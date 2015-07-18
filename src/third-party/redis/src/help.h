@@ -2,7 +2,7 @@
 
 #ifndef __REDIS_HELP_H
 #define __REDIS_HELP_H
-#ifdef FASTOREDIS
+#ifdef FASTO
 static const char *commandGroups[] = {
 #else
 static char *commandGroups[] = {
@@ -21,7 +21,7 @@ static char *commandGroups[] = {
     "hyperloglog"
 };
 
-#ifdef FASTOREDIS
+#ifdef FASTO
 struct commandHelp {
   const char *name;
   const char *params;
