@@ -98,7 +98,7 @@ static bool repack_input_buffer(memcached_instance_st* instance)
 #if EWOULDBLOCK != EAGAIN
           case EWOULDBLOCK:
 #endif
-#ifdef FASTOREDIS
+#ifdef FASTO
 #ifdef __MINGW32__
     case  WSAEWOULDBLOCK:
 #endif
@@ -363,7 +363,7 @@ static bool io_flush(memcached_instance_st* instance,
 #if EWOULDBLOCK != EAGAIN
       case EWOULDBLOCK:
 #endif
-#ifdef FASTOREDIS
+#ifdef FASTO
 #ifdef __MINGW32__
     case  WSAEWOULDBLOCK:
 #endif
@@ -446,7 +446,7 @@ static memcached_return_t _io_fill(memcached_instance_st* instance)
 #if EWOULDBLOCK != EAGAIN
       case EWOULDBLOCK:
 #endif
-#ifdef FASTOREDIS
+#ifdef FASTO
 #ifdef __MINGW32__
     case  WSAEWOULDBLOCK:
 #endif
@@ -589,7 +589,7 @@ memcached_return_t memcached_io_slurp(memcached_instance_st* instance)
 #if EWOULDBLOCK != EAGAIN
       case EWOULDBLOCK:
 #endif
-#ifdef FASTOREDIS
+#ifdef FASTO
 #ifdef __MINGW32__
     case  WSAEWOULDBLOCK:
 #endif

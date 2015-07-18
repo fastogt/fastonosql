@@ -37,7 +37,7 @@
 #include <stdint.h> /* uintXX_t, etc */
 #include "sds.h" /* for sds */
 
-#ifdef FASTOREDIS
+#ifdef FASTO
 #include "third-party/libssh2/include/libssh2.h"
 #endif
 
@@ -105,7 +105,7 @@
     } while (0)
 #endif
 
-#ifdef FASTOREDIS
+#ifdef FASTO
 #define SSH_UNKNOWN 0
 #define SSH_PASSWORD 1
 #define SSH_PUBLICKEY 2
@@ -146,13 +146,13 @@ typedef struct redisContext {
     int flags;
     char *obuf; /* Write buffer */
     redisReader *reader; /* Protocol reader */
-#ifdef FASTOREDIS
+#ifdef FASTO
     LIBSSH2_SESSION *session;
     LIBSSH2_CHANNEL *channel;
 #endif
 } redisContext;
 
-#ifdef FASTOREDIS
+#ifdef FASTO
 redisContext *redisConnect(const char *ip, int port, const char *ssh_address, int ssh_port, const char *username, const char *password,
                            const char *public_key, const char *private_key, const char *passphrase, int curMethod);
 #else
@@ -174,7 +174,7 @@ void redisFree(redisContext *c);
 int redisFreeKeepFd(redisContext *c);
 int redisBufferRead(redisContext *c);
 int redisBufferWrite(redisContext *c, int *done);
-#ifdef FASTOREDIS
+#ifdef FASTO
 int redisReadToBuffer(redisContext *c, char *buf, int size, ssize_t *readed);
 int redisWriteFromBuffer(redisContext *c, const char *buf, ssize_t *nwritten);
 #endif

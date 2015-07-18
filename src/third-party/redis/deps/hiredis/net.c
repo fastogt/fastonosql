@@ -30,7 +30,7 @@
  * POSSIBILITY OF SUCH DAMAGE.
  */
 
-#ifdef FASTOREDIS
+#ifdef FASTO
     #include "fmacros.h"
     #include <sys/types.h>
     #include <limits.h>
@@ -86,7 +86,7 @@ static void redisContextCloseFd(redisContext *c) {
         c->fd = -1;
     }
 }
-#ifdef FASTOREDIS
+#ifdef FASTO
 #ifdef OS_WIN
 int strerror_r(int err, char *text, int size)
 {
@@ -146,7 +146,7 @@ static int redisCreateSocket(redisContext *c, int type) {
 }
 
 static int redisSetBlocking(redisContext *c, int blocking) {
-#ifdef FASTOREDIS
+#ifdef FASTO
     #ifdef OS_WIN
         unsigned long flags = blocking;
         int res = ioctlsocket(c->fd, FIONBIO, &flags);
@@ -259,7 +259,7 @@ static int redisSetTcpNoDelay(redisContext *c) {
 #define __MAX_MSEC (((LONG_MAX) - 999) / 1000)
 
 static int redisContextWaitReady(redisContext *c, const struct timeval *timeout) {
-#ifdef FASTOREDIS
+#ifdef FASTO
     #ifdef OS_WIN
         fd_set master_set;
         FD_ZERO(&master_set);
@@ -431,7 +431,7 @@ int redisContextSetTimeout(redisContext *c, const struct timeval tv) {
 static int _redisContextConnectTcp(redisContext *c, const char *addr, int port,
                                    const struct timeval *timeout,
                                    const char *source_addr) {
-#ifdef FASTOREDIS
+#ifdef FASTO
     if(c->session){
         if (!(c->channel = libssh2_channel_direct_tcpip(c->session, addr, port))) {
             __redisSetError(c, REDIS_ERR_OTHER, "Unable to open a ssh session");
@@ -558,7 +558,7 @@ int redisContextConnectBindTcp(redisContext *c, const char *addr, int port,
 }
 
 int redisContextConnectUnix(redisContext *c, const char *path, const struct timeval *timeout) {
-#ifdef FASTOREDIS
+#ifdef FASTO
     #ifdef OS_WIN
         return REDIS_ERR;
     #else

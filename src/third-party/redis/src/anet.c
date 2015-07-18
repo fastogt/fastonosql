@@ -29,7 +29,7 @@
  */
 
 #include "fmacros.h"
-#ifdef FASTOREDIS
+#ifdef FASTO
         #include <sys/types.h>
     #ifdef OS_WIN
         #include <winsock2.h>
@@ -82,7 +82,7 @@ static void anetSetError(char *err, const char *fmt, ...)
 }
 
 int anetSetBlock(char *err, int fd, int non_block) {
-#ifdef FASTOREDIS
+#ifdef FASTO
 #ifdef OS_WIN
     unsigned long flags = 0;
     int res = ioctlsocket(fd, FIONBIO, &flags);
@@ -409,7 +409,7 @@ int anetTcpNonBlockBindConnect(char *err, char *addr, int port, char *source_add
 
 int anetUnixGenericConnect(char *err, char *path, int flags)
 {
-#ifdef FASTOREDIS
+#ifdef FASTO
 #ifdef OS_WIN
     return ANET_ERR;
 #else
@@ -576,7 +576,7 @@ int anetTcp6Server(char *err, int port, char *bindaddr, int backlog)
 
 int anetUnixServer(char *err, char *path, mode_t perm, int backlog)
 {
-#ifdef FASTOREDIS
+#ifdef FASTO
 #ifdef OS_WIN
     return ANET_ERR;
 #else
@@ -650,7 +650,7 @@ int anetTcpAccept(char *err, int s, char *ip, size_t ip_len, int *port) {
 }
 
 int anetUnixAccept(char *err, int s) {
-#ifdef FASTOREDIS
+#ifdef FASTO
 #ifdef OS_WIN
     return ANET_ERR;
 #else

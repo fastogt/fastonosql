@@ -41,7 +41,7 @@
 #include "net.h"
 #include "sds.h"
 
-#ifdef FASTOREDIS
+#ifdef FASTO
 #ifdef OS_WIN
 #define F_EINTR 0
 #else
@@ -614,7 +614,7 @@ static redisContext *redisContextInit(void) {
         redisFree(c);
         return NULL;
     }
-#ifdef FASTOREDIS
+#ifdef FASTO
     c->session = NULL;
     c->channel = NULL;
 #endif
@@ -626,7 +626,7 @@ void redisFree(redisContext *c) {
     if (c == NULL)
         return;
 
-#ifdef FASTOREDIS
+#ifdef FASTO
     if(c->channel != NULL){
         libssh2_channel_free(c->channel);
     }
@@ -654,7 +654,7 @@ int redisFreeKeepFd(redisContext *c) {
 /* Connect to a Redis instance. On error the field error in the returned
  * context will be set to the return value of the error function.
  * When no set of reply functions is given, the default set will be used. */
-#ifdef FASTOREDIS
+#ifdef FASTO
 static void kbd_callback(const char *name, int name_len,
 const char *instruction, int instruction_len,
 int num_prompts,
@@ -884,7 +884,7 @@ int redisBufferRead(redisContext *c) {
     if (c->err)
         return REDIS_ERR;
 
-#ifdef FASTOREDIS
+#ifdef FASTO
 
     if(c->channel){
         nread = libssh2_channel_read(c->channel, buf, sizeof(buf));
@@ -952,7 +952,7 @@ int redisBufferWrite(redisContext *c, int *done) {
         return REDIS_ERR;
 
     if (sdslen(c->obuf) > 0) {
-#ifdef FASTOREDIS
+#ifdef FASTO
     if(c->channel){
         nwritten = libssh2_channel_write(c->channel, c->obuf, sdslen(c->obuf));
     }
@@ -1002,7 +1002,7 @@ int redisBufferWrite(redisContext *c, int *done) {
     return REDIS_OK;
 }
 
-#ifdef FASTOREDIS
+#ifdef FASTO
 int redisReadToBuffer(redisContext *c, char* buf, int size, ssize_t *nread)
 {
     *nread = -1;

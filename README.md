@@ -1,38 +1,38 @@
-About FastoRedis
+About FastoNoSQL
 ===============
 
-FastoRedis &mdash; is a crossplatform Redis, Memcached, SSDB management tool. <br />
+FastoNoSQL &mdash; is a crossplatform Redis, Memcached, SSDB management tool. <br />
 
 <h3>Windows:</h3>
-![](http://fastoredis.com/images/slider/win_slider.png)
+![](http://fastonosql.com/images/slider/win_slider.png)
 <h3>MacOS X:</h3>
-![](http://fastoredis.com/images/slider/mac_slider.png)
+![](http://fastonosql.com/images/slider/mac_slider.png)
 <h3>Linux:</h3>
-![](http://fastoredis.com/images/slider/linux_slider.png)
+![](http://fastonosql.com/images/slider/linux_slider.png)
 
-Visit our site: [www.fastoredis.com](http://www.fastoredis.com)
+Visit our site: [www.fastonosql.com](http://www.fastonosql.com)
 
 Download
 ========
 
 You can download compiled version (for Mac OS X, Windows, FreeBSD and Linux) from our site:<br />
-[www.fastoredis.com](http://www.fastoredis.com)
+[www.fastonosql.com](http://www.fastonosql.com)
 
 <!-- https://www.dropbox.com/sh/u0s0i8e4m0a8i9f/oxtqKHPUZ8 -->
 
 Contribute
 ==========
-Contributions are always welcome! Just try to follow our coding style: [FastoRedis Coding Style](https://github.com/fasto/fastoredis/wiki/Coding-Style)
+Contributions are always welcome! Just try to follow our coding style: [FastoNoSQL Coding Style](https://github.com/fasto/fastonosql/wiki/Coding-Style)
 
 Build
 =====
 
-Build documentation: [Build FastoRedis](https://github.com/fasto/fastoredis/wiki/Build)
+Build documentation: [Build FastoNoSQL](https://github.com/fasto/fastonosql/wiki/Build)
 
 License
 =======
 
-Copyright (C) 2014 Fasto, Inc (http://www.fastoredis.com)
+Copyright (C) 2014 FastoGT, Inc (http://www.fastonosql.com)
 
 This program is free software: you can redistribute it and/or modify
 it under the terms of the GNU General Public License version 3 as 
@@ -49,19 +49,19 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 <!-- 
 
 Outdated build documentation:<br />
-[Building FastoRedis and Dependencies (for Linux and Mac OS X)]
-(https://github.com/fasto/fastoredis/wiki/Building-FastoRedis-and-Dependencies-(for-Linux-and-Mac-OS-X\))
+[Building FastoNoSQL and Dependencies (for Linux and Mac OS X)]
+(https://github.com/fasto/fastonosql/wiki/Building-FastoNoSQL-and-Dependencies-(for-Linux-and-Mac-OS-X\))
 
 
 
 
 You are lucky enough, if prebuild libraries (that are in `libs` folder) are 
 already available and match your OS/Compiler. For most of you it's not &mdash; 
-you need to build FastoRedis dependencies, before building FastoRedis itself.
+you need to build FastoNoSQL dependencies, before building FastoNoSQL itself.
 
-Here is a detailed instructions on building FastoRedis dependencies for Linux and/or Mac OS X:<br />
-[Building FastoRedis and Dependencies (for Linux and Mac OS X)]
-(https://github.com/fasto/fastoredis/wiki/Building-FastoRedis-and-Dependencies-(for-Linux-and-Mac-OS-X\))
+Here is a detailed instructions on building FastoNoSQL dependencies for Linux and/or Mac OS X:<br />
+[Building FastoNoSQL and Dependencies (for Linux and Mac OS X)]
+(https://github.com/fasto/fastonosql/wiki/Building-FastoNoSQL-and-Dependencies-(for-Linux-and-Mac-OS-X\))
 
 
 
@@ -105,5 +105,5 @@ Executable will be placed to: target/debug/app/out
 
 -->
 
-[![Bitdeli Badge](https://d2weczhvl823v0.cloudfront.net/fasto/fastoredis/trend.png)](https://bitdeli.com/free "Bitdeli Badge")
+[![Bitdeli Badge](https://d2weczhvl823v0.cloudfront.net/fasto/fastonosql/trend.png)](https://bitdeli.com/free "Bitdeli Badge")
 

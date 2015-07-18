@@ -1,0 +1,6 @@
+[submodule "cmake"]
+	path = cmake
+	url = https://github.com/fasto/cmake.git
+[submodule "src/fasto"]
+	path = src/fasto
+	url = https://github.com/fasto/fasto.git
