@@ -483,7 +483,7 @@ Status ClientImpl::multi_zdel(const std::string &name, const std::vector<std::st
 	return s;
 }
 
-#ifdef FASTOREDIS
+#ifdef FASTO
     Status ClientImpl::info(const std::string& args, std::vector<std::string> *ret)
     {
         const std::vector<std::string> *resp;

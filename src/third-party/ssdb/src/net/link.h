@@ -8,7 +8,7 @@ found in the LICENSE file.
 
 #include <vector>
 #include <unistd.h>
-#ifdef FASTOREDIS
+#ifdef FASTO
     #ifdef OS_WIN
         #include <winsock2.h>
         #include <Ws2tcpip.h>

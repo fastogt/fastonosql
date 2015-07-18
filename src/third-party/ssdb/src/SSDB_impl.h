@@ -85,7 +85,7 @@ public:
 		std::vector<std::string> *scores);
 	virtual Status multi_zset(const std::string &name, const std::map<std::string, int64_t> &kss);
 	virtual Status multi_zdel(const std::string &name, const std::vector<std::string> &keys);
-#ifdef FASTOREDIS
+#ifdef FASTO
     virtual Status info(const std::string &args, std::vector<std::string> *ret);
 #endif
 };

@@ -7,7 +7,7 @@ found in the LICENSE file.
 #include <fcntl.h>
 #include <string.h>
 #include <stdarg.h>
-#ifdef FASTOREDIS
+#ifdef FASTO
     #ifdef OS_WIN
         #define F_EINTR 0
     #else
@@ -71,7 +71,7 @@ void Link::close(){
 
 void Link::nodelay(bool enable){
     int opt = enable? 1 : 0;
-#ifdef FASTOREDIS
+#ifdef FASTO
     #ifdef OS_WIN
         ::setsockopt(sock, IPPROTO_TCP, TCP_NODELAY, (const char*)&opt, sizeof(opt));
     #else
@@ -84,7 +84,7 @@ void Link::nodelay(bool enable){
 
 void Link::keepalive(bool enable){
 	int opt = enable? 1 : 0;
-#ifdef FASTOREDIS
+#ifdef FASTO
     #ifdef OS_WIN
         ::setsockopt(sock, SOL_SOCKET, SO_KEEPALIVE, (const char *)&opt, sizeof(opt));
     #else
@@ -97,7 +97,7 @@ void Link::keepalive(bool enable){
 
 void Link::noblock(bool enable){
 	noblock_ = enable;
-#ifdef FASTOREDIS
+#ifdef FASTO
     #ifdef OS_WIN
         unsigned long flags = !enable;
         int res = ioctlsocket(sock, FIONBIO, &flags);
@@ -123,7 +123,7 @@ Link* Link::connect(const char *ip, int port){
 	int sock = -1;
 
 	struct sockaddr_in addr;
-#ifdef FASTOREDIS
+#ifdef FASTO
     #ifdef OS_WIN
         unsigned long hostaddr = inet_addr(ip);
         addr.sin_family = AF_INET;
@@ -168,7 +168,7 @@ Link* Link::listen(const char *ip, int port){
 
 	int opt = 1;
 	struct sockaddr_in addr;
-#ifdef FASTOREDIS
+#ifdef FASTO
     #ifdef OS_WIN
         unsigned long hostaddr = inet_addr(ip);
         addr.sin_family = AF_INET;
@@ -189,7 +189,7 @@ Link* Link::listen(const char *ip, int port){
 	if((sock = ::socket(AF_INET, SOCK_STREAM, 0)) == -1){
 		goto sock_err;
 	}
-#ifdef FASTOREDIS
+#ifdef FASTO
     #ifdef OS_WIN
         if(::setsockopt(sock, SOL_SOCKET, SO_REUSEADDR, (const char*)&opt, sizeof(opt)) == -1){
             goto sock_err;
@@ -239,7 +239,7 @@ Link* Link::accept(){
 	}
 
 	struct linger opt = {1, 0};
-#ifdef FASTOREDIS
+#ifdef FASTO
     #ifdef OS_WIN
         int ret = ::setsockopt(client_sock, SOL_SOCKET, SO_LINGER, (const char *)&opt, sizeof(opt));
     #else
@@ -255,7 +255,7 @@ Link* Link::accept(){
 	link = new Link();
 	link->sock = client_sock;
 	link->keepalive(true);
-#ifdef FASTOREDIS
+#ifdef FASTO
     #ifdef OS_WIN
     #else
         inet_ntop(AF_INET, &addr.sin_addr, link->remote_ip, sizeof(link->remote_ip));
@@ -277,7 +277,7 @@ int Link::read(){
 	while((want = input->space()) > 0){
 		// test
 		//want = 1;
-#ifdef FASTOREDIS
+#ifdef FASTO
     #ifdef OS_WIN
             int len = ::recv(sock, input->slot(), want, 0);
     #else
@@ -320,7 +320,7 @@ int Link::write(){
 	while((want = output->size()) > 0){
 		// test
 		//want = 1;
-#ifdef FASTOREDIS
+#ifdef FASTO
     #ifdef OS_WIN
             int len = ::send(sock, output->data(), want, 0);
     #else
