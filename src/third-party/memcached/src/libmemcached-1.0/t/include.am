@@ -1,0 +1,32 @@
+# vim:ft=automake
+# Copyright (C) 2011 Data Differential
+# All rights reserved.
+#
+# Use and distribution licensed under the BSD license.  See
+# the COPYING file in the parent directory for full text.
+#
+# included from Top Level Makefile.am
+# All paths should be given relative to the root
+
+LIBMEMCACHED_1_0_TEST_PATH= libmemcached-1.0/t
+ 
+if SHARED_ENABLED
+# Test linking with C application
+libmemcached_1_0_t_c_test_SOURCES= libmemcached-1.0/t/c_test.c
+libmemcached_1_0_t_c_test_LDADD= libmemcached/libmemcached.la
+check_PROGRAMS+= libmemcached-1.0/t/c_test
+noinst_PROGRAMS+= libmemcached-1.0/t/c_test
+
+# Test linking with C application/SASL include
+libmemcached_1_0_t_c_sasl_test_SOURCES= libmemcached-1.0/t/c_sasl_test.c
+libmemcached_1_0_t_c_sasl_test_LDADD= libmemcached/libmemcached.la
+check_PROGRAMS+= libmemcached-1.0/t/c_sasl_test
+noinst_PROGRAMS+= libmemcached-1.0/t/c_sasl_test
+else
+endif
+
+# Test linking with C++ application
+libmemcached_1_0_t_cc_test_SOURCES= libmemcached-1.0/t/cc_test.cc
+libmemcached_1_0_t_cc_test_LDADD= libmemcached/libmemcached.la
+check_PROGRAMS+= libmemcached-1.0/t/cc_test
+noinst_PROGRAMS+= libmemcached-1.0/t/cc_test

@@ -1,0 +1,21 @@
+# vim:ft=automake
+# DataDifferential Utility Library
+# Copyright (C) 2011 Data Differential
+# All rights reserved.
+#
+# Use and distribution licensed under the BSD license.  See
+# the COPYING file in the parent directory for full text.
+#
+# Included from Top Level Makefile.am
+# All paths should be given relative to the root
+
+
+noinst_HEADERS+= \
+		 util/daemon.hpp \
+		 util/instance.hpp \
+		 util/logfile.hpp \
+		 util/log.hpp \
+		 util/operation.hpp \
+		 util/signal.hpp \
+		 util/string.hpp \
+		 util/pidfile.hpp

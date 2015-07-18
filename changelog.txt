@@ -1,0 +1,5 @@
+0.1.4
+- Display db name in console
+- Auto open console preference 
+
+copy 0.7.3 FastoRedis sources

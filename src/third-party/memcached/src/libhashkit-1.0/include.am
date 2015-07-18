@@ -1,0 +1,21 @@
+# vim:ft=automake
+# included from Top Level Makefile.am
+# All paths should be given relative to the root
+#
+
+EXTRA_DIST+= libhashkit-1.0/configure.h.in
+BUILT_SOURCES+= libhashkit-1.0/configure.h
+
+nobase_include_HEADERS+= libhashkit-1.0/algorithm.h 
+nobase_include_HEADERS+= libhashkit-1.0/behavior.h 
+nobase_include_HEADERS+= libhashkit-1.0/configure.h 
+nobase_include_HEADERS+= libhashkit-1.0/digest.h 
+nobase_include_HEADERS+= libhashkit-1.0/function.h 
+nobase_include_HEADERS+= libhashkit-1.0/has.h 
+nobase_include_HEADERS+= libhashkit-1.0/hashkit.h 
+nobase_include_HEADERS+= libhashkit-1.0/hashkit.hpp 
+nobase_include_HEADERS+= libhashkit-1.0/strerror.h 
+nobase_include_HEADERS+= libhashkit-1.0/string.h 
+nobase_include_HEADERS+= libhashkit-1.0/str_algorithm.h 
+nobase_include_HEADERS+= libhashkit-1.0/types.h 
+nobase_include_HEADERS+= libhashkit-1.0/visibility.h

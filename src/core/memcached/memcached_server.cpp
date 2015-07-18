@@ -1,0 +1,17 @@
+#include "core/memcached/memcached_server.h"
+
+#include "core/memcached/memcached_database.h"
+
+namespace fastoredis
+{
+    MemcachedServer::MemcachedServer(const IDriverSPtr& drv, bool isSuperServer)
+        : IServer(drv, isSuperServer)
+    {
+
+    }
+
+    IDatabaseSPtr MemcachedServer::createDatabaseImpl(DataBaseInfoSPtr info)
+    {
+        return IDatabaseSPtr(new MemcachedDatabase(shared_from_this(), info));
+    }
+}

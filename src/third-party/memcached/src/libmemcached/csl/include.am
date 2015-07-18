@@ -1,0 +1,39 @@
+# vim:ft=automake
+# included from Top Level Makefile.am
+# All paths should be given relative to the root
+
+DISTCLEANFILES+= libmemcached/csl/parser.output
+
+noinst_HEADERS+= libmemcached/csl/common.h
+noinst_HEADERS+= libmemcached/csl/context.h
+noinst_HEADERS+= libmemcached/csl/parser.h
+noinst_HEADERS+= libmemcached/csl/scanner.h
+noinst_HEADERS+= libmemcached/csl/server.h
+noinst_HEADERS+= libmemcached/csl/symbol.h
+
+libmemcached_libmemcached_la_SOURCES+= libmemcached/csl/context.cc
+libmemcached_libmemcached_la_SOURCES+= libmemcached/csl/parser.cc
+libmemcached_libmemcached_la_SOURCES+= libmemcached/csl/scanner.cc
+
+EXTRA_DIST+= libmemcached/csl/parser.yy
+EXTRA_DIST+= libmemcached/csl/scanner.l
+
+MAINTAINERCLEANFILES+= libmemcached/csl/parser.h
+MAINTAINERCLEANFILES+= libmemcached/csl/parser.cc
+MAINTAINERCLEANFILES+= libmemcached/csl/scanner.h
+MAINTAINERCLEANFILES+= libmemcached/csl/scanner.cc
+
+BUILT_SOURCES+= libmemcached/csl/parser.cc
+BUILT_SOURCES+= libmemcached/csl/parser.h
+BUILT_SOURCES+= libmemcached/csl/scanner.cc
+BUILT_SOURCES+= libmemcached/csl/scanner.h
+
+libmemcached/csl/parser.h: libmemcached/csl/parser.cc
+
+libmemcached/csl/parser.cc: libmemcached/csl/parser.yy libmemcached/csl/scanner.l libmemcached/csl/scanner.h
+	$(AM_V_YACC)$(am__skipyacc) $(YACC) $(YLFLAGS) $(AM_YFLAGS) -o $@ $<
+
+libmemcached/csl/scanner.h: libmemcached/csl/scanner.cc
+
+libmemcached/csl/scanner.cc: libmemcached/csl/scanner.l libmemcached/csl/parser.yy
+	$(AM_V_GEN)$(LEX) $<

@@ -1,0 +1,13 @@
+# vim:ft=automake
+# included from Top Level Makefile.am
+# All paths should be given relative to the root
+
+
+nobase_include_HEADERS+= \
+			 libmemcachedutil-1.0/flush.h \
+			 libmemcachedutil-1.0/ostream.hpp \
+			 libmemcachedutil-1.0/pid.h \
+			 libmemcachedutil-1.0/ping.h \
+			 libmemcachedutil-1.0/pool.h \
+			 libmemcachedutil-1.0/util.h \
+			 libmemcachedutil-1.0/version.h

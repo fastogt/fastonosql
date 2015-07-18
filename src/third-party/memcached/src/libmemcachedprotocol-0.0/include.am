@@ -1,0 +1,9 @@
+# vim:ft=automake
+# included from Top Level Makefile.am
+# All paths should be given relative to the root
+
+nobase_include_HEADERS+= \
+			 libmemcachedprotocol-0.0/binary.h \
+			 libmemcachedprotocol-0.0/callback.h \
+			 libmemcachedprotocol-0.0/handler.h \
+			 libmemcachedprotocol-0.0/vbucket.h

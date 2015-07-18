@@ -1,0 +1,26 @@
+# vim:ft=automake
+# included from Top Level Makefile.am
+# All paths should be given relative to the root
+
+lib_LTLIBRARIES+= libmemcached/libmemcachedutil.la
+
+noinst_HEADERS+= libmemcachedutil/common.h
+
+libmemcached_libmemcachedutil_la_SOURCES= \
+					  libmemcached/backtrace.cc \
+					  libmemcachedutil/flush.cc \
+					  libmemcachedutil/pid.cc \
+					  libmemcachedutil/ping.cc \
+					  libmemcachedutil/pool.cc \
+					  libmemcachedutil/version.cc
+libmemcached_libmemcachedutil_la_LIBADD=
+libmemcached_libmemcachedutil_la_LDFLAGS=
+libmemcached_libmemcachedutil_la_CXXFLAGS=
+libmemcached_libmemcachedutil_la_CXXFLAGS+= \
+					   ${AM_CXXFLAGS} \
+					   ${NO_CONVERSION} \
+					   -DBUILDING_LIBMEMCACHED
+libmemcached_libmemcachedutil_la_CXXFLAGS+= @PTHREAD_CFLAGS@
+libmemcached_libmemcachedutil_la_LDFLAGS+= ${AM_LDFLAGS} -version-info ${MEMCACHED_UTIL_LIBRARY_VERSION}
+libmemcached_libmemcachedutil_la_LIBADD+= libmemcached/libmemcached.la
+libmemcached_libmemcachedutil_la_LIBADD+= @PTHREAD_LIBS@

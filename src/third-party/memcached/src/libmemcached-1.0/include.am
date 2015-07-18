@@ -1,0 +1,56 @@
+# vim:ft=automake
+# included from Top Level Makefile.am
+# All paths should be given relative to the root
+
+EXTRA_DIST+= libmemcached-1.0/configure.h.in
+BUILT_SOURCES+= libmemcached-1.0/configure.h
+
+include libmemcached-1.0/struct/include.am
+include libmemcached-1.0/types/include.am
+
+# Tests for this version of the interface
+include libmemcached-1.0/t/include.am
+
+nobase_include_HEADERS+= libmemcached-1.0/alloc.h 
+nobase_include_HEADERS+= libmemcached-1.0/allocators.h 
+nobase_include_HEADERS+= libmemcached-1.0/analyze.h 
+nobase_include_HEADERS+= libmemcached-1.0/auto.h 
+nobase_include_HEADERS+= libmemcached-1.0/basic_string.h 
+nobase_include_HEADERS+= libmemcached-1.0/behavior.h 
+nobase_include_HEADERS+= libmemcached-1.0/callback.h 
+nobase_include_HEADERS+= libmemcached-1.0/callbacks.h 
+nobase_include_HEADERS+= libmemcached-1.0/configure.h 
+nobase_include_HEADERS+= libmemcached-1.0/defaults.h 
+nobase_include_HEADERS+= libmemcached-1.0/delete.h 
+nobase_include_HEADERS+= libmemcached-1.0/deprecated_types.h 
+nobase_include_HEADERS+= libmemcached-1.0/dump.h 
+nobase_include_HEADERS+= libmemcached-1.0/encoding_key.h 
+nobase_include_HEADERS+= libmemcached-1.0/error.h 
+nobase_include_HEADERS+= libmemcached-1.0/exception.hpp 
+nobase_include_HEADERS+= libmemcached-1.0/exist.h 
+nobase_include_HEADERS+= libmemcached-1.0/fetch.h 
+nobase_include_HEADERS+= libmemcached-1.0/flush.h 
+nobase_include_HEADERS+= libmemcached-1.0/flush_buffers.h 
+nobase_include_HEADERS+= libmemcached-1.0/get.h 
+nobase_include_HEADERS+= libmemcached-1.0/hash.h 
+nobase_include_HEADERS+= libmemcached-1.0/limits.h 
+nobase_include_HEADERS+= libmemcached-1.0/memcached.h 
+nobase_include_HEADERS+= libmemcached-1.0/memcached.hpp 
+nobase_include_HEADERS+= libmemcached-1.0/options.h 
+nobase_include_HEADERS+= libmemcached-1.0/parse.h 
+nobase_include_HEADERS+= libmemcached-1.0/platform.h 
+nobase_include_HEADERS+= libmemcached-1.0/quit.h 
+nobase_include_HEADERS+= libmemcached-1.0/result.h 
+nobase_include_HEADERS+= libmemcached-1.0/return.h 
+nobase_include_HEADERS+= libmemcached-1.0/sasl.h 
+nobase_include_HEADERS+= libmemcached-1.0/server.h 
+nobase_include_HEADERS+= libmemcached-1.0/server_list.h 
+nobase_include_HEADERS+= libmemcached-1.0/stats.h 
+nobase_include_HEADERS+= libmemcached-1.0/storage.h 
+nobase_include_HEADERS+= libmemcached-1.0/strerror.h 
+nobase_include_HEADERS+= libmemcached-1.0/touch.h 
+nobase_include_HEADERS+= libmemcached-1.0/triggers.h 
+nobase_include_HEADERS+= libmemcached-1.0/types.h 
+nobase_include_HEADERS+= libmemcached-1.0/verbosity.h 
+nobase_include_HEADERS+= libmemcached-1.0/version.h 
+nobase_include_HEADERS+= libmemcached-1.0/visibility.h

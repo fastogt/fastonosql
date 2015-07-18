@@ -1,0 +1,8 @@
+# vim:ft=automake
+
+nobase_include_HEADERS+= libmemcached-1.0/types/behavior.h 
+nobase_include_HEADERS+= libmemcached-1.0/types/callback.h 
+nobase_include_HEADERS+= libmemcached-1.0/types/connection.h 
+nobase_include_HEADERS+= libmemcached-1.0/types/hash.h 
+nobase_include_HEADERS+= libmemcached-1.0/types/return.h 
+nobase_include_HEADERS+= libmemcached-1.0/types/server_distribution.h

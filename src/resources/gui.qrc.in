@@ -1,0 +1,57 @@
+<RCC>
+    <qresource prefix="/">
+    <file>@PROJECT_NAME_LOWERCASE@/images/64x64/logo.png</file>
+    <file>@PROJECT_NAME_LOWERCASE@/images/64x64/open.png</file>
+    <file>@PROJECT_NAME_LOWERCASE@/images/64x64/add.png</file>
+    <file>@PROJECT_NAME_LOWERCASE@/images/64x64/remove.png</file>
+    <file>@PROJECT_NAME_LOWERCASE@/images/64x64/edit.png</file>
+    <file>@PROJECT_NAME_LOWERCASE@/images/64x64/redis.png</file>
+    <file>@PROJECT_NAME_LOWERCASE@/images/64x64/memcached.png</file>
+    <file>@PROJECT_NAME_LOWERCASE@/images/64x64/ssdb.png</file>
+    <file>@PROJECT_NAME_LOWERCASE@/images/64x64/redistype.png</file>
+    <file>@PROJECT_NAME_LOWERCASE@/images/64x64/execute.png</file>
+    <file>@PROJECT_NAME_LOWERCASE@/images/64x64/stop.png</file>
+    <file>@PROJECT_NAME_LOWERCASE@/images/64x64/connect.png</file>
+    <file>@PROJECT_NAME_LOWERCASE@/images/64x64/disconnect.png</file>
+
+    <file>@PROJECT_NAME_LOWERCASE@/images/64x64/status.png</file>
+    <file>@PROJECT_NAME_LOWERCASE@/images/64x64/error.png</file>
+    <file>@PROJECT_NAME_LOWERCASE@/images/64x64/string.png</file>
+    <file>@PROJECT_NAME_LOWERCASE@/images/64x64/null.png</file>
+    <file>@PROJECT_NAME_LOWERCASE@/images/64x64/array.png</file>
+    <file>@PROJECT_NAME_LOWERCASE@/images/64x64/zset.png</file>
+    <file>@PROJECT_NAME_LOWERCASE@/images/64x64/hash.png</file>
+    <file>@PROJECT_NAME_LOWERCASE@/images/64x64/double.png</file>
+    <file>@PROJECT_NAME_LOWERCASE@/images/64x64/bool.png</file>
+    <file>@PROJECT_NAME_LOWERCASE@/images/64x64/integer.png</file>
+
+    <file>@PROJECT_NAME_LOWERCASE@/images/64x64/time.png</file>
+    <file>@PROJECT_NAME_LOWERCASE@/images/64x64/server.png</file>
+    <file>@PROJECT_NAME_LOWERCASE@/images/64x64/load.png</file>
+    <file>@PROJECT_NAME_LOWERCASE@/images/64x64/save.png</file>
+    <file>@PROJECT_NAME_LOWERCASE@/images/64x64/saveas.png</file>
+    <file>@PROJECT_NAME_LOWERCASE@/images/64x64/cluster.png</file>
+    <file>@PROJECT_NAME_LOWERCASE@/images/64x64/tree.png</file>
+    <file>@PROJECT_NAME_LOWERCASE@/images/64x64/table.png</file>
+    <file>@PROJECT_NAME_LOWERCASE@/images/64x64/text.png</file>
+    <file>@PROJECT_NAME_LOWERCASE@/images/64x64/database.png</file>
+    <file>@PROJECT_NAME_LOWERCASE@/images/64x64/key.png</file>
+    <file>@PROJECT_NAME_LOWERCASE@/images/64x64/discovery.png</file>
+    <file>@PROJECT_NAME_LOWERCASE@/images/64x64/command.png</file>
+    <file>@PROJECT_NAME_LOWERCASE@/images/64x64/logging.png</file>
+    <file>@PROJECT_NAME_LOWERCASE@/images/64x64/interactive_mode.png</file>
+    <file>@PROJECT_NAME_LOWERCASE@/images/64x64/latency_mode.png</file>
+    <file>@PROJECT_NAME_LOWERCASE@/images/64x64/pipe_mode.png</file>
+    <file>@PROJECT_NAME_LOWERCASE@/images/64x64/stat_mode.png</file>
+    <file>@PROJECT_NAME_LOWERCASE@/images/64x64/bigkeys_mode.png</file>
+    <file>@PROJECT_NAME_LOWERCASE@/images/64x64/scan_mode.png</file>
+    <file>@PROJECT_NAME_LOWERCASE@/images/64x64/rdb_mode.png</file>
+    <file>@PROJECT_NAME_LOWERCASE@/images/64x64/slave_mode.png</file>
+    <file>@PROJECT_NAME_LOWERCASE@/images/64x64/encode_decode.png</file>
+    <file>@PROJECT_NAME_LOWERCASE@/images/64x64/preferences.png</file>
+    <file>@PROJECT_NAME_LOWERCASE@/images/64x64/fail.png</file>
+    <file>@PROJECT_NAME_LOWERCASE@/images/64x64/success.png</file>
+    <file>@PROJECT_NAME_LOWERCASE@/images/16x16/close.png</file>
+    <file>@PROJECT_NAME_LOWERCASE@/images/loading.gif</file>
+    </qresource>
+</RCC>

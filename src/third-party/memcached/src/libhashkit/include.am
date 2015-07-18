@@ -1,0 +1,69 @@
+# vim:ft=automake
+# included from Top Level Makefile.am
+# All paths should be given relative to the root
+#
+# HashKit
+# Copyright (C) 2009 Brian Aker
+# All rights reserved.
+#
+# Use and distribution licensed under the BSD license.  See
+# the COPYING file in the parent directory for full text.
+
+lib_LTLIBRARIES+= libhashkit/libhashkit.la
+
+noinst_HEADERS+= libhashkit/aes.h
+noinst_HEADERS+= libhashkit/algorithm.h
+noinst_HEADERS+= libhashkit/murmur3.h
+noinst_HEADERS+= libhashkit/common.h
+noinst_HEADERS+= libhashkit/is.h
+noinst_HEADERS+= libhashkit/rijndael.hpp
+noinst_HEADERS+= libhashkit/string.h
+
+
+nobase_include_HEADERS+= libhashkit/hashkit.h
+
+libhashkit_libhashkit_la_LIBADD=
+libhashkit_libhashkit_la_SOURCES=
+libhashkit_libhashkit_la_CXXFLAGS=
+libhashkit_libhashkit_la_CFLAGS=
+
+libhashkit_libhashkit_la_SOURCES+= libhashkit/aes.cc
+libhashkit_libhashkit_la_SOURCES+= libhashkit/algorithm.cc
+libhashkit_libhashkit_la_SOURCES+= libhashkit/behavior.cc
+libhashkit_libhashkit_la_SOURCES+= libhashkit/crc32.cc
+libhashkit_libhashkit_la_SOURCES+= libhashkit/digest.cc
+libhashkit_libhashkit_la_SOURCES+= libhashkit/encrypt.cc
+libhashkit_libhashkit_la_SOURCES+= libhashkit/fnv_32.cc
+libhashkit_libhashkit_la_SOURCES+= libhashkit/fnv_64.cc
+libhashkit_libhashkit_la_SOURCES+= libhashkit/function.cc
+libhashkit_libhashkit_la_SOURCES+= libhashkit/has.cc
+libhashkit_libhashkit_la_SOURCES+= libhashkit/hashkit.cc
+libhashkit_libhashkit_la_SOURCES+= libhashkit/jenkins.cc
+libhashkit_libhashkit_la_SOURCES+= libhashkit/ketama.cc
+libhashkit_libhashkit_la_SOURCES+= libhashkit/md5.cc
+libhashkit_libhashkit_la_SOURCES+= libhashkit/murmur.cc
+libhashkit_libhashkit_la_SOURCES+= libhashkit/murmur3.cc
+libhashkit_libhashkit_la_SOURCES+= libhashkit/murmur3_api.cc
+libhashkit_libhashkit_la_SOURCES+= libhashkit/one_at_a_time.cc
+libhashkit_libhashkit_la_SOURCES+= libhashkit/rijndael.cc
+libhashkit_libhashkit_la_SOURCES+= libhashkit/str_algorithm.cc
+libhashkit_libhashkit_la_SOURCES+= libhashkit/strerror.cc
+libhashkit_libhashkit_la_SOURCES+= libhashkit/string.cc
+
+if INCLUDE_HSIEH_SRC
+libhashkit_libhashkit_la_SOURCES+= libhashkit/hsieh.cc
+else
+libhashkit_libhashkit_la_SOURCES+= libhashkit/nohsieh.cc
+endif
+
+libhashkit_libhashkit_la_CXXFLAGS+= -DBUILDING_HASHKIT
+libhashkit_libhashkit_la_CFLAGS+= -DBUILDING_HASHKIT
+
+libhashkit_libhashkit_la_LDFLAGS= -version-info $(HASHKIT_LIBRARY_VERSION)
+
+# library used for testing
+noinst_LTLIBRARIES+= libhashkit/libhashkitinc.la
+
+libhashkit_libhashkitinc_la_SOURCES= ${libhashkit_libhashkit_la_SOURCES}
+libhashkit_libhashkitinc_la_CFLAGS= ${libhashkit_libhashkit_la_CFLAGS}
+libhashkit_libhashkitinc_la_CXXFLAGS= ${libhashkit_libhashkit_la_CXXFLAGS}
