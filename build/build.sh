@@ -39,6 +39,8 @@ else
         platform='linux'
     elif [ "$unamestr" = 'Darwin' ]; then
         platform='macosx'
+    elif [ "$unamestr" = 'FreeBSD' ]; then
+        platform='freebsd'
     fi 
 fi
 
@@ -60,7 +62,10 @@ elif [ "$platform" = 'linux' ]; then
 elif [ "$platform" = 'macosx' ]; then
 	echo Build for MacOSX ...
     createPackage $platform build_dmg DragNDrop  
-    createPackage $platform build_zip ZIP 
+    createPackage $platform build_zip ZIP
+elif [ "$platform" = 'freebsd' ]; then
+    echo Build for FreeBSD ...
+    createPackage $platform build_tar TGZ
 elif [ "$platform" = 'android' ]; then
     echo Build for Android ...
     createPackage $platform build_apk APK

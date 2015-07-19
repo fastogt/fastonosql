@@ -330,7 +330,7 @@ namespace fastoredis
 
     QFont GuiFactory::font() const
     {
-#if defined(OS_MACOSX)
+#if defined(OS_MACOSX) || defined(OS_FREEBSD)
         static const QFont textFont = QFont("Monaco",12);
 #elif defined(OS_LINUX)
         static QFont textFont = QFont("Monospace");

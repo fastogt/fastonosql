@@ -5,6 +5,9 @@
 #include <unistd.h>
 #include <arpa/inet.h>
 #include <sys/socket.h>
+#ifdef OS_FREEBSD
+#include <netinet/in.h>
+#endif
 #endif
 
 #include "third-party/libssh2/include/libssh2.h"

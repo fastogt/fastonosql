@@ -12,7 +12,7 @@
 /* Define to 1 if using `alloca.c'. */
 /* #undef C_ALLOCA */
 
-#ifdef OS_POSIX
+#if defined(OS_POSIX) && !defined(OS_FREEBSD)
 /* Define to 1 if you have `alloca', as a function or macro. */
 #define HAVE_ALLOCA 1
 
