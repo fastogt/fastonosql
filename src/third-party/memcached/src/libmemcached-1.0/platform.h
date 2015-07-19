@@ -37,7 +37,7 @@
 
 #pragma once
 
-#ifdef FASTOREDIS
+#ifdef FASTO
 #include <mem_config.h>
 #endif
 
@@ -60,7 +60,7 @@ typedef SOCKET memcached_socket_t;
 # include <sys/un.h>
 # include <netinet/tcp.h>
 
-#ifdef FASTOREDIS
+#ifdef FASTO
     #ifndef HAVE_IN_PORT_T
     typedef int in_port_t;
     # define HAVE_IN_PORT_T 1
