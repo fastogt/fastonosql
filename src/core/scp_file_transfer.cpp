@@ -14,7 +14,7 @@
 
 #include "fasto/qt/logger.h"
 
-namespace fastoredis
+namespace fastonosql
 {
     int scp_send_file(const std::string& username, const std::string& password, const std::string& loclfile, const std::string& host, const std::string& scppath)
     {

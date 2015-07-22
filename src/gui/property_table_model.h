@@ -4,7 +4,7 @@
 
 #include "core/types.h"
 
-namespace fastoredis
+namespace fastonosql
 {
     struct PropertyTableItem
             : public fasto::qt::gui::TableItem

@@ -5,7 +5,7 @@
 
 #include "fasto/qt/logger.h"
 
-namespace fastoredis
+namespace fastonosql
 {
     namespace
     {
@@ -108,7 +108,7 @@ namespace fastoredis
 
 namespace common
 {
-    std::string convertToString(const fastoredis::ssdbConfig &conf)
+    std::string convertToString(const fastonosql::ssdbConfig &conf)
     {
         std::vector<std::string> argv;
 
@@ -149,9 +149,9 @@ namespace common
     }
 
     template<>
-    fastoredis::ssdbConfig convertFromString(const std::string& line)
+    fastonosql::ssdbConfig convertFromString(const std::string& line)
     {
-        fastoredis::ssdbConfig cfg;
+        fastonosql::ssdbConfig cfg;
         enum { kMaxArgs = 64 };
         int argc = 0;
         char *argv[kMaxArgs] = {0};
@@ -162,7 +162,7 @@ namespace common
             p2 = strtok(0, " ");
         }
 
-        fastoredis::parseOptions(argc, argv, cfg);
+        fastonosql::parseOptions(argc, argv, cfg);
         return cfg;
     }
 }

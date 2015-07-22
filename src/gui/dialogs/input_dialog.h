@@ -4,7 +4,7 @@
 
 class QLineEdit;
 
-namespace fastoredis
+namespace fastonosql
 {
     class InputDialog
             : public QDialog

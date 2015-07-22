@@ -2,7 +2,7 @@
 
 #include "common/utils.h"
 
-namespace fastoredis
+namespace fastonosql
 {
     SsdbConnectionSettings::SsdbConnectionSettings(const std::string& connectionName)
         : IConnectionSettingsBase(connectionName, SSDB), info_()

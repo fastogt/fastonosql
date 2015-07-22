@@ -1,6 +1,6 @@
 #include "core/types.h"
 
-namespace fastoredis
+namespace fastonosql
 {
     NKey::NKey(const std::string& key, common::Value::Type type)
         : key_(key), type_(type)

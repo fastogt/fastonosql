@@ -6,7 +6,7 @@
 #include "common/text_decoders/msgpack_edcoder.h"
 #include "common/text_decoders/hex_edcoder.h"
 
-namespace fastoredis
+namespace fastonosql
 {
     FastoCommonItem::FastoCommonItem(const QString& key, const QString& value, common::Value::Type type, TreeItem *parent, void* internalPointer)
         : TreeItem(parent, internalPointer), key_(key), value_(value), type_(type)

@@ -5,7 +5,7 @@
 #define DEFAULT_SSH_PORT 22
 #define DEFAULT_SSH_HOST ""
 
-namespace fastoredis
+namespace fastonosql
 {
     struct SSHInfo
     {

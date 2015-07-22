@@ -28,7 +28,7 @@
 #include "shell/memcached_shell.h"
 #include "shell/ssdb_shell.h"
 
-using namespace fastoredis::translations;
+using namespace fastonosql::translations;
 
 namespace
 {
@@ -93,7 +93,7 @@ namespace
     const QSize iconSize = QSize(24, 24);
 }
 
-namespace fastoredis
+namespace fastonosql
 {
     BaseShellWidget::BaseShellWidget(IServerSPtr server, const QString& filePath, QWidget* parent)
         : QWidget(parent), server_(server), filePath_(filePath)

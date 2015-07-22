@@ -31,7 +31,7 @@ namespace
     const QString defaultNameConnection = "New Cluster Connection";
 }
 
-namespace fastoredis
+namespace fastonosql
 {
     ClusterDialog::ClusterDialog(QWidget* parent, IClusterSettingsBase *connection)
         : QDialog(parent), cluster_connection_(connection)

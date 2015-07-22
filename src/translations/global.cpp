@@ -2,7 +2,7 @@
 
 #include <QObject>
 
-namespace fastoredis
+namespace fastonosql
 {
     namespace translations
     {

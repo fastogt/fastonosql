@@ -34,7 +34,7 @@ namespace
     const QString defaultNameConnection = "New Connection";
 }
 
-namespace fastoredis
+namespace fastonosql
 {
     ConnectionDialog::ConnectionDialog(QWidget* parent, IConnectionSettingsBase* connection)
         : QDialog(parent), connection_(connection)

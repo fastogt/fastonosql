@@ -4,7 +4,7 @@
 
 #include "gui/gui_factory.h"
 
-namespace fastoredis
+namespace fastonosql
 {
     MemcachedShell::MemcachedShell(bool showAutoCompl, QWidget* parent)
         : FastoEditorShell(common::convertFromString<QString>(MemcachedLexer::version()), showAutoCompl, parent)

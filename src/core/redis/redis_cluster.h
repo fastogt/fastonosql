@@ -2,7 +2,7 @@
 
 #include "core/icluster.h"
 
-namespace fastoredis
+namespace fastonosql
 {
     class RedisCluster
             : public ICluster

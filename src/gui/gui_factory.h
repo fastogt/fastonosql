@@ -8,7 +8,7 @@
 #include "common/value.h"
 #include "common/patterns/singleton_pattern.h"
 
-namespace fastoredis
+namespace fastonosql
 {
     class GuiFactory
             : public common::patterns::LazySingleton<GuiFactory>

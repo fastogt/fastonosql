@@ -6,7 +6,7 @@ class QAction;
 
 #include "core/iserver.h"
 
-namespace fastoredis
+namespace fastonosql
 {
     class ExplorerTreeView
             : public QTreeView

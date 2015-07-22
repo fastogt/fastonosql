@@ -6,7 +6,7 @@
 
 class QAction;
 
-namespace fastoredis
+namespace fastonosql
 {
     class BaseShellWidget;
     class OutputWidget;

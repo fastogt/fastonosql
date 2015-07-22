@@ -18,7 +18,7 @@ namespace fasto
     }
 }
 
-namespace fastoredis
+namespace fastonosql
 {
     class FastoTextView;
     class FastoTreeView;

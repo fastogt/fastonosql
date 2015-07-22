@@ -7,7 +7,7 @@ namespace
     const QString help("help");
 }
 
-namespace fastoredis
+namespace fastonosql
 {
     RedisApi::RedisApi(QsciLexer* lexer)
         : QsciAbstractAPIs(lexer)

@@ -25,7 +25,7 @@
 #include "core/memcached/memcached_infos.h"
 #include "core/ssdb/ssdb_infos.h"
 
-namespace fastoredis
+namespace fastonosql
 {
     CreateDbKeyDialog::CreateDbKeyDialog(const QString &title, connectionTypes type, QWidget* parent)
         : QDialog(parent), type_(type), value_()

@@ -19,7 +19,7 @@
 
 #include "translations/global.h"
 
-namespace fastoredis
+namespace fastonosql
 {
     EncodeDecodeDialog::EncodeDecodeDialog(QWidget* parent)
         : QDialog(parent)

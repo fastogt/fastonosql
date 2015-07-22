@@ -4,7 +4,7 @@
 
 #include "core/memcached/memcached_settings.h"
 
-namespace fastoredis
+namespace fastonosql
 {
     static const QString memcachedCommandsKeywords[] = {"quit",
                                                             "verbosity", "version", "stats", "flush_all",

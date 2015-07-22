@@ -6,7 +6,7 @@
 #include "gui/gui_factory.h"
 #include "gui/widgets/query_widget.h"
 
-namespace fastoredis
+namespace fastonosql
 {
     MainWidget::MainWidget(QWidget* parent)
         : QTabWidget(parent)

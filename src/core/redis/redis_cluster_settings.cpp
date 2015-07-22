@@ -1,6 +1,6 @@
 #include "core/redis/redis_cluster_settings.h"
 
-namespace fastoredis
+namespace fastonosql
 {
     RedisClusterSettings::RedisClusterSettings(const std::string& connectionName)
         : IClusterSettingsBase(connectionName, REDIS)

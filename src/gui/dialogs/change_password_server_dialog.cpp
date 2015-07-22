@@ -13,7 +13,7 @@
 
 #include "translations/global.h"
 
-namespace fastoredis
+namespace fastonosql
 {
     ChangePasswordServerDialog::ChangePasswordServerDialog(const QString &title, IServerSPtr server, QWidget* parent)
         : QDialog(parent), server_(server)

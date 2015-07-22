@@ -10,7 +10,7 @@
 
 #include "translations/global.h"
 
-namespace fastoredis
+namespace fastonosql
 {
     PropertyServerDialog::PropertyServerDialog(const QString& title, connectionTypes type, QWidget* parent)
         : QDialog(parent), type_(type)

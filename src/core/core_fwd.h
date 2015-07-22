@@ -2,7 +2,7 @@
 
 #include "core/types.h"
 
-namespace fastoredis
+namespace fastonosql
 {
     typedef common::shared_ptr<DataBaseInfo> DataBaseInfoSPtr;
 

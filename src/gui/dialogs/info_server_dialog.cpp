@@ -122,7 +122,7 @@ namespace
                                                             "Binlogs: %5");
 }
 
-namespace fastoredis
+namespace fastonosql
 {
     InfoServerDialog::InfoServerDialog(const QString& title, connectionTypes type, QWidget* parent)
         : QDialog(parent), type_(type)

@@ -9,7 +9,7 @@
 
 #include "core/icluster.h"
 
-namespace fastoredis
+namespace fastonosql
 {
     IExplorerTreeItem::IExplorerTreeItem(TreeItem* parent)
         : TreeItem(parent)

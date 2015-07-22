@@ -8,7 +8,7 @@
 
 #include "gui/gui_factory.h"
 
-namespace fastoredis
+namespace fastonosql
 {
     InputDialog::InputDialog(QWidget* parent, const QString& title, InputType type,
                              const QString& firstLabelText, const QString& secondLabelText)

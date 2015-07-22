@@ -8,7 +8,7 @@ class QLabel;
 class QLineEdit;
 class QGroupBox;
 
-namespace fastoredis
+namespace fastonosql
 {
     class PreferencesDialog 
 		: public QDialog

@@ -29,7 +29,7 @@ namespace
         "PARTICULAR PURPOSE.<br/>");
 }
 
-namespace fastoredis
+namespace fastonosql
 {
     AboutDialog::AboutDialog(QWidget* parent)
         : QDialog(parent)

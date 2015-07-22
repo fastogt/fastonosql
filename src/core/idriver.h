@@ -17,7 +17,7 @@ namespace common
     }
 }
 
-namespace fastoredis
+namespace fastonosql
 {
     class IDriver
             : public QObject, private IFastoObjectObserver

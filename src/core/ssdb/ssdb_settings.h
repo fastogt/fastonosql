@@ -4,7 +4,7 @@
 
 #include "core/ssdb/ssdb_config.h"
 
-namespace fastoredis
+namespace fastonosql
 {
     class SsdbConnectionSettings
             : public IConnectionSettingsBase

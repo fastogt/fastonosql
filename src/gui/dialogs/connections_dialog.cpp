@@ -22,7 +22,7 @@
 
 #include "translations/global.h"
 
-namespace fastoredis
+namespace fastonosql
 {
     /**
      * @brief Creates dialog

@@ -7,7 +7,7 @@ namespace
     const QString help("help");
 }
 
-namespace fastoredis
+namespace fastonosql
 {
     SsdbApi::SsdbApi(QsciLexer *lexer)
         : QsciAbstractAPIs(lexer)

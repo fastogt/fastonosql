@@ -8,7 +8,7 @@ class QLineEdit;
 class QSpinBox;
 class QLabel;
 
-namespace fastoredis
+namespace fastonosql
 {
     class FastoTableView;
     class KeysTableModel;

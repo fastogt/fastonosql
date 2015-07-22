@@ -7,7 +7,7 @@ class QAction;
 
 #include "common/log_levels.h"
 
-namespace fastoredis
+namespace fastonosql
 {
     class LogWidget
             : public QWidget

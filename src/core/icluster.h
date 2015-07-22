@@ -4,7 +4,7 @@
 
 #include "core/iserver.h"
 
-namespace fastoredis
+namespace fastonosql
 {
     class ICluster
             : public IServerBase

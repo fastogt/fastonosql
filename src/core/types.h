@@ -6,7 +6,7 @@
 
 #include "common/net/net.h"
 
-namespace fastoredis
+namespace fastonosql
 {
     template<connectionTypes ct>
     struct DBTraits

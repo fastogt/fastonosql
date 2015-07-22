@@ -6,7 +6,7 @@
 
 #define REDIS_CLI_DEFAULT_PIPE_TIMEOUT 30 /* seconds */
 
-namespace fastoredis
+namespace fastonosql
 {
     struct redisConfig
     {
@@ -54,5 +54,5 @@ namespace fastoredis
 
 namespace common
 {
-    std::string convertToString(const fastoredis::redisConfig &conf);
+    std::string convertToString(const fastonosql::redisConfig &conf);
 }

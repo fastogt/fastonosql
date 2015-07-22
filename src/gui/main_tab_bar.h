@@ -2,7 +2,7 @@
 
 #include <QTabBar>
 
-namespace fastoredis
+namespace fastonosql
 {
     class MainTabBar
             : public QTabBar

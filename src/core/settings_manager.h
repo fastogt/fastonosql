@@ -8,7 +8,7 @@
 
 #include "core/connection_settings.h"
 
-namespace fastoredis
+namespace fastonosql
 {
     class SettingsManager
             : public common::patterns::LazySingleton<SettingsManager>

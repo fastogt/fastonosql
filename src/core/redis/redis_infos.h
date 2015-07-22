@@ -96,7 +96,7 @@
 #define REDIS_USED_CPU_SYS_CHILDREN_LABEL "used_cpu_sys_children"
 #define REDIS_USED_CPU_USER_CHILDREN_LABEL "used_cpu_user_children"
 
-namespace fastoredis
+namespace fastonosql
 {
     extern const std::vector<std::string> redisHeaders;
     extern const std::vector< std::vector<Field> > redisFields;

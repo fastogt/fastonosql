@@ -25,7 +25,7 @@ namespace
     const QSize stateIconSize = QSize(64, 64);
 }
 
-namespace fastoredis
+namespace fastonosql
 {
     DiscoveryConnection::DiscoveryConnection(IConnectionSettingsBaseSPtr conn, QObject* parent)
         : QObject(parent), connection_(conn), startTime_(common::time::current_mstime())

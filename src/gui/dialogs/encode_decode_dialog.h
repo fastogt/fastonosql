@@ -5,7 +5,7 @@
 class QComboBox;
 class QRadioButton;
 
-namespace fastoredis
+namespace fastonosql
 {
     class FastoEditor;
     class EncodeDecodeDialog

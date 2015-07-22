@@ -2,7 +2,7 @@
 
 #include <QDialog>
 
-namespace fastoredis
+namespace fastonosql
 {
     class AboutDialog
             : public QDialog

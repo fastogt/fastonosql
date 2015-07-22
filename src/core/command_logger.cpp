@@ -1,6 +1,6 @@
 #include "core/command_logger.h"
 
-namespace fastoredis
+namespace fastonosql
 {
     CommandLogger::CommandLogger()
     {

@@ -4,7 +4,7 @@
 
 #include "core/types.h"
 
-namespace fastoredis
+namespace fastonosql
 {
     class FastoCommonModel
             : public fasto::qt::gui::TreeModel

@@ -90,7 +90,7 @@ namespace
     const QKeySequence explorerKeySequence = Qt::CTRL + Qt::Key_T;
 }
 
-namespace fastoredis
+namespace fastonosql
 {
     MainWindow::MainWindow()
         : QMainWindow(), isCheckedInSession_(false)

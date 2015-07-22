@@ -12,7 +12,7 @@
 
 #include "translations/global.h"
 
-namespace fastoredis
+namespace fastonosql
 {
     CommandsWidget::CommandsWidget(QWidget* parent)
         : QWidget(parent), logTextEdit_(new QTextEdit)

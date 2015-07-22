@@ -4,7 +4,7 @@
 
 #include "core/ssdb/ssdb_settings.h"
 
-namespace fastoredis
+namespace fastonosql
 {
     static const QString ssdbCommandsKeywords[] = { "quit", "set", "get", "setx", "del", "incr", "keys", "scan", "rscan", "multi_get", "multi_set", "multi_del",
                                                         "hset", "hget", "hdel", "hincr", "hsize", "hclear", "hkeys", "hscan", "hrscan", "multi_hget", "multi_hset",

@@ -2,7 +2,7 @@
 
 #include "gui/fasto_editor.h"
 
-namespace fastoredis
+namespace fastonosql
 {
     class SsdbShell
             : public FastoEditorShell

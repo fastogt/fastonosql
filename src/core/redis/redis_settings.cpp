@@ -2,7 +2,7 @@
 
 #include "common/utils.h"
 
-namespace fastoredis
+namespace fastonosql
 {
     RedisConnectionSettings::RedisConnectionSettings(const std::string &connectionName)
         : IConnectionSettingsBase(connectionName, REDIS), info_()

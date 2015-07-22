@@ -4,7 +4,7 @@
 
 #include "core/redis/redis_config.h"
 
-namespace fastoredis
+namespace fastonosql
 {
     class RedisConnectionSettings
             : public IConnectionSettingsBase

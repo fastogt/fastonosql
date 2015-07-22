@@ -4,7 +4,7 @@
 
 #include "core/connection_settings.h"
 
-namespace fastoredis
+namespace fastonosql
 {
     class ConnectionListWidgetItem
             : public QTreeWidgetItem

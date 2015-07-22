@@ -29,7 +29,7 @@ namespace fasto
     }
 }
 
-namespace fastoredis
+namespace fastonosql
 {
     class FastoEditor
         : public QWidget

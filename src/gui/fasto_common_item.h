@@ -5,7 +5,7 @@
 #include "common/value.h"
 #include "fasto/qt/gui/base/tree_item.h"
 
-namespace fastoredis
+namespace fastonosql
 {
     class FastoCommonItem
             : public fasto::qt::gui::TreeItem

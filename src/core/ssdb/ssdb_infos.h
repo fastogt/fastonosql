@@ -10,7 +10,7 @@
 #define SSDB_DBSIZE_LABEL "dbsize"
 #define SSDB_BINLOGS_LABEL "binlogs"
 
-namespace fastoredis
+namespace fastonosql
 {
     extern const std::vector<std::string> SsdbHeaders;
     extern const std::vector<std::vector<Field> > SsdbFields;

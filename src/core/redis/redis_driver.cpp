@@ -195,7 +195,7 @@ namespace
     }
 }
 
-namespace fastoredis
+namespace fastonosql
 {
     namespace
     {

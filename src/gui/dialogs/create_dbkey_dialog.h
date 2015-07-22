@@ -10,7 +10,7 @@ class QListWidget;
 class QTableWidget;
 class QGroupBox;
 
-namespace fastoredis
+namespace fastonosql
 {
     class CreateDbKeyDialog
             : public QDialog

@@ -4,7 +4,7 @@
 
 #include "core/redis/redis_settings.h"
 
-namespace fastoredis
+namespace fastonosql
 {
     extern const std::vector<QString> redisTypesKeywords;
     extern const std::vector<QString> redisCommandsKeywords;

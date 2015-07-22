@@ -14,7 +14,7 @@
 
 #include "translations/global.h"
 
-namespace fastoredis
+namespace fastonosql
 {
     ServerHistoryDialog::ServerHistoryDialog(const QString& title, connectionTypes type, QWidget* parent)
         : QDialog(parent, Qt::WindowMinMaxButtonsHint | Qt::WindowCloseButtonHint ), type_(type)

@@ -19,7 +19,7 @@
 #include "core/settings_manager.h"
 #include "core/servers_manager.h"
 
-namespace fastoredis
+namespace fastonosql
 {
     PreferencesDialog::PreferencesDialog(QWidget* parent)
         : QDialog(parent)
@@ -110,7 +110,7 @@ namespace fastoredis
         SettingsManager::instance().setCurrentStyle(stylesComboBox_->currentText());
 
         const std::string defCombo = common::convertToString(defaultViewComboBox_->currentText());
-        const fastoredis::supportedViews v = common::convertFromString<fastoredis::supportedViews>(defCombo);
+        const fastonosql::supportedViews v = common::convertFromString<fastonosql::supportedViews>(defCombo);
         SettingsManager::instance().setDefaultView(v);
 
         ServersManager::instance().setSyncServers(syncTabs_->isChecked());

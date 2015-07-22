@@ -7,7 +7,7 @@
 class QLineEdit;
 class QSpinBox;
 
-namespace fastoredis
+namespace fastonosql
 {
     class LoadContentDbDialog
             : public QDialog

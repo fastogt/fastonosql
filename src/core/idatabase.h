@@ -2,7 +2,7 @@
 
 #include "core/core_fwd.h"
 
-namespace fastoredis
+namespace fastonosql
 {
     class IDatabase
     {

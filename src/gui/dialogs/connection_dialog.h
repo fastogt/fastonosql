@@ -11,7 +11,7 @@ class QLabel;
 
 #include "core/connection_settings.h"
 
-namespace fastoredis
+namespace fastonosql
 {
     class ConnectionDialog
             : public QDialog

@@ -4,7 +4,7 @@
 
 #include "fasto/qt/gui/base/table_model.h"
 
-namespace fastoredis
+namespace fastonosql
 {
     class KeyTableItem
             : public fasto::qt::gui::TableItem

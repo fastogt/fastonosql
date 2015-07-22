@@ -6,7 +6,7 @@
 #include "core/connection_types.h"
 #include "core/ssh_info.h"
 
-namespace fastoredis
+namespace fastonosql
 {
     class IConnectionSettings
     {

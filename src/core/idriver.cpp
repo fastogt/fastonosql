@@ -62,7 +62,7 @@ struct WinsockInit {
     }
 }
 
-namespace fastoredis
+namespace fastonosql
 {
     namespace
     {

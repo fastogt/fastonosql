@@ -2,7 +2,7 @@
 
 #include "common/time.h"
 
-namespace fastoredis
+namespace fastonosql
 {
     namespace EventsInfo
     {

@@ -5,7 +5,7 @@
 
 namespace
 {
-    using namespace fastoredis;
+    using namespace fastonosql;
 
     const std::vector<Field> memcachedCommonFields =
     {
@@ -34,7 +34,7 @@ namespace
     };
 }
 
-namespace fastoredis
+namespace fastonosql
 {   
     const std::vector<common::Value::Type> DBTraits<MEMCACHED>::supportedTypes =
     {

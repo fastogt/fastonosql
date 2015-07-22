@@ -2,7 +2,7 @@
 
 #include "common/utils.h"
 
-namespace fastoredis
+namespace fastonosql
 {
     MemcachedConnectionSettings::MemcachedConnectionSettings(const std::string& connectionName)
         : IConnectionSettingsBase(connectionName, MEMCACHED), info_()

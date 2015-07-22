@@ -2,7 +2,7 @@
 
 #include "core/ssdb/ssdb_database.h"
 
-namespace fastoredis
+namespace fastonosql
 {
     SsdbServer::SsdbServer(const IDriverSPtr& drv, bool isSuperServer)
         : IServer(drv,isSuperServer)

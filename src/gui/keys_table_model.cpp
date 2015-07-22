@@ -6,7 +6,7 @@
 
 #include "translations/global.h"
 
-namespace fastoredis
+namespace fastonosql
 {
     KeyTableItem::KeyTableItem(const NKey& key)
         : key_(key)

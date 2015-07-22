@@ -16,9 +16,9 @@ int main(int argc, char *argv[])
     app.setApplicationName(PROJECT_NAME);
     app.setApplicationVersion(PROJECT_VERSION);
     app.setAttribute(Qt::AA_UseHighDpiPixmaps);
-    app.setWindowIcon(fastoredis::GuiFactory::instance().logoIcon()); //default icon for app
+    app.setWindowIcon(fastonosql::GuiFactory::instance().logoIcon()); //default icon for app
 
-    fastoredis::MainWindow win;
+    fastonosql::MainWindow win;
     QRect screenGeometry = app.desktop()->availableGeometry();
     QSize screenSize(screenGeometry.width(), screenGeometry.height());
 

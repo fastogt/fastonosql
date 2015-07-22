@@ -12,7 +12,7 @@
 #include "core/ssdb/ssdb_server.h"
 #include "core/ssdb/ssdb_driver.h"
 
-namespace fastoredis
+namespace fastonosql
 {
     ServersManager::ServersManager()
         : syncServers_(SettingsManager::instance().syncTabs())

@@ -2,7 +2,7 @@
 
 #include "common/string_util.h"
 
-namespace fastoredis
+namespace fastonosql
 {
     FastoObject::FastoObject(FastoObject* parent, common::Value* val, const std::string& delemitr)
         : observer_(NULL), value_(val), parent_(parent), childrens_(), delemitr_(delemitr)
@@ -380,9 +380,9 @@ namespace fastoredis
 
 namespace common
 {
-    std::string convertToString(fastoredis::FastoObject* obj)
+    std::string convertToString(fastonosql::FastoObject* obj)
     {
-        using namespace fastoredis;
+        using namespace fastonosql;
         std::string result;
         if(obj){
             const std::string str = obj->toString();

@@ -6,7 +6,7 @@
 
 #include "global/types.h"
 
-namespace fastoredis
+namespace fastonosql
 {
     class CommandLogger
         : public QObject, public common::patterns::LazySingleton<CommandLogger>

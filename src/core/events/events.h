@@ -2,7 +2,7 @@
 
 #include "core/events/events_info.h"
 
-namespace fastoredis
+namespace fastonosql
 {
     namespace events
     {

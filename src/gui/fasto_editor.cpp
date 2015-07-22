@@ -18,7 +18,7 @@
 
 #include "translations/global.h"
 
-namespace fastoredis
+namespace fastonosql
 {
     FastoEditor::FastoEditor(QWidget* parent)
         : QWidget(parent), scin_(NULL)

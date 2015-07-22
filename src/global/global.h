@@ -3,7 +3,7 @@
 #include "common/value.h"
 #include "common/convert2string.h"
 
-namespace fastoredis
+namespace fastonosql
 {
     class IFastoObjectObserver;
     class FastoObject
@@ -127,5 +127,5 @@ namespace fastoredis
 
 namespace common
 {
-    std::string convertToString(fastoredis::FastoObject* obj);
+    std::string convertToString(fastonosql::FastoObject* obj);
 }

@@ -12,7 +12,7 @@
 #define CURMETHOD "currentMethod"
 #define MARKER "\r\n"
 
-namespace fastoredis
+namespace fastonosql
 {
     SSHInfo::SSHInfo()
         : hostName_(DEFAULT_SSH_HOST),port_(DEFAULT_SSH_PORT), userName_(),password_(),publicKey_(),currentMethod_(UNKNOWN)

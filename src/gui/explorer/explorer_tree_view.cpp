@@ -23,7 +23,7 @@
 
 #include "translations/global.h"
 
-namespace fastoredis
+namespace fastonosql
 {
     ExplorerTreeView::ExplorerTreeView(QWidget* parent)
         : QTreeView(parent)

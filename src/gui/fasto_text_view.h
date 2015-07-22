@@ -5,7 +5,7 @@
 class QRadioButton;
 class QAbstractItemModel;
 
-namespace fastoredis
+namespace fastonosql
 {
     class FastoEditorOutput;
     class FastoTextView

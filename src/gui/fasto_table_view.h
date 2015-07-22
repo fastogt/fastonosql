@@ -2,7 +2,7 @@
 
 #include <QTableView>
 
-namespace fastoredis
+namespace fastonosql
 {
     class FastoTableView
             : public QTableView

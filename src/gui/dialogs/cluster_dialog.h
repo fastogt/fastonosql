@@ -14,7 +14,7 @@ class QLabel;
 class QTreeWidget;
 class QToolBar;
 
-namespace fastoredis
+namespace fastonosql
 {
     class ClusterDialog
             : public QDialog

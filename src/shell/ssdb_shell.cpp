@@ -4,7 +4,7 @@
 
 #include "gui/gui_factory.h"
 
-namespace fastoredis
+namespace fastonosql
 {
     SsdbShell::SsdbShell(bool showAutoCompl, QWidget* parent)
         : FastoEditorShell(common::convertFromString<QString>(SsdbLexer::version()), showAutoCompl, parent)

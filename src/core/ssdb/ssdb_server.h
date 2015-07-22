@@ -2,7 +2,7 @@
 
 #include "core/iserver.h"
 
-namespace fastoredis
+namespace fastonosql
 {
     class SsdbServer
             : public IServer

@@ -4,7 +4,7 @@
 
 #include "gui/gui_factory.h"
 
-namespace fastoredis
+namespace fastonosql
 {
     RedisShell::RedisShell(bool showAutoCompl, QWidget* parent)
         : FastoEditorShell(common::convertFromString<QString>(RedisLexer::version()), showAutoCompl, parent)

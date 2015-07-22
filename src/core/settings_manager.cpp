@@ -29,7 +29,7 @@ namespace
 }
 
 
-namespace fastoredis
+namespace fastonosql
 {
     SettingsManager::SettingsManager()
         : views_(), curStyle_(), curLanguage_(), connections_(), syncTabs_(), loggingDir_(), autoCheckUpdate_(), autoCompletion_(), autoOpenConsole_()
@@ -212,7 +212,7 @@ namespace fastoredis
         curStyle_ = settings.value(STYLE, fasto::qt::gui::defStyle).toString();
         curLanguage_ = settings.value(LANGUAGE, fasto::qt::translations::defLanguage).toString();
 
-        int view = settings.value(VIEW, fastoredis::Tree).toInt();
+        int view = settings.value(VIEW, fastonosql::Tree).toInt();
         views_ = static_cast<supportedViews>(view);
 
         QList<QVariant> clusters = settings.value(CLUSTERS, "").toList();

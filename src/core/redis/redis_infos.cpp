@@ -7,7 +7,7 @@
 
 namespace
 {
-    using namespace fastoredis;
+    using namespace fastonosql;
 
     const std::vector<Field> redisServerFields =
     {
@@ -110,7 +110,7 @@ namespace
     };
 }
 
-namespace fastoredis
+namespace fastonosql
 {
     const std::vector<common::Value::Type> DBTraits<REDIS>::supportedTypes =
     {

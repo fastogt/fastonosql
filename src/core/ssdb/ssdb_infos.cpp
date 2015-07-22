@@ -5,7 +5,7 @@
 
 namespace
 {
-    using namespace fastoredis;
+    using namespace fastonosql;
 
     const std::vector<Field> SsdbCommonFields =
     {
@@ -17,7 +17,7 @@ namespace
     };
 }
 
-namespace fastoredis
+namespace fastonosql
 {   
     const std::vector<common::Value::Type> DBTraits<SSDB>::supportedTypes = {
                                             common::Value::TYPE_BOOLEAN,

@@ -1,6 +1,6 @@
 #include "global/types.h"
 
-namespace fastoredis
+namespace fastonosql
 {
     Command::Command()
         : message_(), type_(common::Value::C_INNER)
@@ -27,20 +27,20 @@ namespace fastoredis
 
 namespace common
 {
-    std::string convertToString(fastoredis::supportedViews v)
+    std::string convertToString(fastonosql::supportedViews v)
     {
-        return fastoredis::viewsText[v];
+        return fastonosql::viewsText[v];
     }
 
     template<>
-    fastoredis::supportedViews convertFromString(const std::string& from)
+    fastonosql::supportedViews convertFromString(const std::string& from)
     {
-        for(int i = 0; i < SIZEOFMASS(fastoredis::viewsText); ++i){
-            if(from == fastoredis::viewsText[i]){
-                return static_cast<fastoredis::supportedViews>(i);
+        for(int i = 0; i < SIZEOFMASS(fastonosql::viewsText); ++i){
+            if(from == fastonosql::viewsText[i]){
+                return static_cast<fastonosql::supportedViews>(i);
             }
         }
 
-        return fastoredis::Tree;
+        return fastonosql::Tree;
     }
 }

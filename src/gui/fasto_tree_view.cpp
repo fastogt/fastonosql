@@ -5,7 +5,7 @@
 
 #include "common/macros.h"
 
-namespace fastoredis
+namespace fastonosql
 {
     FastoTreeView::FastoTreeView(QWidget* parent)
         : QTreeView(parent)

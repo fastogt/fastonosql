@@ -4,7 +4,7 @@
 
 #include "core/events/events.h"
 
-namespace fastoredis
+namespace fastonosql
 {
     class IServerBase
             : public QObject

@@ -13,7 +13,7 @@ class QSwipeGesture;
 class QTapAndHoldGesture;
 #endif
 
-namespace fastoredis
+namespace fastonosql
 {
     class MainWidget;
     class ExplorerTreeView;

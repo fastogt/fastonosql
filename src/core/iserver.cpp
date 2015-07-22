@@ -11,7 +11,7 @@
 
 namespace
 {
-    using namespace fastoredis;
+    using namespace fastonosql;
 
     template<bool isConnect>
     struct connectFunct
@@ -58,7 +58,7 @@ namespace
    }
 }
 
-namespace fastoredis
+namespace fastonosql
 {
     IServerBase::~IServerBase()
     {

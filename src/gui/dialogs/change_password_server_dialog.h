@@ -17,7 +17,7 @@ namespace fasto
     }
 }
 
-namespace fastoredis
+namespace fastonosql
 {
     class ChangePasswordServerDialog
             : public QDialog

@@ -24,7 +24,7 @@ namespace
     const char magicNumber = 0x1E;
 }
 
-namespace fastoredis
+namespace fastonosql
 {
     IConnectionSettings::IConnectionSettings(const std::string& connectionName, connectionTypes type)
         : connectionName_(connectionName), logging_enabled_(false), type_(type), msinterval_(60000)

@@ -33,7 +33,7 @@ namespace
     }
 }
 
-namespace fastoredis
+namespace fastonosql
 {
     ViewKeysDialog::ViewKeysDialog(const QString &title, IDatabaseSPtr db, QWidget* parent)
         : QDialog(parent), db_(db), cursorStack_(), curPos_(0)

@@ -5,7 +5,7 @@
 #include "core/iserver.h"
 #include "core/idatabase.h"
 
-namespace fastoredis
+namespace fastonosql
 {
     struct IExplorerTreeItem
             : public fasto::qt::gui::TreeItem

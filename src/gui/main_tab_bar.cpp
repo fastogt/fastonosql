@@ -9,7 +9,7 @@
 
 #include "translations/global.h"
 
-namespace fastoredis
+namespace fastonosql
 {
     MainTabBar::MainTabBar(QWidget* parent)
         : QTabBar(parent)

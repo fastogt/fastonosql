@@ -2,7 +2,7 @@
 
 #include "core/idatabase.h"
 
-namespace fastoredis
+namespace fastonosql
 {
     class RedisDatabase
             : public IDatabase

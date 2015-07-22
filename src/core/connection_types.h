@@ -2,7 +2,7 @@
 
 #include "common/convert2string.h"
 
-namespace fastoredis
+namespace fastonosql
 {
     enum connectionTypes
     {
@@ -50,7 +50,7 @@ namespace fastoredis
 
 namespace common
 {
-    std::string convertToString(fastoredis::connectionTypes t);
-    std::string convertToString(fastoredis::serverTypes st);
-    std::string convertToString(fastoredis::ConnectionMode t);
+    std::string convertToString(fastonosql::connectionTypes t);
+    std::string convertToString(fastonosql::serverTypes st);
+    std::string convertToString(fastonosql::ConnectionMode t);
 }

@@ -7,7 +7,7 @@ class QAction;
 
 #include "global/types.h"
 
-namespace fastoredis
+namespace fastonosql
 {
     class CommandsWidget
             : public QWidget

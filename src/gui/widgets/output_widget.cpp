@@ -22,14 +22,14 @@
 
 namespace
 {
-    fastoredis::FastoCommonItem* createItem(fasto::qt::gui::TreeItem* parent, const QString& key, fastoredis::FastoObject* item)
+    fastonosql::FastoCommonItem* createItem(fasto::qt::gui::TreeItem* parent, const QString& key, fastonosql::FastoObject* item)
     {
         const std::string value = item->toString();
-        return new fastoredis::FastoCommonItem(key, common::convertFromString<QString>(value), item->type(), parent, item);
+        return new fastonosql::FastoCommonItem(key, common::convertFromString<QString>(value), item->type(), parent, item);
     }
 }
 
-namespace fastoredis
+namespace fastonosql
 {
     OutputWidget::OutputWidget(IServerSPtr server, QWidget* parent)
         : QWidget(parent)
@@ -85,7 +85,7 @@ namespace fastoredis
     void OutputWidget::rootCreate(const EventsInfo::CommandRootCreatedInfo& res)
     {
         FastoObject* rootObj = res.root_.get();
-        fastoredis::FastoCommonItem* root = createItem(NULL, "", rootObj);
+        fastonosql::FastoCommonItem* root = createItem(NULL, "", rootObj);
         commonModel_->setRoot(root);
     }
 
@@ -129,12 +129,12 @@ namespace fastoredis
                 return;
             }
 
-            fastoredis::FastoCommonItem* par = NULL;
+            fastonosql::FastoCommonItem* par = NULL;
             if(!parent.isValid()){
-                par = static_cast<fastoredis::FastoCommonItem*>(commonModel_->root());
+                par = static_cast<fastonosql::FastoCommonItem*>(commonModel_->root());
             }
             else{
-                par = common::utils_qt::item<fastoredis::FastoCommonItem*>(parent);
+                par = common::utils_qt::item<fastonosql::FastoCommonItem*>(parent);
             }
 
             DCHECK(par);
@@ -144,7 +144,7 @@ namespace fastoredis
 
             const QString key = common::convertFromString<QString>(command->inputArgs());
 
-            fastoredis::FastoCommonItem* comChild = createItem(par, key, child);
+            fastonosql::FastoCommonItem* comChild = createItem(par, key, child);
             comChild->setChangeCommand(command->oppositeCommand());
             commonModel_->insertItem(parent, comChild);
         }
@@ -157,12 +157,12 @@ namespace fastoredis
                     return;
                 }
 
-                fastoredis::FastoCommonItem* par = NULL;
+                fastonosql::FastoCommonItem* par = NULL;
                 if(!parent.isValid()){
-                    par = static_cast<fastoredis::FastoCommonItem*>(commonModel_->root());
+                    par = static_cast<fastonosql::FastoCommonItem*>(commonModel_->root());
                 }
                 else{
-                    par = common::utils_qt::item<fastoredis::FastoCommonItem*>(parent);
+                    par = common::utils_qt::item<fastonosql::FastoCommonItem*>(parent);
                 }
 
                 DCHECK(par);
@@ -170,7 +170,7 @@ namespace fastoredis
                     return;
                 }
 
-                fastoredis::FastoCommonItem* comChild = createItem(par, QString(), child);
+                fastonosql::FastoCommonItem* comChild = createItem(par, QString(), child);
                 commonModel_->insertItem(parent, comChild);
             }
             else{
@@ -187,7 +187,7 @@ namespace fastoredis
             return;
         }
 
-        fastoredis::FastoCommonItem* it = common::utils_qt::item<fastoredis::FastoCommonItem*>(index);
+        fastonosql::FastoCommonItem* it = common::utils_qt::item<fastonosql::FastoCommonItem*>(index);
         if(!it){
             return;
         }

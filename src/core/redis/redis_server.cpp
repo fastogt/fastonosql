@@ -2,7 +2,7 @@
 
 #include "core/redis/redis_database.h"
 
-namespace fastoredis
+namespace fastonosql
 {
     RedisServer::RedisServer(const IDriverSPtr& drv, bool isSuperServer)
         : IServer(drv, isSuperServer)

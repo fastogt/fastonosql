@@ -20,7 +20,7 @@ namespace fasto
     }
 }
 
-namespace fastoredis
+namespace fastonosql
 {
     class DiscoveryConnection
             : public QObject

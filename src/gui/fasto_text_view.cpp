@@ -11,7 +11,7 @@
 #include "gui/fasto_editor.h"
 #include "gui/gui_factory.h"
 
-namespace fastoredis
+namespace fastonosql
 {
     FastoTextView::FastoTextView(const QString& delemitr, QWidget* parent)
         : QWidget(parent)

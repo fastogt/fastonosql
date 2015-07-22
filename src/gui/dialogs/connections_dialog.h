@@ -6,7 +6,7 @@
 
 class QTreeWidget;
 
-namespace fastoredis
+namespace fastonosql
 {
     class ConnectionsDialog
             : public QDialog

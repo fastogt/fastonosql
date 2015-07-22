@@ -4,7 +4,7 @@
 
 #include "core/memcached/memcached_config.h"
 
-namespace fastoredis
+namespace fastonosql
 {
     class MemcachedConnectionSettings
             : public IConnectionSettingsBase

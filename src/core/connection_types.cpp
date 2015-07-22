@@ -9,40 +9,40 @@ namespace
 namespace common
 {
     template<>
-    fastoredis::connectionTypes convertFromString(const std::string& text)
+    fastonosql::connectionTypes convertFromString(const std::string& text)
     {
-        for (uint32_t i = 0; i < SIZEOFMASS(fastoredis::connnectionType); ++i){
-            if (text == fastoredis::connnectionType[i]){
-                return static_cast<fastoredis::connectionTypes>(i);
+        for (uint32_t i = 0; i < SIZEOFMASS(fastonosql::connnectionType); ++i){
+            if (text == fastonosql::connnectionType[i]){
+                return static_cast<fastonosql::connectionTypes>(i);
             }
         }
 
-        return fastoredis::DBUNKNOWN;
+        return fastonosql::DBUNKNOWN;
     }
 
-    std::string convertToString(fastoredis::connectionTypes t)
+    std::string convertToString(fastonosql::connectionTypes t)
     {
-        return fastoredis::connnectionType[t];
+        return fastonosql::connnectionType[t];
     }
 
     template<>
-    fastoredis::serverTypes convertFromString(const std::string& text)
+    fastonosql::serverTypes convertFromString(const std::string& text)
     {
         for (uint32_t i = 0; i < SIZEOFMASS(serverTypes); ++i){
             if (text == serverTypes[i]){
-                return static_cast<fastoredis::serverTypes>(i);
+                return static_cast<fastonosql::serverTypes>(i);
             }
         }
 
-        return fastoredis::MASTER;
+        return fastonosql::MASTER;
     }
 
-    std::string convertToString(fastoredis::serverTypes st)
+    std::string convertToString(fastonosql::serverTypes st)
     {
         return serverTypes[st];
     }
 
-    std::string convertToString(fastoredis::ConnectionMode t)
+    std::string convertToString(fastonosql::ConnectionMode t)
     {
         return connnectionMode[t];
     }

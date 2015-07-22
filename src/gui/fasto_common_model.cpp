@@ -7,7 +7,7 @@
 #include "common/qt/convert_string.h"
 #include "translations/global.h"
 
-namespace fastoredis
+namespace fastonosql
 {
     FastoCommonModel::FastoCommonModel(QObject* parent)
         : TreeModel(parent)

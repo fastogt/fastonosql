@@ -5,7 +5,7 @@
 
 #include "translations/global.h"
 
-namespace fastoredis
+namespace fastonosql
 {
     PropertyTableItem::PropertyTableItem(const QString& key, const QString& value)
         : key_(key), value_(value)

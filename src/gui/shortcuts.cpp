@@ -1,6 +1,6 @@
 #include "gui/shortcuts.h"
 
-namespace fastoredis
+namespace fastonosql
 {
     /*bool isDuplicateTabShortcut(QKeyEvent* keyEvent)
     {

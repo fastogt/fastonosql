@@ -2,7 +2,7 @@
 
 #include "core/iserver.h"
 
-namespace fastoredis
+namespace fastonosql
 {
     SsdbDatabase::SsdbDatabase(IServerSPtr server, DataBaseInfoSPtr info)
         : IDatabase(server, info)

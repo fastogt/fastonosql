@@ -5,7 +5,7 @@
 #include "core/iserver.h"
 #include "core/connection_settings.h"
 
-namespace fastoredis
+namespace fastonosql
 {
     class QueryWidget;
 

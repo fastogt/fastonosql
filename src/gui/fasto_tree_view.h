@@ -2,7 +2,7 @@
 
 #include <QTreeView>
 
-namespace fastoredis
+namespace fastonosql
 {
     class FastoTreeView
             : public QTreeView

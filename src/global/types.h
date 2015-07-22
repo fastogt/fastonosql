@@ -3,7 +3,7 @@
 #include "common/value.h"
 #include "common/convert2string.h"
 
-namespace fastoredis
+namespace fastonosql
 {
     enum supportedViews
     {
@@ -30,5 +30,5 @@ namespace fastoredis
 
 namespace common
 {
-    std::string convertToString(fastoredis::supportedViews v);
+    std::string convertToString(fastonosql::supportedViews v);
 }

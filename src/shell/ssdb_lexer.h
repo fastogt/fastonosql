@@ -5,7 +5,7 @@
 
 #define ALL_COMMANDS "ALL_COMMANDS"
 
-namespace fastoredis
+namespace fastonosql
 {
     class SsdbApi
             : public QsciAbstractAPIs

@@ -7,7 +7,7 @@ namespace
     const QString help("help");
 }
 
-namespace fastoredis
+namespace fastonosql
 {
     MemcachedApi::MemcachedApi(QsciLexer *lexer)
         : QsciAbstractAPIs(lexer)

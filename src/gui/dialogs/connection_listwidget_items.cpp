@@ -2,7 +2,7 @@
 
 #include "gui/gui_factory.h"
 
-namespace fastoredis
+namespace fastonosql
 {
     ConnectionListWidgetItem::ConnectionListWidgetItem(IConnectionSettingsBaseSPtr connection)
         : connection_()

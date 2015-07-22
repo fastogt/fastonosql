@@ -10,7 +10,7 @@
 #include "gui/gui_factory.h"
 #include "translations/global.h"
 
-namespace fastoredis
+namespace fastonosql
 {
     LoadContentDbDialog::LoadContentDbDialog(const QString &title, connectionTypes type, QWidget* parent)
         : QDialog(parent), type_(type)

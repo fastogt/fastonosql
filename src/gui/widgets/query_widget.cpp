@@ -7,7 +7,7 @@
 
 #include "gui/widgets/output_widget.h"
 
-namespace fastoredis
+namespace fastonosql
 {
     QueryWidget::QueryWidget(IServerSPtr server, QWidget* parent)
         : QWidget(parent)

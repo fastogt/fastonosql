@@ -2,7 +2,7 @@
 
 #include "core/iserver.h"
 
-namespace fastoredis
+namespace fastonosql
 {
     IDatabase::IDatabase(IServerSPtr server, DataBaseInfoSPtr info)
         : info_(info), server_(server)

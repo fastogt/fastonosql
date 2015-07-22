@@ -3,7 +3,7 @@
 #include <QApplication>
 #include <QStyle>
 
-namespace fastoredis
+namespace fastonosql
 {
     const QIcon& GuiFactory::openIcon() const
     {

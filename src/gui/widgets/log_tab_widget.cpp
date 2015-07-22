@@ -9,7 +9,7 @@
 
 #include "translations/global.h"
 
-namespace fastoredis
+namespace fastonosql
 {
     LogTabWidget::LogTabWidget(QWidget* parent)
         : QTabWidget(parent)

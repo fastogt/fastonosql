@@ -2,7 +2,7 @@
 
 #include "fasto/qt/gui/shortcuts.h"
 
-namespace fastoredis
+namespace fastonosql
 {
     // global variables
     extern const fasto::qt::gui::FastoQKeySequence openKey;

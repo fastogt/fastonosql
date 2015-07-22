@@ -27,7 +27,7 @@
 #define MEMCACHED_LIMIT_MAXBYTES_LABEL "limit_maxbytes"
 #define MEMCACHED_THREADS_LABEL "threads"
 
-namespace fastoredis
+namespace fastonosql
 {
     extern const std::vector<std::string> memcachedHeaders;
     extern const std::vector<std::vector<Field> > memcachedFields;

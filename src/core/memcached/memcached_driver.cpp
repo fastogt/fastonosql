@@ -29,7 +29,7 @@ namespace
     std::vector<std::pair<std::string, std::string > > oppositeCommands = { {"GET", "SET"} };
 }
 
-namespace fastoredis
+namespace fastonosql
 {
     namespace
     {

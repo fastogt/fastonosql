@@ -2,7 +2,7 @@
 
 #include "core/memcached/memcached_database.h"
 
-namespace fastoredis
+namespace fastonosql
 {
     MemcachedServer::MemcachedServer(const IDriverSPtr& drv, bool isSuperServer)
         : IServer(drv, isSuperServer)
