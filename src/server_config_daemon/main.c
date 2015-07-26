@@ -19,8 +19,6 @@
 #define SBUF_SIZE 100
 
 sig_atomic_t is_stop = 0;
-char version[SBUF_SIZE] = {0};
-int curLen = 0;
 
 void skeleton_daemon();
 void read_config_file(const char *configFilename);
@@ -153,16 +151,15 @@ void read_config_file(const char *configFilename)
 {
     FILE *configfp = fopen(configFilename, "r");
     if (configfp != NULL) {                 /* Ignore nonexistent file */
-        if (fgets(version, SBUF_SIZE, configfp) == NULL){
-            curLen = 0;
-            version[0] = '\0';
-        }
-        else{
-            curLen = strlen(version);
-            version[curLen] = '\0';    /* Strip trailing '\n' */
-        }
+        while (!feof(fp))
+        {
+            if (fgets(version, SBUF_SIZE, configfp) != NULL){
+                curLen = strlen(version);
+                version[curLen] = '\0';    /* Strip trailing '\n' */
+                syslog(LOG_NOTICE, PROJECT_NAME" read version file version is: %s", version);
+            }
 
-        syslog(LOG_NOTICE, PROJECT_NAME" read version file version is: %s", version);
+        }
 
         fclose(configfp);
     }
