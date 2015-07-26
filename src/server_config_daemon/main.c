@@ -98,6 +98,9 @@ void delete_all_setting() {
 
 int main(int argc, char *argv[])
 {
+    /* Open the log file */
+    openlog(PROJECT_NAME, LOG_PID, LOG_DAEMON);
+
     if(argc > 1 && strcmp(argv[1], "--daemon") == 0){
         skeleton_daemon();
     }
@@ -311,7 +314,4 @@ void skeleton_daemon()
     {
         close (x);
     }
-
-    /* Open the log file */
-    openlog(PROJECT_NAME, LOG_PID, LOG_DAEMON);
 }
