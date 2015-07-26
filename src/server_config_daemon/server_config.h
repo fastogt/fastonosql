@@ -1,3 +1,7 @@
 #define SERV_PORT 5000
-#define GET_VERSION "GET VERSION"
-#define SITE_URL "www.fastonosql.com"
+
+#define GET_FASTONOSQL_VERSION "FASTONOSQL_VERSION"
+#define GET_FASTOREDIS_VERSION "FASTOREDIS_VERSION"
+
+#define FASTONOSQL_URL "www.fastonosql.com"
+#define FASTOREDIS_URL "www.fastoredis.com"

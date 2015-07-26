@@ -5,18 +5,20 @@
 #include <sys/types.h>
 #include <sys/stat.h>
 #include <syslog.h>
+#include <string.h>
 
 #include <errno.h>
 #include <sys/socket.h>
 #include <poll.h>
 #include <netinet/in.h>
 
-#include <limits.h>        /* for OPEN_MAX */
+#include "uthash.h"
 
 #include "server_config.h"
 
 #define MAXLINE 80
-#define SBUF_SIZE 100
+#define SBUF_SIZE 256
+#define SAVE_FREE(x) if(x) { free(x); x = NULL; }
 
 sig_atomic_t is_stop = 0;
 
@@ -24,49 +26,123 @@ void skeleton_daemon();
 void read_config_file(const char *configFilename);
 void signal_handler(int sig);
 
+struct setting {
+    char *key;          /* key */
+    char *value;          /* value */
+    UT_hash_handle hh;         /* makes this structure hashable */
+};
+
+struct setting * alloc_setting(const char *key, const char *value)
+{
+    struct setting * st = (struct setting*)malloc(sizeof(struct setting));
+    if(!st){
+        return NULL;
+    }
+
+    st->key = strdup(key);
+    st->value = strdup(value);
+
+    return st;
+}
+
+void free_setting(struct setting *st)
+{
+    if(!st){
+        return;
+    }
+
+    SAVE_FREE(st->key);
+    SAVE_FREE(st->value);
+    SAVE_FREE(st);
+}
+
+struct setting *settings = NULL;
+
+void add_setting(const char *key, const char *value)
+{
+    struct setting *s = NULL;
+
+    HASH_FIND_STR(settings, key, s);  /* key already in the hash? */
+    if (s == NULL) {
+        struct setting * s = alloc_setting(key, value);
+        HASH_ADD_STR(settings, key, s);  /* key: value of key field */
+    }
+    else{
+        SAVE_FREE(s->value);
+        s->value = strdup(value);
+    }
+}
+
+struct setting *find_setting(const char *key)
+{
+    struct setting *s;
+
+    HASH_FIND_STR(settings, key, s);  /* s: output pointer */
+    return s;
+}
+
+void delete_setting(struct setting *st)
+{
+    HASH_DEL(settings, st);  /* st: pointer to deletee */
+    free_setting(st);
+}
+
+void delete_all_setting() {
+    struct setting *current_setting, *tmp;
+
+    HASH_ITER(hh, settings, current_setting, tmp) {
+        HASH_DEL(settings,current_setting);  /* delete it (users advances to next) */
+        free_setting(current_setting);
+    }
+}
+
 int main(int argc, char *argv[])
 {
-    skeleton_daemon();
+    if(argc > 1 && strcmp(argv[1], "--daemon") == 0){
+        skeleton_daemon();
+    }
 
     read_config_file(CONFIG_FILE_PATH);
 
-    struct pollfd           client[OPEN_MAX];
+    const int max_fd = sysconf(_SC_OPEN_MAX);
+
+    struct pollfd           client[max_fd];
     struct sockaddr_in      servaddr;
 
-   int listenfd = socket(AF_INET, SOCK_STREAM, 0);
-   if(listenfd < 0){
-       syslog(LOG_NOTICE, PROJECT_NAME" socket errno: %d", errno);
-       goto exit;
-   }
+    int listenfd = socket(AF_INET, SOCK_STREAM, 0);
+    if(listenfd < 0){
+        syslog(LOG_NOTICE, PROJECT_NAME" socket errno: %d", errno);
+        goto exit;
+    }
 
-   memset(&servaddr, 0, sizeof(servaddr));
+    memset(&servaddr, 0, sizeof(servaddr));
 
-   servaddr.sin_family      = AF_INET;
-   servaddr.sin_addr.s_addr = htonl( INADDR_ANY );
-   servaddr.sin_port        = htons( SERV_PORT );
-   int res = bind(listenfd , (struct sockaddr *)&servaddr , sizeof( servaddr ));
-   if(res < 0){
-       syslog(LOG_NOTICE, PROJECT_NAME" bind errno: %d", errno);
-       goto exit;
-   }
+    servaddr.sin_family      = AF_INET;
+    servaddr.sin_addr.s_addr = htonl( INADDR_ANY );
+    servaddr.sin_port        = htons( SERV_PORT );
+    int res = bind(listenfd, (struct sockaddr *)&servaddr, sizeof( servaddr ));
+    if(res < 0){
+        syslog(LOG_NOTICE, PROJECT_NAME" bind errno: %d", errno);
+        goto exit;
+    }
 
-   res = listen(listenfd, 1024);
-   if(res < 0){
-       syslog(LOG_NOTICE, PROJECT_NAME" listen errno: %d", errno);
-       goto exit;
-   }
+    res = listen(listenfd, 1024);
+    if(res < 0){
+        syslog(LOG_NOTICE, PROJECT_NAME" listen errno: %d", errno);
+        goto exit;
+    }
 
-   client[0].fd = listenfd;
-   client[0].events = POLLRDNORM;
-   int i, maxi , connfd , sockfd;
-   int nready;
+    client[0].fd = listenfd;
+    client[0].events = POLLRDNORM;
+    int i, maxi , connfd , sockfd;
+    int nready;
 
-   for( i = 1 ; i < OPEN_MAX ; i ++ ){
-       client[i].fd = -1;
-   }
-   maxi = 0;
+    for( i = 1 ; i < max_fd ; i ++ ){
+        client[i].fd = -1;
+    }
+    maxi = 0;
 
-   while (!is_stop) {
+    while (!is_stop) {
         nready = poll(client, maxi + 1 , -1);
         if(client[0].revents & POLLRDNORM)
         {
@@ -74,15 +150,14 @@ int main(int argc, char *argv[])
             int clilen = sizeof(cliaddr);
             connfd = accept(listenfd, (struct sockaddr *)&cliaddr , &clilen);
 
-            //write(connfd, "CENTRE|NEW_JOB|1|sword|A|C|CENTRE\0", 255);
-            for( i = 1 ; i < OPEN_MAX ; i ++ ){
+            for( i = 1; i < max_fd; i ++ ){
                 if( client[i].fd < 0 ){
                     client[i].fd = connfd;
                     break;
                 }
             }
 
-            if(i == OPEN_MAX){
+            if(i == max_fd){
                 syslog(LOG_NOTICE, PROJECT_NAME" too many clients!");
                 goto exit;
             }
@@ -100,7 +175,7 @@ int main(int argc, char *argv[])
         for( i = 1 ; i <= maxi ; i ++ )
         {
             if( ( sockfd = client[i].fd ) < 0 )
-                    continue;
+                continue;
 
             if( client[i].revents & ( POLLRDNORM | POLLERR ) )
             {
@@ -123,23 +198,23 @@ int main(int argc, char *argv[])
                     client[i].fd = -1;
                 }
                 else{
-                    if(strncmp(buf, GET_VERSION, strlen(GET_VERSION)) == 0){
-                        if(curLen){
-                            write(sockfd, version, curLen);
-                        }
+                    struct setting * setting = find_setting(buf);
+                    if(setting){
+                        write(sockfd, setting->value, strlen(setting->value));
                     }
 
                     close( sockfd );
                     client[i].fd = -1;
                 }
 
-            if( -- nready <= 0 )
-                break;
+                if( -- nready <= 0 )
+                    break;
             }
         }
     }
 
 exit:
+    delete_all_setting();
     syslog(LOG_NOTICE, PROJECT_NAME" terminated.");
     closelog();
 
@@ -150,19 +225,27 @@ exit:
 void read_config_file(const char *configFilename)
 {
     FILE *configfp = fopen(configFilename, "r");
-    if (configfp != NULL) {                 /* Ignore nonexistent file */
-        while (!feof(fp))
-        {
-            if (fgets(version, SBUF_SIZE, configfp) != NULL){
-                curLen = strlen(version);
-                version[curLen] = '\0';    /* Strip trailing '\n' */
-                syslog(LOG_NOTICE, PROJECT_NAME" read version file version is: %s", version);
-            }
-
-        }
-
-        fclose(configfp);
+    if(!configfp){
+        syslog(LOG_NOTICE, "File %s could not open errno: %d", configFilename, errno);
+        return;
     }
+
+    while (!feof(configfp)) {
+        char buff[SBUF_SIZE] = {0};
+        if (fgets(buff, sizeof(buff), configfp) != NULL){
+            syslog(LOG_NOTICE, "Readed line from file is: %s", buff);
+            char *pch = strchr(buff, '=');
+            if(pch){
+                int pos = pch - buff;
+                buff[pos] = 0;
+                char *key = buff;
+                char *value = buff + pos + 1;
+                add_setting(key, value);
+            }
+        }
+    }
+
+    fclose(configfp);
 }
 
 void signal_handler(int sig)
