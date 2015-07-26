@@ -234,6 +234,8 @@ void read_config_file(const char *configFilename)
         char buff[SBUF_SIZE] = {0};
         if (fgets(buff, sizeof(buff), configfp) != NULL){
             syslog(LOG_NOTICE, "Readed line from file is: %s", buff);
+            size_t spos = strcspn(buff, "\r\n");
+            buff[spos] = 0;
             char *pch = strchr(buff, '=');
             if(pch){
                 int pos = pch - buff;
