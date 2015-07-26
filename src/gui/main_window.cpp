@@ -523,14 +523,25 @@ namespace fastonosql
 
     void UpdateChecker::routine()
     {
-        common::net::ClientSocketTcp s(SITE_URL, SERV_PORT);
+#if defined(FASTONOSQL)
+        common::net::ClientSocketTcp s(FASTONOSQL_URL, SERV_PORT);
+#elif defined(FASTOREDIS)
+        common::net::ClientSocketTcp s(FASTOREDIS_URL, SERV_PORT);
+#else
+        #error please specify url and port of version information
+#endif
         bool res = s.connect();
         if(!res){
             emit versionAvailibled(res, QString());
             return;
         }
-
-        res = s.write(GET_VERSION, sizeof(GET_VERSION));
+#if defined(FASTONOSQL)
+        res = s.write(GET_FASTONOSQL_VERSION, sizeof(GET_FASTONOSQL_VERSION));
+#elif defined(FASTOREDIS)
+        res = s.write(GET_FASTOREDIS_VERSION, sizeof(GET_FASTOREDIS_VERSION));
+#else
+        #error please specify request to get version information
+#endif
         if(!res){
             emit versionAvailibled(res, QString());
             s.close();
