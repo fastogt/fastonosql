@@ -198,6 +198,8 @@ int main(int argc, char *argv[])
                     client[i].fd = -1;
                 }
                 else{
+                    size_t spos = strcspn(buf, "\r\n");
+                    buf[spos] = 0;
                     struct setting * setting = find_setting(buf);
                     if(setting){
                         write(sockfd, setting->value, strlen(setting->value));
@@ -224,6 +226,7 @@ exit:
 
 void read_config_file(const char *configFilename)
 {
+    delete_all_setting();
     FILE *configfp = fopen(configFilename, "r");
     if(!configfp){
         syslog(LOG_NOTICE, "File %s could not open errno: %d", configFilename, errno);
