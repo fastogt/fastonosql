@@ -1,0 +1,9 @@
+[Desktop Entry]
+Type=Application
+Exec=@PRODUCTNAME@
+Name=@SHORTPRODUCTNAME@
+GenericName=The IDE for redis working.
+GenericName[de]=Die IDE der
+Icon=@ICONNAME@
+Terminal=false
+Categories=Development;IDE;redis;

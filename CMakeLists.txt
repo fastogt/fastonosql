@@ -1,21 +1,23 @@
 CMAKE_MINIMUM_REQUIRED(VERSION 3.0.0)
-#############################################################
-#BRANDING_PROJECT_NAME
-#BRANDING_GITHUB_FORK
-#BRANDING_GITHUB_ISSUES
-#BRANDING_PROJECT_DOMAIN
-#BRANDING_PROJECT_VERSION
-PROJECT("FastoNoSQL" VERSION 0.1.4.0 LANGUAGES CXX C)
+###################### Branding ##########################
+
+SET(BRANDING_PROJECT_NAME "FastoNoSQL" CACHE STRING "Branding for ${BRANDING_PROJECT_NAME}") #default
+SET(BRANDING_PROJECT_VERSION "0.1.4.0" CACHE STRING "Branding for ${BRANDING_PROJECT_VERSION} version") #default
+SET(BRANDING_PROJECT_DOMAIN "www.fastonosql.com" CACHE STRING "Branding for ${BRANDING_PROJECT_DOMAIN} domain") #default
+SET(BRANDING_GITHUB_FORK "www.github.com/fasto/fastonosql" CACHE STRING "Branding for ${BRANDING_GITHUB_FORK} fork") #default
+SET(BRANDING_GITHUB_ISSUES "www.github.com/fasto/fastonosql/issues" CACHE STRING "Branding for ${BRANDING_GITHUB_ISSUES} issues") #default
+
+PROJECT(${BRANDING_PROJECT_NAME} VERSION ${BRANDING_PROJECT_VERSION} LANGUAGES CXX C)
 #################### Project Settings ####################
 SET(PROJECT_NAME_TITLE ${PROJECT_NAME} CACHE STRING "Title for ${PROJECT_NAME}")
-SET(PROJECT_DOMAIN "www.fastonosql.com" CACHE STRING "Internet domain name for ${PROJECT_NAME}")
+SET(PROJECT_DOMAIN ${BRANDING_PROJECT_DOMAIN} CACHE STRING "Internet domain name for ${PROJECT_NAME}")
 SET(PROJECT_COMPANYNAME "FastoGT" CACHE STRING "Company name for ${PROJECT_NAME}")
 SET(PROJECT_COPYRIGHT "Copyright (C) 2014-2015 ${PROJECT_COMPANYNAME} All Rights Reserved.")
 SET(PROJECT_COMPANYNAME_DOMAIN "www.fastogt.com" CACHE STRING "Internet domain name for ${PROJECT_NAME}")
 SET(PROJECT_MAINTAINER_MAIL "atopilski@fastogt.com" CACHE STRING "Internet mail address for ${PROJECT_NAME} mainteiner")
 SET(PROJECT_MAINTAINER_NAME "Alexandr Topilski" CACHE STRING "Name of ${PROJECT_NAME} mainteiner")
-SET(PROJECT_GITHUB_FORK "www.github.com/fasto/fastonosql" CACHE STRING "Git fork of ${PROJECT_NAME}")
-SET(PROJECT_GITHUB_ISSUES "www.github.com/fasto/fastonosql/issues" CACHE STRING "Git issue link for ${PROJECT_NAME}")
+SET(PROJECT_GITHUB_FORK ${BRANDING_GITHUB_FORK} CACHE STRING "Git fork of ${PROJECT_NAME}")
+SET(PROJECT_GITHUB_ISSUES ${BRANDING_GITHUB_ISSUES} CACHE STRING "Git issue link for ${PROJECT_NAME}")
 SET(PROJECT_BUILD_TYPE "release") #alfa, beta, rc, release
 ##########################################################
 
