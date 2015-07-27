@@ -9,12 +9,10 @@ FastoNoSQL &mdash; is a crossplatform Redis, Memcached, SSDB management tool als
 ![](http://fastonosql.com/images/common/macosx/main_window_mac.png)
 <h3>Linux:</h3>
 ![](http://fastonosql.com/images/common/linux/main_window_linux.png)
-<h3>Linux:</h3>
-![](http://fastonosql.com/images/common/linux/main_window_linux.png)
 <h3>FreeBSD:</h3>
-![](http://fastonosql.com/images/common/freebsd/main_window_freebsd.png
+![](http://fastonosql.com/images/common/freebsd/main_window_freebsd.png)
 <h3>Android:</h3>
-![](http://fastonosql.com/images/common/android/main_window_android.png
+![](http://fastonosql.com/images/common/android/main_window_android.png)
 
 Visit our site: [www.fastonosql.com](http://www.fastonosql.com)
 
