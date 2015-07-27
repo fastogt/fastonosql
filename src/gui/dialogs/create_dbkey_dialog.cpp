@@ -20,10 +20,17 @@
 #include "gui/dialogs/input_dialog.h"
 
 #include "translations/global.h"
-
+#ifdef BUILD_WITH_REDIS
 #include "core/redis/redis_infos.h"
+#endif
+
+#ifdef BUILD_WITH_MEMCACHED
 #include "core/memcached/memcached_infos.h"
+#endif
+
+#ifdef BUILD_WITH_SSDB
 #include "core/ssdb/ssdb_infos.h"
+#endif
 
 namespace fastonosql
 {
@@ -39,6 +46,7 @@ namespace fastonosql
 
         kvLayout->addWidget(new QLabel(tr("Type:")), 0, 0);
         typesCombo_ = new QComboBox;
+#ifdef BUILD_WITH_REDIS
         if(type_ == REDIS){
             for(int i = 0; i < DBTraits<REDIS>::supportedTypes.size(); ++i){
                 common::Value::Type t = DBTraits<REDIS>::supportedTypes[i];
@@ -46,23 +54,25 @@ namespace fastonosql
                 typesCombo_->addItem(GuiFactory::instance().icon(t), type, t);
             }
         }
-        else if(type_ == MEMCACHED){
+#endif
+#ifdef BUILD_WITH_MEMCACHED
+        if(type_ == MEMCACHED){
             for(int i = 0; i < DBTraits<MEMCACHED>::supportedTypes.size(); ++i){
                 common::Value::Type t = DBTraits<MEMCACHED>::supportedTypes[i];
                 QString type = common::convertFromString<QString>(common::Value::toString(t));
                 typesCombo_->addItem(GuiFactory::instance().icon(t), type, t);
             }
         }
-        else if(type_ == SSDB){
+#endif
+#ifdef BUILD_WITH_SSDB
+        if(type_ == SSDB){
             for(int i = 0; i < DBTraits<SSDB>::supportedTypes.size(); ++i){
                 common::Value::Type t = DBTraits<SSDB>::supportedTypes[i];
                 QString type = common::convertFromString<QString>(common::Value::toString(t));
                 typesCombo_->addItem(GuiFactory::instance().icon(t), type, t);
             }
         }
-        else{
-            NOTREACHED();
-        }
+#endif
 
         typedef void (QComboBox::*ind)(int);
         VERIFY(connect(typesCombo_, static_cast<ind>(&QComboBox::currentIndexChanged), this, &CreateDbKeyDialog::typeChanged));

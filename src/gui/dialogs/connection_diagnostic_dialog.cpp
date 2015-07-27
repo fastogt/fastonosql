@@ -7,9 +7,15 @@
 
 #include "common/time.h"
 
+#ifdef BUILD_WITH_REDIS
 #include "core/redis/redis_driver.h"
-#include "core/ssdb/ssdb_driver.h"
+#endif
+#ifdef BUILD_WITH_MEMCACHED
 #include "core/memcached/memcached_driver.h"
+#endif
+#ifdef BUILD_WITH_SSDB
+#include "core/ssdb/ssdb_driver.h"
+#endif
 
 #include "gui/gui_factory.h"
 #include "fasto/qt/gui/glass_widget.h"
@@ -21,6 +27,28 @@ namespace
     const QString timeTemplate = "Time execute msec: %1";
     const QString connectionStatusTemplate = "Connection state: %1";
     const QSize stateIconSize = QSize(64, 64);
+
+    common::ErrorValueSPtr testConnectionTMethod(fastonosql::IConnectionSettingsBaseSPtr connection)
+    {
+        using namespace fastonosql;
+        connectionTypes type = connection->connectionType();
+#ifdef BUILD_WITH_REDIS
+        if(type == REDIS){
+            return testConnection(dynamic_cast<RedisConnectionSettings*>(connection.get()));
+        }
+#endif
+#ifdef BUILD_WITH_MEMCACHED
+        if(type == MEMCACHED){
+            return testConnection(dynamic_cast<MemcachedConnectionSettings*>(connection.get()));
+        }
+#endif
+#ifdef BUILD_WITH_SSDB
+        if(type == SSDB){
+            return testConnection(dynamic_cast<SsdbConnectionSettings*>(connection.get()));
+        }
+#endif
+        return common::make_error_value("Invalid setting type", common::ErrorValue::E_ERROR);
+    }
 }
 
 namespace fastonosql
@@ -38,20 +66,7 @@ namespace fastonosql
             return;
         }
 
-        connectionTypes type = connection_->connectionType();
-        common::ErrorValueSPtr er;
-        if(type == REDIS){
-            er = testConnection(dynamic_cast<RedisConnectionSettings*>(connection_.get()));
-        }
-        else if(type == MEMCACHED){
-            er = testConnection(dynamic_cast<MemcachedConnectionSettings*>(connection_.get()));
-        }
-        else if(type == SSDB){
-            er = testConnection(dynamic_cast<SsdbConnectionSettings*>(connection_.get()));
-        }
-        else{
-            er = common::make_error_value("Invalid setting type", common::ErrorValue::E_ERROR);
-        }
+        common::ErrorValueSPtr er = testConnectionTMethod(connection_);
 
         if(er){
             emit connectionResult(false, common::time::current_mstime() - startTime_, common::convertFromString<QString>(er->description()));

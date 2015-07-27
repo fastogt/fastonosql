@@ -73,6 +73,7 @@ namespace fastonosql
     private:
         void syncConnectionActions();
         void updateDefaultDatabase(DataBaseInfoSPtr dbs);
+        void initShellByType(connectionTypes type);
 
         const IServerSPtr server_;
         QAction* executeAction_;

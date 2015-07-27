@@ -24,9 +24,17 @@
 
 #include "translations/global.h"
 
+#ifdef BUILD_WITH_REDIS
 #include "shell/redis_shell.h"
+#endif
+
+#ifdef BUILD_WITH_MEMCACHED
 #include "shell/memcached_shell.h"
+#endif
+
+#ifdef BUILD_WITH_SSDB
 #include "shell/ssdb_shell.h"
+#endif
 
 using namespace fastonosql::translations;
 
@@ -173,24 +181,7 @@ namespace fastonosql
         workProgressBar_ = new QProgressBar;
         hlayout->addWidget(workProgressBar_);
 
-        connectionTypes type = server->type();
-        if(type == REDIS){
-            input_ = new RedisShell(SettingsManager::instance().autoCompletion());
-            setToolTip(tr("Based on redis-cli version: %1").arg(input_->version()));
-        }
-        else if(type == MEMCACHED){
-            input_ = new MemcachedShell(SettingsManager::instance().autoCompletion());
-            setToolTip(tr("Based on libmemcached version: %1").arg(input_->version()));
-        }
-        else if(type == SSDB){
-            input_ = new SsdbShell(SettingsManager::instance().autoCompletion());
-            setToolTip(tr("Based on ssdb-cli version: %1").arg(input_->version()));
-        }
-        else{
-            NOTREACHED();
-        }
-
-        input_->setContextMenuPolicy(Qt::CustomContextMenu);
+        initShellByType(server->type());
 
         mainlayout->addLayout(hlayout);
         mainlayout->addWidget(input_);
@@ -199,6 +190,32 @@ namespace fastonosql
 
         syncConnectionActions();
         updateDefaultDatabase(server_->currentDatabaseInfo());
+    }
+
+    void BaseShellWidget::initShellByType(connectionTypes type)
+    {
+#ifdef BUILD_WITH_REDIS
+        if(type == REDIS){
+            input_ = new RedisShell(SettingsManager::instance().autoCompletion());
+            setToolTip(tr("Based on redis-cli version: %1").arg(input_->version()));
+        }
+#endif
+#ifdef BUILD_WITH_MEMCACHED
+        if(type == MEMCACHED){
+            input_ = new MemcachedShell(SettingsManager::instance().autoCompletion());
+            setToolTip(tr("Based on libmemcached version: %1").arg(input_->version()));
+        }
+#endif
+#ifdef BUILD_WITH_SSDB
+        if(type == SSDB){
+            input_ = new SsdbShell(SettingsManager::instance().autoCompletion());
+            setToolTip(tr("Based on ssdb-cli version: %1").arg(input_->version()));
+        }
+#endif
+        DCHECK(input_);
+        if(input_){
+            input_->setContextMenuPolicy(Qt::CustomContextMenu);
+        }
     }
 
     BaseShellWidget::~BaseShellWidget()

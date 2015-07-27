@@ -141,12 +141,21 @@ namespace fastonosql
         setMinimumSize(QSize(min_height, min_width));
 
         glassWidget_ = new fasto::qt::gui::GlassWidget(GuiFactory::instance().pathToLoadingGif(), trLoading, 0.5, QColor(111, 111, 100), this);
+#ifdef BUILD_WITH_REDIS
         if(type_ == REDIS){
             updateText(RedisServerInfo());
         }
-        else if(type_ == MEMCACHED){
+#endif
+#ifdef BUILD_WITH_MEMCACHED
+        if(type_ == MEMCACHED){
             updateText(MemcachedServerInfo());
         }
+#endif
+#ifdef BUILD_WITH_SSDB
+        if(type_ == SSDB){
+            updateText(SsdbServerInfo());
+        }
+#endif
     }
 
     void InfoServerDialog::startServerInfo(const EventsInfo::ServerInfoRequest& req)
@@ -168,25 +177,30 @@ namespace fastonosql
         }
 
         DCHECK(type_ == inf->type());
-
+#ifdef BUILD_WITH_REDIS
         if(type_ == REDIS){
             RedisServerInfo* infr = dynamic_cast<RedisServerInfo*>(inf.get());
             if(infr){
                 updateText(*infr);
             }
         }
-        else if(type_ == MEMCACHED){
+#endif
+#ifdef BUILD_WITH_MEMCACHED
+        if(type_ == MEMCACHED){
             MemcachedServerInfo* infr = dynamic_cast<MemcachedServerInfo*>(inf.get());
             if(infr){
                 updateText(*infr);
             }
         }
-        else if(type_ == SSDB){
+#endif
+#ifdef BUILD_WITH_SSDB
+        if(type_ == SSDB){
             SsdbServerInfo* infr = dynamic_cast<SsdbServerInfo*>(inf.get());
             if(infr){
                 updateText(*infr);
             }
         }
+#endif
     }
 
     void InfoServerDialog::showEvent(QShowEvent* e)
@@ -195,6 +209,7 @@ namespace fastonosql
         emit showed();
     }
 
+#ifdef BUILD_WITH_REDIS
     void InfoServerDialog::updateText(const RedisServerInfo& serv)
     {
         using namespace common;
@@ -281,7 +296,9 @@ namespace fastonosql
         serverTextInfo_->setText(textServ + textMem + textCpu);
         hardwareTextInfo_->setText(textCl + textPer + textStat + textRepl);
     }
+#endif
 
+#ifdef BUILD_WITH_MEMCACHED
     void InfoServerDialog::updateText(const MemcachedServerInfo& serv)
     {
         using namespace common;
@@ -314,7 +331,9 @@ namespace fastonosql
         serverTextInfo_->setText(textServ);
         //hardwareTextInfo_->setText(textHard);
     }
+#endif
 
+#ifdef BUILD_WITH_SSDB
     void InfoServerDialog::updateText(const SsdbServerInfo& serv)
     {
         using namespace common;
@@ -327,4 +346,5 @@ namespace fastonosql
 
         serverTextInfo_->setText(textServ);
     }
+#endif
 }

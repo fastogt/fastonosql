@@ -125,23 +125,11 @@ SET(SOURCES_CORE
 
 SET(HEADERS_SHELL_TO_MOC
     shell/shell_widget.h
-    shell/redis_shell.h
-    shell/redis_lexer.h
-    shell/memcached_shell.h
-    shell/memcached_lexer.h
-    shell/ssdb_lexer.h
-    shell/ssdb_shell.h
 )
 SET(HEADERS_SHELL
 )
 SET(SOURCES_SHELL
     shell/shell_widget.cpp
-    shell/redis_shell.cpp
-    shell/redis_lexer.cpp
-    shell/memcached_shell.cpp
-    shell/memcached_lexer.cpp
-    shell/ssdb_lexer.cpp
-    shell/ssdb_shell.cpp
 )
 
 SET(HEADERS_TRANSLATIONS
@@ -175,92 +163,134 @@ INCLUDE_DIRECTORIES(${CMAKE_CURRENT_LIST_DIR} ${OPENSSL_INCLUDE_DIR})
 ADD_SUBDIRECTORY(fasto)
 INCLUDE_DIRECTORIES(${CMAKE_CURRENT_LIST_DIR}/fasto)
 ADD_SUBDIRECTORY(third-party/libssh2)
-ADD_SUBDIRECTORY(third-party/redis)
 
 #redis
-SET(HEADERS_REDIS_TO_MOC
-    core/redis/redis_cluster.h
-    core/redis/redis_server.h
-    core/redis/redis_driver.h
-)
-SET(HEADERS_REDIS
-    core/redis/redis_infos.h
-    core/redis/redis_config.h
-    core/redis/redis_database.h
-    core/redis/redis_settings.h
-    core/redis/redis_cluster_settings.h
-)
-SET(SOURCES_REDIS
-    core/redis/redis_config.cpp
-    core/redis/redis_infos.cpp
-    core/redis/redis_cluster.cpp
-    core/redis/redis_server.cpp
-    core/redis/redis_driver.cpp
-    core/redis/redis_database.cpp
-    core/redis/redis_settings.cpp
-    core/redis/redis_cluster_settings.cpp
-)
+IF(BUILD_WITH_REDIS)
+    SET(HEADERS_SHELL_TO_MOC ${HEADERS_SHELL_TO_MOC}
+        shell/redis_shell.h
+        shell/redis_lexer.h
+    )
+    SET(HEADERS_SHELL ${HEADERS_SHELL}
+    )
+    SET(SOURCES_SHELL ${SOURCES_SHELL}
+        shell/redis_shell.cpp
+        shell/redis_lexer.cpp
+    )
+    ADD_SUBDIRECTORY(third-party/redis)
+    SET(HEADERS_REDIS_TO_MOC
+        core/redis/redis_cluster.h
+        core/redis/redis_server.h
+        core/redis/redis_driver.h
+    )
+    SET(HEADERS_REDIS
+        core/redis/redis_infos.h
+        core/redis/redis_config.h
+        core/redis/redis_database.h
+        core/redis/redis_settings.h
+        core/redis/redis_cluster_settings.h
+    )
+    SET(SOURCES_REDIS
+        core/redis/redis_config.cpp
+        core/redis/redis_infos.cpp
+        core/redis/redis_cluster.cpp
+        core/redis/redis_server.cpp
+        core/redis/redis_driver.cpp
+        core/redis/redis_database.cpp
+        core/redis/redis_settings.cpp
+        core/redis/redis_cluster_settings.cpp
+    )
+    SET(OBJECT_LIBS ${OBJECT_LIBS} $<TARGET_OBJECTS:redis_cli> $<TARGET_OBJECTS:libssh2>)
+ENDIF(BUILD_WITH_REDIS)
 
 #memcached
-FIND_PACKAGE(Sasl QUIET)
-IF(SASL_FOUND)
-    ADD_DEFINITIONS(-DHAVE_LIBSASL)
-    INCLUDE_DIRECTORIES(${SASL_INCLUDE_DIR})
-ENDIF(SASL_FOUND)
+IF(BUILD_WITH_MEMCACHED)
+    SET(HEADERS_SHELL_TO_MOC ${HEADERS_SHELL_TO_MOC}
+        shell/memcached_shell.h
+        shell/memcached_lexer.h
+    )
+    SET(HEADERS_SHELL ${HEADERS_SHELL}
+    )
+    SET(SOURCES_SHELL ${SOURCES_SHELL}
+        shell/memcached_shell.cpp
+        shell/memcached_lexer.cpp
+    )
+    FIND_PACKAGE(Sasl QUIET)
+    IF(SASL_FOUND)
+        ADD_DEFINITIONS(-DHAVE_LIBSASL)
+        INCLUDE_DIRECTORIES(${SASL_INCLUDE_DIR})
+        SET(ALL_LIBS ${ALL_LIBS} ${SASL_LIBRARIES})
+    ENDIF(SASL_FOUND)
 
-ADD_SUBDIRECTORY(third-party/memcached)
-
-SET(HEADERS_MEMCACHED_TO_MOC
-    core/memcached/memcached_server.h
-    core/memcached/memcached_driver.h
-)
-SET(HEADERS_MEMCACHED
-    core/memcached/memcached_infos.h
-    core/memcached/memcached_config.h
-    core/memcached/memcached_database.h
-    core/memcached/memcached_settings.h
-)
-SET(SOURCES_MEMCACHED
-    core/memcached/memcached_config.cpp
-    core/memcached/memcached_infos.cpp
-    core/memcached/memcached_server.cpp
-    core/memcached/memcached_driver.cpp
-    core/memcached/memcached_database.cpp
-    core/memcached/memcached_settings.cpp
-)
+    ADD_SUBDIRECTORY(third-party/memcached)
+    SET(HEADERS_MEMCACHED_TO_MOC
+        core/memcached/memcached_server.h
+        core/memcached/memcached_driver.h
+    )
+    SET(HEADERS_MEMCACHED
+        core/memcached/memcached_infos.h
+        core/memcached/memcached_config.h
+        core/memcached/memcached_database.h
+        core/memcached/memcached_settings.h
+    )
+    SET(SOURCES_MEMCACHED
+        core/memcached/memcached_config.cpp
+        core/memcached/memcached_infos.cpp
+        core/memcached/memcached_server.cpp
+        core/memcached/memcached_driver.cpp
+        core/memcached/memcached_database.cpp
+        core/memcached/memcached_settings.cpp
+    )
+    SET(OBJECT_LIBS ${OBJECT_LIBS} $<TARGET_OBJECTS:libmemcached>)
+ENDIF(BUILD_WITH_MEMCACHED)
 
 #ssdb
+IF(BUILD_WITH_SSDB)
+    SET(HEADERS_SHELL_TO_MOC ${HEADERS_SHELL_TO_MOC}
+        shell/ssdb_lexer.h
+        shell/ssdb_shell.h
+    )
+    SET(HEADERS_SHELL ${HEADERS_SHELL}
+    )
+    SET(SOURCES_SHELL ${SOURCES_SHELL}
+        shell/ssdb_lexer.cpp
+        shell/ssdb_shell.cpp
+    )
+    ADD_SUBDIRECTORY(third-party/ssdb)
 
-ADD_SUBDIRECTORY(third-party/ssdb)
+    SET(HEADERS_SSDB_TO_MOC
+        core/ssdb/ssdb_server.h
+        core/ssdb/ssdb_driver.h
+    )
+    SET(HEADERS_SSDB
+        core/ssdb/ssdb_infos.h
+        core/ssdb/ssdb_config.h
+        core/ssdb/ssdb_database.h
+        core/ssdb/ssdb_settings.h
+    )
+    SET(SOURCES_SSDB
+        core/ssdb/ssdb_config.cpp
+        core/ssdb/ssdb_infos.cpp
+        core/ssdb/ssdb_server.cpp
+        core/ssdb/ssdb_driver.cpp
+        core/ssdb/ssdb_database.cpp
+        core/ssdb/ssdb_settings.cpp
+    )
+    SET(OBJECT_LIBS ${OBJECT_LIBS} $<TARGET_OBJECTS:ssd_cli>)
+ENDIF(BUILD_WITH_SSDB)
 
-SET(HEADERS_SSDB_TO_MOC
-    core/ssdb/ssdb_server.h
-    core/ssdb/ssdb_driver.h
-)
-SET(HEADERS_SSDB
-    core/ssdb/ssdb_infos.h
-    core/ssdb/ssdb_config.h
-    core/ssdb/ssdb_database.h
-    core/ssdb/ssdb_settings.h
-)
-SET(SOURCES_SSDB
-    core/ssdb/ssdb_config.cpp
-    core/ssdb/ssdb_infos.cpp
-    core/ssdb/ssdb_server.cpp
-    core/ssdb/ssdb_driver.cpp
-    core/ssdb/ssdb_database.cpp
-    core/ssdb/ssdb_settings.cpp
+SET(SOURCES_SDS
+    third-party/sds/sds.c
 )
 
 SET(HEADERS ${HEADERS} ${HEADERS_GLOBAL} ${HEADERS_GUI} ${HEADERS_CORE} ${HEADERS_SHELL} ${HEADERS_REDIS} ${HEADERS_MEMCACHED} ${HEADERS_SSDB} ${HEADERS_TRANSLATIONS})
-SET(SOURCES ${SOURCES} ${SOURCES_GLOBAL} ${SOURCES_GUI} ${SOURCES_CORE} ${SOURCES_SHELL} ${SOURCES_REDIS} ${SOURCES_MEMCACHED} ${SOURCES_SSDB} ${SOURCES_TRANSLATIONS})
+SET(SOURCES ${SOURCES} ${SOURCES_GLOBAL} ${SOURCES_GUI} ${SOURCES_CORE} ${SOURCES_SHELL} ${SOURCES_REDIS} ${SOURCES_MEMCACHED} ${SOURCES_SSDB} ${SOURCES_TRANSLATIONS} ${SOURCES_SDS})
 SET(HEADERS_TOMOC ${HEADERS_GUI_TO_MOC} ${HEADERS_CORE_TO_MOC} ${HEADERS_SHELL_TO_MOC} ${HEADERS_REDIS_TO_MOC} ${HEADERS_MEMCACHED_TO_MOC} ${HEADERS_SSDB_TO_MOC})
 
 QTX_WRAP_CPP(MOC_FILES ${HEADERS_TOMOC})
 CONFIGURE_FILE("resources/gui.qrc.in" "${CMAKE_CURRENT_LIST_DIR}/resources/gui.qrc" @ONLY IMMEDIATE)
 SET(RESOURCES ${CMAKE_CURRENT_LIST_DIR}/resources/gui.qrc)
 QTX_ADD_RESOURCES(RES_SRC ${RESOURCES})
-SET(INCLUDE_DIRS ${INCLUDE_DIRS} third-party/redis/redis/src third-party/redis/redis/deps fasto/third-party/qscintilla/Qt4Qt5 third-party/memcached/src third-party/ssdb/src)
+SET(INCLUDE_DIRS ${INCLUDE_DIRS} third-party/redis/redis/src third-party/redis/redis/deps third-party/sds fasto/third-party/qscintilla/Qt4Qt5 third-party/memcached/src third-party/ssdb/src)
 INCLUDE_DIRECTORIES(${INCLUDE_DIRS})
 
 SOURCE_GROUP("Header Files" FILES ${HEADERS} ${HEADERS_TOMOC})
@@ -284,11 +314,6 @@ ENDIF(GENERATE_TRANSLATIONS)
 
 SET(ALL_SOURCES ${ALL_SOURCES} ${HEADERS} ${HEADERS_TOMOC} ${SOURCES} ${MOC_FILES} ${PLATFORM_HDRS} ${PLATFORM_SRCS})
 SET(ALL_LIBS ${ALL_LIBS} fasto ${QT_LIBRARIES} ${PLATFORM_LIBRARIES} ${OPENSSL_LIBRARIES} ${ZLIB_LIBRARY})
-IF(SASL_FOUND)
-    SET(ALL_LIBS ${ALL_LIBS} ${SASL_LIBRARIES})
-ENDIF(SASL_FOUND)
-
-SET(OBJECT_LIBS ${OBJECT_LIBS} $<TARGET_OBJECTS:redis_cli> $<TARGET_OBJECTS:libssh2> $<TARGET_OBJECTS:libmemcached> $<TARGET_OBJECTS:ssd_cli>)
 
 SET(EXE_SOURCES main.cpp ${RES_SRC} ${ICON_FILE} ${RESOURCE_OS} ${QM_FILES})
 
@@ -341,17 +366,17 @@ IF(OS_WINDOWS)
     SET(SHARED_ZLIB_NAMES zlib1.dll z.dll zlib.dll zdll.dll zlibd.dll zlibd1.dll)
     FIND_RUNTIME_LIBRARY(SHARED_ZLIB_LIBRARY SHARED_ZLIB_NAMES)
     INSTALL(FILES ${SHARED_ZLIB_LIBRARY} DESTINATION ${LIB_INSTALL_DESTINATION} COMPONENT RUNTIME)
+    IF(SASL_FOUND)
+        #find runtime msys
+        SET(SHARED_MSYS_NAMES msys-2.0.dll)
+        FIND_RUNTIME_LIBRARY(SHARED_MSYS_LIBRARY SHARED_MSYS_NAMES)
+        INSTALL(FILES ${SHARED_MSYS_LIBRARY} DESTINATION ${LIB_INSTALL_DESTINATION} COMPONENT RUNTIME)
 
-    #find runtime msys
-    SET(SHARED_MSYS_NAMES msys-2.0.dll)
-    FIND_RUNTIME_LIBRARY(SHARED_MSYS_LIBRARY SHARED_MSYS_NAMES)
-    INSTALL(FILES ${SHARED_MSYS_LIBRARY} DESTINATION ${LIB_INSTALL_DESTINATION} COMPONENT RUNTIME)
-
-    #find runtime sasl
-    SET(SHARED_SASL_NAMES msys-sasl2-3.dll)
-    FIND_RUNTIME_LIBRARY(SHARED_SASL_LIBRARY SHARED_SASL_NAMES)
-    INSTALL(FILES ${SHARED_SASL_LIBRARY} DESTINATION ${LIB_INSTALL_DESTINATION} COMPONENT RUNTIME)
-
+        #find runtime sasl
+        SET(SHARED_SASL_NAMES msys-sasl2-3.dll)
+        FIND_RUNTIME_LIBRARY(SHARED_SASL_LIBRARY SHARED_SASL_NAMES)
+        INSTALL(FILES ${SHARED_SASL_LIBRARY} DESTINATION ${LIB_INSTALL_DESTINATION} COMPONENT RUNTIME)
+    ENDIF(SASL_FOUND)
 ELSEIF(OS_MACOSX)
     SET(BUNDLE_NAME ${MACOSX_BUNDLE_BUNDLE_NAME}.app)
     DEPLOY_QT_PLUGIN("platforms/qcocoa" ${QT_PLUGINS_DIR} ${BUNDLE_NAME}/Contents/plugins)

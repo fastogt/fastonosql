@@ -6,7 +6,7 @@ ADD_CUSTOM_TARGET(redis_version
             WORKING_DIRECTORY ${CMAKE_CURRENT_LIST_DIR}/src
             COMMENT "Build redis_cli release.h")
 
-INCLUDE_DIRECTORIES(${CMAKE_CURRENT_LIST_DIR}/deps/hiredis ${CMAKE_CURRENT_LIST_DIR}/src)
+INCLUDE_DIRECTORIES(${CMAKE_CURRENT_LIST_DIR}/deps/hiredis ${CMAKE_CURRENT_LIST_DIR}/src ../sds)
 
 SET(HEADERS_REDIS    
     src/anet.h
@@ -25,7 +25,6 @@ SET(SOURCES_REDIS
     src/release.c
     src/zmalloc.c
 
-    deps/hiredis/sds.c
     deps/hiredis/net.c
     deps/hiredis/read.c
     deps/hiredis/hiredis.c

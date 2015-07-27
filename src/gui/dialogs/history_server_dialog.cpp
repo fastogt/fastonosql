@@ -4,9 +4,17 @@
 #include <QSplitter>
 #include <QComboBox>
 
+#ifdef BUILD_WITH_REDIS
 #include "core/redis/redis_infos.h"
+#endif
+
+#ifdef BUILD_WITH_MEMCACHED
 #include "core/memcached/memcached_infos.h"
+#endif
+
+#ifdef BUILD_WITH_SSDB
 #include "core/ssdb/ssdb_infos.h"
+#endif
 
 #include "fasto/qt/gui/base/graph_widget.h"
 #include "gui/gui_factory.h"
@@ -42,21 +50,27 @@ namespace fastonosql
         typedef void (QComboBox::*curc)(int);
         VERIFY(connect(serverInfoGroupsNames_, static_cast<curc>(&QComboBox::currentIndexChanged), this, &ServerHistoryDialog::refreshInfoFields ));
         VERIFY(connect(serverInfoFields_, static_cast<curc>(&QComboBox::currentIndexChanged), this, &ServerHistoryDialog::refreshGraph ));
+#ifdef BUILD_WITH_REDIS
         if(type_ == REDIS){
             for(int i = 0; i < redisHeaders.size(); ++i){
                 serverInfoGroupsNames_->addItem(common::convertFromString<QString>(redisHeaders[i]));
             }
         }
-        else if(type_ == MEMCACHED){
+#endif
+#ifdef BUILD_WITH_MEMCACHED
+        if(type_ == MEMCACHED){
             for(int i = 0; i < memcachedHeaders.size(); ++i){
                 serverInfoGroupsNames_->addItem(common::convertFromString<QString>(memcachedHeaders[i]));
             }
         }
-        else if(type_ == SSDB){
+#endif
+#ifdef BUILD_WITH_SSDB
+        if(type_ == SSDB){
             for(int i = 0; i < SsdbHeaders.size(); ++i){
                 serverInfoGroupsNames_->addItem(common::convertFromString<QString>(SsdbHeaders[i]));
             }
         }
+#endif
 
         QVBoxLayout *setingsLayout = new QVBoxLayout;
         setingsLayout->addWidget(serverInfoGroupsNames_);
@@ -103,15 +117,21 @@ namespace fastonosql
         serverInfoFields_->clear();
 
         std::vector<Field> field;
+#ifdef BUILD_WITH_REDIS
         if(type_ == REDIS){
             field = redisFields[index];
         }
-        else if(type_ == MEMCACHED){
+#endif
+#ifdef BUILD_WITH_MEMCACHED
+        if(type_ == MEMCACHED){
             field = memcachedFields[index];
         }
-        else if(type_ == SSDB){
+#endif
+#ifdef BUILD_WITH_SSDB
+        if(type_ == SSDB){
             field = SsdbFields[index];
         }
+#endif
 
         for(int i = 0; i < field.size(); ++i){
             Field fl = field[i];

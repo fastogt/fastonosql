@@ -30,7 +30,7 @@ extern "C" {
 #include "third-party/redis/src/version.h"
 #include "third-party/redis/deps/hiredis/hiredis.h"
 #include "third-party/redis/src/anet.h"
-#include "third-party/redis/deps/hiredis/sds.h"
+#include "third-party/sds/sds.h"
 }
 
 #include "third-party/redis/src/help.h"

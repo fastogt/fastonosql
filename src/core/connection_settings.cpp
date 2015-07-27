@@ -9,11 +9,17 @@
 
 #include "core/settings_manager.h"
 
+
+#ifdef BUILD_WITH_REDIS
 #include "core/redis/redis_settings.h"
 #include "core/redis/redis_cluster_settings.h"
-
+#endif
+#ifdef BUILD_WITH_MEMCACHED
 #include "core/memcached/memcached_settings.h"
+#endif
+#ifdef BUILD_WITH_SSDB
 #include "core/ssdb/ssdb_settings.h"
+#endif
 
 #define LOGGING_REDIS_FILE_EXTENSION ".red"
 #define LOGGING_MEMCACHED_FILE_EXTENSION ".mem"
@@ -131,19 +137,22 @@ namespace fastonosql
 
     IConnectionSettingsBase* IConnectionSettingsBase::createFromType(connectionTypes type, const std::string& conName)
     {
+#ifdef BUILD_WITH_REDIS
         if(type == REDIS){
             return new RedisConnectionSettings(conName);
         }
-        else if(type == MEMCACHED){
+#endif
+#ifdef BUILD_WITH_MEMCACHED
+        if(type == MEMCACHED){
             return new MemcachedConnectionSettings(conName);
         }
-        else if(type == SSDB){
+#endif
+#ifdef BUILD_WITH_SSDB
+        if(type == SSDB){
             return new SsdbConnectionSettings(conName);
         }
-        else{
-            NOTREACHED();
-            return NULL;
-        }
+#endif
+        return NULL;
     }
 
     IConnectionSettingsBase* IConnectionSettingsBase::fromString(const std::string &val)
@@ -264,21 +273,24 @@ namespace fastonosql
 
     std::string defaultCommandLine(connectionTypes type)
     {
-        if(type == DBUNKNOWN){
-            return std::string();
-        }
-        else if(type == REDIS){
+#ifdef BUILD_WITH_REDIS
+        if(type == REDIS){
             redisConfig r;
             return common::convertToString(r);
         }
-        else if(type == MEMCACHED){
+#endif
+#ifdef BUILD_WITH_MEMCACHED
+        if(type == MEMCACHED){
             memcachedConfig r;
             return common::convertToString(r);
         }
-        else if(type == SSDB){
+#endif
+#ifdef BUILD_WITH_SSDB
+        if(type == SSDB){
             ssdbConfig r;
             return common::convertToString(r);
         }
+#endif
 
         return std::string();
     }
@@ -314,13 +326,13 @@ namespace fastonosql
 
     IClusterSettingsBase* IClusterSettingsBase::createFromType(connectionTypes type, const std::string& conName)
     {
+#ifdef BUILD_WITH_REDIS
         if(type == REDIS){
             return new RedisClusterSettings(conName);
         }
-        else{
-            NOTREACHED();
-            return NULL;
-        }
+#endif
+
+        return NULL;
     }
 
     IClusterSettingsBase* IClusterSettingsBase::fromString(const std::string& val)

@@ -4,9 +4,17 @@
 
 #include "core/events/events_info.h"
 
+#ifdef BUILD_WITH_REDIS
 #include "core/redis/redis_infos.h"
+#endif
+
+#ifdef BUILD_WITH_MEMCACHED
 #include "core/memcached/memcached_infos.h"
+#endif
+
+#ifdef BUILD_WITH_SSDB
 #include "core/ssdb/ssdb_infos.h"
+#endif
 
 class QLabel;
 
@@ -46,9 +54,15 @@ namespace fastonosql
         virtual void showEvent(QShowEvent* e);
 
     private:
+#ifdef BUILD_WITH_REDIS
         void updateText(const RedisServerInfo& serv);
+#endif
+#ifdef BUILD_WITH_MEMCACHED
         void updateText(const MemcachedServerInfo& serv);
+#endif
+#ifdef BUILD_WITH_SSDB
         void updateText(const SsdbServerInfo& serv);
+#endif
         QLabel* serverTextInfo_;
         QLabel* hardwareTextInfo_;
         fasto::qt::gui::GlassWidget* glassWidget_;

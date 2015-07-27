@@ -1,7 +1,7 @@
 #include "core/ssdb/ssdb_driver.h"
 
 extern "C" {
-#include "third-party/redis/deps/hiredis/sds.h"
+#include "third-party/sds/sds.h"
 }
 
 #include "common/sprintf.h"

@@ -18,7 +18,19 @@ namespace fastonosql
         SLAVE
     };
 
-    static const std::string connnectionType[] = { "Unknown", "Redis", "Memcached", "Ssdb" };
+    static const std::string connnectionType[] =
+    {
+        "Unknown",
+#ifdef BUILD_WITH_REDIS
+        "Redis",
+#endif
+#ifdef BUILD_WITH_MEMCACHED
+        "Memcached",
+#endif
+#ifdef BUILD_WITH_SSDB
+        "Ssdb"
+#endif
+    };
 
     enum ConnectionMode
     {

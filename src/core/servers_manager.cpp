@@ -2,15 +2,23 @@
 
 #include "core/settings_manager.h"
 
+#include "core/icluster.h"
+
+#ifdef BUILD_WITH_REDIS
 #include "core/redis/redis_cluster.h"
 #include "core/redis/redis_server.h"
 #include "core/redis/redis_driver.h"
+#endif
 
+#ifdef BUILD_WITH_MEMCACHED
 #include "core/memcached/memcached_server.h"
 #include "core/memcached/memcached_driver.h"
+#endif
 
+#ifdef BUILD_WITH_SSDB
 #include "core/ssdb/ssdb_server.h"
 #include "core/ssdb/ssdb_driver.h"
+#endif
 
 namespace fastonosql
 {
@@ -33,6 +41,7 @@ namespace fastonosql
         IServerSPtr result;
         connectionTypes conT = settings->connectionType();
         IServerSPtr ser = findServerBySetting(settings);
+#ifdef BUILD_WITH_REDIS
         if(conT == REDIS){
             RedisServer *newRed = NULL;
             if(!ser){
@@ -46,7 +55,9 @@ namespace fastonosql
             result.reset(newRed);
             servers_.push_back(result);
         }
-        else if(conT == MEMCACHED){
+#endif
+#ifdef BUILD_WITH_MEMCACHED
+        if(conT == MEMCACHED){
             MemcachedServer *newMem = NULL;
             if(!ser){
                 IDriverSPtr dr(new MemcachedDriver(settings));
@@ -59,7 +70,9 @@ namespace fastonosql
             result.reset(newMem);
             servers_.push_back(result);
         }
-        else if(conT == SSDB){
+#endif
+#ifdef BUILD_WITH_SSDB
+        if(conT == SSDB){
             SsdbServer *newSsdb = NULL;
             if(!ser){
                 IDriverSPtr dr(new SsdbDriver(settings));
@@ -72,9 +85,10 @@ namespace fastonosql
             result.reset(newSsdb);
             servers_.push_back(result);
         }
+#endif
 
         DCHECK(result);
-        if(ser && syncServers_){
+        if(result && ser && syncServers_){
             result->syncWithServer(ser.get());
         }
 
@@ -87,6 +101,7 @@ namespace fastonosql
 
         IClusterSPtr cl;
         connectionTypes conT = settings->connectionType();
+#ifdef BUILD_WITH_REDIS
         if(conT == REDIS){
             IConnectionSettingsBaseSPtr root = settings->root();
             if(!root){
@@ -105,9 +120,8 @@ namespace fastonosql
             IDriverSPtr drv = cl->root()->driver();
             DCHECK(drv->settings() == root);
         }
-        else{
-            NOTREACHED();
-        }
+#endif
+
         return cl;
     }
 
