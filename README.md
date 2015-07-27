@@ -1,14 +1,20 @@
 About FastoNoSQL
 ===============
 
-FastoNoSQL &mdash; is a crossplatform Redis, Memcached, SSDB management tool. <br />
+FastoNoSQL &mdash; is a crossplatform Redis, Memcached, SSDB management tool also FastoNoSQL is platform for custom NoSQL databases, you can add your own implementation for diffrent databases. <br />
 
 <h3>Windows:</h3>
-![](http://fastoredis.com/images/slider/win_slider.png)
+![](http://fastonosql.com/images/common/windows/main_window_windows_more.png)
 <h3>MacOS X:</h3>
-![](http://fastoredis.com/images/slider/mac_slider.png)
+![](http://fastonosql.com/images/common/macosx/main_window_mac.png)
 <h3>Linux:</h3>
-![](http://fastoredis.com/images/slider/linux_slider.png)
+![](http://fastonosql.com/images/common/linux/main_window_linux.png)
+<h3>Linux:</h3>
+![](http://fastonosql.com/images/common/linux/main_window_linux.png)
+<h3>FreeBSD:</h3>
+![](http://fastonosql.com/images/common/freebsd/main_window_freebsd.png
+<h3>Android:</h3>
+![](http://fastonosql.com/images/common/android/main_window_android.png
 
 Visit our site: [www.fastonosql.com](http://www.fastonosql.com)
 
