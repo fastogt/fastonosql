@@ -3,5 +3,5 @@
 #define GET_FASTONOSQL_VERSION "FASTONOSQL_VERSION"
 #define GET_FASTOREDIS_VERSION "FASTOREDIS_VERSION"
 
-#define FASTONOSQL_URL "www.fastonosql.com"
+#define FASTONOSQL_URL "www.fastoredis.com"
 #define FASTOREDIS_URL "www.fastoredis.com"
