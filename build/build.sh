@@ -30,14 +30,12 @@ createPackage() {
     cd ../
 }
 
-if [ "$#" -ne 1 ]; then
-    echo "Please specify at least branding file or /dev/null!"
-	exit 0
-fi
-
 unamestr=`uname`
 if [ -n "$1" ]; then
     branding_file=$1
+else
+echo "Please specify at least branding file or /dev/null!"
+	exit 0
 fi
 
 if [ -n "$2" ]; then
