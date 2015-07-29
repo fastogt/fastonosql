@@ -2,7 +2,7 @@
 set -e
 
 createPackage() {
-	branding_variables=$(<$1)
+    branding_variables="$(cat $1)"
     platform="$2"
     dir_path="$3"
     cpack_generator="$4"
