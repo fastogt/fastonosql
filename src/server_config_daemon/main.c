@@ -98,14 +98,34 @@ void delete_all_setting() {
 
 int main(int argc, char *argv[])
 {
-    /* Open the log file */
-    openlog(PROJECT_NAME, LOG_PID, LOG_DAEMON);
+    int opt;
+    int daemon_mode = 0;
+    const char* config_path = CONFIG_FILE_PATH;
 
-    if(argc > 1 && strcmp(argv[1], "--daemon") == 0){
+    while ((opt = getopt(argc, argv, "cd:")) != -1) {
+        switch (opt) {
+        case 'c':
+            config_path = argv[optind];
+            break;
+        case 'd':
+            daemon_mode = 1;
+            break;
+        default: /* '?' */
+            fprintf(stderr, "Usage: %s [-t nsecs] [-n] name\n", argv[0]);
+            exit(EXIT_FAILURE);
+        }
+    }
+
+    if(daemon_mode){
         skeleton_daemon();
     }
 
-    read_config_file(CONFIG_FILE_PATH);
+    int return_code = EXIT_SUCCESS;
+
+    /* Open the log file */
+    openlog(PROJECT_NAME, LOG_PID, LOG_DAEMON);
+
+    read_config_file(config_path);
 
     const int max_fd = sysconf(_SC_OPEN_MAX);
 
@@ -115,6 +135,7 @@ int main(int argc, char *argv[])
     int listenfd = socket(AF_INET, SOCK_STREAM, 0);
     if(listenfd < 0){
         syslog(LOG_NOTICE, PROJECT_NAME" socket errno: %d", errno);
+        return_code = EXIT_FAILURE;
         goto exit;
     }
 
@@ -126,12 +147,14 @@ int main(int argc, char *argv[])
     int res = bind(listenfd, (struct sockaddr *)&servaddr, sizeof( servaddr ));
     if(res < 0){
         syslog(LOG_NOTICE, PROJECT_NAME" bind errno: %d", errno);
+        return_code = EXIT_FAILURE;
         goto exit;
     }
 
     res = listen(listenfd, 1024);
     if(res < 0){
         syslog(LOG_NOTICE, PROJECT_NAME" listen errno: %d", errno);
+        return_code = EXIT_FAILURE;
         goto exit;
     }
 
@@ -223,7 +246,7 @@ exit:
     syslog(LOG_NOTICE, PROJECT_NAME" terminated.");
     closelog();
 
-    return EXIT_SUCCESS;
+    return return_code;
 }
 
 
