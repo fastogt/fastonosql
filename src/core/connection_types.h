@@ -9,7 +9,8 @@ namespace fastonosql
         DBUNKNOWN = 0,
         REDIS,
         MEMCACHED,
-        SSDB
+        SSDB,
+        LEVELDB
     };
 
     enum serverTypes
@@ -28,7 +29,10 @@ namespace fastonosql
         "Memcached",
 #endif
 #ifdef BUILD_WITH_SSDB
-        "Ssdb"
+        "Ssdb",
+#endif
+#ifdef BUILD_WITH_LEVELDB
+        "Leveldb"
 #endif
     };
 

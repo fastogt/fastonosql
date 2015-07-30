@@ -32,6 +32,10 @@
 #include "core/ssdb/ssdb_infos.h"
 #endif
 
+#ifdef BUILD_WITH_LEVELDB
+#include "core/leveldb/leveldb_infos.h"
+#endif
+
 namespace fastonosql
 {
     CreateDbKeyDialog::CreateDbKeyDialog(const QString &title, connectionTypes type, QWidget* parent)
@@ -73,7 +77,15 @@ namespace fastonosql
             }
         }
 #endif
-
+#ifdef BUILD_WITH_SSDB
+        if(type_ == LEVELDB){
+            for(int i = 0; i < DBTraits<LEVELDB>::supportedTypes.size(); ++i){
+                common::Value::Type t = DBTraits<LEVELDB>::supportedTypes[i];
+                QString type = common::convertFromString<QString>(common::Value::toString(t));
+                typesCombo_->addItem(GuiFactory::instance().icon(t), type, t);
+            }
+        }
+#endif
         typedef void (QComboBox::*ind)(int);
         VERIFY(connect(typesCombo_, static_cast<ind>(&QComboBox::currentIndexChanged), this, &CreateDbKeyDialog::typeChanged));
         kvLayout->addWidget(typesCombo_, 0, 1);

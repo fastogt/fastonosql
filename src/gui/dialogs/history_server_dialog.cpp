@@ -16,6 +16,10 @@
 #include "core/ssdb/ssdb_infos.h"
 #endif
 
+#ifdef BUILD_WITH_LEVELDB
+#include "core/leveldb/leveldb_infos.h"
+#endif
+
 #include "fasto/qt/gui/base/graph_widget.h"
 #include "gui/gui_factory.h"
 #include "fasto/qt/gui/glass_widget.h"
@@ -71,7 +75,13 @@ namespace fastonosql
             }
         }
 #endif
-
+#ifdef BUILD_WITH_LEVELDB
+        if(type_ == LEVELDB){
+            for(int i = 0; i < LeveldbHeaders.size(); ++i){
+                serverInfoGroupsNames_->addItem(common::convertFromString<QString>(LeveldbHeaders[i]));
+            }
+        }
+#endif
         QVBoxLayout *setingsLayout = new QVBoxLayout;
         setingsLayout->addWidget(serverInfoGroupsNames_);
         setingsLayout->addWidget(serverInfoFields_);
@@ -132,7 +142,11 @@ namespace fastonosql
             field = SsdbFields[index];
         }
 #endif
-
+#ifdef BUILD_WITH_LEVELDB
+        if(type_ == LEVELDB){
+            field = LeveldbFields[index];
+        }
+#endif
         for(int i = 0; i < field.size(); ++i){
             Field fl = field[i];
             if(fl.isIntegral()){

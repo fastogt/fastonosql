@@ -20,6 +20,9 @@
 #ifdef BUILD_WITH_SSDB
 #include "core/ssdb/ssdb_settings.h"
 #endif
+#ifdef BUILD_WITH_LEVELDB
+#include "core/leveldb/leveldb_settings.h"
+#endif
 
 #define LOGGING_REDIS_FILE_EXTENSION ".red"
 #define LOGGING_MEMCACHED_FILE_EXTENSION ".mem"
@@ -150,6 +153,11 @@ namespace fastonosql
 #ifdef BUILD_WITH_SSDB
         if(type == SSDB){
             return new SsdbConnectionSettings(conName);
+        }
+#endif
+#ifdef BUILD_WITH_LEVELDB
+        if(type == SSDB){
+            return new LeveldbConnectionSettings(conName);
         }
 #endif
         return NULL;
@@ -291,7 +299,12 @@ namespace fastonosql
             return common::convertToString(r);
         }
 #endif
-
+#ifdef BUILD_WITH_LEVELDB
+        if(type == LEVELDB){
+            ssdbConfig r;
+            return common::convertToString(r);
+        }
+#endif
         return std::string();
     }
 

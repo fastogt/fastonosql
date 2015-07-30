@@ -8,6 +8,7 @@
     <file>@PROJECT_NAME_LOWERCASE@/images/64x64/redis.png</file>
     <file>@PROJECT_NAME_LOWERCASE@/images/64x64/memcached.png</file>
     <file>@PROJECT_NAME_LOWERCASE@/images/64x64/ssdb.png</file>
+    <file>@PROJECT_NAME_LOWERCASE@/images/64x64/leveldb.png</file>
     <file>@PROJECT_NAME_LOWERCASE@/images/64x64/redistype.png</file>
     <file>@PROJECT_NAME_LOWERCASE@/images/64x64/execute.png</file>
     <file>@PROJECT_NAME_LOWERCASE@/images/64x64/stop.png</file>

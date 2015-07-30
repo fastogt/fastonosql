@@ -20,6 +20,11 @@
 #include "core/ssdb/ssdb_driver.h"
 #endif
 
+#ifdef BUILD_WITH_LEVELDB
+#include "core/leveldb/leveldb_server.h"
+#include "core/leveldb/leveldb_driver.h"
+#endif
+
 namespace fastonosql
 {
     ServersManager::ServersManager()
@@ -33,6 +38,17 @@ namespace fastonosql
 
     }
 
+    template<class Server, class Driver>
+    IServer* ServersManager::make_server(IServerSPtr pser, IConnectionSettingsBaseSPtr settings)
+    {
+        if(!pser){
+            IDriverSPtr dr(new Driver(settings));
+            dr->start();
+            return new Server(dr, true);
+        }
+
+        return new Server(pser->driver(), false);
+    }
 
     IServerSPtr ServersManager::createServer(IConnectionSettingsBaseSPtr settings)
     {
@@ -43,53 +59,31 @@ namespace fastonosql
         IServerSPtr ser = findServerBySetting(settings);
 #ifdef BUILD_WITH_REDIS
         if(conT == REDIS){
-            RedisServer *newRed = NULL;
-            if(!ser){
-                IDriverSPtr dr(new RedisDriver(settings));
-                dr->start();
-                newRed = new RedisServer(dr, true);
-            }
-            else{
-                newRed = new RedisServer(ser->driver(), false);
-            }
-            result.reset(newRed);
-            servers_.push_back(result);
+            result.reset(make_server<RedisServer, RedisDriver>(ser, settings));
         }
 #endif
 #ifdef BUILD_WITH_MEMCACHED
         if(conT == MEMCACHED){
-            MemcachedServer *newMem = NULL;
-            if(!ser){
-                IDriverSPtr dr(new MemcachedDriver(settings));
-                dr->start();
-                newMem = new MemcachedServer(dr, true);
-            }
-            else{
-                newMem = new MemcachedServer(ser->driver(), false);
-            }
-            result.reset(newMem);
-            servers_.push_back(result);
+            result.reset(make_server<MemcachedServer, MemcachedDriver>(ser, settings));
         }
 #endif
 #ifdef BUILD_WITH_SSDB
         if(conT == SSDB){
-            SsdbServer *newSsdb = NULL;
-            if(!ser){
-                IDriverSPtr dr(new SsdbDriver(settings));
-                dr->start();
-                newSsdb = new SsdbServer(dr, true);
-            }
-            else{
-                newSsdb = new SsdbServer(ser->driver(), false);
-            }
-            result.reset(newSsdb);
-            servers_.push_back(result);
+            result.reset(make_server<SsdbServer, SsdbDriver>(ser, settings));
+        }
+#endif
+#ifdef BUILD_WITH_LEVELDB
+        if(conT == LEVELDB){
+            result.reset(make_server<LeveldbServer, LeveldbDriver>(ser, settings));
         }
 #endif
 
         DCHECK(result);
-        if(result && ser && syncServers_){
-            result->syncWithServer(ser.get());
+        if(result){
+            servers_.push_back(result);
+            if(ser && syncServers_){
+                result->syncWithServer(ser.get());
+            }
         }
 
         return result;

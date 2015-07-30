@@ -16,6 +16,10 @@
 #include "core/ssdb/ssdb_infos.h"
 #endif
 
+#ifdef BUILD_WITH_LEVELDB
+#include "core/leveldb/leveldb_infos.h"
+#endif
+
 class QLabel;
 
 namespace fasto
@@ -62,6 +66,9 @@ namespace fastonosql
 #endif
 #ifdef BUILD_WITH_SSDB
         void updateText(const SsdbServerInfo& serv);
+#endif
+#ifdef BUILD_WITH_LEVELDB
+        void updateText(const LeveldbServerInfo& serv);
 #endif
         QLabel* serverTextInfo_;
         QLabel* hardwareTextInfo_;

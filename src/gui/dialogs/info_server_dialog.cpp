@@ -156,6 +156,11 @@ namespace fastonosql
             updateText(SsdbServerInfo());
         }
 #endif
+#ifdef BUILD_WITH_LEVELDB
+        if(type_ == LEVELDB){
+            updateText(LeveldbServerInfo());
+        }
+#endif
     }
 
     void InfoServerDialog::startServerInfo(const EventsInfo::ServerInfoRequest& req)
@@ -196,6 +201,14 @@ namespace fastonosql
 #ifdef BUILD_WITH_SSDB
         if(type_ == SSDB){
             SsdbServerInfo* infr = dynamic_cast<SsdbServerInfo*>(inf.get());
+            if(infr){
+                updateText(*infr);
+            }
+        }
+#endif
+#ifdef BUILD_WITH_LEVELDB
+        if(type_ == LEVELDB){
+            LeveldbServerInfo * infr = dynamic_cast<LeveldbServerInfo*>(inf.get());
             if(infr){
                 updateText(*infr);
             }
@@ -338,6 +351,21 @@ namespace fastonosql
     {
         using namespace common;
         SsdbServerInfo::Common com = serv.common_;
+        QString textServ = ssdbTextServerTemplate.arg(convertFromString<QString>(com.version_))
+                .arg(com.links_)
+                .arg(com.total_calls_)
+                .arg(com.dbsize_)
+                .arg(convertFromString<QString>(com.binlogs_));
+
+        serverTextInfo_->setText(textServ);
+    }
+#endif
+
+#ifdef BUILD_WITH_LEVELDB
+    void InfoServerDialog::updateText(const LeveldbServerInfo& serv)
+    {
+        using namespace common;
+        LeveldbServerInfo::Common com = serv.common_;
         QString textServ = ssdbTextServerTemplate.arg(convertFromString<QString>(com.version_))
                 .arg(com.links_)
                 .arg(com.total_calls_)

@@ -27,6 +27,9 @@ namespace fastonosql
         void closeCluster(IClusterSPtr cluster);
 
     private:
+        template<class Server, class Driver>
+        IServer* make_server(IServerSPtr pser, IConnectionSettingsBaseSPtr settings);
+
         ServersManager();
         ~ServersManager();
 

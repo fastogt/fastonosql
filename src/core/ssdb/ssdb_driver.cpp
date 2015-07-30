@@ -1,7 +1,7 @@
 #include "core/ssdb/ssdb_driver.h"
 
 extern "C" {
-#include "third-party/sds/sds.h"
+    #include "sds.h"
 }
 
 #include "common/sprintf.h"
@@ -13,7 +13,7 @@ extern "C" {
 #include "core/ssdb/ssdb_config.h"
 #include "core/ssdb/ssdb_infos.h"
 
-#include "SSDB.h"
+#include <SSDB.h>
 
 #define INFO_REQUEST "INFO"
 #define GET_KEYS_PATTERN_1ARGS_I "KEYS a z %d"

@@ -4,7 +4,7 @@
 #include <libmemcached/util.h>
 
 extern "C" {
-#include "third-party/sds/sds.h"
+    #include "sds.h"
 }
 
 #include "common/utils.h"

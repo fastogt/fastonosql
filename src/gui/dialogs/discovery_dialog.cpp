@@ -12,11 +12,17 @@
 #ifdef BUILD_WITH_REDIS
 #include "core/redis/redis_driver.h"
 #endif
+
 #ifdef BUILD_WITH_MEMCACHED
 #include "core/memcached/memcached_driver.h"
 #endif
+
 #ifdef BUILD_WITH_SSDB
 #include "core/ssdb/ssdb_driver.h"
+#endif
+
+#ifdef BUILD_WITH_LEVELDB
+#include "core/leveldb/leveldb_driver.h"
 #endif
 
 #include "gui/gui_factory.h"
@@ -46,6 +52,11 @@ namespace
 #endif
 #ifdef BUILD_WITH_SSDB
         if(type == SSDB){
+            return common::make_error_value("Not supported setting type", common::ErrorValue::E_ERROR);
+        }
+#endif
+#ifdef BUILD_WITH_LEVELDB
+        if(type == LEVELDB){
             return common::make_error_value("Not supported setting type", common::ErrorValue::E_ERROR);
         }
 #endif

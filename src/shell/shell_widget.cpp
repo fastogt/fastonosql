@@ -36,6 +36,10 @@
 #include "shell/ssdb_shell.h"
 #endif
 
+#ifdef BUILD_WITH_LEVELDB
+#include "shell/leveldb_shell.h"
+#endif
+
 using namespace fastonosql::translations;
 
 namespace
@@ -210,6 +214,12 @@ namespace fastonosql
         if(type == SSDB){
             input_ = new SsdbShell(SettingsManager::instance().autoCompletion());
             setToolTip(tr("Based on ssdb-cli version: %1").arg(input_->version()));
+        }
+#endif
+#ifdef BUILD_WITH_LEVELDB
+        if(type == LEVELDB){
+            input_ = new LeveldbShell(SettingsManager::instance().autoCompletion());
+            setToolTip(tr("Based on leveldb version: %1").arg(input_->version()));
         }
 #endif
         DCHECK(input_);

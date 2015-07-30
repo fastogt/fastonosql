@@ -10,11 +10,17 @@
 #ifdef BUILD_WITH_REDIS
 #include "core/redis/redis_driver.h"
 #endif
+
 #ifdef BUILD_WITH_MEMCACHED
 #include "core/memcached/memcached_driver.h"
 #endif
+
 #ifdef BUILD_WITH_SSDB
 #include "core/ssdb/ssdb_driver.h"
+#endif
+
+#ifdef BUILD_WITH_LEVELDB
+#include "core/leveldb/leveldb_driver.h"
 #endif
 
 #include "gui/gui_factory.h"
@@ -45,6 +51,11 @@ namespace
 #ifdef BUILD_WITH_SSDB
         if(type == SSDB){
             return testConnection(dynamic_cast<SsdbConnectionSettings*>(connection.get()));
+        }
+#endif
+#ifdef BUILD_WITH_SSDB
+        if(type == LEVELDB){
+            return testConnection(dynamic_cast<LeveldbConnectionSettings*>(connection.get()));
         }
 #endif
         return common::make_error_value("Invalid setting type", common::ErrorValue::E_ERROR);

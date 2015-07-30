@@ -176,7 +176,10 @@ IF(BUILD_WITH_REDIS)
         shell/redis_shell.cpp
         shell/redis_lexer.cpp
     )
+
     ADD_SUBDIRECTORY(third-party/redis)
+    SET(INCLUDE_DIRS ${INCLUDE_DIRS} third-party/redis/src third-party/redis/deps third-party/sds)
+
     SET(HEADERS_REDIS_TO_MOC
         core/redis/redis_cluster.h
         core/redis/redis_server.h
@@ -222,6 +225,8 @@ IF(BUILD_WITH_MEMCACHED)
     ENDIF(SASL2_FOUND)
 
     ADD_SUBDIRECTORY(third-party/memcached)
+    SET(INCLUDE_DIRS ${INCLUDE_DIRS} third-party/memcached/src)
+
     SET(HEADERS_MEMCACHED_TO_MOC
         core/memcached/memcached_server.h
         core/memcached/memcached_driver.h
@@ -255,7 +260,9 @@ IF(BUILD_WITH_SSDB)
         shell/ssdb_lexer.cpp
         shell/ssdb_shell.cpp
     )
+
     ADD_SUBDIRECTORY(third-party/ssdb)
+    SET(INCLUDE_DIRS ${INCLUDE_DIRS} third-party/ssdb/src)
 
     SET(HEADERS_SSDB_TO_MOC
         core/ssdb/ssdb_server.h
@@ -278,19 +285,56 @@ IF(BUILD_WITH_SSDB)
     SET(OBJECT_LIBS ${OBJECT_LIBS} $<TARGET_OBJECTS:ssd_cli>)
 ENDIF(BUILD_WITH_SSDB)
 
+#leveldb
+IF(BUILD_WITH_LEVELDB)
+    SET(HEADERS_SHELL_TO_MOC ${HEADERS_SHELL_TO_MOC}
+        shell/leveldb_lexer.h
+        shell/leveldb_shell.h
+    )
+    SET(HEADERS_SHELL ${HEADERS_SHELL}
+    )
+    SET(SOURCES_SHELL ${SOURCES_SHELL}
+        shell/leveldb_lexer.cpp
+        shell/leveldb_shell.cpp
+    )
+
+    ADD_SUBDIRECTORY(third-party/leveldb)
+    SET(INCLUDE_DIRS ${INCLUDE_DIRS} third-party/leveldb/src/include)
+
+    SET(HEADERS_LEVELDB_TO_MOC
+        core/leveldb/leveldb_server.h
+        core/leveldb/leveldb_driver.h
+    )
+    SET(HEADERS_LEVELDB
+        core/leveldb/leveldb_infos.h
+        core/leveldb/leveldb_config.h
+        core/leveldb/leveldb_database.h
+        core/leveldb/leveldb_settings.h
+    )
+    SET(SOURCES_LEVELDB
+        core/leveldb/leveldb_config.cpp
+        core/leveldb/leveldb_infos.cpp
+        core/leveldb/leveldb_server.cpp
+        core/leveldb/leveldb_driver.cpp
+        core/leveldb/leveldb_database.cpp
+        core/leveldb/leveldb_settings.cpp
+    )
+    SET(OBJECT_LIBS ${OBJECT_LIBS} $<TARGET_OBJECTS:leveldb>)
+ENDIF(BUILD_WITH_LEVELDB)
+
 SET(SOURCES_SDS
     third-party/sds/sds.c
 )
 
-SET(HEADERS ${HEADERS} ${HEADERS_GLOBAL} ${HEADERS_GUI} ${HEADERS_CORE} ${HEADERS_SHELL} ${HEADERS_REDIS} ${HEADERS_MEMCACHED} ${HEADERS_SSDB} ${HEADERS_TRANSLATIONS})
-SET(SOURCES ${SOURCES} ${SOURCES_GLOBAL} ${SOURCES_GUI} ${SOURCES_CORE} ${SOURCES_SHELL} ${SOURCES_REDIS} ${SOURCES_MEMCACHED} ${SOURCES_SSDB} ${SOURCES_TRANSLATIONS} ${SOURCES_SDS})
-SET(HEADERS_TOMOC ${HEADERS_GUI_TO_MOC} ${HEADERS_CORE_TO_MOC} ${HEADERS_SHELL_TO_MOC} ${HEADERS_REDIS_TO_MOC} ${HEADERS_MEMCACHED_TO_MOC} ${HEADERS_SSDB_TO_MOC})
+SET(HEADERS ${HEADERS} ${HEADERS_GLOBAL} ${HEADERS_GUI} ${HEADERS_CORE} ${HEADERS_SHELL} ${HEADERS_REDIS} ${HEADERS_MEMCACHED} ${HEADERS_SSDB} ${HEADERS_LEVELDB} ${HEADERS_TRANSLATIONS})
+SET(SOURCES ${SOURCES} ${SOURCES_GLOBAL} ${SOURCES_GUI} ${SOURCES_CORE} ${SOURCES_SHELL} ${SOURCES_REDIS} ${SOURCES_MEMCACHED} ${SOURCES_SSDB} ${SOURCES_LEVELDB} ${SOURCES_TRANSLATIONS} ${SOURCES_SDS})
+SET(HEADERS_TOMOC ${HEADERS_GUI_TO_MOC} ${HEADERS_CORE_TO_MOC} ${HEADERS_SHELL_TO_MOC} ${HEADERS_REDIS_TO_MOC} ${HEADERS_MEMCACHED_TO_MOC} ${HEADERS_SSDB_TO_MOC} ${HEADERS_LEVELDB_TO_MOC})
 
 QTX_WRAP_CPP(MOC_FILES ${HEADERS_TOMOC})
 CONFIGURE_FILE("resources/gui.qrc.in" "${CMAKE_CURRENT_LIST_DIR}/resources/gui.qrc" @ONLY IMMEDIATE)
 SET(RESOURCES ${CMAKE_CURRENT_LIST_DIR}/resources/gui.qrc)
 QTX_ADD_RESOURCES(RES_SRC ${RESOURCES})
-SET(INCLUDE_DIRS ${INCLUDE_DIRS} third-party/redis/redis/src third-party/redis/redis/deps third-party/sds fasto/third-party/qscintilla/Qt4Qt5 third-party/memcached/src third-party/ssdb/src)
+SET(INCLUDE_DIRS ${INCLUDE_DIRS} fasto/third-party/qscintilla/Qt4Qt5)
 INCLUDE_DIRECTORIES(${INCLUDE_DIRS})
 
 SOURCE_GROUP("Header Files" FILES ${HEADERS} ${HEADERS_TOMOC})

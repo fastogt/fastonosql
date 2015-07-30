@@ -111,6 +111,9 @@ namespace fastonosql
         else if(type == SSDB){
             return ssdbConnectionIcon();
         }
+        else if(type == LEVELDB){
+            return leveldbConnectionIcon();
+        }
         else{
             return serverIcon();
         }
@@ -299,6 +302,9 @@ namespace fastonosql
         else if(type == SSDB){
             return ssdbConnectionIcon();
         }
+        else if(type == LEVELDB){
+            return leveldbConnectionIcon();
+        }
         else{
             return serverIcon();
         }
@@ -364,6 +370,12 @@ namespace fastonosql
     const QIcon& GuiFactory::ssdbConnectionIcon() const
     {
         static QIcon main(":" PROJECT_NAME_LOWERCASE "/images/64x64/ssdb.png");
+        return main;
+    }
+
+    const QIcon& GuiFactory::leveldbConnectionIcon() const
+    {
+        static QIcon main(":" PROJECT_NAME_LOWERCASE "/images/64x64/leveldb.png");
         return main;
     }
 }
