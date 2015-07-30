@@ -49,13 +49,13 @@ namespace fastonosql
     }
 
     memcachedConfig::memcachedConfig()
+        : ConnectionConfig("127.0.0.1", 11211), user_(NULL), password_(NULL)
     {
-        init();
     }
 
     memcachedConfig::memcachedConfig(const memcachedConfig &other)
+        : ConnectionConfig(other.hostip_, other.hostport_), user_(NULL), password_(NULL)
     {
-        init();
         copy(other);
     }
 
@@ -68,38 +68,17 @@ namespace fastonosql
     void memcachedConfig::copy(const memcachedConfig& other)
     {
         using namespace common::utils;
-        freeifnotnull(hostip_);
-        hostip_ = strdupornull(other.hostip_); //
-
-        hostport_ = other.hostport_;
-
         freeifnotnull(user_);
         user_ = strdupornull(other.user_); //
         freeifnotnull(password_);
         password_ = strdupornull(other.password_); //
 
-        freeifnotnull(mb_delim_);
-        mb_delim_ = strdupornull(other.mb_delim_); //
-        shutdown_ = other.shutdown_;
-    }
-
-    void memcachedConfig::init()
-    {
-        hostip_ = strdup("127.0.0.1");
-        hostport_ = 11211;
-
-        user_ = NULL;
-        password_ = NULL;
-
-        mb_delim_ = strdup("\n");
-        shutdown_ = 0;
+        ConnectionConfig::copy(other);
     }
 
     memcachedConfig::~memcachedConfig()
     {
         using namespace common::utils;
-        freeifnotnull(hostip_);
-        freeifnotnull(mb_delim_);
         freeifnotnull(user_);
         freeifnotnull(password_);
     }
@@ -109,17 +88,7 @@ namespace common
 {
     std::string convertToString(const fastonosql::memcachedConfig &conf)
     {
-        std::vector<std::string> argv;
-
-        if(conf.hostip_){
-            argv.push_back("-h");
-            argv.push_back(conf.hostip_);
-        }
-
-        if(conf.hostport_){
-            argv.push_back("-p");
-            argv.push_back(convertToString(conf.hostport_));
-        }
+        std::vector<std::string> argv = conf.args();
 
         if(conf.user_){
             argv.push_back("-u");
@@ -129,11 +98,6 @@ namespace common
         if(conf.password_){
             argv.push_back("-a");
             argv.push_back(conf.password_);
-        }
-
-        if (conf.mb_delim_) {
-            argv.push_back("-d");
-            argv.push_back(conf.mb_delim_);
         }
 
         std::string result;

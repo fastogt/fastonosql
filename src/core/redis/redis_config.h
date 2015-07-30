@@ -1,14 +1,15 @@
 #pragma once
 
-#include <vector>
-
 #include "common/convert2string.h"
+
+#include "core/connection_confg.h"
 
 #define REDIS_CLI_DEFAULT_PIPE_TIMEOUT 30 /* seconds */
 
 namespace fastonosql
 {
     struct redisConfig
+            : public ConnectionConfig
     {
         redisConfig();
         redisConfig(const redisConfig& other);
@@ -16,14 +17,11 @@ namespace fastonosql
 
         ~redisConfig();
 
-        char *hostip;
-        int hostport;
         char *hostsocket;
         long repeat;
         long interval;
         int dbnum;
         int interactive;
-        int shutdown;
         int monitor_mode;
         int pubsub_mode;
         int latency_mode;
@@ -43,10 +41,9 @@ namespace fastonosql
         int bigkeys;
         char *auth;
         char *eval;
-        char *mb_delim;
         int last_cmd_type;
 
-    private:
+    protected:
         void copy(const redisConfig& other);
         void init();
     };

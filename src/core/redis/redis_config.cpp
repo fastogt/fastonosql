@@ -16,8 +16,8 @@ namespace fastonosql
                 int lastarg = i==argc-1;
 
                 if (!strcmp(argv[i],"-h") && !lastarg) {
-                    free(cfg.hostip);
-                    cfg.hostip = strdup(argv[++i]);
+                    freeifnotnull(cfg.hostip_);
+                    cfg.hostip_ = strdup(argv[++i]);
                 }/* else if (!strcmp(argv[i],"-h") && lastarg) {
                     usage();
                 } else if (!strcmp(argv[i],"--help")) {
@@ -25,7 +25,7 @@ namespace fastonosql
                 } else if (!strcmp(argv[i],"-x")) {
                     cfg.stdinarg = 1;
                 }*/ else if (!strcmp(argv[i],"-p") && !lastarg) {
-                    cfg.hostport = atoi(argv[++i]);
+                    cfg.hostport_ = atoi(argv[++i]);
                 } else if (!strcmp(argv[i],"-s") && !lastarg) {
                     cfg.hostsocket = argv[++i];
                 } else if (!strcmp(argv[i],"-r") && !lastarg) {
@@ -75,8 +75,8 @@ namespace fastonosql
                     cfg.cluster_mode = 1;
                 }
                 else if (!strcmp(argv[i],"-d") && !lastarg) {
-                    free(cfg.mb_delim);
-                    cfg.mb_delim = strdup(argv[++i]);
+                    freeifnotnull(cfg.mb_delim_);
+                    cfg.mb_delim_ = strdup(argv[++i]);
                 }
                 /*else if (!strcmp(argv[i],"-v") || !strcmp(argv[i], "--version")) {
                     sds version = cliVersion();
@@ -101,11 +101,13 @@ namespace fastonosql
     }
 
     redisConfig::redisConfig()
+        : ConnectionConfig("127.0.0.1", 6379)
     {
         init();
     }
 
     redisConfig::redisConfig(const redisConfig &other)
+        : ConnectionConfig(other.hostip_, other.hostport_)
     {
         init();
         copy(other);
@@ -121,11 +123,6 @@ namespace fastonosql
     {
         using namespace common::utils;
 
-        freeifnotnull(hostip);
-        hostip = strdupornull(other.hostip); //
-
-        hostport = other.hostport;
-
         freeifnotnull(hostsocket);
         hostsocket = strdupornull(other.hostsocket); //
 
@@ -133,7 +130,7 @@ namespace fastonosql
         interval = other.interval;
         dbnum = other.dbnum;
         interactive = other.interactive;
-        shutdown = other.shutdown;
+        shutdown_ = other.shutdown_;
         monitor_mode = other.monitor_mode;
         pubsub_mode = other.pubsub_mode;
         latency_mode = other.latency_mode;
@@ -158,22 +155,19 @@ namespace fastonosql
         auth = strdupornull(other.auth); //
         freeifnotnull(eval);
         eval = strdupornull(other.eval); //
-        freeifnotnull(mb_delim);
-        mb_delim = strdupornull(other.mb_delim); //
 
         last_cmd_type = other.last_cmd_type;
+
+        ConnectionConfig::copy(other);
     }
 
     void redisConfig::init()
     {
-        hostip = strdup("127.0.0.1");
-        hostport = 6379;
         hostsocket = NULL;
         repeat = 1;
         interval = 0;
         dbnum = 0;
         interactive = 0;
-        shutdown = 0;
         monitor_mode = 0;
         pubsub_mode = 0;
         latency_mode = 0;
@@ -194,21 +188,17 @@ namespace fastonosql
         auth = NULL;
         eval = NULL;
         last_cmd_type = -1;
-
-        mb_delim = strdup("\n");
     }
 
     redisConfig::~redisConfig()
     {
         using namespace common::utils;
 
-        freeifnotnull(hostip);
         freeifnotnull(hostsocket);
         freeifnotnull(pattern);
         freeifnotnull(rdb_filename);
         freeifnotnull(auth);
         freeifnotnull(eval);
-        freeifnotnull(mb_delim);
     }
 }
 
@@ -216,17 +206,8 @@ namespace common
 {
     std::string convertToString(const fastonosql::redisConfig& conf)
     {
-        std::vector<std::string> argv;
+        std::vector<std::string> argv = conf.args();
 
-        if(conf.hostip){
-            argv.push_back("-h");
-            argv.push_back(conf.hostip);
-        }
-
-        if(conf.hostport){
-            argv.push_back("-p");
-            argv.push_back(convertToString(conf.hostport));
-        }
         if(conf.hostsocket){
             argv.push_back("-s");
             argv.push_back(conf.hostsocket);
@@ -295,11 +276,6 @@ namespace common
         if(conf.eval){
            argv.push_back("--eval");
            argv.push_back(conf.eval);
-        }
-
-        if (conf.mb_delim) {
-            argv.push_back("-d");
-            argv.push_back(conf.mb_delim);
         }
 
         if(conf.cluster_mode){

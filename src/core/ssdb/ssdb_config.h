@@ -1,6 +1,6 @@
 #pragma once
 
-#include <vector>
+#include "core/connection_confg.h"
 
 #include "common/convert2string.h"
 
@@ -9,6 +9,7 @@
 namespace fastonosql
 {
     struct ssdbConfig
+            : public ConnectionConfig
     {
         ssdbConfig();
         ssdbConfig(const ssdbConfig& other);
@@ -16,18 +17,11 @@ namespace fastonosql
 
         ~ssdbConfig();
 
-        char *hostip_;
-        int hostport_;
-
         char* user_;
         char* password_;
 
-        char *mb_delim_;
-        int shutdown_;
-
     private:
         void copy(const ssdbConfig& other);
-        void init();
     };
 }
 

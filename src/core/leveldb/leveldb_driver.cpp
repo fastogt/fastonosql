@@ -94,18 +94,31 @@ namespace fastonosql
 
         leveldbConfig inf = settings->info();
 
+        leveldb::DB* ldb = NULL;
+        leveldb::Status st = leveldb::DB::Open(inf.options_, inf.dbname_, &ldb);
+        if (!st.ok()){
+            return common::make_error_value("Fail open to server!", common::ErrorValue::E_ERROR);
+        }
+
+        delete ldb;
+
         return common::ErrorValueSPtr();
     }
 
     struct LeveldbDriver::pimpl
     {
         pimpl()
+            : leveldb_(NULL)
         {
 
         }
 
         bool isConnected() const
         {
+            if(!leveldb_){
+                return false;
+            }
+
             return true;
         }
 
@@ -117,6 +130,11 @@ namespace fastonosql
 
             clear();
             init();
+
+            leveldb::Status st = leveldb::DB::Open(config_.options_, config_.dbname_, &leveldb_);
+            if (!st.ok()){
+                return common::make_error_value("Fail open to server!", common::ErrorValue::E_ERROR);
+            }
 
             return common::ErrorValueSPtr();
         }
@@ -215,7 +233,11 @@ namespace fastonosql
 
         void clear()
         {
+            delete leveldb_;
+            leveldb_ = NULL;
         }
+
+        leveldb::DB* leveldb_;
     };
 
     LeveldbDriver::LeveldbDriver(IConnectionSettingsBaseSPtr settings)

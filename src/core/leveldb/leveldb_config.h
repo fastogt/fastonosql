@@ -1,14 +1,16 @@
 #pragma once
 
-#include <vector>
+#include <leveldb/options.h>
 
 #include "common/convert2string.h"
 
-#define REDIS_CLI_DEFAULT_PIPE_TIMEOUT 30 /* seconds */
+#include "core/connection_confg.h"
+
 
 namespace fastonosql
 {
     struct leveldbConfig
+            : public ConnectionConfig
     {
         leveldbConfig();
         leveldbConfig(const leveldbConfig& other);
@@ -16,18 +18,11 @@ namespace fastonosql
 
         ~leveldbConfig();
 
-        char *hostip_;
-        int hostport_;
+        leveldb::Options options_;
+        std::string dbname_;
 
-        char* user_;
-        char* password_;
-
-        char *mb_delim_;
-        int shutdown_;
-
-    private:
+    protected:
         void copy(const leveldbConfig& other);
-        void init();
     };
 }
 

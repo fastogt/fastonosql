@@ -96,6 +96,7 @@ SET(HEADERS_CORE_TO_MOC
 )
 SET(HEADERS_CORE
     core/connection_types.h
+    core/connection_confg.h
     core/core_fwd.h
     core/icluster.h
     core/idatabase.h
@@ -108,6 +109,7 @@ SET(HEADERS_CORE
     core/scp_file_transfer.h
 )
 SET(SOURCES_CORE
+    core/connection_confg.cpp
     core/events/events_info.cpp
     core/command_logger.cpp
     core/connection_types.cpp

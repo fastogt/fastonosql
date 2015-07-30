@@ -48,8 +48,7 @@ SET(SOURCES_LEVELDB
     src/util/coding.cc
 	src/util/comparator.cc 
 	src/util/crc32c.cc 
-	src/util/env.cc 
-    #src/util/env_posix.cc
+    src/util/env.cc
 	src/util/filter_policy.cc 
 	src/util/hash.cc 
 	src/util/histogram.cc 
@@ -59,9 +58,9 @@ SET(SOURCES_LEVELDB
 )
 
 IF(OS_POSIX)
-    SET(SOURCES_LEVELDB ${SOURCES_LEVELDB} src/port/port_posix.cc)
+    SET(SOURCES_LEVELDB ${SOURCES_LEVELDB} src/port/port_posix.cc src/util/env_posix.cc)
 ELSEIF(OS_WINDOWS)
-    SET(SOURCES_LEVELDB ${SOURCES_LEVELDB} src/port/port_win.cc)
+    SET(SOURCES_LEVELDB ${SOURCES_LEVELDB} src/port/port_win.cc src/util/env_win.cc src/port/mman.c)
 ENDIF(OS_POSIX)
 
 ADD_LIBRARY(leveldb OBJECT ${HEADERS_LEVELDB} ${SOURCES_LEVELDB})

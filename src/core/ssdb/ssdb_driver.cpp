@@ -111,6 +111,8 @@ namespace fastonosql
             return common::make_error_value("Fail connect to server!", common::ErrorValue::E_ERROR);
         }
 
+        delete ssdb;
+
         return common::ErrorValueSPtr();
     }
 

@@ -15,20 +15,7 @@ namespace fastonosql
             for (i = 0; i < argc; i++) {
                 int lastarg = i==argc-1;
 
-                if (!strcmp(argv[i],"-h") && !lastarg) {
-                    free(cfg.hostip_);
-                    cfg.hostip_ = strdup(argv[++i]);
-                }
-                else if (!strcmp(argv[i],"-p") && !lastarg) {
-                    cfg.hostport_ = atoi(argv[++i]);
-                }
-                else if (!strcmp(argv[i],"-u") && !lastarg) {
-                    cfg.user_ = strdup(argv[++i]);
-                }
-                else if (!strcmp(argv[i],"-a") && !lastarg) {
-                    cfg.password_ = strdup(argv[++i]);
-                }
-                else if (!strcmp(argv[i],"-d") && !lastarg) {
+                if (!strcmp(argv[i],"-d") && !lastarg) {
                     free(cfg.mb_delim_);
                     cfg.mb_delim_ = strdup(argv[++i]);
                 }
@@ -50,13 +37,13 @@ namespace fastonosql
     }
 
     leveldbConfig::leveldbConfig()
+       : ConnectionConfig("127.0.0.1", -1)
     {
-        init();
     }
 
     leveldbConfig::leveldbConfig(const leveldbConfig &other)
+        : ConnectionConfig(other.hostip_, other.hostport_)
     {
-        init();
         copy(other);
     }
 
@@ -69,40 +56,11 @@ namespace fastonosql
     void leveldbConfig::copy(const leveldbConfig& other)
     {
         using namespace common::utils;
-        freeifnotnull(hostip_);
-        hostip_ = strdupornull(other.hostip_); //
-
-        hostport_ = other.hostport_;
-
-        freeifnotnull(user_);
-        user_ = strdupornull(other.user_); //
-        freeifnotnull(password_);
-        password_ = strdupornull(other.password_); //
-
-        freeifnotnull(mb_delim_);
-        mb_delim_ = strdupornull(other.mb_delim_); //
-        shutdown_ = other.shutdown_;
-    }
-
-    void leveldbConfig::init()
-    {
-        hostip_ = strdup("127.0.0.1");
-        hostport_ = 8888;
-
-        user_ = NULL;
-        password_ = NULL;
-
-        mb_delim_ = strdup("\n");
-        shutdown_ = 0;
+        ConnectionConfig::copy(other);
     }
 
     leveldbConfig::~leveldbConfig()
     {
-        using namespace common::utils;
-        freeifnotnull(hostip_);
-        freeifnotnull(mb_delim_);
-        freeifnotnull(user_);
-        freeifnotnull(password_);
     }
 }
 
@@ -110,32 +68,7 @@ namespace common
 {
     std::string convertToString(const fastonosql::leveldbConfig &conf)
     {
-        std::vector<std::string> argv;
-
-        if(conf.hostip_){
-            argv.push_back("-h");
-            argv.push_back(conf.hostip_);
-        }
-
-        if(conf.hostport_){
-            argv.push_back("-p");
-            argv.push_back(convertToString(conf.hostport_));
-        }
-
-        if(conf.user_){
-            argv.push_back("-u");
-            argv.push_back(conf.user_);
-        }
-
-        if(conf.password_){
-            argv.push_back("-a");
-            argv.push_back(conf.password_);
-        }
-
-        if (conf.mb_delim_) {
-            argv.push_back("-d");
-            argv.push_back(conf.mb_delim_);
-        }
+        std::vector<std::string> argv = conf.args();
 
         std::string result;
         for(int i = 0; i < argv.size(); ++i){
