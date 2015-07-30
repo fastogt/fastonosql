@@ -4,6 +4,3 @@
 [submodule "src/fasto"]
 	path = src/fasto
 	url = https://github.com/fasto/fasto.git
-[submodule "src/third-party/leveldb/src"]
-	path = src/third-party/leveldb/src
-	url = https://github.com/google/leveldb.git

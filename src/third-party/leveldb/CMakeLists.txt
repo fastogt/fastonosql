@@ -4,7 +4,10 @@ PROJECT(leveldb)
 INCLUDE_DIRECTORIES(${CMAKE_CURRENT_LIST_DIR}/src ${CMAKE_CURRENT_LIST_DIR}/src/include)
 IF(OS_LINUX)
     ADD_DEFINITIONS(-DLEVELDB_PLATFORM_POSIX -DLEVELDB_ATOMIC_PRESENT)
+ELSEIF(OS_WINDOWS)
+    ADD_DEFINITIONS(-DLEVELDB_PLATFORM_WINDOWS -DLEVELDB_ATOMIC_PRESENT)
 ELSE()
+    ADD_DEFINITIONS(-DLEVELDB_PLATFORM_POSIX -DLEVELDB_ATOMIC_PRESENT)
 ENDIF()
 
 SET(HEADERS_LEVELDB
@@ -31,26 +34,31 @@ SET(SOURCES_LEVELDB
 	src/table/filter_block.cc 
 	src/table/format.cc 
 	src/table/iterator.cc 
-	src/table/merger.cc 
+    src/table/merger.cc
 	src/table/table_builder.cc 
-	src/table/table.cc 
+    src/table/table.cc
 	src/table/two_level_iterator.cc 
 	src/util/arena.cc 
 	src/util/bloom.cc 
 	src/util/cache.cc 
-	src/util/coding.cc 
+    src/util/coding.cc
 	src/util/comparator.cc 
 	src/util/crc32c.cc 
 	src/util/env.cc 
-	src/util/env_posix.cc 
+    #src/util/env_posix.cc
 	src/util/filter_policy.cc 
 	src/util/hash.cc 
 	src/util/histogram.cc 
 	src/util/logging.cc 
 	src/util/options.cc 
 	src/util/status.cc  
-	src/port/port_posix.cc
 )
+
+IF(OS_POSIX)
+    SET(SOURCES_LEVELDB ${SOURCES_LEVELDB} src/port/port_posix.cc)
+ELSEIF(OS_WINDOWS)
+    SET(SOURCES_LEVELDB ${SOURCES_LEVELDB} src/port/port_win.cc)
+ENDIF(OS_POSIX)
 
 ADD_LIBRARY(leveldb OBJECT ${HEADERS_LEVELDB} ${SOURCES_LEVELDB})
 
