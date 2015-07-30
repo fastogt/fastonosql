@@ -2,7 +2,7 @@ CMAKE_MINIMUM_REQUIRED(VERSION 3.0.0)
 ###################### Branding ##########################
 
 SET(BRANDING_PROJECT_NAME "FastoNoSQL" CACHE STRING "Branding for ${BRANDING_PROJECT_NAME}") #default
-SET(BRANDING_PROJECT_VERSION "0.1.4.0" CACHE STRING "Branding for ${BRANDING_PROJECT_VERSION} version") #default
+SET(BRANDING_PROJECT_VERSION "0.2.4.0" CACHE STRING "Branding for ${BRANDING_PROJECT_VERSION} version") #default
 SET(BRANDING_PROJECT_DOMAIN "www.fastonosql.com" CACHE STRING "Branding for ${BRANDING_PROJECT_DOMAIN} domain") #default
 SET(BRANDING_GITHUB_FORK "www.github.com/fasto/fastonosql" CACHE STRING "Branding for ${BRANDING_GITHUB_FORK} fork") #default
 SET(BRANDING_GITHUB_ISSUES "www.github.com/fasto/fastonosql/issues" CACHE STRING "Branding for ${BRANDING_GITHUB_ISSUES} issues") #default

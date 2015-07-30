@@ -2,7 +2,7 @@ CMAKE_MINIMUM_REQUIRED(VERSION 3.0.0)
 PROJECT(redis_cli)
 
 ADD_CUSTOM_TARGET(redis_version
-            COMMAND sh ./mkreleasehdr.sh
+            COMMAND sh mkreleasehdr.sh
             WORKING_DIRECTORY ${CMAKE_CURRENT_LIST_DIR}/src
             COMMENT "Build redis_cli release.h")
 
