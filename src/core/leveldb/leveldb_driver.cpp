@@ -95,9 +95,13 @@ namespace fastonosql
         leveldbConfig inf = settings->info();
 
         leveldb::DB* ldb = NULL;
-        leveldb::Status st = leveldb::DB::Open(inf.options_, inf.dbname_, &ldb);
+        leveldb::Options options = inf.options_;
+        options.create_if_missing = true;
+        leveldb::Status st = leveldb::DB::Open(options, inf.dbname_, &ldb);
         if (!st.ok()){
-            return common::make_error_value("Fail open to server!", common::ErrorValue::E_ERROR);
+            char buff[1024] = {0};
+            common::SNPrintf(buff, sizeof(buff), "Fail connect to server: %s!", st.ToString());
+            return common::make_error_value(buff, common::ErrorValue::E_ERROR);
         }
 
         delete ldb;

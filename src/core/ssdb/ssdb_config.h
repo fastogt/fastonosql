@@ -4,8 +4,6 @@
 
 #include "common/convert2string.h"
 
-#define REDIS_CLI_DEFAULT_PIPE_TIMEOUT 30 /* seconds */
-
 namespace fastonosql
 {
     struct ssdbConfig

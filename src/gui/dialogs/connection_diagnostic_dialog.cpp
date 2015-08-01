@@ -103,6 +103,7 @@ namespace fastonosql
         mainLayout->addWidget(executeTimeLabel_);
 
         statusLabel_ = new QLabel(timeTemplate.arg("calculate..."));
+        statusLabel_->setWordWrap(true);
         iconLabel_ = new QLabel;
         QIcon icon = GuiFactory::instance().failIcon();
         const QPixmap pm = icon.pixmap(stateIconSize);

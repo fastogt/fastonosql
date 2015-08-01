@@ -15,8 +15,11 @@ namespace fastonosql
             for (i = 0; i < argc; i++) {
                 int lastarg = i==argc-1;
 
-                if (!strcmp(argv[i],"-d") && !lastarg) {
-                    free(cfg.mb_delim_);
+                if (!strcmp(argv[i],"-f") && !lastarg) {
+                    cfg.dbname_ = argv[++i];
+                }
+                else if (!strcmp(argv[i],"-d") && !lastarg) {
+                    common::utils::freeifnotnull(cfg.mb_delim_);
                     cfg.mb_delim_ = strdup(argv[++i]);
                 }
                 else {
@@ -56,6 +59,7 @@ namespace fastonosql
     void leveldbConfig::copy(const leveldbConfig& other)
     {
         using namespace common::utils;
+        dbname_ = other.dbname_;
         ConnectionConfig::copy(other);
     }
 
@@ -69,6 +73,11 @@ namespace common
     std::string convertToString(const fastonosql::leveldbConfig &conf)
     {
         std::vector<std::string> argv = conf.args();
+
+        if(!conf.dbname_.empty()){
+            argv.push_back("-f");
+            argv.push_back(conf.dbname_);
+        }
 
         std::string result;
         for(int i = 0; i < argv.size(); ++i){

@@ -156,7 +156,7 @@ namespace fastonosql
         }
 #endif
 #ifdef BUILD_WITH_LEVELDB
-        if(type == SSDB){
+        if(type == LEVELDB){
             return new LeveldbConnectionSettings(conName);
         }
 #endif
@@ -272,6 +272,13 @@ namespace fastonosql
                                "<b>-p &lt;port&gt;</b>          Server port (default: 8888).<br/>"
                                "<b>-u &lt;username&gt;</b>      Username to use when connecting to the server.<br/>"
                                "<b>-a &lt;password&gt;</b>      Password to use when connecting to the server.<br/>"
+                               "<b>-d &lt;delimiter&gt;</b>     Multi-bulk delimiter in for raw formatting (default: \\n).<br/>";
+        }
+        else if(type == LEVELDB){
+            return "<b>Usage: [OPTIONS] [cmd [arg [arg ...]]]</b><br/>"
+                               "<b>-h &lt;hostname&gt;</b>      Server hostname (default: 127.0.0.1), <b>not used</b>.<br/>"
+                               "<b>-p &lt;port&gt;</b>          Server port (default: 1111), <b>not used</b>.<br/>"
+                               "<b>-f &lt;db&gt;</b>            File path to database.<br/>"
                                "<b>-d &lt;delimiter&gt;</b>     Multi-bulk delimiter in for raw formatting (default: \\n).<br/>";
         }
 

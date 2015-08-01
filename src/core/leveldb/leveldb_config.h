@@ -6,7 +6,6 @@
 
 #include "core/connection_confg.h"
 
-
 namespace fastonosql
 {
     struct leveldbConfig
