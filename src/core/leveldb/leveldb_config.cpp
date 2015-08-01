@@ -15,7 +15,14 @@ namespace fastonosql
             for (i = 0; i < argc; i++) {
                 int lastarg = i==argc-1;
 
-                if (!strcmp(argv[i],"-f") && !lastarg) {
+                if (!strcmp(argv[i],"-h") && !lastarg) {
+                    common::utils::freeifnotnull(cfg.hostip_);
+                    cfg.hostip_ = strdup(argv[++i]);
+                }
+                else if (!strcmp(argv[i],"-p") && !lastarg) {
+                    cfg.hostport_ = atoi(argv[++i]);
+                }
+                else if (!strcmp(argv[i], "-f") && !lastarg) {
                     cfg.dbname_ = argv[++i];
                 }
                 else if (!strcmp(argv[i],"-d") && !lastarg) {
@@ -40,7 +47,7 @@ namespace fastonosql
     }
 
     leveldbConfig::leveldbConfig()
-       : ConnectionConfig("127.0.0.1", -1)
+       : ConnectionConfig("127.0.0.1", 1111)
     {
     }
 
