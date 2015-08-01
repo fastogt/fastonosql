@@ -16,10 +16,15 @@ extern "C" {
 #include "core/leveldb/leveldb_infos.h"
 
 #define INFO_REQUEST "INFO"
+#define GET_KEY_PATTERN_1ARGS_S "GET %s"
+#define SET_KEY_PATTERN_2ARGS_SS "PUT %s %s"
+
 #define GET_KEYS_PATTERN_1ARGS_I "KEYS a z %d"
 #define DELETE_KEY_PATTERN_1ARGS_S "DEL %s"
 #define GET_SERVER_TYPE ""
-
+#define LEVELDB_HEADER_STATS    "                               Compactions\n"\
+                                "Level  Files Size(MB) Time(sec) Read(MB) Write(MB)\n"\
+                                "--------------------------------------------------\n"
 namespace
 {
     std::vector<std::pair<std::string, std::string > > oppositeCommands = { {"GET", "PUT"} };
@@ -153,8 +158,47 @@ namespace fastonosql
             return common::ErrorValueSPtr();
         }
 
-        common::ErrorValueSPtr info(const char* args, LeveldbServerInfo::Common& statsout)
+        common::ErrorValueSPtr info(const char* args, LeveldbServerInfo::Stats& statsout)
         {
+            //sstables
+            //stats
+            //char prop[1024] = {0};
+            //common::SNPrintf(prop, sizeof(prop), "leveldb.%s", args ? args : "stats");
+
+            std::string rets;
+            bool isok = leveldb_->GetProperty("leveldb.stats", &rets);
+            if (!isok){
+                return common::make_error_value("info function failed", common::ErrorValue::E_ERROR);
+            }
+
+            if(rets.size() > sizeof(LEVELDB_HEADER_STATS)){
+                const char * retsc = rets.c_str() + sizeof(LEVELDB_HEADER_STATS);
+                char* p2 = strtok((char*)retsc, " ");
+                int pos = 0;
+                while(p2){
+                    switch(pos++){
+                        case 0:
+                            statsout.compactions_level_ = atoi(p2);
+                            break;
+                        case 1:
+                            statsout.file_size_mb_ = atoi(p2);
+                            break;
+                        case 2:
+                            statsout.time_sec_ = atoi(p2);
+                            break;
+                        case 3:
+                            statsout.read_mb_ = atoi(p2);
+                            break;
+                        case 4:
+                            statsout.write_mb_ = atoi(p2);
+                            break;
+                        default:
+                            break;
+                    }
+                    p2 = strtok(0, " ");
+                }
+            }
+
             return common::ErrorValueSPtr();
         }
 
@@ -214,10 +258,50 @@ namespace fastonosql
                     return common::make_error_value("Invalid info input argument", common::ErrorValue::E_ERROR);
                 }
 
-                LeveldbServerInfo::Common statsout;
+                LeveldbServerInfo::Stats statsout;
                 common::ErrorValueSPtr er = info(argc == 2 ? argv[1] : 0, statsout);
                 if(!er){
                     common::StringValue *val = common::Value::createStringValue(LeveldbServerInfo(statsout).toString());
+                    FastoObject* child = new FastoObject(out, val, config_.mb_delim_);
+                    out->addChildren(child);
+                }
+                return er;
+            }
+            else if(strcasecmp(argv[0], "get") == 0){
+                if(argc != 2){
+                    return common::make_error_value("Invalid get input argument", common::ErrorValue::E_ERROR);
+                }
+
+                std::string ret;
+                common::ErrorValueSPtr er = get(argv[1], &ret);
+                if(!er){
+                    common::StringValue *val = common::Value::createStringValue(ret);
+                    FastoObject* child = new FastoObject(out, val, config_.mb_delim_);
+                    out->addChildren(child);
+                }
+                return er;
+            }
+            else if(strcasecmp(argv[0], "put") == 0){
+                if(argc != 3){
+                    return common::make_error_value("Invalid set input argument", common::ErrorValue::E_ERROR);
+                }
+
+                common::ErrorValueSPtr er = put(argv[1], argv[2]);
+                if(!er){
+                    common::StringValue *val = common::Value::createStringValue("STORED");
+                    FastoObject* child = new FastoObject(out, val, config_.mb_delim_);
+                    out->addChildren(child);
+                }
+                return er;
+            }
+            else if(strcasecmp(argv[0], "del") == 0){
+                if(argc != 2){
+                    return common::make_error_value("Invalid del input argument", common::ErrorValue::E_ERROR);
+                }
+
+                common::ErrorValueSPtr er = del(argv[1]);
+                if(!er){
+                    common::StringValue *val = common::Value::createStringValue("DELETED");
                     FastoObject* child = new FastoObject(out, val, config_.mb_delim_);
                     out->addChildren(child);
                 }
@@ -228,6 +312,44 @@ namespace fastonosql
                 common::SNPrintf(buff, sizeof(buff), "Not supported command: %s", argv[0]);
                 return common::make_error_value(buff, common::ErrorValue::E_ERROR);
             }
+        }
+
+        common::ErrorValueSPtr get(const std::string& key, std::string* ret_val)
+        {
+            leveldb::ReadOptions ro;
+            leveldb::Status st = leveldb_->Get(ro, key, ret_val);
+            if (!st.ok()){
+                char buff[1024] = {0};
+                common::SNPrintf(buff, sizeof(buff), "get function error: %s", st.ToString());
+                return common::make_error_value(buff, common::ErrorValue::E_ERROR);
+            }
+
+            return common::ErrorValueSPtr();
+        }
+
+        common::ErrorValueSPtr put(const std::string& key, const std::string& value)
+        {
+            leveldb::WriteOptions wo;
+            leveldb::Status st = leveldb_->Put(wo, key, value);
+            if (!st.ok()){
+                char buff[1024] = {0};
+                common::SNPrintf(buff, sizeof(buff), "put function error: %s", st.ToString());
+                return common::make_error_value(buff, common::ErrorValue::E_ERROR);
+            }
+
+            return common::ErrorValueSPtr();
+        }
+
+        common::ErrorValueSPtr del(const std::string& key)
+        {
+            leveldb::WriteOptions wo;
+            leveldb::Status st = leveldb_->Delete(wo, key);
+            if (!st.ok()){
+                char buff[1024] = {0};
+                common::SNPrintf(buff, sizeof(buff), "del function error: %s", st.ToString());
+                return common::make_error_value(buff, common::ErrorValue::E_ERROR);
+            }
+            return common::ErrorValueSPtr();
         }
 
         void init()
@@ -285,16 +407,7 @@ namespace fastonosql
     {
         char patternResult[1024] = {0};
         const NKey key = command->key();
-        if(key.type_ == common::Value::TYPE_ARRAY){
-        }
-        else if(key.type_ == common::Value::TYPE_SET){
-        }
-        else if(key.type_ == common::Value::TYPE_ZSET){;
-        }
-        else if(key.type_ == common::Value::TYPE_HASH){
-        }
-        else{
-        }
+        common::SNPrintf(patternResult, sizeof(patternResult), GET_KEY_PATTERN_1ARGS_S, key.key_);
         cmdstring = patternResult;
 
         return common::ErrorValueSPtr();
@@ -305,16 +418,7 @@ namespace fastonosql
         char patternResult[1024] = {0};
         const NKey key = command->key();
         FastoObjectIPtr val = command->value();
-        if(key.type_ == common::Value::TYPE_ARRAY){
-        }
-        else if(key.type_ == common::Value::TYPE_SET){
-        }
-        else if(key.type_ == common::Value::TYPE_ZSET){
-        }
-        else if(key.type_ == common::Value::TYPE_HASH){
-        }
-        else{
-        }
+        common::SNPrintf(patternResult, sizeof(patternResult), SET_KEY_PATTERN_2ARGS_SS, key.key_, val->toString());
         cmdstring = patternResult;
 
         return common::ErrorValueSPtr();
@@ -361,7 +465,7 @@ namespace fastonosql
     {
         *info = NULL;
         LOG_COMMAND(Command(INFO_REQUEST, common::Value::C_INNER));
-        LeveldbServerInfo::Common cm;
+        LeveldbServerInfo::Stats cm;
         common::ErrorValueSPtr err = impl_->info(NULL, cm);
         if(!err){
             *info = new LeveldbServerInfo(cm);
@@ -569,7 +673,7 @@ namespace fastonosql
             events::ServerInfoResponceEvent::value_type res(ev->value());
         notifyProgress(sender, 50);
             LOG_COMMAND(Command(INFO_REQUEST, common::Value::C_INNER));
-            LeveldbServerInfo::Common cm;
+            LeveldbServerInfo::Stats cm;
             common::ErrorValueSPtr err = impl_->info(NULL, cm);
             if(err){
                 res.setErrorInfo(err);

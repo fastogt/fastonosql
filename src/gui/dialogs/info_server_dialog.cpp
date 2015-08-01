@@ -120,6 +120,13 @@ namespace
                                                             "Total calls: %3<br/>"
                                                             "Dbsize: %4<br/>"
                                                             "Binlogs: %5");
+
+    const QString leveldbTextServerTemplate = QObject::tr("<h2>Stats:</h2><br/>"
+                                                            "Compactions level: %1<br/>"
+                                                            "File size mb: %2<br/>"
+                                                            "Time sec: %3<br/>"
+                                                            "Read mb: %4<br/>"
+                                                            "Write mb: %5");
 }
 
 namespace fastonosql
@@ -365,12 +372,12 @@ namespace fastonosql
     void InfoServerDialog::updateText(const LeveldbServerInfo& serv)
     {
         using namespace common;
-        LeveldbServerInfo::Common com = serv.common_;
-        QString textServ = ssdbTextServerTemplate.arg(convertFromString<QString>(com.version_))
-                .arg(com.links_)
-                .arg(com.total_calls_)
-                .arg(com.dbsize_)
-                .arg(convertFromString<QString>(com.binlogs_));
+        LeveldbServerInfo::Stats stats = serv.stats_;
+        QString textServ = leveldbTextServerTemplate.arg(stats.compactions_level_)
+                .arg(stats.file_size_mb_)
+                .arg(stats.time_sec_)
+                .arg(stats.read_mb_)
+                .arg(stats.write_mb_);
 
         serverTextInfo_->setText(textServ);
     }

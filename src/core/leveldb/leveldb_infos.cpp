@@ -9,11 +9,11 @@ namespace
 
     const std::vector<Field> LeveldbCommonFields =
     {
-        Field(SSDB_VERSION_LABEL, common::Value::TYPE_STRING),
-        Field(SSDB_LINKS_LABEL, common::Value::TYPE_UINTEGER),
-        Field(SSDB_TOTAL_CALLS_LABEL, common::Value::TYPE_UINTEGER),
-        Field(SSDB_DBSIZE_LABEL, common::Value::TYPE_UINTEGER),
-        Field(SSDB_BINLOGS_LABEL, common::Value::TYPE_STRING)
+        Field(LEVELDB_CAMPACTIONS_LEVEL_LABEL, common::Value::TYPE_UINTEGER),
+        Field(LEVELDB_FILE_SIZE_MB_LABEL, common::Value::TYPE_UINTEGER),
+        Field(LEVELDB_TIME_SEC_LABEL, common::Value::TYPE_UINTEGER),
+        Field(LEVELDB_READ_MB_LABEL, common::Value::TYPE_UINTEGER),
+        Field(LEVELDB_WRITE_MB_LABEL, common::Value::TYPE_UINTEGER)
     };
 }
 
@@ -25,15 +25,12 @@ namespace fastonosql
                                             common::Value::TYPE_UINTEGER,
                                             common::Value::TYPE_DOUBLE,
                                             common::Value::TYPE_STRING,
-                                            common::Value::TYPE_ARRAY,
-                                            common::Value::TYPE_SET,
-                                            common::Value::TYPE_ZSET,
-                                            common::Value::TYPE_HASH
+                                            common::Value::TYPE_ARRAY
                                            };
 
     const std::vector<std::string> LeveldbHeaders =
     {
-        SSDB_COMMON_LABEL
+        LEVELDB_STATS_LABEL
     };
 
     const std::vector<std::vector<Field> > LeveldbFields =
@@ -41,12 +38,13 @@ namespace fastonosql
         LeveldbCommonFields
     };
 
-    LeveldbServerInfo::Common::Common()
+    LeveldbServerInfo::Stats::Stats()
+        : compactions_level_(0), file_size_mb_(0), time_sec_(0), read_mb_(0), write_mb_(0)
     {
 
     }
 
-    LeveldbServerInfo::Common::Common(const std::string& common_text)
+    LeveldbServerInfo::Stats::Stats(const std::string& common_text)
     {
         const std::string &src = common_text;
         size_t pos = 0;
@@ -57,38 +55,38 @@ namespace fastonosql
             size_t delem = line.find_first_of(':');
             std::string field = line.substr(0, delem);
             std::string value = line.substr(delem + 1);
-            if(field == SSDB_VERSION_LABEL){
-                version_ = value;
+            if(field == LEVELDB_CAMPACTIONS_LEVEL_LABEL){
+                compactions_level_ = common::convertFromString<uint32_t>(value);
             }
-            else if(field == SSDB_LINKS_LABEL){
-                links_ = common::convertFromString<uint32_t>(value);
+            else if(field == LEVELDB_FILE_SIZE_MB_LABEL){
+                file_size_mb_ = common::convertFromString<uint32_t>(value);
             }
-            else if(field == SSDB_TOTAL_CALLS_LABEL){
-                total_calls_ = common::convertFromString<uint32_t>(value);
+            else if(field == LEVELDB_TIME_SEC_LABEL){
+                time_sec_ = common::convertFromString<uint32_t>(value);
             }
-            else if(field == SSDB_DBSIZE_LABEL){
-                dbsize_ = common::convertFromString<uint32_t>(value);
+            else if(field == LEVELDB_READ_MB_LABEL){
+                read_mb_ = common::convertFromString<uint32_t>(value);
             }
-            else if(field == SSDB_BINLOGS_LABEL){
-                binlogs_ = value;
+            else if(field == LEVELDB_WRITE_MB_LABEL){
+                write_mb_ = common::convertFromString<uint32_t>(value);
             }
             start = pos + 2;
         }
     }
 
-    common::Value* LeveldbServerInfo::Common::valueByIndex(unsigned char index) const
+    common::Value* LeveldbServerInfo::Stats::valueByIndex(unsigned char index) const
     {
         switch (index) {
         case 0:
-            return new common::StringValue(version_);
+            return new common::FundamentalValue(compactions_level_);
         case 1:
-            return new common::FundamentalValue(links_);
+            return new common::FundamentalValue(file_size_mb_);
         case 2:
-            return new common::FundamentalValue(total_calls_);
+            return new common::FundamentalValue(time_sec_);
         case 3:
-            return new common::FundamentalValue(dbsize_);
+            return new common::FundamentalValue(read_mb_);
         case 4:
-            return new common::StringValue(binlogs_);
+            return new common::FundamentalValue(write_mb_);
         default:
             NOTREACHED();
             break;
@@ -102,8 +100,8 @@ namespace fastonosql
 
     }
 
-    LeveldbServerInfo::LeveldbServerInfo(const Common& common)
-        : ServerInfo(LEVELDB), common_(common)
+    LeveldbServerInfo::LeveldbServerInfo(const Stats &stats)
+        : ServerInfo(LEVELDB), stats_(stats)
     {
 
     }
@@ -112,7 +110,7 @@ namespace fastonosql
     {
         switch (property) {
         case 0:
-            return common_.valueByIndex(field);
+            return stats_.valueByIndex(field);
         default:
             NOTREACHED();
             break;
@@ -120,13 +118,13 @@ namespace fastonosql
         return NULL;
     }
 
-    std::ostream& operator<<(std::ostream& out, const LeveldbServerInfo::Common& value)
+    std::ostream& operator<<(std::ostream& out, const LeveldbServerInfo::Stats& value)
     {
-        return out << SSDB_VERSION_LABEL":" << value.version_ << ("\r\n")
-                    << SSDB_LINKS_LABEL":" << value.links_ << ("\r\n")
-                    << SSDB_TOTAL_CALLS_LABEL":" << value.total_calls_ << ("\r\n")
-                    << SSDB_DBSIZE_LABEL":" << value.dbsize_ << ("\r\n")
-                    << SSDB_BINLOGS_LABEL":" << value.binlogs_ << ("\r\n");
+        return out << LEVELDB_CAMPACTIONS_LEVEL_LABEL":" << value.compactions_level_ << ("\r\n")
+                    << LEVELDB_FILE_SIZE_MB_LABEL":" << value.file_size_mb_ << ("\r\n")
+                    << LEVELDB_TIME_SEC_LABEL":" << value.time_sec_ << ("\r\n")
+                    << LEVELDB_READ_MB_LABEL":" << value.read_mb_ << ("\r\n")
+                    << LEVELDB_WRITE_MB_LABEL":" << value.write_mb_ << ("\r\n");
     }
 
     std::ostream& operator<<(std::ostream& out, const LeveldbServerInfo& value)
@@ -149,7 +147,7 @@ namespace fastonosql
             word += content[i];
             if(word == LeveldbHeaders[0]){
                 std::string part = content.substr(i + 1);
-                result->common_ = LeveldbServerInfo::Common(part);
+                result->stats_ = LeveldbServerInfo::Stats(part);
                 break;
             }
         }
@@ -161,7 +159,7 @@ namespace fastonosql
     std::string LeveldbServerInfo::toString() const
     {
         std::stringstream str;
-        str << SSDB_COMMON_LABEL"\r\n" << common_;
+        str << LEVELDB_STATS_LABEL"\r\n" << stats_;
         return str.str();
     }
 

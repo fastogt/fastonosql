@@ -2,13 +2,13 @@
 
 #include "core/types.h"
 
-#define SSDB_COMMON_LABEL "# Common"
+#define LEVELDB_STATS_LABEL "# Stats"
 
-#define SSDB_VERSION_LABEL "version"
-#define SSDB_LINKS_LABEL "links"
-#define SSDB_TOTAL_CALLS_LABEL "total_calls"
-#define SSDB_DBSIZE_LABEL "dbsize"
-#define SSDB_BINLOGS_LABEL "binlogs"
+#define LEVELDB_CAMPACTIONS_LEVEL_LABEL "compactions_level"
+#define LEVELDB_FILE_SIZE_MB_LABEL "file_size_mb"
+#define LEVELDB_TIME_SEC_LABEL "time_sec"
+#define LEVELDB_READ_MB_LABEL "read_mb"
+#define LEVELDB_WRITE_MB_LABEL "write_mb"
 
 namespace fastonosql
 {
@@ -19,22 +19,23 @@ namespace fastonosql
             : public ServerInfo
     {
     public:
-        struct Common
+        //Compactions\nLevel  Files Size(MB) Time(sec) Read(MB) Write(MB)\n
+        struct Stats
                 : FieldByIndex
         {
-            Common();
-            explicit Common(const std::string& common_text);
+            Stats();
+            explicit Stats(const std::string& common_text);
             common::Value* valueByIndex(unsigned char index) const;
 
-            std::string version_;
-            uint32_t links_;
-            uint32_t total_calls_;
-            uint32_t dbsize_;
-            std::string binlogs_;
-        } common_;
+            uint32_t compactions_level_;
+            uint32_t file_size_mb_;
+            uint32_t time_sec_;
+            uint32_t read_mb_;
+            uint32_t write_mb_;
+        } stats_;
 
         LeveldbServerInfo();
-        LeveldbServerInfo(const Common& common);
+        LeveldbServerInfo(const Stats& stats);
         virtual common::Value* valueByIndexes(unsigned char property, unsigned char field) const;
         virtual std::string toString() const;
     };
