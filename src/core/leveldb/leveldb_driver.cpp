@@ -100,9 +100,7 @@ namespace fastonosql
         leveldbConfig inf = settings->info();
 
         leveldb::DB* ldb = NULL;
-        leveldb::Options options = inf.options_;
-        options.create_if_missing = true;
-        leveldb::Status st = leveldb::DB::Open(options, inf.dbname_, &ldb);
+        leveldb::Status st = leveldb::DB::Open(inf.options_, inf.dbname_, &ldb);
         if (!st.ok()){
             char buff[1024] = {0};
             common::SNPrintf(buff, sizeof(buff), "Fail connect to server: %s!", st.ToString());

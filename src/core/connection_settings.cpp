@@ -279,6 +279,7 @@ namespace fastonosql
                                "<b>-h &lt;hostname&gt;</b>      Server hostname (default: 127.0.0.1), <b>not used</b>.<br/>"
                                "<b>-p &lt;port&gt;</b>          Server port (default: 1111), <b>not used</b>.<br/>"
                                "<b>-f &lt;db&gt;</b>            File path to database.<br/>"
+                               "<b>-c &lt;db&gt;</b>            Create database if missing.<br/>"
                                "<b>-d &lt;delimiter&gt;</b>     Multi-bulk delimiter in for raw formatting (default: \\n).<br/>";
         }
 

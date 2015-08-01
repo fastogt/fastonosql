@@ -29,6 +29,9 @@ namespace fastonosql
                     common::utils::freeifnotnull(cfg.mb_delim_);
                     cfg.mb_delim_ = strdup(argv[++i]);
                 }
+                else if (!strcmp(argv[i],"-c")) {
+                    cfg.options_.create_if_missing = true;
+                }
                 else {
                     if (argv[i][0] == '-') {
                         const uint16_t size_buff = 256;
@@ -67,6 +70,7 @@ namespace fastonosql
     {
         using namespace common::utils;
         dbname_ = other.dbname_;
+        options_ = other.options_;
         ConnectionConfig::copy(other);
     }
 
@@ -84,6 +88,10 @@ namespace common
         if(!conf.dbname_.empty()){
             argv.push_back("-f");
             argv.push_back(conf.dbname_);
+        }
+
+        if(conf.options_.create_if_missing){
+            argv.push_back("-c");
         }
 
         std::string result;
