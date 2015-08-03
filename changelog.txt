@@ -1,3 +1,8 @@
+0.2.4
+[Alexandr Topilski]
+- LevelDB database support http://leveldb.org/
+- Info and history for LevelDB
+
 0.1.4 / Jule 29, 2015
 - Display db name in console
-- Auto open console preference 
+- Auto open console preference
