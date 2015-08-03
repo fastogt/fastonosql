@@ -305,6 +305,24 @@ namespace fastonosql
                 }
                 return er;
             }
+            else if(strcasecmp(argv[0], "keys") == 0){
+                if(argc != 4){
+                    return common::make_error_value("Invalid keys input argument", common::ErrorValue::E_ERROR);
+                }
+
+                std::vector<std::string> keysout;
+                common::ErrorValueSPtr er = keys(argv[1], argv[2], atoll(argv[3]), &keysout);
+                if(!er){
+                    common::ArrayValue* ar = common::Value::createArrayValue();
+                    for(int i = 0; i < keysout.size(); ++i){
+                        common::StringValue *val = common::Value::createStringValue(keysout[i]);
+                        ar->append(val);
+                    }
+                    FastoObjectArray* child = new FastoObjectArray(out, ar, config_.mb_delim_);
+                    out->addChildren(child);
+                }
+                return er;
+            }
             else{
                 char buff[1024] = {0};
                 common::SNPrintf(buff, sizeof(buff), "Not supported command: %s", argv[0]);
@@ -345,6 +363,33 @@ namespace fastonosql
             if (!st.ok()){
                 char buff[1024] = {0};
                 common::SNPrintf(buff, sizeof(buff), "del function error: %s", st.ToString());
+                return common::make_error_value(buff, common::ErrorValue::E_ERROR);
+            }
+            return common::ErrorValueSPtr();
+        }
+
+        common::ErrorValueSPtr keys(const std::string &key_start, const std::string &key_end, uint64_t limit, std::vector<std::string> *ret)
+        {
+            ret->clear();
+
+            leveldb::ReadOptions ro;
+            leveldb::Iterator* it = leveldb_->NewIterator(ro); //keys(key_start, key_end, limit, ret);
+            for (it->Seek(key_start); it->Valid() && it->key().ToString() < key_end; it->Next()) {
+                std::string key = it->key().ToString();
+                if(ret->size() <= limit){
+                    ret->push_back(key);
+                }
+                else{
+                    break;
+                }
+            }
+
+            leveldb::Status st = it->status();
+            delete it;
+
+            if (!st.ok()){
+                char buff[1024] = {0};
+                common::SNPrintf(buff, sizeof(buff), "Keys function error: %s", st.ToString());
                 return common::make_error_value(buff, common::ErrorValue::E_ERROR);
             }
             return common::ErrorValueSPtr();
