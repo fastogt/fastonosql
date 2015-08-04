@@ -98,17 +98,40 @@ namespace fastonosql
         }
     }
 
-    common::ErrorValueSPtr testConnection(SsdbConnectionSettings* settings)
+    namespace
     {
-        if(!settings){
-            return common::make_error_value("Invalid input argument", common::ErrorValue::E_ERROR);
+        common::ErrorValueSPtr createConnection(const ssdbConfig& config, const SSHInfo& sinfo, ssdb::Client** context)
+        {
+            DCHECK(*context == NULL);
+            UNUSED(sinfo);
+            ssdb::Client *lcontext = ssdb::Client::connect(config.hostip_, config.hostport_);
+            if (!lcontext){
+                return common::make_error_value("Fail connect to server!", common::ErrorValue::E_ERROR);
+            }
+
+            *context = lcontext;
+
+            return common::ErrorValueSPtr();
         }
 
-        ssdbConfig inf = settings->info();
+        common::ErrorValueSPtr createConnection(SsdbConnectionSettings* settings, ssdb::Client** context)
+        {
+            if(!settings){
+                return common::make_error_value("Invalid input argument", common::ErrorValue::E_ERROR);
+            }
 
-        ssdb::Client* ssdb = ssdb::Client::connect(inf.hostip_, inf.hostport_);
-        if (!ssdb){
-            return common::make_error_value("Fail connect to server!", common::ErrorValue::E_ERROR);
+            ssdbConfig config = settings->info();
+            SSHInfo sinfo = settings->sshInfo();
+            return createConnection(config, sinfo, context);
+        }
+    }
+
+    common::ErrorValueSPtr testConnection(SsdbConnectionSettings* settings)
+    {
+        ssdb::Client* ssdb = NULL;
+        common::ErrorValueSPtr er = createConnection(settings, &ssdb);
+        if(er){
+            return er;
         }
 
         delete ssdb;
@@ -142,10 +165,13 @@ namespace fastonosql
             clear();
             init();
 
-            ssdb_ = ssdb::Client::connect(config_.hostip_, config_.hostport_);
-            if (!ssdb_){
-                return common::make_error_value("Fail connect to server!", common::ErrorValue::E_ERROR);
+            ssdb::Client* context = NULL;
+            common::ErrorValueSPtr er = createConnection(config_, sinfo_, &context);
+            if(er){
+                return er;
             }
+
+            ssdb_ = context;
 
             return common::ErrorValueSPtr();
         }

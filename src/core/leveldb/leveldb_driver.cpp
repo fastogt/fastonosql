@@ -91,20 +91,44 @@ namespace fastonosql
         }
     }
 
-    common::ErrorValueSPtr testConnection(LeveldbConnectionSettings* settings)
+    namespace
     {
-        if(!settings){
-            return common::make_error_value("Invalid input argument", common::ErrorValue::E_ERROR);
+        common::ErrorValueSPtr createConnection(const leveldbConfig& config, const SSHInfo& sinfo, leveldb::DB** context)
+        {
+            DCHECK(*context == NULL);
+            UNUSED(sinfo);
+
+            leveldb::DB* lcontext = NULL;
+            leveldb::Status st = leveldb::DB::Open(config.options_, config.dbname_, &lcontext);
+            if (!st.ok()){
+                char buff[1024] = {0};
+                common::SNPrintf(buff, sizeof(buff), "Fail connect to server: %s!", st.ToString());
+                return common::make_error_value(buff, common::ErrorValue::E_ERROR);
+            }
+
+            *context = lcontext;
+
+            return common::ErrorValueSPtr();
         }
 
-        leveldbConfig inf = settings->info();
+        common::ErrorValueSPtr createConnection(LeveldbConnectionSettings* settings, leveldb::DB** context)
+        {
+            if(!settings){
+                return common::make_error_value("Invalid input argument", common::ErrorValue::E_ERROR);
+            }
 
+            leveldbConfig config = settings->info();
+            SSHInfo sinfo = settings->sshInfo();
+            return createConnection(config, sinfo, context);
+        }
+    }
+
+    common::ErrorValueSPtr testConnection(LeveldbConnectionSettings* settings)
+    {
         leveldb::DB* ldb = NULL;
-        leveldb::Status st = leveldb::DB::Open(inf.options_, inf.dbname_, &ldb);
-        if (!st.ok()){
-            char buff[1024] = {0};
-            common::SNPrintf(buff, sizeof(buff), "Fail connect to server: %s!", st.ToString());
-            return common::make_error_value(buff, common::ErrorValue::E_ERROR);
+        common::ErrorValueSPtr er = createConnection(settings, &ldb);
+        if(er){
+            return er;
         }
 
         delete ldb;
@@ -138,10 +162,14 @@ namespace fastonosql
             clear();
             init();
 
-            leveldb::Status st = leveldb::DB::Open(config_.options_, config_.dbname_, &leveldb_);
-            if (!st.ok()){
-                return common::make_error_value("Fail open to server!", common::ErrorValue::E_ERROR);
+            leveldb::DB* context = NULL;
+            common::ErrorValueSPtr er = createConnection(config_, sinfo_, &context);
+            if(er){
+                return er;
             }
+
+            leveldb_ = context;
+
 
             return common::ErrorValueSPtr();
         }
