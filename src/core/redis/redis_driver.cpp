@@ -1238,6 +1238,17 @@ namespace fastonosql
                     context = redisConnectUnix(config.hostsocket);
                 }
 
+                if(!context){
+                    char buff[512] = {0};
+                    if (!config.hostsocket){
+                        common::SNPrintf(buff, sizeof(buff), "Could not connect to Redis at %s:%d : no context", config.hostip_, config.hostport_);
+                    }
+                    else{
+                        common::SNPrintf(buff, sizeof(buff), "Could not connect to Redis at %s : no context", config.hostsocket);
+                    }
+                    return common::make_error_value(buff, common::Value::E_ERROR);
+                }
+
                 if (context->err) {
                     char buff[512] = {0};
                     if (!config.hostsocket){

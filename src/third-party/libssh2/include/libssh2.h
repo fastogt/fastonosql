@@ -1,5 +1,5 @@
 /* Copyright (c) 2004-2009, Sara Golemon <sarag@libssh2.org>
- * Copyright (c) 2009-2012 Daniel Stenberg
+ * Copyright (c) 2009-2015 Daniel Stenberg
  * Copyright (c) 2010 Simon Josefsson <simon@josefsson.org>
  * All rights reserved.
  *
@@ -40,19 +40,19 @@
 #ifndef LIBSSH2_H
 #define LIBSSH2_H 1
 
-#define LIBSSH2_COPYRIGHT "2004-2012 The libssh2 project and its contributors."
+#define LIBSSH2_COPYRIGHT "2004-2015 The libssh2 project and its contributors."
 
 /* We use underscore instead of dash when appending DEV in dev versions just
    to make the BANNER define (used by src/session.c) be a valid SSH
    banner. Release versions have no appended strings and may of course not
    have dashes either. */
-#define LIBSSH2_VERSION                             "1.4.4_DEV"
+#define LIBSSH2_VERSION "1.6.0"
 
 /* The numeric version number is also available "in parts" by using these
    defines: */
-#define LIBSSH2_VERSION_MAJOR                       1
-#define LIBSSH2_VERSION_MINOR                       4
-#define LIBSSH2_VERSION_PATCH                       4
+#define LIBSSH2_VERSION_MAJOR 1
+#define LIBSSH2_VERSION_MINOR 6
+#define LIBSSH2_VERSION_PATCH 0
 
 /* This is the numeric version of the libssh2 version number, meant for easier
    parsing and comparions by programs. The LIBSSH2_VERSION_NUM define will
@@ -69,7 +69,7 @@
    and it is always a greater number in a more recent release. It makes
    comparisons with greater than and less than work.
 */
-#define LIBSSH2_VERSION_NUM                         0x010404
+#define LIBSSH2_VERSION_NUM 0x010600
 
 /*
  * This is the date and time when the full source package was created. The
@@ -80,7 +80,7 @@
  *
  * "Mon Feb 12 11:35:33 UTC 2007"
  */
-#define LIBSSH2_TIMESTAMP "DEV"
+#define LIBSSH2_TIMESTAMP "Fri Jun 12 06:58:26 UTC 2015"
 
 #ifndef RC_INVOKED
 
@@ -114,7 +114,7 @@ extern "C" {
 # endif /* LIBSSH2_WIN32 */
 #endif /* LIBSSH2_API */
 
-#if defined(LIBSSH2_DARWIN)
+#ifdef HAVE_SYS_UIO_H
 # include <sys/uio.h>
 #endif
 
@@ -575,6 +575,16 @@ libssh2_userauth_hostbased_fromfile_ex(LIBSSH2_SESSION *session,
                                         (unsigned int)strlen(hostname), \
                                         (username),                     \
                                         (unsigned int)strlen(username))
+
+LIBSSH2_API int
+libssh2_userauth_publickey_frommemory(LIBSSH2_SESSION *session,
+                                      const char *username,
+                                      size_t username_len,
+                                      const char *publickeyfiledata,
+                                      size_t publickeyfiledata_len,
+                                      const char *privatekeyfiledata,
+                                      size_t privatekeyfiledata_len,
+                                      const char *passphrase);
 
 /*
  * response_callback is provided with filled by library prompts array,

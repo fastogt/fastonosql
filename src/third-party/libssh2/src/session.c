@@ -1,5 +1,5 @@
 /* Copyright (c) 2004-2007 Sara Golemon <sarag@libssh2.org>
- * Copyright (c) 2009-2011 by Daniel Stenberg
+ * Copyright (c) 2009-2015 by Daniel Stenberg
  * Copyright (c) 2010 Simon Josefsson <simon@josefsson.org>
  * All rights reserved.
  *
@@ -358,7 +358,7 @@ get_socket_nonblocking(int sockfd)
 #if defined(WSAEWOULDBLOCK) && (GETBLOCK == 0)
     /* Windows? */
     unsigned int option_value;
-    int option_len = sizeof(option_value);
+    socklen_t option_len = sizeof(option_value);
 
     if (getsockopt
         (sockfd, SOL_SOCKET, SO_ERROR, (void *) &option_value, &option_len)) {
@@ -601,7 +601,7 @@ int _libssh2_wait_socket(LIBSSH2_SESSION *session, time_t start_time)
         (seconds_to_next == 0 ||
          seconds_to_next > session->api_timeout)) {
         time_t now = time (NULL);
-        elapsed_ms = (long)(1000*difftime(start_time, now));
+        elapsed_ms = (long)(1000*difftime(now, start_time));
         if (elapsed_ms > session->api_timeout) {
             session->err_code = LIBSSH2_ERROR_TIMEOUT;
             return LIBSSH2_ERROR_TIMEOUT;
@@ -687,7 +687,12 @@ session_startup(LIBSSH2_SESSION *session, libssh2_socket_t sock)
 
         if (session->socket_prev_blockstate) {
             /* If in blocking state change to non-blocking */
-            session_nonblock(session->socket_fd, 1);
+            rc = session_nonblock(session->socket_fd, 1);
+            if (rc) {
+                return _libssh2_error(session, rc,
+                                      "Failed changing socket's "
+                                      "blocking state to non-blocking");
+            }
         }
 
         session->startup_state = libssh2_NB_state_created;
@@ -1040,9 +1045,14 @@ session_free(LIBSSH2_SESSION *session)
     _libssh2_debug(session, LIBSSH2_TRACE_TRANS,
          "Extra packets left %d", packets_left);
 
-    if(session->socket_prev_blockstate)
+    if(session->socket_prev_blockstate) {
         /* if the socket was previously blocking, put it back so */
-        session_nonblock(session->socket_fd, 0);
+        rc = session_nonblock(session->socket_fd, 0);
+        if (rc) {
+            _libssh2_debug(session, LIBSSH2_TRACE_TRANS,
+             "unable to reset socket's blocking state");
+        }
+    }
 
     if (session->server_hostkey) {
         LIBSSH2_FREE(session, session->server_hostkey);

@@ -158,14 +158,12 @@ _libssh2_channel_open(LIBSSH2_SESSION * session, const char *channel_type,
                        "Opening Channel - win %d pack %d", window_size,
                        packet_size);
         session->open_channel =
-            LIBSSH2_ALLOC(session, sizeof(LIBSSH2_CHANNEL));
+            LIBSSH2_CALLOC(session, sizeof(LIBSSH2_CHANNEL));
         if (!session->open_channel) {
             _libssh2_error(session, LIBSSH2_ERROR_ALLOC,
                            "Unable to allocate space for channel data");
             return NULL;
         }
-        memset(session->open_channel, 0, sizeof(LIBSSH2_CHANNEL));
-
         session->open_channel->channel_type_len = channel_type_len;
         session->open_channel->channel_type =
             LIBSSH2_ALLOC(session, channel_type_len);
@@ -268,8 +266,28 @@ _libssh2_channel_open(LIBSSH2_SESSION * session, const char *channel_type,
         }
 
         if (session->open_data[0] == SSH_MSG_CHANNEL_OPEN_FAILURE) {
-            _libssh2_error(session, LIBSSH2_ERROR_CHANNEL_FAILURE,
-                           "Channel open failure");
+            unsigned int reason_code = _libssh2_ntohu32(session->open_data + 5);
+            switch (reason_code) {
+            case SSH_OPEN_ADMINISTRATIVELY_PROHIBITED:
+                _libssh2_error(session, LIBSSH2_ERROR_CHANNEL_FAILURE,
+                               "Channel open failure (admininstratively prohibited)");
+                break;
+            case SSH_OPEN_CONNECT_FAILED:
+                _libssh2_error(session, LIBSSH2_ERROR_CHANNEL_FAILURE,
+                               "Channel open failure (connect failed)");
+                break;
+            case SSH_OPEN_UNKNOWN_CHANNELTYPE:
+                _libssh2_error(session, LIBSSH2_ERROR_CHANNEL_FAILURE,
+                               "Channel open failure (unknown channel type)");
+                break;
+            case SSH_OPEN_RESOURCE_SHORTAGE:
+                _libssh2_error(session, LIBSSH2_ERROR_CHANNEL_FAILURE,
+                               "Channel open failure (resource shortage)");
+                break;
+            default:
+                _libssh2_error(session, LIBSSH2_ERROR_CHANNEL_FAILURE,
+                               "Channel open failure");
+            }
         }
     }
 
@@ -509,12 +527,11 @@ channel_forward_listen(LIBSSH2_SESSION * session, const char *host,
         if (data[0] == SSH_MSG_REQUEST_SUCCESS) {
             LIBSSH2_LISTENER *listener;
 
-            listener = LIBSSH2_ALLOC(session, sizeof(LIBSSH2_LISTENER));
+            listener = LIBSSH2_CALLOC(session, sizeof(LIBSSH2_LISTENER));
             if (!listener)
                 _libssh2_error(session, LIBSSH2_ERROR_ALLOC,
                                "Unable to allocate memory for listener queue");
             else {
-                memset(listener, 0, sizeof(LIBSSH2_LISTENER));
                 listener->host =
                     LIBSSH2_ALLOC(session, session->fwdLstn_host_len + 1);
                 if (!listener->host) {
@@ -525,8 +542,7 @@ channel_forward_listen(LIBSSH2_SESSION * session, const char *host,
                 }
                 else {
                     listener->session = session;
-                    memcpy(listener->host, host ? host : "0.0.0.0",
-                           session->fwdLstn_host_len);
+                    memcpy(listener->host, host, session->fwdLstn_host_len);
                     listener->host[session->fwdLstn_host_len] = 0;
                     if (data_len >= 5 && !port) {
                         listener->port = _libssh2_ntohu32(data + 1);
@@ -1625,7 +1641,7 @@ libssh2_channel_receive_window_adjust(LIBSSH2_CHANNEL *channel,
     int rc;
 
     if(!channel)
-        return LIBSSH2_ERROR_BAD_USE;
+        return (unsigned long)LIBSSH2_ERROR_BAD_USE;
 
     BLOCK_ADJUST(rc, channel->session,
                  _libssh2_channel_receive_window_adjust(channel, adj,
@@ -1672,7 +1688,7 @@ _libssh2_channel_extended_data(LIBSSH2_CHANNEL *channel, int ignore_mode)
                        "Setting channel %lu/%lu handle_extended_data"
                        " mode to %d",
                        channel->local.id, channel->remote.id, ignore_mode);
-        channel->remote.extended_data_ignore_mode = ignore_mode;
+        channel->remote.extended_data_ignore_mode = (char)ignore_mode;
 
         channel->extData2_state = libssh2_NB_state_created;
     }

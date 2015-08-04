@@ -1,5 +1,5 @@
 /* Copyright (c) 2004-2007 Sara Golemon <sarag@libssh2.org>
- * Copyright (c) 2009-2010 by Daniel Stenberg
+ * Copyright (c) 2009-2014 by Daniel Stenberg
  * Copyright (c) 2010  Simon Josefsson
  * All rights reserved.
  *
@@ -266,15 +266,15 @@ libssh2_base64_decode(LIBSSH2_SESSION *session, char **data,
             continue;
         switch (i % 4) {
         case 0:
-            d[len] = v << 2;
+            d[len] = (unsigned char)(v << 2);
             break;
         case 1:
             d[len++] |= v >> 4;
-            d[len] = v << 4;
+            d[len] = (unsigned char)(v << 4);
             break;
         case 2:
             d[len++] |= v >> 2;
-            d[len] = v << 6;
+            d[len] = (unsigned char)(v << 6);
             break;
         case 3:
             d[len++] |= v;
@@ -605,7 +605,7 @@ int __cdecl _libssh2_gettimeofday(struct timeval *tp, void *tzp)
     unsigned __int64 ns100; /*time since 1 Jan 1601 in 100ns units */
     FILETIME ft;
   }  _now;
-
+  (void)tzp;
   if(tp)
     {
       GetSystemTimeAsFileTime (&_now.ft);
@@ -619,3 +619,12 @@ int __cdecl _libssh2_gettimeofday(struct timeval *tp, void *tzp)
 
 
 #endif
+
+void *_libssh2_calloc(LIBSSH2_SESSION* session, size_t size)
+{
+    void *p = LIBSSH2_ALLOC(session, size);
+    if(p) {
+        memset(p, 0, size);
+    }
+    return p;
+}

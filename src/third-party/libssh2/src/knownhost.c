@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2009-2013 by Daniel Stenberg
+ * Copyright (c) 2009-2014 by Daniel Stenberg
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms,
@@ -149,12 +149,10 @@ knownhost_add(LIBSSH2_KNOWNHOSTS *hosts,
         return _libssh2_error(hosts->session, LIBSSH2_ERROR_INVAL,
                               "No key type set");
 
-    if(!(entry = LIBSSH2_ALLOC(hosts->session, sizeof(struct known_host))))
+    if(!(entry = LIBSSH2_CALLOC(hosts->session, sizeof(struct known_host))))
         return _libssh2_error(hosts->session, LIBSSH2_ERROR_ALLOC,
                               "Unable to allocate memory for known host "
                               "entry");
-
-    memset(entry, 0, sizeof(struct known_host));
 
     entry->typemask = typemask;
 
@@ -419,8 +417,9 @@ knownhost_check(LIBSSH2_KNOWNHOSTS *hosts,
                        plain input to produce a hash to compare with the
                        stored hash.
                     */
-                    libssh2_hmac_ctx ctx;
                     unsigned char hash[SHA_DIGEST_LENGTH];
+                    libssh2_hmac_ctx ctx;
+                    libssh2_hmac_ctx_init(ctx);
 
                     if(SHA_DIGEST_LENGTH != node->name_len) {
                         /* the name hash length must be the sha1 size or
@@ -1186,8 +1185,8 @@ libssh2_knownhost_writefile(LIBSSH2_KNOWNHOSTS *hosts,
 
     for(node = _libssh2_list_first(&hosts->head);
         node;
-        node= _libssh2_list_next(&node->node) ) {
-        size_t wrote;
+        node = _libssh2_list_next(&node->node)) {
+        size_t wrote = 0;
         size_t nwrote;
         rc = knownhost_writeline(hosts, node, buffer, sizeof(buffer), &wrote,
                                  type);

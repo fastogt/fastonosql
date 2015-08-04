@@ -1,6 +1,6 @@
 /*
  * Copyright (c) 2009 by Daiki Ueno
- * Copyright (C) 2010 by Daniel Stenberg
+ * Copyright (C) 2010-2014 by Daniel Stenberg
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms,
@@ -159,6 +159,8 @@ agent_connect_unix(LIBSSH2_AGENT *agent)
 
     s_un.sun_family = AF_UNIX;
     strncpy (s_un.sun_path, path, sizeof s_un.sun_path);
+    s_un.sun_path[sizeof(s_un.sun_path)-1]=0; /* make sure there's a trailing
+                                                 zero */
     if (connect(agent->fd, (struct sockaddr*)(&s_un), sizeof s_un) != 0) {
         close (agent->fd);
         return _libssh2_error(agent->session, LIBSSH2_ERROR_AGENT_PROTOCOL,
@@ -303,6 +305,12 @@ agent_transact_pageant(LIBSSH2_AGENT *agent, agent_transaction_ctx_t transctx)
                               "failed setting up pageant filemap");
 
     p2 = p = MapViewOfFile(filemap, FILE_MAP_WRITE, 0, 0, 0);
+    if (p == NULL || p2 == NULL) {
+        CloseHandle(filemap);
+        return _libssh2_error(agent->session, LIBSSH2_ERROR_AGENT_PROTOCOL,
+                              "failed to open pageant filemap for writing");
+    }
+
     _libssh2_store_str(&p2, (const char *)transctx->request,
                        transctx->request_len);
 
@@ -654,13 +662,12 @@ libssh2_agent_init(LIBSSH2_SESSION *session)
 {
     LIBSSH2_AGENT *agent;
 
-    agent = LIBSSH2_ALLOC(session, sizeof *agent);
+    agent = LIBSSH2_CALLOC(session, sizeof *agent);
     if (!agent) {
         _libssh2_error(session, LIBSSH2_ERROR_ALLOC,
                        "Unable to allocate space for agent connection");
         return NULL;
     }
-    memset(agent, 0, sizeof *agent);
     agent->fd = LIBSSH2_INVALID_SOCKET;
     agent->session = session;
     _libssh2_list_init(&agent->head);
