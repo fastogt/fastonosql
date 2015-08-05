@@ -310,7 +310,7 @@ namespace fastonosql
             }
             else if(strcasecmp(argv[0], "set") == 0){
                 if(argc != 5){
-                    return common::make_error_value("Invalid get input argument", common::ErrorValue::E_ERROR);
+                    return common::make_error_value("Invalid set input argument", common::ErrorValue::E_ERROR);
                 }
 
                 common::ErrorValueSPtr er = set(argv[1], argv[4], atoi(argv[2]), atoi(argv[3]));
@@ -323,7 +323,7 @@ namespace fastonosql
             }
             else if(strcasecmp(argv[0], "add") == 0){
                 if(argc != 4){
-                    return common::make_error_value("Invalid get input argument", common::ErrorValue::E_ERROR);
+                    return common::make_error_value("Invalid add input argument", common::ErrorValue::E_ERROR);
                 }
 
                 common::ErrorValueSPtr er = add(argv[1], argv[4], atoi(argv[2]), atoi(argv[3]));
@@ -336,7 +336,7 @@ namespace fastonosql
             }
             else if(strcasecmp(argv[0], "replace") == 0){
                 if(argc != 4){
-                    return common::make_error_value("Invalid get input argument", common::ErrorValue::E_ERROR);
+                    return common::make_error_value("Invalid replace input argument", common::ErrorValue::E_ERROR);
                 }
 
                 common::ErrorValueSPtr er = replace(argv[1], argv[4], atoi(argv[2]), atoi(argv[3]));
@@ -349,7 +349,7 @@ namespace fastonosql
             }
             else if(strcasecmp(argv[0], "append") == 0){
                 if(argc != 4){
-                    return common::make_error_value("Invalid get input argument", common::ErrorValue::E_ERROR);
+                    return common::make_error_value("Invalid append input argument", common::ErrorValue::E_ERROR);
                 }
 
                 common::ErrorValueSPtr er = append(argv[1], argv[4], atoi(argv[2]), atoi(argv[3]));
@@ -362,7 +362,7 @@ namespace fastonosql
             }
             else if(strcasecmp(argv[0], "prepend") == 0){
                 if(argc != 4){
-                    return common::make_error_value("Invalid get input argument", common::ErrorValue::E_ERROR);
+                    return common::make_error_value("Invalid prepend input argument", common::ErrorValue::E_ERROR);
                 }
 
                 common::ErrorValueSPtr er = prepend(argv[1], argv[4], atoi(argv[2]), atoi(argv[3]));
@@ -375,7 +375,7 @@ namespace fastonosql
             }
             else if(strcasecmp(argv[0], "incr") == 0){
                 if(argc != 3){
-                    return common::make_error_value("Invalid get input argument", common::ErrorValue::E_ERROR);
+                    return common::make_error_value("Invalid incr input argument", common::ErrorValue::E_ERROR);
                 }
 
                 common::ErrorValueSPtr er = incr(argv[1], common::convertFromString<uint64_t>(argv[2]));
@@ -388,7 +388,7 @@ namespace fastonosql
             }
             else if(strcasecmp(argv[0], "decr") == 0){
                 if(argc != 3){
-                    return common::make_error_value("Invalid get input argument", common::ErrorValue::E_ERROR);
+                    return common::make_error_value("Invalid decr input argument", common::ErrorValue::E_ERROR);
                 }
 
                 common::ErrorValueSPtr er = decr(argv[1], common::convertFromString<uint64_t>(argv[2]));
@@ -401,7 +401,7 @@ namespace fastonosql
             }
             else if(strcasecmp(argv[0], "delete") == 0){
                 if(argc != 2){
-                    return common::make_error_value("Invalid get input argument", common::ErrorValue::E_ERROR);
+                    return common::make_error_value("Invalid delete input argument", common::ErrorValue::E_ERROR);
                 }
 
                 common::ErrorValueSPtr er = del(argv[1]);
@@ -414,7 +414,7 @@ namespace fastonosql
             }
             else if(strcasecmp(argv[0], "flush_all") == 0){
                 if(argc < 3){
-                    return common::make_error_value("Invalid get input argument", common::ErrorValue::E_ERROR);
+                    return common::make_error_value("Invalid flush_all input argument", common::ErrorValue::E_ERROR);
                 }
 
                 common::ErrorValueSPtr er = flush_all(argc == 2 ? common::convertFromString<time_t>(argv[1]) : 0);
@@ -441,14 +441,14 @@ namespace fastonosql
             }
             else if(strcasecmp(argv[0], "version") == 0){
                 if(argc != 1){
-                    return common::make_error_value("Invalid get input argument", common::ErrorValue::E_ERROR);
+                    return common::make_error_value("Invalid version input argument", common::ErrorValue::E_ERROR);
                 }
 
                 return version_server();
             }
             else if(strcasecmp(argv[0], "verbosity") == 0){
                 if(argc != 1){
-                    return common::make_error_value("Invalid get input argument", common::ErrorValue::E_ERROR);
+                    return common::make_error_value("Invalid verbosity input argument", common::ErrorValue::E_ERROR);
                 }
 
                 return verbosity();
