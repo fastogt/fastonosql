@@ -27,6 +27,7 @@
 #define LOGGING_REDIS_FILE_EXTENSION ".red"
 #define LOGGING_MEMCACHED_FILE_EXTENSION ".mem"
 #define LOGGING_SSDB_FILE_EXTENSION ".ssdb"
+#define LOGGING_LEVELDB_FILE_EXTENSION ".ssdb"
 
 namespace
 {
@@ -125,6 +126,9 @@ namespace fastonosql
         }
         else if(type_ == SSDB){
             ext = LOGGING_SSDB_FILE_EXTENSION;
+        }
+        else if(type_ == LEVELDB){
+            ext = LOGGING_LEVELDB_FILE_EXTENSION;
         }
         else {
             NOTREACHED();

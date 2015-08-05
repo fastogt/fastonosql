@@ -90,6 +90,9 @@ extern "C" {
 #ifdef _WIN32
 # include <basetsd.h>
 # include <winsock2.h>
+#ifdef FASTO
+# include <ws2tcpip.h>
+#endif
 #endif
 
 #include <stddef.h>

@@ -25,9 +25,16 @@ extern "C" {
 #define LEVELDB_HEADER_STATS    "                               Compactions\n"\
                                 "Level  Files Size(MB) Time(sec) Read(MB) Write(MB)\n"\
                                 "--------------------------------------------------\n"
+
 namespace
 {
     std::vector<std::pair<std::string, std::string > > oppositeCommands = { {"GET", "PUT"} };
+
+    std::once_flag leveldb_version_once;
+    static void leveldb_version_startup_function(char * version)
+    {
+        sprintf(version, "%d.%d", leveldb::kMajorVersion, leveldb::kMinorVersion);
+    }
 }
 
 namespace fastonosql
@@ -513,7 +520,9 @@ namespace fastonosql
 
     const char* LeveldbDriver::versionApi()
     {
-        return "1.8.0";
+        static char leveldb_version[32] = {0};
+        std::call_once(leveldb_version_once, leveldb_version_startup_function, leveldb_version);
+        return leveldb_version;
     }
 
     void LeveldbDriver::customEvent(QEvent *event)

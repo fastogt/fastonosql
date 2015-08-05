@@ -77,7 +77,7 @@ namespace fastonosql
             }
         }
 #endif
-#ifdef BUILD_WITH_SSDB
+#ifdef BUILD_WITH_LEVELDB
         if(type_ == LEVELDB){
             for(int i = 0; i < DBTraits<LEVELDB>::supportedTypes.size(); ++i){
                 common::Value::Type t = DBTraits<LEVELDB>::supportedTypes[i];

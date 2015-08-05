@@ -53,7 +53,7 @@ namespace
             return testConnection(dynamic_cast<SsdbConnectionSettings*>(connection.get()));
         }
 #endif
-#ifdef BUILD_WITH_SSDB
+#ifdef BUILD_WITH_LEVELDB
         if(type == LEVELDB){
             return testConnection(dynamic_cast<LeveldbConnectionSettings*>(connection.get()));
         }

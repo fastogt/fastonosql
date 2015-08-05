@@ -106,9 +106,7 @@ namespace fastonosql
             return;
         }
 
-        if(type_ == REDIS || type_ == MEMCACHED || type_ == SSDB){
-            infos_ = res.infos();
-        }
+        infos_ = res.infos();
         reset();
     }
 
