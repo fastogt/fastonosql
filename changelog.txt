@@ -3,6 +3,7 @@
 - LevelDB database support http://leveldb.org/
 - Info and history for LevelDB
 - Update libssh2 sources
+- Resolve ssh_address for Redis connection
 
 0.1.4 / Jule 29, 2015
 - Display db name in console

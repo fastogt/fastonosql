@@ -674,13 +674,16 @@ redisContext *redisConnect(const char *ip, int port, const char *ssh_address, in
             return NULL;
         }
 
+        struct hostent* host = gethostbyname(ssh_address);
+        if(!host){
+            return NULL;
+        }
+
         struct sockaddr_in sin;
         /* Connect to SSH server */
         int sock = socket(PF_INET, SOCK_STREAM, IPPROTO_TCP);
         sin.sin_family = AF_INET;
-        if (INADDR_NONE == (sin.sin_addr.s_addr = inet_addr(ssh_address))) {
-            return NULL;
-        }
+        sin.sin_addr = *(struct in_addr *)host->h_addr;
         sin.sin_port = htons(ssh_port);
         if (connect(sock, (struct sockaddr*)(&sin),
                     sizeof(struct sockaddr_in)) != 0) {
