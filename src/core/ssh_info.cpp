@@ -1,6 +1,7 @@
 #include "core/ssh_info.h"
 
 #include "common/convert2string.h"
+#include "common/file_system.h"
 
 #define HOST "host"
 #define PORT "port"
@@ -15,7 +16,8 @@
 namespace fastonosql
 {
     SSHInfo::SSHInfo()
-        : hostName_(DEFAULT_SSH_HOST),port_(DEFAULT_SSH_PORT), userName_(),password_(),publicKey_(),currentMethod_(UNKNOWN)
+        : hostName_(DEFAULT_SSH_HOST), port_(DEFAULT_SSH_PORT),
+          userName_(), password_(), publicKey_(common::file_system::prepare_path("~/.ssh/id_rsa.pub")), privateKey_(common::file_system::prepare_path("~/.ssh/id_rsa")), currentMethod_(UNKNOWN)
     {
     }
 
@@ -29,7 +31,7 @@ namespace fastonosql
 
     SSHInfo::SSHInfo(const std::string& text)
         : hostName_(DEFAULT_SSH_HOST), port_(DEFAULT_SSH_PORT), userName_(), password_(),
-          publicKey_(), privateKey_(), passphrase_(), currentMethod_(UNKNOWN)
+          publicKey_(common::file_system::prepare_path("~/.ssh/id_rsa.pub")), privateKey_(common::file_system::prepare_path("~/.ssh/id_rsa")), passphrase_(), currentMethod_(UNKNOWN)
     {
         size_t pos = 0;
         size_t start = 0;

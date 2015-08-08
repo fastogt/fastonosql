@@ -2,6 +2,7 @@
 [Alexandr Topilski]
 - Update libssh2 sources
 - Resolve ssh_address for Redis connection
+- SSH default path for private key(~/.ssh/id_rsa) and for public(~/.ssh/id_rsa.pub)
 
 0.7.4 / Jule 29, 2015
 [Alexandr Topilski]
