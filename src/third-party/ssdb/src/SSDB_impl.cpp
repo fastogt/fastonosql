@@ -1,5 +1,6 @@
 #include "SSDB_impl.h"
 #include "util/strings.h"
+#include <signal.h>
 
 namespace ssdb{
 
@@ -20,7 +21,9 @@ Status _read_int64(const std::vector<std::string> *resp, int64_t *ret){
 	Status s(resp);
 	if(s.ok()){
 		if(resp->size() >= 2){
-			*ret = str_to_int64(resp->at(1));
+			if(ret){
+				*ret = str_to_int64(resp->at(1));
+			}
 		}else{
 			return Status("server_error");
 		}
@@ -52,8 +55,23 @@ ClientImpl::~ClientImpl(){
 }
 
 Client* Client::connect(const char *ip, int port){
+	return Client::connect(std::string(ip), port);
+}
+
+Client* Client::connect(const std::string &ip, int port){
+	static bool inited = false;
+	if(!inited){
+		inited = true;
+#ifdef FASTO
+#ifdef OS_POSIX
+        signal(SIGPIPE, SIG_IGN);
+#endif
+#else
+		signal(SIGPIPE, SIG_IGN);
+#endif
+	}
 	ClientImpl *client = new ClientImpl();
-	client->link = Link::connect(ip, port);
+	client->link = Link::connect(ip.c_str(), port);
 	if(client->link == NULL){
 		delete client;
 		return NULL;
@@ -148,6 +166,32 @@ const std::vector<std::string>* ClientImpl::request(const std::string &cmd, cons
 		req.push_back(*it);
 	}
 	return request(req);
+}
+
+/******************** misc *************************/
+
+Status ClientImpl::dbsize(int64_t *ret){
+	const std::vector<std::string> *resp;
+	resp = this->request("dbsize");
+	return _read_int64(resp, ret);
+}
+
+Status ClientImpl::get_kv_range(std::string *start, std::string *end){
+	const std::vector<std::string> *resp;
+	resp = this->request("get_kv_range");
+	Status s(resp);
+	if(s.ok()){
+		*start = resp->at(1);
+		*end = resp->at(2);
+	}
+	return s;
+}
+
+Status ClientImpl::set_kv_range(const std::string &start, const std::string &end){
+	const std::vector<std::string> *resp;
+	resp = this->request("set_kv_range", start, end);
+	Status s(resp);
+	return s;
 }
 
 /******************** KV *************************/
@@ -481,6 +525,36 @@ Status ClientImpl::multi_zdel(const std::string &name, const std::vector<std::st
 	resp = this->request("multi_zdel", name, keys);
 	Status s(resp);
 	return s;
+}
+
+Status ClientImpl::qpush(const std::string &name, const std::string &item){
+	const std::vector<std::string> *resp;
+	resp = this->request("qpush", name, item);
+	Status s(resp);
+	return s;
+}
+
+Status ClientImpl::qpop(const std::string &name, std::string *item){
+	const std::vector<std::string> *resp;
+	resp = this->request("qpop", name);
+	return _read_str(resp, item);
+}
+
+Status ClientImpl::qslice(const std::string &name,
+		int64_t begin, int64_t end,
+		std::vector<std::string> *ret)
+{
+	std::string s_begin = str(begin);
+	std::string s_end = str(end);
+	const std::vector<std::string> *resp;
+	resp = this->request("qslice", name, s_begin, s_end);
+	return _read_list(resp, ret);
+}
+
+Status ClientImpl::qclear(const std::string &name, int64_t *ret){
+	const std::vector<std::string> *resp;
+	resp = this->request("qclear", name);
+	return _read_int64(resp, ret);
 }
 
 #ifdef FASTO

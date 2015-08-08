@@ -22,8 +22,8 @@ found in the LICENSE file.
 
 #include "link_redis.cpp"
 
-#define MAX_PACKET_SIZE		32 * 1024 * 1024
-#define ZERO_BUFFER_SIZE	8
+#define MAX_PACKET_SIZE		128 * 1024 * 1024
+#define INIT_BUFFER_SIZE	8
 
 int Link::min_recv_buf = 8 * 1024;
 int Link::min_send_buf = 8 * 1024;
@@ -38,6 +38,7 @@ Link::Link(bool is_server){
 	remote_ip[0] = '\0';
 	remote_port = -1;
 	auth = false;
+	ignore_key_range = false;
 	
 	if(is_server){
 		input = output = NULL;
@@ -45,8 +46,8 @@ Link::Link(bool is_server){
 		// alloc memory lazily
 		//input = new Buffer(Link::min_recv_buf);
 		//output = new Buffer(Link::min_send_buf);
-		input = new Buffer(ZERO_BUFFER_SIZE);
-		output = new Buffer(ZERO_BUFFER_SIZE);
+		input = new Buffer(INIT_BUFFER_SIZE);
+		output = new Buffer(INIT_BUFFER_SIZE);
 	}
 }
 
@@ -139,7 +140,7 @@ Link* Link::connect(const char *ip, int port){
 	bzero(&addr, sizeof(addr));
 	addr.sin_family = AF_INET;
 	addr.sin_port = htons((short)port);
-    inet_pton(AF_INET, ip, &addr.sin_addr);
+        inet_pton(AF_INET, ip, &addr.sin_addr);
 #endif
 
 	if((sock = ::socket(AF_INET, SOCK_STREAM, 0)) == -1){
@@ -268,7 +269,7 @@ Link* Link::accept(){
 }
 
 int Link::read(){
-	if(input->total() == ZERO_BUFFER_SIZE){
+	if(input->total() == INIT_BUFFER_SIZE){
 		input->grow();
 	}
 	int ret = 0;
@@ -312,7 +313,7 @@ int Link::read(){
 }
 
 int Link::write(){
-	if(output->total() == ZERO_BUFFER_SIZE){
+	if(output->total() == INIT_BUFFER_SIZE){
 		output->grow();
 	}
 	int ret = 0;
@@ -475,6 +476,9 @@ const std::vector<Bytes>* Link::recv(){
 }
 
 int Link::send(const std::vector<std::string> &resp){
+	if(resp.empty()){
+		return 0;
+	}
 	// Redis protocol supports
 	if(this->redis){
 		return this->redis->send_resp(this->output, resp);
