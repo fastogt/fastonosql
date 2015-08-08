@@ -9,7 +9,7 @@ namespace fastonosql
     static const QString ssdbCommandsKeywords[] = { "quit", "set", "get", "setx", "del", "incr", "keys", "scan", "rscan", "multi_get", "multi_set", "multi_del",
                                                         "hset", "hget", "hdel", "hincr", "hsize", "hclear", "hkeys", "hscan", "hrscan", "multi_hget", "multi_hset",
                                                         "zset", "zget", "zdel", "zincr", "zsize", "zclear", "zrank", "zrrank", "zrange", "zrrange",
-                                                        "zkeys", "zscan", "zrscan", "multi_zget", "multi_zset", "multi_zdel", "info" };
+                                                        "zkeys", "zscan", "zrscan", "multi_zget", "multi_zset", "multi_zdel", "info", "qpush", "qpop", "qslice", "qclear" };
 
     common::ErrorValueSPtr testConnection(SsdbConnectionSettings* settings);
 

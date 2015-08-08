@@ -904,6 +904,68 @@ namespace fastonosql
                 }
                 return er;
             }
+            else if(strcasecmp(argv[0], "qpop") == 0){
+                if(argc != 2){
+                    return common::make_error_value("Invalid qpop input argument", common::ErrorValue::E_ERROR);
+                }
+
+                std::string ret;
+                common::ErrorValueSPtr er = qpop(argv[1], &ret);
+                if(!er){
+                    common::StringValue *val = common::Value::createStringValue(ret);
+                    FastoObject* child = new FastoObject(out, val, config_.mb_delim_);
+                    out->addChildren(child);
+                }
+                return er;
+            }
+            else if(strcasecmp(argv[0], "qpush") == 0){
+                if(argc != 3){
+                    return common::make_error_value("Invalid qpush input argument", common::ErrorValue::E_ERROR);
+                }
+
+                common::ErrorValueSPtr er = qpush(argv[1], argv[2]);
+                if(!er){
+                    common::StringValue *val = common::Value::createStringValue("STORED");
+                    FastoObject* child = new FastoObject(out, val, config_.mb_delim_);
+                    out->addChildren(child);
+                }
+                return er;
+            }
+            else if(strcasecmp(argv[0], "qslice") == 0){
+                if(argc != 4){
+                    return common::make_error_value("Invalid qslice input argument", common::ErrorValue::E_ERROR);
+                }
+
+                int64_t begin = atoll(argv[2]);
+                int64_t end = atoll(argv[3]);
+
+                std::vector<std::string> keysout;
+                common::ErrorValueSPtr er = qslice(argv[1], begin, end, &keysout);
+                if(!er){
+                    common::ArrayValue* ar = common::Value::createArrayValue();
+                    for(int i = 0; i < keysout.size(); ++i){
+                        common::StringValue *val = common::Value::createStringValue(keysout[i]);
+                        ar->append(val);
+                    }
+                    FastoObjectArray* child = new FastoObjectArray(out, ar, config_.mb_delim_);
+                    out->addChildren(child);
+                }
+                return er;
+            }
+            else if(strcasecmp(argv[0], "qclear") == 0){
+                if(argc != 2){
+                    return common::make_error_value("Invalid qclear input argument", common::ErrorValue::E_ERROR);
+                }
+
+                int64_t res = 0;
+                common::ErrorValueSPtr er = qclear(argv[1], &res);
+                if(!er){
+                    common::FundamentalValue *val = common::Value::createIntegerValue(res);
+                    FastoObject* child = new FastoObject(out, val, config_.mb_delim_);
+                    out->addChildren(child);
+                }
+                return er;
+            }
             else{
                 char buff[1024] = {0};
                 common::SNPrintf(buff, sizeof(buff), "Not supported command: %s", argv[0]);
@@ -1339,6 +1401,50 @@ namespace fastonosql
             if (st.error()){
                 char buff[1024] = {0};
                 common::SNPrintf(buff, sizeof(buff), "multi_zdel function error: %s", st.code());
+                return common::make_error_value(buff, common::ErrorValue::E_ERROR);
+            }
+            return common::ErrorValueSPtr();
+        }
+
+        common::ErrorValueSPtr qpush(const std::string &name, const std::string &item)
+        {
+            ssdb::Status st = ssdb_->qpush(name, item);
+            if (st.error()){
+                char buff[1024] = {0};
+                common::SNPrintf(buff, sizeof(buff), "qpush function error: %s", st.code());
+                return common::make_error_value(buff, common::ErrorValue::E_ERROR);
+            }
+            return common::ErrorValueSPtr();
+        }
+
+        common::ErrorValueSPtr qpop(const std::string &name, std::string *item)
+        {
+            ssdb::Status st = ssdb_->qpop(name, item);
+            if (st.error()){
+                char buff[1024] = {0};
+                common::SNPrintf(buff, sizeof(buff), "qpop function error: %s", st.code());
+                return common::make_error_value(buff, common::ErrorValue::E_ERROR);
+            }
+            return common::ErrorValueSPtr();
+        }
+
+        common::ErrorValueSPtr qslice(const std::string &name, int64_t begin, int64_t end, std::vector<std::string> *ret)
+        {
+            ssdb::Status st = ssdb_->qslice(name, begin, end, ret);
+            if (st.error()){
+                char buff[1024] = {0};
+                common::SNPrintf(buff, sizeof(buff), "qslice function error: %s", st.code());
+                return common::make_error_value(buff, common::ErrorValue::E_ERROR);
+            }
+            return common::ErrorValueSPtr();
+        }
+
+        common::ErrorValueSPtr qclear(const std::string &name, int64_t *ret)
+        {
+            ssdb::Status st = ssdb_->qclear(name, ret);
+            if (st.error()){
+                char buff[1024] = {0};
+                common::SNPrintf(buff, sizeof(buff), "qclear function error: %s", st.code());
                 return common::make_error_value(buff, common::ErrorValue::E_ERROR);
             }
             return common::ErrorValueSPtr();
