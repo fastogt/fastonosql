@@ -1,14 +1,10 @@
 <RCC>
     <qresource prefix="/">
-    <file>@PROJECT_NAME_LOWERCASE@/images/64x64/logo.png</file>
     <file>@PROJECT_NAME_LOWERCASE@/images/64x64/open.png</file>
     <file>@PROJECT_NAME_LOWERCASE@/images/64x64/add.png</file>
     <file>@PROJECT_NAME_LOWERCASE@/images/64x64/remove.png</file>
     <file>@PROJECT_NAME_LOWERCASE@/images/64x64/edit.png</file>
-    <file>@PROJECT_NAME_LOWERCASE@/images/64x64/redis.png</file>
-    <file>@PROJECT_NAME_LOWERCASE@/images/64x64/memcached.png</file>
-    <file>@PROJECT_NAME_LOWERCASE@/images/64x64/ssdb.png</file>
-    <file>@PROJECT_NAME_LOWERCASE@/images/64x64/leveldb.png</file>
+
     <file>@PROJECT_NAME_LOWERCASE@/images/64x64/redistype.png</file>
     <file>@PROJECT_NAME_LOWERCASE@/images/64x64/execute.png</file>
     <file>@PROJECT_NAME_LOWERCASE@/images/64x64/stop.png</file>

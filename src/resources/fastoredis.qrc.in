@@ -1,0 +1,6 @@
+<RCC>
+    <qresource prefix="/">
+    <file>@PROJECT_NAME_LOWERCASE@/images/64x64/logo.png</file>
+    <file>@PROJECT_NAME_LOWERCASE@/images/64x64/redis.png</file>
+    </qresource>
+</RCC>

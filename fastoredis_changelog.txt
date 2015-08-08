@@ -1,0 +1,118 @@
+0.7.5 
+[Alexandr Topilski]
+- Update libssh2 sources
+- Resolve ssh_address for Redis connection
+
+0.7.4 / Jule 29, 2015
+[Alexandr Topilski]
+- Display db name in console
+- Auto open console preference 
+
+0.7.3 / April 18, 2015
+[Alexandr Topilski]
+- View keys dialog
+- Redis database size
+- Update hiredis and redis-cli sources
+- Create Redis server password
+- Setup max connection on server
+
+0.7.2 / March 28, 2015
+[Alexandr Topilski]
+- Redis clusters basic support
+- Redis clusters discovery
+- Ability to disable autocompletion
+- Redis subscribe implementation
+- Clear recent connections action
+- Find panel for all custom editors
+- Remove python/lua console dialog
+
+0.7.1 / March 14, 2015
+[Alexandr Topilski]
+- Bug fixes
+- History for SSDB
+- Create key value dialog
+- Recent connections menu
+
+0.7.0 / February 28, 2015
+[Alexandr Topilski]
+- SSDB database support http://ssdb.io/
+- Info and history for SSDB
+- Redis kyes loading by pattern
+- Fix bug with permission app
+- Test connection functionality
+- Fix displaying Redis keys(#51)
+
+0.6.2 / February 14, 2015
+[Alexandr Topilski]
+- Update design
+- Info and history for memcached
+- Delete key from explorer tree(#48)
+- Android holo theme
+- In place edit memcached
+
+0.6.1 / February 7, 2015
+[Alexandr Topilski]
+- In place edit value
+- Load databases for Redis
+- Conversion dialog
+- Set default Redis database
+- Load Redis database/keys in explorer tree
+- Context menu for Android
+
+0.6.0 / January 25, 2015
+[Alexandr Topilski]
+- MsgPack visualization output
+- Lua console(without modules)
+- Beta android version
+- Memcached added (incr, decr, delete, flush_all, stats, version) functions
+- Not 64-bit on Win?(#44)
+
+0.5.6 / January 10, 2015
+[Alexandr Topilski]
+- Remove boost library dependence
+- Move to C++11 standart
+- Server history (only Redis)
+- Memcached support(only basic functions)
+- Memcached sasl connection
+- Shutdown functionality
+- Backup/Import rdb files only localhost version
+
+0.4.5 / December 27, 2014
+[Alexandr Topilski]
+- Python embedded
+
+0.3.5 / December 3, 2014
+[Alexandr Topilski]
+- Find support for output widget
+- Key shortcuts
+- Fixed delemitr bug
+
+0.3.4 / December 3, 2014
+[Alexandr Topilski]
+- Update redis-cli sources to version 2.9.999
+- Implement latency mode
+- Implement slave mode
+- Implement rdb mode
+- Implement bigkeys mode
+- Implement stat mode
+- Implement scan mode
+
+0.2.3 / November 24, 2014
+[Alexandr Topilski]
+- Added check updates functionality
+- Full utf-8 support
+- Help keyword
+- View result as text/table/tree
+- TextView show as json or raw text
+- FreeBSD support
+
+0.1.0 / November 6, 2014
+[Alexandr Topilski]
+- Fixed utf conversions string problem
+- Added translation support
+- Fixed server information displaying
+- Added SSH tunel support
+- Fixed start on windows machine
+
+[Denis Klimenko]
+- Fixed dmg build

@@ -15,7 +15,7 @@ namespace
 #else
         "<h3>" PROJECT_NAME_TITLE " " PROJECT_VERSION " " PROJECT_BUILD_TYPE_VERSION STRINGIZE(PROJECT_VERSION_TWEAK) "<br/>Revision:" PROJECT_GIT_VERSION "</h3>"
 #endif
-        "Cross-platform open source Redis, Memcached, SSDB, LevelDB management tool."
+        PROJECT_BREF_DESCRIPTION
         "<br/>"
         "<br/>"
         "Visit " PROJECT_NAME_TITLE " website: <a href=\"http://" PROJECT_DOMAIN "\">" PROJECT_DOMAIN "</a> <br/>"
