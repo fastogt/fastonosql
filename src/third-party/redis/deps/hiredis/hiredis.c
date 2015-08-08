@@ -47,6 +47,7 @@
 #else
 #include <sys/socket.h>
 #include <netinet/in.h>
+#include <netdb.h>
 #include <arpa/inet.h>
 #define F_EINTR EINTR
 #endif
