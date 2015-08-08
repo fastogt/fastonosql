@@ -3,26 +3,38 @@ set -e
 
 createPackage() {
     branding_variables="$(cat $1)"
-	branding_complex_variables="$(cat $2)"
+    branding_complex_variables="$(cat $2)"
 	#echo branding_variables: $branding_variables
 	#echo branding_complex_variables: $branding_complex_variables 
     platform="$3"
     dir_path="$4"
     cpack_generator="$5"
-	
+
     if [ -d "$dir_path" ]; then
         rm -rf "$dir_path"
     fi
     mkdir "$dir_path"
     cd "$dir_path"
     if [ "$platform" = 'android' ] ; then
-        cmake ../../ -G "Unix Makefiles" -DCMAKE_TOOLCHAIN_FILE=../../cmake/android.toolchain.cmake -DCMAKE_BUILD_TYPE=RELEASE -DOS_ARCH=32 -DOPENSSL_USE_STATIC=1 $branding_variables "$branding_complex_variables"
+        if [ -n "$branding_complex_variables" ]; then
+            cmake ../../ -G "Unix Makefiles" -DCMAKE_TOOLCHAIN_FILE=../../cmake/android.toolchain.cmake -DCMAKE_BUILD_TYPE=RELEASE -DOS_ARCH=32 \
+            -DOPENSSL_USE_STATIC=1 $branding_variables "$branding_complex_variables"
+        else
+            cmake ../../ -G "Unix Makefiles" -DCMAKE_TOOLCHAIN_FILE=../../cmake/android.toolchain.cmake -DCMAKE_BUILD_TYPE=RELEASE -DOS_ARCH=32 \
+            -DOPENSSL_USE_STATIC=1 $branding_variables
+        fi
         make install -j2
         make apk_release
         make apk_signed
 		make apk_signed_aligned
     else
-        cmake ../../ -G "Unix Makefiles" -DCMAKE_BUILD_TYPE=RELEASE -DOS_ARCH=64 -DOPENSSL_USE_STATIC=1 -DCPACK_GENERATOR="$cpack_generator" $branding_variables "$branding_complex_variables"
+        if [ -n "$branding_complex_variables" ]; then
+            cmake ../../ -G "Unix Makefiles" -DCMAKE_BUILD_TYPE=RELEASE -DOS_ARCH=64 -DOPENSSL_USE_STATIC=1 -DCPACK_GENERATOR="$cpack_generator" \
+            $branding_variables "$branding_complex_variables"
+        else
+            cmake ../../ -G "Unix Makefiles" -DCMAKE_BUILD_TYPE=RELEASE -DOS_ARCH=64 -DOPENSSL_USE_STATIC=1 -DCPACK_GENERATOR="$cpack_generator" \
+            $branding_variables 
+        fi
         make install -j2
 		cpack -G "$cpack_generator"
     fi
@@ -49,7 +61,7 @@ echo "Please specify branding file for complex variables or /dev/null!"
 fi
 
 if [ -n "$3" ]; then
-    platform=$2
+    platform=$3
 else
     if [ "$unamestr" = 'MINGW64_NT-6.1' ]; then
         platform='windows'
