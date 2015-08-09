@@ -1609,17 +1609,10 @@ namespace fastonosql
             if (!strcasecmp(command,"subscribe") || !strcasecmp(command,"psubscribe")) config_.pubsub_mode = 1;
             if (!strcasecmp(command,"sync") || !strcasecmp(command,"psync")) config_.slave_mode = 1;
 
-            /* Setup argument length */
-            size_t* argvlen = (size_t*)malloc(argc * sizeof(size_t));
-            for (int j = 0; j < argc; j++){
-                argvlen[j] = sdslen(argv[j]);
-            }
-
-            redisAppendCommandArgv(context_, argc, (const char**)argv, argvlen);
+            redisAppendCommandArgv(context_, argc, (const char**)argv, NULL);
             while (config_.monitor_mode) {
                 common::ErrorValueSPtr er = cliReadReply(out);
                 if (er){
-                    free(argvlen);
                     return er;
                 }
             }
@@ -1628,7 +1621,6 @@ namespace fastonosql
                 while (1) {
                     common::ErrorValueSPtr er = cliReadReply(out);
                     if (er){
-                        free(argvlen);
                         return er;
                     }
                 }
@@ -1637,13 +1629,11 @@ namespace fastonosql
             if (config_.slave_mode) {
                 common::ErrorValueSPtr er = slaveMode(out);
                 config_.slave_mode = 0;
-                free(argvlen);
                 return er;  /* Error = slaveMode lost connection to master */
             }
 
             common::ErrorValueSPtr er = cliReadReply(out);
             if (er) {
-                free(argvlen);
                 return er;
             }
             else {
@@ -1654,7 +1644,6 @@ namespace fastonosql
                 else if (!strcasecmp(command, "auth") && argc == 2) {
                     er = cliSelect();
                     if(er){
-                        free(argvlen);
                         return er;
                     }
                 }
@@ -1663,7 +1652,86 @@ namespace fastonosql
                 common::utils::usleep(config_.interval);
             }
 
-            free(argvlen);
+            return common::ErrorValueSPtr();
+        }
+
+        static bool isPipeLineCommand(const char *command)
+        {
+            if(!command){
+                return false;
+            }
+
+            bool skip = strcasecmp(command, "quit") == 0
+                        || strcasecmp(command, "exit") == 0
+                        || strcasecmp(command, "connect") == 0
+                        || strcasecmp(command, "help") == 0
+                        || strcasecmp(command, "?") == 0
+                        || strcasecmp(command, "shutdown") == 0
+                        || strcasecmp(command, "monitor") == 0
+                        || strcasecmp(command, "subscribe") == 0
+                        || strcasecmp(command, "psubscribe") == 0
+                        || strcasecmp(command, "sync") == 0
+                        || strcasecmp(command, "psync") == 0;
+
+            return !skip;
+        }
+
+        common::ErrorValueSPtr executeAsPipeline(std::vector<FastoObjectCommandIPtr> cmds) WARN_UNUSED_RESULT
+        {
+            //DCHECK(cmd);
+            if(cmds.empty()){
+                return common::make_error_value("Invalid input command", common::ErrorValue::E_ERROR);
+            }
+
+            if (context_ == NULL){
+                return common::make_error_value("Not connected", common::Value::E_ERROR);
+            }
+
+            //start piplene mode
+            std::vector<FastoObjectCommandIPtr> valid_cmds;
+            for(int i = 0; i < cmds.size(); ++i){
+                FastoObjectCommandIPtr cmd = cmds[i];
+                common::CommandValue* cmdc = cmd->cmd();
+
+                const std::string command = cmdc->inputCommand();
+                common::Value::CommandType type = cmdc->commandType();
+
+                if(command.empty()){
+                    continue;
+                }
+
+                LOG_COMMAND(Command(command, type));
+
+                const char* ccommand = common::utils::c_strornull(command);
+
+                if (ccommand) {
+                    int argc = 0;
+                    sds *argv = sdssplitargs(ccommand, &argc);
+
+                    if (argv == NULL) {
+                        common::StringValue *val = common::Value::createStringValue("Invalid argument(s)");
+                        FastoObject* child = new FastoObject(cmd.get(), val, config_.mb_delim_);
+                        cmd->addChildren(child);
+                    }
+                    else if (argc > 0){
+                        if (isPipeLineCommand(argv[0])){
+                            valid_cmds.push_back(cmd);
+                            redisAppendCommandArgv(context_, argc, (const char**)argv, NULL);
+                        }
+                    }
+                    sdsfreesplitres(argv, argc);
+                }
+            }
+
+            for(int i = 0; i < valid_cmds.size(); ++i){
+                FastoObjectCommandIPtr cmd = cmds[i];
+                common::ErrorValueSPtr er = cliReadReply(cmd.get());
+                if (er) {
+                    return er;
+                }
+            }
+            //end piplene
+
             return common::ErrorValueSPtr();
         }
 
@@ -2366,26 +2434,51 @@ namespace fastonosql
                     }
 
                     common::ArrayValue* ar = arr->array();
+                    std::vector<FastoObjectCommandIPtr> cmds;
+                    cmds.reserve(ar->getSize() * 2);
                     for(int i = 0; i < ar->getSize(); ++i){
                         std::string key;
                         bool isok = ar->getString(i, &key);
+                        DCHECK(isok);
                         if(isok){
                             NKey ress(key);
-                            RedisCommand* cmdType = createCommandFast("TYPE " + ress.key_, common::Value::C_INNER);
-                            er = impl_->execute(cmdType);
-                            if(!er){
-                                FastoObject::child_container_type tchildrens = cmdType->childrens();
-                                if(tchildrens.size()){
-                                    DCHECK(tchildrens.size() == 1);
-                                    if(tchildrens.size() == 1){
-                                        FastoObject* type = tchildrens[0];
-                                        std::string typeRedis = type->toString();
-                                        ress.type_ = convertFromStringRType(typeRedis);
-                                        res.keys_.push_back(ress);
+                            cmds.push_back(createCommandFast("TYPE " + ress.key_, common::Value::C_INNER));
+                            cmds.push_back(createCommandFast("TTL " + ress.key_, common::Value::C_INNER));
+                            res.keys_.push_back(ress);
+                        }
+                    }
+
+                    er = impl_->executeAsPipeline(cmds);
+                    if(er){
+                       goto done;
+                    }
+
+                    for(int i = 0; i < res.keys_.size(); ++i){
+                        FastoObjectIPtr cmdType = cmds[i*2];
+                        FastoObject::child_container_type tchildrens = cmdType->childrens();
+                        if(tchildrens.size()){
+                            DCHECK(tchildrens.size() == 1);
+                            if(tchildrens.size() == 1){
+                                FastoObject* type = tchildrens[0];
+                                std::string typeRedis = type->toString();
+                                res.keys_[i].type_ = convertFromStringRType(typeRedis);
+                            }
+                        }
+
+                        FastoObjectIPtr cmdType2 = cmds[i*2+1];
+                        tchildrens = cmdType2->childrens();
+                        if(tchildrens.size()){
+                            DCHECK(tchildrens.size() == 1);
+                            if(tchildrens.size() == 1){
+                                FastoObject* fttl = tchildrens[0];
+                                common::Value* vttl = fttl->value();
+                                int32_t ttl = 0;
+                                if(vttl->getAsInteger(&ttl)){
+                                    if(ttl != -1){
+                                        res.keys_[i].ttl_msec_ = ttl * 1000;
                                     }
                                 }
                             }
-                            delete cmdType;
                         }
                     }
                 }

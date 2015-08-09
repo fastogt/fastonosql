@@ -24,6 +24,11 @@ namespace fastonosql
         return common::convertFromString<QString>(common::Value::toString(key_.type_));
     }
 
+    int32_t KeyTableItem::msecTTL() const
+    {
+        return key_.ttl_msec_;
+    }
+
     common::Value::Type KeyTableItem::type() const
     {
         return key_.type_;
@@ -69,6 +74,9 @@ namespace fastonosql
             else if (col == KeyTableItem::kType) {
                 result = node->typeText();
             }
+            else if (col == KeyTableItem::kTTL) {
+                result = node->msecTTL();
+            }
         }
         return result;
     }
@@ -85,6 +93,9 @@ namespace fastonosql
             }
             else if (section == KeyTableItem::kType) {
                 return trType;
+            }
+            else if (section == KeyTableItem::kTTL) {
+                return trMsecTTL;
             }
         }
 

@@ -123,6 +123,7 @@ namespace fastonosql
     };
 
     typedef common::intrusive_ptr<FastoObject> FastoObjectIPtr;
+    typedef common::intrusive_ptr<FastoObjectCommand> FastoObjectCommandIPtr;
 }
 
 namespace common

@@ -6,6 +6,9 @@
 - Resolve ssh_address for Redis connection
 - SSH default path for private key(~/.ssh/id_rsa) and for public(~/.ssh/id_rsa.pub)
 - SSDB update sources, added command support(qpush, qpop, qslice, qclear)
+- TTL calculate for key
+- Redis driver code optimization
+
 0.1.4 / Jule 29, 2015
 - Display db name in console
 - Auto open console preference

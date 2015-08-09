@@ -2,8 +2,8 @@
 
 namespace fastonosql
 {
-    NKey::NKey(const std::string& key, common::Value::Type type)
-        : key_(key), type_(type)
+    NKey::NKey(const std::string& key, common::Value::Type type, int32_t ttl_msec)
+        : key_(key), type_(type), ttl_msec_(ttl_msec)
     {
     }
 

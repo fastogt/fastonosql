@@ -16,10 +16,11 @@ namespace fastonosql
 
     struct NKey
     {
-        explicit NKey(const std::string& key, common::Value::Type type = common::Value::TYPE_NULL);
+        explicit NKey(const std::string& key, common::Value::Type type = common::Value::TYPE_NULL, int32_t ttl_msec = -1);
 
         std::string key_;
         common::Value::Type type_;
+        int32_t ttl_msec_;
     };
 
     inline bool operator == (const NKey& lhs, const NKey& rhs)

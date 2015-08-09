@@ -48,6 +48,7 @@ namespace fastonosql
         extern const QString trReload;
         extern const QString trDuplicate;
         extern const QString trType;
+        extern const QString trMsecTTL;
         extern const QString trCommands;
         extern const QString trErrors;
         extern const QString trName;

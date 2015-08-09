@@ -14,12 +14,14 @@ namespace fastonosql
         {
             kKey = 0,
             kType = 1,
-            kCountColumns = 2
+            kTTL = 2,
+            kCountColumns = 3
         };
 
         KeyTableItem(const NKey& key);
         QString key() const;
         QString typeText() const;
+        int32_t msecTTL() const;
         common::Value::Type type() const;
 
     private:
