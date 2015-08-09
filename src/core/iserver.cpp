@@ -327,7 +327,7 @@ namespace fastonosql
             ConnectResponceEvent::value_type v = ev->value();
             common::ErrorValueSPtr er(v.errorInfo());
             if(!er){
-                discoveryInfoP();
+                processDiscoveryInfo();
                 processConfigArgs();
             }
         }
@@ -556,12 +556,11 @@ namespace fastonosql
                 DataBaseInfoSPtr db = dbs[j];
                 IDatabaseSPtr datab = findDatabaseByInfo(db);
                 if(!datab){
-                    databases_.push_back(createDatabaseImpl(db));
-                    tmp.push_back(db);
+                    datab = createDatabase(db);
+                    databases_.push_back(datab);
                 }
-                else{
-                    tmp.push_back(datab->info());
-                }
+                DCHECK(*db == *datab->info());
+                tmp.push_back(datab->info());
             }
             v.databases_ = tmp;
         }
@@ -664,7 +663,7 @@ namespace fastonosql
         notify(ev);
     }
 
-    void IServer::discoveryInfoP()
+    void IServer::processDiscoveryInfo()
     {
         EventsInfo::DiscoveryInfoRequest req;
         emit startedLoadDiscoveryInfo(req);

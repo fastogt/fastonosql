@@ -435,7 +435,7 @@ namespace fastonosql
             const std::string command = cmd->inputCommand();
 
             while(!config_.shutdown_) {
-                start = common::time::current_mstime();                
+                start = common::time::current_mstime();
                 reply = (redisReply*)redisCommand(context_, command.c_str());
                 if (reply == NULL) {
                     return common::make_error_value("I/O error", common::Value::E_ERROR);

@@ -67,7 +67,7 @@ namespace fastonosql
     struct ExplorerDatabaseItem
             : public IExplorerTreeItem
     {
-        ExplorerDatabaseItem(DataBaseInfoSPtr db, ExplorerServerItem* parent);
+        ExplorerDatabaseItem(IDatabaseSPtr db, ExplorerServerItem* parent);
         virtual ~ExplorerDatabaseItem();
 
         ExplorerServerItem* parent() const;
@@ -90,7 +90,7 @@ namespace fastonosql
         void createKey(const NKey& key, FastoObjectIPtr value);
 
     private:
-        DataBaseInfoSPtr inf_;
+        const IDatabaseSPtr db_;
     };
 
     struct ExplorerKeyItem

@@ -30,7 +30,7 @@ namespace fastonosql
     {
         Q_OBJECT
     public:
-        OutputWidget(IServerSPtr server, QWidget* parent = 0);
+        OutputWidget(IServer* server, QWidget* parent = 0);
 
     public Q_SLOTS:
         void rootCreate(const EventsInfo::CommandRootCreatedInfo& res);

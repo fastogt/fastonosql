@@ -12,7 +12,7 @@ namespace fastonosql
     public:
 
     private:
-        virtual IDatabaseSPtr createDatabaseImpl(DataBaseInfoSPtr info);
+        virtual IDatabaseSPtr createDatabase(DataBaseInfoSPtr info);
         SsdbServer(const IDriverSPtr& drv, bool isSuperServer);
     };
 }

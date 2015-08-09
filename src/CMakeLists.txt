@@ -106,7 +106,6 @@ SET(HEADERS_CORE
     core/events/events_info.h
     core/types.h
     core/ssh_info.h
-    core/scp_file_transfer.h
 )
 SET(SOURCES_CORE
     core/connection_confg.cpp
@@ -122,7 +121,6 @@ SET(SOURCES_CORE
     core/servers_manager.cpp
     core/types.cpp
     core/ssh_info.cpp
-    core/scp_file_transfer.cpp
 )
 
 SET(HEADERS_SHELL_TO_MOC

@@ -10,7 +10,7 @@ namespace fastonosql
 
     }
 
-    IDatabaseSPtr SsdbServer::createDatabaseImpl(DataBaseInfoSPtr info)
+    IDatabaseSPtr SsdbServer::createDatabase(DataBaseInfoSPtr info)
     {
         return IDatabaseSPtr(new SsdbDatabase(shared_from_this(), info));
     }

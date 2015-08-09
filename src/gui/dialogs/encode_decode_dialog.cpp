@@ -129,6 +129,7 @@ namespace fastonosql
         if(!er){
             output_->setText(common::convertFromString<QString>(out));
         }
+        delete dec;
     }
 
     void EncodeDecodeDialog::retranslateUi()

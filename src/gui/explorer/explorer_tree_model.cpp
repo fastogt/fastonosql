@@ -89,15 +89,10 @@ namespace fastonosql
         return cluster_;
     }
 
-    ExplorerDatabaseItem::ExplorerDatabaseItem(DataBaseInfoSPtr db, ExplorerServerItem* parent)
-        : IExplorerTreeItem(parent)
+    ExplorerDatabaseItem::ExplorerDatabaseItem(IDatabaseSPtr db, ExplorerServerItem* parent)
+        : IExplorerTreeItem(parent), db_(db)
     {
         DCHECK(db);
-        if(!db){
-            return;
-        }
-
-        inf_.reset(db->clone());
     }
 
     ExplorerDatabaseItem::~ExplorerDatabaseItem()
@@ -112,7 +107,7 @@ namespace fastonosql
 
     QString ExplorerDatabaseItem::name() const
     {
-        return common::convertFromString<QString>(inf_->name());
+        return common::convertFromString<QString>(db_->name());
     }
 
     ExplorerDatabaseItem::eType ExplorerDatabaseItem::type() const
@@ -122,12 +117,12 @@ namespace fastonosql
 
     bool ExplorerDatabaseItem::isDefault() const
     {
-        return inf_->isDefault();
+        return info()->isDefault();
     }
 
     size_t ExplorerDatabaseItem::size() const
     {
-        return inf_->size();
+        return info()->size();
     }
 
     IServerSPtr ExplorerDatabaseItem::server() const
@@ -142,15 +137,7 @@ namespace fastonosql
 
     IDatabaseSPtr ExplorerDatabaseItem::db() const
     {
-        IServerSPtr serv = server();
-        DCHECK(serv);
-        if(!serv){
-            return IDatabaseSPtr();
-        }
-
-        IDatabaseSPtr db = serv->findDatabaseByName(inf_->name());
-        DCHECK(db);
-        return db;
+        return db_;
     }
 
     void ExplorerDatabaseItem::loadContent(const std::string& pattern, uint32_t countKeys)
@@ -171,7 +158,7 @@ namespace fastonosql
 
     DataBaseInfoSPtr ExplorerDatabaseItem::info() const
     {
-        return inf_;
+        return db_->info();
     }
 
     void ExplorerDatabaseItem::removeKey(const NKey& key)
@@ -444,7 +431,7 @@ namespace fastonosql
         ExplorerDatabaseItem *dbs = findDatabaseItem(parent, db);
         if(!dbs){
             QModelIndex index = createIndex(0, 0, parent);
-            ExplorerDatabaseItem *item = new ExplorerDatabaseItem(db, parent);
+            ExplorerDatabaseItem *item = new ExplorerDatabaseItem(server->findDatabaseByInfo(db), parent);
             insertItem(index, item);
         }
     }

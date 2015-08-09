@@ -48,20 +48,6 @@ namespace fastonosql
         virtual void syncWithServer(IServer* src);
         virtual void unSyncFromServer(IServer* src);
 
-        //async methods
-        void connect();
-        void disconnect();
-        void loadDatabases();
-        void loadDatabaseContent(DataBaseInfoSPtr inf, const std::string& pattern, uint32_t countKeys, uint32_t cursor);
-        void setDefaultDb(DataBaseInfoSPtr inf);
-        void execute(const QString& script);
-        void executeCommand(DataBaseInfoSPtr inf, CommandKeySPtr cmd);
-        void shutDown();
-        void backupToPath(const QString& path);
-        void exportFromPath(const QString& path);
-        void changePassword(const QString& oldPassword, const QString& newPassword);
-        void setMaxConnection(int maxCon);
-
     Q_SIGNALS: //only direct connections
         void startedConnect(const EventsInfo::ConnectInfoRequest& req);
         void finishedConnect(const EventsInfo::ConnectInfoResponce& res);
@@ -131,16 +117,29 @@ namespace fastonosql
 
     public Q_SLOTS:
         //async methods
-        void serverInfo();
-        void serverProperty();
-        void requestHistoryInfo();
-        void changeProperty(const PropertyType& newValue);
-        void changeValue(const NDbValue& newValue, const std::string &command);
+        void connect(); //signals: startedConnect, finishedConnect
+        void disconnect(); //signals: startedDisconnect, finishedDisconnect
+        void loadDatabases(); //signals: startedLoadDatabases, finishedLoadDatabases
+        void loadDatabaseContent(DataBaseInfoSPtr inf, const std::string& pattern, uint32_t countKeys,
+                                 uint32_t cursor); //signals: startedLoadDataBaseContent, finishedLoadDatabaseContent
+        void setDefaultDb(DataBaseInfoSPtr inf); //signals: startedSetDefaultDatabase, finishedSetDefaultDatabase
+        void execute(const QString& script); //signals: startedExecute
+        void executeCommand(DataBaseInfoSPtr inf, CommandKeySPtr cmd); //signals: startedExecuteCommand, finishedExecuteCommand
+        void shutDown(); //signals: startedShutdown, finishedShutdown
+        void backupToPath(const QString& path); //signals: startedBackup, finishedBackup
+        void exportFromPath(const QString& path); //signals: startedExport, finishedExport
+        void changePassword(const QString& oldPassword, const QString& newPassword); //signals: startedChangePassword, finishedChangePassword
+        void setMaxConnection(int maxCon);//signals: startedChangeMaxConnection, finishedChangeMaxConnection
+        void serverInfo(); //signals: startedLoadServerInfo, finishedLoadServerInfo
+        void serverProperty(); //signals: startedLoadServerProperty, finishedLoadServerProperty
+        void requestHistoryInfo(); //signals: startedLoadServerHistoryInfo, finishedLoadServerHistoryInfo
+        void changeProperty(const PropertyType& newValue); //signals: startedChangeServerProperty, finishedChangeServerProperty
+        void changeValue(const NDbValue& newValue, const std::string &command); //signals: startedChangeDbValue, finishedChangeDbValue
 
     protected:
         virtual void customEvent(QEvent* event);
 
-        virtual IDatabaseSPtr createDatabaseImpl(DataBaseInfoSPtr info) = 0;
+        virtual IDatabaseSPtr createDatabase(DataBaseInfoSPtr info) = 0;
         void notify(QEvent* ev);
 
         // handle server events
@@ -174,7 +173,7 @@ namespace fastonosql
         void handleDiscoveryInfoResponceEvent(events::DiscoveryInfoResponceEvent* ev);
 
         void processConfigArgs();
-        void discoveryInfoP();
+        void processDiscoveryInfo();
 
         bool isSuperServer_;
     };

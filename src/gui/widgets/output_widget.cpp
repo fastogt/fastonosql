@@ -31,13 +31,14 @@ namespace
 
 namespace fastonosql
 {
-    OutputWidget::OutputWidget(IServerSPtr server, QWidget* parent)
+    OutputWidget::OutputWidget(IServer *server, QWidget* parent)
         : QWidget(parent)
     {
+        DCHECK(server);
         commonModel_ = new FastoCommonModel(this);
-        VERIFY(connect(commonModel_, &FastoCommonModel::changedValue, server.get(), &IServer::changeValue, Qt::DirectConnection));
-        VERIFY(connect(server.get(), &IServer::startedChangeDbValue, this, &OutputWidget::startChangeDbValue, Qt::DirectConnection));
-        VERIFY(connect(server.get(), &IServer::finishedChangeDbValue, this, &OutputWidget::finishChangeDbValue, Qt::DirectConnection));
+        VERIFY(connect(commonModel_, &FastoCommonModel::changedValue, server, &IServer::changeValue, Qt::DirectConnection));
+        VERIFY(connect(server, &IServer::startedChangeDbValue, this, &OutputWidget::startChangeDbValue, Qt::DirectConnection));
+        VERIFY(connect(server, &IServer::finishedChangeDbValue, this, &OutputWidget::finishChangeDbValue, Qt::DirectConnection));
 
         treeView_ = new FastoTreeView;
         treeView_->setModel(commonModel_);

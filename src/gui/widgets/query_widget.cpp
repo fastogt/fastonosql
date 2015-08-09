@@ -13,7 +13,7 @@ namespace fastonosql
         : QWidget(parent)
     {
         shellWidget_ = new BaseShellWidget(server);
-        outputWidget_ = new OutputWidget(server);
+        outputWidget_ = new OutputWidget(server.get());
 
         VERIFY(connect(shellWidget_, &BaseShellWidget::rootCreated, outputWidget_, &OutputWidget::rootCreate));
         VERIFY(connect(shellWidget_, &BaseShellWidget::rootCompleated, outputWidget_, &OutputWidget::rootCompleate));

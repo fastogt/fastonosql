@@ -9,6 +9,7 @@ namespace fastonosql
     {
         DCHECK(server);
         DCHECK(info);
+        DCHECK(server->type() == info->type());
     }
 
     IDatabase::~IDatabase()
