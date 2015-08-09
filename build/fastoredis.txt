@@ -6,6 +6,6 @@
 -DBRANDING_PROJECT_NAME:STRING=FastoRedis 
 -DBRANDING_PROJECT_VERSION:STRING=0.7.5.0 
 -DBRANDING_PROJECT_DOMAIN:STRING=www.fastoredis.com 
--DBRANDING_PROJECT_GITHUB_FORK:STRING=www.github.com/fasto/fastoredis 
--DBRANDING_PROJECT_GITHUB_ISSUES:STRING=www.github.com/fasto/fastoredis/issues 
+-DBRANDING_PROJECT_GITHUB_FORK:STRING=www.github.com/fastogt/fastoredis 
+-DBRANDING_PROJECT_GITHUB_ISSUES:STRING=www.github.com/fastogt/fastoredis/issues 
 -DBRANDING_PROJECT_CHANGELOG_FILE:STRING=../fastoredis_changelog.txt 

@@ -30,7 +30,6 @@ extern "C" {
     #include "sds.h"
 }
 
-#include "third-party/redis/src/release.h"
 #include "third-party/redis/src/version.h"
 #include <hiredis/hiredis.h>
 
@@ -96,30 +95,6 @@ extern "C" {
 
 namespace
 {
-    const char *redisGitSHA1(void)
-    {
-        return REDIS_GIT_SHA1;
-    }
-
-    const char *redisGitDirty(void)
-    {
-        return REDIS_GIT_DIRTY;
-    }
-
-    sds cliVersion()
-    {
-        sds version = sdscatprintf(sdsempty(), "%s", REDIS_VERSION);
-
-        /* Add git commit and working tree status when available */
-        if (strtoll(redisGitSHA1(), NULL, 16)) {
-            version = sdscatprintf(version, " (git:%s", redisGitSHA1());
-            if (strtoll(redisGitDirty(), NULL, 10))
-                version = sdscatprintf(version, "-dirty");
-            version = sdscat(version, ")");
-        }
-        return version;
-    }
-
     typedef struct{
         int type;
         int argc;
@@ -1454,20 +1429,13 @@ namespace fastonosql
                 return common::make_error_value("Invalid input argument", common::ErrorValue::E_ERROR);
             }
 
-            sds version = cliVersion();
-            char buff[512] = {0};
-            common::SNPrintf(buff, sizeof(buff),
-                PROJECT_NAME" based on redis-cli %s\r\n"
-                "Type: \"help @<group>\" to get a list of commands in <group>\r\n"
-                "      \"help <command>\" for help on <command>\r\n"
-                "      \"help <tab>\" to get a list of possible help topics\r\n"
-                "      \"quit\" to exit",
-                version
-            );
-            common::StringValue *val = common::Value::createStringValue(buff);
+            common::StringValue *val = common::Value::createStringValue(PROJECT_NAME_TITLE " based on hiredis " REDIS_VERSION "\r\n"
+                                                                        "Type: \"help @<group>\" to get a list of commands in <group>\r\n"
+                                                                        "      \"help <command>\" for help on <command>\r\n"
+                                                                        "      \"help <tab>\" to get a list of possible help topics\r\n"
+                                                                        "      \"quit\" to exit");
             FastoObject* child = new FastoObject(out, val, config_.mb_delim_);
             out->addChildren(child);
-            sdsfree(version);
 
             return common::ErrorValueSPtr();
         }

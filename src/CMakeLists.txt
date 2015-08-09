@@ -202,7 +202,7 @@ IF(BUILD_WITH_REDIS)
         core/redis/redis_settings.cpp
         core/redis/redis_cluster_settings.cpp
     )
-    SET(OBJECT_LIBS ${OBJECT_LIBS} $<TARGET_OBJECTS:redis_cli> $<TARGET_OBJECTS:libssh2>)
+    SET(OBJECT_LIBS ${OBJECT_LIBS} $<TARGET_OBJECTS:hiredis> $<TARGET_OBJECTS:libssh2>)
 ENDIF(BUILD_WITH_REDIS)
 
 #memcached

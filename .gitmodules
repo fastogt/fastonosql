@@ -1,9 +1,9 @@
 [submodule "cmake"]
 	path = cmake
-	url = https://github.com/fasto/cmake.git
+	url = https://github.com/fastogt/cmake.git
 [submodule "src/fasto"]
 	path = src/fasto
-	url = https://github.com/fasto/fasto.git
+	url = https://github.com/fastogt/fasto.git
 [submodule "src/third-party/leveldb/src"]
 	path = src/third-party/leveldb/src
-	url = https://github.com/fasto/leveldb
+	url = https://github.com/fastogt/leveldb

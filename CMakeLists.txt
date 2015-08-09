@@ -12,8 +12,8 @@ SET(BRANDING_PROJECT_COMPANYNAME_DOMAIN "www.fastogt.com" CACHE STRING "Internet
 SET(BRANDING_PROJECT_MAINTAINER_MAIL "atopilski@fastogt.com" CACHE STRING "Internet mail address mainteiner of ${BRANDING_PROJECT_NAME}") #default
 SET(BRANDING_PROJECT_MAINTAINER_NAME "Alexandr Topilski" CACHE STRING "Name of mainteiner for ${BRANDING_PROJECT_NAME}") #default
 
-SET(BRANDING_PROJECT_GITHUB_FORK "www.github.com/fasto/fastonosql" CACHE STRING "Branding fork url for ${BRANDING_PROJECT_NAME}") #default
-SET(BRANDING_PROJECT_GITHUB_ISSUES "www.github.com/fasto/fastonosql/issues" CACHE STRING "Branding issues url for ${BRANDING_PROJECT_NAME}") #default
+SET(BRANDING_PROJECT_GITHUB_FORK "www.github.com/fastogt/fastonosql" CACHE STRING "Branding fork url for ${BRANDING_PROJECT_NAME}") #default
+SET(BRANDING_PROJECT_GITHUB_ISSUES "www.github.com/fastogt/fastonosql/issues" CACHE STRING "Branding issues url for ${BRANDING_PROJECT_NAME}") #default
 
 SET(BRANDING_PROJECT_BREF_DESCRIPTION "Cross-platform open source Redis, Memcached, SSDB, LevelDB management tool."
     CACHE STRING "Bref description for ${BRANDING_PROJECT_NAME}")
