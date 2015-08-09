@@ -380,8 +380,10 @@ namespace fastonosql
 
     void BaseShellWidget::updateDefaultDatabase(DataBaseInfoSPtr dbs)
     {
-        std::string name = dbs->name();
-        dbName_->setText(common::convertFromString<QString>(name));
+        if(dbs){
+            std::string name = dbs->name();
+            dbName_->setText(common::convertFromString<QString>(name));
+        }
     }
 
     void BaseShellWidget::syncConnectionActions()

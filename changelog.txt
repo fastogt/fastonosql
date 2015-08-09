@@ -8,6 +8,7 @@
 - SSDB update sources, added command support(qpush, qpop, qslice, qclear)
 - TTL calculate for key
 - Redis driver code optimization
+- Fix crash lined with double-clicked in settings dialog
 
 0.1.4 / Jule 29, 2015
 - Display db name in console
