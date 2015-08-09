@@ -177,6 +177,7 @@ namespace fastonosql
         savebar_->setEnabled(isValidType);
         listWidget_->selectionModel()->clear();
         listWidget_->setEnabled(isValidType);
+        logging_->setEnabled(isValidType);
         itemSelectionChanged();
     }
 

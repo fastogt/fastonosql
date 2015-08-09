@@ -243,6 +243,7 @@ namespace fastonosql
         useSsh_->setEnabled(isValidType);
         updateSshControls(isValidType);
         testButton_->setEnabled(isValidType);
+        logging_->setEnabled(isValidType);
     }
 
     void ConnectionDialog::securityChange(const QString& )

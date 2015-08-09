@@ -1,4 +1,4 @@
-0.7.5 
+0.7.5 / August 10, 2015
 [Alexandr Topilski]
 - Update libssh2 sources
 - Resolve ssh_address for Redis connection

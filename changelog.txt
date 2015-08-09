@@ -1,4 +1,4 @@
-0.2.4
+0.2.4 / August 10, 2015
 [Alexandr Topilski]
 - LevelDB database support http://leveldb.org/
 - Info and history for LevelDB
