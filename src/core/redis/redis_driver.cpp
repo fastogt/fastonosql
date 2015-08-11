@@ -24,9 +24,11 @@
 #include <errno.h>
 #include <fcntl.h>
 #include <unistd.h>
+#ifdef OS_POSIX
 #include <sys/socket.h>
 #include <netinet/in.h>
 #include <netinet/tcp.h>
+#endif
 
 extern "C" {
     #include "sds.h"
