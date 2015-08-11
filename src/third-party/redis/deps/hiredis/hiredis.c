@@ -1,6 +1,8 @@
 /*
  * Copyright (c) 2009-2011, Salvatore Sanfilippo <antirez at gmail dot com>
- * Copyright (c) 2010-2011, Pieter Noordhuis <pcnoordhuis at gmail dot com>
+ * Copyright (c) 2010-2014, Pieter Noordhuis <pcnoordhuis at gmail dot com>
+ * Copyright (c) 2015, Matt Stancliff <matt at genges dot com>,
+ *                     Jan-Erik Rediger <janerik at fnordig dot com>
  *
  * All rights reserved.
  *
@@ -209,7 +211,7 @@ static uint32_t countDigits(uint64_t v) {
     if (v < 10000) return result + 3;
     v /= 10000U;
     result += 4;
-        }
+  }
 }
 
 /* Helper that calculates the bulk length given a certain string length. */
@@ -436,12 +438,12 @@ memory_err:
 
 cleanup:
     if (curargv) {
-    while(argc--)
-        sdsfree(curargv[argc]);
-    free(curargv);
+        while(argc--)
+            sdsfree(curargv[argc]);
+        free(curargv);
     }
 
-        sdsfree(curarg);
+    sdsfree(curarg);
 
     /* No need to check cmd since it is the last statement that can fail,
      * but do it anyway to be as defensive as possible. */
@@ -610,6 +612,10 @@ static redisContext *redisContextInit(void) {
     c->errstr[0] = '\0';
     c->obuf = sdsempty();
     c->reader = redisReaderCreate();
+    c->tcp.host = NULL;
+    c->tcp.source_addr = NULL;
+    c->unix_sock.path = NULL;
+    c->timeout = NULL;
 
     if (c->obuf == NULL || c->reader == NULL) {
         redisFree(c);
@@ -642,14 +648,50 @@ void redisFree(redisContext *c) {
         sdsfree(c->obuf);
     if (c->reader != NULL)
         redisReaderFree(c->reader);
+    if (c->tcp.host)
+        free(c->tcp.host);
+    if (c->tcp.source_addr)
+        free(c->tcp.source_addr);
+    if (c->unix_sock.path)
+        free(c->unix_sock.path);
+    if (c->timeout)
+        free(c->timeout);
     free(c);
 }
 
 int redisFreeKeepFd(redisContext *c) {
-	int fd = c->fd;
-	c->fd = -1;
-	redisFree(c);
-	return fd;
+    int fd = c->fd;
+    c->fd = -1;
+    redisFree(c);
+    return fd;
+}
+
+int redisReconnect(redisContext *c) {
+    c->err = 0;
+    memset(c->errstr, '\0', strlen(c->errstr));
+
+    if (c->fd > 0) {
+        close(c->fd);
+    }
+
+    sdsfree(c->obuf);
+    redisReaderFree(c->reader);
+
+    c->obuf = sdsempty();
+    c->reader = redisReaderCreate();
+
+    if (c->connection_type == REDIS_CONN_TCP) {
+        return redisContextConnectBindTcp(c, c->tcp.host, c->tcp.port,
+                c->timeout, c->tcp.source_addr);
+    } else if (c->connection_type == REDIS_CONN_UNIX) {
+        return redisContextConnectUnix(c, c->unix_sock.path, c->timeout);
+    } else {
+        /* Something bad happened here and shouldn't have. There isn't
+           enough information in the context to reconnect. */
+        __redisSetError(c,REDIS_ERR_OTHER,"Not enough information to reconnect");
+    }
+
+    return REDIS_ERR;
 }
 
 /* Connect to a Redis instance. On error the field error in the returned
