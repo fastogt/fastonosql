@@ -308,6 +308,11 @@ namespace fastonosql
 
     const std::vector<QString> redisTypesKeywords(commandGroups, commandGroups + sizeof(commandGroups)/sizeof(char*));
     const std::vector<QString> redisCommandsKeywords(commandHelp, commandHelp + sizeof(commandHelp)/sizeof(struct commandHelp));
+    const std::vector<QString> redisSentinelKeywords = {
+        "SENTINEL MASTERS", "SENTINEL MASTER", "SENTINEL SLAVES", "SENTINEL SENTINELS",
+        "SENTINEL GET-MASTER-ADDR-BY-NAME", "SENTINEL RESET", "SENTINEL FAILOVER", "SENTINEL CKQUORUM",
+        "SENTINEL FLUSHCONFIG"
+    };
 
     namespace
     {

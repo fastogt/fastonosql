@@ -32,8 +32,15 @@ namespace fastonosql
                 }
             }
 
+            for(std::vector<QString>::const_iterator jt = redisSentinelKeywords.begin(); jt != redisSentinelKeywords.end(); ++jt){
+                QString jval = *jt;
+                if(jval.startsWith(val, Qt::CaseInsensitive) || (val == ALL_COMMANDS && context.size() == 1) ){
+                    list.append(jval + "?3");
+                }
+            }
+
             if(help.startsWith(val, Qt::CaseInsensitive) || (val == ALL_COMMANDS && context.size() == 1) ){
-                list.append(help + "?3");
+                list.append(help + "?4");
             }
         }
         NOOP();
@@ -70,6 +77,8 @@ namespace fastonosql
             return "Command";
         case Types:
             return "Types";
+        case Sentinel:
+            return "Sentinel commands";
         case HelpKeyword:
             return "HelpKeyword";
         }
@@ -94,6 +103,7 @@ namespace fastonosql
 
         paintCommands(source, start);
         paintTypes(source, start);
+        paintSentinelCommands(source, start);
 
         int index = 0;
         int begin = 0;
@@ -115,6 +125,8 @@ namespace fastonosql
                 return Qt::red;
             case Types:
                 return Qt::blue;
+            case Sentinel:
+                return Qt::darkGreen;
             case HelpKeyword:
                 return Qt::red;
         }
@@ -149,6 +161,22 @@ namespace fastonosql
 
                 startStyling(start + begin);
                 setStyling(word.length(), Types);
+                startStyling(start + begin);
+            }
+        }
+    }
+
+    void RedisLexer::paintSentinelCommands(const QString& source, int start)
+    {
+        for(std::vector<QString>::const_iterator it = redisSentinelKeywords.begin(); it != redisSentinelKeywords.end(); ++it){
+            QString word = *it;
+            int index = 0;
+            int begin = 0;
+            while( (begin = source.indexOf(word, index, Qt::CaseInsensitive)) != -1){
+                index = begin + word.length();
+
+                startStyling(start + begin);
+                setStyling(word.length(), Sentinel);
                 startStyling(start + begin);
             }
         }

@@ -1,6 +1,7 @@
 0.7.6
 [Alexandr Topilski]
 - Update hiredis sources
+- Sentinel commands support
 
 0.7.5 / August 10, 2015
 [Alexandr Topilski]

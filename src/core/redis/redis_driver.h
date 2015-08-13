@@ -8,6 +8,7 @@ namespace fastonosql
 {
     extern const std::vector<QString> redisTypesKeywords;
     extern const std::vector<QString> redisCommandsKeywords;
+    extern const std::vector<QString> redisSentinelKeywords;
 
     common::ErrorValueSPtr testConnection(RedisConnectionSettings* settings);
     common::ErrorValueSPtr discoveryConnection(RedisConnectionSettings* settings, std::vector<ServerDiscoveryInfoSPtr>& infos);
