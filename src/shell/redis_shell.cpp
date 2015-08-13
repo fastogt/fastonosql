@@ -4,6 +4,8 @@
 
 #include "gui/gui_factory.h"
 
+#include <Qsci/qsciscintilla.h>
+
 namespace fastonosql
 {
     RedisShell::RedisShell(bool showAutoCompl, QWidget* parent)

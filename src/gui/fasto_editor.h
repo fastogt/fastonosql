@@ -64,6 +64,9 @@ namespace fastonosql
 
         void setAllCommands(const QString& allCommands);
         void setLexer(QsciLexer *lexer);
+        void setCallTipsStyle(int style);
+        void sendScintilla(unsigned int msg, unsigned long wParam = 0,
+                           long lParam = 0);
 
         virtual void keyPressEvent(QKeyEvent* e);
         virtual bool eventFilter(QObject* object, QEvent* event);

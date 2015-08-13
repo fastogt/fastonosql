@@ -8,6 +8,23 @@
 
 namespace fastonosql
 {
+    struct CommandInfo
+    {
+        CommandInfo(const std::string& name, const std::string& params,
+                    const std::string& summary, const std::string& since = std::string(),
+                    const std::string& example = std::string())
+            : name_(name), params_(params), summary_(summary), since_(since), example_(example)
+        {
+
+        }
+
+        const std::string name_;
+        const std::string params_;
+        const std::string summary_;
+        const std::string since_;
+        const std::string example_;
+    };
+
     template<connectionTypes ct>
     struct DBTraits
     {

@@ -6,7 +6,15 @@
 
 namespace fastonosql
 {
-    static const QString leveldbCommandsKeywords[] = { "put", "get", "del", "keys", "info", "quit" };
+    static const CommandInfo leveldbCommands[] =
+    {
+        CommandInfo("PUT", "<key> <value>", "Set the value of a key."),
+        CommandInfo("GET", "<key>", "Get the value of a key."),
+        CommandInfo("DEL", "<key>", "Delete key."),
+        CommandInfo("KEYS", "<key_start> <key_end> <limit>", "Find all keys matching the given limits."),
+        CommandInfo("INFO", "<args>", "These command return database information."),
+        CommandInfo("QUIT", "-", "Close the connection.")
+    };
 
     common::ErrorValueSPtr testConnection(LeveldbConnectionSettings* settings);
 

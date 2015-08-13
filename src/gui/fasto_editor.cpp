@@ -135,6 +135,16 @@ namespace fastonosql
         scin_->setAutoCompletionCaseSensitivity(false);
     }
 
+    void FastoEditor::setCallTipsStyle(int style)
+    {
+        scin_->setCallTipsStyle((QsciScintilla::CallTipsStyle)style);
+    }
+
+    void FastoEditor::sendScintilla(unsigned int msg, unsigned long wParam, long lParam)
+    {
+        scin_->SendScintilla(msg, wParam, lParam);
+    }
+
     void FastoEditor::keyPressEvent(QKeyEvent* keyEvent)
     {
         bool isFocusScin = scin_->isActiveWindow();

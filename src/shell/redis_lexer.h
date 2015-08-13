@@ -1,14 +1,11 @@
 #pragma once
 
-#include <Qsci/qsciabstractapis.h>
-#include <Qsci/qscilexercustom.h>
-
-#define ALL_COMMANDS "ALL_COMMANDS"
+#include "shell/base_lexer.h"
 
 namespace fastonosql
 {
     class RedisApi
-            : public QsciAbstractAPIs
+            : public BaseQsciApi
     {
         Q_OBJECT
     public:
@@ -19,7 +16,7 @@ namespace fastonosql
     };
 
     class RedisLexer
-            : public QsciLexerCustom
+            : public BaseQsciLexer
     {
         Q_OBJECT
     public:
@@ -39,6 +36,7 @@ namespace fastonosql
         virtual QString description(int style) const;
         virtual void styleText(int start, int end);
         virtual QColor defaultColor(int style) const;
+        virtual const char *wordCharacters() const;
 
     private:
         void paintCommands(const QString& source, int start);

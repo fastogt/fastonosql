@@ -2,6 +2,7 @@
 [Alexandr Topilski]
 - Update hiredis sources
 - Sentinel commands support
+- Calltips for commands
 
 0.7.5 / August 10, 2015
 [Alexandr Topilski]

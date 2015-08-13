@@ -10,7 +10,7 @@ namespace
 namespace fastonosql
 {
     SsdbApi::SsdbApi(QsciLexer *lexer)
-        : QsciAbstractAPIs(lexer)
+        : BaseQsciApi(lexer)
     {
     }
 
@@ -18,8 +18,9 @@ namespace fastonosql
     {
         for(QStringList::const_iterator it = context.begin(); it != context.end(); ++it){
             QString val = *it;
-            for(int i = 0; i < SIZEOFMASS(ssdbCommandsKeywords); ++i){
-                QString jval = ssdbCommandsKeywords[i];
+            for(int i = 0; i < SIZEOFMASS(ssdbCommands); ++i){
+                CommandInfo cmd = ssdbCommands[i];
+                QString jval = common::convertFromString<QString>(cmd.name_);
                 if(jval.startsWith(val, Qt::CaseInsensitive) || (val == ALL_COMMANDS && context.size() == 1) ){
                     list.append(jval + "?1");
                 }
@@ -33,11 +34,22 @@ namespace fastonosql
 
     QStringList SsdbApi::callTips(const QStringList& context, int commas, QsciScintilla::CallTipsStyle style, QList<int>& shifts)
     {
+        for(QStringList::const_iterator it = context.begin(); it != context.end() - 1; ++it){
+            QString val = *it;
+            for(int i = 0; i < SIZEOFMASS(ssdbCommands); ++i){
+                CommandInfo cmd = ssdbCommands[i];
+                QString jval = common::convertFromString<QString>(cmd.name_);
+                if(QString::compare(jval, val, Qt::CaseInsensitive) == 0){
+                    return QStringList() << makeCallTip(cmd);
+                }
+            }
+        }
+
         return QStringList();
     }
 
     SsdbLexer::SsdbLexer(QObject* parent)
-        : QsciLexerCustom(parent)
+        : BaseQsciLexer(parent)
     {
         setAPIs(new SsdbApi(this));
     }
@@ -111,8 +123,9 @@ namespace fastonosql
 
     void SsdbLexer::paintCommands(const QString& source, int start)
     {
-        for(int i = 0; i < SIZEOFMASS(ssdbCommandsKeywords); ++i){
-            QString word = ssdbCommandsKeywords[i];
+        for(int i = 0; i < SIZEOFMASS(ssdbCommands); ++i){
+            CommandInfo cmd = ssdbCommands[i];
+            QString word = common::convertFromString<QString>(cmd.name_);
             int index = 0;
             int begin = 0;
             while( (begin = source.indexOf(word, index, Qt::CaseInsensitive)) != -1){

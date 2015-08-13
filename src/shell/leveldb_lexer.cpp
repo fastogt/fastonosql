@@ -10,7 +10,7 @@ namespace
 namespace fastonosql
 {
     LeveldbApi::LeveldbApi(QsciLexer *lexer)
-        : QsciAbstractAPIs(lexer)
+        : BaseQsciApi(lexer)
     {
     }
 
@@ -18,8 +18,9 @@ namespace fastonosql
     {
         for(QStringList::const_iterator it = context.begin(); it != context.end(); ++it){
             QString val = *it;
-            for(int i = 0; i < SIZEOFMASS(leveldbCommandsKeywords); ++i){
-                QString jval = leveldbCommandsKeywords[i];
+            for(int i = 0; i < SIZEOFMASS(leveldbCommands); ++i){
+                CommandInfo cmd = leveldbCommands[i];
+                QString jval = common::convertFromString<QString>(cmd.name_);
                 if(jval.startsWith(val, Qt::CaseInsensitive) || (val == ALL_COMMANDS && context.size() == 1) ){
                     list.append(jval + "?1");
                 }
@@ -33,11 +34,22 @@ namespace fastonosql
 
     QStringList LeveldbApi::callTips(const QStringList& context, int commas, QsciScintilla::CallTipsStyle style, QList<int>& shifts)
     {
+        for(QStringList::const_iterator it = context.begin(); it != context.end() - 1; ++it){
+            QString val = *it;
+            for(int i = 0; i < SIZEOFMASS(leveldbCommands); ++i){
+                CommandInfo cmd = leveldbCommands[i];
+                QString jval = common::convertFromString<QString>(cmd.name_);
+                if(QString::compare(jval, val, Qt::CaseInsensitive) == 0){
+                    return QStringList() << makeCallTip(cmd);
+                }
+            }
+        }
+
         return QStringList();
     }
 
     LeveldbLexer::LeveldbLexer(QObject* parent)
-        : QsciLexerCustom(parent)
+        : BaseQsciLexer(parent)
     {
         setAPIs(new LeveldbApi(this));
     }
@@ -54,14 +66,13 @@ namespace fastonosql
 
     QString LeveldbLexer::description(int style) const
     {
-        switch (style)
-        {
-        case Default:
-             return "Default";
-        case Command:
-            return "Command";
-        case HelpKeyword:
-            return "HelpKeyword";
+        switch (style) {
+            case Default:
+                 return "Default";
+            case Command:
+                return "Command";
+            case HelpKeyword:
+                return "HelpKeyword";
         }
 
         return QString(style);
@@ -111,8 +122,9 @@ namespace fastonosql
 
     void LeveldbLexer::paintCommands(const QString& source, int start)
     {
-        for(int i = 0; i < SIZEOFMASS(leveldbCommandsKeywords); ++i){
-            QString word = leveldbCommandsKeywords[i];
+        for(int i = 0; i < SIZEOFMASS(leveldbCommands); ++i){
+            CommandInfo cmd = leveldbCommands[i];
+            QString word = common::convertFromString<QString>(cmd.name_);
             int index = 0;
             int begin = 0;
             while( (begin = source.indexOf(word, index, Qt::CaseInsensitive)) != -1){

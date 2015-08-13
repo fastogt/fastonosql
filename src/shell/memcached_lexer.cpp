@@ -10,7 +10,7 @@ namespace
 namespace fastonosql
 {
     MemcachedApi::MemcachedApi(QsciLexer *lexer)
-        : QsciAbstractAPIs(lexer)
+        : BaseQsciApi(lexer)
     {
     }
 
@@ -18,8 +18,9 @@ namespace fastonosql
     {
         for(QStringList::const_iterator it = context.begin(); it != context.end(); ++it){
             QString val = *it;
-            for(int i = 0; i < SIZEOFMASS(memcachedCommandsKeywords); ++i){
-                QString jval = memcachedCommandsKeywords[i];
+            for(int i = 0; i < SIZEOFMASS(memcachedCommands); ++i){
+                CommandInfo cmd = memcachedCommands[i];
+                QString jval = common::convertFromString<QString>(cmd.name_);
                 if(jval.startsWith(val, Qt::CaseInsensitive) || (val == ALL_COMMANDS && context.size() == 1) ){
                     list.append(jval + "?1");
                 }
@@ -33,11 +34,22 @@ namespace fastonosql
 
     QStringList MemcachedApi::callTips(const QStringList& context, int commas, QsciScintilla::CallTipsStyle style, QList<int>& shifts)
     {
+        for(QStringList::const_iterator it = context.begin(); it != context.end() - 1; ++it){
+            QString val = *it;
+            for(int i = 0; i < SIZEOFMASS(memcachedCommands); ++i){
+                CommandInfo cmd = memcachedCommands[i];
+                QString jval = common::convertFromString<QString>(cmd.name_);
+                if(QString::compare(jval, val, Qt::CaseInsensitive) == 0){
+                    return QStringList() << makeCallTip(cmd);
+                }
+            }
+        }
+
         return QStringList();
     }
 
     MemcachedLexer::MemcachedLexer(QObject* parent)
-        : QsciLexerCustom(parent)
+        : BaseQsciLexer(parent)
     {
         setAPIs(new MemcachedApi(this));
     }
@@ -111,8 +123,9 @@ namespace fastonosql
 
     void MemcachedLexer::paintCommands(const QString& source, int start)
     {
-        for(int i = 0; i < SIZEOFMASS(memcachedCommandsKeywords); ++i){
-            QString word = memcachedCommandsKeywords[i];
+        for(int i = 0; i < SIZEOFMASS(memcachedCommands); ++i){
+            CommandInfo cmd = memcachedCommands[i];
+            QString word = common::convertFromString<QString>(cmd.name_);
             int index = 0;
             int begin = 0;
             while( (begin = source.indexOf(word, index, Qt::CaseInsensitive)) != -1){

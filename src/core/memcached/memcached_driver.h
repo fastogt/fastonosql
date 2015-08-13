@@ -6,13 +6,28 @@
 
 namespace fastonosql
 {
-    static const QString memcachedCommandsKeywords[] = {"quit",
-                                                            "verbosity", "version", "stats", "flush_all",
-                                                            "delete", "decr", "incr", "prepend", "append", "replace",
-                                                            "add", "set", "get"};
-    //get [key]
-    //set [key] [value] [time-to-live-seconds] [flags]
-    //add
+    //TODO: cas command implementation
+    static const CommandInfo memcachedCommands[] =
+    {
+        CommandInfo("QUIT", "-", "Close the connection."),
+        CommandInfo("VERBOSITY", "<level>", "Change the verbosity ouptut of Memcached server."),
+        CommandInfo("VERSION", "-", "Return the Memcached server version."),
+        CommandInfo("STATS", "[<args>]", "These command can return various stats that we will explain."),
+        CommandInfo("FLUSH_ALL", "[<time>]", "Flush the server key/value pair (invalidating them) after a optional [<time>] period.\n"
+                                             "It always return OK"),
+        CommandInfo("DELETE", "<key> [<time>]", "Delete key/value pair in Memcached"),
+        CommandInfo("INCR", "<key> <value>", "Increment value associated with key in Memcached, item must exist, increment command will not create it.\n"
+                                             "The limit of increment is the 64 bit mark."),
+        CommandInfo("DECR", "<key> <value>", "Decrement value associated with key in Memcached, item must exist, decrement command will not create it."),
+        CommandInfo("PREPEND", "<key> <flags> <exptime> <bytes>", "Add value to an existing key before existing data.\n"
+                                                                  "Prepend does not take <flags> or <exptime> parameters but you must provide them!"),
+        CommandInfo("APPEND", "<key> <flags> <exptime> <value>", "Add value to an existing key after existing data.\n"
+                                                                 "Append does not take <flags> or <exptime> parameters but you must provide them!"),
+        CommandInfo("REPLACE", "<key> <flags> <exptime> <value>", "Store key/value pair in Memcached, but only if the server already hold data for this key."),
+        CommandInfo("ADD", "<key> <flags> <exptime> <value>", "Store key/value pair in Memcached, but only if the server doesn't already hold data for this key."),
+        CommandInfo("SET", "<key> <flags> <exptime> <value>", "Set the string value of a key."),
+        CommandInfo("GET", "<key>", "Get the value of a key.")
+    };
 
     common::ErrorValueSPtr testConnection(MemcachedConnectionSettings* settings);
 

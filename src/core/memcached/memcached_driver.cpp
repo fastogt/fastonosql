@@ -322,7 +322,7 @@ namespace fastonosql
                 return er;
             }
             else if(strcasecmp(argv[0], "add") == 0){
-                if(argc != 4){
+                if(argc != 5){
                     return common::make_error_value("Invalid add input argument", common::ErrorValue::E_ERROR);
                 }
 
@@ -335,7 +335,7 @@ namespace fastonosql
                 return er;
             }
             else if(strcasecmp(argv[0], "replace") == 0){
-                if(argc != 4){
+                if(argc != 5){
                     return common::make_error_value("Invalid replace input argument", common::ErrorValue::E_ERROR);
                 }
 
@@ -348,7 +348,7 @@ namespace fastonosql
                 return er;
             }
             else if(strcasecmp(argv[0], "append") == 0){
-                if(argc != 4){
+                if(argc != 5){
                     return common::make_error_value("Invalid append input argument", common::ErrorValue::E_ERROR);
                 }
 
@@ -400,11 +400,11 @@ namespace fastonosql
                 return er;
             }
             else if(strcasecmp(argv[0], "delete") == 0){
-                if(argc != 2){
+                if(argc != 2 || argc != 3){
                     return common::make_error_value("Invalid delete input argument", common::ErrorValue::E_ERROR);
                 }
 
-                common::ErrorValueSPtr er = del(argv[1]);
+                common::ErrorValueSPtr er = del(argv[1], argc == 3 ? atoll(argv[2]) : 0);
                 if(!er){
                     common::StringValue *val = common::Value::createStringValue("DELETED");
                     FastoObject* child = new FastoObject(out, val, config_.mb_delim_);
@@ -413,7 +413,7 @@ namespace fastonosql
                 return er;
             }
             else if(strcasecmp(argv[0], "flush_all") == 0){
-                if(argc < 3){
+                if(argc > 2){
                     return common::make_error_value("Invalid flush_all input argument", common::ErrorValue::E_ERROR);
                 }
 
@@ -567,10 +567,8 @@ namespace fastonosql
             return common::ErrorValueSPtr();
         }
 
-        common::ErrorValueSPtr del(const std::string& key)
+        common::ErrorValueSPtr del(const std::string& key, time_t expiration)
         {
-            time_t expiration = 0;
-
             memcached_return_t error = memcached_delete(memc_, key.c_str(), key.length(), expiration);
             if (error != MEMCACHED_SUCCESS){
                 char buff[1024] = {0};

@@ -10,7 +10,7 @@ namespace
 namespace fastonosql
 {
     RedisApi::RedisApi(QsciLexer* lexer)
-        : QsciAbstractAPIs(lexer)
+        : BaseQsciApi(lexer)
     {
     }
 
@@ -18,22 +18,25 @@ namespace fastonosql
     {
         for(QStringList::const_iterator it = context.begin(); it != context.end(); ++it){
             QString val = *it;
-            for(std::vector<QString>::const_iterator jt = redisCommandsKeywords.begin(); jt != redisCommandsKeywords.end(); ++jt){
-                QString jval = *jt;
+            for(std::vector<CommandInfo>::const_iterator jt = redisCommandsKeywords.begin(); jt != redisCommandsKeywords.end(); ++jt){
+                CommandInfo cmd = *jt;
+                QString jval = common::convertFromString<QString>(cmd.name_);
                 if(jval.startsWith(val, Qt::CaseInsensitive) || (val == ALL_COMMANDS && context.size() == 1) ){
                     list.append(jval + "?1");
                 }
             }
 
-            for(std::vector<QString>::const_iterator jt = redisTypesKeywords.begin(); jt != redisTypesKeywords.end(); ++jt){
-                QString jval = *jt;
+            for(std::vector<CommandInfo>::const_iterator jt = redisTypesKeywords.begin(); jt != redisTypesKeywords.end(); ++jt){
+                CommandInfo cmd = *jt;
+                QString jval = common::convertFromString<QString>(cmd.name_);
                 if(jval.startsWith(val, Qt::CaseInsensitive) || (val == ALL_COMMANDS && context.size() == 1) ){
                     list.append(jval + "?2");
                 }
             }
 
-            for(std::vector<QString>::const_iterator jt = redisSentinelKeywords.begin(); jt != redisSentinelKeywords.end(); ++jt){
-                QString jval = *jt;
+            for(int i = 0; i < SIZEOFMASS(redisSentinelCommands); ++i){
+                CommandInfo cmd = redisSentinelCommands[i];
+                QString jval = common::convertFromString<QString>(cmd.name_);
                 if(jval.startsWith(val, Qt::CaseInsensitive) || (val == ALL_COMMANDS && context.size() == 1) ){
                     list.append(jval + "?3");
                 }
@@ -43,16 +46,42 @@ namespace fastonosql
                 list.append(help + "?4");
             }
         }
-        NOOP();
     }
 
     QStringList RedisApi::callTips(const QStringList& context, int commas, QsciScintilla::CallTipsStyle style, QList<int>& shifts)
     {
+        for(QStringList::const_iterator it = context.begin(); it != context.end() - 1; ++it){
+            QString val = *it;
+            for(std::vector<CommandInfo>::const_iterator jt = redisCommandsKeywords.begin(); jt != redisCommandsKeywords.end(); ++jt){
+                CommandInfo cmd = *jt;
+                QString jval = common::convertFromString<QString>(cmd.name_);
+                if(QString::compare(jval, val, Qt::CaseInsensitive) == 0){
+                    return QStringList() << makeCallTip(cmd);
+                }
+            }
+
+            for(std::vector<CommandInfo>::const_iterator jt = redisTypesKeywords.begin(); jt != redisTypesKeywords.end(); ++jt){
+                CommandInfo cmd = *jt;
+                QString jval = common::convertFromString<QString>(cmd.name_);
+                if(QString::compare(jval, val, Qt::CaseInsensitive) == 0){
+                    return QStringList() << makeCallTip(cmd);
+                }
+            }
+
+            for(int i = 0; i < SIZEOFMASS(redisSentinelCommands); ++i){
+                CommandInfo cmd = redisSentinelCommands[i];
+                QString jval = common::convertFromString<QString>(cmd.name_);
+                if(QString::compare(jval, val, Qt::CaseInsensitive) == 0){
+                    return QStringList() << makeCallTip(cmd);
+                }
+            }
+        }
+
         return QStringList();
     }
 
     RedisLexer::RedisLexer(QObject* parent)
-        : QsciLexerCustom(parent)
+        : BaseQsciLexer(parent)
     {
         setAPIs(new RedisApi(this));
     }
@@ -65,6 +94,11 @@ namespace fastonosql
     const char* RedisLexer::version()
     {
         return RedisDriver::versionApi();
+    }
+
+    const char *RedisLexer::wordCharacters() const
+    {
+        return "_abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789";
     }
 
     QString RedisLexer::description(int style) const
@@ -136,8 +170,9 @@ namespace fastonosql
 
     void RedisLexer::paintCommands(const QString& source, int start)
     {
-        for(std::vector<QString>::const_iterator it = redisCommandsKeywords.begin(); it != redisCommandsKeywords.end(); ++it){
-            QString word = (*it);
+        for(std::vector<CommandInfo>::const_iterator it = redisCommandsKeywords.begin(); it != redisCommandsKeywords.end(); ++it){
+            CommandInfo cmd = *it;
+            QString word = common::convertFromString<QString>(cmd.name_);
             int index = 0;
             int begin = 0;
             while( (begin = source.indexOf(word, index, Qt::CaseInsensitive)) != -1){
@@ -152,8 +187,9 @@ namespace fastonosql
 
     void RedisLexer::paintTypes(const QString& source, int start)
     {
-        for(std::vector<QString>::const_iterator it = redisTypesKeywords.begin(); it != redisTypesKeywords.end(); ++it){
-            QString word = *it;
+        for(std::vector<CommandInfo>::const_iterator it = redisTypesKeywords.begin(); it != redisTypesKeywords.end(); ++it){
+            CommandInfo cmd = *it;
+            QString word = common::convertFromString<QString>(cmd.name_);
             int index = 0;
             int begin = 0;
             while( (begin = source.indexOf(word, index, Qt::CaseInsensitive)) != -1){
@@ -168,8 +204,9 @@ namespace fastonosql
 
     void RedisLexer::paintSentinelCommands(const QString& source, int start)
     {
-        for(std::vector<QString>::const_iterator it = redisSentinelKeywords.begin(); it != redisSentinelKeywords.end(); ++it){
-            QString word = *it;
+        for(int i = 0; i < SIZEOFMASS(redisSentinelCommands); ++i){
+            CommandInfo cmd = redisSentinelCommands[i];
+            QString word = common::convertFromString<QString>(cmd.name_);
             int index = 0;
             int begin = 0;
             while( (begin = source.indexOf(word, index, Qt::CaseInsensitive)) != -1){

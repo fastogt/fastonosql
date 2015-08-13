@@ -28,7 +28,6 @@ struct commandHelp {
   const char *summary;
   int group;
   const char *since;
-  operator const char *() const { return name; }
 } commandHelp[] = {
 #else
 struct commandHelp {

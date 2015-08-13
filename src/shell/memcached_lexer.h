@@ -1,14 +1,11 @@
 #pragma once
 
-#include <Qsci/qsciabstractapis.h>
-#include <Qsci/qscilexercustom.h>
-
-#define ALL_COMMANDS "ALL_COMMANDS"
+#include "shell/base_lexer.h"
 
 namespace fastonosql
 {
     class MemcachedApi
-            : public QsciAbstractAPIs
+            : public BaseQsciApi
     {
         Q_OBJECT
     public:
@@ -19,7 +16,7 @@ namespace fastonosql
     };
 
     class MemcachedLexer
-            : public QsciLexerCustom
+            : public BaseQsciLexer
     {
         Q_OBJECT
     public:
