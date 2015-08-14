@@ -24,8 +24,7 @@ namespace fastonosql
         {
             Default = 0,
             Command = 1,
-            Types = 2,
-            Sentinel = 3,
+            Sentinel = 2,
             HelpKeyword
         };
 
@@ -40,7 +39,6 @@ namespace fastonosql
 
     private:
         void paintCommands(const QString& source, int start);
-        void paintTypes(const QString& source, int start);
         void paintSentinelCommands(const QString& source, int start);
     };
 }

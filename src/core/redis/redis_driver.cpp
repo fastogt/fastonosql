@@ -306,31 +306,6 @@ namespace fastonosql
         }
     }
 
-    std::vector<CommandInfo> make_from_redis_types(const char **begin, const char **end)
-    {
-        std::vector<CommandInfo> result;
-
-        for(const char **cur = begin; cur != end; ++cur){
-            CommandInfo curcmd(*cur, "-", "type");
-            result.push_back(curcmd);
-        }
-        return result;
-    }
-
-    std::vector<CommandInfo> make_from_redis_commands(struct commandHelp *begin, struct commandHelp *end)
-    {
-        std::vector<CommandInfo> result;
-
-        for(struct commandHelp *cur = begin; cur != end; ++cur){
-            CommandInfo curcmd(cur->name, cur->params, cur->summary, cur->since);
-            result.push_back(curcmd);
-        }
-        return result;
-    }
-
-    const std::vector<CommandInfo> redisTypesKeywords = make_from_redis_types(commandGroups, commandGroups + sizeof(commandGroups)/sizeof(char*));
-    const std::vector<CommandInfo> redisCommandsKeywords = make_from_redis_commands(commandHelp, commandHelp + sizeof(commandHelp)/sizeof(struct commandHelp));
-
     namespace
     {
         common::ErrorValueSPtr createConnection(const redisConfig& config, const SSHInfo& sinfo, redisContext** context)

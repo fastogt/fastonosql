@@ -2,6 +2,25 @@
 
 namespace fastonosql
 {
+    CommandInfo::CommandInfo(const std::string& name, const std::string& params,
+                const std::string& summary, const std::string& since, const std::string& example,
+                             uint8_t required_arguments_count, uint8_t optional_arguments_count)
+        : name_(name), params_(params), summary_(summary), since_(since), example_(example),
+          required_arguments_count_(required_arguments_count), optional_arguments_count_(optional_arguments_count)
+    {
+
+    }
+
+    uint16_t CommandInfo::maxArgumentsCount() const
+    {
+        return required_arguments_count_ + optional_arguments_count_;
+    }
+
+    uint8_t CommandInfo::minArgumentsCount() const
+    {
+        return required_arguments_count_;
+    }
+
     NKey::NKey(const std::string& key, common::Value::Type type, int32_t ttl_msec)
         : key_(key), type_(type), ttl_msec_(ttl_msec)
     {

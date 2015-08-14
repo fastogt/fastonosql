@@ -18,19 +18,11 @@ namespace fastonosql
     {
         for(QStringList::const_iterator it = context.begin(); it != context.end(); ++it){
             QString val = *it;
-            for(std::vector<CommandInfo>::const_iterator jt = redisCommandsKeywords.begin(); jt != redisCommandsKeywords.end(); ++jt){
-                CommandInfo cmd = *jt;
+            for(int i = 0; i < SIZEOFMASS(redisCommands); ++i){
+                CommandInfo cmd = redisCommands[i];
                 QString jval = common::convertFromString<QString>(cmd.name_);
                 if(jval.startsWith(val, Qt::CaseInsensitive) || (val == ALL_COMMANDS && context.size() == 1) ){
                     list.append(jval + "?1");
-                }
-            }
-
-            for(std::vector<CommandInfo>::const_iterator jt = redisTypesKeywords.begin(); jt != redisTypesKeywords.end(); ++jt){
-                CommandInfo cmd = *jt;
-                QString jval = common::convertFromString<QString>(cmd.name_);
-                if(jval.startsWith(val, Qt::CaseInsensitive) || (val == ALL_COMMANDS && context.size() == 1) ){
-                    list.append(jval + "?2");
                 }
             }
 
@@ -38,12 +30,12 @@ namespace fastonosql
                 CommandInfo cmd = redisSentinelCommands[i];
                 QString jval = common::convertFromString<QString>(cmd.name_);
                 if(jval.startsWith(val, Qt::CaseInsensitive) || (val == ALL_COMMANDS && context.size() == 1) ){
-                    list.append(jval + "?3");
+                    list.append(jval + "?2");
                 }
             }
 
             if(help.startsWith(val, Qt::CaseInsensitive) || (val == ALL_COMMANDS && context.size() == 1) ){
-                list.append(help + "?4");
+                list.append(help + "?3");
             }
         }
     }
@@ -52,16 +44,8 @@ namespace fastonosql
     {
         for(QStringList::const_iterator it = context.begin(); it != context.end() - 1; ++it){
             QString val = *it;
-            for(std::vector<CommandInfo>::const_iterator jt = redisCommandsKeywords.begin(); jt != redisCommandsKeywords.end(); ++jt){
-                CommandInfo cmd = *jt;
-                QString jval = common::convertFromString<QString>(cmd.name_);
-                if(QString::compare(jval, val, Qt::CaseInsensitive) == 0){
-                    return QStringList() << makeCallTip(cmd);
-                }
-            }
-
-            for(std::vector<CommandInfo>::const_iterator jt = redisTypesKeywords.begin(); jt != redisTypesKeywords.end(); ++jt){
-                CommandInfo cmd = *jt;
+            for(int i = 0; i < SIZEOFMASS(redisCommands); ++i){
+                CommandInfo cmd = redisCommands[i];
                 QString jval = common::convertFromString<QString>(cmd.name_);
                 if(QString::compare(jval, val, Qt::CaseInsensitive) == 0){
                     return QStringList() << makeCallTip(cmd);
@@ -109,8 +93,6 @@ namespace fastonosql
              return "Default";
         case Command:
             return "Command";
-        case Types:
-            return "Types";
         case Sentinel:
             return "Sentinel commands";
         case HelpKeyword:
@@ -136,7 +118,6 @@ namespace fastonosql
         }
 
         paintCommands(source, start);
-        paintTypes(source, start);
         paintSentinelCommands(source, start);
 
         int index = 0;
@@ -157,8 +138,6 @@ namespace fastonosql
                 return Qt::black;
             case Command:
                 return Qt::red;
-            case Types:
-                return Qt::blue;
             case Sentinel:
                 return Qt::darkGreen;
             case HelpKeyword:
@@ -170,8 +149,8 @@ namespace fastonosql
 
     void RedisLexer::paintCommands(const QString& source, int start)
     {
-        for(std::vector<CommandInfo>::const_iterator it = redisCommandsKeywords.begin(); it != redisCommandsKeywords.end(); ++it){
-            CommandInfo cmd = *it;
+        for(int i = 0; i < SIZEOFMASS(redisCommands); ++i){
+            CommandInfo cmd = redisCommands[i];
             QString word = common::convertFromString<QString>(cmd.name_);
             int index = 0;
             int begin = 0;
@@ -180,23 +159,6 @@ namespace fastonosql
 
                 startStyling(start + begin);
                 setStyling(word.length(), Command);
-                startStyling(start + begin);
-            }
-        }
-    }
-
-    void RedisLexer::paintTypes(const QString& source, int start)
-    {
-        for(std::vector<CommandInfo>::const_iterator it = redisTypesKeywords.begin(); it != redisTypesKeywords.end(); ++it){
-            CommandInfo cmd = *it;
-            QString word = common::convertFromString<QString>(cmd.name_);
-            int index = 0;
-            int begin = 0;
-            while( (begin = source.indexOf(word, index, Qt::CaseInsensitive)) != -1){
-                index = begin + word.length();
-
-                startStyling(start + begin);
-                setStyling(word.length(), Types);
                 startStyling(start + begin);
             }
         }
