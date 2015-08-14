@@ -3,7 +3,7 @@
 namespace fastonosql
 {
     CommandInfo::CommandInfo(const std::string& name, const std::string& params,
-                const std::string& summary, const std::string& since, const std::string& example,
+                const std::string& summary, const uint32_t since, const std::string& example,
                              uint8_t required_arguments_count, uint8_t optional_arguments_count)
         : name_(name), params_(params), summary_(summary), since_(since), example_(example),
           required_arguments_count_(required_arguments_count), optional_arguments_count_(optional_arguments_count)

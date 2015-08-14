@@ -6,7 +6,8 @@
 
 #include "common/net/net.h"
 
-#define UNDEFINED_STR "Undefined"
+#define UNDEFINED_SINCE 0x000000
+#define UNDEFINED_SINCE_STR "Undefined"
 #define UNDEFINED_EXAMPLE_STR "Unspecified"
 #define INFINITE_COMMAND_ARGS UINT8_MAX
 
@@ -15,7 +16,7 @@ namespace fastonosql
     struct CommandInfo
     {
         CommandInfo(const std::string& name, const std::string& params,
-                    const std::string& summary, const std::string& since,
+                    const std::string& summary, const uint32_t since,
                     const std::string& example, uint8_t required_arguments_count, uint8_t optional_arguments_count);
 
         uint16_t maxArgumentsCount() const;
@@ -24,7 +25,7 @@ namespace fastonosql
         const std::string name_;
         const std::string params_;
         const std::string summary_;
-        const std::string since_;
+        const uint32_t since_;
         const std::string example_;
 
         const uint8_t required_arguments_count_;

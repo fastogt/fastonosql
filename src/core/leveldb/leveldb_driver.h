@@ -10,22 +10,22 @@ namespace fastonosql
     {
         CommandInfo("PUT", "<key> <value>",
                     "Set the value of a key.",
-                    UNDEFINED_STR, UNDEFINED_EXAMPLE_STR, 2, 0),
+                    UNDEFINED_SINCE, UNDEFINED_EXAMPLE_STR, 2, 0),
         CommandInfo("GET", "<key>",
                     "Get the value of a key.",
-                    UNDEFINED_STR, UNDEFINED_EXAMPLE_STR, 1, 0),
+                    UNDEFINED_SINCE, UNDEFINED_EXAMPLE_STR, 1, 0),
         CommandInfo("DEL", "<key>",
                     "Delete key.",
-                    UNDEFINED_STR, UNDEFINED_EXAMPLE_STR, 1, 0),
+                    UNDEFINED_SINCE, UNDEFINED_EXAMPLE_STR, 1, 0),
         CommandInfo("KEYS", "<key_start> <key_end> <limit>",
                     "Find all keys matching the given limits.",
-                    UNDEFINED_STR, UNDEFINED_EXAMPLE_STR, 3, 0),
+                    UNDEFINED_SINCE, UNDEFINED_EXAMPLE_STR, 3, 0),
         CommandInfo("INFO", "<args>",
                     "These command return database information.",
-                    UNDEFINED_STR, UNDEFINED_EXAMPLE_STR, 1, 0),
+                    UNDEFINED_SINCE, UNDEFINED_EXAMPLE_STR, 1, 0),
         CommandInfo("QUIT", "-",
                     "Close the connection.",
-                    UNDEFINED_STR, UNDEFINED_EXAMPLE_STR, 0, 0)
+                    UNDEFINED_SINCE, UNDEFINED_EXAMPLE_STR, 0, 0)
     };
 
     common::ErrorValueSPtr testConnection(LeveldbConnectionSettings* settings);
