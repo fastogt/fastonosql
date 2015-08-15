@@ -508,11 +508,6 @@ namespace fastonosql
         return common::net::hostAndPort(impl_->config_.hostip_, impl_->config_.hostport_);
     }
 
-    std::string LeveldbDriver::version() const
-    {
-        return versionApi();
-    }
-
     std::string LeveldbDriver::outputDelemitr() const
     {
         return impl_->config_.mb_delim_;
@@ -543,7 +538,6 @@ namespace fastonosql
 
     common::ErrorValueSPtr LeveldbDriver::currentLoggingInfo(ServerInfo **info)
     {
-        *info = NULL;
         LOG_COMMAND(Command(INFO_REQUEST, common::Value::C_INNER));
         LeveldbServerInfo::Stats cm;
         common::ErrorValueSPtr err = impl_->info(NULL, cm);
@@ -554,12 +548,17 @@ namespace fastonosql
         return err;
     }
 
-    common::ErrorValueSPtr LeveldbDriver::serverDiscoveryInfo(ServerDiscoveryInfo** dinfo)
+    common::ErrorValueSPtr LeveldbDriver::serverDiscoveryInfo(ServerInfo **sinfo, ServerDiscoveryInfo **dinfo)
     {
-        *dinfo = NULL;
+        ServerInfo *lsinfo = NULL;
+        common::ErrorValueSPtr er = currentLoggingInfo(&lsinfo);
+        if(er){
+            return er;
+        }
+
         FastoObjectIPtr root = FastoObject::createRoot(GET_SERVER_TYPE);
         LeveldbCommand* cmd = createCommand(root, GET_SERVER_TYPE, common::Value::C_INNER);
-        common::ErrorValueSPtr er = impl_->execute(cmd);
+        er = impl_->execute(cmd);
 
         if(!er){
             FastoObject::child_container_type ch = root->childrens();
@@ -567,6 +566,8 @@ namespace fastonosql
                 //*dinfo = makeOwnRedisDiscoveryInfo(ch[0]);
             }
         }
+
+        *sinfo = lsinfo;
         return er;
     }
 

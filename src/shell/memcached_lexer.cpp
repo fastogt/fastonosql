@@ -92,6 +92,11 @@ namespace fastonosql
         return result;
     }
 
+    uint32_t MemcachedLexer::commandsCount() const
+    {
+        return SIZEOFMASS(memcachedCommands);
+    }
+
     QString MemcachedLexer::description(int style) const
     {
         switch (style)

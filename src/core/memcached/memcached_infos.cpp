@@ -302,6 +302,11 @@ namespace fastonosql
         return str.str();
     }
 
+    uint32_t MemcachedServerInfo::version() const
+    {
+        return common::convertVersionNumberFromString(common_.version_);
+    }
+
     MemcachedServerInfo* makeMemcachedServerInfo(FastoObject* root)
     {
         const std::string content = common::convertToString(root);

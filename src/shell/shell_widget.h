@@ -73,8 +73,12 @@ namespace fastonosql
         void enterMode(const EventsInfo::EnterModeInfo& res);
         void leaveMode(const EventsInfo::LeaveModeInfo& res);
 
+        void startLoadDiscoveryInfo(const EventsInfo::DiscoveryInfoRequest& res);
+        void finishLoadDiscoveryInfo(const EventsInfo::DiscoveryInfoResponce& res);
+
     private:
         void syncConnectionActions();
+        void syncServerInfo(ServerInfoSPtr inf);
         void updateDefaultDatabase(DataBaseInfoSPtr dbs);
         void initShellByType(connectionTypes type);
 

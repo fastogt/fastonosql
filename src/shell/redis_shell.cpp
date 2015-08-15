@@ -12,7 +12,6 @@ namespace fastonosql
         RedisLexer* red = new RedisLexer(this);
 
         registerImage(RedisLexer::Command, GuiFactory::instance().commandIcon(REDIS).pixmap(QSize(64,64)));
-        registerImage(RedisLexer::Sentinel, GuiFactory::instance().commandIcon(REDIS).pixmap(QSize(64,64)));
         registerImage(RedisLexer::HelpKeyword, GuiFactory::instance().messageBoxQuestionIcon().pixmap(QSize(64,64)));
 
         setLexer(red);

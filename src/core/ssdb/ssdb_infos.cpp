@@ -165,6 +165,11 @@ namespace fastonosql
         return str.str();
     }
 
+    uint32_t SsdbServerInfo::version() const
+    {
+        return common::convertVersionNumberFromString(common_.version_);
+    }
+
     SsdbServerInfo* makeSsdbServerInfo(FastoObject* root)
     {
         const std::string content = common::convertToString(root);

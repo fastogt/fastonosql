@@ -135,7 +135,8 @@ namespace fastonosql
             typedef DiscoveryInfoRequest base_class;
             DiscoveryInfoResponce(const base_class &request);
 
-            ServerDiscoveryInfoSPtr info_;
+            ServerInfoSPtr sinfo_;
+            ServerDiscoveryInfoSPtr dinfo_;
         };
 
         struct EnterModeInfo

@@ -31,8 +31,10 @@ namespace fastonosql
 
         // sync methods
         connectionTypes connectionType() const;
-        ServerDiscoveryInfoSPtr serverDiscoveryInfo() const;
         IConnectionSettingsBaseSPtr settings() const;
+
+        ServerDiscoveryInfoSPtr serverDiscoveryInfo() const;
+        ServerInfoSPtr serverInfo() const;
         DataBaseInfoSPtr currentDatabaseInfo() const;
 
         void start();
@@ -43,7 +45,6 @@ namespace fastonosql
         virtual bool isConnected() const = 0;
         virtual bool isAuthenticated() const = 0;
         virtual common::net::hostAndPort address() const = 0;
-        virtual std::string version() const = 0;
         virtual std::string outputDelemitr() const = 0;        
 
     Q_SIGNALS:
@@ -110,7 +111,6 @@ namespace fastonosql
     private:
         // handle info events
         void handleLoadServerInfoHistoryEvent(events::ServerInfoHistoryRequestEvent *ev);
-
         void handleDiscoveryInfoRequestEvent(events::DiscoveryInfoRequestEvent* ev);
 
         // notification of execute events
@@ -120,7 +120,7 @@ namespace fastonosql
         // internal methods
         virtual common::ErrorValueSPtr currentLoggingInfo(ServerInfo** info) = 0;
         virtual ServerInfoSPtr makeServerInfoFromString(const std::string& val) = 0;
-        virtual common::ErrorValueSPtr serverDiscoveryInfo(ServerDiscoveryInfo** dinfo) = 0;
+        virtual common::ErrorValueSPtr serverDiscoveryInfo(ServerInfo** sinfo, ServerDiscoveryInfo** dinfo) = 0;
         virtual void initImpl() = 0;
         virtual void clearImpl() = 0;
 
@@ -135,7 +135,9 @@ namespace fastonosql
         DataBaseInfoSPtr currentDatabaseInfo_;        
 
     private:
+        ServerInfoSPtr serverInfo_;
         ServerDiscoveryInfoSPtr serverDiscInfo_;
+
         QThread* thread_;
         int timer_info_id_;
         common::file_system::File* log_file_;

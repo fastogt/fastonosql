@@ -324,7 +324,7 @@ namespace fastonosql
         InfoServerDialog infDialog(QString("%1 info").arg(server->name()), server->type(), this);
         VERIFY(connect(server.get(), &IServer::startedLoadServerInfo, &infDialog, &InfoServerDialog::startServerInfo));
         VERIFY(connect(server.get(), &IServer::finishedLoadServerInfo, &infDialog, &InfoServerDialog::finishServerInfo));
-        VERIFY(connect(&infDialog, &InfoServerDialog::showed, server.get(), &IServer::serverInfo));
+        VERIFY(connect(&infDialog, &InfoServerDialog::showed, server.get(), &IServer::loadServerInfo));
         infDialog.exec();
     }
 

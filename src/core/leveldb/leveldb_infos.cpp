@@ -163,6 +163,11 @@ namespace fastonosql
         return str.str();
     }
 
+    uint32_t LeveldbServerInfo::version() const
+    {
+        return 0;
+    }
+
     LeveldbServerInfo* makeLeveldbServerInfo(FastoObject* root)
     {
         const std::string content = common::convertToString(root);

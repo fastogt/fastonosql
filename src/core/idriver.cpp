@@ -125,6 +125,11 @@ namespace fastonosql
         return settings_;
     }
 
+    ServerInfoSPtr IDriver::serverInfo() const
+    {
+        return serverInfo_;
+    }
+
     DataBaseInfoSPtr IDriver::currentDatabaseInfo() const
     {
         return currentDatabaseInfo_;
@@ -433,10 +438,14 @@ namespace fastonosql
 
         if(isConnected()){
             ServerDiscoveryInfo* disc = NULL;
-            common::ErrorValueSPtr er = serverDiscoveryInfo(&disc);
+            ServerInfo* info = NULL;
+            common::ErrorValueSPtr er = serverDiscoveryInfo(&info, &disc);
             if(!er){
+               serverInfo_.reset(info);
                serverDiscInfo_.reset(disc);
-               res.info_ = serverDiscInfo_;
+
+               res.sinfo_ = serverInfo_;
+               res.dinfo_ = serverDiscInfo_;
             }
             else{
                 res.setErrorInfo(er);

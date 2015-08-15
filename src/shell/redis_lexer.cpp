@@ -30,20 +30,8 @@ namespace fastonosql
                 }
             }
 
-            for(int i = 0; i < SIZEOFMASS(redisSentinelCommands); ++i){
-                CommandInfo cmd = redisSentinelCommands[i];
-                if(canSkipCommand(cmd)){
-                    continue;
-                }
-
-                QString jval = common::convertFromString<QString>(cmd.name_);
-                if(jval.startsWith(val, Qt::CaseInsensitive)){
-                    list.append(jval + "?2");
-                }
-            }
-
             if(help.startsWith(val, Qt::CaseInsensitive)){
-                list.append(help + "?3");
+                list.append(help + "?2");
             }
         }
     }
@@ -54,15 +42,6 @@ namespace fastonosql
             QString val = *it;
             for(int i = 0; i < SIZEOFMASS(redisCommands); ++i){
                 CommandInfo cmd = redisCommands[i];
-                QString jval = common::convertFromString<QString>(cmd.name_);
-                if(QString::compare(jval, val, Qt::CaseInsensitive) == 0){
-                    return QStringList() << makeCallTip(cmd);
-                }
-            }
-
-            for(int i = 0; i < SIZEOFMASS(redisSentinelCommands); ++i){
-                CommandInfo cmd = redisSentinelCommands[i];
-
                 QString jval = common::convertFromString<QString>(cmd.name_);
                 if(QString::compare(jval, val, Qt::CaseInsensitive) == 0){
                     return QStringList() << makeCallTip(cmd);
@@ -108,25 +87,14 @@ namespace fastonosql
             }
         }
 
-        for(int i = 0; i < SIZEOFMASS(redisSentinelCommands); ++i){
-            CommandInfo cmd = redisSentinelCommands[i];
-
-            bool needed_insert = true;
-            for(int j = 0; j < result.size(); ++j){
-                if(result[j] == cmd.since_){
-                    needed_insert = false;
-                    break;
-                }
-            }
-
-            if(needed_insert){
-                result.push_back(cmd.since_);
-            }
-        }
-
         std::sort(result.begin(), result.end());
 
         return result;
+    }
+
+    uint32_t RedisLexer::commandsCount() const
+    {
+        return SIZEOFMASS(redisCommands);
     }
 
     QString RedisLexer::description(int style) const
@@ -137,8 +105,6 @@ namespace fastonosql
              return "Default";
         case Command:
             return "Command";
-        case Sentinel:
-            return "Sentinel commands";
         case HelpKeyword:
             return "HelpKeyword";
         }
@@ -162,7 +128,6 @@ namespace fastonosql
         }
 
         paintCommands(source, start);
-        paintSentinelCommands(source, start);
 
         int index = 0;
         int begin = 0;
@@ -182,8 +147,6 @@ namespace fastonosql
                 return Qt::black;
             case Command:
                 return Qt::red;
-            case Sentinel:
-                return Qt::darkGreen;
             case HelpKeyword:
                 return Qt::red;
         }
@@ -203,23 +166,6 @@ namespace fastonosql
 
                 startStyling(start + begin);
                 setStyling(word.length(), Command);
-                startStyling(start + begin);
-            }
-        }
-    }
-
-    void RedisLexer::paintSentinelCommands(const QString& source, int start)
-    {
-        for(int i = 0; i < SIZEOFMASS(redisSentinelCommands); ++i){
-            CommandInfo cmd = redisSentinelCommands[i];
-            QString word = common::convertFromString<QString>(cmd.name_);
-            int index = 0;
-            int begin = 0;
-            while( (begin = source.indexOf(word, index, Qt::CaseInsensitive)) != -1){
-                index = begin + word.length();
-
-                startStyling(start + begin);
-                setStyling(word.length(), Sentinel);
                 startStyling(start + begin);
             }
         }

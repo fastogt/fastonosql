@@ -40,6 +40,7 @@ namespace fastonosql
         IDriverSPtr driver() const;
         DataBaseInfoSPtr currentDatabaseInfo() const;
         ServerDiscoveryInfoSPtr discoveryInfo() const;
+        ServerInfoSPtr serverInfo() const;
         QString address() const;
         QString outputDelemitr() const;
         IDatabaseSPtr findDatabaseByInfo(DataBaseInfoSPtr inf) const;
@@ -130,7 +131,7 @@ namespace fastonosql
         void exportFromPath(const QString& path); //signals: startedExport, finishedExport
         void changePassword(const QString& oldPassword, const QString& newPassword); //signals: startedChangePassword, finishedChangePassword
         void setMaxConnection(int maxCon);//signals: startedChangeMaxConnection, finishedChangeMaxConnection
-        void serverInfo(); //signals: startedLoadServerInfo, finishedLoadServerInfo
+        void loadServerInfo(); //signals: startedLoadServerInfo, finishedLoadServerInfo
         void serverProperty(); //signals: startedLoadServerProperty, finishedLoadServerProperty
         void requestHistoryInfo(); //signals: startedLoadServerHistoryInfo, finishedLoadServerHistoryInfo
         void changeProperty(const PropertyType& newValue); //signals: startedChangeServerProperty, finishedChangeServerProperty

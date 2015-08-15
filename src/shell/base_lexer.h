@@ -29,6 +29,7 @@ namespace fastonosql
     public:
         virtual const char* version() const = 0;
         virtual std::vector<uint32_t> supportedVersions() const = 0;
+        virtual uint32_t commandsCount() const = 0;
 
     protected:
         BaseQsciLexer(QObject* parent = 0);

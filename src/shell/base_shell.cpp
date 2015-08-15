@@ -31,6 +31,17 @@ namespace fastonosql
         return std::vector<uint32_t>();
     }
 
+    uint32_t BaseShell::commandsCount() const
+    {
+        BaseQsciLexer* red = dynamic_cast<BaseQsciLexer*>(lexer());
+        DCHECK(red);
+        if(red){
+            return red->commandsCount();
+        }
+
+        return 0;
+    }
+
     void BaseShell::setFilteredVersion(uint32_t version)
     {
         BaseQsciLexer* red = dynamic_cast<BaseQsciLexer*>(lexer());

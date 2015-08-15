@@ -310,18 +310,6 @@ namespace fastonosql
         }
     }
 
-    const QIcon& GuiFactory::typeIcon(connectionTypes type) const
-    {
-        if(type == REDIS){
-            static QIcon comm(":" PROJECT_NAME_LOWERCASE "/images/64x64/redistype.png");
-            return comm;
-        }
-        else{
-            static QIcon comm(":" PROJECT_NAME_LOWERCASE "/images/64x64/redistype.png");
-            return comm;
-        }
-    }
-
     const QIcon& GuiFactory::successIcon() const
     {
         static QIcon suc(":" PROJECT_NAME_LOWERCASE "/images/64x64/success.png");
@@ -332,6 +320,12 @@ namespace fastonosql
     {
         static QIcon fail(":" PROJECT_NAME_LOWERCASE "/images/64x64/fail.png");
         return fail;
+    }
+
+    const QIcon& GuiFactory::unknownIcon() const
+    {
+        static QIcon unknown(":" PROJECT_NAME_LOWERCASE "/images/64x64/logging.png");
+        return unknown;
     }
 
     QFont GuiFactory::font() const

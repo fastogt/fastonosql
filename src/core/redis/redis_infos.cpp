@@ -898,6 +898,11 @@ namespace fastonosql
         return str.str();
     }
 
+    uint32_t RedisServerInfo::version() const
+    {
+        return common::convertVersionNumberFromString(server_.redis_version_);
+    }
+
     std::ostream& operator<<(std::ostream& out, const RedisServerInfo& value)
     {
         //"# Server", "# Clients", "# Memory", "# Persistence", "# Stats", "# Replication", "# CPU", "# Keyspace"

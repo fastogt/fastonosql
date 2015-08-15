@@ -24,15 +24,15 @@ namespace fastonosql
         {
             Default = 0,
             Command = 1,
-            Sentinel = 2,
             HelpKeyword
         };
 
         RedisLexer(QObject* parent = 0);
         virtual const char* language() const;
 
-        const char* version() const;
-        std::vector<uint32_t> supportedVersions() const;
+        virtual const char* version() const;
+        virtual std::vector<uint32_t> supportedVersions() const;
+        virtual uint32_t commandsCount() const;
 
         virtual QString description(int style) const;
         virtual void styleText(int start, int end);
@@ -40,6 +40,5 @@ namespace fastonosql
 
     private:
         void paintCommands(const QString& source, int start);
-        void paintSentinelCommands(const QString& source, int start);
     };
 }

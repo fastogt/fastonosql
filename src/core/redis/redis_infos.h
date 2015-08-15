@@ -259,6 +259,7 @@ namespace fastonosql
         RedisServerInfo(const Server &serv, const Clients &clients, const Memory &memory,
                    const Persistence &pers, const Stats &stats, const Replication &repl, const Cpu &cpu, const Keyspace &key);
         virtual std::string toString() const;
+        virtual uint32_t version() const;
     };
 
     std::ostream& operator<<(std::ostream& out, const RedisServerInfo& value);

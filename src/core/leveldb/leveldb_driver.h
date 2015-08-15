@@ -43,7 +43,6 @@ namespace fastonosql
         virtual bool isAuthenticated() const;
         virtual void interrupt();
         common::net::hostAndPort address() const;
-        std::string version() const;
         virtual std::string outputDelemitr() const;
 
         static const char* versionApi();
@@ -54,7 +53,7 @@ namespace fastonosql
         virtual void clearImpl();
 
         virtual common::ErrorValueSPtr currentLoggingInfo(ServerInfo** info);
-        virtual common::ErrorValueSPtr serverDiscoveryInfo(ServerDiscoveryInfo** dinfo);\
+        virtual common::ErrorValueSPtr serverDiscoveryInfo(ServerInfo** sinfo, ServerDiscoveryInfo** dinfo);
 
         virtual void handleConnectEvent(events::ConnectRequestEvent* ev);
         virtual void handleDisconnectEvent(events::DisconnectRequestEvent* ev);

@@ -93,6 +93,11 @@ namespace fastonosql
         return result;
     }
 
+    uint32_t LeveldbLexer::commandsCount() const
+    {
+        return SIZEOFMASS(leveldbCommands);
+    }
+
     QString LeveldbLexer::description(int style) const
     {
         switch (style) {

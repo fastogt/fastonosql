@@ -327,11 +327,8 @@ namespace fastonosql
         CommandInfo("ZSCORE", "<key> <member>",
                     "Get the score associated with the given member in a sorted set", PROJECT_VERSION_GENERATE(1,2,0), UNDEFINED_EXAMPLE_STR, 2, 0),
         CommandInfo("ZUNIONSTORE", "<destination> <numkeys> <key> [key ...] [WEIGHTS weight] [AGGREGATE SUM|MIN|MAX]",
-                    "Add multiple sorted sets and store the resulting sorted set in a new key", PROJECT_VERSION_GENERATE(2,0,0), UNDEFINED_EXAMPLE_STR, 3, 3)
-    };
+                    "Add multiple sorted sets and store the resulting sorted set in a new key", PROJECT_VERSION_GENERATE(2,0,0), UNDEFINED_EXAMPLE_STR, 3, 3),
 
-    const CommandInfo redisSentinelCommands[] =
-    {
         CommandInfo("SENTINEL MASTERS", "-",
                     "Show a list of monitored masters and their state.", UNDEFINED_SINCE, UNDEFINED_EXAMPLE_STR, 0, 0),
         CommandInfo("SENTINEL MASTER", "<master name>",
@@ -379,7 +376,19 @@ namespace fastonosql
                     "and is used in order to change configuration parameters of a specific master.\n"
                     "Multiple option / value pairs can be specified (or none at all).\n"
                     "All the configuration parameters that can be configured via "
-                    "sentinel.conf are also configurable using the SET command.", UNDEFINED_SINCE, UNDEFINED_EXAMPLE_STR, 3, 0)
+                    "sentinel.conf are also configurable using the SET command.", UNDEFINED_SINCE, UNDEFINED_EXAMPLE_STR, 3, 0),
+        CommandInfo("CLUSTER SLOTS", UNDEFINED_STR_IN_PROGRESS,
+                    UNDEFINED_STR_IN_PROGRESS, UNDEFINED_SINCE, UNDEFINED_EXAMPLE_STR, 0, 0),
+        CommandInfo("CLUSTER NODES", UNDEFINED_STR_IN_PROGRESS,
+                    UNDEFINED_STR_IN_PROGRESS, UNDEFINED_SINCE, UNDEFINED_EXAMPLE_STR, 0, 0),
+        CommandInfo("CLUSTER SLAVES", UNDEFINED_STR_IN_PROGRESS,
+                    UNDEFINED_STR_IN_PROGRESS, UNDEFINED_SINCE, UNDEFINED_EXAMPLE_STR, 0, 0),
+        CommandInfo("CLUSTER ADDSLOTS", UNDEFINED_STR_IN_PROGRESS,
+                    UNDEFINED_STR_IN_PROGRESS, UNDEFINED_SINCE, UNDEFINED_EXAMPLE_STR, 0, 0),
+        CommandInfo("CLUSTER REPLICATE", UNDEFINED_STR_IN_PROGRESS,
+                    UNDEFINED_STR_IN_PROGRESS, UNDEFINED_SINCE, UNDEFINED_EXAMPLE_STR, 0, 0),
+        CommandInfo("CLUSTER SETSLOT", UNDEFINED_STR_IN_PROGRESS,
+                    UNDEFINED_STR_IN_PROGRESS, UNDEFINED_SINCE, UNDEFINED_EXAMPLE_STR, 0, 0)
     };
 
     common::ErrorValueSPtr testConnection(RedisConnectionSettings* settings);
@@ -397,7 +406,6 @@ namespace fastonosql
         virtual bool isAuthenticated() const;
         virtual void interrupt();
         common::net::hostAndPort address() const;
-        std::string version() const;
         virtual std::string outputDelemitr() const;
 
         static const char* versionApi();
@@ -408,7 +416,7 @@ namespace fastonosql
         virtual void clearImpl();
 
         virtual common::ErrorValueSPtr currentLoggingInfo(ServerInfo** info);
-        virtual common::ErrorValueSPtr serverDiscoveryInfo(ServerDiscoveryInfo** dinfo);
+        virtual common::ErrorValueSPtr serverDiscoveryInfo(ServerInfo** sinfo, ServerDiscoveryInfo** dinfo);
 
         virtual void handleConnectEvent(events::ConnectRequestEvent* ev);
         virtual void handleDisconnectEvent(events::DisconnectRequestEvent* ev);

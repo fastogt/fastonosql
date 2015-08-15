@@ -56,10 +56,10 @@ namespace fastonosql
         const QIcon& close16Icon() const;
 
         const QIcon& commandIcon(connectionTypes type) const;
-        const QIcon& typeIcon(connectionTypes type) const;
 
         const QIcon& successIcon() const;
         const QIcon& failIcon() const;
+        const QIcon& unknownIcon() const;
 
         QFont font() const;
         const QString& pathToLoadingGif() const;

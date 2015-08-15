@@ -664,11 +664,6 @@ namespace fastonosql
         return common::net::hostAndPort(impl_->config_.hostip_, impl_->config_.hostport_);
     }
 
-    std::string MemcachedDriver::version() const
-    {
-        return versionApi();
-    }
-
     std::string MemcachedDriver::outputDelemitr() const
     {
         return impl_->config_.mb_delim_;
@@ -697,7 +692,6 @@ namespace fastonosql
 
     common::ErrorValueSPtr MemcachedDriver::currentLoggingInfo(ServerInfo **info)
     {
-        *info = NULL;
         LOG_COMMAND(Command(INFO_REQUEST, common::Value::C_INNER));
         MemcachedServerInfo::Common cm;
         common::ErrorValueSPtr err = impl_->stats(NULL, cm);
@@ -708,12 +702,17 @@ namespace fastonosql
         return err;
     }
 
-    common::ErrorValueSPtr MemcachedDriver::serverDiscoveryInfo(ServerDiscoveryInfo** dinfo)
+    common::ErrorValueSPtr MemcachedDriver::serverDiscoveryInfo(ServerInfo **sinfo, ServerDiscoveryInfo** dinfo)
     {
-        *dinfo = NULL;
+        ServerInfo *lsinfo = NULL;
+        common::ErrorValueSPtr er = currentLoggingInfo(&lsinfo);
+        if(er){
+            return er;
+        }
+
         FastoObjectIPtr root = FastoObject::createRoot(GET_SERVER_TYPE);
         MemcachedCommand* cmd = createCommand(root, GET_SERVER_TYPE, common::Value::C_INNER);
-        common::ErrorValueSPtr er = impl_->execute(cmd);
+        er = impl_->execute(cmd);
 
         if(!er){
             FastoObject::child_container_type ch = root->childrens();
@@ -721,6 +720,8 @@ namespace fastonosql
                 //*dinfo = makeOwnRedisDiscoveryInfo(ch[0]);
             }
         }
+
+        *sinfo = lsinfo;
         return er;
     }
 

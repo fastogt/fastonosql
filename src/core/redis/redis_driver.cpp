@@ -1838,11 +1838,6 @@ namespace fastonosql
         return common::net::hostAndPort(impl_->config_.hostip_, impl_->config_.hostport_);
     }
 
-    std::string RedisDriver::version() const
-    {
-        return versionApi();
-    }
-
     std::string RedisDriver::outputDelemitr() const
     {
         return impl_->config_.mb_delim_;
@@ -1885,7 +1880,6 @@ namespace fastonosql
 
     common::ErrorValueSPtr RedisDriver::currentLoggingInfo(ServerInfo** info)
     {
-        *info = NULL;
         FastoObjectIPtr root = FastoObject::createRoot(INFO_REQUEST);
         RedisCommand* cmd = createCommand(root, INFO_REQUEST, common::Value::C_INNER);
         common::ErrorValueSPtr res = impl_->execute(cmd);
@@ -1894,43 +1888,51 @@ namespace fastonosql
             if(ch.size()){
                 *info = makeRedisServerInfo(ch[0]);
             }
+
             if(*info == NULL){
                 res = common::make_error_value("Invalid " INFO_REQUEST " command output", common::ErrorValue::E_ERROR);
             }
         }
+
         return res;
     }
 
-    common::ErrorValueSPtr RedisDriver::serverDiscoveryInfo(ServerDiscoveryInfo** dinfo)
+    common::ErrorValueSPtr RedisDriver::serverDiscoveryInfo(ServerInfo **sinfo, ServerDiscoveryInfo **dinfo)
     {
-        *dinfo = NULL;
+        ServerInfo *lsinfo = NULL;
+        common::ErrorValueSPtr er = currentLoggingInfo(&lsinfo);
+        if(er){
+            return er;
+        }
+
+        uint32_t version = lsinfo->version();
+        if(version < PROJECT_VERSION_CHECK(3,0,0)){
+            *sinfo = lsinfo;
+            return common::ErrorValueSPtr(); //not error server not support cluster command
+        }
+
         FastoObjectIPtr root = FastoObject::createRoot(GET_SERVER_TYPE);
         RedisCommand* cmd = createCommand(root, GET_SERVER_TYPE, common::Value::C_INNER);
-        common::ErrorValueSPtr er = impl_->execute(cmd);
+        er = impl_->execute(cmd);
 
-        if(!er){
-            FastoObject::child_container_type ch = cmd->childrens();
-            if(ch.size()){
-                FastoObject* obj = ch[0];
-                if(obj){
-                    common::Value::Type t = obj->type();
-                    if(t == common::Value::TYPE_STRING){
-                        *dinfo = makeOwnRedisDiscoveryInfo(obj);
-                    }
-                    else if(t == common::Value::TYPE_ERROR){
-                        return common::make_error_value(obj->toString(), common::ErrorValue::E_ERROR);
-                    }
-                    else{
-                        NOTREACHED();
-                    }
+        if(er){
+            *sinfo = lsinfo;
+            return common::ErrorValueSPtr(); //not error serverInfo is valid
+        }
+
+        FastoObject::child_container_type ch = cmd->childrens();
+        if(ch.size()){
+            FastoObject* obj = ch[0];
+            if(obj){
+                common::Value::Type t = obj->type();
+                if(t == common::Value::TYPE_STRING){
+                    *dinfo = makeOwnRedisDiscoveryInfo(obj);
                 }
             }
-
-            if(*dinfo == NULL){
-                er = common::make_error_value("Invalid " GET_SERVER_TYPE " command output", common::ErrorValue::E_ERROR);
-            }
         }
-        return er;
+
+        *sinfo = lsinfo;
+        return common::ErrorValueSPtr();
     }
 
     void RedisDriver::handleConnectEvent(events::ConnectRequestEvent *ev)

@@ -128,6 +128,9 @@ namespace fastonosql
         VERIFY(connect(server_.get(), &IServer::rootCreated, this, &BaseShellWidget::rootCreated));
         VERIFY(connect(server_.get(), &IServer::rootCompleated, this, &BaseShellWidget::rootCompleated));
 
+        VERIFY(connect(server_.get(), &IServer::startedLoadDiscoveryInfo, this, &BaseShellWidget::startLoadDiscoveryInfo));
+        VERIFY(connect(server_.get(), &IServer::finishedLoadDiscoveryInfo, this, &BaseShellWidget::finishLoadDiscoveryInfo));
+
         VERIFY(connect(server_.get(), &IServer::addedChild, this, &BaseShellWidget::addedChild));
         VERIFY(connect(server_.get(), &IServer::itemUpdated, this, &BaseShellWidget::itemUpdated, Qt::UniqueConnection));
 
@@ -193,6 +196,15 @@ namespace fastonosql
         mainlayout->addWidget(input_);
 
         QHBoxLayout* apilayout = new QHBoxLayout;
+
+        apilayout->addWidget(new QLabel(tr("Supported commands count: %1").arg(input_->commandsCount())));
+
+        QSplitter *splitterButtom = new QSplitter;
+        splitterButtom->setOrientation(Qt::Horizontal);
+        splitterButtom->setHandleWidth(1);
+        splitterButtom->setContentsMargins(0, 0, 0, 0);
+        apilayout->addWidget(splitterButtom);
+
         commandsVersionApi_ = new QComboBox;
         typedef void (QComboBox::*curc)(int);
         VERIFY(connect(commandsVersionApi_, static_cast<curc>(&QComboBox::currentIndexChanged), this, &BaseShellWidget::changeVersionApi));
@@ -201,7 +213,8 @@ namespace fastonosql
         for(int i = 0; i < versions.size(); ++i){
             uint32_t cur = versions[i];
             std::string curVers = convertVersionNumberToReadableString(cur);
-            commandsVersionApi_->addItem(common::convertFromString<QString>(curVers), cur);
+            commandsVersionApi_->addItem(GuiFactory::instance().unknownIcon(), common::convertFromString<QString>(curVers), cur);
+            commandsVersionApi_->setCurrentIndex(i);
         }
         apilayout->addWidget(new QLabel(tr("Command version:")));
         apilayout->addWidget(commandsVersionApi_);
@@ -210,7 +223,44 @@ namespace fastonosql
         setLayout(mainlayout);
 
         syncConnectionActions();
+        syncServerInfo(server_->serverInfo());
         updateDefaultDatabase(server_->currentDatabaseInfo());
+    }
+
+    void BaseShellWidget::syncServerInfo(ServerInfoSPtr inf)
+    {
+        if(!inf){
+            return;
+        }
+
+        uint32_t servVers = inf->version();
+        if(servVers == UNDEFINED_SINCE){
+            return;
+        }
+
+        bool updatedComboIndex = false;
+        for(int i = 0; i < commandsVersionApi_->count(); ++i){
+            QVariant var = commandsVersionApi_->itemData(i);
+            uint32_t version = qvariant_cast<uint32_t>(var);
+            if(version == UNDEFINED_SINCE){
+                commandsVersionApi_->setItemIcon(i, GuiFactory::instance().unknownIcon());
+                continue;
+            }
+
+            if(version >= servVers){
+                if(!updatedComboIndex){
+                    updatedComboIndex = true;
+                    commandsVersionApi_->setCurrentIndex(i);
+                    commandsVersionApi_->setItemIcon(i, GuiFactory::instance().successIcon());
+                }
+                else{
+                    commandsVersionApi_->setItemIcon(i, GuiFactory::instance().failIcon());
+                }
+            }
+            else{
+                commandsVersionApi_->setItemIcon(i, GuiFactory::instance().successIcon());
+            }
+        }
     }
 
     void BaseShellWidget::initShellByType(connectionTypes type)
@@ -404,6 +454,21 @@ namespace fastonosql
     void BaseShellWidget::leaveMode(const EventsInfo::LeaveModeInfo& res)
     {
 
+    }
+
+    void BaseShellWidget::startLoadDiscoveryInfo(const EventsInfo::DiscoveryInfoRequest& res)
+    {
+
+    }
+
+    void BaseShellWidget::finishLoadDiscoveryInfo(const EventsInfo::DiscoveryInfoResponce& res)
+    {
+        common::ErrorValueSPtr er = res.errorInfo();
+        if(er && er->isError()){
+            return;
+        }
+
+        syncServerInfo(res.sinfo_);
     }
 
     void BaseShellWidget::updateDefaultDatabase(DataBaseInfoSPtr dbs)

@@ -92,6 +92,11 @@ namespace fastonosql
         return result;
     }
 
+    uint32_t SsdbLexer::commandsCount() const
+    {
+        return SIZEOFMASS(ssdbCommands);
+    }
+
     QString SsdbLexer::description(int style) const
     {
         switch (style)

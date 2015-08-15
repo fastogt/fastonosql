@@ -14,6 +14,7 @@ namespace fastonosql
         BaseShell(bool showAutoCompl, QWidget* parent = 0);
 
         std::vector<uint32_t> supportedVersions() const;
+        uint32_t commandsCount() const;
         QString version() const;
         void setFilteredVersion(uint32_t version);
     };

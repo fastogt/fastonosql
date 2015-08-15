@@ -9,6 +9,7 @@
 #define UNDEFINED_SINCE 0x00000000U
 #define UNDEFINED_SINCE_STR "Undefined"
 #define UNDEFINED_EXAMPLE_STR "Unspecified"
+#define UNDEFINED_STR_IN_PROGRESS "Undefined in progress"
 #define INFINITE_COMMAND_ARGS UINT8_MAX
 
 namespace fastonosql
@@ -122,6 +123,7 @@ namespace fastonosql
 
         connectionTypes type() const;
         virtual std::string toString() const = 0;
+        virtual uint32_t version() const = 0;
         virtual common::Value* valueByIndexes(unsigned char property, unsigned char field) const = 0;        
 
     protected:

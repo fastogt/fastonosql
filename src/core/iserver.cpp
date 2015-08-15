@@ -124,6 +124,11 @@ namespace fastonosql
         return drv_->serverDiscoveryInfo();
     }
 
+    ServerInfoSPtr IServer::serverInfo() const
+    {
+        return drv_->serverInfo();
+    }
+
     DataBaseInfoSPtr IServer::currentDatabaseInfo() const
     {
         return drv_->currentDatabaseInfo();
@@ -274,7 +279,7 @@ namespace fastonosql
         notify(ev);
     }
 
-    void IServer::serverInfo()
+    void IServer::loadServerInfo()
     {
         EventsInfo::ServerInfoRequest req;
         emit startedLoadServerInfo(req);
