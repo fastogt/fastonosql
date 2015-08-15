@@ -126,12 +126,14 @@ SET(SOURCES_CORE
 SET(HEADERS_SHELL_TO_MOC
     shell/shell_widget.h
     shell/base_lexer.h
+    shell/base_shell.h
 )
 SET(HEADERS_SHELL
 )
 SET(SOURCES_SHELL
     shell/shell_widget.cpp
     shell/base_lexer.cpp
+    shell/base_shell.cpp
 )
 
 SET(HEADERS_TRANSLATIONS

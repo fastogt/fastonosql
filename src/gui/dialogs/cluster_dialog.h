@@ -7,7 +7,6 @@ class QLineEdit;
 class QDialogButtonBox;
 class QPushButton;
 class QCheckBox;
-class QLabel;
 
 #include "core/connection_settings.h"
 

@@ -4,12 +4,10 @@
 
 #include "gui/gui_factory.h"
 
-#include <Qsci/qsciscintilla.h>
-
 namespace fastonosql
 {
     RedisShell::RedisShell(bool showAutoCompl, QWidget* parent)
-        : FastoEditorShell(common::convertFromString<QString>(RedisLexer::version()), showAutoCompl, parent)
+        : BaseShell(showAutoCompl, parent)
     {
         RedisLexer* red = new RedisLexer(this);
 
@@ -18,7 +16,6 @@ namespace fastonosql
         registerImage(RedisLexer::HelpKeyword, GuiFactory::instance().messageBoxQuestionIcon().pixmap(QSize(64,64)));
 
         setLexer(red);
-        setAllCommands(ALL_COMMANDS);
 
         VERIFY(connect(this, &RedisShell::customContextMenuRequested, this, &RedisShell::showContextMenu));
     }

@@ -62,8 +62,9 @@ namespace fastonosql
         void setShowAutoCompletion(bool showA);
         QMenu* createStandardContextMenu();
 
-        void setAllCommands(const QString& allCommands);
         void setLexer(QsciLexer *lexer);
+        QsciLexer *lexer() const;
+
         void setCallTipsStyle(int style);
         void sendScintilla(unsigned int msg, unsigned long wParam = 0,
                            long lParam = 0);
@@ -120,16 +121,10 @@ namespace fastonosql
             : public FastoEditor
     {
         Q_OBJECT
-    public:
-        QString version() const;
-
     protected Q_SLOTS:
         void showContextMenu(const QPoint& pt);
 
     protected:
-        FastoEditorShell(const QString& version, bool showAutoCompl, QWidget *parent = 0);
-
-    private:
-        const QString version_;
+        FastoEditorShell(bool showAutoCompl, QWidget *parent = 0);
     };
 }

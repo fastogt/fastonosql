@@ -21,6 +21,15 @@ namespace fastonosql
         return required_arguments_count_;
     }
 
+    std::string convertVersionNumberToReadableString(uint32_t version)
+    {
+        if(version != UNDEFINED_SINCE){
+            return common::convertVersionNumberToString(version);
+        }
+
+        return UNDEFINED_SINCE_STR;
+    }
+
     NKey::NKey(const std::string& key, common::Value::Type type, int32_t ttl_msec)
         : key_(key), type_(type), ttl_msec_(ttl_msec)
     {

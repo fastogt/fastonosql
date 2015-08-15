@@ -6,7 +6,7 @@
 
 #include "common/net/net.h"
 
-#define UNDEFINED_SINCE 0x000000
+#define UNDEFINED_SINCE 0x00000000U
 #define UNDEFINED_SINCE_STR "Undefined"
 #define UNDEFINED_EXAMPLE_STR "Unspecified"
 #define INFINITE_COMMAND_ARGS UINT8_MAX
@@ -31,6 +31,8 @@ namespace fastonosql
         const uint8_t required_arguments_count_;
         const uint8_t optional_arguments_count_;
     };
+
+    std::string convertVersionNumberToReadableString(uint32_t version);
 
     template<connectionTypes ct>
     struct DBTraits

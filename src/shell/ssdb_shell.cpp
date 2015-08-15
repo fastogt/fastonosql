@@ -7,7 +7,7 @@
 namespace fastonosql
 {
     SsdbShell::SsdbShell(bool showAutoCompl, QWidget* parent)
-        : FastoEditorShell(common::convertFromString<QString>(SsdbLexer::version()), showAutoCompl, parent)
+        : BaseShell(showAutoCompl, parent)
     {
         SsdbLexer* red = new SsdbLexer(this);
 
@@ -15,7 +15,6 @@ namespace fastonosql
         registerImage(SsdbLexer::HelpKeyword, GuiFactory::instance().messageBoxQuestionIcon().pixmap(QSize(64,64)));
 
         setLexer(red);
-        setAllCommands(ALL_COMMANDS);
 
         VERIFY(connect(this, &SsdbShell::customContextMenuRequested, this, &SsdbShell::showContextMenu));
     }

@@ -9,6 +9,8 @@
 #include <QApplication>
 #include <QTextStream>
 #include <QFileDialog>
+#include <QComboBox>
+#include <QLabel>
 
 #include "fasto/qt/logger.h"
 #include "common/qt/convert_string.h"
@@ -59,12 +61,12 @@ namespace
         }
         else {
             char buff[256] = {0};
-            SNPrintf(buff, sizeof(buff), PROJECT_NAME" can't read from %s:\n%s.", convertToString(filePath).c_str(),
+            SNPrintf(buff, sizeof(buff), PROJECT_NAME_TITLE" can't read from %s:\n%s.", convertToString(filePath).c_str(),
                             convertToString(file.errorString()).c_str());
             ErrorValueSPtr er = common::make_error_value(buff, Value::E_ERROR);
             LOG_ERROR(er, true);
             QMessageBox::critical(parent, trError,
-                QObject::tr(PROJECT_NAME" can't read from %1:\n%2.")
+                QObject::tr(PROJECT_NAME_TITLE" can't read from %1:\n%2.")
                     .arg(filePath)
                     .arg(file.errorString()));
         }
@@ -94,7 +96,7 @@ namespace
         }
         else {
             QMessageBox::critical(parent, trError,
-                QObject::tr(PROJECT_NAME" can't save to %1:\n%2.")
+                QObject::tr(PROJECT_NAME_TITLE" can't save to %1:\n%2.")
                     .arg(filePath)
                     .arg(file.errorString()));
         }
@@ -189,6 +191,21 @@ namespace fastonosql
 
         mainlayout->addLayout(hlayout);
         mainlayout->addWidget(input_);
+
+        QHBoxLayout* apilayout = new QHBoxLayout;
+        commandsVersionApi_ = new QComboBox;
+        typedef void (QComboBox::*curc)(int);
+        VERIFY(connect(commandsVersionApi_, static_cast<curc>(&QComboBox::currentIndexChanged), this, &BaseShellWidget::changeVersionApi));
+
+        std::vector<uint32_t> versions = input_->supportedVersions();
+        for(int i = 0; i < versions.size(); ++i){
+            uint32_t cur = versions[i];
+            std::string curVers = convertVersionNumberToReadableString(cur);
+            commandsVersionApi_->addItem(common::convertFromString<QString>(curVers), cur);
+        }
+        apilayout->addWidget(new QLabel(tr("Command version:")));
+        apilayout->addWidget(commandsVersionApi_);
+        mainlayout->addLayout(apilayout);
 
         setLayout(mainlayout);
 
@@ -306,6 +323,17 @@ namespace fastonosql
         if (saveToFileText(filepath,text(), this)) {
             filePath_ = filepath;
         }
+    }
+
+    void BaseShellWidget::changeVersionApi(int index)
+    {
+        if(index == -1){
+            return;
+        }
+
+        QVariant var = commandsVersionApi_->itemData(index);
+        uint32_t version = qvariant_cast<uint32_t>(var);
+        input_->setFilteredVersion(version);
     }
 
     void BaseShellWidget::saveToFile()

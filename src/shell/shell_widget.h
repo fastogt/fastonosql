@@ -8,6 +8,7 @@
 class QAction;
 class QProgressBar;
 class QToolButton;
+class QComboBox;
 
 namespace fasto
 {
@@ -22,7 +23,7 @@ namespace fasto
 
 namespace fastonosql
 {
-    class FastoEditorShell;
+    class BaseShell;
 
     class BaseShellWidget
             : public QWidget
@@ -57,6 +58,8 @@ namespace fastonosql
         void saveToFileAs();
         void saveToFile();
 
+        void changeVersionApi(int index);
+
         void startConnect(const EventsInfo::ConnectInfoRequest& req);
         void finishConnect(const EventsInfo::ConnectInfoResponce& res);
         void startDisconnect(const EventsInfo::DisonnectInfoRequest& req);
@@ -82,8 +85,9 @@ namespace fastonosql
         QAction* loadAction_;
         QAction* saveAction_;
         QAction* saveAsAction_;
+        QComboBox* commandsVersionApi_;
 
-        FastoEditorShell* input_;
+        BaseShell* input_;
 
         QProgressBar* workProgressBar_;
         fasto::qt::gui::IconLabel* connectionMode_;

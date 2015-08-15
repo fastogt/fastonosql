@@ -124,15 +124,15 @@ namespace fastonosql
         findElement(false);
     }
 
-    void FastoEditor::setAllCommands(const QString& allCommands)
-    {
-        scin_->setAllCommands(allCommands);
-    }
-
     void FastoEditor::setLexer(QsciLexer *lexer)
     {
         scin_->setLexer(lexer);
         scin_->setAutoCompletionCaseSensitivity(false);
+    }
+
+    QsciLexer *FastoEditor::lexer() const
+    {
+        return scin_->lexer();
     }
 
     void FastoEditor::setCallTipsStyle(int style)
@@ -394,16 +394,11 @@ namespace fastonosql
         setText(result);
     }
 
-    FastoEditorShell::FastoEditorShell(const QString& version, bool showAutoCompl, QWidget* parent)
-        : FastoEditor(parent), version_(version)
+    FastoEditorShell::FastoEditorShell(bool showAutoCompl, QWidget* parent)
+        : FastoEditor(parent)
     {
         setShowAutoCompletion(showAutoCompl);
         VERIFY(connect(this, &FastoEditorShell::customContextMenuRequested, this, &FastoEditorShell::showContextMenu));
-    }
-
-    QString FastoEditorShell::version() const
-    {
-        return version_;
     }
 
     void FastoEditorShell::showContextMenu(const QPoint& pt)

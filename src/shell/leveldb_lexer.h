@@ -29,7 +29,9 @@ namespace fastonosql
 
         LeveldbLexer(QObject* parent = 0);
         virtual const char* language() const;
-        static const char* version();
+
+        virtual const char* version() const;
+        virtual std::vector<uint32_t> supportedVersions() const;
 
         virtual QString description(int style) const;
         virtual void styleText(int start, int end);

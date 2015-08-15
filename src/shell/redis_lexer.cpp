@@ -20,21 +20,29 @@ namespace fastonosql
             QString val = *it;
             for(int i = 0; i < SIZEOFMASS(redisCommands); ++i){
                 CommandInfo cmd = redisCommands[i];
+                if(canSkipCommand(cmd)){
+                    continue;
+                }
+
                 QString jval = common::convertFromString<QString>(cmd.name_);
-                if(jval.startsWith(val, Qt::CaseInsensitive) || (val == ALL_COMMANDS && context.size() == 1) ){
+                if(jval.startsWith(val, Qt::CaseInsensitive)){
                     list.append(jval + "?1");
                 }
             }
 
             for(int i = 0; i < SIZEOFMASS(redisSentinelCommands); ++i){
                 CommandInfo cmd = redisSentinelCommands[i];
+                if(canSkipCommand(cmd)){
+                    continue;
+                }
+
                 QString jval = common::convertFromString<QString>(cmd.name_);
-                if(jval.startsWith(val, Qt::CaseInsensitive) || (val == ALL_COMMANDS && context.size() == 1) ){
+                if(jval.startsWith(val, Qt::CaseInsensitive)){
                     list.append(jval + "?2");
                 }
             }
 
-            if(help.startsWith(val, Qt::CaseInsensitive) || (val == ALL_COMMANDS && context.size() == 1) ){
+            if(help.startsWith(val, Qt::CaseInsensitive)){
                 list.append(help + "?3");
             }
         }
@@ -54,6 +62,7 @@ namespace fastonosql
 
             for(int i = 0; i < SIZEOFMASS(redisSentinelCommands); ++i){
                 CommandInfo cmd = redisSentinelCommands[i];
+
                 QString jval = common::convertFromString<QString>(cmd.name_);
                 if(QString::compare(jval, val, Qt::CaseInsensitive) == 0){
                     return QStringList() << makeCallTip(cmd);
@@ -75,14 +84,49 @@ namespace fastonosql
         return "Redis";
     }
 
-    const char* RedisLexer::version()
+    const char* RedisLexer::version() const
     {
         return RedisDriver::versionApi();
     }
 
-    const char *RedisLexer::wordCharacters() const
+    std::vector<uint32_t> RedisLexer::supportedVersions() const
     {
-        return "_abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789";
+        std::vector<uint32_t> result;
+        for(int i = 0; i < SIZEOFMASS(redisCommands); ++i){
+            CommandInfo cmd = redisCommands[i];
+
+            bool needed_insert = true;
+            for(int j = 0; j < result.size(); ++j){
+                if(result[j] == cmd.since_){
+                    needed_insert = false;
+                    break;
+                }
+            }
+
+            if(needed_insert){
+                result.push_back(cmd.since_);
+            }
+        }
+
+        for(int i = 0; i < SIZEOFMASS(redisSentinelCommands); ++i){
+            CommandInfo cmd = redisSentinelCommands[i];
+
+            bool needed_insert = true;
+            for(int j = 0; j < result.size(); ++j){
+                if(result[j] == cmd.since_){
+                    needed_insert = false;
+                    break;
+                }
+            }
+
+            if(needed_insert){
+                result.push_back(cmd.since_);
+            }
+        }
+
+        std::sort(result.begin(), result.end());
+
+        return result;
     }
 
     QString RedisLexer::description(int style) const

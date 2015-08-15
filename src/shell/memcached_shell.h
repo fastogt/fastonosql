@@ -1,11 +1,11 @@
 #pragma once
 
-#include "gui/fasto_editor.h"
+#include "shell/base_shell.h"
 
 namespace fastonosql
 {
     class MemcachedShell
-            : public FastoEditorShell
+            : public BaseShell
     {
         Q_OBJECT
     public:

@@ -4,7 +4,6 @@
 #include <QEvent>
 #include <QMenu>
 #include <QFileDialog>
-#include <QLabel>
 #include <QPushButton>
 #include <QHBoxLayout>
 #include <QCheckBox>

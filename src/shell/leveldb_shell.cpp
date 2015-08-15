@@ -7,7 +7,7 @@
 namespace fastonosql
 {
     LeveldbShell::LeveldbShell(bool showAutoCompl, QWidget* parent)
-        : FastoEditorShell(common::convertFromString<QString>(LeveldbLexer::version()), showAutoCompl, parent)
+        : BaseShell(showAutoCompl, parent)
     {
         LeveldbLexer* red = new LeveldbLexer(this);
 
@@ -15,7 +15,6 @@ namespace fastonosql
         registerImage(LeveldbLexer::HelpKeyword, GuiFactory::instance().messageBoxQuestionIcon().pixmap(QSize(64,64)));
 
         setLexer(red);
-        setAllCommands(ALL_COMMANDS);
 
         VERIFY(connect(this, &LeveldbShell::customContextMenuRequested, this, &LeveldbShell::showContextMenu));
     }

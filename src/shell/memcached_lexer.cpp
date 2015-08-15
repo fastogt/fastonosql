@@ -20,13 +20,17 @@ namespace fastonosql
             QString val = *it;
             for(int i = 0; i < SIZEOFMASS(memcachedCommands); ++i){
                 CommandInfo cmd = memcachedCommands[i];
+                if(canSkipCommand(cmd)){
+                    continue;
+                }
+
                 QString jval = common::convertFromString<QString>(cmd.name_);
-                if(jval.startsWith(val, Qt::CaseInsensitive) || (val == ALL_COMMANDS && context.size() == 1) ){
+                if(jval.startsWith(val, Qt::CaseInsensitive)){
                     list.append(jval + "?1");
                 }
             }
 
-            if(help.startsWith(val, Qt::CaseInsensitive) || (val == ALL_COMMANDS && context.size() == 1) ){
+            if(help.startsWith(val, Qt::CaseInsensitive)){
                 list.append(help + "?2");
             }
         }
@@ -59,9 +63,33 @@ namespace fastonosql
         return "Memcached";
     }
 
-    const char* MemcachedLexer::version()
+    const char* MemcachedLexer::version() const
     {
         return MemcachedDriver::versionApi();
+    }
+
+    std::vector<uint32_t> MemcachedLexer::supportedVersions() const
+    {
+        std::vector<uint32_t> result;
+        for(int i = 0; i < SIZEOFMASS(memcachedCommands); ++i){
+            CommandInfo cmd = memcachedCommands[i];
+
+            bool needed_insert = true;
+            for(int j = 0; j < result.size(); ++j){
+                if(result[j] == cmd.since_){
+                    needed_insert = false;
+                    break;
+                }
+            }
+
+            if(needed_insert){
+                result.push_back(cmd.since_);
+            }
+        }
+
+        std::sort(result.begin(), result.end());
+
+        return result;
     }
 
     QString MemcachedLexer::description(int style) const

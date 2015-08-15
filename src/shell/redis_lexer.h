@@ -30,12 +30,13 @@ namespace fastonosql
 
         RedisLexer(QObject* parent = 0);
         virtual const char* language() const;
-        static const char* version();
+
+        const char* version() const;
+        std::vector<uint32_t> supportedVersions() const;
 
         virtual QString description(int style) const;
         virtual void styleText(int start, int end);
         virtual QColor defaultColor(int style) const;
-        virtual const char *wordCharacters() const;
 
     private:
         void paintCommands(const QString& source, int start);

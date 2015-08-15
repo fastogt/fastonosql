@@ -7,7 +7,7 @@
 namespace fastonosql
 {
     MemcachedShell::MemcachedShell(bool showAutoCompl, QWidget* parent)
-        : FastoEditorShell(common::convertFromString<QString>(MemcachedLexer::version()), showAutoCompl, parent)
+        : BaseShell(showAutoCompl, parent)
     {
         MemcachedLexer* red = new MemcachedLexer(this);
 
@@ -15,7 +15,6 @@ namespace fastonosql
         registerImage(MemcachedLexer::HelpKeyword, GuiFactory::instance().messageBoxQuestionIcon().pixmap(QSize(64,64)));
 
         setLexer(red);
-        setAllCommands(ALL_COMMANDS);
 
         VERIFY(connect(this, &MemcachedShell::customContextMenuRequested, this, &MemcachedShell::showContextMenu));
     }
