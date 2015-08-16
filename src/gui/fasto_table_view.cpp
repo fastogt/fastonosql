@@ -12,6 +12,10 @@ namespace fastonosql
     {
         verticalHeader()->setDefaultAlignment(Qt::AlignLeft);
         horizontalHeader()->setDefaultAlignment(Qt::AlignLeft);
+
+        horizontalHeader()->resizeSections(QHeaderView::Stretch);
+        verticalHeader()->resizeSections(QHeaderView::Stretch);
+
         setSelectionMode(QAbstractItemView::ExtendedSelection);
         setSelectionBehavior(QAbstractItemView::SelectItems);
 
@@ -26,5 +30,12 @@ namespace fastonosql
         menuPoint.setX(menuPoint.x() + verticalHeader()->width());
         QMenu menu(this);
         menu.exec(menuPoint);
+    }
+
+    void FastoTableView::resizeEvent(QResizeEvent *event)
+    {
+        horizontalHeader()->resizeSections(QHeaderView::Stretch);
+        verticalHeader()->resizeSections(QHeaderView::Stretch);
+        QTableView::resizeEvent(event);
     }
 }

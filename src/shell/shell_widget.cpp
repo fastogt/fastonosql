@@ -188,6 +188,7 @@ namespace fastonosql
         hlayout->addWidget(dbName_);
         hlayout->addWidget(connectionMode_);
         workProgressBar_ = new QProgressBar;
+        workProgressBar_->setTextVisible(true);
         hlayout->addWidget(workProgressBar_);
 
         initShellByType(server->type());

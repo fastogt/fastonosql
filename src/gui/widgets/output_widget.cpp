@@ -3,6 +3,7 @@
 #include <QHBoxLayout>
 #include <QPushButton>
 #include <QSplitter>
+#include <QHeaderView>
 
 #include "gui/fasto_text_view.h"
 #include "gui/fasto_table_view.h"

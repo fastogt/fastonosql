@@ -324,7 +324,7 @@ namespace fastonosql
 
     const QIcon& GuiFactory::unknownIcon() const
     {
-        static QIcon unknown(":" PROJECT_NAME_LOWERCASE "/images/64x64/logging.png");
+        static QIcon unknown(":" PROJECT_NAME_LOWERCASE "/images/64x64/unknown.png");
         return unknown;
     }
 

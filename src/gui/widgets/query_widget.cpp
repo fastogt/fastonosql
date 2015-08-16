@@ -37,6 +37,8 @@ namespace fastonosql
         splitter->setStretchFactor(1, 1);
         mainLayout->addWidget(splitter);
 
+        setMinimumSize(QSize(min_width, min_height));
+
         setLayout(mainLayout);
     }
 

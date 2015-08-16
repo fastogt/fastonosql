@@ -13,6 +13,8 @@ namespace fastonosql
         setSelectionMode(QAbstractItemView::ExtendedSelection);
         setSelectionBehavior(QAbstractItemView::SelectRows);
 
+        header()->resizeSections(QHeaderView::Stretch);
+
         setContextMenuPolicy(Qt::CustomContextMenu);
         VERIFY(connect(this, &FastoTreeView::customContextMenuRequested, this, &FastoTreeView::showContextMenu));
     }
@@ -23,5 +25,11 @@ namespace fastonosql
         menuPoint.setY(menuPoint.y() + header()->height());
         QMenu menu(this);
         menu.exec(menuPoint);
+    }
+
+    void FastoTreeView::resizeEvent(QResizeEvent *event)
+    {
+        header()->resizeSections(QHeaderView::Stretch);
+        QTreeView::resizeEvent(event);        
     }
 }

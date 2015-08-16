@@ -13,6 +13,9 @@ namespace fastonosql
 
     private Q_SLOTS:
         void showContextMenu(const QPoint& point);
+
+    protected:
+        virtual void resizeEvent(QResizeEvent *event);
     };
 }
 

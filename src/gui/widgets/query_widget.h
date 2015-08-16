@@ -16,6 +16,12 @@ namespace fastonosql
     {
         Q_OBJECT
     public:
+        enum
+        {
+            min_height = 320,
+            min_width = 540
+        };
+
         QueryWidget(IServerSPtr server, QWidget* parent = 0);
 
         QueryWidget* clone(const QString& text);
