@@ -66,6 +66,7 @@ namespace fastonosql
 
     protected:
         virtual void changeEvent(QEvent* );
+        virtual void mouseDoubleClickEvent(QMouseEvent* );
 
     private:
         void syncWithServer(IServer* server);

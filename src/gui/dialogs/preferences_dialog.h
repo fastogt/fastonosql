@@ -50,6 +50,7 @@ namespace fastonosql
         QCheckBox* syncTabs_;
         QLabel* logDirLabel_;
         QLineEdit* logDirPath_;
-        QCheckBox* autoOpneConsole_;
+        QCheckBox* autoOpenConsole_;
+        QCheckBox* fastViewKeys_;
     };
 }

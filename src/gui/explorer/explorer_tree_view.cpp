@@ -19,6 +19,7 @@
 
 #include "common/qt/convert_string.h"
 
+#include "core/settings_manager.h"
 #include "core/icluster.h"
 
 #include "translations/global.h"
@@ -757,6 +758,15 @@ namespace fastonosql
         }
 
         QTreeView::changeEvent(e);
+    }
+
+    void ExplorerTreeView::mouseDoubleClickEvent(QMouseEvent* e)
+    {
+        if(SettingsManager::instance().fastViewKeys()){
+            getValue();
+        }
+
+        QTreeView::mouseDoubleClickEvent(e);
     }
 
     void ExplorerTreeView::syncWithServer(IServer* server)

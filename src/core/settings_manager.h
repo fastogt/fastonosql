@@ -59,6 +59,9 @@ namespace fastonosql
         bool autoOpenConsole() const;
         void setAutoOpenConsole(bool enableAuto);
 
+        bool fastViewKeys() const;
+        void setFastViewKeys(bool fastView);
+
     private:
         void load();
         void save();
@@ -77,5 +80,6 @@ namespace fastonosql
         bool autoCheckUpdate_;
         bool autoCompletion_;
         bool autoOpenConsole_;
+        bool fastViewKeys_;
     };
 }

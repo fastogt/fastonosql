@@ -48,8 +48,10 @@ namespace fastonosql
         generalLayout->addWidget(autoCheckUpdates_);
         autoComletionEnable_ = new QCheckBox;
         generalLayout->addWidget(autoComletionEnable_);
-        autoOpneConsole_ = new QCheckBox;
-        generalLayout->addWidget(autoOpneConsole_);
+        autoOpenConsole_ = new QCheckBox;
+        generalLayout->addWidget(autoOpenConsole_);
+        fastViewKeys_ = new QCheckBox;
+        generalLayout->addWidget(fastViewKeys_);
         generalLayout->addLayout(styleswLayout);
         generalLayout->addLayout(langLayout);
 
@@ -116,7 +118,8 @@ namespace fastonosql
         ServersManager::instance().setSyncServers(syncTabs_->isChecked());
         SettingsManager::instance().setSyncTabs(syncTabs_->isChecked());
         SettingsManager::instance().setLoggingDirectory(logDirPath_->text());
-        SettingsManager::instance().setAutoOpenConsole(autoOpneConsole_->isChecked());
+        SettingsManager::instance().setAutoOpenConsole(autoOpenConsole_->isChecked());
+        SettingsManager::instance().setFastViewKeys(fastViewKeys_->isChecked());
 
         return QDialog::accept();
     }
@@ -130,7 +133,8 @@ namespace fastonosql
         defaultViewComboBox_->setCurrentText(common::convertFromString<QString>(common::convertToString(SettingsManager::instance().defaultView())));
         syncTabs_->setChecked(SettingsManager::instance().syncTabs());
         logDirPath_->setText(SettingsManager::instance().loggingDirectory());
-        autoOpneConsole_->setChecked(SettingsManager::instance().autoOpenConsole());
+        autoOpenConsole_->setChecked(SettingsManager::instance().autoOpenConsole());
+        fastViewKeys_->setChecked(SettingsManager::instance().fastViewKeys());
     }
 
     void PreferencesDialog::changeEvent(QEvent* e)
@@ -148,7 +152,8 @@ namespace fastonosql
         generalBox_->setTitle(tr("General settings"));
         autoCheckUpdates_->setText(tr("Automatically check for updates"));
         autoComletionEnable_->setText(tr("Show autocompletion"));
-        autoOpneConsole_->setText(tr("Automatically open console"));
+        autoOpenConsole_->setText(tr("Automatically open console"));
+        fastViewKeys_->setText(tr("Fast view values"));
         langLabel_->setText(tr("Language:"));
         stylesLabel_->setText(tr("Supported UI styles:"));
 

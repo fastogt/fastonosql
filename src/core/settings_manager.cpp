@@ -22,6 +22,7 @@
 #define AUTOCOMPLETION PREFIX"autocompletion"
 #define RCONNECTIONS PREFIX"rconnections"
 #define AUTOOPENCONSOLE PREFIX"autoopenconsole"
+#define FASTVIEWKEYS PREFIX"fastviewkeys"
 
 namespace
 {
@@ -32,7 +33,8 @@ namespace
 namespace fastonosql
 {
     SettingsManager::SettingsManager()
-        : views_(), curStyle_(), curLanguage_(), connections_(), syncTabs_(), loggingDir_(), autoCheckUpdate_(), autoCompletion_(), autoOpenConsole_()
+        : views_(), curStyle_(), curLanguage_(), connections_(), syncTabs_(), loggingDir_(),
+          autoCheckUpdate_(), autoCompletion_(), autoOpenConsole_(), fastViewKeys_()
     {
        load();
     }
@@ -203,6 +205,16 @@ namespace fastonosql
         autoOpenConsole_ = enableAuto;
     }
 
+    bool SettingsManager::fastViewKeys() const
+    {
+        return fastViewKeys_;
+    }
+
+    void SettingsManager::setFastViewKeys(bool fastView)
+    {
+        fastViewKeys_ = fastView;
+    }
+
     void SettingsManager::load()
     {
         QString inip = common::convertFromString<QString>(common::file_system::prepare_path(iniPath));
@@ -259,6 +271,7 @@ namespace fastonosql
         autoCheckUpdate_ = settings.value(CHECKUPDATES, true).toBool();
         autoCompletion_ = settings.value(AUTOCOMPLETION, true).toBool();
         autoOpenConsole_ = settings.value(AUTOOPENCONSOLE, true).toBool();
+        fastViewKeys_ = settings.value(FASTVIEWKEYS, true).toBool();
     }
 
     void SettingsManager::save()
@@ -311,5 +324,6 @@ namespace fastonosql
         settings.setValue(CHECKUPDATES, autoCheckUpdate_);
         settings.setValue(AUTOCOMPLETION, autoCompletion_);
         settings.setValue(AUTOOPENCONSOLE, autoOpenConsole_);
+        settings.setValue(FASTVIEWKEYS, fastViewKeys_);
     }
 }
