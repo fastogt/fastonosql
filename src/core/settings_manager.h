@@ -18,6 +18,9 @@ namespace fastonosql
         typedef std::vector<IClusterSettingsBaseSPtr> ClusterSettingsContainerType;
         friend class common::patterns::LazySingleton<SettingsManager>;
 
+        static QString settingsDirPath();
+        static std::string settingsFilePath();
+
         void setDefaultView(supportedViews view);
         supportedViews defaultView() const;
 
@@ -61,6 +64,8 @@ namespace fastonosql
 
         bool fastViewKeys() const;
         void setFastViewKeys(bool fastView);
+
+        void reloadFromPath(const std::string& path);
 
     private:
         void load();

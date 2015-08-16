@@ -37,6 +37,9 @@ namespace fastonosql
         const QIcon& modeIcon(ConnectionMode mode) const;
         const QIcon& icon(common::Value::Type type) const;
 
+        const QIcon& importIcon() const;
+        const QIcon& exportIcon() const;
+
         const QIcon& loadIcon() const;
         const QIcon& clusterIcon() const;
         const QIcon& saveIcon() const;

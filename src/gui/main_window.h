@@ -47,6 +47,10 @@ namespace fastonosql
         void openEncodeDecodeDialog();
         void openRecentConnection();
 
+        void loadConnection();
+        void importConnection();
+        void exportConnection();
+
         void versionAvailible(bool succesResult, const QString& version);
 
     protected:
@@ -66,6 +70,9 @@ namespace fastonosql
         void createCluster(IClusterSettingsBaseSPtr settings);
 
         QAction* openAction_;
+        QAction* loadFromFileAction_;
+        QAction* importAction_;
+        QAction* exportAction_;
         QAction* exitAction_;
         QAction* preferencesAction_;
         QAction* fullScreanAction_;

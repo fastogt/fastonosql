@@ -201,6 +201,18 @@ namespace fastonosql
         }
     }
 
+    const QIcon& GuiFactory::importIcon() const
+    {
+        static QIcon start(":" PROJECT_NAME_LOWERCASE "/images/64x64/import.png");
+        return start;
+    }
+
+    const QIcon& GuiFactory::exportIcon() const
+    {
+        static QIcon start(":" PROJECT_NAME_LOWERCASE "/images/64x64/export.png");
+        return start;
+    }
+
     const QIcon& GuiFactory::loadIcon() const
     {
         static QIcon start(":" PROJECT_NAME_LOWERCASE "/images/64x64/load.png");

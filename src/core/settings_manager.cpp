@@ -45,6 +45,17 @@ namespace fastonosql
         save();
     }
 
+    QString SettingsManager::settingsDirPath()
+    {
+        std::string dir = common::file_system::get_dir_path(iniPath);
+        return common::convertFromString<QString>(dir);
+    }
+
+    std::string SettingsManager::settingsFilePath()
+    {
+        return common::file_system::prepare_path(iniPath);
+    }
+
     supportedViews SettingsManager::defaultView() const
     {
         return views_;
@@ -215,9 +226,19 @@ namespace fastonosql
         fastViewKeys_ = fastView;
     }
 
-    void SettingsManager::load()
+    void SettingsManager::reloadFromPath(const std::string& path, bool merge)
     {
-        QString inip = common::convertFromString<QString>(common::file_system::prepare_path(iniPath));
+        if(path.empty()){
+            return;
+        }
+
+        if(!merge){
+            clusters_.clear();
+            connections_.clear();
+            recentConnections_.clear();
+        }
+
+        QString inip = common::convertFromString<QString>(common::file_system::prepare_path(path));
         QSettings settings(inip, QSettings::IniFormat);
         DCHECK(settings.status() == QSettings::NoError);
 
@@ -266,12 +287,17 @@ namespace fastonosql
         }
 
         syncTabs_= settings.value(SYNCTABS, false).toBool();
-        std::string dir = common::file_system::get_dir_path(iniPath);
-        loggingDir_ = settings.value(LOGGINGDIR, common::convertFromString<QString>(dir)).toString();
+
+        loggingDir_ = settings.value(LOGGINGDIR, settingsDirPath()).toString();
         autoCheckUpdate_ = settings.value(CHECKUPDATES, true).toBool();
         autoCompletion_ = settings.value(AUTOCOMPLETION, true).toBool();
         autoOpenConsole_ = settings.value(AUTOOPENCONSOLE, true).toBool();
         fastViewKeys_ = settings.value(FASTVIEWKEYS, true).toBool();
+    }
+
+    void SettingsManager::load()
+    {
+        reloadFromPath(iniPath);
     }
 
     void SettingsManager::save()

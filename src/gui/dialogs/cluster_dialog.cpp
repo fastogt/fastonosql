@@ -3,7 +3,6 @@
 #include <QDialogButtonBox>
 #include <QEvent>
 #include <QMenu>
-#include <QFileDialog>
 #include <QPushButton>
 #include <QHBoxLayout>
 #include <QCheckBox>

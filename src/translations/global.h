@@ -26,6 +26,11 @@ namespace fastonosql
         extern const QString trFile;
         extern const QString trInfo;
         extern const QString trTools;
+        extern const QString trImport;
+        extern const QString trImportSettingsFailed;
+        extern const QString trExport;
+        extern const QString trExportSettingsFailed;
+        extern const QString trLoadFromFile;
         extern const QString trProperty;
         extern const QString trSetPassword;
         extern const QString trSetMaxNumberOfClients;
@@ -63,7 +68,6 @@ namespace fastonosql
         extern const QString trGzip;
         extern const QString trSearch;
         extern const QString trBackup;
-        extern const QString trImport;
         extern const QString trShutdown;
         extern const QString trNext;
         extern const QString trPrevious;

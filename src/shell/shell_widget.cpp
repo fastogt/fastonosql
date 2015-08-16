@@ -5,9 +5,7 @@
 #include <QAction>
 #include <QToolBar>
 #include <QVBoxLayout>
-#include <QMessageBox>
 #include <QApplication>
-#include <QTextStream>
 #include <QFileDialog>
 #include <QComboBox>
 #include <QLabel>
@@ -16,6 +14,7 @@
 #include "common/qt/convert_string.h"
 #include "common/sprintf.h"
 #include "fasto/qt/gui/icon_label.h"
+#include "fasto/qt/utils_qt.h"
 
 #include "core/settings_manager.h"
 #include "core/iserver.h"
@@ -46,64 +45,6 @@ using namespace fastonosql::translations;
 
 namespace
 {
-    bool loadFromFileText(const QString& filePath, QString& text, QWidget* parent)
-    {
-        using namespace common;
-
-        bool result = false;
-        QFile file(filePath);
-        if (file.open(QFile::ReadOnly | QFile::Text)) {
-            QTextStream in(&file);
-            QApplication::setOverrideCursor(Qt::WaitCursor);
-            text = in.readAll();
-            QApplication::restoreOverrideCursor();
-            result = true;
-        }
-        else {
-            char buff[256] = {0};
-            SNPrintf(buff, sizeof(buff), PROJECT_NAME_TITLE" can't read from %s:\n%s.", convertToString(filePath).c_str(),
-                            convertToString(file.errorString()).c_str());
-            ErrorValueSPtr er = common::make_error_value(buff, Value::E_ERROR);
-            LOG_ERROR(er, true);
-            QMessageBox::critical(parent, trError,
-                QObject::tr(PROJECT_NAME_TITLE" can't read from %1:\n%2.")
-                    .arg(filePath)
-                    .arg(file.errorString()));
-        }
-
-        return result;
-    }
-
-    bool saveToFileText(QString filePath, const QString& text, QWidget* parent)
-    {
-        if (filePath.isEmpty()){
-            return false;
-        }
-
-#ifdef OS_LINUX
-        if (QFileInfo(filePath).suffix().isEmpty()) {
-            filePath += ".txt";
-        }
-#endif
-        bool result = false;
-        QFile file(filePath);
-        if (file.open(QFile::WriteOnly | QFile::Text)) {
-            QTextStream out(&file);
-            QApplication::setOverrideCursor(Qt::WaitCursor);
-            out << text;
-            QApplication::restoreOverrideCursor();
-            result = true;
-        }
-        else {
-            QMessageBox::critical(parent, trError,
-                QObject::tr(PROJECT_NAME_TITLE" can't save to %1:\n%2.")
-                    .arg(filePath)
-                    .arg(file.errorString()));
-        }
-
-        return result;
-    }
-
     const QSize iconSize = QSize(24, 24);
 }
 
@@ -358,7 +299,7 @@ namespace fastonosql
         QString filepath = QFileDialog::getOpenFileName(this, path, QString(), trfilterForScripts);
         if (!filepath.isEmpty()) {
             QString out;
-            if (loadFromFileText(filepath, out, this)) {
+            if (common::utils_qt::loadFromFileText(filepath, out, this)) {
                 setText(out);
                 filePath_ = filepath;
                 res = true;
@@ -371,7 +312,7 @@ namespace fastonosql
     {
         QString filepath = QFileDialog::getSaveFileName(this, trSaveAs, filePath_, trfilterForScripts);
 
-        if (saveToFileText(filepath,text(), this)) {
+        if (common::utils_qt::saveToFileText(filepath,text(), this)) {
             filePath_ = filepath;
         }
     }
@@ -393,7 +334,7 @@ namespace fastonosql
             saveToFileAs();
         }
         else {
-            saveToFileText(filePath_, text(), this);
+            common::utils_qt::saveToFileText(filePath_, text(), this);
         }
     }
 

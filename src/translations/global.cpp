@@ -25,7 +25,12 @@ namespace fastonosql
         const QString trHistory = QObject::tr("History");
         const QString trFile = QObject::tr("File");
         const QString trInfo = QObject::tr("Info");
-        const QString trTools = QObject::tr("Tools");        
+        const QString trTools = QObject::tr("Tools");
+        const QString trLoadFromFile = QObject::tr("Load from file...");
+        const QString trImport = QObject::tr("Import");
+        const QString trImportSettingsFailed = QObject::tr("Import settings failed!");
+        const QString trExport = QObject::tr("Export...");
+        const QString trExportSettingsFailed = QObject::tr("Export settings failed!");
         const QString trProperty = QObject::tr("Property");
         const QString trSetPassword = QObject::tr("Set password");
         const QString trStop = QObject::tr("Stop");
@@ -63,7 +68,6 @@ namespace fastonosql
         const QString trGzip = QObject::tr("Gzip");
         const QString trSearch = QObject::tr("Search");
         const QString trBackup = QObject::tr("Backup");
-        const QString trImport = QObject::tr("Import");
         const QString trShutdown = QObject::tr("Shutdown");
         const QString trNext = QObject::tr("Next");
         const QString trPrevious = QObject::tr("Previous");

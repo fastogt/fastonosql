@@ -6,6 +6,7 @@
 #include <QMessageBox>
 #include <QThread>
 #include <QApplication>
+#include <QFileDialog>
 
 #ifdef OS_ANDROID
 #include <QGestureEvent>
@@ -26,6 +27,9 @@
 #include "gui/widgets/main_widget.h"
 #include "gui/explorer/explorer_tree_view.h"
 #include "gui/dialogs/encode_decode_dialog.h"
+
+#include "common/text_decoders/iedcoder.h"
+#include "common/file_system.h"
 
 #include "core/servers_manager.h"
 #include "core/settings_manager.h"
@@ -121,6 +125,21 @@ namespace fastonosql
         openAction_->setShortcut(openKey);
         VERIFY(connect(openAction_, &QAction::triggered, this, &MainWindow::open));
 
+        loadFromFileAction_ = new QAction(this);
+        loadFromFileAction_->setIcon(GuiFactory::instance().loadIcon());
+        //importAction_->setShortcut(openKey);
+        VERIFY(connect(loadFromFileAction_, &QAction::triggered, this, &MainWindow::loadConnection));
+
+        importAction_ = new QAction(this);
+        importAction_->setIcon(GuiFactory::instance().importIcon());
+        //importAction_->setShortcut(openKey);
+        VERIFY(connect(importAction_, &QAction::triggered, this, &MainWindow::importConnection));
+
+        exportAction_ = new QAction(this);
+        exportAction_->setIcon(GuiFactory::instance().exportIcon());
+        //exportAction_->setShortcut(openKey);
+        VERIFY(connect(exportAction_, &QAction::triggered, this, &MainWindow::exportConnection));
+
         // Exit action
         exitAction_ = new QAction(this);
         exitAction_->setShortcut(quitKey);
@@ -130,6 +149,9 @@ namespace fastonosql
         QMenu *fileMenu = new QMenu(this);
         fileAction_ = menuBar()->addMenu(fileMenu);
         fileMenu->addAction(openAction_);
+        fileMenu->addAction(loadFromFileAction_);
+        fileMenu->addAction(importAction_);
+        fileMenu->addAction(exportAction_);
         QMenu *recentMenu = new QMenu(this);
         recentConnections_ = fileMenu->addMenu(recentMenu);
         for (int i = 0; i < MaxRecentConnections; ++i) {
@@ -338,6 +360,145 @@ namespace fastonosql
         }
     }
 
+    void MainWindow::loadConnection()
+    {
+        using namespace translations;
+        QString standardIni = common::convertFromString<QString>(SettingsManager::settingsFilePath());
+        QString filepathR = QFileDialog::getOpenFileName(this, tr("Select settings file"), standardIni, tr("Settings files (*.ini)"));
+        if (filepathR.isNull()){
+            return;
+        }
+
+        SettingsManager::instance().reloadFromPath(common::convertToString(filepathR));
+        QMessageBox::information(this, trInfo, QObject::tr("Settings successfully loaded!"));
+    }
+
+    void MainWindow::importConnection()
+    {
+        using namespace translations;
+        QString filepathR = QFileDialog::getOpenFileName(this, tr("Select encrypted settings file"), SettingsManager::settingsDirPath(), tr("Encrypted settings files (*.cini)"));
+        if (filepathR.isNull()){
+            return;
+        }
+
+        std::string tmp = SettingsManager::settingsFilePath() + ".tmp";
+
+        common::file_system::Path wp(tmp);
+        common::file_system::File writeFile(wp);
+        bool openedw = writeFile.open("wb");
+        if(!openedw){
+            QMessageBox::critical(this, trError, trImportSettingsFailed);
+            return;
+        }
+
+        common::file_system::Path rp(common::convertToString(filepathR));
+        common::file_system::File readFile(rp);
+        bool openedr = readFile.open("rb");
+        if(!openedr){
+            writeFile.close();
+            bool rem = common::file_system::remove_file(wp.path());
+            DCHECK(rem);
+            QMessageBox::critical(this, trError, trImportSettingsFailed);
+            return;
+        }
+
+        common::IEDcoder* hexEnc = common::IEDcoder::createEDCoder(common::Hex);
+        if(!hexEnc){
+            writeFile.close();
+            bool rem = common::file_system::remove_file(wp.path());
+            DCHECK(rem);
+            QMessageBox::critical(this, trError, trImportSettingsFailed);
+            return;
+        }
+
+        while(!readFile.isEof()){
+            std::string data;
+            bool res = readFile.read(data, 256);
+            if(!res){
+                break;
+            }
+
+            std::string edata;
+            common::ErrorValueSPtr er = hexEnc->decode(data, edata);
+            if(er){
+                writeFile.close();
+                bool rem = common::file_system::remove_file(wp.path());
+                DCHECK(rem);
+                QMessageBox::critical(this, trError, trImportSettingsFailed);
+                return;
+            }
+            else{
+                writeFile.write(edata);
+            }
+        }
+
+        writeFile.close();
+        SettingsManager::instance().reloadFromPath(tmp);
+        bool rem = common::file_system::remove_file(tmp);
+        DCHECK(rem);
+        QMessageBox::information(this, trInfo, QObject::tr("Settings successfully imported!"));
+    }
+
+    void MainWindow::exportConnection()
+    {
+        using namespace translations;
+        QString filepathW = QFileDialog::getSaveFileName(this, tr("Select file to save settings"), SettingsManager::settingsDirPath(), tr("Settings files (*.cini)"));
+        if (filepathW.isNull()){
+            return;
+        }
+
+        common::file_system::Path wp(common::convertToString(filepathW));
+        common::file_system::File writeFile(wp);
+        bool openedw = writeFile.open("wb");
+        if(!openedw){
+            QMessageBox::critical(this, trError, trExportSettingsFailed);
+            return;
+        }
+
+        common::file_system::Path rp(SettingsManager::settingsFilePath());
+        common::file_system::File readFile(rp);
+        bool openedr = readFile.open("rb");
+        if(!openedr){
+            writeFile.close();
+            bool rem = common::file_system::remove_file(wp.path());
+            DCHECK(rem);
+            QMessageBox::critical(this, trError, trExportSettingsFailed);
+            return;
+        }
+
+        common::IEDcoder* hexEnc = common::IEDcoder::createEDCoder(common::Hex);
+        if(!hexEnc){
+            writeFile.close();
+            bool rem = common::file_system::remove_file(wp.path());
+            DCHECK(rem);
+            QMessageBox::critical(this, trError, trExportSettingsFailed);
+            return;
+        }
+
+        while(!readFile.isEof()){
+            std::string data;
+            bool res = readFile.readLine(data);
+            if(!res || readFile.isEof()){
+                break;
+            }
+
+            std::string edata;
+            common::ErrorValueSPtr er = hexEnc->encode(data, edata);
+            if(er){
+                writeFile.close();
+                bool rem = common::file_system::remove_file(wp.path());
+                DCHECK(rem);
+                QMessageBox::critical(this, trError, trExportSettingsFailed);
+                return;
+            }
+            else{
+                writeFile.write(edata);
+            }
+        }
+
+        QMessageBox::information(this, translations::trInfo, QObject::tr("Settings successfully encrypted and exported!"));
+    }
+
     void MainWindow::versionAvailible(bool succesResult, const QString& version)
     {
         using namespace translations;
@@ -422,6 +583,9 @@ namespace fastonosql
     {
         using namespace translations;
         openAction_->setText(trOpen);
+        loadFromFileAction_->setText(trLoadFromFile);
+        importAction_->setText(trImport);
+        exportAction_->setText(trExport);
         exitAction_->setText(trExit);
         fileAction_->setText(trFile);
         toolsAction_->setText(trTools);
