@@ -297,7 +297,7 @@ namespace fastonosql
 
     void SettingsManager::load()
     {
-        reloadFromPath(iniPath);
+        reloadFromPath(iniPath, false);
     }
 
     void SettingsManager::save()

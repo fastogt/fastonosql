@@ -369,7 +369,7 @@ namespace fastonosql
             return;
         }
 
-        SettingsManager::instance().reloadFromPath(common::convertToString(filepathR));
+        SettingsManager::instance().reloadFromPath(common::convertToString(filepathR), false);
         QMessageBox::information(this, trInfo, QObject::tr("Settings successfully loaded!"));
     }
 
@@ -433,7 +433,7 @@ namespace fastonosql
         }
 
         writeFile.close();
-        SettingsManager::instance().reloadFromPath(tmp);
+        SettingsManager::instance().reloadFromPath(tmp, false);
         bool rem = common::file_system::remove_file(tmp);
         DCHECK(rem);
         QMessageBox::information(this, trInfo, QObject::tr("Settings successfully imported!"));

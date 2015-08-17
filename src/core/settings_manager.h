@@ -65,7 +65,7 @@ namespace fastonosql
         bool fastViewKeys() const;
         void setFastViewKeys(bool fastView);
 
-        void reloadFromPath(const std::string& path);
+        void reloadFromPath(const std::string& path, bool merge);
 
     private:
         void load();
