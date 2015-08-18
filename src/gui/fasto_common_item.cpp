@@ -2,6 +2,8 @@
 
 #include "common/qt/convert_string.h"
 
+#include "common/json_utils.h"
+
 #include "common/text_decoders/compress_edcoder.h"
 #include "common/text_decoders/msgpack_edcoder.h"
 #include "common/text_decoders/hex_edcoder.h"
@@ -52,11 +54,12 @@ namespace fastonosql
     QString toJson(FastoCommonItem* item)
     {
         if(!item){
-            return "{  }";
+            return QString();
         }
 
         if(!item->childrenCount()){
-            return QString("{ %1 : %2 }").arg(item->key()).arg(item->value());
+            std::string res = common::json::parseJson(common::convertToString(item->value()));
+            return common::convertFromString<QString>(res);
         }
 
         QString value;
@@ -64,13 +67,13 @@ namespace fastonosql
             value += toJson(dynamic_cast<FastoCommonItem*>(item->child(i)));
         }
 
-        return QString("{ %1 : %2 }").arg(item->key()).arg(value);
+        return value;
     }
 
     QString toRaw(FastoCommonItem* item)
     {
         if(!item){
-            return "";
+            return QString();
         }
 
         if(!item->childrenCount()){
@@ -88,7 +91,7 @@ namespace fastonosql
     QString toHex(FastoCommonItem* item)
     {
         if(!item){
-            return "";
+            return QString();
         }
 
         if(!item->childrenCount()){
@@ -115,7 +118,7 @@ namespace fastonosql
     QString toCsv(FastoCommonItem* item, const QString& delemitr)
     {
         if(!item){
-            return "";
+            return QString();
         }
 
         if(!item->childrenCount()){

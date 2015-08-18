@@ -18,7 +18,6 @@ namespace fastonosql
             eType = 2,
             eCountColumns = 3
         };
-        typedef std::vector<FastoCommonItem*> child_container_type;
         FastoCommonItem(const QString& key, const QString& value, common::Value::Type type, TreeItem* parent, void* internalPointer);
 
         QString key() const;

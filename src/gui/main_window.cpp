@@ -42,6 +42,9 @@
 
 namespace
 {
+    const QString trImportSettingsFailed = QObject::tr("Import settings failed!");
+    const QString trExportSettingsFailed = QObject::tr("Export settings failed!");
+
     bool isNeededUpdate(const QString& serverVersion)
     {
         if(serverVersion.isEmpty()){

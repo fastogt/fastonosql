@@ -5,6 +5,7 @@
 - Calltips for commands
 - Export/import settings to encrypted file
 - Double click show value for keys
+- Display value as readable json
 
 0.7.5 / August 10, 2015
 [Alexandr Topilski]

@@ -27,9 +27,7 @@ namespace fastonosql
         extern const QString trInfo;
         extern const QString trTools;
         extern const QString trImport;
-        extern const QString trImportSettingsFailed;
         extern const QString trExport;
-        extern const QString trExportSettingsFailed;
         extern const QString trLoadFromFile;
         extern const QString trProperty;
         extern const QString trSetPassword;
