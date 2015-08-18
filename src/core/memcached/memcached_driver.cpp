@@ -901,6 +901,29 @@ namespace fastonosql
         notifyProgress(sender, 100);
     }
 
+    void MemcachedDriver::handleDbValueChangeEvent(events::ChangeDbValueRequestEvent* ev)
+    {
+        QObject* sender = ev->sender();
+        notifyProgress(sender, 0);
+        events::ChangeDbValueResponceEvent::value_type res(ev->value());
+
+        notifyProgress(sender, 50);
+        const std::string changeRequest = res.command_ + " 0 0 " + res.newItem_.valueString();
+        FastoObjectIPtr root = FastoObject::createRoot(changeRequest);
+        MemcachedCommand* cmd = createCommand(root, changeRequest, common::Value::C_INNER);
+        common::ErrorValueSPtr er = impl_->execute(cmd);
+        if(er){
+            res.setErrorInfo(er);
+        }
+        else{
+            res.isChange_ = true;
+        }
+
+        notifyProgress(sender, 75);
+            reply(sender, new events::ChangeDbValueResponceEvent(this, res));
+        notifyProgress(sender, 100);
+    }
+
     void MemcachedDriver::handleSetDefaultDatabaseEvent(events::SetDefaultDatabaseRequestEvent* ev)
     {
         QObject *sender = ev->sender();

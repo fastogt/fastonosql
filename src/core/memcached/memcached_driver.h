@@ -85,6 +85,7 @@ namespace fastonosql
 // ============== commands =============//
 
 // ============== database =============//
+        virtual void handleDbValueChangeEvent(events::ChangeDbValueRequestEvent* ev);
         virtual void handleLoadDatabaseContentEvent(events::LoadDatabaseContentRequestEvent* ev);
         virtual void handleSetDefaultDatabaseEvent(events::SetDefaultDatabaseRequestEvent* ev);
 // ============== database =============//
