@@ -411,6 +411,7 @@ namespace fastonosql
         }
 
         syncServerInfo(res.sinfo_);
+        updateDefaultDatabase(res.dbinfo_);
     }
 
     void BaseShellWidget::updateDefaultDatabase(DataBaseInfoSPtr dbs)

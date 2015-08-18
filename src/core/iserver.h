@@ -38,9 +38,11 @@ namespace fastonosql
         connectionTypes type() const;
         QString name() const;
         IDriverSPtr driver() const;
+
         DataBaseInfoSPtr currentDatabaseInfo() const;
         ServerDiscoveryInfoSPtr discoveryInfo() const;
         ServerInfoSPtr serverInfo() const;
+
         QString address() const;
         QString outputDelemitr() const;
         IDatabaseSPtr findDatabaseByInfo(DataBaseInfoSPtr inf) const;

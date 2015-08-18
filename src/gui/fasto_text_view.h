@@ -3,6 +3,7 @@
 #include <QWidget>
 
 class QRadioButton;
+class QPushButton;
 class QAbstractItemModel;
 
 namespace fastonosql
@@ -20,6 +21,8 @@ namespace fastonosql
 
     private Q_SLOTS:
         void viewChanged(bool checked);
+        void textChange();
+        void saveChanges();
 
     protected:
         virtual void changeEvent(QEvent *);
@@ -34,5 +37,6 @@ namespace fastonosql
         QRadioButton* hexRadioButton_;
         QRadioButton* msgPackRadioButton_;
         QRadioButton* gzipRadioButton_;
+        QPushButton* saveChangeButton_;
     };
 }

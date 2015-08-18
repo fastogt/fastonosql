@@ -12,11 +12,23 @@
 #include <QGestureEvent>
 #endif
 
+#include "common/qt/convert_string.h"
+#include "common/net/socket_tcp.h"
+#include "common/text_decoders/iedcoder.h"
+#include "common/file_system.h"
+
 #include "fasto/qt/gui/app_style.h"
 #include "fasto/qt/translations/translations.h"
 #include "fasto/qt/logger.h"
-#include "common/qt/convert_string.h"
-#include "common/net/socket_tcp.h"
+
+#include "core/servers_manager.h"
+#include "core/settings_manager.h"
+#include "core/command_logger.h"
+#include "core/icluster.h"
+
+#include "server_config_daemon/server_config.h"
+
+#include "translations/global.h"
 
 #include "gui/shortcuts.h"
 #include "gui/gui_factory.h"
@@ -27,18 +39,6 @@
 #include "gui/widgets/main_widget.h"
 #include "gui/explorer/explorer_tree_view.h"
 #include "gui/dialogs/encode_decode_dialog.h"
-
-#include "common/text_decoders/iedcoder.h"
-#include "common/file_system.h"
-
-#include "core/servers_manager.h"
-#include "core/settings_manager.h"
-#include "core/command_logger.h"
-#include "core/icluster.h"
-
-#include "server_config_daemon/server_config.h"
-
-#include "translations/global.h"
 
 namespace
 {

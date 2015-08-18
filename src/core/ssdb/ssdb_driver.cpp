@@ -1574,15 +1574,13 @@ namespace fastonosql
 
     void SsdbDriver::initImpl()
     {
-        currentDatabaseInfo_.reset(new SsdbDataBaseInfo("0", 0, true));
     }
 
     void SsdbDriver::clearImpl()
     {
-
     }
 
-    common::ErrorValueSPtr SsdbDriver::currentLoggingInfo(ServerInfo **info)
+    common::ErrorValueSPtr SsdbDriver::serverInfo(ServerInfo **info)
     {
         LOG_COMMAND(Command(INFO_REQUEST, common::Value::C_INNER));
         SsdbServerInfo::Common cm;
@@ -1594,10 +1592,10 @@ namespace fastonosql
         return err;
     }
 
-    common::ErrorValueSPtr SsdbDriver::serverDiscoveryInfo(ServerInfo** sinfo, ServerDiscoveryInfo** dinfo)
+    common::ErrorValueSPtr SsdbDriver::serverDiscoveryInfo(ServerInfo** sinfo, ServerDiscoveryInfo** dinfo, DataBaseInfo **dbinfo)
     {
         ServerInfo *lsinfo = NULL;
-        common::ErrorValueSPtr er = currentLoggingInfo(&lsinfo);
+        common::ErrorValueSPtr er = serverInfo(&lsinfo);
         if(er){
             return er;
         }
@@ -1613,8 +1611,22 @@ namespace fastonosql
             }
         }
 
+        DataBaseInfo* ldbinfo = NULL;
+        er = currentDataBaseInfo(&ldbinfo);
+        if(er){
+            delete lsinfo;
+            return er;
+        }
+
         *sinfo = lsinfo;
+        *dbinfo = ldbinfo;
         return er;
+    }
+
+    common::ErrorValueSPtr SsdbDriver::currentDataBaseInfo(DataBaseInfo** info)
+    {
+        *info = new SsdbDataBaseInfo("0", 0, true);
+        return common::ErrorValueSPtr();
     }
 
     void SsdbDriver::handleConnectEvent(events::ConnectRequestEvent *ev)
@@ -1734,7 +1746,7 @@ namespace fastonosql
     notifyProgress(sender, 0);
         events::LoadDatabasesInfoResponceEvent::value_type res(ev->value());
     notifyProgress(sender, 50);
-        res.databases_.push_back(currentDatabaseInfo_);
+        res.databases_.push_back(currentDatabaseInfo());
         reply(sender, new events::LoadDatabasesInfoResponceEvent(this, res));
     notifyProgress(sender, 100);
     }

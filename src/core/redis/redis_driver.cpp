@@ -1258,20 +1258,29 @@ namespace fastonosql
             return cliPrintContextError();
         }
 
-        common::ErrorValueSPtr cliSelect() WARN_UNUSED_RESULT
+        common::ErrorValueSPtr cliSelect(int num, DataBaseInfo **info) WARN_UNUSED_RESULT
         {
-            if (config_.dbnum == 0){
-                return common::ErrorValueSPtr();
-            }
-
-            redisReply *reply = static_cast<redisReply*>(redisCommand(context_, "SELECT %d", config_.dbnum));
+            redisReply *reply = static_cast<redisReply*>(redisCommand(context_, "SELECT %d", num));
             if (reply != NULL) {
-                parent_->currentDatabaseInfo_.reset(new RedisDataBaseInfo(common::convertToString(config_.dbnum), 0, true));
+                long long sz = 0;
+                getDbSize(sz);
+                *info = new RedisDataBaseInfo(common::convertToString(num), sz, true);
                 freeReplyObject(reply);
                 return common::ErrorValueSPtr();
             }
 
             return cliPrintContextError();
+        }
+
+        common::ErrorValueSPtr cliSelect() WARN_UNUSED_RESULT
+        {
+            DataBaseInfo *info = NULL;
+
+            common::ErrorValueSPtr er = cliSelect(config_.dbnum, &info);
+            if(!er){
+                parent_->setCurrentDatabaseInfo(info);
+            }
+            return er;
         }
 
         common::ErrorValueSPtr cliConnect(int force) WARN_UNUSED_RESULT
@@ -1870,15 +1879,13 @@ namespace fastonosql
 
     void RedisDriver::initImpl()
     {
-        currentDatabaseInfo_.reset(new RedisDataBaseInfo("0", 0, true));
     }
 
     void RedisDriver::clearImpl()
     {
-
     }
 
-    common::ErrorValueSPtr RedisDriver::currentLoggingInfo(ServerInfo** info)
+    common::ErrorValueSPtr RedisDriver::serverInfo(ServerInfo** info)
     {
         FastoObjectIPtr root = FastoObject::createRoot(INFO_REQUEST);
         RedisCommand* cmd = createCommand(root, INFO_REQUEST, common::Value::C_INNER);
@@ -1897,17 +1904,25 @@ namespace fastonosql
         return res;
     }
 
-    common::ErrorValueSPtr RedisDriver::serverDiscoveryInfo(ServerInfo **sinfo, ServerDiscoveryInfo **dinfo)
+    common::ErrorValueSPtr RedisDriver::serverDiscoveryInfo(ServerInfo **sinfo, ServerDiscoveryInfo **dinfo, DataBaseInfo **dbinfo)
     {
         ServerInfo *lsinfo = NULL;
-        common::ErrorValueSPtr er = currentLoggingInfo(&lsinfo);
+        common::ErrorValueSPtr er = serverInfo(&lsinfo);
         if(er){
+            return er;
+        }
+
+        DataBaseInfo* ldbinfo = NULL;
+        er = currentDataBaseInfo(&ldbinfo);
+        if(er){
+            delete lsinfo;
             return er;
         }
 
         uint32_t version = lsinfo->version();
         if(version < PROJECT_VERSION_CHECK(3,0,0)){
             *sinfo = lsinfo;
+            *dbinfo = ldbinfo;
             return common::ErrorValueSPtr(); //not error server not support cluster command
         }
 
@@ -1917,6 +1932,7 @@ namespace fastonosql
 
         if(er){
             *sinfo = lsinfo;
+            *dbinfo = ldbinfo;
             return common::ErrorValueSPtr(); //not error serverInfo is valid
         }
 
@@ -1932,7 +1948,14 @@ namespace fastonosql
         }
 
         *sinfo = lsinfo;
-        return common::ErrorValueSPtr();
+        *dbinfo = ldbinfo;
+        return er;
+    }
+
+    common::ErrorValueSPtr RedisDriver::currentDataBaseInfo(DataBaseInfo** info)
+    {
+        common::ErrorValueSPtr er = impl_->cliSelect(impl_->config_.dbnum, info);
+        return er;
     }
 
     void RedisDriver::handleConnectEvent(events::ConnectRequestEvent *ev)
@@ -2387,6 +2410,7 @@ namespace fastonosql
                         goto done;
                     }
 
+                    DataBaseInfoSPtr cdbInf = currentDatabaseInfo();
                     if(ar->getSize() == 2){
                         std::string scountDb;
                         bool isok = ar->getString(1, &scountDb);
@@ -2395,8 +2419,8 @@ namespace fastonosql
                             if(countDb > 0){
                                 for(int i = 0; i < countDb; ++i){
                                     DataBaseInfoSPtr dbInf(new RedisDataBaseInfo(common::convertToString(i), 0, false));
-                                    if(dbInf->name() == currentDatabaseInfo_->name()){
-                                        res.databases_.push_back(currentDatabaseInfo_);
+                                    if(dbInf->name() == cdbInf->name()){
+                                        res.databases_.push_back(cdbInf);
                                     }
                                     else {
                                         res.databases_.push_back(dbInf);
@@ -2406,12 +2430,12 @@ namespace fastonosql
                         }
                     }
                     else{
-                        res.databases_.push_back(currentDatabaseInfo_);
+                        res.databases_.push_back(cdbInf);
                     }
 
                     long long sz = 0;
                     er = impl_->getDbSize(sz);
-                    currentDatabaseInfo_->setSize(sz);
+                    cdbInf->setSize(sz);
                 }
             }
     done:
@@ -2538,8 +2562,8 @@ namespace fastonosql
             }
             else{
                 long long sz = 0;
-                er = impl_->getDbSize(sz);
-                currentDatabaseInfo_.reset(new RedisDataBaseInfo(res.inf_->name(), sz, true));
+                er = impl_->getDbSize(sz);                
+                setCurrentDatabaseInfo(new RedisDataBaseInfo(res.inf_->name(), sz, true));
             }
         notifyProgress(sender, 75);
             reply(sender, new events::SetDefaultDatabaseResponceEvent(this, res));

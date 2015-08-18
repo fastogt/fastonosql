@@ -3,6 +3,9 @@
 #include <QVBoxLayout>
 #include <QRadioButton>
 #include <QEvent>
+#include <QPushButton>
+#include <QSplitter>
+#include <QDebug>
 
 #include "common/macros.h"
 
@@ -27,12 +30,18 @@ namespace fastonosql
         msgPackRadioButton_ = new QRadioButton;
         gzipRadioButton_ = new QRadioButton;
 
+        saveChangeButton_ = new QPushButton;
+        saveChangeButton_->setIcon(GuiFactory::instance().saveIcon());
+        saveChangeButton_->setEnabled(false);
+
         VERIFY(connect(jsonRadioButton_, &QRadioButton::toggled, this, &FastoTextView::viewChanged));
         VERIFY(connect(csvRadioButton_, &QRadioButton::toggled, this, &FastoTextView::viewChanged));
         VERIFY(connect(rawRadioButton_, &QRadioButton::toggled, this, &FastoTextView::viewChanged));
         VERIFY(connect(hexRadioButton_, &QRadioButton::toggled, this, &FastoTextView::viewChanged));
         VERIFY(connect(msgPackRadioButton_, &QRadioButton::toggled, this, &FastoTextView::viewChanged));
         VERIFY(connect(gzipRadioButton_, &QRadioButton::toggled, this, &FastoTextView::viewChanged));
+        VERIFY(connect(saveChangeButton_, &QPushButton::clicked, this, &FastoTextView::saveChanges));
+        VERIFY(connect(editor_, &FastoEditorOutput::textChanged, this, &FastoTextView::textChange));
 
         QHBoxLayout* radLaout = new QHBoxLayout;
         radLaout->addWidget(jsonRadioButton_);
@@ -44,6 +53,16 @@ namespace fastonosql
 
         mainL->addLayout(radLaout);
         mainL->addWidget(editor_);
+
+        QHBoxLayout *hlayout = new QHBoxLayout;
+        QSplitter *splitter = new QSplitter;
+        splitter->setOrientation(Qt::Horizontal);
+        splitter->setHandleWidth(1);
+        splitter->setContentsMargins(0, 0, 0, 0);
+        hlayout->addWidget(splitter);
+        hlayout->addWidget(saveChangeButton_);
+
+        mainL->addLayout(hlayout);
         setLayout(mainL);
 
         jsonRadioButton_->setChecked(true);
@@ -58,6 +77,22 @@ namespace fastonosql
     void FastoTextView::setReadOnly(bool ro)
     {
         editor_->setReadOnly(ro);
+    }
+
+    void FastoTextView::saveChanges()
+    {
+        QModelIndex index = editor_->selectedItem(1); //eValue
+        editor_->setData(index, editor_->text().simplified());
+    }
+
+    void FastoTextView::textChange()
+    {
+        QModelIndex index = editor_->selectedItem(1); //eValue
+        bool isEnabled = index.isValid()
+                && (index.flags() & Qt::ItemIsEditable)
+                && index.data() != editor_->text().simplified();
+
+        saveChangeButton_->setEnabled(isEnabled);
     }
 
     void FastoTextView::viewChanged(bool checked)
@@ -115,5 +150,6 @@ namespace fastonosql
         hexRadioButton_->setText(trHex);
         msgPackRadioButton_->setText(trMsgPack);
         gzipRadioButton_->setText(trGzip);
+        saveChangeButton_->setText(trSave);
     }
 }

@@ -137,6 +137,7 @@ namespace fastonosql
 
             ServerInfoSPtr sinfo_;
             ServerDiscoveryInfoSPtr dinfo_;
+            DataBaseInfoSPtr dbinfo_;
         };
 
         struct EnterModeInfo

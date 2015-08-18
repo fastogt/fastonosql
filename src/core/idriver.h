@@ -108,6 +108,8 @@ namespace fastonosql
             return RootLocker(this, reciver, text);
         }
 
+        void setCurrentDatabaseInfo(DataBaseInfo* inf);
+
     private:
         // handle info events
         void handleLoadServerInfoHistoryEvent(events::ServerInfoHistoryRequestEvent *ev);
@@ -118,9 +120,10 @@ namespace fastonosql
         virtual void updated(FastoObject* item, common::Value* val);
 
         // internal methods
-        virtual common::ErrorValueSPtr currentLoggingInfo(ServerInfo** info) = 0;
         virtual ServerInfoSPtr makeServerInfoFromString(const std::string& val) = 0;
-        virtual common::ErrorValueSPtr serverDiscoveryInfo(ServerInfo** sinfo, ServerDiscoveryInfo** dinfo) = 0;
+        virtual common::ErrorValueSPtr serverInfo(ServerInfo** info) = 0;
+        virtual common::ErrorValueSPtr serverDiscoveryInfo(ServerInfo** sinfo, ServerDiscoveryInfo** dinfo, DataBaseInfo** dbinfo) = 0;
+        virtual common::ErrorValueSPtr currentDataBaseInfo(DataBaseInfo** info) = 0;
         virtual void initImpl() = 0;
         virtual void clearImpl() = 0;
 
@@ -131,12 +134,10 @@ namespace fastonosql
         virtual common::ErrorValueSPtr commandLoadImpl(CommandLoadKey* command, std::string& cmdstring) const WARN_UNUSED_RESULT = 0;
         virtual common::ErrorValueSPtr commandCreateImpl(CommandCreateKey* command, std::string& cmdstring) const WARN_UNUSED_RESULT = 0;
 
-    protected:
-        DataBaseInfoSPtr currentDatabaseInfo_;        
-
     private:
         ServerInfoSPtr serverInfo_;
         ServerDiscoveryInfoSPtr serverDiscInfo_;
+        DataBaseInfoSPtr currentDatabaseInfo_;
 
         QThread* thread_;
         int timer_info_id_;

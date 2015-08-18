@@ -59,6 +59,7 @@ namespace fastonosql
         findPanel_->hide();
 
         VERIFY(connect(close_, &QToolButton::clicked, findPanel_, &QFrame::hide));
+        VERIFY(connect(scin_, &fasto::qt::gui::FastoScintilla::textChanged, this, &FastoEditor::textChanged));
         VERIFY(connect(next_, &QPushButton::clicked, this, &FastoEditor::goToNextElement));
         VERIFY(connect(prev_, &QPushButton::clicked, this, &FastoEditor::goToPrevElement));
         retranslateUi();
@@ -334,6 +335,29 @@ namespace fastonosql
     void FastoEditorOutput::reset()
     {
         layoutChanged();
+    }
+
+    QModelIndex FastoEditorOutput::selectedItem(int column) const
+    {
+        if(!model_){
+            return QModelIndex();
+        }
+
+        return model_->index(0, column);
+    }
+
+    bool FastoEditorOutput::setData(const QModelIndex& index, const QVariant& value)
+    {
+        if(!model_){
+            return false;
+        }
+
+        return model_->setData(index, value);
+    }
+
+    int FastoEditorOutput::viewMethod() const
+    {
+        return viewMethod_;
     }
 
     void FastoEditorOutput::layoutChanged()

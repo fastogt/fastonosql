@@ -48,6 +48,9 @@ namespace fastonosql
         QString text() const;
         QString selectedText() const;
 
+    Q_SIGNALS:
+        void textChanged();
+
     public Q_SLOTS:
         void append(const QString &text);
         void setReadOnly(bool ro);
@@ -83,7 +86,7 @@ namespace fastonosql
         QToolButton* close_;
         QPushButton* next_;
         QPushButton* prev_;
-        QCheckBox*  caseSensitive_;
+        QCheckBox* caseSensitive_;
     };
 
     class FastoEditorOutput
@@ -94,6 +97,10 @@ namespace fastonosql
         FastoEditorOutput(const QString &delemitr, QWidget *parent = 0);
 
         void setModel(QAbstractItemModel* model);
+
+        QModelIndex selectedItem(int column) const;
+        bool setData(const QModelIndex& index, const QVariant& value);
+        int viewMethod() const;
 
     public Q_SLOTS:
         void viewChanged(int viewMethod);

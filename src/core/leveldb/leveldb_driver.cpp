@@ -528,15 +528,13 @@ namespace fastonosql
 
     void LeveldbDriver::initImpl()
     {
-        currentDatabaseInfo_.reset(new LeveldbDataBaseInfo("0", 0, true));
     }
 
     void LeveldbDriver::clearImpl()
     {
-
     }
 
-    common::ErrorValueSPtr LeveldbDriver::currentLoggingInfo(ServerInfo **info)
+    common::ErrorValueSPtr LeveldbDriver::serverInfo(ServerInfo **info)
     {
         LOG_COMMAND(Command(INFO_REQUEST, common::Value::C_INNER));
         LeveldbServerInfo::Stats cm;
@@ -548,10 +546,10 @@ namespace fastonosql
         return err;
     }
 
-    common::ErrorValueSPtr LeveldbDriver::serverDiscoveryInfo(ServerInfo **sinfo, ServerDiscoveryInfo **dinfo)
+    common::ErrorValueSPtr LeveldbDriver::serverDiscoveryInfo(ServerInfo **sinfo, ServerDiscoveryInfo **dinfo, DataBaseInfo** dbinfo)
     {
         ServerInfo *lsinfo = NULL;
-        common::ErrorValueSPtr er = currentLoggingInfo(&lsinfo);
+        common::ErrorValueSPtr er = serverInfo(&lsinfo);
         if(er){
             return er;
         }
@@ -567,8 +565,22 @@ namespace fastonosql
             }
         }
 
+        DataBaseInfo* ldbinfo = NULL;
+        er = currentDataBaseInfo(&ldbinfo);
+        if(er){
+            delete lsinfo;
+            return er;
+        }
+
         *sinfo = lsinfo;
+        *dbinfo = ldbinfo;
         return er;
+    }
+
+    common::ErrorValueSPtr LeveldbDriver::currentDataBaseInfo(DataBaseInfo** info)
+    {
+        *info = new LeveldbDataBaseInfo("0", 0, true);
+        return common::ErrorValueSPtr();
     }
 
     void LeveldbDriver::handleConnectEvent(events::ConnectRequestEvent *ev)
@@ -688,7 +700,7 @@ namespace fastonosql
     notifyProgress(sender, 0);
         events::LoadDatabasesInfoResponceEvent::value_type res(ev->value());
     notifyProgress(sender, 50);
-        res.databases_.push_back(currentDatabaseInfo_);
+        res.databases_.push_back(currentDatabaseInfo());
         reply(sender, new events::LoadDatabasesInfoResponceEvent(this, res));
     notifyProgress(sender, 100);
     }

@@ -284,7 +284,8 @@ namespace fastonosql
             if(!log_file_){
                 std::string path = settings_->loggingPath();
                 std::string dir = common::file_system::get_dir_path(path);
-                common::file_system::create_directory(dir, true);
+                bool res = common::file_system::create_directory(dir, true);
+                UNUSED(res);
                 if(common::file_system::is_directory(dir) == SUCCESS){
                     common::file_system::Path p(path);
                     log_file_ = new common::file_system::File(p);
@@ -300,7 +301,7 @@ namespace fastonosql
                 common::time64_t time = common::time::current_mstime();
                 std::string stamp = createStamp(time);
                 ServerInfo* info = NULL;
-                common::ErrorValueSPtr er = currentLoggingInfo(&info);
+                common::ErrorValueSPtr er = serverInfo(&info);
                 if(er && er->isError()){
                     QObject::timerEvent(event);
                     return;
@@ -383,6 +384,11 @@ namespace fastonosql
         return root;
     }
 
+    void IDriver::setCurrentDatabaseInfo(DataBaseInfo *inf)
+    {
+        currentDatabaseInfo_.reset(inf);
+    }
+
     void IDriver::handleLoadServerInfoHistoryEvent(events::ServerInfoHistoryRequestEvent *ev)
     {
         QObject *sender = ev->sender();
@@ -439,13 +445,18 @@ namespace fastonosql
         if(isConnected()){
             ServerDiscoveryInfo* disc = NULL;
             ServerInfo* info = NULL;
-            common::ErrorValueSPtr er = serverDiscoveryInfo(&info, &disc);
+            DataBaseInfo* db = NULL;
+            common::ErrorValueSPtr er = serverDiscoveryInfo(&info, &disc, &db);
             if(!er){
+               DCHECK(info);
+               DCHECK(db);
                serverInfo_.reset(info);
                serverDiscInfo_.reset(disc);
+               currentDatabaseInfo_.reset(db);
 
                res.sinfo_ = serverInfo_;
                res.dinfo_ = serverDiscInfo_;
+               res.dbinfo_ = currentDatabaseInfo_;
             }
             else{
                 res.setErrorInfo(er);

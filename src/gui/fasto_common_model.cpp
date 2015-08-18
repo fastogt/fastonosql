@@ -63,8 +63,9 @@ namespace fastonosql
             int column = index.column();
             FastoCommonItem *node = common::utils_qt::item<FastoCommonItem*>(index);
 
-            if (!node)
+            if (!node){
                 return false;
+            }
 
             if (column == FastoCommonItem::eKey) {
 

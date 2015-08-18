@@ -178,8 +178,9 @@ namespace fastonosql
         virtual void initImpl();
         virtual void clearImpl();
 
-        virtual common::ErrorValueSPtr currentLoggingInfo(ServerInfo** info);
-        virtual common::ErrorValueSPtr serverDiscoveryInfo(ServerInfo** sinfo, ServerDiscoveryInfo** dinfo);
+        virtual common::ErrorValueSPtr serverInfo(ServerInfo** info);
+        virtual common::ErrorValueSPtr serverDiscoveryInfo(ServerInfo** sinfo, ServerDiscoveryInfo** dinfo, DataBaseInfo** dbinfo);
+        virtual common::ErrorValueSPtr currentDataBaseInfo(DataBaseInfo** info);
 
         virtual void handleConnectEvent(events::ConnectRequestEvent* ev);
         virtual void handleDisconnectEvent(events::DisconnectRequestEvent* ev);

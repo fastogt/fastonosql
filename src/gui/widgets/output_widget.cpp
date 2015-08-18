@@ -48,8 +48,7 @@ namespace fastonosql
         tableView_->setModel(commonModel_);
 
         textView_ = new FastoTextView(server->outputDelemitr());
-        textView_->setModel(commonModel_);
-        textView_->setReadOnly(true);
+        textView_->setModel(commonModel_);        
 
         timeLabel_ = new fasto::qt::gui::IconLabel(GuiFactory::instance().timeIcon(), "0", QSize(32, 32));
 
