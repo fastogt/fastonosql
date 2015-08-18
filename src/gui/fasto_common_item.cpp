@@ -38,17 +38,7 @@ namespace fastonosql
 
     bool FastoCommonItem::isReadOnly() const
     {
-        return changeCommand_.empty();
-    }
-
-    void FastoCommonItem::setChangeCommand(const std::string& cmd)
-    {
-        changeCommand_ = cmd;
-    }
-
-    std::string FastoCommonItem::changeCommand() const
-    {
-        return changeCommand_;
+        return false;
     }
 
     QString toJson(FastoCommonItem* item)

@@ -77,7 +77,6 @@ namespace fastonosql
         virtual void handleChangeMaxConnectionEvent(events::ChangeMaxConnectionRequestEvent* ev);
 
         // handle database events
-        virtual void handleDbValueChangeEvent(events::ChangeDbValueRequestEvent* ev);
         virtual void handleLoadDatabaseInfosEvent(events::LoadDatabasesInfoRequestEvent* ev) = 0;
         virtual void handleLoadDatabaseContentEvent(events::LoadDatabaseContentRequestEvent* ev) = 0;
         virtual void handleSetDefaultDatabaseEvent(events::SetDefaultDatabaseRequestEvent* ev) = 0;

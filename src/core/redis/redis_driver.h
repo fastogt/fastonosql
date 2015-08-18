@@ -437,7 +437,6 @@ namespace fastonosql
         virtual common::ErrorValueSPtr commandLoadImpl(CommandLoadKey* command, std::string& cmdstring) const WARN_UNUSED_RESULT;
         virtual common::ErrorValueSPtr commandCreateImpl(CommandCreateKey* command, std::string& cmdstring) const WARN_UNUSED_RESULT;
 
-        virtual void handleDbValueChangeEvent(events::ChangeDbValueRequestEvent* ev);
         virtual void handleLoadDatabaseContentEvent(events::LoadDatabaseContentRequestEvent* ev);
         virtual void handleSetDefaultDatabaseEvent(events::SetDefaultDatabaseRequestEvent* ev);
 

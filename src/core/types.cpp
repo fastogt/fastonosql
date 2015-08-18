@@ -56,6 +56,11 @@ namespace fastonosql
         return NValue(value_, type_);
     }
 
+    common::Value::Type NDbValue::type() const
+    {
+        return type_;
+    }
+
     std::string NDbValue::keyString() const
     {
         return key_;
@@ -265,6 +270,19 @@ namespace fastonosql
 
     }
 
+    CommandCreateKey::CommandCreateKey(const NDbValue& dbv)
+        : CommandKey(dbv.key(), C_CREATE), value_()
+    {
+        NValue val = dbv.value();
+        common::Value::Type t =  dbv.type();
+        if(common::Value::isIntegral(t)){
+           value_ = new FastoObject(NULL, common::Value::createIntegerValue(common::convertFromString<int>(val.value_)));
+        }
+        else{
+           value_ = new FastoObject(NULL, common::Value::createStringValue(val.value_));
+        }
+    }
+
     CommandCreateKey::CommandCreateKey(const NKey& key, FastoObjectIPtr value)
         : CommandKey(key, C_CREATE), value_(value)
     {
@@ -274,5 +292,10 @@ namespace fastonosql
     FastoObjectIPtr CommandCreateKey::value() const
     {
         return value_;
+    }
+
+    NDbValue CommandCreateKey::dbv() const
+    {
+
     }
 }

@@ -206,8 +206,6 @@ namespace
         }
     } rInit;
 
-    std::vector<std::pair<std::string, std::string > > oppositeCommands = { {"GET", "SET"}, {"HSET", "HGET"} };
-
     common::Value::Type convertFromStringRType(const std::string& type)
     {
         if(type.empty()){
@@ -275,32 +273,27 @@ namespace fastonosql
             }
         };
 
-        RedisCommand* createCommand(FastoObject* parent, const std::string& input, common::Value::CommandType ct)
+        RedisCommand* createCommand(FastoObject* parent, const std::string& input, common::Value::CommandLoggingType ct)
         {
             if(input.empty()){
                 return NULL;
             }
 
             DCHECK(parent);
-            std::pair<std::string, std::string> kv = getKeyValueFromLine(input);
-            std::string opposite = getOppositeCommand(kv.first, oppositeCommands);
-            if(!opposite.empty()){
-                opposite += " " + kv.second;
-            }
-            common::CommandValue* cmd = common::Value::createCommand(input, opposite, ct);
+            common::CommandValue* cmd = common::Value::createCommand(input, ct);
             RedisCommand* fs = new RedisCommand(parent, cmd, "");
             parent->addChildren(fs);
             return fs;
         }
 
-        RedisCommand* createCommand(FastoObjectIPtr parent, const std::string& input, common::Value::CommandType ct)
+        RedisCommand* createCommand(FastoObjectIPtr parent, const std::string& input, common::Value::CommandLoggingType ct)
         {
             return createCommand(parent.get(), input, ct);
         }
 
-        RedisCommand* createCommandFast(const std::string& input, common::Value::CommandType ct)
+        RedisCommand* createCommandFast(const std::string& input, common::Value::CommandLoggingType ct)
         {
-            common::CommandValue* cmd = common::Value::createCommand(input, "", ct);
+            common::CommandValue* cmd = common::Value::createCommand(input, ct);
             RedisCommand* fs = new RedisCommand(NULL, cmd, "");
             return fs;
         }
@@ -1735,7 +1728,7 @@ namespace fastonosql
                 common::CommandValue* cmdc = cmd->cmd();
 
                 const std::string command = cmdc->inputCommand();
-                common::Value::CommandType type = cmdc->commandType();
+                common::Value::CommandLoggingType type = cmdc->commandLoggingType();
 
                 if(command.empty()){
                     continue;
@@ -1786,7 +1779,7 @@ namespace fastonosql
             common::CommandValue* cmdc = cmd->cmd();
 
             const std::string command = cmdc->inputCommand();
-            common::Value::CommandType type = cmdc->commandType();
+            common::Value::CommandLoggingType type = cmdc->commandLoggingType();
 
             if(command.empty()){
                 return common::make_error_value("Command empty", common::ErrorValue::E_ERROR);
@@ -2701,29 +2694,6 @@ namespace fastonosql
         cmdstring = patternResult;
 
         return common::ErrorValueSPtr();
-    }
-
-    void RedisDriver::handleDbValueChangeEvent(events::ChangeDbValueRequestEvent* ev)
-    {
-        QObject* sender = ev->sender();
-        notifyProgress(sender, 0);
-        events::ChangeDbValueResponceEvent::value_type res(ev->value());
-
-        notifyProgress(sender, 50);
-        const std::string changeRequest = res.command_ + " " + res.newItem_.valueString();
-        FastoObjectIPtr root = FastoObject::createRoot(changeRequest);
-        RedisCommand* cmd = createCommand(root, changeRequest, common::Value::C_INNER);
-        common::ErrorValueSPtr er = impl_->execute(cmd);
-        if(er){
-            res.setErrorInfo(er);
-        }
-        else{
-            res.isChange_ = true;
-        }
-
-        notifyProgress(sender, 75);
-            reply(sender, new events::ChangeDbValueResponceEvent(this, res));
-        notifyProgress(sender, 100);
     }
 
     ServerInfoSPtr RedisDriver::makeServerInfoFromString(const std::string& val)

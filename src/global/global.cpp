@@ -117,21 +117,11 @@ namespace fastonosql
         return std::string();
     }
 
-    std::string FastoObjectCommand::oppositeCommand() const
+    common::Value::CommandLoggingType FastoObjectCommand::commandLoggingType() const
     {
         common::CommandValue* command = cmd();
         if(command){
-            return command->oppositeCommand();
-        }
-
-        return std::string();
-    }
-
-    common::Value::CommandType FastoObjectCommand::commandType() const
-    {
-        common::CommandValue* command = cmd();
-        if(command){
-            return command->commandType();
+            return command->commandLoggingType();
         }
 
         return common::Value::C_UNKNOWN;

@@ -32,14 +32,14 @@ namespace
 
 namespace fastonosql
 {
-    OutputWidget::OutputWidget(IServer *server, QWidget* parent)
-        : QWidget(parent)
+    OutputWidget::OutputWidget(IServerSPtr server, QWidget* parent)
+        : QWidget(parent), server_(server)
     {
         DCHECK(server);
         commonModel_ = new FastoCommonModel(this);
-        VERIFY(connect(commonModel_, &FastoCommonModel::changedValue, server, &IServer::changeValue, Qt::DirectConnection));
-        VERIFY(connect(server, &IServer::startedChangeDbValue, this, &OutputWidget::startChangeDbValue, Qt::DirectConnection));
-        VERIFY(connect(server, &IServer::finishedChangeDbValue, this, &OutputWidget::finishChangeDbValue, Qt::DirectConnection));
+        VERIFY(connect(commonModel_, &FastoCommonModel::changedValue, this, &OutputWidget::executeCommand, Qt::DirectConnection));
+        VERIFY(connect(server.get(), &IServer::startedExecuteCommand, this, &OutputWidget::startExecuteCommand, Qt::DirectConnection));
+        VERIFY(connect(server.get(), &IServer::finishedExecuteCommand, this, &OutputWidget::finishExecuteCommand, Qt::DirectConnection));
 
         treeView_ = new FastoTreeView;
         treeView_->setModel(commonModel_);
@@ -95,19 +95,25 @@ namespace fastonosql
         updateTimeLabel(res);
     }
 
-    void OutputWidget::startChangeDbValue(const EventsInfo::ChangeDbValueRequest& req)
+    void OutputWidget::startExecuteCommand(const EventsInfo::CommandRequest& req)
     {
 
     }
 
-    void OutputWidget::finishChangeDbValue(const EventsInfo::ChangeDbValueResponce& res)
+    void OutputWidget::finishExecuteCommand(const EventsInfo::CommandResponce& res)
     {
         common::ErrorValueSPtr er = res.errorInfo();
         if(er && er->isError()){
             return;
         }
 
-        commonModel_->changeValue(res.newItem_);
+        CommandKeySPtr key = res.cmd_;
+        if(key->type() == CommandKey::C_CREATE){
+            CommandCreateKey * ckey = dynamic_cast<CommandCreateKey *>(key.get());
+            if(ckey){
+                commonModel_->changeValue(ckey->dbv());
+            }
+        }
     }
 
     void OutputWidget::addChild(FastoObject* child)
@@ -146,7 +152,6 @@ namespace fastonosql
             const QString key = common::convertFromString<QString>(command->inputArgs());
 
             fastonosql::FastoCommonItem* comChild = createItem(par, key, child);
-            comChild->setChangeCommand(command->oppositeCommand());
             commonModel_->insertItem(parent, comChild);
         }
         else{
@@ -195,6 +200,13 @@ namespace fastonosql
 
         it->setValue(newValue);
         commonModel_->updateItem(index.parent(), index);
+    }
+
+    void OutputWidget::executeCommand(CommandKeySPtr cmd)
+    {
+        if(server_){
+            server_->executeCommand(server_->currentDatabaseInfo(), cmd);
+        }
     }
 
     void OutputWidget::setTreeView()

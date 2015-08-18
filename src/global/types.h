@@ -18,13 +18,13 @@ namespace fastonosql
     {
     public:
         Command();
-        Command(const std::string& mess, common::Value::CommandType commandT);
+        Command(const std::string& mess, common::Value::CommandLoggingType commandT);
         const std::string& message() const;
-        common::Value::CommandType type() const;
+        common::Value::CommandLoggingType type() const;
 
     private:
         const std::string message_;
-        const common::Value::CommandType type_;
+        const common::Value::CommandLoggingType type_;
     };
 }
 

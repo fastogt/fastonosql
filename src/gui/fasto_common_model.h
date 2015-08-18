@@ -24,7 +24,7 @@ namespace fastonosql
         void changeValue(const NDbValue& value);
 
     Q_SIGNALS:
-        void changedValue(const NDbValue& value, const std::string& command);
+        void changedValue(CommandKeySPtr cmd);
     };
 }
 

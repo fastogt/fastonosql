@@ -332,25 +332,6 @@ namespace fastonosql
             bool isChange_;
         };
 
-        struct ChangeDbValueRequest
-                : public EventInfoBase
-        {
-            typedef EventInfoBase base_class;
-            ChangeDbValueRequest(const NDbValue& val, const error_type &er = error_type());
-
-            NDbValue newItem_;
-            std::string command_;
-        };
-
-        struct ChangeDbValueResponce
-                : ChangeDbValueRequest
-        {
-            typedef ChangeDbValueRequest base_class;
-            ChangeDbValueResponce(const base_class &request);
-
-            bool isChange_;
-        };
-
         struct CommandRequest
                 : public EventInfoBase
         {

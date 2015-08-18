@@ -239,10 +239,6 @@ namespace fastonosql
             ChangeServerPropertyInfoRequestEvent *ev = static_cast<ChangeServerPropertyInfoRequestEvent*>(event);
             handleServerPropertyChangeEvent(ev);
         }
-        else if (type == static_cast<QEvent::Type>(ChangeDbValueRequestEvent::EventType)){
-            ChangeDbValueRequestEvent *ev = static_cast<ChangeDbValueRequestEvent*>(event);
-            handleDbValueChangeEvent(ev);
-        }
         else if (type == static_cast<QEvent::Type>(BackupRequestEvent::EventType)){
             BackupRequestEvent *ev = static_cast<BackupRequestEvent*>(event);
             handleBackupEvent(ev);
@@ -331,11 +327,6 @@ namespace fastonosql
     void IDriver::handleServerPropertyChangeEvent(events::ChangeServerPropertyInfoRequestEvent* ev)
     {
         replyNotImplementedYet<events::ChangeServerPropertyInfoRequestEvent, events::ChangeServerPropertyInfoResponceEvent>(this, ev, "change server property command");
-    }
-
-    void IDriver::handleDbValueChangeEvent(events::ChangeDbValueRequestEvent* ev)
-    {
-        replyNotImplementedYet<events::ChangeDbValueRequestEvent, events::ChangeDbValueResponceEvent>(this, ev, "change dbvalue command");
     }
 
     void IDriver::handleShutdownEvent(events::ShutDownRequestEvent* ev)

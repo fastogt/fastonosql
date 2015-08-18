@@ -87,9 +87,6 @@ namespace fastonosql
         void startedLoadServerProperty(const EventsInfo::ServerPropertyInfoRequest& req);
         void finishedLoadServerProperty(const EventsInfo::ServerPropertyInfoResponce& res);
 
-        void startedChangeDbValue(const EventsInfo::ChangeDbValueRequest& req);
-        void finishedChangeDbValue(const EventsInfo::ChangeDbValueResponce& res);
-
         void startedChangeServerProperty(const EventsInfo::ChangeServerPropertyInfoRequest& req);
         void finishedChangeServerProperty(const EventsInfo::ChangeServerPropertyInfoResponce& res);
 
@@ -137,7 +134,6 @@ namespace fastonosql
         void serverProperty(); //signals: startedLoadServerProperty, finishedLoadServerProperty
         void requestHistoryInfo(); //signals: startedLoadServerHistoryInfo, finishedLoadServerHistoryInfo
         void changeProperty(const PropertyType& newValue); //signals: startedChangeServerProperty, finishedChangeServerProperty
-        void changeValue(const NDbValue& newValue, const std::string &command); //signals: startedChangeDbValue, finishedChangeDbValue
 
     protected:
         virtual void customEvent(QEvent* event);
@@ -159,7 +155,6 @@ namespace fastonosql
 
         // handle database events
         virtual void handleLoadDatabaseInfosEvent(events::LoadDatabasesInfoResponceEvent* ev);
-        virtual void handleChangeDbValueEvent(events::ChangeDbValueResponceEvent* ev);
         virtual void handleLoadDatabaseContentEvent(events::LoadDatabaseContentResponceEvent* ev);
         virtual void handleSetDefaultDatabaseEvent(events::SetDefaultDatabaseResponceEvent* ev);
 

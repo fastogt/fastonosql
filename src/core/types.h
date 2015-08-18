@@ -75,6 +75,7 @@ namespace fastonosql
 
         NKey key() const;
         NValue value() const;
+        common::Value::Type type() const;
 
         std::string keyString() const;
         std::string valueString() const;
@@ -246,9 +247,11 @@ namespace fastonosql
             : public CommandKey
     {
     public:
+        CommandCreateKey(const NDbValue& dbv);
         CommandCreateKey(const NKey& key, FastoObjectIPtr value);
-        FastoObjectIPtr value() const;
 
+        FastoObjectIPtr value() const;
+        NDbValue dbv() const;
     private:
         FastoObjectIPtr value_;
     };

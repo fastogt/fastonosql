@@ -28,8 +28,6 @@ extern "C" {
 
 namespace
 {
-    std::vector<std::pair<std::string, std::string > > oppositeCommands = { {"GET", "PUT"} };
-
     std::once_flag leveldb_version_once;
     static void leveldb_version_startup_function(char * version)
     {
@@ -74,25 +72,20 @@ namespace fastonosql
             }
         };
 
-        LeveldbCommand* createCommand(FastoObject* parent, const std::string& input, common::Value::CommandType ct)
+        LeveldbCommand* createCommand(FastoObject* parent, const std::string& input, common::Value::CommandLoggingType ct)
         {
             if(input.empty()){
                 return NULL;
             }
 
             DCHECK(parent);
-            std::pair<std::string, std::string> kv = getKeyValueFromLine(input);
-            std::string opposite = getOppositeCommand(kv.first, oppositeCommands);
-            if(!opposite.empty()){
-                opposite += " " + kv.second;
-            }
-            common::CommandValue* cmd = common::Value::createCommand(input, opposite, ct);
+            common::CommandValue* cmd = common::Value::createCommand(input, ct);
             LeveldbCommand* fs = new LeveldbCommand(parent, cmd, "");
             parent->addChildren(fs);
             return fs;
         }
 
-        LeveldbCommand* createCommand(FastoObjectIPtr parent, const std::string& input, common::Value::CommandType ct)
+        LeveldbCommand* createCommand(FastoObjectIPtr parent, const std::string& input, common::Value::CommandLoggingType ct)
         {
             return createCommand(parent.get(), input, ct);
         }
@@ -243,7 +236,7 @@ namespace fastonosql
             }
 
             const std::string command = cmd->cmd()->inputCommand();
-            common::Value::CommandType type = cmd->cmd()->commandType();
+            common::Value::CommandLoggingType type = cmd->cmd()->commandLoggingType();
 
             if(command.empty()){
                 return common::make_error_value("Command empty", common::ErrorValue::E_ERROR);

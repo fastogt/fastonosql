@@ -8,7 +8,7 @@ namespace fastonosql
 
     }
 
-    Command::Command(const std::string &mess, common::Value::CommandType commandT)
+    Command::Command(const std::string &mess, common::Value::CommandLoggingType commandT)
         : message_(mess), type_(commandT)
     {
 
@@ -19,7 +19,7 @@ namespace fastonosql
         return message_;
     }
 
-    common::Value::CommandType Command::type() const
+    common::Value::CommandLoggingType Command::type() const
     {
         return type_;
     }

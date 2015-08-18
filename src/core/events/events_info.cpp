@@ -261,17 +261,6 @@ namespace fastonosql
         {
         }
 
-        ChangeDbValueRequest::ChangeDbValueRequest(const NDbValue& val, const error_type &er)
-            : base_class(er), newItem_(val)
-        {
-
-        }
-
-        ChangeDbValueResponce::ChangeDbValueResponce(const base_class &request)
-            : base_class(request)
-        {
-        }
-
         CommandRequest::CommandRequest(DataBaseInfoSPtr inf, CommandKeySPtr cmd, const error_type &er)
             : base_class(er), inf_(inf), cmd_(cmd)
         {

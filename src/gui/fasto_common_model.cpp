@@ -75,7 +75,10 @@ namespace fastonosql
                 if(newValue != node->value()){
                     const std::string key = common::convertToString(node->key());
                     const std::string value = common::convertToString(newValue);
-                    emit changedValue(NDbValue(key, value, node->type()), node->changeCommand());
+
+                    NDbValue dbv(key, value, node->type());
+                    CommandKeySPtr com(new CommandCreateKey(dbv));
+                    emit changedValue(com);
                 }
             }
         }

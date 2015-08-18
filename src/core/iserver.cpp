@@ -312,15 +312,6 @@ namespace fastonosql
         notify(ev);
     }
 
-    void IServer::changeValue(const NDbValue& newValue, const std::string& command)
-    {
-        EventsInfo::ChangeDbValueRequest req(newValue);
-        req.command_ = command;
-        emit startedChangeDbValue(req);
-        QEvent *ev = new events::ChangeDbValueRequestEvent(this, req);
-        notify(ev);
-    }
-
     void IServer::customEvent(QEvent *event)
     {
         using namespace events;
@@ -358,13 +349,11 @@ namespace fastonosql
             CommandRootCompleatedEvent::value_type v = ev->value();
             emit rootCompleated(v);
         }
-        else if(type == static_cast<QEvent::Type>(DisconnectResponceEvent::EventType))
-        {
+        else if(type == static_cast<QEvent::Type>(DisconnectResponceEvent::EventType)){
             DisconnectResponceEvent *ev = static_cast<DisconnectResponceEvent*>(event);
             handleDisconnectEvent(ev);
         }
-        else if(type == static_cast<QEvent::Type>(LoadDatabasesInfoResponceEvent::EventType))
-        {
+        else if(type == static_cast<QEvent::Type>(LoadDatabasesInfoResponceEvent::EventType)){
             LoadDatabasesInfoResponceEvent *ev = static_cast<LoadDatabasesInfoResponceEvent*>(event);
             handleLoadDatabaseInfosEvent(ev);
         }
@@ -383,10 +372,6 @@ namespace fastonosql
         else if (type == static_cast<QEvent::Type>(ChangeServerPropertyInfoResponceEvent::EventType)){
             ChangeServerPropertyInfoResponceEvent *ev = static_cast<ChangeServerPropertyInfoResponceEvent*>(event);
             handleServerPropertyChangeEvent(ev);
-        }
-        else if (type == static_cast<QEvent::Type>(ChangeDbValueResponceEvent::EventType)){
-            ChangeDbValueResponceEvent *ev = static_cast<ChangeDbValueResponceEvent*>(event);
-            handleChangeDbValueEvent(ev);
         }
         else if (type == static_cast<QEvent::Type>(BackupResponceEvent::EventType)){
             BackupResponceEvent *ev = static_cast<BackupResponceEvent*>(event);
@@ -570,17 +555,6 @@ namespace fastonosql
             v.databases_ = tmp;
         }
         emit finishedLoadDatabases(v);
-    }
-
-    void IServer::handleChangeDbValueEvent(events::ChangeDbValueResponceEvent* ev)
-    {
-        using namespace events;
-        ChangeDbValueResponceEvent::value_type v = ev->value();
-        common::ErrorValueSPtr er(v.errorInfo());
-        if(er && er->isError()){
-            LOG_ERROR(er, true);
-        }
-        emit finishedChangeDbValue(v);
     }
 
     void IServer::handleLoadDatabaseContentEvent(events::LoadDatabaseContentResponceEvent* ev)

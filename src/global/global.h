@@ -52,8 +52,7 @@ namespace fastonosql
         virtual std::string inputArgs() const = 0;
 
         std::string inputCommand() const;
-        std::string oppositeCommand() const;
-        common::Value::CommandType commandType() const;
+        common::Value::CommandLoggingType commandLoggingType() const;
 
     protected:
         FastoObjectCommand(FastoObject* parent, common::CommandValue* cmd, const std::string &delemitr);

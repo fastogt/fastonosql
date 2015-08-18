@@ -24,11 +24,6 @@ extern "C" {
 #define GET_KEY_PATTERN_1ARGS_S "GET %s"
 #define SET_KEY_PATTERN_2ARGS_SS "SET %s 0 0 %s"
 
-namespace
-{
-    std::vector<std::pair<std::string, std::string > > oppositeCommands = { {"GET", "SET"} };
-}
-
 namespace fastonosql
 {
     namespace
@@ -66,25 +61,20 @@ namespace fastonosql
             }
         };
 
-        MemcachedCommand* createCommand(FastoObject* parent, const std::string& input, common::Value::CommandType ct)
+        MemcachedCommand* createCommand(FastoObject* parent, const std::string& input, common::Value::CommandLoggingType ct)
         {
             if(input.empty()){
                 return NULL;
             }
 
             DCHECK(parent);
-            std::pair<std::string, std::string> kv = getKeyValueFromLine(input);
-            std::string opposite = getOppositeCommand(kv.first, oppositeCommands);
-            if(!opposite.empty()){
-                opposite += " " + kv.second;
-            }
-            common::CommandValue* cmd = common::Value::createCommand(input, opposite, ct);
+            common::CommandValue* cmd = common::Value::createCommand(input, ct);
             MemcachedCommand* fs = new MemcachedCommand(parent, cmd, "");
             parent->addChildren(fs);
             return fs;
         }
 
-        MemcachedCommand* createCommand(FastoObjectIPtr parent, const std::string& input, common::Value::CommandType ct)
+        MemcachedCommand* createCommand(FastoObjectIPtr parent, const std::string& input, common::Value::CommandLoggingType ct)
         {
             return createCommand(parent.get(), input, ct);
         }
@@ -251,7 +241,7 @@ namespace fastonosql
             }
 
             const std::string command = cmd->cmd()->inputCommand();
-            common::Value::CommandType type = cmd->cmd()->commandType();
+            common::Value::CommandLoggingType type = cmd->cmd()->commandLoggingType();
 
             if(command.empty()){
                 return common::make_error_value("Command empty", common::ErrorValue::E_ERROR);
@@ -898,29 +888,6 @@ namespace fastonosql
     done:
         notifyProgress(sender, 75);
             reply(sender, new events::LoadDatabaseContentResponceEvent(this, res));
-        notifyProgress(sender, 100);
-    }
-
-    void MemcachedDriver::handleDbValueChangeEvent(events::ChangeDbValueRequestEvent* ev)
-    {
-        QObject* sender = ev->sender();
-        notifyProgress(sender, 0);
-        events::ChangeDbValueResponceEvent::value_type res(ev->value());
-
-        notifyProgress(sender, 50);
-        const std::string changeRequest = res.command_ + " 0 0 " + res.newItem_.valueString();
-        FastoObjectIPtr root = FastoObject::createRoot(changeRequest);
-        MemcachedCommand* cmd = createCommand(root, changeRequest, common::Value::C_INNER);
-        common::ErrorValueSPtr er = impl_->execute(cmd);
-        if(er){
-            res.setErrorInfo(er);
-        }
-        else{
-            res.isChange_ = true;
-        }
-
-        notifyProgress(sender, 75);
-            reply(sender, new events::ChangeDbValueResponceEvent(this, res));
         notifyProgress(sender, 100);
     }
 

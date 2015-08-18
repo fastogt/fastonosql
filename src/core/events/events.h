@@ -38,9 +38,6 @@ namespace fastonosql
         typedef common::utils_qt::Event<EventsInfo::ServerPropertyInfoRequest, QEvent::User + 21> ServerPropertyInfoRequestEvent;
         typedef common::utils_qt::Event<EventsInfo::ServerPropertyInfoResponce, QEvent::User + 22> ServerPropertyInfoResponceEvent;
 
-        typedef common::utils_qt::Event<EventsInfo::ChangeDbValueRequest, QEvent::User + 23> ChangeDbValueRequestEvent;
-        typedef common::utils_qt::Event<EventsInfo::ChangeDbValueResponce, QEvent::User + 24> ChangeDbValueResponceEvent;
-
         typedef common::utils_qt::Event<EventsInfo::ChangeServerPropertyInfoRequest, QEvent::User + 25> ChangeServerPropertyInfoRequestEvent;
         typedef common::utils_qt::Event<EventsInfo::ChangeServerPropertyInfoResponce, QEvent::User + 26> ChangeServerPropertyInfoResponceEvent;
 

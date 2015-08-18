@@ -30,18 +30,21 @@ namespace fastonosql
     {
         Q_OBJECT
     public:
-        OutputWidget(IServer* server, QWidget* parent = 0);
+        OutputWidget(IServerSPtr server, QWidget* parent = 0);
 
     public Q_SLOTS:
         void rootCreate(const EventsInfo::CommandRootCreatedInfo& res);
         void rootCompleate(const EventsInfo::CommandRootCompleatedInfo& res);
-        void startChangeDbValue(const EventsInfo::ChangeDbValueRequest& req);
-        void finishChangeDbValue(const EventsInfo::ChangeDbValueResponce& res);
+
+        void startExecuteCommand(const EventsInfo::CommandRequest& req);
+        void finishExecuteCommand(const EventsInfo::CommandResponce& res);
 
         void addChild(FastoObject* child);
         void itemUpdate(FastoObject* item, const QString& newValue);
 
     private Q_SLOTS:
+        void executeCommand(CommandKeySPtr cmd);
+
         void setTreeView();
         void setTableView();
         void setTextView();
@@ -58,5 +61,6 @@ namespace fastonosql
         FastoTreeView* treeView_;
         FastoTableView* tableView_;
         FastoTextView* textView_;
+        IServerSPtr server_;
     };
 }

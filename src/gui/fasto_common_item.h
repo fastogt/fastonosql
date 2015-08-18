@@ -26,13 +26,10 @@ namespace fastonosql
         common::Value::Type type() const;
 
         bool isReadOnly() const;
-        void setChangeCommand(const std::string& cmd);
-        std::string changeCommand() const;
 
     private:
         QString key_;
         QString value_;
-        std::string changeCommand_;
         common::Value::Type type_;
     };
 
