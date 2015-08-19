@@ -31,7 +31,7 @@ namespace fastonosql
                                             common::Value::TYPE_HASH
                                            };
 
-    const std::vector<std::string> SsdbHeaders =
+    const std::vector<std::string> ssdbHeaders =
     {
         SSDB_COMMON_LABEL
     };
@@ -143,11 +143,11 @@ namespace fastonosql
         SsdbServerInfo* result = new SsdbServerInfo;
 
         std::string word;
-        DCHECK(SsdbHeaders.size() == 1);
+        DCHECK(ssdbHeaders.size() == 1);
         for(int i = 0; i < content.size(); ++i)
         {
             word += content[i];
-            if(word == SsdbHeaders[0]){
+            if(word == ssdbHeaders[0]){
                 std::string part = content.substr(i + 1);
                 result->common_ = SsdbServerInfo::Common(part);
                 break;

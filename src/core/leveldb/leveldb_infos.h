@@ -12,7 +12,7 @@
 
 namespace fastonosql
 {
-    extern const std::vector<std::string> LeveldbHeaders;
+    extern const std::vector<std::string> leveldbHeaders;
     extern const std::vector<std::vector<Field> > LeveldbFields;
 
     class LeveldbServerInfo

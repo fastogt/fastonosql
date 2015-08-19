@@ -387,7 +387,6 @@ namespace fastonosql
 
         std::string path = settings_->loggingPath();
         common::file_system::Path p(path);
-
         common::file_system::File readFile(p);
         if(readFile.open("rb")){
             events::ServerInfoHistoryResponceEvent::value_type::infos_container_type tmpInfos;
@@ -421,8 +420,7 @@ namespace fastonosql
             res.setInfos(tmpInfos);
         }
         else{
-           common::ErrorValueSPtr er(new common::ErrorValue("Logging file not found", common::ErrorValue::E_ERROR));
-           res.setErrorInfo(er);
+           res.setErrorInfo(common::make_error_value("Logging file not found", common::ErrorValue::E_ERROR));
         }
 
         reply(sender, new events::ServerInfoHistoryResponceEvent(this, res));

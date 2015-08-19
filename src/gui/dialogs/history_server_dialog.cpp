@@ -70,15 +70,15 @@ namespace fastonosql
 #endif
 #ifdef BUILD_WITH_SSDB
         if(type_ == SSDB){
-            for(int i = 0; i < SsdbHeaders.size(); ++i){
-                serverInfoGroupsNames_->addItem(common::convertFromString<QString>(SsdbHeaders[i]));
+            for(int i = 0; i < ssdbHeaders.size(); ++i){
+                serverInfoGroupsNames_->addItem(common::convertFromString<QString>(ssdbHeaders[i]));
             }
         }
 #endif
 #ifdef BUILD_WITH_LEVELDB
         if(type_ == LEVELDB){
-            for(int i = 0; i < LeveldbHeaders.size(); ++i){
-                serverInfoGroupsNames_->addItem(common::convertFromString<QString>(LeveldbHeaders[i]));
+            for(int i = 0; i < leveldbHeaders.size(); ++i){
+                serverInfoGroupsNames_->addItem(common::convertFromString<QString>(leveldbHeaders[i]));
             }
         }
 #endif

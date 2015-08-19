@@ -937,6 +937,7 @@ int redisBufferRead(redisContext *c) {
     }
     else{
         #ifdef OS_WIN
+            errno = 0;
             nread = recv(c->fd,buf,sizeof(buf),0);
         #else
             nread = read(c->fd,buf,sizeof(buf));

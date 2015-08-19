@@ -28,7 +28,7 @@ namespace fastonosql
                                             common::Value::TYPE_ARRAY
                                            };
 
-    const std::vector<std::string> LeveldbHeaders =
+    const std::vector<std::string> leveldbHeaders =
     {
         LEVELDB_STATS_LABEL
     };
@@ -141,11 +141,11 @@ namespace fastonosql
         LeveldbServerInfo* result = new LeveldbServerInfo;
 
         std::string word;
-        DCHECK(LeveldbHeaders.size() == 1);
+        DCHECK(leveldbHeaders.size() == 1);
         for(int i = 0; i < content.size(); ++i)
         {
             word += content[i];
-            if(word == LeveldbHeaders[0]){
+            if(word == leveldbHeaders[0]){
                 std::string part = content.substr(i + 1);
                 result->stats_ = LeveldbServerInfo::Stats(part);
                 break;

@@ -12,7 +12,7 @@
 
 namespace fastonosql
 {
-    extern const std::vector<std::string> SsdbHeaders;
+    extern const std::vector<std::string> ssdbHeaders;
     extern const std::vector<std::vector<Field> > SsdbFields;
 
     class SsdbServerInfo
