@@ -109,9 +109,5 @@ Executable will be placed to: target/debug/app/out
 
 -->
 
-[![Bitdeli Badge](https://d2weczhvl823v0.cloudfront.net/fasto/fastonosql/trend.png)](https://bitdeli.com/free "Bitdeli Badge")
-
-
-
 [![Bitdeli Badge](https://d2weczhvl823v0.cloudfront.net/fastogt/fastonosql/trend.png)](https://bitdeli.com/free "Bitdeli Badge")
 
