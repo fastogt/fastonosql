@@ -30,45 +30,86 @@ namespace fastonosql
         return UNDEFINED_SINCE_STR;
     }
 
-    NKey::NKey(const std::string& key, common::Value::Type type, int32_t ttl_msec)
-        : key_(key), type_(type), ttl_msec_(ttl_msec)
+    NKey::NKey(const std::string& key, int32_t ttl_msec)
+        : key_(key), ttl_msec_(ttl_msec)
     {
     }
 
-    NValue::NValue(const std::string& value, common::Value::Type type)
-        : value_(value), type_(type)
+    NValue::NValue(common::Value::Type type)
+        : type_(type), value_()
     {
 
     }
 
-    NDbValue::NDbValue(const std::string& key, const std::string& value, common::Value::Type type)
-        : key_(key), value_(value), type_(type)
+    NValue::NValue(FastoObjectIPtr value)
+        : type_(common::Value::TYPE_NULL), value_(value)
     {
+
+    }
+
+    std::string NValue::toString() const
+    {
+        if(isValid()){
+            return value_->toString();
+        }
+
+        NOTREACHED();
+        return std::string();
+    }
+
+    bool NValue::isValid() const
+    {
+        return value_.get();
+    }
+
+    common::Value::Type NValue::type() const
+    {
+        if(!value_.get()){
+            return type_;
+        }
+
+        return value_->type();
+    }
+
+    NDbValue::NDbValue(const NKey& key, const NValue& value)
+        : key_(key), value_(value)
+    {
+
     }
 
     NKey NDbValue::key() const
     {
-        return NKey(key_, type_);
+        return key_;
     }
 
     NValue NDbValue::value() const
     {
-        return NValue(value_, type_);
+        return value_;
     }
 
     common::Value::Type NDbValue::type() const
     {
-        return type_;
+        return value_.type();
+    }
+
+    void NDbValue::setTTL(int32_t ttl)
+    {
+        key_.ttl_msec_ = ttl;
+    }
+
+    void NDbValue::setValue(const NValue& value)
+    {
+        value_ = value;
     }
 
     std::string NDbValue::keyString() const
     {
-        return key_;
+        return key_.key_;
     }
 
     std::string NDbValue::valueString() const
     {
-        return value_;
+        return value_.toString();
     }
 
     ServerDiscoveryInfo::ServerDiscoveryInfo(connectionTypes ctype, serverTypes type, bool self)
@@ -237,7 +278,7 @@ namespace fastonosql
         return keys_;
     }
 
-    CommandKey::CommandKey(const NKey& key, cmdtype type)
+    CommandKey::CommandKey(const NDbValue &key, cmdtype type)
         : type_(type), key_(key)
     {
 
@@ -248,7 +289,7 @@ namespace fastonosql
         return type_;
     }
 
-    NKey CommandKey::key() const
+    NDbValue CommandKey::key() const
     {
         return key_;
     }
@@ -258,44 +299,26 @@ namespace fastonosql
 
     }
 
-    CommandDeleteKey::CommandDeleteKey(const NKey& key)
+    CommandDeleteKey::CommandDeleteKey(const NDbValue &key)
         : CommandKey(key, C_DELETE)
     {
 
     }
 
-    CommandLoadKey::CommandLoadKey(const NKey& key)
+    CommandLoadKey::CommandLoadKey(const NDbValue &key)
         : CommandKey(key, C_LOAD)
     {
 
     }
 
     CommandCreateKey::CommandCreateKey(const NDbValue& dbv)
-        : CommandKey(dbv.key(), C_CREATE), value_()
-    {
-        NValue val = dbv.value();
-        common::Value::Type t =  dbv.type();
-        if(common::Value::isIntegral(t)){
-           value_ = new FastoObject(NULL, common::Value::createIntegerValue(common::convertFromString<int>(val.value_)));
-        }
-        else{
-           value_ = new FastoObject(NULL, common::Value::createStringValue(val.value_));
-        }
-    }
-
-    CommandCreateKey::CommandCreateKey(const NKey& key, FastoObjectIPtr value)
-        : CommandKey(key, C_CREATE), value_(value)
+        : CommandKey(dbv, C_CREATE)
     {
 
     }
 
-    FastoObjectIPtr CommandCreateKey::value() const
+    NValue CommandCreateKey::value() const
     {
-        return value_;
-    }
-
-    NDbValue CommandCreateKey::dbv() const
-    {
-        return NDbValue(key().key_, value_->toString(), value_->type());
+        return key_.value();
     }
 }

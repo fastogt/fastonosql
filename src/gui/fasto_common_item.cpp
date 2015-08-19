@@ -10,8 +10,8 @@
 
 namespace fastonosql
 {
-    FastoCommonItem::FastoCommonItem(const QString& key, const QString& value, common::Value::Type type, TreeItem *parent, void* internalPointer)
-        : TreeItem(parent, internalPointer), key_(key), value_(value), type_(type)
+    FastoCommonItem::FastoCommonItem(const QString& key, const QString& value, common::Value::Type type, bool isReadOnly, TreeItem *parent, void* internalPointer)
+        : TreeItem(parent, internalPointer), key_(key), value_(value), type_(type), isReadOnly_(isReadOnly)
     {
 
     }
@@ -38,7 +38,7 @@ namespace fastonosql
 
     bool FastoCommonItem::isReadOnly() const
     {
-        return false;
+        return isReadOnly_;
     }
 
     QString toJson(FastoCommonItem* item)

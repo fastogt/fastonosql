@@ -46,6 +46,17 @@ namespace fastonosql
 
             }
 
+            virtual bool isReadOnly() const
+            {
+                std::string key = inputCmd();
+                if(key.empty()){
+                    return true;
+                }
+
+                std::transform(key.begin(), key.end(), key.begin(), ::tolower);
+                return key != "get";
+            }
+
             virtual std::string inputCmd() const
             {
                 common::CommandValue* command = cmd();
@@ -1484,8 +1495,8 @@ namespace fastonosql
     common::ErrorValueSPtr SsdbDriver::commandDeleteImpl(CommandDeleteKey* command, std::string& cmdstring) const
     {
         char patternResult[1024] = {0};
-        const NKey key = command->key();
-        common::SNPrintf(patternResult, sizeof(patternResult), DELETE_KEY_PATTERN_1ARGS_S, key.key_);
+        NDbValue key = command->key();
+        common::SNPrintf(patternResult, sizeof(patternResult), DELETE_KEY_PATTERN_1ARGS_S, key.keyString());
         cmdstring = patternResult;
 
         return common::ErrorValueSPtr();
@@ -1494,21 +1505,22 @@ namespace fastonosql
     common::ErrorValueSPtr SsdbDriver::commandLoadImpl(CommandLoadKey* command, std::string& cmdstring) const
     {
         char patternResult[1024] = {0};
-        const NKey key = command->key();
-        if(key.type_ == common::Value::TYPE_ARRAY){
-            common::SNPrintf(patternResult, sizeof(patternResult), GET_KEY_LIST_PATTERN_1ARGS_S, key.key_);
+        NDbValue key = command->key();
+        common::Value::Type t = key.type();
+        if(t == common::Value::TYPE_ARRAY){
+            common::SNPrintf(patternResult, sizeof(patternResult), GET_KEY_LIST_PATTERN_1ARGS_S, key.keyString());
         }
-        else if(key.type_ == common::Value::TYPE_SET){
-            common::SNPrintf(patternResult, sizeof(patternResult), GET_KEY_SET_PATTERN_1ARGS_S, key.key_);
+        else if(t == common::Value::TYPE_SET){
+            common::SNPrintf(patternResult, sizeof(patternResult), GET_KEY_SET_PATTERN_1ARGS_S, key.keyString());
         }
-        else if(key.type_ == common::Value::TYPE_ZSET){
-            common::SNPrintf(patternResult, sizeof(patternResult), GET_KEY_ZSET_PATTERN_1ARGS_S, key.key_);
+        else if(t == common::Value::TYPE_ZSET){
+            common::SNPrintf(patternResult, sizeof(patternResult), GET_KEY_ZSET_PATTERN_1ARGS_S, key.keyString());
         }
-        else if(key.type_ == common::Value::TYPE_HASH){
-            common::SNPrintf(patternResult, sizeof(patternResult), GET_KEY_HASH_PATTERN_1ARGS_S, key.key_);
+        else if(t == common::Value::TYPE_HASH){
+            common::SNPrintf(patternResult, sizeof(patternResult), GET_KEY_HASH_PATTERN_1ARGS_S, key.keyString());
         }
         else{
-            common::SNPrintf(patternResult, sizeof(patternResult), GET_KEY_PATTERN_1ARGS_S, key.key_);
+            common::SNPrintf(patternResult, sizeof(patternResult), GET_KEY_PATTERN_1ARGS_S, key.keyString());
         }
         cmdstring = patternResult;
 
@@ -1518,22 +1530,23 @@ namespace fastonosql
     common::ErrorValueSPtr SsdbDriver::commandCreateImpl(CommandCreateKey* command, std::string& cmdstring) const
     {
         char patternResult[1024] = {0};
-        const NKey key = command->key();
-        FastoObjectIPtr val = command->value();
-        if(key.type_ == common::Value::TYPE_ARRAY){
-            common::SNPrintf(patternResult, sizeof(patternResult), SET_KEY_LIST_PATTERN_2ARGS_SS, key.key_, val->toString());
+        NDbValue key = command->key();
+        NValue val = command->value();
+        common::Value::Type t = key.type();
+        if(t == common::Value::TYPE_ARRAY){
+            common::SNPrintf(patternResult, sizeof(patternResult), SET_KEY_LIST_PATTERN_2ARGS_SS, key.keyString(), val.toString());
         }
-        else if(key.type_ == common::Value::TYPE_SET){
-            common::SNPrintf(patternResult, sizeof(patternResult), SET_KEY_SET_PATTERN_2ARGS_SS, key.key_, val->toString());
+        else if(t == common::Value::TYPE_SET){
+            common::SNPrintf(patternResult, sizeof(patternResult), SET_KEY_SET_PATTERN_2ARGS_SS, key.keyString(), val.toString());
         }
-        else if(key.type_ == common::Value::TYPE_ZSET){
-            common::SNPrintf(patternResult, sizeof(patternResult), SET_KEY_ZSET_PATTERN_2ARGS_SS, key.key_, val->toString());
+        else if(t == common::Value::TYPE_ZSET){
+            common::SNPrintf(patternResult, sizeof(patternResult), SET_KEY_ZSET_PATTERN_2ARGS_SS, key.keyString(), val.toString());
         }
-        else if(key.type_ == common::Value::TYPE_HASH){
-            common::SNPrintf(patternResult, sizeof(patternResult), SET_KEY_HASH_PATTERN_2ARGS_SS, key.key_, val->toString());
+        else if(t == common::Value::TYPE_HASH){
+            common::SNPrintf(patternResult, sizeof(patternResult), SET_KEY_HASH_PATTERN_2ARGS_SS, key.keyString(), val.toString());
         }
         else{
-            common::SNPrintf(patternResult, sizeof(patternResult), SET_KEY_PATTERN_2ARGS_SS, key.key_, val->toString());
+            common::SNPrintf(patternResult, sizeof(patternResult), SET_KEY_PATTERN_2ARGS_SS, key.keyString(), val.toString());
         }
         cmdstring = patternResult;
 
@@ -1773,7 +1786,8 @@ namespace fastonosql
                         std::string key;
                         bool isok = ar->getString(i, &key);
                         if(isok){
-                            NKey ress(key);
+                            NKey k(key);
+                            NDbValue ress(k, NValue());
                             res.keys_.push_back(ress);
                         }
                     }

@@ -38,6 +38,17 @@ namespace fastonosql
 
             }
 
+            virtual bool isReadOnly() const
+            {
+                std::string key = inputCmd();
+                if(key.empty()){
+                    return true;
+                }
+
+                std::transform(key.begin(), key.end(), key.begin(), ::tolower);
+                return key != "get";
+            }
+
             virtual std::string inputCmd() const
             {
                 common::CommandValue* command = cmd();
@@ -879,7 +890,8 @@ namespace fastonosql
                         std::string key;
                         bool isok = ar->getString(i, &key);
                         if(isok){
-                            NKey ress(key);
+                            NKey k(key);
+                            NDbValue ress(k, NValue());
                             res.keys_.push_back(ress);
                         }
                     }
@@ -926,8 +938,8 @@ namespace fastonosql
     common::ErrorValueSPtr MemcachedDriver::commandDeleteImpl(CommandDeleteKey* command, std::string& cmdstring) const
     {
         char patternResult[1024] = {0};
-        const NKey key = command->key();
-        common::SNPrintf(patternResult, sizeof(patternResult), DELETE_KEY_PATTERN_1ARGS_S, key.key_);
+        NDbValue key = command->key();
+        common::SNPrintf(patternResult, sizeof(patternResult), DELETE_KEY_PATTERN_1ARGS_S, key.keyString());
         cmdstring = patternResult;
         return common::ErrorValueSPtr();
     }
@@ -935,8 +947,8 @@ namespace fastonosql
     common::ErrorValueSPtr MemcachedDriver::commandLoadImpl(CommandLoadKey* command, std::string& cmdstring) const
     {
         char patternResult[1024] = {0};
-        const NKey key = command->key();
-        common::SNPrintf(patternResult, sizeof(patternResult), GET_KEY_PATTERN_1ARGS_S, key.key_);
+        NDbValue key = command->key();
+        common::SNPrintf(patternResult, sizeof(patternResult), GET_KEY_PATTERN_1ARGS_S, key.keyString());
         cmdstring = patternResult;
         return common::ErrorValueSPtr();
     }
@@ -944,9 +956,9 @@ namespace fastonosql
     common::ErrorValueSPtr MemcachedDriver::commandCreateImpl(CommandCreateKey* command, std::string& cmdstring) const
     {
         char patternResult[1024] = {0};
-        const NKey key = command->key();
-        FastoObjectIPtr val = command->value();
-        common::SNPrintf(patternResult, sizeof(patternResult), SET_KEY_PATTERN_2ARGS_SS, key.key_, val->toString());
+        NDbValue key = command->key();
+        NValue val = command->value();
+        common::SNPrintf(patternResult, sizeof(patternResult), SET_KEY_PATTERN_2ARGS_SS, key.keyString(), val.toString());
         cmdstring = patternResult;
         return common::ErrorValueSPtr();
     }

@@ -21,11 +21,19 @@ namespace fastonosql
 
     common::Value::Type FastoObject::type() const
     {
+        if(!value_){
+            return common::Value::TYPE_NULL;
+        }
+
         return value_->getType();
     }
 
     std::string FastoObject::toString() const
     {
+        if(!value_){
+            return std::string();
+        }
+
         std::string result = value_->toString();//getAsString(&result);
         return result;
     }
@@ -201,7 +209,7 @@ namespace fastonosql
 
     std::string FastoObjectArray::toString() const
     {
-        common::ArrayValue* ar = dynamic_cast<common::ArrayValue*>(value_.get());
+        common::ArrayValue* ar = array();
         if(!ar){
             return std::string();
         }

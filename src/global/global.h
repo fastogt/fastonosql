@@ -19,6 +19,7 @@ namespace fastonosql
         virtual std::string toString() const;
 
         static FastoObject* createRoot(const std::string& text, IFastoObjectObserver* observer = NULL);
+
         child_container_type childrens() const;
         void addChildren(FastoObject* child);
         FastoObject* parent() const;
@@ -50,6 +51,8 @@ namespace fastonosql
 
         virtual std::string inputCmd() const = 0;
         virtual std::string inputArgs() const = 0;
+
+        virtual bool isReadOnly() const = 0;
 
         std::string inputCommand() const;
         common::Value::CommandLoggingType commandLoggingType() const;
@@ -123,6 +126,28 @@ namespace fastonosql
 
     typedef common::intrusive_ptr<FastoObject> FastoObjectIPtr;
     typedef common::intrusive_ptr<FastoObjectCommand> FastoObjectCommandIPtr;
+
+    /*static FastoObjectIPtr createFastoObjectByType(common::Value::Type type)
+    {
+        if(type == common::Value::TYPE_ARRAY){
+            return new FastoObjectArray(NULL, common::Value::createArrayValue(), std::string());
+        }
+        else if(type == common::Value::TYPE_HASH){
+            return new FastoObjectHash(NULL, common::Value::createHashValue(), std::string());
+        }
+        else if(type == common::Value::TYPE_SET){
+            return new FastoObjectSet(NULL, common::Value::createSetValue(), std::string());
+        }
+        else if(type == common::Value::TYPE_ZSET){
+            return new FastoObjectZSet(NULL, common::Value::createZSetValue(), std::string());
+        }
+        else if(type == common::Value::TYPE_COMMAND){
+            return new FastoObjectCommand(NULL, common::Value::createCommand(), std::string());
+        }
+        else if(type == common::Value::TYPE_STRING){
+            return new FastoObject(NULL, common::Value::createStringValue(), std::string());
+        }
+    }*/
 }
 
 namespace common

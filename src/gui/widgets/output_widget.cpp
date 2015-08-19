@@ -20,13 +20,14 @@
 #include "common/qt/convert_string.h"
 #include "common/utf_string_conversions.h"
 #include "common/time.h"
+#include "common/logger.h"
 
 namespace
 {
-    fastonosql::FastoCommonItem* createItem(fasto::qt::gui::TreeItem* parent, const QString& key, fastonosql::FastoObject* item)
+    fastonosql::FastoCommonItem* createItem(fasto::qt::gui::TreeItem* parent, const QString& key, bool readOnly, fastonosql::FastoObject* item)
     {
         const std::string value = item->toString();
-        return new fastonosql::FastoCommonItem(key, common::convertFromString<QString>(value), item->type(), parent, item);
+        return new fastonosql::FastoCommonItem(key, common::convertFromString<QString>(value), item->type(), readOnly, parent, item);
     }
 }
 
@@ -86,7 +87,7 @@ namespace fastonosql
     void OutputWidget::rootCreate(const EventsInfo::CommandRootCreatedInfo& res)
     {
         FastoObject* rootObj = res.root_.get();
-        fastonosql::FastoCommonItem* root = createItem(NULL, "", rootObj);
+        fastonosql::FastoCommonItem* root = createItem(NULL, "", true, rootObj);
         commonModel_->setRoot(root);
     }
 
@@ -108,16 +109,14 @@ namespace fastonosql
         }
 
         if(res.initiator() != this){
+            DEBUG_MSG_FORMAT<512>(common::logging::L_DEBUG, "Skipped event in file: %s, function: %s", __FILE__, __FUNCTION__);
             return;
         }
 
         CommandKeySPtr key = res.cmd_;
         if(key->type() == CommandKey::C_CREATE){
-            CommandCreateKey * ckey = dynamic_cast<CommandCreateKey *>(key.get());
-            if(ckey){
-                NDbValue dbv = ckey->dbv();
-                commonModel_->changeValue(dbv);
-            }
+            NDbValue dbv = key->key();
+            commonModel_->changeValue(dbv);
         }
     }
 
@@ -156,7 +155,7 @@ namespace fastonosql
 
             const QString key = common::convertFromString<QString>(command->inputArgs());
 
-            fastonosql::FastoCommonItem* comChild = createItem(par, key, child);
+            fastonosql::FastoCommonItem* comChild = createItem(par, key, command->isReadOnly(), child);
             commonModel_->insertItem(parent, comChild);
         }
         else{
@@ -181,7 +180,7 @@ namespace fastonosql
                     return;
                 }
 
-                fastonosql::FastoCommonItem* comChild = createItem(par, QString(), child);
+                fastonosql::FastoCommonItem* comChild = createItem(par, QString(), true, child);
                 commonModel_->insertItem(parent, comChild);
             }
             else{

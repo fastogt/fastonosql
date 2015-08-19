@@ -170,7 +170,7 @@ namespace fastonosql
         }
         else if(t == CommandKey::C_CREATE){
             CommandCreateKey* createc = dynamic_cast<CommandCreateKey*>(command.get());
-            if(!createc || !createc->value().get()){
+            if(!createc || !createc->value().isValid()){
                 return common::make_error_value("Invalid input argument", common::ErrorValue::E_ERROR);
             }
             return commandCreateImpl(createc, cmdstring);

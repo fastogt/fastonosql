@@ -250,6 +250,17 @@ namespace fastonosql
 
             }
 
+            virtual bool isReadOnly() const
+            {
+                std::string key = inputCmd();
+                if(key.empty()){
+                    return true;
+                }
+
+                std::transform(key.begin(), key.end(), key.begin(), ::tolower);
+                return key != "get";
+            }
+
             virtual std::string inputCmd() const
             {
                 common::CommandValue* command = cmd();
@@ -2492,9 +2503,10 @@ namespace fastonosql
                         bool isok = ar->getString(i, &key);
                         DCHECK(isok);
                         if(isok){
-                            NKey ress(key);
-                            cmds.push_back(createCommandFast("TYPE " + ress.key_, common::Value::C_INNER));
-                            cmds.push_back(createCommandFast("TTL " + ress.key_, common::Value::C_INNER));
+                            NKey k(key);
+                            NDbValue ress(k, NValue());
+                            cmds.push_back(createCommandFast("TYPE " + ress.keyString(), common::Value::C_INNER));
+                            cmds.push_back(createCommandFast("TTL " + ress.keyString(), common::Value::C_INNER));
                             res.keys_.push_back(ress);
                         }
                     }
@@ -2512,7 +2524,8 @@ namespace fastonosql
                             if(tchildrens.size() == 1){
                                 FastoObject* type = tchildrens[0];
                                 std::string typeRedis = type->toString();
-                                res.keys_[i].type_ = convertFromStringRType(typeRedis);
+                                NValue val(convertFromStringRType(typeRedis));
+                                res.keys_[i].setValue(val);
                             }
                         }
 
@@ -2526,7 +2539,7 @@ namespace fastonosql
                                 int32_t ttl = 0;
                                 if(vttl->getAsInteger(&ttl)){
                                     if(ttl != -1){
-                                        res.keys_[i].ttl_msec_ = ttl * 1000;
+                                        res.keys_[i].setTTL(ttl * 1000);
                                     }
                                 }
                             }
@@ -2640,8 +2653,8 @@ namespace fastonosql
     common::ErrorValueSPtr RedisDriver::commandDeleteImpl(CommandDeleteKey* command, std::string& cmdstring) const
     {
         char patternResult[1024] = {0};
-        const NKey key = command->key();
-        common::SNPrintf(patternResult, sizeof(patternResult), DELETE_KEY_PATTERN_1ARGS_S, key.key_);
+        const NDbValue key = command->key();
+        common::SNPrintf(patternResult, sizeof(patternResult), DELETE_KEY_PATTERN_1ARGS_S, key.keyString());
         cmdstring = patternResult;
 
         return common::ErrorValueSPtr();
@@ -2650,21 +2663,21 @@ namespace fastonosql
     common::ErrorValueSPtr RedisDriver::commandLoadImpl(CommandLoadKey* command, std::string& cmdstring) const
     {
         char patternResult[1024] = {0};
-        const NKey key = command->key();
-        if(key.type_ == common::Value::TYPE_ARRAY){
-            common::SNPrintf(patternResult, sizeof(patternResult), GET_KEY_LIST_PATTERN_1ARGS_S, key.key_);
+        const NDbValue key = command->key();
+        if(key.type() == common::Value::TYPE_ARRAY){
+            common::SNPrintf(patternResult, sizeof(patternResult), GET_KEY_LIST_PATTERN_1ARGS_S, key.keyString());
         }
-        else if(key.type_ == common::Value::TYPE_SET){
-            common::SNPrintf(patternResult, sizeof(patternResult), GET_KEY_SET_PATTERN_1ARGS_S, key.key_);
+        else if(key.type() == common::Value::TYPE_SET){
+            common::SNPrintf(patternResult, sizeof(patternResult), GET_KEY_SET_PATTERN_1ARGS_S, key.keyString());
         }
-        else if(key.type_ == common::Value::TYPE_ZSET){
-            common::SNPrintf(patternResult, sizeof(patternResult), GET_KEY_ZSET_PATTERN_1ARGS_S, key.key_);
+        else if(key.type() == common::Value::TYPE_ZSET){
+            common::SNPrintf(patternResult, sizeof(patternResult), GET_KEY_ZSET_PATTERN_1ARGS_S, key.keyString());
         }
-        else if(key.type_ == common::Value::TYPE_HASH){
-            common::SNPrintf(patternResult, sizeof(patternResult), GET_KEY_HASH_PATTERN_1ARGS_S, key.key_);
+        else if(key.type() == common::Value::TYPE_HASH){
+            common::SNPrintf(patternResult, sizeof(patternResult), GET_KEY_HASH_PATTERN_1ARGS_S, key.keyString());
         }
         else{
-            common::SNPrintf(patternResult, sizeof(patternResult), GET_KEY_PATTERN_1ARGS_S, key.key_);\
+            common::SNPrintf(patternResult, sizeof(patternResult), GET_KEY_PATTERN_1ARGS_S, key.keyString());
         }
         cmdstring = patternResult;
 
@@ -2674,22 +2687,22 @@ namespace fastonosql
     common::ErrorValueSPtr RedisDriver::commandCreateImpl(CommandCreateKey* command, std::string& cmdstring) const
     {
         char patternResult[1024] = {0};
-        const NKey key = command->key();
-        FastoObjectIPtr val = command->value();
-        if(key.type_ == common::Value::TYPE_ARRAY){
-            common::SNPrintf(patternResult, sizeof(patternResult), SET_KEY_LIST_PATTERN_2ARGS_SS, key.key_, val->toString());
+        NDbValue key = command->key();
+        NValue val = command->value();
+        if(key.type() == common::Value::TYPE_ARRAY){
+            common::SNPrintf(patternResult, sizeof(patternResult), SET_KEY_LIST_PATTERN_2ARGS_SS, key.keyString(), val.toString());
         }
-        else if(key.type_ == common::Value::TYPE_SET){
-            common::SNPrintf(patternResult, sizeof(patternResult), SET_KEY_SET_PATTERN_2ARGS_SS, key.key_, val->toString());
+        else if(key.type() == common::Value::TYPE_SET){
+            common::SNPrintf(patternResult, sizeof(patternResult), SET_KEY_SET_PATTERN_2ARGS_SS, key.keyString(), val.toString());
         }
-        else if(key.type_ == common::Value::TYPE_ZSET){
-            common::SNPrintf(patternResult, sizeof(patternResult), SET_KEY_ZSET_PATTERN_2ARGS_SS, key.key_, val->toString());
+        else if(key.type() == common::Value::TYPE_ZSET){
+            common::SNPrintf(patternResult, sizeof(patternResult), SET_KEY_ZSET_PATTERN_2ARGS_SS, key.keyString(), val.toString());
         }
-        else if(key.type_ == common::Value::TYPE_HASH){
-            common::SNPrintf(patternResult, sizeof(patternResult), SET_KEY_HASH_PATTERN_2ARGS_SS, key.key_, val->toString());
+        else if(key.type() == common::Value::TYPE_HASH){
+            common::SNPrintf(patternResult, sizeof(patternResult), SET_KEY_HASH_PATTERN_2ARGS_SS, key.keyString(), val.toString());
         }
         else{
-            common::SNPrintf(patternResult, sizeof(patternResult), SET_KEY_PATTERN_2ARGS_SS, key.key_, val->toString());\
+            common::SNPrintf(patternResult, sizeof(patternResult), SET_KEY_PATTERN_2ARGS_SS, key.keyString(), val.toString());\
         }
         cmdstring = patternResult;
 

@@ -4,6 +4,8 @@
 #include "gui/main_window.h"
 #include "gui/gui_factory.h"
 
+#include "common/logger.h"
+
 namespace
 {
     const QSize preferedSize(1024, 768);
@@ -17,6 +19,12 @@ int main(int argc, char *argv[])
     app.setApplicationVersion(PROJECT_VERSION);
     app.setAttribute(Qt::AA_UseHighDpiPixmaps);
     app.setWindowIcon(fastonosql::GuiFactory::instance().logoIcon()); //default icon for app
+
+#ifdef NDEBUG
+    SET_LOG_LEVEL(common::logging::L_INFO);
+#else
+    SET_LOG_LEVEL(common::logging::L_NONE);
+#endif
 
     fastonosql::MainWindow win;
     QRect screenGeometry = app.desktop()->availableGeometry();

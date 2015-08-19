@@ -43,47 +43,49 @@ namespace fastonosql
 
     struct NKey
     {
-        explicit NKey(const std::string& key, common::Value::Type type = common::Value::TYPE_NULL, int32_t ttl_msec = -1);
+        explicit NKey(const std::string& key, int32_t ttl_msec = -1);
 
         std::string key_;
-        common::Value::Type type_;
         int32_t ttl_msec_;
     };
 
     inline bool operator == (const NKey& lhs, const NKey& rhs)
     {
-        return lhs.key_ == rhs.key_ && lhs.type_ == rhs.type_;
+        return lhs.key_ == rhs.key_;
     }
 
     struct NValue
     {
-        explicit NValue(const std::string& value, common::Value::Type type = common::Value::TYPE_NULL);
+        NValue(common::Value::Type type = common::Value::TYPE_NULL);
+        NValue(FastoObjectIPtr value);
 
-        std::string value_;
+        std::string toString() const;
+        bool isValid() const;
+        common::Value::Type type() const;
+
+    private:
+        FastoObjectIPtr value_;
         common::Value::Type type_;
     };
-
-    inline bool operator == (const NValue& lhs, const NValue& rhs)
-    {
-        return lhs.value_ == rhs.value_ && lhs.type_ == rhs.type_;
-    }
 
     class NDbValue
     {
     public:
-        NDbValue(const std::string& key, const std::string& value, common::Value::Type type);
+        NDbValue(const NKey& key, const NValue& value);
 
         NKey key() const;
         NValue value() const;
         common::Value::Type type() const;
 
+        void setTTL(int32_t ttl);
+        void setValue(const NValue& value);
+
         std::string keyString() const;
         std::string valueString() const;
 
     private:
-        std::string key_;
-        std::string value_;
-        common::Value::Type type_;
+        NKey key_;
+        NValue value_;
     };
 
     class ServerDiscoveryInfo
@@ -173,7 +175,7 @@ namespace fastonosql
     class DataBaseInfo
     {
     public:
-        typedef std::vector<NKey> keys_cont_type;
+        typedef std::vector<NDbValue> keys_cont_type;
         connectionTypes type() const;
         std::string name() const;
         void setSize(size_t sz);
@@ -217,30 +219,29 @@ namespace fastonosql
         };
 
         cmdtype type() const;
-        NKey key() const;
+        NDbValue key() const;
 
         virtual ~CommandKey();
 
     protected:
-        CommandKey(const NKey& key, cmdtype type);
+        CommandKey(const NDbValue& key, cmdtype type);
 
-    private:
         cmdtype type_;
-        NKey key_;
+        NDbValue key_;
     };
 
     class CommandDeleteKey
             : public CommandKey
     {
     public:
-        CommandDeleteKey(const NKey& key);
+        CommandDeleteKey(const NDbValue& key);
     };
 
     class CommandLoadKey
             : public CommandKey
     {
     public:
-        CommandLoadKey(const NKey& key);
+        CommandLoadKey(const NDbValue& key);
     };
 
     class CommandCreateKey
@@ -248,12 +249,7 @@ namespace fastonosql
     {
     public:
         CommandCreateKey(const NDbValue& dbv);
-        CommandCreateKey(const NKey& key, FastoObjectIPtr value);
-
-        FastoObjectIPtr value() const;
-        NDbValue dbv() const;
-    private:
-        FastoObjectIPtr value_;
+        NValue value() const;
     };
 
     typedef common::shared_ptr<CommandKey> CommandKeySPtr;

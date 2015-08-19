@@ -18,14 +18,14 @@ namespace fastonosql
             kCountColumns = 3
         };
 
-        KeyTableItem(const NKey& key);
+        KeyTableItem(const NDbValue& key);
         QString key() const;
         QString typeText() const;
         int32_t msecTTL() const;
         common::Value::Type type() const;
 
     private:
-        const NKey key_;
+        const NDbValue key_;
     };
 
     class KeysTableModel

@@ -137,7 +137,7 @@ namespace fastonosql
         void removeDatabase(IServer* server, DataBaseInfoSPtr db);
         void setDefaultDb(IServer* server, DataBaseInfoSPtr db);
 
-        void addKey(IServer* server, DataBaseInfoSPtr db, const NKey& key);
+        void addKey(IServer* server, DataBaseInfoSPtr db, const NDbValue &dbv);
         void removeKey(IServer* server, DataBaseInfoSPtr db, const NKey& key);
 
     private:

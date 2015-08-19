@@ -18,7 +18,7 @@ namespace fastonosql
             eType = 2,
             eCountColumns = 3
         };
-        FastoCommonItem(const QString& key, const QString& value, common::Value::Type type, TreeItem* parent, void* internalPointer);
+        FastoCommonItem(const QString& key, const QString& value, common::Value::Type type, bool isReadOnly, TreeItem* parent, void* internalPointer);
 
         QString key() const;
         QString value() const;
@@ -31,6 +31,7 @@ namespace fastonosql
         QString key_;
         QString value_;
         common::Value::Type type_;
+        bool isReadOnly_;
     };
 
     QString toJson(FastoCommonItem* item);

@@ -18,6 +18,7 @@
 #include "gui/dialogs/change_password_server_dialog.h"
 
 #include "common/qt/convert_string.h"
+#include "common/logger.h"
 
 #include "core/settings_manager.h"
 #include "core/icluster.h"
@@ -719,7 +720,7 @@ namespace fastonosql
         EventsInfo::LoadDatabaseContentResponce::keys_cont_type keys = res.keys_;
 
         for(int i = 0; i < keys.size(); ++i){
-            NKey key = keys[i];
+            NDbValue key = keys[i];
             mod->addKey(serv, res.inf_, key);
         }
     }
@@ -736,10 +737,6 @@ namespace fastonosql
             return;
         }
 
-        if(res.initiator() != this){
-            return;
-        }
-
         IServer* serv = qobject_cast<IServer *>(sender());
         DCHECK(serv);
         if(!serv){
@@ -753,11 +750,12 @@ namespace fastonosql
         }
 
         CommandKeySPtr key = res.cmd_;
+        NDbValue dbv = key->key();
         if(key->type() == CommandKey::C_DELETE){
-            mod->removeKey(serv, res.inf_, key->key());
+            mod->removeKey(serv, res.inf_, dbv.key());
         }
-        else if(key->type() == CommandKey::C_CREATE){
-            mod->addKey(serv, res.inf_, key->key());
+        else if(key->type() == CommandKey::C_CREATE){            
+            mod->addKey(serv, res.inf_, dbv);
         }
     }
 

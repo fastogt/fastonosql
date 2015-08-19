@@ -76,7 +76,9 @@ namespace fastonosql
                     const std::string key = common::convertToString(node->key());
                     const std::string value = common::convertToString(newValue);
 
-                    NDbValue dbv(key, value, node->type());
+                    // node->type() TODO: create according type
+                    NValue val(new FastoObject(NULL, common::Value::createStringValue(value)));
+                    NDbValue dbv(NKey(key), val);
                     CommandKeySPtr com(new CommandCreateKey(dbv));
                     emit changedValue(com);
                 }

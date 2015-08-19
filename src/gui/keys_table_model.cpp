@@ -8,7 +8,7 @@
 
 namespace fastonosql
 {
-    KeyTableItem::KeyTableItem(const NKey& key)
+    KeyTableItem::KeyTableItem(const NDbValue &key)
         : key_(key)
     {
 
@@ -16,22 +16,23 @@ namespace fastonosql
 
     QString KeyTableItem::key() const
     {
-        return common::convertFromString<QString>(key_.key_);
+        return common::convertFromString<QString>(key_.keyString());
     }
 
     QString KeyTableItem::typeText() const
     {
-        return common::convertFromString<QString>(common::Value::toString(key_.type_));
+        return common::convertFromString<QString>(common::Value::toString(key_.type()));
     }
 
     int32_t KeyTableItem::msecTTL() const
     {
-        return key_.ttl_msec_;
+        NKey key = key_.key();
+        return key.ttl_msec_;
     }
 
     common::Value::Type KeyTableItem::type() const
     {
-        return key_.type_;
+        return key_.type();
     }
 
     KeysTableModel::KeysTableModel(QObject* parent)

@@ -233,7 +233,7 @@ namespace fastonosql
                 : LoadDatabaseContentRequest
         {
             typedef LoadDatabaseContentRequest base_class;
-            typedef std::vector<NKey> keys_cont_type;
+            typedef std::vector<NDbValue> keys_cont_type;
             LoadDatabaseContentResponce(const base_class &request);
 
             keys_cont_type keys_;

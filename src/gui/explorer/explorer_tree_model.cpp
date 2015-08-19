@@ -168,7 +168,7 @@ namespace fastonosql
     {
         IDatabaseSPtr dbs = db();
         if(dbs){
-            CommandKeySPtr cmd(new CommandDeleteKey(key));
+            CommandKeySPtr cmd(new CommandDeleteKey(NDbValue(key, NValue())));
             EventsInfo::CommandRequest req(this, dbs->info(), cmd);
             dbs->executeCommand(req);
         }
@@ -178,7 +178,7 @@ namespace fastonosql
     {
         IDatabaseSPtr dbs = db();
         if(dbs){
-            CommandKeySPtr cmd(new CommandLoadKey(key));
+            CommandKeySPtr cmd(new CommandLoadKey(NDbValue(key, NValue())));
             EventsInfo::CommandRequest req(this, dbs->info(), cmd);
             dbs->executeCommand(req);
         }
@@ -188,7 +188,7 @@ namespace fastonosql
     {
         IDatabaseSPtr dbs = db();
         if(dbs){
-            CommandKeySPtr cmd(new CommandCreateKey(key, value));
+            CommandKeySPtr cmd(new CommandCreateKey(NDbValue(key, NValue(value))));
             EventsInfo::CommandRequest req(this, dbs->info(), cmd);
             dbs->executeCommand(req);
         }
@@ -491,20 +491,19 @@ namespace fastonosql
         }
     }
 
-    void ExplorerTreeModel::addKey(IServer* server, DataBaseInfoSPtr db, const NKey &key)
+    void ExplorerTreeModel::addKey(IServer* server, DataBaseInfoSPtr db, const NDbValue &dbv)
     {
         ExplorerServerItem *parent = findServerItem(server);
-        DCHECK(parent);
         if(!parent){
             return;
         }
 
         ExplorerDatabaseItem *dbs = findDatabaseItem(parent, db);
-        DCHECK(dbs);
         if(!dbs){
             return;
         }
 
+        NKey key = dbv.key();
         ExplorerKeyItem *keyit = findKeyItem(dbs, key);
         if(!keyit){
             QModelIndex parentdb = createIndex(parent->indexOf(dbs), 0, dbs);
@@ -516,13 +515,11 @@ namespace fastonosql
     void ExplorerTreeModel::removeKey(IServer* server, DataBaseInfoSPtr db, const NKey &key)
     {
         ExplorerServerItem *parent = findServerItem(server);
-        DCHECK(parent);
         if(!parent){
             return;
         }
 
         ExplorerDatabaseItem *dbs = findDatabaseItem(parent, db);
-        DCHECK(dbs);
         if(!dbs){
             return;
         }

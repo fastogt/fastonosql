@@ -134,7 +134,7 @@ namespace fastonosql
 
         size_t size = keys.size();
         for(size_t i = 0; i < size; ++i){
-            NKey key = keys[i];
+            NDbValue key = keys[i];
             keysModel_->insertItem(new KeyTableItem(key));
         }
 
