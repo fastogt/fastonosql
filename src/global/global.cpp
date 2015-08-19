@@ -169,6 +169,20 @@ namespace fastonosql
         return std::make_pair(key, value);
     }
 
+    std::string getFirstWordFromLine(const std::string& input)
+    {
+        if(input.empty()){
+            return std::string();
+        }
+
+        size_t pos = input.find_first_of(' ');
+        if(pos != std::string::npos){
+            return input.substr(0, pos);
+        }
+
+        return input;
+    }
+
     std::string getOppositeCommand(const std::string& command, const std::vector<std::pair<std::string, std::string > >& srcOppositeCommands)
     {
         DCHECK(!command.empty());

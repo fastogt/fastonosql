@@ -19,6 +19,7 @@ namespace fastonosql
         };
 
         KeyTableItem(const NDbValue& key);
+
         QString key() const;
         QString typeText() const;
         int32_t msecTTL() const;

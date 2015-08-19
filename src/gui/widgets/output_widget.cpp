@@ -153,7 +153,9 @@ namespace fastonosql
                 return;
             }
 
-            const QString key = common::convertFromString<QString>(command->inputArgs());
+            std::string inputArgs = command->inputArgs();
+
+            const QString key = common::convertFromString<QString>(getFirstWordFromLine(inputArgs));
 
             fastonosql::FastoCommonItem* comChild = createItem(par, key, command->isReadOnly(), child);
             commonModel_->insertItem(parent, comChild);

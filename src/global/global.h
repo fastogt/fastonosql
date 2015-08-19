@@ -63,6 +63,7 @@ namespace fastonosql
 
     std::string stableCommand(const char* command);
     std::pair<std::string, std::string> getKeyValueFromLine(const std::string& input);
+    std::string getFirstWordFromLine(const std::string& input);
     std::string getOppositeCommand(const std::string& command, const std::vector<std::pair<std::string, std::string > >& srcOppositeCommands);
 
     class FastoObjectArray
