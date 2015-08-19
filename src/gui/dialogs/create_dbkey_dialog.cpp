@@ -192,15 +192,17 @@ namespace fastonosql
             valueListEdit_->setVisible(false);
             valueTableEdit_->setVisible(false);
             if(t == common::Value::TYPE_INTEGER || t == common::Value::TYPE_UINTEGER){
-                QRegExp rx("\\d+");//(0-65554)
-                valueEdit_->setValidator(new QRegExpValidator(rx, this));
+                valueEdit_->setValidator(new QIntValidator(this));
             }
             else if(t == common::Value::TYPE_BOOLEAN){
                 QRegExp rx("true|false");//
                 valueEdit_->setValidator(new QRegExpValidator(rx, this));
             }
+            else if(t == common::Value::TYPE_DOUBLE){
+                valueEdit_->setValidator(new QDoubleValidator(this));
+            }
             else{
-                QRegExp rx("*");//
+                QRegExp rx(".*");//
                 valueEdit_->setValidator(new QRegExpValidator(rx, this));
             }
         }
