@@ -6,14 +6,14 @@ namespace fastonosql
 {
     namespace EventsInfo
     {
-        EventInfoBase::EventInfoBase(const error_type &er)
-            : base_class(er), time_start_(common::time::current_mstime())
+        EventInfoBase::EventInfoBase(initiator_type sender, const error_type &er)
+            : base_class(sender, er), time_start_(common::time::current_mstime())
         {
 
         }
 
-        EventInfoBase::EventInfoBase(const common::time64_t time_start, const error_type &er)
-            : base_class(er), time_start_(time_start)
+        EventInfoBase::EventInfoBase(initiator_type sender, const common::time64_t time_start, const error_type &er)
+            : base_class(sender, er), time_start_(time_start)
         {
 
         }
@@ -23,8 +23,8 @@ namespace fastonosql
             return common::time::current_mstime() - time_start_;
         }
 
-        ConnectInfoRequest::ConnectInfoRequest(const error_type &er)
-            : base_class(er)
+        ConnectInfoRequest::ConnectInfoRequest(initiator_type sender, const error_type &er)
+            : base_class(sender, er)
         {
 
         }
@@ -34,8 +34,8 @@ namespace fastonosql
         {
         }
 
-        ShutDownInfoRequest::ShutDownInfoRequest(const error_type &er)
-            : base_class(er)
+        ShutDownInfoRequest::ShutDownInfoRequest(initiator_type sender, const error_type &er)
+            : base_class(sender, er)
         {
 
         }
@@ -45,8 +45,8 @@ namespace fastonosql
         {
         }
 
-        BackupInfoRequest::BackupInfoRequest(const std::string& path, const error_type &er)
-            : base_class(er), path_(path)
+        BackupInfoRequest::BackupInfoRequest(initiator_type sender, const std::string& path, const error_type &er)
+            : base_class(sender, er), path_(path)
         {
 
         }
@@ -56,8 +56,8 @@ namespace fastonosql
         {
         }
 
-        ExportInfoRequest::ExportInfoRequest(const std::string& path, const error_type& er)
-            : base_class(er), path_(path)
+        ExportInfoRequest::ExportInfoRequest(initiator_type sender, const std::string& path, const error_type& er)
+            : base_class(sender, er), path_(path)
         {
 
         }
@@ -67,8 +67,8 @@ namespace fastonosql
         {
         }
 
-        ChangePasswordRequest::ChangePasswordRequest(const std::string& oldPassword, const std::string& newPassword, const error_type &er)
-            : base_class(er), oldPassword_(oldPassword), newPassword_(newPassword)
+        ChangePasswordRequest::ChangePasswordRequest(initiator_type sender, const std::string& oldPassword, const std::string& newPassword, const error_type &er)
+            : base_class(sender, er), oldPassword_(oldPassword), newPassword_(newPassword)
         {
 
         }
@@ -78,8 +78,8 @@ namespace fastonosql
         {
         }
 
-        ChangeMaxConnectionRequest::ChangeMaxConnectionRequest(int maxConnection, const error_type &er)
-            : base_class(er), maxConnection_(maxConnection)
+        ChangeMaxConnectionRequest::ChangeMaxConnectionRequest(initiator_type sender, int maxConnection, const error_type &er)
+            : base_class(sender, er), maxConnection_(maxConnection)
         {
 
         }
@@ -89,8 +89,8 @@ namespace fastonosql
         {
         }
 
-        ProcessConfigArgsInfoRequest::ProcessConfigArgsInfoRequest(const error_type &er)
-            : base_class(er)
+        ProcessConfigArgsInfoRequest::ProcessConfigArgsInfoRequest(initiator_type sender, const error_type &er)
+            : base_class(sender, er)
         {
 
         }
@@ -100,8 +100,8 @@ namespace fastonosql
         {
         }
 
-        DiscoveryInfoRequest::DiscoveryInfoRequest(const error_type& er)
-            : base_class(er)
+        DiscoveryInfoRequest::DiscoveryInfoRequest(initiator_type sender, const error_type& er)
+            : base_class(sender, er)
         {
 
         }
@@ -111,38 +111,38 @@ namespace fastonosql
         {
         }
 
-        EnterModeInfo::EnterModeInfo(ConnectionMode mode, const error_type& er)
-            : base_class(er), mode_(mode)
+        EnterModeInfo::EnterModeInfo(initiator_type sender, ConnectionMode mode, const error_type& er)
+            : base_class(sender, er), mode_(mode)
         {
 
         }
 
-        LeaveModeInfo::LeaveModeInfo(ConnectionMode mode, const error_type& er)
-            : base_class(er), mode_(mode)
+        LeaveModeInfo::LeaveModeInfo(initiator_type sender, ConnectionMode mode, const error_type& er)
+            : base_class(sender, er), mode_(mode)
         {
 
         }
 
-        CommandRootCreatedInfo::CommandRootCreatedInfo(FastoObjectIPtr root, const error_type &er)
-            : base_class(er), root_(root)
+        CommandRootCreatedInfo::CommandRootCreatedInfo(initiator_type sender, FastoObjectIPtr root, const error_type &er)
+            : base_class(sender, er), root_(root)
         {
 
         }
 
-        CommandRootCompleatedInfo::CommandRootCompleatedInfo(FastoObjectIPtr root, const error_type &er)
-            : base_class(er), root_(root)
+        CommandRootCompleatedInfo::CommandRootCompleatedInfo(initiator_type sender, FastoObjectIPtr root, const error_type &er)
+            : base_class(sender, er), root_(root)
         {
 
         }
 
-        CommandRootCompleatedInfo::CommandRootCompleatedInfo(common::time64_t timest, FastoObjectIPtr root, const error_type &er)
-            : base_class(timest, er), root_(root)
+        CommandRootCompleatedInfo::CommandRootCompleatedInfo(initiator_type sender, common::time64_t timest, FastoObjectIPtr root, const error_type &er)
+            : base_class(sender, timest, er), root_(root)
         {
 
         }
 
-        DisonnectInfoRequest::DisonnectInfoRequest(const error_type &er)
-            : base_class(er)
+        DisConnectInfoRequest::DisConnectInfoRequest(initiator_type sender, const error_type &er)
+            : base_class(sender, er)
         {
 
         }
@@ -152,14 +152,14 @@ namespace fastonosql
         {
         }
 
-        ExecuteInfoRequest::ExecuteInfoRequest(const std::string &text, const std::vector<std::string>& args, const error_type &er)
-            : base_class(er), text_(text), args_(args)
+        ExecuteInfoRequest::ExecuteInfoRequest(initiator_type sender, const std::string &text, const std::vector<std::string>& args, const error_type &er)
+            : base_class(sender, er), text_(text), args_(args)
         {
 
         }
 
-        LoadDatabasesInfoRequest::LoadDatabasesInfoRequest(const error_type &er)
-            : base_class(er)
+        LoadDatabasesInfoRequest::LoadDatabasesInfoRequest(initiator_type sender, const error_type &er)
+            : base_class(sender, er)
         {
 
         }
@@ -169,9 +169,9 @@ namespace fastonosql
         {
         }
 
-        LoadDatabaseContentRequest::LoadDatabaseContentRequest(DataBaseInfoSPtr inf, const std::string& pattern, uint32_t countKeys,
+        LoadDatabaseContentRequest::LoadDatabaseContentRequest(initiator_type sender, DataBaseInfoSPtr inf, const std::string& pattern, uint32_t countKeys,
                                                                uint32_t cursor, const error_type &er)
-            : base_class(er), inf_(inf), pattern_(pattern), countKeys_(countKeys), cursorIn_(cursor)
+            : base_class(sender, er), inf_(inf), pattern_(pattern), countKeys_(countKeys), cursorIn_(cursor)
         {
 
         }
@@ -181,8 +181,8 @@ namespace fastonosql
         {
         }
 
-        SetDefaultDatabaseRequest::SetDefaultDatabaseRequest(DataBaseInfoSPtr inf, const error_type &er)
-            : base_class(er), inf_(inf)
+        SetDefaultDatabaseRequest::SetDefaultDatabaseRequest(initiator_type sender, DataBaseInfoSPtr inf, const error_type &er)
+            : base_class(sender, er), inf_(inf)
         {
 
         }
@@ -192,8 +192,8 @@ namespace fastonosql
         {
         }
 
-        ServerInfoRequest::ServerInfoRequest(const error_type &er)
-            : base_class(er)
+        ServerInfoRequest::ServerInfoRequest(initiator_type sender, const error_type &er)
+            : base_class(sender, er)
         {
 
         }
@@ -218,8 +218,8 @@ namespace fastonosql
 
         }
 
-        ServerInfoHistoryRequest::ServerInfoHistoryRequest(const error_type& er)
-            : base_class(er)
+        ServerInfoHistoryRequest::ServerInfoHistoryRequest(initiator_type sender, const error_type& er)
+            : base_class(sender, er)
         {
 
         }
@@ -239,8 +239,8 @@ namespace fastonosql
             infos_ = inf;
         }
 
-        ServerPropertyInfoRequest::ServerPropertyInfoRequest(const error_type &er)
-            : base_class(er)
+        ServerPropertyInfoRequest::ServerPropertyInfoRequest(initiator_type sender, const error_type &er)
+            : base_class(sender, er)
         {
 
         }
@@ -250,8 +250,8 @@ namespace fastonosql
         {
         }
 
-        ChangeServerPropertyInfoRequest::ChangeServerPropertyInfoRequest(const error_type &er)
-            : base_class(er)
+        ChangeServerPropertyInfoRequest::ChangeServerPropertyInfoRequest(initiator_type sender, const PropertyType &pt, const error_type &er)
+            : base_class(sender, er), newItem_(pt)
         {
 
         }
@@ -261,8 +261,8 @@ namespace fastonosql
         {
         }
 
-        CommandRequest::CommandRequest(DataBaseInfoSPtr inf, CommandKeySPtr cmd, const error_type &er)
-            : base_class(er), inf_(inf), cmd_(cmd)
+        CommandRequest::CommandRequest(initiator_type sender, DataBaseInfoSPtr inf, CommandKeySPtr cmd, const error_type &er)
+            : base_class(sender, er), inf_(inf), cmd_(cmd)
         {
 
         }

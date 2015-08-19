@@ -2,6 +2,8 @@
 
 #include "core/core_fwd.h"
 
+#include "events/events_info.h"
+
 namespace fastonosql
 {
     class IDatabase
@@ -14,15 +16,13 @@ namespace fastonosql
         bool isDefault() const;
         std::string name() const;
 
-        void loadContent(const std::string& pattern, uint32_t countKeys, uint32_t cursor = 0);
-        void setDefault();
+        void loadContent(const EventsInfo::LoadDatabaseContentRequest &req);
+        void setDefault(const EventsInfo::SetDefaultDatabaseRequest &req);
 
         DataBaseInfoSPtr info() const;
         void setInfo(DataBaseInfoSPtr info);
 
-        void removeKey(const NKey& key);
-        void loadValue(const NKey& key);
-        void createKey(const NKey& key, FastoObjectIPtr value);
+        void executeCommand(const EventsInfo::CommandRequest& req);
 
     protected:
         IDatabase(IServerSPtr server, DataBaseInfoSPtr info);

@@ -11,8 +11,8 @@ namespace fastonosql
                 : public common::utils_qt::EventInfo<common::ErrorValueSPtr>
         {
             typedef common::utils_qt::EventInfo<common::ErrorValueSPtr > base_class;
-            EventInfoBase(const error_type &er = error_type());
-            EventInfoBase(const common::time64_t time_start, const error_type &er = error_type());
+            explicit EventInfoBase(initiator_type sender, const error_type &er = error_type());
+            EventInfoBase(initiator_type sender, const common::time64_t time_start, const error_type &er = error_type());
             common::time64_t elapsedTime() const;
 
         private:
@@ -23,7 +23,7 @@ namespace fastonosql
                 : public EventInfoBase
         {
             typedef EventInfoBase base_class;
-            ConnectInfoRequest(const error_type &er = error_type());
+            explicit ConnectInfoRequest(initiator_type sender, const error_type &er = error_type());
         };
 
         struct ConnectInfoResponce
@@ -37,7 +37,7 @@ namespace fastonosql
                 : public EventInfoBase
         {
             typedef EventInfoBase base_class;
-            ShutDownInfoRequest(const error_type &er = error_type());
+            explicit ShutDownInfoRequest(initiator_type sender, const error_type &er = error_type());
         };
 
         struct ShutDownInfoResponce
@@ -51,7 +51,7 @@ namespace fastonosql
                 : public EventInfoBase
         {
             typedef EventInfoBase base_class;
-            BackupInfoRequest(const std::string& path, const error_type &er = error_type());
+            BackupInfoRequest(initiator_type sender, const std::string& path, const error_type &er = error_type());
             std::string path_;
         };
 
@@ -66,7 +66,7 @@ namespace fastonosql
                 : public EventInfoBase
         {
             typedef EventInfoBase base_class;
-            ExportInfoRequest(const std::string& path, const error_type &er = error_type());
+            ExportInfoRequest(initiator_type sender, const std::string& path, const error_type &er = error_type());
             std::string path_;
         };
 
@@ -81,7 +81,7 @@ namespace fastonosql
                 : public EventInfoBase
         {
             typedef EventInfoBase base_class;
-            ChangePasswordRequest(const std::string& oldPassword, const std::string& newPassword, const error_type &er = error_type());
+            ChangePasswordRequest(initiator_type sender, const std::string& oldPassword, const std::string& newPassword, const error_type &er = error_type());
             std::string oldPassword_;
             std::string newPassword_;
         };
@@ -97,7 +97,7 @@ namespace fastonosql
                 : public EventInfoBase
         {
             typedef EventInfoBase base_class;
-            ChangeMaxConnectionRequest(int maxConnection, const error_type &er = error_type());
+            ChangeMaxConnectionRequest(initiator_type sender, int maxConnection, const error_type &er = error_type());
             int maxConnection_;
         };
 
@@ -112,7 +112,7 @@ namespace fastonosql
                 : public EventInfoBase
         {
             typedef EventInfoBase base_class;
-            ProcessConfigArgsInfoRequest(const error_type &er = error_type());
+            explicit ProcessConfigArgsInfoRequest(initiator_type sender, const error_type &er = error_type());
         };
 
         struct ProcessConfigArgsInfoResponce
@@ -126,7 +126,7 @@ namespace fastonosql
                 : public EventInfoBase
         {
             typedef EventInfoBase base_class;
-            DiscoveryInfoRequest(const error_type &er = error_type());
+            explicit DiscoveryInfoRequest(initiator_type sender, const error_type &er = error_type());
         };
 
         struct DiscoveryInfoResponce
@@ -144,7 +144,7 @@ namespace fastonosql
                 : public EventInfoBase
         {
             typedef EventInfoBase base_class;
-            EnterModeInfo(ConnectionMode mode, const error_type &er = error_type());
+            EnterModeInfo(initiator_type sender, ConnectionMode mode, const error_type &er = error_type());
             ConnectionMode mode_;
         };
 
@@ -152,7 +152,7 @@ namespace fastonosql
                 : public EventInfoBase
         {
             typedef EventInfoBase base_class;
-            LeaveModeInfo(ConnectionMode mode, const error_type &er = error_type());
+            LeaveModeInfo(initiator_type sender, ConnectionMode mode, const error_type &er = error_type());
             ConnectionMode mode_;
         };
 
@@ -160,7 +160,7 @@ namespace fastonosql
                 : public EventInfoBase
         {
             typedef EventInfoBase base_class;
-            CommandRootCreatedInfo(FastoObjectIPtr root, const error_type &er = error_type());
+            CommandRootCreatedInfo(initiator_type sender, FastoObjectIPtr root, const error_type &er = error_type());
 
             FastoObjectIPtr root_;
         };
@@ -169,23 +169,23 @@ namespace fastonosql
                 : public EventInfoBase
         {
             typedef EventInfoBase base_class;
-            CommandRootCompleatedInfo(FastoObjectIPtr root, const error_type &er = error_type());
-            CommandRootCompleatedInfo(common::time64_t timest, FastoObjectIPtr root, const error_type &er = error_type());
+            CommandRootCompleatedInfo(initiator_type sender, FastoObjectIPtr root, const error_type &er = error_type());
+            CommandRootCompleatedInfo(initiator_type sender, common::time64_t timest, FastoObjectIPtr root, const error_type &er = error_type());
 
             FastoObjectIPtr root_;
         };
 
-        struct DisonnectInfoRequest
+        struct DisConnectInfoRequest
                 : public EventInfoBase
         {
             typedef EventInfoBase base_class;
-            DisonnectInfoRequest(const error_type &er = error_type());
+            DisConnectInfoRequest(initiator_type sender, const error_type &er = error_type());
         };
 
         struct DisConnectInfoResponce
-                : DisonnectInfoRequest
+                : DisConnectInfoRequest
         {
-            typedef DisonnectInfoRequest base_class;
+            typedef DisConnectInfoRequest base_class;
             DisConnectInfoResponce(const base_class &request);
         };
 
@@ -193,7 +193,7 @@ namespace fastonosql
                 : public EventInfoBase
         {
             typedef EventInfoBase base_class;
-            ExecuteInfoRequest(const std::string &text, const std::vector<std::string>& args = std::vector<std::string>(), const error_type &er = error_type());
+            ExecuteInfoRequest(initiator_type sender, const std::string &text, const std::vector<std::string>& args = std::vector<std::string>(), const error_type &er = error_type());
 
             const std::string text_;
             const std::vector<std::string> args_;
@@ -203,7 +203,7 @@ namespace fastonosql
                 : public EventInfoBase
         {
             typedef EventInfoBase base_class;
-            LoadDatabasesInfoRequest(const error_type &er = error_type());
+            explicit LoadDatabasesInfoRequest(initiator_type sender, const error_type &er = error_type());
         };
 
         struct LoadDatabasesInfoResponce
@@ -220,8 +220,8 @@ namespace fastonosql
                 : public EventInfoBase
         {
             typedef EventInfoBase base_class;
-            LoadDatabaseContentRequest(DataBaseInfoSPtr inf, const std::string& pattern, uint32_t countKeys,
-                                       uint32_t cursor, const error_type &er = error_type());
+            LoadDatabaseContentRequest(initiator_type sender, DataBaseInfoSPtr inf, const std::string& pattern, uint32_t countKeys,
+                                       uint32_t cursor = 0, const error_type &er = error_type());
 
             DataBaseInfoSPtr inf_;
             std::string pattern_;
@@ -244,7 +244,7 @@ namespace fastonosql
                 : public EventInfoBase
         {
             typedef EventInfoBase base_class;
-            SetDefaultDatabaseRequest(DataBaseInfoSPtr inf, const error_type &er = error_type());
+            SetDefaultDatabaseRequest(initiator_type sender, DataBaseInfoSPtr inf, const error_type &er = error_type());
 
             DataBaseInfoSPtr inf_;
         };
@@ -260,7 +260,7 @@ namespace fastonosql
                 : public EventInfoBase
         {
             typedef EventInfoBase base_class;
-            ServerInfoRequest(const error_type &er = error_type());
+            explicit ServerInfoRequest(initiator_type sender, const error_type &er = error_type());
         };
 
         struct ServerInfoResponce
@@ -281,7 +281,7 @@ namespace fastonosql
                 : public EventInfoBase
         {
             typedef EventInfoBase base_class;
-            ServerInfoHistoryRequest(const error_type &er = error_type());
+            explicit ServerInfoHistoryRequest(initiator_type sender, const error_type &er = error_type());
         };
 
         struct ServerInfoHistoryResponce
@@ -302,7 +302,7 @@ namespace fastonosql
                 : public EventInfoBase
         {
             typedef EventInfoBase base_class;
-            ServerPropertyInfoRequest(const error_type &er = error_type());
+            explicit ServerPropertyInfoRequest(initiator_type sender, const error_type &er = error_type());
         };
 
         struct ServerPropertyInfoResponce
@@ -318,7 +318,7 @@ namespace fastonosql
                 : public EventInfoBase
         {
             typedef EventInfoBase base_class;
-            ChangeServerPropertyInfoRequest(const error_type &er = error_type());
+            ChangeServerPropertyInfoRequest(initiator_type sender, const PropertyType& pt, const error_type &er = error_type());
 
             PropertyType newItem_;
         };
@@ -336,7 +336,7 @@ namespace fastonosql
                 : public EventInfoBase
         {
             typedef EventInfoBase base_class;
-            CommandRequest(DataBaseInfoSPtr inf, CommandKeySPtr cmd, const error_type &er = error_type());
+            CommandRequest(initiator_type sender, DataBaseInfoSPtr inf, CommandKeySPtr cmd, const error_type &er = error_type());
 
             DataBaseInfoSPtr inf_;
             CommandKeySPtr cmd_;

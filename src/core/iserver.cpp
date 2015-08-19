@@ -183,133 +183,144 @@ namespace fastonosql
         //syncServersFunct<false>(this, src);
     }
 
-    void IServer::connect()
+    void IServer::connect(const EventsInfo::ConnectInfoRequest& req)
     {
-        EventsInfo::ConnectInfoRequest req;
         emit startedConnect(req);
         QEvent *ev = new events::ConnectRequestEvent(this, req);
         notify(ev);
     }
 
-    void IServer::disconnect()
+    void IServer::disconnect(const EventsInfo::DisConnectInfoRequest& req)
     {
-        EventsInfo::DisonnectInfoRequest req;
         emit startedDisconnect(req);
         QEvent *ev = new events::DisconnectRequestEvent(this, req);
         notify(ev);
     }
 
-    void IServer::loadDatabases()
+    void IServer::loadDatabases(const EventsInfo::LoadDatabasesInfoRequest& req)
     {
-        EventsInfo::LoadDatabasesInfoRequest req;
         emit startedLoadDatabases(req);
         QEvent *ev = new events::LoadDatabasesInfoRequestEvent(this, req);
         notify(ev);
     }
 
-    void IServer::loadDatabaseContent(DataBaseInfoSPtr inf, const std::string& pattern, uint32_t countKeys, uint32_t cursor)
+    void IServer::loadDatabaseContent(const EventsInfo::LoadDatabaseContentRequest& req)
     {
-        EventsInfo::LoadDatabaseContentRequest req(inf, pattern, countKeys, cursor);
         emit startedLoadDataBaseContent(req);
         QEvent *ev = new events::LoadDatabaseContentRequestEvent(this, req);
         notify(ev);
     }
 
-    void IServer::setDefaultDb(DataBaseInfoSPtr inf)
+    void IServer::setDefaultDb(const EventsInfo::SetDefaultDatabaseRequest& req)
     {
-        EventsInfo::SetDefaultDatabaseRequest req(inf);
         emit startedSetDefaultDatabase(req);
         QEvent *ev = new events::SetDefaultDatabaseRequestEvent(this, req);
         notify(ev);
     }
 
-    void IServer::execute(const QString &script)
+    void IServer::execute(const EventsInfo::ExecuteInfoRequest& req)
     {
-        EventsInfo::ExecuteInfoRequest req(common::convertToString(script));
         emit startedExecute(req);
         QEvent *ev = new events::ExecuteRequestEvent(this, req);
         notify(ev);
     }
 
-    void IServer::executeCommand(DataBaseInfoSPtr inf, CommandKeySPtr cmd)
+    void IServer::executeCommand(const EventsInfo::CommandRequest& req)
     {
-        EventsInfo::CommandRequest req(inf, cmd);
         emit startedExecuteCommand(req);
         QEvent *ev = new events::CommandRequestEvent(this, req);
         notify(ev);
     }
 
-    void IServer::shutDown()
+    void IServer::shutDown(const EventsInfo::ShutDownInfoRequest& req)
     {
-        EventsInfo::ShutDownInfoRequest req;
         emit startedShutdown(req);
         QEvent *ev = new events::ShutDownRequestEvent(this, req);
         notify(ev);
     }
 
-    void IServer::backupToPath(const QString& path)
+    void IServer::backupToPath(const EventsInfo::BackupInfoRequest& req)
     {
-        EventsInfo::BackupInfoRequest req(common::convertToString(path));
         emit startedBackup(req);
         QEvent *ev = new events::BackupRequestEvent(this, req);
         notify(ev);
     }
 
-    void IServer::exportFromPath(const QString& path)
+    void IServer::exportFromPath(const EventsInfo::ExportInfoRequest& req)
     {
-        EventsInfo::ExportInfoRequest req(common::convertToString(path));
         emit startedExport(req);
         QEvent *ev = new events::ExportRequestEvent(this, req);
         notify(ev);
     }
 
-    void IServer::changePassword(const QString& oldPassword, const QString& newPassword)
+    void IServer::changePassword(const EventsInfo::ChangePasswordRequest& req)
     {
-        EventsInfo::ChangePasswordRequest req(common::convertToString(oldPassword), common::convertToString(newPassword));
         emit startedChangePassword(req);
         QEvent *ev = new events::ChangePasswordRequestEvent(this, req);
         notify(ev);
     }
 
-    void IServer::setMaxConnection(int maxCon)
+    void IServer::setMaxConnection(const EventsInfo::ChangeMaxConnectionRequest& req)
     {
-        EventsInfo::ChangeMaxConnectionRequest req(maxCon);
         emit startedChangeMaxConnection(req);
         QEvent *ev = new events::ChangeMaxConnectionRequestEvent(this, req);
         notify(ev);
     }
 
-    void IServer::loadServerInfo()
+    void IServer::loadServerInfo(const EventsInfo::ServerInfoRequest& req)
     {
-        EventsInfo::ServerInfoRequest req;
         emit startedLoadServerInfo(req);
         QEvent *ev = new events::ServerInfoRequestEvent(this, req);
         notify(ev);
     }
 
-    void IServer::serverProperty()
+    void IServer::serverProperty(const EventsInfo::ServerPropertyInfoRequest& req)
     {
-        EventsInfo::ServerPropertyInfoRequest req;
         emit startedLoadServerProperty(req);
         QEvent *ev = new events::ServerPropertyInfoRequestEvent(this, req);
         notify(ev);
     }
 
-    void IServer::requestHistoryInfo()
+    void IServer::requestHistoryInfo(const EventsInfo::ServerInfoHistoryRequest& req)
     {
-        EventsInfo::ServerInfoHistoryRequest req;
         emit startedLoadServerHistoryInfo(req);
         QEvent *ev = new events::ServerInfoHistoryRequestEvent(this, req);
         notify(ev);
     }
 
-    void IServer::changeProperty(const PropertyType &newValue)
+    void IServer::changeProperty(const EventsInfo::ChangeServerPropertyInfoRequest& req)
     {
-        EventsInfo::ChangeServerPropertyInfoRequest req;
-        req.newItem_ = newValue;
         emit startedChangeServerProperty(req);
         QEvent *ev = new events::ChangeServerPropertyInfoRequestEvent(this, req);
         notify(ev);
+    }
+
+    void IServer::loadServerInfoSL()
+    {
+        QObject * send = sender();
+        EventsInfo::ServerInfoRequest req(send);
+        loadServerInfo(req);
+    }
+
+    void IServer::changePropertySL(const PropertyType &prop)
+    {
+        QObject * send = sender();
+        EventsInfo::ChangeServerPropertyInfoRequest req(send, prop);
+        changeProperty(req);
+    }
+
+    void IServer::serverPropertySL()
+    {
+        QObject * send = sender();
+        EventsInfo::ServerPropertyInfoRequest req(send);
+        serverProperty(req);
+    }
+
+    void IServer::requestHistoryInfoSL()
+    {
+        QObject * send = sender();
+        EventsInfo::ServerInfoHistoryRequest req(send);
+        requestHistoryInfo(req);
     }
 
     void IServer::customEvent(QEvent *event)
@@ -323,8 +334,11 @@ namespace fastonosql
             ConnectResponceEvent::value_type v = ev->value();
             common::ErrorValueSPtr er(v.errorInfo());
             if(!er){
-                processDiscoveryInfo();
-                processConfigArgs();
+                EventsInfo::DiscoveryInfoRequest dreq(this);
+                processDiscoveryInfo(dreq);
+
+                EventsInfo::ProcessConfigArgsInfoRequest preq(this);
+                processConfigArgs(preq);
             }
         }
         else if(type == static_cast<QEvent::Type>(EnterModeEvent::EventType))
@@ -635,16 +649,14 @@ namespace fastonosql
         emit finishedExecuteCommand(v);
     }
 
-    void IServer::processConfigArgs()
+    void IServer::processConfigArgs(const EventsInfo::ProcessConfigArgsInfoRequest &req)
     {
-        EventsInfo::ProcessConfigArgsInfoRequest req;
         QEvent *ev = new events::ProcessConfigArgsRequestEvent(this, req);
         notify(ev);
     }
 
-    void IServer::processDiscoveryInfo()
+    void IServer::processDiscoveryInfo(const EventsInfo::DiscoveryInfoRequest& req)
     {
-        EventsInfo::DiscoveryInfoRequest req;
         emit startedLoadDiscoveryInfo(req);
         QEvent *ev = new events::DiscoveryInfoRequestEvent(this, req);
         notify(ev);

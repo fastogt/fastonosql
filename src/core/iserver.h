@@ -55,7 +55,7 @@ namespace fastonosql
         void startedConnect(const EventsInfo::ConnectInfoRequest& req);
         void finishedConnect(const EventsInfo::ConnectInfoResponce& res);
 
-        void startedDisconnect(const EventsInfo::DisonnectInfoRequest& req);
+        void startedDisconnect(const EventsInfo::DisConnectInfoRequest& req);
         void finishedDisconnect(const EventsInfo::DisConnectInfoResponce& res);
 
         void startedShutdown(const EventsInfo::ShutDownInfoRequest& req);
@@ -115,25 +115,30 @@ namespace fastonosql
         void itemUpdated(FastoObject* item, const QString& val);
         void serverInfoSnapShoot(ServerInfoSnapShoot shot);
 
-    public Q_SLOTS:
+    public:
         //async methods
-        void connect(); //signals: startedConnect, finishedConnect
-        void disconnect(); //signals: startedDisconnect, finishedDisconnect
-        void loadDatabases(); //signals: startedLoadDatabases, finishedLoadDatabases
-        void loadDatabaseContent(DataBaseInfoSPtr inf, const std::string& pattern, uint32_t countKeys,
-                                 uint32_t cursor); //signals: startedLoadDataBaseContent, finishedLoadDatabaseContent
-        void setDefaultDb(DataBaseInfoSPtr inf); //signals: startedSetDefaultDatabase, finishedSetDefaultDatabase
-        void execute(const QString& script); //signals: startedExecute
-        void executeCommand(DataBaseInfoSPtr inf, CommandKeySPtr cmd); //signals: startedExecuteCommand, finishedExecuteCommand
-        void shutDown(); //signals: startedShutdown, finishedShutdown
-        void backupToPath(const QString& path); //signals: startedBackup, finishedBackup
-        void exportFromPath(const QString& path); //signals: startedExport, finishedExport
-        void changePassword(const QString& oldPassword, const QString& newPassword); //signals: startedChangePassword, finishedChangePassword
-        void setMaxConnection(int maxCon);//signals: startedChangeMaxConnection, finishedChangeMaxConnection
-        void loadServerInfo(); //signals: startedLoadServerInfo, finishedLoadServerInfo
-        void serverProperty(); //signals: startedLoadServerProperty, finishedLoadServerProperty
-        void requestHistoryInfo(); //signals: startedLoadServerHistoryInfo, finishedLoadServerHistoryInfo
-        void changeProperty(const PropertyType& newValue); //signals: startedChangeServerProperty, finishedChangeServerProperty
+        void connect(const EventsInfo::ConnectInfoRequest &req); //signals: startedConnect, finishedConnect
+        void disconnect(const EventsInfo::DisConnectInfoRequest &req); //signals: startedDisconnect, finishedDisconnect
+        void loadDatabases(const EventsInfo::LoadDatabasesInfoRequest &req); //signals: startedLoadDatabases, finishedLoadDatabases
+        void loadDatabaseContent(const EventsInfo::LoadDatabaseContentRequest &req); //signals: startedLoadDataBaseContent, finishedLoadDatabaseContent
+        void setDefaultDb(const EventsInfo::SetDefaultDatabaseRequest &req); //signals: startedSetDefaultDatabase, finishedSetDefaultDatabase
+        void execute(const EventsInfo::ExecuteInfoRequest &req); //signals: startedExecute
+        void executeCommand(const EventsInfo::CommandRequest &req); //signals: startedExecuteCommand, finishedExecuteCommand
+        void shutDown(const EventsInfo::ShutDownInfoRequest &req); //signals: startedShutdown, finishedShutdown
+        void backupToPath(const EventsInfo::BackupInfoRequest &req); //signals: startedBackup, finishedBackup
+        void exportFromPath(const EventsInfo::ExportInfoRequest &req); //signals: startedExport, finishedExport
+        void changePassword(const EventsInfo::ChangePasswordRequest &req); //signals: startedChangePassword, finishedChangePassword
+        void setMaxConnection(const EventsInfo::ChangeMaxConnectionRequest &req);//signals: startedChangeMaxConnection, finishedChangeMaxConnection
+        void loadServerInfo(const EventsInfo::ServerInfoRequest &req); //signals: startedLoadServerInfo, finishedLoadServerInfo
+        void serverProperty(const EventsInfo::ServerPropertyInfoRequest &req); //signals: startedLoadServerProperty, finishedLoadServerProperty
+        void requestHistoryInfo(const EventsInfo::ServerInfoHistoryRequest &req); //signals: startedLoadServerHistoryInfo, finishedLoadServerHistoryInfo
+        void changeProperty(const EventsInfo::ChangeServerPropertyInfoRequest &req); //signals: startedChangeServerProperty, finishedChangeServerProperty
+
+    public Q_SLOTS:
+        void loadServerInfoSL();
+        void changePropertySL(const PropertyType& prop);
+        void serverPropertySL();
+        void requestHistoryInfoSL();
 
     protected:
         virtual void customEvent(QEvent* event);
@@ -170,8 +175,8 @@ namespace fastonosql
 
         void handleDiscoveryInfoResponceEvent(events::DiscoveryInfoResponceEvent* ev);
 
-        void processConfigArgs();
-        void processDiscoveryInfo();
+        void processConfigArgs(const EventsInfo::ProcessConfigArgsInfoRequest &req);
+        void processDiscoveryInfo(const EventsInfo::DiscoveryInfoRequest &req);
 
         bool isSuperServer_;
     };

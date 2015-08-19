@@ -51,7 +51,8 @@ namespace fastonosql
 
     void ExplorerServerItem::loadDatabases()
     {
-         return server_->loadDatabases();
+         EventsInfo::LoadDatabasesInfoRequest req(this);
+         return server_->loadDatabases(req);
     }
 
     ExplorerClusterItem::ExplorerClusterItem(IClusterSPtr cluster, TreeItem* parent)
@@ -144,7 +145,8 @@ namespace fastonosql
     {
         IDatabaseSPtr dbs = db();
         if(dbs){
-            dbs->loadContent(pattern, countKeys);
+            EventsInfo::LoadDatabaseContentRequest req(this, dbs->info(), pattern, countKeys);
+            dbs->loadContent(req);
         }
     }
 
@@ -152,7 +154,8 @@ namespace fastonosql
     {
         IDatabaseSPtr dbs = db();
         if(dbs){
-            dbs->setDefault();
+            EventsInfo::SetDefaultDatabaseRequest req(this, dbs->info());
+            dbs->setDefault(req);
         }
     }
 
@@ -165,7 +168,9 @@ namespace fastonosql
     {
         IDatabaseSPtr dbs = db();
         if(dbs){
-            dbs->removeKey(key);
+            CommandKeySPtr cmd(new CommandDeleteKey(key));
+            EventsInfo::CommandRequest req(this, dbs->info(), cmd);
+            dbs->executeCommand(req);
         }
     }
 
@@ -173,7 +178,9 @@ namespace fastonosql
     {
         IDatabaseSPtr dbs = db();
         if(dbs){
-            dbs->loadValue(key);
+            CommandKeySPtr cmd(new CommandLoadKey(key));
+            EventsInfo::CommandRequest req(this, dbs->info(), cmd);
+            dbs->executeCommand(req);
         }
     }
 
@@ -181,7 +188,9 @@ namespace fastonosql
     {
         IDatabaseSPtr dbs = db();
         if(dbs){
-            dbs->createKey(key, value);
+            CommandKeySPtr cmd(new CommandCreateKey(key, value));
+            EventsInfo::CommandRequest req(this, dbs->info(), cmd);
+            dbs->executeCommand(req);
         }
     }
 

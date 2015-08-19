@@ -272,10 +272,12 @@ namespace fastonosql
         }
 
         if(server->isConnected()){
-            server->disconnect();
+            EventsInfo::DisConnectInfoResponce req(this);
+            server->disconnect(req);
         }
         else{
-            server->connect();
+            EventsInfo::ConnectInfoRequest req(this);
+            server->connect(req);
         }
     }
 
@@ -325,7 +327,7 @@ namespace fastonosql
         InfoServerDialog infDialog(QString("%1 info").arg(server->name()), server->type(), this);
         VERIFY(connect(server.get(), &IServer::startedLoadServerInfo, &infDialog, &InfoServerDialog::startServerInfo));
         VERIFY(connect(server.get(), &IServer::finishedLoadServerInfo, &infDialog, &InfoServerDialog::finishServerInfo));
-        VERIFY(connect(&infDialog, &InfoServerDialog::showed, server.get(), &IServer::loadServerInfo));
+        VERIFY(connect(&infDialog, &InfoServerDialog::showed, server.get(), &IServer::loadServerInfoSL));
         infDialog.exec();
     }
 
@@ -351,8 +353,8 @@ namespace fastonosql
         VERIFY(connect(server.get(), &IServer::finishedLoadServerProperty, &infDialog, &PropertyServerDialog::finishServerProperty));
         VERIFY(connect(server.get(), &IServer::startedChangeServerProperty, &infDialog, &PropertyServerDialog::startServerChangeProperty));
         VERIFY(connect(server.get(), &IServer::finishedChangeServerProperty, &infDialog, &PropertyServerDialog::finishServerChangeProperty));
-        VERIFY(connect(&infDialog, &PropertyServerDialog::changedProperty, server.get(), &IServer::changeProperty));
-        VERIFY(connect(&infDialog, &PropertyServerDialog::showed, server.get(), &IServer::serverProperty));
+        VERIFY(connect(&infDialog, &PropertyServerDialog::changedProperty, server.get(), &IServer::changePropertySL));
+        VERIFY(connect(&infDialog, &PropertyServerDialog::showed, server.get(), &IServer::serverPropertySL));
         infDialog.exec();
     }
 
@@ -398,7 +400,8 @@ namespace fastonosql
         int maxcl = QInputDialog::getInt(this, tr("Set max connection on %1 server").arg(server->name()),
                                              tr("Maximum connection:"), 10000, 1, INT32_MAX, 100, &ok);
         if(ok){
-            server->setMaxConnection(maxcl);
+            EventsInfo::ChangeMaxConnectionRequest req(this, maxcl);
+            server->setMaxConnection(req);
         }
     }
 
@@ -423,7 +426,7 @@ namespace fastonosql
         VERIFY(connect(server.get(), &IServer::startedLoadServerHistoryInfo, &histDialog, &ServerHistoryDialog::startLoadServerHistoryInfo));
         VERIFY(connect(server.get(), &IServer::finishedLoadServerHistoryInfo, &histDialog, &ServerHistoryDialog::finishLoadServerHistoryInfo));
         VERIFY(connect(server.get(), &IServer::serverInfoSnapShoot, &histDialog, &ServerHistoryDialog::snapShotAdd));
-        VERIFY(connect(&histDialog, &ServerHistoryDialog::showed, server.get(), &IServer::requestHistoryInfo));
+        VERIFY(connect(&histDialog, &ServerHistoryDialog::showed, server.get(), &IServer::requestHistoryInfoSL));
         histDialog.exec();
     }
 
@@ -487,7 +490,8 @@ namespace fastonosql
         using namespace translations;
         QString filepath = QFileDialog::getOpenFileName(this, trBackup, QString(), trfilterForRdb);
         if (!filepath.isEmpty() && server) {
-            server->backupToPath(filepath);
+            EventsInfo::BackupInfoRequest req(this, common::convertToString(filepath));
+            server->backupToPath(req);
         }
     }
 
@@ -508,7 +512,8 @@ namespace fastonosql
         using namespace translations;
         QString filepath = QFileDialog::getOpenFileName(this, trImport, QString(), trfilterForRdb);
         if (filepath.isEmpty() && server) {
-            server->exportFromPath(filepath);
+            EventsInfo::ExportInfoRequest req(this, common::convertToString(filepath));
+            server->exportFromPath(req);
         }
     }
 
@@ -533,7 +538,8 @@ namespace fastonosql
                 return;
             }
 
-            server->shutDown();
+            EventsInfo::ShutDownInfoRequest req(this);
+            server->shutDown(req);
         }
     }
 
@@ -727,6 +733,10 @@ namespace fastonosql
     {
         common::ErrorValueSPtr er = res.errorInfo();
         if(er && er->isError()){
+            return;
+        }
+
+        if(res.initiator() != this){
             return;
         }
 

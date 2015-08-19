@@ -6,6 +6,8 @@
 #include <QLabel>
 #include <QMessageBox>
 
+#include "common/qt/convert_string.h"
+
 #include "core/iserver.h"
 
 #include "fasto/qt/gui/glass_widget.h"
@@ -54,7 +56,8 @@ namespace fastonosql
     void ChangePasswordServerDialog::tryToCreatePassword()
     {
         if(validateInput()){
-            server_->changePassword("", passwordLineEdit_->text());
+            EventsInfo::ChangePasswordRequest req(this, "", common::convertToString(passwordLineEdit_->text()));
+            server_->changePassword(req);
         }
         else{
             using namespace translations;

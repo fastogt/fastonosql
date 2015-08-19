@@ -167,12 +167,16 @@ namespace fastonosql
 
         DCHECK(cursorStack_[0] == 0);
         if(forward){
-            db_->loadContent(common::convertToString(pattern), countSpinEdit_->value(), cursorStack_[curPos_]);
+            EventsInfo::LoadDatabaseContentRequest req(this, db_->info(),
+                                                       common::convertToString(pattern), countSpinEdit_->value(), cursorStack_[curPos_]);
+            db_->loadContent(req);
             ++curPos_;
         }
         else{
             if(curPos_ > 0){
-                db_->loadContent(common::convertToString(pattern), countSpinEdit_->value(), cursorStack_[--curPos_]);
+                EventsInfo::LoadDatabaseContentRequest req(this, db_->info(),
+                                                           common::convertToString(pattern), countSpinEdit_->value(), cursorStack_[--curPos_]);
+                db_->loadContent(req);
             }
         }
     }

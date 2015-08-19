@@ -107,11 +107,16 @@ namespace fastonosql
             return;
         }
 
+        if(res.initiator() != this){
+            return;
+        }
+
         CommandKeySPtr key = res.cmd_;
         if(key->type() == CommandKey::C_CREATE){
             CommandCreateKey * ckey = dynamic_cast<CommandCreateKey *>(key.get());
             if(ckey){
-                commonModel_->changeValue(ckey->dbv());
+                NDbValue dbv = ckey->dbv();
+                commonModel_->changeValue(dbv);
             }
         }
     }
@@ -205,7 +210,8 @@ namespace fastonosql
     void OutputWidget::executeCommand(CommandKeySPtr cmd)
     {
         if(server_){
-            server_->executeCommand(server_->currentDatabaseInfo(), cmd);
+            EventsInfo::CommandRequest req(this, server_->currentDatabaseInfo(), cmd);
+            server_->executeCommand(req);
         }
     }
 

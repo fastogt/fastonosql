@@ -21,7 +21,7 @@ namespace fastonosql
         typedef common::utils_qt::Event<EventsInfo::EnterModeInfo, QEvent::User + 9> EnterModeEvent;
         typedef common::utils_qt::Event<EventsInfo::LeaveModeInfo, QEvent::User + 10> LeaveModeEvent;
 
-        typedef common::utils_qt::Event<EventsInfo::DisonnectInfoRequest, QEvent::User + 11> DisconnectRequestEvent;
+        typedef common::utils_qt::Event<EventsInfo::DisConnectInfoRequest, QEvent::User + 11> DisconnectRequestEvent;
         typedef common::utils_qt::Event<EventsInfo::DisConnectInfoResponce, QEvent::User + 12> DisconnectResponceEvent;
 
         typedef common::utils_qt::Event<EventsInfo::ExecuteInfoRequest, QEvent::User + 13> ExecuteRequestEvent;

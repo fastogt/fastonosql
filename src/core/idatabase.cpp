@@ -37,14 +37,16 @@ namespace fastonosql
         return info_->name();
     }
 
-    void IDatabase::loadContent(const std::string& pattern, uint32_t countKeys, uint32_t cursor)
+    void IDatabase::loadContent(const EventsInfo::LoadDatabaseContentRequest& req)
     {
-        server_->loadDatabaseContent(info_, pattern, countKeys, cursor);
+        DCHECK(req.inf_ == info_);
+        server_->loadDatabaseContent(req);
     }
 
-    void IDatabase::setDefault()
+    void IDatabase::setDefault(const EventsInfo::SetDefaultDatabaseRequest& req)
     {
-        server_->setDefaultDb(info_);
+        DCHECK(req.inf_ == info_);
+        server_->setDefaultDb(req);
     }
 
     DataBaseInfoSPtr IDatabase::info() const
@@ -57,21 +59,9 @@ namespace fastonosql
         info_ = info;
     }
 
-    void IDatabase::removeKey(const NKey& key)
+    void IDatabase::executeCommand(const EventsInfo::CommandRequest& req)
     {
-        CommandKeySPtr com(new CommandDeleteKey(key));
-        server_->executeCommand(info_, com);
-    }
-
-    void IDatabase::loadValue(const NKey& key)
-    {
-        CommandKeySPtr com(new CommandLoadKey(key));
-        server_->executeCommand(info_, com);
-    }
-
-    void IDatabase::createKey(const NKey& key, FastoObjectIPtr value)
-    {
-        CommandKeySPtr com(new CommandCreateKey(key, value));
-        server_->executeCommand(info_, com);
+        DCHECK(req.inf_ == info_);
+        server_->executeCommand(req);
     }
 }

@@ -296,6 +296,6 @@ namespace fastonosql
 
     NDbValue CommandCreateKey::dbv() const
     {
-
+        return NDbValue(key().key_, value_->toString(), value_->type());
     }
 }

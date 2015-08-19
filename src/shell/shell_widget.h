@@ -62,7 +62,7 @@ namespace fastonosql
 
         void startConnect(const EventsInfo::ConnectInfoRequest& req);
         void finishConnect(const EventsInfo::ConnectInfoResponce& res);
-        void startDisconnect(const EventsInfo::DisonnectInfoRequest& req);
+        void startDisconnect(const EventsInfo::DisConnectInfoRequest& req);
         void finishDisconnect(const EventsInfo::DisConnectInfoResponce& res);
 
         void startSetDefaultDatabase(const EventsInfo::SetDefaultDatabaseRequest& req);

@@ -270,7 +270,8 @@ namespace fastonosql
             selected = input_->text();
         }
 
-        server_->execute(selected);
+        EventsInfo::ExecuteInfoRequest req(this, common::convertToString(selected));
+        server_->execute(req);
     }
 
     void BaseShellWidget::stop()
@@ -280,12 +281,14 @@ namespace fastonosql
 
     void BaseShellWidget::connectToServer()
     {
-        server_->connect();
+        EventsInfo::ConnectInfoRequest req(this);
+        server_->connect(req);
     }
 
     void BaseShellWidget::disconnectFromServer()
     {
-        server_->disconnect();
+        EventsInfo::DisConnectInfoRequest req(this);
+        server_->disconnect(req);
     }
 
     void BaseShellWidget::loadFromFile()
@@ -348,7 +351,7 @@ namespace fastonosql
         syncConnectionActions();
     }
 
-    void BaseShellWidget::startDisconnect(const EventsInfo::DisonnectInfoRequest& req)
+    void BaseShellWidget::startDisconnect(const EventsInfo::DisConnectInfoRequest& req)
     {
         syncConnectionActions();
     }

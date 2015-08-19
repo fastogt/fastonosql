@@ -2123,10 +2123,10 @@ namespace fastonosql
     {
         QObject *sender = ev->sender();
         notifyProgress(sender, 0);
-        events::EnterModeEvent::value_type res(IntaractiveMode);
+        events::EnterModeEvent::value_type res(this, IntaractiveMode);
         reply(sender, new events::EnterModeEvent(this, res));
 
-        events::LeaveModeEvent::value_type res2(IntaractiveMode);
+        events::LeaveModeEvent::value_type res2(this, IntaractiveMode);
         reply(sender, new events::LeaveModeEvent(this, res2));
         notifyProgress(sender, 100);
         return common::ErrorValueSPtr();
@@ -2136,7 +2136,7 @@ namespace fastonosql
     {
         QObject *sender = ev->sender();
         notifyProgress(sender, 0);
-        events::EnterModeEvent::value_type resEv(LatencyMode);
+        events::EnterModeEvent::value_type resEv(this, LatencyMode);
         reply(sender, new events::EnterModeEvent(this, resEv));
 
         RootLocker lock = make_locker(sender, LATENCY_REQUEST);
@@ -2147,7 +2147,7 @@ namespace fastonosql
             LOG_ERROR(er, true);
         }
 
-        events::LeaveModeEvent::value_type resEv2(LatencyMode);
+        events::LeaveModeEvent::value_type resEv2(this, LatencyMode);
         reply(sender, new events::LeaveModeEvent(this, resEv2));
         notifyProgress(sender, 100);
         return er;
@@ -2157,7 +2157,7 @@ namespace fastonosql
     {
         QObject* sender = ev->sender();
         notifyProgress(sender, 0);
-        events::EnterModeEvent::value_type resEv(SlaveMode);
+        events::EnterModeEvent::value_type resEv(this, SlaveMode);
         reply(sender, new events::EnterModeEvent(this, resEv));
 
         RootLocker lock = make_locker(sender, SYNC_REQUEST);
@@ -2168,7 +2168,7 @@ namespace fastonosql
             LOG_ERROR(er, true);
         }
 
-        events::LeaveModeEvent::value_type resEv2(SlaveMode);
+        events::LeaveModeEvent::value_type resEv2(this, SlaveMode);
         reply(sender, new events::LeaveModeEvent(this, resEv2));
         notifyProgress(sender, 100);
         return er;
@@ -2178,7 +2178,7 @@ namespace fastonosql
     {
         QObject* sender = ev->sender();
         notifyProgress(sender, 0);
-        events::EnterModeEvent::value_type resEv(GetRDBMode);
+        events::EnterModeEvent::value_type resEv(this, GetRDBMode);
         reply(sender, new events::EnterModeEvent(this, resEv));
 
         RootLocker lock = make_locker(sender, RDM_REQUEST);
@@ -2189,7 +2189,7 @@ namespace fastonosql
             LOG_ERROR(er, true);
         }
 
-        events::LeaveModeEvent::value_type resEv2(GetRDBMode);
+        events::LeaveModeEvent::value_type resEv2(this, GetRDBMode);
         reply(sender, new events::LeaveModeEvent(this, resEv2));
         notifyProgress(sender, 100);
         return er;
@@ -2211,7 +2211,7 @@ namespace fastonosql
     {
         QObject* sender = ev->sender();
         notifyProgress(sender, 0);
-        events::EnterModeEvent::value_type resEv(FindBigKeysMode);
+        events::EnterModeEvent::value_type resEv(this, FindBigKeysMode);
         reply(sender, new events::EnterModeEvent(this, resEv));
 
         RootLocker lock = make_locker(sender, FIND_BIG_KEYS_REQUEST);
@@ -2222,7 +2222,7 @@ namespace fastonosql
             LOG_ERROR(er, true);
         }
 
-        events::LeaveModeEvent::value_type resEv2(FindBigKeysMode);
+        events::LeaveModeEvent::value_type resEv2(this, FindBigKeysMode);
         reply(sender, new events::LeaveModeEvent(this, resEv2));
         notifyProgress(sender, 100);
         return er;
@@ -2232,7 +2232,7 @@ namespace fastonosql
     {
         QObject* sender = ev->sender();
         notifyProgress(sender, 0);
-        events::EnterModeEvent::value_type resEv(StatMode);
+        events::EnterModeEvent::value_type resEv(this, StatMode);
         reply(sender, new events::EnterModeEvent(this, resEv));
 
         RootLocker lock = make_locker(sender, STAT_MODE_REQUEST);
@@ -2243,7 +2243,7 @@ namespace fastonosql
             LOG_ERROR(er, true);
         }
 
-        events::LeaveModeEvent::value_type resEv2(StatMode);
+        events::LeaveModeEvent::value_type resEv2(this, StatMode);
         reply(sender, new events::LeaveModeEvent(this, resEv2));
         notifyProgress(sender, 100);
         return er;
@@ -2253,7 +2253,7 @@ namespace fastonosql
     {
         QObject* sender = ev->sender();
         notifyProgress(sender, 0);
-        events::EnterModeEvent::value_type resEv(ScanMode);
+        events::EnterModeEvent::value_type resEv(this, ScanMode);
         reply(sender, new events::EnterModeEvent(this, resEv));
 
         RootLocker lock = make_locker(sender, SCAN_MODE_REQUEST);
@@ -2264,7 +2264,7 @@ namespace fastonosql
             LOG_ERROR(er, true);
         }
 
-        events::LeaveModeEvent::value_type resEv2(ScanMode);
+        events::LeaveModeEvent::value_type resEv2(this, ScanMode);
         reply(sender, new events::LeaveModeEvent(this, resEv2));
         notifyProgress(sender, 100);
         return er;

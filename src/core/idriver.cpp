@@ -363,14 +363,14 @@ namespace fastonosql
 
     IDriver::RootLocker::~RootLocker()
     {
-        events::CommandRootCompleatedEvent::value_type res(tstart_, root_);
+        events::CommandRootCompleatedEvent::value_type res(this, tstart_, root_);
         reply(reciver_, new events::CommandRootCompleatedEvent(parent_, res));
     }
 
     FastoObjectIPtr IDriver::RootLocker::createRoot(QObject *reciver, const std::string& text)
     {
         FastoObjectIPtr root = FastoObject::createRoot(text, parent_);
-        events::CommandRootCreatedEvent::value_type res(root);
+        events::CommandRootCreatedEvent::value_type res(this, root);
         reply(reciver, new events::CommandRootCreatedEvent(parent_, res));
         return root;
     }
