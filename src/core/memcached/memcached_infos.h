@@ -92,4 +92,12 @@ namespace fastonosql
     {
         static const std::vector<common::Value::Type> supportedTypes;
     };
+
+    class MemcachedCommand
+            : public FastoObjectCommand
+    {
+    public:
+        MemcachedCommand(FastoObject* parent, common::CommandValue* cmd, const std::string &delemitr);
+        virtual bool isReadOnly() const;
+    };
 }

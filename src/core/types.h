@@ -253,4 +253,28 @@ namespace fastonosql
     };
 
     typedef common::shared_ptr<CommandKey> CommandKeySPtr;
+
+    template<typename Command>
+    FastoObjectCommand* createCommand(FastoObject* parent, const std::string& input, common::Value::CommandLoggingType ct)
+    {
+        if(input.empty()){
+            return NULL;
+        }
+
+        DCHECK(parent);
+        if(!parent){
+            return NULL;
+        }
+
+        common::CommandValue* cmd = common::Value::createCommand(input, ct);
+        FastoObjectCommand* fs = new Command(parent, cmd, "");
+        parent->addChildren(fs);
+        return fs;
+    }
+
+    template<typename Command>
+    FastoObjectCommand* createCommand(FastoObjectIPtr parent, const std::string& input, common::Value::CommandLoggingType ct)
+    {
+        return createCommand<Command>(parent.get(), input, ct);
+    }
 }

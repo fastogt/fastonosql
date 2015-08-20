@@ -240,68 +240,6 @@ namespace fastonosql
 {
     namespace
     {
-        class RedisCommand
-                : public FastoObjectCommand
-        {
-        public:
-            RedisCommand(FastoObject* parent, common::CommandValue* cmd, const std::string &delemitr)
-                : FastoObjectCommand(parent, cmd, delemitr)
-            {
-
-            }
-
-            virtual bool isReadOnly() const
-            {
-                std::string key = inputCmd();
-                if(key.empty()){
-                    return true;
-                }
-
-                std::transform(key.begin(), key.end(), key.begin(), ::tolower);
-                return key != "get";
-            }
-
-            virtual std::string inputCmd() const
-            {
-                common::CommandValue* command = cmd();
-                if(command){
-                    std::pair<std::string, std::string> kv = getKeyValueFromLine(command->inputCommand());
-                    return kv.first;
-                }
-
-                return std::string();
-            }
-
-            virtual std::string inputArgs() const
-            {
-                common::CommandValue* command = cmd();
-                if(command){
-                    std::pair<std::string, std::string> kv = getKeyValueFromLine(command->inputCommand());
-                    return kv.second;
-                }
-
-                return std::string();
-            }
-        };
-
-        RedisCommand* createCommand(FastoObject* parent, const std::string& input, common::Value::CommandLoggingType ct)
-        {
-            if(input.empty()){
-                return NULL;
-            }
-
-            DCHECK(parent);
-            common::CommandValue* cmd = common::Value::createCommand(input, ct);
-            RedisCommand* fs = new RedisCommand(parent, cmd, "");
-            parent->addChildren(fs);
-            return fs;
-        }
-
-        RedisCommand* createCommand(FastoObjectIPtr parent, const std::string& input, common::Value::CommandLoggingType ct)
-        {
-            return createCommand(parent.get(), input, ct);
-        }
-
         RedisCommand* createCommandFast(const std::string& input, common::Value::CommandLoggingType ct)
         {
             common::CommandValue* cmd = common::Value::createCommand(input, ct);
@@ -455,7 +393,7 @@ namespace fastonosql
                 return common::make_error_value("Invalid input argument", common::ErrorValue::E_ERROR);
             }
 
-            FastoObjectCommand* cmd = createCommand(out, "PING", common::Value::C_INNER);
+            FastoObjectCommand* cmd = createCommand<RedisCommand>(out, "PING", common::Value::C_INNER);
             DCHECK(cmd);
             if(!cmd){
                 return common::make_error_value("Invalid createCommand input argument", common::ErrorValue::E_ERROR);
@@ -586,7 +524,7 @@ namespace fastonosql
                 return er;
             }
 
-            FastoObjectCommand* cmd = createCommand(out, SYNC_REQUEST, common::Value::C_INNER);
+            FastoObjectCommand* cmd = createCommand<RedisCommand>(out, SYNC_REQUEST, common::Value::C_INNER);
             DCHECK(cmd);
             if(!cmd){
                 return common::make_error_value("Invalid createCommand input argument", common::ErrorValue::E_ERROR);
@@ -639,7 +577,7 @@ namespace fastonosql
 
             FastoObject* child = NULL;
             common::ArrayValue* val = NULL;
-            FastoObjectCommand* cmd = createCommand(out, RDM_REQUEST, common::Value::C_INNER);
+            FastoObjectCommand* cmd = createCommand<RedisCommand>(out, RDM_REQUEST, common::Value::C_INNER);
             DCHECK(cmd);
             if(!cmd){
                 return common::make_error_value("Invalid createCommand input argument", common::ErrorValue::E_ERROR);
@@ -873,7 +811,7 @@ namespace fastonosql
                 return common::make_error_value("Invalid input argument", common::ErrorValue::E_ERROR);
             }
 
-            FastoObjectCommand* cmd = createCommand(out, FIND_BIG_KEYS_REQUEST, common::Value::C_INNER);
+            FastoObjectCommand* cmd = createCommand<RedisCommand>(out, FIND_BIG_KEYS_REQUEST, common::Value::C_INNER);
             DCHECK(cmd);
             if(!cmd){
                 return common::make_error_value("Invalid createCommand input argument", common::ErrorValue::E_ERROR);
@@ -1096,7 +1034,7 @@ namespace fastonosql
                 return common::make_error_value("Invalid input argument", common::ErrorValue::E_ERROR);
             }
 
-            FastoObjectCommand* cmd = createCommand(out, INFO_REQUEST, common::Value::C_INNER);
+            FastoObjectCommand* cmd = createCommand<RedisCommand>(out, INFO_REQUEST, common::Value::C_INNER);
             DCHECK(cmd);
             if(!cmd){
                 return common::make_error_value("Invalid createCommand input argument", common::ErrorValue::E_ERROR);
@@ -1207,7 +1145,7 @@ namespace fastonosql
                 return common::make_error_value("Invalid input argument", common::ErrorValue::E_ERROR);
             }
 
-            FastoObjectCommand* cmd = createCommand(out, SCAN_MODE_REQUEST, common::Value::C_INNER);
+            FastoObjectCommand* cmd = createCommand<RedisCommand>(out, SCAN_MODE_REQUEST, common::Value::C_INNER);
             DCHECK(cmd);
             if(!cmd){
                 return common::make_error_value("Invalid createCommand input argument", common::ErrorValue::E_ERROR);
@@ -1780,7 +1718,7 @@ namespace fastonosql
             return common::ErrorValueSPtr();
         }
 
-        common::ErrorValueSPtr execute(RedisCommand* cmd) WARN_UNUSED_RESULT
+        common::ErrorValueSPtr execute(FastoObjectCommand* cmd) WARN_UNUSED_RESULT
         {
             //DCHECK(cmd);
             if(!cmd){
@@ -1892,7 +1830,7 @@ namespace fastonosql
     common::ErrorValueSPtr RedisDriver::serverInfo(ServerInfo** info)
     {
         FastoObjectIPtr root = FastoObject::createRoot(INFO_REQUEST);
-        RedisCommand* cmd = createCommand(root, INFO_REQUEST, common::Value::C_INNER);
+        FastoObjectCommand* cmd = createCommand<RedisCommand>(root, INFO_REQUEST, common::Value::C_INNER);
         common::ErrorValueSPtr res = impl_->execute(cmd);
         if(!res){
             FastoObject::child_container_type ch = root->childrens();
@@ -1931,7 +1869,7 @@ namespace fastonosql
         }
 
         FastoObjectIPtr root = FastoObject::createRoot(GET_SERVER_TYPE);
-        RedisCommand* cmd = createCommand(root, GET_SERVER_TYPE, common::Value::C_INNER);
+        FastoObjectCommand* cmd = createCommand<RedisCommand>(root, GET_SERVER_TYPE, common::Value::C_INNER);
         er = impl_->execute(cmd);
 
         if(er){
@@ -2042,7 +1980,7 @@ namespace fastonosql
             events::ShutDownResponceEvent::value_type res(ev->value());
         notifyProgress(sender, 25);
             FastoObjectIPtr root = FastoObject::createRoot(SHUTDOWN);
-            RedisCommand* cmd = createCommand(root, SHUTDOWN, common::Value::C_INNER);
+            FastoObjectCommand* cmd = createCommand<RedisCommand>(root, SHUTDOWN, common::Value::C_INNER);
             common::ErrorValueSPtr er = impl_->execute(cmd);
             if(er){
                 res.setErrorInfo(er);
@@ -2059,7 +1997,7 @@ namespace fastonosql
             events::BackupRequestEvent::value_type res(ev->value());
         notifyProgress(sender, 25);
             FastoObjectIPtr root = FastoObject::createRoot(BACKUP);
-            RedisCommand* cmd = createCommand(root, BACKUP, common::Value::C_INNER);
+            FastoObjectCommand* cmd = createCommand<RedisCommand>(root, BACKUP, common::Value::C_INNER);
             common::ErrorValueSPtr er = impl_->execute(cmd);
             if(er){
                 res.setErrorInfo(er);
@@ -2099,7 +2037,7 @@ namespace fastonosql
             char patternResult[1024] = {0};
             common::SNPrintf(patternResult, sizeof(patternResult), SET_PASSWORD_1ARGS_S, res.newPassword_);
             FastoObjectIPtr root = FastoObject::createRoot(patternResult);
-            RedisCommand* cmd = createCommand(root, patternResult, common::Value::C_INNER);
+            FastoObjectCommand* cmd = createCommand<RedisCommand>(root, patternResult, common::Value::C_INNER);
             common::ErrorValueSPtr er = impl_->execute(cmd);
             if(er){
                 res.setErrorInfo(er);
@@ -2119,7 +2057,7 @@ namespace fastonosql
             char patternResult[1024] = {0};
             common::SNPrintf(patternResult, sizeof(patternResult), SET_MAX_CONNECTIONS_1ARGS_I, res.maxConnection_);
             FastoObjectIPtr root = FastoObject::createRoot(patternResult);
-            RedisCommand* cmd = createCommand(root, patternResult, common::Value::C_INNER);
+            FastoObjectCommand* cmd = createCommand<RedisCommand>(root, patternResult, common::Value::C_INNER);
             common::ErrorValueSPtr er = impl_->execute(cmd);
             if(er){
                 res.setErrorInfo(er);
@@ -2314,7 +2252,7 @@ namespace fastonosql
 
                         offset = n + 1;
                         std::string stabc = stableCommand(command);
-                        RedisCommand* cmd = createCommand(outRoot, stabc, common::Value::C_USER);
+                        FastoObjectCommand* cmd = createCommand<RedisCommand>(outRoot, stabc, common::Value::C_USER);
                         er = impl_->execute(cmd);
                         if(er){
                             res.setErrorInfo(er);
@@ -2363,7 +2301,7 @@ namespace fastonosql
 
             RootLocker lock = make_locker(sender, cmdtext);
             FastoObjectIPtr root = lock.root_;
-            RedisCommand* cmd = createCommand(root, cmdtext, common::Value::C_INNER);
+            FastoObjectCommand* cmd = createCommand<RedisCommand>(root, cmdtext, common::Value::C_INNER);
         notifyProgress(sender, 50);
             er = impl_->execute(cmd);
             if(er){
@@ -2396,7 +2334,7 @@ namespace fastonosql
             events::LoadDatabasesInfoResponceEvent::value_type res(ev->value());
             FastoObjectIPtr root = FastoObject::createRoot(GET_DATABASES);
         notifyProgress(sender, 50);
-            RedisCommand* cmd = createCommand(root, GET_DATABASES, common::Value::C_INNER);
+            FastoObjectCommand* cmd = createCommand<RedisCommand>(root, GET_DATABASES, common::Value::C_INNER);
             common::ErrorValueSPtr er = impl_->execute(cmd);
             if(er){
                 res.setErrorInfo(er);
@@ -2457,7 +2395,7 @@ namespace fastonosql
             common::SNPrintf(patternResult, sizeof(patternResult), GET_KEYS_PATTERN_2ARGS_ISI, res.cursorIn_, res.pattern_, res.countKeys_);
             FastoObjectIPtr root = FastoObject::createRoot(patternResult);
         notifyProgress(sender, 50);
-            RedisCommand* cmd = createCommand(root, patternResult, common::Value::C_INNER);
+            FastoObjectCommand* cmd = createCommand<RedisCommand>(root, patternResult, common::Value::C_INNER);
             common::ErrorValueSPtr er = impl_->execute(cmd);
             if(er){
                 res.setErrorInfo(er);
@@ -2561,7 +2499,7 @@ namespace fastonosql
             const std::string setDefCommand = SET_DEFAULT_DATABASE + res.inf_->name();
             FastoObjectIPtr root = FastoObject::createRoot(setDefCommand);
         notifyProgress(sender, 50);
-            RedisCommand* cmd = createCommand(root, setDefCommand, common::Value::C_INNER);
+            FastoObjectCommand* cmd = createCommand<RedisCommand>(root, setDefCommand, common::Value::C_INNER);
             common::ErrorValueSPtr er = impl_->execute(cmd);
             if(er){
                 res.setErrorInfo(er);
@@ -2583,7 +2521,7 @@ namespace fastonosql
             events::ServerInfoResponceEvent::value_type res(ev->value());
             FastoObjectIPtr root = FastoObject::createRoot(INFO_REQUEST);
         notifyProgress(sender, 50);
-            RedisCommand* cmd = createCommand(root, INFO_REQUEST, common::Value::C_INNER);
+            FastoObjectCommand* cmd = createCommand<RedisCommand>(root, INFO_REQUEST, common::Value::C_INNER);
             common::ErrorValueSPtr er = impl_->execute(cmd);
             if(er){
                 res.setErrorInfo(er);
@@ -2608,7 +2546,7 @@ namespace fastonosql
         events::ServerPropertyInfoResponceEvent::value_type res(ev->value());
             FastoObjectIPtr root = FastoObject::createRoot(GET_PROPERTY_SERVER);
         notifyProgress(sender, 50);
-            RedisCommand* cmd = createCommand(root, GET_PROPERTY_SERVER, common::Value::C_INNER);
+            FastoObjectCommand* cmd = createCommand<RedisCommand>(root, GET_PROPERTY_SERVER, common::Value::C_INNER);
             common::ErrorValueSPtr er = impl_->execute(cmd);
             if(er){
                 res.setErrorInfo(er);
@@ -2637,7 +2575,7 @@ namespace fastonosql
         notifyProgress(sender, 50);
         const std::string changeRequest = "CONFIG SET " + res.newItem_.first + " " + res.newItem_.second;
         FastoObjectIPtr root = FastoObject::createRoot(changeRequest);
-        RedisCommand* cmd = createCommand(root, changeRequest, common::Value::C_INNER);
+        FastoObjectCommand* cmd = createCommand<RedisCommand>(root, changeRequest, common::Value::C_INNER);
         common::ErrorValueSPtr er = impl_->execute(cmd);
         if(er){
             res.setErrorInfo(er);

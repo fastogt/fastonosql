@@ -58,4 +58,12 @@ namespace fastonosql
     {
         static const std::vector<common::Value::Type> supportedTypes;
     };
+
+    class SsdbCommand
+            : public FastoObjectCommand
+    {
+    public:
+        SsdbCommand(FastoObject* parent, common::CommandValue* cmd, const std::string &delemitr);
+        virtual bool isReadOnly() const;
+    };
 }

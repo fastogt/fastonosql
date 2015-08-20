@@ -39,71 +39,6 @@ namespace fastonosql
 {
     namespace
     {
-        class LeveldbCommand
-                : public FastoObjectCommand
-        {
-        public:
-            LeveldbCommand(FastoObject* parent, common::CommandValue* cmd, const std::string &delemitr)
-                : FastoObjectCommand(parent, cmd, delemitr)
-            {
-
-            }
-
-            virtual bool isReadOnly() const
-            {
-                std::string key = inputCmd();
-                if(key.empty()){
-                    return true;
-                }
-
-                std::transform(key.begin(), key.end(), key.begin(), ::tolower);
-                return key != "get";
-            }
-
-            virtual std::string inputCmd() const
-            {
-                common::CommandValue* command = cmd();
-                if(command){
-                    std::pair<std::string, std::string> kv = getKeyValueFromLine(command->inputCommand());
-                    return kv.first;
-                }
-
-                return std::string();
-            }
-
-            virtual std::string inputArgs() const
-            {
-                common::CommandValue* command = cmd();
-                if(command){
-                    std::pair<std::string, std::string> kv = getKeyValueFromLine(command->inputCommand());
-                    return kv.second;
-                }
-
-                return std::string();
-            }
-        };
-
-        LeveldbCommand* createCommand(FastoObject* parent, const std::string& input, common::Value::CommandLoggingType ct)
-        {
-            if(input.empty()){
-                return NULL;
-            }
-
-            DCHECK(parent);
-            common::CommandValue* cmd = common::Value::createCommand(input, ct);
-            LeveldbCommand* fs = new LeveldbCommand(parent, cmd, "");
-            parent->addChildren(fs);
-            return fs;
-        }
-
-        LeveldbCommand* createCommand(FastoObjectIPtr parent, const std::string& input, common::Value::CommandLoggingType ct)
-        {
-            return createCommand(parent.get(), input, ct);
-        }
-    }
-
-    namespace
-    {
         common::ErrorValueSPtr createConnection(const leveldbConfig& config, const SSHInfo& sinfo, leveldb::DB** context)
         {
             DCHECK(*context == NULL);
@@ -239,7 +174,7 @@ namespace fastonosql
             return common::ErrorValueSPtr();
         }
 
-        common::ErrorValueSPtr execute(LeveldbCommand* cmd) WARN_UNUSED_RESULT
+        common::ErrorValueSPtr execute(FastoObjectCommand* cmd) WARN_UNUSED_RESULT
         {
             //DCHECK(cmd);
             if(!cmd){
@@ -559,7 +494,7 @@ namespace fastonosql
         }
 
         FastoObjectIPtr root = FastoObject::createRoot(GET_SERVER_TYPE);
-        LeveldbCommand* cmd = createCommand(root, GET_SERVER_TYPE, common::Value::C_INNER);
+        FastoObjectCommand* cmd = createCommand<LeveldbCommand>(root, GET_SERVER_TYPE, common::Value::C_INNER);
         er = impl_->execute(cmd);
 
         if(!er){
@@ -653,7 +588,7 @@ namespace fastonosql
                             strncpy(command, inputLine + offset, n - offset);
                         }
                         offset = n + 1;
-                        LeveldbCommand* cmd = createCommand(outRoot, stableCommand(command), common::Value::C_USER);
+                        FastoObjectCommand* cmd = createCommand<LeveldbCommand>(outRoot, stableCommand(command), common::Value::C_USER);
                         er = impl_->execute(cmd);
                         if(er){
                             res.setErrorInfo(er);
@@ -688,7 +623,7 @@ namespace fastonosql
 
             RootLocker lock = make_locker(sender, cmdtext);
             FastoObjectIPtr root = lock.root_;
-            LeveldbCommand* cmd = createCommand(root, cmdtext, common::Value::C_INNER);
+            FastoObjectCommand* cmd = createCommand<LeveldbCommand>(root, cmdtext, common::Value::C_INNER);
         notifyProgress(sender, 50);
             er = impl_->execute(cmd);
             if(er){
@@ -718,7 +653,7 @@ namespace fastonosql
             common::SNPrintf(patternResult, sizeof(patternResult), GET_KEYS_PATTERN_1ARGS_I, res.countKeys_);
             FastoObjectIPtr root = FastoObject::createRoot(patternResult);
         notifyProgress(sender, 50);
-            LeveldbCommand* cmd = createCommand(root, patternResult, common::Value::C_INNER);
+            FastoObjectCommand* cmd = createCommand<LeveldbCommand>(root, patternResult, common::Value::C_INNER);
             common::ErrorValueSPtr er = impl_->execute(cmd);
             if(er){
                 res.setErrorInfo(er);

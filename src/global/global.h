@@ -49,8 +49,8 @@ namespace fastonosql
         common::CommandValue* cmd() const;
         virtual std::string toString() const;
 
-        virtual std::string inputCmd() const = 0;
-        virtual std::string inputArgs() const = 0;
+        virtual std::string inputCmd() const;
+        virtual std::string inputArgs() const;
 
         virtual bool isReadOnly() const = 0;
 
@@ -64,7 +64,6 @@ namespace fastonosql
     std::string stableCommand(const char* command);
     std::pair<std::string, std::string> getKeyValueFromLine(const std::string& input);
     std::string getFirstWordFromLine(const std::string& input);
-    std::string getOppositeCommand(const std::string& command, const std::vector<std::pair<std::string, std::string > >& srcOppositeCommands);
 
     class FastoObjectArray
             : public FastoObject

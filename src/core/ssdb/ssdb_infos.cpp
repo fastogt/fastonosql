@@ -186,4 +186,22 @@ namespace fastonosql
     {
         return new SsdbDataBaseInfo(*this);
     }
+
+
+    SsdbCommand::SsdbCommand(FastoObject* parent, common::CommandValue* cmd, const std::string &delemitr)
+        : FastoObjectCommand(parent, cmd, delemitr)
+    {
+
+    }
+
+    bool SsdbCommand::isReadOnly() const
+    {
+        std::string key = inputCmd();
+        if(key.empty()){
+            return true;
+        }
+
+        std::transform(key.begin(), key.end(), key.begin(), ::tolower);
+        return key != "get";
+    }
 }

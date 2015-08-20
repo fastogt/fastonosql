@@ -26,71 +26,6 @@ extern "C" {
 
 namespace fastonosql
 {
-    namespace
-    {
-        class MemcachedCommand
-                : public FastoObjectCommand
-        {
-        public:
-            MemcachedCommand(FastoObject* parent, common::CommandValue* cmd, const std::string &delemitr)
-                : FastoObjectCommand(parent, cmd, delemitr)
-            {
-
-            }
-
-            virtual bool isReadOnly() const
-            {
-                std::string key = inputCmd();
-                if(key.empty()){
-                    return true;
-                }
-
-                std::transform(key.begin(), key.end(), key.begin(), ::tolower);
-                return key != "get";
-            }
-
-            virtual std::string inputCmd() const
-            {
-                common::CommandValue* command = cmd();
-                if(command){
-                    std::pair<std::string, std::string> kv = getKeyValueFromLine(command->inputCommand());
-                    return kv.first;
-                }
-
-                return std::string();
-            }
-
-            virtual std::string inputArgs() const
-            {
-                common::CommandValue* command = cmd();
-                if(command){
-                    std::pair<std::string, std::string> kv = getKeyValueFromLine(command->inputCommand());
-                    return kv.second;
-                }
-
-                return std::string();
-            }
-        };
-
-        MemcachedCommand* createCommand(FastoObject* parent, const std::string& input, common::Value::CommandLoggingType ct)
-        {
-            if(input.empty()){
-                return NULL;
-            }
-
-            DCHECK(parent);
-            common::CommandValue* cmd = common::Value::createCommand(input, ct);
-            MemcachedCommand* fs = new MemcachedCommand(parent, cmd, "");
-            parent->addChildren(fs);
-            return fs;
-        }
-
-        MemcachedCommand* createCommand(FastoObjectIPtr parent, const std::string& input, common::Value::CommandLoggingType ct)
-        {
-            return createCommand(parent.get(), input, ct);
-        }
-    }
-
     common::ErrorValueSPtr testConnection(MemcachedConnectionSettings* settings)
     {
         if(!settings){
@@ -710,7 +645,7 @@ namespace fastonosql
         }
 
         FastoObjectIPtr root = FastoObject::createRoot(GET_SERVER_TYPE);
-        MemcachedCommand* cmd = createCommand(root, GET_SERVER_TYPE, common::Value::C_INNER);
+        FastoObjectCommand* cmd = createCommand<MemcachedCommand>(root, GET_SERVER_TYPE, common::Value::C_INNER);
         er = impl_->execute(cmd);
 
         if(!er){
@@ -804,7 +739,7 @@ namespace fastonosql
                             strncpy(command, inputLine + offset, n - offset);
                         }
                         offset = n + 1;
-                        FastoObjectCommand* cmd = createCommand(outRoot, stableCommand(command), common::Value::C_USER);
+                        FastoObjectCommand* cmd = createCommand<MemcachedCommand>(outRoot, stableCommand(command), common::Value::C_USER);
                         er = impl_->execute(cmd);
                         if(er){
                             res.setErrorInfo(er);
@@ -839,7 +774,7 @@ namespace fastonosql
 
             RootLocker lock = make_locker(sender, cmdtext);
             FastoObjectIPtr root = lock.root_;
-            MemcachedCommand* cmd = createCommand(root, cmdtext, common::Value::C_INNER);
+            FastoObjectCommand* cmd = createCommand<MemcachedCommand>(root, cmdtext, common::Value::C_INNER);
         notifyProgress(sender, 50);
             er = impl_->execute(cmd);
             if(er){
@@ -867,7 +802,7 @@ namespace fastonosql
             events::LoadDatabaseContentResponceEvent::value_type res(ev->value());
             FastoObjectIPtr root = FastoObject::createRoot(GET_KEYS);
         notifyProgress(sender, 50);
-            FastoObjectCommand* cmd = createCommand(root, GET_KEYS, common::Value::C_INNER);
+            FastoObjectCommand* cmd = createCommand<MemcachedCommand>(root, GET_KEYS, common::Value::C_INNER);
             common::ErrorValueSPtr er = impl_->execute(cmd);
             if(er){
                 res.setErrorInfo(er);

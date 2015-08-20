@@ -115,6 +115,28 @@ namespace fastonosql
         return std::string();
     }
 
+    std::string FastoObjectCommand::inputCmd() const
+    {
+        common::CommandValue* command = cmd();
+        if(command){
+            std::pair<std::string, std::string> kv = getKeyValueFromLine(command->inputCommand());
+            return kv.first;
+        }
+
+        return std::string();
+    }
+
+    std::string FastoObjectCommand::inputArgs() const
+    {
+        common::CommandValue* command = cmd();
+        if(command){
+            std::pair<std::string, std::string> kv = getKeyValueFromLine(command->inputCommand());
+            return kv.second;
+        }
+
+        return std::string();
+    }
+
     std::string FastoObjectCommand::inputCommand() const
     {
         common::CommandValue* command = cmd();
@@ -181,27 +203,6 @@ namespace fastonosql
         }
 
         return input;
-    }
-
-    std::string getOppositeCommand(const std::string& command, const std::vector<std::pair<std::string, std::string > >& srcOppositeCommands)
-    {
-        DCHECK(!command.empty());
-        if(command.empty()){
-            return std::string();
-        }
-
-        std::string uppercmd = StringToUpperASCII(command);
-        for(int i = 0; i < srcOppositeCommands.size(); ++i){
-            std::pair<std::string, std::string > p = srcOppositeCommands[i];
-            if(p.first == uppercmd){
-                return p.second;
-            }
-            else if(p.second == uppercmd){
-                return p.first;
-            }
-        }
-
-        return std::string();
     }
 
     FastoObjectArray::FastoObjectArray(FastoObject* parent, common::ArrayValue* ar, const std::string& delemitr)

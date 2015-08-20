@@ -59,4 +59,12 @@ namespace fastonosql
     {
         static const std::vector<common::Value::Type> supportedTypes;
     };
+
+    class LeveldbCommand
+            : public FastoObjectCommand
+    {
+    public:
+        LeveldbCommand(FastoObject* parent, common::CommandValue* cmd, const std::string &delemitr);
+        virtual bool isReadOnly() const;
+    };
 }
