@@ -1,4 +1,4 @@
-0.7.6
+0.7.6 / August 22, 2015
 [Alexandr Topilski]
 - Update hiredis sources
 - Sentinel commands support
