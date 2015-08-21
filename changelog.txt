@@ -2,12 +2,14 @@
 [Alexandr Topilski]
 - Update hiredis sources
 - Sentinel commands support for Redis
-- Calltips for commands(Press '(' in console)
+- Calltips for commands (Press '(' in console after command)
 - Export/import settings to encrypted file
 - Double click show value for keys
 - Display value as readable json
 - Save value from text view
 - Official SSDB logo
+- View key dialog direct TTL value change for Redis
+- Bugs fixes
  
 0.2.4 / August 10, 2015
 [Alexandr Topilski]

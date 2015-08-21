@@ -34,6 +34,11 @@ namespace fastonosql
         void startLoadDatabaseContent(const EventsInfo::LoadDatabaseContentRequest& req);
         void finishLoadDatabaseContent(const EventsInfo::LoadDatabaseContentResponce& res);
 
+        void startExecuteCommand(const EventsInfo::CommandRequest& req);
+        void finishExecuteCommand(const EventsInfo::CommandResponce& res);
+
+        void executeCommand(CommandKeySPtr cmd);
+
         void searchLineChanged(const QString& text);
         void leftPageClicked();
         void rightPageClicked();

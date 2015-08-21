@@ -9,8 +9,10 @@
 #include <QLabel>
 #include <QScrollBar>
 #include <QSplitter>
+#include <QStyledItemDelegate>
 
 #include "common/qt/convert_string.h"
+#include "common/logger.h"
 
 #include "core/iserver.h"
 #include "core/idatabase.h"
@@ -31,6 +33,47 @@ namespace
         button->setFlat(true);
         return button;
     }
+
+    class NumericDelegate
+            : public QStyledItemDelegate
+    {
+    public:
+        NumericDelegate(QObject *parent = 0)
+            : QStyledItemDelegate(parent)
+        {
+
+        }
+
+        QWidget* createEditor(QWidget *parent, const QStyleOptionViewItem &, const QModelIndex &) const
+        {
+            QSpinBox* editor = new QSpinBox(parent);
+            editor->setRange(-1, INT32_MAX);
+            editor->setValue(-1);
+            return editor;
+        }
+
+        void setEditorData(QWidget *editor, const QModelIndex &index) const
+        {
+            int value = index.model()->data(index, Qt::EditRole).toInt();
+
+            QSpinBox *spinBox = static_cast<QSpinBox*>(editor);
+            spinBox->setValue(value);
+        }
+
+        void setModelData(QWidget *editor, QAbstractItemModel *model, const QModelIndex &index) const
+        {
+            QSpinBox *spinBox = static_cast<QSpinBox*>(editor);
+            spinBox->interpretText();
+            int value = spinBox->value();
+
+            model->setData(index, value, Qt::EditRole);
+        }
+
+        void updateEditorGeometry(QWidget *editor, const QStyleOptionViewItem &option, const QModelIndex &) const
+        {
+            editor->setGeometry(option.rect);
+        }
+    };
 }
 
 namespace fastonosql
@@ -71,8 +114,15 @@ namespace fastonosql
         searchLayout->addWidget(searchButton_);
 
         keysModel_ = new KeysTableModel(this);
+        VERIFY(connect(keysModel_, &KeysTableModel::changedValue, this, &ViewKeysDialog::executeCommand, Qt::DirectConnection));
+        if(db_){
+            IServerSPtr serv = db_->server();
+            VERIFY(connect(serv.get(), &IServer::startedExecuteCommand, this, &ViewKeysDialog::startExecuteCommand, Qt::DirectConnection));
+            VERIFY(connect(serv.get(), &IServer::finishedExecuteCommand, this, &ViewKeysDialog::finishExecuteCommand, Qt::DirectConnection));
+        }
         keysTable_ = new FastoTableView;
         keysTable_->setModel(keysModel_);
+        keysTable_->setItemDelegateForColumn(KeyTableItem::kTTL, new NumericDelegate(this));
 
         QDialogButtonBox* buttonBox = new QDialogButtonBox;
         buttonBox->setOrientation(Qt::Horizontal);
@@ -148,6 +198,41 @@ namespace fastonosql
         }
 
         updateControls();
+    }
+
+    void ViewKeysDialog::executeCommand(CommandKeySPtr cmd)
+    {
+        if(db_){
+            EventsInfo::CommandRequest req(this, db_->info(), cmd);
+            db_->executeCommand(req);
+        }
+    }
+
+    void ViewKeysDialog::startExecuteCommand(const EventsInfo::CommandRequest& req)
+    {
+
+    }
+
+    void ViewKeysDialog::finishExecuteCommand(const EventsInfo::CommandResponce& res)
+    {
+        common::ErrorValueSPtr er = res.errorInfo();
+        if(er && er->isError()){
+            return;
+        }
+
+        if(res.initiator() != this){
+            DEBUG_MSG_FORMAT<512>(common::logging::L_DEBUG, "Skipped event in file: %s, function: %s", __FILE__, __FUNCTION__);
+            return;
+        }
+
+        CommandKeySPtr key = res.cmd_;
+        if(key->type() == CommandKey::C_CHANGE_TTL){
+            CommandChangeTTL * cttl = dynamic_cast<CommandChangeTTL*>(key.get());
+            if(cttl){
+                NDbValue dbv = cttl->newKey();
+                keysModel_->changeValue(dbv);
+            }
+        }
     }
 
     void ViewKeysDialog::search(bool forward)

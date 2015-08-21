@@ -30,8 +30,8 @@ namespace fastonosql
         return UNDEFINED_SINCE_STR;
     }
 
-    NKey::NKey(const std::string& key, int32_t ttl_msec)
-        : key_(key), ttl_msec_(ttl_msec)
+    NKey::NKey(const std::string& key, int32_t ttl_sec)
+        : key_(key), ttl_sec_(ttl_sec)
     {
     }
 
@@ -94,7 +94,7 @@ namespace fastonosql
 
     void NDbValue::setTTL(int32_t ttl)
     {
-        key_.ttl_msec_ = ttl;
+        key_.ttl_sec_ = ttl;
     }
 
     void NDbValue::setValue(const NValue& value)
@@ -315,6 +315,24 @@ namespace fastonosql
         : CommandKey(dbv, C_CREATE)
     {
 
+    }
+
+    CommandChangeTTL::CommandChangeTTL(const NDbValue& dbv, int32_t newTTL)
+        : CommandKey(dbv, C_CHANGE_TTL), new_ttl_(newTTL)
+    {
+
+    }
+
+    int32_t CommandChangeTTL::newTTL() const
+    {
+        return new_ttl_;
+    }
+
+    NDbValue CommandChangeTTL::newKey() const
+    {
+        NDbValue nk = key();
+        nk.setTTL(new_ttl_);
+        return nk;
     }
 
     NValue CommandCreateKey::value() const

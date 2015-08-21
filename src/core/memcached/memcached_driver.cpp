@@ -570,7 +570,7 @@ namespace fastonosql
    };
 
     MemcachedDriver::MemcachedDriver(IConnectionSettingsBaseSPtr settings)
-        : IDriver(settings), impl_(new pimpl)
+        : IDriver(settings, MEMCACHED), impl_(new pimpl)
     {
 
     }
@@ -896,6 +896,15 @@ namespace fastonosql
         common::SNPrintf(patternResult, sizeof(patternResult), SET_KEY_PATTERN_2ARGS_SS, key.keyString(), val.toString());
         cmdstring = patternResult;
         return common::ErrorValueSPtr();
+    }
+
+    common::ErrorValueSPtr MemcachedDriver::commandChangeTTLImpl(CommandChangeTTL* command, std::string& cmdstring) const
+    {
+        UNUSED(command);
+        UNUSED(cmdstring);
+        char errorMsg[1024] = {0};
+        common::SNPrintf(errorMsg, sizeof(errorMsg), "Sorry, but now " PROJECT_NAME_TITLE " not supported change ttl command for %s.", common::convertToString(connectionType()));
+        return common::make_error_value(errorMsg, common::ErrorValue::E_ERROR);
     }
 
     // ============== commands =============//

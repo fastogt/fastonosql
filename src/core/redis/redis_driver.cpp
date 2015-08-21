@@ -74,6 +74,9 @@ extern "C" {
 #define SET_KEY_ZSET_PATTERN_2ARGS_SS "ZADD %s %s"
 #define SET_KEY_HASH_PATTERN_2ARGS_SS "HMSET %s %s"
 
+#define CHANGE_TTL_2ARGS_SI "EXPIRE %s %d"
+#define PERSIST_KEY_1ARGS_S "PERSIST %s"
+
 #define GET_KEYS_PATTERN_2ARGS_ISI "SCAN %d MATCH %s COUNT %d"
 
 #define GET_SERVER_TYPE "CLUSTER NODES"
@@ -1772,7 +1775,7 @@ namespace fastonosql
     };
 
     RedisDriver::RedisDriver(IConnectionSettingsBaseSPtr settings)
-        : IDriver(settings), impl_(new pimpl)
+        : IDriver(settings, REDIS), impl_(new pimpl)
     {
         impl_->parent_ = this;
     }
@@ -2476,9 +2479,7 @@ namespace fastonosql
                                 common::Value* vttl = fttl->value();
                                 int32_t ttl = 0;
                                 if(vttl->getAsInteger(&ttl)){
-                                    if(ttl != -1){
-                                        res.keys_[i].setTTL(ttl * 1000);
-                                    }
+                                    res.keys_[i].setTTL(ttl);
                                 }
                             }
                         }
@@ -2640,7 +2641,23 @@ namespace fastonosql
             common::SNPrintf(patternResult, sizeof(patternResult), SET_KEY_HASH_PATTERN_2ARGS_SS, key.keyString(), val.toString());
         }
         else{
-            common::SNPrintf(patternResult, sizeof(patternResult), SET_KEY_PATTERN_2ARGS_SS, key.keyString(), val.toString());\
+            common::SNPrintf(patternResult, sizeof(patternResult), SET_KEY_PATTERN_2ARGS_SS, key.keyString(), val.toString());
+        }
+        cmdstring = patternResult;
+
+        return common::ErrorValueSPtr();
+    }
+
+    common::ErrorValueSPtr RedisDriver::commandChangeTTLImpl(CommandChangeTTL* command, std::string& cmdstring) const
+    {
+        char patternResult[1024] = {0};
+        NDbValue key = command->key();
+        uint32_t new_ttl = command->newTTL();
+        if(new_ttl == -1){
+            common::SNPrintf(patternResult, sizeof(patternResult), PERSIST_KEY_1ARGS_S, key.keyString());
+        }
+        else{
+            common::SNPrintf(patternResult, sizeof(patternResult), CHANGE_TTL_2ARGS_SI, key.keyString(), new_ttl);
         }
         cmdstring = patternResult;
 

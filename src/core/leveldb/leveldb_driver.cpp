@@ -384,7 +384,7 @@ namespace fastonosql
     };
 
     LeveldbDriver::LeveldbDriver(IConnectionSettingsBaseSPtr settings)
-        : IDriver(settings), impl_(new pimpl)
+        : IDriver(settings, LEVELDB), impl_(new pimpl)
     {
 
     }
@@ -440,6 +440,16 @@ namespace fastonosql
 
         return common::ErrorValueSPtr();
     }
+
+    common::ErrorValueSPtr LeveldbDriver::commandChangeTTLImpl(CommandChangeTTL* command, std::string& cmdstring) const
+    {
+        UNUSED(command);
+        UNUSED(cmdstring);
+        char errorMsg[1024] = {0};
+        common::SNPrintf(errorMsg, sizeof(errorMsg), "Sorry, but now " PROJECT_NAME_TITLE " not supported change ttl command for %s.", common::convertToString(connectionType()));
+        return common::make_error_value(errorMsg, common::ErrorValue::E_ERROR);
+    }
+
      // ============== commands =============//
 
     common::net::hostAndPort LeveldbDriver::address() const

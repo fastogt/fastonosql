@@ -22,11 +22,14 @@ namespace fastonosql
 
         QString key() const;
         QString typeText() const;
-        int32_t msecTTL() const;
+        int32_t TTL() const;
         common::Value::Type type() const;
 
+        NDbValue dbv() const;
+        void setDbv(const NDbValue& val);
+
     private:
-        const NDbValue key_;
+        NDbValue key_;
     };
 
     class KeysTableModel
@@ -38,10 +41,17 @@ namespace fastonosql
         virtual ~KeysTableModel();
 
         virtual QVariant data(const QModelIndex& index, int role = Qt::DisplayRole) const;
+        virtual bool setData(const QModelIndex& index, const QVariant& value, int role);
+        virtual Qt::ItemFlags flags(const QModelIndex& index) const;
         virtual QVariant headerData(int section, Qt::Orientation orientation, int role = Qt::DisplayRole) const;
 
         virtual int columnCount(const QModelIndex& parent) const;
         void clear();
+
+        void changeValue(const NDbValue& value);
+
+    Q_SIGNALS:
+        void changedValue(CommandKeySPtr cmd);
     };
 }
 

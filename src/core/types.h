@@ -43,10 +43,10 @@ namespace fastonosql
 
     struct NKey
     {
-        explicit NKey(const std::string& key, int32_t ttl_msec = -1);
+        explicit NKey(const std::string& key, int32_t ttl_sec = -1);
 
         std::string key_;
-        int32_t ttl_msec_;
+        int32_t ttl_sec_;
     };
 
     inline bool operator == (const NKey& lhs, const NKey& rhs)
@@ -215,7 +215,8 @@ namespace fastonosql
             C_NONE,
             C_DELETE,
             C_LOAD,
-            C_CREATE
+            C_CREATE,
+            C_CHANGE_TTL
         };
 
         cmdtype type() const;
@@ -250,6 +251,18 @@ namespace fastonosql
     public:
         CommandCreateKey(const NDbValue& dbv);
         NValue value() const;
+    };
+
+    class CommandChangeTTL
+            : public CommandKey
+    {
+    public:
+        CommandChangeTTL(const NDbValue& dbv, int32_t newTTL);
+        int32_t newTTL() const;
+        NDbValue newKey() const;
+
+    private:
+        int32_t new_ttl_;
     };
 
     typedef common::shared_ptr<CommandKey> CommandKeySPtr;

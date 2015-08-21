@@ -89,8 +89,8 @@ namespace fastonosql
         }
     }
 
-    IDriver::IDriver(IConnectionSettingsBaseSPtr settings)
-        : settings_(settings), serverDiscInfo_(), thread_(NULL), timer_info_id_(0), log_file_(NULL)
+    IDriver::IDriver(IConnectionSettingsBaseSPtr settings, connectionTypes type)
+        : settings_(settings), serverDiscInfo_(), thread_(NULL), timer_info_id_(0), log_file_(NULL), type_(type)
     {
         thread_ = new QThread(this);
         moveToThread(thread_);
@@ -112,7 +112,8 @@ namespace fastonosql
 
     connectionTypes IDriver::connectionType() const
     {
-        return settings_->connectionType();
+        DCHECK(type_ == settings_->connectionType());
+        return type_;
     }
 
     ServerDiscoveryInfoSPtr IDriver::serverDiscoveryInfo() const
@@ -174,6 +175,13 @@ namespace fastonosql
                 return common::make_error_value("Invalid input argument", common::ErrorValue::E_ERROR);
             }
             return commandCreateImpl(createc, cmdstring);
+        }
+        else if(t == CommandKey::C_CHANGE_TTL){
+            CommandChangeTTL* changettl = dynamic_cast<CommandChangeTTL*>(command.get());
+            if(!changettl){
+                return common::make_error_value("Invalid input argument", common::ErrorValue::E_ERROR);
+            }
+            return commandChangeTTLImpl(changettl, cmdstring);
         }
         else{
             NOTREACHED();

@@ -2,11 +2,13 @@
 [Alexandr Topilski]
 - Update hiredis sources
 - Sentinel commands support
-- Calltips for commands
+- Calltips for commands (Press '(' in console after command)
 - Export/import settings to encrypted file
 - Double click show value for keys
 - Display value as readable json
 - Save value from text view
+- View key dialog direct TTL value change
+- Bugs fixes
 
 0.7.5 / August 10, 2015
 [Alexandr Topilski]

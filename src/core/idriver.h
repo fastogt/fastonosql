@@ -24,7 +24,7 @@ namespace fastonosql
     {
         Q_OBJECT
     public:
-        IDriver(IConnectionSettingsBaseSPtr settings);
+        IDriver(IConnectionSettingsBaseSPtr settings, connectionTypes type);
         virtual ~IDriver();
 
         static void reply(QObject* reciver, QEvent* ev);
@@ -132,6 +132,7 @@ namespace fastonosql
         virtual common::ErrorValueSPtr commandDeleteImpl(CommandDeleteKey* command, std::string& cmdstring) const WARN_UNUSED_RESULT = 0;
         virtual common::ErrorValueSPtr commandLoadImpl(CommandLoadKey* command, std::string& cmdstring) const WARN_UNUSED_RESULT = 0;
         virtual common::ErrorValueSPtr commandCreateImpl(CommandCreateKey* command, std::string& cmdstring) const WARN_UNUSED_RESULT = 0;
+        virtual common::ErrorValueSPtr commandChangeTTLImpl(CommandChangeTTL* command, std::string& cmdstring) const WARN_UNUSED_RESULT = 0;
 
     private:
         ServerInfoSPtr serverInfo_;
@@ -141,5 +142,6 @@ namespace fastonosql
         QThread* thread_;
         int timer_info_id_;
         common::file_system::File* log_file_;
+        const connectionTypes type_;
     };
 }

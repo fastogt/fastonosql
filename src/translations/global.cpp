@@ -50,7 +50,7 @@ namespace fastonosql
         const QString trReload = QObject::tr("Reload");
         const QString trDuplicate = QObject::tr("Duplicate");
         const QString trType = QObject::tr("Type");
-        const QString trMsecTTL = QObject::tr("Msec TTL");
+        const QString trTTL = QObject::tr("TTL");
         const QString trCommands = QObject::tr("Commands");
         const QString trErrors = QObject::tr("Errors");
         const QString trName = QObject::tr("Name");
