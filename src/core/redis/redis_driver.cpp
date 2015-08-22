@@ -1946,11 +1946,6 @@ namespace fastonosql
             getRDBMode(ev);
         }
 
-        /* Pipe mode */
-        /*if (impl_->config.pipe_mode) {
-            pipeMode(ev);
-        }*/
-
         /* Find big keys */
         if (impl_->config_.bigkeys) {
             findBigKeysMode(ev);
@@ -2146,18 +2141,6 @@ namespace fastonosql
         notifyProgress(sender, 100);
         return er;
     }
-
-    /*void RedisDriver::pipeMode(events::ProcessConfigArgsRequestEvent* ev)
-    {
-        QObject* sender = ev->sender();
-        notifyProgress(sender, 0);
-        events::EnterModeEvent::value_type res(PipeMode);
-        reply(sender, new events::EnterModeEvent(this, res));
-
-        events::LeaveModeEvent::value_type res2(PipeMode);
-        reply(sender, new events::LeaveModeEvent(this, res2));
-        notifyProgress(sender, 100);
-    }*/
 
     common::ErrorValueSPtr RedisDriver::findBigKeysMode(events::ProcessConfigArgsRequestEvent* ev)
     {

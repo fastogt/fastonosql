@@ -452,7 +452,6 @@ namespace fastonosql
         common::ErrorValueSPtr latencyMode(events::ProcessConfigArgsRequestEvent* ev);
         common::ErrorValueSPtr slaveMode(events::ProcessConfigArgsRequestEvent* ev);
         common::ErrorValueSPtr getRDBMode(events::ProcessConfigArgsRequestEvent* ev);
-        //void pipeMode(events::ProcessConfigArgsRequestEvent* ev);
         common::ErrorValueSPtr findBigKeysMode(events::ProcessConfigArgsRequestEvent* ev);
         common::ErrorValueSPtr statMode(events::ProcessConfigArgsRequestEvent* ev);
         common::ErrorValueSPtr scanMode(events::ProcessConfigArgsRequestEvent* ev);

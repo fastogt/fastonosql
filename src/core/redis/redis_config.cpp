@@ -182,8 +182,6 @@ namespace fastonosql
         cluster_reissue_command = 0;
         pattern = NULL;
         rdb_filename = NULL;
-        //pipe_mode = 0;
-        //pipe_timeout = REDIS_CLI_DEFAULT_PIPE_TIMEOUT;
         bigkeys = 0;
         auth = NULL;
         eval = NULL;
@@ -262,13 +260,6 @@ namespace common
             argv.push_back("--rdb");
             argv.push_back(conf.rdb_filename);
         }
-        /*if(conf.pipe_mode){
-            argv.push_back("--pipe");
-        }
-        if(conf.pipe_timeout){
-            argv.push_back("--pipe-timeout");
-            argv.push_back(convertToString(conf.pipe_timeout));
-        }*/
         if(conf.bigkeys){
             argv.push_back("--bigkeys");
         }

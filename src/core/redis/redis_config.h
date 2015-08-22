@@ -4,8 +4,6 @@
 
 #include "core/connection_confg.h"
 
-#define REDIS_CLI_DEFAULT_PIPE_TIMEOUT 30 /* seconds */
-
 namespace fastonosql
 {
     struct redisConfig
@@ -29,8 +27,6 @@ namespace fastonosql
         int cluster_mode;
         int cluster_reissue_command;
         int slave_mode;
-        //int pipe_mode;
-        //int pipe_timeout;
         int getrdb_mode;
         int stat_mode;
         int scan_mode;
