@@ -151,7 +151,7 @@ namespace fastonosql
         retranslateUi();
     }
 
-    common::ValueSPtr CreateDbKeyDialog::value() const
+    NValue CreateDbKeyDialog::value() const
     {
         return value_;
     }

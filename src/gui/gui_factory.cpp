@@ -188,9 +188,6 @@ namespace fastonosql
         case common::Value::TYPE_UINTEGER:
             static QIcon i(":" PROJECT_NAME_LOWERCASE "/images/64x64/integer.png");
             return i;
-        case common::Value::TYPE_STATUS:
-            static QIcon st(":" PROJECT_NAME_LOWERCASE "/images/64x64/status.png");
-            return st;
         case common::Value::TYPE_ERROR:
             static QIcon er(":" PROJECT_NAME_LOWERCASE "/images/64x64/error.png");
             return er;

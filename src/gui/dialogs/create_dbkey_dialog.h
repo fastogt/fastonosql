@@ -24,7 +24,7 @@ namespace fastonosql
         };
 
         explicit CreateDbKeyDialog(const QString& title, connectionTypes type, QWidget* parent = 0);
-        common::ValueSPtr value() const;
+        NValue value() const;
         NKey key() const;
 
     public Q_SLOTS:
@@ -50,6 +50,6 @@ namespace fastonosql
         QLineEdit* valueEdit_;
         QListWidget* valueListEdit_;
         QTableWidget* valueTableEdit_;
-        common::ValueSPtr value_;
+        NValue value_;
     };
 }

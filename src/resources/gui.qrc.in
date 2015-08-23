@@ -11,7 +11,6 @@
     <file>@PROJECT_NAME_LOWERCASE@/images/64x64/connect.png</file>
     <file>@PROJECT_NAME_LOWERCASE@/images/64x64/disconnect.png</file>
 
-    <file>@PROJECT_NAME_LOWERCASE@/images/64x64/status.png</file>
     <file>@PROJECT_NAME_LOWERCASE@/images/64x64/error.png</file>
     <file>@PROJECT_NAME_LOWERCASE@/images/64x64/string.png</file>
     <file>@PROJECT_NAME_LOWERCASE@/images/64x64/null.png</file>
