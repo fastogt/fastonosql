@@ -87,7 +87,7 @@ namespace fastonosql
 
         void removeKey(const NKey& key);
         void loadValue(const NKey& key);
-        void createKey(const NKey& key, FastoObjectIPtr value);
+        void createKey(const NKey& key, common::ValueSPtr value);
 
     private:
         const IDatabaseSPtr db_;

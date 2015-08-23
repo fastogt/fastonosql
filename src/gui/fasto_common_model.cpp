@@ -77,7 +77,8 @@ namespace fastonosql
                     const std::string value = common::convertToString(newValue);
 
                     // node->type() TODO: create according type
-                    NValue val(new FastoObject(NULL, common::Value::createStringValue(value)));
+                    common::ValueSPtr vs = common::make_value(common::Value::createStringValue(value));
+                    NValue val(vs);
                     NDbValue dbv(NKey(key), val);
                     CommandKeySPtr com(new CommandCreateKey(dbv));
                     emit changedValue(com);
@@ -146,7 +147,6 @@ namespace fastonosql
         }
 
         const QString key = common::convertFromString<QString>(value.keyString());
-        const QString val = common::convertFromString<QString>(value.valueString());
 
         for(int i = 0; i < root->childrenCount(); ++i){
             FastoCommonItem* child = dynamic_cast<FastoCommonItem*>(root->child(i));
@@ -155,7 +155,7 @@ namespace fastonosql
             }
 
             if(child->key() == key){
-                child->setValue(val);
+                child->setValue(value.value());
                 emit dataChanged(index(i, FastoCommonItem::eValue), index(i, FastoCommonItem::eType));
                 break;
             }

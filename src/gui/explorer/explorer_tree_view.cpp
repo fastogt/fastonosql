@@ -586,7 +586,7 @@ namespace fastonosql
             CreateDbKeyDialog loadDb(QString("Create key for %1 database").arg(node->name()), node->server()->type(), this);
             int result = loadDb.exec();
             if(result == QDialog::Accepted){
-                FastoObjectIPtr val = loadDb.value();
+                common::ValueSPtr val = loadDb.value();
                 NKey key = loadDb.key();
                 node->createKey(key, val);
             }

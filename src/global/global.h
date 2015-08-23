@@ -126,31 +126,14 @@ namespace fastonosql
 
     typedef common::intrusive_ptr<FastoObject> FastoObjectIPtr;
     typedef common::intrusive_ptr<FastoObjectCommand> FastoObjectCommandIPtr;
-
-    /*static FastoObjectIPtr createFastoObjectByType(common::Value::Type type)
-    {
-        if(type == common::Value::TYPE_ARRAY){
-            return new FastoObjectArray(NULL, common::Value::createArrayValue(), std::string());
-        }
-        else if(type == common::Value::TYPE_HASH){
-            return new FastoObjectHash(NULL, common::Value::createHashValue(), std::string());
-        }
-        else if(type == common::Value::TYPE_SET){
-            return new FastoObjectSet(NULL, common::Value::createSetValue(), std::string());
-        }
-        else if(type == common::Value::TYPE_ZSET){
-            return new FastoObjectZSet(NULL, common::Value::createZSetValue(), std::string());
-        }
-        else if(type == common::Value::TYPE_COMMAND){
-            return new FastoObjectCommand(NULL, common::Value::createCommand(), std::string());
-        }
-        else if(type == common::Value::TYPE_STRING){
-            return new FastoObject(NULL, common::Value::createStringValue(), std::string());
-        }
-    }*/
 }
 
 namespace common
 {
     std::string convertToString(fastonosql::FastoObject* obj);
+    std::string convertToString(common::Value* value, const std::string& delemitr);
+    std::string convertToString(common::ArrayValue* array, const std::string& delemitr);
+    std::string convertToString(common::SetValue* set, const std::string& delemitr);
+    std::string convertToString(common::ZSetValue* zset, const std::string& delemitr);
+    std::string convertToString(common::HashValue* hash, const std::string& delemitr);
 }

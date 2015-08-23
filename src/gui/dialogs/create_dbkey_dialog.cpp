@@ -151,7 +151,7 @@ namespace fastonosql
         retranslateUi();
     }
 
-    FastoObjectIPtr CreateDbKeyDialog::value() const
+    common::ValueSPtr CreateDbKeyDialog::value() const
     {
         return value_;
     }
@@ -280,7 +280,7 @@ namespace fastonosql
             return false;
         }
 
-        FastoObject* obj = getItem();
+        common::Value* obj = getItem();
         if(!obj){
             return false;
         }
@@ -294,7 +294,7 @@ namespace fastonosql
         generalBox_->setTitle(tr("Key/Value input"));
     }
 
-    FastoObject* CreateDbKeyDialog::getItem() const
+    common::Value* CreateDbKeyDialog::getItem() const
     {
         int index = typesCombo_->currentIndex();
         QVariant var = typesCombo_->itemData(index);
@@ -309,7 +309,7 @@ namespace fastonosql
                 ar->appendString(val);
             }
 
-            return new FastoObjectArray(NULL, ar, " ");
+            return  ar;
         }
         else if(t == common::Value::TYPE_SET){
             if(valueListEdit_->count() == 0) {
@@ -321,7 +321,7 @@ namespace fastonosql
                 ar->insert(val);
             }
 
-            return new FastoObjectSet(NULL, ar, " ");
+            return ar;
         }
         else if(t == common::Value::TYPE_ZSET){
             if(valueTableEdit_->rowCount() == 0) {
@@ -338,7 +338,7 @@ namespace fastonosql
                 ar->insert(key, val);
             }
 
-            return new FastoObjectZSet(NULL, ar, " ");
+            return ar;
         }
         else if(t == common::Value::TYPE_HASH){
             if(valueTableEdit_->rowCount() == 0) {
@@ -355,7 +355,7 @@ namespace fastonosql
                 ar->insert(key, val);
             }
 
-            return new FastoObjectHash(NULL, ar, " ");
+            return ar;
         }
         else{
             QString text = valueEdit_->text();
@@ -363,7 +363,7 @@ namespace fastonosql
                 return NULL;
             }
 
-            return new FastoObject(NULL, common::Value::createStringValue(common::convertToString(text)), std::string());
+            return common::Value::createStringValue(common::convertToString(text));
         }
     }
 }

@@ -184,7 +184,7 @@ namespace fastonosql
         }
     }
 
-    void ExplorerDatabaseItem::createKey(const NKey& key, FastoObjectIPtr value)
+    void ExplorerDatabaseItem::createKey(const NKey& key, common::ValueSPtr value)
     {
         IDatabaseSPtr dbs = db();
         if(dbs){

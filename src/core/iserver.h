@@ -112,7 +112,7 @@ namespace fastonosql
 
    Q_SIGNALS:
         void addedChild(FastoObject *child);
-        void itemUpdated(FastoObject* item, const QString& val);
+        void itemUpdated(FastoObject* item, common::Value* val);
         void serverInfoSnapShoot(ServerInfoSnapShoot shot);
 
     public:

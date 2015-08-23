@@ -2448,7 +2448,8 @@ namespace fastonosql
                             if(tchildrens.size() == 1){
                                 FastoObject* type = tchildrens[0];
                                 std::string typeRedis = type->toString();
-                                NValue val(convertFromStringRType(typeRedis));
+                                common::ValueSPtr v = make_value(common::Value::createEmptyValueFromType(convertFromStringRType(typeRedis)));
+                                NValue val(v);
                                 res.keys_[i].setValue(val);
                             }
                         }
@@ -2611,20 +2612,24 @@ namespace fastonosql
         char patternResult[1024] = {0};
         NDbValue key = command->key();
         NValue val = command->value();
-        if(key.type() == common::Value::TYPE_ARRAY){
-            common::SNPrintf(patternResult, sizeof(patternResult), SET_KEY_LIST_PATTERN_2ARGS_SS, key.keyString(), val.toString());
+        common::Value* rval = val.get();
+        std::string key_str = key.keyString();
+        std::string value_str = common::convertToString(rval, " ");
+        common::Value::Type t = key.type();
+        if(t == common::Value::TYPE_ARRAY){
+            common::SNPrintf(patternResult, sizeof(patternResult), SET_KEY_LIST_PATTERN_2ARGS_SS, key_str, value_str);
         }
-        else if(key.type() == common::Value::TYPE_SET){
-            common::SNPrintf(patternResult, sizeof(patternResult), SET_KEY_SET_PATTERN_2ARGS_SS, key.keyString(), val.toString());
+        else if(t == common::Value::TYPE_SET){
+            common::SNPrintf(patternResult, sizeof(patternResult), SET_KEY_SET_PATTERN_2ARGS_SS, key_str, value_str);
         }
-        else if(key.type() == common::Value::TYPE_ZSET){
-            common::SNPrintf(patternResult, sizeof(patternResult), SET_KEY_ZSET_PATTERN_2ARGS_SS, key.keyString(), val.toString());
+        else if(t == common::Value::TYPE_ZSET){
+            common::SNPrintf(patternResult, sizeof(patternResult), SET_KEY_ZSET_PATTERN_2ARGS_SS, key_str, value_str);
         }
-        else if(key.type() == common::Value::TYPE_HASH){
-            common::SNPrintf(patternResult, sizeof(patternResult), SET_KEY_HASH_PATTERN_2ARGS_SS, key.keyString(), val.toString());
+        else if(t == common::Value::TYPE_HASH){
+            common::SNPrintf(patternResult, sizeof(patternResult), SET_KEY_HASH_PATTERN_2ARGS_SS, key_str, value_str);
         }
         else{
-            common::SNPrintf(patternResult, sizeof(patternResult), SET_KEY_PATTERN_2ARGS_SS, key.keyString(), val.toString());
+            common::SNPrintf(patternResult, sizeof(patternResult), SET_KEY_PATTERN_2ARGS_SS, key_str, value_str);
         }
         cmdstring = patternResult;
 

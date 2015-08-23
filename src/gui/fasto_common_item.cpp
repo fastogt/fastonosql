@@ -10,8 +10,8 @@
 
 namespace fastonosql
 {
-    FastoCommonItem::FastoCommonItem(const QString& key, const QString& value, common::Value::Type type, bool isReadOnly, TreeItem *parent, void* internalPointer)
-        : TreeItem(parent, internalPointer), key_(key), value_(value), type_(type), isReadOnly_(isReadOnly)
+    FastoCommonItem::FastoCommonItem(const QString& key, NValue value, bool isReadOnly, TreeItem *parent, void* internalPointer)
+        : TreeItem(parent, internalPointer), key_(key), value_(value), isReadOnly_(isReadOnly)
     {
 
     }
@@ -23,17 +23,27 @@ namespace fastonosql
 
     QString FastoCommonItem::value() const
     {
-        return value_;
+        if(!value_){
+            return QString();
+        }
+
+        common::Value* val = value_.get();
+        std::string valstr = common::convertToString(val, " ");
+        return common::convertFromString<QString>(valstr);
     }
 
-    void FastoCommonItem::setValue(const QString& val)
+    void FastoCommonItem::setValue(NValue val)
     {
         value_ = val;
     }
 
     common::Value::Type FastoCommonItem::type() const
     {
-        return type_;
+        if(!value_){
+            return common::Value::TYPE_NULL;
+        }
+
+        return value_->getType();
     }
 
     bool FastoCommonItem::isReadOnly() const

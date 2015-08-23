@@ -42,7 +42,7 @@ namespace fastonosql
         void rootCompleated(const EventsInfo::CommandRootCompleatedInfo& res);
 
         void addedChild(FastoObject* child);
-        void itemUpdated(FastoObject* item, const QString& value);
+        void itemUpdated(FastoObject* item, common::Value* value);
 
     public Q_SLOTS:
         void setText(const QString& text);

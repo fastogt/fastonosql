@@ -2,7 +2,7 @@
 
 #include <QString>
 
-#include "common/value.h"
+#include "core/types.h"
 #include "fasto/qt/gui/base/tree_item.h"
 
 namespace fastonosql
@@ -18,19 +18,19 @@ namespace fastonosql
             eType = 2,
             eCountColumns = 3
         };
-        FastoCommonItem(const QString& key, const QString& value, common::Value::Type type, bool isReadOnly, TreeItem* parent, void* internalPointer);
+        FastoCommonItem(const QString& key, NValue value, bool isReadOnly, TreeItem* parent, void* internalPointer);
 
         QString key() const;
-        QString value() const;
-        void setValue(const QString& val);
+        QString value() const;        
         common::Value::Type type() const;
 
         bool isReadOnly() const;
 
+        void setValue(NValue val);
+
     private:
         QString key_;
-        QString value_;
-        common::Value::Type type_;
+        NValue value_;
         bool isReadOnly_;
     };
 

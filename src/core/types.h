@@ -54,34 +54,21 @@ namespace fastonosql
         return lhs.key_ == rhs.key_;
     }
 
-    struct NValue
-    {
-        NValue(common::Value::Type type = common::Value::TYPE_NULL);
-        NValue(FastoObjectIPtr value);
-
-        std::string toString() const;
-        bool isValid() const;
-        common::Value::Type type() const;
-
-    private:
-        FastoObjectIPtr value_;
-        common::Value::Type type_;
-    };
+    typedef common::ValueSPtr NValue;
 
     class NDbValue
     {
     public:
-        NDbValue(const NKey& key, const NValue& value);
+        NDbValue(const NKey& key, NValue value);
 
         NKey key() const;
         NValue value() const;
         common::Value::Type type() const;
 
         void setTTL(int32_t ttl);
-        void setValue(const NValue& value);
+        void setValue(NValue value);
 
         std::string keyString() const;
-        std::string valueString() const;
 
     private:
         NKey key_;

@@ -171,7 +171,7 @@ namespace fastonosql
         }
         else if(t == CommandKey::C_CREATE){
             CommandCreateKey* createc = dynamic_cast<CommandCreateKey*>(command.get());
-            if(!createc || !createc->value().isValid()){
+            if(!createc || !createc->value()){
                 return common::make_error_value("Invalid input argument", common::ErrorValue::E_ERROR);
             }
             return commandCreateImpl(createc, cmdstring);
@@ -478,7 +478,6 @@ namespace fastonosql
 
     void IDriver::updated(FastoObject* item, common::Value* val)
     {
-        const QString value = common::convertFromString<QString>(val->toString());
-        emit itemUpdated(item, value);
+        emit itemUpdated(item, val);
     }
 }

@@ -40,7 +40,7 @@ namespace fastonosql
         void finishExecuteCommand(const EventsInfo::CommandResponce& res);
 
         void addChild(FastoObject* child);
-        void itemUpdate(FastoObject* item, const QString& newValue);
+        void itemUpdate(FastoObject* item, common::Value* newValue);
 
     private Q_SLOTS:
         void executeCommand(CommandKeySPtr cmd);

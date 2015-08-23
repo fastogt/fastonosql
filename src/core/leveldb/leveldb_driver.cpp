@@ -435,7 +435,10 @@ namespace fastonosql
         char patternResult[1024] = {0};
         NDbValue key = command->key();
         NValue val = command->value();
-        common::SNPrintf(patternResult, sizeof(patternResult), SET_KEY_PATTERN_2ARGS_SS, key.keyString(), val.toString());
+        common::Value* rval = val.get();
+        std::string key_str = key.keyString();
+        std::string value_str = common::convertToString(rval, " ");
+        common::SNPrintf(patternResult, sizeof(patternResult), SET_KEY_PATTERN_2ARGS_SS, key_str, value_str);
         cmdstring = patternResult;
 
         return common::ErrorValueSPtr();

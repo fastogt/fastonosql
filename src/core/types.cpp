@@ -35,43 +35,7 @@ namespace fastonosql
     {
     }
 
-    NValue::NValue(common::Value::Type type)
-        : type_(type), value_()
-    {
-
-    }
-
-    NValue::NValue(FastoObjectIPtr value)
-        : type_(common::Value::TYPE_NULL), value_(value)
-    {
-
-    }
-
-    std::string NValue::toString() const
-    {
-        if(isValid()){
-            return value_->toString();
-        }
-
-        NOTREACHED();
-        return std::string();
-    }
-
-    bool NValue::isValid() const
-    {
-        return value_.get();
-    }
-
-    common::Value::Type NValue::type() const
-    {
-        if(!value_.get()){
-            return type_;
-        }
-
-        return value_->type();
-    }
-
-    NDbValue::NDbValue(const NKey& key, const NValue& value)
+    NDbValue::NDbValue(const NKey& key, NValue value)
         : key_(key), value_(value)
     {
 
@@ -89,7 +53,11 @@ namespace fastonosql
 
     common::Value::Type NDbValue::type() const
     {
-        return value_.type();
+        if(!value_){
+            return common::Value::TYPE_NULL;
+        }
+
+        return value_->getType();
     }
 
     void NDbValue::setTTL(int32_t ttl)
@@ -97,7 +65,7 @@ namespace fastonosql
         key_.ttl_sec_ = ttl;
     }
 
-    void NDbValue::setValue(const NValue& value)
+    void NDbValue::setValue(NValue value)
     {
         value_ = value;
     }
@@ -105,11 +73,6 @@ namespace fastonosql
     std::string NDbValue::keyString() const
     {
         return key_.key_;
-    }
-
-    std::string NDbValue::valueString() const
-    {
-        return value_.toString();
     }
 
     ServerDiscoveryInfo::ServerDiscoveryInfo(connectionTypes ctype, serverTypes type, bool self)

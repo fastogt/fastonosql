@@ -30,12 +30,7 @@ namespace fastonosql
 
     std::string FastoObject::toString() const
     {
-        if(!value_){
-            return std::string();
-        }
-
-        std::string result = value_->toString();//getAsString(&result);
-        return result;
+        return convertToString(value_.get(), delemitr());
     }
 
     FastoObject* FastoObject::createRoot(const std::string &text, IFastoObjectObserver* observer)
@@ -225,24 +220,7 @@ namespace fastonosql
     std::string FastoObjectArray::toString() const
     {
         common::ArrayValue* ar = array();
-        if(!ar){
-            return std::string();
-        }
-
-        std::string result;
-        const common::ArrayValue::const_iterator lastIt = std::prev(ar->end());
-        for(common::ArrayValue::const_iterator it = ar->begin(); it != ar->end(); ++it){
-            std::string val = (*it)->toString();
-            if(val.empty()){
-                continue;
-            }
-
-            result += val;
-            if(lastIt != it){
-                result += delemitr();
-            }
-        }
-        return result;
+        return convertToString(ar, delemitr());
     }
 
     common::ArrayValue* FastoObjectArray::array() const
@@ -271,24 +249,7 @@ namespace fastonosql
     std::string FastoObjectSet::toString() const
     {
         common::SetValue* ar = set();
-        if(!ar){
-            return std::string();
-        }
-
-        std::string result;
-        const common::SetValue::const_iterator lastIt = std::prev(ar->end());
-        for(common::SetValue::const_iterator it = ar->begin(); it != ar->end(); ++it){
-            std::string val = (*it)->toString();
-            if(val.empty()){
-                continue;
-            }
-
-            result += val;
-            if(lastIt != it){
-                result += delemitr();
-            }
-        }
-        return result;
+        return common::convertToString(ar, delemitr());
     }
 
     common::SetValue* FastoObjectSet::set() const
@@ -316,26 +277,7 @@ namespace fastonosql
     std::string FastoObjectZSet::toString() const
     {
         common::ZSetValue* ar = zset();
-        if(!ar){
-            return std::string();
-        }
-
-        std::string result;
-        const common::ZSetValue::const_iterator lastIt = std::prev(ar->end());
-        for(common::ZSetValue::const_iterator it = ar->begin(); it != ar->end(); ++it){
-            common::ZSetValue::value_type v = *it;
-            std::string key = (v.first)->toString();
-            std::string val = (v.second)->toString();
-            if(val.empty() || key.empty()){
-                continue;
-            }
-
-            result += key + " " + val;
-            if(lastIt != it){
-                result += delemitr();
-            }
-        }
-        return result;
+        return common::convertToString(ar, delemitr());
     }
 
     common::ZSetValue* FastoObjectZSet::zset() const
@@ -364,25 +306,7 @@ namespace fastonosql
     std::string FastoObjectHash::toString() const
     {
         common::HashValue* ar = hash();
-        if(!ar){
-            return std::string();
-        }
-
-        std::string result;
-        for(common::HashValue::const_iterator it = ar->begin(); it != ar->end(); ++it){
-            common::HashValue::value_type v = *it;
-            std::string key = (v.first)->toString();
-            std::string val = (v.second)->toString();
-            if(val.empty() || key.empty()){
-                continue;
-            }
-
-            result += key + " " + val;
-            if(std::next(it) != ar->end()){
-                result += delemitr();
-            }
-        }
-        return result;
+        return common::convertToString(ar, delemitr());
     }
 
     common::HashValue* FastoObjectHash::hash() const
@@ -405,6 +329,123 @@ namespace common
             FastoObject::child_container_type childrens = obj->childrens();
             for(FastoObject::child_container_type::const_iterator it = childrens.begin(); it != childrens.end(); ++it ){
                 result += convertToString(*it);
+            }
+        }
+        return result;
+    }
+
+    std::string convertToString(common::Value* value, const std::string& delemitr)
+    {
+        if(!value){
+            return std::string();
+        }
+
+        common::Value::Type t = value->getType();
+
+        if(t == common::Value::TYPE_ARRAY){
+            return convertToString(dynamic_cast<ArrayValue*>(value), delemitr);
+        }
+        else if(t == common::Value::TYPE_SET){
+            return convertToString(dynamic_cast<SetValue*>(value), delemitr);
+        }
+        else if(t == common::Value::TYPE_ZSET){
+            return convertToString(dynamic_cast<ZSetValue*>(value), delemitr);
+        }
+        else if(t == common::Value::TYPE_HASH){
+            return convertToString(dynamic_cast<HashValue*>(value), delemitr);
+        }
+        else{
+            return value->toString();
+        }
+    }
+
+    std::string convertToString(common::ArrayValue* array, const std::string& delemitr)
+    {
+        if(!array){
+            return std::string();
+        }
+
+        std::string result;
+        const common::ArrayValue::const_iterator lastIt = std::prev(array->end());
+        for(common::ArrayValue::const_iterator it = array->begin(); it != array->end(); ++it){
+            std::string val = (*it)->toString();
+            if(val.empty()){
+                continue;
+            }
+
+            result += val;
+            if(lastIt != it){
+                result += delemitr;
+            }
+        }
+        return result;
+    }
+
+    std::string convertToString(common::SetValue* set, const std::string& delemitr)
+    {
+        if(!set){
+            return std::string();
+        }
+
+        std::string result;
+        const common::SetValue::const_iterator lastIt = std::prev(set->end());
+        for(common::SetValue::const_iterator it = set->begin(); it != set->end(); ++it){
+            std::string val = (*it)->toString();
+            if(val.empty()){
+                continue;
+            }
+
+            result += val;
+            if(lastIt != it){
+                result += delemitr;
+            }
+        }
+        return result;
+    }
+
+    std::string convertToString(common::ZSetValue* zset, const std::string& delemitr)
+    {
+        if(!zset){
+            return std::string();
+        }
+
+        std::string result;
+        const common::ZSetValue::const_iterator lastIt = std::prev(zset->end());
+        for(common::ZSetValue::const_iterator it = zset->begin(); it != zset->end(); ++it){
+            common::ZSetValue::value_type v = *it;
+            std::string key = (v.first)->toString();
+            std::string val = (v.second)->toString();
+            if(val.empty() || key.empty()){
+                continue;
+            }
+
+            result += key + " " + val;
+            if(lastIt != it){
+                result += delemitr;
+            }
+        }
+        return result;
+    }
+
+    std::string convertToString(common::HashValue* hash, const std::string& delemitr)
+    {
+        if(!hash){
+            return std::string();
+        }
+
+        std::string result;
+        const common::HashValue::const_iterator lastIt = std::prev(hash->end());
+        for(common::HashValue::const_iterator it = hash->begin(); it != hash->end(); ++it){
+            common::HashValue::value_type v = *it;
+            std::string key = (v.first)->toString();
+            std::string val = (v.second)->toString();
+            if(val.empty() || key.empty()){
+                continue;
+            }
+
+            result += key + " " + val;
+            if(lastIt != it){
+                result += delemitr;
             }
         }
         return result;

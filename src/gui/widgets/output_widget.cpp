@@ -22,17 +22,17 @@
 #include "common/time.h"
 #include "common/logger.h"
 
-namespace
-{
-    fastonosql::FastoCommonItem* createItem(fasto::qt::gui::TreeItem* parent, const QString& key, bool readOnly, fastonosql::FastoObject* item)
-    {
-        const std::string value = item->toString();
-        return new fastonosql::FastoCommonItem(key, common::convertFromString<QString>(value), item->type(), readOnly, parent, item);
-    }
-}
-
 namespace fastonosql
 {
+    namespace
+    {
+        FastoCommonItem* createItem(fasto::qt::gui::TreeItem* parent, const std::string& key, bool readOnly, fastonosql::FastoObject* item)
+        {
+            NValue val = common::make_value(item->value()->deepCopy());
+            return new FastoCommonItem(common::convertFromString<QString>(key), val, readOnly, parent, item);
+        }
+    }
+
     OutputWidget::OutputWidget(IServerSPtr server, QWidget* parent)
         : QWidget(parent), server_(server)
     {
@@ -87,7 +87,7 @@ namespace fastonosql
     void OutputWidget::rootCreate(const EventsInfo::CommandRootCreatedInfo& res)
     {
         FastoObject* rootObj = res.root_.get();
-        fastonosql::FastoCommonItem* root = createItem(NULL, "", true, rootObj);
+        fastonosql::FastoCommonItem* root = createItem(NULL, std::string(), true, rootObj);
         commonModel_->setRoot(root);
     }
 
@@ -155,9 +155,7 @@ namespace fastonosql
 
             std::string inputArgs = command->inputArgs();
 
-            const QString key = common::convertFromString<QString>(getFirstWordFromLine(inputArgs));
-
-            fastonosql::FastoCommonItem* comChild = createItem(par, key, command->isReadOnly(), child);
+            fastonosql::FastoCommonItem* comChild = createItem(par, getFirstWordFromLine(inputArgs), command->isReadOnly(), child);
             commonModel_->insertItem(parent, comChild);
         }
         else{
@@ -182,7 +180,7 @@ namespace fastonosql
                     return;
                 }
 
-                fastonosql::FastoCommonItem* comChild = createItem(par, QString(), true, child);
+                fastonosql::FastoCommonItem* comChild = createItem(par, std::string(), true, child);
                 commonModel_->insertItem(parent, comChild);
             }
             else{
@@ -191,7 +189,7 @@ namespace fastonosql
         }
     }
 
-    void OutputWidget::itemUpdate(FastoObject* item, const QString& newValue)
+    void OutputWidget::itemUpdate(FastoObject* item, common::Value *newValue)
     {
         QModelIndex index;
         bool isFound = commonModel_->findItem(item, index);
@@ -204,7 +202,10 @@ namespace fastonosql
             return;
         }
 
-        it->setValue(newValue);
+        DCHECK(item->value() == newValue);
+
+        NValue nval = common::make_value(newValue->deepCopy());
+        it->setValue(nval);
         commonModel_->updateItem(index.parent(), index);
     }
 
