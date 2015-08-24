@@ -8,6 +8,7 @@ while [ -h "$SOURCE" ]; do # resolve $SOURCE until the file is no longer a symli
 done
 SOURCE_DIR="$( cd -P "$( dirname "$SOURCE" )" && pwd )"
 
+export QT_QPA_FONTDIR="$SOURCE_DIR/../lib/fonts"
 export LD_LIBRARY_PATH="$SOURCE_DIR/../lib:$LD_LIBRARY_PATH"
 export QT_PLUGIN_PATH="$SOURCE_DIR/../lib:$QT_PLUGIN_PATH"
 
