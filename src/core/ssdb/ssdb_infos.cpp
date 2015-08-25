@@ -36,7 +36,7 @@ namespace fastonosql
         SSDB_COMMON_LABEL
     };
 
-    const std::vector<std::vector<Field> > SsdbFields =
+    const std::vector<std::vector<Field> > ssdbFields =
     {
         SsdbCommonFields
     };

@@ -7,6 +7,7 @@ namespace fastonosql
     BaseShell::BaseShell(bool showAutoCompl, QWidget* parent)
         : FastoEditorShell(showAutoCompl, parent)
     {
+        VERIFY(connect(this, &BaseShell::customContextMenuRequested, this, &BaseShell::showContextMenu));
     }
 
     QString BaseShell::version() const

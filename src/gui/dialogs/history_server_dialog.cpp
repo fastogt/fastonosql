@@ -20,6 +20,10 @@
 #include "core/leveldb/leveldb_infos.h"
 #endif
 
+#ifdef BUILD_WITH_ROCKSDB
+#include "core/rocksdb/rocksdb_infos.h"
+#endif
+
 #include "fasto/qt/gui/base/graph_widget.h"
 #include "gui/gui_factory.h"
 #include "fasto/qt/gui/glass_widget.h"
@@ -82,6 +86,13 @@ namespace fastonosql
             }
         }
 #endif
+#ifdef BUILD_WITH_ROCKSDB
+        if(type_ == ROCKSDB){
+            for(int i = 0; i < rocksdbHeaders.size(); ++i){
+                serverInfoGroupsNames_->addItem(common::convertFromString<QString>(rocksdbHeaders[i]));
+            }
+        }
+#endif
         QVBoxLayout *setingsLayout = new QVBoxLayout;
         setingsLayout->addWidget(serverInfoGroupsNames_);
         setingsLayout->addWidget(serverInfoFields_);
@@ -137,12 +148,17 @@ namespace fastonosql
 #endif
 #ifdef BUILD_WITH_SSDB
         if(type_ == SSDB){
-            field = SsdbFields[index];
+            field = ssdbFields[index];
         }
 #endif
 #ifdef BUILD_WITH_LEVELDB
         if(type_ == LEVELDB){
-            field = LeveldbFields[index];
+            field = leveldbFields[index];
+        }
+#endif
+#ifdef BUILD_WITH_ROCKSDB
+        if(type_ == ROCKSDB){
+            field = rocksdbFields[index];
         }
 #endif
         for(int i = 0; i < field.size(); ++i){

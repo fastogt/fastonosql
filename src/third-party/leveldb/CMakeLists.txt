@@ -34,7 +34,8 @@ SET(SOURCES_LEVELDB
 	src/db/table_cache.cc 
 	src/db/version_edit.cc 
 	src/db/version_set.cc 
-	src/db/write_batch.cc 
+    src/db/write_batch.cc
+
 	src/table/block_builder.cc 
 	src/table/block.cc
 	src/table/filter_block.cc 
@@ -44,6 +45,7 @@ SET(SOURCES_LEVELDB
 	src/table/table_builder.cc 
     src/table/table.cc
 	src/table/two_level_iterator.cc 
+
 	src/util/arena.cc 
 	src/util/bloom.cc 
 	src/util/cache.cc 
@@ -65,5 +67,5 @@ ELSEIF(OS_WINDOWS)
     SET(SOURCES_LEVELDB ${SOURCES_LEVELDB} src/port/port_win.cc src/util/env_win.cc src/port/mman.c)
 ENDIF(OS_POSIX)
 
-ADD_LIBRARY(leveldb OBJECT ${HEADERS_LEVELDB} ${SOURCES_LEVELDB})
+ADD_LIBRARY(leveldb STATIC ${HEADERS_LEVELDB} ${SOURCES_LEVELDB})
 

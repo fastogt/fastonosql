@@ -10,7 +10,8 @@ namespace fastonosql
         REDIS,
         MEMCACHED,
         SSDB,
-        LEVELDB
+        LEVELDB,
+        ROCKSDB
     };
 
     enum serverTypes

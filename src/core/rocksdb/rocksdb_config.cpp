@@ -1,4 +1,4 @@
-#include "core/leveldb/leveldb_config.h"
+#include "core/rocksdb/rocksdb_config.h"
 
 #include "common/sprintf.h"
 #include "common/utils.h"
@@ -9,7 +9,7 @@ namespace fastonosql
 {
     namespace
     {
-        int parseOptions(int argc, char **argv, leveldbConfig& cfg) {
+        int parseOptions(int argc, char **argv, rocksdbConfig& cfg) {
             int i;
 
             for (i = 0; i < argc; i++) {
@@ -30,7 +30,7 @@ namespace fastonosql
                     cfg.dbname_ = argv[++i];
                 }
                 else if (!strcmp(argv[i],"-c")) {
-                    cfg.options_.create_if_missing = true;
+                    cfg.create_if_missing_ = true;
                 }
                 else {
                     if (argv[i][0] == '-') {
@@ -49,39 +49,39 @@ namespace fastonosql
         }
     }
 
-    leveldbConfig::leveldbConfig()
-       : ConnectionConfig("127.0.0.1", 1111)
+    rocksdbConfig::rocksdbConfig()
+       : ConnectionConfig("127.0.0.1", 1111), dbname_(), create_if_missing_(false)
     {
     }
 
-    leveldbConfig::leveldbConfig(const leveldbConfig &other)
+    rocksdbConfig::rocksdbConfig(const rocksdbConfig &other)
         : ConnectionConfig(other.hostip_, other.hostport_)
     {
         copy(other);
     }
 
-    leveldbConfig& leveldbConfig::operator=(const leveldbConfig &other)
+    rocksdbConfig& rocksdbConfig::operator=(const rocksdbConfig &other)
     {
         copy(other);
         return *this;
     }
 
-    void leveldbConfig::copy(const leveldbConfig& other)
+    void rocksdbConfig::copy(const rocksdbConfig& other)
     {
         using namespace common::utils;
         dbname_ = other.dbname_;
-        options_ = other.options_;
+        create_if_missing_ = other.create_if_missing_;
         ConnectionConfig::copy(other);
     }
 
-    leveldbConfig::~leveldbConfig()
+    rocksdbConfig::~rocksdbConfig()
     {
     }
 }
 
 namespace common
 {
-    std::string convertToString(const fastonosql::leveldbConfig &conf)
+    std::string convertToString(const fastonosql::rocksdbConfig &conf)
     {
         std::vector<std::string> argv = conf.args();
 
@@ -90,7 +90,7 @@ namespace common
             argv.push_back(conf.dbname_);
         }
 
-        if(conf.options_.create_if_missing){
+        if(conf.create_if_missing_){
             argv.push_back("-c");
         }
 
@@ -106,9 +106,9 @@ namespace common
     }
 
     template<>
-    fastonosql::leveldbConfig convertFromString(const std::string& line)
+    fastonosql::rocksdbConfig convertFromString(const std::string& line)
     {
-        fastonosql::leveldbConfig cfg;
+        fastonosql::rocksdbConfig cfg;
         enum { kMaxArgs = 64 };
         int argc = 0;
         char *argv[kMaxArgs] = {0};

@@ -166,7 +166,6 @@ INCLUDE_DIRECTORIES(${CMAKE_CURRENT_LIST_DIR} ${OPENSSL_INCLUDE_DIR})
 
 ADD_SUBDIRECTORY(fasto)
 INCLUDE_DIRECTORIES(${CMAKE_CURRENT_LIST_DIR}/fasto)
-ADD_SUBDIRECTORY(third-party/libssh2)
 
 #redis
 IF(BUILD_WITH_REDIS)
@@ -181,6 +180,7 @@ IF(BUILD_WITH_REDIS)
         shell/redis_lexer.cpp
     )
 
+    ADD_SUBDIRECTORY(third-party/libssh2)
     ADD_SUBDIRECTORY(third-party/redis)
     SET(INCLUDE_DIRS ${INCLUDE_DIRS} third-party/redis/src third-party/redis/deps third-party/sds)
 
@@ -323,16 +323,53 @@ IF(BUILD_WITH_LEVELDB)
         core/leveldb/leveldb_database.cpp
         core/leveldb/leveldb_settings.cpp
     )
-    SET(OBJECT_LIBS ${OBJECT_LIBS} $<TARGET_OBJECTS:leveldb>)
+    SET(ALL_LIBS ${ALL_LIBS} leveldb)
 ENDIF(BUILD_WITH_LEVELDB)
+
+#rocksdb
+IF(BUILD_WITH_ROCKSDB)
+    SET(HEADERS_SHELL_TO_MOC ${HEADERS_SHELL_TO_MOC}
+        shell/rocksdb_lexer.h
+        shell/rocksdb_shell.h
+    )
+    SET(HEADERS_SHELL ${HEADERS_SHELL}
+    )
+    SET(SOURCES_SHELL ${SOURCES_SHELL}
+        shell/rocksdb_lexer.cpp
+        shell/rocksdb_shell.cpp
+    )
+
+    ADD_SUBDIRECTORY(third-party/rocksdb)
+    SET(INCLUDE_DIRS ${INCLUDE_DIRS} third-party/rocksdb/src/include)
+
+    SET(HEADERS_ROCKSDB_TO_MOC
+        core/rocksdb/rocksdb_server.h
+        core/rocksdb/rocksdb_driver.h
+    )
+    SET(HEADERS_ROCKSDB
+        core/rocksdb/rocksdb_infos.h
+        core/rocksdb/rocksdb_config.h
+        core/rocksdb/rocksdb_database.h
+        core/rocksdb/rocksdb_settings.h
+    )
+    SET(SOURCES_ROCKSDB
+        core/rocksdb/rocksdb_config.cpp
+        core/rocksdb/rocksdb_infos.cpp
+        core/rocksdb/rocksdb_server.cpp
+        core/rocksdb/rocksdb_driver.cpp
+        core/rocksdb/rocksdb_database.cpp
+        core/rocksdb/rocksdb_settings.cpp
+    )
+    SET(ALL_LIBS ${ALL_LIBS} rocksdb)
+ENDIF(BUILD_WITH_ROCKSDB)
 
 SET(SOURCES_SDS
     third-party/sds/sds.c
 )
 
-SET(HEADERS ${HEADERS} ${HEADERS_GLOBAL} ${HEADERS_GUI} ${HEADERS_CORE} ${HEADERS_SHELL} ${HEADERS_REDIS} ${HEADERS_MEMCACHED} ${HEADERS_SSDB} ${HEADERS_LEVELDB} ${HEADERS_TRANSLATIONS})
-SET(SOURCES ${SOURCES} ${SOURCES_GLOBAL} ${SOURCES_GUI} ${SOURCES_CORE} ${SOURCES_SHELL} ${SOURCES_REDIS} ${SOURCES_MEMCACHED} ${SOURCES_SSDB} ${SOURCES_LEVELDB} ${SOURCES_TRANSLATIONS} ${SOURCES_SDS})
-SET(HEADERS_TOMOC ${HEADERS_GUI_TO_MOC} ${HEADERS_CORE_TO_MOC} ${HEADERS_SHELL_TO_MOC} ${HEADERS_REDIS_TO_MOC} ${HEADERS_MEMCACHED_TO_MOC} ${HEADERS_SSDB_TO_MOC} ${HEADERS_LEVELDB_TO_MOC})
+SET(HEADERS ${HEADERS} ${HEADERS_GLOBAL} ${HEADERS_GUI} ${HEADERS_CORE} ${HEADERS_SHELL} ${HEADERS_REDIS} ${HEADERS_MEMCACHED} ${HEADERS_SSDB} ${HEADERS_LEVELDB} ${HEADERS_ROCKSDB} ${HEADERS_TRANSLATIONS})
+SET(SOURCES ${SOURCES} ${SOURCES_GLOBAL} ${SOURCES_GUI} ${SOURCES_CORE} ${SOURCES_SHELL} ${SOURCES_REDIS} ${SOURCES_MEMCACHED} ${SOURCES_SSDB} ${SOURCES_LEVELDB} ${SOURCES_ROCKSDB} ${SOURCES_TRANSLATIONS} ${SOURCES_SDS})
+SET(HEADERS_TOMOC ${HEADERS_GUI_TO_MOC} ${HEADERS_CORE_TO_MOC} ${HEADERS_SHELL_TO_MOC} ${HEADERS_REDIS_TO_MOC} ${HEADERS_MEMCACHED_TO_MOC} ${HEADERS_SSDB_TO_MOC} ${HEADERS_LEVELDB_TO_MOC} ${HEADERS_ROCKSDB_TO_MOC})
 
 QTX_WRAP_CPP(MOC_FILES ${HEADERS_TOMOC})
 CONFIGURE_FILE("resources/gui.qrc.in" "${CMAKE_CURRENT_LIST_DIR}/resources/gui.qrc" @ONLY IMMEDIATE)

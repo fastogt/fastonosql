@@ -1,6 +1,6 @@
-#include "shell/leveldb_lexer.h"
+#include "shell/rocksdb_lexer.h"
 
-#include "core/leveldb/leveldb_driver.h"
+#include "core/rocksdb/rocksdb_driver.h"
 
 namespace
 {
@@ -9,17 +9,17 @@ namespace
 
 namespace fastonosql
 {
-    LeveldbApi::LeveldbApi(QsciLexer *lexer)
+    RocksdbApi::RocksdbApi(QsciLexer *lexer)
         : BaseQsciApi(lexer)
     {
     }
 
-    void LeveldbApi::updateAutoCompletionList(const QStringList& context, QStringList& list)
+    void RocksdbApi::updateAutoCompletionList(const QStringList& context, QStringList& list)
     {
         for(QStringList::const_iterator it = context.begin(); it != context.end(); ++it){
             QString val = *it;
-            for(int i = 0; i < SIZEOFMASS(leveldbCommands); ++i){
-                CommandInfo cmd = leveldbCommands[i];
+            for(int i = 0; i < SIZEOFMASS(rocksdbCommands); ++i){
+                CommandInfo cmd = rocksdbCommands[i];
                 if(canSkipCommand(cmd)){
                     continue;
                 }
@@ -36,12 +36,12 @@ namespace fastonosql
         }
     }
 
-    QStringList LeveldbApi::callTips(const QStringList& context, int commas, QsciScintilla::CallTipsStyle style, QList<int>& shifts)
+    QStringList RocksdbApi::callTips(const QStringList& context, int commas, QsciScintilla::CallTipsStyle style, QList<int>& shifts)
     {
         for(QStringList::const_iterator it = context.begin(); it != context.end() - 1; ++it){
             QString val = *it;
-            for(int i = 0; i < SIZEOFMASS(leveldbCommands); ++i){
-                CommandInfo cmd = leveldbCommands[i];
+            for(int i = 0; i < SIZEOFMASS(rocksdbCommands); ++i){
+                CommandInfo cmd = rocksdbCommands[i];
 
                 QString jval = common::convertFromString<QString>(cmd.name_);
                 if(QString::compare(jval, val, Qt::CaseInsensitive) == 0){
@@ -53,27 +53,27 @@ namespace fastonosql
         return QStringList();
     }
 
-    LeveldbLexer::LeveldbLexer(QObject* parent)
+    RocksdbLexer::RocksdbLexer(QObject* parent)
         : BaseQsciLexer(parent)
     {
-        setAPIs(new LeveldbApi(this));
+        setAPIs(new RocksdbApi(this));
     }
 
-    const char *LeveldbLexer::language() const
+    const char *RocksdbLexer::language() const
     {
-        return "Leveldb";
+        return "Rocksdb";
     }
 
-    const char* LeveldbLexer::version() const
+    const char* RocksdbLexer::version() const
     {
-        return LeveldbDriver::versionApi();
+        return RocksdbDriver::versionApi();
     }
 
-    std::vector<uint32_t> LeveldbLexer::supportedVersions() const
+    std::vector<uint32_t> RocksdbLexer::supportedVersions() const
     {
         std::vector<uint32_t> result;
-        for(int i = 0; i < SIZEOFMASS(leveldbCommands); ++i){
-            CommandInfo cmd = leveldbCommands[i];
+        for(int i = 0; i < SIZEOFMASS(rocksdbCommands); ++i){
+            CommandInfo cmd = rocksdbCommands[i];
 
             bool needed_insert = true;
             for(int j = 0; j < result.size(); ++j){
@@ -93,12 +93,12 @@ namespace fastonosql
         return result;
     }
 
-    uint32_t LeveldbLexer::commandsCount() const
+    uint32_t RocksdbLexer::commandsCount() const
     {
-        return SIZEOFMASS(leveldbCommands);
+        return SIZEOFMASS(rocksdbCommands);
     }
 
-    QString LeveldbLexer::description(int style) const
+    QString RocksdbLexer::description(int style) const
     {
         switch (style) {
             case Default:
@@ -112,7 +112,7 @@ namespace fastonosql
         return QString(style);
     }
 
-    void LeveldbLexer::styleText(int start, int end)
+    void RocksdbLexer::styleText(int start, int end)
     {
         if(!editor()){
             return;
@@ -140,7 +140,7 @@ namespace fastonosql
         }
     }
 
-    QColor LeveldbLexer::defaultColor(int style) const
+    QColor RocksdbLexer::defaultColor(int style) const
     {
         switch(style) {
             case Default:
@@ -154,10 +154,10 @@ namespace fastonosql
         return Qt::black;
     }
 
-    void LeveldbLexer::paintCommands(const QString& source, int start)
+    void RocksdbLexer::paintCommands(const QString& source, int start)
     {
-        for(int i = 0; i < SIZEOFMASS(leveldbCommands); ++i){
-            CommandInfo cmd = leveldbCommands[i];
+        for(int i = 0; i < SIZEOFMASS(rocksdbCommands); ++i){
+            CommandInfo cmd = rocksdbCommands[i];
             QString word = common::convertFromString<QString>(cmd.name_);
             int index = 0;
             int begin = 0;

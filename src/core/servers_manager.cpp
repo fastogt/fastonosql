@@ -25,6 +25,11 @@
 #include "core/leveldb/leveldb_driver.h"
 #endif
 
+#ifdef BUILD_WITH_ROCKSDB
+#include "core/rocksdb/rocksdb_server.h"
+#include "core/rocksdb/rocksdb_driver.h"
+#endif
+
 namespace fastonosql
 {
     ServersManager::ServersManager()
@@ -77,7 +82,11 @@ namespace fastonosql
             result.reset(make_server<LeveldbServer, LeveldbDriver>(ser, settings));
         }
 #endif
-
+#ifdef BUILD_WITH_ROCKSDB
+        if(conT == ROCKSDB){
+            result.reset(make_server<RocksdbServer, RocksdbDriver>(ser, settings));
+        }
+#endif
         DCHECK(result);
         if(result){
             servers_.push_back(result);
