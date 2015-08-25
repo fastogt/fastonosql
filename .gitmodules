@@ -10,6 +10,3 @@
 [submodule "tests/gtest"]
 	path = tests/gtest
 	url = https://chromium.googlesource.com/external/googletest
-[submodule "src/third-party/rocksdb/src"]
-	path = src/third-party/rocksdb/src
-	url = https://github.com/fastogt/rocksdb.git
