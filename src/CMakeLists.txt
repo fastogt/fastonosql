@@ -148,7 +148,7 @@ SET_DESKTOP_TARGET()
 IF(OS_WINDOWS)
     SET(PLATFORM_HDRS)
     SET(PLATFORM_SRCS)
-    SET(PLATFORM_LIBRARIES ws2_32)
+    SET(PLATFORM_LIBRARIES ws2_32 Rpcrt4)
 ELSEIF(OS_MACOSX)
     FIND_LIBRARY(COCOA_LIBRARY Cocoa)
     SET(PLATFORM_LIBRARIES ${COCOA_LIBRARY})
@@ -323,7 +323,7 @@ IF(BUILD_WITH_LEVELDB)
         core/leveldb/leveldb_database.cpp
         core/leveldb/leveldb_settings.cpp
     )
-    SET(ALL_LIBS ${ALL_LIBS} leveldb)
+    SET(OBJECT_LIBS ${OBJECT_LIBS} $<TARGET_OBJECTS:leveldb>)
 ENDIF(BUILD_WITH_LEVELDB)
 
 #rocksdb
@@ -360,7 +360,7 @@ IF(BUILD_WITH_ROCKSDB)
         core/rocksdb/rocksdb_database.cpp
         core/rocksdb/rocksdb_settings.cpp
     )
-    SET(ALL_LIBS ${ALL_LIBS} rocksdb)
+    SET(OBJECT_LIBS ${OBJECT_LIBS} $<TARGET_OBJECTS:rocksdb>)
 ENDIF(BUILD_WITH_ROCKSDB)
 
 SET(SOURCES_SDS
