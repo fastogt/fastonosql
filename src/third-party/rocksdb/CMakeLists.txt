@@ -9,6 +9,8 @@ ELSE()
 ENDIF(OS_POSIX)
 
 SET(HEADERS_ROCKSDB
+    src/db/db_impl.h
+    #src/table/block_based_table_builder.h
 )
 
 SET(SOURCES_ROCKSDB
@@ -48,12 +50,44 @@ SET(SOURCES_ROCKSDB
     src/db/db_filesnapshot.cc
     src/db/compacted_db_impl.cc
     src/db/compaction_picker.cc
+    src/db/slice.cc
+    src/db/table_properties_collector.cc
+    src/db/file_indexer.cc
+    src/db/version_builder.cc
+    src/db/transaction_log_impl.cc
+    src/db/memtable_allocator.cc
+    src/db/merge_helper.cc
 
     src/table/block_based_table_factory.cc
     src/table/cuckoo_table_factory.cc
-    src/table/plain_table_factory.cc
     src/table/merger.cc
     src/table/iterator.cc
+    src/table/format.cc
+    src/table/table_properties.cc
+    src/table/meta_blocks.cc
+    src/table/block.cc
+    src/table/block_hash_index.cc
+    src/table/block_builder.cc
+    src/table/two_level_iterator.cc
+    src/table/get_context.cc
+    src/table/block_based_table_builder.cc
+    #src/table/adaptive_table_factory.cc
+    src/table/block_based_table_reader.cc
+    src/table/flush_block_policy.cc
+    src/table/cuckoo_table_factory.cc
+    src/table/cuckoo_table_reader.cc
+    src/table/cuckoo_table_builder.cc
+    src/table/plain_table_reader.cc
+    src/table/plain_table_factory.cc
+    src/table/plain_table_builder.cc
+    src/table/bloom_block.cc
+    src/table/block_prefix_index.cc
+    src/table/block_based_table_builder.cc
+    src/table/block_based_filter_block.cc
+    src/table/full_filter_block.cc
+    src/table/plain_table_key_coding.cc
+    src/table/plain_table_builder.cc
+    src/table/plain_table_index.cc
 
     src/util/options.cc
     src/util/status.cc
@@ -89,36 +123,24 @@ SET(SOURCES_ROCKSDB
     src/util/build_version.h
     src/util/iostats_context.cc
     src/util/logging.cc
+    src/util/hash.cc
+    src/util/histogram.cc
+    src/util/murmurhash.cc
+    src/util/xxhash.cc
+    src/util/rate_limiter.cc
+    src/util/dynamic_bloom.cc
+    src/util/thread_local.cc
+    src/util/skiplistrep.cc
 
     src/utilities/backupable/backupable_db.cc
     src/utilities/merge_operators/uint64add.cc
 )
 
-#EXECUTE_PROCESS(COMMAND $ENV{COMSPEC} " /C date /T" OUTPUT_VARIABLE DATE)
-#EXECUTE_PROCESS(COMMAND $ENV{COMSPEC} " /C time /T" OUTPUT_VARIABLE TIME)
-#STRING(REGEX REPLACE "(..)/(..)/..(..).*" "\\1/\\2/\\3" DATE ${DATE})
-#STRING(REGEX REPLACE "(..):(.....).*" " \\1:\\2" TIME ${TIME})
-#STRING(CONCAT GIT_DATE_TIME ${DATE} ${TIME})
-
-#EXECUTE_PROCESS(COMMAND $ENV{COMSPEC} " /C git rev-parse HEAD 2>nil" OUTPUT_VARIABLE GIT_SHA)
-#IF(NOT GIT_SHA)
-    SET(GIT_DATE_TIME "TIME")
-    SET(GIT_SHA "SHA")
-#ENDIF()
-STRING(REGEX REPLACE "[^0-9a-f]+" "" GIT_SHA ${GIT_SHA})
-
 SET(BUILD_VERSION_CC ${CMAKE_CURRENT_SOURCE_DIR}/src/util/build_version.cc)
+CONFIGURE_FILE("${CMAKE_CURRENT_SOURCE_DIR}/build_version.cc.in" ${BUILD_VERSION_CC} @ONLY IMMEDIATE)
 
-ADD_CUSTOM_COMMAND(OUTPUT ${BUILD_VERSION_CC}
-    COMMAND echo "#include \"build_version.h\"" > ${BUILD_VERSION_CC}
-    COMMAND echo "const char* rocksdb_build_git_sha = \"rocksdb_build_git_sha:${GIT_SHA}\";" >> ${BUILD_VERSION_CC}
-    COMMAND echo "const char* rocksdb_build_git_datetime = \"rocksdb_build_git_datetime:${GIT_DATE_TIME}\";" >> ${BUILD_VERSION_CC}
-    COMMAND echo const char* rocksdb_build_compile_date = __DATE__\; >> ${BUILD_VERSION_CC}
-)
-
-ADD_CUSTOM_TARGET(GenerateBuildVersion DEPENDS ${BUILD_VERSION_CC})
 IF(OS_POSIX)
-    SET(SOURCES_ROCKSDB ${SOURCES_ROCKSDB} src/port/port_posix.cc)
+    SET(SOURCES_ROCKSDB ${SOURCES_ROCKSDB} src/port/port_posix.cc src/util/env_posix.cc)
 ELSEIF(OS_WINDOWS)
     SET(SOURCES_ROCKSDB ${SOURCES_ROCKSDB} src/port/win/port_win.cc src/port/win/env_win.cc src/port/win/win_logger.cc)
     SET(PLATFORM_LIBRARIES Rpcrt4)
@@ -126,4 +148,3 @@ ENDIF(OS_POSIX)
 
 ADD_LIBRARY(rocksdb STATIC ${HEADERS_ROCKSDB} ${SOURCES_ROCKSDB} ${BUILD_VERSION_CC})
 TARGET_LINK_LIBRARIES(rocksdb ${PLATFORM_LIBRARIES})
-ADD_DEPENDENCIES(rocksdb GenerateBuildVersion)
