@@ -1,5 +1,7 @@
 #pragma once
 
+#include <rocksdb/options.h>
+
 #include "common/convert2string.h"
 
 #include "core/connection_confg.h"
@@ -16,7 +18,7 @@ namespace fastonosql
         ~rocksdbConfig();
 
         std::string dbname_;
-        bool create_if_missing_;
+        rocksdb::Options options_;
 
     protected:
         void copy(const rocksdbConfig& other);

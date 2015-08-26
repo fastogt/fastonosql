@@ -30,7 +30,7 @@ namespace fastonosql
                     cfg.dbname_ = argv[++i];
                 }
                 else if (!strcmp(argv[i],"-c")) {
-                    cfg.create_if_missing_ = true;
+                    cfg.options_.create_if_missing = true;
                 }
                 else {
                     if (argv[i][0] == '-') {
@@ -50,7 +50,7 @@ namespace fastonosql
     }
 
     rocksdbConfig::rocksdbConfig()
-       : ConnectionConfig("127.0.0.1", 1111), dbname_(), create_if_missing_(false)
+       : ConnectionConfig("127.0.0.1", 1111)
     {
     }
 
@@ -70,7 +70,7 @@ namespace fastonosql
     {
         using namespace common::utils;
         dbname_ = other.dbname_;
-        create_if_missing_ = other.create_if_missing_;
+        options_ = other.options_;
         ConnectionConfig::copy(other);
     }
 
@@ -90,7 +90,7 @@ namespace common
             argv.push_back(conf.dbname_);
         }
 
-        if(conf.create_if_missing_){
+        if(conf.options_.create_if_missing){
             argv.push_back("-c");
         }
 

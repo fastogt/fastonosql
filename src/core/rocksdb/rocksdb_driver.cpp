@@ -4,8 +4,7 @@ extern "C" {
     #include "sds.h"
 }
 
-#include <rocksdb/c.h>
-#include <rocksdb/version.h>
+#include <rocksdb/db.h>
 
 #include "common/sprintf.h"
 #include "common/utils.h"
@@ -23,28 +22,23 @@ extern "C" {
 #define GET_KEYS_PATTERN_1ARGS_I "KEYS a z %d"
 #define DELETE_KEY_PATTERN_1ARGS_S "DEL %s"
 #define GET_SERVER_TYPE ""
-
+#define ROCKSDB_HEADER_STATS    "                               Compactions\n"\
+                                "Level  Files Size(MB) Time(sec) Read(MB) Write(MB)\n"\
+                                "--------------------------------------------------\n"
 namespace fastonosql
 {
     namespace
     {
-        common::ErrorValueSPtr createConnection(const rocksdbConfig& config, const SSHInfo& sinfo, rocksdb_t** context)
+        common::ErrorValueSPtr createConnection(const rocksdbConfig& config, const SSHInfo& sinfo, rocksdb::DB** context)
         {
             DCHECK(*context == NULL);
             UNUSED(sinfo);
 
-            rocksdb_options_t *options = rocksdb_options_create();
-            if(config.create_if_missing_){
-                rocksdb_options_set_create_if_missing(options, 1);
-            }
-
-            char *err = NULL;
-            const char * dbpath = config.dbname_.c_str();
-            rocksdb_t* lcontext = rocksdb_open(options, dbpath, &err);
-            if(err){
+            rocksdb::DB* lcontext = NULL;
+            rocksdb::Status st = rocksdb::DB::Open(config.options_, config.dbname_, &lcontext);
+            if (!st.ok()){
                 char buff[1024] = {0};
-                common::SNPrintf(buff, sizeof(buff), "Fail open database: %s!", dbpath);
-                rocksdb_options_destroy(options);
+                common::SNPrintf(buff, sizeof(buff), "Fail open database: %s!", st.ToString());
                 return common::make_error_value(buff, common::ErrorValue::E_ERROR);
             }
 
@@ -53,7 +47,7 @@ namespace fastonosql
             return common::ErrorValueSPtr();
         }
 
-        common::ErrorValueSPtr createConnection(RocksdbConnectionSettings* settings, rocksdb_t** context)
+        common::ErrorValueSPtr createConnection(RocksdbConnectionSettings* settings, rocksdb::DB** context)
         {
             if(!settings){
                 return common::make_error_value("Invalid input argument", common::ErrorValue::E_ERROR);
@@ -67,13 +61,13 @@ namespace fastonosql
 
     common::ErrorValueSPtr testConnection(RocksdbConnectionSettings* settings)
     {
-        rocksdb_t* rocksdb = NULL;
-        common::ErrorValueSPtr er = createConnection(settings, &rocksdb);
+        rocksdb::DB* ldb = NULL;
+        common::ErrorValueSPtr er = createConnection(settings, &ldb);
         if(er){
             return er;
         }
 
-        rocksdb_close(rocksdb);
+        delete ldb;
 
         return common::ErrorValueSPtr();
     }
@@ -104,7 +98,7 @@ namespace fastonosql
             clear();
             init();
 
-            rocksdb_t* context = NULL;
+            rocksdb::DB* context = NULL;
             common::ErrorValueSPtr er = createConnection(config_, sinfo_, &context);
             if(er){
                 return er;
@@ -131,16 +125,16 @@ namespace fastonosql
             //sstables
             //stats
             //char prop[1024] = {0};
-            //common::SNPrintf(prop, sizeof(prop), "leveldb.%s", args ? args : "stats");
+            //common::SNPrintf(prop, sizeof(prop), "rocksdb.%s", args ? args : "stats");
 
-            /*std::string rets;
-            bool isok = leveldb_->GetProperty("leveldb.stats", &rets);
+            std::string rets;
+            bool isok = rocksdb_->GetProperty("rocksdb.stats", &rets);
             if (!isok){
                 return common::make_error_value("info function failed", common::ErrorValue::E_ERROR);
             }
 
-            if(rets.size() > sizeof(LEVELDB_HEADER_STATS)){
-                const char * retsc = rets.c_str() + sizeof(LEVELDB_HEADER_STATS);
+            if(rets.size() > sizeof(ROCKSDB_HEADER_STATS)){
+                const char * retsc = rets.c_str() + sizeof(ROCKSDB_HEADER_STATS);
                 char* p2 = strtok((char*)retsc, " ");
                 int pos = 0;
                 while(p2){
@@ -165,7 +159,7 @@ namespace fastonosql
                     }
                     p2 = strtok(0, " ");
                 }
-            }*/
+            }
 
             return common::ErrorValueSPtr();
         }
@@ -221,15 +215,15 @@ namespace fastonosql
    private:
         common::ErrorValueSPtr execute(FastoObject* out, int argc, char **argv)
         {
-            /*if(strcasecmp(argv[0], "info") == 0){
+            if(strcasecmp(argv[0], "info") == 0){
                 if(argc > 2){
                     return common::make_error_value("Invalid info input argument", common::ErrorValue::E_ERROR);
                 }
 
-                LeveldbServerInfo::Stats statsout;
+                RocksdbServerInfo::Stats statsout;
                 common::ErrorValueSPtr er = info(argc == 2 ? argv[1] : 0, statsout);
                 if(!er){
-                    common::StringValue *val = common::Value::createStringValue(LeveldbServerInfo(statsout).toString());
+                    common::StringValue *val = common::Value::createStringValue(RocksdbServerInfo(statsout).toString());
                     FastoObject* child = new FastoObject(out, val, config_.mb_delim_);
                     out->addChildren(child);
                 }
@@ -297,45 +291,44 @@ namespace fastonosql
                 char buff[1024] = {0};
                 common::SNPrintf(buff, sizeof(buff), "Not supported command: %s", argv[0]);
                 return common::make_error_value(buff, common::ErrorValue::E_ERROR);
-            }*/
+            }
         }
 
         common::ErrorValueSPtr get(const std::string& key, std::string* ret_val)
         {
-            /*leveldb::ReadOptions ro;
-            leveldb::Status st = leveldb_->Get(ro, key, ret_val);
+            rocksdb::ReadOptions ro;
+            rocksdb::Status st = rocksdb_->Get(ro, key, ret_val);
             if (!st.ok()){
                 char buff[1024] = {0};
                 common::SNPrintf(buff, sizeof(buff), "get function error: %s", st.ToString());
                 return common::make_error_value(buff, common::ErrorValue::E_ERROR);
-            }*/
+            }
 
             return common::ErrorValueSPtr();
         }
 
         common::ErrorValueSPtr put(const std::string& key, const std::string& value)
         {
-            /*leveldb::WriteOptions wo;
-            leveldb::Status st = leveldb_->Put(wo, key, value);
+            rocksdb::WriteOptions wo;
+            rocksdb::Status st = rocksdb_->Put(wo, key, value);
             if (!st.ok()){
                 char buff[1024] = {0};
                 common::SNPrintf(buff, sizeof(buff), "put function error: %s", st.ToString());
                 return common::make_error_value(buff, common::ErrorValue::E_ERROR);
-            }*/
+            }
 
             return common::ErrorValueSPtr();
         }
 
         common::ErrorValueSPtr del(const std::string& key)
         {
-            /*leveldb::WriteOptions wo;
-            leveldb::Status st = leveldb_->Delete(wo, key);
+            rocksdb::WriteOptions wo;
+            rocksdb::Status st = rocksdb_->Delete(wo, key);
             if (!st.ok()){
                 char buff[1024] = {0};
                 common::SNPrintf(buff, sizeof(buff), "del function error: %s", st.ToString());
                 return common::make_error_value(buff, common::ErrorValue::E_ERROR);
-            }*/
-
+            }
             return common::ErrorValueSPtr();
         }
 
@@ -343,8 +336,8 @@ namespace fastonosql
         {
             ret->clear();
 
-            /*leveldb::ReadOptions ro;
-            leveldb::Iterator* it = leveldb_->NewIterator(ro); //keys(key_start, key_end, limit, ret);
+            rocksdb::ReadOptions ro;
+            rocksdb::Iterator* it = rocksdb_->NewIterator(ro); //keys(key_start, key_end, limit, ret);
             for (it->Seek(key_start); it->Valid() && it->key().ToString() < key_end; it->Next()) {
                 std::string key = it->key().ToString();
                 if(ret->size() <= limit){
@@ -355,15 +348,14 @@ namespace fastonosql
                 }
             }
 
-            leveldb::Status st = it->status();
+            rocksdb::Status st = it->status();
             delete it;
 
             if (!st.ok()){
                 char buff[1024] = {0};
                 common::SNPrintf(buff, sizeof(buff), "Keys function error: %s", st.ToString());
                 return common::make_error_value(buff, common::ErrorValue::E_ERROR);
-            }*/
-
+            }
             return common::ErrorValueSPtr();
         }
 
@@ -374,13 +366,11 @@ namespace fastonosql
 
         void clear()
         {
-            if(rocksdb_){
-                rocksdb_close(rocksdb_);
-                rocksdb_ = NULL;
-            }
+            delete rocksdb_;
+            rocksdb_ = NULL;
         }
 
-        rocksdb_t* rocksdb_;
+        rocksdb::DB* rocksdb_;
     };
 
     RocksdbDriver::RocksdbDriver(IConnectionSettingsBaseSPtr settings)
@@ -467,7 +457,7 @@ namespace fastonosql
 
     const char* RocksdbDriver::versionApi()
     {
-        return STRINGIZE(ROCKSDB_MAJOR)"."STRINGIZE(ROCKSDB_MINOR)"."STRINGIZE(ROCKSDB_PATCH);
+        return STRINGIZE(ROCKSDB_MAJOR) "." STRINGIZE(ROCKSDB_MINOR) "." STRINGIZE(ROCKSDB_PATCH);
     }
 
     void RocksdbDriver::customEvent(QEvent *event)

@@ -12,13 +12,9 @@ SET(HEADERS_ROCKSDB
 )
 
 SET(SOURCES_ROCKSDB
-    src/db/c.cc
     src/db/db_impl.cc
-    src/db/db_impl_readonly.cc
     src/db/write_batch_base.cc
     src/db/write_batch.cc
-    src/db/repair.cc
-    src/db/merge_operator.cc
     src/db/column_family.cc
     src/db/version_set.cc
     src/db/flush_scheduler.cc
@@ -45,7 +41,6 @@ SET(SOURCES_ROCKSDB
     src/db/write_controller.cc
     src/db/slice.cc
     src/db/db_filesnapshot.cc
-    src/db/compacted_db_impl.cc
     src/db/table_properties_collector.cc
     src/db/file_indexer.cc
     src/db/version_builder.cc
@@ -74,23 +69,17 @@ SET(SOURCES_ROCKSDB
     src/table/two_level_iterator.cc
     src/table/get_context.cc
     src/table/flush_block_policy.cc
-    src/table/cuckoo_table_factory.cc
-    src/table/cuckoo_table_reader.cc
-    src/table/cuckoo_table_builder.cc
     src/table/bloom_block.cc
     src/table/full_filter_block.cc
 
     src/util/options.cc
     src/util/status.cc
-    src/util/statistics.cc
-    src/util/hash_skiplist_rep.cc
     src/util/hash_linklist_rep.cc
     src/util/bloom.cc
     src/util/cache.cc
     src/util/slice.cc
     src/util/options_helper.cc
     src/util/filter_policy.cc
-    src/util/vectorrep.cc
     src/util/crc32c.cc
     src/util/comparator.cc
     src/util/auto_roll_logger.cc
@@ -121,9 +110,6 @@ SET(SOURCES_ROCKSDB
     src/util/dynamic_bloom.cc
     src/util/thread_local.cc
     src/util/skiplistrep.cc
-
-    src/utilities/backupable/backupable_db.cc
-    src/utilities/merge_operators/uint64add.cc
 )
 
 SET(BUILD_VERSION_CC ${CMAKE_CURRENT_SOURCE_DIR}/src/util/build_version.cc)
