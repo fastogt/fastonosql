@@ -42,6 +42,7 @@
     #include <unistd.h>
     #include <fcntl.h>
     #include <string.h>
+    #include <stdlib.h>
     #ifdef OS_WIN
         #include <winsock2.h>
         #include <wspiapi.h>

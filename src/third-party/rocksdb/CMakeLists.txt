@@ -9,8 +9,6 @@ ELSE()
 ENDIF(OS_POSIX)
 
 SET(HEADERS_ROCKSDB
-    src/db/db_impl.h
-    #src/table/block_based_table_builder.h
 )
 
 SET(SOURCES_ROCKSDB
@@ -20,8 +18,8 @@ SET(SOURCES_ROCKSDB
     src/db/write_batch_base.cc
     src/db/write_batch.cc
     src/db/repair.cc
-    src/db/column_family.cc
     src/db/merge_operator.cc
+    src/db/column_family.cc
     src/db/version_set.cc
     src/db/flush_scheduler.cc
     src/db/db_iter.cc
@@ -32,7 +30,6 @@ SET(SOURCES_ROCKSDB
     src/db/internal_stats.cc
     src/db/compaction.cc
     src/db/version_edit.cc
-    src/db/internal_stats.cc
     src/db/table_cache.cc
     src/db/wal_manager.cc
     src/db/memtable_list.cc
@@ -43,14 +40,12 @@ SET(SOURCES_ROCKSDB
     src/db/compaction_picker.cc
     src/db/compaction_job.cc
     src/db/write_thread.cc
-    src/db/memtable_list.cc
     src/db/managed_iterator.cc
     src/db/forward_iterator.cc
     src/db/write_controller.cc
+    src/db/slice.cc
     src/db/db_filesnapshot.cc
     src/db/compacted_db_impl.cc
-    src/db/compaction_picker.cc
-    src/db/slice.cc
     src/db/table_properties_collector.cc
     src/db/file_indexer.cc
     src/db/version_builder.cc
@@ -59,7 +54,15 @@ SET(SOURCES_ROCKSDB
     src/db/merge_helper.cc
 
     src/table/block_based_table_factory.cc
-    src/table/cuckoo_table_factory.cc
+    src/table/block_based_table_reader.cc
+    src/table/block_prefix_index.cc
+    src/table/block_based_table_builder.cc
+    src/table/block_based_filter_block.cc
+    src/table/plain_table_factory.cc
+    src/table/plain_table_reader.cc
+    src/table/plain_table_builder.cc
+    src/table/plain_table_key_coding.cc
+    src/table/plain_table_index.cc
     src/table/merger.cc
     src/table/iterator.cc
     src/table/format.cc
@@ -70,30 +73,15 @@ SET(SOURCES_ROCKSDB
     src/table/block_builder.cc
     src/table/two_level_iterator.cc
     src/table/get_context.cc
-    src/table/block_based_table_builder.cc
-    #src/table/adaptive_table_factory.cc
-    src/table/block_based_table_reader.cc
     src/table/flush_block_policy.cc
     src/table/cuckoo_table_factory.cc
     src/table/cuckoo_table_reader.cc
     src/table/cuckoo_table_builder.cc
-    src/table/plain_table_reader.cc
-    src/table/plain_table_factory.cc
-    src/table/plain_table_builder.cc
     src/table/bloom_block.cc
-    src/table/block_prefix_index.cc
-    src/table/block_based_table_builder.cc
-    src/table/block_based_filter_block.cc
     src/table/full_filter_block.cc
-    src/table/plain_table_key_coding.cc
-    src/table/plain_table_builder.cc
-    src/table/plain_table_index.cc
 
     src/util/options.cc
     src/util/status.cc
-    src/util/coding.cc
-    src/util/perf_level.cc
-    src/util/perf_context.cc
     src/util/statistics.cc
     src/util/hash_skiplist_rep.cc
     src/util/hash_linklist_rep.cc
@@ -104,24 +92,26 @@ SET(SOURCES_ROCKSDB
     src/util/filter_policy.cc
     src/util/vectorrep.cc
     src/util/crc32c.cc
-    src/util/thread_status_updater.cc
+    src/util/comparator.cc
     src/util/auto_roll_logger.cc
     src/util/env.cc
     src/util/instrumented_mutex.cc
-    src/util/file_reader_writer.cc
     src/util/db_info_dumper.cc
-    src/util/file_util.cc
     src/util/sync_point.cc
     src/util/event_logger.cc
     src/util/arena.cc
-    src/util/thread_status_util_debug.cc
+    src/util/perf_context.cc
     src/util/mutable_cf_options.cc
-    src/util/comparator.cc
     src/util/log_buffer.cc
     src/util/thread_status_util.cc
     src/util/compaction_job_stats_impl.cc
-    src/util/build_version.h
+    src/util/file_reader_writer.cc
+    src/util/file_util.cc
     src/util/iostats_context.cc
+    src/util/coding.cc
+    src/util/perf_level.cc
+    src/util/thread_status_updater.cc
+    src/util/thread_status_util_debug.cc
     src/util/logging.cc
     src/util/hash.cc
     src/util/histogram.cc
