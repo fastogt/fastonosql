@@ -23,11 +23,15 @@
 #ifdef BUILD_WITH_LEVELDB
 #include "core/leveldb/leveldb_settings.h"
 #endif
+#ifdef BUILD_WITH_ROCKSDB
+#include "core/rocksdb/rocksdb_settings.h"
+#endif
 
 #define LOGGING_REDIS_FILE_EXTENSION ".red"
 #define LOGGING_MEMCACHED_FILE_EXTENSION ".mem"
 #define LOGGING_SSDB_FILE_EXTENSION ".ssdb"
-#define LOGGING_LEVELDB_FILE_EXTENSION ".ssdb"
+#define LOGGING_LEVELDB_FILE_EXTENSION ".levdb"
+#define LOGGING_ROCKSDB_FILE_EXTENSION ".rocksdb"
 
 namespace
 {
@@ -130,6 +134,9 @@ namespace fastonosql
         else if(type_ == LEVELDB){
             ext = LOGGING_LEVELDB_FILE_EXTENSION;
         }
+        else if(type_ == ROCKSDB){
+            ext = LOGGING_ROCKSDB_FILE_EXTENSION;
+        }
         else {
             NOTREACHED();
         }
@@ -164,6 +171,12 @@ namespace fastonosql
             return new LeveldbConnectionSettings(conName);
         }
 #endif
+#ifdef BUILD_WITH_ROCKSDB
+        if(type == ROCKSDB){
+            return new RocksdbConnectionSettings(conName);
+        }
+#endif
+        NOTREACHED();
         return NULL;
     }
 
@@ -283,7 +296,15 @@ namespace fastonosql
                                "<b>-h &lt;hostname&gt;</b>      Server hostname (default: 127.0.0.1), <b>not used</b>.<br/>"
                                "<b>-p &lt;port&gt;</b>          Server port (default: 1111), <b>not used</b>.<br/>"
                                "<b>-f &lt;db&gt;</b>            File path to database.<br/>"
-                               "<b>-c &lt;db&gt;</b>            Create database if missing.<br/>"
+                               "<b>-c </b>            Create database if missing.<br/>"
+                               "<b>-d &lt;delimiter&gt;</b>     Multi-bulk delimiter in for raw formatting (default: \\n).<br/>";
+        }
+        else if(type == ROCKSDB){
+            return "<b>Usage: [OPTIONS] [cmd [arg [arg ...]]]</b><br/>"
+                               "<b>-h &lt;hostname&gt;</b>      Server hostname (default: 127.0.0.1), <b>not used</b>.<br/>"
+                               "<b>-p &lt;port&gt;</b>          Server port (default: 1111), <b>not used</b>.<br/>"
+                               "<b>-f &lt;db&gt;</b>            File path to database.<br/>"
+                               "<b>-c </b>            Create database if missing.<br/>"
                                "<b>-d &lt;delimiter&gt;</b>     Multi-bulk delimiter in for raw formatting (default: \\n).<br/>";
         }
 
@@ -313,7 +334,13 @@ namespace fastonosql
 #endif
 #ifdef BUILD_WITH_LEVELDB
         if(type == LEVELDB){
-            ssdbConfig r;
+            leveldbConfig r;
+            return common::convertToString(r);
+        }
+#endif
+#ifdef BUILD_WITH_ROCKSDB
+        if(type == ROCKSDB){
+            rocksdbConfig r;
             return common::convertToString(r);
         }
 #endif

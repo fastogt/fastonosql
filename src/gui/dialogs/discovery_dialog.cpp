@@ -25,6 +25,10 @@
 #include "core/leveldb/leveldb_driver.h"
 #endif
 
+#ifdef BUILD_WITH_ROCKSDB
+#include "core/rocksdb/rocksdb_driver.h"
+#endif
+
 #include "gui/gui_factory.h"
 #include "gui/dialogs/connection_listwidget_items.h"
 
@@ -57,6 +61,11 @@ namespace
 #endif
 #ifdef BUILD_WITH_LEVELDB
         if(type == LEVELDB){
+            return common::make_error_value("Not supported setting type", common::ErrorValue::E_ERROR);
+        }
+#endif
+#ifdef BUILD_WITH_ROCKSDB
+        if(type == ROCKSDB){
             return common::make_error_value("Not supported setting type", common::ErrorValue::E_ERROR);
         }
 #endif

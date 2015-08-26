@@ -36,6 +36,10 @@
 #include "core/leveldb/leveldb_infos.h"
 #endif
 
+#ifdef BUILD_WITH_ROCKSDB
+#include "core/rocksdb/rocksdb_infos.h"
+#endif
+
 namespace fastonosql
 {
     CreateDbKeyDialog::CreateDbKeyDialog(const QString &title, connectionTypes type, QWidget* parent)
@@ -81,6 +85,15 @@ namespace fastonosql
         if(type_ == LEVELDB){
             for(int i = 0; i < DBTraits<LEVELDB>::supportedTypes.size(); ++i){
                 common::Value::Type t = DBTraits<LEVELDB>::supportedTypes[i];
+                QString type = common::convertFromString<QString>(common::Value::toString(t));
+                typesCombo_->addItem(GuiFactory::instance().icon(t), type, t);
+            }
+        }
+#endif
+#ifdef BUILD_WITH_ROCKSDB
+        if(type_ == ROCKSDB){
+            for(int i = 0; i < DBTraits<ROCKSDB>::supportedTypes.size(); ++i){
+                common::Value::Type t = DBTraits<ROCKSDB>::supportedTypes[i];
                 QString type = common::convertFromString<QString>(common::Value::toString(t));
                 typesCombo_->addItem(GuiFactory::instance().icon(t), type, t);
             }

@@ -20,6 +20,10 @@
 #include "core/leveldb/leveldb_infos.h"
 #endif
 
+#ifdef BUILD_WITH_ROCKSDB
+#include "core/rocksdb/rocksdb_infos.h"
+#endif
+
 class QLabel;
 
 namespace fasto
@@ -69,6 +73,9 @@ namespace fastonosql
 #endif
 #ifdef BUILD_WITH_LEVELDB
         void updateText(const LeveldbServerInfo& serv);
+#endif
+#ifdef BUILD_WITH_ROCKSDB
+        void updateText(const RocksdbServerInfo& serv);
 #endif
         QLabel* serverTextInfo_;
         QLabel* hardwareTextInfo_;

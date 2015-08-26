@@ -5,7 +5,7 @@
 namespace fastonosql
 {
     RocksdbConnectionSettings::RocksdbConnectionSettings(const std::string& connectionName)
-        : IConnectionSettingsBase(connectionName, LEVELDB), info_()
+        : IConnectionSettingsBase(connectionName, ROCKSDB), info_()
     {
 
     }

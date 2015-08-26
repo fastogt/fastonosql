@@ -33,7 +33,10 @@ namespace fastonosql
         "Ssdb",
 #endif
 #ifdef BUILD_WITH_LEVELDB
-        "Leveldb"
+        "Leveldb",
+#endif
+#ifdef BUILD_WITH_ROCKSDB
+        "Rocksdb"
 #endif
     };
 

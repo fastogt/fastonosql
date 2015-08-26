@@ -41,6 +41,10 @@
 #include "shell/leveldb_shell.h"
 #endif
 
+#ifdef BUILD_WITH_ROCKSDB
+#include "shell/rocksdb_shell.h"
+#endif
+
 using namespace fastonosql::translations;
 
 namespace
@@ -228,6 +232,12 @@ namespace fastonosql
 #ifdef BUILD_WITH_LEVELDB
         if(type == LEVELDB){
             input_ = new LeveldbShell(SettingsManager::instance().autoCompletion());
+            setToolTip(tr("Based on leveldb version: %1").arg(input_->version()));
+        }
+#endif
+#ifdef BUILD_WITH_ROCKSDB
+        if(type == ROCKSDB){
+            input_ = new RocksdbShell(SettingsManager::instance().autoCompletion());
             setToolTip(tr("Based on leveldb version: %1").arg(input_->version()));
         }
 #endif
