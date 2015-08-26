@@ -5,6 +5,7 @@ extern "C" {
 }
 
 #include <rocksdb/c.h>
+#include <rocksdb/version.h>
 
 #include "common/sprintf.h"
 #include "common/utils.h"
@@ -466,9 +467,7 @@ namespace fastonosql
 
     const char* RocksdbDriver::versionApi()
     {
-        /*static char leveldb_version[32] = {0};
-        std::call_once(leveldb_version_once, leveldb_version_startup_function, leveldb_version);
-        return leveldb_version;*/
+        return STRINGIZE(ROCKSDB_MAJOR)"."STRINGIZE(ROCKSDB_MINOR)"."STRINGIZE(ROCKSDB_PATCH);
     }
 
     void RocksdbDriver::customEvent(QEvent *event)
