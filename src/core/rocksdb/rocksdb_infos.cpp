@@ -95,13 +95,13 @@ namespace fastonosql
     }
 
     RocksdbServerInfo::RocksdbServerInfo()
-        : ServerInfo(LEVELDB)
+        : ServerInfo(ROCKSDB)
     {
 
     }
 
     RocksdbServerInfo::RocksdbServerInfo(const Stats &stats)
-        : ServerInfo(LEVELDB), stats_(stats)
+        : ServerInfo(ROCKSDB), stats_(stats)
     {
 
     }

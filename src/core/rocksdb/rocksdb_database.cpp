@@ -9,7 +9,7 @@ namespace fastonosql
     {
         DCHECK(server);
         DCHECK(info);
-        DCHECK(server->type() == LEVELDB);
-        DCHECK(info->type() == LEVELDB);
+        DCHECK(server->type() == ROCKSDB);
+        DCHECK(info->type() == ROCKSDB);
     }
 }

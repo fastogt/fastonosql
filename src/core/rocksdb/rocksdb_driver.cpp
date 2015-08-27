@@ -22,9 +22,14 @@ extern "C" {
 #define GET_KEYS_PATTERN_1ARGS_I "KEYS a z %d"
 #define DELETE_KEY_PATTERN_1ARGS_S "DEL %s"
 #define GET_SERVER_TYPE ""
-#define ROCKSDB_HEADER_STATS    "                               Compactions\n"\
-                                "Level  Files Size(MB) Time(sec) Read(MB) Write(MB)\n"\
-                                "--------------------------------------------------\n"
+#define ROCKSDB_HEADER_STATS    "\n** Compaction Stats [default] **\n"\
+                                "Level    Files   Size(MB) Score Read(GB)  Rn(GB) Rnp1(GB) "\
+                                "Write(GB) Wnew(GB) Moved(GB) W-Amp Rd(MB/s) Wr(MB/s) "\
+                                "Comp(sec) Comp(cnt) Avg(sec) "\
+                                "Stall(cnt)  KeyIn KeyDrop\n"\
+                                "--------------------------------------------------------------------"\
+                                "-----------------------------------------------------------"\
+                                "--------------------------------------\n"
 namespace fastonosql
 {
     namespace
