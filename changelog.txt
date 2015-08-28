@@ -1,5 +1,8 @@
 0.2.6
 [Alexandr Topilski]
+- Package installation fails on Ubuntu 14 #56
+- RocksDB database support http://http://rocksdb.org/
+- [SSDB] Ssdb auth command #54
 
 0.2.5 / August 22, 2015
 [Alexandr Topilski]
