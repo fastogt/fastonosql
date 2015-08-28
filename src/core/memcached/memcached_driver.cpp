@@ -142,6 +142,13 @@ namespace fastonosql
             return common::ErrorValueSPtr();
         }
 
+        common::ErrorValueSPtr keys(const char* args)
+        {
+            char buff[1024] = {0};
+            common::SNPrintf(buff, sizeof(buff), "Not supported command: STATS %s", args);
+            return common::make_error_value(buff, common::ErrorValue::E_ERROR);
+        }
+
         common::ErrorValueSPtr stats(const char* args, MemcachedServerInfo::Common& statsout)
         {
             memcached_return_t error;
@@ -366,8 +373,14 @@ namespace fastonosql
                     return common::make_error_value("Invalid stats input argument", common::ErrorValue::E_ERROR);
                 }
 
+                const char* args = argc == 2 ? argv[1] : NULL;
+
+                if(args && strcasecmp(args, "items") == 0){
+                    return keys(args);
+                }
+
                 MemcachedServerInfo::Common statsout;
-                common::ErrorValueSPtr er = stats(argc == 2 ? argv[1] : 0, statsout);
+                common::ErrorValueSPtr er = stats(args, statsout);
                 if(!er){
                     common::StringValue *val = common::Value::createStringValue(MemcachedServerInfo(statsout).toString());
                     FastoObject* child = new FastoObject(out, val, config_.mb_delim_);

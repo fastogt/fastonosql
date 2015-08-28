@@ -348,7 +348,6 @@ namespace common
         }
 
         std::string result;
-        const common::HashValue::const_iterator lastIt = std::prev(hash->end());
         for(common::HashValue::const_iterator it = hash->begin(); it != hash->end(); ++it){
             common::HashValue::value_type v = *it;
             std::string key = (v.first)->toString();
@@ -358,7 +357,7 @@ namespace common
             }
 
             result += key + " " + val;
-            if(lastIt != it){
+            if(std::next(it) != hash->end()){
                 result += delemitr;
             }
         }
