@@ -83,7 +83,10 @@ public:
 	virtual const std::vector<std::string>* request(const std::string &cmd, const std::vector<std::string> &s2) = 0;
 	virtual const std::vector<std::string>* request(const std::string &cmd, const std::string &s2, const std::vector<std::string> &s3) = 0;
 	/// @}
-	
+
+#ifdef FASTO
+    virtual Status auth(const std::string &password) = 0;
+#endif
 	virtual Status dbsize(int64_t *ret) = 0;
 	virtual Status get_kv_range(std::string *start, std::string *end) = 0;
 	virtual Status set_kv_range(const std::string &start, const std::string &end) = 0;

@@ -231,6 +231,19 @@ namespace fastonosql
                 }
                 return er;
             }
+            else if(strcasecmp(argv[0], "auth") == 0){
+                if(argc != 2){
+                    return common::make_error_value("Invalid set input argument", common::ErrorValue::E_ERROR);
+                }
+
+                common::ErrorValueSPtr er = auth(argv[1]);
+                if(!er){
+                    common::StringValue *val = common::Value::createStringValue("OK");
+                    FastoObject* child = new FastoObject(out, val, config_.mb_delim_);
+                    out->addChildren(child);
+                }
+                return er;
+            }
             else if(strcasecmp(argv[0], "setx") == 0){
                 if(argc != 4){
                     return common::make_error_value("Invalid setx input argument", common::ErrorValue::E_ERROR);
@@ -907,6 +920,17 @@ namespace fastonosql
                 common::SNPrintf(buff, sizeof(buff), "Not supported command: %s", argv[0]);
                 return common::make_error_value(buff, common::ErrorValue::E_ERROR);
             }
+        }
+
+        common::ErrorValueSPtr auth(const std::string& password)
+        {
+            ssdb::Status st = ssdb_->auth(password);
+            if (st.error()){
+                char buff[1024] = {0};
+                common::SNPrintf(buff, sizeof(buff), "password function error: %s", st.code());
+                return common::make_error_value(buff, common::ErrorValue::E_ERROR);
+            }
+            return common::ErrorValueSPtr();
         }
 
         common::ErrorValueSPtr get(const std::string& key, std::string* ret_val)

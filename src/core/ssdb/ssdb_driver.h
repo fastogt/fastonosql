@@ -6,9 +6,12 @@
 
 namespace fastonosql
 {
-    //TODO: AUTH, SETNX command imlementation
+    //TODO: SETNX command imlementation
     static const CommandInfo ssdbCommands[] =
     {
+        CommandInfo("AUTH", "<password>",
+                    "Authenticate to the server",
+                    UNDEFINED_SINCE, UNDEFINED_EXAMPLE_STR, 1, 0),
         CommandInfo("QUIT", "-",
                     "Close the connection.",
                     UNDEFINED_SINCE, UNDEFINED_EXAMPLE_STR, 0, 0),

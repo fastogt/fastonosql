@@ -170,6 +170,16 @@ const std::vector<std::string>* ClientImpl::request(const std::string &cmd, cons
 
 /******************** misc *************************/
 
+#ifdef FASTO
+Status ClientImpl::auth(const std::string &password)
+{
+    const std::vector<std::string> *resp;
+    resp = this->request("auth", password);
+    Status s(resp);
+    return s;
+}
+#endif
+
 Status ClientImpl::dbsize(int64_t *ret){
 	const std::vector<std::string> *resp;
 	resp = this->request("dbsize");
