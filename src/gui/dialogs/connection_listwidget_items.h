@@ -10,7 +10,7 @@ namespace fastonosql
             : public QTreeWidgetItem
     {
     public:
-        ConnectionListWidgetItem(IConnectionSettingsBaseSPtr connection);
+        explicit ConnectionListWidgetItem(IConnectionSettingsBaseSPtr connection);
         void setConnection(IConnectionSettingsBaseSPtr cons);
         IConnectionSettingsBaseSPtr connection() const;
 
@@ -29,7 +29,7 @@ namespace fastonosql
             : public QTreeWidgetItem
     {
     public:
-        ClusterConnectionListWidgetItem(IClusterSettingsBaseSPtr connection);
+        explicit ClusterConnectionListWidgetItem(IClusterSettingsBaseSPtr connection);
         void setConnection(IClusterSettingsBaseSPtr cons);
         IClusterSettingsBaseSPtr connection() const;
 

@@ -17,7 +17,7 @@ namespace fastonosql
         Q_OBJECT
 
     public:
-        LogTabWidget(QWidget* parent = 0);
+        explicit LogTabWidget(QWidget* parent = 0);
 
     public Q_SLOTS:
         void addLogMessage(const QString& message, common::logging::LEVEL_LOG level);

@@ -12,7 +12,7 @@ namespace fastonosql
     {
         Q_OBJECT
     public:
-        BaseQsciApi(QsciLexer* lexer);
+        explicit BaseQsciApi(QsciLexer* lexer);
         void setFilteredVersion(uint32_t version);
 
     protected:
@@ -32,7 +32,7 @@ namespace fastonosql
         virtual uint32_t commandsCount() const = 0;
 
     protected:
-        BaseQsciLexer(QObject* parent = 0);
+        explicit BaseQsciLexer(QObject* parent = 0);
     };
 
     QString makeCallTip(const CommandInfo& info);

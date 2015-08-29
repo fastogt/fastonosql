@@ -24,7 +24,7 @@ namespace fastonosql
             eKey
         };
 
-        IExplorerTreeItem(TreeItem* parent);
+        explicit IExplorerTreeItem(TreeItem* parent);
         virtual ~IExplorerTreeItem();
 
         virtual QString name() const = 0;
@@ -119,7 +119,7 @@ namespace fastonosql
     {
         Q_OBJECT
     public:
-        ExplorerTreeModel(QObject* parent = 0);
+        explicit ExplorerTreeModel(QObject* parent = 0);
         virtual ~ExplorerTreeModel();
 
         virtual QVariant data(const QModelIndex& index, int role = Qt::DisplayRole) const;

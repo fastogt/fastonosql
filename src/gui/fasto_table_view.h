@@ -9,7 +9,7 @@ namespace fastonosql
     {        
         Q_OBJECT
     public:
-        FastoTableView(QWidget* parent = 0);
+        explicit FastoTableView(QWidget* parent = 0);
 
     private Q_SLOTS:
         void showContextMenu(const QPoint& point);

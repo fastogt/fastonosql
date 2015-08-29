@@ -14,7 +14,7 @@ namespace fastonosql
         Q_OBJECT
 
     public:
-        ExplorerTreeView(QWidget* parent);
+        explicit ExplorerTreeView(QWidget* parent);
 
     Q_SIGNALS:
         void openedConsole(IServerSPtr server, const QString& text);

@@ -19,7 +19,7 @@ namespace fastonosql
         IServerSPtr root() const;
 
     protected:
-        ICluster(const std::string& name);
+        explicit ICluster(const std::string& name);
 
     private:
         const std::string name_;

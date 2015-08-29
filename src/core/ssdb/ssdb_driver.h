@@ -165,7 +165,7 @@ namespace fastonosql
         Q_OBJECT
     public:        
 
-        SsdbDriver(IConnectionSettingsBaseSPtr settings);
+        explicit SsdbDriver(IConnectionSettingsBaseSPtr settings);
         virtual ~SsdbDriver();
 
         virtual bool isConnected() const;

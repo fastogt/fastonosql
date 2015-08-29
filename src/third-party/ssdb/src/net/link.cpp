@@ -101,7 +101,7 @@ void Link::noblock(bool enable){
 #ifdef FASTO
     #ifdef OS_WIN
         unsigned long flags = !enable;
-        int res = ioctlsocket(sock, FIONBIO, &flags);
+        ioctlsocket(sock, FIONBIO, &flags);
     #else
         if(enable){
             ::fcntl(sock, F_SETFL, O_NONBLOCK | O_RDWR);

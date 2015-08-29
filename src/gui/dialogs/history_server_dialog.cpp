@@ -161,6 +161,7 @@ namespace fastonosql
             field = rocksdbFields[index];
         }
 #endif
+        DCHECK(!field.empty());
         for(int i = 0; i < field.size(); ++i){
             Field fl = field[i];
             if(fl.isIntegral()){

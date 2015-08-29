@@ -9,7 +9,7 @@ namespace fastonosql
     {
         Q_OBJECT
     public:
-        RocksdbApi(QsciLexer* lexer);
+        explicit RocksdbApi(QsciLexer* lexer);
 
         virtual void updateAutoCompletionList(const QStringList& context, QStringList& list);
         virtual QStringList callTips(const QStringList& context, int commas, QsciScintilla::CallTipsStyle style, QList<int>& shifts);
@@ -27,7 +27,7 @@ namespace fastonosql
             HelpKeyword
         };
 
-        RocksdbLexer(QObject* parent = 0);
+        explicit RocksdbLexer(QObject* parent = 0);
         virtual const char* language() const;
 
         virtual const char* version() const;

@@ -441,7 +441,7 @@ namespace fastonosql
             else if(field == REDIS_RDB_LAST_SAVE_TIME_LABEL){
                 rdb_last_save_time_ = common::convertFromString<uint32_t>(value);
             }
-            else if(field == REDIS_RDB_LAST_DGSAVE_TIME_SEC_LABEL){
+            else if(field == REDIS_RDB_LAST_DGSAVE_STATUS_LABEL){
                 rdb_last_bgsave_status_ = value;
             }
             else if(field == REDIS_RDB_LAST_DGSAVE_TIME_SEC_LABEL){
@@ -458,9 +458,6 @@ namespace fastonosql
             }
             else if(field == REDIS_AOF_REWRITE_SHEDULED_LABEL){
                 aof_rewrite_scheduled_ = common::convertFromString<uint32_t>(value);
-            }
-            else if(field == REDIS_AOF_REWRITE_SHEDULED_LABEL){
-                aof_last_rewrite_time_sec_ = common::convertFromString<int>(value);
             }
             else if(field == REDIS_AOF_LAST_REWRITE_TIME_SEC_LABEL){
                 aof_last_rewrite_time_sec_ = common::convertFromString<int>(value);

@@ -108,7 +108,7 @@ namespace fastonosql
     class ServerInfo
     {
     public:
-        ServerInfo(connectionTypes type);
+        explicit ServerInfo(connectionTypes type);
         virtual ~ServerInfo();
 
         connectionTypes type() const;
@@ -222,21 +222,21 @@ namespace fastonosql
             : public CommandKey
     {
     public:
-        CommandDeleteKey(const NDbValue& key);
+        explicit CommandDeleteKey(const NDbValue& key);
     };
 
     class CommandLoadKey
             : public CommandKey
     {
     public:
-        CommandLoadKey(const NDbValue& key);
+        explicit CommandLoadKey(const NDbValue& key);
     };
 
     class CommandCreateKey
             : public CommandKey
     {
     public:
-        CommandCreateKey(const NDbValue& dbv);
+        explicit CommandCreateKey(const NDbValue& dbv);
         NValue value() const;
     };
 

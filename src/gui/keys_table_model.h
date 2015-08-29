@@ -18,7 +18,7 @@ namespace fastonosql
             kCountColumns = 3
         };
 
-        KeyTableItem(const NDbValue& key);
+        explicit KeyTableItem(const NDbValue& key);
 
         QString key() const;
         QString typeText() const;
@@ -37,7 +37,7 @@ namespace fastonosql
     {
         Q_OBJECT
     public:
-        KeysTableModel(QObject *parent = 0);
+        explicit KeysTableModel(QObject *parent = 0);
         virtual ~KeysTableModel();
 
         virtual QVariant data(const QModelIndex& index, int role = Qt::DisplayRole) const;

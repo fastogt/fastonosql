@@ -35,7 +35,7 @@ namespace fastonosql
         } stats_;
 
         LeveldbServerInfo();
-        LeveldbServerInfo(const Stats& stats);
+        explicit LeveldbServerInfo(const Stats& stats);
         virtual common::Value* valueByIndexes(unsigned char property, unsigned char field) const;
         virtual std::string toString() const;
         virtual uint32_t version() const;

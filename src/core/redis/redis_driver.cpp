@@ -4,11 +4,9 @@
     char *strcasestr(const char* s, const char* find)
     {
         char c, sc;
-        size_t len;
-
         if ((c = *find++) != 0) {
             c = tolower((unsigned char)c);
-            len = strlen(find);
+            size_t len = strlen(find);
             do {
                 do {
                     if ((sc = *s++) == 0)
@@ -230,9 +228,6 @@ namespace
         else if(type == "zset") {
             return common::Value::TYPE_ZSET;
         }
-        else if(type == "none") {
-            return common::Value::TYPE_NULL;
-        }
         else {
             return common::Value::TYPE_NULL;
         }
@@ -248,6 +243,28 @@ namespace fastonosql
             common::CommandValue* cmd = common::Value::createCommand(input, ct);
             RedisCommand* fs = new RedisCommand(NULL, cmd, "");
             return fs;
+        }
+
+        int toIntType(common::ErrorValueSPtr& er, char *key, char *type)
+        {
+            if(!strcmp(type, "string")) {
+                return RTYPE_STRING;
+            } else if(!strcmp(type, "list")) {
+                return RTYPE_LIST;
+            } else if(!strcmp(type, "set")) {
+                return RTYPE_SET;
+            } else if(!strcmp(type, "hash")) {
+                return RTYPE_HASH;
+            } else if(!strcmp(type, "zset")) {
+                return RTYPE_ZSET;
+            } else if(!strcmp(type, "none")) {
+                return RTYPE_NONE;
+            } else {
+                char buff[4096];
+                common::SNPrintf(buff, sizeof(buff), "Unknown type '%s' for key '%s'", type, key);
+                er.reset(new common::ErrorValue(buff, common::Value::E_ERROR));
+                return -1;
+            }
         }
     }
 
@@ -402,9 +419,8 @@ namespace fastonosql
                 return common::make_error_value("Invalid createCommand input argument", common::ErrorValue::E_ERROR);
             }
 
-            redisReply *reply;
             common::time64_t start;
-            uint64_t latency, min = 0, max = 0, tot = 0, count = 0;
+            uint64_t min = 0, max = 0, tot = 0, count = 0;
             uint64_t history_interval =
                     config_.interval ? config_.interval/1000 :
                                       LATENCY_HISTORY_DEFAULT_INTERVAL;
@@ -420,14 +436,14 @@ namespace fastonosql
 
             while(!config_.shutdown_) {
                 start = common::time::current_mstime();
-                reply = (redisReply*)redisCommand(context_, command.c_str());
+                redisReply *reply = (redisReply*)redisCommand(context_, command.c_str());
                 if (reply == NULL) {
                     return common::make_error_value("I/O error", common::Value::E_ERROR);
                 }
 
                 common::time64_t curTime = common::time::current_mstime();
 
-                latency = curTime - start;
+                uint64_t latency = curTime - start;
                 freeReplyObject(reply);
                 count++;
                 if (count == 1) {
@@ -578,7 +594,6 @@ namespace fastonosql
                 return er;
             }
 
-            FastoObject* child = NULL;
             common::ArrayValue* val = NULL;
             FastoObjectCommand* cmd = createCommand<RedisCommand>(out, RDM_REQUEST, common::Value::C_INNER);
             DCHECK(cmd);
@@ -590,7 +605,7 @@ namespace fastonosql
             /* Write to file. */
             if (!strcmp(config_.rdb_filename,"-")) {
                 val = new common::ArrayValue;
-                child = new FastoObject(cmd, val, config_.mb_delim_);
+                FastoObject* child = new FastoObject(cmd, val, config_.mb_delim_);
                 cmd->addChildren(child);
             }
             else{
@@ -696,29 +711,13 @@ namespace fastonosql
             return common::ErrorValueSPtr();
         }
 
-        int toIntType(common::ErrorValueSPtr& er, char *key, char *type) {
-            if(!strcmp(type, "string")) {
-                return RTYPE_STRING;
-            } else if(!strcmp(type, "list")) {
-                return RTYPE_LIST;
-            } else if(!strcmp(type, "set")) {
-                return RTYPE_SET;
-            } else if(!strcmp(type, "hash")) {
-                return RTYPE_HASH;
-            } else if(!strcmp(type, "zset")) {
-                return RTYPE_ZSET;
-            } else if(!strcmp(type, "none")) {
-                return RTYPE_NONE;
-            } else {
-                char buff[4096];
-                common::SNPrintf(buff, sizeof(buff), "Unknown type '%s' for key '%s'", type, key);
-                er.reset(new common::ErrorValue(buff, common::Value::E_ERROR));
-                return -1;
-            }
-        }
-
         common::ErrorValueSPtr getKeyTypes(redisReply *keys, int *types) WARN_UNUSED_RESULT
         {
+            DCHECK(types);
+            if(!types){
+                return common::make_error_value("Invalid input argument", common::ErrorValue::E_ERROR);
+            }
+
             redisReply *reply;
             unsigned int i;
 
@@ -829,7 +828,6 @@ namespace fastonosql
             redisReply *reply, *keys;
             unsigned int arrsize=0, i;
             int type, *types=NULL;
-            double pct;
 
             /* Total keys pre scanning */
             common::ErrorValueSPtr er = getDbSize(total_keys);
@@ -853,7 +851,7 @@ namespace fastonosql
             /* SCAN loop */
             do {
                 /* Calculate approximate percentage completion */
-                pct = 100 * (double)sampled/total_keys;
+                double pct = 100 * (double)sampled/total_keys;
 
                 /* Grab some keys and point to the keys array */
                 reply = sendScan(er, &it);
@@ -865,12 +863,21 @@ namespace fastonosql
 
                 /* Reallocate our type and size array if we need to */
                 if(keys->elements > arrsize) {
-                    types = (int*)realloc(types, sizeof(int)*keys->elements);
-                    sizes = (unsigned long long*)realloc(sizes, sizeof(unsigned long long)*keys->elements);
-
-                    if(!types || !sizes) {
+                    int* ltypes = (int*)realloc(types, sizeof(int)*keys->elements);
+                    if(!ltypes) {
+                        free(types);
                         return common::make_error_value("Failed to allocate storage for keys!", common::Value::E_ERROR);
                     }
+
+                    types = ltypes;
+
+                    unsigned long long* lsizes = (unsigned long long*)realloc(sizes, sizeof(unsigned long long)*keys->elements);
+                    if(!lsizes) {
+                        free(sizes);
+                        return common::make_error_value("Failed to allocate storage for keys!", common::Value::E_ERROR);
+                    }
+
+                    sizes = lsizes;
 
                     arrsize = keys->elements;
                 }
@@ -924,8 +931,8 @@ namespace fastonosql
                 freeReplyObject(reply);
             } while(it != 0);
 
-            if(types) free(types);
-            if(sizes) free(sizes);
+            common::utils::freeifnotnull(types);
+            common::utils::freeifnotnull(sizes);
 
             /* We're done */
             char buff[4096];
@@ -1044,7 +1051,7 @@ namespace fastonosql
             }
 
             const std::string command = cmd->inputCommand();
-            long aux, requests = 0;
+            long requests = 0;
 
             while(!config_.shutdown_) {
                 char buf[64];
@@ -1067,7 +1074,7 @@ namespace fastonosql
                 }
 
                 /* Keys */
-                aux = 0;
+                long aux = 0;
                 for (j = 0; j < 20; j++) {
                     long k;
 
@@ -1992,7 +1999,7 @@ namespace fastonosql
     {
         QObject *sender = ev->sender();
         notifyProgress(sender, 0);
-            events::BackupRequestEvent::value_type res(ev->value());
+            events::BackupResponceEvent::value_type res(ev->value());
         notifyProgress(sender, 25);
             FastoObjectIPtr root = FastoObject::createRoot(BACKUP);
             FastoObjectCommand* cmd = createCommand<RedisCommand>(root, BACKUP, common::Value::C_INNER);
@@ -2015,7 +2022,7 @@ namespace fastonosql
     {
         QObject *sender = ev->sender();
         notifyProgress(sender, 0);
-            events::ExportRequestEvent::value_type res(ev->value());
+            events::ExportResponceEvent::value_type res(ev->value());
         notifyProgress(sender, 25);
             bool rc = common::file_system::copy_file(res.path_, "/var/lib/redis/dump.rdb");
             if(!rc){
@@ -2030,7 +2037,7 @@ namespace fastonosql
     {
         QObject *sender = ev->sender();
         notifyProgress(sender, 0);
-            events::ChangePasswordRequestEvent::value_type res(ev->value());
+            events::ChangePasswordResponceEvent::value_type res(ev->value());
         notifyProgress(sender, 25);
             char patternResult[1024] = {0};
             common::SNPrintf(patternResult, sizeof(patternResult), SET_PASSWORD_1ARGS_S, res.newPassword_);
@@ -2050,7 +2057,7 @@ namespace fastonosql
     {
         QObject *sender = ev->sender();
         notifyProgress(sender, 0);
-            events::ChangeMaxConnectionRequestEvent::value_type res(ev->value());
+            events::ChangeMaxConnectionResponceEvent::value_type res(ev->value());
         notifyProgress(sender, 25);
             char patternResult[1024] = {0};
             common::SNPrintf(patternResult, sizeof(patternResult), SET_MAX_CONNECTIONS_1ARGS_I, res.maxConnection_);

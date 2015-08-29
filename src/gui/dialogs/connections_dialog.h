@@ -20,7 +20,7 @@ namespace fastonosql
             min_width = 480
         };
 
-        ConnectionsDialog(QWidget* parent = 0);
+        explicit ConnectionsDialog(QWidget* parent = 0);
         IConnectionSettingsBaseSPtr selectedConnection() const;
         IClusterSettingsBaseSPtr selectedCluster() const;
 

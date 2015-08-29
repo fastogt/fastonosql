@@ -14,7 +14,7 @@ namespace fastonosql
     {
         Q_OBJECT
     public:
-        CommandsWidget(QWidget* parent = 0);
+        explicit CommandsWidget(QWidget* parent = 0);
 
     public Q_SLOTS:
         void addCommand(const Command& command);

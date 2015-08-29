@@ -75,21 +75,19 @@ namespace fastonosql
         QToolBar *savebar = new QToolBar;
 
         QAction *addB = new QAction(GuiFactory::instance().loadIcon(), trAddConnection, savebar);
-        typedef void(QAction::*trig)(bool);
-        VERIFY(connect(addB, static_cast<trig>(&QAction::triggered), this, &ConnectionsDialog::add));
+        VERIFY(connect(addB, &QAction::triggered, this, &ConnectionsDialog::add));
         savebar->addAction(addB);
 
         QAction *addc = new QAction(GuiFactory::instance().clusterIcon(), trAddClusterConnection, savebar);
-        typedef void(QAction::*trig)(bool);
-        VERIFY(connect(addc, static_cast<trig>(&QAction::triggered), this, &ConnectionsDialog::addCls));
+        VERIFY(connect(addc, &QAction::triggered, this, &ConnectionsDialog::addCls));
         savebar->addAction(addc);
 
         QAction *rmB = new QAction(GuiFactory::instance().removeIcon(), trRemoveConnection, savebar);
-        VERIFY(connect(rmB, static_cast<trig>(&QAction::triggered), this, &ConnectionsDialog::remove));
+        VERIFY(connect(rmB, &QAction::triggered, this, &ConnectionsDialog::remove));
         savebar->addAction(rmB);
 
         QAction *editB = new QAction(GuiFactory::instance().editIcon(), trEditConnection, savebar);
-        VERIFY(connect(editB, static_cast<trig>(&QAction::triggered), this, &ConnectionsDialog::edit));
+        VERIFY(connect(editB, &QAction::triggered, this, &ConnectionsDialog::edit));
         savebar->addAction(editB);
 
         QVBoxLayout *firstColumnLayout = new QVBoxLayout;

@@ -430,7 +430,8 @@ namespace fastonosql
 
     void IServer::notify(QEvent *ev)
     {
-        emit progressChanged(0);
+        EventsInfo::ProgressInfoResponce resp(0);
+        emit progressChanged(resp);
         qApp->postEvent(drv_.get(), ev);
     }
 

@@ -30,7 +30,7 @@ namespace fastonosql
                 : ConnectInfoRequest
         {
             typedef ConnectInfoRequest base_class;
-            ConnectInfoResponce(const base_class &request);
+            explicit ConnectInfoResponce(const base_class &request);
         };
 
         struct ShutDownInfoRequest
@@ -44,7 +44,7 @@ namespace fastonosql
                 : ShutDownInfoRequest
         {
             typedef ShutDownInfoRequest base_class;
-            ShutDownInfoResponce(const base_class &request);
+            explicit ShutDownInfoResponce(const base_class &request);
         };
 
         struct BackupInfoRequest
@@ -56,10 +56,10 @@ namespace fastonosql
         };
 
         struct BackupInfoResponce
-                : EventInfoBase
+                : BackupInfoRequest
         {
-            typedef EventInfoBase base_class;
-            BackupInfoResponce(const base_class &request);
+            typedef BackupInfoRequest base_class;
+            explicit BackupInfoResponce(const base_class &request);
         };
 
         struct ExportInfoRequest
@@ -74,7 +74,7 @@ namespace fastonosql
                 : ExportInfoRequest
         {
             typedef ExportInfoRequest base_class;
-            ExportInfoResponce(const base_class &request);
+            explicit ExportInfoResponce(const base_class &request);
         };
 
         struct ChangePasswordRequest
@@ -90,7 +90,7 @@ namespace fastonosql
                 : ChangePasswordRequest
         {
             typedef ChangePasswordRequest base_class;
-            ChangePasswordResponce(const base_class& request);
+            explicit ChangePasswordResponce(const base_class& request);
         };
 
         struct ChangeMaxConnectionRequest
@@ -105,7 +105,7 @@ namespace fastonosql
                 : ChangeMaxConnectionRequest
         {
             typedef ChangeMaxConnectionRequest base_class;
-            ChangeMaxConnectionResponce(const base_class& request);
+            explicit ChangeMaxConnectionResponce(const base_class& request);
         };
 
         struct ProcessConfigArgsInfoRequest
@@ -119,7 +119,7 @@ namespace fastonosql
                 : ProcessConfigArgsInfoRequest
         {
             typedef ProcessConfigArgsInfoRequest base_class;
-            ProcessConfigArgsInfoResponce(const base_class &request);
+            explicit ProcessConfigArgsInfoResponce(const base_class &request);
         };
 
         struct DiscoveryInfoRequest
@@ -133,7 +133,7 @@ namespace fastonosql
                 : DiscoveryInfoRequest
         {
             typedef DiscoveryInfoRequest base_class;
-            DiscoveryInfoResponce(const base_class &request);
+            explicit DiscoveryInfoResponce(const base_class &request);
 
             ServerInfoSPtr sinfo_;
             ServerDiscoveryInfoSPtr dinfo_;
@@ -186,7 +186,7 @@ namespace fastonosql
                 : DisConnectInfoRequest
         {
             typedef DisConnectInfoRequest base_class;
-            DisConnectInfoResponce(const base_class &request);
+            explicit DisConnectInfoResponce(const base_class &request);
         };
 
         struct ExecuteInfoRequest
@@ -211,7 +211,7 @@ namespace fastonosql
         {
             typedef LoadDatabasesInfoRequest base_class;
             typedef std::vector<DataBaseInfoSPtr> database_info_cont_type;
-            LoadDatabasesInfoResponce(const base_class &request);
+            explicit LoadDatabasesInfoResponce(const base_class &request);
 
             database_info_cont_type databases_;
         };
@@ -234,7 +234,7 @@ namespace fastonosql
         {
             typedef LoadDatabaseContentRequest base_class;
             typedef std::vector<NDbValue> keys_cont_type;
-            LoadDatabaseContentResponce(const base_class &request);
+            explicit LoadDatabaseContentResponce(const base_class &request);
 
             keys_cont_type keys_;
             uint32_t cursorOut_;
@@ -253,7 +253,7 @@ namespace fastonosql
                 : SetDefaultDatabaseRequest
         {
             typedef SetDefaultDatabaseRequest base_class;
-            SetDefaultDatabaseResponce(const base_class &request);
+            explicit SetDefaultDatabaseResponce(const base_class &request);
         };
 
         struct ServerInfoRequest
@@ -267,7 +267,7 @@ namespace fastonosql
                 : ServerInfoRequest
         {
             typedef ServerInfoRequest base_class;
-            ServerInfoResponce(const base_class &request);
+            explicit ServerInfoResponce(const base_class &request);
             ~ServerInfoResponce();
 
             ServerInfoSPtr info() const;
@@ -289,7 +289,7 @@ namespace fastonosql
         {
             typedef ServerInfoHistoryRequest base_class;
             typedef std::vector<ServerInfoSnapShoot> infos_container_type;
-            ServerInfoHistoryResponce(const base_class &request);
+            explicit ServerInfoHistoryResponce(const base_class &request);
 
             infos_container_type infos() const;
             void setInfos(const infos_container_type& inf);
@@ -309,7 +309,7 @@ namespace fastonosql
                 : ServerPropertyInfoRequest
         {
             typedef ServerPropertyInfoRequest base_class;
-            ServerPropertyInfoResponce(const base_class &request);
+            explicit ServerPropertyInfoResponce(const base_class &request);
 
             ServerPropertyInfo info_;
         };
@@ -327,7 +327,7 @@ namespace fastonosql
                 : ChangeServerPropertyInfoRequest
         {
             typedef ChangeServerPropertyInfoRequest base_class;
-            ChangeServerPropertyInfoResponce(const base_class &request);
+            explicit ChangeServerPropertyInfoResponce(const base_class &request);
 
             bool isChange_;
         };
@@ -346,12 +346,12 @@ namespace fastonosql
                 : CommandRequest
         {
             typedef CommandRequest base_class;
-            CommandResponce(const base_class &request);
+            explicit CommandResponce(const base_class &request);
         };
 
         struct ProgressInfoResponce
         {
-            ProgressInfoResponce(uint8_t pr);
+            explicit ProgressInfoResponce(uint8_t pr);
 
             const uint8_t progress_;
         };

@@ -10,7 +10,7 @@ namespace fastonosql
             : public IConnectionSettingsBase
     {
     public:
-        MemcachedConnectionSettings(const std::string& connectionName);
+        explicit MemcachedConnectionSettings(const std::string& connectionName);
 
         virtual std::string commandLine() const;
         virtual void setCommandLine(const std::string& line);

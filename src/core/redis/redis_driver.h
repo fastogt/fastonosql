@@ -399,7 +399,7 @@ namespace fastonosql
     {
         Q_OBJECT
     public:
-        RedisDriver(IConnectionSettingsBaseSPtr settings);
+        explicit RedisDriver(IConnectionSettingsBaseSPtr settings);
         virtual ~RedisDriver();
 
         virtual bool isConnected() const;

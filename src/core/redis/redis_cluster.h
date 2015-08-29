@@ -12,6 +12,6 @@ namespace fastonosql
     public:
 
     private:
-        RedisCluster(const std::string& name);
+        explicit RedisCluster(const std::string& name);
     };
 }

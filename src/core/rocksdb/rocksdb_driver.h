@@ -34,9 +34,8 @@ namespace fastonosql
             : public IDriver
     {
         Q_OBJECT
-    public:        
-
-        RocksdbDriver(IConnectionSettingsBaseSPtr settings);
+    public:
+        explicit RocksdbDriver(IConnectionSettingsBaseSPtr settings);
         virtual ~RocksdbDriver();
 
         virtual bool isConnected() const;

@@ -38,7 +38,7 @@ namespace
             : public QStyledItemDelegate
     {
     public:
-        NumericDelegate(QObject *parent = 0)
+        explicit NumericDelegate(QObject *parent = 0)
             : QStyledItemDelegate(parent)
         {
 

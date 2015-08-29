@@ -10,7 +10,7 @@ namespace fastonosql
             : public IConnectionSettingsBase
     {
     public:
-        RocksdbConnectionSettings(const std::string& connectionName);
+        explicit RocksdbConnectionSettings(const std::string& connectionName);
 
         virtual std::string commandLine() const;
         virtual void setCommandLine(const std::string& line);

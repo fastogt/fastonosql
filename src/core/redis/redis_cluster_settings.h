@@ -10,7 +10,7 @@ namespace fastonosql
             : public IClusterSettingsBase
     {
     public:
-        RedisClusterSettings(const std::string& connectionName);
+        explicit RedisClusterSettings(const std::string& connectionName);
         virtual IConnectionSettings* clone() const;
     };
 }

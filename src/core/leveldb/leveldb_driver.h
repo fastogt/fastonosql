@@ -36,7 +36,7 @@ namespace fastonosql
         Q_OBJECT
     public:        
 
-        LeveldbDriver(IConnectionSettingsBaseSPtr settings);
+        explicit LeveldbDriver(IConnectionSettingsBaseSPtr settings);
         virtual ~LeveldbDriver();
 
         virtual bool isConnected() const;

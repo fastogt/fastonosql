@@ -9,7 +9,7 @@ namespace fastonosql
     {
         Q_OBJECT
     public:
-        SsdbApi(QsciLexer* lexer);
+        explicit SsdbApi(QsciLexer* lexer);
 
         virtual void updateAutoCompletionList(const QStringList& context, QStringList& list);
         virtual QStringList callTips(const QStringList& context, int commas, QsciScintilla::CallTipsStyle style, QList<int>& shifts);
@@ -27,7 +27,7 @@ namespace fastonosql
             HelpKeyword
         };
 
-        SsdbLexer(QObject* parent = 0);
+        explicit SsdbLexer(QObject* parent = 0);
         virtual const char* language() const;
 
         virtual const char* version() const;

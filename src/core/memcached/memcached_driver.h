@@ -51,7 +51,7 @@ namespace fastonosql
         Q_OBJECT
     public:        
 
-        MemcachedDriver(IConnectionSettingsBaseSPtr settings);
+        explicit MemcachedDriver(IConnectionSettingsBaseSPtr settings);
         virtual ~MemcachedDriver();
 
         virtual bool isConnected() const;

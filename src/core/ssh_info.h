@@ -21,7 +21,7 @@ namespace fastonosql
                 const std::string& publicKey, const std::string& privateKey, const std::string& passphrase,
                 SupportedAuthenticationMetods method);
 
-        SSHInfo(const std::string& text);
+        explicit SSHInfo(const std::string& text);
 
         bool isValid() const;
         SupportedAuthenticationMetods authMethod() const;

@@ -343,7 +343,7 @@ namespace fastonosql
                 return er;
             }
             else if(strcasecmp(argv[0], "delete") == 0){
-                if(argc != 2 || argc != 3){
+                if(!(argc == 2 || argc == 3)){
                     return common::make_error_value("Invalid delete input argument", common::ErrorValue::E_ERROR);
                 }
 

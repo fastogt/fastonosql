@@ -76,7 +76,7 @@ namespace fastonosql
         {
             QObject* esender = ev->sender();
             notifyProgressImpl(sender, esender, 0);
-            typename event_request_type::value_type res(ev->value());
+            typename event_responce_type::value_type res(ev->value());
 
             char patternResult[1024] = {0};
             common::SNPrintf(patternResult, sizeof(patternResult), "Sorry, but now " PROJECT_NAME_TITLE " not supported %s.", eventCommandText);

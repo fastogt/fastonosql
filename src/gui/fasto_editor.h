@@ -40,7 +40,7 @@ namespace fastonosql
         {
             HeightFindPanel = 40
         };
-        FastoEditor(QWidget* parent = 0);
+        explicit FastoEditor(QWidget* parent = 0);
         virtual ~FastoEditor();
 
         void registerImage(int id, const QPixmap &im);

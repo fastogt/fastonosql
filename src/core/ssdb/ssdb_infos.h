@@ -34,7 +34,7 @@ namespace fastonosql
         } common_;
 
         SsdbServerInfo();
-        SsdbServerInfo(const Common& common);
+        explicit SsdbServerInfo(const Common& common);
         virtual common::Value* valueByIndexes(unsigned char property, unsigned char field) const;
         virtual std::string toString() const;
         virtual uint32_t version() const;

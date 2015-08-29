@@ -26,7 +26,7 @@ namespace fastonosql
     {
         Q_OBJECT
     public:
-        PropertyTableModel(QObject* parent = 0);
+        explicit PropertyTableModel(QObject* parent = 0);
         ~PropertyTableModel();
 
         virtual QVariant data(const QModelIndex& index, int role = Qt::DisplayRole) const;

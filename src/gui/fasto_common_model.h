@@ -11,7 +11,7 @@ namespace fastonosql
     {
         Q_OBJECT
     public:
-        FastoCommonModel(QObject *parent = 0);
+        explicit FastoCommonModel(QObject *parent = 0);
         virtual ~FastoCommonModel();
 
         virtual QVariant data(const QModelIndex& index, int role = Qt::DisplayRole) const;
