@@ -15,9 +15,9 @@ SET(BRANDING_PROJECT_MAINTAINER_NAME "Alexandr Topilski" CACHE STRING "Name of m
 SET(BRANDING_PROJECT_GITHUB_FORK "www.github.com/fastogt/fastonosql" CACHE STRING "Branding fork url for ${BRANDING_PROJECT_NAME}") #default
 SET(BRANDING_PROJECT_GITHUB_ISSUES "www.github.com/fastogt/fastonosql/issues" CACHE STRING "Branding issues url for ${BRANDING_PROJECT_NAME}") #default
 
-SET(BRANDING_PROJECT_FACEBOOK_LINK "www.facebook.com/profile.php?id=100010049712549" CACHE STRING "Facebook link for ${BRANDING_PROJECT_NAME}") #default
-SET(BRANDING_PROJECT_TWITTER_LINK "www.twitter.com/FastoNoSQL" CACHE STRING "Twitter link for ${BRANDING_PROJECT_NAME}") #default
-SET(BRANDING_PROJECT_GITHUB_LINK "www.github.com/fastogt/fastonosql" CACHE STRING "Github link for ${BRANDING_PROJECT_NAME}") #default
+SET(BRANDING_PROJECT_FACEBOOK_LINK "https://www.facebook.com/profile.php?id=100010049712549" CACHE STRING "Facebook link for ${BRANDING_PROJECT_NAME}") #default
+SET(BRANDING_PROJECT_TWITTER_LINK "https://www.twitter.com/FastoNoSQL" CACHE STRING "Twitter link for ${BRANDING_PROJECT_NAME}") #default
+SET(BRANDING_PROJECT_GITHUB_LINK "https://www.github.com/fastogt/fastonosql" CACHE STRING "Github link for ${BRANDING_PROJECT_NAME}") #default
 
 SET(BRANDING_PROJECT_BREF_DESCRIPTION "Cross-platform open source Redis, Memcached, SSDB, LevelDB management tool."
     CACHE STRING "Bref description for ${BRANDING_PROJECT_NAME}")
