@@ -81,8 +81,6 @@ namespace fastonosql
 
         QVBoxLayout* mainlayout = new QVBoxLayout;
         QHBoxLayout* hlayout = new QHBoxLayout;
-        hlayout->setContentsMargins(0, 0, 0, 0);
-        hlayout->setSpacing(0);
 
         QToolBar *savebar = new QToolBar;
         savebar->setStyleSheet("QToolBar { border: 0px; }");
@@ -127,7 +125,6 @@ namespace fastonosql
         QSplitter *splitter = new QSplitter;
         splitter->setOrientation(Qt::Horizontal);
         splitter->setHandleWidth(1);
-        splitter->setContentsMargins(0, 0, 0, 0);
         hlayout->addWidget(splitter);
 
         hlayout->addWidget(dbName_);
@@ -148,7 +145,6 @@ namespace fastonosql
         QSplitter *splitterButtom = new QSplitter;
         splitterButtom->setOrientation(Qt::Horizontal);
         splitterButtom->setHandleWidth(1);
-        splitterButtom->setContentsMargins(0, 0, 0, 0);
         apilayout->addWidget(splitterButtom);
 
         commandsVersionApi_ = new QComboBox;

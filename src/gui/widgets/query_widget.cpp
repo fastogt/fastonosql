@@ -27,16 +27,13 @@ namespace fastonosql
 #endif
         splitter->setOrientation(Qt::Vertical);
         splitter->setHandleWidth(1);
-        splitter->setContentsMargins(0, 0, 0, 0);
 
         QVBoxLayout *mainLayout = new QVBoxLayout;
-        mainLayout->setSpacing(0);
         splitter->addWidget(shellWidget_);
         splitter->addWidget(outputWidget_);
         splitter->setStretchFactor(0, 0);
         splitter->setStretchFactor(1, 1);
         mainLayout->addWidget(splitter);
-
         setMinimumSize(QSize(min_width, min_height));
 
         setLayout(mainLayout);

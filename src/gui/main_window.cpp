@@ -7,6 +7,7 @@
 #include <QThread>
 #include <QApplication>
 #include <QFileDialog>
+#include <QToolBar>
 
 #ifdef OS_ANDROID
 #include <QGestureEvent>
@@ -253,6 +254,7 @@ namespace fastonosql
         addDockWidget(Qt::BottomDockWidgetArea, logDock_);
 
         setMinimumSize(QSize(min_width, min_height));
+        createToolBar();
         createStatusBar();
         retranslateUi();
     }
@@ -578,6 +580,57 @@ namespace fastonosql
     }
 #endif
 
+    void MainWindow::createToolBar()
+    {
+#ifdef BUILD_WITH_SOCIAL_BUTTONS
+        QToolBar *toolBar = new QToolBar(tr("Share toolbar"));
+
+        facebookAction_ = new QAction(this);
+        facebookAction_->setIcon(GuiFactory::instance().facebookIcon());
+        VERIFY(connect(facebookAction_, &QAction::triggered, this, &MainWindow::openFacebookLink));
+
+        twitterAction_ = new QAction(this);
+        twitterAction_->setIcon(GuiFactory::instance().twitterIcon());
+        VERIFY(connect(twitterAction_, &QAction::triggered, this, &MainWindow::openTwitterLink));
+
+        githubAction_ = new QAction(this);
+        githubAction_->setIcon(GuiFactory::instance().githubIcon());
+        VERIFY(connect(githubAction_, &QAction::triggered, this, &MainWindow::openGithubLink));
+
+        homePageAction_ = new QAction(this);
+        homePageAction_->setIcon(GuiFactory::instance().homePageIcon());
+        VERIFY(connect(homePageAction_, &QAction::triggered, this, &MainWindow::openHomePageLink));
+
+        toolBar->addAction(homePageAction_);
+        toolBar->addAction(facebookAction_);
+        toolBar->addAction(twitterAction_);
+        toolBar->addAction(githubAction_);
+
+        toolBar->setMovable(false);
+        addToolBar(Qt::TopToolBarArea, toolBar);
+#endif
+    }
+
+    void MainWindow::openHomePageLink()
+    {
+        QDesktopServices::openUrl(QUrl(PROJECT_DOMAIN));
+    }
+
+    void MainWindow::openFacebookLink()
+    {
+        QDesktopServices::openUrl(QUrl(PROJECT_FACEBOOK_LINK));
+    }
+
+    void MainWindow::openTwitterLink()
+    {
+        QDesktopServices::openUrl(QUrl(PROJECT_TWITTER_LINK));
+    }
+
+    void MainWindow::openGithubLink()
+    {
+        QDesktopServices::openUrl(QUrl(PROJECT_GITHUB_LINK));
+    }
+
     void MainWindow::createStatusBar()
     {
     }
@@ -605,6 +658,12 @@ namespace fastonosql
         logsAction_->setText(trLogs);
         recentConnections_->setText(trRecentConnections);
         clearMenu_->setText(trClearMenu);
+#ifdef BUILD_WITH_SOCIAL_BUTTONS
+        homePageAction_->setText(tr("%1 home page").arg(PROJECT_NAME_TITLE));
+        facebookAction_->setText(tr("Facebook %1 link").arg(PROJECT_NAME_TITLE));
+        twitterAction_->setText(tr("Twitter %1 link").arg(PROJECT_NAME_TITLE));
+        githubAction_->setText(tr("Github %1 link").arg(PROJECT_NAME_TITLE));
+#endif
         expDock_->setWindowTitle(trExpTree);
         logDock_->setWindowTitle(trLogs);
     }

@@ -53,14 +53,9 @@ namespace fastonosql
 
         mainL->addLayout(radLaout);
         mainL->addWidget(editor_);
-
-        QHBoxLayout *hlayout = new QHBoxLayout;
-        QSplitter *splitter = new QSplitter;
-        splitter->setOrientation(Qt::Horizontal);
-        splitter->setHandleWidth(1);
-        splitter->setContentsMargins(0, 0, 0, 0);
-        hlayout->addWidget(splitter);
-        hlayout->addWidget(saveChangeButton_);
+        mainL->setContentsMargins(0, 0, 0, 0);
+        QHBoxLayout *hlayout = new QHBoxLayout;;
+        hlayout->addWidget(saveChangeButton_, 0, Qt::AlignRight);
 
         mainL->addLayout(hlayout);
         setLayout(mainL);

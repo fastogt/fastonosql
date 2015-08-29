@@ -16,6 +16,11 @@ namespace fastonosql
     public:
         friend class common::patterns::LazySingleton<GuiFactory>;
 
+        const QIcon& homePageIcon() const;
+        const QIcon& facebookIcon() const;
+        const QIcon& twitterIcon() const;
+        const QIcon& githubIcon() const;
+
         const QIcon& openIcon() const;
         const QIcon& logoIcon() const;
         const QIcon& mainWindowIcon() const;

@@ -5,6 +5,30 @@
 
 namespace fastonosql
 {
+    const QIcon& GuiFactory::homePageIcon() const
+    {
+        static QIcon homepage(":" PROJECT_NAME_LOWERCASE "/images/64x64/homepage.png");
+        return homepage;
+    }
+
+    const QIcon& GuiFactory::facebookIcon() const
+    {
+        static QIcon facebook(":" PROJECT_NAME_LOWERCASE "/images/64x64/facebook.png");
+        return facebook;
+    }
+
+    const QIcon& GuiFactory::twitterIcon() const
+    {
+        static QIcon twitter(":" PROJECT_NAME_LOWERCASE "/images/64x64/twitter.png");
+        return twitter;
+    }
+
+    const QIcon& GuiFactory::githubIcon() const
+    {
+        static QIcon github(":" PROJECT_NAME_LOWERCASE "/images/64x64/github.png");
+        return github;
+    }
+
     const QIcon& GuiFactory::openIcon() const
     {
         static QIcon open(":" PROJECT_NAME_LOWERCASE "/images/64x64/open.png");

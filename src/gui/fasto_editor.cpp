@@ -38,8 +38,6 @@ namespace fastonosql
         findLine_->setAlignment(Qt::AlignLeft | Qt::AlignAbsolute);
 
         QHBoxLayout *layout = new QHBoxLayout;
-        layout->setContentsMargins(6, 0, 6, 0);
-        layout->setSpacing(4);
         layout->addWidget(close_);
         layout->addWidget(findLine_);
         layout->addWidget(next_);
@@ -54,6 +52,7 @@ namespace fastonosql
         QVBoxLayout *mainL = new QVBoxLayout;
         mainL->addWidget(scin_);
         mainL->addWidget(findPanel_);
+        mainL->setContentsMargins(0, 0, 0, 0);
         setLayout(mainL);
 
         findPanel_->hide();

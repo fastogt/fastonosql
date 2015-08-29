@@ -45,7 +45,6 @@ namespace fastonosql
         }
 
         QHBoxLayout* toolBarLayout = new QHBoxLayout;
-        toolBarLayout->setContentsMargins(0, 0, 0, 0);
         toolBarLayout->addWidget(decode);
         toolBarLayout->addWidget(decoders_);
 
@@ -57,7 +56,6 @@ namespace fastonosql
         QSplitter* splitter = new QSplitter;
         splitter->setOrientation(Qt::Horizontal);
         splitter->setHandleWidth(1);
-        splitter->setContentsMargins(0, 0, 0, 0);
         toolBarLayout->addWidget(splitter);
 
         input_ = new FastoEditor;

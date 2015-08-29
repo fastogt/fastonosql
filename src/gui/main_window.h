@@ -51,6 +51,11 @@ namespace fastonosql
         void importConnection();
         void exportConnection();
 
+        void openHomePageLink();
+        void openFacebookLink();
+        void openTwitterLink();
+        void openGithubLink();
+
         void versionAvailible(bool succesResult, const QString& version);
 
     protected:
@@ -62,6 +67,7 @@ namespace fastonosql
 #endif
 
     private:
+        void createToolBar();
         void createStatusBar();
         void retranslateUi();
         void updateRecentConnectionActions();
@@ -90,7 +96,12 @@ namespace fastonosql
         QAction* recentConnections_;
         QAction* clearMenu_;
         QAction* recentConnectionsActs_[MaxRecentConnections];
-
+#ifdef BUILD_WITH_SOCIAL_BUTTONS
+        QAction* homePageAction_;
+        QAction* facebookAction_;
+        QAction* twitterAction_;
+        QAction* githubAction_;
+#endif
         ExplorerTreeView* exp_;
         QDockWidget* expDock_;
         QDockWidget* logDock_;

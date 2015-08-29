@@ -2,6 +2,7 @@
 [Alexandr Topilski]
 - Package installation fails on Ubuntu 14 #56
 - RocksDB database support http://http://rocksdb.org/
+- Added social buttons
 - [SSDB] Ssdb auth command #54
 
 0.2.5 / August 22, 2015

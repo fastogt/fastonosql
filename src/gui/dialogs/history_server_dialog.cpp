@@ -47,7 +47,6 @@ namespace fastonosql
         QSplitter *splitter = new QSplitter;
         splitter->setOrientation(Qt::Horizontal);
         splitter->setHandleWidth(1);
-        splitter->setContentsMargins(0, 0, 0, 0);
 
         mainL->addWidget(splitter);
         splitter->addWidget(settingsGraph_);

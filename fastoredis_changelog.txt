@@ -1,6 +1,7 @@
 0.7.7
 [Alexandr Topilski]
 - Package installation fails on Ubuntu 14 #56
+- Added social buttons
 
 0.7.6 / August 22, 2015
 [Alexandr Topilski]
