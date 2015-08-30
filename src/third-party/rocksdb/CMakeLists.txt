@@ -2,11 +2,13 @@ CMAKE_MINIMUM_REQUIRED(VERSION 3.0.0)
 PROJECT(rocksdb)
 
 INCLUDE_DIRECTORIES(${CMAKE_CURRENT_LIST_DIR}/src ${CMAKE_CURRENT_LIST_DIR}/src/include)
-IF(OS_POSIX)
+IF(OS_ANDROID)
+    ADD_DEFINITIONS(-DROCKSDB_PLATFORM_POSIX -DIOS_CROSS_COMPILE)
+ELSEIF(OS_POSIX)
     ADD_DEFINITIONS(-DROCKSDB_PLATFORM_POSIX)
 ELSEIF(OS_WINDOWS)
 ELSE()
-ENDIF(OS_POSIX)
+ENDIF(OS_ANDROID)
 
 SET(HEADERS_ROCKSDB
 )
@@ -96,7 +98,6 @@ SET(SOURCES_ROCKSDB
     src/util/compaction_job_stats_impl.cc
     src/util/file_reader_writer.cc
     src/util/file_util.cc
-    src/util/iostats_context.cc
     src/util/coding.cc
     src/util/perf_level.cc
     src/util/thread_status_updater.cc
@@ -111,6 +112,10 @@ SET(SOURCES_ROCKSDB
     src/util/thread_local.cc
     src/util/skiplistrep.cc
 )
+
+IF(OS_POSIX AND NOT DEFINED IOS_CROSS_COMPILE)
+    SET(SOURCES_ROCKSDB ${SOURCES_ROCKSDB} src/util/iostats_context.cc)
+ENDIF(OS_POSIX AND NOT DEFINED IOS_CROSS_COMPILE)
 
 SET(BUILD_VERSION_CC ${CMAKE_CURRENT_SOURCE_DIR}/src/util/build_version.cc)
 CONFIGURE_FILE("${CMAKE_CURRENT_SOURCE_DIR}/build_version.cc.in" ${BUILD_VERSION_CC} @ONLY IMMEDIATE)
