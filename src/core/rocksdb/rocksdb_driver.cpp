@@ -217,6 +217,16 @@ namespace fastonosql
         rocksdbConfig config_;
         SSHInfo sinfo_;
 
+        std::string currentDbName() const
+        {
+            rocksdb::ColumnFamilyHandle* fam = rocksdb_->DefaultColumnFamily();
+            if(fam){
+                return fam->GetName();
+            }
+
+            return "default";
+        }
+
    private:
         common::ErrorValueSPtr execute(FastoObject* out, int argc, char **argv)
         {
@@ -248,9 +258,45 @@ namespace fastonosql
                 }
                 return er;
             }
+            else if(strcasecmp(argv[0], "mget") == 0){
+                if(argc < 2){
+                    return common::make_error_value("Invalid mget input argument", common::ErrorValue::E_ERROR);
+                }
+
+                std::vector<rocksdb::Slice> keysget;
+                for(int i = 1; i < argc; ++i){
+                    keysget.push_back(argv[i]);
+                }
+
+                std::vector<std::string> keysout;
+                common::ErrorValueSPtr er = mget(keysget, &keysout);
+                if(!er){
+                    common::ArrayValue* ar = common::Value::createArrayValue();
+                    for(int i = 0; i < keysout.size(); ++i){
+                        common::StringValue *val = common::Value::createStringValue(keysout[i]);
+                        ar->append(val);
+                    }
+                    FastoObjectArray* child = new FastoObjectArray(out, ar, config_.mb_delim_);
+                    out->addChildren(child);
+                }
+                return er;
+            }
+            else if(strcasecmp(argv[0], "merge") == 0){
+                if(argc != 3){
+                    return common::make_error_value("Invalid merge input argument", common::ErrorValue::E_ERROR);
+                }
+
+                common::ErrorValueSPtr er = merge(argv[1], argv[2]);
+                if(!er){
+                    common::StringValue *val = common::Value::createStringValue("STORED");
+                    FastoObject* child = new FastoObject(out, val, config_.mb_delim_);
+                    out->addChildren(child);
+                }
+                return er;
+            }
             else if(strcasecmp(argv[0], "put") == 0){
                 if(argc != 3){
-                    return common::make_error_value("Invalid set input argument", common::ErrorValue::E_ERROR);
+                    return common::make_error_value("Invalid put input argument", common::ErrorValue::E_ERROR);
                 }
 
                 common::ErrorValueSPtr er = put(argv[1], argv[2]);
@@ -306,6 +352,33 @@ namespace fastonosql
             if (!st.ok()){
                 char buff[1024] = {0};
                 common::SNPrintf(buff, sizeof(buff), "get function error: %s", st.ToString());
+                return common::make_error_value(buff, common::ErrorValue::E_ERROR);
+            }
+
+            return common::ErrorValueSPtr();
+        }
+
+        common::ErrorValueSPtr mget(const std::vector<rocksdb::Slice>& keys, std::vector<std::string> *ret)
+        {
+            rocksdb::ReadOptions ro;
+            std::vector<rocksdb::Status> sts = rocksdb_->MultiGet(ro, keys, ret);
+            for(int i = 0; i < sts.size(); ++i){
+                rocksdb::Status st = sts[i];
+                if (st.ok()){
+                    return common::ErrorValueSPtr();
+                }
+            }
+
+            return common::make_error_value("mget function unknown error", common::ErrorValue::E_ERROR);
+        }
+
+        common::ErrorValueSPtr merge(const std::string& key, const std::string& value)
+        {
+            rocksdb::WriteOptions wo;
+            rocksdb::Status st = rocksdb_->Merge(wo, key, value);
+            if (!st.ok()){
+                char buff[1024] = {0};
+                common::SNPrintf(buff, sizeof(buff), "merge function error: %s", st.ToString());
                 return common::make_error_value(buff, common::ErrorValue::E_ERROR);
             }
 
@@ -524,7 +597,8 @@ namespace fastonosql
 
     common::ErrorValueSPtr RocksdbDriver::currentDataBaseInfo(DataBaseInfo** info)
     {
-        *info = new RocksdbDataBaseInfo("0", 0, true);
+        std::string name = impl_->currentDbName();
+        *info = new RocksdbDataBaseInfo(name, 0, true);
         return common::ErrorValueSPtr();
     }
 
