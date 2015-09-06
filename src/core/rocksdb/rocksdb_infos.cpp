@@ -18,25 +18,31 @@ namespace
 }
 
 namespace fastonosql
-{   
-    const std::vector<common::Value::Type> DBTraits<ROCKSDB>::supportedTypes = {
-                                            common::Value::TYPE_BOOLEAN,
-                                            common::Value::TYPE_INTEGER,
-                                            common::Value::TYPE_UINTEGER,
-                                            common::Value::TYPE_DOUBLE,
-                                            common::Value::TYPE_STRING,
-                                            common::Value::TYPE_ARRAY
-                                           };
-
-    const std::vector<std::string> rocksdbHeaders =
+{
+    template<>
+    std::vector<common::Value::Type> DBTraits<ROCKSDB>::supportedTypes()
     {
-        ROCKSDB_STATS_LABEL
-    };
+        return  {
+                    common::Value::TYPE_BOOLEAN,
+                    common::Value::TYPE_INTEGER,
+                    common::Value::TYPE_UINTEGER,
+                    common::Value::TYPE_DOUBLE,
+                    common::Value::TYPE_STRING,
+                    common::Value::TYPE_ARRAY
+                };
+    }
 
-    const std::vector<std::vector<Field> > rocksdbFields =
+    template<>
+    std::vector<std::string> DBTraits<ROCKSDB>::infoHeaders()
     {
-        rockCommonFields
-    };
+        return { ROCKSDB_STATS_LABEL };
+    }
+
+    template<>
+    std::vector<std::vector<Field> > DBTraits<ROCKSDB>::infoFields()
+    {
+        return  { rockCommonFields };
+    }
 
     RocksdbServerInfo::Stats::Stats()
         : compactions_level_(0), file_size_mb_(0), time_sec_(0), read_mb_(0), write_mb_(0)
@@ -140,12 +146,13 @@ namespace fastonosql
 
         RocksdbServerInfo* result = new RocksdbServerInfo;
 
+        const std::vector<std::string> headers = DBTraits<ROCKSDB>::infoHeaders();
         std::string word;
-        DCHECK(rocksdbHeaders.size() == 1);
-        for(int i = 0; i < content.size(); ++i)
-        {
+        DCHECK(headers.size() == 1);
+
+        for(int i = 0; i < content.size(); ++i){
             word += content[i];
-            if(word == rocksdbHeaders[0]){
+            if(word == headers[0]){
                 std::string part = content.substr(i + 1);
                 result->stats_ = RocksdbServerInfo::Stats(part);
                 break;

@@ -29,9 +29,6 @@
 
 namespace fastonosql
 {
-    extern const std::vector<std::string> memcachedHeaders;
-    extern const std::vector<std::vector<Field> > memcachedFields;
-
     class MemcachedServerInfo
             : public ServerInfo
     {
@@ -85,12 +82,6 @@ namespace fastonosql
     public:
         MemcachedDataBaseInfo(const std::string& name, size_t size, bool isDefault);
         virtual DataBaseInfo* clone() const;
-    };
-
-    template<>
-    struct DBTraits<MEMCACHED>
-    {
-        static const std::vector<common::Value::Type> supportedTypes;
     };
 
     class MemcachedCommand

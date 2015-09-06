@@ -35,26 +35,31 @@ namespace
 }
 
 namespace fastonosql
-{   
-    const std::vector<common::Value::Type> DBTraits<MEMCACHED>::supportedTypes =
+{
+    template<>
+    std::vector<common::Value::Type> DBTraits<MEMCACHED>::supportedTypes()
     {
-        common::Value::TYPE_BOOLEAN,
-        common::Value::TYPE_INTEGER,
-        common::Value::TYPE_UINTEGER,
-        common::Value::TYPE_DOUBLE,
-        common::Value::TYPE_STRING,
-        common::Value::TYPE_ARRAY
-    };
+        return  {
+                    common::Value::TYPE_BOOLEAN,
+                    common::Value::TYPE_INTEGER,
+                    common::Value::TYPE_UINTEGER,
+                    common::Value::TYPE_DOUBLE,
+                    common::Value::TYPE_STRING,
+                    common::Value::TYPE_ARRAY
+                };
+    }
 
-    const std::vector<std::string> memcachedHeaders =
+    template<>
+    std::vector<std::string> DBTraits<MEMCACHED>::infoHeaders()
     {
-        MEMCACHED_COMMON_LABEL
-    };
+        return  { MEMCACHED_COMMON_LABEL };
+    }
 
-    const std::vector<std::vector<Field> > memcachedFields =
+    template<>
+    std::vector<std::vector<Field> > DBTraits<MEMCACHED>::infoFields()
     {
-        memcachedCommonFields
-    };
+        return  { memcachedCommonFields };
+    }
 
     MemcachedServerInfo::Common::Common()
     {
@@ -262,13 +267,15 @@ namespace fastonosql
         int j = 0;
         std::string word;
         size_t pos = 0;
+        const std::vector<std::string> headers = DBTraits<MEMCACHED>::infoHeaders();
+
         for(int i = 0; i < content.size(); ++i)
         {
             char ch = content[i];
             word += ch;
-            if(word == memcachedHeaders[j]){
-                if(j+1 != memcachedHeaders.size()){
-                    pos = content.find(memcachedHeaders[j+1], pos);
+            if(word == headers[j]){
+                if(j+1 != headers.size()){
+                    pos = content.find(headers[j+1], pos);
                 }
                 else{
                     break;

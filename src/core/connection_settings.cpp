@@ -9,7 +9,6 @@
 
 #include "core/settings_manager.h"
 
-
 #ifdef BUILD_WITH_REDIS
 #include "core/redis/redis_settings.h"
 #include "core/redis/redis_cluster_settings.h"
@@ -366,6 +365,7 @@ namespace fastonosql
             return common::convertToString(r);
         }
 #endif
+        NOTREACHED();
         return std::string();
     }
 
@@ -406,6 +406,7 @@ namespace fastonosql
         }
 #endif
 
+        NOTREACHED();
         return NULL;
     }
 

@@ -149,6 +149,114 @@ namespace fastonosql
         return common::Value::isIntegral(type_);
     }
 
+    std::vector<common::Value::Type> supportedTypesFromType(connectionTypes type)
+    {
+#ifdef BUILD_WITH_REDIS
+        if(type == REDIS){
+            return DBTraits<REDIS>::supportedTypes();
+        }
+#endif
+#ifdef BUILD_WITH_MEMCACHED
+        if(type == MEMCACHED){
+            return DBTraits<MEMCACHED>::supportedTypes();
+        }
+#endif
+#ifdef BUILD_WITH_SSDB
+        if(type == SSDB){
+            return DBTraits<SSDB>::supportedTypes();
+        }
+#endif
+#ifdef BUILD_WITH_LEVELDB
+        if(type == LEVELDB){
+            return DBTraits<LEVELDB>::supportedTypes();
+        }
+#endif
+#ifdef BUILD_WITH_ROCKSDB
+        if(type == ROCKSDB){
+            return DBTraits<ROCKSDB>::supportedTypes();
+        }
+#endif
+#ifdef BUILD_WITH_UNQLITE
+        if(type == UNQLITE){
+            return DBTraits<UNQLITE>::supportedTypes();
+        }
+#endif
+        NOTREACHED();
+        return std::vector<common::Value::Type>();
+    }
+
+    std::vector<std::string> infoHeadersFromType(connectionTypes type)
+    {
+#ifdef BUILD_WITH_REDIS
+        if(type == REDIS){
+            return DBTraits<REDIS>::infoHeaders();
+        }
+#endif
+#ifdef BUILD_WITH_MEMCACHED
+        if(type == MEMCACHED){
+            return DBTraits<MEMCACHED>::infoHeaders();
+        }
+#endif
+#ifdef BUILD_WITH_SSDB
+        if(type == SSDB){
+            return DBTraits<SSDB>::infoHeaders();
+        }
+#endif
+#ifdef BUILD_WITH_LEVELDB
+        if(type == LEVELDB){
+            return DBTraits<LEVELDB>::infoHeaders();
+        }
+#endif
+#ifdef BUILD_WITH_ROCKSDB
+        if(type == ROCKSDB){
+            return DBTraits<ROCKSDB>::infoHeaders();
+        }
+#endif
+#ifdef BUILD_WITH_UNQLITE
+        if(type == UNQLITE){
+            return DBTraits<UNQLITE>::infoHeaders();
+        }
+#endif
+        NOTREACHED();
+        return std::vector<std::string>();
+    }
+
+    std::vector< std::vector<Field> > infoFieldsFromType(connectionTypes type)
+    {
+#ifdef BUILD_WITH_REDIS
+        if(type == REDIS){
+            return DBTraits<REDIS>::infoFields();
+        }
+#endif
+#ifdef BUILD_WITH_MEMCACHED
+        if(type == MEMCACHED){
+            return DBTraits<MEMCACHED>::infoFields();
+        }
+#endif
+#ifdef BUILD_WITH_SSDB
+        if(type == SSDB){
+            return DBTraits<SSDB>::infoFields();
+        }
+#endif
+#ifdef BUILD_WITH_LEVELDB
+        if(type == LEVELDB){
+            return DBTraits<LEVELDB>::infoFields();
+        }
+#endif
+#ifdef BUILD_WITH_ROCKSDB
+        if(type == ROCKSDB){
+            return DBTraits<ROCKSDB>::infoFields();
+        }
+#endif
+#ifdef BUILD_WITH_UNQLITE
+        if(type == UNQLITE){
+            return DBTraits<UNQLITE>::infoFields();
+        }
+#endif
+       NOTREACHED();
+       return std::vector< std::vector<Field> >();
+    }
+
     ServerInfoSnapShoot::ServerInfoSnapShoot()
         : msec_(0), info_()
     {

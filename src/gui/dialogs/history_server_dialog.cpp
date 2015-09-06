@@ -4,30 +4,6 @@
 #include <QSplitter>
 #include <QComboBox>
 
-#ifdef BUILD_WITH_REDIS
-#include "core/redis/redis_infos.h"
-#endif
-
-#ifdef BUILD_WITH_MEMCACHED
-#include "core/memcached/memcached_infos.h"
-#endif
-
-#ifdef BUILD_WITH_SSDB
-#include "core/ssdb/ssdb_infos.h"
-#endif
-
-#ifdef BUILD_WITH_LEVELDB
-#include "core/leveldb/leveldb_infos.h"
-#endif
-
-#ifdef BUILD_WITH_ROCKSDB
-#include "core/rocksdb/rocksdb_infos.h"
-#endif
-
-#ifdef BUILD_WITH_UNQLITE
-#include "core/unqlite/unqlite_infos.h"
-#endif
-
 #include "fasto/qt/gui/base/graph_widget.h"
 #include "gui/gui_factory.h"
 #include "fasto/qt/gui/glass_widget.h"
@@ -61,48 +37,11 @@ namespace fastonosql
         typedef void (QComboBox::*curc)(int);
         VERIFY(connect(serverInfoGroupsNames_, static_cast<curc>(&QComboBox::currentIndexChanged), this, &ServerHistoryDialog::refreshInfoFields ));
         VERIFY(connect(serverInfoFields_, static_cast<curc>(&QComboBox::currentIndexChanged), this, &ServerHistoryDialog::refreshGraph ));
-#ifdef BUILD_WITH_REDIS
-        if(type_ == REDIS){
-            for(int i = 0; i < redisHeaders.size(); ++i){
-                serverInfoGroupsNames_->addItem(common::convertFromString<QString>(redisHeaders[i]));
-            }
+
+        const std::vector<std::string> headers = infoHeadersFromType(type_);
+        for(int i = 0; i < headers.size(); ++i){
+            serverInfoGroupsNames_->addItem(common::convertFromString<QString>(headers[i]));
         }
-#endif
-#ifdef BUILD_WITH_MEMCACHED
-        if(type_ == MEMCACHED){
-            for(int i = 0; i < memcachedHeaders.size(); ++i){
-                serverInfoGroupsNames_->addItem(common::convertFromString<QString>(memcachedHeaders[i]));
-            }
-        }
-#endif
-#ifdef BUILD_WITH_SSDB
-        if(type_ == SSDB){
-            for(int i = 0; i < ssdbHeaders.size(); ++i){
-                serverInfoGroupsNames_->addItem(common::convertFromString<QString>(ssdbHeaders[i]));
-            }
-        }
-#endif
-#ifdef BUILD_WITH_LEVELDB
-        if(type_ == LEVELDB){
-            for(int i = 0; i < leveldbHeaders.size(); ++i){
-                serverInfoGroupsNames_->addItem(common::convertFromString<QString>(leveldbHeaders[i]));
-            }
-        }
-#endif
-#ifdef BUILD_WITH_ROCKSDB
-        if(type_ == ROCKSDB){
-            for(int i = 0; i < rocksdbHeaders.size(); ++i){
-                serverInfoGroupsNames_->addItem(common::convertFromString<QString>(rocksdbHeaders[i]));
-            }
-        }
-#endif
-#ifdef BUILD_WITH_UNQLITE
-        if(type_ == UNQLITE){
-            for(int i = 0; i < unqliteHeaders.size(); ++i){
-                serverInfoGroupsNames_->addItem(common::convertFromString<QString>(unqliteHeaders[i]));
-            }
-        }
-#endif
         QVBoxLayout *setingsLayout = new QVBoxLayout;
         setingsLayout->addWidget(serverInfoGroupsNames_);
         setingsLayout->addWidget(serverInfoFields_);
@@ -145,38 +84,8 @@ namespace fastonosql
 
         serverInfoFields_->clear();
 
-        std::vector<Field> field;
-#ifdef BUILD_WITH_REDIS
-        if(type_ == REDIS){
-            field = redisFields[index];
-        }
-#endif
-#ifdef BUILD_WITH_MEMCACHED
-        if(type_ == MEMCACHED){
-            field = memcachedFields[index];
-        }
-#endif
-#ifdef BUILD_WITH_SSDB
-        if(type_ == SSDB){
-            field = ssdbFields[index];
-        }
-#endif
-#ifdef BUILD_WITH_LEVELDB
-        if(type_ == LEVELDB){
-            field = leveldbFields[index];
-        }
-#endif
-#ifdef BUILD_WITH_ROCKSDB
-        if(type_ == ROCKSDB){
-            field = rocksdbFields[index];
-        }
-#endif
-#ifdef BUILD_WITH_UNQLITE
-        if(type_ == UNQLITE){
-            field = unqliteFields[index];
-        }
-#endif
-        DCHECK(!field.empty());
+        std::vector< std::vector<Field> > fields = infoFieldsFromType(type_);
+        std::vector<Field> field = fields[index];
         for(int i = 0; i < field.size(); ++i){
             Field fl = field[i];
             if(fl.isIntegral()){

@@ -7,29 +7,7 @@
 
 #include "common/time.h"
 
-#ifdef BUILD_WITH_REDIS
-#include "core/redis/redis_driver.h"
-#endif
-
-#ifdef BUILD_WITH_MEMCACHED
-#include "core/memcached/memcached_driver.h"
-#endif
-
-#ifdef BUILD_WITH_SSDB
-#include "core/ssdb/ssdb_driver.h"
-#endif
-
-#ifdef BUILD_WITH_LEVELDB
-#include "core/leveldb/leveldb_driver.h"
-#endif
-
-#ifdef BUILD_WITH_ROCKSDB
-#include "core/rocksdb/rocksdb_driver.h"
-#endif
-
-#ifdef BUILD_WITH_UNQLITE
-#include "core/unqlite/unqlite_driver.h"
-#endif
+#include "core/servers_manager.h"
 
 #include "gui/gui_factory.h"
 #include "fasto/qt/gui/glass_widget.h"
@@ -41,43 +19,6 @@ namespace
     const QString timeTemplate = "Time execute msec: %1";
     const QString connectionStatusTemplate = "Connection state: %1";
     const QSize stateIconSize = QSize(64, 64);
-
-    common::ErrorValueSPtr testConnectionTMethod(fastonosql::IConnectionSettingsBaseSPtr connection)
-    {
-        using namespace fastonosql;
-        connectionTypes type = connection->connectionType();
-#ifdef BUILD_WITH_REDIS
-        if(type == REDIS){
-            return testConnection(dynamic_cast<RedisConnectionSettings*>(connection.get()));
-        }
-#endif
-#ifdef BUILD_WITH_MEMCACHED
-        if(type == MEMCACHED){
-            return testConnection(dynamic_cast<MemcachedConnectionSettings*>(connection.get()));
-        }
-#endif
-#ifdef BUILD_WITH_SSDB
-        if(type == SSDB){
-            return testConnection(dynamic_cast<SsdbConnectionSettings*>(connection.get()));
-        }
-#endif
-#ifdef BUILD_WITH_LEVELDB
-        if(type == LEVELDB){
-            return testConnection(dynamic_cast<LeveldbConnectionSettings*>(connection.get()));
-        }
-#endif
-#ifdef BUILD_WITH_ROCKSDB
-        if(type == ROCKSDB){
-            return testConnection(dynamic_cast<RocksdbConnectionSettings*>(connection.get()));
-        }
-#endif
-#ifdef BUILD_WITH_UNQLITE
-        if(type == UNQLITE){
-            return testConnection(dynamic_cast<UnqliteConnectionSettings*>(connection.get()));
-        }
-#endif
-        return common::make_error_value("Invalid setting type", common::ErrorValue::E_ERROR);
-    }
 }
 
 namespace fastonosql
@@ -95,7 +36,7 @@ namespace fastonosql
             return;
         }
 
-        common::ErrorValueSPtr er = testConnectionTMethod(connection_);
+        common::ErrorValueSPtr er = ServersManager::instance().testConnection(connection_);
 
         if(er){
             emit connectionResult(false, common::time::current_mstime() - startTime_, common::convertFromString<QString>(er->description()));

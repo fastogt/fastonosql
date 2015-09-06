@@ -35,12 +35,6 @@ namespace fastonosql
 
     std::string convertVersionNumberToReadableString(uint32_t version);
 
-    template<connectionTypes ct>
-    struct DBTraits
-    {
-        static const std::vector<common::Value::Type> supportedTypes;
-    };
-
     struct NKey
     {
         explicit NKey(const std::string& key, int32_t ttl_sec = -1);
@@ -136,6 +130,18 @@ namespace fastonosql
         std::string name_;
         common::Value::Type type_;
     };
+
+    template<connectionTypes ct>
+    struct DBTraits
+    {
+        static std::vector<common::Value::Type> supportedTypes();
+        static std::vector<std::string> infoHeaders();
+        static std::vector< std::vector<Field> > infoFields();
+    };
+
+    std::vector<common::Value::Type> supportedTypesFromType(connectionTypes type);
+    std::vector<std::string> infoHeadersFromType(connectionTypes type);
+    std::vector< std::vector<Field> > infoFieldsFromType(connectionTypes type);
 
     typedef common::shared_ptr<ServerInfo> ServerInfoSPtr;
 

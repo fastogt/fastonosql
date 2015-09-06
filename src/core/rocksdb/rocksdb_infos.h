@@ -12,9 +12,6 @@
 
 namespace fastonosql
 {
-    extern const std::vector<std::string> rocksdbHeaders;
-    extern const std::vector<std::vector<Field> > rocksdbFields;
-
     class RocksdbServerInfo
             : public ServerInfo
     {
@@ -52,12 +49,6 @@ namespace fastonosql
     public:
         RocksdbDataBaseInfo(const std::string& name, size_t size, bool isDefault);
         virtual DataBaseInfo* clone() const;
-    };
-
-    template<>
-    struct DBTraits<ROCKSDB>
-    {
-        static const std::vector<common::Value::Type> supportedTypes;
     };
 
     class RocksdbCommand

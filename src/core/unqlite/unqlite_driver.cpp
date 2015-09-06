@@ -15,8 +15,8 @@ extern "C" {
 #include "core/unqlite/unqlite_infos.h"
 
 #define INFO_REQUEST "INFO"
-#define GET_KEY_PATTERN_1ARGS_S "GET %s"
-#define SET_KEY_PATTERN_2ARGS_SS "PUT %s %s"
+#define GET_KEY_PATTERN_1ARGS_S "FETCH %s"
+#define SET_KEY_PATTERN_2ARGS_SS "STORE %s %s"
 
 #define GET_KEYS_PATTERN_1ARGS_I "KEYS a z %d"
 #define DELETE_KEY_PATTERN_1ARGS_S "DEL %s"
@@ -36,6 +36,7 @@ namespace
     {
         std::string *out = static_cast<std::string *>(str);
         out->assign((const char*)pData, nDatalen);
+        return UNQLITE_OK;
     }
 }
 
@@ -344,7 +345,7 @@ namespace fastonosql
             /* Allocate a new cursor instance */
             unqlite_kv_cursor *pCur; /* Cursor handle */
             int rc = unqlite_kv_cursor_init(unqlite_, &pCur);
-            if( rc != UNQLITE_OK ){
+            if(rc != UNQLITE_OK){
                 char buff[1024] = {0};
                 common::SNPrintf(buff, sizeof(buff), "Keys function error: %s", getUnqliteError(unqlite_));
                 return common::make_error_value(buff, common::ErrorValue::E_ERROR);
@@ -353,13 +354,11 @@ namespace fastonosql
             unqlite_kv_cursor_first_entry(pCur);
 
             /* Iterate over the entries */
-            while( unqlite_kv_cursor_valid_entry(pCur) ){
+            while(unqlite_kv_cursor_valid_entry(pCur)){
                 std::string key;
                 unqlite_kv_cursor_key_callback(pCur, getDataCallback, &key);
                 if(key_start < key && key_end > key){
-                    std::string value;
-                    unqlite_kv_cursor_data_callback(pCur, getDataCallback, &value);
-                    ret->push_back(value);
+                    ret->push_back(key);
                 }
 
                 /* Point to the next entry */

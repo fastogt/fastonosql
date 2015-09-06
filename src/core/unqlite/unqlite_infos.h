@@ -12,9 +12,6 @@
 
 namespace fastonosql
 {
-    extern const std::vector<std::string> unqliteHeaders;
-    extern const std::vector<std::vector<Field> > unqliteFields;
-
     class UnqliteServerInfo
             : public ServerInfo
     {
@@ -52,12 +49,6 @@ namespace fastonosql
     public:
         UnqliteDataBaseInfo(const std::string& name, size_t size, bool isDefault);
         virtual DataBaseInfo* clone() const;
-    };
-
-    template<>
-    struct DBTraits<UNQLITE>
-    {
-        static const std::vector<common::Value::Type> supportedTypes;
     };
 
     class UnqliteCommand

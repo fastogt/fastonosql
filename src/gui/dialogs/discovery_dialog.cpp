@@ -9,30 +9,7 @@
 #include "common/time.h"
 #include "fasto/qt/gui/glass_widget.h"
 
-#ifdef BUILD_WITH_REDIS
-#include "core/redis/redis_driver.h"
-#endif
-
-#ifdef BUILD_WITH_MEMCACHED
-#include "core/memcached/memcached_driver.h"
-#endif
-
-#ifdef BUILD_WITH_SSDB
-#include "core/ssdb/ssdb_driver.h"
-#endif
-
-#ifdef BUILD_WITH_LEVELDB
-#include "core/leveldb/leveldb_driver.h"
-#endif
-
-#ifdef BUILD_WITH_ROCKSDB
-#include "core/rocksdb/rocksdb_driver.h"
-#endif
-
-#ifdef BUILD_WITH_UNQLITE
-#include "core/unqlite/unqlite_driver.h"
-#endif
-
+#include "core/servers_manager.h"
 #include "gui/gui_factory.h"
 #include "gui/dialogs/connection_listwidget_items.h"
 
@@ -43,43 +20,6 @@ namespace
     const QString timeTemplate = "Time execute msec: %1";
     const QString connectionStatusTemplate = "Connection state: %1";
     const QSize stateIconSize = QSize(64, 64);
-
-    common::ErrorValueSPtr discoveryConnectionTMethod(fastonosql::IConnectionSettingsBaseSPtr connection, std::vector<fastonosql::ServerDiscoveryInfoSPtr>& inf)
-    {
-        using namespace fastonosql;
-        connectionTypes type = connection->connectionType();
-#ifdef BUILD_WITH_REDIS
-        if(type == REDIS){
-            return discoveryConnection(dynamic_cast<RedisConnectionSettings*>(connection.get()), inf);
-        }
-#endif
-#ifdef BUILD_WITH_MEMCACHED
-        if(type == MEMCACHED){
-            return common::make_error_value("Not supported setting type", common::ErrorValue::E_ERROR);
-        }
-#endif
-#ifdef BUILD_WITH_SSDB
-        if(type == SSDB){
-            return common::make_error_value("Not supported setting type", common::ErrorValue::E_ERROR);
-        }
-#endif
-#ifdef BUILD_WITH_LEVELDB
-        if(type == LEVELDB){
-            return common::make_error_value("Not supported setting type", common::ErrorValue::E_ERROR);
-        }
-#endif
-#ifdef BUILD_WITH_ROCKSDB
-        if(type == ROCKSDB){
-            return common::make_error_value("Not supported setting type", common::ErrorValue::E_ERROR);
-        }
-#endif
-#ifdef BUILD_WITH_UNQLITE
-        if(type == UNQLITE){
-            return common::make_error_value("Not supported setting type", common::ErrorValue::E_ERROR);
-        }
-#endif
-        return common::make_error_value("Invalid setting type", common::ErrorValue::E_ERROR);
-    }
 }
 
 namespace fastonosql
@@ -99,7 +39,7 @@ namespace fastonosql
             return;
         }
 
-        common::ErrorValueSPtr er = discoveryConnectionTMethod(connection_, inf);
+        common::ErrorValueSPtr er = ServersManager::instance().discoveryConnection(connection_, inf);
 
         if(er){
             emit connectionResult(false, common::time::current_mstime() - startTime_, common::convertFromString<QString>(er->description()), inf);

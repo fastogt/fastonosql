@@ -9,7 +9,7 @@ namespace
 {
     using namespace fastonosql;
 
-    const std::vector<Field> redisServerFields =
+    const std::vector<Field>  redisServerFields =
     {
         Field(REDIS_VERSION_LABEL, common::Value::TYPE_STRING),
         Field(REDIS_GIT_SHA1_LABEL, common::Value::TYPE_STRING),
@@ -112,43 +112,52 @@ namespace
 
 namespace fastonosql
 {
-    const std::vector<common::Value::Type> DBTraits<REDIS>::supportedTypes =
+    template<>
+    std::vector<common::Value::Type> DBTraits<REDIS>::supportedTypes()
     {
-        common::Value::TYPE_BOOLEAN,
-        common::Value::TYPE_INTEGER,
-        common::Value::TYPE_UINTEGER,
-        common::Value::TYPE_DOUBLE,
-        common::Value::TYPE_STRING,
+        return  {
+                    common::Value::TYPE_BOOLEAN,
+                    common::Value::TYPE_INTEGER,
+                    common::Value::TYPE_UINTEGER,
+                    common::Value::TYPE_DOUBLE,
+                    common::Value::TYPE_STRING,
 
-        common::Value::TYPE_ARRAY,
-        common::Value::TYPE_SET,
-        common::Value::TYPE_ZSET,
-        common::Value::TYPE_HASH
-    };
+                    common::Value::TYPE_ARRAY,
+                    common::Value::TYPE_SET,
+                    common::Value::TYPE_ZSET,
+                    common::Value::TYPE_HASH
+                };
+    }
 
-    const std::vector<std::string> redisHeaders =
+    template<>
+    std::vector<std::string> DBTraits<REDIS>::infoHeaders()
     {
-        REDIS_SERVER_LABEL,
-        REDIS_CLIENTS_LABEL,
-        REDIS_MEMORY_LABEL,
-        REDIS_PERSISTENCE_LABEL,
-        REDIS_STATS_LABEL,
-        REDIS_REPLICATION_LABEL,
-        REDIS_CPU_LABEL,
-        REDIS_KEYSPACE_LABEL
-    };
+        return  {
+                    REDIS_SERVER_LABEL,
+                    REDIS_CLIENTS_LABEL,
+                    REDIS_MEMORY_LABEL,
+                    REDIS_PERSISTENCE_LABEL,
+                    REDIS_STATS_LABEL,
+                    REDIS_REPLICATION_LABEL,
+                    REDIS_CPU_LABEL,
+                    REDIS_KEYSPACE_LABEL
+                };
+    }
 
-    const std::vector< std::vector<Field> > redisFields =
+    template<>
+    std::vector< std::vector<Field> > DBTraits<REDIS>::infoFields()
     {
-        redisServerFields,
-        redisClientFields,
-        redisMemoryFields,
-        redisPersistenceFields,
-        redisStatsFields,
-        redisReplicationFields,
-        redisCpuFields,
-        redisKeySpaceFields
-    };
+        return  {
+                    redisServerFields,
+                    redisClientFields,
+                    redisMemoryFields,
+                    redisPersistenceFields,
+                    redisStatsFields,
+                    redisReplicationFields,
+                    redisCpuFields,
+                    redisKeySpaceFields
+                };
+    }
 
     RedisDiscoveryInfo::RedisDiscoveryInfo(serverTypes type, bool self)
         : ServerDiscoveryInfo(REDIS, type, self), hash_()
@@ -916,13 +925,15 @@ namespace fastonosql
         int j = 0;
         std::string word;
         size_t pos = 0;
+        const std::vector<std::string> headers = DBTraits<REDIS>::infoHeaders();
+
         for(int i = 0; i < content.size(); ++i)
         {
             char ch = content[i];
             word += ch;
-            if(word == redisHeaders[j]){
-                if(j+1 != redisHeaders.size()){
-                    pos = content.find(redisHeaders[j+1], pos);
+            if(word == headers[j]){
+                if(j+1 != headers.size()){
+                    pos = content.find(headers[j+1], pos);
                 }
                 else{
                     break;

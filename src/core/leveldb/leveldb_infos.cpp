@@ -18,25 +18,31 @@ namespace
 }
 
 namespace fastonosql
-{   
-    const std::vector<common::Value::Type> DBTraits<LEVELDB>::supportedTypes = {
-                                            common::Value::TYPE_BOOLEAN,
-                                            common::Value::TYPE_INTEGER,
-                                            common::Value::TYPE_UINTEGER,
-                                            common::Value::TYPE_DOUBLE,
-                                            common::Value::TYPE_STRING,
-                                            common::Value::TYPE_ARRAY
-                                           };
-
-    const std::vector<std::string> leveldbHeaders =
+{
+    template<>
+    std::vector<common::Value::Type> DBTraits<LEVELDB>::supportedTypes()
     {
-        LEVELDB_STATS_LABEL
-    };
+        return  {
+                    common::Value::TYPE_BOOLEAN,
+                    common::Value::TYPE_INTEGER,
+                    common::Value::TYPE_UINTEGER,
+                    common::Value::TYPE_DOUBLE,
+                    common::Value::TYPE_STRING,
+                    common::Value::TYPE_ARRAY
+                };
+    }
 
-    const std::vector<std::vector<Field> > leveldbFields =
+    template<>
+    std::vector<std::string> DBTraits<LEVELDB>::infoHeaders()
     {
-        LeveldbCommonFields
-    };
+        return  { LEVELDB_STATS_LABEL };
+    }
+
+    template<>
+    std::vector<std::vector<Field> > DBTraits<LEVELDB>::infoFields()
+    {
+        return  { LeveldbCommonFields };
+    }
 
     LeveldbServerInfo::Stats::Stats()
         : compactions_level_(0), file_size_mb_(0), time_sec_(0), read_mb_(0), write_mb_(0)
@@ -140,12 +146,14 @@ namespace fastonosql
 
         LeveldbServerInfo* result = new LeveldbServerInfo;
 
+        const std::vector<std::string> headers = DBTraits<LEVELDB>::infoHeaders();
         std::string word;
-        DCHECK(leveldbHeaders.size() == 1);
+        DCHECK(headers.size() == 1);
+
         for(int i = 0; i < content.size(); ++i)
         {
             word += content[i];
-            if(word == leveldbHeaders[0]){
+            if(word == headers[0]){
                 std::string part = content.substr(i + 1);
                 result->stats_ = LeveldbServerInfo::Stats(part);
                 break;

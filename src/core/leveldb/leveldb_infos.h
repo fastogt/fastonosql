@@ -12,9 +12,6 @@
 
 namespace fastonosql
 {
-    extern const std::vector<std::string> leveldbHeaders;
-    extern const std::vector<std::vector<Field> > leveldbFields;
-
     class LeveldbServerInfo
             : public ServerInfo
     {
@@ -52,12 +49,6 @@ namespace fastonosql
     public:
         LeveldbDataBaseInfo(const std::string& name, size_t size, bool isDefault);
         virtual DataBaseInfo* clone() const;
-    };
-
-    template<>
-    struct DBTraits<LEVELDB>
-    {
-        static const std::vector<common::Value::Type> supportedTypes;
     };
 
     class LeveldbCommand

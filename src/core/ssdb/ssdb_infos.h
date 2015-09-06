@@ -12,9 +12,6 @@
 
 namespace fastonosql
 {
-    extern const std::vector<std::string> ssdbHeaders;
-    extern const std::vector<std::vector<Field> > ssdbFields;
-
     class SsdbServerInfo
             : public ServerInfo
     {
@@ -51,12 +48,6 @@ namespace fastonosql
     public:
         SsdbDataBaseInfo(const std::string& name, size_t size, bool isDefault);
         virtual DataBaseInfo* clone() const;
-    };
-
-    template<>
-    struct DBTraits<SSDB>
-    {
-        static const std::vector<common::Value::Type> supportedTypes;
     };
 
     class SsdbCommand

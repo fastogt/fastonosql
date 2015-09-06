@@ -138,6 +138,86 @@ namespace fastonosql
         return cl;
     }
 
+    common::ErrorValueSPtr ServersManager::testConnection(IConnectionSettingsBaseSPtr connection)
+    {
+        if(!connection){
+            return common::make_error_value("Invalid input argument", common::ErrorValue::E_ERROR);
+        }
+
+        connectionTypes type = connection->connectionType();
+#ifdef BUILD_WITH_REDIS
+        if(type == REDIS){
+            return fastonosql::testConnection(dynamic_cast<RedisConnectionSettings*>(connection.get()));
+        }
+#endif
+#ifdef BUILD_WITH_MEMCACHED
+        if(type == MEMCACHED){
+            return fastonosql::testConnection(dynamic_cast<MemcachedConnectionSettings*>(connection.get()));
+        }
+#endif
+#ifdef BUILD_WITH_SSDB
+        if(type == SSDB){
+            return fastonosql::testConnection(dynamic_cast<SsdbConnectionSettings*>(connection.get()));
+        }
+#endif
+#ifdef BUILD_WITH_LEVELDB
+        if(type == LEVELDB){
+            return fastonosql::testConnection(dynamic_cast<LeveldbConnectionSettings*>(connection.get()));
+        }
+#endif
+#ifdef BUILD_WITH_ROCKSDB
+        if(type == ROCKSDB){
+            return fastonosql::testConnection(dynamic_cast<RocksdbConnectionSettings*>(connection.get()));
+        }
+#endif
+#ifdef BUILD_WITH_UNQLITE
+        if(type == UNQLITE){
+            return fastonosql::testConnection(dynamic_cast<UnqliteConnectionSettings*>(connection.get()));
+        }
+#endif
+        return common::make_error_value("Invalid setting type", common::ErrorValue::E_ERROR);
+    }
+
+    common::ErrorValueSPtr ServersManager::discoveryConnection(IConnectionSettingsBaseSPtr connection, std::vector<ServerDiscoveryInfoSPtr>& inf)
+    {
+        if(!connection){
+            return common::make_error_value("Invalid input argument", common::ErrorValue::E_ERROR);
+        }
+
+        connectionTypes type = connection->connectionType();
+#ifdef BUILD_WITH_REDIS
+        if(type == REDIS){
+            return fastonosql::discoveryConnection(dynamic_cast<RedisConnectionSettings*>(connection.get()), inf);
+        }
+#endif
+#ifdef BUILD_WITH_MEMCACHED
+        if(type == MEMCACHED){
+            return common::make_error_value("Not supported setting type", common::ErrorValue::E_ERROR);
+        }
+#endif
+#ifdef BUILD_WITH_SSDB
+        if(type == SSDB){
+            return common::make_error_value("Not supported setting type", common::ErrorValue::E_ERROR);
+        }
+#endif
+#ifdef BUILD_WITH_LEVELDB
+        if(type == LEVELDB){
+            return common::make_error_value("Not supported setting type", common::ErrorValue::E_ERROR);
+        }
+#endif
+#ifdef BUILD_WITH_ROCKSDB
+        if(type == ROCKSDB){
+            return common::make_error_value("Not supported setting type", common::ErrorValue::E_ERROR);
+        }
+#endif
+#ifdef BUILD_WITH_UNQLITE
+        if(type == UNQLITE){
+            return common::make_error_value("Not supported setting type", common::ErrorValue::E_ERROR);
+        }
+#endif
+        return common::make_error_value("Invalid setting type", common::ErrorValue::E_ERROR);
+    }
+
     void ServersManager::setSyncServers(bool isSync)
     {
         syncServers_ = isSync;

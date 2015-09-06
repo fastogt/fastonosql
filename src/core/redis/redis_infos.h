@@ -98,9 +98,6 @@
 
 namespace fastonosql
 {
-    extern const std::vector<std::string> redisHeaders;
-    extern const std::vector< std::vector<Field> > redisFields;
-
     class RedisDiscoveryInfo
             : public ServerDiscoveryInfo
     {
@@ -278,12 +275,6 @@ namespace fastonosql
         RedisDataBaseInfo(const std::string& name, size_t size, bool isDefault, const keys_cont_type& keys = keys_cont_type());
 
         virtual DataBaseInfo* clone() const;
-    };
-
-    template<>
-    struct DBTraits<REDIS>
-    {
-        static const std::vector<common::Value::Type> supportedTypes;
     };
 
     class RedisCommand

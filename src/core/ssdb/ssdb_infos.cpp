@@ -18,28 +18,34 @@ namespace
 }
 
 namespace fastonosql
-{   
-    const std::vector<common::Value::Type> DBTraits<SSDB>::supportedTypes = {
-                                            common::Value::TYPE_BOOLEAN,
-                                            common::Value::TYPE_INTEGER,
-                                            common::Value::TYPE_UINTEGER,
-                                            common::Value::TYPE_DOUBLE,
-                                            common::Value::TYPE_STRING,
-                                            common::Value::TYPE_ARRAY,
-                                            common::Value::TYPE_SET,
-                                            common::Value::TYPE_ZSET,
-                                            common::Value::TYPE_HASH
-                                           };
-
-    const std::vector<std::string> ssdbHeaders =
+{
+    template<>
+    std::vector<common::Value::Type> DBTraits<SSDB>::supportedTypes()
     {
-        SSDB_COMMON_LABEL
-    };
+        return  {
+                    common::Value::TYPE_BOOLEAN,
+                    common::Value::TYPE_INTEGER,
+                    common::Value::TYPE_UINTEGER,
+                    common::Value::TYPE_DOUBLE,
+                    common::Value::TYPE_STRING,
+                    common::Value::TYPE_ARRAY,
+                    common::Value::TYPE_SET,
+                    common::Value::TYPE_ZSET,
+                    common::Value::TYPE_HASH
+                };
+    }
 
-    const std::vector<std::vector<Field> > ssdbFields =
+    template<>
+    std::vector<std::string> DBTraits<SSDB>::infoHeaders()
     {
-        SsdbCommonFields
-    };
+        return { SSDB_COMMON_LABEL };
+    }
+
+    template<>
+    std::vector<std::vector<Field> > DBTraits<SSDB>::infoFields()
+    {
+        return { SsdbCommonFields };
+    }
 
     SsdbServerInfo::Common::Common()
     {
@@ -141,13 +147,13 @@ namespace fastonosql
         }
 
         SsdbServerInfo* result = new SsdbServerInfo;
-
+        const std::vector<std::string> headers = DBTraits<SSDB>::infoHeaders();
         std::string word;
-        DCHECK(ssdbHeaders.size() == 1);
-        for(int i = 0; i < content.size(); ++i)
-        {
+        DCHECK(headers.size() == 1);
+
+        for(int i = 0; i < content.size(); ++i){
             word += content[i];
-            if(word == ssdbHeaders[0]){
+            if(word == headers[0]){
                 std::string part = content.substr(i + 1);
                 result->common_ = SsdbServerInfo::Common(part);
                 break;

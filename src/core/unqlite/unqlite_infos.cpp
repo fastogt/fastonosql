@@ -18,25 +18,31 @@ namespace
 }
 
 namespace fastonosql
-{   
-    const std::vector<common::Value::Type> DBTraits<UNQLITE>::supportedTypes = {
-                                            common::Value::TYPE_BOOLEAN,
-                                            common::Value::TYPE_INTEGER,
-                                            common::Value::TYPE_UINTEGER,
-                                            common::Value::TYPE_DOUBLE,
-                                            common::Value::TYPE_STRING,
-                                            common::Value::TYPE_ARRAY
-                                           };
-
-    const std::vector<std::string> unqliteHeaders =
+{
+    template<>
+    std::vector<common::Value::Type> DBTraits<UNQLITE>::supportedTypes()
     {
-        UNQLITE_STATS_LABEL
-    };
+        return  {
+                    common::Value::TYPE_BOOLEAN,
+                    common::Value::TYPE_INTEGER,
+                    common::Value::TYPE_UINTEGER,
+                    common::Value::TYPE_DOUBLE,
+                    common::Value::TYPE_STRING,
+                    common::Value::TYPE_ARRAY
+                };
+    }
 
-    const std::vector<std::vector<Field> > unqliteFields =
+    template<>
+    std::vector<std::string> DBTraits<UNQLITE>::infoHeaders()
     {
-        unqliteCommonFields
-    };
+        return { UNQLITE_STATS_LABEL };
+    }
+
+    template<>
+    std::vector<std::vector<Field> > DBTraits<UNQLITE>::infoFields()
+    {
+        return { unqliteCommonFields };
+    }
 
     UnqliteServerInfo::Stats::Stats()
         : compactions_level_(0), file_size_mb_(0), time_sec_(0), read_mb_(0), write_mb_(0)
@@ -140,12 +146,13 @@ namespace fastonosql
 
         UnqliteServerInfo* result = new UnqliteServerInfo;
 
+        const std::vector<std::string> headers = DBTraits<UNQLITE>::infoHeaders();
         std::string word;
-        DCHECK(unqliteHeaders.size() == 1);
-        for(int i = 0; i < content.size(); ++i)
-        {
+        DCHECK(headers.size() == 1);
+
+        for(int i = 0; i < content.size(); ++i){
             word += content[i];
-            if(word == unqliteHeaders[0]){
+            if(word == headers[0]){
                 std::string part = content.substr(i + 1);
                 result->stats_ = UnqliteServerInfo::Stats(part);
                 break;
@@ -199,6 +206,6 @@ namespace fastonosql
         }
 
         std::transform(key.begin(), key.end(), key.begin(), ::tolower);
-        return key != "get";
+        return key != "fetch";
     }
 }
