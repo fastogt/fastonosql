@@ -40,6 +40,10 @@
 #include "core/rocksdb/rocksdb_infos.h"
 #endif
 
+#ifdef BUILD_WITH_UNQLITE
+#include "core/unqlite/unqlite_infos.h"
+#endif
+
 namespace fastonosql
 {
     CreateDbKeyDialog::CreateDbKeyDialog(const QString &title, connectionTypes type, QWidget* parent)
@@ -94,6 +98,15 @@ namespace fastonosql
         if(type_ == ROCKSDB){
             for(int i = 0; i < DBTraits<ROCKSDB>::supportedTypes.size(); ++i){
                 common::Value::Type t = DBTraits<ROCKSDB>::supportedTypes[i];
+                QString type = common::convertFromString<QString>(common::Value::toString(t));
+                typesCombo_->addItem(GuiFactory::instance().icon(t), type, t);
+            }
+        }
+#endif
+#ifdef BUILD_WITH_UNQLITE
+        if(type_ == UNQLITE){
+            for(int i = 0; i < DBTraits<UNQLITE>::supportedTypes.size(); ++i){
+                common::Value::Type t = DBTraits<UNQLITE>::supportedTypes[i];
                 QString type = common::convertFromString<QString>(common::Value::toString(t));
                 typesCombo_->addItem(GuiFactory::instance().icon(t), type, t);
             }

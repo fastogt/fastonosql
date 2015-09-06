@@ -141,6 +141,9 @@ namespace fastonosql
         else if(type == ROCKSDB){
             return rocksdbConnectionIcon();
         }
+        else if(type == UNQLITE){
+            return unqliteConnectionIcon();
+        }
         else{
             return serverIcon();
         }
@@ -412,6 +415,12 @@ namespace fastonosql
     const QIcon& GuiFactory::rocksdbConnectionIcon() const
     {
         static QIcon main(":" PROJECT_NAME_LOWERCASE "/images/64x64/rocksdb.png");
+        return main;
+    }
+
+    const QIcon& GuiFactory::unqliteConnectionIcon() const
+    {
+        static QIcon main(":" PROJECT_NAME_LOWERCASE "/images/64x64/unqlite.png");
         return main;
     }
 }

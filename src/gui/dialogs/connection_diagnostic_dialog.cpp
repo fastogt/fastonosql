@@ -27,6 +27,10 @@
 #include "core/rocksdb/rocksdb_driver.h"
 #endif
 
+#ifdef BUILD_WITH_UNQLITE
+#include "core/unqlite/unqlite_driver.h"
+#endif
+
 #include "gui/gui_factory.h"
 #include "fasto/qt/gui/glass_widget.h"
 
@@ -65,6 +69,11 @@ namespace
 #ifdef BUILD_WITH_ROCKSDB
         if(type == ROCKSDB){
             return testConnection(dynamic_cast<RocksdbConnectionSettings*>(connection.get()));
+        }
+#endif
+#ifdef BUILD_WITH_UNQLITE
+        if(type == UNQLITE){
+            return testConnection(dynamic_cast<UnqliteConnectionSettings*>(connection.get()));
         }
 #endif
         return common::make_error_value("Invalid setting type", common::ErrorValue::E_ERROR);

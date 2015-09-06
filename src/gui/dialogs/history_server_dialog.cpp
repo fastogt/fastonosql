@@ -24,6 +24,10 @@
 #include "core/rocksdb/rocksdb_infos.h"
 #endif
 
+#ifdef BUILD_WITH_UNQLITE
+#include "core/unqlite/unqlite_infos.h"
+#endif
+
 #include "fasto/qt/gui/base/graph_widget.h"
 #include "gui/gui_factory.h"
 #include "fasto/qt/gui/glass_widget.h"
@@ -89,6 +93,13 @@ namespace fastonosql
         if(type_ == ROCKSDB){
             for(int i = 0; i < rocksdbHeaders.size(); ++i){
                 serverInfoGroupsNames_->addItem(common::convertFromString<QString>(rocksdbHeaders[i]));
+            }
+        }
+#endif
+#ifdef BUILD_WITH_UNQLITE
+        if(type_ == UNQLITE){
+            for(int i = 0; i < unqliteHeaders.size(); ++i){
+                serverInfoGroupsNames_->addItem(common::convertFromString<QString>(unqliteHeaders[i]));
             }
         }
 #endif
@@ -158,6 +169,11 @@ namespace fastonosql
 #ifdef BUILD_WITH_ROCKSDB
         if(type_ == ROCKSDB){
             field = rocksdbFields[index];
+        }
+#endif
+#ifdef BUILD_WITH_UNQLITE
+        if(type_ == UNQLITE){
+            field = unqliteFields[index];
         }
 #endif
         DCHECK(!field.empty());

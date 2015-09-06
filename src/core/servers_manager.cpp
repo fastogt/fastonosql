@@ -30,6 +30,11 @@
 #include "core/rocksdb/rocksdb_driver.h"
 #endif
 
+#ifdef BUILD_WITH_UNQLITE
+#include "core/unqlite/unqlite_server.h"
+#include "core/unqlite/unqlite_driver.h"
+#endif
+
 namespace fastonosql
 {
     ServersManager::ServersManager()
@@ -85,6 +90,11 @@ namespace fastonosql
 #ifdef BUILD_WITH_ROCKSDB
         if(conT == ROCKSDB){
             result.reset(make_server<RocksdbServer, RocksdbDriver>(ser, settings));
+        }
+#endif
+#ifdef BUILD_WITH_UNQLITE
+        if(conT == UNQLITE){
+            result.reset(make_server<UnqliteServer, UnqliteDriver>(ser, settings));
         }
 #endif
         DCHECK(result);

@@ -26,12 +26,16 @@
 #ifdef BUILD_WITH_ROCKSDB
 #include "core/rocksdb/rocksdb_settings.h"
 #endif
+#ifdef BUILD_WITH_UNQLITE
+#include "core/unqlite/unqlite_settings.h"
+#endif
 
 #define LOGGING_REDIS_FILE_EXTENSION ".red"
 #define LOGGING_MEMCACHED_FILE_EXTENSION ".mem"
 #define LOGGING_SSDB_FILE_EXTENSION ".ssdb"
 #define LOGGING_LEVELDB_FILE_EXTENSION ".levdb"
 #define LOGGING_ROCKSDB_FILE_EXTENSION ".rocksdb"
+#define LOGGING_UNQLITE_FILE_EXTENSION ".unq"
 
 namespace
 {
@@ -176,6 +180,11 @@ namespace fastonosql
             return new RocksdbConnectionSettings(conName);
         }
 #endif
+#ifdef BUILD_WITH_UNQLITE
+        if(type == UNQLITE){
+            return new UnqliteConnectionSettings(conName);
+        }
+#endif
         NOTREACHED();
         return NULL;
     }
@@ -307,6 +316,13 @@ namespace fastonosql
                                "<b>-c </b>            Create database if missing.<br/>"
                                "<b>-d &lt;delimiter&gt;</b>     Multi-bulk delimiter in for raw formatting (default: \\n).<br/>";
         }
+        else if(type == UNQLITE){
+            return "<b>Usage: [OPTIONS] [cmd [arg [arg ...]]]</b><br/>"
+                               "<b>-h &lt;hostname&gt;</b>      Server hostname (default: 127.0.0.1), <b>not used</b>.<br/>"
+                               "<b>-p &lt;port&gt;</b>          Server port (default: 1111), <b>not used</b>.<br/>"
+                               "<b>-f &lt;db&gt;</b>            File path to database.<br/>"
+                               "<b>-d &lt;delimiter&gt;</b>     Multi-bulk delimiter in for raw formatting (default: \\n).<br/>";
+        }
 
         NOTREACHED();
         return NULL;
@@ -341,6 +357,12 @@ namespace fastonosql
 #ifdef BUILD_WITH_ROCKSDB
         if(type == ROCKSDB){
             rocksdbConfig r;
+            return common::convertToString(r);
+        }
+#endif
+#ifdef BUILD_WITH_UNQLITE
+        if(type == UNQLITE){
+            unqliteConfig r;
             return common::convertToString(r);
         }
 #endif

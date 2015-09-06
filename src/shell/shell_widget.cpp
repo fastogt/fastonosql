@@ -45,6 +45,10 @@
 #include "shell/rocksdb_shell.h"
 #endif
 
+#ifdef BUILD_WITH_UNQLITE
+#include "shell/unqlite_shell.h"
+#endif
+
 using namespace fastonosql::translations;
 
 namespace
@@ -55,7 +59,7 @@ namespace
 namespace fastonosql
 {
     BaseShellWidget::BaseShellWidget(IServerSPtr server, const QString& filePath, QWidget* parent)
-        : QWidget(parent), server_(server), filePath_(filePath)
+        : QWidget(parent), server_(server), filePath_(filePath), input_(NULL)
     {
         VERIFY(connect(server_.get(), &IServer::startedConnect, this, &BaseShellWidget::startConnect));
         VERIFY(connect(server_.get(), &IServer::finishedConnect, this, &BaseShellWidget::finishConnect));
@@ -234,7 +238,13 @@ namespace fastonosql
 #ifdef BUILD_WITH_ROCKSDB
         if(type == ROCKSDB){
             input_ = new RocksdbShell(SettingsManager::instance().autoCompletion());
-            setToolTip(tr("Based on leveldb version: %1").arg(input_->version()));
+            setToolTip(tr("Based on rocksdb version: %1").arg(input_->version()));
+        }
+#endif
+#ifdef BUILD_WITH_UNQLITE
+        if(type == UNQLITE){
+            input_ = new UnqliteShell(SettingsManager::instance().autoCompletion());
+            setToolTip(tr("Based on unqlite version: %1").arg(input_->version()));
         }
 #endif
         DCHECK(input_);

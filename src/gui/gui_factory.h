@@ -78,5 +78,6 @@ namespace fastonosql
         const QIcon& ssdbConnectionIcon() const;
         const QIcon& leveldbConnectionIcon() const;
         const QIcon& rocksdbConnectionIcon() const;
+        const QIcon& unqliteConnectionIcon() const;
     };
 }

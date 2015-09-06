@@ -363,13 +363,55 @@ IF(BUILD_WITH_ROCKSDB)
     SET(OBJECT_LIBS ${OBJECT_LIBS} $<TARGET_OBJECTS:rocksdb>)
 ENDIF(BUILD_WITH_ROCKSDB)
 
+#unqlite
+IF(BUILD_WITH_UNQLITE)
+    SET(HEADERS_SHELL_TO_MOC ${HEADERS_SHELL_TO_MOC}
+        shell/unqlite_lexer.h
+        shell/unqlite_shell.h
+    )
+    SET(HEADERS_SHELL ${HEADERS_SHELL}
+    )
+    SET(SOURCES_SHELL ${SOURCES_SHELL}
+        shell/unqlite_lexer.cpp
+        shell/unqlite_shell.cpp
+    )
+
+    ADD_SUBDIRECTORY(third-party/unqlite)
+    SET(INCLUDE_DIRS ${INCLUDE_DIRS} third-party/unqlite/src)
+
+    SET(HEADERS_UNQLITE_TO_MOC
+        core/unqlite/unqlite_server.h
+        core/unqlite/unqlite_driver.h
+    )
+    SET(HEADERS_UNQLITE
+        core/unqlite/unqlite_infos.h
+        core/unqlite/unqlite_config.h
+        core/unqlite/unqlite_database.h
+        core/unqlite/unqlite_settings.h
+    )
+    SET(SOURCES_UNQLITE
+        core/unqlite/unqlite_config.cpp
+        core/unqlite/unqlite_infos.cpp
+        core/unqlite/unqlite_server.cpp
+        core/unqlite/unqlite_driver.cpp
+        core/unqlite/unqlite_database.cpp
+        core/unqlite/unqlite_settings.cpp
+    )
+    SET(OBJECT_LIBS ${OBJECT_LIBS} $<TARGET_OBJECTS:unqlite>)
+ENDIF(BUILD_WITH_UNQLITE)
+
 SET(SOURCES_SDS
     third-party/sds/sds.c
 )
 
-SET(HEADERS ${HEADERS} ${HEADERS_GLOBAL} ${HEADERS_GUI} ${HEADERS_CORE} ${HEADERS_SHELL} ${HEADERS_REDIS} ${HEADERS_MEMCACHED} ${HEADERS_SSDB} ${HEADERS_LEVELDB} ${HEADERS_ROCKSDB} ${HEADERS_TRANSLATIONS})
-SET(SOURCES ${SOURCES} ${SOURCES_GLOBAL} ${SOURCES_GUI} ${SOURCES_CORE} ${SOURCES_SHELL} ${SOURCES_REDIS} ${SOURCES_MEMCACHED} ${SOURCES_SSDB} ${SOURCES_LEVELDB} ${SOURCES_ROCKSDB} ${SOURCES_TRANSLATIONS} ${SOURCES_SDS})
-SET(HEADERS_TOMOC ${HEADERS_GUI_TO_MOC} ${HEADERS_CORE_TO_MOC} ${HEADERS_SHELL_TO_MOC} ${HEADERS_REDIS_TO_MOC} ${HEADERS_MEMCACHED_TO_MOC} ${HEADERS_SSDB_TO_MOC} ${HEADERS_LEVELDB_TO_MOC} ${HEADERS_ROCKSDB_TO_MOC})
+SET(HEADERS ${HEADERS} ${HEADERS_GLOBAL} ${HEADERS_GUI} ${HEADERS_CORE} ${HEADERS_SHELL}
+    ${HEADERS_REDIS} ${HEADERS_MEMCACHED} ${HEADERS_SSDB} ${HEADERS_LEVELDB} ${HEADERS_ROCKSDB} ${HEADERS_UNQLITE}
+    ${HEADERS_TRANSLATIONS})
+SET(SOURCES ${SOURCES} ${SOURCES_GLOBAL} ${SOURCES_GUI} ${SOURCES_CORE} ${SOURCES_SHELL}
+    ${SOURCES_REDIS} ${SOURCES_MEMCACHED} ${SOURCES_SSDB} ${SOURCES_LEVELDB} ${SOURCES_ROCKSDB} ${SOURCES_UNQLITE}
+    ${SOURCES_TRANSLATIONS} ${SOURCES_SDS})
+SET(HEADERS_TOMOC ${HEADERS_GUI_TO_MOC} ${HEADERS_CORE_TO_MOC} ${HEADERS_SHELL_TO_MOC}
+    ${HEADERS_REDIS_TO_MOC} ${HEADERS_MEMCACHED_TO_MOC} ${HEADERS_SSDB_TO_MOC} ${HEADERS_LEVELDB_TO_MOC} ${HEADERS_ROCKSDB_TO_MOC} ${HEADERS_UNQLITE_TO_MOC})
 
 QT5_WRAP_CPP(MOC_FILES ${HEADERS_TOMOC})
 CONFIGURE_FILE("resources/gui.qrc.in" "${CMAKE_CURRENT_LIST_DIR}/resources/gui.qrc" @ONLY IMMEDIATE)

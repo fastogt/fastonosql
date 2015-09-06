@@ -6,5 +6,6 @@
     <file>@PROJECT_NAME_LOWERCASE@/images/64x64/ssdb.png</file>
     <file>@PROJECT_NAME_LOWERCASE@/images/64x64/leveldb.png</file>
     <file>@PROJECT_NAME_LOWERCASE@/images/64x64/rocksdb.png</file>
+    <file>@PROJECT_NAME_LOWERCASE@/images/64x64/unqlite.png</file>
     </qresource>
 </RCC>
