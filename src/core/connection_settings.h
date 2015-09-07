@@ -53,7 +53,7 @@ namespace fastonosql
         virtual std::string commandLine() const = 0;
         virtual void setCommandLine(const std::string& line) = 0;
 
-        std::string fullAddress() const;
+        virtual std::string fullAddress() const;
 
         static IConnectionSettingsBase* createFromType(connectionTypes type, const std::string& conName = std::string());
         static IConnectionSettingsBase* fromString(const std::string& val);
@@ -71,7 +71,7 @@ namespace fastonosql
     private:
         using IConnectionSettings::setConnectionName;
 
-        std::string hash_;        
+        std::string hash_;
         SSHInfo sshInfo_;
     };
 

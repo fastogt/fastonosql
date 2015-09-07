@@ -50,7 +50,7 @@ namespace fastonosql
             UNUSED(sinfo);
 
             unqlite* lcontext = NULL;
-            int st = unqlite_open(&lcontext, config.dbname_.c_str(), UNQLITE_OPEN_CREATE);
+            int st = unqlite_open(&lcontext, config.dbname_.c_str(), config.create_if_missing_ ? UNQLITE_OPEN_CREATE : UNQLITE_OPEN_READWRITE);
             if (st != UNQLITE_OK){
                 char buff[1024] = {0};
                 common::SNPrintf(buff, sizeof(buff), "Fail open database: %s!", getUnqliteError(lcontext));
@@ -458,7 +458,8 @@ namespace fastonosql
 
     common::net::hostAndPort UnqliteDriver::address() const
     {
-        return common::net::hostAndPort(impl_->config_.hostip_, impl_->config_.hostport_);
+        //return common::net::hostAndPort(impl_->config_.hostip_, impl_->config_.hostport_);
+        return common::net::hostAndPort();
     }
 
     std::string UnqliteDriver::outputDelemitr() const

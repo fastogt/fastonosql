@@ -21,6 +21,8 @@ namespace fastonosql
         leveldbConfig info() const;
         void setInfo(const leveldbConfig &info);
 
+        virtual std::string fullAddress() const;
+
         virtual IConnectionSettings* clone() const;
 
     private:

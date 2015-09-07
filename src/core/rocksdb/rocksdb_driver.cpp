@@ -525,7 +525,8 @@ namespace fastonosql
 
     common::net::hostAndPort RocksdbDriver::address() const
     {
-        return common::net::hostAndPort(impl_->config_.hostip_, impl_->config_.hostport_);
+        //return common::net::hostAndPort(impl_->config_.hostip_, impl_->config_.hostport_);
+        return common::net::hostAndPort();
     }
 
     std::string RocksdbDriver::outputDelemitr() const

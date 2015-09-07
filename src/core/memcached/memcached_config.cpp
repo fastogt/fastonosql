@@ -1,7 +1,5 @@
 #include "core/memcached/memcached_config.h"
 
-#include "common/utils.h"
-
 #include "fasto/qt/logger.h"
 
 namespace fastonosql
@@ -15,21 +13,19 @@ namespace fastonosql
                 int lastarg = i==argc-1;
 
                 if (!strcmp(argv[i],"-h") && !lastarg) {
-                    free(cfg.hostip_);
-                    cfg.hostip_ = strdup(argv[++i]);
+                    cfg.hostip_ = argv[++i];
                 }
                 else if (!strcmp(argv[i],"-p") && !lastarg) {
                     cfg.hostport_ = atoi(argv[++i]);
                 }
                 else if (!strcmp(argv[i],"-u") && !lastarg) {
-                    cfg.user_ = strdup(argv[++i]);
+                    cfg.user_ = argv[++i];
                 }
                 else if (!strcmp(argv[i],"-a") && !lastarg) {
-                    cfg.password_ = strdup(argv[++i]);
+                    cfg.password_ = argv[++i];
                 }
                 else if (!strcmp(argv[i],"-d") && !lastarg) {
-                    free(cfg.mb_delim_);
-                    cfg.mb_delim_ = strdup(argv[++i]);
+                    cfg.mb_delim_ = argv[++i];
                 }
                 else {
                     if (argv[i][0] == '-') {
@@ -49,38 +45,8 @@ namespace fastonosql
     }
 
     memcachedConfig::memcachedConfig()
-        : ConnectionConfig("127.0.0.1", 11211), user_(NULL), password_(NULL)
+        : ConnectionConfig("127.0.0.1", 11211), user_(), password_()
     {
-    }
-
-    memcachedConfig::memcachedConfig(const memcachedConfig &other)
-        : ConnectionConfig(other.hostip_, other.hostport_), user_(NULL), password_(NULL)
-    {
-        copy(other);
-    }
-
-    memcachedConfig& memcachedConfig::operator=(const memcachedConfig &other)
-    {
-        copy(other);
-        return *this;
-    }
-
-    void memcachedConfig::copy(const memcachedConfig& other)
-    {
-        using namespace common::utils;
-        freeifnotnull(user_);
-        user_ = strdupornull(other.user_); //
-        freeifnotnull(password_);
-        password_ = strdupornull(other.password_); //
-
-        ConnectionConfig::copy(other);
-    }
-
-    memcachedConfig::~memcachedConfig()
-    {
-        using namespace common::utils;
-        freeifnotnull(user_);
-        freeifnotnull(password_);
     }
 }
 
@@ -90,12 +56,12 @@ namespace common
     {
         std::vector<std::string> argv = conf.args();
 
-        if(conf.user_){
+        if(!conf.user_.empty()){
             argv.push_back("-u");
             argv.push_back(conf.user_);
         }
 
-        if(conf.password_){
+        if(!conf.password_.empty()){
             argv.push_back("-a");
             argv.push_back(conf.password_);
         }

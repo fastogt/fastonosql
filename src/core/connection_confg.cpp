@@ -2,52 +2,24 @@
 
 #include "common/convert2string.h"
 
-#include "common/utils.h"
-
 namespace fastonosql
 {
-    ConnectionConfig::ConnectionConfig(const char *hostip, int port)
-        : hostip_(strdup(hostip)), hostport_(port), mb_delim_(strdup("\n")), shutdown_(0)
+    BaseConfig::BaseConfig(ConfigType type)
+        : type_(type), mb_delim_("\n"), shutdown_(false)
     {
+
     }
 
-    ConnectionConfig::ConnectionConfig(const ConnectionConfig& other)
-        : hostip_(NULL), hostport_(0), mb_delim_(NULL)
+    ConfigType BaseConfig::type() const
     {
-        copy(other);
+        return type_;
     }
 
-    ConnectionConfig& ConnectionConfig::operator=(const ConnectionConfig &other)
-    {
-        copy(other);
-        return *this;
-    }
-
-    void ConnectionConfig::copy(const ConnectionConfig& other)
-    {
-        using namespace common::utils;
-        freeifnotnull(hostip_);
-        hostip_ = strdupornull(other.hostip_); //
-        hostport_ = other.hostport_;
-
-        freeifnotnull(mb_delim_);
-        mb_delim_ = strdupornull(other.mb_delim_); //
-        shutdown_ = other.shutdown_;
-    }
-
-    std::vector<std::string> ConnectionConfig::args() const
+    std::vector<std::string> BaseConfig::args() const
     {
         std::vector<std::string> argv;
 
-        if(hostip_){
-            argv.push_back("-h");
-            argv.push_back(hostip_);
-        }
-        if(hostport_){
-            argv.push_back("-p");
-            argv.push_back(common::convertToString(hostport_));
-        }
-        if (mb_delim_) {
+        if (mb_delim_.empty()) {
             argv.push_back("-d");
             argv.push_back(mb_delim_);
         }
@@ -55,10 +27,42 @@ namespace fastonosql
         return argv;
     }
 
-    ConnectionConfig::~ConnectionConfig()
+    LocalConfig::LocalConfig(const std::string& dbname)
+        : BaseConfig(LOCAL), dbname_(dbname)
     {
-        using namespace common::utils;
-        freeifnotnull(hostip_);
-        freeifnotnull(mb_delim_);
+
+    }
+
+    std::vector<std::string> LocalConfig::args() const
+    {
+        std::vector<std::string> argv = BaseConfig::args();
+
+        if(!dbname_.empty()){
+            argv.push_back("-f");
+            argv.push_back(dbname_);
+        }
+
+        return argv;
+    }
+
+    ConnectionConfig::ConnectionConfig(const std::string &hostip, uint16_t port)
+        : BaseConfig(REMOTE), hostip_(hostip), hostport_(port)
+    {
+    }
+
+    std::vector<std::string> ConnectionConfig::args() const
+    {
+        std::vector<std::string> argv = BaseConfig::args();
+
+        if(!hostip_.empty()){
+            argv.push_back("-h");
+            argv.push_back(hostip_);
+        }
+        if(hostport_ != 0){
+            argv.push_back("-p");
+            argv.push_back(common::convertToString(hostport_));
+        }
+
+        return argv;
     }
 }

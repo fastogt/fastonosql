@@ -9,19 +9,11 @@
 namespace fastonosql
 {
     struct leveldbConfig
-            : public ConnectionConfig
+            : public LocalConfig
     {
         leveldbConfig();
-        leveldbConfig(const leveldbConfig& other);
-        leveldbConfig& operator=(const leveldbConfig &other);
-
-        ~leveldbConfig();
 
         leveldb::Options options_;
-        std::string dbname_;
-
-    protected:
-        void copy(const leveldbConfig& other);
     };
 }
 

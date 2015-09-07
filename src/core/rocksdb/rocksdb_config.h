@@ -9,19 +9,11 @@
 namespace fastonosql
 {
     struct rocksdbConfig
-            : public ConnectionConfig
+            : public LocalConfig
     {
         rocksdbConfig();
-        rocksdbConfig(const rocksdbConfig& other);
-        rocksdbConfig& operator=(const rocksdbConfig &other);
 
-        ~rocksdbConfig();
-
-        std::string dbname_;
         rocksdb::Options options_;
-
-    protected:
-        void copy(const rocksdbConfig& other);
     };
 }
 

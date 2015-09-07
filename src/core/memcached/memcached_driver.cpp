@@ -33,9 +33,9 @@ namespace fastonosql
         }
 
         memcachedConfig inf = settings->info();
-        char* user = inf.user_;
-        char* passwd = inf.password_;
-        char* host = inf.hostip_;
+        const char* user = inf.user_.c_str();
+        const char* passwd = inf.password_.c_str();
+        const char* host = inf.hostip_.c_str();
         in_port_t hostport = inf.hostport_;
 
         memcached_return rc;
@@ -101,8 +101,10 @@ namespace fastonosql
             memcached_return rc;
             char buff[1024] = {0};
 
-            if(config_.user_ && config_.password_){
-                rc = memcached_set_sasl_auth_data(memc_, config_.user_, config_.password_);
+            if(!config_.user_.empty() && !config_.password_.empty()){
+                const char* user = config_.user_.c_str();
+                const char* passwd = config_.password_.c_str();
+                rc = memcached_set_sasl_auth_data(memc_, user, passwd);
                 if (rc != MEMCACHED_SUCCESS){
                     common::SNPrintf(buff, sizeof(buff), "Couldn't setup SASL auth: %s", memcached_strerror(memc_, rc));
                     return common::make_error_value(buff, common::ErrorValue::E_ERROR);
@@ -115,7 +117,10 @@ namespace fastonosql
                 return common::make_error_value(buff, common::ErrorValue::E_ERROR);
             }*/
 
-            rc = memcached_server_add(memc_, config_.hostip_, config_.hostport_);
+            const char* host = config_.hostip_.c_str();
+            in_port_t hostport = config_.hostport_;
+
+            rc = memcached_server_add(memc_, host, hostport);
 
             if (rc != MEMCACHED_SUCCESS){
                 common::SNPrintf(buff, sizeof(buff), "Couldn't add server: %s", memcached_strerror(memc_, rc));

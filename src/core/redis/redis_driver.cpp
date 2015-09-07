@@ -279,6 +279,8 @@ namespace fastonosql
             redisContext *lcontext = NULL;
 
             if (config.hostsocket == NULL) {
+                const char *host = config.hostip_.c_str();
+                uint16_t port = config.hostport_;
                 const char *username = c_strornull(sinfo.userName_);
                 const char *password = c_strornull(sinfo.password_);
                 const char *ssh_address = c_strornull(sinfo.hostName_);
@@ -288,7 +290,7 @@ namespace fastonosql
                 const char *privateKey = c_strornull(sinfo.privateKey_);
                 const char *passphrase = c_strornull(sinfo.passphrase_);
 
-                lcontext = redisConnect(config.hostip_, config.hostport_, ssh_address, ssh_port, username, password,
+                lcontext = redisConnect(host, port, ssh_address, ssh_port, username, password,
                                        publicKey, privateKey, passphrase, curM);
             }
             else {

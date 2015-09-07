@@ -5,23 +5,46 @@
 
 namespace fastonosql
 {
-    // -h -p -d
-    struct ConnectionConfig
+    enum ConfigType
     {
-        ConnectionConfig(const char* hostip, int port);
-        ConnectionConfig(const ConnectionConfig& other);
-        ConnectionConfig& operator=(const ConnectionConfig &other);
-        ~ConnectionConfig();
+        LOCAL,
+        REMOTE
+    };
 
-        char *hostip_;
-        int hostport_;
+    // -d
+    struct BaseConfig
+    {
+        explicit BaseConfig(ConfigType type);
+        ConfigType type() const;
+        std::vector<std::string> args() const;
 
-        char *mb_delim_;
-        int shutdown_;
+        std::string mb_delim_;
+        bool shutdown_;
+
+    private:
+        ConfigType type_;
+    };
+
+    // -f
+    struct LocalConfig
+            : public BaseConfig
+    {
+        explicit LocalConfig(const std::string& dbname);
 
         std::vector<std::string> args() const;
 
-    protected:
-        void copy(const ConnectionConfig& other);
+        std::string dbname_;
+    };
+
+    // -h -p
+    struct ConnectionConfig
+            : public BaseConfig
+    {
+        ConnectionConfig(const std::string& hostip, uint16_t port);
+
+        std::vector<std::string> args() const;
+
+        std::string hostip_;
+        uint16_t hostport_;
     };
 }

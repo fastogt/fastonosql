@@ -1,7 +1,7 @@
 #include "core/rocksdb/rocksdb_config.h"
 
 #include "common/sprintf.h"
-#include "common/utils.h"
+#include "common/file_system.h"
 
 #include "fasto/qt/logger.h"
 
@@ -15,16 +15,8 @@ namespace fastonosql
             for (i = 0; i < argc; i++) {
                 int lastarg = i==argc-1;
 
-                if (!strcmp(argv[i],"-h") && !lastarg) {
-                    common::utils::freeifnotnull(cfg.hostip_);
-                    cfg.hostip_ = strdup(argv[++i]);
-                }
-                else if (!strcmp(argv[i],"-p") && !lastarg) {
-                    cfg.hostport_ = atoi(argv[++i]);
-                }
-                else if (!strcmp(argv[i],"-d") && !lastarg) {
-                    common::utils::freeifnotnull(cfg.mb_delim_);
-                    cfg.mb_delim_ = strdup(argv[++i]);
+                if (!strcmp(argv[i],"-d") && !lastarg) {
+                    cfg.mb_delim_ = argv[++i];
                 }
                 else if (!strcmp(argv[i], "-f") && !lastarg) {
                     cfg.dbname_ = argv[++i];
@@ -50,32 +42,9 @@ namespace fastonosql
     }
 
     rocksdbConfig::rocksdbConfig()
-       : ConnectionConfig("127.0.0.1", 1111)
+       : LocalConfig(common::file_system::prepare_path("~/test.rocksdb"))
     {
-    }
-
-    rocksdbConfig::rocksdbConfig(const rocksdbConfig &other)
-        : ConnectionConfig(other.hostip_, other.hostport_)
-    {
-        copy(other);
-    }
-
-    rocksdbConfig& rocksdbConfig::operator=(const rocksdbConfig &other)
-    {
-        copy(other);
-        return *this;
-    }
-
-    void rocksdbConfig::copy(const rocksdbConfig& other)
-    {
-        using namespace common::utils;
-        dbname_ = other.dbname_;
-        options_ = other.options_;
-        ConnectionConfig::copy(other);
-    }
-
-    rocksdbConfig::~rocksdbConfig()
-    {
+        options_.create_if_missing = true;
     }
 }
 
@@ -84,11 +53,6 @@ namespace common
     std::string convertToString(const fastonosql::rocksdbConfig &conf)
     {
         std::vector<std::string> argv = conf.args();
-
-        if(!conf.dbname_.empty()){
-            argv.push_back("-f");
-            argv.push_back(conf.dbname_);
-        }
 
         if(conf.options_.create_if_missing){
             argv.push_back("-c");

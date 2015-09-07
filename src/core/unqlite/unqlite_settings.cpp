@@ -22,13 +22,16 @@ namespace fastonosql
 
     void UnqliteConnectionSettings::setHost(const common::net::hostAndPort& host)
     {
-        info_.hostip_ = common::utils::strdupornull(host.host_);
-        info_.hostport_ = host.port_;
+        NOTREACHED();
+        //info_.hostip_ = host.host_;
+        //info_.hostport_ = host.port_;
     }
 
     common::net::hostAndPort UnqliteConnectionSettings::host() const
     {
-        return common::net::hostAndPort(info_.hostip_, info_.hostport_);
+        NOTREACHED();
+        //return common::net::hostAndPort(info_.hostip_, info_.hostport_);
+        return common::net::hostAndPort();
     }
 
     unqliteConfig UnqliteConnectionSettings::info() const
@@ -39,6 +42,11 @@ namespace fastonosql
     void UnqliteConnectionSettings::setInfo(const unqliteConfig &info)
     {
         info_ = info;
+    }
+
+    std::string UnqliteConnectionSettings::fullAddress() const
+    {
+        return info_.dbname_;
     }
 
     IConnectionSettings* UnqliteConnectionSettings::clone() const

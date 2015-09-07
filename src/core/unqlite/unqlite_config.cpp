@@ -1,7 +1,7 @@
 #include "core/unqlite/unqlite_config.h"
 
 #include "common/sprintf.h"
-#include "common/utils.h"
+#include "common/file_system.h"
 
 #include "fasto/qt/logger.h"
 
@@ -15,19 +15,14 @@ namespace fastonosql
             for (i = 0; i < argc; i++) {
                 int lastarg = i==argc-1;
 
-                if (!strcmp(argv[i],"-h") && !lastarg) {
-                    common::utils::freeifnotnull(cfg.hostip_);
-                    cfg.hostip_ = strdup(argv[++i]);
-                }
-                else if (!strcmp(argv[i],"-p") && !lastarg) {
-                    cfg.hostport_ = atoi(argv[++i]);
-                }
-                else if (!strcmp(argv[i],"-d") && !lastarg) {
-                    common::utils::freeifnotnull(cfg.mb_delim_);
-                    cfg.mb_delim_ = strdup(argv[++i]);
+                if (!strcmp(argv[i],"-d") && !lastarg) {
+                    cfg.mb_delim_ = argv[++i];
                 }
                 else if (!strcmp(argv[i], "-f") && !lastarg) {
                     cfg.dbname_ = argv[++i];
+                }
+                else if (!strcmp(argv[i],"-c")) {
+                    cfg.create_if_missing_ = true;
                 }
                 else {
                     if (argv[i][0] == '-') {
@@ -47,30 +42,7 @@ namespace fastonosql
     }
 
     unqliteConfig::unqliteConfig()
-       : ConnectionConfig("127.0.0.1", 1111)
-    {
-    }
-
-    unqliteConfig::unqliteConfig(const unqliteConfig &other)
-        : ConnectionConfig(other.hostip_, other.hostport_)
-    {
-        copy(other);
-    }
-
-    unqliteConfig& unqliteConfig::operator=(const unqliteConfig &other)
-    {
-        copy(other);
-        return *this;
-    }
-
-    void unqliteConfig::copy(const unqliteConfig& other)
-    {
-        using namespace common::utils;
-        dbname_ = other.dbname_;
-        ConnectionConfig::copy(other);
-    }
-
-    unqliteConfig::~unqliteConfig()
+       : LocalConfig(common::file_system::prepare_path("~/test.unqlite")), create_if_missing_(true)
     {
     }
 }
@@ -81,16 +53,15 @@ namespace common
     {
         std::vector<std::string> argv = conf.args();
 
-        if(!conf.dbname_.empty()){
-            argv.push_back("-f");
-            argv.push_back(conf.dbname_);
+        if(conf.create_if_missing_){
+            argv.push_back("-c");
         }
 
         std::string result;
         for(int i = 0; i < argv.size(); ++i){
-            result+= argv[i];
+            result += argv[i];
             if(i != argv.size()-1){
-                result+=" ";
+                result += " ";
             }
         }
 

@@ -10,16 +10,9 @@ namespace fastonosql
             : public ConnectionConfig
     {
         ssdbConfig();
-        ssdbConfig(const ssdbConfig& other);
-        ssdbConfig& operator=(const ssdbConfig &other);
 
-        ~ssdbConfig();
-
-        char* user_;
-        char* password_;
-
-    private:
-        void copy(const ssdbConfig& other);
+        std::string user_;
+        std::string password_;
     };
 }
 

@@ -7,18 +7,11 @@
 namespace fastonosql
 {
     struct unqliteConfig
-            : public ConnectionConfig
+            : public LocalConfig
     {
         unqliteConfig();
-        unqliteConfig(const unqliteConfig& other);
-        unqliteConfig& operator=(const unqliteConfig &other);
 
-        ~unqliteConfig();
-
-        std::string dbname_;
-
-    protected:
-        void copy(const unqliteConfig& other);
+        bool create_if_missing_;
     };
 }
 

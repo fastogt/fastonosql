@@ -1,7 +1,6 @@
 #include "core/ssdb/ssdb_config.h"
 
 #include "common/sprintf.h"
-#include "common/utils.h"
 
 #include "fasto/qt/logger.h"
 
@@ -16,21 +15,19 @@ namespace fastonosql
                 int lastarg = i==argc-1;
 
                 if (!strcmp(argv[i],"-h") && !lastarg) {
-                    free(cfg.hostip_);
-                    cfg.hostip_ = strdup(argv[++i]);
+                    cfg.hostip_ = argv[++i];
                 }
                 else if (!strcmp(argv[i],"-p") && !lastarg) {
                     cfg.hostport_ = atoi(argv[++i]);
                 }
                 else if (!strcmp(argv[i],"-u") && !lastarg) {
-                    cfg.user_ = strdup(argv[++i]);
+                    cfg.user_ = argv[++i];
                 }
                 else if (!strcmp(argv[i],"-a") && !lastarg) {
-                    cfg.password_ = strdup(argv[++i]);
+                    cfg.password_ = argv[++i];
                 }
                 else if (!strcmp(argv[i],"-d") && !lastarg) {
-                    free(cfg.mb_delim_);
-                    cfg.mb_delim_ = strdup(argv[++i]);
+                    cfg.mb_delim_ = argv[++i];
                 }
                 else {
                     if (argv[i][0] == '-') {
@@ -50,39 +47,8 @@ namespace fastonosql
     }
 
     ssdbConfig::ssdbConfig()
-        : ConnectionConfig("127.0.0.1", 8888), user_(NULL), password_(NULL)
+        : ConnectionConfig("127.0.0.1", 8888), user_(), password_()
     {
-    }
-
-    ssdbConfig::ssdbConfig(const ssdbConfig &other)
-        : ConnectionConfig(other.hostip_, other.hostport_), user_(NULL), password_(NULL)
-    {
-        copy(other);
-    }
-
-    ssdbConfig& ssdbConfig::operator=(const ssdbConfig &other)
-    {
-        copy(other);
-        return *this;
-    }
-
-    void ssdbConfig::copy(const ssdbConfig& other)
-    {
-        using namespace common::utils;
-        freeifnotnull(user_);
-        user_ = strdupornull(other.user_); //
-        freeifnotnull(password_);
-        password_ = strdupornull(other.password_); //
-
-        ConnectionConfig::copy(other);
-    }
-
-
-    ssdbConfig::~ssdbConfig()
-    {
-        using namespace common::utils;
-        freeifnotnull(user_);
-        freeifnotnull(password_);
     }
 }
 
@@ -92,21 +58,21 @@ namespace common
     {
         std::vector<std::string> argv = conf.args();
 
-        if(conf.user_){
+        if(!conf.user_.empty()){
             argv.push_back("-u");
             argv.push_back(conf.user_);
         }
 
-        if(conf.password_){
+        if(!conf.password_.empty()){
             argv.push_back("-a");
             argv.push_back(conf.password_);
         }
 
         std::string result;
         for(int i = 0; i < argv.size(); ++i){
-            result+= argv[i];
+            result += argv[i];
             if(i != argv.size()-1){
-                result+=" ";
+                result += " ";
             }
         }
 

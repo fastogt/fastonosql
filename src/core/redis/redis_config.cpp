@@ -10,14 +10,12 @@ namespace fastonosql
     {
         int parseOptions(int argc, char **argv, redisConfig& cfg) {
             int i;
-            using namespace common::utils;
 
             for (i = 0; i < argc; i++) {
                 int lastarg = i==argc-1;
 
                 if (!strcmp(argv[i],"-h") && !lastarg) {
-                    freeifnotnull(cfg.hostip_);
-                    cfg.hostip_ = strdup(argv[++i]);
+                    cfg.hostip_ = argv[++i];
                 }/* else if (!strcmp(argv[i],"-h") && lastarg) {
                     usage();
                 } else if (!strcmp(argv[i],"--help")) {
@@ -75,8 +73,7 @@ namespace fastonosql
                     cfg.cluster_mode = 1;
                 }
                 else if (!strcmp(argv[i],"-d") && !lastarg) {
-                    freeifnotnull(cfg.mb_delim_);
-                    cfg.mb_delim_ = strdup(argv[++i]);
+                    cfg.mb_delim_ = argv[++i];
                 }
                 /*else if (!strcmp(argv[i],"-v") || !strcmp(argv[i], "--version")) {
                     sds version = cliVersion();
@@ -158,7 +155,7 @@ namespace fastonosql
 
         last_cmd_type = other.last_cmd_type;
 
-        ConnectionConfig::copy(other);
+        ConnectionConfig::operator=(other);
     }
 
     void redisConfig::init()

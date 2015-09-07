@@ -10,16 +10,9 @@ namespace fastonosql
             : public ConnectionConfig
     {
         memcachedConfig();
-        memcachedConfig(const memcachedConfig& other);
-        memcachedConfig& operator=(const memcachedConfig &other);
 
-        ~memcachedConfig();
-
-        char* user_;
-        char* password_;
-
-    protected:
-        void copy(const memcachedConfig& other);
+        std::string user_;
+        std::string password_;
     };
 }
 

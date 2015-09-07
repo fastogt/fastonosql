@@ -255,7 +255,7 @@ namespace fastonosql
         if(type == DBUNKNOWN){
             return NULL;
         }
-        else if(type == REDIS){
+        if(type == REDIS){
             return "<b>Usage: [OPTIONS] [cmd [arg [arg ...]]]</b><br/>"
                                "<b>-h &lt;hostname&gt;</b>      Server hostname (default: 127.0.0.1).<br/>"
                                "<b>-p &lt;port&gt;</b>          Server port (default: 6379).<br/>"
@@ -282,44 +282,37 @@ namespace fastonosql
                                "<b>--intrinsic-latency &lt;sec&gt;</b> Run a test to measure intrinsic system latency.<br/>"
                                "                   The test will run for the specified amount of seconds.<br/>"
                                "<b>--eval &lt;file&gt;</b>      Send an EVAL command using the Lua script at <b>&lt;file&gt;</b>.";
-        }
-        else if(type == MEMCACHED){
+        }        
+        if(type == MEMCACHED){
             return "<b>Usage: [OPTIONS] [cmd [arg [arg ...]]]</b><br/>"
                                "<b>-h &lt;hostname&gt;</b>      Server hostname (default: 127.0.0.1).<br/>"
                                "<b>-p &lt;port&gt;</b>          Server port (default: 11211).<br/>"
                                "<b>-u &lt;username&gt;</b>      Username to use when connecting to the server.<br/>"
                                "<b>-a &lt;password&gt;</b>      Password to use when connecting to the server.<br/>"
                                "<b>-d &lt;delimiter&gt;</b>     Multi-bulk delimiter in for raw formatting (default: \\n).<br/>";
-        }
-        else if(type == SSDB){
+        }        
+        if(type == SSDB){
             return "<b>Usage: [OPTIONS] [cmd [arg [arg ...]]]</b><br/>"
-                               "<b>-h &lt;hostname&gt;</b>      Server hostname (default: 127.0.0.1).<br/>"
-                               "<b>-p &lt;port&gt;</b>          Server port (default: 8888).<br/>"
                                "<b>-u &lt;username&gt;</b>      Username to use when connecting to the server.<br/>"
                                "<b>-a &lt;password&gt;</b>      Password to use when connecting to the server.<br/>"
                                "<b>-d &lt;delimiter&gt;</b>     Multi-bulk delimiter in for raw formatting (default: \\n).<br/>";
         }
-        else if(type == LEVELDB){
+        if(type == LEVELDB){
             return "<b>Usage: [OPTIONS] [cmd [arg [arg ...]]]</b><br/>"
-                               "<b>-h &lt;hostname&gt;</b>      Server hostname (default: 127.0.0.1), <b>not used</b>.<br/>"
-                               "<b>-p &lt;port&gt;</b>          Server port (default: 1111), <b>not used</b>.<br/>"
                                "<b>-f &lt;db&gt;</b>            File path to database.<br/>"
                                "<b>-c </b>            Create database if missing.<br/>"
                                "<b>-d &lt;delimiter&gt;</b>     Multi-bulk delimiter in for raw formatting (default: \\n).<br/>";
         }
-        else if(type == ROCKSDB){
+        if(type == ROCKSDB){
             return "<b>Usage: [OPTIONS] [cmd [arg [arg ...]]]</b><br/>"
-                               "<b>-h &lt;hostname&gt;</b>      Server hostname (default: 127.0.0.1), <b>not used</b>.<br/>"
-                               "<b>-p &lt;port&gt;</b>          Server port (default: 1111), <b>not used</b>.<br/>"
                                "<b>-f &lt;db&gt;</b>            File path to database.<br/>"
                                "<b>-c </b>            Create database if missing.<br/>"
                                "<b>-d &lt;delimiter&gt;</b>     Multi-bulk delimiter in for raw formatting (default: \\n).<br/>";
         }
-        else if(type == UNQLITE){
+        if(type == UNQLITE){
             return "<b>Usage: [OPTIONS] [cmd [arg [arg ...]]]</b><br/>"
-                               "<b>-h &lt;hostname&gt;</b>      Server hostname (default: 127.0.0.1), <b>not used</b>.<br/>"
-                               "<b>-p &lt;port&gt;</b>          Server port (default: 1111), <b>not used</b>.<br/>"
                                "<b>-f &lt;db&gt;</b>            File path to database.<br/>"
+                               "<b>-c </b>            Create database if missing.<br/>"
                                "<b>-d &lt;delimiter&gt;</b>     Multi-bulk delimiter in for raw formatting (default: \\n).<br/>";
         }
 
@@ -365,7 +358,7 @@ namespace fastonosql
             return common::convertToString(r);
         }
 #endif
-        NOTREACHED();
+
         return std::string();
     }
 

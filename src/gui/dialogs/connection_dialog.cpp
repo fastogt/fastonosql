@@ -234,11 +234,8 @@ namespace fastonosql
             commandLine_->setToolTip(trHelp);
         }
 
-        QString text = commandLine_->text();
-        if(text.isEmpty()){
-            QString deft = stableCommandLine(common::convertFromString<QString>(defaultCommandLine(currentType)));
-            commandLine_->setText(deft);
-        }
+        QString deft = stableCommandLine(common::convertFromString<QString>(defaultCommandLine(currentType)));
+        commandLine_->setText(deft);
 
         useSsh_->setEnabled(isValidType);
         updateSshControls(isValidType);

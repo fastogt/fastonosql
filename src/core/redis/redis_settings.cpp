@@ -12,7 +12,7 @@ namespace fastonosql
 
     void RedisConnectionSettings::setHost(const common::net::hostAndPort& host)
     {
-        info_.hostip_ = common::utils::strdupornull(host.host_);
+        info_.hostip_ = host.host_;
         info_.hostport_ = host.port_;
     }
 

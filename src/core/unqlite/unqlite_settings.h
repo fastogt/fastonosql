@@ -21,6 +21,8 @@ namespace fastonosql
         unqliteConfig info() const;
         void setInfo(const unqliteConfig &info);
 
+        virtual std::string fullAddress() const;
+
         virtual IConnectionSettings* clone() const;
 
     private:

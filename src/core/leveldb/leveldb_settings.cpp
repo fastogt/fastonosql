@@ -22,13 +22,16 @@ namespace fastonosql
 
     void LeveldbConnectionSettings::setHost(const common::net::hostAndPort& host)
     {
-        info_.hostip_ = common::utils::strdupornull(host.host_);
-        info_.hostport_ = host.port_;
+        NOTREACHED();
+        //info_.hostip_ = host.host_;
+        //info_.hostport_ = host.port_;
     }
 
     common::net::hostAndPort LeveldbConnectionSettings::host() const
     {
-        return common::net::hostAndPort(info_.hostip_, info_.hostport_);
+        NOTREACHED();
+        //return common::net::hostAndPort(info_.hostip_, info_.hostport_);
+        return common::net::hostAndPort();
     }
 
     leveldbConfig LeveldbConnectionSettings::info() const
@@ -39,6 +42,11 @@ namespace fastonosql
     void LeveldbConnectionSettings::setInfo(const leveldbConfig &info)
     {
         info_ = info;
+    }
+
+    std::string LeveldbConnectionSettings::fullAddress() const
+    {
+        return info_.dbname_;
     }
 
     IConnectionSettings* LeveldbConnectionSettings::clone() const

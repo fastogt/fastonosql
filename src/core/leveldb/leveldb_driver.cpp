@@ -457,7 +457,8 @@ namespace fastonosql
 
     common::net::hostAndPort LeveldbDriver::address() const
     {
-        return common::net::hostAndPort(impl_->config_.hostip_, impl_->config_.hostport_);
+        //return common::net::hostAndPort(impl_->config_.hostip_, impl_->config_.hostport_);
+        return common::net::hostAndPort();
     }
 
     std::string LeveldbDriver::outputDelemitr() const

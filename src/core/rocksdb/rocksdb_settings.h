@@ -21,6 +21,8 @@ namespace fastonosql
         rocksdbConfig info() const;
         void setInfo(const rocksdbConfig &info);
 
+        virtual std::string fullAddress() const;
+
         virtual IConnectionSettings* clone() const;
 
     private:
