@@ -128,8 +128,7 @@ namespace fastonosql
             for(int i = 0; i < infos.size(); ++i){
                 ServerDiscoveryInfoSPtr inf = infos[i];
                 common::net::hostAndPort host = inf->host();
-                IConnectionSettingsBaseSPtr con(IConnectionSettingsBase::createFromType(inf->connectionType(), inf->name()));
-                con->setHost(host);
+                IConnectionSettingsBaseSPtr con(IConnectionSettingsBaseRemote::createFromType(inf->connectionType(), inf->name(), host));
                 ConnectionListWidgetItemEx* item = new ConnectionListWidgetItemEx(con, inf->type());
                 item->setDisabled(inf->self() || cluster_->findSettingsByHost(host));
                 listWidget_->addTopLevelItem(item);

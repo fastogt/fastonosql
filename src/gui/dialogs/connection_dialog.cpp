@@ -85,9 +85,13 @@ namespace fastonosql
         inputLayout->addWidget(logging_);
         inputLayout->addWidget(commandLine_);
 
+        //ssh
+
+        IConnectionSettingsBaseRemote * remoteSettings = dynamic_cast<IConnectionSettingsBaseRemote *>(connection_.get());
+
         SSHInfo info;
-        if(connection_){
-            info = connection_->sshInfo();
+        if(remoteSettings){
+            info = remoteSettings->sshInfo();
         }
         useSsh_ = new QCheckBox;
         useSsh_->setChecked(info.isValid());
@@ -332,21 +336,24 @@ namespace fastonosql
                 connection_->setCommandLine(common::convertToString(toRawCommandLine(commandLine_->text())));
                 connection_->setLoggingEnabled(logging_->isChecked());
 
-                SSHInfo info = connection_->sshInfo();
-                info.hostName_ = common::convertToString(sshHostName_->text());
-                info.userName_ = common::convertToString(userName_->text());
-                info.port_ = sshPort_->text().toInt();
-                info.password_ = common::convertToString(passwordBox_->text());
-                info.publicKey_ = "";
-                info.privateKey_ = common::convertToString(privateKeyBox_->text());
-                info.passphrase_ = common::convertToString(passphraseBox_->text());
-                if (useSsh_->isChecked()){
-                    info.currentMethod_ = selectedAuthMethod();
+                IConnectionSettingsBaseRemote * remoteSettings = dynamic_cast<IConnectionSettingsBaseRemote *>(newConnection);
+                if(remoteSettings){
+                    SSHInfo info = remoteSettings->sshInfo();
+                    info.hostName_ = common::convertToString(sshHostName_->text());
+                    info.userName_ = common::convertToString(userName_->text());
+                    info.port_ = sshPort_->text().toInt();
+                    info.password_ = common::convertToString(passwordBox_->text());
+                    info.publicKey_ = "";
+                    info.privateKey_ = common::convertToString(privateKeyBox_->text());
+                    info.passphrase_ = common::convertToString(passphraseBox_->text());
+                    if (useSsh_->isChecked()){
+                        info.currentMethod_ = selectedAuthMethod();
+                    }
+                    else{
+                        info.currentMethod_ = SSHInfo::UNKNOWN;
+                    }
+                    remoteSettings->setSshInfo(info);
                 }
-                else{
-                    info.currentMethod_ = SSHInfo::UNKNOWN;
-                }
-                connection_->setSshInfo(info);
             }
             return true;
         }

@@ -7,7 +7,7 @@
 namespace fastonosql
 {
     class SsdbConnectionSettings
-            : public IConnectionSettingsBase
+            : public IConnectionSettingsBaseRemote
     {
     public:
         explicit SsdbConnectionSettings(const std::string& connectionName);

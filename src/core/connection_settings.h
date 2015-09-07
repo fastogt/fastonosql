@@ -45,23 +45,18 @@ namespace fastonosql
 
         std::string loggingPath() const;
 
-        virtual void setHost(const common::net::hostAndPort& host) = 0;
-        virtual common::net::hostAndPort host() const = 0;
-
         void setConnectionNameAndUpdateHash(const std::string& name);
 
         virtual std::string commandLine() const = 0;
         virtual void setCommandLine(const std::string& line) = 0;
 
-        virtual std::string fullAddress() const;
+        virtual std::string fullAddress() const = 0;
 
         static IConnectionSettingsBase* createFromType(connectionTypes type, const std::string& conName = std::string());
         static IConnectionSettingsBase* fromString(const std::string& val);
+        static bool isRemoteSettings(IConnectionSettingsBase* settings);
 
         virtual std::string toString() const;
-
-        SSHInfo sshInfo() const;
-        void setSshInfo(const SSHInfo& info);
 
     protected:
         virtual std::string toCommandLine() const = 0;
@@ -72,6 +67,35 @@ namespace fastonosql
         using IConnectionSettings::setConnectionName;
 
         std::string hash_;
+    };
+
+    class IConnectionSettingsBaseRemote
+            : public IConnectionSettingsBase
+    {
+    public:
+        virtual ~IConnectionSettingsBaseRemote();
+
+        virtual void setHost(const common::net::hostAndPort& host) = 0;
+        virtual common::net::hostAndPort host() const = 0;
+
+        virtual std::string commandLine() const = 0;
+        virtual void setCommandLine(const std::string& line) = 0;
+
+        virtual std::string fullAddress() const;
+
+        static IConnectionSettingsBaseRemote* createFromType(connectionTypes type, const std::string& conName, const common::net::hostAndPort& host);
+
+        virtual std::string toString() const;
+
+        SSHInfo sshInfo() const;
+        void setSshInfo(const SSHInfo& info);
+
+    protected:
+        virtual std::string toCommandLine() const = 0;
+        virtual void initFromCommandLine(const std::string& val) = 0;
+        IConnectionSettingsBaseRemote(const std::string& connectionName, connectionTypes type);
+
+    private:
         SSHInfo sshInfo_;
     };
 

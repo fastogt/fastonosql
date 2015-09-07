@@ -44,10 +44,9 @@ namespace fastonosql
 {
     namespace
     {
-        common::ErrorValueSPtr createConnection(const unqliteConfig& config, const SSHInfo& sinfo, unqlite** context)
+        common::ErrorValueSPtr createConnection(const unqliteConfig& config, unqlite** context)
         {
             DCHECK(*context == NULL);
-            UNUSED(sinfo);
 
             unqlite* lcontext = NULL;
             int st = unqlite_open(&lcontext, config.dbname_.c_str(), config.create_if_missing_ ? UNQLITE_OPEN_CREATE : UNQLITE_OPEN_READWRITE);
@@ -69,8 +68,7 @@ namespace fastonosql
             }
 
             unqliteConfig config = settings->info();
-            SSHInfo sinfo = settings->sshInfo();
-            return createConnection(config, sinfo, context);
+            return createConnection(config, context);
         }
     }
 
@@ -114,7 +112,7 @@ namespace fastonosql
             init();
 
             unqlite* context = NULL;
-            common::ErrorValueSPtr er = createConnection(config_, sinfo_, &context);
+            common::ErrorValueSPtr er = createConnection(config_, &context);
             if(er){
                 return er;
             }
@@ -543,7 +541,6 @@ namespace fastonosql
             UnqliteConnectionSettings *set = dynamic_cast<UnqliteConnectionSettings*>(settings_.get());
             if(set){
                 impl_->config_ = set->info();
-                impl_->sinfo_ = set->sshInfo();
         notifyProgress(sender, 25);
                     common::ErrorValueSPtr er = impl_->connect();
                     if(er){

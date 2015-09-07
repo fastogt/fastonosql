@@ -34,10 +34,9 @@ namespace fastonosql
 {
     namespace
     {
-        common::ErrorValueSPtr createConnection(const rocksdbConfig& config, const SSHInfo& sinfo, rocksdb::DB** context)
+        common::ErrorValueSPtr createConnection(const rocksdbConfig& config, rocksdb::DB** context)
         {
             DCHECK(*context == NULL);
-            UNUSED(sinfo);
 
             rocksdb::DB* lcontext = NULL;
             rocksdb::Status st = rocksdb::DB::Open(config.options_, config.dbname_, &lcontext);
@@ -59,8 +58,7 @@ namespace fastonosql
             }
 
             rocksdbConfig config = settings->info();
-            SSHInfo sinfo = settings->sshInfo();
-            return createConnection(config, sinfo, context);
+            return createConnection(config, context);
         }
     }
 
@@ -104,7 +102,7 @@ namespace fastonosql
             init();
 
             rocksdb::DB* context = NULL;
-            common::ErrorValueSPtr er = createConnection(config_, sinfo_, &context);
+            common::ErrorValueSPtr er = createConnection(config_, &context);
             if(er){
                 return er;
             }
@@ -611,7 +609,6 @@ namespace fastonosql
             RocksdbConnectionSettings *set = dynamic_cast<RocksdbConnectionSettings*>(settings_.get());
             if(set){
                 impl_->config_ = set->info();
-                impl_->sinfo_ = set->sshInfo();
         notifyProgress(sender, 25);
                     common::ErrorValueSPtr er = impl_->connect();
                     if(er){

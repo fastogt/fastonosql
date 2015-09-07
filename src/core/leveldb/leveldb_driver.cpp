@@ -39,10 +39,9 @@ namespace fastonosql
 {
     namespace
     {
-        common::ErrorValueSPtr createConnection(const leveldbConfig& config, const SSHInfo& sinfo, leveldb::DB** context)
+        common::ErrorValueSPtr createConnection(const leveldbConfig& config, leveldb::DB** context)
         {
             DCHECK(*context == NULL);
-            UNUSED(sinfo);
 
             leveldb::DB* lcontext = NULL;
             leveldb::Status st = leveldb::DB::Open(config.options_, config.dbname_, &lcontext);
@@ -64,8 +63,7 @@ namespace fastonosql
             }
 
             leveldbConfig config = settings->info();
-            SSHInfo sinfo = settings->sshInfo();
-            return createConnection(config, sinfo, context);
+            return createConnection(config, context);
         }
     }
 
@@ -109,7 +107,7 @@ namespace fastonosql
             init();
 
             leveldb::DB* context = NULL;
-            common::ErrorValueSPtr er = createConnection(config_, sinfo_, &context);
+            common::ErrorValueSPtr er = createConnection(config_, &context);
             if(er){
                 return er;
             }
@@ -220,7 +218,6 @@ namespace fastonosql
         }
 
         leveldbConfig config_;
-        SSHInfo sinfo_;
 
    private:
         common::ErrorValueSPtr execute(FastoObject* out, int argc, char **argv)
@@ -544,7 +541,6 @@ namespace fastonosql
             LeveldbConnectionSettings *set = dynamic_cast<LeveldbConnectionSettings*>(settings_.get());
             if(set){
                 impl_->config_ = set->info();
-                impl_->sinfo_ = set->sshInfo();
         notifyProgress(sender, 25);
                     common::ErrorValueSPtr er = impl_->connect();
                     if(er){

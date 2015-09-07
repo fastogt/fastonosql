@@ -5,7 +5,7 @@
 namespace fastonosql
 {
     SsdbConnectionSettings::SsdbConnectionSettings(const std::string& connectionName)
-        : IConnectionSettingsBase(connectionName, SSDB), info_()
+        : IConnectionSettingsBaseRemote(connectionName, SSDB), info_()
     {
 
     }

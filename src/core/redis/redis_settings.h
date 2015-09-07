@@ -7,7 +7,7 @@
 namespace fastonosql
 {
     class RedisConnectionSettings
-            : public IConnectionSettingsBase
+            : public IConnectionSettingsBaseRemote
     {
     public:
         explicit RedisConnectionSettings(const std::string& connectionName);
