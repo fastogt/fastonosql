@@ -12,22 +12,27 @@ namespace fastonosql
     };
 
     // -d
+    template<ConfigType ctype>
     struct BaseConfig
     {
-        explicit BaseConfig(ConfigType type);
-        ConfigType type() const;
-        std::vector<std::string> args() const;
+        BaseConfig()
+            : mb_delim_("\n"), shutdown_(false)
+        {
+
+        }
+
+        ConfigType type() const
+        {
+            return ctype;
+        }
 
         std::string mb_delim_;
         bool shutdown_;
-
-    private:
-        ConfigType type_;
     };
 
     // -f
     struct LocalConfig
-            : public BaseConfig
+            : public BaseConfig<LOCAL>
     {
         explicit LocalConfig(const std::string& dbname);
 
@@ -37,10 +42,10 @@ namespace fastonosql
     };
 
     // -h -p
-    struct ConnectionConfig
-            : public BaseConfig
+    struct RemoteConfig
+            : public BaseConfig<REMOTE>
     {
-        ConnectionConfig(const std::string& hostip, uint16_t port);
+        RemoteConfig(const std::string& hostip, uint16_t port);
 
         std::vector<std::string> args() const;
 

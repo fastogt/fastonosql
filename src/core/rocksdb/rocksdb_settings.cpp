@@ -1,7 +1,5 @@
 #include "core/rocksdb/rocksdb_settings.h"
 
-#include "common/utils.h"
-
 namespace fastonosql
 {
     RocksdbConnectionSettings::RocksdbConnectionSettings(const std::string& connectionName)
@@ -18,20 +16,6 @@ namespace fastonosql
     void RocksdbConnectionSettings::setCommandLine(const std::string& line)
     {
         info_ = common::convertFromString<rocksdbConfig>(line);
-    }
-
-    void RocksdbConnectionSettings::setHost(const common::net::hostAndPort& host)
-    {
-        NOTREACHED();
-        //info_.hostip_ = host.host_;
-        //info_.hostport_ = host.port_;
-    }
-
-    common::net::hostAndPort RocksdbConnectionSettings::host() const
-    {
-        NOTREACHED();
-        //return common::net::hostAndPort(info_.hostip_, info_.hostport_);
-        return common::net::hostAndPort();
     }
 
     rocksdbConfig RocksdbConnectionSettings::info() const

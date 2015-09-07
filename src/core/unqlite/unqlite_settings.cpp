@@ -1,7 +1,5 @@
 #include "core/unqlite/unqlite_settings.h"
 
-#include "common/utils.h"
-
 namespace fastonosql
 {
     UnqliteConnectionSettings::UnqliteConnectionSettings(const std::string& connectionName)
@@ -18,20 +16,6 @@ namespace fastonosql
     void UnqliteConnectionSettings::setCommandLine(const std::string& line)
     {
         info_ = common::convertFromString<unqliteConfig>(line);
-    }
-
-    void UnqliteConnectionSettings::setHost(const common::net::hostAndPort& host)
-    {
-        NOTREACHED();
-        //info_.hostip_ = host.host_;
-        //info_.hostport_ = host.port_;
-    }
-
-    common::net::hostAndPort UnqliteConnectionSettings::host() const
-    {
-        NOTREACHED();
-        //return common::net::hostAndPort(info_.hostip_, info_.hostport_);
-        return common::net::hostAndPort();
     }
 
     unqliteConfig UnqliteConnectionSettings::info() const
@@ -65,5 +49,4 @@ namespace fastonosql
     {
         info_ = common::convertFromString<unqliteConfig>(val);
     }
-
 }

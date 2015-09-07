@@ -7,7 +7,7 @@
 namespace fastonosql
 {
     struct ssdbConfig
-            : public ConnectionConfig
+            : public RemoteConfig
     {
         ssdbConfig();
 

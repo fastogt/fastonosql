@@ -54,7 +54,6 @@ namespace fastonosql
 
         static IConnectionSettingsBase* createFromType(connectionTypes type, const std::string& conName = std::string());
         static IConnectionSettingsBase* fromString(const std::string& val);
-        static bool isRemoteSettings(IConnectionSettingsBase* settings);
 
         virtual std::string toString() const;
 
@@ -69,11 +68,11 @@ namespace fastonosql
         std::string hash_;
     };
 
-    class IConnectionSettingsBaseRemote
+    class IConnectionSettingsRemote
             : public IConnectionSettingsBase
     {
     public:
-        virtual ~IConnectionSettingsBaseRemote();
+        virtual ~IConnectionSettingsRemote();
 
         virtual void setHost(const common::net::hostAndPort& host) = 0;
         virtual common::net::hostAndPort host() const = 0;
@@ -83,7 +82,7 @@ namespace fastonosql
 
         virtual std::string fullAddress() const;
 
-        static IConnectionSettingsBaseRemote* createFromType(connectionTypes type, const std::string& conName, const common::net::hostAndPort& host);
+        static IConnectionSettingsRemote* createFromType(connectionTypes type, const std::string& conName, const common::net::hostAndPort& host);
 
         virtual std::string toString() const;
 
@@ -93,7 +92,7 @@ namespace fastonosql
     protected:
         virtual std::string toCommandLine() const = 0;
         virtual void initFromCommandLine(const std::string& val) = 0;
-        IConnectionSettingsBaseRemote(const std::string& connectionName, connectionTypes type);
+        IConnectionSettingsRemote(const std::string& connectionName, connectionTypes type);
 
     private:
         SSHInfo sshInfo_;

@@ -7,7 +7,7 @@
 namespace fastonosql
 {
     struct memcachedConfig
-            : public ConnectionConfig
+            : public RemoteConfig
     {
         memcachedConfig();
 

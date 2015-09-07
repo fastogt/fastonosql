@@ -2,7 +2,7 @@
 [Alexandr Topilski]
 - UnQLite database support http://http://unqlite.org//
 
-0.3.5 / September 9, 2015
+0.3.5 / September 5, 2015
 [Alexandr Topilski]
 - Package installation fails on Ubuntu 14 #56
 - RocksDB database support http://rocksdb.org/

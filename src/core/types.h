@@ -220,8 +220,8 @@ namespace fastonosql
     protected:
         CommandKey(const NDbValue& key, cmdtype type);
 
-        cmdtype type_;
-        NDbValue key_;
+        const cmdtype type_;
+        const NDbValue key_;
     };
 
     class CommandDeleteKey

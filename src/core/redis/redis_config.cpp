@@ -8,10 +8,9 @@ namespace fastonosql
 {
     namespace
     {
-        int parseOptions(int argc, char **argv, redisConfig& cfg) {
-            int i;
-
-            for (i = 0; i < argc; i++) {
+        void parseOptions(int argc, char **argv, redisConfig& cfg)
+        {
+            for (int i = 0; i < argc; i++) {
                 int lastarg = i==argc-1;
 
                 if (!strcmp(argv[i],"-h") && !lastarg) {
@@ -87,24 +86,24 @@ namespace fastonosql
                         sprintf(buff, "Unrecognized option or bad number of args for: '%s'", argv[i]);
                         LOG_MSG(buff, common::logging::L_WARNING, true);
                         break;
-                    } else {
+                    }
+                    else {
                         /* Likely the command name, stop here. */
                         break;
                     }
                 }
             }
-            return i;
         }
     }
 
     redisConfig::redisConfig()
-        : ConnectionConfig("127.0.0.1", 6379)
+        : RemoteConfig("127.0.0.1", 6379)
     {
         init();
     }
 
     redisConfig::redisConfig(const redisConfig &other)
-        : ConnectionConfig(other.hostip_, other.hostport_)
+        : RemoteConfig(other.hostip_, other.hostport_)
     {
         init();
         copy(other);
@@ -155,7 +154,7 @@ namespace fastonosql
 
         last_cmd_type = other.last_cmd_type;
 
-        ConnectionConfig::operator=(other);
+        RemoteConfig::operator=(other);
     }
 
     void redisConfig::init()

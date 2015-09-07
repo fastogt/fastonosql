@@ -9,10 +9,10 @@ namespace fastonosql
 {
     namespace
     {
-        int parseOptions(int argc, char **argv, leveldbConfig& cfg) {
-            int i;
-
-            for (i = 0; i < argc; i++) {
+        void parseOptions(int argc, char **argv, leveldbConfig& cfg)
+        {
+             for (int i = 0; i < argc; i++)
+             {
                 int lastarg = i==argc-1;
 
                 if (!strcmp(argv[i],"-d") && !lastarg) {
@@ -31,13 +31,13 @@ namespace fastonosql
                         common::SNPrintf(buff, sizeof(buff), "Unrecognized option or bad number of args for: '%s'", argv[i]);
                         LOG_MSG(buff, common::logging::L_WARNING, true);
                         break;
-                    } else {
+                    }
+                    else {
                         /* Likely the command name, stop here. */
                         break;
                     }
                 }
             }
-            return i;
         }
     }
 

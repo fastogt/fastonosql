@@ -5,7 +5,7 @@
 namespace fastonosql
 {
     RedisConnectionSettings::RedisConnectionSettings(const std::string &connectionName)
-        : IConnectionSettingsBaseRemote(connectionName, REDIS), info_()
+        : IConnectionSettingsRemote(connectionName, REDIS), info_()
     {
 
     }

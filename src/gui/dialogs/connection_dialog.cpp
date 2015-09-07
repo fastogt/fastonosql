@@ -87,7 +87,7 @@ namespace fastonosql
 
         //ssh
 
-        IConnectionSettingsBaseRemote * remoteSettings = dynamic_cast<IConnectionSettingsBaseRemote *>(connection_.get());
+        IConnectionSettingsRemote * remoteSettings = dynamic_cast<IConnectionSettingsRemote *>(connection_.get());
 
         SSHInfo info;
         if(remoteSettings){
@@ -336,7 +336,7 @@ namespace fastonosql
                 connection_->setCommandLine(common::convertToString(toRawCommandLine(commandLine_->text())));
                 connection_->setLoggingEnabled(logging_->isChecked());
 
-                IConnectionSettingsBaseRemote * remoteSettings = dynamic_cast<IConnectionSettingsBaseRemote *>(newConnection);
+                IConnectionSettingsRemote * remoteSettings = dynamic_cast<IConnectionSettingsRemote *>(newConnection);
                 if(remoteSettings){
                     SSHInfo info = remoteSettings->sshInfo();
                     info.hostName_ = common::convertToString(sshHostName_->text());

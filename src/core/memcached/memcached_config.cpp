@@ -6,10 +6,9 @@ namespace fastonosql
 {
     namespace
     {
-        int parseOptions(int argc, char **argv, memcachedConfig& cfg) {
-            int i;
-
-            for (i = 0; i < argc; i++) {
+        void parseOptions(int argc, char **argv, memcachedConfig& cfg)
+        {
+            for (int i = 0; i < argc; i++) {
                 int lastarg = i==argc-1;
 
                 if (!strcmp(argv[i],"-h") && !lastarg) {
@@ -34,18 +33,18 @@ namespace fastonosql
                         sprintf(buff, "Unrecognized option or bad number of args for: '%s'", argv[i]);
                         LOG_MSG(buff, common::logging::L_WARNING, true);
                         break;
-                    } else {
+                    }
+                    else {
                         /* Likely the command name, stop here. */
                         break;
                     }
                 }
             }
-            return i;
         }
     }
 
     memcachedConfig::memcachedConfig()
-        : ConnectionConfig("127.0.0.1", 11211), user_(), password_()
+        : RemoteConfig("127.0.0.1", 11211), user_(), password_()
     {
     }
 }

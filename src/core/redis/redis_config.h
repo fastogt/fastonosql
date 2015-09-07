@@ -7,7 +7,7 @@
 namespace fastonosql
 {
     struct redisConfig
-            : public ConnectionConfig
+            : public RemoteConfig
     {
         redisConfig();
         redisConfig(const redisConfig& other);

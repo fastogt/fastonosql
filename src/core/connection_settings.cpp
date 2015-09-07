@@ -216,7 +216,7 @@ namespace fastonosql
                 }
                 else if(commaCount == 3){
                     result->initFromCommandLine(elText);
-                    IConnectionSettingsBaseRemote * remote = dynamic_cast<IConnectionSettingsBaseRemote *>(result);
+                    IConnectionSettingsRemote * remote = dynamic_cast<IConnectionSettingsRemote *>(result);
                     if(remote){
                         remote->setSshInfo(SSHInfo(val.substr(i+1)));
                     }
@@ -232,17 +232,6 @@ namespace fastonosql
         return result;
     }
 
-    bool IConnectionSettingsBase::isRemoteSettings(IConnectionSettingsBase* settings)
-    {
-        if(!settings){
-            return false;
-        }
-
-        connectionTypes curType = settings->connectionType();
-
-         return curType == REDIS || curType == SSDB || curType == MEMCACHED;
-    }
-
     std::string IConnectionSettingsBase::toString() const
     {
         DCHECK(type_ != DBUNKNOWN);
@@ -253,28 +242,28 @@ namespace fastonosql
         return res;
     }
 
-    ////
+    ////===================== IConnectionSettingsRemote =====================////
 
-    IConnectionSettingsBaseRemote::IConnectionSettingsBaseRemote(const std::string& connectionName, connectionTypes type)
+    IConnectionSettingsRemote::IConnectionSettingsRemote(const std::string& connectionName, connectionTypes type)
         : IConnectionSettingsBase(connectionName, type), sshInfo_()
     {
 
     }
 
-    IConnectionSettingsBaseRemote::~IConnectionSettingsBaseRemote()
+    IConnectionSettingsRemote::~IConnectionSettingsRemote()
     {
 
     }
 
-    std::string IConnectionSettingsBaseRemote::fullAddress() const
+    std::string IConnectionSettingsRemote::fullAddress() const
     {
         const common::net::hostAndPort h = host();
         return common::convertToString(h);
     }
 
-    IConnectionSettingsBaseRemote* IConnectionSettingsBaseRemote::createFromType(connectionTypes type, const std::string& conName, const common::net::hostAndPort& host)
+    IConnectionSettingsRemote* IConnectionSettingsRemote::createFromType(connectionTypes type, const std::string& conName, const common::net::hostAndPort& host)
     {
-        IConnectionSettingsBaseRemote* remote = NULL;
+        IConnectionSettingsRemote* remote = NULL;
 #ifdef BUILD_WITH_REDIS
         if(type == REDIS){
             remote = new RedisConnectionSettings(conName);
@@ -295,7 +284,7 @@ namespace fastonosql
         return remote;
     }
 
-    std::string IConnectionSettingsBaseRemote::toString() const
+    std::string IConnectionSettingsRemote::toString() const
     {
         DCHECK(type_ != DBUNKNOWN);
 
@@ -305,12 +294,12 @@ namespace fastonosql
         return res;
     }
 
-    SSHInfo IConnectionSettingsBaseRemote::sshInfo() const
+    SSHInfo IConnectionSettingsRemote::sshInfo() const
     {
         return sshInfo_;
     }
 
-    void IConnectionSettingsBaseRemote::setSshInfo(const SSHInfo& info)
+    void IConnectionSettingsRemote::setSshInfo(const SSHInfo& info)
     {
         sshInfo_ = info;
     }
@@ -318,7 +307,6 @@ namespace fastonosql
     const char* useHelpText(connectionTypes type)
     {
         if(type == DBUNKNOWN){
-            NOTREACHED();
             return NULL;
         }
         if(type == REDIS){
@@ -539,7 +527,7 @@ namespace fastonosql
     {
         for(int i = 0; i < clusters_nodes_.size(); ++i){
             IConnectionSettingsBaseSPtr cur = clusters_nodes_[i];
-            IConnectionSettingsBaseRemote * remote = dynamic_cast<IConnectionSettingsBaseRemote *>(cur.get());
+            IConnectionSettingsRemote * remote = dynamic_cast<IConnectionSettingsRemote *>(cur.get());
             if(remote && remote->host() == host){
                 return cur;
             }
