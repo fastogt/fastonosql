@@ -19,7 +19,7 @@ SET(BRANDING_PROJECT_FACEBOOK_LINK "https://www.facebook.com/profile.php?id=1000
 SET(BRANDING_PROJECT_TWITTER_LINK "https://www.twitter.com/FastoNoSQL" CACHE STRING "Twitter link for ${BRANDING_PROJECT_NAME}") #default
 SET(BRANDING_PROJECT_GITHUB_LINK "https://www.github.com/fastogt/fastonosql" CACHE STRING "Github link for ${BRANDING_PROJECT_NAME}") #default
 
-SET(BRANDING_PROJECT_BREF_DESCRIPTION "Cross-platform open source Redis, Memcached, SSDB, LevelDB management tool."
+SET(BRANDING_PROJECT_BREF_DESCRIPTION "Cross-platform open source Redis, Memcached, SSDB, LevelDB, RocksDB, UnQLite management tool."
     CACHE STRING "Bref description for ${BRANDING_PROJECT_NAME}")
 SET(BRANDING_PROJECT_COPYRIGHT "Copyright (C) 2014-2015 ${BRANDING_PROJECT_COMPANYNAME} All Rights Reserved."
     CACHE STRING "Copyright notice for ${BRANDING_PROJECT_NAME}") #default

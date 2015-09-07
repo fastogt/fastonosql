@@ -140,6 +140,9 @@ namespace fastonosql
         else if(type_ == ROCKSDB){
             ext = LOGGING_ROCKSDB_FILE_EXTENSION;
         }
+        else if(type_ == UNQLITE){
+            ext = LOGGING_UNQLITE_FILE_EXTENSION;
+        }
         else {
             NOTREACHED();
         }
@@ -315,6 +318,7 @@ namespace fastonosql
     const char* useHelpText(connectionTypes type)
     {
         if(type == DBUNKNOWN){
+            NOTREACHED();
             return NULL;
         }
         if(type == REDIS){
