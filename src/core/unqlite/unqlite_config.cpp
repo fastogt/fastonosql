@@ -41,7 +41,7 @@ namespace fastonosql
     }
 
     unqliteConfig::unqliteConfig()
-       : LocalConfig(common::file_system::prepare_path("~/test.unqlite")), create_if_missing_(true)
+       : LocalConfig(common::file_system::prepare_path("~/test.unqlite")), create_if_missing_(false)
     {
     }
 }

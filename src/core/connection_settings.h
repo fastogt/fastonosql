@@ -52,8 +52,9 @@ namespace fastonosql
 
         virtual std::string fullAddress() const = 0;
 
-        static IConnectionSettingsBase* createFromType(connectionTypes type, const std::string& conName = std::string());
+        static IConnectionSettingsBase* createFromType(connectionTypes type, const std::string& conName);
         static IConnectionSettingsBase* fromString(const std::string& val);
+        static bool isRemoteType(connectionTypes type);
 
         virtual std::string toString() const;
 

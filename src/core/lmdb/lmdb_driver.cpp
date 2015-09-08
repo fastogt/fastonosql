@@ -16,8 +16,8 @@ extern "C" {
 #include "core/lmdb/lmdb_infos.h"
 
 #define INFO_REQUEST "INFO"
-#define GET_KEY_PATTERN_1ARGS_S "FETCH %s"
-#define SET_KEY_PATTERN_2ARGS_SS "STORE %s %s"
+#define GET_KEY_PATTERN_1ARGS_S "GET %s"
+#define SET_KEY_PATTERN_2ARGS_SS "PUT %s %s"
 
 #define GET_KEYS_PATTERN_1ARGS_I "KEYS a z %d"
 #define DELETE_KEY_PATTERN_1ARGS_S "DEL %s"
@@ -29,8 +29,7 @@ namespace
     struct lmdb
     {
         MDB_env *env;
-        MDB_dbi dbi;
-        MDB_txn *txn;
+        MDB_dbi dbir;
     };
 
     int lmdb_open(lmdb **context, const char *dbname, bool create_if_missing)
@@ -54,13 +53,16 @@ namespace
             free(lcontext);
             return rc;
         }
-        rc = mdb_txn_begin(lcontext->env, NULL, 0, &lcontext->txn);
+
+        MDB_txn *txn = NULL;
+        rc = mdb_txn_begin(lcontext->env, NULL, 0, &txn);
         if(rc != LMDB_OK){
             free(lcontext);
             return rc;
         }
 
-        rc = mdb_dbi_open(lcontext->txn, NULL, 0, &lcontext->dbi);
+        rc = mdb_dbi_open(txn, NULL, 0, &lcontext->dbir);
+        mdb_txn_abort(txn);
         if(rc != LMDB_OK){
             free(lcontext);
             return rc;
@@ -77,7 +79,7 @@ namespace
             return;
         }
 
-        mdb_dbi_close(lcontext->env, lcontext->dbi);
+        mdb_dbi_close(lcontext->env, lcontext->dbir);
         mdb_env_close(lcontext->env);
         free(lcontext);
         *context = NULL;
@@ -180,7 +182,7 @@ namespace fastonosql
         MDB_dbi curDb() const
         {
             if(lmdb_){
-                return lmdb_->dbi;
+                return lmdb_->dbir;
             }
 
             return 0;
@@ -361,7 +363,14 @@ namespace fastonosql
             mkey.mv_size = key.size();
             mkey.mv_data = (void*)key.c_str();
             MDB_val mval;
-            int rc = mdb_get(lmdb_->txn, lmdb_->dbi, &mkey, &mval);
+
+            MDB_txn *txn = NULL;
+            int rc = mdb_txn_begin(lmdb_->env, NULL, MDB_RDONLY, &txn);
+            if(rc == LMDB_OK){
+                rc = mdb_get(txn, lmdb_->dbir, &mkey, &mval);
+            }
+            mdb_txn_abort(txn);
+
             if (rc != LMDB_OK){
                 char buff[1024] = {0};
                 common::SNPrintf(buff, sizeof(buff), "get function error: %s", mdb_strerror(rc));
@@ -382,9 +391,16 @@ namespace fastonosql
             mval.mv_size = value.size();
             mval.mv_data = (void*)value.c_str();
 
-            int rc = mdb_put(lmdb_->txn, lmdb_->dbi, &mkey, &mval, 0);
-            if (rc == LMDB_OK){
-                rc = mdb_txn_commit(lmdb_->txn);
+            MDB_txn *txn = NULL;
+            int rc = mdb_txn_begin(lmdb_->env, NULL, 0, &txn);
+            if(rc == LMDB_OK){
+                rc = mdb_put(txn, lmdb_->dbir, &mkey, &mval, 0);
+                if (rc == LMDB_OK){
+                    rc = mdb_txn_commit(txn);
+                }
+                else{
+                    mdb_txn_abort(txn);
+                }
             }
 
             if (rc != LMDB_OK){
@@ -401,7 +417,19 @@ namespace fastonosql
             MDB_val mkey;
             mkey.mv_size = key.size();
             mkey.mv_data = (void*)key.c_str();
-            int rc = mdb_del(lmdb_->txn, lmdb_->dbi, &mkey, NULL);
+
+            MDB_txn *txn = NULL;
+            int rc = mdb_txn_begin(lmdb_->env, NULL, 0, &txn);
+            if(rc == LMDB_OK){
+                rc = mdb_del(txn, lmdb_->dbir, &mkey, NULL);
+                if (rc == LMDB_OK){
+                    rc = mdb_txn_commit(txn);
+                }
+                else{
+                    mdb_txn_abort(txn);
+                }
+            }
+
             if (rc != LMDB_OK){
                 char buff[1024] = {0};
                 common::SNPrintf(buff, sizeof(buff), "delete function error: %s", mdb_strerror(rc));
@@ -413,13 +441,15 @@ namespace fastonosql
 
         common::ErrorValueSPtr keys(const std::string &key_start, const std::string &key_end, uint64_t limit, std::vector<std::string> *ret)
         {
-            int rc = mdb_txn_begin(lmdb_->env, NULL, MDB_RDONLY, &lmdb_->txn);
             MDB_cursor *cursor;
+            MDB_txn *txn = NULL;
+            int rc = mdb_txn_begin(lmdb_->env, NULL, MDB_RDONLY, &txn);
             if(rc == LMDB_OK){
-                rc = mdb_cursor_open(lmdb_->txn, lmdb_->dbi, &cursor);
+                rc = mdb_cursor_open(txn, lmdb_->dbir, &cursor);
             }
 
             if(rc != LMDB_OK){
+                mdb_txn_abort(txn);
                 char buff[1024] = {0};
                 common::SNPrintf(buff, sizeof(buff), "Keys function error: %s", mdb_strerror(rc));
                 return common::make_error_value(buff, common::ErrorValue::E_ERROR);
@@ -434,7 +464,7 @@ namespace fastonosql
                 }
             }
             mdb_cursor_close(cursor);
-            mdb_txn_abort(lmdb_->txn);
+            mdb_txn_abort(txn);
 
             return common::ErrorValueSPtr();
         }

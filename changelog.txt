@@ -1,7 +1,8 @@
-0.4.5
+0.5.5
 [Alexandr Topilski]
 - UnQLite database support http://unqlite.org/
 - Lmdb database support http://symas.com/mdb/
+- Bugs fixes
 
 0.3.5 / September 5, 2015
 [Alexandr Topilski]

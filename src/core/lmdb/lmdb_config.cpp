@@ -41,7 +41,7 @@ namespace fastonosql
     }
 
     lmdbConfig::lmdbConfig()
-       : LocalConfig(common::file_system::prepare_path("~/test.lmdb")), create_if_missing_(true)
+       : LocalConfig(common::file_system::prepare_path("~/test.lmdb")), create_if_missing_(false)
     {
     }
 }

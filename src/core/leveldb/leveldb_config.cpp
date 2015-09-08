@@ -44,7 +44,7 @@ namespace fastonosql
     leveldbConfig::leveldbConfig()
        : LocalConfig(common::file_system::prepare_path("~/test.leveldb"))
     {
-        options_.create_if_missing = true;
+        options_.create_if_missing = false;
     }
 }
 

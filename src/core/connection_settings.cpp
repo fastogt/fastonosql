@@ -212,7 +212,7 @@ namespace fastonosql
             if(ch == ','){
                 if(commaCount == 0){
                     int crT = elText[0] - 48;
-                    result = createFromType((connectionTypes)crT);
+                    result = createFromType((connectionTypes)crT, std::string());
                     if(!result){
                         return NULL;
                     }
@@ -239,6 +239,11 @@ namespace fastonosql
             }
         }
         return result;
+    }
+
+    bool IConnectionSettingsBase::isRemoteType(connectionTypes type)
+    {
+        return type == REDIS || type == MEMCACHED || type == SSDB;
     }
 
     std::string IConnectionSettingsBase::toString() const
@@ -412,24 +417,28 @@ namespace fastonosql
 #ifdef BUILD_WITH_LEVELDB
         if(type == LEVELDB){
             leveldbConfig r;
+            r.options_.create_if_missing = true;
             return common::convertToString(r);
         }
 #endif
 #ifdef BUILD_WITH_ROCKSDB
         if(type == ROCKSDB){
             rocksdbConfig r;
+            r.options_.create_if_missing = true;
             return common::convertToString(r);
         }
 #endif
 #ifdef BUILD_WITH_UNQLITE
         if(type == UNQLITE){
             unqliteConfig r;
+            r.create_if_missing_ = true;
             return common::convertToString(r);
         }
 #endif
 #ifdef BUILD_WITH_LMDB
         if(type == LMDB){
             lmdbConfig r;
+            r.create_if_missing_ = true;
             return common::convertToString(r);
         }
 #endif

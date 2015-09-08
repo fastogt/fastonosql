@@ -228,6 +228,8 @@ namespace fastonosql
         QVariant var = typeConnection_->itemData(index);
         connectionTypes currentType = (connectionTypes)qvariant_cast<unsigned char>(var);
         bool isValidType = currentType != DBUNKNOWN;
+        bool isRemoteType = IConnectionSettingsBase::isRemoteType(currentType);
+
         connectionName_->setEnabled(isValidType);
         commandLine_->setEnabled(isValidType);
         buttonBox_->button(QDialogButtonBox::Save)->setEnabled(isValidType);
@@ -238,11 +240,15 @@ namespace fastonosql
             commandLine_->setToolTip(trHelp);
         }
 
-        QString deft = stableCommandLine(common::convertFromString<QString>(defaultCommandLine(currentType)));
-        commandLine_->setText(deft);
+        QObject *send = qobject_cast<QObject*>(sender());
 
-        useSsh_->setEnabled(isValidType);
-        updateSshControls(isValidType);
+        if(send){
+            QString deft = stableCommandLine(common::convertFromString<QString>(defaultCommandLine(currentType)));
+            commandLine_->setText(deft);
+        }
+
+        useSsh_->setEnabled(isRemoteType);
+        updateSshControls(isRemoteType);
         testButton_->setEnabled(isValidType);
         logging_->setEnabled(isValidType);
     }
@@ -328,33 +334,38 @@ namespace fastonosql
     {
         connectionTypes currentType = common::convertFromString<connectionTypes>(common::convertToString(typeConnection_->currentText()));
         bool isValidType = currentType != DBUNKNOWN;
-        if(isValidType){
-            std::string conName = common::convertToString(connectionName_->text());
-            IConnectionSettingsBase* newConnection = IConnectionSettingsBase::createFromType(currentType, conName);
-            if(newConnection){
-                connection_.reset(newConnection);
-                connection_->setCommandLine(common::convertToString(toRawCommandLine(commandLine_->text())));
-                connection_->setLoggingEnabled(logging_->isChecked());
 
-                IConnectionSettingsRemote * remoteSettings = dynamic_cast<IConnectionSettingsRemote *>(newConnection);
-                if(remoteSettings){
-                    SSHInfo info = remoteSettings->sshInfo();
-                    info.hostName_ = common::convertToString(sshHostName_->text());
-                    info.userName_ = common::convertToString(userName_->text());
-                    info.port_ = sshPort_->text().toInt();
-                    info.password_ = common::convertToString(passwordBox_->text());
-                    info.publicKey_ = "";
-                    info.privateKey_ = common::convertToString(privateKeyBox_->text());
-                    info.passphrase_ = common::convertToString(passphraseBox_->text());
-                    if (useSsh_->isChecked()){
-                        info.currentMethod_ = selectedAuthMethod();
-                    }
-                    else{
-                        info.currentMethod_ = SSHInfo::UNKNOWN;
-                    }
-                    remoteSettings->setSshInfo(info);
+        if(isValidType){
+            bool isRemoteType = IConnectionSettingsBase::isRemoteType(currentType);
+            std::string conName = common::convertToString(connectionName_->text());
+
+            if(isRemoteType){
+                IConnectionSettingsRemote* newConnection = IConnectionSettingsRemote::createFromType(currentType, conName, common::net::hostAndPort());
+                connection_.reset(newConnection);
+
+                SSHInfo info = newConnection->sshInfo();
+                info.hostName_ = common::convertToString(sshHostName_->text());
+                info.userName_ = common::convertToString(userName_->text());
+                info.port_ = sshPort_->text().toInt();
+                info.password_ = common::convertToString(passwordBox_->text());
+                info.publicKey_ = "";
+                info.privateKey_ = common::convertToString(privateKeyBox_->text());
+                info.passphrase_ = common::convertToString(passphraseBox_->text());
+                if (useSsh_->isChecked()){
+                    info.currentMethod_ = selectedAuthMethod();
                 }
+                else{
+                    info.currentMethod_ = SSHInfo::UNKNOWN;
+                }
+                newConnection->setSshInfo(info);
             }
+            else{
+                IConnectionSettingsBase* newConnection = IConnectionSettingsBase::createFromType(currentType, conName);
+                connection_.reset(newConnection);
+            }
+            connection_->setCommandLine(common::convertToString(toRawCommandLine(commandLine_->text())));
+            connection_->setLoggingEnabled(logging_->isChecked());
+
             return true;
         }
         else{

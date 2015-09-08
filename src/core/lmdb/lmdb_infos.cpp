@@ -206,6 +206,6 @@ namespace fastonosql
         }
 
         std::transform(key.begin(), key.end(), key.begin(), ::tolower);
-        return key != "fetch";
+        return key != "get";
     }
 }

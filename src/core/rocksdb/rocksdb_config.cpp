@@ -43,7 +43,7 @@ namespace fastonosql
     rocksdbConfig::rocksdbConfig()
        : LocalConfig(common::file_system::prepare_path("~/test.rocksdb"))
     {
-        options_.create_if_missing = true;
+        options_.create_if_missing = false;
     }
 }
 
