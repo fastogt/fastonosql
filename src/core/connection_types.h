@@ -12,7 +12,8 @@ namespace fastonosql
         SSDB,
         LEVELDB,
         ROCKSDB,
-        UNQLITE
+        UNQLITE,
+        LMDB
     };
 
     enum serverTypes
@@ -40,7 +41,10 @@ namespace fastonosql
         "Rocksdb",
 #endif
 #ifdef BUILD_WITH_UNQLITE
-        "Unqlite"
+        "Unqlite",
+#endif
+#ifdef BUILD_WITH_LMDB
+        "Lmdb"
 #endif
     };
 

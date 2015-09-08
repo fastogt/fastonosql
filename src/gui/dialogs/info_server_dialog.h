@@ -28,6 +28,10 @@
 #include "core/unqlite/unqlite_infos.h"
 #endif
 
+#ifdef BUILD_WITH_LMDB
+#include "core/lmdb/lmdb_infos.h"
+#endif
+
 class QLabel;
 
 namespace fasto
@@ -83,6 +87,9 @@ namespace fastonosql
 #endif
 #ifdef BUILD_WITH_UNQLITE
         void updateText(const UnqliteServerInfo& serv);
+#endif
+#ifdef BUILD_WITH_LMDB
+        void updateText(const LmdbServerInfo& serv);
 #endif
         QLabel* serverTextInfo_;
         QLabel* hardwareTextInfo_;

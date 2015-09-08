@@ -28,6 +28,9 @@
 #ifdef BUILD_WITH_UNQLITE
 #include "core/unqlite/unqlite_settings.h"
 #endif
+#ifdef BUILD_WITH_LMDB
+#include "core/lmdb/lmdb_settings.h"
+#endif
 
 #define LOGGING_REDIS_FILE_EXTENSION ".red"
 #define LOGGING_MEMCACHED_FILE_EXTENSION ".mem"
@@ -35,6 +38,7 @@
 #define LOGGING_LEVELDB_FILE_EXTENSION ".levdb"
 #define LOGGING_ROCKSDB_FILE_EXTENSION ".rocksdb"
 #define LOGGING_UNQLITE_FILE_EXTENSION ".unq"
+#define LOGGING_LMDB_FILE_EXTENSION ".lmdb"
 
 namespace
 {
@@ -179,6 +183,11 @@ namespace fastonosql
 #ifdef BUILD_WITH_UNQLITE
         if(type == UNQLITE){
             return new UnqliteConnectionSettings(conName);
+        }
+#endif
+#ifdef BUILD_WITH_LMDB
+        if(type == LMDB){
+            return new LmdbConnectionSettings(conName);
         }
 #endif
         NOTREACHED();
@@ -369,6 +378,12 @@ namespace fastonosql
                                "<b>-c </b>            Create database if missing.<br/>"
                                "<b>-d &lt;delimiter&gt;</b>     Multi-bulk delimiter in for raw formatting (default: \\n).<br/>";
         }
+        if(type == LMDB){
+            return "<b>Usage: [OPTIONS] [cmd [arg [arg ...]]]</b><br/>"
+                               "<b>-f &lt;db&gt;</b>            File path to database.<br/>"
+                               "<b>-c </b>            Create database if missing.<br/>"
+                               "<b>-d &lt;delimiter&gt;</b>     Multi-bulk delimiter in for raw formatting (default: \\n).<br/>";
+        }
 
         NOTREACHED();
         return NULL;
@@ -409,6 +424,12 @@ namespace fastonosql
 #ifdef BUILD_WITH_UNQLITE
         if(type == UNQLITE){
             unqliteConfig r;
+            return common::convertToString(r);
+        }
+#endif
+#ifdef BUILD_WITH_LMDB
+        if(type == LMDB){
+            lmdbConfig r;
             return common::convertToString(r);
         }
 #endif

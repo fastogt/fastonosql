@@ -400,18 +400,58 @@ IF(BUILD_WITH_UNQLITE)
     SET(OBJECT_LIBS ${OBJECT_LIBS} $<TARGET_OBJECTS:unqlite>)
 ENDIF(BUILD_WITH_UNQLITE)
 
+#lmdb
+IF(BUILD_WITH_LMDB)
+    SET(HEADERS_SHELL_TO_MOC ${HEADERS_SHELL_TO_MOC}
+        shell/lmdb_lexer.h
+        shell/lmdb_shell.h
+    )
+    SET(HEADERS_SHELL ${HEADERS_SHELL}
+    )
+    SET(SOURCES_SHELL ${SOURCES_SHELL}
+        shell/lmdb_lexer.cpp
+        shell/lmdb_shell.cpp
+    )
+
+    ADD_SUBDIRECTORY(third-party/lmdb)
+    SET(INCLUDE_DIRS ${INCLUDE_DIRS} third-party/lmdb/src/libraries/liblmdb)
+
+    SET(HEADERS_LMDB_TO_MOC
+        core/lmdb/lmdb_server.h
+        core/lmdb/lmdb_driver.h
+    )
+    SET(HEADERS_LMDB
+        core/lmdb/lmdb_infos.h
+        core/lmdb/lmdb_config.h
+        core/lmdb/lmdb_database.h
+        core/lmdb/lmdb_settings.h
+    )
+    SET(SOURCES_LMDB
+        core/lmdb/lmdb_config.cpp
+        core/lmdb/lmdb_infos.cpp
+        core/lmdb/lmdb_server.cpp
+        core/lmdb/lmdb_driver.cpp
+        core/lmdb/lmdb_database.cpp
+        core/lmdb/lmdb_settings.cpp
+    )
+    SET(OBJECT_LIBS ${OBJECT_LIBS} $<TARGET_OBJECTS:lmdb>)
+ENDIF(BUILD_WITH_LMDB)
+
 SET(SOURCES_SDS
     third-party/sds/sds.c
 )
 
 SET(HEADERS ${HEADERS} ${HEADERS_GLOBAL} ${HEADERS_GUI} ${HEADERS_CORE} ${HEADERS_SHELL}
-    ${HEADERS_REDIS} ${HEADERS_MEMCACHED} ${HEADERS_SSDB} ${HEADERS_LEVELDB} ${HEADERS_ROCKSDB} ${HEADERS_UNQLITE}
+    ${HEADERS_REDIS} ${HEADERS_MEMCACHED} ${HEADERS_SSDB}
+    ${HEADERS_LEVELDB} ${HEADERS_ROCKSDB} ${HEADERS_UNQLITE} ${HEADERS_LMDB}
     ${HEADERS_TRANSLATIONS})
 SET(SOURCES ${SOURCES} ${SOURCES_GLOBAL} ${SOURCES_GUI} ${SOURCES_CORE} ${SOURCES_SHELL}
-    ${SOURCES_REDIS} ${SOURCES_MEMCACHED} ${SOURCES_SSDB} ${SOURCES_LEVELDB} ${SOURCES_ROCKSDB} ${SOURCES_UNQLITE}
+    ${SOURCES_REDIS} ${SOURCES_MEMCACHED} ${SOURCES_SSDB}
+    ${SOURCES_LEVELDB} ${SOURCES_ROCKSDB} ${SOURCES_UNQLITE} ${SOURCES_LMDB}
     ${SOURCES_TRANSLATIONS} ${SOURCES_SDS})
 SET(HEADERS_TOMOC ${HEADERS_GUI_TO_MOC} ${HEADERS_CORE_TO_MOC} ${HEADERS_SHELL_TO_MOC}
-    ${HEADERS_REDIS_TO_MOC} ${HEADERS_MEMCACHED_TO_MOC} ${HEADERS_SSDB_TO_MOC} ${HEADERS_LEVELDB_TO_MOC} ${HEADERS_ROCKSDB_TO_MOC} ${HEADERS_UNQLITE_TO_MOC})
+    ${HEADERS_REDIS_TO_MOC} ${HEADERS_MEMCACHED_TO_MOC} ${HEADERS_SSDB_TO_MOC}
+    ${HEADERS_LEVELDB_TO_MOC} ${HEADERS_ROCKSDB_TO_MOC} ${HEADERS_UNQLITE_TO_MOC} ${HEADERS_LMDB_TO_MOC})
 
 QT5_WRAP_CPP(MOC_FILES ${HEADERS_TOMOC})
 CONFIGURE_FILE("resources/gui.qrc.in" "${CMAKE_CURRENT_LIST_DIR}/resources/gui.qrc" @ONLY IMMEDIATE)

@@ -1,18 +1,19 @@
-#include "core/unqlite/unqlite_driver.h"
+#include "core/lmdb/lmdb_driver.h"
 
 extern "C" {
     #include "sds.h"
-    #include <unqlite.h>
+    #include <lmdb.h>
 }
 
 #include "common/sprintf.h"
 #include "common/utils.h"
+#include "common/file_system.h"
 #include "fasto/qt/logger.h"
 
 #include "core/command_logger.h"
 
-#include "core/unqlite/unqlite_config.h"
-#include "core/unqlite/unqlite_infos.h"
+#include "core/lmdb/lmdb_config.h"
+#include "core/lmdb/lmdb_infos.h"
 
 #define INFO_REQUEST "INFO"
 #define GET_KEY_PATTERN_1ARGS_S "FETCH %s"
@@ -21,22 +22,65 @@ extern "C" {
 #define GET_KEYS_PATTERN_1ARGS_I "KEYS a z %d"
 #define DELETE_KEY_PATTERN_1ARGS_S "DEL %s"
 #define GET_SERVER_TYPE ""
+#define LMDB_OK 0
 
 namespace
 {
-    std::string getUnqliteError(unqlite* context)
+    struct lmdb
     {
-        const char *zErr = NULL;
-        int iLen = 0;
-        unqlite_config(context, UNQLITE_CONFIG_ERR_LOG, &zErr, &iLen);
-        return std::string(zErr, iLen);
+        MDB_env *env;
+        MDB_dbi dbi;
+        MDB_txn *txn;
+    };
+
+    int lmdb_open(lmdb **context, const char *dbname, bool create_if_missing)
+    {
+        if(create_if_missing){
+            bool res = common::file_system::create_directory(dbname, true);
+            UNUSED(res);
+            if(common::file_system::is_directory(dbname) != SUCCESS){
+                return EACCES;
+            }
+        }
+
+        lmdb *lcontext = (lmdb*)calloc(1, sizeof(lmdb));
+        int rc = mdb_env_create(&lcontext->env);
+        if(rc != LMDB_OK){
+            free(lcontext);
+            return rc;
+        }
+        rc = mdb_env_open(lcontext->env, dbname, 0, 0664);
+        if(rc != LMDB_OK){
+            free(lcontext);
+            return rc;
+        }
+        rc = mdb_txn_begin(lcontext->env, NULL, 0, &lcontext->txn);
+        if(rc != LMDB_OK){
+            free(lcontext);
+            return rc;
+        }
+
+        rc = mdb_dbi_open(lcontext->txn, NULL, 0, &lcontext->dbi);
+        if(rc != LMDB_OK){
+            free(lcontext);
+            return rc;
+        }
+
+        *context = lcontext;
+        return rc;
     }
 
-    int getDataCallback(const void *pData, unsigned int nDatalen, void *str)
+    void lmdb_close(lmdb **context)
     {
-        std::string *out = static_cast<std::string *>(str);
-        out->assign((const char*)pData, nDatalen);
-        return UNQLITE_OK;
+        lmdb *lcontext = *context;
+        if(!lcontext){
+            return;
+        }
+
+        mdb_dbi_close(lcontext->env, lcontext->dbi);
+        mdb_env_close(lcontext->env);
+        free(lcontext);
+        *context = NULL;
     }
 }
 
@@ -44,15 +88,15 @@ namespace fastonosql
 {
     namespace
     {
-        common::ErrorValueSPtr createConnection(const unqliteConfig& config, unqlite** context)
+        common::ErrorValueSPtr createConnection(const lmdbConfig& config, lmdb** context)
         {
             DCHECK(*context == NULL);
 
-            unqlite* lcontext = NULL;
-            int st = unqlite_open(&lcontext, config.dbname_.c_str(), config.create_if_missing_ ? UNQLITE_OPEN_CREATE : UNQLITE_OPEN_READWRITE);
-            if (st != UNQLITE_OK){
+            lmdb* lcontext = NULL;
+            int st = lmdb_open(&lcontext, config.dbname_.c_str(), config.create_if_missing_);
+            if (st != LMDB_OK){
                 char buff[1024] = {0};
-                common::SNPrintf(buff, sizeof(buff), "Fail open database: %s!", getUnqliteError(lcontext));
+                common::SNPrintf(buff, sizeof(buff), "Fail open database: %s", mdb_strerror(st));
                 return common::make_error_value(buff, common::ErrorValue::E_ERROR);
             }
 
@@ -61,41 +105,41 @@ namespace fastonosql
             return common::ErrorValueSPtr();
         }
 
-        common::ErrorValueSPtr createConnection(UnqliteConnectionSettings* settings, unqlite** context)
+        common::ErrorValueSPtr createConnection(LmdbConnectionSettings* settings, lmdb** context)
         {
             if(!settings){
                 return common::make_error_value("Invalid input argument", common::ErrorValue::E_ERROR);
             }
 
-            unqliteConfig config = settings->info();
+            lmdbConfig config = settings->info();
             return createConnection(config, context);
         }
     }
 
-    common::ErrorValueSPtr testConnection(fastonosql::UnqliteConnectionSettings *settings)
+    common::ErrorValueSPtr testConnection(fastonosql::LmdbConnectionSettings *settings)
     {
-        unqlite* ldb = NULL;
+        lmdb* ldb = NULL;
         common::ErrorValueSPtr er = createConnection(settings, &ldb);
         if(er){
             return er;
         }
 
-        unqlite_close(ldb);
+        lmdb_close(&ldb);
 
         return common::ErrorValueSPtr();
     }
 
-    struct UnqliteDriver::pimpl
+    struct LmdbDriver::pimpl
     {
         pimpl()
-            : unqlite_(NULL)
+            : lmdb_(NULL)
         {
 
         }
 
         bool isConnected() const
         {
-            if(!unqlite_){
+            if(!lmdb_){
                 return false;
             }
 
@@ -111,13 +155,13 @@ namespace fastonosql
             clear();
             init();
 
-            unqlite* context = NULL;
+            lmdb* context = NULL;
             common::ErrorValueSPtr er = createConnection(config_, &context);
             if(er){
                 return er;
             }
 
-            unqlite_ = context;
+            lmdb_ = context;
 
 
             return common::ErrorValueSPtr();
@@ -133,7 +177,16 @@ namespace fastonosql
             return common::ErrorValueSPtr();
         }
 
-        common::ErrorValueSPtr info(const char* args, UnqliteServerInfo::Stats& statsout)
+        MDB_dbi curDb() const
+        {
+            if(lmdb_){
+                return lmdb_->dbi;
+            }
+
+            return 0;
+        }
+
+        common::ErrorValueSPtr info(const char* args, LmdbServerInfo::Stats& statsout)
         {
             /*std::string rets;
             bool isok = rocksdb_->GetProperty("rocksdb.stats", &rets);
@@ -217,7 +270,7 @@ namespace fastonosql
             clear();
         }
 
-        unqliteConfig config_;
+        lmdbConfig config_;
         SSHInfo sinfo_;
 
    private:
@@ -228,22 +281,22 @@ namespace fastonosql
                     return common::make_error_value("Invalid info input argument", common::ErrorValue::E_ERROR);
                 }
 
-                UnqliteServerInfo::Stats statsout;
+                LmdbServerInfo::Stats statsout;
                 common::ErrorValueSPtr er = info(argc == 2 ? argv[1] : 0, statsout);
                 if(!er){
-                    common::StringValue *val = common::Value::createStringValue(UnqliteServerInfo(statsout).toString());
+                    common::StringValue *val = common::Value::createStringValue(LmdbServerInfo(statsout).toString());
                     FastoObject* child = new FastoObject(out, val, config_.mb_delim_);
                     out->addChildren(child);
                 }
                 return er;
             }
-            else if(strcasecmp(argv[0], "fetch") == 0){
+            else if(strcasecmp(argv[0], "get") == 0){
                 if(argc != 2){
                     return common::make_error_value("Invalid get input argument", common::ErrorValue::E_ERROR);
                 }
 
                 std::string ret;
-                common::ErrorValueSPtr er = fetch(argv[1], &ret);
+                common::ErrorValueSPtr er = get(argv[1], &ret);
                 if(!er){
                     common::StringValue *val = common::Value::createStringValue(ret);
                     FastoObject* child = new FastoObject(out, val, config_.mb_delim_);
@@ -251,12 +304,12 @@ namespace fastonosql
                 }
                 return er;
             }
-            else if(strcasecmp(argv[0], "store") == 0){
+            else if(strcasecmp(argv[0], "put") == 0){
                 if(argc != 3){
                     return common::make_error_value("Invalid put input argument", common::ErrorValue::E_ERROR);
                 }
 
-                common::ErrorValueSPtr er = store(argv[1], argv[2]);
+                common::ErrorValueSPtr er = put(argv[1], argv[2]);
                 if(!er){
                     common::StringValue *val = common::Value::createStringValue("STORED");
                     FastoObject* child = new FastoObject(out, val, config_.mb_delim_);
@@ -302,24 +355,41 @@ namespace fastonosql
             }
         }
 
-        common::ErrorValueSPtr fetch(const std::string& key, std::string* ret_val)
+        common::ErrorValueSPtr get(const std::string& key, std::string* ret_val)
         {
-            int rc = unqlite_kv_fetch_callback(unqlite_, key.c_str(), key.size(), getDataCallback, ret_val);
-            if (rc != UNQLITE_OK){
+            MDB_val mkey;
+            mkey.mv_size = key.size();
+            mkey.mv_data = (void*)key.c_str();
+            MDB_val mval;
+            int rc = mdb_get(lmdb_->txn, lmdb_->dbi, &mkey, &mval);
+            if (rc != LMDB_OK){
                 char buff[1024] = {0};
-                common::SNPrintf(buff, sizeof(buff), "fetch function error: %s", getUnqliteError(unqlite_));
+                common::SNPrintf(buff, sizeof(buff), "get function error: %s", mdb_strerror(rc));
                 return common::make_error_value(buff, common::ErrorValue::E_ERROR);
             }
+
+            ret_val->assign((const char*)mval.mv_data, mval.mv_size);
 
             return common::ErrorValueSPtr();
         }
 
-        common::ErrorValueSPtr store(const std::string& key, const std::string& value)
+        common::ErrorValueSPtr put(const std::string& key, const std::string& value)
         {
-            int rc = unqlite_kv_store(unqlite_, key.c_str(), key.size(), value.c_str(), value.length());
-            if (rc != UNQLITE_OK){
+            MDB_val mkey;
+            mkey.mv_size = key.size();
+            mkey.mv_data = (void*)key.c_str();
+            MDB_val mval;
+            mval.mv_size = value.size();
+            mval.mv_data = (void*)value.c_str();
+
+            int rc = mdb_put(lmdb_->txn, lmdb_->dbi, &mkey, &mval, 0);
+            if (rc == LMDB_OK){
+                rc = mdb_txn_commit(lmdb_->txn);
+            }
+
+            if (rc != LMDB_OK){
                 char buff[1024] = {0};
-                common::SNPrintf(buff, sizeof(buff), "store function error: %s", getUnqliteError(unqlite_));
+                common::SNPrintf(buff, sizeof(buff), "put function error: %s", mdb_strerror(rc));
                 return common::make_error_value(buff, common::ErrorValue::E_ERROR);
             }
 
@@ -328,10 +398,13 @@ namespace fastonosql
 
         common::ErrorValueSPtr del(const std::string& key)
         {
-            int rc = unqlite_kv_delete(unqlite_, key.c_str(), key.size());
-            if (rc != UNQLITE_OK){
+            MDB_val mkey;
+            mkey.mv_size = key.size();
+            mkey.mv_data = (void*)key.c_str();
+            int rc = mdb_del(lmdb_->txn, lmdb_->dbi, &mkey, NULL);
+            if (rc != LMDB_OK){
                 char buff[1024] = {0};
-                common::SNPrintf(buff, sizeof(buff), "delete function error: %s", getUnqliteError(unqlite_));
+                common::SNPrintf(buff, sizeof(buff), "delete function error: %s", mdb_strerror(rc));
                 return common::make_error_value(buff, common::ErrorValue::E_ERROR);
             }
 
@@ -340,30 +413,28 @@ namespace fastonosql
 
         common::ErrorValueSPtr keys(const std::string &key_start, const std::string &key_end, uint64_t limit, std::vector<std::string> *ret)
         {
-            /* Allocate a new cursor instance */
-            unqlite_kv_cursor *pCur; /* Cursor handle */
-            int rc = unqlite_kv_cursor_init(unqlite_, &pCur);
-            if(rc != UNQLITE_OK){
+            int rc = mdb_txn_begin(lmdb_->env, NULL, MDB_RDONLY, &lmdb_->txn);
+            MDB_cursor *cursor;
+            if(rc == LMDB_OK){
+                rc = mdb_cursor_open(lmdb_->txn, lmdb_->dbi, &cursor);
+            }
+
+            if(rc != LMDB_OK){
                 char buff[1024] = {0};
-                common::SNPrintf(buff, sizeof(buff), "Keys function error: %s", getUnqliteError(unqlite_));
+                common::SNPrintf(buff, sizeof(buff), "Keys function error: %s", mdb_strerror(rc));
                 return common::make_error_value(buff, common::ErrorValue::E_ERROR);
             }
-            /* Point to the first record */
-            unqlite_kv_cursor_first_entry(pCur);
 
-            /* Iterate over the entries */
-            while(unqlite_kv_cursor_valid_entry(pCur) && limit > ret->size()){
-                std::string key;
-                unqlite_kv_cursor_key_callback(pCur, getDataCallback, &key);
-                if(key_start < key && key_end > key){
-                    ret->push_back(key);
+            MDB_val key;
+            MDB_val data;
+            while ((rc = mdb_cursor_get(cursor, &key, &data, MDB_NEXT)) == 0 && limit > ret->size()) {
+                std::string skey((const char*)key.mv_data, key.mv_size);
+                if(key_start < skey && key_end > skey){
+                    ret->push_back(skey);
                 }
-
-                /* Point to the next entry */
-                unqlite_kv_cursor_next_entry(pCur);
             }
-            /* Finally, Release our cursor */
-            unqlite_kv_cursor_release(unqlite_, pCur);
+            mdb_cursor_close(cursor);
+            mdb_txn_abort(lmdb_->txn);
 
             return common::ErrorValueSPtr();
         }
@@ -375,41 +446,40 @@ namespace fastonosql
 
         void clear()
         {
-            unqlite_close(unqlite_);
-            unqlite_ = NULL;
+            lmdb_close(&lmdb_);
         }
 
-        unqlite* unqlite_;
+        lmdb* lmdb_;
     };
 
-    UnqliteDriver::UnqliteDriver(IConnectionSettingsBaseSPtr settings)
-        : IDriver(settings, UNQLITE), impl_(new pimpl)
+    LmdbDriver::LmdbDriver(IConnectionSettingsBaseSPtr settings)
+        : IDriver(settings, LMDB), impl_(new pimpl)
     {
 
     }
 
-    UnqliteDriver::~UnqliteDriver()
+    LmdbDriver::~LmdbDriver()
     {
         delete impl_;
     }
 
-    bool UnqliteDriver::isConnected() const
+    bool LmdbDriver::isConnected() const
     {
         return impl_->isConnected();
     }
 
-    bool UnqliteDriver::isAuthenticated() const
+    bool LmdbDriver::isAuthenticated() const
     {
         return impl_->isConnected();
     }
 
-    void UnqliteDriver::interrupt()
+    void LmdbDriver::interrupt()
     {
         impl_->config_.shutdown_ = 1;
     }
 
     // ============== commands =============//
-    common::ErrorValueSPtr UnqliteDriver::commandDeleteImpl(CommandDeleteKey* command, std::string& cmdstring) const
+    common::ErrorValueSPtr LmdbDriver::commandDeleteImpl(CommandDeleteKey* command, std::string& cmdstring) const
     {
         char patternResult[1024] = {0};
         NDbValue key = command->key();
@@ -419,7 +489,7 @@ namespace fastonosql
         return common::ErrorValueSPtr();
     }
 
-    common::ErrorValueSPtr UnqliteDriver::commandLoadImpl(CommandLoadKey* command, std::string& cmdstring) const
+    common::ErrorValueSPtr LmdbDriver::commandLoadImpl(CommandLoadKey* command, std::string& cmdstring) const
     {
         char patternResult[1024] = {0};
         NDbValue key = command->key();
@@ -429,7 +499,7 @@ namespace fastonosql
         return common::ErrorValueSPtr();
     }
 
-    common::ErrorValueSPtr UnqliteDriver::commandCreateImpl(CommandCreateKey* command, std::string& cmdstring) const
+    common::ErrorValueSPtr LmdbDriver::commandCreateImpl(CommandCreateKey* command, std::string& cmdstring) const
     {
         char patternResult[1024] = {0};
         NDbValue key = command->key();
@@ -443,7 +513,7 @@ namespace fastonosql
         return common::ErrorValueSPtr();
     }
 
-    common::ErrorValueSPtr UnqliteDriver::commandChangeTTLImpl(CommandChangeTTL* command, std::string& cmdstring) const
+    common::ErrorValueSPtr LmdbDriver::commandChangeTTLImpl(CommandChangeTTL* command, std::string& cmdstring) const
     {
         UNUSED(command);
         UNUSED(cmdstring);
@@ -454,49 +524,49 @@ namespace fastonosql
 
      // ============== commands =============//
 
-    common::net::hostAndPort UnqliteDriver::address() const
+    common::net::hostAndPort LmdbDriver::address() const
     {
         //return common::net::hostAndPort(impl_->config_.hostip_, impl_->config_.hostport_);
         return common::net::hostAndPort();
     }
 
-    std::string UnqliteDriver::outputDelemitr() const
+    std::string LmdbDriver::outputDelemitr() const
     {
         return impl_->config_.mb_delim_;
     }
 
-    const char* UnqliteDriver::versionApi()
+    const char* LmdbDriver::versionApi()
     {
-        return UNQLITE_VERSION;
+        return STRINGIZE(MDB_VERSION_MAJOR) "." STRINGIZE(MDB_VERSION_MINOR) "." STRINGIZE(MDB_VERSION_PATCH);
     }
 
-    void UnqliteDriver::customEvent(QEvent *event)
+    void LmdbDriver::customEvent(QEvent *event)
     {
         IDriver::customEvent(event);
         impl_->config_.shutdown_ = 0;
     }
 
-    void UnqliteDriver::initImpl()
+    void LmdbDriver::initImpl()
     {
     }
 
-    void UnqliteDriver::clearImpl()
+    void LmdbDriver::clearImpl()
     {
     }
 
-    common::ErrorValueSPtr UnqliteDriver::serverInfo(ServerInfo **info)
+    common::ErrorValueSPtr LmdbDriver::serverInfo(ServerInfo **info)
     {
         LOG_COMMAND(Command(INFO_REQUEST, common::Value::C_INNER));
-        UnqliteServerInfo::Stats cm;
+        LmdbServerInfo::Stats cm;
         common::ErrorValueSPtr err = impl_->info(NULL, cm);
         if(!err){
-            *info = new UnqliteServerInfo(cm);
+            *info = new LmdbServerInfo(cm);
         }
 
         return err;
     }
 
-    common::ErrorValueSPtr UnqliteDriver::serverDiscoveryInfo(ServerInfo **sinfo, ServerDiscoveryInfo **dinfo, DataBaseInfo** dbinfo)
+    common::ErrorValueSPtr LmdbDriver::serverDiscoveryInfo(ServerInfo **sinfo, ServerDiscoveryInfo **dinfo, DataBaseInfo** dbinfo)
     {
         ServerInfo *lsinfo = NULL;
         common::ErrorValueSPtr er = serverInfo(&lsinfo);
@@ -505,7 +575,7 @@ namespace fastonosql
         }
 
         FastoObjectIPtr root = FastoObject::createRoot(GET_SERVER_TYPE);
-        FastoObjectCommand* cmd = createCommand<UnqliteCommand>(root, GET_SERVER_TYPE, common::Value::C_INNER);
+        FastoObjectCommand* cmd = createCommand<LmdbCommand>(root, GET_SERVER_TYPE, common::Value::C_INNER);
         er = impl_->execute(cmd);
 
         if(!er){
@@ -527,18 +597,18 @@ namespace fastonosql
         return er;
     }
 
-    common::ErrorValueSPtr UnqliteDriver::currentDataBaseInfo(DataBaseInfo** info)
+    common::ErrorValueSPtr LmdbDriver::currentDataBaseInfo(DataBaseInfo** info)
     {
-        *info = new UnqliteDataBaseInfo("0", 0, true);
+        *info = new LmdbDataBaseInfo(common::convertToString(impl_->curDb()), 0, true);
         return common::ErrorValueSPtr();
     }
 
-    void UnqliteDriver::handleConnectEvent(events::ConnectRequestEvent *ev)
+    void LmdbDriver::handleConnectEvent(events::ConnectRequestEvent *ev)
     {
         QObject *sender = ev->sender();
         notifyProgress(sender, 0);
             events::ConnectResponceEvent::value_type res(ev->value());
-            UnqliteConnectionSettings *set = dynamic_cast<UnqliteConnectionSettings*>(settings_.get());
+            LmdbConnectionSettings *set = dynamic_cast<LmdbConnectionSettings*>(settings_.get());
             if(set){
                 impl_->config_ = set->info();
         notifyProgress(sender, 25);
@@ -552,7 +622,7 @@ namespace fastonosql
         notifyProgress(sender, 100);
     }
 
-    void UnqliteDriver::handleDisconnectEvent(events::DisconnectRequestEvent* ev)
+    void LmdbDriver::handleDisconnectEvent(events::DisconnectRequestEvent* ev)
     {
         QObject *sender = ev->sender();
         notifyProgress(sender, 0);
@@ -568,7 +638,7 @@ namespace fastonosql
         notifyProgress(sender, 100);
     }
 
-    void UnqliteDriver::handleExecuteEvent(events::ExecuteRequestEvent* ev)
+    void LmdbDriver::handleExecuteEvent(events::ExecuteRequestEvent* ev)
     {
         QObject *sender = ev->sender();
         notifyProgress(sender, 0);
@@ -598,7 +668,7 @@ namespace fastonosql
                             strncpy(command, inputLine + offset, n - offset);
                         }
                         offset = n + 1;
-                        FastoObjectCommand* cmd = createCommand<UnqliteCommand>(outRoot, stableCommand(command), common::Value::C_USER);
+                        FastoObjectCommand* cmd = createCommand<LmdbCommand>(outRoot, stableCommand(command), common::Value::C_USER);
                         er = impl_->execute(cmd);
                         if(er){
                             res.setErrorInfo(er);
@@ -617,7 +687,7 @@ namespace fastonosql
         notifyProgress(sender, 100);
     }
 
-    void UnqliteDriver::handleCommandRequestEvent(events::CommandRequestEvent* ev)
+    void LmdbDriver::handleCommandRequestEvent(events::CommandRequestEvent* ev)
     {
         QObject *sender = ev->sender();
         notifyProgress(sender, 0);
@@ -633,7 +703,7 @@ namespace fastonosql
 
             RootLocker lock = make_locker(sender, cmdtext);
             FastoObjectIPtr root = lock.root_;
-            FastoObjectCommand* cmd = createCommand<UnqliteCommand>(root, cmdtext, common::Value::C_INNER);
+            FastoObjectCommand* cmd = createCommand<LmdbCommand>(root, cmdtext, common::Value::C_INNER);
         notifyProgress(sender, 50);
             er = impl_->execute(cmd);
             if(er){
@@ -643,7 +713,7 @@ namespace fastonosql
         notifyProgress(sender, 100);
     }
 
-    void UnqliteDriver::handleLoadDatabaseInfosEvent(events::LoadDatabasesInfoRequestEvent* ev)
+    void LmdbDriver::handleLoadDatabaseInfosEvent(events::LoadDatabasesInfoRequestEvent* ev)
     {
         QObject *sender = ev->sender();
     notifyProgress(sender, 0);
@@ -654,7 +724,7 @@ namespace fastonosql
     notifyProgress(sender, 100);
     }
 
-    void UnqliteDriver::handleLoadDatabaseContentEvent(events::LoadDatabaseContentRequestEvent *ev)
+    void LmdbDriver::handleLoadDatabaseContentEvent(events::LoadDatabaseContentRequestEvent *ev)
     {
         QObject *sender = ev->sender();
         notifyProgress(sender, 0);
@@ -663,7 +733,7 @@ namespace fastonosql
             common::SNPrintf(patternResult, sizeof(patternResult), GET_KEYS_PATTERN_1ARGS_I, res.countKeys_);
             FastoObjectIPtr root = FastoObject::createRoot(patternResult);
         notifyProgress(sender, 50);
-            FastoObjectCommand* cmd = createCommand<UnqliteCommand>(root, patternResult, common::Value::C_INNER);
+            FastoObjectCommand* cmd = createCommand<LmdbCommand>(root, patternResult, common::Value::C_INNER);
             common::ErrorValueSPtr er = impl_->execute(cmd);
             if(er){
                 res.setErrorInfo(er);
@@ -699,7 +769,7 @@ namespace fastonosql
         notifyProgress(sender, 100);
     }
 
-    void UnqliteDriver::handleSetDefaultDatabaseEvent(events::SetDefaultDatabaseRequestEvent* ev)
+    void LmdbDriver::handleSetDefaultDatabaseEvent(events::SetDefaultDatabaseRequestEvent* ev)
     {
         QObject *sender = ev->sender();
         notifyProgress(sender, 0);
@@ -709,20 +779,20 @@ namespace fastonosql
         notifyProgress(sender, 100);
     }
 
-    void UnqliteDriver::handleLoadServerInfoEvent(events::ServerInfoRequestEvent* ev)
+    void LmdbDriver::handleLoadServerInfoEvent(events::ServerInfoRequestEvent* ev)
     {
         QObject *sender = ev->sender();
         notifyProgress(sender, 0);
             events::ServerInfoResponceEvent::value_type res(ev->value());
         notifyProgress(sender, 50);
             LOG_COMMAND(Command(INFO_REQUEST, common::Value::C_INNER));
-            UnqliteServerInfo::Stats cm;
+            LmdbServerInfo::Stats cm;
             common::ErrorValueSPtr err = impl_->info(NULL, cm);
             if(err){
                 res.setErrorInfo(err);
             }
             else{
-                ServerInfoSPtr mem(new UnqliteServerInfo(cm));
+                ServerInfoSPtr mem(new LmdbServerInfo(cm));
                 res.setInfo(mem);
             }
         notifyProgress(sender, 75);
@@ -730,14 +800,14 @@ namespace fastonosql
         notifyProgress(sender, 100);
     }
 
-    void UnqliteDriver::handleProcessCommandLineArgs(events::ProcessConfigArgsRequestEvent* ev)
+    void LmdbDriver::handleProcessCommandLineArgs(events::ProcessConfigArgsRequestEvent* ev)
     {
 
     }
 
-    ServerInfoSPtr UnqliteDriver::makeServerInfoFromString(const std::string& val)
+    ServerInfoSPtr LmdbDriver::makeServerInfoFromString(const std::string& val)
     {
-        ServerInfoSPtr res(makeUnqliteServerInfo(val));
+        ServerInfoSPtr res(makeLmdbServerInfo(val));
         return res;
     }
 }

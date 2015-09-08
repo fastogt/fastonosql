@@ -35,6 +35,11 @@
 #include "core/unqlite/unqlite_driver.h"
 #endif
 
+#ifdef BUILD_WITH_LMDB
+#include "core/lmdb/lmdb_server.h"
+#include "core/lmdb/lmdb_driver.h"
+#endif
+
 namespace fastonosql
 {
     ServersManager::ServersManager()
@@ -95,6 +100,11 @@ namespace fastonosql
 #ifdef BUILD_WITH_UNQLITE
         if(conT == UNQLITE){
             result.reset(make_server<UnqliteServer, UnqliteDriver>(ser, settings));
+        }
+#endif
+#ifdef BUILD_WITH_LMDB
+        if(conT == LMDB){
+            result.reset(make_server<LmdbServer, LmdbDriver>(ser, settings));
         }
 #endif
         DCHECK(result);
@@ -175,6 +185,11 @@ namespace fastonosql
             return fastonosql::testConnection(dynamic_cast<UnqliteConnectionSettings*>(connection.get()));
         }
 #endif
+#ifdef BUILD_WITH_LMDB
+        if(type == LMDB){
+            return fastonosql::testConnection(dynamic_cast<UnqliteConnectionSettings*>(connection.get()));
+        }
+#endif
         return common::make_error_value("Invalid setting type", common::ErrorValue::E_ERROR);
     }
 
@@ -212,6 +227,11 @@ namespace fastonosql
 #endif
 #ifdef BUILD_WITH_UNQLITE
         if(type == UNQLITE){
+            return common::make_error_value("Not supported setting type", common::ErrorValue::E_ERROR);
+        }
+#endif
+#ifdef BUILD_WITH_LMDB
+        if(type == LMDB){
             return common::make_error_value("Not supported setting type", common::ErrorValue::E_ERROR);
         }
 #endif

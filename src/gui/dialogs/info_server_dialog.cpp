@@ -178,6 +178,11 @@ namespace fastonosql
             updateText(UnqliteServerInfo());
         }
 #endif
+#ifdef BUILD_WITH_LMDB
+        if(type_ == LMDB){
+            updateText(LmdbServerInfo());
+        }
+#endif
     }
 
     void InfoServerDialog::startServerInfo(const EventsInfo::ServerInfoRequest& req)
@@ -411,6 +416,20 @@ namespace fastonosql
         {
             using namespace common;
             UnqliteServerInfo::Stats stats = serv.stats_;
+            QString textServ = leveldbTextServerTemplate.arg(stats.compactions_level_)
+                    .arg(stats.file_size_mb_)
+                    .arg(stats.time_sec_)
+                    .arg(stats.read_mb_)
+                    .arg(stats.write_mb_);
+
+            serverTextInfo_->setText(textServ);
+        }
+#endif
+#ifdef BUILD_WITH_LMDB
+        void InfoServerDialog::updateText(const LmdbServerInfo& serv)
+        {
+            using namespace common;
+            LmdbServerInfo::Stats stats = serv.stats_;
             QString textServ = leveldbTextServerTemplate.arg(stats.compactions_level_)
                     .arg(stats.file_size_mb_)
                     .arg(stats.time_sec_)

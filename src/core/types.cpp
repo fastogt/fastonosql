@@ -181,6 +181,11 @@ namespace fastonosql
             return DBTraits<UNQLITE>::supportedTypes();
         }
 #endif
+#ifdef BUILD_WITH_LMDB
+        if(type == LMDB){
+            return DBTraits<LMDB>::supportedTypes();
+        }
+#endif
         NOTREACHED();
         return std::vector<common::Value::Type>();
     }
@@ -217,6 +222,11 @@ namespace fastonosql
             return DBTraits<UNQLITE>::infoHeaders();
         }
 #endif
+#ifdef BUILD_WITH_LMDB
+        if(type == LMDB){
+            return DBTraits<LMDB>::infoHeaders();
+        }
+#endif
         NOTREACHED();
         return std::vector<std::string>();
     }
@@ -251,6 +261,11 @@ namespace fastonosql
 #ifdef BUILD_WITH_UNQLITE
         if(type == UNQLITE){
             return DBTraits<UNQLITE>::infoFields();
+        }
+#endif
+#ifdef BUILD_WITH_LMDB
+        if(type == LMDB){
+            return DBTraits<LMDB>::infoFields();
         }
 #endif
        NOTREACHED();

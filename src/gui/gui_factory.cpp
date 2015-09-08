@@ -144,6 +144,9 @@ namespace fastonosql
         else if(type == UNQLITE){
             return unqliteConnectionIcon();
         }
+        else if(type == LMDB){
+            return lmdbConnectionIcon();
+        }
         else{
             return serverIcon();
         }
@@ -344,6 +347,15 @@ namespace fastonosql
         else if(type == LEVELDB){
             return leveldbConnectionIcon();
         }
+        else if(type == ROCKSDB){
+            return rocksdbConnectionIcon();
+        }
+        else if(type == UNQLITE){
+            return unqliteConnectionIcon();
+        }
+        else if(type == LMDB){
+            return lmdbConnectionIcon();
+        }
         else{
             return serverIcon();
         }
@@ -421,6 +433,12 @@ namespace fastonosql
     const QIcon& GuiFactory::unqliteConnectionIcon() const
     {
         static QIcon main(":" PROJECT_NAME_LOWERCASE "/images/64x64/unqlite.png");
+        return main;
+    }
+
+    const QIcon& GuiFactory::lmdbConnectionIcon() const
+    {
+        static QIcon main(":" PROJECT_NAME_LOWERCASE "/images/64x64/lmdb.png");
         return main;
     }
 }

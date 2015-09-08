@@ -49,6 +49,10 @@
 #include "shell/unqlite_shell.h"
 #endif
 
+#ifdef BUILD_WITH_LMDB
+#include "shell/lmdb_shell.h"
+#endif
+
 using namespace fastonosql::translations;
 
 namespace
@@ -245,6 +249,12 @@ namespace fastonosql
         if(type == UNQLITE){
             input_ = new UnqliteShell(SettingsManager::instance().autoCompletion());
             setToolTip(tr("Based on unqlite version: %1").arg(input_->version()));
+        }
+#endif
+#ifdef BUILD_WITH_LMDB
+        if(type == LMDB){
+            input_ = new LmdbShell(SettingsManager::instance().autoCompletion());
+            setToolTip(tr("Based on liblmdb version: %1").arg(input_->version()));
         }
 #endif
         DCHECK(input_);
