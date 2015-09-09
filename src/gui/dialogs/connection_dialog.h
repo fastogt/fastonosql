@@ -8,6 +8,7 @@ class QDialogButtonBox;
 class QPushButton;
 class QCheckBox;
 class QLabel;
+class QSpinBox;
 
 #include "core/connection_settings.h"
 
@@ -29,6 +30,7 @@ namespace fastonosql
 
     private Q_SLOTS:
         void typeConnectionChange(int index);
+        void loggingStateChange(int value);
         void securityChange(const QString& val);
         void sshSupportStateChange(int value);
         void togglePasswordEchoMode();
@@ -49,6 +51,7 @@ namespace fastonosql
         QLineEdit* connectionName_;
         QComboBox* typeConnection_;
         QCheckBox* logging_;
+        QSpinBox* loggingMsec_;
         QLineEdit* commandLine_;
 
         QPushButton* testButton_;

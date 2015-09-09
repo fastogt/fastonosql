@@ -19,7 +19,6 @@ namespace fastonosql
         connectionTypes connectionType() const;
 
         bool loggingEnabled() const;
-        void setLoggingEnabled(bool isLogging);
 
         uint32_t loggingMsTimeInterval() const;
         void setLoggingMsTimeInterval(uint32_t mstime);
@@ -31,7 +30,6 @@ namespace fastonosql
         IConnectionSettings(const std::string& connectionName, connectionTypes type);
 
         std::string connectionName_;
-        bool logging_enabled_;
         const connectionTypes type_;
         uint32_t msinterval_;
     };

@@ -10,6 +10,7 @@
 #include <QComboBox>
 #include <QLineEdit>
 #include <QMessageBox>
+#include <QSpinBox>
 
 #include "gui/dialogs/connection_diagnostic_dialog.h"
 
@@ -65,13 +66,23 @@ namespace fastonosql
         typedef void (QComboBox::*qind)(int);
         VERIFY(connect(typeConnection_, static_cast<qind>(&QComboBox::currentIndexChanged), this, &ConnectionDialog::typeConnectionChange));
 
-        logging_ = new QCheckBox;
+        QHBoxLayout *loggingLayout = new QHBoxLayout;
+        logging_ = new QCheckBox;;
+        loggingMsec_ = new QSpinBox;
+        loggingMsec_->setRange(0, INT32_MAX);
+        loggingMsec_->setSingleStep(1000);
+
         if(connection_){
             logging_->setChecked(connection_->loggingEnabled());
+            loggingMsec_->setValue(connection_->loggingMsTimeInterval());
         }
         else{
             logging_->setChecked(false);
         }
+        VERIFY(connect(logging_, &QCheckBox::stateChanged, this, &ConnectionDialog::loggingStateChange));
+
+        loggingLayout->addWidget(logging_);
+        loggingLayout->addWidget(loggingMsec_);
 
         commandLine_ = new QLineEdit;
         commandLine_->setMinimumWidth(240);
@@ -82,7 +93,7 @@ namespace fastonosql
         QVBoxLayout *inputLayout = new QVBoxLayout;
         inputLayout->addWidget(connectionName_);
         inputLayout->addWidget(typeConnection_);
-        inputLayout->addWidget(logging_);
+        inputLayout->addLayout(loggingLayout);
         inputLayout->addWidget(commandLine_);
 
         //ssh
@@ -201,6 +212,7 @@ namespace fastonosql
         sshSupportStateChange(useSsh_->checkState());
         securityChange(security_->currentText());
         typeConnectionChange(typeConnection_->currentIndex());
+        loggingStateChange(logging_->checkState());
         retranslateUi();
     }
 
@@ -251,6 +263,11 @@ namespace fastonosql
         updateSshControls(isRemoteType);
         testButton_->setEnabled(isValidType);
         logging_->setEnabled(isValidType);
+    }
+
+    void ConnectionDialog::loggingStateChange(int value)
+    {
+        loggingMsec_->setEnabled(value);
     }
 
     void ConnectionDialog::securityChange(const QString& )
@@ -364,7 +381,9 @@ namespace fastonosql
                 connection_.reset(newConnection);
             }
             connection_->setCommandLine(common::convertToString(toRawCommandLine(commandLine_->text())));
-            connection_->setLoggingEnabled(logging_->isChecked());
+            if(logging_->isChecked()){
+                connection_->setLoggingMsTimeInterval(loggingMsec_->value());
+            }
 
             return true;
         }

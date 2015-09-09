@@ -1,6 +1,7 @@
 #include "core/connection_settings.h"
 
 #include <sstream>
+#include <inttypes.h>
 
 #include "common/qt/convert_string.h"
 #include "common/utils.h"
@@ -48,7 +49,7 @@ namespace
 namespace fastonosql
 {
     IConnectionSettings::IConnectionSettings(const std::string& connectionName, connectionTypes type)
-        : connectionName_(connectionName), logging_enabled_(false), type_(type), msinterval_(60000)
+        : connectionName_(connectionName), type_(type), msinterval_(0)
     {
 
     }
@@ -75,12 +76,7 @@ namespace fastonosql
 
     bool IConnectionSettings::loggingEnabled() const
     {
-        return logging_enabled_;
-    }
-
-    void IConnectionSettings::setLoggingEnabled(bool isLogging)
-    {
-        logging_enabled_ = isLogging;
+        return msinterval_ != 0;
     }
 
     uint32_t IConnectionSettings::loggingMsTimeInterval() const
@@ -96,7 +92,7 @@ namespace fastonosql
     std::string IConnectionSettings::toString() const
     {
         char buff[1024] = {0};
-        common::SNPrintf(buff, sizeof(buff), "%d,%s,%d", type_, connectionName_, logging_enabled_);
+        common::SNPrintf(buff, sizeof(buff), "%d,%s,%" PRIu32, type_, connectionName_, msinterval_);
         return buff;
     }
 
@@ -221,7 +217,8 @@ namespace fastonosql
                     result->setConnectionNameAndUpdateHash(elText);
                 }
                 else if(commaCount == 2){
-                    result->setLoggingEnabled(common::convertFromString<uint8_t>(elText));
+                    uint32_t msTime = common::convertFromString<uint32_t>(elText);
+                    result->setLoggingMsTimeInterval(msTime);
                 }
                 else if(commaCount == 3){
                     result->initFromCommandLine(elText);
@@ -510,7 +507,8 @@ namespace fastonosql
                         result->setConnectionName(elText);
                     }
                     else if(commaCount == 2){
-                        result->setLoggingEnabled(common::convertFromString<uint8_t>(elText));
+                        uint32_t msTime = common::convertFromString<uint32_t>(elText);
+                        result->setLoggingMsTimeInterval(msTime);
                         std::string serText;
                         for(size_t j = i + 2; j < len; ++j){
                             ch = val[j];

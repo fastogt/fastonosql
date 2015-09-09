@@ -7,6 +7,7 @@ class QLineEdit;
 class QDialogButtonBox;
 class QPushButton;
 class QCheckBox;
+class QSpinBox;
 
 #include "core/connection_settings.h"
 
@@ -30,6 +31,7 @@ namespace fastonosql
 
     private Q_SLOTS:
         void typeConnectionChange(int index);
+        void loggingStateChange(int value);
         void testConnection();
         void discoveryCluster();
         void showContextMenu(const QPoint& point);
@@ -54,6 +56,7 @@ namespace fastonosql
         QLineEdit* connectionName_;
         QComboBox* typeConnection_;
         QCheckBox* logging_;
+        QSpinBox* loggingMsec_;
 
         QToolBar* savebar_;
         QTreeWidget* listWidget_;

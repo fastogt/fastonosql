@@ -12,6 +12,8 @@
 #include <QTreeWidget>
 #include <QToolBar>
 #include <QAction>
+#include <QCheckBox>
+#include <QSpinBox>
 
 #include "gui/dialogs/connection_diagnostic_dialog.h"
 #include "gui/dialogs/connection_dialog.h"
@@ -60,13 +62,23 @@ namespace fastonosql
         typedef void (QComboBox::*qind)(int);
         VERIFY(connect(typeConnection_, static_cast<qind>(&QComboBox::currentIndexChanged), this, &ClusterDialog::typeConnectionChange));
 
+        QHBoxLayout *loggingLayout = new QHBoxLayout;
         logging_ = new QCheckBox;
+        loggingMsec_ = new QSpinBox;
+        loggingMsec_->setRange(0, INT32_MAX);
+        loggingMsec_->setSingleStep(1000);
+
         if(cluster_connection_){
             logging_->setChecked(cluster_connection_->loggingEnabled());
+            loggingMsec_->setValue(cluster_connection_->loggingMsTimeInterval());
         }
         else{
             logging_->setChecked(false);
         }
+        VERIFY(connect(logging_, &QCheckBox::stateChanged, this, &ClusterDialog::loggingStateChange));
+
+        loggingLayout->addLayout(loggingLayout);
+        loggingLayout->addWidget(loggingMsec_);
 
         listWidget_ = new QTreeWidget;
         listWidget_->setIndentation(5);
@@ -150,6 +162,7 @@ namespace fastonosql
 
         //update controls
         typeConnectionChange(typeConnection_->currentIndex());
+        loggingStateChange(logging_->checkState());
         retranslateUi();
     }
 
@@ -177,6 +190,11 @@ namespace fastonosql
         listWidget_->setEnabled(isValidType);
         logging_->setEnabled(isValidType);
         itemSelectionChanged();
+    }
+
+    void ClusterDialog::loggingStateChange(int value)
+    {
+        loggingMsec_->setEnabled(value);
     }
 
     void ClusterDialog::testConnection()
@@ -335,7 +353,9 @@ namespace fastonosql
             IClusterSettingsBase* newConnection = IClusterSettingsBase::createFromType(currentType, conName);
             if(newConnection){
                 cluster_connection_.reset(newConnection);
-                cluster_connection_->setLoggingEnabled(logging_->isChecked());
+                if(logging_->isChecked()){
+                    cluster_connection_->setLoggingMsTimeInterval(loggingMsec_->value());
+                }
                 for(int i = 0; i < listWidget_->topLevelItemCount(); ++i){
                     ConnectionListWidgetItem* item = dynamic_cast<ConnectionListWidgetItem *>(listWidget_->topLevelItem(i));
                     if(item){
