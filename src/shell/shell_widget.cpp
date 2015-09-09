@@ -19,39 +19,12 @@
 #include "core/settings_manager.h"
 #include "core/iserver.h"
 
+#include "shell/base_shell.h"
 #include "gui/shortcuts.h"
 
 #include "gui/gui_factory.h"
 
 #include "translations/global.h"
-
-#ifdef BUILD_WITH_REDIS
-#include "shell/redis_shell.h"
-#endif
-
-#ifdef BUILD_WITH_MEMCACHED
-#include "shell/memcached_shell.h"
-#endif
-
-#ifdef BUILD_WITH_SSDB
-#include "shell/ssdb_shell.h"
-#endif
-
-#ifdef BUILD_WITH_LEVELDB
-#include "shell/leveldb_shell.h"
-#endif
-
-#ifdef BUILD_WITH_ROCKSDB
-#include "shell/rocksdb_shell.h"
-#endif
-
-#ifdef BUILD_WITH_UNQLITE
-#include "shell/unqlite_shell.h"
-#endif
-
-#ifdef BUILD_WITH_LMDB
-#include "shell/lmdb_shell.h"
-#endif
 
 using namespace fastonosql::translations;
 
@@ -215,50 +188,10 @@ namespace fastonosql
 
     void BaseShellWidget::initShellByType(connectionTypes type)
     {
-#ifdef BUILD_WITH_REDIS
-        if(type == REDIS){
-            input_ = new RedisShell(SettingsManager::instance().autoCompletion());
-            setToolTip(tr("Based on redis-cli version: %1").arg(input_->version()));
-        }
-#endif
-#ifdef BUILD_WITH_MEMCACHED
-        if(type == MEMCACHED){
-            input_ = new MemcachedShell(SettingsManager::instance().autoCompletion());
-            setToolTip(tr("Based on libmemcached version: %1").arg(input_->version()));
-        }
-#endif
-#ifdef BUILD_WITH_SSDB
-        if(type == SSDB){
-            input_ = new SsdbShell(SettingsManager::instance().autoCompletion());
-            setToolTip(tr("Based on ssdb-cli version: %1").arg(input_->version()));
-        }
-#endif
-#ifdef BUILD_WITH_LEVELDB
-        if(type == LEVELDB){
-            input_ = new LeveldbShell(SettingsManager::instance().autoCompletion());
-            setToolTip(tr("Based on leveldb version: %1").arg(input_->version()));
-        }
-#endif
-#ifdef BUILD_WITH_ROCKSDB
-        if(type == ROCKSDB){
-            input_ = new RocksdbShell(SettingsManager::instance().autoCompletion());
-            setToolTip(tr("Based on rocksdb version: %1").arg(input_->version()));
-        }
-#endif
-#ifdef BUILD_WITH_UNQLITE
-        if(type == UNQLITE){
-            input_ = new UnqliteShell(SettingsManager::instance().autoCompletion());
-            setToolTip(tr("Based on unqlite version: %1").arg(input_->version()));
-        }
-#endif
-#ifdef BUILD_WITH_LMDB
-        if(type == LMDB){
-            input_ = new LmdbShell(SettingsManager::instance().autoCompletion());
-            setToolTip(tr("Based on liblmdb version: %1").arg(input_->version()));
-        }
-#endif
+        input_ = BaseShell::createFromType(type, SettingsManager::instance().autoCompletion());
         DCHECK(input_);
         if(input_){
+            setToolTip(tr("Based on %1 version: %2").arg(input_->basedOn()).arg(input_->version()));
             input_->setContextMenuPolicy(Qt::CustomContextMenu);
         }
     }

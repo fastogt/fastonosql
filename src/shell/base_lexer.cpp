@@ -33,6 +33,34 @@ namespace fastonosql
     {
     }
 
+    QString BaseQsciLexer::description(int style) const
+    {
+        switch (style) {
+            case Default:
+                 return "Default";
+            case Command:
+                return "Command";
+            case HelpKeyword:
+                return "HelpKeyword";
+        }
+
+        return QString(style);
+    }
+
+    QColor BaseQsciLexer::defaultColor(int style) const
+    {
+        switch(style) {
+            case Default:
+                return Qt::black;
+            case Command:
+                return Qt::red;
+            case HelpKeyword:
+                return Qt::red;
+        }
+
+        return Qt::black;
+    }
+
     QString makeCallTip(const CommandInfo& info)
     {
         QString since_str = common::convertFromString<QString>(convertVersionNumberToReadableString(info.since_));

@@ -69,6 +69,11 @@ namespace fastonosql
         return LeveldbDriver::versionApi();
     }
 
+    const char* LeveldbLexer::basedOn() const
+    {
+        return "leveldb";
+    }
+
     std::vector<uint32_t> LeveldbLexer::supportedVersions() const
     {
         std::vector<uint32_t> result;
@@ -98,20 +103,6 @@ namespace fastonosql
         return SIZEOFMASS(leveldbCommands);
     }
 
-    QString LeveldbLexer::description(int style) const
-    {
-        switch (style) {
-            case Default:
-                 return "Default";
-            case Command:
-                return "Command";
-            case HelpKeyword:
-                return "HelpKeyword";
-        }
-
-        return QString(style);
-    }
-
     void LeveldbLexer::styleText(int start, int end)
     {
         if(!editor()){
@@ -138,20 +129,6 @@ namespace fastonosql
             setStyling(help.length(), HelpKeyword);
             startStyling(start + begin);
         }
-    }
-
-    QColor LeveldbLexer::defaultColor(int style) const
-    {
-        switch(style) {
-            case Default:
-                return Qt::black;
-            case Command:
-                return Qt::red;
-            case HelpKeyword:
-                return Qt::red;
-        }
-
-        return Qt::black;
     }
 
     void LeveldbLexer::paintCommands(const QString& source, int start)

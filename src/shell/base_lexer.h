@@ -27,9 +27,21 @@ namespace fastonosql
     {
         Q_OBJECT
     public:
+        enum
+        {
+            Default = 0,
+            Command = 1,
+            HelpKeyword
+        };
+
         virtual const char* version() const = 0;
+        virtual const char* basedOn() const = 0;
+
         virtual std::vector<uint32_t> supportedVersions() const = 0;
         virtual uint32_t commandsCount() const = 0;
+
+        virtual QString description(int style) const;
+        virtual QColor defaultColor(int style) const;
 
     protected:
         explicit BaseQsciLexer(QObject* parent = 0);

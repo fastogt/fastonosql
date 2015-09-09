@@ -68,6 +68,11 @@ namespace fastonosql
         return SsdbDriver::versionApi();
     }
 
+    const char* SsdbLexer::basedOn() const
+    {
+        return "ssdb-cli";
+    }
+
     std::vector<uint32_t> SsdbLexer::supportedVersions() const
     {
         std::vector<uint32_t> result;
@@ -97,21 +102,6 @@ namespace fastonosql
         return SIZEOFMASS(ssdbCommands);
     }
 
-    QString SsdbLexer::description(int style) const
-    {
-        switch (style)
-        {
-        case Default:
-             return "Default";
-        case Command:
-            return "Command";
-        case HelpKeyword:
-            return "HelpKeyword";
-        }
-
-        return QString(style);
-    }
-
     void SsdbLexer::styleText(int start, int end)
     {
         if(!editor()){
@@ -138,20 +128,6 @@ namespace fastonosql
             setStyling(help.length(), HelpKeyword);
             startStyling(start + begin);
         }
-    }
-
-    QColor SsdbLexer::defaultColor(int style) const
-    {
-        switch(style) {
-            case Default:
-                return Qt::black;
-            case Command:
-                return Qt::red;
-            case HelpKeyword:
-                return Qt::red;
-        }
-
-        return Qt::black;
     }
 
     void SsdbLexer::paintCommands(const QString& source, int start)

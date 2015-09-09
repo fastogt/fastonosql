@@ -170,13 +170,11 @@ INCLUDE_DIRECTORIES(${CMAKE_CURRENT_LIST_DIR}/fasto)
 #redis
 IF(BUILD_WITH_REDIS)
     SET(HEADERS_SHELL_TO_MOC ${HEADERS_SHELL_TO_MOC}
-        shell/redis_shell.h
         shell/redis_lexer.h
     )
     SET(HEADERS_SHELL ${HEADERS_SHELL}
     )
     SET(SOURCES_SHELL ${SOURCES_SHELL}
-        shell/redis_shell.cpp
         shell/redis_lexer.cpp
     )
 
@@ -212,13 +210,11 @@ ENDIF(BUILD_WITH_REDIS)
 #memcached
 IF(BUILD_WITH_MEMCACHED)
     SET(HEADERS_SHELL_TO_MOC ${HEADERS_SHELL_TO_MOC}
-        shell/memcached_shell.h
         shell/memcached_lexer.h
     )
     SET(HEADERS_SHELL ${HEADERS_SHELL}
     )
     SET(SOURCES_SHELL ${SOURCES_SHELL}
-        shell/memcached_shell.cpp
         shell/memcached_lexer.cpp
     )
     FIND_PACKAGE(Sasl2 QUIET)
@@ -256,13 +252,11 @@ ENDIF(BUILD_WITH_MEMCACHED)
 IF(BUILD_WITH_SSDB)
     SET(HEADERS_SHELL_TO_MOC ${HEADERS_SHELL_TO_MOC}
         shell/ssdb_lexer.h
-        shell/ssdb_shell.h
     )
     SET(HEADERS_SHELL ${HEADERS_SHELL}
     )
     SET(SOURCES_SHELL ${SOURCES_SHELL}
         shell/ssdb_lexer.cpp
-        shell/ssdb_shell.cpp
     )
 
     ADD_SUBDIRECTORY(third-party/ssdb)
@@ -293,13 +287,11 @@ ENDIF(BUILD_WITH_SSDB)
 IF(BUILD_WITH_LEVELDB)
     SET(HEADERS_SHELL_TO_MOC ${HEADERS_SHELL_TO_MOC}
         shell/leveldb_lexer.h
-        shell/leveldb_shell.h
     )
     SET(HEADERS_SHELL ${HEADERS_SHELL}
     )
     SET(SOURCES_SHELL ${SOURCES_SHELL}
         shell/leveldb_lexer.cpp
-        shell/leveldb_shell.cpp
     )
 
     ADD_SUBDIRECTORY(third-party/leveldb)
@@ -330,13 +322,11 @@ ENDIF(BUILD_WITH_LEVELDB)
 IF(BUILD_WITH_ROCKSDB)
     SET(HEADERS_SHELL_TO_MOC ${HEADERS_SHELL_TO_MOC}
         shell/rocksdb_lexer.h
-        shell/rocksdb_shell.h
     )
     SET(HEADERS_SHELL ${HEADERS_SHELL}
     )
     SET(SOURCES_SHELL ${SOURCES_SHELL}
         shell/rocksdb_lexer.cpp
-        shell/rocksdb_shell.cpp
     )
 
     ADD_SUBDIRECTORY(third-party/rocksdb)
@@ -367,13 +357,11 @@ ENDIF(BUILD_WITH_ROCKSDB)
 IF(BUILD_WITH_UNQLITE)
     SET(HEADERS_SHELL_TO_MOC ${HEADERS_SHELL_TO_MOC}
         shell/unqlite_lexer.h
-        shell/unqlite_shell.h
     )
     SET(HEADERS_SHELL ${HEADERS_SHELL}
     )
     SET(SOURCES_SHELL ${SOURCES_SHELL}
         shell/unqlite_lexer.cpp
-        shell/unqlite_shell.cpp
     )
 
     ADD_SUBDIRECTORY(third-party/unqlite)
@@ -404,13 +392,11 @@ ENDIF(BUILD_WITH_UNQLITE)
 IF(BUILD_WITH_LMDB)
     SET(HEADERS_SHELL_TO_MOC ${HEADERS_SHELL_TO_MOC}
         shell/lmdb_lexer.h
-        shell/lmdb_shell.h
     )
     SET(HEADERS_SHELL ${HEADERS_SHELL}
     )
     SET(SOURCES_SHELL ${SOURCES_SHELL}
         shell/lmdb_lexer.cpp
-        shell/lmdb_shell.cpp
     )
 
     ADD_SUBDIRECTORY(third-party/lmdb)

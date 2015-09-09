@@ -68,6 +68,11 @@ namespace fastonosql
         return MemcachedDriver::versionApi();
     }
 
+    const char* MemcachedLexer::basedOn() const
+    {
+        return "libmemcached";
+    }
+
     std::vector<uint32_t> MemcachedLexer::supportedVersions() const
     {
         std::vector<uint32_t> result;
@@ -97,21 +102,6 @@ namespace fastonosql
         return SIZEOFMASS(memcachedCommands);
     }
 
-    QString MemcachedLexer::description(int style) const
-    {
-        switch (style)
-        {
-        case Default:
-             return "Default";
-        case Command:
-            return "Command";
-        case HelpKeyword:
-            return "HelpKeyword";
-        }
-
-        return QString(style);
-    }
-
     void MemcachedLexer::styleText(int start, int end)
     {
         if(!editor()){
@@ -138,20 +128,6 @@ namespace fastonosql
             setStyling(help.length(), HelpKeyword);
             startStyling(start + begin);
         }
-    }
-
-    QColor MemcachedLexer::defaultColor(int style) const
-    {
-        switch(style) {
-            case Default:
-                return Qt::black;
-            case Command:
-                return Qt::red;
-            case HelpKeyword:
-                return Qt::red;
-        }
-
-        return Qt::black;
     }
 
     void MemcachedLexer::paintCommands(const QString& source, int start)
