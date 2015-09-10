@@ -1,5 +1,6 @@
 0.5.5
 [Alexandr Topilski]
+- Clear history
 - Logging mseconds option
 - Not able to view Graphical History Chart on Windows #5
 - UnQLite database support http://unqlite.org/

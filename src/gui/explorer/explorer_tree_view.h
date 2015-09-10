@@ -38,6 +38,7 @@ namespace fastonosql
         void openSetPasswordServerDialog();
         void openMaxClientSetDialog();
         void openHistoryServerDialog();
+        void clearHistory();
         void closeServerConnection();
         void closeClusterConnection();
 
@@ -89,6 +90,7 @@ namespace fastonosql
         QAction* setServerPassword_;
         QAction* setMaxClientConnection_;
         QAction* historyServerAction_;
+        QAction* clearHistoryServerAction_;
         QAction* closeServerAction_;
         QAction* closeClusterAction_;
         QAction* importAction_;

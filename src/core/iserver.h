@@ -84,6 +84,9 @@ namespace fastonosql
         void startedLoadServerHistoryInfo(const EventsInfo::ServerInfoHistoryRequest& req);
         void finishedLoadServerHistoryInfo(const EventsInfo::ServerInfoHistoryResponce& res);
 
+        void startedClearServerHistory(const EventsInfo::ClearServerHistoryRequest& req);
+        void finishedClearServerHistory(const EventsInfo::ClearServerHistoryResponce& req);
+
         void startedLoadServerProperty(const EventsInfo::ServerPropertyInfoRequest& req);
         void finishedLoadServerProperty(const EventsInfo::ServerPropertyInfoResponce& res);
 
@@ -132,13 +135,13 @@ namespace fastonosql
         void loadServerInfo(const EventsInfo::ServerInfoRequest &req); //signals: startedLoadServerInfo, finishedLoadServerInfo
         void serverProperty(const EventsInfo::ServerPropertyInfoRequest &req); //signals: startedLoadServerProperty, finishedLoadServerProperty
         void requestHistoryInfo(const EventsInfo::ServerInfoHistoryRequest &req); //signals: startedLoadServerHistoryInfo, finishedLoadServerHistoryInfo
+        void clearHistory(const EventsInfo::ClearServerHistoryRequest &req); //signals: startedClearServerHistory, finishedClearServerHistory
         void changeProperty(const EventsInfo::ChangeServerPropertyInfoRequest &req); //signals: startedChangeServerProperty, finishedChangeServerProperty
 
     public Q_SLOTS:
         void loadServerInfoSL();
         void changePropertySL(const PropertyType& prop);
         void serverPropertySL();
-        void requestHistoryInfoSL();
 
     protected:
         virtual void customEvent(QEvent* event);
@@ -174,6 +177,8 @@ namespace fastonosql
         void handleLoadServerInfoHistoryEvent(events::ServerInfoHistoryResponceEvent* ev);
 
         void handleDiscoveryInfoResponceEvent(events::DiscoveryInfoResponceEvent* ev);
+
+        void handleClearServerHistoryResponceEvent(events::ClearServerHistoryResponceEvent* ev);
 
         void processConfigArgs(const EventsInfo::ProcessConfigArgsInfoRequest &req);
         void processDiscoveryInfo(const EventsInfo::DiscoveryInfoRequest &req);

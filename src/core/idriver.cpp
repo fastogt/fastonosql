@@ -239,6 +239,10 @@ namespace fastonosql
             ServerInfoHistoryRequestEvent *ev = static_cast<ServerInfoHistoryRequestEvent*>(event);
             handleLoadServerInfoHistoryEvent(ev);
         }
+        else if (type == static_cast<QEvent::Type>(ClearServerHistoryRequestEvent::EventType)){
+            ClearServerHistoryRequestEvent *ev = static_cast<ClearServerHistoryRequestEvent*>(event);
+            handleClearServerHistoryRequestEvent(ev);
+        }
         else if (type == static_cast<QEvent::Type>(ServerPropertyInfoRequestEvent::EventType)){
             ServerPropertyInfoRequestEvent *ev = static_cast<ServerPropertyInfoRequestEvent*>(event);
             handleLoadServerPropertyEvent(ev);
@@ -432,6 +436,33 @@ namespace fastonosql
         }
 
         reply(sender, new events::ServerInfoHistoryResponceEvent(this, res));
+    }
+
+    void IDriver::handleClearServerHistoryRequestEvent(events::ClearServerHistoryRequestEvent *ev)
+    {
+        QObject *sender = ev->sender();
+        events::ClearServerHistoryResponceEvent::value_type res(ev->value());
+
+        bool ret = false;
+
+        if(log_file_ && log_file_->isOpened()){
+            ret = log_file_->truncate(0);
+        }
+        else {
+            std::string path = settings_->loggingPath();
+            if(common::file_system::is_file_exist(path)){
+                ret = common::file_system::remove_file(path);
+            }
+            else{
+                ret = true;
+            }
+        }
+
+        if(!ret){
+            res.setErrorInfo(common::make_error_value("Clear file error!", common::ErrorValue::E_ERROR));
+        }
+
+        reply(sender, new events::ClearServerHistoryResponceEvent(this, res));
     }
 
     void IDriver::handleDiscoveryInfoRequestEvent(events::DiscoveryInfoRequestEvent* ev)

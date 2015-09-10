@@ -23,6 +23,7 @@ namespace fastonosql
         const QString trView = QObject::tr("View");
         const QString trViews = QObject::tr("Views");
         const QString trHistory = QObject::tr("History");
+        const QString trClearHistory = QObject::tr("Clear history");
         const QString trFile = QObject::tr("File");
         const QString trInfo = QObject::tr("Info");
         const QString trTools = QObject::tr("Tools");

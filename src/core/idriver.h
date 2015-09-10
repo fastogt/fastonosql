@@ -114,6 +114,8 @@ namespace fastonosql
         void handleLoadServerInfoHistoryEvent(events::ServerInfoHistoryRequestEvent *ev);
         void handleDiscoveryInfoRequestEvent(events::DiscoveryInfoRequestEvent* ev);
 
+        void handleClearServerHistoryRequestEvent(events::ClearServerHistoryRequestEvent *ev);
+
         // notification of execute events
         virtual void addedChildren(FastoObject *child);
         virtual void updated(FastoObject* item, common::Value* val);

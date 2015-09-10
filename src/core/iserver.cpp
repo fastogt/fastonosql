@@ -288,6 +288,13 @@ namespace fastonosql
         notify(ev);
     }
 
+    void IServer::clearHistory(const EventsInfo::ClearServerHistoryRequest &req)
+    {
+        emit startedClearServerHistory(req);
+        QEvent *ev = new events::ClearServerHistoryRequestEvent(this, req);
+        notify(ev);
+    }
+
     void IServer::changeProperty(const EventsInfo::ChangeServerPropertyInfoRequest& req)
     {
         emit startedChangeServerProperty(req);
@@ -314,13 +321,6 @@ namespace fastonosql
         QObject * send = sender();
         EventsInfo::ServerPropertyInfoRequest req(send);
         serverProperty(req);
-    }
-
-    void IServer::requestHistoryInfoSL()
-    {
-        QObject * send = sender();
-        EventsInfo::ServerInfoHistoryRequest req(send);
-        requestHistoryInfo(req);
     }
 
     void IServer::customEvent(QEvent *event)
@@ -378,6 +378,10 @@ namespace fastonosql
         else if (type == static_cast<QEvent::Type>(ServerInfoHistoryResponceEvent::EventType)){
             ServerInfoHistoryResponceEvent *ev = static_cast<ServerInfoHistoryResponceEvent*>(event);
             handleLoadServerInfoHistoryEvent(ev);
+        }
+        else if (type == static_cast<QEvent::Type>(ClearServerHistoryResponceEvent::EventType)){
+            ClearServerHistoryResponceEvent *ev = static_cast<ClearServerHistoryResponceEvent*>(event);
+            handleClearServerHistoryResponceEvent(ev);
         }
         else if (type == static_cast<QEvent::Type>(ServerPropertyInfoResponceEvent::EventType)){
             ServerPropertyInfoResponceEvent *ev = static_cast<ServerPropertyInfoResponceEvent*>(event);
@@ -612,6 +616,17 @@ namespace fastonosql
             LOG_ERROR(er, true);
         }
         emit finishedLoadDiscoveryInfo(v);
+    }
+
+    void IServer::handleClearServerHistoryResponceEvent(events::ClearServerHistoryResponceEvent* ev)
+    {
+        using namespace events;
+        ClearServerHistoryResponceEvent::value_type v = ev->value();
+        common::ErrorValueSPtr er = v.errorInfo();
+        if(er && er->isError()){
+            LOG_ERROR(er, true);
+        }
+        emit finishedClearServerHistory(v);
     }
 
     void IServer::handleSetDefaultDatabaseEvent(events::SetDefaultDatabaseResponceEvent* ev)

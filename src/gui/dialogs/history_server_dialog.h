@@ -3,6 +3,7 @@
 #include <QDialog>
 
 class QComboBox;
+class QPushButton;
 
 #include "core/events/events_info.h"
 
@@ -26,26 +27,33 @@ namespace fastonosql
     {
         Q_OBJECT
     public:
-        explicit ServerHistoryDialog(const QString& title, connectionTypes type, QWidget* parent = 0);
+        explicit ServerHistoryDialog(IServerSPtr server, QWidget* parent = 0);
 
     Q_SIGNALS:
         void showed();
 
-    public Q_SLOTS:
+    private Q_SLOTS:
         void startLoadServerHistoryInfo(const EventsInfo::ServerInfoHistoryRequest& req);
         void finishLoadServerHistoryInfo(const EventsInfo::ServerInfoHistoryResponce& res);
+        void startClearServerHistory(const EventsInfo::ClearServerHistoryRequest& req);
+        void finishClearServerHistory(const EventsInfo::ClearServerHistoryResponce& res);
         void snapShotAdd(ServerInfoSnapShoot snapshot);
+        void clearHistory();
 
-    private Q_SLOTS:
         void refreshInfoFields(int index);
         void refreshGraph(int index);
 
     protected:
+        virtual void changeEvent(QEvent* e);
         virtual void showEvent(QShowEvent* e);
 
     private:
         void reset();
+        void retranslateUi();
+        void requestHistoryInfo();
+
         QWidget* settingsGraph_;
+        QPushButton* clearHistory_;
         QComboBox* serverInfoGroupsNames_;
         QComboBox* serverInfoFields_;
 
@@ -53,6 +61,6 @@ namespace fastonosql
 
         fasto::qt::gui::GlassWidget* glassWidget_;
         EventsInfo::ServerInfoHistoryResponce::infos_container_type infos_;
-        const connectionTypes type_;
+        const IServerSPtr server_;
     };
 }

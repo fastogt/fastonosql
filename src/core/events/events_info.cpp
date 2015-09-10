@@ -239,6 +239,18 @@ namespace fastonosql
             infos_ = inf;
         }
 
+        ClearServerHistoryRequest::ClearServerHistoryRequest(initiator_type sender, error_type er)
+            : base_class(sender, er)
+        {
+
+        }
+
+        ClearServerHistoryResponce::ClearServerHistoryResponce(const base_class &request)
+            : base_class(request)
+        {
+
+        }
+
         ServerPropertyInfoRequest::ServerPropertyInfoRequest(initiator_type sender, error_type er)
             : base_class(sender, er)
         {

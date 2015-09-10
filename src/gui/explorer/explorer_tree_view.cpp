@@ -59,6 +59,9 @@ namespace fastonosql
         historyServerAction_ = new QAction(this);
         VERIFY(connect(historyServerAction_, &QAction::triggered, this, &ExplorerTreeView::openHistoryServerDialog));
 
+        clearHistoryServerAction_ = new QAction(this);
+        VERIFY(connect(clearHistoryServerAction_, &QAction::triggered, this, &ExplorerTreeView::clearHistory));
+
         closeServerAction_ = new QAction(this);
         VERIFY(connect(closeServerAction_, &QAction::triggered, this, &ExplorerTreeView::closeServerConnection));
 
@@ -214,6 +217,7 @@ namespace fastonosql
                 menu.addAction(setMaxClientConnection_);
 
                 menu.addAction(historyServerAction_);
+                menu.addAction(clearHistoryServerAction_);
                 closeServerAction_->setEnabled(!isClusterMember);
                 menu.addAction(closeServerAction_);
 
@@ -423,12 +427,29 @@ namespace fastonosql
             return;
         }
 
-        ServerHistoryDialog histDialog(QString("%1 history").arg(server->name()), server->type(), this);
-        VERIFY(connect(server.get(), &IServer::startedLoadServerHistoryInfo, &histDialog, &ServerHistoryDialog::startLoadServerHistoryInfo));
-        VERIFY(connect(server.get(), &IServer::finishedLoadServerHistoryInfo, &histDialog, &ServerHistoryDialog::finishLoadServerHistoryInfo));
-        VERIFY(connect(server.get(), &IServer::serverInfoSnapShoot, &histDialog, &ServerHistoryDialog::snapShotAdd));
-        VERIFY(connect(&histDialog, &ServerHistoryDialog::showed, server.get(), &IServer::requestHistoryInfoSL));
+        ServerHistoryDialog histDialog(server, this);
         histDialog.exec();
+    }
+
+    void ExplorerTreeView::clearHistory()
+    {
+        QModelIndex sel = selectedIndex();
+        if(!sel.isValid()){
+            return;
+        }
+
+        ExplorerServerItem *node = common::utils_qt::item<ExplorerServerItem*>(sel);
+        if(!node){
+            return;
+        }
+
+        IServerSPtr server = node->server();
+        if(!server){
+            return;
+        }
+
+        EventsInfo::ClearServerHistoryRequest req(this);
+        server->clearHistory(req);
     }
 
     void ExplorerTreeView::closeServerConnection()
@@ -821,6 +842,7 @@ namespace fastonosql
         setServerPassword_->setText(trSetPassword);
         setMaxClientConnection_->setText(trSetMaxNumberOfClients);
         historyServerAction_->setText(trHistory);
+        clearHistoryServerAction_->setText(trClearHistory);
         closeServerAction_->setText(trClose);
         closeClusterAction_->setText(trClose);
         backupAction_->setText(trBackup);

@@ -298,6 +298,20 @@ namespace fastonosql
             infos_container_type infos_;
         };
 
+        struct ClearServerHistoryRequest
+                : public EventInfoBase
+        {
+            typedef EventInfoBase base_class;
+            explicit ClearServerHistoryRequest(initiator_type sender, error_type er = error_type());
+        };
+
+        struct ClearServerHistoryResponce
+                : public ClearServerHistoryRequest
+        {
+            typedef ClearServerHistoryRequest base_class;
+            explicit ClearServerHistoryResponce(const base_class &request);
+        };
+
         struct ServerPropertyInfoRequest
                 : public EventInfoBase
         {
