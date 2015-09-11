@@ -219,6 +219,10 @@ namespace fastonosql
                 else if(commaCount == 2){
                     uint32_t msTime = common::convertFromString<uint32_t>(elText);
                     result->setLoggingMsTimeInterval(msTime);
+                    if(!IConnectionSettingsBase::isRemoteType(result->connectionType())){
+                        result->initFromCommandLine(val.substr(i+1));
+                        break;
+                    }
                 }
                 else if(commaCount == 3){
                     result->initFromCommandLine(elText);
