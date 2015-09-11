@@ -7,17 +7,19 @@
 
 #include "gui/gui_factory.h"
 #include "gui/property_table_model.h"
+#include "core/iserver.h"
 
 #include "translations/global.h"
 
 namespace fastonosql
 {
-    PropertyServerDialog::PropertyServerDialog(const QString& title, connectionTypes type, QWidget* parent)
-        : QDialog(parent), type_(type)
+    PropertyServerDialog::PropertyServerDialog(IServerSPtr server, QWidget* parent)
+        : QDialog(parent), server_(server)
     {
         using namespace translations;
-        setWindowIcon(GuiFactory::instance().icon(type_));
-        setWindowTitle(title);
+        CHECK(server_);
+
+        setWindowIcon(GuiFactory::instance().icon(server->type()));
 
         PropertyTableModel* mod = new PropertyTableModel(this);
         propertyes_table_ = new QTableView;
@@ -29,6 +31,12 @@ namespace fastonosql
         setLayout(mainL);
 
         glassWidget_ = new fasto::qt::gui::GlassWidget(GuiFactory::instance().pathToLoadingGif(), trLoading, 0.5, QColor(111, 111, 100), this);
+
+        VERIFY(connect(server.get(), &IServer::startedLoadServerProperty, this, &PropertyServerDialog::startServerProperty));
+        VERIFY(connect(server.get(), &IServer::finishedLoadServerProperty, this, &PropertyServerDialog::finishServerProperty));
+        VERIFY(connect(server.get(), &IServer::startedChangeServerProperty, this, &PropertyServerDialog::startServerChangeProperty));
+        VERIFY(connect(server.get(), &IServer::finishedChangeServerProperty, this, &PropertyServerDialog::finishServerChangeProperty));
+        retranslateUi();
     }
 
     void PropertyServerDialog::startServerProperty(const EventsInfo::ServerPropertyInfoRequest& req)
@@ -44,7 +52,7 @@ namespace fastonosql
             return;
         }
 
-        if(type_ == REDIS){
+        if(server_->type() == REDIS){
             ServerPropertyInfo inf = res.info_;
             PropertyTableModel *model = qobject_cast<PropertyTableModel*>(propertyes_table_->model());
             for(int i = 0; i < inf.propertyes_.size(); ++i)
@@ -67,7 +75,7 @@ namespace fastonosql
             return;
         }
 
-        if(type_ == REDIS){
+        if(server_->type() == REDIS){
             PropertyType pr = res.newItem_;
             if(res.isChange_){
                 PropertyTableModel *model = qobject_cast<PropertyTableModel*>(propertyes_table_->model());
@@ -76,9 +84,32 @@ namespace fastonosql
         }
     }
 
+    void PropertyServerDialog::changedProperty(const PropertyType& prop)
+    {
+        EventsInfo::ChangeServerPropertyInfoRequest req(this, prop);
+        server_->changeProperty(req);
+    }
+
+    void PropertyServerDialog::changeEvent(QEvent* e)
+    {
+        if(e->type() == QEvent::LanguageChange){
+            retranslateUi();
+        }
+        QDialog::changeEvent(e);
+    }
+
     void PropertyServerDialog::showEvent(QShowEvent* e)
     {
         QDialog::showEvent(e);
         emit showed();
+
+        EventsInfo::ServerPropertyInfoRequest req(this);
+        server_->serverProperty(req);
+    }
+
+    void PropertyServerDialog::retranslateUi()
+    {
+        using namespace translations;
+        setWindowTitle(tr("%1 properties").arg(server_->name()));
     }
 }

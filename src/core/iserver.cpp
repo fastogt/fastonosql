@@ -302,27 +302,6 @@ namespace fastonosql
         notify(ev);
     }
 
-    void IServer::loadServerInfoSL()
-    {
-        QObject * send = sender();
-        EventsInfo::ServerInfoRequest req(send);
-        loadServerInfo(req);
-    }
-
-    void IServer::changePropertySL(const PropertyType &prop)
-    {
-        QObject * send = sender();
-        EventsInfo::ChangeServerPropertyInfoRequest req(send, prop);
-        changeProperty(req);
-    }
-
-    void IServer::serverPropertySL()
-    {
-        QObject * send = sender();
-        EventsInfo::ServerPropertyInfoRequest req(send);
-        serverProperty(req);
-    }
-
     void IServer::customEvent(QEvent *event)
     {
         using namespace events;

@@ -138,11 +138,6 @@ namespace fastonosql
         void clearHistory(const EventsInfo::ClearServerHistoryRequest &req); //signals: startedClearServerHistory, finishedClearServerHistory
         void changeProperty(const EventsInfo::ChangeServerPropertyInfoRequest &req); //signals: startedChangeServerProperty, finishedChangeServerProperty
 
-    public Q_SLOTS:
-        void loadServerInfoSL();
-        void changePropertySL(const PropertyType& prop);
-        void serverPropertySL();
-
     protected:
         virtual void customEvent(QEvent* event);
 

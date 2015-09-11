@@ -24,25 +24,28 @@ namespace fastonosql
     {
         Q_OBJECT
     public:
-        explicit PropertyServerDialog(const QString& title, connectionTypes type, QWidget* parent = 0);
+        explicit PropertyServerDialog(IServerSPtr server, QWidget* parent = 0);
 
     Q_SIGNALS:
         void showed();
-        void changedProperty(const PropertyType& prop);
 
-    public Q_SLOTS:
+    private Q_SLOTS:
         void startServerProperty(const EventsInfo::ServerPropertyInfoRequest& req);
         void finishServerProperty(const EventsInfo::ServerPropertyInfoResponce& res);
 
         void startServerChangeProperty(const EventsInfo::ChangeServerPropertyInfoRequest& req);
         void finishServerChangeProperty(const EventsInfo::ChangeServerPropertyInfoResponce& res);
 
+        void changedProperty(const PropertyType& prop);
     protected:
+        virtual void changeEvent(QEvent* e);
         virtual void showEvent(QShowEvent *e);
 
     private:
+        void retranslateUi();
+
         fasto::qt::gui::GlassWidget *glassWidget_;
         QTableView *propertyes_table_;
-        const connectionTypes type_;       
+        const IServerSPtr server_;
     };
 }

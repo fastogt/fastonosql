@@ -52,7 +52,7 @@ namespace fastonosql
     {
         Q_OBJECT
     public:
-        explicit InfoServerDialog(const QString& title, connectionTypes type, QWidget* parent = 0);
+        explicit InfoServerDialog(IServerSPtr server, QWidget* parent = 0);
         enum
         {
             min_height = 320,
@@ -62,14 +62,16 @@ namespace fastonosql
     Q_SIGNALS:
         void showed();
 
-    public Q_SLOTS:
+    private Q_SLOTS:
         void startServerInfo(const EventsInfo::ServerInfoRequest& req);
         void finishServerInfo(const EventsInfo::ServerInfoResponce& res);
 
     protected:
+        virtual void changeEvent(QEvent* e);
         virtual void showEvent(QShowEvent* e);
 
     private:
+        void retranslateUi();
 #ifdef BUILD_WITH_REDIS
         void updateText(const RedisServerInfo& serv);
 #endif
@@ -94,6 +96,6 @@ namespace fastonosql
         QLabel* serverTextInfo_;
         QLabel* hardwareTextInfo_;
         fasto::qt::gui::GlassWidget* glassWidget_;
-        const connectionTypes type_;
+        const IServerSPtr server_;
     };
 }

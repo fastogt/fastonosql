@@ -329,10 +329,7 @@ namespace fastonosql
             return;
         }
 
-        InfoServerDialog infDialog(QString("%1 info").arg(server->name()), server->type(), this);
-        VERIFY(connect(server.get(), &IServer::startedLoadServerInfo, &infDialog, &InfoServerDialog::startServerInfo));
-        VERIFY(connect(server.get(), &IServer::finishedLoadServerInfo, &infDialog, &InfoServerDialog::finishServerInfo));
-        VERIFY(connect(&infDialog, &InfoServerDialog::showed, server.get(), &IServer::loadServerInfoSL));
+        InfoServerDialog infDialog(server, this);
         infDialog.exec();
     }
 
@@ -353,13 +350,7 @@ namespace fastonosql
             return;
         }
 
-        PropertyServerDialog infDialog(QString("%1 properties").arg(server->name()), server->type(), this);
-        VERIFY(connect(server.get(), &IServer::startedLoadServerProperty, &infDialog, &PropertyServerDialog::startServerProperty));
-        VERIFY(connect(server.get(), &IServer::finishedLoadServerProperty, &infDialog, &PropertyServerDialog::finishServerProperty));
-        VERIFY(connect(server.get(), &IServer::startedChangeServerProperty, &infDialog, &PropertyServerDialog::startServerChangeProperty));
-        VERIFY(connect(server.get(), &IServer::finishedChangeServerProperty, &infDialog, &PropertyServerDialog::finishServerChangeProperty));
-        VERIFY(connect(&infDialog, &PropertyServerDialog::changedProperty, server.get(), &IServer::changePropertySL));
-        VERIFY(connect(&infDialog, &PropertyServerDialog::showed, server.get(), &IServer::serverPropertySL));
+        PropertyServerDialog infDialog(server, this);
         infDialog.exec();
     }
 

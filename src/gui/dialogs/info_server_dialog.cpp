@@ -3,6 +3,8 @@
 #include <QLabel>
 #include <QHBoxLayout>
 
+#include "core/iserver.h"
+
 #include "gui/gui_factory.h"
 #include "fasto/qt/gui/glass_widget.h"
 
@@ -131,12 +133,14 @@ namespace
 
 namespace fastonosql
 {
-    InfoServerDialog::InfoServerDialog(const QString& title, connectionTypes type, QWidget* parent)
-        : QDialog(parent), type_(type)
+    InfoServerDialog::InfoServerDialog(IServerSPtr server, QWidget* parent)
+        : QDialog(parent), server_(server)
     {
+        CHECK(server_);
+
         using namespace translations;
-        setWindowIcon(GuiFactory::instance().icon(type_));
-        setWindowTitle(title);
+        connectionTypes type = server->type();
+        setWindowIcon(GuiFactory::instance().icon(type));
 
         serverTextInfo_ = new QLabel;
         hardwareTextInfo_ = new QLabel;
@@ -149,40 +153,44 @@ namespace fastonosql
 
         glassWidget_ = new fasto::qt::gui::GlassWidget(GuiFactory::instance().pathToLoadingGif(), trLoading, 0.5, QColor(111, 111, 100), this);
 #ifdef BUILD_WITH_REDIS
-        if(type_ == REDIS){
+        if(type == REDIS){
             updateText(RedisServerInfo());
         }
 #endif
 #ifdef BUILD_WITH_MEMCACHED
-        if(type_ == MEMCACHED){
+        if(type == MEMCACHED){
             updateText(MemcachedServerInfo());
         }
 #endif
 #ifdef BUILD_WITH_SSDB
-        if(type_ == SSDB){
+        if(type == SSDB){
             updateText(SsdbServerInfo());
         }
 #endif
 #ifdef BUILD_WITH_LEVELDB
-        if(type_ == LEVELDB){
+        if(type == LEVELDB){
             updateText(LeveldbServerInfo());
         }
 #endif
 #ifdef BUILD_WITH_ROCKSDB
-        if(type_ == ROCKSDB){
+        if(type == ROCKSDB){
             updateText(RocksdbServerInfo());
         }
 #endif
 #ifdef BUILD_WITH_UNQLITE
-        if(type_ == UNQLITE){
+        if(type == UNQLITE){
             updateText(UnqliteServerInfo());
         }
 #endif
 #ifdef BUILD_WITH_LMDB
-        if(type_ == LMDB){
+        if(type == LMDB){
             updateText(LmdbServerInfo());
         }
 #endif
+
+        VERIFY(connect(server.get(), &IServer::startedLoadServerInfo, this, &InfoServerDialog::startServerInfo));
+        VERIFY(connect(server.get(), &IServer::finishedLoadServerInfo, this, &InfoServerDialog::finishServerInfo));
+        retranslateUi();
     }
 
     void InfoServerDialog::startServerInfo(const EventsInfo::ServerInfoRequest& req)
@@ -203,9 +211,11 @@ namespace fastonosql
             return;
         }
 
-        DCHECK(type_ == inf->type());
+        connectionTypes type = server_->type();
+
+        DCHECK(type == inf->type());
 #ifdef BUILD_WITH_REDIS
-        if(type_ == REDIS){
+        if(type == REDIS){
             RedisServerInfo* infr = dynamic_cast<RedisServerInfo*>(inf.get());
             if(infr){
                 updateText(*infr);
@@ -213,7 +223,7 @@ namespace fastonosql
         }
 #endif
 #ifdef BUILD_WITH_MEMCACHED
-        if(type_ == MEMCACHED){
+        if(type == MEMCACHED){
             MemcachedServerInfo* infr = dynamic_cast<MemcachedServerInfo*>(inf.get());
             if(infr){
                 updateText(*infr);
@@ -221,7 +231,7 @@ namespace fastonosql
         }
 #endif
 #ifdef BUILD_WITH_SSDB
-        if(type_ == SSDB){
+        if(type == SSDB){
             SsdbServerInfo* infr = dynamic_cast<SsdbServerInfo*>(inf.get());
             if(infr){
                 updateText(*infr);
@@ -229,8 +239,32 @@ namespace fastonosql
         }
 #endif
 #ifdef BUILD_WITH_LEVELDB
-        if(type_ == LEVELDB){
+        if(type == LEVELDB){
             LeveldbServerInfo * infr = dynamic_cast<LeveldbServerInfo*>(inf.get());
+            if(infr){
+                updateText(*infr);
+            }
+        }
+#endif
+#ifdef BUILD_WITH_ROCKSDB
+        if(type == ROCKSDB){
+            RocksdbServerInfo * infr = dynamic_cast<RocksdbServerInfo*>(inf.get());
+            if(infr){
+                updateText(*infr);
+            }
+        }
+#endif
+#ifdef BUILD_WITH_UNQLITE
+        if(type == UNQLITE){
+            UnqliteServerInfo * infr = dynamic_cast<UnqliteServerInfo*>(inf.get());
+            if(infr){
+                updateText(*infr);
+            }
+        }
+#endif
+#ifdef BUILD_WITH_LMDB
+        if(type == LMDB){
+            LmdbServerInfo * infr = dynamic_cast<LmdbServerInfo*>(inf.get());
             if(infr){
                 updateText(*infr);
             }
@@ -242,6 +276,23 @@ namespace fastonosql
     {
         QDialog::showEvent(e);
         emit showed();
+
+        EventsInfo::ServerInfoRequest req(this);
+        server_->loadServerInfo(req);
+    }
+
+    void InfoServerDialog::changeEvent(QEvent* e)
+    {
+        if(e->type() == QEvent::LanguageChange){
+            retranslateUi();
+        }
+        QDialog::changeEvent(e);
+    }
+
+    void InfoServerDialog::retranslateUi()
+    {
+        using namespace translations;
+        setWindowTitle(tr("%1 info").arg(server_->name()));
     }
 
 #ifdef BUILD_WITH_REDIS
