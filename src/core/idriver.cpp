@@ -9,9 +9,15 @@
 #include <QThread>
 #include <QApplication>
 
+extern "C" {
+    #include "sds.h"
+}
+
 #include "common/file_system.h"
 #include "common/time.h"
 #include "common/sprintf.h"
+
+#include "core/command_logger.h"
 
 namespace
 {
@@ -89,8 +95,49 @@ namespace fastonosql
         }
     }
 
+    common::ErrorValueSPtr IDriver::execute(FastoObjectCommand* cmd)
+    {
+        //DCHECK(cmd);
+        if(!cmd){
+            return common::make_error_value("Invalid input argument", common::ErrorValue::E_ERROR);
+        }
+
+        const std::string command = cmd->cmd()->inputCommand();
+        common::Value::CommandLoggingType type = cmd->cmd()->commandLoggingType();
+
+        if(command.empty()){
+            return common::make_error_value("Command empty", common::ErrorValue::E_ERROR);
+        }
+
+        LOG_COMMAND(Command(command, type));
+
+        common::ErrorValueSPtr er;
+        if (command[0] != '\0') {
+            int argc;
+            sds *argv = sdssplitargs(command.c_str(), &argc);
+
+            if (argv == NULL) {
+                common::StringValue *val = common::Value::createStringValue("Invalid argument(s)");
+                FastoObject* child = new FastoObject(cmd, val, cmd->delemitr());
+                cmd->addChildren(child);
+            }
+            else if (argc > 0) {
+                char *command = argv[0];
+                if (strcasecmp(command, "interrupt") == 0){
+                    interrupt();
+                }
+                else {
+                    er = executeImpl(cmd, argc, argv);
+                }
+            }
+            sdsfreesplitres(argv,argc);
+        }
+
+        return er;
+    }
+
     IDriver::IDriver(IConnectionSettingsBaseSPtr settings, connectionTypes type)
-        : settings_(settings), serverDiscInfo_(), thread_(NULL), timer_info_id_(0), log_file_(NULL), type_(type)
+        : settings_(settings), interrupt_(false), serverDiscInfo_(), thread_(NULL), timer_info_id_(0), log_file_(NULL), type_(type)
     {
         thread_ = new QThread(this);
         moveToThread(thread_);
@@ -189,6 +236,11 @@ namespace fastonosql
         }
     }
 
+    void IDriver::interrupt()
+    {
+        interrupt_ = true;
+    }
+
     void IDriver::init()
     {
         int interval = settings_->loggingMsTimeInterval();
@@ -283,6 +335,9 @@ namespace fastonosql
             events::DiscoveryInfoRequestEvent* ev = static_cast<events::DiscoveryInfoRequestEvent*>(event);
             handleDiscoveryInfoRequestEvent(ev);
         }
+
+        interrupt_ = false;
+
         return QObject::customEvent(event);
     }
 

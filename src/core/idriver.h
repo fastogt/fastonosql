@@ -41,7 +41,7 @@ namespace fastonosql
         void stop();
         common::ErrorValueSPtr commandByType(CommandKeySPtr command, std::string& cmdstring) const WARN_UNUSED_RESULT;
 
-        virtual void interrupt() = 0;
+        virtual void interrupt();
         virtual bool isConnected() const = 0;
         virtual bool isAuthenticated() const = 0;
         virtual common::net::hostAndPort address() const = 0;
@@ -85,6 +85,7 @@ namespace fastonosql
         virtual void handleCommandRequestEvent(events::CommandRequestEvent* ev) = 0;
 
         const IConnectionSettingsBaseSPtr settings_;
+        bool interrupt_;
 
         class RootLocker
         {
@@ -109,7 +110,11 @@ namespace fastonosql
 
         void setCurrentDatabaseInfo(DataBaseInfo* inf);
 
+        common::ErrorValueSPtr execute(FastoObjectCommand* cmd) WARN_UNUSED_RESULT;
+
     private:
+        virtual common::ErrorValueSPtr executeImpl(FastoObject* out, int argc, char **argv) = 0;
+
         // handle info events
         void handleLoadServerInfoHistoryEvent(events::ServerInfoHistoryRequestEvent *ev);
         void handleDiscoveryInfoRequestEvent(events::DiscoveryInfoRequestEvent* ev);

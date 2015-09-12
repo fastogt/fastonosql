@@ -25,6 +25,9 @@ namespace fastonosql
         CommandInfo("INCR", "<key> <value>",
                     "Increment value associated with key in Memcached, item must exist, increment command will not create it.\n"
                     "The limit of increment is the 64 bit mark.", UNDEFINED_SINCE, UNDEFINED_EXAMPLE_STR, 2, 0),
+        CommandInfo("INTERRUPT", "-",
+                    "Command execution interrupt",
+                    UNDEFINED_SINCE, UNDEFINED_EXAMPLE_STR, 0, 0),
         CommandInfo("DECR", "<key> <value>",
                     "Decrement value associated with key in Memcached, item must exist, decrement command will not create it.", UNDEFINED_SINCE, UNDEFINED_EXAMPLE_STR, 2, 0),
         CommandInfo("PREPEND", "<key> <flags> <exptime> <bytes>",
@@ -56,17 +59,16 @@ namespace fastonosql
 
         virtual bool isConnected() const;
         virtual bool isAuthenticated() const;
-        virtual void interrupt();
         common::net::hostAndPort address() const;
         virtual std::string outputDelemitr() const;
 
         static const char* versionApi();
 
     private:
-        virtual void customEvent(QEvent *event);
         virtual void initImpl();
         virtual void clearImpl();
 
+        virtual common::ErrorValueSPtr executeImpl(FastoObject* out, int argc, char **argv);
         virtual common::ErrorValueSPtr serverInfo(ServerInfo** info);
         virtual common::ErrorValueSPtr serverDiscoveryInfo(ServerInfo** sinfo, ServerDiscoveryInfo** dinfo, DataBaseInfo** dbinfo);
         virtual common::ErrorValueSPtr currentDataBaseInfo(DataBaseInfo** info);

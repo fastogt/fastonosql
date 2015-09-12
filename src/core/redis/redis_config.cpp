@@ -126,7 +126,6 @@ namespace fastonosql
         interval = other.interval;
         dbnum = other.dbnum;
         interactive = other.interactive;
-        shutdown_ = other.shutdown_;
         monitor_mode = other.monitor_mode;
         pubsub_mode = other.pubsub_mode;
         latency_mode = other.latency_mode;

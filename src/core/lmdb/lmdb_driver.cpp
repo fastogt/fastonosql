@@ -1,7 +1,6 @@
 #include "core/lmdb/lmdb_driver.h"
 
 extern "C" {
-    #include "sds.h"
     #include <lmdb.h>
 }
 
@@ -11,7 +10,6 @@ extern "C" {
 #include "fasto/qt/logger.h"
 
 #include "core/command_logger.h"
-
 #include "core/lmdb/lmdb_config.h"
 #include "core/lmdb/lmdb_infos.h"
 
@@ -227,56 +225,14 @@ namespace fastonosql
             return common::ErrorValueSPtr();
         }
 
-        common::ErrorValueSPtr execute(FastoObjectCommand* cmd) WARN_UNUSED_RESULT
-        {
-            //DCHECK(cmd);
-            if(!cmd){
-                return common::make_error_value("Invalid input argument", common::ErrorValue::E_ERROR);
-            }
-
-            const std::string command = cmd->cmd()->inputCommand();
-            common::Value::CommandLoggingType type = cmd->cmd()->commandLoggingType();
-
-            if(command.empty()){
-                return common::make_error_value("Command empty", common::ErrorValue::E_ERROR);
-            }
-
-            LOG_COMMAND(Command(command, type));
-
-            common::ErrorValueSPtr er;
-            if (command[0] != '\0') {
-                int argc;
-                sds *argv = sdssplitargs(command.c_str(), &argc);
-
-                if (argv == NULL) {
-                    common::StringValue *val = common::Value::createStringValue("Invalid argument(s)");
-                    FastoObject* child = new FastoObject(cmd, val, config_.mb_delim_);
-                    cmd->addChildren(child);
-                }
-                else if (argc > 0) {
-                    if (strcasecmp(argv[0], "quit") == 0){
-                        config_.shutdown_ = 1;
-                    }
-                    else {
-                        er = execute(cmd, argc, argv);
-                    }
-                }
-                sdsfreesplitres(argv,argc);
-            }
-
-            return er;
-        }
-
         ~pimpl()
         {
             clear();
         }
 
         lmdbConfig config_;
-        SSHInfo sinfo_;
 
-   private:
-        common::ErrorValueSPtr execute(FastoObject* out, int argc, char **argv)
+        virtual common::ErrorValueSPtr execute_impl(FastoObject* out, int argc, char **argv)
         {
             if(strcasecmp(argv[0], "info") == 0){
                 if(argc > 2){
@@ -357,6 +313,7 @@ namespace fastonosql
             }
         }
 
+    private:
         common::ErrorValueSPtr get(const std::string& key, std::string* ret_val)
         {
             MDB_val mkey;
@@ -503,11 +460,6 @@ namespace fastonosql
         return impl_->isConnected();
     }
 
-    void LmdbDriver::interrupt()
-    {
-        impl_->config_.shutdown_ = 1;
-    }
-
     // ============== commands =============//
     common::ErrorValueSPtr LmdbDriver::commandDeleteImpl(CommandDeleteKey* command, std::string& cmdstring) const
     {
@@ -570,18 +522,17 @@ namespace fastonosql
         return STRINGIZE(MDB_VERSION_MAJOR) "." STRINGIZE(MDB_VERSION_MINOR) "." STRINGIZE(MDB_VERSION_PATCH);
     }
 
-    void LmdbDriver::customEvent(QEvent *event)
-    {
-        IDriver::customEvent(event);
-        impl_->config_.shutdown_ = 0;
-    }
-
     void LmdbDriver::initImpl()
     {
     }
 
     void LmdbDriver::clearImpl()
     {
+    }
+
+    common::ErrorValueSPtr LmdbDriver::executeImpl(FastoObject* out, int argc, char **argv)
+    {
+        return impl_->execute_impl(out, argc, argv);
     }
 
     common::ErrorValueSPtr LmdbDriver::serverInfo(ServerInfo **info)
@@ -606,7 +557,7 @@ namespace fastonosql
 
         FastoObjectIPtr root = FastoObject::createRoot(GET_SERVER_TYPE);
         FastoObjectCommand* cmd = createCommand<LmdbCommand>(root, GET_SERVER_TYPE, common::Value::C_INNER);
-        er = impl_->execute(cmd);
+        er = execute(cmd);
 
         if(!er){
             FastoObject::child_container_type ch = root->childrens();
@@ -683,7 +634,7 @@ namespace fastonosql
                 FastoObjectIPtr outRoot = lock.root_;
                 double step = 100.0f/length;
                 for(size_t n = 0; n < length; ++n){
-                    if(impl_->config_.shutdown_){
+                    if(interrupt_){
                         er.reset(new common::ErrorValue("Interrupted exec.", common::ErrorValue::E_INTERRUPTED));
                         res.setErrorInfo(er);
                         break;
@@ -699,7 +650,7 @@ namespace fastonosql
                         }
                         offset = n + 1;
                         FastoObjectCommand* cmd = createCommand<LmdbCommand>(outRoot, stableCommand(command), common::Value::C_USER);
-                        er = impl_->execute(cmd);
+                        er = execute(cmd);
                         if(er){
                             res.setErrorInfo(er);
                             break;
@@ -735,7 +686,7 @@ namespace fastonosql
             FastoObjectIPtr root = lock.root_;
             FastoObjectCommand* cmd = createCommand<LmdbCommand>(root, cmdtext, common::Value::C_INNER);
         notifyProgress(sender, 50);
-            er = impl_->execute(cmd);
+            er = execute(cmd);
             if(er){
                 res.setErrorInfo(er);
             }
@@ -764,7 +715,7 @@ namespace fastonosql
             FastoObjectIPtr root = FastoObject::createRoot(patternResult);
         notifyProgress(sender, 50);
             FastoObjectCommand* cmd = createCommand<LmdbCommand>(root, patternResult, common::Value::C_INNER);
-            common::ErrorValueSPtr er = impl_->execute(cmd);
+            common::ErrorValueSPtr er = execute(cmd);
             if(er){
                 res.setErrorInfo(er);
             }

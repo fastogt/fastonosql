@@ -16,7 +16,7 @@ namespace fastonosql
     struct BaseConfig
     {
         BaseConfig()
-            : mb_delim_("\n"), shutdown_(false)
+            : mb_delim_("\n")
         {
 
         }
@@ -27,7 +27,6 @@ namespace fastonosql
         }
 
         std::string mb_delim_;
-        bool shutdown_;
     };
 
     // -f

@@ -124,6 +124,9 @@ namespace fastonosql
                     "Increment the float value of a key by the given amount", PROJECT_VERSION_GENERATE(2,6,0), UNDEFINED_EXAMPLE_STR, 2, 0),
         CommandInfo("INFO", "[section]",
                     "Get information and statistics about the server", PROJECT_VERSION_GENERATE(1,0,0), UNDEFINED_EXAMPLE_STR, 0, 1),
+        CommandInfo("INTERRUPT", "-",
+                    "Command execution interrupt",
+                    UNDEFINED_SINCE, UNDEFINED_EXAMPLE_STR, 0, 0),
         CommandInfo("KEYS", "<pattern>",
                     "Find all keys matching the given pattern", PROJECT_VERSION_GENERATE(1,0,0), UNDEFINED_EXAMPLE_STR, 1, 0),
         CommandInfo("LASTSAVE", "-",
@@ -404,16 +407,16 @@ namespace fastonosql
 
         virtual bool isConnected() const;
         virtual bool isAuthenticated() const;
-        virtual void interrupt();
         common::net::hostAndPort address() const;
         virtual std::string outputDelemitr() const;
 
         static const char* versionApi();
 
     private:
-        virtual void customEvent(QEvent *event);
         virtual void initImpl();
         virtual void clearImpl();
+
+        virtual common::ErrorValueSPtr executeImpl(FastoObject* out, int argc, char **argv);
 
         virtual common::ErrorValueSPtr serverInfo(ServerInfo** info);
         virtual common::ErrorValueSPtr serverDiscoveryInfo(ServerInfo** sinfo, ServerDiscoveryInfo** dinfo, DataBaseInfo** dbinfo);

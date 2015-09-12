@@ -32,6 +32,9 @@ namespace fastonosql
                     "The num argument could be a negative integer.\n"
                     "The old number is first converted to an integer before increment, assuming it was stored as literal integer.",
                     UNDEFINED_SINCE, UNDEFINED_EXAMPLE_STR, 1, 1),
+        CommandInfo("INTERRUPT", "-",
+                    "Command execution interrupt",
+                    UNDEFINED_SINCE, UNDEFINED_EXAMPLE_STR, 0, 0),
         CommandInfo("KEYS", "<key_start> <key_end> <limit>",
                     "List keys in range (key_start, key_end].",
                     UNDEFINED_SINCE, UNDEFINED_EXAMPLE_STR, 3, 0),
@@ -170,17 +173,16 @@ namespace fastonosql
 
         virtual bool isConnected() const;
         virtual bool isAuthenticated() const;
-        virtual void interrupt();
         common::net::hostAndPort address() const;
         virtual std::string outputDelemitr() const;
 
         static const char* versionApi();
 
     private:
-        virtual void customEvent(QEvent *event);
         virtual void initImpl();
         virtual void clearImpl();
 
+        virtual common::ErrorValueSPtr executeImpl(FastoObject* out, int argc, char **argv);
         virtual common::ErrorValueSPtr serverInfo(ServerInfo** info);
         virtual common::ErrorValueSPtr serverDiscoveryInfo(ServerInfo** sinfo, ServerDiscoveryInfo** dinfo, DataBaseInfo** dbinfo);
         virtual common::ErrorValueSPtr currentDataBaseInfo(DataBaseInfo** info);
