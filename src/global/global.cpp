@@ -35,7 +35,7 @@ namespace fastonosql
 
     FastoObject* FastoObject::createRoot(const std::string &text, IFastoObjectObserver* observer)
     {
-        FastoObject* root =  new FastoObject(NULL, common::Value::createStringValue(text), "");
+        FastoObject* root =  new FastoObject(NULL, common::Value::createStringValue(text), std::string());
         root->observer_ = observer;
         return root;
     }

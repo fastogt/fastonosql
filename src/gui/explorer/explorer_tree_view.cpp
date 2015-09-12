@@ -598,9 +598,8 @@ namespace fastonosql
             CreateDbKeyDialog loadDb(QString("Create key for %1 database").arg(node->name()), node->server()->type(), this);
             int result = loadDb.exec();
             if(result == QDialog::Accepted){
-                NValue val = loadDb.value();
-                NKey key = loadDb.key();
-                node->createKey(key, val);
+                NDbValue key = loadDb.key();
+                node->createKey(key);
             }
         }
     }
@@ -764,7 +763,7 @@ namespace fastonosql
         CommandKeySPtr key = res.cmd_;
         NDbValue dbv = key->key();
         if(key->type() == CommandKey::C_DELETE){
-            mod->removeKey(serv, res.inf_, dbv.key());
+            mod->removeKey(serv, res.inf_, dbv);
         }
         else if(key->type() == CommandKey::C_CREATE){            
             mod->addKey(serv, res.inf_, dbv);

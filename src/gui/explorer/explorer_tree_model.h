@@ -85,9 +85,9 @@ namespace fastonosql
 
         DataBaseInfoSPtr info() const;
 
-        void removeKey(const NKey& key);
-        void loadValue(const NKey& key);
-        void createKey(const NKey& key, common::ValueSPtr value);
+        void removeKey(const NDbValue& key);
+        void loadValue(const NDbValue& key);
+        void createKey(const NDbValue& key);
 
     private:
         const IDatabaseSPtr db_;
@@ -96,12 +96,12 @@ namespace fastonosql
     struct ExplorerKeyItem
             : public IExplorerTreeItem
     {
-        ExplorerKeyItem(const NKey& key, ExplorerDatabaseItem* parent);
+        ExplorerKeyItem(const NDbValue& key, ExplorerDatabaseItem* parent);
         virtual ~ExplorerKeyItem();
 
         ExplorerDatabaseItem* parent() const;
 
-        NKey key() const;
+        NDbValue key() const;
 
         virtual QString name() const;        
         virtual IServerSPtr server() const;
@@ -111,7 +111,7 @@ namespace fastonosql
         void loadValueFromDb();
 
     private:
-        NKey key_;
+        NDbValue key_;
     };
 
     class ExplorerTreeModel
@@ -138,13 +138,13 @@ namespace fastonosql
         void setDefaultDb(IServer* server, DataBaseInfoSPtr db);
 
         void addKey(IServer* server, DataBaseInfoSPtr db, const NDbValue &dbv);
-        void removeKey(IServer* server, DataBaseInfoSPtr db, const NKey& key);
+        void removeKey(IServer* server, DataBaseInfoSPtr db, const NDbValue &key);
 
     private:
         ExplorerClusterItem* findClusterItem(IClusterSPtr cl);
         ExplorerServerItem* findServerItem(IServer* server) const;
         ExplorerDatabaseItem* findDatabaseItem(ExplorerServerItem* server, DataBaseInfoSPtr db) const;
-        ExplorerKeyItem* findKeyItem(ExplorerDatabaseItem* db, const NKey& key) const;
+        ExplorerKeyItem* findKeyItem(ExplorerDatabaseItem* db, const NDbValue &key) const;
     };
 }
 

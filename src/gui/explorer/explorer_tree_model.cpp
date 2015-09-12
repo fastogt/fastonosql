@@ -164,40 +164,39 @@ namespace fastonosql
         return db_->info();
     }
 
-    void ExplorerDatabaseItem::removeKey(const NKey& key)
+    void ExplorerDatabaseItem::removeKey(const NDbValue& key)
     {
         IDatabaseSPtr dbs = db();
         if(dbs){
-            CommandKeySPtr cmd(new CommandDeleteKey(NDbValue(key, NValue())));
+            CommandKeySPtr cmd(new CommandDeleteKey(key));
             EventsInfo::CommandRequest req(this, dbs->info(), cmd);
             dbs->executeCommand(req);
         }
     }
 
-    void ExplorerDatabaseItem::loadValue(const NKey& key)
+    void ExplorerDatabaseItem::loadValue(const NDbValue& key)
     {
         IDatabaseSPtr dbs = db();
         if(dbs){
-            CommandKeySPtr cmd(new CommandLoadKey(NDbValue(key, NValue())));
+            CommandKeySPtr cmd(new CommandLoadKey(key));
             EventsInfo::CommandRequest req(this, dbs->info(), cmd);
             dbs->executeCommand(req);
         }
     }
 
-    void ExplorerDatabaseItem::createKey(const NKey& key, common::ValueSPtr value)
+    void ExplorerDatabaseItem::createKey(const NDbValue &key)
     {
         IDatabaseSPtr dbs = db();
         if(dbs){
-            CommandKeySPtr cmd(new CommandCreateKey(NDbValue(key, NValue(value))));
+            CommandKeySPtr cmd(new CommandCreateKey(key));
             EventsInfo::CommandRequest req(this, dbs->info(), cmd);
             dbs->executeCommand(req);
         }
     }
 
-    ExplorerKeyItem::ExplorerKeyItem(const NKey& key, ExplorerDatabaseItem* parent)
+    ExplorerKeyItem::ExplorerKeyItem(const NDbValue& key, ExplorerDatabaseItem* parent)
         : IExplorerTreeItem(parent), key_(key)
     {
-
     }
 
     ExplorerKeyItem::~ExplorerKeyItem()
@@ -210,14 +209,14 @@ namespace fastonosql
         return dynamic_cast<ExplorerDatabaseItem*>(parent_);
     }
 
-    NKey ExplorerKeyItem::key() const
+    NDbValue ExplorerKeyItem::key() const
     {
         return key_;
     }
 
     QString ExplorerKeyItem::name() const
     {
-        return common::convertFromString<QString>(key_.key_);
+        return common::convertFromString<QString>(key_.keyString());
     }
 
     IServerSPtr ExplorerKeyItem::server() const
@@ -503,16 +502,15 @@ namespace fastonosql
             return;
         }
 
-        NKey key = dbv.key();
-        ExplorerKeyItem *keyit = findKeyItem(dbs, key);
+        ExplorerKeyItem *keyit = findKeyItem(dbs, dbv);
         if(!keyit){
             QModelIndex parentdb = createIndex(parent->indexOf(dbs), 0, dbs);
-            ExplorerKeyItem *item = new ExplorerKeyItem(key, dbs);
+            ExplorerKeyItem *item = new ExplorerKeyItem(dbv, dbs);
             insertItem(parentdb, item);
         }
     }
 
-    void ExplorerTreeModel::removeKey(IServer* server, DataBaseInfoSPtr db, const NKey &key)
+    void ExplorerTreeModel::removeKey(IServer* server, DataBaseInfoSPtr db, const NDbValue &key)
     {
         ExplorerServerItem *parent = findServerItem(server);
         if(!parent){
@@ -599,7 +597,7 @@ namespace fastonosql
         return NULL;
     }
 
-    ExplorerKeyItem *ExplorerTreeModel::findKeyItem(ExplorerDatabaseItem* db, const NKey& key) const
+    ExplorerKeyItem *ExplorerTreeModel::findKeyItem(ExplorerDatabaseItem* db, const NDbValue &key) const
     {
         if(db){
             for(int i = 0; i < db->childrenCount() ; ++i){
@@ -609,7 +607,7 @@ namespace fastonosql
                     continue;
                 }
 
-                if(item->key() == key){
+                if(item->key().keyString() == key.keyString()){
                     return item;
                 }
             }

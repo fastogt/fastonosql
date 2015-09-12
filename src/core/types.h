@@ -43,11 +43,6 @@ namespace fastonosql
         int32_t ttl_sec_;
     };
 
-    inline bool operator == (const NKey& lhs, const NKey& rhs)
-    {
-        return lhs.key_ == rhs.key_;
-    }
-
     typedef common::ValueSPtr NValue;
 
     class NDbValue
@@ -273,7 +268,7 @@ namespace fastonosql
         }
 
         common::CommandValue* cmd = common::Value::createCommand(input, ct);
-        FastoObjectCommand* fs = new Command(parent, cmd, "");
+        FastoObjectCommand* fs = new Command(parent, cmd, parent->delemitr());
         parent->addChildren(fs);
         return fs;
     }

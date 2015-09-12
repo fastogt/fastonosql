@@ -107,17 +107,10 @@ namespace fastonosql
         retranslateUi();
     }
 
-    NValue CreateDbKeyDialog::value() const
+    NDbValue CreateDbKeyDialog::key() const
     {
-        return value_;
-    }
-
-    NKey CreateDbKeyDialog::key() const
-    {
-        int index = typesCombo_->currentIndex();
-        QVariant var = typesCombo_->itemData(index);
-        common::Value::Type t = (common::Value::Type)qvariant_cast<unsigned char>(var);
-        return NKey(common::convertToString(keyEdit_->text()), t);
+        NKey key(common::convertToString(keyEdit_->text()));
+        return NDbValue(key, value_);
     }
 
     void CreateDbKeyDialog::accept()

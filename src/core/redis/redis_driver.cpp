@@ -75,7 +75,7 @@ extern "C" {
 #define CHANGE_TTL_2ARGS_SI "EXPIRE %s %d"
 #define PERSIST_KEY_1ARGS_S "PERSIST %s"
 
-#define GET_KEYS_PATTERN_2ARGS_ISI "SCAN %d MATCH %s COUNT %d"
+#define GET_KEYS_PATTERN_3ARGS_ISI "SCAN %d MATCH %s COUNT %d"
 
 #define GET_SERVER_TYPE "CLUSTER NODES"
 #define SHUTDOWN "shutdown"
@@ -2329,7 +2329,7 @@ namespace fastonosql
         notifyProgress(sender, 0);
             events::LoadDatabaseContentResponceEvent::value_type res(ev->value());
             char patternResult[1024] = {0};
-            common::SNPrintf(patternResult, sizeof(patternResult), GET_KEYS_PATTERN_2ARGS_ISI, res.cursorIn_, res.pattern_, res.countKeys_);
+            common::SNPrintf(patternResult, sizeof(patternResult), GET_KEYS_PATTERN_3ARGS_ISI, res.cursorIn_, res.pattern_, res.countKeys_);
             FastoObjectIPtr root = FastoObject::createRoot(patternResult);
         notifyProgress(sender, 50);
             FastoObjectCommand* cmd = createCommand<RedisCommand>(root, patternResult, common::Value::C_INNER);
@@ -2399,7 +2399,9 @@ namespace fastonosql
                             if(tchildrens.size() == 1){
                                 FastoObject* type = tchildrens[0];
                                 std::string typeRedis = type->toString();
-                                common::ValueSPtr v = make_value(common::Value::createEmptyValueFromType(convertFromStringRType(typeRedis)));
+                                common::Value::Type ctype = convertFromStringRType(typeRedis);
+                                common::Value* emptyval = common::Value::createEmptyValueFromType(ctype);
+                                common::ValueSPtr v = make_value(emptyval);
                                 NValue val(v);
                                 res.keys_[i].setValue(val);
                             }

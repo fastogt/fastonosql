@@ -24,8 +24,7 @@ namespace fastonosql
         };
 
         explicit CreateDbKeyDialog(const QString& title, connectionTypes type, QWidget* parent = 0);
-        NValue value() const;
-        NKey key() const;
+        NDbValue key() const;
 
     public Q_SLOTS:
         virtual void accept();
