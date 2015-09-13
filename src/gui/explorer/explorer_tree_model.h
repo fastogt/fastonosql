@@ -75,7 +75,8 @@ namespace fastonosql
         virtual QString name() const;
         virtual eType type() const;       
         bool isDefault() const;
-        size_t size() const;
+        size_t sizeDB() const;
+        size_t loadedSize() const;
 
         virtual IServerSPtr server() const;
         IDatabaseSPtr db() const;
@@ -85,9 +86,9 @@ namespace fastonosql
 
         DataBaseInfoSPtr info() const;
 
-        void removeKey(const NDbValue& key);
-        void loadValue(const NDbValue& key);
-        void createKey(const NDbValue& key);
+        void removeKey(const NDbKValue& key);
+        void loadValue(const NDbKValue& key);
+        void createKey(const NDbKValue& key);
 
     private:
         const IDatabaseSPtr db_;
@@ -96,12 +97,12 @@ namespace fastonosql
     struct ExplorerKeyItem
             : public IExplorerTreeItem
     {
-        ExplorerKeyItem(const NDbValue& key, ExplorerDatabaseItem* parent);
+        ExplorerKeyItem(const NDbKValue& key, ExplorerDatabaseItem* parent);
         virtual ~ExplorerKeyItem();
 
         ExplorerDatabaseItem* parent() const;
 
-        NDbValue key() const;
+        NDbKValue key() const;
 
         virtual QString name() const;        
         virtual IServerSPtr server() const;
@@ -111,7 +112,7 @@ namespace fastonosql
         void loadValueFromDb();
 
     private:
-        NDbValue key_;
+        NDbKValue key_;
     };
 
     class ExplorerTreeModel
@@ -137,14 +138,14 @@ namespace fastonosql
         void removeDatabase(IServer* server, DataBaseInfoSPtr db);
         void setDefaultDb(IServer* server, DataBaseInfoSPtr db);
 
-        void addKey(IServer* server, DataBaseInfoSPtr db, const NDbValue &dbv);
-        void removeKey(IServer* server, DataBaseInfoSPtr db, const NDbValue &key);
+        void addKey(IServer* server, DataBaseInfoSPtr db, const NDbKValue &dbv);
+        void removeKey(IServer* server, DataBaseInfoSPtr db, const NDbKValue &key);
 
     private:
         ExplorerClusterItem* findClusterItem(IClusterSPtr cl);
         ExplorerServerItem* findServerItem(IServer* server) const;
         ExplorerDatabaseItem* findDatabaseItem(ExplorerServerItem* server, DataBaseInfoSPtr db) const;
-        ExplorerKeyItem* findKeyItem(ExplorerDatabaseItem* db, const NDbValue &key) const;
+        ExplorerKeyItem* findKeyItem(ExplorerDatabaseItem* db, const NDbKValue &key) const;
     };
 }
 

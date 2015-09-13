@@ -1218,7 +1218,8 @@ namespace fastonosql
             if (reply != NULL) {
                 long long sz = 0;
                 getDbSize(sz);
-                *info = new RedisDataBaseInfo(common::convertToString(num), sz, true);
+                #pragma message("remark")
+                *info = new RedisDataBaseInfo(common::convertToString(num), true, sz);
                 freeReplyObject(reply);
                 return common::ErrorValueSPtr();
             }
@@ -2297,7 +2298,7 @@ namespace fastonosql
                             int countDb = common::convertFromString<int>(scountDb);
                             if(countDb > 0){
                                 for(int i = 0; i < countDb; ++i){
-                                    DataBaseInfoSPtr dbInf(new RedisDataBaseInfo(common::convertToString(i), 0, false));
+                                    DataBaseInfoSPtr dbInf(new RedisDataBaseInfo(common::convertToString(i), false, 0));
                                     if(dbInf->name() == cdbInf->name()){
                                         res.databases_.push_back(cdbInf);
                                     }
@@ -2312,9 +2313,10 @@ namespace fastonosql
                         res.databases_.push_back(cdbInf);
                     }
 
-                    long long sz = 0;
+                    /*long long sz = 0;
                     er = impl_->getDbSize(sz);
-                    cdbInf->setSize(sz);
+                    cdbInf->setSize(sz);*/
+                    #pragma message("remark")
                 }
             }
     done:
@@ -2379,7 +2381,7 @@ namespace fastonosql
                         DCHECK(isok);
                         if(isok){
                             NKey k(key);
-                            NDbValue ress(k, NValue());
+                            NDbKValue ress(k, NValue());
                             cmds.push_back(createCommandFast("TYPE " + ress.keyString(), common::Value::C_INNER));
                             cmds.push_back(createCommandFast("TTL " + ress.keyString(), common::Value::C_INNER));
                             res.keys_.push_back(ress);
@@ -2444,8 +2446,8 @@ namespace fastonosql
             }
             else{
                 long long sz = 0;
-                er = impl_->getDbSize(sz);                
-                setCurrentDatabaseInfo(new RedisDataBaseInfo(res.inf_->name(), sz, true));
+                er = impl_->getDbSize(sz);
+                setCurrentDatabaseInfo(new RedisDataBaseInfo(res.inf_->name(), true, sz));
             }
         notifyProgress(sender, 75);
             reply(sender, new events::SetDefaultDatabaseResponceEvent(this, res));
@@ -2529,7 +2531,7 @@ namespace fastonosql
     common::ErrorValueSPtr RedisDriver::commandDeleteImpl(CommandDeleteKey* command, std::string& cmdstring) const
     {
         char patternResult[1024] = {0};
-        const NDbValue key = command->key();
+        const NDbKValue key = command->key();
         common::SNPrintf(patternResult, sizeof(patternResult), DELETE_KEY_PATTERN_1ARGS_S, key.keyString());
         cmdstring = patternResult;
 
@@ -2539,7 +2541,7 @@ namespace fastonosql
     common::ErrorValueSPtr RedisDriver::commandLoadImpl(CommandLoadKey* command, std::string& cmdstring) const
     {
         char patternResult[1024] = {0};
-        const NDbValue key = command->key();
+        const NDbKValue key = command->key();
         if(key.type() == common::Value::TYPE_ARRAY){
             common::SNPrintf(patternResult, sizeof(patternResult), GET_KEY_LIST_PATTERN_1ARGS_S, key.keyString());
         }
@@ -2563,7 +2565,7 @@ namespace fastonosql
     common::ErrorValueSPtr RedisDriver::commandCreateImpl(CommandCreateKey* command, std::string& cmdstring) const
     {
         char patternResult[1024] = {0};
-        NDbValue key = command->key();
+        NDbKValue key = command->key();
         NValue val = command->value();
         common::Value* rval = val.get();
         std::string key_str = key.keyString();
@@ -2592,7 +2594,7 @@ namespace fastonosql
     common::ErrorValueSPtr RedisDriver::commandChangeTTLImpl(CommandChangeTTL* command, std::string& cmdstring) const
     {
         char patternResult[1024] = {0};
-        NDbValue key = command->key();
+        NDbKValue key = command->key();
         uint32_t new_ttl = command->newTTL();
         if(new_ttl == -1){
             common::SNPrintf(patternResult, sizeof(patternResult), PERSIST_KEY_1ARGS_S, key.keyString());

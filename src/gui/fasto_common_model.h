@@ -21,7 +21,7 @@ namespace fastonosql
 
         virtual int columnCount(const QModelIndex& parent) const;
 
-        void changeValue(const NDbValue& value);
+        void changeValue(const NDbKValue& value);
 
     Q_SIGNALS:
         void changedValue(CommandKeySPtr cmd);

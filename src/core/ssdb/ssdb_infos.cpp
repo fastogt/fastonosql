@@ -182,8 +182,8 @@ namespace fastonosql
         return makeSsdbServerInfo(content);
     }
 
-    SsdbDataBaseInfo::SsdbDataBaseInfo(const std::string& name, size_t size, bool isDefault)
-        : DataBaseInfo(name, size, isDefault, SSDB)
+    SsdbDataBaseInfo::SsdbDataBaseInfo(const std::string& name, bool isDefault, size_t size, const keys_cont_type& keys)
+        : DataBaseInfo(name, isDefault, SSDB, size, keys)
     {
 
     }

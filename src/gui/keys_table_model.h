@@ -18,18 +18,18 @@ namespace fastonosql
             kCountColumns = 3
         };
 
-        explicit KeyTableItem(const NDbValue& key);
+        explicit KeyTableItem(const NDbKValue& key);
 
         QString key() const;
         QString typeText() const;
         int32_t TTL() const;
         common::Value::Type type() const;
 
-        NDbValue dbv() const;
-        void setDbv(const NDbValue& val);
+        NDbKValue dbv() const;
+        void setDbv(const NDbKValue& val);
 
     private:
-        NDbValue key_;
+        NDbKValue key_;
     };
 
     class KeysTableModel
@@ -48,7 +48,7 @@ namespace fastonosql
         virtual int columnCount(const QModelIndex& parent) const;
         void clear();
 
-        void changeValue(const NDbValue& value);
+        void changeValue(const NDbKValue& value);
 
     Q_SIGNALS:
         void changedValue(CommandKeySPtr cmd);

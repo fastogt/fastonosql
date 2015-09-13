@@ -182,8 +182,8 @@ namespace fastonosql
         return makeLeveldbServerInfo(content);
     }
 
-    LeveldbDataBaseInfo::LeveldbDataBaseInfo(const std::string& name, size_t size, bool isDefault)
-        : DataBaseInfo(name, size, isDefault, LEVELDB)
+    LeveldbDataBaseInfo::LeveldbDataBaseInfo(const std::string& name, bool isDefault, size_t size, const keys_cont_type &keys)
+        : DataBaseInfo(name, isDefault, LEVELDB, size, keys)
     {
 
     }

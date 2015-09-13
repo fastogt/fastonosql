@@ -464,7 +464,7 @@ namespace fastonosql
     common::ErrorValueSPtr LmdbDriver::commandDeleteImpl(CommandDeleteKey* command, std::string& cmdstring) const
     {
         char patternResult[1024] = {0};
-        NDbValue key = command->key();
+        NDbKValue key = command->key();
         common::SNPrintf(patternResult, sizeof(patternResult), DELETE_KEY_PATTERN_1ARGS_S, key.keyString());
         cmdstring = patternResult;
 
@@ -474,7 +474,7 @@ namespace fastonosql
     common::ErrorValueSPtr LmdbDriver::commandLoadImpl(CommandLoadKey* command, std::string& cmdstring) const
     {
         char patternResult[1024] = {0};
-        NDbValue key = command->key();
+        NDbKValue key = command->key();
         common::SNPrintf(patternResult, sizeof(patternResult), GET_KEY_PATTERN_1ARGS_S, key.keyString());
         cmdstring = patternResult;
 
@@ -484,7 +484,7 @@ namespace fastonosql
     common::ErrorValueSPtr LmdbDriver::commandCreateImpl(CommandCreateKey* command, std::string& cmdstring) const
     {
         char patternResult[1024] = {0};
-        NDbValue key = command->key();
+        NDbKValue key = command->key();
         NValue val = command->value();
         common::Value* rval = val.get();
         std::string key_str = key.keyString();
@@ -580,7 +580,7 @@ namespace fastonosql
 
     common::ErrorValueSPtr LmdbDriver::currentDataBaseInfo(DataBaseInfo** info)
     {
-        *info = new LmdbDataBaseInfo(common::convertToString(impl_->curDb()), 0, true);
+        *info = new LmdbDataBaseInfo(common::convertToString(impl_->curDb()), true, 0);
         return common::ErrorValueSPtr();
     }
 
@@ -738,7 +738,7 @@ namespace fastonosql
                         bool isok = ar->getString(i, &key);
                         if(isok){
                             NKey k(key);
-                            NDbValue ress(k, NValue());
+                            NDbKValue ress(k, NValue());
                             res.keys_.push_back(ress);
                         }
                     }

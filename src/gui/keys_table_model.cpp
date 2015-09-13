@@ -8,7 +8,7 @@
 
 namespace fastonosql
 {
-    KeyTableItem::KeyTableItem(const NDbValue &key)
+    KeyTableItem::KeyTableItem(const NDbKValue &key)
         : key_(key)
     {
 
@@ -35,12 +35,12 @@ namespace fastonosql
         return key_.type();
     }
 
-    NDbValue KeyTableItem::dbv() const
+    NDbKValue KeyTableItem::dbv() const
     {
         return key_;
     }
 
-    void KeyTableItem::setDbv(const NDbValue& val)
+    void KeyTableItem::setDbv(const NDbKValue& val)
     {
         key_ = val;
     }
@@ -109,7 +109,7 @@ namespace fastonosql
                 bool isOk = false;
                 int32_t newValue = value.toInt(&isOk);
                 if(isOk && newValue != node->TTL()){
-                    NDbValue dbv = node->dbv();
+                    NDbKValue dbv = node->dbv();
                     CommandKeySPtr com(new CommandChangeTTL(dbv, newValue));
                     emit changedValue(com);
                 }
@@ -159,7 +159,7 @@ namespace fastonosql
         return KeyTableItem::kCountColumns;
     }
 
-    void KeysTableModel::changeValue(const NDbValue& value)
+    void KeysTableModel::changeValue(const NDbKValue& value)
     {
         const QString key = common::convertFromString<QString>(value.keyString());
         for(int i = 0; i < data_.size(); ++i) {

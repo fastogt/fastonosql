@@ -1406,7 +1406,7 @@ namespace fastonosql
     common::ErrorValueSPtr SsdbDriver::commandDeleteImpl(CommandDeleteKey* command, std::string& cmdstring) const
     {
         char patternResult[1024] = {0};
-        NDbValue key = command->key();
+        NDbKValue key = command->key();
         common::SNPrintf(patternResult, sizeof(patternResult), DELETE_KEY_PATTERN_1ARGS_S, key.keyString());
         cmdstring = patternResult;
 
@@ -1416,7 +1416,7 @@ namespace fastonosql
     common::ErrorValueSPtr SsdbDriver::commandLoadImpl(CommandLoadKey* command, std::string& cmdstring) const
     {
         char patternResult[1024] = {0};
-        NDbValue key = command->key();
+        NDbKValue key = command->key();
         common::Value::Type t = key.type();
         if(t == common::Value::TYPE_ARRAY){
             common::SNPrintf(patternResult, sizeof(patternResult), GET_KEY_LIST_PATTERN_1ARGS_S, key.keyString());
@@ -1441,7 +1441,7 @@ namespace fastonosql
     common::ErrorValueSPtr SsdbDriver::commandCreateImpl(CommandCreateKey* command, std::string& cmdstring) const
     {
         char patternResult[1024] = {0};
-        NDbValue key = command->key();
+        NDbKValue key = command->key();
         NValue val = command->value();
         common::Value* rval = val.get();
         std::string key_str = key.keyString();
@@ -1550,7 +1550,7 @@ namespace fastonosql
 
     common::ErrorValueSPtr SsdbDriver::currentDataBaseInfo(DataBaseInfo** info)
     {
-        *info = new SsdbDataBaseInfo("0", 0, true);
+        *info = new SsdbDataBaseInfo("0", true, 0);
         return common::ErrorValueSPtr();
     }
 
@@ -1709,7 +1709,7 @@ namespace fastonosql
                         bool isok = ar->getString(i, &key);
                         if(isok){
                             NKey k(key);
-                            NDbValue ress(k, NValue());
+                            NDbKValue ress(k, NValue());
                             res.keys_.push_back(ress);
                         }
                     }

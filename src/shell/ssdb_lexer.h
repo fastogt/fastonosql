@@ -21,8 +21,8 @@ namespace fastonosql
         Q_OBJECT
     public:
         explicit SsdbLexer(QObject* parent = 0);
-        virtual const char* language() const;
 
+        virtual const char* language() const;
         virtual const char* version() const;
         virtual const char* basedOn() const;
 

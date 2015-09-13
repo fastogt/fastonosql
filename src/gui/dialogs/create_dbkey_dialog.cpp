@@ -107,10 +107,10 @@ namespace fastonosql
         retranslateUi();
     }
 
-    NDbValue CreateDbKeyDialog::key() const
+    NDbKValue CreateDbKeyDialog::key() const
     {
         NKey key(common::convertToString(keyEdit_->text()));
-        return NDbValue(key, value_);
+        return NDbKValue(key, value_);
     }
 
     void CreateDbKeyDialog::accept()

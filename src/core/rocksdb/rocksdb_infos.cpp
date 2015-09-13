@@ -181,8 +181,8 @@ namespace fastonosql
         return makeRocksdbServerInfo(content);
     }
 
-    RocksdbDataBaseInfo::RocksdbDataBaseInfo(const std::string& name, size_t size, bool isDefault)
-        : DataBaseInfo(name, size, isDefault, ROCKSDB)
+    RocksdbDataBaseInfo::RocksdbDataBaseInfo(const std::string& name, bool isDefault, size_t size, const keys_cont_type &keys)
+        : DataBaseInfo(name, isDefault, ROCKSDB, size, keys)
     {
 
     }

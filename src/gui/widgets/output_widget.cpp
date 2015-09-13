@@ -114,7 +114,7 @@ namespace fastonosql
 
         CommandKeySPtr key = res.cmd_;
         if(key->type() == CommandKey::C_CREATE){
-            NDbValue dbv = key->key();
+            NDbKValue dbv = key->key();
             commonModel_->changeValue(dbv);
         }
     }

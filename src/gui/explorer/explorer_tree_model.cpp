@@ -121,9 +121,16 @@ namespace fastonosql
         return info()->isDefault();
     }
 
-    size_t ExplorerDatabaseItem::size() const
+    size_t ExplorerDatabaseItem::sizeDB() const
     {
-        return info()->size();
+        DataBaseInfoSPtr inf = info();
+        return inf->sizeDB();
+    }
+
+    size_t ExplorerDatabaseItem::loadedSize() const
+    {
+        DataBaseInfoSPtr inf = info();
+        return inf->loadedSize();
     }
 
     IServerSPtr ExplorerDatabaseItem::server() const
@@ -164,7 +171,7 @@ namespace fastonosql
         return db_->info();
     }
 
-    void ExplorerDatabaseItem::removeKey(const NDbValue& key)
+    void ExplorerDatabaseItem::removeKey(const NDbKValue& key)
     {
         IDatabaseSPtr dbs = db();
         if(dbs){
@@ -174,7 +181,7 @@ namespace fastonosql
         }
     }
 
-    void ExplorerDatabaseItem::loadValue(const NDbValue& key)
+    void ExplorerDatabaseItem::loadValue(const NDbKValue& key)
     {
         IDatabaseSPtr dbs = db();
         if(dbs){
@@ -184,7 +191,7 @@ namespace fastonosql
         }
     }
 
-    void ExplorerDatabaseItem::createKey(const NDbValue &key)
+    void ExplorerDatabaseItem::createKey(const NDbKValue &key)
     {
         IDatabaseSPtr dbs = db();
         if(dbs){
@@ -194,7 +201,7 @@ namespace fastonosql
         }
     }
 
-    ExplorerKeyItem::ExplorerKeyItem(const NDbValue& key, ExplorerDatabaseItem* parent)
+    ExplorerKeyItem::ExplorerKeyItem(const NDbKValue& key, ExplorerDatabaseItem* parent)
         : IExplorerTreeItem(parent), key_(key)
     {
     }
@@ -209,7 +216,7 @@ namespace fastonosql
         return dynamic_cast<ExplorerDatabaseItem*>(parent_);
     }
 
-    NDbValue ExplorerKeyItem::key() const
+    NDbKValue ExplorerKeyItem::key() const
     {
         return key_;
     }
@@ -292,7 +299,7 @@ namespace fastonosql
             else if(t == IExplorerTreeItem::eDatabase){
                 ExplorerDatabaseItem* db = dynamic_cast<ExplorerDatabaseItem*>(node);
                 if(db && db->isDefault()){
-                    return QString("<b>Db size:</b> %1 keys<br/>").arg(db->size());
+                    return QString("<b>Db size:</b> %1 keys<br/>").arg(db->sizeDB());
                 }
             }
         }
@@ -319,6 +326,12 @@ namespace fastonosql
             if (col == IExplorerTreeItem::eName) {
                 if(t == IExplorerTreeItem::eKey){
                     return node->name();
+                }
+                else if(t == IExplorerTreeItem::eDatabase){
+                    ExplorerDatabaseItem* db = dynamic_cast<ExplorerDatabaseItem*>(node);
+                    if(db){
+                        return QString("%1 (%2/%3)").arg(node->name()).arg(db->sizeDB()).arg(node->childrenCount());
+                    }
                 }
                 else{
                     return QString("%1 (%2)").arg(node->name()).arg(node->childrenCount());
@@ -478,19 +491,19 @@ namespace fastonosql
             if(info->isDefault()){
                 if(info->name() != db->name()){
                     info->setIsDefault(false);
-                    updateItem(createIndex(i,0,parent), createIndex(i,0,parent));
+                    updateItem(createIndex(i, 0, parent), createIndex(i, 0, parent));
                 }
             }
             else{
                 if(info->name() == db->name()){
                     info->setIsDefault(true);
-                    updateItem(createIndex(i,0,parent), createIndex(i,0,parent));
+                    updateItem(createIndex(i, 0, parent), createIndex(i, 0, parent));
                 }
             }
         }
     }
 
-    void ExplorerTreeModel::addKey(IServer* server, DataBaseInfoSPtr db, const NDbValue &dbv)
+    void ExplorerTreeModel::addKey(IServer* server, DataBaseInfoSPtr db, const NDbKValue &dbv)
     {
         ExplorerServerItem *parent = findServerItem(server);
         if(!parent){
@@ -510,7 +523,7 @@ namespace fastonosql
         }
     }
 
-    void ExplorerTreeModel::removeKey(IServer* server, DataBaseInfoSPtr db, const NDbValue &key)
+    void ExplorerTreeModel::removeKey(IServer* server, DataBaseInfoSPtr db, const NDbKValue &key)
     {
         ExplorerServerItem *parent = findServerItem(server);
         if(!parent){
@@ -597,7 +610,7 @@ namespace fastonosql
         return NULL;
     }
 
-    ExplorerKeyItem *ExplorerTreeModel::findKeyItem(ExplorerDatabaseItem* db, const NDbValue &key) const
+    ExplorerKeyItem *ExplorerTreeModel::findKeyItem(ExplorerDatabaseItem* db, const NDbKValue &key) const
     {
         if(db){
             for(int i = 0; i < db->childrenCount() ; ++i){

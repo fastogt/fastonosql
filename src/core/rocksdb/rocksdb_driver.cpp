@@ -430,7 +430,7 @@ namespace fastonosql
     common::ErrorValueSPtr RocksdbDriver::commandDeleteImpl(CommandDeleteKey* command, std::string& cmdstring) const
     {
         char patternResult[1024] = {0};
-        NDbValue key = command->key();
+        NDbKValue key = command->key();
         common::SNPrintf(patternResult, sizeof(patternResult), DELETE_KEY_PATTERN_1ARGS_S, key.keyString());
         cmdstring = patternResult;
 
@@ -440,7 +440,7 @@ namespace fastonosql
     common::ErrorValueSPtr RocksdbDriver::commandLoadImpl(CommandLoadKey* command, std::string& cmdstring) const
     {
         char patternResult[1024] = {0};
-        NDbValue key = command->key();
+        NDbKValue key = command->key();
         common::SNPrintf(patternResult, sizeof(patternResult), GET_KEY_PATTERN_1ARGS_S, key.keyString());
         cmdstring = patternResult;
 
@@ -450,7 +450,7 @@ namespace fastonosql
     common::ErrorValueSPtr RocksdbDriver::commandCreateImpl(CommandCreateKey* command, std::string& cmdstring) const
     {
         char patternResult[1024] = {0};
-        NDbValue key = command->key();
+        NDbKValue key = command->key();
         NValue val = command->value();
         common::Value* rval = val.get();
         std::string key_str = key.keyString();
@@ -547,7 +547,7 @@ namespace fastonosql
     common::ErrorValueSPtr RocksdbDriver::currentDataBaseInfo(DataBaseInfo** info)
     {
         std::string name = impl_->currentDbName();
-        *info = new RocksdbDataBaseInfo(name, 0, true);
+        *info = new RocksdbDataBaseInfo(name, true, 0);
         return common::ErrorValueSPtr();
     }
 
@@ -705,7 +705,7 @@ namespace fastonosql
                         bool isok = ar->getString(i, &key);
                         if(isok){
                             NKey k(key);
-                            NDbValue ress(k, NValue());
+                            NDbKValue ress(k, NValue());
                             res.keys_.push_back(ress);
                         }
                     }

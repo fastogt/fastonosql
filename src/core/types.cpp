@@ -35,23 +35,23 @@ namespace fastonosql
     {
     }
 
-    NDbValue::NDbValue(const NKey& key, NValue value)
+    NDbKValue::NDbKValue(const NKey& key, NValue value)
         : key_(key), value_(value)
     {
 
     }
 
-    NKey NDbValue::key() const
+    NKey NDbKValue::key() const
     {
         return key_;
     }
 
-    NValue NDbValue::value() const
+    NValue NDbKValue::value() const
     {
         return value_;
     }
 
-    common::Value::Type NDbValue::type() const
+    common::Value::Type NDbKValue::type() const
     {
         if(!value_){
             return common::Value::TYPE_NULL;
@@ -60,17 +60,17 @@ namespace fastonosql
         return value_->getType();
     }
 
-    void NDbValue::setTTL(int32_t ttl)
+    void NDbKValue::setTTL(int32_t ttl)
     {
         key_.ttl_sec_ = ttl;
     }
 
-    void NDbValue::setValue(NValue value)
+    void NDbKValue::setValue(NValue value)
     {
         value_ = value;
     }
 
-    std::string NDbValue::keyString() const
+    std::string NDbKValue::keyString() const
     {
         return key_.key_;
     }
@@ -313,8 +313,8 @@ namespace fastonosql
         return inf;
     }
 
-    DataBaseInfo::DataBaseInfo(const std::string& name, size_t size, bool isDefault, connectionTypes type)
-        : name_(name), size_(size), isDefault_(isDefault), type_(type)
+    DataBaseInfo::DataBaseInfo(const std::string& name, bool isDefault, connectionTypes type, size_t size, const keys_cont_type &keys)
+        : name_(name), isDefault_(isDefault), type_(type), size_(size), keys_(keys)
     {
 
     }
@@ -334,14 +334,14 @@ namespace fastonosql
         return name_;
     }
 
-    void DataBaseInfo::setSize(size_t sz)
-    {
-        size_ = sz;
-    }
-
-    size_t DataBaseInfo::size() const
+    size_t DataBaseInfo::sizeDB() const
     {
         return size_;
+    }
+
+    size_t DataBaseInfo::loadedSize() const
+    {
+        return keys_.size();
     }
 
     bool DataBaseInfo::isDefault() const
@@ -364,7 +364,7 @@ namespace fastonosql
         return keys_;
     }
 
-    CommandKey::CommandKey(const NDbValue &key, cmdtype type)
+    CommandKey::CommandKey(const NDbKValue &key, cmdtype type)
         : type_(type), key_(key)
     {
 
@@ -375,7 +375,7 @@ namespace fastonosql
         return type_;
     }
 
-    NDbValue CommandKey::key() const
+    NDbKValue CommandKey::key() const
     {
         return key_;
     }
@@ -385,25 +385,25 @@ namespace fastonosql
 
     }
 
-    CommandDeleteKey::CommandDeleteKey(const NDbValue &key)
+    CommandDeleteKey::CommandDeleteKey(const NDbKValue &key)
         : CommandKey(key, C_DELETE)
     {
 
     }
 
-    CommandLoadKey::CommandLoadKey(const NDbValue &key)
+    CommandLoadKey::CommandLoadKey(const NDbKValue &key)
         : CommandKey(key, C_LOAD)
     {
 
     }
 
-    CommandCreateKey::CommandCreateKey(const NDbValue& dbv)
+    CommandCreateKey::CommandCreateKey(const NDbKValue& dbv)
         : CommandKey(dbv, C_CREATE)
     {
 
     }
 
-    CommandChangeTTL::CommandChangeTTL(const NDbValue& dbv, int32_t newTTL)
+    CommandChangeTTL::CommandChangeTTL(const NDbKValue& dbv, int32_t newTTL)
         : CommandKey(dbv, C_CHANGE_TTL), new_ttl_(newTTL)
     {
 
@@ -414,9 +414,9 @@ namespace fastonosql
         return new_ttl_;
     }
 
-    NDbValue CommandChangeTTL::newKey() const
+    NDbKValue CommandChangeTTL::newKey() const
     {
-        NDbValue nk = key();
+        NDbKValue nk = key();
         nk.setTTL(new_ttl_);
         return nk;
     }

@@ -139,7 +139,7 @@ namespace fastonosql
         QHBoxLayout* pagingLayout = new QHBoxLayout;
         pagingLayout->addWidget(leftButtonList_);
         DataBaseInfoSPtr inf = db_->info();
-        size_t sizeKey = inf->size();
+        size_t sizeKey = inf->sizeDB();
         currentKey_ = new QSpinBox;
         currentKey_->setEnabled(false);
         currentKey_->setValue(0);
@@ -184,7 +184,7 @@ namespace fastonosql
 
         size_t size = keys.size();
         for(size_t i = 0; i < size; ++i){
-            NDbValue key = keys[i];
+            NDbKValue key = keys[i];
             keysModel_->insertItem(new KeyTableItem(key));
         }
 
@@ -229,7 +229,7 @@ namespace fastonosql
         if(key->type() == CommandKey::C_CHANGE_TTL){
             CommandChangeTTL * cttl = dynamic_cast<CommandChangeTTL*>(key.get());
             if(cttl){
-                NDbValue dbv = cttl->newKey();
+                NDbKValue dbv = cttl->newKey();
                 keysModel_->changeValue(dbv);
             }
         }

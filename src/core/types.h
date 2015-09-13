@@ -45,10 +45,10 @@ namespace fastonosql
 
     typedef common::ValueSPtr NValue;
 
-    class NDbValue
+    class NDbKValue
     {
     public:
-        NDbValue(const NKey& key, NValue value);
+        NDbKValue(const NKey& key, NValue value);
 
         NKey key() const;
         NValue value() const;
@@ -105,7 +105,7 @@ namespace fastonosql
         virtual uint32_t version() const = 0;
         virtual common::Value* valueByIndexes(unsigned char property, unsigned char field) const = 0;        
 
-    protected:
+    private:
         DISALLOW_COPY_AND_ASSIGN(ServerInfo);
 
     private:
@@ -163,11 +163,11 @@ namespace fastonosql
     class DataBaseInfo
     {
     public:
-        typedef std::vector<NDbValue> keys_cont_type;
+        typedef std::vector<NDbKValue> keys_cont_type;
         connectionTypes type() const;
         std::string name() const;
-        void setSize(size_t sz);
-        size_t size() const;
+        size_t sizeDB() const;
+        size_t loadedSize() const;
 
         bool isDefault() const;
         void setIsDefault(bool isDef);
@@ -179,28 +179,23 @@ namespace fastonosql
         void setKeys(const keys_cont_type& keys);
 
     protected:
-        DataBaseInfo(const std::string& name, size_t size, bool isDefault, connectionTypes type);
+        DataBaseInfo(const std::string& name, bool isDefault, connectionTypes type, size_t size, const keys_cont_type& keys);
+        //DISALLOW_COPY_AND_ASSIGN(DataBaseInfo);
 
     private:
-        std::string name_;
-        size_t size_;
+        const std::string name_;
         bool isDefault_;
+        size_t size_;
         keys_cont_type keys_;
 
         const connectionTypes type_;
     };
-
-    inline bool operator == (const DataBaseInfo& lhs, const DataBaseInfo& rhs)
-    {
-        return lhs.name() == rhs.name() && lhs.size() == rhs.size() && lhs.isDefault() == rhs.isDefault() && lhs.type() == rhs.type();
-    }
 
     class CommandKey
     {
     public:
         enum cmdtype
         {
-            C_NONE,
             C_DELETE,
             C_LOAD,
             C_CREATE,
@@ -208,36 +203,36 @@ namespace fastonosql
         };
 
         cmdtype type() const;
-        NDbValue key() const;
+        NDbKValue key() const;
 
         virtual ~CommandKey();
 
     protected:
-        CommandKey(const NDbValue& key, cmdtype type);
+        CommandKey(const NDbKValue& key, cmdtype type);
 
         const cmdtype type_;
-        const NDbValue key_;
+        const NDbKValue key_;
     };
 
     class CommandDeleteKey
             : public CommandKey
     {
     public:
-        explicit CommandDeleteKey(const NDbValue& key);
+        explicit CommandDeleteKey(const NDbKValue& key);
     };
 
     class CommandLoadKey
             : public CommandKey
     {
     public:
-        explicit CommandLoadKey(const NDbValue& key);
+        explicit CommandLoadKey(const NDbKValue& key);
     };
 
     class CommandCreateKey
             : public CommandKey
     {
     public:
-        explicit CommandCreateKey(const NDbValue& dbv);
+        explicit CommandCreateKey(const NDbKValue& dbv);
         NValue value() const;
     };
 
@@ -245,9 +240,9 @@ namespace fastonosql
             : public CommandKey
     {
     public:
-        CommandChangeTTL(const NDbValue& dbv, int32_t newTTL);
+        CommandChangeTTL(const NDbKValue& dbv, int32_t newTTL);
         int32_t newTTL() const;
-        NDbValue newKey() const;
+        NDbKValue newKey() const;
 
     private:
         int32_t new_ttl_;

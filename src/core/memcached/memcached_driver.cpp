@@ -633,7 +633,7 @@ namespace fastonosql
 
     common::ErrorValueSPtr MemcachedDriver::currentDataBaseInfo(DataBaseInfo** info)
     {
-        *info = new MemcachedDataBaseInfo("0", 0, true);
+        *info = new MemcachedDataBaseInfo("0", true, 0);
         return common::ErrorValueSPtr();
     }
 
@@ -790,7 +790,7 @@ namespace fastonosql
                         bool isok = ar->getString(i, &key);
                         if(isok){
                             NKey k(key);
-                            NDbValue ress(k, NValue());
+                            NDbKValue ress(k, NValue());
                             res.keys_.push_back(ress);
                         }
                     }
@@ -837,7 +837,7 @@ namespace fastonosql
     common::ErrorValueSPtr MemcachedDriver::commandDeleteImpl(CommandDeleteKey* command, std::string& cmdstring) const
     {
         char patternResult[1024] = {0};
-        NDbValue key = command->key();
+        NDbKValue key = command->key();
         common::SNPrintf(patternResult, sizeof(patternResult), DELETE_KEY_PATTERN_1ARGS_S, key.keyString());
         cmdstring = patternResult;
         return common::ErrorValueSPtr();
@@ -846,7 +846,7 @@ namespace fastonosql
     common::ErrorValueSPtr MemcachedDriver::commandLoadImpl(CommandLoadKey* command, std::string& cmdstring) const
     {
         char patternResult[1024] = {0};
-        NDbValue key = command->key();
+        NDbKValue key = command->key();
         common::SNPrintf(patternResult, sizeof(patternResult), GET_KEY_PATTERN_1ARGS_S, key.keyString());
         cmdstring = patternResult;
         return common::ErrorValueSPtr();
@@ -855,7 +855,7 @@ namespace fastonosql
     common::ErrorValueSPtr MemcachedDriver::commandCreateImpl(CommandCreateKey* command, std::string& cmdstring) const
     {
         char patternResult[1024] = {0};
-        NDbValue key = command->key();
+        NDbKValue key = command->key();
         NValue val = command->value();
         common::Value* rval = val.get();
         std::string key_str = key.keyString();

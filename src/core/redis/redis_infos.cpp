@@ -1113,10 +1113,9 @@ namespace fastonosql
         return common::ErrorValueSPtr();
     }
 
-    RedisDataBaseInfo::RedisDataBaseInfo(const std::string& name, size_t size, bool isDefault, const keys_cont_type& keys)
-        : DataBaseInfo(name, size, isDefault, REDIS)
+    RedisDataBaseInfo::RedisDataBaseInfo(const std::string& name, bool isDefault, size_t size, const keys_cont_type& keys)
+        : DataBaseInfo(name, isDefault, REDIS, size, keys)
     {
-        setKeys(keys);
     }
 
     DataBaseInfo* RedisDataBaseInfo::clone() const

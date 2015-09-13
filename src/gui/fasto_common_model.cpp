@@ -79,7 +79,7 @@ namespace fastonosql
                     // node->type() TODO: create according type
                     common::ValueSPtr vs = common::make_value(common::Value::createStringValue(value));
                     NValue val(vs);
-                    NDbValue dbv(NKey(key), val);
+                    NDbKValue dbv(NKey(key), val);
                     CommandKeySPtr com(new CommandCreateKey(dbv));
                     emit changedValue(com);
                 }
@@ -129,7 +129,7 @@ namespace fastonosql
         return FastoCommonItem::eCountColumns;
     }
 
-    void FastoCommonModel::changeValue(const NDbValue& value)
+    void FastoCommonModel::changeValue(const NDbKValue& value)
     {
         QModelIndex ind = index(0, 0);
         if(!ind.isValid()){

@@ -181,8 +181,8 @@ namespace fastonosql
         return makeUnqliteServerInfo(content);
     }
 
-    UnqliteDataBaseInfo::UnqliteDataBaseInfo(const std::string& name, size_t size, bool isDefault)
-        : DataBaseInfo(name, size, isDefault, UNQLITE)
+    UnqliteDataBaseInfo::UnqliteDataBaseInfo(const std::string& name, bool isDefault, size_t size, const keys_cont_type &keys)
+        : DataBaseInfo(name, isDefault, UNQLITE, size, keys)
     {
 
     }

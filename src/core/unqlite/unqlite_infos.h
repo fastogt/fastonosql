@@ -47,7 +47,7 @@ namespace fastonosql
             : public DataBaseInfo
     {
     public:
-        UnqliteDataBaseInfo(const std::string& name, size_t size, bool isDefault);
+        UnqliteDataBaseInfo(const std::string& name, bool isDefault, size_t size, const keys_cont_type& keys = keys_cont_type());
         virtual DataBaseInfo* clone() const;
     };
 

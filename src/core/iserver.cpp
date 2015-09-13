@@ -147,9 +147,19 @@ namespace fastonosql
 
     IDatabaseSPtr IServer::findDatabaseByInfo(DataBaseInfoSPtr inf) const
     {
+        DCHECK(inf);
+        if(!inf){
+            return IDatabaseSPtr();
+        }
+
+        DCHECK(type() == inf->type());
+        if(type() != inf->type()){
+            return IDatabaseSPtr();
+        }
+
         for(int i = 0; i < databases_.size(); ++i){
             DataBaseInfoSPtr db = databases_[i]->info();
-            if(*db == *inf){
+            if(db->name() == inf->name()){
                 return databases_[i];
             }
         }
@@ -547,7 +557,6 @@ namespace fastonosql
                     datab = createDatabase(db);
                     databases_.push_back(datab);
                 }
-                DCHECK(*db == *datab->info());
                 tmp.push_back(datab->info());
             }
             v.databases_ = tmp;
