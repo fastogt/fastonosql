@@ -14,8 +14,8 @@ extern "C" {
 #include "core/unqlite/unqlite_infos.h"
 
 #define INFO_REQUEST "INFO"
-#define GET_KEY_PATTERN_1ARGS_S "FETCH %s"
-#define SET_KEY_PATTERN_2ARGS_SS "STORE %s %s"
+#define GET_KEY_PATTERN_1ARGS_S "GET %s"
+#define SET_KEY_PATTERN_2ARGS_SS "PUT %s %s"
 
 #define GET_KEYS_PATTERN_1ARGS_I "KEYS a z %d"
 #define DELETE_KEY_PATTERN_1ARGS_S "DEL %s"
@@ -171,6 +171,33 @@ namespace fastonosql
             return common::ErrorValueSPtr();
         }
 
+        common::ErrorValueSPtr dbsize(size_t& size) WARN_UNUSED_RESULT
+        {
+            /* Allocate a new cursor instance */
+            unqlite_kv_cursor *pCur; /* Cursor handle */
+            int rc = unqlite_kv_cursor_init(unqlite_, &pCur);
+            if(rc != UNQLITE_OK){
+                char buff[1024] = {0};
+                common::SNPrintf(buff, sizeof(buff), "dbsize function error: %s", getUnqliteError(unqlite_));
+                return common::make_error_value(buff, common::ErrorValue::E_ERROR);
+            }
+            /* Point to the first record */
+            unqlite_kv_cursor_first_entry(pCur);
+
+            size_t sz = 0;
+            /* Iterate over the entries */
+            while(unqlite_kv_cursor_valid_entry(pCur)){
+                sz++;
+                /* Point to the next entry */
+                unqlite_kv_cursor_next_entry(pCur);
+            }
+            /* Finally, Release our cursor */
+            unqlite_kv_cursor_release(unqlite_, pCur);
+
+            size = sz;
+            return common::ErrorValueSPtr();
+        }
+
         ~pimpl()
         {
             clear();
@@ -194,13 +221,13 @@ namespace fastonosql
                 }
                 return er;
             }
-            else if(strcasecmp(argv[0], "fetch") == 0){
+            else if(strcasecmp(argv[0], "get") == 0){
                 if(argc != 2){
                     return common::make_error_value("Invalid get input argument", common::ErrorValue::E_ERROR);
                 }
 
                 std::string ret;
-                common::ErrorValueSPtr er = fetch(argv[1], &ret);
+                common::ErrorValueSPtr er = get(argv[1], &ret);
                 if(!er){
                     common::StringValue *val = common::Value::createStringValue(ret);
                     FastoObject* child = new FastoObject(out, val, config_.mb_delim_);
@@ -208,12 +235,26 @@ namespace fastonosql
                 }
                 return er;
             }
-            else if(strcasecmp(argv[0], "store") == 0){
+            else if(strcasecmp(argv[0], "dbsize") == 0){
+                if(argc != 1){
+                    return common::make_error_value("Invalid dbsize input argument", common::ErrorValue::E_ERROR);
+                }
+
+                size_t ret = 0;
+                common::ErrorValueSPtr er = dbsize(ret);
+                if(!er){
+                    common::FundamentalValue *val = common::Value::createUIntegerValue(ret);
+                    FastoObject* child = new FastoObject(out, val, config_.mb_delim_);
+                    out->addChildren(child);
+                }
+                return er;
+            }
+            else if(strcasecmp(argv[0], "put") == 0){
                 if(argc != 3){
                     return common::make_error_value("Invalid put input argument", common::ErrorValue::E_ERROR);
                 }
 
-                common::ErrorValueSPtr er = store(argv[1], argv[2]);
+                common::ErrorValueSPtr er = put(argv[1], argv[2]);
                 if(!er){
                     common::StringValue *val = common::Value::createStringValue("STORED");
                     FastoObject* child = new FastoObject(out, val, config_.mb_delim_);
@@ -260,24 +301,24 @@ namespace fastonosql
         }
 
     private:
-        common::ErrorValueSPtr fetch(const std::string& key, std::string* ret_val)
+        common::ErrorValueSPtr get(const std::string& key, std::string* ret_val)
         {
             int rc = unqlite_kv_fetch_callback(unqlite_, key.c_str(), key.size(), getDataCallback, ret_val);
             if (rc != UNQLITE_OK){
                 char buff[1024] = {0};
-                common::SNPrintf(buff, sizeof(buff), "fetch function error: %s", getUnqliteError(unqlite_));
+                common::SNPrintf(buff, sizeof(buff), "get function error: %s", getUnqliteError(unqlite_));
                 return common::make_error_value(buff, common::ErrorValue::E_ERROR);
             }
 
             return common::ErrorValueSPtr();
         }
 
-        common::ErrorValueSPtr store(const std::string& key, const std::string& value)
+        common::ErrorValueSPtr put(const std::string& key, const std::string& value)
         {
             int rc = unqlite_kv_store(unqlite_, key.c_str(), key.size(), value.c_str(), value.length());
             if (rc != UNQLITE_OK){
                 char buff[1024] = {0};
-                common::SNPrintf(buff, sizeof(buff), "store function error: %s", getUnqliteError(unqlite_));
+                common::SNPrintf(buff, sizeof(buff), "put function error: %s", getUnqliteError(unqlite_));
                 return common::make_error_value(buff, common::ErrorValue::E_ERROR);
             }
 
@@ -481,7 +522,9 @@ namespace fastonosql
 
     common::ErrorValueSPtr UnqliteDriver::currentDataBaseInfo(DataBaseInfo** info)
     {
-        *info = new UnqliteDataBaseInfo("0", true, 0);
+        size_t size = 0;
+        impl_->dbsize(size);
+        *info = new UnqliteDataBaseInfo("0", true, size);
         return common::ErrorValueSPtr();
     }
 

@@ -32,9 +32,6 @@ namespace fastonosql
                     "The num argument could be a negative integer.\n"
                     "The old number is first converted to an integer before increment, assuming it was stored as literal integer.",
                     UNDEFINED_SINCE, UNDEFINED_EXAMPLE_STR, 1, 1),
-        CommandInfo("INTERRUPT", "-",
-                    "Command execution interrupt",
-                    UNDEFINED_SINCE, UNDEFINED_EXAMPLE_STR, 0, 0),
         CommandInfo("KEYS", "<key_start> <key_end> <limit>",
                     "List keys in range (key_start, key_end].",
                     UNDEFINED_SINCE, UNDEFINED_EXAMPLE_STR, 3, 0),
@@ -157,7 +154,15 @@ namespace fastonosql
                     UNDEFINED_SINCE, UNDEFINED_EXAMPLE_STR, 3, 0),
         CommandInfo("QCLEAR", "<name>",
                     "Clear the queue.",
-                    UNDEFINED_SINCE, UNDEFINED_EXAMPLE_STR, 1, 0)
+                    UNDEFINED_SINCE, UNDEFINED_EXAMPLE_STR, 1, 0),
+        //======= extended =======//
+        CommandInfo("INTERRUPT", "-",
+                    "Command execution interrupt",
+                    UNDEFINED_SINCE, UNDEFINED_EXAMPLE_STR, 0, 0),
+        CommandInfo("DBSIZE", "-",
+                    "Return the number of keys in the selected database",
+                    UNDEFINED_SINCE, UNDEFINED_EXAMPLE_STR, 0, 0)
+        //======= extended =======//
     };
 
     common::ErrorValueSPtr testConnection(SsdbConnectionSettings* settings);

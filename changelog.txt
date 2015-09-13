@@ -6,6 +6,9 @@
 - UnQLite database support http://unqlite.org/
 - Lmdb database support http://symas.com/mdb/
 - Bugs fixes
+- [SSDB] dbsize extend command
+- [LevelDB] dbsize extend command
+- [RocksDB] dbsize extend command
 
 0.3.5 / September 5, 2015
 [Alexandr Topilski]

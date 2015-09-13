@@ -163,6 +163,26 @@ namespace fastonosql
             return common::ErrorValueSPtr();
         }
 
+        common::ErrorValueSPtr dbsize(size_t& size) WARN_UNUSED_RESULT
+        {
+            rocksdb::ReadOptions ro;
+            rocksdb::Iterator* it = rocksdb_->NewIterator(ro);
+            size_t sz = 0;
+            for (it->SeekToFirst(); it->Valid(); it->Next()) {
+                sz++;
+            }
+
+            rocksdb::Status st = it->status();
+            delete it;
+
+            if (!st.ok()){
+                char buff[1024] = {0};
+                common::SNPrintf(buff, sizeof(buff), "Couldn't determine DBSIZE error: %s", st.ToString());
+                return common::make_error_value(buff, common::ErrorValue::E_ERROR);
+            }
+            size = sz;
+            return common::ErrorValueSPtr();
+        }
 
         ~pimpl()
         {
@@ -206,6 +226,20 @@ namespace fastonosql
                 common::ErrorValueSPtr er = get(argv[1], &ret);
                 if(!er){
                     common::StringValue *val = common::Value::createStringValue(ret);
+                    FastoObject* child = new FastoObject(out, val, config_.mb_delim_);
+                    out->addChildren(child);
+                }
+                return er;
+            }
+            else if(strcasecmp(argv[0], "dbsize") == 0){
+                if(argc != 1){
+                    return common::make_error_value("Invalid dbsize input argument", common::ErrorValue::E_ERROR);
+                }
+
+                size_t ret = 0;
+                common::ErrorValueSPtr er = dbsize(ret);
+                if(!er){
+                    common::FundamentalValue *val = common::Value::createUIntegerValue(ret);
                     FastoObject* child = new FastoObject(out, val, config_.mb_delim_);
                     out->addChildren(child);
                 }
@@ -547,7 +581,9 @@ namespace fastonosql
     common::ErrorValueSPtr RocksdbDriver::currentDataBaseInfo(DataBaseInfo** info)
     {
         std::string name = impl_->currentDbName();
-        *info = new RocksdbDataBaseInfo(name, true, 0);
+        size_t size = 0;
+        impl_->dbsize(size);
+        *info = new RocksdbDataBaseInfo(name, true, size);
         return common::ErrorValueSPtr();
     }
 

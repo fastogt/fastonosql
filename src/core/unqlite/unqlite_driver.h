@@ -8,10 +8,10 @@ namespace fastonosql
 {
     static const CommandInfo unqliteCommands[] =
     {
-        CommandInfo("STORE", "<key> <value>",
+        CommandInfo("PUT", "<key> <value>",
                     "Set the value of a key.",
                     UNDEFINED_SINCE, UNDEFINED_EXAMPLE_STR, 2, 0),
-        CommandInfo("FETCH", "<key>",
+        CommandInfo("GET", "<key>",
                     "Get the value of a key.",
                     UNDEFINED_SINCE, UNDEFINED_EXAMPLE_STR, 1, 0),
         CommandInfo("DEL", "<key>",
@@ -23,12 +23,17 @@ namespace fastonosql
         CommandInfo("INFO", "<args>",
                     "These command return database information.",
                     UNDEFINED_SINCE, UNDEFINED_EXAMPLE_STR, 1, 0),
+        CommandInfo("QUIT", "-",
+                    "Close the connection.",
+                    UNDEFINED_SINCE, UNDEFINED_EXAMPLE_STR, 0, 0),
+        //======= extended =======//
         CommandInfo("INTERRUPT", "-",
                     "Command execution interrupt",
                     UNDEFINED_SINCE, UNDEFINED_EXAMPLE_STR, 0, 0),
-        CommandInfo("QUIT", "-",
-                    "Close the connection.",
+        CommandInfo("DBSIZE", "-",
+                    "Return the number of keys in the selected database",
                     UNDEFINED_SINCE, UNDEFINED_EXAMPLE_STR, 0, 0)
+        //======= extended =======//
     };
 
     common::ErrorValueSPtr testConnection(UnqliteConnectionSettings* settings);

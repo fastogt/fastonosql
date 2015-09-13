@@ -225,6 +225,36 @@ namespace fastonosql
             return common::ErrorValueSPtr();
         }
 
+        common::ErrorValueSPtr dbsize(size_t& size) WARN_UNUSED_RESULT
+        {
+            MDB_cursor *cursor;
+            MDB_txn *txn = NULL;
+            int rc = mdb_txn_begin(lmdb_->env, NULL, MDB_RDONLY, &txn);
+            if(rc == LMDB_OK){
+                rc = mdb_cursor_open(txn, lmdb_->dbir, &cursor);
+            }
+
+            if(rc != LMDB_OK){
+                mdb_txn_abort(txn);
+                char buff[1024] = {0};
+                common::SNPrintf(buff, sizeof(buff), "dbsize function error: %s", mdb_strerror(rc));
+                return common::make_error_value(buff, common::ErrorValue::E_ERROR);
+            }
+
+            MDB_val key;
+            MDB_val data;
+            size_t sz = 0;
+            while ((rc = mdb_cursor_get(cursor, &key, &data, MDB_NEXT)) == 0) {
+                sz++;
+            }
+            mdb_cursor_close(cursor);
+            mdb_txn_abort(txn);
+
+            size = sz;
+
+            return common::ErrorValueSPtr();
+        }
+
         ~pimpl()
         {
             clear();
@@ -257,6 +287,20 @@ namespace fastonosql
                 common::ErrorValueSPtr er = get(argv[1], &ret);
                 if(!er){
                     common::StringValue *val = common::Value::createStringValue(ret);
+                    FastoObject* child = new FastoObject(out, val, config_.mb_delim_);
+                    out->addChildren(child);
+                }
+                return er;
+            }
+            else if(strcasecmp(argv[0], "dbsize") == 0){
+                if(argc != 1){
+                    return common::make_error_value("Invalid dbsize input argument", common::ErrorValue::E_ERROR);
+                }
+
+                size_t ret = 0;
+                common::ErrorValueSPtr er = dbsize(ret);
+                if(!er){
+                    common::FundamentalValue *val = common::Value::createUIntegerValue(ret);
                     FastoObject* child = new FastoObject(out, val, config_.mb_delim_);
                     out->addChildren(child);
                 }
@@ -580,7 +624,9 @@ namespace fastonosql
 
     common::ErrorValueSPtr LmdbDriver::currentDataBaseInfo(DataBaseInfo** info)
     {
-        *info = new LmdbDataBaseInfo(common::convertToString(impl_->curDb()), true, 0);
+        size_t size = 0;
+        impl_->dbsize(size);
+        *info = new LmdbDataBaseInfo(common::convertToString(impl_->curDb()), true, size);
         return common::ErrorValueSPtr();
     }
 

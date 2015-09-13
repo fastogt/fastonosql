@@ -123,6 +123,27 @@ namespace fastonosql
             return common::ErrorValueSPtr();
         }
 
+        common::ErrorValueSPtr dbsize(size_t& size) WARN_UNUSED_RESULT
+        {
+            leveldb::ReadOptions ro;
+            leveldb::Iterator* it = leveldb_->NewIterator(ro);
+            size_t sz = 0;
+            for (it->SeekToFirst(); it->Valid(); it->Next()) {
+                sz++;
+            }
+
+            leveldb::Status st = it->status();
+            delete it;
+
+            if (!st.ok()){
+                char buff[1024] = {0};
+                common::SNPrintf(buff, sizeof(buff), "Couldn't determine DBSIZE error: %s", st.ToString());
+                return common::make_error_value(buff, common::ErrorValue::E_ERROR);
+            }
+            size = sz;
+            return common::ErrorValueSPtr();
+        }
+
         common::ErrorValueSPtr info(const char* args, LeveldbServerInfo::Stats& statsout)
         {
             //sstables
@@ -212,6 +233,20 @@ namespace fastonosql
                 common::ErrorValueSPtr er = put(argv[1], argv[2]);
                 if(!er){
                     common::StringValue *val = common::Value::createStringValue("STORED");
+                    FastoObject* child = new FastoObject(out, val, config_.mb_delim_);
+                    out->addChildren(child);
+                }
+                return er;
+            }
+            else if(strcasecmp(argv[0], "dbsize") == 0){
+                if(argc != 1){
+                    return common::make_error_value("Invalid dbsize input argument", common::ErrorValue::E_ERROR);
+                }
+
+                size_t ret = 0;
+                common::ErrorValueSPtr er = dbsize(ret);
+                if(!er){
+                    common::FundamentalValue *val = common::Value::createUIntegerValue(ret);
                     FastoObject* child = new FastoObject(out, val, config_.mb_delim_);
                     out->addChildren(child);
                 }
@@ -478,7 +513,9 @@ namespace fastonosql
 
     common::ErrorValueSPtr LeveldbDriver::currentDataBaseInfo(DataBaseInfo** info)
     {
-        *info = new LeveldbDataBaseInfo("0", true, 0);
+        size_t size = 0;
+        impl_->dbsize(size);
+        *info = new LeveldbDataBaseInfo("0", true, size);
         return common::ErrorValueSPtr();
     }
 

@@ -56,7 +56,6 @@ extern "C" {
 #define FIND_BIG_KEYS_REQUEST "FIND_BIG_KEYS"
 #define LATENCY_REQUEST "LATENCY"
 #define GET_DATABASES "CONFIG GET databases"
-#define GET_DATABASES_KEYS_INFO "INFO keyspace"
 #define SET_DEFAULT_DATABASE "SELECT "
 #define DELETE_KEY_PATTERN_1ARGS_S "DEL %s"
 
@@ -698,7 +697,7 @@ namespace fastonosql
             return reply;
         }
 
-        common::ErrorValueSPtr getDbSize(long long& size) WARN_UNUSED_RESULT
+        common::ErrorValueSPtr dbsize(long long& size) WARN_UNUSED_RESULT
         {
             redisReply *reply = (redisReply *)redisCommand(context_, "DBSIZE");
 
@@ -832,7 +831,7 @@ namespace fastonosql
             int type, *types=NULL;
 
             /* Total keys pre scanning */
-            common::ErrorValueSPtr er = getDbSize(total_keys);
+            common::ErrorValueSPtr er = dbsize(total_keys);
             if(er){
                 return er;
             }
@@ -1217,8 +1216,7 @@ namespace fastonosql
             redisReply *reply = static_cast<redisReply*>(redisCommand(context_, "SELECT %d", num));
             if (reply != NULL) {
                 long long sz = 0;
-                getDbSize(sz);
-                #pragma message("remark")
+                dbsize(sz);
                 *info = new RedisDataBaseInfo(common::convertToString(num), true, sz);
                 freeReplyObject(reply);
                 return common::ErrorValueSPtr();
@@ -2312,11 +2310,6 @@ namespace fastonosql
                     else{
                         res.databases_.push_back(cdbInf);
                     }
-
-                    /*long long sz = 0;
-                    er = impl_->getDbSize(sz);
-                    cdbInf->setSize(sz);*/
-                    #pragma message("remark")
                 }
             }
     done:
@@ -2446,7 +2439,7 @@ namespace fastonosql
             }
             else{
                 long long sz = 0;
-                er = impl_->getDbSize(sz);
+                er = impl_->dbsize(sz);
                 setCurrentDatabaseInfo(new RedisDataBaseInfo(res.inf_->name(), true, sz));
             }
         notifyProgress(sender, 75);

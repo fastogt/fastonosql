@@ -149,6 +149,20 @@ namespace fastonosql
             return common::ErrorValueSPtr();
         }
 
+        common::ErrorValueSPtr dbsize(size_t& size) WARN_UNUSED_RESULT
+        {
+            int64_t sz = 0;
+            ssdb::Status st = ssdb_->dbsize(&sz);
+            if (st.error()){
+                char buff[1024] = {0};
+                common::SNPrintf(buff, sizeof(buff), "Couldn't determine DBSIZE error: %s", st.code());
+                return common::make_error_value(buff, common::ErrorValue::E_ERROR);
+            }
+
+            size = sz;
+            return common::ErrorValueSPtr();
+        }
+
         ~pimpl()
         {
             clear();
@@ -186,9 +200,23 @@ namespace fastonosql
                 }
                 return er;
             }
+            else if(strcasecmp(argv[0], "dbsize") == 0){
+                if(argc != 1){
+                    return common::make_error_value("Invalid dbsize input argument", common::ErrorValue::E_ERROR);
+                }
+
+                size_t ret = 0;
+                common::ErrorValueSPtr er = dbsize(ret);
+                if(!er){
+                    common::FundamentalValue *val = common::Value::createUIntegerValue(ret);
+                    FastoObject* child = new FastoObject(out, val, config_.mb_delim_);
+                    out->addChildren(child);
+                }
+                return er;
+            }
             else if(strcasecmp(argv[0], "auth") == 0){
                 if(argc != 2){
-                    return common::make_error_value("Invalid set input argument", common::ErrorValue::E_ERROR);
+                    return common::make_error_value("Invalid auth input argument", common::ErrorValue::E_ERROR);
                 }
 
                 common::ErrorValueSPtr er = auth(argv[1]);
@@ -1550,7 +1578,10 @@ namespace fastonosql
 
     common::ErrorValueSPtr SsdbDriver::currentDataBaseInfo(DataBaseInfo** info)
     {
-        *info = new SsdbDataBaseInfo("0", true, 0);
+        size_t dbsize = 0;
+        impl_->dbsize(dbsize);
+        SsdbDataBaseInfo *sinfo = new SsdbDataBaseInfo("0", true, dbsize);
+        *info = sinfo;
         return common::ErrorValueSPtr();
     }
 
