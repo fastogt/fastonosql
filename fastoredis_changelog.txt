@@ -1,4 +1,5 @@
 0.7.8
+[Alexandr Topilski]
 - Clear history
 - Logging mseconds option
 - Not able to view Graphical History Chart on Windows #57 
