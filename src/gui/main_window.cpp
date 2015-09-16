@@ -613,7 +613,7 @@ namespace fastonosql
 
     void MainWindow::openHomePageLink()
     {
-        QDesktopServices::openUrl(QUrl(PROJECT_DOMAIN));
+        QDesktopServices::openUrl(QUrl(PROJECT_HOMEPAGE_LINK));
     }
 
     void MainWindow::openFacebookLink()
