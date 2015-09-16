@@ -7,9 +7,10 @@ createPackage() {
 	#echo branding_variables: $branding_variables
 	#echo branding_complex_variables: $branding_complex_variables 
     platform="$3"
-    dir_path="$4"
-    cpack_generator="$5"
-
+	os_arch="$4"
+    dir_path="$5"
+    cpack_generator="$6"
+	
     if [ -d "$dir_path" ]; then
         rm -rf "$dir_path"
     fi
@@ -17,10 +18,10 @@ createPackage() {
     cd "$dir_path"
     if [ "$platform" = 'android' ] ; then
         if [ -n "$branding_complex_variables" ]; then
-            cmake ../../ -G "Unix Makefiles" -DCMAKE_TOOLCHAIN_FILE=../../cmake/android.toolchain.cmake -DCMAKE_BUILD_TYPE=RELEASE -DOS_ARCH=32 \
+            cmake ../../ -G "Unix Makefiles" -DCMAKE_TOOLCHAIN_FILE=../../cmake/android.toolchain.cmake -DCMAKE_BUILD_TYPE=RELEASE -DOS_ARCH=$os_arch \
             -DOPENSSL_USE_STATIC=1 $branding_variables "$branding_complex_variables"
         else
-            cmake ../../ -G "Unix Makefiles" -DCMAKE_TOOLCHAIN_FILE=../../cmake/android.toolchain.cmake -DCMAKE_BUILD_TYPE=RELEASE -DOS_ARCH=32 \
+            cmake ../../ -G "Unix Makefiles" -DCMAKE_TOOLCHAIN_FILE=../../cmake/android.toolchain.cmake -DCMAKE_BUILD_TYPE=RELEASE -DOS_ARCH=$os_arch \
             -DOPENSSL_USE_STATIC=1 $branding_variables
         fi
         make install -j2
@@ -29,10 +30,10 @@ createPackage() {
 		make apk_signed_aligned
     else
         if [ -n "$branding_complex_variables" ]; then
-            cmake ../../ -G "Unix Makefiles" -DCMAKE_BUILD_TYPE=RELEASE -DOS_ARCH=64 -DOPENSSL_USE_STATIC=1 -DCPACK_GENERATOR="$cpack_generator" \
+            cmake ../../ -G "Unix Makefiles" -DCMAKE_BUILD_TYPE=RELEASE -DOS_ARCH=$os_arch -DOPENSSL_USE_STATIC=1 -DCPACK_GENERATOR="$cpack_generator" \
             $branding_variables "$branding_complex_variables"
         else
-            cmake ../../ -G "Unix Makefiles" -DCMAKE_BUILD_TYPE=RELEASE -DOS_ARCH=64 -DOPENSSL_USE_STATIC=1 -DCPACK_GENERATOR="$cpack_generator" \
+            cmake ../../ -G "Unix Makefiles" -DCMAKE_BUILD_TYPE=RELEASE -DOS_ARCH=$os_arch -DOPENSSL_USE_STATIC=1 -DCPACK_GENERATOR="$cpack_generator" \
             $branding_variables 
         fi
         make install -j2
@@ -45,7 +46,15 @@ createPackage() {
     cd ../
 }
 
+#args: 
+#1 - branding_file
+#2 - branding_complex_file
+#3 - platform (windows, linux, macosx, freebsd, android)
+#4 - os_arch (32, 64)
+
 unamestr=`uname`
+unamearch=`uname -m`
+
 if [ -n "$1" ]; then
     branding_file=$1
 else
@@ -74,33 +83,47 @@ else
     fi 
 fi
 
+if [ -n "$4" ]; then
+	if [ "$4" != 32 ]; then 
+		if [ "$4" != 64 ]; then
+			echo "Please specify valid os architecture 32 or 64"
+			exit 0
+		fi
+	fi
+    os_arch=$4
+else
+    os_arch=64
+fi
+
 echo ========= START BUILDING ===========
 echo platform: $platform
+echo arch: $os_arch
 echo branding file: $branding_file
 echo branding complex file: $branding_complex_file
 echo host: $unamestr
+echo host_arch: $unamearch
 
 #-DCMAKE_OSX_SYSROOT=/Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX10.9.sdk/
 
 if [ "$platform" = 'windows' ]; then
 	echo Build for Windows ...
-    createPackage $branding_file $branding_complex_file $platform build_nsis NSIS
-    createPackage $branding_file $branding_complex_file $platform build_zip ZIP
+    createPackage $branding_file $branding_complex_file $platform $os_arch build_nsis NSIS
+    createPackage $branding_file $branding_complex_file $platform $os_arch build_zip ZIP
 elif [ "$platform" = 'linux' ]; then
 	echo Build for Linux ...
-    createPackage $branding_file $branding_complex_file $platform build_deb DEB
-    createPackage $branding_file $branding_complex_file $platform build_rpm RPM
-    createPackage $branding_file $branding_complex_file $platform build_tar TGZ
+    createPackage $branding_file $branding_complex_file $platform $os_arch build_deb DEB
+    createPackage $branding_file $branding_complex_file $platform $os_arch build_rpm RPM
+    createPackage $branding_file $branding_complex_file $platform $os_arch build_tar TGZ
 elif [ "$platform" = 'macosx' ]; then
 	echo Build for MacOSX ...
-    createPackage $branding_file $branding_complex_file $platform build_dmg DragNDrop  
-    createPackage $branding_file $branding_complex_file $platform build_zip ZIP
+    createPackage $branding_file $branding_complex_file $platform $os_arch build_dmg DragNDrop
+    createPackage $branding_file $branding_complex_file $platform $os_arch build_zip ZIP
 elif [ "$platform" = 'freebsd' ]; then
     echo Build for FreeBSD ...
-    createPackage $branding_file $branding_complex_file $platform build_tar TGZ
+    createPackage $branding_file $branding_complex_file $platform $os_arch build_tar TGZ
 elif [ "$platform" = 'android' ]; then
     echo Build for Android ...
-    createPackage $branding_file $branding_complex_file $platform build_apk APK
+    createPackage $branding_file $branding_complex_file $platform 32 build_apk APK
 fi
 
 echo ========= END BUILDING ===========
