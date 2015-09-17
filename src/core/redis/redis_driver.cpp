@@ -32,7 +32,6 @@ extern "C" {
     #include "sds.h"
 }
 
-#include "third-party/redis/src/version.h"
 #include <hiredis/hiredis.h>
 
 #include "third-party/redis/src/help.h"
@@ -47,6 +46,7 @@ extern "C" {
 #include "core/command_logger.h"
 #include "core/redis/redis_infos.h"
 
+#define HIREDIS_VERSION STRINGIZE(HIREDIS_MAJOR) "." STRINGIZE(HIREDIS_MINOR) "." STRINGIZE(HIREDIS_PATCH)
 #define REDIS_CLI_KEEPALIVE_INTERVAL 15 /* seconds */
 #define CLI_HELP_COMMAND 1
 #define CLI_HELP_GROUP 2
@@ -1455,7 +1455,7 @@ namespace fastonosql
                 return common::make_error_value("Invalid input argument", common::ErrorValue::E_ERROR);
             }
 
-            common::StringValue *val = common::Value::createStringValue(PROJECT_NAME_TITLE " based on hiredis " REDIS_VERSION "\r\n"
+            common::StringValue *val = common::Value::createStringValue(PROJECT_NAME_TITLE " based on hiredis " HIREDIS_VERSION "\r\n"
                                                                         "Type: \"help @<group>\" to get a list of commands in <group>\r\n"
                                                                         "      \"help <command>\" for help on <command>\r\n"
                                                                         "      \"help <tab>\" to get a list of possible help topics\r\n"
@@ -1756,7 +1756,7 @@ namespace fastonosql
 
     const char* RedisDriver::versionApi()
     {
-        return REDIS_VERSION;
+        return HIREDIS_VERSION;
     }
 
     bool RedisDriver::isConnected() const
