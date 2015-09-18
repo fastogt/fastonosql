@@ -1,14 +1,15 @@
-0.5.5
+0.5.5 / September 19, 2015
 [Alexandr Topilski]
 - Clear history
 - Logging mseconds option
 - Not able to view Graphical History Chart on Windows #5
 - UnQLite database support http://unqlite.org/
-- Lmdb database support http://symas.com/mdb/
+- LMDB database support http://symas.com/mdb/
 - Bugs fixes
 - [SSDB] dbsize extend command
 - [LevelDB] dbsize extend command
 - [RocksDB] dbsize extend command
+- i386 build for windows
 
 0.3.5 / September 5, 2015
 [Alexandr Topilski]
