@@ -1,1 +1,21 @@
+language: cpp
+compiler:
+  - gcc
+env:
 
+before_install:
+
+script:
+  - git submodule update --init --recursive 
+  - cd build
+  - sh ./rebuild.sh /dev/null /dev/null
+after_success:
+
+services:
+
+notifications:
+  recipients:
+    - atopilski@fastogt.com
+  email:
+    on_success: change
+    on_failure: change
