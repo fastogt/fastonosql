@@ -32,6 +32,7 @@ before_install:
 - rm cmake-3.3.2.tar.gz
 
 script:
+  - /opt/qt54/bin/qt54-env.sh 
   - git submodule update --init --recursive 
   - cd build
   - sh ./rebuild.sh /dev/null /dev/null
