@@ -42,6 +42,7 @@ before_script:
   - tar -xzf cmake.tar.gz -C $HOME
   - if [ "$TRAVIS_OS_NAME" = "linux" ]; then export PATH=$HOME/cmake-3.3.2-Linux-x86_64/bin:$PATH; fi
   - if [ "$TRAVIS_OS_NAME" = "osx" ]; then export PATH=$HOME/cmake-3.3.2-Darwin-x86_64/CMake.app/Contents/bin:$PATH; fi
+  - if [ "$TRAVIS_OS_NAME" = "osx" ]; then CMAKE_ARGS="-DCMAKE_PREFIX_PATH=/usr/local/opt/qt5"; fi
 
   - which qmake
   - qmake -v
@@ -50,9 +51,9 @@ before_script:
   - which openssl
   - openssl version
 script:
-  - git submodule update --init --recursive 
   - cd build
   - sh ./rebuild.sh /dev/null /dev/null
+  - sh ./rebuild.sh fastoredis.txt fastoredis_complex.txt
   
 after_success:
   - sh ./clean.sh
