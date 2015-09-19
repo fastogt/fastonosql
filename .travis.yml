@@ -37,11 +37,11 @@ install:
   - if [ "$TRAVIS_OS_NAME" = "osx" ]; then brew link openssl --force; fi
 before_script:
   - if [ "$TRAVIS_OS_NAME" = "linux" ]; then source /opt/qt54/bin/qt54-env.sh; fi
-  - if [ "$TRAVIS_OS_NAME" = "linux" ]; then wget http://www.cmake.org/files/v3.3/cmake-3.3.1-Linux-x86_64.tar.gz -O cmake.tar.gz; fi
-  - if [ "$TRAVIS_OS_NAME" = "linux" ]; then tar -xzf cmake.tar.gz -C $HOME; fi
-  - if [ "$TRAVIS_OS_NAME" = "linux" ]; then export PATH=$HOME/cmake-3.3.1-Linux-x86_64/bin:$PATH; fi
-  
-  #- if [ "$TRAVIS_OS_NAME" = "osx" ]; then CMAKE_ARGS="-DCMAKE_PREFIX_PATH=/usr/local/opt/qt5"; fi
+  - if [ "$TRAVIS_OS_NAME" = "linux" ]; then wget http://www.cmake.org/files/v3.3/cmake-3.3.2-Linux-x86_64.tar.gz -O cmake.tar.gz; fi
+  - if [ "$TRAVIS_OS_NAME" = "osx" ]; then wget http://www.cmake.org/files/v3.3/cmake-3.3.2-Darwin-x86_64.tar.gz -O cmake.tar.gz; fi
+  - tar -xzf cmake.tar.gz -C $HOME; fi
+  - if [ "$TRAVIS_OS_NAME" = "linux" ]; then export PATH=$HOME/cmake-3.3.2-Linux-x86_64/bin:$PATH; fi
+  - if [ "$TRAVIS_OS_NAME" = "osx" ]; then export PATH=$HOME/cmake-3.3.2-Darwin-x86_64/bin:$PATH; fi
 
   - which qmake
   - qmake -v
