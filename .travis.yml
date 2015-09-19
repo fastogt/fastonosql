@@ -1,11 +1,27 @@
 language: cpp
+os:
+  - linux
+  - osx
 compiler:
   - gcc
 env:
-
 before_install:
-- sudo add-apt-repository --yes ppa:ubuntu-sdk-team/ppa
-- sudo apt-get update -qq
+- if [ "${TRAVIS_OS_NAME}" = "linux" ]; then
+         sudo apt-add-repository -y ppa:ubuntu-toolchain-r/test
+      && sudo apt-add-repository -y ppa:beineri/opt-qt541
+      && sudo apt-get -qq update
+      && sudo apt-get -qq install g++-4.8 qt54tools
+      && export CXX="g++-4.8"
+      && export CC="gcc-4.8"
+      && sudo apt-get install libssl-dev
+      ;
+    else
+         brew update
+      && brew install qt5
+      && brew install qt5-qmake
+      && chmod -R 755 /usr/local/opt/qt5/*
+      ;
+    fi
 
 - wget http://www.cmake.org/files/v3.3/cmake-3.3.2.tar.gz
 - tar -xvf cmake-3.3.2.tar.gz
@@ -14,9 +30,6 @@ before_install:
 - cd ../
 - rm -rf cmake-3.3.2
 - rm cmake-3.3.2.tar.gz
-
-- sudo apt-get install qtbase5-dev qt5-default qttools5-dev
-- sudo apt-get install libssl-dev
 
 script:
   - git submodule update --init --recursive 
