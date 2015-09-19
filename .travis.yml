@@ -5,37 +5,22 @@ os:
 compiler:
   - gcc
 env:
-install:
-- if [ "${TRAVIS_OS_NAME}" = "linux" ]; then
-         sudo apt-add-repository -y ppa:ubuntu-toolchain-r/test
-      && sudo apt-add-repository -y ppa:beineri/opt-qt542
-      && sudo apt-get -qq update
-      && sudo apt-get -qq install g++-4.8 qt54tools qt54base qt54core
-      && export CXX="g++-4.8"
-      && export CC="gcc-4.8"
-      && export PATH=/opt/qt54/bin:$PATH
-      && sudo apt-get install libssl-dev
-      ;
-    else
-         brew tap PX4/homebrew-px4
-      && brew update
-      && brew install qt54
-      && export PATH=/usr/local/opt/qt54/bin:$PATH
-      ;
-    fi
+before_install:
+  - if [ "$TRAVIS_OS_NAME" = "linux" ]; then sudo add-apt-repository -y ppa:beineri/opt-qt541; fi
+  - if [ "$TRAVIS_OS_NAME" = "linux" ] && [ "$CXX" == "g++" ]; then sudo add-apt-repository -y ppa:ubuntu-toolchain-r/test; fi
 
-# install cmake
-- CMAKE_VERSION="3.3.2"
-- wget "http://www.cmake.org/files/v3.3/cmake-${CMAKE_VERSION}.tar.gz"
-- tar xf "cmake-${CMAKE_VERSION}.tar.gz"
-- cd "cmake-${CMAKE_VERSION}"
-- ./configure --prefix=~
-- make 
-- make install
-- export PATH="~/bin:${PATH}"
-- cd ../
-- rm -rf "cmake-${CMAKE_VERSION}"
-- rm "cmake-${CMAKE_VERSION}.tar.gz"
+install:
+  - if [ "$TRAVIS_OS_NAME" = "linux" ]; then sudo apt-get -qq update; fi
+  - if [ "$TRAVIS_OS_NAME" = "linux" ] && [ "$CC" == "gcc" ]; then sudo apt-get -qq install gcc-4.7; fi
+  - if [ "$TRAVIS_OS_NAME" = "linux" ] && [ "$CC" == "gcc" ]; then export CC="gcc-4.7"; fi
+  - if [ "$TRAVIS_OS_NAME" = "linux" ] && [ "$CXX" == "g++" ]; then sudo apt-get -qq install g++-4.7; fi
+  - if [ "$TRAVIS_OS_NAME" = "linux" ] && [ "$CXX" == "g++" ]; then export CXX="g++-4.7"; fi
+  - if [ "$TRAVIS_OS_NAME" = "linux" ]; then sudo apt-get -qq install cmake qt54base qt54x11extras qt54tools; fi
+  - if [ "$TRAVIS_OS_NAME" = "linux" ]; then sudo apt-get install libssl-dev; fi
+  
+  - if [ "$TRAVIS_OS_NAME" = "osx" ]; then brew update; fi
+  - if [ "$TRAVIS_OS_NAME" = "osx" ]; then brew ls | grep -wq cmake || brew install cmake; fi
+  - if [ "$TRAVIS_OS_NAME" = "osx" ]; then brew ls | grep -wq qt5 || brew install qt5; fi
 
 script:
   - git submodule update --init --recursive 
