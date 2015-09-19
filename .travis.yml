@@ -9,7 +9,7 @@ before_install:
 
 - sudo apt-get install cmake
 - sudo apt-get install qtbase5-dev qt5-default qttools5-dev-tools
-- sudo apt-get install libssl
+- sudo apt-get install libssl-dev
 
 script:
   - git submodule update --init --recursive 
