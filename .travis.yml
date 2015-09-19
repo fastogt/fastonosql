@@ -7,7 +7,13 @@ before_install:
 - sudo add-apt-repository --yes ppa:ubuntu-sdk-team/ppa
 - sudo apt-get update -qq
 
-- sudo apt-get install cmake
+- wget http://www.cmake.org/files/v3.3/cmake-3.3.2.tar.gz
+- cd cmake-3.3.2
+- ./configure && make && make install
+- cd ../
+- rm -rf cmake-3.3.2
+- rm cmake-3.3.2.tar.gz
+
 - sudo apt-get install qtbase5-dev qt5-default qttools5-dev-tools
 - sudo apt-get install libssl-dev
 
