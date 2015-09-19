@@ -40,7 +40,7 @@ before_script:
   - which cmake
   - cmake --version
   - which openssl
-  - openssl -v
+  - openssl version
 script:
   - git submodule update --init --recursive 
   - cd build
