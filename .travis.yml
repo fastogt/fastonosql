@@ -8,18 +8,19 @@ env:
 install:
 - if [ "${TRAVIS_OS_NAME}" = "linux" ]; then
          sudo apt-add-repository -y ppa:ubuntu-toolchain-r/test
-      && sudo apt-add-repository -y ppa:beineri/opt-qt541
+      && sudo apt-add-repository -y ppa:beineri/opt-qt542
       && sudo apt-get -qq update
-      && sudo apt-get -qq install g++-4.8 qt54tools
+      && sudo apt-get -qq install g++-4.8 qt54tools qt54base
       && export CXX="g++-4.8"
       && export CC="gcc-4.8"
       && sudo apt-get install libssl-dev
       ;
     else
-         brew update
-      && brew install qt5
-      && brew install qt5-qmake
-      && chmod -R 755 /usr/local/opt/qt5/*
+         brew tap PX4/homebrew-px4
+      && brew update
+      && brew install qt54
+      && brew linkapps qt54
+      && export PATH=/usr/local/opt/qt54/bin:$PATH
       ;
     fi
 
@@ -37,7 +38,6 @@ install:
 - rm "cmake-${CMAKE_VERSION}.tar.gz"
 
 script:
-  - /opt/qt54/bin/qt54-env.sh 
   - git submodule update --init --recursive 
   - cd build
   - sh ./rebuild.sh /dev/null /dev/null
