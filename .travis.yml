@@ -23,13 +23,18 @@ before_install:
       ;
     fi
 
-- wget http://www.cmake.org/files/v3.3/cmake-3.3.2.tar.gz
-- tar -xvf cmake-3.3.2.tar.gz
-- cd cmake-3.3.2
-- ./configure && make && sudo make install
+# install cmake
+- CMAKE_VERSION="3.3.2"
+- wget "http://www.cmake.org/files/v3.3/cmake-${CMAKE_VERSION}.tar.gz"
+- tar xf "cmake-${CMAKE_VERSION}.tar.gz"
+- cd "cmake-${CMAKE_VERSION}"
+- ./configure --prefix=~
+- make 
+- make install
+- export PATH="~/bin:${PATH}"
 - cd ../
-- rm -rf cmake-3.3.2
-- rm cmake-3.3.2.tar.gz
+- rm -rf "cmake-${CMAKE_VERSION}"
+- rm "cmake-${CMAKE_VERSION}.tar.gz"
 
 script:
   - /opt/qt54/bin/qt54-env.sh 
