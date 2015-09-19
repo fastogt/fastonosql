@@ -5,7 +5,7 @@ os:
 compiler:
   - gcc
 env:
-before_install:
+install:
 - if [ "${TRAVIS_OS_NAME}" = "linux" ]; then
          sudo apt-add-repository -y ppa:ubuntu-toolchain-r/test
       && sudo apt-add-repository -y ppa:beineri/opt-qt541
