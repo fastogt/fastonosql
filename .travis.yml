@@ -10,7 +10,7 @@ before_install:
 - wget http://www.cmake.org/files/v3.3/cmake-3.3.2.tar.gz
 - tar -xvf cmake-3.3.2.tar.gz
 - cd cmake-3.3.2
-- ./configure && make && make install
+- ./configure && make && sudo make install
 - cd ../
 - rm -rf cmake-3.3.2
 - rm cmake-3.3.2.tar.gz
