@@ -15,7 +15,7 @@ before_install:
 - rm -rf cmake-3.3.2
 - rm cmake-3.3.2.tar.gz
 
-- sudo apt-get install qtbase5-dev qt5-default qttools5-dev-tools
+- sudo apt-get install qtbase5-dev qt5-default qttools5-dev
 - sudo apt-get install libssl-dev
 
 script:
