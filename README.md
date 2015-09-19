@@ -1,5 +1,7 @@
 About FastoNoSQL
 ===============
+[![Travis Build Status](https://travis-ci.org/fastogt/fastonosql.svg?branch=master)](https://travis-ci.org/fastogt/fastonosql)
+[![Bitdeli Badge](https://d2weczhvl823v0.cloudfront.net/fastogt/fastonosql/trend.png)](https://bitdeli.com/free "Bitdeli Badge")
 
 FastoNoSQL &mdash; is a crossplatform Redis, Memcached, SSDB management tool, also FastoNoSQL is platform for NoSQL databases, you can add your own implementation for diffrent databases. <br />
 
@@ -108,6 +110,4 @@ Compiling:
 Executable will be placed to: target/debug/app/out
 
 -->
-
-[![Bitdeli Badge](https://d2weczhvl823v0.cloudfront.net/fastogt/fastonosql/trend.png)](https://bitdeli.com/free "Bitdeli Badge")
 
