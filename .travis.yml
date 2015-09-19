@@ -4,13 +4,15 @@ compiler:
 env:
 
 before_install:
+- sudo apt-get install cmake qt5-dev-tools
+- sudo apt-get install libssl-devel
 
 script:
   - git submodule update --init --recursive 
   - cd build
   - sh ./rebuild.sh /dev/null /dev/null
 after_success:
-
+  - sh ./clean.sh
 services:
 
 notifications:
