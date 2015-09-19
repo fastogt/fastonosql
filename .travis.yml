@@ -10,16 +10,16 @@ install:
          sudo apt-add-repository -y ppa:ubuntu-toolchain-r/test
       && sudo apt-add-repository -y ppa:beineri/opt-qt542
       && sudo apt-get -qq update
-      && sudo apt-get -qq install g++-4.8 qt54tools qt54base
+      && sudo apt-get -qq install g++-4.8 qt54tools qt54base qt54core
       && export CXX="g++-4.8"
       && export CC="gcc-4.8"
+      && export PATH=/opt/qt54/bin:$PATH
       && sudo apt-get install libssl-dev
       ;
     else
          brew tap PX4/homebrew-px4
       && brew update
       && brew install qt54
-      && brew linkapps qt54
       && export PATH=/usr/local/opt/qt54/bin:$PATH
       ;
     fi
