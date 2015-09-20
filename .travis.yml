@@ -51,6 +51,7 @@ before_script:
   - which openssl
   - openssl version
 script:
+  - git submodule update --init --recursive
   - cd build
   - sh ./rebuild.sh /dev/null /dev/null
   - sh ./rebuild.sh fastoredis.txt fastoredis_complex.txt
