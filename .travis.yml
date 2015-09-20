@@ -32,7 +32,7 @@ install:
   - if [ "$TRAVIS_OS_NAME" = "osx" ]; then brew update; fi
   - if [ "$TRAVIS_OS_NAME" = "osx" ]; then brew ls | grep -wq cmake || brew install cmake; fi
   - if [ "$TRAVIS_OS_NAME" = "osx" ]; then brew ls | grep -wq qt5 || brew install qt5; fi
-  - if [ "$TRAVIS_OS_NAME" = "osx" ]; then brew link --force qt5 && ln -s /usr/local/Cellar/qt5/5.5.0/mkspecs /usr/local/mkspecs && ln -s /usr/local/Cellar/qt5/5.5.0/plugins /usr/local/plugins; fi
+  - if [ "$TRAVIS_OS_NAME" = "osx" ]; then brew link --force qt5 && chmod -R +rw /usr/local/Cellar/qt5/*; fi
   - if [ "$TRAVIS_OS_NAME" = "osx" ]; then brew ls | grep -wq openssl || brew install openssl; fi
   - if [ "$TRAVIS_OS_NAME" = "osx" ]; then brew link openssl --force; fi
 before_script:
@@ -54,8 +54,8 @@ before_script:
 script:
   - git submodule update --init --recursive
   - cd build
-  - sudo sh ./rebuild.sh /dev/null /dev/null
-  - sudo sh ./rebuild.sh fastoredis.txt fastoredis_complex.txt
+  - sh ./rebuild.sh /dev/null /dev/null
+  - sh ./rebuild.sh fastoredis.txt fastoredis_complex.txt
   
 after_success:
   - sh ./clean.sh
