@@ -27,6 +27,9 @@ namespace fastonosql
         QString currentStyle() const;
         void setCurrentStyle(const QString &style);
 
+        QString currentFontName() const;
+        void setCurrentFontName(const QString& font);
+
         QString currentLanguage() const;
         void setCurrentLanguage(const QString &lang);
 
@@ -76,6 +79,7 @@ namespace fastonosql
 
         supportedViews views_;
         QString curStyle_;
+        QString curFontName_;
         QString curLanguage_;
         ConnectionSettingsContainerType connections_;
         ClusterSettingsContainerType clusters_;

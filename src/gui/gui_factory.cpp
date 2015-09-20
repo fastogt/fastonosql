@@ -3,6 +3,8 @@
 #include <QApplication>
 #include <QStyle>
 
+#include "core/settings_manager.h"
+
 namespace fastonosql
 {
     const QIcon& GuiFactory::homePageIcon() const
@@ -381,17 +383,7 @@ namespace fastonosql
 
     QFont GuiFactory::font() const
     {
-#if defined(OS_MACOSX) || defined(OS_FREEBSD)
-        static const QFont textFont = QFont("Monaco", 12);
-#elif defined(OS_LINUX)
-        static QFont textFont = QFont("Monospace");
-        textFont.setFixedPitch(true);
-#elif defined(OS_WIN)
-        static const QFont textFont = QFont("Courier", 10);
-#elif defined(OS_ANDROID)
-        static const QFont textFont = QFont("Monospace");
-#endif
-        return textFont;
+        return QFont(SettingsManager::instance().currentFontName());
     }
 
     const QString &GuiFactory::pathToLoadingGif() const

@@ -8,6 +8,7 @@
 #include <QGroupBox>
 #include <QHBoxLayout>
 #include <QPushButton>
+#include <QFontComboBox>
 
 #include "fasto/qt/gui/app_style.h"
 #include "fasto/qt/translations/translations.h"
@@ -31,9 +32,16 @@ namespace fastonosql
         QHBoxLayout *styleswLayout = new QHBoxLayout;
         stylesLabel_ = new QLabel;
         stylesComboBox_ = new QComboBox;
-        stylesComboBox_->addItems(fasto::qt::gui::getSupportedStyles());
+        stylesComboBox_->addItems(fasto::qt::gui::supportedStyles());
         styleswLayout->addWidget(stylesLabel_);
         styleswLayout->addWidget(stylesComboBox_);
+
+        QHBoxLayout *fontLayout = new QHBoxLayout;
+        fontLabel_ = new QLabel;
+        fontComboBox_ = new QFontComboBox;
+        fontComboBox_->setEditable(false);
+        fontLayout->addWidget(fontLabel_);
+        fontLayout->addWidget(fontComboBox_);
 
         QHBoxLayout *langLayout = new QHBoxLayout;
         langLabel_ = new QLabel;
@@ -52,6 +60,7 @@ namespace fastonosql
         fastViewKeys_ = new QCheckBox;
         generalLayout->addWidget(fastViewKeys_);
         generalLayout->addLayout(styleswLayout);
+        generalLayout->addLayout(fontLayout);
         generalLayout->addLayout(langLayout);
 
         generalBox_->setLayout(generalLayout);
@@ -110,6 +119,8 @@ namespace fastonosql
         fasto::qt::gui::applyStyle(stylesComboBox_->currentText());
         SettingsManager::instance().setCurrentStyle(stylesComboBox_->currentText());
 
+        SettingsManager::instance().setCurrentFontName(fontComboBox_->currentText());
+
         const std::string defCombo = common::convertToString(defaultViewComboBox_->currentText());
         const fastonosql::supportedViews v = common::convertFromString<fastonosql::supportedViews>(defCombo);
         SettingsManager::instance().setDefaultView(v);
@@ -129,6 +140,7 @@ namespace fastonosql
         autoComletionEnable_->setChecked(SettingsManager::instance().autoCompletion());
         languagesComboBox_->setCurrentText(SettingsManager::instance().currentLanguage());
         stylesComboBox_->setCurrentText(SettingsManager::instance().currentStyle());
+        fontComboBox_->setCurrentText(SettingsManager::instance().currentFontName());
         defaultViewComboBox_->setCurrentText(common::convertFromString<QString>(common::convertToString(SettingsManager::instance().defaultView())));
         syncTabs_->setChecked(SettingsManager::instance().syncTabs());
         logDirPath_->setText(SettingsManager::instance().loggingDirectory());
@@ -155,6 +167,7 @@ namespace fastonosql
         fastViewKeys_->setText(tr("Fast view values"));
         langLabel_->setText(tr("Language:"));
         stylesLabel_->setText(tr("Supported UI styles:"));
+        fontLabel_->setText(tr("Supported fonts:"));
 
         serverSettingsBox_->setTitle(tr("Servers global settings"));
         defaultViewLabel_->setText(tr("Default views:"));

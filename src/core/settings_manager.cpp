@@ -13,6 +13,7 @@
 
 #define LANGUAGE PREFIX"language"
 #define STYLE PREFIX"style"
+#define FONT PREFIX"font"
 #define CONNECTIONS PREFIX"connections"
 #define CLUSTERS PREFIX"clusters"
 #define VIEW PREFIX"view"
@@ -27,13 +28,23 @@
 namespace
 {
     const std::string iniPath("~/.config/" PROJECT_NAME "/config.ini");
+    QString fontName()
+    {
+#if defined(OS_MACOSX) || defined(OS_FREEBSD)
+        return "Monaco";
+#elif defined(OS_LINUX) || defined(OS_ANDROID)
+        return "Monospace";
+#elif defined(OS_WIN)
+        return "Courier";
+#endif
+    }
 }
 
 
 namespace fastonosql
 {
     SettingsManager::SettingsManager()
-        : views_(), curStyle_(), curLanguage_(), connections_(), syncTabs_(), loggingDir_(),
+        : views_(), curStyle_(), curFontName_(), curLanguage_(), connections_(), syncTabs_(), loggingDir_(),
           autoCheckUpdate_(), autoCompletion_(), autoOpenConsole_(), fastViewKeys_()
     {
        load();
@@ -74,6 +85,16 @@ namespace fastonosql
     void SettingsManager::setCurrentStyle(const QString &st)
     {
         curStyle_ = st;
+    }
+
+    QString SettingsManager::currentFontName() const
+    {
+        return curFontName_;
+    }
+
+    void SettingsManager::setCurrentFontName(const QString& font)
+    {
+        curFontName_ = font;
     }
 
     QString SettingsManager::currentLanguage() const
@@ -243,6 +264,7 @@ namespace fastonosql
         DCHECK(settings.status() == QSettings::NoError);
 
         curStyle_ = settings.value(STYLE, fasto::qt::gui::defStyle).toString();
+        curFontName_ = settings.value(FONT, fontName()).toString();
         curLanguage_ = settings.value(LANGUAGE, fasto::qt::translations::defLanguage).toString();
 
         int view = settings.value(VIEW, fastonosql::Tree).toInt();
@@ -306,6 +328,7 @@ namespace fastonosql
         DCHECK(settings.status() == QSettings::NoError);
 
         settings.setValue(STYLE, curStyle_);
+        settings.setValue(FONT, curFontName_);
         settings.setValue(LANGUAGE, curLanguage_);
         settings.setValue(VIEW, views_);
 

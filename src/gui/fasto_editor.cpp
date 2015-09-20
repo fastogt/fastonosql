@@ -23,7 +23,9 @@ namespace fastonosql
     FastoEditor::FastoEditor(QWidget* parent)
         : QWidget(parent), scin_(NULL)
     {
-        scin_ = new fasto::qt::gui::FastoScintilla(NULL, GuiFactory::instance().font());
+        QFont font = GuiFactory::instance().font();
+        setFont(font);
+        scin_ = new fasto::qt::gui::FastoScintilla;
 
         findPanel_ = new QFrame;
         findLine_ = new QLineEdit;

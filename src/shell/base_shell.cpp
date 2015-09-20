@@ -77,6 +77,7 @@ namespace fastonosql
 
         DCHECK(lex);
         setLexer(lex);
+        lex->setFont(font());
     }
 
     QString BaseShell::version() const

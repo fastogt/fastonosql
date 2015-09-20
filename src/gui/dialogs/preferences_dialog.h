@@ -3,6 +3,7 @@
 #include <QDialog>
 
 class QComboBox;
+class QFontComboBox;
 class QCheckBox;
 class QLabel;
 class QLineEdit;
@@ -43,6 +44,8 @@ namespace fastonosql
 
         QLabel* stylesLabel_;
         QComboBox* stylesComboBox_;
+        QLabel* fontLabel_;
+        QFontComboBox* fontComboBox_;
         QLabel* defaultViewLabel_;
         QComboBox* defaultViewComboBox_;
 
