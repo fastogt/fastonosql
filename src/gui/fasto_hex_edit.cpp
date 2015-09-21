@@ -9,42 +9,43 @@
 
 namespace
 {
-    const QColor addressAreaColor = QColor(0xd4, 0xd4, 0xd4, 0xff);
     const QColor selectedColor = QColor(0x6d, 0x9e, 0xff, 0xff);
 }
 
 namespace fastonosql
 {
     FastoHexEdit::FastoHexEdit(QWidget *parent)
-        : QAbstractScrollArea(parent), mode_(TEXT_MODE)
+        : QPlainTextEdit(parent), mode_(TEXT_MODE)
     {
         setFocusPolicy(Qt::StrongFocus);
     }
 
-    QByteArray FastoHexEdit::data() const
+    QString FastoHexEdit::text() const
     {
-        return data_;
+        return toPlainText();
     }
 
     void FastoHexEdit::setMode(DisplayMode mode)
     {
         mode_ = mode;
+        setReadOnly(mode_ == HEX_MODE);
         forceRepaint();
     }
 
-    void FastoHexEdit::setData(const QByteArray &arr)
+    void FastoHexEdit::setText(const QString &arr)
     {
         verticalScrollBar()->setValue(0);
-        data_ = arr;
         cursorPos_ = 0;
         resetSelection(0);
-        forceRepaint();
+
+        setPlainText(arr);
     }
 
     void FastoHexEdit::clear()
     {
         verticalScrollBar()->setValue(0);
-        data_.clear();
+
+        QPlainTextEdit::clear();
     }
 
     int FastoHexEdit::charWidth() const
@@ -65,37 +66,18 @@ namespace fastonosql
         return res;
     }
 
-    QSize FastoHexEdit::fullSize() const
-    {
-        int charW = charWidth();
-        int charH = charHeight();
-
-        std::size_t wid = width()/2 + (asciiCharInLine() * charW);
-        std::size_t height = data_.size() / asciiCharInLine();
-        if(data_.size() % asciiCharInLine())
-            height++;
-
-        height *= charH;
-
-        return QSize(wid, height);
-    }
-
     void FastoHexEdit::paintEvent(QPaintEvent *event)
     {
-        QPainter painter(viewport());
-        const QRect rect = event->rect();
-        QSize areaSize = viewport()->size();
-        QSize widgetSize = fullSize();
-        const int charW = charWidth();
-        const int charH = charHeight();
-
-        verticalScrollBar()->setPageStep(areaSize.height() / charH);
-        verticalScrollBar()->setRange(0, (widgetSize.height() - areaSize.height()) / charH + 1);
-
-        int firstLineIdx = verticalScrollBar()->value();
-        int lastLineIdx = firstLineIdx + areaSize.height() / charH;
-
         if(mode_ == HEX_MODE){
+            QPainter painter(viewport());
+            const QRect rect = event->rect();
+            QSize areaSize = viewport()->size();
+            const int charW = charWidth();
+            const int charH = charHeight();
+
+            int firstLineIdx = verticalScrollBar()->value();
+            int lastLineIdx = firstLineIdx + areaSize.height() / charH;
+
             const int acharInLine = asciiCharInLine();
             const int yPosStart = charH;
             const int xPosStart = charW;
@@ -104,13 +86,18 @@ namespace fastonosql
 
             int xPosAscii = xPosEnd - areaSize.width()/4;
 
-            int indexCount = data_.size() / acharInLine;
+            QByteArray data = text().toLocal8Bit();
+
+            int indexCount = data.size() / acharInLine;
             if(lastLineIdx > indexCount) {
                 lastLineIdx = indexCount;
-                if(data_.size() % acharInLine){
+                if(data.size() % acharInLine){
                     lastLineIdx++;
                 }
             }
+
+            verticalScrollBar()->setPageStep(areaSize.height() / charH);
+            verticalScrollBar()->setRange(0, (lastLineIdx * charH - areaSize.height()) / charH + 1);
 
             painter.setPen(Qt::gray);
             painter.drawLine(xPosAscii, rect.top(), xPosAscii, height());
@@ -121,10 +108,10 @@ namespace fastonosql
 
             for (int lineIdx = firstLineIdx, yPos = yPosStart; lineIdx < lastLineIdx; lineIdx += 1, yPos += charH) {
                 painter.setBackgroundMode(Qt::OpaqueMode);
-                for(int xPos = xPosStart, i = 0; i < acharInLine && (lineIdx * acharInLine + i) < data_.size(); i++, xPos += 3 * charW) {
+                for(int xPos = xPosStart, i = 0; i < acharInLine && (lineIdx * acharInLine + i) < data.size(); i++, xPos += 3 * charW) {
                     const int pos = lineIdx * acharInLine + i;
                     const int dpos = pos * 2;
-                    char c = data_[pos];
+                    char c = data[pos];
 
                     // set setBackground for symbol
                     if(dpos >= selectBegin_ && dpos < selectEnd_) {
@@ -150,182 +137,179 @@ namespace fastonosql
                 }
 
                 painter.setBackgroundMode(Qt::TransparentMode);
-                QByteArray part = data_.begin() + (lineIdx * acharInLine);
+                QByteArray part = data.begin() + (lineIdx * acharInLine);
                 part.resize(acharInLine);
                 painter.drawText(xPosAscii + 4, yPos, part);
             }
         }
         else{
-            painter.setBackgroundMode(Qt::OpaqueMode);
-            painter.drawText(rect, data_);
+            QPlainTextEdit::paintEvent(event);
         }
-
-        QAbstractScrollArea::paintEvent(event);
     }
 
     void FastoHexEdit::keyPressEvent(QKeyEvent *event)
     {
-        bool setVisible = false;
+        if(mode_ == HEX_MODE){
+            bool setVisible = false;
+            QString data = text();
 
-        if(event->matches(QKeySequence::MoveToNextChar)){
-            setCursorPos(cursorPos_ + 1);
-            resetSelection(cursorPos_);
-            setVisible = true;
-        }
-        else if(event->matches(QKeySequence::MoveToPreviousChar)){
-            setCursorPos(cursorPos_ - 1);
-            resetSelection(cursorPos_);
-            setVisible = true;
-        }
-        else if(event->matches(QKeySequence::MoveToEndOfLine)){
-            setCursorPos(cursorPos_ | ((asciiCharInLine() * 2) - 1));
-            resetSelection(cursorPos_);
-            setVisible = true;
-        }
-        else if(event->matches(QKeySequence::MoveToStartOfLine)){
-            setCursorPos(cursorPos_ | (cursorPos_ % (asciiCharInLine() * 2)));
-            resetSelection(cursorPos_);
-            setVisible = true;
-        }
-        else if(event->matches(QKeySequence::MoveToPreviousLine)){
-            setCursorPos(cursorPos_ - asciiCharInLine() * 2);
-            resetSelection(cursorPos_);
-            setVisible = true;
-        }
-        else if(event->matches(QKeySequence::MoveToNextLine)){
-            setCursorPos(cursorPos_ + asciiCharInLine() * 2);
-            resetSelection(cursorPos_);
-            setVisible = true;
-        }
-        else if(event->matches(QKeySequence::MoveToNextPage)){
-            setCursorPos(cursorPos_ + (viewport()->height() / charHeight() - 1) * 2 * asciiCharInLine());
-            resetSelection(cursorPos_);
-            setVisible = true;
-        }
-        else if(event->matches(QKeySequence::MoveToPreviousPage)){
-            setCursorPos(cursorPos_ - (viewport()->height() / charHeight() - 1) * 2 * asciiCharInLine());
-            resetSelection(cursorPos_);
-            setVisible = true;
-        }
-        else if(event->matches(QKeySequence::MoveToEndOfDocument)){
-            setCursorPos(data_.size() * 2);
-            resetSelection(cursorPos_);
-            setVisible = true;
-        }
-        else if(event->matches(QKeySequence::MoveToStartOfDocument)){
-            setCursorPos(0);
-            resetSelection(cursorPos_);
-            setVisible = true;
-        }
-        else if (event->matches(QKeySequence::SelectAll)){
-            resetSelection(0);
-            setSelection(2 * data_.size() + 1);
-            setVisible = true;
-        }
-        else if (event->matches(QKeySequence::SelectNextChar)){
-            int pos = cursorPos_ + 1;
-            setCursorPos(pos);
-            setSelection(pos);
-            setVisible = true;
-        }
-        else if (event->matches(QKeySequence::SelectPreviousChar)){
-            int pos = cursorPos_ - 1;
-            setSelection(pos);
-            setCursorPos(pos);
-            setVisible = true;
-        }
-        else if (event->matches(QKeySequence::SelectEndOfLine)){
-            int pos = cursorPos_ - (cursorPos_ % (2 * asciiCharInLine())) + (2 * asciiCharInLine());
-            setCursorPos(pos);
-            setSelection(pos);
-            setVisible = true;
-        }
-        else if (event->matches(QKeySequence::SelectStartOfLine)){
-            int pos = cursorPos_ - (cursorPos_ % (2 * asciiCharInLine()));
-            setCursorPos(pos);
-            setSelection(pos);
-            setVisible = true;
-        }
-        else if (event->matches(QKeySequence::SelectPreviousLine)){
-            int pos = cursorPos_ - (2 * asciiCharInLine());
-            setCursorPos(pos);
-            setSelection(pos);
-            setVisible = true;
-        }
-        else if (event->matches(QKeySequence::SelectNextLine)){
-            int pos = cursorPos_ + (2 * asciiCharInLine());
-            setCursorPos(pos);
-            setSelection(pos);
-            setVisible = true;
-        }
-        else if (event->matches(QKeySequence::SelectNextPage)){
-            int pos = cursorPos_ + (((viewport()->height() / charHeight()) - 1) * 2 * asciiCharInLine());
-            setCursorPos(pos);
-            setSelection(pos);
-            setVisible = true;
-        }
-        else if (event->matches(QKeySequence::SelectPreviousPage)){
-            int pos = cursorPos_ - (((viewport()->height() / charHeight()) - 1) * 2 * asciiCharInLine());
-            setCursorPos(pos);
-            setSelection(pos);
-            setVisible = true;
-        }
-        else if (event->matches(QKeySequence::SelectEndOfDocument)){
-            int pos = data_.size() * 2;
-            setCursorPos(pos);
-            setSelection(pos);
-            setVisible = true;
-        }
-        else if (event->matches(QKeySequence::SelectStartOfDocument)){
-            int pos = 0;
-            setCursorPos(pos);
-            setSelection(pos);
-            setVisible = true;
+            if(event->matches(QKeySequence::MoveToNextChar)){
+                setCursorPos(cursorPos_ + 1);
+                resetSelection(cursorPos_);
+                setVisible = true;
+            }
+            else if(event->matches(QKeySequence::MoveToPreviousChar)){
+                setCursorPos(cursorPos_ - 1);
+                resetSelection(cursorPos_);
+                setVisible = true;
+            }
+            else if(event->matches(QKeySequence::MoveToEndOfLine)){
+                setCursorPos(cursorPos_ | ((asciiCharInLine() * 2) - 1));
+                resetSelection(cursorPos_);
+                setVisible = true;
+            }
+            else if(event->matches(QKeySequence::MoveToStartOfLine)){
+                setCursorPos(cursorPos_ | (cursorPos_ % (asciiCharInLine() * 2)));
+                resetSelection(cursorPos_);
+                setVisible = true;
+            }
+            else if(event->matches(QKeySequence::MoveToPreviousLine)){
+                setCursorPos(cursorPos_ - asciiCharInLine() * 2);
+                resetSelection(cursorPos_);
+                setVisible = true;
+            }
+            else if(event->matches(QKeySequence::MoveToNextLine)){
+                setCursorPos(cursorPos_ + asciiCharInLine() * 2);
+                resetSelection(cursorPos_);
+                setVisible = true;
+            }
+            else if(event->matches(QKeySequence::MoveToNextPage)){
+                setCursorPos(cursorPos_ + (viewport()->height() / charHeight() - 1) * 2 * asciiCharInLine());
+                resetSelection(cursorPos_);
+                setVisible = true;
+            }
+            else if(event->matches(QKeySequence::MoveToPreviousPage)){
+                setCursorPos(cursorPos_ - (viewport()->height() / charHeight() - 1) * 2 * asciiCharInLine());
+                resetSelection(cursorPos_);
+                setVisible = true;
+            }
+            else if(event->matches(QKeySequence::MoveToEndOfDocument)){
+                setCursorPos(data.size() * 2);
+                resetSelection(cursorPos_);
+                setVisible = true;
+            }
+            else if(event->matches(QKeySequence::MoveToStartOfDocument)){
+                setCursorPos(0);
+                resetSelection(cursorPos_);
+                setVisible = true;
+            }
+            else if (event->matches(QKeySequence::SelectAll)){
+                resetSelection(0);
+                setSelection(2 * data.size() + 1);
+                setVisible = true;
+            }
+            else if (event->matches(QKeySequence::SelectNextChar)){
+                int pos = cursorPos_ + 1;
+                setCursorPos(pos);
+                setSelection(pos);
+                setVisible = true;
+            }
+            else if (event->matches(QKeySequence::SelectPreviousChar)){
+                int pos = cursorPos_ - 1;
+                setSelection(pos);
+                setCursorPos(pos);
+                setVisible = true;
+            }
+            else if (event->matches(QKeySequence::SelectEndOfLine)){
+                int pos = cursorPos_ - (cursorPos_ % (2 * asciiCharInLine())) + (2 * asciiCharInLine());
+                setCursorPos(pos);
+                setSelection(pos);
+                setVisible = true;
+            }
+            else if (event->matches(QKeySequence::SelectStartOfLine)){
+                int pos = cursorPos_ - (cursorPos_ % (2 * asciiCharInLine()));
+                setCursorPos(pos);
+                setSelection(pos);
+                setVisible = true;
+            }
+            else if (event->matches(QKeySequence::SelectPreviousLine)){
+                int pos = cursorPos_ - (2 * asciiCharInLine());
+                setCursorPos(pos);
+                setSelection(pos);
+                setVisible = true;
+            }
+            else if (event->matches(QKeySequence::SelectNextLine)){
+                int pos = cursorPos_ + (2 * asciiCharInLine());
+                setCursorPos(pos);
+                setSelection(pos);
+                setVisible = true;
+            }
+            else if (event->matches(QKeySequence::SelectNextPage)){
+                int pos = cursorPos_ + (((viewport()->height() / charHeight()) - 1) * 2 * asciiCharInLine());
+                setCursorPos(pos);
+                setSelection(pos);
+                setVisible = true;
+            }
+            else if (event->matches(QKeySequence::SelectPreviousPage)){
+                int pos = cursorPos_ - (((viewport()->height() / charHeight()) - 1) * 2 * asciiCharInLine());
+                setCursorPos(pos);
+                setSelection(pos);
+                setVisible = true;
+            }
+            else if (event->matches(QKeySequence::SelectEndOfDocument)){
+                int pos = data.size() * 2;
+                setCursorPos(pos);
+                setSelection(pos);
+                setVisible = true;
+            }
+            else if (event->matches(QKeySequence::SelectStartOfDocument)){
+                int pos = 0;
+                setCursorPos(pos);
+                setSelection(pos);
+                setVisible = true;
+            }
+
+            if(setVisible){
+                ensureVisible();
+                forceRepaint();
+            }
         }
 
-        if(setVisible){
-            ensureVisible();
-            forceRepaint();
-        }
-
-        QAbstractScrollArea::keyPressEvent(event);
-    }
-
-    void FastoHexEdit::resizeEvent(QResizeEvent *event)
-    {
-        QAbstractScrollArea::resizeEvent(event);
+        QPlainTextEdit::keyPressEvent(event);
     }
 
     void FastoHexEdit::mouseMoveEvent(QMouseEvent * event)
     {
-        int actPos = cursorPos(event->pos());
-        setCursorPos(actPos);
-        setSelection(actPos);
-        forceRepaint();
+        if(mode_ == HEX_MODE){
+            int actPos = cursorPos(event->pos());
+            setCursorPos(actPos);
+            setSelection(actPos);
+            forceRepaint();
+        }
 
-        QAbstractScrollArea::mouseMoveEvent(event);
+        QPlainTextEdit::mouseMoveEvent(event);
     }
 
     void FastoHexEdit::mousePressEvent(QMouseEvent * event)
     {
-        if(event->button() == Qt::LeftButton){
+        if(event->button() == Qt::LeftButton && mode_ == HEX_MODE){
             int cPos = cursorPos(event->pos());
             setSelection(cPos);
             setCursorPos(cPos);
             forceRepaint();
         }
 
-        QAbstractScrollArea::mousePressEvent(event);
+        QPlainTextEdit::mousePressEvent(event);
     }
 
     void FastoHexEdit::mouseReleaseEvent(QMouseEvent *event)
     {
-        if(event->button() == Qt::LeftButton){
+        if(event->button() == Qt::LeftButton && mode_ == HEX_MODE){
             int cPos = cursorPos(event->pos());
             resetSelection(cPos);
         }
 
-        QAbstractScrollArea::mouseReleaseEvent(event);
+        QPlainTextEdit::mouseReleaseEvent(event);
     }
 
     void FastoHexEdit::forceRepaint()
@@ -341,10 +325,12 @@ namespace fastonosql
         int wid = width() - asciiCharInLine();
         if ((position.x() >= 0) && (position.x() < wid)){
             int x = position.x() / charW;
-            if ((x % 3) == 0)
+            if ((x % 3) == 0){
                 x = (x / 3) * 2;
-            else
+            }
+            else {
                 x = ((x / 3) * 2) + 1;
+            }
 
             int firstLineIdx = verticalScrollBar()->value();
             int y = (position.y() / charH) * 2 * asciiCharInLine();
@@ -384,8 +370,9 @@ namespace fastonosql
         if(position < 0)
             position = 0;
 
-        int maxPos = data_.size() * 2;
-        if(data_.size() % asciiCharInLine())
+        QString data = text();
+        int maxPos = data.size() * 2;
+        if(data.size() % asciiCharInLine())
             maxPos++;
 
         if(position > maxPos)

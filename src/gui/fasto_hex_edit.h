@@ -1,33 +1,33 @@
 #pragma once
 
-#include <QAbstractScrollArea>
+#include <QPlainTextEdit>
 #include <QByteArray>
 
 namespace fastonosql
 {
     class FastoHexEdit
-            : public QAbstractScrollArea
+            : public QPlainTextEdit
     {
             Q_OBJECT
         public:
             FastoHexEdit(QWidget *parent = 0);
 
-            QByteArray data() const;
             enum DisplayMode
             {
                 TEXT_MODE,
                 HEX_MODE
             };
 
+            QString text() const;
+
         public Q_SLOTS:
             void setMode(DisplayMode mode);
-            void setData(const QByteArray &arr);
+            void setText(const QString &arr);
             void clear();
 
         protected:
             virtual void paintEvent(QPaintEvent *event);
             virtual void keyPressEvent(QKeyEvent *event);
-            virtual void resizeEvent(QResizeEvent *event);
 
             virtual void mouseMoveEvent(QMouseEvent *event);
             virtual void mousePressEvent(QMouseEvent *event);
@@ -37,7 +37,6 @@ namespace fastonosql
             void forceRepaint();
 
             DisplayMode mode_;
-            QByteArray data_;
 
             int charWidth() const;
             int charHeight() const;
@@ -49,7 +48,6 @@ namespace fastonosql
             size_t selectInit_;
             size_t cursorPos_;
 
-            QSize fullSize() const;
             void resetSelection(int pos);
             void setSelection(int pos);
             void ensureVisible();

@@ -293,7 +293,7 @@ namespace fastonosql
 
     void FastoEditorOutput::setReadOnly(bool ro)
     {
-        //editor_->setReadOnly(ro);
+        editor_->setReadOnly(ro);
     }
 
     void FastoEditorOutput::viewChanged(int viewMethod)
@@ -377,7 +377,7 @@ namespace fastonosql
 
     QString FastoEditorOutput::text() const
     {
-        return editor_->data();
+        return editor_->text();
     }
 
     void FastoEditorOutput::layoutChanged()
@@ -435,7 +435,7 @@ namespace fastonosql
         }
 
         editor_->setMode(viewMethod_ == HEX ? FastoHexEdit::HEX_MODE : FastoHexEdit::TEXT_MODE );
-        editor_->setData(result.toLocal8Bit());
+        editor_->setText(result.toLocal8Bit());
     }
 
     FastoEditorShell::FastoEditorShell(bool showAutoCompl, QWidget* parent)
