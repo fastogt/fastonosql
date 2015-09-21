@@ -43,7 +43,7 @@ namespace fastonosql
             return common::Value::TYPE_NULL;
         }
 
-        return value_->getType();
+        return value_->type();
     }
 
     bool FastoCommonItem::isReadOnly() const

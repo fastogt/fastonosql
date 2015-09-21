@@ -14,6 +14,7 @@
 
 #include "gui/fasto_common_item.h"
 #include "gui/gui_factory.h"
+#include "gui/fasto_hex_edit.h"
 #include "fasto/qt/gui/fasto_scintilla.h"
 
 #include "translations/global.h"
@@ -229,9 +230,17 @@ namespace fastonosql
     }
 
     FastoEditorOutput::FastoEditorOutput(const QString &delemitr, QWidget *parent)
-        : FastoEditor(parent), model_(NULL), viewMethod_(JSON), delemitr_(delemitr)
+        : QWidget(parent), model_(NULL), viewMethod_(JSON), delemitr_(delemitr)
     {
+        QFont font = GuiFactory::instance().font();
+        setFont(font);
 
+        editor_ = new FastoHexEdit;
+
+        QVBoxLayout *mainL = new QVBoxLayout;
+        mainL->addWidget(editor_);
+        mainL->setContentsMargins(0, 0, 0, 0);
+        setLayout(mainL);
     }
 
     void FastoEditorOutput::setModel(QAbstractItemModel* model)
@@ -280,6 +289,11 @@ namespace fastonosql
         }
 
         reset();
+    }
+
+    void FastoEditorOutput::setReadOnly(bool ro)
+    {
+        //editor_->setReadOnly(ro);
     }
 
     void FastoEditorOutput::viewChanged(int viewMethod)
@@ -361,9 +375,14 @@ namespace fastonosql
         return viewMethod_;
     }
 
+    QString FastoEditorOutput::text() const
+    {
+        return editor_->data();
+    }
+
     void FastoEditorOutput::layoutChanged()
     {
-        clear();
+        editor_->clear();
         if(!model_){
             return;
         }
@@ -403,12 +422,11 @@ namespace fastonosql
                 result += common::escapedText(raw);
             }
             else if(viewMethod_ == HEX){
-                QString hex = toHex(child);
-                result += common::escapedText(hex);
+                result += toRaw(child);
             }
             else if(viewMethod_ == MSGPACK){
-                QString hex = fromHexMsgPack(child);
-                result += common::escapedText(hex);
+                QString msgp = fromHexMsgPack(child);
+                result += common::escapedText(msgp);
             }
             else if(viewMethod_ == GZIP){
                 QString gzip = fromGzip(child);
@@ -416,7 +434,8 @@ namespace fastonosql
             }
         }
 
-        setText(result);
+        editor_->setMode(viewMethod_ == HEX ? FastoHexEdit::HEX_MODE : FastoHexEdit::TEXT_MODE );
+        editor_->setData(result.toLocal8Bit());
     }
 
     FastoEditorShell::FastoEditorShell(bool showAutoCompl, QWidget* parent)

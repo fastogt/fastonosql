@@ -31,6 +31,8 @@ namespace fasto
 
 namespace fastonosql
 {
+    class FastoHexEdit;
+
     class FastoEditor
         : public QWidget
     {
@@ -90,7 +92,7 @@ namespace fastonosql
     };
 
     class FastoEditorOutput
-            : public FastoEditor
+            : public QWidget
     {
         Q_OBJECT
     public:
@@ -101,8 +103,13 @@ namespace fastonosql
         QModelIndex selectedItem(int column) const;
         bool setData(const QModelIndex& index, const QVariant& value);
         int viewMethod() const;
+        QString text() const;
+
+    Q_SIGNALS:
+        void textChanged();
 
     public Q_SLOTS:
+        void setReadOnly(bool ro);
         void viewChanged(int viewMethod);
 
     private Q_SLOTS:
@@ -119,6 +126,7 @@ namespace fastonosql
         void layoutChanged();
 
     private:
+        FastoHexEdit *editor_;
         QAbstractItemModel* model_;
         int viewMethod_;
         const QString delemitr_;

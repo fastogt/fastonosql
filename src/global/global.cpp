@@ -25,7 +25,7 @@ namespace fastonosql
             return common::Value::TYPE_NULL;
         }
 
-        return value_->getType();
+        return value_->type();
     }
 
     std::string FastoObject::toString() const
@@ -254,7 +254,7 @@ namespace common
             return std::string();
         }
 
-        common::Value::Type t = value->getType();
+        common::Value::Type t = value->type();
 
         if(t == common::Value::TYPE_ARRAY){
             return convertToString(dynamic_cast<ArrayValue*>(value), delemitr);

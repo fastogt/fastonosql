@@ -57,7 +57,7 @@ namespace fastonosql
             return common::Value::TYPE_NULL;
         }
 
-        return value_->getType();
+        return value_->type();
     }
 
     void NDbKValue::setTTL(int32_t ttl)
@@ -300,7 +300,7 @@ namespace fastonosql
 
         common::ArrayValue* ar = array->array();
         if(ar){
-            for(int i = 0; i < ar->getSize(); i+=2){
+            for(int i = 0; i < ar->size(); i+=2){
                 std::string c1;
                 std::string c2;
                 bool res = ar->getString(i, &c1);

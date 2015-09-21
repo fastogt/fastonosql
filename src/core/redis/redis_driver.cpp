@@ -2289,7 +2289,7 @@ namespace fastonosql
                     }
 
                     DataBaseInfoSPtr cdbInf = currentDatabaseInfo();
-                    if(ar->getSize() == 2){
+                    if(ar->size() == 2){
                         std::string scountDb;
                         bool isok = ar->getString(1, &scountDb);
                         if(isok){
@@ -2342,7 +2342,7 @@ namespace fastonosql
                     }
 
                     common::ArrayValue* arm = array->array();
-                    if(!arm->getSize()){
+                    if(!arm->size()){
                         goto done;
                     }
 
@@ -2367,8 +2367,8 @@ namespace fastonosql
 
                     common::ArrayValue* ar = arr->array();
                     std::vector<FastoObjectCommandIPtr> cmds;
-                    cmds.reserve(ar->getSize() * 2);
-                    for(int i = 0; i < ar->getSize(); ++i){
+                    cmds.reserve(ar->size() * 2);
+                    for(int i = 0; i < ar->size(); ++i){
                         std::string key;
                         bool isok = ar->getString(i, &key);
                         DCHECK(isok);

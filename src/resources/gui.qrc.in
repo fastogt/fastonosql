@@ -24,6 +24,7 @@
     <file>@PROJECT_NAME_LOWERCASE@/images/64x64/hash.png</file>
     <file>@PROJECT_NAME_LOWERCASE@/images/64x64/double.png</file>
     <file>@PROJECT_NAME_LOWERCASE@/images/64x64/bool.png</file>
+    <file>@PROJECT_NAME_LOWERCASE@/images/64x64/byte.png</file>
     <file>@PROJECT_NAME_LOWERCASE@/images/64x64/integer.png</file>
 
     <file>@PROJECT_NAME_LOWERCASE@/images/64x64/import.png</file>

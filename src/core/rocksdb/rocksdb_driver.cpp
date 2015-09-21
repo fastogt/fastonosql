@@ -735,7 +735,7 @@ namespace fastonosql
                         goto done;
                     }
 
-                    for(int i = 0; i < ar->getSize(); ++i)
+                    for(int i = 0; i < ar->size(); ++i)
                     {
                         std::string key;
                         bool isok = ar->getString(i, &key);

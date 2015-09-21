@@ -62,7 +62,7 @@ struct WinsockInit {
             cstamp.resize(cstamp.size() - 1);
         }
 
-        timeOut = common::convertFromString<common::time64_t>((const char*)(cstamp.c_str() + 1));
+        timeOut = common::convertFromString<common::time64_t>((const char*)(cstamp.data() + 1));
 
         return timeOut != 0;
     }
@@ -481,7 +481,7 @@ namespace fastonosql
                     dataInfo.clear();
                 }
                 else{
-                    dataInfo += data;
+                    dataInfo.insert(dataInfo.end(), data.begin(), data.end());
                 }
             }
             res.setInfos(tmpInfos);

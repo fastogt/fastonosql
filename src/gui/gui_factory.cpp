@@ -208,6 +208,9 @@ namespace fastonosql
         case common::Value::TYPE_STRING:
             static QIcon s(":" PROJECT_NAME_LOWERCASE "/images/64x64/string.png");
             return s;
+        case common::Value::TYPE_BYTE_ARRAY:
+            static QIcon by(":" PROJECT_NAME_LOWERCASE "/images/64x64/byte.png");
+            return by;
         case common::Value::TYPE_SET:
         case common::Value::TYPE_ARRAY:
             static QIcon a(":" PROJECT_NAME_LOWERCASE "/images/64x64/array.png");
