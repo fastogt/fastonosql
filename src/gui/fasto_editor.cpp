@@ -435,7 +435,7 @@ namespace fastonosql
         }
 
         editor_->setMode(viewMethod_ == HEX ? FastoHexEdit::HEX_MODE : FastoHexEdit::TEXT_MODE );
-        editor_->setText(result.toLocal8Bit());
+        editor_->setData(result.toLocal8Bit());
     }
 
     FastoEditorShell::FastoEditorShell(bool showAutoCompl, QWidget* parent)
