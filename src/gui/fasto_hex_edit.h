@@ -34,13 +34,23 @@ namespace fastonosql
         protected:
             virtual void paintEvent(QPaintEvent *event);
 
+            virtual void mousePressEvent(QMouseEvent* event);
+            virtual void mouseMoveEvent(QMouseEvent* event);
+            virtual void mouseReleaseEvent(QMouseEvent* event);
+
         private:
+            static QRect stableRect(const QRect& rect);
+            QSize fullSize() const;
+
             QByteArray data_;
             DisplayMode mode_;
+
+            bool inSelectionState_;
 
             int charWidth() const;
             int charHeight() const;
 
             int asciiCharInLine(int wid) const;
+            int positionAtPoint(const QPoint &point) const;
     };
 }

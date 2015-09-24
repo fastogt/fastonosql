@@ -15,7 +15,7 @@ namespace
 namespace fastonosql
 {
     FastoHexEdit::FastoHexEdit(QWidget *parent)
-        : base_class(parent), mode_(TEXT_MODE)
+        : base_class(parent), mode_(TEXT_MODE), inSelectionState_(false)
     {
         setFocusPolicy(Qt::StrongFocus);
     }
@@ -74,22 +74,52 @@ namespace fastonosql
         return res;
     }
 
+    QSize FastoHexEdit::fullSize() const
+    {
+        const int charW = charWidth();
+        const int charH = charHeight();
+
+        const QRect rect = stableRect(viewport()->rect());
+        const int yPosStart = rect.top();
+        const int xPosStart = rect.left();
+        const int yPosEnd = rect.bottom();
+        const int xPosEnd = rect.right();
+
+        const int wid = xPosEnd - xPosStart;
+        const int widchars = wid - TextMarginXY * 2;
+        const int xPosAscii = widchars/4 * 3; //line pos
+
+        int acharInLine = asciiCharInLine(widchars);
+
+        int width = xPosAscii + (acharInLine * charW);
+        int height = data_.size() / acharInLine;
+        if(data_.size() % acharInLine)
+            height++;
+
+        height *= charH;
+
+        return QSize(width, height);
+    }
+
     void FastoHexEdit::paintEvent(QPaintEvent *event)
     {
         if(mode_ == HEX_MODE){
             QPainter painter(viewport());
-            const QRect rect = event->rect();
+
             QSize areaSize = viewport()->size();
+            QSize widgetSize = fullSize();
+
             const int charW = charWidth();
             const int charH = charHeight();
 
             int firstLineIdx = verticalScrollBar()->value();
             int lastLineIdx = firstLineIdx + areaSize.height() / charH;
 
-            const int yPosStart = rect.top() + TextMarginXY;
-            const int xPosStart = rect.left() + TextMarginXY;
-            const int yPosEnd = rect.bottom() - TextMarginXY;
-            const int xPosEnd = rect.right() - TextMarginXY;
+            const QRect rect = stableRect(event->rect());
+            const int yPosStart = rect.top();
+            const int xPosStart = rect.left();
+            const int yPosEnd = rect.bottom();
+            const int xPosEnd = rect.right();
 
             const int wid = xPosEnd - xPosStart;
             const int height = yPosEnd - yPosStart;
@@ -109,12 +139,11 @@ namespace fastonosql
                     lastLineIdx++;
                 }
             }
-
             verticalScrollBar()->setPageStep(areaSize.height() / charH);
-            verticalScrollBar()->setRange(0, (lastLineIdx * charH - areaSize.height()) / charH + 1);
+            verticalScrollBar()->setRange(0, (widgetSize.height() - areaSize.height()) / charH + 1);
 
             painter.setPen(Qt::gray);
-            painter.drawLine(xPosAscii, rect.top(), xPosAscii, rect.bottom());
+            painter.drawLine(xPosAscii, yPosStart, xPosAscii, yPosEnd);
 
             painter.setPen(Qt::black);
 
@@ -145,5 +174,88 @@ namespace fastonosql
         else{
             base_class::paintEvent(event);
         }
+    }
+
+    void FastoHexEdit::mousePressEvent(QMouseEvent* event)
+    {
+        if(mode_ == HEX_MODE){
+            if(event->button() == Qt::LeftButton){
+                inSelectionState_ = true;
+            }
+        }
+
+        base_class::mousePressEvent(event);
+    }
+
+    void FastoHexEdit::mouseMoveEvent(QMouseEvent* event)
+    {
+        if(mode_ == HEX_MODE && inSelectionState_){
+        }
+
+        base_class::mouseMoveEvent(event);
+    }
+
+    void FastoHexEdit::mouseReleaseEvent(QMouseEvent* event)
+    {
+        if(mode_ == HEX_MODE){
+            if((event->button() == Qt::LeftButton) && inSelectionState_){
+                inSelectionState_ = false;
+            }
+        }
+
+        base_class::mouseReleaseEvent(event);
+    }
+
+    QRect FastoHexEdit::stableRect(const QRect& rect)
+    {
+        const int yPosStart = rect.top() + TextMarginXY;
+        const int xPosStart = rect.left() + TextMarginXY;
+        const int yPosEnd = rect.bottom() - TextMarginXY;
+        const int xPosEnd = rect.right() - TextMarginXY;
+        return QRect(QPoint(xPosStart, yPosStart), QPoint(xPosEnd, yPosEnd));
+    }
+
+    int FastoHexEdit::positionAtPoint(const QPoint &point) const
+    {
+        const int px = point.x();
+        const int py = point.y();
+        const int charW = charWidth();
+        const int charH = charHeight();
+
+        const QRect rect = stableRect(viewport()->rect());
+        const int yPosStart = rect.top();
+        const int xPosStart = rect.left();
+        const int yPosEnd = rect.bottom();
+        const int xPosEnd = rect.right();
+
+        const int wid = xPosEnd - xPosStart;
+        const int widchars = wid - TextMarginXY * 2;
+        const int xPosAscii = widchars/4 * 3; //line pos
+
+        int acharInLine = asciiCharInLine(widchars);
+        if(acharInLine < 0){
+            acharInLine = 0;
+        }
+
+        if ((px >= xPosStart && px < xPosAscii) && (py >= yPosStart && py < yPosEnd)){
+            int posx = (xPosStart + px) / charW;
+            int div = posx / 3;
+            int mod = posx % 3;
+
+            int pos = 0; //symbol pos in data;
+            if(mod == 0){
+                pos = div * 2;
+            }
+            else{
+                pos = (div * 2) + 1;
+            }
+
+            int firstLineIdx = verticalScrollBar()->value();
+            int posy = (py - yPosStart) / charH;
+            pos = pos + (firstLineIdx + posy) * acharInLine * 2;
+            return pos;
+        }
+
+        return -1;
     }
 }
