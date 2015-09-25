@@ -29,8 +29,8 @@ namespace fastonosql
         }
 
         memcachedConfig inf = settings->info();
-        const char* user = inf.user_.c_str();
-        const char* passwd = inf.password_.c_str();
+        const char* user = common::utils::c_strornull(inf.user_);
+        const char* passwd = common::utils::c_strornull(inf.password_);
         const char* host = inf.hostip_.c_str();
         in_port_t hostport = inf.hostport_;
 

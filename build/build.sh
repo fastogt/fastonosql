@@ -97,7 +97,7 @@ fi
 
 echo ========= START BUILDING ===========
 echo platform: $platform
-echo arch: $os_arch
+echo arch: $os_arch bit
 echo branding file: $branding_file
 echo branding complex file: $branding_complex_file
 echo host: $unamestr
