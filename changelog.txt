@@ -1,6 +1,8 @@
 0.5.6
 [Alexandr Topilski]
 - Font selection for widgets
+- [Memcached] memcached connection fails with UNKNOWN READ #2 
+- Hex view for output data
 
 0.5.5 / September 19, 2015
 [Alexandr Topilski]

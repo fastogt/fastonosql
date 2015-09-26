@@ -162,7 +162,7 @@ namespace fastonosql
                     painter.drawText(hexrect, Qt::AlignLeft, val);
                     char ch = part[i];
                     if ((ch < 0x20) || (ch > 0x7e)){
-                        part[i] = ' ';
+                        part[i] = '.';
                     }
                 }
 

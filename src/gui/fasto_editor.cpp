@@ -236,6 +236,7 @@ namespace fastonosql
         setFont(font);
 
         editor_ = new FastoHexEdit;
+        VERIFY(connect(editor_, &FastoHexEdit::textChanged, this, &FastoEditorOutput::textChanged));
 
         QVBoxLayout *mainL = new QVBoxLayout;
         mainL->addWidget(editor_);
