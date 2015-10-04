@@ -756,29 +756,30 @@ namespace fastonosql
 #else
         #error please specify url and port of version information
 #endif
-        bool res = s.connect();
-        if(!res){
-            emit versionAvailibled(res, QString());
+        common::Error err = s.connect();
+        if(err && err->isError()){
+            emit versionAvailibled(false, QString());
             return;
         }
 #if defined(FASTONOSQL)
-        res = s.write(GET_FASTONOSQL_VERSION, sizeof(GET_FASTONOSQL_VERSION));
+        err = s.write(GET_FASTONOSQL_VERSION, sizeof(GET_FASTONOSQL_VERSION));
 #elif defined(FASTOREDIS)
-        res = s.write(GET_FASTOREDIS_VERSION, sizeof(GET_FASTOREDIS_VERSION));
+        err = s.write(GET_FASTOREDIS_VERSION, sizeof(GET_FASTOREDIS_VERSION));
 #else
         #error please specify request to get version information
 #endif
-        if(!res){
-            emit versionAvailibled(res, QString());
+        if(err && err->isError()){
+            emit versionAvailibled(false, QString());
             s.close();
             return;
         }
 
         char version[128] = {0};
-        res = s.read(version, 128);
+        ssize_t nread = 0;
+        err = s.read(version, 128, nread);
 
         QString vers = common::convertFromString<QString>(version);
-        emit versionAvailibled(res, vers);
+        emit versionAvailibled(!(err && err->isError()), vers);
 
         s.close();
         return;
