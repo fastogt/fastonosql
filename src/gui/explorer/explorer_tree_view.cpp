@@ -651,7 +651,7 @@ namespace fastonosql
 
     void ExplorerTreeView::finishLoadDatabases(const EventsInfo::LoadDatabasesInfoResponce& res)
     {
-        common::ErrorValueSPtr er = res.errorInfo();
+        common::Error er = res.errorInfo();
         if(er && er->isError()){
             return;
         }
@@ -683,7 +683,7 @@ namespace fastonosql
 
     void ExplorerTreeView::finishSetDefaultDatabase(const EventsInfo::SetDefaultDatabaseResponce& res)
     {
-        common::ErrorValueSPtr er = res.errorInfo();
+        common::Error er = res.errorInfo();
         if(er && er->isError()){
             return;
         }
@@ -711,7 +711,7 @@ namespace fastonosql
 
     void ExplorerTreeView::finishLoadDatabaseContent(const EventsInfo::LoadDatabaseContentResponce& res)
     {
-        common::ErrorValueSPtr er = res.errorInfo();
+        common::Error er = res.errorInfo();
         if(er && er->isError()){
             return;
         }
@@ -743,7 +743,7 @@ namespace fastonosql
 
     void ExplorerTreeView::finishExecuteCommand(const EventsInfo::CommandResponce& res)
     {
-        common::ErrorValueSPtr er = res.errorInfo();
+        common::Error er = res.errorInfo();
         if(er && er->isError()){
             return;
         }

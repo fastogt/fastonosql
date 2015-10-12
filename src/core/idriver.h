@@ -39,7 +39,7 @@ namespace fastonosql
 
         void start();
         void stop();
-        common::ErrorValueSPtr commandByType(CommandKeySPtr command, std::string& cmdstring) const WARN_UNUSED_RESULT;
+        common::Error commandByType(CommandKeySPtr command, std::string& cmdstring) const WARN_UNUSED_RESULT;
 
         virtual void interrupt();
         virtual bool isConnected() const = 0;
@@ -110,10 +110,10 @@ namespace fastonosql
 
         void setCurrentDatabaseInfo(DataBaseInfo* inf);
 
-        common::ErrorValueSPtr execute(FastoObjectCommand* cmd) WARN_UNUSED_RESULT;
+        common::Error execute(FastoObjectCommand* cmd) WARN_UNUSED_RESULT;
 
     private:
-        virtual common::ErrorValueSPtr executeImpl(FastoObject* out, int argc, char **argv) = 0;
+        virtual common::Error executeImpl(FastoObject* out, int argc, char **argv) = 0;
 
         // handle info events
         void handleLoadServerInfoHistoryEvent(events::ServerInfoHistoryRequestEvent *ev);
@@ -127,19 +127,19 @@ namespace fastonosql
 
         // internal methods
         virtual ServerInfoSPtr makeServerInfoFromString(const std::string& val) = 0;
-        virtual common::ErrorValueSPtr serverInfo(ServerInfo** info) = 0;
-        virtual common::ErrorValueSPtr serverDiscoveryInfo(ServerInfo** sinfo, ServerDiscoveryInfo** dinfo, DataBaseInfo** dbinfo) = 0;
-        virtual common::ErrorValueSPtr currentDataBaseInfo(DataBaseInfo** info) = 0;
+        virtual common::Error serverInfo(ServerInfo** info) = 0;
+        virtual common::Error serverDiscoveryInfo(ServerInfo** sinfo, ServerDiscoveryInfo** dinfo, DataBaseInfo** dbinfo) = 0;
+        virtual common::Error currentDataBaseInfo(DataBaseInfo** info) = 0;
         virtual void initImpl() = 0;
         virtual void clearImpl() = 0;
 
         virtual void handleProcessCommandLineArgs(events::ProcessConfigArgsRequestEvent* ev) = 0;
 
         // command impl methods
-        virtual common::ErrorValueSPtr commandDeleteImpl(CommandDeleteKey* command, std::string& cmdstring) const WARN_UNUSED_RESULT = 0;
-        virtual common::ErrorValueSPtr commandLoadImpl(CommandLoadKey* command, std::string& cmdstring) const WARN_UNUSED_RESULT = 0;
-        virtual common::ErrorValueSPtr commandCreateImpl(CommandCreateKey* command, std::string& cmdstring) const WARN_UNUSED_RESULT = 0;
-        virtual common::ErrorValueSPtr commandChangeTTLImpl(CommandChangeTTL* command, std::string& cmdstring) const WARN_UNUSED_RESULT = 0;
+        virtual common::Error commandDeleteImpl(CommandDeleteKey* command, std::string& cmdstring) const WARN_UNUSED_RESULT = 0;
+        virtual common::Error commandLoadImpl(CommandLoadKey* command, std::string& cmdstring) const WARN_UNUSED_RESULT = 0;
+        virtual common::Error commandCreateImpl(CommandCreateKey* command, std::string& cmdstring) const WARN_UNUSED_RESULT = 0;
+        virtual common::Error commandChangeTTLImpl(CommandChangeTTL* command, std::string& cmdstring) const WARN_UNUSED_RESULT = 0;
 
     private:
         ServerInfoSPtr serverInfo_;

@@ -148,7 +148,7 @@ namespace fastonosql
         return cl;
     }
 
-    common::ErrorValueSPtr ServersManager::testConnection(IConnectionSettingsBaseSPtr connection)
+    common::Error ServersManager::testConnection(IConnectionSettingsBaseSPtr connection)
     {
         if(!connection){
             return common::make_error_value("Invalid input argument", common::ErrorValue::E_ERROR);
@@ -193,7 +193,7 @@ namespace fastonosql
         return common::make_error_value("Invalid setting type", common::ErrorValue::E_ERROR);
     }
 
-    common::ErrorValueSPtr ServersManager::discoveryConnection(IConnectionSettingsBaseSPtr connection, std::vector<ServerDiscoveryInfoSPtr>& inf)
+    common::Error ServersManager::discoveryConnection(IConnectionSettingsBaseSPtr connection, std::vector<ServerDiscoveryInfoSPtr>& inf)
     {
         if(!connection){
             return common::make_error_value("Invalid input argument", common::ErrorValue::E_ERROR);

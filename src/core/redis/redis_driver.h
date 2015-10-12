@@ -394,8 +394,8 @@ namespace fastonosql
                     UNDEFINED_STR_IN_PROGRESS, UNDEFINED_SINCE, UNDEFINED_EXAMPLE_STR, 0, 0)
     };
 
-    common::ErrorValueSPtr testConnection(RedisConnectionSettings* settings);
-    common::ErrorValueSPtr discoveryConnection(RedisConnectionSettings* settings, std::vector<ServerDiscoveryInfoSPtr>& infos);
+    common::Error testConnection(RedisConnectionSettings* settings);
+    common::Error discoveryConnection(RedisConnectionSettings* settings, std::vector<ServerDiscoveryInfoSPtr>& infos);
 
     class RedisDriver
             : public IDriver
@@ -416,11 +416,11 @@ namespace fastonosql
         virtual void initImpl();
         virtual void clearImpl();
 
-        virtual common::ErrorValueSPtr executeImpl(FastoObject* out, int argc, char **argv);
+        virtual common::Error executeImpl(FastoObject* out, int argc, char **argv);
 
-        virtual common::ErrorValueSPtr serverInfo(ServerInfo** info);
-        virtual common::ErrorValueSPtr serverDiscoveryInfo(ServerInfo** sinfo, ServerDiscoveryInfo** dinfo, DataBaseInfo** dbinfo);
-        virtual common::ErrorValueSPtr currentDataBaseInfo(DataBaseInfo** info);
+        virtual common::Error serverInfo(ServerInfo** info);
+        virtual common::Error serverDiscoveryInfo(ServerInfo** sinfo, ServerDiscoveryInfo** dinfo, DataBaseInfo** dbinfo);
+        virtual common::Error currentDataBaseInfo(DataBaseInfo** info);
 
         virtual void handleConnectEvent(events::ConnectRequestEvent* ev);
         virtual void handleDisconnectEvent(events::DisconnectRequestEvent* ev);
@@ -436,10 +436,10 @@ namespace fastonosql
         virtual void handleChangePasswordEvent(events::ChangePasswordRequestEvent* ev);
         virtual void handleChangeMaxConnectionEvent(events::ChangeMaxConnectionRequestEvent* ev);
 
-        virtual common::ErrorValueSPtr commandDeleteImpl(CommandDeleteKey* command, std::string& cmdstring) const WARN_UNUSED_RESULT;
-        virtual common::ErrorValueSPtr commandLoadImpl(CommandLoadKey* command, std::string& cmdstring) const WARN_UNUSED_RESULT;
-        virtual common::ErrorValueSPtr commandCreateImpl(CommandCreateKey* command, std::string& cmdstring) const WARN_UNUSED_RESULT;
-        virtual common::ErrorValueSPtr commandChangeTTLImpl(CommandChangeTTL* command, std::string& cmdstring) const WARN_UNUSED_RESULT;
+        virtual common::Error commandDeleteImpl(CommandDeleteKey* command, std::string& cmdstring) const WARN_UNUSED_RESULT;
+        virtual common::Error commandLoadImpl(CommandLoadKey* command, std::string& cmdstring) const WARN_UNUSED_RESULT;
+        virtual common::Error commandCreateImpl(CommandCreateKey* command, std::string& cmdstring) const WARN_UNUSED_RESULT;
+        virtual common::Error commandChangeTTLImpl(CommandChangeTTL* command, std::string& cmdstring) const WARN_UNUSED_RESULT;
 
         virtual void handleLoadDatabaseContentEvent(events::LoadDatabaseContentRequestEvent* ev);
         virtual void handleSetDefaultDatabaseEvent(events::SetDefaultDatabaseRequestEvent* ev);
@@ -451,12 +451,12 @@ namespace fastonosql
         struct pimpl;
         pimpl* const impl_;
 
-        common::ErrorValueSPtr interacteveMode(events::ProcessConfigArgsRequestEvent* ev);
-        common::ErrorValueSPtr latencyMode(events::ProcessConfigArgsRequestEvent* ev);
-        common::ErrorValueSPtr slaveMode(events::ProcessConfigArgsRequestEvent* ev);
-        common::ErrorValueSPtr getRDBMode(events::ProcessConfigArgsRequestEvent* ev);
-        common::ErrorValueSPtr findBigKeysMode(events::ProcessConfigArgsRequestEvent* ev);
-        common::ErrorValueSPtr statMode(events::ProcessConfigArgsRequestEvent* ev);
-        common::ErrorValueSPtr scanMode(events::ProcessConfigArgsRequestEvent* ev);
+        common::Error interacteveMode(events::ProcessConfigArgsRequestEvent* ev);
+        common::Error latencyMode(events::ProcessConfigArgsRequestEvent* ev);
+        common::Error slaveMode(events::ProcessConfigArgsRequestEvent* ev);
+        common::Error getRDBMode(events::ProcessConfigArgsRequestEvent* ev);
+        common::Error findBigKeysMode(events::ProcessConfigArgsRequestEvent* ev);
+        common::Error statMode(events::ProcessConfigArgsRequestEvent* ev);
+        common::Error scanMode(events::ProcessConfigArgsRequestEvent* ev);
     };
 }

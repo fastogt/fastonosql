@@ -73,7 +73,7 @@ namespace fastonosql
     void ChangePasswordServerDialog::finishChangePassword(const EventsInfo::ChangePasswordResponce& res)
     {
         glassWidget_->stop();
-        common::ErrorValueSPtr er = res.errorInfo();
+        common::Error er = res.errorInfo();
         if(er && er->isError()){
             return;
         }

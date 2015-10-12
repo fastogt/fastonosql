@@ -424,7 +424,7 @@ namespace fastonosql
             }
 
             std::string edata;
-            common::ErrorValueSPtr er = hexEnc->decode(data, edata);
+            common::Error er = hexEnc->decode(data, edata);
             if(er){
                 writeFile.close();
                 bool rem = common::file_system::remove_file(wp.path());
@@ -488,7 +488,7 @@ namespace fastonosql
             }
 
             std::string edata;
-            common::ErrorValueSPtr er = hexEnc->encode(data, edata);
+            common::Error er = hexEnc->encode(data, edata);
             if(er){
                 writeFile.close();
                 bool rem = common::file_system::remove_file(wp.path());
@@ -756,7 +756,7 @@ namespace fastonosql
 #else
         #error please specify url and port of version information
 #endif
-        common::Error err = s.connect();
+        common::ErrnoError err = s.connect();
         if(err && err->isError()){
             emit versionAvailibled(false, QString());
             return;

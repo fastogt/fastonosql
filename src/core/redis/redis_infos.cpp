@@ -1050,7 +1050,7 @@ namespace fastonosql
         return makeOwnRedisDiscoveryInfo(content);
     }
 
-    common::ErrorValueSPtr makeAllDiscoveryInfo(const common::net::hostAndPort& parentHost, const std::string& text, std::vector<ServerDiscoveryInfoSPtr> &infos)
+    common::Error makeAllDiscoveryInfo(const common::net::hostAndPort& parentHost, const std::string& text, std::vector<ServerDiscoveryInfoSPtr> &infos)
     {
         if(text.empty()){
             return common::make_error_value("Invalid input argument", common::ErrorValue::E_ERROR);;
@@ -1110,7 +1110,7 @@ namespace fastonosql
             start = pos + 1;
         }
 
-        return common::ErrorValueSPtr();
+        return common::Error();
     }
 
     RedisDataBaseInfo::RedisDataBaseInfo(const std::string& name, bool isDefault, size_t size, const keys_cont_type& keys)

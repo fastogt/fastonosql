@@ -116,7 +116,7 @@ namespace fastonosql
 
         const std::string sin = common::convertToString(in);
         std::string out;
-        common::ErrorValueSPtr er;
+        common::Error er;
         if(encodeButton_->isChecked()){
             er = dec->encode(sin, out);
         }

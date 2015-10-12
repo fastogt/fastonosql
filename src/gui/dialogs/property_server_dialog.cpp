@@ -47,7 +47,7 @@ namespace fastonosql
     void PropertyServerDialog::finishServerProperty(const EventsInfo::ServerPropertyInfoResponce& res)
     {
         glassWidget_->stop();
-        common::ErrorValueSPtr er = res.errorInfo();
+        common::Error er = res.errorInfo();
         if(er && er->isError()){
             return;
         }
@@ -70,7 +70,7 @@ namespace fastonosql
 
     void PropertyServerDialog::finishServerChangeProperty(const EventsInfo::ChangeServerPropertyInfoResponce& res)
     {
-        common::ErrorValueSPtr er = res.errorInfo();
+        common::Error er = res.errorInfo();
         if(er && er->isError()){
             return;
         }

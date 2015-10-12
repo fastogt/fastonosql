@@ -266,7 +266,7 @@ namespace fastonosql
 
     ServerDiscoveryInfo* makeOwnRedisDiscoveryInfo(const std::string& text);
     ServerDiscoveryInfo* makeOwnRedisDiscoveryInfo(FastoObject* root);
-    common::ErrorValueSPtr makeAllDiscoveryInfo(const common::net::hostAndPort& parentHost, const std::string& text, std::vector<ServerDiscoveryInfoSPtr>& infos);
+    common::Error makeAllDiscoveryInfo(const common::net::hostAndPort& parentHost, const std::string& text, std::vector<ServerDiscoveryInfoSPtr>& infos);
 
     class RedisDataBaseInfo
             : public DataBaseInfo

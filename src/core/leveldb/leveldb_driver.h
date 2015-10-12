@@ -36,7 +36,7 @@ namespace fastonosql
         //======= extended =======//
     };
 
-    common::ErrorValueSPtr testConnection(LeveldbConnectionSettings* settings);
+    common::Error testConnection(LeveldbConnectionSettings* settings);
 
     class LeveldbDriver
             : public IDriver
@@ -58,10 +58,10 @@ namespace fastonosql
         virtual void initImpl();
         virtual void clearImpl();
 
-        virtual common::ErrorValueSPtr executeImpl(FastoObject* out, int argc, char **argv);
-        virtual common::ErrorValueSPtr serverInfo(ServerInfo** info);
-        virtual common::ErrorValueSPtr serverDiscoveryInfo(ServerInfo** sinfo, ServerDiscoveryInfo** dinfo, DataBaseInfo** dbinfo);
-        virtual common::ErrorValueSPtr currentDataBaseInfo(DataBaseInfo** info);
+        virtual common::Error executeImpl(FastoObject* out, int argc, char **argv);
+        virtual common::Error serverInfo(ServerInfo** info);
+        virtual common::Error serverDiscoveryInfo(ServerInfo** sinfo, ServerDiscoveryInfo** dinfo, DataBaseInfo** dbinfo);
+        virtual common::Error currentDataBaseInfo(DataBaseInfo** info);
 
         virtual void handleConnectEvent(events::ConnectRequestEvent* ev);
         virtual void handleDisconnectEvent(events::DisconnectRequestEvent* ev);
@@ -71,10 +71,10 @@ namespace fastonosql
         virtual void handleProcessCommandLineArgs(events::ProcessConfigArgsRequestEvent* ev);
 
 // ============== commands =============//
-        virtual common::ErrorValueSPtr commandDeleteImpl(CommandDeleteKey* command, std::string& cmdstring) const WARN_UNUSED_RESULT;
-        virtual common::ErrorValueSPtr commandLoadImpl(CommandLoadKey* command, std::string& cmdstring) const WARN_UNUSED_RESULT;
-        virtual common::ErrorValueSPtr commandCreateImpl(CommandCreateKey* command, std::string& cmdstring) const WARN_UNUSED_RESULT;
-        virtual common::ErrorValueSPtr commandChangeTTLImpl(CommandChangeTTL* command, std::string& cmdstring) const WARN_UNUSED_RESULT;
+        virtual common::Error commandDeleteImpl(CommandDeleteKey* command, std::string& cmdstring) const WARN_UNUSED_RESULT;
+        virtual common::Error commandLoadImpl(CommandLoadKey* command, std::string& cmdstring) const WARN_UNUSED_RESULT;
+        virtual common::Error commandCreateImpl(CommandCreateKey* command, std::string& cmdstring) const WARN_UNUSED_RESULT;
+        virtual common::Error commandChangeTTLImpl(CommandChangeTTL* command, std::string& cmdstring) const WARN_UNUSED_RESULT;
 // ============== commands =============//
 
 // ============== database =============//

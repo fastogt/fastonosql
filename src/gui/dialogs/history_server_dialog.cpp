@@ -72,7 +72,7 @@ namespace fastonosql
     void ServerHistoryDialog::finishLoadServerHistoryInfo(const EventsInfo::ServerInfoHistoryResponce& res)
     {
         glassWidget_->stop();
-        common::ErrorValueSPtr er = res.errorInfo();
+        common::Error er = res.errorInfo();
         if(er && er->isError()){
             return;
         }
@@ -88,7 +88,7 @@ namespace fastonosql
 
     void ServerHistoryDialog::finishClearServerHistory(const EventsInfo::ClearServerHistoryResponce& res)
     {
-        common::ErrorValueSPtr er = res.errorInfo();
+        common::Error er = res.errorInfo();
         if(er && er->isError()){
             return;
         }

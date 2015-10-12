@@ -43,7 +43,7 @@ namespace fastonosql
 {
     namespace
     {
-        common::ErrorValueSPtr createConnection(const unqliteConfig& config, unqlite** context)
+        common::Error createConnection(const unqliteConfig& config, unqlite** context)
         {
             DCHECK(*context == NULL);
 
@@ -57,10 +57,10 @@ namespace fastonosql
 
             *context = lcontext;
 
-            return common::ErrorValueSPtr();
+            return common::Error();
         }
 
-        common::ErrorValueSPtr createConnection(UnqliteConnectionSettings* settings, unqlite** context)
+        common::Error createConnection(UnqliteConnectionSettings* settings, unqlite** context)
         {
             if(!settings){
                 return common::make_error_value("Invalid input argument", common::ErrorValue::E_ERROR);
@@ -71,17 +71,17 @@ namespace fastonosql
         }
     }
 
-    common::ErrorValueSPtr testConnection(fastonosql::UnqliteConnectionSettings *settings)
+    common::Error testConnection(fastonosql::UnqliteConnectionSettings *settings)
     {
         unqlite* ldb = NULL;
-        common::ErrorValueSPtr er = createConnection(settings, &ldb);
+        common::Error er = createConnection(settings, &ldb);
         if(er){
             return er;
         }
 
         unqlite_close(ldb);
 
-        return common::ErrorValueSPtr();
+        return common::Error();
     }
 
     struct UnqliteDriver::pimpl
@@ -101,17 +101,17 @@ namespace fastonosql
             return true;
         }
 
-        common::ErrorValueSPtr connect()
+        common::Error connect()
         {
             if(isConnected()){
-                return common::ErrorValueSPtr();
+                return common::Error();
             }
 
             clear();
             init();
 
             unqlite* context = NULL;
-            common::ErrorValueSPtr er = createConnection(config_, &context);
+            common::Error er = createConnection(config_, &context);
             if(er){
                 return er;
             }
@@ -119,20 +119,20 @@ namespace fastonosql
             unqlite_ = context;
 
 
-            return common::ErrorValueSPtr();
+            return common::Error();
         }
 
-        common::ErrorValueSPtr disconnect()
+        common::Error disconnect()
         {
             if(!isConnected()){
-                return common::ErrorValueSPtr();
+                return common::Error();
             }
 
             clear();
-            return common::ErrorValueSPtr();
+            return common::Error();
         }
 
-        common::ErrorValueSPtr info(const char* args, UnqliteServerInfo::Stats& statsout)
+        common::Error info(const char* args, UnqliteServerInfo::Stats& statsout)
         {
             /*std::string rets;
             bool isok = rocksdb_->GetProperty("rocksdb.stats", &rets);
@@ -168,10 +168,10 @@ namespace fastonosql
                 }
             }*/
 
-            return common::ErrorValueSPtr();
+            return common::Error();
         }
 
-        common::ErrorValueSPtr dbsize(size_t& size) WARN_UNUSED_RESULT
+        common::Error dbsize(size_t& size) WARN_UNUSED_RESULT
         {
             /* Allocate a new cursor instance */
             unqlite_kv_cursor *pCur; /* Cursor handle */
@@ -195,7 +195,7 @@ namespace fastonosql
             unqlite_kv_cursor_release(unqlite_, pCur);
 
             size = sz;
-            return common::ErrorValueSPtr();
+            return common::Error();
         }
 
         ~pimpl()
@@ -205,7 +205,7 @@ namespace fastonosql
 
         unqliteConfig config_;
 
-        virtual common::ErrorValueSPtr execute_impl(FastoObject* out, int argc, char **argv)
+        virtual common::Error execute_impl(FastoObject* out, int argc, char **argv)
         {
             if(strcasecmp(argv[0], "info") == 0){
                 if(argc > 2){
@@ -213,7 +213,7 @@ namespace fastonosql
                 }
 
                 UnqliteServerInfo::Stats statsout;
-                common::ErrorValueSPtr er = info(argc == 2 ? argv[1] : 0, statsout);
+                common::Error er = info(argc == 2 ? argv[1] : 0, statsout);
                 if(!er){
                     common::StringValue *val = common::Value::createStringValue(UnqliteServerInfo(statsout).toString());
                     FastoObject* child = new FastoObject(out, val, config_.mb_delim_);
@@ -227,7 +227,7 @@ namespace fastonosql
                 }
 
                 std::string ret;
-                common::ErrorValueSPtr er = get(argv[1], &ret);
+                common::Error er = get(argv[1], &ret);
                 if(!er){
                     common::StringValue *val = common::Value::createStringValue(ret);
                     FastoObject* child = new FastoObject(out, val, config_.mb_delim_);
@@ -241,7 +241,7 @@ namespace fastonosql
                 }
 
                 size_t ret = 0;
-                common::ErrorValueSPtr er = dbsize(ret);
+                common::Error er = dbsize(ret);
                 if(!er){
                     common::FundamentalValue *val = common::Value::createUIntegerValue(ret);
                     FastoObject* child = new FastoObject(out, val, config_.mb_delim_);
@@ -254,7 +254,7 @@ namespace fastonosql
                     return common::make_error_value("Invalid put input argument", common::ErrorValue::E_ERROR);
                 }
 
-                common::ErrorValueSPtr er = put(argv[1], argv[2]);
+                common::Error er = put(argv[1], argv[2]);
                 if(!er){
                     common::StringValue *val = common::Value::createStringValue("STORED");
                     FastoObject* child = new FastoObject(out, val, config_.mb_delim_);
@@ -267,7 +267,7 @@ namespace fastonosql
                     return common::make_error_value("Invalid del input argument", common::ErrorValue::E_ERROR);
                 }
 
-                common::ErrorValueSPtr er = del(argv[1]);
+                common::Error er = del(argv[1]);
                 if(!er){
                     common::StringValue *val = common::Value::createStringValue("DELETED");
                     FastoObject* child = new FastoObject(out, val, config_.mb_delim_);
@@ -281,7 +281,7 @@ namespace fastonosql
                 }
 
                 std::vector<std::string> keysout;
-                common::ErrorValueSPtr er = keys(argv[1], argv[2], atoll(argv[3]), &keysout);
+                common::Error er = keys(argv[1], argv[2], atoll(argv[3]), &keysout);
                 if(!er){
                     common::ArrayValue* ar = common::Value::createArrayValue();
                     for(int i = 0; i < keysout.size(); ++i){
@@ -301,7 +301,7 @@ namespace fastonosql
         }
 
     private:
-        common::ErrorValueSPtr get(const std::string& key, std::string* ret_val)
+        common::Error get(const std::string& key, std::string* ret_val)
         {
             int rc = unqlite_kv_fetch_callback(unqlite_, key.c_str(), key.size(), getDataCallback, ret_val);
             if (rc != UNQLITE_OK){
@@ -310,10 +310,10 @@ namespace fastonosql
                 return common::make_error_value(buff, common::ErrorValue::E_ERROR);
             }
 
-            return common::ErrorValueSPtr();
+            return common::Error();
         }
 
-        common::ErrorValueSPtr put(const std::string& key, const std::string& value)
+        common::Error put(const std::string& key, const std::string& value)
         {
             int rc = unqlite_kv_store(unqlite_, key.c_str(), key.size(), value.c_str(), value.length());
             if (rc != UNQLITE_OK){
@@ -322,10 +322,10 @@ namespace fastonosql
                 return common::make_error_value(buff, common::ErrorValue::E_ERROR);
             }
 
-            return common::ErrorValueSPtr();
+            return common::Error();
         }
 
-        common::ErrorValueSPtr del(const std::string& key)
+        common::Error del(const std::string& key)
         {
             int rc = unqlite_kv_delete(unqlite_, key.c_str(), key.size());
             if (rc != UNQLITE_OK){
@@ -334,10 +334,10 @@ namespace fastonosql
                 return common::make_error_value(buff, common::ErrorValue::E_ERROR);
             }
 
-            return common::ErrorValueSPtr();
+            return common::Error();
         }
 
-        common::ErrorValueSPtr keys(const std::string &key_start, const std::string &key_end, uint64_t limit, std::vector<std::string> *ret)
+        common::Error keys(const std::string &key_start, const std::string &key_end, uint64_t limit, std::vector<std::string> *ret)
         {
             /* Allocate a new cursor instance */
             unqlite_kv_cursor *pCur; /* Cursor handle */
@@ -364,7 +364,7 @@ namespace fastonosql
             /* Finally, Release our cursor */
             unqlite_kv_cursor_release(unqlite_, pCur);
 
-            return common::ErrorValueSPtr();
+            return common::Error();
         }
 
         void init()
@@ -403,27 +403,27 @@ namespace fastonosql
     }
 
     // ============== commands =============//
-    common::ErrorValueSPtr UnqliteDriver::commandDeleteImpl(CommandDeleteKey* command, std::string& cmdstring) const
+    common::Error UnqliteDriver::commandDeleteImpl(CommandDeleteKey* command, std::string& cmdstring) const
     {
         char patternResult[1024] = {0};
         NDbKValue key = command->key();
         common::SNPrintf(patternResult, sizeof(patternResult), DELETE_KEY_PATTERN_1ARGS_S, key.keyString());
         cmdstring = patternResult;
 
-        return common::ErrorValueSPtr();
+        return common::Error();
     }
 
-    common::ErrorValueSPtr UnqliteDriver::commandLoadImpl(CommandLoadKey* command, std::string& cmdstring) const
+    common::Error UnqliteDriver::commandLoadImpl(CommandLoadKey* command, std::string& cmdstring) const
     {
         char patternResult[1024] = {0};
         NDbKValue key = command->key();
         common::SNPrintf(patternResult, sizeof(patternResult), GET_KEY_PATTERN_1ARGS_S, key.keyString());
         cmdstring = patternResult;
 
-        return common::ErrorValueSPtr();
+        return common::Error();
     }
 
-    common::ErrorValueSPtr UnqliteDriver::commandCreateImpl(CommandCreateKey* command, std::string& cmdstring) const
+    common::Error UnqliteDriver::commandCreateImpl(CommandCreateKey* command, std::string& cmdstring) const
     {
         char patternResult[1024] = {0};
         NDbKValue key = command->key();
@@ -434,10 +434,10 @@ namespace fastonosql
         common::SNPrintf(patternResult, sizeof(patternResult), SET_KEY_PATTERN_2ARGS_SS, key_str, value_str);
         cmdstring = patternResult;
 
-        return common::ErrorValueSPtr();
+        return common::Error();
     }
 
-    common::ErrorValueSPtr UnqliteDriver::commandChangeTTLImpl(CommandChangeTTL* command, std::string& cmdstring) const
+    common::Error UnqliteDriver::commandChangeTTLImpl(CommandChangeTTL* command, std::string& cmdstring) const
     {
         UNUSED(command);
         UNUSED(cmdstring);
@@ -472,16 +472,16 @@ namespace fastonosql
     {
     }
 
-    common::ErrorValueSPtr UnqliteDriver::executeImpl(FastoObject* out, int argc, char **argv)
+    common::Error UnqliteDriver::executeImpl(FastoObject* out, int argc, char **argv)
     {
         return impl_->execute_impl(out, argc, argv);
     }
 
-    common::ErrorValueSPtr UnqliteDriver::serverInfo(ServerInfo **info)
+    common::Error UnqliteDriver::serverInfo(ServerInfo **info)
     {
         LOG_COMMAND(Command(INFO_REQUEST, common::Value::C_INNER));
         UnqliteServerInfo::Stats cm;
-        common::ErrorValueSPtr err = impl_->info(NULL, cm);
+        common::Error err = impl_->info(NULL, cm);
         if(!err){
             *info = new UnqliteServerInfo(cm);
         }
@@ -489,10 +489,10 @@ namespace fastonosql
         return err;
     }
 
-    common::ErrorValueSPtr UnqliteDriver::serverDiscoveryInfo(ServerInfo **sinfo, ServerDiscoveryInfo **dinfo, DataBaseInfo** dbinfo)
+    common::Error UnqliteDriver::serverDiscoveryInfo(ServerInfo **sinfo, ServerDiscoveryInfo **dinfo, DataBaseInfo** dbinfo)
     {
         ServerInfo *lsinfo = NULL;
-        common::ErrorValueSPtr er = serverInfo(&lsinfo);
+        common::Error er = serverInfo(&lsinfo);
         if(er){
             return er;
         }
@@ -520,12 +520,12 @@ namespace fastonosql
         return er;
     }
 
-    common::ErrorValueSPtr UnqliteDriver::currentDataBaseInfo(DataBaseInfo** info)
+    common::Error UnqliteDriver::currentDataBaseInfo(DataBaseInfo** info)
     {
         size_t size = 0;
         impl_->dbsize(size);
         *info = new UnqliteDataBaseInfo("0", true, size);
-        return common::ErrorValueSPtr();
+        return common::Error();
     }
 
     void UnqliteDriver::handleConnectEvent(events::ConnectRequestEvent *ev)
@@ -537,7 +537,7 @@ namespace fastonosql
             if(set){
                 impl_->config_ = set->info();
         notifyProgress(sender, 25);
-                    common::ErrorValueSPtr er = impl_->connect();
+                    common::Error er = impl_->connect();
                     if(er){
                         res.setErrorInfo(er);
                     }
@@ -554,7 +554,7 @@ namespace fastonosql
             events::DisconnectResponceEvent::value_type res(ev->value());
         notifyProgress(sender, 50);
 
-            common::ErrorValueSPtr er = impl_->disconnect();
+            common::Error er = impl_->disconnect();
             if(er){
                 res.setErrorInfo(er);
             }
@@ -570,7 +570,7 @@ namespace fastonosql
             events::ExecuteRequestEvent::value_type res(ev->value());
             const char *inputLine = common::utils::c_strornull(res.text_);
 
-            common::ErrorValueSPtr er;
+            common::Error er;
             if(inputLine){
                 size_t length = strlen(inputLine);
                 int offset = 0;
@@ -618,7 +618,7 @@ namespace fastonosql
         notifyProgress(sender, 0);
             events::CommandResponceEvent::value_type res(ev->value());
             std::string cmdtext;
-            common::ErrorValueSPtr er = commandByType(res.cmd_, cmdtext);
+            common::Error er = commandByType(res.cmd_, cmdtext);
             if(er){
                 res.setErrorInfo(er);
                 reply(sender, new events::CommandResponceEvent(this, res));
@@ -659,7 +659,7 @@ namespace fastonosql
             FastoObjectIPtr root = FastoObject::createRoot(patternResult);
         notifyProgress(sender, 50);
             FastoObjectCommand* cmd = createCommand<UnqliteCommand>(root, patternResult, common::Value::C_INNER);
-            common::ErrorValueSPtr er = execute(cmd);
+            common::Error er = execute(cmd);
             if(er){
                 res.setErrorInfo(er);
             }
@@ -712,7 +712,7 @@ namespace fastonosql
         notifyProgress(sender, 50);
             LOG_COMMAND(Command(INFO_REQUEST, common::Value::C_INNER));
             UnqliteServerInfo::Stats cm;
-            common::ErrorValueSPtr err = impl_->info(NULL, cm);
+            common::Error err = impl_->info(NULL, cm);
             if(err){
                 res.setErrorInfo(err);
             }

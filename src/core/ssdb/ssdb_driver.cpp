@@ -32,7 +32,7 @@ namespace fastonosql
 {
     namespace
     {
-        common::ErrorValueSPtr createConnection(const ssdbConfig& config, const SSHInfo& sinfo, ssdb::Client** context)
+        common::Error createConnection(const ssdbConfig& config, const SSHInfo& sinfo, ssdb::Client** context)
         {
             DCHECK(*context == NULL);
             UNUSED(sinfo);
@@ -43,10 +43,10 @@ namespace fastonosql
 
             *context = lcontext;
 
-            return common::ErrorValueSPtr();
+            return common::Error();
         }
 
-        common::ErrorValueSPtr createConnection(SsdbConnectionSettings* settings, ssdb::Client** context)
+        common::Error createConnection(SsdbConnectionSettings* settings, ssdb::Client** context)
         {
             if(!settings){
                 return common::make_error_value("Invalid input argument", common::ErrorValue::E_ERROR);
@@ -58,17 +58,17 @@ namespace fastonosql
         }
     }
 
-    common::ErrorValueSPtr testConnection(SsdbConnectionSettings* settings)
+    common::Error testConnection(SsdbConnectionSettings* settings)
     {
         ssdb::Client* ssdb = NULL;
-        common::ErrorValueSPtr er = createConnection(settings, &ssdb);
+        common::Error er = createConnection(settings, &ssdb);
         if(er){
             return er;
         }
 
         delete ssdb;
 
-        return common::ErrorValueSPtr();
+        return common::Error();
     }
 
     struct SsdbDriver::pimpl
@@ -88,37 +88,37 @@ namespace fastonosql
             return true;
         }
 
-        common::ErrorValueSPtr connect()
+        common::Error connect()
         {
             if(isConnected()){
-                return common::ErrorValueSPtr();
+                return common::Error();
             }
 
             clear();
             init();
 
             ssdb::Client* context = NULL;
-            common::ErrorValueSPtr er = createConnection(config_, sinfo_, &context);
+            common::Error er = createConnection(config_, sinfo_, &context);
             if(er){
                 return er;
             }
 
             ssdb_ = context;
 
-            return common::ErrorValueSPtr();
+            return common::Error();
         }
 
-        common::ErrorValueSPtr disconnect()
+        common::Error disconnect()
         {
             if(!isConnected()){
-                return common::ErrorValueSPtr();
+                return common::Error();
             }
 
             clear();
-            return common::ErrorValueSPtr();
+            return common::Error();
         }
 
-        common::ErrorValueSPtr info(const char* args, SsdbServerInfo::Common& statsout)
+        common::Error info(const char* args, SsdbServerInfo::Common& statsout)
         {
             std::vector<std::string> ret;
             ssdb::Status st = ssdb_->info(args ? args : std::string(), &ret);
@@ -146,10 +146,10 @@ namespace fastonosql
                 }
             }
 
-            return common::ErrorValueSPtr();
+            return common::Error();
         }
 
-        common::ErrorValueSPtr dbsize(size_t& size) WARN_UNUSED_RESULT
+        common::Error dbsize(size_t& size) WARN_UNUSED_RESULT
         {
             int64_t sz = 0;
             ssdb::Status st = ssdb_->dbsize(&sz);
@@ -160,7 +160,7 @@ namespace fastonosql
             }
 
             size = sz;
-            return common::ErrorValueSPtr();
+            return common::Error();
         }
 
         ~pimpl()
@@ -171,7 +171,7 @@ namespace fastonosql
         ssdbConfig config_;
         SSHInfo sinfo_;
 
-        common::ErrorValueSPtr execute_impl(FastoObject* out, int argc, char **argv)
+        common::Error execute_impl(FastoObject* out, int argc, char **argv)
         {
             if(strcasecmp(argv[0], "get") == 0){
                 if(argc != 2){
@@ -179,7 +179,7 @@ namespace fastonosql
                 }
 
                 std::string ret;
-                common::ErrorValueSPtr er = get(argv[1], &ret);
+                common::Error er = get(argv[1], &ret);
                 if(!er){
                     common::StringValue *val = common::Value::createStringValue(ret);
                     FastoObject* child = new FastoObject(out, val, config_.mb_delim_);
@@ -192,7 +192,7 @@ namespace fastonosql
                     return common::make_error_value("Invalid set input argument", common::ErrorValue::E_ERROR);
                 }
 
-                common::ErrorValueSPtr er = set(argv[1], argv[2]);
+                common::Error er = set(argv[1], argv[2]);
                 if(!er){
                     common::StringValue *val = common::Value::createStringValue("STORED");
                     FastoObject* child = new FastoObject(out, val, config_.mb_delim_);
@@ -206,7 +206,7 @@ namespace fastonosql
                 }
 
                 size_t ret = 0;
-                common::ErrorValueSPtr er = dbsize(ret);
+                common::Error er = dbsize(ret);
                 if(!er){
                     common::FundamentalValue *val = common::Value::createUIntegerValue(ret);
                     FastoObject* child = new FastoObject(out, val, config_.mb_delim_);
@@ -219,7 +219,7 @@ namespace fastonosql
                     return common::make_error_value("Invalid auth input argument", common::ErrorValue::E_ERROR);
                 }
 
-                common::ErrorValueSPtr er = auth(argv[1]);
+                common::Error er = auth(argv[1]);
                 if(!er){
                     common::StringValue *val = common::Value::createStringValue("OK");
                     FastoObject* child = new FastoObject(out, val, config_.mb_delim_);
@@ -232,7 +232,7 @@ namespace fastonosql
                     return common::make_error_value("Invalid setx input argument", common::ErrorValue::E_ERROR);
                 }
 
-                common::ErrorValueSPtr er = setx(argv[1], argv[2], atoi(argv[3]));
+                common::Error er = setx(argv[1], argv[2], atoi(argv[3]));
                 if(!er){
                     common::StringValue *val = common::Value::createStringValue("STORED");
                     FastoObject* child = new FastoObject(out, val, config_.mb_delim_);
@@ -245,7 +245,7 @@ namespace fastonosql
                     return common::make_error_value("Invalid del input argument", common::ErrorValue::E_ERROR);
                 }
 
-                common::ErrorValueSPtr er = del(argv[1]);
+                common::Error er = del(argv[1]);
                 if(!er){
                     common::StringValue *val = common::Value::createStringValue("DELETED");
                     FastoObject* child = new FastoObject(out, val, config_.mb_delim_);
@@ -259,7 +259,7 @@ namespace fastonosql
                 }
 
                 int64_t ret = 0;
-                common::ErrorValueSPtr er = incr(argv[1], atoll(argv[2]), &ret);
+                common::Error er = incr(argv[1], atoll(argv[2]), &ret);
                 if(!er){
                     common::FundamentalValue *val = common::Value::createIntegerValue(ret);
                     FastoObject* child = new FastoObject(out, val, config_.mb_delim_);
@@ -273,7 +273,7 @@ namespace fastonosql
                 }
 
                 std::vector<std::string> keysout;
-                common::ErrorValueSPtr er = keys(argv[1], argv[2], atoll(argv[3]), &keysout);
+                common::Error er = keys(argv[1], argv[2], atoll(argv[3]), &keysout);
                 if(!er){
                     common::ArrayValue* ar = common::Value::createArrayValue();
                     for(int i = 0; i < keysout.size(); ++i){
@@ -291,7 +291,7 @@ namespace fastonosql
                 }
 
                 std::vector<std::string> keysout;
-                common::ErrorValueSPtr er = scan(argv[1], argv[2], atoll(argv[3]), &keysout);
+                common::Error er = scan(argv[1], argv[2], atoll(argv[3]), &keysout);
                 if(!er){
                     common::ArrayValue* ar = common::Value::createArrayValue();
                     for(int i = 0; i < keysout.size(); ++i){
@@ -309,7 +309,7 @@ namespace fastonosql
                 }
 
                 std::vector<std::string> keysout;
-                common::ErrorValueSPtr er = rscan(argv[1], argv[2], atoll(argv[3]), &keysout);
+                common::Error er = rscan(argv[1], argv[2], atoll(argv[3]), &keysout);
                 if(!er){
                     common::ArrayValue* ar = common::Value::createArrayValue();
                     for(int i = 0; i < keysout.size(); ++i){
@@ -332,7 +332,7 @@ namespace fastonosql
                 }
 
                 std::vector<std::string> keysout;
-                common::ErrorValueSPtr er = multi_get(keysget, &keysout);
+                common::Error er = multi_get(keysget, &keysout);
                 if(!er){
                     common::ArrayValue* ar = common::Value::createArrayValue();
                     for(int i = 0; i < keysout.size(); ++i){
@@ -354,7 +354,7 @@ namespace fastonosql
                     keysget.push_back(argv[i]);
                 }
 
-                common::ErrorValueSPtr er = multi_del(keysget);
+                common::Error er = multi_del(keysget);
                 if(!er){
                     common::StringValue *val = common::Value::createStringValue("DELETED");
                     FastoObject* child = new FastoObject(out, val, config_.mb_delim_);
@@ -372,7 +372,7 @@ namespace fastonosql
                     keysset[argv[i]] = argv[i + 1];
                 }
 
-                common::ErrorValueSPtr er = multi_set(keysset);
+                common::Error er = multi_set(keysset);
                 if(!er){
                     common::StringValue *val = common::Value::createStringValue("STORED");
                     FastoObject* child = new FastoObject(out, val, config_.mb_delim_);
@@ -386,7 +386,7 @@ namespace fastonosql
                 }
 
                 std::string ret;
-                common::ErrorValueSPtr er = hget(argv[1], argv[2], &ret);
+                common::Error er = hget(argv[1], argv[2], &ret);
                 if(!er){
                     common::StringValue *val = common::Value::createStringValue(ret);
                     FastoObject* child = new FastoObject(out, val, config_.mb_delim_);
@@ -399,7 +399,7 @@ namespace fastonosql
                     return common::make_error_value("Invalid hset input argument", common::ErrorValue::E_ERROR);
                 }
 
-                common::ErrorValueSPtr er = hset(argv[1], argv[2], argv[3]);
+                common::Error er = hset(argv[1], argv[2], argv[3]);
                 if(!er){
                     common::StringValue *val = common::Value::createStringValue("STORED");
                     FastoObject* child = new FastoObject(out, val, config_.mb_delim_);
@@ -412,7 +412,7 @@ namespace fastonosql
                     return common::make_error_value("Invalid hset input argument", common::ErrorValue::E_ERROR);
                 }
 
-                common::ErrorValueSPtr er = hdel(argv[1], argv[2]);
+                common::Error er = hdel(argv[1], argv[2]);
                 if(!er){
                     common::StringValue *val = common::Value::createStringValue("DELETED");
                     FastoObject* child = new FastoObject(out, val, config_.mb_delim_);
@@ -426,7 +426,7 @@ namespace fastonosql
                 }
 
                 int64_t res = 0;
-                common::ErrorValueSPtr er = hincr(argv[1], argv[2], atoll(argv[3]), &res);
+                common::Error er = hincr(argv[1], argv[2], atoll(argv[3]), &res);
                 if(!er){
                     common::FundamentalValue *val = common::Value::createIntegerValue(res);
                     FastoObject* child = new FastoObject(out, val, config_.mb_delim_);
@@ -440,7 +440,7 @@ namespace fastonosql
                 }
 
                 int64_t res = 0;
-                common::ErrorValueSPtr er = hsize(argv[1], &res);
+                common::Error er = hsize(argv[1], &res);
                 if(!er){
                     common::FundamentalValue *val = common::Value::createIntegerValue(res);
                     FastoObject* child = new FastoObject(out, val, config_.mb_delim_);
@@ -454,7 +454,7 @@ namespace fastonosql
                 }
 
                 int64_t res = 0;
-                common::ErrorValueSPtr er = hclear(argv[1], &res);
+                common::Error er = hclear(argv[1], &res);
                 if(!er){
                     common::FundamentalValue *val = common::Value::createIntegerValue(res);
                     FastoObject* child = new FastoObject(out, val, config_.mb_delim_);
@@ -468,7 +468,7 @@ namespace fastonosql
                 }
 
                 std::vector<std::string> keysout;
-                common::ErrorValueSPtr er = hkeys(argv[1], argv[2], argv[3], atoll(argv[4]), &keysout);
+                common::Error er = hkeys(argv[1], argv[2], argv[3], atoll(argv[4]), &keysout);
                 if(!er){
                     common::ArrayValue* ar = common::Value::createArrayValue();
                     for(int i = 0; i < keysout.size(); ++i){
@@ -486,7 +486,7 @@ namespace fastonosql
                 }
 
                 std::vector<std::string> keysout;
-                common::ErrorValueSPtr er = hscan(argv[1], argv[2], argv[3], atoll(argv[4]), &keysout);
+                common::Error er = hscan(argv[1], argv[2], argv[3], atoll(argv[4]), &keysout);
                 if(!er){
                     common::ArrayValue* ar = common::Value::createArrayValue();
                     for(int i = 0; i < keysout.size(); ++i){
@@ -504,7 +504,7 @@ namespace fastonosql
                 }
 
                 std::vector<std::string> keysout;
-                common::ErrorValueSPtr er = hrscan(argv[1], argv[2], argv[3], atoll(argv[4]), &keysout);
+                common::Error er = hrscan(argv[1], argv[2], argv[3], atoll(argv[4]), &keysout);
                 if(!er){
                     common::ArrayValue* ar = common::Value::createArrayValue();
                     for(int i = 0; i < keysout.size(); ++i){
@@ -527,7 +527,7 @@ namespace fastonosql
                 }
 
                 std::vector<std::string> keysout;
-                common::ErrorValueSPtr er = multi_hget(argv[1], keysget, &keysout);
+                common::Error er = multi_hget(argv[1], keysget, &keysout);
                 if(!er){
                     common::ArrayValue* ar = common::Value::createArrayValue();
                     for(int i = 0; i < keysout.size(); ++i){
@@ -549,7 +549,7 @@ namespace fastonosql
                     keys[argv[i]] = argv[i + 1];
                 }
 
-                common::ErrorValueSPtr er = multi_hset(argv[1], keys);
+                common::Error er = multi_hset(argv[1], keys);
                 if(!er){
                     common::StringValue *val = common::Value::createStringValue("STORED");
                     FastoObject* child = new FastoObject(out, val, config_.mb_delim_);
@@ -563,7 +563,7 @@ namespace fastonosql
                 }
 
                 int64_t ret;
-                common::ErrorValueSPtr er = zget(argv[1], argv[2], &ret);
+                common::Error er = zget(argv[1], argv[2], &ret);
                 if(!er){
                     common::FundamentalValue *val = common::Value::createIntegerValue(ret);
                     FastoObject* child = new FastoObject(out, val, config_.mb_delim_);
@@ -576,7 +576,7 @@ namespace fastonosql
                     return common::make_error_value("Invalid zset input argument", common::ErrorValue::E_ERROR);
                 }
 
-                common::ErrorValueSPtr er = zset(argv[1], argv[2], atoll(argv[3]));
+                common::Error er = zset(argv[1], argv[2], atoll(argv[3]));
                 if(!er){
                     common::StringValue *val = common::Value::createStringValue("STORED");
                     FastoObject* child = new FastoObject(out, val, config_.mb_delim_);
@@ -589,7 +589,7 @@ namespace fastonosql
                     return common::make_error_value("Invalid zdel input argument", common::ErrorValue::E_ERROR);
                 }
 
-                common::ErrorValueSPtr er = zdel(argv[1], argv[2]);
+                common::Error er = zdel(argv[1], argv[2]);
                 if(!er){
                     common::StringValue *val = common::Value::createStringValue("DELETED");
                     FastoObject* child = new FastoObject(out, val, config_.mb_delim_);
@@ -603,7 +603,7 @@ namespace fastonosql
                 }
 
                 int64_t ret = 0;
-                common::ErrorValueSPtr er = zincr(argv[1], argv[2], atoll(argv[3]), &ret);
+                common::Error er = zincr(argv[1], argv[2], atoll(argv[3]), &ret);
                 if(!er){
                     common::FundamentalValue *val = common::Value::createIntegerValue(ret);
                     FastoObject* child = new FastoObject(out, val, config_.mb_delim_);
@@ -617,7 +617,7 @@ namespace fastonosql
                 }
 
                 int64_t res = 0;
-                common::ErrorValueSPtr er = zsize(argv[1], &res);
+                common::Error er = zsize(argv[1], &res);
                 if(!er){
                     common::FundamentalValue *val = common::Value::createIntegerValue(res);
                     FastoObject* child = new FastoObject(out, val, config_.mb_delim_);
@@ -631,7 +631,7 @@ namespace fastonosql
                 }
 
                 int64_t res = 0;
-                common::ErrorValueSPtr er = zclear(argv[1], &res);
+                common::Error er = zclear(argv[1], &res);
                 if(!er){
                     common::FundamentalValue *val = common::Value::createIntegerValue(res);
                     FastoObject* child = new FastoObject(out, val, config_.mb_delim_);
@@ -645,7 +645,7 @@ namespace fastonosql
                 }
 
                 int64_t res = 0;
-                common::ErrorValueSPtr er = zrank(argv[1], argv[2], &res);
+                common::Error er = zrank(argv[1], argv[2], &res);
                 if(!er){
                     common::FundamentalValue *val = common::Value::createIntegerValue(res);
                     FastoObject* child = new FastoObject(out, val, config_.mb_delim_);
@@ -659,7 +659,7 @@ namespace fastonosql
                 }
 
                 int64_t res = 0;
-                common::ErrorValueSPtr er = zrrank(argv[1], argv[2], &res);
+                common::Error er = zrrank(argv[1], argv[2], &res);
                 if(!er){
                     common::FundamentalValue *val = common::Value::createIntegerValue(res);
                     FastoObject* child = new FastoObject(out, val, config_.mb_delim_);
@@ -673,7 +673,7 @@ namespace fastonosql
                 }
 
                 std::vector<std::string> res;
-                common::ErrorValueSPtr er = zrange(argv[1], atoll(argv[2]), atoll(argv[3]), &res);
+                common::Error er = zrange(argv[1], atoll(argv[2]), atoll(argv[3]), &res);
                 if(!er){
                     common::ArrayValue* ar = common::Value::createArrayValue();
                     for(int i = 0; i < res.size(); ++i){
@@ -691,7 +691,7 @@ namespace fastonosql
                 }
 
                 std::vector<std::string> res;
-                common::ErrorValueSPtr er = zrrange(argv[1], atoll(argv[2]), atoll(argv[3]), &res);
+                common::Error er = zrrange(argv[1], atoll(argv[2]), atoll(argv[3]), &res);
                 if(!er){
                     common::ArrayValue* ar = common::Value::createArrayValue();
                     for(int i = 0; i < res.size(); ++i){
@@ -711,7 +711,7 @@ namespace fastonosql
                 std::vector<std::string> res;
                 int64_t st = atoll(argv[3]);
                 int64_t end = atoll(argv[4]);
-                common::ErrorValueSPtr er = zkeys(argv[1], argv[2], &st, &end, atoll(argv[5]), &res);
+                common::Error er = zkeys(argv[1], argv[2], &st, &end, atoll(argv[5]), &res);
                 if(!er){
                     common::ArrayValue* ar = common::Value::createArrayValue();
                     for(int i = 0; i < res.size(); ++i){
@@ -731,7 +731,7 @@ namespace fastonosql
                 std::vector<std::string> res;
                 int64_t st = atoll(argv[3]);
                 int64_t end = atoll(argv[4]);
-                common::ErrorValueSPtr er = zscan(argv[1], argv[2], &st, &end, atoll(argv[5]), &res);
+                common::Error er = zscan(argv[1], argv[2], &st, &end, atoll(argv[5]), &res);
                 if(!er){
                     common::ArrayValue* ar = common::Value::createArrayValue();
                     for(int i = 0; i < res.size(); ++i){
@@ -751,7 +751,7 @@ namespace fastonosql
                 std::vector<std::string> res;
                 int64_t st = atoll(argv[3]);
                 int64_t end = atoll(argv[4]);
-                common::ErrorValueSPtr er = zrscan(argv[1], argv[2], &st, &end, atoll(argv[5]), &res);
+                common::Error er = zrscan(argv[1], argv[2], &st, &end, atoll(argv[5]), &res);
                 if(!er){
                     common::ArrayValue* ar = common::Value::createArrayValue();
                     for(int i = 0; i < res.size(); ++i){
@@ -774,7 +774,7 @@ namespace fastonosql
                 }
 
                 std::vector<std::string> res;
-                common::ErrorValueSPtr er = multi_zget(argv[1], keysget, &res);
+                common::Error er = multi_zget(argv[1], keysget, &res);
                 if(!er){
                     common::ArrayValue* ar = common::Value::createArrayValue();
                     for(int i = 0; i < res.size(); ++i){
@@ -796,7 +796,7 @@ namespace fastonosql
                     keysget[argv[i]] = atoll(argv[i+1]);
                 }
 
-                common::ErrorValueSPtr er = multi_zset(argv[1], keysget);
+                common::Error er = multi_zset(argv[1], keysget);
                 if(!er){
                     common::StringValue *val = common::Value::createStringValue("STORED");
                     FastoObject* child = new FastoObject(out, val, config_.mb_delim_);
@@ -814,7 +814,7 @@ namespace fastonosql
                     keysget.push_back(argv[i]);
                 }
 
-                common::ErrorValueSPtr er = multi_zdel(argv[1], keysget);
+                common::Error er = multi_zdel(argv[1], keysget);
                 if(!er){
                     common::StringValue *val = common::Value::createStringValue("DELETED");
                     FastoObject* child = new FastoObject(out, val, config_.mb_delim_);
@@ -828,7 +828,7 @@ namespace fastonosql
                 }
 
                 SsdbServerInfo::Common statsout;
-                common::ErrorValueSPtr er = info(argc == 2 ? argv[1] : 0, statsout);
+                common::Error er = info(argc == 2 ? argv[1] : 0, statsout);
                 if(!er){
                     common::StringValue *val = common::Value::createStringValue(SsdbServerInfo(statsout).toString());
                     FastoObject* child = new FastoObject(out, val, config_.mb_delim_);
@@ -842,7 +842,7 @@ namespace fastonosql
                 }
 
                 std::string ret;
-                common::ErrorValueSPtr er = qpop(argv[1], &ret);
+                common::Error er = qpop(argv[1], &ret);
                 if(!er){
                     common::StringValue *val = common::Value::createStringValue(ret);
                     FastoObject* child = new FastoObject(out, val, config_.mb_delim_);
@@ -855,7 +855,7 @@ namespace fastonosql
                     return common::make_error_value("Invalid qpush input argument", common::ErrorValue::E_ERROR);
                 }
 
-                common::ErrorValueSPtr er = qpush(argv[1], argv[2]);
+                common::Error er = qpush(argv[1], argv[2]);
                 if(!er){
                     common::StringValue *val = common::Value::createStringValue("STORED");
                     FastoObject* child = new FastoObject(out, val, config_.mb_delim_);
@@ -872,7 +872,7 @@ namespace fastonosql
                 int64_t end = atoll(argv[3]);
 
                 std::vector<std::string> keysout;
-                common::ErrorValueSPtr er = qslice(argv[1], begin, end, &keysout);
+                common::Error er = qslice(argv[1], begin, end, &keysout);
                 if(!er){
                     common::ArrayValue* ar = common::Value::createArrayValue();
                     for(int i = 0; i < keysout.size(); ++i){
@@ -890,7 +890,7 @@ namespace fastonosql
                 }
 
                 int64_t res = 0;
-                common::ErrorValueSPtr er = qclear(argv[1], &res);
+                common::Error er = qclear(argv[1], &res);
                 if(!er){
                     common::FundamentalValue *val = common::Value::createIntegerValue(res);
                     FastoObject* child = new FastoObject(out, val, config_.mb_delim_);
@@ -907,7 +907,7 @@ namespace fastonosql
 
     private:
 
-        common::ErrorValueSPtr auth(const std::string& password)
+        common::Error auth(const std::string& password)
         {
             ssdb::Status st = ssdb_->auth(password);
             if (st.error()){
@@ -915,10 +915,10 @@ namespace fastonosql
                 common::SNPrintf(buff, sizeof(buff), "password function error: %s", st.code());
                 return common::make_error_value(buff, common::ErrorValue::E_ERROR);
             }
-            return common::ErrorValueSPtr();
+            return common::Error();
         }
 
-        common::ErrorValueSPtr get(const std::string& key, std::string* ret_val)
+        common::Error get(const std::string& key, std::string* ret_val)
         {
             ssdb::Status st = ssdb_->get(key, ret_val);
             if (st.error()){
@@ -926,10 +926,10 @@ namespace fastonosql
                 common::SNPrintf(buff, sizeof(buff), "get function error: %s", st.code());
                 return common::make_error_value(buff, common::ErrorValue::E_ERROR);
             }
-            return common::ErrorValueSPtr();
+            return common::Error();
         }
 
-        common::ErrorValueSPtr set(const std::string& key, const std::string& value)
+        common::Error set(const std::string& key, const std::string& value)
         {
             ssdb::Status st = ssdb_->set(key, value);
             if (st.error()){
@@ -937,10 +937,10 @@ namespace fastonosql
                 common::SNPrintf(buff, sizeof(buff), "set function error: %s", st.code());
                 return common::make_error_value(buff, common::ErrorValue::E_ERROR);
             }
-            return common::ErrorValueSPtr();
+            return common::Error();
         }
 
-        common::ErrorValueSPtr setx(const std::string& key, const std::string& value, int ttl)
+        common::Error setx(const std::string& key, const std::string& value, int ttl)
         {
             ssdb::Status st = ssdb_->setx(key, value, ttl);
             if (st.error()){
@@ -948,10 +948,10 @@ namespace fastonosql
                 common::SNPrintf(buff, sizeof(buff), "setx function error: %s", st.code());
                 return common::make_error_value(buff, common::ErrorValue::E_ERROR);
             }
-            return common::ErrorValueSPtr();
+            return common::Error();
         }
 
-        common::ErrorValueSPtr del(const std::string& key)
+        common::Error del(const std::string& key)
         {
             ssdb::Status st = ssdb_->del(key);
             if (st.error()){
@@ -959,10 +959,10 @@ namespace fastonosql
                 common::SNPrintf(buff, sizeof(buff), "del function error: %s", st.code());
                 return common::make_error_value(buff, common::ErrorValue::E_ERROR);
             }
-            return common::ErrorValueSPtr();
+            return common::Error();
         }
 
-        common::ErrorValueSPtr incr(const std::string& key, int64_t incrby, int64_t *ret)
+        common::Error incr(const std::string& key, int64_t incrby, int64_t *ret)
         {
             ssdb::Status st = ssdb_->incr(key, incrby, ret);
             if (st.error()){
@@ -970,10 +970,10 @@ namespace fastonosql
                 common::SNPrintf(buff, sizeof(buff), "Incr function error: %s", st.code());
                 return common::make_error_value(buff, common::ErrorValue::E_ERROR);
             }
-            return common::ErrorValueSPtr();
+            return common::Error();
         }
 
-        common::ErrorValueSPtr keys(const std::string &key_start, const std::string &key_end, uint64_t limit, std::vector<std::string> *ret)
+        common::Error keys(const std::string &key_start, const std::string &key_end, uint64_t limit, std::vector<std::string> *ret)
         {
             ssdb::Status st = ssdb_->keys(key_start, key_end, limit, ret);
             if (st.error()){
@@ -981,10 +981,10 @@ namespace fastonosql
                 common::SNPrintf(buff, sizeof(buff), "Keys function error: %s", st.code());
                 return common::make_error_value(buff, common::ErrorValue::E_ERROR);
             }
-            return common::ErrorValueSPtr();
+            return common::Error();
         }
 
-        common::ErrorValueSPtr scan(const std::string &key_start, const std::string &key_end, uint64_t limit, std::vector<std::string> *ret)
+        common::Error scan(const std::string &key_start, const std::string &key_end, uint64_t limit, std::vector<std::string> *ret)
         {
             ssdb::Status st = ssdb_->scan(key_start, key_end, limit, ret);
             if (st.error()){
@@ -992,10 +992,10 @@ namespace fastonosql
                 common::SNPrintf(buff, sizeof(buff), "scan function error: %s", st.code());
                 return common::make_error_value(buff, common::ErrorValue::E_ERROR);
             }
-            return common::ErrorValueSPtr();
+            return common::Error();
         }
 
-        common::ErrorValueSPtr rscan(const std::string &key_start, const std::string &key_end, uint64_t limit, std::vector<std::string> *ret)
+        common::Error rscan(const std::string &key_start, const std::string &key_end, uint64_t limit, std::vector<std::string> *ret)
         {
             ssdb::Status st = ssdb_->rscan(key_start, key_end, limit, ret);
             if (st.error()){
@@ -1003,10 +1003,10 @@ namespace fastonosql
                 common::SNPrintf(buff, sizeof(buff), "rscan function error: %s", st.code());
                 return common::make_error_value(buff, common::ErrorValue::E_ERROR);
             }
-            return common::ErrorValueSPtr();
+            return common::Error();
         }
 
-        common::ErrorValueSPtr multi_get(const std::vector<std::string>& keys, std::vector<std::string> *ret)
+        common::Error multi_get(const std::vector<std::string>& keys, std::vector<std::string> *ret)
         {
             ssdb::Status st = ssdb_->multi_get(keys, ret);
             if (st.error()){
@@ -1014,10 +1014,10 @@ namespace fastonosql
                 common::SNPrintf(buff, sizeof(buff), "multi_get function error: %s", st.code());
                 return common::make_error_value(buff, common::ErrorValue::E_ERROR);
             }
-            return common::ErrorValueSPtr();
+            return common::Error();
         }
 
-        common::ErrorValueSPtr multi_set(const std::map<std::string, std::string> &kvs)
+        common::Error multi_set(const std::map<std::string, std::string> &kvs)
         {
             ssdb::Status st = ssdb_->multi_set(kvs);
             if (st.error()){
@@ -1025,10 +1025,10 @@ namespace fastonosql
                 common::SNPrintf(buff, sizeof(buff), "multi_set function error: %s", st.code());
                 return common::make_error_value(buff, common::ErrorValue::E_ERROR);
             }
-            return common::ErrorValueSPtr();
+            return common::Error();
         }
 
-        common::ErrorValueSPtr multi_del(const std::vector<std::string>& keys)
+        common::Error multi_del(const std::vector<std::string>& keys)
         {
             ssdb::Status st = ssdb_->multi_del(keys);
             if (st.error()){
@@ -1036,12 +1036,12 @@ namespace fastonosql
                 common::SNPrintf(buff, sizeof(buff), "multi_del function error: %s", st.code());
                 return common::make_error_value(buff, common::ErrorValue::E_ERROR);
             }
-            return common::ErrorValueSPtr();
+            return common::Error();
         }
 
         /******************** hash *************************/
 
-        common::ErrorValueSPtr hget(const std::string& name, const std::string& key, std::string *val)
+        common::Error hget(const std::string& name, const std::string& key, std::string *val)
         {
             ssdb::Status st = ssdb_->hget(name, key, val);
             if (st.error()){
@@ -1049,10 +1049,10 @@ namespace fastonosql
                 common::SNPrintf(buff, sizeof(buff), "hget function error: %s", st.code());
                 return common::make_error_value(buff, common::ErrorValue::E_ERROR);
             }
-            return common::ErrorValueSPtr();
+            return common::Error();
         }
 
-        common::ErrorValueSPtr hset(const std::string& name, const std::string& key, const std::string& val)
+        common::Error hset(const std::string& name, const std::string& key, const std::string& val)
         {
             ssdb::Status st = ssdb_->hset(name, key, val);
             if (st.error()){
@@ -1060,10 +1060,10 @@ namespace fastonosql
                 common::SNPrintf(buff, sizeof(buff), "hset function error: %s", st.code());
                 return common::make_error_value(buff, common::ErrorValue::E_ERROR);
             }
-            return common::ErrorValueSPtr();
+            return common::Error();
         }
 
-        common::ErrorValueSPtr hdel(const std::string& name, const std::string& key)
+        common::Error hdel(const std::string& name, const std::string& key)
         {
             ssdb::Status st = ssdb_->hdel(name, key);
             if (st.error()){
@@ -1071,10 +1071,10 @@ namespace fastonosql
                 common::SNPrintf(buff, sizeof(buff), "hdel function error: %s", st.code());
                 return common::make_error_value(buff, common::ErrorValue::E_ERROR);
             }
-            return common::ErrorValueSPtr();
+            return common::Error();
         }
 
-        common::ErrorValueSPtr hincr(const std::string &name, const std::string &key, int64_t incrby, int64_t *ret)
+        common::Error hincr(const std::string &name, const std::string &key, int64_t incrby, int64_t *ret)
         {
             ssdb::Status st = ssdb_->hincr(name, key, incrby, ret);
             if (st.error()){
@@ -1082,10 +1082,10 @@ namespace fastonosql
                 common::SNPrintf(buff, sizeof(buff), "hincr function error: %s", st.code());
                 return common::make_error_value(buff, common::ErrorValue::E_ERROR);
             }
-            return common::ErrorValueSPtr();
+            return common::Error();
         }
 
-        common::ErrorValueSPtr hsize(const std::string &name, int64_t *ret)
+        common::Error hsize(const std::string &name, int64_t *ret)
         {
             ssdb::Status st = ssdb_->hsize(name, ret);
             if (st.error()){
@@ -1093,10 +1093,10 @@ namespace fastonosql
                 common::SNPrintf(buff, sizeof(buff), "hset function error: %s", st.code());
                 return common::make_error_value(buff, common::ErrorValue::E_ERROR);
             }
-            return common::ErrorValueSPtr();
+            return common::Error();
         }
 
-        common::ErrorValueSPtr hclear(const std::string &name, int64_t *ret)
+        common::Error hclear(const std::string &name, int64_t *ret)
         {
             ssdb::Status st = ssdb_->hclear(name, ret);
             if (st.error()){
@@ -1104,10 +1104,10 @@ namespace fastonosql
                 common::SNPrintf(buff, sizeof(buff), "hclear function error: %s", st.code());
                 return common::make_error_value(buff, common::ErrorValue::E_ERROR);
             }
-            return common::ErrorValueSPtr();
+            return common::Error();
         }
 
-        common::ErrorValueSPtr hkeys(const std::string &name, const std::string &key_start, const std::string &key_end, uint64_t limit, std::vector<std::string> *ret)
+        common::Error hkeys(const std::string &name, const std::string &key_start, const std::string &key_end, uint64_t limit, std::vector<std::string> *ret)
         {
             ssdb::Status st = ssdb_->hkeys(name, key_start, key_end, limit, ret);
             if (st.error()){
@@ -1115,10 +1115,10 @@ namespace fastonosql
                 common::SNPrintf(buff, sizeof(buff), "hkeys function error: %s", st.code());
                 return common::make_error_value(buff, common::ErrorValue::E_ERROR);
             }
-            return common::ErrorValueSPtr();
+            return common::Error();
         }
 
-        common::ErrorValueSPtr hscan(const std::string &name, const std::string &key_start, const std::string &key_end, uint64_t limit, std::vector<std::string> *ret)
+        common::Error hscan(const std::string &name, const std::string &key_start, const std::string &key_end, uint64_t limit, std::vector<std::string> *ret)
         {
             ssdb::Status st = ssdb_->hscan(name, key_start, key_end, limit, ret);
             if (st.error()){
@@ -1126,10 +1126,10 @@ namespace fastonosql
                 common::SNPrintf(buff, sizeof(buff), "hscan function error: %s", st.code());
                 return common::make_error_value(buff, common::ErrorValue::E_ERROR);
             }
-            return common::ErrorValueSPtr();
+            return common::Error();
         }
 
-        common::ErrorValueSPtr hrscan(const std::string &name, const std::string &key_start, const std::string &key_end, uint64_t limit, std::vector<std::string> *ret)
+        common::Error hrscan(const std::string &name, const std::string &key_start, const std::string &key_end, uint64_t limit, std::vector<std::string> *ret)
         {
             ssdb::Status st = ssdb_->hrscan(name, key_start, key_end, limit, ret);
             if (st.error()){
@@ -1137,10 +1137,10 @@ namespace fastonosql
                 common::SNPrintf(buff, sizeof(buff), "hrscan function error: %s", st.code());
                 return common::make_error_value(buff, common::ErrorValue::E_ERROR);
             }
-            return common::ErrorValueSPtr();
+            return common::Error();
         }
 
-        common::ErrorValueSPtr multi_hget(const std::string &name, const std::vector<std::string> &keys, std::vector<std::string> *ret)
+        common::Error multi_hget(const std::string &name, const std::vector<std::string> &keys, std::vector<std::string> *ret)
         {
             ssdb::Status st = ssdb_->multi_hget(name, keys, ret);
             if (st.error()){
@@ -1148,10 +1148,10 @@ namespace fastonosql
                 common::SNPrintf(buff, sizeof(buff), "hrscan function error: %s", st.code());
                 return common::make_error_value(buff, common::ErrorValue::E_ERROR);
             }
-            return common::ErrorValueSPtr();
+            return common::Error();
         }
 
-        common::ErrorValueSPtr multi_hset(const std::string &name, const std::map<std::string, std::string> &keys)
+        common::Error multi_hset(const std::string &name, const std::map<std::string, std::string> &keys)
         {
             ssdb::Status st = ssdb_->multi_hset(name, keys);
             if (st.error()){
@@ -1159,12 +1159,12 @@ namespace fastonosql
                 common::SNPrintf(buff, sizeof(buff), "multi_hset function error: %s", st.code());
                 return common::make_error_value(buff, common::ErrorValue::E_ERROR);
             }
-            return common::ErrorValueSPtr();
+            return common::Error();
         }
 
         /******************** zset *************************/
 
-        common::ErrorValueSPtr zget(const std::string &name, const std::string &key, int64_t *ret)
+        common::Error zget(const std::string &name, const std::string &key, int64_t *ret)
         {
             ssdb::Status st = ssdb_->zget(name, key, ret);
             if (st.error()){
@@ -1172,10 +1172,10 @@ namespace fastonosql
                 common::SNPrintf(buff, sizeof(buff), "zget function error: %s", st.code());
                 return common::make_error_value(buff, common::ErrorValue::E_ERROR);
             }
-            return common::ErrorValueSPtr();
+            return common::Error();
         }
 
-        common::ErrorValueSPtr zset(const std::string &name, const std::string &key, int64_t score)
+        common::Error zset(const std::string &name, const std::string &key, int64_t score)
         {
             ssdb::Status st = ssdb_->zset(name, key, score);
             if (st.error()){
@@ -1183,10 +1183,10 @@ namespace fastonosql
                 common::SNPrintf(buff, sizeof(buff), "zset function error: %s", st.code());
                 return common::make_error_value(buff, common::ErrorValue::E_ERROR);
             }
-            return common::ErrorValueSPtr();
+            return common::Error();
         }
 
-        common::ErrorValueSPtr zdel(const std::string &name, const std::string &key)
+        common::Error zdel(const std::string &name, const std::string &key)
         {
             ssdb::Status st = ssdb_->zdel(name, key);
             if (st.error()){
@@ -1194,10 +1194,10 @@ namespace fastonosql
                 common::SNPrintf(buff, sizeof(buff), "Zdel function error: %s", st.code());
                 return common::make_error_value(buff, common::ErrorValue::E_ERROR);
             }
-            return common::ErrorValueSPtr();
+            return common::Error();
         }
 
-        common::ErrorValueSPtr zincr(const std::string &name, const std::string &key, int64_t incrby, int64_t *ret)
+        common::Error zincr(const std::string &name, const std::string &key, int64_t incrby, int64_t *ret)
         {
             ssdb::Status st = ssdb_->zincr(name, key, incrby, ret);
             if (st.error()){
@@ -1205,10 +1205,10 @@ namespace fastonosql
                 common::SNPrintf(buff, sizeof(buff), "Zincr function error: %s", st.code());
                 return common::make_error_value(buff, common::ErrorValue::E_ERROR);
             }
-            return common::ErrorValueSPtr();
+            return common::Error();
         }
 
-        common::ErrorValueSPtr zsize(const std::string &name, int64_t *ret)
+        common::Error zsize(const std::string &name, int64_t *ret)
         {
             ssdb::Status st = ssdb_->zsize(name, ret);
             if (st.error()){
@@ -1216,10 +1216,10 @@ namespace fastonosql
                 common::SNPrintf(buff, sizeof(buff), "zsize function error: %s", st.code());
                 return common::make_error_value(buff, common::ErrorValue::E_ERROR);
             }
-            return common::ErrorValueSPtr();
+            return common::Error();
         }
 
-        common::ErrorValueSPtr zclear(const std::string &name, int64_t *ret)
+        common::Error zclear(const std::string &name, int64_t *ret)
         {
             ssdb::Status st = ssdb_->zclear(name, ret);
             if (st.error()){
@@ -1227,10 +1227,10 @@ namespace fastonosql
                 common::SNPrintf(buff, sizeof(buff), "zclear function error: %s", st.code());
                 return common::make_error_value(buff, common::ErrorValue::E_ERROR);
             }
-            return common::ErrorValueSPtr();
+            return common::Error();
         }
 
-        common::ErrorValueSPtr zrank(const std::string &name, const std::string &key, int64_t *ret)
+        common::Error zrank(const std::string &name, const std::string &key, int64_t *ret)
         {
             ssdb::Status st = ssdb_->zrank(name, key, ret);
             if (st.error()){
@@ -1238,10 +1238,10 @@ namespace fastonosql
                 common::SNPrintf(buff, sizeof(buff), "zrank function error: %s", st.code());
                 return common::make_error_value(buff, common::ErrorValue::E_ERROR);
             }
-            return common::ErrorValueSPtr();
+            return common::Error();
         }
 
-        common::ErrorValueSPtr zrrank(const std::string &name, const std::string &key, int64_t *ret)
+        common::Error zrrank(const std::string &name, const std::string &key, int64_t *ret)
         {
             ssdb::Status st = ssdb_->zrrank(name, key, ret);
             if (st.error()){
@@ -1249,10 +1249,10 @@ namespace fastonosql
                 common::SNPrintf(buff, sizeof(buff), "zrrank function error: %s", st.code());
                 return common::make_error_value(buff, common::ErrorValue::E_ERROR);
             }
-            return common::ErrorValueSPtr();
+            return common::Error();
         }
 
-        common::ErrorValueSPtr zrange(const std::string &name,
+        common::Error zrange(const std::string &name,
                 uint64_t offset, uint64_t limit,
                 std::vector<std::string> *ret)
         {
@@ -1262,10 +1262,10 @@ namespace fastonosql
                 common::SNPrintf(buff, sizeof(buff), "zrange function error: %s", st.code());
                 return common::make_error_value(buff, common::ErrorValue::E_ERROR);
             }
-            return common::ErrorValueSPtr();
+            return common::Error();
         }
 
-        common::ErrorValueSPtr zrrange(const std::string &name,
+        common::Error zrrange(const std::string &name,
                 uint64_t offset, uint64_t limit,
                 std::vector<std::string> *ret)
         {
@@ -1275,10 +1275,10 @@ namespace fastonosql
                 common::SNPrintf(buff, sizeof(buff), "zrrange function error: %s", st.code());
                 return common::make_error_value(buff, common::ErrorValue::E_ERROR);
             }
-            return common::ErrorValueSPtr();
+            return common::Error();
         }
 
-        common::ErrorValueSPtr zkeys(const std::string &name, const std::string &key_start,
+        common::Error zkeys(const std::string &name, const std::string &key_start,
             int64_t *score_start, int64_t *score_end,
             uint64_t limit, std::vector<std::string> *ret)
         {
@@ -1288,10 +1288,10 @@ namespace fastonosql
                 common::SNPrintf(buff, sizeof(buff), "zkeys function error: %s", st.code());
                 return common::make_error_value(buff, common::ErrorValue::E_ERROR);
             }
-            return common::ErrorValueSPtr();
+            return common::Error();
         }
 
-        common::ErrorValueSPtr zscan(const std::string &name, const std::string &key_start,
+        common::Error zscan(const std::string &name, const std::string &key_start,
             int64_t *score_start, int64_t *score_end,
             uint64_t limit, std::vector<std::string> *ret)
         {
@@ -1301,10 +1301,10 @@ namespace fastonosql
                 common::SNPrintf(buff, sizeof(buff), "zscan function error: %s", st.code());
                 return common::make_error_value(buff, common::ErrorValue::E_ERROR);
             }
-            return common::ErrorValueSPtr();
+            return common::Error();
         }
 
-        common::ErrorValueSPtr zrscan(const std::string &name, const std::string &key_start,
+        common::Error zrscan(const std::string &name, const std::string &key_start,
             int64_t *score_start, int64_t *score_end,
             uint64_t limit, std::vector<std::string> *ret)
         {
@@ -1314,10 +1314,10 @@ namespace fastonosql
                 common::SNPrintf(buff, sizeof(buff), "zrscan function error: %s", st.code());
                 return common::make_error_value(buff, common::ErrorValue::E_ERROR);
             }
-            return common::ErrorValueSPtr();
+            return common::Error();
         }
 
-        common::ErrorValueSPtr multi_zget(const std::string &name, const std::vector<std::string> &keys,
+        common::Error multi_zget(const std::string &name, const std::vector<std::string> &keys,
             std::vector<std::string> *ret)
         {
             ssdb::Status st = ssdb_->multi_zget(name, keys, ret);
@@ -1326,10 +1326,10 @@ namespace fastonosql
                 common::SNPrintf(buff, sizeof(buff), "multi_zget function error: %s", st.code());
                 return common::make_error_value(buff, common::ErrorValue::E_ERROR);
             }
-            return common::ErrorValueSPtr();
+            return common::Error();
         }
 
-        common::ErrorValueSPtr multi_zset(const std::string &name, const std::map<std::string, int64_t> &kss)
+        common::Error multi_zset(const std::string &name, const std::map<std::string, int64_t> &kss)
         {
             ssdb::Status st = ssdb_->multi_zset(name, kss);
             if (st.error()){
@@ -1337,10 +1337,10 @@ namespace fastonosql
                 common::SNPrintf(buff, sizeof(buff), "multi_zset function error: %s", st.code());
                 return common::make_error_value(buff, common::ErrorValue::E_ERROR);
             }
-            return common::ErrorValueSPtr();
+            return common::Error();
         }
 
-        common::ErrorValueSPtr multi_zdel(const std::string &name, const std::vector<std::string> &keys)
+        common::Error multi_zdel(const std::string &name, const std::vector<std::string> &keys)
         {
             ssdb::Status st = ssdb_->multi_zdel(name, keys);
             if (st.error()){
@@ -1348,10 +1348,10 @@ namespace fastonosql
                 common::SNPrintf(buff, sizeof(buff), "multi_zdel function error: %s", st.code());
                 return common::make_error_value(buff, common::ErrorValue::E_ERROR);
             }
-            return common::ErrorValueSPtr();
+            return common::Error();
         }
 
-        common::ErrorValueSPtr qpush(const std::string &name, const std::string &item)
+        common::Error qpush(const std::string &name, const std::string &item)
         {
             ssdb::Status st = ssdb_->qpush(name, item);
             if (st.error()){
@@ -1359,10 +1359,10 @@ namespace fastonosql
                 common::SNPrintf(buff, sizeof(buff), "qpush function error: %s", st.code());
                 return common::make_error_value(buff, common::ErrorValue::E_ERROR);
             }
-            return common::ErrorValueSPtr();
+            return common::Error();
         }
 
-        common::ErrorValueSPtr qpop(const std::string &name, std::string *item)
+        common::Error qpop(const std::string &name, std::string *item)
         {
             ssdb::Status st = ssdb_->qpop(name, item);
             if (st.error()){
@@ -1370,10 +1370,10 @@ namespace fastonosql
                 common::SNPrintf(buff, sizeof(buff), "qpop function error: %s", st.code());
                 return common::make_error_value(buff, common::ErrorValue::E_ERROR);
             }
-            return common::ErrorValueSPtr();
+            return common::Error();
         }
 
-        common::ErrorValueSPtr qslice(const std::string &name, int64_t begin, int64_t end, std::vector<std::string> *ret)
+        common::Error qslice(const std::string &name, int64_t begin, int64_t end, std::vector<std::string> *ret)
         {
             ssdb::Status st = ssdb_->qslice(name, begin, end, ret);
             if (st.error()){
@@ -1381,10 +1381,10 @@ namespace fastonosql
                 common::SNPrintf(buff, sizeof(buff), "qslice function error: %s", st.code());
                 return common::make_error_value(buff, common::ErrorValue::E_ERROR);
             }
-            return common::ErrorValueSPtr();
+            return common::Error();
         }
 
-        common::ErrorValueSPtr qclear(const std::string &name, int64_t *ret)
+        common::Error qclear(const std::string &name, int64_t *ret)
         {
             ssdb::Status st = ssdb_->qclear(name, ret);
             if (st.error()){
@@ -1392,7 +1392,7 @@ namespace fastonosql
                 common::SNPrintf(buff, sizeof(buff), "qclear function error: %s", st.code());
                 return common::make_error_value(buff, common::ErrorValue::E_ERROR);
             }
-            return common::ErrorValueSPtr();
+            return common::Error();
         }
 
         void init()
@@ -1431,17 +1431,17 @@ namespace fastonosql
     }
 
     // ============== commands =============//
-    common::ErrorValueSPtr SsdbDriver::commandDeleteImpl(CommandDeleteKey* command, std::string& cmdstring) const
+    common::Error SsdbDriver::commandDeleteImpl(CommandDeleteKey* command, std::string& cmdstring) const
     {
         char patternResult[1024] = {0};
         NDbKValue key = command->key();
         common::SNPrintf(patternResult, sizeof(patternResult), DELETE_KEY_PATTERN_1ARGS_S, key.keyString());
         cmdstring = patternResult;
 
-        return common::ErrorValueSPtr();
+        return common::Error();
     }
 
-    common::ErrorValueSPtr SsdbDriver::commandLoadImpl(CommandLoadKey* command, std::string& cmdstring) const
+    common::Error SsdbDriver::commandLoadImpl(CommandLoadKey* command, std::string& cmdstring) const
     {
         char patternResult[1024] = {0};
         NDbKValue key = command->key();
@@ -1463,10 +1463,10 @@ namespace fastonosql
         }
         cmdstring = patternResult;
 
-        return common::ErrorValueSPtr();
+        return common::Error();
     }
 
-    common::ErrorValueSPtr SsdbDriver::commandCreateImpl(CommandCreateKey* command, std::string& cmdstring) const
+    common::Error SsdbDriver::commandCreateImpl(CommandCreateKey* command, std::string& cmdstring) const
     {
         char patternResult[1024] = {0};
         NDbKValue key = command->key();
@@ -1492,10 +1492,10 @@ namespace fastonosql
         }
         cmdstring = patternResult;
 
-        return common::ErrorValueSPtr();
+        return common::Error();
     }
 
-    common::ErrorValueSPtr SsdbDriver::commandChangeTTLImpl(CommandChangeTTL* command, std::string& cmdstring) const
+    common::Error SsdbDriver::commandChangeTTLImpl(CommandChangeTTL* command, std::string& cmdstring) const
     {
         UNUSED(command);
         UNUSED(cmdstring);
@@ -1528,16 +1528,16 @@ namespace fastonosql
     {
     }
 
-    common::ErrorValueSPtr SsdbDriver::executeImpl(FastoObject* out, int argc, char **argv)
+    common::Error SsdbDriver::executeImpl(FastoObject* out, int argc, char **argv)
     {
         return impl_->execute_impl(out, argc, argv);
     }
 
-    common::ErrorValueSPtr SsdbDriver::serverInfo(ServerInfo **info)
+    common::Error SsdbDriver::serverInfo(ServerInfo **info)
     {
         LOG_COMMAND(Command(INFO_REQUEST, common::Value::C_INNER));
         SsdbServerInfo::Common cm;
-        common::ErrorValueSPtr err = impl_->info(NULL, cm);
+        common::Error err = impl_->info(NULL, cm);
         if(!err){
             *info = new SsdbServerInfo(cm);
         }
@@ -1545,10 +1545,10 @@ namespace fastonosql
         return err;
     }
 
-    common::ErrorValueSPtr SsdbDriver::serverDiscoveryInfo(ServerInfo** sinfo, ServerDiscoveryInfo** dinfo, DataBaseInfo **dbinfo)
+    common::Error SsdbDriver::serverDiscoveryInfo(ServerInfo** sinfo, ServerDiscoveryInfo** dinfo, DataBaseInfo **dbinfo)
     {
         ServerInfo *lsinfo = NULL;
-        common::ErrorValueSPtr er = serverInfo(&lsinfo);
+        common::Error er = serverInfo(&lsinfo);
         if(er){
             return er;
         }
@@ -1576,13 +1576,13 @@ namespace fastonosql
         return er;
     }
 
-    common::ErrorValueSPtr SsdbDriver::currentDataBaseInfo(DataBaseInfo** info)
+    common::Error SsdbDriver::currentDataBaseInfo(DataBaseInfo** info)
     {
         size_t dbsize = 0;
         impl_->dbsize(dbsize);
         SsdbDataBaseInfo *sinfo = new SsdbDataBaseInfo("0", true, dbsize);
         *info = sinfo;
-        return common::ErrorValueSPtr();
+        return common::Error();
     }
 
     void SsdbDriver::handleConnectEvent(events::ConnectRequestEvent *ev)
@@ -1595,7 +1595,7 @@ namespace fastonosql
                 impl_->config_ = set->info();
                 impl_->sinfo_ = set->sshInfo();
         notifyProgress(sender, 25);
-                    common::ErrorValueSPtr er = impl_->connect();
+                    common::Error er = impl_->connect();
                     if(er){
                         res.setErrorInfo(er);
                     }
@@ -1612,7 +1612,7 @@ namespace fastonosql
             events::DisconnectResponceEvent::value_type res(ev->value());
         notifyProgress(sender, 50);
 
-            common::ErrorValueSPtr er = impl_->disconnect();
+            common::Error er = impl_->disconnect();
             if(er){
                 res.setErrorInfo(er);
             }
@@ -1628,7 +1628,7 @@ namespace fastonosql
             events::ExecuteRequestEvent::value_type res(ev->value());
             const char *inputLine = common::utils::c_strornull(res.text_);
 
-            common::ErrorValueSPtr er;
+            common::Error er;
             if(inputLine){
                 size_t length = strlen(inputLine);
                 int offset = 0;
@@ -1676,7 +1676,7 @@ namespace fastonosql
         notifyProgress(sender, 0);
             events::CommandResponceEvent::value_type res(ev->value());
             std::string cmdtext;
-            common::ErrorValueSPtr er = commandByType(res.cmd_, cmdtext);
+            common::Error er = commandByType(res.cmd_, cmdtext);
             if(er){
                 res.setErrorInfo(er);
                 reply(sender, new events::CommandResponceEvent(this, res));
@@ -1717,7 +1717,7 @@ namespace fastonosql
             FastoObjectIPtr root = FastoObject::createRoot(patternResult);
         notifyProgress(sender, 50);
             FastoObjectCommand* cmd = createCommand<SsdbCommand>(root, patternResult, common::Value::C_INNER);
-            common::ErrorValueSPtr er = execute(cmd);
+            common::Error er = execute(cmd);
             if(er){
                 res.setErrorInfo(er);
             }
@@ -1770,7 +1770,7 @@ namespace fastonosql
         notifyProgress(sender, 50);
             LOG_COMMAND(Command(INFO_REQUEST, common::Value::C_INNER));
             SsdbServerInfo::Common cm;
-            common::ErrorValueSPtr err = impl_->info(NULL, cm);
+            common::Error err = impl_->info(NULL, cm);
             if(err){
                 res.setErrorInfo(err);
             }

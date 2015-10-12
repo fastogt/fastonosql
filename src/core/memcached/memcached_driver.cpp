@@ -22,7 +22,7 @@
 
 namespace fastonosql
 {
-    common::ErrorValueSPtr testConnection(MemcachedConnectionSettings* settings)
+    common::Error testConnection(MemcachedConnectionSettings* settings)
     {
         if(!settings){
             return common::make_error_value("Invalid input argument", common::ErrorValue::E_ERROR);
@@ -52,7 +52,7 @@ namespace fastonosql
             }
         }
 
-        return common::ErrorValueSPtr();
+        return common::Error();
     }
 
     struct MemcachedDriver::pimpl
@@ -77,10 +77,10 @@ namespace fastonosql
             return server->state == MEMCACHED_SERVER_STATE_CONNECTED;
         }
 
-        common::ErrorValueSPtr connect()
+        common::Error connect()
         {
             if(isConnected()){
-                return common::ErrorValueSPtr();
+                return common::Error();
             }
 
             clear();
@@ -126,27 +126,27 @@ namespace fastonosql
                 return common::make_error_value(buff, common::ErrorValue::E_ERROR);
             }
 
-            return common::ErrorValueSPtr();
+            return common::Error();
         }
 
-        common::ErrorValueSPtr disconnect()
+        common::Error disconnect()
         {
             if(!isConnected()){
-                return common::ErrorValueSPtr();
+                return common::Error();
             }
 
             clear();
-            return common::ErrorValueSPtr();
+            return common::Error();
         }
 
-        common::ErrorValueSPtr keys(const char* args)
+        common::Error keys(const char* args)
         {
             char buff[1024] = {0};
             common::SNPrintf(buff, sizeof(buff), "Not supported command: STATS %s", args);
             return common::make_error_value(buff, common::ErrorValue::E_ERROR);
         }
 
-        common::ErrorValueSPtr stats(const char* args, MemcachedServerInfo::Common& statsout)
+        common::Error stats(const char* args, MemcachedServerInfo::Common& statsout)
         {
             memcached_return_t error;
             memcached_stat_st* st = memcached_stat(memc_, (char*)args, &error);
@@ -180,7 +180,7 @@ namespace fastonosql
             statsout.threads_ = st->threads;
 
             memcached_stat_free(NULL, st);
-            return common::ErrorValueSPtr();
+            return common::Error();
         }
 
         ~pimpl()
@@ -191,7 +191,7 @@ namespace fastonosql
         memcachedConfig config_;
         SSHInfo sinfo_;
 
-        common::ErrorValueSPtr execute_impl(FastoObject* out, int argc, char **argv)
+        common::Error execute_impl(FastoObject* out, int argc, char **argv)
         {
             if(strcasecmp(argv[0], "get") == 0){
                 if(argc != 2){
@@ -199,7 +199,7 @@ namespace fastonosql
                 }
 
                 std::string ret;
-                common::ErrorValueSPtr er = get(argv[1], ret);
+                common::Error er = get(argv[1], ret);
                 if(!er){
                     common::StringValue *val = common::Value::createStringValue(ret);
                     FastoObject* child = new FastoObject(out, val, config_.mb_delim_);
@@ -212,7 +212,7 @@ namespace fastonosql
                     return common::make_error_value("Invalid set input argument", common::ErrorValue::E_ERROR);
                 }
 
-                common::ErrorValueSPtr er = set(argv[1], argv[4], atoi(argv[2]), atoi(argv[3]));
+                common::Error er = set(argv[1], argv[4], atoi(argv[2]), atoi(argv[3]));
                 if(!er){
                     common::StringValue *val = common::Value::createStringValue("STORED");
                     FastoObject* child = new FastoObject(out, val, config_.mb_delim_);
@@ -225,7 +225,7 @@ namespace fastonosql
                     return common::make_error_value("Invalid add input argument", common::ErrorValue::E_ERROR);
                 }
 
-                common::ErrorValueSPtr er = add(argv[1], argv[4], atoi(argv[2]), atoi(argv[3]));
+                common::Error er = add(argv[1], argv[4], atoi(argv[2]), atoi(argv[3]));
                 if(!er){
                     common::StringValue *val = common::Value::createStringValue("STORED");
                     FastoObject* child = new FastoObject(out, val, config_.mb_delim_);
@@ -238,7 +238,7 @@ namespace fastonosql
                     return common::make_error_value("Invalid replace input argument", common::ErrorValue::E_ERROR);
                 }
 
-                common::ErrorValueSPtr er = replace(argv[1], argv[4], atoi(argv[2]), atoi(argv[3]));
+                common::Error er = replace(argv[1], argv[4], atoi(argv[2]), atoi(argv[3]));
                 if(!er){
                     common::StringValue *val = common::Value::createStringValue("STORED");
                     FastoObject* child = new FastoObject(out, val, config_.mb_delim_);
@@ -251,7 +251,7 @@ namespace fastonosql
                     return common::make_error_value("Invalid append input argument", common::ErrorValue::E_ERROR);
                 }
 
-                common::ErrorValueSPtr er = append(argv[1], argv[4], atoi(argv[2]), atoi(argv[3]));
+                common::Error er = append(argv[1], argv[4], atoi(argv[2]), atoi(argv[3]));
                 if(!er){
                     common::StringValue *val = common::Value::createStringValue("STORED");
                     FastoObject* child = new FastoObject(out, val, config_.mb_delim_);
@@ -264,7 +264,7 @@ namespace fastonosql
                     return common::make_error_value("Invalid prepend input argument", common::ErrorValue::E_ERROR);
                 }
 
-                common::ErrorValueSPtr er = prepend(argv[1], argv[4], atoi(argv[2]), atoi(argv[3]));
+                common::Error er = prepend(argv[1], argv[4], atoi(argv[2]), atoi(argv[3]));
                 if(!er){
                     common::StringValue *val = common::Value::createStringValue("STORED");
                     FastoObject* child = new FastoObject(out, val, config_.mb_delim_);
@@ -277,7 +277,7 @@ namespace fastonosql
                     return common::make_error_value("Invalid incr input argument", common::ErrorValue::E_ERROR);
                 }
 
-                common::ErrorValueSPtr er = incr(argv[1], common::convertFromString<uint64_t>(argv[2]));
+                common::Error er = incr(argv[1], common::convertFromString<uint64_t>(argv[2]));
                 if(!er){
                     common::StringValue *val = common::Value::createStringValue("STORED");
                     FastoObject* child = new FastoObject(out, val, config_.mb_delim_);
@@ -290,7 +290,7 @@ namespace fastonosql
                     return common::make_error_value("Invalid decr input argument", common::ErrorValue::E_ERROR);
                 }
 
-                common::ErrorValueSPtr er = decr(argv[1], common::convertFromString<uint64_t>(argv[2]));
+                common::Error er = decr(argv[1], common::convertFromString<uint64_t>(argv[2]));
                 if(!er){
                     common::StringValue *val = common::Value::createStringValue("STORED");
                     FastoObject* child = new FastoObject(out, val, config_.mb_delim_);
@@ -303,7 +303,7 @@ namespace fastonosql
                     return common::make_error_value("Invalid delete input argument", common::ErrorValue::E_ERROR);
                 }
 
-                common::ErrorValueSPtr er = del(argv[1], argc == 3 ? atoll(argv[2]) : 0);
+                common::Error er = del(argv[1], argc == 3 ? atoll(argv[2]) : 0);
                 if(!er){
                     common::StringValue *val = common::Value::createStringValue("DELETED");
                     FastoObject* child = new FastoObject(out, val, config_.mb_delim_);
@@ -316,7 +316,7 @@ namespace fastonosql
                     return common::make_error_value("Invalid flush_all input argument", common::ErrorValue::E_ERROR);
                 }
 
-                common::ErrorValueSPtr er = flush_all(argc == 2 ? common::convertFromString<time_t>(argv[1]) : 0);
+                common::Error er = flush_all(argc == 2 ? common::convertFromString<time_t>(argv[1]) : 0);
                 if(!er){
                     common::StringValue *val = common::Value::createStringValue("STORED");
                     FastoObject* child = new FastoObject(out, val, config_.mb_delim_);
@@ -336,7 +336,7 @@ namespace fastonosql
                 }
 
                 MemcachedServerInfo::Common statsout;
-                common::ErrorValueSPtr er = stats(args, statsout);
+                common::Error er = stats(args, statsout);
                 if(!er){
                     common::StringValue *val = common::Value::createStringValue(MemcachedServerInfo(statsout).toString());
                     FastoObject* child = new FastoObject(out, val, config_.mb_delim_);
@@ -366,7 +366,7 @@ namespace fastonosql
         }
 
     private:
-        common::ErrorValueSPtr get(const std::string& key, std::string& ret_val)
+        common::Error get(const std::string& key, std::string& ret_val)
         {
             ret_val.clear();
             uint32_t flags = 0;
@@ -386,10 +386,10 @@ namespace fastonosql
                 ret_val.resize(value_length);
                 free(value);
             }
-            return common::ErrorValueSPtr();
+            return common::Error();
         }
 
-        common::ErrorValueSPtr set(const std::string& key, const std::string& value, time_t expiration, uint32_t flags)
+        common::Error set(const std::string& key, const std::string& value, time_t expiration, uint32_t flags)
         {
             memcached_return_t error = memcached_set(memc_, key.c_str(), key.length(), value.c_str(), value.length(), expiration, flags);
             if (error != MEMCACHED_SUCCESS){
@@ -398,10 +398,10 @@ namespace fastonosql
                 return common::make_error_value(buff, common::ErrorValue::E_ERROR);
             }
 
-            return common::ErrorValueSPtr();
+            return common::Error();
         }
 
-        common::ErrorValueSPtr add(const std::string& key, const std::string& value, time_t expiration, uint32_t flags)
+        common::Error add(const std::string& key, const std::string& value, time_t expiration, uint32_t flags)
         {
             memcached_return_t error = memcached_add(memc_, key.c_str(), key.length(), value.c_str(), value.length(), expiration, flags);
             if (error != MEMCACHED_SUCCESS){
@@ -410,10 +410,10 @@ namespace fastonosql
                 return common::make_error_value(buff, common::ErrorValue::E_ERROR);
             }
 
-            return common::ErrorValueSPtr();
+            return common::Error();
         }
 
-        common::ErrorValueSPtr replace(const std::string& key, const std::string& value, time_t expiration, uint32_t flags)
+        common::Error replace(const std::string& key, const std::string& value, time_t expiration, uint32_t flags)
         {
             memcached_return_t error = memcached_replace(memc_, key.c_str(), key.length(), value.c_str(), value.length(), expiration, flags);
             if (error != MEMCACHED_SUCCESS){
@@ -422,10 +422,10 @@ namespace fastonosql
                 return common::make_error_value(buff, common::ErrorValue::E_ERROR);
             }
 
-            return common::ErrorValueSPtr();
+            return common::Error();
         }
 
-        common::ErrorValueSPtr append(const std::string& key, const std::string& value, time_t expiration, uint32_t flags)
+        common::Error append(const std::string& key, const std::string& value, time_t expiration, uint32_t flags)
         {
             memcached_return_t error = memcached_append(memc_, key.c_str(), key.length(), value.c_str(), value.length(), expiration, flags);
             if (error != MEMCACHED_SUCCESS){
@@ -434,10 +434,10 @@ namespace fastonosql
                 return common::make_error_value(buff, common::ErrorValue::E_ERROR);
             }
 
-            return common::ErrorValueSPtr();
+            return common::Error();
         }
 
-        common::ErrorValueSPtr prepend(const std::string& key, const std::string& value, time_t expiration, uint32_t flags)
+        common::Error prepend(const std::string& key, const std::string& value, time_t expiration, uint32_t flags)
         {
             memcached_return_t error = memcached_prepend(memc_, key.c_str(), key.length(), value.c_str(), value.length(), expiration, flags);
             if (error != MEMCACHED_SUCCESS){
@@ -446,10 +446,10 @@ namespace fastonosql
                 return common::make_error_value(buff, common::ErrorValue::E_ERROR);
             }
 
-            return common::ErrorValueSPtr();
+            return common::Error();
         }
 
-        common::ErrorValueSPtr incr(const std::string& key, uint64_t value)
+        common::Error incr(const std::string& key, uint64_t value)
         {
             memcached_return_t error = memcached_increment(memc_, key.c_str(), key.length(), 0, &value);
             if (error != MEMCACHED_SUCCESS){
@@ -458,10 +458,10 @@ namespace fastonosql
                 return common::make_error_value(buff, common::ErrorValue::E_ERROR);
             }
 
-            return common::ErrorValueSPtr();
+            return common::Error();
         }
 
-        common::ErrorValueSPtr decr(const std::string& key, uint64_t value)
+        common::Error decr(const std::string& key, uint64_t value)
         {
             memcached_return_t error = memcached_decrement(memc_, key.c_str(), key.length(), 0, &value);
             if (error != MEMCACHED_SUCCESS){
@@ -470,10 +470,10 @@ namespace fastonosql
                 return common::make_error_value(buff, common::ErrorValue::E_ERROR);
             }
 
-            return common::ErrorValueSPtr();
+            return common::Error();
         }
 
-        common::ErrorValueSPtr del(const std::string& key, time_t expiration)
+        common::Error del(const std::string& key, time_t expiration)
         {
             memcached_return_t error = memcached_delete(memc_, key.c_str(), key.length(), expiration);
             if (error != MEMCACHED_SUCCESS){
@@ -482,10 +482,10 @@ namespace fastonosql
                 return common::make_error_value(buff, common::ErrorValue::E_ERROR);
             }
 
-            return common::ErrorValueSPtr();
+            return common::Error();
         }
 
-        common::ErrorValueSPtr flush_all(time_t expiration)
+        common::Error flush_all(time_t expiration)
         {
             memcached_return_t error = memcached_flush(memc_, expiration);
             if (error != MEMCACHED_SUCCESS){
@@ -494,10 +494,10 @@ namespace fastonosql
                 return common::make_error_value(buff, common::ErrorValue::E_ERROR);
             }
 
-            return common::ErrorValueSPtr();
+            return common::Error();
         }
 
-        common::ErrorValueSPtr version_server() const
+        common::Error version_server() const
         {
             memcached_return_t error = memcached_version(memc_);
             if (error != MEMCACHED_SUCCESS){
@@ -506,10 +506,10 @@ namespace fastonosql
                 return common::make_error_value(buff, common::ErrorValue::E_ERROR);
             }
 
-            return common::ErrorValueSPtr();
+            return common::Error();
         }
 
-        common::ErrorValueSPtr verbosity() const
+        common::Error verbosity() const
         {
             /*memcached_return_t error = memcached_verbosity(memc_, 1);
             if (error != MEMCACHED_SUCCESS){
@@ -583,16 +583,16 @@ namespace fastonosql
     {
     }
 
-    common::ErrorValueSPtr MemcachedDriver::executeImpl(FastoObject* out, int argc, char **argv)
+    common::Error MemcachedDriver::executeImpl(FastoObject* out, int argc, char **argv)
     {
         return impl_->execute_impl(out, argc, argv);
     }
 
-    common::ErrorValueSPtr MemcachedDriver::serverInfo(ServerInfo **info)
+    common::Error MemcachedDriver::serverInfo(ServerInfo **info)
     {
         LOG_COMMAND(Command(INFO_REQUEST, common::Value::C_INNER));
         MemcachedServerInfo::Common cm;
-        common::ErrorValueSPtr err = impl_->stats(NULL, cm);
+        common::Error err = impl_->stats(NULL, cm);
         if(!err){
             *info = new MemcachedServerInfo(cm);
         }
@@ -600,10 +600,10 @@ namespace fastonosql
         return err;
     }
 
-    common::ErrorValueSPtr MemcachedDriver::serverDiscoveryInfo(ServerInfo **sinfo, ServerDiscoveryInfo** dinfo, DataBaseInfo** dbinfo)
+    common::Error MemcachedDriver::serverDiscoveryInfo(ServerInfo **sinfo, ServerDiscoveryInfo** dinfo, DataBaseInfo** dbinfo)
     {
         ServerInfo *lsinfo = NULL;
-        common::ErrorValueSPtr er = serverInfo(&lsinfo);
+        common::Error er = serverInfo(&lsinfo);
         if(er){
             return er;
         }
@@ -631,10 +631,10 @@ namespace fastonosql
         return er;
     }
 
-    common::ErrorValueSPtr MemcachedDriver::currentDataBaseInfo(DataBaseInfo** info)
+    common::Error MemcachedDriver::currentDataBaseInfo(DataBaseInfo** info)
     {
         *info = new MemcachedDataBaseInfo("0", true, 0);
-        return common::ErrorValueSPtr();
+        return common::Error();
     }
 
     void MemcachedDriver::handleConnectEvent(events::ConnectRequestEvent *ev)
@@ -647,7 +647,7 @@ namespace fastonosql
                 impl_->config_ = set->info();
                 impl_->sinfo_ = set->sshInfo();
         notifyProgress(sender, 25);
-                    common::ErrorValueSPtr er = impl_->connect();
+                    common::Error er = impl_->connect();
                     if(er){
                         res.setErrorInfo(er);
                     }
@@ -664,7 +664,7 @@ namespace fastonosql
             events::DisconnectResponceEvent::value_type res(ev->value());
         notifyProgress(sender, 50);
 
-            common::ErrorValueSPtr er = impl_->disconnect();
+            common::Error er = impl_->disconnect();
             if(er){
                 res.setErrorInfo(er);
             }
@@ -680,7 +680,7 @@ namespace fastonosql
             events::ExecuteRequestEvent::value_type res(ev->value());
             const char *inputLine = common::utils::c_strornull(res.text_);
 
-            common::ErrorValueSPtr er;
+            common::Error er;
             if(inputLine){
                 size_t length = strlen(inputLine);
                 int offset = 0;
@@ -728,7 +728,7 @@ namespace fastonosql
         notifyProgress(sender, 0);
             events::CommandResponceEvent::value_type res(ev->value());
             std::string cmdtext;
-            common::ErrorValueSPtr er = commandByType(res.cmd_, cmdtext);
+            common::Error er = commandByType(res.cmd_, cmdtext);
             if(er){
                 res.setErrorInfo(er);
                 reply(sender, new events::CommandResponceEvent(this, res));
@@ -767,7 +767,7 @@ namespace fastonosql
             FastoObjectIPtr root = FastoObject::createRoot(GET_KEYS);
         notifyProgress(sender, 50);
             FastoObjectCommand* cmd = createCommand<MemcachedCommand>(root, GET_KEYS, common::Value::C_INNER);
-            common::ErrorValueSPtr er = execute(cmd);
+            common::Error er = execute(cmd);
             if(er){
                 res.setErrorInfo(er);
             }
@@ -820,7 +820,7 @@ namespace fastonosql
         notifyProgress(sender, 50);
             LOG_COMMAND(Command(INFO_REQUEST, common::Value::C_INNER));
             MemcachedServerInfo::Common cm;
-            common::ErrorValueSPtr err = impl_->stats(NULL, cm);
+            common::Error err = impl_->stats(NULL, cm);
             if(err){
                 res.setErrorInfo(err);
             }
@@ -834,25 +834,25 @@ namespace fastonosql
     }
 
     // ============== commands =============//
-    common::ErrorValueSPtr MemcachedDriver::commandDeleteImpl(CommandDeleteKey* command, std::string& cmdstring) const
+    common::Error MemcachedDriver::commandDeleteImpl(CommandDeleteKey* command, std::string& cmdstring) const
     {
         char patternResult[1024] = {0};
         NDbKValue key = command->key();
         common::SNPrintf(patternResult, sizeof(patternResult), DELETE_KEY_PATTERN_1ARGS_S, key.keyString());
         cmdstring = patternResult;
-        return common::ErrorValueSPtr();
+        return common::Error();
     }
 
-    common::ErrorValueSPtr MemcachedDriver::commandLoadImpl(CommandLoadKey* command, std::string& cmdstring) const
+    common::Error MemcachedDriver::commandLoadImpl(CommandLoadKey* command, std::string& cmdstring) const
     {
         char patternResult[1024] = {0};
         NDbKValue key = command->key();
         common::SNPrintf(patternResult, sizeof(patternResult), GET_KEY_PATTERN_1ARGS_S, key.keyString());
         cmdstring = patternResult;
-        return common::ErrorValueSPtr();
+        return common::Error();
     }
 
-    common::ErrorValueSPtr MemcachedDriver::commandCreateImpl(CommandCreateKey* command, std::string& cmdstring) const
+    common::Error MemcachedDriver::commandCreateImpl(CommandCreateKey* command, std::string& cmdstring) const
     {
         char patternResult[1024] = {0};
         NDbKValue key = command->key();
@@ -862,10 +862,10 @@ namespace fastonosql
         std::string value_str = common::convertToString(rval, " ");
         common::SNPrintf(patternResult, sizeof(patternResult), SET_KEY_PATTERN_2ARGS_SS, key_str, value_str);
         cmdstring = patternResult;
-        return common::ErrorValueSPtr();
+        return common::Error();
     }
 
-    common::ErrorValueSPtr MemcachedDriver::commandChangeTTLImpl(CommandChangeTTL* command, std::string& cmdstring) const
+    common::Error MemcachedDriver::commandChangeTTLImpl(CommandChangeTTL* command, std::string& cmdstring) const
     {
         UNUSED(command);
         UNUSED(cmdstring);

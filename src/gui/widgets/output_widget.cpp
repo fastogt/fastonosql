@@ -102,7 +102,7 @@ namespace fastonosql
 
     void OutputWidget::finishExecuteCommand(const EventsInfo::CommandResponce& res)
     {
-        common::ErrorValueSPtr er = res.errorInfo();
+        common::Error er = res.errorInfo();
         if(er && er->isError()){
             return;
         }

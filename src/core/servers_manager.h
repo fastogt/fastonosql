@@ -19,8 +19,8 @@ namespace fastonosql
         IServerSPtr createServer(IConnectionSettingsBaseSPtr settings);
         IClusterSPtr createCluster(IClusterSettingsBaseSPtr settings);
 
-        common::ErrorValueSPtr testConnection(IConnectionSettingsBaseSPtr connection);
-        common::ErrorValueSPtr discoveryConnection(IConnectionSettingsBaseSPtr connection, std::vector<ServerDiscoveryInfoSPtr>& inf);
+        common::Error testConnection(IConnectionSettingsBaseSPtr connection);
+        common::Error discoveryConnection(IConnectionSettingsBaseSPtr connection, std::vector<ServerDiscoveryInfoSPtr>& inf);
 
         void setSyncServers(bool isSync);        
         void clear();

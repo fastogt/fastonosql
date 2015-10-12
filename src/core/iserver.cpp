@@ -321,7 +321,7 @@ namespace fastonosql
             handleConnectEvent(ev);
 
             ConnectResponceEvent::value_type v = ev->value();
-            common::ErrorValueSPtr er(v.errorInfo());
+            common::Error er(v.errorInfo());
             if(!er){
                 EventsInfo::DiscoveryInfoRequest dreq(this);
                 processDiscoveryInfo(dreq);
@@ -432,7 +432,7 @@ namespace fastonosql
     {
         using namespace events;
         ConnectResponceEvent::value_type v = ev->value();
-        common::ErrorValueSPtr er(v.errorInfo());
+        common::Error er(v.errorInfo());
         if(er && er->isError()){
             LOG_ERROR(er, true);
         }
@@ -443,7 +443,7 @@ namespace fastonosql
     {
         using namespace events;
         DisconnectResponceEvent::value_type v = ev->value();
-        common::ErrorValueSPtr er(v.errorInfo());
+        common::Error er(v.errorInfo());
         if(er && er->isError()){
             LOG_ERROR(er, true);
         }
@@ -454,7 +454,7 @@ namespace fastonosql
     {
         using namespace events;
         ServerInfoResponceEvent::value_type v = ev->value();
-        common::ErrorValueSPtr er(v.errorInfo());
+        common::Error er(v.errorInfo());
         if(er && er->isError()){
             LOG_ERROR(er, true);
         }
@@ -465,7 +465,7 @@ namespace fastonosql
     {
         using namespace events;
         ServerPropertyInfoResponceEvent::value_type v = ev->value();
-        common::ErrorValueSPtr er(v.errorInfo());
+        common::Error er(v.errorInfo());
         if(er && er->isError()){
             LOG_ERROR(er, true);
         }
@@ -476,7 +476,7 @@ namespace fastonosql
     {
         using namespace events;
         ChangeServerPropertyInfoResponceEvent::value_type v = ev->value();
-        common::ErrorValueSPtr er(v.errorInfo());
+        common::Error er(v.errorInfo());
         if(er && er->isError()){
             LOG_ERROR(er, true);
         }
@@ -487,7 +487,7 @@ namespace fastonosql
     {
         using namespace events;
         ShutDownResponceEvent::value_type v = ev->value();
-        common::ErrorValueSPtr er(v.errorInfo());
+        common::Error er(v.errorInfo());
         if(er && er->isError()){
             LOG_ERROR(er, true);
         }
@@ -498,7 +498,7 @@ namespace fastonosql
     {
         using namespace events;
         BackupResponceEvent::value_type v = ev->value();
-        common::ErrorValueSPtr er(v.errorInfo());
+        common::Error er(v.errorInfo());
         if(er && er->isError()){
             LOG_ERROR(er, true);
         }
@@ -509,7 +509,7 @@ namespace fastonosql
     {
         using namespace events;
         ExportResponceEvent::value_type v = ev->value();
-        common::ErrorValueSPtr er(v.errorInfo());
+        common::Error er(v.errorInfo());
         if(er && er->isError()){
             LOG_ERROR(er, true);
         }
@@ -520,7 +520,7 @@ namespace fastonosql
     {
         using namespace events;
         ChangePasswordResponceEvent::value_type v = ev->value();
-        common::ErrorValueSPtr er(v.errorInfo());
+        common::Error er(v.errorInfo());
         if(er && er->isError()){
             LOG_ERROR(er, true);
         }
@@ -531,7 +531,7 @@ namespace fastonosql
     {
         using namespace events;
         ChangeMaxConnectionResponceEvent::value_type v = ev->value();
-        common::ErrorValueSPtr er(v.errorInfo());
+        common::Error er(v.errorInfo());
         if(er && er->isError()){
             LOG_ERROR(er, true);
         }
@@ -542,7 +542,7 @@ namespace fastonosql
     {
         using namespace events;
         LoadDatabasesInfoResponceEvent::value_type v = ev->value();
-        common::ErrorValueSPtr er(v.errorInfo());
+        common::Error er(v.errorInfo());
         if(er && er->isError()){
             LOG_ERROR(er, true);
             databases_.clear();
@@ -568,7 +568,7 @@ namespace fastonosql
     {
         using namespace events;
         LoadDatabaseContentResponceEvent::value_type v = ev->value();
-        common::ErrorValueSPtr er(v.errorInfo());
+        common::Error er(v.errorInfo());
         if(er && er->isError()){
             LOG_ERROR(er, true);
         }
@@ -588,7 +588,7 @@ namespace fastonosql
     {
         using namespace events;
         ServerInfoHistoryResponceEvent::value_type v = ev->value();
-        common::ErrorValueSPtr er = v.errorInfo();
+        common::Error er = v.errorInfo();
         if(er && er->isError()){
             LOG_ERROR(er, true);
         }
@@ -599,7 +599,7 @@ namespace fastonosql
     {
         using namespace events;
         DiscoveryInfoResponceEvent::value_type v = ev->value();
-        common::ErrorValueSPtr er = v.errorInfo();
+        common::Error er = v.errorInfo();
         if(er && er->isError()){
             LOG_ERROR(er, true);
         }
@@ -610,7 +610,7 @@ namespace fastonosql
     {
         using namespace events;
         ClearServerHistoryResponceEvent::value_type v = ev->value();
-        common::ErrorValueSPtr er = v.errorInfo();
+        common::Error er = v.errorInfo();
         if(er && er->isError()){
             LOG_ERROR(er, true);
         }
@@ -621,7 +621,7 @@ namespace fastonosql
     {
         using namespace events;
         SetDefaultDatabaseResponceEvent::value_type v = ev->value();
-        common::ErrorValueSPtr er(v.errorInfo());
+        common::Error er(v.errorInfo());
         if(er && er->isError()){
             LOG_ERROR(er, true);
         }
@@ -646,7 +646,7 @@ namespace fastonosql
     {
         using namespace events;
         CommandResponceEvent::value_type v = ev->value();
-        common::ErrorValueSPtr er(v.errorInfo());
+        common::Error er(v.errorInfo());
         if(er && er->isError()){
             LOG_ERROR(er, true);
         }

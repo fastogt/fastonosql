@@ -327,7 +327,7 @@ namespace fastonosql
 
     void BaseShellWidget::finishSetDefaultDatabase(const EventsInfo::SetDefaultDatabaseResponce& res)
     {
-        common::ErrorValueSPtr er = res.errorInfo();
+        common::Error er = res.errorInfo();
         if(er && er->isError()){
             return;
         }
@@ -367,7 +367,7 @@ namespace fastonosql
 
     void BaseShellWidget::finishLoadDiscoveryInfo(const EventsInfo::DiscoveryInfoResponce& res)
     {
-        common::ErrorValueSPtr er = res.errorInfo();
+        common::Error er = res.errorInfo();
         if(er && er->isError()){
             return;
         }

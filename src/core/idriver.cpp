@@ -87,7 +87,7 @@ namespace fastonosql
             char patternResult[1024] = {0};
             common::SNPrintf(patternResult, sizeof(patternResult), "Sorry, but now " PROJECT_NAME_TITLE " not supported %s.", eventCommandText);
 
-            common::ErrorValueSPtr er = common::make_error_value(patternResult, common::ErrorValue::E_ERROR);
+            common::Error er = common::make_error_value(patternResult, common::ErrorValue::E_ERROR);
             res.setErrorInfo(er);
             event_responce_type* resp = new event_responce_type(sender, res);
             IDriver::reply(esender, resp);
@@ -95,7 +95,7 @@ namespace fastonosql
         }
     }
 
-    common::ErrorValueSPtr IDriver::execute(FastoObjectCommand* cmd)
+    common::Error IDriver::execute(FastoObjectCommand* cmd)
     {
         //DCHECK(cmd);
         if(!cmd){
@@ -111,7 +111,7 @@ namespace fastonosql
 
         LOG_COMMAND(Command(command, type));
 
-        common::ErrorValueSPtr er;
+        common::Error er;
         if (command[0] != '\0') {
             int argc;
             sds *argv = sdssplitargs(command.c_str(), &argc);
@@ -194,7 +194,7 @@ namespace fastonosql
         thread_->wait();
     }
 
-    common::ErrorValueSPtr IDriver::commandByType(CommandKeySPtr command, std::string& cmdstring) const
+    common::Error IDriver::commandByType(CommandKeySPtr command, std::string& cmdstring) const
     {
         if(!command){
             return common::make_error_value("Invalid input argument", common::ErrorValue::E_ERROR);
@@ -364,7 +364,7 @@ namespace fastonosql
                 common::time64_t time = common::time::current_mstime();
                 std::string stamp = createStamp(time);
                 ServerInfo* info = NULL;
-                common::ErrorValueSPtr er = serverInfo(&info);
+                common::Error er = serverInfo(&info);
                 if(er && er->isError()){
                     QObject::timerEvent(event);
                     return;
@@ -529,7 +529,7 @@ namespace fastonosql
             ServerDiscoveryInfo* disc = NULL;
             ServerInfo* info = NULL;
             DataBaseInfo* db = NULL;
-            common::ErrorValueSPtr er = serverDiscoveryInfo(&info, &disc, &db);
+            common::Error er = serverDiscoveryInfo(&info, &disc, &db);
             if(!er){
                DCHECK(info);
                DCHECK(db);

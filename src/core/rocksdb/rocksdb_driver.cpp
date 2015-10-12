@@ -30,7 +30,7 @@ namespace fastonosql
 {
     namespace
     {
-        common::ErrorValueSPtr createConnection(const rocksdbConfig& config, rocksdb::DB** context)
+        common::Error createConnection(const rocksdbConfig& config, rocksdb::DB** context)
         {
             DCHECK(*context == NULL);
 
@@ -44,10 +44,10 @@ namespace fastonosql
 
             *context = lcontext;
 
-            return common::ErrorValueSPtr();
+            return common::Error();
         }
 
-        common::ErrorValueSPtr createConnection(RocksdbConnectionSettings* settings, rocksdb::DB** context)
+        common::Error createConnection(RocksdbConnectionSettings* settings, rocksdb::DB** context)
         {
             if(!settings){
                 return common::make_error_value("Invalid input argument", common::ErrorValue::E_ERROR);
@@ -58,17 +58,17 @@ namespace fastonosql
         }
     }
 
-    common::ErrorValueSPtr testConnection(RocksdbConnectionSettings* settings)
+    common::Error testConnection(RocksdbConnectionSettings* settings)
     {
         rocksdb::DB* ldb = NULL;
-        common::ErrorValueSPtr er = createConnection(settings, &ldb);
+        common::Error er = createConnection(settings, &ldb);
         if(er){
             return er;
         }
 
         delete ldb;
 
-        return common::ErrorValueSPtr();
+        return common::Error();
     }
 
     struct RocksdbDriver::pimpl
@@ -88,17 +88,17 @@ namespace fastonosql
             return true;
         }
 
-        common::ErrorValueSPtr connect()
+        common::Error connect()
         {
             if(isConnected()){
-                return common::ErrorValueSPtr();
+                return common::Error();
             }
 
             clear();
             init();
 
             rocksdb::DB* context = NULL;
-            common::ErrorValueSPtr er = createConnection(config_, &context);
+            common::Error er = createConnection(config_, &context);
             if(er){
                 return er;
             }
@@ -106,20 +106,20 @@ namespace fastonosql
             rocksdb_ = context;
 
 
-            return common::ErrorValueSPtr();
+            return common::Error();
         }
 
-        common::ErrorValueSPtr disconnect()
+        common::Error disconnect()
         {
             if(!isConnected()){
-                return common::ErrorValueSPtr();
+                return common::Error();
             }
 
             clear();
-            return common::ErrorValueSPtr();
+            return common::Error();
         }
 
-        common::ErrorValueSPtr info(const char* args, RocksdbServerInfo::Stats& statsout)
+        common::Error info(const char* args, RocksdbServerInfo::Stats& statsout)
         {
             //sstables
             //stats
@@ -160,10 +160,10 @@ namespace fastonosql
                 }
             }
 
-            return common::ErrorValueSPtr();
+            return common::Error();
         }
 
-        common::ErrorValueSPtr dbsize(size_t& size) WARN_UNUSED_RESULT
+        common::Error dbsize(size_t& size) WARN_UNUSED_RESULT
         {
             rocksdb::ReadOptions ro;
             rocksdb::Iterator* it = rocksdb_->NewIterator(ro);
@@ -181,7 +181,7 @@ namespace fastonosql
                 return common::make_error_value(buff, common::ErrorValue::E_ERROR);
             }
             size = sz;
-            return common::ErrorValueSPtr();
+            return common::Error();
         }
 
         ~pimpl()
@@ -201,7 +201,7 @@ namespace fastonosql
             return "default";
         }
 
-        common::ErrorValueSPtr execute_impl(FastoObject* out, int argc, char **argv)
+        common::Error execute_impl(FastoObject* out, int argc, char **argv)
         {
             if(strcasecmp(argv[0], "info") == 0){
                 if(argc > 2){
@@ -209,7 +209,7 @@ namespace fastonosql
                 }
 
                 RocksdbServerInfo::Stats statsout;
-                common::ErrorValueSPtr er = info(argc == 2 ? argv[1] : 0, statsout);
+                common::Error er = info(argc == 2 ? argv[1] : 0, statsout);
                 if(!er){
                     common::StringValue *val = common::Value::createStringValue(RocksdbServerInfo(statsout).toString());
                     FastoObject* child = new FastoObject(out, val, config_.mb_delim_);
@@ -223,7 +223,7 @@ namespace fastonosql
                 }
 
                 std::string ret;
-                common::ErrorValueSPtr er = get(argv[1], &ret);
+                common::Error er = get(argv[1], &ret);
                 if(!er){
                     common::StringValue *val = common::Value::createStringValue(ret);
                     FastoObject* child = new FastoObject(out, val, config_.mb_delim_);
@@ -237,7 +237,7 @@ namespace fastonosql
                 }
 
                 size_t ret = 0;
-                common::ErrorValueSPtr er = dbsize(ret);
+                common::Error er = dbsize(ret);
                 if(!er){
                     common::FundamentalValue *val = common::Value::createUIntegerValue(ret);
                     FastoObject* child = new FastoObject(out, val, config_.mb_delim_);
@@ -256,7 +256,7 @@ namespace fastonosql
                 }
 
                 std::vector<std::string> keysout;
-                common::ErrorValueSPtr er = mget(keysget, &keysout);
+                common::Error er = mget(keysget, &keysout);
                 if(!er){
                     common::ArrayValue* ar = common::Value::createArrayValue();
                     for(int i = 0; i < keysout.size(); ++i){
@@ -273,7 +273,7 @@ namespace fastonosql
                     return common::make_error_value("Invalid merge input argument", common::ErrorValue::E_ERROR);
                 }
 
-                common::ErrorValueSPtr er = merge(argv[1], argv[2]);
+                common::Error er = merge(argv[1], argv[2]);
                 if(!er){
                     common::StringValue *val = common::Value::createStringValue("STORED");
                     FastoObject* child = new FastoObject(out, val, config_.mb_delim_);
@@ -286,7 +286,7 @@ namespace fastonosql
                     return common::make_error_value("Invalid put input argument", common::ErrorValue::E_ERROR);
                 }
 
-                common::ErrorValueSPtr er = put(argv[1], argv[2]);
+                common::Error er = put(argv[1], argv[2]);
                 if(!er){
                     common::StringValue *val = common::Value::createStringValue("STORED");
                     FastoObject* child = new FastoObject(out, val, config_.mb_delim_);
@@ -299,7 +299,7 @@ namespace fastonosql
                     return common::make_error_value("Invalid del input argument", common::ErrorValue::E_ERROR);
                 }
 
-                common::ErrorValueSPtr er = del(argv[1]);
+                common::Error er = del(argv[1]);
                 if(!er){
                     common::StringValue *val = common::Value::createStringValue("DELETED");
                     FastoObject* child = new FastoObject(out, val, config_.mb_delim_);
@@ -313,7 +313,7 @@ namespace fastonosql
                 }
 
                 std::vector<std::string> keysout;
-                common::ErrorValueSPtr er = keys(argv[1], argv[2], atoll(argv[3]), &keysout);
+                common::Error er = keys(argv[1], argv[2], atoll(argv[3]), &keysout);
                 if(!er){
                     common::ArrayValue* ar = common::Value::createArrayValue();
                     for(int i = 0; i < keysout.size(); ++i){
@@ -333,7 +333,7 @@ namespace fastonosql
         }
 
     private:
-        common::ErrorValueSPtr get(const std::string& key, std::string* ret_val)
+        common::Error get(const std::string& key, std::string* ret_val)
         {
             rocksdb::ReadOptions ro;
             rocksdb::Status st = rocksdb_->Get(ro, key, ret_val);
@@ -343,24 +343,24 @@ namespace fastonosql
                 return common::make_error_value(buff, common::ErrorValue::E_ERROR);
             }
 
-            return common::ErrorValueSPtr();
+            return common::Error();
         }
 
-        common::ErrorValueSPtr mget(const std::vector<rocksdb::Slice>& keys, std::vector<std::string> *ret)
+        common::Error mget(const std::vector<rocksdb::Slice>& keys, std::vector<std::string> *ret)
         {
             rocksdb::ReadOptions ro;
             std::vector<rocksdb::Status> sts = rocksdb_->MultiGet(ro, keys, ret);
             for(int i = 0; i < sts.size(); ++i){
                 rocksdb::Status st = sts[i];
                 if (st.ok()){
-                    return common::ErrorValueSPtr();
+                    return common::Error();
                 }
             }
 
             return common::make_error_value("mget function unknown error", common::ErrorValue::E_ERROR);
         }
 
-        common::ErrorValueSPtr merge(const std::string& key, const std::string& value)
+        common::Error merge(const std::string& key, const std::string& value)
         {
             rocksdb::WriteOptions wo;
             rocksdb::Status st = rocksdb_->Merge(wo, key, value);
@@ -370,10 +370,10 @@ namespace fastonosql
                 return common::make_error_value(buff, common::ErrorValue::E_ERROR);
             }
 
-            return common::ErrorValueSPtr();
+            return common::Error();
         }
 
-        common::ErrorValueSPtr put(const std::string& key, const std::string& value)
+        common::Error put(const std::string& key, const std::string& value)
         {
             rocksdb::WriteOptions wo;
             rocksdb::Status st = rocksdb_->Put(wo, key, value);
@@ -383,10 +383,10 @@ namespace fastonosql
                 return common::make_error_value(buff, common::ErrorValue::E_ERROR);
             }
 
-            return common::ErrorValueSPtr();
+            return common::Error();
         }
 
-        common::ErrorValueSPtr del(const std::string& key)
+        common::Error del(const std::string& key)
         {
             rocksdb::WriteOptions wo;
             rocksdb::Status st = rocksdb_->Delete(wo, key);
@@ -395,10 +395,10 @@ namespace fastonosql
                 common::SNPrintf(buff, sizeof(buff), "del function error: %s", st.ToString());
                 return common::make_error_value(buff, common::ErrorValue::E_ERROR);
             }
-            return common::ErrorValueSPtr();
+            return common::Error();
         }
 
-        common::ErrorValueSPtr keys(const std::string &key_start, const std::string &key_end, uint64_t limit, std::vector<std::string> *ret)
+        common::Error keys(const std::string &key_start, const std::string &key_end, uint64_t limit, std::vector<std::string> *ret)
         {
             ret->clear();
 
@@ -422,7 +422,7 @@ namespace fastonosql
                 common::SNPrintf(buff, sizeof(buff), "Keys function error: %s", st.ToString());
                 return common::make_error_value(buff, common::ErrorValue::E_ERROR);
             }
-            return common::ErrorValueSPtr();
+            return common::Error();
         }
 
         void init()
@@ -461,27 +461,27 @@ namespace fastonosql
     }
 
     // ============== commands =============//
-    common::ErrorValueSPtr RocksdbDriver::commandDeleteImpl(CommandDeleteKey* command, std::string& cmdstring) const
+    common::Error RocksdbDriver::commandDeleteImpl(CommandDeleteKey* command, std::string& cmdstring) const
     {
         char patternResult[1024] = {0};
         NDbKValue key = command->key();
         common::SNPrintf(patternResult, sizeof(patternResult), DELETE_KEY_PATTERN_1ARGS_S, key.keyString());
         cmdstring = patternResult;
 
-        return common::ErrorValueSPtr();
+        return common::Error();
     }
 
-    common::ErrorValueSPtr RocksdbDriver::commandLoadImpl(CommandLoadKey* command, std::string& cmdstring) const
+    common::Error RocksdbDriver::commandLoadImpl(CommandLoadKey* command, std::string& cmdstring) const
     {
         char patternResult[1024] = {0};
         NDbKValue key = command->key();
         common::SNPrintf(patternResult, sizeof(patternResult), GET_KEY_PATTERN_1ARGS_S, key.keyString());
         cmdstring = patternResult;
 
-        return common::ErrorValueSPtr();
+        return common::Error();
     }
 
-    common::ErrorValueSPtr RocksdbDriver::commandCreateImpl(CommandCreateKey* command, std::string& cmdstring) const
+    common::Error RocksdbDriver::commandCreateImpl(CommandCreateKey* command, std::string& cmdstring) const
     {
         char patternResult[1024] = {0};
         NDbKValue key = command->key();
@@ -492,10 +492,10 @@ namespace fastonosql
         common::SNPrintf(patternResult, sizeof(patternResult), SET_KEY_PATTERN_2ARGS_SS, key_str, value_str);
         cmdstring = patternResult;
 
-        return common::ErrorValueSPtr();
+        return common::Error();
     }
 
-    common::ErrorValueSPtr RocksdbDriver::commandChangeTTLImpl(CommandChangeTTL* command, std::string& cmdstring) const
+    common::Error RocksdbDriver::commandChangeTTLImpl(CommandChangeTTL* command, std::string& cmdstring) const
     {
         UNUSED(command);
         UNUSED(cmdstring);
@@ -530,16 +530,16 @@ namespace fastonosql
     {
     }
 
-    common::ErrorValueSPtr RocksdbDriver::executeImpl(FastoObject* out, int argc, char **argv)
+    common::Error RocksdbDriver::executeImpl(FastoObject* out, int argc, char **argv)
     {
         return impl_->execute_impl(out, argc, argv);
     }
 
-    common::ErrorValueSPtr RocksdbDriver::serverInfo(ServerInfo **info)
+    common::Error RocksdbDriver::serverInfo(ServerInfo **info)
     {
         LOG_COMMAND(Command(INFO_REQUEST, common::Value::C_INNER));
         RocksdbServerInfo::Stats cm;
-        common::ErrorValueSPtr err = impl_->info(NULL, cm);
+        common::Error err = impl_->info(NULL, cm);
         if(!err){
             *info = new RocksdbServerInfo(cm);
         }
@@ -547,10 +547,10 @@ namespace fastonosql
         return err;
     }
 
-    common::ErrorValueSPtr RocksdbDriver::serverDiscoveryInfo(ServerInfo **sinfo, ServerDiscoveryInfo **dinfo, DataBaseInfo** dbinfo)
+    common::Error RocksdbDriver::serverDiscoveryInfo(ServerInfo **sinfo, ServerDiscoveryInfo **dinfo, DataBaseInfo** dbinfo)
     {
         ServerInfo *lsinfo = NULL;
-        common::ErrorValueSPtr er = serverInfo(&lsinfo);
+        common::Error er = serverInfo(&lsinfo);
         if(er){
             return er;
         }
@@ -578,13 +578,13 @@ namespace fastonosql
         return er;
     }
 
-    common::ErrorValueSPtr RocksdbDriver::currentDataBaseInfo(DataBaseInfo** info)
+    common::Error RocksdbDriver::currentDataBaseInfo(DataBaseInfo** info)
     {
         std::string name = impl_->currentDbName();
         size_t size = 0;
         impl_->dbsize(size);
         *info = new RocksdbDataBaseInfo(name, true, size);
-        return common::ErrorValueSPtr();
+        return common::Error();
     }
 
     void RocksdbDriver::handleConnectEvent(events::ConnectRequestEvent *ev)
@@ -596,7 +596,7 @@ namespace fastonosql
             if(set){
                 impl_->config_ = set->info();
         notifyProgress(sender, 25);
-                    common::ErrorValueSPtr er = impl_->connect();
+                    common::Error er = impl_->connect();
                     if(er){
                         res.setErrorInfo(er);
                     }
@@ -613,7 +613,7 @@ namespace fastonosql
             events::DisconnectResponceEvent::value_type res(ev->value());
         notifyProgress(sender, 50);
 
-            common::ErrorValueSPtr er = impl_->disconnect();
+            common::Error er = impl_->disconnect();
             if(er){
                 res.setErrorInfo(er);
             }
@@ -629,7 +629,7 @@ namespace fastonosql
             events::ExecuteRequestEvent::value_type res(ev->value());
             const char *inputLine = common::utils::c_strornull(res.text_);
 
-            common::ErrorValueSPtr er;
+            common::Error er;
             if(inputLine){
                 size_t length = strlen(inputLine);
                 int offset = 0;
@@ -677,7 +677,7 @@ namespace fastonosql
         notifyProgress(sender, 0);
             events::CommandResponceEvent::value_type res(ev->value());
             std::string cmdtext;
-            common::ErrorValueSPtr er = commandByType(res.cmd_, cmdtext);
+            common::Error er = commandByType(res.cmd_, cmdtext);
             if(er){
                 res.setErrorInfo(er);
                 reply(sender, new events::CommandResponceEvent(this, res));
@@ -718,7 +718,7 @@ namespace fastonosql
             FastoObjectIPtr root = FastoObject::createRoot(patternResult);
         notifyProgress(sender, 50);
             FastoObjectCommand* cmd = createCommand<RocksdbCommand>(root, patternResult, common::Value::C_INNER);
-            common::ErrorValueSPtr er = execute(cmd);
+            common::Error er = execute(cmd);
             if(er){
                 res.setErrorInfo(er);
             }
@@ -771,7 +771,7 @@ namespace fastonosql
         notifyProgress(sender, 50);
             LOG_COMMAND(Command(INFO_REQUEST, common::Value::C_INNER));
             RocksdbServerInfo::Stats cm;
-            common::ErrorValueSPtr err = impl_->info(NULL, cm);
+            common::Error err = impl_->info(NULL, cm);
             if(err){
                 res.setErrorInfo(err);
             }

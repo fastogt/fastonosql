@@ -36,7 +36,7 @@ namespace fastonosql
             return;
         }
 
-        common::ErrorValueSPtr er = ServersManager::instance().testConnection(connection_);
+        common::Error er = ServersManager::instance().testConnection(connection_);
 
         if(er){
             emit connectionResult(false, common::time::current_mstime() - startTime_, common::convertFromString<QString>(er->description()));
