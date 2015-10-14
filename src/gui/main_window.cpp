@@ -761,10 +761,11 @@ namespace fastonosql
             emit versionAvailibled(false, QString());
             return;
         }
+        ssize_t nwrite = 0;
 #if defined(FASTONOSQL)
-        err = s.write(GET_FASTONOSQL_VERSION, sizeof(GET_FASTONOSQL_VERSION));
+        err = s.write(GET_FASTONOSQL_VERSION, sizeof(GET_FASTONOSQL_VERSION), nwrite);
 #elif defined(FASTOREDIS)
-        err = s.write(GET_FASTOREDIS_VERSION, sizeof(GET_FASTOREDIS_VERSION));
+        err = s.write(GET_FASTOREDIS_VERSION, sizeof(GET_FASTOREDIS_VERSION), nwrite);
 #else
         #error please specify request to get version information
 #endif
