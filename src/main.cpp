@@ -23,7 +23,7 @@ int main(int argc, char *argv[])
 #ifdef NDEBUG
     SET_LOG_LEVEL(common::logging::L_INFO);
 #else
-    SET_LOG_LEVEL(common::logging::L_NONE);
+    SET_LOG_LEVEL(common::logging::L_DEBUG);
 #endif
 
     fastonosql::MainWindow win;
