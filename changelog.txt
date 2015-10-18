@@ -1,4 +1,4 @@
-0.5.6
+0.5.6 / October 18, 2015
 [Alexandr Topilski]
 - Font selection for widgets
 - Hex view for output data
