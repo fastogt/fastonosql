@@ -2,6 +2,7 @@
 [Alexandr Topilski]
 - Font selection for widgets
 - Hex view for output data
+- HGETALL for hash values
 
 0.7.8 / September 19, 2015
 [Alexandr Topilski]

@@ -63,7 +63,7 @@ extern "C" {
 #define GET_KEY_LIST_PATTERN_1ARGS_S "LRANGE %s 0 -1"
 #define GET_KEY_SET_PATTERN_1ARGS_S "SMEMBERS %s"
 #define GET_KEY_ZSET_PATTERN_1ARGS_S "ZRANGE %s 0 -1"
-#define GET_KEY_HASH_PATTERN_1ARGS_S "HGET %s"
+#define GET_KEY_HASH_PATTERN_1ARGS_S "HGETALL %s"
 
 #define SET_KEY_PATTERN_2ARGS_SS "SET %s %s"
 #define SET_KEY_LIST_PATTERN_2ARGS_SS "LPUSH %s %s"
@@ -728,7 +728,7 @@ namespace fastonosql
             }
 
             /* Retrieve types */
-            for(i=0;i<keys->elements;i++) {
+            for(i = 0; i < keys->elements; i++) {
                 if(redisGetReply(context_, (void**)&reply)!=REDIS_OK) {
                     char buff[4096];
                     common::SNPrintf(buff, sizeof(buff), "Error getting type for key '%s' (%d: %s)",
