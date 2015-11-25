@@ -96,7 +96,7 @@ namespace fastonosql
         VERIFY(connect(stopAction, &QAction::triggered, this, &BaseShellWidget::stop));
         savebar->addAction(stopAction);
 
-        const ConnectionMode mode = IntaractiveMode;
+        const ConnectionMode mode = InteractiveMode;
         connectionMode_ = new fasto::qt::gui::IconLabel(GuiFactory::instance().modeIcon(mode), common::convertFromString<QString>(common::convertToString(mode)), iconSize);
 
         dbName_ = new fasto::qt::gui::IconLabel(GuiFactory::instance().databaseIcon(), "Calculate...", iconSize);

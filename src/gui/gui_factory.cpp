@@ -184,7 +184,7 @@ namespace fastonosql
             static QIcon i(":" PROJECT_NAME_LOWERCASE "/images/64x64/scan_mode.png");
             return i;
         }
-        else if(mode == IntaractiveMode){
+        else if(mode == InteractiveMode){
             static QIcon i(":" PROJECT_NAME_LOWERCASE "/images/64x64/interactive_mode.png");
             return i;
         }
