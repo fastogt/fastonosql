@@ -71,8 +71,8 @@ namespace fastonosql
         /* Scan mode */
         ScanMode,
 
-        /* Intaractive mode */
-        IntaractiveMode
+        /* Interactive mode */
+        InteractiveMode
     };
 }
 

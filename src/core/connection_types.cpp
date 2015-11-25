@@ -2,7 +2,7 @@
 
 namespace
 {
-    const std::string connnectionMode[] = { "Latency mode", "Slave mode", "Get RDB mode", "Pipe mode",  "Find big keys mode", "Stat mode", "Scan mode", "Intaractive mode" };
+    const std::string connnectionMode[] = { "Latency mode", "Slave mode", "Get RDB mode", "Pipe mode",  "Find big keys mode", "Stat mode", "Scan mode", "Interactive mode" };
     const std::string serverTypes[] = { "Master", "Slave" };
 }
 
