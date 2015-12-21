@@ -2020,10 +2020,10 @@ namespace fastonosql
     {
         QObject *sender = ev->sender();
         notifyProgress(sender, 0);
-        events::EnterModeEvent::value_type res(this, IntaractiveMode);
+        events::EnterModeEvent::value_type res(this, InteractiveMode);
         reply(sender, new events::EnterModeEvent(this, res));
 
-        events::LeaveModeEvent::value_type res2(this, IntaractiveMode);
+        events::LeaveModeEvent::value_type res2(this, InteractiveMode);
         reply(sender, new events::LeaveModeEvent(this, res2));
         notifyProgress(sender, 100);
         return common::Error();
