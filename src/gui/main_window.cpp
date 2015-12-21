@@ -401,8 +401,10 @@ namespace fastonosql
         bool openedr = readFile.open("rb");
         if(!openedr){
             writeFile.close();
-            bool rem = common::file_system::remove_file(wp.path());
-            DCHECK(rem);
+            common::Error err = common::file_system::remove_file(wp.path());
+            if(err && err->isError()){
+
+            }
             QMessageBox::critical(this, trError, trImportSettingsFailed);
             return;
         }
@@ -410,8 +412,10 @@ namespace fastonosql
         common::IEDcoder* hexEnc = common::IEDcoder::createEDCoder(common::Hex);
         if(!hexEnc){
             writeFile.close();
-            bool rem = common::file_system::remove_file(wp.path());
-            DCHECK(rem);
+            common::Error err = common::file_system::remove_file(wp.path());
+            if(err && err->isError()){
+
+            }
             QMessageBox::critical(this, trError, trImportSettingsFailed);
             return;
         }
@@ -427,8 +431,10 @@ namespace fastonosql
             common::Error er = hexEnc->decode(data, edata);
             if(er){
                 writeFile.close();
-                bool rem = common::file_system::remove_file(wp.path());
-                DCHECK(rem);
+                common::Error err = common::file_system::remove_file(wp.path());
+                if(err && err->isError()){
+
+                }
                 QMessageBox::critical(this, trError, trImportSettingsFailed);
                 return;
             }
@@ -439,8 +445,10 @@ namespace fastonosql
 
         writeFile.close();
         SettingsManager::instance().reloadFromPath(tmp, false);
-        bool rem = common::file_system::remove_file(tmp);
-        DCHECK(rem);
+        common::Error err = common::file_system::remove_file(tmp);
+        if(err && err->isError()){
+
+        }
         QMessageBox::information(this, trInfo, QObject::tr("Settings successfully imported!"));
     }
 
@@ -465,8 +473,10 @@ namespace fastonosql
         bool openedr = readFile.open("rb");
         if(!openedr){
             writeFile.close();
-            bool rem = common::file_system::remove_file(wp.path());
-            DCHECK(rem);
+            common::Error err = common::file_system::remove_file(wp.path());
+            if(err && err->isError()){
+
+            }
             QMessageBox::critical(this, trError, trExportSettingsFailed);
             return;
         }
@@ -474,8 +484,10 @@ namespace fastonosql
         common::IEDcoder* hexEnc = common::IEDcoder::createEDCoder(common::Hex);
         if(!hexEnc){
             writeFile.close();
-            bool rem = common::file_system::remove_file(wp.path());
-            DCHECK(rem);
+            common::Error err = common::file_system::remove_file(wp.path());
+            if(err && err->isError()){
+
+            }
             QMessageBox::critical(this, trError, trExportSettingsFailed);
             return;
         }
@@ -491,8 +503,10 @@ namespace fastonosql
             common::Error er = hexEnc->encode(data, edata);
             if(er){
                 writeFile.close();
-                bool rem = common::file_system::remove_file(wp.path());
-                DCHECK(rem);
+                common::Error err = common::file_system::remove_file(wp.path());
+                if(err && err->isError()){
+
+                }
                 QMessageBox::critical(this, trError, trExportSettingsFailed);
                 return;
             }
@@ -750,9 +764,9 @@ namespace fastonosql
     void UpdateChecker::routine()
     {
 #if defined(FASTONOSQL)
-        common::net::ClientSocketTcp s(FASTONOSQL_URL, SERV_PORT);
+        common::net::ClientSocketTcp s(common::net::hostAndPort(FASTONOSQL_URL, SERV_PORT));
 #elif defined(FASTOREDIS)
-        common::net::ClientSocketTcp s(FASTOREDIS_URL, SERV_PORT);
+        common::net::ClientSocketTcp s(common::net::hostAndPort(FASTOREDIS_URL, SERV_PORT));
 #else
         #error please specify url and port of version information
 #endif

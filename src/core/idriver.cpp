@@ -347,8 +347,10 @@ namespace fastonosql
             if(!log_file_){
                 std::string path = settings_->loggingPath();
                 std::string dir = common::file_system::get_dir_path(path);
-                bool res = common::file_system::create_directory(dir, true);
-                UNUSED(res);
+                common::Error err = common::file_system::create_directory(dir, true);
+                if(err && err->isError()){
+
+                }
                 if(common::file_system::is_directory(dir) == SUCCESS){
                     common::file_system::Path p(path);
                     log_file_ = new common::file_system::File(p);
@@ -506,7 +508,13 @@ namespace fastonosql
         else {
             std::string path = settings_->loggingPath();
             if(common::file_system::is_file_exist(path)){
-                ret = common::file_system::remove_file(path);
+                common::Error err = common::file_system::remove_file(path);
+                if(err && err->isError()){
+                    ret = false;
+                }
+                else{
+                    ret = true;
+                }
             }
             else{
                 ret = true;

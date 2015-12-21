@@ -33,8 +33,10 @@ namespace
     int lmdb_open(lmdb **context, const char *dbname, bool create_if_missing)
     {
         if(create_if_missing){
-            bool res = common::file_system::create_directory(dbname, true);
-            UNUSED(res);
+            common::Error err = common::file_system::create_directory(dbname, true);
+            if(err && err->isError()){
+
+            }
             if(common::file_system::is_directory(dbname) != SUCCESS){
                 return EACCES;
             }

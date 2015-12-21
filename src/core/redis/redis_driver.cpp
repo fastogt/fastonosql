@@ -1951,9 +1951,9 @@ namespace fastonosql
                 res.setErrorInfo(er);
             }
             else{
-                bool rc = common::file_system::copy_file("/var/lib/redis/dump.rdb", res.path_);
-                if(!rc){
-                    res.setErrorInfo(common::make_error_value("Copy failed.", common::ErrorValue::E_ERROR));
+                common::Error err = common::file_system::copy_file("/var/lib/redis/dump.rdb", res.path_);
+                if(err && err->isError()){
+                    res.setErrorInfo(err);
                 }
             }
         notifyProgress(sender, 75);
@@ -1967,9 +1967,9 @@ namespace fastonosql
         notifyProgress(sender, 0);
             events::ExportResponceEvent::value_type res(ev->value());
         notifyProgress(sender, 25);
-            bool rc = common::file_system::copy_file(res.path_, "/var/lib/redis/dump.rdb");
-            if(!rc){
-                res.setErrorInfo(common::make_error_value("Copy failed.", common::ErrorValue::E_ERROR));
+            common::Error err = common::file_system::copy_file(res.path_, "/var/lib/redis/dump.rdb");
+            if(err && err->isError()){
+                res.setErrorInfo(err);
             }
         notifyProgress(sender, 75);
             reply(sender, new events::ExportResponceEvent(this, res));
