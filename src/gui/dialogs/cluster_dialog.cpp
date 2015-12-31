@@ -272,8 +272,8 @@ namespace fastonosql
 
     void ClusterDialog::add()
     {
-        ConnectionDialog dlg(this);
-        dlg.setConnectionTypeOnly(REDIS);
+        const std::vector<connectionTypes> avail = { DBUNKNOWN, REDIS };
+        ConnectionDialog dlg(this, NULL, avail);
         int result = dlg.exec();
         IConnectionSettingsBaseSPtr p = dlg.connection();
         if(result == QDialog::Accepted && p){
@@ -309,8 +309,8 @@ namespace fastonosql
 
         IConnectionSettingsBaseSPtr oldConnection = currentItem->connection();
 
-        ConnectionDialog dlg(this, dynamic_cast<IConnectionSettingsBase*>(oldConnection->clone()));
-        dlg.setConnectionTypeOnly(REDIS);
+        const std::vector<connectionTypes> avail = { DBUNKNOWN, REDIS };
+        ConnectionDialog dlg(this, dynamic_cast<IConnectionSettingsBase*>(oldConnection->clone()), avail);
         int result = dlg.exec();
         IConnectionSettingsBaseSPtr newConnection = dlg.connection();
         if(result == QDialog::Accepted && newConnection){

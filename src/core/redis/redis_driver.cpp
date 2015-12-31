@@ -333,52 +333,96 @@ namespace fastonosql
             SSHInfo sinfo = settings->sshInfo();
             return createConnection(config, sinfo, context);
         }
+
+        common::Error cliPrintContextError(redisContext* context)
+        {
+            if (context == NULL){
+                return common::make_error_value("Not connected", common::Value::E_ERROR);
+            }
+
+            char buff[512] = {0};
+            common::SNPrintf(buff, sizeof(buff), "Error: %s", context->errstr);
+            return common::make_error_value(buff, common::ErrorValue::E_ERROR);
+        }
+
+        common::Error authContext(const redisConfig& config, redisContext* context)
+        {
+            if (config.auth == NULL){
+                return common::Error();
+            }
+
+            redisReply *reply = static_cast<redisReply*>(redisCommand(context, "AUTH %s", config.auth));
+            if (reply != NULL) {
+                if(reply->type == REDIS_REPLY_ERROR){
+                    char buff[512] = {0};
+                    common::SNPrintf(buff, sizeof(buff), "Authentification error: %s", reply->str);
+                    freeReplyObject(reply);
+                    return common::make_error_value(buff, common::ErrorValue::E_ERROR);
+                }
+
+                freeReplyObject(reply);
+                return common::Error();
+            }
+
+            return cliPrintContextError(context);
+        }
     }
 
     common::Error testConnection(RedisConnectionSettings* settings)
     {
-        redisContext* context = NULL;
-        common::Error er = createConnection(settings, &context);
-        if(er){
-            return er;
+        redisContext* context = NULL;        
+        common::Error err = createConnection(settings, &context);
+        if(err && err->isError()){
+            return err;
+        }
+
+        redisConfig config = settings->info();
+        err = authContext(config, context);
+        if(err && err->isError()){
+            redisFree(context);
+            return err;
         }
 
         redisFree(context);
-        context = NULL;
-        return er;
+        return common::Error();
     }
 
     common::Error discoveryConnection(RedisConnectionSettings* settings, std::vector<ServerDiscoveryInfoSPtr>& infos)
     {
         redisContext* context = NULL;
-        common::Error er = createConnection(settings, &context);
-        if(er){
-            return er;
+        common::Error err = createConnection(settings, &context);
+        if(err && err->isError()){
+            return err;
+        }
+
+        redisConfig config = settings->info();
+        err = authContext(config, context);
+        if(err && err->isError()){
+            redisFree(context);
+            return err;
         }
 
         /* Send the GET CLUSTER command. */
         redisReply *reply = (redisReply*)redisCommand(context, GET_SERVER_TYPE);
         if (reply == NULL) {
-            er = common::make_error_value("I/O error", common::Value::E_ERROR);
-            goto cleanup;
+            err = common::make_error_value("I/O error", common::Value::E_ERROR);
+            redisFree(context);
+            return err;
         }
 
         if(reply->type == REDIS_REPLY_STRING){
-            er = makeAllDiscoveryInfo(settings->host(), std::string(reply->str, reply->len), infos);
+            err = makeAllDiscoveryInfo(settings->host(), std::string(reply->str, reply->len), infos);
         }
         else if(reply->type == REDIS_REPLY_ERROR){
-            er = common::make_error_value(std::string(reply->str, reply->len), common::Value::E_ERROR);
+            err = common::make_error_value(std::string(reply->str, reply->len), common::Value::E_ERROR);
         }
         else{
             NOTREACHED();
         }
 
         freeReplyObject(reply);
-
-    cleanup:
         redisFree(context);
-        context = NULL;
-        return er;
+        return err;
     }
 
     struct RedisDriver::pimpl
@@ -1195,20 +1239,14 @@ namespace fastonosql
 
         common::Error cliAuth() WARN_UNUSED_RESULT
         {
-            if (config_.auth == NULL){
-                isAuth_ = true;
+            common::Error err = authContext(config_, context_);
+            if (err && err->isError()){
+                isAuth_ = false;
                 return common::Error();
             }
 
-            redisReply *reply = static_cast<redisReply*>(redisCommand(context_, "AUTH %s", config_.auth));
-            if (reply != NULL) {
-                isAuth_ = true;
-                freeReplyObject(reply);
-                return common::Error();
-            }
-
-            isAuth_ = false;
-            return cliPrintContextError();
+            isAuth_ = true;
+            return common::Error();
         }
 
         common::Error cliSelect(int num, DataBaseInfo **info) WARN_UNUSED_RESULT
@@ -1222,7 +1260,7 @@ namespace fastonosql
                 return common::Error();
             }
 
-            return cliPrintContextError();
+            return cliPrintContextError(context_);
         }
 
         common::Error cliSelect() WARN_UNUSED_RESULT
@@ -1283,17 +1321,6 @@ namespace fastonosql
             }
 
             return common::Error();
-        }
-
-        common::Error cliPrintContextError() WARN_UNUSED_RESULT
-        {
-            if (context_ == NULL){
-                return common::make_error_value("Not connected", common::Value::E_ERROR);
-            }
-
-            char buff[512] = {0};
-            common::SNPrintf(buff, sizeof(buff), "Error: %s", context_->errstr);
-            return common::make_error_value(buff, common::ErrorValue::E_ERROR);
         }
 
         common::Error cliFormatReplyRaw(FastoObjectArray* ar, redisReply *r) WARN_UNUSED_RESULT
@@ -1541,7 +1568,7 @@ namespace fastonosql
                     return common::make_error_value("Needed reconnect.", common::ErrorValue::E_ERROR);
                 }
 
-                return cliPrintContextError(); /* avoid compiler warning */
+                return cliPrintContextError(context_); /* avoid compiler warning */
             }
 
             redisReply *reply = static_cast<redisReply*>(_reply);

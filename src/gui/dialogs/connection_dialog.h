@@ -20,8 +20,7 @@ namespace fastonosql
         Q_OBJECT
 
     public:
-        ConnectionDialog(QWidget* parent, IConnectionSettingsBase* connection = NULL); //get ownerships connection
-        void setConnectionTypeOnly(connectionTypes type);
+        ConnectionDialog(QWidget* parent, IConnectionSettingsBase* connection = NULL, const std::vector<connectionTypes>& availibleTypes = std::vector<connectionTypes>()); //get ownerships connection
 
         IConnectionSettingsBaseSPtr connection() const;
 

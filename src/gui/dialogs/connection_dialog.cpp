@@ -37,7 +37,7 @@ namespace
 
 namespace fastonosql
 {
-    ConnectionDialog::ConnectionDialog(QWidget* parent, IConnectionSettingsBase* connection)
+    ConnectionDialog::ConnectionDialog(QWidget* parent, IConnectionSettingsBase* connection, const std::vector<connectionTypes>& availibleTypes)
         : QDialog(parent), connection_(connection)
     {
         using namespace translations;
@@ -53,10 +53,19 @@ namespace fastonosql
         connectionName_->setText(conName);
         typeConnection_ = new QComboBox;
 
-        for(int i = 0; i < SIZEOFMASS(connnectionType); ++i){
-            connectionTypes ct = static_cast<connectionTypes>(i);
-            std::string str = common::convertToString(ct);
-            typeConnection_->addItem(GuiFactory::instance().icon(ct), common::convertFromString<QString>(str), i);
+        if(availibleTypes.empty()){
+            for(size_t i = 0; i < SIZEOFMASS(connnectionType); ++i){
+                connectionTypes ct = static_cast<connectionTypes>(i);
+                std::string str = common::convertToString(ct);
+                typeConnection_->addItem(GuiFactory::instance().icon(ct), common::convertFromString<QString>(str), ct);
+            }
+        }
+        else{
+            for(size_t i = 0; i < availibleTypes.size(); ++i){
+                connectionTypes ct = availibleTypes[i];
+                std::string str = common::convertToString(ct);
+                typeConnection_->addItem(GuiFactory::instance().icon(ct), common::convertFromString<QString>(str), ct);
+            }
         }
 
         if(connection_){
@@ -216,12 +225,12 @@ namespace fastonosql
         retranslateUi();
     }
 
-    void ConnectionDialog::setConnectionTypeOnly(connectionTypes type)
+    /*void ConnectionDialog::setConnectionTypeOnly(connectionTypes type)
     {
         typeConnection_->clear();
         std::string str = common::convertToString(type);
         typeConnection_->addItem(GuiFactory::instance().icon(type), common::convertFromString<QString>(str), type);
-    }
+    }*/
 
     IConnectionSettingsBaseSPtr ConnectionDialog::connection() const
     {
