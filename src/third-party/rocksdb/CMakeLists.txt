@@ -51,6 +51,7 @@ SET(SOURCES_ROCKSDB
     src/db/transaction_log_impl.cc
     src/db/memtable_allocator.cc
     src/db/merge_helper.cc
+    src/db/compaction_iterator.cc
 
     src/table/block_based_table_factory.cc
     src/table/block_based_table_reader.cc
@@ -75,10 +76,21 @@ SET(SOURCES_ROCKSDB
     src/table/flush_block_policy.cc
     src/table/bloom_block.cc
     src/table/full_filter_block.cc
+    src/table/sst_file_writer.cc
 
+    src/memtable/hash_linklist_rep.cc
+    src/memtable/hash_cuckoo_rep.cc
+    src/memtable/hash_skiplist_rep.cc
+
+    src/util/random.cc
+    src/util/vectorrep.cc
+    src/util/string_util.cc
     src/util/options.cc
     src/util/status.cc
-    src/util/hash_linklist_rep.cc
+    src/util/status_message.cc
+    src/util/concurrent_arena.cc
+    src/util/options_parser.cc
+    src/util/options_sanity_check.cc
     src/util/bloom.cc
     src/util/cache.cc
     src/util/slice.cc

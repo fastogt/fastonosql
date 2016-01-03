@@ -1517,7 +1517,7 @@ namespace fastonosql
 
     const char* SsdbDriver::versionApi()
     {
-        return "1.8.0";
+        return "1.9.2";
     }
 
     void SsdbDriver::initImpl()

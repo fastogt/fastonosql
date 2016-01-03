@@ -45,7 +45,8 @@
 
 #define HIREDIS_MAJOR 0
 #define HIREDIS_MINOR 13
-#define HIREDIS_PATCH 1
+#define HIREDIS_PATCH 3
+#define HIREDIS_SONAME 0.13
 
 /* Connection type can be blocking or non-blocking and is set in the
  * least significant bit of the flags field in redisContext. */
@@ -196,7 +197,7 @@ redisContext *redisConnectFd(int fd);
  * host, ip (or path), timeout and bind address are reused,
  * flags are used unmodified from the existing context.
  *
- * Returns REDIS_OK on successfull connect or REDIS_ERR otherwise.
+ * Returns REDIS_OK on successful connect or REDIS_ERR otherwise.
  */
 int redisReconnect(redisContext *c);
 

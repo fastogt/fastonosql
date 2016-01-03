@@ -1,7 +1,12 @@
 0.5.7 /
 [Alexandr Topilski]
 - [Redis] Redis cluster discovery button doesn't work with protected Redis configuration #59 
-- [Redis] Edit existing connection settings doesn't show existing parameter values #58 
+- [Redis] Edit existing connection settings doesn't show existing parameter values #58
+- [Redis] Up hiredis sources to version 0.13.3
+- [LMDB] Up sources to version 0.9.70
+- [LevelDB] Up sources to version 1.18
+- [SSDB] Up sources to version 1.9.2
+- [UnQLite] Up sources to version 1.1.6
 
 0.5.6 / October 18, 2015
 [Alexandr Topilski]

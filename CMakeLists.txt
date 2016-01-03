@@ -22,7 +22,7 @@ SET(BRANDING_PROJECT_GITHUB_LINK "https://www.github.com/fastogt/fastonosql" CAC
 
 SET(BRANDING_PROJECT_BREF_DESCRIPTION "Cross-platform open source Redis, Memcached, SSDB, LevelDB, RocksDB, UnQLite, LMDB GUI management tool."
     CACHE STRING "Bref description for ${BRANDING_PROJECT_NAME}")
-SET(BRANDING_PROJECT_COPYRIGHT "Copyright (C) 2014-2015 ${BRANDING_PROJECT_COMPANYNAME} All Rights Reserved."
+SET(BRANDING_PROJECT_COPYRIGHT "Copyright (C) 2014-2016 ${BRANDING_PROJECT_COMPANYNAME} All Rights Reserved."
     CACHE STRING "Copyright notice for ${BRANDING_PROJECT_NAME}") #default
 SET(BRANDING_PROJECT_CHANGELOG_FILE changelog.txt
     CACHE STRING "Branding for changelog file ${BRANDING_PROJECT_NAME}
