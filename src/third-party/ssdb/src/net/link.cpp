@@ -12,6 +12,7 @@ found in the LICENSE file.
         #define F_EINTR 0
     #else
         #include <sys/socket.h>
+        #include <netdb.h>
         #define F_EINTR EINTR
     #endif
 #else
