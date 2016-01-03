@@ -22,7 +22,6 @@ found in the LICENSE file.
 
 #include "link_redis.cpp"
 
-#define MAX_PACKET_SIZE		128 * 1024 * 1024
 #define INIT_BUFFER_SIZE	8
 
 int Link::min_recv_buf = 8 * 1024;
@@ -118,49 +117,176 @@ void Link::noblock(bool enable){
 #endif
 }
 
+// TODO: check less than 256
+static bool is_ip(const char *host){
+	int dot_count = 0;
+	int digit_count = 0;
+	for(const char *p = host; *p; p++){
+		if(*p == '.'){
+			dot_count += 1;
+			if(digit_count >= 1 && digit_count <= 3){ 
+				digit_count = 0;
+			}else{
+				return false;
+			}   
+		}else if(*p >= '0' && *p <= '9'){
+			digit_count += 1;
+		}else{
+			return false;
+		}   
+	}   
+	return dot_count == 3;
+}
 
-Link* Link::connect(const char *ip, int port){
-	Link *link;
-	int sock = -1;
-
-	struct sockaddr_in addr;
 #ifdef FASTO
     #ifdef OS_WIN
-        unsigned long hostaddr = inet_addr(ip);
+    static const char* inet_ntop(int af, const void* src, char* dst, int cnt)
+    {
+        struct sockaddr_in srcaddr;
+
+        memset(&srcaddr, 0, sizeof(struct sockaddr_in));
+        memcpy(&(srcaddr.sin_addr), src, sizeof(srcaddr.sin_addr));
+
+        srcaddr.sin_family = af;
+        if (WSAAddressToString((struct sockaddr*) &srcaddr, sizeof(struct sockaddr_in), 0, dst, (LPDWORD) &cnt) != 0) {
+            DWORD rv = WSAGetLastError();
+            printf("WSAAddressToString() : %d\n",rv);
+            return NULL;
+        }
+        return dst;
+    }
+    #endif
+#endif
+
+
+Link* Link::connect(const char *host, int port){
+#ifdef FASTO
+    #ifdef OS_WIN
+        Link *link;
+        int sock = -1;
+
+        char ip_resolve[INET_ADDRSTRLEN];
+        if(!is_ip(host)){
+            struct hostent *hptr = gethostbyname(host);
+            for(int i=0; hptr && hptr->h_addr_list[i] != NULL; i++){
+                struct in_addr *addr = (struct in_addr *)hptr->h_addr_list[i];
+                if(inet_ntop(AF_INET, addr, ip_resolve, sizeof(ip_resolve))){
+                    //printf("resolve %s: %s\n", host, ip_resolve);
+                    host = ip_resolve;
+                    break;
+                }
+            }
+        }
+
+        unsigned long hostaddr = inet_addr(host);
+        struct sockaddr_in addr;
+        memset(&addr, 0, sizeof(addr));
         addr.sin_family = AF_INET;
         addr.sin_port = htons((short)port);
         addr.sin_addr.s_addr = hostaddr;
+
+        if((sock = ::socket(AF_INET, SOCK_STREAM, 0)) == -1){
+            goto sock_err;
+        }
+        if(::connect(sock, (struct sockaddr *)&addr, sizeof(addr)) == -1){
+            goto sock_err;
+        }
+
+        //log_debug("fd: %d, connect to %s:%d", sock, ip, port);
+        link = new Link();
+        link->sock = sock;
+        link->keepalive(true);
+        return link;
+    sock_err:
+        //log_debug("connect to %s:%d failed: %s", ip, port, strerror(errno));
+        if(sock >= 0){
+            ::close(sock);
+        }
+        return NULL;
     #else
+        Link *link;
+        int sock = -1;
+
+        char ip_resolve[INET_ADDRSTRLEN];
+        if(!is_ip(host)){
+            struct hostent *hptr = gethostbyname(host);
+            for(int i=0; hptr && hptr->h_addr_list[i] != NULL; i++){
+                struct in_addr *addr = (struct in_addr *)hptr->h_addr_list[i];
+                if(inet_ntop(AF_INET, addr, ip_resolve, sizeof(ip_resolve))){
+                    //printf("resolve %s: %s\n", host, ip_resolve);
+                    host = ip_resolve;
+                    break;
+                }
+            }
+        }
+
+        struct sockaddr_in addr;
         bzero(&addr, sizeof(addr));
         addr.sin_family = AF_INET;
         addr.sin_port = htons((short)port);
-        inet_pton(AF_INET, ip, &addr.sin_addr);
+        inet_pton(AF_INET, host, &addr.sin_addr);
+
+        if((sock = ::socket(AF_INET, SOCK_STREAM, 0)) == -1){
+            goto sock_err;
+        }
+        if(::connect(sock, (struct sockaddr *)&addr, sizeof(addr)) == -1){
+            goto sock_err;
+        }
+
+        //log_debug("fd: %d, connect to %s:%d", sock, ip, port);
+        link = new Link();
+        link->sock = sock;
+        link->keepalive(true);
+        return link;
+    sock_err:
+        //log_debug("connect to %s:%d failed: %s", ip, port, strerror(errno));
+        if(sock >= 0){
+            ::close(sock);
+        }
+        return NULL;
     #endif
 #else
-	bzero(&addr, sizeof(addr));
-	addr.sin_family = AF_INET;
-	addr.sin_port = htons((short)port);
-        inet_pton(AF_INET, ip, &addr.sin_addr);
-#endif
+    Link *link;
+    int sock = -1;
 
-	if((sock = ::socket(AF_INET, SOCK_STREAM, 0)) == -1){
-		goto sock_err;
-	}
-	if(::connect(sock, (struct sockaddr *)&addr, sizeof(addr)) == -1){
-		goto sock_err;
-	}
+    char ip_resolve[INET_ADDRSTRLEN];
+    if(!is_ip(host)){
+        struct hostent *hptr = gethostbyname(host);
+        for(int i=0; hptr && hptr->h_addr_list[i] != NULL; i++){
+            struct in_addr *addr = (struct in_addr *)hptr->h_addr_list[i];
+            if(inet_ntop(AF_INET, addr, ip_resolve, sizeof(ip_resolve))){
+                //printf("resolve %s: %s\n", host, ip_resolve);
+                host = ip_resolve;
+                break;
+            }
+        }
+    }
 
-	//log_debug("fd: %d, connect to %s:%d", sock, ip, port);
-	link = new Link();
-	link->sock = sock;
-	link->keepalive(true);
-	return link;
+    struct sockaddr_in addr;
+    bzero(&addr, sizeof(addr));
+    addr.sin_family = AF_INET;
+    addr.sin_port = htons((short)port);
+    inet_pton(AF_INET, host, &addr.sin_addr);
+
+    if((sock = ::socket(AF_INET, SOCK_STREAM, 0)) == -1){
+        goto sock_err;
+    }
+    if(::connect(sock, (struct sockaddr *)&addr, sizeof(addr)) == -1){
+        goto sock_err;
+    }
+
+    //log_debug("fd: %d, connect to %s:%d", sock, ip, port);
+    link = new Link();
+    link->sock = sock;
+    link->keepalive(true);
+    return link;
 sock_err:
-	//log_debug("connect to %s:%d failed: %s", ip, port, strerror(errno));
-	if(sock >= 0){
-		::close(sock);
-	}
-	return NULL;
+    //log_debug("connect to %s:%d failed: %s", ip, port, strerror(errno));
+    if(sock >= 0){
+        ::close(sock);
+    }
+    return NULL;
+#endif
 }
 
 Link* Link::listen(const char *ip, int port){
@@ -379,6 +505,13 @@ const std::vector<Bytes>* Link::recv(){
 	int parsed = 0;
 	int size = input->size();
 	char *head = input->data();
+
+	// ignore leading empty lines
+	while(size > 0 && (head[0] == '\n' || head[0] == '\r')){
+		head ++;
+		size --;
+		parsed ++;
+	}
 	
 	// Redis protocol supports
 	if(head[0] == '*'){
@@ -392,13 +525,6 @@ const std::vector<Bytes>* Link::recv(){
 		}else{
 			return NULL;
 		}
-	}
-
-	// ignore leading empty lines
-	while(size > 0 && (head[0] == '\n' || head[0] == '\r')){
-		head ++;
-		size --;
-		parsed ++;
 	}
 
 	while(size > 0){

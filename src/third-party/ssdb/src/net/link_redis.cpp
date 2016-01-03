@@ -113,7 +113,6 @@ static RedisCommand_raw cmds_raw[] = {
 	{STRATEGY_AUTO,		"lset",		    "qset", 			REPLY_STATUS},
 	{STRATEGY_AUTO,		"lrange",		"qslice",			REPLY_MULTI_BULK},
 
-	{STRATEGY_AUTO, 	"dbsize",		"dbsize",			REPLY_INT},
 	{STRATEGY_AUTO, 	NULL,			NULL,			0}
 };
 
@@ -173,7 +172,8 @@ int RedisLink::convert_req(){
 			recv_string.push_back(recv_bytes[1].String());
 			for(int i=2; i<=recv_bytes.size()-2; i+=2){
 				recv_string.push_back(recv_bytes[i+1].String());
-				recv_string.push_back(recv_bytes[i].String());
+				int64_t score = (int64_t)recv_bytes[i].Double();
+				recv_string.push_back(str(score));
 			}
 		}
 		return 0;
@@ -354,6 +354,9 @@ const std::vector<Bytes>* RedisLink::recv_req(Buffer *input){
 }
 
 int RedisLink::send_resp(Buffer *output, const std::vector<std::string> &resp){
+	if(resp.empty()){
+		return 0;
+	}
 	if(resp[0] == "error" || resp[0] == "fail" || resp[0] == "client_error"){
 		output->append("-ERR ");
 		if(resp.size() >= 2){
@@ -510,6 +513,12 @@ int RedisLink::parse_req(Buffer *input){
 	int size = input->size();
 	char *ptr = input->data();
 	
+	// ignore leading empty lines
+	while(size > 0 && (ptr[0] == '\n' || ptr[0] == '\r')){
+		ptr ++;
+		size --;
+		parsed ++;
+	}
 	//dump(ptr, size);
 	
 	if(ptr[0] != '*'){
@@ -542,15 +551,21 @@ int RedisLink::parse_req(Buffer *input){
 			continue;
 		}
 		
-		if(len > size - 2){
+		if(len > size - 1){
 			break;
 		}
 		
 		recv_bytes.push_back(Bytes(ptr, len));
 		
-		ptr += len + 2;
-		size -= len + 2;
-		parsed += len + 2;
+		ptr += len + 1;
+		size -= len + 1;
+		parsed += len + 1;
+		// compatiabl with both CRLF and LF
+		if(*ptr == '\n'){
+			ptr += 1;
+			size -= 1;
+			parsed += 1;
+		}
 
 		num_args --;
 		if(num_args == 0){
