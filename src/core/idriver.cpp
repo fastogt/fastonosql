@@ -253,6 +253,7 @@ namespace fastonosql
     {
         killTimer(timer_info_id_);
         timer_info_id_ = 0;
+        clearImpl();
     }
 
     void IDriver::customEvent(QEvent *event)

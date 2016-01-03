@@ -1417,6 +1417,8 @@ namespace fastonosql
 
     SsdbDriver::~SsdbDriver()
     {
+        interrupt();
+        stop();
         delete impl_;
     }
 

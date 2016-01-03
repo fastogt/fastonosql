@@ -493,6 +493,8 @@ namespace fastonosql
 
     LmdbDriver::~LmdbDriver()
     {
+        interrupt();
+        stop();
         delete impl_;
     }
 

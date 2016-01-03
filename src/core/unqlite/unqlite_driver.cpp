@@ -389,6 +389,8 @@ namespace fastonosql
 
     UnqliteDriver::~UnqliteDriver()
     {
+        interrupt();
+        stop();
         delete impl_;
     }
 

@@ -547,6 +547,8 @@ namespace fastonosql
 
     MemcachedDriver::~MemcachedDriver()
     {
+        interrupt();
+        stop();
         delete impl_;
     }
 

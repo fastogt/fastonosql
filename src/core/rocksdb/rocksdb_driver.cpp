@@ -447,6 +447,8 @@ namespace fastonosql
 
     RocksdbDriver::~RocksdbDriver()
     {
+        interrupt();
+        stop();
         delete impl_;
     }
 
