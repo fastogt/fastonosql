@@ -19,6 +19,8 @@ else
         platform='linux'
     elif [ "$unamestr" = 'Darwin' ]; then
         platform='macosx'
+    elif [ "$unamestr" = 'FreeBSD' ]; then
+        platform='freebsd'
     fi 
 fi
 
@@ -28,16 +30,14 @@ echo platform: $platform
 echo host: $unamestr
 
 if [ "$platform" = 'windows' ]; then
-    deleteDir build_nsis
-    deleteDir build_zip
+    deleteDir build_windows
 elif [ "$platform" = 'linux' ]; then
-    deleteDir build_deb
-    deleteDir build_rpm
-    deleteDir build_tar
+    deleteDir build_linux
 elif [ "$platform"='macosx' ]; then
-    deleteDir build_dmg
-    deleteDir build_zip
+    deleteDir build_macosx
+elif [ "$platform" = 'freebsd' ]; then
+    deleteDir build_freebsd
 elif [ "$platform" = 'android' ]; then
-    deleteDir build_apk
+    deleteDir build_android
 fi
 echo ========= END CLEANING ===========

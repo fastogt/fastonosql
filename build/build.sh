@@ -4,13 +4,13 @@ set -e
 createPackage() {
     branding_variables="$(cat $1)"
     branding_complex_variables="$(cat $2)"
-	#echo branding_variables: $branding_variables
-	#echo branding_complex_variables: $branding_complex_variables 
+    #echo branding_variables: $branding_variables
+    #echo branding_complex_variables: $branding_complex_variables 
     platform="$3"
-	os_arch="$4"
+    os_arch="$4"
     dir_path="$5"
-    cpack_generator="$6"
-	
+    cpack_generators="$6"
+
     if [ -d "$dir_path" ]; then
         rm -rf "$dir_path"
     fi
@@ -27,22 +27,22 @@ createPackage() {
         make install -j2
         make apk_release
         make apk_signed
-		make apk_signed_aligned
+        make apk_signed_aligned
     else
         if [ -n "$branding_complex_variables" ]; then
-            cmake ../../ -G "Unix Makefiles" -DCMAKE_BUILD_TYPE=RELEASE -DOS_ARCH=$os_arch -DOPENSSL_USE_STATIC=1 -DCPACK_GENERATOR="$cpack_generator" \
+            cmake ../../ -G "Unix Makefiles" -DCMAKE_BUILD_TYPE=RELEASE -DOS_ARCH=$os_arch -DOPENSSL_USE_STATIC=1 \
             $branding_variables "$branding_complex_variables"
         else
-            cmake ../../ -G "Unix Makefiles" -DCMAKE_BUILD_TYPE=RELEASE -DOS_ARCH=$os_arch -DOPENSSL_USE_STATIC=1 -DCPACK_GENERATOR="$cpack_generator" \
+            cmake ../../ -G "Unix Makefiles" -DCMAKE_BUILD_TYPE=RELEASE -DOS_ARCH=$os_arch -DOPENSSL_USE_STATIC=1 \
             $branding_variables 
         fi
         make install -j2
-		cpack -G "$cpack_generator"
+        
+        for generator in $cpack_generators
+        do
+            cpack -G $generator
+        done
     fi
-    
-#    if [ "$cpack_generator" = 'DEB' ]; then
-#        sh ./fixup_deb.sh
-#    fi
     cd ../
 }
 
@@ -59,14 +59,14 @@ if [ -n "$1" ]; then
     branding_file=$1
 else
 echo "Please specify branding file for simple variables or /dev/null!"
-	exit 0
+    exit 0
 fi
 
 if [ -n "$2" ]; then
     branding_complex_file=$2
 else
 echo "Please specify branding file for complex variables or /dev/null!"
-	exit 0
+    exit 0
 fi
 
 if [ -n "$3" ]; then
@@ -84,12 +84,12 @@ else
 fi
 
 if [ -n "$4" ]; then
-	if [ "$4" != 32 ]; then 
-		if [ "$4" != 64 ]; then
-			echo "Please specify valid os architecture 32 or 64"
-			exit 0
-		fi
-	fi
+    if [ "$4" != 32 ]; then 
+        if [ "$4" != 64 ]; then
+            echo "Please specify valid os architecture 32 or 64"
+            exit 0
+        fi
+    fi
     os_arch=$4
 else
     os_arch=64
@@ -106,24 +106,20 @@ echo host_arch: $unamearch
 #-DCMAKE_OSX_SYSROOT=/Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX10.9.sdk/
 
 if [ "$platform" = 'windows' ]; then
-	echo Build for Windows ...
-    createPackage $branding_file $branding_complex_file $platform $os_arch build_nsis NSIS
-    createPackage $branding_file $branding_complex_file $platform $os_arch build_zip ZIP
+    echo Build for Windows ...
+    createPackage $branding_file $branding_complex_file $platform $os_arch build_windows "NSIS ZIP"
 elif [ "$platform" = 'linux' ]; then
-	echo Build for Linux ...
-    createPackage $branding_file $branding_complex_file $platform $os_arch build_deb DEB
-    createPackage $branding_file $branding_complex_file $platform $os_arch build_rpm RPM
-    createPackage $branding_file $branding_complex_file $platform $os_arch build_tar TGZ
+    echo Build for Linux ...
+    createPackage $branding_file $branding_complex_file $platform $os_arch build_linux "DEB RPM TGZ"
 elif [ "$platform" = 'macosx' ]; then
-	echo Build for MacOSX ...
-    createPackage $branding_file $branding_complex_file $platform $os_arch build_dmg DragNDrop
-    createPackage $branding_file $branding_complex_file $platform $os_arch build_zip ZIP
+    echo Build for MacOSX ...
+    createPackage $branding_file $branding_complex_file $platform $os_arch build_macosx "DragNDrop ZIP"
 elif [ "$platform" = 'freebsd' ]; then
     echo Build for FreeBSD ...
-    createPackage $branding_file $branding_complex_file $platform $os_arch build_tar TGZ
+    createPackage $branding_file $branding_complex_file $platform $os_arch build_freebsd TGZ
 elif [ "$platform" = 'android' ]; then
     echo Build for Android ...
-    createPackage $branding_file $branding_complex_file $platform 32 build_apk APK
+    createPackage $branding_file $branding_complex_file $platform 32 build_android APK
 fi
 
 echo ========= END BUILDING ===========
