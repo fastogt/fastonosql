@@ -1,4 +1,4 @@
-0.8.0 /
+0.8.0 / January 7, 2016
 [Alexandr Topilski]
 - Redis cluster discovery button doesn't work with protected Redis configuration #59 
 - Edit existing connection settings doesn't show existing parameter values #58 
