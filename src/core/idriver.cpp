@@ -352,7 +352,7 @@ namespace fastonosql
                 if(err && err->isError()){
 
                 }
-                if(common::file_system::is_directory(dir) == SUCCESS){
+                if(common::file_system::is_directory(dir) == common::SUCCESS){
                     common::file_system::Path p(path);
                     log_file_ = new common::file_system::File(p);
                 }
@@ -439,7 +439,7 @@ namespace fastonosql
 
     FastoObjectIPtr IDriver::RootLocker::createRoot(QObject *reciver, const std::string& text)
     {
-        FastoObjectIPtr root = FastoObject::createRoot(text, parent_);
+        FastoObjectIPtr root(FastoObject::createRoot(text, parent_));
         events::CommandRootCreatedEvent::value_type res(this, root);
         reply(reciver, new events::CommandRootCreatedEvent(parent_, res));
         return root;
@@ -466,7 +466,7 @@ namespace fastonosql
 
             while(!readFile.isEof()){
                 common::buffer_type data;
-                bool res = readFile.readLine(data);
+                bool res = readFile.readLine(&data);
                 if(!res || readFile.isEof()){
                     if(curStamp){
                         tmpInfos.push_back(ServerInfoSnapShoot(curStamp, makeServerInfoFromString(common::convertToString(dataInfo))));

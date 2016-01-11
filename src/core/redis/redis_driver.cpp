@@ -1058,7 +1058,7 @@ namespace fastonosql
 
         /* Convert number of bytes into a human readable string of the form:
          * 100B, 2G, 100M, 4K, and so forth. */
-        static void bytesToHuman(char *s, long long n) {
+        static void bytesToHuman(char *s, size_t len, long long n) {
             double d;
 
             if (n < 0) {
@@ -1068,17 +1068,17 @@ namespace fastonosql
             }
             if (n < 1024) {
                 /* Bytes */
-                common::SPrintf(s, "%lluB", n);
+                common::SNPrintf(s, len, "%lluB", n);
                 return;
             } else if (n < (1024*1024)) {
                 d = (double)n/(1024);
-                common::SPrintf(s,"%.2fK",d);
+                common::SNPrintf(s, len, "%.2fK", d);
             } else if (n < (1024LL*1024*1024)) {
                 d = (double)n/(1024*1024);
-                common::SPrintf(s,"%.2fM",d);
+                common::SNPrintf(s, len, "%.2fM", d);
             } else if (n < (1024LL*1024*1024*1024)) {
                 d = (double)n/(1024LL*1024*1024);
-                common::SPrintf(s,"%.2fG",d);
+                common::SNPrintf(s, len, "%.2fG", d);
             }
         }
 
@@ -1136,7 +1136,7 @@ namespace fastonosql
 
                 /* Used memory */
                 aux = getLongInfoField(reply->str, "used_memory");
-                bytesToHuman(buf,aux);
+                bytesToHuman(buf, sizeof(buf), aux);
                 result += " used_memory: ";
                 result += buf;
 
@@ -1147,18 +1147,18 @@ namespace fastonosql
 
                 /* Blocked (BLPOPPING) Clients */
                 aux = getLongInfoField(reply->str, "blocked_clients");
-                common::SPrintf(buf," blocked_clients: %ld",aux);
+                common::SNPrintf(buf, sizeof(buf), " blocked_clients: %ld",aux);
                 result += buf;
 
                 /* Requets */
                 aux = getLongInfoField(reply->str, "total_commands_processed");
-                common::SPrintf(buf," total_commands_processed: %ld (+%ld)",aux,requests == 0 ? 0 : aux-requests);
+                common::SNPrintf(buf, sizeof(buf), " total_commands_processed: %ld (+%ld)",aux,requests == 0 ? 0 : aux-requests);
                 result += buf;
                 requests = aux;
 
                 /* Connections */
                 aux = getLongInfoField(reply->str, "total_connections_received");
-                common::SPrintf(buf," total_connections_received: %ld",aux);
+                common::SNPrintf(buf, sizeof(buf), " total_connections_received: %ld",aux);
                 result += buf;
 
                 /* Children */

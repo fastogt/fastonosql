@@ -22,8 +22,8 @@ namespace fastonosql
 
     void MemcachedConnectionSettings::setHost(const common::net::hostAndPort& host)
     {
-        info_.hostip_ = host.host_;
-        info_.hostport_ = host.port_;
+        info_.hostip_ = host.host;
+        info_.hostport_ = host.port;
     }
 
     common::net::hostAndPort MemcachedConnectionSettings::host() const

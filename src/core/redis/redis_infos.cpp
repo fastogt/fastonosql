@@ -1079,8 +1079,8 @@ namespace fastonosql
                         break;
                     case 1:
                         hport = common::convertFromString<common::net::hostAndPort>(word);
-                        if(common::net::isLocalHost(hport.host_)){
-                            hport.host_ = parentHost.host_;
+                        if(common::net::isLocalHost(hport.host)){
+                            hport.host = parentHost.host;
                         }
                         break;
                     case 2:

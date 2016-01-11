@@ -101,7 +101,7 @@ namespace fastonosql
 
     bool IServer::isLocalHost() const
     {
-        return common::net::isLocalHost(drv_->address().host_);
+        return drv_->address().isLocalHost();
     }
 
     connectionTypes IServer::type() const

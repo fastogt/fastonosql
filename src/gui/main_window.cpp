@@ -422,13 +422,13 @@ namespace fastonosql
 
         while(!readFile.isEof()){
             std::string data;
-            bool res = readFile.read(data, 256);
+            bool res = readFile.read(&data, 256);
             if(!res){
                 break;
             }
 
             std::string edata;
-            common::Error er = hexEnc->decode(data, edata);
+            common::Error er = hexEnc->decode(data, &edata);
             if(er){
                 writeFile.close();
                 common::Error err = common::file_system::remove_file(wp.path());
@@ -494,13 +494,13 @@ namespace fastonosql
 
         while(!readFile.isEof()){
             std::string data;
-            bool res = readFile.readLine(data);
+            bool res = readFile.readLine(&data);
             if(!res || readFile.isEof()){
                 break;
             }
 
             std::string edata;
-            common::Error er = hexEnc->encode(data, edata);
+            common::Error er = hexEnc->encode(data, &edata);
             if(er){
                 writeFile.close();
                 common::Error err = common::file_system::remove_file(wp.path());
@@ -777,9 +777,9 @@ namespace fastonosql
         }
         ssize_t nwrite = 0;
 #if defined(FASTONOSQL)
-        err = s.write(GET_FASTONOSQL_VERSION, sizeof(GET_FASTONOSQL_VERSION), nwrite);
+        err = s.write(GET_FASTONOSQL_VERSION, sizeof(GET_FASTONOSQL_VERSION), &nwrite);
 #elif defined(FASTOREDIS)
-        err = s.write(GET_FASTOREDIS_VERSION, sizeof(GET_FASTOREDIS_VERSION), nwrite);
+        err = s.write(GET_FASTOREDIS_VERSION, sizeof(GET_FASTOREDIS_VERSION), &nwrite);
 #else
         #error please specify request to get version information
 #endif
@@ -791,7 +791,7 @@ namespace fastonosql
 
         char version[128] = {0};
         ssize_t nread = 0;
-        err = s.read(version, 128, nread);
+        err = s.read(version, 128, &nread);
 
         QString vers = common::convertFromString<QString>(version);
         emit versionAvailibled(!(err && err->isError()), vers);

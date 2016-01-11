@@ -37,7 +37,7 @@ namespace
             if(err && err->isError()){
 
             }
-            if(common::file_system::is_directory(dbname) != SUCCESS){
+            if(common::file_system::is_directory(dbname) != common::SUCCESS){
                 return EACCES;
             }
         }

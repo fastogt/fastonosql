@@ -100,7 +100,7 @@ namespace fastonosql
 
             std::string hexstr;
             common::HexEDcoder hex;
-            common::Error er = hex.encode(sval, hexstr);
+            common::Error er = hex.encode(sval, &hexstr);
             if(er){
                 return QString();
             }
@@ -147,7 +147,7 @@ namespace fastonosql
             std::string sval = common::convertToString(val);
             std::string out;
             common::CompressEDcoder enc;
-            common::Error er = enc.decode(sval, out);
+            common::Error er = enc.decode(sval, &out);
             if(er){
                 return QString();
             }
@@ -175,14 +175,14 @@ namespace fastonosql
 
             common::HexEDcoder hex;
             std::string hexstr;
-            common::Error er = hex.decode(sval, hexstr);
+            common::Error er = hex.decode(sval, &hexstr);
             if(er){
                 return QString();
             }
 
             common::MsgPackEDcoder msg;
             std::string upack;
-            er = msg.decode(hexstr, upack);
+            er = msg.decode(hexstr, &upack);
             if(er){
                 return QString();
             }

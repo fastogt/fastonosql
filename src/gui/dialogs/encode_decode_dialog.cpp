@@ -118,10 +118,10 @@ namespace fastonosql
         std::string out;
         common::Error er;
         if(encodeButton_->isChecked()){
-            er = dec->encode(sin, out);
+            er = dec->encode(sin, &out);
         }
         else{
-            er = dec->decode(sin, out);
+            er = dec->decode(sin, &out);
         }
 
         if(!er){
