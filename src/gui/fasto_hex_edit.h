@@ -1,56 +1,75 @@
+/*  Copyright (C) 2014-2016 FastoGT. All right reserved.
+
+    This file is part of FastoNoSQL.
+
+    SiteOnYourDevice is free software: you can redistribute it and/or modify
+    it under the terms of the GNU General Public License as published by
+    the Free Software Foundation, either version 3 of the License, or
+    (at your option) any later version.
+
+    SiteOnYourDevice is distributed in the hope that it will be useful,
+    but WITHOUT ANY WARRANTY; without even the implied warranty of
+    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+    GNU General Public License for more details.
+
+    You should have received a copy of the GNU General Public License
+    along with SiteOnYourDevice.  If not, see <http://www.gnu.org/licenses/>.
+*/
+
 #pragma once
 
 #include <QPlainTextEdit>
 #include <QByteArray>
 
-namespace fastonosql
+namespace fastonosql {
+
+class FastoHexEdit
+  : public QPlainTextEdit
 {
-    class FastoHexEdit
-            : public QPlainTextEdit
-    {
-            Q_OBJECT
-        public:
-            typedef QPlainTextEdit base_class;
-            FastoHexEdit(QWidget *parent = 0);
+  Q_OBJECT
+ public:
+  typedef QPlainTextEdit base_class;
+  FastoHexEdit(QWidget *parent = 0);
 
-            enum DisplayMode
-            {
-                TEXT_MODE,
-                HEX_MODE
-            };
+  enum DisplayMode
+  {
+    TEXT_MODE,
+    HEX_MODE
+  };
 
-            enum
-            {
-                TextMarginXY = 4
-            };
+  enum
+  {
+    TextMarginXY = 4
+  };
 
-            QString text() const;
+  QString text() const;
 
-        public Q_SLOTS:
-            void setMode(DisplayMode mode);
-            void setData(const QByteArray &arr);
-            void clear();
+ public Q_SLOTS:
+  void setMode(DisplayMode mode);
+  void setData(const QByteArray &arr);
+  void clear();
 
-        protected:
-            virtual void paintEvent(QPaintEvent *event);
+ protected:
+  virtual void paintEvent(QPaintEvent *event);
 
-            virtual void mousePressEvent(QMouseEvent* event);
-            virtual void mouseMoveEvent(QMouseEvent* event);
-            virtual void mouseReleaseEvent(QMouseEvent* event);
+  virtual void mousePressEvent(QMouseEvent* event);
+  virtual void mouseMoveEvent(QMouseEvent* event);
+  virtual void mouseReleaseEvent(QMouseEvent* event);
 
-        private:
-            static QRect stableRect(const QRect& rect);
-            QSize fullSize() const;
+ private:
+  static QRect stableRect(const QRect& rect);
+  QSize fullSize() const;
 
-            QByteArray data_;
-            DisplayMode mode_;
+  QByteArray data_;
+  DisplayMode mode_;
 
-            bool inSelectionState_;
+  bool inSelectionState_;
 
-            int charWidth() const;
-            int charHeight() const;
+  int charWidth() const;
+  int charHeight() const;
 
-            int asciiCharInLine(int wid) const;
-            int positionAtPoint(const QPoint &point) const;
-    };
+  int asciiCharInLine(int wid) const;
+  int positionAtPoint(const QPoint &point) const;
+};
+
 }
