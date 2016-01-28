@@ -1,3 +1,21 @@
+/*  Copyright (C) 2014-2016 FastoGT. All right reserved.
+
+    This file is part of FastoNoSQL.
+
+    SiteOnYourDevice is free software: you can redistribute it and/or modify
+    it under the terms of the GNU General Public License as published by
+    the Free Software Foundation, either version 3 of the License, or
+    (at your option) any later version.
+
+    SiteOnYourDevice is distributed in the hope that it will be useful,
+    but WITHOUT ANY WARRANTY; without even the implied warranty of
+    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+    GNU General Public License for more details.
+
+    You should have received a copy of the GNU General Public License
+    along with SiteOnYourDevice.  If not, see <http://www.gnu.org/licenses/>.
+*/
+
 #include <QApplication>
 #include <QDesktopWidget>
 
@@ -6,45 +24,42 @@
 
 #include "common/logger.h"
 
-namespace
-{
-    const QSize preferedSize(1024, 768);
+namespace {
+  const QSize preferedSize(1024, 768);
 }
 
-int main(int argc, char *argv[])
-{    
-    QApplication app(argc, argv);
-    app.setOrganizationName(PROJECT_COMPANYNAME);
-    app.setApplicationName(PROJECT_NAME);
-    app.setApplicationVersion(PROJECT_VERSION);
-    app.setAttribute(Qt::AA_UseHighDpiPixmaps);
-    app.setWindowIcon(fastonosql::GuiFactory::instance().logoIcon()); //default icon for app
+int main(int argc, char *argv[]) {
+  QApplication app(argc, argv);
+  app.setOrganizationName(PROJECT_COMPANYNAME);
+  app.setApplicationName(PROJECT_NAME);
+  app.setApplicationVersion(PROJECT_VERSION);
+  app.setAttribute(Qt::AA_UseHighDpiPixmaps);
+  app.setWindowIcon(fastonosql::GuiFactory::instance().logoIcon());  // default icon for app
 
 #ifdef NDEBUG
-    SET_LOG_LEVEL(common::logging::L_INFO);
+  SET_LOG_LEVEL(common::logging::L_INFO);
 #else
-    SET_LOG_LEVEL(common::logging::L_DEBUG);
+  SET_LOG_LEVEL(common::logging::L_DEBUG);
 #endif
 
-    fastonosql::MainWindow win;
-    QRect screenGeometry = app.desktop()->availableGeometry();
-    QSize screenSize(screenGeometry.width(), screenGeometry.height());
+  fastonosql::MainWindow win;
+  QRect screenGeometry = app.desktop()->availableGeometry();
+  QSize screenSize(screenGeometry.width(), screenGeometry.height());
 
 #ifdef OS_ANDROID
-    win.resize(screenSize);
+  win.resize(screenSize);
 #else
-    QSize size(screenGeometry.width()/2, screenGeometry.height()/2);
-    if(preferedSize.height() < screenSize.height() && preferedSize.width() < screenSize.width()){
-        win.resize(preferedSize);
-    }
-    else{
-        win.resize(size);
-    }
+  QSize size(screenGeometry.width()/2, screenGeometry.height()/2);
+  if (preferedSize.height() < screenSize.height() && preferedSize.width() < screenSize.width()) {
+    win.resize(preferedSize);
+  } else {
+    win.resize(size);
+  }
 
-    QPoint center = screenGeometry.center();
-    win.move(center.x() - win.width() * 0.5, center.y() - win.height() * 0.5);
+  QPoint center = screenGeometry.center();
+  win.move(center.x() - win.width() * 0.5, center.y() - win.height() * 0.5);
 #endif
 
-    win.show();
-    return app.exec();
+  win.show();
+  return app.exec();
 }
