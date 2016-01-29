@@ -1,3 +1,21 @@
+/*  Copyright (C) 2014-2016 FastoGT. All right reserved.
+
+    This file is part of FastoNoSQL.
+
+    SiteOnYourDevice is free software: you can redistribute it and/or modify
+    it under the terms of the GNU General Public License as published by
+    the Free Software Foundation, either version 3 of the License, or
+    (at your option) any later version.
+
+    SiteOnYourDevice is distributed in the hope that it will be useful,
+    but WITHOUT ANY WARRANTY; without even the implied warranty of
+    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+    GNU General Public License for more details.
+
+    You should have received a copy of the GNU General Public License
+    along with SiteOnYourDevice.  If not, see <http://www.gnu.org/licenses/>.
+*/
+
 #pragma  once
 
 #include <QDialog>
@@ -6,42 +24,39 @@
 
 class QLineEdit;
 
-namespace fasto
-{
-    namespace qt
-    {
-        namespace gui
-        {
-            class GlassWidget;
-        }
-    }
+namespace fasto {
+namespace qt {
+namespace gui {
+  class GlassWidget;
+}
+}
 }
 
-namespace fastonosql
-{
-    class ChangePasswordServerDialog
-            : public QDialog
-    {
-        Q_OBJECT
-    public:
-        enum
-        {
-            fix_height = 160,
-            fix_width = 240
-        };
+namespace fastonosql {
 
-        explicit ChangePasswordServerDialog(const QString& title, IServerSPtr server, QWidget* parent);
+class ChangePasswordServerDialog
+  : public QDialog {
+  Q_OBJECT
+ public:
+  enum
+  {
+      fix_height = 160,
+      fix_width = 240
+  };
 
-    private Q_SLOTS:
-        void tryToCreatePassword();
-        void startChangePassword(const EventsInfo::ChangePasswordRequest& req);
-        void finishChangePassword(const EventsInfo::ChangePasswordResponce& res);
+  explicit ChangePasswordServerDialog(const QString& title, IServerSPtr server, QWidget* parent);
 
-    private:
-        bool validateInput();
-        fasto::qt::gui::GlassWidget *glassWidget_;
-        QLineEdit* passwordLineEdit_;
-        QLineEdit* confPasswordLineEdit_;
-        const IServerSPtr server_;
-    };
+ private Q_SLOTS:
+  void tryToCreatePassword();
+  void startChangePassword(const EventsInfo::ChangePasswordRequest& req);
+  void finishChangePassword(const EventsInfo::ChangePasswordResponce& res);
+
+ private:
+  bool validateInput();
+  fasto::qt::gui::GlassWidget *glassWidget_;
+  QLineEdit* passwordLineEdit_;
+  QLineEdit* confPasswordLineEdit_;
+  const IServerSPtr server_;
+};
+
 }

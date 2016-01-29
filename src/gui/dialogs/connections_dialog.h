@@ -1,3 +1,21 @@
+/*  Copyright (C) 2014-2016 FastoGT. All right reserved.
+
+    This file is part of FastoNoSQL.
+
+    SiteOnYourDevice is free software: you can redistribute it and/or modify
+    it under the terms of the GNU General Public License as published by
+    the Free Software Foundation, either version 3 of the License, or
+    (at your option) any later version.
+
+    SiteOnYourDevice is distributed in the hope that it will be useful,
+    but WITHOUT ANY WARRANTY; without even the implied warranty of
+    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+    GNU General Public License for more details.
+
+    You should have received a copy of the GNU General Public License
+    along with SiteOnYourDevice.  If not, see <http://www.gnu.org/licenses/>.
+*/
+
 #pragma once
 
 #include <QDialog>
@@ -6,42 +24,42 @@
 
 class QTreeWidget;
 
-namespace fastonosql
-{
-    class ConnectionsDialog
-            : public QDialog
-    {
-        Q_OBJECT
+namespace fastonosql {
 
-    public:
-        enum
-        {
-            min_height = 320,
-            min_width = 480
-        };
+class ConnectionsDialog
+  : public QDialog {
+  Q_OBJECT
 
-        explicit ConnectionsDialog(QWidget* parent = 0);
-        IConnectionSettingsBaseSPtr selectedConnection() const;
-        IClusterSettingsBaseSPtr selectedCluster() const;
+ public:
+  enum
+  {
+    min_height = 320,
+    min_width = 480
+  };
 
-        virtual void accept();
+  explicit ConnectionsDialog(QWidget* parent = 0);
+  IConnectionSettingsBaseSPtr selectedConnection() const;
+  IClusterSettingsBaseSPtr selectedCluster() const;
 
-    private Q_SLOTS:
-        void add();
-        void addCls();
-        void remove();
-        void edit();
-        void connectionSelectChange();
+  virtual void accept();
 
-    protected:
-        virtual void changeEvent(QEvent* );
+ private Q_SLOTS:
+  void add();
+  void addCls();
+  void remove();
+  void edit();
+  void connectionSelectChange();
 
-    private:
-        void retranslateUi();
-        void addConnection(IConnectionSettingsBaseSPtr con);
-        void addCluster(IClusterSettingsBaseSPtr con);
+ protected:
+  virtual void changeEvent(QEvent* );
 
-        QTreeWidget* listWidget_;
-        QPushButton* acButton_;
-    };
+ private:
+  void retranslateUi();
+  void addConnection(IConnectionSettingsBaseSPtr con);
+  void addCluster(IClusterSettingsBaseSPtr con);
+
+  QTreeWidget* listWidget_;
+  QPushButton* acButton_;
+};
+
 }

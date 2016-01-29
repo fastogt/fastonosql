@@ -1,3 +1,21 @@
+/*  Copyright (C) 2014-2016 FastoGT. All right reserved.
+
+    This file is part of FastoNoSQL.
+
+    SiteOnYourDevice is free software: you can redistribute it and/or modify
+    it under the terms of the GNU General Public License as published by
+    the Free Software Foundation, either version 3 of the License, or
+    (at your option) any later version.
+
+    SiteOnYourDevice is distributed in the hope that it will be useful,
+    but WITHOUT ANY WARRANTY; without even the implied warranty of
+    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+    GNU General Public License for more details.
+
+    You should have received a copy of the GNU General Public License
+    along with SiteOnYourDevice.  If not, see <http://www.gnu.org/licenses/>.
+*/
+
 #pragma once
 
 #include <QDialog>
@@ -14,56 +32,56 @@ class QSpinBox;
 class QTreeWidget;
 class QToolBar;
 
-namespace fastonosql
-{
-    class ClusterDialog
-            : public QDialog
-    {
-        Q_OBJECT
+namespace fastonosql {
 
-    public:
-        typedef std::vector<IConnectionSettingsBaseSPtr> cluster_connection_type;
-        ClusterDialog(QWidget* parent, IClusterSettingsBase* connection = NULL); //get ownerships connection
-        IClusterSettingsBaseSPtr connection() const;
+class ClusterDialog
+  : public QDialog {
+  Q_OBJECT
 
-    public Q_SLOTS:
-        virtual void accept();
+ public:
+  typedef std::vector<IConnectionSettingsBaseSPtr> cluster_connection_type;
+  ClusterDialog(QWidget* parent, IClusterSettingsBase* connection = NULL); //get ownerships connection
+  IClusterSettingsBaseSPtr connection() const;
 
-    private Q_SLOTS:
-        void typeConnectionChange(int index);
-        void loggingStateChange(int value);
-        void testConnection();
-        void discoveryCluster();
-        void showContextMenu(const QPoint& point);
+ public Q_SLOTS:
+  virtual void accept();
 
-        void setStartNode();
+ private Q_SLOTS:
+  void typeConnectionChange(int index);
+  void loggingStateChange(int value);
+  void testConnection();
+  void discoveryCluster();
+  void showContextMenu(const QPoint& point);
 
-        void add();
-        void remove();
-        void edit();
+  void setStartNode();
 
-        void itemSelectionChanged();
+  void add();
+  void remove();
+  void edit();
 
-    protected:
-        virtual void changeEvent(QEvent* );
+  void itemSelectionChanged();
 
-    private:
-        void retranslateUi();
-        bool validateAndApply();
-        void addConnection(IConnectionSettingsBaseSPtr con);
+ protected:
+  virtual void changeEvent(QEvent* );
 
-        IClusterSettingsBaseSPtr cluster_connection_;
-        QLineEdit* connectionName_;
-        QComboBox* typeConnection_;
-        QCheckBox* logging_;
-        QSpinBox* loggingMsec_;
+ private:
+  void retranslateUi();
+  bool validateAndApply();
+  void addConnection(IConnectionSettingsBaseSPtr con);
 
-        QToolBar* savebar_;
-        QTreeWidget* listWidget_;
+  IClusterSettingsBaseSPtr cluster_connection_;
+  QLineEdit* connectionName_;
+  QComboBox* typeConnection_;
+  QCheckBox* logging_;
+  QSpinBox* loggingMsec_;
 
-        QPushButton* testButton_;
-        QPushButton* discoveryButton_;
-        QDialogButtonBox* buttonBox_;
-        QAction* setDefault_;
-    };
+  QToolBar* savebar_;
+  QTreeWidget* listWidget_;
+
+  QPushButton* testButton_;
+  QPushButton* discoveryButton_;
+  QDialogButtonBox* buttonBox_;
+  QAction* setDefault_;
+};
+
 }
