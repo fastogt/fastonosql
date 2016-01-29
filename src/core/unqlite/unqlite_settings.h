@@ -1,30 +1,49 @@
+/*  Copyright (C) 2014-2016 FastoGT. All right reserved.
+
+    This file is part of FastoNoSQL.
+
+    SiteOnYourDevice is free software: you can redistribute it and/or modify
+    it under the terms of the GNU General Public License as published by
+    the Free Software Foundation, either version 3 of the License, or
+    (at your option) any later version.
+
+    SiteOnYourDevice is distributed in the hope that it will be useful,
+    but WITHOUT ANY WARRANTY; without even the implied warranty of
+    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+    GNU General Public License for more details.
+
+    You should have received a copy of the GNU General Public License
+    along with SiteOnYourDevice.  If not, see <http://www.gnu.org/licenses/>.
+*/
+
 #pragma once
 
 #include "core/connection_settings.h"
 
 #include "core/unqlite/unqlite_config.h"
 
-namespace fastonosql
+namespace fastonosql {
+
+class UnqliteConnectionSettings
+  : public IConnectionSettingsBase
 {
-    class UnqliteConnectionSettings
-            : public IConnectionSettingsBase
-    {
-    public:
-        explicit UnqliteConnectionSettings(const std::string& connectionName);
+public:
+  explicit UnqliteConnectionSettings(const std::string& connectionName);
 
-        virtual std::string commandLine() const;
-        virtual void setCommandLine(const std::string& line);
+  virtual std::string commandLine() const;
+  virtual void setCommandLine(const std::string& line);
 
-        unqliteConfig info() const;
-        void setInfo(const unqliteConfig &info);
+  unqliteConfig info() const;
+  void setInfo(const unqliteConfig &info);
 
-        virtual std::string fullAddress() const;
+  virtual std::string fullAddress() const;
 
-        virtual IConnectionSettings* clone() const;
+  virtual IConnectionSettings* clone() const;
 
-    private:
-        virtual std::string toCommandLine() const;
-        virtual void initFromCommandLine(const std::string& val);
-        unqliteConfig info_;
-    };
+private:
+  virtual std::string toCommandLine() const;
+  virtual void initFromCommandLine(const std::string& val);
+  unqliteConfig info_;
+};
+
 }

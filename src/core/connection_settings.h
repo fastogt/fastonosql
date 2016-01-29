@@ -1,3 +1,21 @@
+/*  Copyright (C) 2014-2016 FastoGT. All right reserved.
+
+    This file is part of FastoNoSQL.
+
+    SiteOnYourDevice is free software: you can redistribute it and/or modify
+    it under the terms of the GNU General Public License as published by
+    the Free Software Foundation, either version 3 of the License, or
+    (at your option) any later version.
+
+    SiteOnYourDevice is distributed in the hope that it will be useful,
+    but WITHOUT ANY WARRANTY; without even the implied warranty of
+    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+    GNU General Public License for more details.
+
+    You should have received a copy of the GNU General Public License
+    along with SiteOnYourDevice.  If not, see <http://www.gnu.org/licenses/>.
+*/
+
 #pragma once
 
 #include "common/smart_ptr.h"
@@ -6,125 +24,124 @@
 #include "core/connection_types.h"
 #include "core/ssh_info.h"
 
-namespace fastonosql
+namespace fastonosql {
+
+class IConnectionSettings {
+public:
+  virtual ~IConnectionSettings();
+
+  std::string connectionName() const;
+  void setConnectionName(const std::string& name);
+
+  connectionTypes connectionType() const;
+
+  bool loggingEnabled() const;
+
+  uint32_t loggingMsTimeInterval() const;
+  void setLoggingMsTimeInterval(uint32_t mstime);
+
+  virtual std::string toString() const;
+  virtual IConnectionSettings* clone() const = 0;
+
+protected:
+  IConnectionSettings(const std::string& connectionName, connectionTypes type);
+
+  std::string connectionName_;
+  const connectionTypes type_;
+  uint32_t msinterval_;
+};
+
+class IConnectionSettingsBase
+  : public IConnectionSettings {
+public:
+  virtual ~IConnectionSettingsBase();
+  std::string hash() const;
+
+  std::string loggingPath() const;
+
+  void setConnectionNameAndUpdateHash(const std::string& name);
+
+  virtual std::string commandLine() const = 0;
+  virtual void setCommandLine(const std::string& line) = 0;
+
+  virtual std::string fullAddress() const = 0;
+
+  static IConnectionSettingsBase* createFromType(connectionTypes type, const std::string& conName);
+  static IConnectionSettingsBase* fromString(const std::string& val);
+  static bool isRemoteType(connectionTypes type);
+
+  virtual std::string toString() const;
+
+protected:
+  virtual std::string toCommandLine() const = 0;
+  virtual void initFromCommandLine(const std::string& val) = 0;
+  IConnectionSettingsBase(const std::string& connectionName, connectionTypes type);
+
+private:
+  using IConnectionSettings::setConnectionName;
+
+  std::string hash_;
+};
+
+class IConnectionSettingsRemote
+  : public IConnectionSettingsBase
 {
-    class IConnectionSettings
-    {
-    public:
-        virtual ~IConnectionSettings();
+public:
+  virtual ~IConnectionSettingsRemote();
 
-        std::string connectionName() const;
-        void setConnectionName(const std::string& name);
+  virtual void setHost(const common::net::hostAndPort& host) = 0;
+  virtual common::net::hostAndPort host() const = 0;
 
-        connectionTypes connectionType() const;
+  virtual std::string commandLine() const = 0;
+  virtual void setCommandLine(const std::string& line) = 0;
 
-        bool loggingEnabled() const;
+  virtual std::string fullAddress() const;
 
-        uint32_t loggingMsTimeInterval() const;
-        void setLoggingMsTimeInterval(uint32_t mstime);
+  static IConnectionSettingsRemote* createFromType(connectionTypes type, const std::string& conName, const common::net::hostAndPort& host);
 
-        virtual std::string toString() const;
-        virtual IConnectionSettings* clone() const = 0;
+  virtual std::string toString() const;
 
-    protected:
-        IConnectionSettings(const std::string& connectionName, connectionTypes type);
+  SSHInfo sshInfo() const;
+  void setSshInfo(const SSHInfo& info);
 
-        std::string connectionName_;
-        const connectionTypes type_;
-        uint32_t msinterval_;
-    };
+protected:
+  virtual std::string toCommandLine() const = 0;
+  virtual void initFromCommandLine(const std::string& val) = 0;
+  IConnectionSettingsRemote(const std::string& connectionName, connectionTypes type);
 
-    class IConnectionSettingsBase
-            : public IConnectionSettings
-    {
-    public:
-        virtual ~IConnectionSettingsBase();
-        std::string hash() const;
+private:
+  SSHInfo sshInfo_;
+};
 
-        std::string loggingPath() const;
+const char *useHelpText(connectionTypes type);
+std::string defaultCommandLine(connectionTypes type);
 
-        void setConnectionNameAndUpdateHash(const std::string& name);
+typedef common::shared_ptr<IConnectionSettingsBase> IConnectionSettingsBaseSPtr;
 
-        virtual std::string commandLine() const = 0;
-        virtual void setCommandLine(const std::string& line) = 0;
+class IClusterSettingsBase
+  : public IConnectionSettings
+{
+public:
+  typedef std::vector<IConnectionSettingsBaseSPtr> cluster_connection_type;
+  cluster_connection_type nodes() const;
+  IConnectionSettingsBaseSPtr root() const;
 
-        virtual std::string fullAddress() const = 0;
+  void addNode(IConnectionSettingsBaseSPtr node);
 
-        static IConnectionSettingsBase* createFromType(connectionTypes type, const std::string& conName);
-        static IConnectionSettingsBase* fromString(const std::string& val);
-        static bool isRemoteType(connectionTypes type);
+  static IClusterSettingsBase* createFromType(connectionTypes type, const std::string& conName = std::string());
+  static IClusterSettingsBase* fromString(const std::string& val);
 
-        virtual std::string toString() const;
+  virtual std::string toString() const;
 
-    protected:
-        virtual std::string toCommandLine() const = 0;
-        virtual void initFromCommandLine(const std::string& val) = 0;
-        IConnectionSettingsBase(const std::string& connectionName, connectionTypes type);
+  IConnectionSettingsBaseSPtr findSettingsByHost(const common::net::hostAndPort& host) const;
 
-    private:
-        using IConnectionSettings::setConnectionName;
+protected:
+  IClusterSettingsBase(const std::string& connectionName, connectionTypes type);
 
-        std::string hash_;
-    };
+private:
+  cluster_connection_type clusters_nodes_; //first element is root!!!
+};
 
-    class IConnectionSettingsRemote
-            : public IConnectionSettingsBase
-    {
-    public:
-        virtual ~IConnectionSettingsRemote();
+typedef common::shared_ptr<IClusterSettingsBase> IClusterSettingsBaseSPtr;
 
-        virtual void setHost(const common::net::hostAndPort& host) = 0;
-        virtual common::net::hostAndPort host() const = 0;
-
-        virtual std::string commandLine() const = 0;
-        virtual void setCommandLine(const std::string& line) = 0;
-
-        virtual std::string fullAddress() const;
-
-        static IConnectionSettingsRemote* createFromType(connectionTypes type, const std::string& conName, const common::net::hostAndPort& host);
-
-        virtual std::string toString() const;
-
-        SSHInfo sshInfo() const;
-        void setSshInfo(const SSHInfo& info);
-
-    protected:
-        virtual std::string toCommandLine() const = 0;
-        virtual void initFromCommandLine(const std::string& val) = 0;
-        IConnectionSettingsRemote(const std::string& connectionName, connectionTypes type);
-
-    private:
-        SSHInfo sshInfo_;
-    };
-
-    const char *useHelpText(connectionTypes type);
-    std::string defaultCommandLine(connectionTypes type);
-
-    typedef common::shared_ptr<IConnectionSettingsBase> IConnectionSettingsBaseSPtr;
-
-    class IClusterSettingsBase
-            : public IConnectionSettings
-    {
-    public:
-        typedef std::vector<IConnectionSettingsBaseSPtr> cluster_connection_type;
-        cluster_connection_type nodes() const;
-        IConnectionSettingsBaseSPtr root() const;
-
-        void addNode(IConnectionSettingsBaseSPtr node);
-
-        static IClusterSettingsBase* createFromType(connectionTypes type, const std::string& conName = std::string());
-        static IClusterSettingsBase* fromString(const std::string& val);
-
-        virtual std::string toString() const;
-
-        IConnectionSettingsBaseSPtr findSettingsByHost(const common::net::hostAndPort& host) const;
-
-    protected:
-        IClusterSettingsBase(const std::string& connectionName, connectionTypes type);
-
-    private:
-        cluster_connection_type clusters_nodes_; //first element is root!!!
-    };
-
-    typedef common::shared_ptr<IClusterSettingsBase> IClusterSettingsBaseSPtr;
 }

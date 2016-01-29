@@ -1,3 +1,21 @@
+/*  Copyright (C) 2014-2016 FastoGT. All right reserved.
+
+    This file is part of FastoNoSQL.
+
+    SiteOnYourDevice is free software: you can redistribute it and/or modify
+    it under the terms of the GNU General Public License as published by
+    the Free Software Foundation, either version 3 of the License, or
+    (at your option) any later version.
+
+    SiteOnYourDevice is distributed in the hope that it will be useful,
+    but WITHOUT ANY WARRANTY; without even the implied warranty of
+    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+    GNU General Public License for more details.
+
+    You should have received a copy of the GNU General Public License
+    along with SiteOnYourDevice.  If not, see <http://www.gnu.org/licenses/>.
+*/
+
 #pragma once
 
 #include "global/global.h"
@@ -12,265 +30,251 @@
 #define UNDEFINED_STR_IN_PROGRESS "Undefined in progress"
 #define INFINITE_COMMAND_ARGS UINT8_MAX
 
-namespace fastonosql
-{
-    struct CommandInfo
-    {
-        CommandInfo(const std::string& name, const std::string& params,
-                    const std::string& summary, const uint32_t since,
-                    const std::string& example, uint8_t required_arguments_count, uint8_t optional_arguments_count);
+namespace fastonosql {
 
-        uint16_t maxArgumentsCount() const;
-        uint8_t minArgumentsCount() const;
+struct CommandInfo {
+  CommandInfo(const std::string& name, const std::string& params,
+              const std::string& summary, const uint32_t since,
+              const std::string& example, uint8_t required_arguments_count,
+              uint8_t optional_arguments_count);
 
-        const std::string name_;
-        const std::string params_;
-        const std::string summary_;
-        const uint32_t since_;
-        const std::string example_;
+  uint16_t maxArgumentsCount() const;
+  uint8_t minArgumentsCount() const;
 
-        const uint8_t required_arguments_count_;
-        const uint8_t optional_arguments_count_;
-    };
+  const std::string name_;
+  const std::string params_;
+  const std::string summary_;
+  const uint32_t since_;
+  const std::string example_;
 
-    std::string convertVersionNumberToReadableString(uint32_t version);
+  const uint8_t required_arguments_count_;
+  const uint8_t optional_arguments_count_;
+};
 
-    struct NKey
-    {
-        explicit NKey(const std::string& key, int32_t ttl_sec = -1);
+std::string convertVersionNumberToReadableString(uint32_t version);
 
-        std::string key_;
-        int32_t ttl_sec_;
-    };
+struct NKey {
+  explicit NKey(const std::string& key, int32_t ttl_sec = -1);
 
-    typedef common::ValueSPtr NValue;
+  std::string key_;
+  int32_t ttl_sec_;
+};
 
-    class NDbKValue
-    {
-    public:
-        NDbKValue(const NKey& key, NValue value);
+typedef common::ValueSPtr NValue;
 
-        NKey key() const;
-        NValue value() const;
-        common::Value::Type type() const;
+class NDbKValue {
+ public:
+  NDbKValue(const NKey& key, NValue value);
 
-        void setTTL(int32_t ttl);
-        void setValue(NValue value);
+  NKey key() const;
+  NValue value() const;
+  common::Value::Type type() const;
 
-        std::string keyString() const;
+  void setTTL(int32_t ttl);
+  void setValue(NValue value);
 
-    private:
-        NKey key_;
-        NValue value_;
-    };
+  std::string keyString() const;
 
-    class ServerDiscoveryInfo
-    {
-    public:
-        virtual ~ServerDiscoveryInfo();
+ private:
+  NKey key_;
+  NValue value_;
+};
 
-        connectionTypes connectionType() const;
-        serverTypes type() const;
-        bool self() const;
+class ServerDiscoveryInfo {
+ public:
+  virtual ~ServerDiscoveryInfo();
 
-        std::string name() const;
-        void setName(const std::string& name);
+  connectionTypes connectionType() const;
+  serverTypes type() const;
+  bool self() const;
 
-        common::net::hostAndPort host() const;
-        void setHost(const common::net::hostAndPort& host);
+  std::string name() const;
+  void setName(const std::string& name);
 
-    protected:
-        DISALLOW_COPY_AND_ASSIGN(ServerDiscoveryInfo);
+  common::net::hostAndPort host() const;
+  void setHost(const common::net::hostAndPort& host);
 
-        ServerDiscoveryInfo(connectionTypes ctype, serverTypes type, bool self);
-        common::net::hostAndPort host_;
-        std::string name_;
+ protected:
+  DISALLOW_COPY_AND_ASSIGN(ServerDiscoveryInfo);
 
-    private:
-        const bool self_;
-        const serverTypes type_;
-        const connectionTypes ctype_;
-    };
+  ServerDiscoveryInfo(connectionTypes ctype, serverTypes type, bool self);
+  common::net::hostAndPort host_;
+  std::string name_;
 
-    typedef common::shared_ptr<ServerDiscoveryInfo> ServerDiscoveryInfoSPtr;
+ private:
+  const bool self_;
+  const serverTypes type_;
+  const connectionTypes ctype_;
+};
 
-    class ServerInfo
-    {
-    public:
-        explicit ServerInfo(connectionTypes type);
-        virtual ~ServerInfo();
+typedef common::shared_ptr<ServerDiscoveryInfo> ServerDiscoveryInfoSPtr;
 
-        connectionTypes type() const;
-        virtual std::string toString() const = 0;
-        virtual uint32_t version() const = 0;
-        virtual common::Value* valueByIndexes(unsigned char property, unsigned char field) const = 0;        
+class ServerInfo {
+ public:
+  explicit ServerInfo(connectionTypes type);
+  virtual ~ServerInfo();
 
-    private:
-        DISALLOW_COPY_AND_ASSIGN(ServerInfo);
+  connectionTypes type() const;
+  virtual std::string toString() const = 0;
+  virtual uint32_t version() const = 0;
+  virtual common::Value* valueByIndexes(unsigned char property, unsigned char field) const = 0;
 
-    private:
-        const connectionTypes type_;
-    };
+ private:
+  DISALLOW_COPY_AND_ASSIGN(ServerInfo);
 
-    struct FieldByIndex
-    {
-        virtual common::Value* valueByIndex(unsigned char index) const = 0;
-    };
+ private:
+  const connectionTypes type_;
+};
 
-    struct Field
-    {
-        Field(const std::string& name, common::Value::Type type);
+struct FieldByIndex {
+  virtual common::Value* valueByIndex(unsigned char index) const = 0;
+};
 
-        bool isIntegral() const;
-        std::string name_;
-        common::Value::Type type_;
-    };
+struct Field {
+  Field(const std::string& name, common::Value::Type type);
 
-    template<connectionTypes ct>
-    struct DBTraits
-    {
-        static std::vector<common::Value::Type> supportedTypes();
-        static std::vector<std::string> infoHeaders();
-        static std::vector< std::vector<Field> > infoFields();
-    };
+  bool isIntegral() const;
+  std::string name_;
+  common::Value::Type type_;
+};
 
-    std::vector<common::Value::Type> supportedTypesFromType(connectionTypes type);
-    std::vector<std::string> infoHeadersFromType(connectionTypes type);
-    std::vector< std::vector<Field> > infoFieldsFromType(connectionTypes type);
+template<connectionTypes ct>
+struct DBTraits {
+  static std::vector<common::Value::Type> supportedTypes();
+  static std::vector<std::string> infoHeaders();
+  static std::vector< std::vector<Field> > infoFields();
+};
 
-    typedef common::shared_ptr<ServerInfo> ServerInfoSPtr;
+std::vector<common::Value::Type> supportedTypesFromType(connectionTypes type);
+std::vector<std::string> infoHeadersFromType(connectionTypes type);
+std::vector< std::vector<Field> > infoFieldsFromType(connectionTypes type);
 
-    struct ServerInfoSnapShoot
-    {
-        ServerInfoSnapShoot();
-        ServerInfoSnapShoot(common::time64_t msec, ServerInfoSPtr info);
-        bool isValid() const;
+typedef common::shared_ptr<ServerInfo> ServerInfoSPtr;
 
-        common::time64_t msec_;
-        ServerInfoSPtr info_;
-    };
+struct ServerInfoSnapShoot {
+  ServerInfoSnapShoot();
+  ServerInfoSnapShoot(common::time64_t msec, ServerInfoSPtr info);
+  bool isValid() const;
 
-    typedef std::pair<std::string, std::string> PropertyType;
+  common::time64_t msec_;
+  ServerInfoSPtr info_;
+};
 
-    struct ServerPropertyInfo
-    {
-        ServerPropertyInfo();
-        std::vector<PropertyType> propertyes_;
-    };
+typedef std::pair<std::string, std::string> PropertyType;
 
-    ServerPropertyInfo makeServerProperty(FastoObjectArray* array);
+struct ServerPropertyInfo {
+  ServerPropertyInfo();
+  std::vector<PropertyType> propertyes_;
+};
 
-    class DataBaseInfo
-    {
-    public:
-        typedef std::vector<NDbKValue> keys_cont_type;
-        connectionTypes type() const;
-        std::string name() const;
-        size_t sizeDB() const;
-        size_t loadedSize() const;
+ServerPropertyInfo makeServerProperty(FastoObjectArray* array);
 
-        bool isDefault() const;
-        void setIsDefault(bool isDef);
+class DataBaseInfo {
+ public:
+  typedef std::vector<NDbKValue> keys_cont_type;
+  connectionTypes type() const;
+  std::string name() const;
+  size_t sizeDB() const;
+  size_t loadedSize() const;
 
-        virtual DataBaseInfo* clone() const = 0;
-        virtual ~DataBaseInfo();
+  bool isDefault() const;
+  void setIsDefault(bool isDef);
 
-        keys_cont_type keys() const;
-        void setKeys(const keys_cont_type& keys);
+  virtual DataBaseInfo* clone() const = 0;
+  virtual ~DataBaseInfo();
 
-    protected:
-        DataBaseInfo(const std::string& name, bool isDefault, connectionTypes type, size_t size, const keys_cont_type& keys);
-        //DISALLOW_COPY_AND_ASSIGN(DataBaseInfo);
+  keys_cont_type keys() const;
+  void setKeys(const keys_cont_type& keys);
 
-    private:
-        const std::string name_;
-        bool isDefault_;
-        size_t size_;
-        keys_cont_type keys_;
+ protected:
+  DataBaseInfo(const std::string& name, bool isDefault, connectionTypes type, size_t size, const keys_cont_type& keys);
+  //DISALLOW_COPY_AND_ASSIGN(DataBaseInfo);
 
-        const connectionTypes type_;
-    };
+ private:
+  const std::string name_;
+  bool isDefault_;
+  size_t size_;
+  keys_cont_type keys_;
 
-    class CommandKey
-    {
-    public:
-        enum cmdtype
-        {
-            C_DELETE,
-            C_LOAD,
-            C_CREATE,
-            C_CHANGE_TTL
-        };
+  const connectionTypes type_;
+};
 
-        cmdtype type() const;
-        NDbKValue key() const;
+class CommandKey {
+ public:
+  enum cmdtype
+  {
+    C_DELETE,
+    C_LOAD,
+    C_CREATE,
+    C_CHANGE_TTL
+  };
 
-        virtual ~CommandKey();
+  cmdtype type() const;
+  NDbKValue key() const;
 
-    protected:
-        CommandKey(const NDbKValue& key, cmdtype type);
+  virtual ~CommandKey();
 
-        const cmdtype type_;
-        const NDbKValue key_;
-    };
+ protected:
+  CommandKey(const NDbKValue& key, cmdtype type);
 
-    class CommandDeleteKey
-            : public CommandKey
-    {
-    public:
-        explicit CommandDeleteKey(const NDbKValue& key);
-    };
+  const cmdtype type_;
+  const NDbKValue key_;
+};
 
-    class CommandLoadKey
-            : public CommandKey
-    {
-    public:
-        explicit CommandLoadKey(const NDbKValue& key);
-    };
+class CommandDeleteKey
+      : public CommandKey {
+ public:
+  explicit CommandDeleteKey(const NDbKValue& key);
+};
 
-    class CommandCreateKey
-            : public CommandKey
-    {
-    public:
-        explicit CommandCreateKey(const NDbKValue& dbv);
-        NValue value() const;
-    };
+class CommandLoadKey
+  : public CommandKey {
+ public:
+  explicit CommandLoadKey(const NDbKValue& key);
+};
 
-    class CommandChangeTTL
-            : public CommandKey
-    {
-    public:
-        CommandChangeTTL(const NDbKValue& dbv, int32_t newTTL);
-        int32_t newTTL() const;
-        NDbKValue newKey() const;
+class CommandCreateKey
+  : public CommandKey {
+ public:
+  explicit CommandCreateKey(const NDbKValue& dbv);
+  NValue value() const;
+};
 
-    private:
-        int32_t new_ttl_;
-    };
+class CommandChangeTTL
+  : public CommandKey {
+ public:
+  CommandChangeTTL(const NDbKValue& dbv, int32_t newTTL);
+  int32_t newTTL() const;
+  NDbKValue newKey() const;
 
-    typedef common::shared_ptr<CommandKey> CommandKeySPtr;
+ private:
+  int32_t new_ttl_;
+};
 
-    template<typename Command>
-    FastoObjectCommand* createCommand(FastoObject* parent, const std::string& input, common::Value::CommandLoggingType ct)
-    {
-        if(input.empty()){
-            return NULL;
-        }
+typedef common::shared_ptr<CommandKey> CommandKeySPtr;
 
-        DCHECK(parent);
-        if(!parent){
-            return NULL;
-        }
+template<typename Command>
+FastoObjectCommand* createCommand(FastoObject* parent, const std::string& input,
+                                  common::Value::CommandLoggingType ct) {
+  if(input.empty()){
+      return NULL;
+  }
 
-        common::CommandValue* cmd = common::Value::createCommand(input, ct);
-        FastoObjectCommand* fs = new Command(parent, cmd, parent->delemitr());
-        parent->addChildren(fs);
-        return fs;
-    }
+  DCHECK(parent);
+  if(!parent){
+      return NULL;
+  }
 
-    template<typename Command>
-    FastoObjectCommand* createCommand(FastoObjectIPtr parent, const std::string& input, common::Value::CommandLoggingType ct)
-    {
-        return createCommand<Command>(parent.get(), input, ct);
-    }
+  common::CommandValue* cmd = common::Value::createCommand(input, ct);
+  FastoObjectCommand* fs = new Command(parent, cmd, parent->delemitr());
+  parent->addChildren(fs);
+  return fs;
+}
+
+template<typename Command>
+FastoObjectCommand* createCommand(FastoObjectIPtr parent, const std::string& input,
+                                  common::Value::CommandLoggingType ct) {
+  return createCommand<Command>(parent.get(), input, ct);
+}
+
 }

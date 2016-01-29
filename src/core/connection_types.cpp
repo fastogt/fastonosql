@@ -1,49 +1,64 @@
+/*  Copyright (C) 2014-2016 FastoGT. All right reserved.
+
+    This file is part of FastoNoSQL.
+
+    SiteOnYourDevice is free software: you can redistribute it and/or modify
+    it under the terms of the GNU General Public License as published by
+    the Free Software Foundation, either version 3 of the License, or
+    (at your option) any later version.
+
+    SiteOnYourDevice is distributed in the hope that it will be useful,
+    but WITHOUT ANY WARRANTY; without even the implied warranty of
+    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+    GNU General Public License for more details.
+
+    You should have received a copy of the GNU General Public License
+    along with SiteOnYourDevice.  If not, see <http://www.gnu.org/licenses/>.
+*/
+
 #include "core/connection_types.h"
 
-namespace
-{
-    const std::string connnectionMode[] = { "Latency mode", "Slave mode", "Get RDB mode", "Pipe mode",  "Find big keys mode", "Stat mode", "Scan mode", "Interactive mode" };
-    const std::string serverTypes[] = { "Master", "Slave" };
+namespace {
+  const std::string connnectionMode[] = { "Latency mode", "Slave mode", "Get RDB mode", "Pipe mode",
+                                          "Find big keys mode", "Stat mode", "Scan mode",
+                                          "Interactive mode" };
+  const std::string serverTypes[] = { "Master", "Slave" };
 }
 
-namespace common
-{
-    template<>
-    fastonosql::connectionTypes convertFromString(const std::string& text)
-    {
-        for (uint32_t i = 0; i < SIZEOFMASS(fastonosql::connnectionType); ++i){
-            if (text == fastonosql::connnectionType[i]){
-                return static_cast<fastonosql::connectionTypes>(i);
-            }
-        }
+namespace common {
 
-        return fastonosql::DBUNKNOWN;
-    }
+template<>
+fastonosql::connectionTypes convertFromString(const std::string& text) {
+  for (uint32_t i = 0; i < SIZEOFMASS(fastonosql::connnectionType); ++i){
+      if (text == fastonosql::connnectionType[i]){
+          return static_cast<fastonosql::connectionTypes>(i);
+      }
+  }
 
-    std::string convertToString(fastonosql::connectionTypes t)
-    {
-        return fastonosql::connnectionType[t];
-    }
+  return fastonosql::DBUNKNOWN;
+}
 
-    template<>
-    fastonosql::serverTypes convertFromString(const std::string& text)
-    {
-        for (uint32_t i = 0; i < SIZEOFMASS(serverTypes); ++i){
-            if (text == serverTypes[i]){
-                return static_cast<fastonosql::serverTypes>(i);
-            }
-        }
+std::string convertToString(fastonosql::connectionTypes t) {
+  return fastonosql::connnectionType[t];
+}
 
-        return fastonosql::MASTER;
-    }
+template<>
+fastonosql::serverTypes convertFromString(const std::string& text) {
+  for (uint32_t i = 0; i < SIZEOFMASS(serverTypes); ++i){
+      if (text == serverTypes[i]){
+          return static_cast<fastonosql::serverTypes>(i);
+      }
+  }
 
-    std::string convertToString(fastonosql::serverTypes st)
-    {
-        return serverTypes[st];
-    }
+  return fastonosql::MASTER;
+}
 
-    std::string convertToString(fastonosql::ConnectionMode t)
-    {
-        return connnectionMode[t];
-    }
+std::string convertToString(fastonosql::serverTypes st) {
+  return serverTypes[st];
+}
+
+std::string convertToString(fastonosql::ConnectionMode t) {
+  return connnectionMode[t];
+}
+
 }

@@ -1,31 +1,49 @@
+/*  Copyright (C) 2014-2016 FastoGT. All right reserved.
+
+    This file is part of FastoNoSQL.
+
+    SiteOnYourDevice is free software: you can redistribute it and/or modify
+    it under the terms of the GNU General Public License as published by
+    the Free Software Foundation, either version 3 of the License, or
+    (at your option) any later version.
+
+    SiteOnYourDevice is distributed in the hope that it will be useful,
+    but WITHOUT ANY WARRANTY; without even the implied warranty of
+    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+    GNU General Public License for more details.
+
+    You should have received a copy of the GNU General Public License
+    along with SiteOnYourDevice.  If not, see <http://www.gnu.org/licenses/>.
+*/
+
 #pragma once
 
 #include "core/connection_settings.h"
 
 #include "core/ssdb/ssdb_config.h"
 
-namespace fastonosql
-{
-    class SsdbConnectionSettings
-            : public IConnectionSettingsRemote
-    {
-    public:
-        explicit SsdbConnectionSettings(const std::string& connectionName);
+namespace fastonosql {
 
-        virtual std::string commandLine() const;
-        virtual void setCommandLine(const std::string& line);
+class SsdbConnectionSettings
+  : public IConnectionSettingsRemote {
+public:
+  explicit SsdbConnectionSettings(const std::string& connectionName);
 
-        virtual void setHost(const common::net::hostAndPort& host);
-        virtual common::net::hostAndPort host() const;
+  virtual std::string commandLine() const;
+  virtual void setCommandLine(const std::string& line);
 
-        ssdbConfig info() const;
-        void setInfo(const ssdbConfig &info);
+  virtual void setHost(const common::net::hostAndPort& host);
+  virtual common::net::hostAndPort host() const;
 
-        virtual IConnectionSettings* clone() const;
+  ssdbConfig info() const;
+  void setInfo(const ssdbConfig &info);
 
-    private:
-        virtual std::string toCommandLine() const;
-        virtual void initFromCommandLine(const std::string& val);
-        ssdbConfig info_;
-    };
+  virtual IConnectionSettings* clone() const;
+
+private:
+  virtual std::string toCommandLine() const;
+  virtual void initFromCommandLine(const std::string& val);
+  ssdbConfig info_;
+};
+
 }

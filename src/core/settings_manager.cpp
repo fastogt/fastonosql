@@ -1,3 +1,21 @@
+/*  Copyright (C) 2014-2016 FastoGT. All right reserved.
+
+    This file is part of FastoNoSQL.
+
+    SiteOnYourDevice is free software: you can redistribute it and/or modify
+    it under the terms of the GNU General Public License as published by
+    the Free Software Foundation, either version 3 of the License, or
+    (at your option) any later version.
+
+    SiteOnYourDevice is distributed in the hope that it will be useful,
+    but WITHOUT ANY WARRANTY; without even the implied warranty of
+    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+    GNU General Public License for more details.
+
+    You should have received a copy of the GNU General Public License
+    along with SiteOnYourDevice.  If not, see <http://www.gnu.org/licenses/>.
+*/
+
 #include "core/settings_manager.h"
 
 #include <QSettings>
@@ -25,354 +43,318 @@
 #define AUTOOPENCONSOLE PREFIX"autoopenconsole"
 #define FASTVIEWKEYS PREFIX"fastviewkeys"
 
-namespace
-{
-    const std::string iniPath("~/.config/" PROJECT_NAME "/config.ini");
-    QString fontName()
-    {
+namespace {
+
+const std::string iniPath("~/.config/" PROJECT_NAME "/config.ini");
+QString fontName() {
 #if defined(OS_MACOSX) || defined(OS_FREEBSD)
-        return "Monaco";
+    return "Monaco";
 #elif defined(OS_LINUX) || defined(OS_ANDROID)
-        return "Monospace";
+    return "Monospace";
 #elif defined(OS_WIN)
-        return "Courier";
+    return "Courier";
 #endif
-    }
+}
+
 }
 
 
-namespace fastonosql
-{
-    SettingsManager::SettingsManager()
-        : views_(), curStyle_(), curFontName_(), curLanguage_(), connections_(), syncTabs_(), loggingDir_(),
-          autoCheckUpdate_(), autoCompletion_(), autoOpenConsole_(), fastViewKeys_()
-    {
-       load();
+namespace fastonosql {
+SettingsManager::SettingsManager()
+  : views_(), curStyle_(), curFontName_(), curLanguage_(), connections_(),
+    syncTabs_(), loggingDir_(),
+    autoCheckUpdate_(), autoCompletion_(), autoOpenConsole_(), fastViewKeys_() {
+ load();
+}
+
+
+SettingsManager::~SettingsManager() {
+  save();
+}
+
+QString SettingsManager::settingsDirPath() {
+  std::string dir = common::file_system::get_dir_path(iniPath);
+  return common::convertFromString<QString>(dir);
+}
+
+std::string SettingsManager::settingsFilePath() {
+  return common::file_system::prepare_path(iniPath);
+}
+
+supportedViews SettingsManager::defaultView() const {
+  return views_;
+}
+
+void SettingsManager::setDefaultView(supportedViews view) {
+  views_ = view;
+}
+
+QString SettingsManager::currentStyle() const {
+  return curStyle_;
+}
+
+void SettingsManager::setCurrentStyle(const QString &st) {
+  curStyle_ = st;
+}
+
+QString SettingsManager::currentFontName() const {
+  return curFontName_;
+}
+
+void SettingsManager::setCurrentFontName(const QString& font) {
+  curFontName_ = font;
+}
+
+QString SettingsManager::currentLanguage() const {
+  return curLanguage_;
+}
+
+void SettingsManager::setCurrentLanguage(const QString &lang) {
+  curLanguage_ = lang;
+}
+
+void SettingsManager::addConnection(IConnectionSettingsBaseSPtr connection) {
+  if(connection){
+    ConnectionSettingsContainerType::iterator it = std::find(connections_.begin(),connections_.end(),connection);
+    if (it == connections_.end()) {
+      connections_.push_back(connection);
     }
+  }
+}
 
-
-    SettingsManager::~SettingsManager()
-    {
-        save();
+void SettingsManager::removeConnection(IConnectionSettingsBaseSPtr connection) {
+  if(connection){
+    ConnectionSettingsContainerType::iterator it = std::find(connections_.begin(),connections_.end(),connection);
+    if (it != connections_.end()) {
+      connections_.erase(it);
     }
+  }
+}
 
-    QString SettingsManager::settingsDirPath()
-    {
-        std::string dir = common::file_system::get_dir_path(iniPath);
-        return common::convertFromString<QString>(dir);
+SettingsManager::ConnectionSettingsContainerType SettingsManager::connections() const {
+  return connections_;
+}
+
+void SettingsManager::addCluster(IClusterSettingsBaseSPtr cluster) {
+  if(cluster){
+    ClusterSettingsContainerType::iterator it = std::find(clusters_.begin(),clusters_.end(),cluster);
+    if (it == clusters_.end()) {
+      clusters_.push_back(cluster);
     }
+  }
+}
 
-    std::string SettingsManager::settingsFilePath()
-    {
-        return common::file_system::prepare_path(iniPath);
+void SettingsManager::removeCluster(IClusterSettingsBaseSPtr cluster) {
+  if(cluster){
+    ClusterSettingsContainerType::iterator it = std::find(clusters_.begin(), clusters_.end(), cluster);
+    if (it != clusters_.end()) {
+      clusters_.erase(it);
     }
+  }
+}
 
-    supportedViews SettingsManager::defaultView() const
-    {
-        return views_;
+SettingsManager::ClusterSettingsContainerType SettingsManager::clusters() const {
+  return clusters_;
+}
+
+void SettingsManager::addRConnection(const QString& connection) {
+  if(!connection.isEmpty()){
+    QStringList::iterator it = std::find(recentConnections_.begin(), recentConnections_.end(), connection);
+    if (it == recentConnections_.end()) {
+      recentConnections_.push_front(connection);
     }
+  }
+}
 
-    void SettingsManager::setDefaultView(supportedViews view)
-    {
-        views_ = view;
+void SettingsManager::removeRConnection(const QString& connection) {
+  if(!connection.isEmpty()){
+    QStringList::iterator it = std::find(recentConnections_.begin(), recentConnections_.end(), connection);
+    if (it != recentConnections_.end()) {
+      recentConnections_.erase(it);
     }
+  }
+}
 
-    QString SettingsManager::currentStyle() const
-    {
-        return curStyle_;
-    }
+QStringList SettingsManager::recentConnections() const {
+  return recentConnections_;
+}
 
-    void SettingsManager::setCurrentStyle(const QString &st)
-    {
-        curStyle_ = st;
-    }
+void SettingsManager::clearRConnections() {
+  recentConnections_.clear();
+}
 
-    QString SettingsManager::currentFontName() const
-    {
-        return curFontName_;
-    }
+bool SettingsManager::syncTabs() const {
+  return syncTabs_;
+}
 
-    void SettingsManager::setCurrentFontName(const QString& font)
-    {
-        curFontName_ = font;
-    }
+void SettingsManager::setSyncTabs(bool sync) {
+  syncTabs_ = sync;
+}
 
-    QString SettingsManager::currentLanguage() const
-    {
-        return curLanguage_;
-    }
+QString SettingsManager::loggingDirectory() const {
+  return loggingDir_;
+}
 
-    void SettingsManager::setCurrentLanguage(const QString &lang)
-    {
-        curLanguage_ = lang;
-    }
+void SettingsManager::setLoggingDirectory(const QString &dir) {
+  loggingDir_ = dir;
+}
 
-    void SettingsManager::addConnection(IConnectionSettingsBaseSPtr connection)
-    {
-        if(connection){
-            ConnectionSettingsContainerType::iterator it = std::find(connections_.begin(),connections_.end(),connection);
-            if (it == connections_.end()) {
-                connections_.push_back(connection);
-            }
-        }
-    }
+bool SettingsManager::autoCheckUpdates() const {
+  return autoCheckUpdate_;
+}
 
-    void SettingsManager::removeConnection(IConnectionSettingsBaseSPtr connection)
-    {
-        if(connection){
-            ConnectionSettingsContainerType::iterator it = std::find(connections_.begin(),connections_.end(),connection);
-            if (it != connections_.end()) {
-                connections_.erase(it);
-            }
-        }
-    }
+void SettingsManager::setAutoCheckUpdates(bool isCheck) {
+  autoCheckUpdate_ = isCheck;
+}
 
-    SettingsManager::ConnectionSettingsContainerType SettingsManager::connections() const
-    {
-        return connections_;
-    }
+bool SettingsManager::autoCompletion() const {
+  return autoCompletion_;
+}
 
-    void SettingsManager::addCluster(IClusterSettingsBaseSPtr cluster)
-    {
-        if(cluster){
-            ClusterSettingsContainerType::iterator it = std::find(clusters_.begin(),clusters_.end(),cluster);
-            if (it == clusters_.end()) {
-                clusters_.push_back(cluster);
-            }
-        }
-    }
+void SettingsManager::setAutoCompletion(bool enableAuto) {
+  autoCompletion_ = enableAuto;
+}
 
-    void SettingsManager::removeCluster(IClusterSettingsBaseSPtr cluster)
-    {
-        if(cluster){
-            ClusterSettingsContainerType::iterator it = std::find(clusters_.begin(), clusters_.end(), cluster);
-            if (it != clusters_.end()) {
-                clusters_.erase(it);
-            }
-        }
-    }
+bool SettingsManager::autoOpenConsole() const {
+  return autoOpenConsole_;
+}
 
-    SettingsManager::ClusterSettingsContainerType SettingsManager::clusters() const
-    {
-        return clusters_;
-    }
+void SettingsManager::setAutoOpenConsole(bool enableAuto) {
+  autoOpenConsole_ = enableAuto;
+}
 
-    void SettingsManager::addRConnection(const QString& connection)
-    {
-        if(!connection.isEmpty()){
-            QStringList::iterator it = std::find(recentConnections_.begin(), recentConnections_.end(), connection);
-            if (it == recentConnections_.end()) {
-                recentConnections_.push_front(connection);
-            }
-        }
-    }
+bool SettingsManager::fastViewKeys() const {
+  return fastViewKeys_;
+}
 
-    void SettingsManager::removeRConnection(const QString& connection)
-    {
-        if(!connection.isEmpty()){
-            QStringList::iterator it = std::find(recentConnections_.begin(), recentConnections_.end(), connection);
-            if (it != recentConnections_.end()) {
-                recentConnections_.erase(it);
-            }
-        }
-    }
+void SettingsManager::setFastViewKeys(bool fastView) {
+  fastViewKeys_ = fastView;
+}
 
-    QStringList SettingsManager::recentConnections() const
-    {
-        return recentConnections_;
-    }
+void SettingsManager::reloadFromPath(const std::string& path, bool merge) {
+  if(path.empty()){
+      return;
+  }
 
-    void SettingsManager::clearRConnections()
-    {
-        recentConnections_.clear();
-    }
+  if(!merge){
+      clusters_.clear();
+      connections_.clear();
+      recentConnections_.clear();
+  }
 
-    bool SettingsManager::syncTabs() const
-    {
-        return syncTabs_;
-    }
+  QString inip = common::convertFromString<QString>(common::file_system::prepare_path(path));
+  QSettings settings(inip, QSettings::IniFormat);
+  DCHECK(settings.status() == QSettings::NoError);
 
-    void SettingsManager::setSyncTabs(bool sync)
-    {
-        syncTabs_ = sync;
-    }
+  curStyle_ = settings.value(STYLE, fasto::qt::gui::defStyle).toString();
+  curFontName_ = settings.value(FONT, fontName()).toString();
+  curLanguage_ = settings.value(LANGUAGE, fasto::qt::translations::defLanguage).toString();
 
-    QString SettingsManager::loggingDirectory() const
-    {
-        return loggingDir_;
-    }
+  int view = settings.value(VIEW, fastonosql::Tree).toInt();
+  views_ = static_cast<supportedViews>(view);
 
-    void SettingsManager::setLoggingDirectory(const QString &dir)
-    {
-        loggingDir_ = dir;
-    }
+  QList<QVariant> clusters = settings.value(CLUSTERS, "").toList();
+  for(QList<QVariant>::const_iterator it = clusters.begin(); it != clusters.end(); ++it){
+      QVariant var = *it;
+      QString string = var.toString();
+      std::string encoded = common::convertToString(string);
+      std::string raw = common::utils::base64::decode64(encoded);
 
-    bool SettingsManager::autoCheckUpdates() const
-    {
-        return autoCheckUpdate_;
-    }
+      IClusterSettingsBaseSPtr sett(IClusterSettingsBase::fromString(raw));
+      if(sett){
+         clusters_.push_back(sett);
+      }
+  }
 
-    void SettingsManager::setAutoCheckUpdates(bool isCheck)
-    {
-        autoCheckUpdate_ = isCheck;
-    }
+  QList<QVariant> connections = settings.value(CONNECTIONS, "").toList();
+  for(QList<QVariant>::const_iterator it = connections.begin(); it != connections.end(); ++it){
+      QVariant var = *it;
+      QString string = var.toString();
+      std::string encoded = common::convertToString(string);
+      std::string raw = common::utils::base64::decode64(encoded);
 
-    bool SettingsManager::autoCompletion() const
-    {
-        return autoCompletion_;
-    }
+      IConnectionSettingsBaseSPtr sett(IConnectionSettingsBase::fromString(raw));
+      if(sett){
+         connections_.push_back(sett);
+      }
+  }
 
-    void SettingsManager::setAutoCompletion(bool enableAuto)
-    {
-        autoCompletion_ = enableAuto;
-    }
+  QStringList rconnections = settings.value(RCONNECTIONS, "").toStringList();
+  for(QStringList::const_iterator it = rconnections.begin(); it != rconnections.end(); ++it){
+      QString string = *it;
+      std::string encoded = common::convertToString(string);
+      std::string raw = common::utils::base64::decode64(encoded);
 
-    bool SettingsManager::autoOpenConsole() const
-    {
-        return autoOpenConsole_;
-    }
+      QString qdata = common::convertFromString<QString>(raw);
+      if(!qdata.isEmpty()){
+         recentConnections_.push_back(qdata);
+      }
+  }
 
-    void SettingsManager::setAutoOpenConsole(bool enableAuto)
-    {
-        autoOpenConsole_ = enableAuto;
-    }
+  syncTabs_= settings.value(SYNCTABS, false).toBool();
 
-    bool SettingsManager::fastViewKeys() const
-    {
-        return fastViewKeys_;
-    }
+  loggingDir_ = settings.value(LOGGINGDIR, settingsDirPath()).toString();
+  autoCheckUpdate_ = settings.value(CHECKUPDATES, true).toBool();
+  autoCompletion_ = settings.value(AUTOCOMPLETION, true).toBool();
+  autoOpenConsole_ = settings.value(AUTOOPENCONSOLE, true).toBool();
+  fastViewKeys_ = settings.value(FASTVIEWKEYS, true).toBool();
+}
 
-    void SettingsManager::setFastViewKeys(bool fastView)
-    {
-        fastViewKeys_ = fastView;
-    }
+void SettingsManager::load() {
+  reloadFromPath(iniPath, false);
+}
 
-    void SettingsManager::reloadFromPath(const std::string& path, bool merge)
-    {
-        if(path.empty()){
-            return;
-        }
+void SettingsManager::save() {
+  QSettings settings(common::convertFromString<QString>(common::file_system::prepare_path(iniPath)), QSettings::IniFormat);
+  DCHECK(settings.status() == QSettings::NoError);
 
-        if(!merge){
-            clusters_.clear();
-            connections_.clear();
-            recentConnections_.clear();
-        }
+  settings.setValue(STYLE, curStyle_);
+  settings.setValue(FONT, curFontName_);
+  settings.setValue(LANGUAGE, curLanguage_);
+  settings.setValue(VIEW, views_);
 
-        QString inip = common::convertFromString<QString>(common::file_system::prepare_path(path));
-        QSettings settings(inip, QSettings::IniFormat);
-        DCHECK(settings.status() == QSettings::NoError);
+  QList<QVariant> clusters;
+  for(ClusterSettingsContainerType::const_iterator it = clusters_.begin(); it != clusters_.end(); ++it){
+      IClusterSettingsBaseSPtr conn = *it;
+      if(conn){
+         std::string raw = conn->toString();
+         std::string enc = common::utils::base64::encode64(raw);
+         QString qdata = common::convertFromString<QString>(enc);
+         clusters.push_back(qdata);
+      }
+  }
+  settings.setValue(CLUSTERS, clusters);
 
-        curStyle_ = settings.value(STYLE, fasto::qt::gui::defStyle).toString();
-        curFontName_ = settings.value(FONT, fontName()).toString();
-        curLanguage_ = settings.value(LANGUAGE, fasto::qt::translations::defLanguage).toString();
+  QList<QVariant> connections;
+  for(ConnectionSettingsContainerType::const_iterator it = connections_.begin(); it != connections_.end(); ++it){
+      IConnectionSettingsBaseSPtr conn = *it;
+      if(conn){
+         std::string raw = conn->toString();
+         std::string enc = common::utils::base64::encode64(raw);
+         QString qdata = common::convertFromString<QString>(enc);
+         connections.push_back(qdata);
+      }
+  }
+  settings.setValue(CONNECTIONS, connections);
 
-        int view = settings.value(VIEW, fastonosql::Tree).toInt();
-        views_ = static_cast<supportedViews>(view);
+  QStringList rconnections;
+  for(QStringList::const_iterator it = recentConnections_.begin(); it != recentConnections_.end(); ++it){
+      QString conn = *it;
+      if(!conn.isEmpty()){
+         std::string raw = common::convertToString(conn);
+         std::string enc = common::utils::base64::encode64(raw);
+         QString qdata = common::convertFromString<QString>(enc);
+         rconnections.push_back(qdata);
+      }
+  }
+  settings.setValue(RCONNECTIONS, rconnections);
 
-        QList<QVariant> clusters = settings.value(CLUSTERS, "").toList();
-        for(QList<QVariant>::const_iterator it = clusters.begin(); it != clusters.end(); ++it){
-            QVariant var = *it;
-            QString string = var.toString();
-            std::string encoded = common::convertToString(string);
-            std::string raw = common::utils::base64::decode64(encoded);
+  settings.setValue(SYNCTABS, syncTabs_);
+  settings.setValue(LOGGINGDIR, loggingDir_);
+  settings.setValue(CHECKUPDATES, autoCheckUpdate_);
+  settings.setValue(AUTOCOMPLETION, autoCompletion_);
+  settings.setValue(AUTOOPENCONSOLE, autoOpenConsole_);
+  settings.setValue(FASTVIEWKEYS, fastViewKeys_);
+}
 
-            IClusterSettingsBaseSPtr sett(IClusterSettingsBase::fromString(raw));
-            if(sett){
-               clusters_.push_back(sett);
-            }
-        }
-
-        QList<QVariant> connections = settings.value(CONNECTIONS, "").toList();
-        for(QList<QVariant>::const_iterator it = connections.begin(); it != connections.end(); ++it){
-            QVariant var = *it;
-            QString string = var.toString();
-            std::string encoded = common::convertToString(string);
-            std::string raw = common::utils::base64::decode64(encoded);
-
-            IConnectionSettingsBaseSPtr sett(IConnectionSettingsBase::fromString(raw));
-            if(sett){
-               connections_.push_back(sett);
-            }
-        }
-
-        QStringList rconnections = settings.value(RCONNECTIONS, "").toStringList();
-        for(QStringList::const_iterator it = rconnections.begin(); it != rconnections.end(); ++it){
-            QString string = *it;
-            std::string encoded = common::convertToString(string);
-            std::string raw = common::utils::base64::decode64(encoded);
-
-            QString qdata = common::convertFromString<QString>(raw);
-            if(!qdata.isEmpty()){
-               recentConnections_.push_back(qdata);
-            }
-        }
-
-        syncTabs_= settings.value(SYNCTABS, false).toBool();
-
-        loggingDir_ = settings.value(LOGGINGDIR, settingsDirPath()).toString();
-        autoCheckUpdate_ = settings.value(CHECKUPDATES, true).toBool();
-        autoCompletion_ = settings.value(AUTOCOMPLETION, true).toBool();
-        autoOpenConsole_ = settings.value(AUTOOPENCONSOLE, true).toBool();
-        fastViewKeys_ = settings.value(FASTVIEWKEYS, true).toBool();
-    }
-
-    void SettingsManager::load()
-    {
-        reloadFromPath(iniPath, false);
-    }
-
-    void SettingsManager::save()
-    {
-        QSettings settings(common::convertFromString<QString>(common::file_system::prepare_path(iniPath)), QSettings::IniFormat);
-        DCHECK(settings.status() == QSettings::NoError);
-
-        settings.setValue(STYLE, curStyle_);
-        settings.setValue(FONT, curFontName_);
-        settings.setValue(LANGUAGE, curLanguage_);
-        settings.setValue(VIEW, views_);
-
-        QList<QVariant> clusters;
-        for(ClusterSettingsContainerType::const_iterator it = clusters_.begin(); it != clusters_.end(); ++it){
-            IClusterSettingsBaseSPtr conn = *it;
-            if(conn){
-               std::string raw = conn->toString();
-               std::string enc = common::utils::base64::encode64(raw);
-               QString qdata = common::convertFromString<QString>(enc);
-               clusters.push_back(qdata);
-            }
-        }
-        settings.setValue(CLUSTERS, clusters);
-
-        QList<QVariant> connections;
-        for(ConnectionSettingsContainerType::const_iterator it = connections_.begin(); it != connections_.end(); ++it){
-            IConnectionSettingsBaseSPtr conn = *it;
-            if(conn){
-               std::string raw = conn->toString();
-               std::string enc = common::utils::base64::encode64(raw);
-               QString qdata = common::convertFromString<QString>(enc);
-               connections.push_back(qdata);
-            }
-        }
-        settings.setValue(CONNECTIONS, connections);
-
-        QStringList rconnections;
-        for(QStringList::const_iterator it = recentConnections_.begin(); it != recentConnections_.end(); ++it){
-            QString conn = *it;
-            if(!conn.isEmpty()){
-               std::string raw = common::convertToString(conn);
-               std::string enc = common::utils::base64::encode64(raw);
-               QString qdata = common::convertFromString<QString>(enc);
-               rconnections.push_back(qdata);
-            }
-        }
-        settings.setValue(RCONNECTIONS, rconnections);
-
-        settings.setValue(SYNCTABS, syncTabs_);
-        settings.setValue(LOGGINGDIR, loggingDir_);
-        settings.setValue(CHECKUPDATES, autoCheckUpdate_);
-        settings.setValue(AUTOCOMPLETION, autoCompletion_);
-        settings.setValue(AUTOOPENCONSOLE, autoOpenConsole_);
-        settings.setValue(FASTVIEWKEYS, fastViewKeys_);
-    }
 }
