@@ -45,68 +45,69 @@
 #define MEMCACHED_LIMIT_MAXBYTES_LABEL "limit_maxbytes"
 #define MEMCACHED_THREADS_LABEL "threads"
 
-namespace fastonosql
+namespace fastonosql {
+
+class MemcachedServerInfo
+  : public ServerInfo
 {
-    class MemcachedServerInfo
-            : public ServerInfo
-    {
-    public:
-        struct Common
-                : FieldByIndex
-        {
-            Common();
-            explicit Common(const std::string& common_text);
-            common::Value* valueByIndex(unsigned char index) const;
+public:
+  struct Common
+          : FieldByIndex
+  {
+      Common();
+      explicit Common(const std::string& common_text);
+      common::Value* valueByIndex(unsigned char index) const;
 
-            uint32_t pid_;
-            uint32_t uptime_;
-            uint32_t time_;
-            std::string version_;
-            uint32_t pointer_size_;
-            uint32_t rusage_user_;
-            uint32_t rusage_system_;
-            uint32_t curr_items_;
-            uint32_t total_items_;
-            uint32_t bytes_;
-            uint32_t curr_connections_;
-            uint32_t total_connections_;
-            uint32_t connection_structures_;
-            uint32_t cmd_get_;
-            uint32_t cmd_set_;
-            uint32_t get_hits_;
-            uint32_t get_misses_;
-            uint32_t evictions_;
-            uint32_t bytes_read_;
-            uint32_t bytes_written_;
-            uint32_t limit_maxbytes_;
-            uint32_t threads_;
-        } common_;
+      uint32_t pid_;
+      uint32_t uptime_;
+      uint32_t time_;
+      std::string version_;
+      uint32_t pointer_size_;
+      uint32_t rusage_user_;
+      uint32_t rusage_system_;
+      uint32_t curr_items_;
+      uint32_t total_items_;
+      uint32_t bytes_;
+      uint32_t curr_connections_;
+      uint32_t total_connections_;
+      uint32_t connection_structures_;
+      uint32_t cmd_get_;
+      uint32_t cmd_set_;
+      uint32_t get_hits_;
+      uint32_t get_misses_;
+      uint32_t evictions_;
+      uint32_t bytes_read_;
+      uint32_t bytes_written_;
+      uint32_t limit_maxbytes_;
+      uint32_t threads_;
+  } common_;
 
-        MemcachedServerInfo();
-        explicit MemcachedServerInfo(const Common& common);
-        virtual common::Value* valueByIndexes(unsigned char property, unsigned char field) const;
-        virtual std::string toString() const;
-        virtual uint32_t version() const;
-    };
+  MemcachedServerInfo();
+  explicit MemcachedServerInfo(const Common& common);
+  virtual common::Value* valueByIndexes(unsigned char property, unsigned char field) const;
+  virtual std::string toString() const;
+  virtual uint32_t version() const;
+};
 
-    std::ostream& operator << (std::ostream& out, const MemcachedServerInfo& value);
+std::ostream& operator << (std::ostream& out, const MemcachedServerInfo& value);
 
-    MemcachedServerInfo* makeMemcachedServerInfo(const std::string &content);
-    MemcachedServerInfo* makeMemcachedServerInfo(FastoObject *root);
+MemcachedServerInfo* makeMemcachedServerInfo(const std::string &content);
+MemcachedServerInfo* makeMemcachedServerInfo(FastoObject *root);
 
-    class MemcachedDataBaseInfo
-            : public DataBaseInfo
-    {
-    public:
-        MemcachedDataBaseInfo(const std::string& name, bool isDefault, size_t size, const keys_cont_type& keys = keys_cont_type());
-        virtual DataBaseInfo* clone() const;
-    };
+class MemcachedDataBaseInfo
+  : public DataBaseInfo
+{
+public:
+  MemcachedDataBaseInfo(const std::string& name, bool isDefault, size_t size, const keys_cont_type& keys = keys_cont_type());
+  virtual DataBaseInfo* clone() const;
+};
 
-    class MemcachedCommand
-            : public FastoObjectCommand
-    {
-    public:
-        MemcachedCommand(FastoObject* parent, common::CommandValue* cmd, const std::string &delemitr);
-        virtual bool isReadOnly() const;
-    };
+class MemcachedCommand
+  : public FastoObjectCommand
+{
+public:
+  MemcachedCommand(FastoObject* parent, common::CommandValue* cmd, const std::string &delemitr);
+  virtual bool isReadOnly() const;
+};
+
 }

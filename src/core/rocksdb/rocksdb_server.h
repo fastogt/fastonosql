@@ -20,17 +20,18 @@
 
 #include "core/iserver.h"
 
-namespace fastonosql
-{
-    class RocksdbServer
-            : public IServer
-    {
-        friend class ServersManager;
-        Q_OBJECT
-    public:
+namespace fastonosql {
 
-    private:
-        virtual IDatabaseSPtr createDatabase(DataBaseInfoSPtr info);
-        RocksdbServer(const IDriverSPtr& drv, bool isSuperServer);
-    };
+class RocksdbServer
+  : public IServer
+{
+  friend class ServersManager;
+  Q_OBJECT
+public:
+
+private:
+  virtual IDatabaseSPtr createDatabase(DataBaseInfoSPtr info);
+  RocksdbServer(const IDriverSPtr& drv, bool isSuperServer);
+};
+
 }

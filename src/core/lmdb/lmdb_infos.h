@@ -28,52 +28,50 @@
 #define LMDB_READ_MB_LABEL "read_mb"
 #define LMDB_WRITE_MB_LABEL "write_mb"
 
-namespace fastonosql
-{
-    class LmdbServerInfo
-            : public ServerInfo
-    {
-    public:
-        //Compactions\nLevel  Files Size(MB) Time(sec) Read(MB) Write(MB)\n
-        struct Stats
-                : FieldByIndex
-        {
-            Stats();
-            explicit Stats(const std::string& common_text);
-            common::Value* valueByIndex(unsigned char index) const;
+namespace fastonosql {
 
-            uint32_t compactions_level_;
-            uint32_t file_size_mb_;
-            uint32_t time_sec_;
-            uint32_t read_mb_;
-            uint32_t write_mb_;
-        } stats_;
+class LmdbServerInfo
+      : public ServerInfo {
+public:
+  //Compactions\nLevel  Files Size(MB) Time(sec) Read(MB) Write(MB)\n
+  struct Stats
+          : FieldByIndex
+  {
+      Stats();
+      explicit Stats(const std::string& common_text);
+      common::Value* valueByIndex(unsigned char index) const;
 
-        LmdbServerInfo();
-        explicit LmdbServerInfo(const Stats& stats);
-        virtual common::Value* valueByIndexes(unsigned char property, unsigned char field) const;
-        virtual std::string toString() const;
-        virtual uint32_t version() const;
-    };
+      uint32_t compactions_level_;
+      uint32_t file_size_mb_;
+      uint32_t time_sec_;
+      uint32_t read_mb_;
+      uint32_t write_mb_;
+  } stats_;
 
-    std::ostream& operator << (std::ostream& out, const LmdbServerInfo& value);
+  LmdbServerInfo();
+  explicit LmdbServerInfo(const Stats& stats);
+  virtual common::Value* valueByIndexes(unsigned char property, unsigned char field) const;
+  virtual std::string toString() const;
+  virtual uint32_t version() const;
+};
 
-    LmdbServerInfo* makeLmdbServerInfo(const std::string &content);
-    LmdbServerInfo* makeLmdbServerInfo(FastoObject *root);
+std::ostream& operator << (std::ostream& out, const LmdbServerInfo& value);
 
-    class LmdbDataBaseInfo
-            : public DataBaseInfo
-    {
-    public:
-        LmdbDataBaseInfo(const std::string& name, bool isDefault, size_t size, const keys_cont_type& keys = keys_cont_type());
-        virtual DataBaseInfo* clone() const;
-    };
+LmdbServerInfo* makeLmdbServerInfo(const std::string &content);
+LmdbServerInfo* makeLmdbServerInfo(FastoObject *root);
 
-    class LmdbCommand
-            : public FastoObjectCommand
-    {
-    public:
-        LmdbCommand(FastoObject* parent, common::CommandValue* cmd, const std::string &delemitr);
-        virtual bool isReadOnly() const;
-    };
+class LmdbDataBaseInfo
+      : public DataBaseInfo {
+public:
+  LmdbDataBaseInfo(const std::string& name, bool isDefault, size_t size, const keys_cont_type& keys = keys_cont_type());
+  virtual DataBaseInfo* clone() const;
+};
+
+class LmdbCommand
+      : public FastoObjectCommand {
+public:
+  LmdbCommand(FastoObject* parent, common::CommandValue* cmd, const std::string &delemitr);
+  virtual bool isReadOnly() const;
+};
+
 }

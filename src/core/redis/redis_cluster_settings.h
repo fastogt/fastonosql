@@ -22,13 +22,14 @@
 
 #include "core/redis/redis_config.h"
 
-namespace fastonosql
+namespace fastonosql {
+
+class RedisClusterSettings
+  : public IClusterSettingsBase
 {
-    class RedisClusterSettings
-            : public IClusterSettingsBase
-    {
-    public:
-        explicit RedisClusterSettings(const std::string& connectionName);
-        virtual IConnectionSettings* clone() const;
-    };
+public:
+  explicit RedisClusterSettings(const std::string& connectionName);
+  virtual IConnectionSettings* clone() const;
+};
+
 }

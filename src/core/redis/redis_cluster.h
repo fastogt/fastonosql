@@ -20,16 +20,17 @@
 
 #include "core/icluster.h"
 
-namespace fastonosql
-{
-    class RedisCluster
-            : public ICluster
-    {
-        friend class ServersManager;
-        Q_OBJECT
-    public:
+namespace fastonosql {
 
-    private:
-        explicit RedisCluster(const std::string& name);
-    };
+class RedisCluster
+  : public ICluster
+{
+  friend class ServersManager;
+  Q_OBJECT
+public:
+
+private:
+  explicit RedisCluster(const std::string& name);
+};
+
 }

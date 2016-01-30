@@ -20,14 +20,15 @@
 
 #include "core/iserver.h"
 
-namespace fastonosql
+namespace fastonosql {
+
+RedisDatabase::RedisDatabase(IServerSPtr server, DataBaseInfoSPtr info)
+  : IDatabase(server, info)
 {
-    RedisDatabase::RedisDatabase(IServerSPtr server, DataBaseInfoSPtr info)
-        : IDatabase(server, info)
-    {
-        DCHECK(server);
-        DCHECK(info);
-        DCHECK(server->type() == REDIS);
-        DCHECK(info->type() == REDIS);
-    }
+  DCHECK(server);
+  DCHECK(info);
+  DCHECK(server->type() == REDIS);
+  DCHECK(info->type() == REDIS);
+}
+
 }

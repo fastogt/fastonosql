@@ -20,13 +20,14 @@
 
 #include "core/idatabase.h"
 
-namespace fastonosql
+namespace fastonosql {
+
+class RocksdbDatabase
+  : public IDatabase
 {
-    class RocksdbDatabase
-            : public IDatabase
-    {
-        friend class RocksdbServer;
-    private:
-        RocksdbDatabase(IServerSPtr server, DataBaseInfoSPtr info);
-    };
+  friend class RocksdbServer;
+private:
+  RocksdbDatabase(IServerSPtr server, DataBaseInfoSPtr info);
+};
+
 }

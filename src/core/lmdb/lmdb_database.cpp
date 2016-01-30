@@ -20,14 +20,15 @@
 
 #include "core/iserver.h"
 
-namespace fastonosql
+namespace fastonosql {
+
+LmdbDatabase::LmdbDatabase(IServerSPtr server, DataBaseInfoSPtr info)
+  : IDatabase(server, info)
 {
-    LmdbDatabase::LmdbDatabase(IServerSPtr server, DataBaseInfoSPtr info)
-        : IDatabase(server, info)
-    {
-        DCHECK(server);
-        DCHECK(info);
-        DCHECK(server->type() == LMDB);
-        DCHECK(info->type() == LMDB);
-    }
+  DCHECK(server);
+  DCHECK(info);
+  DCHECK(server->type() == LMDB);
+  DCHECK(info->type() == LMDB);
+}
+
 }

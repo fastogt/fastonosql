@@ -20,13 +20,14 @@
 
 #include "core/idatabase.h"
 
-namespace fastonosql
+namespace fastonosql {
+
+class MemcachedDatabase
+  : public IDatabase
 {
-    class MemcachedDatabase
-            : public IDatabase
-    {
-        friend class MemcachedServer;
-    private:
-        MemcachedDatabase(IServerSPtr server, DataBaseInfoSPtr info);
-    };
+  friend class MemcachedServer;
+private:
+  MemcachedDatabase(IServerSPtr server, DataBaseInfoSPtr info);
+};
+
 }

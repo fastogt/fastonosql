@@ -20,13 +20,14 @@
 
 #include "core/idatabase.h"
 
-namespace fastonosql
+namespace fastonosql {
+
+class LeveldbDatabase
+  : public IDatabase
 {
-    class LeveldbDatabase
-            : public IDatabase
-    {
-        friend class LeveldbServer;
-    private:
-        LeveldbDatabase(IServerSPtr server, DataBaseInfoSPtr info);
-    };
+  friend class LeveldbServer;
+private:
+  LeveldbDatabase(IServerSPtr server, DataBaseInfoSPtr info);
+};
+
 }

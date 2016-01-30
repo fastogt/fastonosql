@@ -114,192 +114,196 @@
 #define REDIS_USED_CPU_SYS_CHILDREN_LABEL "used_cpu_sys_children"
 #define REDIS_USED_CPU_USER_CHILDREN_LABEL "used_cpu_user_children"
 
-namespace fastonosql
+namespace fastonosql {
+class RedisDiscoveryInfo
+      : public ServerDiscoveryInfo
 {
-    class RedisDiscoveryInfo
-            : public ServerDiscoveryInfo
-    {
-    public:
-        RedisDiscoveryInfo(serverTypes type, bool self);
+public:
+  RedisDiscoveryInfo(serverTypes type, bool self);
 
-        std::string hash() const;
-        void setHash(const std::string& hash);
+  std::string hash() const;
+  void setHash(const std::string& hash);
 
-    private:
-        std::string hash_;
-    };
+private:
+  std::string hash_;
+};
 
-    struct RedisServerInfo
-            : public ServerInfo
-    {
-        struct Server
-                : FieldByIndex
-        {
-            Server();
-            explicit Server(const std::string& server_text);
-            common::Value* valueByIndex(unsigned char index) const;
+struct RedisServerInfo
+      : public ServerInfo
+{
+  struct Server
+          : FieldByIndex
+  {
+      Server();
+      explicit Server(const std::string& server_text);
+      common::Value* valueByIndex(unsigned char index) const;
 
-            std::string redis_version_;
-            std::string redis_git_sha1_;
-            std::string redis_git_dirty_;
-            std::string redis_build_id_;//
-            std::string redis_mode_;
-            std::string os_;
-            uint32_t arch_bits_;
-            std::string multiplexing_api_;
-            std::string gcc_version_;
-            uint32_t process_id_;
-            std::string run_id_;
-            uint32_t tcp_port_;
-            uint32_t uptime_in_seconds_;
-            uint32_t uptime_in_days_;
-            uint32_t hz_; //
-            uint32_t lru_clock_;
-        } server_;
+      std::string redis_version_;
+      std::string redis_git_sha1_;
+      std::string redis_git_dirty_;
+      std::string redis_build_id_;//
+      std::string redis_mode_;
+      std::string os_;
+      uint32_t arch_bits_;
+      std::string multiplexing_api_;
+      std::string gcc_version_;
+      uint32_t process_id_;
+      std::string run_id_;
+      uint32_t tcp_port_;
+      uint32_t uptime_in_seconds_;
+      uint32_t uptime_in_days_;
+      uint32_t hz_; //
+      uint32_t lru_clock_;
+  } server_;
 
-        struct Clients
-                : FieldByIndex
-        {
-            Clients();
-            explicit Clients(const std::string& client_text);
-            common::Value* valueByIndex(unsigned char index) const;
+  struct Clients
+          : FieldByIndex
+  {
+      Clients();
+      explicit Clients(const std::string& client_text);
+      common::Value* valueByIndex(unsigned char index) const;
 
-            uint32_t connected_clients_;
-            uint32_t client_longest_output_list_;
-            uint32_t client_biggest_input_buf_;
-            uint32_t blocked_clients_;
-        } clients_;
+      uint32_t connected_clients_;
+      uint32_t client_longest_output_list_;
+      uint32_t client_biggest_input_buf_;
+      uint32_t blocked_clients_;
+  } clients_;
 
-        struct Memory
-                : FieldByIndex
-        {
-            Memory();
-            explicit Memory(const std::string& memory_text);
-            common::Value* valueByIndex(unsigned char index) const;
+  struct Memory
+          : FieldByIndex
+  {
+      Memory();
+      explicit Memory(const std::string& memory_text);
+      common::Value* valueByIndex(unsigned char index) const;
 
-            uint32_t used_memory_;
-            std::string used_memory_human_;
-            uint32_t used_memory_rss_;
-            uint32_t used_memory_peak_;
-            std::string used_memory_peak_human_;
-            uint32_t used_memory_lua_;
-            float mem_fragmentation_ratio_;
-            std::string mem_allocator_;
-        } memory_;
+      uint32_t used_memory_;
+      std::string used_memory_human_;
+      uint32_t used_memory_rss_;
+      uint32_t used_memory_peak_;
+      std::string used_memory_peak_human_;
+      uint32_t used_memory_lua_;
+      float mem_fragmentation_ratio_;
+      std::string mem_allocator_;
+  } memory_;
 
-        struct Persistence
-                : FieldByIndex
-        {
-            Persistence();
-            explicit Persistence(const std::string& persistence_text);
-            common::Value* valueByIndex(unsigned char index) const;
+  struct Persistence
+          : FieldByIndex
+  {
+      Persistence();
+      explicit Persistence(const std::string& persistence_text);
+      common::Value* valueByIndex(unsigned char index) const;
 
-            uint32_t loading_;
-            uint32_t rdb_changes_since_last_save_;
-            uint32_t rdb_bgsave_in_progress_;
-            uint32_t rdb_last_save_time_;
-            std::string rdb_last_bgsave_status_;
-            int rdb_last_bgsave_time_sec_;
-            int rdb_current_bgsave_time_sec_;
-            uint32_t aof_enabled_;
-            uint32_t aof_rewrite_in_progress_;
-            uint32_t aof_rewrite_scheduled_;
-            int aof_last_rewrite_time_sec_;
-            int aof_current_rewrite_time_sec_;
-            std::string aof_last_bgrewrite_status_;
-            std::string aof_last_write_status_;//
-        } persistence_;
+      uint32_t loading_;
+      uint32_t rdb_changes_since_last_save_;
+      uint32_t rdb_bgsave_in_progress_;
+      uint32_t rdb_last_save_time_;
+      std::string rdb_last_bgsave_status_;
+      int rdb_last_bgsave_time_sec_;
+      int rdb_current_bgsave_time_sec_;
+      uint32_t aof_enabled_;
+      uint32_t aof_rewrite_in_progress_;
+      uint32_t aof_rewrite_scheduled_;
+      int aof_last_rewrite_time_sec_;
+      int aof_current_rewrite_time_sec_;
+      std::string aof_last_bgrewrite_status_;
+      std::string aof_last_write_status_;//
+  } persistence_;
 
-        struct Stats
-                : FieldByIndex
-        {
-            Stats();
-            explicit Stats(const std::string& stats_text);
-            common::Value* valueByIndex(unsigned char index) const;
+  struct Stats
+          : FieldByIndex
+  {
+      Stats();
+      explicit Stats(const std::string& stats_text);
+      common::Value* valueByIndex(unsigned char index) const;
 
-            uint32_t total_connections_received_;
-            uint32_t total_commands_processed_;
-            uint32_t instantaneous_ops_per_sec_;
-            uint32_t rejected_connections_;
-            uint32_t sync_full_;//
-            uint32_t sync_partial_ok_;//
-            uint32_t sync_partial_err_;//
-            uint32_t expired_keys_;
-            uint32_t evicted_keys_;
-            uint32_t keyspace_hits_;
-            uint32_t keyspace_misses_;
-            uint32_t pubsub_channels_;
-            uint32_t pubsub_patterns_;
-            uint32_t latest_fork_usec_;
-        } stats_;
+      uint32_t total_connections_received_;
+      uint32_t total_commands_processed_;
+      uint32_t instantaneous_ops_per_sec_;
+      uint32_t rejected_connections_;
+      uint32_t sync_full_;//
+      uint32_t sync_partial_ok_;//
+      uint32_t sync_partial_err_;//
+      uint32_t expired_keys_;
+      uint32_t evicted_keys_;
+      uint32_t keyspace_hits_;
+      uint32_t keyspace_misses_;
+      uint32_t pubsub_channels_;
+      uint32_t pubsub_patterns_;
+      uint32_t latest_fork_usec_;
+  } stats_;
 
-        struct Replication
-                : FieldByIndex
-        {
-            Replication();
-            explicit Replication(const std::string& replication_text);
-            common::Value* valueByIndex(unsigned char index) const;
+  struct Replication
+          : FieldByIndex
+  {
+      Replication();
+      explicit Replication(const std::string& replication_text);
+      common::Value* valueByIndex(unsigned char index) const;
 
-            std::string role_;
-            uint32_t connected_slaves_;
-            uint32_t master_repl_offset_; //
-            uint32_t backlog_active_; //
-            uint32_t backlog_size_; //
-            uint32_t backlog_first_byte_offset_; //
-            uint32_t backlog_histen_; //
-        } replication_;
+      std::string role_;
+      uint32_t connected_slaves_;
+      uint32_t master_repl_offset_; //
+      uint32_t backlog_active_; //
+      uint32_t backlog_size_; //
+      uint32_t backlog_first_byte_offset_; //
+      uint32_t backlog_histen_; //
+  } replication_;
 
-        struct Cpu
-                : FieldByIndex
-        {
-            Cpu();
-            explicit Cpu(const std::string& cpu_text);
-            common::Value* valueByIndex(unsigned char index) const;
+  struct Cpu
+          : FieldByIndex
+  {
+      Cpu();
+      explicit Cpu(const std::string& cpu_text);
+      common::Value* valueByIndex(unsigned char index) const;
 
-            float used_cpu_sys_;
-            float used_cpu_user_;
-            float used_cpu_sys_children_;
-            float used_cpu_user_children_;
-        } cpu_;
+      float used_cpu_sys_;
+      float used_cpu_user_;
+      float used_cpu_sys_children_;
+      float used_cpu_user_children_;
+  } cpu_;
 
-        struct Keyspace
-                : FieldByIndex
-        {
-            common::Value* valueByIndex(unsigned char index) const;
-        } keySp_;
+  struct Keyspace
+          : FieldByIndex
+  {
+      common::Value* valueByIndex(unsigned char index) const;
+  } keySp_;
 
-        virtual common::Value* valueByIndexes(unsigned char property, unsigned char field) const;
+  virtual common::Value* valueByIndexes(unsigned char property, unsigned char field) const;
 
-        RedisServerInfo();
-        RedisServerInfo(const Server &serv, const Clients &clients, const Memory &memory,
-                   const Persistence &pers, const Stats &stats, const Replication &repl, const Cpu &cpu, const Keyspace &key);
-        virtual std::string toString() const;
-        virtual uint32_t version() const;
-    };
+  RedisServerInfo();
+  RedisServerInfo(const Server &serv, const Clients &clients, const Memory &memory,
+             const Persistence &pers, const Stats &stats, const Replication &repl,
+                  const Cpu &cpu, const Keyspace &key);
+  virtual std::string toString() const;
+  virtual uint32_t version() const;
+};
 
-    std::ostream& operator<<(std::ostream& out, const RedisServerInfo& value);
+std::ostream& operator<<(std::ostream& out, const RedisServerInfo& value);
 
-    RedisServerInfo* makeRedisServerInfo(const std::string& content);
-    RedisServerInfo* makeRedisServerInfo(FastoObject* root);
+RedisServerInfo* makeRedisServerInfo(const std::string& content);
+RedisServerInfo* makeRedisServerInfo(FastoObject* root);
 
-    ServerDiscoveryInfo* makeOwnRedisDiscoveryInfo(const std::string& text);
-    ServerDiscoveryInfo* makeOwnRedisDiscoveryInfo(FastoObject* root);
-    common::Error makeAllDiscoveryInfo(const common::net::hostAndPort& parentHost, const std::string& text, std::vector<ServerDiscoveryInfoSPtr>& infos);
+ServerDiscoveryInfo* makeOwnRedisDiscoveryInfo(const std::string& text);
+ServerDiscoveryInfo* makeOwnRedisDiscoveryInfo(FastoObject* root);
+common::Error makeAllDiscoveryInfo(const common::net::hostAndPort& parentHost,
+                                   const std::string& text,
+                                   std::vector<ServerDiscoveryInfoSPtr>& infos);
 
-    class RedisDataBaseInfo
-            : public DataBaseInfo
-    {
-    public:
-        RedisDataBaseInfo(const std::string& name, bool isDefault, size_t size, const keys_cont_type& keys = keys_cont_type());
+class RedisDataBaseInfo
+      : public DataBaseInfo
+{
+public:
+  RedisDataBaseInfo(const std::string& name, bool isDefault, size_t size,
+                    const keys_cont_type& keys = keys_cont_type());
 
-        virtual DataBaseInfo* clone() const;
-    };
+  virtual DataBaseInfo* clone() const;
+};
 
-    class RedisCommand
-            : public FastoObjectCommand
-    {
-    public:
-        RedisCommand(FastoObject* parent, common::CommandValue* cmd, const std::string &delemitr);
-        virtual bool isReadOnly() const;
-    };
+class RedisCommand
+      : public FastoObjectCommand
+{
+public:
+  RedisCommand(FastoObject* parent, common::CommandValue* cmd, const std::string &delemitr);
+  virtual bool isReadOnly() const;
+};
+
 }

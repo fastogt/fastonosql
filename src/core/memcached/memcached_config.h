@@ -22,19 +22,20 @@
 
 #include "core/connection_confg.h"
 
-namespace fastonosql
-{
-    struct memcachedConfig
-            : public RemoteConfig
-    {
-        memcachedConfig();
+namespace fastonosql {
 
-        std::string user_;
-        std::string password_;
-    };
+struct memcachedConfig
+  : public RemoteConfig
+{
+  memcachedConfig();
+
+  std::string user_;
+  std::string password_;
+};
+
 }
 
 namespace common
 {
-    std::string convertToString(const fastonosql::memcachedConfig &conf);
+  std::string convertToString(const fastonosql::memcachedConfig &conf);
 }
