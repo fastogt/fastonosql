@@ -93,13 +93,13 @@ QSize FastoHexEdit::fullSize() const {
 
   const int wid = xPosEnd - xPosStart;
   const int widchars = wid - TextMarginXY * 2;
-  const int xPosAscii = widchars/4 * 3; //line pos
+  const int xPosAscii = widchars/4 * 3;  // line pos
 
   int acharInLine = asciiCharInLine(widchars);
 
   int width = xPosAscii + (acharInLine * charW);
   int height = data_.size() / acharInLine;
-  if(data_.size() % acharInLine) {
+  if (data_.size() % acharInLine) {
     height++;
   }
 
@@ -135,13 +135,13 @@ void FastoHexEdit::paintEvent(QPaintEvent *event) {
       return;
     }
 
-    const int xPosAscii = widchars/4 * 3; //line pos
+    const int xPosAscii = widchars/4 * 3;  // line pos
     const int xPosAsciiStart = xPosAscii + TextMarginXY;
 
     int indexCount = data_.size() / acharInLine;
     if (lastLineIdx > indexCount) {
       lastLineIdx = indexCount;
-      if(data_.size() % acharInLine){
+      if (data_.size() % acharInLine) {
         lastLineIdx++;
       }
     }
@@ -168,7 +168,7 @@ void FastoHexEdit::paintEvent(QPaintEvent *event) {
         QRect hexrect(xPos, yPos, 3 * charW, charH);
         painter.drawText(hexrect, Qt::AlignLeft, val);
         char ch = part[i];
-        if ((ch < 0x20) || (ch > 0x7e)){
+        if ((ch < 0x20) || (ch > 0x7e)) {
           part[i] = '.';
         }
       }
@@ -231,7 +231,7 @@ int FastoHexEdit::positionAtPoint(const QPoint &point) const {
 
   const int wid = xPosEnd - xPosStart;
   const int widchars = wid - TextMarginXY * 2;
-  const int xPosAscii = widchars/4 * 3; //line pos
+  const int xPosAscii = widchars/4 * 3;  // line pos
 
   int acharInLine = asciiCharInLine(widchars);
   if (acharInLine < 0) {
@@ -243,7 +243,7 @@ int FastoHexEdit::positionAtPoint(const QPoint &point) const {
     int div = posx / 3;
     int mod = posx % 3;
 
-    int pos = 0; //symbol pos in data;
+    int pos = 0;  // symbol pos in data;
     if (mod == 0) {
       pos = div * 2;
     } else {
@@ -259,4 +259,4 @@ int FastoHexEdit::positionAtPoint(const QPoint &point) const {
   return -1;
 }
 
-}
+}  // namespace fastonosql

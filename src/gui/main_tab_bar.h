@@ -21,9 +21,10 @@
 #include <QTabBar>
 
 namespace fastonosql {
+
 class MainTabBar
-        : public QTabBar {
- Q_OBJECT
+  : public QTabBar {
+  Q_OBJECT
  public:
   explicit MainTabBar(QWidget* parent = 0);
 
@@ -53,4 +54,5 @@ class MainTabBar
   QAction* closeShellAction_;
   QAction* closeOtherShellsAction_;
 };
-}
+
+}  // namespace fastonosql

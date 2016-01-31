@@ -18,6 +18,9 @@
 
 #include "shell/shell_widget.h"
 
+#include <string>
+#include <vector>
+
 #include <QProgressBar>
 #include <QSplitter>
 #include <QAction>
@@ -28,9 +31,10 @@
 #include <QComboBox>
 #include <QLabel>
 
-#include "fasto/qt/logger.h"
 #include "common/qt/convert_string.h"
 #include "common/sprintf.h"
+
+#include "fasto/qt/logger.h"
 #include "fasto/qt/gui/icon_label.h"
 #include "fasto/qt/utils_qt.h"
 
@@ -43,8 +47,6 @@
 #include "gui/gui_factory.h"
 
 #include "translations/global.h"
-
-using namespace fastonosql::translations;
 
 namespace {
   const QSize iconSize = QSize(24, 24);
@@ -98,36 +100,40 @@ BaseShellWidget::BaseShellWidget(IServerSPtr server, const QString& filePath, QW
   QToolBar *savebar = new QToolBar;
   savebar->setStyleSheet("QToolBar { border: 0px; }");
 
-  loadAction_ = new QAction(GuiFactory::instance().loadIcon(), trLoad, savebar);
+  loadAction_ = new QAction(GuiFactory::instance().loadIcon(), translations::trLoad, savebar);
   typedef void (BaseShellWidget::*lf)();
   VERIFY(connect(loadAction_, &QAction::triggered,
                  this, static_cast<lf>(&BaseShellWidget::loadFromFile)));
   savebar->addAction(loadAction_);
 
-  saveAction_ = new QAction(GuiFactory::instance().saveIcon(), trSave, savebar);
+  saveAction_ = new QAction(GuiFactory::instance().saveIcon(), translations::trSave, savebar);
   VERIFY(connect(saveAction_, &QAction::triggered,
                  this, &BaseShellWidget::saveToFile));
   savebar->addAction(saveAction_);
 
-  saveAsAction_ = new QAction(GuiFactory::instance().saveAsIcon(), trSaveAs, savebar);
+  saveAsAction_ = new QAction(GuiFactory::instance().saveAsIcon(), translations::trSaveAs, savebar);
   VERIFY(connect(saveAsAction_, &QAction::triggered, this, &BaseShellWidget::saveToFileAs));
   savebar->addAction(saveAsAction_);
 
-  connectAction_ = new QAction(GuiFactory::instance().connectIcon(), trConnect, savebar);
+  connectAction_ = new QAction(GuiFactory::instance().connectIcon(),
+                               translations::trConnect, savebar);
   VERIFY(connect(connectAction_, &QAction::triggered, this, &BaseShellWidget::connectToServer));
   savebar->addAction(connectAction_);
 
-  disConnectAction_ = new QAction(GuiFactory::instance().disConnectIcon(), trDisconnect, savebar);
+  disConnectAction_ = new QAction(GuiFactory::instance().disConnectIcon(),
+                                  translations::trDisconnect, savebar);
   VERIFY(connect(disConnectAction_, &QAction::triggered,
                  this, &BaseShellWidget::disconnectFromServer));
   savebar->addAction(disConnectAction_);
 
-  executeAction_ = new QAction(GuiFactory::instance().executeIcon(), trExecute, savebar);
+  executeAction_ = new QAction(GuiFactory::instance().executeIcon(),
+                               translations::trExecute, savebar);
   executeAction_->setShortcut(executeKey);
   VERIFY(connect(executeAction_, &QAction::triggered, this, &BaseShellWidget::execute));
   savebar->addAction(executeAction_);
 
-  QAction *stopAction = new QAction(GuiFactory::instance().stopIcon(), trStop, savebar);
+  QAction *stopAction = new QAction(GuiFactory::instance().stopIcon(),
+                                    translations::trStop, savebar);
   VERIFY(connect(stopAction, &QAction::triggered, this, &BaseShellWidget::stop));
   savebar->addAction(stopAction);
 
@@ -135,7 +141,8 @@ BaseShellWidget::BaseShellWidget(IServerSPtr server, const QString& filePath, QW
   connectionMode_ = new fasto::qt::gui::IconLabel(GuiFactory::instance().modeIcon(mode),
                                                   common::convertFromString<QString>(common::convertToString(mode)), iconSize);
 
-  dbName_ = new fasto::qt::gui::IconLabel(GuiFactory::instance().databaseIcon(), "Calculate...", iconSize);
+  dbName_ = new fasto::qt::gui::IconLabel(GuiFactory::instance().databaseIcon(),
+                                          "Calculate...", iconSize);
 
   hlayout->addWidget(savebar);
 
@@ -170,7 +177,7 @@ BaseShellWidget::BaseShellWidget(IServerSPtr server, const QString& filePath, QW
                  this, &BaseShellWidget::changeVersionApi));
 
   std::vector<uint32_t> versions = input_->supportedVersions();
-  for(int i = 0; i < versions.size(); ++i){
+  for (size_t i = 0; i < versions.size(); ++i) {
     uint32_t cur = versions[i];
     std::string curVers = convertVersionNumberToReadableString(cur);
     commandsVersionApi_->addItem(GuiFactory::instance().unknownIcon(),
@@ -280,7 +287,8 @@ void BaseShellWidget::loadFromFile() {
 
 bool BaseShellWidget::loadFromFile(const QString& path) {
   bool res = false;
-  QString filepath = QFileDialog::getOpenFileName(this, path, QString(), trfilterForScripts);
+  QString filepath = QFileDialog::getOpenFileName(this, path, QString(),
+                                                  translations::trfilterForScripts);
   if (!filepath.isEmpty()) {
     QString out;
     if (common::utils_qt::loadFromFileText(filepath, out, this)) {
@@ -294,9 +302,10 @@ bool BaseShellWidget::loadFromFile(const QString& path) {
 }
 
 void BaseShellWidget::saveToFileAs() {
-  QString filepath = QFileDialog::getSaveFileName(this, trSaveAs, filePath_, trfilterForScripts);
+  QString filepath = QFileDialog::getSaveFileName(this, translations::trSaveAs, filePath_,
+                                                  translations::trfilterForScripts);
 
-  if (common::utils_qt::saveToFileText(filepath,text(), this)) {
+  if (common::utils_qt::saveToFileText(filepath, text(), this)) {
     filePath_ = filepath;
   }
 }
@@ -394,4 +403,4 @@ void BaseShellWidget::syncConnectionActions() {
   executeAction_->setEnabled(server_->isConnected());
 }
 
-}
+}  // namespace fastonosql

@@ -32,22 +32,21 @@ namespace fastonosql {
 const fasto::qt::gui::FastoQKeySequence openKey = fasto::qt::gui::FastoQKeySequence(QKeySequence::Open);
 const fasto::qt::gui::FastoQKeySequence saveKey = fasto::qt::gui::FastoQKeySequence(QKeySequence::Save);
 const fasto::qt::gui::FastoQKeySequence saveAsKey = fasto::qt::gui::FastoQKeySequence(QKeySequence::SaveAs);
-#ifdef OS_MAC
-const fasto::qt::gui::FastoQKeySequence quitKey = fasto::qt::gui::FastoQKeySequence(QKeySequence::Quit);
-#else
-const fasto::qt::gui::FastoQKeySequence quitKey = fasto::qt::gui::FastoQKeySequence(Qt::ControlModifier, Qt::Key_Q);
-#endif
+
 const fasto::qt::gui::FastoQKeySequence closeKey = fasto::qt::gui::FastoQKeySequence(QKeySequence::Close);
 const fasto::qt::gui::FastoQKeySequence newTabKey = fasto::qt::gui::FastoQKeySequence(QKeySequence::AddTab);
 const fasto::qt::gui::FastoQKeySequence nextTabKey = fasto::qt::gui::FastoQKeySequence(QKeySequence::NextChild);
 const fasto::qt::gui::FastoQKeySequence prevTabKey = fasto::qt::gui::FastoQKeySequence(QKeySequence::PreviousChild);
 const fasto::qt::gui::FastoQKeySequence refreshKey = fasto::qt::gui::FastoQKeySequence(QKeySequence::Refresh);
+const fasto::qt::gui::FastoQKeySequence executeKey = fasto::qt::gui::FastoQKeySequence(Qt::ControlModifier, Qt::Key_Return);
+
 #ifdef OS_MAC
 const fasto::qt::gui::FastoQKeySequence fullScreenKey = fasto::qt::gui::FastoQKeySequence(QKeySequence::FullScreen);
+const fasto::qt::gui::FastoQKeySequence quitKey = fasto::qt::gui::FastoQKeySequence(QKeySequence::Quit);
 #else
 const fasto::qt::gui::FastoQKeySequence fullScreenKey = fasto::qt::gui::FastoQKeySequence(Qt::ControlModifier | Qt::ShiftModifier, Qt::Key_F11);
+const fasto::qt::gui::FastoQKeySequence quitKey = fasto::qt::gui::FastoQKeySequence(Qt::ControlModifier, Qt::Key_Q);
 #endif
-const fasto::qt::gui::FastoQKeySequence executeKey = fasto::qt::gui::FastoQKeySequence(Qt::ControlModifier, Qt::Key_Return);
 
 bool isOpenShortcut(QKeyEvent* keyEvent) {
   return openKey == keyEvent;
@@ -102,4 +101,4 @@ bool isExecuteScriptShortcut(QKeyEvent* keyEvent) {
          ((keyEvent->modifiers() & Qt::ControlModifier) && (keyEvent->modifiers() & Qt::ShiftModifier) && (keyEvent->key() == Qt::Key_C));
 }*/
 
-}
+}  // namespace fastonosql

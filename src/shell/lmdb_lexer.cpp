@@ -18,10 +18,13 @@
 
 #include "shell/lmdb_lexer.h"
 
+#include <vector>
+#include <algorithm>
+
 #include "core/lmdb/lmdb_driver.h"
 
 namespace {
-  const QString help("help");
+  const QString help = "help";
 }
 
 namespace fastonosql {
@@ -30,21 +33,21 @@ LmdbApi::LmdbApi(QsciLexer *lexer)
 }
 
 void LmdbApi::updateAutoCompletionList(const QStringList& context, QStringList& list) {
-  for(QStringList::const_iterator it = context.begin(); it != context.end(); ++it){
+  for (QStringList::const_iterator it = context.begin(); it != context.end(); ++it) {
     QString val = *it;
-    for(int i = 0; i < SIZEOFMASS(lmdbCommands); ++i){
+    for (size_t i = 0; i < SIZEOFMASS(lmdbCommands); ++i) {
       CommandInfo cmd = lmdbCommands[i];
-      if(canSkipCommand(cmd)){
+      if (canSkipCommand(cmd)) {
         continue;
       }
 
       QString jval = common::convertFromString<QString>(cmd.name_);
-      if(jval.startsWith(val, Qt::CaseInsensitive)){
+      if (jval.startsWith(val, Qt::CaseInsensitive)) {
         list.append(jval + "?1");
       }
     }
 
-    if(help.startsWith(val, Qt::CaseInsensitive)){
+    if (help.startsWith(val, Qt::CaseInsensitive)) {
       list.append(help + "?2");
     }
   }
@@ -52,13 +55,13 @@ void LmdbApi::updateAutoCompletionList(const QStringList& context, QStringList& 
 
 QStringList LmdbApi::callTips(const QStringList& context, int commas,
                               QsciScintilla::CallTipsStyle style, QList<int>& shifts) {
-  for(QStringList::const_iterator it = context.begin(); it != context.end() - 1; ++it){
+  for (QStringList::const_iterator it = context.begin(); it != context.end() - 1; ++it) {
     QString val = *it;
-    for (int i = 0; i < SIZEOFMASS(lmdbCommands); ++i) {
+    for (size_t i = 0; i < SIZEOFMASS(lmdbCommands); ++i) {
       CommandInfo cmd = lmdbCommands[i];
 
       QString jval = common::convertFromString<QString>(cmd.name_);
-      if(QString::compare(jval, val, Qt::CaseInsensitive) == 0){
+      if (QString::compare(jval, val, Qt::CaseInsensitive) == 0) {
         return QStringList() << makeCallTip(cmd);
       }
     }
@@ -76,8 +79,7 @@ const char *LmdbLexer::language() const {
   return "LMDB";
 }
 
-const char* LmdbLexer::version() const
-{
+const char* LmdbLexer::version() const {
   return LmdbDriver::versionApi();
 }
 
@@ -87,18 +89,18 @@ const char* LmdbLexer::basedOn() const {
 
 std::vector<uint32_t> LmdbLexer::supportedVersions() const {
   std::vector<uint32_t> result;
-  for(int i = 0; i < SIZEOFMASS(lmdbCommands); ++i){
+  for (int i = 0; i < SIZEOFMASS(lmdbCommands); ++i) {
     CommandInfo cmd = lmdbCommands[i];
 
     bool needed_insert = true;
-    for(int j = 0; j < result.size(); ++j){
-      if(result[j] == cmd.since_){
+    for (int j = 0; j < result.size(); ++j) {
+      if (result[j] == cmd.since_) {
         needed_insert = false;
         break;
       }
     }
 
-    if(needed_insert){
+    if (needed_insert) {
       result.push_back(cmd.since_);
     }
   }
@@ -121,7 +123,7 @@ void LmdbLexer::styleText(int start, int end) {
   QString source(data);
   delete [] data;
 
-  if(source.isEmpty()){
+  if (source.isEmpty()) {
     return;
   }
 
@@ -129,7 +131,7 @@ void LmdbLexer::styleText(int start, int end) {
 
   int index = 0;
   int begin = 0;
-  while( (begin = source.indexOf(help, index, Qt::CaseInsensitive)) != -1){
+  while ((begin = source.indexOf(help, index, Qt::CaseInsensitive)) != -1) {
     index = begin + help.length();
 
     startStyling(start + begin);
@@ -139,12 +141,12 @@ void LmdbLexer::styleText(int start, int end) {
 }
 
 void LmdbLexer::paintCommands(const QString& source, int start) {
-  for(int i = 0; i < SIZEOFMASS(lmdbCommands); ++i){
+  for (int i = 0; i < SIZEOFMASS(lmdbCommands); ++i) {
     CommandInfo cmd = lmdbCommands[i];
     QString word = common::convertFromString<QString>(cmd.name_);
     int index = 0;
     int begin = 0;
-    while( (begin = source.indexOf(word, index, Qt::CaseInsensitive)) != -1){
+    while ((begin = source.indexOf(word, index, Qt::CaseInsensitive)) != -1) {
       index = begin + word.length();
 
       startStyling(start + begin);
@@ -154,4 +156,4 @@ void LmdbLexer::paintCommands(const QString& source, int start) {
   }
 }
 
-}
+}  // namespace fastonosql

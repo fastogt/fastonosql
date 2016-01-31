@@ -132,5 +132,5 @@ namespace translations {
   const QString trConnectionDiscovery = QObject::tr("Connection discovery");
   const QString trKeyCountOnThePage = QObject::tr("Key count on the page");
 
-}
-}
+}  // namespace translations
+}  // namespace fastonosql

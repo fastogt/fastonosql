@@ -78,7 +78,8 @@ FastoEditor::FastoEditor(QWidget* parent)
   findPanel_->hide();
 
   VERIFY(connect(close_, &QToolButton::clicked, findPanel_, &QFrame::hide));
-  VERIFY(connect(scin_, &fasto::qt::gui::FastoScintilla::textChanged, this, &FastoEditor::textChanged));
+  VERIFY(connect(scin_, &fasto::qt::gui::FastoScintilla::textChanged,
+                 this, &FastoEditor::textChanged));
   VERIFY(connect(next_, &QPushButton::clicked, this, &FastoEditor::goToNextElement));
   VERIFY(connect(prev_, &QPushButton::clicked, this, &FastoEditor::goToPrevElement));
   retranslateUi();
@@ -182,19 +183,18 @@ bool FastoEditor::eventFilter(QObject* object, QEvent* event) {
   return QWidget::eventFilter(object, event);
 }
 
-void FastoEditor::changeEvent(QEvent* e) {
-  if (e->type() == QEvent::LanguageChange) {
+void FastoEditor::changeEvent(QEvent* ev) {
+  if (ev->type() == QEvent::LanguageChange) {
     retranslateUi();
   }
 
-  QWidget::changeEvent(e);
+  QWidget::changeEvent(ev);
 }
 
 void FastoEditor::retranslateUi() {
-  using namespace translations;
-  next_->setText(trNext);
-  prev_->setText(trPrevious);
-  caseSensitive_->setText(trMatchCase);
+  next_->setText(translations::trNext);
+  prev_->setText(translations::trPrevious);
+  caseSensitive_->setText(translations::trMatchCase);
 }
 
 void FastoEditor::findElement(bool forward) {
@@ -224,8 +224,7 @@ void FastoEditor::findElement(bool forward) {
 }
 
 FastoEditorOutput::FastoEditorOutput(const QString &delemitr, QWidget *parent)
-  : QWidget(parent), model_(NULL), viewMethod_(JSON), delemitr_(delemitr)
-{
+  : QWidget(parent), model_(NULL), viewMethod_(JSON), delemitr_(delemitr) {
   QFont font = GuiFactory::instance().font();
   setFont(font);
 
@@ -239,11 +238,11 @@ FastoEditorOutput::FastoEditorOutput(const QString &delemitr, QWidget *parent)
 }
 
 void FastoEditorOutput::setModel(QAbstractItemModel* model) {
-  if (model == model_){
+  if (model == model_) {
     return;
   }
 
-  if(model_){
+  if (model_) {
     VERIFY(disconnect(model_, &QAbstractItemModel::destroyed,
                       this, &FastoEditorOutput::modelDestroyed));
     VERIFY(disconnect(model_, &QAbstractItemModel::dataChanged,
@@ -339,9 +338,7 @@ void FastoEditorOutput::rowsRemoved(QModelIndex index, int r, int c) {
 void FastoEditorOutput::columnsAboutToBeRemoved(QModelIndex index, int r, int c) {
 }
 
-void FastoEditorOutput::columnsRemoved(QModelIndex index, int r, int c)
-{
-
+void FastoEditorOutput::columnsRemoved(QModelIndex index, int r, int c) {
 }
 
 void FastoEditorOutput::columnsInserted(QModelIndex index, int r, int c) {
@@ -397,7 +394,7 @@ void FastoEditorOutput::layoutChanged() {
   }
 
   QString result;
-  for(int i = 0; i < root->childrenCount(); ++i){
+  for (size_t i = 0; i < root->childrenCount(); ++i) {
     FastoCommonItem* child = dynamic_cast<FastoCommonItem*>(root->child(i));
     if (!child) {
       continue;
@@ -406,24 +403,24 @@ void FastoEditorOutput::layoutChanged() {
     if (viewMethod_ == JSON) {
       QString json = toJson(child);
       result += common::escapedText(json);
-    } else if(viewMethod_ == CSV) {
+    } else if (viewMethod_ == CSV) {
       QString csv = toCsv(child, delemitr_);
       result += common::escapedText(csv);
-    } else if(viewMethod_ == RAW) {
+    } else if (viewMethod_ == RAW) {
       QString raw = toRaw(child);
       result += common::escapedText(raw);
-    } else if(viewMethod_ == HEX) {
+    } else if (viewMethod_ == HEX) {
       result += toRaw(child);
-    } else if(viewMethod_ == MSGPACK) {
+    } else if (viewMethod_ == MSGPACK) {
       QString msgp = fromHexMsgPack(child);
       result += common::escapedText(msgp);
-    } else if(viewMethod_ == GZIP) {
+    } else if (viewMethod_ == GZIP) {
       QString gzip = fromGzip(child);
       result += common::escapedText(gzip);
     }
   }
 
-  editor_->setMode(viewMethod_ == HEX ? FastoHexEdit::HEX_MODE : FastoHexEdit::TEXT_MODE );
+  editor_->setMode(viewMethod_ == HEX ? FastoHexEdit::HEX_MODE : FastoHexEdit::TEXT_MODE);
   editor_->setData(result.toLocal8Bit());
 }
 
@@ -440,4 +437,4 @@ void FastoEditorShell::showContextMenu(const QPoint& pt) {
   delete menu;
 }
 
-}
+}  // namespace fastonosql

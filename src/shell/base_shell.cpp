@@ -18,6 +18,8 @@
 
 #include "shell/base_shell.h"
 
+#include <vector>
+
 #include "gui/gui_factory.h"
 
 #ifdef BUILD_WITH_REDIS
@@ -55,42 +57,45 @@ BaseShell::BaseShell(connectionTypes type, bool showAutoCompl, QWidget* parent)
   VERIFY(connect(this, &BaseShell::customContextMenuRequested, this, &BaseShell::showContextMenu));
   BaseQsciLexer* lex = NULL;
 #ifdef BUILD_WITH_REDIS
-  if(type == REDIS){
+  if (type == REDIS) {
     lex = new RedisLexer(this);
   }
 #endif
 #ifdef BUILD_WITH_MEMCACHED
-  if(type == MEMCACHED){
+  if (type == MEMCACHED) {
     lex = new MemcachedLexer(this);
   }
 #endif
 #ifdef BUILD_WITH_SSDB
-  if(type == SSDB){
+  if (type == SSDB) {
     lex = new SsdbLexer(this);
   }
 #endif
 #ifdef BUILD_WITH_LEVELDB
-  if(type == LEVELDB){
+  if (type == LEVELDB) {
     lex = new LeveldbLexer(this);
   }
 #endif
 #ifdef BUILD_WITH_ROCKSDB
-  if(type == ROCKSDB){
+  if (type == ROCKSDB) {
     lex = new RocksdbLexer(this);
   }
 #endif
 #ifdef BUILD_WITH_UNQLITE
-  if(type == UNQLITE){
+  if (type == UNQLITE) {
     lex = new UnqliteLexer(this);
   }
 #endif
 #ifdef BUILD_WITH_LMDB
-  if(type == LMDB){
+  if (type == LMDB) {
     lex = new LmdbLexer(this);
   }
 #endif
-  registerImage(BaseQsciLexer::Command, GuiFactory::instance().commandIcon(type).pixmap(QSize(64,64)));
-  registerImage(BaseQsciLexer::HelpKeyword, GuiFactory::instance().messageBoxQuestionIcon().pixmap(QSize(64,64)));
+  const QSize image_size(64, 64);
+  registerImage(BaseQsciLexer::Command,
+                GuiFactory::instance().commandIcon(type).pixmap(image_size));
+  registerImage(BaseQsciLexer::HelpKeyword,
+                GuiFactory::instance().messageBoxQuestionIcon().pixmap(image_size));
 
   DCHECK(lex);
   setLexer(lex);
@@ -100,7 +105,7 @@ BaseShell::BaseShell(connectionTypes type, bool showAutoCompl, QWidget* parent)
 QString BaseShell::version() const {
   BaseQsciLexer* red = dynamic_cast<BaseQsciLexer*>(lexer());
   DCHECK(red);
-  if(red){
+  if (red) {
     return common::convertFromString<QString>(red->version());
   }
 
@@ -110,7 +115,7 @@ QString BaseShell::version() const {
 QString BaseShell::basedOn() const {
   BaseQsciLexer* red = dynamic_cast<BaseQsciLexer*>(lexer());
   DCHECK(red);
-  if(red){
+  if (red) {
     return common::convertFromString<QString>(red->basedOn());
   }
 
@@ -120,7 +125,7 @@ QString BaseShell::basedOn() const {
 std::vector<uint32_t> BaseShell::supportedVersions() const {
   BaseQsciLexer* red = dynamic_cast<BaseQsciLexer*>(lexer());
   DCHECK(red);
-  if(red){
+  if (red) {
     return red->supportedVersions();
   }
 
@@ -140,7 +145,7 @@ uint32_t BaseShell::commandsCount() const {
 void BaseShell::setFilteredVersion(uint32_t version) {
   BaseQsciLexer* red = dynamic_cast<BaseQsciLexer*>(lexer());
   DCHECK(red);
-  if(!red){
+  if (!red) {
     return;
   }
 
@@ -156,5 +161,5 @@ BaseShell* BaseShell::createFromType(connectionTypes type, bool showAutoCompl) {
   return new BaseShell(type, showAutoCompl);
 }
 
-}
+}  // namespace fastonosql
 

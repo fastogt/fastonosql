@@ -18,6 +18,8 @@
 
 #include "gui/fasto_common_item.h"
 
+#include <string>
+
 #include "common/qt/convert_string.h"
 
 #include "common/json_utils.h"
@@ -68,13 +70,13 @@ QString toJson(FastoCommonItem* item) {
     return QString();
   }
 
-  if(!item->childrenCount()){
+  if (!item->childrenCount()) {
     std::string res = common::json::parseJson(common::convertToString(item->value()));
     return common::convertFromString<QString>(res);
   }
 
   QString value;
-  for(int i = 0; i < item->childrenCount(); ++i){
+  for (int i = 0; i < item->childrenCount(); ++i) {
     value += toJson(dynamic_cast<FastoCommonItem*>(item->child(i)));
   }
 
@@ -82,16 +84,16 @@ QString toJson(FastoCommonItem* item) {
 }
 
 QString toRaw(FastoCommonItem* item) {
-  if(!item){
+  if (!item) {
     return QString();
   }
 
-  if(!item->childrenCount()){
+  if (!item->childrenCount()) {
     return item->value();
   }
 
   QString value;
-  for(int i = 0; i < item->childrenCount(); ++i){
+  for (size_t i = 0; i < item->childrenCount(); ++i) {
     value += toRaw(dynamic_cast<FastoCommonItem*>(item->child(i)));
   }
 
@@ -118,7 +120,7 @@ QString toHex(FastoCommonItem* item) {
   }
 
   QString value;
-  for(int i = 0; i < item->childrenCount(); ++i){
+  for (size_t i = 0; i < item->childrenCount(); ++i) {
     value += toHex(dynamic_cast<FastoCommonItem*>(item->child(i)));
   }
 
@@ -135,9 +137,9 @@ QString toCsv(FastoCommonItem* item, const QString& delemitr) {
   }
 
   QString value;
-  for(int i = 0; i < item->childrenCount(); ++i){
+  for (size_t i = 0; i < item->childrenCount(); ++i) {
     value += toCsv(dynamic_cast<FastoCommonItem*>(item->child(i)), delemitr);
-    if(i != item->childrenCount() - 1){
+    if (i != item->childrenCount() - 1) {
       value += ",";
     }
   }
@@ -150,13 +152,13 @@ QString fromGzip(FastoCommonItem* item) {
     return QString();
   }
 
-  if(!item->childrenCount()){
+  if (!item->childrenCount()) {
     QString val = item->value();
     std::string sval = common::convertToString(val);
     std::string out;
     common::CompressEDcoder enc;
     common::Error err = enc.decode(sval, &out);
-    if(err && err->isError()){
+    if (err && err->isError()) {
       return QString();
     } else {
       return common::convertFromString<QString>(out);
@@ -164,7 +166,7 @@ QString fromGzip(FastoCommonItem* item) {
   }
 
   QString value;
-  for(int i = 0; i < item->childrenCount(); ++i){
+  for (size_t i = 0; i < item->childrenCount(); ++i) {
     value += fromGzip(dynamic_cast<FastoCommonItem*>(item->child(i)));
   }
 
@@ -189,18 +191,18 @@ QString fromHexMsgPack(FastoCommonItem* item) {
     common::MsgPackEDcoder msg;
     std::string upack;
     err = msg.decode(hexstr, &upack);
-    if(err && err->isError()){
+    if (err && err->isError()) {
       return QString();
     }
     return common::convertFromString<QString>(upack);
   }
 
   QString value;
-  for(int i = 0; i < item->childrenCount(); ++i){
-      value += fromHexMsgPack(dynamic_cast<FastoCommonItem*>(item->child(i)));
+  for (size_t i = 0; i < item->childrenCount(); ++i) {
+    value += fromHexMsgPack(dynamic_cast<FastoCommonItem*>(item->child(i)));
   }
 
   return value;
 }
 
-}
+}  // namespace fastonosql

@@ -98,4 +98,4 @@ class GuiFactory
   const QIcon& lmdbConnectionIcon() const;
 };
 
-}
+}  // namespace fastonosql

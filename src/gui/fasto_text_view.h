@@ -57,4 +57,4 @@ class FastoTextView
   QPushButton* saveChangeButton_;
 };
 
-}
+}  // namespace fastonosql

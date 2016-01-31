@@ -28,16 +28,14 @@ class FastoHexEdit
   Q_OBJECT
  public:
   typedef QPlainTextEdit base_class;
-  FastoHexEdit(QWidget *parent = 0);
+  explicit FastoHexEdit(QWidget *parent = 0);
 
-  enum DisplayMode
-  {
+  enum DisplayMode {
     TEXT_MODE,
     HEX_MODE
   };
 
-  enum
-  {
+  enum {
     TextMarginXY = 4
   };
 
@@ -71,4 +69,4 @@ class FastoHexEdit
   int positionAtPoint(const QPoint &point) const;
 };
 
-}
+}  // namespace fastonosql

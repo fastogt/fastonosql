@@ -18,6 +18,9 @@
 
 #include "shell/ssdb_lexer.h"
 
+#include <vector>
+#include <algorithm>
+
 #include "core/ssdb/ssdb_driver.h"
 
 namespace {
@@ -154,4 +157,4 @@ void SsdbLexer::paintCommands(const QString& source, int start) {
   }
 }
 
-}
+}  // namespace fastonosql

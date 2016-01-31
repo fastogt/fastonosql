@@ -52,9 +52,9 @@ QVariant PropertyTableModel::data(const QModelIndex& index, int role) const {
   if (role == Qt::DisplayRole) {
     if (col == PropertyTableItem::eKey) {
       result = node->key_;
-     } else if (col == PropertyTableItem::eValue) {
-       result = node->value_;
-     }
+    } else if (col == PropertyTableItem::eValue) {
+      result = node->value_;
+    }
   }
   return result;
 }
@@ -68,11 +68,9 @@ bool PropertyTableModel::setData(const QModelIndex& index, const QVariant& value
       return false;
 
      if (column == PropertyTableItem::eKey) {
-
-     }
-     else if (column == PropertyTableItem::eValue) {
+     } else if (column == PropertyTableItem::eValue) {
        const QString &newValue = value.toString();
-       if(newValue != node->value_){
+       if (newValue != node->value_) {
          PropertyType pr;
          pr.first = common::convertToString(node->key_);
          pr.second = common::convertToString(newValue);
@@ -89,7 +87,7 @@ Qt::ItemFlags PropertyTableModel::flags(const QModelIndex &index) const {
   if (index.isValid()) {
     result = Qt::ItemIsSelectable | Qt::ItemIsEnabled;
     int col = index.column();
-    if(col == PropertyTableItem::eValue){
+    if (col == PropertyTableItem::eValue) {
       result |= Qt::ItemIsEditable;
     }
   }
@@ -97,15 +95,14 @@ Qt::ItemFlags PropertyTableModel::flags(const QModelIndex &index) const {
 }
 
 QVariant PropertyTableModel::headerData(int section, Qt::Orientation orientation, int role) const {
-  using namespace translations;
   if (role != Qt::DisplayRole)
     return QVariant();
 
   if (orientation == Qt::Horizontal && role == Qt::DisplayRole) {
     if (section == PropertyTableItem::eKey) {
-      return trKey;
+      return translations::trKey;
     } else if (section == PropertyTableItem::eValue) {
-      return trValue;
+      return translations::trValue;
     }
   }
 
@@ -119,14 +116,14 @@ int PropertyTableModel::columnCount(const QModelIndex& parent) const {
 
 void PropertyTableModel::changeProperty(const PropertyType& pr) {
   const QString key = common::convertFromString<QString>(pr.first);
-  for(int i = 0; i < data_.size(); ++i) {
+  for (int i = 0; i < data_.size(); ++i) {
     PropertyTableItem *it = dynamic_cast<PropertyTableItem*>(data_[i]);
-    if(it->key_ == key){
+    if (it->key_ == key) {
       it->value_ = common::convertFromString<QString>(pr.second);
-      emit dataChanged(index(i,0), index(i,1));
+      emit dataChanged(index(i, 0), index(i, 1));
       break;
     }
   }
 }
 
-}
+}  // namespace fastonosql

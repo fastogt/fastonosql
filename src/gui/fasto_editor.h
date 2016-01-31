@@ -39,7 +39,7 @@ class QMenu;
 namespace fasto {
 namespace qt {
 namespace gui {
-  class FastoScintilla;
+class FastoScintilla;
 }
 }
 }
@@ -51,8 +51,7 @@ class FastoEditor
   : public QWidget {
   Q_OBJECT
  public:
-  enum
-  {
+  enum {
     HeightFindPanel = 40
   };
   explicit FastoEditor(QWidget* parent = 0);
@@ -88,7 +87,7 @@ class FastoEditor
 
   virtual void keyPressEvent(QKeyEvent* e);
   virtual bool eventFilter(QObject* object, QEvent* event);
-  virtual void changeEvent(QEvent *);
+  virtual void changeEvent(QEvent* ev);
 
  private:
   void retranslateUi();
@@ -107,7 +106,7 @@ class FastoEditorOutput
   : public QWidget {
   Q_OBJECT
  public:
-  FastoEditorOutput(const QString &delemitr, QWidget *parent = 0);
+  explicit FastoEditorOutput(const QString &delemitr, QWidget *parent = 0);
 
   void setModel(QAbstractItemModel* model);
 
@@ -150,7 +149,7 @@ class FastoEditorShell
   void showContextMenu(const QPoint& pt);
 
  protected:
-  FastoEditorShell(bool showAutoCompl, QWidget *parent = 0);
+  explicit FastoEditorShell(bool showAutoCompl, QWidget *parent = 0);
 };
 
-}
+}  // namespace fastonosql

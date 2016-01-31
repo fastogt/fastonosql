@@ -18,10 +18,13 @@
 
 #include "shell/leveldb_lexer.h"
 
+#include <vector>
+#include <algorithm>
+
 #include "core/leveldb/leveldb_driver.h"
 
 namespace {
-  const QString help("help");
+  const QString help = "help";
 }
 
 namespace fastonosql {
@@ -31,21 +34,21 @@ LeveldbApi::LeveldbApi(QsciLexer *lexer)
 }
 
 void LeveldbApi::updateAutoCompletionList(const QStringList& context, QStringList& list) {
-  for(QStringList::const_iterator it = context.begin(); it != context.end(); ++it){
+  for (QStringList::const_iterator it = context.begin(); it != context.end(); ++it) {
     QString val = *it;
-    for(int i = 0; i < SIZEOFMASS(leveldbCommands); ++i){
+    for (size_t i = 0; i < SIZEOFMASS(leveldbCommands); ++i) {
       CommandInfo cmd = leveldbCommands[i];
-      if(canSkipCommand(cmd)){
+      if (canSkipCommand(cmd)) {
         continue;
       }
 
       QString jval = common::convertFromString<QString>(cmd.name_);
-      if(jval.startsWith(val, Qt::CaseInsensitive)){
+      if (jval.startsWith(val, Qt::CaseInsensitive)) {
         list.append(jval + "?1");
       }
     }
 
-    if(help.startsWith(val, Qt::CaseInsensitive)){
+    if (help.startsWith(val, Qt::CaseInsensitive)) {
       list.append(help + "?2");
     }
   }
@@ -59,7 +62,7 @@ QStringList LeveldbApi::callTips(const QStringList& context, int commas,
       CommandInfo cmd = leveldbCommands[i];
 
       QString jval = common::convertFromString<QString>(cmd.name_);
-      if(QString::compare(jval, val, Qt::CaseInsensitive) == 0){
+      if (QString::compare(jval, val, Qt::CaseInsensitive) == 0) {
         return QStringList() << makeCallTip(cmd);
       }
     }
@@ -87,18 +90,18 @@ const char* LeveldbLexer::basedOn() const {
 
 std::vector<uint32_t> LeveldbLexer::supportedVersions() const {
   std::vector<uint32_t> result;
-  for(int i = 0; i < SIZEOFMASS(leveldbCommands); ++i){
+  for (size_t i = 0; i < SIZEOFMASS(leveldbCommands); ++i) {
     CommandInfo cmd = leveldbCommands[i];
 
     bool needed_insert = true;
-    for(int j = 0; j < result.size(); ++j){
-      if(result[j] == cmd.since_){
+    for (int j = 0; j < result.size(); ++j) {
+      if (result[j] == cmd.since_) {
         needed_insert = false;
         break;
       }
     }
 
-    if(needed_insert){
+    if (needed_insert) {
       result.push_back(cmd.since_);
     }
   }
@@ -130,7 +133,7 @@ void LeveldbLexer::styleText(int start, int end) {
 
   int index = 0;
   int begin = 0;
-  while( (begin = source.indexOf(help, index, Qt::CaseInsensitive)) != -1){
+  while ((begin = source.indexOf(help, index, Qt::CaseInsensitive)) != -1) {
     index = begin + help.length();
 
     startStyling(start + begin);
@@ -145,7 +148,7 @@ void LeveldbLexer::paintCommands(const QString& source, int start) {
     QString word = common::convertFromString<QString>(cmd.name_);
     int index = 0;
     int begin = 0;
-    while( (begin = source.indexOf(word, index, Qt::CaseInsensitive)) != -1){
+    while ((begin = source.indexOf(word, index, Qt::CaseInsensitive)) != -1) {
       index = begin + word.length();
 
       startStyling(start + begin);
@@ -155,4 +158,4 @@ void LeveldbLexer::paintCommands(const QString& source, int start) {
   }
 }
 
-}
+}  // namespace fastonosql

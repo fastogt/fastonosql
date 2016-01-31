@@ -39,9 +39,8 @@ class ExplorerTreeView;
 class MainWindow
   : public QMainWindow {
   Q_OBJECT
-public:
-  enum
-  {
+ public:
+  enum {
     min_height = 480,
     min_width = 640,
     MaxRecentConnections = 5
@@ -50,11 +49,11 @@ public:
   MainWindow();
   ~MainWindow();
 
-protected:
+ protected:
   virtual void changeEvent(QEvent* ev);
   virtual void showEvent(QShowEvent* ev);
 
-private Q_SLOTS:
+ private Q_SLOTS:
   void open();
   void about();
   void openPreferences();
@@ -75,7 +74,7 @@ private Q_SLOTS:
 
   void versionAvailible(bool succesResult, const QString& version);
 
-protected:
+ protected:
 #ifdef OS_ANDROID
   virtual bool event(QEvent *event);
   bool gestureEvent(QGestureEvent *event);
@@ -83,7 +82,7 @@ protected:
   void tapAndHoldTriggered(QTapAndHoldGesture* tapEvent);
 #endif
 
-private:
+ private:
   void createToolBar();
   void createStatusBar();
   void retranslateUi();
@@ -128,14 +127,14 @@ private:
 class UpdateChecker
   : public QObject {
   Q_OBJECT
-public:
+ public:
   explicit UpdateChecker(QObject* parent = 0);
 
-Q_SIGNALS:
+ Q_SIGNALS:
   void versionAvailibled(bool succesResult, const QString& version);
 
-public Q_SLOTS:
+ public Q_SLOTS:
   void routine();
 };
 
-}
+}  // namespace fastonosql

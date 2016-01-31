@@ -75,11 +75,11 @@ QVariant KeysTableModel::data(const QModelIndex& index, int role) const {
 
   int col = index.column();
 
-  if(role == Qt::DecorationRole && col == KeyTableItem::kKey){
+  if (role == Qt::DecorationRole && col == KeyTableItem::kKey) {
     return GuiFactory::instance().icon(node->type());
   }
 
-  if(role == Qt::TextColorRole && col == KeyTableItem::kType){
+  if (role == Qt::TextColorRole && col == KeyTableItem::kType) {
     return QColor(Qt::gray);
   }
 
@@ -101,7 +101,7 @@ bool KeysTableModel::setData(const QModelIndex& index, const QVariant& value, in
     int column = index.column();
     KeyTableItem *node = common::utils_qt::item<KeyTableItem*>(index);
 
-    if (!node){
+    if (!node) {
       return false;
     }
 
@@ -126,7 +126,7 @@ Qt::ItemFlags KeysTableModel::flags(const QModelIndex& index) const {
     result = Qt::ItemIsSelectable | Qt::ItemIsEnabled;
     int col = index.column();
     KeyTableItem *node = common::utils_qt::item<KeyTableItem*>(index);
-    if(node && col == KeyTableItem::kTTL){
+    if (node && col == KeyTableItem::kTTL) {
       result |= Qt::ItemIsEditable;
     }
   }
@@ -135,21 +135,20 @@ Qt::ItemFlags KeysTableModel::flags(const QModelIndex& index) const {
 }
 
 QVariant KeysTableModel::headerData(int section, Qt::Orientation orientation, int role) const {
-  using namespace translations;
   if (role != Qt::DisplayRole)
     return QVariant();
 
   if (orientation == Qt::Horizontal && role == Qt::DisplayRole) {
     if (section == KeyTableItem::kKey) {
-      return trKey;
+      return translations::trKey;
     } else if (section == KeyTableItem::kType) {
-      return trType;
+      return translations::trType;
     }  else if (section == KeyTableItem::kTTL) {
-      return trTTL;
+      return translations::trTTL;
     }
   }
 
-  return TableModel::headerData(section,orientation,role);
+  return TableModel::headerData(section, orientation, role);
 }
 
 int KeysTableModel::columnCount(const QModelIndex &parent) const {
@@ -158,9 +157,9 @@ int KeysTableModel::columnCount(const QModelIndex &parent) const {
 
 void KeysTableModel::changeValue(const NDbKValue& value) {
   const QString key = common::convertFromString<QString>(value.keyString());
-  for(int i = 0; i < data_.size(); ++i) {
+  for (size_t i = 0; i < data_.size(); ++i) {
     KeyTableItem *it = dynamic_cast<KeyTableItem*>(data_[i]);
-    if(it->key() == key){
+    if (it->key() == key) {
       it->setDbv(value);
       emit dataChanged(index(i, KeyTableItem::kTTL), index(i, KeyTableItem::kTTL));
       break;
@@ -170,11 +169,11 @@ void KeysTableModel::changeValue(const NDbKValue& value) {
 
 void KeysTableModel::clear() {
   beginResetModel();
-  for(int i = 0; i < data_.size(); ++i){
+  for (size_t i = 0; i < data_.size(); ++i) {
     delete data_[i];
   }
   data_.clear();
   endResetModel();
 }
 
-}
+}  // namespace fastonosql

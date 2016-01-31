@@ -49,4 +49,4 @@ void FastoTreeView::resizeEvent(QResizeEvent *event) {
   QTreeView::resizeEvent(event);
 }
 
-}
+}  // namespace fastonosql

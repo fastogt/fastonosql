@@ -23,11 +23,11 @@
 #include "fasto/qt/gui/base/table_model.h"
 
 namespace fastonosql {
+
 class KeyTableItem
   : public fasto::qt::gui::TableItem {
  public:
-  enum eColumn
-  {
+  enum eColumn {
     kKey = 0,
     kType = 1,
     kTTL = 2,
@@ -58,7 +58,8 @@ class KeysTableModel
   virtual QVariant data(const QModelIndex& index, int role = Qt::DisplayRole) const;
   virtual bool setData(const QModelIndex& index, const QVariant& value, int role);
   virtual Qt::ItemFlags flags(const QModelIndex& index) const;
-  virtual QVariant headerData(int section, Qt::Orientation orientation, int role = Qt::DisplayRole) const;
+  virtual QVariant headerData(int section, Qt::Orientation orientation,
+                              int role = Qt::DisplayRole) const;
 
   virtual int columnCount(const QModelIndex& parent) const;
   void clear();
@@ -69,6 +70,6 @@ class KeysTableModel
   void changedValue(CommandKeySPtr cmd);
 };
 
-}
+}  // namespace fastonosql
 
 

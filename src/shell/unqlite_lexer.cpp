@@ -18,10 +18,13 @@
 
 #include "shell/unqlite_lexer.h"
 
+#include <vector>
+#include <algorithm>
+
 #include "core/unqlite/unqlite_driver.h"
 
 namespace {
-  const QString help("help");
+  const QString help = "help";
 }
 
 namespace fastonosql {
@@ -35,7 +38,7 @@ void UnqliteApi::updateAutoCompletionList(const QStringList& context, QStringLis
     QString val = *it;
     for (int i = 0; i < SIZEOFMASS(unqliteCommands); ++i) {
       CommandInfo cmd = unqliteCommands[i];
-      if(canSkipCommand(cmd)){
+      if (canSkipCommand(cmd)) {
         continue;
       }
 
@@ -130,7 +133,7 @@ void UnqliteLexer::styleText(int start, int end) {
 
   int index = 0;
   int begin = 0;
-  while ( (begin = source.indexOf(help, index, Qt::CaseInsensitive)) != -1) {
+  while ((begin = source.indexOf(help, index, Qt::CaseInsensitive)) != -1) {
     index = begin + help.length();
 
     startStyling(start + begin);
@@ -145,7 +148,7 @@ void UnqliteLexer::paintCommands(const QString& source, int start) {
     QString word = common::convertFromString<QString>(cmd.name_);
     int index = 0;
     int begin = 0;
-    while ( (begin = source.indexOf(word, index, Qt::CaseInsensitive)) != -1) {
+    while ((begin = source.indexOf(word, index, Qt::CaseInsensitive)) != -1) {
       index = begin + word.length();
 
       startStyling(start + begin);
@@ -155,4 +158,4 @@ void UnqliteLexer::paintCommands(const QString& source, int start) {
   }
 }
 
-}
+}  // namespace fastonosql

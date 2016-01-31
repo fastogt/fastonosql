@@ -18,6 +18,8 @@
 
 #include "gui/fasto_common_model.h"
 
+#include <string>
+
 #include "gui/fasto_common_item.h"
 #include "gui/gui_factory.h"
 
@@ -48,11 +50,11 @@ QVariant FastoCommonModel::data(const QModelIndex& index, int role) const {
 
   int col = index.column();
 
-  if(role == Qt::DecorationRole && col == FastoCommonItem::eKey ){
+  if (role == Qt::DecorationRole && col == FastoCommonItem::eKey) {
     return GuiFactory::instance().icon(node->type());
   }
 
-  if(role == Qt::TextColorRole && col == FastoCommonItem::eType){
+  if (role == Qt::TextColorRole && col == FastoCommonItem::eType) {
     return QColor(Qt::gray);
   }
 
@@ -78,24 +80,24 @@ bool FastoCommonModel::setData(const QModelIndex& index, const QVariant& value, 
       return false;
     }
 
-   if (column == FastoCommonItem::eKey) { }
-   else if (column == FastoCommonItem::eValue) {
-     const QString newValue = value.toString();
-     if(newValue != node->value()){
-       const std::string key = common::convertToString(node->key());
-       const std::string value = common::convertToString(newValue);
+    if (column == FastoCommonItem::eKey) {
+    } else if (column == FastoCommonItem::eValue) {
+      const QString newValue = value.toString();
+      if (newValue != node->value()) {
+        const std::string key = common::convertToString(node->key());
+        const std::string value = common::convertToString(newValue);
 
-       //  node->type() TODO: create according type
-       common::ValueSPtr vs = common::make_value(common::Value::createStringValue(value));
-       NValue val(vs);
-       NDbKValue dbv(NKey(key), val);
-       CommandKeySPtr com(new CommandCreateKey(dbv));
-       emit changedValue(com);
-       }
+        //  node->type() TODO: create according type
+        common::ValueSPtr vs = common::make_value(common::Value::createStringValue(value));
+        NValue val(vs);
+        NDbKValue dbv(NKey(key), val);
+        CommandKeySPtr com(new CommandCreateKey(dbv));
+        emit changedValue(com);
+      }
     }
   }
 
-    return false;
+  return false;
 }
 
 Qt::ItemFlags FastoCommonModel::flags(const QModelIndex& index) const {
@@ -104,7 +106,7 @@ Qt::ItemFlags FastoCommonModel::flags(const QModelIndex& index) const {
     result = Qt::ItemIsSelectable | Qt::ItemIsEnabled;
     int col = index.column();
       FastoCommonItem *node = common::utils_qt::item<FastoCommonItem*>(index);
-      if(node && col == FastoCommonItem::eValue && !node->isReadOnly()){
+      if (node && col == FastoCommonItem::eValue && !node->isReadOnly()) {
         result |= Qt::ItemIsEditable;
       }
   }
@@ -112,21 +114,20 @@ Qt::ItemFlags FastoCommonModel::flags(const QModelIndex& index) const {
 }
 
 QVariant FastoCommonModel::headerData(int section, Qt::Orientation orientation, int role) const {
-  using namespace translations;
   if (role != Qt::DisplayRole)
     return QVariant();
 
   if (orientation == Qt::Horizontal && role == Qt::DisplayRole) {
     if (section == FastoCommonItem::eKey) {
-      return trKey;
+      return translations::trKey;
     } else if (section == FastoCommonItem::eValue) {
-      return trValue;
+      return translations::trValue;
     } else {
-      return trType;
+      return translations::trType;
     }
   }
 
-  return TreeModel::headerData(section,orientation,role);
+  return TreeModel::headerData(section, orientation, role);
 }
 
 int FastoCommonModel::columnCount(const QModelIndex &parent) const {
@@ -151,13 +152,13 @@ void FastoCommonModel::changeValue(const NDbKValue& value) {
 
   const QString key = common::convertFromString<QString>(value.keyString());
 
-  for(int i = 0; i < root->childrenCount(); ++i){
+  for (size_t i = 0; i < root->childrenCount(); ++i) {
     FastoCommonItem* child = dynamic_cast<FastoCommonItem*>(root->child(i));
     if (!child) {
       continue;
     }
 
-    if(child->key() == key){
+    if (child->key() == key) {
       child->setValue(value.value());
       emit dataChanged(index(i, FastoCommonItem::eValue), index(i, FastoCommonItem::eType));
       break;
@@ -165,4 +166,4 @@ void FastoCommonModel::changeValue(const NDbKValue& value) {
   }
 }
 
-}
+}  // namespace fastonosql

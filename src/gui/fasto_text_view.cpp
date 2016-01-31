@@ -159,4 +159,4 @@ void FastoTextView::retranslateUi() {
   saveChangeButton_->setText(trSave);
 }
 
-}
+}  // namespace fastonosql

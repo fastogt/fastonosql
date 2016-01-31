@@ -132,5 +132,5 @@ namespace translations {
   extern const QString trConnectionDiscovery;
   extern const QString trKeyCountOnThePage;
 
-}
-}
+}  // namespace translations
+}  // namespace fastonosql

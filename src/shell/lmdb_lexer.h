@@ -18,6 +18,8 @@
 
 #pragma once
 
+#include <vector>
+
 #include "shell/base_lexer.h"
 
 namespace fastonosql {
@@ -29,7 +31,8 @@ class LmdbApi
   explicit LmdbApi(QsciLexer* lexer);
 
   virtual void updateAutoCompletionList(const QStringList& context, QStringList& list);
-  virtual QStringList callTips(const QStringList& context, int commas, QsciScintilla::CallTipsStyle style, QList<int>& shifts);
+  virtual QStringList callTips(const QStringList& context, int commas,
+                               QsciScintilla::CallTipsStyle style, QList<int>& shifts);
 };
 
 class LmdbLexer
@@ -51,4 +54,4 @@ class LmdbLexer
   void paintCommands(const QString& source, int start);
 };
 
-}
+}  // namespace fastonosql

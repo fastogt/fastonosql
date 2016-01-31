@@ -37,7 +37,8 @@ FastoTableView::FastoTableView(QWidget* parent)
   setSelectionBehavior(QAbstractItemView::SelectItems);
 
   setContextMenuPolicy(Qt::CustomContextMenu);
-  VERIFY(connect(this, &FastoTableView::customContextMenuRequested, this, &FastoTableView::showContextMenu));
+  VERIFY(connect(this, &FastoTableView::customContextMenuRequested,
+                 this, &FastoTableView::showContextMenu));
 }
 
 void FastoTableView::showContextMenu(const QPoint& point) {
@@ -54,4 +55,4 @@ void FastoTableView::resizeEvent(QResizeEvent *event) {
   QTableView::resizeEvent(event);
 }
 
-}
+}  // namespace fastonosql

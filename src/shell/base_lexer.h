@@ -21,6 +21,8 @@
 #include <Qsci/qsciabstractapis.h>
 #include <Qsci/qscilexercustom.h>
 
+#include <vector>
+
 #include "core/types.h"
 
 namespace fastonosql {
@@ -65,4 +67,4 @@ class BaseQsciLexer
 
 QString makeCallTip(const CommandInfo& info);
 
-}
+}  // namespace fastonosql

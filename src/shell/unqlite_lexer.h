@@ -18,6 +18,8 @@
 
 #pragma once
 
+#include <vector>
+
 #include "shell/base_lexer.h"
 
 namespace fastonosql {
@@ -34,7 +36,7 @@ class UnqliteApi
 };
 
 class UnqliteLexer
- : public BaseQsciLexer {
+  : public BaseQsciLexer {
   Q_OBJECT
  public:
   explicit UnqliteLexer(QObject* parent = 0);
@@ -52,4 +54,4 @@ class UnqliteLexer
   void paintCommands(const QString& source, int start);
 };
 
-}
+}  // namespace fastonosql

@@ -18,8 +18,11 @@
 
 #pragma once
 
-#include "gui/fasto_editor.h"
+#include <vector>
+
 #include "core/connection_types.h"
+
+#include "gui/fasto_editor.h"
 
 namespace fastonosql {
 
@@ -39,4 +42,4 @@ class BaseShell
   BaseShell(connectionTypes type, bool showAutoCompl, QWidget* parent = 0);
 };
 
-}
+}  // namespace fastonosql

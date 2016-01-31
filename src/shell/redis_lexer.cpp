@@ -18,10 +18,13 @@
 
 #include "shell/redis_lexer.h"
 
+#include <vector>
+#include <algorithm>
+
 #include "core/redis/redis_driver.h"
 
 namespace {
-  const QString help("help");
+  const QString help = "help";
 }
 
 namespace fastonosql {
@@ -153,4 +156,4 @@ void RedisLexer::paintCommands(const QString& source, int start) {
   }
 }
 
-}
+}  // namespace fastonosql

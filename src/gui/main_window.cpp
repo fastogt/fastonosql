@@ -18,6 +18,8 @@
 
 #include "gui/main_window.h"
 
+#include <string>
+
 #include <QAction>
 #include <QMenuBar>
 #include <QDockWidget>
@@ -65,7 +67,7 @@ const QString trImportSettingsFailed = QObject::tr("Import settings failed!");
 const QString trExportSettingsFailed = QObject::tr("Export settings failed!");
 
 bool isNeededUpdate(const QString& serverVersion) {
-  if(serverVersion.isEmpty()){
+  if (serverVersion.isEmpty()) {
     return false;
   }
 
@@ -75,14 +77,14 @@ bool isNeededUpdate(const QString& serverVersion) {
   uint serMin = 0;
   uint serPatch = 0;
 
-  for(int i = 0; i < serverVersion.length(); ++i){
+  for (int i = 0; i < serverVersion.length(); ++i) {
     QChar ch = serverVersion[i];
     if (ch == '.') {
-      if(pos == 0){
+      if (pos == 0) {
         serMaj = curVer.toUInt();
-      } else if(pos == 1) {
+      } else if (pos == 1) {
         serMin = curVer.toUInt();
-      } else if(pos == 2) {
+      } else if (pos == 2) {
         serPatch = curVer.toUInt();
       }
 
@@ -111,23 +113,23 @@ bool isNeededUpdate(const QString& serverVersion) {
 const QKeySequence logsKeySequence = Qt::CTRL + Qt::Key_L;
 const QKeySequence explorerKeySequence = Qt::CTRL + Qt::Key_T;
 
-}
+}  // namespace
 
 namespace fastonosql {
+
 MainWindow::MainWindow()
   : QMainWindow(), isCheckedInSession_(false) {
 #ifdef OS_ANDROID
   setAttribute(Qt::WA_AcceptTouchEvents);
-  //setAttribute(Qt::WA_StaticContents);
+  // setAttribute(Qt::WA_StaticContents);
 
-  //grabGesture(Qt::TapGesture); //click
-  grabGesture(Qt::TapAndHoldGesture); //long tap
+  // grabGesture(Qt::TapGesture);  // click
+  grabGesture(Qt::TapAndHoldGesture);  // long tap
 
-  //grabGesture(Qt::SwipeGesture); //swipe
-  //grabGesture(Qt::PanGesture); // drag and drop
-  //grabGesture(Qt::PinchGesture); //zoom
+  // grabGesture(Qt::SwipeGesture);  // swipe
+  // grabGesture(Qt::PanGesture);  // drag and drop
+  // grabGesture(Qt::PinchGesture);  // zoom
 #endif
-  using namespace common;
   QString lang = SettingsManager::instance().currentLanguage();
   QString newLang = fasto::qt::translations::applyLanguage(lang);
   SettingsManager::instance().setCurrentLanguage(newLang);
@@ -144,17 +146,17 @@ MainWindow::MainWindow()
 
   loadFromFileAction_ = new QAction(this);
   loadFromFileAction_->setIcon(GuiFactory::instance().loadIcon());
-  //importAction_->setShortcut(openKey);
+  // importAction_->setShortcut(openKey);
   VERIFY(connect(loadFromFileAction_, &QAction::triggered, this, &MainWindow::loadConnection));
 
   importAction_ = new QAction(this);
   importAction_->setIcon(GuiFactory::instance().importIcon());
-  //importAction_->setShortcut(openKey);
+  // importAction_->setShortcut(openKey);
   VERIFY(connect(importAction_, &QAction::triggered, this, &MainWindow::importConnection));
 
   exportAction_ = new QAction(this);
   exportAction_->setIcon(GuiFactory::instance().exportIcon());
-  //exportAction_->setShortcut(openKey);
+  // exportAction_->setShortcut(openKey);
   VERIFY(connect(exportAction_, &QAction::triggered, this, &MainWindow::exportConnection));
 
   // Exit action
@@ -173,7 +175,8 @@ MainWindow::MainWindow()
   recentConnections_ = fileMenu->addMenu(recentMenu);
   for (int i = 0; i < MaxRecentConnections; ++i) {
     recentConnectionsActs_[i] = new QAction(this);
-    VERIFY(connect(recentConnectionsActs_[i], &QAction::triggered, this, &MainWindow::openRecentConnection));
+    VERIFY(connect(recentConnectionsActs_[i], &QAction::triggered,
+                   this, &MainWindow::openRecentConnection));
     recentMenu->addAction(recentConnectionsActs_[i]);
   }
 
@@ -194,16 +197,17 @@ MainWindow::MainWindow()
   editAction_ = menuBar()->addMenu(editMenu);
   editMenu->addAction(preferencesAction_);
 
-  //tools menu
+  // tools menu
   QMenu *tools = new QMenu(this);
   toolsAction_ = menuBar()->addMenu(tools);
 
   encodeDecodeDialogAction_ = new QAction(this);
   encodeDecodeDialogAction_->setIcon(GuiFactory::instance().encodeDecodeIcon());
-  VERIFY(connect(encodeDecodeDialogAction_, &QAction::triggered, this, &MainWindow::openEncodeDecodeDialog));
+  VERIFY(connect(encodeDecodeDialogAction_, &QAction::triggered,
+                 this, &MainWindow::openEncodeDecodeDialog));
   tools->addAction(encodeDecodeDialogAction_);
 
-  //window menu
+  // window menu
   QMenu *window = new QMenu(this);
   windowAction_ = menuBar()->addMenu(window);
   fullScreanAction_ = new QAction(this);
@@ -237,30 +241,36 @@ MainWindow::MainWindow()
 
   exp_ = new ExplorerTreeView(this);
   VERIFY(connect(exp_, &ExplorerTreeView::openedConsole, mainW, &MainWidget::openConsole));
-  VERIFY(connect(exp_, &ExplorerTreeView::closeServer, &ServersManager::instance(), &ServersManager::closeServer));
-  VERIFY(connect(exp_, &ExplorerTreeView::closeCluster, &ServersManager::instance(), &ServersManager::closeCluster));
+  VERIFY(connect(exp_, &ExplorerTreeView::closeServer,
+                 &ServersManager::instance(), &ServersManager::closeServer));
+  VERIFY(connect(exp_, &ExplorerTreeView::closeCluster,
+                 &ServersManager::instance(), &ServersManager::closeCluster));
   expDock_ = new QDockWidget(this);
   explorerAction_ = expDock_->toggleViewAction();
   explorerAction_->setShortcut(explorerKeySequence);
   explorerAction_->setChecked(true);
   views->addAction(explorerAction_);
 
-  expDock_->setAllowedAreas(Qt::LeftDockWidgetArea | Qt::RightDockWidgetArea | Qt::BottomDockWidgetArea | Qt::TopDockWidgetArea);
+  expDock_->setAllowedAreas(Qt::LeftDockWidgetArea | Qt::RightDockWidgetArea |
+                            Qt::BottomDockWidgetArea | Qt::TopDockWidgetArea);
   expDock_->setWidget(exp_);
   expDock_->setFeatures(QDockWidget::DockWidgetClosable | QDockWidget::DockWidgetMovable);
   expDock_->setVisible(true);
   addDockWidget(Qt::LeftDockWidgetArea, expDock_);
 
   LogTabWidget *log = new LogTabWidget(this);
-  VERIFY(connect(&fasto::qt::Logger::instance(), &fasto::qt::Logger::printed, log, &LogTabWidget::addLogMessage));
-  VERIFY(connect(&CommandLogger::instance(), &CommandLogger::printed, log, &LogTabWidget::addCommand));
+  VERIFY(connect(&fasto::qt::Logger::instance(), &fasto::qt::Logger::printed,
+                 log, &LogTabWidget::addLogMessage));
+  VERIFY(connect(&CommandLogger::instance(), &CommandLogger::printed,
+                 log, &LogTabWidget::addCommand));
   logDock_ = new QDockWidget(this);
   logsAction_ = logDock_->toggleViewAction();
   logsAction_->setShortcut(logsKeySequence);
   logsAction_->setChecked(false);
   views->addAction(logsAction_);
 
-  logDock_->setAllowedAreas(Qt::LeftDockWidgetArea | Qt::RightDockWidgetArea | Qt::BottomDockWidgetArea | Qt::TopDockWidgetArea);
+  logDock_->setAllowedAreas(Qt::LeftDockWidgetArea | Qt::RightDockWidgetArea |
+                            Qt::BottomDockWidgetArea | Qt::TopDockWidgetArea);
   logDock_->setWidget(log);
   logDock_->setFeatures(QDockWidget::DockWidgetClosable | QDockWidget::DockWidgetMovable);
   logDock_->setVisible(false);
@@ -277,7 +287,7 @@ MainWindow::~MainWindow() {
 }
 
 void MainWindow::changeEvent(QEvent* ev) {
-  if(ev->type() == QEvent::LanguageChange){
+  if (ev->type() == QEvent::LanguageChange) {
     retranslateUi();
   }
 
@@ -287,7 +297,7 @@ void MainWindow::changeEvent(QEvent* ev) {
 void MainWindow::showEvent(QShowEvent* ev) {
   QMainWindow::showEvent(ev);
   bool isA = SettingsManager::instance().autoCheckUpdates();
-  if(isA && !isCheckedInSession_){
+  if (isA && !isCheckedInSession_) {
     isCheckedInSession_ = true;
     checkUpdate();
   }
@@ -296,10 +306,10 @@ void MainWindow::showEvent(QShowEvent* ev) {
 void MainWindow::open() {
   ConnectionsDialog dlg(this);
   int result = dlg.exec();
-  if(result == QDialog::Accepted){
-    if(IConnectionSettingsBaseSPtr con = dlg.selectedConnection()) {
+  if (result == QDialog::Accepted) {
+    if (IConnectionSettingsBaseSPtr con = dlg.selectedConnection()) {
       createServer(con);
-    } else if(IClusterSettingsBaseSPtr clus = dlg.selectedCluster()) {
+    } else if (IClusterSettingsBaseSPtr clus = dlg.selectedCluster()) {
       createCluster(clus);
     }
   }
@@ -332,13 +342,12 @@ void MainWindow::reportBug() {
 }
 
 void MainWindow::enterLeaveFullScreen() {
-  using namespace translations;
   if (isFullScreen()) {
     showNormal();
-    fullScreanAction_->setText(trEnterFullScreen);
+    fullScreanAction_->setText(translations::trEnterFullScreen);
   } else {
     showFullScreen();
-    fullScreanAction_->setText(trExitFullScreen);
+    fullScreanAction_->setText(translations::trExitFullScreen);
   }
 }
 
@@ -349,16 +358,17 @@ void MainWindow::openEncodeDecodeDialog() {
 
 void MainWindow::openRecentConnection() {
   QAction *action = qobject_cast<QAction *>(sender());
-  if (!action){
+  if (!action) {
     return;
   }
 
   QString rcon = action->text();
   std::string srcon = common::convertToString(rcon);
   SettingsManager::ConnectionSettingsContainerType conns = SettingsManager::instance().connections();
-  for(SettingsManager::ConnectionSettingsContainerType::const_iterator it = conns.begin(); it != conns.end(); ++it){
+  for (SettingsManager::ConnectionSettingsContainerType::const_iterator it = conns.begin();
+       it != conns.end(); ++it) {
     IConnectionSettingsBaseSPtr con = *it;
-    if(con && con->connectionName() == srcon){
+    if (con && con->connectionName() == srcon) {
       createServer(con);
       return;
     }
@@ -366,16 +376,16 @@ void MainWindow::openRecentConnection() {
 }
 
 void MainWindow::loadConnection() {
-  using namespace translations;
   QString standardIni = common::convertFromString<QString>(SettingsManager::settingsFilePath());
   QString filepathR = QFileDialog::getOpenFileName(this, tr("Select settings file"),
                                                    standardIni, tr("Settings files (*.ini)"));
-  if (filepathR.isNull()){
+  if (filepathR.isNull()) {
     return;
   }
 
   SettingsManager::instance().reloadFromPath(common::convertToString(filepathR), false);
-  QMessageBox::information(this, trInfo, QObject::tr("Settings successfully loaded!"));
+  QMessageBox::information(this, translations::trInfo,
+                           QObject::tr("Settings successfully loaded!"));
 }
 
 void MainWindow::importConnection() {
@@ -383,7 +393,7 @@ void MainWindow::importConnection() {
   QString filepathR = QFileDialog::getOpenFileName(this, tr("Select encrypted settings file"),
                                                    SettingsManager::settingsDirPath(),
                                                    tr("Encrypted settings files (*.cini)"));
-  if (filepathR.isNull()){
+  if (filepathR.isNull()) {
     return;
   }
 
@@ -392,7 +402,7 @@ void MainWindow::importConnection() {
   common::file_system::Path wp(tmp);
   common::file_system::File writeFile(wp);
   bool openedw = writeFile.open("wb");
-  if(!openedw){
+  if (!openedw) {
     QMessageBox::critical(this, trError, trImportSettingsFailed);
     return;
   }
@@ -400,11 +410,10 @@ void MainWindow::importConnection() {
   common::file_system::Path rp(common::convertToString(filepathR));
   common::file_system::File readFile(rp);
   bool openedr = readFile.open("rb");
-  if(!openedr){
+  if (!openedr) {
     writeFile.close();
     common::Error err = common::file_system::remove_file(wp.path());
-    if(err && err->isError()){
-
+    if (err && err->isError()) {
     }
     QMessageBox::critical(this, trError, trImportSettingsFailed);
     return;
@@ -415,13 +424,12 @@ void MainWindow::importConnection() {
     writeFile.close();
     common::Error err = common::file_system::remove_file(wp.path());
     if (err && err->isError()) {
-
     }
     QMessageBox::critical(this, trError, trImportSettingsFailed);
     return;
   }
 
-  while(!readFile.isEof()){
+  while (!readFile.isEof()) {
     std::string data;
     bool res = readFile.read(&data, 256);
     if (!res) {
@@ -433,8 +441,7 @@ void MainWindow::importConnection() {
     if (er) {
       writeFile.close();
       common::Error err = common::file_system::remove_file(wp.path());
-      if(err && err->isError()){
-
+      if (err && err->isError()) {
       }
       QMessageBox::critical(this, trError, trImportSettingsFailed);
       return;
@@ -447,7 +454,6 @@ void MainWindow::importConnection() {
   SettingsManager::instance().reloadFromPath(tmp, false);
   common::Error err = common::file_system::remove_file(tmp);
   if (err && err->isError()) {
-
   }
   QMessageBox::information(this, trInfo, QObject::tr("Settings successfully imported!"));
 }
@@ -457,14 +463,14 @@ void MainWindow::exportConnection() {
   QString filepathW = QFileDialog::getSaveFileName(this, tr("Select file to save settings"),
                                                    SettingsManager::settingsDirPath(),
                                                    tr("Settings files (*.cini)"));
-  if (filepathW.isNull()){
+  if (filepathW.isNull()) {
     return;
   }
 
   common::file_system::Path wp(common::convertToString(filepathW));
   common::file_system::File writeFile(wp);
   bool openedw = writeFile.open("wb");
-  if(!openedw){
+  if (!openedw) {
     QMessageBox::critical(this, trError, trExportSettingsFailed);
     return;
   }
@@ -475,8 +481,7 @@ void MainWindow::exportConnection() {
   if (!openedr) {
     writeFile.close();
     common::Error err = common::file_system::remove_file(wp.path());
-    if(err && err->isError()){
-
+    if (err && err->isError()) {
     }
     QMessageBox::critical(this, trError, trExportSettingsFailed);
     return;
@@ -486,27 +491,25 @@ void MainWindow::exportConnection() {
   if (!hexEnc) {
     writeFile.close();
     common::Error err = common::file_system::remove_file(wp.path());
-    if(err && err->isError()){
-
+    if (err && err->isError()) {
     }
     QMessageBox::critical(this, trError, trExportSettingsFailed);
     return;
   }
 
-  while(!readFile.isEof()){
+  while (!readFile.isEof()) {
     std::string data;
     bool res = readFile.readLine(&data);
-    if(!res || readFile.isEof()){
+    if (!res || readFile.isEof()) {
       break;
     }
 
     std::string edata;
     common::Error er = hexEnc->encode(data, &edata);
-    if(er){
+    if (er) {
       writeFile.close();
       common::Error err = common::file_system::remove_file(wp.path());
-      if(err && err->isError()){
-
+      if (err && err->isError()) {
       }
       QMessageBox::critical(this, trError, trExportSettingsFailed);
       return;
@@ -520,18 +523,18 @@ void MainWindow::exportConnection() {
 }
 
 void MainWindow::versionAvailible(bool succesResult, const QString& version) {
-  using namespace translations;
   if (!succesResult) {
-      QMessageBox::information(this, trCheckVersion, trConnectionErrorText);
+      QMessageBox::information(this, translations::trCheckVersion,
+                               translations::trConnectionErrorText);
       checkUpdateAction_->setEnabled(true);
   } else {
       bool isn = isNeededUpdate(version);
       if (isn) {
-          QMessageBox::information(this, trCheckVersion,
+          QMessageBox::information(this, translations::trCheckVersion,
               QObject::tr("Availible new version: %1")
                   .arg(version));
       } else {
-          QMessageBox::information(this, trCheckVersion,
+          QMessageBox::information(this, translations::trCheckVersion,
               QObject::tr("<h3>You're' up-to-date!</h3>" PROJECT_NAME_TITLE " %1 is currently the newest version available.")
                   .arg(version));
       }
@@ -542,7 +545,7 @@ void MainWindow::versionAvailible(bool succesResult, const QString& version) {
 
 #ifdef OS_ANDROID
 bool MainWindow::event(QEvent *event) {
-  if (event->type() == QEvent::Gesture){
+  if (event->type() == QEvent::Gesture) {
     QGestureEvent *gest = static_cast<QGestureEvent*>(event);
     if (gest) {
       return gestureEvent(gest);
@@ -635,35 +638,34 @@ void MainWindow::createStatusBar() {
 }
 
 void MainWindow::retranslateUi() {
-  using namespace translations;
-  openAction_->setText(trOpen);
-  loadFromFileAction_->setText(trLoadFromFile);
-  importAction_->setText(trImport);
-  exportAction_->setText(trExport);
-  exitAction_->setText(trExit);
-  fileAction_->setText(trFile);
-  toolsAction_->setText(trTools);
-  encodeDecodeDialogAction_->setText(trEncodeDecode);
-  preferencesAction_->setText(trPreferences);
-  checkUpdateAction_->setText(trCheckUpdate);
-  editAction_->setText(trEdit);
-  windowAction_->setText(trWindow);
-  fullScreanAction_->setText(trEnterFullScreen);
-  reportBugAction_->setText(trReportBug);
+  openAction_->setText(translations::trOpen);
+  loadFromFileAction_->setText(translations::trLoadFromFile);
+  importAction_->setText(translations::trImport);
+  exportAction_->setText(translations::trExport);
+  exitAction_->setText(translations::trExit);
+  fileAction_->setText(translations::trFile);
+  toolsAction_->setText(translations::trTools);
+  encodeDecodeDialogAction_->setText(translations::trEncodeDecode);
+  preferencesAction_->setText(translations::trPreferences);
+  checkUpdateAction_->setText(translations::trCheckUpdate);
+  editAction_->setText(translations::trEdit);
+  windowAction_->setText(translations::trWindow);
+  fullScreanAction_->setText(translations::trEnterFullScreen);
+  reportBugAction_->setText(translations::trReportBug);
   aboutAction_->setText(tr("About %1...").arg(PROJECT_NAME));
-  helpAction_->setText(trHelp);
-  explorerAction_->setText(trExpTree);
-  logsAction_->setText(trLogs);
-  recentConnections_->setText(trRecentConnections);
-  clearMenu_->setText(trClearMenu);
+  helpAction_->setText(translations::trHelp);
+  explorerAction_->setText(translations::trExpTree);
+  logsAction_->setText(translations::trLogs);
+  recentConnections_->setText(translations::trRecentConnections);
+  clearMenu_->setText(translations::trClearMenu);
 #ifdef BUILD_WITH_SOCIAL_BUTTONS
   homePageAction_->setText(tr("%1 home page").arg(PROJECT_NAME_TITLE));
   facebookAction_->setText(tr("Facebook %1 link").arg(PROJECT_NAME_TITLE));
   twitterAction_->setText(tr("Twitter %1 link").arg(PROJECT_NAME_TITLE));
   githubAction_->setText(tr("Github %1 link").arg(PROJECT_NAME_TITLE));
 #endif
-  expDock_->setWindowTitle(trExpTree);
-  logDock_->setWindowTitle(trLogs);
+  expDock_->setWindowTitle(translations::trExpTree);
+  logDock_->setWindowTitle(translations::trLogs);
 }
 
 void MainWindow::updateRecentConnectionActions() {
@@ -677,7 +679,7 @@ void MainWindow::updateRecentConnectionActions() {
     recentConnectionsActs_[i]->setVisible(true);
   }
 
-  for (int j = numRecentFiles; j < MaxRecentConnections; ++j){
+  for (int j = numRecentFiles; j < MaxRecentConnections; ++j) {
     recentConnectionsActs_[j]->setVisible(false);
   }
 
@@ -692,7 +694,7 @@ void MainWindow::clearRecentConnectionsMenu() {
 }
 
 void MainWindow::createServer(IConnectionSettingsBaseSPtr settings) {
-  if(!settings){
+  if (!settings) {
     return;
   }
 
@@ -702,7 +704,7 @@ void MainWindow::createServer(IConnectionSettingsBaseSPtr settings) {
   exp_->addServer(server);
   SettingsManager::instance().addRConnection(rcon);
   updateRecentConnectionActions();
-  if(SettingsManager::instance().autoOpenConsole()){
+  if (SettingsManager::instance().autoOpenConsole()) {
     MainWidget* mwidg = qobject_cast<MainWidget*>(centralWidget());
     if (mwidg) {
       mwidg->openConsole(server, "");
@@ -730,7 +732,7 @@ void MainWindow::createCluster(IClusterSettingsBaseSPtr settings) {
   exp_->addCluster(cl);
   if (SettingsManager::instance().autoOpenConsole()) {
     MainWidget* mwidg = qobject_cast<MainWidget*>(centralWidget());
-    if(mwidg){
+    if (mwidg) {
       mwidg->openConsole(cl->root(), "");
     }
   }
@@ -778,5 +780,5 @@ void UpdateChecker::routine() {
   return;
 }
 
-}
+}  // namespace fastonosql
 

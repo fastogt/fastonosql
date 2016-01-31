@@ -35,5 +35,5 @@ class FastoTreeView
   virtual void resizeEvent(QResizeEvent *event);
 };
 
-}
+}  // namespace fastonosql
 

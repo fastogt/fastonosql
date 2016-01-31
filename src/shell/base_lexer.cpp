@@ -27,11 +27,11 @@ BaseQsciApi::BaseQsciApi(QsciLexer* lexer)
 }
 
 bool BaseQsciApi::canSkipCommand(const CommandInfo& info) const {
-  if(filtered_version_ == UNDEFINED_SINCE){
+  if (filtered_version_ == UNDEFINED_SINCE) {
     return false;
   }
 
-  if(info.since_ == UNDEFINED_SINCE){
+  if (info.since_ == UNDEFINED_SINCE) {
     return false;
   }
 
@@ -60,7 +60,7 @@ QString BaseQsciLexer::description(int style) const {
 }
 
 QColor BaseQsciLexer::defaultColor(int style) const {
-  switch(style) {
+  switch (style) {
     case Default:
       return Qt::black;
     case Command:
@@ -81,4 +81,4 @@ QString makeCallTip(const CommandInfo& info) {
       .arg(common::convertFromString<QString>(info.example_));
 }
 
-}
+}  // namespace fastonosql

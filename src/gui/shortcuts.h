@@ -45,4 +45,4 @@ namespace fastonosql {
   bool isRefreshShortcut(QKeyEvent* keyEvent);
   bool isFullScreenShortcut(QKeyEvent* keyEvent);
   bool isExecuteScriptShortcut(QKeyEvent* keyEvent);
-}
+}  // namespace fastonosql

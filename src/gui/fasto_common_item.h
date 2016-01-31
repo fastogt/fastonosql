@@ -28,8 +28,7 @@ namespace fastonosql {
 class FastoCommonItem
   : public fasto::qt::gui::TreeItem {
  public:
-  enum eColumn
-  {
+  enum eColumn {
     eKey = 0,
     eValue = 1,
     eType = 2,
@@ -46,7 +45,7 @@ class FastoCommonItem
 
   void setValue(NValue val);
 
-private:
+ private:
   QString key_;
   NValue value_;
   bool isReadOnly_;
@@ -60,5 +59,5 @@ QString toCsv(FastoCommonItem* item, const QString &delemitr);
 QString fromGzip(FastoCommonItem* item);
 QString fromHexMsgPack(FastoCommonItem* item);
 
-}
+}  // namespace fastonosql
 

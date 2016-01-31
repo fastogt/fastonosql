@@ -33,32 +33,40 @@ MainTabBar::MainTabBar(QWidget* parent)
   : QTabBar(parent) {
   newShellAction_ = new QAction(this);
   newShellAction_->setShortcut(newTabKey);
-  VERIFY(connect(newShellAction_, &QAction::triggered, this , &MainTabBar::createdNewTab));
+  VERIFY(connect(newShellAction_, &QAction::triggered,
+                 this , &MainTabBar::createdNewTab));
 
   nextTabAction_ = new QAction(this);
   nextTabAction_->setShortcut(nextTabKey);
-  VERIFY(connect(nextTabAction_, &QAction::triggered, this , &MainTabBar::nextTab));
+  VERIFY(connect(nextTabAction_, &QAction::triggered,
+                 this , &MainTabBar::nextTab));
 
   prevTabAction_ = new QAction(this);
   prevTabAction_->setShortcut(prevTabKey);
-  VERIFY(connect(prevTabAction_, &QAction::triggered, this , &MainTabBar::prevTab));
+  VERIFY(connect(prevTabAction_, &QAction::triggered,
+                 this , &MainTabBar::prevTab));
 
   reloadShellAction_ = new QAction(this);
   reloadShellAction_->setShortcut(refreshKey);
-  VERIFY(connect(reloadShellAction_, &QAction::triggered, this , &MainTabBar::reloadedTab));
+  VERIFY(connect(reloadShellAction_, &QAction::triggered,
+                 this , &MainTabBar::reloadedTab));
 
   duplicateShellAction_ = new QAction(this);
-  VERIFY(connect(duplicateShellAction_, &QAction::triggered, this , &MainTabBar::duplicatedTab));
+  VERIFY(connect(duplicateShellAction_, &QAction::triggered,
+                 this , &MainTabBar::duplicatedTab));
 
   closeShellAction_ = new QAction(this);
   closeShellAction_->setShortcut(closeKey);
-  VERIFY(connect(closeShellAction_, &QAction::triggered, this , &MainTabBar::closedTab));
+  VERIFY(connect(closeShellAction_, &QAction::triggered,
+                 this , &MainTabBar::closedTab));
 
   closeOtherShellsAction_ = new QAction(this);
-  VERIFY(connect(closeOtherShellsAction_, &QAction::triggered, this , &MainTabBar::closedOtherTabs));
+  VERIFY(connect(closeOtherShellsAction_, &QAction::triggered,
+                 this , &MainTabBar::closedOtherTabs));
 
   setContextMenuPolicy(Qt::CustomContextMenu);
-  VERIFY(connect(this, &MainTabBar::customContextMenuRequested, this, &MainTabBar::showContextMenu));
+  VERIFY(connect(this, &MainTabBar::customContextMenuRequested,
+                 this, &MainTabBar::showContextMenu));
 
   retranslateUi();
 }
@@ -86,14 +94,13 @@ void MainTabBar::changeEvent(QEvent* e) {
 }
 
 void MainTabBar::retranslateUi() {
-  using namespace translations;
-  newShellAction_->setText(trNewTab);
-  nextTabAction_->setText(trNextTab);
-  prevTabAction_->setText(trPrevTab);
-  reloadShellAction_->setText(trReload);
-  duplicateShellAction_->setText(trDuplicate);
-  closeShellAction_->setText(trCloseTab);
-  closeOtherShellsAction_->setText(trCloseOtherTab);
+  newShellAction_->setText(translations::trNewTab);
+  nextTabAction_->setText(translations::trNextTab);
+  prevTabAction_->setText(translations::trPrevTab);
+  reloadShellAction_->setText(translations::trReload);
+  duplicateShellAction_->setText(translations::trDuplicate);
+  closeShellAction_->setText(translations::trCloseTab);
+  closeOtherShellsAction_->setText(translations::trCloseOtherTab);
 }
 
-}
+}  // namespace fastonosql

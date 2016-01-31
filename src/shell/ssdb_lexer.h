@@ -18,6 +18,8 @@
 
 #pragma once
 
+#include <vector>
+
 #include "shell/base_lexer.h"
 
 namespace fastonosql {
@@ -52,4 +54,4 @@ class SsdbLexer
   void paintCommands(const QString& source, int start);
 };
 
-}
+}  // namespace fastonosql

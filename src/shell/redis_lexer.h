@@ -18,6 +18,8 @@
 
 #pragma once
 
+#include <vector>
+
 #include "shell/base_lexer.h"
 
 namespace fastonosql {
@@ -34,8 +36,7 @@ class RedisApi
 };
 
 class RedisLexer
-  : public BaseQsciLexer
-{
+  : public BaseQsciLexer {
   Q_OBJECT
  public:
   explicit RedisLexer(QObject* parent = 0);
@@ -53,4 +54,4 @@ class RedisLexer
   void paintCommands(const QString& source, int start);
 };
 
-}
+}  // namespace fastonosql

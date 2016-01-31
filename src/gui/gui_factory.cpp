@@ -127,17 +127,17 @@ const QIcon& GuiFactory::keyIcon() const {
 const QIcon& GuiFactory::icon(connectionTypes type) const {
   if (type == REDIS) {
     return redisConnectionIcon();
-  } else if(type == MEMCACHED) {
+  } else if (type == MEMCACHED) {
     return memcachedConnectionIcon();
-  } else if(type == SSDB) {
+  } else if (type == SSDB) {
     return ssdbConnectionIcon();
-  } else if(type == LEVELDB) {
+  } else if (type == LEVELDB) {
     return leveldbConnectionIcon();
-  } else if(type == ROCKSDB) {
+  } else if (type == ROCKSDB) {
     return rocksdbConnectionIcon();
-  } else if(type == UNQLITE) {
+  } else if (type == UNQLITE) {
     return unqliteConnectionIcon();
-  } else if(type == LMDB) {
+  } else if (type == LMDB) {
     return lmdbConnectionIcon();
   } else {
     return serverIcon();
@@ -148,25 +148,25 @@ const QIcon& GuiFactory::modeIcon(ConnectionMode mode) const {
   if (mode == LatencyMode) {
     static QIcon i(":" PROJECT_NAME_LOWERCASE "/images/64x64/latency_mode.png");
     return i;
-  } else if(mode == SlaveMode) {
+  } else if (mode == SlaveMode) {
     static QIcon i(":" PROJECT_NAME_LOWERCASE "/images/64x64/slave_mode.png");
     return i;
-  } else if(mode == GetRDBMode) {
+  } else if (mode == GetRDBMode) {
     static QIcon i(":" PROJECT_NAME_LOWERCASE "/images/64x64/rdb_mode.png");
     return i;
-  } else if(mode == PipeMode) {
+  } else if (mode == PipeMode) {
     static QIcon i(":" PROJECT_NAME_LOWERCASE "/images/64x64/pipe_mode.png");
     return i;
-  } else if(mode == FindBigKeysMode) {
+  } else if (mode == FindBigKeysMode) {
     static QIcon i(":" PROJECT_NAME_LOWERCASE "/images/64x64/bigkeys_mode.png");
     return i;
-  } else if(mode == StatMode) {
+  } else if (mode == StatMode) {
     static QIcon i(":" PROJECT_NAME_LOWERCASE "/images/64x64/stat_mode.png");
     return i;
-  } else if(mode == ScanMode) {
+  } else if (mode == ScanMode) {
     static QIcon i(":" PROJECT_NAME_LOWERCASE "/images/64x64/scan_mode.png");
     return i;
-  } else if(mode == InteractiveMode) {
+  } else if (mode == InteractiveMode) {
     static QIcon i(":" PROJECT_NAME_LOWERCASE "/images/64x64/interactive_mode.png");
     return i;
   } else {
@@ -177,41 +177,41 @@ const QIcon& GuiFactory::modeIcon(ConnectionMode mode) const {
 }
 
 const QIcon& GuiFactory::icon(common::Value::Type type) const {
-  switch(type) {
-  case common::Value::TYPE_NULL:
-    static QIcon u(":" PROJECT_NAME_LOWERCASE "/images/64x64/null.png");
-    return u;
-  case common::Value::TYPE_BOOLEAN:
-    static QIcon b(":" PROJECT_NAME_LOWERCASE "/images/64x64/bool.png");
-    return b;
-  case common::Value::TYPE_STRING:
-    static QIcon s(":" PROJECT_NAME_LOWERCASE "/images/64x64/string.png");
-    return s;
-  case common::Value::TYPE_BYTE_ARRAY:
-    static QIcon by(":" PROJECT_NAME_LOWERCASE "/images/64x64/byte.png");
-    return by;
-  case common::Value::TYPE_SET:
-  case common::Value::TYPE_ARRAY:
-    static QIcon a(":" PROJECT_NAME_LOWERCASE "/images/64x64/array.png");
-    return a;
-  case common::Value::TYPE_HASH:
-    static QIcon h(":" PROJECT_NAME_LOWERCASE "/images/64x64/hash.png");
-    return h;
-  case common::Value::TYPE_ZSET:
-    static QIcon z(":" PROJECT_NAME_LOWERCASE "/images/64x64/zset.png");
-    return z;
-  case common::Value::TYPE_INTEGER:
-  case common::Value::TYPE_DOUBLE:
-  case common::Value::TYPE_UINTEGER:
-    static QIcon i(":" PROJECT_NAME_LOWERCASE "/images/64x64/integer.png");
-    return i;
-  case common::Value::TYPE_ERROR:
-    static QIcon er(":" PROJECT_NAME_LOWERCASE "/images/64x64/error.png");
-    return er;
-  default:
-    static QIcon err(":" PROJECT_NAME_LOWERCASE "/images/64x64/error.png");
-    NOTREACHED();
-    return err;
+  switch (type) {
+    case common::Value::TYPE_NULL:
+      static QIcon u(":" PROJECT_NAME_LOWERCASE "/images/64x64/null.png");
+      return u;
+    case common::Value::TYPE_BOOLEAN:
+      static QIcon b(":" PROJECT_NAME_LOWERCASE "/images/64x64/bool.png");
+      return b;
+    case common::Value::TYPE_STRING:
+      static QIcon s(":" PROJECT_NAME_LOWERCASE "/images/64x64/string.png");
+      return s;
+    case common::Value::TYPE_BYTE_ARRAY:
+      static QIcon by(":" PROJECT_NAME_LOWERCASE "/images/64x64/byte.png");
+      return by;
+    case common::Value::TYPE_SET:
+    case common::Value::TYPE_ARRAY:
+      static QIcon a(":" PROJECT_NAME_LOWERCASE "/images/64x64/array.png");
+      return a;
+    case common::Value::TYPE_HASH:
+      static QIcon h(":" PROJECT_NAME_LOWERCASE "/images/64x64/hash.png");
+      return h;
+    case common::Value::TYPE_ZSET:
+      static QIcon z(":" PROJECT_NAME_LOWERCASE "/images/64x64/zset.png");
+      return z;
+    case common::Value::TYPE_INTEGER:
+    case common::Value::TYPE_DOUBLE:
+    case common::Value::TYPE_UINTEGER:
+      static QIcon i(":" PROJECT_NAME_LOWERCASE "/images/64x64/integer.png");
+      return i;
+    case common::Value::TYPE_ERROR:
+      static QIcon er(":" PROJECT_NAME_LOWERCASE "/images/64x64/error.png");
+      return er;
+    default:
+      static QIcon err(":" PROJECT_NAME_LOWERCASE "/images/64x64/error.png");
+      NOTREACHED();
+      return err;
   }
 }
 
@@ -250,10 +250,9 @@ const QIcon& GuiFactory::textIcon() const {
   return start;
 }
 
-const QIcon& GuiFactory::tableIcon() const
-{
-    static QIcon start(":" PROJECT_NAME_LOWERCASE "/images/64x64/table.png");
-    return start;
+const QIcon& GuiFactory::tableIcon() const {
+  static QIcon start(":" PROJECT_NAME_LOWERCASE "/images/64x64/table.png");
+  return start;
 }
 
 const QIcon& GuiFactory::treeIcon() const {
@@ -302,19 +301,19 @@ const QIcon& GuiFactory::close16Icon() const {
 }
 
 const QIcon& GuiFactory::commandIcon(connectionTypes type) const {
-  if(type == REDIS){
+  if (type == REDIS) {
     return redisConnectionIcon();
-  } else if(type == MEMCACHED) {
+  } else if (type == MEMCACHED) {
     return memcachedConnectionIcon();
-  } else if(type == SSDB) {
+  } else if (type == SSDB) {
     return ssdbConnectionIcon();
-  } else if(type == LEVELDB) {
+  } else if (type == LEVELDB) {
     return leveldbConnectionIcon();
-  } else if(type == ROCKSDB) {
+  } else if (type == ROCKSDB) {
     return rocksdbConnectionIcon();
-  } else if(type == UNQLITE) {
+  } else if (type == UNQLITE) {
     return unqliteConnectionIcon();
-  } else if(type == LMDB) {
+  } else if (type == LMDB) {
     return lmdbConnectionIcon();
   } else {
     return serverIcon();
@@ -380,4 +379,4 @@ const QIcon& GuiFactory::lmdbConnectionIcon() const {
   return main;
 }
 
-}
+}  // namespace fastonosql

@@ -18,10 +18,13 @@
 
 #include "shell/memcached_lexer.h"
 
+#include <vector>
+#include <algorithm>
+
 #include "core/memcached/memcached_driver.h"
 
 namespace {
-  const QString help("help");
+  const QString help = "help";
 }
 
 namespace fastonosql {
@@ -31,23 +34,23 @@ MemcachedApi::MemcachedApi(QsciLexer *lexer)
 }
 
 void MemcachedApi::updateAutoCompletionList(const QStringList& context, QStringList& list) {
-  for(QStringList::const_iterator it = context.begin(); it != context.end(); ++it){
-   QString val = *it;
-   for(int i = 0; i < SIZEOFMASS(memcachedCommands); ++i){
-     CommandInfo cmd = memcachedCommands[i];
-     if (canSkipCommand(cmd)) {
-       continue;
-     }
+  for (QStringList::const_iterator it = context.begin(); it != context.end(); ++it) {
+    QString val = *it;
+    for (size_t i = 0; i < SIZEOFMASS(memcachedCommands); ++i) {
+      CommandInfo cmd = memcachedCommands[i];
+      if (canSkipCommand(cmd)) {
+        continue;
+      }
 
-     QString jval = common::convertFromString<QString>(cmd.name_);
-     if (jval.startsWith(val, Qt::CaseInsensitive)) {
-       list.append(jval + "?1");
-     }
-   }
+      QString jval = common::convertFromString<QString>(cmd.name_);
+      if (jval.startsWith(val, Qt::CaseInsensitive)) {
+        list.append(jval + "?1");
+      }
+    }
 
-   if (help.startsWith(val, Qt::CaseInsensitive)) {
-     list.append(help + "?2");
-   }
+    if (help.startsWith(val, Qt::CaseInsensitive)) {
+      list.append(help + "?2");
+    }
   }
 }
 
@@ -58,7 +61,7 @@ QStringList MemcachedApi::callTips(const QStringList& context, int commas,
     for (int i = 0; i < SIZEOFMASS(memcachedCommands); ++i) {
       CommandInfo cmd = memcachedCommands[i];
       QString jval = common::convertFromString<QString>(cmd.name_);
-      if(QString::compare(jval, val, Qt::CaseInsensitive) == 0){
+      if (QString::compare(jval, val, Qt::CaseInsensitive) == 0) {
         return QStringList() << makeCallTip(cmd);
       }
     }
@@ -86,18 +89,18 @@ const char* MemcachedLexer::basedOn() const {
 
 std::vector<uint32_t> MemcachedLexer::supportedVersions() const {
   std::vector<uint32_t> result;
-  for(int i = 0; i < SIZEOFMASS(memcachedCommands); ++i){
+  for (size_t i = 0; i < SIZEOFMASS(memcachedCommands); ++i) {
     CommandInfo cmd = memcachedCommands[i];
 
     bool needed_insert = true;
-    for(int j = 0; j < result.size(); ++j){
-      if(result[j] == cmd.since_){
+    for (int j = 0; j < result.size(); ++j) {
+      if (result[j] == cmd.since_) {
         needed_insert = false;
         break;
       }
     }
 
-    if(needed_insert){
+    if (needed_insert) {
       result.push_back(cmd.since_);
     }
   }
@@ -129,7 +132,7 @@ void MemcachedLexer::styleText(int start, int end) {
 
   int index = 0;
   int begin = 0;
-  while( (begin = source.indexOf(help, index, Qt::CaseInsensitive)) != -1){
+  while ((begin = source.indexOf(help, index, Qt::CaseInsensitive)) != -1) {
     index = begin + help.length();
 
     startStyling(start + begin);
@@ -139,19 +142,19 @@ void MemcachedLexer::styleText(int start, int end) {
 }
 
 void MemcachedLexer::paintCommands(const QString& source, int start) {
-  for (int i = 0; i < SIZEOFMASS(memcachedCommands); ++i) {
-   CommandInfo cmd = memcachedCommands[i];
-   QString word = common::convertFromString<QString>(cmd.name_);
-   int index = 0;
-   int begin = 0;
-   while( (begin = source.indexOf(word, index, Qt::CaseInsensitive)) != -1){
-     index = begin + word.length();
+  for (size_t i = 0; i < SIZEOFMASS(memcachedCommands); ++i) {
+    CommandInfo cmd = memcachedCommands[i];
+    QString word = common::convertFromString<QString>(cmd.name_);
+    int index = 0;
+    int begin = 0;
+    while ((begin = source.indexOf(word, index, Qt::CaseInsensitive)) != -1) {
+      index = begin + word.length();
 
-     startStyling(start + begin);
-     setStyling(word.length(), Command);
-     startStyling(start + begin);
-   }
+      startStyling(start + begin);
+      setStyling(word.length(), Command);
+      startStyling(start + begin);
+    }
   }
 }
 
-}
+}  // namespace fastonosql

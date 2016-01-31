@@ -18,10 +18,13 @@
 
 #include "shell/rocksdb_lexer.h"
 
+#include <vector>
+#include <algorithm>
+
 #include "core/rocksdb/rocksdb_driver.h"
 
 namespace {
-  const QString help("help");
+  const QString help = "help";
 }
 
 namespace fastonosql {
@@ -35,12 +38,12 @@ void RocksdbApi::updateAutoCompletionList(const QStringList& context, QStringLis
     QString val = *it;
     for (int i = 0; i < SIZEOFMASS(rocksdbCommands); ++i) {
       CommandInfo cmd = rocksdbCommands[i];
-      if(canSkipCommand(cmd)){
+      if (canSkipCommand(cmd)) {
         continue;
       }
 
       QString jval = common::convertFromString<QString>(cmd.name_);
-      if(jval.startsWith(val, Qt::CaseInsensitive)){
+      if (jval.startsWith(val, Qt::CaseInsensitive)) {
         list.append(jval + "?1");
       }
     }
@@ -92,7 +95,7 @@ std::vector<uint32_t> RocksdbLexer::supportedVersions() const {
 
     bool needed_insert = true;
     for (int j = 0; j < result.size(); ++j) {
-      if(result[j] == cmd.since_){
+      if (result[j] == cmd.since_) {
         needed_insert = false;
         break;
       }
@@ -154,4 +157,4 @@ void RocksdbLexer::paintCommands(const QString& source, int start) {
   }
 }
 
-}
+}  // namespace fastonosql

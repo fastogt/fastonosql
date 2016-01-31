@@ -31,7 +31,7 @@ class QComboBox;
 namespace fasto {
 namespace qt {
 namespace gui {
-  class IconLabel;
+class IconLabel;
 }
 }
 }
@@ -43,7 +43,8 @@ class BaseShellWidget
   : public QWidget {
   Q_OBJECT
  public:
-  BaseShellWidget(IServerSPtr server, const QString& filePath = QString(), QWidget* parent = 0);
+  explicit BaseShellWidget(IServerSPtr server,
+                           const QString& filePath = QString(), QWidget* parent = 0);
   virtual ~BaseShellWidget();
 
   IServerSPtr server() const;
@@ -112,4 +113,4 @@ class BaseShellWidget
   QString filePath_;
 };
 
-}
+}  // namespace fastonosql

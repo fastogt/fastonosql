@@ -24,9 +24,11 @@
 #include <QPushButton>
 
 #include "fasto/qt/gui/base/graph_widget.h"
-#include "gui/gui_factory.h"
 #include "fasto/qt/gui/glass_widget.h"
+
 #include "core/iserver.h"
+
+#include "gui/gui_factory.h"
 
 #include "translations/global.h"
 
@@ -135,7 +137,7 @@ void ServerHistoryDialog::refreshInfoFields(int index) {
 
   std::vector< std::vector<Field> > fields = infoFieldsFromType(server_->type());
   std::vector<Field> field = fields[index];
-  for (size_t i = 0; i < field.size(); ++i) {
+  for (int i = 0; i < field.size(); ++i) {
     Field fl = field[i];
     if(fl.isIntegral()){
       serverInfoFields_->addItem(common::convertFromString<QString>(fl.name_), i);
