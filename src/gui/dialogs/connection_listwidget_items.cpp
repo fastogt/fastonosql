@@ -57,7 +57,7 @@ ClusterConnectionListWidgetItem::ClusterConnectionListWidgetItem(IClusterSetting
 
   IClusterSettingsBase::cluster_connection_type servers = connection_->nodes();
 
-  for(int i = 0; i < servers.size(); ++i){
+  for(size_t i = 0; i < servers.size(); ++i){
     IConnectionSettingsBaseSPtr con = servers[i];
     ConnectionListWidgetItem* item = new ConnectionListWidgetItem(con);
     addChild(item);

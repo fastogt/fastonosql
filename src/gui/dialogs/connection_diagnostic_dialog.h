@@ -37,25 +37,24 @@ namespace fastonosql {
 
 class TestConnection
   : public QObject {
-  Q_OBJECT
-public:
+ Q_OBJECT
+ public:
   TestConnection(IConnectionSettingsBaseSPtr conn, QObject* parent = 0);
 
-Q_SIGNALS:
+ Q_SIGNALS:
   void connectionResult(bool suc, qint64 msTimeExecute, const QString& resultText);
 
-public Q_SLOTS:
+ public Q_SLOTS:
   void routine();
 
-private:
+ private:
   IConnectionSettingsBaseSPtr connection_;
   common::time64_t startTime_;
 };
 
 class ConnectionDiagnosticDialog
   : public QDialog {
-    Q_OBJECT
-
+ Q_OBJECT
  public:
   enum
   {

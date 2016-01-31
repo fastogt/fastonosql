@@ -21,11 +21,11 @@
 #include "shell/base_lexer.h"
 
 namespace fastonosql {
+
 class RedisApi
-  : public BaseQsciApi
-{
+  : public BaseQsciApi {
   Q_OBJECT
-public:
+ public:
   explicit RedisApi(QsciLexer* lexer);
 
   virtual void updateAutoCompletionList(const QStringList& context, QStringList& list);
@@ -37,7 +37,7 @@ class RedisLexer
   : public BaseQsciLexer
 {
   Q_OBJECT
-public:
+ public:
   explicit RedisLexer(QObject* parent = 0);
 
   virtual const char* language() const;
@@ -49,7 +49,7 @@ public:
 
   virtual void styleText(int start, int end);
 
-private:
+ private:
   void paintCommands(const QString& source, int start);
 };
 

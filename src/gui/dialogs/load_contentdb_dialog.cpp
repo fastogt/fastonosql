@@ -29,10 +29,10 @@
 #include "translations/global.h"
 
 namespace fastonosql {
+
 LoadContentDbDialog::LoadContentDbDialog(const QString &title,
                                          connectionTypes type, QWidget* parent)
-  : QDialog(parent), type_(type)
-{
+  : QDialog(parent), type_(type) {
   setWindowIcon(GuiFactory::instance().icon(type_));
   setWindowTitle(title);
   QDialogButtonBox* buttonBox = new QDialogButtonBox(this);

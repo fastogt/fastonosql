@@ -27,8 +27,7 @@
 namespace fastonosql {
 
 struct leveldbConfig
-  : public LocalConfig
-{
+  : public LocalConfig {
   leveldbConfig();
 
   leveldb::Options options_;

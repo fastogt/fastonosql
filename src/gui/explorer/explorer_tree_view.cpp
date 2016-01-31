@@ -46,8 +46,7 @@
 namespace fastonosql {
 
 ExplorerTreeView::ExplorerTreeView(QWidget* parent)
-  : QTreeView(parent)
-{
+  : QTreeView(parent) {
   setModel(new ExplorerTreeModel(this));
 
   setSelectionBehavior(QAbstractItemView::SelectRows);
@@ -168,18 +167,18 @@ void ExplorerTreeView::addCluster(IClusterSPtr cluster) {
 
 void ExplorerTreeView::removeCluster(IClusterSPtr cluster) {
   DCHECK(cluster);
-  if(!cluster){
+  if (!cluster) {
     return;
   }
 
   ExplorerTreeModel *mod = static_cast<ExplorerTreeModel*>(model());
   DCHECK(mod);
-  if(!mod){
+  if (!mod) {
     return;
   }
 
   ICluster::nodes_type nodes = cluster->nodes();
-  for(int i = 0; i < nodes.size(); ++i){
+  for (int i = 0; i < nodes.size(); ++i) {
     unsyncWithServer(nodes[i].get());
   }
 
@@ -195,7 +194,7 @@ void ExplorerTreeView::showContextMenu(const QPoint& point) {
   if (sel.isValid()) {
     IExplorerTreeItem *node = common::utils_qt::item<IExplorerTreeItem*>(sel);
     DCHECK(node);
-    if(!node){
+    if (!node) {
       return;
     }
 
@@ -271,21 +270,21 @@ void ExplorerTreeView::showContextMenu(const QPoint& point) {
 
 void ExplorerTreeView::connectDisconnectToServer() {
   QModelIndex sel = selectedIndex();
-  if(!sel.isValid()){
+  if (!sel.isValid()) {
     return;
   }
 
   ExplorerServerItem *node = common::utils_qt::item<ExplorerServerItem*>(sel);
-  if(!node){
+  if (!node) {
     return;
   }
 
   IServerSPtr server = node->server();
-  if(!server){
+  if (!server) {
     return;
   }
 
-  if(server->isConnected()){
+  if (server->isConnected()) {
     EventsInfo::DisConnectInfoResponce req(this);
     server->disconnect(req);
   } else {
@@ -296,41 +295,41 @@ void ExplorerTreeView::connectDisconnectToServer() {
 
 void ExplorerTreeView::openConsole() {
   QModelIndex sel = selectedIndex();
-  if(!sel.isValid()){
+  if (!sel.isValid()) {
     return;
   }
 
   ExplorerServerItem *node = common::utils_qt::item<ExplorerServerItem*>(sel);
-  if(node){
+  if (node) {
     emit openedConsole(node->server(), QString());
   }
 }
 
 void ExplorerTreeView::loadDatabases() {
   QModelIndex sel = selectedIndex();
-  if(!sel.isValid()){
+  if (!sel.isValid()) {
     return;
   }
 
   ExplorerServerItem *node = common::utils_qt::item<ExplorerServerItem*>(sel);
-  if(node){
+  if (node) {
     node->loadDatabases();
   }
 }
 
 void ExplorerTreeView::openInfoServerDialog() {
   QModelIndex sel = selectedIndex();
-  if(!sel.isValid()){
+  if (!sel.isValid()) {
     return;
   }
 
   ExplorerServerItem *node = common::utils_qt::item<ExplorerServerItem*>(sel);
-  if(!node){
+  if (!node) {
     return;
   }
 
   IServerSPtr server = node->server();
-  if(!server){
+  if (!server) {
     return;
   }
 
@@ -340,17 +339,17 @@ void ExplorerTreeView::openInfoServerDialog() {
 
 void ExplorerTreeView::openPropertyServerDialog() {
   QModelIndex sel = selectedIndex();
-  if(!sel.isValid()){
+  if (!sel.isValid()) {
     return;
   }
 
   ExplorerServerItem *node = common::utils_qt::item<ExplorerServerItem*>(sel);
-  if(!node){
+  if (!node) {
     return;
   }
 
   IServerSPtr server = node->server();
-  if(!server){
+  if (!server) {
     return;
   }
 
@@ -360,17 +359,17 @@ void ExplorerTreeView::openPropertyServerDialog() {
 
 void ExplorerTreeView::openSetPasswordServerDialog() {
   QModelIndex sel = selectedIndex();
-  if(!sel.isValid()){
+  if (!sel.isValid()) {
     return;
   }
 
   ExplorerServerItem *node = common::utils_qt::item<ExplorerServerItem*>(sel);
-  if(!node){
+  if (!node) {
     return;
   }
 
   IServerSPtr server = node->server();
-  if(!server){
+  if (!server) {
     return;
   }
 
@@ -381,24 +380,24 @@ void ExplorerTreeView::openSetPasswordServerDialog() {
 
 void ExplorerTreeView::openMaxClientSetDialog() {
   QModelIndex sel = selectedIndex();
-  if(!sel.isValid()){
+  if (!sel.isValid()) {
     return;
   }
 
   ExplorerServerItem *node = common::utils_qt::item<ExplorerServerItem*>(sel);
-  if(!node){
+  if (!node) {
     return;
   }
 
   IServerSPtr server = node->server();
-  if(!server){
+  if (!server) {
     return;
   }
 
   bool ok;
   int maxcl = QInputDialog::getInt(this, tr("Set max connection on %1 server").arg(server->name()),
                                          tr("Maximum connection:"), 10000, 1, INT32_MAX, 100, &ok);
-  if(ok){
+  if (ok) {
     EventsInfo::ChangeMaxConnectionRequest req(this, maxcl);
     server->setMaxConnection(req);
   }
@@ -406,17 +405,17 @@ void ExplorerTreeView::openMaxClientSetDialog() {
 
 void ExplorerTreeView::openHistoryServerDialog() {
   QModelIndex sel = selectedIndex();
-  if(!sel.isValid()){
+  if (!sel.isValid()) {
     return;
   }
 
   ExplorerServerItem *node = common::utils_qt::item<ExplorerServerItem*>(sel);
-  if(!node){
+  if (!node) {
     return;
   }
 
   IServerSPtr server = node->server();
-  if(!server){
+  if (!server) {
     return;
   }
 
@@ -426,17 +425,17 @@ void ExplorerTreeView::openHistoryServerDialog() {
 
 void ExplorerTreeView::clearHistory() {
   QModelIndex sel = selectedIndex();
-  if(!sel.isValid()){
+  if (!sel.isValid()) {
     return;
   }
 
   ExplorerServerItem *node = common::utils_qt::item<ExplorerServerItem*>(sel);
-  if(!node){
+  if (!node) {
     return;
   }
 
   IServerSPtr server = node->server();
-  if(!server){
+  if (!server) {
     return;
   }
 
@@ -446,21 +445,21 @@ void ExplorerTreeView::clearHistory() {
 
 void ExplorerTreeView::closeServerConnection() {
   QModelIndex sel = selectedIndex();
-  if(!sel.isValid()){
+  if (!sel.isValid()) {
     return;
   }
 
   ExplorerServerItem* snode = common::utils_qt::item<ExplorerServerItem*>(sel);
-  if(snode){
+  if (snode) {
     IServerSPtr server = snode->server();
-    if(server){
+    if (server) {
       removeServer(server);
     }
     return;
   }
 
   ExplorerClusterItem* cnode = common::utils_qt::item<ExplorerClusterItem*>(sel);
-  if(cnode && cnode->type() == IExplorerTreeItem::eCluster){
+  if (cnode && cnode->type() == IExplorerTreeItem::eCluster) {
     IClusterSPtr server = cnode->cluster();
     if(server){
       removeCluster(server);
@@ -471,12 +470,12 @@ void ExplorerTreeView::closeServerConnection() {
 
 void ExplorerTreeView::closeClusterConnection() {
   QModelIndex sel = selectedIndex();
-  if(!sel.isValid()){
+  if (!sel.isValid()) {
     return;
   }
 
   ExplorerClusterItem* cnode = common::utils_qt::item<ExplorerClusterItem*>(sel);
-  if(cnode){
+  if (cnode) {
     IClusterSPtr server = cnode->cluster();
     if(server){
       removeCluster(server);
@@ -487,12 +486,12 @@ void ExplorerTreeView::closeClusterConnection() {
 
 void ExplorerTreeView::backupServer() {
   QModelIndex sel = selectedIndex();
-  if(!sel.isValid()){
+  if (!sel.isValid()) {
     return;
   }
 
   ExplorerServerItem *node = common::utils_qt::item<ExplorerServerItem*>(sel);
-  if(!node){
+  if (!node) {
     return;
   }
 
@@ -508,12 +507,12 @@ void ExplorerTreeView::backupServer() {
 
 void ExplorerTreeView::importServer() {
   QModelIndex sel = selectedIndex();
-  if(!sel.isValid()){
+  if (!sel.isValid()) {
     return;
   }
 
   ExplorerServerItem *node = common::utils_qt::item<ExplorerServerItem*>(sel);
-  if(!node){
+  if (!node) {
     return;
   }
 
@@ -529,17 +528,17 @@ void ExplorerTreeView::importServer() {
 
 void ExplorerTreeView::shutdownServer() {
   QModelIndex sel = selectedIndex();
-  if(!sel.isValid()){
+  if (!sel.isValid()) {
     return;
   }
 
   ExplorerServerItem *node = common::utils_qt::item<ExplorerServerItem*>(sel);
-  if(!node){
+  if (!node) {
     return;
   }
 
   IServerSPtr server = node->server();
-  if(server && server->isConnected()){
+  if (server && server->isConnected()) {
     // Ask user
     int answer = QMessageBox::question(this, "Shutdown", QString("Really shutdown \"%1\" server?").arg(server->name()), QMessageBox::Yes, QMessageBox::No, QMessageBox::NoButton);
 
@@ -554,15 +553,15 @@ void ExplorerTreeView::shutdownServer() {
 
 void ExplorerTreeView::loadContentDb() {
   QModelIndex sel = selectedIndex();
-  if(!sel.isValid()){
+  if (!sel.isValid()) {
     return;
   }
 
   ExplorerDatabaseItem *node = common::utils_qt::item<ExplorerDatabaseItem*>(sel);
-  if(node){
+  if (node) {
     LoadContentDbDialog loadDb(QString("Load %1 content").arg(node->name()), node->server()->type(), this);
     int result = loadDb.exec();
-    if(result == QDialog::Accepted){
+    if (result == QDialog::Accepted) {
       node->loadContent(common::convertToString(loadDb.pattern()), loadDb.count());
     }
   }
@@ -570,24 +569,24 @@ void ExplorerTreeView::loadContentDb() {
 
 void ExplorerTreeView::setDefaultDb() {
   QModelIndex sel = selectedIndex();
-  if(!sel.isValid()){
+  if (!sel.isValid()) {
     return;
   }
 
   ExplorerDatabaseItem *node = common::utils_qt::item<ExplorerDatabaseItem*>(sel);
-  if(node){
+  if (node) {
     node->setDefault();
   }
 }
 
 void ExplorerTreeView::createKey() {
   QModelIndex sel = selectedIndex();
-  if(!sel.isValid()){
+  if (!sel.isValid()) {
     return;
   }
 
   ExplorerDatabaseItem *node = common::utils_qt::item<ExplorerDatabaseItem*>(sel);
-  if(node){
+  if (node) {
     CreateDbKeyDialog loadDb(QString("Create key for %1 database").arg(node->name()), node->server()->type(), this);
     int result = loadDb.exec();
     if(result == QDialog::Accepted){
@@ -599,12 +598,12 @@ void ExplorerTreeView::createKey() {
 
 void ExplorerTreeView::viewKeys() {
   QModelIndex sel = selectedIndex();
-  if(!sel.isValid()){
+  if (!sel.isValid()) {
     return;
   }
 
   ExplorerDatabaseItem* node = common::utils_qt::item<ExplorerDatabaseItem*>(sel);
-  if(node){
+  if (node) {
     ViewKeysDialog diag(QString("View key in %1 database").arg(node->name()), node->db(), this);
     diag.exec();
   }
@@ -612,24 +611,24 @@ void ExplorerTreeView::viewKeys() {
 
 void ExplorerTreeView::getValue() {
   QModelIndex sel = selectedIndex();
-  if(!sel.isValid()){
+  if (!sel.isValid()) {
     return;
   }
 
   ExplorerKeyItem *node = common::utils_qt::item<ExplorerKeyItem*>(sel);
-  if(node){
+  if (node) {
     node->loadValueFromDb();
   }
 }
 
 void ExplorerTreeView::deleteKey() {
   QModelIndex sel = selectedIndex();
-  if(!sel.isValid()){
+  if (!sel.isValid()) {
     return;
   }
 
   ExplorerKeyItem *node = common::utils_qt::item<ExplorerKeyItem*>(sel);
-  if(node){
+  if (node) {
     node->removeFromDb();
   }
 }
@@ -639,25 +638,25 @@ void ExplorerTreeView::startLoadDatabases(const EventsInfo::LoadDatabasesInfoReq
 
 void ExplorerTreeView::finishLoadDatabases(const EventsInfo::LoadDatabasesInfoResponce& res) {
   common::Error er = res.errorInfo();
-  if(er && er->isError()){
+  if (er && er->isError()) {
     return;
   }
 
   IServer *serv = qobject_cast<IServer *>(sender());
   DCHECK(serv);
-  if(!serv){
+  if (!serv) {
     return;
   }
 
   ExplorerTreeModel *mod = qobject_cast<ExplorerTreeModel*>(model());
   DCHECK(mod);
-  if(!mod){
+  if (!mod) {
     return;
   }
 
   EventsInfo::LoadDatabasesInfoResponce::database_info_cont_type dbs = res.databases_;
 
-  for(int i = 0; i < dbs.size(); ++i){
+  for (int i = 0; i < dbs.size(); ++i) {
     DataBaseInfoSPtr db = dbs[i];
     mod->addDatabase(serv, db);
   }
@@ -668,20 +667,20 @@ void ExplorerTreeView::startSetDefaultDatabase(const EventsInfo::SetDefaultDatab
 
 void ExplorerTreeView::finishSetDefaultDatabase(const EventsInfo::SetDefaultDatabaseResponce& res) {
   common::Error er = res.errorInfo();
-  if(er && er->isError()){
+  if (er && er->isError()) {
     return;
   }
 
   IServer *serv = qobject_cast<IServer *>(sender());
   DCHECK(serv);
-  if(!serv){
+  if (!serv) {
     return;
   }
 
   DataBaseInfoSPtr db = res.inf_;
   ExplorerTreeModel *mod = qobject_cast<ExplorerTreeModel*>(model());
   DCHECK(mod);
-  if(!mod){
+  if (!mod) {
     return;
   }
 
@@ -693,25 +692,25 @@ void ExplorerTreeView::startLoadDatabaseContent(const EventsInfo::LoadDatabaseCo
 
 void ExplorerTreeView::finishLoadDatabaseContent(const EventsInfo::LoadDatabaseContentResponce& res) {
   common::Error er = res.errorInfo();
-  if(er && er->isError()){
+  if (er && er->isError()) {
     return;
   }
 
   IServer *serv = qobject_cast<IServer *>(sender());
   DCHECK(serv);
-  if(!serv){
+  if (!serv) {
     return;
   }
 
   ExplorerTreeModel *mod = qobject_cast<ExplorerTreeModel*>(model());
   DCHECK(mod);
-  if(!mod){
+  if (!mod) {
     return;
   }
 
   EventsInfo::LoadDatabaseContentResponce::keys_cont_type keys = res.keys_;
 
-  for(int i = 0; i < keys.size(); ++i){
+  for (int i = 0; i < keys.size(); ++i) {
     NDbKValue key = keys[i];
     mod->addKey(serv, res.inf_, key);
   }
@@ -722,19 +721,19 @@ void ExplorerTreeView::startExecuteCommand(const EventsInfo::CommandRequest& req
 
 void ExplorerTreeView::finishExecuteCommand(const EventsInfo::CommandResponce& res) {
   common::Error er = res.errorInfo();
-  if(er && er->isError()){
+  if (er && er->isError()) {
     return;
   }
 
   IServer* serv = qobject_cast<IServer *>(sender());
   DCHECK(serv);
-  if(!serv){
+  if (!serv) {
     return;
   }
 
   ExplorerTreeModel* mod = qobject_cast<ExplorerTreeModel*>(model());
   DCHECK(mod);
-  if(!mod){
+  if (!mod) {
     return;
   }
 
@@ -748,7 +747,7 @@ void ExplorerTreeView::finishExecuteCommand(const EventsInfo::CommandResponce& r
 }
 
 void ExplorerTreeView::changeEvent(QEvent* e) {
-  if(e->type() == QEvent::LanguageChange){
+  if (e->type() == QEvent::LanguageChange) {
     retranslateUi();
   }
 
@@ -756,7 +755,7 @@ void ExplorerTreeView::changeEvent(QEvent* e) {
 }
 
 void ExplorerTreeView::mouseDoubleClickEvent(QMouseEvent* e) {
-  if(SettingsManager::instance().fastViewKeys()){
+  if (SettingsManager::instance().fastViewKeys()) {
     getValue();
   }
 
@@ -764,7 +763,7 @@ void ExplorerTreeView::mouseDoubleClickEvent(QMouseEvent* e) {
 }
 
 void ExplorerTreeView::syncWithServer(IServer* server) {
-  if(!server){
+  if (!server) {
     return;
   }
 
@@ -779,7 +778,7 @@ void ExplorerTreeView::syncWithServer(IServer* server) {
 }
 
 void ExplorerTreeView::unsyncWithServer(IServer* server) {
-  if(!server){
+  if (!server) {
     return;
   }
 
@@ -822,7 +821,7 @@ void ExplorerTreeView::retranslateUi() {
 QModelIndex ExplorerTreeView::selectedIndex() const {
   QModelIndexList indexses = selectionModel()->selectedRows();
 
-  if (indexses.count() != 1){
+  if (indexses.count() != 1) {
     return QModelIndex();
   }
 

@@ -36,7 +36,7 @@ namespace fastonosql {
 
 class ChangePasswordServerDialog
   : public QDialog {
-  Q_OBJECT
+ Q_OBJECT
  public:
   enum
   {

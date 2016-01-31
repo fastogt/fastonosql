@@ -27,9 +27,10 @@
 #include "common/text_decoders/hex_edcoder.h"
 
 namespace fastonosql {
+
 FastoCommonItem::FastoCommonItem(const QString& key, NValue value, bool isReadOnly,
                                  TreeItem *parent, void* internalPointer)
-    : TreeItem(parent, internalPointer), key_(key), value_(value), isReadOnly_(isReadOnly) {
+  : TreeItem(parent, internalPointer), key_(key), value_(value), isReadOnly_(isReadOnly) {
 }
 
 QString FastoCommonItem::key() const {

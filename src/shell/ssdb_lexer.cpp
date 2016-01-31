@@ -27,7 +27,7 @@ namespace {
 namespace fastonosql {
 
 SsdbApi::SsdbApi(QsciLexer *lexer)
-    : BaseQsciApi(lexer) {
+  : BaseQsciApi(lexer) {
 }
 
 void SsdbApi::updateAutoCompletionList(const QStringList& context, QStringList& list) {
@@ -53,9 +53,9 @@ void SsdbApi::updateAutoCompletionList(const QStringList& context, QStringList& 
 
 QStringList SsdbApi::callTips(const QStringList& context, int commas,
                               QsciScintilla::CallTipsStyle style, QList<int>& shifts) {
-  for(QStringList::const_iterator it = context.begin(); it != context.end() - 1; ++it){
+  for (QStringList::const_iterator it = context.begin(); it != context.end() - 1; ++it) {
     QString val = *it;
-    for(int i = 0; i < SIZEOFMASS(ssdbCommands); ++i){
+    for (int i = 0; i < SIZEOFMASS(ssdbCommands); ++i) {
       CommandInfo cmd = ssdbCommands[i];
       QString jval = common::convertFromString<QString>(cmd.name_);
       if (QString::compare(jval, val, Qt::CaseInsensitive) == 0) {
@@ -91,7 +91,7 @@ std::vector<uint32_t> SsdbLexer::supportedVersions() const {
 
     bool needed_insert = true;
     for (int j = 0; j < result.size(); ++j) {
-      if(result[j] == cmd.since_){
+      if (result[j] == cmd.since_) {
         needed_insert = false;
         break;
       }
@@ -129,22 +129,22 @@ void SsdbLexer::styleText(int start, int end) {
 
   int index = 0;
   int begin = 0;
-  while( (begin = source.indexOf(help, index, Qt::CaseInsensitive)) != -1){
+  while ((begin = source.indexOf(help, index, Qt::CaseInsensitive)) != -1) {
     index = begin + help.length();
 
-      startStyling(start + begin);
-      setStyling(help.length(), HelpKeyword);
-      startStyling(start + begin);
+    startStyling(start + begin);
+    setStyling(help.length(), HelpKeyword);
+    startStyling(start + begin);
   }
 }
 
 void SsdbLexer::paintCommands(const QString& source, int start) {
-  for(int i = 0; i < SIZEOFMASS(ssdbCommands); ++i){
+  for (int i = 0; i < SIZEOFMASS(ssdbCommands); ++i) {
     CommandInfo cmd = ssdbCommands[i];
     QString word = common::convertFromString<QString>(cmd.name_);
     int index = 0;
     int begin = 0;
-    while( (begin = source.indexOf(word, index, Qt::CaseInsensitive)) != -1){
+    while ((begin = source.indexOf(word, index, Qt::CaseInsensitive)) != -1) {
       index = begin + word.length();
 
       startStyling(start + begin);

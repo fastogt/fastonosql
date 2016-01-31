@@ -26,6 +26,7 @@
 #include "gui/gui_factory.h"
 
 namespace {
+
 const QString description = QObject::tr(
 #if defined(PROJECT_BUILD_TYPE_VERSION) && defined(PROJECT_BUILD_RELEASE)
     "<h3>" PROJECT_NAME_TITLE " " PROJECT_VERSION "<br/>Revision:" PROJECT_GIT_VERSION "</h3>"
@@ -49,8 +50,7 @@ const QString description = QObject::tr(
 namespace fastonosql {
 
 AboutDialog::AboutDialog(QWidget* parent)
-  : QDialog(parent)
-{
+  : QDialog(parent) {
   setWindowTitle("About " PROJECT_NAME_TITLE);
   setWindowFlags(windowFlags() & ~Qt::WindowContextHelpButtonHint);
   QGridLayout* glayout = new QGridLayout;

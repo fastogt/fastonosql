@@ -33,9 +33,9 @@ class IServerBase
 };
 
 class IServer
-      : public IServerBase, public std::enable_shared_from_this<IServer> {
-  Q_OBJECT
-  friend class ServersManager;
+  : public IServerBase, public std::enable_shared_from_this<IServer> {
+ Q_OBJECT
+ friend class ServersManager;
  public:
   typedef std::vector<IDatabaseSPtr> databases_container_t;
 
@@ -67,7 +67,7 @@ class IServer
   virtual void syncWithServer(IServer* src);
   virtual void unSyncFromServer(IServer* src);
 
-Q_SIGNALS: //only direct connections
+ Q_SIGNALS: //only direct connections
   void startedConnect(const EventsInfo::ConnectInfoRequest& req);
   void finishedConnect(const EventsInfo::ConnectInfoResponce& res);
 
@@ -129,7 +129,7 @@ Q_SIGNALS: //only direct connections
   void startedLoadDiscoveryInfo(const EventsInfo::DiscoveryInfoRequest& res);
   void finishedLoadDiscoveryInfo(const EventsInfo::DiscoveryInfoResponce& res);
 
-Q_SIGNALS:
+ Q_SIGNALS:
   void addedChild(FastoObject *child);
   void itemUpdated(FastoObject* item, common::Value* val);
   void serverInfoSnapShoot(ServerInfoSnapShoot shot);

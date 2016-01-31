@@ -29,9 +29,8 @@ class ServersManager
   : public QObject, public common::patterns::LazySingleton<ServersManager>
 {
   friend class common::patterns::LazySingleton<ServersManager>;
-  Q_OBJECT
-
-public:
+ Q_OBJECT
+ public:
   typedef std::vector<IServerSPtr> ServersContainer;
 
   IServerSPtr createServer(IConnectionSettingsBaseSPtr settings);
@@ -43,11 +42,11 @@ public:
   void setSyncServers(bool isSync);
   void clear();
 
-public Q_SLOTS:
+ public Q_SLOTS:
   void closeServer(IServerSPtr server);
   void closeCluster(IClusterSPtr cluster);
 
-private:
+ private:
   template<class Server, class Driver>
   IServer* make_server(IServerSPtr pser, IConnectionSettingsBaseSPtr settings);
 

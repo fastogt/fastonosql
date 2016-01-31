@@ -24,8 +24,7 @@
 namespace fastonosql {
 
 class FastoHexEdit
-  : public QPlainTextEdit
-{
+  : public QPlainTextEdit {
   Q_OBJECT
  public:
   typedef QPlainTextEdit base_class;

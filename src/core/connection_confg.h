@@ -32,13 +32,10 @@ enum ConfigType {
 template<ConfigType ctype>
 struct BaseConfig {
   BaseConfig()
-    : mb_delim_("\n")
-  {
-
+    : mb_delim_("\n") {
   }
 
-  ConfigType type() const
-  {
+  ConfigType type() const {
     return ctype;
   }
 
@@ -47,8 +44,7 @@ struct BaseConfig {
 
 // -f
 struct LocalConfig
-        : public BaseConfig<LOCAL>
-{
+        : public BaseConfig<LOCAL> {
   explicit LocalConfig(const std::string& dbname);
 
   std::vector<std::string> args() const;
@@ -58,8 +54,7 @@ struct LocalConfig
 
 // -h -p
 struct RemoteConfig
-        : public BaseConfig<REMOTE>
-{
+        : public BaseConfig<REMOTE> {
   RemoteConfig(const std::string& hostip, uint16_t port);
 
   std::vector<std::string> args() const;

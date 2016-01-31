@@ -23,10 +23,9 @@
 namespace fastonosql {
 
 class LeveldbDatabase
-  : public IDatabase
-{
+  : public IDatabase {
   friend class LeveldbServer;
-private:
+ private:
   LeveldbDatabase(IServerSPtr server, DataBaseInfoSPtr info);
 };
 

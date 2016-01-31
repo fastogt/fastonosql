@@ -25,11 +25,10 @@ class QAction;
 #include "core/iserver.h"
 
 namespace fastonosql {
-class ExplorerTreeView
-      : public QTreeView
-{
-  Q_OBJECT
 
+class ExplorerTreeView
+      : public QTreeView {
+ Q_OBJECT
  public:
   explicit ExplorerTreeView(QWidget* parent);
 

@@ -24,10 +24,9 @@
 namespace fastonosql {
 
 class BaseShell
-  : public FastoEditorShell
-{
+  : public FastoEditorShell {
   Q_OBJECT
-public:
+ public:
   std::vector<uint32_t> supportedVersions() const;
   uint32_t commandsCount() const;
   QString version() const;
@@ -36,7 +35,7 @@ public:
 
   static BaseShell* createFromType(connectionTypes type, bool showAutoCompl);
 
-protected:
+ protected:
   BaseShell(connectionTypes type, bool showAutoCompl, QWidget* parent = 0);
 };
 

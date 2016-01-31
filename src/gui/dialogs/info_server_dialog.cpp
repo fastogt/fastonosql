@@ -30,131 +30,130 @@
 
 namespace {
 
-  const QString redisTextServerTemplate = QObject::tr("<h2>Server:</h2><br/>"
-                                                "Redis version: %1<br/>"
-                                                "Redis git_sha1: %2<br/>"
-                                                "Redis git_dirty: %3<br/>"
-                                                "Redis mode: %4<br/>"
-                                                "Os: %5<br/>"
-                                                "Arch: %6<br/>"
-                                                "Multiplexing Api: %7<br/>"
-                                                "Gcc version: %8<br/>"
-                                                "Process id: %9<br/>"
-                                                "Run id: %10<br/>"
-                                                "Tcp port: %11<br/>"
-                                                "Uptime sec: %12<br/>"
-                                                "Uptime days: %13<br/>"
-                                                "Hz: %14<br/>"
-                                                "Lru clock: %15");
+const QString redisTextServerTemplate = QObject::tr("<h2>Server:</h2><br/>"
+                                              "Redis version: %1<br/>"
+                                              "Redis git_sha1: %2<br/>"
+                                              "Redis git_dirty: %3<br/>"
+                                              "Redis mode: %4<br/>"
+                                              "Os: %5<br/>"
+                                              "Arch: %6<br/>"
+                                              "Multiplexing Api: %7<br/>"
+                                              "Gcc version: %8<br/>"
+                                              "Process id: %9<br/>"
+                                              "Run id: %10<br/>"
+                                              "Tcp port: %11<br/>"
+                                              "Uptime sec: %12<br/>"
+                                              "Uptime days: %13<br/>"
+                                              "Hz: %14<br/>"
+                                              "Lru clock: %15");
 
-  const QString redisTextClientsTemplate = QObject::tr("<h2>Clients:</h2><br/>"
-                                                       "Connected clients_: %1<br/>"
-                                                       "Client longest output list: %2<br/>"
-                                                       "Client biggest input buf: %3<br/>"
-                                                       "Blocked clients: %4");
+const QString redisTextClientsTemplate = QObject::tr("<h2>Clients:</h2><br/>"
+                                                     "Connected clients_: %1<br/>"
+                                                     "Client longest output list: %2<br/>"
+                                                     "Client biggest input buf: %3<br/>"
+                                                     "Blocked clients: %4");
 
-  const QString redisTextMemoryTemplate = QObject::tr("<h2>Memory:</h2><br/>"
-                                                "Used memory: %1<br/>"
-                                                "Used memory human: %2<br/>"
-                                                "Used memory rss: %3<br/>"
-                                                "Used memory peak: %4<br/>"
-                                                "Used memory peak human: %5<br/>"
-                                                "Used memory lua: %6<br/>"
-                                                "Mem fragmentation ratio: %7<br/>"
-                                                "Mem allocator: %8");
+const QString redisTextMemoryTemplate = QObject::tr("<h2>Memory:</h2><br/>"
+                                              "Used memory: %1<br/>"
+                                              "Used memory human: %2<br/>"
+                                              "Used memory rss: %3<br/>"
+                                              "Used memory peak: %4<br/>"
+                                              "Used memory peak human: %5<br/>"
+                                              "Used memory lua: %6<br/>"
+                                              "Mem fragmentation ratio: %7<br/>"
+                                              "Mem allocator: %8");
 
-  const QString redisTextPersistenceTemplate = QObject::tr("<h2>Persistence:</h2><br/>"
-                                                "Loading: %1<br/>"
-                                                "Rdb changes since last save: %2<br/>"
-                                                "Rdb bgsave in_progress: %3<br/>"
-                                                "Rdb last save_time: %4<br/>"
-                                                "Rdb last bgsave_status: %5<br/>"
-                                                "Rdb last bgsave time sec: %6<br/>"
-                                                "Rdb current bgsave time sec: %7<br/>"
-                                                "Aof enabled: %8<br/>"
-                                                "Aof rewrite in progress: %9<br/>"
-                                                "Aof rewrite scheduled: %10<br/>"
-                                                "Aof last rewrite time sec: %11<br/>"
-                                                "Aof current rewrite time sec: %12<br/>"
-                                                "Aof last bgrewrite status: %13<br/>"
-                                                "Aof last write status: %14");
+const QString redisTextPersistenceTemplate = QObject::tr("<h2>Persistence:</h2><br/>"
+                                              "Loading: %1<br/>"
+                                              "Rdb changes since last save: %2<br/>"
+                                              "Rdb bgsave in_progress: %3<br/>"
+                                              "Rdb last save_time: %4<br/>"
+                                              "Rdb last bgsave_status: %5<br/>"
+                                              "Rdb last bgsave time sec: %6<br/>"
+                                              "Rdb current bgsave time sec: %7<br/>"
+                                              "Aof enabled: %8<br/>"
+                                              "Aof rewrite in progress: %9<br/>"
+                                              "Aof rewrite scheduled: %10<br/>"
+                                              "Aof last rewrite time sec: %11<br/>"
+                                              "Aof current rewrite time sec: %12<br/>"
+                                              "Aof last bgrewrite status: %13<br/>"
+                                              "Aof last write status: %14");
 
-  const QString redisTextStatsTemplate = QObject::tr("<h2>Stats:</h2><br/>"
-                                                "Total connections received: %1<br/>"
-                                                "Total commands processed: %2<br/>"
-                                                "Instantaneous ops per sec: %3<br/>"
-                                                "Rejected connections: %4<br/>"
-                                                "Sync full: %5<br/>"
-                                                "Sync partial ok: %6<br/>"
-                                                "Sync partial err: %7<br/>"
-                                                "Expired keys: %8<br/>"
-                                                "Evicted keys: %9<br/>"
-                                                "Keyspace hits: %10<br/>"
-                                                "Keyspace misses: %11<br/>"
-                                                "Pubsub channels: %12<br/>"
-                                                "Pubsub patterns: %13<br/>"
-                                                "Latest fork usec: %14");
+const QString redisTextStatsTemplate = QObject::tr("<h2>Stats:</h2><br/>"
+                                              "Total connections received: %1<br/>"
+                                              "Total commands processed: %2<br/>"
+                                              "Instantaneous ops per sec: %3<br/>"
+                                              "Rejected connections: %4<br/>"
+                                              "Sync full: %5<br/>"
+                                              "Sync partial ok: %6<br/>"
+                                              "Sync partial err: %7<br/>"
+                                              "Expired keys: %8<br/>"
+                                              "Evicted keys: %9<br/>"
+                                              "Keyspace hits: %10<br/>"
+                                              "Keyspace misses: %11<br/>"
+                                              "Pubsub channels: %12<br/>"
+                                              "Pubsub patterns: %13<br/>"
+                                              "Latest fork usec: %14");
 
-  const QString redisTextReplicationTemplate = QObject::tr("<h2>Replication:</h2><br/>"
-                                                 "Role: %1<br/>"
-                                                 "Connected slaves: %2<br/>"
-                                                 "Master reply offset: %3<br/>"
-                                                 "Backlog active: %4<br/>"
-                                                 "Backlog size: %5<br/>"
-                                                 "Backlog first byte offset: %6<br/>"
-                                                 "Backlog histen: %7");
+const QString redisTextReplicationTemplate = QObject::tr("<h2>Replication:</h2><br/>"
+                                               "Role: %1<br/>"
+                                               "Connected slaves: %2<br/>"
+                                               "Master reply offset: %3<br/>"
+                                               "Backlog active: %4<br/>"
+                                               "Backlog size: %5<br/>"
+                                               "Backlog first byte offset: %6<br/>"
+                                               "Backlog histen: %7");
 
-  const QString redisTextCpuTemplate = QObject::tr("<h2>Cpu:</h2><br/>"
-                                                       "Used cpu sys: %1<br/>"
-                                                       "Used cpu user: %2<br/>"
-                                                       "Used cpu sys children: %3<br/>"
-                                                       "Used cpu user children: %4");
+const QString redisTextCpuTemplate = QObject::tr("<h2>Cpu:</h2><br/>"
+                                                     "Used cpu sys: %1<br/>"
+                                                     "Used cpu user: %2<br/>"
+                                                     "Used cpu sys children: %3<br/>"
+                                                     "Used cpu user children: %4");
 
-  const QString memcachedTextServerTemplate = QObject::tr("<h2>Common:</h2><br/>"
-                                                          "Pid: %1<br/>"
-                                                          "Update time: %2<br/>"
-                                                          "Time: %3<br/>"
-                                                          "Version: %4<br/>"
-                                                          "Pointer size: %5<br/>"
-                                                          "Usage user: %6<br/>"
-                                                          "Usage system: %7<br/>"
-                                                          "Current items: %8<br/>"
-                                                          "Total items: %9<br/>"
-                                                          "Bytes: %10<br/>"
-                                                          "Current connections: %11<br/>"
-                                                          "Total connections: %12<br/>"
-                                                          "Connection structures: %13<br/>"
-                                                          "Cmd get: %14<br/>"
-                                                          "Cmd set: %15<br/>"
-                                                          "Get hits: %16<br/>"
-                                                          "Get misses: %17<br/>"
-                                                          "Evictions: %18<br/>"
-                                                          "Bytes read: %19<br/>"
-                                                          "Bytes written: %20<br/>"
-                                                          "Limit max bytes: %21<br/>"
-                                                          "Threads: %22");
+const QString memcachedTextServerTemplate = QObject::tr("<h2>Common:</h2><br/>"
+                                                        "Pid: %1<br/>"
+                                                        "Update time: %2<br/>"
+                                                        "Time: %3<br/>"
+                                                        "Version: %4<br/>"
+                                                        "Pointer size: %5<br/>"
+                                                        "Usage user: %6<br/>"
+                                                        "Usage system: %7<br/>"
+                                                        "Current items: %8<br/>"
+                                                        "Total items: %9<br/>"
+                                                        "Bytes: %10<br/>"
+                                                        "Current connections: %11<br/>"
+                                                        "Total connections: %12<br/>"
+                                                        "Connection structures: %13<br/>"
+                                                        "Cmd get: %14<br/>"
+                                                        "Cmd set: %15<br/>"
+                                                        "Get hits: %16<br/>"
+                                                        "Get misses: %17<br/>"
+                                                        "Evictions: %18<br/>"
+                                                        "Bytes read: %19<br/>"
+                                                        "Bytes written: %20<br/>"
+                                                        "Limit max bytes: %21<br/>"
+                                                        "Threads: %22");
 
-  const QString ssdbTextServerTemplate = QObject::tr("<h2>Common:</h2><br/>"
-                                                          "Version: %1<br/>"
-                                                          "Links: %2<br/>"
-                                                          "Total calls: %3<br/>"
-                                                          "Dbsize: %4<br/>"
-                                                          "Binlogs: %5");
+const QString ssdbTextServerTemplate = QObject::tr("<h2>Common:</h2><br/>"
+                                                        "Version: %1<br/>"
+                                                        "Links: %2<br/>"
+                                                        "Total calls: %3<br/>"
+                                                        "Dbsize: %4<br/>"
+                                                        "Binlogs: %5");
 
-  const QString leveldbTextServerTemplate = QObject::tr("<h2>Stats:</h2><br/>"
-                                                          "Compactions level: %1<br/>"
-                                                          "File size mb: %2<br/>"
-                                                          "Time sec: %3<br/>"
-                                                          "Read mb: %4<br/>"
-                                                          "Write mb: %5");
+const QString leveldbTextServerTemplate = QObject::tr("<h2>Stats:</h2><br/>"
+                                                        "Compactions level: %1<br/>"
+                                                        "File size mb: %2<br/>"
+                                                        "Time sec: %3<br/>"
+                                                        "Read mb: %4<br/>"
+                                                        "Write mb: %5");
 
 }
 
 namespace fastonosql {
 
 InfoServerDialog::InfoServerDialog(IServerSPtr server, QWidget* parent)
-  : QDialog(parent), server_(server)
-{
+  : QDialog(parent), server_(server) {
   CHECK(server_);
 
   using namespace translations;
@@ -170,7 +169,8 @@ InfoServerDialog::InfoServerDialog(IServerSPtr server, QWidget* parent)
 
   setMinimumSize(QSize(min_height, min_width));
 
-  glassWidget_ = new fasto::qt::gui::GlassWidget(GuiFactory::instance().pathToLoadingGif(), trLoading, 0.5, QColor(111, 111, 100), this);
+  glassWidget_ = new fasto::qt::gui::GlassWidget(GuiFactory::instance().pathToLoadingGif(),
+                                                 trLoading, 0.5, QColor(111, 111, 100), this);
 #ifdef BUILD_WITH_REDIS
   if(type == REDIS){
     updateText(RedisServerInfo());

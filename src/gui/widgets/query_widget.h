@@ -28,8 +28,7 @@ class BaseShellWidget;
 class OutputWidget;
 
 class QueryWidget
-        : public QWidget
-{
+        : public QWidget {
   Q_OBJECT
  public:
   enum

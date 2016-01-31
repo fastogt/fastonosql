@@ -32,9 +32,8 @@ class FastoTableView;
 class KeysTableModel;
 
 class ViewKeysDialog
-  : public QDialog
-{
-  Q_OBJECT
+  : public QDialog {
+ Q_OBJECT
  public:
   enum
   {

@@ -41,12 +41,9 @@
 #include "translations/global.h"
 
 namespace fastonosql {
-/**
- * @brief Creates dialog
- */
+
 ConnectionsDialog::ConnectionsDialog(QWidget* parent)
-  : QDialog(parent)
-{
+  : QDialog(parent) {
   using namespace translations;
 
   setWindowIcon(GuiFactory::instance().connectIcon());
@@ -74,7 +71,8 @@ ConnectionsDialog::ConnectionsDialog(QWidget* parent)
   //listWidget_->setDragDropMode(QAbstractItemView::InternalMove);
   setMinimumSize(QSize(min_width, min_height));
   VERIFY(connect(listWidget_, &QTreeWidget::itemDoubleClicked, this, &ConnectionsDialog::accept));
-  VERIFY(connect(listWidget_, &QTreeWidget::itemSelectionChanged, this, &ConnectionsDialog::connectionSelectChange));
+  VERIFY(connect(listWidget_, &QTreeWidget::itemSelectionChanged,
+                 this, &ConnectionsDialog::connectionSelectChange));
 
   QDialogButtonBox *buttonBox = new QDialogButtonBox(this);
   buttonBox->setOrientation(Qt::Horizontal);
@@ -117,13 +115,15 @@ ConnectionsDialog::ConnectionsDialog(QWidget* parent)
 
   // Populate list with connections
   SettingsManager::ConnectionSettingsContainerType connections = SettingsManager::instance().connections();
-  for (SettingsManager::ConnectionSettingsContainerType::const_iterator it = connections.begin(); it != connections.end(); ++it) {
+  for (SettingsManager::ConnectionSettingsContainerType::const_iterator it = connections.begin();
+       it != connections.end(); ++it) {
     IConnectionSettingsBaseSPtr connectionModel = (*it);
     addConnection(connectionModel);
   }
 
   SettingsManager::ClusterSettingsContainerType clusters = SettingsManager::instance().clusters();
-  for (SettingsManager::ClusterSettingsContainerType::const_iterator it = clusters.begin(); it != clusters.end(); ++it) {
+  for (SettingsManager::ClusterSettingsContainerType::const_iterator it = clusters.begin();
+       it != clusters.end(); ++it) {
     IClusterSettingsBaseSPtr connectionModel = (*it);
     addCluster(connectionModel);
   }
@@ -184,7 +184,8 @@ void ConnectionsDialog::remove() {
     QTreeWidgetItem* qpitem = qitem->parent();
     if(!qpitem){
       // Ask user
-      int answer = QMessageBox::question(this, "Connections", QString("Really delete \"%1\" connection?").arg(currentItem->text(0)),
+      int answer = QMessageBox::question(this, "Connections",
+                                         QString("Really delete \"%1\" connection?").arg(currentItem->text(0)),
                                          QMessageBox::Yes, QMessageBox::No, QMessageBox::NoButton);
 
       if (answer != QMessageBox::Yes)
@@ -243,15 +244,15 @@ void ConnectionsDialog::edit() {
 
   ClusterConnectionListWidgetItem* clCurrentItem = dynamic_cast<ClusterConnectionListWidgetItem *>(qitem);
   if(clCurrentItem){
-      IClusterSettingsBaseSPtr con = clCurrentItem->connection();
-      ClusterDialog dlg(this, dynamic_cast<IClusterSettingsBase*>(con->clone()));
-      int result = dlg.exec();
-      IClusterSettingsBaseSPtr newConnection = dlg.connection();
-      if(result == QDialog::Accepted && newConnection){
-          clCurrentItem->setConnection(newConnection);
-          SettingsManager::instance().removeCluster(con);
-          SettingsManager::instance().addCluster(newConnection);
-      }
+    IClusterSettingsBaseSPtr con = clCurrentItem->connection();
+    ClusterDialog dlg(this, dynamic_cast<IClusterSettingsBase*>(con->clone()));
+    int result = dlg.exec();
+    IClusterSettingsBaseSPtr newConnection = dlg.connection();
+    if(result == QDialog::Accepted && newConnection){
+      clCurrentItem->setConnection(newConnection);
+      SettingsManager::instance().removeCluster(con);
+      SettingsManager::instance().addCluster(newConnection);
+    }
   }
 }
 

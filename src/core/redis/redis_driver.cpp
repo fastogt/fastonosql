@@ -25,10 +25,10 @@ char *strcasestr(const char* s, const char* find) {
     c = tolower((unsigned char)c);
     size_t len = strlen(find);
     do {
-        do {
-            if ((sc = *s++) == 0)
-                return (NULL);
-        } while ((char)tolower((unsigned char)sc) != c);
+      do {
+        if ((sc = *s++) == 0)
+          return (NULL);
+      } while ((char)tolower((unsigned char)sc) != c);
     } while (strncasecmp(s, find, len) != 0);
     s--;
   }
@@ -46,7 +46,7 @@ char *strcasestr(const char* s, const char* find) {
 #endif
 
 extern "C" {
-    #include "sds.h"
+  #include "sds.h"
 }
 
 #include <hiredis/hiredis.h>
@@ -119,79 +119,76 @@ extern "C" {
 #define ANET_ERR_LEN 256
 
 namespace {
-void anetSetError(char *err, const char *fmt, ...)
-{
-    va_list ap;
 
-    if (!err) return;
-    va_start(ap, fmt);
-    vsnprintf(err, ANET_ERR_LEN, fmt, ap);
-    va_end(ap);
+void anetSetError(char *err, const char *fmt, ...) {
+  va_list ap;
+
+  if (!err) return;
+  va_start(ap, fmt);
+  vsnprintf(err, ANET_ERR_LEN, fmt, ap);
+  va_end(ap);
 }
 
 /* Set TCP keep alive option to detect dead peers. The interval option
  * is only used for Linux as we are using Linux-specific APIs to set
  * the probe send time, interval, and count. */
-int anetKeepAlive(char *err, int fd, int interval)
-{
-    int val = 1;
+int anetKeepAlive(char *err, int fd, int interval) {
+  int val = 1;
 
-    if (setsockopt(fd, SOL_SOCKET, SO_KEEPALIVE, (char*)&val, sizeof(val)) == -1)
-    {
-        anetSetError(err, "setsockopt SO_KEEPALIVE: %s", strerror(errno));
-        return ANET_ERR;
-    }
+  if (setsockopt(fd, SOL_SOCKET, SO_KEEPALIVE, (char*)&val, sizeof(val)) == -1) {
+    anetSetError(err, "setsockopt SO_KEEPALIVE: %s", strerror(errno));
+    return ANET_ERR;
+  }
 
 #ifdef __linux__
-    /* Default settings are more or less garbage, with the keepalive time
-     * set to 7200 by default on Linux. Modify settings to make the feature
-     * actually useful. */
+  /* Default settings are more or less garbage, with the keepalive time
+   * set to 7200 by default on Linux. Modify settings to make the feature
+   * actually useful. */
 
-    /* Send first probe after interval. */
-    val = interval;
-    if (setsockopt(fd, IPPROTO_TCP, TCP_KEEPIDLE, &val, sizeof(val)) < 0) {
-        anetSetError(err, "setsockopt TCP_KEEPIDLE: %s\n", strerror(errno));
-        return ANET_ERR;
-    }
+  /* Send first probe after interval. */
+  val = interval;
+  if (setsockopt(fd, IPPROTO_TCP, TCP_KEEPIDLE, &val, sizeof(val)) < 0) {
+    anetSetError(err, "setsockopt TCP_KEEPIDLE: %s\n", strerror(errno));
+    return ANET_ERR;
+  }
 
-    /* Send next probes after the specified interval. Note that we set the
-     * delay as interval / 3, as we send three probes before detecting
-     * an error (see the next setsockopt call). */
-    val = interval/3;
-    if (val == 0) val = 1;
-    if (setsockopt(fd, IPPROTO_TCP, TCP_KEEPINTVL, &val, sizeof(val)) < 0) {
-        anetSetError(err, "setsockopt TCP_KEEPINTVL: %s\n", strerror(errno));
-        return ANET_ERR;
-    }
+  /* Send next probes after the specified interval. Note that we set the
+   * delay as interval / 3, as we send three probes before detecting
+   * an error (see the next setsockopt call). */
+  val = interval/3;
+  if (val == 0) val = 1;
+  if (setsockopt(fd, IPPROTO_TCP, TCP_KEEPINTVL, &val, sizeof(val)) < 0) {
+    anetSetError(err, "setsockopt TCP_KEEPINTVL: %s\n", strerror(errno));
+    return ANET_ERR;
+  }
 
-    /* Consider the socket in error state after three we send three ACK
-     * probes without getting a reply. */
-    val = 3;
-    if (setsockopt(fd, IPPROTO_TCP, TCP_KEEPCNT, &val, sizeof(val)) < 0) {
-        anetSetError(err, "setsockopt TCP_KEEPCNT: %s\n", strerror(errno));
-        return ANET_ERR;
-    }
+  /* Consider the socket in error state after three we send three ACK
+   * probes without getting a reply. */
+  val = 3;
+  if (setsockopt(fd, IPPROTO_TCP, TCP_KEEPCNT, &val, sizeof(val)) < 0) {
+    anetSetError(err, "setsockopt TCP_KEEPCNT: %s\n", strerror(errno));
+    return ANET_ERR;
+  }
 #else
-    ((void) interval); /* Avoid unused var warning for non Linux systems. */
+  ((void) interval); /* Avoid unused var warning for non Linux systems. */
 #endif
 
-    return ANET_OK;
+  return ANET_OK;
 }
 
 typedef struct{
-    int type;
-    int argc;
-    sds *argv;
-    sds full;
+  int type;
+  int argc;
+  sds *argv;
+  sds full;
 
     /* Only used for help on commands */
-    struct commandHelp *org;
+  struct commandHelp *org;
 } helpEntry;
 
 const int helpEntriesLen = sizeof(commandHelp)/sizeof(struct commandHelp) + sizeof(commandGroups)/sizeof(char*);
 
-const struct RedisInit
-{
+const struct RedisInit {
   helpEntry helpEntries[helpEntriesLen];
 
   RedisInit() {
@@ -227,59 +224,57 @@ common::Value::Type convertFromStringRType(const std::string& type) {
   }
 
   if(type == "string") {
-      return common::Value::TYPE_STRING;
+    return common::Value::TYPE_STRING;
   }  else if(type == "list") {
-      return common::Value::TYPE_ARRAY;
+    return common::Value::TYPE_ARRAY;
   } else if(type == "set") {
-      return common::Value::TYPE_SET;
+    return common::Value::TYPE_SET;
   } else if(type == "hash") {
-      return common::Value::TYPE_HASH;
+    return common::Value::TYPE_HASH;
   } else if(type == "zset") {
-      return common::Value::TYPE_ZSET;
+    return common::Value::TYPE_ZSET;
   } else {
-      return common::Value::TYPE_NULL;
+    return common::Value::TYPE_NULL;
   }
 }
 
 }
 
-namespace fastonosql
-{
-namespace
-{
-  RedisCommand* createCommandFast(const std::string& input, common::Value::CommandLoggingType ct)
-  {
-      common::CommandValue* cmd = common::Value::createCommand(input, ct);
-      RedisCommand* fs = new RedisCommand(NULL, cmd, "");
-      return fs;
+namespace fastonosql {
+namespace {
+
+  RedisCommand* createCommandFast(const std::string& input, common::Value::CommandLoggingType ct) {
+    common::CommandValue* cmd = common::Value::createCommand(input, ct);
+    RedisCommand* fs = new RedisCommand(NULL, cmd, "");
+    return fs;
   }
 
-  int toIntType(common::Error& er, char *key, char *type)
-  {
-      if(!strcmp(type, "string")) {
-          return RTYPE_STRING;
-      } else if(!strcmp(type, "list")) {
-          return RTYPE_LIST;
-      } else if(!strcmp(type, "set")) {
-          return RTYPE_SET;
-      } else if(!strcmp(type, "hash")) {
-          return RTYPE_HASH;
-      } else if(!strcmp(type, "zset")) {
-          return RTYPE_ZSET;
-      } else if(!strcmp(type, "none")) {
-          return RTYPE_NONE;
-      } else {
-          char buff[4096];
-          common::SNPrintf(buff, sizeof(buff), "Unknown type '%s' for key '%s'", type, key);
-          er.reset(new common::ErrorValue(buff, common::Value::E_ERROR));
-          return -1;
-      }
+  int toIntType(common::Error& er, char *key, char *type) {
+    if(!strcmp(type, "string")) {
+        return RTYPE_STRING;
+    } else if(!strcmp(type, "list")) {
+        return RTYPE_LIST;
+    } else if(!strcmp(type, "set")) {
+        return RTYPE_SET;
+    } else if(!strcmp(type, "hash")) {
+        return RTYPE_HASH;
+    } else if(!strcmp(type, "zset")) {
+        return RTYPE_ZSET;
+    } else if(!strcmp(type, "none")) {
+        return RTYPE_NONE;
+    } else {
+        char buff[4096];
+        common::SNPrintf(buff, sizeof(buff), "Unknown type '%s' for key '%s'", type, key);
+        er.reset(new common::ErrorValue(buff, common::Value::E_ERROR));
+        return -1;
+    }
   }
 }
 
 namespace {
 
-common::Error createConnection(const redisConfig& config, const SSHInfo& sinfo, redisContext** context) {
+common::Error createConnection(const redisConfig& config,
+                               const SSHInfo& sinfo, redisContext** context) {
     DCHECK(*context == NULL);
 
     using namespace common::utils;
@@ -287,90 +282,90 @@ common::Error createConnection(const redisConfig& config, const SSHInfo& sinfo, 
     redisContext *lcontext = NULL;
 
     if (config.hostsocket == NULL) {
-        const char *host = config.hostip_.c_str();
-        uint16_t port = config.hostport_;
-        const char *username = c_strornull(sinfo.userName_);
-        const char *password = c_strornull(sinfo.password_);
-        const char *ssh_address = c_strornull(sinfo.hostName_);
-        int ssh_port = sinfo.port_;
-        int curM = sinfo.currentMethod_;
-        const char *publicKey = c_strornull(sinfo.publicKey_);
-        const char *privateKey = c_strornull(sinfo.privateKey_);
-        const char *passphrase = c_strornull(sinfo.passphrase_);
+      const char *host = config.hostip_.c_str();
+      uint16_t port = config.hostport_;
+      const char *username = c_strornull(sinfo.userName_);
+      const char *password = c_strornull(sinfo.password_);
+      const char *ssh_address = c_strornull(sinfo.hostName_);
+      int ssh_port = sinfo.port_;
+      int curM = sinfo.currentMethod_;
+      const char *publicKey = c_strornull(sinfo.publicKey_);
+      const char *privateKey = c_strornull(sinfo.privateKey_);
+      const char *passphrase = c_strornull(sinfo.passphrase_);
 
-        lcontext = redisConnect(host, port, ssh_address, ssh_port, username, password,
-                               publicKey, privateKey, passphrase, curM);
-    }
-    else {
-        lcontext = redisConnectUnix(config.hostsocket);
+      lcontext = redisConnect(host, port, ssh_address, ssh_port, username, password,
+                             publicKey, privateKey, passphrase, curM);
+    } else {
+      lcontext = redisConnectUnix(config.hostsocket);
     }
 
-    if(!lcontext){
-        char buff[512] = {0};
-        if (!config.hostsocket){
-            common::SNPrintf(buff, sizeof(buff), "Could not connect to Redis at %s:%d : no context", config.hostip_, config.hostport_);
-        }
-        else{
-            common::SNPrintf(buff, sizeof(buff), "Could not connect to Redis at %s : no context", config.hostsocket);
-        }
-        return common::make_error_value(buff, common::Value::E_ERROR);
+    if (!lcontext) {
+      char buff[512] = {0};
+      if (!config.hostsocket) {
+        common::SNPrintf(buff, sizeof(buff), "Could not connect to Redis at %s:%d : no context",
+                         config.hostip_, config.hostport_);
+      } else {
+        common::SNPrintf(buff, sizeof(buff), "Could not connect to Redis at %s : no context",
+                         config.hostsocket);
+      }
+      return common::make_error_value(buff, common::Value::E_ERROR);
     }
 
     if (lcontext->err) {
-        char buff[512] = {0};
-        if (!config.hostsocket){
-            common::SNPrintf(buff, sizeof(buff), "Could not connect to Redis at %s:%d : %s", config.hostip_, config.hostport_, lcontext->errstr);
-        }
-        else{
-            common::SNPrintf(buff, sizeof(buff), "Could not connect to Redis at %s : %s", config.hostsocket, lcontext->errstr);
-        }
-        return common::make_error_value(buff, common::Value::E_ERROR);
+      char buff[512] = {0};
+      if (!config.hostsocket){
+        common::SNPrintf(buff, sizeof(buff), "Could not connect to Redis at %s:%d : %s",
+                         config.hostip_, config.hostport_, lcontext->errstr);
+      } else {
+        common::SNPrintf(buff, sizeof(buff), "Could not connect to Redis at %s : %s",
+                         config.hostsocket, lcontext->errstr);
+      }
+      return common::make_error_value(buff, common::Value::E_ERROR);
     }
 
     *context = lcontext;
-
     return common::Error();
 }
 
 common::Error createConnection(RedisConnectionSettings* settings, redisContext** context) {
-    if(!settings){
-        return common::make_error_value("Invalid input argument", common::ErrorValue::E_ERROR);
-    }
+  if (!settings) {
+    return common::make_error_value("Invalid input argument", common::ErrorValue::E_ERROR);
+  }
 
-    redisConfig config = settings->info();
-    SSHInfo sinfo = settings->sshInfo();
-    return createConnection(config, sinfo, context);
+  redisConfig config = settings->info();
+  SSHInfo sinfo = settings->sshInfo();
+  return createConnection(config, sinfo, context);
 }
 
 common::Error cliPrintContextError(redisContext* context) {
-    if (context == NULL){
-        return common::make_error_value("Not connected", common::Value::E_ERROR);
-    }
+  if (!context) {
+    return common::make_error_value("Not connected", common::Value::E_ERROR);
+  }
 
-    char buff[512] = {0};
-    common::SNPrintf(buff, sizeof(buff), "Error: %s", context->errstr);
-    return common::make_error_value(buff, common::ErrorValue::E_ERROR);
+  char buff[512] = {0};
+  common::SNPrintf(buff, sizeof(buff), "Error: %s", context->errstr);
+  return common::make_error_value(buff, common::ErrorValue::E_ERROR);
 }
 
 common::Error authContext(const redisConfig& config, redisContext* context) {
-    if (config.auth == NULL){
-        return common::Error();
+  if (config.auth == NULL) {
+    return common::Error();
+  }
+
+  redisReply *reply = static_cast<redisReply*>(redisCommand(context, "AUTH %s", config.auth));
+  if (reply != NULL) {
+    if(reply->type == REDIS_REPLY_ERROR){
+      char buff[512] = {0};
+      common::SNPrintf(buff, sizeof(buff), "Authentification error: %s", reply->str);
+      freeReplyObject(reply);
+      return common::make_error_value(buff, common::ErrorValue::E_ERROR);
     }
 
-    redisReply *reply = static_cast<redisReply*>(redisCommand(context, "AUTH %s", config.auth));
-    if (reply != NULL) {
-        if(reply->type == REDIS_REPLY_ERROR){
-            char buff[512] = {0};
-            common::SNPrintf(buff, sizeof(buff), "Authentification error: %s", reply->str);
-            freeReplyObject(reply);
-            return common::make_error_value(buff, common::ErrorValue::E_ERROR);
-        }
+    freeReplyObject(reply);
+    return common::Error();
+  }
 
-        freeReplyObject(reply);
-        return common::Error();
-    }
-
-    return cliPrintContextError(context);
+  return cliPrintContextError(context);
 }
 
 }
@@ -379,14 +374,14 @@ common::Error testConnection(RedisConnectionSettings* settings) {
   redisContext* context = NULL;
   common::Error err = createConnection(settings, &context);
   if(err && err->isError()){
-      return err;
+    return err;
   }
 
   redisConfig config = settings->info();
   err = authContext(config, context);
   if(err && err->isError()){
-      redisFree(context);
-      return err;
+    redisFree(context);
+    return err;
   }
 
   redisFree(context);
@@ -397,32 +392,30 @@ common::Error discoveryConnection(RedisConnectionSettings* settings, std::vector
   redisContext* context = NULL;
   common::Error err = createConnection(settings, &context);
   if(err && err->isError()){
-      return err;
+    return err;
   }
 
   redisConfig config = settings->info();
   err = authContext(config, context);
   if(err && err->isError()){
-      redisFree(context);
-      return err;
+    redisFree(context);
+    return err;
   }
 
   /* Send the GET CLUSTER command. */
   redisReply *reply = (redisReply*)redisCommand(context, GET_SERVER_TYPE);
   if (reply == NULL) {
-      err = common::make_error_value("I/O error", common::Value::E_ERROR);
-      redisFree(context);
-      return err;
+    err = common::make_error_value("I/O error", common::Value::E_ERROR);
+    redisFree(context);
+    return err;
   }
 
-  if(reply->type == REDIS_REPLY_STRING){
-      err = makeAllDiscoveryInfo(settings->host(), std::string(reply->str, reply->len), infos);
-  }
-  else if(reply->type == REDIS_REPLY_ERROR){
-      err = common::make_error_value(std::string(reply->str, reply->len), common::Value::E_ERROR);
-  }
-  else{
-      NOTREACHED();
+  if (reply->type == REDIS_REPLY_STRING) {
+    err = makeAllDiscoveryInfo(settings->host(), std::string(reply->str, reply->len), infos);
+  } else if(reply->type == REDIS_REPLY_ERROR) {
+    err = common::make_error_value(std::string(reply->str, reply->len), common::Value::E_ERROR);
+  } else {
+    NOTREACHED();
   }
 
   freeReplyObject(reply);
@@ -432,14 +425,14 @@ common::Error discoveryConnection(RedisConnectionSettings* settings, std::vector
 
 struct RedisDriver::pimpl {
   pimpl(RedisDriver* parent)
-      : parent_(parent), context_(NULL), isAuth_(false) {
+    : parent_(parent), context_(NULL), isAuth_(false) {
   }
 
   ~pimpl() {
-      if(context_){
-          redisFree(context_);
-          context_ = NULL;
-      }
+    if (context_) {
+      redisFree(context_);
+      context_ = NULL;
+    }
   }
 
   RedisDriver* parent_;
@@ -453,79 +446,78 @@ struct RedisDriver::pimpl {
    *--------------------------------------------------------------------------- */
 
   common::Error latencyMode(FastoObject* out) WARN_UNUSED_RESULT {
-      DCHECK(out);
-      if(!out){
-          return common::make_error_value("Invalid input argument", common::ErrorValue::E_ERROR);
+    DCHECK(out);
+    if(!out){
+      return common::make_error_value("Invalid input argument", common::ErrorValue::E_ERROR);
+    }
+
+    FastoObjectCommand* cmd = createCommand<RedisCommand>(out, "PING", common::Value::C_INNER);
+    DCHECK(cmd);
+    if(!cmd){
+      return common::make_error_value("Invalid createCommand input argument", common::ErrorValue::E_ERROR);
+    }
+
+    common::time64_t start;
+    uint64_t min = 0, max = 0, tot = 0, count = 0;
+    uint64_t history_interval =
+            config_.interval ? config_.interval/1000 :
+                              LATENCY_HISTORY_DEFAULT_INTERVAL;
+    double avg;
+    common::time64_t history_start = common::time::current_mstime();
+
+    if (!context_){
+      return common::make_error_value("Not connected", common::Value::E_ERROR);
+    }
+
+    FastoObject* child = NULL;
+    const std::string command = cmd->inputCommand();
+
+    while(!parent_->interrupt_) {
+      start = common::time::current_mstime();
+      redisReply *reply = (redisReply*)redisCommand(context_, command.c_str());
+      if (reply == NULL) {
+        return common::make_error_value("I/O error", common::Value::E_ERROR);
       }
 
-      FastoObjectCommand* cmd = createCommand<RedisCommand>(out, "PING", common::Value::C_INNER);
-      DCHECK(cmd);
-      if(!cmd){
-          return common::make_error_value("Invalid createCommand input argument", common::ErrorValue::E_ERROR);
+      common::time64_t curTime = common::time::current_mstime();
+
+      uint64_t latency = curTime - start;
+      freeReplyObject(reply);
+      count++;
+      if (count == 1) {
+        min = max = tot = latency;
+        avg = (double) latency;
+      } else {
+        if (latency < min) min = latency;
+        if (latency > max) max = latency;
+        tot += latency;
+        avg = (double) tot/count;
       }
 
-      common::time64_t start;
-      uint64_t min = 0, max = 0, tot = 0, count = 0;
-      uint64_t history_interval =
-              config_.interval ? config_.interval/1000 :
-                                LATENCY_HISTORY_DEFAULT_INTERVAL;
-      double avg;
-      common::time64_t history_start = common::time::current_mstime();
+      char buff[1024];
+      common::SNPrintf(buff, sizeof(buff), "min: %lld, max: %lld, avg: %.2f (%lld samples)",
+                          min, max, avg, count);
+      common::Value *val = common::Value::createStringValue(buff);
 
-      if (!context_){
-          return common::make_error_value("Not connected", common::Value::E_ERROR);
+      if(!child){
+        child = new FastoObject(cmd, val, config_.mb_delim_);
+        cmd->addChildren(child);
+        continue;
       }
 
-      FastoObject* child = NULL;
-      const std::string command = cmd->inputCommand();
-
-      while(!parent_->interrupt_) {
-          start = common::time::current_mstime();
-          redisReply *reply = (redisReply*)redisCommand(context_, command.c_str());
-          if (reply == NULL) {
-              return common::make_error_value("I/O error", common::Value::E_ERROR);
-          }
-
-          common::time64_t curTime = common::time::current_mstime();
-
-          uint64_t latency = curTime - start;
-          freeReplyObject(reply);
-          count++;
-          if (count == 1) {
-              min = max = tot = latency;
-              avg = (double) latency;
-          } else {
-              if (latency < min) min = latency;
-              if (latency > max) max = latency;
-              tot += latency;
-              avg = (double) tot/count;
-          }
-
-          char buff[1024];
-          common::SNPrintf(buff, sizeof(buff), "min: %lld, max: %lld, avg: %.2f (%lld samples)",
-                              min, max, avg, count);
-          common::Value *val = common::Value::createStringValue(buff);
-
-          if(!child){
-              child = new FastoObject(cmd, val, config_.mb_delim_);
-              cmd->addChildren(child);
-              continue;
-          }
-
-          if(config_.latency_history && curTime - history_start > history_interval){
-              child = new FastoObject(cmd, val, config_.mb_delim_);
-              cmd->addChildren(child);
-              history_start = curTime;
-              min = max = tot = count = 0;
-          }
-          else{
-              child->setValue(val);
-          }
-
-          common::utils::msleep(LATENCY_SAMPLE_RATE);
+      if(config_.latency_history && curTime - history_start > history_interval){
+          child = new FastoObject(cmd, val, config_.mb_delim_);
+          cmd->addChildren(child);
+          history_start = curTime;
+          min = max = tot = count = 0;
+      } else {
+          child->setValue(val);
       }
 
-      return common::make_error_value("Interrupted.", common::ErrorValue::E_INTERRUPTED);
+      common::utils::msleep(LATENCY_SAMPLE_RATE);
+    }
+
+    return common::make_error_value("Interrupted.", common::ErrorValue::E_INTERRUPTED);
   }
 
   /*------------------------------------------------------------------------------
@@ -535,87 +527,88 @@ struct RedisDriver::pimpl {
   /* Sends SYNC and reads the number of bytes in the payload. Used both by
    * slaveMode() and getRDB(). */
   common::Error sendSync(unsigned long long& payload) WARN_UNUSED_RESULT {
-      /* To start we need to send the SYNC command and return the payload.
-       * The hiredis client lib does not understand this part of the protocol
-       * and we don't want to mess with its buffers, so everything is performed
-       * using direct low-level I/O. */
-      char buf[4096], *p;
+    /* To start we need to send the SYNC command and return the payload.
+     * The hiredis client lib does not understand this part of the protocol
+     * and we don't want to mess with its buffers, so everything is performed
+     * using direct low-level I/O. */
+    char buf[4096], *p;
 
-      /* Send the SYNC command. */
-      ssize_t nwrite = 0;
-      if (redisWriteFromBuffer(context_, "SYNC\r\n", &nwrite) == REDIS_ERR) {
-          return common::make_error_value("Error writing to master", common::ErrorValue::E_ERROR);
+    /* Send the SYNC command. */
+    ssize_t nwrite = 0;
+    if (redisWriteFromBuffer(context_, "SYNC\r\n", &nwrite) == REDIS_ERR) {
+        return common::make_error_value("Error writing to master", common::ErrorValue::E_ERROR);
+    }
+
+    /* Read $<payload>\r\n, making sure to read just up to "\n" */
+    p = buf;
+    while(1) {
+      ssize_t nread = 0;
+      int res = redisReadToBuffer(context_, p, 1, &nread);
+      if (res == REDIS_ERR) {
+        return common::make_error_value("Error reading bulk length while SYNCing",
+                                        common::ErrorValue::E_ERROR);
       }
 
-      /* Read $<payload>\r\n, making sure to read just up to "\n" */
-      p = buf;
-      while(1) {
-          ssize_t nread = 0;
-          int res = redisReadToBuffer(context_, p, 1, &nread);
-          if (res == REDIS_ERR) {
-              return common::make_error_value("Error reading bulk length while SYNCing", common::ErrorValue::E_ERROR);
-          }
-
-          if(!nread){
-              continue;
-          }
-
-          if (*p == '\n' && p != buf) break;
-          if (*p != '\n') p++;
-      }
-      *p = '\0';
-      if (buf[0] == '-') {
-          char buf2[4096];
-          common::SNPrintf(buf2, sizeof(buf2), "SYNC with master failed: %s", buf);
-          return common::make_error_value(buf2, common::ErrorValue::E_ERROR);
+      if(!nread){
+        continue;
       }
 
-      payload = strtoull(buf+1, NULL, 10);
-      return common::Error();
+      if (*p == '\n' && p != buf) break;
+      if (*p != '\n') p++;
+    }
+    *p = '\0';
+    if (buf[0] == '-') {
+      char buf2[4096];
+      common::SNPrintf(buf2, sizeof(buf2), "SYNC with master failed: %s", buf);
+      return common::make_error_value(buf2, common::ErrorValue::E_ERROR);
+    }
+
+    payload = strtoull(buf+1, NULL, 10);
+    return common::Error();
   }
 
   common::Error slaveMode(FastoObject* out) WARN_UNUSED_RESULT {
-      DCHECK(out);
-      if(!out){
-          return common::make_error_value("Invalid input argument", common::ErrorValue::E_ERROR);
-      }
+    DCHECK(out);
+    if(!out){
+      return common::make_error_value("Invalid input argument", common::ErrorValue::E_ERROR);
+    }
 
-      unsigned long long payload = 0;
-      common::Error er = sendSync(payload);
-      if(er){
-          return er;
-      }
-
-      FastoObjectCommand* cmd = createCommand<RedisCommand>(out, SYNC_REQUEST, common::Value::C_INNER);
-      DCHECK(cmd);
-      if(!cmd){
-          return common::make_error_value("Invalid createCommand input argument", common::ErrorValue::E_ERROR);
-      }
-
-      char buf[1024];
-      /* Discard the payload. */
-      while(payload) {
-          ssize_t nread = 0;
-          int res = redisReadToBuffer(context_, buf, (payload > sizeof(buf)) ? sizeof(buf) : payload, &nread);
-          if (res == REDIS_ERR) {
-              return common::make_error_value("Error reading RDB payload while SYNCing", common::ErrorValue::E_ERROR);
-          }
-          payload -= nread;
-      }
-
-      /* Now we can use hiredis to read the incoming protocol. */
-      while (1){
-          er = cliReadReply(cmd);
-          if(er){
-              break;
-          }
-
-          if (parent_->interrupt_){
-              return common::make_error_value("Interrupted.", common::ErrorValue::E_INTERRUPTED);
-          }
-      }
-
+    unsigned long long payload = 0;
+    common::Error er = sendSync(payload);
+    if(er){
       return er;
+    }
+
+    FastoObjectCommand* cmd = createCommand<RedisCommand>(out, SYNC_REQUEST, common::Value::C_INNER);
+    DCHECK(cmd);
+    if(!cmd){
+      return common::make_error_value("Invalid createCommand input argument", common::ErrorValue::E_ERROR);
+    }
+
+    char buf[1024];
+    /* Discard the payload. */
+    while(payload) {
+      ssize_t nread = 0;
+      int res = redisReadToBuffer(context_, buf, (payload > sizeof(buf)) ? sizeof(buf) : payload, &nread);
+      if (res == REDIS_ERR) {
+        return common::make_error_value("Error reading RDB payload while SYNCing", common::ErrorValue::E_ERROR);
+      }
+      payload -= nread;
+    }
+
+    /* Now we can use hiredis to read the incoming protocol. */
+    while (1){
+      er = cliReadReply(cmd);
+      if(er){
+        break;
+      }
+
+      if (parent_->interrupt_){
+        return common::make_error_value("Interrupted.", common::ErrorValue::E_INTERRUPTED);
+      }
+    }
+
+    return er;
   }
 
   /*------------------------------------------------------------------------------
@@ -625,82 +618,80 @@ struct RedisDriver::pimpl {
   /* This function implements --rdb, so it uses the replication protocol in order
    * to fetch the RDB file from a remote server. */
   common::Error getRDB(FastoObject* out) WARN_UNUSED_RESULT {
-      DCHECK(out);
-      if(!out){
-          return common::make_error_value("Invalid input argument", common::ErrorValue::E_ERROR);
+    DCHECK(out);
+    if(!out){
+      return common::make_error_value("Invalid input argument", common::ErrorValue::E_ERROR);
+    }
+
+    unsigned long long payload = 0;
+    common::Error er = sendSync(payload);
+    if(er){
+      return er;
+    }
+
+    common::ArrayValue* val = NULL;
+    FastoObjectCommand* cmd = createCommand<RedisCommand>(out, RDM_REQUEST, common::Value::C_INNER);
+    DCHECK(cmd);
+    if(!cmd){
+      return common::make_error_value("Invalid createCommand input argument", common::ErrorValue::E_ERROR);
+    }
+
+    int fd = INVALID_DESCRIPTOR;
+    /* Write to file. */
+    if (!strcmp(config_.rdb_filename,"-")) {
+      val = new common::ArrayValue;
+      FastoObject* child = new FastoObject(cmd, val, config_.mb_delim_);
+      cmd->addChildren(child);
+    } else {
+      fd = open(config_.rdb_filename, O_CREAT | O_WRONLY, 0644);
+      if (fd == INVALID_DESCRIPTOR) {
+        char bufeEr[2048];
+        common::SNPrintf(bufeEr, sizeof(bufeEr), "Error opening '%s': %s", config_.rdb_filename, strerror(errno));
+
+        return common::make_error_value(bufeEr, common::ErrorValue::E_ERROR);
+      }
+    }
+
+    char buf[4096];
+
+    while(payload) {
+      ssize_t nread = 0, nwritten = 0;
+
+      int res = redisReadToBuffer(context_, buf,(payload > sizeof(buf)) ? sizeof(buf) : payload, &nread);
+      if (res == REDIS_ERR) {
+        return common::make_error_value("Error reading RDB payload while SYNCing", common::ErrorValue::E_ERROR);
       }
 
-      unsigned long long payload = 0;
-      common::Error er = sendSync(payload);
-      if(er){
-          return er;
+      if (!nread) {
+        continue;
       }
 
-      common::ArrayValue* val = NULL;
-      FastoObjectCommand* cmd = createCommand<RedisCommand>(out, RDM_REQUEST, common::Value::C_INNER);
-      DCHECK(cmd);
-      if(!cmd){
-          return common::make_error_value("Invalid createCommand input argument", common::ErrorValue::E_ERROR);
+      if (fd != INVALID_DESCRIPTOR) {
+        nwritten = write(fd, buf, nread);
+      } else {
+        val->appendString(buf);
       }
 
-      int fd = INVALID_DESCRIPTOR;
-      /* Write to file. */
-      if (!strcmp(config_.rdb_filename,"-")) {
-          val = new common::ArrayValue;
-          FastoObject* child = new FastoObject(cmd, val, config_.mb_delim_);
-          cmd->addChildren(child);
-      }
-      else{
-          fd = open(config_.rdb_filename, O_CREAT | O_WRONLY, 0644);
-          if (fd == INVALID_DESCRIPTOR) {
-              char bufeEr[2048];
-              common::SNPrintf(bufeEr, sizeof(bufeEr), "Error opening '%s': %s", config_.rdb_filename, strerror(errno));
+      if (nwritten != nread) {
+        char bufeEr[2048];
+        common::SNPrintf(bufeEr, sizeof(bufeEr), "Error writing data to file: %s", strerror(errno));
 
-              return common::make_error_value(bufeEr, common::ErrorValue::E_ERROR);
-          }
-      }
-
-      char buf[4096];
-
-      while(payload) {
-          ssize_t nread = 0, nwritten = 0;
-
-          int res = redisReadToBuffer(context_, buf,(payload > sizeof(buf)) ? sizeof(buf) : payload, &nread);
-          if (res == REDIS_ERR) {
-              return common::make_error_value("Error reading RDB payload while SYNCing", common::ErrorValue::E_ERROR);
-          }
-
-          if(!nread){
-              continue;
-          }
-
-          if(fd != INVALID_DESCRIPTOR){
-              nwritten = write(fd, buf, nread);
-          }
-          else{
-              val->appendString(buf);
-          }
-
-          if (nwritten != nread) {
-              char bufeEr[2048];
-              common::SNPrintf(bufeEr, sizeof(bufeEr), "Error writing data to file: %s", strerror(errno));
-
-              if(fd != INVALID_DESCRIPTOR){
-                  close(fd);
-              }
-
-              return common::make_error_value(bufeEr, common::ErrorValue::E_ERROR);
-          }
-
-          payload -= nread;
-      }
-
-      if(fd != INVALID_DESCRIPTOR){
+        if(fd != INVALID_DESCRIPTOR){
           close(fd);
+        }
+
+        return common::make_error_value(bufeEr, common::ErrorValue::E_ERROR);
       }
 
-      LOG_MSG("Transfer finished with success.", common::logging::L_INFO, true);
-      return common::Error();
+        payload -= nread;
+    }
+
+    if (fd != INVALID_DESCRIPTOR) {
+      close(fd);
+    }
+
+    LOG_MSG("Transfer finished with success.", common::logging::L_INFO, true);
+    return common::Error();
   }
 
   /*------------------------------------------------------------------------------
@@ -708,33 +699,32 @@ struct RedisDriver::pimpl {
    *--------------------------------------------------------------------------- */
 
   redisReply *sendScan(common::Error& er, unsigned long long *it) {
-      redisReply *reply = (redisReply *)redisCommand(context_, "SCAN %llu", *it);
+    redisReply *reply = (redisReply *)redisCommand(context_, "SCAN %llu", *it);
 
-      /* Handle any error conditions */
-      if(reply == NULL) {
-          er.reset(new common::ErrorValue("I/O error", common::Value::E_ERROR));
-          return NULL;
-      } else if(reply->type == REDIS_REPLY_ERROR) {
-          char buff[512];
-          common::SNPrintf(buff, sizeof(buff), "SCAN error: %s", reply->str);
-          er.reset(new common::ErrorValue(buff, common::Value::E_ERROR));
-          return NULL;
-      } else if(reply->type != REDIS_REPLY_ARRAY) {
-          er.reset(new common::ErrorValue("Non ARRAY response from SCAN!", common::Value::E_ERROR));
-          return NULL;
-      } else if(reply->elements != 2) {
-          er.reset(new common::ErrorValue("Invalid element count from SCAN!", common::Value::E_ERROR));
-          return NULL;
-      }
+    /* Handle any error conditions */
+    if (reply == NULL) {
+      er.reset(new common::ErrorValue("I/O error", common::Value::E_ERROR));
+      return NULL;
+    } else if(reply->type == REDIS_REPLY_ERROR) {
+      char buff[512];
+      common::SNPrintf(buff, sizeof(buff), "SCAN error: %s", reply->str);
+      er.reset(new common::ErrorValue(buff, common::Value::E_ERROR));
+      return NULL;
+    } else if(reply->type != REDIS_REPLY_ARRAY) {
+      er.reset(new common::ErrorValue("Non ARRAY response from SCAN!", common::Value::E_ERROR));
+      return NULL;
+    } else if(reply->elements != 2) {
+      er.reset(new common::ErrorValue("Invalid element count from SCAN!", common::Value::E_ERROR));
+      return NULL;
+    }
 
-      /* Validate our types are correct */
-      assert(reply->element[0]->type == REDIS_REPLY_STRING);
-      assert(reply->element[1]->type == REDIS_REPLY_ARRAY);
+    /* Validate our types are correct */
+    assert(reply->element[0]->type == REDIS_REPLY_STRING);
+    assert(reply->element[1]->type == REDIS_REPLY_ARRAY);
 
-      /* Update iterator */
-      *it = atoi(reply->element[0]->str);
-
-      return reply;
+    /* Update iterator */
+    *it = atoi(reply->element[0]->str);
+    return reply;
   }
 
   common::Error dbsize(long long& size) WARN_UNUSED_RESULT {
@@ -797,220 +787,213 @@ struct RedisDriver::pimpl {
 
   common::Error getKeySizes(redisReply *keys, int *types,
                           unsigned long long *sizes) WARN_UNUSED_RESULT {
-      redisReply *reply;
-      const char *sizecmds[] = {"STRLEN","LLEN","SCARD","HLEN","ZCARD"};
-      unsigned int i;
+    redisReply *reply;
+    const char *sizecmds[] = {"STRLEN","LLEN","SCARD","HLEN","ZCARD"};
+    unsigned int i;
 
-      /* Pipeline size commands */
-      for(i=0;i<keys->elements;i++) {
-          /* Skip keys that were deleted */
-          if(types[i]==RTYPE_NONE)
-              continue;
+    /* Pipeline size commands */
+    for(i=0;i<keys->elements;i++) {
+      /* Skip keys that were deleted */
+      if(types[i]==RTYPE_NONE)
+        continue;
 
-          redisAppendCommand(context_, "%s %s", sizecmds[types[i]],
-              keys->element[i]->str);
+      redisAppendCommand(context_, "%s %s", sizecmds[types[i]], keys->element[i]->str);
+    }
+
+    /* Retreive sizes */
+    for(i=0;i<keys->elements;i++) {
+      /* Skip keys that dissapeared between SCAN and TYPE */
+      if(types[i] == RTYPE_NONE) {
+        sizes[i] = 0;
+        continue;
       }
 
-      /* Retreive sizes */
-      for(i=0;i<keys->elements;i++) {
-          /* Skip keys that dissapeared between SCAN and TYPE */
-          if(types[i] == RTYPE_NONE) {
-              sizes[i] = 0;
-              continue;
-          }
-
-          /* Retreive size */
-          if(redisGetReply(context_, (void**)&reply)!=REDIS_OK) {
-              char buff[4096];
-              common::SNPrintf(buff, sizeof(buff), "Error getting size for key '%s' (%d: %s)",
-                  keys->element[i]->str, context_->err, context_->errstr);
-              return common::make_error_value(buff, common::Value::E_ERROR);
-          } else if(reply->type != REDIS_REPLY_INTEGER) {
-              /* Theoretically the key could have been removed and
-               * added as a different type between TYPE and SIZE */
-              char buff[4096];
-              common::SNPrintf(buff, sizeof(buff),
-                  "Warning:  %s on '%s' failed (may have changed type)",
-                   sizecmds[types[i]], keys->element[i]->str);
-              LOG_MSG(buff, common::logging::L_WARNING, true);
-              sizes[i] = 0;
-          } else {
-              sizes[i] = reply->integer;
-          }
-
-          freeReplyObject(reply);
+      /* Retreive size */
+      if(redisGetReply(context_, (void**)&reply)!=REDIS_OK) {
+        char buff[4096];
+        common::SNPrintf(buff, sizeof(buff), "Error getting size for key '%s' (%d: %s)",
+            keys->element[i]->str, context_->err, context_->errstr);
+        return common::make_error_value(buff, common::Value::E_ERROR);
+      } else if(reply->type != REDIS_REPLY_INTEGER) {
+        /* Theoretically the key could have been removed and
+        * added as a different type between TYPE and SIZE */
+        char buff[4096];
+        common::SNPrintf(buff, sizeof(buff), "Warning:  %s on '%s' failed (may have changed type)",
+              sizecmds[types[i]], keys->element[i]->str);
+        LOG_MSG(buff, common::logging::L_WARNING, true);
+        sizes[i] = 0;
+      } else {
+          sizes[i] = reply->integer;
       }
 
-      return common::Error();
+      freeReplyObject(reply);
+    }
+
+    return common::Error();
   }
 
   common::Error findBigKeys(FastoObject* out) WARN_UNUSED_RESULT {
-      DCHECK(out);
-      if(!out){
-          return common::make_error_value("Invalid input argument", common::ErrorValue::E_ERROR);
+    DCHECK(out);
+    if(!out){
+      return common::make_error_value("Invalid input argument", common::ErrorValue::E_ERROR);
+    }
+
+    FastoObjectCommand* cmd = createCommand<RedisCommand>(out, FIND_BIG_KEYS_REQUEST, common::Value::C_INNER);
+    DCHECK(cmd);
+    if(!cmd){
+      return common::make_error_value("Invalid createCommand input argument", common::ErrorValue::E_ERROR);
+    }
+
+    unsigned long long biggest[5] = {0}, counts[5] = {0}, totalsize[5] = {0};
+    unsigned long long sampled = 0, totlen=0, *sizes=NULL, it=0;
+    long long total_keys;
+    sds maxkeys[5] = {0};
+    const char *typeName[] = {"string","list","set","hash","zset"};
+    const char *typeunit[] = {"bytes","items","members","fields","members"};
+    redisReply *reply, *keys;
+    unsigned int arrsize=0, i;
+    int type, *types=NULL;
+
+    /* Total keys pre scanning */
+    common::Error er = dbsize(total_keys);
+    if(er){
+      return er;
+    }
+
+    /* Status message */
+    LOG_MSG("# Scanning the entire keyspace to find biggest keys as well as", common::logging::L_INFO, true);
+    LOG_MSG("# average sizes per key type.  You can use -i 0.1 to sleep 0.1 sec", common::logging::L_INFO, true);
+    LOG_MSG("# per 100 SCAN commands (not usually needed).", common::logging::L_INFO, true);
+
+    /* New up sds strings to keep track of overall biggest per type */
+    for(i=0;i<RTYPE_NONE; i++) {
+      maxkeys[i] = sdsempty();
+      if(!maxkeys[i]) {
+        return common::make_error_value("Failed to allocate memory for largest key names!", common::Value::E_ERROR);
+      }
+    }
+
+    /* SCAN loop */
+    do {
+      /* Calculate approximate percentage completion */
+      double pct = 100 * (double)sampled/total_keys;
+
+      /* Grab some keys and point to the keys array */
+      reply = sendScan(er, &it);
+      if (er) {
+        return er;
       }
 
-      FastoObjectCommand* cmd = createCommand<RedisCommand>(out, FIND_BIG_KEYS_REQUEST, common::Value::C_INNER);
-      DCHECK(cmd);
-      if(!cmd){
-          return common::make_error_value("Invalid createCommand input argument", common::ErrorValue::E_ERROR);
+      keys  = reply->element[1];
+
+      /* Reallocate our type and size array if we need to */
+      if(keys->elements > arrsize) {
+        int* ltypes = (int*)realloc(types, sizeof(int)*keys->elements);
+        if(!ltypes) {
+          free(types);
+          return common::make_error_value("Failed to allocate storage for keys!", common::Value::E_ERROR);
+        }
+        types = ltypes;
+        unsigned long long* lsizes = (unsigned long long*)realloc(sizes, sizeof(unsigned long long)*keys->elements);
+        if (!lsizes) {
+          free(sizes);
+          return common::make_error_value("Failed to allocate storage for keys!", common::Value::E_ERROR);
+        }
+        sizes = lsizes;
+        arrsize = keys->elements;
       }
 
-      unsigned long long biggest[5] = {0}, counts[5] = {0}, totalsize[5] = {0};
-      unsigned long long sampled = 0, totlen=0, *sizes=NULL, it=0;
-      long long total_keys;
-      sds maxkeys[5] = {0};
-      const char *typeName[] = {"string","list","set","hash","zset"};
-      const char *typeunit[] = {"bytes","items","members","fields","members"};
-      redisReply *reply, *keys;
-      unsigned int arrsize=0, i;
-      int type, *types=NULL;
-
-      /* Total keys pre scanning */
-      common::Error er = dbsize(total_keys);
+      /* Retreive types and then sizes */
+      er = getKeyTypes(keys, types);
       if(er){
-          return er;
+        return er;
       }
 
-      /* Status message */
-      LOG_MSG("# Scanning the entire keyspace to find biggest keys as well as", common::logging::L_INFO, true);
-      LOG_MSG("# average sizes per key type.  You can use -i 0.1 to sleep 0.1 sec", common::logging::L_INFO, true);
-      LOG_MSG("# per 100 SCAN commands (not usually needed).", common::logging::L_INFO, true);
-
-      /* New up sds strings to keep track of overall biggest per type */
-      for(i=0;i<RTYPE_NONE; i++) {
-          maxkeys[i] = sdsempty();
-          if(!maxkeys[i]) {
-              return common::make_error_value("Failed to allocate memory for largest key names!", common::Value::E_ERROR);
-          }
+      er = getKeySizes(keys, types, sizes);
+      if(er){
+        return er;
       }
 
-      /* SCAN loop */
-      do {
-          /* Calculate approximate percentage completion */
-          double pct = 100 * (double)sampled/total_keys;
+      /* Now update our stats */
+      for(i=0;i<keys->elements;i++) {
+        if((type = types[i]) == RTYPE_NONE)
+          continue;
 
-          /* Grab some keys and point to the keys array */
-          reply = sendScan(er, &it);
-          if(er){
-              return er;
+        totalsize[type] += sizes[i];
+        counts[type]++;
+        totlen += keys->element[i]->len;
+        sampled++;
+
+        if(biggest[type]<sizes[i]) {
+          char buff[4096];
+          common::SNPrintf(buff, sizeof(buff),
+                           "[%05.2f%%] Biggest %-6s found so far '%s' with %llu %s",
+                           pct, typeName[type], keys->element[i]->str, sizes[i], typeunit[type]);
+
+          LOG_MSG(buff, common::logging::L_INFO, true);
+
+          /* Keep track of biggest key name for this type */
+          maxkeys[type] = sdscpy(maxkeys[type], keys->element[i]->str);
+          if(!maxkeys[type]) {
+            return common::make_error_value("Failed to allocate memory for key!", common::Value::E_ERROR);
           }
 
-          keys  = reply->element[1];
+          /* Keep track of the biggest size for this type */
+          biggest[type] = sizes[i];
+        }
+      }
 
-          /* Reallocate our type and size array if we need to */
-          if(keys->elements > arrsize) {
-              int* ltypes = (int*)realloc(types, sizeof(int)*keys->elements);
-              if(!ltypes) {
-                  free(types);
-                  return common::make_error_value("Failed to allocate storage for keys!", common::Value::E_ERROR);
-              }
+      /* Sleep if we've been directed to do so */
+      if(sampled && (sampled %100) == 0 && config_.interval) {
+        common::utils::usleep(config_.interval);
+      }
 
-              types = ltypes;
+      freeReplyObject(reply);
+    } while(it != 0);
 
-              unsigned long long* lsizes = (unsigned long long*)realloc(sizes, sizeof(unsigned long long)*keys->elements);
-              if(!lsizes) {
-                  free(sizes);
-                  return common::make_error_value("Failed to allocate storage for keys!", common::Value::E_ERROR);
-              }
+    common::utils::freeifnotnull(types);
+    common::utils::freeifnotnull(sizes);
 
-              sizes = lsizes;
+    /* We're done */
+    char buff[4096];
+    common::SNPrintf(buff, sizeof(buff), "Sampled %llu keys in the keyspace!", sampled);
+    LOG_MSG(buff, common::logging::L_INFO, true);
 
-              arrsize = keys->elements;
-          }
+    memset(&buff, 0, sizeof(buff));
+    common::SNPrintf(buff, sizeof(buff), "Total key length in bytes is %llu (avg len %.2f)",
+       totlen, totlen ? (double)totlen/sampled : 0);
+    LOG_MSG(buff, common::logging::L_INFO, true);
 
-          /* Retreive types and then sizes */
-          er = getKeyTypes(keys, types);
-          if(er){
-              return er;
-          }
+    /* Output the biggest keys we found, for types we did find */
+    for(i=0;i<RTYPE_NONE;i++) {
+      if(sdslen(maxkeys[i])>0) {
+        memset(&buff, 0, sizeof(buff));
+        common::SNPrintf(buff, sizeof(buff), "Biggest %6s found '%s' has %llu %s", typeName[i], maxkeys[i],
+           biggest[i], typeunit[i]);
+        common::StringValue *val = common::Value::createStringValue(buff);
+        FastoObject* obj = new FastoObject(cmd, val, config_.mb_delim_);
+        cmd->addChildren(obj);
+      }
+    }
 
-          er = getKeySizes(keys, types, sizes);
-          if(er){
-              return er;
-          }
-
-          /* Now update our stats */
-          for(i=0;i<keys->elements;i++) {
-              if((type = types[i]) == RTYPE_NONE)
-                  continue;
-
-              totalsize[type] += sizes[i];
-              counts[type]++;
-              totlen += keys->element[i]->len;
-              sampled++;
-
-              if(biggest[type]<sizes[i]) {
-                  char buff[4096];
-                  common::SNPrintf(buff, sizeof(buff),
-                     "[%05.2f%%] Biggest %-6s found so far '%s' with %llu %s",
-                     pct, typeName[type], keys->element[i]->str, sizes[i],
-                     typeunit[type]);
-
-                  LOG_MSG(buff, common::logging::L_INFO, true);
-
-                  /* Keep track of biggest key name for this type */
-                  maxkeys[type] = sdscpy(maxkeys[type], keys->element[i]->str);
-                  if(!maxkeys[type]) {
-                      return common::make_error_value("Failed to allocate memory for key!", common::Value::E_ERROR);
-                  }
-
-                  /* Keep track of the biggest size for this type */
-                  biggest[type] = sizes[i];
-              }
-          }
-
-          /* Sleep if we've been directed to do so */
-          if(sampled && (sampled %100) == 0 && config_.interval) {
-              common::utils::usleep(config_.interval);
-          }
-
-          freeReplyObject(reply);
-      } while(it != 0);
-
-      common::utils::freeifnotnull(types);
-      common::utils::freeifnotnull(sizes);
-
-      /* We're done */
-      char buff[4096];
-      common::SNPrintf(buff, sizeof(buff), "Sampled %llu keys in the keyspace!", sampled);
-      LOG_MSG(buff, common::logging::L_INFO, true);
-
+    for(i=0;i<RTYPE_NONE;i++) {
       memset(&buff, 0, sizeof(buff));
-      common::SNPrintf(buff, sizeof(buff), "Total key length in bytes is %llu (avg len %.2f)",
-         totlen, totlen ? (double)totlen/sampled : 0);
-      LOG_MSG(buff, common::logging::L_INFO, true);
+      common::SNPrintf(buff, sizeof(buff), "%llu %ss with %llu %s (%05.2f%% of keys, avg size %.2f)",
+         counts[i], typeName[i], totalsize[i], typeunit[i],
+         sampled ? 100 * (double)counts[i]/sampled : 0,
+         counts[i] ? (double)totalsize[i]/counts[i] : 0);
+      common::StringValue *val = common::Value::createStringValue(buff);
+      FastoObject* obj = new FastoObject(cmd, val, config_.mb_delim_);
+      cmd->addChildren(obj);
+    }
 
-      /* Output the biggest keys we found, for types we did find */
-      for(i=0;i<RTYPE_NONE;i++) {
-          if(sdslen(maxkeys[i])>0) {
-              memset(&buff, 0, sizeof(buff));
-              common::SNPrintf(buff, sizeof(buff), "Biggest %6s found '%s' has %llu %s", typeName[i], maxkeys[i],
-                 biggest[i], typeunit[i]);
-              common::StringValue *val = common::Value::createStringValue(buff);
-              FastoObject* obj = new FastoObject(cmd, val, config_.mb_delim_);
-              cmd->addChildren(obj);
-          }
-      }
+    /* Free sds strings containing max keys */
+    for(i=0;i<RTYPE_NONE;i++) {
+      sdsfree(maxkeys[i]);
+    }
 
-      for(i=0;i<RTYPE_NONE;i++) {
-          memset(&buff, 0, sizeof(buff));
-          common::SNPrintf(buff, sizeof(buff), "%llu %ss with %llu %s (%05.2f%% of keys, avg size %.2f)",
-             counts[i], typeName[i], totalsize[i], typeunit[i],
-             sampled ? 100 * (double)counts[i]/sampled : 0,
-             counts[i] ? (double)totalsize[i]/counts[i] : 0);
-          common::StringValue *val = common::Value::createStringValue(buff);
-          FastoObject* obj = new FastoObject(cmd, val, config_.mb_delim_);
-          cmd->addChildren(obj);
-      }
-
-      /* Free sds strings containing max keys */
-      for(i=0;i<RTYPE_NONE;i++) {
-          sdsfree(maxkeys[i]);
-      }
-
-      /* Success! */
-      return common::Error();
+    /* Success! */
+    return common::Error();
   }
 
   /*------------------------------------------------------------------------------
@@ -1021,163 +1004,166 @@ struct RedisDriver::pimpl {
    * A new buffer is allocated for the result, that needs to be free'd.
    * If the field is not found NULL is returned. */
   static char *getInfoField(char *info, const char *field) {
-      char *p = strstr(info,field);
-      char *n1, *n2;
-      char *result;
+    char *p = strstr(info,field);
+    char *n1, *n2;
+    char *result;
 
-      if (!p) return NULL;
-      p += strlen(field)+1;
-      n1 = strchr(p,'\r');
-      n2 = strchr(p,',');
-      if (n2 && n2 < n1) n1 = n2;
-      result = (char*)malloc(sizeof(char)*(n1-p)+1);
-      memcpy(result,p,(n1-p));
-      result[n1-p] = '\0';
-      return result;
+    if (!p) return NULL;
+    p += strlen(field)+1;
+    n1 = strchr(p,'\r');
+    n2 = strchr(p,',');
+    if (n2 && n2 < n1) n1 = n2;
+    result = (char*)malloc(sizeof(char)*(n1-p)+1);
+    memcpy(result,p,(n1-p));
+    result[n1-p] = '\0';
+    return result;
   }
 
   /* Like the above function but automatically convert the result into
    * a long. On error (missing field) LONG_MIN is returned. */
   static long getLongInfoField(char *info, const char *field) {
-      char *value = getInfoField(info,field);
-      long l;
+    char *value = getInfoField(info,field);
+    long l;
 
-      if (!value) return LONG_MIN;
-      l = strtol(value,NULL,10);
-      free(value);
-      return l;
+    if (!value) return LONG_MIN;
+    l = strtol(value,NULL,10);
+    free(value);
+    return l;
   }
 
   /* Convert number of bytes into a human readable string of the form:
    * 100B, 2G, 100M, 4K, and so forth. */
   static void bytesToHuman(char *s, size_t len, long long n) {
-      double d;
+    double d;
 
-      if (n < 0) {
-          *s = '-';
-          s++;
-          n = -n;
-      }
-      if (n < 1024) {
-          /* Bytes */
-          common::SNPrintf(s, len, "%lluB", n);
-          return;
-      } else if (n < (1024*1024)) {
-          d = (double)n/(1024);
-          common::SNPrintf(s, len, "%.2fK", d);
-      } else if (n < (1024LL*1024*1024)) {
-          d = (double)n/(1024*1024);
-          common::SNPrintf(s, len, "%.2fM", d);
-      } else if (n < (1024LL*1024*1024*1024)) {
-          d = (double)n/(1024LL*1024*1024);
-          common::SNPrintf(s, len, "%.2fG", d);
-      }
+    if (n < 0) {
+      *s = '-';
+      s++;
+      n = -n;
+    }
+    if (n < 1024) {
+      /* Bytes */
+      common::SNPrintf(s, len, "%lluB", n);
+      return;
+    } else if (n < (1024*1024)) {
+      d = (double)n/(1024);
+      common::SNPrintf(s, len, "%.2fK", d);
+    } else if (n < (1024LL*1024*1024)) {
+      d = (double)n/(1024*1024);
+      common::SNPrintf(s, len, "%.2fM", d);
+    } else if (n < (1024LL*1024*1024*1024)) {
+      d = (double)n/(1024LL*1024*1024);
+      common::SNPrintf(s, len, "%.2fG", d);
+    }
   }
 
   common::Error statMode(FastoObject* out) WARN_UNUSED_RESULT {
-      DCHECK(out);
-      if(!out){
-          return common::make_error_value("Invalid input argument", common::ErrorValue::E_ERROR);
-      }
+    DCHECK(out);
+    if (!out) {
+      return common::make_error_value("Invalid input argument", common::ErrorValue::E_ERROR);
+    }
 
-      FastoObjectCommand* cmd = createCommand<RedisCommand>(out, INFO_REQUEST, common::Value::C_INNER);
-      DCHECK(cmd);
-      if(!cmd){
-          return common::make_error_value("Invalid createCommand input argument", common::ErrorValue::E_ERROR);
-      }
+    FastoObjectCommand* cmd = createCommand<RedisCommand>(out, INFO_REQUEST,
+                                                          common::Value::C_INNER);
+    DCHECK(cmd);
+    if (!cmd) {
+      return common::make_error_value("Invalid createCommand input argument",
+                                      common::ErrorValue::E_ERROR);
+    }
 
-      const std::string command = cmd->inputCommand();
-      long requests = 0;
+    const std::string command = cmd->inputCommand();
+    long requests = 0;
 
-      while(!parent_->interrupt_) {
-          char buf[64];
-          int j;
+    while(!parent_->interrupt_) {
+      char buf[64];
+      int j;
 
-          redisReply *reply = NULL;
-          while(reply == NULL) {
-              reply = (redisReply*)redisCommand(context_, command.c_str());
-              if (context_->err && !(context_->err & (REDIS_ERR_IO | REDIS_ERR_EOF))) {
-                  char buff[2048];
-                  common::SNPrintf(buff, sizeof(buff), "ERROR: %s", context_->errstr);
-                  return common::make_error_value(buff, common::ErrorValue::E_ERROR);
-              }
-          }
-
-          if (reply->type == REDIS_REPLY_ERROR) {
+      redisReply *reply = NULL;
+      while(reply == NULL) {
+          reply = (redisReply*)redisCommand(context_, command.c_str());
+          if (context_->err && !(context_->err & (REDIS_ERR_IO | REDIS_ERR_EOF))) {
               char buff[2048];
-              common::SNPrintf(buff, sizeof(buff), "ERROR: %s", reply->str);
+              common::SNPrintf(buff, sizeof(buff), "ERROR: %s", context_->errstr);
               return common::make_error_value(buff, common::ErrorValue::E_ERROR);
           }
-
-          /* Keys */
-          long aux = 0;
-          for (j = 0; j < 20; j++) {
-              long k;
-
-              common::SNPrintf(buf, sizeof(buf), "db%d:keys", j);
-              k = getLongInfoField(reply->str, buf);
-              if (k == LONG_MIN) continue;
-              aux += k;
-          }
-
-          std::string result;
-
-          common::SNPrintf(buf, sizeof(buf), "keys %ld", aux);
-          result += buf;
-
-          /* Used memory */
-          aux = getLongInfoField(reply->str, "used_memory");
-          bytesToHuman(buf, sizeof(buf), aux);
-          result += " used_memory: ";
-          result += buf;
-
-          /* Clients */
-          aux = getLongInfoField(reply->str, "connected_clients");
-          common::SNPrintf(buf, sizeof(buf), " connected_clients: %ld", aux);
-          result += buf;
-
-          /* Blocked (BLPOPPING) Clients */
-          aux = getLongInfoField(reply->str, "blocked_clients");
-          common::SNPrintf(buf, sizeof(buf), " blocked_clients: %ld",aux);
-          result += buf;
-
-          /* Requets */
-          aux = getLongInfoField(reply->str, "total_commands_processed");
-          common::SNPrintf(buf, sizeof(buf), " total_commands_processed: %ld (+%ld)",aux,requests == 0 ? 0 : aux-requests);
-          result += buf;
-          requests = aux;
-
-          /* Connections */
-          aux = getLongInfoField(reply->str, "total_connections_received");
-          common::SNPrintf(buf, sizeof(buf), " total_connections_received: %ld",aux);
-          result += buf;
-
-          /* Children */
-          aux = getLongInfoField(reply->str, "bgsave_in_progress");
-          aux |= getLongInfoField(reply->str, "aof_rewrite_in_progress") << 1;
-          switch(aux) {
-          case 0: break;
-          case 1:
-              result += " SAVE";
-              break;
-          case 2:
-              result += " AOF";
-              break;
-          case 3:
-              result += " SAVE+AOF";
-              break;
-          }
-
-          common::StringValue *val = common::Value::createStringValue(result);
-          FastoObject* obj = new FastoObject(cmd, val, config_.mb_delim_);
-          cmd->addChildren(obj);
-
-          freeReplyObject(reply);
-
-          common::utils::usleep(config_.interval);
       }
 
-      return common::make_error_value("Interrupted.", common::ErrorValue::E_INTERRUPTED);
+      if (reply->type == REDIS_REPLY_ERROR) {
+          char buff[2048];
+          common::SNPrintf(buff, sizeof(buff), "ERROR: %s", reply->str);
+          return common::make_error_value(buff, common::ErrorValue::E_ERROR);
+      }
+
+      /* Keys */
+      long aux = 0;
+      for (j = 0; j < 20; j++) {
+          long k;
+
+          common::SNPrintf(buf, sizeof(buf), "db%d:keys", j);
+          k = getLongInfoField(reply->str, buf);
+          if (k == LONG_MIN) continue;
+          aux += k;
+      }
+
+      std::string result;
+
+      common::SNPrintf(buf, sizeof(buf), "keys %ld", aux);
+      result += buf;
+
+      /* Used memory */
+      aux = getLongInfoField(reply->str, "used_memory");
+      bytesToHuman(buf, sizeof(buf), aux);
+      result += " used_memory: ";
+      result += buf;
+
+      /* Clients */
+      aux = getLongInfoField(reply->str, "connected_clients");
+      common::SNPrintf(buf, sizeof(buf), " connected_clients: %ld", aux);
+      result += buf;
+
+      /* Blocked (BLPOPPING) Clients */
+      aux = getLongInfoField(reply->str, "blocked_clients");
+      common::SNPrintf(buf, sizeof(buf), " blocked_clients: %ld",aux);
+      result += buf;
+
+      /* Requets */
+      aux = getLongInfoField(reply->str, "total_commands_processed");
+      common::SNPrintf(buf, sizeof(buf), " total_commands_processed: %ld (+%ld)", aux,
+                       requests == 0 ? 0 : aux-requests);
+      result += buf;
+      requests = aux;
+
+      /* Connections */
+      aux = getLongInfoField(reply->str, "total_connections_received");
+      common::SNPrintf(buf, sizeof(buf), " total_connections_received: %ld",aux);
+      result += buf;
+
+      /* Children */
+      aux = getLongInfoField(reply->str, "bgsave_in_progress");
+      aux |= getLongInfoField(reply->str, "aof_rewrite_in_progress") << 1;
+      switch(aux) {
+      case 0: break;
+      case 1:
+          result += " SAVE";
+          break;
+      case 2:
+          result += " AOF";
+          break;
+      case 3:
+          result += " SAVE+AOF";
+          break;
+      }
+
+      common::StringValue *val = common::Value::createStringValue(result);
+      FastoObject* obj = new FastoObject(cmd, val, config_.mb_delim_);
+      cmd->addChildren(obj);
+
+      freeReplyObject(reply);
+
+      common::utils::usleep(config_.interval);
+    }
+
+    return common::make_error_value("Interrupted.", common::ErrorValue::E_INTERRUPTED);
   }
 
   /*------------------------------------------------------------------------------
@@ -1185,554 +1171,545 @@ struct RedisDriver::pimpl {
    *--------------------------------------------------------------------------- */
 
   common::Error scanMode(FastoObject* out) WARN_UNUSED_RESULT {
-      DCHECK(out);
-      if(!out){
-          return common::make_error_value("Invalid input argument", common::ErrorValue::E_ERROR);
+    DCHECK(out);
+    if(!out){
+      return common::make_error_value("Invalid input argument", common::ErrorValue::E_ERROR);
+    }
+
+    FastoObjectCommand* cmd = createCommand<RedisCommand>(out, SCAN_MODE_REQUEST, common::Value::C_INNER);
+    DCHECK(cmd);
+    if(!cmd){
+      return common::make_error_value("Invalid createCommand input argument", common::ErrorValue::E_ERROR);
+    }
+
+    redisReply *reply;
+    unsigned long long cur = 0;
+
+    do {
+      if (config_.pattern)
+        reply = (redisReply*)redisCommand(context_, "SCAN %llu MATCH %s",
+                                          cur, config_.pattern);
+      else
+        reply = (redisReply*)redisCommand(context_,"SCAN %llu",cur);
+      if (reply == NULL) {
+        return common::make_error_value("I/O error", common::ErrorValue::E_ERROR);
+      } else if (reply->type == REDIS_REPLY_ERROR) {
+        char buff[2048];
+        common::SNPrintf(buff, sizeof(buff), "ERROR: %s", reply->str);
+        return common::make_error_value(buff, common::ErrorValue::E_ERROR);
+      } else {
+        unsigned int j;
+
+        cur = strtoull(reply->element[0]->str,NULL,10);
+        for (j = 0; j < reply->element[1]->elements; j++){
+          common::StringValue *val = common::Value::createStringValue(reply->element[1]->element[j]->str);
+          FastoObject* obj = new FastoObject(cmd, val, config_.mb_delim_);
+          cmd->addChildren(obj);
+        }
       }
+      freeReplyObject(reply);
+    } while(cur != 0);
 
-      FastoObjectCommand* cmd = createCommand<RedisCommand>(out, SCAN_MODE_REQUEST, common::Value::C_INNER);
-      DCHECK(cmd);
-      if(!cmd){
-          return common::make_error_value("Invalid createCommand input argument", common::ErrorValue::E_ERROR);
-      }
-
-      redisReply *reply;
-      unsigned long long cur = 0;
-
-      do {
-          if (config_.pattern)
-              reply = (redisReply*)redisCommand(context_,"SCAN %llu MATCH %s",
-                  cur,config_.pattern);
-          else
-              reply = (redisReply*)redisCommand(context_,"SCAN %llu",cur);
-          if (reply == NULL) {
-              return common::make_error_value("I/O error", common::ErrorValue::E_ERROR);
-          } else if (reply->type == REDIS_REPLY_ERROR) {
-              char buff[2048];
-              common::SNPrintf(buff, sizeof(buff), "ERROR: %s", reply->str);
-              return common::make_error_value(buff, common::ErrorValue::E_ERROR);
-          } else {
-              unsigned int j;
-
-              cur = strtoull(reply->element[0]->str,NULL,10);
-              for (j = 0; j < reply->element[1]->elements; j++){
-                  common::StringValue *val = common::Value::createStringValue(reply->element[1]->element[j]->str);
-                  FastoObject* obj = new FastoObject(cmd, val, config_.mb_delim_);
-                  cmd->addChildren(obj);
-              }
-          }
-          freeReplyObject(reply);
-      } while(cur != 0);
-
-      return common::Error();
+    return common::Error();
   }
 
   common::Error cliAuth() WARN_UNUSED_RESULT {
-      common::Error err = authContext(config_, context_);
-      if (err && err->isError()){
-          isAuth_ = false;
-          return common::Error();
-      }
-
-      isAuth_ = true;
+    common::Error err = authContext(config_, context_);
+    if (err && err->isError()) {
+      isAuth_ = false;
       return common::Error();
+    }
+
+    isAuth_ = true;
+    return common::Error();
   }
 
   common::Error cliSelect(int num, DataBaseInfo **info) WARN_UNUSED_RESULT {
-      redisReply *reply = static_cast<redisReply*>(redisCommand(context_, "SELECT %d", num));
-      if (reply != NULL) {
-          long long sz = 0;
-          dbsize(sz);
-          *info = new RedisDataBaseInfo(common::convertToString(num), true, sz);
-          freeReplyObject(reply);
-          return common::Error();
-      }
+    redisReply *reply = static_cast<redisReply*>(redisCommand(context_, "SELECT %d", num));
+    if (reply != NULL) {
+      long long sz = 0;
+      dbsize(sz);
+      *info = new RedisDataBaseInfo(common::convertToString(num), true, sz);
+      freeReplyObject(reply);
+      return common::Error();
+    }
 
-      return cliPrintContextError(context_);
+    return cliPrintContextError(context_);
   }
 
   common::Error cliSelect() WARN_UNUSED_RESULT {
-      DataBaseInfo *info = NULL;
+    DataBaseInfo *info = NULL;
 
-      common::Error er = cliSelect(config_.dbnum, &info);
-      if(!er){
-          parent_->setCurrentDatabaseInfo(info);
-      }
-      return er;
+    common::Error er = cliSelect(config_.dbnum, &info);
+    if (!er) {
+      parent_->setCurrentDatabaseInfo(info);
+    }
+    return er;
   }
 
   common::Error cliConnect(int force) WARN_UNUSED_RESULT {
-      using namespace common::utils;
+    using namespace common::utils;
 
-      if (context_ == NULL || force) {
-          if (context_ != NULL){
-              redisFree(context_);
-              context_ = NULL;
-          }
-
-          redisContext* context = NULL;
-          common::Error er = createConnection(config_, sinfo_, &context);
-          if(er){
-              return er;
-          }
-
-          context_ = context;
-
-          /* Set aggressive KEEP_ALIVE socket option in the Redis context socket
-           * in order to prevent timeouts caused by the execution of long
-           * commands. At the same time this improves the detection of real
-           * errors. */
-          anetKeepAlive(NULL, context->fd, REDIS_CLI_KEEPALIVE_INTERVAL);
-
-          /*struct timeval timeout;
-          timeout.tv_sec = 10;
-          timeout.tv_usec = 0;
-          int res = redisSetTimeout(context, timeout);
-          if(res == REDIS_ERR){
-              char buff[512] = {0};
-              common::SNPrintf(buff, sizeof(buff), "Redis connection set timeout failed error is: %s.", context->errstr);
-              LOG_MSG(buff, common::logging::L_WARNING, true);
-          }*/
-
-          /* Do AUTH and select the right DB. */
-          er = cliAuth();
-          if (er){
-              return er;
-          }
-
-          er = cliSelect();
-          if (er){
-              return er;
-          }
+    if (context_ == NULL || force) {
+      if (context_ != NULL){
+        redisFree(context_);
+        context_ = NULL;
       }
 
-      return common::Error();
+      redisContext* context = NULL;
+      common::Error er = createConnection(config_, sinfo_, &context);
+      if(er){
+        return er;
+      }
+
+      context_ = context;
+
+      /* Set aggressive KEEP_ALIVE socket option in the Redis context socket
+       * in order to prevent timeouts caused by the execution of long
+       * commands. At the same time this improves the detection of real
+       * errors. */
+      anetKeepAlive(NULL, context->fd, REDIS_CLI_KEEPALIVE_INTERVAL);
+
+      /*struct timeval timeout;
+      timeout.tv_sec = 10;
+      timeout.tv_usec = 0;
+      int res = redisSetTimeout(context, timeout);
+      if(res == REDIS_ERR){
+          char buff[512] = {0};
+          common::SNPrintf(buff, sizeof(buff), "Redis connection set timeout failed error is: %s.", context->errstr);
+          LOG_MSG(buff, common::logging::L_WARNING, true);
+      }*/
+
+      /* Do AUTH and select the right DB. */
+      er = cliAuth();
+      if (er){
+        return er;
+      }
+
+      er = cliSelect();
+      if (er){
+        return er;
+      }
+    }
+
+    return common::Error();
   }
 
   common::Error cliFormatReplyRaw(FastoObjectArray* ar, redisReply *r) WARN_UNUSED_RESULT {
-      DCHECK(ar);
-      if(!ar){
-          return common::make_error_value("Invalid input argument", common::ErrorValue::E_ERROR);
+    DCHECK(ar);
+    if(!ar){
+        return common::make_error_value("Invalid input argument", common::ErrorValue::E_ERROR);
+    }
+
+    switch (r->type) {
+      case REDIS_REPLY_NIL: {
+          common::Value* val = common::Value::createNullValue();
+          ar->append(val);
+
+          break;
       }
-
-      switch (r->type) {
-          case REDIS_REPLY_NIL:
-          {
-              common::Value* val = common::Value::createNullValue();
-              ar->append(val);
-
-              break;
-          }
-          case REDIS_REPLY_ERROR:
-          {
-              common::ErrorValue* val = common::Value::createErrorValue(std::string(r->str, r->len), common::ErrorValue::E_NONE, common::logging::L_WARNING);
-              ar->append(val);
-              break;
-          }
-          case REDIS_REPLY_STATUS:
-          case REDIS_REPLY_STRING:
-          {
-              common::StringValue *val = common::Value::createStringValue(std::string(r->str, r->len));
-              ar->append(val);
-              break;
-          }
-          case REDIS_REPLY_INTEGER:
-          {
-              common::FundamentalValue *val = common::Value::createIntegerValue(r->integer);
-              ar->append(val);
-              break;
-          }
-          case REDIS_REPLY_ARRAY:
-          {
-              common::ArrayValue* arv = common::Value::createArrayValue();
-              FastoObjectArray* child = new FastoObjectArray(ar, arv, config_.mb_delim_);
-              ar->addChildren(child);
-
-              for (size_t i = 0; i < r->elements; ++i) {
-                  common::Error er = cliFormatReplyRaw(child, r->element[i]);
-                  if(er){
-                      return er;
-                  }
-              }
-              break;
-          }
-      default:
-          {
-              char tmp2[128] = {0};
-              common::SNPrintf(tmp2, sizeof(tmp2), "Unknown reply type: %d", r->type);
-              common::ErrorValue* val = common::Value::createErrorValue(tmp2, common::ErrorValue::E_NONE, common::logging::L_WARNING);
-              ar->append(val);
-          }
+      case REDIS_REPLY_ERROR: {
+          common::ErrorValue* val = common::Value::createErrorValue(std::string(r->str, r->len),
+                                                                    common::ErrorValue::E_NONE,
+                                                                    common::logging::L_WARNING);
+          ar->append(val);
+          break;
       }
-
-      return common::Error();
-  }
-
-  common::Error cliFormatReplyRaw(FastoObject* out, redisReply *r) WARN_UNUSED_RESULT {
-      DCHECK(out);
-      if(!out){
-          return common::make_error_value("Invalid input argument", common::ErrorValue::E_ERROR);
+      case REDIS_REPLY_STATUS:
+      case REDIS_REPLY_STRING: {
+          common::StringValue *val = common::Value::createStringValue(std::string(r->str, r->len));
+          ar->append(val);
+          break;
       }
-
-      FastoObject* obj = NULL;
-      switch (r->type) {
-          case REDIS_REPLY_NIL:
-          {
-              common::Value *val = common::Value::createNullValue();
-              obj = new FastoObject(out, val, config_.mb_delim_);
-              out->addChildren(obj);
-
-              break;
-          }
-          case REDIS_REPLY_ERROR:
-          {
-              common::ErrorValue* val = common::Value::createErrorValue(r->str, common::ErrorValue::E_NONE, common::logging::L_WARNING);
-              if(strcasestr(r->str, "NOAUTH")){ //"NOAUTH Authentication required."
-                  isAuth_ = false;
-              }
-              obj = new FastoObject(out, val, config_.mb_delim_);
-              out->addChildren(obj);
-              break;
-          }
-          case REDIS_REPLY_STATUS:
-          case REDIS_REPLY_STRING:
-          {
-              common::StringValue *val = common::Value::createStringValue(r->str);
-              obj = new FastoObject(out, val, config_.mb_delim_);
-              out->addChildren(obj);
-              break;
-          }
-          case REDIS_REPLY_INTEGER:
-          {
-              common::FundamentalValue *val = common::Value::createIntegerValue(r->integer);
-              obj = new FastoObject(out, val, config_.mb_delim_);
-              out->addChildren(obj);
-              break;
-          }
-          case REDIS_REPLY_ARRAY:
-          {
-              common::ArrayValue* arv = common::Value::createArrayValue();
-              FastoObjectArray* child = new FastoObjectArray(out, arv, config_.mb_delim_);
-              out->addChildren(child);
-
-              for (size_t i = 0; i < r->elements; ++i) {
-                  common::Error er = cliFormatReplyRaw(child, r->element[i]);
-                  if(er){
-                      return er;
-                  }
-              }
-              break;
-          }
-      default:
-          {
-              char tmp2[128] = {0};
-              common::SNPrintf(tmp2, sizeof(tmp2), "Unknown reply type: %d", r->type);
-              common::ErrorValue* val = common::Value::createErrorValue(tmp2, common::ErrorValue::E_NONE, common::logging::L_WARNING);
-              obj = new FastoObject(out, val, config_.mb_delim_);
-              out->addChildren(obj);
-          }
+      case REDIS_REPLY_INTEGER: {
+          common::FundamentalValue *val = common::Value::createIntegerValue(r->integer);
+          ar->append(val);
+          break;
       }
+      case REDIS_REPLY_ARRAY: {
+          common::ArrayValue* arv = common::Value::createArrayValue();
+          FastoObjectArray* child = new FastoObjectArray(ar, arv, config_.mb_delim_);
+          ar->addChildren(child);
 
-      return common::Error();
-  }
-
-  common::Error cliOutputCommandHelp(FastoObject* out, struct commandHelp *help, int group) WARN_UNUSED_RESULT {
-      DCHECK(out);
-      if(!out){
-          return common::make_error_value("Invalid input argument", common::ErrorValue::E_ERROR);
-      }
-
-      char buff[1024] = {0};
-      common::SNPrintf(buff, sizeof(buff), "name: %s %s\r\n  summary: %s\r\n  since: %s", help->name, help->params, help->summary, help->since);
-      common::StringValue *val =common::Value::createStringValue(buff);
-      FastoObject* child = new FastoObject(out, val, config_.mb_delim_);
-      out->addChildren(child);
-      if (group) {
-          char buff2[1024] = {0};
-          common::SNPrintf(buff2, sizeof(buff2), "  group: %s", commandGroups[help->group]);
-          val = common::Value::createStringValue(buff2);
-          FastoObject* gchild = new FastoObject(out, val, config_.mb_delim_);
-          out->addChildren(gchild);
-      }
-
-      return common::Error();
-  }
-
-  common::Error cliOutputGenericHelp(FastoObject* out) WARN_UNUSED_RESULT {
-      DCHECK(out);
-      if(!out){
-          return common::make_error_value("Invalid input argument", common::ErrorValue::E_ERROR);
-      }
-
-      common::StringValue *val = common::Value::createStringValue(PROJECT_NAME_TITLE " based on hiredis " HIREDIS_VERSION "\r\n"
-                                                                  "Type: \"help @<group>\" to get a list of commands in <group>\r\n"
-                                                                  "      \"help <command>\" for help on <command>\r\n"
-                                                                  "      \"help <tab>\" to get a list of possible help topics\r\n"
-                                                                  "      \"quit\" to exit");
-      FastoObject* child = new FastoObject(out, val, config_.mb_delim_);
-      out->addChildren(child);
-
-      return common::Error();
-  }
-
-  common::Error cliOutputHelp(FastoObject* out, int argc, char **argv) WARN_UNUSED_RESULT {
-      DCHECK(out);
-      if(!out){
-          return common::make_error_value("Invalid input argument", common::ErrorValue::E_ERROR);
-      }
-
-      int i, j, len;
-      int group = -1;
-      const helpEntry *entry;
-      struct commandHelp *help;
-
-      if (argc == 0) {
-          return cliOutputGenericHelp(out);
-      }
-      else if (argc > 0 && argv[0][0] == '@') {
-          len = sizeof(commandGroups)/sizeof(char*);
-          for (i = 0; i < len; i++) {
-              if (strcasecmp(argv[0]+1,commandGroups[i]) == 0) {
-                  group = i;
-                  break;
-              }
-          }
-      }
-
-      assert(argc > 0);
-      for (i = 0; i < helpEntriesLen; i++) {
-          entry = &rInit.helpEntries[i];
-          if (entry->type != CLI_HELP_COMMAND) continue;
-
-          help = entry->org;
-          if (group == -1) {
-              /* Compare all arguments */
-              if (argc == entry->argc) {
-                  for (j = 0; j < argc; j++) {
-                      if (strcasecmp(argv[j],entry->argv[j]) != 0) break;
-                  }
-                  if (j == argc) {
-                      common::Error er = cliOutputCommandHelp(out, help,1);
-                      if(er){
-                          return er;
-                      }
-                  }
-              }
-          }
-          else {
-              if (group == help->group) {
-                  common::Error er = cliOutputCommandHelp(out, help,0);
-                  if(er){
-                      return er;
-                  }
-              }
-          }
-      }
-
-      return common::Error();
-  }
-
-  common::Error cliReadReply(FastoObject* out) WARN_UNUSED_RESULT {
-      DCHECK(out);
-      if(!out){
-          return common::make_error_value("Invalid input argument", common::ErrorValue::E_ERROR);
-      }
-
-      void *_reply = NULL;
-      if (redisGetReply(context_, &_reply) != REDIS_OK) {
-          /* Filter cases where we should reconnect */
-          if (context_->err == REDIS_ERR_IO && errno == ECONNRESET){
-              return common::make_error_value("Needed reconnect.", common::ErrorValue::E_ERROR);
-          }
-          if (context_->err == REDIS_ERR_EOF){
-              return common::make_error_value("Needed reconnect.", common::ErrorValue::E_ERROR);
-          }
-
-          return cliPrintContextError(context_); /* avoid compiler warning */
-      }
-
-      redisReply *reply = static_cast<redisReply*>(_reply);
-      config_.last_cmd_type = reply->type;
-
-      if (config_.cluster_mode && reply->type == REDIS_REPLY_ERROR &&
-          (!strncmp(reply->str,"MOVED",5) || !strcmp(reply->str,"ASK")))
-      {
-          char *p = reply->str, *s;
-          int slot;
-
-          s = strchr(p,' ');      /* MOVED[S]3999 127.0.0.1:6381 */
-          p = strchr(s+1,' ');    /* MOVED[S]3999[P]127.0.0.1:6381 */
-          *p = '\0';
-          slot = atoi(s+1);
-          s = strchr(p+1,':');    /* MOVED 3999[P]127.0.0.1[S]6381 */
-          *s = '\0';
-          config_.hostip_ = p+1;
-          config_.hostport_ = atoi(s+1);
-          char redir[512] = {0};
-          common::SNPrintf(redir, sizeof(redir), "-> Redirected to slot [%d] located at %s:%d", slot, config_.hostip_, config_.hostport_);
-          common::StringValue *val = common::Value::createStringValue(redir);
-          FastoObject* child = new FastoObject(out, val, config_.mb_delim_);
-          out->addChildren(child);
-          config_.cluster_reissue_command = 1;
-
-          freeReplyObject(reply);
-          return common::Error();
-      }
-
-      common::Error er = cliFormatReplyRaw(out, reply);
-      freeReplyObject(reply);
-      return er;
-  }
-
-  common::Error execute_impl(FastoObject* out, int argc, char **argv) WARN_UNUSED_RESULT {
-      DCHECK(out);
-      if(!out){
-          return common::make_error_value("Invalid input argument", common::ErrorValue::E_ERROR);
-      }
-
-      char *command = argv[0];
-
-      if (argc == 3 && !strcasecmp(command, "connect")) {
-          config_.hostip_ = argv[1];
-          config_.hostport_ = atoi(argv[2]);
-          sdsfreesplitres(argv, argc);
-          return cliConnect(1);
-      }
-
-      if (!strcasecmp(command,"help") || !strcasecmp(command,"?")) {
-          return cliOutputHelp(out, --argc, ++argv);
-      }
-
-      if (context_ == NULL){
-          return common::make_error_value("Not connected", common::Value::E_ERROR);
-      }
-
-      if (!strcasecmp(command, "monitor")) config_.monitor_mode = 1;
-      if (!strcasecmp(command, "subscribe") || !strcasecmp(command,"psubscribe")) config_.pubsub_mode = 1;
-      if (!strcasecmp(command, "sync") || !strcasecmp(command,"psync")) config_.slave_mode = 1;
-
-      redisAppendCommandArgv(context_, argc, (const char**)argv, NULL);
-      while (config_.monitor_mode) {
-          common::Error er = cliReadReply(out);
-          if (er){
-              return er;
-          }
-      }
-
-      if (config_.pubsub_mode) {
-          while (1) {
-              common::Error er = cliReadReply(out);
-              if (er){
-                  return er;
-              }
-          }
-      }
-
-      if (config_.slave_mode) {
-          common::Error er = slaveMode(out);
-          config_.slave_mode = 0;
-          return er;  /* Error = slaveMode lost connection to master */
-      }
-
-      common::Error er = cliReadReply(out);
-      if (er) {
-          return er;
-      }
-      else {
-          /* Store database number when SELECT was successfully executed. */
-          if (!strcasecmp(command, "select") && argc == 2) {
-              config_.dbnum = atoi(argv[1]);
-          }
-          else if (!strcasecmp(command, "auth") && argc == 2) {
-              er = cliSelect();
+          for (size_t i = 0; i < r->elements; ++i) {
+              common::Error er = cliFormatReplyRaw(child, r->element[i]);
               if(er){
                   return er;
               }
           }
+          break;
       }
-      if (config_.interval){
-          common::utils::usleep(config_.interval);
+      default: {
+        char tmp2[128] = {0};
+        common::SNPrintf(tmp2, sizeof(tmp2), "Unknown reply type: %d", r->type);
+        common::ErrorValue* val = common::Value::createErrorValue(tmp2, common::ErrorValue::E_NONE,
+                                                                  common::logging::L_WARNING);
+        ar->append(val);
       }
+    }
 
-      return common::Error();
+    return common::Error();
   }
 
-  static bool isPipeLineCommand(const char *command) {
-      if(!command){
-          return false;
+  common::Error cliFormatReplyRaw(FastoObject* out, redisReply *r) WARN_UNUSED_RESULT {
+    DCHECK(out);
+    if(!out){
+      return common::make_error_value("Invalid input argument", common::ErrorValue::E_ERROR);
+    }
+
+    FastoObject* obj = NULL;
+    switch (r->type) {
+      case REDIS_REPLY_NIL: {
+        common::Value *val = common::Value::createNullValue();
+        obj = new FastoObject(out, val, config_.mb_delim_);
+        out->addChildren(obj);
+
+        break;
       }
+      case REDIS_REPLY_ERROR: {
+        common::ErrorValue* val = common::Value::createErrorValue(r->str,
+                                                                  common::ErrorValue::E_NONE,
+                                                                  common::logging::L_WARNING);
+        if(strcasestr(r->str, "NOAUTH")){ //"NOAUTH Authentication required."
+          isAuth_ = false;
+        }
+        obj = new FastoObject(out, val, config_.mb_delim_);
+        out->addChildren(obj);
+        break;
+      }
+      case REDIS_REPLY_STATUS:
+      case REDIS_REPLY_STRING: {
+        common::StringValue *val = common::Value::createStringValue(r->str);
+        obj = new FastoObject(out, val, config_.mb_delim_);
+        out->addChildren(obj);
+        break;
+      }
+      case REDIS_REPLY_INTEGER: {
+        common::FundamentalValue *val = common::Value::createIntegerValue(r->integer);
+        obj = new FastoObject(out, val, config_.mb_delim_);
+        out->addChildren(obj);
+        break;
+      }
+      case REDIS_REPLY_ARRAY: {
+        common::ArrayValue* arv = common::Value::createArrayValue();
+        FastoObjectArray* child = new FastoObjectArray(out, arv, config_.mb_delim_);
+        out->addChildren(child);
 
-      bool skip = strcasecmp(command, "quit") == 0
-                  || strcasecmp(command, "exit") == 0
-                  || strcasecmp(command, "connect") == 0
-                  || strcasecmp(command, "help") == 0
-                  || strcasecmp(command, "?") == 0
-                  || strcasecmp(command, "shutdown") == 0
-                  || strcasecmp(command, "monitor") == 0
-                  || strcasecmp(command, "subscribe") == 0
-                  || strcasecmp(command, "psubscribe") == 0
-                  || strcasecmp(command, "sync") == 0
-                  || strcasecmp(command, "psync") == 0;
+        for (size_t i = 0; i < r->elements; ++i) {
+          common::Error er = cliFormatReplyRaw(child, r->element[i]);
+          if(er){
+            return er;
+          }
+        }
+        break;
+      }
+      default: {
+        char tmp2[128] = {0};
+        common::SNPrintf(tmp2, sizeof(tmp2), "Unknown reply type: %d", r->type);
+        common::ErrorValue* val = common::Value::createErrorValue(tmp2, common::ErrorValue::E_NONE,
+                                                                  common::logging::L_WARNING);
+        obj = new FastoObject(out, val, config_.mb_delim_);
+        out->addChildren(obj);
+      }
+    }
 
-      return !skip;
+    return common::Error();
   }
 
-  common::Error executeAsPipeline(std::vector<FastoObjectCommandIPtr> cmds) WARN_UNUSED_RESULT {
-      //DCHECK(cmd);
-      if(cmds.empty()){
-          return common::make_error_value("Invalid input command", common::ErrorValue::E_ERROR);
+  common::Error cliOutputCommandHelp(FastoObject* out, struct commandHelp *help,
+                                     int group) WARN_UNUSED_RESULT {
+    DCHECK(out);
+    if(!out){
+      return common::make_error_value("Invalid input argument", common::ErrorValue::E_ERROR);
+    }
+
+    char buff[1024] = {0};
+    common::SNPrintf(buff, sizeof(buff), "name: %s %s\r\n  summary: %s\r\n  since: %s",
+                     help->name, help->params, help->summary, help->since);
+    common::StringValue *val =common::Value::createStringValue(buff);
+    FastoObject* child = new FastoObject(out, val, config_.mb_delim_);
+    out->addChildren(child);
+    if (group) {
+      char buff2[1024] = {0};
+      common::SNPrintf(buff2, sizeof(buff2), "  group: %s", commandGroups[help->group]);
+      val = common::Value::createStringValue(buff2);
+      FastoObject* gchild = new FastoObject(out, val, config_.mb_delim_);
+      out->addChildren(gchild);
+    }
+
+    return common::Error();
+  }
+
+  common::Error cliOutputGenericHelp(FastoObject* out) WARN_UNUSED_RESULT {
+    DCHECK(out);
+    if(!out){
+      return common::make_error_value("Invalid input argument", common::ErrorValue::E_ERROR);
+    }
+
+    common::StringValue *val = common::Value::createStringValue(PROJECT_NAME_TITLE " based on hiredis " HIREDIS_VERSION "\r\n"
+                                                                "Type: \"help @<group>\" to get a list of commands in <group>\r\n"
+                                                                "      \"help <command>\" for help on <command>\r\n"
+                                                                "      \"help <tab>\" to get a list of possible help topics\r\n"
+                                                                "      \"quit\" to exit");
+    FastoObject* child = new FastoObject(out, val, config_.mb_delim_);
+    out->addChildren(child);
+
+    return common::Error();
+  }
+
+  common::Error cliOutputHelp(FastoObject* out, int argc, char **argv) WARN_UNUSED_RESULT {
+    DCHECK(out);
+    if(!out){
+      return common::make_error_value("Invalid input argument", common::ErrorValue::E_ERROR);
+    }
+
+    int i, j, len;
+    int group = -1;
+    const helpEntry *entry;
+    struct commandHelp *help;
+
+    if (argc == 0) {
+      return cliOutputGenericHelp(out);
+    } else if (argc > 0 && argv[0][0] == '@') {
+      len = sizeof(commandGroups)/sizeof(char*);
+      for (i = 0; i < len; i++) {
+        if (strcasecmp(argv[0]+1,commandGroups[i]) == 0) {
+          group = i;
+          break;
+        }
       }
+    }
 
-      if (context_ == NULL){
-          return common::make_error_value("Not connected", common::Value::E_ERROR);
-      }
+    DCHECK(argc > 0);
+    for (i = 0; i < helpEntriesLen; i++) {
+      entry = &rInit.helpEntries[i];
+      if (entry->type != CLI_HELP_COMMAND) continue;
 
-      //start piplene mode
-      std::vector<FastoObjectCommandIPtr> valid_cmds;
-      for(int i = 0; i < cmds.size(); ++i){
-          FastoObjectCommandIPtr cmd = cmds[i];
-          common::CommandValue* cmdc = cmd->cmd();
-
-          const std::string command = cmdc->inputCommand();
-          common::Value::CommandLoggingType type = cmdc->commandLoggingType();
-
-          if(command.empty()){
-              continue;
-          }
-
-          LOG_COMMAND(Command(command, type));
-
-          const char* ccommand = common::utils::c_strornull(command);
-
-          if (ccommand) {
-              int argc = 0;
-              sds *argv = sdssplitargs(ccommand, &argc);
-
-              if (argv == NULL) {
-                  common::StringValue *val = common::Value::createStringValue("Invalid argument(s)");
-                  FastoObject* child = new FastoObject(cmd.get(), val, config_.mb_delim_);
-                  cmd->addChildren(child);
+      help = entry->org;
+      if (group == -1) {
+        /* Compare all arguments */
+        if (argc == entry->argc) {
+            for (j = 0; j < argc; j++) {
+              if (strcasecmp(argv[j],entry->argv[j]) != 0) break;
+            }
+            if (j == argc) {
+              common::Error er = cliOutputCommandHelp(out, help,1);
+              if (er) {
+                return er;
               }
-              else if (argc > 0){
-                  if (isPipeLineCommand(argv[0])){
-                      valid_cmds.push_back(cmd);
-                      redisAppendCommandArgv(context_, argc, (const char**)argv, NULL);
-                  }
-              }
-              sdsfreesplitres(argv, argc);
-          }
-      }
-
-      for(int i = 0; i < valid_cmds.size(); ++i){
-          FastoObjectCommandIPtr cmd = cmds[i];
-          common::Error er = cliReadReply(cmd.get());
+            }
+        }
+      } else {
+        if (group == help->group) {
+          common::Error er = cliOutputCommandHelp(out, help,0);
           if (er) {
               return er;
           }
+        }
       }
-      //end piplene
+    }
 
+    return common::Error();
+  }
+
+  common::Error cliReadReply(FastoObject* out) WARN_UNUSED_RESULT {
+    DCHECK(out);
+    if (!out) {
+      return common::make_error_value("Invalid input argument", common::ErrorValue::E_ERROR);
+    }
+
+    void *_reply = NULL;
+    if (redisGetReply(context_, &_reply) != REDIS_OK) {
+        /* Filter cases where we should reconnect */
+        if (context_->err == REDIS_ERR_IO && errno == ECONNRESET){
+          return common::make_error_value("Needed reconnect.", common::ErrorValue::E_ERROR);
+        }
+        if (context_->err == REDIS_ERR_EOF){
+          return common::make_error_value("Needed reconnect.", common::ErrorValue::E_ERROR);
+        }
+
+        return cliPrintContextError(context_); /* avoid compiler warning */
+    }
+
+    redisReply *reply = static_cast<redisReply*>(_reply);
+    config_.last_cmd_type = reply->type;
+
+    if (config_.cluster_mode && reply->type == REDIS_REPLY_ERROR &&
+      (!strncmp(reply->str, "MOVED", 5) || !strcmp(reply->str, "ASK"))) {
+      char *p = reply->str, *s;
+      int slot;
+
+      s = strchr(p,' ');      /* MOVED[S]3999 127.0.0.1:6381 */
+      p = strchr(s+1,' ');    /* MOVED[S]3999[P]127.0.0.1:6381 */
+      *p = '\0';
+      slot = atoi(s+1);
+      s = strchr(p+1,':');    /* MOVED 3999[P]127.0.0.1[S]6381 */
+      *s = '\0';
+      config_.hostip_ = p+1;
+      config_.hostport_ = atoi(s+1);
+      char redir[512] = {0};
+      common::SNPrintf(redir, sizeof(redir), "-> Redirected to slot [%d] located at %s:%d",
+                       slot, config_.hostip_, config_.hostport_);
+      common::StringValue *val = common::Value::createStringValue(redir);
+      FastoObject* child = new FastoObject(out, val, config_.mb_delim_);
+      out->addChildren(child);
+      config_.cluster_reissue_command = 1;
+
+      freeReplyObject(reply);
       return common::Error();
+    }
+
+    common::Error er = cliFormatReplyRaw(out, reply);
+    freeReplyObject(reply);
+    return er;
+  }
+
+  common::Error execute_impl(FastoObject* out, int argc, char **argv) WARN_UNUSED_RESULT {
+    DCHECK(out);
+    if(!out){
+      return common::make_error_value("Invalid input argument", common::ErrorValue::E_ERROR);
+    }
+
+    char *command = argv[0];
+
+    if (argc == 3 && !strcasecmp(command, "connect")) {
+      config_.hostip_ = argv[1];
+      config_.hostport_ = atoi(argv[2]);
+      sdsfreesplitres(argv, argc);
+      return cliConnect(1);
+    }
+
+    if (!strcasecmp(command,"help") || !strcasecmp(command,"?")) {
+      return cliOutputHelp(out, --argc, ++argv);
+    }
+
+    if (context_ == NULL){
+      return common::make_error_value("Not connected", common::Value::E_ERROR);
+    }
+
+    if (!strcasecmp(command, "monitor")) config_.monitor_mode = 1;
+    if (!strcasecmp(command, "subscribe") || !strcasecmp(command,"psubscribe")) config_.pubsub_mode = 1;
+    if (!strcasecmp(command, "sync") || !strcasecmp(command,"psync")) config_.slave_mode = 1;
+
+    redisAppendCommandArgv(context_, argc, (const char**)argv, NULL);
+    while (config_.monitor_mode) {
+      common::Error er = cliReadReply(out);
+      if (er){
+        return er;
+      }
+    }
+
+    if (config_.pubsub_mode) {
+      while (1) {
+        common::Error er = cliReadReply(out);
+        if (er){
+          return er;
+        }
+      }
+    }
+
+    if (config_.slave_mode) {
+      common::Error er = slaveMode(out);
+      config_.slave_mode = 0;
+      return er;  /* Error = slaveMode lost connection to master */
+    }
+
+    common::Error er = cliReadReply(out);
+    if (er) {
+      return er;
+    } else {
+      /* Store database number when SELECT was successfully executed. */
+      if (!strcasecmp(command, "select") && argc == 2) {
+        config_.dbnum = atoi(argv[1]);
+      } else if (!strcasecmp(command, "auth") && argc == 2) {
+        er = cliSelect();
+        if(er){
+          return er;
+        }
+      }
+    }
+    if (config_.interval){
+      common::utils::usleep(config_.interval);
+    }
+
+    return common::Error();
+  }
+
+  static bool isPipeLineCommand(const char *command) {
+    if(!command){
+        return false;
+    }
+
+    bool skip = strcasecmp(command, "quit") == 0
+                || strcasecmp(command, "exit") == 0
+                || strcasecmp(command, "connect") == 0
+                || strcasecmp(command, "help") == 0
+                || strcasecmp(command, "?") == 0
+                || strcasecmp(command, "shutdown") == 0
+                || strcasecmp(command, "monitor") == 0
+                || strcasecmp(command, "subscribe") == 0
+                || strcasecmp(command, "psubscribe") == 0
+                || strcasecmp(command, "sync") == 0
+                || strcasecmp(command, "psync") == 0;
+
+    return !skip;
+  }
+
+  common::Error executeAsPipeline(std::vector<FastoObjectCommandIPtr> cmds) WARN_UNUSED_RESULT {
+    //DCHECK(cmd);
+    if(cmds.empty()){
+      return common::make_error_value("Invalid input command", common::ErrorValue::E_ERROR);
+    }
+
+    if (context_ == NULL){
+      return common::make_error_value("Not connected", common::Value::E_ERROR);
+    }
+
+    //start piplene mode
+    std::vector<FastoObjectCommandIPtr> valid_cmds;
+    for(int i = 0; i < cmds.size(); ++i){
+      FastoObjectCommandIPtr cmd = cmds[i];
+      common::CommandValue* cmdc = cmd->cmd();
+
+      const std::string command = cmdc->inputCommand();
+      common::Value::CommandLoggingType type = cmdc->commandLoggingType();
+
+      if(command.empty()){
+        continue;
+      }
+
+      LOG_COMMAND(Command(command, type));
+
+      const char* ccommand = common::utils::c_strornull(command);
+
+      if (ccommand) {
+        int argc = 0;
+        sds *argv = sdssplitargs(ccommand, &argc);
+
+        if (argv == NULL) {
+          common::StringValue *val = common::Value::createStringValue("Invalid argument(s)");
+          FastoObject* child = new FastoObject(cmd.get(), val, config_.mb_delim_);
+          cmd->addChildren(child);
+        } else if (argc > 0) {
+          if (isPipeLineCommand(argv[0])){
+            valid_cmds.push_back(cmd);
+            redisAppendCommandArgv(context_, argc, (const char**)argv, NULL);
+          }
+        }
+        sdsfreesplitres(argv, argc);
+      }
+    }
+
+    for(int i = 0; i < valid_cmds.size(); ++i){
+      FastoObjectCommandIPtr cmd = cmds[i];
+      common::Error er = cliReadReply(cmd.get());
+      if (er) {
+          return er;
+      }
+    }
+    //end piplene
+
+    return common::Error();
   }
 };
 
@@ -1764,7 +1741,7 @@ bool RedisDriver::isConnected() const {
 
 bool RedisDriver::isAuthenticated() const {
   if(!impl_->context_){
-      return false;
+    return false;
   }
 
   return impl_->isAuth_;
@@ -1782,17 +1759,19 @@ common::Error RedisDriver::executeImpl(FastoObject* out, int argc, char **argv) 
 
 common::Error RedisDriver::serverInfo(ServerInfo** info) {
   FastoObjectIPtr root = FastoObject::createRoot(INFO_REQUEST);
-  FastoObjectCommand* cmd = createCommand<RedisCommand>(root, INFO_REQUEST, common::Value::C_INNER);
+  FastoObjectCommand* cmd = createCommand<RedisCommand>(root, INFO_REQUEST,
+                                                        common::Value::C_INNER);
   common::Error res = execute(cmd);
-  if(!res){
-      FastoObject::child_container_type ch = root->childrens();
-      if(ch.size()){
-          *info = makeRedisServerInfo(ch[0]);
-      }
+  if (!res){
+    FastoObject::child_container_type ch = root->childrens();
+    if(ch.size()){
+      *info = makeRedisServerInfo(ch[0]);
+    }
 
-      if(*info == NULL){
-          res = common::make_error_value("Invalid " INFO_REQUEST " command output", common::ErrorValue::E_ERROR);
-      }
+    if(*info == NULL){
+      res = common::make_error_value("Invalid " INFO_REQUEST " command output",
+                                     common::ErrorValue::E_ERROR);
+    }
   }
 
   return res;
@@ -1803,21 +1782,21 @@ common::Error RedisDriver::serverDiscoveryInfo(ServerInfo **sinfo,
   ServerInfo *lsinfo = NULL;
   common::Error er = serverInfo(&lsinfo);
   if(er){
-      return er;
+    return er;
   }
 
   DataBaseInfo* ldbinfo = NULL;
   er = currentDataBaseInfo(&ldbinfo);
   if(er){
-      delete lsinfo;
-      return er;
+    delete lsinfo;
+    return er;
   }
 
   uint32_t version = lsinfo->version();
   if(version < PROJECT_VERSION_CHECK(3,0,0)){
-      *sinfo = lsinfo;
-      *dbinfo = ldbinfo;
-      return common::Error(); //not error server not support cluster command
+    *sinfo = lsinfo;
+    *dbinfo = ldbinfo;
+    return common::Error(); //not error server not support cluster command
   }
 
   FastoObjectIPtr root = FastoObject::createRoot(GET_SERVER_TYPE);
@@ -1825,20 +1804,20 @@ common::Error RedisDriver::serverDiscoveryInfo(ServerInfo **sinfo,
   er = execute(cmd);
 
   if(er){
-      *sinfo = lsinfo;
-      *dbinfo = ldbinfo;
-      return common::Error(); //not error serverInfo is valid
+    *sinfo = lsinfo;
+    *dbinfo = ldbinfo;
+    return common::Error(); //not error serverInfo is valid
   }
 
   FastoObject::child_container_type ch = cmd->childrens();
-  if(ch.size()){
-      FastoObject* obj = ch[0];
-      if(obj){
-          common::Value::Type t = obj->type();
-          if(t == common::Value::TYPE_STRING){
-              *dinfo = makeOwnRedisDiscoveryInfo(obj);
-          }
+  if (ch.size()) {
+    FastoObject* obj = ch[0];
+    if (obj) {
+      common::Value::Type t = obj->type();
+      if(t == common::Value::TYPE_STRING){
+        *dinfo = makeOwnRedisDiscoveryInfo(obj);
       }
+    }
   }
 
   *sinfo = lsinfo;
@@ -1854,54 +1833,54 @@ common::Error RedisDriver::currentDataBaseInfo(DataBaseInfo** info) {
 void RedisDriver::handleConnectEvent(events::ConnectRequestEvent *ev) {
   QObject *sender = ev->sender();
   notifyProgress(sender, 0);
-      events::ConnectResponceEvent::value_type res(ev->value());
-      RedisConnectionSettings *set = dynamic_cast<RedisConnectionSettings*>(settings_.get());
-      if(set){
-          impl_->config_ = set->info();
-          impl_->sinfo_ = set->sshInfo();
+  events::ConnectResponceEvent::value_type res(ev->value());
+  RedisConnectionSettings *set = dynamic_cast<RedisConnectionSettings*>(settings_.get());
+  if (set) {
+    impl_->config_ = set->info();
+    impl_->sinfo_ = set->sshInfo();
   notifyProgress(sender, 25);
-          common::Error er = impl_->cliConnect(0);
-          if(er){
-              res.setErrorInfo(er);
-          }
+    common::Error er = impl_->cliConnect(0);
+    if (er) {
+      res.setErrorInfo(er);
+    }
   notifyProgress(sender, 75);
-      }
-      reply(sender, new events::ConnectResponceEvent(this, res));
+  }
+  reply(sender, new events::ConnectResponceEvent(this, res));
   notifyProgress(sender, 100);
 }
 
 void RedisDriver::handleProcessCommandLineArgs(events::ProcessConfigArgsRequestEvent* ev) {
   /* Latency mode */
   if (impl_->config_.latency_mode) {
-      latencyMode(ev);
+    latencyMode(ev);
   }
 
   /* Slave mode */
   if (impl_->config_.slave_mode) {
-      slaveMode(ev);
+    slaveMode(ev);
   }
 
   /* Get RDB mode. */
   if (impl_->config_.getrdb_mode) {
-      getRDBMode(ev);
+    getRDBMode(ev);
   }
 
   /* Find big keys */
   if (impl_->config_.bigkeys) {
-      findBigKeysMode(ev);
+    findBigKeysMode(ev);
   }
 
   /* Stat mode */
   if (impl_->config_.stat_mode) {
-      if (impl_->config_.interval == 0){
-          impl_->config_.interval = 1000000;
-      }
-      statMode(ev);
+    if (impl_->config_.interval == 0){
+      impl_->config_.interval = 1000000;
+    }
+    statMode(ev);
   }
 
   /* Scan mode */
   if (impl_->config_.scan_mode) {
-      scanMode(ev);
+    scanMode(ev);
   }
 
   interacteveMode(ev);
@@ -1914,90 +1893,89 @@ void RedisDriver::handleProcessCommandLineArgs(events::ProcessConfigArgsRequestE
 void RedisDriver::handleShutdownEvent(events::ShutDownRequestEvent* ev) {
   QObject *sender = ev->sender();
   notifyProgress(sender, 0);
-      events::ShutDownResponceEvent::value_type res(ev->value());
+  events::ShutDownResponceEvent::value_type res(ev->value());
   notifyProgress(sender, 25);
-      FastoObjectIPtr root = FastoObject::createRoot(SHUTDOWN);
-      FastoObjectCommand* cmd = createCommand<RedisCommand>(root, SHUTDOWN, common::Value::C_INNER);
-      common::Error er = execute(cmd);
-      if(er){
-          res.setErrorInfo(er);
-      }
+  FastoObjectIPtr root = FastoObject::createRoot(SHUTDOWN);
+  FastoObjectCommand* cmd = createCommand<RedisCommand>(root, SHUTDOWN, common::Value::C_INNER);
+  common::Error er = execute(cmd);
+  if (er) {
+    res.setErrorInfo(er);
+  }
   notifyProgress(sender, 75);
-      reply(sender, new events::ShutDownResponceEvent(this, res));
+  reply(sender, new events::ShutDownResponceEvent(this, res));
   notifyProgress(sender, 100);
 }
 
 void RedisDriver::handleBackupEvent(events::BackupRequestEvent* ev) {
   QObject *sender = ev->sender();
   notifyProgress(sender, 0);
-      events::BackupResponceEvent::value_type res(ev->value());
+  events::BackupResponceEvent::value_type res(ev->value());
   notifyProgress(sender, 25);
-      FastoObjectIPtr root = FastoObject::createRoot(BACKUP);
-      FastoObjectCommand* cmd = createCommand<RedisCommand>(root, BACKUP, common::Value::C_INNER);
-      common::Error er = execute(cmd);
-      if(er){
-          res.setErrorInfo(er);
-      }
-      else{
-          common::Error err = common::file_system::copy_file("/var/lib/redis/dump.rdb", res.path_);
-          if(err && err->isError()){
-              res.setErrorInfo(err);
-          }
-      }
+  FastoObjectIPtr root = FastoObject::createRoot(BACKUP);
+  FastoObjectCommand* cmd = createCommand<RedisCommand>(root, BACKUP, common::Value::C_INNER);
+  common::Error er = execute(cmd);
+  if (er) {
+    res.setErrorInfo(er);
+  } else {
+    common::Error err = common::file_system::copy_file("/var/lib/redis/dump.rdb", res.path_);
+    if(err && err->isError()){
+      res.setErrorInfo(err);
+    }
+  }
   notifyProgress(sender, 75);
-      reply(sender, new events::BackupResponceEvent(this, res));
+  reply(sender, new events::BackupResponceEvent(this, res));
   notifyProgress(sender, 100);
 }
 
 void RedisDriver::handleExportEvent(events::ExportRequestEvent* ev) {
   QObject *sender = ev->sender();
   notifyProgress(sender, 0);
-      events::ExportResponceEvent::value_type res(ev->value());
+  events::ExportResponceEvent::value_type res(ev->value());
   notifyProgress(sender, 25);
-      common::Error err = common::file_system::copy_file(res.path_, "/var/lib/redis/dump.rdb");
-      if(err && err->isError()){
-          res.setErrorInfo(err);
-      }
+  common::Error err = common::file_system::copy_file(res.path_, "/var/lib/redis/dump.rdb");
+  if(err && err->isError()){
+    res.setErrorInfo(err);
+  }
   notifyProgress(sender, 75);
-      reply(sender, new events::ExportResponceEvent(this, res));
+  reply(sender, new events::ExportResponceEvent(this, res));
   notifyProgress(sender, 100);
 }
 
 void RedisDriver::handleChangePasswordEvent(events::ChangePasswordRequestEvent* ev) {
   QObject *sender = ev->sender();
   notifyProgress(sender, 0);
-      events::ChangePasswordResponceEvent::value_type res(ev->value());
+  events::ChangePasswordResponceEvent::value_type res(ev->value());
   notifyProgress(sender, 25);
-      char patternResult[1024] = {0};
-      common::SNPrintf(patternResult, sizeof(patternResult), SET_PASSWORD_1ARGS_S, res.newPassword_);
-      FastoObjectIPtr root = FastoObject::createRoot(patternResult);
-      FastoObjectCommand* cmd = createCommand<RedisCommand>(root, patternResult, common::Value::C_INNER);
-      common::Error er = execute(cmd);
-      if(er){
-          res.setErrorInfo(er);
-      }
+  char patternResult[1024] = {0};
+  common::SNPrintf(patternResult, sizeof(patternResult), SET_PASSWORD_1ARGS_S, res.newPassword_);
+  FastoObjectIPtr root = FastoObject::createRoot(patternResult);
+  FastoObjectCommand* cmd = createCommand<RedisCommand>(root, patternResult, common::Value::C_INNER);
+  common::Error er = execute(cmd);
+  if(er){
+    res.setErrorInfo(er);
+  }
 
   notifyProgress(sender, 75);
-      reply(sender, new events::ChangePasswordResponceEvent(this, res));
+  reply(sender, new events::ChangePasswordResponceEvent(this, res));
   notifyProgress(sender, 100);
 }
 
 void RedisDriver::handleChangeMaxConnectionEvent(events::ChangeMaxConnectionRequestEvent* ev) {
   QObject *sender = ev->sender();
   notifyProgress(sender, 0);
-      events::ChangeMaxConnectionResponceEvent::value_type res(ev->value());
+  events::ChangeMaxConnectionResponceEvent::value_type res(ev->value());
   notifyProgress(sender, 25);
-      char patternResult[1024] = {0};
-      common::SNPrintf(patternResult, sizeof(patternResult), SET_MAX_CONNECTIONS_1ARGS_I, res.maxConnection_);
-      FastoObjectIPtr root = FastoObject::createRoot(patternResult);
-      FastoObjectCommand* cmd = createCommand<RedisCommand>(root, patternResult, common::Value::C_INNER);
-      common::Error er = execute(cmd);
-      if(er){
-          res.setErrorInfo(er);
-      }
+  char patternResult[1024] = {0};
+  common::SNPrintf(patternResult, sizeof(patternResult), SET_MAX_CONNECTIONS_1ARGS_I, res.maxConnection_);
+  FastoObjectIPtr root = FastoObject::createRoot(patternResult);
+  FastoObjectCommand* cmd = createCommand<RedisCommand>(root, patternResult, common::Value::C_INNER);
+  common::Error er = execute(cmd);
+  if(er){
+    res.setErrorInfo(er);
+  }
 
   notifyProgress(sender, 75);
-      reply(sender, new events::ChangeMaxConnectionResponceEvent(this, res));
+  reply(sender, new events::ChangeMaxConnectionResponceEvent(this, res));
   notifyProgress(sender, 100);
 }
 
@@ -2136,307 +2114,303 @@ common::Error RedisDriver::scanMode(events::ProcessConfigArgsRequestEvent* ev) {
 void RedisDriver::handleExecuteEvent(events::ExecuteRequestEvent *ev) {
   QObject *sender = ev->sender();
   notifyProgress(sender, 0);
-      events::ExecuteRequestEvent::value_type res(ev->value());
-      const char *inputLine = common::utils::c_strornull(res.text_);
+  events::ExecuteRequestEvent::value_type res(ev->value());
+  const char *inputLine = common::utils::c_strornull(res.text_);
 
-      common::Error er;
-      if(inputLine){
-          size_t length = strlen(inputLine);
-          int offset = 0;
-          RootLocker lock = make_locker(sender, inputLine);
-          FastoObjectIPtr outRoot = lock.root_;
-          double step = 100.0f/length;
-          for(size_t n = 0; n < length; ++n){
-              if(interrupt_){
-                  er.reset(new common::ErrorValue("Interrupted exec.", common::ErrorValue::E_INTERRUPTED));
-                  res.setErrorInfo(er);
-                  break;
-              }
+  common::Error er;
+  if(inputLine){
+      size_t length = strlen(inputLine);
+      int offset = 0;
+      RootLocker lock = make_locker(sender, inputLine);
+      FastoObjectIPtr outRoot = lock.root_;
+      double step = 100.0f/length;
+      for(size_t n = 0; n < length; ++n){
+          if(interrupt_){
+              er.reset(new common::ErrorValue("Interrupted exec.", common::ErrorValue::E_INTERRUPTED));
+              res.setErrorInfo(er);
+              break;
+          }
 
-              if(inputLine[n] == '\n' || n == length-1){
+          if (inputLine[n] == '\n' || n == length-1) {
   notifyProgress(sender, step * n);
-                  char command[128] = {0};
-                  if(n == length-1){
-                      strcpy(command, inputLine + offset);
-                  }
-                  else{
-                      strncpy(command, inputLine + offset, n - offset);
-                  }
+            char command[128] = {0};
+            if(n == length-1){
+              strcpy(command, inputLine + offset);
+            } else {
+              strncpy(command, inputLine + offset, n - offset);
+            }
 
-                  offset = n + 1;
-                  std::string stabc = stableCommand(command);
-                  FastoObjectCommand* cmd = createCommand<RedisCommand>(outRoot, stabc, common::Value::C_USER);
-                  er = execute(cmd);
-                  if(er){
-                      res.setErrorInfo(er);
-                      break;
-                  } else{
-                      std::string cmdcom = cmd->inputCmd();
-                      std::transform(cmdcom.begin(), cmdcom.end(), cmdcom.begin(), ::tolower);
-                      FastoObject::child_container_type rchildrens = cmd->childrens();
-                      if(cmdcom == "auth"){
-                          if(rchildrens.size() == 1){
-                              FastoObject* obj = dynamic_cast<FastoObject*>(rchildrens[0]);
-                              impl_->isAuth_ = obj && obj->toString() == "OK";
-                          }
-                          else{
-                              impl_->isAuth_ = false;
-                          }
-                      }
-                  }
+            offset = n + 1;
+            std::string stabc = stableCommand(command);
+            FastoObjectCommand* cmd = createCommand<RedisCommand>(outRoot, stabc, common::Value::C_USER);
+            er = execute(cmd);
+            if (er) {
+              res.setErrorInfo(er);
+              break;
+            } else {
+              std::string cmdcom = cmd->inputCmd();
+              std::transform(cmdcom.begin(), cmdcom.end(), cmdcom.begin(), ::tolower);
+              FastoObject::child_container_type rchildrens = cmd->childrens();
+
+              if(cmdcom == "auth"){
+                if(rchildrens.size() == 1){
+                  FastoObject* obj = dynamic_cast<FastoObject*>(rchildrens[0]);
+                   impl_->isAuth_ = obj && obj->toString() == "OK";
+                } else {
+                   impl_->isAuth_ = false;
+                }
               }
+            }
           }
       }
-      else{
-          er.reset(new common::ErrorValue("Empty command line.", common::ErrorValue::E_ERROR));
-      }
+  } else {
+    er.reset(new common::ErrorValue("Empty command line.", common::ErrorValue::E_ERROR));
+  }
 
-      if(er){
-          LOG_ERROR(er, true);
-      }
+  if(er){
+    LOG_ERROR(er, true);
+  }
   notifyProgress(sender, 100);
 }
 
 void RedisDriver::handleCommandRequestEvent(events::CommandRequestEvent* ev) {
   QObject *sender = ev->sender();
   notifyProgress(sender, 0);
-      events::CommandResponceEvent::value_type res(ev->value());
-      std::string cmdtext;
-      common::Error er = commandByType(res.cmd_, cmdtext);
-      if(er){
-          res.setErrorInfo(er);
-          reply(sender, new events::CommandResponceEvent(this, res));
-          notifyProgress(sender, 100);
-          return;
-      }
+  events::CommandResponceEvent::value_type res(ev->value());
+  std::string cmdtext;
+  common::Error er = commandByType(res.cmd_, cmdtext);
+  if (er) {
+    res.setErrorInfo(er);
+    reply(sender, new events::CommandResponceEvent(this, res));
+    notifyProgress(sender, 100);
+    return;
+  }
 
-      RootLocker lock = make_locker(sender, cmdtext);
-      FastoObjectIPtr root = lock.root_;
-      FastoObjectCommand* cmd = createCommand<RedisCommand>(root, cmdtext, common::Value::C_INNER);
+  RootLocker lock = make_locker(sender, cmdtext);
+  FastoObjectIPtr root = lock.root_;
+  FastoObjectCommand* cmd = createCommand<RedisCommand>(root, cmdtext, common::Value::C_INNER);
   notifyProgress(sender, 50);
-      er = execute(cmd);
-      if(er){
-          res.setErrorInfo(er);
-      }
-      reply(sender, new events::CommandResponceEvent(this, res));
+  er = execute(cmd);
+  if(er){
+    res.setErrorInfo(er);
+  }
+  reply(sender, new events::CommandResponceEvent(this, res));
   notifyProgress(sender, 100);
 }
 
 void RedisDriver::handleDisconnectEvent(events::DisconnectRequestEvent *ev) {
   QObject *sender = ev->sender();
   notifyProgress(sender, 0);
-      events::DisconnectResponceEvent::value_type res(ev->value());
+  events::DisconnectResponceEvent::value_type res(ev->value());
   notifyProgress(sender, 50);
 
   if(impl_->context_){
-      redisFree(impl_->context_);
-      impl_->context_ = NULL;
+    redisFree(impl_->context_);
+    impl_->context_ = NULL;
   }
 
-      reply(sender, new events::DisconnectResponceEvent(this, res));
+  reply(sender, new events::DisconnectResponceEvent(this, res));
   notifyProgress(sender, 100);
 }
 
 void RedisDriver::handleLoadDatabaseInfosEvent(events::LoadDatabasesInfoRequestEvent *ev) {
-      QObject *sender = ev->sender();
+  QObject *sender = ev->sender();
   notifyProgress(sender, 0);
-      events::LoadDatabasesInfoResponceEvent::value_type res(ev->value());
-      FastoObjectIPtr root = FastoObject::createRoot(GET_DATABASES);
+  events::LoadDatabasesInfoResponceEvent::value_type res(ev->value());
+  FastoObjectIPtr root = FastoObject::createRoot(GET_DATABASES);
   notifyProgress(sender, 50);
-      FastoObjectCommand* cmd = createCommand<RedisCommand>(root, GET_DATABASES, common::Value::C_INNER);
-      common::Error er = execute(cmd);
-      if(er){
-          res.setErrorInfo(er);
+  FastoObjectCommand* cmd = createCommand<RedisCommand>(root, GET_DATABASES, common::Value::C_INNER);
+  common::Error er = execute(cmd);
+  if (er) {
+    res.setErrorInfo(er);
+  } else {
+    FastoObject::child_container_type rchildrens = cmd->childrens();
+    if (rchildrens.size()) {
+      DCHECK(rchildrens.size() == 1);
+      FastoObjectArray* array = dynamic_cast<FastoObjectArray*>(rchildrens[0]);
+      if (!array) {
+        goto done;
       }
-      else{
-          FastoObject::child_container_type rchildrens = cmd->childrens();
-          if(rchildrens.size()){
-              DCHECK(rchildrens.size() == 1);
-              FastoObjectArray* array = dynamic_cast<FastoObjectArray*>(rchildrens[0]);
-              if(!array){
-                  goto done;
-              }
-              common::ArrayValue* ar = array->array();
-              if(!ar){
-                  goto done;
-              }
+      common::ArrayValue* ar = array->array();
+      if (!ar) {
+        goto done;
+      }
 
-              DataBaseInfoSPtr cdbInf = currentDatabaseInfo();
-              if(ar->size() == 2){
-                  std::string scountDb;
-                  bool isok = ar->getString(1, &scountDb);
-                  if(isok){
-                      int countDb = common::convertFromString<int>(scountDb);
-                      if(countDb > 0){
-                          for(int i = 0; i < countDb; ++i){
-                              DataBaseInfoSPtr dbInf(new RedisDataBaseInfo(common::convertToString(i), false, 0));
-                              if(dbInf->name() == cdbInf->name()){
-                                  res.databases_.push_back(cdbInf);
-                              }
-                              else {
-                                  res.databases_.push_back(dbInf);
-                              }
-                          }
-                      }
-                  }
-              }
-              else{
+      DataBaseInfoSPtr cdbInf = currentDatabaseInfo();
+      if(ar->size() == 2){
+        std::string scountDb;
+        bool isok = ar->getString(1, &scountDb);
+        if(isok){
+            int countDb = common::convertFromString<int>(scountDb);
+            if(countDb > 0){
+              for(int i = 0; i < countDb; ++i){
+                DataBaseInfoSPtr dbInf(new RedisDataBaseInfo(common::convertToString(i), false, 0));
+                if(dbInf->name() == cdbInf->name()){
                   res.databases_.push_back(cdbInf);
+                } else {
+                  res.databases_.push_back(dbInf);
+                }
               }
-          }
+            }
+        }
+      } else {
+        res.databases_.push_back(cdbInf);
       }
+    }
+  }
 done:
   notifyProgress(sender, 75);
-      reply(sender, new events::LoadDatabasesInfoResponceEvent(this, res));
+  reply(sender, new events::LoadDatabasesInfoResponceEvent(this, res));
   notifyProgress(sender, 100);
 }
 
 void RedisDriver::handleLoadDatabaseContentEvent(events::LoadDatabaseContentRequestEvent *ev) {
   QObject *sender = ev->sender();
   notifyProgress(sender, 0);
-      events::LoadDatabaseContentResponceEvent::value_type res(ev->value());
-      char patternResult[1024] = {0};
-      common::SNPrintf(patternResult, sizeof(patternResult),
-                       GET_KEYS_PATTERN_3ARGS_ISI, res.cursorIn_, res.pattern_, res.countKeys_);
-      FastoObjectIPtr root = FastoObject::createRoot(patternResult);
+  events::LoadDatabaseContentResponceEvent::value_type res(ev->value());
+  char patternResult[1024] = {0};
+  common::SNPrintf(patternResult, sizeof(patternResult),
+                   GET_KEYS_PATTERN_3ARGS_ISI, res.cursorIn_, res.pattern_, res.countKeys_);
+  FastoObjectIPtr root = FastoObject::createRoot(patternResult);
   notifyProgress(sender, 50);
-      FastoObjectCommand* cmd = createCommand<RedisCommand>(root, patternResult, common::Value::C_INNER);
-      common::Error er = execute(cmd);
+  FastoObjectCommand* cmd = createCommand<RedisCommand>(root, patternResult,
+                                                        common::Value::C_INNER);
+  common::Error er = execute(cmd);
+  if(er){
+    res.setErrorInfo(er);
+  } else {
+    FastoObject::child_container_type rchildrens = cmd->childrens();
+    if(rchildrens.size()){
+      DCHECK(rchildrens.size() == 1);
+      FastoObjectArray* array = dynamic_cast<FastoObjectArray*>(rchildrens[0]);
+      if(!array){
+        goto done;
+      }
+
+      common::ArrayValue* arm = array->array();
+      if(!arm->size()){
+        goto done;
+      }
+
+      std::string cursor;
+      bool isok = arm->getString(0, &cursor);
+      if(!isok){
+        goto done;
+      }
+
+      res.cursorOut_ = common::convertFromString<uint32_t>(cursor);
+
+      rchildrens = array->childrens();
+      if(!rchildrens.size()){
+        goto done;
+      }
+
+      FastoObject* obj = rchildrens[0];
+      FastoObjectArray* arr = dynamic_cast<FastoObjectArray*>(obj);
+      if(!arr){
+        goto done;
+      }
+
+      common::ArrayValue* ar = arr->array();
+      std::vector<FastoObjectCommandIPtr> cmds;
+      cmds.reserve(ar->size() * 2);
+      for(int i = 0; i < ar->size(); ++i){
+        std::string key;
+        bool isok = ar->getString(i, &key);
+        DCHECK(isok);
+        if(isok){
+          NKey k(key);
+          NDbKValue ress(k, NValue());
+          cmds.push_back(createCommandFast("TYPE " + ress.keyString(), common::Value::C_INNER));
+          cmds.push_back(createCommandFast("TTL " + ress.keyString(), common::Value::C_INNER));
+          res.keys_.push_back(ress);
+        }
+      }
+
+      er = impl_->executeAsPipeline(cmds);
       if(er){
-        res.setErrorInfo(er);
-      } else {
-        FastoObject::child_container_type rchildrens = cmd->childrens();
-        if(rchildrens.size()){
-            DCHECK(rchildrens.size() == 1);
-            FastoObjectArray* array = dynamic_cast<FastoObjectArray*>(rchildrens[0]);
-            if(!array){
-                goto done;
-            }
+        goto done;
+      }
 
-            common::ArrayValue* arm = array->array();
-            if(!arm->size()){
-                goto done;
-            }
+      for(int i = 0; i < res.keys_.size(); ++i){
+        FastoObjectIPtr cmdType = cmds[i*2];
+        FastoObject::child_container_type tchildrens = cmdType->childrens();
+        if(tchildrens.size()){
+          DCHECK(tchildrens.size() == 1);
+          if(tchildrens.size() == 1){
+            FastoObject* type = tchildrens[0];
+            std::string typeRedis = type->toString();
+            common::Value::Type ctype = convertFromStringRType(typeRedis);
+            common::Value* emptyval = common::Value::createEmptyValueFromType(ctype);
+            common::ValueSPtr v = make_value(emptyval);
+            NValue val(v);
+            res.keys_[i].setValue(val);
+          }
+        }
 
-            std::string cursor;
-            bool isok = arm->getString(0, &cursor);
-            if(!isok){
-               goto done;
-            }
-
-            res.cursorOut_ = common::convertFromString<uint32_t>(cursor);
-
-            rchildrens = array->childrens();
-            if(!rchildrens.size()){
-                goto done;
-            }
-
-            FastoObject* obj = rchildrens[0];
-            FastoObjectArray* arr = dynamic_cast<FastoObjectArray*>(obj);
-            if(!arr){
-                goto done;
-            }
-
-            common::ArrayValue* ar = arr->array();
-            std::vector<FastoObjectCommandIPtr> cmds;
-            cmds.reserve(ar->size() * 2);
-            for(int i = 0; i < ar->size(); ++i){
-                std::string key;
-                bool isok = ar->getString(i, &key);
-                DCHECK(isok);
-                if(isok){
-                    NKey k(key);
-                    NDbKValue ress(k, NValue());
-                    cmds.push_back(createCommandFast("TYPE " + ress.keyString(), common::Value::C_INNER));
-                    cmds.push_back(createCommandFast("TTL " + ress.keyString(), common::Value::C_INNER));
-                    res.keys_.push_back(ress);
-                }
-            }
-
-            er = impl_->executeAsPipeline(cmds);
-            if(er){
-               goto done;
-            }
-
-            for(int i = 0; i < res.keys_.size(); ++i){
-                FastoObjectIPtr cmdType = cmds[i*2];
-                FastoObject::child_container_type tchildrens = cmdType->childrens();
-                if(tchildrens.size()){
-                    DCHECK(tchildrens.size() == 1);
-                    if(tchildrens.size() == 1){
-                        FastoObject* type = tchildrens[0];
-                        std::string typeRedis = type->toString();
-                        common::Value::Type ctype = convertFromStringRType(typeRedis);
-                        common::Value* emptyval = common::Value::createEmptyValueFromType(ctype);
-                        common::ValueSPtr v = make_value(emptyval);
-                        NValue val(v);
-                        res.keys_[i].setValue(val);
-                    }
-                }
-
-                FastoObjectIPtr cmdType2 = cmds[i*2+1];
-                tchildrens = cmdType2->childrens();
-                if(tchildrens.size()){
-                    DCHECK(tchildrens.size() == 1);
-                    if(tchildrens.size() == 1){
-                        FastoObject* fttl = tchildrens[0];
-                        common::Value* vttl = fttl->value();
-                        int32_t ttl = 0;
-                        if(vttl->getAsInteger(&ttl)){
-                            res.keys_[i].setTTL(ttl);
-                        }
-                    }
-                }
+        FastoObjectIPtr cmdType2 = cmds[i*2+1];
+        tchildrens = cmdType2->childrens();
+        if(tchildrens.size()){
+          DCHECK(tchildrens.size() == 1);
+          if(tchildrens.size() == 1){
+            FastoObject* fttl = tchildrens[0];
+            common::Value* vttl = fttl->value();
+            int32_t ttl = 0;
+            if(vttl->getAsInteger(&ttl)){
+                res.keys_[i].setTTL(ttl);
             }
           }
+        }
       }
+    }
+  }
 done:
   notifyProgress(sender, 75);
-      reply(sender, new events::LoadDatabaseContentResponceEvent(this, res));
+  reply(sender, new events::LoadDatabaseContentResponceEvent(this, res));
   notifyProgress(sender, 100);
 }
 
 void RedisDriver::handleSetDefaultDatabaseEvent(events::SetDefaultDatabaseRequestEvent* ev) {
   QObject *sender = ev->sender();
   notifyProgress(sender, 0);
-    events::SetDefaultDatabaseResponceEvent::value_type res(ev->value());
-    const std::string setDefCommand = SET_DEFAULT_DATABASE + res.inf_->name();
-    FastoObjectIPtr root = FastoObject::createRoot(setDefCommand);
+  events::SetDefaultDatabaseResponceEvent::value_type res(ev->value());
+  const std::string setDefCommand = SET_DEFAULT_DATABASE + res.inf_->name();
+  FastoObjectIPtr root = FastoObject::createRoot(setDefCommand);
   notifyProgress(sender, 50);
-    FastoObjectCommand* cmd = createCommand<RedisCommand>(root, setDefCommand, common::Value::C_INNER);
-    common::Error er = execute(cmd);
-    if(er){
-      res.setErrorInfo(er);
-    } else {
-        long long sz = 0;
-        er = impl_->dbsize(sz);
-        setCurrentDatabaseInfo(new RedisDataBaseInfo(res.inf_->name(), true, sz));
-    }
+  FastoObjectCommand* cmd = createCommand<RedisCommand>(root, setDefCommand, common::Value::C_INNER);
+  common::Error er = execute(cmd);
+  if(er){
+    res.setErrorInfo(er);
+  } else {
+    long long sz = 0;
+    er = impl_->dbsize(sz);
+    setCurrentDatabaseInfo(new RedisDataBaseInfo(res.inf_->name(), true, sz));
+  }
   notifyProgress(sender, 75);
-    reply(sender, new events::SetDefaultDatabaseResponceEvent(this, res));
+  reply(sender, new events::SetDefaultDatabaseResponceEvent(this, res));
   notifyProgress(sender, 100);
 }
 
 void RedisDriver::handleLoadServerInfoEvent(events::ServerInfoRequestEvent *ev) {
   QObject *sender = ev->sender();
   notifyProgress(sender, 0);
-      events::ServerInfoResponceEvent::value_type res(ev->value());
-      FastoObjectIPtr root = FastoObject::createRoot(INFO_REQUEST);
+  events::ServerInfoResponceEvent::value_type res(ev->value());
+  FastoObjectIPtr root = FastoObject::createRoot(INFO_REQUEST);
   notifyProgress(sender, 50);
-      FastoObjectCommand* cmd = createCommand<RedisCommand>(root, INFO_REQUEST, common::Value::C_INNER);
-      common::Error er = execute(cmd);
-      if(er){
-        res.setErrorInfo(er);
-      } else {
-        FastoObject::child_container_type ch = cmd->childrens();
-        if(ch.size()){
-            DCHECK(ch.size() == 1);
-            ServerInfoSPtr red(makeRedisServerInfo(ch[0]));
-            res.setInfo(red);
-        }
-      }
+  FastoObjectCommand* cmd = createCommand<RedisCommand>(root, INFO_REQUEST, common::Value::C_INNER);
+  common::Error er = execute(cmd);
+  if(er){
+    res.setErrorInfo(er);
+  } else {
+    FastoObject::child_container_type ch = cmd->childrens();
+    if(ch.size()){
+      DCHECK(ch.size() == 1);
+      ServerInfoSPtr red(makeRedisServerInfo(ch[0]));
+      res.setInfo(red);
+    }
+  }
   notifyProgress(sender, 75);
-      reply(sender, new events::ServerInfoResponceEvent(this, res));
+  reply(sender, new events::ServerInfoResponceEvent(this, res));
   notifyProgress(sender, 100);
 }
 
@@ -2444,26 +2418,26 @@ void RedisDriver::handleLoadServerPropertyEvent(events::ServerPropertyInfoReques
   QObject* sender = ev->sender();
   notifyProgress(sender, 0);
   events::ServerPropertyInfoResponceEvent::value_type res(ev->value());
-      FastoObjectIPtr root = FastoObject::createRoot(GET_PROPERTY_SERVER);
+  FastoObjectIPtr root = FastoObject::createRoot(GET_PROPERTY_SERVER);
   notifyProgress(sender, 50);
-      FastoObjectCommand* cmd = createCommand<RedisCommand>(root,
-                                                            GET_PROPERTY_SERVER,
-                                                            common::Value::C_INNER);
-      common::Error er = execute(cmd);
-      if (er) {
-          res.setErrorInfo(er);
-      } else {
-        FastoObject::child_container_type ch = cmd->childrens();
-        if(ch.size()){
-          DCHECK(ch.size() == 1);
-          FastoObjectArray* array = dynamic_cast<FastoObjectArray*>(ch[0]);
-          if(array){
-            res.info_ = makeServerProperty(array);
-          }
-        }
+  FastoObjectCommand* cmd = createCommand<RedisCommand>(root,
+                                                        GET_PROPERTY_SERVER,
+                                                        common::Value::C_INNER);
+  common::Error er = execute(cmd);
+  if (er) {
+    res.setErrorInfo(er);
+  } else {
+    FastoObject::child_container_type ch = cmd->childrens();
+    if(ch.size()){
+      DCHECK(ch.size() == 1);
+      FastoObjectArray* array = dynamic_cast<FastoObjectArray*>(ch[0]);
+      if(array){
+        res.info_ = makeServerProperty(array);
       }
+    }
+  }
   notifyProgress(sender, 75);
-      reply(sender, new events::ServerPropertyInfoResponceEvent(this, res));
+  reply(sender, new events::ServerPropertyInfoResponceEvent(this, res));
   notifyProgress(sender, 100);
 }
 
@@ -2502,20 +2476,20 @@ common::Error RedisDriver::commandLoadImpl(CommandLoadKey* command, std::string&
   char patternResult[1024] = {0};
   const NDbKValue key = command->key();
   if(key.type() == common::Value::TYPE_ARRAY) {
-      common::SNPrintf(patternResult, sizeof(patternResult),
-                       GET_KEY_LIST_PATTERN_1ARGS_S, key.keyString());
+    common::SNPrintf(patternResult, sizeof(patternResult),
+                     GET_KEY_LIST_PATTERN_1ARGS_S, key.keyString());
   } else if(key.type() == common::Value::TYPE_SET) {
-      common::SNPrintf(patternResult, sizeof(patternResult),
-                       GET_KEY_SET_PATTERN_1ARGS_S, key.keyString());
+    common::SNPrintf(patternResult, sizeof(patternResult),
+                     GET_KEY_SET_PATTERN_1ARGS_S, key.keyString());
   } else if(key.type() == common::Value::TYPE_ZSET) {
-      common::SNPrintf(patternResult, sizeof(patternResult),
-                       GET_KEY_ZSET_PATTERN_1ARGS_S, key.keyString());
+    common::SNPrintf(patternResult, sizeof(patternResult),
+                     GET_KEY_ZSET_PATTERN_1ARGS_S, key.keyString());
   } else if(key.type() == common::Value::TYPE_HASH) {
-      common::SNPrintf(patternResult, sizeof(patternResult),
-                       GET_KEY_HASH_PATTERN_1ARGS_S, key.keyString());
+    common::SNPrintf(patternResult, sizeof(patternResult),
+                     GET_KEY_HASH_PATTERN_1ARGS_S, key.keyString());
   } else {
-      common::SNPrintf(patternResult, sizeof(patternResult),
-                       GET_KEY_PATTERN_1ARGS_S, key.keyString());
+    common::SNPrintf(patternResult, sizeof(patternResult),
+                     GET_KEY_PATTERN_1ARGS_S, key.keyString());
   }
   cmdstring = patternResult;
 
@@ -2532,15 +2506,15 @@ common::Error RedisDriver::commandCreateImpl(CommandCreateKey* command,
   std::string value_str = common::convertToString(rval, " ");
   common::Value::Type t = key.type();
   if(t == common::Value::TYPE_ARRAY) {
-      common::SNPrintf(patternResult, sizeof(patternResult), SET_KEY_LIST_PATTERN_2ARGS_SS, key_str, value_str);
+    common::SNPrintf(patternResult, sizeof(patternResult), SET_KEY_LIST_PATTERN_2ARGS_SS, key_str, value_str);
   } else if(t == common::Value::TYPE_SET) {
-      common::SNPrintf(patternResult, sizeof(patternResult), SET_KEY_SET_PATTERN_2ARGS_SS, key_str, value_str);
+    common::SNPrintf(patternResult, sizeof(patternResult), SET_KEY_SET_PATTERN_2ARGS_SS, key_str, value_str);
   } else if(t == common::Value::TYPE_ZSET) {
-      common::SNPrintf(patternResult, sizeof(patternResult), SET_KEY_ZSET_PATTERN_2ARGS_SS, key_str, value_str);
+    common::SNPrintf(patternResult, sizeof(patternResult), SET_KEY_ZSET_PATTERN_2ARGS_SS, key_str, value_str);
   } else if(t == common::Value::TYPE_HASH) {
-      common::SNPrintf(patternResult, sizeof(patternResult), SET_KEY_HASH_PATTERN_2ARGS_SS, key_str, value_str);
+    common::SNPrintf(patternResult, sizeof(patternResult), SET_KEY_HASH_PATTERN_2ARGS_SS, key_str, value_str);
   } else {
-      common::SNPrintf(patternResult, sizeof(patternResult), SET_KEY_PATTERN_2ARGS_SS, key_str, value_str);
+    common::SNPrintf(patternResult, sizeof(patternResult), SET_KEY_PATTERN_2ARGS_SS, key_str, value_str);
   }
   cmdstring = patternResult;
 
@@ -2552,11 +2526,12 @@ common::Error RedisDriver::commandChangeTTLImpl(CommandChangeTTL* command,
   char patternResult[1024] = {0};
   NDbKValue key = command->key();
   uint32_t new_ttl = command->newTTL();
-  if(new_ttl == -1){
-      common::SNPrintf(patternResult, sizeof(patternResult), PERSIST_KEY_1ARGS_S, key.keyString());
-  }
-  else{
-      common::SNPrintf(patternResult, sizeof(patternResult), CHANGE_TTL_2ARGS_SI, key.keyString(), new_ttl);
+  if (new_ttl == -1) {
+    common::SNPrintf(patternResult, sizeof(patternResult),
+                     PERSIST_KEY_1ARGS_S, key.keyString());
+  } else {
+    common::SNPrintf(patternResult, sizeof(patternResult),
+                     CHANGE_TTL_2ARGS_SI, key.keyString(), new_ttl);
   }
   cmdstring = patternResult;
 

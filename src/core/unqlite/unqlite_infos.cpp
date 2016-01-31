@@ -23,14 +23,12 @@
 
 namespace {
 
-  using namespace fastonosql;
-
-  const std::vector<Field> unqliteCommonFields = {
-      Field(UNQLITE_CAMPACTIONS_LEVEL_LABEL, common::Value::TYPE_UINTEGER),
-      Field(UNQLITE_FILE_SIZE_MB_LABEL, common::Value::TYPE_UINTEGER),
-      Field(UNQLITE_TIME_SEC_LABEL, common::Value::TYPE_UINTEGER),
-      Field(UNQLITE_READ_MB_LABEL, common::Value::TYPE_UINTEGER),
-      Field(UNQLITE_WRITE_MB_LABEL, common::Value::TYPE_UINTEGER)
+  const std::vector<fastonosql::Field> unqliteCommonFields = {
+      fastonosql::Field(UNQLITE_CAMPACTIONS_LEVEL_LABEL, common::Value::TYPE_UINTEGER),
+      fastonosql::Field(UNQLITE_FILE_SIZE_MB_LABEL, common::Value::TYPE_UINTEGER),
+      fastonosql::Field(UNQLITE_TIME_SEC_LABEL, common::Value::TYPE_UINTEGER),
+      fastonosql::Field(UNQLITE_READ_MB_LABEL, common::Value::TYPE_UINTEGER),
+      fastonosql::Field(UNQLITE_WRITE_MB_LABEL, common::Value::TYPE_UINTEGER)
   };
 
 }
@@ -115,11 +113,12 @@ UnqliteServerInfo::UnqliteServerInfo(const Stats &stats)
   : ServerInfo(ROCKSDB), stats_(stats) {
 }
 
-common::Value* UnqliteServerInfo::valueByIndexes(unsigned char property, unsigned char field) const {
+common::Value* UnqliteServerInfo::valueByIndexes(unsigned char property,
+                                                 unsigned char field) const {
   switch (property) {
-  case 0:
+    case 0:
       return stats_.valueByIndex(field);
-  default:
+    default:
       NOTREACHED();
       break;
   }
@@ -177,7 +176,8 @@ UnqliteServerInfo* makeUnqliteServerInfo(FastoObject* root) {
   return makeUnqliteServerInfo(content);
 }
 
-UnqliteDataBaseInfo::UnqliteDataBaseInfo(const std::string& name, bool isDefault, size_t size, const keys_cont_type &keys)
+UnqliteDataBaseInfo::UnqliteDataBaseInfo(const std::string& name, bool isDefault,
+                                         size_t size, const keys_cont_type &keys)
   : DataBaseInfo(name, isDefault, UNQLITE, size, keys) {
 }
 
@@ -185,7 +185,8 @@ DataBaseInfo* UnqliteDataBaseInfo::clone() const {
   return new UnqliteDataBaseInfo(*this);
 }
 
-UnqliteCommand::UnqliteCommand(FastoObject* parent, common::CommandValue* cmd, const std::string &delemitr)
+UnqliteCommand::UnqliteCommand(FastoObject* parent, common::CommandValue* cmd,
+                               const std::string &delemitr)
   : FastoObjectCommand(parent, cmd, delemitr) {
 }
 

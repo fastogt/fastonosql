@@ -40,7 +40,8 @@ PropertyServerDialog::PropertyServerDialog(IServerSPtr server, QWidget* parent)
 
   PropertyTableModel* mod = new PropertyTableModel(this);
   propertyes_table_ = new QTableView;
-  VERIFY(connect(mod, &PropertyTableModel::changedProperty, this, &PropertyServerDialog::changedProperty));
+  VERIFY(connect(mod, &PropertyTableModel::changedProperty,
+                 this, &PropertyServerDialog::changedProperty));
   propertyes_table_->setModel(mod);
 
   QHBoxLayout *mainL = new QHBoxLayout;
@@ -65,12 +66,11 @@ void PropertyServerDialog::startServerProperty(const EventsInfo::ServerPropertyI
   glassWidget_->start();
 }
 
-void PropertyServerDialog::finishServerProperty(const EventsInfo::ServerPropertyInfoResponce& res)
-{
+void PropertyServerDialog::finishServerProperty(const EventsInfo::ServerPropertyInfoResponce& res) {
   glassWidget_->stop();
   common::Error er = res.errorInfo();
   if(er && er->isError()){
-      return;
+    return;
   }
 
   if(server_->type() == REDIS){
@@ -78,7 +78,8 @@ void PropertyServerDialog::finishServerProperty(const EventsInfo::ServerProperty
     PropertyTableModel *model = qobject_cast<PropertyTableModel*>(propertyes_table_->model());
     for(int i = 0; i < inf.propertyes_.size(); ++i) {
       PropertyType it = inf.propertyes_[i];
-      model->insertItem(new PropertyTableItem(common::convertFromString<QString>(it.first), common::convertFromString<QString>(it.second)));
+      model->insertItem(new PropertyTableItem(common::convertFromString<QString>(it.first),
+                                              common::convertFromString<QString>(it.second)));
     }
   }
 }
@@ -108,7 +109,7 @@ void PropertyServerDialog::changedProperty(const PropertyType& prop) {
 
 void PropertyServerDialog::changeEvent(QEvent* e) {
   if(e->type() == QEvent::LanguageChange){
-      retranslateUi();
+    retranslateUi();
   }
   QDialog::changeEvent(e);
 }

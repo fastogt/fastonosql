@@ -24,9 +24,9 @@
 #include "fasto/qt/gui/base/tree_item.h"
 
 namespace fastonosql {
+
 class FastoCommonItem
-  : public fasto::qt::gui::TreeItem
-{
+  : public fasto::qt::gui::TreeItem {
  public:
   enum eColumn
   {
@@ -59,5 +59,6 @@ QString toCsv(FastoCommonItem* item, const QString &delemitr);
 
 QString fromGzip(FastoCommonItem* item);
 QString fromHexMsgPack(FastoCommonItem* item);
+
 }
 

@@ -108,14 +108,16 @@ ClusterDialog::ClusterDialog(QWidget* parent, IClusterSettingsBase *connection)
   listWidget_->setSelectionBehavior(QAbstractItemView::SelectRows);
 
   listWidget_->setContextMenuPolicy(Qt::CustomContextMenu);
-  VERIFY(connect(listWidget_, &QTreeWidget::customContextMenuRequested, this, &ClusterDialog::showContextMenu));
+  VERIFY(connect(listWidget_, &QTreeWidget::customContextMenuRequested,
+                 this, &ClusterDialog::showContextMenu));
 
   setDefault_ = new QAction(this);
   VERIFY(connect(setDefault_, &QAction::triggered, this, &ClusterDialog::setStartNode));
 
   if(cluster_connection_){
     IClusterSettingsBase::cluster_connection_type clusters = cluster_connection_->nodes();
-    for(IClusterSettingsBase::cluster_connection_type::const_iterator it = clusters.begin(); it != clusters.end(); ++it){
+    for(IClusterSettingsBase::cluster_connection_type::const_iterator it = clusters.begin();
+        it != clusters.end(); ++it){
       IConnectionSettingsBaseSPtr serv = (*it);
       addConnection(serv);
     }
@@ -354,17 +356,17 @@ bool ClusterDialog::validateAndApply() {
   if (isValidType) {
       std::string conName = common::convertToString(connectionName_->text());
       IClusterSettingsBase* newConnection = IClusterSettingsBase::createFromType(currentType, conName);
-      if(newConnection){
+      if (newConnection) {
           cluster_connection_.reset(newConnection);
-          if(logging_->isChecked()){
-              cluster_connection_->setLoggingMsTimeInterval(loggingMsec_->value());
+          if (logging_->isChecked()) {
+            cluster_connection_->setLoggingMsTimeInterval(loggingMsec_->value());
           }
-          for(int i = 0; i < listWidget_->topLevelItemCount(); ++i){
-              ConnectionListWidgetItem* item = dynamic_cast<ConnectionListWidgetItem *>(listWidget_->topLevelItem(i));
-              if(item){
-                  IConnectionSettingsBaseSPtr con = item->connection();
-                  cluster_connection_->addNode(con);
-              }
+          for (size_t i = 0; i < listWidget_->topLevelItemCount(); ++i) {
+            ConnectionListWidgetItem* item = dynamic_cast<ConnectionListWidgetItem *>(listWidget_->topLevelItem(i));
+            if (item) {
+              IConnectionSettingsBaseSPtr con = item->connection();
+              cluster_connection_->addNode(con);
+            }
           }
       }
       return true;

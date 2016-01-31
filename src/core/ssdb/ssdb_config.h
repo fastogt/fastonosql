@@ -25,8 +25,7 @@
 namespace fastonosql {
 
 struct ssdbConfig
-  : public RemoteConfig
-{
+  : public RemoteConfig {
   ssdbConfig();
 
   std::string user_;

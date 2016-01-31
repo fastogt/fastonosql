@@ -30,9 +30,8 @@ class QGroupBox;
 namespace fastonosql {
 
 class PreferencesDialog
-  : public QDialog
-{
-  Q_OBJECT
+  : public QDialog {
+ Q_OBJECT
  public:
   explicit PreferencesDialog(QWidget* parent);
   enum

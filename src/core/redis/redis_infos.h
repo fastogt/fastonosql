@@ -116,24 +116,21 @@
 
 namespace fastonosql {
 class RedisDiscoveryInfo
-      : public ServerDiscoveryInfo
-{
-public:
+      : public ServerDiscoveryInfo {
+ public:
   RedisDiscoveryInfo(serverTypes type, bool self);
 
   std::string hash() const;
   void setHash(const std::string& hash);
 
-private:
+ private:
   std::string hash_;
 };
 
 struct RedisServerInfo
-      : public ServerInfo
-{
+      : public ServerInfo {
   struct Server
-          : FieldByIndex
-  {
+          : FieldByIndex {
       Server();
       explicit Server(const std::string& server_text);
       common::Value* valueByIndex(unsigned char index) const;
@@ -157,8 +154,7 @@ struct RedisServerInfo
   } server_;
 
   struct Clients
-          : FieldByIndex
-  {
+          : FieldByIndex {
       Clients();
       explicit Clients(const std::string& client_text);
       common::Value* valueByIndex(unsigned char index) const;
@@ -170,8 +166,7 @@ struct RedisServerInfo
   } clients_;
 
   struct Memory
-          : FieldByIndex
-  {
+          : FieldByIndex {
       Memory();
       explicit Memory(const std::string& memory_text);
       common::Value* valueByIndex(unsigned char index) const;
@@ -187,8 +182,7 @@ struct RedisServerInfo
   } memory_;
 
   struct Persistence
-          : FieldByIndex
-  {
+          : FieldByIndex {
       Persistence();
       explicit Persistence(const std::string& persistence_text);
       common::Value* valueByIndex(unsigned char index) const;
@@ -210,8 +204,7 @@ struct RedisServerInfo
   } persistence_;
 
   struct Stats
-          : FieldByIndex
-  {
+          : FieldByIndex {
       Stats();
       explicit Stats(const std::string& stats_text);
       common::Value* valueByIndex(unsigned char index) const;
@@ -233,8 +226,7 @@ struct RedisServerInfo
   } stats_;
 
   struct Replication
-          : FieldByIndex
-  {
+          : FieldByIndex {
       Replication();
       explicit Replication(const std::string& replication_text);
       common::Value* valueByIndex(unsigned char index) const;
@@ -262,8 +254,7 @@ struct RedisServerInfo
   } cpu_;
 
   struct Keyspace
-          : FieldByIndex
-  {
+          : FieldByIndex {
       common::Value* valueByIndex(unsigned char index) const;
   } keySp_;
 

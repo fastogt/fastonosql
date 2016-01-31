@@ -23,8 +23,7 @@
 namespace fastonosql {
 class MainTabBar
         : public QTabBar {
-  Q_OBJECT
-
+ Q_OBJECT
  public:
   explicit MainTabBar(QWidget* parent = 0);
 

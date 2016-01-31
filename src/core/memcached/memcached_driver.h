@@ -66,10 +66,9 @@ static const CommandInfo memcachedCommands[] = {
 common::Error testConnection(MemcachedConnectionSettings* settings);
 
 class MemcachedDriver
-  : public IDriver
-{
-  Q_OBJECT
-public:
+  : public IDriver {
+ Q_OBJECT
+ public:
 
   explicit MemcachedDriver(IConnectionSettingsBaseSPtr settings);
   virtual ~MemcachedDriver();
@@ -81,7 +80,7 @@ public:
 
   static const char* versionApi();
 
-private:
+ private:
   virtual void initImpl();
   virtual void clearImpl();
 

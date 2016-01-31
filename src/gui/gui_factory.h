@@ -30,7 +30,7 @@ namespace fastonosql {
 
 class GuiFactory
         : public common::patterns::LazySingleton<GuiFactory> {
-public:
+ public:
   friend class common::patterns::LazySingleton<GuiFactory>;
 
   const QIcon& homePageIcon() const;
@@ -88,7 +88,7 @@ public:
   QFont font() const;
   const QString& pathToLoadingGif() const;
 
-private:
+ private:
   const QIcon& redisConnectionIcon() const;
   const QIcon& memcachedConnectionIcon() const;
   const QIcon& ssdbConnectionIcon() const;

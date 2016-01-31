@@ -23,8 +23,7 @@
 namespace fastonosql {
 
 class FastoTableView
-  : public QTableView
-{
+  : public QTableView {
   Q_OBJECT
  public:
   explicit FastoTableView(QWidget* parent = 0);

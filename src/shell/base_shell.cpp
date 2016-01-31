@@ -49,9 +49,9 @@
 #endif
 
 namespace fastonosql {
+
 BaseShell::BaseShell(connectionTypes type, bool showAutoCompl, QWidget* parent)
-  : FastoEditorShell(showAutoCompl, parent)
-{
+  : FastoEditorShell(showAutoCompl, parent) {
   VERIFY(connect(this, &BaseShell::customContextMenuRequested, this, &BaseShell::showContextMenu));
   BaseQsciLexer* lex = NULL;
 #ifdef BUILD_WITH_REDIS

@@ -29,9 +29,10 @@
 #define ROCKSDB_WRITE_MB_LABEL "write_mb"
 
 namespace fastonosql {
+
 class RocksdbServerInfo
       : public ServerInfo {
-public:
+ public:
   //Compactions\nLevel  Files Size(MB) Time(sec) Read(MB) Write(MB)\n
   struct Stats
     : FieldByIndex
@@ -61,14 +62,14 @@ RocksdbServerInfo* makeRocksdbServerInfo(FastoObject *root);
 
 class RocksdbDataBaseInfo
    : public DataBaseInfo {
-public:
+ public:
   RocksdbDataBaseInfo(const std::string& name, bool isDefault, size_t size, const keys_cont_type& keys = keys_cont_type());
   virtual DataBaseInfo* clone() const;
 };
 
 class RocksdbCommand
   : public FastoObjectCommand {
-public:
+ public:
   RocksdbCommand(FastoObject* parent, common::CommandValue* cmd, const std::string &delemitr);
   virtual bool isReadOnly() const;
 };

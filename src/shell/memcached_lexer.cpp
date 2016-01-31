@@ -25,6 +25,7 @@ namespace {
 }
 
 namespace fastonosql {
+
 MemcachedApi::MemcachedApi(QsciLexer *lexer)
   : BaseQsciApi(lexer) {
 }
@@ -53,14 +54,14 @@ void MemcachedApi::updateAutoCompletionList(const QStringList& context, QStringL
 QStringList MemcachedApi::callTips(const QStringList& context, int commas,
                                    QsciScintilla::CallTipsStyle style, QList<int>& shifts) {
   for (QStringList::const_iterator it = context.begin(); it != context.end() - 1; ++it) {
-      QString val = *it;
-      for (int i = 0; i < SIZEOFMASS(memcachedCommands); ++i) {
-          CommandInfo cmd = memcachedCommands[i];
-          QString jval = common::convertFromString<QString>(cmd.name_);
-          if(QString::compare(jval, val, Qt::CaseInsensitive) == 0){
-              return QStringList() << makeCallTip(cmd);
-          }
+    QString val = *it;
+    for (int i = 0; i < SIZEOFMASS(memcachedCommands); ++i) {
+      CommandInfo cmd = memcachedCommands[i];
+      QString jval = common::convertFromString<QString>(cmd.name_);
+      if(QString::compare(jval, val, Qt::CaseInsensitive) == 0){
+        return QStringList() << makeCallTip(cmd);
       }
+    }
   }
 
   return QStringList();
@@ -121,7 +122,7 @@ void MemcachedLexer::styleText(int start, int end) {
   delete [] data;
 
   if (source.isEmpty()) {
-      return;
+    return;
   }
 
   paintCommands(source, start);
@@ -129,11 +130,11 @@ void MemcachedLexer::styleText(int start, int end) {
   int index = 0;
   int begin = 0;
   while( (begin = source.indexOf(help, index, Qt::CaseInsensitive)) != -1){
-      index = begin + help.length();
+    index = begin + help.length();
 
-      startStyling(start + begin);
-      setStyling(help.length(), HelpKeyword);
-      startStyling(start + begin);
+    startStyling(start + begin);
+    setStyling(help.length(), HelpKeyword);
+    startStyling(start + begin);
   }
 }
 

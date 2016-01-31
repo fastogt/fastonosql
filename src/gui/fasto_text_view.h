@@ -25,10 +25,10 @@ class QPushButton;
 class QAbstractItemModel;
 
 namespace fastonosql {
+
 class FastoEditorOutput;
 class FastoTextView
-  : public QWidget
-{
+  : public QWidget {
   Q_OBJECT
  public:
   FastoTextView(const QString& delemitr, QWidget* parent = 0);
@@ -56,4 +56,5 @@ class FastoTextView
   QRadioButton* gzipRadioButton_;
   QPushButton* saveChangeButton_;
 };
+
 }

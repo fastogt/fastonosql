@@ -41,7 +41,7 @@ struct PropertyTableItem
 class PropertyTableModel
   : public fasto::qt::gui::TableModel {
   Q_OBJECT
-public:
+ public:
   explicit PropertyTableModel(QObject* parent = 0);
   ~PropertyTableModel();
 
@@ -54,7 +54,7 @@ public:
 
   void changeProperty(const PropertyType& pr);
 
-Q_SIGNALS:
+ Q_SIGNALS:
   void changedProperty(const PropertyType& pr);
 };
 

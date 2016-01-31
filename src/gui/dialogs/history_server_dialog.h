@@ -38,7 +38,7 @@ namespace fastonosql {
 
 class ServerHistoryDialog
   : public QDialog {
-  Q_OBJECT
+ Q_OBJECT
  public:
   explicit ServerHistoryDialog(IServerSPtr server, QWidget* parent = 0);
 

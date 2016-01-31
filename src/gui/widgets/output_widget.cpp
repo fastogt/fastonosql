@@ -52,8 +52,7 @@ FastoCommonItem* createItem(fasto::qt::gui::TreeItem* parent, const std::string&
 }
 
 OutputWidget::OutputWidget(IServerSPtr server, QWidget* parent)
-  : QWidget(parent), server_(server)
-{
+  : QWidget(parent), server_(server) {
   DCHECK(server);
   commonModel_ = new FastoCommonModel(this);
   VERIFY(connect(commonModel_, &FastoCommonModel::changedValue, this,

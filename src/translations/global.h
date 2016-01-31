@@ -22,6 +22,7 @@
 
 namespace fastonosql {
 namespace translations {
+
   extern const QString trfilterForScripts;
   extern const QString trfilterForAll;
   extern const QString trfilterForRdb;
@@ -130,5 +131,6 @@ namespace translations {
   extern const QString trConnectionDiagnostic;
   extern const QString trConnectionDiscovery;
   extern const QString trKeyCountOnThePage;
+
 }
 }

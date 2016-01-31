@@ -24,7 +24,7 @@
 
 namespace fastonosql {
 
-const CommandInfo redisCommands[] = {
+static const CommandInfo redisCommands[] = {
   CommandInfo("APPEND", "<key> <value>",
               "Append a value to a key", PROJECT_VERSION_GENERATE(2,0,0), UNDEFINED_EXAMPLE_STR, 2, 0),
   CommandInfo("AUTH", "<password>",
@@ -415,10 +415,9 @@ common::Error testConnection(RedisConnectionSettings* settings);
 common::Error discoveryConnection(RedisConnectionSettings* settings, std::vector<ServerDiscoveryInfoSPtr>& infos);
 
 class RedisDriver
-      : public IDriver
-{
-  Q_OBJECT
-public:
+      : public IDriver {
+ Q_OBJECT
+ public:
   explicit RedisDriver(IConnectionSettingsBaseSPtr settings);
   virtual ~RedisDriver();
 
@@ -429,7 +428,7 @@ public:
 
   static const char* versionApi();
 
-private:
+ private:
   virtual void initImpl();
   virtual void clearImpl();
 

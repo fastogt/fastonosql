@@ -66,24 +66,20 @@ LmdbServerInfo::Stats::Stats(const std::string& common_text) {
   size_t pos = 0;
   size_t start = 0;
 
-  while((pos = src.find(("\r\n"), start)) != std::string::npos){
+  while ((pos = src.find(("\r\n"), start)) != std::string::npos){
       std::string line = src.substr(start, pos-start);
       size_t delem = line.find_first_of(':');
       std::string field = line.substr(0, delem);
       std::string value = line.substr(delem + 1);
-      if(field == LMDB_CAMPACTIONS_LEVEL_LABEL){
+      if (field == LMDB_CAMPACTIONS_LEVEL_LABEL){
           compactions_level_ = common::convertFromString<uint32_t>(value);
-      }
-      else if(field == LMDB_FILE_SIZE_MB_LABEL){
+      } else if(field == LMDB_FILE_SIZE_MB_LABEL){
           file_size_mb_ = common::convertFromString<uint32_t>(value);
-      }
-      else if(field == LMDB_TIME_SEC_LABEL){
+      } else if(field == LMDB_TIME_SEC_LABEL){
           time_sec_ = common::convertFromString<uint32_t>(value);
-      }
-      else if(field == LMDB_READ_MB_LABEL){
+      } else if(field == LMDB_READ_MB_LABEL){
           read_mb_ = common::convertFromString<uint32_t>(value);
-      }
-      else if(field == LMDB_WRITE_MB_LABEL){
+      } else if(field == LMDB_WRITE_MB_LABEL){
           write_mb_ = common::convertFromString<uint32_t>(value);
       }
       start = pos + 2;
@@ -93,18 +89,18 @@ LmdbServerInfo::Stats::Stats(const std::string& common_text) {
 common::Value* LmdbServerInfo::Stats::valueByIndex(unsigned char index) const {
   switch (index) {
   case 0:
-      return new common::FundamentalValue(compactions_level_);
+    return new common::FundamentalValue(compactions_level_);
   case 1:
-      return new common::FundamentalValue(file_size_mb_);
+    return new common::FundamentalValue(file_size_mb_);
   case 2:
-      return new common::FundamentalValue(time_sec_);
+    return new common::FundamentalValue(time_sec_);
   case 3:
-      return new common::FundamentalValue(read_mb_);
+    return new common::FundamentalValue(read_mb_);
   case 4:
-      return new common::FundamentalValue(write_mb_);
+    return new common::FundamentalValue(write_mb_);
   default:
-      NOTREACHED();
-      break;
+    NOTREACHED();
+    break;
   }
   return NULL;
 }
@@ -194,7 +190,7 @@ LmdbCommand::LmdbCommand(FastoObject* parent, common::CommandValue* cmd, const s
 bool LmdbCommand::isReadOnly() const {
   std::string key = inputCmd();
   if(key.empty()){
-      return true;
+    return true;
   }
 
   std::transform(key.begin(), key.end(), key.begin(), ::tolower);

@@ -23,10 +23,9 @@
 namespace fastonosql {
 
 class RocksdbDatabase
-  : public IDatabase
-{
+  : public IDatabase {
   friend class RocksdbServer;
-private:
+ private:
   RocksdbDatabase(IServerSPtr server, DataBaseInfoSPtr info);
 };
 

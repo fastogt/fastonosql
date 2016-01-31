@@ -35,16 +35,15 @@ namespace gui {
 namespace fastonosql {
 
 class PropertyServerDialog
-  : public QDialog
-{
-  Q_OBJECT
-public:
+  : public QDialog {
+ Q_OBJECT
+ public:
   explicit PropertyServerDialog(IServerSPtr server, QWidget* parent = 0);
 
-Q_SIGNALS:
+ Q_SIGNALS:
   void showed();
 
-private Q_SLOTS:
+ private Q_SLOTS:
   void startServerProperty(const EventsInfo::ServerPropertyInfoRequest& req);
   void finishServerProperty(const EventsInfo::ServerPropertyInfoResponce& res);
 
@@ -52,11 +51,11 @@ private Q_SLOTS:
   void finishServerChangeProperty(const EventsInfo::ChangeServerPropertyInfoResponce& res);
 
   void changedProperty(const PropertyType& prop);
-protected:
+ protected:
   virtual void changeEvent(QEvent* e);
   virtual void showEvent(QShowEvent *e);
 
-private:
+ private:
   void retranslateUi();
 
   fasto::qt::gui::GlassWidget *glassWidget_;

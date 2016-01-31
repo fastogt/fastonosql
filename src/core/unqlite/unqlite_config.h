@@ -25,8 +25,7 @@
 namespace fastonosql {
 
 struct unqliteConfig
-  : public LocalConfig
-{
+  : public LocalConfig {
   unqliteConfig();
 
   bool create_if_missing_;

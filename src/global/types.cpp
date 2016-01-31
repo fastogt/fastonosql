@@ -46,7 +46,7 @@ std::string convertToString(fastonosql::supportedViews v) {
 
 template<>
 fastonosql::supportedViews convertFromString(const std::string& from) {
-  for(int i = 0; i < SIZEOFMASS(fastonosql::viewsText); ++i){
+  for(size_t i = 0; i < SIZEOFMASS(fastonosql::viewsText); ++i){
     if(from == fastonosql::viewsText[i]){
       return static_cast<fastonosql::supportedViews>(i);
     }

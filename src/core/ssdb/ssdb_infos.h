@@ -31,9 +31,8 @@
 namespace fastonosql {
 
 class SsdbServerInfo
-  : public ServerInfo
-{
-public:
+  : public ServerInfo {
+ public:
   struct Common
     : FieldByIndex
   {
@@ -61,17 +60,15 @@ SsdbServerInfo* makeSsdbServerInfo(const std::string &content);
 SsdbServerInfo* makeSsdbServerInfo(FastoObject *root);
 
 class SsdbDataBaseInfo
-  : public DataBaseInfo
-{
-public:
+  : public DataBaseInfo {
+ public:
   SsdbDataBaseInfo(const std::string& name, bool isDefault, size_t size, const keys_cont_type& keys = keys_cont_type());
   virtual DataBaseInfo* clone() const;
 };
 
 class SsdbCommand
-  : public FastoObjectCommand
-{
-public:
+  : public FastoObjectCommand {
+ public:
   SsdbCommand(FastoObject* parent, common::CommandValue* cmd, const std::string &delemitr);
   virtual bool isReadOnly() const;
 };

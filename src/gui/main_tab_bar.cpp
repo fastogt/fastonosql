@@ -78,7 +78,7 @@ void MainTabBar::showContextMenu(const QPoint& p) {
 }
 
 void MainTabBar::changeEvent(QEvent* e) {
-  if(e->type() == QEvent::LanguageChange){
+  if (e->type() == QEvent::LanguageChange) {
     retranslateUi();
   }
 

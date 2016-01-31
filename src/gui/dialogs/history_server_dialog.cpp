@@ -56,11 +56,13 @@ ServerHistoryDialog::ServerHistoryDialog(IServerSPtr server, QWidget* parent)
   serverInfoFields_ = new QComboBox;
 
   typedef void (QComboBox::*curc)(int);
-  VERIFY(connect(serverInfoGroupsNames_, static_cast<curc>(&QComboBox::currentIndexChanged), this, &ServerHistoryDialog::refreshInfoFields ));
-  VERIFY(connect(serverInfoFields_, static_cast<curc>(&QComboBox::currentIndexChanged), this, &ServerHistoryDialog::refreshGraph ));
+  VERIFY(connect(serverInfoGroupsNames_, static_cast<curc>(&QComboBox::currentIndexChanged),
+                 this, &ServerHistoryDialog::refreshInfoFields ));
+  VERIFY(connect(serverInfoFields_, static_cast<curc>(&QComboBox::currentIndexChanged),
+                 this, &ServerHistoryDialog::refreshGraph ));
 
   const std::vector<std::string> headers = infoHeadersFromType(server_->type());
-  for(int i = 0; i < headers.size(); ++i){
+  for(size_t i = 0; i < headers.size(); ++i){
       serverInfoGroupsNames_->addItem(common::convertFromString<QString>(headers[i]));
   }
   QVBoxLayout *setingsLayout = new QVBoxLayout;
@@ -72,12 +74,18 @@ ServerHistoryDialog::ServerHistoryDialog(IServerSPtr server, QWidget* parent)
   splitter->addWidget(graphWidget_);
   setLayout(mainL);
 
-  glassWidget_ = new fasto::qt::gui::GlassWidget(GuiFactory::instance().pathToLoadingGif(), trLoading, 0.5, QColor(111, 111, 100), this);
-  VERIFY(connect(server.get(), &IServer::startedLoadServerHistoryInfo, this, &ServerHistoryDialog::startLoadServerHistoryInfo));
-  VERIFY(connect(server.get(), &IServer::finishedLoadServerHistoryInfo, this, &ServerHistoryDialog::finishLoadServerHistoryInfo));
-  VERIFY(connect(server.get(), &IServer::startedClearServerHistory, this, &ServerHistoryDialog::startClearServerHistory));
-  VERIFY(connect(server.get(), &IServer::finishedClearServerHistory, this, &ServerHistoryDialog::finishClearServerHistory));
-  VERIFY(connect(server.get(), &IServer::serverInfoSnapShoot, this, &ServerHistoryDialog::snapShotAdd));
+  glassWidget_ = new fasto::qt::gui::GlassWidget(GuiFactory::instance().pathToLoadingGif(),
+                                                 trLoading, 0.5, QColor(111, 111, 100), this);
+  VERIFY(connect(server.get(), &IServer::startedLoadServerHistoryInfo,
+                 this, &ServerHistoryDialog::startLoadServerHistoryInfo));
+  VERIFY(connect(server.get(), &IServer::finishedLoadServerHistoryInfo,
+                 this, &ServerHistoryDialog::finishLoadServerHistoryInfo));
+  VERIFY(connect(server.get(), &IServer::startedClearServerHistory,
+                 this, &ServerHistoryDialog::startClearServerHistory));
+  VERIFY(connect(server.get(), &IServer::finishedClearServerHistory,
+                 this, &ServerHistoryDialog::finishClearServerHistory));
+  VERIFY(connect(server.get(), &IServer::serverInfoSnapShoot,
+                 this, &ServerHistoryDialog::snapShotAdd));
   retranslateUi();
 }
 
@@ -127,7 +135,7 @@ void ServerHistoryDialog::refreshInfoFields(int index) {
 
   std::vector< std::vector<Field> > fields = infoFieldsFromType(server_->type());
   std::vector<Field> field = fields[index];
-  for(int i = 0; i < field.size(); ++i){
+  for (size_t i = 0; i < field.size(); ++i) {
     Field fl = field[i];
     if(fl.isIntegral()){
       serverInfoFields_->addItem(common::convertFromString<QString>(fl.name_), i);
@@ -136,7 +144,7 @@ void ServerHistoryDialog::refreshInfoFields(int index) {
 }
 
 void ServerHistoryDialog::refreshGraph(int index) {
-  if(index == -1){
+  if (index == -1) {
     return;
   }
 

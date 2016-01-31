@@ -50,7 +50,7 @@ void FastoHexEdit::setMode(DisplayMode mode) {
 }
 
 void FastoHexEdit::setData(const QByteArray &arr) {
-  if(mode_ == HEX_MODE){
+  if (mode_ == HEX_MODE) {
     verticalScrollBar()->setValue(0);
     data_ = arr;
     viewport()->update();
@@ -60,7 +60,7 @@ void FastoHexEdit::setData(const QByteArray &arr) {
 }
 
 void FastoHexEdit::clear() {
-  if(mode_ == HEX_MODE){
+  if (mode_ == HEX_MODE) {
     verticalScrollBar()->setValue(0);
   }
 
@@ -109,7 +109,7 @@ QSize FastoHexEdit::fullSize() const {
 }
 
 void FastoHexEdit::paintEvent(QPaintEvent *event) {
-  if(mode_ == HEX_MODE){
+  if (mode_ == HEX_MODE) {
     QPainter painter(viewport());
 
     QSize areaSize = viewport()->size();
@@ -131,7 +131,7 @@ void FastoHexEdit::paintEvent(QPaintEvent *event) {
     const int height = yPosEnd - yPosStart;
     const int widchars = wid - TextMarginXY * 2;
     const int acharInLine = asciiCharInLine(widchars);
-    if(acharInLine <= 0){
+    if (acharInLine <= 0) {
       return;
     }
 
@@ -139,7 +139,7 @@ void FastoHexEdit::paintEvent(QPaintEvent *event) {
     const int xPosAsciiStart = xPosAscii + TextMarginXY;
 
     int indexCount = data_.size() / acharInLine;
-    if(lastLineIdx > indexCount) {
+    if (lastLineIdx > indexCount) {
       lastLineIdx = indexCount;
       if(data_.size() % acharInLine){
         lastLineIdx++;
@@ -154,7 +154,8 @@ void FastoHexEdit::paintEvent(QPaintEvent *event) {
     painter.setPen(Qt::black);
 
     int size = data_.size();
-    for (int lineIdx = firstLineIdx, yPos = yPosStart; lineIdx < lastLineIdx; lineIdx += 1, yPos += charH) {
+    for (int lineIdx = firstLineIdx, yPos = yPosStart;
+         lineIdx < lastLineIdx; lineIdx += 1, yPos += charH) {
       QByteArray part = data_.begin() + (lineIdx * acharInLine);
       int part_size = size / acharInLine ? acharInLine : size % acharInLine;
       part.resize(part_size);
@@ -162,7 +163,7 @@ void FastoHexEdit::paintEvent(QPaintEvent *event) {
       QByteArray hex = part.toHex();
 
       painter.setBackgroundMode(Qt::OpaqueMode);
-      for(int xPos = xPosStart, i = 0; i < hex.size(); i++, xPos += 3 * charW) {
+      for (int xPos = xPosStart, i = 0; i < hex.size(); i++, xPos += 3 * charW) {
         QString val = hex.mid(i * 2, 2);
         QRect hexrect(xPos, yPos, 3 * charW, charH);
         painter.drawText(hexrect, Qt::AlignLeft, val);
@@ -192,15 +193,15 @@ void FastoHexEdit::mousePressEvent(QMouseEvent* event) {
 }
 
 void FastoHexEdit::mouseMoveEvent(QMouseEvent* event) {
-  if(mode_ == HEX_MODE && inSelectionState_){
+  if (mode_ == HEX_MODE && inSelectionState_) {
   }
 
   base_class::mouseMoveEvent(event);
 }
 
 void FastoHexEdit::mouseReleaseEvent(QMouseEvent* event) {
-  if(mode_ == HEX_MODE){
-    if((event->button() == Qt::LeftButton) && inSelectionState_){
+  if (mode_ == HEX_MODE) {
+    if ((event->button() == Qt::LeftButton) && inSelectionState_) {
       inSelectionState_ = false;
     }
   }
@@ -233,17 +234,17 @@ int FastoHexEdit::positionAtPoint(const QPoint &point) const {
   const int xPosAscii = widchars/4 * 3; //line pos
 
   int acharInLine = asciiCharInLine(widchars);
-  if(acharInLine < 0){
+  if (acharInLine < 0) {
     acharInLine = 0;
   }
 
-  if ((px >= xPosStart && px < xPosAscii) && (py >= yPosStart && py < yPosEnd)){
+  if ((px >= xPosStart && px < xPosAscii) && (py >= yPosStart && py < yPosEnd)) {
     int posx = (xPosStart + px) / charW;
     int div = posx / 3;
     int mod = posx % 3;
 
     int pos = 0; //symbol pos in data;
-    if(mod == 0){
+    if (mod == 0) {
       pos = div * 2;
     } else {
       pos = (div * 2) + 1;

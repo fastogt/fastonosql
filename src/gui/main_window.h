@@ -32,6 +32,7 @@ class QTapAndHoldGesture;
 #endif
 
 namespace fastonosql {
+
 class MainWidget;
 class ExplorerTreeView;
 

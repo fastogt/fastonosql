@@ -38,9 +38,9 @@
 #include "translations/global.h"
 
 namespace fastonosql {
+
 EncodeDecodeDialog::EncodeDecodeDialog(QWidget* parent)
-  : QDialog(parent)
-{
+  : QDialog(parent) {
   setWindowIcon(GuiFactory::instance().encodeDecodeIcon());
 
   setWindowTitle(translations::trEncodeDecode);
@@ -91,35 +91,32 @@ EncodeDecodeDialog::EncodeDecodeDialog(QWidget* parent)
   retranslateUi();
 }
 
-bool EncodeDecodeDialog::eventFilter(QObject* object, QEvent* event)
-{
+bool EncodeDecodeDialog::eventFilter(QObject* object, QEvent* event) {
   if (object == output_ || object == input_) {
-      if (event->type() == QEvent::KeyPress) {
-          QKeyEvent *keyEvent = (QKeyEvent *)event;
-          if (keyEvent->key() == Qt::Key_Escape) {
-              reject();
-              return true;
-          }
+    if (event->type() == QEvent::KeyPress) {
+      QKeyEvent *keyEvent = (QKeyEvent *)event;
+      if (keyEvent->key() == Qt::Key_Escape) {
+        reject();
+        return true;
       }
+    }
   }
 
   return QWidget::eventFilter(object, event);
 }
 
-void EncodeDecodeDialog::changeEvent(QEvent* e)
-{
+void EncodeDecodeDialog::changeEvent(QEvent* e) {
   if(e->type() == QEvent::LanguageChange){
-      retranslateUi();
+    retranslateUi();
   }
 
   QWidget::changeEvent(e);
 }
 
-void EncodeDecodeDialog::decode()
-{
+void EncodeDecodeDialog::decode() {
   const QString in = input_->text();
-  if(in.isEmpty()){
-      return;
+  if (in.isEmpty()) {
+    return;
   }
 
   output_->clear();
@@ -127,20 +124,20 @@ void EncodeDecodeDialog::decode()
   std::string sdec = common::convertToString(decoderText);
   common::IEDcoder* dec = common::IEDcoder::createEDCoder(sdec);
 
-  if(!dec){
-      return;
+  if (!dec) {
+    return;
   }
 
   const std::string sin = common::convertToString(in);
   std::string out;
   common::Error er;
-  if(encodeButton_->isChecked()){
+  if (encodeButton_->isChecked()) {
     er = dec->encode(sin, &out);
   } else {
     er = dec->decode(sin, &out);
   }
 
-  if(!er){
+  if (!er) {
     output_->setText(common::convertFromString<QString>(out));
   }
   delete dec;

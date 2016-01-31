@@ -23,10 +23,9 @@
 namespace fastonosql {
 
 class UnqliteDatabase
-  : public IDatabase
-{
+  : public IDatabase {
   friend class UnqliteServer;
-private:
+ private:
   UnqliteDatabase(IServerSPtr server, DataBaseInfoSPtr info);
 };
 

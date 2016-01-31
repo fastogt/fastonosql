@@ -186,8 +186,8 @@ common::Error testConnection(SsdbConnectionSettings* settings);
 
 class SsdbDriver
       : public IDriver {
-  Q_OBJECT
-public:
+ Q_OBJECT
+ public:
 
   explicit SsdbDriver(IConnectionSettingsBaseSPtr settings);
   virtual ~SsdbDriver();
@@ -199,7 +199,7 @@ public:
 
   static const char* versionApi();
 
-private:
+ private:
   virtual void initImpl();
   virtual void clearImpl();
 

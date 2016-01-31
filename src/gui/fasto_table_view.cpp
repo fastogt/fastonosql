@@ -24,6 +24,7 @@
 #include "common/macros.h"
 
 namespace fastonosql {
+
 FastoTableView::FastoTableView(QWidget* parent)
   : QTableView(parent) {
   verticalHeader()->setDefaultAlignment(Qt::AlignLeft);

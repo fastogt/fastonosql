@@ -40,17 +40,16 @@ namespace fastonosql {
 class BaseShell;
 
 class BaseShellWidget
-        : public QWidget
-{
+  : public QWidget {
   Q_OBJECT
-public:
+ public:
   BaseShellWidget(IServerSPtr server, const QString& filePath = QString(), QWidget* parent = 0);
   virtual ~BaseShellWidget();
 
   IServerSPtr server() const;
   QString text() const;
 
-Q_SIGNALS:
+ Q_SIGNALS:
   void startedExecute(const EventsInfo::ExecuteInfoRequest& req);
   void rootCreated(const EventsInfo::CommandRootCreatedInfo& res);
   void rootCompleated(const EventsInfo::CommandRootCompleatedInfo& res);
@@ -58,11 +57,11 @@ Q_SIGNALS:
   void addedChild(FastoObject* child);
   void itemUpdated(FastoObject* item, common::Value* value);
 
-public Q_SLOTS:
+ public Q_SLOTS:
   void setText(const QString& text);
   void executeText(const QString& text);
 
-private Q_SLOTS:
+ private Q_SLOTS:
   void execute();
   void stop();
   void connectToServer();
@@ -90,7 +89,7 @@ private Q_SLOTS:
   void startLoadDiscoveryInfo(const EventsInfo::DiscoveryInfoRequest& res);
   void finishLoadDiscoveryInfo(const EventsInfo::DiscoveryInfoResponce& res);
 
-private:
+ private:
   void syncConnectionActions();
   void syncServerInfo(ServerInfoSPtr inf);
   void updateDefaultDatabase(DataBaseInfoSPtr dbs);

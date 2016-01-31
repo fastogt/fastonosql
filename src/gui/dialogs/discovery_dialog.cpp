@@ -49,20 +49,20 @@ DiscoveryConnection::DiscoveryConnection(IConnectionSettingsBaseSPtr conn, QObje
 void DiscoveryConnection::routine() {
   std::vector<ServerDiscoveryInfoSPtr> inf;
 
-  if(!connection_){
+  if (!connection_) {
     emit connectionResult(false, common::time::current_mstime() - startTime_,
                           "Invalid connection settings", inf);
-      return;
+    return;
   }
 
   common::Error er = ServersManager::instance().discoveryConnection(connection_, inf);
 
   if (er) {
-      emit connectionResult(false, common::time::current_mstime() - startTime_,
-                            common::convertFromString<QString>(er->description()), inf);
+    emit connectionResult(false, common::time::current_mstime() - startTime_,
+                          common::convertFromString<QString>(er->description()), inf);
   } else {
-      emit connectionResult(true, common::time::current_mstime() - startTime_,
-                            "Success", inf);
+    emit connectionResult(true, common::time::current_mstime() - startTime_,
+                          "Success", inf);
   }
 }
 
@@ -122,7 +122,7 @@ DiscoveryDiagnosticDialog::DiscoveryDiagnosticDialog(QWidget* parent,
 
 std::vector<IConnectionSettingsBaseSPtr> DiscoveryDiagnosticDialog::selectedConnections() const {
   std::vector<IConnectionSettingsBaseSPtr> res;
-  for(int i = 0; i < listWidget_->topLevelItemCount(); ++i){
+  for (size_t i = 0; i < listWidget_->topLevelItemCount(); ++i) {
     ConnectionListWidgetItemEx* item = dynamic_cast<ConnectionListWidgetItemEx *>(listWidget_->topLevelItem(i));
     if(item && item->isSelected()){
       res.push_back(item->connection());

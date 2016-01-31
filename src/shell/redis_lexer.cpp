@@ -25,14 +25,15 @@ namespace {
 }
 
 namespace fastonosql {
+
 RedisApi::RedisApi(QsciLexer* lexer)
   : BaseQsciApi(lexer) {
 }
 
 void RedisApi::updateAutoCompletionList(const QStringList& context, QStringList& list) {
-  for(QStringList::const_iterator it = context.begin(); it != context.end(); ++it){
+  for (QStringList::const_iterator it = context.begin(); it != context.end(); ++it) {
     QString val = *it;
-    for(int i = 0; i < SIZEOFMASS(redisCommands); ++i){
+    for (int i = 0; i < SIZEOFMASS(redisCommands); ++i) {
       CommandInfo cmd = redisCommands[i];
       if (canSkipCommand(cmd)) {
         continue;
@@ -102,7 +103,6 @@ std::vector<uint32_t> RedisLexer::supportedVersions() const {
   }
 
   std::sort(result.begin(), result.end());
-
   return result;
 }
 
@@ -131,9 +131,9 @@ void RedisLexer::styleText(int start, int end) {
   while( (begin = source.indexOf(help, index, Qt::CaseInsensitive)) != -1){
     index = begin + help.length();
 
-     startStyling(start + begin);
-     setStyling(help.length(), HelpKeyword);
-     startStyling(start + begin);
+    startStyling(start + begin);
+    setStyling(help.length(), HelpKeyword);
+    startStyling(start + begin);
   }
 }
 

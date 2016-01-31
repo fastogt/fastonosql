@@ -32,11 +32,10 @@ namespace fastonosql {
 
 class LeveldbServerInfo
   : public ServerInfo {
-public:
+ public:
   //Compactions\nLevel  Files Size(MB) Time(sec) Read(MB) Write(MB)\n
   struct Stats
-          : FieldByIndex
-  {
+          : FieldByIndex {
       Stats();
       explicit Stats(const std::string& common_text);
       common::Value* valueByIndex(unsigned char index) const;
@@ -61,15 +60,16 @@ LeveldbServerInfo* makeLeveldbServerInfo(const std::string &content);
 LeveldbServerInfo* makeLeveldbServerInfo(FastoObject *root);
 
 class LeveldbDataBaseInfo
-      : public DataBaseInfo {
-public:
-  LeveldbDataBaseInfo(const std::string& name, bool isDefault, size_t size, const keys_cont_type& keys = keys_cont_type());
+  : public DataBaseInfo {
+ public:
+  LeveldbDataBaseInfo(const std::string& name, bool isDefault, size_t size,
+                      const keys_cont_type& keys = keys_cont_type());
   virtual DataBaseInfo* clone() const;
 };
 
 class LeveldbCommand
-      : public FastoObjectCommand {
-public:
+  : public FastoObjectCommand {
+ public:
   LeveldbCommand(FastoObject* parent, common::CommandValue* cmd, const std::string &delemitr);
   virtual bool isReadOnly() const;
 };

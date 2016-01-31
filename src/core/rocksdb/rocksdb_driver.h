@@ -63,7 +63,7 @@ common::Error testConnection(RocksdbConnectionSettings* settings);
 
 class RocksdbDriver
   : public IDriver {
-  Q_OBJECT
+ Q_OBJECT
  public:
   explicit RocksdbDriver(IConnectionSettingsBaseSPtr settings);
   virtual ~RocksdbDriver();

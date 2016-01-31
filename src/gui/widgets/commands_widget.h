@@ -28,8 +28,7 @@ class QAction;
 namespace fastonosql {
 
 class CommandsWidget
-  : public QWidget
-{
+  : public QWidget {
   Q_OBJECT
  public:
   explicit CommandsWidget(QWidget* parent = 0);

@@ -29,15 +29,14 @@ namespace fastonosql {
 class CommandLogger
   : public QObject, public common::patterns::LazySingleton<CommandLogger> {
   friend class common::patterns::LazySingleton<CommandLogger>;
-  Q_OBJECT
-
-public:
+ Q_OBJECT
+ public:
   void print(const Command& command);
 
-Q_SIGNALS:
+ Q_SIGNALS:
   void printed(const Command& mess);
 
-private:
+ private:
   CommandLogger();
 };
 

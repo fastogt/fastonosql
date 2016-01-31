@@ -24,6 +24,7 @@
 #include "common/macros.h"
 
 namespace fastonosql {
+
 FastoTreeView::FastoTreeView(QWidget* parent)
   : QTreeView(parent) {
   setSelectionMode(QAbstractItemView::ExtendedSelection);

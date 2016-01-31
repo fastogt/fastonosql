@@ -27,7 +27,7 @@
 namespace fastonosql {
 
 class IConnectionSettings {
-public:
+ public:
   virtual ~IConnectionSettings();
 
   std::string connectionName() const;
@@ -43,7 +43,7 @@ public:
   virtual std::string toString() const;
   virtual IConnectionSettings* clone() const = 0;
 
-protected:
+ protected:
   IConnectionSettings(const std::string& connectionName, connectionTypes type);
 
   std::string connectionName_;
@@ -53,7 +53,7 @@ protected:
 
 class IConnectionSettingsBase
   : public IConnectionSettings {
-public:
+ public:
   virtual ~IConnectionSettingsBase();
   std::string hash() const;
 
@@ -72,21 +72,20 @@ public:
 
   virtual std::string toString() const;
 
-protected:
+ protected:
   virtual std::string toCommandLine() const = 0;
   virtual void initFromCommandLine(const std::string& val) = 0;
   IConnectionSettingsBase(const std::string& connectionName, connectionTypes type);
 
-private:
+ private:
   using IConnectionSettings::setConnectionName;
 
   std::string hash_;
 };
 
 class IConnectionSettingsRemote
-  : public IConnectionSettingsBase
-{
-public:
+  : public IConnectionSettingsBase {
+ public:
   virtual ~IConnectionSettingsRemote();
 
   virtual void setHost(const common::net::hostAndPort& host) = 0;
@@ -104,12 +103,12 @@ public:
   SSHInfo sshInfo() const;
   void setSshInfo(const SSHInfo& info);
 
-protected:
+ protected:
   virtual std::string toCommandLine() const = 0;
   virtual void initFromCommandLine(const std::string& val) = 0;
   IConnectionSettingsRemote(const std::string& connectionName, connectionTypes type);
 
-private:
+ private:
   SSHInfo sshInfo_;
 };
 
@@ -119,9 +118,8 @@ std::string defaultCommandLine(connectionTypes type);
 typedef common::shared_ptr<IConnectionSettingsBase> IConnectionSettingsBaseSPtr;
 
 class IClusterSettingsBase
-  : public IConnectionSettings
-{
-public:
+  : public IConnectionSettings {
+ public:
   typedef std::vector<IConnectionSettingsBaseSPtr> cluster_connection_type;
   cluster_connection_type nodes() const;
   IConnectionSettingsBaseSPtr root() const;
@@ -135,10 +133,10 @@ public:
 
   IConnectionSettingsBaseSPtr findSettingsByHost(const common::net::hostAndPort& host) const;
 
-protected:
+ protected:
   IClusterSettingsBase(const std::string& connectionName, connectionTypes type);
 
-private:
+ private:
   cluster_connection_type clusters_nodes_; //first element is root!!!
 };
 

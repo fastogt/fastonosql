@@ -26,7 +26,7 @@ namespace fastonosql {
 class IFastoObjectObserver;
 class FastoObject
   : public common::intrusive_ptr_base<FastoObject> {
-public:
+ public:
   typedef std::vector<FastoObject*> child_container_type;
 
   FastoObject(FastoObject* parent, common::Value* val, const std::string& delemitr = std::string());
@@ -46,11 +46,11 @@ public:
   common::Value* value() const;
   void setValue(common::Value* val);
 
-protected:
+ protected:
   IFastoObjectObserver* observer_;
   common::scoped_ptr<common::Value> value_;
 
-private:
+ private:
   DISALLOW_COPY_AND_ASSIGN(FastoObject);
 
   FastoObject* const parent_;

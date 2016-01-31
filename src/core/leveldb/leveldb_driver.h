@@ -56,10 +56,9 @@ static const CommandInfo leveldbCommands[] = {
 common::Error testConnection(LeveldbConnectionSettings* settings);
 
 class LeveldbDriver
-      : public IDriver
-{
-  Q_OBJECT
-public:
+      : public IDriver {
+ Q_OBJECT
+ public:
 
   explicit LeveldbDriver(IConnectionSettingsBaseSPtr settings);
   virtual ~LeveldbDriver();
@@ -71,7 +70,7 @@ public:
 
   static const char* versionApi();
 
-private:
+ private:
   virtual void initImpl();
   virtual void clearImpl();
 

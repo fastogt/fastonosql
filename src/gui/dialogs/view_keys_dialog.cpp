@@ -52,8 +52,7 @@ QPushButton *createButtonWithIcon(const QIcon &icon) {
 }
 
 class NumericDelegate
-  : public QStyledItemDelegate
-{
+  : public QStyledItemDelegate {
 public:
 explicit NumericDelegate(QObject *parent = 0)
   : QStyledItemDelegate(parent) {
@@ -95,11 +94,11 @@ ViewKeysDialog::ViewKeysDialog(const QString &title, IDatabaseSPtr db, QWidget* 
   : QDialog(parent), db_(db), cursorStack_(), curPos_(0) {
   DCHECK(db_);
   if(db_){
-      IServerSPtr serv = db_->server();
-      VERIFY(connect(serv.get(), &IServer::startedLoadDataBaseContent,
-                     this, &ViewKeysDialog::startLoadDatabaseContent));
-      VERIFY(connect(serv.get(), &IServer::finishedLoadDatabaseContent,
-                     this, &ViewKeysDialog::finishLoadDatabaseContent));
+    IServerSPtr serv = db_->server();
+    VERIFY(connect(serv.get(), &IServer::startedLoadDataBaseContent,
+                   this, &ViewKeysDialog::startLoadDatabaseContent));
+    VERIFY(connect(serv.get(), &IServer::finishedLoadDatabaseContent,
+                   this, &ViewKeysDialog::finishLoadDatabaseContent));
   }
 
   setWindowTitle(title);
@@ -124,15 +123,19 @@ ViewKeysDialog::ViewKeysDialog(const QString &title, IDatabaseSPtr db, QWidget* 
   searchLayout->addWidget(countSpinEdit_);
 
   searchButton_ = new QPushButton;
-  VERIFY(connect(searchButton_, &QPushButton::clicked, this, &ViewKeysDialog::rightPageClicked));
+  VERIFY(connect(searchButton_, &QPushButton::clicked,
+                 this, &ViewKeysDialog::rightPageClicked));
   searchLayout->addWidget(searchButton_);
 
   keysModel_ = new KeysTableModel(this);
-  VERIFY(connect(keysModel_, &KeysTableModel::changedValue, this, &ViewKeysDialog::executeCommand, Qt::DirectConnection));
-  if(db_){
-      IServerSPtr serv = db_->server();
-      VERIFY(connect(serv.get(), &IServer::startedExecuteCommand, this, &ViewKeysDialog::startExecuteCommand, Qt::DirectConnection));
-      VERIFY(connect(serv.get(), &IServer::finishedExecuteCommand, this, &ViewKeysDialog::finishExecuteCommand, Qt::DirectConnection));
+  VERIFY(connect(keysModel_, &KeysTableModel::changedValue,
+                 this, &ViewKeysDialog::executeCommand, Qt::DirectConnection));
+  if (db_) {
+    IServerSPtr serv = db_->server();
+    VERIFY(connect(serv.get(), &IServer::startedExecuteCommand,
+                   this, &ViewKeysDialog::startExecuteCommand, Qt::DirectConnection));
+    VERIFY(connect(serv.get(), &IServer::finishedExecuteCommand,
+                   this, &ViewKeysDialog::finishExecuteCommand, Qt::DirectConnection));
   }
   keysTable_ = new FastoTableView;
   keysTable_->setModel(keysModel_);
@@ -184,7 +187,7 @@ void ViewKeysDialog::startLoadDatabaseContent(const EventsInfo::LoadDatabaseCont
 
 void ViewKeysDialog::finishLoadDatabaseContent(const EventsInfo::LoadDatabaseContentResponce& res) {
   common::Error er = res.errorInfo();
-  if(er && er->isError()){
+  if (er && er->isError()) {
     return;
   }
 
@@ -195,15 +198,15 @@ void ViewKeysDialog::finishLoadDatabaseContent(const EventsInfo::LoadDatabaseCon
   EventsInfo::LoadDatabaseContentResponce::keys_cont_type keys = res.keys_;
 
   size_t size = keys.size();
-  for(size_t i = 0; i < size; ++i){
-      NDbKValue key = keys[i];
-      keysModel_->insertItem(new KeyTableItem(key));
+  for (size_t i = 0; i < size; ++i) {
+    NDbKValue key = keys[i];
+    keysModel_->insertItem(new KeyTableItem(key));
   }
 
   int curv = currentKey_->value();
   if (cursorStack_.size() == curPos_) {
-      cursorStack_.push_back(res.cursorOut_);
-      currentKey_->setValue(curv + size);
+    cursorStack_.push_back(res.cursorOut_);
+    currentKey_->setValue(curv + size);
   } else {
     currentKey_->setValue(curv - size);
   }

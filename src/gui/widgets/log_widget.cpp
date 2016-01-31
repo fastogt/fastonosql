@@ -31,8 +31,7 @@
 namespace fastonosql {
 
 LogWidget::LogWidget(QWidget* parent)
-  : QWidget(parent), logTextEdit_(new QTextEdit)
-{
+  : QWidget(parent), logTextEdit_(new QTextEdit) {
   logTextEdit_->setReadOnly(true);
   logTextEdit_->setContextMenuPolicy(Qt::CustomContextMenu);
   VERIFY(connect(logTextEdit_, &QTextEdit::customContextMenuRequested, this, &LogWidget::showContextMenu));

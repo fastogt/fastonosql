@@ -23,13 +23,12 @@
 namespace fastonosql {
 
 class RocksdbServer
-  : public IServer
-{
+  : public IServer {
   friend class ServersManager;
-  Q_OBJECT
-public:
+ Q_OBJECT
+ public:
 
-private:
+ private:
   virtual IDatabaseSPtr createDatabase(DataBaseInfoSPtr info);
   RocksdbServer(const IDriverSPtr& drv, bool isSuperServer);
 };

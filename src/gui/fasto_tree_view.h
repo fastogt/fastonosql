@@ -23,8 +23,7 @@
 namespace fastonosql {
 
 class FastoTreeView
-  : public QTreeView
-{
+  : public QTreeView {
   Q_OBJECT
  public:
   explicit FastoTreeView(QWidget* parent = 0);

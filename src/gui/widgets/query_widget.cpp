@@ -26,6 +26,7 @@
 #include "gui/widgets/output_widget.h"
 
 namespace fastonosql {
+
 QueryWidget::QueryWidget(IServerSPtr server, QWidget* parent)
   : QWidget(parent) {
   shellWidget_ = new BaseShellWidget(server);

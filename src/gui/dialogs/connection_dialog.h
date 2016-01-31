@@ -33,8 +33,7 @@ class QSpinBox;
 namespace fastonosql {
 class ConnectionDialog
   : public QDialog {
-  Q_OBJECT
-
+ Q_OBJECT
  public:
   ConnectionDialog(QWidget* parent, IConnectionSettingsBase* connection = NULL,
                    const std::vector<connectionTypes>& availibleTypes = std::vector<connectionTypes>()); //get ownerships connection

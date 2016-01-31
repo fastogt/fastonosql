@@ -34,19 +34,19 @@ namespace gui {
 }
 
 namespace fastonosql {
+
 class FastoTextView;
 class FastoTreeView;
 class FastoTableView;
 class FastoCommonModel;
 
 class OutputWidget
-  : public QWidget
-{
-  Q_OBJECT
-public:
+  : public QWidget {
+ Q_OBJECT
+ public:
   OutputWidget(IServerSPtr server, QWidget* parent = 0);
 
-public Q_SLOTS:
+ public Q_SLOTS:
   void rootCreate(const EventsInfo::CommandRootCreatedInfo& res);
   void rootCompleate(const EventsInfo::CommandRootCompleatedInfo& res);
 
@@ -56,14 +56,14 @@ public Q_SLOTS:
   void addChild(FastoObject* child);
   void itemUpdate(FastoObject* item, common::Value* newValue);
 
-private Q_SLOTS:
+ private Q_SLOTS:
   void executeCommand(CommandKeySPtr cmd);
 
   void setTreeView();
   void setTableView();
   void setTextView();
 
-private:
+ private:
   void syncWithSettings();
   void updateTimeLabel(const EventsInfo::EventInfoBase& evinfo);
   fasto::qt::gui::IconLabel* timeLabel_;
@@ -77,4 +77,5 @@ private:
   FastoTextView* textView_;
   IServerSPtr server_;
 };
+
 }

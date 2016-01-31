@@ -36,9 +36,8 @@ namespace file_system {
 namespace fastonosql {
 
 class IDriver
-      : public QObject, private IFastoObjectObserver
-{
-  Q_OBJECT
+  : public QObject, private IFastoObjectObserver {
+ Q_OBJECT
  public:
   IDriver(IConnectionSettingsBaseSPtr settings, connectionTypes type);
   virtual ~IDriver();
@@ -127,7 +126,7 @@ class IDriver
 
   common::Error execute(FastoObjectCommand* cmd) WARN_UNUSED_RESULT;
 
-private:
+ private:
   virtual common::Error executeImpl(FastoObject* out, int argc, char **argv) = 0;
 
   // handle info events
@@ -156,7 +155,7 @@ private:
   virtual common::Error commandCreateImpl(CommandCreateKey* command, std::string& cmdstring) const WARN_UNUSED_RESULT = 0;
   virtual common::Error commandChangeTTLImpl(CommandChangeTTL* command, std::string& cmdstring) const WARN_UNUSED_RESULT = 0;
 
-private:
+ private:
   ServerInfoSPtr serverInfo_;
   ServerDiscoveryInfoSPtr serverDiscInfo_;
   DataBaseInfoSPtr currentDatabaseInfo_;

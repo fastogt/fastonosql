@@ -28,8 +28,7 @@ class QAction;
 namespace fastonosql {
 
 class LogWidget
-      : public QWidget
-{
+      : public QWidget {
   Q_OBJECT
 
  public:

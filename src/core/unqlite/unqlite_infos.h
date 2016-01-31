@@ -31,7 +31,7 @@
 namespace fastonosql {
 class UnqliteServerInfo
   : public ServerInfo {
-public:
+ public:
   //Compactions\nLevel  Files Size(MB) Time(sec) Read(MB) Write(MB)\n
   struct Stats
           : FieldByIndex
@@ -68,7 +68,7 @@ public:
 
 class UnqliteCommand
       : public FastoObjectCommand {
-public:
+ public:
   UnqliteCommand(FastoObject* parent, common::CommandValue* cmd, const std::string &delemitr);
   virtual bool isReadOnly() const;
 };

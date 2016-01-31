@@ -38,26 +38,25 @@ namespace gui {
 namespace fastonosql {
 class DiscoveryConnection
   : public QObject {
-  Q_OBJECT
-public:
+ Q_OBJECT
+ public:
   DiscoveryConnection(IConnectionSettingsBaseSPtr conn, QObject* parent = 0);
 
-Q_SIGNALS:
+ Q_SIGNALS:
   void connectionResult(bool suc, qint64 msTimeExecute, const QString& resultText, std::vector<ServerDiscoveryInfoSPtr> infos);
 
-public Q_SLOTS:
+ public Q_SLOTS:
   void routine();
 
-private:
+ private:
   IConnectionSettingsBaseSPtr connection_;
   common::time64_t startTime_;
 };
 
 class DiscoveryDiagnosticDialog
   : public QDialog {
-  Q_OBJECT
-
-public:
+ Q_OBJECT
+ public:
   enum
   {
     fix_height = 320,
@@ -67,13 +66,13 @@ public:
   DiscoveryDiagnosticDialog(QWidget* parent, IConnectionSettingsBaseSPtr connection, IClusterSettingsBaseSPtr cluster);
   std::vector<IConnectionSettingsBaseSPtr> selectedConnections() const;
 
-private Q_SLOTS:
+ private Q_SLOTS:
   void connectionResult(bool suc, qint64 mstimeExecute, const QString &resultText, std::vector<ServerDiscoveryInfoSPtr> infos);
 
-protected:
+ protected:
   virtual void showEvent(QShowEvent* e);
 
-private:
+ private:
   void testConnection(IConnectionSettingsBaseSPtr connection);
 
   fasto::qt::gui::GlassWidget *glassWidget_;

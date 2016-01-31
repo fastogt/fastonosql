@@ -53,7 +53,7 @@ CreateDbKeyDialog::CreateDbKeyDialog(const QString &title, connectionTypes type,
   kvLayout->addWidget(new QLabel(tr("Type:")), 0, 0);
   typesCombo_ = new QComboBox;
   std::vector<common::Value::Type> types = supportedTypesFromType(type);
-  for(int i = 0; i < types.size(); ++i){
+  for (size_t i = 0; i < types.size(); ++i) {
     common::Value::Type t = types[i];
     QString type = common::convertFromString<QString>(common::Value::toString(t));
     typesCombo_->addItem(GuiFactory::instance().icon(t), type, t);
@@ -154,15 +154,15 @@ void CreateDbKeyDialog::typeChanged(int index) {
     valueListEdit_->setVisible(false);
     valueTableEdit_->setVisible(false);
     if(t == common::Value::TYPE_INTEGER || t == common::Value::TYPE_UINTEGER) {
-        valueEdit_->setValidator(new QIntValidator(this));
+      valueEdit_->setValidator(new QIntValidator(this));
     } else if(t == common::Value::TYPE_BOOLEAN) {
-        QRegExp rx("true|false");//
-        valueEdit_->setValidator(new QRegExpValidator(rx, this));
+      QRegExp rx("true|false");//
+      valueEdit_->setValidator(new QRegExpValidator(rx, this));
     } else if(t == common::Value::TYPE_DOUBLE){
-        valueEdit_->setValidator(new QDoubleValidator(this));
+      valueEdit_->setValidator(new QDoubleValidator(this));
     } else {
-        QRegExp rx(".*");//
-        valueEdit_->setValidator(new QRegExpValidator(rx, this));
+      QRegExp rx(".*");//
+      valueEdit_->setValidator(new QRegExpValidator(rx, this));
     }
   }
 }
@@ -212,117 +212,107 @@ void CreateDbKeyDialog::addItem() {
   }
 }
 
-void CreateDbKeyDialog::removeItem()
-{
-    if(valueListEdit_->isVisible()){
-        QListWidgetItem* ritem = valueListEdit_->currentItem();
-        delete ritem;
-    }
-    else{
-        int row = valueTableEdit_->currentRow();
-        valueTableEdit_->removeRow(row);
-    }
+void CreateDbKeyDialog::removeItem() {
+  if(valueListEdit_->isVisible()){
+    QListWidgetItem* ritem = valueListEdit_->currentItem();
+    delete ritem;
+  } else {
+    int row = valueTableEdit_->currentRow();
+    valueTableEdit_->removeRow(row);
+  }
 }
 
-void CreateDbKeyDialog::changeEvent(QEvent* e)
-{
-    if(e->type() == QEvent::LanguageChange){
-        retranslateUi();
-    }
-    QDialog::changeEvent(e);
+void CreateDbKeyDialog::changeEvent(QEvent* e) {
+  if(e->type() == QEvent::LanguageChange){
+    retranslateUi();
+  }
+  QDialog::changeEvent(e);
 }
 
-bool CreateDbKeyDialog::validateAndApply()
-{
-    if(keyEdit_->text().isEmpty()){
-        return false;
-    }
+bool CreateDbKeyDialog::validateAndApply() {
+  if(keyEdit_->text().isEmpty()){
+    return false;
+  }
 
-    common::Value* obj = getItem();
-    if(!obj){
-        return false;
-    }
+  common::Value* obj = getItem();
+  if(!obj){
+    return false;
+  }
 
-    value_.reset(obj);
-    return true;
+  value_.reset(obj);
+  return true;
 }
 
-void CreateDbKeyDialog::retranslateUi()
-{
+void CreateDbKeyDialog::retranslateUi() {
     generalBox_->setTitle(tr("Key/Value input"));
 }
 
-common::Value* CreateDbKeyDialog::getItem() const
-{
-    int index = typesCombo_->currentIndex();
-    QVariant var = typesCombo_->itemData(index);
-    common::Value::Type t = (common::Value::Type)qvariant_cast<unsigned char>(var);
-    if(t == common::Value::TYPE_ARRAY){
-        if(valueListEdit_->count() == 0) {
-            return NULL;
-        }
-        common::ArrayValue* ar = common::Value::createArrayValue();
-        for(int i = 0; i < valueListEdit_->count(); ++i){
-            std::string val = common::convertToString(valueListEdit_->item(i)->text());
-            ar->appendString(val);
-        }
+common::Value* CreateDbKeyDialog::getItem() const {
+  int index = typesCombo_->currentIndex();
+  QVariant var = typesCombo_->itemData(index);
+  common::Value::Type t = (common::Value::Type)qvariant_cast<unsigned char>(var);
+  if (t == common::Value::TYPE_ARRAY) {
+      if(valueListEdit_->count() == 0) {
+        return NULL;
+      }
+      common::ArrayValue* ar = common::Value::createArrayValue();
+      for(size_t i = 0; i < valueListEdit_->count(); ++i){
+        std::string val = common::convertToString(valueListEdit_->item(i)->text());
+        ar->appendString(val);
+      }
 
-        return  ar;
-    }
-    else if(t == common::Value::TYPE_SET){
-        if(valueListEdit_->count() == 0) {
-            return NULL;
-        }
-        common::SetValue* ar = common::Value::createSetValue();
-        for(int i = 0; i < valueListEdit_->count(); ++i){
-            std::string val = common::convertToString(valueListEdit_->item(i)->text());
-            ar->insert(val);
-        }
+      return ar;
+  } else if(t == common::Value::TYPE_SET) {
+      if(valueListEdit_->count() == 0) {
+          return NULL;
+      }
+      common::SetValue* ar = common::Value::createSetValue();
+      for(size_t i = 0; i < valueListEdit_->count(); ++i){
+          std::string val = common::convertToString(valueListEdit_->item(i)->text());
+          ar->insert(val);
+      }
 
-        return ar;
-    }
-    else if(t == common::Value::TYPE_ZSET){
-        if(valueTableEdit_->rowCount() == 0) {
-            return NULL;
-        }
+      return ar;
+  } else if(t == common::Value::TYPE_ZSET) {
+      if(valueTableEdit_->rowCount() == 0) {
+        return NULL;
+      }
 
-        common::ZSetValue* ar = common::Value::createZSetValue();
-        for(int i = 0; i < valueTableEdit_->rowCount(); ++i){
-            QTableWidgetItem* kitem = valueTableEdit_->item(i, 0);
-            QTableWidgetItem* vitem = valueTableEdit_->item(i, 0);
+      common::ZSetValue* ar = common::Value::createZSetValue();
+      for(int i = 0; i < valueTableEdit_->rowCount(); ++i){
+        QTableWidgetItem* kitem = valueTableEdit_->item(i, 0);
+        QTableWidgetItem* vitem = valueTableEdit_->item(i, 0);
 
-            std::string key = common::convertToString(kitem->text());
-            std::string val = common::convertToString(vitem->text());
-            ar->insert(key, val);
-        }
+        std::string key = common::convertToString(kitem->text());
+        std::string val = common::convertToString(vitem->text());
+        ar->insert(key, val);
+      }
 
-        return ar;
-    }
-    else if(t == common::Value::TYPE_HASH){
-        if(valueTableEdit_->rowCount() == 0) {
-            return NULL;
-        }
+      return ar;
+  } else if(t == common::Value::TYPE_HASH) {
+      if(valueTableEdit_->rowCount() == 0) {
+        return NULL;
+      }
 
-        common::HashValue* ar = common::Value::createHashValue();
-        for(int i = 0; i < valueTableEdit_->rowCount(); ++i){
-            QTableWidgetItem* kitem = valueTableEdit_->item(i, 0);
-            QTableWidgetItem* vitem = valueTableEdit_->item(i, 0);
+      common::HashValue* ar = common::Value::createHashValue();
+      for(size_t i = 0; i < valueTableEdit_->rowCount(); ++i){
+        QTableWidgetItem* kitem = valueTableEdit_->item(i, 0);
+        QTableWidgetItem* vitem = valueTableEdit_->item(i, 0);
 
-            std::string key = common::convertToString(kitem->text());
-            std::string val = common::convertToString(vitem->text());
-            ar->insert(key, val);
-        }
+        std::string key = common::convertToString(kitem->text());
+        std::string val = common::convertToString(vitem->text());
+        ar->insert(key, val);
+      }
 
-        return ar;
-    }
-    else{
-        QString text = valueEdit_->text();
-        if(text.isEmpty()){
-            return NULL;
-        }
+      return ar;
+  } else {
+      QString text = valueEdit_->text();
+      if(text.isEmpty()){
+        return NULL;
+      }
 
-        return common::Value::createStringValue(common::convertToString(text));
-    }
+      return common::Value::createStringValue(common::convertToString(text));
+  }
 }
 
 }

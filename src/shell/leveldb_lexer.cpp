@@ -25,8 +25,9 @@ namespace {
 }
 
 namespace fastonosql {
+
 LeveldbApi::LeveldbApi(QsciLexer *lexer)
-    : BaseQsciApi(lexer) {
+  : BaseQsciApi(lexer) {
 }
 
 void LeveldbApi::updateAutoCompletionList(const QStringList& context, QStringList& list) {

@@ -28,8 +28,7 @@ namespace fastonosql {
 
 class ConnectionsDialog
   : public QDialog {
-  Q_OBJECT
-
+ Q_OBJECT
  public:
   enum
   {

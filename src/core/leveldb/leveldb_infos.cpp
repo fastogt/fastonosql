@@ -67,44 +67,40 @@ LeveldbServerInfo::Stats::Stats(const std::string& common_text) {
   size_t start = 0;
 
   while((pos = src.find(("\r\n"), start)) != std::string::npos){
-      std::string line = src.substr(start, pos-start);
-      size_t delem = line.find_first_of(':');
-      std::string field = line.substr(0, delem);
-      std::string value = line.substr(delem + 1);
-      if(field == LEVELDB_CAMPACTIONS_LEVEL_LABEL){
-          compactions_level_ = common::convertFromString<uint32_t>(value);
-      }
-      else if(field == LEVELDB_FILE_SIZE_MB_LABEL){
-          file_size_mb_ = common::convertFromString<uint32_t>(value);
-      }
-      else if(field == LEVELDB_TIME_SEC_LABEL){
-          time_sec_ = common::convertFromString<uint32_t>(value);
-      }
-      else if(field == LEVELDB_READ_MB_LABEL){
-          read_mb_ = common::convertFromString<uint32_t>(value);
-      }
-      else if(field == LEVELDB_WRITE_MB_LABEL){
-          write_mb_ = common::convertFromString<uint32_t>(value);
-      }
-      start = pos + 2;
+    std::string line = src.substr(start, pos-start);
+    size_t delem = line.find_first_of(':');
+    std::string field = line.substr(0, delem);
+    std::string value = line.substr(delem + 1);
+    if(field == LEVELDB_CAMPACTIONS_LEVEL_LABEL){
+        compactions_level_ = common::convertFromString<uint32_t>(value);
+    } else if(field == LEVELDB_FILE_SIZE_MB_LABEL){
+        file_size_mb_ = common::convertFromString<uint32_t>(value);
+    } else if(field == LEVELDB_TIME_SEC_LABEL){
+        time_sec_ = common::convertFromString<uint32_t>(value);
+    } else if(field == LEVELDB_READ_MB_LABEL){
+        read_mb_ = common::convertFromString<uint32_t>(value);
+    } else if(field == LEVELDB_WRITE_MB_LABEL){
+        write_mb_ = common::convertFromString<uint32_t>(value);
+    }
+    start = pos + 2;
   }
 }
 
 common::Value* LeveldbServerInfo::Stats::valueByIndex(unsigned char index) const {
   switch (index) {
   case 0:
-      return new common::FundamentalValue(compactions_level_);
+    return new common::FundamentalValue(compactions_level_);
   case 1:
-      return new common::FundamentalValue(file_size_mb_);
+    return new common::FundamentalValue(file_size_mb_);
   case 2:
-      return new common::FundamentalValue(time_sec_);
+    return new common::FundamentalValue(time_sec_);
   case 3:
-      return new common::FundamentalValue(read_mb_);
+    return new common::FundamentalValue(read_mb_);
   case 4:
-      return new common::FundamentalValue(write_mb_);
+    return new common::FundamentalValue(write_mb_);
   default:
-      NOTREACHED();
-      break;
+    NOTREACHED();
+    break;
   }
   return NULL;
 }

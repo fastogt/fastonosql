@@ -32,22 +32,18 @@ void parseOptions(int argc, char **argv, lmdbConfig& cfg) {
 
       if (!strcmp(argv[i],"-d") && !lastarg) {
           cfg.mb_delim_ = argv[++i];
-      }
-      else if (!strcmp(argv[i], "-f") && !lastarg) {
+      } else if (!strcmp(argv[i], "-f") && !lastarg) {
           cfg.dbname_ = argv[++i];
-      }
-      else if (!strcmp(argv[i],"-c")) {
+      } else if (!strcmp(argv[i],"-c")) {
           cfg.create_if_missing_ = true;
-      }
-      else {
+      } else {
           if (argv[i][0] == '-') {
               const uint16_t size_buff = 256;
               char buff[size_buff] = {0};
               common::SNPrintf(buff, sizeof(buff), "Unrecognized option or bad number of args for: '%s'", argv[i]);
               LOG_MSG(buff, common::logging::L_WARNING, true);
               break;
-          }
-          else {
+          } else {
               /* Likely the command name, stop here. */
               break;
           }

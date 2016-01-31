@@ -48,8 +48,7 @@ namespace fastonosql {
 class FastoHexEdit;
 
 class FastoEditor
-  : public QWidget
-{
+  : public QWidget {
   Q_OBJECT
  public:
   enum
@@ -91,7 +90,7 @@ class FastoEditor
   virtual bool eventFilter(QObject* object, QEvent* event);
   virtual void changeEvent(QEvent *);
 
-private:
+ private:
   void retranslateUi();
   void findElement(bool forward);
 
@@ -145,8 +144,7 @@ class FastoEditorOutput
 };
 
 class FastoEditorShell
-  : public FastoEditor
-{
+  : public FastoEditor {
   Q_OBJECT
  protected Q_SLOTS:
   void showContextMenu(const QPoint& pt);

@@ -46,13 +46,14 @@
 namespace {
 
 const std::string iniPath("~/.config/" PROJECT_NAME "/config.ini");
+
 QString fontName() {
 #if defined(OS_MACOSX) || defined(OS_FREEBSD)
-    return "Monaco";
+  return "Monaco";
 #elif defined(OS_LINUX) || defined(OS_ANDROID)
-    return "Monospace";
+  return "Monospace";
 #elif defined(OS_WIN)
-    return "Courier";
+  return "Courier";
 #endif
 }
 

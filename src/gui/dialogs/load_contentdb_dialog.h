@@ -28,10 +28,9 @@ class QSpinBox;
 namespace fastonosql {
 
 class LoadContentDbDialog
-  : public QDialog
-{
-  Q_OBJECT
-public:
+  : public QDialog {
+ Q_OBJECT
+ public:
   enum
   {
     min_height = 120,
@@ -46,10 +45,10 @@ public:
   uint32_t count() const;
   QString pattern() const;
 
-public Q_SLOTS:
+ public Q_SLOTS:
   virtual void accept();
 
-private:
+ private:
   const connectionTypes type_;
 
   QLineEdit* patternEdit_;

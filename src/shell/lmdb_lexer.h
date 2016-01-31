@@ -23,8 +23,7 @@
 namespace fastonosql {
 
 class LmdbApi
-  : public BaseQsciApi
-{
+  : public BaseQsciApi {
   Q_OBJECT
  public:
   explicit LmdbApi(QsciLexer* lexer);
@@ -34,8 +33,7 @@ class LmdbApi
 };
 
 class LmdbLexer
-  : public BaseQsciLexer
-{
+  : public BaseQsciLexer {
   Q_OBJECT
  public:
   explicit LmdbLexer(QObject* parent = 0);

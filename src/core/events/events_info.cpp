@@ -27,7 +27,8 @@ EventInfoBase::EventInfoBase(initiator_type sender, error_type er)
   : base_class(sender, er), time_start_(common::time::current_mstime()) {
 }
 
-EventInfoBase::EventInfoBase(initiator_type sender, const common::time64_t time_start, error_type er)
+EventInfoBase::EventInfoBase(initiator_type sender,
+                             const common::time64_t time_start, error_type er)
   : base_class(sender, er), time_start_(time_start) {
 }
 
@@ -67,7 +68,9 @@ ExportInfoResponce::ExportInfoResponce(const base_class &request)
   : base_class(request) {
 }
 
-ChangePasswordRequest::ChangePasswordRequest(initiator_type sender, const std::string& oldPassword, const std::string& newPassword, error_type er)
+ChangePasswordRequest::ChangePasswordRequest(initiator_type sender,
+                                             const std::string& oldPassword,
+                                             const std::string& newPassword, error_type er)
   : base_class(sender, er), oldPassword_(oldPassword), newPassword_(newPassword) {
 }
 
@@ -75,7 +78,8 @@ ChangePasswordResponce::ChangePasswordResponce(const base_class &request)
   : base_class(request) {
 }
 
-ChangeMaxConnectionRequest::ChangeMaxConnectionRequest(initiator_type sender, int maxConnection, error_type er)
+ChangeMaxConnectionRequest::ChangeMaxConnectionRequest(initiator_type sender,
+                                                       int maxConnection, error_type er)
   : base_class(sender, er), maxConnection_(maxConnection) {
 }
 
@@ -107,15 +111,18 @@ LeaveModeInfo::LeaveModeInfo(initiator_type sender, ConnectionMode mode, error_t
   : base_class(sender, er), mode_(mode) {
 }
 
-CommandRootCreatedInfo::CommandRootCreatedInfo(initiator_type sender, FastoObjectIPtr root, error_type er)
+CommandRootCreatedInfo::CommandRootCreatedInfo(initiator_type sender,
+                                               FastoObjectIPtr root, error_type er)
   : base_class(sender, er), root_(root) {
 }
 
-CommandRootCompleatedInfo::CommandRootCompleatedInfo(initiator_type sender, FastoObjectIPtr root, error_type er)
+CommandRootCompleatedInfo::CommandRootCompleatedInfo(initiator_type sender,
+                                                     FastoObjectIPtr root, error_type er)
   : base_class(sender, er), root_(root) {
 }
 
-CommandRootCompleatedInfo::CommandRootCompleatedInfo(initiator_type sender, common::time64_t timest, FastoObjectIPtr root, error_type er)
+CommandRootCompleatedInfo::CommandRootCompleatedInfo(initiator_type sender, common::time64_t timest,
+                                                     FastoObjectIPtr root, error_type er)
   : base_class(sender, timest, er), root_(root) {
 }
 
@@ -127,7 +134,8 @@ DisConnectInfoResponce::DisConnectInfoResponce(const base_class &request)
   : base_class(request) {
 }
 
-ExecuteInfoRequest::ExecuteInfoRequest(initiator_type sender, const std::string &text, const std::vector<std::string>& args, error_type er)
+ExecuteInfoRequest::ExecuteInfoRequest(initiator_type sender, const std::string &text,
+                                       const std::vector<std::string>& args, error_type er)
   : base_class(sender, er), text_(text), args_(args) {
 }
 
@@ -149,7 +157,8 @@ LoadDatabaseContentResponce::LoadDatabaseContentResponce(const base_class &reque
   : base_class(request) {
 }
 
-SetDefaultDatabaseRequest::SetDefaultDatabaseRequest(initiator_type sender, DataBaseInfoSPtr inf, error_type er)
+SetDefaultDatabaseRequest::SetDefaultDatabaseRequest(initiator_type sender, DataBaseInfoSPtr inf,
+                                                     error_type er)
   : base_class(sender, er), inf_(inf) {
 }
 
@@ -208,7 +217,9 @@ ServerPropertyInfoResponce::ServerPropertyInfoResponce(const base_class &request
   : base_class(request) {
 }
 
-ChangeServerPropertyInfoRequest::ChangeServerPropertyInfoRequest(initiator_type sender, const PropertyType &pt, error_type er)
+ChangeServerPropertyInfoRequest::ChangeServerPropertyInfoRequest(initiator_type sender,
+                                                                 const PropertyType &pt,
+                                                                 error_type er)
   : base_class(sender, er), newItem_(pt) {
 }
 
@@ -216,7 +227,8 @@ ChangeServerPropertyInfoResponce::ChangeServerPropertyInfoResponce(const base_cl
   : base_class(request) {
 }
 
-CommandRequest::CommandRequest(initiator_type sender, DataBaseInfoSPtr inf, CommandKeySPtr cmd, error_type er)
+CommandRequest::CommandRequest(initiator_type sender, DataBaseInfoSPtr inf,
+                               CommandKeySPtr cmd, error_type er)
   : base_class(sender, er), inf_(inf), cmd_(cmd) {
 }
 

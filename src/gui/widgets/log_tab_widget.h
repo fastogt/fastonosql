@@ -30,21 +30,19 @@ class LogWidget;
 class CommandsWidget;
 
 class LogTabWidget
-  : public QTabWidget
-{
-  Q_OBJECT
-
-public:
+  : public QTabWidget {
+ Q_OBJECT
+ public:
   explicit LogTabWidget(QWidget* parent = 0);
 
-public Q_SLOTS:
+ public Q_SLOTS:
   void addLogMessage(const QString& message, common::logging::LEVEL_LOG level);
   void addCommand(const Command& command);
 
-protected:
+ protected:
   virtual void changeEvent(QEvent* );
 
-private:
+ private:
   void retranslateUi();
   LogWidget* log_;
   CommandsWidget* commands_;

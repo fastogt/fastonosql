@@ -26,7 +26,7 @@ namespace fastonosql {
 
 class SsdbConnectionSettings
   : public IConnectionSettingsRemote {
-public:
+ public:
   explicit SsdbConnectionSettings(const std::string& connectionName);
 
   virtual std::string commandLine() const;
@@ -40,7 +40,7 @@ public:
 
   virtual IConnectionSettings* clone() const;
 
-private:
+ private:
   virtual std::string toCommandLine() const;
   virtual void initFromCommandLine(const std::string& val);
   ssdbConfig info_;

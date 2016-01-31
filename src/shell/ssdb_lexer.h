@@ -23,17 +23,18 @@
 namespace fastonosql {
 
 class SsdbApi
-        : public BaseQsciApi {
+  : public BaseQsciApi {
   Q_OBJECT
  public:
   explicit SsdbApi(QsciLexer* lexer);
 
   virtual void updateAutoCompletionList(const QStringList& context, QStringList& list);
-  virtual QStringList callTips(const QStringList& context, int commas, QsciScintilla::CallTipsStyle style, QList<int>& shifts);
+  virtual QStringList callTips(const QStringList& context, int commas,
+                               QsciScintilla::CallTipsStyle style, QList<int>& shifts);
 };
 
 class SsdbLexer
-        : public BaseQsciLexer {
+  : public BaseQsciLexer {
   Q_OBJECT
  public:
   explicit SsdbLexer(QObject* parent = 0);

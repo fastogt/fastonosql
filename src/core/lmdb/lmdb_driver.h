@@ -56,10 +56,9 @@ static const CommandInfo lmdbCommands[] = {
 common::Error testConnection(LmdbConnectionSettings* settings);
 
 class LmdbDriver
-      : public IDriver
-{
-  Q_OBJECT
-public:
+      : public IDriver {
+ Q_OBJECT
+ public:
   explicit LmdbDriver(IConnectionSettingsBaseSPtr settings);
   virtual ~LmdbDriver();
 
@@ -70,7 +69,7 @@ public:
 
   static const char* versionApi();
 
-private:
+ private:
   virtual void initImpl();
   virtual void clearImpl();
 

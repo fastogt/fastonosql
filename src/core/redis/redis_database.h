@@ -23,7 +23,7 @@
 namespace fastonosql {
 class RedisDatabase
   : public IDatabase {
-    friend class RedisServer;
+  friend class RedisServer;
  private:
     RedisDatabase(IServerSPtr server, DataBaseInfoSPtr info);
 };

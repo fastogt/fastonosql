@@ -52,7 +52,9 @@ const QString defaultNameConnection = "New Connection";
 }
 
 namespace fastonosql {
-ConnectionDialog::ConnectionDialog(QWidget* parent, IConnectionSettingsBase* connection, const std::vector<connectionTypes>& availibleTypes)
+
+ConnectionDialog::ConnectionDialog(QWidget* parent, IConnectionSettingsBase* connection,
+                                   const std::vector<connectionTypes>& availibleTypes)
   : QDialog(parent), connection_(connection) {
   using namespace translations;
 
@@ -71,13 +73,15 @@ ConnectionDialog::ConnectionDialog(QWidget* parent, IConnectionSettingsBase* con
       for(size_t i = 0; i < SIZEOFMASS(connnectionType); ++i){
           connectionTypes ct = static_cast<connectionTypes>(i);
           std::string str = common::convertToString(ct);
-          typeConnection_->addItem(GuiFactory::instance().icon(ct), common::convertFromString<QString>(str), ct);
+          typeConnection_->addItem(GuiFactory::instance().icon(ct),
+                                   common::convertFromString<QString>(str), ct);
       }
   } else {
       for(size_t i = 0; i < availibleTypes.size(); ++i){
           connectionTypes ct = availibleTypes[i];
           std::string str = common::convertToString(ct);
-          typeConnection_->addItem(GuiFactory::instance().icon(ct), common::convertFromString<QString>(str), ct);
+          typeConnection_->addItem(GuiFactory::instance().icon(ct),
+                                   common::convertFromString<QString>(str), ct);
       }
   }
 
@@ -86,7 +90,8 @@ ConnectionDialog::ConnectionDialog(QWidget* parent, IConnectionSettingsBase* con
   }
 
   typedef void (QComboBox::*qind)(int);
-  VERIFY(connect(typeConnection_, static_cast<qind>(&QComboBox::currentIndexChanged), this, &ConnectionDialog::typeConnectionChange));
+  VERIFY(connect(typeConnection_, static_cast<qind>(&QComboBox::currentIndexChanged),
+                 this, &ConnectionDialog::typeConnectionChange));
 
   QHBoxLayout *loggingLayout = new QHBoxLayout;
   logging_ = new QCheckBox;;
@@ -156,13 +161,15 @@ ConnectionDialog::ConnectionDialog(QWidget* parent, IConnectionSettingsBase* con
   }
 
   typedef void (QComboBox::*ind)(const QString&);
-  VERIFY(connect(security_, static_cast<ind>(&QComboBox::currentIndexChanged), this, &ConnectionDialog::securityChange));
+  VERIFY(connect(security_, static_cast<ind>(&QComboBox::currentIndexChanged),
+                 this, &ConnectionDialog::securityChange));
 
   passwordBox_ = new QLineEdit;
   passwordBox_->setText(common::convertFromString<QString>(info.password_));
   passwordBox_->setEchoMode(QLineEdit::Password);
   passwordEchoModeButton_ = new QPushButton(trShow);
-  VERIFY(connect(passwordEchoModeButton_, &QPushButton::clicked, this, &ConnectionDialog::togglePasswordEchoMode));
+  VERIFY(connect(passwordEchoModeButton_, &QPushButton::clicked,
+                 this, &ConnectionDialog::togglePasswordEchoMode));
 
   privateKeyBox_ = new QLineEdit;
   privateKeyBox_->setText(common::convertFromString<QString>(info.privateKey_));
@@ -171,7 +178,8 @@ ConnectionDialog::ConnectionDialog(QWidget* parent, IConnectionSettingsBase* con
   passphraseBox_->setText(common::convertFromString<QString>(info.passphrase_));
   passphraseBox_->setEchoMode(QLineEdit::Password);
   passphraseEchoModeButton_ = new QPushButton(trShow);
-  VERIFY(connect(passphraseEchoModeButton_, &QPushButton::clicked, this, &ConnectionDialog::togglePassphraseEchoMode));
+  VERIFY(connect(passphraseEchoModeButton_, &QPushButton::clicked,
+                 this, &ConnectionDialog::togglePassphraseEchoMode));
 
   useSshWidget_ = new QWidget;
 
@@ -204,20 +212,25 @@ ConnectionDialog::ConnectionDialog(QWidget* parent, IConnectionSettingsBase* con
 
   inputLayout->addWidget(useSsh_);
 
-  VERIFY(connect(selectPrivateFileButton_, &QPushButton::clicked, this, &ConnectionDialog::setPrivateFile));
-  VERIFY(connect(useSsh_, &QCheckBox::stateChanged, this, &ConnectionDialog::sshSupportStateChange));
+  VERIFY(connect(selectPrivateFileButton_, &QPushButton::clicked,
+                 this, &ConnectionDialog::setPrivateFile));
+  VERIFY(connect(useSsh_, &QCheckBox::stateChanged,
+                 this, &ConnectionDialog::sshSupportStateChange));
 
   testButton_ = new QPushButton("&Test");
   testButton_->setIcon(GuiFactory::instance().messageBoxInformationIcon());
-  VERIFY(connect(testButton_, &QPushButton::clicked, this, &ConnectionDialog::testConnection));
+  VERIFY(connect(testButton_, &QPushButton::clicked,
+                 this, &ConnectionDialog::testConnection));
 
   QHBoxLayout *bottomLayout = new QHBoxLayout;
   bottomLayout->addWidget(testButton_, 1, Qt::AlignLeft);
   buttonBox_ = new QDialogButtonBox(this);
   buttonBox_->setOrientation(Qt::Horizontal);
   buttonBox_->setStandardButtons(QDialogButtonBox::Cancel | QDialogButtonBox::Save);
-  VERIFY(connect(buttonBox_, &QDialogButtonBox::accepted, this, &ConnectionDialog::accept));
-  VERIFY(connect(buttonBox_, &QDialogButtonBox::rejected, this, &ConnectionDialog::reject));
+  VERIFY(connect(buttonBox_, &QDialogButtonBox::accepted,
+                 this, &ConnectionDialog::accept));
+  VERIFY(connect(buttonBox_, &QDialogButtonBox::rejected,
+                 this, &ConnectionDialog::reject));
   bottomLayout->addWidget(buttonBox_);
 
 
@@ -366,7 +379,9 @@ bool ConnectionDialog::validateAndApply() {
       std::string conName = common::convertToString(connectionName_->text());
 
     if (isRemoteType) {
-      IConnectionSettingsRemote* newConnection = IConnectionSettingsRemote::createFromType(currentType, conName, common::net::hostAndPort());
+      IConnectionSettingsRemote* newConnection = IConnectionSettingsRemote::createFromType(currentType,
+                                                                                           conName,
+                                                                                           common::net::hostAndPort());
       connection_.reset(newConnection);
 
       SSHInfo info = newConnection->sshInfo();

@@ -31,12 +31,11 @@
 namespace fastonosql {
 
 class LmdbServerInfo
-      : public ServerInfo {
+  : public ServerInfo {
 public:
   //Compactions\nLevel  Files Size(MB) Time(sec) Read(MB) Write(MB)\n
   struct Stats
-          : FieldByIndex
-  {
+          : FieldByIndex {
       Stats();
       explicit Stats(const std::string& common_text);
       common::Value* valueByIndex(unsigned char index) const;
@@ -62,14 +61,14 @@ LmdbServerInfo* makeLmdbServerInfo(FastoObject *root);
 
 class LmdbDataBaseInfo
       : public DataBaseInfo {
-public:
+ public:
   LmdbDataBaseInfo(const std::string& name, bool isDefault, size_t size, const keys_cont_type& keys = keys_cont_type());
   virtual DataBaseInfo* clone() const;
 };
 
 class LmdbCommand
       : public FastoObjectCommand {
-public:
+ public:
   LmdbCommand(FastoObject* parent, common::CommandValue* cmd, const std::string &delemitr);
   virtual bool isReadOnly() const;
 };

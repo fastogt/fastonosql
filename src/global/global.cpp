@@ -21,6 +21,7 @@
 #include "common/string_util.h"
 
 namespace fastonosql {
+
 FastoObject::FastoObject(FastoObject* parent, common::Value* val, const std::string& delemitr)
   : observer_(NULL), value_(val), parent_(parent), childrens_(), delemitr_(delemitr) {
   DCHECK(val);
@@ -94,7 +95,8 @@ void FastoObject::setValue(common::Value* val) {
   }
 }
 
-FastoObjectCommand::FastoObjectCommand(FastoObject* parent, common::CommandValue* cmd, const std::string& delemitr)
+FastoObjectCommand::FastoObjectCommand(FastoObject* parent, common::CommandValue* cmd,
+                                       const std::string& delemitr)
   : FastoObject(parent, cmd, delemitr) {
 }
 
@@ -192,7 +194,8 @@ std::string getFirstWordFromLine(const std::string& input) {
   return input;
 }
 
-FastoObjectArray::FastoObjectArray(FastoObject* parent, common::ArrayValue* ar, const std::string& delemitr)
+FastoObjectArray::FastoObjectArray(FastoObject* parent, common::ArrayValue* ar,
+                                   const std::string& delemitr)
   : FastoObject(parent, ar, delemitr) {
 }
 
@@ -211,14 +214,14 @@ std::string FastoObjectArray::toString() const {
   return convertToString(ar, delemitr());
 }
 
-common::ArrayValue* FastoObjectArray::array() const
-{
+common::ArrayValue* FastoObjectArray::array() const {
   return dynamic_cast<common::ArrayValue*>(value_.get());
 }
 
 }
 
 namespace common {
+
 std::string convertToString(fastonosql::FastoObject* obj) {
   using namespace fastonosql;
   std::string result;
@@ -228,7 +231,8 @@ std::string convertToString(fastonosql::FastoObject* obj) {
       result += str + obj->delemitr();
     }
     FastoObject::child_container_type childrens = obj->childrens();
-    for(FastoObject::child_container_type::const_iterator it = childrens.begin(); it != childrens.end(); ++it ){
+    for(FastoObject::child_container_type::const_iterator it = childrens.begin();
+        it != childrens.end(); ++it ){
       result += convertToString(*it);
     }
   }
@@ -237,22 +241,22 @@ std::string convertToString(fastonosql::FastoObject* obj) {
 }
 
 std::string convertToString(common::Value* value, const std::string& delemitr) {
-  if(!value){
-      return std::string();
+  if (!value) {
+    return std::string();
   }
 
   common::Value::Type t = value->type();
 
   if (t == common::Value::TYPE_ARRAY) {
-      return convertToString(dynamic_cast<ArrayValue*>(value), delemitr);
+    return convertToString(dynamic_cast<ArrayValue*>(value), delemitr);
   } else if(t == common::Value::TYPE_SET) {
-      return convertToString(dynamic_cast<SetValue*>(value), delemitr);
+    return convertToString(dynamic_cast<SetValue*>(value), delemitr);
   } else if(t == common::Value::TYPE_ZSET) {
-      return convertToString(dynamic_cast<ZSetValue*>(value), delemitr);
+    return convertToString(dynamic_cast<ZSetValue*>(value), delemitr);
   } else if(t == common::Value::TYPE_HASH) {
-      return convertToString(dynamic_cast<HashValue*>(value), delemitr);
+    return convertToString(dynamic_cast<HashValue*>(value), delemitr);
   } else {
-      return value->toString();
+    return value->toString();
   }
 }
 

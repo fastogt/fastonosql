@@ -207,47 +207,47 @@ struct RocksdbDriver::pimpl {
   }
 
   common::Error execute_impl(FastoObject* out, int argc, char **argv) {
-    if(strcasecmp(argv[0], "info") == 0){
+    if (strcasecmp(argv[0], "info") == 0) {
       if(argc > 2){
         return common::make_error_value("Invalid info input argument", common::ErrorValue::E_ERROR);
       }
 
       RocksdbServerInfo::Stats statsout;
       common::Error er = info(argc == 2 ? argv[1] : 0, statsout);
-      if(!er){
+      if (!er) {
         common::StringValue *val = common::Value::createStringValue(RocksdbServerInfo(statsout).toString());
         FastoObject* child = new FastoObject(out, val, config_.mb_delim_);
         out->addChildren(child);
       }
       return er;
-    } else if(strcasecmp(argv[0], "get") == 0){
-      if(argc != 2){
+    } else if(strcasecmp(argv[0], "get") == 0) {
+      if (argc != 2) {
         return common::make_error_value("Invalid get input argument", common::ErrorValue::E_ERROR);
       }
 
       std::string ret;
       common::Error er = get(argv[1], &ret);
-      if(!er){
+      if (!er) {
         common::StringValue *val = common::Value::createStringValue(ret);
         FastoObject* child = new FastoObject(out, val, config_.mb_delim_);
         out->addChildren(child);
       }
       return er;
-    } else if(strcasecmp(argv[0], "dbsize") == 0){
-      if(argc != 1){
+    } else if(strcasecmp(argv[0], "dbsize") == 0) {
+      if (argc != 1) {
         return common::make_error_value("Invalid dbsize input argument", common::ErrorValue::E_ERROR);
       }
 
       size_t ret = 0;
       common::Error er = dbsize(ret);
-      if(!er){
+      if (!er) {
         common::FundamentalValue *val = common::Value::createUIntegerValue(ret);
         FastoObject* child = new FastoObject(out, val, config_.mb_delim_);
         out->addChildren(child);
       }
       return er;
-    } else if(strcasecmp(argv[0], "mget") == 0){
-      if(argc < 2){
+    } else if(strcasecmp(argv[0], "mget") == 0) {
+      if (argc < 2) {
         return common::make_error_value("Invalid mget input argument", common::ErrorValue::E_ERROR);
       }
 
@@ -258,7 +258,7 @@ struct RocksdbDriver::pimpl {
 
       std::vector<std::string> keysout;
       common::Error er = mget(keysget, &keysout);
-      if(!er){
+      if (!er) {
         common::ArrayValue* ar = common::Value::createArrayValue();
         for(int i = 0; i < keysout.size(); ++i){
           common::StringValue *val = common::Value::createStringValue(keysout[i]);
@@ -274,19 +274,19 @@ struct RocksdbDriver::pimpl {
       }
 
       common::Error er = merge(argv[1], argv[2]);
-      if(!er){
+      if (!er) {
         common::StringValue *val = common::Value::createStringValue("STORED");
         FastoObject* child = new FastoObject(out, val, config_.mb_delim_);
         out->addChildren(child);
       }
       return er;
     } else if(strcasecmp(argv[0], "put") == 0){
-      if(argc != 3){
+      if (argc != 3) {
         return common::make_error_value("Invalid put input argument", common::ErrorValue::E_ERROR);
       }
 
       common::Error er = put(argv[1], argv[2]);
-      if(!er){
+      if (!er) {
         common::StringValue *val = common::Value::createStringValue("STORED");
         FastoObject* child = new FastoObject(out, val, config_.mb_delim_);
         out->addChildren(child);
@@ -298,7 +298,7 @@ struct RocksdbDriver::pimpl {
       }
 
       common::Error er = del(argv[1]);
-      if(!er){
+      if (!er) {
         common::StringValue *val = common::Value::createStringValue("DELETED");
         FastoObject* child = new FastoObject(out, val, config_.mb_delim_);
         out->addChildren(child);
@@ -311,7 +311,7 @@ struct RocksdbDriver::pimpl {
 
       std::vector<std::string> keysout;
       common::Error er = keys(argv[1], argv[2], atoll(argv[3]), &keysout);
-      if(!er){
+      if (!er) {
         common::ArrayValue* ar = common::Value::createArrayValue();
         for(int i = 0; i < keysout.size(); ++i){
           common::StringValue *val = common::Value::createStringValue(keysout[i]);
@@ -332,7 +332,7 @@ private:
   common::Error get(const std::string& key, std::string* ret_val) {
     rocksdb::ReadOptions ro;
     rocksdb::Status st = rocksdb_->Get(ro, key, ret_val);
-    if (!st.ok()){
+    if (!st.ok()) {
       char buff[1024] = {0};
       common::SNPrintf(buff, sizeof(buff), "get function error: %s", st.ToString());
       return common::make_error_value(buff, common::ErrorValue::E_ERROR);
@@ -344,9 +344,9 @@ private:
   common::Error mget(const std::vector<rocksdb::Slice>& keys, std::vector<std::string> *ret) {
     rocksdb::ReadOptions ro;
     std::vector<rocksdb::Status> sts = rocksdb_->MultiGet(ro, keys, ret);
-    for(int i = 0; i < sts.size(); ++i){
+    for (size_t i = 0; i < sts.size(); ++i) {
       rocksdb::Status st = sts[i];
-      if (st.ok()){
+      if (st.ok()) {
         return common::Error();
       }
     }
@@ -357,7 +357,7 @@ private:
   common::Error merge(const std::string& key, const std::string& value) {
     rocksdb::WriteOptions wo;
     rocksdb::Status st = rocksdb_->Merge(wo, key, value);
-    if (!st.ok()){
+    if (!st.ok()) {
       char buff[1024] = {0};
       common::SNPrintf(buff, sizeof(buff), "merge function error: %s", st.ToString());
       return common::make_error_value(buff, common::ErrorValue::E_ERROR);
@@ -369,7 +369,7 @@ private:
   common::Error put(const std::string& key, const std::string& value) {
     rocksdb::WriteOptions wo;
     rocksdb::Status st = rocksdb_->Put(wo, key, value);
-    if (!st.ok()){
+    if (!st.ok()) {
       char buff[1024] = {0};
       common::SNPrintf(buff, sizeof(buff), "put function error: %s", st.ToString());
       return common::make_error_value(buff, common::ErrorValue::E_ERROR);
@@ -381,7 +381,7 @@ private:
   common::Error del(const std::string& key) {
     rocksdb::WriteOptions wo;
     rocksdb::Status st = rocksdb_->Delete(wo, key);
-    if (!st.ok()){
+    if (!st.ok()) {
       char buff[1024] = {0};
       common::SNPrintf(buff, sizeof(buff), "del function error: %s", st.ToString());
       return common::make_error_value(buff, common::ErrorValue::E_ERROR);
@@ -397,7 +397,7 @@ private:
     rocksdb::Iterator* it = rocksdb_->NewIterator(ro); //keys(key_start, key_end, limit, ret);
     for (it->Seek(key_start); it->Valid() && it->key().ToString() < key_end; it->Next()) {
       std::string key = it->key().ToString();
-      if(ret->size() <= limit){
+      if (ret->size() <= limit) {
         ret->push_back(key);
       } else {
         break;
@@ -538,7 +538,7 @@ common::Error RocksdbDriver::serverDiscoveryInfo(ServerInfo **sinfo,
                                                           GET_SERVER_TYPE, common::Value::C_INNER);
   er = execute(cmd);
 
-  if(!er){
+  if (!er) {
     FastoObject::child_container_type ch = root->childrens();
     if(ch.size()){
       //*dinfo = makeOwnRedisDiscoveryInfo(ch[0]);

@@ -129,7 +129,7 @@ private:
 
 class ExplorerTreeModel
   : public fasto::qt::gui::TreeModel {
-  Q_OBJECT
+ Q_OBJECT
  public:
   explicit ExplorerTreeModel(QObject* parent = 0);
   virtual ~ExplorerTreeModel();

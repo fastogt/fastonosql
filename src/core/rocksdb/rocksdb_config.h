@@ -27,8 +27,7 @@
 namespace fastonosql {
 
 struct rocksdbConfig
-  : public LocalConfig
-{
+  : public LocalConfig {
   rocksdbConfig();
 
   rocksdb::Options options_;

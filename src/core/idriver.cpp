@@ -113,14 +113,14 @@ void replyNotImplementedYet(IDriver* sender, event_request_type* ev, const char*
 
 common::Error IDriver::execute(FastoObjectCommand* cmd) {
   //DCHECK(cmd);
-  if(!cmd){
+  if (!cmd) {
     return common::make_error_value("Invalid input argument", common::ErrorValue::E_ERROR);
   }
 
   const std::string command = cmd->cmd()->inputCommand();
   common::Value::CommandLoggingType type = cmd->cmd()->commandLoggingType();
 
-  if(command.empty()){
+  if (command.empty()) {
     return common::make_error_value("Command empty", common::ErrorValue::E_ERROR);
   }
 
@@ -255,63 +255,63 @@ void IDriver::clear() {
 void IDriver::customEvent(QEvent *event) {
   using namespace events;
   QEvent::Type type = event->type();
-  if (type == static_cast<QEvent::Type>(ConnectRequestEvent::EventType)){
-      ConnectRequestEvent *ev = static_cast<ConnectRequestEvent*>(event);
-      handleConnectEvent(ev);
-  } else if (type == static_cast<QEvent::Type>(ShutDownRequestEvent::EventType)){
-      ShutDownRequestEvent *ev = static_cast<ShutDownRequestEvent*>(event);
-      handleShutdownEvent(ev);
+  if (type == static_cast<QEvent::Type>(ConnectRequestEvent::EventType)) {
+    ConnectRequestEvent *ev = static_cast<ConnectRequestEvent*>(event);
+    handleConnectEvent(ev);
+  } else if (type == static_cast<QEvent::Type>(ShutDownRequestEvent::EventType)) {
+    ShutDownRequestEvent *ev = static_cast<ShutDownRequestEvent*>(event);
+    handleShutdownEvent(ev);
   } else if (type == static_cast<QEvent::Type>(ProcessConfigArgsRequestEvent::EventType)){
-      ProcessConfigArgsRequestEvent *ev = static_cast<ProcessConfigArgsRequestEvent*>(event);
-      handleProcessCommandLineArgs(ev);
-  } else if (type == static_cast<QEvent::Type>(DisconnectRequestEvent::EventType)){
-      DisconnectRequestEvent *ev = static_cast<DisconnectRequestEvent*>(event);
-      handleDisconnectEvent(ev);
-  } else if (type == static_cast<QEvent::Type>(ExecuteRequestEvent::EventType)){
-      ExecuteRequestEvent *ev = static_cast<ExecuteRequestEvent*>(event);
-      handleExecuteEvent(ev);
-  } else if (type == static_cast<QEvent::Type>(LoadDatabasesInfoRequestEvent::EventType)){
-      LoadDatabasesInfoRequestEvent *ev = static_cast<LoadDatabasesInfoRequestEvent*>(event);
-      handleLoadDatabaseInfosEvent(ev);
-  } else if (type == static_cast<QEvent::Type>(ServerInfoRequestEvent::EventType)){
-      ServerInfoRequestEvent *ev = static_cast<ServerInfoRequestEvent*>(event);
-      handleLoadServerInfoEvent(ev);
-  } else if (type == static_cast<QEvent::Type>(ServerInfoHistoryRequestEvent::EventType)){
-      ServerInfoHistoryRequestEvent *ev = static_cast<ServerInfoHistoryRequestEvent*>(event);
-      handleLoadServerInfoHistoryEvent(ev);
-  } else if (type == static_cast<QEvent::Type>(ClearServerHistoryRequestEvent::EventType)){
-      ClearServerHistoryRequestEvent *ev = static_cast<ClearServerHistoryRequestEvent*>(event);
-      handleClearServerHistoryRequestEvent(ev);
-  } else if (type == static_cast<QEvent::Type>(ServerPropertyInfoRequestEvent::EventType)){
-      ServerPropertyInfoRequestEvent *ev = static_cast<ServerPropertyInfoRequestEvent*>(event);
-      handleLoadServerPropertyEvent(ev);
-  } else if (type == static_cast<QEvent::Type>(ChangeServerPropertyInfoRequestEvent::EventType)){
-      ChangeServerPropertyInfoRequestEvent *ev = static_cast<ChangeServerPropertyInfoRequestEvent*>(event);
-      handleServerPropertyChangeEvent(ev);
-  } else if (type == static_cast<QEvent::Type>(BackupRequestEvent::EventType)){
-      BackupRequestEvent *ev = static_cast<BackupRequestEvent*>(event);
-      handleBackupEvent(ev);
-  } else if (type == static_cast<QEvent::Type>(ExportRequestEvent::EventType)){
-      ExportRequestEvent *ev = static_cast<ExportRequestEvent*>(event);
-      handleExportEvent(ev);
-  } else if (type == static_cast<QEvent::Type>(ChangePasswordRequestEvent::EventType)){
-      ChangePasswordRequestEvent *ev = static_cast<ChangePasswordRequestEvent*>(event);
-      handleChangePasswordEvent(ev);
-  } else if (type == static_cast<QEvent::Type>(ChangeMaxConnectionRequestEvent::EventType)){
-      ChangeMaxConnectionRequestEvent *ev = static_cast<ChangeMaxConnectionRequestEvent*>(event);
-      handleChangeMaxConnectionEvent(ev);
-  } else if (type == static_cast<QEvent::Type>(LoadDatabaseContentRequestEvent::EventType)){
-      LoadDatabaseContentRequestEvent *ev = static_cast<LoadDatabaseContentRequestEvent*>(event);
-      handleLoadDatabaseContentEvent(ev);
-  } else if (type == static_cast<QEvent::Type>(SetDefaultDatabaseRequestEvent::EventType)){
-      SetDefaultDatabaseRequestEvent *ev = static_cast<SetDefaultDatabaseRequestEvent*>(event);
-      handleSetDefaultDatabaseEvent(ev);
-  } else if(type == static_cast<QEvent::Type>(CommandRequestEvent::EventType)){
-      events::CommandRequestEvent* ev = static_cast<events::CommandRequestEvent*>(event);
-      handleCommandRequestEvent(ev);
-  } else if(type == static_cast<QEvent::Type>(DiscoveryInfoRequestEvent::EventType)){
-      events::DiscoveryInfoRequestEvent* ev = static_cast<events::DiscoveryInfoRequestEvent*>(event);
-      handleDiscoveryInfoRequestEvent(ev);
+    ProcessConfigArgsRequestEvent *ev = static_cast<ProcessConfigArgsRequestEvent*>(event);
+    handleProcessCommandLineArgs(ev);
+  } else if (type == static_cast<QEvent::Type>(DisconnectRequestEvent::EventType)) {
+    DisconnectRequestEvent *ev = static_cast<DisconnectRequestEvent*>(event);
+    handleDisconnectEvent(ev);
+  } else if (type == static_cast<QEvent::Type>(ExecuteRequestEvent::EventType)) {
+    ExecuteRequestEvent *ev = static_cast<ExecuteRequestEvent*>(event);
+    handleExecuteEvent(ev);
+  } else if (type == static_cast<QEvent::Type>(LoadDatabasesInfoRequestEvent::EventType)) {
+    LoadDatabasesInfoRequestEvent *ev = static_cast<LoadDatabasesInfoRequestEvent*>(event);
+    handleLoadDatabaseInfosEvent(ev);
+  } else if (type == static_cast<QEvent::Type>(ServerInfoRequestEvent::EventType)) {
+    ServerInfoRequestEvent *ev = static_cast<ServerInfoRequestEvent*>(event);
+    handleLoadServerInfoEvent(ev);
+  } else if (type == static_cast<QEvent::Type>(ServerInfoHistoryRequestEvent::EventType)) {
+    ServerInfoHistoryRequestEvent *ev = static_cast<ServerInfoHistoryRequestEvent*>(event);
+    handleLoadServerInfoHistoryEvent(ev);
+  } else if (type == static_cast<QEvent::Type>(ClearServerHistoryRequestEvent::EventType)) {
+    ClearServerHistoryRequestEvent *ev = static_cast<ClearServerHistoryRequestEvent*>(event);
+    handleClearServerHistoryRequestEvent(ev);
+  } else if (type == static_cast<QEvent::Type>(ServerPropertyInfoRequestEvent::EventType)) {
+    ServerPropertyInfoRequestEvent *ev = static_cast<ServerPropertyInfoRequestEvent*>(event);
+    handleLoadServerPropertyEvent(ev);
+  } else if (type == static_cast<QEvent::Type>(ChangeServerPropertyInfoRequestEvent::EventType)) {
+    ChangeServerPropertyInfoRequestEvent *ev = static_cast<ChangeServerPropertyInfoRequestEvent*>(event);
+    handleServerPropertyChangeEvent(ev);
+  } else if (type == static_cast<QEvent::Type>(BackupRequestEvent::EventType)) {
+    BackupRequestEvent *ev = static_cast<BackupRequestEvent*>(event);
+    handleBackupEvent(ev);
+  } else if (type == static_cast<QEvent::Type>(ExportRequestEvent::EventType)) {
+    ExportRequestEvent *ev = static_cast<ExportRequestEvent*>(event);
+    handleExportEvent(ev);
+  } else if (type == static_cast<QEvent::Type>(ChangePasswordRequestEvent::EventType)) {
+    ChangePasswordRequestEvent *ev = static_cast<ChangePasswordRequestEvent*>(event);
+    handleChangePasswordEvent(ev);
+  } else if (type == static_cast<QEvent::Type>(ChangeMaxConnectionRequestEvent::EventType)) {
+    ChangeMaxConnectionRequestEvent *ev = static_cast<ChangeMaxConnectionRequestEvent*>(event);
+    handleChangeMaxConnectionEvent(ev);
+  } else if (type == static_cast<QEvent::Type>(LoadDatabaseContentRequestEvent::EventType)) {
+    LoadDatabaseContentRequestEvent *ev = static_cast<LoadDatabaseContentRequestEvent*>(event);
+    handleLoadDatabaseContentEvent(ev);
+  } else if (type == static_cast<QEvent::Type>(SetDefaultDatabaseRequestEvent::EventType)) {
+    SetDefaultDatabaseRequestEvent *ev = static_cast<SetDefaultDatabaseRequestEvent*>(event);
+    handleSetDefaultDatabaseEvent(ev);
+  } else if(type == static_cast<QEvent::Type>(CommandRequestEvent::EventType)) {
+    events::CommandRequestEvent* ev = static_cast<events::CommandRequestEvent*>(event);
+    handleCommandRequestEvent(ev);
+  } else if(type == static_cast<QEvent::Type>(DiscoveryInfoRequestEvent::EventType)) {
+    events::DiscoveryInfoRequestEvent* ev = static_cast<events::DiscoveryInfoRequestEvent*>(event);
+    handleDiscoveryInfoRequestEvent(ev);
   }
 
   interrupt_ = false;
@@ -320,33 +320,33 @@ void IDriver::customEvent(QEvent *event) {
 }
 
 void IDriver::timerEvent(QTimerEvent* event) {
-  if(timer_info_id_ == event->timerId() && isConnected() && settings_->loggingEnabled()){
-    if(!log_file_){
+  if (timer_info_id_ == event->timerId() && isConnected() && settings_->loggingEnabled()) {
+    if (!log_file_) {
       std::string path = settings_->loggingPath();
       std::string dir = common::file_system::get_dir_path(path);
       common::Error err = common::file_system::create_directory(dir, true);
-      if(err && err->isError()){
+      if (err && err->isError()) {
 
       }
-      if(common::file_system::is_directory(dir) == common::SUCCESS){
-          common::file_system::Path p(path);
-          log_file_ = new common::file_system::File(p);
+      if (common::file_system::is_directory(dir) == common::SUCCESS) {
+        common::file_system::Path p(path);
+        log_file_ = new common::file_system::File(p);
       }
     }
 
-    if(log_file_ && !log_file_->isOpened()){
+    if (log_file_ && !log_file_->isOpened()) {
       bool opened = log_file_->open("ab+");
       DCHECK(opened);
     }
 
-    if(log_file_ && log_file_->isOpened()){
+    if (log_file_ && log_file_->isOpened()) {
       common::time64_t time = common::time::current_mstime();
       std::string stamp = createStamp(time);
       ServerInfo* info = NULL;
       common::Error er = serverInfo(&info);
-      if(er && er->isError()){
-          QObject::timerEvent(event);
-          return;
+      if (er && er->isError()) {
+        QObject::timerEvent(event);
+        return;
       }
 
       ServerInfoSnapShoot shot(time, ServerInfoSPtr(info));
@@ -451,7 +451,7 @@ void IDriver::handleLoadServerInfoHistoryEvent(events::ServerInfoHistoryRequestE
     }
     res.setInfos(tmpInfos);
   } else {
-     res.setErrorInfo(common::make_error_value("Logging file not found", common::ErrorValue::E_ERROR));
+    res.setErrorInfo(common::make_error_value("Logging file not found", common::ErrorValue::E_ERROR));
   }
 
   reply(sender, new events::ServerInfoHistoryResponceEvent(this, res));
@@ -495,7 +495,7 @@ void IDriver::handleDiscoveryInfoRequestEvent(events::DiscoveryInfoRequestEvent*
     ServerInfo* info = NULL;
     DataBaseInfo* db = NULL;
     common::Error er = serverDiscoveryInfo(&info, &disc, &db);
-    if(!er){
+    if (!er) {
       DCHECK(info);
       DCHECK(db);
       serverInfo_.reset(info);

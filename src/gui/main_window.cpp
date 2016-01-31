@@ -60,6 +60,7 @@
 #include "gui/dialogs/encode_decode_dialog.h"
 
 namespace {
+
 const QString trImportSettingsFailed = QObject::tr("Import settings failed!");
 const QString trExportSettingsFailed = QObject::tr("Export settings failed!");
 
@@ -367,7 +368,8 @@ void MainWindow::openRecentConnection() {
 void MainWindow::loadConnection() {
   using namespace translations;
   QString standardIni = common::convertFromString<QString>(SettingsManager::settingsFilePath());
-  QString filepathR = QFileDialog::getOpenFileName(this, tr("Select settings file"), standardIni, tr("Settings files (*.ini)"));
+  QString filepathR = QFileDialog::getOpenFileName(this, tr("Select settings file"),
+                                                   standardIni, tr("Settings files (*.ini)"));
   if (filepathR.isNull()){
     return;
   }
@@ -378,7 +380,9 @@ void MainWindow::loadConnection() {
 
 void MainWindow::importConnection() {
   using namespace translations;
-  QString filepathR = QFileDialog::getOpenFileName(this, tr("Select encrypted settings file"), SettingsManager::settingsDirPath(), tr("Encrypted settings files (*.cini)"));
+  QString filepathR = QFileDialog::getOpenFileName(this, tr("Select encrypted settings file"),
+                                                   SettingsManager::settingsDirPath(),
+                                                   tr("Encrypted settings files (*.cini)"));
   if (filepathR.isNull()){
     return;
   }
@@ -450,7 +454,9 @@ void MainWindow::importConnection() {
 
 void MainWindow::exportConnection() {
   using namespace translations;
-  QString filepathW = QFileDialog::getSaveFileName(this, tr("Select file to save settings"), SettingsManager::settingsDirPath(), tr("Settings files (*.cini)"));
+  QString filepathW = QFileDialog::getSaveFileName(this, tr("Select file to save settings"),
+                                                   SettingsManager::settingsDirPath(),
+                                                   tr("Settings files (*.cini)"));
   if (filepathW.isNull()){
     return;
   }
@@ -509,7 +515,8 @@ void MainWindow::exportConnection() {
     }
   }
 
-  QMessageBox::information(this, translations::trInfo, QObject::tr("Settings successfully encrypted and exported!"));
+  QMessageBox::information(this, translations::trInfo,
+                           QObject::tr("Settings successfully encrypted and exported!"));
 }
 
 void MainWindow::versionAvailible(bool succesResult, const QString& version) {
@@ -710,7 +717,8 @@ void MainWindow::createCluster(IClusterSettingsBaseSPtr settings) {
 
   if (!settings->root()) {
     QMessageBox::critical(this, QObject::tr("Cluster open failed"),
-                          QObject::tr("Imposible open cluster \"%1\" without connections!").arg(common::convertFromString<QString>(settings->connectionName())));
+                          QObject::tr("Imposible open cluster \"%1\" without connections!").
+                          arg(common::convertFromString<QString>(settings->connectionName())));
     return;
   }
 

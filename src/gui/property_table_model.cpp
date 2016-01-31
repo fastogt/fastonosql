@@ -24,6 +24,7 @@
 #include "translations/global.h"
 
 namespace fastonosql {
+
 PropertyTableItem::PropertyTableItem(const QString& key, const QString& value)
   : key_(key), value_(value) {
 }

@@ -29,8 +29,7 @@
 namespace fastonosql {
 
 class SettingsManager
-  : public common::patterns::LazySingleton<SettingsManager>
-{
+  : public common::patterns::LazySingleton<SettingsManager> {
  public:
   typedef std::vector<IConnectionSettingsBaseSPtr> ConnectionSettingsContainerType;
   typedef std::vector<IClusterSettingsBaseSPtr> ClusterSettingsContainerType;

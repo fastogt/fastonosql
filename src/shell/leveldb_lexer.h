@@ -21,11 +21,11 @@
 #include "shell/base_lexer.h"
 
 namespace fastonosql {
+
 class LeveldbApi
-  : public BaseQsciApi
-{
+  : public BaseQsciApi {
   Q_OBJECT
-public:
+ public:
   explicit LeveldbApi(QsciLexer* lexer);
 
   virtual void updateAutoCompletionList(const QStringList& context, QStringList& list);
@@ -33,10 +33,9 @@ public:
 };
 
 class LeveldbLexer
-  : public BaseQsciLexer
-{
+  : public BaseQsciLexer {
   Q_OBJECT
-public:
+ public:
   explicit LeveldbLexer(QObject* parent = 0);
 
   virtual const char* language() const;
@@ -48,7 +47,7 @@ public:
 
   virtual void styleText(int start, int end);
 
-private:
+ private:
   void paintCommands(const QString& source, int start);
 };
 

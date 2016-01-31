@@ -88,7 +88,7 @@ PreferencesDialog::PreferencesDialog(QWidget* parent)
   QHBoxLayout* defaultViewLayaut = new QHBoxLayout;
   defaultViewLabel_ = new QLabel;
   defaultViewComboBox_ = new QComboBox;
-  for(int i = 0; i < SIZEOFMASS(viewsText); ++i){
+  for(size_t i = 0; i < SIZEOFMASS(viewsText); ++i){
     defaultViewComboBox_->addItem(common::convertFromString<QString>(viewsText[i]));
   }
   defaultViewLayaut->addWidget(defaultViewLabel_);
@@ -156,7 +156,8 @@ void PreferencesDialog::syncWithSettings() {
   languagesComboBox_->setCurrentText(SettingsManager::instance().currentLanguage());
   stylesComboBox_->setCurrentText(SettingsManager::instance().currentStyle());
   fontComboBox_->setCurrentText(SettingsManager::instance().currentFontName());
-  defaultViewComboBox_->setCurrentText(common::convertFromString<QString>(common::convertToString(SettingsManager::instance().defaultView())));
+  std::string defaultViewText = common::convertToString(SettingsManager::instance().defaultView());
+  defaultViewComboBox_->setCurrentText(common::convertFromString<QString>(defaultViewText));
   syncTabs_->setChecked(SettingsManager::instance().syncTabs());
   logDirPath_->setText(SettingsManager::instance().loggingDirectory());
   autoOpenConsole_->setChecked(SettingsManager::instance().autoOpenConsole());
@@ -167,6 +168,7 @@ void PreferencesDialog::changeEvent(QEvent* e) {
   if(e->type() == QEvent::LanguageChange){
     retranslateUi();
   }
+
   QDialog::changeEvent(e);
 }
 

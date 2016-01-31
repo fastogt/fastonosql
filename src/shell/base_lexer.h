@@ -28,22 +28,21 @@ namespace fastonosql {
 class BaseQsciApi
   : public QsciAbstractAPIs {
   Q_OBJECT
-public:
+ public:
   explicit BaseQsciApi(QsciLexer* lexer);
   void setFilteredVersion(uint32_t version);
 
-protected:
+ protected:
   bool canSkipCommand(const CommandInfo& info) const;
 
-private:
+ private:
   uint32_t filtered_version_;
 };
 
 class BaseQsciLexer
-  : public QsciLexerCustom
-{
+  : public QsciLexerCustom {
   Q_OBJECT
-public:
+ public:
   enum
   {
     Default = 0,
@@ -60,7 +59,7 @@ public:
   virtual QString description(int style) const;
   virtual QColor defaultColor(int style) const;
 
-protected:
+ protected:
   explicit BaseQsciLexer(QObject* parent = 0);
 };
 

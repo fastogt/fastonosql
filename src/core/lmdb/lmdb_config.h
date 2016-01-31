@@ -25,8 +25,7 @@
 namespace fastonosql {
 
 struct lmdbConfig
-  : public LocalConfig
-{
+  : public LocalConfig {
   lmdbConfig();
 
   bool create_if_missing_;

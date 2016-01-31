@@ -23,13 +23,12 @@
 namespace fastonosql {
 
 class RedisCluster
-  : public ICluster
-{
+  : public ICluster {
   friend class ServersManager;
-  Q_OBJECT
-public:
+ Q_OBJECT
+ public:
 
-private:
+ private:
   explicit RedisCluster(const std::string& name);
 };
 

@@ -25,7 +25,7 @@ namespace fastonosql {
 class UnqliteApi
   : public BaseQsciApi {
   Q_OBJECT
-public:
+ public:
   explicit UnqliteApi(QsciLexer* lexer);
 
   virtual void updateAutoCompletionList(const QStringList& context, QStringList& list);
@@ -35,8 +35,8 @@ public:
 
 class UnqliteLexer
  : public BaseQsciLexer {
-    Q_OBJECT
-public:
+  Q_OBJECT
+ public:
   explicit UnqliteLexer(QObject* parent = 0);
 
   virtual const char* language() const;
@@ -48,7 +48,7 @@ public:
 
   virtual void styleText(int start, int end);
 
-private:
+ private:
   void paintCommands(const QString& source, int start);
 };
 

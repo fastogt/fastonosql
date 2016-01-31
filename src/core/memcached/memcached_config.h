@@ -25,8 +25,7 @@
 namespace fastonosql {
 
 struct memcachedConfig
-  : public RemoteConfig
-{
+  : public RemoteConfig {
   memcachedConfig();
 
   std::string user_;
@@ -35,7 +34,6 @@ struct memcachedConfig
 
 }
 
-namespace common
-{
+namespace common {
   std::string convertToString(const fastonosql::memcachedConfig &conf);
 }

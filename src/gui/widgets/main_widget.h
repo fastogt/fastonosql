@@ -27,8 +27,7 @@ namespace fastonosql {
 
 class QueryWidget;
 class MainWidget
-        : public QTabWidget
-{
+        : public QTabWidget {
     Q_OBJECT
  public:
   explicit MainWidget(QWidget* parent = 0);

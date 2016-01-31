@@ -28,7 +28,7 @@ namespace fastonosql {
 class FastoEditor;
 class EncodeDecodeDialog
   : public QDialog {
-  Q_OBJECT
+ Q_OBJECT
  public:
   explicit EncodeDecodeDialog(QWidget* parent);
 

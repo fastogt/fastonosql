@@ -36,8 +36,7 @@ namespace fastonosql {
 
 class ClusterDialog
   : public QDialog {
-  Q_OBJECT
-
+ Q_OBJECT
  public:
   typedef std::vector<IConnectionSettingsBaseSPtr> cluster_connection_type;
   ClusterDialog(QWidget* parent, IClusterSettingsBase* connection = NULL); //get ownerships connection

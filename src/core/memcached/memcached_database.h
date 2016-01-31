@@ -23,10 +23,9 @@
 namespace fastonosql {
 
 class MemcachedDatabase
-  : public IDatabase
-{
+  : public IDatabase {
   friend class MemcachedServer;
-private:
+ private:
   MemcachedDatabase(IServerSPtr server, DataBaseInfoSPtr info);
 };
 

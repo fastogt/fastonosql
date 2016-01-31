@@ -23,13 +23,12 @@
 namespace fastonosql {
 
 class UnqliteServer
-  : public IServer
-{
-  friend class ServersManager;
-  Q_OBJECT
-public:
+  : public IServer {
+ friend class ServersManager;
+ Q_OBJECT
+ public:
 
-private:
+ private:
   virtual IDatabaseSPtr createDatabase(DataBaseInfoSPtr info);
   UnqliteServer(const IDriverSPtr& drv, bool isSuperServer);
 };

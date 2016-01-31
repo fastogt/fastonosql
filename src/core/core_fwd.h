@@ -21,6 +21,7 @@
 #include "core/types.h"
 
 namespace fastonosql {
+
   typedef common::shared_ptr<DataBaseInfo> DataBaseInfoSPtr;
 
   class IDatabase;
@@ -34,4 +35,5 @@ namespace fastonosql {
 
   class ICluster;
   typedef common::shared_ptr<ICluster> IClusterSPtr;
+
 }

@@ -28,7 +28,7 @@
 namespace fastonosql {
 
 FastoCommonModel::FastoCommonModel(QObject* parent)
-    : TreeModel(parent) {
+  : TreeModel(parent) {
 }
 
 FastoCommonModel::~FastoCommonModel() {
@@ -78,22 +78,22 @@ bool FastoCommonModel::setData(const QModelIndex& index, const QVariant& value, 
       return false;
     }
 
-     if (column == FastoCommonItem::eKey) { }
-     else if (column == FastoCommonItem::eValue) {
-       const QString newValue = value.toString();
-       if(newValue != node->value()){
-         const std::string key = common::convertToString(node->key());
-         const std::string value = common::convertToString(newValue);
+   if (column == FastoCommonItem::eKey) { }
+   else if (column == FastoCommonItem::eValue) {
+     const QString newValue = value.toString();
+     if(newValue != node->value()){
+       const std::string key = common::convertToString(node->key());
+       const std::string value = common::convertToString(newValue);
 
-         //  node->type() TODO: create according type
-         common::ValueSPtr vs = common::make_value(common::Value::createStringValue(value));
-         NValue val(vs);
-         NDbKValue dbv(NKey(key), val);
-         CommandKeySPtr com(new CommandCreateKey(dbv));
-         emit changedValue(com);
-         }
-      }
+       //  node->type() TODO: create according type
+       common::ValueSPtr vs = common::make_value(common::Value::createStringValue(value));
+       NValue val(vs);
+       NDbKValue dbv(NKey(key), val);
+       CommandKeySPtr com(new CommandCreateKey(dbv));
+       emit changedValue(com);
+       }
     }
+  }
 
     return false;
 }

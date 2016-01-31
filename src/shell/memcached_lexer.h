@@ -23,19 +23,18 @@
 namespace fastonosql {
 
 class MemcachedApi
-  : public BaseQsciApi
-{
+  : public BaseQsciApi {
   Q_OBJECT
  public:
   explicit MemcachedApi(QsciLexer* lexer);
 
   virtual void updateAutoCompletionList(const QStringList& context, QStringList& list);
-  virtual QStringList callTips(const QStringList& context, int commas, QsciScintilla::CallTipsStyle style, QList<int>& shifts);
+  virtual QStringList callTips(const QStringList& context, int commas,
+                               QsciScintilla::CallTipsStyle style, QList<int>& shifts);
 };
 
 class MemcachedLexer
-  : public BaseQsciLexer
-{
+  : public BaseQsciLexer {
   Q_OBJECT
  public:
   explicit MemcachedLexer(QObject* parent = 0);

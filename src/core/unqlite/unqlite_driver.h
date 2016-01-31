@@ -57,7 +57,7 @@ common::Error testConnection(UnqliteConnectionSettings* settings);
 
 class UnqliteDriver
       : public IDriver {
-  Q_OBJECT
+ Q_OBJECT
  public:
   explicit UnqliteDriver(IConnectionSettingsBaseSPtr settings);
   virtual ~UnqliteDriver();

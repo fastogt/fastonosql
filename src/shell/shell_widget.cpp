@@ -51,29 +51,46 @@ namespace {
 }
 
 namespace fastonosql {
+
 BaseShellWidget::BaseShellWidget(IServerSPtr server, const QString& filePath, QWidget* parent)
   : QWidget(parent), server_(server), filePath_(filePath), input_(NULL) {
-  VERIFY(connect(server_.get(), &IServer::startedConnect, this, &BaseShellWidget::startConnect));
-  VERIFY(connect(server_.get(), &IServer::finishedConnect, this, &BaseShellWidget::finishConnect));
-  VERIFY(connect(server_.get(), &IServer::startedDisconnect, this, &BaseShellWidget::startDisconnect));
-  VERIFY(connect(server_.get(), &IServer::finishedDisconnect, this, &BaseShellWidget::finishDisconnect));
-  VERIFY(connect(server_.get(), &IServer::startedExecute, this, &BaseShellWidget::startedExecute));
-  VERIFY(connect(server_.get(), &IServer::progressChanged, this, &BaseShellWidget::progressChange));
+  VERIFY(connect(server_.get(), &IServer::startedConnect,
+                 this, &BaseShellWidget::startConnect));
+  VERIFY(connect(server_.get(), &IServer::finishedConnect,
+                 this, &BaseShellWidget::finishConnect));
+  VERIFY(connect(server_.get(), &IServer::startedDisconnect,
+                 this, &BaseShellWidget::startDisconnect));
+  VERIFY(connect(server_.get(), &IServer::finishedDisconnect,
+                 this, &BaseShellWidget::finishDisconnect));
+  VERIFY(connect(server_.get(), &IServer::startedExecute,
+                 this, &BaseShellWidget::startedExecute));
+  VERIFY(connect(server_.get(), &IServer::progressChanged,
+                 this, &BaseShellWidget::progressChange));
 
-  VERIFY(connect(server_.get(), &IServer::startedSetDefaultDatabase, this, &BaseShellWidget::startSetDefaultDatabase));
-  VERIFY(connect(server_.get(), &IServer::finishedSetDefaultDatabase, this, &BaseShellWidget::finishSetDefaultDatabase));
+  VERIFY(connect(server_.get(), &IServer::startedSetDefaultDatabase,
+                 this, &BaseShellWidget::startSetDefaultDatabase));
+  VERIFY(connect(server_.get(), &IServer::finishedSetDefaultDatabase,
+                 this, &BaseShellWidget::finishSetDefaultDatabase));
 
-  VERIFY(connect(server_.get(), &IServer::enteredMode, this, &BaseShellWidget::enterMode));
-  VERIFY(connect(server_.get(), &IServer::leavedMode, this, &BaseShellWidget::leaveMode));
+  VERIFY(connect(server_.get(), &IServer::enteredMode,
+                 this, &BaseShellWidget::enterMode));
+  VERIFY(connect(server_.get(), &IServer::leavedMode,
+                 this, &BaseShellWidget::leaveMode));
 
-  VERIFY(connect(server_.get(), &IServer::rootCreated, this, &BaseShellWidget::rootCreated));
-  VERIFY(connect(server_.get(), &IServer::rootCompleated, this, &BaseShellWidget::rootCompleated));
+  VERIFY(connect(server_.get(), &IServer::rootCreated,
+                 this, &BaseShellWidget::rootCreated));
+  VERIFY(connect(server_.get(), &IServer::rootCompleated,
+                 this, &BaseShellWidget::rootCompleated));
 
-  VERIFY(connect(server_.get(), &IServer::startedLoadDiscoveryInfo, this, &BaseShellWidget::startLoadDiscoveryInfo));
-  VERIFY(connect(server_.get(), &IServer::finishedLoadDiscoveryInfo, this, &BaseShellWidget::finishLoadDiscoveryInfo));
+  VERIFY(connect(server_.get(), &IServer::startedLoadDiscoveryInfo,
+                 this, &BaseShellWidget::startLoadDiscoveryInfo));
+  VERIFY(connect(server_.get(), &IServer::finishedLoadDiscoveryInfo,
+                 this, &BaseShellWidget::finishLoadDiscoveryInfo));
 
-  VERIFY(connect(server_.get(), &IServer::addedChild, this, &BaseShellWidget::addedChild));
-  VERIFY(connect(server_.get(), &IServer::itemUpdated, this, &BaseShellWidget::itemUpdated, Qt::UniqueConnection));
+  VERIFY(connect(server_.get(), &IServer::addedChild,
+                 this, &BaseShellWidget::addedChild));
+  VERIFY(connect(server_.get(), &IServer::itemUpdated,
+                 this, &BaseShellWidget::itemUpdated, Qt::UniqueConnection));
 
   QVBoxLayout* mainlayout = new QVBoxLayout;
   QHBoxLayout* hlayout = new QHBoxLayout;
@@ -83,11 +100,13 @@ BaseShellWidget::BaseShellWidget(IServerSPtr server, const QString& filePath, QW
 
   loadAction_ = new QAction(GuiFactory::instance().loadIcon(), trLoad, savebar);
   typedef void (BaseShellWidget::*lf)();
-  VERIFY(connect(loadAction_, &QAction::triggered, this, static_cast<lf>(&BaseShellWidget::loadFromFile)));
+  VERIFY(connect(loadAction_, &QAction::triggered,
+                 this, static_cast<lf>(&BaseShellWidget::loadFromFile)));
   savebar->addAction(loadAction_);
 
   saveAction_ = new QAction(GuiFactory::instance().saveIcon(), trSave, savebar);
-  VERIFY(connect(saveAction_, &QAction::triggered, this, &BaseShellWidget::saveToFile));
+  VERIFY(connect(saveAction_, &QAction::triggered,
+                 this, &BaseShellWidget::saveToFile));
   savebar->addAction(saveAction_);
 
   saveAsAction_ = new QAction(GuiFactory::instance().saveAsIcon(), trSaveAs, savebar);
@@ -99,7 +118,8 @@ BaseShellWidget::BaseShellWidget(IServerSPtr server, const QString& filePath, QW
   savebar->addAction(connectAction_);
 
   disConnectAction_ = new QAction(GuiFactory::instance().disConnectIcon(), trDisconnect, savebar);
-  VERIFY(connect(disConnectAction_, &QAction::triggered, this, &BaseShellWidget::disconnectFromServer));
+  VERIFY(connect(disConnectAction_, &QAction::triggered,
+                 this, &BaseShellWidget::disconnectFromServer));
   savebar->addAction(disConnectAction_);
 
   executeAction_ = new QAction(GuiFactory::instance().executeIcon(), trExecute, savebar);
@@ -112,7 +132,8 @@ BaseShellWidget::BaseShellWidget(IServerSPtr server, const QString& filePath, QW
   savebar->addAction(stopAction);
 
   const ConnectionMode mode = InteractiveMode;
-  connectionMode_ = new fasto::qt::gui::IconLabel(GuiFactory::instance().modeIcon(mode), common::convertFromString<QString>(common::convertToString(mode)), iconSize);
+  connectionMode_ = new fasto::qt::gui::IconLabel(GuiFactory::instance().modeIcon(mode),
+                                                  common::convertFromString<QString>(common::convertToString(mode)), iconSize);
 
   dbName_ = new fasto::qt::gui::IconLabel(GuiFactory::instance().databaseIcon(), "Calculate...", iconSize);
 
@@ -145,13 +166,15 @@ BaseShellWidget::BaseShellWidget(IServerSPtr server, const QString& filePath, QW
 
   commandsVersionApi_ = new QComboBox;
   typedef void (QComboBox::*curc)(int);
-  VERIFY(connect(commandsVersionApi_, static_cast<curc>(&QComboBox::currentIndexChanged), this, &BaseShellWidget::changeVersionApi));
+  VERIFY(connect(commandsVersionApi_, static_cast<curc>(&QComboBox::currentIndexChanged),
+                 this, &BaseShellWidget::changeVersionApi));
 
   std::vector<uint32_t> versions = input_->supportedVersions();
   for(int i = 0; i < versions.size(); ++i){
     uint32_t cur = versions[i];
     std::string curVers = convertVersionNumberToReadableString(cur);
-    commandsVersionApi_->addItem(GuiFactory::instance().unknownIcon(), common::convertFromString<QString>(curVers), cur);
+    commandsVersionApi_->addItem(GuiFactory::instance().unknownIcon(),
+                                 common::convertFromString<QString>(curVers), cur);
     commandsVersionApi_->setCurrentIndex(i);
   }
   apilayout->addWidget(new QLabel(tr("Command version:")));

@@ -43,11 +43,10 @@ void BaseQsciApi::setFilteredVersion(uint32_t version) {
 }
 
 BaseQsciLexer::BaseQsciLexer(QObject* parent)
-    : QsciLexerCustom(parent) {
+  : QsciLexerCustom(parent) {
 }
 
-QString BaseQsciLexer::description(int style) const
-{
+QString BaseQsciLexer::description(int style) const {
   switch (style) {
     case Default:
       return "Default";

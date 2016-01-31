@@ -63,9 +63,8 @@ namespace gui {
 namespace fastonosql {
 
 class InfoServerDialog
-  : public QDialog
-{
-  Q_OBJECT
+  : public QDialog {
+ Q_OBJECT
  public:
   explicit InfoServerDialog(IServerSPtr server, QWidget* parent = 0);
   enum
@@ -85,7 +84,7 @@ class InfoServerDialog
   virtual void changeEvent(QEvent* e);
   virtual void showEvent(QShowEvent* e);
 
-private:
+ private:
   void retranslateUi();
 #ifdef BUILD_WITH_REDIS
   void updateText(const RedisServerInfo& serv);

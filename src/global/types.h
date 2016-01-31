@@ -33,13 +33,13 @@ enum supportedViews
 static const std::string viewsText[] = { "Tree", "Table", "Text" };
 
 class Command {
-public:
+ public:
   Command();
   Command(const std::string& mess, common::Value::CommandLoggingType commandT);
   const std::string& message() const;
   common::Value::CommandLoggingType type() const;
 
-private:
+ private:
   const std::string message_;
   const common::Value::CommandLoggingType type_;
 };
