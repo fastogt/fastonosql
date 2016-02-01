@@ -18,6 +18,9 @@
 
 #include "core/rocksdb/rocksdb_driver.h"
 
+#include <vector>
+#include <string>
+
 #include <rocksdb/db.h>
 
 #include "common/sprintf.h"
@@ -52,7 +55,7 @@ common::Error createConnection(const rocksdbConfig& config, rocksdb::DB** contex
 
   rocksdb::DB* lcontext = NULL;
   rocksdb::Status st = rocksdb::DB::Open(config.options_, config.dbname_, &lcontext);
-  if (!st.ok()){
+  if (!st.ok()) {
     char buff[1024] = {0};
     common::SNPrintf(buff, sizeof(buff), "Fail open database: %s!", st.ToString());
     return common::make_error_value(buff, common::ErrorValue::E_ERROR);
@@ -64,7 +67,7 @@ common::Error createConnection(const rocksdbConfig& config, rocksdb::DB** contex
 }
 
 common::Error createConnection(RocksdbConnectionSettings* settings, rocksdb::DB** context) {
-  if(!settings){
+  if (!settings) {
     return common::make_error_value("Invalid input argument", common::ErrorValue::E_ERROR);
   }
 
@@ -72,12 +75,12 @@ common::Error createConnection(RocksdbConnectionSettings* settings, rocksdb::DB*
   return createConnection(config, context);
 }
 
-}
+}  // namesapce
 
 common::Error testConnection(RocksdbConnectionSettings* settings) {
   rocksdb::DB* ldb = NULL;
   common::Error er = createConnection(settings, &ldb);
-  if(er){
+  if (er) {
     return er;
   }
 
@@ -88,19 +91,19 @@ common::Error testConnection(RocksdbConnectionSettings* settings) {
 
 struct RocksdbDriver::pimpl {
   pimpl()
-   : rocksdb_(NULL) {
+    : rocksdb_(NULL) {
   }
 
   bool isConnected() const {
-   if(!rocksdb_){
-     return false;
-   }
+    if (!rocksdb_) {
+      return false;
+    }
 
-   return true;
+    return true;
   }
 
   common::Error connect() {
-    if(isConnected()){
+    if (isConnected()) {
       return common::Error();
     }
 
@@ -109,7 +112,7 @@ struct RocksdbDriver::pimpl {
 
     rocksdb::DB* context = NULL;
     common::Error er = createConnection(config_, &context);
-    if(er){
+    if (er) {
       return er;
     }
 
@@ -120,7 +123,7 @@ struct RocksdbDriver::pimpl {
   }
 
   common::Error disconnect() {
-    if(!isConnected()){
+    if (!isConnected()) {
       return common::Error();
     }
 
@@ -129,23 +132,23 @@ struct RocksdbDriver::pimpl {
   }
 
   common::Error info(const char* args, RocksdbServerInfo::Stats& statsout) {
-    //sstables
-    //stats
-    //char prop[1024] = {0};
-    //common::SNPrintf(prop, sizeof(prop), "rocksdb.%s", args ? args : "stats");
+    // sstables
+    // stats
+    // char prop[1024] = {0};
+    // common::SNPrintf(prop, sizeof(prop), "rocksdb.%s", args ? args : "stats");
 
     std::string rets;
     bool isok = rocksdb_->GetProperty("rocksdb.stats", &rets);
-    if (!isok){
+    if (!isok) {
       return common::make_error_value("info function failed", common::ErrorValue::E_ERROR);
     }
 
-    if(rets.size() > sizeof(ROCKSDB_HEADER_STATS)){
+    if (rets.size() > sizeof(ROCKSDB_HEADER_STATS)) {
       const char * retsc = rets.c_str() + sizeof(ROCKSDB_HEADER_STATS);
       char* p2 = strtok((char*)retsc, " ");
       int pos = 0;
-      while(p2){
-        switch(pos++){
+      while (p2) {
+        switch (pos++) {
           case 0:
             statsout.compactions_level_ = atoi(p2);
             break;
@@ -182,7 +185,7 @@ struct RocksdbDriver::pimpl {
     rocksdb::Status st = it->status();
     delete it;
 
-    if (!st.ok()){
+    if (!st.ok()) {
       char buff[1024] = {0};
       common::SNPrintf(buff, sizeof(buff), "Couldn't determine DBSIZE error: %s", st.ToString());
       return common::make_error_value(buff, common::ErrorValue::E_ERROR);
@@ -199,7 +202,7 @@ struct RocksdbDriver::pimpl {
 
   std::string currentDbName() const {
     rocksdb::ColumnFamilyHandle* fam = rocksdb_->DefaultColumnFamily();
-    if(fam){
+    if (fam) {
       return fam->GetName();
     }
 
@@ -208,7 +211,7 @@ struct RocksdbDriver::pimpl {
 
   common::Error execute_impl(FastoObject* out, int argc, char **argv) {
     if (strcasecmp(argv[0], "info") == 0) {
-      if(argc > 2){
+      if (argc > 2) {
         return common::make_error_value("Invalid info input argument", common::ErrorValue::E_ERROR);
       }
 
@@ -220,7 +223,7 @@ struct RocksdbDriver::pimpl {
         out->addChildren(child);
       }
       return er;
-    } else if(strcasecmp(argv[0], "get") == 0) {
+    } else if (strcasecmp(argv[0], "get") == 0) {
       if (argc != 2) {
         return common::make_error_value("Invalid get input argument", common::ErrorValue::E_ERROR);
       }
@@ -233,7 +236,7 @@ struct RocksdbDriver::pimpl {
         out->addChildren(child);
       }
       return er;
-    } else if(strcasecmp(argv[0], "dbsize") == 0) {
+    } else if (strcasecmp(argv[0], "dbsize") == 0) {
       if (argc != 1) {
         return common::make_error_value("Invalid dbsize input argument", common::ErrorValue::E_ERROR);
       }
@@ -246,13 +249,13 @@ struct RocksdbDriver::pimpl {
         out->addChildren(child);
       }
       return er;
-    } else if(strcasecmp(argv[0], "mget") == 0) {
+    } else if (strcasecmp(argv[0], "mget") == 0) {
       if (argc < 2) {
         return common::make_error_value("Invalid mget input argument", common::ErrorValue::E_ERROR);
       }
 
       std::vector<rocksdb::Slice> keysget;
-      for(int i = 1; i < argc; ++i){
+      for (size_t i = 1; i < argc; ++i) {
         keysget.push_back(argv[i]);
       }
 
@@ -260,7 +263,7 @@ struct RocksdbDriver::pimpl {
       common::Error er = mget(keysget, &keysout);
       if (!er) {
         common::ArrayValue* ar = common::Value::createArrayValue();
-        for(int i = 0; i < keysout.size(); ++i){
+        for (size_t i = 0; i < keysout.size(); ++i) {
           common::StringValue *val = common::Value::createStringValue(keysout[i]);
           ar->append(val);
         }
@@ -268,8 +271,8 @@ struct RocksdbDriver::pimpl {
         out->addChildren(child);
       }
       return er;
-    } else if(strcasecmp(argv[0], "merge") == 0){
-      if(argc != 3){
+    } else if (strcasecmp(argv[0], "merge") == 0) {
+      if (argc != 3) {
         return common::make_error_value("Invalid merge input argument", common::ErrorValue::E_ERROR);
       }
 
@@ -280,7 +283,7 @@ struct RocksdbDriver::pimpl {
         out->addChildren(child);
       }
       return er;
-    } else if(strcasecmp(argv[0], "put") == 0){
+    } else if (strcasecmp(argv[0], "put") == 0) {
       if (argc != 3) {
         return common::make_error_value("Invalid put input argument", common::ErrorValue::E_ERROR);
       }
@@ -292,8 +295,8 @@ struct RocksdbDriver::pimpl {
         out->addChildren(child);
       }
       return er;
-    } else if(strcasecmp(argv[0], "del") == 0){
-      if(argc != 2){
+    } else if (strcasecmp(argv[0], "del") == 0) {
+      if (argc != 2) {
         return common::make_error_value("Invalid del input argument", common::ErrorValue::E_ERROR);
       }
 
@@ -304,8 +307,8 @@ struct RocksdbDriver::pimpl {
         out->addChildren(child);
       }
       return er;
-    } else if(strcasecmp(argv[0], "keys") == 0){
-      if(argc != 4){
+    } else if (strcasecmp(argv[0], "keys") == 0) {
+      if (argc != 4) {
         return common::make_error_value("Invalid keys input argument", common::ErrorValue::E_ERROR);
       }
 
@@ -313,7 +316,7 @@ struct RocksdbDriver::pimpl {
       common::Error er = keys(argv[1], argv[2], atoll(argv[3]), &keysout);
       if (!er) {
         common::ArrayValue* ar = common::Value::createArrayValue();
-        for(int i = 0; i < keysout.size(); ++i){
+        for (size_t i = 0; i < keysout.size(); ++i) {
           common::StringValue *val = common::Value::createStringValue(keysout[i]);
           ar->append(val);
         }
@@ -321,14 +324,14 @@ struct RocksdbDriver::pimpl {
         out->addChildren(child);
       }
       return er;
-    }  else{
+    } else {
       char buff[1024] = {0};
       common::SNPrintf(buff, sizeof(buff), "Not supported command: %s", argv[0]);
       return common::make_error_value(buff, common::ErrorValue::E_ERROR);
     }
   }
 
-private:
+ private:
   common::Error get(const std::string& key, std::string* ret_val) {
     rocksdb::ReadOptions ro;
     rocksdb::Status st = rocksdb_->Get(ro, key, ret_val);
@@ -394,7 +397,7 @@ private:
     ret->clear();
 
     rocksdb::ReadOptions ro;
-    rocksdb::Iterator* it = rocksdb_->NewIterator(ro); //keys(key_start, key_end, limit, ret);
+    rocksdb::Iterator* it = rocksdb_->NewIterator(ro);  // keys(key_start, key_end, limit, ret);
     for (it->Seek(key_start); it->Valid() && it->key().ToString() < key_end; it->Next()) {
       std::string key = it->key().ToString();
       if (ret->size() <= limit) {
@@ -407,7 +410,7 @@ private:
     rocksdb::Status st = it->status();
     delete it;
 
-    if (!st.ok()){
+    if (!st.ok()) {
       char buff[1024] = {0};
       common::SNPrintf(buff, sizeof(buff), "Keys function error: %s", st.ToString());
       return common::make_error_value(buff, common::ErrorValue::E_ERROR);
@@ -449,7 +452,8 @@ common::Error RocksdbDriver::commandDeleteImpl(CommandDeleteKey* command,
                                                std::string& cmdstring) const {
   char patternResult[1024] = {0};
   NDbKValue key = command->key();
-  common::SNPrintf(patternResult, sizeof(patternResult), DELETE_KEY_PATTERN_1ARGS_S, key.keyString());
+  common::SNPrintf(patternResult, sizeof(patternResult),
+                   DELETE_KEY_PATTERN_1ARGS_S, key.keyString());
   cmdstring = patternResult;
 
   return common::Error();
@@ -473,7 +477,8 @@ common::Error RocksdbDriver::commandCreateImpl(CommandCreateKey* command,
   common::Value* rval = val.get();
   std::string key_str = key.keyString();
   std::string value_str = common::convertToString(rval, " ");
-  common::SNPrintf(patternResult, sizeof(patternResult), SET_KEY_PATTERN_2ARGS_SS, key_str, value_str);
+  common::SNPrintf(patternResult, sizeof(patternResult), SET_KEY_PATTERN_2ARGS_SS,
+                   key_str, value_str);
   cmdstring = patternResult;
 
   return common::Error();
@@ -491,7 +496,7 @@ common::Error RocksdbDriver::commandChangeTTLImpl(CommandChangeTTL* command,
 // ============== commands =============//
 
 common::net::hostAndPort RocksdbDriver::address() const {
-  //return common::net::hostAndPort(impl_->config_.hostip_, impl_->config_.hostport_);
+  // return common::net::hostAndPort(impl_->config_.hostip_, impl_->config_.hostport_);
   return common::net::hostAndPort();
 }
 
@@ -517,7 +522,7 @@ common::Error RocksdbDriver::serverInfo(ServerInfo **info) {
   LOG_COMMAND(Command(INFO_REQUEST, common::Value::C_INNER));
   RocksdbServerInfo::Stats cm;
   common::Error err = impl_->info(NULL, cm);
-  if(!err){
+  if (!err) {
     *info = new RocksdbServerInfo(cm);
   }
 
@@ -529,7 +534,7 @@ common::Error RocksdbDriver::serverDiscoveryInfo(ServerInfo **sinfo,
                                                  DataBaseInfo** dbinfo) {
   ServerInfo *lsinfo = NULL;
   common::Error er = serverInfo(&lsinfo);
-  if(er){
+  if (er) {
       return er;
   }
 
@@ -540,14 +545,14 @@ common::Error RocksdbDriver::serverDiscoveryInfo(ServerInfo **sinfo,
 
   if (!er) {
     FastoObject::child_container_type ch = root->childrens();
-    if(ch.size()){
-      //*dinfo = makeOwnRedisDiscoveryInfo(ch[0]);
+    if (ch.size()) {
+      // *dinfo = makeOwnRedisDiscoveryInfo(ch[0]);
     }
   }
 
   DataBaseInfo* ldbinfo = NULL;
   er = currentDataBaseInfo(&ldbinfo);
-  if(er){
+  if (er) {
     delete lsinfo;
     return er;
   }
@@ -570,11 +575,11 @@ void RocksdbDriver::handleConnectEvent(events::ConnectRequestEvent *ev) {
   notifyProgress(sender, 0);
       events::ConnectResponceEvent::value_type res(ev->value());
       RocksdbConnectionSettings *set = dynamic_cast<RocksdbConnectionSettings*>(settings_.get());
-      if(set){
+      if (set) {
           impl_->config_ = set->info();
   notifyProgress(sender, 25);
               common::Error er = impl_->connect();
-              if(er){
+              if (er) {
                   res.setErrorInfo(er);
               }
   notifyProgress(sender, 75);
@@ -590,7 +595,7 @@ void RocksdbDriver::handleDisconnectEvent(events::DisconnectRequestEvent* ev) {
   notifyProgress(sender, 50);
 
       common::Error er = impl_->disconnect();
-      if(er){
+      if (er) {
           res.setErrorInfo(er);
       }
 
@@ -605,42 +610,43 @@ void RocksdbDriver::handleExecuteEvent(events::ExecuteRequestEvent* ev) {
       const char *inputLine = common::utils::c_strornull(res.text_);
 
       common::Error er;
-      if(inputLine){
+      if (inputLine) {
           size_t length = strlen(inputLine);
           int offset = 0;
           RootLocker lock = make_locker(sender, inputLine);
           FastoObjectIPtr outRoot = lock.root_;
           double step = 100.0f/length;
-          for(size_t n = 0; n < length; ++n){
-              if(interrupt_){
-                  er.reset(new common::ErrorValue("Interrupted exec.", common::ErrorValue::E_INTERRUPTED));
+          for (size_t n = 0; n < length; ++n) {
+              if (interrupt_) {
+                  er.reset(new common::ErrorValue("Interrupted exec.",
+                                                  common::ErrorValue::E_INTERRUPTED));
                   res.setErrorInfo(er);
                   break;
               }
-              if(inputLine[n] == '\n' || n == length-1){
+              if (inputLine[n] == '\n' || n == length-1) {
   notifyProgress(sender, step * n);
                   char command[128] = {0};
-                  if(n == length-1){
-                      strcpy(command, inputLine + offset);
-                  }
-                  else{
-                      strncpy(command, inputLine + offset, n - offset);
+                  if (n == length-1) {
+                    strcpy(command, inputLine + offset);
+                  } else {
+                    strncpy(command, inputLine + offset, n - offset);
                   }
                   offset = n + 1;
-                  FastoObjectCommand* cmd = createCommand<RocksdbCommand>(outRoot, stableCommand(command), common::Value::C_USER);
+                  FastoObjectCommand* cmd = createCommand<RocksdbCommand>(outRoot,
+                                                                          stableCommand(command),
+                                                                          common::Value::C_USER);
                   er = execute(cmd);
-                  if(er){
+                  if (er) {
                       res.setErrorInfo(er);
                       break;
                   }
               }
           }
-      }
-      else{
+      } else {
           er.reset(new common::ErrorValue("Empty command line.", common::ErrorValue::E_ERROR));
       }
 
-      if(er){
+      if (er) {
           LOG_ERROR(er, true);
       }
   notifyProgress(sender, 100);
@@ -652,7 +658,7 @@ void RocksdbDriver::handleCommandRequestEvent(events::CommandRequestEvent* ev) {
       events::CommandResponceEvent::value_type res(ev->value());
       std::string cmdtext;
       common::Error er = commandByType(res.cmd_, cmdtext);
-      if(er){
+      if (er) {
           res.setErrorInfo(er);
           reply(sender, new events::CommandResponceEvent(this, res));
           notifyProgress(sender, 100);
@@ -664,7 +670,7 @@ void RocksdbDriver::handleCommandRequestEvent(events::CommandRequestEvent* ev) {
       FastoObjectCommand* cmd = createCommand<RocksdbCommand>(root, cmdtext, common::Value::C_INNER);
   notifyProgress(sender, 50);
       er = execute(cmd);
-      if(er){
+      if (er) {
           res.setErrorInfo(er);
       }
       reply(sender, new events::CommandResponceEvent(this, res));
@@ -689,28 +695,28 @@ void RocksdbDriver::handleLoadDatabaseContentEvent(events::LoadDatabaseContentRe
     common::SNPrintf(patternResult, sizeof(patternResult), GET_KEYS_PATTERN_1ARGS_I, res.countKeys_);
     FastoObjectIPtr root = FastoObject::createRoot(patternResult);
   notifyProgress(sender, 50);
-    FastoObjectCommand* cmd = createCommand<RocksdbCommand>(root, patternResult, common::Value::C_INNER);
+    FastoObjectCommand* cmd = createCommand<RocksdbCommand>(root, patternResult,
+                                                            common::Value::C_INNER);
     common::Error er = execute(cmd);
-    if(er){
+    if (er) {
         res.setErrorInfo(er);
     } else {
       FastoObject::child_container_type rchildrens = cmd->childrens();
-      if(rchildrens.size()){
-          DCHECK(rchildrens.size() == 1);
+      if (rchildrens.size()) {
+          DCHECK_EQ(rchildrens.size(), 1);
           FastoObjectArray* array = dynamic_cast<FastoObjectArray*>(rchildrens[0]);
-          if(!array){
+          if (!array) {
               goto done;
           }
           common::ArrayValue* ar = array->array();
-          if(!ar){
+          if (!ar) {
               goto done;
           }
 
-          for(int i = 0; i < ar->size(); ++i)
-          {
+          for (size_t i = 0; i < ar->size(); ++i) {
               std::string key;
               bool isok = ar->getString(i, &key);
-              if(isok){
+              if (isok) {
                   NKey k(key);
                   NDbKValue ress(k, NValue());
                   res.keys_.push_back(ress);
@@ -741,10 +747,9 @@ void RocksdbDriver::handleLoadServerInfoEvent(events::ServerInfoRequestEvent* ev
       LOG_COMMAND(Command(INFO_REQUEST, common::Value::C_INNER));
       RocksdbServerInfo::Stats cm;
       common::Error err = impl_->info(NULL, cm);
-      if(err){
+      if (err) {
           res.setErrorInfo(err);
-      }
-      else{
+      } else {
           ServerInfoSPtr mem(new RocksdbServerInfo(cm));
           res.setInfo(mem);
       }
@@ -761,4 +766,4 @@ ServerInfoSPtr RocksdbDriver::makeServerInfoFromString(const std::string& val) {
   return res;
 }
 
-}
+}  // namespace fastonosql

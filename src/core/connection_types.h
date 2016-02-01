@@ -18,11 +18,13 @@
 
 #pragma once
 
+#include <string>
+
 #include "common/convert2string.h"
 
 namespace fastonosql {
-  enum connectionTypes
-  {
+
+  enum connectionTypes {
     DBUNKNOWN = 0,
     REDIS,
     MEMCACHED,
@@ -33,8 +35,7 @@ namespace fastonosql {
     LMDB
   };
 
-  enum serverTypes
-  {
+  enum serverTypes {
     MASTER,
     SLAVE
   };
@@ -90,7 +91,7 @@ enum ConnectionMode {
     InteractiveMode
 };
 
-}
+}  // namespace fastonosql
 
 namespace common {
   std::string convertToString(fastonosql::connectionTypes t);

@@ -20,20 +20,22 @@
 
 #include <ostream>
 #include <sstream>
-
-namespace {
-
-const std::vector<fastonosql::Field> SsdbCommonFields = {
-  fastonosql::Field(SSDB_VERSION_LABEL, common::Value::TYPE_STRING),
-  fastonosql::Field(SSDB_LINKS_LABEL, common::Value::TYPE_UINTEGER),
-  fastonosql::Field(SSDB_TOTAL_CALLS_LABEL, common::Value::TYPE_UINTEGER),
-  fastonosql::Field(SSDB_DBSIZE_LABEL, common::Value::TYPE_UINTEGER),
-  fastonosql::Field(SSDB_BINLOGS_LABEL, common::Value::TYPE_STRING)
-};
-
-}
+#include <vector>
+#include <algorithm>
+#include <string>
 
 namespace fastonosql {
+namespace {
+
+const std::vector<Field> SsdbCommonFields = {
+  Field(SSDB_VERSION_LABEL, common::Value::TYPE_STRING),
+  Field(SSDB_LINKS_LABEL, common::Value::TYPE_UINTEGER),
+  Field(SSDB_TOTAL_CALLS_LABEL, common::Value::TYPE_UINTEGER),
+  Field(SSDB_DBSIZE_LABEL, common::Value::TYPE_UINTEGER),
+  Field(SSDB_BINLOGS_LABEL, common::Value::TYPE_STRING)
+};
+
+}  // namespace
 
 template<>
 std::vector<common::Value::Type> DBTraits<SSDB>::supportedTypes() {
@@ -68,28 +70,27 @@ SsdbServerInfo::Common::Common(const std::string& common_text) {
   size_t pos = 0;
   size_t start = 0;
 
-  while((pos = src.find(("\r\n"), start)) != std::string::npos) {
+  while ((pos = src.find(("\r\n"), start)) != std::string::npos) {
     std::string line = src.substr(start, pos-start);
     size_t delem = line.find_first_of(':');
     std::string field = line.substr(0, delem);
     std::string value = line.substr(delem + 1);
-    if(field == SSDB_VERSION_LABEL){
+    if (field == SSDB_VERSION_LABEL) {
       version_ = value;
-    } else if(field == SSDB_LINKS_LABEL) {
+    } else if (field == SSDB_LINKS_LABEL) {
       links_ = common::convertFromString<uint32_t>(value);
-    } else if(field == SSDB_TOTAL_CALLS_LABEL){
+    } else if (field == SSDB_TOTAL_CALLS_LABEL) {
       total_calls_ = common::convertFromString<uint32_t>(value);
-    } else if(field == SSDB_DBSIZE_LABEL){
+    } else if (field == SSDB_DBSIZE_LABEL) {
         dbsize_ = common::convertFromString<uint32_t>(value);
-    } else if(field == SSDB_BINLOGS_LABEL){
+    } else if (field == SSDB_BINLOGS_LABEL) {
         binlogs_ = value;
     }
     start = pos + 2;
   }
 }
 
-common::Value* SsdbServerInfo::Common::valueByIndex(unsigned char index) const
-{
+common::Value* SsdbServerInfo::Common::valueByIndex(unsigned char index) const {
   switch (index) {
   case 0:
       return new common::StringValue(version_);
@@ -119,11 +120,12 @@ SsdbServerInfo::SsdbServerInfo(const Common& common)
 common::Value* SsdbServerInfo::valueByIndexes(unsigned char property, unsigned char field) const {
   switch (property) {
   case 0:
-   return common_.valueByIndex(field);
+    return common_.valueByIndex(field);
   default:
-   NOTREACHED();
-   break;
+    NOTREACHED();
+    break;
   }
+
   return NULL;
 }
 
@@ -140,18 +142,18 @@ std::ostream& operator<<(std::ostream& out, const SsdbServerInfo& value) {
 }
 
 SsdbServerInfo* makeSsdbServerInfo(const std::string &content) {
-  if(content.empty()){
-      return NULL;
+  if (content.empty()) {
+    return NULL;
   }
 
   SsdbServerInfo* result = new SsdbServerInfo;
   const std::vector<std::string> headers = DBTraits<SSDB>::infoHeaders();
   std::string word;
-  DCHECK(headers.size() == 1);
+  DCHECK_EQ(headers.size(), 1);
 
-  for(int i = 0; i < content.size(); ++i){
+  for (size_t i = 0; i < content.size(); ++i) {
     word += content[i];
-    if(word == headers[0]){
+    if (word == headers[0]) {
       std::string part = content.substr(i + 1);
       result->common_ = SsdbServerInfo::Common(part);
       break;
@@ -194,7 +196,7 @@ SsdbCommand::SsdbCommand(FastoObject* parent,
 
 bool SsdbCommand::isReadOnly() const {
   std::string key = inputCmd();
-  if(key.empty()){
+  if (key.empty()) {
     return true;
   }
 
@@ -202,4 +204,4 @@ bool SsdbCommand::isReadOnly() const {
   return key != "get";
 }
 
-}
+}  // namespace fastonosql

@@ -30,4 +30,4 @@ UnqliteDatabase::UnqliteDatabase(IServerSPtr server, DataBaseInfoSPtr info)
   DCHECK(info->type() == UNQLITE);
 }
 
-}
+}  // namespace fastonosql

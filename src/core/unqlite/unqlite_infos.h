@@ -18,6 +18,8 @@
 
 #pragma once
 
+#include <string>
+
 #include "core/types.h"
 
 #define UNQLITE_STATS_LABEL "# Stats"
@@ -29,13 +31,13 @@
 #define UNQLITE_WRITE_MB_LABEL "write_mb"
 
 namespace fastonosql {
+
 class UnqliteServerInfo
   : public ServerInfo {
  public:
-  //Compactions\nLevel  Files Size(MB) Time(sec) Read(MB) Write(MB)\n
+  // Compactions\nLevel  Files Size(MB) Time(sec) Read(MB) Write(MB)\n
   struct Stats
-          : FieldByIndex
-  {
+          : FieldByIndex {
       Stats();
       explicit Stats(const std::string& common_text);
       common::Value* valueByIndex(unsigned char index) const;
@@ -61,8 +63,9 @@ UnqliteServerInfo* makeUnqliteServerInfo(FastoObject *root);
 
 class UnqliteDataBaseInfo
       : public DataBaseInfo {
-public:
-  UnqliteDataBaseInfo(const std::string& name, bool isDefault, size_t size, const keys_cont_type& keys = keys_cont_type());
+ public:
+  UnqliteDataBaseInfo(const std::string& name, bool isDefault, size_t size,
+                      const keys_cont_type& keys = keys_cont_type());
   virtual DataBaseInfo* clone() const;
 };
 
@@ -73,4 +76,4 @@ class UnqliteCommand
   virtual bool isReadOnly() const;
 };
 
-}
+}  // namespace fastonosql

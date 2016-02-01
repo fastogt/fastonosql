@@ -30,4 +30,4 @@ IDatabaseSPtr UnqliteServer::createDatabase(DataBaseInfoSPtr info) {
     return IDatabaseSPtr(new UnqliteDatabase(shared_from_this(), info));
 }
 
-}
+}  // namespace fastonosql

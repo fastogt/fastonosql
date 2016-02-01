@@ -29,4 +29,4 @@ class RocksdbDatabase
   RocksdbDatabase(IServerSPtr server, DataBaseInfoSPtr info);
 };
 
-}
+}  // namespace fastonosql

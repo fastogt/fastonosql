@@ -63,4 +63,4 @@ struct RemoteConfig
   uint16_t hostport_;
 };
 
-}
+}  // namespace fastonosql

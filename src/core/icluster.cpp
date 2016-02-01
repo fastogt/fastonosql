@@ -18,6 +18,8 @@
 
 #include "core/icluster.h"
 
+#include <string>
+
 #include "common/qt/convert_string.h"
 
 #include "core/iserver.h"
@@ -37,17 +39,17 @@ ICluster::nodes_type ICluster::nodes() const {
 }
 
 void ICluster::addServer(IServerSPtr serv) {
-    if(serv){
-        nodes_.push_back(serv);
+    if (serv) {
+      nodes_.push_back(serv);
     }
 }
 
 IServerSPtr ICluster::root() const {
-    if(nodes_.empty()){
+    if (nodes_.empty()) {
         return IServerSPtr();
     }
 
     return nodes_[0];
 }
 
-}
+}  // namespace fastonosql

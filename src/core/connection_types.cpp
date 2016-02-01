@@ -18,19 +18,21 @@
 
 #include "core/connection_types.h"
 
+#include <string>
+
 namespace {
   const std::string connnectionMode[] = { "Latency mode", "Slave mode", "Get RDB mode", "Pipe mode",
                                           "Find big keys mode", "Stat mode", "Scan mode",
                                           "Interactive mode" };
   const std::string serverTypes[] = { "Master", "Slave" };
-}
+}  // namespace
 
 namespace common {
 
 template<>
 fastonosql::connectionTypes convertFromString(const std::string& text) {
-  for (uint32_t i = 0; i < SIZEOFMASS(fastonosql::connnectionType); ++i){
-      if (text == fastonosql::connnectionType[i]){
+  for (size_t i = 0; i < SIZEOFMASS(fastonosql::connnectionType); ++i) {
+      if (text == fastonosql::connnectionType[i]) {
           return static_cast<fastonosql::connectionTypes>(i);
       }
   }
@@ -44,8 +46,8 @@ std::string convertToString(fastonosql::connectionTypes t) {
 
 template<>
 fastonosql::serverTypes convertFromString(const std::string& text) {
-  for (uint32_t i = 0; i < SIZEOFMASS(serverTypes); ++i){
-      if (text == serverTypes[i]){
+  for (size_t i = 0; i < SIZEOFMASS(serverTypes); ++i) {
+      if (text == serverTypes[i]) {
           return static_cast<fastonosql::serverTypes>(i);
       }
   }
@@ -61,4 +63,4 @@ std::string convertToString(fastonosql::ConnectionMode t) {
   return connnectionMode[t];
 }
 
-}
+}  // namespace common

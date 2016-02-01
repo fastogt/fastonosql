@@ -23,15 +23,12 @@
 namespace fastonosql {
 
 class SsdbServer
-  : public IServer
-{
+  : public IServer {
   friend class ServersManager;
- Q_OBJECT
- public:
-
+  Q_OBJECT
  private:
   virtual IDatabaseSPtr createDatabase(DataBaseInfoSPtr info);
   SsdbServer(const IDriverSPtr& drv, bool isSuperServer);
 };
 
-}
+}  // namespace fastonosql

@@ -20,20 +20,22 @@
 
 #include <ostream>
 #include <sstream>
-
-namespace {
-
-  const std::vector<fastonosql::Field> unqliteCommonFields = {
-      fastonosql::Field(UNQLITE_CAMPACTIONS_LEVEL_LABEL, common::Value::TYPE_UINTEGER),
-      fastonosql::Field(UNQLITE_FILE_SIZE_MB_LABEL, common::Value::TYPE_UINTEGER),
-      fastonosql::Field(UNQLITE_TIME_SEC_LABEL, common::Value::TYPE_UINTEGER),
-      fastonosql::Field(UNQLITE_READ_MB_LABEL, common::Value::TYPE_UINTEGER),
-      fastonosql::Field(UNQLITE_WRITE_MB_LABEL, common::Value::TYPE_UINTEGER)
-  };
-
-}
+#include <vector>
+#include <algorithm>
+#include <string>
 
 namespace fastonosql {
+namespace {
+
+const std::vector<Field> unqliteCommonFields = {
+    Field(UNQLITE_CAMPACTIONS_LEVEL_LABEL, common::Value::TYPE_UINTEGER),
+    Field(UNQLITE_FILE_SIZE_MB_LABEL, common::Value::TYPE_UINTEGER),
+    Field(UNQLITE_TIME_SEC_LABEL, common::Value::TYPE_UINTEGER),
+    Field(UNQLITE_READ_MB_LABEL, common::Value::TYPE_UINTEGER),
+    Field(UNQLITE_WRITE_MB_LABEL, common::Value::TYPE_UINTEGER)
+};
+
+}  // namespace
 
 template<>
 std::vector<common::Value::Type> DBTraits<UNQLITE>::supportedTypes() {
@@ -66,20 +68,20 @@ UnqliteServerInfo::Stats::Stats(const std::string& common_text) {
   size_t pos = 0;
   size_t start = 0;
 
-  while((pos = src.find(("\r\n"), start)) != std::string::npos){
+  while ((pos = src.find(("\r\n"), start)) != std::string::npos) {
       std::string line = src.substr(start, pos-start);
       size_t delem = line.find_first_of(':');
       std::string field = line.substr(0, delem);
       std::string value = line.substr(delem + 1);
-      if(field == UNQLITE_CAMPACTIONS_LEVEL_LABEL){
+      if (field == UNQLITE_CAMPACTIONS_LEVEL_LABEL) {
           compactions_level_ = common::convertFromString<uint32_t>(value);
-      } else if(field == UNQLITE_FILE_SIZE_MB_LABEL){
+      } else if (field == UNQLITE_FILE_SIZE_MB_LABEL) {
           file_size_mb_ = common::convertFromString<uint32_t>(value);
-      } else if(field == UNQLITE_TIME_SEC_LABEL){
+      } else if (field == UNQLITE_TIME_SEC_LABEL) {
           time_sec_ = common::convertFromString<uint32_t>(value);
-      } else if(field == UNQLITE_READ_MB_LABEL){
+      } else if (field == UNQLITE_READ_MB_LABEL) {
           read_mb_ = common::convertFromString<uint32_t>(value);
-      } else if(field == UNQLITE_WRITE_MB_LABEL){
+      } else if (field == UNQLITE_WRITE_MB_LABEL) {
           write_mb_ = common::convertFromString<uint32_t>(value);
       }
       start = pos + 2;
@@ -138,7 +140,7 @@ std::ostream& operator<<(std::ostream& out, const UnqliteServerInfo& value) {
 }
 
 UnqliteServerInfo* makeUnqliteServerInfo(const std::string &content) {
-  if(content.empty()){
+  if (content.empty()) {
       return NULL;
   }
 
@@ -146,11 +148,11 @@ UnqliteServerInfo* makeUnqliteServerInfo(const std::string &content) {
 
   const std::vector<std::string> headers = DBTraits<UNQLITE>::infoHeaders();
   std::string word;
-  DCHECK(headers.size() == 1);
+  DCHECK_EQ(headers.size(), 1);
 
-  for(int i = 0; i < content.size(); ++i){
+  for (size_t i = 0; i < content.size(); ++i) {
       word += content[i];
-      if(word == headers[0]){
+      if (word == headers[0]) {
           std::string part = content.substr(i + 1);
           result->stats_ = UnqliteServerInfo::Stats(part);
           break;
@@ -192,7 +194,7 @@ UnqliteCommand::UnqliteCommand(FastoObject* parent, common::CommandValue* cmd,
 
 bool UnqliteCommand::isReadOnly() const {
   std::string key = inputCmd();
-  if(key.empty()){
+  if (key.empty()) {
       return true;
   }
 
@@ -200,4 +202,4 @@ bool UnqliteCommand::isReadOnly() const {
   return key != "get";
 }
 
-}
+}  // namespace fastonosql

@@ -20,20 +20,22 @@
 
 #include <ostream>
 #include <sstream>
-
-namespace {
-
-const std::vector<fastonosql::Field> rockCommonFields = {
-    fastonosql::Field(ROCKSDB_CAMPACTIONS_LEVEL_LABEL, common::Value::TYPE_UINTEGER),
-    fastonosql::Field(ROCKSDB_FILE_SIZE_MB_LABEL, common::Value::TYPE_UINTEGER),
-    fastonosql::Field(ROCKSDB_TIME_SEC_LABEL, common::Value::TYPE_UINTEGER),
-    fastonosql::Field(ROCKSDB_READ_MB_LABEL, common::Value::TYPE_UINTEGER),
-    fastonosql::Field(ROCKSDB_WRITE_MB_LABEL, common::Value::TYPE_UINTEGER)
-};
-
-}
+#include <vector>
+#include <string>
+#include <algorithm>
 
 namespace fastonosql {
+namespace {
+
+const std::vector<Field> rockCommonFields = {
+    Field(ROCKSDB_CAMPACTIONS_LEVEL_LABEL, common::Value::TYPE_UINTEGER),
+    Field(ROCKSDB_FILE_SIZE_MB_LABEL, common::Value::TYPE_UINTEGER),
+    Field(ROCKSDB_TIME_SEC_LABEL, common::Value::TYPE_UINTEGER),
+    Field(ROCKSDB_READ_MB_LABEL, common::Value::TYPE_UINTEGER),
+    Field(ROCKSDB_WRITE_MB_LABEL, common::Value::TYPE_UINTEGER)
+};
+
+}  // namespace
 
 template<>
 std::vector<common::Value::Type> DBTraits<ROCKSDB>::supportedTypes() {
@@ -66,44 +68,39 @@ RocksdbServerInfo::Stats::Stats(const std::string& common_text) {
   size_t pos = 0;
   size_t start = 0;
 
-  while((pos = src.find(("\r\n"), start)) != std::string::npos){
-      std::string line = src.substr(start, pos-start);
-      size_t delem = line.find_first_of(':');
-      std::string field = line.substr(0, delem);
-      std::string value = line.substr(delem + 1);
-      if(field == ROCKSDB_CAMPACTIONS_LEVEL_LABEL){
-          compactions_level_ = common::convertFromString<uint32_t>(value);
-      }
-      else if(field == ROCKSDB_FILE_SIZE_MB_LABEL){
-          file_size_mb_ = common::convertFromString<uint32_t>(value);
-      }
-      else if(field == ROCKSDB_TIME_SEC_LABEL){
-          time_sec_ = common::convertFromString<uint32_t>(value);
-      }
-      else if(field == ROCKSDB_READ_MB_LABEL){
-          read_mb_ = common::convertFromString<uint32_t>(value);
-      }
-      else if(field == ROCKSDB_WRITE_MB_LABEL){
-          write_mb_ = common::convertFromString<uint32_t>(value);
-      }
-      start = pos + 2;
+  while ((pos = src.find(("\r\n"), start)) != std::string::npos) {
+    std::string line = src.substr(start, pos-start);
+    size_t delem = line.find_first_of(':');
+    std::string field = line.substr(0, delem);
+    std::string value = line.substr(delem + 1);
+    if (field == ROCKSDB_CAMPACTIONS_LEVEL_LABEL) {
+        compactions_level_ = common::convertFromString<uint32_t>(value);
+    } else if (field == ROCKSDB_FILE_SIZE_MB_LABEL) {
+        file_size_mb_ = common::convertFromString<uint32_t>(value);
+    } else if (field == ROCKSDB_TIME_SEC_LABEL) {
+        time_sec_ = common::convertFromString<uint32_t>(value);
+    } else if (field == ROCKSDB_READ_MB_LABEL) {
+        read_mb_ = common::convertFromString<uint32_t>(value);
+    } else if (field == ROCKSDB_WRITE_MB_LABEL) {
+        write_mb_ = common::convertFromString<uint32_t>(value);
+    }
+    start = pos + 2;
   }
 }
 
-common::Value* RocksdbServerInfo::Stats::valueByIndex(unsigned char index) const
-{
+common::Value* RocksdbServerInfo::Stats::valueByIndex(unsigned char index) const {
   switch (index) {
-  case 0:
+    case 0:
       return new common::FundamentalValue(compactions_level_);
-  case 1:
+    case 1:
       return new common::FundamentalValue(file_size_mb_);
-  case 2:
+    case 2:
       return new common::FundamentalValue(time_sec_);
-  case 3:
+    case 3:
       return new common::FundamentalValue(read_mb_);
-  case 4:
+    case 4:
       return new common::FundamentalValue(write_mb_);
-  default:
+    default:
       NOTREACHED();
       break;
   }
@@ -118,11 +115,12 @@ RocksdbServerInfo::RocksdbServerInfo(const Stats &stats)
   : ServerInfo(ROCKSDB), stats_(stats) {
 }
 
-common::Value* RocksdbServerInfo::valueByIndexes(unsigned char property, unsigned char field) const {
+common::Value* RocksdbServerInfo::valueByIndexes(unsigned char property,
+                                                 unsigned char field) const {
   switch (property) {
-  case 0:
+    case 0:
       return stats_.valueByIndex(field);
-  default:
+    default:
       NOTREACHED();
       break;
   }
@@ -142,19 +140,19 @@ std::ostream& operator<<(std::ostream& out, const RocksdbServerInfo& value) {
 }
 
 RocksdbServerInfo* makeRocksdbServerInfo(const std::string &content) {
-  if(content.empty()){
-      return NULL;
+  if (content.empty()) {
+    return NULL;
   }
 
   RocksdbServerInfo* result = new RocksdbServerInfo;
 
   const std::vector<std::string> headers = DBTraits<ROCKSDB>::infoHeaders();
   std::string word;
-  DCHECK(headers.size() == 1);
+  DCHECK_EQ(headers.size(), 1);
 
-  for(int i = 0; i < content.size(); ++i){
+  for (size_t i = 0; i < content.size(); ++i) {
       word += content[i];
-      if(word == headers[0]){
+      if (word == headers[0]) {
           std::string part = content.substr(i + 1);
           result->stats_ = RocksdbServerInfo::Stats(part);
           break;
@@ -180,7 +178,8 @@ RocksdbServerInfo* makeRocksdbServerInfo(FastoObject* root) {
   return makeRocksdbServerInfo(content);
 }
 
-RocksdbDataBaseInfo::RocksdbDataBaseInfo(const std::string& name, bool isDefault, size_t size, const keys_cont_type &keys)
+RocksdbDataBaseInfo::RocksdbDataBaseInfo(const std::string& name, bool isDefault, size_t size,
+                                         const keys_cont_type &keys)
   : DataBaseInfo(name, isDefault, ROCKSDB, size, keys) {
 }
 
@@ -188,18 +187,19 @@ DataBaseInfo* RocksdbDataBaseInfo::clone() const {
   return new RocksdbDataBaseInfo(*this);
 }
 
-RocksdbCommand::RocksdbCommand(FastoObject* parent, common::CommandValue* cmd, const std::string &delemitr)
+RocksdbCommand::RocksdbCommand(FastoObject* parent, common::CommandValue* cmd,
+                               const std::string &delemitr)
   : FastoObjectCommand(parent, cmd, delemitr) {
 }
 
 bool RocksdbCommand::isReadOnly() const {
   std::string key = inputCmd();
-  if(key.empty()){
-      return true;
+  if (key.empty()) {
+    return true;
   }
 
   std::transform(key.begin(), key.end(), key.begin(), ::tolower);
   return key != "get";
 }
 
-}
+}  // namespace fastonosql

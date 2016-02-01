@@ -18,6 +18,8 @@
 
 #include "core/ssh_info.h"
 
+#include <string>
+
 #include "common/convert2string.h"
 #include "common/file_system.h"
 
@@ -39,11 +41,13 @@ SSHInfo::SSHInfo()
     privateKey_(common::file_system::prepare_path("~/.ssh/id_rsa")), currentMethod_(UNKNOWN) {
 }
 
-SSHInfo::SSHInfo(const std::string &hostName, int port, const std::string &userName, const std::string &password,
-               const std::string &publicKey, const std::string &privateKey, const std::string &passphrase,
-               SupportedAuthenticationMetods method)
+SSHInfo::SSHInfo(const std::string &hostName, int port, const std::string &userName,
+                 const std::string &password, const std::string &publicKey,
+                 const std::string &privateKey, const std::string &passphrase,
+                 SupportedAuthenticationMetods method)
   : hostName_(hostName), port_(port), userName_(userName), password_(password),
-    publicKey_(publicKey), privateKey_(privateKey), passphrase_(passphrase), currentMethod_(method) {
+    publicKey_(publicKey), privateKey_(privateKey), passphrase_(passphrase),
+    currentMethod_(method) {
 }
 
 SSHInfo::SSHInfo(const std::string& text)
@@ -53,26 +57,26 @@ SSHInfo::SSHInfo(const std::string& text)
     currentMethod_(UNKNOWN) {
   size_t pos = 0;
   size_t start = 0;
-  while((pos = text.find(MARKER, start)) != std::string::npos){
+  while ((pos = text.find(MARKER, start)) != std::string::npos) {
       std::string line = text.substr(start, pos-start);
       size_t delem = line.find_first_of(':');
       std::string field = line.substr(0, delem);
       std::string value = line.substr(delem + 1);
       if (field == HOST) {
           hostName_ = value;
-      } else if(field == PORT) {
+      } else if (field == PORT) {
           port_ = common::convertFromString<int>(value);
-      } else if(field == USER) {
+      } else if (field == USER) {
           userName_ = value;
-      } else if(field == PASSWORD) {
+      } else if (field == PASSWORD) {
           password_ = value;
-      } else if(field == PUBKEY) {
+      } else if (field == PUBKEY) {
           publicKey_ = value;
-      } else if(field == PRIVKEY) {
+      } else if (field == PRIVKEY) {
           privateKey_ = value;
-      } else if(field == PASSPHRASE) {
+      } else if (field == PASSPHRASE) {
           passphrase_ = value;
-      } else if(field == CURMETHOD) {
+      } else if (field == CURMETHOD) {
           currentMethod_ = (SupportedAuthenticationMetods)common::convertFromString<int>(value);
       }
       start = pos + 2;
@@ -98,4 +102,4 @@ std::string SSHInfo::toString() const {
           CURMETHOD":" + common::convertToString(currentMethod_) + MARKER;
 }
 
-}
+}  // namespace fastonosql

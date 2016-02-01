@@ -18,6 +18,8 @@
 
 #pragma once
 
+#include <string>
+
 #include "core/types.h"
 
 #define SSDB_COMMON_LABEL "# Common"
@@ -34,8 +36,7 @@ class SsdbServerInfo
   : public ServerInfo {
  public:
   struct Common
-    : FieldByIndex
-  {
+    : FieldByIndex {
       Common();
       explicit Common(const std::string& common_text);
       common::Value* valueByIndex(unsigned char index) const;
@@ -62,7 +63,8 @@ SsdbServerInfo* makeSsdbServerInfo(FastoObject *root);
 class SsdbDataBaseInfo
   : public DataBaseInfo {
  public:
-  SsdbDataBaseInfo(const std::string& name, bool isDefault, size_t size, const keys_cont_type& keys = keys_cont_type());
+  SsdbDataBaseInfo(const std::string& name, bool isDefault, size_t size,
+                   const keys_cont_type& keys = keys_cont_type());
   virtual DataBaseInfo* clone() const;
 };
 
@@ -73,4 +75,4 @@ class SsdbCommand
   virtual bool isReadOnly() const;
 };
 
-}
+}  // namespace fastonosql

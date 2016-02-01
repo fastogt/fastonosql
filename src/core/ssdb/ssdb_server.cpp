@@ -23,11 +23,11 @@
 namespace fastonosql {
 
 SsdbServer::SsdbServer(const IDriverSPtr& drv, bool isSuperServer)
-  : IServer(drv,isSuperServer) {
+  : IServer(drv, isSuperServer) {
 }
 
 IDatabaseSPtr SsdbServer::createDatabase(DataBaseInfoSPtr info) {
   return IDatabaseSPtr(new SsdbDatabase(shared_from_this(), info));
 }
 
-}
+}  // namespace fastonosql

@@ -18,6 +18,8 @@
 
 #pragma once
 
+#include <string>
+
 #include "core/connection_confg.h"
 
 #include "common/convert2string.h"
@@ -32,7 +34,7 @@ struct ssdbConfig
   std::string password_;
 };
 
-}
+}  // namespace fastonosql
 
 namespace common {
   std::string convertToString(const fastonosql::ssdbConfig &conf);

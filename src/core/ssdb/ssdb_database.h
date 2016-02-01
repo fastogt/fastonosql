@@ -29,4 +29,4 @@ class SsdbDatabase
   SsdbDatabase(IServerSPtr server, DataBaseInfoSPtr info);
 };
 
-}
+}  // namespace fastonosql

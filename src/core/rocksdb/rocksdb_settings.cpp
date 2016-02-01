@@ -18,6 +18,8 @@
 
 #include "core/rocksdb/rocksdb_settings.h"
 
+#include <string>
+
 namespace fastonosql {
 
 RocksdbConnectionSettings::RocksdbConnectionSettings(const std::string& connectionName)
@@ -58,4 +60,4 @@ void RocksdbConnectionSettings::initFromCommandLine(const std::string& val) {
   info_ = common::convertFromString<rocksdbConfig>(val);
 }
 
-}
+}  // namespace fastonosql

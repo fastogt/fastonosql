@@ -18,6 +18,8 @@
 
 #pragma once
 
+#include <string>
+
 #include "core/idriver.h"
 
 #include "core/rocksdb/rocksdb_settings.h"
@@ -63,7 +65,7 @@ common::Error testConnection(RocksdbConnectionSettings* settings);
 
 class RocksdbDriver
   : public IDriver {
- Q_OBJECT
+  Q_OBJECT
  public:
   explicit RocksdbDriver(IConnectionSettingsBaseSPtr settings);
   virtual ~RocksdbDriver();
@@ -81,7 +83,8 @@ class RocksdbDriver
 
   virtual common::Error executeImpl(FastoObject* out, int argc, char **argv);
   virtual common::Error serverInfo(ServerInfo** info);
-  virtual common::Error serverDiscoveryInfo(ServerInfo** sinfo, ServerDiscoveryInfo** dinfo, DataBaseInfo** dbinfo);
+  virtual common::Error serverDiscoveryInfo(ServerInfo** sinfo,
+                                            ServerDiscoveryInfo** dinfo, DataBaseInfo** dbinfo);
   virtual common::Error currentDataBaseInfo(DataBaseInfo** info);
 
   virtual void handleConnectEvent(events::ConnectRequestEvent* ev);
@@ -91,24 +94,28 @@ class RocksdbDriver
   virtual void handleLoadServerInfoEvent(events::ServerInfoRequestEvent* ev);
   virtual void handleProcessCommandLineArgs(events::ProcessConfigArgsRequestEvent* ev);
 
-// ============== commands =============//
-  virtual common::Error commandDeleteImpl(CommandDeleteKey* command, std::string& cmdstring) const WARN_UNUSED_RESULT;
-  virtual common::Error commandLoadImpl(CommandLoadKey* command, std::string& cmdstring) const WARN_UNUSED_RESULT;
-  virtual common::Error commandCreateImpl(CommandCreateKey* command, std::string& cmdstring) const WARN_UNUSED_RESULT;
-  virtual common::Error commandChangeTTLImpl(CommandChangeTTL* command, std::string& cmdstring) const WARN_UNUSED_RESULT;
-// ============== commands =============//
+  // ============== commands =============//
+  virtual common::Error commandDeleteImpl(CommandDeleteKey* command,
+                                          std::string& cmdstring) const WARN_UNUSED_RESULT;
+  virtual common::Error commandLoadImpl(CommandLoadKey* command,
+                                        std::string& cmdstring) const WARN_UNUSED_RESULT;
+  virtual common::Error commandCreateImpl(CommandCreateKey* command,
+                                          std::string& cmdstring) const WARN_UNUSED_RESULT;
+  virtual common::Error commandChangeTTLImpl(CommandChangeTTL* command,
+                                             std::string& cmdstring) const WARN_UNUSED_RESULT;
+  // ============== commands =============//
 
-// ============== database =============//
+  // ============== database =============//
   virtual void handleLoadDatabaseContentEvent(events::LoadDatabaseContentRequestEvent* ev);
   virtual void handleSetDefaultDatabaseEvent(events::SetDefaultDatabaseRequestEvent* ev);
-// ============== database =============//
-// ============== command =============//
+  // ============== database =============//
+  // ============== command =============//
   virtual void handleCommandRequestEvent(events::CommandRequestEvent* ev);
-// ============== command =============//
+  // ============== command =============//
   ServerInfoSPtr makeServerInfoFromString(const std::string& val);
 
   struct pimpl;
   pimpl* const impl_;
 };
 
-}
+}  // namespace fastonosql

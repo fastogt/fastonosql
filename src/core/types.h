@@ -18,6 +18,10 @@
 
 #pragma once
 
+#include <vector>
+#include <utility>
+#include <string>
+
 #include "global/global.h"
 
 #include "core/connection_types.h"
@@ -95,8 +99,6 @@ class ServerDiscoveryInfo {
   void setHost(const common::net::hostAndPort& host);
 
  protected:
-  DISALLOW_COPY_AND_ASSIGN(ServerDiscoveryInfo);
-
   ServerDiscoveryInfo(connectionTypes ctype, serverTypes type, bool self);
   common::net::hostAndPort host_;
   std::string name_;
@@ -105,6 +107,7 @@ class ServerDiscoveryInfo {
   const bool self_;
   const serverTypes type_;
   const connectionTypes ctype_;
+  DISALLOW_COPY_AND_ASSIGN(ServerDiscoveryInfo);
 };
 
 typedef common::shared_ptr<ServerDiscoveryInfo> ServerDiscoveryInfoSPtr;
@@ -120,10 +123,8 @@ class ServerInfo {
   virtual common::Value* valueByIndexes(unsigned char property, unsigned char field) const = 0;
 
  private:
-  DISALLOW_COPY_AND_ASSIGN(ServerInfo);
-
- private:
   const connectionTypes type_;
+  DISALLOW_COPY_AND_ASSIGN(ServerInfo);
 };
 
 struct FieldByIndex {
@@ -187,8 +188,8 @@ class DataBaseInfo {
   void setKeys(const keys_cont_type& keys);
 
  protected:
-  DataBaseInfo(const std::string& name, bool isDefault, connectionTypes type, size_t size, const keys_cont_type& keys);
-  //DISALLOW_COPY_AND_ASSIGN(DataBaseInfo);
+  DataBaseInfo(const std::string& name, bool isDefault, connectionTypes type,
+               size_t size, const keys_cont_type& keys);
 
  private:
   const std::string name_;
@@ -201,8 +202,7 @@ class DataBaseInfo {
 
 class CommandKey {
  public:
-  enum cmdtype
-  {
+  enum cmdtype {
     C_DELETE,
     C_LOAD,
     C_CREATE,
@@ -256,13 +256,13 @@ typedef common::shared_ptr<CommandKey> CommandKeySPtr;
 template<typename Command>
 FastoObjectCommand* createCommand(FastoObject* parent, const std::string& input,
                                   common::Value::CommandLoggingType ct) {
-  if(input.empty()){
-      return NULL;
+  if (input.empty()) {
+    return NULL;
   }
 
   DCHECK(parent);
-  if(!parent){
-      return NULL;
+  if (!parent) {
+    return NULL;
   }
 
   common::CommandValue* cmd = common::Value::createCommand(input, ct);
@@ -277,4 +277,4 @@ FastoObjectCommand* createCommand(FastoObjectIPtr parent, const std::string& inp
   return createCommand<Command>(parent.get(), input, ct);
 }
 
-}
+}  // namespace fastonosql

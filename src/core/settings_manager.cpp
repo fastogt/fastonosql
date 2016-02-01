@@ -18,6 +18,8 @@
 
 #include "core/settings_manager.h"
 
+#include <string>
+
 #include <QSettings>
 
 #include "fasto/qt/translations/translations.h"
@@ -57,7 +59,7 @@ QString fontName() {
 #endif
 }
 
-}
+}  // namespace
 
 
 namespace fastonosql {
@@ -65,7 +67,7 @@ SettingsManager::SettingsManager()
   : views_(), curStyle_(), curFontName_(), curLanguage_(), connections_(),
     syncTabs_(), loggingDir_(),
     autoCheckUpdate_(), autoCompletion_(), autoOpenConsole_(), fastViewKeys_() {
- load();
+  load();
 }
 
 
@@ -115,8 +117,9 @@ void SettingsManager::setCurrentLanguage(const QString &lang) {
 }
 
 void SettingsManager::addConnection(IConnectionSettingsBaseSPtr connection) {
-  if(connection){
-    ConnectionSettingsContainerType::iterator it = std::find(connections_.begin(),connections_.end(),connection);
+  if (connection) {
+    ConnectionSettingsContainerType::iterator it = std::find(connections_.begin(),
+                                                             connections_.end(), connection);
     if (it == connections_.end()) {
       connections_.push_back(connection);
     }
@@ -124,8 +127,9 @@ void SettingsManager::addConnection(IConnectionSettingsBaseSPtr connection) {
 }
 
 void SettingsManager::removeConnection(IConnectionSettingsBaseSPtr connection) {
-  if(connection){
-    ConnectionSettingsContainerType::iterator it = std::find(connections_.begin(),connections_.end(),connection);
+  if (connection) {
+    ConnectionSettingsContainerType::iterator it = std::find(connections_.begin(),
+                                                             connections_.end(), connection);
     if (it != connections_.end()) {
       connections_.erase(it);
     }
@@ -137,8 +141,9 @@ SettingsManager::ConnectionSettingsContainerType SettingsManager::connections() 
 }
 
 void SettingsManager::addCluster(IClusterSettingsBaseSPtr cluster) {
-  if(cluster){
-    ClusterSettingsContainerType::iterator it = std::find(clusters_.begin(),clusters_.end(),cluster);
+  if (cluster) {
+    ClusterSettingsContainerType::iterator it = std::find(clusters_.begin(),
+                                                          clusters_.end(), cluster);
     if (it == clusters_.end()) {
       clusters_.push_back(cluster);
     }
@@ -146,8 +151,9 @@ void SettingsManager::addCluster(IClusterSettingsBaseSPtr cluster) {
 }
 
 void SettingsManager::removeCluster(IClusterSettingsBaseSPtr cluster) {
-  if(cluster){
-    ClusterSettingsContainerType::iterator it = std::find(clusters_.begin(), clusters_.end(), cluster);
+  if (cluster) {
+    ClusterSettingsContainerType::iterator it = std::find(clusters_.begin(),
+                                                          clusters_.end(), cluster);
     if (it != clusters_.end()) {
       clusters_.erase(it);
     }
@@ -159,8 +165,9 @@ SettingsManager::ClusterSettingsContainerType SettingsManager::clusters() const 
 }
 
 void SettingsManager::addRConnection(const QString& connection) {
-  if(!connection.isEmpty()){
-    QStringList::iterator it = std::find(recentConnections_.begin(), recentConnections_.end(), connection);
+  if (!connection.isEmpty()) {
+    QStringList::iterator it = std::find(recentConnections_.begin(),
+                                         recentConnections_.end(), connection);
     if (it == recentConnections_.end()) {
       recentConnections_.push_front(connection);
     }
@@ -168,8 +175,9 @@ void SettingsManager::addRConnection(const QString& connection) {
 }
 
 void SettingsManager::removeRConnection(const QString& connection) {
-  if(!connection.isEmpty()){
-    QStringList::iterator it = std::find(recentConnections_.begin(), recentConnections_.end(), connection);
+  if (!connection.isEmpty()) {
+    QStringList::iterator it = std::find(recentConnections_.begin(),
+                                         recentConnections_.end(), connection);
     if (it != recentConnections_.end()) {
       recentConnections_.erase(it);
     }
@@ -233,14 +241,14 @@ void SettingsManager::setFastViewKeys(bool fastView) {
 }
 
 void SettingsManager::reloadFromPath(const std::string& path, bool merge) {
-  if(path.empty()){
-      return;
+  if (path.empty()) {
+    return;
   }
 
-  if(!merge){
-      clusters_.clear();
-      connections_.clear();
-      recentConnections_.clear();
+  if (!merge) {
+    clusters_.clear();
+    connections_.clear();
+    recentConnections_.clear();
   }
 
   QString inip = common::convertFromString<QString>(common::file_system::prepare_path(path));
@@ -255,44 +263,44 @@ void SettingsManager::reloadFromPath(const std::string& path, bool merge) {
   views_ = static_cast<supportedViews>(view);
 
   QList<QVariant> clusters = settings.value(CLUSTERS, "").toList();
-  for(QList<QVariant>::const_iterator it = clusters.begin(); it != clusters.end(); ++it){
+  for (QList<QVariant>::const_iterator it = clusters.begin(); it != clusters.end(); ++it) {
       QVariant var = *it;
       QString string = var.toString();
       std::string encoded = common::convertToString(string);
       std::string raw = common::utils::base64::decode64(encoded);
 
       IClusterSettingsBaseSPtr sett(IClusterSettingsBase::fromString(raw));
-      if(sett){
+      if (sett) {
          clusters_.push_back(sett);
       }
   }
 
   QList<QVariant> connections = settings.value(CONNECTIONS, "").toList();
-  for(QList<QVariant>::const_iterator it = connections.begin(); it != connections.end(); ++it){
+  for (QList<QVariant>::const_iterator it = connections.begin(); it != connections.end(); ++it) {
       QVariant var = *it;
       QString string = var.toString();
       std::string encoded = common::convertToString(string);
       std::string raw = common::utils::base64::decode64(encoded);
 
       IConnectionSettingsBaseSPtr sett(IConnectionSettingsBase::fromString(raw));
-      if(sett){
+      if (sett) {
          connections_.push_back(sett);
       }
   }
 
   QStringList rconnections = settings.value(RCONNECTIONS, "").toStringList();
-  for(QStringList::const_iterator it = rconnections.begin(); it != rconnections.end(); ++it){
+  for (QStringList::const_iterator it = rconnections.begin(); it != rconnections.end(); ++it) {
       QString string = *it;
       std::string encoded = common::convertToString(string);
       std::string raw = common::utils::base64::decode64(encoded);
 
       QString qdata = common::convertFromString<QString>(raw);
-      if(!qdata.isEmpty()){
+      if (!qdata.isEmpty()) {
          recentConnections_.push_back(qdata);
       }
   }
 
-  syncTabs_= settings.value(SYNCTABS, false).toBool();
+  syncTabs_ = settings.value(SYNCTABS, false).toBool();
 
   loggingDir_ = settings.value(LOGGINGDIR, settingsDirPath()).toString();
   autoCheckUpdate_ = settings.value(CHECKUPDATES, true).toBool();
@@ -306,7 +314,8 @@ void SettingsManager::load() {
 }
 
 void SettingsManager::save() {
-  QSettings settings(common::convertFromString<QString>(common::file_system::prepare_path(iniPath)), QSettings::IniFormat);
+  QSettings settings(common::convertFromString<QString>(common::file_system::prepare_path(iniPath)),
+                     QSettings::IniFormat);
   DCHECK(settings.status() == QSettings::NoError);
 
   settings.setValue(STYLE, curStyle_);
@@ -315,9 +324,10 @@ void SettingsManager::save() {
   settings.setValue(VIEW, views_);
 
   QList<QVariant> clusters;
-  for(ClusterSettingsContainerType::const_iterator it = clusters_.begin(); it != clusters_.end(); ++it){
+  for (ClusterSettingsContainerType::const_iterator it = clusters_.begin();
+       it != clusters_.end(); ++it) {
       IClusterSettingsBaseSPtr conn = *it;
-      if(conn){
+      if (conn) {
          std::string raw = conn->toString();
          std::string enc = common::utils::base64::encode64(raw);
          QString qdata = common::convertFromString<QString>(enc);
@@ -327,9 +337,10 @@ void SettingsManager::save() {
   settings.setValue(CLUSTERS, clusters);
 
   QList<QVariant> connections;
-  for(ConnectionSettingsContainerType::const_iterator it = connections_.begin(); it != connections_.end(); ++it){
+  for (ConnectionSettingsContainerType::const_iterator it = connections_.begin();
+       it != connections_.end(); ++it) {
       IConnectionSettingsBaseSPtr conn = *it;
-      if(conn){
+      if (conn) {
          std::string raw = conn->toString();
          std::string enc = common::utils::base64::encode64(raw);
          QString qdata = common::convertFromString<QString>(enc);
@@ -339,9 +350,10 @@ void SettingsManager::save() {
   settings.setValue(CONNECTIONS, connections);
 
   QStringList rconnections;
-  for(QStringList::const_iterator it = recentConnections_.begin(); it != recentConnections_.end(); ++it){
+  for (QStringList::const_iterator it = recentConnections_.begin();
+       it != recentConnections_.end(); ++it) {
       QString conn = *it;
-      if(!conn.isEmpty()){
+      if (!conn.isEmpty()) {
          std::string raw = common::convertToString(conn);
          std::string enc = common::utils::base64::encode64(raw);
          QString qdata = common::convertFromString<QString>(enc);
@@ -358,4 +370,4 @@ void SettingsManager::save() {
   settings.setValue(FASTVIEWKEYS, fastViewKeys_);
 }
 
-}
+}  // namespace fastonosql

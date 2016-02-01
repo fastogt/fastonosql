@@ -18,6 +18,8 @@
 
 #pragma once
 
+#include <string>
+
 #include "core/core_fwd.h"
 
 #include "events/events_info.h"
@@ -48,4 +50,4 @@ class IDatabase {
   const IServerSPtr server_;
 };
 
-}
+}  // namespace fastonosql

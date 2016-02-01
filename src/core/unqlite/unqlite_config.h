@@ -18,6 +18,8 @@
 
 #pragma once
 
+#include <string>
+
 #include "common/convert2string.h"
 
 #include "core/connection_confg.h"
@@ -31,7 +33,7 @@ struct unqliteConfig
   bool create_if_missing_;
 };
 
-}
+}  // namespace fastonosql
 
 namespace common {
   std::string convertToString(const fastonosql::unqliteConfig &conf);

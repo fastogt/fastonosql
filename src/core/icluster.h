@@ -18,6 +18,9 @@
 
 #pragma once
 
+#include <vector>
+#include <string>
+
 #include "core/core_fwd.h"
 
 #include "core/iserver.h"
@@ -43,4 +46,4 @@ class ICluster
   nodes_type nodes_;
 };
 
-}
+}  // namespace fastonosql

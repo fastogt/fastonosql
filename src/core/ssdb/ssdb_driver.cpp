@@ -18,6 +18,10 @@
 
 #include "core/ssdb/ssdb_driver.h"
 
+#include <string>
+#include <vector>
+#include <map>
+
 #include "common/sprintf.h"
 #include "common/utils.h"
 #include "fasto/qt/logger.h"
@@ -54,7 +58,7 @@ common::Error createConnection(const ssdbConfig& config, const SSHInfo& sinfo,
   DCHECK(*context == NULL);
   UNUSED(sinfo);
   ssdb::Client *lcontext = ssdb::Client::connect(config.hostip_, config.hostport_);
-  if (!lcontext){
+  if (!lcontext) {
     return common::make_error_value("Fail connect to server!", common::ErrorValue::E_ERROR);
   }
 
@@ -64,7 +68,7 @@ common::Error createConnection(const ssdbConfig& config, const SSHInfo& sinfo,
 }
 
 common::Error createConnection(SsdbConnectionSettings* settings, ssdb::Client** context) {
-  if(!settings){
+  if (!settings) {
     return common::make_error_value("Invalid input argument", common::ErrorValue::E_ERROR);
   }
 
@@ -73,12 +77,12 @@ common::Error createConnection(SsdbConnectionSettings* settings, ssdb::Client** 
   return createConnection(config, sinfo, context);
 }
 
-}
+}  // namespace
 
 common::Error testConnection(SsdbConnectionSettings* settings) {
   ssdb::Client* ssdb = NULL;
   common::Error er = createConnection(settings, &ssdb);
-  if(er){
+  if (er) {
       return er;
   }
 
@@ -101,7 +105,7 @@ struct SsdbDriver::pimpl {
   }
 
   common::Error connect() {
-    if(isConnected()){
+    if (isConnected()) {
       return common::Error();
     }
 
@@ -120,7 +124,7 @@ struct SsdbDriver::pimpl {
   }
 
   common::Error disconnect() {
-    if(!isConnected()){
+    if (!isConnected()) {
       return common::Error();
     }
 
@@ -137,16 +141,16 @@ struct SsdbDriver::pimpl {
       return common::make_error_value(buff, common::ErrorValue::E_ERROR);
     }
 
-    for(int i = 0; i < ret.size(); i += 2){
-      if(ret[i] == SSDB_VERSION_LABEL){
+    for (int i = 0; i < ret.size(); i += 2) {
+      if (ret[i] == SSDB_VERSION_LABEL) {
         statsout.version_ = ret[i + 1];
       } else if (ret[i] == SSDB_LINKS_LABEL) {
         statsout.links_ = common::convertFromString<uint32_t>(ret[i + 1]);
-      } else if(ret[i] == SSDB_TOTAL_CALLS_LABEL) {
+      } else if (ret[i] == SSDB_TOTAL_CALLS_LABEL) {
         statsout.total_calls_ = common::convertFromString<uint32_t>(ret[i + 1]);
-      } else if(ret[i] == SSDB_DBSIZE_LABEL) {
+      } else if (ret[i] == SSDB_DBSIZE_LABEL) {
         statsout.dbsize_ = common::convertFromString<uint32_t>(ret[i + 1]);
-      } else if(ret[i] == SSDB_BINLOGS_LABEL){
+      } else if (ret[i] == SSDB_BINLOGS_LABEL) {
         statsout.binlogs_ = ret[i + 1];
       }
     }
@@ -157,7 +161,7 @@ struct SsdbDriver::pimpl {
   common::Error dbsize(size_t& size) WARN_UNUSED_RESULT {
     int64_t sz = 0;
     ssdb::Status st = ssdb_->dbsize(&sz);
-    if (st.error()){
+    if (st.error()) {
       char buff[1024] = {0};
       common::SNPrintf(buff, sizeof(buff), "Couldn't determine DBSIZE error: %s", st.code());
       return common::make_error_value(buff, common::ErrorValue::E_ERROR);
@@ -176,7 +180,7 @@ struct SsdbDriver::pimpl {
 
   common::Error execute_impl(FastoObject* out, int argc, char **argv) {
     if (strcasecmp(argv[0], "get") == 0) {
-      if (argc != 2){
+      if (argc != 2) {
         return common::make_error_value("Invalid get input argument", common::ErrorValue::E_ERROR);
       }
 
@@ -188,19 +192,19 @@ struct SsdbDriver::pimpl {
           out->addChildren(child);
         }
         return er;
-    } else if(strcasecmp(argv[0], "set") == 0){
+    } else if (strcasecmp(argv[0], "set") == 0) {
       if (argc != 3) {
         return common::make_error_value("Invalid set input argument", common::ErrorValue::E_ERROR);
       }
 
       common::Error er = set(argv[1], argv[2]);
-      if (!er){
+      if (!er) {
         common::StringValue *val = common::Value::createStringValue("STORED");
         FastoObject* child = new FastoObject(out, val, config_.mb_delim_);
         out->addChildren(child);
       }
       return er;
-    } else if(strcasecmp(argv[0], "dbsize") == 0){
+    } else if (strcasecmp(argv[0], "dbsize") == 0) {
       if (argc != 1) {
         return common::make_error_value("Invalid dbsize input argument", common::ErrorValue::E_ERROR);
       }
@@ -213,7 +217,7 @@ struct SsdbDriver::pimpl {
         out->addChildren(child);
       }
       return er;
-    } else if(strcasecmp(argv[0], "auth") == 0){
+    } else if (strcasecmp(argv[0], "auth") == 0) {
       if (argc != 2) {
         return common::make_error_value("Invalid auth input argument", common::ErrorValue::E_ERROR);
       }
@@ -225,7 +229,7 @@ struct SsdbDriver::pimpl {
         out->addChildren(child);
       }
       return er;
-    } else if(strcasecmp(argv[0], "setx") == 0){
+    } else if (strcasecmp(argv[0], "setx") == 0) {
       if (argc != 4) {
         return common::make_error_value("Invalid setx input argument", common::ErrorValue::E_ERROR);
       }
@@ -237,7 +241,7 @@ struct SsdbDriver::pimpl {
         out->addChildren(child);
       }
       return er;
-    } else if(strcasecmp(argv[0], "del") == 0){
+    } else if (strcasecmp(argv[0], "del") == 0) {
       if (argc != 2) {
         return common::make_error_value("Invalid del input argument", common::ErrorValue::E_ERROR);
       }
@@ -249,7 +253,7 @@ struct SsdbDriver::pimpl {
         out->addChildren(child);
       }
       return er;
-    } else if(strcasecmp(argv[0], "incr") == 0){
+    } else if (strcasecmp(argv[0], "incr") == 0) {
       if (argc != 3) {
         return common::make_error_value("Invalid incr input argument", common::ErrorValue::E_ERROR);
       }
@@ -262,7 +266,7 @@ struct SsdbDriver::pimpl {
         out->addChildren(child);
       }
       return er;
-    } else if(strcasecmp(argv[0], "keys") == 0){
+    } else if (strcasecmp(argv[0], "keys") == 0) {
       if (argc != 4) {
         return common::make_error_value("Invalid keys input argument", common::ErrorValue::E_ERROR);
       }
@@ -271,7 +275,7 @@ struct SsdbDriver::pimpl {
       common::Error er = keys(argv[1], argv[2], atoll(argv[3]), &keysout);
       if (!er) {
         common::ArrayValue* ar = common::Value::createArrayValue();
-        for(size_t i = 0; i < keysout.size(); ++i){
+        for (size_t i = 0; i < keysout.size(); ++i) {
           common::StringValue *val = common::Value::createStringValue(keysout[i]);
           ar->append(val);
         }
@@ -279,7 +283,7 @@ struct SsdbDriver::pimpl {
         out->addChildren(child);
       }
       return er;
-    } else if(strcasecmp(argv[0], "scan") == 0){
+    } else if (strcasecmp(argv[0], "scan") == 0) {
       if (argc != 4) {
         return common::make_error_value("Invalid scan input argument", common::ErrorValue::E_ERROR);
       }
@@ -288,7 +292,7 @@ struct SsdbDriver::pimpl {
       common::Error er = scan(argv[1], argv[2], atoll(argv[3]), &keysout);
       if (!er) {
         common::ArrayValue* ar = common::Value::createArrayValue();
-        for(size_t i = 0; i < keysout.size(); ++i){
+        for (size_t i = 0; i < keysout.size(); ++i) {
           common::StringValue *val = common::Value::createStringValue(keysout[i]);
           ar->append(val);
         }
@@ -296,7 +300,7 @@ struct SsdbDriver::pimpl {
         out->addChildren(child);
       }
       return er;
-    } else if(strcasecmp(argv[0], "rscan") == 0){
+    } else if (strcasecmp(argv[0], "rscan") == 0) {
       if (argc != 4) {
         return common::make_error_value("Invalid rscan input argument", common::ErrorValue::E_ERROR);
       }
@@ -305,7 +309,7 @@ struct SsdbDriver::pimpl {
       common::Error er = rscan(argv[1], argv[2], atoll(argv[3]), &keysout);
       if (!er) {
         common::ArrayValue* ar = common::Value::createArrayValue();
-        for(size_t i = 0; i < keysout.size(); ++i){
+        for (size_t i = 0; i < keysout.size(); ++i) {
           common::StringValue *val = common::Value::createStringValue(keysout[i]);
           ar->append(val);
         }
@@ -313,13 +317,13 @@ struct SsdbDriver::pimpl {
         out->addChildren(child);
       }
       return er;
-    } else if(strcasecmp(argv[0], "multi_get") == 0){
+    } else if (strcasecmp(argv[0], "multi_get") == 0) {
       if (argc < 2) {
         return common::make_error_value("Invalid multi_get input argument", common::ErrorValue::E_ERROR);
       }
 
       std::vector<std::string> keysget;
-      for(int i = 1; i < argc; ++i){
+      for (int i = 1; i < argc; ++i) {
         keysget.push_back(argv[i]);
       }
 
@@ -327,7 +331,7 @@ struct SsdbDriver::pimpl {
       common::Error er = multi_get(keysget, &keysout);
       if (!er) {
         common::ArrayValue* ar = common::Value::createArrayValue();
-        for(size_t i = 0; i < keysout.size(); ++i){
+        for (size_t i = 0; i < keysout.size(); ++i) {
           common::StringValue *val = common::Value::createStringValue(keysout[i]);
           ar->append(val);
         }
@@ -335,13 +339,13 @@ struct SsdbDriver::pimpl {
         out->addChildren(child);
       }
       return er;
-    } else if(strcasecmp(argv[0], "multi_del") == 0){
+    } else if (strcasecmp(argv[0], "multi_del") == 0) {
       if (argc < 2) {
         return common::make_error_value("Invalid multi_del input argument", common::ErrorValue::E_ERROR);
       }
 
       std::vector<std::string> keysget;
-      for(size_t i = 1; i < argc; ++i){
+      for (size_t i = 1; i < argc; ++i) {
         keysget.push_back(argv[i]);
       }
 
@@ -352,13 +356,13 @@ struct SsdbDriver::pimpl {
         out->addChildren(child);
       }
       return er;
-    } else if(strcasecmp(argv[0], "multi_set") == 0){
-      if(argc < 2 || argc % 2){
+    } else if (strcasecmp(argv[0], "multi_set") == 0) {
+      if (argc < 2 || argc % 2) {
         return common::make_error_value("Invalid multi_del input argument", common::ErrorValue::E_ERROR);
       }
 
       std::map<std::string, std::string> keysset;
-      for(size_t i = 1; i < argc; i += 2){
+      for (size_t i = 1; i < argc; i += 2) {
         keysset[argv[i]] = argv[i + 1];
       }
 
@@ -369,7 +373,7 @@ struct SsdbDriver::pimpl {
         out->addChildren(child);
       }
       return er;
-    } else if(strcasecmp(argv[0], "hget") == 0){
+    } else if (strcasecmp(argv[0], "hget") == 0) {
       if (argc != 3) {
         return common::make_error_value("Invalid hget input argument", common::ErrorValue::E_ERROR);
       }
@@ -382,8 +386,8 @@ struct SsdbDriver::pimpl {
         out->addChildren(child);
       }
       return er;
-    } else if(strcasecmp(argv[0], "hset") == 0){
-      if(argc != 4){
+    } else if (strcasecmp(argv[0], "hset") == 0) {
+      if (argc != 4) {
         return common::make_error_value("Invalid hset input argument", common::ErrorValue::E_ERROR);
       }
 
@@ -394,7 +398,7 @@ struct SsdbDriver::pimpl {
         out->addChildren(child);
       }
       return er;
-    } else if(strcasecmp(argv[0], "hdel") == 0){
+    } else if (strcasecmp(argv[0], "hdel") == 0) {
       if (argc != 3) {
         return common::make_error_value("Invalid hset input argument", common::ErrorValue::E_ERROR);
       }
@@ -406,7 +410,7 @@ struct SsdbDriver::pimpl {
          out->addChildren(child);
       }
       return er;
-    } else if(strcasecmp(argv[0], "hincr") == 0){
+    } else if (strcasecmp(argv[0], "hincr") == 0) {
       if (argc != 4) {
         return common::make_error_value("Invalid hincr input argument", common::ErrorValue::E_ERROR);
       }
@@ -419,8 +423,8 @@ struct SsdbDriver::pimpl {
         out->addChildren(child);
       }
       return er;
-    } else if(strcasecmp(argv[0], "hsize") == 0){
-      if(argc != 2){
+    } else if (strcasecmp(argv[0], "hsize") == 0) {
+      if (argc != 2) {
         return common::make_error_value("Invalid hsize input argument", common::ErrorValue::E_ERROR);
       }
 
@@ -432,7 +436,7 @@ struct SsdbDriver::pimpl {
         out->addChildren(child);
       }
       return er;
-    } else if(strcasecmp(argv[0], "hclear") == 0){
+    } else if (strcasecmp(argv[0], "hclear") == 0) {
       if (argc != 2) {
         return common::make_error_value("Invalid hclear input argument", common::ErrorValue::E_ERROR);
       }
@@ -445,7 +449,7 @@ struct SsdbDriver::pimpl {
         out->addChildren(child);
       }
       return er;
-    } else if(strcasecmp(argv[0], "hkeys") == 0){
+    } else if (strcasecmp(argv[0], "hkeys") == 0) {
       if (argc != 5) {
         return common::make_error_value("Invalid hclear input argument", common::ErrorValue::E_ERROR);
       }
@@ -454,7 +458,7 @@ struct SsdbDriver::pimpl {
       common::Error er = hkeys(argv[1], argv[2], argv[3], atoll(argv[4]), &keysout);
       if (!er) {
         common::ArrayValue* ar = common::Value::createArrayValue();
-        for(size_t i = 0; i < keysout.size(); ++i){
+        for (size_t i = 0; i < keysout.size(); ++i) {
           common::StringValue *val = common::Value::createStringValue(keysout[i]);
           ar->append(val);
         }
@@ -462,8 +466,8 @@ struct SsdbDriver::pimpl {
         out->addChildren(child);
       }
       return er;
-    } else if(strcasecmp(argv[0], "hscan") == 0){
-      if(argc != 5){
+    } else if (strcasecmp(argv[0], "hscan") == 0) {
+      if (argc != 5) {
         return common::make_error_value("Invalid hscan input argument", common::ErrorValue::E_ERROR);
       }
 
@@ -471,7 +475,7 @@ struct SsdbDriver::pimpl {
       common::Error er = hscan(argv[1], argv[2], argv[3], atoll(argv[4]), &keysout);
       if (!er) {
         common::ArrayValue* ar = common::Value::createArrayValue();
-        for(int i = 0; i < keysout.size(); ++i){
+        for (int i = 0; i < keysout.size(); ++i) {
           common::StringValue *val = common::Value::createStringValue(keysout[i]);
           ar->append(val);
         }
@@ -479,8 +483,8 @@ struct SsdbDriver::pimpl {
         out->addChildren(child);
       }
       return er;
-    } else if(strcasecmp(argv[0], "hrscan") == 0){
-      if(argc != 5){
+    } else if (strcasecmp(argv[0], "hrscan") == 0) {
+      if (argc != 5) {
         return common::make_error_value("Invalid hrscan input argument", common::ErrorValue::E_ERROR);
       }
 
@@ -488,7 +492,7 @@ struct SsdbDriver::pimpl {
       common::Error er = hrscan(argv[1], argv[2], argv[3], atoll(argv[4]), &keysout);
       if (!er) {
         common::ArrayValue* ar = common::Value::createArrayValue();
-        for(int i = 0; i < keysout.size(); ++i){
+        for (int i = 0; i < keysout.size(); ++i) {
           common::StringValue *val = common::Value::createStringValue(keysout[i]);
           ar->append(val);
         }
@@ -496,13 +500,13 @@ struct SsdbDriver::pimpl {
         out->addChildren(child);
       }
       return er;
-    } else if(strcasecmp(argv[0], "multi_hget") == 0){
+    } else if (strcasecmp(argv[0], "multi_hget") == 0) {
       if (argc < 2) {
         return common::make_error_value("Invalid multi_get input argument", common::ErrorValue::E_ERROR);
       }
 
       std::vector<std::string> keysget;
-      for(int i = 2; i < argc; ++i){
+      for (int i = 2; i < argc; ++i) {
         keysget.push_back(argv[i]);
       }
 
@@ -510,7 +514,7 @@ struct SsdbDriver::pimpl {
       common::Error er = multi_hget(argv[1], keysget, &keysout);
       if (!er) {
         common::ArrayValue* ar = common::Value::createArrayValue();
-        for(int i = 0; i < keysout.size(); ++i){
+        for (int i = 0; i < keysout.size(); ++i) {
           common::StringValue *val = common::Value::createStringValue(keysout[i]);
           ar->append(val);
         }
@@ -518,13 +522,13 @@ struct SsdbDriver::pimpl {
         out->addChildren(child);
       }
       return er;
-    } else if(strcasecmp(argv[0], "multi_hset") == 0){
-      if(argc < 2 || (argc % 2 == 0)){
+    } else if (strcasecmp(argv[0], "multi_hset") == 0) {
+      if (argc < 2 || (argc % 2 == 0)) {
         return common::make_error_value("Invalid multi_hset input argument", common::ErrorValue::E_ERROR);
       }
 
       std::map<std::string, std::string> keys;
-      for(int i = 2; i < argc; i += 2){
+      for (int i = 2; i < argc; i += 2) {
         keys[argv[i]] = argv[i + 1];
       }
 
@@ -535,8 +539,8 @@ struct SsdbDriver::pimpl {
         out->addChildren(child);
       }
       return er;
-    } else if(strcasecmp(argv[0], "zget") == 0){
-      if(argc != 3){
+    } else if (strcasecmp(argv[0], "zget") == 0) {
+      if (argc != 3) {
         return common::make_error_value("Invalid zget input argument", common::ErrorValue::E_ERROR);
       }
 
@@ -548,8 +552,8 @@ struct SsdbDriver::pimpl {
         out->addChildren(child);
       }
       return er;
-    } else if(strcasecmp(argv[0], "zset") == 0){
-      if(argc != 4){
+    } else if (strcasecmp(argv[0], "zset") == 0) {
+      if (argc != 4) {
         return common::make_error_value("Invalid zset input argument", common::ErrorValue::E_ERROR);
       }
 
@@ -560,7 +564,7 @@ struct SsdbDriver::pimpl {
         out->addChildren(child);
       }
       return er;
-    } else if(strcasecmp(argv[0], "zdel") == 0){
+    } else if (strcasecmp(argv[0], "zdel") == 0) {
       if (argc != 3) {
         return common::make_error_value("Invalid zdel input argument", common::ErrorValue::E_ERROR);
       }
@@ -572,8 +576,8 @@ struct SsdbDriver::pimpl {
           out->addChildren(child);
       }
       return er;
-    } else if(strcasecmp(argv[0], "zincr") == 0){
-      if(argc != 4){
+    } else if (strcasecmp(argv[0], "zincr") == 0) {
+      if (argc != 4) {
         return common::make_error_value("Invalid zincr input argument", common::ErrorValue::E_ERROR);
       }
 
@@ -585,8 +589,8 @@ struct SsdbDriver::pimpl {
         out->addChildren(child);
       }
       return er;
-    } else if(strcasecmp(argv[0], "zsize") == 0){
-      if(argc != 2){
+    } else if (strcasecmp(argv[0], "zsize") == 0) {
+      if (argc != 2) {
         return common::make_error_value("Invalid zsize input argument", common::ErrorValue::E_ERROR);
       }
 
@@ -598,8 +602,8 @@ struct SsdbDriver::pimpl {
         out->addChildren(child);
       }
       return er;
-    } else if(strcasecmp(argv[0], "zclear") == 0){
-      if(argc != 2){
+    } else if (strcasecmp(argv[0], "zclear") == 0) {
+      if (argc != 2) {
         return common::make_error_value("Invalid zclear input argument", common::ErrorValue::E_ERROR);
       }
 
@@ -611,8 +615,8 @@ struct SsdbDriver::pimpl {
         out->addChildren(child);
       }
       return er;
-    } else if(strcasecmp(argv[0], "zrank") == 0){
-      if(argc != 3){
+    } else if (strcasecmp(argv[0], "zrank") == 0) {
+      if (argc != 3) {
         return common::make_error_value("Invalid zrank input argument", common::ErrorValue::E_ERROR);
       }
 
@@ -624,8 +628,8 @@ struct SsdbDriver::pimpl {
         out->addChildren(child);
       }
       return er;
-    } else if(strcasecmp(argv[0], "zzrank") == 0){
-      if(argc != 3){
+    } else if (strcasecmp(argv[0], "zzrank") == 0) {
+      if (argc != 3) {
         return common::make_error_value("Invalid zzrank input argument", common::ErrorValue::E_ERROR);
       }
 
@@ -637,8 +641,8 @@ struct SsdbDriver::pimpl {
         out->addChildren(child);
       }
       return er;
-    } else if(strcasecmp(argv[0], "zrange") == 0){
-      if(argc != 4){
+    } else if (strcasecmp(argv[0], "zrange") == 0) {
+      if (argc != 4) {
           return common::make_error_value("Invalid zrange input argument", common::ErrorValue::E_ERROR);
       }
 
@@ -646,7 +650,7 @@ struct SsdbDriver::pimpl {
       common::Error er = zrange(argv[1], atoll(argv[2]), atoll(argv[3]), &res);
       if (!er) {
         common::ArrayValue* ar = common::Value::createArrayValue();
-        for(int i = 0; i < res.size(); ++i){
+        for (int i = 0; i < res.size(); ++i) {
           common::StringValue *val = common::Value::createStringValue(res[i]);
           ar->append(val);
         }
@@ -654,8 +658,8 @@ struct SsdbDriver::pimpl {
         out->addChildren(child);
       }
       return er;
-    } else if(strcasecmp(argv[0], "zrrange") == 0){
-      if(argc != 4){
+    } else if (strcasecmp(argv[0], "zrrange") == 0) {
+      if (argc != 4) {
         return common::make_error_value("Invalid zrrange input argument", common::ErrorValue::E_ERROR);
       }
 
@@ -663,7 +667,7 @@ struct SsdbDriver::pimpl {
       common::Error er = zrrange(argv[1], atoll(argv[2]), atoll(argv[3]), &res);
       if (!er) {
         common::ArrayValue* ar = common::Value::createArrayValue();
-        for(int i = 0; i < res.size(); ++i){
+        for (int i = 0; i < res.size(); ++i) {
           common::StringValue *val = common::Value::createStringValue(res[i]);
           ar->append(val);
         }
@@ -671,8 +675,8 @@ struct SsdbDriver::pimpl {
         out->addChildren(child);
       }
       return er;
-    } else if(strcasecmp(argv[0], "zkeys") == 0){
-      if(argc != 6){
+    } else if (strcasecmp(argv[0], "zkeys") == 0) {
+      if (argc != 6) {
         return common::make_error_value("Invalid zkeys input argument", common::ErrorValue::E_ERROR);
       }
 
@@ -682,7 +686,7 @@ struct SsdbDriver::pimpl {
       common::Error er = zkeys(argv[1], argv[2], &st, &end, atoll(argv[5]), &res);
       if (!er) {
         common::ArrayValue* ar = common::Value::createArrayValue();
-        for(int i = 0; i < res.size(); ++i){
+        for (int i = 0; i < res.size(); ++i) {
           common::StringValue *val = common::Value::createStringValue(res[i]);
           ar->append(val);
         }
@@ -690,8 +694,8 @@ struct SsdbDriver::pimpl {
         out->addChildren(child);
       }
       return er;
-    } else if(strcasecmp(argv[0], "zscan") == 0){
-      if(argc != 6){
+    } else if (strcasecmp(argv[0], "zscan") == 0) {
+      if (argc != 6) {
         return common::make_error_value("Invalid zscan input argument", common::ErrorValue::E_ERROR);
       }
 
@@ -701,7 +705,7 @@ struct SsdbDriver::pimpl {
       common::Error er = zscan(argv[1], argv[2], &st, &end, atoll(argv[5]), &res);
       if (!er) {
         common::ArrayValue* ar = common::Value::createArrayValue();
-        for(int i = 0; i < res.size(); ++i){
+        for (int i = 0; i < res.size(); ++i) {
           common::StringValue *val = common::Value::createStringValue(res[i]);
           ar->append(val);
         }
@@ -709,8 +713,8 @@ struct SsdbDriver::pimpl {
         out->addChildren(child);
       }
       return er;
-    } else if(strcasecmp(argv[0], "zrscan") == 0){
-      if(argc != 6){
+    } else if (strcasecmp(argv[0], "zrscan") == 0) {
+      if (argc != 6) {
         return common::make_error_value("Invalid zrscan input argument", common::ErrorValue::E_ERROR);
       }
 
@@ -720,7 +724,7 @@ struct SsdbDriver::pimpl {
       common::Error er = zrscan(argv[1], argv[2], &st, &end, atoll(argv[5]), &res);
       if (!er) {
         common::ArrayValue* ar = common::Value::createArrayValue();
-        for(int i = 0; i < res.size(); ++i){
+        for (int i = 0; i < res.size(); ++i) {
           common::StringValue *val = common::Value::createStringValue(res[i]);
           ar->append(val);
         }
@@ -728,13 +732,13 @@ struct SsdbDriver::pimpl {
         out->addChildren(child);
       }
       return er;
-    } else if(strcasecmp(argv[0], "multi_zget") == 0){
-      if(argc < 2){
+    } else if (strcasecmp(argv[0], "multi_zget") == 0) {
+      if (argc < 2) {
         return common::make_error_value("Invalid zrscan input argument", common::ErrorValue::E_ERROR);
       }
 
       std::vector<std::string> keysget;
-      for(int i = 2; i < argc; ++i){
+      for (int i = 2; i < argc; ++i) {
         keysget.push_back(argv[i]);
       }
 
@@ -742,7 +746,7 @@ struct SsdbDriver::pimpl {
       common::Error er = multi_zget(argv[1], keysget, &res);
       if (!er) {
         common::ArrayValue* ar = common::Value::createArrayValue();
-        for(int i = 0; i < res.size(); ++i){
+        for (int i = 0; i < res.size(); ++i) {
           common::StringValue *val = common::Value::createStringValue(res[i]);
           ar->append(val);
         }
@@ -750,13 +754,13 @@ struct SsdbDriver::pimpl {
         out->addChildren(child);
       }
       return er;
-    } else if(strcasecmp(argv[0], "multi_zset") == 0){
-      if(argc < 2 || (argc % 2 == 0)){
+    } else if (strcasecmp(argv[0], "multi_zset") == 0) {
+      if (argc < 2 || (argc % 2 == 0)) {
         return common::make_error_value("Invalid zrscan input argument", common::ErrorValue::E_ERROR);
       }
 
       std::map<std::string, int64_t> keysget;
-      for(int i = 2; i < argc; i += 2){
+      for (int i = 2; i < argc; i += 2) {
         keysget[argv[i]] = atoll(argv[i+1]);
       }
 
@@ -767,13 +771,14 @@ struct SsdbDriver::pimpl {
         out->addChildren(child);
       }
       return er;
-    } else if(strcasecmp(argv[0], "multi_zdel") == 0){
-      if(argc < 2){
-        return common::make_error_value("Invalid zrscan input argument", common::ErrorValue::E_ERROR);
+    } else if (strcasecmp(argv[0], "multi_zdel") == 0) {
+      if (argc < 2) {
+        return common::make_error_value("Invalid zrscan input argument",
+                                        common::ErrorValue::E_ERROR);
       }
 
       std::vector<std::string> keysget;
-      for(int i = 2; i < argc; ++i){
+      for (int i = 2; i < argc; ++i) {
         keysget.push_back(argv[i]);
       }
 
@@ -784,22 +789,25 @@ struct SsdbDriver::pimpl {
         out->addChildren(child);
       }
       return er;
-    } else if(strcasecmp(argv[0], "info") == 0) {
+    } else if (strcasecmp(argv[0], "info") == 0) {
       if (argc > 2) {
-        return common::make_error_value("Invalid info input argument", common::ErrorValue::E_ERROR);
+        return common::make_error_value("Invalid info input argument",
+                                        common::ErrorValue::E_ERROR);
       }
 
       SsdbServerInfo::Common statsout;
       common::Error er = info(argc == 2 ? argv[1] : 0, statsout);
       if (!er) {
-        common::StringValue *val = common::Value::createStringValue(SsdbServerInfo(statsout).toString());
+        SsdbServerInfo sinf(statsout);
+        common::StringValue *val = common::Value::createStringValue(sinf.toString());
         FastoObject* child = new FastoObject(out, val, config_.mb_delim_);
         out->addChildren(child);
       }
       return er;
-    } else if(strcasecmp(argv[0], "qpop") == 0) {
-      if(argc != 2){
-        return common::make_error_value("Invalid qpop input argument", common::ErrorValue::E_ERROR);
+    } else if (strcasecmp(argv[0], "qpop") == 0) {
+      if (argc != 2) {
+        return common::make_error_value("Invalid qpop input argument",
+                                        common::ErrorValue::E_ERROR);
       }
 
       std::string ret;
@@ -810,9 +818,10 @@ struct SsdbDriver::pimpl {
         out->addChildren(child);
       }
       return er;
-    } else if(strcasecmp(argv[0], "qpush") == 0) {
+    } else if (strcasecmp(argv[0], "qpush") == 0) {
       if (argc != 3) {
-        return common::make_error_value("Invalid qpush input argument", common::ErrorValue::E_ERROR);
+        return common::make_error_value("Invalid qpush input argument",
+                                        common::ErrorValue::E_ERROR);
       }
 
       common::Error er = qpush(argv[1], argv[2]);
@@ -822,9 +831,10 @@ struct SsdbDriver::pimpl {
         out->addChildren(child);
       }
       return er;
-    } else if(strcasecmp(argv[0], "qslice") == 0) {
+    } else if (strcasecmp(argv[0], "qslice") == 0) {
       if (argc != 4) {
-        return common::make_error_value("Invalid qslice input argument", common::ErrorValue::E_ERROR);
+        return common::make_error_value("Invalid qslice input argument",
+                                        common::ErrorValue::E_ERROR);
       }
 
       int64_t begin = atoll(argv[2]);
@@ -834,7 +844,7 @@ struct SsdbDriver::pimpl {
       common::Error er = qslice(argv[1], begin, end, &keysout);
       if (!er) {
         common::ArrayValue* ar = common::Value::createArrayValue();
-        for(int i = 0; i < keysout.size(); ++i){
+        for (size_t i = 0; i < keysout.size(); ++i) {
           common::StringValue *val = common::Value::createStringValue(keysout[i]);
           ar->append(val);
         }
@@ -842,9 +852,10 @@ struct SsdbDriver::pimpl {
         out->addChildren(child);
       }
       return er;
-    } else if(strcasecmp(argv[0], "qclear") == 0) {
-      if(argc != 2){
-        return common::make_error_value("Invalid qclear input argument", common::ErrorValue::E_ERROR);
+    } else if (strcasecmp(argv[0], "qclear") == 0) {
+      if (argc != 2) {
+        return common::make_error_value("Invalid qclear input argument",
+                                        common::ErrorValue::E_ERROR);
       }
 
       int64_t res = 0;
@@ -862,8 +873,7 @@ struct SsdbDriver::pimpl {
     }
   }
 
-private:
-
+ private:
   common::Error auth(const std::string& password) {
     ssdb::Status st = ssdb_->auth(password);
     if (st.error()) {
@@ -876,7 +886,7 @@ private:
 
   common::Error get(const std::string& key, std::string* ret_val) {
     ssdb::Status st = ssdb_->get(key, ret_val);
-    if (st.error()){
+    if (st.error()) {
       char buff[1024] = {0};
       common::SNPrintf(buff, sizeof(buff), "get function error: %s", st.code());
       return common::make_error_value(buff, common::ErrorValue::E_ERROR);
@@ -886,7 +896,7 @@ private:
 
   common::Error set(const std::string& key, const std::string& value) {
     ssdb::Status st = ssdb_->set(key, value);
-    if (st.error()){
+    if (st.error()) {
       char buff[1024] = {0};
       common::SNPrintf(buff, sizeof(buff), "set function error: %s", st.code());
       return common::make_error_value(buff, common::ErrorValue::E_ERROR);
@@ -896,7 +906,7 @@ private:
 
   common::Error setx(const std::string& key, const std::string& value, int ttl) {
     ssdb::Status st = ssdb_->setx(key, value, ttl);
-    if (st.error()){
+    if (st.error()) {
       char buff[1024] = {0};
       common::SNPrintf(buff, sizeof(buff), "setx function error: %s", st.code());
       return common::make_error_value(buff, common::ErrorValue::E_ERROR);
@@ -906,7 +916,7 @@ private:
 
   common::Error del(const std::string& key) {
     ssdb::Status st = ssdb_->del(key);
-    if (st.error()){
+    if (st.error()) {
       char buff[1024] = {0};
       common::SNPrintf(buff, sizeof(buff), "del function error: %s", st.code());
       return common::make_error_value(buff, common::ErrorValue::E_ERROR);
@@ -916,7 +926,7 @@ private:
 
   common::Error incr(const std::string& key, int64_t incrby, int64_t *ret) {
     ssdb::Status st = ssdb_->incr(key, incrby, ret);
-    if (st.error()){
+    if (st.error()) {
       char buff[1024] = {0};
       common::SNPrintf(buff, sizeof(buff), "Incr function error: %s", st.code());
       return common::make_error_value(buff, common::ErrorValue::E_ERROR);
@@ -927,7 +937,7 @@ private:
   common::Error keys(const std::string &key_start, const std::string &key_end,
                      uint64_t limit, std::vector<std::string> *ret) {
     ssdb::Status st = ssdb_->keys(key_start, key_end, limit, ret);
-    if (st.error()){
+    if (st.error()) {
       char buff[1024] = {0};
       common::SNPrintf(buff, sizeof(buff), "Keys function error: %s", st.code());
       return common::make_error_value(buff, common::ErrorValue::E_ERROR);
@@ -938,7 +948,7 @@ private:
   common::Error scan(const std::string &key_start, const std::string &key_end,
                      uint64_t limit, std::vector<std::string> *ret) {
     ssdb::Status st = ssdb_->scan(key_start, key_end, limit, ret);
-    if (st.error()){
+    if (st.error()) {
       char buff[1024] = {0};
       common::SNPrintf(buff, sizeof(buff), "scan function error: %s", st.code());
       return common::make_error_value(buff, common::ErrorValue::E_ERROR);
@@ -949,7 +959,7 @@ private:
   common::Error rscan(const std::string &key_start, const std::string &key_end,
                       uint64_t limit, std::vector<std::string> *ret) {
     ssdb::Status st = ssdb_->rscan(key_start, key_end, limit, ret);
-    if (st.error()){
+    if (st.error()) {
       char buff[1024] = {0};
       common::SNPrintf(buff, sizeof(buff), "rscan function error: %s", st.code());
       return common::make_error_value(buff, common::ErrorValue::E_ERROR);
@@ -959,7 +969,7 @@ private:
 
   common::Error multi_get(const std::vector<std::string>& keys, std::vector<std::string> *ret) {
     ssdb::Status st = ssdb_->multi_get(keys, ret);
-    if (st.error()){
+    if (st.error()) {
       char buff[1024] = {0};
       common::SNPrintf(buff, sizeof(buff), "multi_get function error: %s", st.code());
       return common::make_error_value(buff, common::ErrorValue::E_ERROR);
@@ -969,7 +979,7 @@ private:
 
   common::Error multi_set(const std::map<std::string, std::string> &kvs) {
     ssdb::Status st = ssdb_->multi_set(kvs);
-    if (st.error()){
+    if (st.error()) {
       char buff[1024] = {0};
       common::SNPrintf(buff, sizeof(buff), "multi_set function error: %s", st.code());
       return common::make_error_value(buff, common::ErrorValue::E_ERROR);
@@ -979,7 +989,7 @@ private:
 
   common::Error multi_del(const std::vector<std::string>& keys) {
     ssdb::Status st = ssdb_->multi_del(keys);
-    if (st.error()){
+    if (st.error()) {
       char buff[1024] = {0};
       common::SNPrintf(buff, sizeof(buff), "multi_del function error: %s", st.code());
       return common::make_error_value(buff, common::ErrorValue::E_ERROR);
@@ -991,7 +1001,7 @@ private:
 
   common::Error hget(const std::string& name, const std::string& key, std::string *val) {
     ssdb::Status st = ssdb_->hget(name, key, val);
-    if (st.error()){
+    if (st.error()) {
       char buff[1024] = {0};
       common::SNPrintf(buff, sizeof(buff), "hget function error: %s", st.code());
       return common::make_error_value(buff, common::ErrorValue::E_ERROR);
@@ -1001,7 +1011,7 @@ private:
 
   common::Error hset(const std::string& name, const std::string& key, const std::string& val) {
     ssdb::Status st = ssdb_->hset(name, key, val);
-    if (st.error()){
+    if (st.error()) {
       char buff[1024] = {0};
       common::SNPrintf(buff, sizeof(buff), "hset function error: %s", st.code());
       return common::make_error_value(buff, common::ErrorValue::E_ERROR);
@@ -1012,7 +1022,7 @@ private:
 
   common::Error hdel(const std::string& name, const std::string& key) {
     ssdb::Status st = ssdb_->hdel(name, key);
-    if (st.error()){
+    if (st.error()) {
       char buff[1024] = {0};
       common::SNPrintf(buff, sizeof(buff), "hdel function error: %s", st.code());
       return common::make_error_value(buff, common::ErrorValue::E_ERROR);
@@ -1023,7 +1033,7 @@ private:
   common::Error hincr(const std::string &name, const std::string &key,
                       int64_t incrby, int64_t *ret) {
     ssdb::Status st = ssdb_->hincr(name, key, incrby, ret);
-    if (st.error()){
+    if (st.error()) {
       char buff[1024] = {0};
       common::SNPrintf(buff, sizeof(buff), "hincr function error: %s", st.code());
       return common::make_error_value(buff, common::ErrorValue::E_ERROR);
@@ -1033,7 +1043,7 @@ private:
 
   common::Error hsize(const std::string &name, int64_t *ret) {
     ssdb::Status st = ssdb_->hsize(name, ret);
-    if (st.error()){
+    if (st.error()) {
       char buff[1024] = {0};
       common::SNPrintf(buff, sizeof(buff), "hset function error: %s", st.code());
       return common::make_error_value(buff, common::ErrorValue::E_ERROR);
@@ -1043,7 +1053,7 @@ private:
 
   common::Error hclear(const std::string &name, int64_t *ret) {
     ssdb::Status st = ssdb_->hclear(name, ret);
-    if (st.error()){
+    if (st.error()) {
       char buff[1024] = {0};
       common::SNPrintf(buff, sizeof(buff), "hclear function error: %s", st.code());
       return common::make_error_value(buff, common::ErrorValue::E_ERROR);
@@ -1054,7 +1064,7 @@ private:
   common::Error hkeys(const std::string &name, const std::string &key_start,
                       const std::string &key_end, uint64_t limit, std::vector<std::string> *ret) {
     ssdb::Status st = ssdb_->hkeys(name, key_start, key_end, limit, ret);
-    if (st.error()){
+    if (st.error()) {
       char buff[1024] = {0};
       common::SNPrintf(buff, sizeof(buff), "hkeys function error: %s", st.code());
       return common::make_error_value(buff, common::ErrorValue::E_ERROR);
@@ -1065,7 +1075,7 @@ private:
   common::Error hscan(const std::string &name, const std::string &key_start,
                       const std::string &key_end, uint64_t limit, std::vector<std::string> *ret) {
     ssdb::Status st = ssdb_->hscan(name, key_start, key_end, limit, ret);
-    if (st.error()){
+    if (st.error()) {
       char buff[1024] = {0};
       common::SNPrintf(buff, sizeof(buff), "hscan function error: %s", st.code());
       return common::make_error_value(buff, common::ErrorValue::E_ERROR);
@@ -1076,7 +1086,7 @@ private:
   common::Error hrscan(const std::string &name, const std::string &key_start,
                        const std::string &key_end, uint64_t limit, std::vector<std::string> *ret) {
     ssdb::Status st = ssdb_->hrscan(name, key_start, key_end, limit, ret);
-    if (st.error()){
+    if (st.error()) {
       char buff[1024] = {0};
       common::SNPrintf(buff, sizeof(buff), "hrscan function error: %s", st.code());
       return common::make_error_value(buff, common::ErrorValue::E_ERROR);
@@ -1087,7 +1097,7 @@ private:
   common::Error multi_hget(const std::string &name, const std::vector<std::string> &keys,
                            std::vector<std::string> *ret) {
     ssdb::Status st = ssdb_->multi_hget(name, keys, ret);
-    if (st.error()){
+    if (st.error()) {
       char buff[1024] = {0};
       common::SNPrintf(buff, sizeof(buff), "hrscan function error: %s", st.code());
       return common::make_error_value(buff, common::ErrorValue::E_ERROR);
@@ -1095,9 +1105,10 @@ private:
     return common::Error();
   }
 
-  common::Error multi_hset(const std::string &name, const std::map<std::string, std::string> &keys) {
+  common::Error multi_hset(const std::string &name,
+                           const std::map<std::string, std::string> &keys) {
     ssdb::Status st = ssdb_->multi_hset(name, keys);
-    if (st.error()){
+    if (st.error()) {
       char buff[1024] = {0};
       common::SNPrintf(buff, sizeof(buff), "multi_hset function error: %s", st.code());
       return common::make_error_value(buff, common::ErrorValue::E_ERROR);
@@ -1109,7 +1120,7 @@ private:
 
   common::Error zget(const std::string &name, const std::string &key, int64_t *ret) {
     ssdb::Status st = ssdb_->zget(name, key, ret);
-    if (st.error()){
+    if (st.error()) {
       char buff[1024] = {0};
       common::SNPrintf(buff, sizeof(buff), "zget function error: %s", st.code());
       return common::make_error_value(buff, common::ErrorValue::E_ERROR);
@@ -1119,7 +1130,7 @@ private:
 
   common::Error zset(const std::string &name, const std::string &key, int64_t score) {
     ssdb::Status st = ssdb_->zset(name, key, score);
-    if (st.error()){
+    if (st.error()) {
       char buff[1024] = {0};
       common::SNPrintf(buff, sizeof(buff), "zset function error: %s", st.code());
       return common::make_error_value(buff, common::ErrorValue::E_ERROR);
@@ -1129,7 +1140,7 @@ private:
 
   common::Error zdel(const std::string &name, const std::string &key) {
     ssdb::Status st = ssdb_->zdel(name, key);
-    if (st.error()){
+    if (st.error()) {
       char buff[1024] = {0};
       common::SNPrintf(buff, sizeof(buff), "Zdel function error: %s", st.code());
       return common::make_error_value(buff, common::ErrorValue::E_ERROR);
@@ -1139,7 +1150,7 @@ private:
 
   common::Error zincr(const std::string &name, const std::string &key, int64_t incrby, int64_t *ret) {
     ssdb::Status st = ssdb_->zincr(name, key, incrby, ret);
-    if (st.error()){
+    if (st.error()) {
       char buff[1024] = {0};
       common::SNPrintf(buff, sizeof(buff), "Zincr function error: %s", st.code());
       return common::make_error_value(buff, common::ErrorValue::E_ERROR);
@@ -1149,7 +1160,7 @@ private:
 
   common::Error zsize(const std::string &name, int64_t *ret) {
     ssdb::Status st = ssdb_->zsize(name, ret);
-    if (st.error()){
+    if (st.error()) {
       char buff[1024] = {0};
       common::SNPrintf(buff, sizeof(buff), "zsize function error: %s", st.code());
       return common::make_error_value(buff, common::ErrorValue::E_ERROR);
@@ -1159,7 +1170,7 @@ private:
 
   common::Error zclear(const std::string &name, int64_t *ret) {
     ssdb::Status st = ssdb_->zclear(name, ret);
-    if (st.error()){
+    if (st.error()) {
       char buff[1024] = {0};
       common::SNPrintf(buff, sizeof(buff), "zclear function error: %s", st.code());
       return common::make_error_value(buff, common::ErrorValue::E_ERROR);
@@ -1169,7 +1180,7 @@ private:
 
   common::Error zrank(const std::string &name, const std::string &key, int64_t *ret) {
     ssdb::Status st = ssdb_->zrank(name, key, ret);
-    if (st.error()){
+    if (st.error()) {
       char buff[1024] = {0};
       common::SNPrintf(buff, sizeof(buff), "zrank function error: %s", st.code());
       return common::make_error_value(buff, common::ErrorValue::E_ERROR);
@@ -1179,7 +1190,7 @@ private:
 
   common::Error zrrank(const std::string &name, const std::string &key, int64_t *ret) {
     ssdb::Status st = ssdb_->zrrank(name, key, ret);
-    if (st.error()){
+    if (st.error()) {
       char buff[1024] = {0};
       common::SNPrintf(buff, sizeof(buff), "zrrank function error: %s", st.code());
       return common::make_error_value(buff, common::ErrorValue::E_ERROR);
@@ -1191,7 +1202,7 @@ private:
           uint64_t offset, uint64_t limit,
           std::vector<std::string> *ret) {
     ssdb::Status st = ssdb_->zrange(name, offset, limit, ret);
-    if (st.error()){
+    if (st.error()) {
       char buff[1024] = {0};
       common::SNPrintf(buff, sizeof(buff), "zrange function error: %s", st.code());
       return common::make_error_value(buff, common::ErrorValue::E_ERROR);
@@ -1203,7 +1214,7 @@ private:
           uint64_t offset, uint64_t limit,
           std::vector<std::string> *ret) {
     ssdb::Status st = ssdb_->zrrange(name, offset, limit, ret);
-    if (st.error()){
+    if (st.error()) {
       char buff[1024] = {0};
       common::SNPrintf(buff, sizeof(buff), "zrrange function error: %s", st.code());
       return common::make_error_value(buff, common::ErrorValue::E_ERROR);
@@ -1215,7 +1226,7 @@ private:
       int64_t *score_start, int64_t *score_end,
       uint64_t limit, std::vector<std::string> *ret) {
     ssdb::Status st = ssdb_->zkeys(name, key_start, score_start, score_end, limit, ret);
-    if (st.error()){
+    if (st.error()) {
       char buff[1024] = {0};
       common::SNPrintf(buff, sizeof(buff), "zkeys function error: %s", st.code());
       return common::make_error_value(buff, common::ErrorValue::E_ERROR);
@@ -1227,7 +1238,7 @@ private:
       int64_t *score_start, int64_t *score_end,
       uint64_t limit, std::vector<std::string> *ret) {
     ssdb::Status st = ssdb_->zscan(name, key_start, score_start, score_end, limit, ret);
-    if (st.error()){
+    if (st.error()) {
       char buff[1024] = {0};
       common::SNPrintf(buff, sizeof(buff), "zscan function error: %s", st.code());
       return common::make_error_value(buff, common::ErrorValue::E_ERROR);
@@ -1239,7 +1250,7 @@ private:
       int64_t *score_start, int64_t *score_end,
       uint64_t limit, std::vector<std::string> *ret) {
     ssdb::Status st = ssdb_->zrscan(name, key_start, score_start, score_end, limit, ret);
-    if (st.error()){
+    if (st.error()) {
       char buff[1024] = {0};
       common::SNPrintf(buff, sizeof(buff), "zrscan function error: %s", st.code());
       return common::make_error_value(buff, common::ErrorValue::E_ERROR);
@@ -1250,7 +1261,7 @@ private:
   common::Error multi_zget(const std::string &name, const std::vector<std::string> &keys,
       std::vector<std::string> *ret) {
     ssdb::Status st = ssdb_->multi_zget(name, keys, ret);
-    if (st.error()){
+    if (st.error()) {
       char buff[1024] = {0};
       common::SNPrintf(buff, sizeof(buff), "multi_zget function error: %s", st.code());
       return common::make_error_value(buff, common::ErrorValue::E_ERROR);
@@ -1260,7 +1271,7 @@ private:
 
   common::Error multi_zset(const std::string &name, const std::map<std::string, int64_t> &kss) {
     ssdb::Status st = ssdb_->multi_zset(name, kss);
-    if (st.error()){
+    if (st.error()) {
       char buff[1024] = {0};
       common::SNPrintf(buff, sizeof(buff), "multi_zset function error: %s", st.code());
       return common::make_error_value(buff, common::ErrorValue::E_ERROR);
@@ -1270,7 +1281,7 @@ private:
 
   common::Error multi_zdel(const std::string &name, const std::vector<std::string> &keys) {
     ssdb::Status st = ssdb_->multi_zdel(name, keys);
-    if (st.error()){
+    if (st.error()) {
       char buff[1024] = {0};
       common::SNPrintf(buff, sizeof(buff), "multi_zdel function error: %s", st.code());
       return common::make_error_value(buff, common::ErrorValue::E_ERROR);
@@ -1280,7 +1291,7 @@ private:
 
   common::Error qpush(const std::string &name, const std::string &item) {
     ssdb::Status st = ssdb_->qpush(name, item);
-    if (st.error()){
+    if (st.error()) {
       char buff[1024] = {0};
       common::SNPrintf(buff, sizeof(buff), "qpush function error: %s", st.code());
       return common::make_error_value(buff, common::ErrorValue::E_ERROR);
@@ -1290,7 +1301,7 @@ private:
 
   common::Error qpop(const std::string &name, std::string *item) {
     ssdb::Status st = ssdb_->qpop(name, item);
-    if (st.error()){
+    if (st.error()) {
       char buff[1024] = {0};
       common::SNPrintf(buff, sizeof(buff), "qpop function error: %s", st.code());
       return common::make_error_value(buff, common::ErrorValue::E_ERROR);
@@ -1301,7 +1312,7 @@ private:
   common::Error qslice(const std::string &name, int64_t begin, int64_t end,
                        std::vector<std::string> *ret) {
     ssdb::Status st = ssdb_->qslice(name, begin, end, ret);
-    if (st.error()){
+    if (st.error()) {
       char buff[1024] = {0};
       common::SNPrintf(buff, sizeof(buff), "qslice function error: %s", st.code());
       return common::make_error_value(buff, common::ErrorValue::E_ERROR);
@@ -1311,7 +1322,7 @@ private:
 
   common::Error qclear(const std::string &name, int64_t *ret) {
     ssdb::Status st = ssdb_->qclear(name, ret);
-    if (st.error()){
+    if (st.error()) {
       char buff[1024] = {0};
       common::SNPrintf(buff, sizeof(buff), "qclear function error: %s", st.code());
       return common::make_error_value(buff, common::ErrorValue::E_ERROR);
@@ -1349,7 +1360,8 @@ bool SsdbDriver::isAuthenticated() const {
 }
 
 // ============== commands =============//
-common::Error SsdbDriver::commandDeleteImpl(CommandDeleteKey* command, std::string& cmdstring) const {
+common::Error SsdbDriver::commandDeleteImpl(CommandDeleteKey* command,
+                                            std::string& cmdstring) const {
   char patternResult[1024] = {0};
   NDbKValue key = command->key();
   common::SNPrintf(patternResult, sizeof(patternResult),
@@ -1363,19 +1375,19 @@ common::Error SsdbDriver::commandLoadImpl(CommandLoadKey* command, std::string& 
   char patternResult[1024] = {0};
   NDbKValue key = command->key();
   common::Value::Type t = key.type();
-  if(t == common::Value::TYPE_ARRAY){
+  if (t == common::Value::TYPE_ARRAY) {
       common::SNPrintf(patternResult, sizeof(patternResult),
                        GET_KEY_LIST_PATTERN_1ARGS_S, key.keyString());
-  } else if(t == common::Value::TYPE_SET){
+  } else if (t == common::Value::TYPE_SET) {
       common::SNPrintf(patternResult, sizeof(patternResult),
                        GET_KEY_SET_PATTERN_1ARGS_S, key.keyString());
-  } else if(t == common::Value::TYPE_ZSET){
+  } else if (t == common::Value::TYPE_ZSET) {
       common::SNPrintf(patternResult, sizeof(patternResult),
                        GET_KEY_ZSET_PATTERN_1ARGS_S, key.keyString());
-  } else if(t == common::Value::TYPE_HASH){
+  } else if (t == common::Value::TYPE_HASH) {
       common::SNPrintf(patternResult, sizeof(patternResult),
                        GET_KEY_HASH_PATTERN_1ARGS_S, key.keyString());
-  } else{
+  } else {
       common::SNPrintf(patternResult, sizeof(patternResult),
                        GET_KEY_PATTERN_1ARGS_S, key.keyString());
   }
@@ -1384,7 +1396,8 @@ common::Error SsdbDriver::commandLoadImpl(CommandLoadKey* command, std::string& 
   return common::Error();
 }
 
-common::Error SsdbDriver::commandCreateImpl(CommandCreateKey* command, std::string& cmdstring) const {
+common::Error SsdbDriver::commandCreateImpl(CommandCreateKey* command,
+                                            std::string& cmdstring) const {
   char patternResult[1024] = {0};
   NDbKValue key = command->key();
   NValue val = command->value();
@@ -1392,16 +1405,16 @@ common::Error SsdbDriver::commandCreateImpl(CommandCreateKey* command, std::stri
   std::string key_str = key.keyString();
   std::string value_str = common::convertToString(rval, " ");
   common::Value::Type t = key.type();
-  if(t == common::Value::TYPE_ARRAY) {
+  if (t == common::Value::TYPE_ARRAY) {
       common::SNPrintf(patternResult, sizeof(patternResult), SET_KEY_LIST_PATTERN_2ARGS_SS,
                        key_str, value_str);
-  } else if(t == common::Value::TYPE_SET) {
+  } else if (t == common::Value::TYPE_SET) {
       common::SNPrintf(patternResult, sizeof(patternResult), SET_KEY_SET_PATTERN_2ARGS_SS,
                        key_str, value_str);
-  } else if(t == common::Value::TYPE_ZSET) {
+  } else if (t == common::Value::TYPE_ZSET) {
       common::SNPrintf(patternResult, sizeof(patternResult), SET_KEY_ZSET_PATTERN_2ARGS_SS,
                        key_str, value_str);
-  } else if(t == common::Value::TYPE_HASH) {
+  } else if (t == common::Value::TYPE_HASH) {
       common::SNPrintf(patternResult, sizeof(patternResult), SET_KEY_HASH_PATTERN_2ARGS_SS,
                        key_str, value_str);
   } else {
@@ -1413,7 +1426,8 @@ common::Error SsdbDriver::commandCreateImpl(CommandCreateKey* command, std::stri
   return common::Error();
 }
 
-common::Error SsdbDriver::commandChangeTTLImpl(CommandChangeTTL* command, std::string& cmdstring) const {
+common::Error SsdbDriver::commandChangeTTLImpl(CommandChangeTTL* command,
+                                               std::string& cmdstring) const {
   UNUSED(command);
   UNUSED(cmdstring);
   char errorMsg[1024] = {0};
@@ -1450,7 +1464,7 @@ common::Error SsdbDriver::serverInfo(ServerInfo **info) {
   LOG_COMMAND(Command(INFO_REQUEST, common::Value::C_INNER));
   SsdbServerInfo::Common cm;
   common::Error err = impl_->info(NULL, cm);
-  if(!err){
+  if (!err) {
     *info = new SsdbServerInfo(cm);
   }
 
@@ -1461,24 +1475,25 @@ common::Error SsdbDriver::serverDiscoveryInfo(ServerInfo** sinfo, ServerDiscover
                                               DataBaseInfo **dbinfo) {
   ServerInfo *lsinfo = NULL;
   common::Error er = serverInfo(&lsinfo);
-  if(er){
+  if (er) {
     return er;
   }
 
   FastoObjectIPtr root = FastoObject::createRoot(GET_SERVER_TYPE);
-  FastoObjectCommand* cmd = createCommand<SsdbCommand>(root, GET_SERVER_TYPE, common::Value::C_INNER);
+  FastoObjectCommand* cmd = createCommand<SsdbCommand>(root, GET_SERVER_TYPE,
+                                                       common::Value::C_INNER);
   er = execute(cmd);
 
   if (!er) {
     FastoObject::child_container_type ch = root->childrens();
-    if(ch.size()){
-      //*dinfo = makeOwnRedisDiscoveryInfo(ch[0]);
+    if (ch.size()) {
+      // *dinfo = makeOwnRedisDiscoveryInfo(ch[0]);
     }
   }
 
   DataBaseInfo* ldbinfo = NULL;
   er = currentDataBaseInfo(&ldbinfo);
-  if(er){
+  if (er) {
     delete lsinfo;
     return er;
   }
@@ -1501,12 +1516,12 @@ void SsdbDriver::handleConnectEvent(events::ConnectRequestEvent *ev) {
   notifyProgress(sender, 0);
   events::ConnectResponceEvent::value_type res(ev->value());
   SsdbConnectionSettings *set = dynamic_cast<SsdbConnectionSettings*>(settings_.get());
-  if(set){
+  if (set) {
     impl_->config_ = set->info();
     impl_->sinfo_ = set->sshInfo();
   notifyProgress(sender, 25);
     common::Error er = impl_->connect();
-    if(er){
+    if (er) {
       res.setErrorInfo(er);
     }
   notifyProgress(sender, 75);
@@ -1522,7 +1537,7 @@ void SsdbDriver::handleDisconnectEvent(events::DisconnectRequestEvent* ev) {
   notifyProgress(sender, 50);
 
   common::Error er = impl_->disconnect();
-  if(er){
+  if (er) {
     res.setErrorInfo(er);
   }
 
@@ -1536,41 +1551,42 @@ void SsdbDriver::handleExecuteEvent(events::ExecuteRequestEvent* ev) {
     events::ExecuteRequestEvent::value_type res(ev->value());
     const char *inputLine = common::utils::c_strornull(res.text_);
 
-   common::Error er;
-   if(inputLine){
-     size_t length = strlen(inputLine);
-     int offset = 0;
-     RootLocker lock = make_locker(sender, inputLine);
-     FastoObjectIPtr outRoot = lock.root_;
-     double step = 100.0f/length;
-     for(size_t n = 0; n < length; ++n){
-       if(interrupt_){
-         er.reset(new common::ErrorValue("Interrupted exec.", common::ErrorValue::E_INTERRUPTED));
-         res.setErrorInfo(er);
-         break;
-       }
-       if(inputLine[n] == '\n' || n == length-1){
+  common::Error er;
+  if (inputLine) {
+    size_t length = strlen(inputLine);
+    int offset = 0;
+    RootLocker lock = make_locker(sender, inputLine);
+    FastoObjectIPtr outRoot = lock.root_;
+    double step = 100.0f/length;
+    for (size_t n = 0; n < length; ++n) {
+      if (interrupt_) {
+        er.reset(new common::ErrorValue("Interrupted exec.", common::ErrorValue::E_INTERRUPTED));
+        res.setErrorInfo(er);
+        break;
+      }
+      if (inputLine[n] == '\n' || n == length-1) {
   notifyProgress(sender, step * n);
-         char command[128] = {0};
-         if(n == length-1){
-           strcpy(command, inputLine + offset);
-         } else {
-           strncpy(command, inputLine + offset, n - offset);
-         }
-         offset = n + 1;
-         FastoObjectCommand* cmd = createCommand<SsdbCommand>(outRoot, stableCommand(command), common::Value::C_USER);
-         er = execute(cmd);
-         if(er){
-           res.setErrorInfo(er);
-           break;
-         }
-       }
-     }
+        char command[128] = {0};
+        if (n == length-1) {
+          strcpy(command, inputLine + offset);
+        } else {
+          strncpy(command, inputLine + offset, n - offset);
+        }
+        offset = n + 1;
+        FastoObjectCommand* cmd = createCommand<SsdbCommand>(outRoot, stableCommand(command),
+                                                             common::Value::C_USER);
+        er = execute(cmd);
+        if (er) {
+          res.setErrorInfo(er);
+          break;
+        }
+      }
+    }
   } else {
     er.reset(new common::ErrorValue("Empty command line.", common::ErrorValue::E_ERROR));
   }
 
-  if(er){
+  if (er) {
     LOG_ERROR(er, true);
   }
   notifyProgress(sender, 100);
@@ -1582,7 +1598,7 @@ void SsdbDriver::handleCommandRequestEvent(events::CommandRequestEvent* ev) {
     events::CommandResponceEvent::value_type res(ev->value());
     std::string cmdtext;
     common::Error er = commandByType(res.cmd_, cmdtext);
-    if(er){
+    if (er) {
         res.setErrorInfo(er);
         reply(sender, new events::CommandResponceEvent(this, res));
         notifyProgress(sender, 100);
@@ -1594,7 +1610,7 @@ void SsdbDriver::handleCommandRequestEvent(events::CommandRequestEvent* ev) {
     FastoObjectCommand* cmd = createCommand<SsdbCommand>(root, cmdtext, common::Value::C_INNER);
   notifyProgress(sender, 50);
     er = execute(cmd);
-    if(er){
+    if (er) {
       res.setErrorInfo(er);
     }
     reply(sender, new events::CommandResponceEvent(this, res));
@@ -1616,36 +1632,37 @@ void SsdbDriver::handleLoadDatabaseContentEvent(events::LoadDatabaseContentReque
   notifyProgress(sender, 0);
       events::LoadDatabaseContentResponceEvent::value_type res(ev->value());
       char patternResult[1024] = {0};
-      common::SNPrintf(patternResult, sizeof(patternResult), GET_KEYS_PATTERN_1ARGS_I, res.countKeys_);
+      common::SNPrintf(patternResult, sizeof(patternResult), GET_KEYS_PATTERN_1ARGS_I,
+                       res.countKeys_);
       FastoObjectIPtr root = FastoObject::createRoot(patternResult);
   notifyProgress(sender, 50);
-      FastoObjectCommand* cmd = createCommand<SsdbCommand>(root, patternResult, common::Value::C_INNER);
+      FastoObjectCommand* cmd = createCommand<SsdbCommand>(root, patternResult,
+                                                           common::Value::C_INNER);
       common::Error er = execute(cmd);
-      if(er){
+      if (er) {
           res.setErrorInfo(er);
       } else {
         FastoObject::child_container_type rchildrens = cmd->childrens();
-        if(rchildrens.size()){
-            DCHECK(rchildrens.size() == 1);
-            FastoObjectArray* array = dynamic_cast<FastoObjectArray*>(rchildrens[0]);
-            if(!array){
-                goto done;
-            }
-            common::ArrayValue* ar = array->array();
-            if(!ar){
-                goto done;
-            }
+        if (rchildrens.size()) {
+          DCHECK_EQ(rchildrens.size(), 1);
+          FastoObjectArray* array = dynamic_cast<FastoObjectArray*>(rchildrens[0]);
+          if (!array) {
+            goto done;
+          }
+          common::ArrayValue* ar = array->array();
+          if (!ar) {
+            goto done;
+          }
 
-            for(int i = 0; i < ar->size(); ++i)
-            {
-                std::string key;
-                bool isok = ar->getString(i, &key);
-                if(isok){
-                    NKey k(key);
-                    NDbKValue ress(k, NValue());
-                    res.keys_.push_back(ress);
-                }
+          for (size_t i = 0; i < ar->size(); ++i) {
+            std::string key;
+            bool isok = ar->getString(i, &key);
+            if (isok) {
+              NKey k(key);
+              NDbKValue ress(k, NValue());
+              res.keys_.push_back(ress);
             }
+          }
         }
       }
 done:
@@ -1671,12 +1688,11 @@ void SsdbDriver::handleLoadServerInfoEvent(events::ServerInfoRequestEvent* ev) {
       LOG_COMMAND(Command(INFO_REQUEST, common::Value::C_INNER));
       SsdbServerInfo::Common cm;
       common::Error err = impl_->info(NULL, cm);
-      if(err){
-          res.setErrorInfo(err);
-      }
-      else{
-          ServerInfoSPtr mem(new SsdbServerInfo(cm));
-          res.setInfo(mem);
+      if (err) {
+        res.setErrorInfo(err);
+      } else {
+        ServerInfoSPtr mem(new SsdbServerInfo(cm));
+        res.setInfo(mem);
       }
   notifyProgress(sender, 75);
       reply(sender, new events::ServerInfoResponceEvent(this, res));
@@ -1691,4 +1707,4 @@ ServerInfoSPtr SsdbDriver::makeServerInfoFromString(const std::string& val) {
   return res;
 }
 
-}
+}  // namespace fastonosql

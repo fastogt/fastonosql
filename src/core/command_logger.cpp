@@ -28,4 +28,4 @@ void CommandLogger::print(const Command &command) {
   emit printed(command);
 }
 
-}
+}  // namespace fastonosql

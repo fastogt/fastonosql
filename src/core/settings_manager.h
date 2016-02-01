@@ -18,6 +18,9 @@
 
 #pragma once
 
+#include <vector>
+#include <string>
+
 #include <QStringList>
 
 #include "global/types.h"
@@ -109,4 +112,4 @@ class SettingsManager
   bool fastViewKeys_;
 };
 
-}
+}  // namespace fastonosql

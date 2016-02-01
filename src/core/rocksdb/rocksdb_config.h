@@ -18,6 +18,8 @@
 
 #pragma once
 
+#include <string>
+
 #include <rocksdb/options.h>
 
 #include "common/convert2string.h"
@@ -33,7 +35,7 @@ struct rocksdbConfig
   rocksdb::Options options_;
 };
 
-}
+}  // namespace fastonosql
 
 namespace common {
   std::string convertToString(const fastonosql::rocksdbConfig &conf);

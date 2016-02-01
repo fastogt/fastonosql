@@ -18,6 +18,9 @@
 
 #include "core/types.h"
 
+#include <vector>
+#include <string>
+
 namespace fastonosql {
 
 CommandInfo::CommandInfo(const std::string& name, const std::string& params,
@@ -37,8 +40,8 @@ uint8_t CommandInfo::minArgumentsCount() const {
 }
 
 std::string convertVersionNumberToReadableString(uint32_t version) {
-  if(version != UNDEFINED_SINCE){
-      return common::convertVersionNumberToString(version);
+  if (version != UNDEFINED_SINCE) {
+    return common::convertVersionNumberToString(version);
   }
 
   return UNDEFINED_SINCE_STR;
@@ -61,8 +64,8 @@ NValue NDbKValue::value() const {
 }
 
 common::Value::Type NDbKValue::type() const {
-  if(!value_){
-      return common::Value::TYPE_NULL;
+  if (!value_) {
+    return common::Value::TYPE_NULL;
   }
 
   return value_->type();
@@ -137,38 +140,38 @@ bool Field::isIntegral() const {
 
 std::vector<common::Value::Type> supportedTypesFromType(connectionTypes type) {
 #ifdef BUILD_WITH_REDIS
-  if(type == REDIS){
-      return DBTraits<REDIS>::supportedTypes();
+  if (type == REDIS) {
+    return DBTraits<REDIS>::supportedTypes();
   }
 #endif
 #ifdef BUILD_WITH_MEMCACHED
-  if(type == MEMCACHED){
-      return DBTraits<MEMCACHED>::supportedTypes();
+  if (type == MEMCACHED) {
+    return DBTraits<MEMCACHED>::supportedTypes();
   }
 #endif
 #ifdef BUILD_WITH_SSDB
-  if(type == SSDB){
-      return DBTraits<SSDB>::supportedTypes();
+  if (type == SSDB) {
+    return DBTraits<SSDB>::supportedTypes();
   }
 #endif
 #ifdef BUILD_WITH_LEVELDB
-  if(type == LEVELDB){
-      return DBTraits<LEVELDB>::supportedTypes();
+  if (type == LEVELDB) {
+    return DBTraits<LEVELDB>::supportedTypes();
   }
 #endif
 #ifdef BUILD_WITH_ROCKSDB
-  if(type == ROCKSDB){
-      return DBTraits<ROCKSDB>::supportedTypes();
+  if (type == ROCKSDB) {
+    return DBTraits<ROCKSDB>::supportedTypes();
   }
 #endif
 #ifdef BUILD_WITH_UNQLITE
-  if(type == UNQLITE){
-      return DBTraits<UNQLITE>::supportedTypes();
+  if (type == UNQLITE) {
+    return DBTraits<UNQLITE>::supportedTypes();
   }
 #endif
 #ifdef BUILD_WITH_LMDB
-  if(type == LMDB){
-      return DBTraits<LMDB>::supportedTypes();
+  if (type == LMDB) {
+    return DBTraits<LMDB>::supportedTypes();
   }
 #endif
   NOTREACHED();
@@ -177,38 +180,38 @@ std::vector<common::Value::Type> supportedTypesFromType(connectionTypes type) {
 
 std::vector<std::string> infoHeadersFromType(connectionTypes type) {
 #ifdef BUILD_WITH_REDIS
-  if(type == REDIS){
-      return DBTraits<REDIS>::infoHeaders();
+  if (type == REDIS) {
+    return DBTraits<REDIS>::infoHeaders();
   }
 #endif
 #ifdef BUILD_WITH_MEMCACHED
-  if(type == MEMCACHED){
-      return DBTraits<MEMCACHED>::infoHeaders();
+  if (type == MEMCACHED) {
+    return DBTraits<MEMCACHED>::infoHeaders();
   }
 #endif
 #ifdef BUILD_WITH_SSDB
-  if(type == SSDB){
-      return DBTraits<SSDB>::infoHeaders();
+  if (type == SSDB) {
+    return DBTraits<SSDB>::infoHeaders();
   }
 #endif
 #ifdef BUILD_WITH_LEVELDB
-  if(type == LEVELDB){
-      return DBTraits<LEVELDB>::infoHeaders();
+  if (type == LEVELDB) {
+    return DBTraits<LEVELDB>::infoHeaders();
   }
 #endif
 #ifdef BUILD_WITH_ROCKSDB
-  if(type == ROCKSDB){
-      return DBTraits<ROCKSDB>::infoHeaders();
+  if (type == ROCKSDB) {
+    return DBTraits<ROCKSDB>::infoHeaders();
   }
 #endif
 #ifdef BUILD_WITH_UNQLITE
-  if(type == UNQLITE){
-      return DBTraits<UNQLITE>::infoHeaders();
+  if (type == UNQLITE) {
+    return DBTraits<UNQLITE>::infoHeaders();
   }
 #endif
 #ifdef BUILD_WITH_LMDB
-  if(type == LMDB){
-      return DBTraits<LMDB>::infoHeaders();
+  if (type == LMDB) {
+    return DBTraits<LMDB>::infoHeaders();
   }
 #endif
   NOTREACHED();
@@ -217,42 +220,42 @@ std::vector<std::string> infoHeadersFromType(connectionTypes type) {
 
 std::vector< std::vector<Field> > infoFieldsFromType(connectionTypes type) {
 #ifdef BUILD_WITH_REDIS
-  if(type == REDIS){
-      return DBTraits<REDIS>::infoFields();
+  if (type == REDIS) {
+    return DBTraits<REDIS>::infoFields();
   }
 #endif
 #ifdef BUILD_WITH_MEMCACHED
-  if(type == MEMCACHED){
-      return DBTraits<MEMCACHED>::infoFields();
+  if (type == MEMCACHED) {
+    return DBTraits<MEMCACHED>::infoFields();
   }
 #endif
 #ifdef BUILD_WITH_SSDB
-  if(type == SSDB){
-      return DBTraits<SSDB>::infoFields();
+  if (type == SSDB) {
+    return DBTraits<SSDB>::infoFields();
   }
 #endif
 #ifdef BUILD_WITH_LEVELDB
-  if(type == LEVELDB){
-      return DBTraits<LEVELDB>::infoFields();
+  if (type == LEVELDB) {
+    return DBTraits<LEVELDB>::infoFields();
   }
 #endif
 #ifdef BUILD_WITH_ROCKSDB
-  if(type == ROCKSDB){
-      return DBTraits<ROCKSDB>::infoFields();
+  if (type == ROCKSDB) {
+    return DBTraits<ROCKSDB>::infoFields();
   }
 #endif
 #ifdef BUILD_WITH_UNQLITE
-  if(type == UNQLITE){
-      return DBTraits<UNQLITE>::infoFields();
+  if (type == UNQLITE) {
+    return DBTraits<UNQLITE>::infoFields();
   }
 #endif
 #ifdef BUILD_WITH_LMDB
-  if(type == LMDB){
-      return DBTraits<LMDB>::infoFields();
+  if (type == LMDB) {
+    return DBTraits<LMDB>::infoFields();
   }
 #endif
- NOTREACHED();
- return std::vector< std::vector<Field> >();
+  NOTREACHED();
+  return std::vector<std::vector<Field>>();
 }
 
 ServerInfoSnapShoot::ServerInfoSnapShoot()
@@ -275,7 +278,7 @@ ServerPropertyInfo makeServerProperty(FastoObjectArray* array) {
 
   common::ArrayValue* ar = array->array();
   if (ar) {
-    for(int i = 0; i < ar->size(); i+=2){
+    for (size_t i = 0; i < ar->size(); i+=2) {
       std::string c1;
       std::string c2;
       bool res = ar->getString(i, &c1);
@@ -373,4 +376,4 @@ NValue CommandCreateKey::value() const {
   return key_.value();
 }
 
-}
+}  // namespace fastonosql

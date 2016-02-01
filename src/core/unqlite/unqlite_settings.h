@@ -18,6 +18,8 @@
 
 #pragma once
 
+#include <string>
+
 #include "core/connection_settings.h"
 
 #include "core/unqlite/unqlite_config.h"
@@ -45,4 +47,4 @@ class UnqliteConnectionSettings
   unqliteConfig info_;
 };
 
-}
+}  // namespace fastonosql

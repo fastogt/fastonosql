@@ -18,6 +18,9 @@
 
 #pragma once
 
+#include <string>
+#include <vector>
+
 #include "core/core_fwd.h"
 
 #include "core/events/events.h"
@@ -34,8 +37,8 @@ class IServerBase
 
 class IServer
   : public IServerBase, public std::enable_shared_from_this<IServer> {
- Q_OBJECT
- friend class ServersManager;
+  Q_OBJECT
+  friend class ServersManager;
  public:
   typedef std::vector<IDatabaseSPtr> databases_container_t;
 
@@ -135,24 +138,24 @@ class IServer
   void serverInfoSnapShoot(ServerInfoSnapShoot shot);
 
  public:
-  //async methods
-  void connect(const EventsInfo::ConnectInfoRequest &req); //signals: startedConnect, finishedConnect
-  void disconnect(const EventsInfo::DisConnectInfoRequest &req); //signals: startedDisconnect, finishedDisconnect
-  void loadDatabases(const EventsInfo::LoadDatabasesInfoRequest &req); //signals: startedLoadDatabases, finishedLoadDatabases
-  void loadDatabaseContent(const EventsInfo::LoadDatabaseContentRequest &req); //signals: startedLoadDataBaseContent, finishedLoadDatabaseContent
-  void setDefaultDb(const EventsInfo::SetDefaultDatabaseRequest &req); //signals: startedSetDefaultDatabase, finishedSetDefaultDatabase
-  void execute(const EventsInfo::ExecuteInfoRequest &req); //signals: startedExecute
-  void executeCommand(const EventsInfo::CommandRequest &req); //signals: startedExecuteCommand, finishedExecuteCommand
-  void shutDown(const EventsInfo::ShutDownInfoRequest &req); //signals: startedShutdown, finishedShutdown
-  void backupToPath(const EventsInfo::BackupInfoRequest &req); //signals: startedBackup, finishedBackup
-  void exportFromPath(const EventsInfo::ExportInfoRequest &req); //signals: startedExport, finishedExport
-  void changePassword(const EventsInfo::ChangePasswordRequest &req); //signals: startedChangePassword, finishedChangePassword
-  void setMaxConnection(const EventsInfo::ChangeMaxConnectionRequest &req);//signals: startedChangeMaxConnection, finishedChangeMaxConnection
-  void loadServerInfo(const EventsInfo::ServerInfoRequest &req); //signals: startedLoadServerInfo, finishedLoadServerInfo
-  void serverProperty(const EventsInfo::ServerPropertyInfoRequest &req); //signals: startedLoadServerProperty, finishedLoadServerProperty
-  void requestHistoryInfo(const EventsInfo::ServerInfoHistoryRequest &req); //signals: startedLoadServerHistoryInfo, finishedLoadServerHistoryInfo
-  void clearHistory(const EventsInfo::ClearServerHistoryRequest &req); //signals: startedClearServerHistory, finishedClearServerHistory
-  void changeProperty(const EventsInfo::ChangeServerPropertyInfoRequest &req); //signals: startedChangeServerProperty, finishedChangeServerProperty
+  // async methods
+  void connect(const EventsInfo::ConnectInfoRequest &req);  // signals: startedConnect, finishedConnect
+  void disconnect(const EventsInfo::DisConnectInfoRequest &req);  // signals: startedDisconnect, finishedDisconnect
+  void loadDatabases(const EventsInfo::LoadDatabasesInfoRequest &req);  // signals: startedLoadDatabases, finishedLoadDatabases
+  void loadDatabaseContent(const EventsInfo::LoadDatabaseContentRequest &req);  // signals: startedLoadDataBaseContent, finishedLoadDatabaseContent
+  void setDefaultDb(const EventsInfo::SetDefaultDatabaseRequest &req);  // signals: startedSetDefaultDatabase, finishedSetDefaultDatabase
+  void execute(const EventsInfo::ExecuteInfoRequest &req);  // signals: startedExecute
+  void executeCommand(const EventsInfo::CommandRequest &req);  // signals: startedExecuteCommand, finishedExecuteCommand
+  void shutDown(const EventsInfo::ShutDownInfoRequest &req);  // signals: startedShutdown, finishedShutdown
+  void backupToPath(const EventsInfo::BackupInfoRequest &req);  // signals: startedBackup, finishedBackup
+  void exportFromPath(const EventsInfo::ExportInfoRequest &req);  // signals: startedExport, finishedExport
+  void changePassword(const EventsInfo::ChangePasswordRequest &req);  // signals: startedChangePassword, finishedChangePassword
+  void setMaxConnection(const EventsInfo::ChangeMaxConnectionRequest &req); // signals: startedChangeMaxConnection, finishedChangeMaxConnection
+  void loadServerInfo(const EventsInfo::ServerInfoRequest &req);  // signals: startedLoadServerInfo, finishedLoadServerInfo
+  void serverProperty(const EventsInfo::ServerPropertyInfoRequest &req);  // signals: startedLoadServerProperty, finishedLoadServerProperty
+  void requestHistoryInfo(const EventsInfo::ServerInfoHistoryRequest &req);  // signals: startedLoadServerHistoryInfo, finishedLoadServerHistoryInfo
+  void clearHistory(const EventsInfo::ClearServerHistoryRequest &req);  // signals: startedClearServerHistory, finishedClearServerHistory
+  void changeProperty(const EventsInfo::ChangeServerPropertyInfoRequest &req);  // signals: startedChangeServerProperty, finishedChangeServerProperty
 
  protected:
   virtual void customEvent(QEvent* event);
@@ -197,4 +200,4 @@ class IServer
   bool isSuperServer_;
 };
 
-}
+}  // namespace fastonosql

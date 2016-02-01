@@ -17,6 +17,8 @@
 */
 #include "core/idatabase.h"
 
+#include <string>
+
 #include "core/iserver.h"
 
 namespace fastonosql {
@@ -70,4 +72,4 @@ void IDatabase::executeCommand(const EventsInfo::CommandRequest& req) {
   server_->executeCommand(req);
 }
 
-}
+}  // namespace fastonosql

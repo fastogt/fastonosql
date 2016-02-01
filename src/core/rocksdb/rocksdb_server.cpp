@@ -30,4 +30,4 @@ IDatabaseSPtr RocksdbServer::createDatabase(DataBaseInfoSPtr info) {
   return IDatabaseSPtr(new RocksdbDatabase(shared_from_this(), info));
 }
 
-}
+}  // namespace fastonosql

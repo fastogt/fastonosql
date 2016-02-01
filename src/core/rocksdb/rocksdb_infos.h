@@ -18,6 +18,8 @@
 
 #pragma once
 
+#include <string>
+
 #include "core/types.h"
 
 #define ROCKSDB_STATS_LABEL "# Stats"
@@ -33,10 +35,9 @@ namespace fastonosql {
 class RocksdbServerInfo
       : public ServerInfo {
  public:
-  //Compactions\nLevel  Files Size(MB) Time(sec) Read(MB) Write(MB)\n
+  // Compactions\nLevel  Files Size(MB) Time(sec) Read(MB) Write(MB)\n
   struct Stats
-    : FieldByIndex
-  {
+    : FieldByIndex {
       Stats();
       explicit Stats(const std::string& common_text);
       common::Value* valueByIndex(unsigned char index) const;
@@ -61,9 +62,10 @@ RocksdbServerInfo* makeRocksdbServerInfo(const std::string &content);
 RocksdbServerInfo* makeRocksdbServerInfo(FastoObject *root);
 
 class RocksdbDataBaseInfo
-   : public DataBaseInfo {
+  : public DataBaseInfo {
  public:
-  RocksdbDataBaseInfo(const std::string& name, bool isDefault, size_t size, const keys_cont_type& keys = keys_cont_type());
+  RocksdbDataBaseInfo(const std::string& name, bool isDefault, size_t size,
+                      const keys_cont_type& keys = keys_cont_type());
   virtual DataBaseInfo* clone() const;
 };
 
@@ -74,4 +76,4 @@ class RocksdbCommand
   virtual bool isReadOnly() const;
 };
 
-}
+}  // namespace fastonosql

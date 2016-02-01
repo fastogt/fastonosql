@@ -19,7 +19,7 @@
 #include "core/connection_settings.h"
 
 #include <sstream>
-#include <inttypes.h>
+#include <string>
 
 #include "common/qt/convert_string.h"
 #include "common/utils.h"
@@ -126,17 +126,17 @@ std::string IConnectionSettingsBase::hash() const {
 std::string IConnectionSettingsBase::loggingPath() const {
   std::string logDir = common::convertToString(SettingsManager::instance().loggingDirectory());
   std::string ext;
-  if(type_ == REDIS){
+  if (type_ == REDIS) {
       ext = LOGGING_REDIS_FILE_EXTENSION;
-  } else if(type_ == MEMCACHED){
+  } else if (type_ == MEMCACHED) {
       ext = LOGGING_MEMCACHED_FILE_EXTENSION;
-  } else if(type_ == SSDB){
+  } else if (type_ == SSDB) {
       ext = LOGGING_SSDB_FILE_EXTENSION;
-  } else if(type_ == LEVELDB){
+  } else if (type_ == LEVELDB) {
       ext = LOGGING_LEVELDB_FILE_EXTENSION;
-  } else if(type_ == ROCKSDB){
+  } else if (type_ == ROCKSDB) {
       ext = LOGGING_ROCKSDB_FILE_EXTENSION;
-  } else if(type_ == UNQLITE){
+  } else if (type_ == UNQLITE) {
       ext = LOGGING_UNQLITE_FILE_EXTENSION;
   } else {
       NOTREACHED();
@@ -147,37 +147,37 @@ std::string IConnectionSettingsBase::loggingPath() const {
 IConnectionSettingsBase* IConnectionSettingsBase::createFromType(connectionTypes type,
                                                                  const std::string& conName) {
 #ifdef BUILD_WITH_REDIS
-  if(type == REDIS){
+  if (type == REDIS) {
       return new RedisConnectionSettings(conName);
   }
 #endif
 #ifdef BUILD_WITH_MEMCACHED
-  if(type == MEMCACHED){
+  if (type == MEMCACHED) {
       return new MemcachedConnectionSettings(conName);
   }
 #endif
 #ifdef BUILD_WITH_SSDB
-  if(type == SSDB){
+  if (type == SSDB) {
       return new SsdbConnectionSettings(conName);
   }
 #endif
 #ifdef BUILD_WITH_LEVELDB
-  if(type == LEVELDB){
+  if (type == LEVELDB) {
       return new LeveldbConnectionSettings(conName);
   }
 #endif
 #ifdef BUILD_WITH_ROCKSDB
-  if(type == ROCKSDB){
+  if (type == ROCKSDB) {
       return new RocksdbConnectionSettings(conName);
   }
 #endif
 #ifdef BUILD_WITH_UNQLITE
-  if(type == UNQLITE){
+  if (type == UNQLITE) {
       return new UnqliteConnectionSettings(conName);
   }
 #endif
 #ifdef BUILD_WITH_LMDB
-  if(type == LMDB){
+  if (type == LMDB) {
       return new LmdbConnectionSettings(conName);
   }
 #endif
@@ -186,7 +186,7 @@ IConnectionSettingsBase* IConnectionSettingsBase::createFromType(connectionTypes
 }
 
 IConnectionSettingsBase* IConnectionSettingsBase::fromString(const std::string &val) {
-  if(val.empty()){
+  if (val.empty()) {
       return NULL;
   }
 
@@ -197,28 +197,28 @@ IConnectionSettingsBase* IConnectionSettingsBase::fromString(const std::string &
   uint8_t commaCount = 0;
   std::string elText;
 
-  for(size_t i = 0; i < len; ++i ){
+  for (size_t i = 0; i < len; ++i ) {
     char ch = val[i];
-    if(ch == ',') {
-      if(commaCount == 0) {
+    if (ch == ',') {
+      if (commaCount == 0) {
           int crT = elText[0] - 48;
           result = createFromType((connectionTypes)crT, std::string());
-          if(!result){
+          if (!result) {
               return NULL;
           }
-      } else if(commaCount == 1) {
+      } else if (commaCount == 1) {
           result->setConnectionNameAndUpdateHash(elText);
-      } else if(commaCount == 2) {
+      } else if (commaCount == 2) {
           uint32_t msTime = common::convertFromString<uint32_t>(elText);
           result->setLoggingMsTimeInterval(msTime);
-          if(!IConnectionSettingsBase::isRemoteType(result->connectionType())){
+          if (!IConnectionSettingsBase::isRemoteType(result->connectionType())) {
               result->initFromCommandLine(val.substr(i+1));
               break;
           }
-      } else if(commaCount == 3) {
+      } else if (commaCount == 3) {
           result->initFromCommandLine(elText);
           IConnectionSettingsRemote * remote = dynamic_cast<IConnectionSettingsRemote *>(result);
-          if(remote){
+          if (remote) {
               remote->setSshInfo(SSHInfo(val.substr(i+1)));
           }
           break;
@@ -267,17 +267,17 @@ IConnectionSettingsRemote* IConnectionSettingsRemote::createFromType(connectionT
 {
   IConnectionSettingsRemote* remote = NULL;
 #ifdef BUILD_WITH_REDIS
-  if(type == REDIS){
+  if (type == REDIS) {
     remote = new RedisConnectionSettings(conName);
   }
 #endif
 #ifdef BUILD_WITH_MEMCACHED
-  if(type == MEMCACHED){
+  if (type == MEMCACHED) {
     remote = new MemcachedConnectionSettings(conName);
   }
 #endif
 #ifdef BUILD_WITH_SSDB
-  if(type == SSDB){
+  if (type == SSDB) {
     remote = new SsdbConnectionSettings(conName);
   }
 #endif
@@ -304,10 +304,10 @@ void IConnectionSettingsRemote::setSshInfo(const SSHInfo& info) {
 }
 
 const char* useHelpText(connectionTypes type) {
-  if(type == DBUNKNOWN){
+  if (type == DBUNKNOWN) {
       return NULL;
   }
-  if(type == REDIS){
+  if (type == REDIS) {
       return "<b>Usage: [OPTIONS] [cmd [arg [arg ...]]]</b><br/>"
                          "<b>-h &lt;hostname&gt;</b>      Server hostname (default: 127.0.0.1).<br/>"
                          "<b>-p &lt;port&gt;</b>          Server port (default: 6379).<br/>"
@@ -335,7 +335,7 @@ const char* useHelpText(connectionTypes type) {
                          "                   The test will run for the specified amount of seconds.<br/>"
                          "<b>--eval &lt;file&gt;</b>      Send an EVAL command using the Lua script at <b>&lt;file&gt;</b>.";
   }
-  if(type == MEMCACHED){
+  if (type == MEMCACHED) {
       return "<b>Usage: [OPTIONS] [cmd [arg [arg ...]]]</b><br/>"
                          "<b>-h &lt;hostname&gt;</b>      Server hostname (default: 127.0.0.1).<br/>"
                          "<b>-p &lt;port&gt;</b>          Server port (default: 11211).<br/>"
@@ -343,31 +343,31 @@ const char* useHelpText(connectionTypes type) {
                          "<b>-a &lt;password&gt;</b>      Password to use when connecting to the server.<br/>"
                          "<b>-d &lt;delimiter&gt;</b>     Multi-bulk delimiter in for raw formatting (default: \\n).<br/>";
   }
-  if(type == SSDB){
+  if (type == SSDB) {
       return "<b>Usage: [OPTIONS] [cmd [arg [arg ...]]]</b><br/>"
                          "<b>-u &lt;username&gt;</b>      Username to use when connecting to the server.<br/>"
                          "<b>-a &lt;password&gt;</b>      Password to use when connecting to the server.<br/>"
                          "<b>-d &lt;delimiter&gt;</b>     Multi-bulk delimiter in for raw formatting (default: \\n).<br/>";
   }
-  if(type == LEVELDB){
+  if (type == LEVELDB) {
       return "<b>Usage: [OPTIONS] [cmd [arg [arg ...]]]</b><br/>"
                          "<b>-f &lt;db&gt;</b>            File path to database.<br/>"
                          "<b>-c </b>            Create database if missing.<br/>"
                          "<b>-d &lt;delimiter&gt;</b>     Multi-bulk delimiter in for raw formatting (default: \\n).<br/>";
   }
-  if(type == ROCKSDB){
+  if (type == ROCKSDB) {
       return "<b>Usage: [OPTIONS] [cmd [arg [arg ...]]]</b><br/>"
                          "<b>-f &lt;db&gt;</b>            File path to database.<br/>"
                          "<b>-c </b>            Create database if missing.<br/>"
                          "<b>-d &lt;delimiter&gt;</b>     Multi-bulk delimiter in for raw formatting (default: \\n).<br/>";
   }
-  if(type == UNQLITE){
+  if (type == UNQLITE) {
       return "<b>Usage: [OPTIONS] [cmd [arg [arg ...]]]</b><br/>"
                          "<b>-f &lt;db&gt;</b>            File path to database.<br/>"
                          "<b>-c </b>            Create database if missing.<br/>"
                          "<b>-d &lt;delimiter&gt;</b>     Multi-bulk delimiter in for raw formatting (default: \\n).<br/>";
   }
-  if(type == LMDB){
+  if (type == LMDB) {
       return "<b>Usage: [OPTIONS] [cmd [arg [arg ...]]]</b><br/>"
                          "<b>-f &lt;db&gt;</b>            File path to database.<br/>"
                          "<b>-c </b>            Create database if missing.<br/>"
@@ -380,46 +380,46 @@ const char* useHelpText(connectionTypes type) {
 
 std::string defaultCommandLine(connectionTypes type) {
 #ifdef BUILD_WITH_REDIS
-  if(type == REDIS){
+  if (type == REDIS) {
     redisConfig r;
     return common::convertToString(r);
   }
 #endif
 #ifdef BUILD_WITH_MEMCACHED
-  if(type == MEMCACHED){
+  if (type == MEMCACHED) {
     memcachedConfig r;
     return common::convertToString(r);
   }
 #endif
 #ifdef BUILD_WITH_SSDB
-  if(type == SSDB){
+  if (type == SSDB) {
     ssdbConfig r;
     return common::convertToString(r);
   }
 #endif
 #ifdef BUILD_WITH_LEVELDB
-  if(type == LEVELDB){
+  if (type == LEVELDB) {
     leveldbConfig r;
     r.options_.create_if_missing = true;
     return common::convertToString(r);
   }
 #endif
 #ifdef BUILD_WITH_ROCKSDB
-  if(type == ROCKSDB){
+  if (type == ROCKSDB) {
     rocksdbConfig r;
     r.options_.create_if_missing = true;
     return common::convertToString(r);
   }
 #endif
 #ifdef BUILD_WITH_UNQLITE
-  if(type == UNQLITE){
+  if (type == UNQLITE) {
     unqliteConfig r;
     r.create_if_missing_ = true;
     return common::convertToString(r);
   }
 #endif
 #ifdef BUILD_WITH_LMDB
-  if(type == LMDB){
+  if (type == LMDB) {
     lmdbConfig r;
     r.create_if_missing_ = true;
     return common::convertToString(r);
@@ -438,7 +438,7 @@ IClusterSettingsBase::cluster_connection_type IClusterSettingsBase::nodes() cons
 }
 
 IConnectionSettingsBaseSPtr IClusterSettingsBase::root() const {
-  if(clusters_nodes_.empty()){
+  if (clusters_nodes_.empty()) {
     return IConnectionSettingsBaseSPtr();
   }
 
@@ -446,7 +446,7 @@ IConnectionSettingsBaseSPtr IClusterSettingsBase::root() const {
 }
 
 void IClusterSettingsBase::addNode(IConnectionSettingsBaseSPtr node) {
-  if(!node){
+  if (!node) {
     return;
   }
 
@@ -456,7 +456,7 @@ void IClusterSettingsBase::addNode(IConnectionSettingsBaseSPtr node) {
 IClusterSettingsBase* IClusterSettingsBase::createFromType(connectionTypes type,
                                                            const std::string& conName) {
 #ifdef BUILD_WITH_REDIS
-  if(type == REDIS){
+  if (type == REDIS) {
       return new RedisClusterSettings(conName);
   }
 #endif
@@ -466,7 +466,7 @@ IClusterSettingsBase* IClusterSettingsBase::createFromType(connectionTypes type,
 }
 
 IClusterSettingsBase* IClusterSettingsBase::fromString(const std::string& val) {
-  if(val.empty()){
+  if (val.empty()) {
     return NULL;
   }
 
@@ -476,24 +476,24 @@ IClusterSettingsBase* IClusterSettingsBase::fromString(const std::string& val) {
   uint8_t commaCount = 0;
   std::string elText;
 
-  for(size_t i = 0; i < len; ++i){
+  for (size_t i = 0; i < len; ++i) {
     char ch = val[i];
     if (ch == ',') {
-        if(commaCount == 0) {
+        if (commaCount == 0) {
             int crT = elText[0] - 48;
             result = createFromType((connectionTypes)crT);
-            if(!result){
+            if (!result) {
                 return NULL;
             }
-        } else if(commaCount == 1) {
+        } else if (commaCount == 1) {
             result->setConnectionName(elText);
-        } else if(commaCount == 2) {
+        } else if (commaCount == 2) {
             uint32_t msTime = common::convertFromString<uint32_t>(elText);
             result->setLoggingMsTimeInterval(msTime);
             std::string serText;
-            for(size_t j = i + 2; j < len; ++j) {
+            for (size_t j = i + 2; j < len; ++j) {
                 ch = val[j];
-                if(ch == magicNumber || j == len - 1){
+                if (ch == magicNumber || j == len - 1) {
                     IConnectionSettingsBaseSPtr ser(IConnectionSettingsBase::fromString(serText));
                     result->addNode(ser);
                     serText.clear();
@@ -518,9 +518,9 @@ std::string IClusterSettingsBase::toString() const {
 
   std::stringstream str;
   str << IConnectionSettings::toString() << ',';
-  for(int i = 0; i < clusters_nodes_.size(); ++i){
+  for (size_t i = 0; i < clusters_nodes_.size(); ++i) {
      IConnectionSettingsBaseSPtr serv = clusters_nodes_[i];
-     if(serv){
+     if (serv) {
          str << magicNumber << serv->toString();
      }
   }
@@ -530,10 +530,10 @@ std::string IClusterSettingsBase::toString() const {
 }
 
 IConnectionSettingsBaseSPtr IClusterSettingsBase::findSettingsByHost(const common::net::hostAndPort& host) const {
-  for(int i = 0; i < clusters_nodes_.size(); ++i){
+  for (size_t i = 0; i < clusters_nodes_.size(); ++i) {
       IConnectionSettingsBaseSPtr cur = clusters_nodes_[i];
       IConnectionSettingsRemote * remote = dynamic_cast<IConnectionSettingsRemote *>(cur.get());
-      if(remote && remote->host() == host){
+      if (remote && remote->host() == host) {
           return cur;
       }
   }
@@ -541,4 +541,4 @@ IConnectionSettingsBaseSPtr IClusterSettingsBase::findSettingsByHost(const commo
   return IConnectionSettingsBaseSPtr();
 }
 
-}
+}  // namespace fastonosql

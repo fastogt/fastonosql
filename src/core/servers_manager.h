@@ -18,6 +18,8 @@
 
 #pragma once
 
+#include <vector>
+
 #include "common/patterns/singleton_pattern.h"
 
 #include "core/iserver.h"
@@ -26,10 +28,9 @@
 namespace fastonosql {
 
 class ServersManager
-  : public QObject, public common::patterns::LazySingleton<ServersManager>
-{
+  : public QObject, public common::patterns::LazySingleton<ServersManager> {
   friend class common::patterns::LazySingleton<ServersManager>;
- Q_OBJECT
+  Q_OBJECT
  public:
   typedef std::vector<IServerSPtr> ServersContainer;
 
@@ -37,7 +38,8 @@ class ServersManager
   IClusterSPtr createCluster(IClusterSettingsBaseSPtr settings);
 
   common::Error testConnection(IConnectionSettingsBaseSPtr connection);
-  common::Error discoveryConnection(IConnectionSettingsBaseSPtr connection, std::vector<ServerDiscoveryInfoSPtr>& inf);
+  common::Error discoveryConnection(IConnectionSettingsBaseSPtr connection,
+                                    std::vector<ServerDiscoveryInfoSPtr>& inf);
 
   void setSyncServers(bool isSync);
   void clear();
@@ -61,4 +63,4 @@ class ServersManager
   bool syncServers_;
 };
 
-}
+}  // namespace fastonosql

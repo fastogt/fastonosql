@@ -26,17 +26,16 @@
 namespace fastonosql {
 
 struct SSHInfo {
-  enum SupportedAuthenticationMetods
-  {
+  enum SupportedAuthenticationMetods {
     UNKNOWN = 0,
     PASSWORD = 1,
     PUBLICKEY = 2
   };
 
   SSHInfo();
-  SSHInfo(const std::string& hostName, int port, const std::string& userName, const std::string& password,
-          const std::string& publicKey, const std::string& privateKey, const std::string& passphrase,
-          SupportedAuthenticationMetods method);
+  SSHInfo(const std::string& hostName, int port, const std::string& userName,
+          const std::string& password, const std::string& publicKey, const std::string& privateKey,
+          const std::string& passphrase, SupportedAuthenticationMetods method);
 
   explicit SSHInfo(const std::string& text);
 
@@ -56,10 +55,10 @@ struct SSHInfo {
   SupportedAuthenticationMetods currentMethod_;
 };
 
-inline bool operator == (const SSHInfo& r,const SSHInfo& l) {
+inline bool operator == (const SSHInfo& r, const SSHInfo& l) {
   return r.hostName_ == l.hostName_ && r.password_ == l.password_ && r.port_ == l.port_ &&
       r.publicKey_ == l.publicKey_ && r.privateKey_ == l.privateKey_ &&
       r.passphrase_ == l.passphrase_ && r.userName_ == l.userName_;
 }
 
-}
+}  // namespace fastonosql

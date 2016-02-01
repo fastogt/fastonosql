@@ -29,4 +29,4 @@ class UnqliteDatabase
   UnqliteDatabase(IServerSPtr server, DataBaseInfoSPtr info);
 };
 
-}
+}  // namespace fastonosql

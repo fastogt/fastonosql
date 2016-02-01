@@ -18,6 +18,9 @@
 
 #include "core/ssdb/ssdb_config.h"
 
+#include <string>
+#include <vector>
+
 #include "common/sprintf.h"
 
 #include "fasto/qt/logger.h"
@@ -29,25 +32,25 @@ void parseOptions(int argc, char **argv, ssdbConfig& cfg) {
   for (int i = 0; i < argc; i++) {
       int lastarg = i == argc - 1;
 
-      if (!strcmp(argv[i],"-h") && !lastarg) {
+      if (!strcmp(argv[i], "-h") && !lastarg) {
           cfg.hostip_ = argv[++i];
-      } else if (!strcmp(argv[i],"-p") && !lastarg) {
+      } else if (!strcmp(argv[i], "-p") && !lastarg) {
           cfg.hostport_ = atoi(argv[++i]);
-      } else if (!strcmp(argv[i],"-u") && !lastarg) {
+      } else if (!strcmp(argv[i], "-u") && !lastarg) {
           cfg.user_ = argv[++i];
-      } else if (!strcmp(argv[i],"-a") && !lastarg) {
+      } else if (!strcmp(argv[i], "-a") && !lastarg) {
           cfg.password_ = argv[++i];
-      } else if (!strcmp(argv[i],"-d") && !lastarg) {
+      } else if (!strcmp(argv[i], "-d") && !lastarg) {
           cfg.mb_delim_ = argv[++i];
       } else {
           if (argv[i][0] == '-') {
               const uint16_t size_buff = 256;
               char buff[size_buff] = {0};
-              common::SNPrintf(buff, sizeof(buff), "Unrecognized option or bad number of args for: '%s'", argv[i]);
+              common::SNPrintf(buff, sizeof(buff),
+                               "Unrecognized option or bad number of args for: '%s'", argv[i]);
               LOG_MSG(buff, common::logging::L_WARNING, true);
               break;
-          }
-          else {
+          } else {
               /* Likely the command name, stop here. */
               break;
           }
@@ -55,34 +58,33 @@ void parseOptions(int argc, char **argv, ssdbConfig& cfg) {
   }
 }
 
-}
+}  // namespace
 
 ssdbConfig::ssdbConfig()
   : RemoteConfig("127.0.0.1", 8888), user_(), password_() {
 }
 
-}
+}  // namespace fastonosql
 
 namespace common {
 
-std::string convertToString(const fastonosql::ssdbConfig &conf)
-{
+std::string convertToString(const fastonosql::ssdbConfig &conf) {
   std::vector<std::string> argv = conf.args();
 
-  if(!conf.user_.empty()){
+  if (!conf.user_.empty()) {
       argv.push_back("-u");
       argv.push_back(conf.user_);
   }
 
-  if(!conf.password_.empty()){
+  if (!conf.password_.empty()) {
       argv.push_back("-a");
       argv.push_back(conf.password_);
   }
 
   std::string result;
-  for(int i = 0; i < argv.size(); ++i){
+  for (size_t i = 0; i < argv.size(); ++i) {
       result += argv[i];
-      if(i != argv.size()-1){
+      if (i != argv.size()-1) {
           result += " ";
       }
   }
@@ -91,15 +93,14 @@ std::string convertToString(const fastonosql::ssdbConfig &conf)
 }
 
 template<>
-fastonosql::ssdbConfig convertFromString(const std::string& line)
-{
+fastonosql::ssdbConfig convertFromString(const std::string& line) {
   fastonosql::ssdbConfig cfg;
   enum { kMaxArgs = 64 };
   int argc = 0;
   char *argv[kMaxArgs] = {0};
 
   char* p2 = strtok((char*)line.c_str(), " ");
-  while(p2){
+  while (p2) {
       argv[argc++] = p2;
       p2 = strtok(0, " ");
   }
@@ -108,4 +109,4 @@ fastonosql::ssdbConfig convertFromString(const std::string& line)
   return cfg;
 }
 
-}
+}  // namespace common

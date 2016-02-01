@@ -18,6 +18,9 @@
 
 #pragma once
 
+#include <string>
+#include <vector>
+
 #include "common/smart_ptr.h"
 #include "common/net/net.h"
 
@@ -96,7 +99,8 @@ class IConnectionSettingsRemote
 
   virtual std::string fullAddress() const;
 
-  static IConnectionSettingsRemote* createFromType(connectionTypes type, const std::string& conName, const common::net::hostAndPort& host);
+  static IConnectionSettingsRemote* createFromType(connectionTypes type, const std::string& conName,
+                                                   const common::net::hostAndPort& host);
 
   virtual std::string toString() const;
 
@@ -126,7 +130,8 @@ class IClusterSettingsBase
 
   void addNode(IConnectionSettingsBaseSPtr node);
 
-  static IClusterSettingsBase* createFromType(connectionTypes type, const std::string& conName = std::string());
+  static IClusterSettingsBase* createFromType(connectionTypes type,
+                                              const std::string& conName = std::string());
   static IClusterSettingsBase* fromString(const std::string& val);
 
   virtual std::string toString() const;
@@ -137,9 +142,9 @@ class IClusterSettingsBase
   IClusterSettingsBase(const std::string& connectionName, connectionTypes type);
 
  private:
-  cluster_connection_type clusters_nodes_; //first element is root!!!
+  cluster_connection_type clusters_nodes_;  // first element is root!!!
 };
 
 typedef common::shared_ptr<IClusterSettingsBase> IClusterSettingsBaseSPtr;
 
-}
+}  // namespace fastonosql

@@ -18,6 +18,8 @@
 
 #include "core/unqlite/unqlite_settings.h"
 
+#include <string>
+
 namespace fastonosql {
 
 UnqliteConnectionSettings::UnqliteConnectionSettings(const std::string& connectionName)
@@ -58,4 +60,4 @@ void UnqliteConnectionSettings::initFromCommandLine(const std::string& val) {
   info_ = common::convertFromString<unqliteConfig>(val);
 }
 
-}
+}  // namespace fastonosql

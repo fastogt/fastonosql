@@ -18,6 +18,8 @@
 
 #include "core/iserver.h"
 
+#include <string>
+
 #include <QApplication>
 
 #include "common/qt/convert_string.h"
@@ -27,8 +29,8 @@
 #include "core/idatabase.h"
 #include "core/idriver.h"
 
+namespace fastonosql {
 namespace {
-using namespace fastonosql;
 
 template<bool isConnect>
 struct connectFunct {
@@ -50,7 +52,7 @@ struct connectFunct<true> {
 
 template<bool con>
 void syncServersFunct(IServer *src, IServer *dsc) {
-  if(!src || !dsc){
+  if (!src || !dsc) {
     return;
   }
 
@@ -68,18 +70,18 @@ void syncServersFunct(IServer *src, IServer *dsc) {
 
   func(src, &IServer::addedChild, dsc, &IServer::addedChild, Qt::UniqueConnection);
   func(src, &IServer::itemUpdated, dsc, &IServer::itemUpdated, Qt::UniqueConnection);
-  func(src, &IServer::serverInfoSnapShoot, dsc, &IServer::serverInfoSnapShoot, Qt::UniqueConnection);
+  func(src, &IServer::serverInfoSnapShoot, dsc,
+       &IServer::serverInfoSnapShoot, Qt::UniqueConnection);
 }
 
 }
 
-namespace fastonosql {
 IServerBase::~IServerBase() {
 }
 
 IServer::IServer(IDriverSPtr drv, bool isSuperServer)
   : drv_(drv), isSuperServer_(isSuperServer) {
-  if(isSuperServer_){
+  if (isSuperServer_) {
     VERIFY(QObject::connect(drv_.get(), &IDriver::addedChild, this, &IServer::addedChild));
     VERIFY(QObject::connect(drv_.get(), &IDriver::itemUpdated, this, &IServer::itemUpdated));
     VERIFY(QObject::connect(drv_.get(), &IDriver::serverInfoSnapShoot,
@@ -145,18 +147,18 @@ QString IServer::outputDelemitr() const {
 
 IDatabaseSPtr IServer::findDatabaseByInfo(DataBaseInfoSPtr inf) const {
   DCHECK(inf);
-  if(!inf){
+  if (!inf) {
       return IDatabaseSPtr();
   }
 
   DCHECK(type() == inf->type());
-  if(type() != inf->type()){
+  if (type() != inf->type()) {
       return IDatabaseSPtr();
   }
 
-  for(int i = 0; i < databases_.size(); ++i){
+  for (int i = 0; i < databases_.size(); ++i) {
       DataBaseInfoSPtr db = databases_[i]->info();
-      if(db->name() == inf->name()){
+      if (db->name() == inf->name()) {
           return databases_[i];
       }
   }
@@ -165,9 +167,9 @@ IDatabaseSPtr IServer::findDatabaseByInfo(DataBaseInfoSPtr inf) const {
 }
 
 IDatabaseSPtr IServer::findDatabaseByName(const std::string& name) const {
-  for(int i = 0; i < databases_.size(); ++i){
+  for (int i = 0; i < databases_.size(); ++i) {
     DataBaseInfoSPtr db = databases_[i]->info();
-    if(db->name() == name){
+    if (db->name() == name) {
       return databases_[i];
     }
   }
@@ -178,13 +180,13 @@ IDatabaseSPtr IServer::findDatabaseByName(const std::string& name) const {
 void IServer::syncWithServer(IServer *src) {
   DCHECK(src != this);
   syncServersFunct<true>(src, this);
-  //syncServersFunct<true>(this, src);
+  // syncServersFunct<true>(this, src);
 }
 
 void IServer::unSyncFromServer(IServer *src) {
   DCHECK(src != this);
   syncServersFunct<false>(src, this);
-  //syncServersFunct<false>(this, src);
+  // syncServersFunct<false>(this, src);
 }
 
 void IServer::connect(const EventsInfo::ConnectInfoRequest& req) {
@@ -199,8 +201,7 @@ void IServer::disconnect(const EventsInfo::DisConnectInfoRequest& req) {
   notify(ev);
 }
 
-void IServer::loadDatabases(const EventsInfo::LoadDatabasesInfoRequest& req)
-{
+void IServer::loadDatabases(const EventsInfo::LoadDatabasesInfoRequest& req) {
   emit startedLoadDatabases(req);
   QEvent *ev = new events::LoadDatabasesInfoRequestEvent(this, req);
   notify(ev);
@@ -306,26 +307,26 @@ void IServer::customEvent(QEvent *event) {
       EventsInfo::ProcessConfigArgsInfoRequest preq(this);
       processConfigArgs(preq);
     }
-  } else if(type == static_cast<QEvent::Type>(EnterModeEvent::EventType)) {
+  } else if (type == static_cast<QEvent::Type>(EnterModeEvent::EventType)) {
     EnterModeEvent *ev = static_cast<EnterModeEvent*>(event);
     EnterModeEvent::value_type v = ev->value();
     emit enteredMode(v);
-  } else if(type == static_cast<QEvent::Type>(LeaveModeEvent::EventType)) {
+  } else if (type == static_cast<QEvent::Type>(LeaveModeEvent::EventType)) {
     LeaveModeEvent *ev = static_cast<LeaveModeEvent*>(event);
     LeaveModeEvent::value_type v = ev->value();
     emit leavedMode(v);
-  } else if(type == static_cast<QEvent::Type>(CommandRootCreatedEvent::EventType)) {
+  } else if (type == static_cast<QEvent::Type>(CommandRootCreatedEvent::EventType)) {
     CommandRootCreatedEvent *ev = static_cast<CommandRootCreatedEvent*>(event);
     CommandRootCreatedEvent::value_type v = ev->value();
     emit rootCreated(v);
-  } else if(type == static_cast<QEvent::Type>(CommandRootCompleatedEvent::EventType)) {
+  } else if (type == static_cast<QEvent::Type>(CommandRootCompleatedEvent::EventType)) {
     CommandRootCompleatedEvent *ev = static_cast<CommandRootCompleatedEvent*>(event);
     CommandRootCompleatedEvent::value_type v = ev->value();
     emit rootCompleated(v);
-  } else if(type == static_cast<QEvent::Type>(DisconnectResponceEvent::EventType)) {
+  } else if (type == static_cast<QEvent::Type>(DisconnectResponceEvent::EventType)) {
     DisconnectResponceEvent *ev = static_cast<DisconnectResponceEvent*>(event);
     handleDisconnectEvent(ev);
-  } else if(type == static_cast<QEvent::Type>(LoadDatabasesInfoResponceEvent::EventType)) {
+  } else if (type == static_cast<QEvent::Type>(LoadDatabasesInfoResponceEvent::EventType)) {
     LoadDatabasesInfoResponceEvent *ev = static_cast<LoadDatabasesInfoResponceEvent*>(event);
     handleLoadDatabaseInfosEvent(ev);
   } else if (type == static_cast<QEvent::Type>(ServerInfoResponceEvent::EventType)) {
@@ -361,13 +362,13 @@ void IServer::customEvent(QEvent *event) {
   } else if (type == static_cast<QEvent::Type>(SetDefaultDatabaseResponceEvent::EventType)) {
     SetDefaultDatabaseResponceEvent *ev = static_cast<SetDefaultDatabaseResponceEvent*>(event);
     handleSetDefaultDatabaseEvent(ev);
-  } else if(type == static_cast<QEvent::Type>(CommandResponceEvent::EventType)){
+  } else if (type == static_cast<QEvent::Type>(CommandResponceEvent::EventType)) {
     CommandResponceEvent *ev = static_cast<CommandResponceEvent*>(event);
     handleCommandResponceEvent(ev);
-  } else if(type == static_cast<QEvent::Type>(DiscoveryInfoResponceEvent::EventType)) {
+  } else if (type == static_cast<QEvent::Type>(DiscoveryInfoResponceEvent::EventType)) {
     DiscoveryInfoResponceEvent *ev = static_cast<DiscoveryInfoResponceEvent*>(event);
     handleDiscoveryInfoResponceEvent(ev);
-  } else if(type == static_cast<QEvent::Type>(ProgressResponceEvent::EventType)) {
+  } else if (type == static_cast<QEvent::Type>(ProgressResponceEvent::EventType)) {
     ProgressResponceEvent *ev = static_cast<ProgressResponceEvent*>(event);
     ProgressResponceEvent::value_type v = ev->value();
     emit progressChanged(v);
@@ -383,208 +384,193 @@ void IServer::notify(QEvent *ev) {
 }
 
 void IServer::handleConnectEvent(events::ConnectResponceEvent* ev) {
-  using namespace events;
-  ConnectResponceEvent::value_type v = ev->value();
+  auto v = ev->value();
   common::Error er(v.errorInfo());
-  if(er && er->isError()){
+  if (er && er->isError()) {
       LOG_ERROR(er, true);
   }
   emit finishedConnect(v);
 }
 
 void IServer::handleDisconnectEvent(events::DisconnectResponceEvent* ev) {
-  using namespace events;
-  DisconnectResponceEvent::value_type v = ev->value();
+  auto v = ev->value();
   common::Error er(v.errorInfo());
-  if(er && er->isError()){
+  if (er && er->isError()) {
       LOG_ERROR(er, true);
   }
   emit finishedDisconnect(v);
 }
 
 void IServer::handleLoadServerInfoEvent(events::ServerInfoResponceEvent* ev) {
-  using namespace events;
-  ServerInfoResponceEvent::value_type v = ev->value();
+  auto v = ev->value();
   common::Error er(v.errorInfo());
-  if(er && er->isError()){
+  if (er && er->isError()) {
       LOG_ERROR(er, true);
   }
   emit finishedLoadServerInfo(v);
 }
 
 void IServer::handleLoadServerPropertyEvent(events::ServerPropertyInfoResponceEvent* ev) {
-  using namespace events;
-  ServerPropertyInfoResponceEvent::value_type v = ev->value();
+  auto v = ev->value();
   common::Error er(v.errorInfo());
-  if(er && er->isError()){
+  if (er && er->isError()) {
       LOG_ERROR(er, true);
   }
   emit finishedLoadServerProperty(v);
 }
 
 void IServer::handleServerPropertyChangeEvent(events::ChangeServerPropertyInfoResponceEvent* ev) {
-  using namespace events;
-  ChangeServerPropertyInfoResponceEvent::value_type v = ev->value();
+  auto v = ev->value();
   common::Error er(v.errorInfo());
-  if(er && er->isError()){
+  if (er && er->isError()) {
       LOG_ERROR(er, true);
   }
   emit finishedChangeServerProperty(v);
 }
 
 void IServer::handleShutdownEvent(events::ShutDownResponceEvent* ev) {
-  using namespace events;
-  ShutDownResponceEvent::value_type v = ev->value();
+  auto v = ev->value();
   common::Error er(v.errorInfo());
-  if(er && er->isError()){
+  if (er && er->isError()) {
       LOG_ERROR(er, true);
   }
   emit finishedShutdown(v);
 }
 
 void IServer::handleBackupEvent(events::BackupResponceEvent* ev) {
-  using namespace events;
-  BackupResponceEvent::value_type v = ev->value();
+  auto v = ev->value();
   common::Error er(v.errorInfo());
-  if(er && er->isError()){
+  if (er && er->isError()) {
       LOG_ERROR(er, true);
   }
   emit finishedBackup(v);
 }
 
 void IServer::handleExportEvent(events::ExportResponceEvent* ev) {
-  using namespace events;
-  ExportResponceEvent::value_type v = ev->value();
+  auto v = ev->value();
   common::Error er(v.errorInfo());
-  if(er && er->isError()){
-      LOG_ERROR(er, true);
+  if (er && er->isError()) {
+    LOG_ERROR(er, true);
   }
   emit finishedExport(v);
 }
 
 void IServer::handleChangePasswordEvent(events::ChangePasswordResponceEvent* ev) {
-  using namespace events;
-  ChangePasswordResponceEvent::value_type v = ev->value();
+  auto v = ev->value();
   common::Error er(v.errorInfo());
-  if(er && er->isError()){
-      LOG_ERROR(er, true);
+  if (er && er->isError()) {
+    LOG_ERROR(er, true);
   }
+
   emit finishedChangePassword(v);
 }
 
 void IServer::handleChangeMaxConnection(events::ChangeMaxConnectionResponceEvent* ev) {
-  using namespace events;
-  ChangeMaxConnectionResponceEvent::value_type v = ev->value();
+  auto v = ev->value();
   common::Error er(v.errorInfo());
-  if(er && er->isError()){
-      LOG_ERROR(er, true);
+  if (er && er->isError()) {
+    LOG_ERROR(er, true);
   }
+
   emit finishedChangeMaxConnection(v);
 }
 
 void IServer::handleLoadDatabaseInfosEvent(events::LoadDatabasesInfoResponceEvent* ev) {
-  using namespace events;
-  LoadDatabasesInfoResponceEvent::value_type v = ev->value();
+  auto v = ev->value();
   common::Error er(v.errorInfo());
-  if(er && er->isError()){
-      LOG_ERROR(er, true);
-      databases_.clear();
+  if (er && er->isError()) {
+    LOG_ERROR(er, true);
+    databases_.clear();
+  } else {
+    EventsInfo::LoadDatabasesInfoResponce::database_info_cont_type dbs = v.databases_;
+    EventsInfo::LoadDatabasesInfoResponce::database_info_cont_type tmp;
+    for (int j = 0; j < dbs.size(); ++j) {
+      DataBaseInfoSPtr db = dbs[j];
+      IDatabaseSPtr datab = findDatabaseByInfo(db);
+      if (!datab) {
+        datab = createDatabase(db);
+        databases_.push_back(datab);
+       }
+       tmp.push_back(datab->info());
+    }
+    v.databases_ = tmp;
   }
-  else{
-      EventsInfo::LoadDatabasesInfoResponce::database_info_cont_type dbs = v.databases_;
-      EventsInfo::LoadDatabasesInfoResponce::database_info_cont_type tmp;
-      for(int j = 0; j < dbs.size(); ++j){
-          DataBaseInfoSPtr db = dbs[j];
-          IDatabaseSPtr datab = findDatabaseByInfo(db);
-          if(!datab){
-              datab = createDatabase(db);
-              databases_.push_back(datab);
-          }
-          tmp.push_back(datab->info());
-      }
-      v.databases_ = tmp;
-  }
+
   emit finishedLoadDatabases(v);
 }
 
 void IServer::handleLoadDatabaseContentEvent(events::LoadDatabaseContentResponceEvent* ev) {
-  using namespace events;
-  LoadDatabaseContentResponceEvent::value_type v = ev->value();
+  auto v = ev->value();
   common::Error er(v.errorInfo());
-  if(er && er->isError()){
-      LOG_ERROR(er, true);
-  }
-  else{
-      IDatabaseSPtr db = findDatabaseByInfo(v.inf_);
-      if(db){
-          DataBaseInfoSPtr rdb = db->info();
-          if(rdb){
-              rdb->setKeys(v.keys_);
-          }
+  if (er && er->isError()) {
+    LOG_ERROR(er, true);
+  } else {
+    IDatabaseSPtr db = findDatabaseByInfo(v.inf_);
+    if (db) {
+      DataBaseInfoSPtr rdb = db->info();
+      if (rdb) {
+        rdb->setKeys(v.keys_);
       }
+    }
   }
+
   emit finishedLoadDatabaseContent(v);
 }
 
 void IServer::handleLoadServerInfoHistoryEvent(events::ServerInfoHistoryResponceEvent *ev) {
-  using namespace events;
-  ServerInfoHistoryResponceEvent::value_type v = ev->value();
+  auto v = ev->value();
   common::Error er = v.errorInfo();
-  if(er && er->isError()){
+  if (er && er->isError()) {
       LOG_ERROR(er, true);
   }
+
   emit finishedLoadServerHistoryInfo(v);
 }
 
 void IServer::handleDiscoveryInfoResponceEvent(events::DiscoveryInfoResponceEvent* ev) {
-  using namespace events;
-  DiscoveryInfoResponceEvent::value_type v = ev->value();
+  auto v = ev->value();
   common::Error er = v.errorInfo();
-  if(er && er->isError()){
+  if (er && er->isError()) {
       LOG_ERROR(er, true);
   }
   emit finishedLoadDiscoveryInfo(v);
 }
 
 void IServer::handleClearServerHistoryResponceEvent(events::ClearServerHistoryResponceEvent* ev) {
-  using namespace events;
-  ClearServerHistoryResponceEvent::value_type v = ev->value();
+  auto v = ev->value();
   common::Error er = v.errorInfo();
-  if(er && er->isError()){
+  if (er && er->isError()) {
       LOG_ERROR(er, true);
   }
+
   emit finishedClearServerHistory(v);
 }
 
 void IServer::handleSetDefaultDatabaseEvent(events::SetDefaultDatabaseResponceEvent* ev) {
-  using namespace events;
-  SetDefaultDatabaseResponceEvent::value_type v = ev->value();
+  auto v = ev->value();
   common::Error er(v.errorInfo());
-  if(er && er->isError()){
-      LOG_ERROR(er, true);
-  }
-  else{
-      DataBaseInfoSPtr inf = v.inf_;
-      for(int i = 0; i < databases_.size(); ++i){
-          IDatabaseSPtr db = databases_[i];
-          DataBaseInfoSPtr info = db->info();
-          if(info->name() == inf->name()){
-              info->setIsDefault(true);
-          }
-          else{
-              info->setIsDefault(false);
-          }
+  if (er && er->isError()) {
+    LOG_ERROR(er, true);
+  } else {
+    DataBaseInfoSPtr inf = v.inf_;
+    for (int i = 0; i < databases_.size(); ++i) {
+      IDatabaseSPtr db = databases_[i];
+      DataBaseInfoSPtr info = db->info();
+      if (info->name() == inf->name()) {
+        info->setIsDefault(true);
+      } else {
+        info->setIsDefault(false);
       }
+    }
   }
 
   emit finishedSetDefaultDatabase(v);
 }
 
 void IServer::handleCommandResponceEvent(events::CommandResponceEvent* ev) {
-  using namespace events;
-  CommandResponceEvent::value_type v = ev->value();
+  auto v = ev->value();
   common::Error er(v.errorInfo());
-  if(er && er->isError()){
+  if (er && er->isError()) {
       LOG_ERROR(er, true);
   }
   emit finishedExecuteCommand(v);
@@ -601,4 +587,4 @@ void IServer::processDiscoveryInfo(const EventsInfo::DiscoveryInfoRequest& req) 
   notify(ev);
 }
 
-}
+}  // namespace fastonosql

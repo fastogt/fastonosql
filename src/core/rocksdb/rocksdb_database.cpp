@@ -30,4 +30,4 @@ RocksdbDatabase::RocksdbDatabase(IServerSPtr server, DataBaseInfoSPtr info)
   DCHECK(info->type() == ROCKSDB);
 }
 
-}
+}  // namespace fastonosql

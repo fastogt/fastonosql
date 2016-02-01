@@ -24,12 +24,14 @@
 #include <signal.h>
 #endif
 
+extern "C" {
+  #include "sds.h"
+}
+
+#include <string>
+
 #include <QThread>
 #include <QApplication>
-
-extern "C" {
-    #include "sds.h"
-}
 
 #include "common/file_system.h"
 #include "common/time.h"
@@ -46,12 +48,12 @@ struct WinsockInit {
       _exit(1);
     }
   }
-  ~WinsockInit(){ WSACleanup(); }
+  ~WinsockInit() { WSACleanup(); }
 } winsock_init;
 #else
 struct SigIgnInit
 {
-  SigIgnInit(){
+  SigIgnInit() {
     signal(SIGPIPE, SIG_IGN);
   }
 } sig_init;
@@ -64,17 +66,17 @@ std::string createStamp(common::time64_t time)
 }
 
 bool getStamp(const common::buffer_type& stamp, common::time64_t& timeOut) {
-  if(stamp.empty()){
+  if (stamp.empty()) {
     return false;
   }
 
-  if(stamp[0] != magicNumber){
+  if (stamp[0] != magicNumber) {
     return false;
   }
 
   common::buffer_type cstamp = stamp;
 
-  if(cstamp[cstamp.size() - 1] == '\n'){
+  if (cstamp[cstamp.size() - 1] == '\n') {
     cstamp.resize(cstamp.size() - 1);
   }
 
@@ -137,7 +139,7 @@ common::Error IDriver::execute(FastoObjectCommand* cmd) {
         cmd->addChildren(child);
     } else if (argc > 0) {
         char *command = argv[0];
-        if (strcasecmp(command, "interrupt") == 0){
+        if (strcasecmp(command, "interrupt") == 0) {
             interrupt();
         } else {
             er = executeImpl(cmd, argc, argv);
@@ -199,33 +201,33 @@ void IDriver::stop() {
 }
 
 common::Error IDriver::commandByType(CommandKeySPtr command, std::string& cmdstring) const {
-  if(!command){
+  if (!command) {
     return common::make_error_value("Invalid input argument", common::ErrorValue::E_ERROR);
   }
 
   CommandKey::cmdtype t = command->type();
 
-  if(t == CommandKey::C_DELETE) {
+  if (t == CommandKey::C_DELETE) {
     CommandDeleteKey* delc = dynamic_cast<CommandDeleteKey*>(command.get());
     if (!delc) {
       return common::make_error_value("Invalid input argument", common::ErrorValue::E_ERROR);
     }
     return commandDeleteImpl(delc, cmdstring);
-  } else if(t == CommandKey::C_LOAD) {
+  } else if (t == CommandKey::C_LOAD) {
       CommandLoadKey* loadc = dynamic_cast<CommandLoadKey*>(command.get());
-      if(!loadc){
+      if (!loadc) {
           return common::make_error_value("Invalid input argument", common::ErrorValue::E_ERROR);
       }
       return commandLoadImpl(loadc, cmdstring);
-  } else if(t == CommandKey::C_CREATE) {
+  } else if (t == CommandKey::C_CREATE) {
       CommandCreateKey* createc = dynamic_cast<CommandCreateKey*>(command.get());
-      if(!createc || !createc->value()){
+      if (!createc || !createc->value()) {
           return common::make_error_value("Invalid input argument", common::ErrorValue::E_ERROR);
       }
       return commandCreateImpl(createc, cmdstring);
-  } else if(t == CommandKey::C_CHANGE_TTL) {
+  } else if (t == CommandKey::C_CHANGE_TTL) {
       CommandChangeTTL* changettl = dynamic_cast<CommandChangeTTL*>(command.get());
-      if(!changettl){
+      if (!changettl) {
           return common::make_error_value("Invalid input argument", common::ErrorValue::E_ERROR);
       }
       return commandChangeTTLImpl(changettl, cmdstring);
@@ -261,7 +263,7 @@ void IDriver::customEvent(QEvent *event) {
   } else if (type == static_cast<QEvent::Type>(ShutDownRequestEvent::EventType)) {
     ShutDownRequestEvent *ev = static_cast<ShutDownRequestEvent*>(event);
     handleShutdownEvent(ev);
-  } else if (type == static_cast<QEvent::Type>(ProcessConfigArgsRequestEvent::EventType)){
+  } else if (type == static_cast<QEvent::Type>(ProcessConfigArgsRequestEvent::EventType)) {
     ProcessConfigArgsRequestEvent *ev = static_cast<ProcessConfigArgsRequestEvent*>(event);
     handleProcessCommandLineArgs(ev);
   } else if (type == static_cast<QEvent::Type>(DisconnectRequestEvent::EventType)) {
@@ -306,10 +308,10 @@ void IDriver::customEvent(QEvent *event) {
   } else if (type == static_cast<QEvent::Type>(SetDefaultDatabaseRequestEvent::EventType)) {
     SetDefaultDatabaseRequestEvent *ev = static_cast<SetDefaultDatabaseRequestEvent*>(event);
     handleSetDefaultDatabaseEvent(ev);
-  } else if(type == static_cast<QEvent::Type>(CommandRequestEvent::EventType)) {
+  } else if (type == static_cast<QEvent::Type>(CommandRequestEvent::EventType)) {
     events::CommandRequestEvent* ev = static_cast<events::CommandRequestEvent*>(event);
     handleCommandRequestEvent(ev);
-  } else if(type == static_cast<QEvent::Type>(DiscoveryInfoRequestEvent::EventType)) {
+  } else if (type == static_cast<QEvent::Type>(DiscoveryInfoRequestEvent::EventType)) {
     events::DiscoveryInfoRequestEvent* ev = static_cast<events::DiscoveryInfoRequestEvent*>(event);
     handleDiscoveryInfoRequestEvent(ev);
   }
@@ -421,17 +423,17 @@ void IDriver::handleLoadServerInfoHistoryEvent(events::ServerInfoHistoryRequestE
   std::string path = settings_->loggingPath();
   common::file_system::Path p(path);
   common::file_system::File readFile(p);
-  if(readFile.open("rb")){
+  if (readFile.open("rb")) {
     events::ServerInfoHistoryResponceEvent::value_type::infos_container_type tmpInfos;
 
     common::time64_t curStamp = 0;
     common::buffer_type dataInfo;
 
-    while(!readFile.isEof()){
+    while(!readFile.isEof()) {
       common::buffer_type data;
       bool res = readFile.readLine(&data);
-      if(!res || readFile.isEof()){
-        if(curStamp){
+      if (!res || readFile.isEof()) {
+        if (curStamp) {
           tmpInfos.push_back(ServerInfoSnapShoot(curStamp, makeServerInfoFromString(common::convertToString(dataInfo))));
         }
         break;
@@ -439,8 +441,8 @@ void IDriver::handleLoadServerInfoHistoryEvent(events::ServerInfoHistoryRequestE
 
       common::time64_t tmpStamp = 0;
       bool isSt = getStamp(data, tmpStamp);
-      if(isSt){
-        if(curStamp){
+      if (isSt) {
+        if (curStamp) {
           tmpInfos.push_back(ServerInfoSnapShoot(curStamp, makeServerInfoFromString(common::convertToString(dataInfo))));
         }
         curStamp = tmpStamp;
@@ -463,13 +465,13 @@ void IDriver::handleClearServerHistoryRequestEvent(events::ClearServerHistoryReq
 
   bool ret = false;
 
-  if(log_file_ && log_file_->isOpened()){
+  if (log_file_ && log_file_->isOpened()) {
     ret = log_file_->truncate(0);
   } else {
     std::string path = settings_->loggingPath();
-    if(common::file_system::is_file_exist(path)){
+    if (common::file_system::is_file_exist(path)) {
       common::Error err = common::file_system::remove_file(path);
-      if(err && err->isError()){
+      if (err && err->isError()) {
         ret = false;
       } else {
         ret = true;
@@ -490,7 +492,7 @@ void IDriver::handleDiscoveryInfoRequestEvent(events::DiscoveryInfoRequestEvent*
   QObject *sender = ev->sender();
   events::DiscoveryInfoResponceEvent::value_type res(ev->value());
 
-  if(isConnected()){
+  if (isConnected()) {
     ServerDiscoveryInfo* disc = NULL;
     ServerInfo* info = NULL;
     DataBaseInfo* db = NULL;
@@ -517,7 +519,7 @@ void IDriver::handleDiscoveryInfoRequestEvent(events::DiscoveryInfoRequestEvent*
 
 void IDriver::addedChildren(FastoObject* child) {
   DCHECK(child);
-  if(!child){
+  if (!child) {
     return;
   }
 
@@ -528,4 +530,4 @@ void IDriver::updated(FastoObject* item, common::Value* val) {
   emit itemUpdated(item, val);
 }
 
-}
+}  // namespace fastonosql
