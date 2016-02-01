@@ -148,7 +148,7 @@ const QString leveldbTextServerTemplate = QObject::tr("<h2>Stats:</h2><br/>"
                                                         "Read mb: %4<br/>"
                                                         "Write mb: %5");
 
-}
+}  // namespace
 
 namespace fastonosql {
 
@@ -156,7 +156,6 @@ InfoServerDialog::InfoServerDialog(IServerSPtr server, QWidget* parent)
   : QDialog(parent), server_(server) {
   CHECK(server_);
 
-  using namespace translations;
   connectionTypes type = server->type();
   setWindowIcon(GuiFactory::instance().icon(type));
 
@@ -170,45 +169,48 @@ InfoServerDialog::InfoServerDialog(IServerSPtr server, QWidget* parent)
   setMinimumSize(QSize(min_height, min_width));
 
   glassWidget_ = new fasto::qt::gui::GlassWidget(GuiFactory::instance().pathToLoadingGif(),
-                                                 trLoading, 0.5, QColor(111, 111, 100), this);
+                                                 translations::trLoading, 0.5,
+                                                 QColor(111, 111, 100), this);
 #ifdef BUILD_WITH_REDIS
-  if(type == REDIS){
+  if (type == REDIS) {
     updateText(RedisServerInfo());
   }
 #endif
 #ifdef BUILD_WITH_MEMCACHED
-  if(type == MEMCACHED){
+  if (type == MEMCACHED) {
     updateText(MemcachedServerInfo());
   }
 #endif
 #ifdef BUILD_WITH_SSDB
-  if(type == SSDB){
+  if (type == SSDB) {
     updateText(SsdbServerInfo());
   }
 #endif
 #ifdef BUILD_WITH_LEVELDB
-  if(type == LEVELDB){
+  if (type == LEVELDB) {
     updateText(LeveldbServerInfo());
   }
 #endif
 #ifdef BUILD_WITH_ROCKSDB
-  if(type == ROCKSDB){
+  if (type == ROCKSDB) {
     updateText(RocksdbServerInfo());
   }
 #endif
 #ifdef BUILD_WITH_UNQLITE
-  if(type == UNQLITE){
+  if (type == UNQLITE) {
     updateText(UnqliteServerInfo());
   }
 #endif
 #ifdef BUILD_WITH_LMDB
-  if(type == LMDB){
+  if (type == LMDB) {
     updateText(LmdbServerInfo());
   }
 #endif
 
-VERIFY(connect(server.get(), &IServer::startedLoadServerInfo, this, &InfoServerDialog::startServerInfo));
-VERIFY(connect(server.get(), &IServer::finishedLoadServerInfo, this, &InfoServerDialog::finishServerInfo));
+VERIFY(connect(server.get(), &IServer::startedLoadServerInfo,
+               this, &InfoServerDialog::startServerInfo));
+VERIFY(connect(server.get(), &IServer::finishedLoadServerInfo,
+               this, &InfoServerDialog::finishServerInfo));
   retranslateUi();
 }
 
@@ -219,12 +221,12 @@ void InfoServerDialog::startServerInfo(const EventsInfo::ServerInfoRequest& req)
 void InfoServerDialog::finishServerInfo(const EventsInfo::ServerInfoResponce& res) {
   glassWidget_->stop();
   common::Error er = res.errorInfo();
-  if(er && er->isError()){
+  if (er && er->isError()) {
     return;
   }
 
   ServerInfoSPtr inf = res.info();
-  if(!inf){
+  if (!inf) {
     return;
   }
 
@@ -232,57 +234,57 @@ void InfoServerDialog::finishServerInfo(const EventsInfo::ServerInfoResponce& re
 
 DCHECK(type == inf->type());
 #ifdef BUILD_WITH_REDIS
-  if(type == REDIS){
+  if (type == REDIS) {
     RedisServerInfo* infr = dynamic_cast<RedisServerInfo*>(inf.get());
-    if(infr){
+    if (infr) {
         updateText(*infr);
     }
   }
 #endif
 #ifdef BUILD_WITH_MEMCACHED
-  if(type == MEMCACHED){
+  if (type == MEMCACHED) {
     MemcachedServerInfo* infr = dynamic_cast<MemcachedServerInfo*>(inf.get());
-    if(infr){
+    if (infr) {
       updateText(*infr);
     }
   }
 #endif
 #ifdef BUILD_WITH_SSDB
-  if(type == SSDB){
+  if (type == SSDB) {
     SsdbServerInfo* infr = dynamic_cast<SsdbServerInfo*>(inf.get());
-    if(infr){
+    if (infr) {
       updateText(*infr);
     }
   }
 #endif
 #ifdef BUILD_WITH_LEVELDB
-  if(type == LEVELDB){
+  if (type == LEVELDB) {
     LeveldbServerInfo * infr = dynamic_cast<LeveldbServerInfo*>(inf.get());
-    if(infr){
+    if (infr) {
         updateText(*infr);
     }
   }
 #endif
 #ifdef BUILD_WITH_ROCKSDB
-  if(type == ROCKSDB){
+  if (type == ROCKSDB) {
     RocksdbServerInfo * infr = dynamic_cast<RocksdbServerInfo*>(inf.get());
-    if(infr){
+    if (infr) {
       updateText(*infr);
     }
   }
 #endif
 #ifdef BUILD_WITH_UNQLITE
-  if(type == UNQLITE){
+  if (type == UNQLITE) {
     UnqliteServerInfo * infr = dynamic_cast<UnqliteServerInfo*>(inf.get());
-    if(infr){
+    if (infr) {
       updateText(*infr);
     }
   }
 #endif
 #ifdef BUILD_WITH_LMDB
-  if(type == LMDB){
+  if (type == LMDB) {
     LmdbServerInfo * infr = dynamic_cast<LmdbServerInfo*>(inf.get());
-    if(infr){
+    if (infr) {
       updateText(*infr);
     }
   }
@@ -298,31 +300,30 @@ void InfoServerDialog::showEvent(QShowEvent* e) {
 }
 
 void InfoServerDialog::changeEvent(QEvent* e) {
-  if(e->type() == QEvent::LanguageChange){
+  if (e->type() == QEvent::LanguageChange) {
     retranslateUi();
   }
   QDialog::changeEvent(e);
 }
 
 void InfoServerDialog::retranslateUi() {
-  using namespace translations;
   setWindowTitle(tr("%1 info").arg(server_->name()));
 }
 
 #ifdef BUILD_WITH_REDIS
 void InfoServerDialog::updateText(const RedisServerInfo& serv) {
-  using namespace common;
   RedisServerInfo::Server ser = serv.server_;
-  QString textServ = redisTextServerTemplate.arg(convertFromString<QString>(ser.redis_version_))
-          .arg(convertFromString<QString>(ser.redis_git_sha1_))
-          .arg(convertFromString<QString>(ser.redis_git_dirty_))
-          .arg(convertFromString<QString>(ser.redis_mode_))
-          .arg(convertFromString<QString>(ser.os_))
+  QString textServ = redisTextServerTemplate
+          .arg(common::convertFromString<QString>(ser.redis_version_))
+          .arg(common::convertFromString<QString>(ser.redis_git_sha1_))
+          .arg(common::convertFromString<QString>(ser.redis_git_dirty_))
+          .arg(common::convertFromString<QString>(ser.redis_mode_))
+          .arg(common::convertFromString<QString>(ser.os_))
           .arg(ser.arch_bits_)
-          .arg(convertFromString<QString>(ser.multiplexing_api_))
-          .arg(convertFromString<QString>(ser.gcc_version_))
+          .arg(common::convertFromString<QString>(ser.multiplexing_api_))
+          .arg(common::convertFromString<QString>(ser.gcc_version_))
           .arg(ser.process_id_)
-          .arg(convertFromString<QString>(ser.run_id_))
+          .arg(common::convertFromString<QString>(ser.run_id_))
           .arg(ser.tcp_port_)
           .arg(ser.uptime_in_seconds_)
           .arg(ser.uptime_in_days_)
@@ -337,33 +338,33 @@ void InfoServerDialog::updateText(const RedisServerInfo& serv) {
 
   RedisServerInfo::Memory mem = serv.memory_;
   QString textMem = redisTextMemoryTemplate.arg(mem.used_memory_)
-          .arg(convertFromString<QString>(mem.used_memory_human_))
+          .arg(common::convertFromString<QString>(mem.used_memory_human_))
           .arg(mem.used_memory_rss_)
           .arg(mem.used_memory_peak_)
-          .arg(convertFromString<QString>(mem.used_memory_peak_human_))
+          .arg(common::convertFromString<QString>(mem.used_memory_peak_human_))
           .arg(mem.used_memory_lua_)
           .arg(mem.mem_fragmentation_ratio_)
-          .arg(convertFromString<QString>(mem.mem_allocator_));
+          .arg(common::convertFromString<QString>(mem.mem_allocator_));
 
   RedisServerInfo::Persistence per = serv.persistence_;
   QString textPer = redisTextPersistenceTemplate.arg(per.loading_)
           .arg(per.rdb_changes_since_last_save_)
           .arg(per.rdb_bgsave_in_progress_)
           .arg(per.rdb_last_save_time_)
-          .arg(convertFromString<QString>(per.rdb_last_bgsave_status_))
+          .arg(common::convertFromString<QString>(per.rdb_last_bgsave_status_))
           .arg(per.rdb_last_bgsave_time_sec_)
           .arg(per.rdb_current_bgsave_time_sec_)
           .arg(per.aof_enabled_)
-        .arg(per.aof_rewrite_in_progress_)
-        .arg(per.aof_rewrite_scheduled_)
-        .arg(per.aof_last_rewrite_time_sec_)
-        .arg(per.aof_current_rewrite_time_sec_)
-        .arg(convertFromString<QString>(per.aof_last_bgrewrite_status_))
-        .arg(convertFromString<QString>(per.aof_last_write_status_));
+          .arg(per.aof_rewrite_in_progress_)
+          .arg(per.aof_rewrite_scheduled_)
+          .arg(per.aof_last_rewrite_time_sec_)
+          .arg(per.aof_current_rewrite_time_sec_)
+          .arg(common::convertFromString<QString>(per.aof_last_bgrewrite_status_))
+          .arg(common::convertFromString<QString>(per.aof_last_write_status_));
 
   RedisServerInfo::Stats stat = serv.stats_;
   QString textStat = redisTextStatsTemplate.arg(stat.total_connections_received_)
-         .arg(stat.total_commands_processed_)
+          .arg(stat.total_commands_processed_)
           .arg(stat.instantaneous_ops_per_sec_)
           .arg(stat.rejected_connections_)
           .arg(stat.sync_full_)
@@ -378,7 +379,8 @@ void InfoServerDialog::updateText(const RedisServerInfo& serv) {
           .arg(stat.latest_fork_usec_);
 
   RedisServerInfo::Replication repl = serv.replication_;
-  QString textRepl = redisTextReplicationTemplate.arg(convertFromString<QString>(repl.role_))
+  QString textRepl = redisTextReplicationTemplate
+          .arg(common::convertFromString<QString>(repl.role_))
           .arg(repl.connected_slaves_)
           .arg(repl.master_repl_offset_)
           .arg(repl.backlog_active_)
@@ -399,13 +401,12 @@ void InfoServerDialog::updateText(const RedisServerInfo& serv) {
 
 #ifdef BUILD_WITH_MEMCACHED
 void InfoServerDialog::updateText(const MemcachedServerInfo& serv) {
-  using namespace common;
   MemcachedServerInfo::Common com = serv.common_;
 
   QString textServ = memcachedTextServerTemplate.arg(com.pid_)
           .arg(com.uptime_)
           .arg(com.time_)
-          .arg(convertFromString<QString>(com.version_))
+          .arg(common::convertFromString<QString>(com.version_))
           .arg(com.pointer_size_)
           .arg(com.rusage_user_)
           .arg(com.rusage_system_)
@@ -425,21 +426,20 @@ void InfoServerDialog::updateText(const MemcachedServerInfo& serv) {
           .arg(com.limit_maxbytes_)
           .arg(com.threads_);
 
-  //QString textHard = memcachedTextHardwareTemplate;
+  // QString textHard = memcachedTextHardwareTemplate;
   serverTextInfo_->setText(textServ);
-  //hardwareTextInfo_->setText(textHard);
+  // hardwareTextInfo_->setText(textHard);
 }
 #endif
 
 #ifdef BUILD_WITH_SSDB
 void InfoServerDialog::updateText(const SsdbServerInfo& serv) {
-  using namespace common;
   SsdbServerInfo::Common com = serv.common_;
-  QString textServ = ssdbTextServerTemplate.arg(convertFromString<QString>(com.version_))
+  QString textServ = ssdbTextServerTemplate.arg(common::convertFromString<QString>(com.version_))
           .arg(com.links_)
           .arg(com.total_calls_)
           .arg(com.dbsize_)
-          .arg(convertFromString<QString>(com.binlogs_));
+          .arg(common::convertFromString<QString>(com.binlogs_));
 
   serverTextInfo_->setText(textServ);
 }
@@ -447,7 +447,6 @@ void InfoServerDialog::updateText(const SsdbServerInfo& serv) {
 
 #ifdef BUILD_WITH_LEVELDB
 void InfoServerDialog::updateText(const LeveldbServerInfo& serv) {
-  using namespace common;
   LeveldbServerInfo::Stats stats = serv.stats_;
   QString textServ = leveldbTextServerTemplate.arg(stats.compactions_level_)
           .arg(stats.file_size_mb_)
@@ -460,7 +459,6 @@ void InfoServerDialog::updateText(const LeveldbServerInfo& serv) {
 #endif
 #ifdef BUILD_WITH_ROCKSDB
 void InfoServerDialog::updateText(const RocksdbServerInfo& serv) {
-  using namespace common;
   RocksdbServerInfo::Stats stats = serv.stats_;
   QString textServ = leveldbTextServerTemplate.arg(stats.compactions_level_)
           .arg(stats.file_size_mb_)
@@ -473,7 +471,6 @@ void InfoServerDialog::updateText(const RocksdbServerInfo& serv) {
 #endif
 #ifdef BUILD_WITH_UNQLITE
 void InfoServerDialog::updateText(const UnqliteServerInfo& serv) {
-  using namespace common;
   UnqliteServerInfo::Stats stats = serv.stats_;
   QString textServ = leveldbTextServerTemplate.arg(stats.compactions_level_)
           .arg(stats.file_size_mb_)
@@ -486,7 +483,6 @@ void InfoServerDialog::updateText(const UnqliteServerInfo& serv) {
 #endif
 #ifdef BUILD_WITH_LMDB
 void InfoServerDialog::updateText(const LmdbServerInfo& serv) {
-  using namespace common;
   LmdbServerInfo::Stats stats = serv.stats_;
   QString textServ = leveldbTextServerTemplate.arg(stats.compactions_level_)
           .arg(stats.file_size_mb_)
@@ -498,4 +494,4 @@ void InfoServerDialog::updateText(const LmdbServerInfo& serv) {
 }
 #endif
 
-}
+}  // namespace fastonosql

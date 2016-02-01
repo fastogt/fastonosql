@@ -18,6 +18,8 @@
 
 #include "gui/dialogs/encode_decode_dialog.h"
 
+#include <string>
+
 #include <QPushButton>
 #include <QLabel>
 #include <QDialogButtonBox>
@@ -57,8 +59,8 @@ EncodeDecodeDialog::EncodeDecodeDialog(QWidget* parent)
   VERIFY(connect(decode, &QToolButton::clicked, this, &EncodeDecodeDialog::decode));
 
   decoders_ = new QComboBox;
-  for(int i = 0; i < SIZEOFMASS(common::EDecoderTypes); ++i){
-      decoders_->addItem(common::convertFromString<QString>(common::EDecoderTypes[i]));
+  for (size_t i = 0; i < SIZEOFMASS(common::EDecoderTypes); ++i) {
+    decoders_->addItem(common::convertFromString<QString>(common::EDecoderTypes[i]));
   }
 
   QHBoxLayout* toolBarLayout = new QHBoxLayout;
@@ -94,7 +96,7 @@ EncodeDecodeDialog::EncodeDecodeDialog(QWidget* parent)
 bool EncodeDecodeDialog::eventFilter(QObject* object, QEvent* event) {
   if (object == output_ || object == input_) {
     if (event->type() == QEvent::KeyPress) {
-      QKeyEvent *keyEvent = (QKeyEvent *)event;
+      QKeyEvent *keyEvent = static_cast<QKeyEvent *>(event);
       if (keyEvent->key() == Qt::Key_Escape) {
         reject();
         return true;
@@ -106,7 +108,7 @@ bool EncodeDecodeDialog::eventFilter(QObject* object, QEvent* event) {
 }
 
 void EncodeDecodeDialog::changeEvent(QEvent* e) {
-  if(e->type() == QEvent::LanguageChange){
+  if (e->type() == QEvent::LanguageChange) {
     retranslateUi();
   }
 
@@ -144,9 +146,8 @@ void EncodeDecodeDialog::decode() {
 }
 
 void EncodeDecodeDialog::retranslateUi() {
-  using namespace translations;
-  encodeButton_->setText(trEncode);
-  decodeButton_->setText(trDecode);
+  encodeButton_->setText(translations::trEncode);
+  decodeButton_->setText(translations::trDecode);
 }
 
-}
+}  // namespace fastonosql

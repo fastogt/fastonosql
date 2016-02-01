@@ -71,18 +71,17 @@ ChangePasswordServerDialog::ChangePasswordServerDialog(const QString &title,
   setFixedSize(QSize(fix_width, fix_height));
   setLayout(mainLayout);
 
-  using namespace translations;
   glassWidget_ = new fasto::qt::gui::GlassWidget(GuiFactory::instance().pathToLoadingGif(),
-                                                 trTryToChangePassword, 0.5, QColor(111, 111, 100), this);
+                                                 translations::trTryToChangePassword, 0.5,
+                                                 QColor(111, 111, 100), this);
 }
 
 void ChangePasswordServerDialog::tryToCreatePassword() {
-  if(validateInput()){
+  if (validateInput()) {
     EventsInfo::ChangePasswordRequest req(this, "", common::convertToString(passwordLineEdit_->text()));
     server_->changePassword(req);
   } else {
-    using namespace translations;
-    QMessageBox::critical(this, trError, QObject::tr("Invalid input!"));
+    QMessageBox::critical(this, translations::trError, QObject::tr("Invalid input!"));
   }
 }
 
@@ -93,23 +92,22 @@ void ChangePasswordServerDialog::startChangePassword(const EventsInfo::ChangePas
 void ChangePasswordServerDialog::finishChangePassword(const EventsInfo::ChangePasswordResponce& res) {
   glassWidget_->stop();
   common::Error er = res.errorInfo();
-  if(er && er->isError()){
+  if (er && er->isError()) {
     return;
   }
 
-  using namespace translations;
-  QMessageBox::information(this, trInfo, QObject::tr("Password successfully changed!"));
+  QMessageBox::information(this, translations::trInfo, QObject::tr("Password successfully changed!"));
   ChangePasswordServerDialog::accept();
 }
 
 bool ChangePasswordServerDialog::validateInput() {
   const QString pass = passwordLineEdit_->text();
   const QString cpass = confPasswordLineEdit_->text();
-  if(pass.isEmpty() || cpass.isEmpty()){
+  if (pass.isEmpty() || cpass.isEmpty()) {
     return false;
   }
 
   return pass == cpass;
 }
 
-}
+}  // namespace fastonosql

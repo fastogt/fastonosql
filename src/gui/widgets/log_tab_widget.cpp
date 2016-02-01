@@ -31,8 +31,6 @@ namespace fastonosql {
 
 LogTabWidget::LogTabWidget(QWidget* parent)
   : QTabWidget(parent) {
-  using namespace translations;
-
   QTabBar *tab = new QTabBar;
   setTabBar(tab);
   setTabsClosable(false);
@@ -41,9 +39,9 @@ LogTabWidget::LogTabWidget(QWidget* parent)
   setDocumentMode(true);
 
   log_ = new LogWidget;
-  addTab(log_, GuiFactory::instance().loggingIcon(), trLogs);
+  addTab(log_, GuiFactory::instance().loggingIcon(), translations::trLogs);
   commands_ = new CommandsWidget;
-  addTab(commands_, GuiFactory::instance().commandIcon(), trCommands);
+  addTab(commands_, GuiFactory::instance().commandIcon(), translations::trCommands);
   retranslateUi();
 }
 
@@ -56,7 +54,7 @@ void LogTabWidget::addCommand(const Command& command) {
 }
 
 void LogTabWidget::changeEvent(QEvent* e) {
-  if(e->type() == QEvent::LanguageChange){
+  if (e->type() == QEvent::LanguageChange) {
     retranslateUi();
   }
 
@@ -64,10 +62,8 @@ void LogTabWidget::changeEvent(QEvent* e) {
 }
 
 void LogTabWidget::retranslateUi() {
-  using namespace translations;
-
-  setTabText(0, trLogs);
-  setTabText(1, trCommands);
+  setTabText(0, translations::trLogs);
+  setTabText(1, translations::trCommands);
 }
 
-}
+}  // namespace fastonosql

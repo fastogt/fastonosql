@@ -18,6 +18,8 @@
 
 #include "gui/widgets/output_widget.h"
 
+#include <string>
+
 #include <QHBoxLayout>
 #include <QPushButton>
 #include <QSplitter>
@@ -118,77 +120,76 @@ void OutputWidget::startExecuteCommand(const EventsInfo::CommandRequest& req) {
 
 void OutputWidget::finishExecuteCommand(const EventsInfo::CommandResponce& res) {
   common::Error er = res.errorInfo();
-  if(er && er->isError()){
+  if (er && er->isError()) {
     return;
   }
 
-  if(res.initiator() != this){
+  if (res.initiator() != this) {
     DEBUG_MSG_FORMAT<512>(common::logging::L_DEBUG,
                           "Skipped event in file: %s, function: %s", __FILE__, __FUNCTION__);
     return;
   }
 
   CommandKeySPtr key = res.cmd_;
-  if(key->type() == CommandKey::C_CREATE){
+  if (key->type() == CommandKey::C_CREATE) {
     NDbKValue dbv = key->key();
     commonModel_->changeValue(dbv);
   }
 }
 
-void OutputWidget::addChild(FastoObject* child)
-{
+void OutputWidget::addChild(FastoObject* child) {
   DCHECK(child->parent());
 
   FastoObjectCommand* command = dynamic_cast<FastoObjectCommand*>(child);
-  if(command){
+  if (command) {
     return;
   }
 
   command = dynamic_cast<FastoObjectCommand*>(child->parent());
-  if(command){
-
+  if (command) {
     void* parentinner = command->parent();
 
     QModelIndex parent;
     bool isFound = commonModel_->findItem(parentinner, parent);
-    if(!isFound){
+    if (!isFound) {
       return;
     }
 
     fastonosql::FastoCommonItem* par = NULL;
-    if(!parent.isValid()){
+    if (!parent.isValid()) {
       par = static_cast<fastonosql::FastoCommonItem*>(commonModel_->root());
     } else {
       par = common::utils_qt::item<fastonosql::FastoCommonItem*>(parent);
     }
 
     DCHECK(par);
-    if(!par){
+    if (!par) {
       return;
     }
 
     std::string inputArgs = command->inputArgs();
 
-    fastonosql::FastoCommonItem* comChild = createItem(par, getFirstWordFromLine(inputArgs), command->isReadOnly(), child);
+    fastonosql::FastoCommonItem* comChild = createItem(par, getFirstWordFromLine(inputArgs),
+                                                       command->isReadOnly(), child);
     commonModel_->insertItem(parent, comChild);
   } else {
     FastoObjectArray* arr = dynamic_cast<FastoObjectArray*>(child->parent());
-    if(arr){
+    if (arr) {
       QModelIndex parent;
       bool isFound = commonModel_->findItem(arr, parent);
-      if(!isFound){
+      if (!isFound) {
         return;
       }
 
       fastonosql::FastoCommonItem* par = NULL;
-      if(!parent.isValid()){
+      if (!parent.isValid()) {
         par = static_cast<fastonosql::FastoCommonItem*>(commonModel_->root());
       } else {
         par = common::utils_qt::item<fastonosql::FastoCommonItem*>(parent);
       }
 
       DCHECK(par);
-      if(!par){
+      if (!par) {
         return;
       }
 
@@ -208,7 +209,7 @@ void OutputWidget::itemUpdate(FastoObject* item, common::Value *newValue) {
   }
 
   fastonosql::FastoCommonItem* it = common::utils_qt::item<fastonosql::FastoCommonItem*>(index);
-  if(!it){
+  if (!it) {
     return;
   }
 
@@ -248,7 +249,7 @@ void OutputWidget::syncWithSettings() {
   supportedViews curV = SettingsManager::instance().defaultView();
   if (curV == Tree) {
     setTreeView();
-  } else if(curV == Table) {
+  } else if (curV == Table) {
     setTableView();
   } else {
     setTextView();
@@ -259,4 +260,4 @@ void OutputWidget::updateTimeLabel(const EventsInfo::EventInfoBase& evinfo) {
   timeLabel_->setText(QString("%1 msec").arg(evinfo.elapsedTime()));
 }
 
-}
+}  // namespace fastonosql

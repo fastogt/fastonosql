@@ -28,8 +28,8 @@ class QPushButton;
 namespace fasto {
 namespace qt {
 namespace gui {
-  class GlassWidget;
-  class GraphWidget;
+class GlassWidget;
+class GraphWidget;
 }
 }
 }
@@ -38,7 +38,7 @@ namespace fastonosql {
 
 class ServerHistoryDialog
   : public QDialog {
- Q_OBJECT
+  Q_OBJECT
  public:
   explicit ServerHistoryDialog(IServerSPtr server, QWidget* parent = 0);
 
@@ -77,4 +77,4 @@ class ServerHistoryDialog
   const IServerSPtr server_;
 };
 
-}
+}  // namespace fastonosql

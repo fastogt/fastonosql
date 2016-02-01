@@ -55,7 +55,7 @@ class QLabel;
 namespace fasto {
 namespace qt {
 namespace gui {
-  class GlassWidget;
+class GlassWidget;
 }
 }
 }
@@ -64,11 +64,10 @@ namespace fastonosql {
 
 class InfoServerDialog
   : public QDialog {
- Q_OBJECT
+  Q_OBJECT
  public:
   explicit InfoServerDialog(IServerSPtr server, QWidget* parent = 0);
-  enum
-  {
+  enum {
     min_height = 320,
     min_width = 240
   };
@@ -77,8 +76,8 @@ class InfoServerDialog
   void showed();
 
  private Q_SLOTS:
-   void startServerInfo(const EventsInfo::ServerInfoRequest& req);
-   void finishServerInfo(const EventsInfo::ServerInfoResponce& res);
+  void startServerInfo(const EventsInfo::ServerInfoRequest& req);
+  void finishServerInfo(const EventsInfo::ServerInfoResponce& res);
 
  protected:
   virtual void changeEvent(QEvent* e);
@@ -113,4 +112,4 @@ class InfoServerDialog
   const IServerSPtr server_;
 };
 
-}
+}  // namespace fastonosql

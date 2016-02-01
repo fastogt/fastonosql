@@ -32,11 +32,15 @@ QueryWidget::QueryWidget(IServerSPtr server, QWidget* parent)
   shellWidget_ = new BaseShellWidget(server);
   outputWidget_ = new OutputWidget(server);
 
-  VERIFY(connect(shellWidget_, &BaseShellWidget::rootCreated, outputWidget_, &OutputWidget::rootCreate));
-  VERIFY(connect(shellWidget_, &BaseShellWidget::rootCompleated, outputWidget_, &OutputWidget::rootCompleate));
+  VERIFY(connect(shellWidget_, &BaseShellWidget::rootCreated,
+                 outputWidget_, &OutputWidget::rootCreate));
+  VERIFY(connect(shellWidget_, &BaseShellWidget::rootCompleated,
+                 outputWidget_, &OutputWidget::rootCompleate));
 
-  VERIFY(connect(shellWidget_, &BaseShellWidget::addedChild, outputWidget_, &OutputWidget::addChild));
-  VERIFY(connect(shellWidget_, &BaseShellWidget::itemUpdated, outputWidget_, &OutputWidget::itemUpdate));
+  VERIFY(connect(shellWidget_, &BaseShellWidget::addedChild,
+                 outputWidget_, &OutputWidget::addChild));
+  VERIFY(connect(shellWidget_, &BaseShellWidget::itemUpdated,
+                 outputWidget_, &OutputWidget::itemUpdate));
 
   QSplitter* splitter = new QSplitter;
 #ifdef OS_WIN
@@ -64,7 +68,7 @@ QueryWidget* QueryWidget::clone(const QString& text) {
 
 connectionTypes QueryWidget::connectionType() const {
   IServerSPtr ser = shellWidget_->server();
-  if(!ser){
+  if (!ser) {
     return DBUNKNOWN;
   }
 
@@ -86,4 +90,4 @@ void QueryWidget::execute(const QString& text) {
 void QueryWidget::reload() {
 }
 
-}
+}  // namespace fastonosql

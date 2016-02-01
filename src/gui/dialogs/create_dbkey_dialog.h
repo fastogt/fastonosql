@@ -31,11 +31,10 @@ class QGroupBox;
 namespace fastonosql {
 
 class CreateDbKeyDialog
-      : public QDialog {
- Q_OBJECT
+  : public QDialog {
+  Q_OBJECT
  public:
-  enum
-  {
+  enum {
       min_height = 200,
       min_width = 320
   };
@@ -52,7 +51,7 @@ class CreateDbKeyDialog
   void removeItem();
 
  protected:
-  virtual void changeEvent(QEvent* );
+  virtual void changeEvent(QEvent* ev);
 
  private:
   bool validateAndApply();
@@ -69,4 +68,4 @@ class CreateDbKeyDialog
   NValue value_;
 };
 
-}
+}  // namespace fastonosql

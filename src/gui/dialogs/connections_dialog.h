@@ -28,10 +28,9 @@ namespace fastonosql {
 
 class ConnectionsDialog
   : public QDialog {
- Q_OBJECT
+  Q_OBJECT
  public:
-  enum
-  {
+  enum {
     min_height = 320,
     min_width = 480
   };
@@ -50,7 +49,7 @@ class ConnectionsDialog
   void connectionSelectChange();
 
  protected:
-  virtual void changeEvent(QEvent* );
+  virtual void changeEvent(QEvent* ev);
 
  private:
   void retranslateUi();
@@ -61,4 +60,4 @@ class ConnectionsDialog
   QPushButton* acButton_;
 };
 
-}
+}  // namespace fastonosql

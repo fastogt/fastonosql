@@ -18,6 +18,8 @@
 
 #include "gui/dialogs/connection_listwidget_items.h"
 
+#include <string>
+
 #include "gui/gui_factory.h"
 
 namespace fastonosql {
@@ -28,7 +30,7 @@ ConnectionListWidgetItem::ConnectionListWidgetItem(IConnectionSettingsBaseSPtr c
 }
 
 void ConnectionListWidgetItem::setConnection(IConnectionSettingsBaseSPtr cons) {
-  if(!cons){
+  if (!cons) {
     return;
   }
 
@@ -46,8 +48,8 @@ IConnectionSettingsBaseSPtr ConnectionListWidgetItem::connection() const {
 ConnectionListWidgetItemEx::ConnectionListWidgetItemEx(IConnectionSettingsBaseSPtr connection,
                                                        serverTypes st)
   : ConnectionListWidgetItem(connection) {
-    std::string sert = common::convertToString(st);
-    setText(2, common::convertFromString<QString>(sert));
+  std::string sert = common::convertToString(st);
+  setText(2, common::convertFromString<QString>(sert));
 }
 
 ClusterConnectionListWidgetItem::ClusterConnectionListWidgetItem(IClusterSettingsBaseSPtr connection)
@@ -57,7 +59,7 @@ ClusterConnectionListWidgetItem::ClusterConnectionListWidgetItem(IClusterSetting
 
   IClusterSettingsBase::cluster_connection_type servers = connection_->nodes();
 
-  for(size_t i = 0; i < servers.size(); ++i){
+  for (size_t i = 0; i < servers.size(); ++i) {
     IConnectionSettingsBaseSPtr con = servers[i];
     ConnectionListWidgetItem* item = new ConnectionListWidgetItem(con);
     addChild(item);
@@ -65,7 +67,7 @@ ClusterConnectionListWidgetItem::ClusterConnectionListWidgetItem(IClusterSetting
 }
 
 void ClusterConnectionListWidgetItem::setConnection(IClusterSettingsBaseSPtr cons) {
-  if(!cons){
+  if (!cons) {
     return;
   }
 
@@ -78,4 +80,4 @@ IClusterSettingsBaseSPtr ClusterConnectionListWidgetItem::connection() const {
   return connection_;
 }
 
-}
+}  // namespace fastonosql

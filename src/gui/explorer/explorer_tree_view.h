@@ -82,8 +82,8 @@ class ExplorerTreeView
   void finishExecuteCommand(const EventsInfo::CommandResponce& res);
 
  protected:
-  virtual void changeEvent(QEvent* );
-  virtual void mouseDoubleClickEvent(QMouseEvent* );
+  virtual void changeEvent(QEvent* ev);
+  virtual void mouseDoubleClickEvent(QMouseEvent* ev);
 
  private:
   void syncWithServer(IServer* server);
@@ -114,4 +114,4 @@ class ExplorerTreeView
   QAction* shutdownAction_;
 };
 
-}
+}  // namespace fastonosql

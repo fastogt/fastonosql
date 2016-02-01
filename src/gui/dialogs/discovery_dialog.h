@@ -18,6 +18,8 @@
 
 #pragma once
 
+#include <vector>
+
 #include <QDialog>
 
 #include "core/connection_settings.h"
@@ -30,20 +32,22 @@ class QTreeWidget;
 namespace fasto {
 namespace qt {
 namespace gui {
-  class GlassWidget;
+class GlassWidget;
 }
 }
 }
 
 namespace fastonosql {
+
 class DiscoveryConnection
   : public QObject {
- Q_OBJECT
+  Q_OBJECT
  public:
-  DiscoveryConnection(IConnectionSettingsBaseSPtr conn, QObject* parent = 0);
+  explicit DiscoveryConnection(IConnectionSettingsBaseSPtr conn, QObject* parent = 0);
 
  Q_SIGNALS:
-  void connectionResult(bool suc, qint64 msTimeExecute, const QString& resultText, std::vector<ServerDiscoveryInfoSPtr> infos);
+  void connectionResult(bool suc, qint64 msTimeExecute, const QString& resultText,
+                        std::vector<ServerDiscoveryInfoSPtr> infos);
 
  public Q_SLOTS:
   void routine();
@@ -55,19 +59,20 @@ class DiscoveryConnection
 
 class DiscoveryDiagnosticDialog
   : public QDialog {
- Q_OBJECT
+  Q_OBJECT
  public:
-  enum
-  {
+  enum {
     fix_height = 320,
     fix_width = 480
   };
 
-  DiscoveryDiagnosticDialog(QWidget* parent, IConnectionSettingsBaseSPtr connection, IClusterSettingsBaseSPtr cluster);
+  DiscoveryDiagnosticDialog(QWidget* parent, IConnectionSettingsBaseSPtr connection,
+                            IClusterSettingsBaseSPtr cluster);
   std::vector<IConnectionSettingsBaseSPtr> selectedConnections() const;
 
  private Q_SLOTS:
-  void connectionResult(bool suc, qint64 mstimeExecute, const QString &resultText, std::vector<ServerDiscoveryInfoSPtr> infos);
+  void connectionResult(bool suc, qint64 mstimeExecute, const QString &resultText,
+                        std::vector<ServerDiscoveryInfoSPtr> infos);
 
  protected:
   virtual void showEvent(QShowEvent* e);
@@ -83,4 +88,4 @@ class DiscoveryDiagnosticDialog
   IClusterSettingsBaseSPtr cluster_;
 };
 
-}
+}  // namespace fastonosql

@@ -30,7 +30,6 @@ namespace fastonosql {
 class LogWidget
       : public QWidget {
   Q_OBJECT
-
  public:
   explicit LogWidget(QWidget* parent = 0);
 
@@ -49,4 +48,4 @@ class LogWidget
   QAction *clear_;
 };
 
-}
+}  // namespace fastonosql

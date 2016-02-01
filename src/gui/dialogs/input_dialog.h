@@ -26,7 +26,7 @@ namespace fastonosql {
 
 class InputDialog
         : public QDialog {
- Q_OBJECT
+  Q_OBJECT
  public:
   enum InputType { SingleLine, DoubleLine };
   explicit InputDialog(QWidget* parent, const QString& title, InputType type,
@@ -40,4 +40,4 @@ class InputDialog
   QLineEdit* secondLine_;
 };
 
-}
+}  // namespace fastonosql

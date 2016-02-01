@@ -18,6 +18,9 @@
 
 #include "gui/dialogs/connection_dialog.h"
 
+#include <vector>
+#include <string>
+
 #include <QDialogButtonBox>
 #include <QEvent>
 #include <QFileDialog>
@@ -49,44 +52,42 @@ QString toRawCommandLine(QString input) {
 }
 
 const QString defaultNameConnection = "New Connection";
-}
+}  // namespace
 
 namespace fastonosql {
 
 ConnectionDialog::ConnectionDialog(QWidget* parent, IConnectionSettingsBase* connection,
                                    const std::vector<connectionTypes>& availibleTypes)
   : QDialog(parent), connection_(connection) {
-  using namespace translations;
-
   setWindowIcon(GuiFactory::instance().serverIcon());
-  setWindowFlags(windowFlags() & ~Qt::WindowContextHelpButtonHint); // Remove help button (?)
+  setWindowFlags(windowFlags() & ~Qt::WindowContextHelpButtonHint);  // Remove help button (?)
 
   connectionName_ = new QLineEdit;
   QString conName = defaultNameConnection;
-  if(connection_){
+  if (connection_) {
       conName = common::convertFromString<QString>(connection_->connectionName());
   }
   connectionName_->setText(conName);
   typeConnection_ = new QComboBox;
 
-  if(availibleTypes.empty()){
-      for(size_t i = 0; i < SIZEOFMASS(connnectionType); ++i){
-          connectionTypes ct = static_cast<connectionTypes>(i);
-          std::string str = common::convertToString(ct);
-          typeConnection_->addItem(GuiFactory::instance().icon(ct),
-                                   common::convertFromString<QString>(str), ct);
+  if (availibleTypes.empty()) {
+      for (size_t i = 0; i < SIZEOFMASS(connnectionType); ++i) {
+        connectionTypes ct = static_cast<connectionTypes>(i);
+        std::string str = common::convertToString(ct);
+        typeConnection_->addItem(GuiFactory::instance().icon(ct),
+                                 common::convertFromString<QString>(str), ct);
       }
   } else {
-      for(size_t i = 0; i < availibleTypes.size(); ++i){
-          connectionTypes ct = availibleTypes[i];
-          std::string str = common::convertToString(ct);
-          typeConnection_->addItem(GuiFactory::instance().icon(ct),
-                                   common::convertFromString<QString>(str), ct);
+      for (size_t i = 0; i < availibleTypes.size(); ++i) {
+        connectionTypes ct = availibleTypes[i];
+        std::string str = common::convertToString(ct);
+        typeConnection_->addItem(GuiFactory::instance().icon(ct),
+                                 common::convertFromString<QString>(str), ct);
       }
   }
 
-  if(connection_){
-      typeConnection_->setCurrentIndex(connection_->connectionType());
+  if (connection_) {
+    typeConnection_->setCurrentIndex(connection_->connectionType());
   }
 
   typedef void (QComboBox::*qind)(int);
@@ -99,11 +100,11 @@ ConnectionDialog::ConnectionDialog(QWidget* parent, IConnectionSettingsBase* con
   loggingMsec_->setRange(0, INT32_MAX);
   loggingMsec_->setSingleStep(1000);
 
-  if(connection_){
-      logging_->setChecked(connection_->loggingEnabled());
-      loggingMsec_->setValue(connection_->loggingMsTimeInterval());
+  if (connection_) {
+    logging_->setChecked(connection_->loggingEnabled());
+    loggingMsec_->setValue(connection_->loggingMsTimeInterval());
   } else {
-      logging_->setChecked(false);
+    logging_->setChecked(false);
   }
   VERIFY(connect(logging_, &QCheckBox::stateChanged, this, &ConnectionDialog::loggingStateChange));
 
@@ -112,8 +113,8 @@ ConnectionDialog::ConnectionDialog(QWidget* parent, IConnectionSettingsBase* con
 
   commandLine_ = new QLineEdit;
   commandLine_->setMinimumWidth(240);
-  if(connection_){
-      commandLine_->setText(stableCommandLine(common::convertFromString<QString>(connection_->commandLine())));
+  if (connection_) {
+    commandLine_->setText(stableCommandLine(common::convertFromString<QString>(connection_->commandLine())));
   }
 
   QVBoxLayout *inputLayout = new QVBoxLayout;
@@ -122,13 +123,13 @@ ConnectionDialog::ConnectionDialog(QWidget* parent, IConnectionSettingsBase* con
   inputLayout->addLayout(loggingLayout);
   inputLayout->addWidget(commandLine_);
 
-  //ssh
+  // ssh
 
   IConnectionSettingsRemote * remoteSettings = dynamic_cast<IConnectionSettingsRemote *>(connection_.get());
 
   SSHInfo info;
-  if(remoteSettings){
-      info = remoteSettings->sshInfo();
+  if (remoteSettings) {
+    info = remoteSettings->sshInfo();
   }
   useSsh_ = new QCheckBox;
   useSsh_->setChecked(info.isValid());
@@ -141,7 +142,7 @@ ConnectionDialog::ConnectionDialog(QWidget* parent, IConnectionSettingsBase* con
 
   sshPort_ = new QLineEdit;
   sshPort_->setFixedWidth(80);
-  QRegExp rx("\\d+");//(0-65554)
+  QRegExp rx("\\d+");  // (0-65554)
   sshPort_->setValidator(new QRegExpValidator(rx, this));
   sshPort_->setText(QString::number(info.port_));
 
@@ -153,11 +154,11 @@ ConnectionDialog::ConnectionDialog(QWidget* parent, IConnectionSettingsBase* con
   sshAuthMethodLabel_ = new QLabel;
 
   security_ = new QComboBox;
-  security_->addItems(QStringList() << trPassword << trPrivateKey);
+  security_->addItems(QStringList() << translations::trPassword << translations::trPrivateKey);
   if (info.authMethod() == SSHInfo::PUBLICKEY) {
-      security_->setCurrentText(trPrivateKey);
+      security_->setCurrentText(translations::trPrivateKey);
   } else {
-      security_->setCurrentText(trPassword);
+      security_->setCurrentText(translations::trPassword);
   }
 
   typedef void (QComboBox::*ind)(const QString&);
@@ -167,7 +168,7 @@ ConnectionDialog::ConnectionDialog(QWidget* parent, IConnectionSettingsBase* con
   passwordBox_ = new QLineEdit;
   passwordBox_->setText(common::convertFromString<QString>(info.password_));
   passwordBox_->setEchoMode(QLineEdit::Password);
-  passwordEchoModeButton_ = new QPushButton(trShow);
+  passwordEchoModeButton_ = new QPushButton(translations::trShow);
   VERIFY(connect(passwordEchoModeButton_, &QPushButton::clicked,
                  this, &ConnectionDialog::togglePasswordEchoMode));
 
@@ -177,7 +178,7 @@ ConnectionDialog::ConnectionDialog(QWidget* parent, IConnectionSettingsBase* con
   passphraseBox_ = new QLineEdit;
   passphraseBox_->setText(common::convertFromString<QString>(info.passphrase_));
   passphraseBox_->setEchoMode(QLineEdit::Password);
-  passphraseEchoModeButton_ = new QPushButton(trShow);
+  passphraseEchoModeButton_ = new QPushButton(translations::trShow);
   VERIFY(connect(passphraseEchoModeButton_, &QPushButton::clicked,
                  this, &ConnectionDialog::togglePassphraseEchoMode));
 
@@ -241,7 +242,7 @@ ConnectionDialog::ConnectionDialog(QWidget* parent, IConnectionSettingsBase* con
   mainLayout->setSizeConstraint(QLayout::SetFixedSize);
   setLayout(mainLayout);
 
-  //update controls
+  // update controls
   sshSupportStateChange(useSsh_->checkState());
   securityChange(security_->currentText());
   typeConnectionChange(typeConnection_->currentIndex());
@@ -261,8 +262,8 @@ IConnectionSettingsBaseSPtr ConnectionDialog::connection() const {
 }
 
 void ConnectionDialog::accept() {
-  if(validateAndApply()){
-      QDialog::accept();
+  if (validateAndApply()) {
+    QDialog::accept();
   }
 }
 
@@ -277,16 +278,16 @@ void ConnectionDialog::typeConnectionChange(int index) {
   buttonBox_->button(QDialogButtonBox::Save)->setEnabled(isValidType);
 
   const char* helpText = useHelpText(currentType);
-  if(helpText){
-      QString trHelp = tr(helpText);
-      commandLine_->setToolTip(trHelp);
+  if (helpText) {
+    QString trHelp = tr(helpText);
+    commandLine_->setToolTip(trHelp);
   }
 
   QObject *send = qobject_cast<QObject*>(sender());
 
-  if(send){
-      QString deft = stableCommandLine(common::convertFromString<QString>(defaultCommandLine(currentType)));
-      commandLine_->setText(deft);
+  if (send) {
+    QString deft = stableCommandLine(common::convertFromString<QString>(defaultCommandLine(currentType)));
+    commandLine_->setText(deft);
   }
 
   useSsh_->setEnabled(isRemoteType);
@@ -295,13 +296,11 @@ void ConnectionDialog::typeConnectionChange(int index) {
   logging_->setEnabled(isValidType);
 }
 
-void ConnectionDialog::loggingStateChange(int value)
-{
+void ConnectionDialog::loggingStateChange(int value) {
   loggingMsec_->setEnabled(value);
 }
 
-void ConnectionDialog::securityChange(const QString& )
-{
+void ConnectionDialog::securityChange(const QString& ) {
   bool isKey = selectedAuthMethod() == SSHInfo::PUBLICKEY;
   sshPrivateKeyLabel_->setVisible(isKey);
   privateKeyBox_->setVisible(isKey);
@@ -320,39 +319,36 @@ void ConnectionDialog::sshSupportStateChange(int value) {
 }
 
 void ConnectionDialog::togglePasswordEchoMode() {
-  using namespace translations;
-
   bool isPassword = passwordBox_->echoMode() == QLineEdit::Password;
   passwordBox_->setEchoMode(isPassword ? QLineEdit::Normal: QLineEdit::Password);
-  passwordEchoModeButton_->setText(isPassword ? trHide: trShow);
+  passwordEchoModeButton_->setText(isPassword ? translations::trHide: translations::trShow);
 }
 
 void ConnectionDialog::togglePassphraseEchoMode() {
-  using namespace translations;
-
   bool isPassword = passphraseBox_->echoMode() == QLineEdit::Password;
   passphraseBox_->setEchoMode(isPassword ? QLineEdit::Normal: QLineEdit::Password);
-  passphraseEchoModeButton_->setText(isPassword ? trHide: trShow);
+  passphraseEchoModeButton_->setText(isPassword ? translations::trHide: translations::trShow);
 }
 
 void ConnectionDialog::setPrivateFile() {
   QString filepath = QFileDialog::getOpenFileName(this, tr("Select private key file"),
   privateKeyBox_->text(), tr("Private key files (*.*)"));
-  if (filepath.isNull())
-      return;
+  if (filepath.isNull()) {
+    return;
+  }
 
   privateKeyBox_->setText(filepath);
 }
 
 void ConnectionDialog::testConnection() {
-  if(validateAndApply()){
+  if (validateAndApply()) {
       ConnectionDiagnosticDialog diag(this, connection_);
       diag.exec();
   }
 }
 
 void ConnectionDialog::changeEvent(QEvent* e) {
-  if(e->type() == QEvent::LanguageChange){
+  if (e->type() == QEvent::LanguageChange) {
       retranslateUi();
   }
   QDialog::changeEvent(e);
@@ -379,9 +375,7 @@ bool ConnectionDialog::validateAndApply() {
       std::string conName = common::convertToString(connectionName_->text());
 
     if (isRemoteType) {
-      IConnectionSettingsRemote* newConnection = IConnectionSettingsRemote::createFromType(currentType,
-                                                                                           conName,
-                                                                                           common::net::hostAndPort());
+      IConnectionSettingsRemote* newConnection = IConnectionSettingsRemote::createFromType(currentType, conName, common::net::hostAndPort());
       connection_.reset(newConnection);
 
       SSHInfo info = newConnection->sshInfo();
@@ -392,33 +386,31 @@ bool ConnectionDialog::validateAndApply() {
       info.publicKey_ = "";
       info.privateKey_ = common::convertToString(privateKeyBox_->text());
       info.passphrase_ = common::convertToString(passphraseBox_->text());
-      if (useSsh_->isChecked()){
+      if (useSsh_->isChecked()) {
         info.currentMethod_ = selectedAuthMethod();
       } else {
         info.currentMethod_ = SSHInfo::UNKNOWN;
       }
       newConnection->setSshInfo(info);
     } else {
-      IConnectionSettingsBase* newConnection = IConnectionSettingsBase::createFromType(currentType, conName);
+      IConnectionSettingsBase* newConnection = IConnectionSettingsBase::createFromType(currentType,
+                                                                                       conName);
       connection_.reset(newConnection);
     }
     connection_->setCommandLine(common::convertToString(toRawCommandLine(commandLine_->text())));
-    if(logging_->isChecked()){
+    if (logging_->isChecked()) {
       connection_->setLoggingMsTimeInterval(loggingMsec_->value());
     }
 
     return true;
   } else {
-    using namespace translations;
-    QMessageBox::critical(this, trError, QObject::tr("Invalid database type!"));
+    QMessageBox::critical(this, translations::trError, QObject::tr("Invalid database type!"));
     return false;
   }
 }
 
 SSHInfo::SupportedAuthenticationMetods ConnectionDialog::selectedAuthMethod() const {
-  using namespace translations;
-
-  if (security_->currentText() == trPrivateKey){
+  if (security_->currentText() == translations::trPrivateKey) {
     return SSHInfo::PUBLICKEY;
   }
 
@@ -442,4 +434,4 @@ void ConnectionDialog::updateSshControls(bool isValidType) {
   passwordLabel_->setEnabled(isValidType);
 }
 
-}
+}  // namespace fastonosql

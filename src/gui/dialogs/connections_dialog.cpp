@@ -44,8 +44,6 @@ namespace fastonosql {
 
 ConnectionsDialog::ConnectionsDialog(QWidget* parent)
   : QDialog(parent) {
-  using namespace translations;
-
   setWindowIcon(GuiFactory::instance().connectIcon());
 
   // Remove help button (?)
@@ -55,20 +53,20 @@ ConnectionsDialog::ConnectionsDialog(QWidget* parent)
   listWidget_->setIndentation(5);
 
   QStringList colums;
-  colums << trName << trAddress;
+  colums << translations::trName << translations::trAddress;
   listWidget_->setHeaderLabels(colums);
 
-  //listWidget_->header()->setSectionResizeMode(0, QHeaderView::Stretch);
-  //listWidget_->header()->setSectionResizeMode(1, QHeaderView::Stretch);
+  // listWidget_->header()->setSectionResizeMode(0, QHeaderView::Stretch);
+  // listWidget_->header()->setSectionResizeMode(1, QHeaderView::Stretch);
 
-  //listWidget_->setViewMode(QListView::ListMode);
+  // listWidget_->setViewMode(QListView::ListMode);
   listWidget_->setContextMenuPolicy(Qt::ActionsContextMenu);
   listWidget_->setIndentation(15);
-  listWidget_->setSelectionMode(QAbstractItemView::SingleSelection); // single item can be draged or droped
+  listWidget_->setSelectionMode(QAbstractItemView::SingleSelection);  // single item can be draged or droped
   listWidget_->setSelectionBehavior(QAbstractItemView::SelectRows);
 
-  //listWidget_->setDragEnabled(true);
-  //listWidget_->setDragDropMode(QAbstractItemView::InternalMove);
+  // listWidget_->setDragEnabled(true);
+  // listWidget_->setDragDropMode(QAbstractItemView::InternalMove);
   setMinimumSize(QSize(min_width, min_height));
   VERIFY(connect(listWidget_, &QTreeWidget::itemDoubleClicked, this, &ConnectionsDialog::accept));
   VERIFY(connect(listWidget_, &QTreeWidget::itemSelectionChanged,
@@ -89,19 +87,23 @@ ConnectionsDialog::ConnectionsDialog(QWidget* parent)
 
   QToolBar *savebar = new QToolBar;
 
-  QAction *addB = new QAction(GuiFactory::instance().loadIcon(), trAddConnection, savebar);
+  QAction *addB = new QAction(GuiFactory::instance().loadIcon(),
+                              translations::trAddConnection, savebar);
   VERIFY(connect(addB, &QAction::triggered, this, &ConnectionsDialog::add));
   savebar->addAction(addB);
 
-  QAction *addc = new QAction(GuiFactory::instance().clusterIcon(), trAddClusterConnection, savebar);
+  QAction *addc = new QAction(GuiFactory::instance().clusterIcon(),
+                              translations::trAddClusterConnection, savebar);
   VERIFY(connect(addc, &QAction::triggered, this, &ConnectionsDialog::addCls));
   savebar->addAction(addc);
 
-  QAction *rmB = new QAction(GuiFactory::instance().removeIcon(), trRemoveConnection, savebar);
+  QAction *rmB = new QAction(GuiFactory::instance().removeIcon(),
+                             translations::trRemoveConnection, savebar);
   VERIFY(connect(rmB, &QAction::triggered, this, &ConnectionsDialog::remove));
   savebar->addAction(rmB);
 
-  QAction *editB = new QAction(GuiFactory::instance().editIcon(), trEditConnection, savebar);
+  QAction *editB = new QAction(GuiFactory::instance().editIcon(),
+                               translations::trEditConnection, savebar);
   VERIFY(connect(editB, &QAction::triggered, this, &ConnectionsDialog::edit));
   savebar->addAction(editB);
 
@@ -136,7 +138,7 @@ ConnectionsDialog::ConnectionsDialog(QWidget* parent)
 
 IConnectionSettingsBaseSPtr ConnectionsDialog::selectedConnection() const {
   ConnectionListWidgetItem *currentItem = dynamic_cast<ConnectionListWidgetItem *>(listWidget_->currentItem());
-  if (currentItem){
+  if (currentItem) {
     return currentItem->connection();
   }
 
@@ -145,7 +147,7 @@ IConnectionSettingsBaseSPtr ConnectionsDialog::selectedConnection() const {
 
 IClusterSettingsBaseSPtr ConnectionsDialog::selectedCluster() const {
   ClusterConnectionListWidgetItem *currentItem = dynamic_cast<ClusterConnectionListWidgetItem *>(listWidget_->currentItem());
-  if (currentItem){
+  if (currentItem) {
     return currentItem->connection();
   }
 
@@ -156,7 +158,7 @@ void ConnectionsDialog::add() {
   ConnectionDialog dlg(this);
   int result = dlg.exec();
   IConnectionSettingsBaseSPtr p = dlg.connection();
-  if(result == QDialog::Accepted && p){
+  if (result == QDialog::Accepted && p) {
     SettingsManager::instance().addConnection(p);
     addConnection(p);
   }
@@ -166,7 +168,7 @@ void ConnectionsDialog::addCls() {
   ClusterDialog dlg(this);
   int result = dlg.exec();
   IClusterSettingsBaseSPtr p = dlg.connection();
-  if(result == QDialog::Accepted && p){
+  if (result == QDialog::Accepted && p) {
     SettingsManager::instance().addCluster(p);
     addCluster(p);
   }
@@ -174,15 +176,14 @@ void ConnectionsDialog::addCls() {
 
 void ConnectionsDialog::remove() {
   QTreeWidgetItem* qitem = listWidget_->currentItem();
-  if(!qitem){
+  if (!qitem) {
     return;
   }
 
   ConnectionListWidgetItem* currentItem = dynamic_cast<ConnectionListWidgetItem *>(qitem);
-  if(currentItem){
-
+  if (currentItem) {
     QTreeWidgetItem* qpitem = qitem->parent();
-    if(!qpitem){
+    if (!qpitem) {
       // Ask user
       int answer = QMessageBox::question(this, "Connections",
                                          QString("Really delete \"%1\" connection?").arg(currentItem->text(0)),
@@ -201,10 +202,10 @@ void ConnectionsDialog::remove() {
   }
 
   ClusterConnectionListWidgetItem* clCurrentItem = dynamic_cast<ClusterConnectionListWidgetItem *>(qitem);
-  if(clCurrentItem){
-
+  if (clCurrentItem) {
     // Ask user
-    int answer = QMessageBox::question(this, "Connections", QString("Really delete \"%1\" cluster?").arg(clCurrentItem->text(0)),
+    int answer = QMessageBox::question(this, "Connections",
+                                       QString("Really delete \"%1\" cluster?").arg(clCurrentItem->text(0)),
                                        QMessageBox::Yes, QMessageBox::No, QMessageBox::NoButton);
 
     if (answer != QMessageBox::Yes)
@@ -218,19 +219,19 @@ void ConnectionsDialog::remove() {
 
 void ConnectionsDialog::edit() {
   QTreeWidgetItem* qitem = listWidget_->currentItem();
-  if(!qitem){
+  if (!qitem) {
     return;
   }
 
   ConnectionListWidgetItem* currentItem = dynamic_cast<ConnectionListWidgetItem *>(qitem);
-  if(currentItem){
+  if (currentItem) {
     QTreeWidgetItem* qpitem = qitem->parent();
-    if(!qpitem){
+    if (!qpitem) {
       IConnectionSettingsBaseSPtr con = currentItem->connection();
       ConnectionDialog dlg(this, dynamic_cast<IConnectionSettingsBase*>(con->clone()));
       int result = dlg.exec();
       IConnectionSettingsBaseSPtr newConnection = dlg.connection();
-      if(result == QDialog::Accepted && newConnection){
+      if (result == QDialog::Accepted && newConnection) {
         currentItem->setConnection(newConnection);
         SettingsManager::instance().removeConnection(con);
         SettingsManager::instance().addConnection(newConnection);
@@ -241,14 +242,13 @@ void ConnectionsDialog::edit() {
     }
   }
 
-
   ClusterConnectionListWidgetItem* clCurrentItem = dynamic_cast<ClusterConnectionListWidgetItem *>(qitem);
-  if(clCurrentItem){
+  if (clCurrentItem) {
     IClusterSettingsBaseSPtr con = clCurrentItem->connection();
     ClusterDialog dlg(this, dynamic_cast<IClusterSettingsBase*>(con->clone()));
     int result = dlg.exec();
     IClusterSettingsBaseSPtr newConnection = dlg.connection();
-    if(result == QDialog::Accepted && newConnection){
+    if (result == QDialog::Accepted && newConnection) {
       clCurrentItem->setConnection(newConnection);
       SettingsManager::instance().removeCluster(con);
       SettingsManager::instance().addCluster(newConnection);
@@ -269,17 +269,15 @@ void ConnectionsDialog::accept() {
 }
 
 void ConnectionsDialog::changeEvent(QEvent* e) {
-  if(e->type() == QEvent::LanguageChange){
+  if (e->type() == QEvent::LanguageChange) {
     retranslateUi();
   }
   QDialog::changeEvent(e);
 }
 
 void ConnectionsDialog::retranslateUi() {
-  using namespace translations;
-
-  setWindowTitle(trConnections);
-  acButton_->setText(trOpen);
+  setWindowTitle(translations::trConnections);
+  acButton_->setText(translations::trOpen);
 }
 
 void ConnectionsDialog::addConnection(IConnectionSettingsBaseSPtr con) {
@@ -292,4 +290,4 @@ void ConnectionsDialog::addCluster(IClusterSettingsBaseSPtr con) {
   listWidget_->addTopLevelItem(item);
 }
 
-}
+}  // namespace fastonosql

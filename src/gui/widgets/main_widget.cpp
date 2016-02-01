@@ -56,7 +56,7 @@ QueryWidget *MainWidget::widget(int index) const {
 }
 
 void MainWidget::openConsole(IServerSPtr server, const QString& text) {
-  if(server){
+  if (server) {
     QueryWidget *queryWidget = new QueryWidget(server);
     addWidgetToTab(queryWidget, server->name());
     queryWidget->setInputText(text);
@@ -64,7 +64,7 @@ void MainWidget::openConsole(IServerSPtr server, const QString& text) {
 }
 
 void MainWidget::executeText(IServerSPtr server, const QString& text) {
-  if(server){
+  if (server) {
     QueryWidget *queryWidget = new QueryWidget(server);
     addWidgetToTab(queryWidget, server->name());
     queryWidget->execute(text);
@@ -74,7 +74,7 @@ void MainWidget::executeText(IServerSPtr server, const QString& text) {
 void MainWidget::createNewTab() {
   int curIndex = currentIndex();
   QueryWidget * shw = widget(curIndex);
-  if(shw){
+  if (shw) {
     openNewTab(shw, tabText(curIndex), QString());
   }
 }
@@ -82,12 +82,12 @@ void MainWidget::createNewTab() {
 void MainWidget::nextTab() {
   int index = currentIndex();
   int tabsCount = count();
-  if(index == tabsCount - 1){
+  if (index == tabsCount - 1) {
     setCurrentIndex(0);
     return;
   }
 
-  if (index >= 0 && index < tabsCount - 1){
+  if (index >= 0 && index < tabsCount - 1) {
     setCurrentIndex(index + 1);
     return;
   }
@@ -95,12 +95,12 @@ void MainWidget::nextTab() {
 
 void MainWidget::previousTab() {
   int index = currentIndex();
-  if (index == 0){
+  if (index == 0) {
     setCurrentIndex(count() - 1);
     return;
   }
 
-  if (index > 0){
+  if (index > 0) {
     setCurrentIndex(index - 1);
     return;
   }
@@ -109,7 +109,7 @@ void MainWidget::previousTab() {
 void MainWidget::reloadeCurrentTab() {
   int curIndex = currentIndex();
   QueryWidget *shw = widget(curIndex);
-  if(shw){
+  if (shw) {
     shw->reload();
   }
 }
@@ -117,14 +117,14 @@ void MainWidget::reloadeCurrentTab() {
 void MainWidget::duplicateCurrentTab() {
   int curIndex = currentIndex();
   QueryWidget * shw = widget(curIndex);
-  if(shw){
+  if (shw) {
     openNewTab(shw, tabText(curIndex), shw->inputText());
   }
 }
 
 void MainWidget::closeTab(int index) {
   QueryWidget * shw = widget(index);
-  if(shw){
+  if (shw) {
     removeTab(index);
     delete shw;
   }
@@ -144,7 +144,7 @@ void MainWidget::closedOtherTabs() {
 }
 
 void MainWidget::addWidgetToTab(QueryWidget* wid, const QString& title) {
-  if(!wid){
+  if (!wid) {
     return;
   }
 
@@ -158,5 +158,5 @@ void MainWidget::openNewTab(QueryWidget* src, const QString& title, const QStrin
   addWidgetToTab(newWid, title);
 }
 
-}
+}  // namespace fastonosql
 

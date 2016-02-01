@@ -18,6 +18,8 @@
 
 #pragma once
 
+#include <vector>
+
 #include <QDialog>
 
 class QComboBox;
@@ -31,12 +33,13 @@ class QSpinBox;
 #include "core/connection_settings.h"
 
 namespace fastonosql {
+
 class ConnectionDialog
   : public QDialog {
- Q_OBJECT
+  Q_OBJECT
  public:
   ConnectionDialog(QWidget* parent, IConnectionSettingsBase* connection = NULL,
-                   const std::vector<connectionTypes>& availibleTypes = std::vector<connectionTypes>()); //get ownerships connection
+                   const std::vector<connectionTypes>& availibleTypes = std::vector<connectionTypes>());  // get ownerships connection
 
   IConnectionSettingsBaseSPtr connection() const;
 
@@ -54,7 +57,7 @@ class ConnectionDialog
   void testConnection();
 
  protected:
-  virtual void changeEvent(QEvent* );
+  virtual void changeEvent(QEvent* ev);
 
  private:
   void retranslateUi();
@@ -95,4 +98,4 @@ class ConnectionDialog
   QPushButton* selectPrivateFileButton_;
 };
 
-}
+}  // namespace fastonosql

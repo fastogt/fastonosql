@@ -24,9 +24,9 @@ namespace fastonosql {
 
 class AboutDialog
   : public QDialog {
- Q_OBJECT
+  Q_OBJECT
  public:
   explicit AboutDialog(QWidget* parent);
 };
 
-}
+}  // namespace fastonosql

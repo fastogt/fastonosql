@@ -18,6 +18,8 @@
 
 #pragma once
 
+#include <vector>
+
 #include <QDialog>
 
 #include "core/events/events_info.h"
@@ -33,10 +35,9 @@ class KeysTableModel;
 
 class ViewKeysDialog
   : public QDialog {
- Q_OBJECT
+  Q_OBJECT
  public:
-  enum
-  {
+  enum {
       min_height = 200,
       min_width = 320,
       min_key_on_page = 1,
@@ -61,7 +62,7 @@ class ViewKeysDialog
   void rightPageClicked();
 
  protected:
-  virtual void changeEvent(QEvent* );
+  virtual void changeEvent(QEvent* ev);
 
  private:
   void search(bool forward);
@@ -85,4 +86,4 @@ class ViewKeysDialog
   IDatabaseSPtr db_;
 };
 
-}
+}  // namespace fastonosql

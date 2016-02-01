@@ -18,6 +18,8 @@
 
 #include "gui/dialogs/preferences_dialog.h"
 
+#include <string>
+
 #include <QDialogButtonBox>
 #include <QLineEdit>
 #include <QCheckBox>
@@ -88,7 +90,7 @@ PreferencesDialog::PreferencesDialog(QWidget* parent)
   QHBoxLayout* defaultViewLayaut = new QHBoxLayout;
   defaultViewLabel_ = new QLabel;
   defaultViewComboBox_ = new QComboBox;
-  for(size_t i = 0; i < SIZEOFMASS(viewsText); ++i){
+  for (size_t i = 0; i < SIZEOFMASS(viewsText); ++i) {
     defaultViewComboBox_->addItem(common::convertFromString<QString>(viewsText[i]));
   }
   defaultViewLayaut->addWidget(defaultViewLabel_);
@@ -138,7 +140,7 @@ void PreferencesDialog::accept() {
   SettingsManager::instance().setCurrentFontName(fontComboBox_->currentText());
 
   const std::string defCombo = common::convertToString(defaultViewComboBox_->currentText());
-  const fastonosql::supportedViews v = common::convertFromString<fastonosql::supportedViews>(defCombo);
+  const supportedViews v = common::convertFromString<fastonosql::supportedViews>(defCombo);
   SettingsManager::instance().setDefaultView(v);
 
   ServersManager::instance().setSyncServers(syncTabs_->isChecked());
@@ -165,7 +167,7 @@ void PreferencesDialog::syncWithSettings() {
 }
 
 void PreferencesDialog::changeEvent(QEvent* e) {
-  if(e->type() == QEvent::LanguageChange){
+  if (e->type() == QEvent::LanguageChange) {
     retranslateUi();
   }
 
@@ -190,4 +192,4 @@ void PreferencesDialog::retranslateUi() {
   logDirLabel_->setText(tr("Logging directory:"));
 }
 
-}
+}  // namespace fastonosql

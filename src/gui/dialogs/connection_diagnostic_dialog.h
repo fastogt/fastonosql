@@ -28,7 +28,7 @@ class QLabel;
 namespace fasto {
 namespace qt {
 namespace gui {
-  class GlassWidget;
+class GlassWidget;
 }
 }
 }
@@ -37,9 +37,9 @@ namespace fastonosql {
 
 class TestConnection
   : public QObject {
- Q_OBJECT
+  Q_OBJECT
  public:
-  TestConnection(IConnectionSettingsBaseSPtr conn, QObject* parent = 0);
+  explicit TestConnection(IConnectionSettingsBaseSPtr conn, QObject* parent = 0);
 
  Q_SIGNALS:
   void connectionResult(bool suc, qint64 msTimeExecute, const QString& resultText);
@@ -54,10 +54,9 @@ class TestConnection
 
 class ConnectionDiagnosticDialog
   : public QDialog {
- Q_OBJECT
+  Q_OBJECT
  public:
-  enum
-  {
+  enum {
     fix_height = 160,
     fix_width = 240
   };
@@ -78,4 +77,4 @@ class ConnectionDiagnosticDialog
   QLabel* iconLabel_;
 };
 
-}
+}  // namespace fastonosql

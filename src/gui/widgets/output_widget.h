@@ -42,9 +42,9 @@ class FastoCommonModel;
 
 class OutputWidget
   : public QWidget {
- Q_OBJECT
+  Q_OBJECT
  public:
-  OutputWidget(IServerSPtr server, QWidget* parent = 0);
+  explicit OutputWidget(IServerSPtr server, QWidget* parent = 0);
 
  public Q_SLOTS:
   void rootCreate(const EventsInfo::CommandRootCreatedInfo& res);
@@ -78,4 +78,4 @@ class OutputWidget
   IServerSPtr server_;
 };
 
-}
+}  // namespace fastonosql

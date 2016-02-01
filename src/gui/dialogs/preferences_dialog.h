@@ -31,11 +31,10 @@ namespace fastonosql {
 
 class PreferencesDialog
   : public QDialog {
- Q_OBJECT
+  Q_OBJECT
  public:
   explicit PreferencesDialog(QWidget* parent);
-  enum
-  {
+  enum {
     min_height = 480,
     min_width = 640
   };
@@ -47,7 +46,7 @@ class PreferencesDialog
   void syncWithSettings();
 
  protected:
-  virtual void changeEvent(QEvent* );
+  virtual void changeEvent(QEvent* ev);
 
  private:
   void retranslateUi();
@@ -73,4 +72,4 @@ class PreferencesDialog
   QCheckBox* fastViewKeys_;
 };
 
-}
+}  // namespace fastonosql

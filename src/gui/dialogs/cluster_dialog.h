@@ -18,6 +18,8 @@
 
 #pragma once
 
+#include <vector>
+
 #include <QDialog>
 
 class QComboBox;
@@ -36,10 +38,10 @@ namespace fastonosql {
 
 class ClusterDialog
   : public QDialog {
- Q_OBJECT
+  Q_OBJECT
  public:
   typedef std::vector<IConnectionSettingsBaseSPtr> cluster_connection_type;
-  ClusterDialog(QWidget* parent, IClusterSettingsBase* connection = NULL); //get ownerships connection
+  explicit ClusterDialog(QWidget* parent, IClusterSettingsBase* connection = NULL);  // get ownerships connection
   IClusterSettingsBaseSPtr connection() const;
 
  public Q_SLOTS:
@@ -61,7 +63,7 @@ class ClusterDialog
   void itemSelectionChanged();
 
  protected:
-  virtual void changeEvent(QEvent* );
+  virtual void changeEvent(QEvent* ev);
 
  private:
   void retranslateUi();
@@ -83,4 +85,4 @@ class ClusterDialog
   QAction* setDefault_;
 };
 
-}
+}  // namespace fastonosql

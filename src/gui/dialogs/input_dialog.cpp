@@ -47,7 +47,7 @@ InputDialog::InputDialog(QWidget* parent, const QString& title, InputType type,
   glayout->addWidget(firstLabel, 0, 0);
   glayout->addWidget(firstLine_, 0, 1);
 
-  if(type == DoubleLine){
+  if (type == DoubleLine) {
     QLabel* secondLabel = new QLabel(secondLabelText);
     glayout->addWidget(secondLabel, 1, 0);
     glayout->addWidget(secondLine_, 1, 1);
@@ -67,4 +67,4 @@ QString InputDialog::secondText() const {
   return secondLine_->text();
 }
 
-}
+}  // namespace fastonosql

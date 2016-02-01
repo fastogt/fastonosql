@@ -40,7 +40,7 @@ class LogTabWidget
   void addCommand(const Command& command);
 
  protected:
-  virtual void changeEvent(QEvent* );
+  virtual void changeEvent(QEvent* ev);
 
  private:
   void retranslateUi();
@@ -48,4 +48,4 @@ class LogTabWidget
   CommandsWidget* commands_;
 };
 
-}
+}  // namespace fastonosql

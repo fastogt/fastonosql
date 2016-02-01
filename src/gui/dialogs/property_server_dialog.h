@@ -27,7 +27,7 @@ class QTableView;
 namespace fasto {
 namespace qt {
 namespace gui {
-  class GlassWidget;
+class GlassWidget;
 }
 }
 }
@@ -36,7 +36,7 @@ namespace fastonosql {
 
 class PropertyServerDialog
   : public QDialog {
- Q_OBJECT
+  Q_OBJECT
  public:
   explicit PropertyServerDialog(IServerSPtr server, QWidget* parent = 0);
 
@@ -63,4 +63,4 @@ class PropertyServerDialog
   const IServerSPtr server_;
 };
 
-}
+}  // namespace fastonosql

@@ -18,6 +18,9 @@
 
 #include "gui/dialogs/create_dbkey_dialog.h"
 
+#include <vector>
+#include <string>
+
 #include <QDialogButtonBox>
 #include <QLineEdit>
 #include <QComboBox>
@@ -43,8 +46,6 @@ namespace fastonosql {
 
 CreateDbKeyDialog::CreateDbKeyDialog(const QString &title, connectionTypes type, QWidget* parent)
   : QDialog(parent), type_(type), value_() {
-  using namespace translations;
-
   setWindowIcon(GuiFactory::instance().icon(type_));
   setWindowTitle(title);
 
@@ -64,13 +65,13 @@ CreateDbKeyDialog::CreateDbKeyDialog(const QString &title, connectionTypes type,
                  this, &CreateDbKeyDialog::typeChanged));
   kvLayout->addWidget(typesCombo_, 0, 1);
 
-  //key layout
+  // key layout
 
   kvLayout->addWidget(new QLabel(tr("Key:")), 1, 0);
   keyEdit_ = new QLineEdit;
   kvLayout->addWidget(keyEdit_, 1, 1);
 
-  //value layout
+  // value layout
 
   kvLayout->addWidget(new QLabel(tr("Value:")), 2, 0);
   valueEdit_ = new QLineEdit;
@@ -82,11 +83,11 @@ CreateDbKeyDialog::CreateDbKeyDialog(const QString &title, connectionTypes type,
   valueListEdit_->setSelectionMode(QAbstractItemView::SingleSelection);
   valueListEdit_->setSelectionBehavior(QAbstractItemView::SelectRows);
 
-  QAction* addItem = new QAction(trAddItem, this);
+  QAction* addItem = new QAction(translations::trAddItem, this);
   VERIFY(connect(addItem, &QAction::triggered, this, &CreateDbKeyDialog::addItem));
   valueListEdit_->addAction(addItem);
 
-  QAction* removeItem = new QAction(trRemoveItem, this);
+  QAction* removeItem = new QAction(translations::trRemoveItem, this);
   VERIFY(connect(removeItem, &QAction::triggered, this, &CreateDbKeyDialog::removeItem));
   valueListEdit_->addAction(removeItem);
 
@@ -131,7 +132,7 @@ NDbKValue CreateDbKeyDialog::key() const {
 }
 
 void CreateDbKeyDialog::accept() {
-  if(validateAndApply()){
+  if (validateAndApply()) {
     QDialog::accept();
   }
 }
@@ -145,7 +146,7 @@ void CreateDbKeyDialog::typeChanged(int index) {
     valueListEdit_->setVisible(true);
     valueEdit_->setVisible(false);
     valueTableEdit_->setVisible(false);
-  } else if(t == common::Value::TYPE_ZSET || t == common::Value::TYPE_HASH) {
+  } else if (t == common::Value::TYPE_ZSET || t == common::Value::TYPE_HASH) {
     valueTableEdit_->setVisible(true);
     valueEdit_->setVisible(false);
     valueListEdit_->setVisible(false);
@@ -153,32 +154,30 @@ void CreateDbKeyDialog::typeChanged(int index) {
     valueEdit_->setVisible(true);
     valueListEdit_->setVisible(false);
     valueTableEdit_->setVisible(false);
-    if(t == common::Value::TYPE_INTEGER || t == common::Value::TYPE_UINTEGER) {
+    if (t == common::Value::TYPE_INTEGER || t == common::Value::TYPE_UINTEGER) {
       valueEdit_->setValidator(new QIntValidator(this));
-    } else if(t == common::Value::TYPE_BOOLEAN) {
-      QRegExp rx("true|false");//
+    } else if (t == common::Value::TYPE_BOOLEAN) {
+      QRegExp rx("true|false");
       valueEdit_->setValidator(new QRegExpValidator(rx, this));
-    } else if(t == common::Value::TYPE_DOUBLE){
+    } else if (t == common::Value::TYPE_DOUBLE) {
       valueEdit_->setValidator(new QDoubleValidator(this));
     } else {
-      QRegExp rx(".*");//
+      QRegExp rx(".*");
       valueEdit_->setValidator(new QRegExpValidator(rx, this));
     }
   }
 }
 
 void CreateDbKeyDialog::addItem() {
-  using namespace translations;
-
   if (valueListEdit_->isVisible()) {
-    InputDialog diag(this, trAddItem, InputDialog::SingleLine, trValue);
+    InputDialog diag(this, translations::trAddItem, InputDialog::SingleLine, translations::trValue);
     int result = diag.exec();
-    if(result != QDialog::Accepted){
+    if (result != QDialog::Accepted) {
       return;
     }
 
     QString text = diag.firstText();
-    if(!text.isEmpty()){
+    if (!text.isEmpty()) {
       QListWidgetItem* nitem = new QListWidgetItem(text, valueListEdit_);
       nitem->setFlags(nitem->flags() | Qt::ItemIsEditable);
       valueListEdit_->addItem(nitem);
@@ -188,17 +187,18 @@ void CreateDbKeyDialog::addItem() {
     QVariant var = typesCombo_->itemData(index);
     common::Value::Type t = (common::Value::Type)qvariant_cast<unsigned char>(var);
 
-    InputDialog diag(this, trAddItem, InputDialog::DoubleLine,
-                     t == common::Value::TYPE_HASH ? trField : trScore, trValue);
+    InputDialog diag(this, translations::trAddItem, InputDialog::DoubleLine,
+                     t == common::Value::TYPE_HASH ? translations::trField :
+                                                     translations::trScore, translations::trValue);
     int result = diag.exec();
-    if(result != QDialog::Accepted){
+    if (result != QDialog::Accepted) {
       return;
     }
 
     QString ftext = diag.firstText();
     QString stext = diag.secondText();
 
-    if(!ftext.isEmpty() && !stext.isEmpty()){
+    if (!ftext.isEmpty() && !stext.isEmpty()) {
       QTableWidgetItem* fitem = new QTableWidgetItem(ftext);
       fitem->setFlags(fitem->flags() | Qt::ItemIsEditable);
 
@@ -213,7 +213,7 @@ void CreateDbKeyDialog::addItem() {
 }
 
 void CreateDbKeyDialog::removeItem() {
-  if(valueListEdit_->isVisible()){
+  if (valueListEdit_->isVisible()) {
     QListWidgetItem* ritem = valueListEdit_->currentItem();
     delete ritem;
   } else {
@@ -223,19 +223,19 @@ void CreateDbKeyDialog::removeItem() {
 }
 
 void CreateDbKeyDialog::changeEvent(QEvent* e) {
-  if(e->type() == QEvent::LanguageChange){
+  if (e->type() == QEvent::LanguageChange) {
     retranslateUi();
   }
   QDialog::changeEvent(e);
 }
 
 bool CreateDbKeyDialog::validateAndApply() {
-  if(keyEdit_->text().isEmpty()){
+  if (keyEdit_->text().isEmpty()) {
     return false;
   }
 
   common::Value* obj = getItem();
-  if(!obj){
+  if (!obj) {
     return false;
   }
 
@@ -252,34 +252,34 @@ common::Value* CreateDbKeyDialog::getItem() const {
   QVariant var = typesCombo_->itemData(index);
   common::Value::Type t = (common::Value::Type)qvariant_cast<unsigned char>(var);
   if (t == common::Value::TYPE_ARRAY) {
-      if(valueListEdit_->count() == 0) {
+      if (valueListEdit_->count() == 0) {
         return NULL;
       }
       common::ArrayValue* ar = common::Value::createArrayValue();
-      for(size_t i = 0; i < valueListEdit_->count(); ++i){
+      for (size_t i = 0; i < valueListEdit_->count(); ++i) {
         std::string val = common::convertToString(valueListEdit_->item(i)->text());
         ar->appendString(val);
       }
 
       return ar;
-  } else if(t == common::Value::TYPE_SET) {
-      if(valueListEdit_->count() == 0) {
-          return NULL;
+  } else if (t == common::Value::TYPE_SET) {
+      if (valueListEdit_->count() == 0) {
+        return NULL;
       }
       common::SetValue* ar = common::Value::createSetValue();
-      for(size_t i = 0; i < valueListEdit_->count(); ++i){
-          std::string val = common::convertToString(valueListEdit_->item(i)->text());
-          ar->insert(val);
+      for (size_t i = 0; i < valueListEdit_->count(); ++i) {
+        std::string val = common::convertToString(valueListEdit_->item(i)->text());
+        ar->insert(val);
       }
 
       return ar;
-  } else if(t == common::Value::TYPE_ZSET) {
-      if(valueTableEdit_->rowCount() == 0) {
+  } else if (t == common::Value::TYPE_ZSET) {
+      if (valueTableEdit_->rowCount() == 0) {
         return NULL;
       }
 
       common::ZSetValue* ar = common::Value::createZSetValue();
-      for(int i = 0; i < valueTableEdit_->rowCount(); ++i){
+      for (size_t i = 0; i < valueTableEdit_->rowCount(); ++i) {
         QTableWidgetItem* kitem = valueTableEdit_->item(i, 0);
         QTableWidgetItem* vitem = valueTableEdit_->item(i, 0);
 
@@ -289,13 +289,13 @@ common::Value* CreateDbKeyDialog::getItem() const {
       }
 
       return ar;
-  } else if(t == common::Value::TYPE_HASH) {
-      if(valueTableEdit_->rowCount() == 0) {
+  } else if (t == common::Value::TYPE_HASH) {
+      if (valueTableEdit_->rowCount() == 0) {
         return NULL;
       }
 
       common::HashValue* ar = common::Value::createHashValue();
-      for(size_t i = 0; i < valueTableEdit_->rowCount(); ++i){
+      for (size_t i = 0; i < valueTableEdit_->rowCount(); ++i) {
         QTableWidgetItem* kitem = valueTableEdit_->item(i, 0);
         QTableWidgetItem* vitem = valueTableEdit_->item(i, 0);
 
@@ -307,7 +307,7 @@ common::Value* CreateDbKeyDialog::getItem() const {
       return ar;
   } else {
       QString text = valueEdit_->text();
-      if(text.isEmpty()){
+      if (text.isEmpty()) {
         return NULL;
       }
 
@@ -315,4 +315,4 @@ common::Value* CreateDbKeyDialog::getItem() const {
   }
 }
 
-}
+}  // namespace fastonosql

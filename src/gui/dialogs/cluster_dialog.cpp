@@ -18,6 +18,9 @@
 
 #include "gui/dialogs/cluster_dialog.h"
 
+#include <vector>
+#include <string>
+
 #include <QDialogButtonBox>
 #include <QEvent>
 #include <QMenu>
@@ -52,27 +55,25 @@ namespace fastonosql {
 
 ClusterDialog::ClusterDialog(QWidget* parent, IClusterSettingsBase *connection)
   : QDialog(parent), cluster_connection_(connection) {
-  using namespace translations;
-
   setWindowIcon(GuiFactory::instance().serverIcon());
-  setWindowFlags(windowFlags() & ~Qt::WindowContextHelpButtonHint); // Remove help button (?)
+  setWindowFlags(windowFlags() & ~Qt::WindowContextHelpButtonHint);  // Remove help button (?)
 
   connectionName_ = new QLineEdit;
   QString conName = defaultNameConnection;
-  if(cluster_connection_){
-      conName = common::convertFromString<QString>(cluster_connection_->connectionName());
+  if (cluster_connection_) {
+    conName = common::convertFromString<QString>(cluster_connection_->connectionName());
   }
   connectionName_->setText(conName);
   typeConnection_ = new QComboBox;
 
-  for(int i = 0; i < SIZEOFMASS(connnectionType); ++i){
+  for (int i = 0; i < SIZEOFMASS(connnectionType); ++i) {
     connectionTypes ct = static_cast<connectionTypes>(i);
     std::string str = common::convertToString(ct);
     typeConnection_->addItem(GuiFactory::instance().icon(ct),
                              common::convertFromString<QString>(str), i);
   }
 
-  if(cluster_connection_){
+  if (cluster_connection_) {
     typeConnection_->setCurrentIndex(cluster_connection_->connectionType());
   }
 
@@ -86,7 +87,7 @@ ClusterDialog::ClusterDialog(QWidget* parent, IClusterSettingsBase *connection)
   loggingMsec_->setRange(0, INT32_MAX);
   loggingMsec_->setSingleStep(1000);
 
-  if(cluster_connection_){
+  if (cluster_connection_) {
       logging_->setChecked(cluster_connection_->loggingEnabled());
       loggingMsec_->setValue(cluster_connection_->loggingMsTimeInterval());
   } else {
@@ -101,10 +102,10 @@ ClusterDialog::ClusterDialog(QWidget* parent, IClusterSettingsBase *connection)
   listWidget_->setIndentation(5);
 
   QStringList colums;
-  colums << trName << trAddress;
+  colums << translations::trName << translations::trAddress;
   listWidget_->setHeaderLabels(colums);
   listWidget_->setIndentation(15);
-  listWidget_->setSelectionMode(QAbstractItemView::SingleSelection); // single item can be draged or droped
+  listWidget_->setSelectionMode(QAbstractItemView::SingleSelection);  // single item can be draged or droped
   listWidget_->setSelectionBehavior(QAbstractItemView::SelectRows);
 
   listWidget_->setContextMenuPolicy(Qt::CustomContextMenu);
@@ -114,10 +115,10 @@ ClusterDialog::ClusterDialog(QWidget* parent, IClusterSettingsBase *connection)
   setDefault_ = new QAction(this);
   VERIFY(connect(setDefault_, &QAction::triggered, this, &ClusterDialog::setStartNode));
 
-  if(cluster_connection_){
+  if (cluster_connection_) {
     IClusterSettingsBase::cluster_connection_type clusters = cluster_connection_->nodes();
-    for(IClusterSettingsBase::cluster_connection_type::const_iterator it = clusters.begin();
-        it != clusters.end(); ++it){
+    for (IClusterSettingsBase::cluster_connection_type::const_iterator it = clusters.begin();
+        it != clusters.end(); ++it) {
       IConnectionSettingsBaseSPtr serv = (*it);
       addConnection(serv);
     }
@@ -131,16 +132,19 @@ ClusterDialog::ClusterDialog(QWidget* parent, IClusterSettingsBase *connection)
   savebar_->setStyleSheet("QToolBar { border: 0px; }");
   toolBarLayout->addWidget(savebar_);
 
-  QAction *addB = new QAction(GuiFactory::instance().loadIcon(), trAddConnection, savebar_);
+  QAction *addB = new QAction(GuiFactory::instance().loadIcon(),
+                              translations::trAddConnection, savebar_);
   typedef void(QAction::*trig)(bool);
   VERIFY(connect(addB, static_cast<trig>(&QAction::triggered), this, &ClusterDialog::add));
   savebar_->addAction(addB);
 
-  QAction *rmB = new QAction(GuiFactory::instance().removeIcon(), trRemoveConnection, savebar_);
+  QAction *rmB = new QAction(GuiFactory::instance().removeIcon(),
+                             translations::trRemoveConnection, savebar_);
   VERIFY(connect(rmB, static_cast<trig>(&QAction::triggered), this, &ClusterDialog::remove));
   savebar_->addAction(rmB);
 
-  QAction *editB = new QAction(GuiFactory::instance().editIcon(), trEditConnection, savebar_);
+  QAction *editB = new QAction(GuiFactory::instance().editIcon(),
+                               translations::trEditConnection, savebar_);
   VERIFY(connect(editB, static_cast<trig>(&QAction::triggered), this, &ClusterDialog::edit));
   savebar_->addAction(editB);
 
@@ -180,7 +184,7 @@ ClusterDialog::ClusterDialog(QWidget* parent, IClusterSettingsBase *connection)
   mainLayout->setSizeConstraint(QLayout::SetFixedSize);
   setLayout(mainLayout);
 
-  //update controls
+  // update controls
   typeConnectionChange(typeConnection_->currentIndex());
   loggingStateChange(logging_->checkState());
   retranslateUi();
@@ -191,7 +195,7 @@ IClusterSettingsBaseSPtr ClusterDialog::connection() const {
 }
 
 void ClusterDialog::accept() {
-  if(validateAndApply()){
+  if (validateAndApply()) {
     QDialog::accept();
   }
 }
@@ -228,19 +232,19 @@ void ClusterDialog::discoveryCluster() {
   ConnectionListWidgetItem* currentItem = dynamic_cast<ConnectionListWidgetItem *>(listWidget_->currentItem());
 
   // Do nothing if no item selected
-  if (!currentItem){
+  if (!currentItem) {
     return;
   }
 
-  if(!validateAndApply()){
+  if (!validateAndApply()) {
     return;
   }
 
   DiscoveryDiagnosticDialog diag(this, currentItem->connection(), cluster_connection_);
   int result = diag.exec();
-  if(result == QDialog::Accepted){
+  if (result == QDialog::Accepted) {
     std::vector<IConnectionSettingsBaseSPtr> conns = diag.selectedConnections();
-    for(int i = 0; i < conns.size(); ++i){
+    for (size_t i = 0; i < conns.size(); ++i) {
       addConnection(conns[i]);
     }
   }
@@ -250,7 +254,7 @@ void ClusterDialog::showContextMenu(const QPoint& point) {
   ConnectionListWidgetItem* currentItem = dynamic_cast<ConnectionListWidgetItem *>(listWidget_->currentItem());
 
   // Do nothing if no item selected
-  if (!currentItem){
+  if (!currentItem) {
       return;
   }
 
@@ -267,12 +271,12 @@ void ClusterDialog::setStartNode() {
   ConnectionListWidgetItem* currentItem = dynamic_cast<ConnectionListWidgetItem *>(listWidget_->currentItem());
 
   // Do nothing if no item selected
-  if (!currentItem){
+  if (!currentItem) {
     return;
   }
 
   ConnectionListWidgetItem* top = dynamic_cast<ConnectionListWidgetItem *>(listWidget_->topLevelItem(0));
-  if (top == currentItem){
+  if (top == currentItem) {
     return;
   }
 
@@ -287,7 +291,7 @@ void ClusterDialog::add() {
   ConnectionDialog dlg(this, NULL, avail);
   int result = dlg.exec();
   IConnectionSettingsBaseSPtr p = dlg.connection();
-  if(result == QDialog::Accepted && p){
+  if (result == QDialog::Accepted && p) {
     addConnection(p);
   }
 }
@@ -313,8 +317,9 @@ void ClusterDialog::edit() {
   ConnectionListWidgetItem* currentItem = dynamic_cast<ConnectionListWidgetItem*>(listWidget_->currentItem());
 
   // Do nothing if no item selected
-  if (!currentItem)
+  if (!currentItem) {
     return;
+  }
 
   IConnectionSettingsBaseSPtr oldConnection = currentItem->connection();
 
@@ -322,7 +327,7 @@ void ClusterDialog::edit() {
   ConnectionDialog dlg(this, dynamic_cast<IConnectionSettingsBase*>(oldConnection->clone()), avail);
   int result = dlg.exec();
   IConnectionSettingsBaseSPtr newConnection = dlg.connection();
-  if(result == QDialog::Accepted && newConnection){
+  if (result == QDialog::Accepted && newConnection) {
     currentItem->setConnection(newConnection);
   }
 }
@@ -337,7 +342,7 @@ void ClusterDialog::itemSelectionChanged() {
 }
 
 void ClusterDialog::changeEvent(QEvent* e) {
-  if(e->type() == QEvent::LanguageChange){
+  if (e->type() == QEvent::LanguageChange) {
     retranslateUi();
   }
 
@@ -345,35 +350,33 @@ void ClusterDialog::changeEvent(QEvent* e) {
 }
 
 void ClusterDialog::retranslateUi() {
-  using namespace translations;
   logging_->setText(tr("Logging enabled"));
-  setDefault_->setText(trSetAsStartNode);
+  setDefault_->setText(translations::trSetAsStartNode);
 }
 
 bool ClusterDialog::validateAndApply() {
   connectionTypes currentType = common::convertFromString<connectionTypes>(common::convertToString(typeConnection_->currentText()));
   bool isValidType = currentType != DBUNKNOWN;
   if (isValidType) {
-      std::string conName = common::convertToString(connectionName_->text());
-      IClusterSettingsBase* newConnection = IClusterSettingsBase::createFromType(currentType, conName);
-      if (newConnection) {
-          cluster_connection_.reset(newConnection);
-          if (logging_->isChecked()) {
-            cluster_connection_->setLoggingMsTimeInterval(loggingMsec_->value());
-          }
-          for (size_t i = 0; i < listWidget_->topLevelItemCount(); ++i) {
-            ConnectionListWidgetItem* item = dynamic_cast<ConnectionListWidgetItem *>(listWidget_->topLevelItem(i));
-            if (item) {
-              IConnectionSettingsBaseSPtr con = item->connection();
-              cluster_connection_->addNode(con);
-            }
-          }
+    std::string conName = common::convertToString(connectionName_->text());
+    IClusterSettingsBase* newConnection = IClusterSettingsBase::createFromType(currentType, conName);
+    if (newConnection) {
+      cluster_connection_.reset(newConnection);
+      if (logging_->isChecked()) {
+        cluster_connection_->setLoggingMsTimeInterval(loggingMsec_->value());
       }
-      return true;
+      for (size_t i = 0; i < listWidget_->topLevelItemCount(); ++i) {
+        ConnectionListWidgetItem* item = dynamic_cast<ConnectionListWidgetItem *>(listWidget_->topLevelItem(i));
+        if (item) {
+          IConnectionSettingsBaseSPtr con = item->connection();
+          cluster_connection_->addNode(con);
+        }
+      }
+    }
+    return true;
   } else {
-      using namespace translations;
-      QMessageBox::critical(this, trError, QObject::tr("Invalid database type!"));
-      return false;
+    QMessageBox::critical(this, translations::trError, QObject::tr("Invalid database type!"));
+    return false;
   }
 }
 
@@ -382,4 +385,4 @@ void ClusterDialog::addConnection(IConnectionSettingsBaseSPtr con) {
   listWidget_->addTopLevelItem(item);
 }
 
-}
+}  // namespace fastonosql

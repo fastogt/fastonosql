@@ -29,10 +29,9 @@ namespace fastonosql {
 
 class LoadContentDbDialog
   : public QDialog {
- Q_OBJECT
+  Q_OBJECT
  public:
-  enum
-  {
+  enum {
     min_height = 120,
     min_width = 240,
     min_key_on_page = 1,
@@ -55,4 +54,4 @@ class LoadContentDbDialog
   QSpinBox* countSpinEdit_;
 };
 
-}
+}  // namespace fastonosql

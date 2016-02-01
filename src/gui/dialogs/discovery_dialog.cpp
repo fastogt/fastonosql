@@ -18,6 +18,9 @@
 
 #include "gui/dialogs/discovery_dialog.h"
 
+#include <string>
+#include <vector>
+
 #include <QVBoxLayout>
 #include <QDialogButtonBox>
 #include <QThread>
@@ -70,11 +73,9 @@ DiscoveryDiagnosticDialog::DiscoveryDiagnosticDialog(QWidget* parent,
                                                      IConnectionSettingsBaseSPtr connection,
                                                      IClusterSettingsBaseSPtr cluster)
   : QDialog(parent), cluster_(cluster) {
-  using namespace translations;
-
-  setWindowTitle(trConnectionDiscovery);
+  setWindowTitle(translations::trConnectionDiscovery);
   setWindowIcon(GuiFactory::instance().serverIcon());
-  setWindowFlags(windowFlags() & ~Qt::WindowContextHelpButtonHint); // Remove help button (?)
+  setWindowFlags(windowFlags() & ~Qt::WindowContextHelpButtonHint);  // Remove help button (?)
 
   QVBoxLayout* mainLayout = new QVBoxLayout;
 
@@ -95,11 +96,11 @@ DiscoveryDiagnosticDialog::DiscoveryDiagnosticDialog(QWidget* parent,
   listWidget_->setIndentation(5);
 
   QStringList colums;
-  colums << trName << trAddress << trType;
+  colums << translations::trName << translations::trAddress << translations::trType;
   listWidget_->setHeaderLabels(colums);
   listWidget_->setContextMenuPolicy(Qt::ActionsContextMenu);
   listWidget_->setIndentation(15);
-  listWidget_->setSelectionMode(QAbstractItemView::MultiSelection); // single item can be draged or droped
+  listWidget_->setSelectionMode(QAbstractItemView::MultiSelection);  // single item can be draged or droped
   listWidget_->setSelectionBehavior(QAbstractItemView::SelectRows);
 
   mainLayout->addWidget(listWidget_);
@@ -116,7 +117,8 @@ DiscoveryDiagnosticDialog::DiscoveryDiagnosticDialog(QWidget* parent,
   setLayout(mainLayout);
 
   glassWidget_ = new fasto::qt::gui::GlassWidget(GuiFactory::instance().pathToLoadingGif(),
-                                                 trTryToConnect, 0.5, QColor(111, 111, 100), this);
+                                                 translations::trTryToConnect, 0.5,
+                                                 QColor(111, 111, 100), this);
   testConnection(connection);
 }
 
@@ -124,7 +126,7 @@ std::vector<IConnectionSettingsBaseSPtr> DiscoveryDiagnosticDialog::selectedConn
   std::vector<IConnectionSettingsBaseSPtr> res;
   for (size_t i = 0; i < listWidget_->topLevelItemCount(); ++i) {
     ConnectionListWidgetItemEx* item = dynamic_cast<ConnectionListWidgetItemEx *>(listWidget_->topLevelItem(i));
-    if(item && item->isSelected()){
+    if (item && item->isSelected()) {
       res.push_back(item->connection());
     }
   }
@@ -144,7 +146,7 @@ void DiscoveryDiagnosticDialog::connectionResult(bool suc, qint64 mstimeExecute,
     const QPixmap pm = icon.pixmap(stateIconSize);
     iconLabel_->setPixmap(pm);
 
-    for(int i = 0; i < infos.size(); ++i){
+    for (size_t i = 0; i < infos.size(); ++i) {
       ServerDiscoveryInfoSPtr inf = infos[i];
       common::net::hostAndPort host = inf->host();
       IConnectionSettingsBaseSPtr con(IConnectionSettingsRemote::createFromType(inf->connectionType(),
@@ -175,4 +177,4 @@ void DiscoveryDiagnosticDialog::testConnection(IConnectionSettingsBaseSPtr conne
   th->start();
 }
 
-}
+}  // namespace fastonosql

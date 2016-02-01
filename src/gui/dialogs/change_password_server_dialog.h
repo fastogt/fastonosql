@@ -27,7 +27,7 @@ class QLineEdit;
 namespace fasto {
 namespace qt {
 namespace gui {
-  class GlassWidget;
+class GlassWidget;
 }
 }
 }
@@ -36,10 +36,9 @@ namespace fastonosql {
 
 class ChangePasswordServerDialog
   : public QDialog {
- Q_OBJECT
+  Q_OBJECT
  public:
-  enum
-  {
+  enum {
       fix_height = 160,
       fix_width = 240
   };
@@ -59,4 +58,4 @@ class ChangePasswordServerDialog
   const IServerSPtr server_;
 };
 
-}
+}  // namespace fastonosql

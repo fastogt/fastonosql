@@ -53,8 +53,8 @@ QPushButton *createButtonWithIcon(const QIcon &icon) {
 
 class NumericDelegate
   : public QStyledItemDelegate {
-public:
-explicit NumericDelegate(QObject *parent = 0)
+ public:
+  explicit NumericDelegate(QObject *parent = 0)
   : QStyledItemDelegate(parent) {
 }
 
@@ -86,14 +86,14 @@ void updateEditorGeometry(QWidget *editor, const QStyleOptionViewItem &option,
 }
 };
 
-}
+}  // namespace
 
 namespace fastonosql {
 
 ViewKeysDialog::ViewKeysDialog(const QString &title, IDatabaseSPtr db, QWidget* parent)
   : QDialog(parent), db_(db), cursorStack_(), curPos_(0) {
   DCHECK(db_);
-  if(db_){
+  if (db_) {
     IServerSPtr serv = db_->server();
     VERIFY(connect(serv.get(), &IServer::startedLoadDataBaseContent,
                    this, &ViewKeysDialog::startLoadDatabaseContent));
@@ -215,7 +215,7 @@ void ViewKeysDialog::finishLoadDatabaseContent(const EventsInfo::LoadDatabaseCon
 }
 
 void ViewKeysDialog::executeCommand(CommandKeySPtr cmd) {
-  if(db_){
+  if (db_) {
     EventsInfo::CommandRequest req(this, db_->info(), cmd);
     db_->executeCommand(req);
   }
@@ -231,7 +231,8 @@ void ViewKeysDialog::finishExecuteCommand(const EventsInfo::CommandResponce& res
   }
 
   if (res.initiator() != this) {
-    DEBUG_MSG_FORMAT<512>(common::logging::L_DEBUG, "Skipped event in file: %s, function: %s", __FILE__, __FUNCTION__);
+    DEBUG_MSG_FORMAT<512>(common::logging::L_DEBUG,
+                          "Skipped event in file: %s, function: %s", __FILE__, __FUNCTION__);
     return;
   }
 
@@ -255,20 +256,22 @@ void ViewKeysDialog::search(bool forward) {
     return;
   }
 
-  if(cursorStack_.empty()){
+  if (cursorStack_.empty()) {
     cursorStack_.push_back(0);
   }
 
-  DCHECK(cursorStack_[0] == 0);
+  DCHECK_EQ(cursorStack_[0], 0);
   if (forward) {
     EventsInfo::LoadDatabaseContentRequest req(this, db_->info(),
-                                               common::convertToString(pattern), countSpinEdit_->value(), cursorStack_[curPos_]);
+                                               common::convertToString(pattern),
+                                               countSpinEdit_->value(), cursorStack_[curPos_]);
     db_->loadContent(req);
     ++curPos_;
   } else {
-    if(curPos_ > 0){
+    if (curPos_ > 0) {
       EventsInfo::LoadDatabaseContentRequest req(this, db_->info(),
-                                                 common::convertToString(pattern), countSpinEdit_->value(), cursorStack_[--curPos_]);
+                                                 common::convertToString(pattern),
+                                                 countSpinEdit_->value(), cursorStack_[--curPos_]);
       db_->loadContent(req);
     }
   }
@@ -290,16 +293,15 @@ void ViewKeysDialog::rightPageClicked() {
 }
 
 void ViewKeysDialog::changeEvent(QEvent* e) {
-  if(e->type() == QEvent::LanguageChange){
+  if (e->type() == QEvent::LanguageChange) {
     retranslateUi();
   }
   QDialog::changeEvent(e);
 }
 
 void ViewKeysDialog::retranslateUi() {
-  using namespace translations;
-  keyCountLabel_->setText(trKeyCountOnThePage);
-  searchButton_->setText(trSearch);
+  keyCountLabel_->setText(translations::trKeyCountOnThePage);
+  searchButton_->setText(translations::trSearch);
 }
 
 void ViewKeysDialog::updateControls() {
@@ -315,4 +317,4 @@ size_t ViewKeysDialog::keysCount() const {
   return countKey_->value();
 }
 
-}
+}  // namespace fastonosql

@@ -18,6 +18,8 @@
 
 #include "gui/explorer/explorer_tree_model.h"
 
+#include <string>
+
 #include "translations/global.h"
 
 #include "gui/gui_factory.h"
@@ -64,7 +66,7 @@ void ExplorerServerItem::loadDatabases() {
 ExplorerClusterItem::ExplorerClusterItem(IClusterSPtr cluster, TreeItem* parent)
   : IExplorerTreeItem(parent), cluster_(cluster) {
   ICluster::nodes_type nodes = cluster_->nodes();
-  for(int i = 0; i < nodes.size(); ++i){
+  for (size_t i = 0; i < nodes.size(); ++i) {
     ExplorerServerItem* ser = new ExplorerServerItem(nodes[i], this);
     addChildren(ser);
   }
@@ -109,8 +111,7 @@ ExplorerDatabaseItem::eType ExplorerDatabaseItem::type() const {
   return eDatabase;
 }
 
-bool ExplorerDatabaseItem::isDefault() const
-{
+bool ExplorerDatabaseItem::isDefault() const {
     return info()->isDefault();
 }
 
@@ -264,22 +265,22 @@ QVariant ExplorerTreeModel::data(const QModelIndex& index, int role) const {
                        "<b>Type:</b> %2<br/>"
                        "<b>Host:</b> %3<br/>").arg(dname).arg(dtype).arg(dhost);
       }
-    } else if(t == IExplorerTreeItem::eDatabase) {
+    } else if (t == IExplorerTreeItem::eDatabase) {
         ExplorerDatabaseItem* db = dynamic_cast<ExplorerDatabaseItem*>(node);
-        if(db && db->isDefault()){
+        if (db && db->isDefault()) {
             return QString("<b>Db size:</b> %1 keys<br/>").arg(db->sizeDB());
         }
     }
   }
 
   if (role == Qt::DecorationRole && col == ExplorerServerItem::eName) {
-    if(t == IExplorerTreeItem::eCluster) {
+    if (t == IExplorerTreeItem::eCluster) {
         return GuiFactory::instance().clusterIcon();
-    } else if(t == IExplorerTreeItem::eServer) {
+    } else if (t == IExplorerTreeItem::eServer) {
         return GuiFactory::instance().icon(node->server()->type());
-    } else if(t == IExplorerTreeItem::eKey) {
+    } else if (t == IExplorerTreeItem::eKey) {
         return GuiFactory::instance().keyIcon();
-    } else if(t == IExplorerTreeItem::eDatabase) {
+    } else if (t == IExplorerTreeItem::eDatabase) {
         return GuiFactory::instance().databaseIcon();
     } else {
         NOTREACHED();
@@ -288,12 +289,13 @@ QVariant ExplorerTreeModel::data(const QModelIndex& index, int role) const {
 
   if (role == Qt::DisplayRole) {
     if (col == IExplorerTreeItem::eName) {
-      if(t == IExplorerTreeItem::eKey){
+      if (t == IExplorerTreeItem::eKey) {
         return node->name();
-      } else if(t == IExplorerTreeItem::eDatabase) {
+      } else if (t == IExplorerTreeItem::eDatabase) {
         ExplorerDatabaseItem* db = dynamic_cast<ExplorerDatabaseItem*>(node);
-        if(db){
-          return QString("%1 (%2/%3)").arg(node->name()).arg(db->sizeDB()).arg(node->childrenCount());
+        if (db) {
+          return QString("%1 (%2/%3)").arg(node->name()).arg(db->sizeDB())
+              .arg(node->childrenCount());
         }
       } else {
         return QString("%1 (%2)").arg(node->name()).arg(node->childrenCount());
@@ -331,7 +333,7 @@ QVariant ExplorerTreeModel::headerData(int section, Qt::Orientation orientation,
     }
   }
 
-  return TreeModel::headerData(section,orientation,role);
+  return TreeModel::headerData(section, orientation, role);
 }
 
 int ExplorerTreeModel::columnCount(const QModelIndex& parent) const {
@@ -374,7 +376,7 @@ void ExplorerTreeModel::addServer(IServerSPtr server) {
   if (!serv) {
     fasto::qt::gui::TreeItem *parent = dynamic_cast<fasto::qt::gui::TreeItem*>(root_);
     DCHECK(parent);
-    if(!parent){
+    if (!parent) {
       return;
     }
 
@@ -420,7 +422,7 @@ void ExplorerTreeModel::removeDatabase(IServer* server, DataBaseInfoSPtr db) {
 
   ExplorerDatabaseItem *dbs = findDatabaseItem(parent, db);
   if (dbs) {
-    removeItem(createIndex(0,0,parent), dbs);
+    removeItem(createIndex(0, 0, parent), dbs);
   }
 }
 
@@ -514,10 +516,10 @@ ExplorerServerItem* ExplorerTreeModel::findServerItem(IServer* server) const {
     return NULL;
   }
 
-  for(int i = 0; i < parent->childrenCount(); ++i){
+  for (size_t i = 0; i < parent->childrenCount(); ++i) {
     ExplorerServerItem *item = dynamic_cast<ExplorerServerItem*>(parent->child(i));
     if (item) {
-      if(item->server().get() == server){
+      if (item->server().get() == server) {
         return item;
       }
     } else {
@@ -539,16 +541,16 @@ ExplorerServerItem* ExplorerTreeModel::findServerItem(IServer* server) const {
 
 ExplorerDatabaseItem *ExplorerTreeModel::findDatabaseItem(ExplorerServerItem* server,
                                                           DataBaseInfoSPtr db) const {
-  if(server){
-    for(int i = 0; i < server->childrenCount() ; ++i){
+  if (server) {
+    for (size_t i = 0; i < server->childrenCount() ; ++i) {
       ExplorerDatabaseItem *item = dynamic_cast<ExplorerDatabaseItem*>(server->child(i));
       DCHECK(item);
-      if(!item){
+      if (!item) {
         continue;
       }
 
       IDatabaseSPtr inf = item->db();
-      if(inf && inf->name() == db->name()){
+      if (inf && inf->name() == db->name()) {
         return item;
       }
     }
@@ -576,4 +578,4 @@ ExplorerKeyItem *ExplorerTreeModel::findKeyItem(ExplorerDatabaseItem* db,
   return NULL;
 }
 
-}
+}  // namespace fastonosql

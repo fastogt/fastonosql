@@ -75,10 +75,9 @@ QString LoadContentDbDialog::pattern() const {
 }
 
 void LoadContentDbDialog::accept() {
-  using namespace translations;
   QString pattern = patternEdit_->text();
-  if(pattern.isEmpty()){
-    QMessageBox::warning(this, trError, QObject::tr("Invalid pattern!"));
+  if (pattern.isEmpty()) {
+    QMessageBox::warning(this, translations::trError, QObject::tr("Invalid pattern!"));
     countSpinEdit_->setFocus();
     return;
   }
@@ -86,4 +85,4 @@ void LoadContentDbDialog::accept() {
   QDialog::accept();
 }
 
-}
+}  // namespace fastonosql

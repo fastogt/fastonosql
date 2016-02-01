@@ -52,7 +52,7 @@ void TestConnection::routine() {
 
   common::Error er = ServersManager::instance().testConnection(connection_);
 
-  if(er){
+  if (er && er->isError()) {
     emit connectionResult(false, common::time::current_mstime() - startTime_,
                           common::convertFromString<QString>(er->description()));
   } else {
@@ -63,11 +63,9 @@ void TestConnection::routine() {
 ConnectionDiagnosticDialog::ConnectionDiagnosticDialog(QWidget* parent,
                                                        IConnectionSettingsBaseSPtr connection)
   : QDialog(parent) {
-  using namespace translations;
-
-  setWindowTitle(trConnectionDiagnostic);
+  setWindowTitle(translations::trConnectionDiagnostic);
   setWindowIcon(GuiFactory::instance().icon(connection->connectionType()));
-  setWindowFlags(windowFlags() & ~Qt::WindowContextHelpButtonHint); // Remove help button (?)
+  setWindowFlags(windowFlags() & ~Qt::WindowContextHelpButtonHint);  // Remove help button (?)
 
   QVBoxLayout* mainLayout = new QVBoxLayout;
 
@@ -88,14 +86,16 @@ ConnectionDiagnosticDialog::ConnectionDiagnosticDialog(QWidget* parent,
   QDialogButtonBox* buttonBox = new QDialogButtonBox;
   buttonBox->setOrientation(Qt::Horizontal);
   buttonBox->setStandardButtons(QDialogButtonBox::Ok);
-  VERIFY(connect(buttonBox, &QDialogButtonBox::accepted, this, &ConnectionDiagnosticDialog::accept));
+  VERIFY(connect(buttonBox, &QDialogButtonBox::accepted,
+                 this, &ConnectionDiagnosticDialog::accept));
 
   mainLayout->addWidget(buttonBox);
   setFixedSize(QSize(fix_width, fix_height));
   setLayout(mainLayout);
 
   glassWidget_ = new fasto::qt::gui::GlassWidget(GuiFactory::instance().pathToLoadingGif(),
-                                                 trTryToConnect, 0.5, QColor(111, 111, 100), this);
+                                                 translations::trTryToConnect, 0.5,
+                                                 QColor(111, 111, 100), this);
   testConnection(connection);
 }
 
@@ -104,7 +104,7 @@ void ConnectionDiagnosticDialog::connectionResult(bool suc,
   glassWidget_->stop();
 
   executeTimeLabel_->setText(timeTemplate.arg(mstimeExecute));
-  if(suc){
+  if (suc) {
     QIcon icon = GuiFactory::instance().successIcon();
     const QPixmap pm = icon.pixmap(stateIconSize);
     iconLabel_->setPixmap(pm);
@@ -122,11 +122,12 @@ void ConnectionDiagnosticDialog::testConnection(IConnectionSettingsBaseSPtr conn
   TestConnection* cheker = new TestConnection(connection);
   cheker->moveToThread(th);
   VERIFY(connect(th, &QThread::started, cheker, &TestConnection::routine));
-  VERIFY(connect(cheker, &TestConnection::connectionResult, this, &ConnectionDiagnosticDialog::connectionResult));
+  VERIFY(connect(cheker, &TestConnection::connectionResult,
+                 this, &ConnectionDiagnosticDialog::connectionResult));
   VERIFY(connect(cheker, &TestConnection::connectionResult, th, &QThread::quit));
   VERIFY(connect(th, &QThread::finished, cheker, &TestConnection::deleteLater));
   VERIFY(connect(th, &QThread::finished, th, &QThread::deleteLater));
   th->start();
 }
 
-}
+}  // namespace fastonosql

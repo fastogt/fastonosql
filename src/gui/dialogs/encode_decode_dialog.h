@@ -28,18 +28,17 @@ namespace fastonosql {
 class FastoEditor;
 class EncodeDecodeDialog
   : public QDialog {
- Q_OBJECT
+  Q_OBJECT
  public:
   explicit EncodeDecodeDialog(QWidget* parent);
 
-  enum
-  {
+  enum {
     height = 480,
     width = 640
   };
 
  protected:
-  virtual void changeEvent(QEvent* );
+  virtual void changeEvent(QEvent* ev);
   virtual bool eventFilter(QObject* object, QEvent* event);
 
  private Q_SLOTS:
@@ -55,4 +54,4 @@ class EncodeDecodeDialog
   QRadioButton* decodeButton_;
 };
 
-}
+}  // namespace fastonosql

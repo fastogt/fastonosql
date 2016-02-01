@@ -48,4 +48,4 @@ class CommandsWidget
   QAction* clear_;
 };
 
-}
+}  // namespace fastonosql

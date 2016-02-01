@@ -36,7 +36,8 @@ CommandsWidget::CommandsWidget(QWidget* parent)
   : QWidget(parent), logTextEdit_(new QTextEdit) {
   logTextEdit_->setReadOnly(true);
   logTextEdit_->setContextMenuPolicy(Qt::CustomContextMenu);
-  VERIFY(connect(logTextEdit_, &QTextEdit::customContextMenuRequested, this, &CommandsWidget::showContextMenu));
+  VERIFY(connect(logTextEdit_, &QTextEdit::customContextMenuRequested,
+                 this, &CommandsWidget::showContextMenu));
 
   QHBoxLayout* hlayout = new QHBoxLayout;
   hlayout->setContentsMargins(0, 0, 0, 0);
@@ -49,7 +50,8 @@ CommandsWidget::CommandsWidget(QWidget* parent)
 
 void CommandsWidget::addCommand(const Command& command) {
   QTime time = QTime::currentTime();
-  logTextEdit_->setTextColor(command.type() == common::Value::C_INNER ? QColor(Qt::gray) : QColor(Qt::black));
+  logTextEdit_->setTextColor(command.type() == common::Value::C_INNER ?
+                               QColor(Qt::gray) : QColor(Qt::black));
   QString mess = common::convertFromString<QString>(command.message());
   logTextEdit_->append(time.toString("h:mm:ss AP: ") + mess);
   QScrollBar* sb = logTextEdit_->verticalScrollBar();
@@ -73,8 +75,7 @@ void CommandsWidget::changeEvent(QEvent* ev) {
 }
 
 void CommandsWidget::retranslateUi() {
-  using namespace translations;
-  clear_->setText(trClearAll);
+  clear_->setText(translations::trClearAll);
 }
 
-}
+}  // namespace fastonosql

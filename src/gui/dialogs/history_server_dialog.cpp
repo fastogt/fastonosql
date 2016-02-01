@@ -18,6 +18,9 @@
 
 #include "gui/dialogs/history_server_dialog.h"
 
+#include <string>
+#include <vector>
+
 #include <QHBoxLayout>
 #include <QSplitter>
 #include <QComboBox>
@@ -36,7 +39,6 @@ namespace fastonosql {
 
 ServerHistoryDialog::ServerHistoryDialog(IServerSPtr server, QWidget* parent)
   : QDialog(parent, Qt::WindowMinMaxButtonsHint | Qt::WindowCloseButtonHint ), server_(server) {
-  using namespace translations;
   CHECK(server_);
 
   setWindowIcon(GuiFactory::instance().icon(server_->type()));
@@ -59,12 +61,12 @@ ServerHistoryDialog::ServerHistoryDialog(IServerSPtr server, QWidget* parent)
 
   typedef void (QComboBox::*curc)(int);
   VERIFY(connect(serverInfoGroupsNames_, static_cast<curc>(&QComboBox::currentIndexChanged),
-                 this, &ServerHistoryDialog::refreshInfoFields ));
+                 this, &ServerHistoryDialog::refreshInfoFields));
   VERIFY(connect(serverInfoFields_, static_cast<curc>(&QComboBox::currentIndexChanged),
-                 this, &ServerHistoryDialog::refreshGraph ));
+                 this, &ServerHistoryDialog::refreshGraph));
 
   const std::vector<std::string> headers = infoHeadersFromType(server_->type());
-  for(size_t i = 0; i < headers.size(); ++i){
+  for (size_t i = 0; i < headers.size(); ++i) {
       serverInfoGroupsNames_->addItem(common::convertFromString<QString>(headers[i]));
   }
   QVBoxLayout *setingsLayout = new QVBoxLayout;
@@ -77,7 +79,8 @@ ServerHistoryDialog::ServerHistoryDialog(IServerSPtr server, QWidget* parent)
   setLayout(mainL);
 
   glassWidget_ = new fasto::qt::gui::GlassWidget(GuiFactory::instance().pathToLoadingGif(),
-                                                 trLoading, 0.5, QColor(111, 111, 100), this);
+                                                 translations::trLoading, 0.5,
+                                                 QColor(111, 111, 100), this);
   VERIFY(connect(server.get(), &IServer::startedLoadServerHistoryInfo,
                  this, &ServerHistoryDialog::startLoadServerHistoryInfo));
   VERIFY(connect(server.get(), &IServer::finishedLoadServerHistoryInfo,
@@ -98,7 +101,7 @@ void ServerHistoryDialog::startLoadServerHistoryInfo(const EventsInfo::ServerInf
 void ServerHistoryDialog::finishLoadServerHistoryInfo(const EventsInfo::ServerInfoHistoryResponce& res) {
   glassWidget_->stop();
   common::Error er = res.errorInfo();
-  if(er && er->isError()){
+  if (er && er->isError()) {
     return;
   }
 
@@ -111,7 +114,7 @@ void ServerHistoryDialog::startClearServerHistory(const EventsInfo::ClearServerH
 
 void ServerHistoryDialog::finishClearServerHistory(const EventsInfo::ClearServerHistoryResponce& res) {
   common::Error er = res.errorInfo();
-  if(er && er->isError()){
+  if (er && er->isError()) {
     return;
   }
 
@@ -129,7 +132,7 @@ void ServerHistoryDialog::clearHistory() {
 }
 
 void ServerHistoryDialog::refreshInfoFields(int index) {
-  if(index == -1){
+  if (index == -1) {
     return;
   }
 
@@ -139,7 +142,7 @@ void ServerHistoryDialog::refreshInfoFields(int index) {
   std::vector<Field> field = fields[index];
   for (int i = 0; i < field.size(); ++i) {
     Field fl = field[i];
-    if(fl.isIntegral()){
+    if (fl.isIntegral()) {
       serverInfoFields_->addItem(common::convertFromString<QString>(fl.name_), i);
     }
   }
@@ -157,14 +160,14 @@ void ServerHistoryDialog::refreshGraph(int index) {
   for (EventsInfo::ServerInfoHistoryResponce::infos_container_type::iterator it = infos_.begin();
       it != infos_.end(); ++it) {
     EventsInfo::ServerInfoHistoryResponce::infos_container_type::value_type val = *it;
-    if(!val.isValid()){
+    if (!val.isValid()) {
       continue;
     }
 
-    common::Value* value = val.info_->valueByIndexes(serverIndex, indexIn); //allocate
-    if(value){
+    common::Value* value = val.info_->valueByIndexes(serverIndex, indexIn);  // allocate
+    if (value) {
       qreal graphY = 0.0f;
-      if(value->getAsDouble(&graphY)){
+      if (value->getAsDouble(&graphY)) {
         nodes.push_back(std::make_pair(val.msec_, graphY));
       }
     }
@@ -175,7 +178,7 @@ void ServerHistoryDialog::refreshGraph(int index) {
 }
 
 void ServerHistoryDialog::changeEvent(QEvent* e) {
-  if(e->type() == QEvent::LanguageChange){
+  if (e->type() == QEvent::LanguageChange) {
     retranslateUi();
   }
   QDialog::changeEvent(e);
@@ -192,9 +195,8 @@ void ServerHistoryDialog::reset() {
 }
 
 void ServerHistoryDialog::retranslateUi() {
-  using namespace translations;
   setWindowTitle(tr("%1 history").arg(server_->name()));
-  clearHistory_->setText(trClearHistory);
+  clearHistory_->setText(translations::trClearHistory);
 }
 
 void ServerHistoryDialog::requestHistoryInfo() {
@@ -202,4 +204,4 @@ void ServerHistoryDialog::requestHistoryInfo() {
   server_->requestHistoryInfo(req);
 }
 
-}
+}  // namespace fastonosql

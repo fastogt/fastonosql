@@ -18,6 +18,8 @@
 
 #pragma once
 
+#include <string>
+
 #include "fasto/qt/gui/base/tree_model.h"
 
 #include "core/iserver.h"
@@ -26,14 +28,12 @@
 namespace fastonosql {
 struct IExplorerTreeItem
   : public fasto::qt::gui::TreeItem {
-  enum eColumn
-  {
+  enum eColumn {
     eName = 0,
     eCountColumns
   };
 
-  enum eType
-  {
+  enum eType {
     eCluster,
     eServer,
     eDatabase,
@@ -103,7 +103,7 @@ struct ExplorerDatabaseItem
   void loadValue(const NDbKValue& key);
   void createKey(const NDbKValue& key);
 
-private:
+ private:
   const IDatabaseSPtr db_;
 };
 
@@ -123,20 +123,21 @@ struct ExplorerKeyItem
   void removeFromDb();
   void loadValueFromDb();
 
-private:
+ private:
   NDbKValue key_;
 };
 
 class ExplorerTreeModel
   : public fasto::qt::gui::TreeModel {
- Q_OBJECT
+  Q_OBJECT
  public:
   explicit ExplorerTreeModel(QObject* parent = 0);
   virtual ~ExplorerTreeModel();
 
   virtual QVariant data(const QModelIndex& index, int role = Qt::DisplayRole) const;
   virtual Qt::ItemFlags flags(const QModelIndex& index) const;
-  virtual QVariant headerData(int section, Qt::Orientation orientation, int role = Qt::DisplayRole) const;
+  virtual QVariant headerData(int section, Qt::Orientation orientation,
+                              int role = Qt::DisplayRole) const;
   virtual int columnCount(const QModelIndex &parent) const;
 
   void addCluster(IClusterSPtr cluster);
@@ -159,6 +160,4 @@ class ExplorerTreeModel
   ExplorerKeyItem* findKeyItem(ExplorerDatabaseItem* db, const NDbKValue &key) const;
 };
 
-}
-
-
+}  // namespace fastonosql

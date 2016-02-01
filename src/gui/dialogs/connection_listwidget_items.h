@@ -52,4 +52,4 @@ class ClusterConnectionListWidgetItem
   IClusterSettingsBaseSPtr connection_;
 };
 
-}
+}  // namespace fastonosql
