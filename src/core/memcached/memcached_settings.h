@@ -18,6 +18,8 @@
 
 #pragma once
 
+#include <string>
+
 #include "core/connection_settings.h"
 
 #include "core/memcached/memcached_config.h"
@@ -46,4 +48,4 @@ class MemcachedConnectionSettings
   memcachedConfig info_;
 };
 
-}
+}  // namespace fastonosql

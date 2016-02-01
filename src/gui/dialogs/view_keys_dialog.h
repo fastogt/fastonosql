@@ -49,11 +49,11 @@ class ViewKeysDialog
   explicit ViewKeysDialog(const QString& title, IDatabaseSPtr db, QWidget* parent = 0);
 
  private Q_SLOTS:
-  void startLoadDatabaseContent(const EventsInfo::LoadDatabaseContentRequest& req);
-  void finishLoadDatabaseContent(const EventsInfo::LoadDatabaseContentResponce& res);
+  void startLoadDatabaseContent(const events_info::LoadDatabaseContentRequest& req);
+  void finishLoadDatabaseContent(const events_info::LoadDatabaseContentResponce& res);
 
-  void startExecuteCommand(const EventsInfo::CommandRequest& req);
-  void finishExecuteCommand(const EventsInfo::CommandResponce& res);
+  void startExecuteCommand(const events_info::CommandRequest& req);
+  void finishExecuteCommand(const events_info::CommandResponce& res);
 
   void executeCommand(CommandKeySPtr cmd);
 

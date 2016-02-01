@@ -18,6 +18,8 @@
 
 #pragma once
 
+#include <string>
+
 #include "core/connection_settings.h"
 
 #include "core/leveldb/leveldb_config.h"
@@ -45,4 +47,4 @@ class LeveldbConnectionSettings
   leveldbConfig info_;
 };
 
-}
+}  // namespace fastonosql

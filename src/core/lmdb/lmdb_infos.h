@@ -18,6 +18,8 @@
 
 #pragma once
 
+#include <string>
+
 #include "core/types.h"
 
 #define LMDB_STATS_LABEL "# Stats"
@@ -32,8 +34,8 @@ namespace fastonosql {
 
 class LmdbServerInfo
   : public ServerInfo {
-public:
-  //Compactions\nLevel  Files Size(MB) Time(sec) Read(MB) Write(MB)\n
+ public:
+  // Compactions\nLevel  Files Size(MB) Time(sec) Read(MB) Write(MB)\n
   struct Stats
           : FieldByIndex {
       Stats();
@@ -62,7 +64,8 @@ LmdbServerInfo* makeLmdbServerInfo(FastoObject *root);
 class LmdbDataBaseInfo
       : public DataBaseInfo {
  public:
-  LmdbDataBaseInfo(const std::string& name, bool isDefault, size_t size, const keys_cont_type& keys = keys_cont_type());
+  LmdbDataBaseInfo(const std::string& name, bool isDefault, size_t size,
+                   const keys_cont_type& keys = keys_cont_type());
   virtual DataBaseInfo* clone() const;
 };
 
@@ -73,4 +76,4 @@ class LmdbCommand
   virtual bool isReadOnly() const;
 };
 
-}
+}  // namespace fastonosql

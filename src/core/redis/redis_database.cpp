@@ -30,4 +30,4 @@ RedisDatabase::RedisDatabase(IServerSPtr server, DataBaseInfoSPtr info)
   DCHECK(info->type() == REDIS);
 }
 
-}
+}  // namespace fastonosql

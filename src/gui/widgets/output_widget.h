@@ -47,11 +47,11 @@ class OutputWidget
   explicit OutputWidget(IServerSPtr server, QWidget* parent = 0);
 
  public Q_SLOTS:
-  void rootCreate(const EventsInfo::CommandRootCreatedInfo& res);
-  void rootCompleate(const EventsInfo::CommandRootCompleatedInfo& res);
+  void rootCreate(const events_info::CommandRootCreatedInfo& res);
+  void rootCompleate(const events_info::CommandRootCompleatedInfo& res);
 
-  void startExecuteCommand(const EventsInfo::CommandRequest& req);
-  void finishExecuteCommand(const EventsInfo::CommandResponce& res);
+  void startExecuteCommand(const events_info::CommandRequest& req);
+  void finishExecuteCommand(const events_info::CommandResponce& res);
 
   void addChild(FastoObject* child);
   void itemUpdate(FastoObject* item, common::Value* newValue);
@@ -65,7 +65,7 @@ class OutputWidget
 
  private:
   void syncWithSettings();
-  void updateTimeLabel(const EventsInfo::EventInfoBase& evinfo);
+  void updateTimeLabel(const events_info::EventInfoBase& evinfo);
   fasto::qt::gui::IconLabel* timeLabel_;
   QPushButton* treeButton_;
   QPushButton* tableButton_;

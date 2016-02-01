@@ -30,4 +30,4 @@ IDatabaseSPtr LmdbServer::createDatabase(DataBaseInfoSPtr info) {
   return IDatabaseSPtr(new LmdbDatabase(shared_from_this(), info));
 }
 
-}
+}  // namespace fastonosql

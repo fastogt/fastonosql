@@ -214,11 +214,11 @@ VERIFY(connect(server.get(), &IServer::finishedLoadServerInfo,
   retranslateUi();
 }
 
-void InfoServerDialog::startServerInfo(const EventsInfo::ServerInfoRequest& req) {
+void InfoServerDialog::startServerInfo(const events_info::ServerInfoRequest& req) {
   glassWidget_->start();
 }
 
-void InfoServerDialog::finishServerInfo(const EventsInfo::ServerInfoResponce& res) {
+void InfoServerDialog::finishServerInfo(const events_info::ServerInfoResponce& res) {
   glassWidget_->stop();
   common::Error er = res.errorInfo();
   if (er && er->isError()) {
@@ -295,7 +295,7 @@ void InfoServerDialog::showEvent(QShowEvent* e) {
   QDialog::showEvent(e);
   emit showed();
 
-  EventsInfo::ServerInfoRequest req(this);
+  events_info::ServerInfoRequest req(this);
   server_->loadServerInfo(req);
 }
 

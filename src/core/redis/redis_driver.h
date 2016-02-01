@@ -18,6 +18,9 @@
 
 #pragma once
 
+#include <vector>
+#include <string>
+
 #include "core/idriver.h"
 
 #include "core/redis/redis_settings.h"
@@ -435,7 +438,8 @@ class RedisDriver
   virtual common::Error executeImpl(FastoObject* out, int argc, char **argv);
 
   virtual common::Error serverInfo(ServerInfo** info);
-  virtual common::Error serverDiscoveryInfo(ServerInfo** sinfo, ServerDiscoveryInfo** dinfo, DataBaseInfo** dbinfo);
+  virtual common::Error serverDiscoveryInfo(ServerInfo** sinfo, ServerDiscoveryInfo** dinfo,
+                                            DataBaseInfo** dbinfo);
   virtual common::Error currentDataBaseInfo(DataBaseInfo** info);
 
   virtual void handleConnectEvent(events::ConnectRequestEvent* ev);
@@ -452,10 +456,14 @@ class RedisDriver
   virtual void handleChangePasswordEvent(events::ChangePasswordRequestEvent* ev);
   virtual void handleChangeMaxConnectionEvent(events::ChangeMaxConnectionRequestEvent* ev);
 
-  virtual common::Error commandDeleteImpl(CommandDeleteKey* command, std::string& cmdstring) const WARN_UNUSED_RESULT;
-  virtual common::Error commandLoadImpl(CommandLoadKey* command, std::string& cmdstring) const WARN_UNUSED_RESULT;
-  virtual common::Error commandCreateImpl(CommandCreateKey* command, std::string& cmdstring) const WARN_UNUSED_RESULT;
-  virtual common::Error commandChangeTTLImpl(CommandChangeTTL* command, std::string& cmdstring) const WARN_UNUSED_RESULT;
+  virtual common::Error commandDeleteImpl(CommandDeleteKey* command,
+                                          std::string& cmdstring) const WARN_UNUSED_RESULT;
+  virtual common::Error commandLoadImpl(CommandLoadKey* command,
+                                        std::string& cmdstring) const WARN_UNUSED_RESULT;
+  virtual common::Error commandCreateImpl(CommandCreateKey* command,
+                                          std::string& cmdstring) const WARN_UNUSED_RESULT;
+  virtual common::Error commandChangeTTLImpl(CommandChangeTTL* command,
+                                             std::string& cmdstring) const WARN_UNUSED_RESULT;
 
   virtual void handleLoadDatabaseContentEvent(events::LoadDatabaseContentRequestEvent* ev);
   virtual void handleSetDefaultDatabaseEvent(events::SetDefaultDatabaseRequestEvent* ev);
@@ -476,4 +484,4 @@ class RedisDriver
   common::Error scanMode(events::ProcessConfigArgsRequestEvent* ev);
 };
 
-}
+}  // namespace fastonosql

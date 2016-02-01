@@ -18,6 +18,8 @@
 
 #pragma once
 
+#include <string>
+
 #include "core/types.h"
 
 #define MEMCACHED_COMMON_LABEL "# Common"
@@ -95,7 +97,8 @@ MemcachedServerInfo* makeMemcachedServerInfo(FastoObject *root);
 class MemcachedDataBaseInfo
   : public DataBaseInfo {
  public:
-  MemcachedDataBaseInfo(const std::string& name, bool isDefault, size_t size, const keys_cont_type& keys = keys_cont_type());
+  MemcachedDataBaseInfo(const std::string& name, bool isDefault, size_t size,
+                        const keys_cont_type& keys = keys_cont_type());
   virtual DataBaseInfo* clone() const;
 };
 
@@ -106,4 +109,4 @@ class MemcachedCommand
   virtual bool isReadOnly() const;
 };
 
-}
+}  // namespace fastonosql

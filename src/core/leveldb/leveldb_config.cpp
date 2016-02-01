@@ -18,6 +18,9 @@
 
 #include "core/leveldb/leveldb_config.h"
 
+#include <string>
+#include <vector>
+
 #include "common/sprintf.h"
 #include "common/file_system.h"
 
@@ -28,19 +31,20 @@ namespace {
 
 void parseOptions(int argc, char **argv, leveldbConfig& cfg) {
   for (int i = 0; i < argc; i++) {
-    int lastarg = i==argc-1;
+    int lastarg = i == argc-1;
 
-    if (!strcmp(argv[i],"-d") && !lastarg) {
+    if (!strcmp(argv[i], "-d") && !lastarg) {
         cfg.mb_delim_ = argv[++i];
     } else if (!strcmp(argv[i], "-f") && !lastarg) {
         cfg.dbname_ = argv[++i];
-    } else if (!strcmp(argv[i],"-c")) {
+    } else if (!strcmp(argv[i], "-c")) {
         cfg.options_.create_if_missing = true;
     } else {
       if (argv[i][0] == '-') {
         const uint16_t size_buff = 256;
         char buff[size_buff] = {0};
-        common::SNPrintf(buff, sizeof(buff), "Unrecognized option or bad number of args for: '%s'", argv[i]);
+        common::SNPrintf(buff, sizeof(buff), "Unrecognized option or bad number of args for: '%s'",
+                         argv[i]);
         LOG_MSG(buff, common::logging::L_WARNING, true);
         break;
       } else {
@@ -51,28 +55,28 @@ void parseOptions(int argc, char **argv, leveldbConfig& cfg) {
   }
 }
 
-}
+}  // namespace
 
 leveldbConfig::leveldbConfig()
- : LocalConfig(common::file_system::prepare_path("~/test.leveldb")) {
+  : LocalConfig(common::file_system::prepare_path("~/test.leveldb")) {
   options_.create_if_missing = false;
 }
 
-}
+}  // namespace fastonosql
 
 namespace common {
 
 std::string convertToString(const fastonosql::leveldbConfig &conf) {
   std::vector<std::string> argv = conf.args();
 
-  if(conf.options_.create_if_missing){
+  if (conf.options_.create_if_missing) {
     argv.push_back("-c");
   }
 
   std::string result;
-  for(size_t i = 0; i < argv.size(); ++i){
+  for (size_t i = 0; i < argv.size(); ++i) {
     result += argv[i];
-    if(i != argv.size()-1){
+    if (i != argv.size()-1) {
       result += " ";
     }
   }
@@ -88,7 +92,7 @@ fastonosql::leveldbConfig convertFromString(const std::string& line) {
   char *argv[kMaxArgs] = {0};
 
   char* p2 = strtok((char*)line.c_str(), " ");
-  while(p2){
+  while (p2) {
     argv[argc++] = p2;
     p2 = strtok(0, " ");
   }
@@ -97,4 +101,4 @@ fastonosql::leveldbConfig convertFromString(const std::string& line) {
   return cfg;
 }
 
-}
+}  // namespace common

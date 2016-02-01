@@ -47,8 +47,8 @@ class ChangePasswordServerDialog
 
  private Q_SLOTS:
   void tryToCreatePassword();
-  void startChangePassword(const EventsInfo::ChangePasswordRequest& req);
-  void finishChangePassword(const EventsInfo::ChangePasswordResponce& res);
+  void startChangePassword(const events_info::ChangePasswordRequest& req);
+  void finishChangePassword(const events_info::ChangePasswordResponce& res);
 
  private:
   bool validateInput();

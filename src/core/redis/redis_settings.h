@@ -18,6 +18,8 @@
 
 #pragma once
 
+#include <string>
+
 #include "core/connection_settings.h"
 
 #include "core/redis/redis_config.h"
@@ -46,4 +48,4 @@ class RedisConnectionSettings
   redisConfig info_;
 };
 
-}
+}  // namespace fastonosql

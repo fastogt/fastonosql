@@ -22,6 +22,9 @@ extern "C" {
   #include <lmdb.h>
 }
 
+#include <vector>
+#include <string>
+
 #include "common/sprintf.h"
 #include "common/utils.h"
 #include "common/file_system.h"
@@ -48,38 +51,38 @@ struct lmdb {
 };
 
 int lmdb_open(lmdb **context, const char *dbname, bool create_if_missing) {
-  if(create_if_missing){
+  if (create_if_missing) {
     common::Error err = common::file_system::create_directory(dbname, true);
-    if(err && err->isError()){
-
+    if (err && err->isError()) {
+        return EACCES;
     }
-    if(common::file_system::is_directory(dbname) != common::SUCCESS){
+    if (common::file_system::is_directory(dbname) != common::SUCCESS) {
         return EACCES;
     }
   }
 
   lmdb *lcontext = (lmdb*)calloc(1, sizeof(lmdb));
   int rc = mdb_env_create(&lcontext->env);
-  if(rc != LMDB_OK){
+  if (rc != LMDB_OK) {
     free(lcontext);
     return rc;
   }
   rc = mdb_env_open(lcontext->env, dbname, 0, 0664);
-  if(rc != LMDB_OK){
+  if (rc != LMDB_OK) {
     free(lcontext);
     return rc;
   }
 
   MDB_txn *txn = NULL;
   rc = mdb_txn_begin(lcontext->env, NULL, 0, &txn);
-  if(rc != LMDB_OK){
+  if (rc != LMDB_OK) {
     free(lcontext);
     return rc;
   }
 
   rc = mdb_dbi_open(txn, NULL, 0, &lcontext->dbir);
   mdb_txn_abort(txn);
-  if(rc != LMDB_OK){
+  if (rc != LMDB_OK) {
     free(lcontext);
     return rc;
   }
@@ -90,7 +93,7 @@ int lmdb_open(lmdb **context, const char *dbname, bool create_if_missing) {
 
 void lmdb_close(lmdb **context) {
   lmdb *lcontext = *context;
-  if(!lcontext){
+  if (!lcontext) {
     return;
   }
 
@@ -100,7 +103,7 @@ void lmdb_close(lmdb **context) {
   *context = NULL;
 }
 
-}
+}  // namespace
 
 namespace fastonosql {
 namespace {
@@ -110,7 +113,7 @@ common::Error createConnection(const lmdbConfig& config, lmdb** context) {
 
   lmdb* lcontext = NULL;
   int st = lmdb_open(&lcontext, config.dbname_.c_str(), config.create_if_missing_);
-  if (st != LMDB_OK){
+  if (st != LMDB_OK) {
     char buff[1024] = {0};
     common::SNPrintf(buff, sizeof(buff), "Fail open database: %s", mdb_strerror(st));
     return common::make_error_value(buff, common::ErrorValue::E_ERROR);
@@ -122,7 +125,7 @@ common::Error createConnection(const lmdbConfig& config, lmdb** context) {
 }
 
 common::Error createConnection(LmdbConnectionSettings* settings, lmdb** context) {
-  if(!settings){
+  if (!settings) {
     return common::make_error_value("Invalid input argument", common::ErrorValue::E_ERROR);
   }
 
@@ -130,12 +133,12 @@ common::Error createConnection(LmdbConnectionSettings* settings, lmdb** context)
   return createConnection(config, context);
 }
 
-}
+}  // namespace
 
 common::Error testConnection(fastonosql::LmdbConnectionSettings *settings) {
   lmdb* ldb = NULL;
   common::Error er = createConnection(settings, &ldb);
-  if(er){
+  if (er) {
     return er;
   }
 
@@ -150,7 +153,7 @@ struct LmdbDriver::pimpl {
   }
 
   bool isConnected() const {
-    if(!lmdb_){
+    if (!lmdb_) {
       return false;
     }
 
@@ -158,7 +161,7 @@ struct LmdbDriver::pimpl {
   }
 
   common::Error connect() {
-    if(isConnected()){
+    if (isConnected()) {
       return common::Error();
     }
 
@@ -167,7 +170,7 @@ struct LmdbDriver::pimpl {
 
     lmdb* context = NULL;
     common::Error er = createConnection(config_, &context);
-    if(er){
+    if (er) {
       return er;
     }
 
@@ -178,7 +181,7 @@ struct LmdbDriver::pimpl {
   }
 
   common::Error disconnect() {
-    if(!isConnected()){
+    if (!isConnected()) {
         return common::Error();
     }
 
@@ -187,7 +190,7 @@ struct LmdbDriver::pimpl {
   }
 
   MDB_dbi curDb() const {
-    if(lmdb_){
+    if (lmdb_) {
       return lmdb_->dbir;
     }
 
@@ -197,16 +200,16 @@ struct LmdbDriver::pimpl {
   common::Error info(const char* args, LmdbServerInfo::Stats& statsout) {
     /*std::string rets;
     bool isok = rocksdb_->GetProperty("rocksdb.stats", &rets);
-    if (!isok){
+    if (!isok) {
         return common::make_error_value("info function failed", common::ErrorValue::E_ERROR);
     }
 
-    if(rets.size() > sizeof(ROCKSDB_HEADER_STATS)){
+    if (rets.size() > sizeof(ROCKSDB_HEADER_STATS)) {
         const char * retsc = rets.c_str() + sizeof(ROCKSDB_HEADER_STATS);
         char* p2 = strtok((char*)retsc, " ");
         int pos = 0;
-        while(p2){
-            switch(pos++){
+        while(p2) {
+            switch(pos++) {
                 case 0:
                     statsout.compactions_level_ = atoi(p2);
                     break;
@@ -236,11 +239,11 @@ struct LmdbDriver::pimpl {
     MDB_cursor *cursor;
     MDB_txn *txn = NULL;
     int rc = mdb_txn_begin(lmdb_->env, NULL, MDB_RDONLY, &txn);
-    if(rc == LMDB_OK){
+    if (rc == LMDB_OK) {
       rc = mdb_cursor_open(txn, lmdb_->dbir, &cursor);
     }
 
-    if(rc != LMDB_OK){
+    if (rc != LMDB_OK) {
       mdb_txn_abort(txn);
       char buff[1024] = {0};
       common::SNPrintf(buff, sizeof(buff), "dbsize function error: %s", mdb_strerror(rc));
@@ -268,8 +271,8 @@ struct LmdbDriver::pimpl {
   lmdbConfig config_;
 
   virtual common::Error execute_impl(FastoObject* out, int argc, char **argv) {
-    if(strcasecmp(argv[0], "info") == 0){
-      if(argc > 2){
+    if (strcasecmp(argv[0], "info") == 0) {
+      if (argc > 2) {
         return common::make_error_value("Invalid info input argument", common::ErrorValue::E_ERROR);
       }
 
@@ -281,8 +284,8 @@ struct LmdbDriver::pimpl {
         out->addChildren(child);
       }
       return er;
-    } else if(strcasecmp(argv[0], "get") == 0){
-      if(argc != 2){
+    } else if (strcasecmp(argv[0], "get") == 0) {
+      if (argc != 2) {
         return common::make_error_value("Invalid get input argument", common::ErrorValue::E_ERROR);
       }
 
@@ -294,8 +297,8 @@ struct LmdbDriver::pimpl {
         out->addChildren(child);
       }
       return er;
-    } else if(strcasecmp(argv[0], "dbsize") == 0){
-      if(argc != 1){
+    } else if (strcasecmp(argv[0], "dbsize") == 0) {
+      if (argc != 1) {
         return common::make_error_value("Invalid dbsize input argument", common::ErrorValue::E_ERROR);
       }
 
@@ -307,8 +310,8 @@ struct LmdbDriver::pimpl {
         out->addChildren(child);
       }
       return er;
-    } else if(strcasecmp(argv[0], "put") == 0){
-      if(argc != 3){
+    } else if (strcasecmp(argv[0], "put") == 0) {
+      if (argc != 3) {
         return common::make_error_value("Invalid put input argument", common::ErrorValue::E_ERROR);
       }
 
@@ -319,8 +322,8 @@ struct LmdbDriver::pimpl {
         out->addChildren(child);
       }
       return er;
-    } else if(strcasecmp(argv[0], "del") == 0){
-      if(argc != 2){
+    } else if (strcasecmp(argv[0], "del") == 0) {
+      if (argc != 2) {
         return common::make_error_value("Invalid del input argument", common::ErrorValue::E_ERROR);
       }
 
@@ -331,8 +334,8 @@ struct LmdbDriver::pimpl {
         out->addChildren(child);
       }
       return er;
-    } else if(strcasecmp(argv[0], "keys") == 0){
-      if(argc != 4){
+    } else if (strcasecmp(argv[0], "keys") == 0) {
+      if (argc != 4) {
         return common::make_error_value("Invalid keys input argument", common::ErrorValue::E_ERROR);
       }
 
@@ -340,7 +343,7 @@ struct LmdbDriver::pimpl {
       common::Error er = keys(argv[1], argv[2], atoll(argv[3]), &keysout);
       if (!er) {
         common::ArrayValue* ar = common::Value::createArrayValue();
-        for(int i = 0; i < keysout.size(); ++i){
+        for (size_t i = 0; i < keysout.size(); ++i) {
           common::StringValue *val = common::Value::createStringValue(keysout[i]);
           ar->append(val);
         }
@@ -348,15 +351,14 @@ struct LmdbDriver::pimpl {
         out->addChildren(child);
       }
       return er;
-    }
-    else{
+    } else {
       char buff[1024] = {0};
       common::SNPrintf(buff, sizeof(buff), "Not supported command: %s", argv[0]);
       return common::make_error_value(buff, common::ErrorValue::E_ERROR);
     }
   }
 
-private:
+ private:
   common::Error get(const std::string& key, std::string* ret_val) {
     MDB_val mkey;
     mkey.mv_size = key.size();
@@ -365,12 +367,12 @@ private:
 
     MDB_txn *txn = NULL;
     int rc = mdb_txn_begin(lmdb_->env, NULL, MDB_RDONLY, &txn);
-    if(rc == LMDB_OK){
+    if (rc == LMDB_OK) {
       rc = mdb_get(txn, lmdb_->dbir, &mkey, &mval);
     }
     mdb_txn_abort(txn);
 
-    if (rc != LMDB_OK){
+    if (rc != LMDB_OK) {
       char buff[1024] = {0};
       common::SNPrintf(buff, sizeof(buff), "get function error: %s", mdb_strerror(rc));
       return common::make_error_value(buff, common::ErrorValue::E_ERROR);
@@ -391,16 +393,16 @@ private:
 
     MDB_txn *txn = NULL;
     int rc = mdb_txn_begin(lmdb_->env, NULL, 0, &txn);
-    if(rc == LMDB_OK){
+    if (rc == LMDB_OK) {
       rc = mdb_put(txn, lmdb_->dbir, &mkey, &mval, 0);
-      if (rc == LMDB_OK){
+      if (rc == LMDB_OK) {
           rc = mdb_txn_commit(txn);
       } else {
           mdb_txn_abort(txn);
       }
     }
 
-    if (rc != LMDB_OK){
+    if (rc != LMDB_OK) {
       char buff[1024] = {0};
       common::SNPrintf(buff, sizeof(buff), "put function error: %s", mdb_strerror(rc));
       return common::make_error_value(buff, common::ErrorValue::E_ERROR);
@@ -416,16 +418,16 @@ private:
 
     MDB_txn *txn = NULL;
     int rc = mdb_txn_begin(lmdb_->env, NULL, 0, &txn);
-    if(rc == LMDB_OK){
+    if (rc == LMDB_OK) {
       rc = mdb_del(txn, lmdb_->dbir, &mkey, NULL);
-      if (rc == LMDB_OK){
+      if (rc == LMDB_OK) {
         rc = mdb_txn_commit(txn);
       } else {
         mdb_txn_abort(txn);
       }
     }
 
-    if (rc != LMDB_OK){
+    if (rc != LMDB_OK) {
       char buff[1024] = {0};
       common::SNPrintf(buff, sizeof(buff), "delete function error: %s", mdb_strerror(rc));
       return common::make_error_value(buff, common::ErrorValue::E_ERROR);
@@ -439,11 +441,11 @@ private:
     MDB_cursor *cursor;
     MDB_txn *txn = NULL;
     int rc = mdb_txn_begin(lmdb_->env, NULL, MDB_RDONLY, &txn);
-    if(rc == LMDB_OK){
+    if (rc == LMDB_OK) {
       rc = mdb_cursor_open(txn, lmdb_->dbir, &cursor);
     }
 
-    if(rc != LMDB_OK){
+    if (rc != LMDB_OK) {
       mdb_txn_abort(txn);
       char buff[1024] = {0};
       common::SNPrintf(buff, sizeof(buff), "Keys function error: %s", mdb_strerror(rc));
@@ -454,7 +456,7 @@ private:
     MDB_val data;
     while ((rc = mdb_cursor_get(cursor, &key, &data, MDB_NEXT)) == 0 && limit > ret->size()) {
       std::string skey((const char*)key.mv_data, key.mv_size);
-      if(key_start < skey && key_end > skey){
+      if (key_start < skey && key_end > skey) {
         ret->push_back(skey);
       }
     }
@@ -538,7 +540,7 @@ common::Error LmdbDriver::commandChangeTTLImpl(CommandChangeTTL* command,
 // ============== commands =============//
 
 common::net::hostAndPort LmdbDriver::address() const {
-  //return common::net::hostAndPort(impl_->config_.hostip_, impl_->config_.hostport_);
+  // return common::net::hostAndPort(impl_->config_.hostip_, impl_->config_.hostport_);
   return common::net::hostAndPort();
 }
 
@@ -564,7 +566,7 @@ common::Error LmdbDriver::serverInfo(ServerInfo **info) {
   LOG_COMMAND(Command(INFO_REQUEST, common::Value::C_INNER));
   LmdbServerInfo::Stats cm;
   common::Error err = impl_->info(NULL, cm);
-  if(!err){
+  if (!err) {
       *info = new LmdbServerInfo(cm);
   }
 
@@ -575,24 +577,25 @@ common::Error LmdbDriver::serverDiscoveryInfo(ServerInfo **sinfo, ServerDiscover
                                               DataBaseInfo** dbinfo) {
   ServerInfo *lsinfo = NULL;
   common::Error er = serverInfo(&lsinfo);
-  if(er){
+  if (er) {
     return er;
   }
 
   FastoObjectIPtr root = FastoObject::createRoot(GET_SERVER_TYPE);
-  FastoObjectCommand* cmd = createCommand<LmdbCommand>(root, GET_SERVER_TYPE, common::Value::C_INNER);
+  FastoObjectCommand* cmd = createCommand<LmdbCommand>(root,
+                                                       GET_SERVER_TYPE, common::Value::C_INNER);
   er = execute(cmd);
 
   if (!er) {
     FastoObject::child_container_type ch = root->childrens();
-    if(ch.size()){
+    if (ch.size()) {
       // *dinfo = makeOwnRedisDiscoveryInfo(ch[0]);
     }
   }
 
   DataBaseInfo* ldbinfo = NULL;
   er = currentDataBaseInfo(&ldbinfo);
-  if(er){
+  if (er) {
     delete lsinfo;
     return er;
   }
@@ -614,11 +617,11 @@ void LmdbDriver::handleConnectEvent(events::ConnectRequestEvent *ev) {
   notifyProgress(sender, 0);
   events::ConnectResponceEvent::value_type res(ev->value());
   LmdbConnectionSettings *set = dynamic_cast<LmdbConnectionSettings*>(settings_.get());
-  if(set){
+  if (set) {
     impl_->config_ = set->info();
     notifyProgress(sender, 25);
     common::Error er = impl_->connect();
-    if(er){
+    if (er) {
       res.setErrorInfo(er);
     }
     notifyProgress(sender, 75);
@@ -634,7 +637,7 @@ void LmdbDriver::handleDisconnectEvent(events::DisconnectRequestEvent* ev) {
   notifyProgress(sender, 50);
 
   common::Error er = impl_->disconnect();
-  if(er){
+  if (er) {
     res.setErrorInfo(er);
   }
 
@@ -649,31 +652,31 @@ void LmdbDriver::handleExecuteEvent(events::ExecuteRequestEvent* ev) {
   const char *inputLine = common::utils::c_strornull(res.text_);
 
   common::Error er;
-  if(inputLine){
+  if (inputLine) {
     size_t length = strlen(inputLine);
     int offset = 0;
     RootLocker lock = make_locker(sender, inputLine);
     FastoObjectIPtr outRoot = lock.root_;
     double step = 100.0f/length;
-    for(size_t n = 0; n < length; ++n){
-      if(interrupt_){
+    for (size_t n = 0; n < length; ++n) {
+      if (interrupt_) {
         er.reset(new common::ErrorValue("Interrupted exec.", common::ErrorValue::E_INTERRUPTED));
         res.setErrorInfo(er);
         break;
       }
-      if(inputLine[n] == '\n' || n == length-1){
+      if (inputLine[n] == '\n' || n == length-1) {
         notifyProgress(sender, step * n);
         char command[128] = {0};
-        if(n == length-1){
+        if (n == length-1) {
             strcpy(command, inputLine + offset);
-        }
-        else{
+        } else {
             strncpy(command, inputLine + offset, n - offset);
         }
         offset = n + 1;
-        FastoObjectCommand* cmd = createCommand<LmdbCommand>(outRoot, stableCommand(command), common::Value::C_USER);
+        FastoObjectCommand* cmd = createCommand<LmdbCommand>(outRoot, stableCommand(command),
+                                                             common::Value::C_USER);
         er = execute(cmd);
-        if(er){
+        if (er) {
             res.setErrorInfo(er);
             break;
         }
@@ -738,8 +741,8 @@ void LmdbDriver::handleLoadDatabaseContentEvent(events::LoadDatabaseContentReque
     res.setErrorInfo(er);
   } else {
     FastoObject::child_container_type rchildrens = cmd->childrens();
-    if(rchildrens.size()){
-      DCHECK(rchildrens.size() == 1);
+    if (rchildrens.size()) {
+      DCHECK_EQ(rchildrens.size(), 1);
       FastoObjectArray* array = dynamic_cast<FastoObjectArray*>(rchildrens[0]);
       if (!array) {
           goto done;
@@ -752,7 +755,7 @@ void LmdbDriver::handleLoadDatabaseContentEvent(events::LoadDatabaseContentReque
       for (size_t i = 0; i < ar->size(); ++i) {
         std::string key;
         bool isok = ar->getString(i, &key);
-        if(isok){
+        if (isok) {
           NKey k(key);
           NDbKValue ress(k, NValue());
           res.keys_.push_back(ress);
@@ -802,4 +805,4 @@ ServerInfoSPtr LmdbDriver::makeServerInfoFromString(const std::string& val) {
   return res;
 }
 
-}
+}  // namespace fastonosql

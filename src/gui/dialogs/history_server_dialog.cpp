@@ -94,11 +94,11 @@ ServerHistoryDialog::ServerHistoryDialog(IServerSPtr server, QWidget* parent)
   retranslateUi();
 }
 
-void ServerHistoryDialog::startLoadServerHistoryInfo(const EventsInfo::ServerInfoHistoryRequest& req) {
+void ServerHistoryDialog::startLoadServerHistoryInfo(const events_info::ServerInfoHistoryRequest& req) {
   glassWidget_->start();
 }
 
-void ServerHistoryDialog::finishLoadServerHistoryInfo(const EventsInfo::ServerInfoHistoryResponce& res) {
+void ServerHistoryDialog::finishLoadServerHistoryInfo(const events_info::ServerInfoHistoryResponce& res) {
   glassWidget_->stop();
   common::Error er = res.errorInfo();
   if (er && er->isError()) {
@@ -109,10 +109,10 @@ void ServerHistoryDialog::finishLoadServerHistoryInfo(const EventsInfo::ServerIn
   reset();
 }
 
-void ServerHistoryDialog::startClearServerHistory(const EventsInfo::ClearServerHistoryRequest& req) {
+void ServerHistoryDialog::startClearServerHistory(const events_info::ClearServerHistoryRequest& req) {
 }
 
-void ServerHistoryDialog::finishClearServerHistory(const EventsInfo::ClearServerHistoryResponce& res) {
+void ServerHistoryDialog::finishClearServerHistory(const events_info::ClearServerHistoryResponce& res) {
   common::Error er = res.errorInfo();
   if (er && er->isError()) {
     return;
@@ -127,7 +127,7 @@ void ServerHistoryDialog::snapShotAdd(ServerInfoSnapShoot snapshot) {
 }
 
 void ServerHistoryDialog::clearHistory() {
-  EventsInfo::ClearServerHistoryRequest req(this);
+  events_info::ClearServerHistoryRequest req(this);
   server_->clearHistory(req);
 }
 
@@ -157,9 +157,9 @@ void ServerHistoryDialog::refreshGraph(int index) {
   QVariant var = serverInfoFields_->itemData(index);
   unsigned char indexIn = qvariant_cast<unsigned char>(var);
   fasto::qt::gui::GraphWidget::nodes_container_type nodes;
-  for (EventsInfo::ServerInfoHistoryResponce::infos_container_type::iterator it = infos_.begin();
+  for (events_info::ServerInfoHistoryResponce::infos_container_type::iterator it = infos_.begin();
       it != infos_.end(); ++it) {
-    EventsInfo::ServerInfoHistoryResponce::infos_container_type::value_type val = *it;
+    events_info::ServerInfoHistoryResponce::infos_container_type::value_type val = *it;
     if (!val.isValid()) {
       continue;
     }
@@ -200,7 +200,7 @@ void ServerHistoryDialog::retranslateUi() {
 }
 
 void ServerHistoryDialog::requestHistoryInfo() {
-  EventsInfo::ServerInfoHistoryRequest req(this);
+  events_info::ServerInfoHistoryRequest req(this);
   server_->requestHistoryInfo(req);
 }
 

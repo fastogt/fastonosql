@@ -18,6 +18,8 @@
 
 #include "core/memcached/memcached_settings.h"
 
+#include <string>
+
 #include "common/utils.h"
 
 namespace fastonosql {
@@ -65,4 +67,4 @@ void MemcachedConnectionSettings::initFromCommandLine(const std::string& val) {
   info_ = common::convertFromString<memcachedConfig>(val);
 }
 
-}
+}  // namespace fastonosql

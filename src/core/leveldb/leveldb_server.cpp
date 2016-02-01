@@ -30,4 +30,4 @@ IDatabaseSPtr LeveldbServer::createDatabase(DataBaseInfoSPtr info) {
   return IDatabaseSPtr(new LeveldbDatabase(shared_from_this(), info));
 }
 
-}
+}  // namespace fastonosql

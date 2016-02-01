@@ -18,6 +18,8 @@
 
 #include "core/redis/redis_cluster_settings.h"
 
+#include <string>
+
 namespace fastonosql {
 
 RedisClusterSettings::RedisClusterSettings(const std::string& connectionName)
@@ -29,4 +31,4 @@ IConnectionSettings* RedisClusterSettings::clone() const {
   return red;
 }
 
-}
+}  // namespace fastonosql

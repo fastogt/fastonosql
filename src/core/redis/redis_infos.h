@@ -19,6 +19,7 @@
 #pragma once
 
 #include <vector>
+#include <string>
 
 #include "common/types.h"
 #include "global/global.h"
@@ -33,7 +34,7 @@
 #define REDIS_CPU_LABEL "# CPU"
 #define REDIS_KEYSPACE_LABEL "# Keyspace"
 
-//Server
+// Server
 #define REDIS_VERSION_LABEL "redis_version"
 #define REDIS_GIT_SHA1_LABEL "redis_git_sha1"
 #define REDIS_GIT_DIRTY_LABEL "redis_git_dirty"
@@ -51,13 +52,13 @@
 #define REDIS_HZ_LABEL "hz"
 #define REDIS_LRU_CLOCK_LABEL "lru_clock"
 
-//Clients
+// Clients
 #define REDIS_CONNECTED_CLIENTS_LABEL "connected_clients"
 #define REDIS_CLIENT_LONGEST_OUTPUT_LIST_LABEL "client_longest_output_list"
 #define REDIS_CLIENT_BIGGEST_INPUT_BUF_LABEL "client_biggest_input_buf"
 #define REDIS_BLOCKED_CLIENTS_LABEL "blocked_clients"
 
-//Memory
+// Memory
 #define REDIS_USED_MEMORY_LABEL "used_memory"
 #define REDIS_USED_MEMORY_HUMAN_LABEL "used_memory_human"
 #define REDIS_USED_MEMORY_RSS_LABEL "used_memory_rss"
@@ -67,7 +68,7 @@
 #define REDIS_MEM_FRAGMENTATION_RATIO_LABEL "mem_fragmentation_ratio"
 #define REDIS_MEM_ALLOCATOR_LABEL "mem_allocator"
 
-//Persistence
+// Persistence
 #define REDIS_LOADING_LABEL "loading"
 #define REDIS_RDB_CHANGES_SINCE_LAST_SAVE_LABEL "rdb_changes_since_last_save"
 #define REDIS_RDB_DGSAVE_IN_PROGRESS_LABEL "rdb_bgsave_in_progress"
@@ -83,7 +84,7 @@
 #define REDIS_AOF_LAST_DGREWRITE_STATUS_LABEL "aof_last_bgrewrite_status"
 #define REDIS_AOF_LAST_WRITE_STATUS_LABEL "aof_last_write_status"
 
-//Stats
+// Stats
 #define REDIS_TOTAL_CONNECTIONS_RECEIVED_LABEL "total_connections_received"
 #define REDIS_TOTAL_COMMANDS_PROCESSED_LABEL "total_commands_processed"
 #define REDIS_INSTANTANEOUS_OPS_PER_SEC_LABEL "instantaneous_ops_per_sec"
@@ -99,7 +100,7 @@
 #define REDIS_PUBSUB_PATTERNS_LABEL "pubsub_patterns"
 #define REDIS_LATEST_FORK_USEC_LABEL "latest_fork_usec"
 
-//Replication
+// Replication
 #define REDIS_ROLE_LABEL "role"
 #define REDIS_CONNECTED_SLAVES_LABEL "connected_slaves"
 #define REDIS_MASTER_REPL_OFFSET_LABEL "master_repl_offset"
@@ -108,7 +109,7 @@
 #define REDIS_BACKLOG_FIRST_BYTE_OFFSET_LABEL "repl_backlog_first_byte_offset"
 #define REDIS_BACKLOG_HISTEN_LABEL "repl_backlog_histlen"
 
-//CPU
+// CPU
 #define REDIS_USED_CPU_SYS_LABEL "used_cpu_sys"
 #define REDIS_USED_CPU_USER_LABEL "used_cpu_user"
 #define REDIS_USED_CPU_SYS_CHILDREN_LABEL "used_cpu_sys_children"
@@ -138,7 +139,7 @@ struct RedisServerInfo
       std::string redis_version_;
       std::string redis_git_sha1_;
       std::string redis_git_dirty_;
-      std::string redis_build_id_;//
+      std::string redis_build_id_;
       std::string redis_mode_;
       std::string os_;
       uint32_t arch_bits_;
@@ -149,7 +150,7 @@ struct RedisServerInfo
       uint32_t tcp_port_;
       uint32_t uptime_in_seconds_;
       uint32_t uptime_in_days_;
-      uint32_t hz_; //
+      uint32_t hz_;
       uint32_t lru_clock_;
   } server_;
 
@@ -200,7 +201,7 @@ struct RedisServerInfo
       int aof_last_rewrite_time_sec_;
       int aof_current_rewrite_time_sec_;
       std::string aof_last_bgrewrite_status_;
-      std::string aof_last_write_status_;//
+      std::string aof_last_write_status_;
   } persistence_;
 
   struct Stats
@@ -213,9 +214,9 @@ struct RedisServerInfo
       uint32_t total_commands_processed_;
       uint32_t instantaneous_ops_per_sec_;
       uint32_t rejected_connections_;
-      uint32_t sync_full_;//
-      uint32_t sync_partial_ok_;//
-      uint32_t sync_partial_err_;//
+      uint32_t sync_full_;
+      uint32_t sync_partial_ok_;
+      uint32_t sync_partial_err_;
       uint32_t expired_keys_;
       uint32_t evicted_keys_;
       uint32_t keyspace_hits_;
@@ -233,16 +234,15 @@ struct RedisServerInfo
 
       std::string role_;
       uint32_t connected_slaves_;
-      uint32_t master_repl_offset_; //
-      uint32_t backlog_active_; //
-      uint32_t backlog_size_; //
-      uint32_t backlog_first_byte_offset_; //
-      uint32_t backlog_histen_; //
+      uint32_t master_repl_offset_;
+      uint32_t backlog_active_;
+      uint32_t backlog_size_;
+      uint32_t backlog_first_byte_offset_;
+      uint32_t backlog_histen_;
   } replication_;
 
   struct Cpu
-          : FieldByIndex
-  {
+          : FieldByIndex {
       Cpu();
       explicit Cpu(const std::string& cpu_text);
       common::Value* valueByIndex(unsigned char index) const;
@@ -280,9 +280,8 @@ common::Error makeAllDiscoveryInfo(const common::net::hostAndPort& parentHost,
                                    std::vector<ServerDiscoveryInfoSPtr>& infos);
 
 class RedisDataBaseInfo
-      : public DataBaseInfo
-{
-public:
+      : public DataBaseInfo {
+ public:
   RedisDataBaseInfo(const std::string& name, bool isDefault, size_t size,
                     const keys_cont_type& keys = keys_cont_type());
 
@@ -290,11 +289,10 @@ public:
 };
 
 class RedisCommand
-      : public FastoObjectCommand
-{
-public:
+      : public FastoObjectCommand {
+ public:
   RedisCommand(FastoObject* parent, common::CommandValue* cmd, const std::string &delemitr);
   virtual bool isReadOnly() const;
 };
 
-}
+}  // namespace fastonosql

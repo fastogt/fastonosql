@@ -18,20 +18,24 @@
 
 #pragma once
 
+#include <vector>
+#include <string>
+
 #include "core/core_fwd.h"
 #include "common/qt/utils_qt.h"
 
 namespace fastonosql {
-namespace EventsInfo {
+namespace events_info {
 
 struct EventInfoBase
   : public common::utils_qt::EventInfo<common::Error> {
   typedef common::utils_qt::EventInfo<common::Error > base_class;
   explicit EventInfoBase(initiator_type sender, error_type er = error_type());
-  EventInfoBase(initiator_type sender, const common::time64_t time_start, error_type er = error_type());
+  EventInfoBase(initiator_type sender, const common::time64_t time_start,
+                error_type er = error_type());
   common::time64_t elapsedTime() const;
 
-private:
+ private:
   const common::time64_t time_start_;
 };
 
@@ -88,7 +92,8 @@ struct ExportInfoResponce
 struct ChangePasswordRequest
   : public EventInfoBase {
   typedef EventInfoBase base_class;
-  ChangePasswordRequest(initiator_type sender, const std::string& oldPassword, const std::string& newPassword, error_type er = error_type());
+  ChangePasswordRequest(initiator_type sender, const std::string& oldPassword,
+                        const std::string& newPassword, error_type er = error_type());
   std::string oldPassword_;
   std::string newPassword_;
 };
@@ -102,7 +107,8 @@ struct ChangePasswordResponce
 struct ChangeMaxConnectionRequest
   : public EventInfoBase {
   typedef EventInfoBase base_class;
-  ChangeMaxConnectionRequest(initiator_type sender, int maxConnection, error_type er = error_type());
+  ChangeMaxConnectionRequest(initiator_type sender, int maxConnection,
+                             error_type er = error_type());
   int maxConnection_;
 };
 
@@ -165,8 +171,10 @@ struct CommandRootCreatedInfo
 struct CommandRootCompleatedInfo
   : public EventInfoBase {
   typedef EventInfoBase base_class;
-  CommandRootCompleatedInfo(initiator_type sender, FastoObjectIPtr root, error_type er = error_type());
-  CommandRootCompleatedInfo(initiator_type sender, common::time64_t timest, FastoObjectIPtr root, error_type er = error_type());
+  CommandRootCompleatedInfo(initiator_type sender,
+                            FastoObjectIPtr root, error_type er = error_type());
+  CommandRootCompleatedInfo(initiator_type sender, common::time64_t timest,
+                            FastoObjectIPtr root, error_type er = error_type());
 
   FastoObjectIPtr root_;
 };
@@ -174,7 +182,7 @@ struct CommandRootCompleatedInfo
 struct DisConnectInfoRequest
   : public EventInfoBase {
   typedef EventInfoBase base_class;
-  DisConnectInfoRequest(initiator_type sender, error_type er = error_type());
+  explicit DisConnectInfoRequest(initiator_type sender, error_type er = error_type());
 };
 
 struct DisConnectInfoResponce
@@ -186,7 +194,9 @@ struct DisConnectInfoResponce
 struct ExecuteInfoRequest
   : public EventInfoBase {
   typedef EventInfoBase base_class;
-  ExecuteInfoRequest(initiator_type sender, const std::string &text, const std::vector<std::string>& args = std::vector<std::string>(), error_type er = error_type());
+  ExecuteInfoRequest(initiator_type sender, const std::string &text,
+                     const std::vector<std::string>& args = std::vector<std::string>(),
+                     error_type er = error_type());
 
   const std::string text_;
   const std::vector<std::string> args_;
@@ -210,7 +220,8 @@ struct LoadDatabasesInfoResponce
 struct LoadDatabaseContentRequest
   : public EventInfoBase {
   typedef EventInfoBase base_class;
-  LoadDatabaseContentRequest(initiator_type sender, DataBaseInfoSPtr inf, const std::string& pattern, uint32_t countKeys,
+  LoadDatabaseContentRequest(initiator_type sender, DataBaseInfoSPtr inf,
+                             const std::string& pattern, uint32_t countKeys,
              uint32_t cursor = 0, error_type er = error_type());
 
   DataBaseInfoSPtr inf_;
@@ -232,7 +243,8 @@ struct LoadDatabaseContentResponce
 struct SetDefaultDatabaseRequest
   : public EventInfoBase {
   typedef EventInfoBase base_class;
-  SetDefaultDatabaseRequest(initiator_type sender, DataBaseInfoSPtr inf, error_type er = error_type());
+  SetDefaultDatabaseRequest(initiator_type sender, DataBaseInfoSPtr inf,
+                            error_type er = error_type());
 
   DataBaseInfoSPtr inf_;
 };
@@ -258,7 +270,7 @@ struct ServerInfoResponce
   ServerInfoSPtr info() const;
   void setInfo(ServerInfoSPtr inf);
 
-private:
+ private:
   ServerInfoSPtr info_;
 };
 
@@ -277,7 +289,7 @@ struct ServerInfoHistoryResponce
   infos_container_type infos() const;
   void setInfos(const infos_container_type& inf);
 
-private:
+ private:
   infos_container_type infos_;
 };
 
@@ -310,7 +322,8 @@ struct ServerPropertyInfoResponce
 struct ChangeServerPropertyInfoRequest
   : public EventInfoBase {
   typedef EventInfoBase base_class;
-  ChangeServerPropertyInfoRequest(initiator_type sender, const PropertyType& pt, error_type er = error_type());
+  ChangeServerPropertyInfoRequest(initiator_type sender, const PropertyType& pt,
+                                  error_type er = error_type());
 
   PropertyType newItem_;
 };
@@ -326,7 +339,8 @@ struct ChangeServerPropertyInfoResponce
 struct CommandRequest
   : public EventInfoBase {
   typedef EventInfoBase base_class;
-  CommandRequest(initiator_type sender, DataBaseInfoSPtr inf, CommandKeySPtr cmd, error_type er = error_type());
+  CommandRequest(initiator_type sender, DataBaseInfoSPtr inf, CommandKeySPtr cmd,
+                 error_type er = error_type());
 
   DataBaseInfoSPtr inf_;
   CommandKeySPtr cmd_;
@@ -344,5 +358,5 @@ struct ProgressInfoResponce {
   const uint8_t progress_;
 };
 
-}
-}
+}  // namespace events_info
+}  // namespace fastonosql

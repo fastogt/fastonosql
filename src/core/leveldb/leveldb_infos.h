@@ -18,6 +18,8 @@
 
 #pragma once
 
+#include <string>
+
 #include "core/types.h"
 
 #define LEVELDB_STATS_LABEL "# Stats"
@@ -33,7 +35,7 @@ namespace fastonosql {
 class LeveldbServerInfo
   : public ServerInfo {
  public:
-  //Compactions\nLevel  Files Size(MB) Time(sec) Read(MB) Write(MB)\n
+  // Compactions\nLevel  Files Size(MB) Time(sec) Read(MB) Write(MB)\n
   struct Stats
           : FieldByIndex {
       Stats();
@@ -74,4 +76,4 @@ class LeveldbCommand
   virtual bool isReadOnly() const;
 };
 
-}
+}  // namespace fastonosql

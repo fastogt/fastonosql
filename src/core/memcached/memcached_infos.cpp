@@ -20,6 +20,9 @@
 
 #include <ostream>
 #include <sstream>
+#include <string>
+#include <vector>
+#include <algorithm>
 
 namespace fastonosql {
 
@@ -48,7 +51,7 @@ namespace {
       Field(MEMCACHED_LIMIT_MAXBYTES_LABEL, common::Value::TYPE_UINTEGER),
       Field(MEMCACHED_THREADS_LABEL, common::Value::TYPE_UINTEGER)
   };
-}
+}  // namespace
 
 template<>
 std::vector<common::Value::Type> DBTraits<MEMCACHED>::supportedTypes() {
@@ -80,54 +83,54 @@ MemcachedServerInfo::Common::Common(const std::string& common_text) {
   size_t pos = 0;
   size_t start = 0;
 
-  while((pos = src.find(("\r\n"), start)) != std::string::npos){
+  while ((pos = src.find(("\r\n"), start)) != std::string::npos) {
     std::string line = src.substr(start, pos-start);
     size_t delem = line.find_first_of(':');
     std::string field = line.substr(0, delem);
     std::string value = line.substr(delem + 1);
-    if(field == MEMCACHED_PID_LABEL){
+    if (field == MEMCACHED_PID_LABEL) {
       pid_ = common::convertFromString<uint32_t>(value);
-    } else if(field == MEMCACHED_UPTIME_LABEL){
+    } else if (field == MEMCACHED_UPTIME_LABEL) {
       uptime_ = common::convertFromString<uint32_t>(value);
-    } else if(field == MEMCACHED_TIME_LABEL){
+    } else if (field == MEMCACHED_TIME_LABEL) {
       time_ = common::convertFromString<uint32_t>(value);
-    } else if(field == MEMCACHED_VERSION_LABEL){
+    } else if (field == MEMCACHED_VERSION_LABEL) {
       version_ = value;
-    } else if(field == MEMCACHED_POINTER_SIZE_LABEL){
+    } else if (field == MEMCACHED_POINTER_SIZE_LABEL) {
       pointer_size_ = common::convertFromString<uint32_t>(value);
-    } else if(field == MEMCACHED_RUSAGE_USER_LABEL){
+    } else if (field == MEMCACHED_RUSAGE_USER_LABEL) {
       rusage_user_ = common::convertFromString<uint32_t>(value);
-    } else if(field == MEMCACHED_RUSAGE_SYSTEM_LABEL){
+    } else if (field == MEMCACHED_RUSAGE_SYSTEM_LABEL) {
       rusage_system_ = common::convertFromString<uint32_t>(value);
-    } else if(field == MEMCACHED_CURR_ITEMS_LABEL){
+    } else if (field == MEMCACHED_CURR_ITEMS_LABEL) {
       curr_items_ = common::convertFromString<uint32_t>(value);
-    } else if(field == MEMCACHED_TOTAL_ITEMS_LABEL){
+    } else if (field == MEMCACHED_TOTAL_ITEMS_LABEL) {
       total_items_ = common::convertFromString<uint32_t>(value);
-    } else if(field == MEMCACHED_BYTES_LABEL){
+    } else if (field == MEMCACHED_BYTES_LABEL) {
       bytes_ = common::convertFromString<uint32_t>(value);
-    } else if(field == MEMCACHED_CURR_CONNECTIONS_LABEL){
+    } else if (field == MEMCACHED_CURR_CONNECTIONS_LABEL) {
       curr_connections_ = common::convertFromString<uint32_t>(value);
-    } else if(field == MEMCACHED_TOTAL_CONNECTIONS_LABEL){
+    } else if (field == MEMCACHED_TOTAL_CONNECTIONS_LABEL) {
       total_connections_ = common::convertFromString<uint32_t>(value);
-    } else if(field == MEMCACHED_CONNECTION_STRUCTURES_LABEL){
+    } else if (field == MEMCACHED_CONNECTION_STRUCTURES_LABEL) {
       connection_structures_ = common::convertFromString<uint32_t>(value);
-    } else if(field == MEMCACHED_CMD_GET_LABEL){
+    } else if (field == MEMCACHED_CMD_GET_LABEL) {
       cmd_get_ = common::convertFromString<uint32_t>(value);
-    } else if(field == MEMCACHED_CMD_SET_LABEL){
+    } else if (field == MEMCACHED_CMD_SET_LABEL) {
       cmd_set_ = common::convertFromString<uint32_t>(value);
-    } else if(field == MEMCACHED_GET_HITS_LABEL){
+    } else if (field == MEMCACHED_GET_HITS_LABEL) {
       get_hits_ = common::convertFromString<uint32_t>(value);
-    } else if(field == MEMCACHED_GET_MISSES_LABEL){
+    } else if (field == MEMCACHED_GET_MISSES_LABEL) {
       get_misses_ = common::convertFromString<uint32_t>(value);
-    } else if(field == MEMCACHED_EVICTIONS_LABEL){
+    } else if (field == MEMCACHED_EVICTIONS_LABEL) {
       evictions_ = common::convertFromString<uint32_t>(value);
-    } else if(field == MEMCACHED_BYTES_READ_LABEL){
+    } else if (field == MEMCACHED_BYTES_READ_LABEL) {
       bytes_read_ = common::convertFromString<uint32_t>(value);
-    } else if(field == MEMCACHED_BYTES_WRITTEN_LABEL){
+    } else if (field == MEMCACHED_BYTES_WRITTEN_LABEL) {
       bytes_written_ = common::convertFromString<uint32_t>(value);
-    } else if(field == MEMCACHED_LIMIT_MAXBYTES_LABEL){
+    } else if (field == MEMCACHED_LIMIT_MAXBYTES_LABEL) {
       limit_maxbytes_ = common::convertFromString<uint32_t>(value);
-    } else if(field == MEMCACHED_THREADS_LABEL){
+    } else if (field == MEMCACHED_THREADS_LABEL) {
       threads_ = common::convertFromString<uint32_t>(value);
     }
     start = pos + 2;
@@ -195,7 +198,8 @@ MemcachedServerInfo::MemcachedServerInfo(const Common& common)
   : ServerInfo(MEMCACHED), common_(common) {
 }
 
-common::Value* MemcachedServerInfo::valueByIndexes(unsigned char property, unsigned char field) const {
+common::Value* MemcachedServerInfo::valueByIndexes(unsigned char property,
+                                                   unsigned char field) const {
   switch (property) {
   case 0:
     return common_.valueByIndex(field);
@@ -236,7 +240,7 @@ std::ostream& operator<<(std::ostream& out, const MemcachedServerInfo& value) {
 }
 
 MemcachedServerInfo* makeMemcachedServerInfo(const std::string &content) {
-  if(content.empty()){
+  if (content.empty()) {
     return NULL;
   }
 
@@ -247,7 +251,7 @@ MemcachedServerInfo* makeMemcachedServerInfo(const std::string &content) {
   size_t pos = 0;
   const std::vector<std::string> headers = DBTraits<MEMCACHED>::infoHeaders();
 
-  for(int i = 0; i < content.size(); ++i) {
+  for (size_t i = 0; i < content.size(); ++i) {
     char ch = content[i];
     word += ch;
     if (word == headers[j]) {
@@ -258,8 +262,8 @@ MemcachedServerInfo* makeMemcachedServerInfo(const std::string &content) {
       }
 
       if (pos != std::string::npos) {
-        std::string part = content.substr(i + 1, pos - i - 1 );
-        switch(j) {
+        std::string part = content.substr(i + 1, pos - i - 1);
+        switch (j) {
         case 0:
           result->common_ = MemcachedServerInfo::Common(part);
           break;
@@ -308,7 +312,7 @@ MemcachedCommand::MemcachedCommand(FastoObject* parent, common::CommandValue* cm
 
 bool MemcachedCommand::isReadOnly() const {
   std::string key = inputCmd();
-  if(key.empty()){
+  if (key.empty()) {
     return true;
   }
 
@@ -316,4 +320,4 @@ bool MemcachedCommand::isReadOnly() const {
   return key != "get";
 }
 
-}
+}  // namespace fastonosql

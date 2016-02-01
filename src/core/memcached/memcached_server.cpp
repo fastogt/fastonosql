@@ -30,4 +30,4 @@ IDatabaseSPtr MemcachedServer::createDatabase(DataBaseInfoSPtr info) {
   return IDatabaseSPtr(new MemcachedDatabase(shared_from_this(), info));
 }
 
-}
+}  // namespace fastonosql

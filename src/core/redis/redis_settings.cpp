@@ -18,6 +18,8 @@
 
 #include "core/redis/redis_settings.h"
 
+#include <string>
+
 #include "common/utils.h"
 
 namespace fastonosql {
@@ -65,4 +67,4 @@ IConnectionSettings *RedisConnectionSettings::clone() const {
   return red;
 }
 
-}
+}  // namespace fastonosql

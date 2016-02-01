@@ -76,8 +76,8 @@ class InfoServerDialog
   void showed();
 
  private Q_SLOTS:
-  void startServerInfo(const EventsInfo::ServerInfoRequest& req);
-  void finishServerInfo(const EventsInfo::ServerInfoResponce& res);
+  void startServerInfo(const events_info::ServerInfoRequest& req);
+  void finishServerInfo(const events_info::ServerInfoResponce& res);
 
  protected:
   virtual void changeEvent(QEvent* e);

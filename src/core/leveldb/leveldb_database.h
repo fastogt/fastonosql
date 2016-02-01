@@ -29,4 +29,4 @@ class LeveldbDatabase
   LeveldbDatabase(IServerSPtr server, DataBaseInfoSPtr info);
 };
 
-}
+}  // namespace fastonosql

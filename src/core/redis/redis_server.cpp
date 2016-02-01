@@ -30,4 +30,4 @@ IDatabaseSPtr RedisServer::createDatabase(DataBaseInfoSPtr info) {
   return IDatabaseSPtr(new RedisDatabase(shared_from_this(), info));
 }
 
-}
+}  // namespace fastonosql

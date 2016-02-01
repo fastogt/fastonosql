@@ -105,20 +105,20 @@ OutputWidget::OutputWidget(IServerSPtr server, QWidget* parent)
   syncWithSettings();
 }
 
-void OutputWidget::rootCreate(const EventsInfo::CommandRootCreatedInfo& res) {
+void OutputWidget::rootCreate(const events_info::CommandRootCreatedInfo& res) {
   FastoObject* rootObj = res.root_.get();
   fastonosql::FastoCommonItem* root = createItem(NULL, std::string(), true, rootObj);
   commonModel_->setRoot(root);
 }
 
-void OutputWidget::rootCompleate(const EventsInfo::CommandRootCompleatedInfo& res) {
+void OutputWidget::rootCompleate(const events_info::CommandRootCompleatedInfo& res) {
   updateTimeLabel(res);
 }
 
-void OutputWidget::startExecuteCommand(const EventsInfo::CommandRequest& req) {
+void OutputWidget::startExecuteCommand(const events_info::CommandRequest& req) {
 }
 
-void OutputWidget::finishExecuteCommand(const EventsInfo::CommandResponce& res) {
+void OutputWidget::finishExecuteCommand(const events_info::CommandResponce& res) {
   common::Error er = res.errorInfo();
   if (er && er->isError()) {
     return;
@@ -222,7 +222,7 @@ void OutputWidget::itemUpdate(FastoObject* item, common::Value *newValue) {
 
 void OutputWidget::executeCommand(CommandKeySPtr cmd) {
   if (server_) {
-    EventsInfo::CommandRequest req(this, server_->currentDatabaseInfo(), cmd);
+    events_info::CommandRequest req(this, server_->currentDatabaseInfo(), cmd);
     server_->executeCommand(req);
   }
 }
@@ -256,7 +256,7 @@ void OutputWidget::syncWithSettings() {
   }
 }
 
-void OutputWidget::updateTimeLabel(const EventsInfo::EventInfoBase& evinfo) {
+void OutputWidget::updateTimeLabel(const events_info::EventInfoBase& evinfo) {
   timeLabel_->setText(QString("%1 msec").arg(evinfo.elapsedTime()));
 }
 

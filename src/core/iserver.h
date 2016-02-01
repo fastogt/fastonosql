@@ -71,66 +71,66 @@ class IServer
   virtual void unSyncFromServer(IServer* src);
 
  Q_SIGNALS: //only direct connections
-  void startedConnect(const EventsInfo::ConnectInfoRequest& req);
-  void finishedConnect(const EventsInfo::ConnectInfoResponce& res);
+  void startedConnect(const events_info::ConnectInfoRequest& req);
+  void finishedConnect(const events_info::ConnectInfoResponce& res);
 
-  void startedDisconnect(const EventsInfo::DisConnectInfoRequest& req);
-  void finishedDisconnect(const EventsInfo::DisConnectInfoResponce& res);
+  void startedDisconnect(const events_info::DisConnectInfoRequest& req);
+  void finishedDisconnect(const events_info::DisConnectInfoResponce& res);
 
-  void startedShutdown(const EventsInfo::ShutDownInfoRequest& req);
-  void finishedShutdown(const EventsInfo::ShutDownInfoResponce& res);
+  void startedShutdown(const events_info::ShutDownInfoRequest& req);
+  void finishedShutdown(const events_info::ShutDownInfoResponce& res);
 
-  void startedBackup(const EventsInfo::BackupInfoRequest& req);
-  void finishedBackup(const EventsInfo::BackupInfoResponce& res);
+  void startedBackup(const events_info::BackupInfoRequest& req);
+  void finishedBackup(const events_info::BackupInfoResponce& res);
 
-  void startedExport(const EventsInfo::ExportInfoRequest& req);
-  void finishedExport(const EventsInfo::ExportInfoResponce& res);
+  void startedExport(const events_info::ExportInfoRequest& req);
+  void finishedExport(const events_info::ExportInfoResponce& res);
 
-  void startedChangePassword(const EventsInfo::ChangePasswordRequest& req);
-  void finishedChangePassword(const EventsInfo::ChangePasswordResponce& res);
+  void startedChangePassword(const events_info::ChangePasswordRequest& req);
+  void finishedChangePassword(const events_info::ChangePasswordResponce& res);
 
-  void startedChangeMaxConnection(const EventsInfo::ChangeMaxConnectionRequest& req);
-  void finishedChangeMaxConnection(const EventsInfo::ChangeMaxConnectionResponce& res);
+  void startedChangeMaxConnection(const events_info::ChangeMaxConnectionRequest& req);
+  void finishedChangeMaxConnection(const events_info::ChangeMaxConnectionResponce& res);
 
-  void startedExecute(const EventsInfo::ExecuteInfoRequest& req);
+  void startedExecute(const events_info::ExecuteInfoRequest& req);
 
-  void startedLoadDatabases(const EventsInfo::LoadDatabasesInfoRequest& req);
-  void finishedLoadDatabases(const EventsInfo::LoadDatabasesInfoResponce& res);
+  void startedLoadDatabases(const events_info::LoadDatabasesInfoRequest& req);
+  void finishedLoadDatabases(const events_info::LoadDatabasesInfoResponce& res);
 
-  void startedLoadServerInfo(const EventsInfo::ServerInfoRequest& req);
-  void finishedLoadServerInfo(const EventsInfo::ServerInfoResponce& res);
+  void startedLoadServerInfo(const events_info::ServerInfoRequest& req);
+  void finishedLoadServerInfo(const events_info::ServerInfoResponce& res);
 
-  void startedLoadServerHistoryInfo(const EventsInfo::ServerInfoHistoryRequest& req);
-  void finishedLoadServerHistoryInfo(const EventsInfo::ServerInfoHistoryResponce& res);
+  void startedLoadServerHistoryInfo(const events_info::ServerInfoHistoryRequest& req);
+  void finishedLoadServerHistoryInfo(const events_info::ServerInfoHistoryResponce& res);
 
-  void startedClearServerHistory(const EventsInfo::ClearServerHistoryRequest& req);
-  void finishedClearServerHistory(const EventsInfo::ClearServerHistoryResponce& req);
+  void startedClearServerHistory(const events_info::ClearServerHistoryRequest& req);
+  void finishedClearServerHistory(const events_info::ClearServerHistoryResponce& req);
 
-  void startedLoadServerProperty(const EventsInfo::ServerPropertyInfoRequest& req);
-  void finishedLoadServerProperty(const EventsInfo::ServerPropertyInfoResponce& res);
+  void startedLoadServerProperty(const events_info::ServerPropertyInfoRequest& req);
+  void finishedLoadServerProperty(const events_info::ServerPropertyInfoResponce& res);
 
-  void startedChangeServerProperty(const EventsInfo::ChangeServerPropertyInfoRequest& req);
-  void finishedChangeServerProperty(const EventsInfo::ChangeServerPropertyInfoResponce& res);
+  void startedChangeServerProperty(const events_info::ChangeServerPropertyInfoRequest& req);
+  void finishedChangeServerProperty(const events_info::ChangeServerPropertyInfoResponce& res);
 
-  void progressChanged(const EventsInfo::ProgressInfoResponce& res);
+  void progressChanged(const events_info::ProgressInfoResponce& res);
 
-  void enteredMode(const EventsInfo::EnterModeInfo& res);
-  void leavedMode(const EventsInfo::LeaveModeInfo& res);
+  void enteredMode(const events_info::EnterModeInfo& res);
+  void leavedMode(const events_info::LeaveModeInfo& res);
 
-  void rootCreated(const EventsInfo::CommandRootCreatedInfo& res);
-  void rootCompleated(const EventsInfo::CommandRootCompleatedInfo& res);
+  void rootCreated(const events_info::CommandRootCreatedInfo& res);
+  void rootCompleated(const events_info::CommandRootCompleatedInfo& res);
 
-  void startedLoadDataBaseContent(const EventsInfo::LoadDatabaseContentRequest& req);
-  void finishedLoadDatabaseContent(const EventsInfo::LoadDatabaseContentResponce& res);
+  void startedLoadDataBaseContent(const events_info::LoadDatabaseContentRequest& req);
+  void finishedLoadDatabaseContent(const events_info::LoadDatabaseContentResponce& res);
 
-  void startedSetDefaultDatabase(const EventsInfo::SetDefaultDatabaseRequest& req);
-  void finishedSetDefaultDatabase(const EventsInfo::SetDefaultDatabaseResponce& res);
+  void startedSetDefaultDatabase(const events_info::SetDefaultDatabaseRequest& req);
+  void finishedSetDefaultDatabase(const events_info::SetDefaultDatabaseResponce& res);
 
-  void startedExecuteCommand(const EventsInfo::CommandRequest& req);
-  void finishedExecuteCommand(const EventsInfo::CommandResponce& res);
+  void startedExecuteCommand(const events_info::CommandRequest& req);
+  void finishedExecuteCommand(const events_info::CommandResponce& res);
 
-  void startedLoadDiscoveryInfo(const EventsInfo::DiscoveryInfoRequest& res);
-  void finishedLoadDiscoveryInfo(const EventsInfo::DiscoveryInfoResponce& res);
+  void startedLoadDiscoveryInfo(const events_info::DiscoveryInfoRequest& res);
+  void finishedLoadDiscoveryInfo(const events_info::DiscoveryInfoResponce& res);
 
  Q_SIGNALS:
   void addedChild(FastoObject *child);
@@ -139,23 +139,23 @@ class IServer
 
  public:
   // async methods
-  void connect(const EventsInfo::ConnectInfoRequest &req);  // signals: startedConnect, finishedConnect
-  void disconnect(const EventsInfo::DisConnectInfoRequest &req);  // signals: startedDisconnect, finishedDisconnect
-  void loadDatabases(const EventsInfo::LoadDatabasesInfoRequest &req);  // signals: startedLoadDatabases, finishedLoadDatabases
-  void loadDatabaseContent(const EventsInfo::LoadDatabaseContentRequest &req);  // signals: startedLoadDataBaseContent, finishedLoadDatabaseContent
-  void setDefaultDb(const EventsInfo::SetDefaultDatabaseRequest &req);  // signals: startedSetDefaultDatabase, finishedSetDefaultDatabase
-  void execute(const EventsInfo::ExecuteInfoRequest &req);  // signals: startedExecute
-  void executeCommand(const EventsInfo::CommandRequest &req);  // signals: startedExecuteCommand, finishedExecuteCommand
-  void shutDown(const EventsInfo::ShutDownInfoRequest &req);  // signals: startedShutdown, finishedShutdown
-  void backupToPath(const EventsInfo::BackupInfoRequest &req);  // signals: startedBackup, finishedBackup
-  void exportFromPath(const EventsInfo::ExportInfoRequest &req);  // signals: startedExport, finishedExport
-  void changePassword(const EventsInfo::ChangePasswordRequest &req);  // signals: startedChangePassword, finishedChangePassword
-  void setMaxConnection(const EventsInfo::ChangeMaxConnectionRequest &req); // signals: startedChangeMaxConnection, finishedChangeMaxConnection
-  void loadServerInfo(const EventsInfo::ServerInfoRequest &req);  // signals: startedLoadServerInfo, finishedLoadServerInfo
-  void serverProperty(const EventsInfo::ServerPropertyInfoRequest &req);  // signals: startedLoadServerProperty, finishedLoadServerProperty
-  void requestHistoryInfo(const EventsInfo::ServerInfoHistoryRequest &req);  // signals: startedLoadServerHistoryInfo, finishedLoadServerHistoryInfo
-  void clearHistory(const EventsInfo::ClearServerHistoryRequest &req);  // signals: startedClearServerHistory, finishedClearServerHistory
-  void changeProperty(const EventsInfo::ChangeServerPropertyInfoRequest &req);  // signals: startedChangeServerProperty, finishedChangeServerProperty
+  void connect(const events_info::ConnectInfoRequest &req);  // signals: startedConnect, finishedConnect
+  void disconnect(const events_info::DisConnectInfoRequest &req);  // signals: startedDisconnect, finishedDisconnect
+  void loadDatabases(const events_info::LoadDatabasesInfoRequest &req);  // signals: startedLoadDatabases, finishedLoadDatabases
+  void loadDatabaseContent(const events_info::LoadDatabaseContentRequest &req);  // signals: startedLoadDataBaseContent, finishedLoadDatabaseContent
+  void setDefaultDb(const events_info::SetDefaultDatabaseRequest &req);  // signals: startedSetDefaultDatabase, finishedSetDefaultDatabase
+  void execute(const events_info::ExecuteInfoRequest &req);  // signals: startedExecute
+  void executeCommand(const events_info::CommandRequest &req);  // signals: startedExecuteCommand, finishedExecuteCommand
+  void shutDown(const events_info::ShutDownInfoRequest &req);  // signals: startedShutdown, finishedShutdown
+  void backupToPath(const events_info::BackupInfoRequest &req);  // signals: startedBackup, finishedBackup
+  void exportFromPath(const events_info::ExportInfoRequest &req);  // signals: startedExport, finishedExport
+  void changePassword(const events_info::ChangePasswordRequest &req);  // signals: startedChangePassword, finishedChangePassword
+  void setMaxConnection(const events_info::ChangeMaxConnectionRequest &req); // signals: startedChangeMaxConnection, finishedChangeMaxConnection
+  void loadServerInfo(const events_info::ServerInfoRequest &req);  // signals: startedLoadServerInfo, finishedLoadServerInfo
+  void serverProperty(const events_info::ServerPropertyInfoRequest &req);  // signals: startedLoadServerProperty, finishedLoadServerProperty
+  void requestHistoryInfo(const events_info::ServerInfoHistoryRequest &req);  // signals: startedLoadServerHistoryInfo, finishedLoadServerHistoryInfo
+  void clearHistory(const events_info::ClearServerHistoryRequest &req);  // signals: startedClearServerHistory, finishedClearServerHistory
+  void changeProperty(const events_info::ChangeServerPropertyInfoRequest &req);  // signals: startedChangeServerProperty, finishedChangeServerProperty
 
  protected:
   virtual void customEvent(QEvent* event);
@@ -194,8 +194,8 @@ class IServer
 
   void handleClearServerHistoryResponceEvent(events::ClearServerHistoryResponceEvent* ev);
 
-  void processConfigArgs(const EventsInfo::ProcessConfigArgsInfoRequest &req);
-  void processDiscoveryInfo(const EventsInfo::DiscoveryInfoRequest &req);
+  void processConfigArgs(const events_info::ProcessConfigArgsInfoRequest &req);
+  void processDiscoveryInfo(const events_info::DiscoveryInfoRequest &req);
 
   bool isSuperServer_;
 };

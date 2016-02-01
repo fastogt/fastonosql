@@ -18,6 +18,8 @@
 
 #pragma once
 
+#include <string>
+
 #include "core/icluster.h"
 
 namespace fastonosql {
@@ -25,11 +27,9 @@ namespace fastonosql {
 class RedisCluster
   : public ICluster {
   friend class ServersManager;
- Q_OBJECT
- public:
-
+  Q_OBJECT
  private:
   explicit RedisCluster(const std::string& name);
 };
 
-}
+}  // namespace fastonosql

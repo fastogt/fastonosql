@@ -78,18 +78,18 @@ ChangePasswordServerDialog::ChangePasswordServerDialog(const QString &title,
 
 void ChangePasswordServerDialog::tryToCreatePassword() {
   if (validateInput()) {
-    EventsInfo::ChangePasswordRequest req(this, "", common::convertToString(passwordLineEdit_->text()));
+    events_info::ChangePasswordRequest req(this, "", common::convertToString(passwordLineEdit_->text()));
     server_->changePassword(req);
   } else {
     QMessageBox::critical(this, translations::trError, QObject::tr("Invalid input!"));
   }
 }
 
-void ChangePasswordServerDialog::startChangePassword(const EventsInfo::ChangePasswordRequest& req) {
+void ChangePasswordServerDialog::startChangePassword(const events_info::ChangePasswordRequest& req) {
   glassWidget_->start();
 }
 
-void ChangePasswordServerDialog::finishChangePassword(const EventsInfo::ChangePasswordResponce& res) {
+void ChangePasswordServerDialog::finishChangePassword(const events_info::ChangePasswordResponce& res) {
   glassWidget_->stop();
   common::Error er = res.errorInfo();
   if (er && er->isError()) {

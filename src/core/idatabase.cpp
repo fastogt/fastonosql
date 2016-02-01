@@ -49,12 +49,12 @@ std::string IDatabase::name() const {
   return info_->name();
 }
 
-void IDatabase::loadContent(const EventsInfo::LoadDatabaseContentRequest& req) {
+void IDatabase::loadContent(const events_info::LoadDatabaseContentRequest& req) {
   DCHECK(req.inf_ == info_);
   server_->loadDatabaseContent(req);
 }
 
-void IDatabase::setDefault(const EventsInfo::SetDefaultDatabaseRequest& req) {
+void IDatabase::setDefault(const events_info::SetDefaultDatabaseRequest& req) {
   DCHECK(req.inf_ == info_);
   server_->setDefaultDb(req);
 }
@@ -67,7 +67,7 @@ void IDatabase::setInfo(DataBaseInfoSPtr info) {
   info_ = info;
 }
 
-void IDatabase::executeCommand(const EventsInfo::CommandRequest& req) {
+void IDatabase::executeCommand(const events_info::CommandRequest& req) {
   DCHECK(req.inf_ == info_);
   server_->executeCommand(req);
 }

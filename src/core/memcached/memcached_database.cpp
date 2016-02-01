@@ -30,4 +30,4 @@ MemcachedDatabase::MemcachedDatabase(IServerSPtr server, DataBaseInfoSPtr info)
   DCHECK(info->type() == MEMCACHED);
 }
 
-}
+}  // namespace fastonosql

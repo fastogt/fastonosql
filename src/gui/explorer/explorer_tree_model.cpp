@@ -59,7 +59,7 @@ ExplorerServerItem::eType ExplorerServerItem::type() const {
 }
 
 void ExplorerServerItem::loadDatabases() {
-  EventsInfo::LoadDatabasesInfoRequest req(this);
+  events_info::LoadDatabasesInfoRequest req(this);
   return server_->loadDatabases(req);
 }
 
@@ -141,7 +141,7 @@ IDatabaseSPtr ExplorerDatabaseItem::db() const {
 void ExplorerDatabaseItem::loadContent(const std::string& pattern, uint32_t countKeys) {
   IDatabaseSPtr dbs = db();
   if (dbs) {
-    EventsInfo::LoadDatabaseContentRequest req(this, dbs->info(), pattern, countKeys);
+    events_info::LoadDatabaseContentRequest req(this, dbs->info(), pattern, countKeys);
     dbs->loadContent(req);
   }
 }
@@ -149,7 +149,7 @@ void ExplorerDatabaseItem::loadContent(const std::string& pattern, uint32_t coun
 void ExplorerDatabaseItem::setDefault() {
   IDatabaseSPtr dbs = db();
   if (dbs) {
-    EventsInfo::SetDefaultDatabaseRequest req(this, dbs->info());
+    events_info::SetDefaultDatabaseRequest req(this, dbs->info());
     dbs->setDefault(req);
   }
 }
@@ -162,7 +162,7 @@ void ExplorerDatabaseItem::removeKey(const NDbKValue& key) {
   IDatabaseSPtr dbs = db();
   if (dbs) {
     CommandKeySPtr cmd(new CommandDeleteKey(key));
-    EventsInfo::CommandRequest req(this, dbs->info(), cmd);
+    events_info::CommandRequest req(this, dbs->info(), cmd);
     dbs->executeCommand(req);
   }
 }
@@ -171,7 +171,7 @@ void ExplorerDatabaseItem::loadValue(const NDbKValue& key) {
   IDatabaseSPtr dbs = db();
   if (dbs) {
     CommandKeySPtr cmd(new CommandLoadKey(key));
-    EventsInfo::CommandRequest req(this, dbs->info(), cmd);
+    events_info::CommandRequest req(this, dbs->info(), cmd);
     dbs->executeCommand(req);
   }
 }
@@ -180,7 +180,7 @@ void ExplorerDatabaseItem::createKey(const NDbKValue &key) {
   IDatabaseSPtr dbs = db();
   if (dbs) {
     CommandKeySPtr cmd(new CommandCreateKey(key));
-    EventsInfo::CommandRequest req(this, dbs->info(), cmd);
+    events_info::CommandRequest req(this, dbs->info(), cmd);
     dbs->executeCommand(req);
   }
 }

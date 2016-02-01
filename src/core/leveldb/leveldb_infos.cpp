@@ -20,20 +20,23 @@
 
 #include <ostream>
 #include <sstream>
+#include <string>
+#include <vector>
+#include <algorithm>
+
+namespace fastonosql {
 
 namespace {
 
-const std::vector<fastonosql::Field> LeveldbCommonFields = {
-  fastonosql::Field(LEVELDB_CAMPACTIONS_LEVEL_LABEL, common::Value::TYPE_UINTEGER),
-  fastonosql::Field(LEVELDB_FILE_SIZE_MB_LABEL, common::Value::TYPE_UINTEGER),
-  fastonosql::Field(LEVELDB_TIME_SEC_LABEL, common::Value::TYPE_UINTEGER),
-  fastonosql::Field(LEVELDB_READ_MB_LABEL, common::Value::TYPE_UINTEGER),
-  fastonosql::Field(LEVELDB_WRITE_MB_LABEL, common::Value::TYPE_UINTEGER)
+const std::vector<Field> LeveldbCommonFields = {
+  Field(LEVELDB_CAMPACTIONS_LEVEL_LABEL, common::Value::TYPE_UINTEGER),
+  Field(LEVELDB_FILE_SIZE_MB_LABEL, common::Value::TYPE_UINTEGER),
+  Field(LEVELDB_TIME_SEC_LABEL, common::Value::TYPE_UINTEGER),
+  Field(LEVELDB_READ_MB_LABEL, common::Value::TYPE_UINTEGER),
+  Field(LEVELDB_WRITE_MB_LABEL, common::Value::TYPE_UINTEGER)
 };
 
-}
-
-namespace fastonosql {
+}  // namespace
 
 template<>
 std::vector<common::Value::Type> DBTraits<LEVELDB>::supportedTypes() {
@@ -66,20 +69,20 @@ LeveldbServerInfo::Stats::Stats(const std::string& common_text) {
   size_t pos = 0;
   size_t start = 0;
 
-  while((pos = src.find(("\r\n"), start)) != std::string::npos){
+  while ((pos = src.find(("\r\n"), start)) != std::string::npos) {
     std::string line = src.substr(start, pos-start);
     size_t delem = line.find_first_of(':');
     std::string field = line.substr(0, delem);
     std::string value = line.substr(delem + 1);
-    if(field == LEVELDB_CAMPACTIONS_LEVEL_LABEL){
+    if (field == LEVELDB_CAMPACTIONS_LEVEL_LABEL) {
         compactions_level_ = common::convertFromString<uint32_t>(value);
-    } else if(field == LEVELDB_FILE_SIZE_MB_LABEL){
+    } else if (field == LEVELDB_FILE_SIZE_MB_LABEL) {
         file_size_mb_ = common::convertFromString<uint32_t>(value);
-    } else if(field == LEVELDB_TIME_SEC_LABEL){
+    } else if (field == LEVELDB_TIME_SEC_LABEL) {
         time_sec_ = common::convertFromString<uint32_t>(value);
-    } else if(field == LEVELDB_READ_MB_LABEL){
+    } else if (field == LEVELDB_READ_MB_LABEL) {
         read_mb_ = common::convertFromString<uint32_t>(value);
-    } else if(field == LEVELDB_WRITE_MB_LABEL){
+    } else if (field == LEVELDB_WRITE_MB_LABEL) {
         write_mb_ = common::convertFromString<uint32_t>(value);
     }
     start = pos + 2;
@@ -113,7 +116,8 @@ LeveldbServerInfo::LeveldbServerInfo(const Stats &stats)
   : ServerInfo(LEVELDB), stats_(stats) {
 }
 
-common::Value* LeveldbServerInfo::valueByIndexes(unsigned char property, unsigned char field) const {
+common::Value* LeveldbServerInfo::valueByIndexes(unsigned char property,
+                                                 unsigned char field) const {
   switch (property) {
   case 0:
       return stats_.valueByIndex(field);
@@ -137,7 +141,7 @@ std::ostream& operator<<(std::ostream& out, const LeveldbServerInfo& value) {
 }
 
 LeveldbServerInfo* makeLeveldbServerInfo(const std::string &content) {
-  if(content.empty()){
+  if (content.empty()) {
       return NULL;
   }
 
@@ -145,12 +149,11 @@ LeveldbServerInfo* makeLeveldbServerInfo(const std::string &content) {
 
   const std::vector<std::string> headers = DBTraits<LEVELDB>::infoHeaders();
   std::string word;
-  DCHECK(headers.size() == 1);
+  DCHECK_EQ(headers.size(), 1);
 
-  for(int i = 0; i < content.size(); ++i)
-  {
+  for (size_t i = 0; i < content.size(); ++i) {
       word += content[i];
-      if(word == headers[0]){
+      if (word == headers[0]) {
           std::string part = content.substr(i + 1);
           result->stats_ = LeveldbServerInfo::Stats(part);
           break;
@@ -176,7 +179,8 @@ LeveldbServerInfo* makeLeveldbServerInfo(FastoObject* root) {
   return makeLeveldbServerInfo(content);
 }
 
-LeveldbDataBaseInfo::LeveldbDataBaseInfo(const std::string& name, bool isDefault, size_t size, const keys_cont_type &keys)
+LeveldbDataBaseInfo::LeveldbDataBaseInfo(const std::string& name, bool isDefault,
+                                         size_t size, const keys_cont_type &keys)
   : DataBaseInfo(name, isDefault, LEVELDB, size, keys) {
 }
 
@@ -184,13 +188,14 @@ DataBaseInfo* LeveldbDataBaseInfo::clone() const {
   return new LeveldbDataBaseInfo(*this);
 }
 
-LeveldbCommand::LeveldbCommand(FastoObject* parent, common::CommandValue* cmd, const std::string &delemitr)
+LeveldbCommand::LeveldbCommand(FastoObject* parent, common::CommandValue* cmd,
+                               const std::string &delemitr)
   : FastoObjectCommand(parent, cmd, delemitr) {
 }
 
 bool LeveldbCommand::isReadOnly() const {
   std::string key = inputCmd();
-  if(key.empty()){
+  if (key.empty()) {
       return true;
   }
 
@@ -198,4 +203,4 @@ bool LeveldbCommand::isReadOnly() const {
   return key != "get";
 }
 
-}
+}  // namespace fastonosql

@@ -295,10 +295,10 @@ void ExplorerTreeView::connectDisconnectToServer() {
   }
 
   if (server->isConnected()) {
-    EventsInfo::DisConnectInfoResponce req(this);
+    events_info::DisConnectInfoResponce req(this);
     server->disconnect(req);
   } else {
-    EventsInfo::ConnectInfoRequest req(this);
+    events_info::ConnectInfoRequest req(this);
     server->connect(req);
   }
 }
@@ -408,7 +408,7 @@ void ExplorerTreeView::openMaxClientSetDialog() {
   int maxcl = QInputDialog::getInt(this, tr("Set max connection on %1 server").arg(server->name()),
                                          tr("Maximum connection:"), 10000, 1, INT32_MAX, 100, &ok);
   if (ok) {
-    EventsInfo::ChangeMaxConnectionRequest req(this, maxcl);
+    events_info::ChangeMaxConnectionRequest req(this, maxcl);
     server->setMaxConnection(req);
   }
 }
@@ -449,7 +449,7 @@ void ExplorerTreeView::clearHistory() {
     return;
   }
 
-  EventsInfo::ClearServerHistoryRequest req(this);
+  events_info::ClearServerHistoryRequest req(this);
   server->clearHistory(req);
 }
 
@@ -509,7 +509,7 @@ void ExplorerTreeView::backupServer() {
   QString filepath = QFileDialog::getOpenFileName(this, translations::trBackup,
                                                   QString(), translations::trfilterForRdb);
   if (!filepath.isEmpty() && server) {
-    EventsInfo::BackupInfoRequest req(this, common::convertToString(filepath));
+    events_info::BackupInfoRequest req(this, common::convertToString(filepath));
     server->backupToPath(req);
   }
 }
@@ -529,7 +529,7 @@ void ExplorerTreeView::importServer() {
   QString filepath = QFileDialog::getOpenFileName(this, translations::trImport,
                                                   QString(), translations::trfilterForRdb);
   if (filepath.isEmpty() && server) {
-    EventsInfo::ExportInfoRequest req(this, common::convertToString(filepath));
+    events_info::ExportInfoRequest req(this, common::convertToString(filepath));
     server->exportFromPath(req);
   }
 }
@@ -556,7 +556,7 @@ void ExplorerTreeView::shutdownServer() {
       return;
     }
 
-    EventsInfo::ShutDownInfoRequest req(this);
+    events_info::ShutDownInfoRequest req(this);
     server->shutDown(req);
   }
 }
@@ -645,10 +645,10 @@ void ExplorerTreeView::deleteKey() {
   }
 }
 
-void ExplorerTreeView::startLoadDatabases(const EventsInfo::LoadDatabasesInfoRequest& req) {
+void ExplorerTreeView::startLoadDatabases(const events_info::LoadDatabasesInfoRequest& req) {
 }
 
-void ExplorerTreeView::finishLoadDatabases(const EventsInfo::LoadDatabasesInfoResponce& res) {
+void ExplorerTreeView::finishLoadDatabases(const events_info::LoadDatabasesInfoResponce& res) {
   common::Error er = res.errorInfo();
   if (er && er->isError()) {
     return;
@@ -666,7 +666,7 @@ void ExplorerTreeView::finishLoadDatabases(const EventsInfo::LoadDatabasesInfoRe
     return;
   }
 
-  EventsInfo::LoadDatabasesInfoResponce::database_info_cont_type dbs = res.databases_;
+  events_info::LoadDatabasesInfoResponce::database_info_cont_type dbs = res.databases_;
 
   for (int i = 0; i < dbs.size(); ++i) {
     DataBaseInfoSPtr db = dbs[i];
@@ -674,10 +674,10 @@ void ExplorerTreeView::finishLoadDatabases(const EventsInfo::LoadDatabasesInfoRe
   }
 }
 
-void ExplorerTreeView::startSetDefaultDatabase(const EventsInfo::SetDefaultDatabaseRequest& req) {
+void ExplorerTreeView::startSetDefaultDatabase(const events_info::SetDefaultDatabaseRequest& req) {
 }
 
-void ExplorerTreeView::finishSetDefaultDatabase(const EventsInfo::SetDefaultDatabaseResponce& res) {
+void ExplorerTreeView::finishSetDefaultDatabase(const events_info::SetDefaultDatabaseResponce& res) {
   common::Error er = res.errorInfo();
   if (er && er->isError()) {
     return;
@@ -699,10 +699,10 @@ void ExplorerTreeView::finishSetDefaultDatabase(const EventsInfo::SetDefaultData
   mod->setDefaultDb(serv, db);
 }
 
-void ExplorerTreeView::startLoadDatabaseContent(const EventsInfo::LoadDatabaseContentRequest& req) {
+void ExplorerTreeView::startLoadDatabaseContent(const events_info::LoadDatabaseContentRequest& req) {
 }
 
-void ExplorerTreeView::finishLoadDatabaseContent(const EventsInfo::LoadDatabaseContentResponce& res) {
+void ExplorerTreeView::finishLoadDatabaseContent(const events_info::LoadDatabaseContentResponce& res) {
   common::Error er = res.errorInfo();
   if (er && er->isError()) {
     return;
@@ -720,7 +720,7 @@ void ExplorerTreeView::finishLoadDatabaseContent(const EventsInfo::LoadDatabaseC
     return;
   }
 
-  EventsInfo::LoadDatabaseContentResponce::keys_cont_type keys = res.keys_;
+  events_info::LoadDatabaseContentResponce::keys_cont_type keys = res.keys_;
 
   for (int i = 0; i < keys.size(); ++i) {
     NDbKValue key = keys[i];
@@ -728,10 +728,10 @@ void ExplorerTreeView::finishLoadDatabaseContent(const EventsInfo::LoadDatabaseC
   }
 }
 
-void ExplorerTreeView::startExecuteCommand(const EventsInfo::CommandRequest& req) {
+void ExplorerTreeView::startExecuteCommand(const events_info::CommandRequest& req) {
 }
 
-void ExplorerTreeView::finishExecuteCommand(const EventsInfo::CommandResponce& res) {
+void ExplorerTreeView::finishExecuteCommand(const events_info::CommandResponce& res) {
   common::Error er = res.errorInfo();
   if (er && er->isError()) {
     return;

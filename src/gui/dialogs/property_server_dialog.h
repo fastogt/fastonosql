@@ -44,11 +44,11 @@ class PropertyServerDialog
   void showed();
 
  private Q_SLOTS:
-  void startServerProperty(const EventsInfo::ServerPropertyInfoRequest& req);
-  void finishServerProperty(const EventsInfo::ServerPropertyInfoResponce& res);
+  void startServerProperty(const events_info::ServerPropertyInfoRequest& req);
+  void finishServerProperty(const events_info::ServerPropertyInfoResponce& res);
 
-  void startServerChangeProperty(const EventsInfo::ChangeServerPropertyInfoRequest& req);
-  void finishServerChangeProperty(const EventsInfo::ChangeServerPropertyInfoResponce& res);
+  void startServerChangeProperty(const events_info::ChangeServerPropertyInfoRequest& req);
+  void finishServerChangeProperty(const events_info::ChangeServerPropertyInfoResponce& res);
 
   void changedProperty(const PropertyType& prop);
  protected:

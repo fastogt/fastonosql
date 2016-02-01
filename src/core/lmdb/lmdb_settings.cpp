@@ -18,6 +18,8 @@
 
 #include "core/lmdb/lmdb_settings.h"
 
+#include <string>
+
 namespace fastonosql {
 
 LmdbConnectionSettings::LmdbConnectionSettings(const std::string& connectionName)
@@ -58,4 +60,4 @@ void LmdbConnectionSettings::initFromCommandLine(const std::string& val) {
   info_ = common::convertFromString<lmdbConfig>(val);
 }
 
-}
+}  // namespace fastonosql

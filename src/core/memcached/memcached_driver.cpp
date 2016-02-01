@@ -21,6 +21,8 @@
 #include <libmemcached/memcached.h>
 #include <libmemcached/util.h>
 
+#include <string>
+
 #include "common/utils.h"
 #include "common/sprintf.h"
 #include "fasto/qt/logger.h"
@@ -41,7 +43,7 @@
 namespace fastonosql {
 
 common::Error testConnection(MemcachedConnectionSettings* settings) {
-  if(!settings){
+  if (!settings) {
       return common::make_error_value("Invalid input argument", common::ErrorValue::E_ERROR);
   }
 
@@ -54,17 +56,18 @@ common::Error testConnection(MemcachedConnectionSettings* settings) {
   memcached_return rc;
   char buff[1024] = {0};
 
-  if(user && passwd){
+  if (user && passwd) {
       libmemcached_util_ping2(host, hostport, user, passwd, &rc);
-      if (rc != MEMCACHED_SUCCESS){
-          common::SNPrintf(buff, sizeof(buff), "Couldn't ping server: %s", memcached_strerror(NULL, rc));
+      if (rc != MEMCACHED_SUCCESS) {
+          common::SNPrintf(buff, sizeof(buff), "Couldn't ping server: %s",
+                           memcached_strerror(NULL, rc));
           return common::make_error_value(buff, common::ErrorValue::E_ERROR);
       }
-  }
-  else{
+  } else {
       libmemcached_util_ping(host, hostport, &rc);
-      if (rc != MEMCACHED_SUCCESS){
-          common::SNPrintf(buff, sizeof(buff), "Couldn't ping server: %s", memcached_strerror(NULL, rc));
+      if (rc != MEMCACHED_SUCCESS) {
+          common::SNPrintf(buff, sizeof(buff), "Couldn't ping server: %s",
+                           memcached_strerror(NULL, rc));
           return common::make_error_value(buff, common::ErrorValue::E_ERROR);
       }
   }
@@ -91,32 +94,33 @@ struct MemcachedDriver::pimpl {
   }
 
   common::Error connect() {
-    if(isConnected()){
+    if (isConnected()) {
       return common::Error();
     }
 
     clear();
     init();
 
-    if(!memc_){
+    if (!memc_) {
       return common::make_error_value("Init error", common::ErrorValue::E_ERROR);
     }
 
     memcached_return rc;
     char buff[1024] = {0};
 
-    if(!config_.user_.empty() && !config_.password_.empty()){
+    if (!config_.user_.empty() && !config_.password_.empty()) {
       const char* user = config_.user_.c_str();
       const char* passwd = config_.password_.c_str();
       rc = memcached_set_sasl_auth_data(memc_, user, passwd);
-      if (rc != MEMCACHED_SUCCESS){
-        common::SNPrintf(buff, sizeof(buff), "Couldn't setup SASL auth: %s", memcached_strerror(memc_, rc));
+      if (rc != MEMCACHED_SUCCESS) {
+        common::SNPrintf(buff, sizeof(buff), "Couldn't setup SASL auth: %s",
+                         memcached_strerror(memc_, rc));
         return common::make_error_value(buff, common::ErrorValue::E_ERROR);
       }
     }
 
     /*rc = memcached_behavior_set(memc_, MEMCACHED_BEHAVIOR_CONNECT_TIMEOUT, 10000);
-    if (rc != MEMCACHED_SUCCESS){
+    if (rc != MEMCACHED_SUCCESS) {
         sprintf(buff, "Couldn't set the connect timeout: %s", memcached_strerror(memc_, rc));
         return common::make_error_value(buff, common::ErrorValue::E_ERROR);
     }*/
@@ -126,15 +130,17 @@ struct MemcachedDriver::pimpl {
 
     rc = memcached_server_add(memc_, host, hostport);
 
-    if (rc != MEMCACHED_SUCCESS){
-      common::SNPrintf(buff, sizeof(buff), "Couldn't add server: %s", memcached_strerror(memc_, rc));
+    if (rc != MEMCACHED_SUCCESS) {
+      common::SNPrintf(buff, sizeof(buff), "Couldn't add server: %s",
+                       memcached_strerror(memc_, rc));
       return common::make_error_value(buff, common::ErrorValue::E_ERROR);
     }
 
     memcached_return_t error = memcached_version(memc_);
     if (error != MEMCACHED_SUCCESS) {
       char buff[1024] = {0};
-      common::SNPrintf(buff, sizeof(buff), "Connect to server error: %s", memcached_strerror(memc_, error));
+      common::SNPrintf(buff, sizeof(buff), "Connect to server error: %s",
+                       memcached_strerror(memc_, error));
       return common::make_error_value(buff, common::ErrorValue::E_ERROR);
     }
 
@@ -142,7 +148,7 @@ struct MemcachedDriver::pimpl {
   }
 
   common::Error disconnect() {
-    if(!isConnected()){
+    if (!isConnected()) {
       return common::Error();
     }
 
@@ -159,9 +165,10 @@ struct MemcachedDriver::pimpl {
   common::Error stats(const char* args, MemcachedServerInfo::Common& statsout) {
     memcached_return_t error;
     memcached_stat_st* st = memcached_stat(memc_, (char*)args, &error);
-    if (error != MEMCACHED_SUCCESS){
+    if (error != MEMCACHED_SUCCESS) {
       char buff[1024] = {0};
-      common::SNPrintf(buff, sizeof(buff), "Stats function error: %s", memcached_strerror(memc_, error));
+      common::SNPrintf(buff, sizeof(buff), "Stats function error: %s",
+                       memcached_strerror(memc_, error));
       return common::make_error_value(buff, common::ErrorValue::E_ERROR);
     }
 
@@ -200,8 +207,8 @@ struct MemcachedDriver::pimpl {
   SSHInfo sinfo_;
 
   common::Error execute_impl(FastoObject* out, int argc, char **argv) {
-    if(strcasecmp(argv[0], "get") == 0) {
-      if(argc != 2){
+    if (strcasecmp(argv[0], "get") == 0) {
+      if (argc != 2) {
         return common::make_error_value("Invalid get input argument", common::ErrorValue::E_ERROR);
       }
 
@@ -213,8 +220,8 @@ struct MemcachedDriver::pimpl {
         out->addChildren(child);
       }
       return er;
-    } else if(strcasecmp(argv[0], "set") == 0) {
-      if(argc != 5){
+    } else if (strcasecmp(argv[0], "set") == 0) {
+      if (argc != 5) {
         return common::make_error_value("Invalid set input argument", common::ErrorValue::E_ERROR);
       }
 
@@ -225,8 +232,8 @@ struct MemcachedDriver::pimpl {
         out->addChildren(child);
       }
       return er;
-    } else if(strcasecmp(argv[0], "add") == 0) {
-      if(argc != 5){
+    } else if (strcasecmp(argv[0], "add") == 0) {
+      if (argc != 5) {
         return common::make_error_value("Invalid add input argument", common::ErrorValue::E_ERROR);
       }
 
@@ -237,9 +244,10 @@ struct MemcachedDriver::pimpl {
         out->addChildren(child);
       }
       return er;
-    } else if(strcasecmp(argv[0], "replace") == 0) {
-      if(argc != 5){
-        return common::make_error_value("Invalid replace input argument", common::ErrorValue::E_ERROR);
+    } else if (strcasecmp(argv[0], "replace") == 0) {
+      if (argc != 5) {
+        return common::make_error_value("Invalid replace input argument",
+                                        common::ErrorValue::E_ERROR);
       }
 
       common::Error er = replace(argv[1], argv[4], atoi(argv[2]), atoi(argv[3]));
@@ -249,9 +257,10 @@ struct MemcachedDriver::pimpl {
         out->addChildren(child);
       }
       return er;
-    } else if(strcasecmp(argv[0], "append") == 0) {
-      if(argc != 5){
-        return common::make_error_value("Invalid append input argument", common::ErrorValue::E_ERROR);
+    } else if (strcasecmp(argv[0], "append") == 0) {
+      if (argc != 5) {
+        return common::make_error_value("Invalid append input argument",
+                                        common::ErrorValue::E_ERROR);
       }
 
       common::Error er = append(argv[1], argv[4], atoi(argv[2]), atoi(argv[3]));
@@ -261,9 +270,10 @@ struct MemcachedDriver::pimpl {
         out->addChildren(child);
       }
       return er;
-    } else if(strcasecmp(argv[0], "prepend") == 0){
-      if(argc != 4){
-        return common::make_error_value("Invalid prepend input argument", common::ErrorValue::E_ERROR);
+    } else if (strcasecmp(argv[0], "prepend") == 0) {
+      if (argc != 4) {
+        return common::make_error_value("Invalid prepend input argument",
+                                        common::ErrorValue::E_ERROR);
       }
 
       common::Error er = prepend(argv[1], argv[4], atoi(argv[2]), atoi(argv[3]));
@@ -273,8 +283,8 @@ struct MemcachedDriver::pimpl {
         out->addChildren(child);
       }
       return er;
-    } else if(strcasecmp(argv[0], "incr") == 0){
-      if(argc != 3){
+    } else if (strcasecmp(argv[0], "incr") == 0) {
+      if (argc != 3) {
         return common::make_error_value("Invalid incr input argument", common::ErrorValue::E_ERROR);
       }
 
@@ -285,8 +295,8 @@ struct MemcachedDriver::pimpl {
         out->addChildren(child);
       }
       return er;
-    } else if(strcasecmp(argv[0], "decr") == 0) {
-      if(argc != 3){
+    } else if (strcasecmp(argv[0], "decr") == 0) {
+      if (argc != 3) {
         return common::make_error_value("Invalid decr input argument", common::ErrorValue::E_ERROR);
       }
 
@@ -297,9 +307,10 @@ struct MemcachedDriver::pimpl {
         out->addChildren(child);
       }
       return er;
-    } else if(strcasecmp(argv[0], "delete") == 0){
-      if(!(argc == 2 || argc == 3)){
-        return common::make_error_value("Invalid delete input argument", common::ErrorValue::E_ERROR);
+    } else if (strcasecmp(argv[0], "delete") == 0) {
+      if (!(argc == 2 || argc == 3)) {
+        return common::make_error_value("Invalid delete input argument",
+                                        common::ErrorValue::E_ERROR);
       }
 
       common::Error er = del(argv[1], argc == 3 ? atoll(argv[2]) : 0);
@@ -309,9 +320,10 @@ struct MemcachedDriver::pimpl {
         out->addChildren(child);
       }
       return er;
-    } else if(strcasecmp(argv[0], "flush_all") == 0){
-      if(argc > 2){
-        return common::make_error_value("Invalid flush_all input argument", common::ErrorValue::E_ERROR);
+    } else if (strcasecmp(argv[0], "flush_all") == 0) {
+      if (argc > 2) {
+        return common::make_error_value("Invalid flush_all input argument",
+                                        common::ErrorValue::E_ERROR);
       }
 
       common::Error er = flush_all(argc == 2 ? common::convertFromString<time_t>(argv[1]) : 0);
@@ -321,34 +333,38 @@ struct MemcachedDriver::pimpl {
         out->addChildren(child);
       }
       return er;
-    } else if(strcasecmp(argv[0], "stats") == 0){
-      if(argc > 2){
-        return common::make_error_value("Invalid stats input argument", common::ErrorValue::E_ERROR);
+    } else if (strcasecmp(argv[0], "stats") == 0) {
+      if (argc > 2) {
+        return common::make_error_value("Invalid stats input argument",
+                                        common::ErrorValue::E_ERROR);
       }
 
       const char* args = argc == 2 ? argv[1] : NULL;
 
-      if(args && strcasecmp(args, "items") == 0){
+      if (args && strcasecmp(args, "items") == 0) {
         return keys(args);
       }
 
       MemcachedServerInfo::Common statsout;
       common::Error er = stats(args, statsout);
       if (!er) {
-        common::StringValue *val = common::Value::createStringValue(MemcachedServerInfo(statsout).toString());
+        MemcachedServerInfo minf(statsout);
+        common::StringValue *val = common::Value::createStringValue(minf.toString());
         FastoObject* child = new FastoObject(out, val, config_.mb_delim_);
         out->addChildren(child);
       }
       return er;
-    } else if(strcasecmp(argv[0], "version") == 0) {
-      if(argc != 1){
-        return common::make_error_value("Invalid version input argument", common::ErrorValue::E_ERROR);
+    } else if (strcasecmp(argv[0], "version") == 0) {
+      if (argc != 1) {
+        return common::make_error_value("Invalid version input argument",
+                                        common::ErrorValue::E_ERROR);
       }
 
       return version_server();
-    } else if(strcasecmp(argv[0], "verbosity") == 0) {
-      if(argc != 1){
-        return common::make_error_value("Invalid verbosity input argument", common::ErrorValue::E_ERROR);
+    } else if (strcasecmp(argv[0], "verbosity") == 0) {
+      if (argc != 1) {
+        return common::make_error_value("Invalid verbosity input argument",
+                                        common::ErrorValue::E_ERROR);
       }
 
       return verbosity();
@@ -369,12 +385,13 @@ private:
     char *value = memcached_get(memc_, key.c_str(), key.length(), &value_length, &flags, &error);
     if (error != MEMCACHED_SUCCESS) {
       char buff[1024] = {0};
-      common::SNPrintf(buff, sizeof(buff), "Get function error: %s", memcached_strerror(memc_, error));
+      common::SNPrintf(buff, sizeof(buff), "Get function error: %s",
+                       memcached_strerror(memc_, error));
       return common::make_error_value(buff, common::ErrorValue::E_ERROR);
     }
 
     if (value != NULL) {
-      ret_val.reserve(value_length +1); // Always provide null
+      ret_val.reserve(value_length +1);  // Always provide null
       ret_val.assign(value, value + value_length +1);
       ret_val.resize(value_length);
       free(value);
@@ -382,55 +399,70 @@ private:
     return common::Error();
   }
 
-  common::Error set(const std::string& key, const std::string& value, time_t expiration, uint32_t flags) {
-    memcached_return_t error = memcached_set(memc_, key.c_str(), key.length(), value.c_str(), value.length(), expiration, flags);
+  common::Error set(const std::string& key, const std::string& value,
+                    time_t expiration, uint32_t flags) {
+    memcached_return_t error = memcached_set(memc_, key.c_str(), key.length(),
+                                             value.c_str(), value.length(), expiration, flags);
     if (error != MEMCACHED_SUCCESS) {
       char buff[1024] = {0};
-      common::SNPrintf(buff, sizeof(buff), "Set function error: %s", memcached_strerror(memc_, error));
+      common::SNPrintf(buff, sizeof(buff), "Set function error: %s",
+                       memcached_strerror(memc_, error));
       return common::make_error_value(buff, common::ErrorValue::E_ERROR);
     }
 
     return common::Error();
   }
 
-  common::Error add(const std::string& key, const std::string& value, time_t expiration, uint32_t flags) {
-    memcached_return_t error = memcached_add(memc_, key.c_str(), key.length(), value.c_str(), value.length(), expiration, flags);
-    if (error != MEMCACHED_SUCCESS){
+  common::Error add(const std::string& key, const std::string& value,
+                    time_t expiration, uint32_t flags) {
+    memcached_return_t error = memcached_add(memc_, key.c_str(), key.length(),
+                                             value.c_str(), value.length(), expiration, flags);
+    if (error != MEMCACHED_SUCCESS) {
       char buff[1024] = {0};
-      common::SNPrintf(buff, sizeof(buff), "Add function error: %s", memcached_strerror(memc_, error));
+      common::SNPrintf(buff, sizeof(buff), "Add function error: %s",
+                       memcached_strerror(memc_, error));
       return common::make_error_value(buff, common::ErrorValue::E_ERROR);
     }
 
     return common::Error();
   }
 
-  common::Error replace(const std::string& key, const std::string& value, time_t expiration, uint32_t flags) {
-    memcached_return_t error = memcached_replace(memc_, key.c_str(), key.length(), value.c_str(), value.length(), expiration, flags);
-    if (error != MEMCACHED_SUCCESS){
+  common::Error replace(const std::string& key, const std::string& value,
+                        time_t expiration, uint32_t flags) {
+    memcached_return_t error = memcached_replace(memc_, key.c_str(), key.length(),
+                                                 value.c_str(), value.length(), expiration, flags);
+    if (error != MEMCACHED_SUCCESS) {
       char buff[1024] = {0};
-      common::SNPrintf(buff, sizeof(buff), "Replace function error: %s", memcached_strerror(memc_, error));
+      common::SNPrintf(buff, sizeof(buff), "Replace function error: %s",
+                       memcached_strerror(memc_, error));
       return common::make_error_value(buff, common::ErrorValue::E_ERROR);
     }
 
     return common::Error();
   }
 
-  common::Error append(const std::string& key, const std::string& value, time_t expiration, uint32_t flags) {
-    memcached_return_t error = memcached_append(memc_, key.c_str(), key.length(), value.c_str(), value.length(), expiration, flags);
-    if (error != MEMCACHED_SUCCESS){
+  common::Error append(const std::string& key, const std::string& value,
+                       time_t expiration, uint32_t flags) {
+    memcached_return_t error = memcached_append(memc_, key.c_str(), key.length(), value.c_str(),
+                                                value.length(), expiration, flags);
+    if (error != MEMCACHED_SUCCESS) {
       char buff[1024] = {0};
-      common::SNPrintf(buff, sizeof(buff), "Append function error: %s", memcached_strerror(memc_, error));
+      common::SNPrintf(buff, sizeof(buff), "Append function error: %s",
+                       memcached_strerror(memc_, error));
       return common::make_error_value(buff, common::ErrorValue::E_ERROR);
     }
 
     return common::Error();
   }
 
-  common::Error prepend(const std::string& key, const std::string& value, time_t expiration, uint32_t flags) {
-    memcached_return_t error = memcached_prepend(memc_, key.c_str(), key.length(), value.c_str(), value.length(), expiration, flags);
-    if (error != MEMCACHED_SUCCESS){
+  common::Error prepend(const std::string& key, const std::string& value,
+                        time_t expiration, uint32_t flags) {
+    memcached_return_t error = memcached_prepend(memc_, key.c_str(), key.length(),
+                                                 value.c_str(), value.length(), expiration, flags);
+    if (error != MEMCACHED_SUCCESS) {
       char buff[1024] = {0};
-      common::SNPrintf(buff, sizeof(buff), "Prepend function error: %s", memcached_strerror(memc_, error));
+      common::SNPrintf(buff, sizeof(buff), "Prepend function error: %s",
+                       memcached_strerror(memc_, error));
       return common::make_error_value(buff, common::ErrorValue::E_ERROR);
     }
 
@@ -439,9 +471,10 @@ private:
 
   common::Error incr(const std::string& key, uint64_t value) {
     memcached_return_t error = memcached_increment(memc_, key.c_str(), key.length(), 0, &value);
-    if (error != MEMCACHED_SUCCESS){
+    if (error != MEMCACHED_SUCCESS) {
       char buff[1024] = {0};
-      common::SNPrintf(buff, sizeof(buff), "Incr function error: %s", memcached_strerror(memc_, error));
+      common::SNPrintf(buff, sizeof(buff), "Incr function error: %s",
+                       memcached_strerror(memc_, error));
       return common::make_error_value(buff, common::ErrorValue::E_ERROR);
     }
 
@@ -450,9 +483,10 @@ private:
 
   common::Error decr(const std::string& key, uint64_t value) {
     memcached_return_t error = memcached_decrement(memc_, key.c_str(), key.length(), 0, &value);
-    if (error != MEMCACHED_SUCCESS){
+    if (error != MEMCACHED_SUCCESS) {
       char buff[1024] = {0};
-      common::SNPrintf(buff, sizeof(buff), "Decr function error: %s", memcached_strerror(memc_, error));
+      common::SNPrintf(buff, sizeof(buff), "Decr function error: %s",
+                       memcached_strerror(memc_, error));
       return common::make_error_value(buff, common::ErrorValue::E_ERROR);
     }
 
@@ -461,9 +495,10 @@ private:
 
   common::Error del(const std::string& key, time_t expiration) {
     memcached_return_t error = memcached_delete(memc_, key.c_str(), key.length(), expiration);
-    if (error != MEMCACHED_SUCCESS){
+    if (error != MEMCACHED_SUCCESS) {
       char buff[1024] = {0};
-      common::SNPrintf(buff, sizeof(buff), "Delete function error: %s", memcached_strerror(memc_, error));
+      common::SNPrintf(buff, sizeof(buff), "Delete function error: %s",
+                       memcached_strerror(memc_, error));
       return common::make_error_value(buff, common::ErrorValue::E_ERROR);
     }
 
@@ -472,9 +507,10 @@ private:
 
   common::Error flush_all(time_t expiration) {
     memcached_return_t error = memcached_flush(memc_, expiration);
-    if (error != MEMCACHED_SUCCESS){
+    if (error != MEMCACHED_SUCCESS) {
       char buff[1024] = {0};
-      common::SNPrintf(buff, sizeof(buff), "Fluss all function error: %s", memcached_strerror(memc_, error));
+      common::SNPrintf(buff, sizeof(buff), "Fluss all function error: %s",
+                       memcached_strerror(memc_, error));
       return common::make_error_value(buff, common::ErrorValue::E_ERROR);
     }
 
@@ -483,9 +519,10 @@ private:
 
   common::Error version_server() const {
     memcached_return_t error = memcached_version(memc_);
-    if (error != MEMCACHED_SUCCESS){
+    if (error != MEMCACHED_SUCCESS) {
       char buff[1024] = {0};
-      common::SNPrintf(buff, sizeof(buff), "Get server version error: %s", memcached_strerror(memc_, error));
+      common::SNPrintf(buff, sizeof(buff), "Get server version error: %s",
+                       memcached_strerror(memc_, error));
       return common::make_error_value(buff, common::ErrorValue::E_ERROR);
     }
 
@@ -494,7 +531,7 @@ private:
 
   common::Error verbosity() const {
     /*memcached_return_t error = memcached_verbosity(memc_, 1);
-    if (error != MEMCACHED_SUCCESS){
+    if (error != MEMCACHED_SUCCESS) {
       char buff[1024] = {0};
       sprintf(buff, "Verbosity error: %s", memcached_strerror(memc_, error));
       return common::make_error_value(buff, common::ErrorValue::E_ERROR);
@@ -510,7 +547,7 @@ private:
   }
 
   void clear() {
-    if(memc_){
+    if (memc_) {
       memcached_free(memc_);
     }
     memc_ = NULL;
@@ -563,7 +600,7 @@ common::Error MemcachedDriver::serverInfo(ServerInfo **info) {
   LOG_COMMAND(Command(INFO_REQUEST, common::Value::C_INNER));
   MemcachedServerInfo::Common cm;
   common::Error err = impl_->stats(NULL, cm);
-  if(!err){
+  if (!err) {
     *info = new MemcachedServerInfo(cm);
   }
 
@@ -575,24 +612,25 @@ common::Error MemcachedDriver::serverDiscoveryInfo(ServerInfo **sinfo,
                                                    DataBaseInfo** dbinfo) {
   ServerInfo *lsinfo = NULL;
   common::Error er = serverInfo(&lsinfo);
-  if(er){
+  if (er) {
     return er;
   }
 
   FastoObjectIPtr root = FastoObject::createRoot(GET_SERVER_TYPE);
-  FastoObjectCommand* cmd = createCommand<MemcachedCommand>(root, GET_SERVER_TYPE, common::Value::C_INNER);
+  FastoObjectCommand* cmd = createCommand<MemcachedCommand>(root, GET_SERVER_TYPE,
+                                                            common::Value::C_INNER);
   er = execute(cmd);
 
   if (!er) {
     FastoObject::child_container_type ch = root->childrens();
-    if(ch.size()){
-      //*dinfo = makeOwnRedisDiscoveryInfo(ch[0]);
+    if (ch.size()) {
+      // *dinfo = makeOwnRedisDiscoveryInfo(ch[0]);
     }
   }
 
   DataBaseInfo* ldbinfo = NULL;
   er = currentDataBaseInfo(&ldbinfo);
-  if(er){
+  if (er) {
     delete lsinfo;
     return er;
   }
@@ -612,12 +650,12 @@ void MemcachedDriver::handleConnectEvent(events::ConnectRequestEvent *ev) {
   notifyProgress(sender, 0);
   events::ConnectResponceEvent::value_type res(ev->value());
   MemcachedConnectionSettings *set = dynamic_cast<MemcachedConnectionSettings*>(settings_.get());
-  if(set){
+  if (set) {
     impl_->config_ = set->info();
     impl_->sinfo_ = set->sshInfo();
   notifyProgress(sender, 25);
     common::Error er = impl_->connect();
-    if(er){
+    if (er) {
       res.setErrorInfo(er);
     }
   notifyProgress(sender, 75);
@@ -648,22 +686,22 @@ void MemcachedDriver::handleExecuteEvent(events::ExecuteRequestEvent* ev) {
   const char *inputLine = common::utils::c_strornull(res.text_);
 
   common::Error er;
-  if(inputLine){
+  if (inputLine) {
     size_t length = strlen(inputLine);
     int offset = 0;
     RootLocker lock = make_locker(sender, inputLine);
     FastoObjectIPtr outRoot = lock.root_;
     double step = 100.0f/length;
-    for(size_t n = 0; n < length; ++n){
-      if(interrupt_){
+    for (size_t n = 0; n < length; ++n) {
+      if (interrupt_) {
         er.reset(new common::ErrorValue("Interrupted exec.", common::ErrorValue::E_INTERRUPTED));
         res.setErrorInfo(er);
         break;
       }
-      if(inputLine[n] == '\n' || n == length-1){
+      if (inputLine[n] == '\n' || n == length-1) {
   notifyProgress(sender, step * n);
         char command[128] = {0};
-        if(n == length-1){
+        if (n == length-1) {
           strcpy(command, inputLine + offset);
         } else {
           strncpy(command, inputLine + offset, n - offset);
@@ -682,7 +720,7 @@ void MemcachedDriver::handleExecuteEvent(events::ExecuteRequestEvent* ev) {
     er.reset(new common::ErrorValue("Empty command line.", common::ErrorValue::E_ERROR));
   }
 
-  if(er){
+  if (er) {
     LOG_ERROR(er, true);
   }
   notifyProgress(sender, 100);
@@ -706,7 +744,7 @@ void MemcachedDriver::handleCommandRequestEvent(events::CommandRequestEvent* ev)
   FastoObjectCommand* cmd = createCommand<MemcachedCommand>(root, cmdtext, common::Value::C_INNER);
   notifyProgress(sender, 50);
   er = execute(cmd);
-  if(er){
+  if (er) {
     res.setErrorInfo(er);
   }
   reply(sender, new events::CommandResponceEvent(this, res));
@@ -735,8 +773,8 @@ void MemcachedDriver::handleLoadDatabaseContentEvent(events::LoadDatabaseContent
     res.setErrorInfo(er);
   } else {
     FastoObject::child_container_type rchildrens = cmd->childrens();
-    if(rchildrens.size()){
-      DCHECK(rchildrens.size() == 1);
+    if (rchildrens.size()) {
+      DCHECK_EQ(rchildrens.size(), 1);
       FastoObjectArray* array = dynamic_cast<FastoObjectArray*>(rchildrens[0]);
       if (!array) {
         goto done;
@@ -746,7 +784,7 @@ void MemcachedDriver::handleLoadDatabaseContentEvent(events::LoadDatabaseContent
         goto done;
       }
 
-      for(size_t i = 0; i < ar->size(); ++i) {
+      for (size_t i = 0; i < ar->size(); ++i) {
         std::string key;
         bool isok = ar->getString(i, &key);
         if (isok) {
@@ -792,15 +830,18 @@ void MemcachedDriver::handleLoadServerInfoEvent(events::ServerInfoRequestEvent* 
 }
 
 // ============== commands =============//
-common::Error MemcachedDriver::commandDeleteImpl(CommandDeleteKey* command, std::string& cmdstring) const {
+common::Error MemcachedDriver::commandDeleteImpl(CommandDeleteKey* command,
+                                                 std::string& cmdstring) const {
   char patternResult[1024] = {0};
   NDbKValue key = command->key();
-  common::SNPrintf(patternResult, sizeof(patternResult), DELETE_KEY_PATTERN_1ARGS_S, key.keyString());
+  common::SNPrintf(patternResult, sizeof(patternResult),
+                   DELETE_KEY_PATTERN_1ARGS_S, key.keyString());
   cmdstring = patternResult;
   return common::Error();
 }
 
-common::Error MemcachedDriver::commandLoadImpl(CommandLoadKey* command, std::string& cmdstring) const {
+common::Error MemcachedDriver::commandLoadImpl(CommandLoadKey* command,
+                                               std::string& cmdstring) const {
   char patternResult[1024] = {0};
   NDbKValue key = command->key();
   common::SNPrintf(patternResult, sizeof(patternResult), GET_KEY_PATTERN_1ARGS_S, key.keyString());
@@ -808,19 +849,22 @@ common::Error MemcachedDriver::commandLoadImpl(CommandLoadKey* command, std::str
   return common::Error();
 }
 
-common::Error MemcachedDriver::commandCreateImpl(CommandCreateKey* command, std::string& cmdstring) const {
+common::Error MemcachedDriver::commandCreateImpl(CommandCreateKey* command,
+                                                 std::string& cmdstring) const {
   char patternResult[1024] = {0};
   NDbKValue key = command->key();
   NValue val = command->value();
   common::Value* rval = val.get();
   std::string key_str = key.keyString();
   std::string value_str = common::convertToString(rval, " ");
-  common::SNPrintf(patternResult, sizeof(patternResult), SET_KEY_PATTERN_2ARGS_SS, key_str, value_str);
+  common::SNPrintf(patternResult, sizeof(patternResult),
+                   SET_KEY_PATTERN_2ARGS_SS, key_str, value_str);
   cmdstring = patternResult;
   return common::Error();
 }
 
-common::Error MemcachedDriver::commandChangeTTLImpl(CommandChangeTTL* command, std::string& cmdstring) const {
+common::Error MemcachedDriver::commandChangeTTLImpl(CommandChangeTTL* command,
+                                                    std::string& cmdstring) const {
   UNUSED(command);
   UNUSED(cmdstring);
   char errorMsg[1024] = {0};
@@ -838,4 +882,4 @@ ServerInfoSPtr MemcachedDriver::makeServerInfoFromString(const std::string& val)
   return res;
 }
 
-}
+}  // namespace fastonosql

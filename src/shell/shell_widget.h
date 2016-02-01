@@ -51,9 +51,9 @@ class BaseShellWidget
   QString text() const;
 
  Q_SIGNALS:
-  void startedExecute(const EventsInfo::ExecuteInfoRequest& req);
-  void rootCreated(const EventsInfo::CommandRootCreatedInfo& res);
-  void rootCompleated(const EventsInfo::CommandRootCompleatedInfo& res);
+  void startedExecute(const events_info::ExecuteInfoRequest& req);
+  void rootCreated(const events_info::CommandRootCreatedInfo& res);
+  void rootCompleated(const events_info::CommandRootCompleatedInfo& res);
 
   void addedChild(FastoObject* child);
   void itemUpdated(FastoObject* item, common::Value* value);
@@ -74,21 +74,21 @@ class BaseShellWidget
 
   void changeVersionApi(int index);
 
-  void startConnect(const EventsInfo::ConnectInfoRequest& req);
-  void finishConnect(const EventsInfo::ConnectInfoResponce& res);
-  void startDisconnect(const EventsInfo::DisConnectInfoRequest& req);
-  void finishDisconnect(const EventsInfo::DisConnectInfoResponce& res);
+  void startConnect(const events_info::ConnectInfoRequest& req);
+  void finishConnect(const events_info::ConnectInfoResponce& res);
+  void startDisconnect(const events_info::DisConnectInfoRequest& req);
+  void finishDisconnect(const events_info::DisConnectInfoResponce& res);
 
-  void startSetDefaultDatabase(const EventsInfo::SetDefaultDatabaseRequest& req);
-  void finishSetDefaultDatabase(const EventsInfo::SetDefaultDatabaseResponce& res);
+  void startSetDefaultDatabase(const events_info::SetDefaultDatabaseRequest& req);
+  void finishSetDefaultDatabase(const events_info::SetDefaultDatabaseResponce& res);
 
-  void progressChange(const EventsInfo::ProgressInfoResponce& res);
+  void progressChange(const events_info::ProgressInfoResponce& res);
 
-  void enterMode(const EventsInfo::EnterModeInfo& res);
-  void leaveMode(const EventsInfo::LeaveModeInfo& res);
+  void enterMode(const events_info::EnterModeInfo& res);
+  void leaveMode(const events_info::LeaveModeInfo& res);
 
-  void startLoadDiscoveryInfo(const EventsInfo::DiscoveryInfoRequest& res);
-  void finishLoadDiscoveryInfo(const EventsInfo::DiscoveryInfoResponce& res);
+  void startLoadDiscoveryInfo(const events_info::DiscoveryInfoRequest& res);
+  void finishLoadDiscoveryInfo(const events_info::DiscoveryInfoResponce& res);
 
  private:
   void syncConnectionActions();

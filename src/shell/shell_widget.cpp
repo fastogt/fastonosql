@@ -263,7 +263,7 @@ void BaseShellWidget::execute() {
     selected = input_->text();
   }
 
-  EventsInfo::ExecuteInfoRequest req(this, common::convertToString(selected));
+  events_info::ExecuteInfoRequest req(this, common::convertToString(selected));
   server_->execute(req);
 }
 
@@ -272,12 +272,12 @@ void BaseShellWidget::stop() {
 }
 
 void BaseShellWidget::connectToServer() {
-  EventsInfo::ConnectInfoRequest req(this);
+  events_info::ConnectInfoRequest req(this);
   server_->connect(req);
 }
 
 void BaseShellWidget::disconnectFromServer() {
-  EventsInfo::DisConnectInfoRequest req(this);
+  events_info::DisConnectInfoRequest req(this);
   server_->disconnect(req);
 }
 
@@ -328,26 +328,26 @@ void BaseShellWidget::saveToFile() {
   }
 }
 
-void BaseShellWidget::startConnect(const EventsInfo::ConnectInfoRequest& req) {
+void BaseShellWidget::startConnect(const events_info::ConnectInfoRequest& req) {
   syncConnectionActions();
 }
 
-void BaseShellWidget::finishConnect(const EventsInfo::ConnectInfoResponce& res) {
+void BaseShellWidget::finishConnect(const events_info::ConnectInfoResponce& res) {
   syncConnectionActions();
 }
 
-void BaseShellWidget::startDisconnect(const EventsInfo::DisConnectInfoRequest& req) {
+void BaseShellWidget::startDisconnect(const events_info::DisConnectInfoRequest& req) {
   syncConnectionActions();
 }
 
-void BaseShellWidget::finishDisconnect(const EventsInfo::DisConnectInfoResponce& res) {
+void BaseShellWidget::finishDisconnect(const events_info::DisConnectInfoResponce& res) {
   syncConnectionActions();
 }
 
-void BaseShellWidget::startSetDefaultDatabase(const EventsInfo::SetDefaultDatabaseRequest& req) {
+void BaseShellWidget::startSetDefaultDatabase(const events_info::SetDefaultDatabaseRequest& req) {
 }
 
-void BaseShellWidget::finishSetDefaultDatabase(const EventsInfo::SetDefaultDatabaseResponce& res) {
+void BaseShellWidget::finishSetDefaultDatabase(const events_info::SetDefaultDatabaseResponce& res) {
   common::Error er = res.errorInfo();
   if (er && er->isError()) {
     return;
@@ -363,24 +363,24 @@ void BaseShellWidget::finishSetDefaultDatabase(const EventsInfo::SetDefaultDatab
   updateDefaultDatabase(db);
 }
 
-void BaseShellWidget::progressChange(const EventsInfo::ProgressInfoResponce& res) {
+void BaseShellWidget::progressChange(const events_info::ProgressInfoResponce& res) {
   workProgressBar_->setValue(res.progress_);
 }
 
-void BaseShellWidget::enterMode(const EventsInfo::EnterModeInfo& res) {
+void BaseShellWidget::enterMode(const events_info::EnterModeInfo& res) {
   ConnectionMode mode = res.mode_;
   connectionMode_->setIcon(GuiFactory::instance().modeIcon(mode), iconSize);
   std::string modeText = common::convertToString(mode);
   connectionMode_->setText(common::convertFromString<QString>(modeText));
 }
 
-void BaseShellWidget::leaveMode(const EventsInfo::LeaveModeInfo& res) {
+void BaseShellWidget::leaveMode(const events_info::LeaveModeInfo& res) {
 }
 
-void BaseShellWidget::startLoadDiscoveryInfo(const EventsInfo::DiscoveryInfoRequest& res) {
+void BaseShellWidget::startLoadDiscoveryInfo(const events_info::DiscoveryInfoRequest& res) {
 }
 
-void BaseShellWidget::finishLoadDiscoveryInfo(const EventsInfo::DiscoveryInfoResponce& res) {
+void BaseShellWidget::finishLoadDiscoveryInfo(const events_info::DiscoveryInfoResponce& res) {
   common::Error er = res.errorInfo();
   if (er && er->isError()) {
     return;

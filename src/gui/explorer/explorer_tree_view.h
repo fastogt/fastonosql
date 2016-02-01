@@ -69,17 +69,17 @@ class ExplorerTreeView
   void getValue();
   void deleteKey();
 
-  void startLoadDatabases(const EventsInfo::LoadDatabasesInfoRequest& req);
-  void finishLoadDatabases(const EventsInfo::LoadDatabasesInfoResponce& res);
+  void startLoadDatabases(const events_info::LoadDatabasesInfoRequest& req);
+  void finishLoadDatabases(const events_info::LoadDatabasesInfoResponce& res);
 
-  void startSetDefaultDatabase(const EventsInfo::SetDefaultDatabaseRequest& req);
-  void finishSetDefaultDatabase(const EventsInfo::SetDefaultDatabaseResponce& res);
+  void startSetDefaultDatabase(const events_info::SetDefaultDatabaseRequest& req);
+  void finishSetDefaultDatabase(const events_info::SetDefaultDatabaseResponce& res);
 
-  void startLoadDatabaseContent(const EventsInfo::LoadDatabaseContentRequest& req);
-  void finishLoadDatabaseContent(const EventsInfo::LoadDatabaseContentResponce& res);
+  void startLoadDatabaseContent(const events_info::LoadDatabaseContentRequest& req);
+  void finishLoadDatabaseContent(const events_info::LoadDatabaseContentResponce& res);
 
-  void startExecuteCommand(const EventsInfo::CommandRequest& req);
-  void finishExecuteCommand(const EventsInfo::CommandResponce& res);
+  void startExecuteCommand(const events_info::CommandRequest& req);
+  void finishExecuteCommand(const events_info::CommandResponce& res);
 
  protected:
   virtual void changeEvent(QEvent* ev);

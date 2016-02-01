@@ -181,11 +181,11 @@ ViewKeysDialog::ViewKeysDialog(const QString &title, IDatabaseSPtr db, QWidget* 
   retranslateUi();
 }
 
-void ViewKeysDialog::startLoadDatabaseContent(const EventsInfo::LoadDatabaseContentRequest& req) {
+void ViewKeysDialog::startLoadDatabaseContent(const events_info::LoadDatabaseContentRequest& req) {
   keysModel_->clear();
 }
 
-void ViewKeysDialog::finishLoadDatabaseContent(const EventsInfo::LoadDatabaseContentResponce& res) {
+void ViewKeysDialog::finishLoadDatabaseContent(const events_info::LoadDatabaseContentResponce& res) {
   common::Error er = res.errorInfo();
   if (er && er->isError()) {
     return;
@@ -195,7 +195,7 @@ void ViewKeysDialog::finishLoadDatabaseContent(const EventsInfo::LoadDatabaseCon
     return;
   }
 
-  EventsInfo::LoadDatabaseContentResponce::keys_cont_type keys = res.keys_;
+  events_info::LoadDatabaseContentResponce::keys_cont_type keys = res.keys_;
 
   size_t size = keys.size();
   for (size_t i = 0; i < size; ++i) {
@@ -216,15 +216,15 @@ void ViewKeysDialog::finishLoadDatabaseContent(const EventsInfo::LoadDatabaseCon
 
 void ViewKeysDialog::executeCommand(CommandKeySPtr cmd) {
   if (db_) {
-    EventsInfo::CommandRequest req(this, db_->info(), cmd);
+    events_info::CommandRequest req(this, db_->info(), cmd);
     db_->executeCommand(req);
   }
 }
 
-void ViewKeysDialog::startExecuteCommand(const EventsInfo::CommandRequest& req) {
+void ViewKeysDialog::startExecuteCommand(const events_info::CommandRequest& req) {
 }
 
-void ViewKeysDialog::finishExecuteCommand(const EventsInfo::CommandResponce& res) {
+void ViewKeysDialog::finishExecuteCommand(const events_info::CommandResponce& res) {
   common::Error er = res.errorInfo();
   if (er && er->isError()) {
     return;
@@ -262,14 +262,14 @@ void ViewKeysDialog::search(bool forward) {
 
   DCHECK_EQ(cursorStack_[0], 0);
   if (forward) {
-    EventsInfo::LoadDatabaseContentRequest req(this, db_->info(),
+    events_info::LoadDatabaseContentRequest req(this, db_->info(),
                                                common::convertToString(pattern),
                                                countSpinEdit_->value(), cursorStack_[curPos_]);
     db_->loadContent(req);
     ++curPos_;
   } else {
     if (curPos_ > 0) {
-      EventsInfo::LoadDatabaseContentRequest req(this, db_->info(),
+      events_info::LoadDatabaseContentRequest req(this, db_->info(),
                                                  common::convertToString(pattern),
                                                  countSpinEdit_->value(), cursorStack_[--curPos_]);
       db_->loadContent(req);

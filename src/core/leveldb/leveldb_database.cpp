@@ -30,4 +30,4 @@ LeveldbDatabase::LeveldbDatabase(IServerSPtr server, DataBaseInfoSPtr info)
   DCHECK(info->type() == LEVELDB);
 }
 
-}
+}  // namespace fastonosql

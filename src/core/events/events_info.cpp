@@ -18,10 +18,13 @@
 
 #include "core/events/events_info.h"
 
+#include <vector>
+#include <string>
+
 #include "common/time.h"
 
 namespace fastonosql {
-namespace EventsInfo {
+namespace events_info {
 
 EventInfoBase::EventInfoBase(initiator_type sender, error_type er)
   : base_class(sender, er), time_start_(common::time::current_mstime()) {
@@ -148,8 +151,9 @@ LoadDatabasesInfoResponce::LoadDatabasesInfoResponce(const base_class &request)
 }
 
 LoadDatabaseContentRequest::LoadDatabaseContentRequest(initiator_type sender, DataBaseInfoSPtr inf,
-                                                       const std::string& pattern, uint32_t countKeys,
-                                                     uint32_t cursor, error_type er)
+                                                       const std::string& pattern,
+                                                       uint32_t countKeys, uint32_t cursor,
+                                                       error_type er)
   : base_class(sender, er), inf_(inf), pattern_(pattern), countKeys_(countKeys), cursorIn_(cursor) {
 }
 
@@ -240,5 +244,5 @@ ProgressInfoResponce::ProgressInfoResponce(uint8_t pr)
   : progress_(pr) {
 }
 
-}
-}
+}  // namespace events_info
+}  // namespace fastonosql

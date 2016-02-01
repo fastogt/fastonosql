@@ -25,12 +25,10 @@ namespace fastonosql {
 class LeveldbServer
   : public IServer {
   friend class ServersManager;
- Q_OBJECT
- public:
-
+  Q_OBJECT
  private:
   virtual IDatabaseSPtr createDatabase(DataBaseInfoSPtr info);
   LeveldbServer(const IDriverSPtr& drv, bool isSuperServer);
 };
 
-}
+}  // namespace fastonosql

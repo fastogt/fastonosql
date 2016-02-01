@@ -30,4 +30,4 @@ LmdbDatabase::LmdbDatabase(IServerSPtr server, DataBaseInfoSPtr info)
   DCHECK(info->type() == LMDB);
 }
 
-}
+}  // namespace fastonosql

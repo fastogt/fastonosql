@@ -35,13 +35,13 @@ class IDatabase {
   bool isDefault() const;
   std::string name() const;
 
-  void loadContent(const EventsInfo::LoadDatabaseContentRequest &req);
-  void setDefault(const EventsInfo::SetDefaultDatabaseRequest &req);
+  void loadContent(const events_info::LoadDatabaseContentRequest &req);
+  void setDefault(const events_info::SetDefaultDatabaseRequest &req);
 
   DataBaseInfoSPtr info() const;
   void setInfo(DataBaseInfoSPtr info);
 
-  void executeCommand(const EventsInfo::CommandRequest& req);
+  void executeCommand(const events_info::CommandRequest& req);
 
  protected:
   IDatabase(IServerSPtr server, DataBaseInfoSPtr info);

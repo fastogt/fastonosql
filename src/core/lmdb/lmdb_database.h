@@ -29,4 +29,4 @@ class LmdbDatabase
   LmdbDatabase(IServerSPtr server, DataBaseInfoSPtr info);
 };
 
-}
+}  // namespace fastonosql

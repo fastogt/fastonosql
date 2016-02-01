@@ -18,6 +18,8 @@
 
 #pragma once
 
+#include <string>
+
 #include "core/connection_settings.h"
 
 #include "core/redis/redis_config.h"
@@ -31,4 +33,4 @@ class RedisClusterSettings
   virtual IConnectionSettings* clone() const;
 };
 
-}
+}  // namespace fastonosql

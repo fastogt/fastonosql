@@ -46,10 +46,10 @@ class ServerHistoryDialog
   void showed();
 
  private Q_SLOTS:
-  void startLoadServerHistoryInfo(const EventsInfo::ServerInfoHistoryRequest& req);
-  void finishLoadServerHistoryInfo(const EventsInfo::ServerInfoHistoryResponce& res);
-  void startClearServerHistory(const EventsInfo::ClearServerHistoryRequest& req);
-  void finishClearServerHistory(const EventsInfo::ClearServerHistoryResponce& res);
+  void startLoadServerHistoryInfo(const events_info::ServerInfoHistoryRequest& req);
+  void finishLoadServerHistoryInfo(const events_info::ServerInfoHistoryResponce& res);
+  void startClearServerHistory(const events_info::ClearServerHistoryRequest& req);
+  void finishClearServerHistory(const events_info::ClearServerHistoryResponce& res);
   void snapShotAdd(ServerInfoSnapShoot snapshot);
   void clearHistory();
 
@@ -73,7 +73,7 @@ class ServerHistoryDialog
   fasto::qt::gui::GraphWidget* graphWidget_;
 
   fasto::qt::gui::GlassWidget* glassWidget_;
-  EventsInfo::ServerInfoHistoryResponce::infos_container_type infos_;
+  events_info::ServerInfoHistoryResponce::infos_container_type infos_;
   const IServerSPtr server_;
 };
 

@@ -62,11 +62,11 @@ PropertyServerDialog::PropertyServerDialog(IServerSPtr server, QWidget* parent)
   retranslateUi();
 }
 
-void PropertyServerDialog::startServerProperty(const EventsInfo::ServerPropertyInfoRequest& req) {
+void PropertyServerDialog::startServerProperty(const events_info::ServerPropertyInfoRequest& req) {
   glassWidget_->start();
 }
 
-void PropertyServerDialog::finishServerProperty(const EventsInfo::ServerPropertyInfoResponce& res) {
+void PropertyServerDialog::finishServerProperty(const events_info::ServerPropertyInfoResponce& res) {
   glassWidget_->stop();
   common::Error er = res.errorInfo();
   if (er && er->isError()) {
@@ -84,10 +84,10 @@ void PropertyServerDialog::finishServerProperty(const EventsInfo::ServerProperty
   }
 }
 
-void PropertyServerDialog::startServerChangeProperty(const EventsInfo::ChangeServerPropertyInfoRequest& req) {
+void PropertyServerDialog::startServerChangeProperty(const events_info::ChangeServerPropertyInfoRequest& req) {
 }
 
-void PropertyServerDialog::finishServerChangeProperty(const EventsInfo::ChangeServerPropertyInfoResponce& res) {
+void PropertyServerDialog::finishServerChangeProperty(const events_info::ChangeServerPropertyInfoResponce& res) {
   common::Error er = res.errorInfo();
   if (er && er->isError()) {
     return;
@@ -103,7 +103,7 @@ void PropertyServerDialog::finishServerChangeProperty(const EventsInfo::ChangeSe
 }
 
 void PropertyServerDialog::changedProperty(const PropertyType& prop) {
-  EventsInfo::ChangeServerPropertyInfoRequest req(this, prop);
+  events_info::ChangeServerPropertyInfoRequest req(this, prop);
   server_->changeProperty(req);
 }
 
@@ -118,7 +118,7 @@ void PropertyServerDialog::showEvent(QShowEvent* e) {
   QDialog::showEvent(e);
   emit showed();
 
-  EventsInfo::ServerPropertyInfoRequest req(this);
+  events_info::ServerPropertyInfoRequest req(this);
   server_->serverProperty(req);
 }
 

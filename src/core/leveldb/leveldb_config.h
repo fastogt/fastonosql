@@ -18,6 +18,8 @@
 
 #pragma once
 
+#include <string>
+
 #include <leveldb/options.h>
 
 #include "common/convert2string.h"
@@ -33,8 +35,8 @@ struct leveldbConfig
   leveldb::Options options_;
 };
 
-}
+}  // namespace fastonosql
 
 namespace common {
   std::string convertToString(const fastonosql::leveldbConfig &conf);
-}
+}  // namespace common

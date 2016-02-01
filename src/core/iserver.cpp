@@ -189,103 +189,103 @@ void IServer::unSyncFromServer(IServer *src) {
   // syncServersFunct<false>(this, src);
 }
 
-void IServer::connect(const EventsInfo::ConnectInfoRequest& req) {
+void IServer::connect(const events_info::ConnectInfoRequest& req) {
   emit startedConnect(req);
   QEvent *ev = new events::ConnectRequestEvent(this, req);
   notify(ev);
 }
 
-void IServer::disconnect(const EventsInfo::DisConnectInfoRequest& req) {
+void IServer::disconnect(const events_info::DisConnectInfoRequest& req) {
   emit startedDisconnect(req);
   QEvent *ev = new events::DisconnectRequestEvent(this, req);
   notify(ev);
 }
 
-void IServer::loadDatabases(const EventsInfo::LoadDatabasesInfoRequest& req) {
+void IServer::loadDatabases(const events_info::LoadDatabasesInfoRequest& req) {
   emit startedLoadDatabases(req);
   QEvent *ev = new events::LoadDatabasesInfoRequestEvent(this, req);
   notify(ev);
 }
 
-void IServer::loadDatabaseContent(const EventsInfo::LoadDatabaseContentRequest& req) {
+void IServer::loadDatabaseContent(const events_info::LoadDatabaseContentRequest& req) {
   emit startedLoadDataBaseContent(req);
   QEvent *ev = new events::LoadDatabaseContentRequestEvent(this, req);
   notify(ev);
 }
 
-void IServer::setDefaultDb(const EventsInfo::SetDefaultDatabaseRequest& req) {
+void IServer::setDefaultDb(const events_info::SetDefaultDatabaseRequest& req) {
   emit startedSetDefaultDatabase(req);
   QEvent *ev = new events::SetDefaultDatabaseRequestEvent(this, req);
   notify(ev);
 }
 
-void IServer::execute(const EventsInfo::ExecuteInfoRequest& req) {
+void IServer::execute(const events_info::ExecuteInfoRequest& req) {
   emit startedExecute(req);
   QEvent *ev = new events::ExecuteRequestEvent(this, req);
   notify(ev);
 }
 
-void IServer::executeCommand(const EventsInfo::CommandRequest& req) {
+void IServer::executeCommand(const events_info::CommandRequest& req) {
   emit startedExecuteCommand(req);
   QEvent *ev = new events::CommandRequestEvent(this, req);
   notify(ev);
 }
 
-void IServer::shutDown(const EventsInfo::ShutDownInfoRequest& req) {
+void IServer::shutDown(const events_info::ShutDownInfoRequest& req) {
   emit startedShutdown(req);
   QEvent *ev = new events::ShutDownRequestEvent(this, req);
   notify(ev);
 }
 
-void IServer::backupToPath(const EventsInfo::BackupInfoRequest& req) {
+void IServer::backupToPath(const events_info::BackupInfoRequest& req) {
   emit startedBackup(req);
   QEvent *ev = new events::BackupRequestEvent(this, req);
   notify(ev);
 }
 
-void IServer::exportFromPath(const EventsInfo::ExportInfoRequest& req) {
+void IServer::exportFromPath(const events_info::ExportInfoRequest& req) {
   emit startedExport(req);
   QEvent *ev = new events::ExportRequestEvent(this, req);
   notify(ev);
 }
 
-void IServer::changePassword(const EventsInfo::ChangePasswordRequest& req) {
+void IServer::changePassword(const events_info::ChangePasswordRequest& req) {
   emit startedChangePassword(req);
   QEvent *ev = new events::ChangePasswordRequestEvent(this, req);
   notify(ev);
 }
 
-void IServer::setMaxConnection(const EventsInfo::ChangeMaxConnectionRequest& req) {
+void IServer::setMaxConnection(const events_info::ChangeMaxConnectionRequest& req) {
   emit startedChangeMaxConnection(req);
   QEvent *ev = new events::ChangeMaxConnectionRequestEvent(this, req);
   notify(ev);
 }
 
-void IServer::loadServerInfo(const EventsInfo::ServerInfoRequest& req) {
+void IServer::loadServerInfo(const events_info::ServerInfoRequest& req) {
   emit startedLoadServerInfo(req);
   QEvent *ev = new events::ServerInfoRequestEvent(this, req);
   notify(ev);
 }
 
-void IServer::serverProperty(const EventsInfo::ServerPropertyInfoRequest& req) {
+void IServer::serverProperty(const events_info::ServerPropertyInfoRequest& req) {
   emit startedLoadServerProperty(req);
   QEvent *ev = new events::ServerPropertyInfoRequestEvent(this, req);
   notify(ev);
 }
 
-void IServer::requestHistoryInfo(const EventsInfo::ServerInfoHistoryRequest& req) {
+void IServer::requestHistoryInfo(const events_info::ServerInfoHistoryRequest& req) {
   emit startedLoadServerHistoryInfo(req);
   QEvent *ev = new events::ServerInfoHistoryRequestEvent(this, req);
   notify(ev);
 }
 
-void IServer::clearHistory(const EventsInfo::ClearServerHistoryRequest &req) {
+void IServer::clearHistory(const events_info::ClearServerHistoryRequest &req) {
   emit startedClearServerHistory(req);
   QEvent *ev = new events::ClearServerHistoryRequestEvent(this, req);
   notify(ev);
 }
 
-void IServer::changeProperty(const EventsInfo::ChangeServerPropertyInfoRequest& req) {
+void IServer::changeProperty(const events_info::ChangeServerPropertyInfoRequest& req) {
   emit startedChangeServerProperty(req);
   QEvent *ev = new events::ChangeServerPropertyInfoRequestEvent(this, req);
   notify(ev);
@@ -301,10 +301,10 @@ void IServer::customEvent(QEvent *event) {
     ConnectResponceEvent::value_type v = ev->value();
     common::Error er(v.errorInfo());
     if (!er) {
-      EventsInfo::DiscoveryInfoRequest dreq(this);
+      events_info::DiscoveryInfoRequest dreq(this);
       processDiscoveryInfo(dreq);
 
-      EventsInfo::ProcessConfigArgsInfoRequest preq(this);
+      events_info::ProcessConfigArgsInfoRequest preq(this);
       processConfigArgs(preq);
     }
   } else if (type == static_cast<QEvent::Type>(EnterModeEvent::EventType)) {
@@ -378,7 +378,7 @@ void IServer::customEvent(QEvent *event) {
 }
 
 void IServer::notify(QEvent *ev) {
-  EventsInfo::ProgressInfoResponce resp(0);
+  events_info::ProgressInfoResponce resp(0);
   emit progressChanged(resp);
   qApp->postEvent(drv_.get(), ev);
 }
@@ -482,8 +482,8 @@ void IServer::handleLoadDatabaseInfosEvent(events::LoadDatabasesInfoResponceEven
     LOG_ERROR(er, true);
     databases_.clear();
   } else {
-    EventsInfo::LoadDatabasesInfoResponce::database_info_cont_type dbs = v.databases_;
-    EventsInfo::LoadDatabasesInfoResponce::database_info_cont_type tmp;
+    events_info::LoadDatabasesInfoResponce::database_info_cont_type dbs = v.databases_;
+    events_info::LoadDatabasesInfoResponce::database_info_cont_type tmp;
     for (int j = 0; j < dbs.size(); ++j) {
       DataBaseInfoSPtr db = dbs[j];
       IDatabaseSPtr datab = findDatabaseByInfo(db);
@@ -576,12 +576,12 @@ void IServer::handleCommandResponceEvent(events::CommandResponceEvent* ev) {
   emit finishedExecuteCommand(v);
 }
 
-void IServer::processConfigArgs(const EventsInfo::ProcessConfigArgsInfoRequest &req) {
+void IServer::processConfigArgs(const events_info::ProcessConfigArgsInfoRequest &req) {
   QEvent *ev = new events::ProcessConfigArgsRequestEvent(this, req);
   notify(ev);
 }
 
-void IServer::processDiscoveryInfo(const EventsInfo::DiscoveryInfoRequest& req) {
+void IServer::processDiscoveryInfo(const events_info::DiscoveryInfoRequest& req) {
   emit startedLoadDiscoveryInfo(req);
   QEvent *ev = new events::DiscoveryInfoRequestEvent(this, req);
   notify(ev);

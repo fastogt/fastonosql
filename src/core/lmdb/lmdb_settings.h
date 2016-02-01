@@ -18,6 +18,8 @@
 
 #pragma once
 
+#include <string>
+
 #include "core/connection_settings.h"
 
 #include "core/lmdb/lmdb_config.h"
@@ -45,4 +47,4 @@ class LmdbConnectionSettings
   lmdbConfig info_;
 };
 
-}
+}  // namespace fastonosql
