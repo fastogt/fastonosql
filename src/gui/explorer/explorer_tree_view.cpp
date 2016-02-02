@@ -295,7 +295,7 @@ void ExplorerTreeView::connectDisconnectToServer() {
   }
 
   if (server->isConnected()) {
-    events_info::DisConnectInfoResponce req(this);
+    events_info::DisConnectInfoRequest req(this);
     server->disconnect(req);
   } else {
     events_info::ConnectInfoRequest req(this);

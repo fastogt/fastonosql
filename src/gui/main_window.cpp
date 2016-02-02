@@ -28,6 +28,7 @@
 #include <QApplication>
 #include <QFileDialog>
 #include <QToolBar>
+#include <QDesktopServices>
 
 #ifdef OS_ANDROID
 #include <QGestureEvent>
