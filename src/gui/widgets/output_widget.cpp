@@ -106,7 +106,7 @@ OutputWidget::OutputWidget(IServerSPtr server, QWidget* parent)
 }
 
 void OutputWidget::rootCreate(const events_info::CommandRootCreatedInfo& res) {
-  FastoObject* rootObj = res.root_.get();
+  FastoObject* rootObj = res.root.get();
   fastonosql::FastoCommonItem* root = createItem(NULL, std::string(), true, rootObj);
   commonModel_->setRoot(root);
 }
@@ -130,7 +130,7 @@ void OutputWidget::finishExecuteCommand(const events_info::CommandResponce& res)
     return;
   }
 
-  CommandKeySPtr key = res.cmd_;
+  CommandKeySPtr key = res.cmd;
   if (key->type() == CommandKey::C_CREATE) {
     NDbKValue dbv = key->key();
     commonModel_->changeValue(dbv);

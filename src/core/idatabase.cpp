@@ -50,12 +50,12 @@ std::string IDatabase::name() const {
 }
 
 void IDatabase::loadContent(const events_info::LoadDatabaseContentRequest& req) {
-  DCHECK(req.inf_ == info_);
+  DCHECK(req.inf == info_);
   server_->loadDatabaseContent(req);
 }
 
 void IDatabase::setDefault(const events_info::SetDefaultDatabaseRequest& req) {
-  DCHECK(req.inf_ == info_);
+  DCHECK(req.inf == info_);
   server_->setDefaultDb(req);
 }
 
@@ -68,7 +68,7 @@ void IDatabase::setInfo(DataBaseInfoSPtr info) {
 }
 
 void IDatabase::executeCommand(const events_info::CommandRequest& req) {
-  DCHECK(req.inf_ == info_);
+  DCHECK(req.inf == info_);
   server_->executeCommand(req);
 }
 

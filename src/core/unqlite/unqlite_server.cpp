@@ -22,7 +22,7 @@
 
 namespace fastonosql {
 
-UnqliteServer::UnqliteServer(const IDriverSPtr& drv, bool isSuperServer)
+UnqliteServer::UnqliteServer(IDriverSPtr drv, bool isSuperServer)
     : IServer(drv, isSuperServer) {
 }
 

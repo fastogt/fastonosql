@@ -38,7 +38,6 @@ class IServerBase
 class IServer
   : public IServerBase, public std::enable_shared_from_this<IServer> {
   Q_OBJECT
-  friend class ServersManager;
  public:
   typedef std::vector<IDatabaseSPtr> databases_container_t;
 
@@ -49,10 +48,12 @@ class IServer
   void stopCurrentEvent();
   bool isConnected() const;
   bool isAuthenticated() const;
+  bool isCanRemote() const;
 
   bool isSuperServer() const;
+  void setSuperServer(bool isSuper);
 
-  bool isLocalHost() const;
+  common::net::hostAndPort address() const;
 
   connectionTypes type() const;
   QString name() const;
@@ -62,7 +63,6 @@ class IServer
   ServerDiscoveryInfoSPtr discoveryInfo() const;
   ServerInfoSPtr serverInfo() const;
 
-  QString address() const;
   QString outputDelemitr() const;
   IDatabaseSPtr findDatabaseByInfo(DataBaseInfoSPtr inf) const;
   IDatabaseSPtr findDatabaseByName(const std::string& name) const;

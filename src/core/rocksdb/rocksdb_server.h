@@ -24,11 +24,11 @@ namespace fastonosql {
 
 class RocksdbServer
   : public IServer {
-  friend class ServersManager;
   Q_OBJECT
+ public:
+  RocksdbServer(IDriverSPtr drv, bool isSuperServer);
  private:
   virtual IDatabaseSPtr createDatabase(DataBaseInfoSPtr info);
-  RocksdbServer(const IDriverSPtr& drv, bool isSuperServer);
 };
 
 }  // namespace fastonosql

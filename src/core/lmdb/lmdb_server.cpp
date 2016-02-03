@@ -22,7 +22,7 @@
 
 namespace fastonosql {
 
-LmdbServer::LmdbServer(const IDriverSPtr& drv, bool isSuperServer)
+LmdbServer::LmdbServer(IDriverSPtr drv, bool isSuperServer)
   : IServer(drv, isSuperServer) {
 }
 

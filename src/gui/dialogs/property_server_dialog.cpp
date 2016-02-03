@@ -74,7 +74,7 @@ void PropertyServerDialog::finishServerProperty(const events_info::ServerPropert
   }
 
   if (server_->type() == REDIS) {
-    ServerPropertyInfo inf = res.info_;
+    ServerPropertyInfo inf = res.info;
     PropertyTableModel *model = qobject_cast<PropertyTableModel*>(propertyes_table_->model());
     for (size_t i = 0; i < inf.propertyes.size(); ++i) {
       PropertyType it = inf.propertyes[i];
@@ -94,8 +94,8 @@ void PropertyServerDialog::finishServerChangeProperty(const events_info::ChangeS
   }
 
   if (server_->type() == REDIS) {
-    PropertyType pr = res.newItem_;
-    if (res.isChange_) {
+    PropertyType pr = res.new_item;
+    if (res.is_change) {
       PropertyTableModel *model = qobject_cast<PropertyTableModel*>(propertyes_table_->model());
       model->changeProperty(pr);
     }

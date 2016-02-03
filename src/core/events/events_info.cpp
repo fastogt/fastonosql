@@ -56,7 +56,7 @@ ShutDownInfoResponce::ShutDownInfoResponce(const base_class &request)
 }
 
 BackupInfoRequest::BackupInfoRequest(initiator_type sender, const std::string& path, error_type er)
-  : base_class(sender, er), path_(path) {
+  : base_class(sender, er), path(path) {
 }
 
 BackupInfoResponce::BackupInfoResponce(const base_class &request)
@@ -64,7 +64,7 @@ BackupInfoResponce::BackupInfoResponce(const base_class &request)
 }
 
 ExportInfoRequest::ExportInfoRequest(initiator_type sender, const std::string& path, error_type er)
-  : base_class(sender, er), path_(path) {
+  : base_class(sender, er), path(path) {
 }
 
 ExportInfoResponce::ExportInfoResponce(const base_class &request)
@@ -74,7 +74,7 @@ ExportInfoResponce::ExportInfoResponce(const base_class &request)
 ChangePasswordRequest::ChangePasswordRequest(initiator_type sender,
                                              const std::string& oldPassword,
                                              const std::string& newPassword, error_type er)
-  : base_class(sender, er), oldPassword_(oldPassword), newPassword_(newPassword) {
+  : base_class(sender, er), old_password(oldPassword), new_password(newPassword) {
 }
 
 ChangePasswordResponce::ChangePasswordResponce(const base_class &request)
@@ -83,7 +83,7 @@ ChangePasswordResponce::ChangePasswordResponce(const base_class &request)
 
 ChangeMaxConnectionRequest::ChangeMaxConnectionRequest(initiator_type sender,
                                                        int maxConnection, error_type er)
-  : base_class(sender, er), maxConnection_(maxConnection) {
+  : base_class(sender, er), max_connection(maxConnection) {
 }
 
 ChangeMaxConnectionResponce::ChangeMaxConnectionResponce(const base_class &request)
@@ -107,26 +107,26 @@ DiscoveryInfoResponce::DiscoveryInfoResponce(const base_class& request)
 }
 
 EnterModeInfo::EnterModeInfo(initiator_type sender, ConnectionMode mode, error_type er)
-  : base_class(sender, er), mode_(mode) {
+  : base_class(sender, er), mode(mode) {
 }
 
 LeaveModeInfo::LeaveModeInfo(initiator_type sender, ConnectionMode mode, error_type er)
-  : base_class(sender, er), mode_(mode) {
+  : base_class(sender, er), mode(mode) {
 }
 
 CommandRootCreatedInfo::CommandRootCreatedInfo(initiator_type sender,
                                                FastoObjectIPtr root, error_type er)
-  : base_class(sender, er), root_(root) {
+  : base_class(sender, er), root(root) {
 }
 
 CommandRootCompleatedInfo::CommandRootCompleatedInfo(initiator_type sender,
                                                      FastoObjectIPtr root, error_type er)
-  : base_class(sender, er), root_(root) {
+  : base_class(sender, er), root(root) {
 }
 
 CommandRootCompleatedInfo::CommandRootCompleatedInfo(initiator_type sender, common::time64_t timest,
                                                      FastoObjectIPtr root, error_type er)
-  : base_class(sender, timest, er), root_(root) {
+  : base_class(sender, timest, er), root(root) {
 }
 
 DisConnectInfoRequest::DisConnectInfoRequest(initiator_type sender, error_type er)
@@ -139,7 +139,7 @@ DisConnectInfoResponce::DisConnectInfoResponce(const base_class &request)
 
 ExecuteInfoRequest::ExecuteInfoRequest(initiator_type sender, const std::string &text,
                                        const std::vector<std::string>& args, error_type er)
-  : base_class(sender, er), text_(text), args_(args) {
+  : base_class(sender, er), text(text), args(args) {
 }
 
 LoadDatabasesInfoRequest::LoadDatabasesInfoRequest(initiator_type sender, error_type er)
@@ -154,7 +154,7 @@ LoadDatabaseContentRequest::LoadDatabaseContentRequest(initiator_type sender, Da
                                                        const std::string& pattern,
                                                        uint32_t countKeys, uint32_t cursor,
                                                        error_type er)
-  : base_class(sender, er), inf_(inf), pattern_(pattern), countKeys_(countKeys), cursorIn_(cursor) {
+  : base_class(sender, er), inf(inf), pattern(pattern), count_keys(countKeys), cursor_in(cursor) {
 }
 
 LoadDatabaseContentResponce::LoadDatabaseContentResponce(const base_class &request)
@@ -163,7 +163,7 @@ LoadDatabaseContentResponce::LoadDatabaseContentResponce(const base_class &reque
 
 SetDefaultDatabaseRequest::SetDefaultDatabaseRequest(initiator_type sender, DataBaseInfoSPtr inf,
                                                      error_type er)
-  : base_class(sender, er), inf_(inf) {
+  : base_class(sender, er), inf(inf) {
 }
 
 SetDefaultDatabaseResponce::SetDefaultDatabaseResponce(const base_class &request)
@@ -224,7 +224,7 @@ ServerPropertyInfoResponce::ServerPropertyInfoResponce(const base_class &request
 ChangeServerPropertyInfoRequest::ChangeServerPropertyInfoRequest(initiator_type sender,
                                                                  const PropertyType &pt,
                                                                  error_type er)
-  : base_class(sender, er), newItem_(pt) {
+  : base_class(sender, er), new_item(pt) {
 }
 
 ChangeServerPropertyInfoResponce::ChangeServerPropertyInfoResponce(const base_class &request)
@@ -233,7 +233,7 @@ ChangeServerPropertyInfoResponce::ChangeServerPropertyInfoResponce(const base_cl
 
 CommandRequest::CommandRequest(initiator_type sender, DataBaseInfoSPtr inf,
                                CommandKeySPtr cmd, error_type er)
-  : base_class(sender, er), inf_(inf), cmd_(cmd) {
+  : base_class(sender, er), inf(inf), cmd(cmd) {
 }
 
 CommandResponce::CommandResponce(const base_class& request)
@@ -241,7 +241,7 @@ CommandResponce::CommandResponce(const base_class& request)
 }
 
 ProgressInfoResponce::ProgressInfoResponce(uint8_t pr)
-  : progress_(pr) {
+  : progress(pr) {
 }
 
 }  // namespace events_info

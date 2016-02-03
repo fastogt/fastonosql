@@ -359,16 +359,16 @@ void BaseShellWidget::finishSetDefaultDatabase(const events_info::SetDefaultData
     return;
   }
 
-  DataBaseInfoSPtr db = res.inf_;
+  DataBaseInfoSPtr db = res.inf;
   updateDefaultDatabase(db);
 }
 
 void BaseShellWidget::progressChange(const events_info::ProgressInfoResponce& res) {
-  workProgressBar_->setValue(res.progress_);
+  workProgressBar_->setValue(res.progress);
 }
 
 void BaseShellWidget::enterMode(const events_info::EnterModeInfo& res) {
-  ConnectionMode mode = res.mode_;
+  ConnectionMode mode = res.mode;
   connectionMode_->setIcon(GuiFactory::instance().modeIcon(mode), iconSize);
   std::string modeText = common::convertToString(mode);
   connectionMode_->setText(common::convertFromString<QString>(modeText));
@@ -386,8 +386,8 @@ void BaseShellWidget::finishLoadDiscoveryInfo(const events_info::DiscoveryInfoRe
     return;
   }
 
-  syncServerInfo(res.sinfo_);
-  updateDefaultDatabase(res.dbinfo_);
+  syncServerInfo(res.sinfo);
+  updateDefaultDatabase(res.dbinfo);
 }
 
 void BaseShellWidget::updateDefaultDatabase(DataBaseInfoSPtr dbs) {

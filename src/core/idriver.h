@@ -59,7 +59,7 @@ class IDriver
   common::Error commandByType(CommandKeySPtr command,
                               std::string* cmdstring) const WARN_UNUSED_RESULT;
 
-  virtual void interrupt();
+  void interrupt();
   virtual bool isConnected() const = 0;
   virtual bool isAuthenticated() const = 0;
   virtual common::net::hostAndPort address() const = 0;

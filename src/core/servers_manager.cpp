@@ -71,7 +71,7 @@ ServersManager::~ServersManager() {
 }
 
 template<class Server, class Driver>
-IServer* ServersManager::make_server(IServerSPtr pser, IConnectionSettingsBaseSPtr settings) {
+IServer* make_server(IServerSPtr pser, IConnectionSettingsBaseSPtr settings) {
   if (!pser) {
     IDriverSPtr dr(new Driver(settings));
     dr->start();
@@ -273,7 +273,7 @@ void ServersManager::closeServer(IServerSPtr server) {
         for (size_t j = 0; j < servers_.size(); ++j) {
           IServerSPtr servj = servers_[j];
           if (servj->driver() == drv) {
-            servj->is_super_server_ = true;
+            servj->setSuperServer(true);
             break;
           }
         }
@@ -288,7 +288,7 @@ void ServersManager::closeServer(IServerSPtr server) {
 
 void ServersManager::closeCluster(IClusterSPtr cluster) {
   ICluster::nodes_type nodes = cluster->nodes();
-  for (int i = 0; i < nodes.size(); ++i) {
+  for (size_t i = 0; i < nodes.size(); ++i) {
     closeServer(nodes[i]);
   }
 }
@@ -311,7 +311,7 @@ void ServersManager::refreshSyncServers() {
   }
 }
 
-IServerSPtr ServersManager::findServerBySetting(const IConnectionSettingsBaseSPtr &settings) const {
+IServerSPtr ServersManager::findServerBySetting(IConnectionSettingsBaseSPtr settings) const {
   for (size_t i = 0; i < servers_.size(); ++i) {
     IServerSPtr drp = servers_[i];
     IDriverSPtr curDr = drp->driver();
@@ -322,7 +322,7 @@ IServerSPtr ServersManager::findServerBySetting(const IConnectionSettingsBaseSPt
   return IServerSPtr();
 }
 
-std::vector<QObject *> ServersManager::findAllListeners(const IDriverSPtr &drv) const {
+std::vector<QObject *> ServersManager::findAllListeners(IDriverSPtr drv) const {
   std::vector<QObject *> result;
   for (size_t j = 0; j < servers_.size(); ++j) {
     IServerSPtr ser = servers_[j];

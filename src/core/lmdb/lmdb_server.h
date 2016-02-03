@@ -24,11 +24,11 @@ namespace fastonosql {
 
 class LmdbServer
   : public IServer {
-  friend class ServersManager;
   Q_OBJECT
+ public:
+  LmdbServer(IDriverSPtr drv, bool isSuperServer);
  private:
   virtual IDatabaseSPtr createDatabase(DataBaseInfoSPtr info);
-  LmdbServer(const IDriverSPtr& drv, bool isSuperServer);
 };
 
 }  // namespace fastonosql

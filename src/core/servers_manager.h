@@ -49,15 +49,12 @@ class ServersManager
   void closeCluster(IClusterSPtr cluster);
 
  private:
-  template<class Server, class Driver>
-  IServer* make_server(IServerSPtr pser, IConnectionSettingsBaseSPtr settings);
-
   ServersManager();
   ~ServersManager();
 
   void refreshSyncServers();
-  IServerSPtr findServerBySetting(const IConnectionSettingsBaseSPtr& settings) const;
-  std::vector<QObject*> findAllListeners(const IDriverSPtr& drv) const;
+  IServerSPtr findServerBySetting(IConnectionSettingsBaseSPtr settings) const;
+  std::vector<QObject*> findAllListeners(IDriverSPtr drv) const;
 
   ServersContainer servers_;
   bool sync_servers_;

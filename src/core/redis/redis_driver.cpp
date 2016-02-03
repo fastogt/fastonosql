@@ -1942,7 +1942,7 @@ void RedisDriver::handleBackupEvent(events::BackupRequestEvent* ev) {
   if (er && er->isError()) {
     res.setErrorInfo(er);
   } else {
-    common::Error err = common::file_system::copy_file("/var/lib/redis/dump.rdb", res.path_);
+    common::Error err = common::file_system::copy_file("/var/lib/redis/dump.rdb", res.path);
     if (err && err->isError()) {
       res.setErrorInfo(err);
     }
@@ -1957,7 +1957,7 @@ void RedisDriver::handleExportEvent(events::ExportRequestEvent* ev) {
   notifyProgress(sender, 0);
   events::ExportResponceEvent::value_type res(ev->value());
   notifyProgress(sender, 25);
-  common::Error err = common::file_system::copy_file(res.path_, "/var/lib/redis/dump.rdb");
+  common::Error err = common::file_system::copy_file(res.path, "/var/lib/redis/dump.rdb");
   if (err && err->isError()) {
     res.setErrorInfo(err);
   }
@@ -1972,7 +1972,7 @@ void RedisDriver::handleChangePasswordEvent(events::ChangePasswordRequestEvent* 
   events::ChangePasswordResponceEvent::value_type res(ev->value());
   notifyProgress(sender, 25);
   char patternResult[1024] = {0};
-  common::SNPrintf(patternResult, sizeof(patternResult), SET_PASSWORD_1ARGS_S, res.newPassword_);
+  common::SNPrintf(patternResult, sizeof(patternResult), SET_PASSWORD_1ARGS_S, res.new_password);
   FastoObjectIPtr root = FastoObject::createRoot(patternResult);
   FastoObjectCommand* cmd = createCommand<RedisCommand>(root, patternResult,
                                                         common::Value::C_INNER);
@@ -1993,7 +1993,7 @@ void RedisDriver::handleChangeMaxConnectionEvent(events::ChangeMaxConnectionRequ
   notifyProgress(sender, 25);
   char patternResult[1024] = {0};
   common::SNPrintf(patternResult, sizeof(patternResult),
-                   SET_MAX_CONNECTIONS_1ARGS_I, res.maxConnection_);
+                   SET_MAX_CONNECTIONS_1ARGS_I, res.max_connection);
   FastoObjectIPtr root = FastoObject::createRoot(patternResult);
   FastoObjectCommand* cmd = createCommand<RedisCommand>(root,
                                                         patternResult, common::Value::C_INNER);
@@ -2143,7 +2143,7 @@ void RedisDriver::handleExecuteEvent(events::ExecuteRequestEvent *ev) {
   QObject *sender = ev->sender();
   notifyProgress(sender, 0);
   events::ExecuteRequestEvent::value_type res(ev->value());
-  const char *inputLine = common::utils::c_strornull(res.text_);
+  const char *inputLine = common::utils::c_strornull(res.text);
 
   common::Error er;
   if (inputLine) {
@@ -2208,7 +2208,7 @@ void RedisDriver::handleCommandRequestEvent(events::CommandRequestEvent* ev) {
   notifyProgress(sender, 0);
   events::CommandResponceEvent::value_type res(ev->value());
   std::string cmdtext;
-  common::Error er = commandByType(res.cmd_, &cmdtext);
+  common::Error er = commandByType(res.cmd, &cmdtext);
   if (er && er->isError()) {
     res.setErrorInfo(er);
     reply(sender, new events::CommandResponceEvent(this, res));
@@ -2277,15 +2277,15 @@ void RedisDriver::handleLoadDatabaseInfosEvent(events::LoadDatabasesInfoRequestE
               for (size_t i = 0; i < countDb; ++i) {
                 DataBaseInfoSPtr dbInf(new RedisDataBaseInfo(common::convertToString(i), false, 0));
                 if (dbInf->name() == cdbInf->name()) {
-                  res.databases_.push_back(cdbInf);
+                  res.databases.push_back(cdbInf);
                 } else {
-                  res.databases_.push_back(dbInf);
+                  res.databases.push_back(dbInf);
                 }
               }
             }
         }
       } else {
-        res.databases_.push_back(cdbInf);
+        res.databases.push_back(cdbInf);
       }
     }
   }
@@ -2301,7 +2301,7 @@ void RedisDriver::handleLoadDatabaseContentEvent(events::LoadDatabaseContentRequ
   events::LoadDatabaseContentResponceEvent::value_type res(ev->value());
   char patternResult[1024] = {0};
   common::SNPrintf(patternResult, sizeof(patternResult),
-                   GET_KEYS_PATTERN_3ARGS_ISI, res.cursorIn_, res.pattern_, res.countKeys_);
+                   GET_KEYS_PATTERN_3ARGS_ISI, res.cursor_in, res.pattern, res.count_keys);
   FastoObjectIPtr root = FastoObject::createRoot(patternResult);
   notifyProgress(sender, 50);
   FastoObjectCommand* cmd = createCommand<RedisCommand>(root, patternResult,
@@ -2329,7 +2329,7 @@ void RedisDriver::handleLoadDatabaseContentEvent(events::LoadDatabaseContentRequ
         goto done;
       }
 
-      res.cursorOut_ = common::convertFromString<uint32_t>(cursor);
+      res.cursor_out = common::convertFromString<uint32_t>(cursor);
 
       rchildrens = array->childrens();
       if (!rchildrens.size()) {
@@ -2354,7 +2354,7 @@ void RedisDriver::handleLoadDatabaseContentEvent(events::LoadDatabaseContentRequ
           NDbKValue ress(k, NValue());
           cmds.push_back(createCommandFast("TYPE " + ress.keyString(), common::Value::C_INNER));
           cmds.push_back(createCommandFast("TTL " + ress.keyString(), common::Value::C_INNER));
-          res.keys_.push_back(ress);
+          res.keys.push_back(ress);
         }
       }
 
@@ -2363,7 +2363,7 @@ void RedisDriver::handleLoadDatabaseContentEvent(events::LoadDatabaseContentRequ
         goto done;
       }
 
-      for (size_t i = 0; i < res.keys_.size(); ++i) {
+      for (size_t i = 0; i < res.keys.size(); ++i) {
         FastoObjectIPtr cmdType = cmds[i*2];
         FastoObject::child_container_type tchildrens = cmdType->childrens();
         if (tchildrens.size()) {
@@ -2375,7 +2375,7 @@ void RedisDriver::handleLoadDatabaseContentEvent(events::LoadDatabaseContentRequ
             common::Value* emptyval = common::Value::createEmptyValueFromType(ctype);
             common::ValueSPtr v = make_value(emptyval);
             NValue val(v);
-            res.keys_[i].setValue(val);
+            res.keys[i].setValue(val);
           }
         }
 
@@ -2388,7 +2388,7 @@ void RedisDriver::handleLoadDatabaseContentEvent(events::LoadDatabaseContentRequ
             common::Value* vttl = fttl->value();
             int32_t ttl = 0;
             if (vttl->getAsInteger(&ttl)) {
-                res.keys_[i].setTTL(ttl);
+                res.keys[i].setTTL(ttl);
             }
           }
         }
@@ -2405,7 +2405,7 @@ void RedisDriver::handleSetDefaultDatabaseEvent(events::SetDefaultDatabaseReques
   QObject *sender = ev->sender();
   notifyProgress(sender, 0);
   events::SetDefaultDatabaseResponceEvent::value_type res(ev->value());
-  const std::string setDefCommand = SET_DEFAULT_DATABASE + res.inf_->name();
+  const std::string setDefCommand = SET_DEFAULT_DATABASE + res.inf->name();
   FastoObjectIPtr root = FastoObject::createRoot(setDefCommand);
   notifyProgress(sender, 50);
   FastoObjectCommand* cmd = createCommand<RedisCommand>(root, setDefCommand,
@@ -2416,7 +2416,7 @@ void RedisDriver::handleSetDefaultDatabaseEvent(events::SetDefaultDatabaseReques
   } else {
     long long sz = 0;
     er = impl_->dbsize(sz);
-    setCurrentDatabaseInfo(new RedisDataBaseInfo(res.inf_->name(), true, sz));
+    setCurrentDatabaseInfo(new RedisDataBaseInfo(res.inf->name(), true, sz));
   }
   notifyProgress(sender, 75);
   reply(sender, new events::SetDefaultDatabaseResponceEvent(this, res));
@@ -2464,7 +2464,7 @@ void RedisDriver::handleLoadServerPropertyEvent(events::ServerPropertyInfoReques
       DCHECK_EQ(ch.size(), 1);
       FastoObjectArray* array = dynamic_cast<FastoObjectArray*>(ch[0]);
       if (array) {
-        res.info_ = makeServerProperty(array);
+        res.info = makeServerProperty(array);
       }
     }
   }
@@ -2479,7 +2479,7 @@ void RedisDriver::handleServerPropertyChangeEvent(events::ChangeServerPropertyIn
   events::ChangeServerPropertyInfoResponceEvent::value_type res(ev->value());
 
   notifyProgress(sender, 50);
-  const std::string changeRequest = "CONFIG SET " + res.newItem_.first + " " + res.newItem_.second;
+  const std::string changeRequest = "CONFIG SET " + res.new_item.first + " " + res.new_item.second;
   FastoObjectIPtr root = FastoObject::createRoot(changeRequest);
   FastoObjectCommand* cmd = createCommand<RedisCommand>(root, changeRequest,
                                                         common::Value::C_INNER);
@@ -2487,7 +2487,7 @@ void RedisDriver::handleServerPropertyChangeEvent(events::ChangeServerPropertyIn
   if (er && er->isError()) {
     res.setErrorInfo(er);
   } else {
-    res.isChange_ = true;
+    res.is_change = true;
   }
   notifyProgress(sender, 75);
       reply(sender, new events::ChangeServerPropertyInfoResponceEvent(this, res));

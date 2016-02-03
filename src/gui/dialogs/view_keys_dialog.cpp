@@ -195,7 +195,7 @@ void ViewKeysDialog::finishLoadDatabaseContent(const events_info::LoadDatabaseCo
     return;
   }
 
-  events_info::LoadDatabaseContentResponce::keys_cont_type keys = res.keys_;
+  events_info::LoadDatabaseContentResponce::keys_cont_type keys = res.keys;
 
   size_t size = keys.size();
   for (size_t i = 0; i < size; ++i) {
@@ -205,7 +205,7 @@ void ViewKeysDialog::finishLoadDatabaseContent(const events_info::LoadDatabaseCo
 
   int curv = currentKey_->value();
   if (cursorStack_.size() == curPos_) {
-    cursorStack_.push_back(res.cursorOut_);
+    cursorStack_.push_back(res.cursor_out);
     currentKey_->setValue(curv + size);
   } else {
     currentKey_->setValue(curv - size);
@@ -236,7 +236,7 @@ void ViewKeysDialog::finishExecuteCommand(const events_info::CommandResponce& re
     return;
   }
 
-  CommandKeySPtr key = res.cmd_;
+  CommandKeySPtr key = res.cmd;
   if (key->type() == CommandKey::C_CHANGE_TTL) {
     CommandChangeTTL * cttl = dynamic_cast<CommandChangeTTL*>(key.get());
     if (cttl) {

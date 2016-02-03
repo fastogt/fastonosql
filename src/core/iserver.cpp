@@ -104,12 +104,20 @@ bool IServer::isAuthenticated() const {
   return drv_->isAuthenticated();
 }
 
+bool IServer::isCanRemote() const {
+  return IConnectionSettingsBase::isRemoteType(type());
+}
+
 bool IServer::isSuperServer() const {
   return is_super_server_;
 }
 
-bool IServer::isLocalHost() const {
-  return drv_->address().isLocalHost();
+void IServer::setSuperServer(bool isSuper){
+  is_super_server_ = isSuper;
+}
+
+common::net::hostAndPort IServer::address() const {
+  return drv_->address();
 }
 
 connectionTypes IServer::type() const {
@@ -134,11 +142,6 @@ ServerInfoSPtr IServer::serverInfo() const {
 
 DataBaseInfoSPtr IServer::currentDatabaseInfo() const {
   return drv_->currentDatabaseInfo();
-}
-
-QString IServer::address() const {
-  std::string shost = common::convertToString(drv_->address());
-  return common::convertFromString<QString>(shost);
 }
 
 QString IServer::outputDelemitr() const {
@@ -482,7 +485,7 @@ void IServer::handleLoadDatabaseInfosEvent(events::LoadDatabasesInfoResponceEven
     LOG_ERROR(er, true);
     databases_.clear();
   } else {
-    events_info::LoadDatabasesInfoResponce::database_info_cont_type dbs = v.databases_;
+    events_info::LoadDatabasesInfoResponce::database_info_cont_type dbs = v.databases;
     events_info::LoadDatabasesInfoResponce::database_info_cont_type tmp;
     for (int j = 0; j < dbs.size(); ++j) {
       DataBaseInfoSPtr db = dbs[j];
@@ -493,7 +496,7 @@ void IServer::handleLoadDatabaseInfosEvent(events::LoadDatabasesInfoResponceEven
        }
        tmp.push_back(datab->info());
     }
-    v.databases_ = tmp;
+    v.databases = tmp;
   }
 
   emit finishedLoadDatabases(v);
@@ -505,11 +508,11 @@ void IServer::handleLoadDatabaseContentEvent(events::LoadDatabaseContentResponce
   if (er && er->isError()) {
     LOG_ERROR(er, true);
   } else {
-    IDatabaseSPtr db = findDatabaseByInfo(v.inf_);
+    IDatabaseSPtr db = findDatabaseByInfo(v.inf);
     if (db) {
       DataBaseInfoSPtr rdb = db->info();
       if (rdb) {
-        rdb->setKeys(v.keys_);
+        rdb->setKeys(v.keys);
       }
     }
   }
@@ -552,7 +555,7 @@ void IServer::handleSetDefaultDatabaseEvent(events::SetDefaultDatabaseResponceEv
   if (er && er->isError()) {
     LOG_ERROR(er, true);
   } else {
-    DataBaseInfoSPtr inf = v.inf_;
+    DataBaseInfoSPtr inf = v.inf;
     for (int i = 0; i < databases_.size(); ++i) {
       IDatabaseSPtr db = databases_[i];
       DataBaseInfoSPtr info = db->info();

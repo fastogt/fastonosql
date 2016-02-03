@@ -242,7 +242,12 @@ void ExplorerTreeView::showContextMenu(const QPoint& point) {
       closeServerAction_->setEnabled(!isClusterMember);
       menu.addAction(closeServerAction_);
 
-      bool isLocal = server->isLocalHost();
+      bool isCanRemote = server->isCanRemote();
+      bool isLocal = true;
+      if (isCanRemote) {
+        common::net::hostAndPort host = server->address();
+        isLocal = host.isLocalHost();
+      }
 
       importAction_->setEnabled(!isCon && isLocal);
       menu.addAction(importAction_);
@@ -666,7 +671,7 @@ void ExplorerTreeView::finishLoadDatabases(const events_info::LoadDatabasesInfoR
     return;
   }
 
-  events_info::LoadDatabasesInfoResponce::database_info_cont_type dbs = res.databases_;
+  events_info::LoadDatabasesInfoResponce::database_info_cont_type dbs = res.databases;
 
   for (int i = 0; i < dbs.size(); ++i) {
     DataBaseInfoSPtr db = dbs[i];
@@ -689,7 +694,7 @@ void ExplorerTreeView::finishSetDefaultDatabase(const events_info::SetDefaultDat
     return;
   }
 
-  DataBaseInfoSPtr db = res.inf_;
+  DataBaseInfoSPtr db = res.inf;
   ExplorerTreeModel *mod = qobject_cast<ExplorerTreeModel*>(model());
   DCHECK(mod);
   if (!mod) {
@@ -720,11 +725,11 @@ void ExplorerTreeView::finishLoadDatabaseContent(const events_info::LoadDatabase
     return;
   }
 
-  events_info::LoadDatabaseContentResponce::keys_cont_type keys = res.keys_;
+  events_info::LoadDatabaseContentResponce::keys_cont_type keys = res.keys;
 
   for (int i = 0; i < keys.size(); ++i) {
     NDbKValue key = keys[i];
-    mod->addKey(serv, res.inf_, key);
+    mod->addKey(serv, res.inf, key);
   }
 }
 
@@ -749,12 +754,12 @@ void ExplorerTreeView::finishExecuteCommand(const events_info::CommandResponce& 
     return;
   }
 
-  CommandKeySPtr key = res.cmd_;
+  CommandKeySPtr key = res.cmd;
   NDbKValue dbv = key->key();
   if (key->type() == CommandKey::C_DELETE) {
-    mod->removeKey(serv, res.inf_, dbv);
+    mod->removeKey(serv, res.inf, dbv);
   } else if (key->type() == CommandKey::C_CREATE) {
-    mod->addKey(serv, res.inf_, dbv);
+    mod->addKey(serv, res.inf, dbv);
   }
 }
 

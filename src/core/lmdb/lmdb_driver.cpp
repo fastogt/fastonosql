@@ -54,10 +54,10 @@ int lmdb_open(lmdb **context, const char *dbname, bool create_if_missing) {
   if (create_if_missing) {
     common::Error err = common::file_system::create_directory(dbname, true);
     if (err && err->isError()) {
-        return EACCES;
+      return EACCES;
     }
     if (common::file_system::is_directory(dbname) != common::SUCCESS) {
-        return EACCES;
+      return EACCES;
     }
   }
 
@@ -665,7 +665,7 @@ void LmdbDriver::handleExecuteEvent(events::ExecuteRequestEvent* ev) {
   QObject *sender = ev->sender();
   notifyProgress(sender, 0);
   events::ExecuteRequestEvent::value_type res(ev->value());
-  const char *inputLine = common::utils::c_strornull(res.text_);
+  const char *inputLine = common::utils::c_strornull(res.text);
 
   common::Error er;
   if (inputLine) {
@@ -693,8 +693,8 @@ void LmdbDriver::handleExecuteEvent(events::ExecuteRequestEvent* ev) {
                                                              common::Value::C_USER);
         er = execute(cmd);
         if (er && er->isError()) {
-            res.setErrorInfo(er);
-            break;
+          res.setErrorInfo(er);
+          break;
         }
       }
     }
@@ -713,7 +713,7 @@ void LmdbDriver::handleCommandRequestEvent(events::CommandRequestEvent* ev) {
   notifyProgress(sender, 0);
   events::CommandResponceEvent::value_type res(ev->value());
   std::string cmdtext;
-  common::Error er = commandByType(res.cmd_, &cmdtext);
+  common::Error er = commandByType(res.cmd, &cmdtext);
   if (er && er->isError()) {
     res.setErrorInfo(er);
     reply(sender, new events::CommandResponceEvent(this, res));
@@ -738,7 +738,7 @@ void LmdbDriver::handleLoadDatabaseInfosEvent(events::LoadDatabasesInfoRequestEv
   notifyProgress(sender, 0);
   events::LoadDatabasesInfoResponceEvent::value_type res(ev->value());
   notifyProgress(sender, 50);
-  res.databases_.push_back(currentDatabaseInfo());
+  res.databases.push_back(currentDatabaseInfo());
   reply(sender, new events::LoadDatabasesInfoResponceEvent(this, res));
   notifyProgress(sender, 100);
 }
@@ -748,7 +748,7 @@ void LmdbDriver::handleLoadDatabaseContentEvent(events::LoadDatabaseContentReque
   notifyProgress(sender, 0);
   events::LoadDatabaseContentResponceEvent::value_type res(ev->value());
   char patternResult[1024] = {0};
-  common::SNPrintf(patternResult, sizeof(patternResult), GET_KEYS_PATTERN_1ARGS_I, res.countKeys_);
+  common::SNPrintf(patternResult, sizeof(patternResult), GET_KEYS_PATTERN_1ARGS_I, res.count_keys);
   FastoObjectIPtr root = FastoObject::createRoot(patternResult);
   notifyProgress(sender, 50);
   FastoObjectCommand* cmd = createCommand<LmdbCommand>(root, patternResult, common::Value::C_INNER);
@@ -761,11 +761,11 @@ void LmdbDriver::handleLoadDatabaseContentEvent(events::LoadDatabaseContentReque
       DCHECK_EQ(rchildrens.size(), 1);
       FastoObjectArray* array = dynamic_cast<FastoObjectArray*>(rchildrens[0]);
       if (!array) {
-          goto done;
+        goto done;
       }
       common::ArrayValue* ar = array->array();
       if (!ar) {
-          goto done;
+        goto done;
       }
 
       for (size_t i = 0; i < ar->size(); ++i) {
@@ -774,7 +774,7 @@ void LmdbDriver::handleLoadDatabaseContentEvent(events::LoadDatabaseContentReque
         if (isok) {
           NKey k(key);
           NDbKValue ress(k, NValue());
-          res.keys_.push_back(ress);
+          res.keys.push_back(ress);
         }
       }
     }

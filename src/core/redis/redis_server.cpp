@@ -22,7 +22,7 @@
 
 namespace fastonosql {
 
-RedisServer::RedisServer(const IDriverSPtr& drv, bool isSuperServer)
+RedisServer::RedisServer(IDriverSPtr drv, bool isSuperServer)
   : IServer(drv, isSuperServer) {
 }
 

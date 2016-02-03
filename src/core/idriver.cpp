@@ -506,9 +506,9 @@ void IDriver::handleDiscoveryInfoRequestEvent(events::DiscoveryInfoRequestEvent*
       server_disc_info_.reset(disc);
       current_database_info_.reset(db);
 
-      res.sinfo_ = server_info_;
-      res.dinfo_ = server_disc_info_;
-      res.dbinfo_ = current_database_info_;
+      res.sinfo = server_info_;
+      res.dinfo = server_disc_info_;
+      res.dbinfo = current_database_info_;
     }
   } else {
     res.setErrorInfo(common::make_error_value("Not connected to server, impossible to get discovery info!", common::Value::E_ERROR));

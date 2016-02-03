@@ -22,7 +22,7 @@
 
 namespace fastonosql {
 
-MemcachedServer::MemcachedServer(const IDriverSPtr& drv, bool isSuperServer)
+MemcachedServer::MemcachedServer(IDriverSPtr drv, bool isSuperServer)
   : IServer(drv, isSuperServer) {
 }
 

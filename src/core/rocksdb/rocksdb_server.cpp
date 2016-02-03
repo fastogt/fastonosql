@@ -22,7 +22,7 @@
 
 namespace fastonosql {
 
-RocksdbServer::RocksdbServer(const IDriverSPtr& drv, bool isSuperServer)
+RocksdbServer::RocksdbServer(IDriverSPtr drv, bool isSuperServer)
   : IServer(drv, isSuperServer) {
 }
 

@@ -561,7 +561,7 @@ void LeveldbDriver::handleExecuteEvent(events::ExecuteRequestEvent* ev) {
   QObject *sender = ev->sender();
   notifyProgress(sender, 0);
   events::ExecuteRequestEvent::value_type res(ev->value());
-  const char *inputLine = common::utils::c_strornull(res.text_);
+  const char *inputLine = common::utils::c_strornull(res.text);
 
   common::Error er;
   if (inputLine) {
@@ -609,7 +609,7 @@ void LeveldbDriver::handleCommandRequestEvent(events::CommandRequestEvent* ev) {
   notifyProgress(sender, 0);
   events::CommandResponceEvent::value_type res(ev->value());
   std::string cmdtext;
-  common::Error er = commandByType(res.cmd_, &cmdtext);
+  common::Error er = commandByType(res.cmd, &cmdtext);
   if (er && er->isError()) {
     res.setErrorInfo(er);
     reply(sender, new events::CommandResponceEvent(this, res));
@@ -634,7 +634,7 @@ void LeveldbDriver::handleLoadDatabaseInfosEvent(events::LoadDatabasesInfoReques
   notifyProgress(sender, 0);
   events::LoadDatabasesInfoResponceEvent::value_type res(ev->value());
   notifyProgress(sender, 50);
-  res.databases_.push_back(currentDatabaseInfo());
+  res.databases.push_back(currentDatabaseInfo());
   reply(sender, new events::LoadDatabasesInfoResponceEvent(this, res));
   notifyProgress(sender, 100);
 }
@@ -644,7 +644,7 @@ void LeveldbDriver::handleLoadDatabaseContentEvent(events::LoadDatabaseContentRe
   notifyProgress(sender, 0);
   events::LoadDatabaseContentResponceEvent::value_type res(ev->value());
   char patternResult[1024] = {0};
-  common::SNPrintf(patternResult, sizeof(patternResult), GET_KEYS_PATTERN_1ARGS_I, res.countKeys_);
+  common::SNPrintf(patternResult, sizeof(patternResult), GET_KEYS_PATTERN_1ARGS_I, res.count_keys);
   FastoObjectIPtr root = FastoObject::createRoot(patternResult);
   notifyProgress(sender, 50);
   FastoObjectCommand* cmd = createCommand<LeveldbCommand>(root, patternResult,
@@ -671,7 +671,7 @@ void LeveldbDriver::handleLoadDatabaseContentEvent(events::LoadDatabaseContentRe
         if (isok) {
           NKey k(key);
           NDbKValue ress(k, NValue());
-          res.keys_.push_back(ress);
+          res.keys.push_back(ress);
         }
       }
     }

@@ -24,11 +24,11 @@ namespace fastonosql {
 
 class RedisServer
   : public IServer {
-  friend class ServersManager;
   Q_OBJECT
+ public:
+  RedisServer(IDriverSPtr drv, bool isSuperServer);
  private:
   virtual IDatabaseSPtr createDatabase(DataBaseInfoSPtr info);
-  RedisServer(const IDriverSPtr& drv, bool isSuperServer);
 };
 
 }  // namespace fastonosql

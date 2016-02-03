@@ -22,7 +22,7 @@
 
 namespace fastonosql {
 
-LeveldbServer::LeveldbServer(const IDriverSPtr& drv, bool isSuperServer)
+LeveldbServer::LeveldbServer(IDriverSPtr drv, bool isSuperServer)
   : IServer(drv, isSuperServer) {
 }
 
