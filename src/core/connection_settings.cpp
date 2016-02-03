@@ -66,18 +66,18 @@ namespace {
 namespace fastonosql {
 
 IConnectionSettings::IConnectionSettings(const std::string& connectionName, connectionTypes type)
-  : connectionName_(connectionName), type_(type), msinterval_(0) {
+  : connection_name_(connectionName), type_(type), msinterval_(0) {
 }
 
 void IConnectionSettings::setConnectionName(const std::string& name) {
-  connectionName_ = name;
+  connection_name_ = name;
 }
 
 IConnectionSettings::~IConnectionSettings() {
 }
 
 std::string IConnectionSettings::connectionName() const {
-  return connectionName_;
+  return connection_name_;
 }
 
 connectionTypes IConnectionSettings::connectionType() const {
@@ -99,7 +99,7 @@ void IConnectionSettings::setLoggingMsTimeInterval(uint32_t mstime) {
 
 std::string IConnectionSettings::toString() const {
   char buff[1024] = {0};
-  common::SNPrintf(buff, sizeof(buff), "%d,%s,%" PRIu32, type_, connectionName_, msinterval_);
+  common::SNPrintf(buff, sizeof(buff), "%d,%s,%" PRIu32, type_, connection_name_, msinterval_);
   return buff;
 }
 
@@ -114,7 +114,7 @@ IConnectionSettingsBase::~IConnectionSettingsBase() {
 void IConnectionSettingsBase::setConnectionNameAndUpdateHash(const std::string& name) {
   using namespace common::utils;
   setConnectionName(name);
-  common::buffer_type bcon = common::convertFromString<common::buffer_type>(connectionName_);
+  common::buffer_type bcon = common::convertFromString<common::buffer_type>(connection_name_);
   uint64_t v = hash::crc64(0, bcon);
   hash_ = common::convertToString(v);
 }
@@ -251,7 +251,7 @@ std::string IConnectionSettingsBase::toString() const {
 
 IConnectionSettingsRemote::IConnectionSettingsRemote(const std::string& connectionName,
                                                      connectionTypes type)
-  : IConnectionSettingsBase(connectionName, type), sshInfo_() {
+  : IConnectionSettingsBase(connectionName, type), ssh_info_() {
 }
 
 IConnectionSettingsRemote::~IConnectionSettingsRemote() {
@@ -291,17 +291,17 @@ std::string IConnectionSettingsRemote::toString() const {
   DCHECK(type_ != DBUNKNOWN);
 
   std::stringstream str;
-  str << IConnectionSettingsBase::toString() << ',' << sshInfo_.toString();
+  str << IConnectionSettingsBase::toString() << ',' << ssh_info_.toString();
   std::string res = str.str();
   return res;
 }
 
 SSHInfo IConnectionSettingsRemote::sshInfo() const {
-  return sshInfo_;
+  return ssh_info_;
 }
 
 void IConnectionSettingsRemote::setSshInfo(const SSHInfo& info) {
-  sshInfo_ = info;
+  ssh_info_ = info;
 }
 
 const char* useHelpText(connectionTypes type) {
@@ -415,7 +415,7 @@ std::string defaultCommandLine(connectionTypes type) {
 #ifdef BUILD_WITH_UNQLITE
   if (type == UNQLITE) {
     unqliteConfig r;
-    r.create_if_missing_ = true;
+    r.create_if_missing = true;
     return common::convertToString(r);
   }
 #endif

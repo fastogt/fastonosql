@@ -164,9 +164,9 @@ class IDriver
                                              std::string* cmdstring) const WARN_UNUSED_RESULT = 0;
 
  private:
-  ServerInfoSPtr serverInfo_;
-  ServerDiscoveryInfoSPtr serverDiscInfo_;
-  DataBaseInfoSPtr currentDatabaseInfo_;
+  ServerInfoSPtr server_info_;
+  ServerDiscoveryInfoSPtr server_disc_info_;
+  DataBaseInfoSPtr current_database_info_;
 
   QThread* thread_;
   int timer_info_id_;

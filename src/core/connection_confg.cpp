@@ -26,45 +26,42 @@
 namespace fastonosql {
 
 LocalConfig::LocalConfig(const std::string& dbname)
-  : BaseConfig<LOCAL>(), dbname_(dbname) {
+  : BaseConfig<LOCAL>(), dbname(dbname) {
 }
 
 std::vector<std::string> LocalConfig::args() const {
   std::vector<std::string> argv;
 
-  if (!dbname_.empty()) {
+  if (!dbname.empty()) {
     argv.push_back("-f");
-    argv.push_back(dbname_);
+    argv.push_back(dbname);
   }
 
-  if (!mb_delim_.empty()) {
+  if (!delimiter.empty()) {
     argv.push_back("-d");
-    argv.push_back(mb_delim_);
+    argv.push_back(delimiter);
   }
 
   return argv;
 }
 
-RemoteConfig::RemoteConfig(const std::string &hostip, uint16_t port)
-  : BaseConfig<REMOTE>(), hostip_(hostip), hostport_(port) {
+RemoteConfig::RemoteConfig(const common::net::hostAndPort& host)
+  : BaseConfig<REMOTE>(), host(host) {
 }
 
 std::vector<std::string> RemoteConfig::args() const {
   std::vector<std::string> argv;
 
-  if (!hostip_.empty()) {
+  if (host.isValid()) {
     argv.push_back("-h");
-    argv.push_back(hostip_);
-  }
-
-  if (hostport_ != 0) {
+    argv.push_back(host.host);
     argv.push_back("-p");
-    argv.push_back(common::convertToString(hostport_));
+    argv.push_back(common::convertToString(host.port));
   }
 
-  if (!mb_delim_.empty()) {
+  if (!delimiter.empty()) {
     argv.push_back("-d");
-    argv.push_back(mb_delim_);
+    argv.push_back(delimiter);
   }
 
   return argv;

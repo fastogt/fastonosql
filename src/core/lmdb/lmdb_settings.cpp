@@ -43,7 +43,7 @@ void LmdbConnectionSettings::setInfo(const lmdbConfig &info) {
 }
 
 std::string LmdbConnectionSettings::fullAddress() const {
-  return info_.dbname_;
+  return info_.dbname;
 }
 
 IConnectionSettings* LmdbConnectionSettings::clone() const {

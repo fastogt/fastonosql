@@ -60,7 +60,7 @@ class ServersManager
   std::vector<QObject*> findAllListeners(const IDriverSPtr& drv) const;
 
   ServersContainer servers_;
-  bool syncServers_;
+  bool sync_servers_;
 };
 
 }  // namespace fastonosql

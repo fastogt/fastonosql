@@ -29,12 +29,11 @@ RedisConnectionSettings::RedisConnectionSettings(const std::string &connectionNa
 }
 
 void RedisConnectionSettings::setHost(const common::net::hostAndPort& host) {
-  info_.hostip_ = host.host;
-  info_.hostport_ = host.port;
+  info_.host = host;
 }
 
 common::net::hostAndPort RedisConnectionSettings::host() const {
-  return common::net::hostAndPort(info_.hostip_, info_.hostport_);
+  return info_.host;
 }
 
 void RedisConnectionSettings::initFromCommandLine(const std::string &val) {

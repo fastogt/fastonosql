@@ -54,7 +54,7 @@ common::Error createConnection(const rocksdbConfig& config, rocksdb::DB** contex
   DCHECK(*context == NULL);
 
   rocksdb::DB* lcontext = NULL;
-  rocksdb::Status st = rocksdb::DB::Open(config.options_, config.dbname_, &lcontext);
+  rocksdb::Status st = rocksdb::DB::Open(config.options_, config.dbname, &lcontext);
   if (!st.ok()) {
     char buff[1024] = {0};
     common::SNPrintf(buff, sizeof(buff), "Fail open database: %s!", st.ToString());
@@ -62,7 +62,6 @@ common::Error createConnection(const rocksdbConfig& config, rocksdb::DB** contex
   }
 
   *context = lcontext;
-
   return common::Error();
 }
 
@@ -85,7 +84,6 @@ common::Error testConnection(RocksdbConnectionSettings* settings) {
   }
 
   delete ldb;
-
   return common::Error();
 }
 
@@ -117,8 +115,6 @@ struct RocksdbDriver::pimpl {
     }
 
     rocksdb_ = context;
-
-
     return common::Error();
   }
 
@@ -219,7 +215,7 @@ struct RocksdbDriver::pimpl {
       common::Error er = info(argc == 2 ? argv[1] : 0, statsout);
       if (!er) {
         common::StringValue *val = common::Value::createStringValue(RocksdbServerInfo(statsout).toString());
-        FastoObject* child = new FastoObject(out, val, config_.mb_delim_);
+        FastoObject* child = new FastoObject(out, val, config_.delimiter);
         out->addChildren(child);
       }
       return er;
@@ -232,7 +228,7 @@ struct RocksdbDriver::pimpl {
       common::Error er = get(argv[1], &ret);
       if (!er) {
         common::StringValue *val = common::Value::createStringValue(ret);
-        FastoObject* child = new FastoObject(out, val, config_.mb_delim_);
+        FastoObject* child = new FastoObject(out, val, config_.delimiter);
         out->addChildren(child);
       }
       return er;
@@ -245,7 +241,7 @@ struct RocksdbDriver::pimpl {
       common::Error er = dbsize(ret);
       if (!er) {
         common::FundamentalValue *val = common::Value::createUIntegerValue(ret);
-        FastoObject* child = new FastoObject(out, val, config_.mb_delim_);
+        FastoObject* child = new FastoObject(out, val, config_.delimiter);
         out->addChildren(child);
       }
       return er;
@@ -267,7 +263,7 @@ struct RocksdbDriver::pimpl {
           common::StringValue *val = common::Value::createStringValue(keysout[i]);
           ar->append(val);
         }
-        FastoObjectArray* child = new FastoObjectArray(out, ar, config_.mb_delim_);
+        FastoObjectArray* child = new FastoObjectArray(out, ar, config_.delimiter);
         out->addChildren(child);
       }
       return er;
@@ -279,7 +275,7 @@ struct RocksdbDriver::pimpl {
       common::Error er = merge(argv[1], argv[2]);
       if (!er) {
         common::StringValue *val = common::Value::createStringValue("STORED");
-        FastoObject* child = new FastoObject(out, val, config_.mb_delim_);
+        FastoObject* child = new FastoObject(out, val, config_.delimiter);
         out->addChildren(child);
       }
       return er;
@@ -291,7 +287,7 @@ struct RocksdbDriver::pimpl {
       common::Error er = put(argv[1], argv[2]);
       if (!er) {
         common::StringValue *val = common::Value::createStringValue("STORED");
-        FastoObject* child = new FastoObject(out, val, config_.mb_delim_);
+        FastoObject* child = new FastoObject(out, val, config_.delimiter);
         out->addChildren(child);
       }
       return er;
@@ -303,7 +299,7 @@ struct RocksdbDriver::pimpl {
       common::Error er = del(argv[1]);
       if (!er) {
         common::StringValue *val = common::Value::createStringValue("DELETED");
-        FastoObject* child = new FastoObject(out, val, config_.mb_delim_);
+        FastoObject* child = new FastoObject(out, val, config_.delimiter);
         out->addChildren(child);
       }
       return er;
@@ -320,7 +316,7 @@ struct RocksdbDriver::pimpl {
           common::StringValue *val = common::Value::createStringValue(keysout[i]);
           ar->append(val);
         }
-        FastoObjectArray* child = new FastoObjectArray(out, ar, config_.mb_delim_);
+        FastoObjectArray* child = new FastoObjectArray(out, ar, config_.delimiter);
         out->addChildren(child);
       }
       return er;
@@ -510,12 +506,11 @@ common::Error RocksdbDriver::commandChangeTTLImpl(CommandChangeTTL* command,
 // ============== commands =============//
 
 common::net::hostAndPort RocksdbDriver::address() const {
-  // return common::net::hostAndPort(impl_->config_.hostip_, impl_->config_.hostport_);
   return common::net::hostAndPort();
 }
 
 std::string RocksdbDriver::outputDelemitr() const {
-  return impl_->config_.mb_delim_;
+  return impl_->config_.delimiter;
 }
 
 const char* RocksdbDriver::versionApi() {
@@ -590,12 +585,12 @@ void RocksdbDriver::handleConnectEvent(events::ConnectRequestEvent *ev) {
       events::ConnectResponceEvent::value_type res(ev->value());
       RocksdbConnectionSettings *set = dynamic_cast<RocksdbConnectionSettings*>(settings_.get());
       if (set) {
-          impl_->config_ = set->info();
+        impl_->config_ = set->info();
   notifyProgress(sender, 25);
-              common::Error er = impl_->connect();
-              if (er && er->isError()) {
-                  res.setErrorInfo(er);
-              }
+        common::Error er = impl_->connect();
+        if (er && er->isError()) {
+          res.setErrorInfo(er);
+        }
   notifyProgress(sender, 75);
       }
       reply(sender, new events::ConnectResponceEvent(this, res));

@@ -21,6 +21,8 @@
 #include <vector>
 #include <string>
 
+#include "common/net/types.h"
+
 namespace fastonosql {
 
 enum ConfigType {
@@ -32,35 +34,34 @@ enum ConfigType {
 template<ConfigType ctype>
 struct BaseConfig {
   BaseConfig()
-    : mb_delim_("\n") {
+    : delimiter("\n") {
   }
 
   ConfigType type() const {
     return ctype;
   }
 
-  std::string mb_delim_;
+  std::string delimiter;
 };
 
-// -f
+// -f -d
 struct LocalConfig
         : public BaseConfig<LOCAL> {
   explicit LocalConfig(const std::string& dbname);
 
   std::vector<std::string> args() const;
 
-  std::string dbname_;
+  std::string dbname;
 };
 
-// -h -p
+// -h -p -d
 struct RemoteConfig
         : public BaseConfig<REMOTE> {
-  RemoteConfig(const std::string& hostip, uint16_t port);
+  explicit RemoteConfig(const common::net::hostAndPort& host);
 
   std::vector<std::string> args() const;
 
-  std::string hostip_;
-  uint16_t hostport_;
+  common::net::hostAndPort host;
 };
 
 }  // namespace fastonosql

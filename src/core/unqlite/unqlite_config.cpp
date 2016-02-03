@@ -34,11 +34,11 @@ void parseOptions(int argc, char **argv, unqliteConfig& cfg) {
     int lastarg = i == argc-1;
 
     if (!strcmp(argv[i], "-d") && !lastarg) {
-        cfg.mb_delim_ = argv[++i];
+        cfg.delimiter = argv[++i];
     } else if (!strcmp(argv[i], "-f") && !lastarg) {
-        cfg.dbname_ = argv[++i];
+        cfg.dbname = argv[++i];
     } else if (!strcmp(argv[i], "-c")) {
-        cfg.create_if_missing_ = true;
+        cfg.create_if_missing = true;
     } else {
       if (argv[i][0] == '-') {
         const uint16_t size_buff = 256;
@@ -58,7 +58,7 @@ void parseOptions(int argc, char **argv, unqliteConfig& cfg) {
 }  // namespace
 
 unqliteConfig::unqliteConfig()
-  : LocalConfig(common::file_system::prepare_path("~/test.unqlite")), create_if_missing_(false) {
+  : LocalConfig(common::file_system::prepare_path("~/test.unqlite")), create_if_missing(false) {
 }
 
 }  // namespace fastonosql
@@ -68,7 +68,7 @@ namespace common {
 std::string convertToString(const fastonosql::unqliteConfig &conf) {
   std::vector<std::string> argv = conf.args();
 
-  if (conf.create_if_missing_) {
+  if (conf.create_if_missing) {
       argv.push_back("-c");
   }
 

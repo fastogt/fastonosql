@@ -43,7 +43,7 @@ void LeveldbConnectionSettings::setInfo(const leveldbConfig &info) {
 }
 
 std::string LeveldbConnectionSettings::fullAddress() const {
-  return info_.dbname_;
+  return info_.dbname;
 }
 
 IConnectionSettings* LeveldbConnectionSettings::clone() const {

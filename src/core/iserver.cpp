@@ -80,8 +80,8 @@ IServerBase::~IServerBase() {
 }
 
 IServer::IServer(IDriverSPtr drv, bool isSuperServer)
-  : drv_(drv), isSuperServer_(isSuperServer) {
-  if (isSuperServer_) {
+  : drv_(drv), is_super_server_(isSuperServer) {
+  if (is_super_server_) {
     VERIFY(QObject::connect(drv_.get(), &IDriver::addedChild, this, &IServer::addedChild));
     VERIFY(QObject::connect(drv_.get(), &IDriver::itemUpdated, this, &IServer::itemUpdated));
     VERIFY(QObject::connect(drv_.get(), &IDriver::serverInfoSnapShoot,
@@ -105,7 +105,7 @@ bool IServer::isAuthenticated() const {
 }
 
 bool IServer::isSuperServer() const {
-  return isSuperServer_;
+  return is_super_server_;
 }
 
 bool IServer::isLocalHost() const {

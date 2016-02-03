@@ -98,18 +98,18 @@ class SettingsManager
   ~SettingsManager();
 
   supportedViews views_;
-  QString curStyle_;
-  QString curFontName_;
-  QString curLanguage_;
+  QString cur_style_;
+  QString cur_font_name_;
+  QString cur_language_;
   ConnectionSettingsContainerType connections_;
   ClusterSettingsContainerType clusters_;
-  QStringList recentConnections_;
-  bool syncTabs_;
-  QString loggingDir_;
-  bool autoCheckUpdate_;
-  bool autoCompletion_;
-  bool autoOpenConsole_;
-  bool fastViewKeys_;
+  QStringList recent_connections_;
+  bool sync_tabs_;
+  QString logging_dir_;
+  bool auto_check_update_;
+  bool auto_completion_;
+  bool auto_open_console_;
+  bool fast_view_keys_;
 };
 
 }  // namespace fastonosql

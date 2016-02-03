@@ -63,7 +63,7 @@
 namespace fastonosql {
 
 ServersManager::ServersManager()
-  : syncServers_(SettingsManager::instance().syncTabs()) {
+  : sync_servers_(SettingsManager::instance().syncTabs()) {
   qRegisterMetaType<ServerInfoSnapShoot>("ServerInfoSnapShoot");
 }
 
@@ -125,7 +125,7 @@ IServerSPtr ServersManager::createServer(IConnectionSettingsBaseSPtr settings) {
   DCHECK(result);
   if (result) {
     servers_.push_back(result);
-    if (ser && syncServers_) {
+    if (ser && sync_servers_) {
       result->syncWithServer(ser.get());
     }
   }
@@ -252,7 +252,7 @@ common::Error ServersManager::discoveryConnection(IConnectionSettingsBaseSPtr co
 }
 
 void ServersManager::setSyncServers(bool isSync) {
-  syncServers_ = isSync;
+  sync_servers_ = isSync;
   refreshSyncServers();
 }
 
@@ -273,7 +273,7 @@ void ServersManager::closeServer(IServerSPtr server) {
         for (size_t j = 0; j < servers_.size(); ++j) {
           IServerSPtr servj = servers_[j];
           if (servj->driver() == drv) {
-            servj->isSuperServer_ = true;
+            servj->is_super_server_ = true;
             break;
           }
         }
@@ -300,7 +300,7 @@ void ServersManager::refreshSyncServers() {
       for (size_t j = 0; j < servers_.size(); ++j) {
         IServerSPtr servj = servers_[j];
         if (servj != servi && servj->driver() == servi->driver()) {
-          if (syncServers_) {
+          if (sync_servers_) {
             servj->syncWithServer(servi.get());
           } else {
             servj->unSyncFromServer(servi.get());

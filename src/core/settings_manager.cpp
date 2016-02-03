@@ -64,9 +64,9 @@ QString fontName() {
 
 namespace fastonosql {
 SettingsManager::SettingsManager()
-  : views_(), curStyle_(), curFontName_(), curLanguage_(), connections_(),
-    syncTabs_(), loggingDir_(),
-    autoCheckUpdate_(), autoCompletion_(), autoOpenConsole_(), fastViewKeys_() {
+  : views_(), cur_style_(), cur_font_name_(), cur_language_(), connections_(),
+    sync_tabs_(), logging_dir_(),
+    auto_check_update_(), auto_completion_(), auto_open_console_(), fast_view_keys_() {
   load();
 }
 
@@ -93,27 +93,27 @@ void SettingsManager::setDefaultView(supportedViews view) {
 }
 
 QString SettingsManager::currentStyle() const {
-  return curStyle_;
+  return cur_style_;
 }
 
 void SettingsManager::setCurrentStyle(const QString &st) {
-  curStyle_ = st;
+  cur_style_ = st;
 }
 
 QString SettingsManager::currentFontName() const {
-  return curFontName_;
+  return cur_font_name_;
 }
 
 void SettingsManager::setCurrentFontName(const QString& font) {
-  curFontName_ = font;
+  cur_font_name_ = font;
 }
 
 QString SettingsManager::currentLanguage() const {
-  return curLanguage_;
+  return cur_language_;
 }
 
 void SettingsManager::setCurrentLanguage(const QString &lang) {
-  curLanguage_ = lang;
+  cur_language_ = lang;
 }
 
 void SettingsManager::addConnection(IConnectionSettingsBaseSPtr connection) {
@@ -166,78 +166,78 @@ SettingsManager::ClusterSettingsContainerType SettingsManager::clusters() const 
 
 void SettingsManager::addRConnection(const QString& connection) {
   if (!connection.isEmpty()) {
-    QStringList::iterator it = std::find(recentConnections_.begin(),
-                                         recentConnections_.end(), connection);
-    if (it == recentConnections_.end()) {
-      recentConnections_.push_front(connection);
+    QStringList::iterator it = std::find(recent_connections_.begin(),
+                                         recent_connections_.end(), connection);
+    if (it == recent_connections_.end()) {
+      recent_connections_.push_front(connection);
     }
   }
 }
 
 void SettingsManager::removeRConnection(const QString& connection) {
   if (!connection.isEmpty()) {
-    QStringList::iterator it = std::find(recentConnections_.begin(),
-                                         recentConnections_.end(), connection);
-    if (it != recentConnections_.end()) {
-      recentConnections_.erase(it);
+    QStringList::iterator it = std::find(recent_connections_.begin(),
+                                         recent_connections_.end(), connection);
+    if (it != recent_connections_.end()) {
+      recent_connections_.erase(it);
     }
   }
 }
 
 QStringList SettingsManager::recentConnections() const {
-  return recentConnections_;
+  return recent_connections_;
 }
 
 void SettingsManager::clearRConnections() {
-  recentConnections_.clear();
+  recent_connections_.clear();
 }
 
 bool SettingsManager::syncTabs() const {
-  return syncTabs_;
+  return sync_tabs_;
 }
 
 void SettingsManager::setSyncTabs(bool sync) {
-  syncTabs_ = sync;
+  sync_tabs_ = sync;
 }
 
 QString SettingsManager::loggingDirectory() const {
-  return loggingDir_;
+  return logging_dir_;
 }
 
 void SettingsManager::setLoggingDirectory(const QString &dir) {
-  loggingDir_ = dir;
+  logging_dir_ = dir;
 }
 
 bool SettingsManager::autoCheckUpdates() const {
-  return autoCheckUpdate_;
+  return auto_check_update_;
 }
 
 void SettingsManager::setAutoCheckUpdates(bool isCheck) {
-  autoCheckUpdate_ = isCheck;
+  auto_check_update_ = isCheck;
 }
 
 bool SettingsManager::autoCompletion() const {
-  return autoCompletion_;
+  return auto_completion_;
 }
 
 void SettingsManager::setAutoCompletion(bool enableAuto) {
-  autoCompletion_ = enableAuto;
+  auto_completion_ = enableAuto;
 }
 
 bool SettingsManager::autoOpenConsole() const {
-  return autoOpenConsole_;
+  return auto_open_console_;
 }
 
 void SettingsManager::setAutoOpenConsole(bool enableAuto) {
-  autoOpenConsole_ = enableAuto;
+  auto_open_console_ = enableAuto;
 }
 
 bool SettingsManager::fastViewKeys() const {
-  return fastViewKeys_;
+  return fast_view_keys_;
 }
 
 void SettingsManager::setFastViewKeys(bool fastView) {
-  fastViewKeys_ = fastView;
+  fast_view_keys_ = fastView;
 }
 
 void SettingsManager::reloadFromPath(const std::string& path, bool merge) {
@@ -248,16 +248,16 @@ void SettingsManager::reloadFromPath(const std::string& path, bool merge) {
   if (!merge) {
     clusters_.clear();
     connections_.clear();
-    recentConnections_.clear();
+    recent_connections_.clear();
   }
 
   QString inip = common::convertFromString<QString>(common::file_system::prepare_path(path));
   QSettings settings(inip, QSettings::IniFormat);
   DCHECK(settings.status() == QSettings::NoError);
 
-  curStyle_ = settings.value(STYLE, fasto::qt::gui::defStyle).toString();
-  curFontName_ = settings.value(FONT, fontName()).toString();
-  curLanguage_ = settings.value(LANGUAGE, fasto::qt::translations::defLanguage).toString();
+  cur_style_ = settings.value(STYLE, fasto::qt::gui::defStyle).toString();
+  cur_font_name_ = settings.value(FONT, fontName()).toString();
+  cur_language_ = settings.value(LANGUAGE, fasto::qt::translations::defLanguage).toString();
 
   int view = settings.value(VIEW, fastonosql::Tree).toInt();
   views_ = static_cast<supportedViews>(view);
@@ -296,17 +296,17 @@ void SettingsManager::reloadFromPath(const std::string& path, bool merge) {
 
       QString qdata = common::convertFromString<QString>(raw);
       if (!qdata.isEmpty()) {
-         recentConnections_.push_back(qdata);
+         recent_connections_.push_back(qdata);
       }
   }
 
-  syncTabs_ = settings.value(SYNCTABS, false).toBool();
+  sync_tabs_ = settings.value(SYNCTABS, false).toBool();
 
-  loggingDir_ = settings.value(LOGGINGDIR, settingsDirPath()).toString();
-  autoCheckUpdate_ = settings.value(CHECKUPDATES, true).toBool();
-  autoCompletion_ = settings.value(AUTOCOMPLETION, true).toBool();
-  autoOpenConsole_ = settings.value(AUTOOPENCONSOLE, true).toBool();
-  fastViewKeys_ = settings.value(FASTVIEWKEYS, true).toBool();
+  logging_dir_ = settings.value(LOGGINGDIR, settingsDirPath()).toString();
+  auto_check_update_ = settings.value(CHECKUPDATES, true).toBool();
+  auto_completion_ = settings.value(AUTOCOMPLETION, true).toBool();
+  auto_open_console_ = settings.value(AUTOOPENCONSOLE, true).toBool();
+  fast_view_keys_ = settings.value(FASTVIEWKEYS, true).toBool();
 }
 
 void SettingsManager::load() {
@@ -318,9 +318,9 @@ void SettingsManager::save() {
                      QSettings::IniFormat);
   DCHECK(settings.status() == QSettings::NoError);
 
-  settings.setValue(STYLE, curStyle_);
-  settings.setValue(FONT, curFontName_);
-  settings.setValue(LANGUAGE, curLanguage_);
+  settings.setValue(STYLE, cur_style_);
+  settings.setValue(FONT, cur_font_name_);
+  settings.setValue(LANGUAGE, cur_language_);
   settings.setValue(VIEW, views_);
 
   QList<QVariant> clusters;
@@ -350,8 +350,8 @@ void SettingsManager::save() {
   settings.setValue(CONNECTIONS, connections);
 
   QStringList rconnections;
-  for (QStringList::const_iterator it = recentConnections_.begin();
-       it != recentConnections_.end(); ++it) {
+  for (QStringList::const_iterator it = recent_connections_.begin();
+       it != recent_connections_.end(); ++it) {
       QString conn = *it;
       if (!conn.isEmpty()) {
          std::string raw = common::convertToString(conn);
@@ -362,12 +362,12 @@ void SettingsManager::save() {
   }
   settings.setValue(RCONNECTIONS, rconnections);
 
-  settings.setValue(SYNCTABS, syncTabs_);
-  settings.setValue(LOGGINGDIR, loggingDir_);
-  settings.setValue(CHECKUPDATES, autoCheckUpdate_);
-  settings.setValue(AUTOCOMPLETION, autoCompletion_);
-  settings.setValue(AUTOOPENCONSOLE, autoOpenConsole_);
-  settings.setValue(FASTVIEWKEYS, fastViewKeys_);
+  settings.setValue(SYNCTABS, sync_tabs_);
+  settings.setValue(LOGGINGDIR, logging_dir_);
+  settings.setValue(CHECKUPDATES, auto_check_update_);
+  settings.setValue(AUTOCOMPLETION, auto_completion_);
+  settings.setValue(AUTOOPENCONSOLE, auto_open_console_);
+  settings.setValue(FASTVIEWKEYS, fast_view_keys_);
 }
 
 }  // namespace fastonosql

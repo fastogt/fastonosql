@@ -34,9 +34,9 @@ void parseOptions(int argc, char **argv, lmdbConfig& cfg) {
       int lastarg = i == argc-1;
 
       if (!strcmp(argv[i], "-d") && !lastarg) {
-          cfg.mb_delim_ = argv[++i];
+          cfg.delimiter = argv[++i];
       } else if (!strcmp(argv[i], "-f") && !lastarg) {
-          cfg.dbname_ = argv[++i];
+          cfg.dbname = argv[++i];
       } else if (!strcmp(argv[i], "-c")) {
           cfg.create_if_missing_ = true;
       } else {

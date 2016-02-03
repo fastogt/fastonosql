@@ -34,7 +34,7 @@ void parseOptions(int argc, char **argv, redisConfig& cfg) {
       int lastarg = i==argc-1;
 
       if (!strcmp(argv[i], "-h") && !lastarg) {
-        cfg.hostip_ = argv[++i];
+        cfg.host.host = argv[++i];
       }/* else if (!strcmp(argv[i], "-h") && lastarg) {
         usage();
       } else if (!strcmp(argv[i], "--help")) {
@@ -42,7 +42,7 @@ void parseOptions(int argc, char **argv, redisConfig& cfg) {
       } else if (!strcmp(argv[i], "-x")) {
         cfg.stdinarg = 1;
       }*/ else if (!strcmp(argv[i], "-p") && !lastarg) {
-        cfg.hostport_ = atoi(argv[++i]);
+        cfg.host.port = atoi(argv[++i]);
       } else if (!strcmp(argv[i], "-s") && !lastarg) {
         cfg.hostsocket = argv[++i];
       } else if (!strcmp(argv[i], "-r") && !lastarg) {
@@ -91,7 +91,7 @@ void parseOptions(int argc, char **argv, redisConfig& cfg) {
       } else if (!strcmp(argv[i], "-c")) {
         cfg.cluster_mode = 1;
       } else if (!strcmp(argv[i], "-d") && !lastarg) {
-        cfg.mb_delim_ = argv[++i];
+        cfg.delimiter = argv[++i];
       }
       /*else if (!strcmp(argv[i], "-v") || !strcmp(argv[i], "--version")) {
         sds version = cliVersion();
@@ -115,12 +115,12 @@ void parseOptions(int argc, char **argv, redisConfig& cfg) {
 }  // namespace
 
 redisConfig::redisConfig()
-  : RemoteConfig("127.0.0.1", 6379) {
+  : RemoteConfig(common::net::hostAndPort("127.0.0.1", 6379)) {
   init();
 }
 
 redisConfig::redisConfig(const redisConfig &other)
-  : RemoteConfig(other.hostip_, other.hostport_) {
+  : RemoteConfig(other.host) {
   init();
   copy(other);
 }

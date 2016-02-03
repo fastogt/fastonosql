@@ -43,7 +43,7 @@ void UnqliteConnectionSettings::setInfo(const unqliteConfig &info) {
 }
 
 std::string UnqliteConnectionSettings::fullAddress() const {
-  return info_.dbname_;
+  return info_.dbname;
 }
 
 IConnectionSettings* UnqliteConnectionSettings::clone() const {

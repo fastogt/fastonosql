@@ -57,7 +57,7 @@ common::Error createConnection(const ssdbConfig& config, const SSHInfo& sinfo,
                                ssdb::Client** context) {
   DCHECK(*context == NULL);
   UNUSED(sinfo);
-  ssdb::Client *lcontext = ssdb::Client::connect(config.hostip_, config.hostport_);
+  ssdb::Client *lcontext = ssdb::Client::connect(config.host.host, config.host.port);
   if (!lcontext) {
     return common::make_error_value("Fail connect to server!", common::ErrorValue::E_ERROR);
   }
@@ -188,7 +188,7 @@ struct SsdbDriver::pimpl {
       common::Error er = get(argv[1], &ret);
       if (!er) {
         common::StringValue *val = common::Value::createStringValue(ret);
-        FastoObject* child = new FastoObject(out, val, config_.mb_delim_);
+        FastoObject* child = new FastoObject(out, val, config_.delimiter);
           out->addChildren(child);
         }
         return er;
@@ -200,7 +200,7 @@ struct SsdbDriver::pimpl {
       common::Error er = set(argv[1], argv[2]);
       if (!er) {
         common::StringValue *val = common::Value::createStringValue("STORED");
-        FastoObject* child = new FastoObject(out, val, config_.mb_delim_);
+        FastoObject* child = new FastoObject(out, val, config_.delimiter);
         out->addChildren(child);
       }
       return er;
@@ -213,7 +213,7 @@ struct SsdbDriver::pimpl {
       common::Error er = dbsize(ret);
       if (!er) {
         common::FundamentalValue *val = common::Value::createUIntegerValue(ret);
-        FastoObject* child = new FastoObject(out, val, config_.mb_delim_);
+        FastoObject* child = new FastoObject(out, val, config_.delimiter);
         out->addChildren(child);
       }
       return er;
@@ -225,7 +225,7 @@ struct SsdbDriver::pimpl {
       common::Error er = auth(argv[1]);
       if (!er) {
         common::StringValue *val = common::Value::createStringValue("OK");
-        FastoObject* child = new FastoObject(out, val, config_.mb_delim_);
+        FastoObject* child = new FastoObject(out, val, config_.delimiter);
         out->addChildren(child);
       }
       return er;
@@ -237,7 +237,7 @@ struct SsdbDriver::pimpl {
       common::Error er = setx(argv[1], argv[2], atoi(argv[3]));
       if (!er) {
         common::StringValue *val = common::Value::createStringValue("STORED");
-        FastoObject* child = new FastoObject(out, val, config_.mb_delim_);
+        FastoObject* child = new FastoObject(out, val, config_.delimiter);
         out->addChildren(child);
       }
       return er;
@@ -249,7 +249,7 @@ struct SsdbDriver::pimpl {
       common::Error er = del(argv[1]);
       if (!er) {
         common::StringValue *val = common::Value::createStringValue("DELETED");
-        FastoObject* child = new FastoObject(out, val, config_.mb_delim_);
+        FastoObject* child = new FastoObject(out, val, config_.delimiter);
         out->addChildren(child);
       }
       return er;
@@ -262,7 +262,7 @@ struct SsdbDriver::pimpl {
       common::Error er = incr(argv[1], atoll(argv[2]), &ret);
       if (!er) {
         common::FundamentalValue *val = common::Value::createIntegerValue(ret);
-        FastoObject* child = new FastoObject(out, val, config_.mb_delim_);
+        FastoObject* child = new FastoObject(out, val, config_.delimiter);
         out->addChildren(child);
       }
       return er;
@@ -279,7 +279,7 @@ struct SsdbDriver::pimpl {
           common::StringValue *val = common::Value::createStringValue(keysout[i]);
           ar->append(val);
         }
-        FastoObjectArray* child = new FastoObjectArray(out, ar, config_.mb_delim_);
+        FastoObjectArray* child = new FastoObjectArray(out, ar, config_.delimiter);
         out->addChildren(child);
       }
       return er;
@@ -296,7 +296,7 @@ struct SsdbDriver::pimpl {
           common::StringValue *val = common::Value::createStringValue(keysout[i]);
           ar->append(val);
         }
-        FastoObjectArray* child = new FastoObjectArray(out, ar, config_.mb_delim_);
+        FastoObjectArray* child = new FastoObjectArray(out, ar, config_.delimiter);
         out->addChildren(child);
       }
       return er;
@@ -313,7 +313,7 @@ struct SsdbDriver::pimpl {
           common::StringValue *val = common::Value::createStringValue(keysout[i]);
           ar->append(val);
         }
-        FastoObjectArray* child = new FastoObjectArray(out, ar, config_.mb_delim_);
+        FastoObjectArray* child = new FastoObjectArray(out, ar, config_.delimiter);
         out->addChildren(child);
       }
       return er;
@@ -335,7 +335,7 @@ struct SsdbDriver::pimpl {
           common::StringValue *val = common::Value::createStringValue(keysout[i]);
           ar->append(val);
         }
-        FastoObjectArray* child = new FastoObjectArray(out, ar, config_.mb_delim_);
+        FastoObjectArray* child = new FastoObjectArray(out, ar, config_.delimiter);
         out->addChildren(child);
       }
       return er;
@@ -352,7 +352,7 @@ struct SsdbDriver::pimpl {
       common::Error er = multi_del(keysget);
       if (!er) {
         common::StringValue *val = common::Value::createStringValue("DELETED");
-        FastoObject* child = new FastoObject(out, val, config_.mb_delim_);
+        FastoObject* child = new FastoObject(out, val, config_.delimiter);
         out->addChildren(child);
       }
       return er;
@@ -369,7 +369,7 @@ struct SsdbDriver::pimpl {
       common::Error er = multi_set(keysset);
       if (!er) {
         common::StringValue *val = common::Value::createStringValue("STORED");
-        FastoObject* child = new FastoObject(out, val, config_.mb_delim_);
+        FastoObject* child = new FastoObject(out, val, config_.delimiter);
         out->addChildren(child);
       }
       return er;
@@ -382,7 +382,7 @@ struct SsdbDriver::pimpl {
       common::Error er = hget(argv[1], argv[2], &ret);
       if (!er) {
         common::StringValue *val = common::Value::createStringValue(ret);
-        FastoObject* child = new FastoObject(out, val, config_.mb_delim_);
+        FastoObject* child = new FastoObject(out, val, config_.delimiter);
         out->addChildren(child);
       }
       return er;
@@ -394,7 +394,7 @@ struct SsdbDriver::pimpl {
       common::Error er = hset(argv[1], argv[2], argv[3]);
       if (!er) {
         common::StringValue *val = common::Value::createStringValue("STORED");
-        FastoObject* child = new FastoObject(out, val, config_.mb_delim_);
+        FastoObject* child = new FastoObject(out, val, config_.delimiter);
         out->addChildren(child);
       }
       return er;
@@ -406,7 +406,7 @@ struct SsdbDriver::pimpl {
       common::Error er = hdel(argv[1], argv[2]);
       if (!er) {
          common::StringValue *val = common::Value::createStringValue("DELETED");
-         FastoObject* child = new FastoObject(out, val, config_.mb_delim_);
+         FastoObject* child = new FastoObject(out, val, config_.delimiter);
          out->addChildren(child);
       }
       return er;
@@ -419,7 +419,7 @@ struct SsdbDriver::pimpl {
       common::Error er = hincr(argv[1], argv[2], atoll(argv[3]), &res);
       if (!er) {
         common::FundamentalValue *val = common::Value::createIntegerValue(res);
-        FastoObject* child = new FastoObject(out, val, config_.mb_delim_);
+        FastoObject* child = new FastoObject(out, val, config_.delimiter);
         out->addChildren(child);
       }
       return er;
@@ -432,7 +432,7 @@ struct SsdbDriver::pimpl {
       common::Error er = hsize(argv[1], &res);
       if (!er) {
         common::FundamentalValue *val = common::Value::createIntegerValue(res);
-        FastoObject* child = new FastoObject(out, val, config_.mb_delim_);
+        FastoObject* child = new FastoObject(out, val, config_.delimiter);
         out->addChildren(child);
       }
       return er;
@@ -445,7 +445,7 @@ struct SsdbDriver::pimpl {
       common::Error er = hclear(argv[1], &res);
       if (!er) {
         common::FundamentalValue *val = common::Value::createIntegerValue(res);
-        FastoObject* child = new FastoObject(out, val, config_.mb_delim_);
+        FastoObject* child = new FastoObject(out, val, config_.delimiter);
         out->addChildren(child);
       }
       return er;
@@ -462,7 +462,7 @@ struct SsdbDriver::pimpl {
           common::StringValue *val = common::Value::createStringValue(keysout[i]);
           ar->append(val);
         }
-        FastoObjectArray* child = new FastoObjectArray(out, ar, config_.mb_delim_);
+        FastoObjectArray* child = new FastoObjectArray(out, ar, config_.delimiter);
         out->addChildren(child);
       }
       return er;
@@ -479,7 +479,7 @@ struct SsdbDriver::pimpl {
           common::StringValue *val = common::Value::createStringValue(keysout[i]);
           ar->append(val);
         }
-        FastoObjectArray* child = new FastoObjectArray(out, ar, config_.mb_delim_);
+        FastoObjectArray* child = new FastoObjectArray(out, ar, config_.delimiter);
         out->addChildren(child);
       }
       return er;
@@ -496,7 +496,7 @@ struct SsdbDriver::pimpl {
           common::StringValue *val = common::Value::createStringValue(keysout[i]);
           ar->append(val);
         }
-        FastoObjectArray* child = new FastoObjectArray(out, ar, config_.mb_delim_);
+        FastoObjectArray* child = new FastoObjectArray(out, ar, config_.delimiter);
         out->addChildren(child);
       }
       return er;
@@ -518,7 +518,7 @@ struct SsdbDriver::pimpl {
           common::StringValue *val = common::Value::createStringValue(keysout[i]);
           ar->append(val);
         }
-        FastoObjectArray* child = new FastoObjectArray(out, ar, config_.mb_delim_);
+        FastoObjectArray* child = new FastoObjectArray(out, ar, config_.delimiter);
         out->addChildren(child);
       }
       return er;
@@ -535,7 +535,7 @@ struct SsdbDriver::pimpl {
       common::Error er = multi_hset(argv[1], keys);
       if (!er) {
         common::StringValue *val = common::Value::createStringValue("STORED");
-        FastoObject* child = new FastoObject(out, val, config_.mb_delim_);
+        FastoObject* child = new FastoObject(out, val, config_.delimiter);
         out->addChildren(child);
       }
       return er;
@@ -548,7 +548,7 @@ struct SsdbDriver::pimpl {
       common::Error er = zget(argv[1], argv[2], &ret);
       if (!er) {
         common::FundamentalValue *val = common::Value::createIntegerValue(ret);
-        FastoObject* child = new FastoObject(out, val, config_.mb_delim_);
+        FastoObject* child = new FastoObject(out, val, config_.delimiter);
         out->addChildren(child);
       }
       return er;
@@ -560,7 +560,7 @@ struct SsdbDriver::pimpl {
       common::Error er = zset(argv[1], argv[2], atoll(argv[3]));
       if (!er) {
         common::StringValue *val = common::Value::createStringValue("STORED");
-        FastoObject* child = new FastoObject(out, val, config_.mb_delim_);
+        FastoObject* child = new FastoObject(out, val, config_.delimiter);
         out->addChildren(child);
       }
       return er;
@@ -572,7 +572,7 @@ struct SsdbDriver::pimpl {
       common::Error er = zdel(argv[1], argv[2]);
       if (!er) {
           common::StringValue *val = common::Value::createStringValue("DELETED");
-          FastoObject* child = new FastoObject(out, val, config_.mb_delim_);
+          FastoObject* child = new FastoObject(out, val, config_.delimiter);
           out->addChildren(child);
       }
       return er;
@@ -585,7 +585,7 @@ struct SsdbDriver::pimpl {
       common::Error er = zincr(argv[1], argv[2], atoll(argv[3]), &ret);
       if (!er) {
         common::FundamentalValue *val = common::Value::createIntegerValue(ret);
-        FastoObject* child = new FastoObject(out, val, config_.mb_delim_);
+        FastoObject* child = new FastoObject(out, val, config_.delimiter);
         out->addChildren(child);
       }
       return er;
@@ -598,7 +598,7 @@ struct SsdbDriver::pimpl {
       common::Error er = zsize(argv[1], &res);
       if (!er) {
         common::FundamentalValue *val = common::Value::createIntegerValue(res);
-        FastoObject* child = new FastoObject(out, val, config_.mb_delim_);
+        FastoObject* child = new FastoObject(out, val, config_.delimiter);
         out->addChildren(child);
       }
       return er;
@@ -611,7 +611,7 @@ struct SsdbDriver::pimpl {
       common::Error er = zclear(argv[1], &res);
       if (!er) {
         common::FundamentalValue *val = common::Value::createIntegerValue(res);
-        FastoObject* child = new FastoObject(out, val, config_.mb_delim_);
+        FastoObject* child = new FastoObject(out, val, config_.delimiter);
         out->addChildren(child);
       }
       return er;
@@ -624,7 +624,7 @@ struct SsdbDriver::pimpl {
       common::Error er = zrank(argv[1], argv[2], &res);
       if (!er) {
         common::FundamentalValue *val = common::Value::createIntegerValue(res);
-        FastoObject* child = new FastoObject(out, val, config_.mb_delim_);
+        FastoObject* child = new FastoObject(out, val, config_.delimiter);
         out->addChildren(child);
       }
       return er;
@@ -637,7 +637,7 @@ struct SsdbDriver::pimpl {
       common::Error er = zrrank(argv[1], argv[2], &res);
       if (!er) {
         common::FundamentalValue *val = common::Value::createIntegerValue(res);
-        FastoObject* child = new FastoObject(out, val, config_.mb_delim_);
+        FastoObject* child = new FastoObject(out, val, config_.delimiter);
         out->addChildren(child);
       }
       return er;
@@ -654,7 +654,7 @@ struct SsdbDriver::pimpl {
           common::StringValue *val = common::Value::createStringValue(res[i]);
           ar->append(val);
         }
-        FastoObjectArray* child = new FastoObjectArray(out, ar, config_.mb_delim_);
+        FastoObjectArray* child = new FastoObjectArray(out, ar, config_.delimiter);
         out->addChildren(child);
       }
       return er;
@@ -671,7 +671,7 @@ struct SsdbDriver::pimpl {
           common::StringValue *val = common::Value::createStringValue(res[i]);
           ar->append(val);
         }
-        FastoObjectArray* child = new FastoObjectArray(out, ar, config_.mb_delim_);
+        FastoObjectArray* child = new FastoObjectArray(out, ar, config_.delimiter);
         out->addChildren(child);
       }
       return er;
@@ -690,7 +690,7 @@ struct SsdbDriver::pimpl {
           common::StringValue *val = common::Value::createStringValue(res[i]);
           ar->append(val);
         }
-        FastoObjectArray* child = new FastoObjectArray(out, ar, config_.mb_delim_);
+        FastoObjectArray* child = new FastoObjectArray(out, ar, config_.delimiter);
         out->addChildren(child);
       }
       return er;
@@ -709,7 +709,7 @@ struct SsdbDriver::pimpl {
           common::StringValue *val = common::Value::createStringValue(res[i]);
           ar->append(val);
         }
-        FastoObjectArray* child = new FastoObjectArray(out, ar, config_.mb_delim_);
+        FastoObjectArray* child = new FastoObjectArray(out, ar, config_.delimiter);
         out->addChildren(child);
       }
       return er;
@@ -728,7 +728,7 @@ struct SsdbDriver::pimpl {
           common::StringValue *val = common::Value::createStringValue(res[i]);
           ar->append(val);
         }
-        FastoObjectArray* child = new FastoObjectArray(out, ar, config_.mb_delim_);
+        FastoObjectArray* child = new FastoObjectArray(out, ar, config_.delimiter);
         out->addChildren(child);
       }
       return er;
@@ -750,7 +750,7 @@ struct SsdbDriver::pimpl {
           common::StringValue *val = common::Value::createStringValue(res[i]);
           ar->append(val);
         }
-        FastoObjectArray* child = new FastoObjectArray(out, ar, config_.mb_delim_);
+        FastoObjectArray* child = new FastoObjectArray(out, ar, config_.delimiter);
         out->addChildren(child);
       }
       return er;
@@ -767,7 +767,7 @@ struct SsdbDriver::pimpl {
       common::Error er = multi_zset(argv[1], keysget);
       if (!er) {
         common::StringValue *val = common::Value::createStringValue("STORED");
-        FastoObject* child = new FastoObject(out, val, config_.mb_delim_);
+        FastoObject* child = new FastoObject(out, val, config_.delimiter);
         out->addChildren(child);
       }
       return er;
@@ -785,7 +785,7 @@ struct SsdbDriver::pimpl {
       common::Error er = multi_zdel(argv[1], keysget);
       if (!er) {
         common::StringValue *val = common::Value::createStringValue("DELETED");
-        FastoObject* child = new FastoObject(out, val, config_.mb_delim_);
+        FastoObject* child = new FastoObject(out, val, config_.delimiter);
         out->addChildren(child);
       }
       return er;
@@ -800,7 +800,7 @@ struct SsdbDriver::pimpl {
       if (!er) {
         SsdbServerInfo sinf(statsout);
         common::StringValue *val = common::Value::createStringValue(sinf.toString());
-        FastoObject* child = new FastoObject(out, val, config_.mb_delim_);
+        FastoObject* child = new FastoObject(out, val, config_.delimiter);
         out->addChildren(child);
       }
       return er;
@@ -814,7 +814,7 @@ struct SsdbDriver::pimpl {
       common::Error er = qpop(argv[1], &ret);
       if (!er) {
         common::StringValue *val = common::Value::createStringValue(ret);
-        FastoObject* child = new FastoObject(out, val, config_.mb_delim_);
+        FastoObject* child = new FastoObject(out, val, config_.delimiter);
         out->addChildren(child);
       }
       return er;
@@ -827,7 +827,7 @@ struct SsdbDriver::pimpl {
       common::Error er = qpush(argv[1], argv[2]);
       if (!er) {
         common::StringValue *val = common::Value::createStringValue("STORED");
-        FastoObject* child = new FastoObject(out, val, config_.mb_delim_);
+        FastoObject* child = new FastoObject(out, val, config_.delimiter);
         out->addChildren(child);
       }
       return er;
@@ -848,7 +848,7 @@ struct SsdbDriver::pimpl {
           common::StringValue *val = common::Value::createStringValue(keysout[i]);
           ar->append(val);
         }
-        FastoObjectArray* child = new FastoObjectArray(out, ar, config_.mb_delim_);
+        FastoObjectArray* child = new FastoObjectArray(out, ar, config_.delimiter);
         out->addChildren(child);
       }
       return er;
@@ -862,7 +862,7 @@ struct SsdbDriver::pimpl {
       common::Error er = qclear(argv[1], &res);
       if (!er) {
           common::FundamentalValue *val = common::Value::createIntegerValue(res);
-          FastoObject* child = new FastoObject(out, val, config_.mb_delim_);
+          FastoObject* child = new FastoObject(out, val, config_.delimiter);
           out->addChildren(child);
       }
       return er;
@@ -1451,11 +1451,11 @@ common::Error SsdbDriver::commandChangeTTLImpl(CommandChangeTTL* command,
 // ============== commands =============//
 
 common::net::hostAndPort SsdbDriver::address() const {
-  return common::net::hostAndPort(impl_->config_.hostip_, impl_->config_.hostport_);
+  return impl_->config_.host;
 }
 
 std::string SsdbDriver::outputDelemitr() const {
-  return impl_->config_.mb_delim_;
+  return impl_->config_.delimiter;
 }
 
 const char* SsdbDriver::versionApi() {

@@ -43,7 +43,7 @@ void RocksdbConnectionSettings::setInfo(const rocksdbConfig &info) {
 }
 
 std::string RocksdbConnectionSettings::fullAddress() const {
-  return info_.dbname_;
+  return info_.dbname;
 }
 
 IConnectionSettings* RocksdbConnectionSettings::clone() const {

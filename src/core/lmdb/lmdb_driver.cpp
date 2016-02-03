@@ -112,7 +112,8 @@ common::Error createConnection(const lmdbConfig& config, lmdb** context) {
   DCHECK(*context == NULL);
 
   lmdb* lcontext = NULL;
-  int st = lmdb_open(&lcontext, config.dbname_.c_str(), config.create_if_missing_);
+  const char * dbname = common::utils::c_strornull(config.dbname);
+  int st = lmdb_open(&lcontext, dbname, config.create_if_missing_);
   if (st != LMDB_OK) {
     char buff[1024] = {0};
     common::SNPrintf(buff, sizeof(buff), "Fail open database: %s", mdb_strerror(st));
@@ -280,7 +281,7 @@ struct LmdbDriver::pimpl {
       common::Error er = info(argc == 2 ? argv[1] : 0, statsout);
       if (!er) {
         common::StringValue *val = common::Value::createStringValue(LmdbServerInfo(statsout).toString());
-        FastoObject* child = new FastoObject(out, val, config_.mb_delim_);
+        FastoObject* child = new FastoObject(out, val, config_.delimiter);
         out->addChildren(child);
       }
       return er;
@@ -293,7 +294,7 @@ struct LmdbDriver::pimpl {
       common::Error er = get(argv[1], &ret);
       if (!er) {
         common::StringValue *val = common::Value::createStringValue(ret);
-        FastoObject* child = new FastoObject(out, val, config_.mb_delim_);
+        FastoObject* child = new FastoObject(out, val, config_.delimiter);
         out->addChildren(child);
       }
       return er;
@@ -306,7 +307,7 @@ struct LmdbDriver::pimpl {
       common::Error er = dbsize(ret);
       if (!er) {
         common::FundamentalValue *val = common::Value::createUIntegerValue(ret);
-        FastoObject* child = new FastoObject(out, val, config_.mb_delim_);
+        FastoObject* child = new FastoObject(out, val, config_.delimiter);
         out->addChildren(child);
       }
       return er;
@@ -318,7 +319,7 @@ struct LmdbDriver::pimpl {
       common::Error er = put(argv[1], argv[2]);
       if (!er) {
         common::StringValue *val = common::Value::createStringValue("STORED");
-        FastoObject* child = new FastoObject(out, val, config_.mb_delim_);
+        FastoObject* child = new FastoObject(out, val, config_.delimiter);
         out->addChildren(child);
       }
       return er;
@@ -330,7 +331,7 @@ struct LmdbDriver::pimpl {
       common::Error er = del(argv[1]);
       if (!er) {
         common::StringValue *val = common::Value::createStringValue("DELETED");
-        FastoObject* child = new FastoObject(out, val, config_.mb_delim_);
+        FastoObject* child = new FastoObject(out, val, config_.delimiter);
         out->addChildren(child);
       }
       return er;
@@ -347,7 +348,7 @@ struct LmdbDriver::pimpl {
           common::StringValue *val = common::Value::createStringValue(keysout[i]);
           ar->append(val);
         }
-        FastoObjectArray* child = new FastoObjectArray(out, ar, config_.mb_delim_);
+        FastoObjectArray* child = new FastoObjectArray(out, ar, config_.delimiter);
         out->addChildren(child);
       }
       return er;
@@ -560,7 +561,7 @@ common::net::hostAndPort LmdbDriver::address() const {
 }
 
 std::string LmdbDriver::outputDelemitr() const {
-  return impl_->config_.mb_delim_;
+  return impl_->config_.delimiter;
 }
 
 const char* LmdbDriver::versionApi() {

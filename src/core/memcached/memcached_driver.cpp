@@ -44,32 +44,32 @@ namespace fastonosql {
 
 common::Error testConnection(MemcachedConnectionSettings* settings) {
   if (!settings) {
-      return common::make_error_value("Invalid input argument", common::ErrorValue::E_ERROR);
+    return common::make_error_value("Invalid input argument", common::ErrorValue::E_ERROR);
   }
 
   memcachedConfig inf = settings->info();
   const char* user = common::utils::c_strornull(inf.user_);
   const char* passwd = common::utils::c_strornull(inf.password_);
-  const char* host = inf.hostip_.c_str();
-  in_port_t hostport = inf.hostport_;
+  const char* host = common::utils::c_strornull(inf.host.host);
+  uint16_t hostport = inf.host.port;
 
   memcached_return rc;
   char buff[1024] = {0};
 
   if (user && passwd) {
-      libmemcached_util_ping2(host, hostport, user, passwd, &rc);
-      if (rc != MEMCACHED_SUCCESS) {
-          common::SNPrintf(buff, sizeof(buff), "Couldn't ping server: %s",
-                           memcached_strerror(NULL, rc));
-          return common::make_error_value(buff, common::ErrorValue::E_ERROR);
-      }
+    libmemcached_util_ping2(host, hostport, user, passwd, &rc);
+    if (rc != MEMCACHED_SUCCESS) {
+      common::SNPrintf(buff, sizeof(buff), "Couldn't ping server: %s",
+                       memcached_strerror(NULL, rc));
+      return common::make_error_value(buff, common::ErrorValue::E_ERROR);
+    }
   } else {
-      libmemcached_util_ping(host, hostport, &rc);
-      if (rc != MEMCACHED_SUCCESS) {
-          common::SNPrintf(buff, sizeof(buff), "Couldn't ping server: %s",
-                           memcached_strerror(NULL, rc));
-          return common::make_error_value(buff, common::ErrorValue::E_ERROR);
-      }
+    libmemcached_util_ping(host, hostport, &rc);
+    if (rc != MEMCACHED_SUCCESS) {
+      common::SNPrintf(buff, sizeof(buff), "Couldn't ping server: %s",
+                       memcached_strerror(NULL, rc));
+      return common::make_error_value(buff, common::ErrorValue::E_ERROR);
+    }
   }
 
   return common::Error();
@@ -125,8 +125,8 @@ struct MemcachedDriver::pimpl {
         return common::make_error_value(buff, common::ErrorValue::E_ERROR);
     }*/
 
-    const char* host = config_.hostip_.c_str();
-    in_port_t hostport = config_.hostport_;
+    const char* host = common::utils::c_strornull(config_.host.host);
+    uint16_t hostport = config_.host.port;
 
     rc = memcached_server_add(memc_, host, hostport);
 
@@ -216,7 +216,7 @@ struct MemcachedDriver::pimpl {
       common::Error er = get(argv[1], ret);
       if (!er) {
         common::StringValue *val = common::Value::createStringValue(ret);
-        FastoObject* child = new FastoObject(out, val, config_.mb_delim_);
+        FastoObject* child = new FastoObject(out, val, config_.delimiter);
         out->addChildren(child);
       }
       return er;
@@ -228,7 +228,7 @@ struct MemcachedDriver::pimpl {
       common::Error er = set(argv[1], argv[4], atoi(argv[2]), atoi(argv[3]));
       if (!er) {
         common::StringValue *val = common::Value::createStringValue("STORED");
-        FastoObject* child = new FastoObject(out, val, config_.mb_delim_);
+        FastoObject* child = new FastoObject(out, val, config_.delimiter);
         out->addChildren(child);
       }
       return er;
@@ -240,7 +240,7 @@ struct MemcachedDriver::pimpl {
       common::Error er = add(argv[1], argv[4], atoi(argv[2]), atoi(argv[3]));
       if (!er) {
         common::StringValue *val = common::Value::createStringValue("STORED");
-        FastoObject* child = new FastoObject(out, val, config_.mb_delim_);
+        FastoObject* child = new FastoObject(out, val, config_.delimiter);
         out->addChildren(child);
       }
       return er;
@@ -253,7 +253,7 @@ struct MemcachedDriver::pimpl {
       common::Error er = replace(argv[1], argv[4], atoi(argv[2]), atoi(argv[3]));
       if (!er) {
         common::StringValue *val = common::Value::createStringValue("STORED");
-        FastoObject* child = new FastoObject(out, val, config_.mb_delim_);
+        FastoObject* child = new FastoObject(out, val, config_.delimiter);
         out->addChildren(child);
       }
       return er;
@@ -266,7 +266,7 @@ struct MemcachedDriver::pimpl {
       common::Error er = append(argv[1], argv[4], atoi(argv[2]), atoi(argv[3]));
       if (!er) {
         common::StringValue *val = common::Value::createStringValue("STORED");
-        FastoObject* child = new FastoObject(out, val, config_.mb_delim_);
+        FastoObject* child = new FastoObject(out, val, config_.delimiter);
         out->addChildren(child);
       }
       return er;
@@ -279,7 +279,7 @@ struct MemcachedDriver::pimpl {
       common::Error er = prepend(argv[1], argv[4], atoi(argv[2]), atoi(argv[3]));
       if (!er) {
         common::StringValue *val = common::Value::createStringValue("STORED");
-        FastoObject* child = new FastoObject(out, val, config_.mb_delim_);
+        FastoObject* child = new FastoObject(out, val, config_.delimiter);
         out->addChildren(child);
       }
       return er;
@@ -291,7 +291,7 @@ struct MemcachedDriver::pimpl {
       common::Error er = incr(argv[1], common::convertFromString<uint64_t>(argv[2]));
       if (!er) {
         common::StringValue *val = common::Value::createStringValue("STORED");
-        FastoObject* child = new FastoObject(out, val, config_.mb_delim_);
+        FastoObject* child = new FastoObject(out, val, config_.delimiter);
         out->addChildren(child);
       }
       return er;
@@ -303,7 +303,7 @@ struct MemcachedDriver::pimpl {
       common::Error er = decr(argv[1], common::convertFromString<uint64_t>(argv[2]));
       if (!er) {
         common::StringValue *val = common::Value::createStringValue("STORED");
-        FastoObject* child = new FastoObject(out, val, config_.mb_delim_);
+        FastoObject* child = new FastoObject(out, val, config_.delimiter);
         out->addChildren(child);
       }
       return er;
@@ -316,7 +316,7 @@ struct MemcachedDriver::pimpl {
       common::Error er = del(argv[1], argc == 3 ? atoll(argv[2]) : 0);
       if (!er) {
         common::StringValue *val = common::Value::createStringValue("DELETED");
-        FastoObject* child = new FastoObject(out, val, config_.mb_delim_);
+        FastoObject* child = new FastoObject(out, val, config_.delimiter);
         out->addChildren(child);
       }
       return er;
@@ -329,7 +329,7 @@ struct MemcachedDriver::pimpl {
       common::Error er = flush_all(argc == 2 ? common::convertFromString<time_t>(argv[1]) : 0);
       if (!er) {
         common::StringValue *val = common::Value::createStringValue("STORED");
-        FastoObject* child = new FastoObject(out, val, config_.mb_delim_);
+        FastoObject* child = new FastoObject(out, val, config_.delimiter);
         out->addChildren(child);
       }
       return er;
@@ -350,7 +350,7 @@ struct MemcachedDriver::pimpl {
       if (!er) {
         MemcachedServerInfo minf(statsout);
         common::StringValue *val = common::Value::createStringValue(minf.toString());
-        FastoObject* child = new FastoObject(out, val, config_.mb_delim_);
+        FastoObject* child = new FastoObject(out, val, config_.delimiter);
         out->addChildren(child);
       }
       return er;
@@ -575,11 +575,11 @@ bool MemcachedDriver::isAuthenticated() const {
 }
 
 common::net::hostAndPort MemcachedDriver::address() const {
-  return common::net::hostAndPort(impl_->config_.hostip_, impl_->config_.hostport_);
+  return impl_->config_.host;
 }
 
 std::string MemcachedDriver::outputDelemitr() const {
-  return impl_->config_.mb_delim_;
+  return impl_->config_.delimiter;
 }
 
 const char* MemcachedDriver::versionApi() {

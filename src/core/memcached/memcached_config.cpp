@@ -31,15 +31,15 @@ void parseOptions(int argc, char **argv, memcachedConfig& cfg) {
     int lastarg = i == argc-1;
 
     if (!strcmp(argv[i], "-h") && !lastarg) {
-      cfg.hostip_ = argv[++i];
+      cfg.host.host = argv[++i];
     } else if (!strcmp(argv[i], "-p") && !lastarg) {
-      cfg.hostport_ = atoi(argv[++i]);
+      cfg.host.port = atoi(argv[++i]);
     } else if (!strcmp(argv[i], "-u") && !lastarg) {
       cfg.user_ = argv[++i];
     } else if (!strcmp(argv[i], "-a") && !lastarg) {
       cfg.password_ = argv[++i];
     } else if (!strcmp(argv[i], "-d") && !lastarg) {
-      cfg.mb_delim_ = argv[++i];
+      cfg.delimiter = argv[++i];
     } else {
       if (argv[i][0] == '-') {
         const uint16_t size_buff = 256;
@@ -58,7 +58,7 @@ void parseOptions(int argc, char **argv, memcachedConfig& cfg) {
 }  // namespace
 
 memcachedConfig::memcachedConfig()
-  : RemoteConfig("127.0.0.1", 11211), user_(), password_() {
+  : RemoteConfig(common::net::hostAndPort("127.0.0.1", 11211)), user_(), password_() {
 }
 
 }  // namespace fastonosql

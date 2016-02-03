@@ -197,7 +197,7 @@ class IServer
   void processConfigArgs(const events_info::ProcessConfigArgsInfoRequest &req);
   void processDiscoveryInfo(const events_info::DiscoveryInfoRequest &req);
 
-  bool isSuperServer_;
+  bool is_super_server_;
 };
 
 }  // namespace fastonosql

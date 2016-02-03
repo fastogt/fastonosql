@@ -152,7 +152,7 @@ common::Error IDriver::execute(FastoObjectCommand* cmd) {
 }
 
 IDriver::IDriver(IConnectionSettingsBaseSPtr settings, connectionTypes type)
-  : settings_(settings), interrupt_(false), serverDiscInfo_(), thread_(NULL),
+  : settings_(settings), interrupt_(false), server_disc_info_(), thread_(NULL),
     timer_info_id_(0), log_file_(NULL), type_(type) {
   thread_ = new QThread(this);
   moveToThread(thread_);
@@ -176,7 +176,7 @@ connectionTypes IDriver::connectionType() const {
 }
 
 ServerDiscoveryInfoSPtr IDriver::serverDiscoveryInfo() const {
-  return serverDiscInfo_;
+  return server_disc_info_;
 }
 
 IConnectionSettingsBaseSPtr IDriver::settings() const {
@@ -184,11 +184,11 @@ IConnectionSettingsBaseSPtr IDriver::settings() const {
 }
 
 ServerInfoSPtr IDriver::serverInfo() const {
-  return serverInfo_;
+  return server_info_;
 }
 
 DataBaseInfoSPtr IDriver::currentDatabaseInfo() const {
-  return currentDatabaseInfo_;
+  return current_database_info_;
 }
 
 void IDriver::start() {
@@ -413,7 +413,7 @@ FastoObjectIPtr IDriver::RootLocker::createRoot(QObject *reciver, const std::str
 }
 
 void IDriver::setCurrentDatabaseInfo(DataBaseInfo *inf) {
-  currentDatabaseInfo_.reset(inf);
+  current_database_info_.reset(inf);
 }
 
 void IDriver::handleLoadServerInfoHistoryEvent(events::ServerInfoHistoryRequestEvent *ev) {
@@ -497,18 +497,18 @@ void IDriver::handleDiscoveryInfoRequestEvent(events::DiscoveryInfoRequestEvent*
     ServerInfo* info = NULL;
     DataBaseInfo* db = NULL;
     common::Error er = serverDiscoveryInfo(&info, &disc, &db);
-    if (!er) {
+    if (er && er->isError()) {
+      res.setErrorInfo(er);
+    } else {
       DCHECK(info);
       DCHECK(db);
-      serverInfo_.reset(info);
-      serverDiscInfo_.reset(disc);
-      currentDatabaseInfo_.reset(db);
+      server_info_.reset(info);
+      server_disc_info_.reset(disc);
+      current_database_info_.reset(db);
 
-      res.sinfo_ = serverInfo_;
-      res.dinfo_ = serverDiscInfo_;
-      res.dbinfo_ = currentDatabaseInfo_;
-    } else {
-      res.setErrorInfo(er);
+      res.sinfo_ = server_info_;
+      res.dinfo_ = server_disc_info_;
+      res.dbinfo_ = current_database_info_;
     }
   } else {
     res.setErrorInfo(common::make_error_value("Not connected to server, impossible to get discovery info!", common::Value::E_ERROR));

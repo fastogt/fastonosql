@@ -283,8 +283,8 @@ common::Error createConnection(const redisConfig& config,
     redisContext *lcontext = NULL;
 
     if (config.hostsocket == NULL) {
-      const char *host = config.hostip_.c_str();
-      uint16_t port = config.hostport_;
+      const char *host = common::utils::c_strornull(config.host.host);
+      uint16_t port = config.host.port;
       const char *username = common::utils::c_strornull(sinfo.user_name);
       const char *password = common::utils::c_strornull(sinfo.password);
       common::net::hostAndPort ssh_host = sinfo.host;
@@ -304,8 +304,9 @@ common::Error createConnection(const redisConfig& config,
     if (!lcontext) {
       char buff[512] = {0};
       if (!config.hostsocket) {
-        common::SNPrintf(buff, sizeof(buff), "Could not connect to Redis at %s:%d : no context",
-                         config.hostip_, config.hostport_);
+        std::string host_str = common::convertToString(config.host);
+        common::SNPrintf(buff, sizeof(buff), "Could not connect to Redis at %s : no context",
+                         host_str);
       } else {
         common::SNPrintf(buff, sizeof(buff), "Could not connect to Redis at %s : no context",
                          config.hostsocket);
@@ -315,12 +316,13 @@ common::Error createConnection(const redisConfig& config,
 
     if (lcontext->err) {
       char buff[512] = {0};
-      if (!config.hostsocket) {
-        common::SNPrintf(buff, sizeof(buff), "Could not connect to Redis at %s:%d : %s",
-                         config.hostip_, config.hostport_, lcontext->errstr);
-      } else {
+      if (config.hostsocket) {
         common::SNPrintf(buff, sizeof(buff), "Could not connect to Redis at %s : %s",
                          config.hostsocket, lcontext->errstr);
+      } else {
+        std::string host_str = common::convertToString(config.host);
+        common::SNPrintf(buff, sizeof(buff), "Could not connect to Redis at %s : %s",
+                         host_str, lcontext->errstr);
       }
       return common::make_error_value(buff, common::Value::E_ERROR);
     }
@@ -504,13 +506,13 @@ struct RedisDriver::pimpl {
       common::Value *val = common::Value::createStringValue(buff);
 
       if (!child) {
-        child = new FastoObject(cmd, val, config_.mb_delim_);
+        child = new FastoObject(cmd, val, config_.delimiter);
         cmd->addChildren(child);
         continue;
       }
 
       if (config_.latency_history && curTime - history_start > history_interval) {
-          child = new FastoObject(cmd, val, config_.mb_delim_);
+          child = new FastoObject(cmd, val, config_.delimiter);
           cmd->addChildren(child);
           history_start = curTime;
           min = max = tot = count = 0;
@@ -649,7 +651,7 @@ struct RedisDriver::pimpl {
     /* Write to file. */
     if (!strcmp(config_.rdb_filename,"-")) {
       val = new common::ArrayValue;
-      FastoObject* child = new FastoObject(cmd, val, config_.mb_delim_);
+      FastoObject* child = new FastoObject(cmd, val, config_.delimiter);
       cmd->addChildren(child);
     } else {
       fd = open(config_.rdb_filename, O_CREAT | O_WRONLY, 0644);
@@ -991,7 +993,7 @@ struct RedisDriver::pimpl {
         common::SNPrintf(buff, sizeof(buff), "Biggest %6s found '%s' has %llu %s", typeName[i],
                          maxkeys[i], biggest[i], typeunit[i]);
         common::StringValue *val = common::Value::createStringValue(buff);
-        FastoObject* obj = new FastoObject(cmd, val, config_.mb_delim_);
+        FastoObject* obj = new FastoObject(cmd, val, config_.delimiter);
         cmd->addChildren(obj);
       }
     }
@@ -1003,7 +1005,7 @@ struct RedisDriver::pimpl {
          sampled ? 100 * (double)counts[i]/sampled : 0,
          counts[i] ? (double)totalsize[i]/counts[i] : 0);
       common::StringValue *val = common::Value::createStringValue(buff);
-      FastoObject* obj = new FastoObject(cmd, val, config_.mb_delim_);
+      FastoObject* obj = new FastoObject(cmd, val, config_.delimiter);
       cmd->addChildren(obj);
     }
 
@@ -1175,7 +1177,7 @@ struct RedisDriver::pimpl {
       }
 
       common::StringValue *val = common::Value::createStringValue(result);
-      FastoObject* obj = new FastoObject(cmd, val, config_.mb_delim_);
+      FastoObject* obj = new FastoObject(cmd, val, config_.delimiter);
       cmd->addChildren(obj);
 
       freeReplyObject(reply);
@@ -1225,7 +1227,7 @@ struct RedisDriver::pimpl {
         cur = strtoull(reply->element[0]->str,NULL,10);
         for (j = 0; j < reply->element[1]->elements; j++) {
           common::StringValue *val = common::Value::createStringValue(reply->element[1]->element[j]->str);
-          FastoObject* obj = new FastoObject(cmd, val, config_.mb_delim_);
+          FastoObject* obj = new FastoObject(cmd, val, config_.delimiter);
           cmd->addChildren(obj);
         }
       }
@@ -1350,7 +1352,7 @@ struct RedisDriver::pimpl {
       }
       case REDIS_REPLY_ARRAY: {
           common::ArrayValue* arv = common::Value::createArrayValue();
-          FastoObjectArray* child = new FastoObjectArray(ar, arv, config_.mb_delim_);
+          FastoObjectArray* child = new FastoObjectArray(ar, arv, config_.delimiter);
           ar->addChildren(child);
 
           for (size_t i = 0; i < r->elements; ++i) {
@@ -1383,7 +1385,7 @@ struct RedisDriver::pimpl {
     switch (r->type) {
       case REDIS_REPLY_NIL: {
         common::Value *val = common::Value::createNullValue();
-        obj = new FastoObject(out, val, config_.mb_delim_);
+        obj = new FastoObject(out, val, config_.delimiter);
         out->addChildren(obj);
 
         break;
@@ -1395,26 +1397,26 @@ struct RedisDriver::pimpl {
         if (strcasestr(r->str, "NOAUTH")) { //"NOAUTH Authentication required."
           isAuth_ = false;
         }
-        obj = new FastoObject(out, val, config_.mb_delim_);
+        obj = new FastoObject(out, val, config_.delimiter);
         out->addChildren(obj);
         break;
       }
       case REDIS_REPLY_STATUS:
       case REDIS_REPLY_STRING: {
         common::StringValue *val = common::Value::createStringValue(r->str);
-        obj = new FastoObject(out, val, config_.mb_delim_);
+        obj = new FastoObject(out, val, config_.delimiter);
         out->addChildren(obj);
         break;
       }
       case REDIS_REPLY_INTEGER: {
         common::FundamentalValue *val = common::Value::createIntegerValue(r->integer);
-        obj = new FastoObject(out, val, config_.mb_delim_);
+        obj = new FastoObject(out, val, config_.delimiter);
         out->addChildren(obj);
         break;
       }
       case REDIS_REPLY_ARRAY: {
         common::ArrayValue* arv = common::Value::createArrayValue();
-        FastoObjectArray* child = new FastoObjectArray(out, arv, config_.mb_delim_);
+        FastoObjectArray* child = new FastoObjectArray(out, arv, config_.delimiter);
         out->addChildren(child);
 
         for (size_t i = 0; i < r->elements; ++i) {
@@ -1430,7 +1432,7 @@ struct RedisDriver::pimpl {
         common::SNPrintf(tmp2, sizeof(tmp2), "Unknown reply type: %d", r->type);
         common::ErrorValue* val = common::Value::createErrorValue(tmp2, common::ErrorValue::E_NONE,
                                                                   common::logging::L_WARNING);
-        obj = new FastoObject(out, val, config_.mb_delim_);
+        obj = new FastoObject(out, val, config_.delimiter);
         out->addChildren(obj);
       }
     }
@@ -1449,13 +1451,13 @@ struct RedisDriver::pimpl {
     common::SNPrintf(buff, sizeof(buff), "name: %s %s\r\n  summary: %s\r\n  since: %s",
                      help->name, help->params, help->summary, help->since);
     common::StringValue *val =common::Value::createStringValue(buff);
-    FastoObject* child = new FastoObject(out, val, config_.mb_delim_);
+    FastoObject* child = new FastoObject(out, val, config_.delimiter);
     out->addChildren(child);
     if (group) {
       char buff2[1024] = {0};
       common::SNPrintf(buff2, sizeof(buff2), "  group: %s", commandGroups[help->group]);
       val = common::Value::createStringValue(buff2);
-      FastoObject* gchild = new FastoObject(out, val, config_.mb_delim_);
+      FastoObject* gchild = new FastoObject(out, val, config_.delimiter);
       out->addChildren(gchild);
     }
 
@@ -1473,7 +1475,7 @@ struct RedisDriver::pimpl {
                                                                 "      \"help <command>\" for help on <command>\r\n"
                                                                 "      \"help <tab>\" to get a list of possible help topics\r\n"
                                                                 "      \"quit\" to exit");
-    FastoObject* child = new FastoObject(out, val, config_.mb_delim_);
+    FastoObject* child = new FastoObject(out, val, config_.delimiter);
     out->addChildren(child);
 
     return common::Error();
@@ -1567,13 +1569,13 @@ struct RedisDriver::pimpl {
       slot = atoi(s+1);
       s = strchr(p+1,':');    /* MOVED 3999[P]127.0.0.1[S]6381 */
       *s = '\0';
-      config_.hostip_ = p+1;
-      config_.hostport_ = atoi(s+1);
+      config_.host = common::net::hostAndPort(p + 1, atoi(s + 1));
+      const std::string host_str = common::convertToString(config_.host);
       char redir[512] = {0};
-      common::SNPrintf(redir, sizeof(redir), "-> Redirected to slot [%d] located at %s:%d",
-                       slot, config_.hostip_, config_.hostport_);
+      common::SNPrintf(redir, sizeof(redir), "-> Redirected to slot [%d] located at %s",
+                       slot, host_str);
       common::StringValue *val = common::Value::createStringValue(redir);
-      FastoObject* child = new FastoObject(out, val, config_.mb_delim_);
+      FastoObject* child = new FastoObject(out, val, config_.delimiter);
       out->addChildren(child);
       config_.cluster_reissue_command = 1;
 
@@ -1595,8 +1597,8 @@ struct RedisDriver::pimpl {
     char *command = argv[0];
 
     if (argc == 3 && !strcasecmp(command, "connect")) {
-      config_.hostip_ = argv[1];
-      config_.hostport_ = atoi(argv[2]);
+      config_.host.host = argv[1];
+      config_.host.port = atoi(argv[2]);
       sdsfreesplitres(argv, argc);
       return cliConnect(1);
     }
@@ -1710,7 +1712,7 @@ struct RedisDriver::pimpl {
 
         if (argv == NULL) {
           common::StringValue *val = common::Value::createStringValue("Invalid argument(s)");
-          FastoObject* child = new FastoObject(cmd.get(), val, config_.mb_delim_);
+          FastoObject* child = new FastoObject(cmd.get(), val, config_.delimiter);
           cmd->addChildren(child);
         } else if (argc > 0) {
           if (isPipeLineCommand(argv[0])) {
@@ -1746,11 +1748,11 @@ RedisDriver::~RedisDriver() {
 }
 
 common::net::hostAndPort RedisDriver::address() const {
-  return common::net::hostAndPort(impl_->config_.hostip_, impl_->config_.hostport_);
+  return impl_->config_.host;
 }
 
 std::string RedisDriver::outputDelemitr() const {
-  return impl_->config_.mb_delim_;
+  return impl_->config_.delimiter;
 }
 
 const char* RedisDriver::versionApi() {

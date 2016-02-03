@@ -58,7 +58,7 @@ common::Error createConnection(const leveldbConfig& config, leveldb::DB** contex
   DCHECK(*context == NULL);
 
   leveldb::DB* lcontext = NULL;
-  leveldb::Status st = leveldb::DB::Open(config.options_, config.dbname_, &lcontext);
+  leveldb::Status st = leveldb::DB::Open(config.options_, config.dbname, &lcontext);
   if (!st.ok()) {
     char buff[1024] = {0};
     common::SNPrintf(buff, sizeof(buff), "Fail connect to server: %s!", st.ToString());
@@ -213,7 +213,7 @@ struct LeveldbDriver::pimpl {
         if (!er) {
           LeveldbServerInfo linf(statsout);
           common::StringValue *val = common::Value::createStringValue(linf.toString());
-          FastoObject* child = new FastoObject(out, val, config_.mb_delim_);
+          FastoObject* child = new FastoObject(out, val, config_.delimiter);
           out->addChildren(child);
         }
         return er;
@@ -227,7 +227,7 @@ struct LeveldbDriver::pimpl {
         common::Error er = get(argv[1], &ret);
         if (!er) {
           common::StringValue *val = common::Value::createStringValue(ret);
-          FastoObject* child = new FastoObject(out, val, config_.mb_delim_);
+          FastoObject* child = new FastoObject(out, val, config_.delimiter);
           out->addChildren(child);
         }
         return er;
@@ -240,7 +240,7 @@ struct LeveldbDriver::pimpl {
         common::Error er = put(argv[1], argv[2]);
         if (!er) {
           common::StringValue *val = common::Value::createStringValue("STORED");
-          FastoObject* child = new FastoObject(out, val, config_.mb_delim_);
+          FastoObject* child = new FastoObject(out, val, config_.delimiter);
           out->addChildren(child);
         }
         return er;
@@ -254,7 +254,7 @@ struct LeveldbDriver::pimpl {
         common::Error er = dbsize(ret);
         if (!er) {
           common::FundamentalValue *val = common::Value::createUIntegerValue(ret);
-          FastoObject* child = new FastoObject(out, val, config_.mb_delim_);
+          FastoObject* child = new FastoObject(out, val, config_.delimiter);
           out->addChildren(child);
         }
         return er;
@@ -266,7 +266,7 @@ struct LeveldbDriver::pimpl {
       common::Error er = del(argv[1]);
       if (!er) {
         common::StringValue *val = common::Value::createStringValue("DELETED");
-        FastoObject* child = new FastoObject(out, val, config_.mb_delim_);
+        FastoObject* child = new FastoObject(out, val, config_.delimiter);
         out->addChildren(child);
       }
       return er;
@@ -283,7 +283,7 @@ struct LeveldbDriver::pimpl {
           common::StringValue *val = common::Value::createStringValue(keysout[i]);
           ar->append(val);
         }
-        FastoObjectArray* child = new FastoObjectArray(out, ar, config_.mb_delim_);
+        FastoObjectArray* child = new FastoObjectArray(out, ar, config_.delimiter);
         out->addChildren(child);
       }
       return er;
@@ -455,7 +455,7 @@ common::net::hostAndPort LeveldbDriver::address() const {
 }
 
 std::string LeveldbDriver::outputDelemitr() const {
-  return impl_->config_.mb_delim_;
+  return impl_->config_.delimiter;
 }
 
 const char* LeveldbDriver::versionApi() {

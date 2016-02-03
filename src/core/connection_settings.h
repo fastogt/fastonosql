@@ -49,7 +49,7 @@ class IConnectionSettings {
  protected:
   IConnectionSettings(const std::string& connectionName, connectionTypes type);
 
-  std::string connectionName_;
+  std::string connection_name_;
   const connectionTypes type_;
   uint32_t msinterval_;
 };
@@ -113,7 +113,7 @@ class IConnectionSettingsRemote
   IConnectionSettingsRemote(const std::string& connectionName, connectionTypes type);
 
  private:
-  SSHInfo sshInfo_;
+  SSHInfo ssh_info_;
 };
 
 const char *useHelpText(connectionTypes type);
