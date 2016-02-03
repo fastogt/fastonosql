@@ -60,7 +60,7 @@ void DiscoveryConnection::routine() {
 
   common::Error er = ServersManager::instance().discoveryConnection(connection_, inf);
 
-  if (er) {
+  if (er && er->isError()) {
     emit connectionResult(false, common::time::current_mstime() - startTime_,
                           common::convertFromString<QString>(er->description()), inf);
   } else {

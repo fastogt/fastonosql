@@ -219,7 +219,8 @@ IConnectionSettingsBase* IConnectionSettingsBase::fromString(const std::string &
           result->initFromCommandLine(elText);
           IConnectionSettingsRemote * remote = dynamic_cast<IConnectionSettingsRemote *>(result);
           if (remote) {
-              remote->setSshInfo(SSHInfo(val.substr(i+1)));
+              SSHInfo sinf(val.substr(i + 1));
+              remote->setSshInfo(sinf);
           }
           break;
       }

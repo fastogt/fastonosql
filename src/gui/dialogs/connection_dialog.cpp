@@ -135,16 +135,17 @@ ConnectionDialog::ConnectionDialog(QWidget* parent, IConnectionSettingsBase* con
   useSsh_->setChecked(info.isValid());
 
   sshHostName_ = new QLineEdit;
-  sshHostName_->setText(common::convertFromString<QString>(info.hostName_));
+  common::net::hostAndPort host = info.host;
+  sshHostName_->setText(common::convertFromString<QString>(host.host));
 
   userName_ = new QLineEdit;
-  userName_->setText(common::convertFromString<QString>(info.userName_));
+  userName_->setText(common::convertFromString<QString>(info.user_name));
 
   sshPort_ = new QLineEdit;
   sshPort_->setFixedWidth(80);
   QRegExp rx("\\d+");  // (0-65554)
   sshPort_->setValidator(new QRegExpValidator(rx, this));
-  sshPort_->setText(QString::number(info.port_));
+  sshPort_->setText(QString::number(host.port));
 
   passwordLabel_ = new QLabel;
   sshPrivateKeyLabel_ = new QLabel;
@@ -166,17 +167,17 @@ ConnectionDialog::ConnectionDialog(QWidget* parent, IConnectionSettingsBase* con
                  this, &ConnectionDialog::securityChange));
 
   passwordBox_ = new QLineEdit;
-  passwordBox_->setText(common::convertFromString<QString>(info.password_));
+  passwordBox_->setText(common::convertFromString<QString>(info.password));
   passwordBox_->setEchoMode(QLineEdit::Password);
   passwordEchoModeButton_ = new QPushButton(translations::trShow);
   VERIFY(connect(passwordEchoModeButton_, &QPushButton::clicked,
                  this, &ConnectionDialog::togglePasswordEchoMode));
 
   privateKeyBox_ = new QLineEdit;
-  privateKeyBox_->setText(common::convertFromString<QString>(info.privateKey_));
+  privateKeyBox_->setText(common::convertFromString<QString>(info.private_key));
 
   passphraseBox_ = new QLineEdit;
-  passphraseBox_->setText(common::convertFromString<QString>(info.passphrase_));
+  passphraseBox_->setText(common::convertFromString<QString>(info.passphrase));
   passphraseBox_->setEchoMode(QLineEdit::Password);
   passphraseEchoModeButton_ = new QPushButton(translations::trShow);
   VERIFY(connect(passphraseEchoModeButton_, &QPushButton::clicked,
@@ -379,17 +380,17 @@ bool ConnectionDialog::validateAndApply() {
       connection_.reset(newConnection);
 
       SSHInfo info = newConnection->sshInfo();
-      info.hostName_ = common::convertToString(sshHostName_->text());
-      info.userName_ = common::convertToString(userName_->text());
-      info.port_ = sshPort_->text().toInt();
-      info.password_ = common::convertToString(passwordBox_->text());
-      info.publicKey_ = "";
-      info.privateKey_ = common::convertToString(privateKeyBox_->text());
-      info.passphrase_ = common::convertToString(passphraseBox_->text());
+      info.host = common::net::hostAndPort(common::convertToString(sshHostName_->text()),
+                                           sshPort_->text().toInt());
+      info.user_name = common::convertToString(userName_->text());
+      info.password = common::convertToString(passwordBox_->text());
+      info.public_key = "";
+      info.private_key = common::convertToString(privateKeyBox_->text());
+      info.passphrase = common::convertToString(passphraseBox_->text());
       if (useSsh_->isChecked()) {
-        info.currentMethod_ = selectedAuthMethod();
+        info.current_method = selectedAuthMethod();
       } else {
-        info.currentMethod_ = SSHInfo::UNKNOWN;
+        info.current_method = SSHInfo::UNKNOWN;
       }
       newConnection->setSshInfo(info);
     } else {

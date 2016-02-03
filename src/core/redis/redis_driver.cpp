@@ -280,22 +280,20 @@ namespace {
 common::Error createConnection(const redisConfig& config,
                                const SSHInfo& sinfo, redisContext** context) {
     DCHECK(*context == NULL);
-
-    using namespace common::utils;
-
     redisContext *lcontext = NULL;
 
     if (config.hostsocket == NULL) {
       const char *host = config.hostip_.c_str();
       uint16_t port = config.hostport_;
-      const char *username = c_strornull(sinfo.userName_);
-      const char *password = c_strornull(sinfo.password_);
-      const char *ssh_address = c_strornull(sinfo.hostName_);
-      int ssh_port = sinfo.port_;
-      int curM = sinfo.currentMethod_;
-      const char *publicKey = c_strornull(sinfo.publicKey_);
-      const char *privateKey = c_strornull(sinfo.privateKey_);
-      const char *passphrase = c_strornull(sinfo.passphrase_);
+      const char *username = common::utils::c_strornull(sinfo.user_name);
+      const char *password = common::utils::c_strornull(sinfo.password);
+      common::net::hostAndPort ssh_host = sinfo.host;
+      const char *ssh_address = common::utils::c_strornull(ssh_host.host);
+      int ssh_port = ssh_host.port;
+      int curM = sinfo.current_method;
+      const char *publicKey = common::utils::c_strornull(sinfo.public_key);
+      const char *privateKey = common::utils::c_strornull(sinfo.private_key);
+      const char *passphrase = common::utils::c_strornull(sinfo.passphrase);
 
       lcontext = redisConnect(host, port, ssh_address, ssh_port, username, password,
                              publicKey, privateKey, passphrase, curM);
@@ -581,7 +579,7 @@ struct RedisDriver::pimpl {
 
     unsigned long long payload = 0;
     common::Error er = sendSync(payload);
-    if (er) {
+    if (er && er->isError()) {
       return er;
     }
 
@@ -609,7 +607,7 @@ struct RedisDriver::pimpl {
     /* Now we can use hiredis to read the incoming protocol. */
     while (1) {
       er = cliReadReply(cmd);
-      if (er) {
+      if (er && er->isError()) {
         break;
       }
 
@@ -635,7 +633,7 @@ struct RedisDriver::pimpl {
 
     unsigned long long payload = 0;
     common::Error er = sendSync(payload);
-    if (er) {
+    if (er && er->isError()) {
       return er;
     }
 
@@ -872,7 +870,7 @@ struct RedisDriver::pimpl {
 
     /* Total keys pre scanning */
     common::Error er = dbsize(total_keys);
-    if (er) {
+    if (er && er->isError()) {
       return er;
     }
 
@@ -899,7 +897,7 @@ struct RedisDriver::pimpl {
 
       /* Grab some keys and point to the keys array */
       reply = sendScan(er, &it);
-      if (er) {
+      if (er && er->isError()) {
         return er;
       }
 
@@ -926,12 +924,12 @@ struct RedisDriver::pimpl {
 
       /* Retreive types and then sizes */
       er = getKeyTypes(keys, types);
-      if (er) {
+      if (er && er->isError()) {
         return er;
       }
 
       er = getKeySizes(keys, types, sizes);
-      if (er) {
+      if (er && er->isError()) {
         return er;
       }
 
@@ -1282,7 +1280,7 @@ struct RedisDriver::pimpl {
 
       redisContext* context = NULL;
       common::Error er = createConnection(config_, sinfo_, &context);
-      if (er) {
+      if (er && er->isError()) {
         return er;
       }
 
@@ -1306,12 +1304,12 @@ struct RedisDriver::pimpl {
 
       /* Do AUTH and select the right DB. */
       er = cliAuth();
-      if (er) {
+      if (er && er->isError()) {
         return er;
       }
 
       er = cliSelect();
-      if (er) {
+      if (er && er->isError()) {
         return er;
       }
     }
@@ -1357,7 +1355,7 @@ struct RedisDriver::pimpl {
 
           for (size_t i = 0; i < r->elements; ++i) {
               common::Error er = cliFormatReplyRaw(child, r->element[i]);
-              if (er) {
+              if (er && er->isError()) {
                   return er;
               }
           }
@@ -1421,7 +1419,7 @@ struct RedisDriver::pimpl {
 
         for (size_t i = 0; i < r->elements; ++i) {
           common::Error er = cliFormatReplyRaw(child, r->element[i]);
-          if (er) {
+          if (er && er->isError()) {
             return er;
           }
         }
@@ -1518,7 +1516,7 @@ struct RedisDriver::pimpl {
             }
             if (j == argc) {
               common::Error er = cliOutputCommandHelp(out, help,1);
-              if (er) {
+              if (er && er->isError()) {
                 return er;
               }
             }
@@ -1526,7 +1524,7 @@ struct RedisDriver::pimpl {
       } else {
         if (group == help->group) {
           common::Error er = cliOutputCommandHelp(out, help,0);
-          if (er) {
+          if (er && er->isError()) {
               return er;
           }
         }
@@ -1618,7 +1616,7 @@ struct RedisDriver::pimpl {
     redisAppendCommandArgv(context_, argc, (const char**)argv, NULL);
     while (config_.monitor_mode) {
       common::Error er = cliReadReply(out);
-      if (er) {
+      if (er && er->isError()) {
         return er;
       }
     }
@@ -1626,7 +1624,7 @@ struct RedisDriver::pimpl {
     if (config_.pubsub_mode) {
       while (1) {
         common::Error er = cliReadReply(out);
-        if (er) {
+        if (er && er->isError()) {
           return er;
         }
       }
@@ -1639,7 +1637,7 @@ struct RedisDriver::pimpl {
     }
 
     common::Error er = cliReadReply(out);
-    if (er) {
+    if (er && er->isError()) {
       return er;
     } else {
       /* Store database number when SELECT was successfully executed. */
@@ -1647,7 +1645,7 @@ struct RedisDriver::pimpl {
         config_.dbnum = atoi(argv[1]);
       } else if (!strcasecmp(command, "auth") && argc == 2) {
         er = cliSelect();
-        if (er) {
+        if (er && er->isError()) {
           return er;
         }
       }
@@ -1727,7 +1725,7 @@ struct RedisDriver::pimpl {
     for (size_t i = 0; i < valid_cmds.size(); ++i) {
       FastoObjectCommandIPtr cmd = cmds[i];
       common::Error er = cliReadReply(cmd.get());
-      if (er) {
+      if (er && er->isError()) {
           return er;
       }
     }
@@ -1805,13 +1803,13 @@ common::Error RedisDriver::serverDiscoveryInfo(ServerInfo **sinfo,
                                                ServerDiscoveryInfo **dinfo, DataBaseInfo **dbinfo) {
   ServerInfo *lsinfo = NULL;
   common::Error er = serverInfo(&lsinfo);
-  if (er) {
+  if (er && er->isError()) {
     return er;
   }
 
   DataBaseInfo* ldbinfo = NULL;
   er = currentDataBaseInfo(&ldbinfo);
-  if (er) {
+  if (er && er->isError()) {
     delete lsinfo;
     return er;
   }
@@ -1828,7 +1826,7 @@ common::Error RedisDriver::serverDiscoveryInfo(ServerInfo **sinfo,
                                                         GET_SERVER_TYPE, common::Value::C_INNER);
   er = execute(cmd);
 
-  if (er) {
+  if (er && er->isError()) {
     *sinfo = lsinfo;
     *dbinfo = ldbinfo;
     return common::Error(); //not error serverInfo is valid
@@ -1865,7 +1863,7 @@ void RedisDriver::handleConnectEvent(events::ConnectRequestEvent *ev) {
     impl_->sinfo_ = set->sshInfo();
   notifyProgress(sender, 25);
     common::Error er = impl_->cliConnect(0);
-    if (er) {
+    if (er && er->isError()) {
       res.setErrorInfo(er);
     }
   notifyProgress(sender, 75);
@@ -1923,7 +1921,7 @@ void RedisDriver::handleShutdownEvent(events::ShutDownRequestEvent* ev) {
   FastoObjectIPtr root = FastoObject::createRoot(SHUTDOWN);
   FastoObjectCommand* cmd = createCommand<RedisCommand>(root, SHUTDOWN, common::Value::C_INNER);
   common::Error er = execute(cmd);
-  if (er) {
+  if (er && er->isError()) {
     res.setErrorInfo(er);
   }
   notifyProgress(sender, 75);
@@ -1939,7 +1937,7 @@ void RedisDriver::handleBackupEvent(events::BackupRequestEvent* ev) {
   FastoObjectIPtr root = FastoObject::createRoot(BACKUP);
   FastoObjectCommand* cmd = createCommand<RedisCommand>(root, BACKUP, common::Value::C_INNER);
   common::Error er = execute(cmd);
-  if (er) {
+  if (er && er->isError()) {
     res.setErrorInfo(er);
   } else {
     common::Error err = common::file_system::copy_file("/var/lib/redis/dump.rdb", res.path_);
@@ -1977,7 +1975,7 @@ void RedisDriver::handleChangePasswordEvent(events::ChangePasswordRequestEvent* 
   FastoObjectCommand* cmd = createCommand<RedisCommand>(root, patternResult,
                                                         common::Value::C_INNER);
   common::Error er = execute(cmd);
-  if (er) {
+  if (er && er->isError()) {
     res.setErrorInfo(er);
   }
 
@@ -1998,7 +1996,7 @@ void RedisDriver::handleChangeMaxConnectionEvent(events::ChangeMaxConnectionRequ
   FastoObjectCommand* cmd = createCommand<RedisCommand>(root,
                                                         patternResult, common::Value::C_INNER);
   common::Error er = execute(cmd);
-  if (er) {
+  if (er && er->isError()) {
     res.setErrorInfo(er);
   }
 
@@ -2029,7 +2027,7 @@ common::Error RedisDriver::latencyMode(events::ProcessConfigArgsRequestEvent* ev
 
   FastoObjectIPtr obj = lock.root_;
   common::Error er = impl_->latencyMode(obj.get());
-  if (er) {
+  if (er && er->isError()) {
       LOG_ERROR(er, true);
   }
 
@@ -2049,7 +2047,7 @@ common::Error RedisDriver::slaveMode(events::ProcessConfigArgsRequestEvent* ev) 
 
   FastoObjectIPtr obj = lock.root_;
   common::Error er = impl_->slaveMode(obj.get());
-  if (er) {
+  if (er && er->isError()) {
       LOG_ERROR(er, true);
   }
 
@@ -2069,7 +2067,7 @@ common::Error RedisDriver::getRDBMode(events::ProcessConfigArgsRequestEvent* ev)
 
   FastoObjectIPtr obj = lock.root_;
   common::Error er = impl_->getRDB(obj.get());
-  if (er) {
+  if (er && er->isError()) {
       LOG_ERROR(er, true);
   }
 
@@ -2089,7 +2087,7 @@ common::Error RedisDriver::findBigKeysMode(events::ProcessConfigArgsRequestEvent
 
   FastoObjectIPtr obj = lock.root_;
   common::Error er = impl_->findBigKeys(obj.get());
-  if (er) {
+  if (er && er->isError()) {
       LOG_ERROR(er, true);
   }
 
@@ -2109,7 +2107,7 @@ common::Error RedisDriver::statMode(events::ProcessConfigArgsRequestEvent* ev) {
 
   FastoObjectIPtr obj = lock.root_;
   common::Error er = impl_->statMode(obj.get());
-  if (er) {
+  if (er && er->isError()) {
       LOG_ERROR(er, true);
   }
 
@@ -2129,7 +2127,7 @@ common::Error RedisDriver::scanMode(events::ProcessConfigArgsRequestEvent* ev) {
 
   FastoObjectIPtr obj = lock.root_;
   common::Error er = impl_->scanMode(obj.get());
-  if (er) {
+  if (er && er->isError()) {
       LOG_ERROR(er, true);
   }
 
@@ -2174,7 +2172,7 @@ void RedisDriver::handleExecuteEvent(events::ExecuteRequestEvent *ev) {
             FastoObjectCommand* cmd = createCommand<RedisCommand>(outRoot, stabc,
                                                                   common::Value::C_USER);
             er = execute(cmd);
-            if (er) {
+            if (er && er->isError()) {
               res.setErrorInfo(er);
               break;
             } else {
@@ -2197,7 +2195,7 @@ void RedisDriver::handleExecuteEvent(events::ExecuteRequestEvent *ev) {
     er.reset(new common::ErrorValue("Empty command line.", common::ErrorValue::E_ERROR));
   }
 
-  if (er) {
+  if (er && er->isError()) {
     LOG_ERROR(er, true);
   }
   notifyProgress(sender, 100);
@@ -2208,8 +2206,8 @@ void RedisDriver::handleCommandRequestEvent(events::CommandRequestEvent* ev) {
   notifyProgress(sender, 0);
   events::CommandResponceEvent::value_type res(ev->value());
   std::string cmdtext;
-  common::Error er = commandByType(res.cmd_, cmdtext);
-  if (er) {
+  common::Error er = commandByType(res.cmd_, &cmdtext);
+  if (er && er->isError()) {
     res.setErrorInfo(er);
     reply(sender, new events::CommandResponceEvent(this, res));
     notifyProgress(sender, 100);
@@ -2221,7 +2219,7 @@ void RedisDriver::handleCommandRequestEvent(events::CommandRequestEvent* ev) {
   FastoObjectCommand* cmd = createCommand<RedisCommand>(root, cmdtext, common::Value::C_INNER);
   notifyProgress(sender, 50);
   er = execute(cmd);
-  if (er) {
+  if (er && er->isError()) {
     res.setErrorInfo(er);
   }
   reply(sender, new events::CommandResponceEvent(this, res));
@@ -2252,7 +2250,7 @@ void RedisDriver::handleLoadDatabaseInfosEvent(events::LoadDatabasesInfoRequestE
   FastoObjectCommand* cmd = createCommand<RedisCommand>(root, GET_DATABASES,
                                                         common::Value::C_INNER);
   common::Error er = execute(cmd);
-  if (er) {
+  if (er && er->isError()) {
     res.setErrorInfo(er);
   } else {
     FastoObject::child_container_type rchildrens = cmd->childrens();
@@ -2307,7 +2305,7 @@ void RedisDriver::handleLoadDatabaseContentEvent(events::LoadDatabaseContentRequ
   FastoObjectCommand* cmd = createCommand<RedisCommand>(root, patternResult,
                                                         common::Value::C_INNER);
   common::Error er = execute(cmd);
-  if (er) {
+  if (er && er->isError()) {
     res.setErrorInfo(er);
   } else {
     FastoObject::child_container_type rchildrens = cmd->childrens();
@@ -2359,7 +2357,7 @@ void RedisDriver::handleLoadDatabaseContentEvent(events::LoadDatabaseContentRequ
       }
 
       er = impl_->executeAsPipeline(cmds);
-      if (er) {
+      if (er && er->isError()) {
         goto done;
       }
 
@@ -2411,7 +2409,7 @@ void RedisDriver::handleSetDefaultDatabaseEvent(events::SetDefaultDatabaseReques
   FastoObjectCommand* cmd = createCommand<RedisCommand>(root, setDefCommand,
                                                         common::Value::C_INNER);
   common::Error er = execute(cmd);
-  if (er) {
+  if (er && er->isError()) {
     res.setErrorInfo(er);
   } else {
     long long sz = 0;
@@ -2431,7 +2429,7 @@ void RedisDriver::handleLoadServerInfoEvent(events::ServerInfoRequestEvent *ev) 
   notifyProgress(sender, 50);
   FastoObjectCommand* cmd = createCommand<RedisCommand>(root, INFO_REQUEST, common::Value::C_INNER);
   common::Error er = execute(cmd);
-  if (er) {
+  if (er && er->isError()) {
     res.setErrorInfo(er);
   } else {
     FastoObject::child_container_type ch = cmd->childrens();
@@ -2456,7 +2454,7 @@ void RedisDriver::handleLoadServerPropertyEvent(events::ServerPropertyInfoReques
                                                         GET_PROPERTY_SERVER,
                                                         common::Value::C_INNER);
   common::Error er = execute(cmd);
-  if (er) {
+  if (er && er->isError()) {
     res.setErrorInfo(er);
   } else {
     FastoObject::child_container_type ch = cmd->childrens();
@@ -2484,7 +2482,7 @@ void RedisDriver::handleServerPropertyChangeEvent(events::ChangeServerPropertyIn
   FastoObjectCommand* cmd = createCommand<RedisCommand>(root, changeRequest,
                                                         common::Value::C_INNER);
   common::Error er = execute(cmd);
-  if (er) {
+  if (er && er->isError()) {
     res.setErrorInfo(er);
   } else {
     res.isChange_ = true;
@@ -2495,17 +2493,25 @@ void RedisDriver::handleServerPropertyChangeEvent(events::ChangeServerPropertyIn
 }
 
 common::Error RedisDriver::commandDeleteImpl(CommandDeleteKey* command,
-                                             std::string& cmdstring) const {
+                                             std::string* cmdstring) const {
+  if (!command || !cmdstring) {
+    return common::make_error_value("Invalid input argument", common::ErrorValue::E_ERROR);
+  }
+
   char patternResult[1024] = {0};
   const NDbKValue key = command->key();
   common::SNPrintf(patternResult, sizeof(patternResult),
                    DELETE_KEY_PATTERN_1ARGS_S, key.keyString());
-  cmdstring = patternResult;
 
+  *cmdstring = patternResult;
   return common::Error();
 }
 
-common::Error RedisDriver::commandLoadImpl(CommandLoadKey* command, std::string& cmdstring) const {
+common::Error RedisDriver::commandLoadImpl(CommandLoadKey* command, std::string* cmdstring) const {
+  if (!command || !cmdstring) {
+    return common::make_error_value("Invalid input argument", common::ErrorValue::E_ERROR);
+  }
+
   char patternResult[1024] = {0};
   const NDbKValue key = command->key();
   if (key.type() == common::Value::TYPE_ARRAY) {
@@ -2524,13 +2530,17 @@ common::Error RedisDriver::commandLoadImpl(CommandLoadKey* command, std::string&
     common::SNPrintf(patternResult, sizeof(patternResult),
                      GET_KEY_PATTERN_1ARGS_S, key.keyString());
   }
-  cmdstring = patternResult;
 
+  *cmdstring = patternResult;
   return common::Error();
 }
 
 common::Error RedisDriver::commandCreateImpl(CommandCreateKey* command,
-                                             std::string& cmdstring) const {
+                                             std::string* cmdstring) const {
+  if (!command || !cmdstring) {
+    return common::make_error_value("Invalid input argument", common::ErrorValue::E_ERROR);
+  }
+
   char patternResult[1024] = {0};
   NDbKValue key = command->key();
   NValue val = command->value();
@@ -2554,13 +2564,17 @@ common::Error RedisDriver::commandCreateImpl(CommandCreateKey* command,
     common::SNPrintf(patternResult, sizeof(patternResult),
                      SET_KEY_PATTERN_2ARGS_SS, key_str, value_str);
   }
-  cmdstring = patternResult;
 
+  *cmdstring = patternResult;
   return common::Error();
 }
 
 common::Error RedisDriver::commandChangeTTLImpl(CommandChangeTTL* command,
-                                                std::string& cmdstring) const {
+                                                std::string* cmdstring) const {
+  if (!command || !cmdstring) {
+    return common::make_error_value("Invalid input argument", common::ErrorValue::E_ERROR);
+  }
+
   char patternResult[1024] = {0};
   NDbKValue key = command->key();
   uint32_t new_ttl = command->newTTL();
@@ -2571,8 +2585,8 @@ common::Error RedisDriver::commandChangeTTLImpl(CommandChangeTTL* command,
     common::SNPrintf(patternResult, sizeof(patternResult),
                      CHANGE_TTL_2ARGS_SI, key.keyString(), new_ttl);
   }
-  cmdstring = patternResult;
 
+  *cmdstring = patternResult;
   return common::Error();
 }
 

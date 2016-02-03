@@ -143,7 +143,7 @@ void ServerHistoryDialog::refreshInfoFields(int index) {
   for (int i = 0; i < field.size(); ++i) {
     Field fl = field[i];
     if (fl.isIntegral()) {
-      serverInfoFields_->addItem(common::convertFromString<QString>(fl.name_), i);
+      serverInfoFields_->addItem(common::convertFromString<QString>(fl.name), i);
     }
   }
 }
@@ -164,14 +164,14 @@ void ServerHistoryDialog::refreshGraph(int index) {
       continue;
     }
 
-    common::Value* value = val.info_->valueByIndexes(serverIndex, indexIn);  // allocate
+    common::Value* value = val.info->valueByIndexes(serverIndex, indexIn);  // allocate
     if (value) {
       qreal graphY = 0.0f;
       if (value->getAsDouble(&graphY)) {
-        nodes.push_back(std::make_pair(val.msec_, graphY));
+        nodes.push_back(std::make_pair(val.msec, graphY));
       }
+      delete value;
     }
-    delete value;
   }
 
   graphWidget_->setNodes(nodes);

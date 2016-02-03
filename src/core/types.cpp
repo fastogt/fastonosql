@@ -26,17 +26,17 @@ namespace fastonosql {
 CommandInfo::CommandInfo(const std::string& name, const std::string& params,
           const std::string& summary, const uint32_t since, const std::string& example,
                        uint8_t required_arguments_count, uint8_t optional_arguments_count)
-  : name_(name), params_(params), summary_(summary), since_(since), example_(example),
-    required_arguments_count_(required_arguments_count),
-    optional_arguments_count_(optional_arguments_count) {
+  : name(name), params(params), summary(summary), since(since), example(example),
+    required_arguments_count(required_arguments_count),
+    optional_arguments_count(optional_arguments_count) {
 }
 
 uint16_t CommandInfo::maxArgumentsCount() const {
-  return required_arguments_count_ + optional_arguments_count_;
+  return required_arguments_count + optional_arguments_count;
 }
 
 uint8_t CommandInfo::minArgumentsCount() const {
-  return required_arguments_count_;
+  return required_arguments_count;
 }
 
 std::string convertVersionNumberToReadableString(uint32_t version) {
@@ -48,7 +48,7 @@ std::string convertVersionNumberToReadableString(uint32_t version) {
 }
 
 NKey::NKey(const std::string& key, int32_t ttl_sec)
-  : key_(key), ttl_sec_(ttl_sec) {
+  : key(key), ttl_sec(ttl_sec) {
 }
 
 NDbKValue::NDbKValue(const NKey& key, NValue value)
@@ -72,7 +72,7 @@ common::Value::Type NDbKValue::type() const {
 }
 
 void NDbKValue::setTTL(int32_t ttl) {
-  key_.ttl_sec_ = ttl;
+  key_.ttl_sec = ttl;
 }
 
 void NDbKValue::setValue(NValue value) {
@@ -80,7 +80,7 @@ void NDbKValue::setValue(NValue value) {
 }
 
 std::string NDbKValue::keyString() const {
-  return key_.key_;
+  return key_.key;
 }
 
 ServerDiscoveryInfo::ServerDiscoveryInfo(connectionTypes ctype, serverTypes type, bool self)
@@ -131,11 +131,11 @@ ServerInfo::ServerInfo(connectionTypes type)
 }
 
 Field::Field(const std::string& name, common::Value::Type type)
-  : name_(name), type_(type) {
+  : name(name), type(type) {
 }
 
 bool Field::isIntegral() const {
-  return common::Value::isIntegral(type_);
+  return common::Value::isIntegral(type);
 }
 
 std::vector<common::Value::Type> supportedTypesFromType(connectionTypes type) {
@@ -259,34 +259,39 @@ std::vector< std::vector<Field> > infoFieldsFromType(connectionTypes type) {
 }
 
 ServerInfoSnapShoot::ServerInfoSnapShoot()
-  : msec_(0), info_() {
+  : msec(0), info() {
 }
 
 ServerInfoSnapShoot::ServerInfoSnapShoot(common::time64_t msec, ServerInfoSPtr info)
-  : msec_(msec), info_(info) {
+  : msec(msec), info(info) {
 }
 
 bool ServerInfoSnapShoot::isValid() const {
-  return msec_ > 0 && info_;
+  return msec > 0 && info;
 }
 
 ServerPropertyInfo::ServerPropertyInfo() {
 }
 
-ServerPropertyInfo makeServerProperty(FastoObjectArray* array) {
-  ServerPropertyInfo inf;
+ServerPropertyInfo makeServerProperty(const FastoObjectArray* array) {
+  if (!array) {
+    return ServerPropertyInfo();
+  }
 
   common::ArrayValue* ar = array->array();
-  if (ar) {
-    for (size_t i = 0; i < ar->size(); i+=2) {
-      std::string c1;
-      std::string c2;
-      bool res = ar->getString(i, &c1);
-      DCHECK(res);
-      res = ar->getString(i+1, &c2);
-      DCHECK(res);
-      inf.propertyes_.push_back(std::make_pair(c1, c2));
-    }
+  if (!ar) {
+    return ServerPropertyInfo();
+  }
+
+  ServerPropertyInfo inf;
+  for (size_t i = 0; i < ar->size(); i+=2) {
+    std::string c1;
+    std::string c2;
+    bool res = ar->getString(i, &c1);
+    DCHECK(res);
+    res = ar->getString(i+1, &c2);
+    DCHECK(res);
+    inf.propertyes.push_back(std::make_pair(c1, c2));
   }
   return inf;
 }

@@ -457,13 +457,13 @@ class RedisDriver
   virtual void handleChangeMaxConnectionEvent(events::ChangeMaxConnectionRequestEvent* ev);
 
   virtual common::Error commandDeleteImpl(CommandDeleteKey* command,
-                                          std::string& cmdstring) const WARN_UNUSED_RESULT;
+                                          std::string* cmdstring) const WARN_UNUSED_RESULT;
   virtual common::Error commandLoadImpl(CommandLoadKey* command,
-                                        std::string& cmdstring) const WARN_UNUSED_RESULT;
+                                        std::string* cmdstring) const WARN_UNUSED_RESULT;
   virtual common::Error commandCreateImpl(CommandCreateKey* command,
-                                          std::string& cmdstring) const WARN_UNUSED_RESULT;
+                                          std::string* cmdstring) const WARN_UNUSED_RESULT;
   virtual common::Error commandChangeTTLImpl(CommandChangeTTL* command,
-                                             std::string& cmdstring) const WARN_UNUSED_RESULT;
+                                             std::string* cmdstring) const WARN_UNUSED_RESULT;
 
   virtual void handleLoadDatabaseContentEvent(events::LoadDatabaseContentRequestEvent* ev);
   virtual void handleSetDefaultDatabaseEvent(events::SetDefaultDatabaseRequestEvent* ev);

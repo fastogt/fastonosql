@@ -76,8 +76,8 @@ void PropertyServerDialog::finishServerProperty(const events_info::ServerPropert
   if (server_->type() == REDIS) {
     ServerPropertyInfo inf = res.info_;
     PropertyTableModel *model = qobject_cast<PropertyTableModel*>(propertyes_table_->model());
-    for (size_t i = 0; i < inf.propertyes_.size(); ++i) {
-      PropertyType it = inf.propertyes_[i];
+    for (size_t i = 0; i < inf.propertyes.size(); ++i) {
+      PropertyType it = inf.propertyes[i];
       model->insertItem(new PropertyTableItem(common::convertFromString<QString>(it.first),
                                               common::convertFromString<QString>(it.second)));
     }

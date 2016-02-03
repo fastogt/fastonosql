@@ -36,13 +36,13 @@ RedisApi::RedisApi(QsciLexer* lexer)
 void RedisApi::updateAutoCompletionList(const QStringList& context, QStringList& list) {
   for (QStringList::const_iterator it = context.begin(); it != context.end(); ++it) {
     QString val = *it;
-    for (int i = 0; i < SIZEOFMASS(redisCommands); ++i) {
+    for (size_t i = 0; i < SIZEOFMASS(redisCommands); ++i) {
       CommandInfo cmd = redisCommands[i];
       if (canSkipCommand(cmd)) {
         continue;
       }
 
-      QString jval = common::convertFromString<QString>(cmd.name_);
+      QString jval = common::convertFromString<QString>(cmd.name);
       if(jval.startsWith(val, Qt::CaseInsensitive)){
         list.append(jval + "?1");
       }
@@ -60,7 +60,7 @@ QStringList RedisApi::callTips(const QStringList& context, int commas,
     QString val = *it;
     for (int i = 0; i < SIZEOFMASS(redisCommands); ++i) {
       CommandInfo cmd = redisCommands[i];
-      QString jval = common::convertFromString<QString>(cmd.name_);
+      QString jval = common::convertFromString<QString>(cmd.name);
       if (QString::compare(jval, val, Qt::CaseInsensitive) == 0) {
         return QStringList() << makeCallTip(cmd);
       }
@@ -93,15 +93,15 @@ std::vector<uint32_t> RedisLexer::supportedVersions() const {
     CommandInfo cmd = redisCommands[i];
 
     bool needed_insert = true;
-    for (int j = 0; j < result.size(); ++j) {
-      if(result[j] == cmd.since_){
+    for (size_t j = 0; j < result.size(); ++j) {
+      if(result[j] == cmd.since){
         needed_insert = false;
         break;
       }
     }
 
     if(needed_insert){
-      result.push_back(cmd.since_);
+      result.push_back(cmd.since);
     }
   }
 
@@ -141,9 +141,9 @@ void RedisLexer::styleText(int start, int end) {
 }
 
 void RedisLexer::paintCommands(const QString& source, int start) {
-  for (int i = 0; i < SIZEOFMASS(redisCommands); ++i) {
+  for (size_t i = 0; i < SIZEOFMASS(redisCommands); ++i) {
     CommandInfo cmd = redisCommands[i];
-    QString word = common::convertFromString<QString>(cmd.name_);
+    QString word = common::convertFromString<QString>(cmd.name);
     int index = 0;
     int begin = 0;
     while ( (begin = source.indexOf(word, index, Qt::CaseInsensitive)) != -1){

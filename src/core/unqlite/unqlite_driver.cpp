@@ -91,7 +91,7 @@ common::Error createConnection(UnqliteConnectionSettings* settings, unqlite** co
 common::Error testConnection(fastonosql::UnqliteConnectionSettings *settings) {
   unqlite* ldb = NULL;
   common::Error er = createConnection(settings, &ldb);
-  if (er) {
+  if (er && er->isError()) {
     return er;
   }
 
@@ -123,7 +123,7 @@ struct UnqliteDriver::pimpl {
 
     unqlite* context = NULL;
     common::Error er = createConnection(config_, &context);
-    if (er) {
+    if (er && er->isError()) {
       return er;
     }
 
@@ -397,28 +397,40 @@ bool UnqliteDriver::isAuthenticated() const {
 
 // ============== commands =============//
 common::Error UnqliteDriver::commandDeleteImpl(CommandDeleteKey* command,
-                                               std::string& cmdstring) const {
+                                               std::string* cmdstring) const {
+  if (!command || !cmdstring) {
+    return common::make_error_value("Invalid input argument", common::ErrorValue::E_ERROR);
+  }
+
   char patternResult[1024] = {0};
   NDbKValue key = command->key();
   common::SNPrintf(patternResult, sizeof(patternResult),
                    DELETE_KEY_PATTERN_1ARGS_S, key.keyString());
-  cmdstring = patternResult;
 
+  *cmdstring = patternResult;
   return common::Error();
 }
 
 common::Error UnqliteDriver::commandLoadImpl(CommandLoadKey* command,
-                                             std::string& cmdstring) const {
+                                             std::string* cmdstring) const {
+  if (!command || !cmdstring) {
+    return common::make_error_value("Invalid input argument", common::ErrorValue::E_ERROR);
+  }
+
   char patternResult[1024] = {0};
   NDbKValue key = command->key();
   common::SNPrintf(patternResult, sizeof(patternResult), GET_KEY_PATTERN_1ARGS_S, key.keyString());
-  cmdstring = patternResult;
 
+  *cmdstring = patternResult;
   return common::Error();
 }
 
 common::Error UnqliteDriver::commandCreateImpl(CommandCreateKey* command,
-                                               std::string& cmdstring) const {
+                                               std::string* cmdstring) const {
+  if (!command || !cmdstring) {
+    return common::make_error_value("Invalid input argument", common::ErrorValue::E_ERROR);
+  }
+
   char patternResult[1024] = {0};
   NDbKValue key = command->key();
   NValue val = command->value();
@@ -427,15 +439,17 @@ common::Error UnqliteDriver::commandCreateImpl(CommandCreateKey* command,
   std::string value_str = common::convertToString(rval, " ");
   common::SNPrintf(patternResult, sizeof(patternResult),
                    SET_KEY_PATTERN_2ARGS_SS, key_str, value_str);
-  cmdstring = patternResult;
 
+  *cmdstring = patternResult;
   return common::Error();
 }
 
 common::Error UnqliteDriver::commandChangeTTLImpl(CommandChangeTTL* command,
-                                                  std::string& cmdstring) const {
-  UNUSED(command);
-  UNUSED(cmdstring);
+                                                  std::string* cmdstring) const {
+  if (!command || !cmdstring) {
+    return common::make_error_value("Invalid input argument", common::ErrorValue::E_ERROR);
+  }
+
   char errorMsg[1024] = {0};
   common::SNPrintf(errorMsg, sizeof(errorMsg),
                    "Sorry, but now " PROJECT_NAME_TITLE " not supported change ttl command for %s.",
@@ -484,7 +498,7 @@ common::Error UnqliteDriver::serverDiscoveryInfo(ServerInfo **sinfo,
                                                  DataBaseInfo** dbinfo) {
   ServerInfo *lsinfo = NULL;
   common::Error er = serverInfo(&lsinfo);
-  if (er) {
+  if (er && er->isError()) {
     return er;
   }
 
@@ -502,7 +516,7 @@ common::Error UnqliteDriver::serverDiscoveryInfo(ServerInfo **sinfo,
 
   DataBaseInfo* ldbinfo = NULL;
   er = currentDataBaseInfo(&ldbinfo);
-  if (er) {
+  if (er && er->isError()) {
     delete lsinfo;
     return er;
   }
@@ -528,7 +542,7 @@ void UnqliteDriver::handleConnectEvent(events::ConnectRequestEvent *ev) {
     impl_->config_ = set->info();
   notifyProgress(sender, 25);
     common::Error er = impl_->connect();
-    if (er) {
+    if (er && er->isError()) {
       res.setErrorInfo(er);
     }
   notifyProgress(sender, 75);
@@ -544,7 +558,7 @@ void UnqliteDriver::handleDisconnectEvent(events::DisconnectRequestEvent* ev) {
   notifyProgress(sender, 50);
 
   common::Error er = impl_->disconnect();
-  if (er) {
+  if (er && er->isError()) {
     res.setErrorInfo(er);
   }
 
@@ -583,7 +597,7 @@ void UnqliteDriver::handleExecuteEvent(events::ExecuteRequestEvent* ev) {
         FastoObjectCommand* cmd = createCommand<UnqliteCommand>(outRoot, stableCommand(command),
                                                                 common::Value::C_USER);
         er = execute(cmd);
-        if (er) {
+        if (er && er->isError()) {
           res.setErrorInfo(er);
           break;
         }
@@ -593,7 +607,7 @@ void UnqliteDriver::handleExecuteEvent(events::ExecuteRequestEvent* ev) {
     er.reset(new common::ErrorValue("Empty command line.", common::ErrorValue::E_ERROR));
   }
 
-  if (er) {
+  if (er && er->isError()) {
     LOG_ERROR(er, true);
   }
   notifyProgress(sender, 100);
@@ -604,8 +618,8 @@ void UnqliteDriver::handleCommandRequestEvent(events::CommandRequestEvent* ev) {
   notifyProgress(sender, 0);
   events::CommandResponceEvent::value_type res(ev->value());
   std::string cmdtext;
-  common::Error er = commandByType(res.cmd_, cmdtext);
-  if (er) {
+  common::Error er = commandByType(res.cmd_, &cmdtext);
+  if (er && er->isError()) {
     res.setErrorInfo(er);
     reply(sender, new events::CommandResponceEvent(this, res));
     notifyProgress(sender, 100);
@@ -617,7 +631,7 @@ void UnqliteDriver::handleCommandRequestEvent(events::CommandRequestEvent* ev) {
   FastoObjectCommand* cmd = createCommand<UnqliteCommand>(root, cmdtext, common::Value::C_INNER);
   notifyProgress(sender, 50);
   er = execute(cmd);
-  if (er) {
+  if (er && er->isError()) {
     res.setErrorInfo(er);
   }
   reply(sender, new events::CommandResponceEvent(this, res));
@@ -645,7 +659,7 @@ void UnqliteDriver::handleLoadDatabaseContentEvent(events::LoadDatabaseContentRe
   FastoObjectCommand* cmd = createCommand<UnqliteCommand>(root, patternResult,
                                                           common::Value::C_INNER);
   common::Error er = execute(cmd);
-  if (er) {
+  if (er && er->isError()) {
     res.setErrorInfo(er);
   } else {
     FastoObject::child_container_type rchildrens = cmd->childrens();

@@ -36,13 +36,13 @@ SsdbApi::SsdbApi(QsciLexer *lexer)
 void SsdbApi::updateAutoCompletionList(const QStringList& context, QStringList& list) {
   for (QStringList::const_iterator it = context.begin(); it != context.end(); ++it) {
     QString val = *it;
-    for (int i = 0; i < SIZEOFMASS(ssdbCommands); ++i) {
+    for (size_t i = 0; i < SIZEOFMASS(ssdbCommands); ++i) {
       CommandInfo cmd = ssdbCommands[i];
       if (canSkipCommand(cmd)) {
         continue;
       }
 
-      QString jval = common::convertFromString<QString>(cmd.name_);
+      QString jval = common::convertFromString<QString>(cmd.name);
       if (jval.startsWith(val, Qt::CaseInsensitive)) {
         list.append(jval + "?1");
       }
@@ -58,9 +58,9 @@ QStringList SsdbApi::callTips(const QStringList& context, int commas,
                               QsciScintilla::CallTipsStyle style, QList<int>& shifts) {
   for (QStringList::const_iterator it = context.begin(); it != context.end() - 1; ++it) {
     QString val = *it;
-    for (int i = 0; i < SIZEOFMASS(ssdbCommands); ++i) {
+    for (size_t i = 0; i < SIZEOFMASS(ssdbCommands); ++i) {
       CommandInfo cmd = ssdbCommands[i];
-      QString jval = common::convertFromString<QString>(cmd.name_);
+      QString jval = common::convertFromString<QString>(cmd.name);
       if (QString::compare(jval, val, Qt::CaseInsensitive) == 0) {
         return QStringList() << makeCallTip(cmd);
       }
@@ -93,15 +93,15 @@ std::vector<uint32_t> SsdbLexer::supportedVersions() const {
     CommandInfo cmd = ssdbCommands[i];
 
     bool needed_insert = true;
-    for (int j = 0; j < result.size(); ++j) {
-      if (result[j] == cmd.since_) {
+    for (size_t j = 0; j < result.size(); ++j) {
+      if (result[j] == cmd.since) {
         needed_insert = false;
         break;
       }
     }
 
     if (needed_insert) {
-      result.push_back(cmd.since_);
+      result.push_back(cmd.since);
     }
   }
 
@@ -142,9 +142,9 @@ void SsdbLexer::styleText(int start, int end) {
 }
 
 void SsdbLexer::paintCommands(const QString& source, int start) {
-  for (int i = 0; i < SIZEOFMASS(ssdbCommands); ++i) {
+  for (size_t i = 0; i < SIZEOFMASS(ssdbCommands); ++i) {
     CommandInfo cmd = ssdbCommands[i];
-    QString word = common::convertFromString<QString>(cmd.name_);
+    QString word = common::convertFromString<QString>(cmd.name);
     int index = 0;
     int begin = 0;
     while ((begin = source.indexOf(word, index, Qt::CaseInsensitive)) != -1) {

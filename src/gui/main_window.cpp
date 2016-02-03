@@ -439,7 +439,7 @@ void MainWindow::importConnection() {
 
     std::string edata;
     common::Error er = hexEnc->decode(data, &edata);
-    if (er) {
+    if (er && er->isError()) {
       writeFile.close();
       common::Error err = common::file_system::remove_file(wp.path());
       if (err && err->isError()) {
@@ -507,7 +507,7 @@ void MainWindow::exportConnection() {
 
     std::string edata;
     common::Error er = hexEnc->encode(data, &edata);
-    if (er) {
+    if (er && er->isError()) {
       writeFile.close();
       common::Error err = common::file_system::remove_file(wp.path());
       if (err && err->isError()) {

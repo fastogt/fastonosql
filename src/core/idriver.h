@@ -57,7 +57,7 @@ class IDriver
   void start();
   void stop();
   common::Error commandByType(CommandKeySPtr command,
-                              std::string& cmdstring) const WARN_UNUSED_RESULT;
+                              std::string* cmdstring) const WARN_UNUSED_RESULT;
 
   virtual void interrupt();
   virtual bool isConnected() const = 0;
@@ -155,13 +155,13 @@ class IDriver
 
   // command impl methods
   virtual common::Error commandDeleteImpl(CommandDeleteKey* command,
-                                          std::string& cmdstring) const WARN_UNUSED_RESULT = 0;
+                                          std::string* cmdstring) const WARN_UNUSED_RESULT = 0;
   virtual common::Error commandLoadImpl(CommandLoadKey* command,
-                                        std::string& cmdstring) const WARN_UNUSED_RESULT = 0;
+                                        std::string* cmdstring) const WARN_UNUSED_RESULT = 0;
   virtual common::Error commandCreateImpl(CommandCreateKey* command,
-                                          std::string& cmdstring) const WARN_UNUSED_RESULT = 0;
+                                          std::string* cmdstring) const WARN_UNUSED_RESULT = 0;
   virtual common::Error commandChangeTTLImpl(CommandChangeTTL* command,
-                                             std::string& cmdstring) const WARN_UNUSED_RESULT = 0;
+                                             std::string* cmdstring) const WARN_UNUSED_RESULT = 0;
 
  private:
   ServerInfoSPtr serverInfo_;

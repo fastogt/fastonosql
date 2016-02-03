@@ -200,8 +200,8 @@ void IDriver::stop() {
   thread_->wait();
 }
 
-common::Error IDriver::commandByType(CommandKeySPtr command, std::string& cmdstring) const {
-  if (!command) {
+common::Error IDriver::commandByType(CommandKeySPtr command, std::string* cmdstring) const {
+  if (!command || !cmdstring) {
     return common::make_error_value("Invalid input argument", common::ErrorValue::E_ERROR);
   }
 
@@ -216,19 +216,19 @@ common::Error IDriver::commandByType(CommandKeySPtr command, std::string& cmdstr
   } else if (t == CommandKey::C_LOAD) {
       CommandLoadKey* loadc = dynamic_cast<CommandLoadKey*>(command.get());
       if (!loadc) {
-          return common::make_error_value("Invalid input argument", common::ErrorValue::E_ERROR);
+        return common::make_error_value("Invalid input argument", common::ErrorValue::E_ERROR);
       }
       return commandLoadImpl(loadc, cmdstring);
   } else if (t == CommandKey::C_CREATE) {
       CommandCreateKey* createc = dynamic_cast<CommandCreateKey*>(command.get());
       if (!createc || !createc->value()) {
-          return common::make_error_value("Invalid input argument", common::ErrorValue::E_ERROR);
+        return common::make_error_value("Invalid input argument", common::ErrorValue::E_ERROR);
       }
       return commandCreateImpl(createc, cmdstring);
   } else if (t == CommandKey::C_CHANGE_TTL) {
       CommandChangeTTL* changettl = dynamic_cast<CommandChangeTTL*>(command.get());
       if (!changettl) {
-          return common::make_error_value("Invalid input argument", common::ErrorValue::E_ERROR);
+        return common::make_error_value("Invalid input argument", common::ErrorValue::E_ERROR);
       }
       return commandChangeTTLImpl(changettl, cmdstring);
   } else {

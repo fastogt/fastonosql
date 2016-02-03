@@ -45,14 +45,14 @@ struct CommandInfo {
   uint16_t maxArgumentsCount() const;
   uint8_t minArgumentsCount() const;
 
-  const std::string name_;
-  const std::string params_;
-  const std::string summary_;
-  const uint32_t since_;
-  const std::string example_;
+  const std::string name;
+  const std::string params;
+  const std::string summary;
+  const uint32_t since;
+  const std::string example;
 
-  const uint8_t required_arguments_count_;
-  const uint8_t optional_arguments_count_;
+  const uint8_t required_arguments_count;
+  const uint8_t optional_arguments_count;
 };
 
 std::string convertVersionNumberToReadableString(uint32_t version);
@@ -60,8 +60,8 @@ std::string convertVersionNumberToReadableString(uint32_t version);
 struct NKey {
   explicit NKey(const std::string& key, int32_t ttl_sec = -1);
 
-  std::string key_;
-  int32_t ttl_sec_;
+  std::string key;
+  int32_t ttl_sec;
 };
 
 typedef common::ValueSPtr NValue;
@@ -135,8 +135,8 @@ struct Field {
   Field(const std::string& name, common::Value::Type type);
 
   bool isIntegral() const;
-  std::string name_;
-  common::Value::Type type_;
+  std::string name;
+  common::Value::Type type;
 };
 
 template<connectionTypes ct>
@@ -157,18 +157,18 @@ struct ServerInfoSnapShoot {
   ServerInfoSnapShoot(common::time64_t msec, ServerInfoSPtr info);
   bool isValid() const;
 
-  common::time64_t msec_;
-  ServerInfoSPtr info_;
+  common::time64_t msec;
+  ServerInfoSPtr info;
 };
 
 typedef std::pair<std::string, std::string> PropertyType;
 
 struct ServerPropertyInfo {
   ServerPropertyInfo();
-  std::vector<PropertyType> propertyes_;
+  std::vector<PropertyType> propertyes;
 };
 
-ServerPropertyInfo makeServerProperty(FastoObjectArray* array);
+ServerPropertyInfo makeServerProperty(const FastoObjectArray* array);
 
 class DataBaseInfo {
  public:

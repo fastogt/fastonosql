@@ -31,11 +31,11 @@ bool BaseQsciApi::canSkipCommand(const CommandInfo& info) const {
     return false;
   }
 
-  if (info.since_ == UNDEFINED_SINCE) {
+  if (info.since == UNDEFINED_SINCE) {
     return false;
   }
 
-  return info.since_ > filtered_version_;
+  return info.since > filtered_version_;
 }
 
 void BaseQsciApi::setFilteredVersion(uint32_t version) {
@@ -73,12 +73,13 @@ QColor BaseQsciLexer::defaultColor(int style) const {
 }
 
 QString makeCallTip(const CommandInfo& info) {
-  QString since_str = common::convertFromString<QString>(convertVersionNumberToReadableString(info.since_));
+  std::string since_str = convertVersionNumberToReadableString(info.since);
+  QString qsince_str = common::convertFromString<QString>(since_str);
   return QString("Arguments: %1\nSummary: %2\nSince: %3\nExample: %4")
-      .arg(common::convertFromString<QString>(info.params_))
-      .arg(common::convertFromString<QString>(info.summary_))
-      .arg(since_str)
-      .arg(common::convertFromString<QString>(info.example_));
+      .arg(common::convertFromString<QString>(info.params))
+      .arg(common::convertFromString<QString>(info.summary))
+      .arg(qsince_str)
+      .arg(common::convertFromString<QString>(info.example));
 }
 
 }  // namespace fastonosql

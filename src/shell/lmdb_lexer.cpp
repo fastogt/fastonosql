@@ -41,7 +41,7 @@ void LmdbApi::updateAutoCompletionList(const QStringList& context, QStringList& 
         continue;
       }
 
-      QString jval = common::convertFromString<QString>(cmd.name_);
+      QString jval = common::convertFromString<QString>(cmd.name);
       if (jval.startsWith(val, Qt::CaseInsensitive)) {
         list.append(jval + "?1");
       }
@@ -60,7 +60,7 @@ QStringList LmdbApi::callTips(const QStringList& context, int commas,
     for (size_t i = 0; i < SIZEOFMASS(lmdbCommands); ++i) {
       CommandInfo cmd = lmdbCommands[i];
 
-      QString jval = common::convertFromString<QString>(cmd.name_);
+      QString jval = common::convertFromString<QString>(cmd.name);
       if (QString::compare(jval, val, Qt::CaseInsensitive) == 0) {
         return QStringList() << makeCallTip(cmd);
       }
@@ -93,15 +93,15 @@ std::vector<uint32_t> LmdbLexer::supportedVersions() const {
     CommandInfo cmd = lmdbCommands[i];
 
     bool needed_insert = true;
-    for (int j = 0; j < result.size(); ++j) {
-      if (result[j] == cmd.since_) {
+    for (size_t j = 0; j < result.size(); ++j) {
+      if (result[j] == cmd.since) {
         needed_insert = false;
         break;
       }
     }
 
     if (needed_insert) {
-      result.push_back(cmd.since_);
+      result.push_back(cmd.since);
     }
   }
 
@@ -141,9 +141,9 @@ void LmdbLexer::styleText(int start, int end) {
 }
 
 void LmdbLexer::paintCommands(const QString& source, int start) {
-  for (int i = 0; i < SIZEOFMASS(lmdbCommands); ++i) {
+  for (size_t i = 0; i < SIZEOFMASS(lmdbCommands); ++i) {
     CommandInfo cmd = lmdbCommands[i];
-    QString word = common::convertFromString<QString>(cmd.name_);
+    QString word = common::convertFromString<QString>(cmd.name);
     int index = 0;
     int begin = 0;
     while ((begin = source.indexOf(word, index, Qt::CaseInsensitive)) != -1) {

@@ -20,6 +20,8 @@
 
 #include <string>
 
+#include <common/net/types.h>
+
 #define DEFAULT_SSH_PORT 22
 #define DEFAULT_SSH_HOST ""
 
@@ -33,7 +35,7 @@ struct SSHInfo {
   };
 
   SSHInfo();
-  SSHInfo(const std::string& hostName, int port, const std::string& userName,
+  SSHInfo(const common::net::hostAndPort& host, const std::string& userName,
           const std::string& password, const std::string& publicKey, const std::string& privateKey,
           const std::string& passphrase, SupportedAuthenticationMetods method);
 
@@ -44,21 +46,20 @@ struct SSHInfo {
 
   std::string toString() const;
 
-  std::string hostName_;
-  int port_;
-  std::string userName_;
-  std::string password_;
-  std::string publicKey_;
-  std::string privateKey_;
-  std::string passphrase_;
+  common::net::hostAndPort host;
+  std::string user_name;
+  std::string password;
+  std::string public_key;
+  std::string private_key;
+  std::string passphrase;
 
-  SupportedAuthenticationMetods currentMethod_;
+  SupportedAuthenticationMetods current_method;
 };
 
 inline bool operator == (const SSHInfo& r, const SSHInfo& l) {
-  return r.hostName_ == l.hostName_ && r.password_ == l.password_ && r.port_ == l.port_ &&
-      r.publicKey_ == l.publicKey_ && r.privateKey_ == l.privateKey_ &&
-      r.passphrase_ == l.passphrase_ && r.userName_ == l.userName_;
+  return r.host == l.host && r.password == l.password &&
+      r.public_key == l.public_key && r.private_key == l.private_key &&
+      r.passphrase == l.passphrase && r.user_name == l.user_name;
 }
 
 }  // namespace fastonosql
