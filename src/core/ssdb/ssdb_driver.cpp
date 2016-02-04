@@ -1577,7 +1577,7 @@ void SsdbDriver::handleExecuteEvent(events::ExecuteRequestEvent* ev) {
         break;
       }
       if (inputLine[n] == '\n' || n == length-1) {
-  notifyProgress(sender, step * n);
+        notifyProgress(sender, step * n);
         char command[128] = {0};
         if (n == length-1) {
           strcpy(command, inputLine + offset);
@@ -1598,7 +1598,7 @@ void SsdbDriver::handleExecuteEvent(events::ExecuteRequestEvent* ev) {
     er.reset(new common::ErrorValue("Empty command line.", common::ErrorValue::E_ERROR));
   }
 
-  if (er && er->isError()) {
+  if (er) {  // E_INTERRUPTED
     LOG_ERROR(er, true);
   }
   notifyProgress(sender, 100);

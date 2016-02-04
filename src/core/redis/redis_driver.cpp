@@ -2029,8 +2029,8 @@ common::Error RedisDriver::latencyMode(events::ProcessConfigArgsRequestEvent* ev
 
   FastoObjectIPtr obj = lock.root_;
   common::Error er = impl_->latencyMode(obj.get());
-  if (er && er->isError()) {
-      LOG_ERROR(er, true);
+  if (er) {  // E_INTERRUPTED
+    LOG_ERROR(er, true);
   }
 
   events::LeaveModeEvent::value_type resEv2(this, LatencyMode);
@@ -2049,8 +2049,8 @@ common::Error RedisDriver::slaveMode(events::ProcessConfigArgsRequestEvent* ev) 
 
   FastoObjectIPtr obj = lock.root_;
   common::Error er = impl_->slaveMode(obj.get());
-  if (er && er->isError()) {
-      LOG_ERROR(er, true);
+  if (er) {  // E_INTERRUPTED
+    LOG_ERROR(er, true);
   }
 
   events::LeaveModeEvent::value_type resEv2(this, SlaveMode);
@@ -2070,7 +2070,7 @@ common::Error RedisDriver::getRDBMode(events::ProcessConfigArgsRequestEvent* ev)
   FastoObjectIPtr obj = lock.root_;
   common::Error er = impl_->getRDB(obj.get());
   if (er && er->isError()) {
-      LOG_ERROR(er, true);
+    LOG_ERROR(er, true);
   }
 
   events::LeaveModeEvent::value_type resEv2(this, GetRDBMode);
@@ -2090,7 +2090,7 @@ common::Error RedisDriver::findBigKeysMode(events::ProcessConfigArgsRequestEvent
   FastoObjectIPtr obj = lock.root_;
   common::Error er = impl_->findBigKeys(obj.get());
   if (er && er->isError()) {
-      LOG_ERROR(er, true);
+    LOG_ERROR(er, true);
   }
 
   events::LeaveModeEvent::value_type resEv2(this, FindBigKeysMode);
@@ -2109,8 +2109,8 @@ common::Error RedisDriver::statMode(events::ProcessConfigArgsRequestEvent* ev) {
 
   FastoObjectIPtr obj = lock.root_;
   common::Error er = impl_->statMode(obj.get());
-  if (er && er->isError()) {
-      LOG_ERROR(er, true);
+  if (er) {  // E_INTERRUPTED
+    LOG_ERROR(er, true);
   }
 
   events::LeaveModeEvent::value_type resEv2(this, StatMode);
@@ -2130,7 +2130,7 @@ common::Error RedisDriver::scanMode(events::ProcessConfigArgsRequestEvent* ev) {
   FastoObjectIPtr obj = lock.root_;
   common::Error er = impl_->scanMode(obj.get());
   if (er && er->isError()) {
-      LOG_ERROR(er, true);
+    LOG_ERROR(er, true);
   }
 
   events::LeaveModeEvent::value_type resEv2(this, ScanMode);
@@ -2161,7 +2161,7 @@ void RedisDriver::handleExecuteEvent(events::ExecuteRequestEvent *ev) {
           }
 
           if (inputLine[n] == '\n' || n == length-1) {
-  notifyProgress(sender, step * n);
+            notifyProgress(sender, step * n);
             char command[128] = {0};
             if (n == length-1) {
               strcpy(command, inputLine + offset);
@@ -2197,7 +2197,7 @@ void RedisDriver::handleExecuteEvent(events::ExecuteRequestEvent *ev) {
     er.reset(new common::ErrorValue("Empty command line.", common::ErrorValue::E_ERROR));
   }
 
-  if (er && er->isError()) {
+  if (er) {  // E_INTERRUPTED
     LOG_ERROR(er, true);
   }
   notifyProgress(sender, 100);
