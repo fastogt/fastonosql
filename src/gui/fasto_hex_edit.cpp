@@ -32,7 +32,7 @@ namespace {
 namespace fastonosql {
 
 FastoHexEdit::FastoHexEdit(QWidget *parent)
-  : base_class(parent), mode_(TEXT_MODE), inSelectionState_(false) {
+  : base_class(parent), mode_(TEXT_MODE), in_selection_state_(false) {
   setFocusPolicy(Qt::StrongFocus);
 }
 
@@ -185,7 +185,7 @@ void FastoHexEdit::paintEvent(QPaintEvent *event) {
 void FastoHexEdit::mousePressEvent(QMouseEvent* event) {
   if (mode_ == HEX_MODE) {
     if (event->button() == Qt::LeftButton) {
-      inSelectionState_ = true;
+      in_selection_state_ = true;
     }
   }
 
@@ -193,7 +193,7 @@ void FastoHexEdit::mousePressEvent(QMouseEvent* event) {
 }
 
 void FastoHexEdit::mouseMoveEvent(QMouseEvent* event) {
-  if (mode_ == HEX_MODE && inSelectionState_) {
+  if (mode_ == HEX_MODE && in_selection_state_) {
   }
 
   base_class::mouseMoveEvent(event);
@@ -201,8 +201,8 @@ void FastoHexEdit::mouseMoveEvent(QMouseEvent* event) {
 
 void FastoHexEdit::mouseReleaseEvent(QMouseEvent* event) {
   if (mode_ == HEX_MODE) {
-    if ((event->button() == Qt::LeftButton) && inSelectionState_) {
-      inSelectionState_ = false;
+    if ((event->button() == Qt::LeftButton) && in_selection_state_) {
+      in_selection_state_ = false;
     }
   }
 

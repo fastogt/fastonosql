@@ -224,7 +224,7 @@ void FastoEditor::findElement(bool forward) {
 }
 
 FastoEditorOutput::FastoEditorOutput(const QString &delemitr, QWidget *parent)
-  : QWidget(parent), model_(NULL), viewMethod_(JSON), delemitr_(delemitr) {
+  : QWidget(parent), model_(NULL), view_method_(JSON), delemitr_(delemitr) {
   QFont font = GuiFactory::instance().font();
   setFont(font);
 
@@ -311,7 +311,7 @@ void FastoEditorOutput::setReadOnly(bool ro) {
 }
 
 void FastoEditorOutput::viewChanged(int viewMethod) {
-  viewMethod_ = viewMethod;
+  view_method_ = viewMethod;
   layoutChanged();
 }
 
@@ -365,7 +365,7 @@ bool FastoEditorOutput::setData(const QModelIndex& index, const QVariant& value)
 }
 
 int FastoEditorOutput::viewMethod() const {
-  return viewMethod_;
+  return view_method_;
 }
 
 QString FastoEditorOutput::text() const {
@@ -400,27 +400,27 @@ void FastoEditorOutput::layoutChanged() {
       continue;
     }
 
-    if (viewMethod_ == JSON) {
+    if (view_method_ == JSON) {
       QString json = toJson(child);
       result += common::escapedText(json);
-    } else if (viewMethod_ == CSV) {
+    } else if (view_method_ == CSV) {
       QString csv = toCsv(child, delemitr_);
       result += common::escapedText(csv);
-    } else if (viewMethod_ == RAW) {
+    } else if (view_method_ == RAW) {
       QString raw = toRaw(child);
       result += common::escapedText(raw);
-    } else if (viewMethod_ == HEX) {
+    } else if (view_method_ == HEX) {
       result += toRaw(child);
-    } else if (viewMethod_ == MSGPACK) {
+    } else if (view_method_ == MSGPACK) {
       QString msgp = fromHexMsgPack(child);
       result += common::escapedText(msgp);
-    } else if (viewMethod_ == GZIP) {
+    } else if (view_method_ == GZIP) {
       QString gzip = fromGzip(child);
       result += common::escapedText(gzip);
     }
   }
 
-  editor_->setMode(viewMethod_ == HEX ? FastoHexEdit::HEX_MODE : FastoHexEdit::TEXT_MODE);
+  editor_->setMode(view_method_ == HEX ? FastoHexEdit::HEX_MODE : FastoHexEdit::TEXT_MODE);
   editor_->setData(result.toLocal8Bit());
 }
 

@@ -60,7 +60,7 @@ class FastoHexEdit
   QByteArray data_;
   DisplayMode mode_;
 
-  bool inSelectionState_;
+  bool in_selection_state_;
 
   int charWidth() const;
   int charHeight() const;
