@@ -35,7 +35,7 @@ struct redisConfig
 
   ~redisConfig();
 
-  char *hostsocket;
+  std::string hostsocket;
   long repeat;
   long interval;
   int dbnum;
@@ -52,11 +52,11 @@ struct redisConfig
   int scan_mode;
   int intrinsic_latency_mode;
   int intrinsic_latency_duration;
-  char *pattern;
-  char *rdb_filename;
+  std::string pattern;
+  std::string rdb_filename;
   int bigkeys;
-  char *auth;
-  char *eval;
+  std::string auth;
+  std::string eval;
   int last_cmd_type;
 
  protected:

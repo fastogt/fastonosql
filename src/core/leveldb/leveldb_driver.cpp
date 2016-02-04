@@ -58,7 +58,7 @@ common::Error createConnection(const leveldbConfig& config, leveldb::DB** contex
   DCHECK(*context == NULL);
 
   leveldb::DB* lcontext = NULL;
-  leveldb::Status st = leveldb::DB::Open(config.options_, config.dbname, &lcontext);
+  leveldb::Status st = leveldb::DB::Open(config.options, config.dbname, &lcontext);
   if (!st.ok()) {
     char buff[1024] = {0};
     common::SNPrintf(buff, sizeof(buff), "Fail connect to server: %s!", st.ToString());

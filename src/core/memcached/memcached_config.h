@@ -30,8 +30,8 @@ struct memcachedConfig
   : public RemoteConfig {
   memcachedConfig();
 
-  std::string user_;
-  std::string password_;
+  std::string user;
+  std::string password;
 };
 
 }  // namespace fastonosql

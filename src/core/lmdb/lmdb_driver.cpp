@@ -113,7 +113,7 @@ common::Error createConnection(const lmdbConfig& config, lmdb** context) {
 
   lmdb* lcontext = NULL;
   const char * dbname = common::utils::c_strornull(config.dbname);
-  int st = lmdb_open(&lcontext, dbname, config.create_if_missing_);
+  int st = lmdb_open(&lcontext, dbname, config.create_if_missing);
   if (st != LMDB_OK) {
     char buff[1024] = {0};
     common::SNPrintf(buff, sizeof(buff), "Fail open database: %s", mdb_strerror(st));

@@ -33,15 +33,15 @@ void parseOptions(int argc, char **argv, ssdbConfig& cfg) {
       int lastarg = i == argc - 1;
 
       if (!strcmp(argv[i], "-h") && !lastarg) {
-          cfg.host.host = argv[++i];
+        cfg.host.host = argv[++i];
       } else if (!strcmp(argv[i], "-p") && !lastarg) {
-          cfg.host.port = atoi(argv[++i]);
+        cfg.host.port = atoi(argv[++i]);
       } else if (!strcmp(argv[i], "-u") && !lastarg) {
-          cfg.user_ = argv[++i];
+        cfg.user = argv[++i];
       } else if (!strcmp(argv[i], "-a") && !lastarg) {
-          cfg.password_ = argv[++i];
+        cfg.password = argv[++i];
       } else if (!strcmp(argv[i], "-d") && !lastarg) {
-          cfg.delimiter = argv[++i];
+        cfg.delimiter = argv[++i];
       } else {
           if (argv[i][0] == '-') {
               const uint16_t size_buff = 256;
@@ -61,7 +61,7 @@ void parseOptions(int argc, char **argv, ssdbConfig& cfg) {
 }  // namespace
 
 ssdbConfig::ssdbConfig()
-  : RemoteConfig(common::net::hostAndPort("127.0.0.1", 8888)), user_(), password_() {
+  : RemoteConfig(common::net::hostAndPort("127.0.0.1", 8888)), user(), password() {
 }
 
 }  // namespace fastonosql
@@ -71,22 +71,22 @@ namespace common {
 std::string convertToString(const fastonosql::ssdbConfig &conf) {
   std::vector<std::string> argv = conf.args();
 
-  if (!conf.user_.empty()) {
-      argv.push_back("-u");
-      argv.push_back(conf.user_);
+  if (!conf.user.empty()) {
+    argv.push_back("-u");
+    argv.push_back(conf.user);
   }
 
-  if (!conf.password_.empty()) {
-      argv.push_back("-a");
-      argv.push_back(conf.password_);
+  if (!conf.password.empty()) {
+    argv.push_back("-a");
+    argv.push_back(conf.password);
   }
 
   std::string result;
   for (size_t i = 0; i < argv.size(); ++i) {
-      result += argv[i];
-      if (i != argv.size()-1) {
-          result += " ";
-      }
+    result += argv[i];
+    if (i != argv.size()-1) {
+      result += " ";
+    }
   }
 
   return result;
@@ -101,8 +101,8 @@ fastonosql::ssdbConfig convertFromString(const std::string& line) {
 
   char* p2 = strtok((char*)line.c_str(), " ");
   while (p2) {
-      argv[argc++] = p2;
-      p2 = strtok(0, " ");
+    argv[argc++] = p2;
+    p2 = strtok(0, " ");
   }
 
   fastonosql::parseOptions(argc, argv, cfg);

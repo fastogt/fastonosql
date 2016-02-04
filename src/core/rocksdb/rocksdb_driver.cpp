@@ -54,7 +54,7 @@ common::Error createConnection(const rocksdbConfig& config, rocksdb::DB** contex
   DCHECK(*context == NULL);
 
   rocksdb::DB* lcontext = NULL;
-  rocksdb::Status st = rocksdb::DB::Open(config.options_, config.dbname, &lcontext);
+  rocksdb::Status st = rocksdb::DB::Open(config.options, config.dbname, &lcontext);
   if (!st.ok()) {
     char buff[1024] = {0};
     common::SNPrintf(buff, sizeof(buff), "Fail open database: %s!", st.ToString());

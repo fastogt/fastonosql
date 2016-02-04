@@ -34,11 +34,11 @@ void parseOptions(int argc, char **argv, leveldbConfig& cfg) {
     int lastarg = i == argc-1;
 
     if (!strcmp(argv[i], "-d") && !lastarg) {
-        cfg.delimiter = argv[++i];
+      cfg.delimiter = argv[++i];
     } else if (!strcmp(argv[i], "-f") && !lastarg) {
-        cfg.dbname = argv[++i];
+      cfg.dbname = argv[++i];
     } else if (!strcmp(argv[i], "-c")) {
-        cfg.options_.create_if_missing = true;
+      cfg.options.create_if_missing = true;
     } else {
       if (argv[i][0] == '-') {
         const uint16_t size_buff = 256;
@@ -59,7 +59,7 @@ void parseOptions(int argc, char **argv, leveldbConfig& cfg) {
 
 leveldbConfig::leveldbConfig()
   : LocalConfig(common::file_system::prepare_path("~/test.leveldb")) {
-  options_.create_if_missing = false;
+  options.create_if_missing = false;
 }
 
 }  // namespace fastonosql
@@ -69,7 +69,7 @@ namespace common {
 std::string convertToString(const fastonosql::leveldbConfig &conf) {
   std::vector<std::string> argv = conf.args();
 
-  if (conf.options_.create_if_missing) {
+  if (conf.options.create_if_missing) {
     argv.push_back("-c");
   }
 

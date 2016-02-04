@@ -48,8 +48,8 @@ common::Error testConnection(MemcachedConnectionSettings* settings) {
   }
 
   memcachedConfig inf = settings->info();
-  const char* user = common::utils::c_strornull(inf.user_);
-  const char* passwd = common::utils::c_strornull(inf.password_);
+  const char* user = common::utils::c_strornull(inf.user);
+  const char* passwd = common::utils::c_strornull(inf.password);
   const char* host = common::utils::c_strornull(inf.host.host);
   uint16_t hostport = inf.host.port;
 
@@ -108,9 +108,9 @@ struct MemcachedDriver::pimpl {
     memcached_return rc;
     char buff[1024] = {0};
 
-    if (!config_.user_.empty() && !config_.password_.empty()) {
-      const char* user = config_.user_.c_str();
-      const char* passwd = config_.password_.c_str();
+    if (!config_.user.empty() && !config_.password.empty()) {
+      const char* user = config_.user.c_str();
+      const char* passwd = config_.password.c_str();
       rc = memcached_set_sasl_auth_data(memc_, user, passwd);
       if (rc != MEMCACHED_SUCCESS) {
         common::SNPrintf(buff, sizeof(buff), "Couldn't setup SASL auth: %s",

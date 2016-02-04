@@ -401,14 +401,14 @@ std::string defaultCommandLine(connectionTypes type) {
 #ifdef BUILD_WITH_LEVELDB
   if (type == LEVELDB) {
     leveldbConfig r;
-    r.options_.create_if_missing = true;
+    r.options.create_if_missing = true;
     return common::convertToString(r);
   }
 #endif
 #ifdef BUILD_WITH_ROCKSDB
   if (type == ROCKSDB) {
     rocksdbConfig r;
-    r.options_.create_if_missing = true;
+    r.options.create_if_missing = true;
     return common::convertToString(r);
   }
 #endif
@@ -422,7 +422,7 @@ std::string defaultCommandLine(connectionTypes type) {
 #ifdef BUILD_WITH_LMDB
   if (type == LMDB) {
     lmdbConfig r;
-    r.create_if_missing_ = true;
+    r.create_if_missing = true;
     return common::convertToString(r);
   }
 #endif

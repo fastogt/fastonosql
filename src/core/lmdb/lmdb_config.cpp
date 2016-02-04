@@ -34,11 +34,11 @@ void parseOptions(int argc, char **argv, lmdbConfig& cfg) {
       int lastarg = i == argc-1;
 
       if (!strcmp(argv[i], "-d") && !lastarg) {
-          cfg.delimiter = argv[++i];
+        cfg.delimiter = argv[++i];
       } else if (!strcmp(argv[i], "-f") && !lastarg) {
-          cfg.dbname = argv[++i];
+        cfg.dbname = argv[++i];
       } else if (!strcmp(argv[i], "-c")) {
-          cfg.create_if_missing_ = true;
+        cfg.create_if_missing = true;
       } else {
           if (argv[i][0] == '-') {
               const uint16_t size_buff = 256;
@@ -57,7 +57,7 @@ void parseOptions(int argc, char **argv, lmdbConfig& cfg) {
 }  // namespace
 
 lmdbConfig::lmdbConfig()
-  : LocalConfig(common::file_system::prepare_path("~/test.lmdb")), create_if_missing_(false) {
+  : LocalConfig(common::file_system::prepare_path("~/test.lmdb")), create_if_missing(false) {
 }
 
 }  // namespace fastonosql
@@ -67,16 +67,16 @@ namespace common {
 std::string convertToString(const fastonosql::lmdbConfig &conf) {
   std::vector<std::string> argv = conf.args();
 
-  if (conf.create_if_missing_) {
-      argv.push_back("-c");
+  if (conf.create_if_missing) {
+    argv.push_back("-c");
   }
 
   std::string result;
   for (size_t i = 0; i < argv.size(); ++i) {
-      result += argv[i];
-      if (i != argv.size()-1) {
-          result += " ";
-      }
+    result += argv[i];
+    if (i != argv.size()-1) {
+      result += " ";
+    }
   }
 
   return result;
@@ -91,8 +91,8 @@ fastonosql::lmdbConfig convertFromString(const std::string& line) {
 
   char* p2 = strtok((char*)line.c_str(), " ");
   while (p2) {
-      argv[argc++] = p2;
-      p2 = strtok(0, " ");
+    argv[argc++] = p2;
+    p2 = strtok(0, " ");
   }
 
   fastonosql::parseOptions(argc, argv, cfg);

@@ -31,7 +31,7 @@ namespace {
 
 void parseOptions(int argc, char **argv, redisConfig& cfg) {
     for (int i = 0; i < argc; i++) {
-      int lastarg = i==argc-1;
+      int lastarg = i == argc - 1;
 
       if (!strcmp(argv[i], "-h") && !lastarg) {
         cfg.host.host = argv[++i];
@@ -46,14 +46,14 @@ void parseOptions(int argc, char **argv, redisConfig& cfg) {
       } else if (!strcmp(argv[i], "-s") && !lastarg) {
         cfg.hostsocket = argv[++i];
       } else if (!strcmp(argv[i], "-r") && !lastarg) {
-        cfg.repeat = strtoll(argv[++i],NULL,10);
+        cfg.repeat = strtoll(argv[++i], NULL, 10);
       } else if (!strcmp(argv[i], "-i") && !lastarg) {
         double seconds = atof(argv[++i]);
         cfg.interval = seconds*1000000;
       } else if (!strcmp(argv[i], "-n") && !lastarg) {
         cfg.dbnum = atoi(argv[++i]);
       } else if (!strcmp(argv[i], "-a") && !lastarg) {
-        cfg.auth = strdup(argv[++i]);
+        cfg.auth = argv[++i];
       }
       /*else if (!strcmp(argv[i], "--raw")) {
         cfg.output = OUTPUT_RAW;
@@ -73,13 +73,13 @@ void parseOptions(int argc, char **argv, redisConfig& cfg) {
       } else if (!strcmp(argv[i], "--scan")) {
         cfg.scan_mode = 1;
       } else if (!strcmp(argv[i], "--pattern") && !lastarg) {
-        cfg.pattern = strdup(argv[++i]);
+        cfg.pattern = argv[++i];
       } else if (!strcmp(argv[i], "--intrinsic-latency") && !lastarg) {
         cfg.intrinsic_latency_mode = 1;
         cfg.intrinsic_latency_duration = atoi(argv[++i]);
       } else if (!strcmp(argv[i], "--rdb") && !lastarg) {
         cfg.getrdb_mode = 1;
-        cfg.rdb_filename = strdup(argv[++i]);
+        cfg.rdb_filename = argv[++i];
       /*} else if (!strcmp(argv[i], "--pipe")) {
         cfg.pipe_mode = 1;
       } else if (!strcmp(argv[i], "--pipe-timeout") && !lastarg) {
@@ -87,7 +87,7 @@ void parseOptions(int argc, char **argv, redisConfig& cfg) {
       } else if (!strcmp(argv[i], "--bigkeys")) {
         cfg.bigkeys = 1;
       } else if (!strcmp(argv[i], "--eval") && !lastarg) {
-        cfg.eval = strdup(argv[++i]);
+        cfg.eval = argv[++i];
       } else if (!strcmp(argv[i], "-c")) {
         cfg.cluster_mode = 1;
       } else if (!strcmp(argv[i], "-d") && !lastarg) {
@@ -131,8 +131,7 @@ redisConfig& redisConfig::operator=(const redisConfig &other) {
 }
 
 void redisConfig::copy(const redisConfig& other) {
-  common::utils::freeifnotnull(hostsocket);
-  hostsocket = common::utils::strdupornull(other.hostsocket);
+  hostsocket = other.hostsocket;
 
   repeat = other.repeat;
   interval = other.interval;
@@ -151,17 +150,13 @@ void redisConfig::copy(const redisConfig& other) {
   intrinsic_latency_mode = other.intrinsic_latency_mode;
   intrinsic_latency_duration = other.intrinsic_latency_duration;
 
-  common::utils::freeifnotnull(pattern);
-  pattern = common::utils::strdupornull(other.pattern);
-  common::utils::freeifnotnull(rdb_filename);
-  rdb_filename = common::utils::strdupornull(other.rdb_filename);
+  pattern = other.pattern;
+  rdb_filename = other.rdb_filename;
 
   bigkeys = other.bigkeys;
 
-  common::utils::freeifnotnull(auth);
-  auth = common::utils::strdupornull(other.auth);
-  common::utils::freeifnotnull(eval);
-  eval = common::utils::strdupornull(other.eval);
+  auth = other.auth;
+  eval = other.eval;
 
   last_cmd_type = other.last_cmd_type;
 
@@ -169,7 +164,7 @@ void redisConfig::copy(const redisConfig& other) {
 }
 
 void redisConfig::init() {
-  hostsocket = NULL;
+  hostsocket = std::string();
   repeat = 1;
   interval = 0;
   dbnum = 0;
@@ -186,20 +181,15 @@ void redisConfig::init() {
   intrinsic_latency_mode = 0;
   intrinsic_latency_duration = 0;
   cluster_reissue_command = 0;
-  pattern = NULL;
-  rdb_filename = NULL;
+  pattern = std::string();
+  rdb_filename = std::string();
   bigkeys = 0;
-  auth = NULL;
-  eval = NULL;
+  auth = std::string();
+  eval = std::string();
   last_cmd_type = -1;
 }
 
 redisConfig::~redisConfig() {
-  common::utils::freeifnotnull(hostsocket);
-  common::utils::freeifnotnull(pattern);
-  common::utils::freeifnotnull(rdb_filename);
-  common::utils::freeifnotnull(auth);
-  common::utils::freeifnotnull(eval);
 }
 }  // namespace fastonosql
 
@@ -208,7 +198,7 @@ namespace common {
 std::string convertToString(const fastonosql::redisConfig& conf) {
   std::vector<std::string> argv = conf.args();
 
-  if (conf.hostsocket) {
+  if (!conf.hostsocket.empty()) {
     argv.push_back("-s");
     argv.push_back(conf.hostsocket);
   }
@@ -225,7 +215,7 @@ std::string convertToString(const fastonosql::redisConfig& conf) {
     argv.push_back(convertToString(conf.dbnum));
   }
 
-  if (conf.auth) {
+  if (!conf.auth.empty()) {
     argv.push_back("-a");
     argv.push_back(conf.auth);
   }
@@ -247,7 +237,7 @@ std::string convertToString(const fastonosql::redisConfig& conf) {
   if (conf.scan_mode) {
     argv.push_back("--scan");
   }
-  if (conf.pattern) {
+  if (!conf.pattern.empty()) {
     argv.push_back("--pattern");
     argv.push_back(conf.pattern);
   }
@@ -265,7 +255,7 @@ std::string convertToString(const fastonosql::redisConfig& conf) {
     argv.push_back("--bigkeys");
   }
 
-  if (conf.eval) {
+  if (!conf.eval.empty()) {
     argv.push_back("--eval");
     argv.push_back(conf.eval);
   }

@@ -282,7 +282,12 @@ common::Error createConnection(const redisConfig& config,
     DCHECK(*context == NULL);
     redisContext *lcontext = NULL;
 
-    if (config.hostsocket == NULL) {
+    bool is_local = !config.hostsocket.empty();
+
+    if (is_local) {
+      const char *hostsocket = common::utils::c_strornull(config.hostsocket);
+      lcontext = redisConnectUnix(hostsocket);
+    } else {
       const char *host = common::utils::c_strornull(config.host.host);
       uint16_t port = config.host.port;
       const char *username = common::utils::c_strornull(sinfo.user_name);
@@ -297,13 +302,11 @@ common::Error createConnection(const redisConfig& config,
 
       lcontext = redisConnect(host, port, ssh_address, ssh_port, username, password,
                              publicKey, privateKey, passphrase, curM);
-    } else {
-      lcontext = redisConnectUnix(config.hostsocket);
     }
 
     if (!lcontext) {
       char buff[512] = {0};
-      if (!config.hostsocket) {
+      if (!is_local) {
         std::string host_str = common::convertToString(config.host);
         common::SNPrintf(buff, sizeof(buff), "Could not connect to Redis at %s : no context",
                          host_str);
@@ -316,7 +319,7 @@ common::Error createConnection(const redisConfig& config,
 
     if (lcontext->err) {
       char buff[512] = {0};
-      if (config.hostsocket) {
+      if (is_local) {
         common::SNPrintf(buff, sizeof(buff), "Could not connect to Redis at %s : %s",
                          config.hostsocket, lcontext->errstr);
       } else {
@@ -352,11 +355,12 @@ common::Error cliPrintContextError(redisContext* context) {
 }
 
 common::Error authContext(const redisConfig& config, redisContext* context) {
-  if (config.auth == NULL) {
+  const char* auth_str = common::utils::c_strornull(config.auth);
+  if (!auth_str) {
     return common::Error();
   }
 
-  redisReply *reply = static_cast<redisReply*>(redisCommand(context, "AUTH %s", config.auth));
+  redisReply *reply = static_cast<redisReply*>(redisCommand(context, "AUTH %s", auth_str));
   if (reply != NULL) {
     if (reply->type == REDIS_REPLY_ERROR) {
       char buff[512] = {0};
@@ -649,12 +653,12 @@ struct RedisDriver::pimpl {
 
     int fd = INVALID_DESCRIPTOR;
     /* Write to file. */
-    if (!strcmp(config_.rdb_filename,"-")) {
+    if (config_.rdb_filename == "-") {
       val = new common::ArrayValue;
       FastoObject* child = new FastoObject(cmd, val, config_.delimiter);
       cmd->addChildren(child);
     } else {
-      fd = open(config_.rdb_filename, O_CREAT | O_WRONLY, 0644);
+      fd = open(config_.rdb_filename.c_str(), O_CREAT | O_WRONLY, 0644);
       if (fd == INVALID_DESCRIPTOR) {
         char bufeEr[2048];
         common::SNPrintf(bufeEr, sizeof(bufeEr), "Error opening '%s': %s", config_.rdb_filename,
@@ -1208,13 +1212,14 @@ struct RedisDriver::pimpl {
 
     redisReply *reply;
     unsigned long long cur = 0;
+    const char* pattern = common::utils::c_strornull(config_.pattern);
 
     do {
-      if (config_.pattern)
+      if (pattern)
         reply = (redisReply*)redisCommand(context_, "SCAN %llu MATCH %s",
-                                          cur, config_.pattern);
+                                          cur, pattern);
       else
-        reply = (redisReply*)redisCommand(context_,"SCAN %llu",cur);
+        reply = (redisReply*)redisCommand(context_, "SCAN %llu", cur);
       if (reply == NULL) {
         return common::make_error_value("I/O error", common::ErrorValue::E_ERROR);
       } else if (reply->type == REDIS_REPLY_ERROR) {

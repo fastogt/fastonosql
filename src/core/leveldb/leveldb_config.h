@@ -32,7 +32,7 @@ struct leveldbConfig
   : public LocalConfig {
   leveldbConfig();
 
-  leveldb::Options options_;
+  leveldb::Options options;
 };
 
 }  // namespace fastonosql
