@@ -24,6 +24,8 @@
 #include <vector>
 #include <algorithm>
 
+#define MARKER "\r\n"
+
 namespace fastonosql {
 
 namespace {
@@ -61,7 +63,7 @@ std::vector<std::vector<Field> > DBTraits<LEVELDB>::infoFields() {
 }
 
 LeveldbServerInfo::Stats::Stats()
-  : compactions_level_(0), file_size_mb_(0), time_sec_(0), read_mb_(0), write_mb_(0) {
+  : compactions_level(0), file_size_mb(0), time_sec(0), read_mb(0), write_mb(0) {
 }
 
 LeveldbServerInfo::Stats::Stats(const std::string& common_text) {
@@ -69,21 +71,21 @@ LeveldbServerInfo::Stats::Stats(const std::string& common_text) {
   size_t pos = 0;
   size_t start = 0;
 
-  while ((pos = src.find(("\r\n"), start)) != std::string::npos) {
+  while ((pos = src.find(MARKER, start)) != std::string::npos) {
     std::string line = src.substr(start, pos-start);
     size_t delem = line.find_first_of(':');
     std::string field = line.substr(0, delem);
     std::string value = line.substr(delem + 1);
     if (field == LEVELDB_CAMPACTIONS_LEVEL_LABEL) {
-        compactions_level_ = common::convertFromString<uint32_t>(value);
+        compactions_level = common::convertFromString<uint32_t>(value);
     } else if (field == LEVELDB_FILE_SIZE_MB_LABEL) {
-        file_size_mb_ = common::convertFromString<uint32_t>(value);
+        file_size_mb = common::convertFromString<uint32_t>(value);
     } else if (field == LEVELDB_TIME_SEC_LABEL) {
-        time_sec_ = common::convertFromString<uint32_t>(value);
+        time_sec = common::convertFromString<uint32_t>(value);
     } else if (field == LEVELDB_READ_MB_LABEL) {
-        read_mb_ = common::convertFromString<uint32_t>(value);
+        read_mb = common::convertFromString<uint32_t>(value);
     } else if (field == LEVELDB_WRITE_MB_LABEL) {
-        write_mb_ = common::convertFromString<uint32_t>(value);
+        write_mb = common::convertFromString<uint32_t>(value);
     }
     start = pos + 2;
   }
@@ -92,15 +94,15 @@ LeveldbServerInfo::Stats::Stats(const std::string& common_text) {
 common::Value* LeveldbServerInfo::Stats::valueByIndex(unsigned char index) const {
   switch (index) {
   case 0:
-    return new common::FundamentalValue(compactions_level_);
+    return new common::FundamentalValue(compactions_level);
   case 1:
-    return new common::FundamentalValue(file_size_mb_);
+    return new common::FundamentalValue(file_size_mb);
   case 2:
-    return new common::FundamentalValue(time_sec_);
+    return new common::FundamentalValue(time_sec);
   case 3:
-    return new common::FundamentalValue(read_mb_);
+    return new common::FundamentalValue(read_mb);
   case 4:
-    return new common::FundamentalValue(write_mb_);
+    return new common::FundamentalValue(write_mb);
   default:
     NOTREACHED();
     break;
@@ -129,11 +131,11 @@ common::Value* LeveldbServerInfo::valueByIndexes(unsigned char property,
 }
 
 std::ostream& operator<<(std::ostream& out, const LeveldbServerInfo::Stats& value) {
-  return out << LEVELDB_CAMPACTIONS_LEVEL_LABEL":" << value.compactions_level_ << ("\r\n")
-              << LEVELDB_FILE_SIZE_MB_LABEL":" << value.file_size_mb_ << ("\r\n")
-              << LEVELDB_TIME_SEC_LABEL":" << value.time_sec_ << ("\r\n")
-              << LEVELDB_READ_MB_LABEL":" << value.read_mb_ << ("\r\n")
-              << LEVELDB_WRITE_MB_LABEL":" << value.write_mb_ << ("\r\n");
+  return out << LEVELDB_CAMPACTIONS_LEVEL_LABEL":" << value.compactions_level << MARKER
+              << LEVELDB_FILE_SIZE_MB_LABEL":" << value.file_size_mb << MARKER
+              << LEVELDB_TIME_SEC_LABEL":" << value.time_sec << MARKER
+              << LEVELDB_READ_MB_LABEL":" << value.read_mb << MARKER
+              << LEVELDB_WRITE_MB_LABEL":" << value.write_mb << MARKER;
 }
 
 std::ostream& operator<<(std::ostream& out, const LeveldbServerInfo& value) {
@@ -166,7 +168,7 @@ LeveldbServerInfo* makeLeveldbServerInfo(const std::string &content) {
 
 std::string LeveldbServerInfo::toString() const {
   std::stringstream str;
-  str << LEVELDB_STATS_LABEL"\r\n" << stats_;
+  str << LEVELDB_STATS_LABEL MARKER << stats_;
   return str.str();
 }
 

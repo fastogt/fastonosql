@@ -42,11 +42,11 @@ class LmdbServerInfo
       explicit Stats(const std::string& common_text);
       common::Value* valueByIndex(unsigned char index) const;
 
-      uint32_t compactions_level_;
-      uint32_t file_size_mb_;
-      uint32_t time_sec_;
-      uint32_t read_mb_;
-      uint32_t write_mb_;
+      uint32_t compactions_level;
+      uint32_t file_size_mb;
+      uint32_t time_sec;
+      uint32_t read_mb;
+      uint32_t write_mb;
   } stats_;
 
   LmdbServerInfo();

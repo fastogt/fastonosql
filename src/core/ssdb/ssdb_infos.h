@@ -41,11 +41,11 @@ class SsdbServerInfo
       explicit Common(const std::string& common_text);
       common::Value* valueByIndex(unsigned char index) const;
 
-      std::string version_;
-      uint32_t links_;
-      uint32_t total_calls_;
-      uint32_t dbsize_;
-      std::string binlogs_;
+      std::string version;
+      uint32_t links;
+      uint32_t total_calls;
+      uint32_t dbsize;
+      std::string binlogs;
   } common_;
 
   SsdbServerInfo();

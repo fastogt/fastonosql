@@ -214,14 +214,14 @@ struct UnqliteDriver::pimpl {
 
   unqliteConfig config_;
 
-  virtual common::Error execute_impl(FastoObject* out, int argc, char **argv) {
+  virtual common::Error execute_impl(int argc, char **argv, FastoObject* out) {
     if (strcasecmp(argv[0], "info") == 0) {
       if (argc > 2) {
         return common::make_error_value("Invalid info input argument", common::ErrorValue::E_ERROR);
       }
 
       UnqliteServerInfo::Stats statsout;
-      common::Error er = info(argc == 2 ? argv[1] : 0, statsout);
+      common::Error er = info(argc == 2 ? argv[1] : NULL, statsout);
       if (!er) {
         UnqliteServerInfo uinf(statsout);
         common::StringValue *val = common::Value::createStringValue(uinf.toString());
@@ -244,7 +244,8 @@ struct UnqliteDriver::pimpl {
       return er;
     } else if (strcasecmp(argv[0], "dbsize") == 0) {
       if (argc != 1) {
-        return common::make_error_value("Invalid dbsize input argument", common::ErrorValue::E_ERROR);
+        return common::make_error_value("Invalid dbsize input argument",
+                                        common::ErrorValue::E_ERROR);
       }
 
       size_t ret = 0;
@@ -262,7 +263,7 @@ struct UnqliteDriver::pimpl {
 
       common::Error er = put(argv[1], argv[2]);
       if (!er) {
-        common::StringValue *val = common::Value::createStringValue("STORED");
+        common::StringValue * val = common::Value::createStringValue("STORED");
         FastoObject* child = new FastoObject(out, val, config_.delimiter);
         out->addChildren(child);
       }
@@ -478,8 +479,8 @@ void UnqliteDriver::initImpl() {
 void UnqliteDriver::clearImpl() {
 }
 
-common::Error UnqliteDriver::executeImpl(FastoObject* out, int argc, char **argv) {
-  return impl_->execute_impl(out, argc, argv);
+common::Error UnqliteDriver::executeImpl(int argc, char **argv, FastoObject* out) {
+  return impl_->execute_impl(argc, argv, out);
 }
 
 common::Error UnqliteDriver::serverInfo(ServerInfo **info) {

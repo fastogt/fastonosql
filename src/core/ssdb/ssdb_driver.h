@@ -172,14 +172,12 @@ static const CommandInfo ssdbCommands[] = {
   CommandInfo("QCLEAR", "<name>",
               "Clear the queue.",
               UNDEFINED_SINCE, UNDEFINED_EXAMPLE_STR, 1, 0),
-  //======= extended =======//
-  CommandInfo("INTERRUPT", "-",
+  ExtendedCommandInfo("INTERRUPT", "-",
               "Command execution interrupt",
               UNDEFINED_SINCE, UNDEFINED_EXAMPLE_STR, 0, 0),
-  CommandInfo("DBSIZE", "-",
+  ExtendedCommandInfo("DBSIZE", "-",
               "Return the number of keys in the selected database",
               UNDEFINED_SINCE, UNDEFINED_EXAMPLE_STR, 0, 0)
-  //======= extended =======//
 };
 
 common::Error testConnection(SsdbConnectionSettings* settings);
@@ -202,7 +200,7 @@ class SsdbDriver
   virtual void initImpl();
   virtual void clearImpl();
 
-  virtual common::Error executeImpl(FastoObject* out, int argc, char **argv);
+  virtual common::Error executeImpl(int argc, char **argv, FastoObject* out);
   virtual common::Error serverInfo(ServerInfo** info);
   virtual common::Error serverDiscoveryInfo(ServerInfo** sinfo,
                                             ServerDiscoveryInfo** dinfo, DataBaseInfo** dbinfo);

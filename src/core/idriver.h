@@ -130,7 +130,7 @@ class IDriver
   common::Error execute(FastoObjectCommand* cmd) WARN_UNUSED_RESULT;
 
  private:
-  virtual common::Error executeImpl(FastoObject* out, int argc, char **argv) = 0;
+  virtual common::Error executeImpl(int argc, char **argv, FastoObject* out) = 0;
 
   // handle info events
   void handleLoadServerInfoHistoryEvent(events::ServerInfoHistoryRequestEvent *ev);

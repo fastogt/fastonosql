@@ -142,7 +142,7 @@ common::Error IDriver::execute(FastoObjectCommand* cmd) {
         if (strcasecmp(command, "interrupt") == 0) {
             interrupt();
         } else {
-            er = executeImpl(cmd, argc, argv);
+            er = executeImpl(argc, argv, cmd);
         }
     }
     sdsfreesplitres(argv,argc);

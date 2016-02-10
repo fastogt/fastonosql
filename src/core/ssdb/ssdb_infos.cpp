@@ -24,6 +24,8 @@
 #include <algorithm>
 #include <string>
 
+#define MARKER "\r\n"
+
 namespace fastonosql {
 namespace {
 
@@ -70,21 +72,21 @@ SsdbServerInfo::Common::Common(const std::string& common_text) {
   size_t pos = 0;
   size_t start = 0;
 
-  while ((pos = src.find(("\r\n"), start)) != std::string::npos) {
+  while ((pos = src.find(MARKER, start)) != std::string::npos) {
     std::string line = src.substr(start, pos-start);
     size_t delem = line.find_first_of(':');
     std::string field = line.substr(0, delem);
     std::string value = line.substr(delem + 1);
     if (field == SSDB_VERSION_LABEL) {
-      version_ = value;
+      version = value;
     } else if (field == SSDB_LINKS_LABEL) {
-      links_ = common::convertFromString<uint32_t>(value);
+      links = common::convertFromString<uint32_t>(value);
     } else if (field == SSDB_TOTAL_CALLS_LABEL) {
-      total_calls_ = common::convertFromString<uint32_t>(value);
+      total_calls = common::convertFromString<uint32_t>(value);
     } else if (field == SSDB_DBSIZE_LABEL) {
-        dbsize_ = common::convertFromString<uint32_t>(value);
+        dbsize = common::convertFromString<uint32_t>(value);
     } else if (field == SSDB_BINLOGS_LABEL) {
-        binlogs_ = value;
+        binlogs = value;
     }
     start = pos + 2;
   }
@@ -93,15 +95,15 @@ SsdbServerInfo::Common::Common(const std::string& common_text) {
 common::Value* SsdbServerInfo::Common::valueByIndex(unsigned char index) const {
   switch (index) {
   case 0:
-      return new common::StringValue(version_);
+      return new common::StringValue(version);
   case 1:
-      return new common::FundamentalValue(links_);
+      return new common::FundamentalValue(links);
   case 2:
-      return new common::FundamentalValue(total_calls_);
+      return new common::FundamentalValue(total_calls);
   case 3:
-      return new common::FundamentalValue(dbsize_);
+      return new common::FundamentalValue(dbsize);
   case 4:
-      return new common::StringValue(binlogs_);
+      return new common::StringValue(binlogs);
   default:
       NOTREACHED();
       break;
@@ -130,11 +132,11 @@ common::Value* SsdbServerInfo::valueByIndexes(unsigned char property, unsigned c
 }
 
 std::ostream& operator<<(std::ostream& out, const SsdbServerInfo::Common& value) {
-  return out << SSDB_VERSION_LABEL":" << value.version_ << ("\r\n")
-             << SSDB_LINKS_LABEL":" << value.links_ << ("\r\n")
-             << SSDB_TOTAL_CALLS_LABEL":" << value.total_calls_ << ("\r\n")
-             << SSDB_DBSIZE_LABEL":" << value.dbsize_ << ("\r\n")
-             << SSDB_BINLOGS_LABEL":" << value.binlogs_ << ("\r\n");
+  return out << SSDB_VERSION_LABEL":" << value.version << MARKER
+             << SSDB_LINKS_LABEL":" << value.links << MARKER
+             << SSDB_TOTAL_CALLS_LABEL":" << value.total_calls << MARKER
+             << SSDB_DBSIZE_LABEL":" << value.dbsize << MARKER
+             << SSDB_BINLOGS_LABEL":" << value.binlogs << MARKER;
 }
 
 std::ostream& operator<<(std::ostream& out, const SsdbServerInfo& value) {
@@ -166,12 +168,12 @@ SsdbServerInfo* makeSsdbServerInfo(const std::string &content) {
 
 std::string SsdbServerInfo::toString() const {
   std::stringstream str;
-  str << SSDB_COMMON_LABEL"\r\n" << common_;
+  str << SSDB_COMMON_LABEL MARKER << common_;
   return str.str();
 }
 
 uint32_t SsdbServerInfo::version() const {
-  return common::convertVersionNumberFromString(common_.version_);
+  return common::convertVersionNumberFromString(common_.version);
 }
 
 SsdbServerInfo* makeSsdbServerInfo(FastoObject* root) {

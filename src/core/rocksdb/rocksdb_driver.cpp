@@ -146,19 +146,19 @@ struct RocksdbDriver::pimpl {
       while (p2) {
         switch (pos++) {
           case 0:
-            statsout.compactions_level_ = atoi(p2);
+            statsout.compactions_level = atoi(p2);
             break;
           case 1:
-            statsout.file_size_mb_ = atoi(p2);
+            statsout.file_size_mb = atoi(p2);
             break;
           case 2:
-            statsout.time_sec_ = atoi(p2);
+            statsout.time_sec = atoi(p2);
             break;
           case 3:
-            statsout.read_mb_ = atoi(p2);
+            statsout.read_mb = atoi(p2);
             break;
           case 4:
-            statsout.write_mb_ = atoi(p2);
+            statsout.write_mb = atoi(p2);
             break;
           default:
             break;
@@ -205,7 +205,7 @@ struct RocksdbDriver::pimpl {
     return "default";
   }
 
-  common::Error execute_impl(FastoObject* out, int argc, char **argv) {
+  common::Error execute_impl(int argc, char **argv, FastoObject* out) {
     if (strcasecmp(argv[0], "info") == 0) {
       if (argc > 2) {
         return common::make_error_value("Invalid info input argument", common::ErrorValue::E_ERROR);
@@ -523,8 +523,8 @@ void RocksdbDriver::initImpl() {
 void RocksdbDriver::clearImpl() {
 }
 
-common::Error RocksdbDriver::executeImpl(FastoObject* out, int argc, char **argv) {
-  return impl_->execute_impl(out, argc, argv);
+common::Error RocksdbDriver::executeImpl(int argc, char **argv, FastoObject* out) {
+  return impl_->execute_impl(argc, argv, out);
 }
 
 common::Error RocksdbDriver::serverInfo(ServerInfo **info) {

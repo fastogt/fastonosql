@@ -44,7 +44,7 @@ static const CommandInfo memcachedCommands[] = {
   CommandInfo("INCR", "<key> <value>",
               "Increment value associated with key in Memcached, item must exist, increment command will not create it.\n"
               "The limit of increment is the 64 bit mark.", UNDEFINED_SINCE, UNDEFINED_EXAMPLE_STR, 2, 0),
-  CommandInfo("INTERRUPT", "-",
+  ExtendedCommandInfo("INTERRUPT", "-",
               "Command execution interrupt",
               UNDEFINED_SINCE, UNDEFINED_EXAMPLE_STR, 0, 0),
   CommandInfo("DECR", "<key> <value>",
@@ -85,7 +85,7 @@ class MemcachedDriver
   virtual void initImpl();
   virtual void clearImpl();
 
-  virtual common::Error executeImpl(FastoObject* out, int argc, char **argv);
+  virtual common::Error executeImpl(int argc, char **argv, FastoObject* out);
   virtual common::Error serverInfo(ServerInfo** info);
   virtual common::Error serverDiscoveryInfo(ServerInfo** sinfo, ServerDiscoveryInfo** dinfo,
                                             DataBaseInfo** dbinfo);

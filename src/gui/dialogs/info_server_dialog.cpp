@@ -403,28 +403,28 @@ void InfoServerDialog::updateText(const RedisServerInfo& serv) {
 void InfoServerDialog::updateText(const MemcachedServerInfo& serv) {
   MemcachedServerInfo::Common com = serv.common_;
 
-  QString textServ = memcachedTextServerTemplate.arg(com.pid_)
-          .arg(com.uptime_)
-          .arg(com.time_)
-          .arg(common::convertFromString<QString>(com.version_))
-          .arg(com.pointer_size_)
-          .arg(com.rusage_user_)
-          .arg(com.rusage_system_)
-          .arg(com.curr_items_)
-          .arg(com.total_items_)
-          .arg(com.bytes_)
-          .arg(com.curr_connections_)
-          .arg(com.total_connections_)
-          .arg(com.connection_structures_)
-          .arg(com.cmd_get_)
-          .arg(com.cmd_set_)
-          .arg(com.get_hits_)
-          .arg(com.get_misses_)
-          .arg(com.evictions_)
-          .arg(com.bytes_read_)
-          .arg(com.bytes_written_)
-          .arg(com.limit_maxbytes_)
-          .arg(com.threads_);
+  QString textServ = memcachedTextServerTemplate.arg(com.pid)
+          .arg(com.uptime)
+          .arg(com.time)
+          .arg(common::convertFromString<QString>(com.version))
+          .arg(com.pointer_size)
+          .arg(com.rusage_user)
+          .arg(com.rusage_system)
+          .arg(com.curr_items)
+          .arg(com.total_items)
+          .arg(com.bytes)
+          .arg(com.curr_connections)
+          .arg(com.total_connections)
+          .arg(com.connection_structures)
+          .arg(com.cmd_get)
+          .arg(com.cmd_set)
+          .arg(com.get_hits)
+          .arg(com.get_misses)
+          .arg(com.evictions)
+          .arg(com.bytes_read)
+          .arg(com.bytes_written)
+          .arg(com.limit_maxbytes)
+          .arg(com.threads);
 
   // QString textHard = memcachedTextHardwareTemplate;
   serverTextInfo_->setText(textServ);
@@ -435,11 +435,11 @@ void InfoServerDialog::updateText(const MemcachedServerInfo& serv) {
 #ifdef BUILD_WITH_SSDB
 void InfoServerDialog::updateText(const SsdbServerInfo& serv) {
   SsdbServerInfo::Common com = serv.common_;
-  QString textServ = ssdbTextServerTemplate.arg(common::convertFromString<QString>(com.version_))
-          .arg(com.links_)
-          .arg(com.total_calls_)
-          .arg(com.dbsize_)
-          .arg(common::convertFromString<QString>(com.binlogs_));
+  QString textServ = ssdbTextServerTemplate.arg(common::convertFromString<QString>(com.version))
+          .arg(com.links)
+          .arg(com.total_calls)
+          .arg(com.dbsize)
+          .arg(common::convertFromString<QString>(com.binlogs));
 
   serverTextInfo_->setText(textServ);
 }
@@ -448,11 +448,11 @@ void InfoServerDialog::updateText(const SsdbServerInfo& serv) {
 #ifdef BUILD_WITH_LEVELDB
 void InfoServerDialog::updateText(const LeveldbServerInfo& serv) {
   LeveldbServerInfo::Stats stats = serv.stats_;
-  QString textServ = leveldbTextServerTemplate.arg(stats.compactions_level_)
-          .arg(stats.file_size_mb_)
-          .arg(stats.time_sec_)
-          .arg(stats.read_mb_)
-          .arg(stats.write_mb_);
+  QString textServ = leveldbTextServerTemplate.arg(stats.compactions_level)
+          .arg(stats.file_size_mb)
+          .arg(stats.time_sec)
+          .arg(stats.read_mb)
+          .arg(stats.write_mb);
 
   serverTextInfo_->setText(textServ);
 }
@@ -460,11 +460,11 @@ void InfoServerDialog::updateText(const LeveldbServerInfo& serv) {
 #ifdef BUILD_WITH_ROCKSDB
 void InfoServerDialog::updateText(const RocksdbServerInfo& serv) {
   RocksdbServerInfo::Stats stats = serv.stats_;
-  QString textServ = leveldbTextServerTemplate.arg(stats.compactions_level_)
-          .arg(stats.file_size_mb_)
-          .arg(stats.time_sec_)
-          .arg(stats.read_mb_)
-          .arg(stats.write_mb_);
+  QString textServ = leveldbTextServerTemplate.arg(stats.compactions_level)
+          .arg(stats.file_size_mb)
+          .arg(stats.time_sec)
+          .arg(stats.read_mb)
+          .arg(stats.write_mb);
 
   serverTextInfo_->setText(textServ);
 }
@@ -472,11 +472,11 @@ void InfoServerDialog::updateText(const RocksdbServerInfo& serv) {
 #ifdef BUILD_WITH_UNQLITE
 void InfoServerDialog::updateText(const UnqliteServerInfo& serv) {
   UnqliteServerInfo::Stats stats = serv.stats_;
-  QString textServ = leveldbTextServerTemplate.arg(stats.compactions_level_)
-          .arg(stats.file_size_mb_)
-          .arg(stats.time_sec_)
-          .arg(stats.read_mb_)
-          .arg(stats.write_mb_);
+  QString textServ = leveldbTextServerTemplate.arg(stats.compactions_level)
+          .arg(stats.file_size_mb)
+          .arg(stats.time_sec)
+          .arg(stats.read_mb)
+          .arg(stats.write_mb);
 
   serverTextInfo_->setText(textServ);
 }
@@ -484,11 +484,11 @@ void InfoServerDialog::updateText(const UnqliteServerInfo& serv) {
 #ifdef BUILD_WITH_LMDB
 void InfoServerDialog::updateText(const LmdbServerInfo& serv) {
   LmdbServerInfo::Stats stats = serv.stats_;
-  QString textServ = leveldbTextServerTemplate.arg(stats.compactions_level_)
-          .arg(stats.file_size_mb_)
-          .arg(stats.time_sec_)
-          .arg(stats.read_mb_)
-          .arg(stats.write_mb_);
+  QString textServ = leveldbTextServerTemplate.arg(stats.compactions_level)
+          .arg(stats.file_size_mb)
+          .arg(stats.time_sec)
+          .arg(stats.read_mb)
+          .arg(stats.write_mb);
 
   serverTextInfo_->setText(textServ);
 }

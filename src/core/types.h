@@ -55,6 +55,8 @@ struct CommandInfo {
   const uint8_t optional_arguments_count;
 };
 
+typedef CommandInfo ExtendedCommandInfo;
+
 std::string convertVersionNumberToReadableString(uint32_t version);
 
 struct NKey {

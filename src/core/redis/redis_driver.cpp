@@ -1593,7 +1593,7 @@ struct RedisDriver::pimpl {
     return er;
   }
 
-  common::Error execute_impl(FastoObject* out, int argc, char **argv) WARN_UNUSED_RESULT {
+  common::Error execute_impl(int argc, char **argv, FastoObject* out) WARN_UNUSED_RESULT {
     DCHECK(out);
     if (!out) {
       return common::make_error_value("Invalid input argument", common::ErrorValue::E_ERROR);
@@ -1782,8 +1782,8 @@ void RedisDriver::initImpl() {
 void RedisDriver::clearImpl() {
 }
 
-common::Error RedisDriver::executeImpl(FastoObject* out, int argc, char **argv) {
-  return impl_->execute_impl(out, argc, argv);
+common::Error RedisDriver::executeImpl(int argc, char **argv, FastoObject* out) {
+  return impl_->execute_impl(argc, argv, out);
 }
 
 common::Error RedisDriver::serverInfo(ServerInfo** info) {

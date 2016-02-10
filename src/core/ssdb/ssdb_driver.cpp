@@ -141,17 +141,17 @@ struct SsdbDriver::pimpl {
       return common::make_error_value(buff, common::ErrorValue::E_ERROR);
     }
 
-    for (int i = 0; i < ret.size(); i += 2) {
+    for (size_t i = 0; i < ret.size(); i += 2) {
       if (ret[i] == SSDB_VERSION_LABEL) {
-        statsout.version_ = ret[i + 1];
+        statsout.version = ret[i + 1];
       } else if (ret[i] == SSDB_LINKS_LABEL) {
-        statsout.links_ = common::convertFromString<uint32_t>(ret[i + 1]);
+        statsout.links = common::convertFromString<uint32_t>(ret[i + 1]);
       } else if (ret[i] == SSDB_TOTAL_CALLS_LABEL) {
-        statsout.total_calls_ = common::convertFromString<uint32_t>(ret[i + 1]);
+        statsout.total_calls = common::convertFromString<uint32_t>(ret[i + 1]);
       } else if (ret[i] == SSDB_DBSIZE_LABEL) {
-        statsout.dbsize_ = common::convertFromString<uint32_t>(ret[i + 1]);
+        statsout.dbsize = common::convertFromString<uint32_t>(ret[i + 1]);
       } else if (ret[i] == SSDB_BINLOGS_LABEL) {
-        statsout.binlogs_ = ret[i + 1];
+        statsout.binlogs = ret[i + 1];
       }
     }
 
@@ -178,7 +178,7 @@ struct SsdbDriver::pimpl {
   ssdbConfig config_;
   SSHInfo sinfo_;
 
-  common::Error execute_impl(FastoObject* out, int argc, char **argv) {
+  common::Error execute_impl(int argc, char **argv, FastoObject* out) {
     if (strcasecmp(argv[0], "get") == 0) {
       if (argc != 2) {
         return common::make_error_value("Invalid get input argument", common::ErrorValue::E_ERROR);
@@ -1468,8 +1468,8 @@ void SsdbDriver::initImpl() {
 void SsdbDriver::clearImpl() {
 }
 
-common::Error SsdbDriver::executeImpl(FastoObject* out, int argc, char **argv) {
-  return impl_->execute_impl(out, argc, argv);
+common::Error SsdbDriver::executeImpl(int argc, char **argv, FastoObject* out) {
+  return impl_->execute_impl(argc, argv, out);
 }
 
 common::Error SsdbDriver::serverInfo(ServerInfo **info) {

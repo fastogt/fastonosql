@@ -271,7 +271,7 @@ struct LmdbDriver::pimpl {
 
   lmdbConfig config_;
 
-  virtual common::Error execute_impl(FastoObject* out, int argc, char **argv) {
+  virtual common::Error execute_impl(int argc, char **argv, FastoObject* out) {
     if (strcasecmp(argv[0], "info") == 0) {
       if (argc > 2) {
         return common::make_error_value("Invalid info input argument", common::ErrorValue::E_ERROR);
@@ -574,8 +574,8 @@ void LmdbDriver::initImpl() {
 void LmdbDriver::clearImpl() {
 }
 
-common::Error LmdbDriver::executeImpl(FastoObject* out, int argc, char **argv) {
-  return impl_->execute_impl(out, argc, argv);
+common::Error LmdbDriver::executeImpl(int argc, char **argv, FastoObject* out) {
+  return impl_->execute_impl(argc, argv, out);
 }
 
 common::Error LmdbDriver::serverInfo(ServerInfo **info) {

@@ -172,28 +172,28 @@ struct MemcachedDriver::pimpl {
       return common::make_error_value(buff, common::ErrorValue::E_ERROR);
     }
 
-    statsout.pid_ = st->pid;
-    statsout.uptime_ = st->uptime;
-    statsout.time_ = st->time;
-    statsout.version_ = st->version;
-    statsout.pointer_size_ = st->pointer_size;
-    statsout.rusage_user_ = st->rusage_user_seconds;
-    statsout.rusage_system_ = st->rusage_system_seconds;
-    statsout.curr_items_ = st->curr_items;
-    statsout.total_items_ = st->total_items;
-    statsout.bytes_ = st->bytes;
-    statsout.curr_connections_ = st->curr_connections;
-    statsout.total_connections_ = st->total_connections;
-    statsout.connection_structures_ = st->connection_structures;
-    statsout.cmd_get_ = st->cmd_get;
-    statsout.cmd_set_ = st->cmd_set;
-    statsout.get_hits_ = st->get_hits;
-    statsout.get_misses_ = st->get_misses;
-    statsout.evictions_ = st->evictions;
-    statsout.bytes_read_ = st->bytes_read;
-    statsout.bytes_written_ = st->bytes_written;
-    statsout.limit_maxbytes_ = st->limit_maxbytes;
-    statsout.threads_ = st->threads;
+    statsout.pid = st->pid;
+    statsout.uptime = st->uptime;
+    statsout.time = st->time;
+    statsout.version = st->version;
+    statsout.pointer_size = st->pointer_size;
+    statsout.rusage_user = st->rusage_user_seconds;
+    statsout.rusage_system = st->rusage_system_seconds;
+    statsout.curr_items = st->curr_items;
+    statsout.total_items = st->total_items;
+    statsout.bytes = st->bytes;
+    statsout.curr_connections = st->curr_connections;
+    statsout.total_connections = st->total_connections;
+    statsout.connection_structures = st->connection_structures;
+    statsout.cmd_get = st->cmd_get;
+    statsout.cmd_set = st->cmd_set;
+    statsout.get_hits = st->get_hits;
+    statsout.get_misses = st->get_misses;
+    statsout.evictions = st->evictions;
+    statsout.bytes_read = st->bytes_read;
+    statsout.bytes_written = st->bytes_written;
+    statsout.limit_maxbytes = st->limit_maxbytes;
+    statsout.threads = st->threads;
 
     memcached_stat_free(NULL, st);
     return common::Error();
@@ -206,7 +206,7 @@ struct MemcachedDriver::pimpl {
   memcachedConfig config_;
   SSHInfo sinfo_;
 
-  common::Error execute_impl(FastoObject* out, int argc, char **argv) {
+  common::Error execute_impl(int argc, char **argv, FastoObject* out) {
     if (strcasecmp(argv[0], "get") == 0) {
       if (argc != 2) {
         return common::make_error_value("Invalid get input argument", common::ErrorValue::E_ERROR);
@@ -592,8 +592,8 @@ void MemcachedDriver::initImpl() {
 void MemcachedDriver::clearImpl() {
 }
 
-common::Error MemcachedDriver::executeImpl(FastoObject* out, int argc, char **argv) {
-  return impl_->execute_impl(out, argc, argv);
+common::Error MemcachedDriver::executeImpl(int argc, char **argv, FastoObject* out) {
+  return impl_->execute_impl(argc, argv, out);
 }
 
 common::Error MemcachedDriver::serverInfo(ServerInfo **info) {
