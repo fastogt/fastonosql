@@ -26,7 +26,7 @@ MemcachedServer::MemcachedServer(IDriverSPtr drv, bool isSuperServer)
   : IServer(drv, isSuperServer) {
 }
 
-IDatabaseSPtr MemcachedServer::createDatabase(DataBaseInfoSPtr info) {
+IDatabaseSPtr MemcachedServer::createDatabase(IDataBaseInfoSPtr info) {
   return IDatabaseSPtr(new MemcachedDatabase(shared_from_this(), info));
 }
 

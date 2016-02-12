@@ -1253,7 +1253,7 @@ struct RedisDriver::pimpl {
     return common::Error();
   }
 
-  common::Error cliSelect(int num, DataBaseInfo **info) WARN_UNUSED_RESULT {
+  common::Error cliSelect(int num, IDataBaseInfo **info) WARN_UNUSED_RESULT {
     redisReply *reply = static_cast<redisReply*>(redisCommand(context_, "SELECT %d", num));
     if (reply != NULL) {
       long long sz = 0;
@@ -1267,7 +1267,7 @@ struct RedisDriver::pimpl {
   }
 
   common::Error cliSelect() WARN_UNUSED_RESULT {
-    DataBaseInfo *info = NULL;
+    IDataBaseInfo *info = NULL;
 
     common::Error er = cliSelect(config_.dbnum, &info);
     if (!er) {
@@ -1807,14 +1807,14 @@ common::Error RedisDriver::serverInfo(ServerInfo** info) {
 }
 
 common::Error RedisDriver::serverDiscoveryInfo(ServerInfo **sinfo,
-                                               ServerDiscoveryInfo **dinfo, DataBaseInfo **dbinfo) {
+                                               ServerDiscoveryInfo **dinfo, IDataBaseInfo **dbinfo) {
   ServerInfo *lsinfo = NULL;
   common::Error er = serverInfo(&lsinfo);
   if (er && er->isError()) {
     return er;
   }
 
-  DataBaseInfo* ldbinfo = NULL;
+  IDataBaseInfo* ldbinfo = NULL;
   er = currentDataBaseInfo(&ldbinfo);
   if (er && er->isError()) {
     delete lsinfo;
@@ -1855,7 +1855,7 @@ common::Error RedisDriver::serverDiscoveryInfo(ServerInfo **sinfo,
   return er;
 }
 
-common::Error RedisDriver::currentDataBaseInfo(DataBaseInfo** info) {
+common::Error RedisDriver::currentDataBaseInfo(IDataBaseInfo** info) {
   common::Error er = impl_->cliSelect(impl_->config_.dbnum, info);
   return er;
 }
@@ -2272,7 +2272,7 @@ void RedisDriver::handleLoadDatabaseInfosEvent(events::LoadDatabasesInfoRequestE
         goto done;
       }
 
-      DataBaseInfoSPtr cdbInf = currentDatabaseInfo();
+      IDataBaseInfoSPtr cdbInf = currentDatabaseInfo();
       if (ar->size() == 2) {
         std::string scountDb;
         bool isok = ar->getString(1, &scountDb);
@@ -2280,7 +2280,7 @@ void RedisDriver::handleLoadDatabaseInfosEvent(events::LoadDatabasesInfoRequestE
             int countDb = common::convertFromString<int>(scountDb);
             if (countDb > 0) {
               for (size_t i = 0; i < countDb; ++i) {
-                DataBaseInfoSPtr dbInf(new RedisDataBaseInfo(common::convertToString(i), false, 0));
+                IDataBaseInfoSPtr dbInf(new RedisDataBaseInfo(common::convertToString(i), false, 0));
                 if (dbInf->name() == cdbInf->name()) {
                   res.databases.push_back(cdbInf);
                 } else {

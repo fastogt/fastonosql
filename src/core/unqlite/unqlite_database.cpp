@@ -22,7 +22,7 @@
 
 namespace fastonosql {
 
-UnqliteDatabase::UnqliteDatabase(IServerSPtr server, DataBaseInfoSPtr info)
+UnqliteDatabase::UnqliteDatabase(IServerSPtr server, IDataBaseInfoSPtr info)
   : IDatabase(server, info) {
   DCHECK(server);
   DCHECK(info);

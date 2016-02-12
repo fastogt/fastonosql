@@ -59,12 +59,12 @@ class IServer
   QString name() const;
   IDriverSPtr driver() const;
 
-  DataBaseInfoSPtr currentDatabaseInfo() const;
+  IDataBaseInfoSPtr currentDatabaseInfo() const;
   ServerDiscoveryInfoSPtr discoveryInfo() const;
   ServerInfoSPtr serverInfo() const;
 
   QString outputDelemitr() const;
-  IDatabaseSPtr findDatabaseByInfo(DataBaseInfoSPtr inf) const;
+  IDatabaseSPtr findDatabaseByInfo(IDataBaseInfoSPtr inf) const;
   IDatabaseSPtr findDatabaseByName(const std::string& name) const;
 
   virtual void syncWithServer(IServer* src);
@@ -160,7 +160,7 @@ class IServer
  protected:
   virtual void customEvent(QEvent* event);
 
-  virtual IDatabaseSPtr createDatabase(DataBaseInfoSPtr info) = 0;
+  virtual IDatabaseSPtr createDatabase(IDataBaseInfoSPtr info) = 0;
   void notify(QEvent* ev);
 
   // handle server events

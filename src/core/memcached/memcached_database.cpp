@@ -22,7 +22,7 @@
 
 namespace fastonosql {
 
-MemcachedDatabase::MemcachedDatabase(IServerSPtr server, DataBaseInfoSPtr info)
+MemcachedDatabase::MemcachedDatabase(IServerSPtr server, IDataBaseInfoSPtr info)
   : IDatabase(server, info) {
   DCHECK(server);
   DCHECK(info);

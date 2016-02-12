@@ -674,7 +674,7 @@ void ExplorerTreeView::finishLoadDatabases(const events_info::LoadDatabasesInfoR
   events_info::LoadDatabasesInfoResponce::database_info_cont_type dbs = res.databases;
 
   for (int i = 0; i < dbs.size(); ++i) {
-    DataBaseInfoSPtr db = dbs[i];
+    IDataBaseInfoSPtr db = dbs[i];
     mod->addDatabase(serv, db);
   }
 }
@@ -694,7 +694,7 @@ void ExplorerTreeView::finishSetDefaultDatabase(const events_info::SetDefaultDat
     return;
   }
 
-  DataBaseInfoSPtr db = res.inf;
+  IDataBaseInfoSPtr db = res.inf;
   ExplorerTreeModel *mod = qobject_cast<ExplorerTreeModel*>(model());
   DCHECK(mod);
   if (!mod) {

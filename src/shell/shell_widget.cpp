@@ -359,7 +359,7 @@ void BaseShellWidget::finishSetDefaultDatabase(const events_info::SetDefaultData
     return;
   }
 
-  DataBaseInfoSPtr db = res.inf;
+  IDataBaseInfoSPtr db = res.inf;
   updateDefaultDatabase(db);
 }
 
@@ -390,7 +390,7 @@ void BaseShellWidget::finishLoadDiscoveryInfo(const events_info::DiscoveryInfoRe
   updateDefaultDatabase(res.dbinfo);
 }
 
-void BaseShellWidget::updateDefaultDatabase(DataBaseInfoSPtr dbs) {
+void BaseShellWidget::updateDefaultDatabase(IDataBaseInfoSPtr dbs) {
   if (dbs) {
     std::string name = dbs->name();
     dbName_->setText(common::convertFromString<QString>(name));

@@ -24,9 +24,8 @@ namespace fastonosql {
 
 class LeveldbDatabase
   : public IDatabase {
-  friend class LeveldbServer;
- private:
-  LeveldbDatabase(IServerSPtr server, DataBaseInfoSPtr info);
+ public:
+  LeveldbDatabase(IServerSPtr server, IDataBaseInfoSPtr info);
 };
 
 }  // namespace fastonosql

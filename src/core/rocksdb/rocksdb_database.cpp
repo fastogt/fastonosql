@@ -22,7 +22,7 @@
 
 namespace fastonosql {
 
-RocksdbDatabase::RocksdbDatabase(IServerSPtr server, DataBaseInfoSPtr info)
+RocksdbDatabase::RocksdbDatabase(IServerSPtr server, IDataBaseInfoSPtr info)
   : IDatabase(server, info) {
   DCHECK(server);
   DCHECK(info);

@@ -609,7 +609,7 @@ common::Error MemcachedDriver::serverInfo(ServerInfo **info) {
 
 common::Error MemcachedDriver::serverDiscoveryInfo(ServerInfo **sinfo,
                                                    ServerDiscoveryInfo** dinfo,
-                                                   DataBaseInfo** dbinfo) {
+                                                   IDataBaseInfo** dbinfo) {
   ServerInfo *lsinfo = NULL;
   common::Error er = serverInfo(&lsinfo);
   if (er && er->isError()) {
@@ -628,7 +628,7 @@ common::Error MemcachedDriver::serverDiscoveryInfo(ServerInfo **sinfo,
     }
   }
 
-  DataBaseInfo* ldbinfo = NULL;
+  IDataBaseInfo* ldbinfo = NULL;
   er = currentDataBaseInfo(&ldbinfo);
   if (er && er->isError()) {
     delete lsinfo;
@@ -640,7 +640,7 @@ common::Error MemcachedDriver::serverDiscoveryInfo(ServerInfo **sinfo,
   return er;
 }
 
-common::Error MemcachedDriver::currentDataBaseInfo(DataBaseInfo** info) {
+common::Error MemcachedDriver::currentDataBaseInfo(IDataBaseInfo** info) {
   *info = new MemcachedDataBaseInfo("0", true, 0);
   return common::Error();
 }

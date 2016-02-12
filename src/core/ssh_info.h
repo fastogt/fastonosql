@@ -23,7 +23,7 @@
 #include <common/net/types.h>
 
 #define DEFAULT_SSH_PORT 22
-#define DEFAULT_SSH_HOST ""
+#define DEFAULT_SSH_HOST std::string()
 
 namespace fastonosql {
 
@@ -44,8 +44,6 @@ struct SSHInfo {
   bool isValid() const;
   SupportedAuthenticationMetods authMethod() const;
 
-  std::string toString() const;
-
   common::net::hostAndPort host;
   std::string user_name;
   std::string password;
@@ -63,3 +61,7 @@ inline bool operator == (const SSHInfo& r, const SSHInfo& l) {
 }
 
 }  // namespace fastonosql
+
+namespace common {
+  std::string convertToString(const fastonosql::SSHInfo& ssh_info);
+}  // namespace common

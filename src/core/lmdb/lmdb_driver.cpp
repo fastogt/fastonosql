@@ -590,7 +590,7 @@ common::Error LmdbDriver::serverInfo(ServerInfo **info) {
 }
 
 common::Error LmdbDriver::serverDiscoveryInfo(ServerInfo **sinfo, ServerDiscoveryInfo **dinfo,
-                                              DataBaseInfo** dbinfo) {
+                                              IDataBaseInfo** dbinfo) {
   ServerInfo *lsinfo = NULL;
   common::Error er = serverInfo(&lsinfo);
   if (er && er->isError()) {
@@ -609,7 +609,7 @@ common::Error LmdbDriver::serverDiscoveryInfo(ServerInfo **sinfo, ServerDiscover
     }
   }
 
-  DataBaseInfo* ldbinfo = NULL;
+  IDataBaseInfo* ldbinfo = NULL;
   er = currentDataBaseInfo(&ldbinfo);
   if (er && er->isError()) {
     delete lsinfo;
@@ -621,7 +621,7 @@ common::Error LmdbDriver::serverDiscoveryInfo(ServerInfo **sinfo, ServerDiscover
   return er;
 }
 
-common::Error LmdbDriver::currentDataBaseInfo(DataBaseInfo** info) {
+common::Error LmdbDriver::currentDataBaseInfo(IDataBaseInfo** info) {
   size_t size = 0;
   impl_->dbsize(size);
   *info = new LmdbDataBaseInfo(common::convertToString(impl_->curDb()), true, size);

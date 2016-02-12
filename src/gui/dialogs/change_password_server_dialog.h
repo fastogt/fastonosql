@@ -39,8 +39,8 @@ class ChangePasswordServerDialog
   Q_OBJECT
  public:
   enum {
-      fix_height = 160,
-      fix_width = 240
+    fix_height = 160,
+    fix_width = 240
   };
 
   explicit ChangePasswordServerDialog(const QString& title, IServerSPtr server, QWidget* parent);

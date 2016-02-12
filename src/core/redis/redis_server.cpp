@@ -26,7 +26,7 @@ RedisServer::RedisServer(IDriverSPtr drv, bool isSuperServer)
   : IServer(drv, isSuperServer) {
 }
 
-IDatabaseSPtr RedisServer::createDatabase(DataBaseInfoSPtr info) {
+IDatabaseSPtr RedisServer::createDatabase(IDataBaseInfoSPtr info) {
   return IDatabaseSPtr(new RedisDatabase(shared_from_this(), info));
 }
 

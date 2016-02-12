@@ -144,7 +144,7 @@ struct DiscoveryInfoResponce
 
   ServerInfoSPtr sinfo;
   ServerDiscoveryInfoSPtr dinfo;
-  DataBaseInfoSPtr dbinfo;
+  IDataBaseInfoSPtr dbinfo;
 };
 
 struct EnterModeInfo
@@ -212,7 +212,7 @@ struct LoadDatabasesInfoRequest
 struct LoadDatabasesInfoResponce
   : LoadDatabasesInfoRequest {
   typedef LoadDatabasesInfoRequest base_class;
-  typedef std::vector<DataBaseInfoSPtr> database_info_cont_type;
+  typedef std::vector<IDataBaseInfoSPtr> database_info_cont_type;
   explicit LoadDatabasesInfoResponce(const base_class &request);
 
   database_info_cont_type databases;
@@ -221,11 +221,11 @@ struct LoadDatabasesInfoResponce
 struct LoadDatabaseContentRequest
   : public EventInfoBase {
   typedef EventInfoBase base_class;
-  LoadDatabaseContentRequest(initiator_type sender, DataBaseInfoSPtr inf,
+  LoadDatabaseContentRequest(initiator_type sender, IDataBaseInfoSPtr inf,
                              const std::string& pattern, uint32_t countKeys,
              uint32_t cursor = 0, error_type er = error_type());
 
-  DataBaseInfoSPtr inf;
+  IDataBaseInfoSPtr inf;
   std::string pattern;
   uint32_t count_keys;
   const uint32_t cursor_in;
@@ -244,10 +244,10 @@ struct LoadDatabaseContentResponce
 struct SetDefaultDatabaseRequest
   : public EventInfoBase {
   typedef EventInfoBase base_class;
-  SetDefaultDatabaseRequest(initiator_type sender, DataBaseInfoSPtr inf,
+  SetDefaultDatabaseRequest(initiator_type sender, IDataBaseInfoSPtr inf,
                             error_type er = error_type());
 
-  DataBaseInfoSPtr inf;
+  IDataBaseInfoSPtr inf;
 };
 
 struct SetDefaultDatabaseResponce
@@ -342,10 +342,10 @@ struct ChangeServerPropertyInfoResponce
 struct CommandRequest
   : public EventInfoBase {
   typedef EventInfoBase base_class;
-  CommandRequest(initiator_type sender, DataBaseInfoSPtr inf, CommandKeySPtr cmd,
+  CommandRequest(initiator_type sender, IDataBaseInfoSPtr inf, CommandKeySPtr cmd,
                  error_type er = error_type());
 
-  DataBaseInfoSPtr inf;
+  IDataBaseInfoSPtr inf;
   CommandKeySPtr cmd;
 };
 

@@ -97,7 +97,7 @@ struct ExplorerDatabaseItem
   void loadContent(const std::string& pattern, uint32_t countKeys);
   void setDefault();
 
-  DataBaseInfoSPtr info() const;
+  IDataBaseInfoSPtr info() const;
 
   void removeKey(const NDbKValue& key);
   void loadValue(const NDbKValue& key);
@@ -146,17 +146,17 @@ class ExplorerTreeModel
   void addServer(IServerSPtr server);
   void removeServer(IServerSPtr server);
 
-  void addDatabase(IServer* server, DataBaseInfoSPtr db);
-  void removeDatabase(IServer* server, DataBaseInfoSPtr db);
-  void setDefaultDb(IServer* server, DataBaseInfoSPtr db);
+  void addDatabase(IServer* server, IDataBaseInfoSPtr db);
+  void removeDatabase(IServer* server, IDataBaseInfoSPtr db);
+  void setDefaultDb(IServer* server, IDataBaseInfoSPtr db);
 
-  void addKey(IServer* server, DataBaseInfoSPtr db, const NDbKValue &dbv);
-  void removeKey(IServer* server, DataBaseInfoSPtr db, const NDbKValue &key);
+  void addKey(IServer* server, IDataBaseInfoSPtr db, const NDbKValue &dbv);
+  void removeKey(IServer* server, IDataBaseInfoSPtr db, const NDbKValue &key);
 
  private:
   ExplorerClusterItem* findClusterItem(IClusterSPtr cl);
   ExplorerServerItem* findServerItem(IServer* server) const;
-  ExplorerDatabaseItem* findDatabaseItem(ExplorerServerItem* server, DataBaseInfoSPtr db) const;
+  ExplorerDatabaseItem* findDatabaseItem(ExplorerServerItem* server, IDataBaseInfoSPtr db) const;
   ExplorerKeyItem* findKeyItem(ExplorerDatabaseItem* db, const NDbKValue &key) const;
 };
 

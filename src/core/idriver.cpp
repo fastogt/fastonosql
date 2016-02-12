@@ -187,7 +187,7 @@ ServerInfoSPtr IDriver::serverInfo() const {
   return server_info_;
 }
 
-DataBaseInfoSPtr IDriver::currentDatabaseInfo() const {
+IDataBaseInfoSPtr IDriver::currentDatabaseInfo() const {
   return current_database_info_;
 }
 
@@ -412,7 +412,7 @@ FastoObjectIPtr IDriver::RootLocker::createRoot(QObject *reciver, const std::str
   return root;
 }
 
-void IDriver::setCurrentDatabaseInfo(DataBaseInfo *inf) {
+void IDriver::setCurrentDatabaseInfo(IDataBaseInfo *inf) {
   current_database_info_.reset(inf);
 }
 
@@ -495,7 +495,7 @@ void IDriver::handleDiscoveryInfoRequestEvent(events::DiscoveryInfoRequestEvent*
   if (isConnected()) {
     ServerDiscoveryInfo* disc = NULL;
     ServerInfo* info = NULL;
-    DataBaseInfo* db = NULL;
+    IDataBaseInfo* db = NULL;
     common::Error er = serverDiscoveryInfo(&info, &disc, &db);
     if (er && er->isError()) {
       res.setErrorInfo(er);

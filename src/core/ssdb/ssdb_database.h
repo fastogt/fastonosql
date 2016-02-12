@@ -24,9 +24,8 @@ namespace fastonosql {
 
 class SsdbDatabase
   : public IDatabase {
-  friend class SsdbServer;
- private:
-  SsdbDatabase(IServerSPtr server, DataBaseInfoSPtr info);
+ public:
+  SsdbDatabase(IServerSPtr server, IDataBaseInfoSPtr info);
 };
 
 }  // namespace fastonosql

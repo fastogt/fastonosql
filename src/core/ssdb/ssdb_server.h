@@ -28,7 +28,7 @@ class SsdbServer
  public:
   SsdbServer(IDriverSPtr drv, bool isSuperServer);
  private:
-  virtual IDatabaseSPtr createDatabase(DataBaseInfoSPtr info);
+  virtual IDatabaseSPtr createDatabase(IDataBaseInfoSPtr info);
 };
 
 }  // namespace fastonosql

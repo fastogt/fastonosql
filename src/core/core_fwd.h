@@ -22,7 +22,7 @@
 
 namespace fastonosql {
 
-typedef common::shared_ptr<DataBaseInfo> DataBaseInfoSPtr;
+typedef common::shared_ptr<IDataBaseInfo> IDataBaseInfoSPtr;
 
 class IDatabase;
 typedef common::shared_ptr<IDatabase> IDatabaseSPtr;

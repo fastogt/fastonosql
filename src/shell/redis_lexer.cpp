@@ -89,7 +89,7 @@ const char* RedisLexer::basedOn() const {
 
 std::vector<uint32_t> RedisLexer::supportedVersions() const {
   std::vector<uint32_t> result;
-  for(int i = 0; i < SIZEOFMASS(redisCommands); ++i){
+  for(size_t i = 0; i < SIZEOFMASS(redisCommands); ++i){
     CommandInfo cmd = redisCommands[i];
 
     bool needed_insert = true;

@@ -300,10 +300,10 @@ MemcachedServerInfo* makeMemcachedServerInfo(FastoObject* root) {
 
 MemcachedDataBaseInfo::MemcachedDataBaseInfo(const std::string& name, bool isDefault,
                                              size_t size, const keys_cont_type &keys)
-  : DataBaseInfo(name, isDefault, MEMCACHED, size, keys) {
+  : IDataBaseInfo(name, isDefault, MEMCACHED, size, keys) {
 }
 
-DataBaseInfo* MemcachedDataBaseInfo::clone() const {
+IDataBaseInfo* MemcachedDataBaseInfo::clone() const {
   return new MemcachedDataBaseInfo(*this);
 }
 

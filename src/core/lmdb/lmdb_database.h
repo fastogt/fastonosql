@@ -24,9 +24,8 @@ namespace fastonosql {
 
 class LmdbDatabase
   : public IDatabase {
-  friend class LmdbServer;
- private:
-  LmdbDatabase(IServerSPtr server, DataBaseInfoSPtr info);
+ public:
+  LmdbDatabase(IServerSPtr server, IDataBaseInfoSPtr info);
 };
 
 }  // namespace fastonosql

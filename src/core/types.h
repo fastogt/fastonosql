@@ -172,7 +172,7 @@ struct ServerPropertyInfo {
 
 ServerPropertyInfo makeServerProperty(const FastoObjectArray* array);
 
-class DataBaseInfo {
+class IDataBaseInfo {
  public:
   typedef std::vector<NDbKValue> keys_cont_type;
   connectionTypes type() const;
@@ -183,19 +183,19 @@ class DataBaseInfo {
   bool isDefault() const;
   void setIsDefault(bool isDef);
 
-  virtual DataBaseInfo* clone() const = 0;
-  virtual ~DataBaseInfo();
+  virtual IDataBaseInfo* clone() const = 0;
+  virtual ~IDataBaseInfo();
 
   keys_cont_type keys() const;
   void setKeys(const keys_cont_type& keys);
 
  protected:
-  DataBaseInfo(const std::string& name, bool isDefault, connectionTypes type,
+  IDataBaseInfo(const std::string& name, bool isDefault, connectionTypes type,
                size_t size, const keys_cont_type& keys);
 
  private:
   const std::string name_;
-  bool isDefault_;
+  bool is_default_;
   size_t size_;
   keys_cont_type keys_;
 

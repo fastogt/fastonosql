@@ -22,7 +22,7 @@
 
 namespace fastonosql {
 
-LmdbDatabase::LmdbDatabase(IServerSPtr server, DataBaseInfoSPtr info)
+LmdbDatabase::LmdbDatabase(IServerSPtr server, IDataBaseInfoSPtr info)
   : IDatabase(server, info) {
   DCHECK(server);
   DCHECK(info);

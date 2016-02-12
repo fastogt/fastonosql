@@ -116,12 +116,12 @@ bool ExplorerDatabaseItem::isDefault() const {
 }
 
 size_t ExplorerDatabaseItem::sizeDB() const {
-  DataBaseInfoSPtr inf = info();
+  IDataBaseInfoSPtr inf = info();
   return inf->sizeDB();
 }
 
 size_t ExplorerDatabaseItem::loadedSize() const {
-  DataBaseInfoSPtr inf = info();
+  IDataBaseInfoSPtr inf = info();
   return inf->loadedSize();
 }
 
@@ -154,7 +154,7 @@ void ExplorerDatabaseItem::setDefault() {
   }
 }
 
-DataBaseInfoSPtr ExplorerDatabaseItem::info() const {
+IDataBaseInfoSPtr ExplorerDatabaseItem::info() const {
   return db_->info();
 }
 
@@ -398,7 +398,7 @@ void ExplorerTreeModel::removeServer(IServerSPtr server) {
   }
 }
 
-void ExplorerTreeModel::addDatabase(IServer* server, DataBaseInfoSPtr db) {
+void ExplorerTreeModel::addDatabase(IServer* server, IDataBaseInfoSPtr db) {
   ExplorerServerItem *parent = findServerItem(server);
   DCHECK(parent);
   if (!parent) {
@@ -413,7 +413,7 @@ void ExplorerTreeModel::addDatabase(IServer* server, DataBaseInfoSPtr db) {
   }
 }
 
-void ExplorerTreeModel::removeDatabase(IServer* server, DataBaseInfoSPtr db) {
+void ExplorerTreeModel::removeDatabase(IServer* server, IDataBaseInfoSPtr db) {
   ExplorerServerItem *parent = findServerItem(server);
   DCHECK(parent);
   if (!parent) {
@@ -426,7 +426,7 @@ void ExplorerTreeModel::removeDatabase(IServer* server, DataBaseInfoSPtr db) {
   }
 }
 
-void ExplorerTreeModel::setDefaultDb(IServer* server, DataBaseInfoSPtr db) {
+void ExplorerTreeModel::setDefaultDb(IServer* server, IDataBaseInfoSPtr db) {
   ExplorerServerItem *parent = findServerItem(server);
   DCHECK(parent);
   if (!parent) {
@@ -441,7 +441,7 @@ void ExplorerTreeModel::setDefaultDb(IServer* server, DataBaseInfoSPtr db) {
       continue;
     }
 
-    DataBaseInfoSPtr info = item->info();
+    IDataBaseInfoSPtr info = item->info();
     if (info->isDefault()) {
       if (info->name() != db->name()) {
         info->setIsDefault(false);
@@ -456,7 +456,7 @@ void ExplorerTreeModel::setDefaultDb(IServer* server, DataBaseInfoSPtr db) {
   }
 }
 
-void ExplorerTreeModel::addKey(IServer* server, DataBaseInfoSPtr db, const NDbKValue &dbv) {
+void ExplorerTreeModel::addKey(IServer* server, IDataBaseInfoSPtr db, const NDbKValue &dbv) {
   ExplorerServerItem *parent = findServerItem(server);
   if (!parent) {
     return;
@@ -475,7 +475,7 @@ void ExplorerTreeModel::addKey(IServer* server, DataBaseInfoSPtr db, const NDbKV
   }
 }
 
-void ExplorerTreeModel::removeKey(IServer* server, DataBaseInfoSPtr db, const NDbKValue &key) {
+void ExplorerTreeModel::removeKey(IServer* server, IDataBaseInfoSPtr db, const NDbKValue &key) {
   ExplorerServerItem *parent = findServerItem(server);
   if (!parent) {
     return;
@@ -540,7 +540,7 @@ ExplorerServerItem* ExplorerTreeModel::findServerItem(IServer* server) const {
 }
 
 ExplorerDatabaseItem *ExplorerTreeModel::findDatabaseItem(ExplorerServerItem* server,
-                                                          DataBaseInfoSPtr db) const {
+                                                          IDataBaseInfoSPtr db) const {
   if (server) {
     for (size_t i = 0; i < server->childrenCount() ; ++i) {
       ExplorerDatabaseItem *item = dynamic_cast<ExplorerDatabaseItem*>(server->child(i));

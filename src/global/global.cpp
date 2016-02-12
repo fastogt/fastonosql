@@ -28,7 +28,7 @@ FastoObject::FastoObject(FastoObject* parent, common::Value* val, const std::str
 }
 
 FastoObject::~FastoObject() {
-  for(int i = 0; i < childrens_.size(); ++i){
+  for(size_t i = 0; i < childrens_.size(); ++i){
     FastoObject* item = childrens_[i];
     delete item;
   }

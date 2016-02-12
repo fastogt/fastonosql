@@ -296,43 +296,43 @@ ServerPropertyInfo makeServerProperty(const FastoObjectArray* array) {
   return inf;
 }
 
-DataBaseInfo::DataBaseInfo(const std::string& name, bool isDefault, connectionTypes type,
-                           size_t size, const keys_cont_type &keys)
-  : name_(name), isDefault_(isDefault), type_(type), size_(size), keys_(keys) {
+IDataBaseInfo::IDataBaseInfo(const std::string& name, bool isDefault, connectionTypes type,
+                           size_t size, const keys_cont_type& keys)
+  : name_(name), is_default_(isDefault), type_(type), size_(size), keys_(keys) {
 }
 
-DataBaseInfo::~DataBaseInfo() {
+IDataBaseInfo::~IDataBaseInfo() {
 }
 
-connectionTypes DataBaseInfo::type() const {
+connectionTypes IDataBaseInfo::type() const {
   return type_;
 }
 
-std::string DataBaseInfo::name() const {
+std::string IDataBaseInfo::name() const {
   return name_;
 }
 
-size_t DataBaseInfo::sizeDB() const {
+size_t IDataBaseInfo::sizeDB() const {
   return size_;
 }
 
-size_t DataBaseInfo::loadedSize() const {
+size_t IDataBaseInfo::loadedSize() const {
   return keys_.size();
 }
 
-bool DataBaseInfo::isDefault() const {
-  return isDefault_;
+bool IDataBaseInfo::isDefault() const {
+  return is_default_;
 }
 
-void DataBaseInfo::setIsDefault(bool isDef) {
-  isDefault_ = isDef;
+void IDataBaseInfo::setIsDefault(bool isDef) {
+  is_default_ = isDef;
 }
 
-void DataBaseInfo::setKeys(const keys_cont_type& keys) {
+void IDataBaseInfo::setKeys(const keys_cont_type& keys) {
   keys_ = keys;
 }
 
-DataBaseInfo::keys_cont_type DataBaseInfo::keys() const {
+IDataBaseInfo::keys_cont_type IDataBaseInfo::keys() const {
   return keys_;
 }
 

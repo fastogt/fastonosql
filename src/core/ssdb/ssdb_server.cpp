@@ -26,7 +26,7 @@ SsdbServer::SsdbServer(IDriverSPtr drv, bool isSuperServer)
   : IServer(drv, isSuperServer) {
 }
 
-IDatabaseSPtr SsdbServer::createDatabase(DataBaseInfoSPtr info) {
+IDatabaseSPtr SsdbServer::createDatabase(IDataBaseInfoSPtr info) {
   return IDatabaseSPtr(new SsdbDatabase(shared_from_this(), info));
 }
 

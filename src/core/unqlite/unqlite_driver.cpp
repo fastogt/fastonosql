@@ -496,7 +496,7 @@ common::Error UnqliteDriver::serverInfo(ServerInfo **info) {
 
 common::Error UnqliteDriver::serverDiscoveryInfo(ServerInfo **sinfo,
                                                  ServerDiscoveryInfo **dinfo,
-                                                 DataBaseInfo** dbinfo) {
+                                                 IDataBaseInfo** dbinfo) {
   ServerInfo *lsinfo = NULL;
   common::Error er = serverInfo(&lsinfo);
   if (er && er->isError()) {
@@ -515,7 +515,7 @@ common::Error UnqliteDriver::serverDiscoveryInfo(ServerInfo **sinfo,
     }
   }
 
-  DataBaseInfo* ldbinfo = NULL;
+  IDataBaseInfo* ldbinfo = NULL;
   er = currentDataBaseInfo(&ldbinfo);
   if (er && er->isError()) {
     delete lsinfo;
@@ -527,7 +527,7 @@ common::Error UnqliteDriver::serverDiscoveryInfo(ServerInfo **sinfo,
   return er;
 }
 
-common::Error UnqliteDriver::currentDataBaseInfo(DataBaseInfo** info) {
+common::Error UnqliteDriver::currentDataBaseInfo(IDataBaseInfo** info) {
   size_t size = 0;
   impl_->dbsize(size);
   *info = new UnqliteDataBaseInfo("0", true, size);

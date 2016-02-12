@@ -22,7 +22,7 @@
 
 namespace fastonosql {
 
-RedisDatabase::RedisDatabase(IServerSPtr server, DataBaseInfoSPtr info)
+RedisDatabase::RedisDatabase(IServerSPtr server, IDataBaseInfoSPtr info)
   : IDatabase(server, info) {
   DCHECK(server);
   DCHECK(info);

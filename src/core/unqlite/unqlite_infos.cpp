@@ -182,10 +182,10 @@ UnqliteServerInfo* makeUnqliteServerInfo(FastoObject* root) {
 
 UnqliteDataBaseInfo::UnqliteDataBaseInfo(const std::string& name, bool isDefault,
                                          size_t size, const keys_cont_type &keys)
-  : DataBaseInfo(name, isDefault, UNQLITE, size, keys) {
+  : IDataBaseInfo(name, isDefault, UNQLITE, size, keys) {
 }
 
-DataBaseInfo* UnqliteDataBaseInfo::clone() const {
+IDataBaseInfo* UnqliteDataBaseInfo::clone() const {
   return new UnqliteDataBaseInfo(*this);
 }
 

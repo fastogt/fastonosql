@@ -52,7 +52,7 @@ class IDriver
 
   ServerDiscoveryInfoSPtr serverDiscoveryInfo() const;
   ServerInfoSPtr serverInfo() const;
-  DataBaseInfoSPtr currentDatabaseInfo() const;
+  IDataBaseInfoSPtr currentDatabaseInfo() const;
 
   void start();
   void stop();
@@ -125,7 +125,7 @@ class IDriver
     return RootLocker(this, reciver, text);
   }
 
-  void setCurrentDatabaseInfo(DataBaseInfo* inf);
+  void setCurrentDatabaseInfo(IDataBaseInfo* inf);
 
   common::Error execute(FastoObjectCommand* cmd) WARN_UNUSED_RESULT;
 
@@ -146,8 +146,8 @@ class IDriver
   virtual ServerInfoSPtr makeServerInfoFromString(const std::string& val) = 0;
   virtual common::Error serverInfo(ServerInfo** info) = 0;
   virtual common::Error serverDiscoveryInfo(ServerInfo** sinfo, ServerDiscoveryInfo** dinfo,
-                                            DataBaseInfo** dbinfo) = 0;
-  virtual common::Error currentDataBaseInfo(DataBaseInfo** info) = 0;
+                                            IDataBaseInfo** dbinfo) = 0;
+  virtual common::Error currentDataBaseInfo(IDataBaseInfo** info) = 0;
   virtual void initImpl() = 0;
   virtual void clearImpl() = 0;
 
@@ -166,7 +166,7 @@ class IDriver
  private:
   ServerInfoSPtr server_info_;
   ServerDiscoveryInfoSPtr server_disc_info_;
-  DataBaseInfoSPtr current_database_info_;
+  IDataBaseInfoSPtr current_database_info_;
 
   QThread* thread_;
   int timer_info_id_;

@@ -26,7 +26,7 @@ LeveldbServer::LeveldbServer(IDriverSPtr drv, bool isSuperServer)
   : IServer(drv, isSuperServer) {
 }
 
-IDatabaseSPtr LeveldbServer::createDatabase(DataBaseInfoSPtr info) {
+IDatabaseSPtr LeveldbServer::createDatabase(IDataBaseInfoSPtr info) {
   return IDatabaseSPtr(new LeveldbDatabase(shared_from_this(), info));
 }
 

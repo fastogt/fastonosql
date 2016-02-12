@@ -65,25 +65,25 @@ ConnectionDialog::ConnectionDialog(QWidget* parent, IConnectionSettingsBase* con
   connectionName_ = new QLineEdit;
   QString conName = defaultNameConnection;
   if (connection_) {
-      conName = common::convertFromString<QString>(connection_->connectionName());
+    conName = common::convertFromString<QString>(connection_->connectionName());
   }
   connectionName_->setText(conName);
   typeConnection_ = new QComboBox;
 
   if (availibleTypes.empty()) {
-      for (size_t i = 0; i < SIZEOFMASS(connnectionType); ++i) {
-        connectionTypes ct = static_cast<connectionTypes>(i);
-        std::string str = common::convertToString(ct);
-        typeConnection_->addItem(GuiFactory::instance().icon(ct),
-                                 common::convertFromString<QString>(str), ct);
-      }
+    for (size_t i = 0; i < SIZEOFMASS(connnectionType); ++i) {
+      connectionTypes ct = static_cast<connectionTypes>(i);
+      std::string str = common::convertToString(ct);
+      typeConnection_->addItem(GuiFactory::instance().icon(ct),
+                               common::convertFromString<QString>(str), ct);
+    }
   } else {
-      for (size_t i = 0; i < availibleTypes.size(); ++i) {
-        connectionTypes ct = availibleTypes[i];
-        std::string str = common::convertToString(ct);
-        typeConnection_->addItem(GuiFactory::instance().icon(ct),
-                                 common::convertFromString<QString>(str), ct);
-      }
+    for (size_t i = 0; i < availibleTypes.size(); ++i) {
+      connectionTypes ct = availibleTypes[i];
+      std::string str = common::convertToString(ct);
+      typeConnection_->addItem(GuiFactory::instance().icon(ct),
+                               common::convertFromString<QString>(str), ct);
+    }
   }
 
   if (connection_) {
@@ -157,9 +157,9 @@ ConnectionDialog::ConnectionDialog(QWidget* parent, IConnectionSettingsBase* con
   security_ = new QComboBox;
   security_->addItems(QStringList() << translations::trPassword << translations::trPrivateKey);
   if (info.authMethod() == SSHInfo::PUBLICKEY) {
-      security_->setCurrentText(translations::trPrivateKey);
+    security_->setCurrentText(translations::trPrivateKey);
   } else {
-      security_->setCurrentText(translations::trPassword);
+    security_->setCurrentText(translations::trPassword);
   }
 
   typedef void (QComboBox::*ind)(const QString&);
@@ -343,14 +343,14 @@ void ConnectionDialog::setPrivateFile() {
 
 void ConnectionDialog::testConnection() {
   if (validateAndApply()) {
-      ConnectionDiagnosticDialog diag(this, connection_);
-      diag.exec();
+    ConnectionDiagnosticDialog diag(this, connection_);
+    diag.exec();
   }
 }
 
 void ConnectionDialog::changeEvent(QEvent* e) {
   if (e->type() == QEvent::LanguageChange) {
-      retranslateUi();
+    retranslateUi();
   }
   QDialog::changeEvent(e);
 }
@@ -372,8 +372,8 @@ bool ConnectionDialog::validateAndApply() {
   bool isValidType = currentType != DBUNKNOWN;
 
   if (isValidType) {
-      bool isRemoteType = IConnectionSettingsBase::isRemoteType(currentType);
-      std::string conName = common::convertToString(connectionName_->text());
+    bool isRemoteType = IConnectionSettingsBase::isRemoteType(currentType);
+    std::string conName = common::convertToString(connectionName_->text());
 
     if (isRemoteType) {
       IConnectionSettingsRemote* newConnection = IConnectionSettingsRemote::createFromType(currentType, conName, common::net::hostAndPort());
@@ -381,7 +381,7 @@ bool ConnectionDialog::validateAndApply() {
 
       SSHInfo info = newConnection->sshInfo();
       info.host = common::net::hostAndPort(common::convertToString(sshHostName_->text()),
-                                           sshPort_->text().toInt());
+                                             sshPort_->text().toInt());
       info.user_name = common::convertToString(userName_->text());
       info.password = common::convertToString(passwordBox_->text());
       info.public_key = "";
@@ -392,7 +392,7 @@ bool ConnectionDialog::validateAndApply() {
       } else {
         info.current_method = SSHInfo::UNKNOWN;
       }
-      newConnection->setSshInfo(info);
+        newConnection->setSshInfo(info);
     } else {
       IConnectionSettingsBase* newConnection = IConnectionSettingsBase::createFromType(currentType,
                                                                                        conName);

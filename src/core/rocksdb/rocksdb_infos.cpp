@@ -182,10 +182,10 @@ RocksdbServerInfo* makeRocksdbServerInfo(FastoObject* root) {
 
 RocksdbDataBaseInfo::RocksdbDataBaseInfo(const std::string& name, bool isDefault, size_t size,
                                          const keys_cont_type &keys)
-  : DataBaseInfo(name, isDefault, ROCKSDB, size, keys) {
+  : IDataBaseInfo(name, isDefault, ROCKSDB, size, keys) {
 }
 
-DataBaseInfo* RocksdbDataBaseInfo::clone() const {
+IDataBaseInfo* RocksdbDataBaseInfo::clone() const {
   return new RocksdbDataBaseInfo(*this);
 }
 

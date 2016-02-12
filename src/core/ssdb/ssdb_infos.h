@@ -61,11 +61,11 @@ SsdbServerInfo* makeSsdbServerInfo(const std::string &content);
 SsdbServerInfo* makeSsdbServerInfo(FastoObject *root);
 
 class SsdbDataBaseInfo
-  : public DataBaseInfo {
+  : public IDataBaseInfo {
  public:
   SsdbDataBaseInfo(const std::string& name, bool isDefault, size_t size,
                    const keys_cont_type& keys = keys_cont_type());
-  virtual DataBaseInfo* clone() const;
+  virtual IDataBaseInfo* clone() const;
 };
 
 class SsdbCommand

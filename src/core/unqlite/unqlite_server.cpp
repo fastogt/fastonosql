@@ -26,7 +26,7 @@ UnqliteServer::UnqliteServer(IDriverSPtr drv, bool isSuperServer)
     : IServer(drv, isSuperServer) {
 }
 
-IDatabaseSPtr UnqliteServer::createDatabase(DataBaseInfoSPtr info) {
+IDatabaseSPtr UnqliteServer::createDatabase(IDataBaseInfoSPtr info) {
     return IDatabaseSPtr(new UnqliteDatabase(shared_from_this(), info));
 }
 

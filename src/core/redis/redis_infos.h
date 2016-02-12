@@ -280,12 +280,12 @@ common::Error makeAllDiscoveryInfo(const common::net::hostAndPort& parentHost,
                                    std::vector<ServerDiscoveryInfoSPtr>& infos);
 
 class RedisDataBaseInfo
-      : public DataBaseInfo {
+      : public IDataBaseInfo {
  public:
   RedisDataBaseInfo(const std::string& name, bool isDefault, size_t size,
                     const keys_cont_type& keys = keys_cont_type());
 
-  virtual DataBaseInfo* clone() const;
+  virtual IDataBaseInfo* clone() const;
 };
 
 class RedisCommand

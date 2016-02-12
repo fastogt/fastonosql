@@ -155,7 +155,7 @@ ViewKeysDialog::ViewKeysDialog(const QString &title, IDatabaseSPtr db, QWidget* 
   VERIFY(connect(rightButtonList_, &QPushButton::clicked, this, &ViewKeysDialog::rightPageClicked));
   QHBoxLayout* pagingLayout = new QHBoxLayout;
   pagingLayout->addWidget(leftButtonList_);
-  DataBaseInfoSPtr inf = db_->info();
+  IDataBaseInfoSPtr inf = db_->info();
   size_t sizeKey = inf->sizeDB();
   currentKey_ = new QSpinBox;
   currentKey_->setEnabled(false);

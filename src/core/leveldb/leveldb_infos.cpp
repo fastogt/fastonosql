@@ -183,10 +183,10 @@ LeveldbServerInfo* makeLeveldbServerInfo(FastoObject* root) {
 
 LeveldbDataBaseInfo::LeveldbDataBaseInfo(const std::string& name, bool isDefault,
                                          size_t size, const keys_cont_type &keys)
-  : DataBaseInfo(name, isDefault, LEVELDB, size, keys) {
+  : IDataBaseInfo(name, isDefault, LEVELDB, size, keys) {
 }
 
-DataBaseInfo* LeveldbDataBaseInfo::clone() const {
+IDataBaseInfo* LeveldbDataBaseInfo::clone() const {
   return new LeveldbDataBaseInfo(*this);
 }
 

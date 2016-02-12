@@ -35,8 +35,8 @@ class CreateDbKeyDialog
   Q_OBJECT
  public:
   enum {
-      min_height = 200,
-      min_width = 320
+    min_height = 200,
+    min_width = 320
   };
 
   explicit CreateDbKeyDialog(const QString& title, connectionTypes type, QWidget* parent = 0);

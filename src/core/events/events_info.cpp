@@ -150,7 +150,7 @@ LoadDatabasesInfoResponce::LoadDatabasesInfoResponce(const base_class &request)
   : base_class(request) {
 }
 
-LoadDatabaseContentRequest::LoadDatabaseContentRequest(initiator_type sender, DataBaseInfoSPtr inf,
+LoadDatabaseContentRequest::LoadDatabaseContentRequest(initiator_type sender, IDataBaseInfoSPtr inf,
                                                        const std::string& pattern,
                                                        uint32_t countKeys, uint32_t cursor,
                                                        error_type er)
@@ -161,7 +161,7 @@ LoadDatabaseContentResponce::LoadDatabaseContentResponce(const base_class &reque
   : base_class(request) {
 }
 
-SetDefaultDatabaseRequest::SetDefaultDatabaseRequest(initiator_type sender, DataBaseInfoSPtr inf,
+SetDefaultDatabaseRequest::SetDefaultDatabaseRequest(initiator_type sender, IDataBaseInfoSPtr inf,
                                                      error_type er)
   : base_class(sender, er), inf(inf) {
 }
@@ -231,7 +231,7 @@ ChangeServerPropertyInfoResponce::ChangeServerPropertyInfoResponce(const base_cl
   : base_class(request) {
 }
 
-CommandRequest::CommandRequest(initiator_type sender, DataBaseInfoSPtr inf,
+CommandRequest::CommandRequest(initiator_type sender, IDataBaseInfoSPtr inf,
                                CommandKeySPtr cmd, error_type er)
   : base_class(sender, er), inf(inf), cmd(cmd) {
 }

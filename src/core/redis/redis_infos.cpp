@@ -1005,10 +1005,10 @@ common::Error makeAllDiscoveryInfo(const common::net::hostAndPort& parentHost,
 
 RedisDataBaseInfo::RedisDataBaseInfo(const std::string& name, bool isDefault, size_t size,
                                      const keys_cont_type& keys)
-  : DataBaseInfo(name, isDefault, REDIS, size, keys) {
+  : IDataBaseInfo(name, isDefault, REDIS, size, keys) {
 }
 
-DataBaseInfo* RedisDataBaseInfo::clone() const {
+IDataBaseInfo* RedisDataBaseInfo::clone() const {
   return new RedisDataBaseInfo(*this);
 }
 

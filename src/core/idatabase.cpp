@@ -23,7 +23,7 @@
 
 namespace fastonosql {
 
-IDatabase::IDatabase(IServerSPtr server, DataBaseInfoSPtr info)
+IDatabase::IDatabase(IServerSPtr server, IDataBaseInfoSPtr info)
   : info_(info), server_(server) {
   DCHECK(server);
   DCHECK(info);
@@ -59,11 +59,11 @@ void IDatabase::setDefault(const events_info::SetDefaultDatabaseRequest& req) {
   server_->setDefaultDb(req);
 }
 
-DataBaseInfoSPtr IDatabase::info() const {
+IDataBaseInfoSPtr IDatabase::info() const {
   return info_;
 }
 
-void IDatabase::setInfo(DataBaseInfoSPtr info) {
+void IDatabase::setInfo(IDataBaseInfoSPtr info) {
   info_ = info;
 }
 

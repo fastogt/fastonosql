@@ -62,11 +62,11 @@ UnqliteServerInfo* makeUnqliteServerInfo(const std::string &content);
 UnqliteServerInfo* makeUnqliteServerInfo(FastoObject *root);
 
 class UnqliteDataBaseInfo
-      : public DataBaseInfo {
+      : public IDataBaseInfo {
  public:
   UnqliteDataBaseInfo(const std::string& name, bool isDefault, size_t size,
                       const keys_cont_type& keys = keys_cont_type());
-  virtual DataBaseInfo* clone() const;
+  virtual IDataBaseInfo* clone() const;
 };
 
 class UnqliteCommand

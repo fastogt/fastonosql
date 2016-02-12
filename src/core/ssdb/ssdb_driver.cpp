@@ -1484,7 +1484,7 @@ common::Error SsdbDriver::serverInfo(ServerInfo **info) {
 }
 
 common::Error SsdbDriver::serverDiscoveryInfo(ServerInfo** sinfo, ServerDiscoveryInfo** dinfo,
-                                              DataBaseInfo **dbinfo) {
+                                              IDataBaseInfo **dbinfo) {
   ServerInfo *lsinfo = NULL;
   common::Error er = serverInfo(&lsinfo);
   if (er && er->isError()) {
@@ -1503,7 +1503,7 @@ common::Error SsdbDriver::serverDiscoveryInfo(ServerInfo** sinfo, ServerDiscover
     }
   }
 
-  DataBaseInfo* ldbinfo = NULL;
+  IDataBaseInfo* ldbinfo = NULL;
   er = currentDataBaseInfo(&ldbinfo);
   if (er && er->isError()) {
     delete lsinfo;
@@ -1515,7 +1515,7 @@ common::Error SsdbDriver::serverDiscoveryInfo(ServerInfo** sinfo, ServerDiscover
   return er;
 }
 
-common::Error SsdbDriver::currentDataBaseInfo(DataBaseInfo** info) {
+common::Error SsdbDriver::currentDataBaseInfo(IDataBaseInfo** info) {
   size_t dbsize = 0;
   impl_->dbsize(dbsize);
   SsdbDataBaseInfo *sinfo = new SsdbDataBaseInfo("0", true, dbsize);

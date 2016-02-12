@@ -291,7 +291,7 @@ std::string IConnectionSettingsRemote::toString() const {
   DCHECK(type_ != DBUNKNOWN);
 
   std::stringstream str;
-  str << IConnectionSettingsBase::toString() << ',' << ssh_info_.toString();
+  str << IConnectionSettingsBase::toString() << ',' << common::convertToString(ssh_info_);
   std::string res = str.str();
   return res;
 }

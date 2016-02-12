@@ -182,10 +182,10 @@ LmdbServerInfo* makeLmdbServerInfo(FastoObject* root) {
 
 LmdbDataBaseInfo::LmdbDataBaseInfo(const std::string& name, bool isDefault,
                                    size_t size, const keys_cont_type &keys)
-  : DataBaseInfo(name, isDefault, LMDB, size, keys) {
+  : IDataBaseInfo(name, isDefault, LMDB, size, keys) {
 }
 
-DataBaseInfo* LmdbDataBaseInfo::clone() const {
+IDataBaseInfo* LmdbDataBaseInfo::clone() const {
   return new LmdbDataBaseInfo(*this);
 }
 

@@ -486,7 +486,7 @@ common::Error LeveldbDriver::serverInfo(ServerInfo **info) {
 }
 
 common::Error LeveldbDriver::serverDiscoveryInfo(ServerInfo **sinfo, ServerDiscoveryInfo **dinfo,
-                                                 DataBaseInfo** dbinfo) {
+                                                 IDataBaseInfo** dbinfo) {
   ServerInfo *lsinfo = NULL;
   common::Error er = serverInfo(&lsinfo);
   if (er && er->isError()) {
@@ -505,7 +505,7 @@ common::Error LeveldbDriver::serverDiscoveryInfo(ServerInfo **sinfo, ServerDisco
     }
   }
 
-  DataBaseInfo* ldbinfo = NULL;
+  IDataBaseInfo* ldbinfo = NULL;
   er = currentDataBaseInfo(&ldbinfo);
   if (er && er->isError()) {
     delete lsinfo;
@@ -517,7 +517,7 @@ common::Error LeveldbDriver::serverDiscoveryInfo(ServerInfo **sinfo, ServerDisco
   return er;
 }
 
-common::Error LeveldbDriver::currentDataBaseInfo(DataBaseInfo** info) {
+common::Error LeveldbDriver::currentDataBaseInfo(IDataBaseInfo** info) {
   size_t size = 0;
   impl_->dbsize(size);
   *info = new LeveldbDataBaseInfo("0", true, size);

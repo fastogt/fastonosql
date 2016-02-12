@@ -88,8 +88,8 @@ class MemcachedDriver
   virtual common::Error executeImpl(int argc, char **argv, FastoObject* out);
   virtual common::Error serverInfo(ServerInfo** info);
   virtual common::Error serverDiscoveryInfo(ServerInfo** sinfo, ServerDiscoveryInfo** dinfo,
-                                            DataBaseInfo** dbinfo);
-  virtual common::Error currentDataBaseInfo(DataBaseInfo** info);
+                                            IDataBaseInfo** dbinfo);
+  virtual common::Error currentDataBaseInfo(IDataBaseInfo** info);
 
   virtual void handleConnectEvent(events::ConnectRequestEvent* ev);
   virtual void handleDisconnectEvent(events::DisconnectRequestEvent* ev);

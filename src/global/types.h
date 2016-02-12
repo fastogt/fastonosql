@@ -23,8 +23,7 @@
 
 namespace fastonosql {
 
-enum supportedViews
-{
+enum supportedViews {
   Tree = 0,
   Table,
   Text

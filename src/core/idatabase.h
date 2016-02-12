@@ -38,15 +38,15 @@ class IDatabase {
   void loadContent(const events_info::LoadDatabaseContentRequest &req);
   void setDefault(const events_info::SetDefaultDatabaseRequest &req);
 
-  DataBaseInfoSPtr info() const;
-  void setInfo(DataBaseInfoSPtr info);
+  IDataBaseInfoSPtr info() const;
+  void setInfo(IDataBaseInfoSPtr info);
 
   void executeCommand(const events_info::CommandRequest& req);
 
  protected:
-  IDatabase(IServerSPtr server, DataBaseInfoSPtr info);
+  IDatabase(IServerSPtr server, IDataBaseInfoSPtr info);
 
-  DataBaseInfoSPtr info_;
+  IDataBaseInfoSPtr info_;
   const IServerSPtr server_;
 };
 

@@ -24,9 +24,8 @@ namespace fastonosql {
 
 class RedisDatabase
   : public IDatabase {
-  friend class RedisServer;
- private:
-    RedisDatabase(IServerSPtr server, DataBaseInfoSPtr info);
+ public:
+    RedisDatabase(IServerSPtr server, IDataBaseInfoSPtr info);
 };
 
 }  // namespace fastonosql

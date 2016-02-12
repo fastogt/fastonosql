@@ -62,11 +62,11 @@ LeveldbServerInfo* makeLeveldbServerInfo(const std::string &content);
 LeveldbServerInfo* makeLeveldbServerInfo(FastoObject *root);
 
 class LeveldbDataBaseInfo
-  : public DataBaseInfo {
+  : public IDataBaseInfo {
  public:
   LeveldbDataBaseInfo(const std::string& name, bool isDefault, size_t size,
                       const keys_cont_type& keys = keys_cont_type());
-  virtual DataBaseInfo* clone() const;
+  virtual IDataBaseInfo* clone() const;
 };
 
 class LeveldbCommand

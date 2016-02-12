@@ -540,7 +540,7 @@ common::Error RocksdbDriver::serverInfo(ServerInfo **info) {
 
 common::Error RocksdbDriver::serverDiscoveryInfo(ServerInfo **sinfo,
                                                  ServerDiscoveryInfo **dinfo,
-                                                 DataBaseInfo** dbinfo) {
+                                                 IDataBaseInfo** dbinfo) {
   ServerInfo *lsinfo = NULL;
   common::Error er = serverInfo(&lsinfo);
   if (er && er->isError()) {
@@ -559,7 +559,7 @@ common::Error RocksdbDriver::serverDiscoveryInfo(ServerInfo **sinfo,
     }
   }
 
-  DataBaseInfo* ldbinfo = NULL;
+  IDataBaseInfo* ldbinfo = NULL;
   er = currentDataBaseInfo(&ldbinfo);
   if (er && er->isError()) {
     delete lsinfo;
@@ -571,7 +571,7 @@ common::Error RocksdbDriver::serverDiscoveryInfo(ServerInfo **sinfo,
   return er;
 }
 
-common::Error RocksdbDriver::currentDataBaseInfo(DataBaseInfo** info) {
+common::Error RocksdbDriver::currentDataBaseInfo(IDataBaseInfo** info) {
   std::string name = impl_->currentDbName();
   size_t size = 0;
   impl_->dbsize(size);

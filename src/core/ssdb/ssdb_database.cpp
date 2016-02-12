@@ -22,7 +22,7 @@
 
 namespace fastonosql {
 
-SsdbDatabase::SsdbDatabase(IServerSPtr server, DataBaseInfoSPtr info)
+SsdbDatabase::SsdbDatabase(IServerSPtr server, IDataBaseInfoSPtr info)
   : IDatabase(server, info) {
   DCHECK(server);
   DCHECK(info);

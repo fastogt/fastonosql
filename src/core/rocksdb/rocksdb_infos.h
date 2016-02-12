@@ -62,11 +62,11 @@ RocksdbServerInfo* makeRocksdbServerInfo(const std::string &content);
 RocksdbServerInfo* makeRocksdbServerInfo(FastoObject *root);
 
 class RocksdbDataBaseInfo
-  : public DataBaseInfo {
+  : public IDataBaseInfo {
  public:
   RocksdbDataBaseInfo(const std::string& name, bool isDefault, size_t size,
                       const keys_cont_type& keys = keys_cont_type());
-  virtual DataBaseInfo* clone() const;
+  virtual IDataBaseInfo* clone() const;
 };
 
 class RocksdbCommand

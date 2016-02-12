@@ -26,7 +26,7 @@ RocksdbServer::RocksdbServer(IDriverSPtr drv, bool isSuperServer)
   : IServer(drv, isSuperServer) {
 }
 
-IDatabaseSPtr RocksdbServer::createDatabase(DataBaseInfoSPtr info) {
+IDatabaseSPtr RocksdbServer::createDatabase(IDataBaseInfoSPtr info) {
   return IDatabaseSPtr(new RocksdbDatabase(shared_from_this(), info));
 }
 
