@@ -23,6 +23,7 @@
 #include "common/utils.h"
 
 namespace fastonosql {
+namespace ssdb {
 
 SsdbConnectionSettings::SsdbConnectionSettings(const std::string& connectionName)
   : IConnectionSettingsRemote(connectionName, SSDB), info_() {
@@ -66,4 +67,5 @@ void SsdbConnectionSettings::initFromCommandLine(const std::string& val) {
   info_ = common::convertFromString<ssdbConfig>(val);
 }
 
+}  // namespace ssdb
 }  // namespace fastonosql

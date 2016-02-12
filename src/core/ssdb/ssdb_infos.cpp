@@ -64,6 +64,8 @@ std::vector<std::vector<Field> > DBTraits<SSDB>::infoFields() {
   return { SsdbCommonFields };
 }
 
+namespace ssdb {
+
 SsdbServerInfo::Common::Common() {
 }
 
@@ -206,4 +208,5 @@ bool SsdbCommand::isReadOnly() const {
   return key != "get";
 }
 
+}  // namespace ssdb
 }  // namespace fastonosql

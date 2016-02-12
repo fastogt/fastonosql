@@ -99,7 +99,7 @@ IServerSPtr ServersManager::createServer(IConnectionSettingsBaseSPtr settings) {
 #endif
 #ifdef BUILD_WITH_SSDB
   if (conT == SSDB) {
-    result.reset(make_server<SsdbServer, SsdbDriver>(ser, settings));
+    result.reset(make_server<ssdb::SsdbServer, ssdb::SsdbDriver>(ser, settings));
   }
 #endif
 #ifdef BUILD_WITH_LEVELDB
@@ -114,7 +114,7 @@ IServerSPtr ServersManager::createServer(IConnectionSettingsBaseSPtr settings) {
 #endif
 #ifdef BUILD_WITH_UNQLITE
   if (conT == UNQLITE) {
-    result.reset(make_server<UnqliteServer, UnqliteDriver>(ser, settings));
+    result.reset(make_server<unqlite::UnqliteServer, unqlite::UnqliteDriver>(ser, settings));
   }
 #endif
 #ifdef BUILD_WITH_LMDB
@@ -180,7 +180,7 @@ common::Error ServersManager::testConnection(IConnectionSettingsBaseSPtr connect
 #endif
 #ifdef BUILD_WITH_SSDB
   if (type == SSDB) {
-    return fastonosql::testConnection(dynamic_cast<SsdbConnectionSettings*>(connection.get()));
+    return fastonosql::ssdb::testConnection(dynamic_cast<ssdb::SsdbConnectionSettings*>(connection.get()));
   }
 #endif
 #ifdef BUILD_WITH_LEVELDB
@@ -195,12 +195,12 @@ common::Error ServersManager::testConnection(IConnectionSettingsBaseSPtr connect
 #endif
 #ifdef BUILD_WITH_UNQLITE
   if (type == UNQLITE) {
-    return fastonosql::testConnection(dynamic_cast<UnqliteConnectionSettings*>(connection.get()));
+    return fastonosql::unqlite::testConnection(dynamic_cast<unqlite::UnqliteConnectionSettings*>(connection.get()));
   }
 #endif
 #ifdef BUILD_WITH_LMDB
   if (type == LMDB) {
-    return fastonosql::testConnection(dynamic_cast<UnqliteConnectionSettings*>(connection.get()));
+    return fastonosql::testConnection(dynamic_cast<LmdbConnectionSettings*>(connection.get()));
   }
 #endif
   return common::make_error_value("Invalid setting type", common::ErrorValue::E_ERROR);

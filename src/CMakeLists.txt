@@ -269,12 +269,14 @@ IF(BUILD_WITH_SSDB)
         core/ssdb/ssdb_driver.h
     )
     SET(HEADERS_SSDB
+        core/ssdb/ssdb_raw.h
         core/ssdb/ssdb_infos.h
         core/ssdb/ssdb_config.h
         core/ssdb/ssdb_database.h
         core/ssdb/ssdb_settings.h
     )
     SET(SOURCES_SSDB
+        core/ssdb/ssdb_raw.cpp
         core/ssdb/ssdb_config.cpp
         core/ssdb/ssdb_infos.cpp
         core/ssdb/ssdb_server.cpp
@@ -374,12 +376,14 @@ IF(BUILD_WITH_UNQLITE)
         core/unqlite/unqlite_driver.h
     )
     SET(HEADERS_UNQLITE
+        core/unqlite/unqlite_raw.h
         core/unqlite/unqlite_infos.h
         core/unqlite/unqlite_config.h
         core/unqlite/unqlite_database.h
         core/unqlite/unqlite_settings.h
     )
     SET(SOURCES_UNQLITE
+        core/unqlite/unqlite_raw.cpp
         core/unqlite/unqlite_config.cpp
         core/unqlite/unqlite_infos.cpp
         core/unqlite/unqlite_server.cpp

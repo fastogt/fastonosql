@@ -31,6 +31,7 @@
 #define SSDB_BINLOGS_LABEL "binlogs"
 
 namespace fastonosql {
+namespace ssdb {
 
 class SsdbServerInfo
   : public ServerInfo {
@@ -75,4 +76,5 @@ class SsdbCommand
   virtual bool isReadOnly() const;
 };
 
+}  // namespace ssdb
 }  // namespace fastonosql

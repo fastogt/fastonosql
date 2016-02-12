@@ -37,7 +37,7 @@ struct BaseConfig {
     : delimiter("\n") {
   }
 
-  ConfigType type() const {
+  static ConfigType type() {
     return ctype;
   }
 

@@ -31,6 +31,7 @@
 #define UNQLITE_WRITE_MB_LABEL "write_mb"
 
 namespace fastonosql {
+namespace unqlite {
 
 class UnqliteServerInfo
   : public ServerInfo {
@@ -76,4 +77,5 @@ class UnqliteCommand
   virtual bool isReadOnly() const;
 };
 
+}  // namespace unqlite
 }  // namespace fastonosql

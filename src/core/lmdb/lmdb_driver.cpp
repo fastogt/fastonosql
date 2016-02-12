@@ -61,7 +61,7 @@ int lmdb_open(lmdb **context, const char *dbname, bool create_if_missing) {
     }
   }
 
-  lmdb *lcontext = (lmdb*)calloc(1, sizeof(lmdb));
+  lmdb *lcontext = reinterpret_cast<lmdb*>(calloc(1, sizeof(lmdb)));
   int rc = mdb_env_create(&lcontext->env);
   if (rc != LMDB_OK) {
     free(lcontext);
@@ -167,7 +167,6 @@ struct LmdbDriver::pimpl {
     }
 
     clear();
-    init();
 
     lmdb* context = NULL;
     common::Error er = createConnection(config_, &context);
@@ -176,8 +175,6 @@ struct LmdbDriver::pimpl {
     }
 
     lmdb_ = context;
-
-
     return common::Error();
   }
 
@@ -254,7 +251,7 @@ struct LmdbDriver::pimpl {
     MDB_val key;
     MDB_val data;
     size_t sz = 0;
-    while ((rc = mdb_cursor_get(cursor, &key, &data, MDB_NEXT)) == 0) {
+    while (mdb_cursor_get(cursor, &key, &data, MDB_NEXT) == LMDB_OK) {
       sz++;
     }
     mdb_cursor_close(cursor);
@@ -271,7 +268,7 @@ struct LmdbDriver::pimpl {
 
   lmdbConfig config_;
 
-  virtual common::Error execute_impl(int argc, char **argv, FastoObject* out) {
+  common::Error execute_impl(int argc, char **argv, FastoObject* out) {
     if (strcasecmp(argv[0], "info") == 0) {
       if (argc > 2) {
         return common::make_error_value("Invalid info input argument", common::ErrorValue::E_ERROR);
@@ -455,7 +452,7 @@ struct LmdbDriver::pimpl {
 
     MDB_val key;
     MDB_val data;
-    while ((rc = mdb_cursor_get(cursor, &key, &data, MDB_NEXT)) == 0 && limit > ret->size()) {
+    while ((mdb_cursor_get(cursor, &key, &data, MDB_NEXT) == LMDB_OK) && limit > ret->size()) {
       std::string skey((const char*)key.mv_data, key.mv_size);
       if (key_start < skey && key_end > skey) {
         ret->push_back(skey);
@@ -465,9 +462,6 @@ struct LmdbDriver::pimpl {
     mdb_txn_abort(txn);
 
     return common::Error();
-  }
-
-  void init() {
   }
 
   void clear() {

@@ -106,7 +106,6 @@ struct RocksdbDriver::pimpl {
     }
 
     clear();
-    init();
 
     rocksdb::DB* context = NULL;
     common::Error er = createConnection(config_, &context);
@@ -412,9 +411,6 @@ struct RocksdbDriver::pimpl {
       return common::make_error_value(buff, common::ErrorValue::E_ERROR);
     }
     return common::Error();
-  }
-
-  void init() {
   }
 
   void clear() {

@@ -110,7 +110,7 @@ std::vector<uint32_t> RocksdbLexer::supportedVersions() const {
   return result;
 }
 
-uint32_t RocksdbLexer::commandsCount() const {
+size_t RocksdbLexer::commandsCount() const {
   return SIZEOFMASS(rocksdbCommands);
 }
 

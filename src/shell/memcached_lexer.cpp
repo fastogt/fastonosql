@@ -110,7 +110,7 @@ std::vector<uint32_t> MemcachedLexer::supportedVersions() const {
   return result;
 }
 
-uint32_t MemcachedLexer::commandsCount() const {
+size_t MemcachedLexer::commandsCount() const {
   return SIZEOFMASS(memcachedCommands);
 }
 

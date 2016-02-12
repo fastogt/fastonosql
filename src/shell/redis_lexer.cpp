@@ -109,7 +109,7 @@ std::vector<uint32_t> RedisLexer::supportedVersions() const {
   return result;
 }
 
-uint32_t RedisLexer::commandsCount() const {
+size_t RedisLexer::commandsCount() const {
   return SIZEOFMASS(redisCommands);
 }
 

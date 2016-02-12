@@ -30,11 +30,11 @@ namespace fastonosql {
 namespace {
 
 const std::vector<Field> unqliteCommonFields = {
-    Field(UNQLITE_CAMPACTIONS_LEVEL_LABEL, common::Value::TYPE_UINTEGER),
-    Field(UNQLITE_FILE_SIZE_MB_LABEL, common::Value::TYPE_UINTEGER),
-    Field(UNQLITE_TIME_SEC_LABEL, common::Value::TYPE_UINTEGER),
-    Field(UNQLITE_READ_MB_LABEL, common::Value::TYPE_UINTEGER),
-    Field(UNQLITE_WRITE_MB_LABEL, common::Value::TYPE_UINTEGER)
+  Field(UNQLITE_CAMPACTIONS_LEVEL_LABEL, common::Value::TYPE_UINTEGER),
+  Field(UNQLITE_FILE_SIZE_MB_LABEL, common::Value::TYPE_UINTEGER),
+  Field(UNQLITE_TIME_SEC_LABEL, common::Value::TYPE_UINTEGER),
+  Field(UNQLITE_READ_MB_LABEL, common::Value::TYPE_UINTEGER),
+  Field(UNQLITE_WRITE_MB_LABEL, common::Value::TYPE_UINTEGER)
 };
 
 }  // namespace
@@ -60,6 +60,8 @@ template<>
 std::vector<std::vector<Field> > DBTraits<UNQLITE>::infoFields() {
   return { unqliteCommonFields };
 }
+
+namespace unqlite {
 
 UnqliteServerInfo::Stats::Stats()
   : compactions_level(0), file_size_mb(0), time_sec(0), read_mb(0), write_mb(0) {
@@ -204,4 +206,5 @@ bool UnqliteCommand::isReadOnly() const {
   return key != "get";
 }
 
+}  // namespace unqlite
 }  // namespace fastonosql

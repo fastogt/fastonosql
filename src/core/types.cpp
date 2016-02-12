@@ -21,11 +21,15 @@
 #include <vector>
 #include <string>
 
+#include "common/string_util.h"
+#include "common/sprintf.h"
+
 namespace fastonosql {
 
 CommandInfo::CommandInfo(const std::string& name, const std::string& params,
-          const std::string& summary, const uint32_t since, const std::string& example,
-                       uint8_t required_arguments_count, uint8_t optional_arguments_count)
+                         const std::string& summary, const uint32_t since,
+                         const std::string& example, uint8_t required_arguments_count,
+                         uint8_t optional_arguments_count)
   : name(name), params(params), summary(summary), since(since), example(example),
     required_arguments_count(required_arguments_count),
     optional_arguments_count(optional_arguments_count) {
@@ -37,6 +41,52 @@ uint16_t CommandInfo::maxArgumentsCount() const {
 
 uint8_t CommandInfo::minArgumentsCount() const {
   return required_arguments_count;
+}
+
+CommandHolder::CommandHolder(const std::string &name, const std::string &params,
+                             const std::string &summary, const uint32_t since,
+                             const std::string &example, uint8_t required_arguments_count,
+                             uint8_t optional_arguments_count, function_type func)
+  : CommandInfo(name, params, summary, since, example,
+                required_arguments_count, optional_arguments_count), func_(func){
+}
+
+bool CommandHolder::isCommand(const std::string& cmd) {
+  return FullEqualsASCII(cmd, name, false);
+}
+
+common::Error CommandHolder::execute(CommandHandler *handler, int argc, char** argv, FastoObject* out) {
+  return func_(handler, argc, argv, out);
+}
+
+CommandHandler::CommandHandler(const std::vector<commands_type>& commands)
+  : commands_(commands) {
+}
+
+common::Error CommandHandler::execute(int argc, char** argv, FastoObject* out) {
+  char * input_cmd = argv[0];
+  for(size_t i = 0; i < commands_.size(); ++i) {
+    commands_type cmd = commands_[i];
+    if (cmd.isCommand(input_cmd)) {
+      int argc_to_call = argc - 1;
+      char** argv_to_call = argv + 1;
+      if (argc_to_call > cmd.maxArgumentsCount() || argc_to_call < cmd.minArgumentsCount()) {
+        char buff[256] = {0};
+        common::SNPrintf(buff, sizeof(buff), "Invalid input argument for command: %s", input_cmd);
+        return common::make_error_value(buff, common::ErrorValue::E_ERROR);
+      }
+
+      return cmd.execute(this, argc_to_call, argv_to_call, out);
+    }
+  }
+
+  return notSupported(input_cmd);
+}
+
+common::Error CommandHandler::notSupported(const char* cmd) {
+  char buff[1024] = {0};
+  common::SNPrintf(buff, sizeof(buff), "Not supported command: %s", cmd);
+  return common::make_error_value(buff, common::ErrorValue::E_ERROR);
 }
 
 std::string convertVersionNumberToReadableString(uint32_t version) {

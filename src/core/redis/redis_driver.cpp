@@ -433,7 +433,7 @@ common::Error discoveryConnection(RedisConnectionSettings* settings,
 }
 
 struct RedisDriver::pimpl {
-  pimpl(RedisDriver* parent)
+  explicit pimpl(RedisDriver* parent)
     : parent_(parent), context_(NULL), isAuth_(false) {
   }
 

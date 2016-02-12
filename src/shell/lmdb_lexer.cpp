@@ -109,7 +109,7 @@ std::vector<uint32_t> LmdbLexer::supportedVersions() const {
   return result;
 }
 
-uint32_t LmdbLexer::commandsCount() const {
+size_t LmdbLexer::commandsCount() const {
   return SIZEOFMASS(lmdbCommands);
 }
 

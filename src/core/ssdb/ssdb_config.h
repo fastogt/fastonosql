@@ -25,6 +25,7 @@
 #include "common/convert2string.h"
 
 namespace fastonosql {
+namespace ssdb {
 
 struct ssdbConfig
   : public RemoteConfig {
@@ -34,8 +35,9 @@ struct ssdbConfig
   std::string password;
 };
 
+}
 }  // namespace fastonosql
 
 namespace common {
-  std::string convertToString(const fastonosql::ssdbConfig &conf);
+  std::string convertToString(const fastonosql::ssdb::ssdbConfig &conf);
 }

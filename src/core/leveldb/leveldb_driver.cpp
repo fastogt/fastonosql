@@ -110,7 +110,6 @@ struct LeveldbDriver::pimpl {
     }
 
     clear();
-    init();
 
     leveldb::DB* context = NULL;
     common::Error er = createConnection(config_, &context);
@@ -354,9 +353,6 @@ private:
       return common::make_error_value(buff, common::ErrorValue::E_ERROR);
     }
     return common::Error();
-  }
-
-  void init() {
   }
 
   void clear() {

@@ -27,6 +27,7 @@
 #include "fasto/qt/logger.h"
 
 namespace fastonosql {
+namespace unqlite {
 namespace {
 
 void parseOptions(int argc, char **argv, unqliteConfig& cfg) {
@@ -61,11 +62,12 @@ unqliteConfig::unqliteConfig()
   : LocalConfig(common::file_system::prepare_path("~/test.unqlite")), create_if_missing(false) {
 }
 
+}  // namespace unqlite
 }  // namespace fastonosql
 
 namespace common {
 
-std::string convertToString(const fastonosql::unqliteConfig &conf) {
+std::string convertToString(const fastonosql::unqlite::unqliteConfig &conf) {
   std::vector<std::string> argv = conf.args();
 
   if (conf.create_if_missing) {
@@ -75,7 +77,7 @@ std::string convertToString(const fastonosql::unqliteConfig &conf) {
   std::string result;
   for (size_t i = 0; i < argv.size(); ++i) {
       result += argv[i];
-      if (i != argv.size()-1) {
+      if (i != argv.size() - 1) {
           result += " ";
       }
   }
@@ -84,8 +86,8 @@ std::string convertToString(const fastonosql::unqliteConfig &conf) {
 }
 
 template<>
-fastonosql::unqliteConfig convertFromString(const std::string& line) {
-  fastonosql::unqliteConfig cfg;
+fastonosql::unqlite::unqliteConfig convertFromString(const std::string& line) {
+  fastonosql::unqlite::unqliteConfig cfg;
   enum { kMaxArgs = 64 };
   int argc = 0;
   char *argv[kMaxArgs] = {0};
@@ -96,7 +98,7 @@ fastonosql::unqliteConfig convertFromString(const std::string& line) {
     p2 = strtok(NULL, " ");
   }
 
-  fastonosql::parseOptions(argc, argv, cfg);
+  fastonosql::unqlite::parseOptions(argc, argv, cfg);
   return cfg;
 }
 

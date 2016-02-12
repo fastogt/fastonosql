@@ -92,7 +92,7 @@ class InfoServerDialog
   void updateText(const MemcachedServerInfo& serv);
 #endif
 #ifdef BUILD_WITH_SSDB
-  void updateText(const SsdbServerInfo& serv);
+  void updateText(const ssdb::SsdbServerInfo& serv);
 #endif
 #ifdef BUILD_WITH_LEVELDB
   void updateText(const LeveldbServerInfo& serv);
@@ -101,7 +101,7 @@ class InfoServerDialog
   void updateText(const RocksdbServerInfo& serv);
 #endif
 #ifdef BUILD_WITH_UNQLITE
-  void updateText(const UnqliteServerInfo& serv);
+  void updateText(const unqlite::UnqliteServerInfo& serv);
 #endif
 #ifdef BUILD_WITH_LMDB
   void updateText(const LmdbServerInfo& serv);

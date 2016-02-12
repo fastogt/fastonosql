@@ -21,7 +21,7 @@
 #include <vector>
 #include <algorithm>
 
-#include "core/unqlite/unqlite_driver.h"
+#include "core/unqlite/unqlite_raw.h"
 
 namespace {
   const QString help = "help";
@@ -36,8 +36,8 @@ UnqliteApi::UnqliteApi(QsciLexer *lexer)
 void UnqliteApi::updateAutoCompletionList(const QStringList& context, QStringList& list) {
   for (QStringList::const_iterator it = context.begin(); it != context.end(); ++it) {
     QString val = *it;
-    for (size_t i = 0; i < SIZEOFMASS(unqliteCommands); ++i) {
-      CommandInfo cmd = unqliteCommands[i];
+    for (size_t i = 0; i < unqlite::unqliteCommands.size(); ++i) {
+      CommandInfo cmd = unqlite::unqliteCommands[i];
       if (canSkipCommand(cmd)) {
         continue;
       }
@@ -58,8 +58,8 @@ QStringList UnqliteApi::callTips(const QStringList& context, int commas,
                                  QsciScintilla::CallTipsStyle style, QList<int>& shifts) {
   for (QStringList::const_iterator it = context.begin(); it != context.end() - 1; ++it) {
       QString val = *it;
-      for (size_t i = 0; i < SIZEOFMASS(unqliteCommands); ++i) {
-          CommandInfo cmd = unqliteCommands[i];
+      for (size_t i = 0; i < unqlite::unqliteCommands.size(); ++i) {
+          CommandInfo cmd = unqlite::unqliteCommands[i];
 
           QString jval = common::convertFromString<QString>(cmd.name);
           if (QString::compare(jval, val, Qt::CaseInsensitive) == 0) {
@@ -81,7 +81,7 @@ const char *UnqliteLexer::language() const {
 }
 
 const char* UnqliteLexer::version() const {
-  return UnqliteDriver::versionApi();
+  return unqlite::UnqliteRaw::versionApi();
 }
 
 const char* UnqliteLexer::basedOn() const {
@@ -90,8 +90,8 @@ const char* UnqliteLexer::basedOn() const {
 
 std::vector<uint32_t> UnqliteLexer::supportedVersions() const {
   std::vector<uint32_t> result;
-  for (size_t i = 0; i < SIZEOFMASS(unqliteCommands); ++i) {
-    CommandInfo cmd = unqliteCommands[i];
+  for (size_t i = 0; i < unqlite::unqliteCommands.size(); ++i) {
+    CommandInfo cmd = unqlite::unqliteCommands[i];
 
     bool needed_insert = true;
     for (int j = 0; j < result.size(); ++j) {
@@ -111,8 +111,8 @@ std::vector<uint32_t> UnqliteLexer::supportedVersions() const {
   return result;
 }
 
-uint32_t UnqliteLexer::commandsCount() const {
-  return SIZEOFMASS(unqliteCommands);
+size_t UnqliteLexer::commandsCount() const {
+  return unqlite::unqliteCommands.size();
 }
 
 void UnqliteLexer::styleText(int start, int end) {
@@ -143,8 +143,8 @@ void UnqliteLexer::styleText(int start, int end) {
 }
 
 void UnqliteLexer::paintCommands(const QString& source, int start) {
-  for (size_t i = 0; i < SIZEOFMASS(unqliteCommands); ++i) {
-    CommandInfo cmd = unqliteCommands[i];
+  for (size_t i = 0; i < unqlite::unqliteCommands.size(); ++i) {
+    CommandInfo cmd = unqlite::unqliteCommands[i];
     QString word = common::convertFromString<QString>(cmd.name);
     int index = 0;
     int begin = 0;

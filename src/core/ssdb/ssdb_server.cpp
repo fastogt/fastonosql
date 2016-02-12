@@ -21,6 +21,7 @@
 #include "core/ssdb/ssdb_database.h"
 
 namespace fastonosql {
+namespace ssdb {
 
 SsdbServer::SsdbServer(IDriverSPtr drv, bool isSuperServer)
   : IServer(drv, isSuperServer) {
@@ -30,4 +31,5 @@ IDatabaseSPtr SsdbServer::createDatabase(IDataBaseInfoSPtr info) {
   return IDatabaseSPtr(new SsdbDatabase(shared_from_this(), info));
 }
 
+}  // namespace ssdb
 }  // namespace fastonosql

@@ -25,6 +25,7 @@
 #include "core/connection_confg.h"
 
 namespace fastonosql {
+namespace unqlite {
 
 struct unqliteConfig
   : public LocalConfig {
@@ -33,8 +34,9 @@ struct unqliteConfig
   bool create_if_missing;
 };
 
+}  // namespace unqlite
 }  // namespace fastonosql
 
 namespace common {
-  std::string convertToString(const fastonosql::unqliteConfig &conf);
+  std::string convertToString(const fastonosql::unqlite::unqliteConfig &conf);
 }

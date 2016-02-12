@@ -46,7 +46,7 @@ class UnqliteLexer
   virtual const char* basedOn() const;
 
   virtual std::vector<uint32_t> supportedVersions() const;
-  virtual uint32_t commandsCount() const;
+  virtual size_t commandsCount() const;
 
   virtual void styleText(int start, int end);
 

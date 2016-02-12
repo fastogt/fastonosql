@@ -57,6 +57,34 @@ struct CommandInfo {
 
 typedef CommandInfo ExtendedCommandInfo;
 
+class CommandHandler;
+class CommandHolder
+    : public CommandInfo {
+ public:
+  typedef std::function<common::Error(CommandHandler*, int, char **, FastoObject*)> function_type;
+
+  CommandHolder(const std::string& name, const std::string& params,
+                const std::string& summary, const uint32_t since,
+                const std::string& example, uint8_t required_arguments_count,
+                uint8_t optional_arguments_count, function_type func);
+  bool isCommand(const std::string& cmd);
+  common::Error execute(CommandHandler *handler, int argc, char** argv, FastoObject* out);
+
+ private:
+  const function_type func_;
+};
+
+class CommandHandler {
+ public:
+  typedef CommandHolder commands_type;
+  CommandHandler(const std::vector<commands_type>& commands);
+  common::Error execute(int argc, char** argv, FastoObject* out);
+
+  static common::Error notSupported(const char *cmd);
+ private:
+  const std::vector<commands_type> commands_;
+};
+
 std::string convertVersionNumberToReadableString(uint32_t version);
 
 struct NKey {

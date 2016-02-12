@@ -45,8 +45,7 @@ class BaseQsciLexer
   : public QsciLexerCustom {
   Q_OBJECT
  public:
-  enum
-  {
+  enum {
     Default = 0,
     Command = 1,
     HelpKeyword
@@ -56,7 +55,7 @@ class BaseQsciLexer
   virtual const char* basedOn() const = 0;
 
   virtual std::vector<uint32_t> supportedVersions() const = 0;
-  virtual uint32_t commandsCount() const = 0;
+  virtual size_t commandsCount() const = 0;
 
   virtual QString description(int style) const;
   virtual QColor defaultColor(int style) const;

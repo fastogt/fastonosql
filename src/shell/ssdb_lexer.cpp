@@ -21,7 +21,7 @@
 #include <vector>
 #include <algorithm>
 
-#include "core/ssdb/ssdb_driver.h"
+#include "core/ssdb/ssdb_raw.h"
 
 namespace {
   const QString help("help");
@@ -36,8 +36,8 @@ SsdbApi::SsdbApi(QsciLexer *lexer)
 void SsdbApi::updateAutoCompletionList(const QStringList& context, QStringList& list) {
   for (QStringList::const_iterator it = context.begin(); it != context.end(); ++it) {
     QString val = *it;
-    for (size_t i = 0; i < SIZEOFMASS(ssdbCommands); ++i) {
-      CommandInfo cmd = ssdbCommands[i];
+    for (size_t i = 0; i < ssdb::ssdbCommands.size(); ++i) {
+      CommandInfo cmd = ssdb::ssdbCommands[i];
       if (canSkipCommand(cmd)) {
         continue;
       }
@@ -58,8 +58,8 @@ QStringList SsdbApi::callTips(const QStringList& context, int commas,
                               QsciScintilla::CallTipsStyle style, QList<int>& shifts) {
   for (QStringList::const_iterator it = context.begin(); it != context.end() - 1; ++it) {
     QString val = *it;
-    for (size_t i = 0; i < SIZEOFMASS(ssdbCommands); ++i) {
-      CommandInfo cmd = ssdbCommands[i];
+    for (size_t i = 0; i < ssdb::ssdbCommands.size(); ++i) {
+      CommandInfo cmd = ssdb::ssdbCommands[i];
       QString jval = common::convertFromString<QString>(cmd.name);
       if (QString::compare(jval, val, Qt::CaseInsensitive) == 0) {
         return QStringList() << makeCallTip(cmd);
@@ -80,7 +80,7 @@ const char *SsdbLexer::language() const {
 }
 
 const char* SsdbLexer::version() const {
-  return SsdbDriver::versionApi();
+  return ssdb::SsdbRaw::versionApi();
 }
 
 const char* SsdbLexer::basedOn() const {
@@ -89,8 +89,8 @@ const char* SsdbLexer::basedOn() const {
 
 std::vector<uint32_t> SsdbLexer::supportedVersions() const {
   std::vector<uint32_t> result;
-  for (int i = 0; i < SIZEOFMASS(ssdbCommands); ++i) {
-    CommandInfo cmd = ssdbCommands[i];
+  for (int i = 0; i < ssdb::ssdbCommands.size(); ++i) {
+    CommandInfo cmd = ssdb::ssdbCommands[i];
 
     bool needed_insert = true;
     for (size_t j = 0; j < result.size(); ++j) {
@@ -110,8 +110,8 @@ std::vector<uint32_t> SsdbLexer::supportedVersions() const {
   return result;
 }
 
-uint32_t SsdbLexer::commandsCount() const {
-  return SIZEOFMASS(ssdbCommands);
+size_t SsdbLexer::commandsCount() const {
+  return ssdb::ssdbCommands.size();
 }
 
 void SsdbLexer::styleText(int start, int end) {
@@ -142,8 +142,8 @@ void SsdbLexer::styleText(int start, int end) {
 }
 
 void SsdbLexer::paintCommands(const QString& source, int start) {
-  for (size_t i = 0; i < SIZEOFMASS(ssdbCommands); ++i) {
-    CommandInfo cmd = ssdbCommands[i];
+  for (size_t i = 0; i < ssdb::ssdbCommands.size(); ++i) {
+    CommandInfo cmd = ssdb::ssdbCommands[i];
     QString word = common::convertFromString<QString>(cmd.name);
     int index = 0;
     int begin = 0;

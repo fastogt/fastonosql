@@ -111,7 +111,7 @@ std::vector<uint32_t> LeveldbLexer::supportedVersions() const {
   return result;
 }
 
-uint32_t LeveldbLexer::commandsCount() const {
+size_t LeveldbLexer::commandsCount() const {
   return SIZEOFMASS(leveldbCommands);
 }
 

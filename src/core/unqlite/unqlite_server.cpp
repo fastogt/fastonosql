@@ -21,6 +21,7 @@
 #include "core/unqlite/unqlite_database.h"
 
 namespace fastonosql {
+namespace unqlite {
 
 UnqliteServer::UnqliteServer(IDriverSPtr drv, bool isSuperServer)
     : IServer(drv, isSuperServer) {
@@ -30,4 +31,5 @@ IDatabaseSPtr UnqliteServer::createDatabase(IDataBaseInfoSPtr info) {
     return IDatabaseSPtr(new UnqliteDatabase(shared_from_this(), info));
 }
 
+}  // namespace unqlite
 }  // namespace fastonosql

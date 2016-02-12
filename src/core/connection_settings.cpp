@@ -148,37 +148,37 @@ IConnectionSettingsBase* IConnectionSettingsBase::createFromType(connectionTypes
                                                                  const std::string& conName) {
 #ifdef BUILD_WITH_REDIS
   if (type == REDIS) {
-      return new RedisConnectionSettings(conName);
+    return new RedisConnectionSettings(conName);
   }
 #endif
 #ifdef BUILD_WITH_MEMCACHED
   if (type == MEMCACHED) {
-      return new MemcachedConnectionSettings(conName);
+    return new MemcachedConnectionSettings(conName);
   }
 #endif
 #ifdef BUILD_WITH_SSDB
   if (type == SSDB) {
-      return new SsdbConnectionSettings(conName);
+    return new ssdb::SsdbConnectionSettings(conName);
   }
 #endif
 #ifdef BUILD_WITH_LEVELDB
   if (type == LEVELDB) {
-      return new LeveldbConnectionSettings(conName);
+    return new LeveldbConnectionSettings(conName);
   }
 #endif
 #ifdef BUILD_WITH_ROCKSDB
   if (type == ROCKSDB) {
-      return new RocksdbConnectionSettings(conName);
+    return new RocksdbConnectionSettings(conName);
   }
 #endif
 #ifdef BUILD_WITH_UNQLITE
   if (type == UNQLITE) {
-      return new UnqliteConnectionSettings(conName);
+    return new unqlite::UnqliteConnectionSettings(conName);
   }
 #endif
 #ifdef BUILD_WITH_LMDB
   if (type == LMDB) {
-      return new LmdbConnectionSettings(conName);
+    return new LmdbConnectionSettings(conName);
   }
 #endif
   NOTREACHED();
@@ -264,8 +264,7 @@ std::string IConnectionSettingsRemote::fullAddress() const {
 
 IConnectionSettingsRemote* IConnectionSettingsRemote::createFromType(connectionTypes type,
                                                                      const std::string& conName,
-                                                                     const common::net::hostAndPort& host)
-{
+                                                                     const common::net::hostAndPort& host) {
   IConnectionSettingsRemote* remote = NULL;
 #ifdef BUILD_WITH_REDIS
   if (type == REDIS) {
@@ -279,10 +278,14 @@ IConnectionSettingsRemote* IConnectionSettingsRemote::createFromType(connectionT
 #endif
 #ifdef BUILD_WITH_SSDB
   if (type == SSDB) {
-    remote = new SsdbConnectionSettings(conName);
+    remote = new ssdb::SsdbConnectionSettings(conName);
   }
 #endif
-  CHECK(remote);
+  if (!remote) {
+    NOTREACHED();
+    return NULL;
+  }
+
   remote->setHost(host);
   return remote;
 }
@@ -394,7 +397,7 @@ std::string defaultCommandLine(connectionTypes type) {
 #endif
 #ifdef BUILD_WITH_SSDB
   if (type == SSDB) {
-    ssdbConfig r;
+    ssdb::ssdbConfig r;
     return common::convertToString(r);
   }
 #endif
@@ -414,7 +417,7 @@ std::string defaultCommandLine(connectionTypes type) {
 #endif
 #ifdef BUILD_WITH_UNQLITE
   if (type == UNQLITE) {
-    unqliteConfig r;
+    unqlite::unqliteConfig r;
     r.create_if_missing = true;
     return common::convertToString(r);
   }

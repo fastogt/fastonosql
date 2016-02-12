@@ -183,7 +183,7 @@ InfoServerDialog::InfoServerDialog(IServerSPtr server, QWidget* parent)
 #endif
 #ifdef BUILD_WITH_SSDB
   if (type == SSDB) {
-    updateText(SsdbServerInfo());
+    updateText(ssdb::SsdbServerInfo());
   }
 #endif
 #ifdef BUILD_WITH_LEVELDB
@@ -198,7 +198,7 @@ InfoServerDialog::InfoServerDialog(IServerSPtr server, QWidget* parent)
 #endif
 #ifdef BUILD_WITH_UNQLITE
   if (type == UNQLITE) {
-    updateText(UnqliteServerInfo());
+    updateText(unqlite::UnqliteServerInfo());
   }
 #endif
 #ifdef BUILD_WITH_LMDB
@@ -251,7 +251,7 @@ DCHECK(type == inf->type());
 #endif
 #ifdef BUILD_WITH_SSDB
   if (type == SSDB) {
-    SsdbServerInfo* infr = dynamic_cast<SsdbServerInfo*>(inf.get());
+    ssdb::SsdbServerInfo* infr = dynamic_cast<ssdb::SsdbServerInfo*>(inf.get());
     if (infr) {
       updateText(*infr);
     }
@@ -275,7 +275,7 @@ DCHECK(type == inf->type());
 #endif
 #ifdef BUILD_WITH_UNQLITE
   if (type == UNQLITE) {
-    UnqliteServerInfo * infr = dynamic_cast<UnqliteServerInfo*>(inf.get());
+    unqlite::UnqliteServerInfo * infr = dynamic_cast<unqlite::UnqliteServerInfo*>(inf.get());
     if (infr) {
       updateText(*infr);
     }
@@ -433,8 +433,8 @@ void InfoServerDialog::updateText(const MemcachedServerInfo& serv) {
 #endif
 
 #ifdef BUILD_WITH_SSDB
-void InfoServerDialog::updateText(const SsdbServerInfo& serv) {
-  SsdbServerInfo::Common com = serv.common_;
+void InfoServerDialog::updateText(const ssdb::SsdbServerInfo& serv) {
+  ssdb::SsdbServerInfo::Common com = serv.common_;
   QString textServ = ssdbTextServerTemplate.arg(common::convertFromString<QString>(com.version))
           .arg(com.links)
           .arg(com.total_calls)
@@ -470,8 +470,8 @@ void InfoServerDialog::updateText(const RocksdbServerInfo& serv) {
 }
 #endif
 #ifdef BUILD_WITH_UNQLITE
-void InfoServerDialog::updateText(const UnqliteServerInfo& serv) {
-  UnqliteServerInfo::Stats stats = serv.stats_;
+void InfoServerDialog::updateText(const unqlite::UnqliteServerInfo& serv) {
+  unqlite::UnqliteServerInfo::Stats stats = serv.stats_;
   QString textServ = leveldbTextServerTemplate.arg(stats.compactions_level)
           .arg(stats.file_size_mb)
           .arg(stats.time_sec)

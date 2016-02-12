@@ -21,6 +21,7 @@
 #include "core/iserver.h"
 
 namespace fastonosql {
+namespace ssdb {
 
 class SsdbServer
   : public IServer {
@@ -31,4 +32,5 @@ class SsdbServer
   virtual IDatabaseSPtr createDatabase(IDataBaseInfoSPtr info);
 };
 
+}  // namespace ssdb
 }  // namespace fastonosql
