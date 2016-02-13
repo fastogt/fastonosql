@@ -21,6 +21,7 @@
 #include <string>
 
 namespace fastonosql {
+namespace rocksdb {
 
 RocksdbConnectionSettings::RocksdbConnectionSettings(const std::string& connectionName)
   : IConnectionSettingsBase(connectionName, ROCKSDB), info_() {
@@ -60,4 +61,5 @@ void RocksdbConnectionSettings::initFromCommandLine(const std::string& val) {
   info_ = common::convertFromString<rocksdbConfig>(val);
 }
 
+}  // namespace rocksdb
 }  // namespace fastonosql

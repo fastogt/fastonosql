@@ -109,7 +109,7 @@ IServerSPtr ServersManager::createServer(IConnectionSettingsBaseSPtr settings) {
 #endif
 #ifdef BUILD_WITH_ROCKSDB
   if (conT == ROCKSDB) {
-    result.reset(make_server<RocksdbServer, RocksdbDriver>(ser, settings));
+    result.reset(make_server<rocksdb::RocksdbServer, rocksdb::RocksdbDriver>(ser, settings));
   }
 #endif
 #ifdef BUILD_WITH_UNQLITE
@@ -190,7 +190,7 @@ common::Error ServersManager::testConnection(IConnectionSettingsBaseSPtr connect
 #endif
 #ifdef BUILD_WITH_ROCKSDB
   if (type == ROCKSDB) {
-    return fastonosql::testConnection(dynamic_cast<RocksdbConnectionSettings*>(connection.get()));
+    return fastonosql::rocksdb::testConnection(dynamic_cast<rocksdb::RocksdbConnectionSettings*>(connection.get()));
   }
 #endif
 #ifdef BUILD_WITH_UNQLITE

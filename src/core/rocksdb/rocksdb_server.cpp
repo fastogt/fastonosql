@@ -21,6 +21,7 @@
 #include "core/rocksdb/rocksdb_database.h"
 
 namespace fastonosql {
+namespace rocksdb {
 
 RocksdbServer::RocksdbServer(IDriverSPtr drv, bool isSuperServer)
   : IServer(drv, isSuperServer) {
@@ -30,4 +31,5 @@ IDatabaseSPtr RocksdbServer::createDatabase(IDataBaseInfoSPtr info) {
   return IDatabaseSPtr(new RocksdbDatabase(shared_from_this(), info));
 }
 
+}  // namespace rocksdb
 }  // namespace fastonosql

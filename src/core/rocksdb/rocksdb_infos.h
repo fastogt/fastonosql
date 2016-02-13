@@ -31,6 +31,7 @@
 #define ROCKSDB_WRITE_MB_LABEL "write_mb"
 
 namespace fastonosql {
+namespace rocksdb {
 
 class RocksdbServerInfo
       : public ServerInfo {
@@ -76,4 +77,5 @@ class RocksdbCommand
   virtual bool isReadOnly() const;
 };
 
+}  // namespace rocksdb
 }  // namespace fastonosql

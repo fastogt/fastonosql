@@ -36,8 +36,8 @@ RocksdbApi::RocksdbApi(QsciLexer *lexer)
 void RocksdbApi::updateAutoCompletionList(const QStringList& context, QStringList& list) {
   for (QStringList::const_iterator it = context.begin(); it != context.end(); ++it) {
     QString val = *it;
-    for (size_t i = 0; i < SIZEOFMASS(rocksdbCommands); ++i) {
-      CommandInfo cmd = rocksdbCommands[i];
+    for (size_t i = 0; i < rocksdb::rocksdbCommands.size(); ++i) {
+      CommandInfo cmd = rocksdb::rocksdbCommands[i];
       if (canSkipCommand(cmd)) {
         continue;
       }
@@ -58,8 +58,8 @@ QStringList RocksdbApi::callTips(const QStringList& context, int commas,
                                  QsciScintilla::CallTipsStyle style, QList<int>& shifts) {
   for (QStringList::const_iterator it = context.begin(); it != context.end() - 1; ++it) {
     QString val = *it;
-    for (size_t i = 0; i < SIZEOFMASS(rocksdbCommands); ++i) {
-      CommandInfo cmd = rocksdbCommands[i];
+    for (size_t i = 0; i < rocksdb::rocksdbCommands.size(); ++i) {
+      CommandInfo cmd = rocksdb::rocksdbCommands[i];
 
       QString jval = common::convertFromString<QString>(cmd.name);
       if (QString::compare(jval, val, Qt::CaseInsensitive) == 0) {
@@ -81,7 +81,7 @@ const char *RocksdbLexer::language() const {
 }
 
 const char* RocksdbLexer::version() const {
-  return RocksdbDriver::versionApi();
+  return rocksdb::RocksdbDriver::versionApi();
 }
 
 const char* RocksdbLexer::basedOn() const {
@@ -90,8 +90,8 @@ const char* RocksdbLexer::basedOn() const {
 
 std::vector<uint32_t> RocksdbLexer::supportedVersions() const {
   std::vector<uint32_t> result;
-  for (int i = 0; i < SIZEOFMASS(rocksdbCommands); ++i) {
-    CommandInfo cmd = rocksdbCommands[i];
+  for (int i = 0; i < rocksdb::rocksdbCommands.size(); ++i) {
+    CommandInfo cmd = rocksdb::rocksdbCommands[i];
 
     bool needed_insert = true;
     for (size_t j = 0; j < result.size(); ++j) {
@@ -111,7 +111,7 @@ std::vector<uint32_t> RocksdbLexer::supportedVersions() const {
 }
 
 size_t RocksdbLexer::commandsCount() const {
-  return SIZEOFMASS(rocksdbCommands);
+  return rocksdb::rocksdbCommands.size();
 }
 
 void RocksdbLexer::styleText(int start, int end) {
@@ -142,8 +142,8 @@ void RocksdbLexer::styleText(int start, int end) {
 }
 
 void RocksdbLexer::paintCommands(const QString& source, int start) {
-  for (size_t i = 0; i < SIZEOFMASS(rocksdbCommands); ++i) {
-    CommandInfo cmd = rocksdbCommands[i];
+  for (size_t i = 0; i < rocksdb::rocksdbCommands.size(); ++i) {
+    CommandInfo cmd = rocksdb::rocksdbCommands[i];
     QString word = common::convertFromString<QString>(cmd.name);
     int index = 0;
     int begin = 0;

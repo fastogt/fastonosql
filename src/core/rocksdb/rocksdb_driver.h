@@ -22,44 +22,10 @@
 
 #include "core/idriver.h"
 
-#include "core/rocksdb/rocksdb_settings.h"
+#include "core/rocksdb/rocksdb_raw.h"
 
 namespace fastonosql {
-
-static const CommandInfo rocksdbCommands[] = {
-  CommandInfo("PUT", "<key> <value>",
-              "Set the value of a key.",
-              UNDEFINED_SINCE, UNDEFINED_EXAMPLE_STR, 2, 0),
-  CommandInfo("GET", "<key>",
-              "Get the value of a key.",
-              UNDEFINED_SINCE, UNDEFINED_EXAMPLE_STR, 1, 0),
-  CommandInfo("MGET", "<keys>",
-              "Get the value of a key.",
-              UNDEFINED_SINCE, UNDEFINED_EXAMPLE_STR, 1, 0),
-  CommandInfo("MERGE", "<key> <value>",
-              "Merge the database entry for \"key\" with \"value\"",
-              UNDEFINED_SINCE, UNDEFINED_EXAMPLE_STR, 2, 0),
-  CommandInfo("DEL", "<key>",
-              "Delete key.",
-              UNDEFINED_SINCE, UNDEFINED_EXAMPLE_STR, 1, 0),
-  CommandInfo("KEYS", "<key_start> <key_end> <limit>",
-              "Find all keys matching the given limits.",
-              UNDEFINED_SINCE, UNDEFINED_EXAMPLE_STR, 3, 0),
-  CommandInfo("INFO", "<args>",
-              "These command return database information.",
-              UNDEFINED_SINCE, UNDEFINED_EXAMPLE_STR, 1, 0),
-  CommandInfo("QUIT", "-",
-              "Close the connection.",
-              UNDEFINED_SINCE, UNDEFINED_EXAMPLE_STR, 0, 0),
-  ExtendedCommandInfo("INTERRUPT", "-",
-              "Command execution interrupt",
-              UNDEFINED_SINCE, UNDEFINED_EXAMPLE_STR, 0, 0),
-  ExtendedCommandInfo("DBSIZE", "-",
-              "Return the number of keys in the selected database",
-              UNDEFINED_SINCE, UNDEFINED_EXAMPLE_STR, 0, 0)
-};
-
-common::Error testConnection(RocksdbConnectionSettings* settings);
+namespace rocksdb {
 
 class RocksdbDriver
   : public IDriver {
@@ -112,8 +78,9 @@ class RocksdbDriver
   // ============== command =============//
   ServerInfoSPtr makeServerInfoFromString(const std::string& val);
 
-  struct pimpl;
-  pimpl* const impl_;
+ private:
+  RocksdbRaw* const impl_;
 };
 
+}  // namespace rocksdb
 }  // namespace fastonosql

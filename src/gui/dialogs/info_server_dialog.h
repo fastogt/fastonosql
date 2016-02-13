@@ -98,7 +98,7 @@ class InfoServerDialog
   void updateText(const LeveldbServerInfo& serv);
 #endif
 #ifdef BUILD_WITH_ROCKSDB
-  void updateText(const RocksdbServerInfo& serv);
+  void updateText(const rocksdb::RocksdbServerInfo& serv);
 #endif
 #ifdef BUILD_WITH_UNQLITE
   void updateText(const unqlite::UnqliteServerInfo& serv);

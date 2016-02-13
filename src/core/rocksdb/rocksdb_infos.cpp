@@ -61,6 +61,8 @@ std::vector<std::vector<Field> > DBTraits<ROCKSDB>::infoFields() {
   return  { rockCommonFields };
 }
 
+namespace rocksdb {
+
 RocksdbServerInfo::Stats::Stats()
   : compactions_level(0), file_size_mb(0), time_sec(0), read_mb(0), write_mb(0) {
 }
@@ -204,4 +206,5 @@ bool RocksdbCommand::isReadOnly() const {
   return key != "get";
 }
 
+}  // namespace rocksdb
 }  // namespace fastonosql

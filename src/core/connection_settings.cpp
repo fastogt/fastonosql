@@ -168,7 +168,7 @@ IConnectionSettingsBase* IConnectionSettingsBase::createFromType(connectionTypes
 #endif
 #ifdef BUILD_WITH_ROCKSDB
   if (type == ROCKSDB) {
-    return new RocksdbConnectionSettings(conName);
+    return new rocksdb::RocksdbConnectionSettings(conName);
   }
 #endif
 #ifdef BUILD_WITH_UNQLITE
@@ -410,7 +410,7 @@ std::string defaultCommandLine(connectionTypes type) {
 #endif
 #ifdef BUILD_WITH_ROCKSDB
   if (type == ROCKSDB) {
-    rocksdbConfig r;
+    rocksdb::rocksdbConfig r;
     r.options.create_if_missing = true;
     return common::convertToString(r);
   }

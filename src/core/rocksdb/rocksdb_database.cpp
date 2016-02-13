@@ -21,6 +21,7 @@
 #include "core/iserver.h"
 
 namespace fastonosql {
+namespace rocksdb {
 
 RocksdbDatabase::RocksdbDatabase(IServerSPtr server, IDataBaseInfoSPtr info)
   : IDatabase(server, info) {
@@ -30,4 +31,5 @@ RocksdbDatabase::RocksdbDatabase(IServerSPtr server, IDataBaseInfoSPtr info)
   DCHECK(info->type() == ROCKSDB);
 }
 
+}  // namespace rocksdb
 }  // namespace fastonosql

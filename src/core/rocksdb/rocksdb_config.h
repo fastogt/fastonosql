@@ -27,16 +27,18 @@
 #include "core/connection_confg.h"
 
 namespace fastonosql {
+namespace rocksdb {
 
 struct rocksdbConfig
   : public LocalConfig {
   rocksdbConfig();
 
-  rocksdb::Options options;
+  ::rocksdb::Options options;
 };
 
+}  // namespace rocksdb
 }  // namespace fastonosql
 
 namespace common {
-  std::string convertToString(const fastonosql::rocksdbConfig &conf);
+  std::string convertToString(const fastonosql::rocksdb::rocksdbConfig &conf);
 }

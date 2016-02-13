@@ -193,7 +193,7 @@ InfoServerDialog::InfoServerDialog(IServerSPtr server, QWidget* parent)
 #endif
 #ifdef BUILD_WITH_ROCKSDB
   if (type == ROCKSDB) {
-    updateText(RocksdbServerInfo());
+    updateText(rocksdb::RocksdbServerInfo());
   }
 #endif
 #ifdef BUILD_WITH_UNQLITE
@@ -267,7 +267,7 @@ DCHECK(type == inf->type());
 #endif
 #ifdef BUILD_WITH_ROCKSDB
   if (type == ROCKSDB) {
-    RocksdbServerInfo * infr = dynamic_cast<RocksdbServerInfo*>(inf.get());
+    rocksdb::RocksdbServerInfo * infr = dynamic_cast<rocksdb::RocksdbServerInfo*>(inf.get());
     if (infr) {
       updateText(*infr);
     }
@@ -458,8 +458,8 @@ void InfoServerDialog::updateText(const LeveldbServerInfo& serv) {
 }
 #endif
 #ifdef BUILD_WITH_ROCKSDB
-void InfoServerDialog::updateText(const RocksdbServerInfo& serv) {
-  RocksdbServerInfo::Stats stats = serv.stats_;
+void InfoServerDialog::updateText(const rocksdb::RocksdbServerInfo& serv) {
+  rocksdb::RocksdbServerInfo::Stats stats = serv.stats_;
   QString textServ = leveldbTextServerTemplate.arg(stats.compactions_level)
           .arg(stats.file_size_mb)
           .arg(stats.time_sec)

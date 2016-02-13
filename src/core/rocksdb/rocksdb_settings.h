@@ -25,6 +25,7 @@
 #include "core/rocksdb/rocksdb_config.h"
 
 namespace fastonosql {
+namespace rocksdb {
 
 class RocksdbConnectionSettings
   : public IConnectionSettingsBase {
@@ -47,4 +48,5 @@ class RocksdbConnectionSettings
   rocksdbConfig info_;
 };
 
+}  // namespace rocksdb
 }  // namespace fastonosql

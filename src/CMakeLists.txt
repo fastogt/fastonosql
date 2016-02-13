@@ -341,12 +341,14 @@ IF(BUILD_WITH_ROCKSDB)
         core/rocksdb/rocksdb_driver.h
     )
     SET(HEADERS_ROCKSDB
+        core/rocksdb/rocksdb_raw.h
         core/rocksdb/rocksdb_infos.h
         core/rocksdb/rocksdb_config.h
         core/rocksdb/rocksdb_database.h
         core/rocksdb/rocksdb_settings.h
     )
     SET(SOURCES_ROCKSDB
+        core/rocksdb/rocksdb_raw.cpp
         core/rocksdb/rocksdb_config.cpp
         core/rocksdb/rocksdb_infos.cpp
         core/rocksdb/rocksdb_server.cpp

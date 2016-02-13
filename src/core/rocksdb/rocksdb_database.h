@@ -21,6 +21,7 @@
 #include "core/idatabase.h"
 
 namespace fastonosql {
+namespace rocksdb {
 
 class RocksdbDatabase
   : public IDatabase {
@@ -28,4 +29,5 @@ class RocksdbDatabase
   RocksdbDatabase(IServerSPtr server, IDataBaseInfoSPtr info);
 };
 
+}  // namespace rocksdb
 }  // namespace fastonosql

@@ -196,40 +196,6 @@ struct LmdbDriver::pimpl {
   }
 
   common::Error info(const char* args, LmdbServerInfo::Stats& statsout) {
-    /*std::string rets;
-    bool isok = rocksdb_->GetProperty("rocksdb.stats", &rets);
-    if (!isok) {
-        return common::make_error_value("info function failed", common::ErrorValue::E_ERROR);
-    }
-
-    if (rets.size() > sizeof(ROCKSDB_HEADER_STATS)) {
-        const char * retsc = rets.c_str() + sizeof(ROCKSDB_HEADER_STATS);
-        char* p2 = strtok((char*)retsc, " ");
-        int pos = 0;
-        while(p2) {
-            switch(pos++) {
-                case 0:
-                    statsout.compactions_level_ = atoi(p2);
-                    break;
-                case 1:
-                    statsout.file_size_mb_ = atoi(p2);
-                    break;
-                case 2:
-                    statsout.time_sec_ = atoi(p2);
-                    break;
-                case 3:
-                    statsout.read_mb_ = atoi(p2);
-                    break;
-                case 4:
-                    statsout.write_mb_ = atoi(p2);
-                    break;
-                default:
-                    break;
-            }
-            p2 = strtok(0, " ");
-        }
-    }*/
-
     return common::Error();
   }
 
