@@ -38,9 +38,6 @@ struct MemcachedRaw
 
   static const char* versionApi();
 
-  common::Error quit();
-  common::Error interrupt();
-
   bool isConnected() const;
   common::Error connect();
   common::Error disconnect();
@@ -74,8 +71,6 @@ struct MemcachedRaw
   memcached_st* memc_;
 };
 
-common::Error quit(CommandHandler* handler, int argc, char** argv, FastoObject* out);
-common::Error interrupt(CommandHandler* handler, int argc, char** argv, FastoObject* out);
 common::Error keys(CommandHandler* handler, int argc, char** argv, FastoObject* out);
 common::Error stats(CommandHandler* handler, int argc, char** argv, FastoObject* out);
 common::Error get(CommandHandler* handler, int argc, char** argv, FastoObject* out);
@@ -127,13 +122,7 @@ static const std::vector<CommandHolder> memcachedCommands = {
   CommandHolder("SET", "<key> <flags> <exptime> <value>",
               "Set the string value of a key.", UNDEFINED_SINCE, UNDEFINED_EXAMPLE_STR, 4, 0, &set),
   CommandHolder("GET", "<key>",
-              "Get the value of a key.", UNDEFINED_SINCE, UNDEFINED_EXAMPLE_STR, 1, 0, &get),
-
-  CommandHolder("INTERRUPT", "-",
-              "Command execution interrupt",
-              UNDEFINED_SINCE, UNDEFINED_EXAMPLE_STR, 0, 0, &interrupt),
-  CommandHolder("QUIT", "-",
-              "Close the connection.", UNDEFINED_SINCE, UNDEFINED_EXAMPLE_STR, 0, 0, &quit),
+              "Get the value of a key.", UNDEFINED_SINCE, UNDEFINED_EXAMPLE_STR, 1, 0, &get)
 };
 
 }  // namespace memcached

@@ -37,19 +37,15 @@ struct RocksdbRaw
   ~RocksdbRaw();
 
   static const char* versionApi();
-  bool isConnected() const;
 
+  bool isConnected() const;
   common::Error connect();
   common::Error disconnect();
-
-  common::Error quit();
-  common::Error interrupt();
 
   std::string currentDbName() const;
 
   common::Error info(const char* args, RocksdbServerInfo::Stats& statsout);
   common::Error dbsize(size_t& size);
-
   common::Error get(const std::string& key, std::string* ret_val);
   common::Error mget(const std::vector< ::rocksdb::Slice>& keys, std::vector<std::string> *ret);
   common::Error merge(const std::string& key, const std::string& value);
@@ -63,8 +59,6 @@ struct RocksdbRaw
   ::rocksdb::DB* rocksdb_;
 };
 
-common::Error quit(CommandHandler* handler, int argc, char** argv, FastoObject* out);
-common::Error interrupt(CommandHandler* handler, int argc, char** argv, FastoObject* out);
 common::Error info(CommandHandler* handler, int argc, char** argv, FastoObject* out);
 common::Error dbsize(CommandHandler* handler, int argc, char** argv, FastoObject* out);
 common::Error get(CommandHandler* handler, int argc, char** argv, FastoObject* out);
@@ -99,13 +93,7 @@ static const std::vector<CommandHolder> rocksdbCommands = {
 
   CommandHolder("DBSIZE", "-",
               "Return the number of keys in the selected database",
-              UNDEFINED_SINCE, UNDEFINED_EXAMPLE_STR, 0, 0, &dbsize),
-  CommandHolder("QUIT", "-",
-              "Close the connection.",
-              UNDEFINED_SINCE, UNDEFINED_EXAMPLE_STR, 0, 0, &quit),
-  CommandHolder("INTERRUPT", "-",
-              "Command execution interrupt",
-              UNDEFINED_SINCE, UNDEFINED_EXAMPLE_STR, 0, 0, &interrupt)
+              UNDEFINED_SINCE, UNDEFINED_EXAMPLE_STR, 0, 0, &dbsize)
 };
 
 }  // namespace rocksdb

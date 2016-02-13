@@ -167,14 +167,6 @@ common::Error LmdbRaw::disconnect() {
   return common::Error();
 }
 
-common::Error LmdbRaw::quit() {
-  return notSupported("QUIT");
-}
-
-common::Error LmdbRaw::interrupt() {
-  return notSupported("INTERRUPT");
-}
-
 MDB_dbi LmdbRaw::curDb() const {
   if (lmdb_) {
     return lmdb_->dbir;
@@ -401,14 +393,6 @@ common::Error keys(CommandHandler* handler, int argc, char** argv, FastoObject* 
   }
 
   return er;
-}
-
-common::Error quit(CommandHandler* handler, int argc, char** argv, FastoObject* out) {
-  LmdbRaw* mdb = static_cast<LmdbRaw*>(handler);
-}
-
-common::Error interrupt(CommandHandler* handler, int argc, char** argv, FastoObject* out) {
-  LmdbRaw* mdb = static_cast<LmdbRaw*>(handler);
 }
 
 }  // namespace lmdb

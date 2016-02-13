@@ -125,14 +125,6 @@ common::Error LeveldbRaw::disconnect() {
   return common::Error();
 }
 
-common::Error LeveldbRaw::quit() {
-  return notSupported("QUIT");
-}
-
-common::Error LeveldbRaw::interrupt() {
-  return notSupported("INTERRUPT");
-}
-
 common::Error LeveldbRaw::dbsize(size_t& size) {
   ::leveldb::ReadOptions ro;
   ::leveldb::Iterator* it = leveldb_->NewIterator(ro);
@@ -335,16 +327,6 @@ common::Error keys(CommandHandler* handler, int argc, char** argv, FastoObject* 
     out->addChildren(child);
   }
   return er;
-}
-
-common::Error quit(CommandHandler* handler, int argc, char** argv, FastoObject* out) {
-  LeveldbRaw* level = static_cast<LeveldbRaw*>(handler);
-  return level->quit();
-}
-
-common::Error interrupt(CommandHandler* handler, int argc, char** argv, FastoObject* out) {
-  LeveldbRaw* level = static_cast<LeveldbRaw*>(handler);
-  return level->interrupt();
 }
 
 }  // namespace leveldb

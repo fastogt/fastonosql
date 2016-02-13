@@ -55,8 +55,6 @@ struct CommandInfo {
   const uint8_t optional_arguments_count;
 };
 
-typedef CommandInfo ExtendedCommandInfo;
-
 class CommandHandler;
 class CommandHolder
     : public CommandInfo {

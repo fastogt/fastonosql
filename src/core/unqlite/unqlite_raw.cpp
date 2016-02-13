@@ -121,14 +121,6 @@ common::Error UnqliteRaw::disconnect() {
   return common::Error();
 }
 
-common::Error UnqliteRaw::quit() {
-  return notSupported("QUIT");
-}
-
-common::Error UnqliteRaw::interrupt() {
-  return notSupported("INTERRUPT");
-}
-
 common::Error UnqliteRaw::info(const char* args, UnqliteServerInfo::Stats* statsout) {
   if (!statsout) {
     return common::make_error_value("Invalid input argument for command: INFO",
@@ -316,16 +308,6 @@ common::Error dbsize(CommandHandler* handler, int argc, char** argv, FastoObject
   }
 
   return er;
-}
-
-common::Error quit(CommandHandler* handler, int argc, char** argv, FastoObject* out) {
-  UnqliteRaw* unq = static_cast<UnqliteRaw*>(handler);
-  return unq->quit();
-}
-
-common::Error interrupt(CommandHandler* handler, int argc, char** argv, FastoObject* out) {
-  UnqliteRaw* unq = static_cast<UnqliteRaw*>(handler);
-  return unq->interrupt();
 }
 
 }  // namespace unqlite

@@ -110,14 +110,6 @@ common::Error SsdbRaw::disconnect() {
   return common::Error();
 }
 
-common::Error SsdbRaw::quit() {
-  return notSupported("QUIT");
-}
-
-common::Error SsdbRaw::interrupt() {
-  return notSupported("INTERRUPT");
-}
-
 common::Error SsdbRaw::info(const char* args, SsdbServerInfo::Common *statsout) {
   if (!statsout) {
     return common::make_error_value("Invalid input argument for command: INFO",
@@ -1294,16 +1286,6 @@ common::Error qclear(CommandHandler* handler, int argc, char** argv, FastoObject
   }
 
   return er;
-}
-
-common::Error quit(CommandHandler* handler, int argc, char** argv, FastoObject* out) {
-  SsdbRaw* ssdb = static_cast<SsdbRaw*>(handler);
-  return ssdb->quit();
-}
-
-common::Error interrupt(CommandHandler* handler, int argc, char** argv, FastoObject* out) {
-  SsdbRaw* ssdb = static_cast<SsdbRaw*>(handler);
-  return ssdb->interrupt();
 }
 
 }  // namespace ssdb

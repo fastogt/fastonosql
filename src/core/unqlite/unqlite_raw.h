@@ -40,12 +40,10 @@ class UnqliteRaw
   ~UnqliteRaw();
 
   static const char* versionApi();
+
   bool isConnected() const;
   common::Error connect();
   common::Error disconnect();
-
-  common::Error quit();
-  common::Error interrupt();
 
   common::Error info(const char* args, UnqliteServerInfo::Stats* statsout);
   common::Error dbsize(size_t& size);
@@ -66,8 +64,6 @@ common::Error del(CommandHandler* handler, int argc, char** argv, FastoObject* o
 common::Error keys(CommandHandler* handler, int argc, char** argv, FastoObject* out);
 common::Error info(CommandHandler* handler, int argc, char** argv, FastoObject* out);
 common::Error dbsize(CommandHandler* handler, int argc, char** argv, FastoObject* out);
-common::Error quit(CommandHandler* handler, int argc, char** argv, FastoObject* out);
-common::Error interrupt(CommandHandler* handler, int argc, char** argv, FastoObject* out);
 
 static const std::vector<CommandHolder> unqliteCommands = {
   CommandHolder("PUT", "<key> <value>",
@@ -86,12 +82,6 @@ static const std::vector<CommandHolder> unqliteCommands = {
               "These command return database information.",
               UNDEFINED_SINCE, UNDEFINED_EXAMPLE_STR, 1, 0, &info),
 
-  CommandHolder("QUIT", "-",
-              "Close the connection.",
-              UNDEFINED_SINCE, UNDEFINED_EXAMPLE_STR, 0, 0, &quit),
-  CommandHolder("INTERRUPT", "-",
-              "Command execution interrupt",
-              UNDEFINED_SINCE, UNDEFINED_EXAMPLE_STR, 0, 0, &interrupt),
   CommandHolder("DBSIZE", "-",
               "Return the number of keys in the selected database",
               UNDEFINED_SINCE, UNDEFINED_EXAMPLE_STR, 0, 0, &dbsize)

@@ -46,12 +46,8 @@ struct LmdbRaw
   static const char* versionApi();
 
   bool isConnected() const;
-
   common::Error connect();
   common::Error disconnect();
-
-  common::Error quit();
-  common::Error interrupt();
 
   MDB_dbi curDb() const;
 
@@ -74,8 +70,6 @@ common::Error get(CommandHandler* handler, int argc, char** argv, FastoObject* o
 common::Error put(CommandHandler* handler, int argc, char** argv, FastoObject* out);
 common::Error del(CommandHandler* handler, int argc, char** argv, FastoObject* out);
 common::Error keys(CommandHandler* handler, int argc, char** argv, FastoObject* out);
-common::Error quit(CommandHandler* handler, int argc, char** argv, FastoObject* out);
-common::Error interrupt(CommandHandler* handler, int argc, char** argv, FastoObject* out);
 
 static const std::vector<CommandHolder> lmdbCommands = {
   CommandHolder("PUT", "<key> <value>",
@@ -96,13 +90,7 @@ static const std::vector<CommandHolder> lmdbCommands = {
 
   CommandHolder("DBSIZE", "-",
               "Return the number of keys in the selected database",
-              UNDEFINED_SINCE, UNDEFINED_EXAMPLE_STR, 0, 0, &dbsize),
-  CommandHolder("QUIT", "-",
-              "Close the connection.",
-              UNDEFINED_SINCE, UNDEFINED_EXAMPLE_STR, 0, 0, &quit),
-  CommandHolder("INTERRUPT", "-",
-              "Command execution interrupt",
-              UNDEFINED_SINCE, UNDEFINED_EXAMPLE_STR, 0, 0, &interrupt)
+              UNDEFINED_SINCE, UNDEFINED_EXAMPLE_STR, 0, 0, &dbsize)
 };
 
 }  // namespace lmdb

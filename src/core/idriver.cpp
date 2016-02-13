@@ -317,7 +317,6 @@ void IDriver::customEvent(QEvent *event) {
   }
 
   interrupt_ = false;
-
   return QObject::customEvent(event);
 }
 

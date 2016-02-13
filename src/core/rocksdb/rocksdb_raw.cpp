@@ -115,14 +115,6 @@ common::Error RocksdbRaw::disconnect() {
   return common::Error();
 }
 
-common::Error RocksdbRaw::quit() {
-  return notSupported("QUIT");
-}
-
-common::Error RocksdbRaw::interrupt() {
-  return notSupported("INTERRUPT");
-}
-
 common::Error RocksdbRaw::info(const char* args, RocksdbServerInfo::Stats& statsout) {
   // sstables
   // stats
@@ -284,16 +276,6 @@ common::Error RocksdbRaw::keys(const std::string &key_start, const std::string &
     return common::make_error_value(buff, common::ErrorValue::E_ERROR);
   }
   return common::Error();
-}
-
-common::Error quit(CommandHandler* handler, int argc, char** argv, FastoObject* out) {
-  RocksdbRaw* rocks = static_cast<RocksdbRaw*>(handler);
-  return rocks->quit();
-}
-
-common::Error interrupt(CommandHandler* handler, int argc, char** argv, FastoObject* out) {
-  RocksdbRaw* rocks = static_cast<RocksdbRaw*>(handler);
-  return rocks->interrupt();
 }
 
 common::Error info(CommandHandler* handler, int argc, char** argv, FastoObject* out) {

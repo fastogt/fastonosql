@@ -69,14 +69,6 @@ const char* MemcachedRaw::versionApi() {
   return memcached_lib_version();
 }
 
-common::Error MemcachedRaw::quit() {
-  return notSupported("QUIT");
-}
-
-common::Error MemcachedRaw::interrupt() {
-  return notSupported("INTERRUPT");
-}
-
 bool MemcachedRaw::isConnected() const {
   if (!memc_) {
     return false;
@@ -374,16 +366,6 @@ void MemcachedRaw::clear() {
     memcached_free(memc_);
   }
   memc_ = NULL;
-}
-
-common::Error quit(CommandHandler* handler, int argc, char** argv, FastoObject* out) {
-  MemcachedRaw* mem = static_cast<MemcachedRaw*>(handler);
-  return mem->quit();
-}
-
-common::Error interrupt(CommandHandler* handler, int argc, char** argv, FastoObject* out) {
-  MemcachedRaw* mem = static_cast<MemcachedRaw*>(handler);
-  return mem->interrupt();
 }
 
 common::Error keys(CommandHandler* handler, int argc, char** argv, FastoObject* out) {

@@ -35,12 +35,10 @@ struct SsdbRaw
   ~SsdbRaw();
 
   static const char* versionApi();
+
   bool isConnected() const;
   common::Error connect();
   common::Error disconnect();
-
-  common::Error quit();
-  common::Error interrupt();
 
   common::Error info(const char* args, SsdbServerInfo::Common* statsout);
   common::Error dbsize(size_t& size);
@@ -99,21 +97,14 @@ struct SsdbRaw
   common::Error zrscan(const std::string &name, const std::string &key_start,
       int64_t *score_start, int64_t *score_end,
       uint64_t limit, std::vector<std::string> *ret);
-
   common::Error multi_zget(const std::string &name, const std::vector<std::string> &keys,
       std::vector<std::string> *ret);
-
   common::Error multi_zset(const std::string &name, const std::map<std::string, int64_t> &kss);
-
   common::Error multi_zdel(const std::string &name, const std::vector<std::string> &keys);
-
   common::Error qpush(const std::string &name, const std::string &item);
-
   common::Error qpop(const std::string &name, std::string *item);
-
   common::Error qslice(const std::string &name, int64_t begin, int64_t end,
                        std::vector<std::string> *ret);
-
   common::Error qclear(const std::string &name, int64_t *ret);
 
   ssdbConfig config_;
@@ -167,8 +158,6 @@ common::Error qpush(CommandHandler* handler, int argc, char** argv, FastoObject*
 common::Error qpop(CommandHandler* handler, int argc, char** argv, FastoObject* out);
 common::Error qslice(CommandHandler* handler, int argc, char** argv, FastoObject* out);
 common::Error qclear(CommandHandler* handler, int argc, char** argv, FastoObject* out);
-common::Error quit(CommandHandler* handler, int argc, char** argv, FastoObject* out);
-common::Error interrupt(CommandHandler* handler, int argc, char** argv, FastoObject* out);
 
 // TODO: SETNX command imlementation
 static const std::vector<CommandHolder> ssdbCommands = {
@@ -318,13 +307,7 @@ static const std::vector<CommandHolder> ssdbCommands = {
 
   CommandHolder("DBSIZE", "-",
               "Return the number of keys in the selected database",
-              UNDEFINED_SINCE, UNDEFINED_EXAMPLE_STR, 0, 0, &dbsize),
-  CommandHolder("QUIT", "-",
-              "Close the connection.",
-              UNDEFINED_SINCE, UNDEFINED_EXAMPLE_STR, 0, 0, &quit),
-  CommandHolder("INTERRUPT", "-",
-              "Command execution interrupt",
-              UNDEFINED_SINCE, UNDEFINED_EXAMPLE_STR, 0, 0, &interrupt)
+              UNDEFINED_SINCE, UNDEFINED_EXAMPLE_STR, 0, 0, &dbsize)
 };
 
 }  // namespace ssdb
