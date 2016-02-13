@@ -21,6 +21,7 @@
 #include "core/iserver.h"
 
 namespace fastonosql {
+namespace lmdb {
 
 LmdbDatabase::LmdbDatabase(IServerSPtr server, IDataBaseInfoSPtr info)
   : IDatabase(server, info) {
@@ -30,4 +31,5 @@ LmdbDatabase::LmdbDatabase(IServerSPtr server, IDataBaseInfoSPtr info)
   DCHECK(info->type() == LMDB);
 }
 
+}  // namespace lmdb
 }  // namespace fastonosql

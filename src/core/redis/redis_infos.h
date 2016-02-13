@@ -116,6 +116,8 @@
 #define REDIS_USED_CPU_USER_CHILDREN_LABEL "used_cpu_user_children"
 
 namespace fastonosql {
+namespace redis {
+
 class RedisDiscoveryInfo
       : public ServerDiscoveryInfo {
  public:
@@ -295,4 +297,5 @@ class RedisCommand
   virtual bool isReadOnly() const;
 };
 
+}  // namespace redis
 }  // namespace fastonosql

@@ -24,6 +24,8 @@
 #include "fasto/qt/logger.h"
 
 namespace fastonosql {
+namespace memcached {
+
 namespace {
 
 void parseOptions(int argc, char **argv, memcachedConfig& cfg) {
@@ -58,14 +60,15 @@ void parseOptions(int argc, char **argv, memcachedConfig& cfg) {
 }  // namespace
 
 memcachedConfig::memcachedConfig()
-  : RemoteConfig(common::net::hostAndPort("127.0.0.1", 11211)), user(), password() {
+  : RemoteConfig(common::net::hostAndPort("localhost", 11211)), user(), password() {
 }
 
+}  // namespace memcached
 }  // namespace fastonosql
 
 namespace common {
 
-std::string convertToString(const fastonosql::memcachedConfig &conf) {
+std::string convertToString(const fastonosql::memcached::memcachedConfig &conf) {
   std::vector<std::string> argv = conf.args();
 
   if (!conf.user.empty()) {
@@ -90,8 +93,8 @@ std::string convertToString(const fastonosql::memcachedConfig &conf) {
 }
 
 template<>
-fastonosql::memcachedConfig convertFromString(const std::string& line) {
-  fastonosql::memcachedConfig cfg;
+fastonosql::memcached::memcachedConfig convertFromString(const std::string& line) {
+  fastonosql::memcached::memcachedConfig cfg;
   enum { kMaxArgs = 64 };
   int argc = 0;
   char *argv[kMaxArgs] = {0};
@@ -102,7 +105,7 @@ fastonosql::memcachedConfig convertFromString(const std::string& line) {
     p2 = strtok(0, " ");
   }
 
-  fastonosql::parseOptions(argc, argv, cfg);
+  fastonosql::memcached::parseOptions(argc, argv, cfg);
   return cfg;
 }
 

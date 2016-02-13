@@ -173,12 +173,12 @@ InfoServerDialog::InfoServerDialog(IServerSPtr server, QWidget* parent)
                                                  QColor(111, 111, 100), this);
 #ifdef BUILD_WITH_REDIS
   if (type == REDIS) {
-    updateText(RedisServerInfo());
+    updateText(redis::RedisServerInfo());
   }
 #endif
 #ifdef BUILD_WITH_MEMCACHED
   if (type == MEMCACHED) {
-    updateText(MemcachedServerInfo());
+    updateText(memcached::MemcachedServerInfo());
   }
 #endif
 #ifdef BUILD_WITH_SSDB
@@ -188,7 +188,7 @@ InfoServerDialog::InfoServerDialog(IServerSPtr server, QWidget* parent)
 #endif
 #ifdef BUILD_WITH_LEVELDB
   if (type == LEVELDB) {
-    updateText(LeveldbServerInfo());
+    updateText(leveldb::LeveldbServerInfo());
   }
 #endif
 #ifdef BUILD_WITH_ROCKSDB
@@ -203,7 +203,7 @@ InfoServerDialog::InfoServerDialog(IServerSPtr server, QWidget* parent)
 #endif
 #ifdef BUILD_WITH_LMDB
   if (type == LMDB) {
-    updateText(LmdbServerInfo());
+    updateText(lmdb::LmdbServerInfo());
   }
 #endif
 
@@ -235,7 +235,7 @@ void InfoServerDialog::finishServerInfo(const events_info::ServerInfoResponce& r
 DCHECK(type == inf->type());
 #ifdef BUILD_WITH_REDIS
   if (type == REDIS) {
-    RedisServerInfo* infr = dynamic_cast<RedisServerInfo*>(inf.get());
+    redis::RedisServerInfo* infr = dynamic_cast<redis::RedisServerInfo*>(inf.get());
     if (infr) {
         updateText(*infr);
     }
@@ -243,7 +243,7 @@ DCHECK(type == inf->type());
 #endif
 #ifdef BUILD_WITH_MEMCACHED
   if (type == MEMCACHED) {
-    MemcachedServerInfo* infr = dynamic_cast<MemcachedServerInfo*>(inf.get());
+    memcached::MemcachedServerInfo* infr = dynamic_cast<memcached::MemcachedServerInfo*>(inf.get());
     if (infr) {
       updateText(*infr);
     }
@@ -259,7 +259,7 @@ DCHECK(type == inf->type());
 #endif
 #ifdef BUILD_WITH_LEVELDB
   if (type == LEVELDB) {
-    LeveldbServerInfo * infr = dynamic_cast<LeveldbServerInfo*>(inf.get());
+    leveldb::LeveldbServerInfo * infr = dynamic_cast<leveldb::LeveldbServerInfo*>(inf.get());
     if (infr) {
         updateText(*infr);
     }
@@ -283,7 +283,7 @@ DCHECK(type == inf->type());
 #endif
 #ifdef BUILD_WITH_LMDB
   if (type == LMDB) {
-    LmdbServerInfo * infr = dynamic_cast<LmdbServerInfo*>(inf.get());
+    lmdb::LmdbServerInfo* infr = dynamic_cast<lmdb::LmdbServerInfo*>(inf.get());
     if (infr) {
       updateText(*infr);
     }
@@ -311,8 +311,8 @@ void InfoServerDialog::retranslateUi() {
 }
 
 #ifdef BUILD_WITH_REDIS
-void InfoServerDialog::updateText(const RedisServerInfo& serv) {
-  RedisServerInfo::Server ser = serv.server_;
+void InfoServerDialog::updateText(const redis::RedisServerInfo& serv) {
+  redis::RedisServerInfo::Server ser = serv.server_;
   QString textServ = redisTextServerTemplate
           .arg(common::convertFromString<QString>(ser.redis_version_))
           .arg(common::convertFromString<QString>(ser.redis_git_sha1_))
@@ -330,13 +330,13 @@ void InfoServerDialog::updateText(const RedisServerInfo& serv) {
           .arg(ser.hz_)
           .arg(ser.lru_clock_);
 
-  RedisServerInfo::Clients cl = serv.clients_;
+  redis::RedisServerInfo::Clients cl = serv.clients_;
   QString textCl = redisTextClientsTemplate.arg(cl.connected_clients_)
           .arg(cl.client_longest_output_list_)
           .arg(cl.client_biggest_input_buf_)
           .arg(cl.blocked_clients_);
 
-  RedisServerInfo::Memory mem = serv.memory_;
+  redis::RedisServerInfo::Memory mem = serv.memory_;
   QString textMem = redisTextMemoryTemplate.arg(mem.used_memory_)
           .arg(common::convertFromString<QString>(mem.used_memory_human_))
           .arg(mem.used_memory_rss_)
@@ -346,7 +346,7 @@ void InfoServerDialog::updateText(const RedisServerInfo& serv) {
           .arg(mem.mem_fragmentation_ratio_)
           .arg(common::convertFromString<QString>(mem.mem_allocator_));
 
-  RedisServerInfo::Persistence per = serv.persistence_;
+  redis::RedisServerInfo::Persistence per = serv.persistence_;
   QString textPer = redisTextPersistenceTemplate.arg(per.loading_)
           .arg(per.rdb_changes_since_last_save_)
           .arg(per.rdb_bgsave_in_progress_)
@@ -362,7 +362,7 @@ void InfoServerDialog::updateText(const RedisServerInfo& serv) {
           .arg(common::convertFromString<QString>(per.aof_last_bgrewrite_status_))
           .arg(common::convertFromString<QString>(per.aof_last_write_status_));
 
-  RedisServerInfo::Stats stat = serv.stats_;
+  redis::RedisServerInfo::Stats stat = serv.stats_;
   QString textStat = redisTextStatsTemplate.arg(stat.total_connections_received_)
           .arg(stat.total_commands_processed_)
           .arg(stat.instantaneous_ops_per_sec_)
@@ -378,7 +378,7 @@ void InfoServerDialog::updateText(const RedisServerInfo& serv) {
           .arg(stat.pubsub_patterns_)
           .arg(stat.latest_fork_usec_);
 
-  RedisServerInfo::Replication repl = serv.replication_;
+  redis::RedisServerInfo::Replication repl = serv.replication_;
   QString textRepl = redisTextReplicationTemplate
           .arg(common::convertFromString<QString>(repl.role_))
           .arg(repl.connected_slaves_)
@@ -388,7 +388,7 @@ void InfoServerDialog::updateText(const RedisServerInfo& serv) {
           .arg(repl.backlog_first_byte_offset_)
           .arg(repl.backlog_histen_);
 
-  RedisServerInfo::Cpu cpu = serv.cpu_;
+  redis::RedisServerInfo::Cpu cpu = serv.cpu_;
   QString textCpu = redisTextCpuTemplate.arg(cpu.used_cpu_sys_)
           .arg(cpu.used_cpu_user_)
           .arg(cpu.used_cpu_sys_children_)
@@ -400,8 +400,8 @@ void InfoServerDialog::updateText(const RedisServerInfo& serv) {
 #endif
 
 #ifdef BUILD_WITH_MEMCACHED
-void InfoServerDialog::updateText(const MemcachedServerInfo& serv) {
-  MemcachedServerInfo::Common com = serv.common_;
+void InfoServerDialog::updateText(const memcached::MemcachedServerInfo& serv) {
+  memcached::MemcachedServerInfo::Common com = serv.common_;
 
   QString textServ = memcachedTextServerTemplate.arg(com.pid)
           .arg(com.uptime)
@@ -446,8 +446,8 @@ void InfoServerDialog::updateText(const ssdb::SsdbServerInfo& serv) {
 #endif
 
 #ifdef BUILD_WITH_LEVELDB
-void InfoServerDialog::updateText(const LeveldbServerInfo& serv) {
-  LeveldbServerInfo::Stats stats = serv.stats_;
+void InfoServerDialog::updateText(const leveldb::LeveldbServerInfo& serv) {
+  leveldb::LeveldbServerInfo::Stats stats = serv.stats_;
   QString textServ = leveldbTextServerTemplate.arg(stats.compactions_level)
           .arg(stats.file_size_mb)
           .arg(stats.time_sec)
@@ -482,8 +482,8 @@ void InfoServerDialog::updateText(const unqlite::UnqliteServerInfo& serv) {
 }
 #endif
 #ifdef BUILD_WITH_LMDB
-void InfoServerDialog::updateText(const LmdbServerInfo& serv) {
-  LmdbServerInfo::Stats stats = serv.stats_;
+void InfoServerDialog::updateText(const lmdb::LmdbServerInfo& serv) {
+  lmdb::LmdbServerInfo::Stats stats = serv.stats_;
   QString textServ = leveldbTextServerTemplate.arg(stats.compactions_level)
           .arg(stats.file_size_mb)
           .arg(stats.time_sec)

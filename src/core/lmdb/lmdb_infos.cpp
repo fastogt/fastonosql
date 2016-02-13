@@ -27,7 +27,6 @@
 #define MARKER "\r\n"
 
 namespace fastonosql {
-
 namespace {
 
 const std::vector<Field> lmdbCommonFields = {
@@ -61,6 +60,7 @@ template<>
 std::vector<std::vector<Field> > DBTraits<LMDB>::infoFields() {
   return { lmdbCommonFields };
 }
+namespace lmdb {
 
 LmdbServerInfo::Stats::Stats()
   : compactions_level(0), file_size_mb(0), time_sec(0), read_mb(0), write_mb(0) {
@@ -204,4 +204,5 @@ bool LmdbCommand::isReadOnly() const {
   return key != "get";
 }
 
+}  // namespace lmdb
 }  // namespace fastonosql

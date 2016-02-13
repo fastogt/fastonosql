@@ -25,6 +25,7 @@
 #include "core/connection_confg.h"
 
 namespace fastonosql {
+namespace lmdb {
 
 struct lmdbConfig
   : public LocalConfig {
@@ -33,8 +34,9 @@ struct lmdbConfig
   bool create_if_missing;
 };
 
+}  // namespace lmdb
 }  // namespace fastonosql
 
 namespace common {
-  std::string convertToString(const fastonosql::lmdbConfig &conf);
+  std::string convertToString(const fastonosql::lmdb::lmdbConfig &conf);
 }  // namespace common

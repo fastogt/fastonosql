@@ -148,12 +148,12 @@ IConnectionSettingsBase* IConnectionSettingsBase::createFromType(connectionTypes
                                                                  const std::string& conName) {
 #ifdef BUILD_WITH_REDIS
   if (type == REDIS) {
-    return new RedisConnectionSettings(conName);
+    return new redis::RedisConnectionSettings(conName);
   }
 #endif
 #ifdef BUILD_WITH_MEMCACHED
   if (type == MEMCACHED) {
-    return new MemcachedConnectionSettings(conName);
+    return new memcached::MemcachedConnectionSettings(conName);
   }
 #endif
 #ifdef BUILD_WITH_SSDB
@@ -163,7 +163,7 @@ IConnectionSettingsBase* IConnectionSettingsBase::createFromType(connectionTypes
 #endif
 #ifdef BUILD_WITH_LEVELDB
   if (type == LEVELDB) {
-    return new LeveldbConnectionSettings(conName);
+    return new leveldb::LeveldbConnectionSettings(conName);
   }
 #endif
 #ifdef BUILD_WITH_ROCKSDB
@@ -178,7 +178,7 @@ IConnectionSettingsBase* IConnectionSettingsBase::createFromType(connectionTypes
 #endif
 #ifdef BUILD_WITH_LMDB
   if (type == LMDB) {
-    return new LmdbConnectionSettings(conName);
+    return new lmdb::LmdbConnectionSettings(conName);
   }
 #endif
   NOTREACHED();
@@ -268,12 +268,12 @@ IConnectionSettingsRemote* IConnectionSettingsRemote::createFromType(connectionT
   IConnectionSettingsRemote* remote = NULL;
 #ifdef BUILD_WITH_REDIS
   if (type == REDIS) {
-    remote = new RedisConnectionSettings(conName);
+    remote = new redis::RedisConnectionSettings(conName);
   }
 #endif
 #ifdef BUILD_WITH_MEMCACHED
   if (type == MEMCACHED) {
-    remote = new MemcachedConnectionSettings(conName);
+    remote = new memcached::MemcachedConnectionSettings(conName);
   }
 #endif
 #ifdef BUILD_WITH_SSDB
@@ -385,13 +385,13 @@ const char* useHelpText(connectionTypes type) {
 std::string defaultCommandLine(connectionTypes type) {
 #ifdef BUILD_WITH_REDIS
   if (type == REDIS) {
-    redisConfig r;
+    redis::redisConfig r;
     return common::convertToString(r);
   }
 #endif
 #ifdef BUILD_WITH_MEMCACHED
   if (type == MEMCACHED) {
-    memcachedConfig r;
+    memcached::memcachedConfig r;
     return common::convertToString(r);
   }
 #endif
@@ -403,7 +403,7 @@ std::string defaultCommandLine(connectionTypes type) {
 #endif
 #ifdef BUILD_WITH_LEVELDB
   if (type == LEVELDB) {
-    leveldbConfig r;
+    leveldb::leveldbConfig r;
     r.options.create_if_missing = true;
     return common::convertToString(r);
   }
@@ -424,7 +424,7 @@ std::string defaultCommandLine(connectionTypes type) {
 #endif
 #ifdef BUILD_WITH_LMDB
   if (type == LMDB) {
-    lmdbConfig r;
+    lmdb::lmdbConfig r;
     r.create_if_missing = true;
     return common::convertToString(r);
   }
@@ -461,7 +461,7 @@ IClusterSettingsBase* IClusterSettingsBase::createFromType(connectionTypes type,
                                                            const std::string& conName) {
 #ifdef BUILD_WITH_REDIS
   if (type == REDIS) {
-      return new RedisClusterSettings(conName);
+      return new redis::RedisClusterSettings(conName);
   }
 #endif
 

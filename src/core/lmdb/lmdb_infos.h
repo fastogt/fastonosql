@@ -31,6 +31,7 @@
 #define LMDB_WRITE_MB_LABEL "write_mb"
 
 namespace fastonosql {
+namespace lmdb {
 
 class LmdbServerInfo
   : public ServerInfo {
@@ -76,4 +77,5 @@ class LmdbCommand
   virtual bool isReadOnly() const;
 };
 
+}  // namespace lmdb
 }  // namespace fastonosql

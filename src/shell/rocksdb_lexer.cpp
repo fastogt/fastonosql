@@ -21,7 +21,7 @@
 #include <vector>
 #include <algorithm>
 
-#include "core/rocksdb/rocksdb_driver.h"
+#include "core/rocksdb/rocksdb_raw.h"
 
 namespace {
   const QString help = "help";
@@ -81,7 +81,7 @@ const char *RocksdbLexer::language() const {
 }
 
 const char* RocksdbLexer::version() const {
-  return rocksdb::RocksdbDriver::versionApi();
+  return rocksdb::RocksdbRaw::versionApi();
 }
 
 const char* RocksdbLexer::basedOn() const {

@@ -26,6 +26,7 @@
 #include "core/connection_confg.h"
 
 namespace fastonosql {
+namespace redis {
 
 struct redisConfig
   : public RemoteConfig {
@@ -64,8 +65,9 @@ struct redisConfig
   void init();
 };
 
+}  // namespace redis
 }  // namespace fastonosql
 
 namespace common {
-  std::string convertToString(const fastonosql::redisConfig &conf);
+  std::string convertToString(const fastonosql::redis::redisConfig &conf);
 }  // namespace common

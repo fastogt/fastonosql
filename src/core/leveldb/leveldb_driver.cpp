@@ -28,8 +28,6 @@
 #include "fasto/qt/logger.h"
 
 #include "core/command_logger.h"
-#include "core/leveldb/leveldb_config.h"
-#include "core/leveldb/leveldb_infos.h"
 
 #define INFO_REQUEST "INFO"
 #define GET_KEY_PATTERN_1ARGS_S "GET %s"
@@ -38,333 +36,12 @@
 #define GET_KEYS_PATTERN_1ARGS_I "KEYS a z %d"
 #define DELETE_KEY_PATTERN_1ARGS_S "DEL %s"
 #define GET_SERVER_TYPE ""
-#define LEVELDB_HEADER_STATS    "                               Compactions\n"\
-                                "Level  Files Size(MB) Time(sec) Read(MB) Write(MB)\n"\
-                                "--------------------------------------------------\n"
-
-namespace {
-
-std::once_flag leveldb_version_once;
-void leveldb_version_startup_function(char * version) {
-  sprintf(version, "%d.%d", leveldb::kMajorVersion, leveldb::kMinorVersion);
-}
-
-}
 
 namespace fastonosql {
-namespace {
-
-common::Error createConnection(const leveldbConfig& config, leveldb::DB** context) {
-  DCHECK(*context == NULL);
-
-  leveldb::DB* lcontext = NULL;
-  leveldb::Status st = leveldb::DB::Open(config.options, config.dbname, &lcontext);
-  if (!st.ok()) {
-    char buff[1024] = {0};
-    common::SNPrintf(buff, sizeof(buff), "Fail connect to server: %s!", st.ToString());
-    return common::make_error_value(buff, common::ErrorValue::E_ERROR);
-  }
-
-  *context = lcontext;
-  return common::Error();
-}
-
-common::Error createConnection(LeveldbConnectionSettings* settings, leveldb::DB** context) {
-  if (!settings) {
-    return common::make_error_value("Invalid input argument", common::ErrorValue::E_ERROR);
-  }
-
-  leveldbConfig config = settings->info();
-  return createConnection(config, context);
-}
-
-}  // namespace
-
-common::Error testConnection(LeveldbConnectionSettings* settings) {
-  leveldb::DB* ldb = NULL;
-  common::Error er = createConnection(settings, &ldb);
-  if (er && er->isError()) {
-    return er;
-  }
-
-  delete ldb;
-  return common::Error();
-}
-
-struct LeveldbDriver::pimpl {
-  pimpl()
-    : leveldb_(NULL) {
-  }
-
-  bool isConnected() const {
-    if (!leveldb_) {
-        return false;
-    }
-
-    return true;
-  }
-
-  common::Error connect() {
-    if (isConnected()) {
-      return common::Error();
-    }
-
-    clear();
-
-    leveldb::DB* context = NULL;
-    common::Error er = createConnection(config_, &context);
-    if (er && er->isError()) {
-      return er;
-    }
-
-    leveldb_ = context;
-    return common::Error();
-  }
-
-  common::Error disconnect() {
-    if (!isConnected()) {
-      return common::Error();
-    }
-
-    clear();
-    return common::Error();
-  }
-
-  common::Error dbsize(size_t& size) WARN_UNUSED_RESULT {
-    leveldb::ReadOptions ro;
-    leveldb::Iterator* it = leveldb_->NewIterator(ro);
-    size_t sz = 0;
-    for (it->SeekToFirst(); it->Valid(); it->Next()) {
-      sz++;
-    }
-
-    leveldb::Status st = it->status();
-    delete it;
-
-    if (!st.ok()) {
-      char buff[1024] = {0};
-      common::SNPrintf(buff, sizeof(buff), "Couldn't determine DBSIZE error: %s", st.ToString());
-      return common::make_error_value(buff, common::ErrorValue::E_ERROR);
-    }
-
-    size = sz;
-    return common::Error();
-  }
-
-  common::Error info(const char* args, LeveldbServerInfo::Stats& statsout) {
-    // sstables
-    // stats
-    // char prop[1024] = {0};
-    // common::SNPrintf(prop, sizeof(prop), "leveldb.%s", args ? args : "stats");
-
-    std::string rets;
-    bool isok = leveldb_->GetProperty("leveldb.stats", &rets);
-    if (!isok) {
-      return common::make_error_value("info function failed", common::ErrorValue::E_ERROR);
-    }
-
-    if (rets.size() > sizeof(LEVELDB_HEADER_STATS)) {
-      const char * retsc = rets.c_str() + sizeof(LEVELDB_HEADER_STATS);
-      char* p2 = strtok((char*)retsc, " ");
-      int pos = 0;
-      while (p2) {
-        switch (pos++) {
-          case 0:
-            statsout.compactions_level = atoi(p2);
-            break;
-          case 1:
-            statsout.file_size_mb = atoi(p2);
-            break;
-          case 2:
-            statsout.time_sec = atoi(p2);
-            break;
-          case 3:
-            statsout.read_mb = atoi(p2);
-            break;
-          case 4:
-            statsout.write_mb = atoi(p2);
-            break;
-          default:
-            break;
-        }
-        p2 = strtok(0, " ");
-      }
-    }
-
-    return common::Error();
-  }
-
-  ~pimpl() {
-    clear();
-  }
-
-  leveldbConfig config_;
-
-  common::Error execute_impl(int argc, char **argv, FastoObject* out) {
-    if (strcasecmp(argv[0], "info") == 0) {
-        if (argc > 2) {
-          return common::make_error_value("Invalid info input argument",
-                                          common::ErrorValue::E_ERROR);
-        }
-
-        LeveldbServerInfo::Stats statsout;
-        common::Error er = info(argc == 2 ? argv[1] : 0, statsout);
-        if (!er) {
-          LeveldbServerInfo linf(statsout);
-          common::StringValue *val = common::Value::createStringValue(linf.toString());
-          FastoObject* child = new FastoObject(out, val, config_.delimiter);
-          out->addChildren(child);
-        }
-        return er;
-    } else if (strcasecmp(argv[0], "get") == 0) {
-        if (argc != 2) {
-          return common::make_error_value("Invalid get input argument",
-                                          common::ErrorValue::E_ERROR);
-        }
-
-        std::string ret;
-        common::Error er = get(argv[1], &ret);
-        if (!er) {
-          common::StringValue *val = common::Value::createStringValue(ret);
-          FastoObject* child = new FastoObject(out, val, config_.delimiter);
-          out->addChildren(child);
-        }
-        return er;
-    } else if (strcasecmp(argv[0], "put") == 0) {
-        if (argc != 3) {
-          return common::make_error_value("Invalid set input argument",
-                                          common::ErrorValue::E_ERROR);
-        }
-
-        common::Error er = put(argv[1], argv[2]);
-        if (!er) {
-          common::StringValue *val = common::Value::createStringValue("STORED");
-          FastoObject* child = new FastoObject(out, val, config_.delimiter);
-          out->addChildren(child);
-        }
-        return er;
-    } else if (strcasecmp(argv[0], "dbsize") == 0) {
-        if (argc != 1) {
-          return common::make_error_value("Invalid dbsize input argument",
-                                          common::ErrorValue::E_ERROR);
-        }
-
-        size_t ret = 0;
-        common::Error er = dbsize(ret);
-        if (!er) {
-          common::FundamentalValue *val = common::Value::createUIntegerValue(ret);
-          FastoObject* child = new FastoObject(out, val, config_.delimiter);
-          out->addChildren(child);
-        }
-        return er;
-    } else if (strcasecmp(argv[0], "del") == 0) {
-      if (argc != 2) {
-        return common::make_error_value("Invalid del input argument", common::ErrorValue::E_ERROR);
-      }
-
-      common::Error er = del(argv[1]);
-      if (!er) {
-        common::StringValue *val = common::Value::createStringValue("DELETED");
-        FastoObject* child = new FastoObject(out, val, config_.delimiter);
-        out->addChildren(child);
-      }
-      return er;
-    } else if (strcasecmp(argv[0], "keys") == 0) {
-      if (argc != 4) {
-        return common::make_error_value("Invalid keys input argument", common::ErrorValue::E_ERROR);
-      }
-
-      std::vector<std::string> keysout;
-      common::Error er = keys(argv[1], argv[2], atoll(argv[3]), &keysout);
-      if (!er) {
-        common::ArrayValue* ar = common::Value::createArrayValue();
-        for (int i = 0; i < keysout.size(); ++i) {
-          common::StringValue *val = common::Value::createStringValue(keysout[i]);
-          ar->append(val);
-        }
-        FastoObjectArray* child = new FastoObjectArray(out, ar, config_.delimiter);
-        out->addChildren(child);
-      }
-      return er;
-    } else {
-      char buff[1024] = {0};
-      common::SNPrintf(buff, sizeof(buff), "Not supported command: %s", argv[0]);
-      return common::make_error_value(buff, common::ErrorValue::E_ERROR);
-    }
-  }
-
-private:
-  common::Error get(const std::string& key, std::string* ret_val) {
-    leveldb::ReadOptions ro;
-    leveldb::Status st = leveldb_->Get(ro, key, ret_val);
-    if (!st.ok()) {
-      char buff[1024] = {0};
-      common::SNPrintf(buff, sizeof(buff), "get function error: %s", st.ToString());
-      return common::make_error_value(buff, common::ErrorValue::E_ERROR);
-    }
-
-    return common::Error();
-  }
-
-  common::Error put(const std::string& key, const std::string& value) {
-    leveldb::WriteOptions wo;
-    leveldb::Status st = leveldb_->Put(wo, key, value);
-    if (!st.ok()) {
-      char buff[1024] = {0};
-      common::SNPrintf(buff, sizeof(buff), "put function error: %s", st.ToString());
-      return common::make_error_value(buff, common::ErrorValue::E_ERROR);
-    }
-
-    return common::Error();
-  }
-
-  common::Error del(const std::string& key) {
-    leveldb::WriteOptions wo;
-    leveldb::Status st = leveldb_->Delete(wo, key);
-    if (!st.ok()) {
-      char buff[1024] = {0};
-      common::SNPrintf(buff, sizeof(buff), "del function error: %s", st.ToString());
-      return common::make_error_value(buff, common::ErrorValue::E_ERROR);
-    }
-    return common::Error();
-  }
-
-  common::Error keys(const std::string &key_start, const std::string &key_end,
-                     uint64_t limit, std::vector<std::string> *ret) {
-    ret->clear();
-
-    leveldb::ReadOptions ro;
-    leveldb::Iterator* it = leveldb_->NewIterator(ro);  // keys(key_start, key_end, limit, ret);
-    for (it->Seek(key_start); it->Valid() && it->key().ToString() < key_end; it->Next()) {
-      std::string key = it->key().ToString();
-      if (ret->size() <= limit) {
-          ret->push_back(key);
-      } else {
-        break;
-      }
-    }
-
-    leveldb::Status st = it->status();
-    delete it;
-
-    if (!st.ok()) {
-      char buff[1024] = {0};
-      common::SNPrintf(buff, sizeof(buff), "Keys function error: %s", st.ToString());
-      return common::make_error_value(buff, common::ErrorValue::E_ERROR);
-    }
-    return common::Error();
-  }
-
-  void clear() {
-    delete leveldb_;
-    leveldb_ = NULL;
-  }
-
-  leveldb::DB* leveldb_;
-};
+namespace leveldb {
 
 LeveldbDriver::LeveldbDriver(IConnectionSettingsBaseSPtr settings)
-  : IDriver(settings, LEVELDB), impl_(new pimpl) {
+  : IDriver(settings, LEVELDB), impl_(new LeveldbRaw) {
 }
 
 LeveldbDriver::~LeveldbDriver() {
@@ -454,12 +131,6 @@ std::string LeveldbDriver::outputDelemitr() const {
   return impl_->config_.delimiter;
 }
 
-const char* LeveldbDriver::versionApi() {
-  static char leveldb_version[32] = {0};
-  std::call_once(leveldb_version_once, leveldb_version_startup_function, leveldb_version);
-  return leveldb_version;
-}
-
 void LeveldbDriver::initImpl() {
 }
 
@@ -467,7 +138,7 @@ void LeveldbDriver::clearImpl() {
 }
 
 common::Error LeveldbDriver::executeImpl(int argc, char **argv, FastoObject* out) {
-  return impl_->execute_impl(argc, argv, out);
+  return impl_->execute(argc, argv, out);
 }
 
 common::Error LeveldbDriver::serverInfo(ServerInfo **info) {
@@ -714,4 +385,5 @@ ServerInfoSPtr LeveldbDriver::makeServerInfoFromString(const std::string& val) {
   return res;
 }
 
+}  // namespace leveldb
 }  // namespace fastonosql

@@ -31,6 +31,7 @@
 #define LEVELDB_WRITE_MB_LABEL "write_mb"
 
 namespace fastonosql {
+namespace leveldb {
 
 class LeveldbServerInfo
   : public ServerInfo {
@@ -76,4 +77,5 @@ class LeveldbCommand
   virtual bool isReadOnly() const;
 };
 
+}  // namespace leveldb
 }  // namespace fastonosql

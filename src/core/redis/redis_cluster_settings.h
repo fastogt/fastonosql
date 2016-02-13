@@ -25,6 +25,7 @@
 #include "core/redis/redis_config.h"
 
 namespace fastonosql {
+namespace redis {
 
 class RedisClusterSettings
   : public IClusterSettingsBase {
@@ -33,4 +34,5 @@ class RedisClusterSettings
   virtual IConnectionSettings* clone() const;
 };
 
+}  // namespace redis
 }  // namespace fastonosql

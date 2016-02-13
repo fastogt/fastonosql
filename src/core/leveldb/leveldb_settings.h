@@ -25,6 +25,7 @@
 #include "core/leveldb/leveldb_config.h"
 
 namespace fastonosql {
+namespace leveldb {
 
 class LeveldbConnectionSettings
   : public IConnectionSettingsBase {
@@ -47,4 +48,5 @@ class LeveldbConnectionSettings
   leveldbConfig info_;
 };
 
+}  // namespace leveldb
 }  // namespace fastonosql

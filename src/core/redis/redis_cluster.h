@@ -23,6 +23,7 @@
 #include "core/icluster.h"
 
 namespace fastonosql {
+namespace redis {
 
 class RedisCluster
   : public ICluster {
@@ -31,4 +32,5 @@ class RedisCluster
   explicit RedisCluster(const std::string& name);
 };
 
+}  // namespace redis
 }  // namespace fastonosql

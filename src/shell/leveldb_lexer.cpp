@@ -21,7 +21,7 @@
 #include <vector>
 #include <algorithm>
 
-#include "core/leveldb/leveldb_driver.h"
+#include "core/leveldb/leveldb_raw.h"
 
 namespace {
   const QString help = "help";
@@ -36,8 +36,8 @@ LeveldbApi::LeveldbApi(QsciLexer *lexer)
 void LeveldbApi::updateAutoCompletionList(const QStringList& context, QStringList& list) {
   for (QStringList::const_iterator it = context.begin(); it != context.end(); ++it) {
     QString val = *it;
-    for (size_t i = 0; i < SIZEOFMASS(leveldbCommands); ++i) {
-      CommandInfo cmd = leveldbCommands[i];
+    for (size_t i = 0; i < leveldb::leveldbCommands.size(); ++i) {
+      CommandInfo cmd = leveldb::leveldbCommands[i];
       if (canSkipCommand(cmd)) {
         continue;
       }
@@ -58,8 +58,8 @@ QStringList LeveldbApi::callTips(const QStringList& context, int commas,
                                  QsciScintilla::CallTipsStyle style, QList<int>& shifts) {
   for (QStringList::const_iterator it = context.begin(); it != context.end() - 1; ++it) {
     QString val = *it;
-    for (size_t i = 0; i < SIZEOFMASS(leveldbCommands); ++i) {
-      CommandInfo cmd = leveldbCommands[i];
+    for (size_t i = 0; i < leveldb::leveldbCommands.size(); ++i) {
+      CommandInfo cmd = leveldb::leveldbCommands[i];
 
       QString jval = common::convertFromString<QString>(cmd.name);
       if (QString::compare(jval, val, Qt::CaseInsensitive) == 0) {
@@ -81,7 +81,7 @@ const char *LeveldbLexer::language() const {
 }
 
 const char* LeveldbLexer::version() const {
-  return LeveldbDriver::versionApi();
+  return leveldb::LeveldbRaw::versionApi();
 }
 
 const char* LeveldbLexer::basedOn() const {
@@ -90,8 +90,8 @@ const char* LeveldbLexer::basedOn() const {
 
 std::vector<uint32_t> LeveldbLexer::supportedVersions() const {
   std::vector<uint32_t> result;
-  for (size_t i = 0; i < SIZEOFMASS(leveldbCommands); ++i) {
-    CommandInfo cmd = leveldbCommands[i];
+  for (size_t i = 0; i < leveldb::leveldbCommands.size(); ++i) {
+    CommandInfo cmd = leveldb::leveldbCommands[i];
 
     bool needed_insert = true;
     for (size_t j = 0; j < result.size(); ++j) {
@@ -112,7 +112,7 @@ std::vector<uint32_t> LeveldbLexer::supportedVersions() const {
 }
 
 size_t LeveldbLexer::commandsCount() const {
-  return SIZEOFMASS(leveldbCommands);
+  return leveldb::leveldbCommands.size();
 }
 
 void LeveldbLexer::styleText(int start, int end) {
@@ -143,8 +143,8 @@ void LeveldbLexer::styleText(int start, int end) {
 }
 
 void LeveldbLexer::paintCommands(const QString& source, int start) {
-  for (size_t i = 0; i < SIZEOFMASS(leveldbCommands); ++i) {
-    CommandInfo cmd = leveldbCommands[i];
+  for (size_t i = 0; i < leveldb::leveldbCommands.size(); ++i) {
+    CommandInfo cmd = leveldb::leveldbCommands[i];
     QString word = common::convertFromString<QString>(cmd.name);
     int index = 0;
     int begin = 0;

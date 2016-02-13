@@ -21,6 +21,7 @@
 #include "core/idatabase.h"
 
 namespace fastonosql {
+namespace redis {
 
 class RedisDatabase
   : public IDatabase {
@@ -28,4 +29,5 @@ class RedisDatabase
     RedisDatabase(IServerSPtr server, IDataBaseInfoSPtr info);
 };
 
+}  // namespace redis
 }  // namespace fastonosql

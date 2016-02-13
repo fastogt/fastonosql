@@ -234,12 +234,14 @@ IF(BUILD_WITH_MEMCACHED)
         core/memcached/memcached_driver.h
     )
     SET(HEADERS_MEMCACHED
+        core/memcached/memcached_raw.h
         core/memcached/memcached_infos.h
         core/memcached/memcached_config.h
         core/memcached/memcached_database.h
         core/memcached/memcached_settings.h
     )
     SET(SOURCES_MEMCACHED
+        core/memcached/memcached_raw.cpp
         core/memcached/memcached_config.cpp
         core/memcached/memcached_infos.cpp
         core/memcached/memcached_server.cpp
@@ -306,12 +308,14 @@ IF(BUILD_WITH_LEVELDB)
         core/leveldb/leveldb_driver.h
     )
     SET(HEADERS_LEVELDB
+        core/leveldb/leveldb_raw.h
         core/leveldb/leveldb_infos.h
         core/leveldb/leveldb_config.h
         core/leveldb/leveldb_database.h
         core/leveldb/leveldb_settings.h
     )
     SET(SOURCES_LEVELDB
+        core/leveldb/leveldb_raw.cpp
         core/leveldb/leveldb_config.cpp
         core/leveldb/leveldb_infos.cpp
         core/leveldb/leveldb_server.cpp
@@ -415,12 +419,14 @@ IF(BUILD_WITH_LMDB)
         core/lmdb/lmdb_driver.h
     )
     SET(HEADERS_LMDB
+        core/lmdb/lmdb_raw.h
         core/lmdb/lmdb_infos.h
         core/lmdb/lmdb_config.h
         core/lmdb/lmdb_database.h
         core/lmdb/lmdb_settings.h
     )
     SET(SOURCES_LMDB
+        core/lmdb/lmdb_raw.cpp
         core/lmdb/lmdb_config.cpp
         core/lmdb/lmdb_infos.cpp
         core/lmdb/lmdb_server.cpp

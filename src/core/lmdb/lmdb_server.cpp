@@ -21,6 +21,7 @@
 #include "core/lmdb/lmdb_database.h"
 
 namespace fastonosql {
+namespace lmdb {
 
 LmdbServer::LmdbServer(IDriverSPtr drv, bool isSuperServer)
   : IServer(drv, isSuperServer) {
@@ -30,4 +31,5 @@ IDatabaseSPtr LmdbServer::createDatabase(IDataBaseInfoSPtr info) {
   return IDatabaseSPtr(new LmdbDatabase(shared_from_this(), info));
 }
 
+}  // namespace lmdb
 }  // namespace fastonosql

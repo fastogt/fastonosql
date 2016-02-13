@@ -48,6 +48,7 @@
 #define MEMCACHED_THREADS_LABEL "threads"
 
 namespace fastonosql {
+namespace memcached {
 
 class MemcachedServerInfo
   : public ServerInfo {
@@ -109,4 +110,5 @@ class MemcachedCommand
   virtual bool isReadOnly() const;
 };
 
+}  // namespace memcached
 }  // namespace fastonosql

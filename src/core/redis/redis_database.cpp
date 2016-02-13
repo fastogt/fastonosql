@@ -21,6 +21,7 @@
 #include "core/iserver.h"
 
 namespace fastonosql {
+namespace redis {
 
 RedisDatabase::RedisDatabase(IServerSPtr server, IDataBaseInfoSPtr info)
   : IDatabase(server, info) {
@@ -30,4 +31,5 @@ RedisDatabase::RedisDatabase(IServerSPtr server, IDataBaseInfoSPtr info)
   DCHECK(info->type() == REDIS);
 }
 
+}  // namespace redis
 }  // namespace fastonosql

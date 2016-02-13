@@ -21,7 +21,7 @@
 #include <vector>
 #include <algorithm>
 
-#include "core/memcached/memcached_driver.h"
+#include "core/memcached/memcached_raw.h"
 
 namespace {
   const QString help = "help";
@@ -36,8 +36,8 @@ MemcachedApi::MemcachedApi(QsciLexer *lexer)
 void MemcachedApi::updateAutoCompletionList(const QStringList& context, QStringList& list) {
   for (QStringList::const_iterator it = context.begin(); it != context.end(); ++it) {
     QString val = *it;
-    for (size_t i = 0; i < SIZEOFMASS(memcachedCommands); ++i) {
-      CommandInfo cmd = memcachedCommands[i];
+    for (size_t i = 0; i < memcached::memcachedCommands.size(); ++i) {
+      CommandInfo cmd = memcached::memcachedCommands[i];
       if (canSkipCommand(cmd)) {
         continue;
       }
@@ -58,8 +58,8 @@ QStringList MemcachedApi::callTips(const QStringList& context, int commas,
                                    QsciScintilla::CallTipsStyle style, QList<int>& shifts) {
   for (QStringList::const_iterator it = context.begin(); it != context.end() - 1; ++it) {
     QString val = *it;
-    for (size_t i = 0; i < SIZEOFMASS(memcachedCommands); ++i) {
-      CommandInfo cmd = memcachedCommands[i];
+    for (size_t i = 0; i < memcached::memcachedCommands.size(); ++i) {
+      CommandInfo cmd = memcached::memcachedCommands[i];
       QString jval = common::convertFromString<QString>(cmd.name);
       if (QString::compare(jval, val, Qt::CaseInsensitive) == 0) {
         return QStringList() << makeCallTip(cmd);
@@ -80,7 +80,7 @@ const char *MemcachedLexer::language() const {
 }
 
 const char* MemcachedLexer::version() const {
-  return MemcachedDriver::versionApi();
+  return memcached::MemcachedRaw::versionApi();
 }
 
 const char* MemcachedLexer::basedOn() const {
@@ -89,8 +89,8 @@ const char* MemcachedLexer::basedOn() const {
 
 std::vector<uint32_t> MemcachedLexer::supportedVersions() const {
   std::vector<uint32_t> result;
-  for (size_t i = 0; i < SIZEOFMASS(memcachedCommands); ++i) {
-    CommandInfo cmd = memcachedCommands[i];
+  for (size_t i = 0; i < memcached::memcachedCommands.size(); ++i) {
+    CommandInfo cmd = memcached::memcachedCommands[i];
 
     bool needed_insert = true;
     for (size_t j = 0; j < result.size(); ++j) {
@@ -111,7 +111,7 @@ std::vector<uint32_t> MemcachedLexer::supportedVersions() const {
 }
 
 size_t MemcachedLexer::commandsCount() const {
-  return SIZEOFMASS(memcachedCommands);
+  return memcached::memcachedCommands.size();
 }
 
 void MemcachedLexer::styleText(int start, int end) {
@@ -142,8 +142,8 @@ void MemcachedLexer::styleText(int start, int end) {
 }
 
 void MemcachedLexer::paintCommands(const QString& source, int start) {
-  for (size_t i = 0; i < SIZEOFMASS(memcachedCommands); ++i) {
-    CommandInfo cmd = memcachedCommands[i];
+  for (size_t i = 0; i < memcached::memcachedCommands.size(); ++i) {
+    CommandInfo cmd = memcached::memcachedCommands[i];
     QString word = common::convertFromString<QString>(cmd.name);
     int index = 0;
     int begin = 0;

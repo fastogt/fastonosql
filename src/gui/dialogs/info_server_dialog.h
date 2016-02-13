@@ -86,16 +86,16 @@ class InfoServerDialog
  private:
   void retranslateUi();
 #ifdef BUILD_WITH_REDIS
-  void updateText(const RedisServerInfo& serv);
+  void updateText(const redis::RedisServerInfo& serv);
 #endif
 #ifdef BUILD_WITH_MEMCACHED
-  void updateText(const MemcachedServerInfo& serv);
+  void updateText(const memcached::MemcachedServerInfo& serv);
 #endif
 #ifdef BUILD_WITH_SSDB
   void updateText(const ssdb::SsdbServerInfo& serv);
 #endif
 #ifdef BUILD_WITH_LEVELDB
-  void updateText(const LeveldbServerInfo& serv);
+  void updateText(const leveldb::LeveldbServerInfo& serv);
 #endif
 #ifdef BUILD_WITH_ROCKSDB
   void updateText(const rocksdb::RocksdbServerInfo& serv);
@@ -104,7 +104,7 @@ class InfoServerDialog
   void updateText(const unqlite::UnqliteServerInfo& serv);
 #endif
 #ifdef BUILD_WITH_LMDB
-  void updateText(const LmdbServerInfo& serv);
+  void updateText(const lmdb::LmdbServerInfo& serv);
 #endif
   QLabel* serverTextInfo_;
   QLabel* hardwareTextInfo_;

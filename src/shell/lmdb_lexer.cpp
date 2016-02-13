@@ -21,7 +21,7 @@
 #include <vector>
 #include <algorithm>
 
-#include "core/lmdb/lmdb_driver.h"
+#include "core/lmdb/lmdb_raw.h"
 
 namespace {
   const QString help = "help";
@@ -35,8 +35,8 @@ LmdbApi::LmdbApi(QsciLexer *lexer)
 void LmdbApi::updateAutoCompletionList(const QStringList& context, QStringList& list) {
   for (QStringList::const_iterator it = context.begin(); it != context.end(); ++it) {
     QString val = *it;
-    for (size_t i = 0; i < SIZEOFMASS(lmdbCommands); ++i) {
-      CommandInfo cmd = lmdbCommands[i];
+    for (size_t i = 0; i < lmdb::lmdbCommands.size(); ++i) {
+      CommandInfo cmd = lmdb::lmdbCommands[i];
       if (canSkipCommand(cmd)) {
         continue;
       }
@@ -57,8 +57,8 @@ QStringList LmdbApi::callTips(const QStringList& context, int commas,
                               QsciScintilla::CallTipsStyle style, QList<int>& shifts) {
   for (QStringList::const_iterator it = context.begin(); it != context.end() - 1; ++it) {
     QString val = *it;
-    for (size_t i = 0; i < SIZEOFMASS(lmdbCommands); ++i) {
-      CommandInfo cmd = lmdbCommands[i];
+    for (size_t i = 0; i < lmdb::lmdbCommands.size(); ++i) {
+      CommandInfo cmd = lmdb::lmdbCommands[i];
 
       QString jval = common::convertFromString<QString>(cmd.name);
       if (QString::compare(jval, val, Qt::CaseInsensitive) == 0) {
@@ -80,7 +80,7 @@ const char *LmdbLexer::language() const {
 }
 
 const char* LmdbLexer::version() const {
-  return LmdbDriver::versionApi();
+  return lmdb::LmdbRaw::versionApi();
 }
 
 const char* LmdbLexer::basedOn() const {
@@ -89,8 +89,8 @@ const char* LmdbLexer::basedOn() const {
 
 std::vector<uint32_t> LmdbLexer::supportedVersions() const {
   std::vector<uint32_t> result;
-  for (int i = 0; i < SIZEOFMASS(lmdbCommands); ++i) {
-    CommandInfo cmd = lmdbCommands[i];
+  for (int i = 0; i < lmdb::lmdbCommands.size(); ++i) {
+    CommandInfo cmd = lmdb::lmdbCommands[i];
 
     bool needed_insert = true;
     for (size_t j = 0; j < result.size(); ++j) {
@@ -110,7 +110,7 @@ std::vector<uint32_t> LmdbLexer::supportedVersions() const {
 }
 
 size_t LmdbLexer::commandsCount() const {
-  return SIZEOFMASS(lmdbCommands);
+  return lmdb::lmdbCommands.size();
 }
 
 void LmdbLexer::styleText(int start, int end) {
@@ -141,8 +141,8 @@ void LmdbLexer::styleText(int start, int end) {
 }
 
 void LmdbLexer::paintCommands(const QString& source, int start) {
-  for (size_t i = 0; i < SIZEOFMASS(lmdbCommands); ++i) {
-    CommandInfo cmd = lmdbCommands[i];
+  for (size_t i = 0; i < lmdb::lmdbCommands.size(); ++i) {
+    CommandInfo cmd = lmdb::lmdbCommands[i];
     QString word = common::convertFromString<QString>(cmd.name);
     int index = 0;
     int begin = 0;

@@ -78,6 +78,10 @@ RocksdbRaw::RocksdbRaw()
   : CommandHandler(rocksdbCommands), rocksdb_(NULL) {
 }
 
+const char* RocksdbRaw::versionApi() {
+  return STRINGIZE(ROCKSDB_MAJOR) "." STRINGIZE(ROCKSDB_MINOR) "." STRINGIZE(ROCKSDB_PATCH);
+}
+
 bool RocksdbRaw::isConnected() const {
   if (!rocksdb_) {
     return false;

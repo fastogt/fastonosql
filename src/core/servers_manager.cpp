@@ -89,12 +89,12 @@ IServerSPtr ServersManager::createServer(IConnectionSettingsBaseSPtr settings) {
   IServerSPtr ser = findServerBySetting(settings);
 #ifdef BUILD_WITH_REDIS
   if (conT == REDIS) {
-    result.reset(make_server<RedisServer, RedisDriver>(ser, settings));
+    result.reset(make_server<redis::RedisServer, redis::RedisDriver>(ser, settings));
   }
 #endif
 #ifdef BUILD_WITH_MEMCACHED
   if (conT == MEMCACHED) {
-    result.reset(make_server<MemcachedServer, MemcachedDriver>(ser, settings));
+    result.reset(make_server<memcached::MemcachedServer, memcached::MemcachedDriver>(ser, settings));
   }
 #endif
 #ifdef BUILD_WITH_SSDB
@@ -104,7 +104,7 @@ IServerSPtr ServersManager::createServer(IConnectionSettingsBaseSPtr settings) {
 #endif
 #ifdef BUILD_WITH_LEVELDB
   if (conT == LEVELDB) {
-    result.reset(make_server<LeveldbServer, LeveldbDriver>(ser, settings));
+    result.reset(make_server<leveldb::LeveldbServer, leveldb::LeveldbDriver>(ser, settings));
   }
 #endif
 #ifdef BUILD_WITH_ROCKSDB
@@ -119,7 +119,7 @@ IServerSPtr ServersManager::createServer(IConnectionSettingsBaseSPtr settings) {
 #endif
 #ifdef BUILD_WITH_LMDB
   if (conT == LMDB) {
-    result.reset(make_server<LmdbServer, LmdbDriver>(ser, settings));
+    result.reset(make_server<lmdb::LmdbServer, lmdb::LmdbDriver>(ser, settings));
   }
 #endif
   DCHECK(result);
@@ -145,7 +145,7 @@ IClusterSPtr ServersManager::createCluster(IClusterSettingsBaseSPtr settings) {
       return IClusterSPtr();
     }
 
-    cl.reset(new RedisCluster(settings->connectionName()));
+    cl.reset(new redis::RedisCluster(settings->connectionName()));
     IClusterSettingsBase::cluster_connection_type nodes = settings->nodes();
     for (int i = 0; i < nodes.size(); ++i) {
       IConnectionSettingsBaseSPtr nd = nodes[i];
@@ -170,12 +170,12 @@ common::Error ServersManager::testConnection(IConnectionSettingsBaseSPtr connect
   connectionTypes type = connection->connectionType();
 #ifdef BUILD_WITH_REDIS
   if (type == REDIS) {
-    return fastonosql::testConnection(dynamic_cast<RedisConnectionSettings*>(connection.get()));
+    return fastonosql::redis::testConnection(dynamic_cast<redis::RedisConnectionSettings*>(connection.get()));
   }
 #endif
 #ifdef BUILD_WITH_MEMCACHED
   if (type == MEMCACHED) {
-    return fastonosql::testConnection(dynamic_cast<MemcachedConnectionSettings*>(connection.get()));
+    return fastonosql::memcached::testConnection(dynamic_cast<memcached::MemcachedConnectionSettings*>(connection.get()));
   }
 #endif
 #ifdef BUILD_WITH_SSDB
@@ -185,7 +185,7 @@ common::Error ServersManager::testConnection(IConnectionSettingsBaseSPtr connect
 #endif
 #ifdef BUILD_WITH_LEVELDB
   if (type == LEVELDB) {
-    return fastonosql::testConnection(dynamic_cast<LeveldbConnectionSettings*>(connection.get()));
+    return fastonosql::leveldb::testConnection(dynamic_cast<leveldb::LeveldbConnectionSettings*>(connection.get()));
   }
 #endif
 #ifdef BUILD_WITH_ROCKSDB
@@ -200,7 +200,7 @@ common::Error ServersManager::testConnection(IConnectionSettingsBaseSPtr connect
 #endif
 #ifdef BUILD_WITH_LMDB
   if (type == LMDB) {
-    return fastonosql::testConnection(dynamic_cast<LmdbConnectionSettings*>(connection.get()));
+    return fastonosql::lmdb::testConnection(dynamic_cast<lmdb::LmdbConnectionSettings*>(connection.get()));
   }
 #endif
   return common::make_error_value("Invalid setting type", common::ErrorValue::E_ERROR);
@@ -215,7 +215,7 @@ common::Error ServersManager::discoveryConnection(IConnectionSettingsBaseSPtr co
   connectionTypes type = connection->connectionType();
 #ifdef BUILD_WITH_REDIS
   if (type == REDIS) {
-    return fastonosql::discoveryConnection(dynamic_cast<RedisConnectionSettings*>(connection.get()), inf);
+    return fastonosql::redis::discoveryConnection(dynamic_cast<redis::RedisConnectionSettings*>(connection.get()), inf);
   }
 #endif
 #ifdef BUILD_WITH_MEMCACHED

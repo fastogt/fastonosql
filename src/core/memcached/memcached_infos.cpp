@@ -77,6 +77,8 @@ std::vector<std::vector<Field> > DBTraits<MEMCACHED>::infoFields() {
   return  { memcachedCommonFields };
 }
 
+namespace memcached {
+
 MemcachedServerInfo::Common::Common() {
 }
 
@@ -322,4 +324,5 @@ bool MemcachedCommand::isReadOnly() const {
   return key != "get";
 }
 
+}  // namespace memcached
 }  // namespace fastonosql

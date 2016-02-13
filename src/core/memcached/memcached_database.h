@@ -21,6 +21,7 @@
 #include "core/idatabase.h"
 
 namespace fastonosql {
+namespace memcached {
 
 class MemcachedDatabase
   : public IDatabase {
@@ -28,4 +29,5 @@ class MemcachedDatabase
   MemcachedDatabase(IServerSPtr server, IDataBaseInfoSPtr info);
 };
 
+}  // namespace memcached
 }  // namespace fastonosql

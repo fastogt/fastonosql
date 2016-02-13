@@ -128,10 +128,6 @@ std::string RocksdbDriver::outputDelemitr() const {
   return impl_->config_.delimiter;
 }
 
-const char* RocksdbDriver::versionApi() {
-  return STRINGIZE(ROCKSDB_MAJOR) "." STRINGIZE(ROCKSDB_MINOR) "." STRINGIZE(ROCKSDB_PATCH);
-}
-
 void RocksdbDriver::initImpl() {
 }
 

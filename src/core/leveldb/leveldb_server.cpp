@@ -21,6 +21,7 @@
 #include "core/leveldb/leveldb_database.h"
 
 namespace fastonosql {
+namespace leveldb {
 
 LeveldbServer::LeveldbServer(IDriverSPtr drv, bool isSuperServer)
   : IServer(drv, isSuperServer) {
@@ -30,4 +31,5 @@ IDatabaseSPtr LeveldbServer::createDatabase(IDataBaseInfoSPtr info) {
   return IDatabaseSPtr(new LeveldbDatabase(shared_from_this(), info));
 }
 
+}  // namespace leveldb
 }  // namespace fastonosql

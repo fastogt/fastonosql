@@ -21,6 +21,7 @@
 #include <string>
 
 namespace fastonosql {
+namespace leveldb {
 
 LeveldbConnectionSettings::LeveldbConnectionSettings(const std::string& connectionName)
   : IConnectionSettingsBase(connectionName, LEVELDB), info_() {
@@ -60,4 +61,5 @@ void LeveldbConnectionSettings::initFromCommandLine(const std::string& val) {
   info_ = common::convertFromString<leveldbConfig>(val);
 }
 
+}  // namespace leveldb
 }  // namespace fastonosql

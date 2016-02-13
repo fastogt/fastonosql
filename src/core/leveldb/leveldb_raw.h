@@ -20,23 +20,22 @@
 
 #include <string>
 
-#include <rocksdb/db.h>
+#include <leveldb/db.h>
 
-#include "core/rocksdb/rocksdb_settings.h"
-#include "core/rocksdb/rocksdb_config.h"
-#include "core/rocksdb/rocksdb_infos.h"
+#include "core/leveldb/leveldb_settings.h"
+#include "core/leveldb/leveldb_config.h"
+#include "core/leveldb/leveldb_infos.h"
 
 namespace fastonosql {
-namespace rocksdb {
+namespace leveldb {
 
-common::Error testConnection(RocksdbConnectionSettings* settings);
-
-struct RocksdbRaw
+struct LeveldbRaw
     : public CommandHandler {
-  RocksdbRaw();
-  ~RocksdbRaw();
+  LeveldbRaw();
+  ~LeveldbRaw();
 
   static const char* versionApi();
+
   bool isConnected() const;
 
   common::Error connect();
@@ -45,48 +44,38 @@ struct RocksdbRaw
   common::Error quit();
   common::Error interrupt();
 
-  std::string currentDbName() const;
-
-  common::Error info(const char* args, RocksdbServerInfo::Stats& statsout);
   common::Error dbsize(size_t& size);
+  common::Error info(const char* args, LeveldbServerInfo::Stats& statsout);
+
 
   common::Error get(const std::string& key, std::string* ret_val);
-  common::Error mget(const std::vector< ::rocksdb::Slice>& keys, std::vector<std::string> *ret);
-  common::Error merge(const std::string& key, const std::string& value);
   common::Error put(const std::string& key, const std::string& value);
   common::Error del(const std::string& key);
   common::Error keys(const std::string &key_start, const std::string &key_end,
                      uint64_t limit, std::vector<std::string> *ret);
 
-  rocksdbConfig config_;
- private:
-  ::rocksdb::DB* rocksdb_;
+  leveldbConfig config_;
+private:
+  ::leveldb::DB* leveldb_;
 };
 
-common::Error quit(CommandHandler* handler, int argc, char** argv, FastoObject* out);
-common::Error interrupt(CommandHandler* handler, int argc, char** argv, FastoObject* out);
-common::Error info(CommandHandler* handler, int argc, char** argv, FastoObject* out);
+
 common::Error dbsize(CommandHandler* handler, int argc, char** argv, FastoObject* out);
+common::Error info(CommandHandler* handler, int argc, char** argv, FastoObject* out);
 common::Error get(CommandHandler* handler, int argc, char** argv, FastoObject* out);
-common::Error mget(CommandHandler* handler, int argc, char** argv, FastoObject* out);
-common::Error merge(CommandHandler* handler, int argc, char** argv, FastoObject* out);
 common::Error put(CommandHandler* handler, int argc, char** argv, FastoObject* out);
 common::Error del(CommandHandler* handler, int argc, char** argv, FastoObject* out);
 common::Error keys(CommandHandler* handler, int argc, char** argv, FastoObject* out);
+common::Error quit(CommandHandler* handler, int argc, char** argv, FastoObject* out);
+common::Error interrupt(CommandHandler* handler, int argc, char** argv, FastoObject* out);
 
-static const std::vector<CommandHolder> rocksdbCommands = {
+static const std::vector<CommandHolder> leveldbCommands = {
   CommandHolder("PUT", "<key> <value>",
               "Set the value of a key.",
               UNDEFINED_SINCE, UNDEFINED_EXAMPLE_STR, 2, 0, &put),
   CommandHolder("GET", "<key>",
               "Get the value of a key.",
               UNDEFINED_SINCE, UNDEFINED_EXAMPLE_STR, 1, 0, &get),
-  CommandHolder("MGET", "<keys>",
-              "Get the value of a key.",
-              UNDEFINED_SINCE, UNDEFINED_EXAMPLE_STR, 1, 0, &mget),
-  CommandHolder("MERGE", "<key> <value>",
-              "Merge the database entry for \"key\" with \"value\"",
-              UNDEFINED_SINCE, UNDEFINED_EXAMPLE_STR, 2, 0, &merge),
   CommandHolder("DEL", "<key>",
               "Delete key.",
               UNDEFINED_SINCE, UNDEFINED_EXAMPLE_STR, 1, 0, &del),
@@ -108,5 +97,5 @@ static const std::vector<CommandHolder> rocksdbCommands = {
               UNDEFINED_SINCE, UNDEFINED_EXAMPLE_STR, 0, 0, &interrupt)
 };
 
-}  // namespace rocksdb
+}  // namespace leveldb
 }  // namespace fastonosql

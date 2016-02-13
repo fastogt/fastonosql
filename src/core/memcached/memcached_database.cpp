@@ -21,6 +21,7 @@
 #include "core/iserver.h"
 
 namespace fastonosql {
+namespace memcached {
 
 MemcachedDatabase::MemcachedDatabase(IServerSPtr server, IDataBaseInfoSPtr info)
   : IDatabase(server, info) {
@@ -30,4 +31,5 @@ MemcachedDatabase::MemcachedDatabase(IServerSPtr server, IDataBaseInfoSPtr info)
   DCHECK(info->type() == MEMCACHED);
 }
 
+}  // namespace memcached
 }  // namespace fastonosql

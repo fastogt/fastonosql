@@ -62,6 +62,8 @@ std::vector<std::vector<Field> > DBTraits<LEVELDB>::infoFields() {
   return  { LeveldbCommonFields };
 }
 
+namespace leveldb {
+
 LeveldbServerInfo::Stats::Stats()
   : compactions_level(0), file_size_mb(0), time_sec(0), read_mb(0), write_mb(0) {
 }
@@ -205,4 +207,5 @@ bool LeveldbCommand::isReadOnly() const {
   return key != "get";
 }
 
+}  // namespace leveldb
 }  // namespace fastonosql

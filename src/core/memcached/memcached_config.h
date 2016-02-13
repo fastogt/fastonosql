@@ -25,6 +25,7 @@
 #include "core/connection_confg.h"
 
 namespace fastonosql {
+namespace memcached {
 
 struct memcachedConfig
   : public RemoteConfig {
@@ -34,8 +35,9 @@ struct memcachedConfig
   std::string password;
 };
 
+}  // namespace memcached
 }  // namespace fastonosql
 
 namespace common {
-  std::string convertToString(const fastonosql::memcachedConfig &conf);
+  std::string convertToString(const fastonosql::memcached::memcachedConfig &conf);
 }  // namespace common

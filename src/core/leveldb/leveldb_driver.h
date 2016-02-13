@@ -21,37 +21,10 @@
 #include <string>
 
 #include "core/idriver.h"
-
-#include "core/leveldb/leveldb_settings.h"
+#include "core/leveldb/leveldb_raw.h"
 
 namespace fastonosql {
-
-static const CommandInfo leveldbCommands[] = {
-  CommandInfo("PUT", "<key> <value>",
-              "Set the value of a key.",
-              UNDEFINED_SINCE, UNDEFINED_EXAMPLE_STR, 2, 0),
-  CommandInfo("GET", "<key>",
-              "Get the value of a key.",
-              UNDEFINED_SINCE, UNDEFINED_EXAMPLE_STR, 1, 0),
-  CommandInfo("DEL", "<key>",
-              "Delete key.",
-              UNDEFINED_SINCE, UNDEFINED_EXAMPLE_STR, 1, 0),
-  CommandInfo("KEYS", "<key_start> <key_end> <limit>",
-              "Find all keys matching the given limits.",
-              UNDEFINED_SINCE, UNDEFINED_EXAMPLE_STR, 3, 0),
-  CommandInfo("INFO", "<args>",
-              "These command return database information.",
-              UNDEFINED_SINCE, UNDEFINED_EXAMPLE_STR, 1, 0),
-  CommandInfo("QUIT", "-",
-              "Close the connection.",
-              UNDEFINED_SINCE, UNDEFINED_EXAMPLE_STR, 0, 0),
-  ExtendedCommandInfo("INTERRUPT", "-",
-              "Command execution interrupt",
-              UNDEFINED_SINCE, UNDEFINED_EXAMPLE_STR, 0, 0),
-  ExtendedCommandInfo("DBSIZE", "-",
-              "Return the number of keys in the selected database",
-              UNDEFINED_SINCE, UNDEFINED_EXAMPLE_STR, 0, 0)
-};
+namespace leveldb {
 
 common::Error testConnection(LeveldbConnectionSettings* settings);
 
@@ -66,8 +39,6 @@ class LeveldbDriver
   virtual bool isAuthenticated() const;
   common::net::hostAndPort address() const;
   virtual std::string outputDelemitr() const;
-
-  static const char* versionApi();
 
  private:
   virtual void initImpl();
@@ -106,8 +77,8 @@ class LeveldbDriver
   // ============== command =============//
   ServerInfoSPtr makeServerInfoFromString(const std::string& val);
 
-  struct pimpl;
-  pimpl* const impl_;
+  LeveldbRaw* const impl_;
 };
 
+}  // namespace leveldb
 }  // namespace fastonosql

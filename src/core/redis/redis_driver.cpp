@@ -245,6 +245,7 @@ common::Value::Type convertFromStringRType(const std::string& type) {
 }
 
 namespace fastonosql {
+namespace redis {
 namespace {
 
   RedisCommand* createCommandFast(const std::string& input, common::Value::CommandLoggingType ct) {
@@ -2602,4 +2603,5 @@ ServerInfoSPtr RedisDriver::makeServerInfoFromString(const std::string& val) {
   return res;
 }
 
+}  // namespace redis
 }  // namespace fastonosql

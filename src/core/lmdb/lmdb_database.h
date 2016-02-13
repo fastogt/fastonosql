@@ -21,6 +21,7 @@
 #include "core/idatabase.h"
 
 namespace fastonosql {
+namespace lmdb {
 
 class LmdbDatabase
   : public IDatabase {
@@ -28,4 +29,5 @@ class LmdbDatabase
   LmdbDatabase(IServerSPtr server, IDataBaseInfoSPtr info);
 };
 
+}  // namespace lmdb
 }  // namespace fastonosql

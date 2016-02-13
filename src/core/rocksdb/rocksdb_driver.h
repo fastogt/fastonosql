@@ -39,8 +39,6 @@ class RocksdbDriver
   common::net::hostAndPort address() const;
   virtual std::string outputDelemitr() const;
 
-  static const char* versionApi();
-
  private:
   virtual void initImpl();
   virtual void clearImpl();

@@ -21,9 +21,11 @@
 #include <string>
 
 namespace fastonosql {
+namespace redis {
 
 RedisCluster::RedisCluster(const std::string& name)
   : ICluster(name) {
 }
 
+}  // namespace redis
 }  // namespace fastonosql

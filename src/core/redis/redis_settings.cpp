@@ -23,6 +23,7 @@
 #include "common/utils.h"
 
 namespace fastonosql {
+namespace redis {
 
 RedisConnectionSettings::RedisConnectionSettings(const std::string &connectionName)
   : IConnectionSettingsRemote(connectionName, REDIS), info_() {
@@ -66,4 +67,5 @@ IConnectionSettings *RedisConnectionSettings::clone() const {
   return red;
 }
 
+}  // namespace redis
 }  // namespace fastonosql

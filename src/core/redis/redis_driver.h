@@ -26,8 +26,9 @@
 #include "core/redis/redis_settings.h"
 
 namespace fastonosql {
+namespace redis {
 
-static const CommandInfo redisCommands[] = {
+static const std::vector<CommandInfo> redisCommands = {
   CommandInfo("APPEND", "<key> <value>",
               "Append a value to a key", PROJECT_VERSION_GENERATE(2,0,0), UNDEFINED_EXAMPLE_STR, 2, 0),
   CommandInfo("AUTH", "<password>",
@@ -484,4 +485,5 @@ class RedisDriver
   common::Error scanMode(events::ProcessConfigArgsRequestEvent* ev);
 };
 
+}  // namespace redis
 }  // namespace fastonosql

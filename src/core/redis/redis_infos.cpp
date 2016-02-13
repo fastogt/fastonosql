@@ -167,6 +167,8 @@ std::vector< std::vector<Field> > DBTraits<REDIS>::infoFields() {
           };
 }
 
+namespace redis {
+
 RedisDiscoveryInfo::RedisDiscoveryInfo(serverTypes type, bool self)
   : ServerDiscoveryInfo(REDIS, type, self), hash_() {
 }
@@ -1026,4 +1028,5 @@ bool RedisCommand::isReadOnly() const {
   return key != "get";
 }
 
+}  // namespace redis
 }  // namespace fastonosql
