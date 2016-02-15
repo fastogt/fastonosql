@@ -38,7 +38,7 @@ LogTabWidget::LogTabWidget(QWidget* parent)
   setMovable(true);
   setDocumentMode(true);
 
-  log_ = new LogWidget;
+  log_ = new LogWidget(this);
   addTab(log_, GuiFactory::instance().loggingIcon(), translations::trLogs);
   commands_ = new CommandsWidget;
   addTab(commands_, GuiFactory::instance().commandIcon(), translations::trCommands);

@@ -163,8 +163,10 @@ common::Error UnqliteRaw::dbsize(size_t& size) {
 }
 
 UnqliteRaw::~UnqliteRaw() {
-  int rc = unqlite_close(unqlite_);
-  DCHECK(rc == UNQLITE_OK);
+  if (unqlite_) {
+    int rc = unqlite_close(unqlite_);
+    DCHECK(rc == UNQLITE_OK);
+  }
   unqlite_ = NULL;
 }
 
