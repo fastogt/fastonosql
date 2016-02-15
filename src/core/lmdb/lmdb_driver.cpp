@@ -296,7 +296,9 @@ void LmdbDriver::handleLoadDatabaseInfosEvent(events::LoadDatabasesInfoRequestEv
   notifyProgress(sender, 0);
   events::LoadDatabasesInfoResponceEvent::value_type res(ev->value());
   notifyProgress(sender, 50);
-  res.databases.push_back(currentDatabaseInfo());
+  IDataBaseInfoSPtr curdb = currentDatabaseInfo();
+  CHECK(curdb);
+  res.databases.push_back(curdb);
   reply(sender, new events::LoadDatabasesInfoResponceEvent(this, res));
   notifyProgress(sender, 100);
 }

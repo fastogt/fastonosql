@@ -151,19 +151,19 @@ QString IServer::outputDelemitr() const {
 IDatabaseSPtr IServer::findDatabaseByInfo(IDataBaseInfoSPtr inf) const {
   DCHECK(inf);
   if (!inf) {
-      return IDatabaseSPtr();
+    return IDatabaseSPtr();
   }
 
   DCHECK(type() == inf->type());
   if (type() != inf->type()) {
-      return IDatabaseSPtr();
+    return IDatabaseSPtr();
   }
 
   for (int i = 0; i < databases_.size(); ++i) {
-      IDataBaseInfoSPtr db = databases_[i]->info();
-      if (db->name() == inf->name()) {
-          return databases_[i];
-      }
+    IDataBaseInfoSPtr db = databases_[i]->info();
+    if (db->name() == inf->name()) {
+      return databases_[i];
+    }
   }
 
   return IDatabaseSPtr();

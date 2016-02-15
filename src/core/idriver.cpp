@@ -184,11 +184,21 @@ IConnectionSettingsBaseSPtr IDriver::settings() const {
 }
 
 ServerInfoSPtr IDriver::serverInfo() const {
-  return server_info_;
+  if (isConnected()) {
+    CHECK(server_info_);
+    return server_info_;
+  }
+
+  return ServerInfoSPtr();
 }
 
 IDataBaseInfoSPtr IDriver::currentDatabaseInfo() const {
-  return current_database_info_;
+  if (isConnected()) {
+    CHECK(current_database_info_);
+    return current_database_info_;
+  }
+
+  return IDataBaseInfoSPtr();
 }
 
 void IDriver::start() {
@@ -495,9 +505,9 @@ void IDriver::handleDiscoveryInfoRequestEvent(events::DiscoveryInfoRequestEvent*
     ServerDiscoveryInfo* disc = NULL;
     ServerInfo* info = NULL;
     IDataBaseInfo* db = NULL;
-    common::Error er = serverDiscoveryInfo(&info, &disc, &db);
-    if (er && er->isError()) {
-      res.setErrorInfo(er);
+    common::Error err = serverDiscoveryInfo(&info, &disc, &db);
+    if (err && err->isError()) {
+      res.setErrorInfo(err);
     } else {
       DCHECK(info);
       DCHECK(db);

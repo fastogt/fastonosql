@@ -24,11 +24,7 @@
 
 #define UNQLITE_STATS_LABEL "# Stats"
 
-#define UNQLITE_CAMPACTIONS_LEVEL_LABEL "compactions_level"
-#define UNQLITE_FILE_SIZE_MB_LABEL "file_size_mb"
-#define UNQLITE_TIME_SEC_LABEL "time_sec"
-#define UNQLITE_READ_MB_LABEL "read_mb"
-#define UNQLITE_WRITE_MB_LABEL "write_mb"
+#define UNQLITE_FILE_NAME_LABEL "file_name"
 
 namespace fastonosql {
 namespace unqlite {
@@ -42,12 +38,7 @@ class UnqliteServerInfo
       Stats();
       explicit Stats(const std::string& common_text);
       common::Value* valueByIndex(unsigned char index) const;
-
-      uint32_t compactions_level;
-      uint32_t file_size_mb;
-      uint32_t time_sec;
-      uint32_t read_mb;
-      uint32_t write_mb;
+      std::string file_name;
   } stats_;
 
   UnqliteServerInfo();

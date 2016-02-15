@@ -64,10 +64,8 @@ struct MemcachedRaw
 
   memcachedConfig config_;
   SSHInfo sinfo_;
- private:
-  void init();
-  void clear();
 
+ private:
   memcached_st* memc_;
 };
 

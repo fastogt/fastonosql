@@ -27,6 +27,64 @@
 
 namespace fastonosql {
 namespace memcached {
+namespace {
+common::Error createConnection(const memcachedConfig& config, struct memcached_st** context) {
+  DCHECK(*context == NULL);
+  memcached_st* memc = ::memcached(NULL, 0);
+
+  if (!memc) {
+    return common::make_error_value("Init error", common::ErrorValue::E_ERROR);
+  }
+
+  memcached_return rc;
+  char buff[1024] = {0};
+
+  if (!config.user.empty() && !config.password.empty()) {
+    const char* user = common::utils::c_strornull(config.user);
+    const char* passwd = common::utils::c_strornull(config.password);
+    rc = memcached_set_sasl_auth_data(memc, user, passwd);
+    if (rc != MEMCACHED_SUCCESS) {
+      common::SNPrintf(buff, sizeof(buff), "Couldn't setup SASL auth: %s",
+                       memcached_strerror(memc, rc));
+      memcached_free(memc);
+      return common::make_error_value(buff, common::ErrorValue::E_ERROR);
+    }
+  }
+
+  const char* host = common::utils::c_strornull(config.host.host);
+  uint16_t hostport = config.host.port;
+
+  rc = memcached_server_add(memc, host, hostport);
+
+  if (rc != MEMCACHED_SUCCESS) {
+    common::SNPrintf(buff, sizeof(buff), "Couldn't add server: %s",
+                     memcached_strerror(memc, rc));
+    memcached_free(memc);
+    return common::make_error_value(buff, common::ErrorValue::E_ERROR);
+  }
+
+  memcached_return_t error = memcached_version(memc);
+  if (error != MEMCACHED_SUCCESS) {
+    char buff[1024] = {0};
+    common::SNPrintf(buff, sizeof(buff), "Connect to server error: %s",
+                     memcached_strerror(memc, error));
+    memcached_free(memc);
+    return common::make_error_value(buff, common::ErrorValue::E_ERROR);
+  }
+
+  *context = memc;
+  return common::Error();
+}
+
+common::Error createConnection(MemcachedConnectionSettings* settings, struct memcached_st** context) {
+  if (!settings) {
+      return common::make_error_value("Invalid input argument", common::ErrorValue::E_ERROR);
+  }
+
+  memcachedConfig config = settings->info();
+  return createConnection(config, context);
+}
+}  // namespace
 
 common::Error testConnection(MemcachedConnectionSettings* settings) {
   if (!settings) {
@@ -87,51 +145,13 @@ common::Error MemcachedRaw::connect() {
     return common::Error();
   }
 
-  init();
-
-  if (!memc_) {
-    return common::make_error_value("Init error", common::ErrorValue::E_ERROR);
+  struct memcached_st* context = NULL;
+  common::Error err = createConnection(config_, &context);
+  if (err && err->isError()) {
+    return err;
   }
 
-  memcached_return rc;
-  char buff[1024] = {0};
-
-  if (!config_.user.empty() && !config_.password.empty()) {
-    const char* user = config_.user.c_str();
-    const char* passwd = config_.password.c_str();
-    rc = memcached_set_sasl_auth_data(memc_, user, passwd);
-    if (rc != MEMCACHED_SUCCESS) {
-      common::SNPrintf(buff, sizeof(buff), "Couldn't setup SASL auth: %s",
-                       memcached_strerror(memc_, rc));
-      return common::make_error_value(buff, common::ErrorValue::E_ERROR);
-    }
-  }
-
-  /*rc = memcached_behavior_set(memc_, MEMCACHED_BEHAVIOR_CONNECT_TIMEOUT, 10000);
-  if (rc != MEMCACHED_SUCCESS) {
-      sprintf(buff, "Couldn't set the connect timeout: %s", memcached_strerror(memc_, rc));
-      return common::make_error_value(buff, common::ErrorValue::E_ERROR);
-  }*/
-
-  const char* host = common::utils::c_strornull(config_.host.host);
-  uint16_t hostport = config_.host.port;
-
-  rc = memcached_server_add(memc_, host, hostport);
-
-  if (rc != MEMCACHED_SUCCESS) {
-    common::SNPrintf(buff, sizeof(buff), "Couldn't add server: %s",
-                     memcached_strerror(memc_, rc));
-    return common::make_error_value(buff, common::ErrorValue::E_ERROR);
-  }
-
-  memcached_return_t error = memcached_version(memc_);
-  if (error != MEMCACHED_SUCCESS) {
-    char buff[1024] = {0};
-    common::SNPrintf(buff, sizeof(buff), "Connect to server error: %s",
-                     memcached_strerror(memc_, error));
-    return common::make_error_value(buff, common::ErrorValue::E_ERROR);
-  }
-
+  memc_ = context;
   return common::Error();
 }
 
@@ -140,7 +160,10 @@ common::Error MemcachedRaw::disconnect() {
     return common::Error();
   }
 
-  clear();
+  if (memc_) {
+    memcached_free(memc_);
+  }
+  memc_ = NULL;
   return common::Error();
 }
 
@@ -188,7 +211,10 @@ common::Error MemcachedRaw::stats(const char* args, MemcachedServerInfo::Common&
 }
 
 MemcachedRaw::~MemcachedRaw() {
-  clear();
+  if (memc_) {
+    memcached_free(memc_);
+  }
+  memc_ = NULL;
 }
 
 common::Error MemcachedRaw::get(const std::string& key, std::string& ret_val) {
@@ -353,19 +379,6 @@ common::Error MemcachedRaw::verbosity() const {
   }*/
 
   return common::make_error_value("Not supported command", common::ErrorValue::E_ERROR);
-}
-
-void MemcachedRaw::init() {
-  DCHECK(!memc_);
-  memc_ = ::memcached(NULL, 0);
-  DCHECK(memc_);
-}
-
-void MemcachedRaw::clear() {
-  if (memc_) {
-    memcached_free(memc_);
-  }
-  memc_ = NULL;
 }
 
 common::Error keys(CommandHandler* handler, int argc, char** argv, FastoObject* out) {

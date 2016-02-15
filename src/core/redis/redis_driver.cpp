@@ -2273,7 +2273,8 @@ void RedisDriver::handleLoadDatabaseInfosEvent(events::LoadDatabasesInfoRequestE
         goto done;
       }
 
-      IDataBaseInfoSPtr cdbInf = currentDatabaseInfo();
+      IDataBaseInfoSPtr curdb = currentDatabaseInfo();
+      CHECK(curdb);
       if (ar->size() == 2) {
         std::string scountDb;
         bool isok = ar->getString(1, &scountDb);
@@ -2282,8 +2283,8 @@ void RedisDriver::handleLoadDatabaseInfosEvent(events::LoadDatabasesInfoRequestE
             if (countDb > 0) {
               for (size_t i = 0; i < countDb; ++i) {
                 IDataBaseInfoSPtr dbInf(new RedisDataBaseInfo(common::convertToString(i), false, 0));
-                if (dbInf->name() == cdbInf->name()) {
-                  res.databases.push_back(cdbInf);
+                if (dbInf->name() == curdb->name()) {
+                  res.databases.push_back(curdb);
                 } else {
                   res.databases.push_back(dbInf);
                 }
@@ -2291,7 +2292,7 @@ void RedisDriver::handleLoadDatabaseInfosEvent(events::LoadDatabasesInfoRequestE
             }
         }
       } else {
-        res.databases.push_back(cdbInf);
+        res.databases.push_back(curdb);
       }
     }
   }

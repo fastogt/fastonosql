@@ -123,11 +123,16 @@ common::Error UnqliteRaw::disconnect() {
 
 common::Error UnqliteRaw::info(const char* args, UnqliteServerInfo::Stats* statsout) {
   if (!statsout) {
+    NOTREACHED();
     return common::make_error_value("Invalid input argument for command: INFO",
                                     common::ErrorValue::E_ERROR);
   }
 
-  return notSupported("INFO");
+  UnqliteServerInfo::Stats linfo;
+  linfo.file_name = config_.dbname;
+
+  *statsout = linfo;
+  return common::Error();
 }
 
 common::Error UnqliteRaw::dbsize(size_t& size) {

@@ -144,7 +144,7 @@ common::Error UnqliteDriver::serverInfo(ServerInfo **info) {
   UnqliteServerInfo::Stats cm;
   common::Error err = impl_->info(NULL, &cm);
   if (!err) {
-      *info = new UnqliteServerInfo(cm);
+    *info = new UnqliteServerInfo(cm);
   }
 
   return err;
@@ -154,17 +154,17 @@ common::Error UnqliteDriver::serverDiscoveryInfo(ServerInfo **sinfo,
                                                  ServerDiscoveryInfo **dinfo,
                                                  IDataBaseInfo** dbinfo) {
   ServerInfo *lsinfo = NULL;
-  common::Error er = serverInfo(&lsinfo);
-  if (er && er->isError()) {
-    return er;
+  common::Error err = serverInfo(&lsinfo);
+  if (err && err->isError()) {
+    return err;
   }
 
   FastoObjectIPtr root = FastoObject::createRoot(GET_SERVER_TYPE);
   FastoObjectCommand* cmd = createCommand<UnqliteCommand>(root, GET_SERVER_TYPE,
                                                           common::Value::C_INNER);
-  er = execute(cmd);
+  err = execute(cmd);
 
-  if (!er) {
+  if (!err) {
     FastoObject::child_container_type ch = root->childrens();
     if (ch.size()) {
       // *dinfo = makeOwnRedisDiscoveryInfo(ch[0]);
@@ -172,15 +172,15 @@ common::Error UnqliteDriver::serverDiscoveryInfo(ServerInfo **sinfo,
   }
 
   IDataBaseInfo* ldbinfo = NULL;
-  er = currentDataBaseInfo(&ldbinfo);
-  if (er && er->isError()) {
+  err = currentDataBaseInfo(&ldbinfo);
+  if (err && err->isError()) {
     delete lsinfo;
-    return er;
+    return err;
   }
 
   *sinfo = lsinfo;
   *dbinfo = ldbinfo;
-  return er;
+  return err;
 }
 
 common::Error UnqliteDriver::currentDataBaseInfo(IDataBaseInfo** info) {
@@ -300,7 +300,9 @@ void UnqliteDriver::handleLoadDatabaseInfosEvent(events::LoadDatabasesInfoReques
 notifyProgress(sender, 0);
   events::LoadDatabasesInfoResponceEvent::value_type res(ev->value());
 notifyProgress(sender, 50);
-  res.databases.push_back(currentDatabaseInfo());
+  IDataBaseInfoSPtr curdb = currentDatabaseInfo();
+  CHECK(curdb);
+  res.databases.push_back(curdb);
   reply(sender, new events::LoadDatabasesInfoResponceEvent(this, res));
 notifyProgress(sender, 100);
 }
