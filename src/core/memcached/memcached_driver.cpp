@@ -42,8 +42,6 @@ MemcachedDriver::MemcachedDriver(IConnectionSettingsBaseSPtr settings)
 }
 
 MemcachedDriver::~MemcachedDriver() {
-  interrupt();
-  stop();
   delete impl_;
 }
 

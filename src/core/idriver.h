@@ -103,7 +103,7 @@ class IDriver
   virtual void handleCommandRequestEvent(events::CommandRequestEvent* ev) = 0;
 
   const IConnectionSettingsBaseSPtr settings_;
-  bool interrupt_;
+  volatile bool interrupt_;
 
   class RootLocker
   {

@@ -134,16 +134,11 @@ common::Error IDriver::execute(FastoObjectCommand* cmd) {
     sds *argv = sdssplitargs(command.c_str(), &argc);
 
     if (argv == NULL) {
-        common::StringValue *val = common::Value::createStringValue("Invalid argument(s)");
-        FastoObject* child = new FastoObject(cmd, val, cmd->delemitr());
-        cmd->addChildren(child);
+      common::StringValue *val = common::Value::createStringValue("Invalid argument(s)");
+      FastoObject* child = new FastoObject(cmd, val, cmd->delemitr());
+      cmd->addChildren(child);
     } else if (argc > 0) {
-        char *command = argv[0];
-        if (strcasecmp(command, "interrupt") == 0) {
-            interrupt();
-        } else {
-            er = executeImpl(argc, argv, cmd);
-        }
+      er = executeImpl(argc, argv, cmd);
     }
     sdsfreesplitres(argv,argc);
   }
@@ -226,26 +221,26 @@ common::Error IDriver::commandByType(CommandKeySPtr command, std::string* cmdstr
     }
     return commandDeleteImpl(delc, cmdstring);
   } else if (t == CommandKey::C_LOAD) {
-      CommandLoadKey* loadc = dynamic_cast<CommandLoadKey*>(command.get());
-      if (!loadc) {
-        return common::make_error_value("Invalid input argument", common::ErrorValue::E_ERROR);
-      }
-      return commandLoadImpl(loadc, cmdstring);
+    CommandLoadKey* loadc = dynamic_cast<CommandLoadKey*>(command.get());
+    if (!loadc) {
+      return common::make_error_value("Invalid input argument", common::ErrorValue::E_ERROR);
+    }
+    return commandLoadImpl(loadc, cmdstring);
   } else if (t == CommandKey::C_CREATE) {
-      CommandCreateKey* createc = dynamic_cast<CommandCreateKey*>(command.get());
-      if (!createc || !createc->value()) {
-        return common::make_error_value("Invalid input argument", common::ErrorValue::E_ERROR);
-      }
-      return commandCreateImpl(createc, cmdstring);
+    CommandCreateKey* createc = dynamic_cast<CommandCreateKey*>(command.get());
+    if (!createc || !createc->value()) {
+      return common::make_error_value("Invalid input argument", common::ErrorValue::E_ERROR);
+    }
+    return commandCreateImpl(createc, cmdstring);
   } else if (t == CommandKey::C_CHANGE_TTL) {
-      CommandChangeTTL* changettl = dynamic_cast<CommandChangeTTL*>(command.get());
-      if (!changettl) {
-        return common::make_error_value("Invalid input argument", common::ErrorValue::E_ERROR);
-      }
-      return commandChangeTTLImpl(changettl, cmdstring);
+    CommandChangeTTL* changettl = dynamic_cast<CommandChangeTTL*>(command.get());
+    if (!changettl) {
+      return common::make_error_value("Invalid input argument", common::ErrorValue::E_ERROR);
+    }
+    return commandChangeTTLImpl(changettl, cmdstring);
   } else {
-      NOTREACHED();
-      return common::make_error_value("Unknown command", common::ErrorValue::E_ERROR);
+    NOTREACHED();
+    return common::make_error_value("Unknown command", common::ErrorValue::E_ERROR);
   }
 }
 

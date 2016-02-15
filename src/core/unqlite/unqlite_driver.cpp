@@ -44,8 +44,6 @@ UnqliteDriver::UnqliteDriver(IConnectionSettingsBaseSPtr settings)
 }
 
 UnqliteDriver::~UnqliteDriver() {
-  interrupt();
-  stop();
   delete impl_;
 }
 

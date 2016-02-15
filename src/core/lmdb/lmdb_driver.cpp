@@ -44,8 +44,6 @@ LmdbDriver::LmdbDriver(IConnectionSettingsBaseSPtr settings)
 }
 
 LmdbDriver::~LmdbDriver() {
-  interrupt();
-  stop();
   delete impl_;
 }
 

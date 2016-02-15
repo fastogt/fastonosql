@@ -45,8 +45,6 @@ LeveldbDriver::LeveldbDriver(IConnectionSettingsBaseSPtr settings)
 }
 
 LeveldbDriver::~LeveldbDriver() {
-  interrupt();
-  stop();
   delete impl_;
 }
 

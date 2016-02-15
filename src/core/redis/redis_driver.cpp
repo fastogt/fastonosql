@@ -1748,8 +1748,6 @@ RedisDriver::RedisDriver(IConnectionSettingsBaseSPtr settings)
 }
 
 RedisDriver::~RedisDriver() {
-  interrupt();
-  stop();
   delete impl_;
 }
 

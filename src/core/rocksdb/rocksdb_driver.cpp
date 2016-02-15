@@ -45,8 +45,6 @@ RocksdbDriver::RocksdbDriver(IConnectionSettingsBaseSPtr settings)
 }
 
 RocksdbDriver::~RocksdbDriver() {
-  interrupt();
-  stop();
   delete impl_;
 }
 

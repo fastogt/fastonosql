@@ -63,9 +63,6 @@ class IServer
   IDatabaseSPtr findDatabaseByInfo(IDataBaseInfoSPtr inf) const;
   IDatabaseSPtr findDatabaseByName(const std::string& name) const;
 
-  void start();
-  void stop();
-
  Q_SIGNALS: //only direct connections
   void startedConnect(const events_info::ConnectInfoRequest& req);
   void finishedConnect(const events_info::ConnectInfoResponce& res);

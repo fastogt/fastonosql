@@ -53,8 +53,6 @@ SsdbDriver::SsdbDriver(IConnectionSettingsBaseSPtr settings)
 }
 
 SsdbDriver::~SsdbDriver() {
-  interrupt();
-  stop();
   delete impl_;
 }
 

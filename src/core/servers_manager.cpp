@@ -114,7 +114,6 @@ IServerSPtr ServersManager::createServer(IConnectionSettingsBaseSPtr settings) {
   }
 
   IServerSPtr sh(server);
-  sh->start();
   servers_.push_back(sh);
   return sh;
 }
@@ -236,10 +235,6 @@ common::Error ServersManager::discoveryConnection(IConnectionSettingsBaseSPtr co
 }
 
 void ServersManager::clear() {
-  for (size_t i = 0; i < servers_.size(); ++i) {
-    IServerSPtr ser = servers_[i];
-    ser->stop();
-  }
   servers_.clear();
 }
 

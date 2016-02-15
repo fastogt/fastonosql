@@ -40,9 +40,12 @@ IServer::IServer(IDriver* drv)
   VERIFY(QObject::connect(drv_, &IDriver::itemUpdated, this, &IServer::itemUpdated));
   VERIFY(QObject::connect(drv_, &IDriver::serverInfoSnapShoot,
                           this, &IServer::serverInfoSnapShoot));
+  drv_->start();
 }
 
 IServer::~IServer() {
+  drv_->interrupt();
+  drv_->stop();
   delete drv_;
 }
 
@@ -112,7 +115,7 @@ IDatabaseSPtr IServer::findDatabaseByInfo(IDataBaseInfoSPtr inf) const {
 }
 
 IDatabaseSPtr IServer::findDatabaseByName(const std::string& name) const {
-  for (int i = 0; i < databases_.size(); ++i) {
+  for (size_t i = 0; i < databases_.size(); ++i) {
     IDataBaseInfoSPtr db = databases_[i]->info();
     if (db->name() == name) {
       return databases_[i];
@@ -120,14 +123,6 @@ IDatabaseSPtr IServer::findDatabaseByName(const std::string& name) const {
   }
 
   return IDatabaseSPtr();
-}
-
-void IServer::start() {
-  drv_->start();
-}
-
-void IServer::stop() {
-  drv_->stop();
 }
 
 void IServer::connect(const events_info::ConnectInfoRequest& req) {
