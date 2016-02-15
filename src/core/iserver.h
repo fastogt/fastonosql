@@ -39,7 +39,7 @@ class IServer
   : public IServerBase, public std::enable_shared_from_this<IServer> {
   Q_OBJECT
  public:
-  typedef std::vector<IDatabaseSPtr> databases_container_t;
+  typedef std::vector<IDataBaseInfoSPtr> databases_container_t;
 
   IServer(IDriver *drv);  // take ownerships
   virtual ~IServer();
@@ -60,8 +60,8 @@ class IServer
   ServerInfoSPtr serverInfo() const;
 
   QString outputDelemitr() const;
-  IDatabaseSPtr findDatabaseByInfo(IDataBaseInfoSPtr inf) const;
-  IDatabaseSPtr findDatabaseByName(const std::string& name) const;
+  IDatabaseSPtr createDatabaseByInfo(IDataBaseInfoSPtr inf);
+  bool containsDatabase(IDataBaseInfoSPtr inf) const;
 
  Q_SIGNALS: //only direct connections
   void startedConnect(const events_info::ConnectInfoRequest& req);

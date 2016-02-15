@@ -45,6 +45,7 @@ class OutputWidget
   Q_OBJECT
  public:
   explicit OutputWidget(IServerSPtr server, QWidget* parent = 0);
+  ~OutputWidget();
 
  public Q_SLOTS:
   void rootCreate(const events_info::CommandRootCreatedInfo& res);

@@ -93,36 +93,30 @@ QString IServer::outputDelemitr() const {
   return common::convertFromString<QString>(drv_->outputDelemitr());
 }
 
-IDatabaseSPtr IServer::findDatabaseByInfo(IDataBaseInfoSPtr inf) const {
+IDatabaseSPtr IServer::createDatabaseByInfo(IDataBaseInfoSPtr inf) {
+  bool isContains = containsDatabase(inf);
+  return isContains ? createDatabase(inf) : IDatabaseSPtr();
+}
+
+bool IServer::containsDatabase(IDataBaseInfoSPtr inf) const {
   DCHECK(inf);
   if (!inf) {
-    return IDatabaseSPtr();
+    return false;
   }
 
   DCHECK(type() == inf->type());
   if (type() != inf->type()) {
-    return IDatabaseSPtr();
+    return false;
   }
 
-  for (int i = 0; i < databases_.size(); ++i) {
-    IDataBaseInfoSPtr db = databases_[i]->info();
-    if (db->name() == inf->name()) {
-      return databases_[i];
-    }
-  }
-
-  return IDatabaseSPtr();
-}
-
-IDatabaseSPtr IServer::findDatabaseByName(const std::string& name) const {
   for (size_t i = 0; i < databases_.size(); ++i) {
-    IDataBaseInfoSPtr db = databases_[i]->info();
-    if (db->name() == name) {
-      return databases_[i];
+    IDataBaseInfoSPtr db = databases_[i];
+    if (db->name() == inf->name()) {
+      return true;
     }
   }
 
-  return IDatabaseSPtr();
+  return false;
 }
 
 void IServer::connect(const events_info::ConnectInfoRequest& req) {
@@ -422,12 +416,10 @@ void IServer::handleLoadDatabaseInfosEvent(events::LoadDatabasesInfoResponceEven
     events_info::LoadDatabasesInfoResponce::database_info_cont_type tmp;
     for (int j = 0; j < dbs.size(); ++j) {
       IDataBaseInfoSPtr db = dbs[j];
-      IDatabaseSPtr datab = findDatabaseByInfo(db);
-      if (!datab) {
-        datab = createDatabase(db);
-        databases_.push_back(datab);
-       }
-       tmp.push_back(datab->info());
+      if (!containsDatabase(db)) {
+        databases_.push_back(db);
+      }
+      tmp.push_back(db);
     }
     v.databases = tmp;
   }
@@ -441,12 +433,8 @@ void IServer::handleLoadDatabaseContentEvent(events::LoadDatabaseContentResponce
   if (er && er->isError()) {
     LOG_ERROR(er, true);
   } else {
-    IDatabaseSPtr db = findDatabaseByInfo(v.inf);
-    if (db) {
-      IDataBaseInfoSPtr rdb = db->info();
-      if (rdb) {
-        rdb->setKeys(v.keys);
-      }
+    if (containsDatabase(v.inf)) {
+      v.inf->setKeys(v.keys);
     }
   }
 
@@ -489,13 +477,12 @@ void IServer::handleSetDefaultDatabaseEvent(events::SetDefaultDatabaseResponceEv
     LOG_ERROR(er, true);
   } else {
     IDataBaseInfoSPtr inf = v.inf;
-    for (int i = 0; i < databases_.size(); ++i) {
-      IDatabaseSPtr db = databases_[i];
-      IDataBaseInfoSPtr info = db->info();
-      if (info->name() == inf->name()) {
-        info->setIsDefault(true);
+    for (size_t i = 0; i < databases_.size(); ++i) {
+      IDataBaseInfoSPtr db = databases_[i];
+      if (db->name() == inf->name()) {
+        inf->setIsDefault(true);
       } else {
-        info->setIsDefault(false);
+        inf->setIsDefault(false);
       }
     }
   }

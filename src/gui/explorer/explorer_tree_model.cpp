@@ -408,7 +408,7 @@ void ExplorerTreeModel::addDatabase(IServer* server, IDataBaseInfoSPtr db) {
   ExplorerDatabaseItem *dbs = findDatabaseItem(parent, db);
   if (!dbs) {
     QModelIndex index = createIndex(0, 0, parent);
-    ExplorerDatabaseItem *item = new ExplorerDatabaseItem(server->findDatabaseByInfo(db), parent);
+    ExplorerDatabaseItem *item = new ExplorerDatabaseItem(server->createDatabaseByInfo(db), parent);
     insertItem(index, item);
   }
 }

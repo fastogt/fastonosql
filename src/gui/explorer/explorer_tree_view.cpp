@@ -125,6 +125,10 @@ ExplorerTreeView::ExplorerTreeView(QWidget* parent)
   retranslateUi();
 }
 
+ExplorerTreeView::~ExplorerTreeView(){
+
+}
+
 void ExplorerTreeView::addServer(IServerSPtr server) {
   DCHECK(server);
   if (!server) {

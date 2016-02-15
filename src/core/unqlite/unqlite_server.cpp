@@ -25,11 +25,11 @@ namespace fastonosql {
 namespace unqlite {
 
 UnqliteServer::UnqliteServer(IConnectionSettingsBaseSPtr settings)
-    : IServer(new UnqliteDriver(settings)) {
+  : IServer(new UnqliteDriver(settings)) {
 }
 
 IDatabaseSPtr UnqliteServer::createDatabase(IDataBaseInfoSPtr info) {
-    return IDatabaseSPtr(new UnqliteDatabase(shared_from_this(), info));
+  return IDatabaseSPtr(new UnqliteDatabase(shared_from_this(), info));
 }
 
 }  // namespace unqlite

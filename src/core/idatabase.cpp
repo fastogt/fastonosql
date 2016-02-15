@@ -25,16 +25,16 @@ namespace fastonosql {
 
 IDatabase::IDatabase(IServerSPtr server, IDataBaseInfoSPtr info)
   : info_(info), server_(server) {
-  DCHECK(server);
-  DCHECK(info);
-  DCHECK(server->type() == info->type());
+  CHECK(server);
+  CHECK(info);
+  CHECK(server->type() == info->type());
 }
 
 IDatabase::~IDatabase() {
 }
 
 connectionTypes IDatabase::type() const {
-  return server_->type();
+  return info_->type();
 }
 
 IServerSPtr IDatabase::server() const {
