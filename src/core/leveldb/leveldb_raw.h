@@ -29,6 +29,8 @@
 namespace fastonosql {
 namespace leveldb {
 
+common::Error testConnection(LeveldbConnectionSettings* settings);
+
 struct LeveldbRaw
     : public CommandHandler {
   LeveldbRaw();

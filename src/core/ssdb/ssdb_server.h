@@ -18,6 +18,7 @@
 
 #pragma once
 
+#include "core/connection_settings.h"
 #include "core/iserver.h"
 
 namespace fastonosql {
@@ -27,7 +28,7 @@ class SsdbServer
   : public IServer {
   Q_OBJECT
  public:
-  SsdbServer(IDriverSPtr drv, bool isSuperServer);
+  SsdbServer(IConnectionSettingsBaseSPtr settings);
  private:
   virtual IDatabaseSPtr createDatabase(IDataBaseInfoSPtr info);
 };

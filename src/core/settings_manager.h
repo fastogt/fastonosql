@@ -70,9 +70,6 @@ class SettingsManager
   QStringList recentConnections() const;
   void clearRConnections();
 
-  bool syncTabs() const;
-  void setSyncTabs(bool sync);
-
   void setLoggingDirectory(const QString& dir);
   QString loggingDirectory() const;
 
@@ -104,7 +101,6 @@ class SettingsManager
   ConnectionSettingsContainerType connections_;
   ClusterSettingsContainerType clusters_;
   QStringList recent_connections_;
-  bool sync_tabs_;
   QString logging_dir_;
   bool auto_check_update_;
   bool auto_completion_;

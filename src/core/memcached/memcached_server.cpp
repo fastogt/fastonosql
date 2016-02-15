@@ -18,13 +18,14 @@
 
 #include "core/memcached/memcached_server.h"
 
+#include "core/memcached/memcached_driver.h"
 #include "core/memcached/memcached_database.h"
 
 namespace fastonosql {
 namespace memcached {
 
-MemcachedServer::MemcachedServer(IDriverSPtr drv, bool isSuperServer)
-  : IServer(drv, isSuperServer) {
+MemcachedServer::MemcachedServer(IConnectionSettingsBaseSPtr settings)
+  : IServer(new MemcachedDriver(settings)) {
 }
 
 IDatabaseSPtr MemcachedServer::createDatabase(IDataBaseInfoSPtr info) {

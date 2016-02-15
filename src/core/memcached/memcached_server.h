@@ -18,6 +18,7 @@
 
 #pragma once
 
+#include "core/connection_settings.h"
 #include "core/iserver.h"
 
 namespace fastonosql {
@@ -27,7 +28,7 @@ class MemcachedServer
   : public IServer {
   Q_OBJECT
  public:
-  MemcachedServer(IDriverSPtr drv, bool isSuperServer);
+  MemcachedServer(IConnectionSettingsBaseSPtr settings);
  private:
   virtual IDatabaseSPtr createDatabase(IDataBaseInfoSPtr info);
 };

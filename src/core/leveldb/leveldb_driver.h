@@ -26,8 +26,6 @@
 namespace fastonosql {
 namespace leveldb {
 
-common::Error testConnection(LeveldbConnectionSettings* settings);
-
 class LeveldbDriver
       : public IDriver {
   Q_OBJECT

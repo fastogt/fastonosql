@@ -41,7 +41,6 @@ class ServersManager
   common::Error discoveryConnection(IConnectionSettingsBaseSPtr connection,
                                     std::vector<ServerDiscoveryInfoSPtr>& inf);
 
-  void setSyncServers(bool isSync);
   void clear();
 
  public Q_SLOTS:
@@ -52,12 +51,7 @@ class ServersManager
   ServersManager();
   ~ServersManager();
 
-  void refreshSyncServers();
-  IServerSPtr findServerBySetting(IConnectionSettingsBaseSPtr settings) const;
-  std::vector<QObject*> findAllListeners(IDriverSPtr drv) const;
-
   ServersContainer servers_;
-  bool sync_servers_;
 };
 
 }  // namespace fastonosql

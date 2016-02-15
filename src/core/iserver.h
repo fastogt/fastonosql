@@ -21,8 +21,6 @@
 #include <string>
 #include <vector>
 
-#include "core/core_fwd.h"
-
 #include "core/events/events.h"
 
 namespace fastonosql {
@@ -35,13 +33,15 @@ class IServerBase
   virtual ~IServerBase();
 };
 
+class IDriver;
+
 class IServer
   : public IServerBase, public std::enable_shared_from_this<IServer> {
   Q_OBJECT
  public:
   typedef std::vector<IDatabaseSPtr> databases_container_t;
 
-  IServer(IDriverSPtr drv, bool isSuperServer);
+  IServer(IDriver *drv);  // take ownerships
   virtual ~IServer();
 
   //sync methods
@@ -50,14 +50,10 @@ class IServer
   bool isAuthenticated() const;
   bool isCanRemote() const;
 
-  bool isSuperServer() const;
-  void setSuperServer(bool isSuper);
-
   common::net::hostAndPort address() const;
 
   connectionTypes type() const;
   QString name() const;
-  IDriverSPtr driver() const;
 
   IDataBaseInfoSPtr currentDatabaseInfo() const;
   ServerDiscoveryInfoSPtr discoveryInfo() const;
@@ -67,8 +63,8 @@ class IServer
   IDatabaseSPtr findDatabaseByInfo(IDataBaseInfoSPtr inf) const;
   IDatabaseSPtr findDatabaseByName(const std::string& name) const;
 
-  virtual void syncWithServer(IServer* src);
-  virtual void unSyncFromServer(IServer* src);
+  void start();
+  void stop();
 
  Q_SIGNALS: //only direct connections
   void startedConnect(const events_info::ConnectInfoRequest& req);
@@ -183,7 +179,7 @@ class IServer
   // handle command events
   virtual void handleCommandResponceEvent(events::CommandResponceEvent* ev);
 
-  const IDriverSPtr drv_;
+  IDriver* const drv_;
   databases_container_t databases_;
 
  private:
@@ -196,8 +192,6 @@ class IServer
 
   void processConfigArgs(const events_info::ProcessConfigArgsInfoRequest &req);
   void processDiscoveryInfo(const events_info::DiscoveryInfoRequest &req);
-
-  bool is_super_server_;
 };
 
 }  // namespace fastonosql

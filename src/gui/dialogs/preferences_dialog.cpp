@@ -96,7 +96,6 @@ PreferencesDialog::PreferencesDialog(QWidget* parent)
   defaultViewLayaut->addWidget(defaultViewLabel_);
   defaultViewLayaut->addWidget(defaultViewComboBox_);
 
-  syncTabs_ = new QCheckBox;
   logDirPath_ = new QLineEdit;
   QHBoxLayout *logLayout = new QHBoxLayout;
   logDirLabel_ = new QLabel;
@@ -105,7 +104,6 @@ PreferencesDialog::PreferencesDialog(QWidget* parent)
 
   QVBoxLayout *serverSettingsLayout = new QVBoxLayout;
   serverSettingsLayout->addLayout(defaultViewLayaut);
-  serverSettingsLayout->addWidget(syncTabs_);
   serverSettingsLayout->addLayout(logLayout);
   serverSettingsBox_->setLayout(serverSettingsLayout);
 
@@ -143,8 +141,6 @@ void PreferencesDialog::accept() {
   const supportedViews v = common::convertFromString<fastonosql::supportedViews>(defCombo);
   SettingsManager::instance().setDefaultView(v);
 
-  ServersManager::instance().setSyncServers(syncTabs_->isChecked());
-  SettingsManager::instance().setSyncTabs(syncTabs_->isChecked());
   SettingsManager::instance().setLoggingDirectory(logDirPath_->text());
   SettingsManager::instance().setAutoOpenConsole(autoOpenConsole_->isChecked());
   SettingsManager::instance().setFastViewKeys(fastViewKeys_->isChecked());
@@ -160,7 +156,6 @@ void PreferencesDialog::syncWithSettings() {
   fontComboBox_->setCurrentText(SettingsManager::instance().currentFontName());
   std::string defaultViewText = common::convertToString(SettingsManager::instance().defaultView());
   defaultViewComboBox_->setCurrentText(common::convertFromString<QString>(defaultViewText));
-  syncTabs_->setChecked(SettingsManager::instance().syncTabs());
   logDirPath_->setText(SettingsManager::instance().loggingDirectory());
   autoOpenConsole_->setChecked(SettingsManager::instance().autoOpenConsole());
   fastViewKeys_->setChecked(SettingsManager::instance().fastViewKeys());
@@ -188,7 +183,6 @@ void PreferencesDialog::retranslateUi() {
 
   serverSettingsBox_->setTitle(tr("Servers global settings"));
   defaultViewLabel_->setText(tr("Default views:"));
-  syncTabs_->setText(tr("Sync tabs"));
   logDirLabel_->setText(tr("Logging directory:"));
 }
 

@@ -30,9 +30,6 @@ typedef common::shared_ptr<IDatabase> IDatabaseSPtr;
 class IServer;
 typedef common::shared_ptr<IServer> IServerSPtr;
 
-class IDriver;
-typedef common::shared_ptr<IDriver> IDriverSPtr;
-
 class ICluster;
 typedef common::shared_ptr<ICluster> IClusterSPtr;
 

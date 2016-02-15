@@ -18,13 +18,14 @@
 
 #include "core/unqlite/unqlite_server.h"
 
+#include "core/unqlite/unqlite_driver.h"
 #include "core/unqlite/unqlite_database.h"
 
 namespace fastonosql {
 namespace unqlite {
 
-UnqliteServer::UnqliteServer(IDriverSPtr drv, bool isSuperServer)
-    : IServer(drv, isSuperServer) {
+UnqliteServer::UnqliteServer(IConnectionSettingsBaseSPtr settings)
+    : IServer(new UnqliteDriver(settings)) {
 }
 
 IDatabaseSPtr UnqliteServer::createDatabase(IDataBaseInfoSPtr info) {

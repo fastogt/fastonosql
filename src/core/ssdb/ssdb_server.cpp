@@ -18,13 +18,14 @@
 
 #include "core/ssdb/ssdb_server.h"
 
+#include "core/ssdb/ssdb_driver.h"
 #include "core/ssdb/ssdb_database.h"
 
 namespace fastonosql {
 namespace ssdb {
 
-SsdbServer::SsdbServer(IDriverSPtr drv, bool isSuperServer)
-  : IServer(drv, isSuperServer) {
+SsdbServer::SsdbServer(IConnectionSettingsBaseSPtr settings)
+  : IServer(new SsdbDriver(settings)) {
 }
 
 IDatabaseSPtr SsdbServer::createDatabase(IDataBaseInfoSPtr info) {

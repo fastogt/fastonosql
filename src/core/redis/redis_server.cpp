@@ -18,13 +18,14 @@
 
 #include "core/redis/redis_server.h"
 
+#include "core/redis/redis_driver.h"
 #include "core/redis/redis_database.h"
 
 namespace fastonosql {
 namespace redis {
 
-RedisServer::RedisServer(IDriverSPtr drv, bool isSuperServer)
-  : IServer(drv, isSuperServer) {
+RedisServer::RedisServer(IConnectionSettingsBaseSPtr settings)
+  : IServer(new RedisDriver(settings)) {
 }
 
 IDatabaseSPtr RedisServer::createDatabase(IDataBaseInfoSPtr info) {

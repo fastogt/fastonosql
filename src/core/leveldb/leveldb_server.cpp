@@ -18,13 +18,14 @@
 
 #include "core/leveldb/leveldb_server.h"
 
+#include "core/leveldb/leveldb_driver.h"
 #include "core/leveldb/leveldb_database.h"
 
 namespace fastonosql {
 namespace leveldb {
 
-LeveldbServer::LeveldbServer(IDriverSPtr drv, bool isSuperServer)
-  : IServer(drv, isSuperServer) {
+LeveldbServer::LeveldbServer(IConnectionSettingsBaseSPtr settings)
+  : IServer(new LeveldbDriver(settings)) {
 }
 
 IDatabaseSPtr LeveldbServer::createDatabase(IDataBaseInfoSPtr info) {

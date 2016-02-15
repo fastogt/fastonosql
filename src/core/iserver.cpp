@@ -30,66 +30,20 @@
 #include "core/idriver.h"
 
 namespace fastonosql {
-namespace {
-
-template<bool isConnect>
-struct connectFunct {
-  template<typename t1, typename t2>
-  bool operator()(const IServer* sender, t1 signal, const IServer* receiver,
-                  t2 member, Qt::ConnectionType type) const {
-      return QObject::disconnect(sender, signal, receiver, member);
-  }
-};
-
-template<>
-struct connectFunct<true> {
-  template<typename t1, typename t2>
-  bool operator()(const IServer* sender, t1 signal, const IServer* receiver,
-                  t2 member, Qt::ConnectionType type) const {
-      return QObject::connect(sender, signal, receiver, member, type);
-  }
-};
-
-template<bool con>
-void syncServersFunct(IServer *src, IServer *dsc) {
-  if (!src || !dsc) {
-    return;
-  }
-
-  connectFunct<con> func;
-  func(src, &IServer::startedConnect, dsc, &IServer::startedConnect, Qt::UniqueConnection);
-  func(src, &IServer::finishedConnect, dsc, &IServer::finishedConnect, Qt::UniqueConnection);
-
-  func(src, &IServer::startedDisconnect, dsc, &IServer::startedDisconnect, Qt::UniqueConnection);
-  func(src, &IServer::finishedDisconnect, dsc, &IServer::finishedDisconnect, Qt::UniqueConnection);
-
-  func(src, &IServer::startedExecute, dsc, &IServer::startedExecute, Qt::UniqueConnection);
-
-  func(src, &IServer::rootCreated, dsc, &IServer::rootCreated, Qt::UniqueConnection);
-  func(src, &IServer::rootCompleated, dsc, &IServer::rootCompleated, Qt::UniqueConnection);
-
-  func(src, &IServer::addedChild, dsc, &IServer::addedChild, Qt::UniqueConnection);
-  func(src, &IServer::itemUpdated, dsc, &IServer::itemUpdated, Qt::UniqueConnection);
-  func(src, &IServer::serverInfoSnapShoot, dsc,
-       &IServer::serverInfoSnapShoot, Qt::UniqueConnection);
-}
-
-}
 
 IServerBase::~IServerBase() {
 }
 
-IServer::IServer(IDriverSPtr drv, bool isSuperServer)
-  : drv_(drv), is_super_server_(isSuperServer) {
-  if (is_super_server_) {
-    VERIFY(QObject::connect(drv_.get(), &IDriver::addedChild, this, &IServer::addedChild));
-    VERIFY(QObject::connect(drv_.get(), &IDriver::itemUpdated, this, &IServer::itemUpdated));
-    VERIFY(QObject::connect(drv_.get(), &IDriver::serverInfoSnapShoot,
-                            this, &IServer::serverInfoSnapShoot));
-  }
+IServer::IServer(IDriver* drv)
+  : drv_(drv) {
+  VERIFY(QObject::connect(drv_, &IDriver::addedChild, this, &IServer::addedChild));
+  VERIFY(QObject::connect(drv_, &IDriver::itemUpdated, this, &IServer::itemUpdated));
+  VERIFY(QObject::connect(drv_, &IDriver::serverInfoSnapShoot,
+                          this, &IServer::serverInfoSnapShoot));
 }
 
 IServer::~IServer() {
+  delete drv_;
 }
 
 void IServer::stopCurrentEvent() {
@@ -108,14 +62,6 @@ bool IServer::isCanRemote() const {
   return IConnectionSettingsBase::isRemoteType(type());
 }
 
-bool IServer::isSuperServer() const {
-  return is_super_server_;
-}
-
-void IServer::setSuperServer(bool isSuper){
-  is_super_server_ = isSuper;
-}
-
 common::net::hostAndPort IServer::address() const {
   return drv_->address();
 }
@@ -126,10 +72,6 @@ connectionTypes IServer::type() const {
 
 QString IServer::name() const {
   return common::convertFromString<QString>(drv_->settings()->connectionName());
-}
-
-IDriverSPtr IServer::driver() const {
-  return drv_;
 }
 
 ServerDiscoveryInfoSPtr IServer::discoveryInfo() const {
@@ -180,16 +122,12 @@ IDatabaseSPtr IServer::findDatabaseByName(const std::string& name) const {
   return IDatabaseSPtr();
 }
 
-void IServer::syncWithServer(IServer *src) {
-  DCHECK(src != this);
-  syncServersFunct<true>(src, this);
-  // syncServersFunct<true>(this, src);
+void IServer::start() {
+  drv_->start();
 }
 
-void IServer::unSyncFromServer(IServer *src) {
-  DCHECK(src != this);
-  syncServersFunct<false>(src, this);
-  // syncServersFunct<false>(this, src);
+void IServer::stop() {
+  drv_->stop();
 }
 
 void IServer::connect(const events_info::ConnectInfoRequest& req) {
@@ -383,7 +321,7 @@ void IServer::customEvent(QEvent *event) {
 void IServer::notify(QEvent *ev) {
   events_info::ProgressInfoResponce resp(0);
   emit progressChanged(resp);
-  qApp->postEvent(drv_.get(), ev);
+  qApp->postEvent(drv_, ev);
 }
 
 void IServer::handleConnectEvent(events::ConnectResponceEvent* ev) {

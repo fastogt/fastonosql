@@ -20,8 +20,6 @@
 
 #include <vector>
 
-#include "core/settings_manager.h"
-
 #include "core/icluster.h"
 
 #ifdef BUILD_WITH_REDIS
@@ -32,105 +30,93 @@
 
 #ifdef BUILD_WITH_MEMCACHED
 #include "core/memcached/memcached_server.h"
-#include "core/memcached/memcached_driver.h"
+#include "core/memcached/memcached_raw.h"
 #endif
 
 #ifdef BUILD_WITH_SSDB
 #include "core/ssdb/ssdb_server.h"
-#include "core/ssdb/ssdb_driver.h"
+#include "core/ssdb/ssdb_raw.h"
 #endif
 
 #ifdef BUILD_WITH_LEVELDB
 #include "core/leveldb/leveldb_server.h"
-#include "core/leveldb/leveldb_driver.h"
+#include "core/leveldb/leveldb_raw.h"
 #endif
 
 #ifdef BUILD_WITH_ROCKSDB
 #include "core/rocksdb/rocksdb_server.h"
-#include "core/rocksdb/rocksdb_driver.h"
+#include "core/rocksdb/rocksdb_raw.h"
 #endif
 
 #ifdef BUILD_WITH_UNQLITE
 #include "core/unqlite/unqlite_server.h"
-#include "core/unqlite/unqlite_driver.h"
+#include "core/unqlite/unqlite_raw.h"
 #endif
 
 #ifdef BUILD_WITH_LMDB
 #include "core/lmdb/lmdb_server.h"
-#include "core/lmdb/lmdb_driver.h"
+#include "core/lmdb/lmdb_raw.h"
 #endif
 
 namespace fastonosql {
 
-ServersManager::ServersManager()
-  : sync_servers_(SettingsManager::instance().syncTabs()) {
+ServersManager::ServersManager() {
   qRegisterMetaType<ServerInfoSnapShoot>("ServerInfoSnapShoot");
 }
 
 ServersManager::~ServersManager() {
 }
 
-template<class Server, class Driver>
-IServer* make_server(IServerSPtr pser, IConnectionSettingsBaseSPtr settings) {
-  if (!pser) {
-    IDriverSPtr dr(new Driver(settings));
-    dr->start();
-    return new Server(dr, true);
-  }
-
-  return new Server(pser->driver(), false);
-}
-
 IServerSPtr ServersManager::createServer(IConnectionSettingsBaseSPtr settings) {
   DCHECK(settings);
 
-  IServerSPtr result;
   connectionTypes conT = settings->connectionType();
-  IServerSPtr ser = findServerBySetting(settings);
+  IServer* server = NULL;
 #ifdef BUILD_WITH_REDIS
   if (conT == REDIS) {
-    result.reset(make_server<redis::RedisServer, redis::RedisDriver>(ser, settings));
+    server = new redis::RedisServer(settings);
   }
 #endif
 #ifdef BUILD_WITH_MEMCACHED
   if (conT == MEMCACHED) {
-    result.reset(make_server<memcached::MemcachedServer, memcached::MemcachedDriver>(ser, settings));
+    server = new memcached::MemcachedServer(settings);
   }
 #endif
 #ifdef BUILD_WITH_SSDB
   if (conT == SSDB) {
-    result.reset(make_server<ssdb::SsdbServer, ssdb::SsdbDriver>(ser, settings));
+    server = new ssdb::SsdbServer(settings);
   }
 #endif
 #ifdef BUILD_WITH_LEVELDB
   if (conT == LEVELDB) {
-    result.reset(make_server<leveldb::LeveldbServer, leveldb::LeveldbDriver>(ser, settings));
+    server = new leveldb::LeveldbServer(settings);
   }
 #endif
 #ifdef BUILD_WITH_ROCKSDB
   if (conT == ROCKSDB) {
-    result.reset(make_server<rocksdb::RocksdbServer, rocksdb::RocksdbDriver>(ser, settings));
+    server = new rocksdb::RocksdbServer(settings);
   }
 #endif
 #ifdef BUILD_WITH_UNQLITE
   if (conT == UNQLITE) {
-    result.reset(make_server<unqlite::UnqliteServer, unqlite::UnqliteDriver>(ser, settings));
+    server = new unqlite::UnqliteServer(settings);
   }
 #endif
 #ifdef BUILD_WITH_LMDB
   if (conT == LMDB) {
-    result.reset(make_server<lmdb::LmdbServer, lmdb::LmdbDriver>(ser, settings));
+    server = new lmdb::LmdbServer(settings);
   }
 #endif
-  DCHECK(result);
-  if (result) {
-    servers_.push_back(result);
-    if (ser && sync_servers_) {
-      result->syncWithServer(ser.get());
-    }
+
+  if (!server) {
+    NOTREACHED();
+    return IServerSPtr();
   }
 
-  return result;
+  IServerSPtr sh(server);
+  sh->start();
+  servers_.push_back(sh);
+  return sh;
 }
 
 IClusterSPtr ServersManager::createCluster(IClusterSettingsBaseSPtr settings) {
@@ -154,8 +140,6 @@ IClusterSPtr ServersManager::createCluster(IClusterSettingsBaseSPtr settings) {
         cl->addServer(serv);
       }
     }
-    IDriverSPtr drv = cl->root()->driver();
-    DCHECK(drv->settings() == root);
   }
 #endif
 
@@ -251,39 +235,16 @@ common::Error ServersManager::discoveryConnection(IConnectionSettingsBaseSPtr co
   return common::make_error_value("Invalid setting type", common::ErrorValue::E_ERROR);
 }
 
-void ServersManager::setSyncServers(bool isSync) {
-  sync_servers_ = isSync;
-  refreshSyncServers();
-}
-
 void ServersManager::clear() {
   for (size_t i = 0; i < servers_.size(); ++i) {
     IServerSPtr ser = servers_[i];
-    ser->driver()->stop();
+    ser->stop();
   }
   servers_.clear();
 }
 
 void ServersManager::closeServer(IServerSPtr server) {
-  for (size_t i = 0; i < servers_.size(); ++i) {
-    IServerSPtr ser = servers_[i];
-    if (ser == server) {
-      if (ser->isSuperServer()) {
-        IDriverSPtr drv = ser->driver();
-        for (size_t j = 0; j < servers_.size(); ++j) {
-          IServerSPtr servj = servers_[j];
-          if (servj->driver() == drv) {
-            servj->setSuperServer(true);
-            break;
-          }
-        }
-      }
-
-      servers_.erase(servers_.begin()+i);
-      refreshSyncServers();
-      break;
-    }
-  }
+  servers_.erase(std::remove(servers_.begin(), servers_.end(), server));
 }
 
 void ServersManager::closeCluster(IClusterSPtr cluster) {
@@ -291,46 +252,6 @@ void ServersManager::closeCluster(IClusterSPtr cluster) {
   for (size_t i = 0; i < nodes.size(); ++i) {
     closeServer(nodes[i]);
   }
-}
-
-void ServersManager::refreshSyncServers() {
-  for (size_t i = 0; i < servers_.size(); ++i) {
-    IServerSPtr servi = servers_[i];
-    if (servi->isSuperServer()) {
-      for (size_t j = 0; j < servers_.size(); ++j) {
-        IServerSPtr servj = servers_[j];
-        if (servj != servi && servj->driver() == servi->driver()) {
-          if (sync_servers_) {
-            servj->syncWithServer(servi.get());
-          } else {
-            servj->unSyncFromServer(servi.get());
-          }
-        }
-      }
-    }
-  }
-}
-
-IServerSPtr ServersManager::findServerBySetting(IConnectionSettingsBaseSPtr settings) const {
-  for (size_t i = 0; i < servers_.size(); ++i) {
-    IServerSPtr drp = servers_[i];
-    IDriverSPtr curDr = drp->driver();
-    if (curDr->settings() == settings) {
-      return drp;
-    }
-  }
-  return IServerSPtr();
-}
-
-std::vector<QObject *> ServersManager::findAllListeners(IDriverSPtr drv) const {
-  std::vector<QObject *> result;
-  for (size_t j = 0; j < servers_.size(); ++j) {
-    IServerSPtr ser = servers_[j];
-    if (ser->driver() == drv) {
-      result.push_back(ser.get());
-    }
-  }
-  return result;
 }
 
 }  // namespace fastonosql

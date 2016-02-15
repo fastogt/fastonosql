@@ -154,6 +154,8 @@ common::Error IDriver::execute(FastoObjectCommand* cmd) {
 IDriver::IDriver(IConnectionSettingsBaseSPtr settings, connectionTypes type)
   : settings_(settings), interrupt_(false), server_disc_info_(), thread_(NULL),
     timer_info_id_(0), log_file_(NULL), type_(type) {
+  CHECK(settings->connectionType() == type);
+
   thread_ = new QThread(this);
   moveToThread(thread_);
 

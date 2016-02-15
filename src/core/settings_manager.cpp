@@ -37,7 +37,6 @@
 #define CONNECTIONS PREFIX"connections"
 #define CLUSTERS PREFIX"clusters"
 #define VIEW PREFIX"view"
-#define SYNCTABS PREFIX"synctabs"
 #define LOGGINGDIR PREFIX"loggingdir"
 #define CHECKUPDATES PREFIX"checkupdates"
 #define AUTOCOMPLETION PREFIX"autocompletion"
@@ -65,7 +64,7 @@ QString fontName() {
 namespace fastonosql {
 SettingsManager::SettingsManager()
   : views_(), cur_style_(), cur_font_name_(), cur_language_(), connections_(),
-    sync_tabs_(), logging_dir_(),
+    logging_dir_(),
     auto_check_update_(), auto_completion_(), auto_open_console_(), fast_view_keys_() {
   load();
 }
@@ -192,14 +191,6 @@ void SettingsManager::clearRConnections() {
   recent_connections_.clear();
 }
 
-bool SettingsManager::syncTabs() const {
-  return sync_tabs_;
-}
-
-void SettingsManager::setSyncTabs(bool sync) {
-  sync_tabs_ = sync;
-}
-
 QString SettingsManager::loggingDirectory() const {
   return logging_dir_;
 }
@@ -300,8 +291,6 @@ void SettingsManager::reloadFromPath(const std::string& path, bool merge) {
       }
   }
 
-  sync_tabs_ = settings.value(SYNCTABS, false).toBool();
-
   logging_dir_ = settings.value(LOGGINGDIR, settingsDirPath()).toString();
   auto_check_update_ = settings.value(CHECKUPDATES, true).toBool();
   auto_completion_ = settings.value(AUTOCOMPLETION, true).toBool();
@@ -362,7 +351,6 @@ void SettingsManager::save() {
   }
   settings.setValue(RCONNECTIONS, rconnections);
 
-  settings.setValue(SYNCTABS, sync_tabs_);
   settings.setValue(LOGGINGDIR, logging_dir_);
   settings.setValue(CHECKUPDATES, auto_check_update_);
   settings.setValue(AUTOCOMPLETION, auto_completion_);

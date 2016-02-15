@@ -18,13 +18,14 @@
 
 #include "core/rocksdb/rocksdb_server.h"
 
+#include "core/rocksdb/rocksdb_driver.h"
 #include "core/rocksdb/rocksdb_database.h"
 
 namespace fastonosql {
 namespace rocksdb {
 
-RocksdbServer::RocksdbServer(IDriverSPtr drv, bool isSuperServer)
-  : IServer(drv, isSuperServer) {
+RocksdbServer::RocksdbServer(IConnectionSettingsBaseSPtr settings)
+  : IServer(new RocksdbDriver(settings)) {
 }
 
 IDatabaseSPtr RocksdbServer::createDatabase(IDataBaseInfoSPtr info) {

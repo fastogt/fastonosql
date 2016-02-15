@@ -18,13 +18,14 @@
 
 #include "core/lmdb/lmdb_server.h"
 
+#include "core/lmdb/lmdb_driver.h"
 #include "core/lmdb/lmdb_database.h"
 
 namespace fastonosql {
 namespace lmdb {
 
-LmdbServer::LmdbServer(IDriverSPtr drv, bool isSuperServer)
-  : IServer(drv, isSuperServer) {
+LmdbServer::LmdbServer(IConnectionSettingsBaseSPtr settings)
+  : IServer(new LmdbDriver(settings)) {
 }
 
 IDatabaseSPtr LmdbServer::createDatabase(IDataBaseInfoSPtr info) {
