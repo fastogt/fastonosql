@@ -105,10 +105,6 @@ OutputWidget::OutputWidget(IServerSPtr server, QWidget* parent)
   syncWithSettings();
 }
 
-OutputWidget::~OutputWidget() {
-
-}
-
 void OutputWidget::rootCreate(const events_info::CommandRootCreatedInfo& res) {
   FastoObject* rootObj = res.root.get();
   fastonosql::FastoCommonItem* root = createItem(NULL, std::string(), true, rootObj);

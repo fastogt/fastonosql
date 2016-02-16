@@ -60,10 +60,6 @@ QueryWidget::QueryWidget(IServerSPtr server, QWidget* parent)
   setLayout(mainLayout);
 }
 
-QueryWidget::~QueryWidget() {
-
-}
-
 QueryWidget* QueryWidget::clone(const QString& text) {
   QueryWidget *result = new QueryWidget(shellWidget_->server(), parentWidget());
   result->shellWidget_->setText(text);

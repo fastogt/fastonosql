@@ -37,7 +37,6 @@ class QueryWidget
   };
 
   explicit QueryWidget(IServerSPtr server, QWidget* parent = 0);
-  ~QueryWidget();
 
   QueryWidget* clone(const QString& text);
   connectionTypes connectionType() const;

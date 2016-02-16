@@ -31,7 +31,6 @@ class MainWidget
    Q_OBJECT
  public:
   explicit MainWidget(QWidget* parent = 0);
-  ~MainWidget();
 
   QueryWidget* currentWidget() const;
   QueryWidget* widget(int index) const;

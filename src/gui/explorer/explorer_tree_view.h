@@ -31,7 +31,6 @@ class ExplorerTreeView
  Q_OBJECT
  public:
   explicit ExplorerTreeView(QWidget* parent);
-  ~ExplorerTreeView();
 
  Q_SIGNALS:
   void openedConsole(IServerSPtr server, const QString& text);

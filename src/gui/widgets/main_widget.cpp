@@ -47,10 +47,6 @@ MainWidget::MainWidget(QWidget* parent)
   setDocumentMode(true);
 }
 
-MainWidget::~MainWidget() {
-
-}
-
 QueryWidget *MainWidget::currentWidget() const {
   return qobject_cast<QueryWidget *>(QTabWidget::currentWidget());
 }
