@@ -18,6 +18,8 @@
 
 #include "core/lmdb/lmdb_raw.h"
 
+#include <errno.h>
+
 #include <vector>
 #include <string>
 
