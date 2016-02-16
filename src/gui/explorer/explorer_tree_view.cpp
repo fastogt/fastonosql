@@ -221,6 +221,7 @@ void ExplorerTreeView::showContextMenu(const QPoint& point) {
       IServerSPtr server = node->server();
       bool isCon = server->isConnected();
       bool isAuth = server->isAuthenticated();
+      bool isRedis = server->type() == REDIS;
 
       bool isClusterMember = dynamic_cast<ExplorerClusterItem*>(node->parent()) != NULL;
 
@@ -228,13 +229,13 @@ void ExplorerTreeView::showContextMenu(const QPoint& point) {
       menu.addAction(loadDatabaseAction_);
       infoServerAction_->setEnabled(isAuth);
       menu.addAction(infoServerAction_);
-      propertyServerAction_->setEnabled(isAuth);
+      propertyServerAction_->setEnabled(isAuth && isRedis);
       menu.addAction(propertyServerAction_);
 
-      setServerPassword_->setEnabled(isAuth);
+      setServerPassword_->setEnabled(isAuth && isRedis);
       menu.addAction(setServerPassword_);
 \
-      setMaxClientConnection_->setEnabled(isAuth);
+      setMaxClientConnection_->setEnabled(isAuth && isRedis);
       menu.addAction(setMaxClientConnection_);
 
       menu.addAction(historyServerAction_);
@@ -249,11 +250,11 @@ void ExplorerTreeView::showContextMenu(const QPoint& point) {
         isLocal = host.isLocalHost();
       }
 
-      importAction_->setEnabled(!isCon && isLocal);
+      importAction_->setEnabled(!isCon && isLocal && isRedis);
       menu.addAction(importAction_);
-      backupAction_->setEnabled(isCon && isLocal);
+      backupAction_->setEnabled(isCon && isLocal && isRedis);
       menu.addAction(backupAction_);
-      shutdownAction_->setEnabled(isAuth);
+      shutdownAction_->setEnabled(isAuth && isRedis);
       menu.addAction(shutdownAction_);
 
       menu.exec(menuPoint);
