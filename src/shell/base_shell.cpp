@@ -50,6 +50,10 @@
 #include "shell/lmdb_lexer.h"
 #endif
 
+namespace {
+  const QSize image_size(64, 64);
+}
+
 namespace fastonosql {
 
 BaseShell::BaseShell(connectionTypes type, bool showAutoCompl, QWidget* parent)
@@ -91,15 +95,16 @@ BaseShell::BaseShell(connectionTypes type, bool showAutoCompl, QWidget* parent)
     lex = new LmdbLexer(this);
   }
 #endif
-  const QSize image_size(64, 64);
   registerImage(BaseQsciLexer::Command,
                 GuiFactory::instance().commandIcon(type).pixmap(image_size));
   registerImage(BaseQsciLexer::HelpKeyword,
                 GuiFactory::instance().messageBoxQuestionIcon().pixmap(image_size));
 
-  DCHECK(lex);
-  setLexer(lex);
-  lex->setFont(font());
+  CHECK(lex);
+  if (lex) {
+    setLexer(lex);
+    lex->setFont(font());
+  }
 }
 
 QString BaseShell::version() const {

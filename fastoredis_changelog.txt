@@ -1,3 +1,7 @@
+0.8.1 /
+[Alexandr Topilski]
+- Fix some memory leaks
+
 0.8.0 / January 7, 2016
 [Alexandr Topilski]
 - Redis cluster discovery button doesn't work with protected Redis configuration #59 

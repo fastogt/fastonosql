@@ -28,7 +28,7 @@ class SsdbServer
   : public IServer {
   Q_OBJECT
  public:
-  SsdbServer(IConnectionSettingsBaseSPtr settings);
+  explicit SsdbServer(IConnectionSettingsBaseSPtr settings);
  private:
   virtual IDatabaseSPtr createDatabase(IDataBaseInfoSPtr info);
 };

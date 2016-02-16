@@ -75,7 +75,7 @@ class CommandHolder
 class CommandHandler {
  public:
   typedef CommandHolder commands_type;
-  CommandHandler(const std::vector<commands_type>& commands);
+  explicit CommandHandler(const std::vector<commands_type>& commands);
   common::Error execute(int argc, char** argv, FastoObject* out);
 
   static common::Error notSupported(const char *cmd);

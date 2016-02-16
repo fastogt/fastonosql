@@ -41,7 +41,7 @@ class IServer
  public:
   typedef std::vector<IDataBaseInfoSPtr> databases_container_t;
 
-  IServer(IDriver *drv);  // take ownerships
+  explicit IServer(IDriver *drv);  // take ownerships
   virtual ~IServer();
 
   //sync methods

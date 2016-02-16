@@ -28,7 +28,7 @@ class RocksdbServer
   : public IServer {
   Q_OBJECT
  public:
-  RocksdbServer(IConnectionSettingsBaseSPtr settings);
+  explicit RocksdbServer(IConnectionSettingsBaseSPtr settings);
  private:
   virtual IDatabaseSPtr createDatabase(IDataBaseInfoSPtr info);
 };

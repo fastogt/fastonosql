@@ -28,7 +28,7 @@ class LmdbServer
   : public IServer {
   Q_OBJECT
  public:
-  LmdbServer(IConnectionSettingsBaseSPtr settings);
+  explicit LmdbServer(IConnectionSettingsBaseSPtr settings);
  private:
   virtual IDatabaseSPtr createDatabase(IDataBaseInfoSPtr info);
 };

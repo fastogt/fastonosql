@@ -28,7 +28,7 @@ class RedisServer
   : public IServer {
   Q_OBJECT
  public:
-  RedisServer(IConnectionSettingsBaseSPtr settings);
+  explicit RedisServer(IConnectionSettingsBaseSPtr settings);
  private:
   virtual IDatabaseSPtr createDatabase(IDataBaseInfoSPtr info);
 };

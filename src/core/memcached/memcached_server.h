@@ -28,7 +28,7 @@ class MemcachedServer
   : public IServer {
   Q_OBJECT
  public:
-  MemcachedServer(IConnectionSettingsBaseSPtr settings);
+  explicit MemcachedServer(IConnectionSettingsBaseSPtr settings);
  private:
   virtual IDatabaseSPtr createDatabase(IDataBaseInfoSPtr info);
 };

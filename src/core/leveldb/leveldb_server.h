@@ -28,7 +28,7 @@ class LeveldbServer
   : public IServer {
   Q_OBJECT
  public:
-  LeveldbServer(IConnectionSettingsBaseSPtr settings);
+  explicit LeveldbServer(IConnectionSettingsBaseSPtr settings);
  private:
   virtual IDatabaseSPtr createDatabase(IDataBaseInfoSPtr info);
 };
