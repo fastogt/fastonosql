@@ -231,7 +231,7 @@ common::Error LeveldbRaw::keys(const std::string &key_start, const std::string &
   for (it->Seek(key_start); it->Valid() && it->key().ToString() < key_end; it->Next()) {
     std::string key = it->key().ToString();
     if (ret->size() <= limit) {
-        ret->push_back(key);
+      ret->push_back(key);
     } else {
       break;
     }

@@ -224,157 +224,157 @@ void RocksdbDriver::handleDisconnectEvent(events::DisconnectRequestEvent* ev) {
 void RocksdbDriver::handleExecuteEvent(events::ExecuteRequestEvent* ev) {
   QObject *sender = ev->sender();
   notifyProgress(sender, 0);
-      events::ExecuteRequestEvent::value_type res(ev->value());
-      const char *inputLine = common::utils::c_strornull(res.text);
+  events::ExecuteRequestEvent::value_type res(ev->value());
+  const char *inputLine = common::utils::c_strornull(res.text);
 
-      common::Error er;
-      if (inputLine) {
-          size_t length = strlen(inputLine);
-          int offset = 0;
-          RootLocker lock = make_locker(sender, inputLine);
-          FastoObjectIPtr outRoot = lock.root_;
-          double step = 100.0f/length;
-          for (size_t n = 0; n < length; ++n) {
-              if (interrupt_) {
-                  er.reset(new common::ErrorValue("Interrupted exec.",
-                                                  common::ErrorValue::E_INTERRUPTED));
-                  res.setErrorInfo(er);
-                  break;
-              }
-              if (inputLine[n] == '\n' || n == length-1) {
-                  notifyProgress(sender, step * n);
-                  char command[128] = {0};
-                  if (n == length-1) {
-                    strcpy(command, inputLine + offset);
-                  } else {
-                    strncpy(command, inputLine + offset, n - offset);
-                  }
-                  offset = n + 1;
-                  FastoObjectCommand* cmd = createCommand<RocksdbCommand>(outRoot,
-                                                                          stableCommand(command),
-                                                                          common::Value::C_USER);
-                  er = execute(cmd);
-                  if (er && er->isError()) {
-                      res.setErrorInfo(er);
-                      break;
-                  }
-              }
-          }
-      } else {
-          er.reset(new common::ErrorValue("Empty command line.", common::ErrorValue::E_ERROR));
+  common::Error er;
+  if (inputLine) {
+    size_t length = strlen(inputLine);
+    int offset = 0;
+    RootLocker lock = make_locker(sender, inputLine);
+    FastoObjectIPtr outRoot = lock.root_;
+    double step = 100.0f/length;
+    for (size_t n = 0; n < length; ++n) {
+      if (interrupt_) {
+        er.reset(new common::ErrorValue("Interrupted exec.",
+                                        common::ErrorValue::E_INTERRUPTED));
+        res.setErrorInfo(er);
+        break;
       }
+      if (inputLine[n] == '\n' || n == length-1) {
+        notifyProgress(sender, step * n);
+        char command[128] = {0};
+        if (n == length-1) {
+          strcpy(command, inputLine + offset);
+        } else {
+          strncpy(command, inputLine + offset, n - offset);
+        }
+        offset = n + 1;
+        FastoObjectCommand* cmd = createCommand<RocksdbCommand>(outRoot,
+                                                                stableCommand(command),
+                                                                common::Value::C_USER);
+        er = execute(cmd);
+        if (er && er->isError()) {
+          res.setErrorInfo(er);
+          break;
+        }
+      }
+    }
+  } else {
+    er.reset(new common::ErrorValue("Empty command line.", common::ErrorValue::E_ERROR));
+  }
 
-      if (er) {  // E_INTERRUPTED
-        LOG_ERROR(er, true);
-      }
+  if (er) {  // E_INTERRUPTED
+    LOG_ERROR(er, true);
+  }
   notifyProgress(sender, 100);
 }
 
 void RocksdbDriver::handleCommandRequestEvent(events::CommandRequestEvent* ev) {
   QObject *sender = ev->sender();
   notifyProgress(sender, 0);
-      events::CommandResponceEvent::value_type res(ev->value());
-      std::string cmdtext;
-      common::Error er = commandByType(res.cmd, &cmdtext);
-      if (er && er->isError()) {
-          res.setErrorInfo(er);
-          reply(sender, new events::CommandResponceEvent(this, res));
-          notifyProgress(sender, 100);
-          return;
-      }
+  events::CommandResponceEvent::value_type res(ev->value());
+  std::string cmdtext;
+  common::Error er = commandByType(res.cmd, &cmdtext);
+  if (er && er->isError()) {
+    res.setErrorInfo(er);
+    reply(sender, new events::CommandResponceEvent(this, res));
+    notifyProgress(sender, 100);
+    return;
+  }
 
-      RootLocker lock = make_locker(sender, cmdtext);
-      FastoObjectIPtr root = lock.root_;
-      FastoObjectCommand* cmd = createCommand<RocksdbCommand>(root, cmdtext, common::Value::C_INNER);
+  RootLocker lock = make_locker(sender, cmdtext);
+  FastoObjectIPtr root = lock.root_;
+  FastoObjectCommand* cmd = createCommand<RocksdbCommand>(root, cmdtext, common::Value::C_INNER);
   notifyProgress(sender, 50);
-      er = execute(cmd);
-      if (er && er->isError()) {
-          res.setErrorInfo(er);
-      }
-      reply(sender, new events::CommandResponceEvent(this, res));
+  er = execute(cmd);
+  if (er && er->isError()) {
+    res.setErrorInfo(er);
+  }
+  reply(sender, new events::CommandResponceEvent(this, res));
   notifyProgress(sender, 100);
 }
 
 void RocksdbDriver::handleLoadDatabaseInfosEvent(events::LoadDatabasesInfoRequestEvent* ev) {
   QObject *sender = ev->sender();
-notifyProgress(sender, 0);
+  notifyProgress(sender, 0);
   events::LoadDatabasesInfoResponceEvent::value_type res(ev->value());
-notifyProgress(sender, 50);
+  notifyProgress(sender, 50);
   IDataBaseInfoSPtr curdb = currentDatabaseInfo();
   CHECK(curdb);
   res.databases.push_back(curdb);
   reply(sender, new events::LoadDatabasesInfoResponceEvent(this, res));
-notifyProgress(sender, 100);
+  notifyProgress(sender, 100);
 }
 
 void RocksdbDriver::handleLoadDatabaseContentEvent(events::LoadDatabaseContentRequestEvent *ev) {
   QObject *sender = ev->sender();
   notifyProgress(sender, 0);
-    events::LoadDatabaseContentResponceEvent::value_type res(ev->value());
-    char patternResult[1024] = {0};
-    common::SNPrintf(patternResult, sizeof(patternResult), GET_KEYS_PATTERN_1ARGS_I, res.count_keys);
-    FastoObjectIPtr root = FastoObject::createRoot(patternResult);
+  events::LoadDatabaseContentResponceEvent::value_type res(ev->value());
+  char patternResult[1024] = {0};
+  common::SNPrintf(patternResult, sizeof(patternResult), GET_KEYS_PATTERN_1ARGS_I, res.count_keys);
+  FastoObjectIPtr root = FastoObject::createRoot(patternResult);
   notifyProgress(sender, 50);
-    FastoObjectCommand* cmd = createCommand<RocksdbCommand>(root, patternResult,
-                                                            common::Value::C_INNER);
-    common::Error er = execute(cmd);
-    if (er && er->isError()) {
-        res.setErrorInfo(er);
-    } else {
-      FastoObject::child_container_type rchildrens = cmd->childrens();
-      if (rchildrens.size()) {
-          DCHECK_EQ(rchildrens.size(), 1);
-          FastoObjectArray* array = dynamic_cast<FastoObjectArray*>(rchildrens[0]);
-          if (!array) {
-              goto done;
-          }
-          common::ArrayValue* ar = array->array();
-          if (!ar) {
-              goto done;
-          }
+  FastoObjectCommand* cmd = createCommand<RocksdbCommand>(root, patternResult,
+                                                          common::Value::C_INNER);
+  common::Error er = execute(cmd);
+  if (er && er->isError()) {
+    res.setErrorInfo(er);
+  } else {
+    FastoObject::child_container_type rchildrens = cmd->childrens();
+    if (rchildrens.size()) {
+      DCHECK_EQ(rchildrens.size(), 1);
+      FastoObjectArray* array = dynamic_cast<FastoObjectArray*>(rchildrens[0]);
+      if (!array) {
+        goto done;
+      }
+      common::ArrayValue* ar = array->array();
+      if (!ar) {
+        goto done;
+      }
 
-          for (size_t i = 0; i < ar->size(); ++i) {
-              std::string key;
-              bool isok = ar->getString(i, &key);
-              if (isok) {
-                  NKey k(key);
-                  NDbKValue ress(k, NValue());
-                  res.keys.push_back(ress);
-              }
-          }
+      for (size_t i = 0; i < ar->size(); ++i) {
+        std::string key;
+        bool isok = ar->getString(i, &key);
+        if (isok) {
+          NKey k(key);
+          NDbKValue ress(k, NValue());
+          res.keys.push_back(ress);
+        }
       }
     }
+  }
 done:
   notifyProgress(sender, 75);
-    reply(sender, new events::LoadDatabaseContentResponceEvent(this, res));
+  reply(sender, new events::LoadDatabaseContentResponceEvent(this, res));
   notifyProgress(sender, 100);
 }
 
 void RocksdbDriver::handleSetDefaultDatabaseEvent(events::SetDefaultDatabaseRequestEvent* ev) {
   QObject *sender = ev->sender();
   notifyProgress(sender, 0);
-      events::SetDefaultDatabaseResponceEvent::value_type res(ev->value());
+  events::SetDefaultDatabaseResponceEvent::value_type res(ev->value());
   notifyProgress(sender, 50);
-      reply(sender, new events::SetDefaultDatabaseResponceEvent(this, res));
+  reply(sender, new events::SetDefaultDatabaseResponceEvent(this, res));
   notifyProgress(sender, 100);
 }
 
 void RocksdbDriver::handleLoadServerInfoEvent(events::ServerInfoRequestEvent* ev) {
   QObject *sender = ev->sender();
   notifyProgress(sender, 0);
-      events::ServerInfoResponceEvent::value_type res(ev->value());
+  events::ServerInfoResponceEvent::value_type res(ev->value());
   notifyProgress(sender, 50);
-      LOG_COMMAND(Command(INFO_REQUEST, common::Value::C_INNER));
-      RocksdbServerInfo::Stats cm;
-      common::Error err = impl_->info(NULL, cm);
-      if (err) {
-          res.setErrorInfo(err);
-      } else {
-          ServerInfoSPtr mem(new RocksdbServerInfo(cm));
-          res.setInfo(mem);
-      }
+  LOG_COMMAND(Command(INFO_REQUEST, common::Value::C_INNER));
+  RocksdbServerInfo::Stats cm;
+  common::Error err = impl_->info(NULL, cm);
+  if (err) {
+    res.setErrorInfo(err);
+  } else {
+    ServerInfoSPtr mem(new RocksdbServerInfo(cm));
+    res.setInfo(mem);
+  }
   notifyProgress(sender, 75);
-      reply(sender, new events::ServerInfoResponceEvent(this, res));
+  reply(sender, new events::ServerInfoResponceEvent(this, res));
   notifyProgress(sender, 100);
 }
 

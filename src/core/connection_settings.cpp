@@ -88,8 +88,7 @@ bool IConnectionSettings::loggingEnabled() const {
   return msinterval_ != 0;
 }
 
-uint32_t IConnectionSettings::loggingMsTimeInterval() const
-{
+uint32_t IConnectionSettings::loggingMsTimeInterval() const {
   return msinterval_;
 }
 
@@ -127,19 +126,19 @@ std::string IConnectionSettingsBase::loggingPath() const {
   std::string logDir = common::convertToString(SettingsManager::instance().loggingDirectory());
   std::string ext;
   if (type_ == REDIS) {
-      ext = LOGGING_REDIS_FILE_EXTENSION;
+    ext = LOGGING_REDIS_FILE_EXTENSION;
   } else if (type_ == MEMCACHED) {
-      ext = LOGGING_MEMCACHED_FILE_EXTENSION;
+    ext = LOGGING_MEMCACHED_FILE_EXTENSION;
   } else if (type_ == SSDB) {
-      ext = LOGGING_SSDB_FILE_EXTENSION;
+    ext = LOGGING_SSDB_FILE_EXTENSION;
   } else if (type_ == LEVELDB) {
-      ext = LOGGING_LEVELDB_FILE_EXTENSION;
+    ext = LOGGING_LEVELDB_FILE_EXTENSION;
   } else if (type_ == ROCKSDB) {
-      ext = LOGGING_ROCKSDB_FILE_EXTENSION;
+    ext = LOGGING_ROCKSDB_FILE_EXTENSION;
   } else if (type_ == UNQLITE) {
-      ext = LOGGING_UNQLITE_FILE_EXTENSION;
+    ext = LOGGING_UNQLITE_FILE_EXTENSION;
   } else {
-      NOTREACHED();
+    NOTREACHED();
   }
   return logDir + hash() + ext;
 }
@@ -187,7 +186,7 @@ IConnectionSettingsBase* IConnectionSettingsBase::createFromType(connectionTypes
 
 IConnectionSettingsBase* IConnectionSettingsBase::fromString(const std::string &val) {
   if (val.empty()) {
-      return NULL;
+    return NULL;
   }
 
   IConnectionSettingsBase *result = NULL;
@@ -201,33 +200,32 @@ IConnectionSettingsBase* IConnectionSettingsBase::fromString(const std::string &
     char ch = val[i];
     if (ch == ',') {
       if (commaCount == 0) {
-          int crT = elText[0] - 48;
-          result = createFromType((connectionTypes)crT, std::string());
-          if (!result) {
-              return NULL;
-          }
+        int crT = elText[0] - 48;
+        result = createFromType((connectionTypes)crT, std::string());
+        if (!result) {
+          return NULL;
+        }
       } else if (commaCount == 1) {
-          result->setConnectionNameAndUpdateHash(elText);
+        result->setConnectionNameAndUpdateHash(elText);
       } else if (commaCount == 2) {
-          uint32_t msTime = common::convertFromString<uint32_t>(elText);
-          result->setLoggingMsTimeInterval(msTime);
-          if (!IConnectionSettingsBase::isRemoteType(result->connectionType())) {
-              result->initFromCommandLine(val.substr(i+1));
-              break;
-          }
-      } else if (commaCount == 3) {
-          result->initFromCommandLine(elText);
-          IConnectionSettingsRemote * remote = dynamic_cast<IConnectionSettingsRemote *>(result);
-          if (remote) {
-              SSHInfo sinf(val.substr(i + 1));
-              remote->setSshInfo(sinf);
-          }
+        uint32_t msTime = common::convertFromString<uint32_t>(elText);
+        result->setLoggingMsTimeInterval(msTime);
+        if (!IConnectionSettingsBase::isRemoteType(result->connectionType())) {
+          result->initFromCommandLine(val.substr(i+1));
           break;
+        }
+      } else if (commaCount == 3) {
+        result->initFromCommandLine(elText);
+        IConnectionSettingsRemote * remote = dynamic_cast<IConnectionSettingsRemote *>(result);
+        if (remote) {
+          SSHInfo sinf(val.substr(i + 1));
+          remote->setSshInfo(sinf);
+        }
+        break;
       }
       commaCount++;
       elText.clear();
-    }
-    else{
+    } else {
       elText += ch;
     }
   }
@@ -309,73 +307,73 @@ void IConnectionSettingsRemote::setSshInfo(const SSHInfo& info) {
 
 const char* useHelpText(connectionTypes type) {
   if (type == DBUNKNOWN) {
-      return NULL;
+    return NULL;
   }
   if (type == REDIS) {
-      return "<b>Usage: [OPTIONS] [cmd [arg [arg ...]]]</b><br/>"
-                         "<b>-h &lt;hostname&gt;</b>      Server hostname (default: 127.0.0.1).<br/>"
-                         "<b>-p &lt;port&gt;</b>          Server port (default: 6379).<br/>"
-                         "<b>-s &lt;socket&gt;</b>        Server socket (overrides hostname and port).<br/>"
-                         "<b>-a &lt;password&gt;</b>      Password to use when connecting to the server.<br/>"
-                         "<b>-r &lt;repeat&gt;</b>        Execute specified command N times.<br/>"
-                         "<b>-i &lt;interval&gt;</b>      When <b>-r</b> is used, waits &lt;interval&gt; seconds per command.<br/>"
-                         "                   It is possible to specify sub-second times like <b>-i</b> 0.1.<br/>"
-                         "<b>-n &lt;db&gt;</b>            Database number.<br/>"
-                         "<b>-d &lt;delimiter&gt;</b>     Multi-bulk delimiter in for raw formatting (default: \\n).<br/>"
-                         "<b>-c</b>                 Enable cluster mode (follow -ASK and -MOVED redirections).<br/>"
-                         "<b>--latency</b>          Enter a special mode continuously sampling latency.<br/>"
-                         "<b>--latency-history</b>  Like <b>--latency</b> but tracking latency changes over time.<br/>"
-                         "                   Default time interval is 15 sec. Change it using <b>-i</b>.<br/>"
-                         "<b>--slave</b>            Simulate a slave showing commands received from the master.<br/>"
-                         "<b>--rdb &lt;filename&gt;</b>   Transfer an RDB dump from remote server to local file.<br/>"
-                         /*"<b>--pipe</b>             Transfer raw Redis protocol from stdin to server.<br/>"
-                         "<b>--pipe-timeout &lt;n&gt;</b> In <b>--pipe mode</b>, abort with error if after sending all data.<br/>"
-                         "                   no reply is received within &lt;n&gt; seconds.<br/>"
-                         "                   Default timeout: %d. Use 0 to wait forever.<br/>"*/
-                         "<b>--bigkeys</b>          Sample Redis keys looking for big keys.<br/>"
-                         "<b>--scan</b>             List all keys using the SCAN command.<br/>"
-                         "<b>--pattern &lt;pat&gt;</b>    Useful with <b>--scan</b> to specify a SCAN pattern.<br/>"
-                         "<b>--intrinsic-latency &lt;sec&gt;</b> Run a test to measure intrinsic system latency.<br/>"
-                         "                   The test will run for the specified amount of seconds.<br/>"
-                         "<b>--eval &lt;file&gt;</b>      Send an EVAL command using the Lua script at <b>&lt;file&gt;</b>.";
+    return "<b>Usage: [OPTIONS] [cmd [arg [arg ...]]]</b><br/>"
+           "<b>-h &lt;hostname&gt;</b>      Server hostname (default: 127.0.0.1).<br/>"
+           "<b>-p &lt;port&gt;</b>          Server port (default: 6379).<br/>"
+           "<b>-s &lt;socket&gt;</b>        Server socket (overrides hostname and port).<br/>"
+           "<b>-a &lt;password&gt;</b>      Password to use when connecting to the server.<br/>"
+           "<b>-r &lt;repeat&gt;</b>        Execute specified command N times.<br/>"
+           "<b>-i &lt;interval&gt;</b>      When <b>-r</b> is used, waits &lt;interval&gt; seconds per command.<br/>"
+           "                   It is possible to specify sub-second times like <b>-i</b> 0.1.<br/>"
+           "<b>-n &lt;db&gt;</b>            Database number.<br/>"
+           "<b>-d &lt;delimiter&gt;</b>     Multi-bulk delimiter in for raw formatting (default: \\n).<br/>"
+           "<b>-c</b>                 Enable cluster mode (follow -ASK and -MOVED redirections).<br/>"
+           "<b>--latency</b>          Enter a special mode continuously sampling latency.<br/>"
+           "<b>--latency-history</b>  Like <b>--latency</b> but tracking latency changes over time.<br/>"
+           "                   Default time interval is 15 sec. Change it using <b>-i</b>.<br/>"
+           "<b>--slave</b>            Simulate a slave showing commands received from the master.<br/>"
+           "<b>--rdb &lt;filename&gt;</b>   Transfer an RDB dump from remote server to local file.<br/>"
+           /*"<b>--pipe</b>             Transfer raw Redis protocol from stdin to server.<br/>"
+           "<b>--pipe-timeout &lt;n&gt;</b> In <b>--pipe mode</b>, abort with error if after sending all data.<br/>"
+           "                   no reply is received within &lt;n&gt; seconds.<br/>"
+           "                   Default timeout: %d. Use 0 to wait forever.<br/>"*/
+           "<b>--bigkeys</b>          Sample Redis keys looking for big keys.<br/>"
+           "<b>--scan</b>             List all keys using the SCAN command.<br/>"
+           "<b>--pattern &lt;pat&gt;</b>    Useful with <b>--scan</b> to specify a SCAN pattern.<br/>"
+           "<b>--intrinsic-latency &lt;sec&gt;</b> Run a test to measure intrinsic system latency.<br/>"
+           "                   The test will run for the specified amount of seconds.<br/>"
+           "<b>--eval &lt;file&gt;</b>      Send an EVAL command using the Lua script at <b>&lt;file&gt;</b>.";
   }
   if (type == MEMCACHED) {
       return "<b>Usage: [OPTIONS] [cmd [arg [arg ...]]]</b><br/>"
-                         "<b>-h &lt;hostname&gt;</b>      Server hostname (default: 127.0.0.1).<br/>"
-                         "<b>-p &lt;port&gt;</b>          Server port (default: 11211).<br/>"
-                         "<b>-u &lt;username&gt;</b>      Username to use when connecting to the server.<br/>"
-                         "<b>-a &lt;password&gt;</b>      Password to use when connecting to the server.<br/>"
-                         "<b>-d &lt;delimiter&gt;</b>     Multi-bulk delimiter in for raw formatting (default: \\n).<br/>";
+             "<b>-h &lt;hostname&gt;</b>      Server hostname (default: 127.0.0.1).<br/>"
+             "<b>-p &lt;port&gt;</b>          Server port (default: 11211).<br/>"
+             "<b>-u &lt;username&gt;</b>      Username to use when connecting to the server.<br/>"
+             "<b>-a &lt;password&gt;</b>      Password to use when connecting to the server.<br/>"
+             "<b>-d &lt;delimiter&gt;</b>     Multi-bulk delimiter in for raw formatting (default: \\n).<br/>";
   }
   if (type == SSDB) {
       return "<b>Usage: [OPTIONS] [cmd [arg [arg ...]]]</b><br/>"
-                         "<b>-u &lt;username&gt;</b>      Username to use when connecting to the server.<br/>"
-                         "<b>-a &lt;password&gt;</b>      Password to use when connecting to the server.<br/>"
-                         "<b>-d &lt;delimiter&gt;</b>     Multi-bulk delimiter in for raw formatting (default: \\n).<br/>";
+             "<b>-u &lt;username&gt;</b>      Username to use when connecting to the server.<br/>"
+             "<b>-a &lt;password&gt;</b>      Password to use when connecting to the server.<br/>"
+             "<b>-d &lt;delimiter&gt;</b>     Multi-bulk delimiter in for raw formatting (default: \\n).<br/>";
   }
   if (type == LEVELDB) {
       return "<b>Usage: [OPTIONS] [cmd [arg [arg ...]]]</b><br/>"
-                         "<b>-f &lt;db&gt;</b>            File path to database.<br/>"
-                         "<b>-c </b>            Create database if missing.<br/>"
-                         "<b>-d &lt;delimiter&gt;</b>     Multi-bulk delimiter in for raw formatting (default: \\n).<br/>";
+             "<b>-f &lt;db&gt;</b>            File path to database.<br/>"
+             "<b>-c </b>            Create database if missing.<br/>"
+             "<b>-d &lt;delimiter&gt;</b>     Multi-bulk delimiter in for raw formatting (default: \\n).<br/>";
   }
   if (type == ROCKSDB) {
       return "<b>Usage: [OPTIONS] [cmd [arg [arg ...]]]</b><br/>"
-                         "<b>-f &lt;db&gt;</b>            File path to database.<br/>"
-                         "<b>-c </b>            Create database if missing.<br/>"
-                         "<b>-d &lt;delimiter&gt;</b>     Multi-bulk delimiter in for raw formatting (default: \\n).<br/>";
+             "<b>-f &lt;db&gt;</b>            File path to database.<br/>"
+             "<b>-c </b>            Create database if missing.<br/>"
+             "<b>-d &lt;delimiter&gt;</b>     Multi-bulk delimiter in for raw formatting (default: \\n).<br/>";
   }
   if (type == UNQLITE) {
       return "<b>Usage: [OPTIONS] [cmd [arg [arg ...]]]</b><br/>"
-                         "<b>-f &lt;db&gt;</b>            File path to database.<br/>"
-                         "<b>-c </b>            Create database if missing.<br/>"
-                         "<b>-d &lt;delimiter&gt;</b>     Multi-bulk delimiter in for raw formatting (default: \\n).<br/>";
+             "<b>-f &lt;db&gt;</b>            File path to database.<br/>"
+             "<b>-c </b>            Create database if missing.<br/>"
+             "<b>-d &lt;delimiter&gt;</b>     Multi-bulk delimiter in for raw formatting (default: \\n).<br/>";
   }
   if (type == LMDB) {
       return "<b>Usage: [OPTIONS] [cmd [arg [arg ...]]]</b><br/>"
-                         "<b>-f &lt;db&gt;</b>            File path to database.<br/>"
-                         "<b>-c </b>            Create database if missing.<br/>"
-                         "<b>-d &lt;delimiter&gt;</b>     Multi-bulk delimiter in for raw formatting (default: \\n).<br/>";
+             "<b>-f &lt;db&gt;</b>            File path to database.<br/>"
+             "<b>-c </b>            Create database if missing.<br/>"
+             "<b>-d &lt;delimiter&gt;</b>     Multi-bulk delimiter in for raw formatting (default: \\n).<br/>";
   }
 
   NOTREACHED();
@@ -461,7 +459,7 @@ IClusterSettingsBase* IClusterSettingsBase::createFromType(connectionTypes type,
                                                            const std::string& conName) {
 #ifdef BUILD_WITH_REDIS
   if (type == REDIS) {
-      return new redis::RedisClusterSettings(conName);
+    return new redis::RedisClusterSettings(conName);
   }
 #endif
 
@@ -483,34 +481,34 @@ IClusterSettingsBase* IClusterSettingsBase::fromString(const std::string& val) {
   for (size_t i = 0; i < len; ++i) {
     char ch = val[i];
     if (ch == ',') {
-        if (commaCount == 0) {
-            int crT = elText[0] - 48;
-            result = createFromType((connectionTypes)crT);
-            if (!result) {
-                return NULL;
-            }
-        } else if (commaCount == 1) {
-            result->setConnectionName(elText);
-        } else if (commaCount == 2) {
-            uint32_t msTime = common::convertFromString<uint32_t>(elText);
-            result->setLoggingMsTimeInterval(msTime);
-            std::string serText;
-            for (size_t j = i + 2; j < len; ++j) {
-                ch = val[j];
-                if (ch == magicNumber || j == len - 1) {
-                    IConnectionSettingsBaseSPtr ser(IConnectionSettingsBase::fromString(serText));
-                    result->addNode(ser);
-                    serText.clear();
-                } else {
-                    serText += ch;
-                }
-            }
-            break;
+      if (commaCount == 0) {
+        int crT = elText[0] - 48;
+        result = createFromType((connectionTypes)crT);
+        if (!result) {
+          return NULL;
         }
-        commaCount++;
-        elText.clear();
+      } else if (commaCount == 1) {
+        result->setConnectionName(elText);
+      } else if (commaCount == 2) {
+        uint32_t msTime = common::convertFromString<uint32_t>(elText);
+        result->setLoggingMsTimeInterval(msTime);
+        std::string serText;
+        for (size_t j = i + 2; j < len; ++j) {
+          ch = val[j];
+          if (ch == magicNumber || j == len - 1) {
+            IConnectionSettingsBaseSPtr ser(IConnectionSettingsBase::fromString(serText));
+            result->addNode(ser);
+            serText.clear();
+          } else {
+            serText += ch;
+          }
+        }
+        break;
+      }
+      commaCount++;
+      elText.clear();
     } else {
-       elText += ch;
+      elText += ch;
     }
   }
 
@@ -523,10 +521,10 @@ std::string IClusterSettingsBase::toString() const {
   std::stringstream str;
   str << IConnectionSettings::toString() << ',';
   for (size_t i = 0; i < clusters_nodes_.size(); ++i) {
-     IConnectionSettingsBaseSPtr serv = clusters_nodes_[i];
-     if (serv) {
-         str << magicNumber << serv->toString();
-     }
+    IConnectionSettingsBaseSPtr serv = clusters_nodes_[i];
+    if (serv) {
+      str << magicNumber << serv->toString();
+    }
   }
 
   std::string res = str.str();
@@ -535,11 +533,11 @@ std::string IClusterSettingsBase::toString() const {
 
 IConnectionSettingsBaseSPtr IClusterSettingsBase::findSettingsByHost(const common::net::hostAndPort& host) const {
   for (size_t i = 0; i < clusters_nodes_.size(); ++i) {
-      IConnectionSettingsBaseSPtr cur = clusters_nodes_[i];
-      IConnectionSettingsRemote * remote = dynamic_cast<IConnectionSettingsRemote *>(cur.get());
-      if (remote && remote->host() == host) {
-          return cur;
-      }
+    IConnectionSettingsBaseSPtr cur = clusters_nodes_[i];
+    IConnectionSettingsRemote * remote = dynamic_cast<IConnectionSettingsRemote *>(cur.get());
+    if (remote && remote->host() == host) {
+      return cur;
+    }
   }
 
   return IConnectionSettingsBaseSPtr();

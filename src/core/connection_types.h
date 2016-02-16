@@ -41,54 +41,54 @@ namespace fastonosql {
   };
 
 static const std::string connnectionType[] = {
-    "Unknown",
+  "Unknown",
 #ifdef BUILD_WITH_REDIS
-    "Redis",
+  "Redis",
 #endif
 #ifdef BUILD_WITH_MEMCACHED
-    "Memcached",
+  "Memcached",
 #endif
 #ifdef BUILD_WITH_SSDB
-    "Ssdb",
+  "Ssdb",
 #endif
 #ifdef BUILD_WITH_LEVELDB
-    "Leveldb",
+  "Leveldb",
 #endif
 #ifdef BUILD_WITH_ROCKSDB
-    "Rocksdb",
+  "Rocksdb",
 #endif
 #ifdef BUILD_WITH_UNQLITE
-    "Unqlite",
+  "Unqlite",
 #endif
 #ifdef BUILD_WITH_LMDB
-    "Lmdb"
+  "Lmdb"
 #endif
 };
 
 enum ConnectionMode {
-    /* Latency mode */
-    LatencyMode,
+  /* Latency mode */
+  LatencyMode,
 
-    /* Slave mode */
-    SlaveMode,
+  /* Slave mode */
+  SlaveMode,
 
-    /* Get RDB mode. */
-    GetRDBMode,
+  /* Get RDB mode. */
+  GetRDBMode,
 
-    /* Pipe mode */
-    PipeMode,
+  /* Pipe mode */
+  PipeMode,
 
-    /* Find big keys */
-    FindBigKeysMode,
+  /* Find big keys */
+  FindBigKeysMode,
 
-    /* Stat mode */
-    StatMode,
+  /* Stat mode */
+  StatMode,
 
-    /* Scan mode */
-    ScanMode,
+  /* Scan mode */
+  ScanMode,
 
-    /* Interactive mode */
-    InteractiveMode
+  /* Interactive mode */
+  InteractiveMode
 };
 
 }  // namespace fastonosql

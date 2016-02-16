@@ -35,22 +35,22 @@ void parseOptions(int argc, char **argv, unqliteConfig& cfg) {
     int lastarg = i == argc-1;
 
     if (!strcmp(argv[i], "-d") && !lastarg) {
-        cfg.delimiter = argv[++i];
+      cfg.delimiter = argv[++i];
     } else if (!strcmp(argv[i], "-f") && !lastarg) {
-        cfg.dbname = argv[++i];
+      cfg.dbname = argv[++i];
     } else if (!strcmp(argv[i], "-c")) {
-        cfg.create_if_missing = true;
+      cfg.create_if_missing = true;
     } else {
       if (argv[i][0] == '-') {
         const uint16_t size_buff = 256;
-         char buff[size_buff] = {0};
+        char buff[size_buff] = {0};
         common::SNPrintf(buff, sizeof(buff),
                          "Unrecognized option or bad number of args for: '%s'", argv[i]);
         LOG_MSG(buff, common::logging::L_WARNING, true);
         break;
       } else {
-          /* Likely the command name, stop here. */
-          break;
+        /* Likely the command name, stop here. */
+        break;
       }
     }
   }
@@ -71,15 +71,15 @@ std::string convertToString(const fastonosql::unqlite::unqliteConfig &conf) {
   std::vector<std::string> argv = conf.args();
 
   if (conf.create_if_missing) {
-      argv.push_back("-c");
+    argv.push_back("-c");
   }
 
   std::string result;
   for (size_t i = 0; i < argv.size(); ++i) {
-      result += argv[i];
-      if (i != argv.size() - 1) {
-          result += " ";
-      }
+    result += argv[i];
+    if (i != argv.size() - 1) {
+      result += " ";
+    }
   }
 
   return result;

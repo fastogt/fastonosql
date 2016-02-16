@@ -32,9 +32,9 @@ namespace common {
 template<>
 fastonosql::connectionTypes convertFromString(const std::string& text) {
   for (size_t i = 0; i < SIZEOFMASS(fastonosql::connnectionType); ++i) {
-      if (text == fastonosql::connnectionType[i]) {
-          return static_cast<fastonosql::connectionTypes>(i);
-      }
+    if (text == fastonosql::connnectionType[i]) {
+      return static_cast<fastonosql::connectionTypes>(i);
+    }
   }
 
   return fastonosql::DBUNKNOWN;
@@ -47,9 +47,9 @@ std::string convertToString(fastonosql::connectionTypes t) {
 template<>
 fastonosql::serverTypes convertFromString(const std::string& text) {
   for (size_t i = 0; i < SIZEOFMASS(serverTypes); ++i) {
-      if (text == serverTypes[i]) {
-          return static_cast<fastonosql::serverTypes>(i);
-      }
+    if (text == serverTypes[i]) {
+      return static_cast<fastonosql::serverTypes>(i);
+    }
   }
 
   return fastonosql::MASTER;

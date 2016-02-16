@@ -44,18 +44,18 @@ void parseOptions(int argc, char **argv, ssdbConfig& cfg) {
       } else if (!strcmp(argv[i], "-d") && !lastarg) {
         cfg.delimiter = argv[++i];
       } else {
-          if (argv[i][0] == '-') {
-              const uint16_t size_buff = 256;
-              char buff[size_buff] = {0};
-              common::SNPrintf(buff, sizeof(buff),
-                               "Unrecognized option or bad number of args for: '%s'", argv[i]);
-              LOG_MSG(buff, common::logging::L_WARNING, true);
-              break;
-          } else {
-              /* Likely the command name, stop here. */
-              break;
-          }
+        if (argv[i][0] == '-') {
+          const uint16_t size_buff = 256;
+          char buff[size_buff] = {0};
+          common::SNPrintf(buff, sizeof(buff),
+                           "Unrecognized option or bad number of args for: '%s'", argv[i]);
+          LOG_MSG(buff, common::logging::L_WARNING, true);
+          break;
+      } else {
+          /* Likely the command name, stop here. */
+          break;
       }
+    }
   }
 }
 

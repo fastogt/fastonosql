@@ -30,11 +30,11 @@ namespace fastonosql {
 namespace {
 
 const std::vector<Field> rockCommonFields = {
-    Field(ROCKSDB_CAMPACTIONS_LEVEL_LABEL, common::Value::TYPE_UINTEGER),
-    Field(ROCKSDB_FILE_SIZE_MB_LABEL, common::Value::TYPE_UINTEGER),
-    Field(ROCKSDB_TIME_SEC_LABEL, common::Value::TYPE_UINTEGER),
-    Field(ROCKSDB_READ_MB_LABEL, common::Value::TYPE_UINTEGER),
-    Field(ROCKSDB_WRITE_MB_LABEL, common::Value::TYPE_UINTEGER)
+  Field(ROCKSDB_CAMPACTIONS_LEVEL_LABEL, common::Value::TYPE_UINTEGER),
+  Field(ROCKSDB_FILE_SIZE_MB_LABEL, common::Value::TYPE_UINTEGER),
+  Field(ROCKSDB_TIME_SEC_LABEL, common::Value::TYPE_UINTEGER),
+  Field(ROCKSDB_READ_MB_LABEL, common::Value::TYPE_UINTEGER),
+  Field(ROCKSDB_WRITE_MB_LABEL, common::Value::TYPE_UINTEGER)
 };
 
 }  // namespace
@@ -42,12 +42,12 @@ const std::vector<Field> rockCommonFields = {
 template<>
 std::vector<common::Value::Type> DBTraits<ROCKSDB>::supportedTypes() {
   return  {
-              common::Value::TYPE_BOOLEAN,
-              common::Value::TYPE_INTEGER,
-              common::Value::TYPE_UINTEGER,
-              common::Value::TYPE_DOUBLE,
-              common::Value::TYPE_STRING,
-              common::Value::TYPE_ARRAY
+            common::Value::TYPE_BOOLEAN,
+            common::Value::TYPE_INTEGER,
+            common::Value::TYPE_UINTEGER,
+            common::Value::TYPE_DOUBLE,
+            common::Value::TYPE_STRING,
+            common::Value::TYPE_ARRAY
           };
 }
 
@@ -78,15 +78,15 @@ RocksdbServerInfo::Stats::Stats(const std::string& common_text) {
     std::string field = line.substr(0, delem);
     std::string value = line.substr(delem + 1);
     if (field == ROCKSDB_CAMPACTIONS_LEVEL_LABEL) {
-        compactions_level = common::convertFromString<uint32_t>(value);
+      compactions_level = common::convertFromString<uint32_t>(value);
     } else if (field == ROCKSDB_FILE_SIZE_MB_LABEL) {
-        file_size_mb = common::convertFromString<uint32_t>(value);
+      file_size_mb = common::convertFromString<uint32_t>(value);
     } else if (field == ROCKSDB_TIME_SEC_LABEL) {
-        time_sec = common::convertFromString<uint32_t>(value);
+      time_sec = common::convertFromString<uint32_t>(value);
     } else if (field == ROCKSDB_READ_MB_LABEL) {
-        read_mb = common::convertFromString<uint32_t>(value);
+      read_mb = common::convertFromString<uint32_t>(value);
     } else if (field == ROCKSDB_WRITE_MB_LABEL) {
-        write_mb = common::convertFromString<uint32_t>(value);
+      write_mb = common::convertFromString<uint32_t>(value);
     }
     start = pos + 2;
   }
@@ -133,10 +133,10 @@ common::Value* RocksdbServerInfo::valueByIndexes(unsigned char property,
 
 std::ostream& operator<<(std::ostream& out, const RocksdbServerInfo::Stats& value) {
   return out << ROCKSDB_CAMPACTIONS_LEVEL_LABEL":" << value.compactions_level << MARKER
-              << ROCKSDB_FILE_SIZE_MB_LABEL":" << value.file_size_mb << MARKER
-              << ROCKSDB_TIME_SEC_LABEL":" << value.time_sec << MARKER
-              << ROCKSDB_READ_MB_LABEL":" << value.read_mb << MARKER
-              << ROCKSDB_WRITE_MB_LABEL":" << value.write_mb << MARKER;
+             << ROCKSDB_FILE_SIZE_MB_LABEL":" << value.file_size_mb << MARKER
+             << ROCKSDB_TIME_SEC_LABEL":" << value.time_sec << MARKER
+             << ROCKSDB_READ_MB_LABEL":" << value.read_mb << MARKER
+             << ROCKSDB_WRITE_MB_LABEL":" << value.write_mb << MARKER;
 }
 
 std::ostream& operator<<(std::ostream& out, const RocksdbServerInfo& value) {
@@ -155,12 +155,12 @@ RocksdbServerInfo* makeRocksdbServerInfo(const std::string &content) {
   DCHECK_EQ(headers.size(), 1);
 
   for (size_t i = 0; i < content.size(); ++i) {
-      word += content[i];
-      if (word == headers[0]) {
-          std::string part = content.substr(i + 1);
-          result->stats_ = RocksdbServerInfo::Stats(part);
-          break;
-      }
+    word += content[i];
+    if (word == headers[0]) {
+      std::string part = content.substr(i + 1);
+      result->stats_ = RocksdbServerInfo::Stats(part);
+      break;
+    }
   }
 
   return result;

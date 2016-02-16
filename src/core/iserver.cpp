@@ -317,7 +317,7 @@ void IServer::handleConnectEvent(events::ConnectResponceEvent* ev) {
   auto v = ev->value();
   common::Error er(v.errorInfo());
   if (er && er->isError()) {
-      LOG_ERROR(er, true);
+    LOG_ERROR(er, true);
   }
   emit finishedConnect(v);
 }
@@ -326,7 +326,7 @@ void IServer::handleDisconnectEvent(events::DisconnectResponceEvent* ev) {
   auto v = ev->value();
   common::Error er(v.errorInfo());
   if (er && er->isError()) {
-      LOG_ERROR(er, true);
+    LOG_ERROR(er, true);
   }
   emit finishedDisconnect(v);
 }
@@ -335,7 +335,7 @@ void IServer::handleLoadServerInfoEvent(events::ServerInfoResponceEvent* ev) {
   auto v = ev->value();
   common::Error er(v.errorInfo());
   if (er && er->isError()) {
-      LOG_ERROR(er, true);
+    LOG_ERROR(er, true);
   }
   emit finishedLoadServerInfo(v);
 }
@@ -344,7 +344,7 @@ void IServer::handleLoadServerPropertyEvent(events::ServerPropertyInfoResponceEv
   auto v = ev->value();
   common::Error er(v.errorInfo());
   if (er && er->isError()) {
-      LOG_ERROR(er, true);
+    LOG_ERROR(er, true);
   }
   emit finishedLoadServerProperty(v);
 }
@@ -353,7 +353,7 @@ void IServer::handleServerPropertyChangeEvent(events::ChangeServerPropertyInfoRe
   auto v = ev->value();
   common::Error er(v.errorInfo());
   if (er && er->isError()) {
-      LOG_ERROR(er, true);
+    LOG_ERROR(er, true);
   }
   emit finishedChangeServerProperty(v);
 }
@@ -362,7 +362,7 @@ void IServer::handleShutdownEvent(events::ShutDownResponceEvent* ev) {
   auto v = ev->value();
   common::Error er(v.errorInfo());
   if (er && er->isError()) {
-      LOG_ERROR(er, true);
+    LOG_ERROR(er, true);
   }
   emit finishedShutdown(v);
 }
@@ -371,7 +371,7 @@ void IServer::handleBackupEvent(events::BackupResponceEvent* ev) {
   auto v = ev->value();
   common::Error er(v.errorInfo());
   if (er && er->isError()) {
-      LOG_ERROR(er, true);
+    LOG_ERROR(er, true);
   }
   emit finishedBackup(v);
 }
@@ -445,7 +445,7 @@ void IServer::handleLoadServerInfoHistoryEvent(events::ServerInfoHistoryResponce
   auto v = ev->value();
   common::Error er = v.errorInfo();
   if (er && er->isError()) {
-      LOG_ERROR(er, true);
+    LOG_ERROR(er, true);
   }
 
   emit finishedLoadServerHistoryInfo(v);
@@ -455,7 +455,7 @@ void IServer::handleDiscoveryInfoResponceEvent(events::DiscoveryInfoResponceEven
   auto v = ev->value();
   common::Error er = v.errorInfo();
   if (er && er->isError()) {
-      LOG_ERROR(er, true);
+    LOG_ERROR(er, true);
   }
   emit finishedLoadDiscoveryInfo(v);
 }
@@ -464,7 +464,7 @@ void IServer::handleClearServerHistoryResponceEvent(events::ClearServerHistoryRe
   auto v = ev->value();
   common::Error er = v.errorInfo();
   if (er && er->isError()) {
-      LOG_ERROR(er, true);
+    LOG_ERROR(er, true);
   }
 
   emit finishedClearServerHistory(v);
@@ -494,7 +494,7 @@ void IServer::handleCommandResponceEvent(events::CommandResponceEvent* ev) {
   auto v = ev->value();
   common::Error er(v.errorInfo());
   if (er && er->isError()) {
-      LOG_ERROR(er, true);
+    LOG_ERROR(er, true);
   }
   emit finishedExecuteCommand(v);
 }

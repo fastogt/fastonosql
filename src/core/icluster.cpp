@@ -27,29 +27,29 @@
 namespace fastonosql {
 
 ICluster::ICluster(const std::string &name)
-    : name_(name) {
+  : name_(name) {
 }
 
 QString ICluster::name() const {
-    return common::convertFromString<QString>(name_);
+  return common::convertFromString<QString>(name_);
 }
 
 ICluster::nodes_type ICluster::nodes() const {
-    return nodes_;
+  return nodes_;
 }
 
 void ICluster::addServer(IServerSPtr serv) {
-    if (serv) {
-      nodes_.push_back(serv);
-    }
+  if (serv) {
+    nodes_.push_back(serv);
+  }
 }
 
 IServerSPtr ICluster::root() const {
-    if (nodes_.empty()) {
-        return IServerSPtr();
-    }
+  if (nodes_.empty()) {
+    return IServerSPtr();
+  }
 
-    return nodes_[0];
+  return nodes_[0];
 }
 
 }  // namespace fastonosql

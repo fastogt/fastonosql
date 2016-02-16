@@ -35,10 +35,10 @@ class UnqliteServerInfo
   // Compactions\nLevel  Files Size(MB) Time(sec) Read(MB) Write(MB)\n
   struct Stats
           : FieldByIndex {
-      Stats();
-      explicit Stats(const std::string& common_text);
-      common::Value* valueByIndex(unsigned char index) const;
-      std::string file_name;
+    Stats();
+    explicit Stats(const std::string& common_text);
+    common::Value* valueByIndex(unsigned char index) const;
+    std::string file_name;
   } stats_;
 
   UnqliteServerInfo();

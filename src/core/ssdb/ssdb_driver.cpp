@@ -89,20 +89,20 @@ common::Error SsdbDriver::commandLoadImpl(CommandLoadKey* command, std::string* 
   NDbKValue key = command->key();
   common::Value::Type t = key.type();
   if (t == common::Value::TYPE_ARRAY) {
-      common::SNPrintf(patternResult, sizeof(patternResult),
-                       GET_KEY_LIST_PATTERN_1ARGS_S, key.keyString());
+    common::SNPrintf(patternResult, sizeof(patternResult),
+                     GET_KEY_LIST_PATTERN_1ARGS_S, key.keyString());
   } else if (t == common::Value::TYPE_SET) {
-      common::SNPrintf(patternResult, sizeof(patternResult),
-                       GET_KEY_SET_PATTERN_1ARGS_S, key.keyString());
+    common::SNPrintf(patternResult, sizeof(patternResult),
+                     GET_KEY_SET_PATTERN_1ARGS_S, key.keyString());
   } else if (t == common::Value::TYPE_ZSET) {
-      common::SNPrintf(patternResult, sizeof(patternResult),
-                       GET_KEY_ZSET_PATTERN_1ARGS_S, key.keyString());
+    common::SNPrintf(patternResult, sizeof(patternResult),
+                     GET_KEY_ZSET_PATTERN_1ARGS_S, key.keyString());
   } else if (t == common::Value::TYPE_HASH) {
-      common::SNPrintf(patternResult, sizeof(patternResult),
-                       GET_KEY_HASH_PATTERN_1ARGS_S, key.keyString());
+    common::SNPrintf(patternResult, sizeof(patternResult),
+                     GET_KEY_HASH_PATTERN_1ARGS_S, key.keyString());
   } else {
-      common::SNPrintf(patternResult, sizeof(patternResult),
-                       GET_KEY_PATTERN_1ARGS_S, key.keyString());
+    common::SNPrintf(patternResult, sizeof(patternResult),
+                     GET_KEY_PATTERN_1ARGS_S, key.keyString());
   }
 
   *cmdstring = patternResult;
@@ -123,20 +123,20 @@ common::Error SsdbDriver::commandCreateImpl(CommandCreateKey* command,
   std::string value_str = common::convertToString(rval, " ");
   common::Value::Type t = key.type();
   if (t == common::Value::TYPE_ARRAY) {
-      common::SNPrintf(patternResult, sizeof(patternResult), SET_KEY_LIST_PATTERN_2ARGS_SS,
-                       key_str, value_str);
+    common::SNPrintf(patternResult, sizeof(patternResult), SET_KEY_LIST_PATTERN_2ARGS_SS,
+                     key_str, value_str);
   } else if (t == common::Value::TYPE_SET) {
-      common::SNPrintf(patternResult, sizeof(patternResult), SET_KEY_SET_PATTERN_2ARGS_SS,
-                       key_str, value_str);
+    common::SNPrintf(patternResult, sizeof(patternResult), SET_KEY_SET_PATTERN_2ARGS_SS,
+                     key_str, value_str);
   } else if (t == common::Value::TYPE_ZSET) {
-      common::SNPrintf(patternResult, sizeof(patternResult), SET_KEY_ZSET_PATTERN_2ARGS_SS,
-                       key_str, value_str);
+    common::SNPrintf(patternResult, sizeof(patternResult), SET_KEY_ZSET_PATTERN_2ARGS_SS,
+                     key_str, value_str);
   } else if (t == common::Value::TYPE_HASH) {
-      common::SNPrintf(patternResult, sizeof(patternResult), SET_KEY_HASH_PATTERN_2ARGS_SS,
-                       key_str, value_str);
+    common::SNPrintf(patternResult, sizeof(patternResult), SET_KEY_HASH_PATTERN_2ARGS_SS,
+                     key_str, value_str);
   } else {
-      common::SNPrintf(patternResult, sizeof(patternResult), SET_KEY_PATTERN_2ARGS_SS,
-                       key_str, value_str);
+    common::SNPrintf(patternResult, sizeof(patternResult), SET_KEY_PATTERN_2ARGS_SS,
+                     key_str, value_str);
   }
 
   *cmdstring = patternResult;
@@ -280,7 +280,7 @@ void SsdbDriver::handleExecuteEvent(events::ExecuteRequestEvent* ev) {
       if (inputLine[n] == '\n' || n == length-1) {
         notifyProgress(sender, step * n);
         char command[128] = {0};
-        if (n == length-1) {
+        if (n == length - 1) {
           strcpy(command, inputLine + offset);
         } else {
           strncpy(command, inputLine + offset, n - offset);
@@ -312,10 +312,10 @@ void SsdbDriver::handleCommandRequestEvent(events::CommandRequestEvent* ev) {
     std::string cmdtext;
     common::Error er = commandByType(res.cmd, &cmdtext);
     if (er && er->isError()) {
-        res.setErrorInfo(er);
-        reply(sender, new events::CommandResponceEvent(this, res));
-        notifyProgress(sender, 100);
-        return;
+      res.setErrorInfo(er);
+      reply(sender, new events::CommandResponceEvent(this, res));
+      notifyProgress(sender, 100);
+      return;
     }
 
     RootLocker lock = make_locker(sender, cmdtext);

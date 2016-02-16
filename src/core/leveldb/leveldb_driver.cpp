@@ -254,8 +254,8 @@ void LeveldbDriver::handleExecuteEvent(events::ExecuteRequestEvent* ev) {
                                                                 common::Value::C_USER);
         er = execute(cmd);
         if (er && er->isError()) {
-            res.setErrorInfo(er);
-            break;
+          res.setErrorInfo(er);
+          break;
         }
       }
     }

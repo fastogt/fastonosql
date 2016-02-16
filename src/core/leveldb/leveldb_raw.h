@@ -51,7 +51,7 @@ struct LeveldbRaw
                      uint64_t limit, std::vector<std::string> *ret);
 
   leveldbConfig config_;
-private:
+ private:
   ::leveldb::DB* leveldb_;
 };
 

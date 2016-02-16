@@ -37,8 +37,8 @@ class IconLabel;
 }
 
 namespace fastonosql {
-class BaseShell;
 
+class BaseShell;
 class BaseShellWidget
   : public QWidget {
   Q_OBJECT

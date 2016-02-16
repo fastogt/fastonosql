@@ -43,12 +43,12 @@ const std::vector<Field> LeveldbCommonFields = {
 template<>
 std::vector<common::Value::Type> DBTraits<LEVELDB>::supportedTypes() {
   return  {
-              common::Value::TYPE_BOOLEAN,
-              common::Value::TYPE_INTEGER,
-              common::Value::TYPE_UINTEGER,
-              common::Value::TYPE_DOUBLE,
-              common::Value::TYPE_STRING,
-              common::Value::TYPE_ARRAY
+            common::Value::TYPE_BOOLEAN,
+            common::Value::TYPE_INTEGER,
+            common::Value::TYPE_UINTEGER,
+            common::Value::TYPE_DOUBLE,
+            common::Value::TYPE_STRING,
+            common::Value::TYPE_ARRAY
           };
 }
 
@@ -79,15 +79,15 @@ LeveldbServerInfo::Stats::Stats(const std::string& common_text) {
     std::string field = line.substr(0, delem);
     std::string value = line.substr(delem + 1);
     if (field == LEVELDB_CAMPACTIONS_LEVEL_LABEL) {
-        compactions_level = common::convertFromString<uint32_t>(value);
+      compactions_level = common::convertFromString<uint32_t>(value);
     } else if (field == LEVELDB_FILE_SIZE_MB_LABEL) {
-        file_size_mb = common::convertFromString<uint32_t>(value);
+      file_size_mb = common::convertFromString<uint32_t>(value);
     } else if (field == LEVELDB_TIME_SEC_LABEL) {
-        time_sec = common::convertFromString<uint32_t>(value);
+      time_sec = common::convertFromString<uint32_t>(value);
     } else if (field == LEVELDB_READ_MB_LABEL) {
-        read_mb = common::convertFromString<uint32_t>(value);
+      read_mb = common::convertFromString<uint32_t>(value);
     } else if (field == LEVELDB_WRITE_MB_LABEL) {
-        write_mb = common::convertFromString<uint32_t>(value);
+      write_mb = common::convertFromString<uint32_t>(value);
     }
     start = pos + 2;
   }
@@ -124,20 +124,20 @@ common::Value* LeveldbServerInfo::valueByIndexes(unsigned char property,
                                                  unsigned char field) const {
   switch (property) {
   case 0:
-      return stats_.valueByIndex(field);
+    return stats_.valueByIndex(field);
   default:
-      NOTREACHED();
-      break;
+    NOTREACHED();
+    break;
   }
   return NULL;
 }
 
 std::ostream& operator<<(std::ostream& out, const LeveldbServerInfo::Stats& value) {
   return out << LEVELDB_CAMPACTIONS_LEVEL_LABEL":" << value.compactions_level << MARKER
-              << LEVELDB_FILE_SIZE_MB_LABEL":" << value.file_size_mb << MARKER
-              << LEVELDB_TIME_SEC_LABEL":" << value.time_sec << MARKER
-              << LEVELDB_READ_MB_LABEL":" << value.read_mb << MARKER
-              << LEVELDB_WRITE_MB_LABEL":" << value.write_mb << MARKER;
+             << LEVELDB_FILE_SIZE_MB_LABEL":" << value.file_size_mb << MARKER
+             << LEVELDB_TIME_SEC_LABEL":" << value.time_sec << MARKER
+             << LEVELDB_READ_MB_LABEL":" << value.read_mb << MARKER
+             << LEVELDB_WRITE_MB_LABEL":" << value.write_mb << MARKER;
 }
 
 std::ostream& operator<<(std::ostream& out, const LeveldbServerInfo& value) {
@@ -146,7 +146,7 @@ std::ostream& operator<<(std::ostream& out, const LeveldbServerInfo& value) {
 
 LeveldbServerInfo* makeLeveldbServerInfo(const std::string &content) {
   if (content.empty()) {
-      return NULL;
+    return NULL;
   }
 
   LeveldbServerInfo* result = new LeveldbServerInfo;
@@ -156,12 +156,12 @@ LeveldbServerInfo* makeLeveldbServerInfo(const std::string &content) {
   DCHECK_EQ(headers.size(), 1);
 
   for (size_t i = 0; i < content.size(); ++i) {
-      word += content[i];
-      if (word == headers[0]) {
-          std::string part = content.substr(i + 1);
-          result->stats_ = LeveldbServerInfo::Stats(part);
-          break;
-      }
+    word += content[i];
+    if (word == headers[0]) {
+      std::string part = content.substr(i + 1);
+      result->stats_ = LeveldbServerInfo::Stats(part);
+      break;
+    }
   }
 
   return result;
@@ -200,7 +200,7 @@ LeveldbCommand::LeveldbCommand(FastoObject* parent, common::CommandValue* cmd,
 bool LeveldbCommand::isReadOnly() const {
   std::string key = inputCmd();
   if (key.empty()) {
-      return true;
+    return true;
   }
 
   std::transform(key.begin(), key.end(), key.begin(), ::tolower);
