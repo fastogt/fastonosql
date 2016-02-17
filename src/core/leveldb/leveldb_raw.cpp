@@ -94,7 +94,7 @@ const char* LeveldbRaw::versionApi() {
 
 bool LeveldbRaw::isConnected() const {
   if (!leveldb_) {
-      return false;
+    return false;
   }
 
   return true;

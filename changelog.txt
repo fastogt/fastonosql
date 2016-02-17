@@ -1,6 +1,7 @@
 0.5.8 /
 [Alexandr Topilski]
 - [UnQLite] Save data propertly
+- [LevelDB] Stable on windows
 - Commands refactoring
 - Fix some memory leaks
 
