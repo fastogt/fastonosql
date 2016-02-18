@@ -49,7 +49,7 @@ struct IExplorerTreeItem
 };
 
 struct ExplorerServerItem
-        : public IExplorerTreeItem {
+  : public IExplorerTreeItem {
   ExplorerServerItem(IServerSPtr server, TreeItem* parent);
   virtual ~ExplorerServerItem();
 

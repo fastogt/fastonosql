@@ -89,7 +89,7 @@ const char* LmdbLexer::basedOn() const {
 
 std::vector<uint32_t> LmdbLexer::supportedVersions() const {
   std::vector<uint32_t> result;
-  for (int i = 0; i < lmdb::lmdbCommands.size(); ++i) {
+  for (size_t i = 0; i < lmdb::lmdbCommands.size(); ++i) {
     CommandInfo cmd = lmdb::lmdbCommands[i];
 
     bool needed_insert = true;

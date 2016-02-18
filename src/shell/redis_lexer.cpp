@@ -58,7 +58,7 @@ QStringList RedisApi::callTips(const QStringList& context, int commas,
                                QsciScintilla::CallTipsStyle style, QList<int>& shifts) {
   for (QStringList::const_iterator it = context.begin(); it != context.end() - 1; ++it) {
     QString val = *it;
-    for (int i = 0; i < redis::redisCommands.size(); ++i) {
+    for (size_t i = 0; i < redis::redisCommands.size(); ++i) {
       CommandInfo cmd = redis::redisCommands[i];
       QString jval = common::convertFromString<QString>(cmd.name);
       if (QString::compare(jval, val, Qt::CaseInsensitive) == 0) {

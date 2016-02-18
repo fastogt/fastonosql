@@ -132,7 +132,7 @@ IClusterSPtr ServersManager::createCluster(IClusterSettingsBaseSPtr settings) {
 
     cl.reset(new redis::RedisCluster(settings->connectionName()));
     IClusterSettingsBase::cluster_connection_type nodes = settings->nodes();
-    for (int i = 0; i < nodes.size(); ++i) {
+    for (size_t i = 0; i < nodes.size(); ++i) {
       IConnectionSettingsBaseSPtr nd = nodes[i];
       if (nd) {
         IServerSPtr serv = createServer(nd);

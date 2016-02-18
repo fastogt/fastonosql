@@ -27,7 +27,7 @@ class QAction;
 namespace fastonosql {
 
 class ExplorerTreeView
-      : public QTreeView {
+  : public QTreeView {
  Q_OBJECT
  public:
   explicit ExplorerTreeView(QWidget* parent);

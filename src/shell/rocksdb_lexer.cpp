@@ -90,7 +90,7 @@ const char* RocksdbLexer::basedOn() const {
 
 std::vector<uint32_t> RocksdbLexer::supportedVersions() const {
   std::vector<uint32_t> result;
-  for (int i = 0; i < rocksdb::rocksdbCommands.size(); ++i) {
+  for (size_t i = 0; i < rocksdb::rocksdbCommands.size(); ++i) {
     CommandInfo cmd = rocksdb::rocksdbCommands[i];
 
     bool needed_insert = true;

@@ -29,7 +29,7 @@
 namespace fastonosql {
 
 class GuiFactory
-        : public common::patterns::LazySingleton<GuiFactory> {
+  : public common::patterns::LazySingleton<GuiFactory> {
  public:
   friend class common::patterns::LazySingleton<GuiFactory>;
 

@@ -915,7 +915,7 @@ common::Error hscan(CommandHandler* handler, int argc, char** argv, FastoObject*
   common::Error er = ssdb->hscan(argv[0], argv[1], argv[2], atoll(argv[3]), &keysout);
   if (!er) {
     common::ArrayValue* ar = common::Value::createArrayValue();
-    for (int i = 0; i < keysout.size(); ++i) {
+    for (size_t i = 0; i < keysout.size(); ++i) {
       common::StringValue *val = common::Value::createStringValue(keysout[i]);
       ar->append(val);
     }
@@ -932,7 +932,7 @@ common::Error hrscan(CommandHandler* handler, int argc, char** argv, FastoObject
   common::Error er = ssdb->hrscan(argv[0], argv[1], argv[2], atoll(argv[3]), &keysout);
   if (!er) {
     common::ArrayValue* ar = common::Value::createArrayValue();
-    for (int i = 0; i < keysout.size(); ++i) {
+    for (size_t i = 0; i < keysout.size(); ++i) {
       common::StringValue *val = common::Value::createStringValue(keysout[i]);
       ar->append(val);
     }
@@ -954,7 +954,7 @@ common::Error multi_hget(CommandHandler* handler, int argc, char** argv, FastoOb
   common::Error er = ssdb->multi_hget(argv[0], keysget, &keysout);
   if (!er) {
     common::ArrayValue* ar = common::Value::createArrayValue();
-    for (int i = 0; i < keysout.size(); ++i) {
+    for (size_t i = 0; i < keysout.size(); ++i) {
       common::StringValue *val = common::Value::createStringValue(keysout[i]);
       ar->append(val);
     }
@@ -1089,7 +1089,7 @@ common::Error zrange(CommandHandler* handler, int argc, char** argv, FastoObject
   common::Error er = ssdb->zrange(argv[0], atoll(argv[1]), atoll(argv[2]), &res);
   if (!er) {
     common::ArrayValue* ar = common::Value::createArrayValue();
-    for (int i = 0; i < res.size(); ++i) {
+    for (size_t i = 0; i < res.size(); ++i) {
       common::StringValue *val = common::Value::createStringValue(res[i]);
       ar->append(val);
     }
@@ -1106,7 +1106,7 @@ common::Error zrrange(CommandHandler* handler, int argc, char** argv, FastoObjec
   common::Error er = ssdb->zrrange(argv[0], atoll(argv[1]), atoll(argv[2]), &res);
   if (!er) {
     common::ArrayValue* ar = common::Value::createArrayValue();
-    for (int i = 0; i < res.size(); ++i) {
+    for (size_t i = 0; i < res.size(); ++i) {
       common::StringValue *val = common::Value::createStringValue(res[i]);
       ar->append(val);
     }
@@ -1125,7 +1125,7 @@ common::Error zkeys(CommandHandler* handler, int argc, char** argv, FastoObject*
   common::Error er = ssdb->zkeys(argv[0], argv[1], &st, &end, atoll(argv[5]), &res);
   if (!er) {
     common::ArrayValue* ar = common::Value::createArrayValue();
-    for (int i = 0; i < res.size(); ++i) {
+    for (size_t i = 0; i < res.size(); ++i) {
       common::StringValue *val = common::Value::createStringValue(res[i]);
       ar->append(val);
     }
@@ -1144,7 +1144,7 @@ common::Error zscan(CommandHandler* handler, int argc, char** argv, FastoObject*
   common::Error er = ssdb->zscan(argv[0], argv[1], &st, &end, atoll(argv[4]), &res);
   if (!er) {
     common::ArrayValue* ar = common::Value::createArrayValue();
-    for (int i = 0; i < res.size(); ++i) {
+    for (size_t i = 0; i < res.size(); ++i) {
       common::StringValue *val = common::Value::createStringValue(res[i]);
       ar->append(val);
     }
@@ -1163,7 +1163,7 @@ common::Error zrscan(CommandHandler* handler, int argc, char** argv, FastoObject
   common::Error er = ssdb->zrscan(argv[0], argv[1], &st, &end, atoll(argv[4]), &res);
   if (!er) {
     common::ArrayValue* ar = common::Value::createArrayValue();
-    for (int i = 0; i < res.size(); ++i) {
+    for (size_t i = 0; i < res.size(); ++i) {
       common::StringValue *val = common::Value::createStringValue(res[i]);
       ar->append(val);
     }
@@ -1185,7 +1185,7 @@ common::Error multi_zget(CommandHandler* handler, int argc, char** argv, FastoOb
   common::Error er = ssdb->multi_zget(argv[0], keysget, &res);
   if (!er) {
     common::ArrayValue* ar = common::Value::createArrayValue();
-    for (int i = 0; i < res.size(); ++i) {
+    for (size_t i = 0; i < res.size(); ++i) {
       common::StringValue *val = common::Value::createStringValue(res[i]);
       ar->append(val);
     }

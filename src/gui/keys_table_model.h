@@ -49,7 +49,7 @@ class KeyTableItem
 };
 
 class KeysTableModel
-        : public fasto::qt::gui::TableModel {
+  : public fasto::qt::gui::TableModel {
   Q_OBJECT
  public:
   explicit KeysTableModel(QObject *parent = 0);

@@ -319,7 +319,7 @@ common::Error keys(CommandHandler* handler, int argc, char** argv, FastoObject* 
   common::Error er = level->keys(argv[0], argv[1], atoll(argv[2]), &keysout);
   if (!er) {
     common::ArrayValue* ar = common::Value::createArrayValue();
-    for (int i = 0; i < keysout.size(); ++i) {
+    for (size_t i = 0; i < keysout.size(); ++i) {
       common::StringValue *val = common::Value::createStringValue(keysout[i]);
       ar->append(val);
     }

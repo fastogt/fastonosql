@@ -89,7 +89,7 @@ const char* SsdbLexer::basedOn() const {
 
 std::vector<uint32_t> SsdbLexer::supportedVersions() const {
   std::vector<uint32_t> result;
-  for (int i = 0; i < ssdb::ssdbCommands.size(); ++i) {
+  for (size_t i = 0; i < ssdb::ssdbCommands.size(); ++i) {
     CommandInfo cmd = ssdb::ssdbCommands[i];
 
     bool needed_insert = true;

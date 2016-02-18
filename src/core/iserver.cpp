@@ -414,7 +414,7 @@ void IServer::handleLoadDatabaseInfosEvent(events::LoadDatabasesInfoResponceEven
   } else {
     events_info::LoadDatabasesInfoResponce::database_info_cont_type dbs = v.databases;
     events_info::LoadDatabasesInfoResponce::database_info_cont_type tmp;
-    for (int j = 0; j < dbs.size(); ++j) {
+    for (size_t j = 0; j < dbs.size(); ++j) {
       IDataBaseInfoSPtr db = dbs[j];
       if (!containsDatabase(db)) {
         databases_.push_back(db);

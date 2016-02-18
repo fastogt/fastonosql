@@ -116,7 +116,7 @@ int PropertyTableModel::columnCount(const QModelIndex& parent) const {
 
 void PropertyTableModel::changeProperty(const PropertyType& pr) {
   const QString key = common::convertFromString<QString>(pr.first);
-  for (int i = 0; i < data_.size(); ++i) {
+  for (size_t i = 0; i < data_.size(); ++i) {
     PropertyTableItem *it = dynamic_cast<PropertyTableItem*>(data_[i]);
     if (it->key_ == key) {
       it->value_ = common::convertFromString<QString>(pr.second);

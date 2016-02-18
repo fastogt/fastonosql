@@ -94,7 +94,7 @@ std::vector<uint32_t> UnqliteLexer::supportedVersions() const {
     CommandInfo cmd = unqlite::unqliteCommands[i];
 
     bool needed_insert = true;
-    for (int j = 0; j < result.size(); ++j) {
+    for (size_t j = 0; j < result.size(); ++j) {
       if (result[j] == cmd.since) {
         needed_insert = false;
         break;

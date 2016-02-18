@@ -82,7 +82,7 @@ std::pair<std::string, std::string> getKeyValueFromLine(const std::string& input
 std::string getFirstWordFromLine(const std::string& input);
 
 class FastoObjectArray
-      : public FastoObject {
+  : public FastoObject {
  public:
   FastoObjectArray(FastoObject* parent, common::ArrayValue* ar, const std::string& delemitr);
 

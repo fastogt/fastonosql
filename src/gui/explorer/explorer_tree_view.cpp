@@ -188,7 +188,7 @@ void ExplorerTreeView::removeCluster(IClusterSPtr cluster) {
   }
 
   ICluster::nodes_type nodes = cluster->nodes();
-  for (int i = 0; i < nodes.size(); ++i) {
+  for (size_t i = 0; i < nodes.size(); ++i) {
     unsyncWithServer(nodes[i].get());
   }
 
@@ -674,7 +674,7 @@ void ExplorerTreeView::finishLoadDatabases(const events_info::LoadDatabasesInfoR
 
   events_info::LoadDatabasesInfoResponce::database_info_cont_type dbs = res.databases;
 
-  for (int i = 0; i < dbs.size(); ++i) {
+  for (size_t i = 0; i < dbs.size(); ++i) {
     IDataBaseInfoSPtr db = dbs[i];
     mod->addDatabase(serv, db);
   }
@@ -728,7 +728,7 @@ void ExplorerTreeView::finishLoadDatabaseContent(const events_info::LoadDatabase
 
   events_info::LoadDatabaseContentResponce::keys_cont_type keys = res.keys;
 
-  for (int i = 0; i < keys.size(); ++i) {
+  for (size_t i = 0; i < keys.size(); ++i) {
     NDbKValue key = keys[i];
     mod->addKey(serv, res.inf, key);
   }

@@ -268,7 +268,7 @@ std::string convertToString(const fastonosql::redis::redisConfig& conf) {
   }
 
   std::string result;
-  for (int i = 0; i < argv.size(); ++i) {
+  for (size_t i = 0; i < argv.size(); ++i) {
     result+= argv[i];
     if (i != argv.size()-1) {
       result+=" ";

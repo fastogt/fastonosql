@@ -22,8 +22,6 @@
 
 #include "common/qt/convert_string.h"
 
-#include "core/iserver.h"
-
 namespace fastonosql {
 
 ICluster::ICluster(const std::string &name)

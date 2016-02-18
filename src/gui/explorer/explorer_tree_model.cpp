@@ -433,8 +433,8 @@ void ExplorerTreeModel::setDefaultDb(IServer* server, IDataBaseInfoSPtr db) {
     return;
   }
 
-  int child_count = parent->childrenCount();
-  for (int i = 0; i < child_count ; ++i) {
+  size_t child_count = parent->childrenCount();
+  for (size_t i = 0; i < child_count ; ++i) {
     ExplorerDatabaseItem *item = dynamic_cast<ExplorerDatabaseItem*>(parent->child(i));
     DCHECK(item);
     if (!item) {
@@ -500,7 +500,7 @@ ExplorerClusterItem* ExplorerTreeModel::findClusterItem(IClusterSPtr cl) {
     return NULL;
   }
 
-  for (int i = 0; i < parent->childrenCount() ; ++i) {
+  for (size_t i = 0; i < parent->childrenCount() ; ++i) {
     ExplorerClusterItem *item = dynamic_cast<ExplorerClusterItem*>(parent->child(i));
     if (item && item->cluster() == cl) {
       return item;
@@ -525,7 +525,7 @@ ExplorerServerItem* ExplorerTreeModel::findServerItem(IServer* server) const {
     } else {
       ExplorerClusterItem* citem = dynamic_cast<ExplorerClusterItem*>(parent->child(i));
       if (citem) {
-        for (int j = 0; j < citem->childrenCount(); ++j) {
+        for (size_t j = 0; j < citem->childrenCount(); ++j) {
           ExplorerServerItem *item = dynamic_cast<ExplorerServerItem*>(citem->child(i));
            if (item) {
              if (item->server().get() == server) {
@@ -562,7 +562,7 @@ ExplorerDatabaseItem *ExplorerTreeModel::findDatabaseItem(ExplorerServerItem* se
 ExplorerKeyItem *ExplorerTreeModel::findKeyItem(ExplorerDatabaseItem* db,
                                                 const NDbKValue &key) const {
   if (db) {
-    for (int i = 0; i < db->childrenCount() ; ++i) {
+    for (size_t i = 0; i < db->childrenCount() ; ++i) {
       ExplorerKeyItem *item = dynamic_cast<ExplorerKeyItem*>(db->child(i));
       DCHECK(item);
       if (!item) {
