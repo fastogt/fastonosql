@@ -69,24 +69,24 @@ UnqliteServerInfo::Stats::Stats(const std::string& common_text) {
   size_t start = 0;
 
   while ((pos = src.find(MARKER, start)) != std::string::npos) {
-      std::string line = src.substr(start, pos-start);
-      size_t delem = line.find_first_of(':');
-      std::string field = line.substr(0, delem);
-      std::string value = line.substr(delem + 1);
-      if (field == UNQLITE_FILE_NAME_LABEL) {
-          file_name = value;
-      }
-      start = pos + 2;
+    std::string line = src.substr(start, pos-start);
+    size_t delem = line.find_first_of(':');
+    std::string field = line.substr(0, delem);
+    std::string value = line.substr(delem + 1);
+    if (field == UNQLITE_FILE_NAME_LABEL) {
+      file_name = value;
+    }
+    start = pos + 2;
   }
 }
 
 common::Value* UnqliteServerInfo::Stats::valueByIndex(unsigned char index) const {
   switch (index) {
   case 0:
-      return new common::StringValue(file_name);
+    return new common::StringValue(file_name);
   default:
-      NOTREACHED();
-      break;
+    NOTREACHED();
+    break;
   }
   return NULL;
 }
@@ -102,11 +102,11 @@ UnqliteServerInfo::UnqliteServerInfo(const Stats &stats)
 common::Value* UnqliteServerInfo::valueByIndexes(unsigned char property,
                                                  unsigned char field) const {
   switch (property) {
-    case 0:
-      return stats_.valueByIndex(field);
-    default:
-      NOTREACHED();
-      break;
+  case 0:
+    return stats_.valueByIndex(field);
+  default:
+    NOTREACHED();
+    break;
   }
   return NULL;
 }

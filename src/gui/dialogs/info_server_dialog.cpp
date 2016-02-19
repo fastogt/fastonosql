@@ -151,6 +151,8 @@ const QString leveldbTextServerTemplate = QObject::tr("<h2>Stats:</h2><br/>"
 const QString unqliteTextServerTemplate = QObject::tr("<h2>Stats:</h2><br/>"
                                                         "File name: %1<br/>");
 
+const QString lmdbTextServerTemplate = QObject::tr("<h2>Stats:</h2><br/>"
+                                                        "File name: %1<br/>");
 }  // namespace
 
 namespace fastonosql {
@@ -483,11 +485,7 @@ void InfoServerDialog::updateText(const unqlite::UnqliteServerInfo& serv) {
 #ifdef BUILD_WITH_LMDB
 void InfoServerDialog::updateText(const lmdb::LmdbServerInfo& serv) {
   lmdb::LmdbServerInfo::Stats stats = serv.stats_;
-  QString textServ = leveldbTextServerTemplate.arg(stats.compactions_level)
-          .arg(stats.file_size_mb)
-          .arg(stats.time_sec)
-          .arg(stats.read_mb)
-          .arg(stats.write_mb);
+  QString textServ = lmdbTextServerTemplate.arg(common::convertFromString<QString>(stats.file_name));
 
   serverTextInfo_->setText(textServ);
 }

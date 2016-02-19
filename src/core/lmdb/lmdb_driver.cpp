@@ -137,7 +137,7 @@ common::Error LmdbDriver::executeImpl(int argc, char **argv, FastoObject* out) {
 common::Error LmdbDriver::serverInfo(ServerInfo **info) {
   LOG_COMMAND(Command(INFO_REQUEST, common::Value::C_INNER));
   LmdbServerInfo::Stats cm;
-  common::Error err = impl_->info(NULL, cm);
+  common::Error err = impl_->info(NULL, &cm);
   if (!err) {
     *info = new LmdbServerInfo(cm);
   }
@@ -359,7 +359,7 @@ void LmdbDriver::handleLoadServerInfoEvent(events::ServerInfoRequestEvent* ev) {
   notifyProgress(sender, 50);
   LOG_COMMAND(Command(INFO_REQUEST, common::Value::C_INNER));
   LmdbServerInfo::Stats cm;
-  common::Error err = impl_->info(NULL, cm);
+  common::Error err = impl_->info(NULL, &cm);
   if (err) {
     res.setErrorInfo(err);
   } else {

@@ -51,13 +51,13 @@ struct LmdbRaw
 
   MDB_dbi curDb() const;
 
-  common::Error info(const char* args, LmdbServerInfo::Stats& statsout);
+  common::Error info(const char* args, LmdbServerInfo::Stats* statsout);
   common::Error dbsize(size_t& size);
   common::Error get(const std::string& key, std::string* ret_val);
   common::Error put(const std::string& key, const std::string& value);
   common::Error del(const std::string& key);
-  common::Error keys(const std::string &key_start, const std::string &key_end, uint64_t limit,
-                     std::vector<std::string> *ret);
+  common::Error keys(const std::string& key_start, const std::string& key_end, uint64_t limit,
+                     std::vector<std::string>* ret);
 
   lmdbConfig config_;
  private:

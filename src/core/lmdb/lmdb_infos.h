@@ -24,11 +24,7 @@
 
 #define LMDB_STATS_LABEL "# Stats"
 
-#define LMDB_CAMPACTIONS_LEVEL_LABEL "compactions_level"
-#define LMDB_FILE_SIZE_MB_LABEL "file_size_mb"
-#define LMDB_TIME_SEC_LABEL "time_sec"
-#define LMDB_READ_MB_LABEL "read_mb"
-#define LMDB_WRITE_MB_LABEL "write_mb"
+#define LMDB_FILE_NAME_LABEL "file_name"
 
 namespace fastonosql {
 namespace lmdb {
@@ -43,11 +39,7 @@ class LmdbServerInfo
       explicit Stats(const std::string& common_text);
       common::Value* valueByIndex(unsigned char index) const;
 
-      uint32_t compactions_level;
-      uint32_t file_size_mb;
-      uint32_t time_sec;
-      uint32_t read_mb;
-      uint32_t write_mb;
+      std::string file_name;
   } stats_;
 
   LmdbServerInfo();

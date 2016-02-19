@@ -1,7 +1,9 @@
 0.5.8 /
 [Alexandr Topilski]
 - [UnQLite] Save data propertly
+- [UnQLite] Info command
 - [LevelDB] Stable on windows
+- [LMDB] Info command
 - Commands refactoring
 - Fix some memory leaks
 

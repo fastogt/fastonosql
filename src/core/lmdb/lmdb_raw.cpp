@@ -177,7 +177,17 @@ MDB_dbi LmdbRaw::curDb() const {
   return 0;
 }
 
-common::Error LmdbRaw::info(const char* args, LmdbServerInfo::Stats& statsout) {
+common::Error LmdbRaw::info(const char* args, LmdbServerInfo::Stats* statsout) {
+  if (!statsout) {
+    NOTREACHED();
+    return common::make_error_value("Invalid input argument for command: INFO",
+                                    common::ErrorValue::E_ERROR);
+  }
+
+  LmdbServerInfo::Stats linfo;
+  linfo.file_name = config_.dbname;
+
+  *statsout = linfo;
   return common::Error();
 }
 
@@ -320,7 +330,7 @@ common::Error LmdbRaw::keys(const std::string &key_start, const std::string &key
 common::Error info(CommandHandler* handler, int argc, char** argv, FastoObject* out) {
   LmdbRaw* mdb = static_cast<LmdbRaw*>(handler);
   LmdbServerInfo::Stats statsout;
-  common::Error er = mdb->info(argc == 1 ? argv[0] : NULL, statsout);
+  common::Error er = mdb->info(argc == 1 ? argv[0] : NULL, &statsout);
   if (!er) {
     common::StringValue *val = common::Value::createStringValue(LmdbServerInfo(statsout).toString());
     FastoObject* child = new FastoObject(out, val, mdb->config_.delimiter);
