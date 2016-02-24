@@ -21,7 +21,7 @@
 #include <vector>
 #include <algorithm>
 
-#include "core/redis/redis_driver.h"
+#include "core/redis/redis_raw.h"
 
 namespace {
   const QString help = "help";
@@ -80,7 +80,7 @@ const char* RedisLexer::language() const {
 }
 
 const char* RedisLexer::version() const {
-  return redis::RedisDriver::versionApi();
+  return redis::RedisRaw::versionApi();
 }
 
 const char* RedisLexer::basedOn() const {

@@ -190,6 +190,7 @@ IF(BUILD_WITH_REDIS)
         core/redis/redis_driver.h
     )
     SET(HEADERS_REDIS
+        core/redis/redis_raw.h
         core/redis/redis_infos.h
         core/redis/redis_config.h
         core/redis/redis_database.h
@@ -197,6 +198,7 @@ IF(BUILD_WITH_REDIS)
         core/redis/redis_cluster_settings.h
     )
     SET(SOURCES_REDIS
+        core/redis/redis_raw.cpp
         core/redis/redis_config.cpp
         core/redis/redis_infos.cpp
         core/redis/redis_cluster.cpp
