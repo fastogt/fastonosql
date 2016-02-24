@@ -750,10 +750,6 @@ void RedisDriver::handleSetDefaultDatabaseEvent(events::SetDefaultDatabaseReques
   common::Error er = execute(cmd);
   if (er && er->isError()) {
     res.setErrorInfo(er);
-  } else {
-    long long sz = 0;
-    er = impl_->dbsize(sz);
-    setCurrentDatabaseInfo(new RedisDataBaseInfo(res.inf->name(), true, sz));
   }
   notifyProgress(sender, 75);
   reply(sender, new events::SetDefaultDatabaseResponceEvent(this, res));

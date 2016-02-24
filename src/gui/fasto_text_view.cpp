@@ -77,7 +77,7 @@ FastoTextView::FastoTextView(const QString& delemitr, QWidget* parent)
   mainL->addLayout(hlayout);
   setLayout(mainL);
 
-  jsonRadioButton_->setChecked(true);
+  rawRadioButton_->setChecked(true);
   retranslateUi();
 }
 

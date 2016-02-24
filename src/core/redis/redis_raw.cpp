@@ -1587,14 +1587,14 @@ common::Error RedisRaw::execute(int argc, char **argv, FastoObject* out) {
 
   char *command = argv[0];
 
-  if (argc == 3 && !strcasecmp(command, "connect")) {
+  if (argc == 3 && strcasecmp(command, "connect") == 0) {
     config_.host.host = argv[1];
     config_.host.port = atoi(argv[2]);
     sdsfreesplitres(argv, argc);
     return connect(true);
   }
 
-  if (!strcasecmp(command,"help") || !strcasecmp(command,"?")) {
+  if (strcasecmp(command, "help") == 0 || strcasecmp(command, "?") == 0) {
     return cliOutputHelp(out, --argc, ++argv);
   }
 
@@ -1602,9 +1602,9 @@ common::Error RedisRaw::execute(int argc, char **argv, FastoObject* out) {
     return common::make_error_value("Not connected", common::Value::E_ERROR);
   }
 
-  if (!strcasecmp(command, "monitor")) config_.monitor_mode = 1;
-  if (!strcasecmp(command, "subscribe") || !strcasecmp(command,"psubscribe")) config_.pubsub_mode = 1;
-  if (!strcasecmp(command, "sync") || !strcasecmp(command,"psync")) config_.slave_mode = 1;
+  if (strcasecmp(command, "monitor") == 0) config_.monitor_mode = 1;
+  if (strcasecmp(command, "subscribe") == 0 || strcasecmp(command, "psubscribe") == 0) config_.pubsub_mode = 1;
+  if (strcasecmp(command, "sync") == 0 || strcasecmp(command, "psync") == 0) config_.slave_mode = 1;
 
   redisAppendCommandArgv(context_, argc, (const char**)argv, NULL);
   while (config_.monitor_mode) {
@@ -1634,7 +1634,7 @@ common::Error RedisRaw::execute(int argc, char **argv, FastoObject* out) {
     return er;
   } else {
     /* Store database number when SELECT was successfully executed. */
-    if (!strcasecmp(command, "select") && argc == 2) {
+    if (strcasecmp(command, "select") == 0 && argc == 2) {
       config_.dbnum = atoi(argv[1]);
       long long sz = 0;
       dbsize(sz);
@@ -1652,6 +1652,7 @@ common::Error RedisRaw::execute(int argc, char **argv, FastoObject* out) {
       }
     }
   }
+
   if (config_.interval) {
     common::utils::usleep(config_.interval);
   }
