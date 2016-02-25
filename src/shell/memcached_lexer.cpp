@@ -30,7 +30,7 @@ MemcachedApi::MemcachedApi(QsciLexer *lexer)
 }
 
 MemcachedLexer::MemcachedLexer(QObject* parent)
-  : BaseQsciLexer(parent) {
+  : BaseQsciLexerCommandHolder(memcached::memcachedCommands, parent) {
   setAPIs(new MemcachedApi(this));
 }
 
@@ -44,76 +44,6 @@ const char* MemcachedLexer::version() const {
 
 const char* MemcachedLexer::basedOn() const {
   return "libmemcached";
-}
-
-std::vector<uint32_t> MemcachedLexer::supportedVersions() const {
-  std::vector<uint32_t> result;
-  for (size_t i = 0; i < memcached::memcachedCommands.size(); ++i) {
-    CommandInfo cmd = memcached::memcachedCommands[i];
-
-    bool needed_insert = true;
-    for (size_t j = 0; j < result.size(); ++j) {
-      if (result[j] == cmd.since) {
-        needed_insert = false;
-        break;
-      }
-    }
-
-    if (needed_insert) {
-      result.push_back(cmd.since);
-    }
-  }
-
-  std::sort(result.begin(), result.end());
-
-  return result;
-}
-
-size_t MemcachedLexer::commandsCount() const {
-  return memcached::memcachedCommands.size();
-}
-
-void MemcachedLexer::styleText(int start, int end) {
-  if (!editor()) {
-    return;
-  }
-
-  char *data = new char[end - start + 1];
-  editor()->SendScintilla(QsciScintilla::SCI_GETTEXTRANGE, start, end, data);
-  QString source(data);
-  delete [] data;
-
-  if (source.isEmpty()) {
-    return;
-  }
-
-  paintCommands(source, start);
-
-  int index = 0;
-  int begin = 0;
-  while ((begin = source.indexOf(help, index, Qt::CaseInsensitive)) != -1) {
-    index = begin + help.length();
-
-    startStyling(start + begin);
-    setStyling(help.length(), HelpKeyword);
-    startStyling(start + begin);
-  }
-}
-
-void MemcachedLexer::paintCommands(const QString& source, int start) {
-  for (size_t i = 0; i < memcached::memcachedCommands.size(); ++i) {
-    CommandInfo cmd = memcached::memcachedCommands[i];
-    QString word = common::convertFromString<QString>(cmd.name);
-    int index = 0;
-    int begin = 0;
-    while ((begin = source.indexOf(word, index, Qt::CaseInsensitive)) != -1) {
-      index = begin + word.length();
-
-      startStyling(start + begin);
-      setStyling(word.length(), Command);
-      startStyling(start + begin);
-    }
-  }
 }
 
 }  // namespace fastonosql

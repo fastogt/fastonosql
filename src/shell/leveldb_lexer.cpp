@@ -30,7 +30,7 @@ LeveldbApi::LeveldbApi(QsciLexer *lexer)
 }
 
 LeveldbLexer::LeveldbLexer(QObject* parent)
-  : BaseQsciLexer(parent) {
+  : BaseQsciLexerCommandHolder(leveldb::leveldbCommands, parent) {
   setAPIs(new LeveldbApi(this));
 }
 
@@ -44,76 +44,6 @@ const char* LeveldbLexer::version() const {
 
 const char* LeveldbLexer::basedOn() const {
   return "leveldb";
-}
-
-std::vector<uint32_t> LeveldbLexer::supportedVersions() const {
-  std::vector<uint32_t> result;
-  for (size_t i = 0; i < leveldb::leveldbCommands.size(); ++i) {
-    CommandInfo cmd = leveldb::leveldbCommands[i];
-
-    bool needed_insert = true;
-    for (size_t j = 0; j < result.size(); ++j) {
-      if (result[j] == cmd.since) {
-        needed_insert = false;
-        break;
-      }
-    }
-
-    if (needed_insert) {
-      result.push_back(cmd.since);
-    }
-  }
-
-  std::sort(result.begin(), result.end());
-
-  return result;
-}
-
-size_t LeveldbLexer::commandsCount() const {
-  return leveldb::leveldbCommands.size();
-}
-
-void LeveldbLexer::styleText(int start, int end) {
-  if (!editor()) {
-    return;
-  }
-
-  char *data = new char[end - start + 1];
-  editor()->SendScintilla(QsciScintilla::SCI_GETTEXTRANGE, start, end, data);
-  QString source(data);
-  delete [] data;
-
-  if (source.isEmpty()) {
-    return;
-  }
-
-  paintCommands(source, start);
-
-  int index = 0;
-  int begin = 0;
-  while ((begin = source.indexOf(help, index, Qt::CaseInsensitive)) != -1) {
-    index = begin + help.length();
-
-    startStyling(start + begin);
-    setStyling(help.length(), HelpKeyword);
-    startStyling(start + begin);
-  }
-}
-
-void LeveldbLexer::paintCommands(const QString& source, int start) {
-  for (size_t i = 0; i < leveldb::leveldbCommands.size(); ++i) {
-    CommandInfo cmd = leveldb::leveldbCommands[i];
-    QString word = common::convertFromString<QString>(cmd.name);
-    int index = 0;
-    int begin = 0;
-    while ((begin = source.indexOf(word, index, Qt::CaseInsensitive)) != -1) {
-      index = begin + word.length();
-
-      startStyling(start + begin);
-      setStyling(word.length(), Command);
-      startStyling(start + begin);
-    }
-  }
 }
 
 }  // namespace fastonosql

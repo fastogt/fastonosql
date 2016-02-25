@@ -44,14 +44,14 @@ class BaseQsciApi
 };
 
 class BaseQsciApiCommandHolder
-    : public BaseQsciApi {
+  : public BaseQsciApi {
   Q_OBJECT
  public:
   virtual void updateAutoCompletionList(const QStringList& context, QStringList& list);
   virtual QStringList callTips(const QStringList& context, int commas,
                                QsciScintilla::CallTipsStyle style, QList<int>& shifts);
  protected:
-  explicit BaseQsciApiCommandHolder(const std::vector<CommandHolder>& commands, QsciLexer* lexer);
+  BaseQsciApiCommandHolder(const std::vector<CommandHolder>& commands, QsciLexer* lexer);
 
  private:
   const std::vector<CommandHolder>& commands_;
@@ -78,6 +78,23 @@ class BaseQsciLexer
 
  protected:
   explicit BaseQsciLexer(QObject* parent = 0);
+};
+
+class BaseQsciLexerCommandHolder
+  : public BaseQsciLexer {
+  Q_OBJECT
+ public:
+  virtual std::vector<uint32_t> supportedVersions() const;
+  virtual size_t commandsCount() const;
+
+ protected:
+  explicit BaseQsciLexerCommandHolder(const std::vector<CommandHolder>& commands, QObject* parent = 0);
+
+ private:
+  virtual void styleText(int start, int end);
+  void paintCommands(const QString& source, int start);
+
+  const std::vector<CommandHolder>& commands_;
 };
 
 QString makeCallTip(const CommandInfo& info);

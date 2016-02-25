@@ -116,6 +116,82 @@ QColor BaseQsciLexer::defaultColor(int style) const {
   return Qt::black;
 }
 
+BaseQsciLexerCommandHolder::BaseQsciLexerCommandHolder(const std::vector<CommandHolder>& commands,
+                                                       QObject* parent)
+  : BaseQsciLexer(parent), commands_(commands) {
+
+}
+
+std::vector<uint32_t> BaseQsciLexerCommandHolder::supportedVersions() const {
+  std::vector<uint32_t> result;
+  for (size_t i = 0; i < commands_.size(); ++i) {
+    CommandInfo cmd = commands_[i];
+
+    bool needed_insert = true;
+    for (size_t j = 0; j < result.size(); ++j) {
+      if (result[j] == cmd.since) {
+        needed_insert = false;
+        break;
+      }
+    }
+
+    if (needed_insert) {
+      result.push_back(cmd.since);
+    }
+  }
+
+  std::sort(result.begin(), result.end());
+
+  return result;
+}
+
+size_t BaseQsciLexerCommandHolder::commandsCount() const {
+  return commands_.size();
+}
+
+void BaseQsciLexerCommandHolder::styleText(int start, int end) {
+  if (!editor()) {
+    return;
+  }
+
+  char *data = new char[end - start + 1];
+  editor()->SendScintilla(QsciScintilla::SCI_GETTEXTRANGE, start, end, data);
+  QString source(data);
+  delete [] data;
+
+  if (source.isEmpty()) {
+    return;
+  }
+
+  paintCommands(source, start);
+
+  int index = 0;
+  int begin = 0;
+  while ((begin = source.indexOf(help, index, Qt::CaseInsensitive)) != -1) {
+    index = begin + help.length();
+
+    startStyling(start + begin);
+    setStyling(help.length(), HelpKeyword);
+    startStyling(start + begin);
+  }
+}
+
+void BaseQsciLexerCommandHolder::paintCommands(const QString& source, int start) {
+  for (size_t i = 0; i < commands_.size(); ++i) {
+    CommandInfo cmd = commands_[i];
+    QString word = common::convertFromString<QString>(cmd.name);
+    int index = 0;
+    int begin = 0;
+    while ((begin = source.indexOf(word, index, Qt::CaseInsensitive)) != -1) {
+      index = begin + word.length();
+
+      startStyling(start + begin);
+      setStyling(word.length(), Command);
+      startStyling(start + begin);
+    }
+  }
+}
+
 QString makeCallTip(const CommandInfo& info) {
   std::string since_str = convertVersionNumberToReadableString(info.since);
   QString qsince_str = common::convertFromString<QString>(since_str);

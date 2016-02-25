@@ -32,7 +32,7 @@ class SsdbApi
 };
 
 class SsdbLexer
-  : public BaseQsciLexer {
+  : public BaseQsciLexerCommandHolder {
   Q_OBJECT
  public:
   explicit SsdbLexer(QObject* parent = 0);
@@ -40,14 +40,6 @@ class SsdbLexer
   virtual const char* language() const;
   virtual const char* version() const;
   virtual const char* basedOn() const;
-
-  virtual std::vector<uint32_t> supportedVersions() const;
-  virtual size_t commandsCount() const;
-
-  virtual void styleText(int start, int end);
-
- private:
-  void paintCommands(const QString& source, int start);
 };
 
 }  // namespace fastonosql
