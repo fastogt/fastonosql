@@ -38,7 +38,7 @@ namespace fastonosql {
 
 struct CommandInfo {
   CommandInfo(const std::string& name, const std::string& params,
-              const std::string& summary, const uint32_t since,
+              const std::string& summary, uint32_t since,
               const std::string& example, uint8_t required_arguments_count,
               uint8_t optional_arguments_count);
 
@@ -62,7 +62,7 @@ class CommandHolder
   typedef std::function<common::Error(CommandHandler*, int, char **, FastoObject*)> function_type;
 
   CommandHolder(const std::string& name, const std::string& params,
-                const std::string& summary, const uint32_t since,
+                const std::string& summary, uint32_t since,
                 const std::string& example, uint8_t required_arguments_count,
                 uint8_t optional_arguments_count, function_type func);
   bool isCommand(const std::string& cmd);
