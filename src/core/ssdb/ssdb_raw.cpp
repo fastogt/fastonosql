@@ -608,6 +608,10 @@ common::Error SsdbRaw::qclear(const std::string &name, int64_t *ret) {
   return common::Error();
 }
 
+common::Error SsdbRaw::help(int argc, char** argv) {
+  return notSupported("HELP");
+}
+
 common::Error info(CommandHandler* handler, int argc, char** argv, FastoObject* out) {
   SsdbRaw* ssdb = static_cast<SsdbRaw*>(handler);
   SsdbServerInfo::Common statsout;
@@ -1286,6 +1290,11 @@ common::Error qclear(CommandHandler* handler, int argc, char** argv, FastoObject
   }
 
   return er;
+}
+
+common::Error help(CommandHandler* handler, int argc, char** argv, FastoObject* out) {
+  SsdbRaw* ssdb = static_cast<SsdbRaw*>(handler);
+  return ssdb->help(argc - 1, argv + 1);
 }
 
 }  // namespace ssdb

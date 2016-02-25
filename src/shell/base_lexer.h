@@ -27,8 +27,6 @@
 
 namespace fastonosql {
 
-static const QString help = "help";
-
 class BaseQsciApi
   : public QsciAbstractAPIs {
   Q_OBJECT
@@ -63,8 +61,7 @@ class BaseQsciLexer
  public:
   enum {
     Default = 0,
-    Command = 1,
-    HelpKeyword
+    Command = 1
   };
 
   virtual const char* version() const = 0;

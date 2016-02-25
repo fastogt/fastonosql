@@ -381,6 +381,10 @@ common::Error MemcachedRaw::verbosity() const {
   return common::make_error_value("Not supported command", common::ErrorValue::E_ERROR);
 }
 
+common::Error MemcachedRaw::help(int argc, char** argv) {
+  return notSupported("HELP");
+}
+
 common::Error keys(CommandHandler* handler, int argc, char** argv, FastoObject* out) {
   MemcachedRaw* mem = static_cast<MemcachedRaw*>(handler);
   return mem->keys("items");
@@ -534,6 +538,11 @@ common::Error version_server(CommandHandler* handler, int argc, char** argv, Fas
 common::Error verbosity(CommandHandler* handler, int argc, char** argv, FastoObject* out) {
   MemcachedRaw* mem = static_cast<MemcachedRaw*>(handler);
   return mem->verbosity();
+}
+
+common::Error help(CommandHandler* handler, int argc, char** argv, FastoObject* out) {
+  MemcachedRaw* mem = static_cast<MemcachedRaw*>(handler);
+  return mem->help(argc - 1, argv + 1);
 }
 
 }  // namespace memcached

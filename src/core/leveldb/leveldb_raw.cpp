@@ -248,6 +248,10 @@ common::Error LeveldbRaw::keys(const std::string &key_start, const std::string &
   return common::Error();
 }
 
+common::Error LeveldbRaw::help(int argc, char** argv) {
+  return notSupported("HELP");
+}
+
 common::Error dbsize(CommandHandler* handler, int argc, char** argv, FastoObject* out) {
   LeveldbRaw* level = static_cast<LeveldbRaw*>(handler);
 
@@ -327,6 +331,11 @@ common::Error keys(CommandHandler* handler, int argc, char** argv, FastoObject* 
     out->addChildren(child);
   }
   return er;
+}
+
+common::Error help(CommandHandler* handler, int argc, char** argv, FastoObject* out) {
+  LeveldbRaw* level = static_cast<LeveldbRaw*>(handler);
+  return level->help(argc - 1, argv + 1);
 }
 
 }  // namespace leveldb

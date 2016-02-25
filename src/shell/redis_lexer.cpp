@@ -43,10 +43,6 @@ void RedisApi::updateAutoCompletionList(const QStringList& context, QStringList&
         list.append(jval + "?1");
       }
     }
-
-    if(help.startsWith(val, Qt::CaseInsensitive)){
-      list.append(help + "?2");
-    }
   }
 }
 
@@ -124,16 +120,6 @@ void RedisLexer::styleText(int start, int end) {
   }
 
   paintCommands(source, start);
-
-  int index = 0;
-  int begin = 0;
-  while( (begin = source.indexOf(help, index, Qt::CaseInsensitive)) != -1){
-    index = begin + help.length();
-
-    startStyling(start + begin);
-    setStyling(help.length(), HelpKeyword);
-    startStyling(start + begin);
-  }
 }
 
 void RedisLexer::paintCommands(const QString& source, int start) {
@@ -142,7 +128,7 @@ void RedisLexer::paintCommands(const QString& source, int start) {
     QString word = common::convertFromString<QString>(cmd.name);
     int index = 0;
     int begin = 0;
-    while ( (begin = source.indexOf(word, index, Qt::CaseInsensitive)) != -1){
+    while ((begin = source.indexOf(word, index, Qt::CaseInsensitive)) != -1){
       index = begin + word.length();
 
       startStyling(start + begin);

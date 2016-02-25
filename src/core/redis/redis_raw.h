@@ -422,7 +422,12 @@ static const std::vector<CommandInfo> redisCommands = {
   CommandInfo("CLUSTER REPLICATE", UNDEFINED_STR_IN_PROGRESS,
               UNDEFINED_STR_IN_PROGRESS, UNDEFINED_SINCE, UNDEFINED_EXAMPLE_STR, 0, 0),
   CommandInfo("CLUSTER SETSLOT", UNDEFINED_STR_IN_PROGRESS,
-              UNDEFINED_STR_IN_PROGRESS, UNDEFINED_SINCE, UNDEFINED_EXAMPLE_STR, 0, 0)
+              UNDEFINED_STR_IN_PROGRESS, UNDEFINED_SINCE, UNDEFINED_EXAMPLE_STR, 0, 0),
+
+  CommandInfo("HELP", "[@group][command]",
+              "help @<group> to get a list of commands in <group>"
+              "help <command> for help on <command>",
+              UNDEFINED_SINCE, UNDEFINED_EXAMPLE_STR, 0, 2)
 };
 
 common::Error testConnection(RedisConnectionSettings* settings);

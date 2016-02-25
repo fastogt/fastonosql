@@ -106,6 +106,7 @@ struct SsdbRaw
   common::Error qslice(const std::string &name, int64_t begin, int64_t end,
                        std::vector<std::string> *ret);
   common::Error qclear(const std::string &name, int64_t *ret);
+  common::Error help(int argc, char** argv);
 
   ssdbConfig config_;
   SSHInfo sinfo_;
@@ -158,6 +159,7 @@ common::Error qpush(CommandHandler* handler, int argc, char** argv, FastoObject*
 common::Error qpop(CommandHandler* handler, int argc, char** argv, FastoObject* out);
 common::Error qslice(CommandHandler* handler, int argc, char** argv, FastoObject* out);
 common::Error qclear(CommandHandler* handler, int argc, char** argv, FastoObject* out);
+common::Error help(CommandHandler* handler, int argc, char** argv, FastoObject* out);
 
 // TODO: SETNX command imlementation
 static const std::vector<CommandHolder> ssdbCommands = {
@@ -307,7 +309,10 @@ static const std::vector<CommandHolder> ssdbCommands = {
 
   CommandHolder("DBSIZE", "-",
               "Return the number of keys in the selected database",
-              UNDEFINED_SINCE, UNDEFINED_EXAMPLE_STR, 0, 0, &dbsize)
+              UNDEFINED_SINCE, UNDEFINED_EXAMPLE_STR, 0, 0, &dbsize),
+  CommandHolder("HELP", "<command>",
+              "Return how to use command",
+              UNDEFINED_SINCE, UNDEFINED_EXAMPLE_STR, 0, 1, &help)
 };
 
 }  // namespace ssdb

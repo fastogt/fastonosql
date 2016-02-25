@@ -327,6 +327,10 @@ common::Error LmdbRaw::keys(const std::string &key_start, const std::string &key
   return common::Error();
 }
 
+common::Error LmdbRaw::help(int argc, char** argv) {
+  return notSupported("HELP");
+}
+
 common::Error info(CommandHandler* handler, int argc, char** argv, FastoObject* out) {
   LmdbRaw* mdb = static_cast<LmdbRaw*>(handler);
   LmdbServerInfo::Stats statsout;
@@ -405,6 +409,11 @@ common::Error keys(CommandHandler* handler, int argc, char** argv, FastoObject* 
   }
 
   return er;
+}
+
+common::Error help(CommandHandler* handler, int argc, char** argv, FastoObject* out) {
+  LmdbRaw* mdb = static_cast<LmdbRaw*>(handler);
+  return mdb->help(argc - 1, argv + 1);
 }
 
 }  // namespace lmdb

@@ -61,6 +61,7 @@ struct MemcachedRaw
   common::Error flush_all(time_t expiration);
   common::Error version_server() const;
   common::Error verbosity() const;
+  common::Error help(int argc, char** argv);
 
   memcachedConfig config_;
   SSHInfo sinfo_;
@@ -83,6 +84,7 @@ common::Error del(CommandHandler* handler, int argc, char** argv, FastoObject* o
 common::Error flush_all(CommandHandler* handler, int argc, char** argv, FastoObject* out);
 common::Error version_server(CommandHandler* handler, int argc, char** argv, FastoObject* out);
 common::Error verbosity(CommandHandler* handler, int argc, char** argv, FastoObject* out);
+common::Error help(CommandHandler* handler, int argc, char** argv, FastoObject* out);
 
 // TODO: cas command implementation
 static const std::vector<CommandHolder> memcachedCommands = {
@@ -120,7 +122,11 @@ static const std::vector<CommandHolder> memcachedCommands = {
   CommandHolder("SET", "<key> <flags> <exptime> <value>",
               "Set the string value of a key.", UNDEFINED_SINCE, UNDEFINED_EXAMPLE_STR, 4, 0, &set),
   CommandHolder("GET", "<key>",
-              "Get the value of a key.", UNDEFINED_SINCE, UNDEFINED_EXAMPLE_STR, 1, 0, &get)
+              "Get the value of a key.", UNDEFINED_SINCE, UNDEFINED_EXAMPLE_STR, 1, 0, &get),
+
+  CommandHolder("HELP", "<command>",
+              "Return how to use command",
+              UNDEFINED_SINCE, UNDEFINED_EXAMPLE_STR, 0, 1, &help)
 };
 
 }  // namespace memcached

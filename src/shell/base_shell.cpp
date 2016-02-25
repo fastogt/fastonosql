@@ -97,8 +97,6 @@ BaseShell::BaseShell(connectionTypes type, bool showAutoCompl, QWidget* parent)
 #endif
   registerImage(BaseQsciLexer::Command,
                 GuiFactory::instance().commandIcon(type).pixmap(image_size));
-  registerImage(BaseQsciLexer::HelpKeyword,
-                GuiFactory::instance().messageBoxQuestionIcon().pixmap(image_size));
 
   CHECK(lex);
   if (lex) {

@@ -237,6 +237,10 @@ common::Error UnqliteRaw::keys(const std::string &key_start, const std::string &
   return common::Error();
 }
 
+common::Error UnqliteRaw::help(int argc, char** argv) {
+  return notSupported("HELP");
+}
+
 common::Error put(CommandHandler* handler, int argc, char** argv, FastoObject* out) {
   UnqliteRaw* unq = static_cast<UnqliteRaw*>(handler);
   common::Error er = unq->put(argv[0], argv[1]);
@@ -316,6 +320,11 @@ common::Error dbsize(CommandHandler* handler, int argc, char** argv, FastoObject
   }
 
   return er;
+}
+
+common::Error help(CommandHandler* handler, int argc, char** argv, FastoObject* out) {
+  UnqliteRaw* unq = static_cast<UnqliteRaw*>(handler);
+  return unq->help(argc - 1, argv + 1);
 }
 
 }  // namespace unqlite

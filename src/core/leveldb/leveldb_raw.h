@@ -49,6 +49,7 @@ struct LeveldbRaw
   common::Error del(const std::string& key);
   common::Error keys(const std::string &key_start, const std::string &key_end,
                      uint64_t limit, std::vector<std::string> *ret);
+  common::Error help(int argc, char** argv);
 
   leveldbConfig config_;
  private:
@@ -62,6 +63,7 @@ common::Error get(CommandHandler* handler, int argc, char** argv, FastoObject* o
 common::Error put(CommandHandler* handler, int argc, char** argv, FastoObject* out);
 common::Error del(CommandHandler* handler, int argc, char** argv, FastoObject* out);
 common::Error keys(CommandHandler* handler, int argc, char** argv, FastoObject* out);
+common::Error help(CommandHandler* handler, int argc, char** argv, FastoObject* out);
 
 static const std::vector<CommandHolder> leveldbCommands = {
   CommandHolder("PUT", "<key> <value>",
@@ -82,7 +84,10 @@ static const std::vector<CommandHolder> leveldbCommands = {
 
   CommandHolder("DBSIZE", "-",
               "Return the number of keys in the selected database",
-              UNDEFINED_SINCE, UNDEFINED_EXAMPLE_STR, 0, 0, &dbsize)
+              UNDEFINED_SINCE, UNDEFINED_EXAMPLE_STR, 0, 0, &dbsize),
+  CommandHolder("HELP", "<command>",
+              "Return how to use command",
+              UNDEFINED_SINCE, UNDEFINED_EXAMPLE_STR, 0, 1, &help)
 };
 
 }  // namespace leveldb

@@ -278,6 +278,10 @@ common::Error RocksdbRaw::keys(const std::string &key_start, const std::string &
   return common::Error();
 }
 
+common::Error RocksdbRaw::help(int argc, char** argv) {
+  return notSupported("HELP");
+}
+
 common::Error info(CommandHandler* handler, int argc, char** argv, FastoObject* out) {
   RocksdbRaw* rocks = static_cast<RocksdbRaw*>(handler);
   RocksdbServerInfo::Stats statsout;
@@ -390,6 +394,11 @@ common::Error keys(CommandHandler* handler, int argc, char** argv, FastoObject* 
   }
 
   return er;
+}
+
+common::Error help(CommandHandler* handler, int argc, char** argv, FastoObject* out) {
+  RocksdbRaw* rocks = static_cast<RocksdbRaw*>(handler);
+  return rocks->help(argc - 1, argv + 1);
 }
 
 }  // namespace rocksdb

@@ -62,10 +62,6 @@ void BaseQsciApiCommandHolder::updateAutoCompletionList(const QStringList& conte
         list.append(jval + "?1");
       }
     }
-
-    if (help.startsWith(val, Qt::CaseInsensitive)) {
-      list.append(help + "?2");
-    }
   }
 }
 
@@ -96,8 +92,6 @@ QString BaseQsciLexer::description(int style) const {
       return "Default";
     case Command:
       return "Command";
-    case HelpKeyword:
-      return "HelpKeyword";
   }
 
   return QString(style);
@@ -108,8 +102,6 @@ QColor BaseQsciLexer::defaultColor(int style) const {
     case Default:
       return Qt::black;
     case Command:
-      return Qt::red;
-    case HelpKeyword:
       return Qt::red;
   }
 
@@ -164,16 +156,6 @@ void BaseQsciLexerCommandHolder::styleText(int start, int end) {
   }
 
   paintCommands(source, start);
-
-  int index = 0;
-  int begin = 0;
-  while ((begin = source.indexOf(help, index, Qt::CaseInsensitive)) != -1) {
-    index = begin + help.length();
-
-    startStyling(start + begin);
-    setStyling(help.length(), HelpKeyword);
-    startStyling(start + begin);
-  }
 }
 
 void BaseQsciLexerCommandHolder::paintCommands(const QString& source, int start) {
