@@ -23,52 +23,10 @@
 
 #include "core/leveldb/leveldb_raw.h"
 
-namespace {
-  const QString help = "help";
-}
-
 namespace fastonosql {
 
 LeveldbApi::LeveldbApi(QsciLexer *lexer)
-  : BaseQsciApi(lexer) {
-}
-
-void LeveldbApi::updateAutoCompletionList(const QStringList& context, QStringList& list) {
-  for (QStringList::const_iterator it = context.begin(); it != context.end(); ++it) {
-    QString val = *it;
-    for (size_t i = 0; i < leveldb::leveldbCommands.size(); ++i) {
-      CommandInfo cmd = leveldb::leveldbCommands[i];
-      if (canSkipCommand(cmd)) {
-        continue;
-      }
-
-      QString jval = common::convertFromString<QString>(cmd.name);
-      if (jval.startsWith(val, Qt::CaseInsensitive)) {
-        list.append(jval + "?1");
-      }
-    }
-
-    if (help.startsWith(val, Qt::CaseInsensitive)) {
-      list.append(help + "?2");
-    }
-  }
-}
-
-QStringList LeveldbApi::callTips(const QStringList& context, int commas,
-                                 QsciScintilla::CallTipsStyle style, QList<int>& shifts) {
-  for (QStringList::const_iterator it = context.begin(); it != context.end() - 1; ++it) {
-    QString val = *it;
-    for (size_t i = 0; i < leveldb::leveldbCommands.size(); ++i) {
-      CommandInfo cmd = leveldb::leveldbCommands[i];
-
-      QString jval = common::convertFromString<QString>(cmd.name);
-      if (QString::compare(jval, val, Qt::CaseInsensitive) == 0) {
-        return QStringList() << makeCallTip(cmd);
-      }
-    }
-  }
-
-  return QStringList();
+  : BaseQsciApiCommandHolder(leveldb::leveldbCommands, lexer) {
 }
 
 LeveldbLexer::LeveldbLexer(QObject* parent)

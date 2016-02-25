@@ -23,51 +23,10 @@
 
 #include "core/ssdb/ssdb_raw.h"
 
-namespace {
-  const QString help("help");
-}
-
 namespace fastonosql {
 
 SsdbApi::SsdbApi(QsciLexer *lexer)
-  : BaseQsciApi(lexer) {
-}
-
-void SsdbApi::updateAutoCompletionList(const QStringList& context, QStringList& list) {
-  for (QStringList::const_iterator it = context.begin(); it != context.end(); ++it) {
-    QString val = *it;
-    for (size_t i = 0; i < ssdb::ssdbCommands.size(); ++i) {
-      CommandInfo cmd = ssdb::ssdbCommands[i];
-      if (canSkipCommand(cmd)) {
-        continue;
-      }
-
-      QString jval = common::convertFromString<QString>(cmd.name);
-      if (jval.startsWith(val, Qt::CaseInsensitive)) {
-        list.append(jval + "?1");
-      }
-    }
-
-    if (help.startsWith(val, Qt::CaseInsensitive)) {
-      list.append(help + "?2");
-    }
-  }
-}
-
-QStringList SsdbApi::callTips(const QStringList& context, int commas,
-                              QsciScintilla::CallTipsStyle style, QList<int>& shifts) {
-  for (QStringList::const_iterator it = context.begin(); it != context.end() - 1; ++it) {
-    QString val = *it;
-    for (size_t i = 0; i < ssdb::ssdbCommands.size(); ++i) {
-      CommandInfo cmd = ssdb::ssdbCommands[i];
-      QString jval = common::convertFromString<QString>(cmd.name);
-      if (QString::compare(jval, val, Qt::CaseInsensitive) == 0) {
-        return QStringList() << makeCallTip(cmd);
-      }
-    }
-  }
-
-  return QStringList();
+  : BaseQsciApiCommandHolder(ssdb::ssdbCommands, lexer) {
 }
 
 SsdbLexer::SsdbLexer(QObject* parent)

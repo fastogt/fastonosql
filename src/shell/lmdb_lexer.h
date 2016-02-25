@@ -25,14 +25,10 @@
 namespace fastonosql {
 
 class LmdbApi
-  : public BaseQsciApi {
+  : public BaseQsciApiCommandHolder {
   Q_OBJECT
  public:
   explicit LmdbApi(QsciLexer* lexer);
-
-  virtual void updateAutoCompletionList(const QStringList& context, QStringList& list);
-  virtual QStringList callTips(const QStringList& context, int commas,
-                               QsciScintilla::CallTipsStyle style, QList<int>& shifts);
 };
 
 class LmdbLexer

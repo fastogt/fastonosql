@@ -27,6 +27,8 @@
 
 namespace fastonosql {
 
+static const QString help = "help";
+
 class BaseQsciApi
   : public QsciAbstractAPIs {
   Q_OBJECT
@@ -39,6 +41,20 @@ class BaseQsciApi
 
  private:
   uint32_t filtered_version_;
+};
+
+class BaseQsciApiCommandHolder
+    : public BaseQsciApi {
+  Q_OBJECT
+ public:
+  virtual void updateAutoCompletionList(const QStringList& context, QStringList& list);
+  virtual QStringList callTips(const QStringList& context, int commas,
+                               QsciScintilla::CallTipsStyle style, QList<int>& shifts);
+ protected:
+  explicit BaseQsciApiCommandHolder(const std::vector<CommandHolder>& commands, QsciLexer* lexer);
+
+ private:
+  const std::vector<CommandHolder>& commands_;
 };
 
 class BaseQsciLexer

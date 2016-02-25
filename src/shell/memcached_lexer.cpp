@@ -23,51 +23,10 @@
 
 #include "core/memcached/memcached_raw.h"
 
-namespace {
-  const QString help = "help";
-}
-
 namespace fastonosql {
 
 MemcachedApi::MemcachedApi(QsciLexer *lexer)
-  : BaseQsciApi(lexer) {
-}
-
-void MemcachedApi::updateAutoCompletionList(const QStringList& context, QStringList& list) {
-  for (QStringList::const_iterator it = context.begin(); it != context.end(); ++it) {
-    QString val = *it;
-    for (size_t i = 0; i < memcached::memcachedCommands.size(); ++i) {
-      CommandInfo cmd = memcached::memcachedCommands[i];
-      if (canSkipCommand(cmd)) {
-        continue;
-      }
-
-      QString jval = common::convertFromString<QString>(cmd.name);
-      if (jval.startsWith(val, Qt::CaseInsensitive)) {
-        list.append(jval + "?1");
-      }
-    }
-
-    if (help.startsWith(val, Qt::CaseInsensitive)) {
-      list.append(help + "?2");
-    }
-  }
-}
-
-QStringList MemcachedApi::callTips(const QStringList& context, int commas,
-                                   QsciScintilla::CallTipsStyle style, QList<int>& shifts) {
-  for (QStringList::const_iterator it = context.begin(); it != context.end() - 1; ++it) {
-    QString val = *it;
-    for (size_t i = 0; i < memcached::memcachedCommands.size(); ++i) {
-      CommandInfo cmd = memcached::memcachedCommands[i];
-      QString jval = common::convertFromString<QString>(cmd.name);
-      if (QString::compare(jval, val, Qt::CaseInsensitive) == 0) {
-        return QStringList() << makeCallTip(cmd);
-      }
-    }
-  }
-
-  return QStringList();
+  : BaseQsciApiCommandHolder(memcached::memcachedCommands, lexer) {
 }
 
 MemcachedLexer::MemcachedLexer(QObject* parent)

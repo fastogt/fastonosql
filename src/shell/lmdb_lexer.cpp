@@ -23,51 +23,10 @@
 
 #include "core/lmdb/lmdb_raw.h"
 
-namespace {
-  const QString help = "help";
-}
-
 namespace fastonosql {
+
 LmdbApi::LmdbApi(QsciLexer *lexer)
-  : BaseQsciApi(lexer) {
-}
-
-void LmdbApi::updateAutoCompletionList(const QStringList& context, QStringList& list) {
-  for (QStringList::const_iterator it = context.begin(); it != context.end(); ++it) {
-    QString val = *it;
-    for (size_t i = 0; i < lmdb::lmdbCommands.size(); ++i) {
-      CommandInfo cmd = lmdb::lmdbCommands[i];
-      if (canSkipCommand(cmd)) {
-        continue;
-      }
-
-      QString jval = common::convertFromString<QString>(cmd.name);
-      if (jval.startsWith(val, Qt::CaseInsensitive)) {
-        list.append(jval + "?1");
-      }
-    }
-
-    if (help.startsWith(val, Qt::CaseInsensitive)) {
-      list.append(help + "?2");
-    }
-  }
-}
-
-QStringList LmdbApi::callTips(const QStringList& context, int commas,
-                              QsciScintilla::CallTipsStyle style, QList<int>& shifts) {
-  for (QStringList::const_iterator it = context.begin(); it != context.end() - 1; ++it) {
-    QString val = *it;
-    for (size_t i = 0; i < lmdb::lmdbCommands.size(); ++i) {
-      CommandInfo cmd = lmdb::lmdbCommands[i];
-
-      QString jval = common::convertFromString<QString>(cmd.name);
-      if (QString::compare(jval, val, Qt::CaseInsensitive) == 0) {
-        return QStringList() << makeCallTip(cmd);
-      }
-    }
-  }
-
-  return QStringList();
+  : BaseQsciApiCommandHolder(lmdb::lmdbCommands, lexer) {
 }
 
 LmdbLexer::LmdbLexer(QObject* parent)

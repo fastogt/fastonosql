@@ -23,10 +23,6 @@
 
 #include "core/redis/redis_raw.h"
 
-namespace {
-  const QString help = "help";
-}
-
 namespace fastonosql {
 
 RedisApi::RedisApi(QsciLexer* lexer)
@@ -56,7 +52,7 @@ void RedisApi::updateAutoCompletionList(const QStringList& context, QStringList&
 
 QStringList RedisApi::callTips(const QStringList& context, int commas,
                                QsciScintilla::CallTipsStyle style, QList<int>& shifts) {
-  for (QStringList::const_iterator it = context.begin(); it != context.end() - 1; ++it) {
+  for (QStringList::const_iterator it = context.begin(); it != context.end(); ++it) {
     QString val = *it;
     for (size_t i = 0; i < redis::redisCommands.size(); ++i) {
       CommandInfo cmd = redis::redisCommands[i];
