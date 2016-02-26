@@ -46,9 +46,10 @@ namespace fastonosql {
 namespace {
 
 FastoCommonItem* createItem(fasto::qt::gui::TreeItem* parent, const std::string& key,
-                            bool readOnly, fastonosql::FastoObject* item) {
+                            bool readOnly, FastoObject* item) {
   NValue val = common::make_value(item->value()->deepCopy());
-  return new FastoCommonItem(common::convertFromString<QString>(key), val, readOnly, parent, item);
+  NDbKValue nkey(NKey(key), val);
+  return new FastoCommonItem(nkey, item->delemitr(), readOnly, parent, item);
 }
 
 }

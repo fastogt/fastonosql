@@ -93,18 +93,20 @@ SSHInfo::SupportedAuthenticationMetods SSHInfo::authMethod() const {
 }  // namespace fastonosql
 
 namespace common {
-  std::string convertToString(const fastonosql::SSHInfo& ssh_info) {
-    return  HOST":" + common::convertToString(ssh_info.host) + MARKER
-            USER":" + ssh_info.user_name + MARKER
-            PASSWORD":" + ssh_info.password + MARKER
-            PUBKEY":" + ssh_info.public_key + MARKER
-            PRIVKEY":" + ssh_info.private_key + MARKER
-            PASSPHRASE":" + ssh_info.passphrase + MARKER
-            CURMETHOD":" + common::convertToString(ssh_info.current_method) + MARKER;
-  }
 
-  template<>
-  fastonosql::SSHInfo convertFromString(const std::string& text) {
-    return fastonosql::SSHInfo(text);
-  }
+std::string convertToString(const fastonosql::SSHInfo& ssh_info) {
+  return  HOST":" + common::convertToString(ssh_info.host) + MARKER
+          USER":" + ssh_info.user_name + MARKER
+          PASSWORD":" + ssh_info.password + MARKER
+          PUBKEY":" + ssh_info.public_key + MARKER
+          PRIVKEY":" + ssh_info.private_key + MARKER
+          PASSPHRASE":" + ssh_info.passphrase + MARKER
+          CURMETHOD":" + common::convertToString(ssh_info.current_method) + MARKER;
+}
+
+template<>
+fastonosql::SSHInfo convertFromString(const std::string& text) {
+  return fastonosql::SSHInfo(text);
+}
+
 }  // namespace common

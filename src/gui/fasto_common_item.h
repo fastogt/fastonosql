@@ -34,7 +34,7 @@ class FastoCommonItem
     eType = 2,
     eCountColumns = 3
   };
-  FastoCommonItem(const QString& key, NValue value, bool isReadOnly,
+  FastoCommonItem(const NDbKValue& key, const std::string& delemitr, bool isReadOnly,
                   TreeItem* parent, void* internalPointer);
 
   QString key() const;
@@ -46,9 +46,9 @@ class FastoCommonItem
   void setValue(NValue val);
 
  private:
-  QString key_;
-  NValue value_;
-  bool isReadOnly_;
+  NDbKValue key_;
+  std::string delemitr_;
+  bool read_only_;
 };
 
 QString toJson(FastoCommonItem* item);

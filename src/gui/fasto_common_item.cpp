@@ -30,39 +30,32 @@
 
 namespace fastonosql {
 
-FastoCommonItem::FastoCommonItem(const QString& key, NValue value, bool isReadOnly,
+FastoCommonItem::FastoCommonItem(const NDbKValue& key, const std::string& delemitr, bool isReadOnly,
                                  TreeItem *parent, void* internalPointer)
-  : TreeItem(parent, internalPointer), key_(key), value_(value), isReadOnly_(isReadOnly) {
+  : TreeItem(parent, internalPointer), key_(key), delemitr_(delemitr), read_only_(isReadOnly) {
 }
 
 QString FastoCommonItem::key() const {
-  return key_;
+  return common::convertFromString<QString>(key_.keyString());
 }
 
 QString FastoCommonItem::value() const {
-  if (!value_) {
-    return QString();
-  }
-
-  common::Value* val = value_.get();
-  std::string valstr = common::convertToString(val, " ");
+  NValue nval = key_.value();
+  common::Value* val = nval.get();
+  std::string valstr = common::convertToString(val, delemitr_);
   return common::convertFromString<QString>(valstr);
 }
 
 void FastoCommonItem::setValue(NValue val) {
-  value_ = val;
+  key_.setValue(val);
 }
 
 common::Value::Type FastoCommonItem::type() const {
-  if (!value_) {
-    return common::Value::TYPE_NULL;
-  }
-
-  return value_->type();
+  return key_.type();
 }
 
 bool FastoCommonItem::isReadOnly() const {
-  return isReadOnly_;
+  return read_only_;
 }
 
 QString toJson(FastoCommonItem* item) {

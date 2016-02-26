@@ -137,8 +137,8 @@ void PreferencesDialog::accept() {
 
   SettingsManager::instance().setCurrentFontName(fontComboBox_->currentText());
 
-  const std::string defCombo = common::convertToString(defaultViewComboBox_->currentText());
-  const supportedViews v = common::convertFromString<fastonosql::supportedViews>(defCombo);
+  std::string defCombo = common::convertToString(defaultViewComboBox_->currentText());
+  supportedViews v = common::convertFromString<supportedViews>(defCombo);
   SettingsManager::instance().setDefaultView(v);
 
   SettingsManager::instance().setLoggingDirectory(logDirPath_->text());
