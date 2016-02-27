@@ -160,7 +160,11 @@ common::Error RocksdbRaw::info(const char* args, RocksdbServerInfo::Stats& stats
   return common::Error();
 }
 
-common::Error RocksdbRaw::dbsize(size_t& size) {
+common::Error RocksdbRaw::dbsize(size_t* size) {
+  if (!size) {
+    return common::make_error_value("Invalid input argument", common::ErrorValue::E_ERROR);
+  }
+
   ::rocksdb::ReadOptions ro;
   ::rocksdb::Iterator* it = rocksdb_->NewIterator(ro);
   size_t sz = 0;
@@ -176,7 +180,8 @@ common::Error RocksdbRaw::dbsize(size_t& size) {
     common::SNPrintf(buff, sizeof(buff), "Couldn't determine DBSIZE error: %s", st.ToString());
     return common::make_error_value(buff, common::ErrorValue::E_ERROR);
   }
-  size = sz;
+
+  *size = sz;
   return common::Error();
 }
 
@@ -298,10 +303,10 @@ common::Error info(CommandHandler* handler, int argc, char** argv, FastoObject* 
 
 common::Error dbsize(CommandHandler* handler, int argc, char** argv, FastoObject* out) {
   RocksdbRaw* rocks = static_cast<RocksdbRaw*>(handler);
-  size_t ret = 0;
-  common::Error er = rocks->dbsize(ret);
+  size_t dbsize = 0;
+  common::Error er = rocks->dbsize(&dbsize);
   if (!er) {
-    common::FundamentalValue *val = common::Value::createUIntegerValue(ret);
+    common::FundamentalValue *val = common::Value::createUIntegerValue(dbsize);
     FastoObject* child = new FastoObject(out, val, rocks->config_.delimiter);
     out->addChildren(child);
   }

@@ -178,9 +178,13 @@ common::Error LmdbDriver::serverDiscoveryInfo(ServerInfo **sinfo, ServerDiscover
 }
 
 common::Error LmdbDriver::currentDataBaseInfo(IDataBaseInfo** info) {
-  size_t size = 0;
-  impl_->dbsize(size);
-  *info = new LmdbDataBaseInfo(common::convertToString(impl_->curDb()), true, size);
+  if (!info) {
+    return common::make_error_value("Invalid input argument", common::ErrorValue::E_ERROR);
+  }
+
+  size_t dbsize = 0;
+  impl_->dbsize(&dbsize);
+  *info = new LmdbDataBaseInfo(common::convertToString(impl_->curDb()), true, dbsize);
   return common::Error();
 }
 

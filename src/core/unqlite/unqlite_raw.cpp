@@ -26,14 +26,14 @@
 
 namespace {
 
-std::string getUnqliteError(unqlite* context) {
+std::string unqlite_strerror(unqlite* context) {
   const char* zErr = nullptr;
   int iLen = 0;
   unqlite_config(context, UNQLITE_CONFIG_ERR_LOG, &zErr, &iLen);
   return std::string(zErr, iLen);
 }
 
-int getDataCallback(const void *pData, unsigned int nDatalen, void *str) {
+int unqlite_data_callback(const void *pData, unsigned int nDatalen, void *str) {
   std::string *out = static_cast<std::string *>(str);
   out->assign((const char*)pData, nDatalen);
   return UNQLITE_OK;
@@ -56,7 +56,7 @@ common::Error createConnection(const unqliteConfig& config, struct unqlite** con
                           UNQLITE_OPEN_CREATE : UNQLITE_OPEN_READWRITE);
   if (st != UNQLITE_OK) {
       char buff[1024] = {0};
-      common::SNPrintf(buff, sizeof(buff), "Fail open database: %s!", getUnqliteError(lcontext));
+      common::SNPrintf(buff, sizeof(buff), "Fail open database: %s!", unqlite_strerror(lcontext));
       return common::make_error_value(buff, common::ErrorValue::E_ERROR);
   }
 
@@ -138,14 +138,17 @@ common::Error UnqliteRaw::info(const char* args, UnqliteServerInfo::Stats* stats
   return common::Error();
 }
 
-common::Error UnqliteRaw::dbsize(size_t& size) {
+common::Error UnqliteRaw::dbsize(size_t* size) {
+  if (!size) {
+    return common::make_error_value("Invalid input argument", common::ErrorValue::E_ERROR);
+  }
+
   /* Allocate a new cursor instance */
   unqlite_kv_cursor *pCur; /* Cursor handle */
   int rc = unqlite_kv_cursor_init(unqlite_, &pCur);
   if (rc != UNQLITE_OK) {
       char buff[1024] = {0};
-      common::SNPrintf(buff, sizeof(buff), "dbsize function error: %s",
-                       getUnqliteError(unqlite_));
+      common::SNPrintf(buff, sizeof(buff), "dbsize function error: %s", unqlite_strerror(unqlite_));
       return common::make_error_value(buff, common::ErrorValue::E_ERROR);
   }
   /* Point to the first record */
@@ -161,7 +164,7 @@ common::Error UnqliteRaw::dbsize(size_t& size) {
   /* Finally, Release our cursor */
   unqlite_kv_cursor_release(unqlite_, pCur);
 
-  size = sz;
+  *size = sz;
   return common::Error();
 }
 
@@ -178,10 +181,10 @@ const char* UnqliteRaw::versionApi() {
 }
 
 common::Error UnqliteRaw::get(const std::string& key, std::string* ret_val) {
-  int rc = unqlite_kv_fetch_callback(unqlite_, key.c_str(), key.size(), getDataCallback, ret_val);
+  int rc = unqlite_kv_fetch_callback(unqlite_, key.c_str(), key.size(), unqlite_data_callback, ret_val);
   if (rc != UNQLITE_OK) {
     char buff[1024] = {0};
-    common::SNPrintf(buff, sizeof(buff), "get function error: %s", getUnqliteError(unqlite_));
+    common::SNPrintf(buff, sizeof(buff), "get function error: %s", unqlite_strerror(unqlite_));
     return common::make_error_value(buff, common::ErrorValue::E_ERROR);
   }
 
@@ -192,7 +195,7 @@ common::Error UnqliteRaw::put(const std::string& key, const std::string& value) 
   int rc = unqlite_kv_store(unqlite_, key.c_str(), key.size(), value.c_str(), value.length());
   if (rc != UNQLITE_OK) {
     char buff[1024] = {0};
-    common::SNPrintf(buff, sizeof(buff), "put function error: %s", getUnqliteError(unqlite_));
+    common::SNPrintf(buff, sizeof(buff), "put function error: %s", unqlite_strerror(unqlite_));
     return common::make_error_value(buff, common::ErrorValue::E_ERROR);
   }
 
@@ -203,7 +206,7 @@ common::Error UnqliteRaw::del(const std::string& key) {
   int rc = unqlite_kv_delete(unqlite_, key.c_str(), key.size());
   if (rc != UNQLITE_OK) {
     char buff[1024] = {0};
-    common::SNPrintf(buff, sizeof(buff), "delete function error: %s", getUnqliteError(unqlite_));
+    common::SNPrintf(buff, sizeof(buff), "delete function error: %s", unqlite_strerror(unqlite_));
     return common::make_error_value(buff, common::ErrorValue::E_ERROR);
   }
 
@@ -217,7 +220,7 @@ common::Error UnqliteRaw::keys(const std::string &key_start, const std::string &
   int rc = unqlite_kv_cursor_init(unqlite_, &pCur);
   if (rc != UNQLITE_OK) {
     char buff[1024] = {0};
-    common::SNPrintf(buff, sizeof(buff), "Keys function error: %s", getUnqliteError(unqlite_));
+    common::SNPrintf(buff, sizeof(buff), "Keys function error: %s", unqlite_strerror(unqlite_));
     return common::make_error_value(buff, common::ErrorValue::E_ERROR);
   }
   /* Point to the first record */
@@ -226,7 +229,7 @@ common::Error UnqliteRaw::keys(const std::string &key_start, const std::string &
   /* Iterate over the entries */
   while (unqlite_kv_cursor_valid_entry(pCur) && limit > ret->size()) {
     std::string key;
-    unqlite_kv_cursor_key_callback(pCur, getDataCallback, &key);
+    unqlite_kv_cursor_key_callback(pCur, unqlite_data_callback, &key);
     if (key_start < key && key_end > key) {
       ret->push_back(key);
     }
@@ -314,10 +317,10 @@ common::Error info(CommandHandler* handler, int argc, char** argv, FastoObject* 
 
 common::Error dbsize(CommandHandler* handler, int argc, char** argv, FastoObject* out) {
   UnqliteRaw* unq = static_cast<UnqliteRaw*>(handler);
-  size_t ret = 0;
-  common::Error er = unq->dbsize(ret);
+  size_t size = 0;
+  common::Error er = unq->dbsize(&size);
   if (!er) {
-    common::FundamentalValue *val = common::Value::createUIntegerValue(ret);
+    common::FundamentalValue* val = common::Value::createUIntegerValue(size);
     FastoObject* child = new FastoObject(out, val, unq->config_.delimiter);
     out->addChildren(child);
   }

@@ -198,7 +198,11 @@ common::Error LmdbRaw::info(const char* args, LmdbServerInfo::Stats* statsout) {
   return common::Error();
 }
 
-common::Error LmdbRaw::dbsize(size_t& size) {
+common::Error LmdbRaw::dbsize(size_t* size) {
+  if (!size) {
+    return common::make_error_value("Invalid input argument", common::ErrorValue::E_ERROR);
+  }
+
   MDB_cursor *cursor;
   MDB_txn *txn = NULL;
   int rc = mdb_txn_begin(lmdb_->env, NULL, MDB_RDONLY, &txn);
@@ -222,8 +226,7 @@ common::Error LmdbRaw::dbsize(size_t& size) {
   mdb_cursor_close(cursor);
   mdb_txn_abort(txn);
 
-  size = sz;
-
+  *size = sz;
   return common::Error();
 }
 
@@ -353,10 +356,10 @@ common::Error info(CommandHandler* handler, int argc, char** argv, FastoObject* 
 
 common::Error dbsize(CommandHandler* handler, int argc, char** argv, FastoObject* out) {
   LmdbRaw* mdb = static_cast<LmdbRaw*>(handler);
-  size_t ret = 0;
-  common::Error er = mdb->dbsize(ret);
+  size_t dbsize = 0;
+  common::Error er = mdb->dbsize(&dbsize);
   if (!er) {
-    common::FundamentalValue *val = common::Value::createUIntegerValue(ret);
+    common::FundamentalValue *val = common::Value::createUIntegerValue(dbsize);
     FastoObject* child = new FastoObject(out, val, mdb->config_.delimiter);
     out->addChildren(child);
   }

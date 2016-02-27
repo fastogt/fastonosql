@@ -181,10 +181,14 @@ common::Error RocksdbDriver::serverDiscoveryInfo(ServerInfo **sinfo,
 }
 
 common::Error RocksdbDriver::currentDataBaseInfo(IDataBaseInfo** info) {
+  if (!info) {
+    return common::make_error_value("Invalid input argument", common::ErrorValue::E_ERROR);
+  }
+
   std::string name = impl_->currentDbName();
-  size_t size = 0;
-  impl_->dbsize(size);
-  *info = new RocksdbDataBaseInfo(name, true, size);
+  size_t dbsize = 0;
+  impl_->dbsize(&dbsize);
+  *info = new RocksdbDataBaseInfo(name, true, dbsize);
   return common::Error();
 }
 

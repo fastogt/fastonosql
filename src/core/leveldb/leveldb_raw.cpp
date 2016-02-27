@@ -126,7 +126,11 @@ common::Error LeveldbRaw::disconnect() {
   return common::Error();
 }
 
-common::Error LeveldbRaw::dbsize(size_t& size) {
+common::Error LeveldbRaw::dbsize(size_t* size) {
+  if (!size) {
+    return common::make_error_value("Invalid input argument", common::ErrorValue::E_ERROR);
+  }
+
   ::leveldb::ReadOptions ro;
   ::leveldb::Iterator* it = leveldb_->NewIterator(ro);
   size_t sz = 0;
@@ -143,7 +147,7 @@ common::Error LeveldbRaw::dbsize(size_t& size) {
     return common::make_error_value(buff, common::ErrorValue::E_ERROR);
   }
 
-  size = sz;
+  *size = sz;
   return common::Error();
 }
 
@@ -256,10 +260,10 @@ common::Error LeveldbRaw::help(int argc, char** argv) {
 common::Error dbsize(CommandHandler* handler, int argc, char** argv, FastoObject* out) {
   LeveldbRaw* level = static_cast<LeveldbRaw*>(handler);
 
-  size_t ret = 0;
-  common::Error er = level->dbsize(ret);
+  size_t dbsize = 0;
+  common::Error er = level->dbsize(&dbsize);
   if (!er) {
-    common::FundamentalValue *val = common::Value::createUIntegerValue(ret);
+    common::FundamentalValue *val = common::Value::createUIntegerValue(dbsize);
     FastoObject* child = new FastoObject(out, val, level->config_.delimiter);
     out->addChildren(child);
   }

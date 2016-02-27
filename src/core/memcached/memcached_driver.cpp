@@ -116,7 +116,13 @@ common::Error MemcachedDriver::serverDiscoveryInfo(ServerInfo **sinfo,
 }
 
 common::Error MemcachedDriver::currentDataBaseInfo(IDataBaseInfo** info) {
-  *info = new MemcachedDataBaseInfo("0", true, 0);
+  if (!info) {
+    return common::make_error_value("Invalid input argument", common::ErrorValue::E_ERROR);
+  }
+
+  size_t dbsize = 0;
+  impl_->dbsize(&dbsize);
+  *info = new MemcachedDataBaseInfo("0", true, dbsize);
   return common::Error();
 }
 

@@ -183,9 +183,13 @@ common::Error LeveldbDriver::serverDiscoveryInfo(ServerInfo **sinfo, ServerDisco
 }
 
 common::Error LeveldbDriver::currentDataBaseInfo(IDataBaseInfo** info) {
-  size_t size = 0;
-  impl_->dbsize(size);
-  *info = new LeveldbDataBaseInfo("0", true, size);
+  if (!info) {
+    return common::make_error_value("Invalid input argument", common::ErrorValue::E_ERROR);
+  }
+
+  size_t dbsize = 0;
+  impl_->dbsize(&dbsize);
+  *info = new LeveldbDataBaseInfo("0", true, dbsize);
   return common::Error();
 }
 

@@ -126,6 +126,13 @@ MemcachedRaw::MemcachedRaw()
   : CommandHandler(memcachedCommands), memc_(nullptr) {
 }
 
+MemcachedRaw::~MemcachedRaw() {
+  if (memc_) {
+    memcached_free(memc_);
+  }
+  memc_ = nullptr;
+}
+
 const char* MemcachedRaw::versionApi() {
   return memcached_lib_version();
 }
@@ -171,9 +178,7 @@ common::Error MemcachedRaw::disconnect() {
 }
 
 common::Error MemcachedRaw::keys(const char* args) {
-  char buff[1024] = {0};
-  common::SNPrintf(buff, sizeof(buff), "Not supported command: STATS %s", args);
-  return common::make_error_value(buff, common::ErrorValue::E_ERROR);
+  return notSupported("keys");
 }
 
 common::Error MemcachedRaw::stats(const char* args, MemcachedServerInfo::Common& statsout) {
@@ -213,11 +218,9 @@ common::Error MemcachedRaw::stats(const char* args, MemcachedServerInfo::Common&
   return common::Error();
 }
 
-MemcachedRaw::~MemcachedRaw() {
-  if (memc_) {
-    memcached_free(memc_);
-  }
-  memc_ = nullptr;
+common::Error MemcachedRaw::dbsize(size_t* size) {
+  *size = 0;
+  return common::Error();
 }
 
 common::Error MemcachedRaw::get(const std::string& key, std::string* ret_val) {
@@ -371,17 +374,6 @@ common::Error MemcachedRaw::version_server() const {
   }
 
   return common::Error();
-}
-
-common::Error MemcachedRaw::verbosity() const {
-  /*memcached_return_t error = memcached_verbosity(memc_, 1);
-  if (error != MEMCACHED_SUCCESS) {
-    char buff[1024] = {0};
-    sprintf(buff, "Verbosity error: %s", memcached_strerror(memc_, error));
-    return common::make_error_value(buff, common::ErrorValue::E_ERROR);
-  }*/
-
-  return common::make_error_value("Not supported command", common::ErrorValue::E_ERROR);
 }
 
 common::Error MemcachedRaw::help(int argc, char** argv) {
@@ -538,9 +530,17 @@ common::Error version_server(CommandHandler* handler, int argc, char** argv, Fas
   return mem->version_server();
 }
 
-common::Error verbosity(CommandHandler* handler, int argc, char** argv, FastoObject* out) {
+common::Error dbsize(CommandHandler* handler, int argc, char** argv, FastoObject* out) {
   MemcachedRaw* mem = static_cast<MemcachedRaw*>(handler);
-  return mem->verbosity();
+  size_t dbsize = 0;
+  common::Error er = mem->dbsize(&dbsize);
+  if (!er) {
+    common::FundamentalValue *val = common::Value::createUIntegerValue(dbsize);
+    FastoObject* child = new FastoObject(out, val, mem->config_.delimiter);
+    out->addChildren(child);
+  }
+
+  return er;
 }
 
 common::Error help(CommandHandler* handler, int argc, char** argv, FastoObject* out) {

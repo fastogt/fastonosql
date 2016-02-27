@@ -217,8 +217,12 @@ common::Error SsdbDriver::serverDiscoveryInfo(ServerInfo** sinfo, ServerDiscover
 }
 
 common::Error SsdbDriver::currentDataBaseInfo(IDataBaseInfo** info) {
+  if (!info) {
+    return common::make_error_value("Invalid input argument", common::ErrorValue::E_ERROR);
+  }
+
   size_t dbsize = 0;
-  impl_->dbsize(dbsize);
+  impl_->dbsize(&dbsize);
   SsdbDataBaseInfo *sinfo = new SsdbDataBaseInfo("0", true, dbsize);
   *info = sinfo;
   return common::Error();

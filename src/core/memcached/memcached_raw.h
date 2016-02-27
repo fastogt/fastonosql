@@ -44,6 +44,8 @@ struct MemcachedRaw
 
   common::Error keys(const char* args);
   common::Error stats(const char* args, MemcachedServerInfo::Common& statsout);
+  common::Error dbsize(size_t* size);
+
   common::Error get(const std::string& key, std::string *ret_val);
   common::Error set(const std::string& key, const std::string& value,
                     time_t expiration, uint32_t flags);
@@ -60,7 +62,6 @@ struct MemcachedRaw
   common::Error del(const std::string& key, time_t expiration);
   common::Error flush_all(time_t expiration);
   common::Error version_server() const;
-  common::Error verbosity() const;
   common::Error help(int argc, char** argv);
 
   memcachedConfig config_;
@@ -83,13 +84,11 @@ common::Error decr(CommandHandler* handler, int argc, char** argv, FastoObject* 
 common::Error del(CommandHandler* handler, int argc, char** argv, FastoObject* out);
 common::Error flush_all(CommandHandler* handler, int argc, char** argv, FastoObject* out);
 common::Error version_server(CommandHandler* handler, int argc, char** argv, FastoObject* out);
-common::Error verbosity(CommandHandler* handler, int argc, char** argv, FastoObject* out);
+common::Error dbsize(CommandHandler* handler, int argc, char** argv, FastoObject* out);
 common::Error help(CommandHandler* handler, int argc, char** argv, FastoObject* out);
 
 // TODO: cas command implementation
 static const std::vector<CommandHolder> memcachedCommands = {
-  CommandHolder("VERBOSITY", "<level>",
-              "Change the verbosity ouptut of Memcached server.", UNDEFINED_SINCE, UNDEFINED_EXAMPLE_STR, 1, 0, &verbosity),
   CommandHolder("VERSION", "-",
               "Return the Memcached server version.", UNDEFINED_SINCE, UNDEFINED_EXAMPLE_STR, 0, 0, &version_server),
   CommandHolder("STATS", "[<args>]",
@@ -124,6 +123,9 @@ static const std::vector<CommandHolder> memcachedCommands = {
   CommandHolder("GET", "<key>",
               "Get the value of a key.", UNDEFINED_SINCE, UNDEFINED_EXAMPLE_STR, 1, 0, &get),
 
+  CommandHolder("DBSIZE", "-",
+              "Return the number of keys in the selected database",
+              UNDEFINED_SINCE, UNDEFINED_EXAMPLE_STR, 0, 0, &dbsize),
   CommandHolder("HELP", "<command>",
               "Return how to use command",
               UNDEFINED_SINCE, UNDEFINED_EXAMPLE_STR, 0, 1, &help)

@@ -41,7 +41,7 @@ struct SsdbRaw
   common::Error disconnect();
 
   common::Error info(const char* args, SsdbServerInfo::Common* statsout);
-  common::Error dbsize(size_t& size);
+  common::Error dbsize(size_t* size);
   common::Error auth(const std::string& password);
   common::Error get(const std::string& key, std::string* ret_val);
   common::Error set(const std::string& key, const std::string& value);

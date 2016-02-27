@@ -145,7 +145,11 @@ common::Error SsdbRaw::info(const char* args, SsdbServerInfo::Common *statsout) 
   return common::Error();
 }
 
-common::Error SsdbRaw::dbsize(size_t& size) {
+common::Error SsdbRaw::dbsize(size_t* size) {
+  if (!size) {
+    return common::make_error_value("Invalid input argument", common::ErrorValue::E_ERROR);
+  }
+
   int64_t sz = 0;
   auto st = ssdb_->dbsize(&sz);
   if (st.error()) {
@@ -154,7 +158,7 @@ common::Error SsdbRaw::dbsize(size_t& size) {
     return common::make_error_value(buff, common::ErrorValue::E_ERROR);
   }
 
-  size = sz;
+  *size = sz;
   return common::Error();
 }
 
@@ -630,10 +634,10 @@ common::Error info(CommandHandler* handler, int argc, char** argv, FastoObject* 
 
 common::Error dbsize(CommandHandler* handler, int argc, char** argv, FastoObject* out) {
   SsdbRaw* ssdb = static_cast<SsdbRaw*>(handler);
-  size_t ret = 0;
-  common::Error er = ssdb->dbsize(ret);
+  size_t dbsize = 0;
+  common::Error er = ssdb->dbsize(&dbsize);
   if (!er) {
-    common::FundamentalValue *val = common::Value::createUIntegerValue(ret);
+    common::FundamentalValue *val = common::Value::createUIntegerValue(dbsize);
     FastoObject* child = new FastoObject(out, val, ssdb->config_.delimiter);
     out->addChildren(child);
   }

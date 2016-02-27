@@ -52,7 +52,7 @@ struct LmdbRaw
   MDB_dbi curDb() const;
 
   common::Error info(const char* args, LmdbServerInfo::Stats* statsout);
-  common::Error dbsize(size_t& size);
+  common::Error dbsize(size_t* size);
   common::Error get(const std::string& key, std::string* ret_val);
   common::Error put(const std::string& key, const std::string& value);
   common::Error del(const std::string& key);
