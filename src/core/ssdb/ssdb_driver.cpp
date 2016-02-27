@@ -31,7 +31,6 @@
 #define INFO_REQUEST "INFO"
 #define GET_KEYS_PATTERN_1ARGS_I "KEYS a z %d"
 #define DELETE_KEY_PATTERN_1ARGS_S "DEL %s"
-#define GET_SERVER_TYPE ""
 
 #define GET_KEY_PATTERN_1ARGS_S "GET %s"
 #define GET_KEY_LIST_PATTERN_1ARGS_S "LRANGE %s 0 -1"
@@ -184,24 +183,14 @@ common::Error SsdbDriver::serverInfo(ServerInfo **info) {
   return err;
 }
 
-common::Error SsdbDriver::serverDiscoveryInfo(ServerInfo** sinfo, ServerDiscoveryInfo** dinfo,
+common::Error SsdbDriver::serverDiscoveryInfo(ServerDiscoveryInfo** dinfo, ServerInfo** sinfo,
                                               IDataBaseInfo **dbinfo) {
+  UNUSED(dinfo);
+
   ServerInfo *lsinfo = nullptr;
   common::Error er = serverInfo(&lsinfo);
   if (er && er->isError()) {
     return er;
-  }
-
-  FastoObjectIPtr root = FastoObject::createRoot(GET_SERVER_TYPE);
-  FastoObjectCommand* cmd = createCommand<SsdbCommand>(root, GET_SERVER_TYPE,
-                                                       common::Value::C_INNER);
-  er = execute(cmd);
-
-  if (!er) {
-    FastoObject::child_container_type ch = root->childrens();
-    if (ch.size()) {
-      // *dinfo = makeOwnRedisDiscoveryInfo(ch[0]);
-    }
   }
 
   IDataBaseInfo* ldbinfo = nullptr;

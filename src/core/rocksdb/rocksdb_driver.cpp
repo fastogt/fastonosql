@@ -35,7 +35,6 @@
 
 #define GET_KEYS_PATTERN_1ARGS_I "KEYS a z %d"
 #define DELETE_KEY_PATTERN_1ARGS_S "DEL %s"
-#define GET_SERVER_TYPE ""
 
 namespace fastonosql {
 namespace rocksdb {
@@ -147,25 +146,14 @@ common::Error RocksdbDriver::serverInfo(ServerInfo **info) {
   return err;
 }
 
-common::Error RocksdbDriver::serverDiscoveryInfo(ServerInfo **sinfo,
-                                                 ServerDiscoveryInfo **dinfo,
+common::Error RocksdbDriver::serverDiscoveryInfo(ServerDiscoveryInfo **dinfo, ServerInfo **sinfo,
                                                  IDataBaseInfo** dbinfo) {
+  UNUSED(dinfo);
+
   ServerInfo *lsinfo = nullptr;
   common::Error er = serverInfo(&lsinfo);
   if (er && er->isError()) {
       return er;
-  }
-
-  FastoObjectIPtr root = FastoObject::createRoot(GET_SERVER_TYPE);
-  FastoObjectCommand* cmd = createCommand<RocksdbCommand>(root,
-                                                          GET_SERVER_TYPE, common::Value::C_INNER);
-  er = execute(cmd);
-
-  if (!er) {
-    FastoObject::child_container_type ch = root->childrens();
-    if (ch.size()) {
-      // *dinfo = makeOwnRedisDiscoveryInfo(ch[0]);
-    }
   }
 
   IDataBaseInfo* ldbinfo = nullptr;

@@ -145,7 +145,7 @@ class IDriver
   // internal methods
   virtual ServerInfoSPtr makeServerInfoFromString(const std::string& val) = 0;
   virtual common::Error serverInfo(ServerInfo** info) = 0;
-  virtual common::Error serverDiscoveryInfo(ServerInfo** sinfo, ServerDiscoveryInfo** dinfo,
+  virtual common::Error serverDiscoveryInfo(ServerDiscoveryInfo** dinfo, ServerInfo** sinfo,
                                             IDataBaseInfo** dbinfo) = 0;
   virtual common::Error currentDataBaseInfo(IDataBaseInfo** info) = 0;
   virtual void initImpl() = 0;

@@ -501,7 +501,7 @@ void IDriver::handleDiscoveryInfoRequestEvent(events::DiscoveryInfoRequestEvent*
     ServerDiscoveryInfo* disc = nullptr;
     ServerInfo* info = nullptr;
     IDataBaseInfo* db = nullptr;
-    common::Error err = serverDiscoveryInfo(&info, &disc, &db);
+    common::Error err = serverDiscoveryInfo(&disc, &info, &db);
     if (err && err->isError()) {
       res.setErrorInfo(err);
     } else {

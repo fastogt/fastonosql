@@ -45,8 +45,8 @@ class UnqliteDriver
 
   virtual common::Error executeImpl(int argc, char **argv, FastoObject* out);
   virtual common::Error serverInfo(ServerInfo** info);
-  virtual common::Error serverDiscoveryInfo(ServerInfo** sinfo,
-                                            ServerDiscoveryInfo** dinfo, IDataBaseInfo** dbinfo);
+  virtual common::Error serverDiscoveryInfo(ServerDiscoveryInfo** dinfo, ServerInfo** sinfo,
+                                            IDataBaseInfo** dbinfo);
   virtual common::Error currentDataBaseInfo(IDataBaseInfo** info);
 
   virtual void handleConnectEvent(events::ConnectRequestEvent* ev);

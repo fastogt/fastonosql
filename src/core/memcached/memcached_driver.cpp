@@ -28,7 +28,6 @@
 
 #define INFO_REQUEST "STATS"
 #define GET_KEYS "STATS ITEMS"
-#define GET_SERVER_TYPE ""
 
 #define DELETE_KEY_PATTERN_1ARGS_S "DELETE %s"
 #define GET_KEY_PATTERN_1ARGS_S "GET %s"
@@ -82,25 +81,14 @@ common::Error MemcachedDriver::serverInfo(ServerInfo **info) {
   return err;
 }
 
-common::Error MemcachedDriver::serverDiscoveryInfo(ServerInfo **sinfo,
-                                                   ServerDiscoveryInfo** dinfo,
+common::Error MemcachedDriver::serverDiscoveryInfo(ServerDiscoveryInfo** dinfo, ServerInfo **sinfo,
                                                    IDataBaseInfo** dbinfo) {
+  UNUSED(dinfo);
+
   ServerInfo *lsinfo = nullptr;
   common::Error er = serverInfo(&lsinfo);
   if (er && er->isError()) {
     return er;
-  }
-
-  FastoObjectIPtr root = FastoObject::createRoot(GET_SERVER_TYPE);
-  FastoObjectCommand* cmd = createCommand<MemcachedCommand>(root, GET_SERVER_TYPE,
-                                                            common::Value::C_INNER);
-  er = execute(cmd);
-
-  if (!er) {
-    FastoObject::child_container_type ch = root->childrens();
-    if (ch.size()) {
-      // *dinfo = makeOwnRedisDiscoveryInfo(ch[0]);
-    }
   }
 
   IDataBaseInfo* ldbinfo = nullptr;
