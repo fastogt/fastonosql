@@ -74,7 +74,7 @@ common::Error MemcachedDriver::executeImpl(int argc, char **argv, FastoObject* o
 common::Error MemcachedDriver::serverInfo(ServerInfo **info) {
   LOG_COMMAND(Command(INFO_REQUEST, common::Value::C_INNER));
   MemcachedServerInfo::Common cm;
-  common::Error err = impl_->stats(NULL, cm);
+  common::Error err = impl_->stats(nullptr, cm);
   if (!err) {
     *info = new MemcachedServerInfo(cm);
   }
@@ -85,7 +85,7 @@ common::Error MemcachedDriver::serverInfo(ServerInfo **info) {
 common::Error MemcachedDriver::serverDiscoveryInfo(ServerInfo **sinfo,
                                                    ServerDiscoveryInfo** dinfo,
                                                    IDataBaseInfo** dbinfo) {
-  ServerInfo *lsinfo = NULL;
+  ServerInfo *lsinfo = nullptr;
   common::Error er = serverInfo(&lsinfo);
   if (er && er->isError()) {
     return er;
@@ -103,7 +103,7 @@ common::Error MemcachedDriver::serverDiscoveryInfo(ServerInfo **sinfo,
     }
   }
 
-  IDataBaseInfo* ldbinfo = NULL;
+  IDataBaseInfo* ldbinfo = nullptr;
   er = currentDataBaseInfo(&ldbinfo);
   if (er && er->isError()) {
     delete lsinfo;
@@ -294,7 +294,7 @@ void MemcachedDriver::handleLoadServerInfoEvent(events::ServerInfoRequestEvent* 
   notifyProgress(sender, 50);
   LOG_COMMAND(Command(INFO_REQUEST, common::Value::C_INNER));
   MemcachedServerInfo::Common cm;
-  common::Error err = impl_->stats(NULL, cm);
+  common::Error err = impl_->stats(nullptr, cm);
   if (err) {
     res.setErrorInfo(err);
   } else {

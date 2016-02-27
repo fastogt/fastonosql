@@ -131,24 +131,24 @@ common::Error IDriver::execute(FastoObjectCommand* cmd) {
   common::Error er;
   if (command[0] != '\0') {
     int argc;
-    sds *argv = sdssplitargs(command.c_str(), &argc);
+    sds* argv = sdssplitargs(command.c_str(), &argc);
 
-    if (argv == NULL) {
+    if (!argv) {
       common::StringValue *val = common::Value::createStringValue("Invalid argument(s)");
       FastoObject* child = new FastoObject(cmd, val, cmd->delemitr());
       cmd->addChildren(child);
     } else if (argc > 0) {
       er = executeImpl(argc, argv, cmd);
     }
-    sdsfreesplitres(argv,argc);
+    sdsfreesplitres(argv, argc);
   }
 
   return er;
 }
 
 IDriver::IDriver(IConnectionSettingsBaseSPtr settings, connectionTypes type)
-  : settings_(settings), interrupt_(false), server_disc_info_(), thread_(NULL),
-    timer_info_id_(0), log_file_(NULL), type_(type) {
+  : settings_(settings), interrupt_(false), server_disc_info_(), thread_(nullptr),
+    timer_info_id_(0), log_file_(nullptr), type_(type) {
   CHECK(settings->connectionType() == type);
 
   thread_ = new QThread(this);
@@ -159,8 +159,7 @@ IDriver::IDriver(IConnectionSettingsBaseSPtr settings, connectionTypes type)
 }
 
 IDriver::~IDriver() {
-  delete log_file_;
-  log_file_ = NULL;
+  destroy(&log_file_);
 }
 
 void IDriver::reply(QObject *reciver, QEvent *ev) {
@@ -350,7 +349,7 @@ void IDriver::timerEvent(QTimerEvent* event) {
     if (log_file_ && log_file_->isOpened()) {
       common::time64_t time = common::time::current_mstime();
       std::string stamp = createStamp(time);
-      ServerInfo* info = NULL;
+      ServerInfo* info = nullptr;
       common::Error er = serverInfo(&info);
       if (er && er->isError()) {
         QObject::timerEvent(event);
@@ -499,9 +498,9 @@ void IDriver::handleDiscoveryInfoRequestEvent(events::DiscoveryInfoRequestEvent*
   events::DiscoveryInfoResponceEvent::value_type res(ev->value());
 
   if (isConnected()) {
-    ServerDiscoveryInfo* disc = NULL;
-    ServerInfo* info = NULL;
-    IDataBaseInfo* db = NULL;
+    ServerDiscoveryInfo* disc = nullptr;
+    ServerInfo* info = nullptr;
+    IDataBaseInfo* db = nullptr;
     common::Error err = serverDiscoveryInfo(&info, &disc, &db);
     if (err && err->isError()) {
       res.setErrorInfo(err);

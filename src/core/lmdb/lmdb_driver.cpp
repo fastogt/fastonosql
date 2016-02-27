@@ -137,7 +137,7 @@ common::Error LmdbDriver::executeImpl(int argc, char **argv, FastoObject* out) {
 common::Error LmdbDriver::serverInfo(ServerInfo **info) {
   LOG_COMMAND(Command(INFO_REQUEST, common::Value::C_INNER));
   LmdbServerInfo::Stats cm;
-  common::Error err = impl_->info(NULL, &cm);
+  common::Error err = impl_->info(nullptr, &cm);
   if (!err) {
     *info = new LmdbServerInfo(cm);
   }
@@ -147,7 +147,7 @@ common::Error LmdbDriver::serverInfo(ServerInfo **info) {
 
 common::Error LmdbDriver::serverDiscoveryInfo(ServerInfo **sinfo, ServerDiscoveryInfo **dinfo,
                                               IDataBaseInfo** dbinfo) {
-  ServerInfo *lsinfo = NULL;
+  ServerInfo *lsinfo = nullptr;
   common::Error er = serverInfo(&lsinfo);
   if (er && er->isError()) {
     return er;
@@ -165,7 +165,7 @@ common::Error LmdbDriver::serverDiscoveryInfo(ServerInfo **sinfo, ServerDiscover
     }
   }
 
-  IDataBaseInfo* ldbinfo = NULL;
+  IDataBaseInfo* ldbinfo = nullptr;
   er = currentDataBaseInfo(&ldbinfo);
   if (er && er->isError()) {
     delete lsinfo;
@@ -359,7 +359,7 @@ void LmdbDriver::handleLoadServerInfoEvent(events::ServerInfoRequestEvent* ev) {
   notifyProgress(sender, 50);
   LOG_COMMAND(Command(INFO_REQUEST, common::Value::C_INNER));
   LmdbServerInfo::Stats cm;
-  common::Error err = impl_->info(NULL, &cm);
+  common::Error err = impl_->info(nullptr, &cm);
   if (err) {
     res.setErrorInfo(err);
   } else {

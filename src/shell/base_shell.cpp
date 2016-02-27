@@ -59,7 +59,7 @@ namespace fastonosql {
 BaseShell::BaseShell(connectionTypes type, bool showAutoCompl, QWidget* parent)
   : FastoEditorShell(showAutoCompl, parent) {
   VERIFY(connect(this, &BaseShell::customContextMenuRequested, this, &BaseShell::showContextMenu));
-  BaseQsciLexer* lex = NULL;
+  BaseQsciLexer* lex = nullptr;
 #ifdef BUILD_WITH_REDIS
   if (type == REDIS) {
     lex = new RedisLexer(this);

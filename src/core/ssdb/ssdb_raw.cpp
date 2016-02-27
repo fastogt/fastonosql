@@ -27,7 +27,11 @@ namespace {
 
 common::Error createConnection(const ssdbConfig& config, const SSHInfo& sinfo,
                                ::ssdb::Client** context) {
-  DCHECK(*context == NULL);
+  if (!context) {
+    return common::make_error_value("Invalid input argument", common::ErrorValue::E_ERROR);
+  }
+
+  DCHECK(*context == nullptr);
   UNUSED(sinfo);
   ::ssdb::Client *lcontext = ::ssdb::Client::connect(config.host.host, config.host.port);
   if (!lcontext) {
@@ -52,7 +56,7 @@ common::Error createConnection(SsdbConnectionSettings* settings, ::ssdb::Client*
 }  // namespace
 
 common::Error testConnection(SsdbConnectionSettings* settings) {
-  ::ssdb::Client* ssdb = NULL;
+  ::ssdb::Client* ssdb = nullptr;
   common::Error er = createConnection(settings, &ssdb);
   if (er && er->isError()) {
       return er;
@@ -65,12 +69,11 @@ common::Error testConnection(SsdbConnectionSettings* settings) {
 
 
 SsdbRaw::SsdbRaw()
-  : ssdb_(NULL), CommandHandler(ssdbCommands) {
+  : ssdb_(nullptr), CommandHandler(ssdbCommands) {
 }
 
 SsdbRaw::~SsdbRaw() {
-  delete ssdb_;
-  ssdb_ = NULL;
+  destroy(&ssdb_);
 }
 
 const char* SsdbRaw::versionApi() {
@@ -90,7 +93,7 @@ common::Error SsdbRaw::connect() {
     return common::Error();
   }
 
-  ::ssdb::Client* context = NULL;
+  ::ssdb::Client* context = nullptr;
   common::Error er = createConnection(config_, sinfo_, &context);
   if (er && er->isError()) {
     return er;
@@ -105,8 +108,7 @@ common::Error SsdbRaw::disconnect() {
     return common::Error();
   }
 
-  delete ssdb_;
-  ssdb_ = NULL;
+  destroy(&ssdb_);
   return common::Error();
 }
 

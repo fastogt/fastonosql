@@ -71,7 +71,7 @@ IServerSPtr ServersManager::createServer(IConnectionSettingsBaseSPtr settings) {
   DCHECK(settings);
 
   connectionTypes conT = settings->connectionType();
-  IServer* server = NULL;
+  IServer* server = nullptr;
 #ifdef BUILD_WITH_REDIS
   if (conT == REDIS) {
     server = new redis::RedisServer(settings);

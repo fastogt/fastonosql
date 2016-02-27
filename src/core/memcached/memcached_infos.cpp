@@ -191,7 +191,7 @@ common::Value* MemcachedServerInfo::Common::valueByIndex(unsigned char index) co
     NOTREACHED();
     break;
   }
-  return NULL;
+  return nullptr;
 }
 
 MemcachedServerInfo::MemcachedServerInfo()
@@ -211,7 +211,7 @@ common::Value* MemcachedServerInfo::valueByIndexes(unsigned char property,
     NOTREACHED();
     break;
   }
-  return NULL;
+  return nullptr;
 }
 
 std::ostream& operator<<(std::ostream& out, const MemcachedServerInfo::Common& value) {
@@ -245,7 +245,7 @@ std::ostream& operator<<(std::ostream& out, const MemcachedServerInfo& value) {
 
 MemcachedServerInfo* makeMemcachedServerInfo(const std::string &content) {
   if (content.empty()) {
-    return NULL;
+    return nullptr;
   }
 
   MemcachedServerInfo* result = new MemcachedServerInfo;

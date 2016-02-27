@@ -87,7 +87,7 @@ common::Value* LmdbServerInfo::Stats::valueByIndex(unsigned char index) const {
     NOTREACHED();
     break;
   }
-  return NULL;
+  return nullptr;
 }
 
 LmdbServerInfo::LmdbServerInfo()
@@ -106,7 +106,7 @@ common::Value* LmdbServerInfo::valueByIndexes(unsigned char property, unsigned c
     NOTREACHED();
     break;
   }
-  return NULL;
+  return nullptr;
 }
 
 std::ostream& operator<<(std::ostream& out, const LmdbServerInfo::Stats& value) {
@@ -119,7 +119,7 @@ std::ostream& operator<<(std::ostream& out, const LmdbServerInfo& value) {
 
 LmdbServerInfo* makeLmdbServerInfo(const std::string &content) {
   if (content.empty()) {
-    return NULL;
+    return nullptr;
   }
 
   LmdbServerInfo* result = new LmdbServerInfo;

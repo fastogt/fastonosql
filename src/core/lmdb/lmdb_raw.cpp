@@ -75,6 +75,10 @@ int lmdb_open(lmdb **context, const char *dbname, bool create_if_missing) {
 }
 
 void lmdb_close(lmdb **context) {
+  if (!context) {
+    return;
+  }
+
   lmdb *lcontext = *context;
   if (!lcontext) {
     return;
@@ -87,9 +91,12 @@ void lmdb_close(lmdb **context) {
 }
 
 common::Error createConnection(const lmdbConfig& config, struct lmdb** context) {
-  DCHECK(*context == NULL);
+  if (!context) {
+    return common::make_error_value("Invalid input argument", common::ErrorValue::E_ERROR);
+  }
 
-  struct lmdb* lcontext = NULL;
+  DCHECK(*context == nullptr);
+  struct lmdb* lcontext = nullptr;
   const char * dbname = common::utils::c_strornull(config.dbname);
   int st = lmdb_open(&lcontext, dbname, config.create_if_missing);
   if (st != LMDB_OK) {
@@ -114,7 +121,7 @@ common::Error createConnection(LmdbConnectionSettings* settings, struct lmdb** c
 }  // namespace
 
 common::Error testConnection(fastonosql::lmdb::LmdbConnectionSettings* settings) {
-  struct lmdb* ldb = NULL;
+  struct lmdb* ldb = nullptr;
   common::Error er = createConnection(settings, &ldb);
   if (er && er->isError()) {
     return er;
@@ -126,7 +133,7 @@ common::Error testConnection(fastonosql::lmdb::LmdbConnectionSettings* settings)
 }
 
 LmdbRaw::LmdbRaw()
-  : CommandHandler(lmdbCommands), lmdb_(NULL) {
+  : CommandHandler(lmdbCommands), lmdb_(nullptr) {
 }
 
 LmdbRaw::~LmdbRaw() {
@@ -150,7 +157,7 @@ common::Error LmdbRaw::connect() {
     return common::Error();
   }
 
-  struct lmdb* context = NULL;
+  struct lmdb* context = nullptr;
   common::Error er = createConnection(config_, &context);
   if (er && er->isError()) {
     return er;
@@ -334,7 +341,7 @@ common::Error LmdbRaw::help(int argc, char** argv) {
 common::Error info(CommandHandler* handler, int argc, char** argv, FastoObject* out) {
   LmdbRaw* mdb = static_cast<LmdbRaw*>(handler);
   LmdbServerInfo::Stats statsout;
-  common::Error er = mdb->info(argc == 1 ? argv[0] : NULL, &statsout);
+  common::Error er = mdb->info(argc == 1 ? argv[0] : nullptr, &statsout);
   if (!er) {
     common::StringValue *val = common::Value::createStringValue(LmdbServerInfo(statsout).toString());
     FastoObject* child = new FastoObject(out, val, mdb->config_.delimiter);

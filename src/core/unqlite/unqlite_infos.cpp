@@ -88,7 +88,7 @@ common::Value* UnqliteServerInfo::Stats::valueByIndex(unsigned char index) const
     NOTREACHED();
     break;
   }
-  return NULL;
+  return nullptr;
 }
 
 UnqliteServerInfo::UnqliteServerInfo()
@@ -108,7 +108,7 @@ common::Value* UnqliteServerInfo::valueByIndexes(unsigned char property,
     NOTREACHED();
     break;
   }
-  return NULL;
+  return nullptr;
 }
 
 std::ostream& operator<<(std::ostream& out, const UnqliteServerInfo::Stats& value) {
@@ -121,7 +121,7 @@ std::ostream& operator<<(std::ostream& out, const UnqliteServerInfo& value) {
 
 UnqliteServerInfo* makeUnqliteServerInfo(const std::string &content) {
   if (content.empty()) {
-      return NULL;
+      return nullptr;
   }
 
   UnqliteServerInfo* result = new UnqliteServerInfo;

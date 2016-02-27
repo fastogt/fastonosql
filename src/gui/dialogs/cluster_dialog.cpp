@@ -288,7 +288,7 @@ void ClusterDialog::setStartNode() {
 
 void ClusterDialog::add() {
   const std::vector<connectionTypes> avail = { DBUNKNOWN, REDIS };
-  ConnectionDialog dlg(this, NULL, avail);
+  ConnectionDialog dlg(this, nullptr, avail);
   int result = dlg.exec();
   IConnectionSettingsBaseSPtr p = dlg.connection();
   if (result == QDialog::Accepted && p) {
@@ -335,7 +335,7 @@ void ClusterDialog::edit() {
 void ClusterDialog::itemSelectionChanged() {
   ConnectionListWidgetItem* currentItem = dynamic_cast<ConnectionListWidgetItem*>(listWidget_->currentItem());
 
-  bool isValidConnection = currentItem != NULL;
+  bool isValidConnection = currentItem != nullptr;
 
   testButton_->setEnabled(isValidConnection);
   discoveryButton_->setEnabled(isValidConnection);

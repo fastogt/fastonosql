@@ -174,7 +174,7 @@ MainWindow::MainWindow()
   fileMenu->addAction(exportAction_);
   QMenu *recentMenu = new QMenu(this);
   recentConnections_ = fileMenu->addMenu(recentMenu);
-  for (int i = 0; i < MaxRecentConnections; ++i) {
+  for (int i = 0; i < max_recent_connections; ++i) {
     recentConnectionsActs_[i] = new QAction(this);
     VERIFY(connect(recentConnectionsActs_[i], &QAction::triggered,
                    this, &MainWindow::openRecentConnection));
@@ -672,7 +672,7 @@ void MainWindow::retranslateUi() {
 void MainWindow::updateRecentConnectionActions() {
   QStringList connections = SettingsManager::instance().recentConnections();
 
-  int numRecentFiles = qMin(connections.size(), static_cast<int>(MaxRecentConnections));
+  int numRecentFiles = qMin(connections.size(), static_cast<int>(max_recent_connections));
 
   for (int i = 0; i < numRecentFiles; ++i) {
     QString text = connections[i];
@@ -680,7 +680,7 @@ void MainWindow::updateRecentConnectionActions() {
     recentConnectionsActs_[i]->setVisible(true);
   }
 
-  for (int j = numRecentFiles; j < MaxRecentConnections; ++j) {
+  for (int j = numRecentFiles; j < max_recent_connections; ++j) {
     recentConnectionsActs_[j]->setVisible(false);
   }
 

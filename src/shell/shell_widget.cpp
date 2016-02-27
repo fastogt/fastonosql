@@ -55,7 +55,7 @@ namespace {
 namespace fastonosql {
 
 BaseShellWidget::BaseShellWidget(IServerSPtr server, const QString& filePath, QWidget* parent)
-  : QWidget(parent), server_(server), filePath_(filePath), input_(NULL) {
+  : QWidget(parent), server_(server), filePath_(filePath), input_(nullptr) {
   VERIFY(connect(server_.get(), &IServer::startedConnect,
                  this, &BaseShellWidget::startConnect));
   VERIFY(connect(server_.get(), &IServer::finishedConnect,

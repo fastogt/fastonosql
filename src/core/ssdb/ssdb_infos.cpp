@@ -97,20 +97,20 @@ SsdbServerInfo::Common::Common(const std::string& common_text) {
 common::Value* SsdbServerInfo::Common::valueByIndex(unsigned char index) const {
   switch (index) {
   case 0:
-      return new common::StringValue(version);
+    return new common::StringValue(version);
   case 1:
-      return new common::FundamentalValue(links);
+    return new common::FundamentalValue(links);
   case 2:
-      return new common::FundamentalValue(total_calls);
+    return new common::FundamentalValue(total_calls);
   case 3:
-      return new common::FundamentalValue(dbsize);
+    return new common::FundamentalValue(dbsize);
   case 4:
-      return new common::StringValue(binlogs);
+    return new common::StringValue(binlogs);
   default:
-      NOTREACHED();
-      break;
+    NOTREACHED();
+    break;
   }
-  return NULL;
+  return nullptr;
 }
 
 SsdbServerInfo::SsdbServerInfo()
@@ -130,7 +130,7 @@ common::Value* SsdbServerInfo::valueByIndexes(unsigned char property, unsigned c
     break;
   }
 
-  return NULL;
+  return nullptr;
 }
 
 std::ostream& operator<<(std::ostream& out, const SsdbServerInfo::Common& value) {
@@ -147,7 +147,7 @@ std::ostream& operator<<(std::ostream& out, const SsdbServerInfo& value) {
 
 SsdbServerInfo* makeSsdbServerInfo(const std::string &content) {
   if (content.empty()) {
-    return NULL;
+    return nullptr;
   }
 
   SsdbServerInfo* result = new SsdbServerInfo;

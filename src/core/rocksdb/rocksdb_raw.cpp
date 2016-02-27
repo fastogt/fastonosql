@@ -38,9 +38,12 @@ namespace rocksdb {
 namespace {
 
 common::Error createConnection(const rocksdb::rocksdbConfig& config, ::rocksdb::DB** context) {
-  DCHECK(*context == NULL);
+  if (!context) {
+    return common::make_error_value("Invalid input argument", common::ErrorValue::E_ERROR);
+  }
 
-  ::rocksdb::DB* lcontext = NULL;
+  DCHECK(*context == nullptr);
+  ::rocksdb::DB* lcontext = nullptr;
   auto st = ::rocksdb::DB::Open(config.options, config.dbname, &lcontext);
   if (!st.ok()) {
     char buff[1024] = {0};
@@ -64,7 +67,7 @@ common::Error createConnection(RocksdbConnectionSettings* settings, ::rocksdb::D
 }  // namesapce
 
 common::Error testConnection(RocksdbConnectionSettings* settings) {
-  ::rocksdb::DB* ldb = NULL;
+  ::rocksdb::DB* ldb = nullptr;
   common::Error er = createConnection(settings, &ldb);
   if (er && er->isError()) {
     return er;
@@ -75,7 +78,7 @@ common::Error testConnection(RocksdbConnectionSettings* settings) {
 }
 
 RocksdbRaw::RocksdbRaw()
-  : CommandHandler(rocksdbCommands), rocksdb_(NULL) {
+  : CommandHandler(rocksdbCommands), rocksdb_(nullptr) {
 }
 
 const char* RocksdbRaw::versionApi() {
@@ -95,7 +98,7 @@ common::Error RocksdbRaw::connect() {
     return common::Error();
   }
 
-  ::rocksdb::DB* context = NULL;
+  ::rocksdb::DB* context = nullptr;
   common::Error er = createConnection(config_, &context);
   if (er && er->isError()) {
     return er;
@@ -110,8 +113,7 @@ common::Error RocksdbRaw::disconnect() {
     return common::Error();
   }
 
-  delete rocksdb_;
-  rocksdb_ = NULL;
+  destroy(&rocksdb_);
   return common::Error();
 }
 
@@ -179,8 +181,7 @@ common::Error RocksdbRaw::dbsize(size_t& size) {
 }
 
 RocksdbRaw::~RocksdbRaw() {
-  delete rocksdb_;
-  rocksdb_ = NULL;
+  destroy(&rocksdb_);
 }
 
 std::string RocksdbRaw::currentDbName() const {
@@ -285,7 +286,7 @@ common::Error RocksdbRaw::help(int argc, char** argv) {
 common::Error info(CommandHandler* handler, int argc, char** argv, FastoObject* out) {
   RocksdbRaw* rocks = static_cast<RocksdbRaw*>(handler);
   RocksdbServerInfo::Stats statsout;
-  common::Error er = rocks->info(argc == 1 ? argv[0] : NULL, statsout);
+  common::Error er = rocks->info(argc == 1 ? argv[0] : nullptr, statsout);
   if (!er) {
     common::StringValue *val = common::Value::createStringValue(RocksdbServerInfo(statsout).toString());
     FastoObject* child = new FastoObject(out, val, rocks->config_.delimiter);

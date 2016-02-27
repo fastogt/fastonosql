@@ -35,7 +35,7 @@ class FastoObject
   common::Value::Type type() const;
   virtual std::string toString() const;
 
-  static FastoObject* createRoot(const std::string& text, IFastoObjectObserver* observer = NULL);
+  static FastoObject* createRoot(const std::string& text, IFastoObjectObserver* observer = nullptr);
 
   child_container_type childrens() const;
   void addChildren(FastoObject* child);

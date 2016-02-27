@@ -272,7 +272,7 @@ common::Value* RedisServerInfo::Server::valueByIndex(unsigned char index) const 
     NOTREACHED();
     break;
   }
-  return NULL;
+  return nullptr;
 }
 
 RedisServerInfo::Clients::Clients()
@@ -318,7 +318,7 @@ common::Value* RedisServerInfo::Clients::valueByIndex(unsigned char index) const
       NOTREACHED();
       break;
   }
-  return NULL;
+  return nullptr;
 }
 
 RedisServerInfo::Memory::Memory()
@@ -380,7 +380,7 @@ common::Value* RedisServerInfo::Memory::valueByIndex(unsigned char index) const 
       NOTREACHED();
     break;
   }
-  return NULL;
+  return nullptr;
 }
 
 RedisServerInfo::Persistence::Persistence()
@@ -474,7 +474,7 @@ common::Value* RedisServerInfo::Persistence::valueByIndex(unsigned char index) c
       NOTREACHED();
       break;
   }
-  return NULL;
+  return nullptr;
 }
 
 RedisServerInfo::Stats::Stats()
@@ -568,7 +568,7 @@ common::Value* RedisServerInfo::Stats::valueByIndex(unsigned char index) const {
       NOTREACHED();
       break;
   }
-  return NULL;
+  return nullptr;
 }
 
 RedisServerInfo::Replication::Replication()
@@ -631,7 +631,7 @@ common::Value* RedisServerInfo::Replication::valueByIndex(unsigned char index) c
       NOTREACHED();
       break;
   }
-  return NULL;
+  return nullptr;
 }
 
 RedisServerInfo::Cpu::Cpu()
@@ -675,11 +675,11 @@ common::Value* RedisServerInfo::Cpu::valueByIndex(unsigned char index) const {
       NOTREACHED();
       break;
   }
-  return NULL;
+  return nullptr;
 }
 
 common::Value* RedisServerInfo::Keyspace::valueByIndex(unsigned char index) const {
-  return NULL;
+  return nullptr;
 }
 
 RedisServerInfo::RedisServerInfo()
@@ -715,7 +715,7 @@ common::Value* RedisServerInfo::valueByIndexes(unsigned char property, unsigned 
       NOTREACHED();
       break;
   }
-  return NULL;
+  return nullptr;
 }
 
 std::ostream& operator<<(std::ostream& out, const RedisServerInfo::Server& value) {
@@ -824,7 +824,7 @@ std::ostream& operator<<(std::ostream& out, const RedisServerInfo& value) {
 
 RedisServerInfo* makeRedisServerInfo(const std::string &content) {
   if (content.empty()) {
-    return NULL;
+    return nullptr;
   }
 
   RedisServerInfo* result = new RedisServerInfo;
@@ -887,7 +887,7 @@ RedisServerInfo* makeRedisServerInfo(FastoObject* root) {
 
 ServerDiscoveryInfo* makeOwnRedisDiscoveryInfo(const std::string& text) {
   if (text.empty()) {
-    return NULL;
+    return nullptr;
   }
 
   size_t pos = 0;
@@ -937,7 +937,7 @@ ServerDiscoveryInfo* makeOwnRedisDiscoveryInfo(const std::string& text) {
     start = pos + 1;
   }
 
-  return NULL;
+  return nullptr;
 }
 
 ServerDiscoveryInfo* makeOwnRedisDiscoveryInfo(FastoObject* root) {

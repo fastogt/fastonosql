@@ -253,7 +253,7 @@ common::Value* CreateDbKeyDialog::getItem() const {
   common::Value::Type t = (common::Value::Type)qvariant_cast<unsigned char>(var);
   if (t == common::Value::TYPE_ARRAY) {
     if (valueListEdit_->count() == 0) {
-      return NULL;
+      return nullptr;
     }
     common::ArrayValue* ar = common::Value::createArrayValue();
     for (size_t i = 0; i < valueListEdit_->count(); ++i) {
@@ -264,7 +264,7 @@ common::Value* CreateDbKeyDialog::getItem() const {
     return ar;
   } else if (t == common::Value::TYPE_SET) {
     if (valueListEdit_->count() == 0) {
-      return NULL;
+      return nullptr;
     }
     common::SetValue* ar = common::Value::createSetValue();
     for (size_t i = 0; i < valueListEdit_->count(); ++i) {
@@ -275,7 +275,7 @@ common::Value* CreateDbKeyDialog::getItem() const {
     return ar;
   } else if (t == common::Value::TYPE_ZSET) {
     if (valueTableEdit_->rowCount() == 0) {
-      return NULL;
+      return nullptr;
     }
 
     common::ZSetValue* ar = common::Value::createZSetValue();
@@ -291,7 +291,7 @@ common::Value* CreateDbKeyDialog::getItem() const {
     return ar;
   } else if (t == common::Value::TYPE_HASH) {
     if (valueTableEdit_->rowCount() == 0) {
-      return NULL;
+      return nullptr;
     }
 
     common::HashValue* ar = common::Value::createHashValue();
@@ -308,7 +308,7 @@ common::Value* CreateDbKeyDialog::getItem() const {
   } else {
     QString text = valueEdit_->text();
     if (text.isEmpty()) {
-      return NULL;
+      return nullptr;
     }
 
     return common::Value::createStringValue(common::convertToString(text));

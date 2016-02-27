@@ -223,7 +223,7 @@ void ExplorerTreeView::showContextMenu(const QPoint& point) {
       bool isAuth = server->isAuthenticated();
       bool isRedis = server->type() == REDIS;
 
-      bool isClusterMember = dynamic_cast<ExplorerClusterItem*>(node->parent()) != NULL;
+      bool isClusterMember = dynamic_cast<ExplorerClusterItem*>(node->parent()) != nullptr;
 
       loadDatabaseAction_->setEnabled(isAuth);
       menu.addAction(loadDatabaseAction_);

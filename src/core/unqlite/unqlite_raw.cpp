@@ -27,7 +27,7 @@
 namespace {
 
 std::string getUnqliteError(unqlite* context) {
-  const char *zErr = NULL;
+  const char* zErr = nullptr;
   int iLen = 0;
   unqlite_config(context, UNQLITE_CONFIG_ERR_LOG, &zErr, &iLen);
   return std::string(zErr, iLen);
@@ -45,9 +45,12 @@ namespace fastonosql {
 namespace unqlite {
 namespace {
 common::Error createConnection(const unqliteConfig& config, struct unqlite** context) {
-  DCHECK(*context == NULL);
+  if (!context) {
+    return common::make_error_value("Invalid input argument", common::ErrorValue::E_ERROR);
+  }
 
-  struct unqlite* lcontext = NULL;
+  DCHECK(*context == nullptr);
+  struct unqlite* lcontext = nullptr;
   const char* dbname = common::utils::c_strornull(config.dbname);
   int st = unqlite_open(&lcontext, dbname, config.create_if_missing ?
                           UNQLITE_OPEN_CREATE : UNQLITE_OPEN_READWRITE);
@@ -73,7 +76,7 @@ common::Error createConnection(UnqliteConnectionSettings* settings, struct unqli
 }  // namespace
 
 common::Error testConnection(UnqliteConnectionSettings *settings) {
-  struct unqlite* ldb = NULL;
+  struct unqlite* ldb = nullptr;
   common::Error er = createConnection(settings, &ldb);
   if (er && er->isError()) {
     return er;
@@ -85,7 +88,7 @@ common::Error testConnection(UnqliteConnectionSettings *settings) {
 }
 
 UnqliteRaw::UnqliteRaw()
-  : CommandHandler(unqliteCommands), unqlite_(NULL) {
+  : CommandHandler(unqliteCommands), unqlite_(nullptr) {
 }
 
 bool UnqliteRaw::isConnected() const {
@@ -101,7 +104,7 @@ common::Error UnqliteRaw::connect() {
     return common::Error();
   }
 
-  struct unqlite* context = NULL;
+  struct unqlite* context = nullptr;
   common::Error er = createConnection(config_, &context);
   if (er && er->isError()) {
     return er;
@@ -117,7 +120,7 @@ common::Error UnqliteRaw::disconnect() {
   }
 
   unqlite_close(unqlite_);
-  unqlite_ = NULL;
+  unqlite_ = nullptr;
   return common::Error();
 }
 
@@ -167,7 +170,7 @@ UnqliteRaw::~UnqliteRaw() {
     int rc = unqlite_close(unqlite_);
     DCHECK(rc == UNQLITE_OK);
   }
-  unqlite_ = NULL;
+  unqlite_ = nullptr;
 }
 
 const char* UnqliteRaw::versionApi() {
@@ -298,7 +301,7 @@ common::Error keys(CommandHandler* handler, int argc, char** argv, FastoObject* 
 common::Error info(CommandHandler* handler, int argc, char** argv, FastoObject* out) {
   UnqliteRaw* unq = static_cast<UnqliteRaw*>(handler);
   UnqliteServerInfo::Stats statsout;
-  common::Error er = unq->info(argc == 1 ? argv[0] : NULL, &statsout);
+  common::Error er = unq->info(argc == 1 ? argv[0] : nullptr, &statsout);
   if (!er) {
     UnqliteServerInfo uinf(statsout);
     common::StringValue *val = common::Value::createStringValue(uinf.toString());

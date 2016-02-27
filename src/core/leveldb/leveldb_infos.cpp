@@ -109,7 +109,7 @@ common::Value* LeveldbServerInfo::Stats::valueByIndex(unsigned char index) const
     NOTREACHED();
     break;
   }
-  return NULL;
+  return nullptr;
 }
 
 LeveldbServerInfo::LeveldbServerInfo()
@@ -129,7 +129,7 @@ common::Value* LeveldbServerInfo::valueByIndexes(unsigned char property,
     NOTREACHED();
     break;
   }
-  return NULL;
+  return nullptr;
 }
 
 std::ostream& operator<<(std::ostream& out, const LeveldbServerInfo::Stats& value) {
@@ -146,7 +146,7 @@ std::ostream& operator<<(std::ostream& out, const LeveldbServerInfo& value) {
 
 LeveldbServerInfo* makeLeveldbServerInfo(const std::string &content) {
   if (content.empty()) {
-    return NULL;
+    return nullptr;
   }
 
   LeveldbServerInfo* result = new LeveldbServerInfo;

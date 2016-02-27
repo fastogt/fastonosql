@@ -26,7 +26,7 @@
 namespace fastonosql {
 
 class IServerBase
-      : public QObject {
+  : public QObject {
   Q_OBJECT
  public:
   virtual QString name() const = 0;

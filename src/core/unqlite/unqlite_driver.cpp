@@ -140,7 +140,7 @@ common::Error UnqliteDriver::executeImpl(int argc, char **argv, FastoObject* out
 common::Error UnqliteDriver::serverInfo(ServerInfo **info) {
   LOG_COMMAND(Command(INFO_REQUEST, common::Value::C_INNER));
   UnqliteServerInfo::Stats cm;
-  common::Error err = impl_->info(NULL, &cm);
+  common::Error err = impl_->info(nullptr, &cm);
   if (!err) {
     *info = new UnqliteServerInfo(cm);
   }
@@ -151,7 +151,7 @@ common::Error UnqliteDriver::serverInfo(ServerInfo **info) {
 common::Error UnqliteDriver::serverDiscoveryInfo(ServerInfo **sinfo,
                                                  ServerDiscoveryInfo **dinfo,
                                                  IDataBaseInfo** dbinfo) {
-  ServerInfo *lsinfo = NULL;
+  ServerInfo *lsinfo = nullptr;
   common::Error err = serverInfo(&lsinfo);
   if (err && err->isError()) {
     return err;
@@ -169,7 +169,7 @@ common::Error UnqliteDriver::serverDiscoveryInfo(ServerInfo **sinfo,
     }
   }
 
-  IDataBaseInfo* ldbinfo = NULL;
+  IDataBaseInfo* ldbinfo = nullptr;
   err = currentDataBaseInfo(&ldbinfo);
   if (err && err->isError()) {
     delete lsinfo;
@@ -364,7 +364,7 @@ void UnqliteDriver::handleLoadServerInfoEvent(events::ServerInfoRequestEvent* ev
   notifyProgress(sender, 50);
   LOG_COMMAND(Command(INFO_REQUEST, common::Value::C_INNER));
   UnqliteServerInfo::Stats cm;
-  common::Error err = impl_->info(NULL, &cm);
+  common::Error err = impl_->info(nullptr, &cm);
   if (err) {
     res.setErrorInfo(err);
   } else {

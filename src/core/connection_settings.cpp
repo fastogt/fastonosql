@@ -181,15 +181,15 @@ IConnectionSettingsBase* IConnectionSettingsBase::createFromType(connectionTypes
   }
 #endif
   NOTREACHED();
-  return NULL;
+  return nullptr;
 }
 
 IConnectionSettingsBase* IConnectionSettingsBase::fromString(const std::string &val) {
   if (val.empty()) {
-    return NULL;
+    return nullptr;
   }
 
-  IConnectionSettingsBase *result = NULL;
+  IConnectionSettingsBase *result = nullptr;
 
   size_t len = val.size();
 
@@ -203,7 +203,7 @@ IConnectionSettingsBase* IConnectionSettingsBase::fromString(const std::string &
         int crT = elText[0] - 48;
         result = createFromType((connectionTypes)crT, std::string());
         if (!result) {
-          return NULL;
+          return nullptr;
         }
       } else if (commaCount == 1) {
         result->setConnectionNameAndUpdateHash(elText);
@@ -263,7 +263,7 @@ std::string IConnectionSettingsRemote::fullAddress() const {
 IConnectionSettingsRemote* IConnectionSettingsRemote::createFromType(connectionTypes type,
                                                                      const std::string& conName,
                                                                      const common::net::hostAndPort& host) {
-  IConnectionSettingsRemote* remote = NULL;
+  IConnectionSettingsRemote* remote = nullptr;
 #ifdef BUILD_WITH_REDIS
   if (type == REDIS) {
     remote = new redis::RedisConnectionSettings(conName);
@@ -281,7 +281,7 @@ IConnectionSettingsRemote* IConnectionSettingsRemote::createFromType(connectionT
 #endif
   if (!remote) {
     NOTREACHED();
-    return NULL;
+    return nullptr;
   }
 
   remote->setHost(host);
@@ -307,7 +307,7 @@ void IConnectionSettingsRemote::setSshInfo(const SSHInfo& info) {
 
 const char* useHelpText(connectionTypes type) {
   if (type == DBUNKNOWN) {
-    return NULL;
+    return nullptr;
   }
   if (type == REDIS) {
     return "<b>Usage: [OPTIONS] [cmd [arg [arg ...]]]</b><br/>"
@@ -377,7 +377,7 @@ const char* useHelpText(connectionTypes type) {
   }
 
   NOTREACHED();
-  return NULL;
+  return nullptr;
 }
 
 std::string defaultCommandLine(connectionTypes type) {
@@ -464,16 +464,16 @@ IClusterSettingsBase* IClusterSettingsBase::createFromType(connectionTypes type,
 #endif
 
   NOTREACHED();
-  return NULL;
+  return nullptr;
 }
 
 IClusterSettingsBase* IClusterSettingsBase::fromString(const std::string& val) {
   if (val.empty()) {
-    return NULL;
+    return nullptr;
   }
 
-  IClusterSettingsBase *result = NULL;
-  const size_t len = val.size();
+  IClusterSettingsBase *result = nullptr;
+  size_t len = val.size();
 
   uint8_t commaCount = 0;
   std::string elText;
@@ -485,7 +485,7 @@ IClusterSettingsBase* IClusterSettingsBase::fromString(const std::string& val) {
         int crT = elText[0] - 48;
         result = createFromType((connectionTypes)crT);
         if (!result) {
-          return NULL;
+          return nullptr;
         }
       } else if (commaCount == 1) {
         result->setConnectionName(elText);

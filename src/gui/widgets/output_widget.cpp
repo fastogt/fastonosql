@@ -108,7 +108,7 @@ OutputWidget::OutputWidget(IServerSPtr server, QWidget* parent)
 
 void OutputWidget::rootCreate(const events_info::CommandRootCreatedInfo& res) {
   FastoObject* rootObj = res.root.get();
-  fastonosql::FastoCommonItem* root = createItem(NULL, std::string(), true, rootObj);
+  fastonosql::FastoCommonItem* root = createItem(nullptr, std::string(), true, rootObj);
   commonModel_->setRoot(root);
 }
 
@@ -156,15 +156,15 @@ void OutputWidget::addChild(FastoObject* child) {
       return;
     }
 
-    fastonosql::FastoCommonItem* par = NULL;
+    fastonosql::FastoCommonItem* par = nullptr;
     if (!parent.isValid()) {
       par = static_cast<fastonosql::FastoCommonItem*>(commonModel_->root());
     } else {
       par = common::utils_qt::item<fastonosql::FastoCommonItem*>(parent);
     }
 
-    DCHECK(par);
     if (!par) {
+      DNOTREACHED();
       return;
     }
 
@@ -182,15 +182,15 @@ void OutputWidget::addChild(FastoObject* child) {
         return;
       }
 
-      fastonosql::FastoCommonItem* par = NULL;
+      fastonosql::FastoCommonItem* par = nullptr;
       if (!parent.isValid()) {
         par = static_cast<fastonosql::FastoCommonItem*>(commonModel_->root());
       } else {
         par = common::utils_qt::item<fastonosql::FastoCommonItem*>(parent);
       }
 
-      DCHECK(par);
       if (!par) {
+        DNOTREACHED();
         return;
       }
 

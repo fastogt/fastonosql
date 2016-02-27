@@ -41,9 +41,12 @@ namespace leveldb {
 namespace {
 
 common::Error createConnection(const leveldbConfig& config, ::leveldb::DB** context) {
-  DCHECK(*context == NULL);
+  if (!context) {
+    return common::make_error_value("Invalid input argument", common::ErrorValue::E_ERROR);
+  }
 
-  ::leveldb::DB* lcontext = NULL;
+  DCHECK(*context == nullptr);
+  ::leveldb::DB* lcontext = nullptr;
   auto st = ::leveldb::DB::Open(config.options, config.dbname, &lcontext);
   if (!st.ok()) {
     char buff[1024] = {0};
@@ -67,7 +70,7 @@ common::Error createConnection(LeveldbConnectionSettings* settings, ::leveldb::D
 }  // namespace
 
 common::Error testConnection(LeveldbConnectionSettings* settings) {
-  ::leveldb::DB* ldb = NULL;
+  ::leveldb::DB* ldb = nullptr;
   common::Error er = createConnection(settings, &ldb);
   if (er && er->isError()) {
     return er;
@@ -78,12 +81,11 @@ common::Error testConnection(LeveldbConnectionSettings* settings) {
 }
 
 LeveldbRaw::LeveldbRaw()
-  : CommandHandler(leveldbCommands), leveldb_(NULL) {
+  : CommandHandler(leveldbCommands), leveldb_(nullptr) {
 }
 
 LeveldbRaw::~LeveldbRaw() {
-  delete leveldb_;
-  leveldb_ = NULL;
+  destroy(&leveldb_);
 }
 
 const char* LeveldbRaw::versionApi() {
@@ -105,7 +107,7 @@ common::Error LeveldbRaw::connect() {
     return common::Error();
   }
 
-  ::leveldb::DB* context = NULL;
+  ::leveldb::DB* context = nullptr;
   common::Error er = createConnection(config_, &context);
   if (er && er->isError()) {
     return er;
@@ -120,8 +122,7 @@ common::Error LeveldbRaw::disconnect() {
     return common::Error();
   }
 
-  delete leveldb_;
-  leveldb_ = NULL;
+  destroy(&leveldb_);
   return common::Error();
 }
 
@@ -269,7 +270,7 @@ common::Error info(CommandHandler* handler, int argc, char** argv, FastoObject* 
   LeveldbRaw* level = static_cast<LeveldbRaw*>(handler);
 
   LeveldbServerInfo::Stats statsout;
-  common::Error er = level->info(argc == 1 ? argv[0] : NULL, statsout);
+  common::Error er = level->info(argc == 1 ? argv[0] : nullptr, statsout);
   if (!er) {
     LeveldbServerInfo linf(statsout);
     common::StringValue *val = common::Value::createStringValue(linf.toString());

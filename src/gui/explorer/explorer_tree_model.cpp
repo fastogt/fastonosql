@@ -495,9 +495,9 @@ void ExplorerTreeModel::removeKey(IServer* server, IDataBaseInfoSPtr db, const N
 
 ExplorerClusterItem* ExplorerTreeModel::findClusterItem(IClusterSPtr cl) {
   fasto::qt::gui::TreeItem *parent = dynamic_cast<fasto::qt::gui::TreeItem*>(root_);
-  DCHECK(parent);
   if (!parent) {
-    return NULL;
+    DNOTREACHED();
+    return nullptr;
   }
 
   for (size_t i = 0; i < parent->childrenCount() ; ++i) {
@@ -506,14 +506,14 @@ ExplorerClusterItem* ExplorerTreeModel::findClusterItem(IClusterSPtr cl) {
       return item;
     }
   }
-  return NULL;
+  return nullptr;
 }
 
 ExplorerServerItem* ExplorerTreeModel::findServerItem(IServer* server) const {
   fasto::qt::gui::TreeItem *parent = dynamic_cast<fasto::qt::gui::TreeItem*>(root_);
   DCHECK(parent);
   if (!parent) {
-    return NULL;
+    return nullptr;
   }
 
   for (size_t i = 0; i < parent->childrenCount(); ++i) {
@@ -536,7 +536,7 @@ ExplorerServerItem* ExplorerTreeModel::findServerItem(IServer* server) const {
        }
     }
   }
-  return NULL;
+  return nullptr;
 }
 
 ExplorerDatabaseItem *ExplorerTreeModel::findDatabaseItem(ExplorerServerItem* server,
@@ -556,7 +556,7 @@ ExplorerDatabaseItem *ExplorerTreeModel::findDatabaseItem(ExplorerServerItem* se
     }
   }
 
-  return NULL;
+  return nullptr;
 }
 
 ExplorerKeyItem *ExplorerTreeModel::findKeyItem(ExplorerDatabaseItem* db,
@@ -575,7 +575,7 @@ ExplorerKeyItem *ExplorerTreeModel::findKeyItem(ExplorerDatabaseItem* db,
     }
   }
 
-  return NULL;
+  return nullptr;
 }
 
 }  // namespace fastonosql

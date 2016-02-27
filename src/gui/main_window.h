@@ -43,7 +43,7 @@ class MainWindow
   enum {
     min_height = 480,
     min_width = 640,
-    MaxRecentConnections = 5
+    max_recent_connections = 5
   };
 
   MainWindow();
@@ -111,7 +111,7 @@ class MainWindow
   QAction* logsAction_;
   QAction* recentConnections_;
   QAction* clearMenu_;
-  QAction* recentConnectionsActs_[MaxRecentConnections];
+  QAction* recentConnectionsActs_[max_recent_connections];
 #ifdef BUILD_WITH_SOCIAL_BUTTONS
   QAction* homePageAction_;
   QAction* facebookAction_;

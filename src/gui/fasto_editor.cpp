@@ -40,7 +40,7 @@
 namespace fastonosql {
 
 FastoEditor::FastoEditor(QWidget* parent)
-  : QWidget(parent), scin_(NULL) {
+  : QWidget(parent), scin_(nullptr) {
   QFont font = GuiFactory::instance().font();
   setFont(font);
   scin_ = new fasto::qt::gui::FastoScintilla;
@@ -224,7 +224,7 @@ void FastoEditor::findElement(bool forward) {
 }
 
 FastoEditorOutput::FastoEditorOutput(const QString &delemitr, QWidget *parent)
-  : QWidget(parent), model_(NULL), view_method_(JSON), delemitr_(delemitr) {
+  : QWidget(parent), model_(nullptr), view_method_(JSON), delemitr_(delemitr) {
   QFont font = GuiFactory::instance().font();
   setFont(font);
 

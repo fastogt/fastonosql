@@ -24,21 +24,21 @@
 
 namespace fastonosql {
 
-  enum connectionTypes {
-    DBUNKNOWN = 0,
-    REDIS,
-    MEMCACHED,
-    SSDB,
-    LEVELDB,
-    ROCKSDB,
-    UNQLITE,
-    LMDB
-  };
+enum connectionTypes {
+  DBUNKNOWN = 0,
+  REDIS,
+  MEMCACHED,
+  SSDB,
+  LEVELDB,
+  ROCKSDB,
+  UNQLITE,
+  LMDB
+};
 
-  enum serverTypes {
-    MASTER,
-    SLAVE
-  };
+enum serverTypes {
+  MASTER,
+  SLAVE
+};
 
 static const std::string connnectionType[] = {
   "Unknown",

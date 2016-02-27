@@ -285,12 +285,13 @@ template<typename Command>
 FastoObjectCommand* createCommand(FastoObject* parent, const std::string& input,
                                   common::Value::CommandLoggingType ct) {
   if (input.empty()) {
-    return NULL;
+    DNOTREACHED();
+    return nullptr;
   }
 
-  DCHECK(parent);
   if (!parent) {
-    return NULL;
+    DNOTREACHED();
+    return nullptr;
   }
 
   common::CommandValue* cmd = common::Value::createCommand(input, ct);

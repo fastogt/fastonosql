@@ -29,9 +29,12 @@ namespace fastonosql {
 namespace memcached {
 namespace {
 common::Error createConnection(const memcachedConfig& config, struct memcached_st** context) {
-  DCHECK(*context == NULL);
-  memcached_st* memc = ::memcached(NULL, 0);
+  if (!context) {
+    return common::make_error_value("Invalid input argument", common::ErrorValue::E_ERROR);
+  }
 
+  DCHECK(*context == nullptr);
+  memcached_st* memc = ::memcached(NULL, 0);
   if (!memc) {
     return common::make_error_value("Init error", common::ErrorValue::E_ERROR);
   }
@@ -78,7 +81,7 @@ common::Error createConnection(const memcachedConfig& config, struct memcached_s
 
 common::Error createConnection(MemcachedConnectionSettings* settings, struct memcached_st** context) {
   if (!settings) {
-      return common::make_error_value("Invalid input argument", common::ErrorValue::E_ERROR);
+    return common::make_error_value("Invalid input argument", common::ErrorValue::E_ERROR);
   }
 
   memcachedConfig config = settings->info();
@@ -120,7 +123,7 @@ common::Error testConnection(MemcachedConnectionSettings* settings) {
 }
 
 MemcachedRaw::MemcachedRaw()
-  : CommandHandler(memcachedCommands), memc_(NULL) {
+  : CommandHandler(memcachedCommands), memc_(nullptr) {
 }
 
 const char* MemcachedRaw::versionApi() {
@@ -163,7 +166,7 @@ common::Error MemcachedRaw::disconnect() {
   if (memc_) {
     memcached_free(memc_);
   }
-  memc_ = NULL;
+  memc_ = nullptr;
   return common::Error();
 }
 
@@ -214,16 +217,19 @@ MemcachedRaw::~MemcachedRaw() {
   if (memc_) {
     memcached_free(memc_);
   }
-  memc_ = NULL;
+  memc_ = nullptr;
 }
 
-common::Error MemcachedRaw::get(const std::string& key, std::string& ret_val) {
-  ret_val.clear();
+common::Error MemcachedRaw::get(const std::string& key, std::string* ret_val) {
+  if (!ret_val) {
+    return common::make_error_value("Invalid input argument", common::ErrorValue::E_ERROR);
+  }
+
   uint32_t flags = 0;
   memcached_return error;
   size_t value_length = 0;
 
-  char *value = memcached_get(memc_, key.c_str(), key.length(), &value_length, &flags, &error);
+  char* value = memcached_get(memc_, key.c_str(), key.length(), &value_length, &flags, &error);
   if (error != MEMCACHED_SUCCESS) {
     char buff[1024] = {0};
     common::SNPrintf(buff, sizeof(buff), "Get function error: %s",
@@ -231,12 +237,9 @@ common::Error MemcachedRaw::get(const std::string& key, std::string& ret_val) {
     return common::make_error_value(buff, common::ErrorValue::E_ERROR);
   }
 
-  if (value != NULL) {
-    ret_val.reserve(value_length +1);  // Always provide null
-    ret_val.assign(value, value + value_length +1);
-    ret_val.resize(value_length);
-    free(value);
-  }
+  CHECK(value);
+  *ret_val = std::string(value, value + value_length);
+  free(value);
   return common::Error();
 }
 
@@ -392,7 +395,7 @@ common::Error keys(CommandHandler* handler, int argc, char** argv, FastoObject* 
 
 common::Error stats(CommandHandler* handler, int argc, char** argv, FastoObject* out) {
   MemcachedRaw* mem = static_cast<MemcachedRaw*>(handler);
-  const char* args = argc == 1 ? argv[0] : NULL;
+  const char* args = argc == 1 ? argv[0] : nullptr;
   if (args && strcasecmp(args, "items") == 0) {
     return mem->keys(args);
   }
@@ -412,7 +415,7 @@ common::Error stats(CommandHandler* handler, int argc, char** argv, FastoObject*
 common::Error get(CommandHandler* handler, int argc, char** argv, FastoObject* out) {
   MemcachedRaw* mem = static_cast<MemcachedRaw*>(handler);
   std::string ret;
-  common::Error er = mem->get(argv[0], ret);
+  common::Error er = mem->get(argv[0], &ret);
   if (!er) {
     common::StringValue *val = common::Value::createStringValue(ret);
     FastoObject* child = new FastoObject(out, val, mem->config_.delimiter);

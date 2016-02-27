@@ -41,7 +41,7 @@ class ClusterDialog
   Q_OBJECT
  public:
   typedef std::vector<IConnectionSettingsBaseSPtr> cluster_connection_type;
-  explicit ClusterDialog(QWidget* parent, IClusterSettingsBase* connection = NULL);  // get ownerships connection
+  explicit ClusterDialog(QWidget* parent, IClusterSettingsBase* connection = nullptr);  // get ownerships connection
   IClusterSettingsBaseSPtr connection() const;
 
  public Q_SLOTS:

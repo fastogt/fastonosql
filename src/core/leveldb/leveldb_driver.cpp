@@ -142,7 +142,7 @@ common::Error LeveldbDriver::executeImpl(int argc, char **argv, FastoObject* out
 common::Error LeveldbDriver::serverInfo(ServerInfo **info) {
   LOG_COMMAND(Command(INFO_REQUEST, common::Value::C_INNER));
   LeveldbServerInfo::Stats cm;
-  common::Error err = impl_->info(NULL, cm);
+  common::Error err = impl_->info(nullptr, cm);
   if (!err) {
     *info = new LeveldbServerInfo(cm);
   }
@@ -152,7 +152,7 @@ common::Error LeveldbDriver::serverInfo(ServerInfo **info) {
 
 common::Error LeveldbDriver::serverDiscoveryInfo(ServerInfo **sinfo, ServerDiscoveryInfo **dinfo,
                                                  IDataBaseInfo** dbinfo) {
-  ServerInfo *lsinfo = NULL;
+  ServerInfo *lsinfo = nullptr;
   common::Error er = serverInfo(&lsinfo);
   if (er && er->isError()) {
     return er;
@@ -170,7 +170,7 @@ common::Error LeveldbDriver::serverDiscoveryInfo(ServerInfo **sinfo, ServerDisco
     }
   }
 
-  IDataBaseInfo* ldbinfo = NULL;
+  IDataBaseInfo* ldbinfo = nullptr;
   er = currentDataBaseInfo(&ldbinfo);
   if (er && er->isError()) {
     delete lsinfo;
@@ -365,7 +365,7 @@ void LeveldbDriver::handleLoadServerInfoEvent(events::ServerInfoRequestEvent* ev
   notifyProgress(sender, 50);
   LOG_COMMAND(Command(INFO_REQUEST, common::Value::C_INNER));
   LeveldbServerInfo::Stats cm;
-  common::Error err = impl_->info(NULL, cm);
+  common::Error err = impl_->info(nullptr, cm);
   if (err) {
     res.setErrorInfo(err);
   } else {

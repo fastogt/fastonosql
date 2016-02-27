@@ -108,7 +108,7 @@ common::Value* RocksdbServerInfo::Stats::valueByIndex(unsigned char index) const
       NOTREACHED();
       break;
   }
-  return NULL;
+  return nullptr;
 }
 
 RocksdbServerInfo::RocksdbServerInfo()
@@ -128,7 +128,7 @@ common::Value* RocksdbServerInfo::valueByIndexes(unsigned char property,
       NOTREACHED();
       break;
   }
-  return NULL;
+  return nullptr;
 }
 
 std::ostream& operator<<(std::ostream& out, const RocksdbServerInfo::Stats& value) {
@@ -145,7 +145,7 @@ std::ostream& operator<<(std::ostream& out, const RocksdbServerInfo& value) {
 
 RocksdbServerInfo* makeRocksdbServerInfo(const std::string &content) {
   if (content.empty()) {
-    return NULL;
+    return nullptr;
   }
 
   RocksdbServerInfo* result = new RocksdbServerInfo;

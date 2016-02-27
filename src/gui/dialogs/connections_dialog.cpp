@@ -257,7 +257,7 @@ void ConnectionsDialog::edit() {
 }
 
 void ConnectionsDialog::connectionSelectChange() {
-  bool isEnable = selectedConnection() != NULL || selectedCluster() != NULL;
+  bool isEnable = selectedConnection() != nullptr || selectedCluster() != nullptr;
   acButton_->setEnabled(isEnable);
 }
 

@@ -83,7 +83,7 @@ namespace {
 
 RedisCommand* createCommandFast(const std::string& input, common::Value::CommandLoggingType ct) {
   common::CommandValue* cmd = common::Value::createCommand(input, ct);
-  RedisCommand* fs = new RedisCommand(NULL, cmd, "");
+  RedisCommand* fs = new RedisCommand(nullptr, cmd, "");
   return fs;
 }
 
@@ -142,7 +142,7 @@ common::Error RedisDriver::serverInfo(ServerInfo** info) {
       *info = makeRedisServerInfo(ch[0]);
     }
 
-    if (*info == NULL) {
+    if (*info == nullptr) {
       res = common::make_error_value("Invalid " INFO_REQUEST " command output",
                                      common::ErrorValue::E_ERROR);
     }
@@ -153,13 +153,13 @@ common::Error RedisDriver::serverInfo(ServerInfo** info) {
 
 common::Error RedisDriver::serverDiscoveryInfo(ServerInfo** sinfo,
                                                ServerDiscoveryInfo** dinfo, IDataBaseInfo** dbinfo) {
-  ServerInfo *lsinfo = NULL;
+  ServerInfo *lsinfo = nullptr;
   common::Error er = serverInfo(&lsinfo);
   if (er && er->isError()) {
     return er;
   }
 
-  IDataBaseInfo* ldbinfo = NULL;
+  IDataBaseInfo* ldbinfo = nullptr;
   er = currentDataBaseInfo(&ldbinfo);
   if (er && er->isError()) {
     delete lsinfo;

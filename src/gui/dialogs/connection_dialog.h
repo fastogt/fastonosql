@@ -38,7 +38,7 @@ class ConnectionDialog
   : public QDialog {
   Q_OBJECT
  public:
-  ConnectionDialog(QWidget* parent, IConnectionSettingsBase* connection = NULL,
+  ConnectionDialog(QWidget* parent, IConnectionSettingsBase* connection = nullptr,
                    const std::vector<connectionTypes>& availibleTypes = std::vector<connectionTypes>());  // get ownerships connection
 
   IConnectionSettingsBaseSPtr connection() const;
