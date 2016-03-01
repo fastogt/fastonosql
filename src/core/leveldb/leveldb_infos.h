@@ -34,7 +34,7 @@ namespace fastonosql {
 namespace leveldb {
 
 class LeveldbServerInfo
-  : public ServerInfo {
+  : public IServerInfo {
  public:
   // Compactions\nLevel  Files Size(MB) Time(sec) Read(MB) Write(MB)\n
   struct Stats

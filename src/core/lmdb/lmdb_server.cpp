@@ -28,6 +28,10 @@ LmdbServer::LmdbServer(IConnectionSettingsBaseSPtr settings)
   : IServer(new LmdbDriver(settings)) {
 }
 
+serverTypes LmdbServer::role() const {
+  return MASTER;
+}
+
 IDatabaseSPtr LmdbServer::createDatabase(IDataBaseInfoSPtr info) {
   return IDatabaseSPtr(new LmdbDatabase(shared_from_this(), info));
 }

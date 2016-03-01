@@ -101,6 +101,10 @@ common::net::hostAndPort RedisDriver::address() const {
   return impl_->config_.host;
 }
 
+std::string RedisDriver::path() const {
+  return impl_->config_.hostsocket;
+}
+
 std::string RedisDriver::outputDelemitr() const {
   return impl_->config_.delimiter;
 }
@@ -131,7 +135,7 @@ common::Error RedisDriver::executeImpl(int argc, char** argv, FastoObject* out) 
   return impl_->execute(argc, argv, out);
 }
 
-common::Error RedisDriver::serverInfo(ServerInfo** info) {
+common::Error RedisDriver::serverInfo(IServerInfo** info) {
   FastoObjectIPtr root = FastoObject::createRoot(INFO_REQUEST);
   FastoObjectCommand* cmd = createCommand<RedisCommand>(root, INFO_REQUEST,
                                                         common::Value::C_INNER);
@@ -151,9 +155,9 @@ common::Error RedisDriver::serverInfo(ServerInfo** info) {
   return res;
 }
 
-common::Error RedisDriver::serverDiscoveryInfo(ServerDiscoveryInfo** dinfo, ServerInfo** sinfo,
+common::Error RedisDriver::serverDiscoveryInfo(ServerDiscoveryInfo** dinfo, IServerInfo** sinfo,
                                                IDataBaseInfo** dbinfo) {
-  ServerInfo *lsinfo = nullptr;
+  IServerInfo *lsinfo = nullptr;
   common::Error er = serverInfo(&lsinfo);
   if (er && er->isError()) {
     return er;
@@ -770,7 +774,7 @@ void RedisDriver::handleLoadServerInfoEvent(events::ServerInfoRequestEvent *ev) 
     FastoObject::child_container_type ch = cmd->childrens();
     if (ch.size()) {
       DCHECK_EQ(ch.size(), 1);
-      ServerInfoSPtr red(makeRedisServerInfo(ch[0]));
+      IServerInfoSPtr red(makeRedisServerInfo(ch[0]));
       res.setInfo(red);
     }
   }
@@ -925,8 +929,8 @@ common::Error RedisDriver::commandChangeTTLImpl(CommandChangeTTL* command,
   return common::Error();
 }
 
-ServerInfoSPtr RedisDriver::makeServerInfoFromString(const std::string& val) {
-  ServerInfoSPtr res(makeRedisServerInfo(val));
+IServerInfoSPtr RedisDriver::makeServerInfoFromString(const std::string& val) {
+  IServerInfoSPtr res(makeRedisServerInfo(val));
   return res;
 }
 

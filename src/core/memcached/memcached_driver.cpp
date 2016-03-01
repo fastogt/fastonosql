@@ -56,6 +56,10 @@ common::net::hostAndPort MemcachedDriver::address() const {
   return impl_->config_.host;
 }
 
+std::string MemcachedDriver::path() const {
+  return std::string();
+}
+
 std::string MemcachedDriver::outputDelemitr() const {
   return impl_->config_.delimiter;
 }
@@ -70,7 +74,7 @@ common::Error MemcachedDriver::executeImpl(int argc, char **argv, FastoObject* o
   return impl_->execute(argc, argv, out);
 }
 
-common::Error MemcachedDriver::serverInfo(ServerInfo **info) {
+common::Error MemcachedDriver::serverInfo(IServerInfo **info) {
   LOG_COMMAND(Command(INFO_REQUEST, common::Value::C_INNER));
   MemcachedServerInfo::Common cm;
   common::Error err = impl_->stats(nullptr, cm);
@@ -81,11 +85,11 @@ common::Error MemcachedDriver::serverInfo(ServerInfo **info) {
   return err;
 }
 
-common::Error MemcachedDriver::serverDiscoveryInfo(ServerDiscoveryInfo** dinfo, ServerInfo **sinfo,
+common::Error MemcachedDriver::serverDiscoveryInfo(ServerDiscoveryInfo** dinfo, IServerInfo **sinfo,
                                                    IDataBaseInfo** dbinfo) {
   UNUSED(dinfo);
 
-  ServerInfo *lsinfo = nullptr;
+  IServerInfo *lsinfo = nullptr;
   common::Error er = serverInfo(&lsinfo);
   if (er && er->isError()) {
     return er;
@@ -292,7 +296,7 @@ void MemcachedDriver::handleLoadServerInfoEvent(events::ServerInfoRequestEvent* 
   if (err) {
     res.setErrorInfo(err);
   } else {
-    ServerInfoSPtr mem(new MemcachedServerInfo(cm));
+    IServerInfoSPtr mem(new MemcachedServerInfo(cm));
     res.setInfo(mem);
   }
   notifyProgress(sender, 75);
@@ -365,8 +369,8 @@ common::Error MemcachedDriver::commandChangeTTLImpl(CommandChangeTTL* command,
 void MemcachedDriver::handleProcessCommandLineArgs(events::ProcessConfigArgsRequestEvent* ev) {
 }
 
-ServerInfoSPtr MemcachedDriver::makeServerInfoFromString(const std::string& val) {
-  ServerInfoSPtr res(makeMemcachedServerInfo(val));
+IServerInfoSPtr MemcachedDriver::makeServerInfoFromString(const std::string& val) {
+  IServerInfoSPtr res(makeMemcachedServerInfo(val));
   return res;
 }
 

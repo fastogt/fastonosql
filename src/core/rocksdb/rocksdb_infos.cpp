@@ -112,11 +112,11 @@ common::Value* RocksdbServerInfo::Stats::valueByIndex(unsigned char index) const
 }
 
 RocksdbServerInfo::RocksdbServerInfo()
-  : ServerInfo(ROCKSDB) {
+  : IServerInfo(ROCKSDB) {
 }
 
 RocksdbServerInfo::RocksdbServerInfo(const Stats &stats)
-  : ServerInfo(ROCKSDB), stats_(stats) {
+  : IServerInfo(ROCKSDB), stats_(stats) {
 }
 
 common::Value* RocksdbServerInfo::valueByIndexes(unsigned char property,

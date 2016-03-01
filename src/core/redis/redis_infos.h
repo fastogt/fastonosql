@@ -131,7 +131,7 @@ class RedisDiscoveryInfo
 };
 
 struct RedisServerInfo
-      : public ServerInfo {
+      : public IServerInfo {
   struct Server
           : FieldByIndex {
       Server();

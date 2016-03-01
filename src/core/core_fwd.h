@@ -18,11 +18,9 @@
 
 #pragma once
 
-#include "core/types.h"
+#include "common/smart_ptr.h"
 
 namespace fastonosql {
-
-typedef common::shared_ptr<IDataBaseInfo> IDataBaseInfoSPtr;
 
 class IDatabase;
 typedef common::shared_ptr<IDatabase> IDatabaseSPtr;

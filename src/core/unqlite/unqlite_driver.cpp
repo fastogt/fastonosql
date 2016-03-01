@@ -122,6 +122,10 @@ common::net::hostAndPort UnqliteDriver::address() const {
   return common::net::hostAndPort();
 }
 
+std::string UnqliteDriver::path() const {
+  return impl_->config_.dbname;
+}
+
 std::string UnqliteDriver::outputDelemitr() const {
   return impl_->config_.delimiter;
 }
@@ -136,7 +140,7 @@ common::Error UnqliteDriver::executeImpl(int argc, char **argv, FastoObject* out
   return impl_->execute(argc, argv, out);
 }
 
-common::Error UnqliteDriver::serverInfo(ServerInfo **info) {
+common::Error UnqliteDriver::serverInfo(IServerInfo **info) {
   LOG_COMMAND(Command(INFO_REQUEST, common::Value::C_INNER));
   UnqliteServerInfo::Stats cm;
   common::Error err = impl_->info(nullptr, &cm);
@@ -147,11 +151,11 @@ common::Error UnqliteDriver::serverInfo(ServerInfo **info) {
   return err;
 }
 
-common::Error UnqliteDriver::serverDiscoveryInfo(ServerDiscoveryInfo **dinfo, ServerInfo **sinfo,
+common::Error UnqliteDriver::serverDiscoveryInfo(ServerDiscoveryInfo **dinfo, IServerInfo **sinfo,
                                                  IDataBaseInfo** dbinfo) {
   UNUSED(dinfo);
 
-  ServerInfo *lsinfo = nullptr;
+  IServerInfo *lsinfo = nullptr;
   common::Error err = serverInfo(&lsinfo);
   if (err && err->isError()) {
     return err;
@@ -360,7 +364,7 @@ void UnqliteDriver::handleLoadServerInfoEvent(events::ServerInfoRequestEvent* ev
   if (err) {
     res.setErrorInfo(err);
   } else {
-    ServerInfoSPtr mem(new UnqliteServerInfo(cm));
+    IServerInfoSPtr mem(new UnqliteServerInfo(cm));
     res.setInfo(mem);
   }
   notifyProgress(sender, 75);
@@ -371,8 +375,8 @@ void UnqliteDriver::handleLoadServerInfoEvent(events::ServerInfoRequestEvent* ev
 void UnqliteDriver::handleProcessCommandLineArgs(events::ProcessConfigArgsRequestEvent* ev) {
 }
 
-ServerInfoSPtr UnqliteDriver::makeServerInfoFromString(const std::string& val) {
-  ServerInfoSPtr res(makeUnqliteServerInfo(val));
+IServerInfoSPtr UnqliteDriver::makeServerInfoFromString(const std::string& val) {
+  IServerInfoSPtr res(makeUnqliteServerInfo(val));
   return res;
 }
 

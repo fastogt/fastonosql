@@ -683,13 +683,13 @@ common::Value* RedisServerInfo::Keyspace::valueByIndex(unsigned char index) cons
 }
 
 RedisServerInfo::RedisServerInfo()
-  : ServerInfo(REDIS) {
+  : IServerInfo(REDIS) {
 }
 
 RedisServerInfo::RedisServerInfo(const Server &serv, const Clients &clients, const Memory &memory,
                      const Persistence &pers, const Stats &stats, const Replication &repl,
                                  const Cpu &cpu, const Keyspace &key)
-  : ServerInfo(REDIS), server_(serv), clients_(clients), memory_(memory), persistence_(pers),
+  : IServerInfo(REDIS), server_(serv), clients_(clients), memory_(memory), persistence_(pers),
     stats_(stats), replication_(repl), cpu_(cpu), keySp_(key) {
 }
 

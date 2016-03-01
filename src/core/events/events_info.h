@@ -22,6 +22,7 @@
 #include <string>
 
 #include "core/core_fwd.h"
+#include "core/types.h"
 #include "common/qt/utils_qt.h"
 
 namespace fastonosql {
@@ -32,7 +33,7 @@ class EventInfoBase
  public:
   typedef common::utils_qt::EventInfo<common::Error > base_class;
   explicit EventInfoBase(initiator_type sender, error_type er = error_type());
-  EventInfoBase(initiator_type sender, const common::time64_t time_start,
+  EventInfoBase(initiator_type sender, common::time64_t time_start,
                 error_type er = error_type());
   common::time64_t elapsedTime() const;
 
@@ -49,7 +50,7 @@ struct ConnectInfoRequest
 struct ConnectInfoResponce
   : ConnectInfoRequest {
   typedef ConnectInfoRequest base_class;
-  explicit ConnectInfoResponce(const base_class &request);
+  explicit ConnectInfoResponce(const base_class& request);
 };
 
 struct ShutDownInfoRequest
@@ -61,7 +62,7 @@ struct ShutDownInfoRequest
 struct ShutDownInfoResponce
   : ShutDownInfoRequest {
   typedef ShutDownInfoRequest base_class;
-  explicit ShutDownInfoResponce(const base_class &request);
+  explicit ShutDownInfoResponce(const base_class& request);
 };
 
 struct BackupInfoRequest
@@ -74,7 +75,7 @@ struct BackupInfoRequest
 struct BackupInfoResponce
   : BackupInfoRequest {
   typedef BackupInfoRequest base_class;
-  explicit BackupInfoResponce(const base_class &request);
+  explicit BackupInfoResponce(const base_class& request);
 };
 
 struct ExportInfoRequest
@@ -87,7 +88,7 @@ struct ExportInfoRequest
 struct ExportInfoResponce
   : ExportInfoRequest {
   typedef ExportInfoRequest base_class;
-  explicit ExportInfoResponce(const base_class &request);
+  explicit ExportInfoResponce(const base_class& request);
 };
 
 struct ChangePasswordRequest
@@ -128,7 +129,7 @@ struct ProcessConfigArgsInfoRequest
 struct ProcessConfigArgsInfoResponce
   : ProcessConfigArgsInfoRequest {
   typedef ProcessConfigArgsInfoRequest base_class;
-  explicit ProcessConfigArgsInfoResponce(const base_class &request);
+  explicit ProcessConfigArgsInfoResponce(const base_class& request);
 };
 
 struct DiscoveryInfoRequest
@@ -140,9 +141,9 @@ struct DiscoveryInfoRequest
 struct DiscoveryInfoResponce
   : DiscoveryInfoRequest {
   typedef DiscoveryInfoRequest base_class;
-  explicit DiscoveryInfoResponce(const base_class &request);
+  explicit DiscoveryInfoResponce(const base_class& request);
 
-  ServerInfoSPtr sinfo;
+  IServerInfoSPtr sinfo;
   ServerDiscoveryInfoSPtr dinfo;
   IDataBaseInfoSPtr dbinfo;
 };
@@ -189,13 +190,13 @@ struct DisConnectInfoRequest
 struct DisConnectInfoResponce
   : DisConnectInfoRequest {
   typedef DisConnectInfoRequest base_class;
-  explicit DisConnectInfoResponce(const base_class &request);
+  explicit DisConnectInfoResponce(const base_class& request);
 };
 
 struct ExecuteInfoRequest
   : public EventInfoBase {
   typedef EventInfoBase base_class;
-  ExecuteInfoRequest(initiator_type sender, const std::string &text,
+  ExecuteInfoRequest(initiator_type sender, const std::string& text,
                      const std::vector<std::string>& args = std::vector<std::string>(),
                      error_type er = error_type());
 
@@ -213,7 +214,7 @@ struct LoadDatabasesInfoResponce
   : LoadDatabasesInfoRequest {
   typedef LoadDatabasesInfoRequest base_class;
   typedef std::vector<IDataBaseInfoSPtr> database_info_cont_type;
-  explicit LoadDatabasesInfoResponce(const base_class &request);
+  explicit LoadDatabasesInfoResponce(const base_class& request);
 
   database_info_cont_type databases;
 };
@@ -235,7 +236,7 @@ struct LoadDatabaseContentResponce
   : LoadDatabaseContentRequest {
   typedef LoadDatabaseContentRequest base_class;
   typedef std::vector<NDbKValue> keys_cont_type;
-  explicit LoadDatabaseContentResponce(const base_class &request);
+  explicit LoadDatabaseContentResponce(const base_class& request);
 
   keys_cont_type keys;
   uint32_t cursor_out;
@@ -253,7 +254,7 @@ struct SetDefaultDatabaseRequest
 struct SetDefaultDatabaseResponce
   : SetDefaultDatabaseRequest {
   typedef SetDefaultDatabaseRequest base_class;
-  explicit SetDefaultDatabaseResponce(const base_class &request);
+  explicit SetDefaultDatabaseResponce(const base_class& request);
 };
 
 struct ServerInfoRequest
@@ -266,14 +267,14 @@ class ServerInfoResponce
   : public ServerInfoRequest {
  public:
   typedef ServerInfoRequest base_class;
-  explicit ServerInfoResponce(const base_class &request);
+  explicit ServerInfoResponce(const base_class& request);
   ~ServerInfoResponce();
 
-  ServerInfoSPtr info() const;
-  void setInfo(ServerInfoSPtr inf);
+  IServerInfoSPtr info() const;
+  void setInfo(IServerInfoSPtr inf);
 
  private:
-  ServerInfoSPtr info_;
+  IServerInfoSPtr info_;
 };
 
 struct ServerInfoHistoryRequest
@@ -287,7 +288,7 @@ class ServerInfoHistoryResponce
  public:
   typedef ServerInfoHistoryRequest base_class;
   typedef std::vector<ServerInfoSnapShoot> infos_container_type;
-  explicit ServerInfoHistoryResponce(const base_class &request);
+  explicit ServerInfoHistoryResponce(const base_class& request);
 
   infos_container_type infos() const;
   void setInfos(const infos_container_type& inf);
@@ -305,7 +306,7 @@ struct ClearServerHistoryRequest
 struct ClearServerHistoryResponce
   : public ClearServerHistoryRequest {
   typedef ClearServerHistoryRequest base_class;
-  explicit ClearServerHistoryResponce(const base_class &request);
+  explicit ClearServerHistoryResponce(const base_class& request);
 };
 
 struct ServerPropertyInfoRequest
@@ -317,7 +318,7 @@ struct ServerPropertyInfoRequest
 struct ServerPropertyInfoResponce
   : ServerPropertyInfoRequest {
   typedef ServerPropertyInfoRequest base_class;
-  explicit ServerPropertyInfoResponce(const base_class &request);
+  explicit ServerPropertyInfoResponce(const base_class& request);
 
   ServerPropertyInfo info;
 };
@@ -334,7 +335,7 @@ struct ChangeServerPropertyInfoRequest
 struct ChangeServerPropertyInfoResponce
   : ChangeServerPropertyInfoRequest {
   typedef ChangeServerPropertyInfoRequest base_class;
-  explicit ChangeServerPropertyInfoResponce(const base_class &request);
+  explicit ChangeServerPropertyInfoResponce(const base_class& request);
 
   bool is_change;
 };
@@ -352,7 +353,7 @@ struct CommandRequest
 struct CommandResponce
   : CommandRequest {
   typedef CommandRequest base_class;
-  explicit CommandResponce(const base_class &request);
+  explicit CommandResponce(const base_class& request);
 };
 
 struct ProgressInfoResponce {

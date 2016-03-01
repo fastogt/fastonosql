@@ -69,6 +69,10 @@ common::net::hostAndPort IServer::address() const {
   return drv_->address();
 }
 
+QString IServer::path() const {
+  return common::convertFromString<QString>(drv_->path());
+}
+
 connectionTypes IServer::type() const {
   return drv_->connectionType();
 }
@@ -81,7 +85,7 @@ ServerDiscoveryInfoSPtr IServer::discoveryInfo() const {
   return drv_->serverDiscoveryInfo();
 }
 
-ServerInfoSPtr IServer::serverInfo() const {
+IServerInfoSPtr IServer::serverInfo() const {
   return drv_->serverInfo();
 }
 

@@ -28,6 +28,10 @@ LeveldbServer::LeveldbServer(IConnectionSettingsBaseSPtr settings)
   : IServer(new LeveldbDriver(settings)) {
 }
 
+serverTypes LeveldbServer::role() const {
+  return MASTER;
+}
+
 IDatabaseSPtr LeveldbServer::createDatabase(IDataBaseInfoSPtr info) {
   return IDatabaseSPtr(new LeveldbDatabase(shared_from_this(), info));
 }

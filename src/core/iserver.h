@@ -41,7 +41,7 @@ class IServer
  public:
   typedef std::vector<IDataBaseInfoSPtr> databases_container_t;
 
-  explicit IServer(IDriver *drv);  // take ownerships
+  explicit IServer(IDriver* drv);  // take ownerships
   virtual ~IServer();
 
   //sync methods
@@ -49,15 +49,17 @@ class IServer
   bool isConnected() const;
   bool isAuthenticated() const;
   bool isCanRemote() const;
+  virtual serverTypes role() const = 0;
 
   common::net::hostAndPort address() const;
+  QString path() const;
 
   connectionTypes type() const;
   QString name() const;
 
   IDataBaseInfoSPtr currentDatabaseInfo() const;
   ServerDiscoveryInfoSPtr discoveryInfo() const;
-  ServerInfoSPtr serverInfo() const;
+  IServerInfoSPtr serverInfo() const;
 
   QString outputDelemitr() const;
   IDatabaseSPtr createDatabaseByInfo(IDataBaseInfoSPtr inf);
@@ -176,14 +178,14 @@ class IServer
   // handle command events
   virtual void handleCommandResponceEvent(events::CommandResponceEvent* ev);
 
+  virtual void handleDiscoveryInfoResponceEvent(events::DiscoveryInfoResponceEvent* ev);
+
   IDriver* const drv_;
   databases_container_t databases_;
 
  private:
   // handle info events
   void handleLoadServerInfoHistoryEvent(events::ServerInfoHistoryResponceEvent* ev);
-
-  void handleDiscoveryInfoResponceEvent(events::DiscoveryInfoResponceEvent* ev);
 
   void handleClearServerHistoryResponceEvent(events::ClearServerHistoryResponceEvent* ev);
 

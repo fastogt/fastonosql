@@ -28,6 +28,10 @@ RocksdbServer::RocksdbServer(IConnectionSettingsBaseSPtr settings)
   : IServer(new RocksdbDriver(settings)) {
 }
 
+serverTypes RocksdbServer::role() const {
+  return MASTER;
+}
+
 IDatabaseSPtr RocksdbServer::createDatabase(IDataBaseInfoSPtr info) {
   return IDatabaseSPtr(new RocksdbDatabase(shared_from_this(), info));
 }

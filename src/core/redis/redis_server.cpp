@@ -25,11 +25,32 @@ namespace fastonosql {
 namespace redis {
 
 RedisServer::RedisServer(IConnectionSettingsBaseSPtr settings)
-  : IServer(new RedisDriver(settings)) {
+  : IServer(new RedisDriver(settings)), role_(SLAVE) {
+}
+
+serverTypes RedisServer::role() const {
+  return role_;
 }
 
 IDatabaseSPtr RedisServer::createDatabase(IDataBaseInfoSPtr info) {
   return IDatabaseSPtr(new RedisDatabase(shared_from_this(), info));
+}
+
+void RedisServer::handleDiscoveryInfoResponceEvent(events::DiscoveryInfoResponceEvent* ev) {
+  auto v = ev->value();
+  common::Error er = v.errorInfo();
+  if (!er) {
+    RedisServerInfo * rinf = dynamic_cast<RedisServerInfo*>(v.sinfo.get());
+    CHECK(rinf);
+    if (rinf->replication_.role_ == "master") {
+      role_ = MASTER;
+    } else if(rinf->replication_.role_ == "slave") {
+      role_ = SLAVE;
+    } else {
+      NOTREACHED();
+    }
+  }
+  IServer::handleDiscoveryInfoResponceEvent(ev);
 }
 
 }  // namespace redis

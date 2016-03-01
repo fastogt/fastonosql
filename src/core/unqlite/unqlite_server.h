@@ -29,6 +29,8 @@ class UnqliteServer
   Q_OBJECT
  public:
   explicit UnqliteServer(IConnectionSettingsBaseSPtr settings);
+  virtual serverTypes role() const;
+
  private:
   virtual IDatabaseSPtr createDatabase(IDataBaseInfoSPtr info);
 };

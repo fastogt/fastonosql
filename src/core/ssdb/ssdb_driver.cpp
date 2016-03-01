@@ -158,6 +158,10 @@ common::net::hostAndPort SsdbDriver::address() const {
   return impl_->config_.host;
 }
 
+std::string SsdbDriver::path() const {
+  return std::string();
+}
+
 std::string SsdbDriver::outputDelemitr() const {
   return impl_->config_.delimiter;
 }
@@ -172,7 +176,7 @@ common::Error SsdbDriver::executeImpl(int argc, char **argv, FastoObject* out) {
   return impl_->execute(argc, argv, out);
 }
 
-common::Error SsdbDriver::serverInfo(ServerInfo **info) {
+common::Error SsdbDriver::serverInfo(IServerInfo **info) {
   LOG_COMMAND(Command(INFO_REQUEST, common::Value::C_INNER));
   SsdbServerInfo::Common cm;
   common::Error err = impl_->info(nullptr, &cm);
@@ -183,11 +187,11 @@ common::Error SsdbDriver::serverInfo(ServerInfo **info) {
   return err;
 }
 
-common::Error SsdbDriver::serverDiscoveryInfo(ServerDiscoveryInfo** dinfo, ServerInfo** sinfo,
+common::Error SsdbDriver::serverDiscoveryInfo(ServerDiscoveryInfo** dinfo, IServerInfo** sinfo,
                                               IDataBaseInfo **dbinfo) {
   UNUSED(dinfo);
 
-  ServerInfo *lsinfo = nullptr;
+  IServerInfo *lsinfo = nullptr;
   common::Error er = serverInfo(&lsinfo);
   if (er && er->isError()) {
     return er;
@@ -399,7 +403,7 @@ void SsdbDriver::handleLoadServerInfoEvent(events::ServerInfoRequestEvent* ev) {
     if (err) {
       res.setErrorInfo(err);
     } else {
-      ServerInfoSPtr mem(new SsdbServerInfo(cm));
+      IServerInfoSPtr mem(new SsdbServerInfo(cm));
       res.setInfo(mem);
     }
   notifyProgress(sender, 75);
@@ -410,8 +414,8 @@ void SsdbDriver::handleLoadServerInfoEvent(events::ServerInfoRequestEvent* ev) {
 void SsdbDriver::handleProcessCommandLineArgs(events::ProcessConfigArgsRequestEvent* ev) {
 }
 
-ServerInfoSPtr SsdbDriver::makeServerInfoFromString(const std::string& val) {
-  ServerInfoSPtr res(makeSsdbServerInfo(val));
+IServerInfoSPtr SsdbDriver::makeServerInfoFromString(const std::string& val) {
+  IServerInfoSPtr res(makeSsdbServerInfo(val));
   return res;
 }
 

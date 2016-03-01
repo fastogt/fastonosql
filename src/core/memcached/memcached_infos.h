@@ -51,7 +51,7 @@ namespace fastonosql {
 namespace memcached {
 
 class MemcachedServerInfo
-  : public ServerInfo {
+  : public IServerInfo {
  public:
   struct Common
     : FieldByIndex {

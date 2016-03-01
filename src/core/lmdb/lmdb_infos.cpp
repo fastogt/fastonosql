@@ -91,11 +91,11 @@ common::Value* LmdbServerInfo::Stats::valueByIndex(unsigned char index) const {
 }
 
 LmdbServerInfo::LmdbServerInfo()
-  : ServerInfo(LMDB) {
+  : IServerInfo(LMDB) {
 }
 
 LmdbServerInfo::LmdbServerInfo(const Stats &stats)
-  : ServerInfo(LMDB), stats_(stats) {
+  : IServerInfo(LMDB), stats_(stats) {
 }
 
 common::Value* LmdbServerInfo::valueByIndexes(unsigned char property, unsigned char field) const {

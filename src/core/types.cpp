@@ -169,14 +169,14 @@ void ServerDiscoveryInfo::setHost(const common::net::hostAndPort& host) {
 ServerDiscoveryInfo::~ServerDiscoveryInfo() {
 }
 
-ServerInfo::~ServerInfo() {
+IServerInfo::~IServerInfo() {
 }
 
-connectionTypes ServerInfo::type() const {
+connectionTypes IServerInfo::type() const {
   return type_;
 }
 
-ServerInfo::ServerInfo(connectionTypes type)
+IServerInfo::IServerInfo(connectionTypes type)
   : type_(type) {
 }
 
@@ -312,7 +312,7 @@ ServerInfoSnapShoot::ServerInfoSnapShoot()
   : msec(0), info() {
 }
 
-ServerInfoSnapShoot::ServerInfoSnapShoot(common::time64_t msec, ServerInfoSPtr info)
+ServerInfoSnapShoot::ServerInfoSnapShoot(common::time64_t msec, IServerInfoSPtr info)
   : msec(msec), info(info) {
 }
 

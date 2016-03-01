@@ -234,7 +234,7 @@ void ExplorerTreeView::showContextMenu(const QPoint& point) {
 
       setServerPassword_->setEnabled(isAuth && isRedis);
       menu.addAction(setServerPassword_);
-\
+
       setMaxClientConnection_->setEnabled(isAuth && isRedis);
       menu.addAction(setMaxClientConnection_);
 

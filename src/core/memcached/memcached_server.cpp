@@ -28,6 +28,10 @@ MemcachedServer::MemcachedServer(IConnectionSettingsBaseSPtr settings)
   : IServer(new MemcachedDriver(settings)) {
 }
 
+serverTypes MemcachedServer::role() const {
+  return MASTER;
+}
+
 IDatabaseSPtr MemcachedServer::createDatabase(IDataBaseInfoSPtr info) {
   return IDatabaseSPtr(new MemcachedDatabase(shared_from_this(), info));
 }

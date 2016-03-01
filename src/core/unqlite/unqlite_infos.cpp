@@ -92,11 +92,11 @@ common::Value* UnqliteServerInfo::Stats::valueByIndex(unsigned char index) const
 }
 
 UnqliteServerInfo::UnqliteServerInfo()
-  : ServerInfo(UNQLITE) {
+  : IServerInfo(UNQLITE) {
 }
 
 UnqliteServerInfo::UnqliteServerInfo(const Stats &stats)
-  : ServerInfo(UNQLITE), stats_(stats) {
+  : IServerInfo(UNQLITE), stats_(stats) {
 }
 
 common::Value* UnqliteServerInfo::valueByIndexes(unsigned char property,

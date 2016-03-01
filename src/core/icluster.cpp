@@ -43,11 +43,13 @@ void ICluster::addServer(IServerSPtr serv) {
 }
 
 IServerSPtr ICluster::root() const {
-  if (nodes_.empty()) {
-    return IServerSPtr();
+  for (size_t i = 0; i < nodes_.size(); ++i) {
+    if (nodes_[i]->role() == MASTER) {
+      return nodes_[i];
+    }
   }
 
-  return nodes_[0];
+  return IServerSPtr();
 }
 
 }  // namespace fastonosql

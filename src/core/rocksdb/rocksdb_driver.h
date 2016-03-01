@@ -36,7 +36,8 @@ class RocksdbDriver
 
   virtual bool isConnected() const;
   virtual bool isAuthenticated() const;
-  common::net::hostAndPort address() const;
+  virtual common::net::hostAndPort address() const;
+  virtual std::string path() const;
   virtual std::string outputDelemitr() const;
 
  private:
@@ -44,8 +45,8 @@ class RocksdbDriver
   virtual void clearImpl();
 
   virtual common::Error executeImpl(int argc, char **argv, FastoObject* out);
-  virtual common::Error serverInfo(ServerInfo** info);
-  virtual common::Error serverDiscoveryInfo(ServerDiscoveryInfo** dinfo, ServerInfo** sinfo,
+  virtual common::Error serverInfo(IServerInfo** info);
+  virtual common::Error serverDiscoveryInfo(ServerDiscoveryInfo** dinfo, IServerInfo** sinfo,
                                             IDataBaseInfo** dbinfo);
   virtual common::Error currentDataBaseInfo(IDataBaseInfo** info);
 
@@ -74,7 +75,7 @@ class RocksdbDriver
   // ============== command =============//
   virtual void handleCommandRequestEvent(events::CommandRequestEvent* ev);
   // ============== command =============//
-  ServerInfoSPtr makeServerInfoFromString(const std::string& val);
+  IServerInfoSPtr makeServerInfoFromString(const std::string& val);
 
  private:
   RocksdbRaw* const impl_;

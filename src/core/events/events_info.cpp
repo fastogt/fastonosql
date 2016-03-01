@@ -30,8 +30,7 @@ EventInfoBase::EventInfoBase(initiator_type sender, error_type er)
   : base_class(sender, er), time_start_(common::time::current_mstime()) {
 }
 
-EventInfoBase::EventInfoBase(initiator_type sender,
-                             const common::time64_t time_start, error_type er)
+EventInfoBase::EventInfoBase(initiator_type sender, common::time64_t time_start, error_type er)
   : base_class(sender, er), time_start_(time_start) {
 }
 
@@ -178,11 +177,11 @@ ServerInfoResponce::ServerInfoResponce(const base_class &request)
   : base_class(request), info_() {
 }
 
-ServerInfoSPtr ServerInfoResponce::info() const {
+IServerInfoSPtr ServerInfoResponce::info() const {
   return info_;
 }
 
-void ServerInfoResponce::setInfo(ServerInfoSPtr inf) {
+void ServerInfoResponce::setInfo(IServerInfoSPtr inf) {
   info_ = inf;
 }
 

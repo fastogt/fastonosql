@@ -121,6 +121,10 @@ common::net::hostAndPort RocksdbDriver::address() const {
   return common::net::hostAndPort();
 }
 
+std::string RocksdbDriver::path() const {
+  return impl_->config_.dbname;
+}
+
 std::string RocksdbDriver::outputDelemitr() const {
   return impl_->config_.delimiter;
 }
@@ -135,7 +139,7 @@ common::Error RocksdbDriver::executeImpl(int argc, char **argv, FastoObject* out
   return impl_->execute(argc, argv, out);
 }
 
-common::Error RocksdbDriver::serverInfo(ServerInfo **info) {
+common::Error RocksdbDriver::serverInfo(IServerInfo **info) {
   LOG_COMMAND(Command(INFO_REQUEST, common::Value::C_INNER));
   RocksdbServerInfo::Stats cm;
   common::Error err = impl_->info(nullptr, cm);
@@ -146,11 +150,11 @@ common::Error RocksdbDriver::serverInfo(ServerInfo **info) {
   return err;
 }
 
-common::Error RocksdbDriver::serverDiscoveryInfo(ServerDiscoveryInfo **dinfo, ServerInfo **sinfo,
+common::Error RocksdbDriver::serverDiscoveryInfo(ServerDiscoveryInfo **dinfo, IServerInfo **sinfo,
                                                  IDataBaseInfo** dbinfo) {
   UNUSED(dinfo);
 
-  ServerInfo *lsinfo = nullptr;
+  IServerInfo *lsinfo = nullptr;
   common::Error er = serverInfo(&lsinfo);
   if (er && er->isError()) {
       return er;
@@ -362,7 +366,7 @@ void RocksdbDriver::handleLoadServerInfoEvent(events::ServerInfoRequestEvent* ev
   if (err) {
     res.setErrorInfo(err);
   } else {
-    ServerInfoSPtr mem(new RocksdbServerInfo(cm));
+    IServerInfoSPtr mem(new RocksdbServerInfo(cm));
     res.setInfo(mem);
   }
   notifyProgress(sender, 75);
@@ -373,8 +377,8 @@ void RocksdbDriver::handleLoadServerInfoEvent(events::ServerInfoRequestEvent* ev
 void RocksdbDriver::handleProcessCommandLineArgs(events::ProcessConfigArgsRequestEvent* ev) {
 }
 
-ServerInfoSPtr RocksdbDriver::makeServerInfoFromString(const std::string& val) {
-  ServerInfoSPtr res(makeRocksdbServerInfo(val));
+IServerInfoSPtr RocksdbDriver::makeServerInfoFromString(const std::string& val) {
+  IServerInfoSPtr res(makeRocksdbServerInfo(val));
   return res;
 }
 

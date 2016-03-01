@@ -34,7 +34,7 @@ namespace fastonosql {
 namespace ssdb {
 
 class SsdbServerInfo
-  : public ServerInfo {
+  : public IServerInfo {
  public:
   struct Common
     : FieldByIndex {

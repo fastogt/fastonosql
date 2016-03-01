@@ -113,11 +113,11 @@ common::Value* LeveldbServerInfo::Stats::valueByIndex(unsigned char index) const
 }
 
 LeveldbServerInfo::LeveldbServerInfo()
-  : ServerInfo(LEVELDB) {
+  : IServerInfo(LEVELDB) {
 }
 
 LeveldbServerInfo::LeveldbServerInfo(const Stats &stats)
-  : ServerInfo(LEVELDB), stats_(stats) {
+  : IServerInfo(LEVELDB), stats_(stats) {
 }
 
 common::Value* LeveldbServerInfo::valueByIndexes(unsigned char property,

@@ -140,10 +140,10 @@ class ServerDiscoveryInfo {
 
 typedef common::shared_ptr<ServerDiscoveryInfo> ServerDiscoveryInfoSPtr;
 
-class ServerInfo {
+class IServerInfo {
  public:
-  explicit ServerInfo(connectionTypes type);
-  virtual ~ServerInfo();
+  explicit IServerInfo(connectionTypes type);
+  virtual ~IServerInfo();
 
   connectionTypes type() const;
   virtual std::string toString() const = 0;
@@ -152,7 +152,7 @@ class ServerInfo {
 
  private:
   const connectionTypes type_;
-  DISALLOW_COPY_AND_ASSIGN(ServerInfo);
+  DISALLOW_COPY_AND_ASSIGN(IServerInfo);
 };
 
 struct FieldByIndex {
@@ -178,15 +178,15 @@ std::vector<common::Value::Type> supportedTypesFromType(connectionTypes type);
 std::vector<std::string> infoHeadersFromType(connectionTypes type);
 std::vector< std::vector<Field> > infoFieldsFromType(connectionTypes type);
 
-typedef common::shared_ptr<ServerInfo> ServerInfoSPtr;
+typedef common::shared_ptr<IServerInfo> IServerInfoSPtr;
 
 struct ServerInfoSnapShoot {
   ServerInfoSnapShoot();
-  ServerInfoSnapShoot(common::time64_t msec, ServerInfoSPtr info);
+  ServerInfoSnapShoot(common::time64_t msec, IServerInfoSPtr info);
   bool isValid() const;
 
   common::time64_t msec;
-  ServerInfoSPtr info;
+  IServerInfoSPtr info;
 };
 
 typedef std::pair<std::string, std::string> PropertyType;
@@ -227,6 +227,8 @@ class IDataBaseInfo {
 
   const connectionTypes type_;
 };
+
+typedef common::shared_ptr<IDataBaseInfo> IDataBaseInfoSPtr;
 
 class CommandKey {
  public:

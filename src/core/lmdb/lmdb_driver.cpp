@@ -115,8 +115,11 @@ common::Error LmdbDriver::commandChangeTTLImpl(CommandChangeTTL* command,
 // ============== commands =============//
 
 common::net::hostAndPort LmdbDriver::address() const {
-  // return common::net::hostAndPort(impl_->config_.hostip_, impl_->config_.hostport_);
   return common::net::hostAndPort();
+}
+
+std::string LmdbDriver::path() const {
+  return impl_->config_.dbname;
 }
 
 std::string LmdbDriver::outputDelemitr() const {
@@ -133,7 +136,7 @@ common::Error LmdbDriver::executeImpl(int argc, char **argv, FastoObject* out) {
   return impl_->execute(argc, argv, out);
 }
 
-common::Error LmdbDriver::serverInfo(ServerInfo **info) {
+common::Error LmdbDriver::serverInfo(IServerInfo **info) {
   LOG_COMMAND(Command(INFO_REQUEST, common::Value::C_INNER));
   LmdbServerInfo::Stats cm;
   common::Error err = impl_->info(nullptr, &cm);
@@ -144,11 +147,11 @@ common::Error LmdbDriver::serverInfo(ServerInfo **info) {
   return err;
 }
 
-common::Error LmdbDriver::serverDiscoveryInfo(ServerDiscoveryInfo **dinfo, ServerInfo **sinfo,
+common::Error LmdbDriver::serverDiscoveryInfo(ServerDiscoveryInfo **dinfo, IServerInfo **sinfo,
                                               IDataBaseInfo** dbinfo) {
   UNUSED(dinfo);
 
-  ServerInfo *lsinfo = nullptr;
+  IServerInfo *lsinfo = nullptr;
   common::Error er = serverInfo(&lsinfo);
   if (er && er->isError()) {
     return er;
@@ -356,7 +359,7 @@ void LmdbDriver::handleLoadServerInfoEvent(events::ServerInfoRequestEvent* ev) {
   if (err) {
     res.setErrorInfo(err);
   } else {
-    ServerInfoSPtr mem(new LmdbServerInfo(cm));
+    IServerInfoSPtr mem(new LmdbServerInfo(cm));
     res.setInfo(mem);
   }
   notifyProgress(sender, 75);
@@ -367,8 +370,8 @@ void LmdbDriver::handleLoadServerInfoEvent(events::ServerInfoRequestEvent* ev) {
 void LmdbDriver::handleProcessCommandLineArgs(events::ProcessConfigArgsRequestEvent* ev) {
 }
 
-ServerInfoSPtr LmdbDriver::makeServerInfoFromString(const std::string& val) {
-  ServerInfoSPtr res(makeLmdbServerInfo(val));
+IServerInfoSPtr LmdbDriver::makeServerInfoFromString(const std::string& val) {
+  IServerInfoSPtr res(makeLmdbServerInfo(val));
   return res;
 }
 

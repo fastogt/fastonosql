@@ -28,6 +28,10 @@ SsdbServer::SsdbServer(IConnectionSettingsBaseSPtr settings)
   : IServer(new SsdbDriver(settings)) {
 }
 
+serverTypes SsdbServer::role() const {
+  return MASTER;
+}
+
 IDatabaseSPtr SsdbServer::createDatabase(IDataBaseInfoSPtr info) {
   return IDatabaseSPtr(new SsdbDatabase(shared_from_this(), info));
 }

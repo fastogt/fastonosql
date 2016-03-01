@@ -120,8 +120,11 @@ common::Error LeveldbDriver::commandChangeTTLImpl(CommandChangeTTL* command,
 // ============== commands =============//
 
 common::net::hostAndPort LeveldbDriver::address() const {
-  //return common::net::hostAndPort(impl_->config_.hostip_, impl_->config_.hostport_);
   return common::net::hostAndPort();
+}
+
+std::string LeveldbDriver::path() const {
+  return impl_->config_.dbname;
 }
 
 std::string LeveldbDriver::outputDelemitr() const {
@@ -138,7 +141,7 @@ common::Error LeveldbDriver::executeImpl(int argc, char **argv, FastoObject* out
   return impl_->execute(argc, argv, out);
 }
 
-common::Error LeveldbDriver::serverInfo(ServerInfo **info) {
+common::Error LeveldbDriver::serverInfo(IServerInfo **info) {
   LOG_COMMAND(Command(INFO_REQUEST, common::Value::C_INNER));
   LeveldbServerInfo::Stats cm;
   common::Error err = impl_->info(nullptr, cm);
@@ -149,11 +152,11 @@ common::Error LeveldbDriver::serverInfo(ServerInfo **info) {
   return err;
 }
 
-common::Error LeveldbDriver::serverDiscoveryInfo(ServerDiscoveryInfo **dinfo, ServerInfo **sinfo,
+common::Error LeveldbDriver::serverDiscoveryInfo(ServerDiscoveryInfo **dinfo, IServerInfo **sinfo,
                                                  IDataBaseInfo** dbinfo) {
   UNUSED(dinfo);
 
-  ServerInfo *lsinfo = nullptr;
+  IServerInfo *lsinfo = nullptr;
   common::Error er = serverInfo(&lsinfo);
   if (er && er->isError()) {
     return er;
@@ -362,7 +365,7 @@ void LeveldbDriver::handleLoadServerInfoEvent(events::ServerInfoRequestEvent* ev
   if (err) {
     res.setErrorInfo(err);
   } else {
-    ServerInfoSPtr mem(new LeveldbServerInfo(cm));
+    IServerInfoSPtr mem(new LeveldbServerInfo(cm));
     res.setInfo(mem);
   }
   notifyProgress(sender, 75);
@@ -373,8 +376,8 @@ void LeveldbDriver::handleLoadServerInfoEvent(events::ServerInfoRequestEvent* ev
 void LeveldbDriver::handleProcessCommandLineArgs(events::ProcessConfigArgsRequestEvent* ev) {
 }
 
-ServerInfoSPtr LeveldbDriver::makeServerInfoFromString(const std::string& val) {
-  ServerInfoSPtr res(makeLeveldbServerInfo(val));
+IServerInfoSPtr LeveldbDriver::makeServerInfoFromString(const std::string& val) {
+  IServerInfoSPtr res(makeLeveldbServerInfo(val));
   return res;
 }
 

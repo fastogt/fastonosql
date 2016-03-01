@@ -29,6 +29,8 @@ class SsdbServer
   Q_OBJECT
  public:
   explicit SsdbServer(IConnectionSettingsBaseSPtr settings);
+  virtual serverTypes role() const;
+
  private:
   virtual IDatabaseSPtr createDatabase(IDataBaseInfoSPtr info);
 };

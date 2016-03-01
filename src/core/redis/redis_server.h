@@ -29,8 +29,14 @@ class RedisServer
   Q_OBJECT
  public:
   explicit RedisServer(IConnectionSettingsBaseSPtr settings);
+  virtual serverTypes role() const;
+
+ protected:
+  virtual void handleDiscoveryInfoResponceEvent(events::DiscoveryInfoResponceEvent* ev);
+
  private:
   virtual IDatabaseSPtr createDatabase(IDataBaseInfoSPtr info);
+  serverTypes role_;
 };
 
 }  // namespace redis

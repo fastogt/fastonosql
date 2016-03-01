@@ -28,6 +28,10 @@ UnqliteServer::UnqliteServer(IConnectionSettingsBaseSPtr settings)
   : IServer(new UnqliteDriver(settings)) {
 }
 
+serverTypes UnqliteServer::role() const {
+  return MASTER;
+}
+
 IDatabaseSPtr UnqliteServer::createDatabase(IDataBaseInfoSPtr info) {
   return IDatabaseSPtr(new UnqliteDatabase(shared_from_this(), info));
 }

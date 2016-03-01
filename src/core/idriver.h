@@ -51,7 +51,7 @@ class IDriver
   IConnectionSettingsBaseSPtr settings() const;
 
   ServerDiscoveryInfoSPtr serverDiscoveryInfo() const;
-  ServerInfoSPtr serverInfo() const;
+  IServerInfoSPtr serverInfo() const;
   IDataBaseInfoSPtr currentDatabaseInfo() const;
 
   void start();
@@ -63,6 +63,7 @@ class IDriver
   virtual bool isConnected() const = 0;
   virtual bool isAuthenticated() const = 0;
   virtual common::net::hostAndPort address() const = 0;
+  virtual std::string path() const = 0;
   virtual std::string outputDelemitr() const = 0;
 
  Q_SIGNALS:
@@ -143,9 +144,9 @@ class IDriver
   virtual void updated(FastoObject* item, common::Value* val);
 
   // internal methods
-  virtual ServerInfoSPtr makeServerInfoFromString(const std::string& val) = 0;
-  virtual common::Error serverInfo(ServerInfo** info) = 0;
-  virtual common::Error serverDiscoveryInfo(ServerDiscoveryInfo** dinfo, ServerInfo** sinfo,
+  virtual IServerInfoSPtr makeServerInfoFromString(const std::string& val) = 0;
+  virtual common::Error serverInfo(IServerInfo** info) = 0;
+  virtual common::Error serverDiscoveryInfo(ServerDiscoveryInfo** dinfo, IServerInfo** sinfo,
                                             IDataBaseInfo** dbinfo) = 0;
   virtual common::Error currentDataBaseInfo(IDataBaseInfo** info) = 0;
   virtual void initImpl() = 0;
@@ -164,7 +165,7 @@ class IDriver
                                              std::string* cmdstring) const WARN_UNUSED_RESULT = 0;
 
  private:
-  ServerInfoSPtr server_info_;
+  IServerInfoSPtr server_info_;
   ServerDiscoveryInfoSPtr server_disc_info_;
   IDataBaseInfoSPtr current_database_info_;
 

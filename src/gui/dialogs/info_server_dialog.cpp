@@ -230,7 +230,7 @@ void InfoServerDialog::finishServerInfo(const events_info::ServerInfoResponce& r
     return;
   }
 
-  ServerInfoSPtr inf = res.info();
+  IServerInfoSPtr inf = res.info();
   if (!inf) {
     return;
   }

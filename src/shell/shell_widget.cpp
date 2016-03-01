@@ -195,7 +195,7 @@ BaseShellWidget::BaseShellWidget(IServerSPtr server, const QString& filePath, QW
   updateDefaultDatabase(server_->currentDatabaseInfo());
 }
 
-void BaseShellWidget::syncServerInfo(ServerInfoSPtr inf) {
+void BaseShellWidget::syncServerInfo(IServerInfoSPtr inf) {
   if (!inf) {
     return;
   }

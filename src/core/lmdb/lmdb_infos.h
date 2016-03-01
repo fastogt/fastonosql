@@ -30,7 +30,7 @@ namespace fastonosql {
 namespace lmdb {
 
 class LmdbServerInfo
-  : public ServerInfo {
+  : public IServerInfo {
  public:
   // Compactions\nLevel  Files Size(MB) Time(sec) Read(MB) Write(MB)\n
   struct Stats

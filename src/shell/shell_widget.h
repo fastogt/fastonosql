@@ -92,7 +92,7 @@ class BaseShellWidget
 
  private:
   void syncConnectionActions();
-  void syncServerInfo(ServerInfoSPtr inf);
+  void syncServerInfo(IServerInfoSPtr inf);
   void updateDefaultDatabase(IDataBaseInfoSPtr dbs);
   void initShellByType(connectionTypes type);
 

@@ -114,11 +114,11 @@ common::Value* SsdbServerInfo::Common::valueByIndex(unsigned char index) const {
 }
 
 SsdbServerInfo::SsdbServerInfo()
-  : ServerInfo(SSDB) {
+  : IServerInfo(SSDB) {
 }
 
 SsdbServerInfo::SsdbServerInfo(const Common& common)
-  : ServerInfo(SSDB), common_(common) {
+  : IServerInfo(SSDB), common_(common) {
 }
 
 common::Value* SsdbServerInfo::valueByIndexes(unsigned char property, unsigned char field) const {

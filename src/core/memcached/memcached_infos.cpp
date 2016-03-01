@@ -195,11 +195,11 @@ common::Value* MemcachedServerInfo::Common::valueByIndex(unsigned char index) co
 }
 
 MemcachedServerInfo::MemcachedServerInfo()
-  : ServerInfo(MEMCACHED) {
+  : IServerInfo(MEMCACHED) {
 }
 
 MemcachedServerInfo::MemcachedServerInfo(const Common& common)
-  : ServerInfo(MEMCACHED), common_(common) {
+  : IServerInfo(MEMCACHED), common_(common) {
 }
 
 common::Value* MemcachedServerInfo::valueByIndexes(unsigned char property,

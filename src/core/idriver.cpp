@@ -179,13 +179,13 @@ IConnectionSettingsBaseSPtr IDriver::settings() const {
   return settings_;
 }
 
-ServerInfoSPtr IDriver::serverInfo() const {
+IServerInfoSPtr IDriver::serverInfo() const {
   if (isConnected()) {
     CHECK(server_info_);
     return server_info_;
   }
 
-  return ServerInfoSPtr();
+  return IServerInfoSPtr();
 }
 
 IDataBaseInfoSPtr IDriver::currentDatabaseInfo() const {
@@ -349,14 +349,14 @@ void IDriver::timerEvent(QTimerEvent* event) {
     if (log_file_ && log_file_->isOpened()) {
       common::time64_t time = common::time::current_mstime();
       std::string stamp = createStamp(time);
-      ServerInfo* info = nullptr;
+      IServerInfo* info = nullptr;
       common::Error er = serverInfo(&info);
       if (er && er->isError()) {
         QObject::timerEvent(event);
         return;
       }
 
-      ServerInfoSnapShoot shot(time, ServerInfoSPtr(info));
+      ServerInfoSnapShoot shot(time, IServerInfoSPtr(info));
       emit serverInfoSnapShoot(shot);
 
       log_file_->write(stamp);
@@ -499,7 +499,7 @@ void IDriver::handleDiscoveryInfoRequestEvent(events::DiscoveryInfoRequestEvent*
 
   if (isConnected()) {
     ServerDiscoveryInfo* disc = nullptr;
-    ServerInfo* info = nullptr;
+    IServerInfo* info = nullptr;
     IDataBaseInfo* db = nullptr;
     common::Error err = serverDiscoveryInfo(&disc, &info, &db);
     if (err && err->isError()) {
