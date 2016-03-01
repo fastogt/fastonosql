@@ -29,9 +29,9 @@
 namespace fastonosql {
 namespace rocksdb {
 
-struct rocksdbConfig
+struct RocksdbConfig
   : public LocalConfig {
-  rocksdbConfig();
+  RocksdbConfig();
 
   ::rocksdb::Options options;
 };
@@ -40,5 +40,5 @@ struct rocksdbConfig
 }  // namespace fastonosql
 
 namespace common {
-  std::string convertToString(const fastonosql::rocksdb::rocksdbConfig &conf);
+  std::string convertToString(const fastonosql::rocksdb::RocksdbConfig &conf);
 }

@@ -27,9 +27,9 @@
 namespace fastonosql {
 namespace lmdb {
 
-struct lmdbConfig
+struct LmdbConfig
   : public LocalConfig {
-  lmdbConfig();
+  LmdbConfig();
 
   bool create_if_missing;
 };
@@ -38,5 +38,5 @@ struct lmdbConfig
 }  // namespace fastonosql
 
 namespace common {
-  std::string convertToString(const fastonosql::lmdb::lmdbConfig &conf);
+  std::string convertToString(const fastonosql::lmdb::LmdbConfig &conf);
 }  // namespace common

@@ -246,7 +246,9 @@ void ExplorerTreeView::showContextMenu(const QPoint& point) {
       bool isCanRemote = server->isCanRemote();
       bool isLocal = true;
       if (isCanRemote) {
-        common::net::hostAndPort host = server->address();
+        IServerRemote* rserver = dynamic_cast<IServerRemote*>(server.get());
+        CHECK(rserver);
+        common::net::hostAndPort host = rserver->host();
         isLocal = host.isLocalHost();
       }
 

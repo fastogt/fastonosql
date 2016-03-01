@@ -64,7 +64,7 @@ ConnectionDiagnosticDialog::ConnectionDiagnosticDialog(QWidget* parent,
                                                        IConnectionSettingsBaseSPtr connection)
   : QDialog(parent) {
   setWindowTitle(translations::trConnectionDiagnostic);
-  setWindowIcon(GuiFactory::instance().icon(connection->connectionType()));
+  setWindowIcon(GuiFactory::instance().icon(connection->type()));
   setWindowFlags(windowFlags() & ~Qt::WindowContextHelpButtonHint);  // Remove help button (?)
 
   QVBoxLayout* mainLayout = new QVBoxLayout;

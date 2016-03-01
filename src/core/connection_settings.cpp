@@ -69,18 +69,18 @@ IConnectionSettings::IConnectionSettings(const std::string& connectionName, conn
   : connection_name_(connectionName), type_(type), msinterval_(0) {
 }
 
-void IConnectionSettings::setConnectionName(const std::string& name) {
+void IConnectionSettings::setName(const std::string& name) {
   connection_name_ = name;
 }
 
 IConnectionSettings::~IConnectionSettings() {
 }
 
-std::string IConnectionSettings::connectionName() const {
+std::string IConnectionSettings::name() const {
   return connection_name_;
 }
 
-connectionTypes IConnectionSettings::connectionType() const {
+connectionTypes IConnectionSettings::type() const {
   return type_;
 }
 
@@ -112,7 +112,7 @@ IConnectionSettingsBase::~IConnectionSettingsBase() {
 
 void IConnectionSettingsBase::setConnectionNameAndUpdateHash(const std::string& name) {
   using namespace common::utils;
-  setConnectionName(name);
+  setName(name);
   common::buffer_type bcon = common::convertFromString<common::buffer_type>(connection_name_);
   uint64_t v = hash::crc64(0, bcon);
   hash_ = common::convertToString(v);
@@ -210,12 +210,12 @@ IConnectionSettingsBase* IConnectionSettingsBase::fromString(const std::string &
       } else if (commaCount == 2) {
         uint32_t msTime = common::convertFromString<uint32_t>(elText);
         result->setLoggingMsTimeInterval(msTime);
-        if (!IConnectionSettingsBase::isRemoteType(result->connectionType())) {
-          result->initFromCommandLine(val.substr(i+1));
+        if (!isRemoteType(result->type())) {
+          result->setCommandLine(val.substr(i+1));
           break;
         }
       } else if (commaCount == 3) {
-        result->initFromCommandLine(elText);
+        result->setCommandLine(elText);
         IConnectionSettingsRemote * remote = dynamic_cast<IConnectionSettingsRemote *>(result);
         if (remote) {
           SSHInfo sinf(val.substr(i + 1));
@@ -232,7 +232,7 @@ IConnectionSettingsBase* IConnectionSettingsBase::fromString(const std::string &
   return result;
 }
 
-bool IConnectionSettingsBase::isRemoteType(connectionTypes type) {
+bool isRemoteType(connectionTypes type) {
   return type == REDIS || type == MEMCACHED || type == SSDB;
 }
 
@@ -240,9 +240,15 @@ std::string IConnectionSettingsBase::toString() const {
   DCHECK(type_ != DBUNKNOWN);
 
   std::stringstream str;
-  str << IConnectionSettings::toString() << ',' << toCommandLine();
+  str << IConnectionSettings::toString() << ',' << commandLine();
   std::string res = str.str();
   return res;
+}
+
+IConnectionSettingsLocal::IConnectionSettingsLocal(const std::string& connectionName,
+                                                   connectionTypes type)
+  : IConnectionSettingsBase(connectionName, type) {
+  CHECK(!isRemoteType(type));
 }
 
 ////===================== IConnectionSettingsRemote =====================////
@@ -250,6 +256,7 @@ std::string IConnectionSettingsBase::toString() const {
 IConnectionSettingsRemote::IConnectionSettingsRemote(const std::string& connectionName,
                                                      connectionTypes type)
   : IConnectionSettingsBase(connectionName, type), ssh_info_() {
+  CHECK(isRemoteType(type));
 }
 
 IConnectionSettingsRemote::~IConnectionSettingsRemote() {
@@ -383,46 +390,46 @@ const char* useHelpText(connectionTypes type) {
 std::string defaultCommandLine(connectionTypes type) {
 #ifdef BUILD_WITH_REDIS
   if (type == REDIS) {
-    redis::redisConfig r;
+    redis::RedisConfig r;
     return common::convertToString(r);
   }
 #endif
 #ifdef BUILD_WITH_MEMCACHED
   if (type == MEMCACHED) {
-    memcached::memcachedConfig r;
+    memcached::MemcachedConfig r;
     return common::convertToString(r);
   }
 #endif
 #ifdef BUILD_WITH_SSDB
   if (type == SSDB) {
-    ssdb::ssdbConfig r;
+    ssdb::SsdbConfig r;
     return common::convertToString(r);
   }
 #endif
 #ifdef BUILD_WITH_LEVELDB
   if (type == LEVELDB) {
-    leveldb::leveldbConfig r;
+    leveldb::LeveldbConfig r;
     r.options.create_if_missing = true;
     return common::convertToString(r);
   }
 #endif
 #ifdef BUILD_WITH_ROCKSDB
   if (type == ROCKSDB) {
-    rocksdb::rocksdbConfig r;
+    rocksdb::RocksdbConfig r;
     r.options.create_if_missing = true;
     return common::convertToString(r);
   }
 #endif
 #ifdef BUILD_WITH_UNQLITE
   if (type == UNQLITE) {
-    unqlite::unqliteConfig r;
+    unqlite::UnqliteConfig r;
     r.create_if_missing = true;
     return common::convertToString(r);
   }
 #endif
 #ifdef BUILD_WITH_LMDB
   if (type == LMDB) {
-    lmdb::lmdbConfig r;
+    lmdb::LmdbConfig r;
     r.create_if_missing = true;
     return common::convertToString(r);
   }
@@ -488,7 +495,7 @@ IClusterSettingsBase* IClusterSettingsBase::fromString(const std::string& val) {
           return nullptr;
         }
       } else if (commaCount == 1) {
-        result->setConnectionName(elText);
+        result->setName(elText);
       } else if (commaCount == 2) {
         uint32_t msTime = common::convertFromString<uint32_t>(elText);
         result->setLoggingMsTimeInterval(msTime);

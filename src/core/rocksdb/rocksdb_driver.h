@@ -28,7 +28,7 @@ namespace fastonosql {
 namespace rocksdb {
 
 class RocksdbDriver
-  : public IDriver {
+  : public IDriverLocal {
   Q_OBJECT
  public:
   explicit RocksdbDriver(IConnectionSettingsBaseSPtr settings);
@@ -36,7 +36,6 @@ class RocksdbDriver
 
   virtual bool isConnected() const;
   virtual bool isAuthenticated() const;
-  virtual common::net::hostAndPort address() const;
   virtual std::string path() const;
   virtual std::string outputDelemitr() const;
 

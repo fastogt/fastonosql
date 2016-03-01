@@ -37,28 +37,19 @@ common::net::hostAndPort RedisConnectionSettings::host() const {
   return info_.host;
 }
 
-void RedisConnectionSettings::initFromCommandLine(const std::string &val) {
-  info_ = common::convertFromString<redisConfig>(val);
-}
-
-std::string RedisConnectionSettings::toCommandLine() const {
-  std::string result = common::convertToString(info_);
-  return result;
-}
-
 void RedisConnectionSettings::setCommandLine(const std::string &line) {
-  info_ = common::convertFromString<redisConfig>(line);
+  info_ = common::convertFromString<RedisConfig>(line);
 }
 
 std::string RedisConnectionSettings::commandLine() const {
   return common::convertToString(info_);
 }
 
-redisConfig RedisConnectionSettings::info() const {
+RedisConfig RedisConnectionSettings::info() const {
   return info_;
 }
 
-void RedisConnectionSettings::setInfo(const redisConfig &info) {
+void RedisConnectionSettings::setInfo(const RedisConfig &info) {
   info_ =  info;
 }
 

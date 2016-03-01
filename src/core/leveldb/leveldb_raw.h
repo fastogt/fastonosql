@@ -51,7 +51,7 @@ struct LeveldbRaw
                      uint64_t limit, std::vector<std::string> *ret);
   common::Error help(int argc, char** argv);
 
-  leveldbConfig config_;
+  LeveldbConfig config_;
  private:
   ::leveldb::DB* leveldb_;
 };

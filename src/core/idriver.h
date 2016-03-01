@@ -40,15 +40,14 @@ namespace fastonosql {
 class IDriver
   : public QObject, private IFastoObjectObserver {
   Q_OBJECT
- public:
-  IDriver(IConnectionSettingsBaseSPtr settings, connectionTypes type);
+ public:  
   virtual ~IDriver();
 
   static void reply(QObject* reciver, QEvent* ev);
 
   // sync methods
-  connectionTypes connectionType() const;
-  IConnectionSettingsBaseSPtr settings() const;
+  connectionTypes type() const;
+  std::string connectionName() const;
 
   ServerDiscoveryInfoSPtr serverDiscoveryInfo() const;
   IServerInfoSPtr serverInfo() const;
@@ -62,8 +61,7 @@ class IDriver
   void interrupt();
   virtual bool isConnected() const = 0;
   virtual bool isAuthenticated() const = 0;
-  virtual common::net::hostAndPort address() const = 0;
-  virtual std::string path() const = 0;
+
   virtual std::string outputDelemitr() const = 0;
 
  Q_SIGNALS:
@@ -82,6 +80,8 @@ class IDriver
   void notifyProgress(QObject *reciver, int value);
 
  protected:
+  IDriver(IConnectionSettingsBaseSPtr settings, connectionTypes type);
+
   // handle server events
   virtual void handleConnectEvent(events::ConnectRequestEvent* ev) = 0;
   virtual void handleDisconnectEvent(events::DisconnectRequestEvent* ev) = 0;
@@ -173,6 +173,26 @@ class IDriver
   int timer_info_id_;
   common::file_system::File* log_file_;
   const connectionTypes type_;
+};
+
+class IDriverLocal
+  : public IDriver {
+  Q_OBJECT
+ public:
+  virtual std::string path() const = 0;
+
+ protected:
+  IDriverLocal(IConnectionSettingsBaseSPtr settings, connectionTypes type);
+};
+
+class IDriverRemote
+  : public IDriver {
+  Q_OBJECT
+ public:
+    virtual common::net::hostAndPort host() const = 0;
+
+ protected:
+  IDriverRemote(IConnectionSettingsBaseSPtr settings, connectionTypes type);
 };
 
 }  // namespace fastonosql

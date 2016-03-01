@@ -38,15 +38,13 @@ class SsdbConnectionSettings
   virtual void setHost(const common::net::hostAndPort& host);
   virtual common::net::hostAndPort host() const;
 
-  ssdbConfig info() const;
-  void setInfo(const ssdbConfig &info);
+  SsdbConfig info() const;
+  void setInfo(const SsdbConfig &info);
 
   virtual IConnectionSettings* clone() const;
 
  private:
-  virtual std::string toCommandLine() const;
-  virtual void initFromCommandLine(const std::string& val);
-  ssdbConfig info_;
+  SsdbConfig info_;
 };
 
 }  // namespace ssdb

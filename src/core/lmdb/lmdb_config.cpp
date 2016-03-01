@@ -31,7 +31,7 @@ namespace lmdb {
 
 namespace {
 
-void parseOptions(int argc, char **argv, lmdbConfig& cfg) {
+void parseOptions(int argc, char **argv, LmdbConfig& cfg) {
   for (int i = 0; i < argc; i++) {
       int lastarg = i == argc-1;
 
@@ -58,7 +58,7 @@ void parseOptions(int argc, char **argv, lmdbConfig& cfg) {
 
 }  // namespace
 
-lmdbConfig::lmdbConfig()
+LmdbConfig::LmdbConfig()
   : LocalConfig(common::file_system::prepare_path("~/test.lmdb")), create_if_missing(false) {
 }
 
@@ -67,7 +67,7 @@ lmdbConfig::lmdbConfig()
 
 namespace common {
 
-std::string convertToString(const fastonosql::lmdb::lmdbConfig& conf) {
+std::string convertToString(const fastonosql::lmdb::LmdbConfig& conf) {
   std::vector<std::string> argv = conf.args();
 
   if (conf.create_if_missing) {
@@ -86,8 +86,8 @@ std::string convertToString(const fastonosql::lmdb::lmdbConfig& conf) {
 }
 
 template<>
-fastonosql::lmdb::lmdbConfig convertFromString(const std::string& line) {
-  fastonosql::lmdb::lmdbConfig cfg;
+fastonosql::lmdb::LmdbConfig convertFromString(const std::string& line) {
+  fastonosql::lmdb::LmdbConfig cfg;
   enum { kMaxArgs = 64 };
   int argc = 0;
   char *argv[kMaxArgs] = {0};

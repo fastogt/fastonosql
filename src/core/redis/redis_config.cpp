@@ -30,7 +30,7 @@ namespace fastonosql {
 namespace redis {
 namespace {
 
-void parseOptions(int argc, char **argv, redisConfig& cfg) {
+void parseOptions(int argc, char **argv, RedisConfig& cfg) {
     for (int i = 0; i < argc; i++) {
       int lastarg = i == argc - 1;
 
@@ -115,23 +115,23 @@ void parseOptions(int argc, char **argv, redisConfig& cfg) {
   }
 }  // namespace
 
-redisConfig::redisConfig()
+RedisConfig::RedisConfig()
   : RemoteConfig(common::net::hostAndPort("127.0.0.1", 6379)) {
   init();
 }
 
-redisConfig::redisConfig(const redisConfig &other)
+RedisConfig::RedisConfig(const RedisConfig &other)
   : RemoteConfig(other.host) {
   init();
   copy(other);
 }
 
-redisConfig& redisConfig::operator=(const redisConfig &other) {
+RedisConfig& RedisConfig::operator=(const RedisConfig &other) {
   copy(other);
   return *this;
 }
 
-void redisConfig::copy(const redisConfig& other) {
+void RedisConfig::copy(const RedisConfig& other) {
   hostsocket = other.hostsocket;
 
   repeat = other.repeat;
@@ -164,7 +164,7 @@ void redisConfig::copy(const redisConfig& other) {
   RemoteConfig::operator=(other);
 }
 
-void redisConfig::init() {
+void RedisConfig::init() {
   hostsocket = std::string();
   repeat = 1;
   interval = 0;
@@ -190,7 +190,7 @@ void redisConfig::init() {
   last_cmd_type = -1;
 }
 
-redisConfig::~redisConfig() {
+RedisConfig::~RedisConfig() {
 }
 
 }  // namespace redis
@@ -198,7 +198,7 @@ redisConfig::~redisConfig() {
 
 namespace common {
 
-std::string convertToString(const fastonosql::redis::redisConfig& conf) {
+std::string convertToString(const fastonosql::redis::RedisConfig& conf) {
   std::vector<std::string> argv = conf.args();
 
   if (!conf.hostsocket.empty()) {
@@ -279,8 +279,8 @@ std::string convertToString(const fastonosql::redis::redisConfig& conf) {
 }
 
 template<>
-fastonosql::redis::redisConfig convertFromString(const std::string& line) {
-  fastonosql::redis::redisConfig cfg;
+fastonosql::redis::RedisConfig convertFromString(const std::string& line) {
+  fastonosql::redis::RedisConfig cfg;
   enum { kMaxArgs = 64 };
   int argc = 0;
   char *argv[kMaxArgs] = {0};

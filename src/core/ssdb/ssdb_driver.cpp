@@ -48,7 +48,7 @@ namespace fastonosql {
 namespace ssdb {
 
 SsdbDriver::SsdbDriver(IConnectionSettingsBaseSPtr settings)
-  : IDriver(settings, SSDB), impl_(new SsdbRaw) {
+  : IDriverRemote(settings, SSDB), impl_(new SsdbRaw) {
 }
 
 SsdbDriver::~SsdbDriver() {
@@ -149,17 +149,13 @@ common::Error SsdbDriver::commandChangeTTLImpl(CommandChangeTTL* command,
   char errorMsg[1024] = {0};
   common::SNPrintf(errorMsg, sizeof(errorMsg),
                    "Sorry, but now " PROJECT_NAME_TITLE " not supported change ttl command for %s.",
-                   common::convertToString(connectionType()));
+                   common::convertToString(type()));
   return common::make_error_value(errorMsg, common::ErrorValue::E_ERROR);
 }
 // ============== commands =============//
 
-common::net::hostAndPort SsdbDriver::address() const {
+common::net::hostAndPort SsdbDriver::host() const {
   return impl_->config_.host;
-}
-
-std::string SsdbDriver::path() const {
-  return std::string();
 }
 
 std::string SsdbDriver::outputDelemitr() const {

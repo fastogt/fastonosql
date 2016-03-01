@@ -25,11 +25,12 @@ namespace fastonosql {
 namespace memcached {
 
 class MemcachedServer
-  : public IServer {
+  : public IServerRemote {
   Q_OBJECT
  public:
   explicit MemcachedServer(IConnectionSettingsBaseSPtr settings);
   virtual serverTypes role() const;
+  virtual common::net::hostAndPort host() const;
 
  private:
   virtual IDatabaseSPtr createDatabase(IDataBaseInfoSPtr info);

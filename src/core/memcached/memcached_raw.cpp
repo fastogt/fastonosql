@@ -28,7 +28,7 @@
 namespace fastonosql {
 namespace memcached {
 namespace {
-common::Error createConnection(const memcachedConfig& config, struct memcached_st** context) {
+common::Error createConnection(const MemcachedConfig& config, struct memcached_st** context) {
   if (!context) {
     return common::make_error_value("Invalid input argument", common::ErrorValue::E_ERROR);
   }
@@ -84,7 +84,7 @@ common::Error createConnection(MemcachedConnectionSettings* settings, struct mem
     return common::make_error_value("Invalid input argument", common::ErrorValue::E_ERROR);
   }
 
-  memcachedConfig config = settings->info();
+  MemcachedConfig config = settings->info();
   return createConnection(config, context);
 }
 }  // namespace
@@ -94,7 +94,7 @@ common::Error testConnection(MemcachedConnectionSettings* settings) {
     return common::make_error_value("Invalid input argument", common::ErrorValue::E_ERROR);
   }
 
-  memcachedConfig inf = settings->info();
+  MemcachedConfig inf = settings->info();
   const char* user = common::utils::c_strornull(inf.user);
   const char* passwd = common::utils::c_strornull(inf.password);
   const char* host = common::utils::c_strornull(inf.host.host);

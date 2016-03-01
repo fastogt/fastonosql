@@ -39,7 +39,7 @@ namespace fastonosql {
 namespace lmdb {
 
 LmdbDriver::LmdbDriver(IConnectionSettingsBaseSPtr settings)
-  : IDriver(settings, LMDB), impl_(new LmdbRaw) {
+  : IDriverLocal(settings, LMDB), impl_(new LmdbRaw) {
 }
 
 LmdbDriver::~LmdbDriver() {
@@ -108,15 +108,13 @@ common::Error LmdbDriver::commandChangeTTLImpl(CommandChangeTTL* command,
   }
 
   char errorMsg[1024] = {0};
-  common::SNPrintf(errorMsg, sizeof(errorMsg), "Sorry, but now " PROJECT_NAME_TITLE " not supported change ttl command for %s.", common::convertToString(connectionType()));
+  common::SNPrintf(errorMsg, sizeof(errorMsg),
+                   "Sorry, but now " PROJECT_NAME_TITLE " not supported change ttl command for %s.",
+                   common::convertToString(type()));
   return common::make_error_value(errorMsg, common::ErrorValue::E_ERROR);
 }
 
 // ============== commands =============//
-
-common::net::hostAndPort LmdbDriver::address() const {
-  return common::net::hostAndPort();
-}
 
 std::string LmdbDriver::path() const {
   return impl_->config_.dbname;

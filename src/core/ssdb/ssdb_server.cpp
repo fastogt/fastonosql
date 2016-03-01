@@ -25,11 +25,16 @@ namespace fastonosql {
 namespace ssdb {
 
 SsdbServer::SsdbServer(IConnectionSettingsBaseSPtr settings)
-  : IServer(new SsdbDriver(settings)) {
+  : IServerRemote(new SsdbDriver(settings)) {
 }
 
 serverTypes SsdbServer::role() const {
   return MASTER;
+}
+
+common::net::hostAndPort SsdbServer::host() const {
+  SsdbDriver* const rdrv = static_cast<SsdbDriver* const>(drv_);
+  return rdrv->host();
 }
 
 IDatabaseSPtr SsdbServer::createDatabase(IDataBaseInfoSPtr info) {

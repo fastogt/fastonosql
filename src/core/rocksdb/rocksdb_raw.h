@@ -55,7 +55,7 @@ struct RocksdbRaw
                      uint64_t limit, std::vector<std::string> *ret);
   common::Error help(int argc, char** argv);
 
-  rocksdbConfig config_;
+  RocksdbConfig config_;
  private:
   ::rocksdb::DB* rocksdb_;
 };

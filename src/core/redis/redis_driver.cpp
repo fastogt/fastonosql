@@ -90,19 +90,15 @@ RedisCommand* createCommandFast(const std::string& input, common::Value::Command
 }
 
 RedisDriver::RedisDriver(IConnectionSettingsBaseSPtr settings)
-  : IDriver(settings, REDIS), impl_(new RedisRaw(this)) {
+  : IDriverRemote(settings, REDIS), impl_(new RedisRaw(this)) {
 }
 
 RedisDriver::~RedisDriver() {
   delete impl_;
 }
 
-common::net::hostAndPort RedisDriver::address() const {
+common::net::hostAndPort RedisDriver::host() const {
   return impl_->config_.host;
-}
-
-std::string RedisDriver::path() const {
-  return impl_->config_.hostsocket;
 }
 
 std::string RedisDriver::outputDelemitr() const {

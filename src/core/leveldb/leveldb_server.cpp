@@ -25,11 +25,12 @@ namespace fastonosql {
 namespace leveldb {
 
 LeveldbServer::LeveldbServer(IConnectionSettingsBaseSPtr settings)
-  : IServer(new LeveldbDriver(settings)) {
+  : IServerLocal(new LeveldbDriver(settings)) {
 }
 
-serverTypes LeveldbServer::role() const {
-  return MASTER;
+std::string LeveldbServer::path() const {
+  LeveldbDriver* const ldrv = static_cast<LeveldbDriver* const>(drv_);
+  return ldrv->path();
 }
 
 IDatabaseSPtr LeveldbServer::createDatabase(IDataBaseInfoSPtr info) {

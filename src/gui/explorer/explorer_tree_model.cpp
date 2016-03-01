@@ -266,18 +266,21 @@ QVariant ExplorerTreeModel::data(const QModelIndex& index, int role) const {
                        "<b>Host:</b> %3<br/>").arg(dname).arg(dtype).arg(dhost);
       } else {
         QString sname = server->name();
-        QString stype = common::convertFromString<QString>(common::convertToString(server->role()));
         bool isCanRemote = server->isCanRemote();
         if (isCanRemote) {
-          QString shost = common::convertFromString<QString>(common::convertToString(server->address()));
+          IServerRemote* rserver = dynamic_cast<IServerRemote*>(server.get());
+          CHECK(rserver);
+          QString stype = common::convertFromString<QString>(common::convertToString(rserver->role()));
+          QString shost = common::convertFromString<QString>(common::convertToString(rserver->host()));
           return QString("<b>Name:</b> %1<br/>"
                          "<b>Type:</b> %2<br/>"
                          "<b>Host:</b> %3<br/>").arg(sname).arg(stype).arg(shost);
         } else {
-          QString spath = server->path();
+          IServerLocal* lserver = dynamic_cast<IServerLocal*>(server.get());
+          CHECK(lserver);
+          QString spath = common::convertFromString<QString>(lserver->path());
           return QString("<b>Name:</b> %1<br/>"
-                         "<b>Type:</b> %2<br/>"
-                         "<b>Path:</b> %3<br/>").arg(sname).arg(stype).arg(spath);
+                         "<b>Path:</b> %3<br/>").arg(sname).arg(spath);
         }
       }
     } else if (t == IExplorerTreeItem::eDatabase) {

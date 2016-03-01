@@ -28,24 +28,24 @@ namespace fastonosql {
 namespace unqlite {
 
 class UnqliteConnectionSettings
-  : public IConnectionSettingsBase {
+  : public IConnectionSettingsLocal {
  public:
   explicit UnqliteConnectionSettings(const std::string& connectionName);
+
+  virtual std::string path() const;
 
   virtual std::string commandLine() const;
   virtual void setCommandLine(const std::string& line);
 
-  unqliteConfig info() const;
-  void setInfo(const unqliteConfig &info);
+  UnqliteConfig info() const;
+  void setInfo(const UnqliteConfig &info);
 
   virtual std::string fullAddress() const;
 
   virtual IConnectionSettings* clone() const;
 
  private:
-  virtual std::string toCommandLine() const;
-  virtual void initFromCommandLine(const std::string& val);
-  unqliteConfig info_;
+  UnqliteConfig info_;
 };
 
 }  // namespace unqlite

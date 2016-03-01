@@ -25,11 +25,11 @@ namespace fastonosql {
 namespace lmdb {
 
 class LmdbServer
-  : public IServer {
+  : public IServerLocal {
   Q_OBJECT
  public:
   explicit LmdbServer(IConnectionSettingsBaseSPtr settings);
-  virtual serverTypes role() const;
+  virtual std::string path() const;
 
  private:
   virtual IDatabaseSPtr createDatabase(IDataBaseInfoSPtr info);

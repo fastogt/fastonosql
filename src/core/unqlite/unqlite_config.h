@@ -27,9 +27,9 @@
 namespace fastonosql {
 namespace unqlite {
 
-struct unqliteConfig
+struct UnqliteConfig
   : public LocalConfig {
-  unqliteConfig();
+  UnqliteConfig();
 
   bool create_if_missing;
 };
@@ -38,5 +38,5 @@ struct unqliteConfig
 }  // namespace fastonosql
 
 namespace common {
-  std::string convertToString(const fastonosql::unqlite::unqliteConfig &conf);
+  std::string convertToString(const fastonosql::unqlite::UnqliteConfig &conf);
 }

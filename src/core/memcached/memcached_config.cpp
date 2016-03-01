@@ -28,7 +28,7 @@ namespace memcached {
 
 namespace {
 
-void parseOptions(int argc, char **argv, memcachedConfig& cfg) {
+void parseOptions(int argc, char **argv, MemcachedConfig& cfg) {
   for (int i = 0; i < argc; i++) {
     int lastarg = i == argc-1;
 
@@ -59,7 +59,7 @@ void parseOptions(int argc, char **argv, memcachedConfig& cfg) {
 
 }  // namespace
 
-memcachedConfig::memcachedConfig()
+MemcachedConfig::MemcachedConfig()
   : RemoteConfig(common::net::hostAndPort("localhost", 11211)), user(), password() {
 }
 
@@ -68,7 +68,7 @@ memcachedConfig::memcachedConfig()
 
 namespace common {
 
-std::string convertToString(const fastonosql::memcached::memcachedConfig &conf) {
+std::string convertToString(const fastonosql::memcached::MemcachedConfig &conf) {
   std::vector<std::string> argv = conf.args();
 
   if (!conf.user.empty()) {
@@ -93,8 +93,8 @@ std::string convertToString(const fastonosql::memcached::memcachedConfig &conf) 
 }
 
 template<>
-fastonosql::memcached::memcachedConfig convertFromString(const std::string& line) {
-  fastonosql::memcached::memcachedConfig cfg;
+fastonosql::memcached::MemcachedConfig convertFromString(const std::string& line) {
+  fastonosql::memcached::MemcachedConfig cfg;
   enum { kMaxArgs = 64 };
   int argc = 0;
   char *argv[kMaxArgs] = {0};

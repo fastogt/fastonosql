@@ -39,7 +39,7 @@ namespace fastonosql {
 namespace unqlite {
 
 UnqliteDriver::UnqliteDriver(IConnectionSettingsBaseSPtr settings)
-  : IDriver(settings, UNQLITE), impl_(new UnqliteRaw) {
+  : IDriverLocal(settings, UNQLITE), impl_(new UnqliteRaw) {
 }
 
 UnqliteDriver::~UnqliteDriver() {
@@ -112,15 +112,11 @@ common::Error UnqliteDriver::commandChangeTTLImpl(CommandChangeTTL* command,
   char errorMsg[1024] = {0};
   common::SNPrintf(errorMsg, sizeof(errorMsg),
                    "Sorry, but now " PROJECT_NAME_TITLE " not supported change ttl command for %s.",
-                   common::convertToString(connectionType()));
+                   common::convertToString(type()));
   return common::make_error_value(errorMsg, common::ErrorValue::E_ERROR);
 }
 
 // ============== commands =============//
-
-common::net::hostAndPort UnqliteDriver::address() const {
-  return common::net::hostAndPort();
-}
 
 std::string UnqliteDriver::path() const {
   return impl_->config_.dbname;

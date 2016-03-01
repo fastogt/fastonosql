@@ -24,7 +24,11 @@ namespace fastonosql {
 namespace lmdb {
 
 LmdbConnectionSettings::LmdbConnectionSettings(const std::string& connectionName)
-  : IConnectionSettingsBase(connectionName, LMDB), info_() {
+  : IConnectionSettingsLocal(connectionName, LMDB), info_() {
+}
+
+std::string LmdbConnectionSettings::path() const {
+  return info_.dbname;
 }
 
 std::string LmdbConnectionSettings::commandLine() const {
@@ -32,14 +36,14 @@ std::string LmdbConnectionSettings::commandLine() const {
 }
 
 void LmdbConnectionSettings::setCommandLine(const std::string& line) {
-  info_ = common::convertFromString<lmdbConfig>(line);
+  info_ = common::convertFromString<LmdbConfig>(line);
 }
 
-lmdbConfig LmdbConnectionSettings::info() const {
+LmdbConfig LmdbConnectionSettings::info() const {
   return info_;
 }
 
-void LmdbConnectionSettings::setInfo(const lmdbConfig &info) {
+void LmdbConnectionSettings::setInfo(const LmdbConfig &info) {
   info_ = info;
 }
 
@@ -50,15 +54,6 @@ std::string LmdbConnectionSettings::fullAddress() const {
 IConnectionSettings* LmdbConnectionSettings::clone() const {
   LmdbConnectionSettings *red = new LmdbConnectionSettings(*this);
   return red;
-}
-
-std::string LmdbConnectionSettings::toCommandLine() const {
-  std::string result = common::convertToString(info_);
-  return result;
-}
-
-void LmdbConnectionSettings::initFromCommandLine(const std::string& val) {
-  info_ = common::convertFromString<lmdbConfig>(val);
 }
 
 }  // namespace lmdb

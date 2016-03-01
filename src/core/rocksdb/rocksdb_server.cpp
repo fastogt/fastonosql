@@ -25,11 +25,12 @@ namespace fastonosql {
 namespace rocksdb {
 
 RocksdbServer::RocksdbServer(IConnectionSettingsBaseSPtr settings)
-  : IServer(new RocksdbDriver(settings)) {
+  : IServerLocal(new RocksdbDriver(settings)) {
 }
 
-serverTypes RocksdbServer::role() const {
-  return MASTER;
+std::string RocksdbServer::path() const {
+  RocksdbDriver* const ldrv = static_cast<RocksdbDriver* const>(drv_);
+  return ldrv->path();
 }
 
 IDatabaseSPtr RocksdbServer::createDatabase(IDataBaseInfoSPtr info) {

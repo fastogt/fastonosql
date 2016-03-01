@@ -37,7 +37,7 @@ namespace fastonosql {
 namespace memcached {
 
 MemcachedDriver::MemcachedDriver(IConnectionSettingsBaseSPtr settings)
-  : IDriver(settings, MEMCACHED), impl_(new MemcachedRaw) {
+  : IDriverRemote(settings, MEMCACHED), impl_(new MemcachedRaw) {
 }
 
 MemcachedDriver::~MemcachedDriver() {
@@ -52,12 +52,8 @@ bool MemcachedDriver::isAuthenticated() const {
   return impl_->isConnected();
 }
 
-common::net::hostAndPort MemcachedDriver::address() const {
+common::net::hostAndPort MemcachedDriver::host() const {
   return impl_->config_.host;
-}
-
-std::string MemcachedDriver::path() const {
-  return std::string();
 }
 
 std::string MemcachedDriver::outputDelemitr() const {
@@ -360,7 +356,9 @@ common::Error MemcachedDriver::commandChangeTTLImpl(CommandChangeTTL* command,
   }
 
   char errorMsg[1024] = {0};
-  common::SNPrintf(errorMsg, sizeof(errorMsg), "Sorry, but now " PROJECT_NAME_TITLE " not supported change ttl command for %s.", common::convertToString(connectionType()));
+  common::SNPrintf(errorMsg, sizeof(errorMsg),
+                   "Sorry, but now " PROJECT_NAME_TITLE " not supported change ttl command for %s.",
+                   common::convertToString(type()));
   return common::make_error_value(errorMsg, common::ErrorValue::E_ERROR);
 }
 

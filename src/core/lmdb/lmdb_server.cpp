@@ -25,11 +25,12 @@ namespace fastonosql {
 namespace lmdb {
 
 LmdbServer::LmdbServer(IConnectionSettingsBaseSPtr settings)
-  : IServer(new LmdbDriver(settings)) {
+  : IServerLocal(new LmdbDriver(settings)) {
 }
 
-serverTypes LmdbServer::role() const {
-  return MASTER;
+std::string LmdbServer::path() const {
+  LmdbDriver* const ldrv = static_cast<LmdbDriver* const>(drv_);
+  return ldrv->path();
 }
 
 IDatabaseSPtr LmdbServer::createDatabase(IDataBaseInfoSPtr info) {

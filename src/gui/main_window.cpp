@@ -369,7 +369,7 @@ void MainWindow::openRecentConnection() {
   for (SettingsManager::ConnectionSettingsContainerType::const_iterator it = conns.begin();
        it != conns.end(); ++it) {
     IConnectionSettingsBaseSPtr con = *it;
-    if (con && con->connectionName() == srcon) {
+    if (con && con->name() == srcon) {
       createServer(con);
       return;
     }
@@ -699,7 +699,7 @@ void MainWindow::createServer(IConnectionSettingsBaseSPtr settings) {
     return;
   }
 
-  QString rcon = common::convertFromString<QString>(settings->connectionName());
+  QString rcon = common::convertFromString<QString>(settings->name());
   SettingsManager::instance().removeRConnection(rcon);
   IServerSPtr server = ServersManager::instance().createServer(settings);
   exp_->addServer(server);
@@ -721,7 +721,7 @@ void MainWindow::createCluster(IClusterSettingsBaseSPtr settings) {
   if (!settings->root()) {
     QMessageBox::critical(this, QObject::tr("Cluster open failed"),
                           QObject::tr("Imposible open cluster \"%1\" without connections!").
-                          arg(common::convertFromString<QString>(settings->connectionName())));
+                          arg(common::convertFromString<QString>(settings->name())));
     return;
   }
 

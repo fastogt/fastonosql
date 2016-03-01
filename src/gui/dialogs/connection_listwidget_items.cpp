@@ -35,8 +35,8 @@ void ConnectionListWidgetItem::setConnection(IConnectionSettingsBaseSPtr cons) {
   }
 
   connection_ = cons;
-  setText(0, common::convertFromString<QString>(connection_->connectionName()));
-  connectionTypes conType = connection_->connectionType();
+  setText(0, common::convertFromString<QString>(connection_->name()));
+  connectionTypes conType = connection_->type();
   setIcon(0, GuiFactory::instance().icon(conType));
   setText(1, common::convertFromString<QString>(connection_->fullAddress()));
 }
@@ -54,7 +54,7 @@ ConnectionListWidgetItemEx::ConnectionListWidgetItemEx(IConnectionSettingsBaseSP
 
 ClusterConnectionListWidgetItem::ClusterConnectionListWidgetItem(IClusterSettingsBaseSPtr connection)
   : connection_(connection) {
-  setText(0, common::convertFromString<QString>(connection_->connectionName()));
+  setText(0, common::convertFromString<QString>(connection_->name()));
   setIcon(0, GuiFactory::instance().clusterIcon());
 
   IClusterSettingsBase::cluster_connection_type servers = connection_->nodes();
@@ -72,7 +72,7 @@ void ClusterConnectionListWidgetItem::setConnection(IClusterSettingsBaseSPtr con
   }
 
   connection_ = cons;
-  setText(0, common::convertFromString<QString>(connection_->connectionName()));
+  setText(0, common::convertFromString<QString>(connection_->name()));
   setIcon(0, GuiFactory::instance().clusterIcon());
 }
 

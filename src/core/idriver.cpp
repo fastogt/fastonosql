@@ -149,7 +149,7 @@ common::Error IDriver::execute(FastoObjectCommand* cmd) {
 IDriver::IDriver(IConnectionSettingsBaseSPtr settings, connectionTypes type)
   : settings_(settings), interrupt_(false), server_disc_info_(), thread_(nullptr),
     timer_info_id_(0), log_file_(nullptr), type_(type) {
-  CHECK(settings->connectionType() == type);
+  CHECK(settings->type() == type);
 
   thread_ = new QThread(this);
   moveToThread(thread_);
@@ -166,8 +166,7 @@ void IDriver::reply(QObject *reciver, QEvent *ev) {
   qApp->postEvent(reciver, ev);
 }
 
-connectionTypes IDriver::connectionType() const {
-  DCHECK(type_ == settings_->connectionType());
+connectionTypes IDriver::type() const {
   return type_;
 }
 
@@ -175,8 +174,8 @@ ServerDiscoveryInfoSPtr IDriver::serverDiscoveryInfo() const {
   return server_disc_info_;
 }
 
-IConnectionSettingsBaseSPtr IDriver::settings() const {
-  return settings_;
+std::string IDriver::connectionName() const {
+  return settings_->name();
 }
 
 IServerInfoSPtr IDriver::serverInfo() const {
@@ -533,6 +532,18 @@ void IDriver::addedChildren(FastoObject* child) {
 
 void IDriver::updated(FastoObject* item, common::Value* val) {
   emit itemUpdated(item, val);
+}
+
+IDriverLocal::IDriverLocal(IConnectionSettingsBaseSPtr settings, connectionTypes type)
+  : IDriver(settings, type) {
+  CHECK(type == settings->type());
+  CHECK(!isRemoteType(type));
+}
+
+IDriverRemote::IDriverRemote(IConnectionSettingsBaseSPtr settings, connectionTypes type)
+  : IDriver(settings, type) {
+  CHECK(type == settings->type());
+  CHECK(isRemoteType(type));
 }
 
 }  // namespace fastonosql

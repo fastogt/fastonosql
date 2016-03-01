@@ -29,7 +29,7 @@ namespace fastonosql {
 namespace ssdb {
 namespace {
 
-void parseOptions(int argc, char **argv, ssdbConfig& cfg) {
+void parseOptions(int argc, char **argv, SsdbConfig& cfg) {
   for (int i = 0; i < argc; i++) {
       int lastarg = i == argc - 1;
 
@@ -61,7 +61,7 @@ void parseOptions(int argc, char **argv, ssdbConfig& cfg) {
 
 }  // namespace
 
-ssdbConfig::ssdbConfig()
+SsdbConfig::SsdbConfig()
   : RemoteConfig(common::net::hostAndPort("localhost", 8888)), user(), password() {
 }
 
@@ -70,7 +70,7 @@ ssdbConfig::ssdbConfig()
 
 namespace common {
 
-std::string convertToString(const fastonosql::ssdb::ssdbConfig &conf) {
+std::string convertToString(const fastonosql::ssdb::SsdbConfig &conf) {
   std::vector<std::string> argv = conf.args();
 
   if (!conf.user.empty()) {
@@ -95,8 +95,8 @@ std::string convertToString(const fastonosql::ssdb::ssdbConfig &conf) {
 }
 
 template<>
-fastonosql::ssdb::ssdbConfig convertFromString(const std::string& line) {
-  fastonosql::ssdb::ssdbConfig cfg;
+fastonosql::ssdb::SsdbConfig convertFromString(const std::string& line) {
+  fastonosql::ssdb::SsdbConfig cfg;
   enum { kMaxArgs = 64 };
   int argc = 0;
   char *argv[kMaxArgs] = {0};

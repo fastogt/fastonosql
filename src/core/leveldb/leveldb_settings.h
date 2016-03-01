@@ -28,24 +28,24 @@ namespace fastonosql {
 namespace leveldb {
 
 class LeveldbConnectionSettings
-  : public IConnectionSettingsBase {
+  : public IConnectionSettingsLocal {
  public:
   explicit LeveldbConnectionSettings(const std::string& connectionName);
+
+  virtual std::string path() const;
 
   virtual std::string commandLine() const;
   virtual void setCommandLine(const std::string& line);
 
-  leveldbConfig info() const;
-  void setInfo(const leveldbConfig &info);
+  LeveldbConfig info() const;
+  void setInfo(const LeveldbConfig &info);
 
   virtual std::string fullAddress() const;
 
   virtual IConnectionSettings* clone() const;
 
  private:
-  virtual std::string toCommandLine() const;
-  virtual void initFromCommandLine(const std::string& val);
-  leveldbConfig info_;
+  LeveldbConfig info_;
 };
 
 }  // namespace leveldb

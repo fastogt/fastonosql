@@ -25,11 +25,12 @@ namespace fastonosql {
 namespace redis {
 
 class RedisServer
-  : public IServer {
+  : public IServerRemote {
   Q_OBJECT
  public:
   explicit RedisServer(IConnectionSettingsBaseSPtr settings);
   virtual serverTypes role() const;
+  virtual common::net::hostAndPort host() const;
 
  protected:
   virtual void handleDiscoveryInfoResponceEvent(events::DiscoveryInfoResponceEvent* ev);

@@ -41,7 +41,6 @@ class IServer
  public:
   typedef std::vector<IDataBaseInfoSPtr> databases_container_t;
 
-  explicit IServer(IDriver* drv);  // take ownerships
   virtual ~IServer();
 
   //sync methods
@@ -49,10 +48,6 @@ class IServer
   bool isConnected() const;
   bool isAuthenticated() const;
   bool isCanRemote() const;
-  virtual serverTypes role() const = 0;
-
-  common::net::hostAndPort address() const;
-  QString path() const;
 
   connectionTypes type() const;
   QString name() const;
@@ -153,6 +148,8 @@ class IServer
   void changeProperty(const events_info::ChangeServerPropertyInfoRequest &req);  // signals: startedChangeServerProperty, finishedChangeServerProperty
 
  protected:
+  explicit IServer(IDriver* drv);  // take ownerships
+
   virtual void customEvent(QEvent* event);
 
   virtual IDatabaseSPtr createDatabase(IDataBaseInfoSPtr info) = 0;
@@ -191,6 +188,25 @@ class IServer
 
   void processConfigArgs(const events_info::ProcessConfigArgsInfoRequest &req);
   void processDiscoveryInfo(const events_info::DiscoveryInfoRequest &req);
+};
+
+class IServerLocal
+  : public IServer {
+  Q_OBJECT
+ public:
+  virtual std::string path() const = 0;
+ protected:
+  IServerLocal(IDriver* drv);
+};
+
+class IServerRemote
+  : public IServer {
+  Q_OBJECT
+ public:
+  virtual serverTypes role() const = 0;
+  virtual common::net::hostAndPort host() const = 0;
+ protected:
+  IServerRemote(IDriver* drv);
 };
 
 }  // namespace fastonosql

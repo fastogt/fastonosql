@@ -30,7 +30,7 @@ namespace fastonosql {
 namespace unqlite {
 namespace {
 
-void parseOptions(int argc, char **argv, unqliteConfig& cfg) {
+void parseOptions(int argc, char **argv, UnqliteConfig& cfg) {
   for (int i = 0; i < argc; i++) {
     int lastarg = i == argc-1;
 
@@ -58,7 +58,7 @@ void parseOptions(int argc, char **argv, unqliteConfig& cfg) {
 
 }  // namespace
 
-unqliteConfig::unqliteConfig()
+UnqliteConfig::UnqliteConfig()
   : LocalConfig(common::file_system::prepare_path("~/test.unqlite")), create_if_missing(false) {
 }
 
@@ -67,7 +67,7 @@ unqliteConfig::unqliteConfig()
 
 namespace common {
 
-std::string convertToString(const fastonosql::unqlite::unqliteConfig &conf) {
+std::string convertToString(const fastonosql::unqlite::UnqliteConfig &conf) {
   std::vector<std::string> argv = conf.args();
 
   if (conf.create_if_missing) {
@@ -86,8 +86,8 @@ std::string convertToString(const fastonosql::unqlite::unqliteConfig &conf) {
 }
 
 template<>
-fastonosql::unqlite::unqliteConfig convertFromString(const std::string& line) {
-  fastonosql::unqlite::unqliteConfig cfg;
+fastonosql::unqlite::UnqliteConfig convertFromString(const std::string& line) {
+  fastonosql::unqlite::UnqliteConfig cfg;
   enum { kMaxArgs = 64 };
   int argc = 0;
   char *argv[kMaxArgs] = {0};

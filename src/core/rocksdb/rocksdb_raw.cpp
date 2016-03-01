@@ -37,7 +37,7 @@ namespace rocksdb {
 
 namespace {
 
-common::Error createConnection(const rocksdb::rocksdbConfig& config, ::rocksdb::DB** context) {
+common::Error createConnection(const rocksdb::RocksdbConfig& config, ::rocksdb::DB** context) {
   if (!context) {
     return common::make_error_value("Invalid input argument", common::ErrorValue::E_ERROR);
   }
@@ -60,7 +60,7 @@ common::Error createConnection(RocksdbConnectionSettings* settings, ::rocksdb::D
     return common::make_error_value("Invalid input argument", common::ErrorValue::E_ERROR);
   }
 
-  rocksdbConfig config = settings->info();
+  RocksdbConfig config = settings->info();
   return createConnection(config, context);
 }
 

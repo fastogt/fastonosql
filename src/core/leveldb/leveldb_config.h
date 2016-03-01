@@ -29,9 +29,9 @@
 namespace fastonosql {
 namespace leveldb {
 
-struct leveldbConfig
+struct LeveldbConfig
   : public LocalConfig {
-  leveldbConfig();
+  LeveldbConfig();
 
   ::leveldb::Options options;
 };
@@ -40,5 +40,5 @@ struct leveldbConfig
 }  // namespace fastonosql
 
 namespace common {
-  std::string convertToString(const fastonosql::leveldb::leveldbConfig &conf);
+  std::string convertToString(const fastonosql::leveldb::LeveldbConfig &conf);
 }  // namespace common

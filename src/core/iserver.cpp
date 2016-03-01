@@ -62,23 +62,15 @@ bool IServer::isAuthenticated() const {
 }
 
 bool IServer::isCanRemote() const {
-  return IConnectionSettingsBase::isRemoteType(type());
-}
-
-common::net::hostAndPort IServer::address() const {
-  return drv_->address();
-}
-
-QString IServer::path() const {
-  return common::convertFromString<QString>(drv_->path());
+  return isRemoteType(type());
 }
 
 connectionTypes IServer::type() const {
-  return drv_->connectionType();
+  return drv_->type();
 }
 
 QString IServer::name() const {
-  return common::convertFromString<QString>(drv_->settings()->connectionName());
+  return common::convertFromString<QString>(drv_->connectionName());
 }
 
 ServerDiscoveryInfoSPtr IServer::discoveryInfo() const {
@@ -512,6 +504,16 @@ void IServer::processDiscoveryInfo(const events_info::DiscoveryInfoRequest& req)
   emit startedLoadDiscoveryInfo(req);
   QEvent *ev = new events::DiscoveryInfoRequestEvent(this, req);
   notify(ev);
+}
+
+IServerLocal::IServerLocal(IDriver* drv)
+  : IServer(drv){
+  CHECK(!isRemoteType(drv->type()));
+}
+
+IServerRemote::IServerRemote(IDriver* drv)
+  : IServer(drv){
+  CHECK(isRemoteType(drv->type()));
 }
 
 }  // namespace fastonosql

@@ -24,7 +24,11 @@ namespace fastonosql {
 namespace unqlite {
 
 UnqliteConnectionSettings::UnqliteConnectionSettings(const std::string& connectionName)
-  : IConnectionSettingsBase(connectionName, UNQLITE), info_() {
+  : IConnectionSettingsLocal(connectionName, UNQLITE), info_() {
+}
+
+std::string UnqliteConnectionSettings::path() const {
+  return info_.dbname;
 }
 
 std::string UnqliteConnectionSettings::commandLine() const {
@@ -32,14 +36,14 @@ std::string UnqliteConnectionSettings::commandLine() const {
 }
 
 void UnqliteConnectionSettings::setCommandLine(const std::string& line) {
-  info_ = common::convertFromString<unqliteConfig>(line);
+  info_ = common::convertFromString<UnqliteConfig>(line);
 }
 
-unqliteConfig UnqliteConnectionSettings::info() const {
+UnqliteConfig UnqliteConnectionSettings::info() const {
   return info_;
 }
 
-void UnqliteConnectionSettings::setInfo(const unqliteConfig &info) {
+void UnqliteConnectionSettings::setInfo(const UnqliteConfig &info) {
   info_ = info;
 }
 
@@ -50,15 +54,6 @@ std::string UnqliteConnectionSettings::fullAddress() const {
 IConnectionSettings* UnqliteConnectionSettings::clone() const {
   UnqliteConnectionSettings *red = new UnqliteConnectionSettings(*this);
   return red;
-}
-
-std::string UnqliteConnectionSettings::toCommandLine() const {
-  std::string result = common::convertToString(info_);
-  return result;
-}
-
-void UnqliteConnectionSettings::initFromCommandLine(const std::string& val) {
-  info_ = common::convertFromString<unqliteConfig>(val);
 }
 
 }  // namespace unqlite

@@ -25,11 +25,11 @@ namespace fastonosql {
 namespace rocksdb {
 
 class RocksdbServer
-  : public IServer {
+  : public IServerLocal {
   Q_OBJECT
  public:
   explicit RocksdbServer(IConnectionSettingsBaseSPtr settings);
-  virtual serverTypes role() const;
+  std::string path() const;
 
  private:
   virtual IDatabaseSPtr createDatabase(IDataBaseInfoSPtr info);

@@ -25,11 +25,12 @@ namespace fastonosql {
 namespace unqlite {
 
 UnqliteServer::UnqliteServer(IConnectionSettingsBaseSPtr settings)
-  : IServer(new UnqliteDriver(settings)) {
+  : IServerLocal(new UnqliteDriver(settings)) {
 }
 
-serverTypes UnqliteServer::role() const {
-  return MASTER;
+std::string UnqliteServer::path() const {
+  UnqliteDriver* const ldrv = static_cast<UnqliteDriver* const>(drv_);
+  return ldrv->path();
 }
 
 IDatabaseSPtr UnqliteServer::createDatabase(IDataBaseInfoSPtr info) {

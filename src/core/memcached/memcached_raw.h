@@ -64,7 +64,7 @@ struct MemcachedRaw
   common::Error version_server() const;
   common::Error help(int argc, char** argv);
 
-  memcachedConfig config_;
+  MemcachedConfig config_;
   SSHInfo sinfo_;
 
  private:

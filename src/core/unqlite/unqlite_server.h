@@ -25,11 +25,11 @@ namespace fastonosql {
 namespace unqlite {
 
 class UnqliteServer
-  : public IServer {
+  : public IServerLocal {
   Q_OBJECT
  public:
   explicit UnqliteServer(IConnectionSettingsBaseSPtr settings);
-  virtual serverTypes role() const;
+  virtual std::string path() const;
 
  private:
   virtual IDatabaseSPtr createDatabase(IDataBaseInfoSPtr info);

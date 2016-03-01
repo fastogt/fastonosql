@@ -33,10 +33,10 @@ class IConnectionSettings {
  public:
   virtual ~IConnectionSettings();
 
-  std::string connectionName() const;
-  void setConnectionName(const std::string& name);
+  std::string name() const;
+  void setName(const std::string& name);
 
-  connectionTypes connectionType() const;
+  connectionTypes type() const;
 
   bool loggingEnabled() const;
 
@@ -53,6 +53,8 @@ class IConnectionSettings {
   const connectionTypes type_;
   uint32_t msinterval_;
 };
+
+bool isRemoteType(connectionTypes type);
 
 class IConnectionSettingsBase
   : public IConnectionSettings {
@@ -71,19 +73,25 @@ class IConnectionSettingsBase
 
   static IConnectionSettingsBase* createFromType(connectionTypes type, const std::string& conName);
   static IConnectionSettingsBase* fromString(const std::string& val);
-  static bool isRemoteType(connectionTypes type);
 
   virtual std::string toString() const;
 
  protected:
-  virtual std::string toCommandLine() const = 0;
-  virtual void initFromCommandLine(const std::string& val) = 0;
   IConnectionSettingsBase(const std::string& connectionName, connectionTypes type);
 
  private:
-  using IConnectionSettings::setConnectionName;
+  using IConnectionSettings::setName;
 
   std::string hash_;
+};
+
+class IConnectionSettingsLocal
+  : public IConnectionSettingsBase {
+ public:
+  virtual std::string path() const = 0;
+
+ protected:
+  IConnectionSettingsLocal(const std::string& connectionName, connectionTypes type);
 };
 
 class IConnectionSettingsRemote
@@ -108,15 +116,13 @@ class IConnectionSettingsRemote
   void setSshInfo(const SSHInfo& info);
 
  protected:
-  virtual std::string toCommandLine() const = 0;
-  virtual void initFromCommandLine(const std::string& val) = 0;
   IConnectionSettingsRemote(const std::string& connectionName, connectionTypes type);
 
  private:
   SSHInfo ssh_info_;
 };
 
-const char *useHelpText(connectionTypes type);
+const char* useHelpText(connectionTypes type);
 std::string defaultCommandLine(connectionTypes type);
 
 typedef common::shared_ptr<IConnectionSettingsBase> IConnectionSettingsBaseSPtr;

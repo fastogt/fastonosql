@@ -29,7 +29,7 @@ namespace fastonosql {
 namespace redis {
 
 class RedisDriver
-      : public IDriver, public IRedisRawOwner {
+      : public IDriverRemote, public IRedisRawOwner {
  Q_OBJECT
  public:
   explicit RedisDriver(IConnectionSettingsBaseSPtr settings);
@@ -37,8 +37,7 @@ class RedisDriver
 
   virtual bool isConnected() const;
   virtual bool isAuthenticated() const;
-  virtual common::net::hostAndPort address() const;
-  virtual std::string path() const;
+  virtual common::net::hostAndPort host() const;
   virtual std::string outputDelemitr() const;
 
  private:

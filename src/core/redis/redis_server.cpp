@@ -25,11 +25,16 @@ namespace fastonosql {
 namespace redis {
 
 RedisServer::RedisServer(IConnectionSettingsBaseSPtr settings)
-  : IServer(new RedisDriver(settings)), role_(SLAVE) {
+  : IServerRemote(new RedisDriver(settings)), role_(SLAVE) {
 }
 
 serverTypes RedisServer::role() const {
   return role_;
+}
+
+common::net::hostAndPort RedisServer::host() const {
+  RedisDriver* const rdrv = static_cast<RedisDriver* const>(drv_);
+  return rdrv->host();
 }
 
 IDatabaseSPtr RedisServer::createDatabase(IDataBaseInfoSPtr info) {

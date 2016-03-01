@@ -61,7 +61,7 @@ ClusterDialog::ClusterDialog(QWidget* parent, IClusterSettingsBase *connection)
   connectionName_ = new QLineEdit;
   QString conName = defaultNameConnection;
   if (cluster_connection_) {
-    conName = common::convertFromString<QString>(cluster_connection_->connectionName());
+    conName = common::convertFromString<QString>(cluster_connection_->name());
   }
   connectionName_->setText(conName);
   typeConnection_ = new QComboBox;
@@ -74,7 +74,7 @@ ClusterDialog::ClusterDialog(QWidget* parent, IClusterSettingsBase *connection)
   }
 
   if (cluster_connection_) {
-    typeConnection_->setCurrentIndex(cluster_connection_->connectionType());
+    typeConnection_->setCurrentIndex(cluster_connection_->type());
   }
 
   typedef void (QComboBox::*qind)(int);

@@ -24,7 +24,11 @@ namespace fastonosql {
 namespace leveldb {
 
 LeveldbConnectionSettings::LeveldbConnectionSettings(const std::string& connectionName)
-  : IConnectionSettingsBase(connectionName, LEVELDB), info_() {
+  : IConnectionSettingsLocal(connectionName, LEVELDB), info_() {
+}
+
+std::string LeveldbConnectionSettings::path() const {
+  return info_.dbname;
 }
 
 std::string LeveldbConnectionSettings::commandLine() const {
@@ -32,14 +36,14 @@ std::string LeveldbConnectionSettings::commandLine() const {
 }
 
 void LeveldbConnectionSettings::setCommandLine(const std::string& line) {
-  info_ = common::convertFromString<leveldbConfig>(line);
+  info_ = common::convertFromString<LeveldbConfig>(line);
 }
 
-leveldbConfig LeveldbConnectionSettings::info() const {
+LeveldbConfig LeveldbConnectionSettings::info() const {
   return info_;
 }
 
-void LeveldbConnectionSettings::setInfo(const leveldbConfig &info) {
+void LeveldbConnectionSettings::setInfo(const LeveldbConfig &info) {
   info_ = info;
 }
 
@@ -50,15 +54,6 @@ std::string LeveldbConnectionSettings::fullAddress() const {
 IConnectionSettings* LeveldbConnectionSettings::clone() const {
   LeveldbConnectionSettings *red = new LeveldbConnectionSettings(*this);
   return red;
-}
-
-std::string LeveldbConnectionSettings::toCommandLine() const {
-  std::string result = common::convertToString(info_);
-  return result;
-}
-
-void LeveldbConnectionSettings::initFromCommandLine(const std::string& val) {
-  info_ = common::convertFromString<leveldbConfig>(val);
 }
 
 }  // namespace leveldb

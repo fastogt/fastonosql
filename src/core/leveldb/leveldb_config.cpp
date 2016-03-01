@@ -31,7 +31,7 @@ namespace leveldb {
 
 namespace {
 
-void parseOptions(int argc, char **argv, leveldbConfig& cfg) {
+void parseOptions(int argc, char **argv, LeveldbConfig& cfg) {
   for (int i = 0; i < argc; i++) {
     int lastarg = i == argc-1;
 
@@ -59,7 +59,7 @@ void parseOptions(int argc, char **argv, leveldbConfig& cfg) {
 
 }  // namespace
 
-leveldbConfig::leveldbConfig()
+LeveldbConfig::LeveldbConfig()
   : LocalConfig(common::file_system::prepare_path("~/test.leveldb")) {
   options.create_if_missing = false;
 }
@@ -69,7 +69,7 @@ leveldbConfig::leveldbConfig()
 
 namespace common {
 
-std::string convertToString(const fastonosql::leveldb::leveldbConfig &conf) {
+std::string convertToString(const fastonosql::leveldb::LeveldbConfig &conf) {
   std::vector<std::string> argv = conf.args();
 
   if (conf.options.create_if_missing) {
@@ -88,8 +88,8 @@ std::string convertToString(const fastonosql::leveldb::leveldbConfig &conf) {
 }
 
 template<>
-fastonosql::leveldb::leveldbConfig convertFromString(const std::string& line) {
-  fastonosql::leveldb::leveldbConfig cfg;
+fastonosql::leveldb::LeveldbConfig convertFromString(const std::string& line) {
+  fastonosql::leveldb::LeveldbConfig cfg;
   enum { kMaxArgs = 64 };
   int argc = 0;
   char *argv[kMaxArgs] = {0};

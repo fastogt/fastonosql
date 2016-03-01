@@ -54,7 +54,7 @@ class UnqliteRaw
                      uint64_t limit, std::vector<std::string>* ret);
   common::Error help(int argc, char** argv);
 
-  unqliteConfig config_;
+  UnqliteConfig config_;
  private:
   struct unqlite* unqlite_;
 };

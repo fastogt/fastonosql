@@ -40,7 +40,7 @@ namespace fastonosql {
 namespace rocksdb {
 
 RocksdbDriver::RocksdbDriver(IConnectionSettingsBaseSPtr settings)
-  : IDriver(settings, ROCKSDB), impl_(new RocksdbRaw) {
+  : IDriverLocal(settings, ROCKSDB), impl_(new RocksdbRaw) {
 }
 
 RocksdbDriver::~RocksdbDriver() {
@@ -111,15 +111,13 @@ common::Error RocksdbDriver::commandChangeTTLImpl(CommandChangeTTL* command,
   }
 
   char errorMsg[1024] = {0};
-  common::SNPrintf(errorMsg, sizeof(errorMsg), "Sorry, but now " PROJECT_NAME_TITLE " not supported change ttl command for %s.", common::convertToString(connectionType()));
+  common::SNPrintf(errorMsg, sizeof(errorMsg),
+                   "Sorry, but now " PROJECT_NAME_TITLE " not supported change ttl command for %s.",
+                   common::convertToString(type()));
   return common::make_error_value(errorMsg, common::ErrorValue::E_ERROR);
 }
 
 // ============== commands =============//
-
-common::net::hostAndPort RocksdbDriver::address() const {
-  return common::net::hostAndPort();
-}
 
 std::string RocksdbDriver::path() const {
   return impl_->config_.dbname;

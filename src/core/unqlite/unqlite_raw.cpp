@@ -44,7 +44,7 @@ int unqlite_data_callback(const void *pData, unsigned int nDatalen, void *str) {
 namespace fastonosql {
 namespace unqlite {
 namespace {
-common::Error createConnection(const unqliteConfig& config, struct unqlite** context) {
+common::Error createConnection(const UnqliteConfig& config, struct unqlite** context) {
   if (!context) {
     return common::make_error_value("Invalid input argument", common::ErrorValue::E_ERROR);
   }
@@ -70,7 +70,7 @@ common::Error createConnection(UnqliteConnectionSettings* settings, struct unqli
       return common::make_error_value("Invalid input argument", common::ErrorValue::E_ERROR);
   }
 
-  unqliteConfig config = settings->info();
+  UnqliteConfig config = settings->info();
   return createConnection(config, context);
 }
 }  // namespace

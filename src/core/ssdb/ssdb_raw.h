@@ -108,7 +108,7 @@ struct SsdbRaw
   common::Error qclear(const std::string &name, int64_t *ret);
   common::Error help(int argc, char** argv);
 
-  ssdbConfig config_;
+  SsdbConfig config_;
   SSHInfo sinfo_;
  private:
   ::ssdb::Client* ssdb_;

@@ -25,11 +25,16 @@ namespace fastonosql {
 namespace memcached {
 
 MemcachedServer::MemcachedServer(IConnectionSettingsBaseSPtr settings)
-  : IServer(new MemcachedDriver(settings)) {
+  : IServerRemote(new MemcachedDriver(settings)) {
 }
 
 serverTypes MemcachedServer::role() const {
   return MASTER;
+}
+
+common::net::hostAndPort MemcachedServer::host() const {
+  MemcachedDriver* const rdrv = static_cast<MemcachedDriver* const>(drv_);
+  return rdrv->host();
 }
 
 IDatabaseSPtr MemcachedServer::createDatabase(IDataBaseInfoSPtr info) {

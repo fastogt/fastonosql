@@ -70,7 +70,7 @@ ServersManager::~ServersManager() {
 IServerSPtr ServersManager::createServer(IConnectionSettingsBaseSPtr settings) {
   DCHECK(settings);
 
-  connectionTypes conT = settings->connectionType();
+  connectionTypes conT = settings->type();
   IServer* server = nullptr;
 #ifdef BUILD_WITH_REDIS
   if (conT == REDIS) {
@@ -122,7 +122,7 @@ IClusterSPtr ServersManager::createCluster(IClusterSettingsBaseSPtr settings) {
   DCHECK(settings);
 
   IClusterSPtr cl;
-  connectionTypes conT = settings->connectionType();
+  connectionTypes conT = settings->type();
 #ifdef BUILD_WITH_REDIS
   if (conT == REDIS) {
     IConnectionSettingsBaseSPtr root = settings->root();
@@ -130,7 +130,7 @@ IClusterSPtr ServersManager::createCluster(IClusterSettingsBaseSPtr settings) {
       return IClusterSPtr();
     }
 
-    cl.reset(new redis::RedisCluster(settings->connectionName()));
+    cl.reset(new redis::RedisCluster(settings->name()));
     IClusterSettingsBase::cluster_connection_type nodes = settings->nodes();
     for (size_t i = 0; i < nodes.size(); ++i) {
       IConnectionSettingsBaseSPtr nd = nodes[i];
@@ -150,7 +150,7 @@ common::Error ServersManager::testConnection(IConnectionSettingsBaseSPtr connect
     return common::make_error_value("Invalid input argument", common::ErrorValue::E_ERROR);
   }
 
-  connectionTypes type = connection->connectionType();
+  connectionTypes type = connection->type();
 #ifdef BUILD_WITH_REDIS
   if (type == REDIS) {
     return fastonosql::redis::testConnection(dynamic_cast<redis::RedisConnectionSettings*>(connection.get()));
@@ -195,7 +195,7 @@ common::Error ServersManager::discoveryConnection(IConnectionSettingsBaseSPtr co
     return common::make_error_value("Invalid input argument", common::ErrorValue::E_ERROR);
   }
 
-  connectionTypes type = connection->connectionType();
+  connectionTypes type = connection->type();
 #ifdef BUILD_WITH_REDIS
   if (type == REDIS) {
     return fastonosql::redis::discoveryConnection(dynamic_cast<redis::RedisConnectionSettings*>(connection.get()), inf);

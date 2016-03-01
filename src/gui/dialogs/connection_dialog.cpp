@@ -65,7 +65,7 @@ ConnectionDialog::ConnectionDialog(QWidget* parent, IConnectionSettingsBase* con
   connectionName_ = new QLineEdit;
   QString conName = defaultNameConnection;
   if (connection_) {
-    conName = common::convertFromString<QString>(connection_->connectionName());
+    conName = common::convertFromString<QString>(connection_->name());
   }
   connectionName_->setText(conName);
   typeConnection_ = new QComboBox;
@@ -87,7 +87,7 @@ ConnectionDialog::ConnectionDialog(QWidget* parent, IConnectionSettingsBase* con
   }
 
   if (connection_) {
-    typeConnection_->setCurrentIndex(connection_->connectionType());
+    typeConnection_->setCurrentIndex(connection_->type());
   }
 
   typedef void (QComboBox::*qind)(int);
@@ -272,7 +272,7 @@ void ConnectionDialog::typeConnectionChange(int index) {
   QVariant var = typeConnection_->itemData(index);
   connectionTypes currentType = (connectionTypes)qvariant_cast<unsigned char>(var);
   bool isValidType = currentType != DBUNKNOWN;
-  bool isRemoteType = IConnectionSettingsBase::isRemoteType(currentType);
+  bool isRType = isRemoteType(currentType);
 
   connectionName_->setEnabled(isValidType);
   commandLine_->setEnabled(isValidType);
@@ -285,14 +285,13 @@ void ConnectionDialog::typeConnectionChange(int index) {
   }
 
   QObject *send = qobject_cast<QObject*>(sender());
-
   if (send) {
     QString deft = stableCommandLine(common::convertFromString<QString>(defaultCommandLine(currentType)));
     commandLine_->setText(deft);
   }
 
-  useSsh_->setEnabled(isRemoteType);
-  updateSshControls(isRemoteType);
+  useSsh_->setEnabled(isRType);
+  updateSshControls(isRType);
   testButton_->setEnabled(isValidType);
   logging_->setEnabled(isValidType);
 }
@@ -372,10 +371,10 @@ bool ConnectionDialog::validateAndApply() {
   bool isValidType = currentType != DBUNKNOWN;
 
   if (isValidType) {
-    bool isRemoteType = IConnectionSettingsBase::isRemoteType(currentType);
+    bool isRType = isRemoteType(currentType);
     std::string conName = common::convertToString(connectionName_->text());
 
-    if (isRemoteType) {
+    if (isRType) {
       IConnectionSettingsRemote* newConnection = IConnectionSettingsRemote::createFromType(currentType, conName, common::net::hostAndPort());
       connection_.reset(newConnection);
 

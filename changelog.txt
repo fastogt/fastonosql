@@ -1,3 +1,7 @@
+0.5.9
+[Alexandr Topilski]
+- Server roles
+
 0.5.8 / Fabruary 20, 2016
 [Alexandr Topilski]
 - [UnQLite] Save data propertly
@@ -72,5 +76,6 @@
 - Fix crash lined with double-clicked in settings dialog
 
 0.1.4 / Jule 29, 2015
+[Alexandr Topilski]
 - Display db name in console
 - Auto open console preference

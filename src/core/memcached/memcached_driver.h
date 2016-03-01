@@ -28,7 +28,7 @@ namespace fastonosql {
 namespace memcached {
 
 class MemcachedDriver
-  : public IDriver {
+  : public IDriverRemote {
   Q_OBJECT
  public:
   explicit MemcachedDriver(IConnectionSettingsBaseSPtr settings);
@@ -36,8 +36,7 @@ class MemcachedDriver
 
   virtual bool isConnected() const;
   virtual bool isAuthenticated() const;
-  virtual common::net::hostAndPort address() const;
-  virtual std::string path() const;
+  virtual common::net::hostAndPort host() const;
   virtual std::string outputDelemitr() const;
 
  private:

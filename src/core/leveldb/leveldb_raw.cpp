@@ -40,7 +40,7 @@ namespace leveldb {
 
 namespace {
 
-common::Error createConnection(const leveldbConfig& config, ::leveldb::DB** context) {
+common::Error createConnection(const LeveldbConfig& config, ::leveldb::DB** context) {
   if (!context) {
     return common::make_error_value("Invalid input argument", common::ErrorValue::E_ERROR);
   }
@@ -63,7 +63,7 @@ common::Error createConnection(LeveldbConnectionSettings* settings, ::leveldb::D
     return common::make_error_value("Invalid input argument", common::ErrorValue::E_ERROR);
   }
 
-  leveldbConfig config = settings->info();
+  LeveldbConfig config = settings->info();
   return createConnection(config, context);
 }
 

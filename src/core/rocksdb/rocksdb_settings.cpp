@@ -24,7 +24,11 @@ namespace fastonosql {
 namespace rocksdb {
 
 RocksdbConnectionSettings::RocksdbConnectionSettings(const std::string& connectionName)
-  : IConnectionSettingsBase(connectionName, ROCKSDB), info_() {
+  : IConnectionSettingsLocal(connectionName, ROCKSDB), info_() {
+}
+
+std::string RocksdbConnectionSettings::path() const {
+  return info_.dbname;
 }
 
 std::string RocksdbConnectionSettings::commandLine() const {
@@ -32,14 +36,14 @@ std::string RocksdbConnectionSettings::commandLine() const {
 }
 
 void RocksdbConnectionSettings::setCommandLine(const std::string& line) {
-  info_ = common::convertFromString<rocksdbConfig>(line);
+  info_ = common::convertFromString<RocksdbConfig>(line);
 }
 
-rocksdbConfig RocksdbConnectionSettings::info() const {
+RocksdbConfig RocksdbConnectionSettings::info() const {
   return info_;
 }
 
-void RocksdbConnectionSettings::setInfo(const rocksdbConfig &info) {
+void RocksdbConnectionSettings::setInfo(const RocksdbConfig &info) {
   info_ = info;
 }
 
@@ -50,15 +54,6 @@ std::string RocksdbConnectionSettings::fullAddress() const {
 IConnectionSettings* RocksdbConnectionSettings::clone() const {
   RocksdbConnectionSettings *red = new RocksdbConnectionSettings(*this);
   return red;
-}
-
-std::string RocksdbConnectionSettings::toCommandLine() const {
-  std::string result = common::convertToString(info_);
-  return result;
-}
-
-void RocksdbConnectionSettings::initFromCommandLine(const std::string& val) {
-  info_ = common::convertFromString<rocksdbConfig>(val);
 }
 
 }  // namespace rocksdb

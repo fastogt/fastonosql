@@ -25,7 +25,7 @@ namespace ssdb {
 
 namespace {
 
-common::Error createConnection(const ssdbConfig& config, const SSHInfo& sinfo,
+common::Error createConnection(const SsdbConfig& config, const SSHInfo& sinfo,
                                ::ssdb::Client** context) {
   if (!context) {
     return common::make_error_value("Invalid input argument", common::ErrorValue::E_ERROR);
@@ -48,7 +48,7 @@ common::Error createConnection(SsdbConnectionSettings* settings, ::ssdb::Client*
     return common::make_error_value("Invalid input argument", common::ErrorValue::E_ERROR);
   }
 
-  ssdbConfig config = settings->info();
+  SsdbConfig config = settings->info();
   SSHInfo sinfo = settings->sshInfo();
   return createConnection(config, sinfo, context);
 }

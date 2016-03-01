@@ -28,7 +28,7 @@ namespace fastonosql {
 namespace unqlite {
 
 class UnqliteDriver
-    : public IDriver {
+    : public IDriverLocal {
   Q_OBJECT
  public:
   explicit UnqliteDriver(IConnectionSettingsBaseSPtr settings);
@@ -36,7 +36,6 @@ class UnqliteDriver
 
   virtual bool isConnected() const;
   virtual bool isAuthenticated() const;
-  virtual common::net::hostAndPort address() const;
   virtual std::string path() const;
   virtual std::string outputDelemitr() const;
 

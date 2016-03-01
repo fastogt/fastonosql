@@ -1,3 +1,7 @@
+0.8.2
+[Alexandr Topilski]
+- Server roles
+
 0.8.1 / February 20, 2016
 [Alexandr Topilski]
 - Fix some memory leaks

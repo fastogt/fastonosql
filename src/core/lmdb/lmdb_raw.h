@@ -60,7 +60,7 @@ struct LmdbRaw
                      std::vector<std::string>* ret);
   common::Error help(int argc, char** argv);
 
-  lmdbConfig config_;
+  LmdbConfig config_;
  private:
   struct lmdb* lmdb_;
 };

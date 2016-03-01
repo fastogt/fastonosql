@@ -28,7 +28,7 @@ namespace ssdb {
 common::Error testConnection(SsdbConnectionSettings* settings);
 
 class SsdbDriver
-  : public IDriver {
+  : public IDriverRemote {
   Q_OBJECT
  public:
   explicit SsdbDriver(IConnectionSettingsBaseSPtr settings);
@@ -36,8 +36,7 @@ class SsdbDriver
 
   virtual bool isConnected() const;
   virtual bool isAuthenticated() const;
-  virtual common::net::hostAndPort address() const;
-  virtual std::string path() const;
+  virtual common::net::hostAndPort host() const;
   virtual std::string outputDelemitr() const;
 
  private:
