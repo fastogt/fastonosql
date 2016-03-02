@@ -425,6 +425,10 @@ common::Error authContext(const RedisConfig& config, redisContext* context) {
 }
 
 common::Error testConnection(RedisConnectionSettings* settings) {
+  if (!settings) {
+    return common::make_error_value("Invalid input argument", common::ErrorValue::E_ERROR);
+  }
+
   redisContext* context = nullptr;
   common::Error err = createConnection(settings, &context);
   if (err && err->isError()) {
@@ -443,7 +447,11 @@ common::Error testConnection(RedisConnectionSettings* settings) {
 }
 
 common::Error discoveryConnection(RedisConnectionSettings* settings,
-                                  std::vector<ServerDiscoveryInfoSPtr>& infos) {
+                                  std::vector<ServerDiscoveryInfoSPtr>* infos) {
+  if (!settings || !infos) {
+    return common::make_error_value("Invalid input argument", common::ErrorValue::E_ERROR);
+  }
+
   redisContext* context = nullptr;
   common::Error err = createConnection(settings, &context);
   if (err && err->isError()) {

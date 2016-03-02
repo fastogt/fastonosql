@@ -80,7 +80,7 @@ class IDriver
   void notifyProgress(QObject *reciver, int value);
 
  protected:
-  IDriver(IConnectionSettingsBaseSPtr settings, connectionTypes type);
+  IDriver(IConnectionSettingsBaseSPtr settings);
 
   // handle server events
   virtual void handleConnectEvent(events::ConnectRequestEvent* ev) = 0;
@@ -106,8 +106,7 @@ class IDriver
   const IConnectionSettingsBaseSPtr settings_;
   bool interrupt_;
 
-  class RootLocker
-  {
+  class RootLocker {
   public:
     RootLocker(IDriver* parent, QObject* reciver, const std::string& text);
     ~RootLocker();
@@ -172,7 +171,6 @@ class IDriver
   QThread* thread_;
   int timer_info_id_;
   common::file_system::File* log_file_;
-  const connectionTypes type_;
 };
 
 class IDriverLocal
@@ -182,17 +180,17 @@ class IDriverLocal
   virtual std::string path() const = 0;
 
  protected:
-  IDriverLocal(IConnectionSettingsBaseSPtr settings, connectionTypes type);
+  IDriverLocal(IConnectionSettingsBaseSPtr settings);
 };
 
 class IDriverRemote
   : public IDriver {
   Q_OBJECT
  public:
-    virtual common::net::hostAndPort host() const = 0;
+  virtual common::net::hostAndPort host() const = 0;
 
  protected:
-  IDriverRemote(IConnectionSettingsBaseSPtr settings, connectionTypes type);
+  IDriverRemote(IConnectionSettingsBaseSPtr settings);
 };
 
 }  // namespace fastonosql

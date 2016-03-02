@@ -39,7 +39,8 @@ namespace fastonosql {
 namespace lmdb {
 
 LmdbDriver::LmdbDriver(IConnectionSettingsBaseSPtr settings)
-  : IDriverLocal(settings, LMDB), impl_(new LmdbRaw) {
+  : IDriverLocal(settings), impl_(new LmdbRaw) {
+  CHECK(type() == LMDB);
 }
 
 LmdbDriver::~LmdbDriver() {

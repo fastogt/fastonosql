@@ -431,7 +431,7 @@ static const std::vector<CommandInfo> redisCommands = {
 };
 
 common::Error testConnection(RedisConnectionSettings* settings);
-common::Error discoveryConnection(RedisConnectionSettings* settings, std::vector<ServerDiscoveryInfoSPtr>& infos);
+common::Error discoveryConnection(RedisConnectionSettings* settings, std::vector<ServerDiscoveryInfoSPtr>* infos);
 
 class IRedisRawOwner {
 public:

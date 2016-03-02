@@ -279,7 +279,7 @@ ServerDiscoveryInfo* makeOwnRedisDiscoveryInfo(const std::string& text);
 ServerDiscoveryInfo* makeOwnRedisDiscoveryInfo(FastoObject* root);
 common::Error makeAllDiscoveryInfo(const common::net::hostAndPort& parentHost,
                                    const std::string& text,
-                                   std::vector<ServerDiscoveryInfoSPtr>& infos);
+                                   std::vector<ServerDiscoveryInfoSPtr>* infos);
 
 class RedisDataBaseInfo
       : public IDataBaseInfo {

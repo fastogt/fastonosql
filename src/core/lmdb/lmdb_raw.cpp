@@ -121,6 +121,10 @@ common::Error createConnection(LmdbConnectionSettings* settings, struct lmdb** c
 }  // namespace
 
 common::Error testConnection(fastonosql::lmdb::LmdbConnectionSettings* settings) {
+  if (!settings) {
+    return common::make_error_value("Invalid input argument", common::ErrorValue::E_ERROR);
+  }
+
   struct lmdb* ldb = nullptr;
   common::Error er = createConnection(settings, &ldb);
   if (er && er->isError()) {

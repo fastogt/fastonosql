@@ -67,6 +67,10 @@ common::Error createConnection(RocksdbConnectionSettings* settings, ::rocksdb::D
 }  // namesapce
 
 common::Error testConnection(RocksdbConnectionSettings* settings) {
+  if (!settings) {
+    return common::make_error_value("Invalid input argument", common::ErrorValue::E_ERROR);
+  }
+
   ::rocksdb::DB* ldb = nullptr;
   common::Error er = createConnection(settings, &ldb);
   if (er && er->isError()) {

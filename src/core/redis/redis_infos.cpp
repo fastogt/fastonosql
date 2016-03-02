@@ -941,14 +941,14 @@ ServerDiscoveryInfo* makeOwnRedisDiscoveryInfo(const std::string& text) {
 }
 
 ServerDiscoveryInfo* makeOwnRedisDiscoveryInfo(FastoObject* root) {
-  const std::string content = common::convertToString(root);
+  std::string content = common::convertToString(root);
   return makeOwnRedisDiscoveryInfo(content);
 }
 
 common::Error makeAllDiscoveryInfo(const common::net::hostAndPort& parentHost,
                                    const std::string& text,
-                                   std::vector<ServerDiscoveryInfoSPtr> &infos) {
-  if (text.empty()) {
+                                   std::vector<ServerDiscoveryInfoSPtr>* infos) {
+  if (text.empty() || !infos) {
     return common::make_error_value("Invalid input argument", common::ErrorValue::E_ERROR);;
   }
 
@@ -997,7 +997,7 @@ common::Error makeAllDiscoveryInfo(const common::net::hostAndPort& parentHost,
     ser->setHash(hash);
     ser->setName(hash);
     ser->setHost(hport);
-    infos.push_back(ServerDiscoveryInfoSPtr(ser));
+    infos->push_back(ServerDiscoveryInfoSPtr(ser));
 
     start = pos + 1;
   }

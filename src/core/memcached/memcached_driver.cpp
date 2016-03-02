@@ -37,7 +37,8 @@ namespace fastonosql {
 namespace memcached {
 
 MemcachedDriver::MemcachedDriver(IConnectionSettingsBaseSPtr settings)
-  : IDriverRemote(settings, MEMCACHED), impl_(new MemcachedRaw) {
+  : IDriverRemote(settings), impl_(new MemcachedRaw) {
+  CHECK(type() == MEMCACHED);
 }
 
 MemcachedDriver::~MemcachedDriver() {

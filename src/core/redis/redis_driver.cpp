@@ -90,7 +90,8 @@ RedisCommand* createCommandFast(const std::string& input, common::Value::Command
 }
 
 RedisDriver::RedisDriver(IConnectionSettingsBaseSPtr settings)
-  : IDriverRemote(settings, REDIS), impl_(new RedisRaw(this)) {
+  : IDriverRemote(settings), impl_(new RedisRaw(this)) {
+  CHECK(type() == REDIS);
 }
 
 RedisDriver::~RedisDriver() {

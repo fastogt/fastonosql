@@ -76,6 +76,10 @@ common::Error createConnection(UnqliteConnectionSettings* settings, struct unqli
 }  // namespace
 
 common::Error testConnection(UnqliteConnectionSettings *settings) {
+  if (!settings) {
+    return common::make_error_value("Invalid input argument", common::ErrorValue::E_ERROR);
+  }
+
   struct unqlite* ldb = nullptr;
   common::Error er = createConnection(settings, &ldb);
   if (er && er->isError()) {

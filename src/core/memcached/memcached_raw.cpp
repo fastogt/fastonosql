@@ -28,6 +28,7 @@
 namespace fastonosql {
 namespace memcached {
 namespace {
+
 common::Error createConnection(const MemcachedConfig& config, struct memcached_st** context) {
   if (!context) {
     return common::make_error_value("Invalid input argument", common::ErrorValue::E_ERROR);

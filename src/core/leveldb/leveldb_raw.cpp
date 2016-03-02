@@ -70,6 +70,10 @@ common::Error createConnection(LeveldbConnectionSettings* settings, ::leveldb::D
 }  // namespace
 
 common::Error testConnection(LeveldbConnectionSettings* settings) {
+  if (!settings) {
+    return common::make_error_value("Invalid input argument", common::ErrorValue::E_ERROR);
+  }
+
   ::leveldb::DB* ldb = nullptr;
   common::Error er = createConnection(settings, &ldb);
   if (er && er->isError()) {

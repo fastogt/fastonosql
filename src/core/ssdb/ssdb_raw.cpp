@@ -56,6 +56,10 @@ common::Error createConnection(SsdbConnectionSettings* settings, ::ssdb::Client*
 }  // namespace
 
 common::Error testConnection(SsdbConnectionSettings* settings) {
+  if (!settings) {
+    return common::make_error_value("Invalid input argument", common::ErrorValue::E_ERROR);
+  }
+
   ::ssdb::Client* ssdb = nullptr;
   common::Error er = createConnection(settings, &ssdb);
   if (er && er->isError()) {

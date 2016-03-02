@@ -48,7 +48,8 @@ namespace fastonosql {
 namespace ssdb {
 
 SsdbDriver::SsdbDriver(IConnectionSettingsBaseSPtr settings)
-  : IDriverRemote(settings, SSDB), impl_(new SsdbRaw) {
+  : IDriverRemote(settings), impl_(new SsdbRaw) {
+  CHECK(type() == SSDB);
 }
 
 SsdbDriver::~SsdbDriver() {

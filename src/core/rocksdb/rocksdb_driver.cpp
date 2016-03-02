@@ -40,7 +40,8 @@ namespace fastonosql {
 namespace rocksdb {
 
 RocksdbDriver::RocksdbDriver(IConnectionSettingsBaseSPtr settings)
-  : IDriverLocal(settings, ROCKSDB), impl_(new RocksdbRaw) {
+  : IDriverLocal(settings), impl_(new RocksdbRaw) {
+  CHECK(type() == ROCKSDB);
 }
 
 RocksdbDriver::~RocksdbDriver() {

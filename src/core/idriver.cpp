@@ -146,11 +146,9 @@ common::Error IDriver::execute(FastoObjectCommand* cmd) {
   return er;
 }
 
-IDriver::IDriver(IConnectionSettingsBaseSPtr settings, connectionTypes type)
+IDriver::IDriver(IConnectionSettingsBaseSPtr settings)
   : settings_(settings), interrupt_(false), server_disc_info_(), thread_(nullptr),
-    timer_info_id_(0), log_file_(nullptr), type_(type) {
-  CHECK(settings->type() == type);
-
+    timer_info_id_(0), log_file_(nullptr) {
   thread_ = new QThread(this);
   moveToThread(thread_);
 
@@ -167,7 +165,7 @@ void IDriver::reply(QObject *reciver, QEvent *ev) {
 }
 
 connectionTypes IDriver::type() const {
-  return type_;
+  return settings_->type();
 }
 
 ServerDiscoveryInfoSPtr IDriver::serverDiscoveryInfo() const {
@@ -215,24 +213,28 @@ common::Error IDriver::commandByType(CommandKeySPtr command, std::string* cmdstr
   if (t == CommandKey::C_DELETE) {
     CommandDeleteKey* delc = dynamic_cast<CommandDeleteKey*>(command.get());
     if (!delc) {
+      DNOTREACHED();
       return common::make_error_value("Invalid input argument", common::ErrorValue::E_ERROR);
     }
     return commandDeleteImpl(delc, cmdstring);
   } else if (t == CommandKey::C_LOAD) {
     CommandLoadKey* loadc = dynamic_cast<CommandLoadKey*>(command.get());
     if (!loadc) {
+      DNOTREACHED();
       return common::make_error_value("Invalid input argument", common::ErrorValue::E_ERROR);
     }
     return commandLoadImpl(loadc, cmdstring);
   } else if (t == CommandKey::C_CREATE) {
     CommandCreateKey* createc = dynamic_cast<CommandCreateKey*>(command.get());
-    if (!createc || !createc->value()) {
+    if (!createc) {
+      DNOTREACHED();
       return common::make_error_value("Invalid input argument", common::ErrorValue::E_ERROR);
     }
     return commandCreateImpl(createc, cmdstring);
   } else if (t == CommandKey::C_CHANGE_TTL) {
     CommandChangeTTL* changettl = dynamic_cast<CommandChangeTTL*>(command.get());
     if (!changettl) {
+      DNOTREACHED();
       return common::make_error_value("Invalid input argument", common::ErrorValue::E_ERROR);
     }
     return commandChangeTTLImpl(changettl, cmdstring);
@@ -534,16 +536,14 @@ void IDriver::updated(FastoObject* item, common::Value* val) {
   emit itemUpdated(item, val);
 }
 
-IDriverLocal::IDriverLocal(IConnectionSettingsBaseSPtr settings, connectionTypes type)
-  : IDriver(settings, type) {
-  CHECK(type == settings->type());
-  CHECK(!isRemoteType(type));
+IDriverLocal::IDriverLocal(IConnectionSettingsBaseSPtr settings)
+  : IDriver(settings) {
+  CHECK(!isRemoteType(type()));
 }
 
-IDriverRemote::IDriverRemote(IConnectionSettingsBaseSPtr settings, connectionTypes type)
-  : IDriver(settings, type) {
-  CHECK(type == settings->type());
-  CHECK(isRemoteType(type));
+IDriverRemote::IDriverRemote(IConnectionSettingsBaseSPtr settings)
+  : IDriver(settings) {
+  CHECK(isRemoteType(type()));
 }
 
 }  // namespace fastonosql

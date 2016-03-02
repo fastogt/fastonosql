@@ -190,8 +190,8 @@ common::Error ServersManager::testConnection(IConnectionSettingsBaseSPtr connect
 }
 
 common::Error ServersManager::discoveryConnection(IConnectionSettingsBaseSPtr connection,
-                                                  std::vector<ServerDiscoveryInfoSPtr>& inf) {
-  if (!connection) {
+                                                  std::vector<ServerDiscoveryInfoSPtr>* inf) {
+  if (!connection || !inf) {
     return common::make_error_value("Invalid input argument", common::ErrorValue::E_ERROR);
   }
 

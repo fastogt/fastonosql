@@ -39,7 +39,8 @@ namespace fastonosql {
 namespace unqlite {
 
 UnqliteDriver::UnqliteDriver(IConnectionSettingsBaseSPtr settings)
-  : IDriverLocal(settings, UNQLITE), impl_(new UnqliteRaw) {
+  : IDriverLocal(settings), impl_(new UnqliteRaw) {
+  CHECK(type() == UNQLITE);
 }
 
 UnqliteDriver::~UnqliteDriver() {

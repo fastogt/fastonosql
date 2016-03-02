@@ -40,7 +40,8 @@ namespace fastonosql {
 namespace leveldb {
 
 LeveldbDriver::LeveldbDriver(IConnectionSettingsBaseSPtr settings)
-  : IDriverLocal(settings, LEVELDB), impl_(new LeveldbRaw) {
+  : IDriverLocal(settings), impl_(new LeveldbRaw) {
+  CHECK(type() == LEVELDB);
 }
 
 LeveldbDriver::~LeveldbDriver() {

@@ -39,7 +39,7 @@ class ServersManager
 
   common::Error testConnection(IConnectionSettingsBaseSPtr connection);
   common::Error discoveryConnection(IConnectionSettingsBaseSPtr connection,
-                                    std::vector<ServerDiscoveryInfoSPtr>& inf);
+                                    std::vector<ServerDiscoveryInfoSPtr>* inf);
 
   void clear();
 
