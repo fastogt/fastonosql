@@ -27,7 +27,7 @@ RedisClusterSettings::RedisClusterSettings(const std::string& connectionName)
   : IClusterSettingsBase(connectionName, REDIS) {
 }
 
-IConnectionSettings* RedisClusterSettings::clone() const {
+RedisClusterSettings* RedisClusterSettings::clone() const {
   RedisClusterSettings *red = new RedisClusterSettings(*this);
   return red;
 }

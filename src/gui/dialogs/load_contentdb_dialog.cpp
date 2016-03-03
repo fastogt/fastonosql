@@ -66,7 +66,7 @@ LoadContentDbDialog::LoadContentDbDialog(const QString &title,
   setLayout(mainLayout);
 }
 
-uint32_t LoadContentDbDialog::count() const {
+int LoadContentDbDialog::count() const {
   return countSpinEdit_->value();
 }
 

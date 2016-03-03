@@ -41,7 +41,7 @@ class MemcachedConnectionSettings
   MemcachedConfig info() const;
   void setInfo(const MemcachedConfig& info);
 
-  virtual IConnectionSettings* clone() const;
+  virtual MemcachedConnectionSettings* clone() const;
 
  private:
   MemcachedConfig info_;

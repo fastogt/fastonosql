@@ -42,7 +42,7 @@ class UnqliteConnectionSettings
 
   virtual std::string fullAddress() const;
 
-  virtual IConnectionSettings* clone() const;
+  virtual UnqliteConnectionSettings* clone() const;
 
  private:
   UnqliteConfig info_;

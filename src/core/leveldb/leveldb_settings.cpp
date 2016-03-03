@@ -51,7 +51,7 @@ std::string LeveldbConnectionSettings::fullAddress() const {
   return info_.dbname;
 }
 
-IConnectionSettings* LeveldbConnectionSettings::clone() const {
+LeveldbConnectionSettings* LeveldbConnectionSettings::clone() const {
   LeveldbConnectionSettings *red = new LeveldbConnectionSettings(*this);
   return red;
 }

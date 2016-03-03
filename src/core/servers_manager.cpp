@@ -68,7 +68,10 @@ ServersManager::~ServersManager() {
 }
 
 IServerSPtr ServersManager::createServer(IConnectionSettingsBaseSPtr settings) {
-  DCHECK(settings);
+  if (!settings) {
+    NOTREACHED();
+    return IServerSPtr();
+  }
 
   connectionTypes conT = settings->type();
   IServer* server = nullptr;
@@ -119,34 +122,32 @@ IServerSPtr ServersManager::createServer(IConnectionSettingsBaseSPtr settings) {
 }
 
 IClusterSPtr ServersManager::createCluster(IClusterSettingsBaseSPtr settings) {
-  DCHECK(settings);
+  if (!settings) {
+    NOTREACHED();
+    return IClusterSPtr();
+  }
 
-  IClusterSPtr cl;
   connectionTypes conT = settings->type();
 #ifdef BUILD_WITH_REDIS
   if (conT == REDIS) {
-    IConnectionSettingsBaseSPtr root = settings->root();
-    if (!root) {
-      return IClusterSPtr();
-    }
-
-    cl.reset(new redis::RedisCluster(settings->name()));
+    IClusterSPtr cl(new redis::RedisCluster(settings->name()));
     IClusterSettingsBase::cluster_connection_type nodes = settings->nodes();
     for (size_t i = 0; i < nodes.size(); ++i) {
       IConnectionSettingsBaseSPtr nd = nodes[i];
-      if (nd) {
-        IServerSPtr serv = createServer(nd);
-        cl->addServer(serv);
-      }
+      IServerSPtr serv = createServer(nd);
+      cl->addServer(serv);
     }
+    return cl;
   }
 #endif
 
-  return cl;
+  NOTREACHED();
+  return IClusterSPtr();
 }
 
 common::Error ServersManager::testConnection(IConnectionSettingsBaseSPtr connection) {
   if (!connection) {
+    NOTREACHED();
     return common::make_error_value("Invalid input argument", common::ErrorValue::E_ERROR);
   }
 

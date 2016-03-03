@@ -42,7 +42,7 @@ class LeveldbConnectionSettings
 
   virtual std::string fullAddress() const;
 
-  virtual IConnectionSettings* clone() const;
+  virtual LeveldbConnectionSettings* clone() const;
 
  private:
   LeveldbConfig info_;

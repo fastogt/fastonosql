@@ -42,7 +42,7 @@ class RocksdbConnectionSettings
 
   virtual std::string fullAddress() const;
 
-  virtual IConnectionSettings* clone() const;
+  virtual RocksdbConnectionSettings* clone() const;
 
  private:
   RocksdbConfig info_;

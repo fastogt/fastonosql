@@ -51,7 +51,7 @@ std::string UnqliteConnectionSettings::fullAddress() const {
   return info_.dbname;
 }
 
-IConnectionSettings* UnqliteConnectionSettings::clone() const {
+UnqliteConnectionSettings* UnqliteConnectionSettings::clone() const {
   UnqliteConnectionSettings *red = new UnqliteConnectionSettings(*this);
   return red;
 }

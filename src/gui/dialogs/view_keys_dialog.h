@@ -38,12 +38,12 @@ class ViewKeysDialog
   Q_OBJECT
  public:
   enum {
-      min_height = 200,
-      min_width = 320,
-      min_key_on_page = 1,
-      max_key_on_page = 100,
-      defaults_key = 10,
-      step_keys_on_page = defaults_key
+    min_height = 200,
+    min_width = 320,
+    min_key_on_page = 1,
+    max_key_on_page = 100,
+    defaults_key = 10,
+    step_keys_on_page = defaults_key
   };
 
   explicit ViewKeysDialog(const QString& title, IDatabaseSPtr db, QWidget* parent = 0);

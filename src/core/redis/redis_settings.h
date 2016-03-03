@@ -41,7 +41,7 @@ class RedisConnectionSettings
   RedisConfig info() const;
   void setInfo(const RedisConfig& info);
 
-  virtual IConnectionSettings* clone() const;
+  virtual RedisConnectionSettings* clone() const;
 
  private:
   RedisConfig info_;

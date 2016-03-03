@@ -131,8 +131,9 @@ ConnectionsDialog::ConnectionsDialog(QWidget* parent)
   }
 
   // Highlight first item
-  if (listWidget_->topLevelItemCount() > 0)
+  if (listWidget_->topLevelItemCount() > 0) {
     listWidget_->setCurrentItem(listWidget_->topLevelItem(0));
+  }
   retranslateUi();
 }
 
@@ -228,7 +229,7 @@ void ConnectionsDialog::edit() {
     QTreeWidgetItem* qpitem = qitem->parent();
     if (!qpitem) {
       IConnectionSettingsBaseSPtr con = currentItem->connection();
-      ConnectionDialog dlg(this, dynamic_cast<IConnectionSettingsBase*>(con->clone()));
+      ConnectionDialog dlg(this, con->clone());
       int result = dlg.exec();
       IConnectionSettingsBaseSPtr newConnection = dlg.connection();
       if (result == QDialog::Accepted && newConnection) {
@@ -245,7 +246,7 @@ void ConnectionsDialog::edit() {
   ClusterConnectionListWidgetItem* clCurrentItem = dynamic_cast<ClusterConnectionListWidgetItem *>(qitem);
   if (clCurrentItem) {
     IClusterSettingsBaseSPtr con = clCurrentItem->connection();
-    ClusterDialog dlg(this, dynamic_cast<IClusterSettingsBase*>(con->clone()));
+    ClusterDialog dlg(this, con->clone());
     int result = dlg.exec();
     IClusterSettingsBaseSPtr newConnection = dlg.connection();
     if (result == QDialog::Accepted && newConnection) {

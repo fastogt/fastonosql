@@ -53,7 +53,7 @@ void MemcachedConnectionSettings::setInfo(const MemcachedConfig& info) {
   info_ = info;
 }
 
-IConnectionSettings *MemcachedConnectionSettings::clone() const {
+MemcachedConnectionSettings* MemcachedConnectionSettings::clone() const {
   MemcachedConnectionSettings *red = new MemcachedConnectionSettings(*this);
   return red;
 }

@@ -41,7 +41,7 @@ class SsdbConnectionSettings
   SsdbConfig info() const;
   void setInfo(const SsdbConfig &info);
 
-  virtual IConnectionSettings* clone() const;
+  virtual SsdbConnectionSettings* clone() const;
 
  private:
   SsdbConfig info_;

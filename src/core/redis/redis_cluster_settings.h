@@ -31,7 +31,7 @@ class RedisClusterSettings
   : public IClusterSettingsBase {
  public:
   explicit RedisClusterSettings(const std::string& connectionName);
-  virtual IConnectionSettings* clone() const;
+  virtual RedisClusterSettings* clone() const;
 };
 
 }  // namespace redis

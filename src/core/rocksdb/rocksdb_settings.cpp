@@ -51,7 +51,7 @@ std::string RocksdbConnectionSettings::fullAddress() const {
   return info_.dbname;
 }
 
-IConnectionSettings* RocksdbConnectionSettings::clone() const {
+RocksdbConnectionSettings* RocksdbConnectionSettings::clone() const {
   RocksdbConnectionSettings *red = new RocksdbConnectionSettings(*this);
   return red;
 }

@@ -42,7 +42,7 @@ class LmdbConnectionSettings
 
   virtual std::string fullAddress() const;
 
-  virtual IConnectionSettings* clone() const;
+  virtual LmdbConnectionSettings* clone() const;
 
  private:
   LmdbConfig info_;

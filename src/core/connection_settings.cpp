@@ -190,9 +190,7 @@ IConnectionSettingsBase* IConnectionSettingsBase::fromString(const std::string &
   }
 
   IConnectionSettingsBase *result = nullptr;
-
   size_t len = val.size();
-
   uint8_t commaCount = 0;
   std::string elText;
 
@@ -263,8 +261,7 @@ IConnectionSettingsRemote::~IConnectionSettingsRemote() {
 }
 
 std::string IConnectionSettingsRemote::fullAddress() const {
-  const common::net::hostAndPort h = host();
-  return common::convertToString(h);
+  return common::convertToString(host());
 }
 
 IConnectionSettingsRemote* IConnectionSettingsRemote::createFromType(connectionTypes type,
@@ -435,6 +432,7 @@ std::string defaultCommandLine(connectionTypes type) {
   }
 #endif
 
+  NOTREACHED();
   return std::string();
 }
 
@@ -446,16 +444,9 @@ IClusterSettingsBase::cluster_connection_type IClusterSettingsBase::nodes() cons
   return clusters_nodes_;
 }
 
-IConnectionSettingsBaseSPtr IClusterSettingsBase::root() const {
-  if (clusters_nodes_.empty()) {
-    return IConnectionSettingsBaseSPtr();
-  }
-
-  return clusters_nodes_[0];
-}
-
 void IClusterSettingsBase::addNode(IConnectionSettingsBaseSPtr node) {
   if (!node) {
+    NOTREACHED();
     return;
   }
 
@@ -542,6 +533,7 @@ IConnectionSettingsBaseSPtr IClusterSettingsBase::findSettingsByHost(const commo
   for (size_t i = 0; i < clusters_nodes_.size(); ++i) {
     IConnectionSettingsBaseSPtr cur = clusters_nodes_[i];
     IConnectionSettingsRemote * remote = dynamic_cast<IConnectionSettingsRemote *>(cur.get());
+    CHECK(remote);
     if (remote && remote->host() == host) {
       return cur;
     }

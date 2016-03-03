@@ -107,7 +107,7 @@ PreferencesDialog::PreferencesDialog(QWidget* parent)
   serverSettingsLayout->addLayout(logLayout);
   serverSettingsBox_->setLayout(serverSettingsLayout);
 
-//      main layout
+  //  main layout
   QVBoxLayout *layout = new QVBoxLayout(this);
   layout->addWidget(generalBox_);
   layout->addWidget(serverSettingsBox_);

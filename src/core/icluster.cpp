@@ -37,15 +37,18 @@ ICluster::nodes_type ICluster::nodes() const {
 }
 
 void ICluster::addServer(IServerSPtr serv) {
-  if (serv) {
-    nodes_.push_back(serv);
+  DCHECK(serv);
+  if (!serv) {
+    return;
   }
+
+  nodes_.push_back(serv);
 }
 
 IServerSPtr ICluster::root() const {
   for (size_t i = 0; i < nodes_.size(); ++i) {
     IServerRemote* rserver = dynamic_cast<IServerRemote*>(nodes_[i].get());
-    CHECK(rserver);
+    DCHECK(rserver);
     if (rserver && rserver->role() == MASTER) {
       return nodes_[i];
     }

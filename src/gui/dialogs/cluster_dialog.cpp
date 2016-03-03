@@ -323,8 +323,8 @@ void ClusterDialog::edit() {
 
   IConnectionSettingsBaseSPtr oldConnection = currentItem->connection();
 
-  const std::vector<connectionTypes> avail = { DBUNKNOWN, REDIS };
-  ConnectionDialog dlg(this, dynamic_cast<IConnectionSettingsBase*>(oldConnection->clone()), avail);
+  static const std::vector<connectionTypes> avail = { DBUNKNOWN, REDIS };
+  ConnectionDialog dlg(this, oldConnection->clone(), avail);
   int result = dlg.exec();
   IConnectionSettingsBaseSPtr newConnection = dlg.connection();
   if (result == QDialog::Accepted && newConnection) {

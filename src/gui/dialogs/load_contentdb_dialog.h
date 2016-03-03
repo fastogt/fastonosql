@@ -41,7 +41,7 @@ class LoadContentDbDialog
   };
 
   explicit LoadContentDbDialog(const QString& title, connectionTypes type, QWidget* parent = 0);
-  uint32_t count() const;
+  int count() const;
   QString pattern() const;
 
  public Q_SLOTS:

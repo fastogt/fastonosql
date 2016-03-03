@@ -75,6 +75,7 @@ class IConnectionSettingsBase
   static IConnectionSettingsBase* fromString(const std::string& val);
 
   virtual std::string toString() const;
+  virtual IConnectionSettingsBase* clone() const = 0;
 
  protected:
   IConnectionSettingsBase(const std::string& connectionName, connectionTypes type);
@@ -132,7 +133,6 @@ class IClusterSettingsBase
  public:
   typedef std::vector<IConnectionSettingsBaseSPtr> cluster_connection_type;
   cluster_connection_type nodes() const;
-  IConnectionSettingsBaseSPtr root() const;
 
   void addNode(IConnectionSettingsBaseSPtr node);
 
@@ -141,6 +141,7 @@ class IClusterSettingsBase
   static IClusterSettingsBase* fromString(const std::string& val);
 
   virtual std::string toString() const;
+  virtual IClusterSettingsBase* clone() const = 0;
 
   IConnectionSettingsBaseSPtr findSettingsByHost(const common::net::hostAndPort& host) const;
 

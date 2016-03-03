@@ -53,7 +53,7 @@ void RedisConnectionSettings::setInfo(const RedisConfig &info) {
   info_ =  info;
 }
 
-IConnectionSettings *RedisConnectionSettings::clone() const {
+RedisConnectionSettings* RedisConnectionSettings::clone() const {
   RedisConnectionSettings *red = new RedisConnectionSettings(*this);
   return red;
 }
