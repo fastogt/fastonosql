@@ -25,7 +25,6 @@
 
 #include "common/sprintf.h"
 #include "common/utils.h"
-#include "fasto/qt/logger.h"
 
 #include "core/command_logger.h"
 
@@ -218,7 +217,7 @@ void LeveldbDriver::handleDisconnectEvent(events::DisconnectRequestEvent* ev) {
 void LeveldbDriver::handleExecuteEvent(events::ExecuteRequestEvent* ev) {
   QObject *sender = ev->sender();
   notifyProgress(sender, 0);
-  events::ExecuteRequestEvent::value_type res(ev->value());
+  events::ExecuteResponceEvent::value_type res(ev->value());
   const char *inputLine = common::utils::c_strornull(res.text);
 
   common::Error er;
@@ -243,7 +242,7 @@ void LeveldbDriver::handleExecuteEvent(events::ExecuteRequestEvent* ev) {
           strncpy(command, inputLine + offset, n - offset);
         }
         offset = n + 1;
-        FastoObjectCommand* cmd = createCommand<LeveldbCommand>(outRoot, stableCommand(command),
+        FastoObjectCommand* cmd = createCommand<LeveldbCommand>(outRoot, command,
                                                                 common::Value::C_USER);
         er = execute(cmd);
         if (er && er->isError()) {
@@ -254,11 +253,10 @@ void LeveldbDriver::handleExecuteEvent(events::ExecuteRequestEvent* ev) {
     }
   } else {
     er.reset(new common::ErrorValue("Empty command line.", common::ErrorValue::E_ERROR));
+    res.setErrorInfo(er);
   }
 
-  if (er) {  // E_INTERRUPTED
-    LOG_ERROR(er, true);
-  }
+  reply(sender, new events::ExecuteResponceEvent(this, res));
   notifyProgress(sender, 100);
 }
 

@@ -305,7 +305,7 @@ FastoObjectCommand* createCommand(FastoObject* parent, const std::string& input,
 template<typename Command>
 FastoObjectCommand* createCommand(FastoObjectIPtr parent, const std::string& input,
                                   common::Value::CommandLoggingType ct) {
-  return createCommand<Command>(parent.get(), input, ct);
+  return createCommand<Command>(parent.get(), stableCommand(input), ct);
 }
 
 }  // namespace fastonosql

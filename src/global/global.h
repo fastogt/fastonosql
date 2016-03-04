@@ -77,7 +77,7 @@ class FastoObjectCommand
   FastoObjectCommand(FastoObject* parent, common::CommandValue* cmd, const std::string &delemitr);
 };
 
-std::string stableCommand(const char* command);
+std::string stableCommand(std::string command);
 std::pair<std::string, std::string> getKeyValueFromLine(const std::string& input);
 std::string getFirstWordFromLine(const std::string& input);
 

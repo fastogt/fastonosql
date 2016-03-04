@@ -1409,19 +1409,13 @@ common::Error RedisRaw::cliFormatReplyRaw(FastoObject* out, redisReply *r) {
       common::Value *val = common::Value::createNullValue();
       obj = new FastoObject(out, val, config_.delimiter);
       out->addChildren(obj);
-
       break;
     }
     case REDIS_REPLY_ERROR: {
-      common::ErrorValue* val = common::Value::createErrorValue(r->str,
-                                                                common::ErrorValue::E_NONE,
-                                                                common::logging::L_WARNING);
       if (strcasestr(r->str, "NOAUTH")) { //"NOAUTH Authentication required."
         isAuth_ = false;
       }
-      obj = new FastoObject(out, val, config_.delimiter);
-      out->addChildren(obj);
-      break;
+      return common::make_error_value(r->str, common::ErrorValue::E_ERROR);
     }
     case REDIS_REPLY_STATUS:
     case REDIS_REPLY_STRING: {
@@ -1452,10 +1446,7 @@ common::Error RedisRaw::cliFormatReplyRaw(FastoObject* out, redisReply *r) {
     default: {
       char tmp2[128] = {0};
       common::SNPrintf(tmp2, sizeof(tmp2), "Unknown reply type: %d", r->type);
-      common::ErrorValue* val = common::Value::createErrorValue(tmp2, common::ErrorValue::E_NONE,
-                                                                common::logging::L_WARNING);
-      obj = new FastoObject(out, val, config_.delimiter);
-      out->addChildren(obj);
+      return common::make_error_value(tmp2, common::ErrorValue::E_ERROR);
     }
   }
 
@@ -1668,7 +1659,6 @@ common::Error RedisRaw::execute(int argc, char **argv, FastoObject* out) {
 }
 
 common::Error RedisRaw::executeAsPipeline(std::vector<FastoObjectCommandIPtr> cmds) {
-  //DCHECK(cmd);
   if (cmds.empty()) {
     return common::make_error_value("Invalid input command", common::ErrorValue::E_ERROR);
   }
@@ -1683,30 +1673,20 @@ common::Error RedisRaw::executeAsPipeline(std::vector<FastoObjectCommandIPtr> cm
     FastoObjectCommandIPtr cmd = cmds[i];
     common::CommandValue* cmdc = cmd->cmd();
 
-    const std::string command = cmdc->inputCommand();
-    common::Value::CommandLoggingType type = cmdc->commandLoggingType();
-
-    if (command.empty()) {
+    std::string command = cmdc->inputCommand();
+    const char* ccommand = common::utils::c_strornull(command);
+    if (!ccommand) {
       continue;
     }
 
-    LOG_COMMAND(Command(command, type));
+    LOG_COMMAND(Command(cmdc));
+    int argc = 0;
+    sds* argv = sdssplitargs(ccommand, &argc);
 
-    const char* ccommand = common::utils::c_strornull(command);
-
-    if (ccommand) {
-      int argc = 0;
-      sds *argv = sdssplitargs(ccommand, &argc);
-
-      if (!argv) {
-        common::StringValue *val = common::Value::createStringValue("Invalid argument(s)");
-        FastoObject* child = new FastoObject(cmd.get(), val, config_.delimiter);
-        cmd->addChildren(child);
-      } else if (argc > 0) {
-        if (isPipeLineCommand(argv[0])) {
-          valid_cmds.push_back(cmd);
-          redisAppendCommandArgv(context_, argc, (const char**)argv, NULL);
-        }
+    if (argv) {
+      if (isPipeLineCommand(argv[0])) {
+        valid_cmds.push_back(cmd);
+        redisAppendCommandArgv(context_, argc, (const char**)argv, NULL);
       }
       sdsfreesplitres(argv, argc);
     }
@@ -1716,7 +1696,7 @@ common::Error RedisRaw::executeAsPipeline(std::vector<FastoObjectCommandIPtr> cm
     FastoObjectCommandIPtr cmd = cmds[i];
     common::Error er = cliReadReply(cmd.get());
     if (er && er->isError()) {
-        return er;
+      return er;
     }
   }
   //end piplene

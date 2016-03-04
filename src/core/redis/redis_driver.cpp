@@ -492,51 +492,48 @@ common::Error RedisDriver::scanMode(events::ProcessConfigArgsRequestEvent* ev) {
 void RedisDriver::handleExecuteEvent(events::ExecuteRequestEvent *ev) {
   QObject *sender = ev->sender();
   notifyProgress(sender, 0);
-  events::ExecuteRequestEvent::value_type res(ev->value());
+  events::ExecuteResponceEvent::value_type res(ev->value());
   const char *inputLine = common::utils::c_strornull(res.text);
 
   common::Error er;
   if (inputLine) {
-      size_t length = strlen(inputLine);
-      int offset = 0;
-      RootLocker lock = make_locker(sender, inputLine);
-      FastoObjectIPtr outRoot = lock.root_;
-      double step = 100.0f/length;
-      for (size_t n = 0; n < length; ++n) {
-          if (interrupt_) {
-              er.reset(new common::ErrorValue("Interrupted exec.",
-                                              common::ErrorValue::E_INTERRUPTED));
-              res.setErrorInfo(er);
-              break;
-          }
-
-          if (inputLine[n] == '\n' || n == length-1) {
-            notifyProgress(sender, step * n);
-            char command[128] = {0};
-            if (n == length-1) {
-              strcpy(command, inputLine + offset);
-            } else {
-              strncpy(command, inputLine + offset, n - offset);
-            }
-
-            offset = n + 1;
-            std::string stabc = stableCommand(command);
-            FastoObjectCommand* cmd = createCommand<RedisCommand>(outRoot, stabc,
-                                                                  common::Value::C_USER);
-            er = execute(cmd);
-            if (er && er->isError()) {
-              res.setErrorInfo(er);
-              break;
-            }
-          }
+    size_t length = strlen(inputLine);
+    int offset = 0;
+    RootLocker lock = make_locker(sender, inputLine);
+    FastoObjectIPtr outRoot = lock.root_;
+    double step = 100.0f / length;
+    for (size_t n = 0; n < length; ++n) {
+      if (interrupt_) {
+        er.reset(new common::ErrorValue("Interrupted exec.", common::ErrorValue::E_INTERRUPTED));
+        res.setErrorInfo(er);
+        break;
       }
+
+      if (inputLine[n] == '\n' || n == length-1) {
+        notifyProgress(sender, step * n);
+        char command[128] = {0};
+        if (n == length - 1) {
+          strcpy(command, inputLine + offset);
+        } else {
+          strncpy(command, inputLine + offset, n - offset);
+        }
+
+        offset = n + 1;
+        FastoObjectCommand* cmd = createCommand<RedisCommand>(outRoot, command,
+                                                              common::Value::C_USER);
+        er = execute(cmd);
+        if (er && er->isError()) {
+          res.setErrorInfo(er);
+          break;
+        }
+      }
+    }
   } else {
     er.reset(new common::ErrorValue("Empty command line.", common::ErrorValue::E_ERROR));
+    res.setErrorInfo(er);
   }
 
-  if (er) {  // E_INTERRUPTED
-    LOG_ERROR(er, true);
-  }
+  reply(sender, new events::ExecuteResponceEvent(this, res));
   notifyProgress(sender, 100);
 }
 

@@ -28,7 +28,17 @@ Command::Command(const std::string &mess, common::Value::CommandLoggingType comm
   : message_(mess), type_(commandT) {
 }
 
-const std::string &Command::message() const {
+Command::Command(common::CommandValue* cmd)
+  : message_(), type_(common::Value::C_INNER) {
+  if (!cmd) {
+    return;
+  }
+
+  message_ = cmd->inputCommand();
+  type_ = cmd->commandLoggingType();
+}
+
+std::string Command::message() const {
   return message_;
 }
 

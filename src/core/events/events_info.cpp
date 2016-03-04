@@ -141,6 +141,10 @@ ExecuteInfoRequest::ExecuteInfoRequest(initiator_type sender, const std::string 
   : base_class(sender, er), text(text), args(args) {
 }
 
+ExecuteInfoResponce::ExecuteInfoResponce(const base_class& request)
+  : base_class(request) {
+}
+
 LoadDatabasesInfoRequest::LoadDatabasesInfoRequest(initiator_type sender, error_type er)
   : base_class(sender, er) {
 }

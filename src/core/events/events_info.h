@@ -204,6 +204,12 @@ struct ExecuteInfoRequest
   const std::vector<std::string> args;
 };
 
+struct ExecuteInfoResponce
+  : ExecuteInfoRequest {
+  typedef ExecuteInfoRequest base_class;
+  explicit ExecuteInfoResponce(const base_class& request);
+};
+
 struct LoadDatabasesInfoRequest
   : public EventInfoBase {
   typedef EventInfoBase base_class;

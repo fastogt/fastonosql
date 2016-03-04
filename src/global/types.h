@@ -35,12 +35,13 @@ class Command {
  public:
   Command();
   Command(const std::string& mess, common::Value::CommandLoggingType commandT);
-  const std::string& message() const;
+  explicit Command(common::CommandValue* cmd);
+  std::string message() const;
   common::Value::CommandLoggingType type() const;
 
  private:
-  const std::string message_;
-  const common::Value::CommandLoggingType type_;
+  std::string message_;
+  common::Value::CommandLoggingType type_;
 };
 
 }

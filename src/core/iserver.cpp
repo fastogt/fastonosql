@@ -288,6 +288,9 @@ void IServer::customEvent(QEvent *event) {
   } else if (type == static_cast<QEvent::Type>(SetDefaultDatabaseResponceEvent::EventType)) {
     SetDefaultDatabaseResponceEvent *ev = static_cast<SetDefaultDatabaseResponceEvent*>(event);
     handleSetDefaultDatabaseEvent(ev);
+  } else if (type == static_cast<QEvent::Type>(ExecuteResponceEvent::EventType)) {
+    ExecuteResponceEvent *ev = static_cast<ExecuteResponceEvent*>(event);
+    handleExecuteResponceEvent(ev);
   } else if (type == static_cast<QEvent::Type>(CommandResponceEvent::EventType)) {
     CommandResponceEvent *ev = static_cast<CommandResponceEvent*>(event);
     handleCommandResponceEvent(ev);
@@ -399,6 +402,16 @@ void IServer::handleChangeMaxConnection(events::ChangeMaxConnectionResponceEvent
   }
 
   emit finishedChangeMaxConnection(v);
+}
+
+void IServer::handleExecuteResponceEvent(events::ExecuteResponceEvent* ev) {
+  auto v = ev->value();
+  common::Error er(v.errorInfo());
+  if (er && er->isError()) {
+    LOG_ERROR(er, true);
+  }
+
+  emit finishedExecute(v);
 }
 
 void IServer::handleLoadDatabaseInfosEvent(events::LoadDatabasesInfoResponceEvent* ev) {

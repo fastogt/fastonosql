@@ -83,6 +83,7 @@ class IServer
   void finishedChangeMaxConnection(const events_info::ChangeMaxConnectionResponce& res);
 
   void startedExecute(const events_info::ExecuteInfoRequest& req);
+  void finishedExecute(const events_info::ExecuteInfoResponce& res);
 
   void startedLoadDatabases(const events_info::LoadDatabasesInfoRequest& req);
   void finishedLoadDatabases(const events_info::LoadDatabasesInfoResponce& res);
@@ -166,6 +167,7 @@ class IServer
   virtual void handleExportEvent(events::ExportResponceEvent* ev);
   virtual void handleChangePasswordEvent(events::ChangePasswordResponceEvent* ev);
   virtual void handleChangeMaxConnection(events::ChangeMaxConnectionResponceEvent* ev);
+  virtual void handleExecuteResponceEvent(events::ExecuteResponceEvent* ev);
 
   // handle database events
   virtual void handleLoadDatabaseInfosEvent(events::LoadDatabasesInfoResponceEvent* ev);

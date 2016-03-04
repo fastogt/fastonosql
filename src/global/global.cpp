@@ -28,7 +28,7 @@ FastoObject::FastoObject(FastoObject* parent, common::Value* val, const std::str
 }
 
 FastoObject::~FastoObject() {
-  for(size_t i = 0; i < childrens_.size(); ++i){
+  for (size_t i = 0; i < childrens_.size(); ++i) {
     FastoObject* item = childrens_[i];
     delete item;
   }
@@ -36,7 +36,7 @@ FastoObject::~FastoObject() {
 }
 
 common::Value::Type FastoObject::type() const {
-  if(!value_){
+  if (!value_) {
     return common::Value::TYPE_NULL;
   }
 
@@ -58,10 +58,10 @@ FastoObject::child_container_type FastoObject::childrens() const {
 }
 
 void FastoObject::addChildren(FastoObject* child) {
-  if(child){
+  if (child) {
     DCHECK(child->parent_ == this);
     childrens_.push_back(child);
-    if(observer_){
+    if (observer_) {
       observer_->addedChildren(child);
       child->observer_ = observer_;
     }
@@ -73,7 +73,7 @@ FastoObject* FastoObject::parent() const {
 }
 
 void FastoObject::clear() {
-  for (child_container_type::const_iterator it = childrens_.begin(); it != childrens_.end(); ++it){
+  for (child_container_type::const_iterator it = childrens_.begin(); it != childrens_.end(); ++it) {
     FastoObject* child = (*it);
     delete child;
   }
@@ -90,7 +90,7 @@ common::Value* FastoObject::value() const {
 
 void FastoObject::setValue(common::Value* val) {
   value_.reset(val);
-  if(observer_){
+  if (observer_) {
     observer_->updated(this, val);
   }
 }
@@ -113,7 +113,7 @@ std::string FastoObjectCommand::toString() const {
 
 std::string FastoObjectCommand::inputCmd() const {
   common::CommandValue* command = cmd();
-  if(command){
+  if (command) {
     std::pair<std::string, std::string> kv = getKeyValueFromLine(command->inputCommand());
     return kv.first;
   }
@@ -123,7 +123,7 @@ std::string FastoObjectCommand::inputCmd() const {
 
 std::string FastoObjectCommand::inputArgs() const {
   common::CommandValue* command = cmd();
-  if(command){
+  if (command) {
     std::pair<std::string, std::string> kv = getKeyValueFromLine(command->inputCommand());
     return kv.second;
   }
@@ -133,7 +133,7 @@ std::string FastoObjectCommand::inputArgs() const {
 
 std::string FastoObjectCommand::inputCommand() const {
   common::CommandValue* command = cmd();
-  if(command){
+  if (command) {
     return command->inputCommand();
   }
 
@@ -142,36 +142,34 @@ std::string FastoObjectCommand::inputCommand() const {
 
 common::Value::CommandLoggingType FastoObjectCommand::commandLoggingType() const {
   common::CommandValue* command = cmd();
-  if(command){
+  if (command) {
     return command->commandLoggingType();
   }
 
   return common::Value::C_UNKNOWN;
 }
 
-std::string stableCommand(const char* command) {
-  if(!command){
+std::string stableCommand(std::string command) {
+  if (command.empty()) {
     return std::string();
   }
 
-  std::string cmd = command;
-
-  if(cmd[cmd.size() - 1] == '\r'){
-    cmd.resize(cmd.size() - 1);
+  if(command[command.size() - 1] == '\r'){
+    command.pop_back();
   }
 
-  return cmd;
+  return command;
 }
 
 std::pair<std::string, std::string> getKeyValueFromLine(const std::string& input) {
-  if(input.empty()){
+  if (input.empty()) {
     return std::pair<std::string, std::string>();
   }
 
   size_t pos = input.find_first_of(' ');
   std::string key = input;
   std::string value;
-  if(pos != std::string::npos){
+  if (pos != std::string::npos) {
     key = input.substr(0, pos);
     value = input.substr(pos + 1);
   }
@@ -182,12 +180,12 @@ std::pair<std::string, std::string> getKeyValueFromLine(const std::string& input
 }
 
 std::string getFirstWordFromLine(const std::string& input) {
-  if(input.empty()){
+  if (input.empty()) {
     return std::string();
   }
 
   size_t pos = input.find_first_of(' ');
-  if(pos != std::string::npos){
+  if (pos != std::string::npos) {
     return input.substr(0, pos);
   }
 
@@ -201,7 +199,7 @@ FastoObjectArray::FastoObjectArray(FastoObject* parent, common::ArrayValue* ar,
 
 void FastoObjectArray::append(common::Value* in_value) {
   common::ArrayValue* ar = dynamic_cast<common::ArrayValue*>(value_.get());
-  if(!ar){
+  if (!ar) {
     NOTREACHED();
     return;
   }
@@ -225,9 +223,9 @@ namespace common {
 std::string convertToString(fastonosql::FastoObject* obj) {
   using namespace fastonosql;
   std::string result;
-  if(obj){
-    const std::string str = obj->toString();
-    if(!str.empty()){
+  if (obj) {
+    std::string str = obj->toString();
+    if (!str.empty()) {
       result += str + obj->delemitr();
     }
     FastoObject::child_container_type childrens = obj->childrens();
@@ -261,13 +259,13 @@ std::string convertToString(common::Value* value, const std::string& delemitr) {
 }
 
 std::string convertToString(common::ArrayValue* array, const std::string& delemitr) {
-  if(!array){
+  if (!array) {
     return std::string();
   }
 
   std::string result;
-  const common::ArrayValue::const_iterator lastIt = std::prev(array->end());
-  for(common::ArrayValue::const_iterator it = array->begin(); it != array->end(); ++it){
+  common::ArrayValue::const_iterator lastIt = std::prev(array->end());
+  for (common::ArrayValue::const_iterator it = array->begin(); it != array->end(); ++it) {
     std::string val = (*it)->toString();
     if(val.empty()){
       continue;
@@ -283,20 +281,20 @@ std::string convertToString(common::ArrayValue* array, const std::string& delemi
 }
 
 std::string convertToString(common::SetValue* set, const std::string& delemitr) {
-  if(!set){
+  if (!set) {
     return std::string();
   }
 
   std::string result;
   const common::SetValue::const_iterator lastIt = std::prev(set->end());
-  for(common::SetValue::const_iterator it = set->begin(); it != set->end(); ++it){
+  for (common::SetValue::const_iterator it = set->begin(); it != set->end(); ++it) {
     std::string val = (*it)->toString();
     if(val.empty()){
       continue;
     }
 
     result += val;
-    if(lastIt != it){
+    if (lastIt != it) {
       result += delemitr;
     }
   }
@@ -305,13 +303,13 @@ std::string convertToString(common::SetValue* set, const std::string& delemitr) 
 }
 
 std::string convertToString(common::ZSetValue* zset, const std::string& delemitr) {
-  if(!zset){
+  if (!zset) {
     return std::string();
   }
 
   std::string result;
   const common::ZSetValue::const_iterator lastIt = std::prev(zset->end());
-  for(common::ZSetValue::const_iterator it = zset->begin(); it != zset->end(); ++it){
+  for (common::ZSetValue::const_iterator it = zset->begin(); it != zset->end(); ++it) {
     common::ZSetValue::value_type v = *it;
     std::string key = (v.first)->toString();
     std::string val = (v.second)->toString();
@@ -328,21 +326,21 @@ std::string convertToString(common::ZSetValue* zset, const std::string& delemitr
 }
 
 std::string convertToString(common::HashValue* hash, const std::string& delemitr) {
-  if(!hash){
+  if (!hash) {
     return std::string();
   }
 
   std::string result;
-  for(common::HashValue::const_iterator it = hash->begin(); it != hash->end(); ++it){
+  for (common::HashValue::const_iterator it = hash->begin(); it != hash->end(); ++it) {
     common::HashValue::value_type v = *it;
     std::string key = (v.first)->toString();
     std::string val = (v.second)->toString();
-    if(val.empty() || key.empty()){
+    if (val.empty() || key.empty()) {
       continue;
     }
 
     result += key + " " + val;
-    if(std::next(it) != hash->end()){
+    if (std::next(it) != hash->end()) {
       result += delemitr;
     }
   }

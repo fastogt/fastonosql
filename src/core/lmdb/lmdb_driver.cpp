@@ -24,7 +24,6 @@
 #include "common/sprintf.h"
 #include "common/utils.h"
 #include "common/file_system.h"
-#include "fasto/qt/logger.h"
 
 #include "core/command_logger.h"
 
@@ -179,7 +178,7 @@ common::Error LmdbDriver::currentDataBaseInfo(IDataBaseInfo** info) {
   return common::Error();
 }
 
-void LmdbDriver::handleConnectEvent(events::ConnectRequestEvent *ev) {
+void LmdbDriver::handleConnectEvent(events::ConnectRequestEvent* ev) {
   QObject *sender = ev->sender();
   notifyProgress(sender, 0);
   events::ConnectResponceEvent::value_type res(ev->value());
@@ -215,7 +214,7 @@ void LmdbDriver::handleDisconnectEvent(events::DisconnectRequestEvent* ev) {
 void LmdbDriver::handleExecuteEvent(events::ExecuteRequestEvent* ev) {
   QObject *sender = ev->sender();
   notifyProgress(sender, 0);
-  events::ExecuteRequestEvent::value_type res(ev->value());
+  events::ExecuteResponceEvent::value_type res(ev->value());
   const char *inputLine = common::utils::c_strornull(res.text);
 
   common::Error er;
@@ -231,16 +230,16 @@ void LmdbDriver::handleExecuteEvent(events::ExecuteRequestEvent* ev) {
         res.setErrorInfo(er);
         break;
       }
-      if (inputLine[n] == '\n' || n == length-1) {
+      if (inputLine[n] == '\n' || n == length - 1) {
         notifyProgress(sender, step * n);
         char command[128] = {0};
-        if (n == length-1) {
+        if (n == length - 1) {
           strcpy(command, inputLine + offset);
         } else {
           strncpy(command, inputLine + offset, n - offset);
         }
         offset = n + 1;
-        FastoObjectCommand* cmd = createCommand<LmdbCommand>(outRoot, stableCommand(command),
+        FastoObjectCommand* cmd = createCommand<LmdbCommand>(outRoot, command,
                                                              common::Value::C_USER);
         er = execute(cmd);
         if (er && er->isError()) {
@@ -251,11 +250,10 @@ void LmdbDriver::handleExecuteEvent(events::ExecuteRequestEvent* ev) {
     }
   } else {
     er.reset(new common::ErrorValue("Empty command line.", common::ErrorValue::E_ERROR));
+    res.setErrorInfo(er);
   }
 
-  if (er) {  // E_INTERRUPTED
-    LOG_ERROR(er, true);
-  }
+  reply(sender, new events::ExecuteResponceEvent(this, res));
   notifyProgress(sender, 100);
 }
 

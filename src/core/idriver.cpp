@@ -36,23 +36,24 @@ extern "C" {
 #include "common/file_system.h"
 #include "common/time.h"
 #include "common/sprintf.h"
+#include "common/utils.h"
 
 #include "core/command_logger.h"
 
 namespace {
+
 #ifdef OS_WIN
 struct WinsockInit {
   WinsockInit() {
     WSADATA d;
-    if ( WSAStartup(MAKEWORD(2,2), &d) != 0 ) {
+    if (WSAStartup(MAKEWORD(2, 2), &d) != 0 ) {
       _exit(1);
     }
   }
   ~WinsockInit() { WSACleanup(); }
 } winsock_init;
 #else
-struct SigIgnInit
-{
+struct SigIgnInit {
   SigIgnInit() {
     signal(SIGPIPE, SIG_IGN);
   }
@@ -60,12 +61,11 @@ struct SigIgnInit
 #endif
 
 const char magicNumber = 0x1E;
-std::string createStamp(common::time64_t time)
-{
+std::string createStamp(common::time64_t time) {
   return magicNumber + common::convertToString(time) + '\n';
 }
 
-bool getStamp(const common::buffer_type& stamp, common::time64_t& timeOut) {
+bool getStamp(common::buffer_type stamp, common::time64_t* timeOut) {
   if (stamp.empty()) {
     return false;
   }
@@ -74,15 +74,13 @@ bool getStamp(const common::buffer_type& stamp, common::time64_t& timeOut) {
     return false;
   }
 
-  common::buffer_type cstamp = stamp;
-
-  if (cstamp[cstamp.size() - 1] == '\n') {
-    cstamp.resize(cstamp.size() - 1);
+  if (stamp[stamp.size() - 1] == '\n') {
+    stamp.pop_back();
   }
 
-  timeOut = common::convertFromString<common::time64_t>((const char*)(cstamp.data() + 1));
-
-  return timeOut != 0;
+  common::time64_t ltimeOut = common::convertFromString<common::time64_t>((const char*)(stamp.data() + 1));
+  *timeOut = ltimeOut;
+  return ltimeOut != 0;
 }
 
 }
@@ -114,36 +112,29 @@ void replyNotImplementedYet(IDriver* sender, event_request_type* ev, const char*
 }
 
 common::Error IDriver::execute(FastoObjectCommand* cmd) {
-  //DCHECK(cmd);
+  DCHECK(cmd);
   if (!cmd) {
-    return common::make_error_value("Invalid input argument", common::ErrorValue::E_ERROR);
+    return common::make_error_value("Invalid input argument(s)", common::ErrorValue::E_ERROR);
   }
 
-  const std::string command = cmd->cmd()->inputCommand();
-  common::Value::CommandLoggingType type = cmd->cmd()->commandLoggingType();
-
-  if (command.empty()) {
-    return common::make_error_value("Command empty", common::ErrorValue::E_ERROR);
+  common::CommandValue* icmd = cmd->cmd();
+  std::string command = icmd->inputCommand();
+  const char* ccommand = common::utils::c_strornull(command);
+  if (!ccommand) {
+    return common::make_error_value("Invalid input argument(s)", common::ErrorValue::E_ERROR);
   }
 
-  LOG_COMMAND(Command(command, type));
+  LOG_COMMAND(Command(icmd));
+  int argc;
+  sds* argv = sdssplitargs(ccommand, &argc);
 
-  common::Error er;
-  if (command[0] != '\0') {
-    int argc;
-    sds* argv = sdssplitargs(command.c_str(), &argc);
-
-    if (!argv) {
-      common::StringValue *val = common::Value::createStringValue("Invalid argument(s)");
-      FastoObject* child = new FastoObject(cmd, val, cmd->delemitr());
-      cmd->addChildren(child);
-    } else if (argc > 0) {
-      er = executeImpl(argc, argv, cmd);
-    }
+  if (argv) {
+    common::Error err = executeImpl(argc, argv, cmd);
     sdsfreesplitres(argv, argc);
+    return err;
   }
 
-  return er;
+  return common::make_error_value("Invalid input argument(s)", common::ErrorValue::E_ERROR);
 }
 
 IDriver::IDriver(IConnectionSettingsBaseSPtr settings)
@@ -446,7 +437,7 @@ void IDriver::handleLoadServerInfoHistoryEvent(events::ServerInfoHistoryRequestE
       }
 
       common::time64_t tmpStamp = 0;
-      bool isSt = getStamp(data, tmpStamp);
+      bool isSt = getStamp(data, &tmpStamp);
       if (isSt) {
         if (curStamp) {
           tmpInfos.push_back(ServerInfoSnapShoot(curStamp, makeServerInfoFromString(common::convertToString(dataInfo))));

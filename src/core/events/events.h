@@ -42,6 +42,7 @@ typedef common::utils_qt::Event<events_info::DisConnectInfoRequest, QEvent::User
 typedef common::utils_qt::Event<events_info::DisConnectInfoResponce, QEvent::User + 12> DisconnectResponceEvent;
 
 typedef common::utils_qt::Event<events_info::ExecuteInfoRequest, QEvent::User + 13> ExecuteRequestEvent;
+typedef common::utils_qt::Event<events_info::ExecuteInfoResponce, QEvent::User + 14> ExecuteResponceEvent;
 
 typedef common::utils_qt::Event<events_info::LoadDatabasesInfoRequest, QEvent::User + 15> LoadDatabasesInfoRequestEvent;
 typedef common::utils_qt::Event<events_info::LoadDatabasesInfoResponce, QEvent::User + 16> LoadDatabasesInfoResponceEvent;
