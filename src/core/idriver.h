@@ -108,16 +108,14 @@ class IDriver
 
   class RootLocker {
   public:
-    RootLocker(IDriver* parent, QObject* reciver, const std::string& text);
+    RootLocker(IDriver* parent, QObject* receiver, const std::string& text);
     ~RootLocker();
 
     FastoObjectIPtr root_;
 
   private:
-    FastoObjectIPtr createRoot(QObject* reciver, const std::string& text);
-
     IDriver* parent_;
-    QObject* reciver_;
+    QObject* receiver_;
     const common::time64_t tstart_;
   };
 

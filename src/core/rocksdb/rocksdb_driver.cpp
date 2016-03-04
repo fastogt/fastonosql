@@ -140,7 +140,7 @@ common::Error RocksdbDriver::executeImpl(int argc, char **argv, FastoObject* out
 common::Error RocksdbDriver::serverInfo(IServerInfo **info) {
   LOG_COMMAND(Command(INFO_REQUEST, common::Value::C_INNER));
   RocksdbServerInfo::Stats cm;
-  common::Error err = impl_->info(nullptr, cm);
+  common::Error err = impl_->info(nullptr, &cm);
   if (!err) {
     *info = new RocksdbServerInfo(cm);
   }
@@ -155,7 +155,7 @@ common::Error RocksdbDriver::serverDiscoveryInfo(ServerDiscoveryInfo **dinfo, IS
   IServerInfo *lsinfo = nullptr;
   common::Error er = serverInfo(&lsinfo);
   if (er && er->isError()) {
-      return er;
+    return er;
   }
 
   IDataBaseInfo* ldbinfo = nullptr;
@@ -185,33 +185,33 @@ common::Error RocksdbDriver::currentDataBaseInfo(IDataBaseInfo** info) {
 void RocksdbDriver::handleConnectEvent(events::ConnectRequestEvent *ev) {
   QObject *sender = ev->sender();
   notifyProgress(sender, 0);
-      events::ConnectResponceEvent::value_type res(ev->value());
-      RocksdbConnectionSettings *set = dynamic_cast<RocksdbConnectionSettings*>(settings_.get());
-      if (set) {
-        impl_->config_ = set->info();
+  events::ConnectResponceEvent::value_type res(ev->value());
+  RocksdbConnectionSettings *set = dynamic_cast<RocksdbConnectionSettings*>(settings_.get());
+  if (set) {
+    impl_->config_ = set->info();
   notifyProgress(sender, 25);
-        common::Error er = impl_->connect();
-        if (er && er->isError()) {
-          res.setErrorInfo(er);
-        }
+    common::Error er = impl_->connect();
+    if (er && er->isError()) {
+      res.setErrorInfo(er);
+    }
   notifyProgress(sender, 75);
-      }
-      reply(sender, new events::ConnectResponceEvent(this, res));
+  }
+  reply(sender, new events::ConnectResponceEvent(this, res));
   notifyProgress(sender, 100);
 }
 
 void RocksdbDriver::handleDisconnectEvent(events::DisconnectRequestEvent* ev) {
   QObject *sender = ev->sender();
   notifyProgress(sender, 0);
-      events::DisconnectResponceEvent::value_type res(ev->value());
+  events::DisconnectResponceEvent::value_type res(ev->value());
   notifyProgress(sender, 50);
 
-      common::Error er = impl_->disconnect();
-      if (er && er->isError()) {
-          res.setErrorInfo(er);
-      }
+  common::Error er = impl_->disconnect();
+  if (er && er->isError()) {
+    res.setErrorInfo(er);
+  }
 
-      reply(sender, new events::DisconnectResponceEvent(this, res));
+  reply(sender, new events::DisconnectResponceEvent(this, res));
   notifyProgress(sender, 100);
 }
 
@@ -358,8 +358,8 @@ void RocksdbDriver::handleLoadServerInfoEvent(events::ServerInfoRequestEvent* ev
   notifyProgress(sender, 50);
   LOG_COMMAND(Command(INFO_REQUEST, common::Value::C_INNER));
   RocksdbServerInfo::Stats cm;
-  common::Error err = impl_->info(nullptr, cm);
-  if (err) {
+  common::Error err = impl_->info(nullptr, &cm);
+  if (err && err->isError()) {
     res.setErrorInfo(err);
   } else {
     IServerInfoSPtr mem(new RocksdbServerInfo(cm));

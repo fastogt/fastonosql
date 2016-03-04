@@ -183,6 +183,9 @@ class IServer
   databases_container_t databases_;
 
  private:
+  void handleEnterModeEvent(events::EnterModeEvent* ev);
+  void handleLeaveModeEvent(events::LeaveModeEvent* ev);
+
   // handle info events
   void handleLoadServerInfoHistoryEvent(events::ServerInfoHistoryResponceEvent* ev);
 

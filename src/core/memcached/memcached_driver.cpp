@@ -73,7 +73,7 @@ common::Error MemcachedDriver::executeImpl(int argc, char **argv, FastoObject* o
 common::Error MemcachedDriver::serverInfo(IServerInfo **info) {
   LOG_COMMAND(Command(INFO_REQUEST, common::Value::C_INNER));
   MemcachedServerInfo::Common cm;
-  common::Error err = impl_->stats(nullptr, cm);
+  common::Error err = impl_->info(nullptr, &cm);
   if (!err) {
     *info = new MemcachedServerInfo(cm);
   }
@@ -287,7 +287,7 @@ void MemcachedDriver::handleLoadServerInfoEvent(events::ServerInfoRequestEvent* 
   notifyProgress(sender, 50);
   LOG_COMMAND(Command(INFO_REQUEST, common::Value::C_INNER));
   MemcachedServerInfo::Common cm;
-  common::Error err = impl_->stats(nullptr, cm);
+  common::Error err = impl_->info(nullptr, &cm);
   if (err) {
     res.setErrorInfo(err);
   } else {

@@ -26,15 +26,69 @@
 
 namespace {
 
-std::string unqlite_strerror(unqlite* context) {
+std::string unqlite_constext_strerror(unqlite* context) {
   const char* zErr = nullptr;
   int iLen = 0;
   unqlite_config(context, UNQLITE_CONFIG_ERR_LOG, &zErr, &iLen);
   return std::string(zErr, iLen);
 }
 
-int unqlite_data_callback(const void *pData, unsigned int nDatalen, void *str) {
-  std::string *out = static_cast<std::string *>(str);
+std::string unqlite_strerror(int unqlite_error) {
+  if (unqlite_error == UNQLITE_OK) {
+    return "";
+  } else if (unqlite_error == UNQLITE_NOMEM) {
+    return "Out of memory";
+  } else if (unqlite_error == UNQLITE_ABORT) {
+    return "Another thread have released this instance";
+  } else if (unqlite_error == UNQLITE_IOERR) {
+    return "IO error";
+  } else if (unqlite_error == UNQLITE_CORRUPT) {
+    return "Corrupt pointer";
+  } else if (unqlite_error == UNQLITE_LOCKED) {
+    return "Forbidden Operation";
+  } else if (unqlite_error == UNQLITE_BUSY) {
+    return "The database file is locked";
+  } else if (unqlite_error == UNQLITE_DONE) {
+    return "Operation done";
+  } else if (unqlite_error == UNQLITE_PERM) {
+    return "Permission error";
+  } else if (unqlite_error == UNQLITE_NOTIMPLEMENTED) {
+    return "Method not implemented by the underlying Key/Value storage engine";
+  } else if (unqlite_error == UNQLITE_NOTFOUND) {
+    return "No such record";
+  } else if (unqlite_error == UNQLITE_NOOP) {
+    return "No such method";
+  } else if (unqlite_error == UNQLITE_INVALID) {
+    return "Invalid parameter";
+  } else if (unqlite_error == UNQLITE_EOF) {
+    return "End Of Input";
+  } else if (unqlite_error == UNQLITE_UNKNOWN) {
+    return "Unknown configuration option";
+  } else if (unqlite_error == UNQLITE_LIMIT) {
+    return "Database limit reached";
+  } else if (unqlite_error == UNQLITE_EXISTS) {
+    return "Record exists";
+  } else if (unqlite_error == UNQLITE_EMPTY) {
+    return "Empty record";
+  } else if (unqlite_error == UNQLITE_COMPILE_ERR) {
+    return "Compilation error";
+  } else if (unqlite_error == UNQLITE_VM_ERR) {
+    return "Virtual machine error";
+  } else if (unqlite_error == UNQLITE_FULL) {
+    return "Full database (unlikely)";
+  } else if (unqlite_error == UNQLITE_CANTOPEN) {
+    return "Unable to open the database file";
+  } else if (unqlite_error == UNQLITE_READ_ONLY) {
+    return "Read only Key/Value storage engine";
+  } else if (unqlite_error == UNQLITE_LOCKERR) {
+    return "Locking protocol error";
+  } else {
+    return common::MemSPrintf("Unknown error %d", unqlite_error);
+  }
+}
+
+int unqlite_data_callback(const void* pData, unsigned int nDatalen, void* str) {
+  std::string* out = static_cast<std::string*>(str);
   out->assign((const char*)pData, nDatalen);
   return UNQLITE_OK;
 }
@@ -44,6 +98,7 @@ int unqlite_data_callback(const void *pData, unsigned int nDatalen, void *str) {
 namespace fastonosql {
 namespace unqlite {
 namespace {
+
 common::Error createConnection(const UnqliteConfig& config, struct unqlite** context) {
   if (!context) {
     return common::make_error_value("Invalid input argument", common::ErrorValue::E_ERROR);
@@ -55,19 +110,18 @@ common::Error createConnection(const UnqliteConfig& config, struct unqlite** con
   int st = unqlite_open(&lcontext, dbname, config.create_if_missing ?
                           UNQLITE_OPEN_CREATE : UNQLITE_OPEN_READWRITE);
   if (st != UNQLITE_OK) {
-      char buff[1024] = {0};
-      common::SNPrintf(buff, sizeof(buff), "Fail open database: %s!", unqlite_strerror(lcontext));
-      return common::make_error_value(buff, common::ErrorValue::E_ERROR);
+    char buff[1024] = {0};
+    common::SNPrintf(buff, sizeof(buff), "Fail open database: %s!", unqlite_strerror(st));
+    return common::make_error_value(buff, common::ErrorValue::E_ERROR);
   }
 
   *context = lcontext;
-
   return common::Error();
 }
 
 common::Error createConnection(UnqliteConnectionSettings* settings, struct unqlite** context) {
   if (!settings) {
-      return common::make_error_value("Invalid input argument", common::ErrorValue::E_ERROR);
+    return common::make_error_value("Invalid input argument", common::ErrorValue::E_ERROR);
   }
 
   UnqliteConfig config = settings->info();
@@ -87,7 +141,6 @@ common::Error testConnection(UnqliteConnectionSettings *settings) {
   }
 
   unqlite_close(ldb);
-
   return common::Error();
 }
 
@@ -151,9 +204,9 @@ common::Error UnqliteRaw::dbsize(size_t* size) {
   unqlite_kv_cursor *pCur; /* Cursor handle */
   int rc = unqlite_kv_cursor_init(unqlite_, &pCur);
   if (rc != UNQLITE_OK) {
-      char buff[1024] = {0};
-      common::SNPrintf(buff, sizeof(buff), "dbsize function error: %s", unqlite_strerror(unqlite_));
-      return common::make_error_value(buff, common::ErrorValue::E_ERROR);
+    char buff[1024] = {0};
+    common::SNPrintf(buff, sizeof(buff), "dbsize function error: %s", unqlite_strerror(rc));
+    return common::make_error_value(buff, common::ErrorValue::E_ERROR);
   }
   /* Point to the first record */
   unqlite_kv_cursor_first_entry(pCur);
@@ -161,9 +214,9 @@ common::Error UnqliteRaw::dbsize(size_t* size) {
   size_t sz = 0;
   /* Iterate over the entries */
   while (unqlite_kv_cursor_valid_entry(pCur)) {
-      sz++;
+    sz++;
       /* Point to the next entry */
-      unqlite_kv_cursor_next_entry(pCur);
+    unqlite_kv_cursor_next_entry(pCur);
   }
   /* Finally, Release our cursor */
   unqlite_kv_cursor_release(unqlite_, pCur);
@@ -188,7 +241,7 @@ common::Error UnqliteRaw::get(const std::string& key, std::string* ret_val) {
   int rc = unqlite_kv_fetch_callback(unqlite_, key.c_str(), key.size(), unqlite_data_callback, ret_val);
   if (rc != UNQLITE_OK) {
     char buff[1024] = {0};
-    common::SNPrintf(buff, sizeof(buff), "get function error: %s", unqlite_strerror(unqlite_));
+    common::SNPrintf(buff, sizeof(buff), "get function error: %s", unqlite_strerror(rc));
     return common::make_error_value(buff, common::ErrorValue::E_ERROR);
   }
 
@@ -199,7 +252,7 @@ common::Error UnqliteRaw::put(const std::string& key, const std::string& value) 
   int rc = unqlite_kv_store(unqlite_, key.c_str(), key.size(), value.c_str(), value.length());
   if (rc != UNQLITE_OK) {
     char buff[1024] = {0};
-    common::SNPrintf(buff, sizeof(buff), "put function error: %s", unqlite_strerror(unqlite_));
+    common::SNPrintf(buff, sizeof(buff), "put function error: %s", unqlite_strerror(rc));
     return common::make_error_value(buff, common::ErrorValue::E_ERROR);
   }
 
@@ -210,7 +263,7 @@ common::Error UnqliteRaw::del(const std::string& key) {
   int rc = unqlite_kv_delete(unqlite_, key.c_str(), key.size());
   if (rc != UNQLITE_OK) {
     char buff[1024] = {0};
-    common::SNPrintf(buff, sizeof(buff), "delete function error: %s", unqlite_strerror(unqlite_));
+    common::SNPrintf(buff, sizeof(buff), "delete function error: %s", unqlite_strerror(rc));
     return common::make_error_value(buff, common::ErrorValue::E_ERROR);
   }
 
@@ -224,7 +277,7 @@ common::Error UnqliteRaw::keys(const std::string &key_start, const std::string &
   int rc = unqlite_kv_cursor_init(unqlite_, &pCur);
   if (rc != UNQLITE_OK) {
     char buff[1024] = {0};
-    common::SNPrintf(buff, sizeof(buff), "Keys function error: %s", unqlite_strerror(unqlite_));
+    common::SNPrintf(buff, sizeof(buff), "Keys function error: %s", unqlite_strerror(rc));
     return common::make_error_value(buff, common::ErrorValue::E_ERROR);
   }
   /* Point to the first record */

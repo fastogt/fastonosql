@@ -21,8 +21,6 @@
 #include "common/file_system.h"
 #include "common/utils.h"
 
-#include "fasto/qt/logger.h"
-
 #include "core/command_logger.h"
 
 #define SHUTDOWN "SHUTDOWN"
@@ -375,16 +373,16 @@ common::Error RedisDriver::latencyMode(events::ProcessConfigArgsRequestEvent* ev
   events::EnterModeEvent::value_type resEv(this, LatencyMode);
   reply(sender, new events::EnterModeEvent(this, resEv));
 
+  events::LeaveModeEvent::value_type res(this, LatencyMode);
   RootLocker lock = make_locker(sender, LATENCY_REQUEST);
 
   FastoObjectIPtr obj = lock.root_;
   common::Error er = impl_->latencyMode(obj.get());
-  if (er) {  // E_INTERRUPTED
-    LOG_ERROR(er, true);
+  if (er && er->isError()) {
+    res.setErrorInfo(er);
   }
 
-  events::LeaveModeEvent::value_type resEv2(this, LatencyMode);
-  reply(sender, new events::LeaveModeEvent(this, resEv2));
+  reply(sender, new events::LeaveModeEvent(this, res));
   notifyProgress(sender, 100);
   return er;
 }
@@ -395,16 +393,16 @@ common::Error RedisDriver::slaveMode(events::ProcessConfigArgsRequestEvent* ev) 
   events::EnterModeEvent::value_type resEv(this, SlaveMode);
   reply(sender, new events::EnterModeEvent(this, resEv));
 
+  events::LeaveModeEvent::value_type res(this, SlaveMode);
   RootLocker lock = make_locker(sender, SYNC_REQUEST);
 
   FastoObjectIPtr obj = lock.root_;
   common::Error er = impl_->slaveMode(obj.get());
-  if (er) {  // E_INTERRUPTED
-    LOG_ERROR(er, true);
+  if (er && er->isError()) {
+    res.setErrorInfo(er);
   }
 
-  events::LeaveModeEvent::value_type resEv2(this, SlaveMode);
-  reply(sender, new events::LeaveModeEvent(this, resEv2));
+  reply(sender, new events::LeaveModeEvent(this, res));
   notifyProgress(sender, 100);
   return er;
 }
@@ -415,16 +413,16 @@ common::Error RedisDriver::getRDBMode(events::ProcessConfigArgsRequestEvent* ev)
   events::EnterModeEvent::value_type resEv(this, GetRDBMode);
   reply(sender, new events::EnterModeEvent(this, resEv));
 
+  events::LeaveModeEvent::value_type res(this, GetRDBMode);
   RootLocker lock = make_locker(sender, RDM_REQUEST);
 
   FastoObjectIPtr obj = lock.root_;
   common::Error er = impl_->getRDB(obj.get());
   if (er && er->isError()) {
-    LOG_ERROR(er, true);
+    res.setErrorInfo(er);
   }
 
-  events::LeaveModeEvent::value_type resEv2(this, GetRDBMode);
-  reply(sender, new events::LeaveModeEvent(this, resEv2));
+  reply(sender, new events::LeaveModeEvent(this, res));
   notifyProgress(sender, 100);
   return er;
 }
@@ -435,16 +433,16 @@ common::Error RedisDriver::findBigKeysMode(events::ProcessConfigArgsRequestEvent
   events::EnterModeEvent::value_type resEv(this, FindBigKeysMode);
   reply(sender, new events::EnterModeEvent(this, resEv));
 
+  events::LeaveModeEvent::value_type res(this, FindBigKeysMode);
   RootLocker lock = make_locker(sender, FIND_BIG_KEYS_REQUEST);
 
   FastoObjectIPtr obj = lock.root_;
   common::Error er = impl_->findBigKeys(obj.get());
   if (er && er->isError()) {
-    LOG_ERROR(er, true);
+    res.setErrorInfo(er);
   }
 
-  events::LeaveModeEvent::value_type resEv2(this, FindBigKeysMode);
-  reply(sender, new events::LeaveModeEvent(this, resEv2));
+  reply(sender, new events::LeaveModeEvent(this, res));
   notifyProgress(sender, 100);
   return er;
 }
@@ -455,16 +453,16 @@ common::Error RedisDriver::statMode(events::ProcessConfigArgsRequestEvent* ev) {
   events::EnterModeEvent::value_type resEv(this, StatMode);
   reply(sender, new events::EnterModeEvent(this, resEv));
 
+  events::LeaveModeEvent::value_type res(this, StatMode);
   RootLocker lock = make_locker(sender, STAT_MODE_REQUEST);
 
   FastoObjectIPtr obj = lock.root_;
   common::Error er = impl_->statMode(obj.get());
-  if (er) {  // E_INTERRUPTED
-    LOG_ERROR(er, true);
+  if (er && er->isError()) {
+    res.setErrorInfo(er);
   }
 
-  events::LeaveModeEvent::value_type resEv2(this, StatMode);
-  reply(sender, new events::LeaveModeEvent(this, resEv2));
+  reply(sender, new events::LeaveModeEvent(this, res));
   notifyProgress(sender, 100);
   return er;
 }
@@ -475,16 +473,16 @@ common::Error RedisDriver::scanMode(events::ProcessConfigArgsRequestEvent* ev) {
   events::EnterModeEvent::value_type resEv(this, ScanMode);
   reply(sender, new events::EnterModeEvent(this, resEv));
 
+  events::LeaveModeEvent::value_type res(this, ScanMode);
   RootLocker lock = make_locker(sender, SCAN_MODE_REQUEST);
 
   FastoObjectIPtr obj = lock.root_;
   common::Error er = impl_->scanMode(obj.get());
   if (er && er->isError()) {
-    LOG_ERROR(er, true);
+    res.setErrorInfo(er);
   }
 
-  events::LeaveModeEvent::value_type resEv2(this, ScanMode);
-  reply(sender, new events::LeaveModeEvent(this, resEv2));
+  reply(sender, new events::LeaveModeEvent(this, res));
   notifyProgress(sender, 100);
   return er;
 }

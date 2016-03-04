@@ -137,10 +137,10 @@ common::Error LeveldbDriver::executeImpl(int argc, char **argv, FastoObject* out
   return impl_->execute(argc, argv, out);
 }
 
-common::Error LeveldbDriver::serverInfo(IServerInfo **info) {
+common::Error LeveldbDriver::serverInfo(IServerInfo** info) {
   LOG_COMMAND(Command(INFO_REQUEST, common::Value::C_INNER));
   LeveldbServerInfo::Stats cm;
-  common::Error err = impl_->info(nullptr, cm);
+  common::Error err = impl_->info(nullptr, &cm);
   if (!err) {
     *info = new LeveldbServerInfo(cm);
   }
@@ -152,7 +152,7 @@ common::Error LeveldbDriver::serverDiscoveryInfo(ServerDiscoveryInfo **dinfo, IS
                                                  IDataBaseInfo** dbinfo) {
   UNUSED(dinfo);
 
-  IServerInfo *lsinfo = nullptr;
+  IServerInfo* lsinfo = nullptr;
   common::Error er = serverInfo(&lsinfo);
   if (er && er->isError()) {
     return er;
@@ -233,7 +233,7 @@ void LeveldbDriver::handleExecuteEvent(events::ExecuteRequestEvent* ev) {
         res.setErrorInfo(er);
         break;
       }
-      if (inputLine[n] == '\n' || n == length-1) {
+      if (inputLine[n] == '\n' || n == length - 1) {
         notifyProgress(sender, step * n);
         char command[128] = {0};
         if (n == length-1) {
@@ -298,7 +298,7 @@ void LeveldbDriver::handleLoadDatabaseInfosEvent(events::LoadDatabasesInfoReques
 }
 
 void LeveldbDriver::handleLoadDatabaseContentEvent(events::LoadDatabaseContentRequestEvent *ev) {
-  QObject *sender = ev->sender();
+  QObject* sender = ev->sender();
   notifyProgress(sender, 0);
   events::LoadDatabaseContentResponceEvent::value_type res(ev->value());
   char patternResult[1024] = {0};
@@ -341,7 +341,7 @@ done:
 }
 
 void LeveldbDriver::handleSetDefaultDatabaseEvent(events::SetDefaultDatabaseRequestEvent* ev) {
-  QObject *sender = ev->sender();
+  QObject* sender = ev->sender();
   notifyProgress(sender, 0);
   events::SetDefaultDatabaseResponceEvent::value_type res(ev->value());
   notifyProgress(sender, 50);
@@ -350,13 +350,13 @@ void LeveldbDriver::handleSetDefaultDatabaseEvent(events::SetDefaultDatabaseRequ
 }
 
 void LeveldbDriver::handleLoadServerInfoEvent(events::ServerInfoRequestEvent* ev) {
-  QObject *sender = ev->sender();
+  QObject* sender = ev->sender();
   notifyProgress(sender, 0);
   events::ServerInfoResponceEvent::value_type res(ev->value());
   notifyProgress(sender, 50);
   LOG_COMMAND(Command(INFO_REQUEST, common::Value::C_INNER));
   LeveldbServerInfo::Stats cm;
-  common::Error err = impl_->info(nullptr, cm);
+  common::Error err = impl_->info(nullptr, &cm);
   if (err) {
     res.setErrorInfo(err);
   } else {

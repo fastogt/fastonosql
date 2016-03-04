@@ -182,7 +182,11 @@ common::Error MemcachedRaw::keys(const char* args) {
   return notSupported("keys");
 }
 
-common::Error MemcachedRaw::stats(const char* args, MemcachedServerInfo::Common& statsout) {
+common::Error MemcachedRaw::info(const char* args, MemcachedServerInfo::Common* statsout) {
+  if (!statsout) {
+    return common::make_error_value("Invalid input argument", common::ErrorValue::E_ERROR);
+  }
+
   memcached_return_t error;
   memcached_stat_st* st = memcached_stat(memc_, (char*)args, &error);
   if (error != MEMCACHED_SUCCESS) {
@@ -192,29 +196,31 @@ common::Error MemcachedRaw::stats(const char* args, MemcachedServerInfo::Common&
     return common::make_error_value(buff, common::ErrorValue::E_ERROR);
   }
 
-  statsout.pid = st->pid;
-  statsout.uptime = st->uptime;
-  statsout.time = st->time;
-  statsout.version = st->version;
-  statsout.pointer_size = st->pointer_size;
-  statsout.rusage_user = st->rusage_user_seconds;
-  statsout.rusage_system = st->rusage_system_seconds;
-  statsout.curr_items = st->curr_items;
-  statsout.total_items = st->total_items;
-  statsout.bytes = st->bytes;
-  statsout.curr_connections = st->curr_connections;
-  statsout.total_connections = st->total_connections;
-  statsout.connection_structures = st->connection_structures;
-  statsout.cmd_get = st->cmd_get;
-  statsout.cmd_set = st->cmd_set;
-  statsout.get_hits = st->get_hits;
-  statsout.get_misses = st->get_misses;
-  statsout.evictions = st->evictions;
-  statsout.bytes_read = st->bytes_read;
-  statsout.bytes_written = st->bytes_written;
-  statsout.limit_maxbytes = st->limit_maxbytes;
-  statsout.threads = st->threads;
+  MemcachedServerInfo::Common lstatsout;
+  lstatsout.pid = st->pid;
+  lstatsout.uptime = st->uptime;
+  lstatsout.time = st->time;
+  lstatsout.version = st->version;
+  lstatsout.pointer_size = st->pointer_size;
+  lstatsout.rusage_user = st->rusage_user_seconds;
+  lstatsout.rusage_system = st->rusage_system_seconds;
+  lstatsout.curr_items = st->curr_items;
+  lstatsout.total_items = st->total_items;
+  lstatsout.bytes = st->bytes;
+  lstatsout.curr_connections = st->curr_connections;
+  lstatsout.total_connections = st->total_connections;
+  lstatsout.connection_structures = st->connection_structures;
+  lstatsout.cmd_get = st->cmd_get;
+  lstatsout.cmd_set = st->cmd_set;
+  lstatsout.get_hits = st->get_hits;
+  lstatsout.get_misses = st->get_misses;
+  lstatsout.evictions = st->evictions;
+  lstatsout.bytes_read = st->bytes_read;
+  lstatsout.bytes_written = st->bytes_written;
+  lstatsout.limit_maxbytes = st->limit_maxbytes;
+  lstatsout.threads = st->threads;
 
+  *statsout = lstatsout;
   memcached_stat_free(NULL, st);
   return common::Error();
 }
@@ -394,7 +400,7 @@ common::Error stats(CommandHandler* handler, int argc, char** argv, FastoObject*
   }
 
   MemcachedServerInfo::Common statsout;
-  common::Error er = mem->stats(args, statsout);
+  common::Error er = mem->info(args, &statsout);
   if (!er) {
     MemcachedServerInfo minf(statsout);
     common::StringValue *val = common::Value::createStringValue(minf.toString());

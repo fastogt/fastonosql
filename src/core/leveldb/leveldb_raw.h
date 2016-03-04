@@ -43,7 +43,7 @@ struct LeveldbRaw
   common::Error disconnect();
 
   common::Error dbsize(size_t* size);
-  common::Error info(const char* args, LeveldbServerInfo::Stats& statsout);
+  common::Error info(const char* args, LeveldbServerInfo::Stats* statsout);
   common::Error get(const std::string& key, std::string* ret_val);
   common::Error put(const std::string& key, const std::string& value);
   common::Error del(const std::string& key);

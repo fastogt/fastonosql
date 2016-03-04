@@ -155,11 +155,15 @@ common::Error LeveldbRaw::dbsize(size_t* size) {
   return common::Error();
 }
 
-common::Error LeveldbRaw::info(const char* args, LeveldbServerInfo::Stats& statsout) {
+common::Error LeveldbRaw::info(const char* args, LeveldbServerInfo::Stats* statsout) {
   // sstables
   // stats
   // char prop[1024] = {0};
   // common::SNPrintf(prop, sizeof(prop), "leveldb.%s", args ? args : "stats");
+
+  if (!statsout) {
+    return common::make_error_value("Invalid input argument", common::ErrorValue::E_ERROR);
+  }
 
   std::string rets;
   bool isok = leveldb_->GetProperty("leveldb.stats", &rets);
@@ -167,6 +171,7 @@ common::Error LeveldbRaw::info(const char* args, LeveldbServerInfo::Stats& stats
     return common::make_error_value("info function failed", common::ErrorValue::E_ERROR);
   }
 
+  LeveldbServerInfo::Stats lstats;
   if (rets.size() > sizeof(LEVELDB_HEADER_STATS)) {
     const char * retsc = rets.c_str() + sizeof(LEVELDB_HEADER_STATS);
     char* p2 = strtok((char*)retsc, " ");
@@ -174,19 +179,19 @@ common::Error LeveldbRaw::info(const char* args, LeveldbServerInfo::Stats& stats
     while (p2) {
       switch (pos++) {
         case 0:
-          statsout.compactions_level = atoi(p2);
+          lstats.compactions_level = atoi(p2);
           break;
         case 1:
-          statsout.file_size_mb = atoi(p2);
+          lstats.file_size_mb = atoi(p2);
           break;
         case 2:
-          statsout.time_sec = atoi(p2);
+          lstats.time_sec = atoi(p2);
           break;
         case 3:
-          statsout.read_mb = atoi(p2);
+          lstats.read_mb = atoi(p2);
           break;
         case 4:
-          statsout.write_mb = atoi(p2);
+          lstats.write_mb = atoi(p2);
           break;
         default:
           break;
@@ -195,6 +200,7 @@ common::Error LeveldbRaw::info(const char* args, LeveldbServerInfo::Stats& stats
     }
   }
 
+  *statsout = lstats;
   return common::Error();
 }
 
@@ -278,7 +284,7 @@ common::Error info(CommandHandler* handler, int argc, char** argv, FastoObject* 
   LeveldbRaw* level = static_cast<LeveldbRaw*>(handler);
 
   LeveldbServerInfo::Stats statsout;
-  common::Error er = level->info(argc == 1 ? argv[0] : nullptr, statsout);
+  common::Error er = level->info(argc == 1 ? argv[0] : nullptr, &statsout);
   if (!er) {
     LeveldbServerInfo linf(statsout);
     common::StringValue *val = common::Value::createStringValue(linf.toString());

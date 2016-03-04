@@ -391,22 +391,17 @@ void IDriver::handleChangeMaxConnectionEvent(events::ChangeMaxConnectionRequestE
   replyNotImplementedYet<events::ChangeMaxConnectionRequestEvent, events::ChangeMaxConnectionResponceEvent>(this, ev, "change maximum connection command");
 }
 
-IDriver::RootLocker::RootLocker(IDriver* parent, QObject *reciver, const std::string &text)
-  : parent_(parent), reciver_(reciver), tstart_(common::time::current_mstime()) {
+IDriver::RootLocker::RootLocker(IDriver* parent, QObject* receiver, const std::string& text)
+  : parent_(parent), receiver_(receiver), tstart_(common::time::current_mstime()) {
   DCHECK(parent_);
-  root_ = createRoot(reciver, text);
+  root_ = FastoObject::createRoot(text, parent_);
+  events::CommandRootCreatedEvent::value_type res(this, root_);
+  reply(receiver_, new events::CommandRootCreatedEvent(parent_, res));
 }
 
 IDriver::RootLocker::~RootLocker() {
   events::CommandRootCompleatedEvent::value_type res(this, tstart_, root_);
-  reply(reciver_, new events::CommandRootCompleatedEvent(parent_, res));
-}
-
-FastoObjectIPtr IDriver::RootLocker::createRoot(QObject *reciver, const std::string& text) {
-  FastoObjectIPtr root(FastoObject::createRoot(text, parent_));
-  events::CommandRootCreatedEvent::value_type res(this, root);
-  reply(reciver, new events::CommandRootCreatedEvent(parent_, res));
-  return root;
+  reply(receiver_, new events::CommandRootCompleatedEvent(parent_, res));
 }
 
 void IDriver::setCurrentDatabaseInfo(IDataBaseInfo *inf) {

@@ -235,12 +235,10 @@ void IServer::customEvent(QEvent *event) {
     }
   } else if (type == static_cast<QEvent::Type>(EnterModeEvent::EventType)) {
     EnterModeEvent *ev = static_cast<EnterModeEvent*>(event);
-    EnterModeEvent::value_type v = ev->value();
-    emit enteredMode(v);
+    handleEnterModeEvent(ev);
   } else if (type == static_cast<QEvent::Type>(LeaveModeEvent::EventType)) {
     LeaveModeEvent *ev = static_cast<LeaveModeEvent*>(event);
-    LeaveModeEvent::value_type v = ev->value();
-    emit leavedMode(v);
+    handleLeaveModeEvent(ev);
   } else if (type == static_cast<QEvent::Type>(CommandRootCreatedEvent::EventType)) {
     CommandRootCreatedEvent *ev = static_cast<CommandRootCreatedEvent*>(event);
     CommandRootCreatedEvent::value_type v = ev->value();
@@ -448,6 +446,26 @@ void IServer::handleLoadDatabaseContentEvent(events::LoadDatabaseContentResponce
   }
 
   emit finishedLoadDatabaseContent(v);
+}
+
+void IServer::handleEnterModeEvent(events::EnterModeEvent* ev) {
+  auto v = ev->value();
+  common::Error er(v.errorInfo());
+  if (er && er->isError()) {
+    LOG_ERROR(er, true);
+  }
+
+  emit enteredMode(v);
+}
+
+void IServer::handleLeaveModeEvent(events::LeaveModeEvent* ev) {
+  auto v = ev->value();
+  common::Error er(v.errorInfo());
+  if (er && er->isError()) {
+    LOG_ERROR(er, true);
+  }
+
+  emit leavedMode(v);
 }
 
 void IServer::handleLoadServerInfoHistoryEvent(events::ServerInfoHistoryResponceEvent *ev) {

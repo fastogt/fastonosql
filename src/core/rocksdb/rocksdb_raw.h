@@ -44,7 +44,7 @@ struct RocksdbRaw
 
   std::string currentDbName() const;
 
-  common::Error info(const char* args, RocksdbServerInfo::Stats& statsout);
+  common::Error info(const char* args, RocksdbServerInfo::Stats *statsout);
   common::Error dbsize(size_t* size);
   common::Error get(const std::string& key, std::string* ret_val);
   common::Error mget(const std::vector< ::rocksdb::Slice>& keys, std::vector<std::string> *ret);
