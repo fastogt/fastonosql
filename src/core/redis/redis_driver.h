@@ -58,7 +58,6 @@ class RedisDriver
   virtual void handleDisconnectEvent(events::DisconnectRequestEvent* ev);
   virtual void handleExecuteEvent(events::ExecuteRequestEvent* ev);
   virtual void handleLoadDatabaseInfosEvent(events::LoadDatabasesInfoRequestEvent* ev);
-  virtual void handleLoadServerInfoEvent(events::ServerInfoRequestEvent* ev);
   virtual void handleLoadServerPropertyEvent(events::ServerPropertyInfoRequestEvent* ev);
   virtual void handleServerPropertyChangeEvent(events::ChangeServerPropertyInfoRequestEvent* ev);
   virtual void handleProcessCommandLineArgs(events::ProcessConfigArgsRequestEvent* ev);

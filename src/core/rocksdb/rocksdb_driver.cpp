@@ -183,7 +183,7 @@ common::Error RocksdbDriver::currentDataBaseInfo(IDataBaseInfo** info) {
 }
 
 void RocksdbDriver::handleConnectEvent(events::ConnectRequestEvent *ev) {
-  QObject *sender = ev->sender();
+  QObject* sender = ev->sender();
   notifyProgress(sender, 0);
   events::ConnectResponceEvent::value_type res(ev->value());
   RocksdbConnectionSettings *set = dynamic_cast<RocksdbConnectionSettings*>(settings_.get());
@@ -201,7 +201,7 @@ void RocksdbDriver::handleConnectEvent(events::ConnectRequestEvent *ev) {
 }
 
 void RocksdbDriver::handleDisconnectEvent(events::DisconnectRequestEvent* ev) {
-  QObject *sender = ev->sender();
+  QObject* sender = ev->sender();
   notifyProgress(sender, 0);
   events::DisconnectResponceEvent::value_type res(ev->value());
   notifyProgress(sender, 50);
@@ -216,7 +216,7 @@ void RocksdbDriver::handleDisconnectEvent(events::DisconnectRequestEvent* ev) {
 }
 
 void RocksdbDriver::handleExecuteEvent(events::ExecuteRequestEvent* ev) {
-  QObject *sender = ev->sender();
+  QObject* sender = ev->sender();
   notifyProgress(sender, 0);
   events::ExecuteResponceEvent::value_type res(ev->value());
   const char *inputLine = common::utils::c_strornull(res.text);
@@ -263,7 +263,7 @@ void RocksdbDriver::handleExecuteEvent(events::ExecuteRequestEvent* ev) {
 }
 
 void RocksdbDriver::handleCommandRequestEvent(events::CommandRequestEvent* ev) {
-  QObject *sender = ev->sender();
+  QObject* sender = ev->sender();
   notifyProgress(sender, 0);
   events::CommandResponceEvent::value_type res(ev->value());
   std::string cmdtext;
@@ -287,20 +287,8 @@ void RocksdbDriver::handleCommandRequestEvent(events::CommandRequestEvent* ev) {
   notifyProgress(sender, 100);
 }
 
-void RocksdbDriver::handleLoadDatabaseInfosEvent(events::LoadDatabasesInfoRequestEvent* ev) {
-  QObject *sender = ev->sender();
-  notifyProgress(sender, 0);
-  events::LoadDatabasesInfoResponceEvent::value_type res(ev->value());
-  notifyProgress(sender, 50);
-  IDataBaseInfoSPtr curdb = currentDatabaseInfo();
-  CHECK(curdb);
-  res.databases.push_back(curdb);
-  reply(sender, new events::LoadDatabasesInfoResponceEvent(this, res));
-  notifyProgress(sender, 100);
-}
-
 void RocksdbDriver::handleLoadDatabaseContentEvent(events::LoadDatabaseContentRequestEvent *ev) {
-  QObject *sender = ev->sender();
+  QObject* sender = ev->sender();
   notifyProgress(sender, 0);
   events::LoadDatabaseContentResponceEvent::value_type res(ev->value());
   char patternResult[1024] = {0};
@@ -339,34 +327,6 @@ void RocksdbDriver::handleLoadDatabaseContentEvent(events::LoadDatabaseContentRe
 done:
   notifyProgress(sender, 75);
   reply(sender, new events::LoadDatabaseContentResponceEvent(this, res));
-  notifyProgress(sender, 100);
-}
-
-void RocksdbDriver::handleSetDefaultDatabaseEvent(events::SetDefaultDatabaseRequestEvent* ev) {
-  QObject *sender = ev->sender();
-  notifyProgress(sender, 0);
-  events::SetDefaultDatabaseResponceEvent::value_type res(ev->value());
-  notifyProgress(sender, 50);
-  reply(sender, new events::SetDefaultDatabaseResponceEvent(this, res));
-  notifyProgress(sender, 100);
-}
-
-void RocksdbDriver::handleLoadServerInfoEvent(events::ServerInfoRequestEvent* ev) {
-  QObject *sender = ev->sender();
-  notifyProgress(sender, 0);
-  events::ServerInfoResponceEvent::value_type res(ev->value());
-  notifyProgress(sender, 50);
-  LOG_COMMAND(Command(INFO_REQUEST, common::Value::C_INNER));
-  RocksdbServerInfo::Stats cm;
-  common::Error err = impl_->info(nullptr, &cm);
-  if (err && err->isError()) {
-    res.setErrorInfo(err);
-  } else {
-    IServerInfoSPtr mem(new RocksdbServerInfo(cm));
-    res.setInfo(mem);
-  }
-  notifyProgress(sender, 75);
-  reply(sender, new events::ServerInfoResponceEvent(this, res));
   notifyProgress(sender, 100);
 }
 

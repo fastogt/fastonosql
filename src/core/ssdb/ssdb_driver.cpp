@@ -218,7 +218,7 @@ common::Error SsdbDriver::currentDataBaseInfo(IDataBaseInfo** info) {
 }
 
 void SsdbDriver::handleConnectEvent(events::ConnectRequestEvent *ev) {
-  QObject *sender = ev->sender();
+  QObject* sender = ev->sender();
   notifyProgress(sender, 0);
   events::ConnectResponceEvent::value_type res(ev->value());
   SsdbConnectionSettings *set = dynamic_cast<SsdbConnectionSettings*>(settings_.get());
@@ -237,7 +237,7 @@ void SsdbDriver::handleConnectEvent(events::ConnectRequestEvent *ev) {
 }
 
 void SsdbDriver::handleDisconnectEvent(events::DisconnectRequestEvent* ev) {
-  QObject *sender = ev->sender();
+  QObject* sender = ev->sender();
   notifyProgress(sender, 0);
   events::DisconnectResponceEvent::value_type res(ev->value());
   notifyProgress(sender, 50);
@@ -252,7 +252,7 @@ void SsdbDriver::handleDisconnectEvent(events::DisconnectRequestEvent* ev) {
 }
 
 void SsdbDriver::handleExecuteEvent(events::ExecuteRequestEvent* ev) {
-  QObject *sender = ev->sender();
+  QObject* sender = ev->sender();
   notifyProgress(sender, 0);
     events::ExecuteResponceEvent::value_type res(ev->value());
     const char *inputLine = common::utils::c_strornull(res.text);
@@ -298,7 +298,7 @@ void SsdbDriver::handleExecuteEvent(events::ExecuteRequestEvent* ev) {
 }
 
 void SsdbDriver::handleCommandRequestEvent(events::CommandRequestEvent* ev) {
-  QObject *sender = ev->sender();
+  QObject* sender = ev->sender();
   notifyProgress(sender, 0);
     events::CommandResponceEvent::value_type res(ev->value());
     std::string cmdtext;
@@ -322,20 +322,8 @@ void SsdbDriver::handleCommandRequestEvent(events::CommandRequestEvent* ev) {
   notifyProgress(sender, 100);
 }
 
-void SsdbDriver::handleLoadDatabaseInfosEvent(events::LoadDatabasesInfoRequestEvent* ev) {
-  QObject *sender = ev->sender();
-notifyProgress(sender, 0);
-  events::LoadDatabasesInfoResponceEvent::value_type res(ev->value());
-notifyProgress(sender, 50);
-  IDataBaseInfoSPtr curdb = currentDatabaseInfo();
-  CHECK(curdb);
-  res.databases.push_back(curdb);
-  reply(sender, new events::LoadDatabasesInfoResponceEvent(this, res));
-notifyProgress(sender, 100);
-}
-
 void SsdbDriver::handleLoadDatabaseContentEvent(events::LoadDatabaseContentRequestEvent *ev) {
-  QObject *sender = ev->sender();
+  QObject* sender = ev->sender();
   notifyProgress(sender, 0);
     events::LoadDatabaseContentResponceEvent::value_type res(ev->value());
     char patternResult[1024] = {0};
@@ -375,34 +363,6 @@ void SsdbDriver::handleLoadDatabaseContentEvent(events::LoadDatabaseContentReque
 done:
   notifyProgress(sender, 75);
     reply(sender, new events::LoadDatabaseContentResponceEvent(this, res));
-  notifyProgress(sender, 100);
-}
-
-void SsdbDriver::handleSetDefaultDatabaseEvent(events::SetDefaultDatabaseRequestEvent* ev) {
-  QObject *sender = ev->sender();
-  notifyProgress(sender, 0);
-    events::SetDefaultDatabaseResponceEvent::value_type res(ev->value());
-  notifyProgress(sender, 50);
-    reply(sender, new events::SetDefaultDatabaseResponceEvent(this, res));
-  notifyProgress(sender, 100);
-}
-
-void SsdbDriver::handleLoadServerInfoEvent(events::ServerInfoRequestEvent* ev) {
-  QObject *sender = ev->sender();
-  notifyProgress(sender, 0);
-    events::ServerInfoResponceEvent::value_type res(ev->value());
-  notifyProgress(sender, 50);
-    LOG_COMMAND(Command(INFO_REQUEST, common::Value::C_INNER));
-    SsdbServerInfo::Common cm;
-    common::Error err = impl_->info(nullptr, &cm);
-    if (err) {
-      res.setErrorInfo(err);
-    } else {
-      IServerInfoSPtr mem(new SsdbServerInfo(cm));
-      res.setInfo(mem);
-    }
-  notifyProgress(sender, 75);
-    reply(sender, new events::ServerInfoResponceEvent(this, res));
   notifyProgress(sender, 100);
 }
 

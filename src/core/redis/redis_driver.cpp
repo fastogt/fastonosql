@@ -204,7 +204,7 @@ common::Error RedisDriver::currentDataBaseInfo(IDataBaseInfo** info) {
 }
 
 void RedisDriver::handleConnectEvent(events::ConnectRequestEvent *ev) {
-  QObject *sender = ev->sender();
+  QObject* sender = ev->sender();
   notifyProgress(sender, 0);
   events::ConnectResponceEvent::value_type res(ev->value());
   RedisConnectionSettings *set = dynamic_cast<RedisConnectionSettings*>(settings_.get());
@@ -258,13 +258,13 @@ void RedisDriver::handleProcessCommandLineArgs(events::ProcessConfigArgsRequestE
 
   interacteveMode(ev);
 
-  QObject *sender = ev->sender();
+  QObject* sender = ev->sender();
   events::ProcessConfigArgsResponceEvent::value_type res(ev->value());
   reply(sender, new events::ProcessConfigArgsResponceEvent(this, res));
 }
 
 void RedisDriver::handleShutdownEvent(events::ShutDownRequestEvent* ev) {
-  QObject *sender = ev->sender();
+  QObject* sender = ev->sender();
   notifyProgress(sender, 0);
   events::ShutDownResponceEvent::value_type res(ev->value());
   notifyProgress(sender, 25);
@@ -280,7 +280,7 @@ void RedisDriver::handleShutdownEvent(events::ShutDownRequestEvent* ev) {
 }
 
 void RedisDriver::handleBackupEvent(events::BackupRequestEvent* ev) {
-  QObject *sender = ev->sender();
+  QObject* sender = ev->sender();
   notifyProgress(sender, 0);
   events::BackupResponceEvent::value_type res(ev->value());
   notifyProgress(sender, 25);
@@ -301,7 +301,7 @@ void RedisDriver::handleBackupEvent(events::BackupRequestEvent* ev) {
 }
 
 void RedisDriver::handleExportEvent(events::ExportRequestEvent* ev) {
-  QObject *sender = ev->sender();
+  QObject* sender = ev->sender();
   notifyProgress(sender, 0);
   events::ExportResponceEvent::value_type res(ev->value());
   notifyProgress(sender, 25);
@@ -315,7 +315,7 @@ void RedisDriver::handleExportEvent(events::ExportRequestEvent* ev) {
 }
 
 void RedisDriver::handleChangePasswordEvent(events::ChangePasswordRequestEvent* ev) {
-  QObject *sender = ev->sender();
+  QObject* sender = ev->sender();
   notifyProgress(sender, 0);
   events::ChangePasswordResponceEvent::value_type res(ev->value());
   notifyProgress(sender, 25);
@@ -335,7 +335,7 @@ void RedisDriver::handleChangePasswordEvent(events::ChangePasswordRequestEvent* 
 }
 
 void RedisDriver::handleChangeMaxConnectionEvent(events::ChangeMaxConnectionRequestEvent* ev) {
-  QObject *sender = ev->sender();
+  QObject* sender = ev->sender();
   notifyProgress(sender, 0);
   events::ChangeMaxConnectionResponceEvent::value_type res(ev->value());
   notifyProgress(sender, 25);
@@ -356,7 +356,7 @@ void RedisDriver::handleChangeMaxConnectionEvent(events::ChangeMaxConnectionRequ
 }
 
 common::Error RedisDriver::interacteveMode(events::ProcessConfigArgsRequestEvent *ev) {
-  QObject *sender = ev->sender();
+  QObject* sender = ev->sender();
   notifyProgress(sender, 0);
   events::EnterModeEvent::value_type res(this, InteractiveMode);
   reply(sender, new events::EnterModeEvent(this, res));
@@ -368,7 +368,7 @@ common::Error RedisDriver::interacteveMode(events::ProcessConfigArgsRequestEvent
 }
 
 common::Error RedisDriver::latencyMode(events::ProcessConfigArgsRequestEvent* ev) {
-  QObject *sender = ev->sender();
+  QObject* sender = ev->sender();
   notifyProgress(sender, 0);
   events::EnterModeEvent::value_type resEv(this, LatencyMode);
   reply(sender, new events::EnterModeEvent(this, resEv));
@@ -488,7 +488,7 @@ common::Error RedisDriver::scanMode(events::ProcessConfigArgsRequestEvent* ev) {
 }
 
 void RedisDriver::handleExecuteEvent(events::ExecuteRequestEvent *ev) {
-  QObject *sender = ev->sender();
+  QObject* sender = ev->sender();
   notifyProgress(sender, 0);
   events::ExecuteResponceEvent::value_type res(ev->value());
   const char *inputLine = common::utils::c_strornull(res.text);
@@ -536,7 +536,7 @@ void RedisDriver::handleExecuteEvent(events::ExecuteRequestEvent *ev) {
 }
 
 void RedisDriver::handleCommandRequestEvent(events::CommandRequestEvent* ev) {
-  QObject *sender = ev->sender();
+  QObject* sender = ev->sender();
   notifyProgress(sender, 0);
   events::CommandResponceEvent::value_type res(ev->value());
   std::string cmdtext;
@@ -561,7 +561,7 @@ void RedisDriver::handleCommandRequestEvent(events::CommandRequestEvent* ev) {
 }
 
 void RedisDriver::handleDisconnectEvent(events::DisconnectRequestEvent *ev) {
-  QObject *sender = ev->sender();
+  QObject* sender = ev->sender();
   notifyProgress(sender, 0);
   events::DisconnectResponceEvent::value_type res(ev->value());
   notifyProgress(sender, 50);
@@ -576,7 +576,7 @@ void RedisDriver::handleDisconnectEvent(events::DisconnectRequestEvent *ev) {
 }
 
 void RedisDriver::handleLoadDatabaseInfosEvent(events::LoadDatabasesInfoRequestEvent *ev) {
-  QObject *sender = ev->sender();
+  QObject* sender = ev->sender();
   notifyProgress(sender, 0);
   events::LoadDatabasesInfoResponceEvent::value_type res(ev->value());
   FastoObjectIPtr root = FastoObject::createRoot(GET_DATABASES);
@@ -629,7 +629,7 @@ done:
 }
 
 void RedisDriver::handleLoadDatabaseContentEvent(events::LoadDatabaseContentRequestEvent *ev) {
-  QObject *sender = ev->sender();
+  QObject* sender = ev->sender();
   notifyProgress(sender, 0);
   events::LoadDatabaseContentResponceEvent::value_type res(ev->value());
   char patternResult[1024] = {0};
@@ -735,7 +735,7 @@ done:
 }
 
 void RedisDriver::handleSetDefaultDatabaseEvent(events::SetDefaultDatabaseRequestEvent* ev) {
-  QObject *sender = ev->sender();
+  QObject* sender = ev->sender();
   notifyProgress(sender, 0);
   events::SetDefaultDatabaseResponceEvent::value_type res(ev->value());
   std::string setDefCommand = SET_DEFAULT_DATABASE + res.inf->name();
@@ -749,29 +749,6 @@ void RedisDriver::handleSetDefaultDatabaseEvent(events::SetDefaultDatabaseReques
   }
   notifyProgress(sender, 75);
   reply(sender, new events::SetDefaultDatabaseResponceEvent(this, res));
-  notifyProgress(sender, 100);
-}
-
-void RedisDriver::handleLoadServerInfoEvent(events::ServerInfoRequestEvent *ev) {
-  QObject *sender = ev->sender();
-  notifyProgress(sender, 0);
-  events::ServerInfoResponceEvent::value_type res(ev->value());
-  FastoObjectIPtr root = FastoObject::createRoot(INFO_REQUEST);
-  notifyProgress(sender, 50);
-  FastoObjectCommand* cmd = createCommand<RedisCommand>(root, INFO_REQUEST, common::Value::C_INNER);
-  common::Error er = execute(cmd);
-  if (er && er->isError()) {
-    res.setErrorInfo(er);
-  } else {
-    FastoObject::child_container_type ch = cmd->childrens();
-    if (ch.size()) {
-      DCHECK_EQ(ch.size(), 1);
-      IServerInfoSPtr red(makeRedisServerInfo(ch[0]));
-      res.setInfo(red);
-    }
-  }
-  notifyProgress(sender, 75);
-  reply(sender, new events::ServerInfoResponceEvent(this, res));
   notifyProgress(sender, 100);
 }
 
@@ -803,7 +780,7 @@ void RedisDriver::handleLoadServerPropertyEvent(events::ServerPropertyInfoReques
 }
 
 void RedisDriver::handleServerPropertyChangeEvent(events::ChangeServerPropertyInfoRequestEvent *ev) {
-  QObject *sender = ev->sender();
+  QObject* sender = ev->sender();
   notifyProgress(sender, 0);
   events::ChangeServerPropertyInfoResponceEvent::value_type res(ev->value());
 

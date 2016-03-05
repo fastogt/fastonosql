@@ -86,7 +86,7 @@ class IDriver
   virtual void handleConnectEvent(events::ConnectRequestEvent* ev) = 0;
   virtual void handleDisconnectEvent(events::DisconnectRequestEvent* ev) = 0;
   virtual void handleExecuteEvent(events::ExecuteRequestEvent* ev) = 0;
-  virtual void handleLoadServerInfoEvent(events::ServerInfoRequestEvent* ev) = 0;
+  virtual void handleLoadServerInfoEvent(events::ServerInfoRequestEvent* ev);  // call serverInfo
   virtual void handleLoadServerPropertyEvent(events::ServerPropertyInfoRequestEvent* ev);
   virtual void handleServerPropertyChangeEvent(events::ChangeServerPropertyInfoRequestEvent* ev);
   virtual void handleShutdownEvent(events::ShutDownRequestEvent* ev);
@@ -95,10 +95,13 @@ class IDriver
   virtual void handleChangePasswordEvent(events::ChangePasswordRequestEvent* ev);
   virtual void handleChangeMaxConnectionEvent(events::ChangeMaxConnectionRequestEvent* ev);
 
-  // handle database events
-  virtual void handleLoadDatabaseInfosEvent(events::LoadDatabasesInfoRequestEvent* ev) = 0;
+  // call currentDatabaseInfo
+  virtual void handleLoadDatabaseInfosEvent(events::LoadDatabasesInfoRequestEvent* ev);
+
   virtual void handleLoadDatabaseContentEvent(events::LoadDatabaseContentRequestEvent* ev) = 0;
-  virtual void handleSetDefaultDatabaseEvent(events::SetDefaultDatabaseRequestEvent* ev) = 0;
+
+  // nothing because currentDatabaseInfo return only 1 db
+  virtual void handleSetDefaultDatabaseEvent(events::SetDefaultDatabaseRequestEvent* ev);
 
   // handle command events
   virtual void handleCommandRequestEvent(events::CommandRequestEvent* ev) = 0;

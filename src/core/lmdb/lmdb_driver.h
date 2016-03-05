@@ -52,8 +52,6 @@ class LmdbDriver
   virtual void handleConnectEvent(events::ConnectRequestEvent* ev);
   virtual void handleDisconnectEvent(events::DisconnectRequestEvent* ev);
   virtual void handleExecuteEvent(events::ExecuteRequestEvent* ev);
-  virtual void handleLoadDatabaseInfosEvent(events::LoadDatabasesInfoRequestEvent* ev);
-  virtual void handleLoadServerInfoEvent(events::ServerInfoRequestEvent* ev);
   virtual void handleProcessCommandLineArgs(events::ProcessConfigArgsRequestEvent* ev);
 
   // ============== commands =============//
@@ -69,7 +67,6 @@ class LmdbDriver
 
   // ============== database =============//
   virtual void handleLoadDatabaseContentEvent(events::LoadDatabaseContentRequestEvent* ev);
-  virtual void handleSetDefaultDatabaseEvent(events::SetDefaultDatabaseRequestEvent* ev);
   // ============== database =============//
   // ============== command =============//
   virtual void handleCommandRequestEvent(events::CommandRequestEvent* ev);

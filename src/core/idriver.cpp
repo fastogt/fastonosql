@@ -408,8 +408,47 @@ void IDriver::setCurrentDatabaseInfo(IDataBaseInfo *inf) {
   current_database_info_.reset(inf);
 }
 
+void IDriver::handleLoadServerInfoEvent(events::ServerInfoRequestEvent* ev) {
+  QObject* sender = ev->sender();
+  notifyProgress(sender, 0);
+  events::ServerInfoResponceEvent::value_type res(ev->value());
+  notifyProgress(sender, 50);
+  IServerInfo* info = NULL;
+  common::Error err = serverInfo(&info);
+  if (err && err->isError()) {
+    res.setErrorInfo(err);
+  } else {
+    IServerInfoSPtr mem(info);
+    res.setInfo(mem);
+  }
+  notifyProgress(sender, 75);
+  reply(sender, new events::ServerInfoResponceEvent(this, res));
+  notifyProgress(sender, 100);
+}
+
+void IDriver::handleLoadDatabaseInfosEvent(events::LoadDatabasesInfoRequestEvent* ev) {
+  QObject* sender = ev->sender();
+  notifyProgress(sender, 0);
+  events::LoadDatabasesInfoResponceEvent::value_type res(ev->value());
+  notifyProgress(sender, 50);
+  IDataBaseInfoSPtr curdb = currentDatabaseInfo();
+  CHECK(curdb);
+  res.databases.push_back(curdb);
+  reply(sender, new events::LoadDatabasesInfoResponceEvent(this, res));
+  notifyProgress(sender, 100);
+}
+
+void IDriver::handleSetDefaultDatabaseEvent(events::SetDefaultDatabaseRequestEvent* ev) {
+  QObject* sender = ev->sender();
+  notifyProgress(sender, 0);
+  events::SetDefaultDatabaseResponceEvent::value_type res(ev->value());
+  notifyProgress(sender, 50);
+  reply(sender, new events::SetDefaultDatabaseResponceEvent(this, res));
+  notifyProgress(sender, 100);
+}
+
 void IDriver::handleLoadServerInfoHistoryEvent(events::ServerInfoHistoryRequestEvent *ev) {
-  QObject *sender = ev->sender();
+  QObject* sender = ev->sender();
   events::ServerInfoHistoryResponceEvent::value_type res(ev->value());
 
   std::string path = settings_->loggingPath();
@@ -452,7 +491,7 @@ void IDriver::handleLoadServerInfoHistoryEvent(events::ServerInfoHistoryRequestE
 }
 
 void IDriver::handleClearServerHistoryRequestEvent(events::ClearServerHistoryRequestEvent *ev) {
-  QObject *sender = ev->sender();
+  QObject* sender = ev->sender();
   events::ClearServerHistoryResponceEvent::value_type res(ev->value());
 
   bool ret = false;
@@ -481,7 +520,7 @@ void IDriver::handleClearServerHistoryRequestEvent(events::ClearServerHistoryReq
 }
 
 void IDriver::handleDiscoveryInfoRequestEvent(events::DiscoveryInfoRequestEvent* ev) {
-  QObject *sender = ev->sender();
+  QObject* sender = ev->sender();
   events::DiscoveryInfoResponceEvent::value_type res(ev->value());
 
   if (isConnected()) {

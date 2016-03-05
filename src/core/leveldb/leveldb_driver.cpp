@@ -182,7 +182,7 @@ common::Error LeveldbDriver::currentDataBaseInfo(IDataBaseInfo** info) {
 }
 
 void LeveldbDriver::handleConnectEvent(events::ConnectRequestEvent *ev) {
-  QObject *sender = ev->sender();
+  QObject* sender = ev->sender();
   notifyProgress(sender, 0);
   events::ConnectResponceEvent::value_type res(ev->value());
   LeveldbConnectionSettings *set = dynamic_cast<LeveldbConnectionSettings*>(settings_.get());
@@ -200,7 +200,7 @@ void LeveldbDriver::handleConnectEvent(events::ConnectRequestEvent *ev) {
 }
 
 void LeveldbDriver::handleDisconnectEvent(events::DisconnectRequestEvent* ev) {
-  QObject *sender = ev->sender();
+  QObject* sender = ev->sender();
   notifyProgress(sender, 0);
   events::DisconnectResponceEvent::value_type res(ev->value());
   notifyProgress(sender, 50);
@@ -215,7 +215,7 @@ void LeveldbDriver::handleDisconnectEvent(events::DisconnectRequestEvent* ev) {
 }
 
 void LeveldbDriver::handleExecuteEvent(events::ExecuteRequestEvent* ev) {
-  QObject *sender = ev->sender();
+  QObject* sender = ev->sender();
   notifyProgress(sender, 0);
   events::ExecuteResponceEvent::value_type res(ev->value());
   const char *inputLine = common::utils::c_strornull(res.text);
@@ -261,7 +261,7 @@ void LeveldbDriver::handleExecuteEvent(events::ExecuteRequestEvent* ev) {
 }
 
 void LeveldbDriver::handleCommandRequestEvent(events::CommandRequestEvent* ev) {
-  QObject *sender = ev->sender();
+  QObject* sender = ev->sender();
   notifyProgress(sender, 0);
   events::CommandResponceEvent::value_type res(ev->value());
   std::string cmdtext;
@@ -282,18 +282,6 @@ void LeveldbDriver::handleCommandRequestEvent(events::CommandRequestEvent* ev) {
     res.setErrorInfo(er);
   }
   reply(sender, new events::CommandResponceEvent(this, res));
-  notifyProgress(sender, 100);
-}
-
-void LeveldbDriver::handleLoadDatabaseInfosEvent(events::LoadDatabasesInfoRequestEvent* ev) {
-  QObject *sender = ev->sender();
-  notifyProgress(sender, 0);
-  events::LoadDatabasesInfoResponceEvent::value_type res(ev->value());
-  notifyProgress(sender, 50);
-  IDataBaseInfoSPtr curdb = currentDatabaseInfo();
-  CHECK(curdb);
-  res.databases.push_back(curdb);
-  reply(sender, new events::LoadDatabasesInfoResponceEvent(this, res));
   notifyProgress(sender, 100);
 }
 
@@ -337,34 +325,6 @@ void LeveldbDriver::handleLoadDatabaseContentEvent(events::LoadDatabaseContentRe
 done:
   notifyProgress(sender, 75);
   reply(sender, new events::LoadDatabaseContentResponceEvent(this, res));
-  notifyProgress(sender, 100);
-}
-
-void LeveldbDriver::handleSetDefaultDatabaseEvent(events::SetDefaultDatabaseRequestEvent* ev) {
-  QObject* sender = ev->sender();
-  notifyProgress(sender, 0);
-  events::SetDefaultDatabaseResponceEvent::value_type res(ev->value());
-  notifyProgress(sender, 50);
-  reply(sender, new events::SetDefaultDatabaseResponceEvent(this, res));
-  notifyProgress(sender, 100);
-}
-
-void LeveldbDriver::handleLoadServerInfoEvent(events::ServerInfoRequestEvent* ev) {
-  QObject* sender = ev->sender();
-  notifyProgress(sender, 0);
-  events::ServerInfoResponceEvent::value_type res(ev->value());
-  notifyProgress(sender, 50);
-  LOG_COMMAND(Command(INFO_REQUEST, common::Value::C_INNER));
-  LeveldbServerInfo::Stats cm;
-  common::Error err = impl_->info(nullptr, &cm);
-  if (err) {
-    res.setErrorInfo(err);
-  } else {
-    IServerInfoSPtr mem(new LeveldbServerInfo(cm));
-    res.setInfo(mem);
-  }
-  notifyProgress(sender, 75);
-  reply(sender, new events::ServerInfoResponceEvent(this, res));
   notifyProgress(sender, 100);
 }
 
