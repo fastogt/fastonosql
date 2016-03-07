@@ -64,7 +64,7 @@ class ConnectionDiagnosticDialog
   ConnectionDiagnosticDialog(QWidget* parent, IConnectionSettingsBaseSPtr connection);
 
  private Q_SLOTS:
-  void connectionResult(bool suc, qint64 mstimeExecute, const QString &resultText);
+  void connectionResult(bool suc, qint64 mstimeExecute, const QString& resultText);
 
  protected:
   virtual void showEvent(QShowEvent* e);

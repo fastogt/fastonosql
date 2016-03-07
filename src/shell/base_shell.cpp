@@ -116,44 +116,45 @@ QString BaseShell::version() const {
 }
 
 QString BaseShell::basedOn() const {
-  BaseQsciLexer* red = dynamic_cast<BaseQsciLexer*>(lexer());
-  DCHECK(red);
-  if (red) {
-    return common::convertFromString<QString>(red->basedOn());
+  BaseQsciLexer* lex = dynamic_cast<BaseQsciLexer*>(lexer());
+  if (!lex) {
+    NOTREACHED();
+    return QString();
   }
 
-  return QString();
+  return common::convertFromString<QString>(lex->basedOn());
 }
 
 std::vector<uint32_t> BaseShell::supportedVersions() const {
-  BaseQsciLexer* red = dynamic_cast<BaseQsciLexer*>(lexer());
-  DCHECK(red);
-  if (red) {
-    return red->supportedVersions();
+  BaseQsciLexer* lex = dynamic_cast<BaseQsciLexer*>(lexer());
+  if (!lex) {
+    NOTREACHED();
+    return std::vector<uint32_t>();
   }
 
-  return std::vector<uint32_t>();
+  return lex->supportedVersions();
 }
 
-uint32_t BaseShell::commandsCount() const {
-  BaseQsciLexer* red = dynamic_cast<BaseQsciLexer*>(lexer());
-  DCHECK(red);
-  if (red) {
-    return red->commandsCount();
+size_t BaseShell::commandsCount() const {
+  BaseQsciLexer* lex = dynamic_cast<BaseQsciLexer*>(lexer());
+  if (!lex) {
+    NOTREACHED();
+    return 0;
   }
 
-  return 0;
+  return lex->commandsCount();
 }
 
 void BaseShell::setFilteredVersion(uint32_t version) {
-  BaseQsciLexer* red = dynamic_cast<BaseQsciLexer*>(lexer());
-  DCHECK(red);
-  if (!red) {
+  BaseQsciLexer* lex = dynamic_cast<BaseQsciLexer*>(lexer());
+  if (!lex) {
+    NOTREACHED();
     return;
   }
 
-  BaseQsciApi * api = dynamic_cast<BaseQsciApi*>(red->apis());
+  BaseQsciApi* api = dynamic_cast<BaseQsciApi*>(lex->apis());
   if (!api) {
+    NOTREACHED();
     return;
   }
 

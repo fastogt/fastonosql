@@ -57,7 +57,7 @@ class FastoEditor
   explicit FastoEditor(QWidget* parent = 0);
   virtual ~FastoEditor();
 
-  void registerImage(int id, const QPixmap &im);
+  void registerImage(int id, const QPixmap& im);
 
   QString text() const;
   QString selectedText() const;
@@ -66,9 +66,9 @@ class FastoEditor
   void textChanged();
 
  public Q_SLOTS:
-  void append(const QString &text);
+  void append(const QString& text);
   void setReadOnly(bool ro);
-  void setText(const QString &text);
+  void setText(const QString& text);
   void clear();
 
  private Q_SLOTS:
@@ -106,7 +106,7 @@ class FastoEditorOutput
   : public QWidget {
   Q_OBJECT
  public:
-  explicit FastoEditorOutput(const QString &delemitr, QWidget *parent = 0);
+  explicit FastoEditorOutput(const QString& delemitr, QWidget *parent = 0);
 
   void setModel(QAbstractItemModel* model);
 

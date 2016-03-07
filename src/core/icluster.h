@@ -21,7 +21,6 @@
 #include <vector>
 #include <string>
 
-#include "core/core_fwd.h"
 #include "core/iserver.h"
 
 namespace fastonosql {

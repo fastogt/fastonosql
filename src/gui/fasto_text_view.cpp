@@ -36,7 +36,7 @@ namespace fastonosql {
 
 FastoTextView::FastoTextView(const QString& delemitr, QWidget* parent)
   : QWidget(parent) {
-  QVBoxLayout *mainL = new QVBoxLayout;
+  QVBoxLayout* mainL = new QVBoxLayout;
 
   editor_ = new FastoEditorOutput(delemitr);
 

@@ -45,13 +45,13 @@ class SettingsManager
   supportedViews defaultView() const;
 
   QString currentStyle() const;
-  void setCurrentStyle(const QString &style);
+  void setCurrentStyle(const QString& style);
 
   QString currentFontName() const;
   void setCurrentFontName(const QString& font);
 
   QString currentLanguage() const;
-  void setCurrentLanguage(const QString &lang);
+  void setCurrentLanguage(const QString& lang);
 
   // connections
   void addConnection(IConnectionSettingsBaseSPtr connection);

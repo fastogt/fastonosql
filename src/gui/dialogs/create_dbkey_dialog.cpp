@@ -44,7 +44,7 @@
 
 namespace fastonosql {
 
-CreateDbKeyDialog::CreateDbKeyDialog(const QString &title, connectionTypes type, QWidget* parent)
+CreateDbKeyDialog::CreateDbKeyDialog(const QString& title, connectionTypes type, QWidget* parent)
   : QDialog(parent), type_(type), value_() {
   setWindowIcon(GuiFactory::instance().icon(type_));
   setWindowTitle(title);

@@ -35,7 +35,7 @@
 
 namespace fastonosql {
 
-ChangePasswordServerDialog::ChangePasswordServerDialog(const QString &title,
+ChangePasswordServerDialog::ChangePasswordServerDialog(const QString& title,
                                                        IServerSPtr server, QWidget* parent)
   : QDialog(parent), server_(server) {
   DCHECK(server_);
@@ -101,8 +101,8 @@ void ChangePasswordServerDialog::finishChangePassword(const events_info::ChangeP
 }
 
 bool ChangePasswordServerDialog::validateInput() {
-  const QString pass = passwordLineEdit_->text();
-  const QString cpass = confPasswordLineEdit_->text();
+  QString pass = passwordLineEdit_->text();
+  QString cpass = confPasswordLineEdit_->text();
   if (pass.isEmpty() || cpass.isEmpty()) {
     return false;
   }

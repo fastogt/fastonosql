@@ -71,7 +71,7 @@ class DiscoveryDiagnosticDialog
   std::vector<IConnectionSettingsBaseSPtr> selectedConnections() const;
 
  private Q_SLOTS:
-  void connectionResult(bool suc, qint64 mstimeExecute, const QString &resultText,
+  void connectionResult(bool suc, qint64 mstimeExecute, const QString&resultText,
                         std::vector<ServerDiscoveryInfoSPtr> infos);
 
  protected:

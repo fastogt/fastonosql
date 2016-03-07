@@ -69,7 +69,7 @@ bool PropertyTableModel::setData(const QModelIndex& index, const QVariant& value
 
      if (column == PropertyTableItem::eKey) {
      } else if (column == PropertyTableItem::eValue) {
-       const QString &newValue = value.toString();
+       const QString&newValue = value.toString();
        if (newValue != node->value_) {
          PropertyType pr;
          pr.first = common::convertToString(node->key_);

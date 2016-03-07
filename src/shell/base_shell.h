@@ -31,7 +31,7 @@ class BaseShell
   Q_OBJECT
  public:
   std::vector<uint32_t> supportedVersions() const;
-  uint32_t commandsCount() const;
+  size_t commandsCount() const;
   QString version() const;
   QString basedOn() const;
   void setFilteredVersion(uint32_t version);

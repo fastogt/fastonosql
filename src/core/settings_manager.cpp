@@ -95,7 +95,7 @@ QString SettingsManager::currentStyle() const {
   return cur_style_;
 }
 
-void SettingsManager::setCurrentStyle(const QString &st) {
+void SettingsManager::setCurrentStyle(const QString& st) {
   cur_style_ = st;
 }
 
@@ -111,7 +111,7 @@ QString SettingsManager::currentLanguage() const {
   return cur_language_;
 }
 
-void SettingsManager::setCurrentLanguage(const QString &lang) {
+void SettingsManager::setCurrentLanguage(const QString& lang) {
   cur_language_ = lang;
 }
 
@@ -195,7 +195,7 @@ QString SettingsManager::loggingDirectory() const {
   return logging_dir_;
 }
 
-void SettingsManager::setLoggingDirectory(const QString &dir) {
+void SettingsManager::setLoggingDirectory(const QString& dir) {
   logging_dir_ = dir;
 }
 

@@ -339,7 +339,7 @@ QFont GuiFactory::font() const {
   return QFont(SettingsManager::instance().currentFontName());
 }
 
-const QString &GuiFactory::pathToLoadingGif() const {
+const QString& GuiFactory::pathToLoadingGif() const {
   static QString path(":" PROJECT_NAME_LOWERCASE "/images/loading.gif");
   return path;
 }

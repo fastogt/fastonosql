@@ -31,7 +31,7 @@
 namespace fastonosql {
 
 FastoCommonItem::FastoCommonItem(const NDbKValue& key, const std::string& delemitr, bool isReadOnly,
-                                 TreeItem *parent, void* internalPointer)
+                                 TreeItem* parent, void* internalPointer)
   : TreeItem(parent, internalPointer), key_(key), delemitr_(delemitr), read_only_(isReadOnly) {
 }
 

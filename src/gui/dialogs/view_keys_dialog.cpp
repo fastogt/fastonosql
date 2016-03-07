@@ -72,7 +72,7 @@ void setEditorData(QWidget *editor, const QModelIndex &index) const {
   spinBox->setValue(value);
 }
 
-void setModelData(QWidget *editor, QAbstractItemModel *model, const QModelIndex &index) const {
+void setModelData(QWidget *editor, QAbstractItemModel* model, const QModelIndex& index) const {
   QSpinBox *spinBox = static_cast<QSpinBox*>(editor);
   spinBox->interpretText();
   int value = spinBox->value();
@@ -90,7 +90,7 @@ void updateEditorGeometry(QWidget *editor, const QStyleOptionViewItem &option,
 
 namespace fastonosql {
 
-ViewKeysDialog::ViewKeysDialog(const QString &title, IDatabaseSPtr db, QWidget* parent)
+ViewKeysDialog::ViewKeysDialog(const QString& title, IDatabaseSPtr db, QWidget* parent)
   : QDialog(parent), db_(db), cursorStack_(), curPos_(0) {
   DCHECK(db_);
   if (db_) {

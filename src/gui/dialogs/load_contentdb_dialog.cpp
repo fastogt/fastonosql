@@ -30,7 +30,7 @@
 
 namespace fastonosql {
 
-LoadContentDbDialog::LoadContentDbDialog(const QString &title,
+LoadContentDbDialog::LoadContentDbDialog(const QString& title,
                                          connectionTypes type, QWidget* parent)
   : QDialog(parent), type_(type) {
   setWindowIcon(GuiFactory::instance().icon(type_));

@@ -174,7 +174,7 @@ MainWindow::MainWindow()
   fileMenu->addAction(exportAction_);
   QMenu *recentMenu = new QMenu(this);
   recentConnections_ = fileMenu->addMenu(recentMenu);
-  for (int i = 0; i < max_recent_connections; ++i) {
+  for (auto i = 0; i < max_recent_connections; ++i) {
     recentConnectionsActs_[i] = new QAction(this);
     VERIFY(connect(recentConnectionsActs_[i], &QAction::triggered,
                    this, &MainWindow::openRecentConnection));

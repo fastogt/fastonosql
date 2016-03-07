@@ -54,7 +54,7 @@ class FastoCommonItem
 QString toJson(FastoCommonItem* item);
 QString toRaw(FastoCommonItem* item);
 QString toHex(FastoCommonItem* item);
-QString toCsv(FastoCommonItem* item, const QString &delemitr);
+QString toCsv(FastoCommonItem* item, const QString& delemitr);
 
 QString fromGzip(FastoCommonItem* item);
 QString fromHexMsgPack(FastoCommonItem* item);

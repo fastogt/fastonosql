@@ -31,26 +31,26 @@ namespace {
 
 void parseOptions(int argc, char **argv, SsdbConfig& cfg) {
   for (int i = 0; i < argc; i++) {
-      int lastarg = i == argc - 1;
+    int lastarg = i == argc - 1;
 
-      if (!strcmp(argv[i], "-h") && !lastarg) {
-        cfg.host.host = argv[++i];
-      } else if (!strcmp(argv[i], "-p") && !lastarg) {
-        cfg.host.port = atoi(argv[++i]);
-      } else if (!strcmp(argv[i], "-u") && !lastarg) {
-        cfg.user = argv[++i];
-      } else if (!strcmp(argv[i], "-a") && !lastarg) {
-        cfg.password = argv[++i];
-      } else if (!strcmp(argv[i], "-d") && !lastarg) {
-        cfg.delimiter = argv[++i];
-      } else {
-        if (argv[i][0] == '-') {
-          const uint16_t size_buff = 256;
-          char buff[size_buff] = {0};
-          common::SNPrintf(buff, sizeof(buff),
-                           "Unrecognized option or bad number of args for: '%s'", argv[i]);
-          LOG_MSG(buff, common::logging::L_WARNING, true);
-          break;
+    if (!strcmp(argv[i], "-h") && !lastarg) {
+      cfg.host.host = argv[++i];
+    } else if (!strcmp(argv[i], "-p") && !lastarg) {
+      cfg.host.port = atoi(argv[++i]);
+    } else if (!strcmp(argv[i], "-u") && !lastarg) {
+      cfg.user = argv[++i];
+    } else if (!strcmp(argv[i], "-a") && !lastarg) {
+      cfg.password = argv[++i];
+    } else if (!strcmp(argv[i], "-d") && !lastarg) {
+      cfg.delimiter = argv[++i];
+    } else {
+      if (argv[i][0] == '-') {
+        const uint16_t size_buff = 256;
+        char buff[size_buff] = {0};
+        common::SNPrintf(buff, sizeof(buff),
+                         "Unrecognized option or bad number of args for: '%s'", argv[i]);
+        LOG_MSG(buff, common::logging::L_WARNING, true);
+        break;
       } else {
           /* Likely the command name, stop here. */
           break;

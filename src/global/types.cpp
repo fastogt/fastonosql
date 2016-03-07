@@ -24,7 +24,7 @@ Command::Command()
   : message_(), type_(common::Value::C_INNER) {
 }
 
-Command::Command(const std::string &mess, common::Value::CommandLoggingType commandT)
+Command::Command(const std::string& mess, common::Value::CommandLoggingType commandT)
   : message_(mess), type_(commandT) {
 }
 

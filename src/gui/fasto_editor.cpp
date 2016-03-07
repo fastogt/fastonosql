@@ -88,7 +88,7 @@ FastoEditor::FastoEditor(QWidget* parent)
 FastoEditor::~FastoEditor() {
 }
 
-void FastoEditor::registerImage(int id, const QPixmap &im) {
+void FastoEditor::registerImage(int id, const QPixmap& im) {
   scin_->registerImage(id, im);
 }
 
@@ -108,7 +108,7 @@ QMenu* FastoEditor::createStandardContextMenu() {
   return scin_->createStandardContextMenu();
 }
 
-void FastoEditor::append(const QString &text) {
+void FastoEditor::append(const QString& text) {
   scin_->append(text);
 }
 
@@ -116,7 +116,7 @@ void FastoEditor::setReadOnly(bool ro) {
   scin_->setReadOnly(ro);
 }
 
-void FastoEditor::setText(const QString &text) {
+void FastoEditor::setText(const QString& text) {
   scin_->setText(text);
 }
 
@@ -132,7 +132,7 @@ void FastoEditor::goToPrevElement() {
   findElement(false);
 }
 
-void FastoEditor::setLexer(QsciLexer *lexer) {
+void FastoEditor::setLexer(QsciLexer* lexer) {
   scin_->setLexer(lexer);
   scin_->setAutoCompletionCaseSensitivity(false);
 }
@@ -198,7 +198,7 @@ void FastoEditor::retranslateUi() {
 }
 
 void FastoEditor::findElement(bool forward) {
-  const QString &text = findLine_->text();
+  const QString&text = findLine_->text();
   if (!text.isEmpty()) {
     bool re = false;
     bool wo = false;
@@ -223,7 +223,7 @@ void FastoEditor::findElement(bool forward) {
   }
 }
 
-FastoEditorOutput::FastoEditorOutput(const QString &delemitr, QWidget *parent)
+FastoEditorOutput::FastoEditorOutput(const QString& delemitr, QWidget* parent)
   : QWidget(parent), model_(nullptr), view_method_(JSON), delemitr_(delemitr) {
   QFont font = GuiFactory::instance().font();
   setFont(font);
