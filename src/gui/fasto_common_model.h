@@ -28,7 +28,7 @@ class FastoCommonModel
   : public fasto::qt::gui::TreeModel {
   Q_OBJECT
  public:
-  explicit FastoCommonModel(QObject *parent = 0);
+  explicit FastoCommonModel(QObject* parent = 0);
   virtual ~FastoCommonModel();
 
   virtual QVariant data(const QModelIndex& index, int role = Qt::DisplayRole) const;

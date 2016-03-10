@@ -130,7 +130,7 @@ QVariant FastoCommonModel::headerData(int section, Qt::Orientation orientation, 
   return TreeModel::headerData(section, orientation, role);
 }
 
-int FastoCommonModel::columnCount(const QModelIndex &parent) const {
+int FastoCommonModel::columnCount(const QModelIndex& parent) const {
   return FastoCommonItem::eCountColumns;
 }
 

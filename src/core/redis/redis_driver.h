@@ -29,7 +29,7 @@ namespace fastonosql {
 namespace redis {
 
 class RedisDriver
-      : public IDriverRemote, public IRedisRawOwner {
+  : public IDriverRemote, public IRedisRawOwner {
  Q_OBJECT
  public:
   explicit RedisDriver(IConnectionSettingsBaseSPtr settings);

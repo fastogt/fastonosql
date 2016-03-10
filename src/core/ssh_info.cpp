@@ -40,9 +40,9 @@ SSHInfo::SSHInfo()
     private_key(common::file_system::prepare_path("~/.ssh/id_rsa")), current_method(UNKNOWN) {
 }
 
-SSHInfo::SSHInfo(const common::net::hostAndPort &host, const std::string &userName,
-                 const std::string &password, const std::string &publicKey,
-                 const std::string &privateKey, const std::string &passphrase,
+SSHInfo::SSHInfo(const common::net::hostAndPort &host, const std::string& userName,
+                 const std::string& password, const std::string& publicKey,
+                 const std::string& privateKey, const std::string& passphrase,
                  SupportedAuthenticationMetods method)
   : host(host), user_name(userName), password(password),
     public_key(publicKey), private_key(privateKey), passphrase(passphrase),

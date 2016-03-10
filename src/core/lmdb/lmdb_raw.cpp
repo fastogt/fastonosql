@@ -311,7 +311,7 @@ common::Error LmdbRaw::del(const std::string& key) {
   return common::Error();
 }
 
-common::Error LmdbRaw::keys(const std::string &key_start, const std::string &key_end, uint64_t limit,
+common::Error LmdbRaw::keys(const std::string& key_start, const std::string& key_end, uint64_t limit,
                    std::vector<std::string> *ret) {
   MDB_cursor *cursor;
   MDB_txn *txn = NULL;

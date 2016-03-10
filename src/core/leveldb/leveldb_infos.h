@@ -59,7 +59,7 @@ class LeveldbServerInfo
 
 std::ostream& operator << (std::ostream& out, const LeveldbServerInfo& value);
 
-LeveldbServerInfo* makeLeveldbServerInfo(const std::string &content);
+LeveldbServerInfo* makeLeveldbServerInfo(const std::string& content);
 LeveldbServerInfo* makeLeveldbServerInfo(FastoObject *root);
 
 class LeveldbDataBaseInfo
@@ -73,7 +73,7 @@ class LeveldbDataBaseInfo
 class LeveldbCommand
   : public FastoObjectCommand {
  public:
-  LeveldbCommand(FastoObject* parent, common::CommandValue* cmd, const std::string &delemitr);
+  LeveldbCommand(FastoObject* parent, common::CommandValue* cmd, const std::string& delemitr);
   virtual bool isReadOnly() const;
 };
 

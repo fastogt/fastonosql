@@ -63,12 +63,11 @@ LmdbServerInfo::Stats::Stats()
 }
 
 LmdbServerInfo::Stats::Stats(const std::string& common_text) {
-  const std::string &src = common_text;
   size_t pos = 0;
   size_t start = 0;
 
-  while ((pos = src.find(MARKER, start)) != std::string::npos) {
-    std::string line = src.substr(start, pos-start);
+  while ((pos = common_text.find(MARKER, start)) != std::string::npos) {
+    std::string line = common_text.substr(start, pos-start);
     size_t delem = line.find_first_of(':');
     std::string field = line.substr(0, delem);
     std::string value = line.substr(delem + 1);
@@ -117,7 +116,7 @@ std::ostream& operator<<(std::ostream& out, const LmdbServerInfo& value) {
   return out << value.toString();
 }
 
-LmdbServerInfo* makeLmdbServerInfo(const std::string &content) {
+LmdbServerInfo* makeLmdbServerInfo(const std::string& content) {
   if (content.empty()) {
     return nullptr;
   }
@@ -152,7 +151,7 @@ uint32_t LmdbServerInfo::version() const {
 }
 
 LmdbServerInfo* makeLmdbServerInfo(FastoObject* root) {
-  const std::string content = common::convertToString(root);
+  std::string content = common::convertToString(root);
   return makeLmdbServerInfo(content);
 }
 
@@ -166,7 +165,7 @@ IDataBaseInfo* LmdbDataBaseInfo::clone() const {
 }
 
 LmdbCommand::LmdbCommand(FastoObject* parent, common::CommandValue* cmd,
-                         const std::string &delemitr)
+                         const std::string& delemitr)
   : FastoObjectCommand(parent, cmd, delemitr) {
 }
 

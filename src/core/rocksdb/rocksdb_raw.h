@@ -32,7 +32,7 @@ namespace rocksdb {
 common::Error testConnection(RocksdbConnectionSettings* settings);
 
 struct RocksdbRaw
-    : public CommandHandler {
+  : public CommandHandler {
   RocksdbRaw();
   ~RocksdbRaw();
 
@@ -51,7 +51,7 @@ struct RocksdbRaw
   common::Error merge(const std::string& key, const std::string& value);
   common::Error put(const std::string& key, const std::string& value);
   common::Error del(const std::string& key);
-  common::Error keys(const std::string &key_start, const std::string &key_end,
+  common::Error keys(const std::string& key_start, const std::string& key_end,
                      uint64_t limit, std::vector<std::string> *ret);
   common::Error help(int argc, char** argv);
 

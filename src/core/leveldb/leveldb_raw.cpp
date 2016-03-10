@@ -239,7 +239,7 @@ common::Error LeveldbRaw::del(const std::string& key) {
   return common::Error();
 }
 
-common::Error LeveldbRaw::keys(const std::string &key_start, const std::string &key_end,
+common::Error LeveldbRaw::keys(const std::string& key_start, const std::string& key_end,
                    uint64_t limit, std::vector<std::string> *ret) {
   ::leveldb::ReadOptions ro;
   ::leveldb::Iterator* it = leveldb_->NewIterator(ro);  // keys(key_start, key_end, limit, ret);

@@ -58,7 +58,7 @@ class SsdbServerInfo
 
 std::ostream& operator << (std::ostream& out, const SsdbServerInfo& value);
 
-SsdbServerInfo* makeSsdbServerInfo(const std::string &content);
+SsdbServerInfo* makeSsdbServerInfo(const std::string& content);
 SsdbServerInfo* makeSsdbServerInfo(FastoObject *root);
 
 class SsdbDataBaseInfo
@@ -72,7 +72,7 @@ class SsdbDataBaseInfo
 class SsdbCommand
   : public FastoObjectCommand {
  public:
-  SsdbCommand(FastoObject* parent, common::CommandValue* cmd, const std::string &delemitr);
+  SsdbCommand(FastoObject* parent, common::CommandValue* cmd, const std::string& delemitr);
   virtual bool isReadOnly() const;
 };
 

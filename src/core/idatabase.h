@@ -35,8 +35,8 @@ class IDatabase {
   bool isDefault() const;
   std::string name() const;
 
-  void loadContent(const events_info::LoadDatabaseContentRequest &req);
-  void setDefault(const events_info::SetDefaultDatabaseRequest &req);
+  void loadContent(const events_info::LoadDatabaseContentRequest& req);
+  void setDefault(const events_info::SetDefaultDatabaseRequest& req);
 
   IDataBaseInfoSPtr info() const;
   void setInfo(IDataBaseInfoSPtr info);

@@ -25,7 +25,7 @@
 namespace fastonosql {
 namespace redis {
 
-RedisConnectionSettings::RedisConnectionSettings(const std::string &connectionName)
+RedisConnectionSettings::RedisConnectionSettings(const std::string& connectionName)
   : IConnectionSettingsRemote(connectionName, REDIS), info_() {
 }
 
@@ -37,7 +37,7 @@ common::net::hostAndPort RedisConnectionSettings::host() const {
   return info_.host;
 }
 
-void RedisConnectionSettings::setCommandLine(const std::string &line) {
+void RedisConnectionSettings::setCommandLine(const std::string& line) {
   info_ = common::convertFromString<RedisConfig>(line);
 }
 

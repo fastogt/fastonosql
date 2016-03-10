@@ -234,7 +234,7 @@ bool CreateDbKeyDialog::validateAndApply() {
     return false;
   }
 
-  common::Value* obj = getItem();
+  common::Value* obj = item();
   if (!obj) {
     return false;
   }
@@ -247,7 +247,7 @@ void CreateDbKeyDialog::retranslateUi() {
   generalBox_->setTitle(tr("Key/Value input"));
 }
 
-common::Value* CreateDbKeyDialog::getItem() const {
+common::Value* CreateDbKeyDialog::item() const {
   int index = typesCombo_->currentIndex();
   QVariant var = typesCombo_->itemData(index);
   common::Value::Type t = (common::Value::Type)qvariant_cast<unsigned char>(var);

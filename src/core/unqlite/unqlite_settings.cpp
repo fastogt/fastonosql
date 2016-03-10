@@ -43,7 +43,7 @@ UnqliteConfig UnqliteConnectionSettings::info() const {
   return info_;
 }
 
-void UnqliteConnectionSettings::setInfo(const UnqliteConfig &info) {
+void UnqliteConnectionSettings::setInfo(const UnqliteConfig& info) {
   info_ = info;
 }
 

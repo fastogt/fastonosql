@@ -27,7 +27,7 @@ namespace fastonosql {
 namespace leveldb {
 
 class LeveldbDriver
-      : public IDriverLocal {
+  : public IDriverLocal {
   Q_OBJECT
  public:
   explicit LeveldbDriver(IConnectionSettingsBaseSPtr settings);

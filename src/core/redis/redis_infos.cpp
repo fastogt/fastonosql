@@ -191,11 +191,10 @@ RedisServerInfo::Server::Server(const std::string& server_text)
   : redis_version_(), redis_git_sha1_(), redis_git_dirty_(), redis_mode_(), os_(),
   arch_bits_(0), multiplexing_api_(), gcc_version_(), process_id_(0),
   run_id_(), tcp_port_(0), uptime_in_seconds_(0), uptime_in_days_(0), hz_(0), lru_clock_(0) {
-  const std::string &src = server_text;
   size_t pos = 0;
   size_t start = 0;
-  while ((pos = src.find("\r\n", start)) != std::string::npos) {
-      std::string line = src.substr(start, pos-start);
+  while ((pos = server_text.find("\r\n", start)) != std::string::npos) {
+      std::string line = server_text.substr(start, pos-start);
       size_t delem = line.find_first_of(':');
       std::string field = line.substr(0, delem);
       std::string value = line.substr(delem + 1);
@@ -283,11 +282,10 @@ RedisServerInfo::Clients::Clients()
 RedisServerInfo::Clients::Clients(const std::string& client_text)
   : connected_clients_(0), client_longest_output_list_(0),
   client_biggest_input_buf_(0), blocked_clients_(0) {
-  const std::string &src = client_text;
   size_t pos = 0;
   size_t start = 0;
-  while ((pos = src.find(("\r\n"), start)) != std::string::npos) {
-    std::string line = src.substr(start, pos-start);
+  while ((pos = client_text.find(("\r\n"), start)) != std::string::npos) {
+    std::string line = client_text.substr(start, pos-start);
     size_t delem = line.find_first_of(':');
     std::string field = line.substr(0, delem);
     std::string value = line.substr(delem + 1);
@@ -326,14 +324,13 @@ RedisServerInfo::Memory::Memory()
     used_memory_peak_human_(), used_memory_lua_(0), mem_fragmentation_ratio_(0), mem_allocator_() {
 }
 
-RedisServerInfo::Memory::Memory(const std::string &memory_text)
+RedisServerInfo::Memory::Memory(const std::string& memory_text)
   : used_memory_(0), used_memory_human_(), used_memory_rss_(0), used_memory_peak_(0),
     used_memory_peak_human_(), used_memory_lua_(0), mem_fragmentation_ratio_(0), mem_allocator_() {
-  const std::string &src = memory_text;
   size_t pos = 0;
   size_t start = 0;
-  while ((pos = src.find(("\r\n"), start)) != std::string::npos) {
-    std::string line = src.substr(start, pos-start);
+  while ((pos = memory_text.find(("\r\n"), start)) != std::string::npos) {
+    std::string line = memory_text.substr(start, pos-start);
     size_t delem = line.find_first_of(':');
     std::string field = line.substr(0, delem);
     std::string value = line.substr(delem + 1);
@@ -399,11 +396,10 @@ RedisServerInfo::Persistence::Persistence(const std::string& persistence_text)
     aof_enabled_(0), aof_rewrite_in_progress_(0), aof_rewrite_scheduled_(0),
     aof_last_rewrite_time_sec_(0), aof_current_rewrite_time_sec_(0),
     aof_last_bgrewrite_status_(), aof_last_write_status_() {
-  const std::string &src = persistence_text;
   size_t pos = 0;
   size_t start = 0;
-  while ((pos = src.find(("\r\n"), start)) != std::string::npos) {
-    std::string line = src.substr(start, pos-start);
+  while ((pos = persistence_text.find(("\r\n"), start)) != std::string::npos) {
+    std::string line = persistence_text.substr(start, pos-start);
     size_t delem = line.find_first_of(':');
     std::string field = line.substr(0, delem);
     std::string value = line.substr(delem + 1);
@@ -493,11 +489,10 @@ RedisServerInfo::Stats::Stats(const std::string& stats_text)
     expired_keys_(0), evicted_keys_(0), keyspace_hits_(0),
     keyspace_misses_(0), pubsub_channels_(0),
     pubsub_patterns_(0), latest_fork_usec_(0) {
-  const std::string &src = stats_text;
   size_t pos = 0;
   size_t start = 0;
-  while ((pos = src.find(("\r\n"), start)) != std::string::npos) {
-    std::string line = src.substr(start, pos-start);
+  while ((pos = stats_text.find(("\r\n"), start)) != std::string::npos) {
+    std::string line = stats_text.substr(start, pos-start);
     size_t delem = line.find_first_of(':');
     std::string field = line.substr(0, delem);
     std::string value = line.substr(delem + 1);
@@ -578,17 +573,16 @@ RedisServerInfo::Replication::Replication()
     backlog_histen_(0) {
 }
 
-RedisServerInfo::Replication::Replication(const std::string &replication_text)
+RedisServerInfo::Replication::Replication(const std::string& replication_text)
   : role_(), connected_slaves_(0),
     master_repl_offset_(0), backlog_active_(0),
     backlog_size_(0), backlog_first_byte_offset_(0),
     backlog_histen_(0) {
-  const std::string &src = replication_text;
   size_t pos = 0;
   size_t start = 0;
 
-  while ((pos = src.find(("\r\n"), start)) != std::string::npos) {
-    std::string line = src.substr(start, pos-start);
+  while ((pos = replication_text.find(("\r\n"), start)) != std::string::npos) {
+    std::string line = replication_text.substr(start, pos-start);
     size_t delem = line.find_first_of(':');
     std::string field = line.substr(0, delem);
     std::string value = line.substr(delem + 1);
@@ -638,13 +632,12 @@ RedisServerInfo::Cpu::Cpu()
   : used_cpu_sys_(0), used_cpu_user_(0), used_cpu_sys_children_(0), used_cpu_user_children_(0) {
 }
 
-RedisServerInfo::Cpu::Cpu(const std::string &cpu_text)
+RedisServerInfo::Cpu::Cpu(const std::string& cpu_text)
   : used_cpu_sys_(0), used_cpu_user_(0), used_cpu_sys_children_(0), used_cpu_user_children_(0) {
-  const std::string &src = cpu_text;
   size_t pos = 0;
   size_t start = 0;
-  while ((pos = src.find(("\r\n"), start)) != std::string::npos) {
-    std::string line = src.substr(start, pos-start);
+  while ((pos = cpu_text.find(("\r\n"), start)) != std::string::npos) {
+    std::string line = cpu_text.substr(start, pos-start);
     size_t delem = line.find_first_of(':');
     std::string field = line.substr(0, delem);
     std::string value = line.substr(delem + 1);
@@ -822,7 +815,7 @@ std::ostream& operator<<(std::ostream& out, const RedisServerInfo& value) {
   return out << value.toString();
 }
 
-RedisServerInfo* makeRedisServerInfo(const std::string &content) {
+RedisServerInfo* makeRedisServerInfo(const std::string& content) {
   if (content.empty()) {
     return nullptr;
   }
@@ -881,7 +874,7 @@ RedisServerInfo* makeRedisServerInfo(const std::string &content) {
 }
 
 RedisServerInfo* makeRedisServerInfo(FastoObject* root) {
-  const std::string content = common::convertToString(root);
+  std::string content = common::convertToString(root);
   return makeRedisServerInfo(content);
 }
 
@@ -1014,7 +1007,7 @@ IDataBaseInfo* RedisDataBaseInfo::clone() const {
   return new RedisDataBaseInfo(*this);
 }
 
-RedisCommand::RedisCommand(FastoObject* parent, common::CommandValue* cmd, const std::string &delemitr)
+RedisCommand::RedisCommand(FastoObject* parent, common::CommandValue* cmd, const std::string& delemitr)
   : FastoObjectCommand(parent, cmd, delemitr) {
 }
 

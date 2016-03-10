@@ -92,7 +92,7 @@ class MemcachedServerInfo
 
 std::ostream& operator << (std::ostream& out, const MemcachedServerInfo& value);
 
-MemcachedServerInfo* makeMemcachedServerInfo(const std::string &content);
+MemcachedServerInfo* makeMemcachedServerInfo(const std::string& content);
 MemcachedServerInfo* makeMemcachedServerInfo(FastoObject *root);
 
 class MemcachedDataBaseInfo
@@ -106,7 +106,7 @@ class MemcachedDataBaseInfo
 class MemcachedCommand
   : public FastoObjectCommand {
  public:
-  MemcachedCommand(FastoObject* parent, common::CommandValue* cmd, const std::string &delemitr);
+  MemcachedCommand(FastoObject* parent, common::CommandValue* cmd, const std::string& delemitr);
   virtual bool isReadOnly() const;
 };
 

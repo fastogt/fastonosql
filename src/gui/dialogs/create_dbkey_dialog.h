@@ -57,7 +57,7 @@ class CreateDbKeyDialog
   bool validateAndApply();
   void retranslateUi();
 
-  common::Value *getItem() const;
+  common::Value* item() const;
   const connectionTypes type_;
   QGroupBox* generalBox_;
   QLineEdit* keyEdit_;

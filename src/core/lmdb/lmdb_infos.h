@@ -51,7 +51,7 @@ class LmdbServerInfo
 
 std::ostream& operator << (std::ostream& out, const LmdbServerInfo& value);
 
-LmdbServerInfo* makeLmdbServerInfo(const std::string &content);
+LmdbServerInfo* makeLmdbServerInfo(const std::string& content);
 LmdbServerInfo* makeLmdbServerInfo(FastoObject *root);
 
 class LmdbDataBaseInfo
@@ -65,7 +65,7 @@ class LmdbDataBaseInfo
 class LmdbCommand
       : public FastoObjectCommand {
  public:
-  LmdbCommand(FastoObject* parent, common::CommandValue* cmd, const std::string &delemitr);
+  LmdbCommand(FastoObject* parent, common::CommandValue* cmd, const std::string& delemitr);
   virtual bool isReadOnly() const;
 };
 

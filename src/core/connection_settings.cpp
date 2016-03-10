@@ -102,7 +102,7 @@ std::string IConnectionSettings::toString() const {
   return buff;
 }
 
-IConnectionSettingsBase::IConnectionSettingsBase(const std::string &connectionName, connectionTypes type)
+IConnectionSettingsBase::IConnectionSettingsBase(const std::string& connectionName, connectionTypes type)
   : IConnectionSettings(connectionName, type), hash_() {
   setConnectionNameAndUpdateHash(connectionName);
 }
@@ -184,7 +184,7 @@ IConnectionSettingsBase* IConnectionSettingsBase::createFromType(connectionTypes
   return nullptr;
 }
 
-IConnectionSettingsBase* IConnectionSettingsBase::fromString(const std::string &val) {
+IConnectionSettingsBase* IConnectionSettingsBase::fromString(const std::string& val) {
   if (val.empty()) {
     return nullptr;
   }

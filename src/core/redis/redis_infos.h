@@ -293,7 +293,7 @@ class RedisDataBaseInfo
 class RedisCommand
       : public FastoObjectCommand {
  public:
-  RedisCommand(FastoObject* parent, common::CommandValue* cmd, const std::string &delemitr);
+  RedisCommand(FastoObject* parent, common::CommandValue* cmd, const std::string& delemitr);
   virtual bool isReadOnly() const;
 };
 

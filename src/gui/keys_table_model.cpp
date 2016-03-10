@@ -26,7 +26,7 @@
 
 namespace fastonosql {
 
-KeyTableItem::KeyTableItem(const NDbKValue &key)
+KeyTableItem::KeyTableItem(const NDbKValue& key)
   : key_(key) {
 }
 
@@ -151,7 +151,7 @@ QVariant KeysTableModel::headerData(int section, Qt::Orientation orientation, in
   return TableModel::headerData(section, orientation, role);
 }
 
-int KeysTableModel::columnCount(const QModelIndex &parent) const {
+int KeysTableModel::columnCount(const QModelIndex& parent) const {
   return KeyTableItem::kCountColumns;
 }
 

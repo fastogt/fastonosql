@@ -83,12 +83,11 @@ MemcachedServerInfo::Common::Common() {
 }
 
 MemcachedServerInfo::Common::Common(const std::string& common_text) {
-  const std::string &src = common_text;
   size_t pos = 0;
   size_t start = 0;
 
-  while ((pos = src.find(MARKER, start)) != std::string::npos) {
-    std::string line = src.substr(start, pos-start);
+  while ((pos = common_text.find(MARKER, start)) != std::string::npos) {
+    std::string line = common_text.substr(start, pos-start);
     size_t delem = line.find_first_of(':');
     std::string field = line.substr(0, delem);
     std::string value = line.substr(delem + 1);
@@ -243,7 +242,7 @@ std::ostream& operator<<(std::ostream& out, const MemcachedServerInfo& value) {
   return out << value.toString();
 }
 
-MemcachedServerInfo* makeMemcachedServerInfo(const std::string &content) {
+MemcachedServerInfo* makeMemcachedServerInfo(const std::string& content) {
   if (content.empty()) {
     return nullptr;
   }
@@ -296,7 +295,7 @@ uint32_t MemcachedServerInfo::version() const {
 }
 
 MemcachedServerInfo* makeMemcachedServerInfo(FastoObject* root) {
-  const std::string content = common::convertToString(root);
+  std::string content = common::convertToString(root);
   return makeMemcachedServerInfo(content);
 }
 
@@ -310,7 +309,7 @@ IDataBaseInfo* MemcachedDataBaseInfo::clone() const {
 }
 
 MemcachedCommand::MemcachedCommand(FastoObject* parent, common::CommandValue* cmd,
-                                   const std::string &delemitr)
+                                   const std::string& delemitr)
   : FastoObjectCommand(parent, cmd, delemitr) {
 }
 

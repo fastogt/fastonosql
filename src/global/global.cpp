@@ -47,7 +47,7 @@ std::string FastoObject::toString() const {
   return convertToString(value_.get(), delemitr());
 }
 
-FastoObject* FastoObject::createRoot(const std::string &text, IFastoObjectObserver* observer) {
+FastoObject* FastoObject::createRoot(const std::string& text, IFastoObjectObserver* observer) {
   FastoObject* root =  new FastoObject(NULL, common::Value::createStringValue(text), std::string());
   root->observer_ = observer;
   return root;

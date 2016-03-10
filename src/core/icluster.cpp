@@ -24,7 +24,7 @@
 
 namespace fastonosql {
 
-ICluster::ICluster(const std::string &name)
+ICluster::ICluster(const std::string& name)
   : name_(name) {
 }
 

@@ -785,7 +785,7 @@ void RedisDriver::handleServerPropertyChangeEvent(events::ChangeServerPropertyIn
   events::ChangeServerPropertyInfoResponceEvent::value_type res(ev->value());
 
   notifyProgress(sender, 50);
-  const std::string changeRequest = "CONFIG SET " + res.new_item.first + " " + res.new_item.second;
+  std::string changeRequest = "CONFIG SET " + res.new_item.first + " " + res.new_item.second;
   FastoObjectIPtr root = FastoObject::createRoot(changeRequest);
   FastoObjectCommand* cmd = createCommand<RedisCommand>(root, changeRequest,
                                                         common::Value::C_INNER);

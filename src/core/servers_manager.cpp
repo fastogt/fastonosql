@@ -67,7 +67,7 @@ ServersManager::ServersManager() {
 ServersManager::~ServersManager() {
 }
 
-IServerSPtr ServersManager::createServer(IConnectionSettingsBaseSPtr settings) {
+ServersManager::server_t ServersManager::createServer(IConnectionSettingsBaseSPtr settings) {
   if (!settings) {
     NOTREACHED();
     return IServerSPtr();
@@ -121,7 +121,7 @@ IServerSPtr ServersManager::createServer(IConnectionSettingsBaseSPtr settings) {
   return sh;
 }
 
-IClusterSPtr ServersManager::createCluster(IClusterSettingsBaseSPtr settings) {
+ServersManager::cluster_t ServersManager::createCluster(IClusterSettingsBaseSPtr settings) {
   if (!settings) {
     NOTREACHED();
     return IClusterSPtr();
@@ -239,11 +239,11 @@ void ServersManager::clear() {
   servers_.clear();
 }
 
-void ServersManager::closeServer(IServerSPtr server) {
+void ServersManager::closeServer(server_t server) {
   servers_.erase(std::remove(servers_.begin(), servers_.end(), server));
 }
 
-void ServersManager::closeCluster(IClusterSPtr cluster) {
+void ServersManager::closeCluster(cluster_t cluster) {
   ICluster::nodes_type nodes = cluster->nodes();
   for (size_t i = 0; i < nodes.size(); ++i) {
     closeServer(nodes[i]);

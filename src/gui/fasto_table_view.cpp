@@ -49,7 +49,7 @@ void FastoTableView::showContextMenu(const QPoint& point) {
   menu.exec(menuPoint);
 }
 
-void FastoTableView::resizeEvent(QResizeEvent *event) {
+void FastoTableView::resizeEvent(QResizeEvent* event) {
   horizontalHeader()->resizeSections(QHeaderView::Stretch);
   verticalHeader()->resizeSections(QHeaderView::Stretch);
   QTableView::resizeEvent(event);

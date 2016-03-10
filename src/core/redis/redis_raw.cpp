@@ -611,7 +611,7 @@ common::Error RedisRaw::latencyMode(FastoObject* out) {
   }
 
   FastoObject* child = nullptr;
-  const std::string command = cmd->inputCommand();
+  std::string command = cmd->inputCommand();
 
   while (!isInterrupted()) {
     start = common::time::current_mstime();
@@ -1559,7 +1559,7 @@ common::Error RedisRaw::cliReadReply(FastoObject* out) {
     s = strchr(p+1,':');    /* MOVED 3999[P]127.0.0.1[S]6381 */
     *s = '\0';
     config_.host = common::net::hostAndPort(p + 1, atoi(s + 1));
-    const std::string host_str = common::convertToString(config_.host);
+    std::string host_str = common::convertToString(config_.host);
     char redir[512] = {0};
     common::SNPrintf(redir, sizeof(redir), "-> Redirected to slot [%d] located at %s",
                      slot, host_str);

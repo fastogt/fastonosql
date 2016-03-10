@@ -31,7 +31,7 @@ namespace {
 
 namespace fastonosql {
 
-FastoHexEdit::FastoHexEdit(QWidget *parent)
+FastoHexEdit::FastoHexEdit(QWidget* parent)
   : base_class(parent), mode_(TEXT_MODE), in_selection_state_(false) {
   setFocusPolicy(Qt::StrongFocus);
 }
@@ -49,7 +49,7 @@ void FastoHexEdit::setMode(DisplayMode mode) {
   setReadOnly(mode_ == HEX_MODE);
 }
 
-void FastoHexEdit::setData(const QByteArray &arr) {
+void FastoHexEdit::setData(const QByteArray& arr) {
   if (mode_ == HEX_MODE) {
     verticalScrollBar()->setValue(0);
     data_ = arr;
@@ -217,7 +217,7 @@ QRect FastoHexEdit::stableRect(const QRect& rect) {
   return QRect(QPoint(xPosStart, yPosStart), QPoint(xPosEnd, yPosEnd));
 }
 
-int FastoHexEdit::positionAtPoint(const QPoint &point) const {
+int FastoHexEdit::positionAtPoint(const QPoint& point) const {
   const int px = point.x();
   const int py = point.y();
   const int charW = charWidth();

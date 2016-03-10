@@ -28,7 +28,7 @@ namespace fastonosql {
 namespace unqlite {
 
 class UnqliteDriver
-    : public IDriverLocal {
+  : public IDriverLocal {
   Q_OBJECT
  public:
   explicit UnqliteDriver(IConnectionSettingsBaseSPtr settings);

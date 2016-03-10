@@ -32,7 +32,7 @@ namespace memcached {
 common::Error testConnection(MemcachedConnectionSettings* settings);
 
 struct MemcachedRaw
-    : public CommandHandler {
+  : public CommandHandler {
   MemcachedRaw();
   ~MemcachedRaw();
 

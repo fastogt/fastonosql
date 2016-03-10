@@ -34,7 +34,7 @@ namespace fastonosql {
 namespace rocksdb {
 
 class RocksdbServerInfo
-      : public IServerInfo {
+  : public IServerInfo {
  public:
   // Compactions\nLevel  Files Size(MB) Time(sec) Read(MB) Write(MB)\n
   struct Stats
@@ -59,7 +59,7 @@ class RocksdbServerInfo
 
 std::ostream& operator << (std::ostream& out, const RocksdbServerInfo& value);
 
-RocksdbServerInfo* makeRocksdbServerInfo(const std::string &content);
+RocksdbServerInfo* makeRocksdbServerInfo(const std::string& content);
 RocksdbServerInfo* makeRocksdbServerInfo(FastoObject *root);
 
 class RocksdbDataBaseInfo
@@ -73,7 +73,7 @@ class RocksdbDataBaseInfo
 class RocksdbCommand
   : public FastoObjectCommand {
  public:
-  RocksdbCommand(FastoObject* parent, common::CommandValue* cmd, const std::string &delemitr);
+  RocksdbCommand(FastoObject* parent, common::CommandValue* cmd, const std::string& delemitr);
   virtual bool isReadOnly() const;
 };
 

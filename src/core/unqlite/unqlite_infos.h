@@ -34,7 +34,7 @@ class UnqliteServerInfo
  public:
   // Compactions\nLevel  Files Size(MB) Time(sec) Read(MB) Write(MB)\n
   struct Stats
-          : FieldByIndex {
+      : FieldByIndex {
     Stats();
     explicit Stats(const std::string& common_text);
     common::Value* valueByIndex(unsigned char index) const;
@@ -50,11 +50,11 @@ class UnqliteServerInfo
 
 std::ostream& operator << (std::ostream& out, const UnqliteServerInfo& value);
 
-UnqliteServerInfo* makeUnqliteServerInfo(const std::string &content);
+UnqliteServerInfo* makeUnqliteServerInfo(const std::string& content);
 UnqliteServerInfo* makeUnqliteServerInfo(FastoObject *root);
 
 class UnqliteDataBaseInfo
-      : public IDataBaseInfo {
+  : public IDataBaseInfo {
  public:
   UnqliteDataBaseInfo(const std::string& name, bool isDefault, size_t size,
                       const keys_cont_type& keys = keys_cont_type());
@@ -64,7 +64,7 @@ class UnqliteDataBaseInfo
 class UnqliteCommand
       : public FastoObjectCommand {
  public:
-  UnqliteCommand(FastoObject* parent, common::CommandValue* cmd, const std::string &delemitr);
+  UnqliteCommand(FastoObject* parent, common::CommandValue* cmd, const std::string& delemitr);
   virtual bool isReadOnly() const;
 };
 

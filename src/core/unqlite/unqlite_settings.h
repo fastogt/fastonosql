@@ -38,7 +38,7 @@ class UnqliteConnectionSettings
   virtual void setCommandLine(const std::string& line);
 
   UnqliteConfig info() const;
-  void setInfo(const UnqliteConfig &info);
+  void setInfo(const UnqliteConfig& info);
 
   virtual std::string fullAddress() const;
 

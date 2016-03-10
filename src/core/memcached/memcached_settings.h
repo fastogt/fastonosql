@@ -28,7 +28,7 @@ namespace fastonosql {
 namespace memcached {
 
 class MemcachedConnectionSettings
-      : public IConnectionSettingsRemote {
+  : public IConnectionSettingsRemote {
  public:
   explicit MemcachedConnectionSettings(const std::string& connectionName);
 

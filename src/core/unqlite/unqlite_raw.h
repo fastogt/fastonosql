@@ -34,7 +34,7 @@ namespace unqlite {
 common::Error testConnection(UnqliteConnectionSettings* settings);
 
 class UnqliteRaw
-    : public CommandHandler {
+  : public CommandHandler {
  public:
   UnqliteRaw();
   ~UnqliteRaw();

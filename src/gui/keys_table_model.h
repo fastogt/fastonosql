@@ -52,7 +52,7 @@ class KeysTableModel
   : public fasto::qt::gui::TableModel {
   Q_OBJECT
  public:
-  explicit KeysTableModel(QObject *parent = 0);
+  explicit KeysTableModel(QObject* parent = 0);
   virtual ~KeysTableModel();
 
   virtual QVariant data(const QModelIndex& index, int role = Qt::DisplayRole) const;

@@ -44,7 +44,7 @@ void FastoTreeView::showContextMenu(const QPoint& point) {
   menu.exec(menuPoint);
 }
 
-void FastoTreeView::resizeEvent(QResizeEvent *event) {
+void FastoTreeView::resizeEvent(QResizeEvent* event) {
   header()->resizeSections(QHeaderView::Stretch);
   QTreeView::resizeEvent(event);
 }

@@ -32,10 +32,12 @@ class ServersManager
   friend class common::patterns::LazySingleton<ServersManager>;
   Q_OBJECT
  public:
-  typedef std::vector<IServerSPtr> ServersContainer;
+  typedef IServerSPtr server_t;
+  typedef IClusterSPtr cluster_t;
+  typedef std::vector<server_t> servers_container_t;
 
-  IServerSPtr createServer(IConnectionSettingsBaseSPtr settings);
-  IClusterSPtr createCluster(IClusterSettingsBaseSPtr settings);
+  server_t createServer(IConnectionSettingsBaseSPtr settings);
+  cluster_t createCluster(IClusterSettingsBaseSPtr settings);
 
   common::Error testConnection(IConnectionSettingsBaseSPtr connection);
   common::Error discoveryConnection(IConnectionSettingsBaseSPtr connection,
@@ -44,14 +46,14 @@ class ServersManager
   void clear();
 
  public Q_SLOTS:
-  void closeServer(IServerSPtr server);
-  void closeCluster(IClusterSPtr cluster);
+  void closeServer(server_t server);
+  void closeCluster(cluster_t cluster);
 
  private:
   ServersManager();
   ~ServersManager();
 
-  ServersContainer servers_;
+  servers_container_t servers_;
 };
 
 }  // namespace fastonosql

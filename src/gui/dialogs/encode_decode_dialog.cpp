@@ -130,7 +130,7 @@ void EncodeDecodeDialog::decode() {
     return;
   }
 
-  const std::string sin = common::convertToString(in);
+  std::string sin = common::convertToString(in);
   std::string out;
   common::Error er;
   if (encodeButton_->isChecked()) {

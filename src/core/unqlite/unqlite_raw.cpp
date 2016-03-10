@@ -270,7 +270,7 @@ common::Error UnqliteRaw::del(const std::string& key) {
   return common::Error();
 }
 
-common::Error UnqliteRaw::keys(const std::string &key_start, const std::string &key_end,
+common::Error UnqliteRaw::keys(const std::string& key_start, const std::string& key_end,
                    uint64_t limit, std::vector<std::string> *ret) {
   /* Allocate a new cursor instance */
   unqlite_kv_cursor *pCur; /* Cursor handle */

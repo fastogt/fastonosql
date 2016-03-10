@@ -226,7 +226,7 @@ common::Error SsdbRaw::incr(const std::string& key, int64_t incrby, int64_t *ret
   return common::Error();
 }
 
-common::Error SsdbRaw::keys(const std::string &key_start, const std::string &key_end,
+common::Error SsdbRaw::keys(const std::string& key_start, const std::string& key_end,
                    uint64_t limit, std::vector<std::string> *ret) {
   auto st = ssdb_->keys(key_start, key_end, limit, ret);
   if (st.error()) {
@@ -237,7 +237,7 @@ common::Error SsdbRaw::keys(const std::string &key_start, const std::string &key
   return common::Error();
 }
 
-common::Error SsdbRaw::scan(const std::string &key_start, const std::string &key_end,
+common::Error SsdbRaw::scan(const std::string& key_start, const std::string& key_end,
                    uint64_t limit, std::vector<std::string> *ret) {
   auto st = ssdb_->scan(key_start, key_end, limit, ret);
   if (st.error()) {
@@ -248,7 +248,7 @@ common::Error SsdbRaw::scan(const std::string &key_start, const std::string &key
   return common::Error();
 }
 
-common::Error SsdbRaw::rscan(const std::string &key_start, const std::string &key_end,
+common::Error SsdbRaw::rscan(const std::string& key_start, const std::string& key_end,
                     uint64_t limit, std::vector<std::string> *ret) {
   auto st = ssdb_->rscan(key_start, key_end, limit, ret);
   if (st.error()) {
@@ -320,7 +320,7 @@ common::Error SsdbRaw::hdel(const std::string& name, const std::string& key) {
   return common::Error();
 }
 
-common::Error SsdbRaw::hincr(const std::string &name, const std::string &key,
+common::Error SsdbRaw::hincr(const std::string& name, const std::string& key,
                     int64_t incrby, int64_t *ret) {
   auto st = ssdb_->hincr(name, key, incrby, ret);
   if (st.error()) {
@@ -331,7 +331,7 @@ common::Error SsdbRaw::hincr(const std::string &name, const std::string &key,
   return common::Error();
 }
 
-common::Error SsdbRaw::hsize(const std::string &name, int64_t *ret) {
+common::Error SsdbRaw::hsize(const std::string& name, int64_t *ret) {
   auto st = ssdb_->hsize(name, ret);
   if (st.error()) {
     char buff[1024] = {0};
@@ -341,7 +341,7 @@ common::Error SsdbRaw::hsize(const std::string &name, int64_t *ret) {
   return common::Error();
 }
 
-common::Error SsdbRaw::hclear(const std::string &name, int64_t *ret) {
+common::Error SsdbRaw::hclear(const std::string& name, int64_t *ret) {
   auto st = ssdb_->hclear(name, ret);
   if (st.error()) {
     char buff[1024] = {0};
@@ -351,8 +351,8 @@ common::Error SsdbRaw::hclear(const std::string &name, int64_t *ret) {
   return common::Error();
 }
 
-common::Error SsdbRaw::hkeys(const std::string &name, const std::string &key_start,
-                    const std::string &key_end, uint64_t limit, std::vector<std::string> *ret) {
+common::Error SsdbRaw::hkeys(const std::string& name, const std::string& key_start,
+                    const std::string& key_end, uint64_t limit, std::vector<std::string> *ret) {
   auto st = ssdb_->hkeys(name, key_start, key_end, limit, ret);
   if (st.error()) {
     char buff[1024] = {0};
@@ -362,8 +362,8 @@ common::Error SsdbRaw::hkeys(const std::string &name, const std::string &key_sta
   return common::Error();
 }
 
-common::Error SsdbRaw::hscan(const std::string &name, const std::string &key_start,
-                    const std::string &key_end, uint64_t limit, std::vector<std::string> *ret) {
+common::Error SsdbRaw::hscan(const std::string& name, const std::string& key_start,
+                    const std::string& key_end, uint64_t limit, std::vector<std::string> *ret) {
   auto st = ssdb_->hscan(name, key_start, key_end, limit, ret);
   if (st.error()) {
     char buff[1024] = {0};
@@ -373,8 +373,8 @@ common::Error SsdbRaw::hscan(const std::string &name, const std::string &key_sta
   return common::Error();
 }
 
-common::Error SsdbRaw::hrscan(const std::string &name, const std::string &key_start,
-                     const std::string &key_end, uint64_t limit, std::vector<std::string> *ret) {
+common::Error SsdbRaw::hrscan(const std::string& name, const std::string& key_start,
+                     const std::string& key_end, uint64_t limit, std::vector<std::string> *ret) {
   auto st = ssdb_->hrscan(name, key_start, key_end, limit, ret);
   if (st.error()) {
     char buff[1024] = {0};
@@ -384,7 +384,7 @@ common::Error SsdbRaw::hrscan(const std::string &name, const std::string &key_st
   return common::Error();
 }
 
-common::Error SsdbRaw::multi_hget(const std::string &name, const std::vector<std::string> &keys,
+common::Error SsdbRaw::multi_hget(const std::string& name, const std::vector<std::string> &keys,
                          std::vector<std::string> *ret) {
   auto st = ssdb_->multi_hget(name, keys, ret);
   if (st.error()) {
@@ -395,7 +395,7 @@ common::Error SsdbRaw::multi_hget(const std::string &name, const std::vector<std
   return common::Error();
 }
 
-common::Error SsdbRaw::multi_hset(const std::string &name,
+common::Error SsdbRaw::multi_hset(const std::string& name,
                          const std::map<std::string, std::string> &keys) {
   auto st = ssdb_->multi_hset(name, keys);
   if (st.error()) {
@@ -406,7 +406,7 @@ common::Error SsdbRaw::multi_hset(const std::string &name,
   return common::Error();
 }
 
-common::Error SsdbRaw::zget(const std::string &name, const std::string &key, int64_t *ret) {
+common::Error SsdbRaw::zget(const std::string& name, const std::string& key, int64_t *ret) {
   auto st = ssdb_->zget(name, key, ret);
   if (st.error()) {
     char buff[1024] = {0};
@@ -416,7 +416,7 @@ common::Error SsdbRaw::zget(const std::string &name, const std::string &key, int
   return common::Error();
 }
 
-common::Error SsdbRaw::zset(const std::string &name, const std::string &key, int64_t score) {
+common::Error SsdbRaw::zset(const std::string& name, const std::string& key, int64_t score) {
   auto st = ssdb_->zset(name, key, score);
   if (st.error()) {
     char buff[1024] = {0};
@@ -426,7 +426,7 @@ common::Error SsdbRaw::zset(const std::string &name, const std::string &key, int
   return common::Error();
 }
 
-common::Error SsdbRaw::zdel(const std::string &name, const std::string &key) {
+common::Error SsdbRaw::zdel(const std::string& name, const std::string& key) {
   auto st = ssdb_->zdel(name, key);
   if (st.error()) {
     char buff[1024] = {0};
@@ -436,7 +436,7 @@ common::Error SsdbRaw::zdel(const std::string &name, const std::string &key) {
   return common::Error();
 }
 
-common::Error SsdbRaw::zincr(const std::string &name, const std::string &key, int64_t incrby, int64_t *ret) {
+common::Error SsdbRaw::zincr(const std::string& name, const std::string& key, int64_t incrby, int64_t *ret) {
   auto st = ssdb_->zincr(name, key, incrby, ret);
   if (st.error()) {
     char buff[1024] = {0};
@@ -446,7 +446,7 @@ common::Error SsdbRaw::zincr(const std::string &name, const std::string &key, in
   return common::Error();
 }
 
-common::Error SsdbRaw::zsize(const std::string &name, int64_t *ret) {
+common::Error SsdbRaw::zsize(const std::string& name, int64_t *ret) {
   auto st = ssdb_->zsize(name, ret);
   if (st.error()) {
     char buff[1024] = {0};
@@ -456,7 +456,7 @@ common::Error SsdbRaw::zsize(const std::string &name, int64_t *ret) {
   return common::Error();
 }
 
-common::Error SsdbRaw::zclear(const std::string &name, int64_t *ret) {
+common::Error SsdbRaw::zclear(const std::string& name, int64_t *ret) {
   auto st = ssdb_->zclear(name, ret);
   if (st.error()) {
     char buff[1024] = {0};
@@ -466,7 +466,7 @@ common::Error SsdbRaw::zclear(const std::string &name, int64_t *ret) {
   return common::Error();
 }
 
-common::Error SsdbRaw::zrank(const std::string &name, const std::string &key, int64_t *ret) {
+common::Error SsdbRaw::zrank(const std::string& name, const std::string& key, int64_t *ret) {
   auto st = ssdb_->zrank(name, key, ret);
   if (st.error()) {
     char buff[1024] = {0};
@@ -476,7 +476,7 @@ common::Error SsdbRaw::zrank(const std::string &name, const std::string &key, in
   return common::Error();
 }
 
-common::Error SsdbRaw::zrrank(const std::string &name, const std::string &key, int64_t *ret) {
+common::Error SsdbRaw::zrrank(const std::string& name, const std::string& key, int64_t *ret) {
   auto st = ssdb_->zrrank(name, key, ret);
   if (st.error()) {
     char buff[1024] = {0};
@@ -486,7 +486,7 @@ common::Error SsdbRaw::zrrank(const std::string &name, const std::string &key, i
   return common::Error();
 }
 
-common::Error SsdbRaw::zrange(const std::string &name,
+common::Error SsdbRaw::zrange(const std::string& name,
         uint64_t offset, uint64_t limit,
         std::vector<std::string> *ret) {
   auto st = ssdb_->zrange(name, offset, limit, ret);
@@ -498,7 +498,7 @@ common::Error SsdbRaw::zrange(const std::string &name,
   return common::Error();
 }
 
-common::Error SsdbRaw::zrrange(const std::string &name,
+common::Error SsdbRaw::zrrange(const std::string& name,
         uint64_t offset, uint64_t limit,
         std::vector<std::string> *ret) {
   auto st = ssdb_->zrrange(name, offset, limit, ret);
@@ -510,7 +510,7 @@ common::Error SsdbRaw::zrrange(const std::string &name,
   return common::Error();
 }
 
-common::Error SsdbRaw::zkeys(const std::string &name, const std::string &key_start,
+common::Error SsdbRaw::zkeys(const std::string& name, const std::string& key_start,
     int64_t *score_start, int64_t *score_end,
     uint64_t limit, std::vector<std::string> *ret) {
   auto st = ssdb_->zkeys(name, key_start, score_start, score_end, limit, ret);
@@ -522,7 +522,7 @@ common::Error SsdbRaw::zkeys(const std::string &name, const std::string &key_sta
   return common::Error();
 }
 
-common::Error SsdbRaw::zscan(const std::string &name, const std::string &key_start,
+common::Error SsdbRaw::zscan(const std::string& name, const std::string& key_start,
     int64_t *score_start, int64_t *score_end,
     uint64_t limit, std::vector<std::string> *ret) {
   auto st = ssdb_->zscan(name, key_start, score_start, score_end, limit, ret);
@@ -534,7 +534,7 @@ common::Error SsdbRaw::zscan(const std::string &name, const std::string &key_sta
   return common::Error();
 }
 
-common::Error SsdbRaw::zrscan(const std::string &name, const std::string &key_start,
+common::Error SsdbRaw::zrscan(const std::string& name, const std::string& key_start,
     int64_t *score_start, int64_t *score_end,
     uint64_t limit, std::vector<std::string> *ret) {
   auto st = ssdb_->zrscan(name, key_start, score_start, score_end, limit, ret);
@@ -546,7 +546,7 @@ common::Error SsdbRaw::zrscan(const std::string &name, const std::string &key_st
   return common::Error();
 }
 
-common::Error SsdbRaw::multi_zget(const std::string &name, const std::vector<std::string> &keys,
+common::Error SsdbRaw::multi_zget(const std::string& name, const std::vector<std::string> &keys,
     std::vector<std::string> *ret) {
   auto st = ssdb_->multi_zget(name, keys, ret);
   if (st.error()) {
@@ -557,7 +557,7 @@ common::Error SsdbRaw::multi_zget(const std::string &name, const std::vector<std
   return common::Error();
 }
 
-common::Error SsdbRaw::multi_zset(const std::string &name, const std::map<std::string, int64_t> &kss) {
+common::Error SsdbRaw::multi_zset(const std::string& name, const std::map<std::string, int64_t> &kss) {
   auto st = ssdb_->multi_zset(name, kss);
   if (st.error()) {
     char buff[1024] = {0};
@@ -567,7 +567,7 @@ common::Error SsdbRaw::multi_zset(const std::string &name, const std::map<std::s
   return common::Error();
 }
 
-common::Error SsdbRaw::multi_zdel(const std::string &name, const std::vector<std::string> &keys) {
+common::Error SsdbRaw::multi_zdel(const std::string& name, const std::vector<std::string> &keys) {
   auto st = ssdb_->multi_zdel(name, keys);
   if (st.error()) {
     char buff[1024] = {0};
@@ -577,7 +577,7 @@ common::Error SsdbRaw::multi_zdel(const std::string &name, const std::vector<std
   return common::Error();
 }
 
-common::Error SsdbRaw::qpush(const std::string &name, const std::string &item) {
+common::Error SsdbRaw::qpush(const std::string& name, const std::string& item) {
   auto st = ssdb_->qpush(name, item);
   if (st.error()) {
     char buff[1024] = {0};
@@ -587,7 +587,7 @@ common::Error SsdbRaw::qpush(const std::string &name, const std::string &item) {
   return common::Error();
 }
 
-common::Error SsdbRaw::qpop(const std::string &name, std::string *item) {
+common::Error SsdbRaw::qpop(const std::string& name, std::string *item) {
   auto st = ssdb_->qpop(name, item);
   if (st.error()) {
     char buff[1024] = {0};
@@ -597,7 +597,7 @@ common::Error SsdbRaw::qpop(const std::string &name, std::string *item) {
   return common::Error();
 }
 
-common::Error SsdbRaw::qslice(const std::string &name, int64_t begin, int64_t end,
+common::Error SsdbRaw::qslice(const std::string& name, int64_t begin, int64_t end,
                      std::vector<std::string> *ret) {
   auto st = ssdb_->qslice(name, begin, end, ret);
   if (st.error()) {
@@ -608,7 +608,7 @@ common::Error SsdbRaw::qslice(const std::string &name, int64_t begin, int64_t en
   return common::Error();
 }
 
-common::Error SsdbRaw::qclear(const std::string &name, int64_t *ret) {
+common::Error SsdbRaw::qclear(const std::string& name, int64_t *ret) {
   auto st = ssdb_->qclear(name, ret);
   if (st.error()) {
     char buff[1024] = {0};

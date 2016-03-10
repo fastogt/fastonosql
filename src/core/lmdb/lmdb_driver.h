@@ -28,7 +28,7 @@ namespace fastonosql {
 namespace lmdb {
 
 class LmdbDriver
-      : public IDriverLocal {
+  : public IDriverLocal {
   Q_OBJECT
  public:
   explicit LmdbDriver(IConnectionSettingsBaseSPtr settings);

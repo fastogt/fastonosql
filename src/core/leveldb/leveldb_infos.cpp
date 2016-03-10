@@ -69,12 +69,11 @@ LeveldbServerInfo::Stats::Stats()
 }
 
 LeveldbServerInfo::Stats::Stats(const std::string& common_text) {
-  const std::string &src = common_text;
   size_t pos = 0;
   size_t start = 0;
 
-  while ((pos = src.find(MARKER, start)) != std::string::npos) {
-    std::string line = src.substr(start, pos-start);
+  while ((pos = common_text.find(MARKER, start)) != std::string::npos) {
+    std::string line = common_text.substr(start, pos-start);
     size_t delem = line.find_first_of(':');
     std::string field = line.substr(0, delem);
     std::string value = line.substr(delem + 1);
@@ -144,7 +143,7 @@ std::ostream& operator<<(std::ostream& out, const LeveldbServerInfo& value) {
   return out << value.toString();
 }
 
-LeveldbServerInfo* makeLeveldbServerInfo(const std::string &content) {
+LeveldbServerInfo* makeLeveldbServerInfo(const std::string& content) {
   if (content.empty()) {
     return nullptr;
   }
@@ -179,7 +178,7 @@ uint32_t LeveldbServerInfo::version() const {
 }
 
 LeveldbServerInfo* makeLeveldbServerInfo(FastoObject* root) {
-  const std::string content = common::convertToString(root);
+  std::string content = common::convertToString(root);
   return makeLeveldbServerInfo(content);
 }
 
@@ -193,7 +192,7 @@ IDataBaseInfo* LeveldbDataBaseInfo::clone() const {
 }
 
 LeveldbCommand::LeveldbCommand(FastoObject* parent, common::CommandValue* cmd,
-                               const std::string &delemitr)
+                               const std::string& delemitr)
   : FastoObjectCommand(parent, cmd, delemitr) {
 }
 
