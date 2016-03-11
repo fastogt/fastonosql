@@ -382,6 +382,10 @@ void IDataBaseInfo::setKeys(const keys_cont_type& keys) {
   keys_ = keys;
 }
 
+void IDataBaseInfo::clearKeys() {
+  keys_.clear();
+}
+
 IDataBaseInfo::keys_cont_type IDataBaseInfo::keys() const {
   return keys_;
 }

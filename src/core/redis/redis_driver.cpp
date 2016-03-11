@@ -45,6 +45,7 @@
 #define GET_KEYS_PATTERN_3ARGS_ISI "SCAN %d MATCH %s COUNT %d"
 
 #define SET_DEFAULT_DATABASE "SELECT "
+#define REDIS_FLUSHDB "FLUSHDB"
 
 #define CHANGE_TTL_2ARGS_SI "EXPIRE %s %d"
 #define PERSIST_KEY_1ARGS_S "PERSIST %s"
@@ -731,6 +732,23 @@ void RedisDriver::handleLoadDatabaseContentEvent(events::LoadDatabaseContentRequ
 done:
   notifyProgress(sender, 75);
   reply(sender, new events::LoadDatabaseContentResponceEvent(this, res));
+  notifyProgress(sender, 100);
+}
+
+void RedisDriver::handleClearDatabaseEvent(events::ClearDatabaseRequestEvent* ev) {
+  QObject* sender = ev->sender();
+  notifyProgress(sender, 0);
+  events::ClearDatabaseResponceEvent::value_type res(ev->value());
+  FastoObjectIPtr root = FastoObject::createRoot(REDIS_FLUSHDB);
+  notifyProgress(sender, 50);
+  FastoObjectCommand* cmd = createCommand<RedisCommand>(root, REDIS_FLUSHDB,
+                                                        common::Value::C_INNER);
+  common::Error er = execute(cmd);
+  if (er && er->isError()) {
+    res.setErrorInfo(er);
+  }
+  notifyProgress(sender, 75);
+  reply(sender, new events::ClearDatabaseResponceEvent(this, res));
   notifyProgress(sender, 100);
 }
 

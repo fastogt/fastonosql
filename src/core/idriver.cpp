@@ -303,6 +303,9 @@ void IDriver::customEvent(QEvent *event) {
   } else if (type == static_cast<QEvent::Type>(LoadDatabaseContentRequestEvent::EventType)) {
     LoadDatabaseContentRequestEvent *ev = static_cast<LoadDatabaseContentRequestEvent*>(event);
     handleLoadDatabaseContentEvent(ev);
+  } else if (type == static_cast<QEvent::Type>(ClearDatabaseRequestEvent::EventType)) {
+    ClearDatabaseRequestEvent *ev = static_cast<ClearDatabaseRequestEvent*>(event);
+    handleClearDatabaseEvent(ev);
   } else if (type == static_cast<QEvent::Type>(SetDefaultDatabaseRequestEvent::EventType)) {
     SetDefaultDatabaseRequestEvent *ev = static_cast<SetDefaultDatabaseRequestEvent*>(event);
     handleSetDefaultDatabaseEvent(ev);
@@ -389,6 +392,10 @@ void IDriver::handleChangePasswordEvent(events::ChangePasswordRequestEvent* ev) 
 
 void IDriver::handleChangeMaxConnectionEvent(events::ChangeMaxConnectionRequestEvent* ev) {
   replyNotImplementedYet<events::ChangeMaxConnectionRequestEvent, events::ChangeMaxConnectionResponceEvent>(this, ev, "change maximum connection command");
+}
+
+void IDriver::handleClearDatabaseEvent(events::ClearDatabaseRequestEvent* ev) {
+  replyNotImplementedYet<events::ClearDatabaseRequestEvent, events::ClearDatabaseResponceEvent>(this, ev, "clear database command");
 }
 
 IDriver::RootLocker::RootLocker(IDriver* parent, QObject* receiver, const std::string& text)

@@ -56,7 +56,7 @@ void IDatabase::loadContent(const events_info::LoadDatabaseContentRequest& req) 
 
 void IDatabase::setDefault(const events_info::SetDefaultDatabaseRequest& req) {
   DCHECK(req.inf == info_);
-  server_->setDefaultDb(req);
+  server_->setDefaultDB(req);
 }
 
 IDataBaseInfoSPtr IDatabase::info() const {
@@ -70,6 +70,11 @@ void IDatabase::setInfo(IDataBaseInfoSPtr info) {
 void IDatabase::executeCommand(const events_info::CommandRequest& req) {
   DCHECK(req.inf == info_);
   server_->executeCommand(req);
+}
+
+void IDatabase::removeAllKeys(const events_info::ClearDatabaseRequest& req) {
+  DCHECK(req.inf == info_);
+  server_->clearDB(req);
 }
 
 }  // namespace fastonosql

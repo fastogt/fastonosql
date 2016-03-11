@@ -63,6 +63,7 @@ class ExplorerTreeView
   void shutdownServer();
 
   void loadContentDb();
+  void removeAllKeys();
   void setDefaultDb();
   void createKey();
   void viewKeys();
@@ -77,6 +78,9 @@ class ExplorerTreeView
 
   void startLoadDatabaseContent(const events_info::LoadDatabaseContentRequest& req);
   void finishLoadDatabaseContent(const events_info::LoadDatabaseContentResponce& res);
+
+  void startClearDatabase(const events_info::ClearDatabaseRequest& req);
+  void finishClearDatabase(const events_info::ClearDatabaseResponce& res);
 
   void startExecuteCommand(const events_info::CommandRequest& req);
   void finishExecuteCommand(const events_info::CommandResponce& res);
@@ -96,6 +100,7 @@ class ExplorerTreeView
   QAction* openConsoleAction_;
   QAction* loadDatabaseAction_;
   QAction* loadContentAction_;
+  QAction* removeAllKeysAction_;
   QAction* setDefaultDbAction_;
   QAction* createKeyAction_;
   QAction* viewKeysAction_;

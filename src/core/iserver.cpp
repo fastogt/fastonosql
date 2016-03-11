@@ -139,9 +139,15 @@ void IServer::loadDatabaseContent(const events_info::LoadDatabaseContentRequest&
   notify(ev);
 }
 
-void IServer::setDefaultDb(const events_info::SetDefaultDatabaseRequest& req) {
+void IServer::setDefaultDB(const events_info::SetDefaultDatabaseRequest& req) {
   emit startedSetDefaultDatabase(req);
   QEvent *ev = new events::SetDefaultDatabaseRequestEvent(this, req);
+  notify(ev);
+}
+
+void IServer::clearDB(const events_info::ClearDatabaseRequest &req) {
+  emit startedClearDatabase(req);
+  QEvent *ev = new events::ClearDatabaseRequestEvent(this, req);
   notify(ev);
 }
 
@@ -283,6 +289,9 @@ void IServer::customEvent(QEvent *event) {
   } else if (type == static_cast<QEvent::Type>(LoadDatabaseContentResponceEvent::EventType)) {
     LoadDatabaseContentResponceEvent *ev = static_cast<LoadDatabaseContentResponceEvent*>(event);
     handleLoadDatabaseContentEvent(ev);
+  } else if (type == static_cast<QEvent::Type>(ClearDatabaseResponceEvent::EventType)) {
+    ClearDatabaseResponceEvent *ev = static_cast<ClearDatabaseResponceEvent*>(event);
+    handleClearDatabaseResponceEvent(ev);
   } else if (type == static_cast<QEvent::Type>(SetDefaultDatabaseResponceEvent::EventType)) {
     SetDefaultDatabaseResponceEvent *ev = static_cast<SetDefaultDatabaseResponceEvent*>(event);
     handleSetDefaultDatabaseEvent(ev);
@@ -446,6 +455,20 @@ void IServer::handleLoadDatabaseContentEvent(events::LoadDatabaseContentResponce
   }
 
   emit finishedLoadDatabaseContent(v);
+}
+
+void IServer::handleClearDatabaseResponceEvent(events::ClearDatabaseResponceEvent* ev) {
+  auto v = ev->value();
+  common::Error er = v.errorInfo();
+  if (er && er->isError()) {
+    LOG_ERROR(er, true);
+  } else {
+    if (containsDatabase(v.inf)) {
+      v.inf->clearKeys();
+    }
+  }
+
+  emit finishedClearDatabase(v);
 }
 
 void IServer::handleEnterModeEvent(events::EnterModeEvent* ev) {

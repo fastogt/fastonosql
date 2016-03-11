@@ -99,6 +99,7 @@ class IDriver
   virtual void handleLoadDatabaseInfosEvent(events::LoadDatabasesInfoRequestEvent* ev);
 
   virtual void handleLoadDatabaseContentEvent(events::LoadDatabaseContentRequestEvent* ev) = 0;
+  virtual void handleClearDatabaseEvent(events::ClearDatabaseRequestEvent* ev);
 
   // nothing because currentDatabaseInfo return only 1 db
   virtual void handleSetDefaultDatabaseEvent(events::SetDefaultDatabaseRequestEvent* ev);

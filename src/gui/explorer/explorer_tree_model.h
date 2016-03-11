@@ -103,6 +103,7 @@ struct ExplorerDatabaseItem
   void loadValue(const NDbKValue& key);
   void createKey(const NDbKValue& key);
 
+  void removeAllKeys();
  private:
   const IDatabaseSPtr db_;
 };
@@ -152,6 +153,7 @@ class ExplorerTreeModel
 
   void addKey(IServer* server, IDataBaseInfoSPtr db, const NDbKValue &dbv);
   void removeKey(IServer* server, IDataBaseInfoSPtr db, const NDbKValue &key);
+  void removeAllKeys(IServer* server, IDataBaseInfoSPtr db);
 
  private:
   ExplorerClusterItem* findClusterItem(IClusterSPtr cl);

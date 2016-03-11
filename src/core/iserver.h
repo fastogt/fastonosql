@@ -117,6 +117,9 @@ class IServer
   void startedSetDefaultDatabase(const events_info::SetDefaultDatabaseRequest& req);
   void finishedSetDefaultDatabase(const events_info::SetDefaultDatabaseResponce& res);
 
+  void startedClearDatabase(const events_info::ClearDatabaseRequest& req);
+  void finishedClearDatabase(const events_info::ClearDatabaseResponce& res);
+
   void startedExecuteCommand(const events_info::CommandRequest& req);
   void finishedExecuteCommand(const events_info::CommandResponce& res);
 
@@ -134,7 +137,8 @@ class IServer
   void disconnect(const events_info::DisConnectInfoRequest &req);  // signals: startedDisconnect, finishedDisconnect
   void loadDatabases(const events_info::LoadDatabasesInfoRequest &req);  // signals: startedLoadDatabases, finishedLoadDatabases
   void loadDatabaseContent(const events_info::LoadDatabaseContentRequest &req);  // signals: startedLoadDataBaseContent, finishedLoadDatabaseContent
-  void setDefaultDb(const events_info::SetDefaultDatabaseRequest &req);  // signals: startedSetDefaultDatabase, finishedSetDefaultDatabase
+  void setDefaultDB(const events_info::SetDefaultDatabaseRequest &req);  // signals: startedSetDefaultDatabase, finishedSetDefaultDatabase
+  void clearDB(const events_info::ClearDatabaseRequest &req);  // signals: startedClearDatabase, finishedClearDatabase
   void execute(const events_info::ExecuteInfoRequest &req);  // signals: startedExecute
   void executeCommand(const events_info::CommandRequest &req);  // signals: startedExecuteCommand, finishedExecuteCommand
   void shutDown(const events_info::ShutDownInfoRequest &req);  // signals: startedShutdown, finishedShutdown
@@ -172,6 +176,7 @@ class IServer
   // handle database events
   virtual void handleLoadDatabaseInfosEvent(events::LoadDatabasesInfoResponceEvent* ev);
   virtual void handleLoadDatabaseContentEvent(events::LoadDatabaseContentResponceEvent* ev);
+  virtual void handleClearDatabaseResponceEvent(events::ClearDatabaseResponceEvent* ev);
   virtual void handleSetDefaultDatabaseEvent(events::SetDefaultDatabaseResponceEvent* ev);
 
   // handle command events

@@ -1,6 +1,7 @@
 0.5.9
 [Alexandr Topilski]
 - Server roles
+- Clear database
 
 0.5.8 / Fabruary 20, 2016
 [Alexandr Topilski]

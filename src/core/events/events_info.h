@@ -248,6 +248,20 @@ struct LoadDatabaseContentResponce
   uint32_t cursor_out;
 };
 
+struct ClearDatabaseRequest
+  : public EventInfoBase {
+  typedef EventInfoBase base_class;
+  ClearDatabaseRequest(initiator_type sender, IDataBaseInfoSPtr inf, error_type er = error_type());
+
+  IDataBaseInfoSPtr inf;
+};
+
+struct ClearDatabaseResponce
+  : ClearDatabaseRequest {
+  typedef ClearDatabaseRequest base_class;
+  explicit ClearDatabaseResponce(const base_class& request);
+};
+
 struct SetDefaultDatabaseRequest
   : public EventInfoBase {
   typedef EventInfoBase base_class;

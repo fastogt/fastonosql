@@ -185,6 +185,14 @@ void ExplorerDatabaseItem::createKey(const NDbKValue &key) {
   }
 }
 
+void ExplorerDatabaseItem::removeAllKeys() {
+  IDatabaseSPtr dbs = db();
+  if (dbs) {
+    events_info::ClearDatabaseRequest req(this, dbs->info());
+    dbs->removeAllKeys(req);
+  }
+}
+
 ExplorerKeyItem::ExplorerKeyItem(const NDbKValue& key, ExplorerDatabaseItem* parent)
     : IExplorerTreeItem(parent), key_(key) {
 }
@@ -509,6 +517,21 @@ void ExplorerTreeModel::removeKey(IServer* server, IDataBaseInfoSPtr db, const N
     QModelIndex parentdb = createIndex(parent->indexOf(dbs), 0, dbs);
     removeItem(parentdb, keyit);
   }
+}
+
+void ExplorerTreeModel::removeAllKeys(IServer* server, IDataBaseInfoSPtr db) {
+  ExplorerServerItem *parent = findServerItem(server);
+  if (!parent) {
+    return;
+  }
+
+  ExplorerDatabaseItem *dbs = findDatabaseItem(parent, db);
+  if (!dbs) {
+    return;
+  }
+
+  QModelIndex parentdb = createIndex(parent->indexOf(dbs), 0, dbs);
+  removeAllItems(parentdb);
 }
 
 ExplorerClusterItem* ExplorerTreeModel::findClusterItem(IClusterSPtr cl) {

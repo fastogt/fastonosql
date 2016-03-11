@@ -42,7 +42,7 @@ class IDatabase {
   void setInfo(IDataBaseInfoSPtr info);
 
   void executeCommand(const events_info::CommandRequest& req);
-
+  void removeAllKeys(const events_info::ClearDatabaseRequest& req);
  protected:
   IDatabase(IServerSPtr server, IDataBaseInfoSPtr info);
 

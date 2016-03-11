@@ -107,6 +107,9 @@ ExplorerTreeView::ExplorerTreeView(QWidget* parent)
   loadContentAction_ = new QAction(this);
   VERIFY(connect(loadContentAction_, &QAction::triggered, this, &ExplorerTreeView::loadContentDb));
 
+  removeAllKeysAction_ = new QAction(this);
+  VERIFY(connect(removeAllKeysAction_, &QAction::triggered, this, &ExplorerTreeView::removeAllKeys));
+
   setDefaultDbAction_ = new QAction(this);
   VERIFY(connect(setDefaultDbAction_, &QAction::triggered, this, &ExplorerTreeView::setDefaultDb));
 
@@ -270,9 +273,11 @@ void ExplorerTreeView::showContextMenu(const QPoint& point) {
       menu.addAction(createKeyAction_);
       createKeyAction_->setEnabled(isDefault);
 
-      if (isDefault) {
-        menu.addAction(viewKeysAction_);
-      }
+      menu.addAction(viewKeysAction_);
+      viewKeysAction_->setEnabled(isDefault);
+
+      menu.addAction(removeAllKeysAction_);
+      removeAllKeysAction_->setEnabled(isDefault);
 
       menu.addAction(setDefaultDbAction_);
       setDefaultDbAction_->setEnabled(!isDefault);
@@ -586,6 +591,26 @@ void ExplorerTreeView::loadContentDb() {
   }
 }
 
+void ExplorerTreeView::removeAllKeys() {
+  QModelIndex sel = selectedIndex();
+  if (!sel.isValid()) {
+    return;
+  }
+
+  ExplorerDatabaseItem *node = common::utils_qt::item<ExplorerDatabaseItem*>(sel);
+  if (node) {
+    int answer = QMessageBox::question(this, "Clear database",
+                                       QString("Really remove all keys from %1 database?").arg(node->name()),
+                                       QMessageBox::Yes, QMessageBox::No, QMessageBox::NoButton);
+
+    if (answer != QMessageBox::Yes) {
+      return;
+    }
+
+    node->removeAllKeys();
+  }
+}
+
 void ExplorerTreeView::setDefaultDb() {
   QModelIndex sel = selectedIndex();
   if (!sel.isValid()) {
@@ -736,6 +761,31 @@ void ExplorerTreeView::finishLoadDatabaseContent(const events_info::LoadDatabase
   }
 }
 
+void ExplorerTreeView::startClearDatabase(const events_info::ClearDatabaseRequest& req) {
+
+}
+
+void ExplorerTreeView::finishClearDatabase(const events_info::ClearDatabaseResponce& res) {
+  common::Error er = res.errorInfo();
+  if (er && er->isError()) {
+    return;
+  }
+
+  IServer *serv = qobject_cast<IServer *>(sender());
+  DCHECK(serv);
+  if (!serv) {
+    return;
+  }
+
+  ExplorerTreeModel *mod = qobject_cast<ExplorerTreeModel*>(model());
+  DCHECK(mod);
+  if (!mod) {
+    return;
+  }
+
+  mod->removeAllKeys(serv, res.inf);
+}
+
 void ExplorerTreeView::startExecuteCommand(const events_info::CommandRequest& req) {
 }
 
@@ -799,6 +849,10 @@ void ExplorerTreeView::syncWithServer(IServer* server) {
                  this, &ExplorerTreeView::startLoadDatabaseContent));
   VERIFY(connect(server, &IServer::finishedLoadDatabaseContent,
                  this, &ExplorerTreeView::finishLoadDatabaseContent));
+  VERIFY(connect(server, &IServer::startedClearDatabase,
+                 this, &ExplorerTreeView::startClearDatabase));
+  VERIFY(connect(server, &IServer::finishedClearDatabase,
+                 this, &ExplorerTreeView::finishClearDatabase));
   VERIFY(connect(server, &IServer::startedExecuteCommand,
                  this, &ExplorerTreeView::startExecuteCommand));
   VERIFY(connect(server, &IServer::finishedExecuteCommand,
@@ -845,6 +899,7 @@ void ExplorerTreeView::retranslateUi() {
   shutdownAction_->setText(translations::trShutdown);
 
   loadContentAction_->setText(translations::trLoadContOfDataBases);
+  removeAllKeysAction_->setText(translations::trRemoveAllKeys);
   createKeyAction_->setText(translations::trCreateKey);
   viewKeysAction_->setText(translations::trViewKeysDialog);
   setDefaultDbAction_->setText(translations::trSetDefault);

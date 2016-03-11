@@ -77,6 +77,7 @@ class RedisDriver
                                              std::string* cmdstring) const WARN_UNUSED_RESULT;
 
   virtual void handleLoadDatabaseContentEvent(events::LoadDatabaseContentRequestEvent* ev);
+  virtual void handleClearDatabaseEvent(events::ClearDatabaseRequestEvent* ev);
   virtual void handleSetDefaultDatabaseEvent(events::SetDefaultDatabaseRequestEvent* ev);
 
   virtual void handleCommandRequestEvent(events::CommandRequestEvent* ev);
