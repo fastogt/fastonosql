@@ -53,7 +53,6 @@ class LeveldbDriver
   virtual void handleExecuteEvent(events::ExecuteRequestEvent* ev);
   virtual void handleProcessCommandLineArgs(events::ProcessConfigArgsRequestEvent* ev);
 
-  // ============== commands =============//
   virtual common::Error commandDeleteImpl(CommandDeleteKey* command,
                                           std::string* cmdstring) const WARN_UNUSED_RESULT;
   virtual common::Error commandLoadImpl(CommandLoadKey* command,
@@ -62,14 +61,11 @@ class LeveldbDriver
                                           std::string* cmdstring) const WARN_UNUSED_RESULT;
   virtual common::Error commandChangeTTLImpl(CommandChangeTTL* command,
                                              std::string* cmdstring) const WARN_UNUSED_RESULT;
-  // ============== commands =============//
 
-  // ============== database =============//
   virtual void handleLoadDatabaseContentEvent(events::LoadDatabaseContentRequestEvent* ev);
-  // ============== database =============//
-  // ============== command =============//
+  virtual void handleClearDatabaseEvent(events::ClearDatabaseRequestEvent* ev);
+
   virtual void handleCommandRequestEvent(events::CommandRequestEvent* ev);
-  // ============== command =============//
   IServerInfoSPtr makeServerInfoFromString(const std::string& val);
 
   LeveldbRaw* const impl_;

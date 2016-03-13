@@ -330,6 +330,20 @@ done:
   notifyProgress(sender, 100);
 }
 
+void RocksdbDriver::handleClearDatabaseEvent(events::ClearDatabaseRequestEvent* ev) {
+  QObject* sender = ev->sender();
+  notifyProgress(sender, 0);
+  events::ClearDatabaseResponceEvent::value_type res(ev->value());
+  notifyProgress(sender, 50);
+  common::Error er = impl_->flushdb();
+  if (er && er->isError()) {
+    res.setErrorInfo(er);
+  }
+  notifyProgress(sender, 75);
+  reply(sender, new events::ClearDatabaseResponceEvent(this, res));
+  notifyProgress(sender, 100);
+}
+
 void RocksdbDriver::handleProcessCommandLineArgs(events::ProcessConfigArgsRequestEvent* ev) {
 }
 

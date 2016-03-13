@@ -52,13 +52,16 @@ struct LmdbRaw
   MDB_dbi curDb() const;
 
   common::Error info(const char* args, LmdbServerInfo::Stats* statsout);
-  common::Error dbsize(size_t* size);
   common::Error get(const std::string& key, std::string* ret_val);
   common::Error put(const std::string& key, const std::string& value);
   common::Error del(const std::string& key);
   common::Error keys(const std::string& key_start, const std::string& key_end, uint64_t limit,
                      std::vector<std::string>* ret);
+
+  // extended api
+  common::Error dbsize(size_t* size);
   common::Error help(int argc, char** argv);
+  common::Error flushdb();
 
   LmdbConfig config_;
  private:
@@ -66,12 +69,14 @@ struct LmdbRaw
 };
 
 common::Error info(CommandHandler* handler, int argc, char** argv, FastoObject* out);
-common::Error dbsize(CommandHandler* handler, int argc, char** argv, FastoObject* out);
 common::Error get(CommandHandler* handler, int argc, char** argv, FastoObject* out);
 common::Error put(CommandHandler* handler, int argc, char** argv, FastoObject* out);
 common::Error del(CommandHandler* handler, int argc, char** argv, FastoObject* out);
 common::Error keys(CommandHandler* handler, int argc, char** argv, FastoObject* out);
+
+common::Error dbsize(CommandHandler* handler, int argc, char** argv, FastoObject* out);
 common::Error help(CommandHandler* handler, int argc, char** argv, FastoObject* out);
+common::Error flushdb(CommandHandler* handler, int argc, char** argv, FastoObject* out);
 
 static const std::vector<CommandHolder> lmdbCommands = {
   CommandHolder("PUT", "<key> <value>",
@@ -90,12 +95,16 @@ static const std::vector<CommandHolder> lmdbCommands = {
               "These command return database information.",
               UNDEFINED_SINCE, UNDEFINED_EXAMPLE_STR, 1, 0, &info),
 
+  // extended commands
   CommandHolder("DBSIZE", "-",
               "Return the number of keys in the selected database",
               UNDEFINED_SINCE, UNDEFINED_EXAMPLE_STR, 0, 0, &dbsize),
   CommandHolder("HELP", "<command>",
               "Return how to use command",
-              UNDEFINED_SINCE, UNDEFINED_EXAMPLE_STR, 0, 1, &help)
+              UNDEFINED_SINCE, UNDEFINED_EXAMPLE_STR, 0, 1, &help),
+  CommandHolder("FLUSHDB", "-",
+              "Remove all keys from the current database",
+              UNDEFINED_SINCE, UNDEFINED_EXAMPLE_STR, 0, 1, &flushdb)
 };
 
 }  // namespace lmdb

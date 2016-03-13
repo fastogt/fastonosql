@@ -267,6 +267,31 @@ common::Error LeveldbRaw::help(int argc, char** argv) {
   return notSupported("HELP");
 }
 
+common::Error LeveldbRaw::flushdb() {
+  ::leveldb::ReadOptions ro;
+  ::leveldb::WriteOptions wo;
+  ::leveldb::Iterator* it = leveldb_->NewIterator(ro);
+  for (it->SeekToFirst(); it->Valid(); it->Next()) {
+    std::string key = it->key().ToString();
+    auto st = leveldb_->Delete(wo, key);
+    if (!st.ok()) {
+      delete it;
+      std::string buff = common::MemSPrintf("del function error: %s", st.ToString());
+      return common::make_error_value(buff, common::ErrorValue::E_ERROR);
+    }
+  }
+
+  auto st = it->status();
+  delete it;
+
+  if (!st.ok()) {
+    char buff[1024] = {0};
+    common::SNPrintf(buff, sizeof(buff), "Keys function error: %s", st.ToString());
+    return common::make_error_value(buff, common::ErrorValue::E_ERROR);
+  }
+  return common::Error();
+}
+
 common::Error dbsize(CommandHandler* handler, int argc, char** argv, FastoObject* out) {
   LeveldbRaw* level = static_cast<LeveldbRaw*>(handler);
 
@@ -351,6 +376,11 @@ common::Error keys(CommandHandler* handler, int argc, char** argv, FastoObject* 
 common::Error help(CommandHandler* handler, int argc, char** argv, FastoObject* out) {
   LeveldbRaw* level = static_cast<LeveldbRaw*>(handler);
   return level->help(argc - 1, argv + 1);
+}
+
+common::Error flushdb(CommandHandler* handler, int argc, char** argv, FastoObject* out) {
+  LeveldbRaw* level = static_cast<LeveldbRaw*>(handler);
+  return level->flushdb();
 }
 
 }  // namespace leveldb

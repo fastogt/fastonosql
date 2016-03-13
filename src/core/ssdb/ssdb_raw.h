@@ -41,7 +41,6 @@ struct SsdbRaw
   common::Error disconnect();
 
   common::Error info(const char* args, SsdbServerInfo::Common* statsout);
-  common::Error dbsize(size_t* size);
   common::Error auth(const std::string& password);
   common::Error get(const std::string& key, std::string* ret_val);
   common::Error set(const std::string& key, const std::string& value);
@@ -106,7 +105,11 @@ struct SsdbRaw
   common::Error qslice(const std::string& name, int64_t begin, int64_t end,
                        std::vector<std::string> *ret);
   common::Error qclear(const std::string& name, int64_t *ret);
+
+  // extended api
+  common::Error dbsize(size_t* size);
   common::Error help(int argc, char** argv);
+  common::Error flushdb();
 
   SsdbConfig config_;
   SSHInfo sinfo_;
@@ -115,7 +118,6 @@ struct SsdbRaw
 };
 
 common::Error info(CommandHandler* handler, int argc, char** argv, FastoObject* out);
-common::Error dbsize(CommandHandler* handler, int argc, char** argv, FastoObject* out);
 common::Error auth(CommandHandler* handler, int argc, char** argv, FastoObject* out);
 common::Error get(CommandHandler* handler, int argc, char** argv, FastoObject* out);
 common::Error set(CommandHandler* handler, int argc, char** argv, FastoObject* out);
@@ -159,7 +161,10 @@ common::Error qpush(CommandHandler* handler, int argc, char** argv, FastoObject*
 common::Error qpop(CommandHandler* handler, int argc, char** argv, FastoObject* out);
 common::Error qslice(CommandHandler* handler, int argc, char** argv, FastoObject* out);
 common::Error qclear(CommandHandler* handler, int argc, char** argv, FastoObject* out);
+
+common::Error dbsize(CommandHandler* handler, int argc, char** argv, FastoObject* out);
 common::Error help(CommandHandler* handler, int argc, char** argv, FastoObject* out);
+common::Error flushdb(CommandHandler* handler, int argc, char** argv, FastoObject* out);
 
 // TODO: SETNX command imlementation
 static const std::vector<CommandHolder> ssdbCommands = {
@@ -312,7 +317,10 @@ static const std::vector<CommandHolder> ssdbCommands = {
               UNDEFINED_SINCE, UNDEFINED_EXAMPLE_STR, 0, 0, &dbsize),
   CommandHolder("HELP", "<command>",
               "Return how to use command",
-              UNDEFINED_SINCE, UNDEFINED_EXAMPLE_STR, 0, 1, &help)
+              UNDEFINED_SINCE, UNDEFINED_EXAMPLE_STR, 0, 1, &help),
+  CommandHolder("FLUSHDB", "-",
+              "Remove all keys from the current database",
+              UNDEFINED_SINCE, UNDEFINED_EXAMPLE_STR, 0, 1, &flushdb)
 };
 
 }  // namespace ssdb

@@ -622,6 +622,26 @@ common::Error SsdbRaw::help(int argc, char** argv) {
   return notSupported("HELP");
 }
 
+common::Error SsdbRaw::flushdb() {
+  std::vector<std::string> ret;
+  auto st = ssdb_->keys(std::string(), std::string(), 0, &ret);
+  if (st.error()) {
+    char buff[1024] = {0};
+    common::SNPrintf(buff, sizeof(buff), "Flushdb function error: %s", st.code());
+    return common::make_error_value(buff, common::ErrorValue::E_ERROR);
+  }
+
+  for (size_t i = 0; i < ret.size(); ++i) {
+    std::string key = ret[i];
+    common::Error err = del(key);
+    if (err && err->isError()) {
+      return err;
+    }
+  }
+
+  return common::Error();
+}
+
 common::Error info(CommandHandler* handler, int argc, char** argv, FastoObject* out) {
   SsdbRaw* ssdb = static_cast<SsdbRaw*>(handler);
   SsdbServerInfo::Common statsout;
@@ -1306,6 +1326,12 @@ common::Error help(CommandHandler* handler, int argc, char** argv, FastoObject* 
   SsdbRaw* ssdb = static_cast<SsdbRaw*>(handler);
   return ssdb->help(argc - 1, argv + 1);
 }
+
+common::Error flushdb(CommandHandler* handler, int argc, char** argv, FastoObject* out) {
+  SsdbRaw* ssdb = static_cast<SsdbRaw*>(handler);
+  return ssdb->flushdb();
+}
+
 
 }  // namespace ssdb
 }  // namespace fastonosql

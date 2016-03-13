@@ -271,9 +271,9 @@ common::Error LmdbRaw::put(const std::string& key, const std::string& value) {
   if (rc == LMDB_OK) {
     rc = mdb_put(txn, lmdb_->dbir, &mkey, &mval, 0);
     if (rc == LMDB_OK) {
-        rc = mdb_txn_commit(txn);
+      rc = mdb_txn_commit(txn);
     } else {
-        mdb_txn_abort(txn);
+      mdb_txn_abort(txn);
     }
   }
 
@@ -335,15 +335,59 @@ common::Error LmdbRaw::keys(const std::string& key_start, const std::string& key
       ret->push_back(skey);
     }
   }
+
   mdb_cursor_close(cursor);
   mdb_txn_abort(txn);
-
   return common::Error();
 }
 
 common::Error LmdbRaw::help(int argc, char** argv) {
   return notSupported("HELP");
 }
+
+common::Error LmdbRaw::flushdb() {
+  MDB_cursor *cursor;
+  MDB_txn *txn = NULL;
+  int rc = mdb_txn_begin(lmdb_->env, NULL, 0, &txn);
+  if (rc == LMDB_OK) {
+    rc = mdb_cursor_open(txn, lmdb_->dbir, &cursor);
+  }
+
+  if (rc != LMDB_OK) {
+    mdb_txn_abort(txn);
+    char buff[1024] = {0};
+    common::SNPrintf(buff, sizeof(buff), "flushdb function error: %s", mdb_strerror(rc));
+    return common::make_error_value(buff, common::ErrorValue::E_ERROR);
+  }
+
+  MDB_val key;
+  MDB_val data;
+  size_t sz = 0;
+  while (mdb_cursor_get(cursor, &key, &data, MDB_NEXT) == LMDB_OK) {
+    sz++;
+    rc = mdb_del(txn, lmdb_->dbir, &key, NULL);
+    if (rc != LMDB_OK) {
+      mdb_cursor_close(cursor);
+      mdb_txn_abort(txn);
+      std::string buff = common::MemSPrintf("del function error: %s", mdb_strerror(rc));
+      return common::make_error_value(buff, common::ErrorValue::E_ERROR);
+    }
+  }
+
+  mdb_cursor_close(cursor);
+  if (sz != 0) {
+    rc = mdb_txn_commit(txn);
+    if (rc != LMDB_OK) {
+      std::string buff = common::MemSPrintf("commit function error: %s", mdb_strerror(rc));
+      return common::make_error_value(buff, common::ErrorValue::E_ERROR);
+    }
+    return common::Error();
+  }
+
+  mdb_txn_abort(txn);
+  return common::Error();
+}
+
 
 common::Error info(CommandHandler* handler, int argc, char** argv, FastoObject* out) {
   LmdbRaw* mdb = static_cast<LmdbRaw*>(handler);
@@ -428,6 +472,11 @@ common::Error keys(CommandHandler* handler, int argc, char** argv, FastoObject* 
 common::Error help(CommandHandler* handler, int argc, char** argv, FastoObject* out) {
   LmdbRaw* mdb = static_cast<LmdbRaw*>(handler);
   return mdb->help(argc - 1, argv + 1);
+}
+
+common::Error flushdb(CommandHandler* handler, int argc, char** argv, FastoObject* out) {
+  LmdbRaw* mdb = static_cast<LmdbRaw*>(handler);
+  return mdb->flushdb();
 }
 
 }  // namespace lmdb

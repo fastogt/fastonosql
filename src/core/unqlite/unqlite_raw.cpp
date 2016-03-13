@@ -304,6 +304,34 @@ common::Error UnqliteRaw::help(int argc, char** argv) {
   return notSupported("HELP");
 }
 
+common::Error UnqliteRaw::flushdb() {
+  unqlite_kv_cursor *pCur; /* Cursor handle */
+  int rc = unqlite_kv_cursor_init(unqlite_, &pCur);
+  if (rc != UNQLITE_OK) {
+    char buff[1024] = {0};
+    common::SNPrintf(buff, sizeof(buff), "FlushDB function error: %s", unqlite_strerror(rc));
+    return common::make_error_value(buff, common::ErrorValue::E_ERROR);
+  }
+  /* Point to the first record */
+  unqlite_kv_cursor_first_entry(pCur);
+
+  /* Iterate over the entries */
+  while (unqlite_kv_cursor_valid_entry(pCur)) {
+    std::string key;
+    unqlite_kv_cursor_key_callback(pCur, unqlite_data_callback, &key);
+    common::Error err = del(key);
+    if (err && err->isError()) {
+      return err;
+    }
+    /* Point to the next entry */
+    unqlite_kv_cursor_next_entry(pCur);
+  }
+  /* Finally, Release our cursor */
+  unqlite_kv_cursor_release(unqlite_, pCur);
+
+  return common::Error();
+}
+
 common::Error put(CommandHandler* handler, int argc, char** argv, FastoObject* out) {
   UnqliteRaw* unq = static_cast<UnqliteRaw*>(handler);
   common::Error er = unq->put(argv[0], argv[1]);
@@ -389,6 +417,12 @@ common::Error help(CommandHandler* handler, int argc, char** argv, FastoObject* 
   UnqliteRaw* unq = static_cast<UnqliteRaw*>(handler);
   return unq->help(argc - 1, argv + 1);
 }
+
+common::Error flushdb(CommandHandler* handler, int argc, char** argv, FastoObject* out) {
+  UnqliteRaw* unq = static_cast<UnqliteRaw*>(handler);
+  return unq->flushdb();
+}
+
 
 }  // namespace unqlite
 }  // namespace fastonosql
