@@ -29,6 +29,7 @@
 #include <QHBoxLayout>
 #include <QPushButton>
 #include <QFontComboBox>
+#include <QEvent>
 
 #include "fasto/qt/gui/app_style.h"
 #include "fasto/qt/translations/translations.h"

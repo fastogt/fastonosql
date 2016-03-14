@@ -21,7 +21,6 @@
 #include <vector>
 #include <string>
 
-#include "core/core_fwd.h"
 #include "core/types.h"
 #include "common/qt/utils_qt.h"
 

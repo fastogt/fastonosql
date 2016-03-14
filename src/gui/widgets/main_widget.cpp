@@ -18,6 +18,8 @@
 
 #include "gui/widgets/main_widget.h"
 
+#include "core/iserver.h"
+
 #include "gui/shortcuts.h"
 
 #include "gui/main_tab_bar.h"

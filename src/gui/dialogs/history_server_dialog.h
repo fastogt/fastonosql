@@ -23,6 +23,7 @@
 class QComboBox;
 class QPushButton;
 
+#include "core/core_fwd.h"
 #include "core/events/events_info.h"
 
 namespace fasto {

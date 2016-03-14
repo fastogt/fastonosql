@@ -21,8 +21,7 @@
 #include <string>
 
 #include "core/core_fwd.h"
-
-#include "events/events_info.h"
+#include "core/events/events_info.h"
 
 namespace fastonosql {
 

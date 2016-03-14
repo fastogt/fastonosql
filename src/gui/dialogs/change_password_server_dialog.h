@@ -20,6 +20,7 @@
 
 #include <QDialog>
 
+#include "core/core_fwd.h"
 #include "core/events/events_info.h"
 
 class QLineEdit;

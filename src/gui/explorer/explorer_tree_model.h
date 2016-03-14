@@ -22,8 +22,8 @@
 
 #include "fasto/qt/gui/base/tree_model.h"
 
-#include "core/iserver.h"
-#include "core/idatabase.h"
+#include "core/core_fwd.h"
+#include "core/types.h"
 
 namespace fastonosql {
 struct IExplorerTreeItem

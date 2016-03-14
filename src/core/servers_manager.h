@@ -20,9 +20,12 @@
 
 #include <vector>
 
+#include <QObject>
+
 #include "common/patterns/singleton_pattern.h"
 
-#include "core/iserver.h"
+#include "core/types.h"
+#include "core/core_fwd.h"
 #include "core/connection_settings.h"
 
 namespace fastonosql {
@@ -51,7 +54,6 @@ class ServersManager
 
  private:
   ServersManager();
-  ~ServersManager();
 
   servers_container_t servers_;
 };

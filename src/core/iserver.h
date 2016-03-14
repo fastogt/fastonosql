@@ -21,6 +21,7 @@
 #include <string>
 #include <vector>
 
+#include "core/idatabase.h"
 #include "core/events/events.h"
 
 namespace fastonosql {

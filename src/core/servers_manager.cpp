@@ -64,9 +64,6 @@ ServersManager::ServersManager() {
   qRegisterMetaType<ServerInfoSnapShoot>("ServerInfoSnapShoot");
 }
 
-ServersManager::~ServersManager() {
-}
-
 ServersManager::server_t ServersManager::createServer(IConnectionSettingsBaseSPtr settings) {
   if (!settings) {
     NOTREACHED();

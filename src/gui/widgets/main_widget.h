@@ -20,7 +20,7 @@
 
 #include <QTabWidget>
 
-#include "core/iserver.h"
+#include "core/core_fwd.h"
 #include "core/connection_settings.h"
 
 namespace fastonosql {

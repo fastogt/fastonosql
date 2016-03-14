@@ -279,7 +279,7 @@ void SettingsManager::reloadFromPath(const std::string& path, bool merge) {
     }
   }
 
-  QStringList rconnections = settings.value(RCONNECTIONS, "").toStringList();
+  QStringList rconnections = settings.value(RCONNECTIONS).toStringList();
   for (QStringList::const_iterator it = rconnections.begin(); it != rconnections.end(); ++it) {
     QString string = *it;
     std::string encoded = common::convertToString(string);
@@ -303,8 +303,7 @@ void SettingsManager::load() {
 }
 
 void SettingsManager::save() {
-  QSettings settings(common::convertFromString<QString>(common::file_system::prepare_path(iniPath)),
-                     QSettings::IniFormat);
+  QSettings settings(common::convertFromString<QString>(settingsFilePath()), QSettings::IniFormat);
   DCHECK(settings.status() == QSettings::NoError);
 
   settings.setValue(STYLE, cur_style_);
