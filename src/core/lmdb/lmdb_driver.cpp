@@ -309,8 +309,7 @@ void LmdbDriver::handleLoadDatabaseContentEvent(events::LoadDatabaseContentReque
 
       for (size_t i = 0; i < ar->size(); ++i) {
         std::string key;
-        bool isok = ar->getString(i, &key);
-        if (isok) {
+        if (ar->getString(i, &key)) {
           NKey k(key);
           NDbKValue ress(k, NValue());
           res.keys.push_back(ress);

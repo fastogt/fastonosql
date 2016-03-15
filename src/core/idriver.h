@@ -85,8 +85,12 @@ class IDriver
   // handle server events
   virtual void handleConnectEvent(events::ConnectRequestEvent* ev) = 0;
   virtual void handleDisconnectEvent(events::DisconnectRequestEvent* ev) = 0;
+  virtual void handleProcessCommandLineArgs(events::ProcessConfigArgsRequestEvent* ev) = 0;
   virtual void handleExecuteEvent(events::ExecuteRequestEvent* ev) = 0;
-  virtual void handleLoadServerInfoEvent(events::ServerInfoRequestEvent* ev);  // call serverInfo
+  virtual void handleCommandRequestEvent(events::CommandRequestEvent* ev) = 0;
+
+  virtual void handleLoadDatabaseContentEvent(events::LoadDatabaseContentRequestEvent* ev) = 0;
+
   virtual void handleLoadServerPropertyEvent(events::ServerPropertyInfoRequestEvent* ev);
   virtual void handleServerPropertyChangeEvent(events::ChangeServerPropertyInfoRequestEvent* ev);
   virtual void handleShutdownEvent(events::ShutDownRequestEvent* ev);
@@ -94,18 +98,9 @@ class IDriver
   virtual void handleExportEvent(events::ExportRequestEvent* ev);
   virtual void handleChangePasswordEvent(events::ChangePasswordRequestEvent* ev);
   virtual void handleChangeMaxConnectionEvent(events::ChangeMaxConnectionRequestEvent* ev);
-
-  // call currentDatabaseInfo
-  virtual void handleLoadDatabaseInfosEvent(events::LoadDatabasesInfoRequestEvent* ev);
-
-  virtual void handleLoadDatabaseContentEvent(events::LoadDatabaseContentRequestEvent* ev) = 0;
+  virtual void handleLoadDatabaseInfosEvent(events::LoadDatabasesInfoRequestEvent* ev);  // call currentDatabaseInfo
   virtual void handleClearDatabaseEvent(events::ClearDatabaseRequestEvent* ev);
-
-  // nothing because currentDatabaseInfo return only 1 db
   virtual void handleSetDefaultDatabaseEvent(events::SetDefaultDatabaseRequestEvent* ev);
-
-  // handle command events
-  virtual void handleCommandRequestEvent(events::CommandRequestEvent* ev) = 0;
 
   const IConnectionSettingsBaseSPtr settings_;
   bool interrupt_;
@@ -130,15 +125,13 @@ class IDriver
   void setCurrentDatabaseInfo(IDataBaseInfo* inf);
 
   common::Error execute(FastoObjectCommand* cmd) WARN_UNUSED_RESULT;
-
  private:
-  virtual common::Error executeImpl(int argc, char **argv, FastoObject* out) = 0;
-
-  // handle info events
+  void handleLoadServerInfoEvent(events::ServerInfoRequestEvent* ev);  // call serverInfo
   void handleLoadServerInfoHistoryEvent(events::ServerInfoHistoryRequestEvent *ev);
   void handleDiscoveryInfoRequestEvent(events::DiscoveryInfoRequestEvent* ev);
-
   void handleClearServerHistoryRequestEvent(events::ClearServerHistoryRequestEvent *ev);
+
+  virtual common::Error executeImpl(int argc, char **argv, FastoObject* out) = 0;
 
   // notification of execute events
   virtual void addedChildren(FastoObject *child);
@@ -152,8 +145,6 @@ class IDriver
   virtual common::Error currentDataBaseInfo(IDataBaseInfo** info) = 0;
   virtual void initImpl() = 0;
   virtual void clearImpl() = 0;
-
-  virtual void handleProcessCommandLineArgs(events::ProcessConfigArgsRequestEvent* ev) = 0;
 
   // command impl methods
   virtual common::Error commandDeleteImpl(CommandDeleteKey* command,

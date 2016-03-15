@@ -44,7 +44,7 @@
 
 #define GET_KEYS_PATTERN_3ARGS_ISI "SCAN %d MATCH %s COUNT %d"
 
-#define SET_DEFAULT_DATABASE "SELECT "
+#define SET_DEFAULT_DATABASE_PATTERN_1ARGS_S "SELECT %s"
 #define REDIS_FLUSHDB "FLUSHDB"
 
 #define CHANGE_TTL_2ARGS_SI "EXPIRE %s %d"
@@ -707,8 +707,7 @@ void RedisDriver::handleLoadDatabaseContentEvent(events::LoadDatabaseContentRequ
             std::string typeRedis = type->toString();
             common::Value::Type ctype = convertFromStringRType(typeRedis);
             common::Value* emptyval = common::Value::createEmptyValueFromType(ctype);
-            common::ValueSPtr v = make_value(emptyval);
-            NValue val(v);
+            common::ValueSPtr val = make_value(emptyval);
             res.keys[i].setValue(val);
           }
         }
@@ -756,7 +755,8 @@ void RedisDriver::handleSetDefaultDatabaseEvent(events::SetDefaultDatabaseReques
   QObject* sender = ev->sender();
   notifyProgress(sender, 0);
   events::SetDefaultDatabaseResponceEvent::value_type res(ev->value());
-  std::string setDefCommand = SET_DEFAULT_DATABASE + res.inf->name();
+  std::string setDefCommand = common::MemSPrintf(SET_DEFAULT_DATABASE_PATTERN_1ARGS_S,
+                                                 res.inf->name());
   FastoObjectIPtr root = FastoObject::createRoot(setDefCommand);
   notifyProgress(sender, 50);
   FastoObjectCommand* cmd = createCommand<RedisCommand>(root, setDefCommand,

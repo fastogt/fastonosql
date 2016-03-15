@@ -44,8 +44,8 @@ class LogWidget
 
  private:
   void retranslateUi();
-  QTextEdit *const logTextEdit_;
-  QAction *clear_;
+  QTextEdit* const logTextEdit_;
+  QAction* clear_;
 };
 
 }  // namespace fastonosql

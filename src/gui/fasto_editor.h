@@ -136,7 +136,7 @@ class FastoEditorOutput
   void layoutChanged();
 
  private:
-  FastoHexEdit *editor_;
+  FastoHexEdit* editor_;
   QAbstractItemModel* model_;
   int view_method_;
   const QString delemitr_;

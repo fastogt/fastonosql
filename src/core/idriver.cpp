@@ -394,8 +394,24 @@ void IDriver::handleChangeMaxConnectionEvent(events::ChangeMaxConnectionRequestE
   replyNotImplementedYet<events::ChangeMaxConnectionRequestEvent, events::ChangeMaxConnectionResponceEvent>(this, ev, "change maximum connection command");
 }
 
+void IDriver::handleLoadDatabaseInfosEvent(events::LoadDatabasesInfoRequestEvent* ev) {
+  QObject* sender = ev->sender();
+  notifyProgress(sender, 0);
+  events::LoadDatabasesInfoResponceEvent::value_type res(ev->value());
+  notifyProgress(sender, 50);
+  IDataBaseInfoSPtr curdb = currentDatabaseInfo();
+  CHECK(curdb);
+  res.databases.push_back(curdb);
+  reply(sender, new events::LoadDatabasesInfoResponceEvent(this, res));
+  notifyProgress(sender, 100);
+}
+
 void IDriver::handleClearDatabaseEvent(events::ClearDatabaseRequestEvent* ev) {
   replyNotImplementedYet<events::ClearDatabaseRequestEvent, events::ClearDatabaseResponceEvent>(this, ev, "clear database command");
+}
+
+void IDriver::handleSetDefaultDatabaseEvent(events::SetDefaultDatabaseRequestEvent* ev) {
+  replyNotImplementedYet<events::SetDefaultDatabaseRequestEvent, events::SetDefaultDatabaseResponceEvent>(this, ev, "set default database command");
 }
 
 IDriver::RootLocker::RootLocker(IDriver* parent, QObject* receiver, const std::string& text)
@@ -430,27 +446,6 @@ void IDriver::handleLoadServerInfoEvent(events::ServerInfoRequestEvent* ev) {
   }
   notifyProgress(sender, 75);
   reply(sender, new events::ServerInfoResponceEvent(this, res));
-  notifyProgress(sender, 100);
-}
-
-void IDriver::handleLoadDatabaseInfosEvent(events::LoadDatabasesInfoRequestEvent* ev) {
-  QObject* sender = ev->sender();
-  notifyProgress(sender, 0);
-  events::LoadDatabasesInfoResponceEvent::value_type res(ev->value());
-  notifyProgress(sender, 50);
-  IDataBaseInfoSPtr curdb = currentDatabaseInfo();
-  CHECK(curdb);
-  res.databases.push_back(curdb);
-  reply(sender, new events::LoadDatabasesInfoResponceEvent(this, res));
-  notifyProgress(sender, 100);
-}
-
-void IDriver::handleSetDefaultDatabaseEvent(events::SetDefaultDatabaseRequestEvent* ev) {
-  QObject* sender = ev->sender();
-  notifyProgress(sender, 0);
-  events::SetDefaultDatabaseResponceEvent::value_type res(ev->value());
-  notifyProgress(sender, 50);
-  reply(sender, new events::SetDefaultDatabaseResponceEvent(this, res));
   notifyProgress(sender, 100);
 }
 

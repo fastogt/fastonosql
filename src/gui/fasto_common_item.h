@@ -47,8 +47,8 @@ class FastoCommonItem
 
  private:
   NDbKValue key_;
-  std::string delemitr_;
-  bool read_only_;
+  const std::string delemitr_;
+  const bool read_only_;
 };
 
 QString toJson(FastoCommonItem* item);
