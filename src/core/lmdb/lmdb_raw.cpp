@@ -234,31 +234,7 @@ common::Error LmdbRaw::dbsize(size_t* size) {
   return common::Error();
 }
 
-common::Error LmdbRaw::get(const std::string& key, std::string* ret_val) {
-  MDB_val mkey;
-  mkey.mv_size = key.size();
-  mkey.mv_data = (void*)key.c_str();
-  MDB_val mval;
-
-  MDB_txn *txn = NULL;
-  int rc = mdb_txn_begin(lmdb_->env, NULL, MDB_RDONLY, &txn);
-  if (rc == LMDB_OK) {
-    rc = mdb_get(txn, lmdb_->dbir, &mkey, &mval);
-  }
-  mdb_txn_abort(txn);
-
-  if (rc != LMDB_OK) {
-    char buff[1024] = {0};
-    common::SNPrintf(buff, sizeof(buff), "get function error: %s", mdb_strerror(rc));
-    return common::make_error_value(buff, common::ErrorValue::E_ERROR);
-  }
-
-  ret_val->assign((const char*)mval.mv_data, mval.mv_size);
-
-  return common::Error();
-}
-
-common::Error LmdbRaw::put(const std::string& key, const std::string& value) {
+common::Error LmdbRaw::set(const std::string& key, const std::string& value) {
   MDB_val mkey;
   mkey.mv_size = key.size();
   mkey.mv_data = (void*)key.c_str();
@@ -279,9 +255,33 @@ common::Error LmdbRaw::put(const std::string& key, const std::string& value) {
 
   if (rc != LMDB_OK) {
     char buff[1024] = {0};
-    common::SNPrintf(buff, sizeof(buff), "put function error: %s", mdb_strerror(rc));
+    common::SNPrintf(buff, sizeof(buff), "set function error: %s", mdb_strerror(rc));
     return common::make_error_value(buff, common::ErrorValue::E_ERROR);
   }
+
+  return common::Error();
+}
+
+common::Error LmdbRaw::get(const std::string& key, std::string* ret_val) {
+  MDB_val mkey;
+  mkey.mv_size = key.size();
+  mkey.mv_data = (void*)key.c_str();
+  MDB_val mval;
+
+  MDB_txn *txn = NULL;
+  int rc = mdb_txn_begin(lmdb_->env, NULL, MDB_RDONLY, &txn);
+  if (rc == LMDB_OK) {
+    rc = mdb_get(txn, lmdb_->dbir, &mkey, &mval);
+  }
+  mdb_txn_abort(txn);
+
+  if (rc != LMDB_OK) {
+    char buff[1024] = {0};
+    common::SNPrintf(buff, sizeof(buff), "get function error: %s", mdb_strerror(rc));
+    return common::make_error_value(buff, common::ErrorValue::E_ERROR);
+  }
+
+  ret_val->assign((const char*)mval.mv_data, mval.mv_size);
 
   return common::Error();
 }
@@ -415,12 +415,11 @@ common::Error dbsize(CommandHandler* handler, int argc, char** argv, FastoObject
   return er;
 }
 
-common::Error get(CommandHandler* handler, int argc, char** argv, FastoObject* out) {
+common::Error set(CommandHandler* handler, int argc, char** argv, FastoObject* out) {
   LmdbRaw* mdb = static_cast<LmdbRaw*>(handler);
-  std::string ret;
-  common::Error er = mdb->get(argv[0], &ret);
+  common::Error er = mdb->set(argv[0], argv[1]);
   if (!er) {
-    common::StringValue *val = common::Value::createStringValue(ret);
+    common::StringValue *val = common::Value::createStringValue("STORED");
     FastoObject* child = new FastoObject(out, val, mdb->config_.delimiter);
     out->addChildren(child);
   }
@@ -428,11 +427,12 @@ common::Error get(CommandHandler* handler, int argc, char** argv, FastoObject* o
   return er;
 }
 
-common::Error put(CommandHandler* handler, int argc, char** argv, FastoObject* out) {
+common::Error get(CommandHandler* handler, int argc, char** argv, FastoObject* out) {
   LmdbRaw* mdb = static_cast<LmdbRaw*>(handler);
-  common::Error er = mdb->put(argv[0], argv[1]);
+  std::string ret;
+  common::Error er = mdb->get(argv[0], &ret);
   if (!er) {
-    common::StringValue *val = common::Value::createStringValue("STORED");
+    common::StringValue *val = common::Value::createStringValue(ret);
     FastoObject* child = new FastoObject(out, val, mdb->config_.delimiter);
     out->addChildren(child);
   }

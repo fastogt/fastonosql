@@ -43,8 +43,8 @@ struct LeveldbRaw
   common::Error disconnect();
 
   common::Error info(const char* args, LeveldbServerInfo::Stats* statsout);
+  common::Error set(const std::string& key, const std::string& value);
   common::Error get(const std::string& key, std::string* ret_val);
-  common::Error put(const std::string& key, const std::string& value);
   common::Error del(const std::string& key);
   common::Error keys(const std::string& key_start, const std::string& key_end,
                      uint64_t limit, std::vector<std::string> *ret);
@@ -60,8 +60,8 @@ struct LeveldbRaw
 };
 
 common::Error info(CommandHandler* handler, int argc, char** argv, FastoObject* out);
+common::Error set(CommandHandler* handler, int argc, char** argv, FastoObject* out);
 common::Error get(CommandHandler* handler, int argc, char** argv, FastoObject* out);
-common::Error put(CommandHandler* handler, int argc, char** argv, FastoObject* out);
 common::Error del(CommandHandler* handler, int argc, char** argv, FastoObject* out);
 common::Error keys(CommandHandler* handler, int argc, char** argv, FastoObject* out);
 
@@ -70,9 +70,9 @@ common::Error help(CommandHandler* handler, int argc, char** argv, FastoObject* 
 common::Error flushdb(CommandHandler* handler, int argc, char** argv, FastoObject* out);
 
 static const std::vector<CommandHolder> leveldbCommands = {
-  CommandHolder("PUT", "<key> <value>",
+  CommandHolder("SET", "<key> <value>",
               "Set the value of a key.",
-              UNDEFINED_SINCE, UNDEFINED_EXAMPLE_STR, 2, 0, &put),
+              UNDEFINED_SINCE, UNDEFINED_EXAMPLE_STR, 2, 0, &set),
   CommandHolder("GET", "<key>",
               "Get the value of a key.",
               UNDEFINED_SINCE, UNDEFINED_EXAMPLE_STR, 1, 0, &get),

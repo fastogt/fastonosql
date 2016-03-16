@@ -204,24 +204,24 @@ common::Error LeveldbRaw::info(const char* args, LeveldbServerInfo::Stats* stats
   return common::Error();
 }
 
-common::Error LeveldbRaw::get(const std::string& key, std::string* ret_val) {
-  ::leveldb::ReadOptions ro;
-  auto st = leveldb_->Get(ro, key, ret_val);
+common::Error LeveldbRaw::set(const std::string& key, const std::string& value) {
+  ::leveldb::WriteOptions wo;
+  auto st = leveldb_->Put(wo, key, value);
   if (!st.ok()) {
     char buff[1024] = {0};
-    common::SNPrintf(buff, sizeof(buff), "get function error: %s", st.ToString());
+    common::SNPrintf(buff, sizeof(buff), "set function error: %s", st.ToString());
     return common::make_error_value(buff, common::ErrorValue::E_ERROR);
   }
 
   return common::Error();
 }
 
-common::Error LeveldbRaw::put(const std::string& key, const std::string& value) {
-  ::leveldb::WriteOptions wo;
-  auto st = leveldb_->Put(wo, key, value);
+common::Error LeveldbRaw::get(const std::string& key, std::string* ret_val) {
+  ::leveldb::ReadOptions ro;
+  auto st = leveldb_->Get(ro, key, ret_val);
   if (!st.ok()) {
     char buff[1024] = {0};
-    common::SNPrintf(buff, sizeof(buff), "put function error: %s", st.ToString());
+    common::SNPrintf(buff, sizeof(buff), "get function error: %s", st.ToString());
     return common::make_error_value(buff, common::ErrorValue::E_ERROR);
   }
 
@@ -319,6 +319,18 @@ common::Error info(CommandHandler* handler, int argc, char** argv, FastoObject* 
   return er;
 }
 
+common::Error set(CommandHandler* handler, int argc, char** argv, FastoObject* out) {
+  LeveldbRaw* level = static_cast<LeveldbRaw*>(handler);
+
+  common::Error er = level->set(argv[0], argv[1]);
+  if (!er) {
+    common::StringValue *val = common::Value::createStringValue("STORED");
+    FastoObject* child = new FastoObject(out, val, level->config_.delimiter);
+    out->addChildren(child);
+  }
+  return er;
+}
+
 common::Error get(CommandHandler* handler, int argc, char** argv, FastoObject* out) {
   LeveldbRaw* level = static_cast<LeveldbRaw*>(handler);
 
@@ -326,18 +338,6 @@ common::Error get(CommandHandler* handler, int argc, char** argv, FastoObject* o
   common::Error er = level->get(argv[0], &ret);
   if (!er) {
     common::StringValue *val = common::Value::createStringValue(ret);
-    FastoObject* child = new FastoObject(out, val, level->config_.delimiter);
-    out->addChildren(child);
-  }
-  return er;
-}
-
-common::Error put(CommandHandler* handler, int argc, char** argv, FastoObject* out) {
-  LeveldbRaw* level = static_cast<LeveldbRaw*>(handler);
-
-  common::Error er = level->put(argv[0], argv[1]);
-  if (!er) {
-    common::StringValue *val = common::Value::createStringValue("STORED");
     FastoObject* child = new FastoObject(out, val, level->config_.delimiter);
     out->addChildren(child);
   }

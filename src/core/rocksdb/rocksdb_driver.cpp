@@ -30,7 +30,7 @@
 
 #define INFO_REQUEST "INFO"
 #define GET_KEY_PATTERN_1ARGS_S "GET %s"
-#define SET_KEY_PATTERN_2ARGS_SS "PUT %s %s"
+#define SET_KEY_PATTERN_2ARGS_SS "SET %s %s"
 
 #define GET_KEYS_PATTERN_1ARGS_I "KEYS a z %d"
 #define DELETE_KEY_PATTERN_1ARGS_S "DEL %s"

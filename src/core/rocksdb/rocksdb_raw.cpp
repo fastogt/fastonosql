@@ -207,6 +207,18 @@ std::string RocksdbRaw::currentDbName() const {
   return "default";
 }
 
+common::Error RocksdbRaw::set(const std::string& key, const std::string& value) {
+  ::rocksdb::WriteOptions wo;
+  auto st = rocksdb_->Put(wo, key, value);
+  if (!st.ok()) {
+    char buff[1024] = {0};
+    common::SNPrintf(buff, sizeof(buff), "set function error: %s", st.ToString());
+    return common::make_error_value(buff, common::ErrorValue::E_ERROR);
+  }
+
+  return common::Error();
+}
+
 common::Error RocksdbRaw::get(const std::string& key, std::string* ret_val) {
   ::rocksdb::ReadOptions ro;
   auto st = rocksdb_->Get(ro, key, ret_val);
@@ -238,18 +250,6 @@ common::Error RocksdbRaw::merge(const std::string& key, const std::string& value
   if (!st.ok()) {
     char buff[1024] = {0};
     common::SNPrintf(buff, sizeof(buff), "merge function error: %s", st.ToString());
-    return common::make_error_value(buff, common::ErrorValue::E_ERROR);
-  }
-
-  return common::Error();
-}
-
-common::Error RocksdbRaw::put(const std::string& key, const std::string& value) {
-  ::rocksdb::WriteOptions wo;
-  auto st = rocksdb_->Put(wo, key, value);
-  if (!st.ok()) {
-    char buff[1024] = {0};
-    common::SNPrintf(buff, sizeof(buff), "put function error: %s", st.ToString());
     return common::make_error_value(buff, common::ErrorValue::E_ERROR);
   }
 
@@ -348,6 +348,18 @@ common::Error dbsize(CommandHandler* handler, int argc, char** argv, FastoObject
   return er;
 }
 
+common::Error set(CommandHandler* handler, int argc, char** argv, FastoObject* out) {
+  RocksdbRaw* rocks = static_cast<RocksdbRaw*>(handler);
+  common::Error er = rocks->set(argv[0], argv[1]);
+  if (!er) {
+    common::StringValue *val = common::Value::createStringValue("STORED");
+    FastoObject* child = new FastoObject(out, val, rocks->config_.delimiter);
+    out->addChildren(child);
+  }
+
+  return er;
+}
+
 common::Error get(CommandHandler* handler, int argc, char** argv, FastoObject* out) {
   RocksdbRaw* rocks = static_cast<RocksdbRaw*>(handler);
   std::string ret;
@@ -386,18 +398,6 @@ common::Error mget(CommandHandler* handler, int argc, char** argv, FastoObject* 
 common::Error merge(CommandHandler* handler, int argc, char** argv, FastoObject* out) {
   RocksdbRaw* rocks = static_cast<RocksdbRaw*>(handler);
   common::Error er = rocks->merge(argv[0], argv[1]);
-  if (!er) {
-    common::StringValue *val = common::Value::createStringValue("STORED");
-    FastoObject* child = new FastoObject(out, val, rocks->config_.delimiter);
-    out->addChildren(child);
-  }
-
-  return er;
-}
-
-common::Error put(CommandHandler* handler, int argc, char** argv, FastoObject* out) {
-  RocksdbRaw* rocks = static_cast<RocksdbRaw*>(handler);
-  common::Error er = rocks->put(argv[0], argv[1]);
   if (!er) {
     common::StringValue *val = common::Value::createStringValue("STORED");
     FastoObject* child = new FastoObject(out, val, rocks->config_.delimiter);

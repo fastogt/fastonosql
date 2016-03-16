@@ -237,22 +237,22 @@ const char* UnqliteRaw::versionApi() {
   return UNQLITE_VERSION;
 }
 
-common::Error UnqliteRaw::get(const std::string& key, std::string* ret_val) {
-  int rc = unqlite_kv_fetch_callback(unqlite_, key.c_str(), key.size(), unqlite_data_callback, ret_val);
+common::Error UnqliteRaw::set(const std::string& key, const std::string& value) {
+  int rc = unqlite_kv_store(unqlite_, key.c_str(), key.size(), value.c_str(), value.length());
   if (rc != UNQLITE_OK) {
     char buff[1024] = {0};
-    common::SNPrintf(buff, sizeof(buff), "get function error: %s", unqlite_strerror(rc));
+    common::SNPrintf(buff, sizeof(buff), "set function error: %s", unqlite_strerror(rc));
     return common::make_error_value(buff, common::ErrorValue::E_ERROR);
   }
 
   return common::Error();
 }
 
-common::Error UnqliteRaw::put(const std::string& key, const std::string& value) {
-  int rc = unqlite_kv_store(unqlite_, key.c_str(), key.size(), value.c_str(), value.length());
+common::Error UnqliteRaw::get(const std::string& key, std::string* ret_val) {
+  int rc = unqlite_kv_fetch_callback(unqlite_, key.c_str(), key.size(), unqlite_data_callback, ret_val);
   if (rc != UNQLITE_OK) {
     char buff[1024] = {0};
-    common::SNPrintf(buff, sizeof(buff), "put function error: %s", unqlite_strerror(rc));
+    common::SNPrintf(buff, sizeof(buff), "get function error: %s", unqlite_strerror(rc));
     return common::make_error_value(buff, common::ErrorValue::E_ERROR);
   }
 
@@ -332,9 +332,9 @@ common::Error UnqliteRaw::flushdb() {
   return common::Error();
 }
 
-common::Error put(CommandHandler* handler, int argc, char** argv, FastoObject* out) {
+common::Error set(CommandHandler* handler, int argc, char** argv, FastoObject* out) {
   UnqliteRaw* unq = static_cast<UnqliteRaw*>(handler);
-  common::Error er = unq->put(argv[0], argv[1]);
+  common::Error er = unq->set(argv[0], argv[1]);
   if (!er) {
     common::StringValue * val = common::Value::createStringValue("STORED");
     FastoObject* child = new FastoObject(out, val, unq->config_.delimiter);
