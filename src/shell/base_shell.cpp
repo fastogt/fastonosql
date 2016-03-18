@@ -55,6 +55,7 @@ namespace {
 }
 
 namespace fastonosql {
+namespace shell {
 
 BaseShell::BaseShell(connectionTypes type, bool showAutoCompl, QWidget* parent)
   : FastoEditorShell(showAutoCompl, parent) {
@@ -165,5 +166,5 @@ BaseShell* BaseShell::createFromType(connectionTypes type, bool showAutoCompl) {
   return new BaseShell(type, showAutoCompl);
 }
 
+}  // namespace shell
 }  // namespace fastonosql
-

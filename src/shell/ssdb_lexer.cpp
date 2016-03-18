@@ -24,6 +24,7 @@
 #include "core/ssdb/ssdb_raw.h"
 
 namespace fastonosql {
+namespace shell {
 
 SsdbApi::SsdbApi(QsciLexer *lexer)
   : BaseQsciApiCommandHolder(ssdb::ssdbCommands, lexer) {
@@ -46,4 +47,5 @@ const char* SsdbLexer::basedOn() const {
   return "ssdb-cli";
 }
 
+}  // namespace shell
 }  // namespace fastonosql

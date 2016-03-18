@@ -23,6 +23,7 @@
 #include "shell/base_lexer.h"
 
 namespace fastonosql {
+namespace shell {
 
 class RedisApi
   : public BaseQsciApi {
@@ -54,4 +55,5 @@ class RedisLexer
   void paintCommands(const QString& source, int start);
 };
 
+}  // namespace shell
 }  // namespace fastonosql

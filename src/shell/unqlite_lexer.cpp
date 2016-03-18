@@ -24,6 +24,7 @@
 #include "core/unqlite/unqlite_raw.h"
 
 namespace fastonosql {
+namespace shell {
 
 UnqliteApi::UnqliteApi(QsciLexer *lexer)
   : BaseQsciApiCommandHolder(unqlite::unqliteCommands, lexer) {
@@ -46,4 +47,5 @@ const char* UnqliteLexer::basedOn() const {
   return "unqlite";
 }
 
+}  // namespace shell
 }  // namespace fastonosql

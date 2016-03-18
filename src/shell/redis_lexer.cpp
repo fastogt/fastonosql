@@ -24,6 +24,7 @@
 #include "core/redis/redis_raw.h"
 
 namespace fastonosql {
+namespace shell {
 
 RedisApi::RedisApi(QsciLexer* lexer)
   : BaseQsciApi(lexer) {
@@ -138,4 +139,5 @@ void RedisLexer::paintCommands(const QString& source, int start) {
   }
 }
 
+}  // namespace shell
 }  // namespace fastonosql

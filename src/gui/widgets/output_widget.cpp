@@ -56,14 +56,25 @@ FastoCommonItem* createItem(fasto::qt::gui::TreeItem* parent, const std::string&
 
 OutputWidget::OutputWidget(IServerSPtr server, QWidget* parent)
   : QWidget(parent), server_(server) {
-  DCHECK(server);
+  CHECK(server_);
+
   commonModel_ = new FastoCommonModel(this);
   VERIFY(connect(commonModel_, &FastoCommonModel::changedValue, this,
                  &OutputWidget::executeCommand, Qt::DirectConnection));
-  VERIFY(connect(server.get(), &IServer::startedExecuteCommand, this,
+  VERIFY(connect(server_.get(), &IServer::startedExecuteCommand, this,
                  &OutputWidget::startExecuteCommand, Qt::DirectConnection));
-  VERIFY(connect(server.get(), &IServer::finishedExecuteCommand, this,
+  VERIFY(connect(server_.get(), &IServer::finishedExecuteCommand, this,
                  &OutputWidget::finishExecuteCommand, Qt::DirectConnection));
+
+  VERIFY(connect(server_.get(), &IServer::rootCreated,
+                 this, &OutputWidget::rootCreate, Qt::DirectConnection));
+  VERIFY(connect(server_.get(), &IServer::rootCompleated,
+                 this, &OutputWidget::rootCompleate, Qt::DirectConnection));
+
+  VERIFY(connect(server_.get(), &IServer::addedChild,
+                 this, &OutputWidget::addChild, Qt::DirectConnection));
+  VERIFY(connect(server_.get(), &IServer::itemUpdated,
+                 this, &OutputWidget::itemUpdate, Qt::DirectConnection));
 
   treeView_ = new FastoTreeView;
   treeView_->setModel(commonModel_);
@@ -71,7 +82,7 @@ OutputWidget::OutputWidget(IServerSPtr server, QWidget* parent)
   tableView_ = new FastoTableView;
   tableView_->setModel(commonModel_);
 
-  textView_ = new FastoTextView(server->outputDelemitr());
+  textView_ = new FastoTextView(server_->outputDelemitr());
   textView_->setModel(commonModel_);
 
   timeLabel_ = new fasto::qt::gui::IconLabel(GuiFactory::instance().timeIcon(), "0", QSize(32, 32));

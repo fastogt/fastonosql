@@ -47,18 +47,16 @@ class OutputWidget
  public:
   explicit OutputWidget(IServerSPtr server, QWidget* parent = 0);
 
- public Q_SLOTS:
-  void rootCreate(const events_info::CommandRootCreatedInfo& res);
-  void rootCompleate(const events_info::CommandRootCompleatedInfo& res);
-
+ private Q_SLOTS:
+  void executeCommand(CommandKeySPtr cmd);
   void startExecuteCommand(const events_info::CommandRequest& req);
   void finishExecuteCommand(const events_info::CommandResponce& res);
 
+  void rootCreate(const events_info::CommandRootCreatedInfo& res);
+  void rootCompleate(const events_info::CommandRootCompleatedInfo& res);
+
   void addChild(FastoObject* child);
   void itemUpdate(FastoObject* item, common::Value* newValue);
-
- private Q_SLOTS:
-  void executeCommand(CommandKeySPtr cmd);
 
   void setTreeView();
   void setTableView();

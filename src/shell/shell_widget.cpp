@@ -53,9 +53,12 @@ namespace {
 }
 
 namespace fastonosql {
+namespace shell {
 
 BaseShellWidget::BaseShellWidget(IServerSPtr server, const QString& filePath, QWidget* parent)
   : QWidget(parent), server_(server), filePath_(filePath), input_(nullptr) {
+  CHECK(server_);
+
   VERIFY(connect(server_.get(), &IServer::startedConnect,
                  this, &BaseShellWidget::startConnect));
   VERIFY(connect(server_.get(), &IServer::finishedConnect,
@@ -64,8 +67,6 @@ BaseShellWidget::BaseShellWidget(IServerSPtr server, const QString& filePath, QW
                  this, &BaseShellWidget::startDisconnect));
   VERIFY(connect(server_.get(), &IServer::finishedDisconnect,
                  this, &BaseShellWidget::finishDisconnect));
-  VERIFY(connect(server_.get(), &IServer::startedExecute,
-                 this, &BaseShellWidget::startedExecute));
   VERIFY(connect(server_.get(), &IServer::progressChanged,
                  this, &BaseShellWidget::progressChange));
 
@@ -79,20 +80,10 @@ BaseShellWidget::BaseShellWidget(IServerSPtr server, const QString& filePath, QW
   VERIFY(connect(server_.get(), &IServer::leavedMode,
                  this, &BaseShellWidget::leaveMode));
 
-  VERIFY(connect(server_.get(), &IServer::rootCreated,
-                 this, &BaseShellWidget::rootCreated));
-  VERIFY(connect(server_.get(), &IServer::rootCompleated,
-                 this, &BaseShellWidget::rootCompleated));
-
   VERIFY(connect(server_.get(), &IServer::startedLoadDiscoveryInfo,
                  this, &BaseShellWidget::startLoadDiscoveryInfo));
   VERIFY(connect(server_.get(), &IServer::finishedLoadDiscoveryInfo,
                  this, &BaseShellWidget::finishLoadDiscoveryInfo));
-
-  VERIFY(connect(server_.get(), &IServer::addedChild,
-                 this, &BaseShellWidget::addedChild));
-  VERIFY(connect(server_.get(), &IServer::itemUpdated,
-                 this, &BaseShellWidget::itemUpdated, Qt::UniqueConnection));
 
   QVBoxLayout* mainlayout = new QVBoxLayout;
   QHBoxLayout* hlayout = new QHBoxLayout;
@@ -230,11 +221,8 @@ void BaseShellWidget::syncServerInfo(IServerInfoSPtr inf) {
 
 void BaseShellWidget::initShellByType(connectionTypes type) {
   input_ = BaseShell::createFromType(type, SettingsManager::instance().autoCompletion());
-  DCHECK(input_);
-  if (input_) {
-    setToolTip(tr("Based on %1 version: %2").arg(input_->basedOn()).arg(input_->version()));
-    input_->setContextMenuPolicy(Qt::CustomContextMenu);
-  }
+  setToolTip(tr("Based on %1 version: %2").arg(input_->basedOn()).arg(input_->version()));
+  input_->setContextMenuPolicy(Qt::CustomContextMenu);
 }
 
 BaseShellWidget::~BaseShellWidget() {
@@ -242,10 +230,6 @@ BaseShellWidget::~BaseShellWidget() {
 
 QString BaseShellWidget::text() const {
   return input_->text();
-}
-
-IServerSPtr BaseShellWidget::server() const {
-  return server_;
 }
 
 void BaseShellWidget::setText(const QString& text) {
@@ -403,4 +387,5 @@ void BaseShellWidget::syncConnectionActions() {
   executeAction_->setEnabled(server_->isConnected());
 }
 
+}  // namespace shell
 }  // namespace fastonosql

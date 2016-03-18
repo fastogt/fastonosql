@@ -24,6 +24,7 @@
 #include "core/rocksdb/rocksdb_raw.h"
 
 namespace fastonosql {
+namespace shell {
 
 RocksdbApi::RocksdbApi(QsciLexer *lexer)
   : BaseQsciApiCommandHolder(rocksdb::rocksdbCommands, lexer) {
@@ -46,4 +47,5 @@ const char* RocksdbLexer::basedOn() const {
   return "rocksdb";
 }
 
+}  // namespace shell
 }  // namespace fastonosql

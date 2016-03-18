@@ -23,6 +23,7 @@
 #include "shell/base_lexer.h"
 
 namespace fastonosql {
+namespace shell {
 
 class MemcachedApi
   : public BaseQsciApiCommandHolder {
@@ -42,4 +43,5 @@ class MemcachedLexer
   virtual const char* basedOn() const;
 };
 
+}  // namespace shell
 }  // namespace fastonosql

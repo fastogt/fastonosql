@@ -24,6 +24,7 @@
 #include "core/leveldb/leveldb_raw.h"
 
 namespace fastonosql {
+namespace shell {
 
 LeveldbApi::LeveldbApi(QsciLexer *lexer)
   : BaseQsciApiCommandHolder(leveldb::leveldbCommands, lexer) {
@@ -46,4 +47,5 @@ const char* LeveldbLexer::basedOn() const {
   return "leveldb";
 }
 
+}  // namespace shell
 }  // namespace fastonosql

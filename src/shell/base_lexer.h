@@ -26,6 +26,7 @@
 #include "core/types.h"
 
 namespace fastonosql {
+namespace shell {
 
 class BaseQsciApi
   : public QsciAbstractAPIs {
@@ -96,4 +97,5 @@ class BaseQsciLexerCommandHolder
 
 QString makeCallTip(const CommandInfo& info);
 
+}  // namespace shell
 }  // namespace fastonosql

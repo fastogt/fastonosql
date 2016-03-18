@@ -21,6 +21,7 @@
 #include "common/convert2string.h"
 
 namespace fastonosql {
+namespace shell {
 
 BaseQsciApi::BaseQsciApi(QsciLexer* lexer)
   : QsciAbstractAPIs(lexer), filtered_version_(UNDEFINED_SINCE) {
@@ -184,4 +185,5 @@ QString makeCallTip(const CommandInfo& info) {
       .arg(common::convertFromString<QString>(info.example));
 }
 
+}  // namespace shell
 }  // namespace fastonosql

@@ -23,6 +23,7 @@
 #include "shell/base_lexer.h"
 
 namespace fastonosql {
+namespace shell {
 
 class LmdbApi
   : public BaseQsciApiCommandHolder {
@@ -42,4 +43,5 @@ class LmdbLexer
   virtual const char* basedOn() const;
 };
 
+}  // namespace shell
 }  // namespace fastonosql

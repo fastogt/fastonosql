@@ -24,10 +24,11 @@
 #include "core/connection_types.h"
 
 namespace fastonosql {
-
+namespace shell {
 class BaseShellWidget;
-class OutputWidget;
+}
 
+class OutputWidget;
 class QueryWidget
         : public QWidget {
   Q_OBJECT
@@ -47,8 +48,9 @@ class QueryWidget
   void reload();
 
  private:
-  BaseShellWidget* shellWidget_;
+  shell::BaseShellWidget* shellWidget_;
   OutputWidget* outputWidget_;
+  IServerSPtr server_;
 };
 
 }  // namespace fastonosql

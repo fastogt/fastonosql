@@ -24,6 +24,7 @@
 #include "core/memcached/memcached_raw.h"
 
 namespace fastonosql {
+namespace shell {
 
 MemcachedApi::MemcachedApi(QsciLexer *lexer)
   : BaseQsciApiCommandHolder(memcached::memcachedCommands, lexer) {
@@ -46,4 +47,5 @@ const char* MemcachedLexer::basedOn() const {
   return "libmemcached";
 }
 
+}  // namespace shell
 }  // namespace fastonosql

@@ -37,6 +37,7 @@ class IconLabel;
 }
 
 namespace fastonosql {
+namespace shell {
 
 class BaseShell;
 class BaseShellWidget
@@ -47,16 +48,7 @@ class BaseShellWidget
                            const QString& filePath = QString(), QWidget* parent = 0);
   virtual ~BaseShellWidget();
 
-  IServerSPtr server() const;
   QString text() const;
-
- Q_SIGNALS:
-  void startedExecute(const events_info::ExecuteInfoRequest& req);
-  void rootCreated(const events_info::CommandRootCreatedInfo& res);
-  void rootCompleated(const events_info::CommandRootCompleatedInfo& res);
-
-  void addedChild(FastoObject* child);
-  void itemUpdated(FastoObject* item, common::Value* value);
 
  public Q_SLOTS:
   void setText(const QString& text);
@@ -113,4 +105,5 @@ class BaseShellWidget
   QString filePath_;
 };
 
+}  // namespace shell
 }  // namespace fastonosql

@@ -24,6 +24,7 @@
 #include "core/lmdb/lmdb_raw.h"
 
 namespace fastonosql {
+namespace shell {
 
 LmdbApi::LmdbApi(QsciLexer *lexer)
   : BaseQsciApiCommandHolder(lmdb::lmdbCommands, lexer) {
@@ -46,4 +47,5 @@ const char* LmdbLexer::basedOn() const {
   return "liblmdb";
 }
 
+}  // namespace shell
 }  // namespace fastonosql

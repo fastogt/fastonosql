@@ -40,7 +40,7 @@ class CommandsWidget
   void showContextMenu(const QPoint& pt);
 
  protected:
-  virtual void changeEvent(QEvent *ev);
+  virtual void changeEvent(QEvent* ev);
 
  private:
   void retranslateUi();

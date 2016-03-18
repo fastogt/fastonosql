@@ -25,6 +25,7 @@
 #include "gui/fasto_editor.h"
 
 namespace fastonosql {
+namespace shell {
 
 class BaseShell
   : public FastoEditorShell {
@@ -42,4 +43,5 @@ class BaseShell
   BaseShell(connectionTypes type, bool showAutoCompl, QWidget* parent = 0);
 };
 
+}  // namespace shell
 }  // namespace fastonosql
