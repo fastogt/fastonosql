@@ -106,6 +106,16 @@ CreateDbKeyDialog::CreateDbKeyDialog(const QString& title, connectionTypes type,
   kvLayout->addWidget(valueTableEdit_, 2, 1);
   valueTableEdit_->setVisible(false);
 
+  addItemButton_ = new QPushButton(translations::trAddItem);
+  VERIFY(connect(addItemButton_, &QPushButton::clicked, this, &CreateDbKeyDialog::addItem));
+  kvLayout->addWidget(addItemButton_, 3, 0);
+  addItemButton_->setVisible(false);
+
+  removeItemButton_ = new QPushButton(translations::trRemoveItem);
+  VERIFY(connect(removeItemButton_, &QPushButton::clicked, this, &CreateDbKeyDialog::removeItem));
+  kvLayout->addWidget(removeItemButton_, 3, 1);
+  removeItemButton_->setVisible(false);
+
   generalBox_ = new QGroupBox;
   generalBox_->setLayout(kvLayout);
 
@@ -146,14 +156,20 @@ void CreateDbKeyDialog::typeChanged(int index) {
     valueListEdit_->setVisible(true);
     valueEdit_->setVisible(false);
     valueTableEdit_->setVisible(false);
+    addItemButton_->setVisible(true);
+    removeItemButton_->setVisible(true);
   } else if (t == common::Value::TYPE_ZSET || t == common::Value::TYPE_HASH) {
     valueTableEdit_->setVisible(true);
     valueEdit_->setVisible(false);
     valueListEdit_->setVisible(false);
+    addItemButton_->setVisible(true);
+    removeItemButton_->setVisible(true);
   } else {
     valueEdit_->setVisible(true);
     valueListEdit_->setVisible(false);
     valueTableEdit_->setVisible(false);
+    addItemButton_->setVisible(false);
+    removeItemButton_->setVisible(false);
     if (t == common::Value::TYPE_INTEGER || t == common::Value::TYPE_UINTEGER) {
       valueEdit_->setValidator(new QIntValidator(this));
     } else if (t == common::Value::TYPE_BOOLEAN) {
@@ -182,7 +198,7 @@ void CreateDbKeyDialog::addItem() {
       nitem->setFlags(nitem->flags() | Qt::ItemIsEditable);
       valueListEdit_->addItem(nitem);
     }
-  } else {
+  } else if (valueTableEdit_->isVisible()) {
     int index = typesCombo_->currentIndex();
     QVariant var = typesCombo_->itemData(index);
     common::Value::Type t = (common::Value::Type)qvariant_cast<unsigned char>(var);
@@ -216,7 +232,7 @@ void CreateDbKeyDialog::removeItem() {
   if (valueListEdit_->isVisible()) {
     QListWidgetItem* ritem = valueListEdit_->currentItem();
     delete ritem;
-  } else {
+  } else if (valueTableEdit_->isVisible()) {
     int row = valueTableEdit_->currentRow();
     valueTableEdit_->removeRow(row);
   }

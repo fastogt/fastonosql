@@ -65,6 +65,8 @@ class CreateDbKeyDialog
   QLineEdit* valueEdit_;
   QListWidget* valueListEdit_;
   QTableWidget* valueTableEdit_;
+  QPushButton* addItemButton_;
+  QPushButton* removeItemButton_;
   NValue value_;
 };
 

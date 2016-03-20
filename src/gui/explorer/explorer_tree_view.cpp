@@ -268,24 +268,33 @@ void ExplorerTreeView::showContextMenu(const QPoint& point) {
       QMenu menu(this);
       menu.addAction(loadContentAction_);
       bool isDefault = db && db->isDefault();
-      loadContentAction_->setEnabled(isDefault);
+      IServerSPtr server = node->server();
+
+      bool isCon = server->isConnected();
+      loadContentAction_->setEnabled(isDefault && isCon);
 
       menu.addAction(createKeyAction_);
-      createKeyAction_->setEnabled(isDefault);
+      createKeyAction_->setEnabled(isDefault && isCon);
 
       menu.addAction(viewKeysAction_);
-      viewKeysAction_->setEnabled(isDefault);
+      viewKeysAction_->setEnabled(isDefault && isCon);
 
       menu.addAction(removeAllKeysAction_);
-      removeAllKeysAction_->setEnabled(isDefault);
+      removeAllKeysAction_->setEnabled(isDefault && isCon);
 
       menu.addAction(setDefaultDbAction_);
-      setDefaultDbAction_->setEnabled(!isDefault);
+      setDefaultDbAction_->setEnabled(!isDefault && isCon);
       menu.exec(menuPoint);
     } else if (node->type() == IExplorerTreeItem::eKey) {
       QMenu menu(this);
+      IServerSPtr server = node->server();
+
+      bool isCon = server->isConnected();
       menu.addAction(getValueAction_);
+      getValueAction_->setEnabled(isCon);
+
       menu.addAction(deleteKeyAction_);
+      deleteKeyAction_->setEnabled(isCon);
       menu.exec(menuPoint);
     }
   }
