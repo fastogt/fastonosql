@@ -54,8 +54,12 @@ CreateDbKeyDialog::CreateDbKeyDialog(const QString& title, connectionTypes type,
   kvLayout->addWidget(new QLabel(tr("Type:")), 0, 0);
   typesCombo_ = new QComboBox;
   std::vector<common::Value::Type> types = supportedTypesFromType(type);
+  int string_index = 0;
   for (size_t i = 0; i < types.size(); ++i) {
     common::Value::Type t = types[i];
+    if (t == common::Value::TYPE_STRING) {
+      string_index = i;
+    }
     QString type = common::convertFromString<QString>(common::Value::toString(t));
     typesCombo_->addItem(GuiFactory::instance().icon(t), type, t);
   }
@@ -66,13 +70,11 @@ CreateDbKeyDialog::CreateDbKeyDialog(const QString& title, connectionTypes type,
   kvLayout->addWidget(typesCombo_, 0, 1);
 
   // key layout
-
   kvLayout->addWidget(new QLabel(tr("Key:")), 1, 0);
   keyEdit_ = new QLineEdit;
   kvLayout->addWidget(keyEdit_, 1, 1);
 
   // value layout
-
   kvLayout->addWidget(new QLabel(tr("Value:")), 2, 0);
   valueEdit_ = new QLineEdit;
   kvLayout->addWidget(valueEdit_, 2, 1);
@@ -130,7 +132,7 @@ CreateDbKeyDialog::CreateDbKeyDialog(const QString& title, connectionTypes type,
   VERIFY(connect(buttonBox, &QDialogButtonBox::rejected, this, &CreateDbKeyDialog::reject));
   layout->addWidget(buttonBox);
 
-  typeChanged(0);
+  typesCombo_->setCurrentIndex(string_index);
   setMinimumSize(QSize(min_width, min_height));
   setLayout(layout);
   retranslateUi();
@@ -149,16 +151,19 @@ void CreateDbKeyDialog::accept() {
 
 void CreateDbKeyDialog::typeChanged(int index) {
   QVariant var = typesCombo_->itemData(index);
-  common::Value::Type t = (common::Value::Type)qvariant_cast<unsigned char>(var);
-  valueEdit_->clear();
+  common::Value::Type type = (common::Value::Type)qvariant_cast<unsigned char>(var);
 
-  if (t == common::Value::TYPE_ARRAY || t == common::Value::TYPE_SET) {
+  valueEdit_->clear();
+  valueTableEdit_->clear();
+  valueListEdit_->clear();
+
+  if (type == common::Value::TYPE_ARRAY || type == common::Value::TYPE_SET) {
     valueListEdit_->setVisible(true);
     valueEdit_->setVisible(false);
     valueTableEdit_->setVisible(false);
     addItemButton_->setVisible(true);
     removeItemButton_->setVisible(true);
-  } else if (t == common::Value::TYPE_ZSET || t == common::Value::TYPE_HASH) {
+  } else if (type == common::Value::TYPE_ZSET || type == common::Value::TYPE_HASH) {
     valueTableEdit_->setVisible(true);
     valueEdit_->setVisible(false);
     valueListEdit_->setVisible(false);
@@ -170,12 +175,12 @@ void CreateDbKeyDialog::typeChanged(int index) {
     valueTableEdit_->setVisible(false);
     addItemButton_->setVisible(false);
     removeItemButton_->setVisible(false);
-    if (t == common::Value::TYPE_INTEGER || t == common::Value::TYPE_UINTEGER) {
+    if (type == common::Value::TYPE_INTEGER || type == common::Value::TYPE_UINTEGER) {
       valueEdit_->setValidator(new QIntValidator(this));
-    } else if (t == common::Value::TYPE_BOOLEAN) {
+    } else if (type == common::Value::TYPE_BOOLEAN) {
       QRegExp rx("true|false");
       valueEdit_->setValidator(new QRegExpValidator(rx, this));
-    } else if (t == common::Value::TYPE_DOUBLE) {
+    } else if (type == common::Value::TYPE_DOUBLE) {
       valueEdit_->setValidator(new QDoubleValidator(this));
     } else {
       QRegExp rx(".*");
