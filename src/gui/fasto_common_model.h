@@ -29,7 +29,6 @@ class FastoCommonModel
   Q_OBJECT
  public:
   explicit FastoCommonModel(QObject* parent = 0);
-  virtual ~FastoCommonModel();
 
   virtual QVariant data(const QModelIndex& index, int role = Qt::DisplayRole) const;
   virtual bool setData(const QModelIndex& index, const QVariant& value, int role);

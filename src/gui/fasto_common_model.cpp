@@ -33,9 +33,6 @@ FastoCommonModel::FastoCommonModel(QObject* parent)
   : TreeModel(parent) {
 }
 
-FastoCommonModel::~FastoCommonModel() {
-}
-
 QVariant FastoCommonModel::data(const QModelIndex& index, int role) const {
   QVariant result;
 

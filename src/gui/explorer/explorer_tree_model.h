@@ -26,6 +26,7 @@
 #include "core/types.h"
 
 namespace fastonosql {
+
 struct IExplorerTreeItem
   : public fasto::qt::gui::TreeItem {
   enum eColumn {
@@ -41,7 +42,6 @@ struct IExplorerTreeItem
   };
 
   explicit IExplorerTreeItem(TreeItem* parent);
-  virtual ~IExplorerTreeItem();
 
   virtual QString name() const = 0;
   virtual IServerSPtr server() const = 0;
@@ -51,7 +51,6 @@ struct IExplorerTreeItem
 struct ExplorerServerItem
   : public IExplorerTreeItem {
   ExplorerServerItem(IServerSPtr server, TreeItem* parent);
-  virtual ~ExplorerServerItem();
 
   virtual QString name() const;
   virtual IServerSPtr server() const;
@@ -66,7 +65,6 @@ struct ExplorerServerItem
 struct ExplorerClusterItem
   : public IExplorerTreeItem {
   ExplorerClusterItem(IClusterSPtr cluster, TreeItem* parent);
-  virtual ~ExplorerClusterItem();
 
   virtual QString name() const;
   virtual IServerSPtr server() const;
@@ -81,7 +79,6 @@ struct ExplorerClusterItem
 struct ExplorerDatabaseItem
   : public IExplorerTreeItem {
   ExplorerDatabaseItem(IDatabaseSPtr db, ExplorerServerItem* parent);
-  virtual ~ExplorerDatabaseItem();
 
   ExplorerServerItem* parent() const;
 
@@ -111,7 +108,6 @@ struct ExplorerDatabaseItem
 struct ExplorerKeyItem
   : public IExplorerTreeItem {
   ExplorerKeyItem(const NDbKValue& key, ExplorerDatabaseItem* parent);
-  virtual ~ExplorerKeyItem();
 
   ExplorerDatabaseItem* parent() const;
 
@@ -133,7 +129,6 @@ class ExplorerTreeModel
   Q_OBJECT
  public:
   explicit ExplorerTreeModel(QObject* parent = 0);
-  virtual ~ExplorerTreeModel();
 
   virtual QVariant data(const QModelIndex& index, int role = Qt::DisplayRole) const;
   virtual Qt::ItemFlags flags(const QModelIndex& index) const;

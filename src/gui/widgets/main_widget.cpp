@@ -30,7 +30,7 @@ namespace fastonosql {
 
 MainWidget::MainWidget(QWidget* parent)
   : QTabWidget(parent) {
-  MainTabBar *tab = new MainTabBar(this);
+  MainTabBar* tab = new MainTabBar(this);
 
   VERIFY(connect(tab, &MainTabBar::createdNewTab, this, &MainWidget::createNewTab));
   VERIFY(connect(tab, &MainTabBar::nextTab, this, &MainWidget::nextTab));
@@ -50,11 +50,11 @@ MainWidget::MainWidget(QWidget* parent)
 }
 
 QueryWidget *MainWidget::currentWidget() const {
-  return qobject_cast<QueryWidget *>(QTabWidget::currentWidget());
+  return qobject_cast<QueryWidget*>(QTabWidget::currentWidget());
 }
 
 QueryWidget *MainWidget::widget(int index) const {
-  return qobject_cast<QueryWidget *>(QTabWidget::widget(index));
+  return qobject_cast<QueryWidget*>(QTabWidget::widget(index));
 }
 
 void MainWidget::openConsole(IServerSPtr server, const QString& text) {
@@ -67,7 +67,7 @@ void MainWidget::openConsole(IServerSPtr server, const QString& text) {
 
 void MainWidget::executeText(IServerSPtr server, const QString& text) {
   if (server) {
-    QueryWidget *queryWidget = new QueryWidget(server);
+    QueryWidget* queryWidget = new QueryWidget(server);
     addWidgetToTab(queryWidget, server->name());
     queryWidget->execute(text);
   }
@@ -75,7 +75,7 @@ void MainWidget::executeText(IServerSPtr server, const QString& text) {
 
 void MainWidget::createNewTab() {
   int curIndex = currentIndex();
-  QueryWidget * shw = widget(curIndex);
+  QueryWidget* shw = widget(curIndex);
   if (shw) {
     openNewTab(shw, tabText(curIndex), QString());
   }
@@ -118,14 +118,14 @@ void MainWidget::reloadeCurrentTab() {
 
 void MainWidget::duplicateCurrentTab() {
   int curIndex = currentIndex();
-  QueryWidget * shw = widget(curIndex);
+  QueryWidget* shw = widget(curIndex);
   if (shw) {
     openNewTab(shw, tabText(curIndex), shw->inputText());
   }
 }
 
 void MainWidget::closeTab(int index) {
-  QueryWidget * shw = widget(index);
+  QueryWidget* shw = widget(index);
   if (shw) {
     removeTab(index);
     delete shw;
@@ -155,7 +155,7 @@ void MainWidget::addWidgetToTab(QueryWidget* wid, const QString& title) {
 }
 
 void MainWidget::openNewTab(QueryWidget* src, const QString& title, const QString& text) {
-  QueryWidget *newWid = src->clone(text);
+  QueryWidget* newWid = src->clone(text);
   DCHECK(newWid);
   addWidgetToTab(newWid, title);
 }

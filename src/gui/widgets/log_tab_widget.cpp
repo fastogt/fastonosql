@@ -31,7 +31,7 @@ namespace fastonosql {
 
 LogTabWidget::LogTabWidget(QWidget* parent)
   : QTabWidget(parent) {
-  QTabBar *tab = new QTabBar;
+  QTabBar* tab = new QTabBar;
   setTabBar(tab);
   setTabsClosable(false);
   setElideMode(Qt::ElideRight);

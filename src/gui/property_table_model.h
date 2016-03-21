@@ -42,7 +42,6 @@ class PropertyTableModel
   Q_OBJECT
  public:
   explicit PropertyTableModel(QObject* parent = 0);
-  ~PropertyTableModel();
 
   virtual QVariant data(const QModelIndex& index, int role = Qt::DisplayRole) const;
   virtual bool setData(const QModelIndex& index, const QVariant& value, int role = Qt::EditRole);

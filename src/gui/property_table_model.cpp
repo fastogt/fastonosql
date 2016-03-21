@@ -33,9 +33,6 @@ PropertyTableModel::PropertyTableModel(QObject* parent)
   : TableModel(parent) {
 }
 
-PropertyTableModel::~PropertyTableModel() {
-}
-
 QVariant PropertyTableModel::data(const QModelIndex& index, int role) const {
   QVariant result;
 

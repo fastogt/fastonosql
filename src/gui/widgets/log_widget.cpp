@@ -37,7 +37,7 @@ LogWidget::LogWidget(QWidget* parent)
   VERIFY(connect(logTextEdit_, &QTextEdit::customContextMenuRequested,
                  this, &LogWidget::showContextMenu));
 
-  QHBoxLayout *hlayout = new QHBoxLayout;
+  QHBoxLayout* hlayout = new QHBoxLayout;
   hlayout->setContentsMargins(0, 0, 0, 0);
   hlayout->addWidget(logTextEdit_);
   clear_ = new QAction(this);
@@ -50,12 +50,12 @@ void LogWidget::addLogMessage(const QString& message, common::logging::LEVEL_LOG
   QTime time = QTime::currentTime();
   logTextEdit_->setTextColor(level == common::logging::L_CRIT ? QColor(Qt::red):QColor(Qt::black));
   logTextEdit_->append(time.toString("h:mm:ss AP: ") + message);
-  QScrollBar *sb = logTextEdit_->verticalScrollBar();
+  QScrollBar* sb = logTextEdit_->verticalScrollBar();
   sb->setValue(sb->maximum());
 }
 
 void LogWidget::showContextMenu(const QPoint& pt) {
-  QMenu *menu = logTextEdit_->createStandardContextMenu();
+  QMenu* menu = logTextEdit_->createStandardContextMenu();
   menu->addAction(clear_);
   clear_->setEnabled(!logTextEdit_->toPlainText().isEmpty());
 

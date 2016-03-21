@@ -366,8 +366,7 @@ void MainWindow::openRecentConnection() {
   QString rcon = action->text();
   std::string srcon = common::convertToString(rcon);
   SettingsManager::ConnectionSettingsContainerType conns = SettingsManager::instance().connections();
-  for (SettingsManager::ConnectionSettingsContainerType::const_iterator it = conns.begin();
-       it != conns.end(); ++it) {
+  for (auto it = conns.begin(); it != conns.end(); ++it) {
     IConnectionSettingsBaseSPtr con = *it;
     if (con && con->name() == srcon) {
       createServer(con);
@@ -415,6 +414,7 @@ void MainWindow::importConnection() {
     writeFile.close();
     common::Error err = common::file_system::remove_file(wp.path());
     if (err && err->isError()) {
+      DNOTREACHED();
     }
     QMessageBox::critical(this, trError, trImportSettingsFailed);
     return;
@@ -425,6 +425,7 @@ void MainWindow::importConnection() {
     writeFile.close();
     common::Error err = common::file_system::remove_file(wp.path());
     if (err && err->isError()) {
+      DNOTREACHED();
     }
     QMessageBox::critical(this, trError, trImportSettingsFailed);
     return;
@@ -443,6 +444,7 @@ void MainWindow::importConnection() {
       writeFile.close();
       common::Error err = common::file_system::remove_file(wp.path());
       if (err && err->isError()) {
+        DNOTREACHED();
       }
       QMessageBox::critical(this, trError, trImportSettingsFailed);
       return;
@@ -455,6 +457,7 @@ void MainWindow::importConnection() {
   SettingsManager::instance().reloadFromPath(tmp, false);
   common::Error err = common::file_system::remove_file(tmp);
   if (err && err->isError()) {
+    DNOTREACHED();
   }
   QMessageBox::information(this, trInfo, QObject::tr("Settings successfully imported!"));
 }
@@ -483,6 +486,7 @@ void MainWindow::exportConnection() {
     writeFile.close();
     common::Error err = common::file_system::remove_file(wp.path());
     if (err && err->isError()) {
+      DNOTREACHED();
     }
     QMessageBox::critical(this, trError, trExportSettingsFailed);
     return;
@@ -493,6 +497,7 @@ void MainWindow::exportConnection() {
     writeFile.close();
     common::Error err = common::file_system::remove_file(wp.path());
     if (err && err->isError()) {
+      DNOTREACHED();
     }
     QMessageBox::critical(this, trError, trExportSettingsFailed);
     return;
@@ -511,6 +516,7 @@ void MainWindow::exportConnection() {
       writeFile.close();
       common::Error err = common::file_system::remove_file(wp.path());
       if (err && err->isError()) {
+        DNOTREACHED();
       }
       QMessageBox::critical(this, trError, trExportSettingsFailed);
       return;
@@ -531,9 +537,8 @@ void MainWindow::versionAvailible(bool succesResult, const QString& version) {
   } else {
       bool isn = isNeededUpdate(version);
       if (isn) {
-          QMessageBox::information(this, translations::trCheckVersion,
-              QObject::tr("Availible new version: %1")
-                  .arg(version));
+        QMessageBox::information(this, translations::trCheckVersion,
+                                 QObject::tr("Availible new version: %1").arg(version));
       } else {
           QMessageBox::information(this, translations::trCheckVersion,
               QObject::tr("<h3>You're' up-to-date!</h3>" PROJECT_NAME_TITLE " %1 is currently the newest version available.")
