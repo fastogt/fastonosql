@@ -71,7 +71,7 @@ common::Error MemcachedDriver::executeImpl(int argc, char **argv, FastoObject* o
 }
 
 common::Error MemcachedDriver::serverInfo(IServerInfo **info) {
-  LOG_COMMAND(Command(INFO_REQUEST, common::Value::C_INNER));
+  LOG_COMMAND(type(), Command(INFO_REQUEST, common::Value::C_INNER));
   MemcachedServerInfo::Common cm;
   common::Error err = impl_->info(nullptr, &cm);
   if (!err) {
@@ -105,7 +105,7 @@ common::Error MemcachedDriver::serverDiscoveryInfo(ServerDiscoveryInfo** dinfo, 
 
 common::Error MemcachedDriver::currentDataBaseInfo(IDataBaseInfo** info) {
   if (!info) {
-    return common::make_error_value("Invalid input argument", common::ErrorValue::E_ERROR);
+    return common::make_error_value("Invalid input argument(s)", common::ErrorValue::E_ERROR);
   }
 
   size_t dbsize = 0;
@@ -263,7 +263,7 @@ done:
 common::Error MemcachedDriver::commandDeleteImpl(CommandDeleteKey* command,
                                                  std::string* cmdstring) const {
   if (!command || !cmdstring) {
-    return common::make_error_value("Invalid input argument", common::ErrorValue::E_ERROR);
+    return common::make_error_value("Invalid input argument(s)", common::ErrorValue::E_ERROR);
   }
 
   char patternResult[1024] = {0};
@@ -278,7 +278,7 @@ common::Error MemcachedDriver::commandDeleteImpl(CommandDeleteKey* command,
 common::Error MemcachedDriver::commandLoadImpl(CommandLoadKey* command,
                                                std::string* cmdstring) const {
   if (!command || !cmdstring) {
-    return common::make_error_value("Invalid input argument", common::ErrorValue::E_ERROR);
+    return common::make_error_value("Invalid input argument(s)", common::ErrorValue::E_ERROR);
   }
 
   char patternResult[1024] = {0};
@@ -292,7 +292,7 @@ common::Error MemcachedDriver::commandLoadImpl(CommandLoadKey* command,
 common::Error MemcachedDriver::commandCreateImpl(CommandCreateKey* command,
                                                  std::string* cmdstring) const {
   if (!command || !cmdstring) {
-    return common::make_error_value("Invalid input argument", common::ErrorValue::E_ERROR);
+    return common::make_error_value("Invalid input argument(s)", common::ErrorValue::E_ERROR);
   }
 
   char patternResult[1024] = {0};
@@ -311,7 +311,7 @@ common::Error MemcachedDriver::commandCreateImpl(CommandCreateKey* command,
 common::Error MemcachedDriver::commandChangeTTLImpl(CommandChangeTTL* command,
                                                     std::string* cmdstring) const {
   if (!command || !cmdstring) {
-    return common::make_error_value("Invalid input argument", common::ErrorValue::E_ERROR);
+    return common::make_error_value("Invalid input argument(s)", common::ErrorValue::E_ERROR);
   }
 
   char errorMsg[1024] = {0};

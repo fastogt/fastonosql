@@ -42,7 +42,7 @@ namespace {
 
 common::Error createConnection(const LeveldbConfig& config, ::leveldb::DB** context) {
   if (!context) {
-    return common::make_error_value("Invalid input argument", common::ErrorValue::E_ERROR);
+    return common::make_error_value("Invalid input argument(s)", common::ErrorValue::E_ERROR);
   }
 
   DCHECK(*context == nullptr);
@@ -60,7 +60,7 @@ common::Error createConnection(const LeveldbConfig& config, ::leveldb::DB** cont
 
 common::Error createConnection(LeveldbConnectionSettings* settings, ::leveldb::DB** context) {
   if (!settings) {
-    return common::make_error_value("Invalid input argument", common::ErrorValue::E_ERROR);
+    return common::make_error_value("Invalid input argument(s)", common::ErrorValue::E_ERROR);
   }
 
   LeveldbConfig config = settings->info();
@@ -71,7 +71,7 @@ common::Error createConnection(LeveldbConnectionSettings* settings, ::leveldb::D
 
 common::Error testConnection(LeveldbConnectionSettings* settings) {
   if (!settings) {
-    return common::make_error_value("Invalid input argument", common::ErrorValue::E_ERROR);
+    return common::make_error_value("Invalid input argument(s)", common::ErrorValue::E_ERROR);
   }
 
   ::leveldb::DB* ldb = nullptr;
@@ -132,7 +132,7 @@ common::Error LeveldbRaw::disconnect() {
 
 common::Error LeveldbRaw::dbsize(size_t* size) {
   if (!size) {
-    return common::make_error_value("Invalid input argument", common::ErrorValue::E_ERROR);
+    return common::make_error_value("Invalid input argument(s)", common::ErrorValue::E_ERROR);
   }
 
   ::leveldb::ReadOptions ro;
@@ -162,7 +162,7 @@ common::Error LeveldbRaw::info(const char* args, LeveldbServerInfo::Stats* stats
   // common::SNPrintf(prop, sizeof(prop), "leveldb.%s", args ? args : "stats");
 
   if (!statsout) {
-    return common::make_error_value("Invalid input argument", common::ErrorValue::E_ERROR);
+    return common::make_error_value("Invalid input argument(s)", common::ErrorValue::E_ERROR);
   }
 
   std::string rets;

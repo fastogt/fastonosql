@@ -35,8 +35,8 @@ LeveldbLexer::LeveldbLexer(QObject* parent)
   setAPIs(new LeveldbApi(this));
 }
 
-const char *LeveldbLexer::language() const {
-  return "Leveldb";
+const char* LeveldbLexer::language() const {
+  return "LevelDB";
 }
 
 const char* LeveldbLexer::version() const {

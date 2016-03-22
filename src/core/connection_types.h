@@ -49,19 +49,19 @@ static const std::string connnectionType[] = {
   "Memcached",
 #endif
 #ifdef BUILD_WITH_SSDB
-  "Ssdb",
+  "SSDB",
 #endif
 #ifdef BUILD_WITH_LEVELDB
-  "Leveldb",
+  "LevelDB",
 #endif
 #ifdef BUILD_WITH_ROCKSDB
-  "Rocksdb",
+  "RocksDB",
 #endif
 #ifdef BUILD_WITH_UNQLITE
-  "Unqlite",
+  "UnQLite",
 #endif
 #ifdef BUILD_WITH_LMDB
-  "Lmdb"
+  "LMDB"
 #endif
 };
 

@@ -80,7 +80,7 @@ class DiscoveryDiagnosticDialog
  private:
   void testConnection(IConnectionSettingsBaseSPtr connection);
 
-  fasto::qt::gui::GlassWidget *glassWidget_;
+  fasto::qt::gui::GlassWidget* glassWidget_;
   QLabel* executeTimeLabel_;
   QLabel* statusLabel_;
   QTreeWidget* listWidget_;

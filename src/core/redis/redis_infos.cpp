@@ -942,7 +942,7 @@ common::Error makeAllDiscoveryInfo(const common::net::hostAndPort& parentHost,
                                    const std::string& text,
                                    std::vector<ServerDiscoveryInfoSPtr>* infos) {
   if (text.empty() || !infos) {
-    return common::make_error_value("Invalid input argument", common::ErrorValue::E_ERROR);;
+    return common::make_error_value("Invalid input argument(s)", common::ErrorValue::E_ERROR);;
   }
 
   size_t pos = 0;

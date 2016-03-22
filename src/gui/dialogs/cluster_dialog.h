@@ -53,13 +53,10 @@ class ClusterDialog
   void testConnection();
   void discoveryCluster();
   void showContextMenu(const QPoint& point);
-
   void setStartNode();
-
   void add();
   void remove();
   void edit();
-
   void itemSelectionChanged();
 
  protected:

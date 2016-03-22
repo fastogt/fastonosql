@@ -50,7 +50,7 @@ class QueryWidget
  private:
   shell::BaseShellWidget* shellWidget_;
   OutputWidget* outputWidget_;
-  IServerSPtr server_;
+  const IServerSPtr server_;
 };
 
 }  // namespace fastonosql

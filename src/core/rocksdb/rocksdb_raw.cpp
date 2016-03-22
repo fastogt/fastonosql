@@ -39,7 +39,7 @@ namespace {
 
 common::Error createConnection(const rocksdb::RocksdbConfig& config, ::rocksdb::DB** context) {
   if (!context) {
-    return common::make_error_value("Invalid input argument", common::ErrorValue::E_ERROR);
+    return common::make_error_value("Invalid input argument(s)", common::ErrorValue::E_ERROR);
   }
 
   DCHECK(*context == nullptr);
@@ -57,7 +57,7 @@ common::Error createConnection(const rocksdb::RocksdbConfig& config, ::rocksdb::
 
 common::Error createConnection(RocksdbConnectionSettings* settings, ::rocksdb::DB** context) {
   if (!settings) {
-    return common::make_error_value("Invalid input argument", common::ErrorValue::E_ERROR);
+    return common::make_error_value("Invalid input argument(s)", common::ErrorValue::E_ERROR);
   }
 
   RocksdbConfig config = settings->info();
@@ -68,7 +68,7 @@ common::Error createConnection(RocksdbConnectionSettings* settings, ::rocksdb::D
 
 common::Error testConnection(RocksdbConnectionSettings* settings) {
   if (!settings) {
-    return common::make_error_value("Invalid input argument", common::ErrorValue::E_ERROR);
+    return common::make_error_value("Invalid input argument(s)", common::ErrorValue::E_ERROR);
   }
 
   ::rocksdb::DB* ldb = nullptr;
@@ -127,7 +127,7 @@ common::Error RocksdbRaw::info(const char* args, RocksdbServerInfo::Stats* stats
   // char prop[1024] = {0};
   // common::SNPrintf(prop, sizeof(prop), "rocksdb.%s", args ? args : "stats");
   if (!statsout) {
-    return common::make_error_value("Invalid input argument", common::ErrorValue::E_ERROR);
+    return common::make_error_value("Invalid input argument(s)", common::ErrorValue::E_ERROR);
   }
 
   std::string rets;
@@ -171,7 +171,7 @@ common::Error RocksdbRaw::info(const char* args, RocksdbServerInfo::Stats* stats
 
 common::Error RocksdbRaw::dbsize(size_t* size) {
   if (!size) {
-    return common::make_error_value("Invalid input argument", common::ErrorValue::E_ERROR);
+    return common::make_error_value("Invalid input argument(s)", common::ErrorValue::E_ERROR);
   }
 
   ::rocksdb::ReadOptions ro;

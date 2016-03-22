@@ -35,7 +35,7 @@ LmdbLexer::LmdbLexer(QObject* parent)
   setAPIs(new LmdbApi(this));
 }
 
-const char *LmdbLexer::language() const {
+const char* LmdbLexer::language() const {
   return "LMDB";
 }
 

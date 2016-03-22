@@ -92,7 +92,7 @@ void lmdb_close(lmdb **context) {
 
 common::Error createConnection(const LmdbConfig& config, struct lmdb** context) {
   if (!context) {
-    return common::make_error_value("Invalid input argument", common::ErrorValue::E_ERROR);
+    return common::make_error_value("Invalid input argument(s)", common::ErrorValue::E_ERROR);
   }
 
   DCHECK(*context == nullptr);
@@ -111,7 +111,7 @@ common::Error createConnection(const LmdbConfig& config, struct lmdb** context) 
 
 common::Error createConnection(LmdbConnectionSettings* settings, struct lmdb** context) {
   if (!settings) {
-    return common::make_error_value("Invalid input argument", common::ErrorValue::E_ERROR);
+    return common::make_error_value("Invalid input argument(s)", common::ErrorValue::E_ERROR);
   }
 
   LmdbConfig config = settings->info();
@@ -122,7 +122,7 @@ common::Error createConnection(LmdbConnectionSettings* settings, struct lmdb** c
 
 common::Error testConnection(fastonosql::lmdb::LmdbConnectionSettings* settings) {
   if (!settings) {
-    return common::make_error_value("Invalid input argument", common::ErrorValue::E_ERROR);
+    return common::make_error_value("Invalid input argument(s)", common::ErrorValue::E_ERROR);
   }
 
   struct lmdb* ldb = nullptr;
@@ -204,7 +204,7 @@ common::Error LmdbRaw::info(const char* args, LmdbServerInfo::Stats* statsout) {
 
 common::Error LmdbRaw::dbsize(size_t* size) {
   if (!size) {
-    return common::make_error_value("Invalid input argument", common::ErrorValue::E_ERROR);
+    return common::make_error_value("Invalid input argument(s)", common::ErrorValue::E_ERROR);
   }
 
   MDB_cursor *cursor;

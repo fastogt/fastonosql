@@ -101,7 +101,7 @@ namespace {
 
 common::Error createConnection(const UnqliteConfig& config, struct unqlite** context) {
   if (!context) {
-    return common::make_error_value("Invalid input argument", common::ErrorValue::E_ERROR);
+    return common::make_error_value("Invalid input argument(s)", common::ErrorValue::E_ERROR);
   }
 
   DCHECK(*context == nullptr);
@@ -121,7 +121,7 @@ common::Error createConnection(const UnqliteConfig& config, struct unqlite** con
 
 common::Error createConnection(UnqliteConnectionSettings* settings, struct unqlite** context) {
   if (!settings) {
-    return common::make_error_value("Invalid input argument", common::ErrorValue::E_ERROR);
+    return common::make_error_value("Invalid input argument(s)", common::ErrorValue::E_ERROR);
   }
 
   UnqliteConfig config = settings->info();
@@ -131,7 +131,7 @@ common::Error createConnection(UnqliteConnectionSettings* settings, struct unqli
 
 common::Error testConnection(UnqliteConnectionSettings *settings) {
   if (!settings) {
-    return common::make_error_value("Invalid input argument", common::ErrorValue::E_ERROR);
+    return common::make_error_value("Invalid input argument(s)", common::ErrorValue::E_ERROR);
   }
 
   struct unqlite* ldb = nullptr;
@@ -197,7 +197,7 @@ common::Error UnqliteRaw::info(const char* args, UnqliteServerInfo::Stats* stats
 
 common::Error UnqliteRaw::dbsize(size_t* size) {
   if (!size) {
-    return common::make_error_value("Invalid input argument", common::ErrorValue::E_ERROR);
+    return common::make_error_value("Invalid input argument(s)", common::ErrorValue::E_ERROR);
   }
 
   /* Allocate a new cursor instance */

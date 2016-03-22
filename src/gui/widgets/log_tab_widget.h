@@ -23,6 +23,7 @@
 #include "common/log_levels.h"
 
 #include "global/types.h"
+#include "core/connection_types.h"
 
 namespace fastonosql {
 
@@ -37,7 +38,7 @@ class LogTabWidget
 
  public Q_SLOTS:
   void addLogMessage(const QString& message, common::logging::LEVEL_LOG level);
-  void addCommand(const Command& command);
+  void addCommand(connectionTypes type, const Command& command);
 
  protected:
   virtual void changeEvent(QEvent* ev);

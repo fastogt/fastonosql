@@ -59,8 +59,8 @@ class PropertyServerDialog
  private:
   void retranslateUi();
 
-  fasto::qt::gui::GlassWidget *glassWidget_;
-  QTableView *propertyes_table_;
+  fasto::qt::gui::GlassWidget* glassWidget_;
+  QTableView* propertyes_table_;
   const IServerSPtr server_;
 };
 

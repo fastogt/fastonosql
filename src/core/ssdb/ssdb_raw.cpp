@@ -28,7 +28,7 @@ namespace {
 common::Error createConnection(const SsdbConfig& config, const SSHInfo& sinfo,
                                ::ssdb::Client** context) {
   if (!context) {
-    return common::make_error_value("Invalid input argument", common::ErrorValue::E_ERROR);
+    return common::make_error_value("Invalid input argument(s)", common::ErrorValue::E_ERROR);
   }
 
   DCHECK(*context == nullptr);
@@ -45,7 +45,7 @@ common::Error createConnection(const SsdbConfig& config, const SSHInfo& sinfo,
 
 common::Error createConnection(SsdbConnectionSettings* settings, ::ssdb::Client** context) {
   if (!settings) {
-    return common::make_error_value("Invalid input argument", common::ErrorValue::E_ERROR);
+    return common::make_error_value("Invalid input argument(s)", common::ErrorValue::E_ERROR);
   }
 
   SsdbConfig config = settings->info();
@@ -57,7 +57,7 @@ common::Error createConnection(SsdbConnectionSettings* settings, ::ssdb::Client*
 
 common::Error testConnection(SsdbConnectionSettings* settings) {
   if (!settings) {
-    return common::make_error_value("Invalid input argument", common::ErrorValue::E_ERROR);
+    return common::make_error_value("Invalid input argument(s)", common::ErrorValue::E_ERROR);
   }
 
   ::ssdb::Client* ssdb = nullptr;
@@ -151,7 +151,7 @@ common::Error SsdbRaw::info(const char* args, SsdbServerInfo::Common *statsout) 
 
 common::Error SsdbRaw::dbsize(size_t* size) {
   if (!size) {
-    return common::make_error_value("Invalid input argument", common::ErrorValue::E_ERROR);
+    return common::make_error_value("Invalid input argument(s)", common::ErrorValue::E_ERROR);
   }
 
   int64_t sz = 0;

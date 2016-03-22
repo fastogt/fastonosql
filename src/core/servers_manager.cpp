@@ -145,7 +145,7 @@ ServersManager::cluster_t ServersManager::createCluster(IClusterSettingsBaseSPtr
 common::Error ServersManager::testConnection(IConnectionSettingsBaseSPtr connection) {
   if (!connection) {
     NOTREACHED();
-    return common::make_error_value("Invalid input argument", common::ErrorValue::E_ERROR);
+    return common::make_error_value("Invalid input argument(s)", common::ErrorValue::E_ERROR);
   }
 
   connectionTypes type = connection->type();
@@ -190,7 +190,7 @@ common::Error ServersManager::testConnection(IConnectionSettingsBaseSPtr connect
 common::Error ServersManager::discoveryConnection(IConnectionSettingsBaseSPtr connection,
                                                   std::vector<ServerDiscoveryInfoSPtr>* inf) {
   if (!connection || !inf) {
-    return common::make_error_value("Invalid input argument", common::ErrorValue::E_ERROR);
+    return common::make_error_value("Invalid input argument(s)", common::ErrorValue::E_ERROR);
   }
 
   connectionTypes type = connection->type();

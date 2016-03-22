@@ -35,8 +35,8 @@ RocksdbLexer::RocksdbLexer(QObject* parent)
   setAPIs(new RocksdbApi(this));
 }
 
-const char *RocksdbLexer::language() const {
-  return "Rocksdb";
+const char* RocksdbLexer::language() const {
+  return "RocksDB";
 }
 
 const char* RocksdbLexer::version() const {

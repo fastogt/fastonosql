@@ -35,8 +35,8 @@ UnqliteLexer::UnqliteLexer(QObject* parent)
   setAPIs(new UnqliteApi(this));
 }
 
-const char *UnqliteLexer::language() const {
-  return "Unqlite";
+const char* UnqliteLexer::language() const {
+  return "UnQLite";
 }
 
 const char* UnqliteLexer::version() const {

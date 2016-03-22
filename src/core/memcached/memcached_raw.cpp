@@ -31,7 +31,7 @@ namespace {
 
 common::Error createConnection(const MemcachedConfig& config, struct memcached_st** context) {
   if (!context) {
-    return common::make_error_value("Invalid input argument", common::ErrorValue::E_ERROR);
+    return common::make_error_value("Invalid input argument(s)", common::ErrorValue::E_ERROR);
   }
 
   DCHECK(*context == nullptr);
@@ -82,7 +82,7 @@ common::Error createConnection(const MemcachedConfig& config, struct memcached_s
 
 common::Error createConnection(MemcachedConnectionSettings* settings, struct memcached_st** context) {
   if (!settings) {
-    return common::make_error_value("Invalid input argument", common::ErrorValue::E_ERROR);
+    return common::make_error_value("Invalid input argument(s)", common::ErrorValue::E_ERROR);
   }
 
   MemcachedConfig config = settings->info();
@@ -92,7 +92,7 @@ common::Error createConnection(MemcachedConnectionSettings* settings, struct mem
 
 common::Error testConnection(MemcachedConnectionSettings* settings) {
   if (!settings) {
-    return common::make_error_value("Invalid input argument", common::ErrorValue::E_ERROR);
+    return common::make_error_value("Invalid input argument(s)", common::ErrorValue::E_ERROR);
   }
 
   MemcachedConfig inf = settings->info();
@@ -184,7 +184,7 @@ common::Error MemcachedRaw::keys(const char* args) {
 
 common::Error MemcachedRaw::info(const char* args, MemcachedServerInfo::Common* statsout) {
   if (!statsout) {
-    return common::make_error_value("Invalid input argument", common::ErrorValue::E_ERROR);
+    return common::make_error_value("Invalid input argument(s)", common::ErrorValue::E_ERROR);
   }
 
   memcached_return_t error;
@@ -232,7 +232,7 @@ common::Error MemcachedRaw::dbsize(size_t* size) {
 
 common::Error MemcachedRaw::get(const std::string& key, std::string* ret_val) {
   if (!ret_val) {
-    return common::make_error_value("Invalid input argument", common::ErrorValue::E_ERROR);
+    return common::make_error_value("Invalid input argument(s)", common::ErrorValue::E_ERROR);
   }
 
   uint32_t flags = 0;

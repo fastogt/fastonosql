@@ -35,7 +35,7 @@ MemcachedLexer::MemcachedLexer(QObject* parent)
   setAPIs(new MemcachedApi(this));
 }
 
-const char *MemcachedLexer::language() const {
+const char* MemcachedLexer::language() const {
   return "Memcached";
 }
 

@@ -21,11 +21,12 @@
 namespace fastonosql {
 
 CommandLogger::CommandLogger() {
-  qRegisterMetaType<Command>("Command");
+  qRegisterMetaType<fastonosql::Command>("fastonosql::Command");
+  qRegisterMetaType<fastonosql::connectionTypes>("fastonosql::connectionTypes");
 }
 
-void CommandLogger::print(const Command& command) {
-  emit printed(command);
+void CommandLogger::print(connectionTypes type, const Command& command) {
+  emit printed(type, command);
 }
 
 }  // namespace fastonosql

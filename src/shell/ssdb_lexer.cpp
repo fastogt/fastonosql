@@ -35,8 +35,8 @@ SsdbLexer::SsdbLexer(QObject* parent)
   setAPIs(new SsdbApi(this));
 }
 
-const char *SsdbLexer::language() const {
-  return "Ssdb";
+const char* SsdbLexer::language() const {
+  return "SSDB";
 }
 
 const char* SsdbLexer::version() const {

@@ -67,7 +67,7 @@ bool SsdbDriver::isAuthenticated() const {
 common::Error SsdbDriver::commandDeleteImpl(CommandDeleteKey* command,
                                             std::string* cmdstring) const {
   if (!command || !cmdstring) {
-    return common::make_error_value("Invalid input argument", common::ErrorValue::E_ERROR);
+    return common::make_error_value("Invalid input argument(s)", common::ErrorValue::E_ERROR);
   }
 
   char patternResult[1024] = {0};
@@ -81,7 +81,7 @@ common::Error SsdbDriver::commandDeleteImpl(CommandDeleteKey* command,
 
 common::Error SsdbDriver::commandLoadImpl(CommandLoadKey* command, std::string* cmdstring) const {
   if (!command || !cmdstring) {
-    return common::make_error_value("Invalid input argument", common::ErrorValue::E_ERROR);
+    return common::make_error_value("Invalid input argument(s)", common::ErrorValue::E_ERROR);
   }
 
   char patternResult[1024] = {0};
@@ -111,7 +111,7 @@ common::Error SsdbDriver::commandLoadImpl(CommandLoadKey* command, std::string* 
 common::Error SsdbDriver::commandCreateImpl(CommandCreateKey* command,
                                             std::string* cmdstring) const {
   if (!command || !cmdstring) {
-    return common::make_error_value("Invalid input argument", common::ErrorValue::E_ERROR);
+    return common::make_error_value("Invalid input argument(s)", common::ErrorValue::E_ERROR);
   }
 
   char patternResult[1024] = {0};
@@ -173,7 +173,7 @@ common::Error SsdbDriver::executeImpl(int argc, char **argv, FastoObject* out) {
 }
 
 common::Error SsdbDriver::serverInfo(IServerInfo **info) {
-  LOG_COMMAND(Command(INFO_REQUEST, common::Value::C_INNER));
+  LOG_COMMAND(type(), Command(INFO_REQUEST, common::Value::C_INNER));
   SsdbServerInfo::Common cm;
   common::Error err = impl_->info(nullptr, &cm);
   if (!err) {
@@ -207,7 +207,7 @@ common::Error SsdbDriver::serverDiscoveryInfo(ServerDiscoveryInfo** dinfo, IServ
 
 common::Error SsdbDriver::currentDataBaseInfo(IDataBaseInfo** info) {
   if (!info) {
-    return common::make_error_value("Invalid input argument", common::ErrorValue::E_ERROR);
+    return common::make_error_value("Invalid input argument(s)", common::ErrorValue::E_ERROR);
   }
 
   size_t dbsize = 0;

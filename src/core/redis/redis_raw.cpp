@@ -298,7 +298,7 @@ namespace {
 common::Error createConnection(const RedisConfig& config,
                                const SSHInfo& sinfo, struct redisContext** context) {
     if (!context) {
-      return common::make_error_value("Invalid input argument", common::ErrorValue::E_ERROR);
+      return common::make_error_value("Invalid input argument(s)", common::ErrorValue::E_ERROR);
     }
 
     redisContext* lcontext = nullptr;
@@ -358,7 +358,7 @@ common::Error createConnection(const RedisConfig& config,
 
 common::Error createConnection(RedisConnectionSettings* settings, redisContext** context) {
   if (!settings) {
-    return common::make_error_value("Invalid input argument", common::ErrorValue::E_ERROR);
+    return common::make_error_value("Invalid input argument(s)", common::ErrorValue::E_ERROR);
   }
 
   RedisConfig config = settings->info();
@@ -380,7 +380,7 @@ common::Error cliOutputCommandHelp(FastoObject* out, struct commandHelp *help, i
                                    const std::string& delimiter) {
   DCHECK(out);
   if (!out) {
-    return common::make_error_value("Invalid input argument", common::ErrorValue::E_ERROR);
+    return common::make_error_value("Invalid input argument(s)", common::ErrorValue::E_ERROR);
   }
 
   char buff[1024] = {0};
@@ -426,7 +426,7 @@ common::Error authContext(const RedisConfig& config, redisContext* context) {
 
 common::Error testConnection(RedisConnectionSettings* settings) {
   if (!settings) {
-    return common::make_error_value("Invalid input argument", common::ErrorValue::E_ERROR);
+    return common::make_error_value("Invalid input argument(s)", common::ErrorValue::E_ERROR);
   }
 
   redisContext* context = nullptr;
@@ -449,7 +449,7 @@ common::Error testConnection(RedisConnectionSettings* settings) {
 common::Error discoveryConnection(RedisConnectionSettings* settings,
                                   std::vector<ServerDiscoveryInfoSPtr>* infos) {
   if (!settings || !infos) {
-    return common::make_error_value("Invalid input argument", common::ErrorValue::E_ERROR);
+    return common::make_error_value("Invalid input argument(s)", common::ErrorValue::E_ERROR);
   }
 
   redisContext* context = nullptr;
@@ -588,7 +588,7 @@ bool RedisRaw::isInterrupted() const {
 common::Error RedisRaw::latencyMode(FastoObject* out) {
   DCHECK(out);
   if (!out) {
-    return common::make_error_value("Invalid input argument", common::ErrorValue::E_ERROR);
+    return common::make_error_value("Invalid input argument(s)", common::ErrorValue::E_ERROR);
   }
 
   FastoObjectCommand* cmd = createCommand<RedisCommand>(out, "PING", common::Value::C_INNER);
@@ -711,7 +711,7 @@ common::Error RedisRaw::sendSync(unsigned long long& payload) {
 common::Error RedisRaw::slaveMode(FastoObject* out) {
   DCHECK(out);
   if (!out) {
-    return common::make_error_value("Invalid input argument", common::ErrorValue::E_ERROR);
+    return common::make_error_value("Invalid input argument(s)", common::ErrorValue::E_ERROR);
   }
 
   unsigned long long payload = 0;
@@ -765,7 +765,7 @@ common::Error RedisRaw::slaveMode(FastoObject* out) {
 common::Error RedisRaw::getRDB(FastoObject* out) {
   DCHECK(out);
   if (!out) {
-    return common::make_error_value("Invalid input argument", common::ErrorValue::E_ERROR);
+    return common::make_error_value("Invalid input argument(s)", common::ErrorValue::E_ERROR);
   }
 
   unsigned long long payload = 0;
@@ -892,7 +892,7 @@ common::Error RedisRaw::dbsize(long long& size) {
 common::Error RedisRaw::getKeyTypes(redisReply *keys, int *types) {
   DCHECK(types);
   if (!types) {
-    return common::make_error_value("Invalid input argument", common::ErrorValue::E_ERROR);
+    return common::make_error_value("Invalid input argument(s)", common::ErrorValue::E_ERROR);
   }
 
   redisReply *reply;
@@ -981,7 +981,7 @@ common::Error RedisRaw::getKeySizes(redisReply *keys, int *types, unsigned long 
 common::Error RedisRaw::findBigKeys(FastoObject* out) {
   DCHECK(out);
   if (!out) {
-    return common::make_error_value("Invalid input argument", common::ErrorValue::E_ERROR);
+    return common::make_error_value("Invalid input argument(s)", common::ErrorValue::E_ERROR);
   }
 
   FastoObjectCommand* cmd = createCommand<RedisCommand>(out, FIND_BIG_KEYS_REQUEST,
@@ -1157,7 +1157,7 @@ common::Error RedisRaw::findBigKeys(FastoObject* out) {
 common::Error RedisRaw::statMode(FastoObject* out) {
   DCHECK(out);
   if (!out) {
-    return common::make_error_value("Invalid input argument", common::ErrorValue::E_ERROR);
+    return common::make_error_value("Invalid input argument(s)", common::ErrorValue::E_ERROR);
   }
 
   FastoObjectCommand* cmd = createCommand<RedisCommand>(out, INFO_REQUEST,
@@ -1268,7 +1268,7 @@ common::Error RedisRaw::statMode(FastoObject* out) {
 common::Error RedisRaw::scanMode(FastoObject* out) {
   DCHECK(out);
   if (!out) {
-    return common::make_error_value("Invalid input argument", common::ErrorValue::E_ERROR);
+    return common::make_error_value("Invalid input argument(s)", common::ErrorValue::E_ERROR);
   }
 
   FastoObjectCommand* cmd = createCommand<RedisCommand>(out, SCAN_MODE_REQUEST,
@@ -1344,7 +1344,7 @@ common::Error RedisRaw::select(int num, IDataBaseInfo **info) {
 common::Error RedisRaw::cliFormatReplyRaw(FastoObjectArray* ar, redisReply *r) {
   DCHECK(ar);
   if (!ar) {
-      return common::make_error_value("Invalid input argument", common::ErrorValue::E_ERROR);
+      return common::make_error_value("Invalid input argument(s)", common::ErrorValue::E_ERROR);
   }
 
   switch (r->type) {
@@ -1400,7 +1400,7 @@ common::Error RedisRaw::cliFormatReplyRaw(FastoObjectArray* ar, redisReply *r) {
 common::Error RedisRaw::cliFormatReplyRaw(FastoObject* out, redisReply *r) {
   DCHECK(out);
   if (!out) {
-    return common::make_error_value("Invalid input argument", common::ErrorValue::E_ERROR);
+    return common::make_error_value("Invalid input argument(s)", common::ErrorValue::E_ERROR);
   }
 
   FastoObject* obj = nullptr;
@@ -1456,7 +1456,7 @@ common::Error RedisRaw::cliFormatReplyRaw(FastoObject* out, redisReply *r) {
 common::Error RedisRaw::cliOutputGenericHelp(FastoObject* out) {
   DCHECK(out);
   if (!out) {
-    return common::make_error_value("Invalid input argument", common::ErrorValue::E_ERROR);
+    return common::make_error_value("Invalid input argument(s)", common::ErrorValue::E_ERROR);
   }
 
   common::StringValue *val = common::Value::createStringValue(PROJECT_NAME_TITLE " based on hiredis " HIREDIS_VERSION "\r\n"
@@ -1473,7 +1473,7 @@ common::Error RedisRaw::cliOutputGenericHelp(FastoObject* out) {
 common::Error RedisRaw::cliOutputHelp(FastoObject* out, int argc, char **argv) {
   DCHECK(out);
   if (!out) {
-    return common::make_error_value("Invalid input argument", common::ErrorValue::E_ERROR);
+    return common::make_error_value("Invalid input argument(s)", common::ErrorValue::E_ERROR);
   }
 
   int i, j, len;
@@ -1528,7 +1528,7 @@ common::Error RedisRaw::cliOutputHelp(FastoObject* out, int argc, char **argv) {
 common::Error RedisRaw::cliReadReply(FastoObject* out) {
   DCHECK(out);
   if (!out) {
-    return common::make_error_value("Invalid input argument", common::ErrorValue::E_ERROR);
+    return common::make_error_value("Invalid input argument(s)", common::ErrorValue::E_ERROR);
   }
 
   void *_reply = nullptr;
@@ -1580,7 +1580,7 @@ common::Error RedisRaw::cliReadReply(FastoObject* out) {
 common::Error RedisRaw::execute(int argc, char **argv, FastoObject* out) {
   DCHECK(out);
   if (!out) {
-    return common::make_error_value("Invalid input argument", common::ErrorValue::E_ERROR);
+    return common::make_error_value("Invalid input argument(s)", common::ErrorValue::E_ERROR);
   }
 
   char *command = argv[0];
@@ -1679,7 +1679,7 @@ common::Error RedisRaw::executeAsPipeline(std::vector<FastoObjectCommandIPtr> cm
       continue;
     }
 
-    LOG_COMMAND(Command(cmdc));
+    LOG_COMMAND(REDIS, Command(cmdc));
     int argc = 0;
     sds* argv = sdssplitargs(ccommand, &argc);
 

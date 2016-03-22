@@ -53,7 +53,7 @@ class ChangePasswordServerDialog
 
  private:
   bool validateInput();
-  fasto::qt::gui::GlassWidget *glassWidget_;
+  fasto::qt::gui::GlassWidget* glassWidget_;
   QLineEdit* passwordLineEdit_;
   QLineEdit* confPasswordLineEdit_;
   const IServerSPtr server_;

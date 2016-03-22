@@ -821,7 +821,7 @@ void RedisDriver::handleServerPropertyChangeEvent(events::ChangeServerPropertyIn
 common::Error RedisDriver::commandDeleteImpl(CommandDeleteKey* command,
                                              std::string* cmdstring) const {
   if (!command || !cmdstring) {
-    return common::make_error_value("Invalid input argument", common::ErrorValue::E_ERROR);
+    return common::make_error_value("Invalid input argument(s)", common::ErrorValue::E_ERROR);
   }
 
   char patternResult[1024] = {0};
@@ -835,7 +835,7 @@ common::Error RedisDriver::commandDeleteImpl(CommandDeleteKey* command,
 
 common::Error RedisDriver::commandLoadImpl(CommandLoadKey* command, std::string* cmdstring) const {
   if (!command || !cmdstring) {
-    return common::make_error_value("Invalid input argument", common::ErrorValue::E_ERROR);
+    return common::make_error_value("Invalid input argument(s)", common::ErrorValue::E_ERROR);
   }
 
   char patternResult[1024] = {0};
@@ -864,7 +864,7 @@ common::Error RedisDriver::commandLoadImpl(CommandLoadKey* command, std::string*
 common::Error RedisDriver::commandCreateImpl(CommandCreateKey* command,
                                              std::string* cmdstring) const {
   if (!command || !cmdstring) {
-    return common::make_error_value("Invalid input argument", common::ErrorValue::E_ERROR);
+    return common::make_error_value("Invalid input argument(s)", common::ErrorValue::E_ERROR);
   }
 
   char patternResult[1024] = {0};
@@ -898,7 +898,7 @@ common::Error RedisDriver::commandCreateImpl(CommandCreateKey* command,
 common::Error RedisDriver::commandChangeTTLImpl(CommandChangeTTL* command,
                                                 std::string* cmdstring) const {
   if (!command || !cmdstring) {
-    return common::make_error_value("Invalid input argument", common::ErrorValue::E_ERROR);
+    return common::make_error_value("Invalid input argument(s)", common::ErrorValue::E_ERROR);
   }
 
   char patternResult[1024] = {0};

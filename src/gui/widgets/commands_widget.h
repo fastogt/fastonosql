@@ -24,6 +24,7 @@ class QTextEdit;
 class QAction;
 
 #include "global/types.h"
+#include "core/connection_types.h"
 
 namespace fastonosql {
 
@@ -34,7 +35,7 @@ class CommandsWidget
   explicit CommandsWidget(QWidget* parent = 0);
 
  public Q_SLOTS:
-  void addCommand(const Command& command);
+  void addCommand(connectionTypes type, const Command& command);
 
  private Q_SLOTS:
   void showContextMenu(const QPoint& pt);

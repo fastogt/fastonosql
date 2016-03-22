@@ -74,7 +74,7 @@ class OutputWidget
   FastoTreeView* treeView_;
   FastoTableView* tableView_;
   FastoTextView* textView_;
-  IServerSPtr server_;
+  const IServerSPtr server_;
 };
 
 }  // namespace fastonosql

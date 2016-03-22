@@ -124,7 +124,7 @@ common::Error IDriver::execute(FastoObjectCommand* cmd) {
     return common::make_error_value("Invalid input argument(s)", common::ErrorValue::E_ERROR);
   }
 
-  LOG_COMMAND(Command(icmd));
+  LOG_COMMAND(type(), Command(icmd));
   int argc;
   sds* argv = sdssplitargs(ccommand, &argc);
 
@@ -196,7 +196,7 @@ void IDriver::stop() {
 
 common::Error IDriver::commandByType(CommandKeySPtr command, std::string* cmdstring) const {
   if (!command || !cmdstring) {
-    return common::make_error_value("Invalid input argument", common::ErrorValue::E_ERROR);
+    return common::make_error_value("Invalid input argument(s)", common::ErrorValue::E_ERROR);
   }
 
   CommandKey::cmdtype t = command->type();
@@ -205,28 +205,28 @@ common::Error IDriver::commandByType(CommandKeySPtr command, std::string* cmdstr
     CommandDeleteKey* delc = dynamic_cast<CommandDeleteKey*>(command.get());
     if (!delc) {
       DNOTREACHED();
-      return common::make_error_value("Invalid input argument", common::ErrorValue::E_ERROR);
+      return common::make_error_value("Invalid input argument(s)", common::ErrorValue::E_ERROR);
     }
     return commandDeleteImpl(delc, cmdstring);
   } else if (t == CommandKey::C_LOAD) {
     CommandLoadKey* loadc = dynamic_cast<CommandLoadKey*>(command.get());
     if (!loadc) {
       DNOTREACHED();
-      return common::make_error_value("Invalid input argument", common::ErrorValue::E_ERROR);
+      return common::make_error_value("Invalid input argument(s)", common::ErrorValue::E_ERROR);
     }
     return commandLoadImpl(loadc, cmdstring);
   } else if (t == CommandKey::C_CREATE) {
     CommandCreateKey* createc = dynamic_cast<CommandCreateKey*>(command.get());
     if (!createc) {
       DNOTREACHED();
-      return common::make_error_value("Invalid input argument", common::ErrorValue::E_ERROR);
+      return common::make_error_value("Invalid input argument(s)", common::ErrorValue::E_ERROR);
     }
     return commandCreateImpl(createc, cmdstring);
   } else if (t == CommandKey::C_CHANGE_TTL) {
     CommandChangeTTL* changettl = dynamic_cast<CommandChangeTTL*>(command.get());
     if (!changettl) {
       DNOTREACHED();
-      return common::make_error_value("Invalid input argument", common::ErrorValue::E_ERROR);
+      return common::make_error_value("Invalid input argument(s)", common::ErrorValue::E_ERROR);
     }
     return commandChangeTTLImpl(changettl, cmdstring);
   } else {
