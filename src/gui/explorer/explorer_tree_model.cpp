@@ -412,9 +412,9 @@ void ExplorerTreeModel::addDatabase(IServer* server, IDataBaseInfoSPtr db) {
 
   ExplorerDatabaseItem* dbs = findDatabaseItem(parent, db);
   if (!dbs) {
-    QModelIndex index = createIndex(0, 0, parent);
+    QModelIndex ind = index(root_->indexOf(parent), 0, QModelIndex());
     ExplorerDatabaseItem *item = new ExplorerDatabaseItem(server->createDatabaseByInfo(db), parent);
-    insertItem(index, item);
+    insertItem(ind, item);
   }
 }
 
@@ -427,7 +427,8 @@ void ExplorerTreeModel::removeDatabase(IServer* server, IDataBaseInfoSPtr db) {
 
   ExplorerDatabaseItem* dbs = findDatabaseItem(parent, db);
   if (dbs) {
-    removeItem(createIndex(0, 0, parent), dbs);
+    QModelIndex ind = index(root_->indexOf(parent), 0, QModelIndex());
+    removeItem(ind, dbs);
   }
 }
 

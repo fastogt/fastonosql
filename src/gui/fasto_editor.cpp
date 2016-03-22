@@ -421,7 +421,7 @@ void FastoEditorOutput::layoutChanged() {
   }
 
   editor_->setMode(view_method_ == HEX ? FastoHexEdit::HEX_MODE : FastoHexEdit::TEXT_MODE);
-  editor_->setData(result.toLocal8Bit());
+  editor_->setData(result.toUtf8());
 }
 
 FastoEditorShell::FastoEditorShell(bool showAutoCompl, QWidget* parent)
