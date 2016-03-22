@@ -145,6 +145,7 @@ class ExplorerTreeModel
   void addDatabase(IServer* server, IDataBaseInfoSPtr db);
   void removeDatabase(IServer* server, IDataBaseInfoSPtr db);
   void setDefaultDb(IServer* server, IDataBaseInfoSPtr db);
+  void updateDb(IServer* server, IDataBaseInfoSPtr db);
 
   void addKey(IServer* server, IDataBaseInfoSPtr db, const NDbKValue &dbv);
   void removeKey(IServer* server, IDataBaseInfoSPtr db, const NDbKValue &key);

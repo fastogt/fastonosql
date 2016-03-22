@@ -251,6 +251,8 @@ void MemcachedDriver::handleLoadDatabaseContentEvent(events::LoadDatabaseContent
           res.keys.push_back(ress);
         }
       }
+
+      impl_->dbsize(&res.dbsize);
     }
   }
 done:

@@ -768,6 +768,8 @@ void ExplorerTreeView::finishLoadDatabaseContent(const events_info::LoadDatabase
     NDbKValue key = keys[i];
     mod->addKey(serv, res.inf, key);
   }
+
+  mod->updateDb(serv, res.inf);
 }
 
 void ExplorerTreeView::startClearDatabase(const events_info::ClearDatabaseRequest& req) {

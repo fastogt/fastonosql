@@ -366,6 +366,10 @@ size_t IDataBaseInfo::sizeDB() const {
   return size_;
 }
 
+void IDataBaseInfo::setSizeDB(size_t size) {
+  size_ = size;
+}
+
 size_t IDataBaseInfo::loadedSize() const {
   return keys_.size();
 }

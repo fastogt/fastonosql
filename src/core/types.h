@@ -204,6 +204,7 @@ class IDataBaseInfo {
   connectionTypes type() const;
   std::string name() const;
   size_t sizeDB() const;
+  void setSizeDB(size_t size);
   size_t loadedSize() const;
 
   bool isDefault() const;

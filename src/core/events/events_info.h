@@ -245,6 +245,7 @@ struct LoadDatabaseContentResponce
 
   keys_cont_type keys;
   uint32_t cursor_out;
+  size_t dbsize;
 };
 
 struct ClearDatabaseRequest

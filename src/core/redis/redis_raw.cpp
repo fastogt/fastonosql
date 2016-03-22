@@ -876,7 +876,11 @@ redisReply* RedisRaw::sendScan(common::Error& er, unsigned long long *it) {
   return reply;
 }
 
-common::Error RedisRaw::dbsize(long long& size) {
+common::Error RedisRaw::dbsize(size_t* size) {
+  if (!size) {
+    return common::make_error_value("Invalid input argument(s)", common::ErrorValue::E_ERROR);
+  }
+
   redisReply *reply = (redisReply *)redisCommand(context_, DBSIZE);
 
   if (!reply || reply->type != REDIS_REPLY_INTEGER) {
@@ -884,7 +888,7 @@ common::Error RedisRaw::dbsize(long long& size) {
   }
 
   /* Grab the number of keys and free our reply */
-  size = reply->integer;
+  *size = reply->integer;
   freeReplyObject(reply);
   return common::Error();
 }
@@ -994,7 +998,7 @@ common::Error RedisRaw::findBigKeys(FastoObject* out) {
 
   unsigned long long biggest[5] = {0}, counts[5] = {0}, totalsize[5] = {0};
   unsigned long long sampled = 0, totlen=0, *sizes = nullptr, it = 0;
-  long long total_keys;
+  size_t total_keys = 0;
   sds maxkeys[5] = {0};
   const char *typeName[] = {"string","list","set","hash","zset"};
   const char *typeunit[] = {"bytes","items","members","fields","members"};
@@ -1003,7 +1007,7 @@ common::Error RedisRaw::findBigKeys(FastoObject* out) {
   int type, *types = nullptr;
 
   /* Total keys pre scanning */
-  common::Error er = dbsize(total_keys);
+  common::Error er = dbsize(&total_keys);
   if (er && er->isError()) {
     return er;
   }
@@ -1324,8 +1328,8 @@ common::Error RedisRaw::cliAuth() {
 common::Error RedisRaw::select(int num, IDataBaseInfo **info) {
   redisReply *reply = static_cast<redisReply*>(redisCommand(context_, "SELECT %d", num));
   if (reply) {
-    long long sz = 0;
-    dbsize(sz);
+    size_t sz = 0;
+    dbsize(&sz);
     RedisDataBaseInfo* linfo = new RedisDataBaseInfo(common::convertToString(num), true, sz);
     if (observer_) {
       observer_->currentDataBaseChanged(linfo);
@@ -1634,8 +1638,8 @@ common::Error RedisRaw::execute(int argc, char **argv, FastoObject* out) {
     /* Store database number when SELECT was successfully executed. */
     if (strcasecmp(command, "select") == 0 && argc == 2) {
       config_.dbnum = atoi(argv[1]);
-      long long sz = 0;
-      dbsize(sz);
+      size_t sz = 0;
+      dbsize(&sz);
       RedisDataBaseInfo* info = new RedisDataBaseInfo(common::convertToString(config_.dbnum), true, sz);
       if (observer_) {
         observer_->currentDataBaseChanged(info);

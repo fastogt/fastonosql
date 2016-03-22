@@ -451,6 +451,7 @@ void IServer::handleLoadDatabaseContentEvent(events::LoadDatabaseContentResponce
   } else {
     if (containsDatabase(v.inf)) {
       v.inf->setKeys(v.keys);
+      v.inf->setSizeDB(v.dbsize);
     }
   }
 
@@ -528,13 +529,9 @@ void IServer::handleSetDefaultDatabaseEvent(events::SetDefaultDatabaseResponceEv
   } else {
     IDataBaseInfoSPtr inf = v.inf;
     for (size_t i = 0; i < databases_.size(); ++i) {
-      IDataBaseInfoSPtr db = databases_[i];
-      if (db->name() == inf->name()) {
-        inf->setIsDefault(true);
-      } else {
-        inf->setIsDefault(false);
-      }
+      databases_[i]->setIsDefault(false);
     }
+    inf->setIsDefault(true);
   }
 
   emit finishedSetDefaultDatabase(v);

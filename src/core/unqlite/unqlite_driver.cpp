@@ -317,6 +317,8 @@ void UnqliteDriver::handleLoadDatabaseContentEvent(events::LoadDatabaseContentRe
           res.keys.push_back(ress);
          }
        }
+
+        impl_->dbsize(&res.dbsize);
      }
   }
 done:

@@ -455,7 +455,7 @@ struct RedisRaw {
   common::Error slaveMode(FastoObject* out) WARN_UNUSED_RESULT;
   common::Error getRDB(FastoObject* out) WARN_UNUSED_RESULT;
   redisReply *sendScan(common::Error& er, unsigned long long *it);
-  common::Error dbsize(long long& size) WARN_UNUSED_RESULT;
+  common::Error dbsize(size_t* size) WARN_UNUSED_RESULT;
   common::Error getKeyTypes(redisReply *keys, int *types) WARN_UNUSED_RESULT;
   common::Error getKeySizes(redisReply *keys, int *types,
                           unsigned long long *sizes) WARN_UNUSED_RESULT;

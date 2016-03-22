@@ -726,6 +726,8 @@ void RedisDriver::handleLoadDatabaseContentEvent(events::LoadDatabaseContentRequ
           }
         }
       }
+
+      impl_->dbsize(&res.dbsize);
     }
   }
 done:

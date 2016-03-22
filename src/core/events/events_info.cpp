@@ -161,7 +161,7 @@ LoadDatabaseContentRequest::LoadDatabaseContentRequest(initiator_type sender, ID
 }
 
 LoadDatabaseContentResponce::LoadDatabaseContentResponce(const base_class &request)
-  : base_class(request) {
+  : base_class(request), keys(), cursor_out(0), dbsize(0) {
 }
 
 ClearDatabaseRequest::ClearDatabaseRequest(initiator_type sender, IDataBaseInfoSPtr inf,

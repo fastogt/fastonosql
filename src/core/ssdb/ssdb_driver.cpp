@@ -357,6 +357,8 @@ void SsdbDriver::handleLoadDatabaseContentEvent(events::LoadDatabaseContentReque
             res.keys.push_back(ress);
           }
         }
+
+        impl_->dbsize(&res.dbsize);
       }
     }
 done:

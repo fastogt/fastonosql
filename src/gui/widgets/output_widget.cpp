@@ -162,7 +162,7 @@ void OutputWidget::addChild(FastoObject* child) {
     void* parentinner = command->parent();
 
     QModelIndex parent;
-    bool isFound = commonModel_->findItem(parentinner, parent);
+    bool isFound = commonModel_->findItem(parentinner, &parent);
     if (!isFound) {
       return;
     }
@@ -188,7 +188,7 @@ void OutputWidget::addChild(FastoObject* child) {
     FastoObjectArray* arr = dynamic_cast<FastoObjectArray*>(child->parent());
     if (arr) {
       QModelIndex parent;
-      bool isFound = commonModel_->findItem(arr, parent);
+      bool isFound = commonModel_->findItem(arr, &parent);
       if (!isFound) {
         return;
       }
@@ -215,7 +215,7 @@ void OutputWidget::addChild(FastoObject* child) {
 
 void OutputWidget::itemUpdate(FastoObject* item, common::Value *newValue) {
   QModelIndex index;
-  bool isFound = commonModel_->findItem(item, index);
+  bool isFound = commonModel_->findItem(item, &index);
   if (!isFound) {
     return;
   }

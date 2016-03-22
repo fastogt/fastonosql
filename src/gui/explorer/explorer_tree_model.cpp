@@ -300,8 +300,7 @@ QVariant ExplorerTreeModel::data(const QModelIndex& index, int role) const {
       } else if (t == IExplorerTreeItem::eDatabase) {
         ExplorerDatabaseItem* db = dynamic_cast<ExplorerDatabaseItem*>(node);
         if (db) {
-          return QString("%1 (%2/%3)").arg(node->name()).arg(db->sizeDB())
-              .arg(node->childrenCount());
+          return QString("%1 (%2/%3)").arg(node->name()).arg(db->childrenCount()).arg(db->sizeDB());
         }
       } else {
         return QString("%1 (%2)").arg(node->name()).arg(node->childrenCount());
@@ -439,27 +438,34 @@ void ExplorerTreeModel::setDefaultDb(IServer* server, IDataBaseInfoSPtr db) {
     return;
   }
 
-  size_t child_count = parent->childrenCount();
-  for (size_t i = 0; i < child_count ; ++i) {
-    ExplorerDatabaseItem *item = dynamic_cast<ExplorerDatabaseItem*>(parent->child(i));
-    DCHECK(item);
-    if (!item) {
-      continue;
-    }
-
-    IDataBaseInfoSPtr info = item->info();
-    if (info->isDefault()) {
-      if (info->name() != db->name()) {
-        info->setIsDefault(false);
-        updateItem(createIndex(i, 0, parent), createIndex(i, 0, parent));
-      }
-    } else {
-      if (info->name() == db->name()) {
-        info->setIsDefault(true);
-        updateItem(createIndex(i, 0, parent), createIndex(i, 0, parent));
-      }
-    }
+  ExplorerDatabaseItem* dbs = findDatabaseItem(parent, db);
+  DCHECK(dbs);
+  if (!dbs) {
+    return;
   }
+
+  QModelIndex parent_index = createIndex(root_->indexOf(parent), ExplorerDatabaseItem::eName, parent);
+  QModelIndex dbs_last_index = index(parent->childrenCount(), ExplorerDatabaseItem::eCountColumns, parent_index);
+  updateItem(parent_index, dbs_last_index);
+}
+
+void ExplorerTreeModel::updateDb(IServer* server, IDataBaseInfoSPtr db) {
+  ExplorerServerItem* parent = findServerItem(server);
+  DCHECK(parent);
+  if (!parent) {
+    return;
+  }
+
+  ExplorerDatabaseItem* dbs = findDatabaseItem(parent, db);
+  DCHECK(dbs);
+  if (!dbs) {
+    return;
+  }
+
+  int index_db = parent->indexOf(dbs);
+  QModelIndex dbs_index1 = createIndex(index_db, ExplorerDatabaseItem::eName, dbs);
+  QModelIndex dbs_index2 = createIndex(index_db, ExplorerDatabaseItem::eCountColumns, dbs);
+  updateItem(dbs_index1, dbs_index2);
 }
 
 void ExplorerTreeModel::addKey(IServer* server, IDataBaseInfoSPtr db, const NDbKValue &dbv) {
@@ -468,12 +474,12 @@ void ExplorerTreeModel::addKey(IServer* server, IDataBaseInfoSPtr db, const NDbK
     return;
   }
 
-  ExplorerDatabaseItem *dbs = findDatabaseItem(parent, db);
+  ExplorerDatabaseItem* dbs = findDatabaseItem(parent, db);
   if (!dbs) {
     return;
   }
 
-  ExplorerKeyItem *keyit = findKeyItem(dbs, dbv);
+  ExplorerKeyItem* keyit = findKeyItem(dbs, dbv);
   if (!keyit) {
     QModelIndex parentdb = createIndex(parent->indexOf(dbs), 0, dbs);
     ExplorerKeyItem *item = new ExplorerKeyItem(dbv, dbs);
