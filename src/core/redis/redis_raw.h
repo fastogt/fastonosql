@@ -451,10 +451,10 @@ struct RedisRaw {
   common::Error connect(bool force) WARN_UNUSED_RESULT;
 
   common::Error latencyMode(FastoObject* out) WARN_UNUSED_RESULT;
-  common::Error sendSync(unsigned long long& payload) WARN_UNUSED_RESULT;
+  common::Error sendSync(unsigned long long* payload) WARN_UNUSED_RESULT;
   common::Error slaveMode(FastoObject* out) WARN_UNUSED_RESULT;
   common::Error getRDB(FastoObject* out) WARN_UNUSED_RESULT;
-  redisReply* sendScan(common::Error& er, unsigned long long* it);
+  common::Error sendScan(unsigned long long* it, redisReply** out) WARN_UNUSED_RESULT;
   common::Error dbsize(size_t* size) WARN_UNUSED_RESULT;
   common::Error getKeyTypes(redisReply* keys, int* types) WARN_UNUSED_RESULT;
   common::Error getKeySizes(redisReply* keys, int* types,

@@ -673,7 +673,11 @@ common::Error RedisRaw::latencyMode(FastoObject* out) {
 
 /* Sends SYNC and reads the number of bytes in the payload. Used both by
  * slaveMode() and getRDB(). */
-common::Error RedisRaw::sendSync(unsigned long long& payload) {
+common::Error RedisRaw::sendSync(unsigned long long* payload) {
+  DCHECK(payload);
+  if (!payload) {
+    return common::make_error_value("Invalid input argument(s)", common::ErrorValue::E_ERROR);
+  }
   /* To start we need to send the SYNC command and return the payload.
    * The hiredis client lib does not understand this part of the protocol
    * and we don't want to mess with its buffers, so everything is performed
@@ -710,7 +714,7 @@ common::Error RedisRaw::sendSync(unsigned long long& payload) {
     return common::make_error_value(buf2, common::ErrorValue::E_ERROR);
   }
 
-  payload = strtoull(buf+1, NULL, 10);
+  *payload = strtoull(buf + 1, NULL, 10);
   return common::Error();
 }
 
@@ -721,7 +725,7 @@ common::Error RedisRaw::slaveMode(FastoObject* out) {
   }
 
   unsigned long long payload = 0;
-  common::Error er = sendSync(payload);
+  common::Error er = sendSync(&payload);
   if (er && er->isError()) {
     return er;
   }
@@ -775,7 +779,7 @@ common::Error RedisRaw::getRDB(FastoObject* out) {
   }
 
   unsigned long long payload = 0;
-  common::Error er = sendSync(payload);
+  common::Error er = sendSync(&payload);
   if (er && er->isError()) {
     return er;
   }
@@ -853,33 +857,35 @@ common::Error RedisRaw::getRDB(FastoObject* out) {
  * Find big keys
  *--------------------------------------------------------------------------- */
 
-redisReply* RedisRaw::sendScan(common::Error& er, unsigned long long *it) {
-  redisReply* reply = (redisReply *)redisCommand(context_, "SCAN %llu", *it);
+common::Error RedisRaw::sendScan(unsigned long long* it, redisReply** out){
+  DCHECK(out);
+  if (!out) {
+    return common::make_error_value("Invalid input argument(s)", common::ErrorValue::E_ERROR);
+  }
+
+  redisReply* reply = (redisReply*)redisCommand(context_, "SCAN %llu", *it);
 
   /* Handle any error conditions */
   if (!reply) {
-    er.reset(new common::ErrorValue("I/O error", common::Value::E_ERROR));
-    return nullptr;
+    return common::make_error_value("I/O error", common::Value::E_ERROR);
   } else if (reply->type == REDIS_REPLY_ERROR) {
     char buff[512];
     common::SNPrintf(buff, sizeof(buff), "SCAN error: %s", reply->str);
-    er.reset(new common::ErrorValue(buff, common::Value::E_ERROR));
-    return nullptr;
+    return common::make_error_value(buff, common::Value::E_ERROR);
   } else if (reply->type != REDIS_REPLY_ARRAY) {
-    er.reset(new common::ErrorValue("Non ARRAY response from SCAN!", common::Value::E_ERROR));
-    return nullptr;
+    return common::make_error_value("Non ARRAY response from SCAN!", common::Value::E_ERROR);
   } else if (reply->elements != 2) {
-    er.reset(new common::ErrorValue("Invalid element count from SCAN!", common::Value::E_ERROR));
-    return nullptr;
+    return common::make_error_value("Invalid element count from SCAN!", common::Value::E_ERROR);
   }
 
   /* Validate our types are correct */
-  assert(reply->element[0]->type == REDIS_REPLY_STRING);
-  assert(reply->element[1]->type == REDIS_REPLY_ARRAY);
+  DCHECK(reply->element[0]->type == REDIS_REPLY_STRING);
+  DCHECK(reply->element[1]->type == REDIS_REPLY_ARRAY);
 
   /* Update iterator */
   *it = atoi(reply->element[0]->str);
-  return reply;
+  *out = reply;
+  return common::Error();
 }
 
 common::Error RedisRaw::dbsize(size_t* size) {
@@ -887,7 +893,7 @@ common::Error RedisRaw::dbsize(size_t* size) {
     return common::make_error_value("Invalid input argument(s)", common::ErrorValue::E_ERROR);
   }
 
-  redisReply *reply = (redisReply *)redisCommand(context_, DBSIZE);
+  redisReply* reply = (redisReply*)redisCommand(context_, DBSIZE);
 
   if (!reply || reply->type != REDIS_REPLY_INTEGER) {
     return common::make_error_value("Couldn't determine DBSIZE!", common::Value::E_ERROR);
@@ -1037,12 +1043,12 @@ common::Error RedisRaw::findBigKeys(FastoObject* out) {
     double pct = 100 * (double)sampled/total_keys;
 
     /* Grab some keys and point to the keys array */
-    reply = sendScan(er, &it);
+    er = sendScan(&it, &reply);
     if (er && er->isError()) {
       return er;
     }
 
-    keys  = reply->element[1];
+    keys = reply->element[1];
 
     /* Reallocate our type and size array if we need to */
     if (keys->elements > arrsize) {
