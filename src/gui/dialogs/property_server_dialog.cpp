@@ -43,7 +43,7 @@ PropertyServerDialog::PropertyServerDialog(IServerSPtr server, QWidget* parent)
                  this, &PropertyServerDialog::changedProperty));
   propertyes_table_->setModel(mod);
 
-  QHBoxLayout *mainL = new QHBoxLayout;
+  QHBoxLayout* mainL = new QHBoxLayout;
   mainL->addWidget(propertyes_table_);
   setLayout(mainL);
 
@@ -75,7 +75,7 @@ void PropertyServerDialog::finishServerProperty(const events_info::ServerPropert
 
   if (server_->type() == REDIS) {
     ServerPropertyInfo inf = res.info;
-    PropertyTableModel *model = qobject_cast<PropertyTableModel*>(propertyes_table_->model());
+    PropertyTableModel* model = qobject_cast<PropertyTableModel*>(propertyes_table_->model());
     for (size_t i = 0; i < inf.propertyes.size(); ++i) {
       PropertyType it = inf.propertyes[i];
       model->insertItem(new PropertyTableItem(common::convertFromString<QString>(it.first),
@@ -96,7 +96,7 @@ void PropertyServerDialog::finishServerChangeProperty(const events_info::ChangeS
   if (server_->type() == REDIS) {
     PropertyType pr = res.new_item;
     if (res.is_change) {
-      PropertyTableModel *model = qobject_cast<PropertyTableModel*>(propertyes_table_->model());
+      PropertyTableModel* model = qobject_cast<PropertyTableModel*>(propertyes_table_->model());
       model->changeProperty(pr);
     }
   }

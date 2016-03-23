@@ -39,7 +39,7 @@ QVariant PropertyTableModel::data(const QModelIndex& index, int role) const {
   if (!index.isValid())
     return result;
 
-  PropertyTableItem *node = common::utils_qt::item<PropertyTableItem*>(index);
+  PropertyTableItem* node = common::utils_qt::item<PropertyTableItem*>(index);
 
   if (!node)
     return result;
@@ -59,7 +59,7 @@ QVariant PropertyTableModel::data(const QModelIndex& index, int role) const {
 bool PropertyTableModel::setData(const QModelIndex& index, const QVariant& value, int role) {
   if (index.isValid() && role == Qt::EditRole) {
     int column = index.column();
-    PropertyTableItem *node = common::utils_qt::item<PropertyTableItem*>(index);
+    PropertyTableItem* node = common::utils_qt::item<PropertyTableItem*>(index);
 
     if (!node)
       return false;
@@ -114,8 +114,8 @@ int PropertyTableModel::columnCount(const QModelIndex& parent) const {
 void PropertyTableModel::changeProperty(const PropertyType& pr) {
   const QString key = common::convertFromString<QString>(pr.first);
   for (size_t i = 0; i < data_.size(); ++i) {
-    PropertyTableItem *it = dynamic_cast<PropertyTableItem*>(data_[i]);
-    if (it->key_ == key) {
+    PropertyTableItem* it = dynamic_cast<PropertyTableItem*>(data_[i]);
+    if (it && it->key_ == key) {
       it->value_ = common::convertFromString<QString>(pr.second);
       emit dataChanged(index(i, 0), index(i, 1));
       break;

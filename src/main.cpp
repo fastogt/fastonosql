@@ -28,7 +28,7 @@ namespace {
   const QSize preferedSize(1024, 768);
 }
 
-int main(int argc, char *argv[]) {
+int main(int argc, char* argv[]) {
   QApplication app(argc, argv);
   app.setOrganizationName(PROJECT_COMPANYNAME);
   app.setApplicationName(PROJECT_NAME);

@@ -26,7 +26,7 @@
 namespace fastonosql {
 namespace shell {
 
-MemcachedApi::MemcachedApi(QsciLexer *lexer)
+MemcachedApi::MemcachedApi(QsciLexer* lexer)
   : BaseQsciApiCommandHolder(memcached::memcachedCommands, lexer) {
 }
 

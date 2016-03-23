@@ -148,7 +148,7 @@ common::Error LeveldbDriver::serverInfo(IServerInfo** info) {
   return err;
 }
 
-common::Error LeveldbDriver::serverDiscoveryInfo(ServerDiscoveryInfo **dinfo, IServerInfo **sinfo,
+common::Error LeveldbDriver::serverDiscoveryInfo(ServerDiscoveryInfo** dinfo, IServerInfo** sinfo,
                                                  IDataBaseInfo** dbinfo) {
   UNUSED(dinfo);
 
@@ -181,11 +181,11 @@ common::Error LeveldbDriver::currentDataBaseInfo(IDataBaseInfo** info) {
   return common::Error();
 }
 
-void LeveldbDriver::handleConnectEvent(events::ConnectRequestEvent *ev) {
+void LeveldbDriver::handleConnectEvent(events::ConnectRequestEvent* ev) {
   QObject* sender = ev->sender();
   notifyProgress(sender, 0);
   events::ConnectResponceEvent::value_type res(ev->value());
-  LeveldbConnectionSettings *set = dynamic_cast<LeveldbConnectionSettings*>(settings_.get());
+  LeveldbConnectionSettings* set = dynamic_cast<LeveldbConnectionSettings*>(settings_.get());
   if (set) {
     impl_->config_ = set->info();
   notifyProgress(sender, 25);
@@ -218,7 +218,7 @@ void LeveldbDriver::handleExecuteEvent(events::ExecuteRequestEvent* ev) {
   QObject* sender = ev->sender();
   notifyProgress(sender, 0);
   events::ExecuteResponceEvent::value_type res(ev->value());
-  const char *inputLine = common::utils::c_strornull(res.text);
+  const char* inputLine = common::utils::c_strornull(res.text);
 
   common::Error er;
   if (inputLine) {

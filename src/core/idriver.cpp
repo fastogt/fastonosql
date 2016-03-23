@@ -151,7 +151,7 @@ IDriver::~IDriver() {
   destroy(&log_file_);
 }
 
-void IDriver::reply(QObject *reciver, QEvent *ev) {
+void IDriver::reply(QObject* reciver, QEvent* ev) {
   qApp->postEvent(reciver, ev);
 }
 
@@ -256,58 +256,58 @@ void IDriver::customEvent(QEvent* event) {
   using namespace events;
   QEvent::Type type = event->type();
   if (type == static_cast<QEvent::Type>(ConnectRequestEvent::EventType)) {
-    ConnectRequestEvent *ev = static_cast<ConnectRequestEvent*>(event);
+    ConnectRequestEvent* ev = static_cast<ConnectRequestEvent*>(event);
     handleConnectEvent(ev);
   } else if (type == static_cast<QEvent::Type>(ShutDownRequestEvent::EventType)) {
-    ShutDownRequestEvent *ev = static_cast<ShutDownRequestEvent*>(event);
+    ShutDownRequestEvent* ev = static_cast<ShutDownRequestEvent*>(event);
     handleShutdownEvent(ev);
   } else if (type == static_cast<QEvent::Type>(ProcessConfigArgsRequestEvent::EventType)) {
-    ProcessConfigArgsRequestEvent *ev = static_cast<ProcessConfigArgsRequestEvent*>(event);
+    ProcessConfigArgsRequestEvent* ev = static_cast<ProcessConfigArgsRequestEvent*>(event);
     handleProcessCommandLineArgs(ev);
   } else if (type == static_cast<QEvent::Type>(DisconnectRequestEvent::EventType)) {
-    DisconnectRequestEvent *ev = static_cast<DisconnectRequestEvent*>(event);
+    DisconnectRequestEvent* ev = static_cast<DisconnectRequestEvent*>(event);
     handleDisconnectEvent(ev);
   } else if (type == static_cast<QEvent::Type>(ExecuteRequestEvent::EventType)) {
-    ExecuteRequestEvent *ev = static_cast<ExecuteRequestEvent*>(event);
+    ExecuteRequestEvent* ev = static_cast<ExecuteRequestEvent*>(event);
     handleExecuteEvent(ev);
   } else if (type == static_cast<QEvent::Type>(LoadDatabasesInfoRequestEvent::EventType)) {
-    LoadDatabasesInfoRequestEvent *ev = static_cast<LoadDatabasesInfoRequestEvent*>(event);
+    LoadDatabasesInfoRequestEvent* ev = static_cast<LoadDatabasesInfoRequestEvent*>(event);
     handleLoadDatabaseInfosEvent(ev);
   } else if (type == static_cast<QEvent::Type>(ServerInfoRequestEvent::EventType)) {
-    ServerInfoRequestEvent *ev = static_cast<ServerInfoRequestEvent*>(event);
+    ServerInfoRequestEvent* ev = static_cast<ServerInfoRequestEvent*>(event);
     handleLoadServerInfoEvent(ev);
   } else if (type == static_cast<QEvent::Type>(ServerInfoHistoryRequestEvent::EventType)) {
-    ServerInfoHistoryRequestEvent *ev = static_cast<ServerInfoHistoryRequestEvent*>(event);
+    ServerInfoHistoryRequestEvent* ev = static_cast<ServerInfoHistoryRequestEvent*>(event);
     handleLoadServerInfoHistoryEvent(ev);
   } else if (type == static_cast<QEvent::Type>(ClearServerHistoryRequestEvent::EventType)) {
-    ClearServerHistoryRequestEvent *ev = static_cast<ClearServerHistoryRequestEvent*>(event);
+    ClearServerHistoryRequestEvent* ev = static_cast<ClearServerHistoryRequestEvent*>(event);
     handleClearServerHistoryRequestEvent(ev);
   } else if (type == static_cast<QEvent::Type>(ServerPropertyInfoRequestEvent::EventType)) {
-    ServerPropertyInfoRequestEvent *ev = static_cast<ServerPropertyInfoRequestEvent*>(event);
+    ServerPropertyInfoRequestEvent* ev = static_cast<ServerPropertyInfoRequestEvent*>(event);
     handleLoadServerPropertyEvent(ev);
   } else if (type == static_cast<QEvent::Type>(ChangeServerPropertyInfoRequestEvent::EventType)) {
-    ChangeServerPropertyInfoRequestEvent *ev = static_cast<ChangeServerPropertyInfoRequestEvent*>(event);
+    ChangeServerPropertyInfoRequestEvent* ev = static_cast<ChangeServerPropertyInfoRequestEvent*>(event);
     handleServerPropertyChangeEvent(ev);
   } else if (type == static_cast<QEvent::Type>(BackupRequestEvent::EventType)) {
-    BackupRequestEvent *ev = static_cast<BackupRequestEvent*>(event);
+    BackupRequestEvent* ev = static_cast<BackupRequestEvent*>(event);
     handleBackupEvent(ev);
   } else if (type == static_cast<QEvent::Type>(ExportRequestEvent::EventType)) {
-    ExportRequestEvent *ev = static_cast<ExportRequestEvent*>(event);
+    ExportRequestEvent* ev = static_cast<ExportRequestEvent*>(event);
     handleExportEvent(ev);
   } else if (type == static_cast<QEvent::Type>(ChangePasswordRequestEvent::EventType)) {
-    ChangePasswordRequestEvent *ev = static_cast<ChangePasswordRequestEvent*>(event);
+    ChangePasswordRequestEvent* ev = static_cast<ChangePasswordRequestEvent*>(event);
     handleChangePasswordEvent(ev);
   } else if (type == static_cast<QEvent::Type>(ChangeMaxConnectionRequestEvent::EventType)) {
-    ChangeMaxConnectionRequestEvent *ev = static_cast<ChangeMaxConnectionRequestEvent*>(event);
+    ChangeMaxConnectionRequestEvent* ev = static_cast<ChangeMaxConnectionRequestEvent*>(event);
     handleChangeMaxConnectionEvent(ev);
   } else if (type == static_cast<QEvent::Type>(LoadDatabaseContentRequestEvent::EventType)) {
-    LoadDatabaseContentRequestEvent *ev = static_cast<LoadDatabaseContentRequestEvent*>(event);
+    LoadDatabaseContentRequestEvent* ev = static_cast<LoadDatabaseContentRequestEvent*>(event);
     handleLoadDatabaseContentEvent(ev);
   } else if (type == static_cast<QEvent::Type>(ClearDatabaseRequestEvent::EventType)) {
-    ClearDatabaseRequestEvent *ev = static_cast<ClearDatabaseRequestEvent*>(event);
+    ClearDatabaseRequestEvent* ev = static_cast<ClearDatabaseRequestEvent*>(event);
     handleClearDatabaseEvent(ev);
   } else if (type == static_cast<QEvent::Type>(SetDefaultDatabaseRequestEvent::EventType)) {
-    SetDefaultDatabaseRequestEvent *ev = static_cast<SetDefaultDatabaseRequestEvent*>(event);
+    SetDefaultDatabaseRequestEvent* ev = static_cast<SetDefaultDatabaseRequestEvent*>(event);
     handleSetDefaultDatabaseEvent(ev);
   } else if (type == static_cast<QEvent::Type>(CommandRequestEvent::EventType)) {
     events::CommandRequestEvent* ev = static_cast<events::CommandRequestEvent*>(event);
@@ -362,7 +362,7 @@ void IDriver::timerEvent(QTimerEvent* event) {
   QObject::timerEvent(event);
 }
 
-void IDriver::notifyProgress(QObject *reciver, int value) {
+void IDriver::notifyProgress(QObject* reciver, int value) {
   notifyProgressImpl(this, reciver, value);
 }
 
@@ -427,7 +427,7 @@ IDriver::RootLocker::~RootLocker() {
   reply(receiver_, new events::CommandRootCompleatedEvent(parent_, res));
 }
 
-void IDriver::setCurrentDatabaseInfo(IDataBaseInfo *inf) {
+void IDriver::setCurrentDatabaseInfo(IDataBaseInfo* inf) {
   current_database_info_.reset(inf);
 }
 

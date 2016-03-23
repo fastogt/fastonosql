@@ -61,7 +61,7 @@ void CommandsWidget::addCommand(connectionTypes type, const Command& command) {
 }
 
 void CommandsWidget::showContextMenu(const QPoint& pt) {
-  QMenu *menu = logTextEdit_->createStandardContextMenu();
+  QMenu* menu = logTextEdit_->createStandardContextMenu();
   menu->addAction(clear_);
   clear_->setEnabled(!logTextEdit_->toPlainText().isEmpty());
 

@@ -150,7 +150,7 @@ common::Error UnqliteDriver::serverDiscoveryInfo(ServerDiscoveryInfo** dinfo, IS
                                                  IDataBaseInfo** dbinfo) {
   UNUSED(dinfo);
 
-  IServerInfo *lsinfo = nullptr;
+  IServerInfo* lsinfo = nullptr;
   common::Error err = serverInfo(&lsinfo);
   if (err && err->isError()) {
     return err;
@@ -183,7 +183,7 @@ void UnqliteDriver::handleConnectEvent(events::ConnectRequestEvent* ev) {
   QObject* sender = ev->sender();
   notifyProgress(sender, 0);
   events::ConnectResponceEvent::value_type res(ev->value());
-  UnqliteConnectionSettings *set = dynamic_cast<UnqliteConnectionSettings*>(settings_.get());
+  UnqliteConnectionSettings* set = dynamic_cast<UnqliteConnectionSettings*>(settings_.get());
   if (set) {
     impl_->config_ = set->info();
   notifyProgress(sender, 25);
@@ -216,7 +216,7 @@ void UnqliteDriver::handleExecuteEvent(events::ExecuteRequestEvent* ev) {
   QObject* sender = ev->sender();
   notifyProgress(sender, 0);
   events::ExecuteResponceEvent::value_type res(ev->value());
-  const char *inputLine = common::utils::c_strornull(res.text);
+  const char* inputLine = common::utils::c_strornull(res.text);
 
   common::Error er;
   if (inputLine) {
@@ -283,7 +283,7 @@ void UnqliteDriver::handleCommandRequestEvent(events::CommandRequestEvent* ev) {
   notifyProgress(sender, 100);
 }
 
-void UnqliteDriver::handleLoadDatabaseContentEvent(events::LoadDatabaseContentRequestEvent *ev) {
+void UnqliteDriver::handleLoadDatabaseContentEvent(events::LoadDatabaseContentRequestEvent* ev) {
   QObject* sender = ev->sender();
   notifyProgress(sender, 0);
   events::LoadDatabaseContentResponceEvent::value_type res(ev->value());

@@ -168,11 +168,11 @@ void SsdbDriver::initImpl() {
 void SsdbDriver::clearImpl() {
 }
 
-common::Error SsdbDriver::executeImpl(int argc, char **argv, FastoObject* out) {
+common::Error SsdbDriver::executeImpl(int argc, char** argv, FastoObject* out) {
   return impl_->execute(argc, argv, out);
 }
 
-common::Error SsdbDriver::serverInfo(IServerInfo **info) {
+common::Error SsdbDriver::serverInfo(IServerInfo** info) {
   LOG_COMMAND(type(), Command(INFO_REQUEST, common::Value::C_INNER));
   SsdbServerInfo::Common cm;
   common::Error err = impl_->info(nullptr, &cm);
@@ -187,7 +187,7 @@ common::Error SsdbDriver::serverDiscoveryInfo(ServerDiscoveryInfo** dinfo, IServ
                                               IDataBaseInfo** dbinfo) {
   UNUSED(dinfo);
 
-  IServerInfo *lsinfo = nullptr;
+  IServerInfo* lsinfo = nullptr;
   common::Error er = serverInfo(&lsinfo);
   if (er && er->isError()) {
     return er;
@@ -212,16 +212,16 @@ common::Error SsdbDriver::currentDataBaseInfo(IDataBaseInfo** info) {
 
   size_t dbsize = 0;
   impl_->dbsize(&dbsize);
-  SsdbDataBaseInfo *sinfo = new SsdbDataBaseInfo("0", true, dbsize);
+  SsdbDataBaseInfo* sinfo = new SsdbDataBaseInfo("0", true, dbsize);
   *info = sinfo;
   return common::Error();
 }
 
-void SsdbDriver::handleConnectEvent(events::ConnectRequestEvent *ev) {
+void SsdbDriver::handleConnectEvent(events::ConnectRequestEvent* ev) {
   QObject* sender = ev->sender();
   notifyProgress(sender, 0);
   events::ConnectResponceEvent::value_type res(ev->value());
-  SsdbConnectionSettings *set = dynamic_cast<SsdbConnectionSettings*>(settings_.get());
+  SsdbConnectionSettings* set = dynamic_cast<SsdbConnectionSettings*>(settings_.get());
   if (set) {
     impl_->config_ = set->info();
     impl_->sinfo_ = set->sshInfo();
@@ -254,8 +254,8 @@ void SsdbDriver::handleDisconnectEvent(events::DisconnectRequestEvent* ev) {
 void SsdbDriver::handleExecuteEvent(events::ExecuteRequestEvent* ev) {
   QObject* sender = ev->sender();
   notifyProgress(sender, 0);
-    events::ExecuteResponceEvent::value_type res(ev->value());
-    const char *inputLine = common::utils::c_strornull(res.text);
+  events::ExecuteResponceEvent::value_type res(ev->value());
+  const char* inputLine = common::utils::c_strornull(res.text);
 
   common::Error er;
   if (inputLine) {

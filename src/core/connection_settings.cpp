@@ -189,7 +189,7 @@ IConnectionSettingsBase* IConnectionSettingsBase::fromString(const std::string& 
     return nullptr;
   }
 
-  IConnectionSettingsBase *result = nullptr;
+  IConnectionSettingsBase* result = nullptr;
   size_t len = val.size();
   uint8_t commaCount = 0;
   std::string elText;
@@ -214,7 +214,7 @@ IConnectionSettingsBase* IConnectionSettingsBase::fromString(const std::string& 
         }
       } else if (commaCount == 3) {
         result->setCommandLine(elText);
-        IConnectionSettingsRemote * remote = dynamic_cast<IConnectionSettingsRemote *>(result);
+        IConnectionSettingsRemote* remote = dynamic_cast<IConnectionSettingsRemote*>(result);
         if (remote) {
           SSHInfo sinf(val.substr(i + 1));
           remote->setSshInfo(sinf);
@@ -470,7 +470,7 @@ IClusterSettingsBase* IClusterSettingsBase::fromString(const std::string& val) {
     return nullptr;
   }
 
-  IClusterSettingsBase *result = nullptr;
+  IClusterSettingsBase* result = nullptr;
   size_t len = val.size();
 
   uint8_t commaCount = 0;
@@ -532,7 +532,7 @@ std::string IClusterSettingsBase::toString() const {
 IConnectionSettingsBaseSPtr IClusterSettingsBase::findSettingsByHost(const common::net::hostAndPort& host) const {
   for (size_t i = 0; i < clusters_nodes_.size(); ++i) {
     IConnectionSettingsBaseSPtr cur = clusters_nodes_[i];
-    IConnectionSettingsRemote * remote = dynamic_cast<IConnectionSettingsRemote *>(cur.get());
+    IConnectionSettingsRemote* remote = dynamic_cast<IConnectionSettingsRemote*>(cur.get());
     CHECK(remote);
     if (remote && remote->host() == host) {
       return cur;

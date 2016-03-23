@@ -60,7 +60,7 @@ bool isSaveAsShortcut(QKeyEvent* keyEvent) {
   return saveAsKey == keyEvent;
 }
 
-bool isQuitShortcut(QKeyEvent *keyEvent) {
+bool isQuitShortcut(QKeyEvent* keyEvent) {
   return quitKey == keyEvent;
 }
 

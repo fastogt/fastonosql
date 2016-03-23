@@ -134,7 +134,7 @@ void ExplorerTreeView::addServer(IServerSPtr server) {
     return;
   }
 
-  ExplorerTreeModel *mod = static_cast<ExplorerTreeModel*>(model());
+  ExplorerTreeModel* mod = static_cast<ExplorerTreeModel*>(model());
   DCHECK(mod);
   if (!mod) {
     return;
@@ -151,7 +151,7 @@ void ExplorerTreeView::removeServer(IServerSPtr server) {
     return;
   }
 
-  ExplorerTreeModel *mod = static_cast<ExplorerTreeModel*>(model());
+  ExplorerTreeModel* mod = static_cast<ExplorerTreeModel*>(model());
   DCHECK(mod);
   if (!mod) {
     return;
@@ -164,7 +164,7 @@ void ExplorerTreeView::removeServer(IServerSPtr server) {
 }
 
 void ExplorerTreeView::addCluster(IClusterSPtr cluster) {
-  ExplorerTreeModel *mod = static_cast<ExplorerTreeModel*>(model());
+  ExplorerTreeModel* mod = static_cast<ExplorerTreeModel*>(model());
   DCHECK(mod);
   if (!mod) {
     return;
@@ -184,7 +184,7 @@ void ExplorerTreeView::removeCluster(IClusterSPtr cluster) {
     return;
   }
 
-  ExplorerTreeModel *mod = static_cast<ExplorerTreeModel*>(model());
+  ExplorerTreeModel* mod = static_cast<ExplorerTreeModel*>(model());
   DCHECK(mod);
   if (!mod) {
     return;
@@ -205,7 +205,7 @@ void ExplorerTreeView::showContextMenu(const QPoint& point) {
 
   QModelIndex sel = selectedIndex();
   if (sel.isValid()) {
-    IExplorerTreeItem *node = common::utils_qt::item<IExplorerTreeItem*>(sel);
+    IExplorerTreeItem* node = common::utils_qt::item<IExplorerTreeItem*>(sel);
     DCHECK(node);
     if (!node) {
       return;
@@ -264,7 +264,7 @@ void ExplorerTreeView::showContextMenu(const QPoint& point) {
 
       menu.exec(menuPoint);
     } else if (node->type() == IExplorerTreeItem::eDatabase) {
-      ExplorerDatabaseItem *db = dynamic_cast<ExplorerDatabaseItem*>(node);
+      ExplorerDatabaseItem* db = dynamic_cast<ExplorerDatabaseItem*>(node);
       QMenu menu(this);
       menu.addAction(loadContentAction_);
       bool isDefault = db && db->isDefault();
@@ -306,7 +306,7 @@ void ExplorerTreeView::connectDisconnectToServer() {
     return;
   }
 
-  ExplorerServerItem *node = common::utils_qt::item<ExplorerServerItem*>(sel);
+  ExplorerServerItem* node = common::utils_qt::item<ExplorerServerItem*>(sel);
   if (!node) {
     return;
   }
@@ -331,7 +331,7 @@ void ExplorerTreeView::openConsole() {
     return;
   }
 
-  ExplorerServerItem *node = common::utils_qt::item<ExplorerServerItem*>(sel);
+  ExplorerServerItem* node = common::utils_qt::item<ExplorerServerItem*>(sel);
   if (node) {
     emit openedConsole(node->server(), QString());
   }
@@ -343,7 +343,7 @@ void ExplorerTreeView::loadDatabases() {
     return;
   }
 
-  ExplorerServerItem *node = common::utils_qt::item<ExplorerServerItem*>(sel);
+  ExplorerServerItem* node = common::utils_qt::item<ExplorerServerItem*>(sel);
   if (node) {
     node->loadDatabases();
   }
@@ -355,7 +355,7 @@ void ExplorerTreeView::openInfoServerDialog() {
     return;
   }
 
-  ExplorerServerItem *node = common::utils_qt::item<ExplorerServerItem*>(sel);
+  ExplorerServerItem* node = common::utils_qt::item<ExplorerServerItem*>(sel);
   if (!node) {
     return;
   }
@@ -375,7 +375,7 @@ void ExplorerTreeView::openPropertyServerDialog() {
     return;
   }
 
-  ExplorerServerItem *node = common::utils_qt::item<ExplorerServerItem*>(sel);
+  ExplorerServerItem* node = common::utils_qt::item<ExplorerServerItem*>(sel);
   if (!node) {
     return;
   }
@@ -395,7 +395,7 @@ void ExplorerTreeView::openSetPasswordServerDialog() {
     return;
   }
 
-  ExplorerServerItem *node = common::utils_qt::item<ExplorerServerItem*>(sel);
+  ExplorerServerItem* node = common::utils_qt::item<ExplorerServerItem*>(sel);
   if (!node) {
     return;
   }
@@ -416,7 +416,7 @@ void ExplorerTreeView::openMaxClientSetDialog() {
     return;
   }
 
-  ExplorerServerItem *node = common::utils_qt::item<ExplorerServerItem*>(sel);
+  ExplorerServerItem* node = common::utils_qt::item<ExplorerServerItem*>(sel);
   if (!node) {
     return;
   }
@@ -441,7 +441,7 @@ void ExplorerTreeView::openHistoryServerDialog() {
     return;
   }
 
-  ExplorerServerItem *node = common::utils_qt::item<ExplorerServerItem*>(sel);
+  ExplorerServerItem* node = common::utils_qt::item<ExplorerServerItem*>(sel);
   if (!node) {
     return;
   }
@@ -461,7 +461,7 @@ void ExplorerTreeView::clearHistory() {
     return;
   }
 
-  ExplorerServerItem *node = common::utils_qt::item<ExplorerServerItem*>(sel);
+  ExplorerServerItem* node = common::utils_qt::item<ExplorerServerItem*>(sel);
   if (!node) {
     return;
   }
@@ -522,7 +522,7 @@ void ExplorerTreeView::backupServer() {
     return;
   }
 
-  ExplorerServerItem *node = common::utils_qt::item<ExplorerServerItem*>(sel);
+  ExplorerServerItem* node = common::utils_qt::item<ExplorerServerItem*>(sel);
   if (!node) {
     return;
   }
@@ -542,7 +542,7 @@ void ExplorerTreeView::importServer() {
     return;
   }
 
-  ExplorerServerItem *node = common::utils_qt::item<ExplorerServerItem*>(sel);
+  ExplorerServerItem* node = common::utils_qt::item<ExplorerServerItem*>(sel);
   if (!node) {
     return;
   }
@@ -562,7 +562,7 @@ void ExplorerTreeView::shutdownServer() {
     return;
   }
 
-  ExplorerServerItem *node = common::utils_qt::item<ExplorerServerItem*>(sel);
+  ExplorerServerItem* node = common::utils_qt::item<ExplorerServerItem*>(sel);
   if (!node) {
     return;
   }
@@ -589,7 +589,7 @@ void ExplorerTreeView::loadContentDb() {
     return;
   }
 
-  ExplorerDatabaseItem *node = common::utils_qt::item<ExplorerDatabaseItem*>(sel);
+  ExplorerDatabaseItem* node = common::utils_qt::item<ExplorerDatabaseItem*>(sel);
   if (node) {
     LoadContentDbDialog loadDb(QString("Load %1 content").arg(node->name()),
                                node->server()->type(), this);
@@ -606,7 +606,7 @@ void ExplorerTreeView::removeAllKeys() {
     return;
   }
 
-  ExplorerDatabaseItem *node = common::utils_qt::item<ExplorerDatabaseItem*>(sel);
+  ExplorerDatabaseItem* node = common::utils_qt::item<ExplorerDatabaseItem*>(sel);
   if (node) {
     int answer = QMessageBox::question(this, "Clear database",
                                        QString("Really remove all keys from %1 database?").arg(node->name()),
@@ -626,7 +626,7 @@ void ExplorerTreeView::setDefaultDb() {
     return;
   }
 
-  ExplorerDatabaseItem *node = common::utils_qt::item<ExplorerDatabaseItem*>(sel);
+  ExplorerDatabaseItem* node = common::utils_qt::item<ExplorerDatabaseItem*>(sel);
   if (node) {
     node->setDefault();
   }
@@ -638,7 +638,7 @@ void ExplorerTreeView::createKey() {
     return;
   }
 
-  ExplorerDatabaseItem *node = common::utils_qt::item<ExplorerDatabaseItem*>(sel);
+  ExplorerDatabaseItem* node = common::utils_qt::item<ExplorerDatabaseItem*>(sel);
   if (node) {
     CreateDbKeyDialog loadDb(QString("Create key for %1 database").arg(node->name()),
                              node->server()->type(), this);
@@ -669,7 +669,7 @@ void ExplorerTreeView::getValue() {
     return;
   }
 
-  ExplorerKeyItem *node = common::utils_qt::item<ExplorerKeyItem*>(sel);
+  ExplorerKeyItem* node = common::utils_qt::item<ExplorerKeyItem*>(sel);
   if (node) {
     node->loadValueFromDb();
   }
@@ -681,7 +681,7 @@ void ExplorerTreeView::deleteKey() {
     return;
   }
 
-  ExplorerKeyItem *node = common::utils_qt::item<ExplorerKeyItem*>(sel);
+  ExplorerKeyItem* node = common::utils_qt::item<ExplorerKeyItem*>(sel);
   if (node) {
     node->removeFromDb();
   }
@@ -696,13 +696,13 @@ void ExplorerTreeView::finishLoadDatabases(const events_info::LoadDatabasesInfoR
     return;
   }
 
-  IServer *serv = qobject_cast<IServer *>(sender());
+  IServer* serv = qobject_cast<IServer*>(sender());
   DCHECK(serv);
   if (!serv) {
     return;
   }
 
-  ExplorerTreeModel *mod = qobject_cast<ExplorerTreeModel*>(model());
+  ExplorerTreeModel* mod = qobject_cast<ExplorerTreeModel*>(model());
   DCHECK(mod);
   if (!mod) {
     return;
@@ -725,14 +725,14 @@ void ExplorerTreeView::finishSetDefaultDatabase(const events_info::SetDefaultDat
     return;
   }
 
-  IServer *serv = qobject_cast<IServer *>(sender());
+  IServer* serv = qobject_cast<IServer*>(sender());
   DCHECK(serv);
   if (!serv) {
     return;
   }
 
   IDataBaseInfoSPtr db = res.inf;
-  ExplorerTreeModel *mod = qobject_cast<ExplorerTreeModel*>(model());
+  ExplorerTreeModel* mod = qobject_cast<ExplorerTreeModel*>(model());
   DCHECK(mod);
   if (!mod) {
     return;
@@ -750,13 +750,13 @@ void ExplorerTreeView::finishLoadDatabaseContent(const events_info::LoadDatabase
     return;
   }
 
-  IServer *serv = qobject_cast<IServer *>(sender());
+  IServer* serv = qobject_cast<IServer*>(sender());
   DCHECK(serv);
   if (!serv) {
     return;
   }
 
-  ExplorerTreeModel *mod = qobject_cast<ExplorerTreeModel*>(model());
+  ExplorerTreeModel* mod = qobject_cast<ExplorerTreeModel*>(model());
   DCHECK(mod);
   if (!mod) {
     return;
@@ -782,13 +782,13 @@ void ExplorerTreeView::finishClearDatabase(const events_info::ClearDatabaseRespo
     return;
   }
 
-  IServer *serv = qobject_cast<IServer *>(sender());
+  IServer* serv = qobject_cast<IServer*>(sender());
   DCHECK(serv);
   if (!serv) {
     return;
   }
 
-  ExplorerTreeModel *mod = qobject_cast<ExplorerTreeModel*>(model());
+  ExplorerTreeModel* mod = qobject_cast<ExplorerTreeModel*>(model());
   DCHECK(mod);
   if (!mod) {
     return;
@@ -806,7 +806,7 @@ void ExplorerTreeView::finishExecuteCommand(const events_info::CommandResponce& 
     return;
   }
 
-  IServer* serv = qobject_cast<IServer *>(sender());
+  IServer* serv = qobject_cast<IServer*>(sender());
   DCHECK(serv);
   if (!serv) {
     return;

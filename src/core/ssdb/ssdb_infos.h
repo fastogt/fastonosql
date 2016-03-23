@@ -59,7 +59,7 @@ class SsdbServerInfo
 std::ostream& operator << (std::ostream& out, const SsdbServerInfo& value);
 
 SsdbServerInfo* makeSsdbServerInfo(const std::string& content);
-SsdbServerInfo* makeSsdbServerInfo(FastoObject *root);
+SsdbServerInfo* makeSsdbServerInfo(FastoObject* root);
 
 class SsdbDataBaseInfo
   : public IDataBaseInfo {

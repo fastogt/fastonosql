@@ -26,7 +26,7 @@
 namespace fastonosql {
 namespace shell {
 
-RocksdbApi::RocksdbApi(QsciLexer *lexer)
+RocksdbApi::RocksdbApi(QsciLexer* lexer)
   : BaseQsciApiCommandHolder(rocksdb::rocksdbCommands, lexer) {
 }
 

@@ -75,8 +75,8 @@ class MainWindow
 
  protected:
 #ifdef OS_ANDROID
-  virtual bool event(QEvent *event);
-  bool gestureEvent(QGestureEvent *event);
+  virtual bool event(QEvent* event);
+  bool gestureEvent(QGestureEvent* event);
   void swipeTriggered(QSwipeGesture* swipeEvent);
   void tapAndHoldTriggered(QTapAndHoldGesture* tapEvent);
 #endif

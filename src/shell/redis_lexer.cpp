@@ -111,7 +111,7 @@ void RedisLexer::styleText(int start, int end) {
     return;
   }
 
-  char *data = new char[end - start + 1];
+  char* data = new char[end - start + 1];
   editor()->SendScintilla(QsciScintilla::SCI_GETTEXTRANGE, start, end, data);
   QString source(data);
   delete [] data;

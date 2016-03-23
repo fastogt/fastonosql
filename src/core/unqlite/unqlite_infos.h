@@ -51,7 +51,7 @@ class UnqliteServerInfo
 std::ostream& operator << (std::ostream& out, const UnqliteServerInfo& value);
 
 UnqliteServerInfo* makeUnqliteServerInfo(const std::string& content);
-UnqliteServerInfo* makeUnqliteServerInfo(FastoObject *root);
+UnqliteServerInfo* makeUnqliteServerInfo(FastoObject* root);
 
 class UnqliteDataBaseInfo
   : public IDataBaseInfo {

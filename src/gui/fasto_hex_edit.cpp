@@ -108,7 +108,7 @@ QSize FastoHexEdit::fullSize() const {
   return QSize(width, height);
 }
 
-void FastoHexEdit::paintEvent(QPaintEvent *event) {
+void FastoHexEdit::paintEvent(QPaintEvent* event) {
   if (mode_ == HEX_MODE) {
     QPainter painter(viewport());
 

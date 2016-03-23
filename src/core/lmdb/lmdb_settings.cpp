@@ -52,7 +52,7 @@ std::string LmdbConnectionSettings::fullAddress() const {
 }
 
 LmdbConnectionSettings* LmdbConnectionSettings::clone() const {
-  LmdbConnectionSettings *red = new LmdbConnectionSettings(*this);
+  LmdbConnectionSettings* red = new LmdbConnectionSettings(*this);
   return red;
 }
 

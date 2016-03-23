@@ -85,7 +85,7 @@ common::Error MemcachedDriver::serverDiscoveryInfo(ServerDiscoveryInfo** dinfo, 
                                                    IDataBaseInfo** dbinfo) {
   UNUSED(dinfo);
 
-  IServerInfo *lsinfo = nullptr;
+  IServerInfo* lsinfo = nullptr;
   common::Error er = serverInfo(&lsinfo);
   if (er && er->isError()) {
     return er;
@@ -114,11 +114,11 @@ common::Error MemcachedDriver::currentDataBaseInfo(IDataBaseInfo** info) {
   return common::Error();
 }
 
-void MemcachedDriver::handleConnectEvent(events::ConnectRequestEvent *ev) {
+void MemcachedDriver::handleConnectEvent(events::ConnectRequestEvent* ev) {
   QObject* sender = ev->sender();
   notifyProgress(sender, 0);
   events::ConnectResponceEvent::value_type res(ev->value());
-  MemcachedConnectionSettings *set = dynamic_cast<MemcachedConnectionSettings*>(settings_.get());
+  MemcachedConnectionSettings* set = dynamic_cast<MemcachedConnectionSettings*>(settings_.get());
   if (set) {
     impl_->config_ = set->info();
     impl_->sinfo_ = set->sshInfo();
@@ -152,7 +152,7 @@ void MemcachedDriver::handleExecuteEvent(events::ExecuteRequestEvent* ev) {
   QObject* sender = ev->sender();
   notifyProgress(sender, 0);
   events::ExecuteResponceEvent::value_type res(ev->value());
-  const char *inputLine = common::utils::c_strornull(res.text);
+  const char* inputLine = common::utils::c_strornull(res.text);
 
   common::Error er;
   if (inputLine) {

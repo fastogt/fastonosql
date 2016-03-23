@@ -166,7 +166,7 @@ InfoServerDialog::InfoServerDialog(IServerSPtr server, QWidget* parent)
 
   serverTextInfo_ = new QLabel;
   hardwareTextInfo_ = new QLabel;
-  QHBoxLayout *mainL = new QHBoxLayout;
+  QHBoxLayout* mainL = new QHBoxLayout;
   mainL->addWidget(serverTextInfo_);
   mainL->addWidget(hardwareTextInfo_);
   setLayout(mainL);
@@ -264,7 +264,7 @@ DCHECK(type == inf->type());
 #endif
 #ifdef BUILD_WITH_LEVELDB
   if (type == LEVELDB) {
-    leveldb::LeveldbServerInfo * infr = dynamic_cast<leveldb::LeveldbServerInfo*>(inf.get());
+    leveldb::LeveldbServerInfo* infr = dynamic_cast<leveldb::LeveldbServerInfo*>(inf.get());
     if (infr) {
         updateText(*infr);
     }
@@ -272,7 +272,7 @@ DCHECK(type == inf->type());
 #endif
 #ifdef BUILD_WITH_ROCKSDB
   if (type == ROCKSDB) {
-    rocksdb::RocksdbServerInfo * infr = dynamic_cast<rocksdb::RocksdbServerInfo*>(inf.get());
+    rocksdb::RocksdbServerInfo* infr = dynamic_cast<rocksdb::RocksdbServerInfo*>(inf.get());
     if (infr) {
       updateText(*infr);
     }
@@ -280,7 +280,7 @@ DCHECK(type == inf->type());
 #endif
 #ifdef BUILD_WITH_UNQLITE
   if (type == UNQLITE) {
-    unqlite::UnqliteServerInfo * infr = dynamic_cast<unqlite::UnqliteServerInfo*>(inf.get());
+    unqlite::UnqliteServerInfo* infr = dynamic_cast<unqlite::UnqliteServerInfo*>(inf.get());
     if (infr) {
       updateText(*infr);
     }

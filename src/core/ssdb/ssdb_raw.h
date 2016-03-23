@@ -46,65 +46,65 @@ struct SsdbRaw
   common::Error set(const std::string& key, const std::string& value);
   common::Error setx(const std::string& key, const std::string& value, int ttl);
   common::Error del(const std::string& key);
-  common::Error incr(const std::string& key, int64_t incrby, int64_t *ret);
+  common::Error incr(const std::string& key, int64_t incrby, int64_t* ret);
   common::Error keys(const std::string& key_start, const std::string& key_end,
-                     uint64_t limit, std::vector<std::string> *ret);
+                     uint64_t limit, std::vector<std::string>* ret);
   common::Error scan(const std::string& key_start, const std::string& key_end,
-                     uint64_t limit, std::vector<std::string> *ret);
+                     uint64_t limit, std::vector<std::string>* ret);
   common::Error rscan(const std::string& key_start, const std::string& key_end,
-                      uint64_t limit, std::vector<std::string> *ret);
-  common::Error multi_get(const std::vector<std::string>& keys, std::vector<std::string> *ret);
+                      uint64_t limit, std::vector<std::string>* ret);
+  common::Error multi_get(const std::vector<std::string>& keys, std::vector<std::string>* ret);
   common::Error multi_set(const std::map<std::string, std::string> &kvs);
   common::Error multi_del(const std::vector<std::string>& keys);
-  common::Error hget(const std::string& name, const std::string& key, std::string *val);
+  common::Error hget(const std::string& name, const std::string& key, std::string* val);
   common::Error hset(const std::string& name, const std::string& key, const std::string& val);
   common::Error hdel(const std::string& name, const std::string& key);
   common::Error hincr(const std::string& name, const std::string& key,
-                      int64_t incrby, int64_t *ret);
-  common::Error hsize(const std::string& name, int64_t *ret);
-  common::Error hclear(const std::string& name, int64_t *ret);
+                      int64_t incrby, int64_t* ret);
+  common::Error hsize(const std::string& name, int64_t* ret);
+  common::Error hclear(const std::string& name, int64_t* ret);
   common::Error hkeys(const std::string& name, const std::string& key_start,
-                      const std::string& key_end, uint64_t limit, std::vector<std::string> *ret);
+                      const std::string& key_end, uint64_t limit, std::vector<std::string>* ret);
   common::Error hscan(const std::string& name, const std::string& key_start,
-                      const std::string& key_end, uint64_t limit, std::vector<std::string> *ret);
+                      const std::string& key_end, uint64_t limit, std::vector<std::string>* ret);
   common::Error hrscan(const std::string& name, const std::string& key_start,
-                       const std::string& key_end, uint64_t limit, std::vector<std::string> *ret);
+                       const std::string& key_end, uint64_t limit, std::vector<std::string>* ret);
   common::Error multi_hget(const std::string& name, const std::vector<std::string> &keys,
-                           std::vector<std::string> *ret);
+                           std::vector<std::string>* ret);
   common::Error multi_hset(const std::string& name,
                            const std::map<std::string, std::string> &keys);
-  common::Error zget(const std::string& name, const std::string& key, int64_t *ret);
+  common::Error zget(const std::string& name, const std::string& key, int64_t* ret);
   common::Error zset(const std::string& name, const std::string& key, int64_t score);
   common::Error zdel(const std::string& name, const std::string& key);
-  common::Error zincr(const std::string& name, const std::string& key, int64_t incrby, int64_t *ret);
-  common::Error zsize(const std::string& name, int64_t *ret);
-  common::Error zclear(const std::string& name, int64_t *ret);
-  common::Error zrank(const std::string& name, const std::string& key, int64_t *ret);
-  common::Error zrrank(const std::string& name, const std::string& key, int64_t *ret);
+  common::Error zincr(const std::string& name, const std::string& key, int64_t incrby, int64_t* ret);
+  common::Error zsize(const std::string& name, int64_t* ret);
+  common::Error zclear(const std::string& name, int64_t* ret);
+  common::Error zrank(const std::string& name, const std::string& key, int64_t* ret);
+  common::Error zrrank(const std::string& name, const std::string& key, int64_t* ret);
   common::Error zrange(const std::string& name,
           uint64_t offset, uint64_t limit,
-          std::vector<std::string> *ret);
+          std::vector<std::string>* ret);
   common::Error zrrange(const std::string& name,
           uint64_t offset, uint64_t limit,
-          std::vector<std::string> *ret);
+          std::vector<std::string>* ret);
   common::Error zkeys(const std::string& name, const std::string& key_start,
-      int64_t *score_start, int64_t *score_end,
-      uint64_t limit, std::vector<std::string> *ret);
+      int64_t* score_start, int64_t* score_end,
+      uint64_t limit, std::vector<std::string>* ret);
   common::Error zscan(const std::string& name, const std::string& key_start,
-      int64_t *score_start, int64_t *score_end,
-      uint64_t limit, std::vector<std::string> *ret);
+      int64_t* score_start, int64_t* score_end,
+      uint64_t limit, std::vector<std::string>* ret);
   common::Error zrscan(const std::string& name, const std::string& key_start,
-      int64_t *score_start, int64_t *score_end,
-      uint64_t limit, std::vector<std::string> *ret);
+      int64_t* score_start, int64_t* score_end,
+      uint64_t limit, std::vector<std::string>* ret);
   common::Error multi_zget(const std::string& name, const std::vector<std::string> &keys,
-      std::vector<std::string> *ret);
+      std::vector<std::string>* ret);
   common::Error multi_zset(const std::string& name, const std::map<std::string, int64_t> &kss);
   common::Error multi_zdel(const std::string& name, const std::vector<std::string> &keys);
   common::Error qpush(const std::string& name, const std::string& item);
-  common::Error qpop(const std::string& name, std::string *item);
+  common::Error qpop(const std::string& name, std::string* item);
   common::Error qslice(const std::string& name, int64_t begin, int64_t end,
-                       std::vector<std::string> *ret);
-  common::Error qclear(const std::string& name, int64_t *ret);
+                       std::vector<std::string>* ret);
+  common::Error qclear(const std::string& name, int64_t* ret);
 
   // extended api
   common::Error dbsize(size_t* size);

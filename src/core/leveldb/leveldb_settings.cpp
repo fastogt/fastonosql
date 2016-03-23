@@ -52,7 +52,7 @@ std::string LeveldbConnectionSettings::fullAddress() const {
 }
 
 LeveldbConnectionSettings* LeveldbConnectionSettings::clone() const {
-  LeveldbConnectionSettings *red = new LeveldbConnectionSettings(*this);
+  LeveldbConnectionSettings* red = new LeveldbConnectionSettings(*this);
   return red;
 }
 

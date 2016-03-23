@@ -465,7 +465,7 @@ struct RedisRaw {
   common::Error cliAuth() WARN_UNUSED_RESULT;
   common::Error select(int num, IDataBaseInfo** info) WARN_UNUSED_RESULT;
   common::Error cliFormatReplyRaw(FastoObjectArray* ar, redisReply* r) WARN_UNUSED_RESULT;
-  common::Error cliFormatReplyRaw(FastoObject* out, redisReply *r) WARN_UNUSED_RESULT;
+  common::Error cliFormatReplyRaw(FastoObject* out, redisReply* r) WARN_UNUSED_RESULT;
   common::Error cliOutputGenericHelp(FastoObject* out) WARN_UNUSED_RESULT;
   common::Error cliOutputHelp(FastoObject* out, int argc, char** argv) WARN_UNUSED_RESULT;
   common::Error cliReadReply(FastoObject* out) WARN_UNUSED_RESULT;
@@ -478,7 +478,7 @@ struct RedisRaw {
 private:
   bool isInterrupted() const;
 
-  redisContext *context_;
+  redisContext* context_;
   bool isAuth_;
   IRedisRawOwner* const observer_;
 };

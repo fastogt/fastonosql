@@ -39,7 +39,7 @@ QVariant FastoCommonModel::data(const QModelIndex& index, int role) const {
   if (!index.isValid())
     return result;
 
-  FastoCommonItem *node = common::utils_qt::item<FastoCommonItem*>(index);
+  FastoCommonItem* node = common::utils_qt::item<FastoCommonItem*>(index);
 
   if (!node) {
     return result;
@@ -71,7 +71,7 @@ QVariant FastoCommonModel::data(const QModelIndex& index, int role) const {
 bool FastoCommonModel::setData(const QModelIndex& index, const QVariant& value, int role) {
   if (index.isValid() && role == Qt::EditRole) {
     int column = index.column();
-    FastoCommonItem *node = common::utils_qt::item<FastoCommonItem*>(index);
+    FastoCommonItem* node = common::utils_qt::item<FastoCommonItem*>(index);
 
     if (!node) {
       return false;
@@ -102,7 +102,7 @@ Qt::ItemFlags FastoCommonModel::flags(const QModelIndex& index) const {
   if (index.isValid()) {
     result = Qt::ItemIsSelectable | Qt::ItemIsEnabled;
     int col = index.column();
-      FastoCommonItem *node = common::utils_qt::item<FastoCommonItem*>(index);
+      FastoCommonItem* node = common::utils_qt::item<FastoCommonItem*>(index);
       if (node && col == FastoCommonItem::eValue && !node->isReadOnly()) {
         result |= Qt::ItemIsEditable;
       }

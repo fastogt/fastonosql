@@ -44,7 +44,7 @@ int lmdb_open(lmdb** context, const char* dbname, bool create_if_missing) {
     }
   }
 
-  lmdb *lcontext = reinterpret_cast<lmdb*>(calloc(1, sizeof(lmdb)));
+  lmdb* lcontext = reinterpret_cast<lmdb*>(calloc(1, sizeof(lmdb)));
   int rc = mdb_env_create(&lcontext->env);
   if (rc != LMDB_OK) {
     free(lcontext);
@@ -56,7 +56,7 @@ int lmdb_open(lmdb** context, const char* dbname, bool create_if_missing) {
     return rc;
   }
 
-  MDB_txn *txn = NULL;
+  MDB_txn* txn = NULL;
   rc = mdb_txn_begin(lcontext->env, NULL, 0, &txn);
   if (rc != LMDB_OK) {
     free(lcontext);
@@ -74,12 +74,12 @@ int lmdb_open(lmdb** context, const char* dbname, bool create_if_missing) {
   return rc;
 }
 
-void lmdb_close(lmdb **context) {
+void lmdb_close(lmdb** context) {
   if (!context) {
     return;
   }
 
-  lmdb *lcontext = *context;
+  lmdb* lcontext = *context;
   if (!lcontext) {
     return;
   }
@@ -97,7 +97,7 @@ common::Error createConnection(const LmdbConfig& config, struct lmdb** context) 
 
   DCHECK(*context == nullptr);
   struct lmdb* lcontext = nullptr;
-  const char * dbname = common::utils::c_strornull(config.dbname);
+  const char* dbname = common::utils::c_strornull(config.dbname);
   int st = lmdb_open(&lcontext, dbname, config.create_if_missing);
   if (st != LMDB_OK) {
     char buff[1024] = {0};
@@ -207,8 +207,8 @@ common::Error LmdbRaw::dbsize(size_t* size) {
     return common::make_error_value("Invalid input argument(s)", common::ErrorValue::E_ERROR);
   }
 
-  MDB_cursor *cursor;
-  MDB_txn *txn = NULL;
+  MDB_cursor* cursor = NULL;
+  MDB_txn* txn = NULL;
   int rc = mdb_txn_begin(lmdb_->env, NULL, MDB_RDONLY, &txn);
   if (rc == LMDB_OK) {
     rc = mdb_cursor_open(txn, lmdb_->dbir, &cursor);
@@ -242,7 +242,7 @@ common::Error LmdbRaw::set(const std::string& key, const std::string& value) {
   mval.mv_size = value.size();
   mval.mv_data = (void*)value.c_str();
 
-  MDB_txn *txn = NULL;
+  MDB_txn* txn = NULL;
   int rc = mdb_txn_begin(lmdb_->env, NULL, 0, &txn);
   if (rc == LMDB_OK) {
     rc = mdb_put(txn, lmdb_->dbir, &mkey, &mval, 0);
@@ -268,7 +268,7 @@ common::Error LmdbRaw::get(const std::string& key, std::string* ret_val) {
   mkey.mv_data = (void*)key.c_str();
   MDB_val mval;
 
-  MDB_txn *txn = NULL;
+  MDB_txn* txn = NULL;
   int rc = mdb_txn_begin(lmdb_->env, NULL, MDB_RDONLY, &txn);
   if (rc == LMDB_OK) {
     rc = mdb_get(txn, lmdb_->dbir, &mkey, &mval);
@@ -291,7 +291,7 @@ common::Error LmdbRaw::del(const std::string& key) {
   mkey.mv_size = key.size();
   mkey.mv_data = (void*)key.c_str();
 
-  MDB_txn *txn = NULL;
+  MDB_txn* txn = NULL;
   int rc = mdb_txn_begin(lmdb_->env, NULL, 0, &txn);
   if (rc == LMDB_OK) {
     rc = mdb_del(txn, lmdb_->dbir, &mkey, NULL);
@@ -313,8 +313,8 @@ common::Error LmdbRaw::del(const std::string& key) {
 
 common::Error LmdbRaw::keys(const std::string& key_start, const std::string& key_end,
                             uint64_t limit, std::vector<std::string>* ret) {
-  MDB_cursor *cursor;
-  MDB_txn *txn = NULL;
+  MDB_cursor* cursor = NULL;
+  MDB_txn* txn = NULL;
   int rc = mdb_txn_begin(lmdb_->env, NULL, MDB_RDONLY, &txn);
   if (rc == LMDB_OK) {
     rc = mdb_cursor_open(txn, lmdb_->dbir, &cursor);
@@ -346,8 +346,8 @@ common::Error LmdbRaw::help(int argc, char** argv) {
 }
 
 common::Error LmdbRaw::flushdb() {
-  MDB_cursor *cursor;
-  MDB_txn *txn = NULL;
+  MDB_cursor* cursor = NULL;
+  MDB_txn* txn = NULL;
   int rc = mdb_txn_begin(lmdb_->env, NULL, 0, &txn);
   if (rc == LMDB_OK) {
     rc = mdb_cursor_open(txn, lmdb_->dbir, &cursor);
@@ -394,7 +394,7 @@ common::Error info(CommandHandler* handler, int argc, char** argv, FastoObject* 
   LmdbServerInfo::Stats statsout;
   common::Error er = mdb->info(argc == 1 ? argv[0] : nullptr, &statsout);
   if (!er) {
-    common::StringValue *val = common::Value::createStringValue(LmdbServerInfo(statsout).toString());
+    common::StringValue* val = common::Value::createStringValue(LmdbServerInfo(statsout).toString());
     FastoObject* child = new FastoObject(out, val, mdb->config_.delimiter);
     out->addChildren(child);
   }
@@ -407,7 +407,7 @@ common::Error dbsize(CommandHandler* handler, int argc, char** argv, FastoObject
   size_t dbsize = 0;
   common::Error er = mdb->dbsize(&dbsize);
   if (!er) {
-    common::FundamentalValue *val = common::Value::createUIntegerValue(dbsize);
+    common::FundamentalValue* val = common::Value::createUIntegerValue(dbsize);
     FastoObject* child = new FastoObject(out, val, mdb->config_.delimiter);
     out->addChildren(child);
   }
@@ -419,7 +419,7 @@ common::Error set(CommandHandler* handler, int argc, char** argv, FastoObject* o
   LmdbRaw* mdb = static_cast<LmdbRaw*>(handler);
   common::Error er = mdb->set(argv[0], argv[1]);
   if (!er) {
-    common::StringValue *val = common::Value::createStringValue("STORED");
+    common::StringValue* val = common::Value::createStringValue("STORED");
     FastoObject* child = new FastoObject(out, val, mdb->config_.delimiter);
     out->addChildren(child);
   }
@@ -432,7 +432,7 @@ common::Error get(CommandHandler* handler, int argc, char** argv, FastoObject* o
   std::string ret;
   common::Error er = mdb->get(argv[0], &ret);
   if (!er) {
-    common::StringValue *val = common::Value::createStringValue(ret);
+    common::StringValue* val = common::Value::createStringValue(ret);
     FastoObject* child = new FastoObject(out, val, mdb->config_.delimiter);
     out->addChildren(child);
   }
@@ -444,7 +444,7 @@ common::Error del(CommandHandler* handler, int argc, char** argv, FastoObject* o
   LmdbRaw* mdb = static_cast<LmdbRaw*>(handler);
   common::Error er = mdb->del(argv[0]);
   if (!er) {
-    common::StringValue *val = common::Value::createStringValue("DELETED");
+    common::StringValue* val = common::Value::createStringValue("DELETED");
     FastoObject* child = new FastoObject(out, val, mdb->config_.delimiter);
     out->addChildren(child);
   }
@@ -459,7 +459,7 @@ common::Error keys(CommandHandler* handler, int argc, char** argv, FastoObject* 
   if (!er) {
     common::ArrayValue* ar = common::Value::createArrayValue();
     for (size_t i = 0; i < keysout.size(); ++i) {
-      common::StringValue *val = common::Value::createStringValue(keysout[i]);
+      common::StringValue* val = common::Value::createStringValue(keysout[i]);
       ar->append(val);
     }
     FastoObjectArray* child = new FastoObjectArray(out, ar, mdb->config_.delimiter);

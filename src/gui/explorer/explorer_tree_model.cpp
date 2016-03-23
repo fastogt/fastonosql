@@ -86,7 +86,7 @@ ExplorerDatabaseItem::ExplorerDatabaseItem(IDatabaseSPtr db, ExplorerServerItem*
   DCHECK(db);
 }
 
-ExplorerServerItem *ExplorerDatabaseItem::parent() const {
+ExplorerServerItem* ExplorerDatabaseItem::parent() const {
   return dynamic_cast<ExplorerServerItem*>(IExplorerTreeItem::parent());
 }
 
@@ -223,7 +223,7 @@ void ExplorerKeyItem::loadValueFromDb() {
   }
 }
 
-ExplorerTreeModel::ExplorerTreeModel(QObject *parent)
+ExplorerTreeModel::ExplorerTreeModel(QObject* parent)
   : TreeModel(parent) {
 }
 
@@ -379,7 +379,7 @@ void ExplorerTreeModel::addServer(IServerSPtr server) {
 
   ExplorerServerItem* serv = findServerItem(server.get());
   if (!serv) {
-    fasto::qt::gui::TreeItem *parent = dynamic_cast<fasto::qt::gui::TreeItem*>(root_);
+    fasto::qt::gui::TreeItem* parent = dynamic_cast<fasto::qt::gui::TreeItem*>(root_);
     DCHECK(parent);
     if (!parent) {
       return;
@@ -413,7 +413,7 @@ void ExplorerTreeModel::addDatabase(IServer* server, IDataBaseInfoSPtr db) {
   ExplorerDatabaseItem* dbs = findDatabaseItem(parent, db);
   if (!dbs) {
     QModelIndex ind = index(root_->indexOf(parent), 0, QModelIndex());
-    ExplorerDatabaseItem *item = new ExplorerDatabaseItem(server->createDatabaseByInfo(db), parent);
+    ExplorerDatabaseItem* item = new ExplorerDatabaseItem(server->createDatabaseByInfo(db), parent);
     insertItem(ind, item);
   }
 }
@@ -433,7 +433,7 @@ void ExplorerTreeModel::removeDatabase(IServer* server, IDataBaseInfoSPtr db) {
 }
 
 void ExplorerTreeModel::setDefaultDb(IServer* server, IDataBaseInfoSPtr db) {
-  ExplorerServerItem *parent = findServerItem(server);
+  ExplorerServerItem* parent = findServerItem(server);
   DCHECK(parent);
   if (!parent) {
     return;
@@ -470,7 +470,7 @@ void ExplorerTreeModel::updateDb(IServer* server, IDataBaseInfoSPtr db) {
 }
 
 void ExplorerTreeModel::addKey(IServer* server, IDataBaseInfoSPtr db, const NDbKValue &dbv) {
-  ExplorerServerItem *parent = findServerItem(server);
+  ExplorerServerItem* parent = findServerItem(server);
   if (!parent) {
     return;
   }
@@ -483,13 +483,13 @@ void ExplorerTreeModel::addKey(IServer* server, IDataBaseInfoSPtr db, const NDbK
   ExplorerKeyItem* keyit = findKeyItem(dbs, dbv);
   if (!keyit) {
     QModelIndex parentdb = createIndex(parent->indexOf(dbs), 0, dbs);
-    ExplorerKeyItem *item = new ExplorerKeyItem(dbv, dbs);
+    ExplorerKeyItem* item = new ExplorerKeyItem(dbv, dbs);
     insertItem(parentdb, item);
   }
 }
 
 void ExplorerTreeModel::removeKey(IServer* server, IDataBaseInfoSPtr db, const NDbKValue &key) {
-  ExplorerServerItem *parent = findServerItem(server);
+  ExplorerServerItem* parent = findServerItem(server);
   if (!parent) {
     return;
   }
@@ -567,7 +567,7 @@ ExplorerServerItem* ExplorerTreeModel::findServerItem(IServer* server) const {
   return nullptr;
 }
 
-ExplorerDatabaseItem *ExplorerTreeModel::findDatabaseItem(ExplorerServerItem* server,
+ExplorerDatabaseItem* ExplorerTreeModel::findDatabaseItem(ExplorerServerItem* server,
                                                           IDataBaseInfoSPtr db) const {
   if (!server) {
     return nullptr;
@@ -589,7 +589,7 @@ ExplorerDatabaseItem *ExplorerTreeModel::findDatabaseItem(ExplorerServerItem* se
   return nullptr;
 }
 
-ExplorerKeyItem *ExplorerTreeModel::findKeyItem(ExplorerDatabaseItem* db,
+ExplorerKeyItem* ExplorerTreeModel::findKeyItem(ExplorerDatabaseItem* db,
                                                 const NDbKValue &key) const {
   if (!db) {
     return nullptr;

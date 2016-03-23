@@ -49,28 +49,28 @@ PreferencesDialog::PreferencesDialog(QWidget* parent)
 //      ui settings
   generalBox_ = new QGroupBox;
 
-  QHBoxLayout *styleswLayout = new QHBoxLayout;
+  QHBoxLayout* styleswLayout = new QHBoxLayout;
   stylesLabel_ = new QLabel;
   stylesComboBox_ = new QComboBox;
   stylesComboBox_->addItems(fasto::qt::gui::supportedStyles());
   styleswLayout->addWidget(stylesLabel_);
   styleswLayout->addWidget(stylesComboBox_);
 
-  QHBoxLayout *fontLayout = new QHBoxLayout;
+  QHBoxLayout* fontLayout = new QHBoxLayout;
   fontLabel_ = new QLabel;
   fontComboBox_ = new QFontComboBox;
   fontComboBox_->setEditable(false);
   fontLayout->addWidget(fontLabel_);
   fontLayout->addWidget(fontComboBox_);
 
-  QHBoxLayout *langLayout = new QHBoxLayout;
+  QHBoxLayout* langLayout = new QHBoxLayout;
   langLabel_ = new QLabel;
   langLayout->addWidget(langLabel_);
   languagesComboBox_  = new QComboBox;
   languagesComboBox_->addItems(fasto::qt::translations::supportedLanguages());
   langLayout->addWidget(languagesComboBox_);
 
-  QVBoxLayout *generalLayout = new QVBoxLayout;
+  QVBoxLayout* generalLayout = new QVBoxLayout;
   autoCheckUpdates_ = new QCheckBox;
   generalLayout->addWidget(autoCheckUpdates_);
   autoComletionEnable_ = new QCheckBox;
@@ -98,22 +98,22 @@ PreferencesDialog::PreferencesDialog(QWidget* parent)
   defaultViewLayaut->addWidget(defaultViewComboBox_);
 
   logDirPath_ = new QLineEdit;
-  QHBoxLayout *logLayout = new QHBoxLayout;
+  QHBoxLayout* logLayout = new QHBoxLayout;
   logDirLabel_ = new QLabel;
   logLayout->addWidget(logDirLabel_);
   logLayout->addWidget(logDirPath_);
 
-  QVBoxLayout *serverSettingsLayout = new QVBoxLayout;
+  QVBoxLayout* serverSettingsLayout = new QVBoxLayout;
   serverSettingsLayout->addLayout(defaultViewLayaut);
   serverSettingsLayout->addLayout(logLayout);
   serverSettingsBox_->setLayout(serverSettingsLayout);
 
   //  main layout
-  QVBoxLayout *layout = new QVBoxLayout(this);
+  QVBoxLayout* layout = new QVBoxLayout(this);
   layout->addWidget(generalBox_);
   layout->addWidget(serverSettingsBox_);
 
-  QDialogButtonBox *buttonBox = new QDialogButtonBox;
+  QDialogButtonBox* buttonBox = new QDialogButtonBox;
   buttonBox->setOrientation(Qt::Horizontal);
   buttonBox->setStandardButtons(QDialogButtonBox::Cancel | QDialogButtonBox::Save);
   VERIFY(connect(buttonBox, &QDialogButtonBox::accepted, this, &PreferencesDialog::accept));

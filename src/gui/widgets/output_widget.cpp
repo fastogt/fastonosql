@@ -213,7 +213,7 @@ void OutputWidget::addChild(FastoObject* child) {
   }
 }
 
-void OutputWidget::itemUpdate(FastoObject* item, common::Value *newValue) {
+void OutputWidget::itemUpdate(FastoObject* item, common::Value* newValue) {
   QModelIndex index;
   bool isFound = commonModel_->findItem(item, &index);
   if (!isFound) {

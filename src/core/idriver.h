@@ -74,10 +74,10 @@ class IDriver
   void clear();
 
  protected:
-  virtual void customEvent(QEvent *event);
+  virtual void customEvent(QEvent* event);
   virtual void timerEvent(QTimerEvent* event);
 
-  void notifyProgress(QObject *reciver, int value);
+  void notifyProgress(QObject* reciver, int value);
 
  protected:
   IDriver(IConnectionSettingsBaseSPtr settings);
@@ -127,9 +127,9 @@ class IDriver
   common::Error execute(FastoObjectCommand* cmd) WARN_UNUSED_RESULT;
  private:
   void handleLoadServerInfoEvent(events::ServerInfoRequestEvent* ev);  // call serverInfo
-  void handleLoadServerInfoHistoryEvent(events::ServerInfoHistoryRequestEvent *ev);
+  void handleLoadServerInfoHistoryEvent(events::ServerInfoHistoryRequestEvent* ev);
   void handleDiscoveryInfoRequestEvent(events::DiscoveryInfoRequestEvent* ev);
-  void handleClearServerHistoryRequestEvent(events::ClearServerHistoryRequestEvent *ev);
+  void handleClearServerHistoryRequestEvent(events::ClearServerHistoryRequestEvent* ev);
 
   virtual common::Error executeImpl(int argc, char** argv, FastoObject* out) = 0;
 

@@ -60,7 +60,7 @@ class LeveldbServerInfo
 std::ostream& operator << (std::ostream& out, const LeveldbServerInfo& value);
 
 LeveldbServerInfo* makeLeveldbServerInfo(const std::string& content);
-LeveldbServerInfo* makeLeveldbServerInfo(FastoObject *root);
+LeveldbServerInfo* makeLeveldbServerInfo(FastoObject* root);
 
 class LeveldbDataBaseInfo
   : public IDataBaseInfo {

@@ -71,7 +71,7 @@ FastoTextView::FastoTextView(const QString& delemitr, QWidget* parent)
   mainL->addLayout(radLaout);
   mainL->addWidget(editor_);
   mainL->setContentsMargins(0, 0, 0, 0);
-  QHBoxLayout *hlayout = new QHBoxLayout;;
+  QHBoxLayout* hlayout = new QHBoxLayout;;
   hlayout->addWidget(saveChangeButton_, 0, Qt::AlignRight);
 
   mainL->addLayout(hlayout);
@@ -139,12 +139,12 @@ void FastoTextView::viewChanged(bool checked) {
   }
 }
 
-void FastoTextView::changeEvent(QEvent* e) {
-  if(e->type() == QEvent::LanguageChange){
+void FastoTextView::changeEvent(QEvent* ev) {
+  if(ev->type() == QEvent::LanguageChange){
     retranslateUi();
   }
 
-  QWidget::changeEvent(e);
+  QWidget::changeEvent(ev);
 }
 
 void FastoTextView::retranslateUi() {

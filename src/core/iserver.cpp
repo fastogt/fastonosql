@@ -117,109 +117,109 @@ bool IServer::containsDatabase(IDataBaseInfoSPtr inf) const {
 
 void IServer::connect(const events_info::ConnectInfoRequest& req) {
   emit startedConnect(req);
-  QEvent *ev = new events::ConnectRequestEvent(this, req);
+  QEvent* ev = new events::ConnectRequestEvent(this, req);
   notify(ev);
 }
 
 void IServer::disconnect(const events_info::DisConnectInfoRequest& req) {
   emit startedDisconnect(req);
-  QEvent *ev = new events::DisconnectRequestEvent(this, req);
+  QEvent* ev = new events::DisconnectRequestEvent(this, req);
   notify(ev);
 }
 
 void IServer::loadDatabases(const events_info::LoadDatabasesInfoRequest& req) {
   emit startedLoadDatabases(req);
-  QEvent *ev = new events::LoadDatabasesInfoRequestEvent(this, req);
+  QEvent* ev = new events::LoadDatabasesInfoRequestEvent(this, req);
   notify(ev);
 }
 
 void IServer::loadDatabaseContent(const events_info::LoadDatabaseContentRequest& req) {
   emit startedLoadDataBaseContent(req);
-  QEvent *ev = new events::LoadDatabaseContentRequestEvent(this, req);
+  QEvent* ev = new events::LoadDatabaseContentRequestEvent(this, req);
   notify(ev);
 }
 
 void IServer::setDefaultDB(const events_info::SetDefaultDatabaseRequest& req) {
   emit startedSetDefaultDatabase(req);
-  QEvent *ev = new events::SetDefaultDatabaseRequestEvent(this, req);
+  QEvent* ev = new events::SetDefaultDatabaseRequestEvent(this, req);
   notify(ev);
 }
 
 void IServer::clearDB(const events_info::ClearDatabaseRequest& req) {
   emit startedClearDatabase(req);
-  QEvent *ev = new events::ClearDatabaseRequestEvent(this, req);
+  QEvent* ev = new events::ClearDatabaseRequestEvent(this, req);
   notify(ev);
 }
 
 void IServer::execute(const events_info::ExecuteInfoRequest& req) {
   emit startedExecute(req);
-  QEvent *ev = new events::ExecuteRequestEvent(this, req);
+  QEvent* ev = new events::ExecuteRequestEvent(this, req);
   notify(ev);
 }
 
 void IServer::executeCommand(const events_info::CommandRequest& req) {
   emit startedExecuteCommand(req);
-  QEvent *ev = new events::CommandRequestEvent(this, req);
+  QEvent* ev = new events::CommandRequestEvent(this, req);
   notify(ev);
 }
 
 void IServer::shutDown(const events_info::ShutDownInfoRequest& req) {
   emit startedShutdown(req);
-  QEvent *ev = new events::ShutDownRequestEvent(this, req);
+  QEvent* ev = new events::ShutDownRequestEvent(this, req);
   notify(ev);
 }
 
 void IServer::backupToPath(const events_info::BackupInfoRequest& req) {
   emit startedBackup(req);
-  QEvent *ev = new events::BackupRequestEvent(this, req);
+  QEvent* ev = new events::BackupRequestEvent(this, req);
   notify(ev);
 }
 
 void IServer::exportFromPath(const events_info::ExportInfoRequest& req) {
   emit startedExport(req);
-  QEvent *ev = new events::ExportRequestEvent(this, req);
+  QEvent* ev = new events::ExportRequestEvent(this, req);
   notify(ev);
 }
 
 void IServer::changePassword(const events_info::ChangePasswordRequest& req) {
   emit startedChangePassword(req);
-  QEvent *ev = new events::ChangePasswordRequestEvent(this, req);
+  QEvent* ev = new events::ChangePasswordRequestEvent(this, req);
   notify(ev);
 }
 
 void IServer::setMaxConnection(const events_info::ChangeMaxConnectionRequest& req) {
   emit startedChangeMaxConnection(req);
-  QEvent *ev = new events::ChangeMaxConnectionRequestEvent(this, req);
+  QEvent* ev = new events::ChangeMaxConnectionRequestEvent(this, req);
   notify(ev);
 }
 
 void IServer::loadServerInfo(const events_info::ServerInfoRequest& req) {
   emit startedLoadServerInfo(req);
-  QEvent *ev = new events::ServerInfoRequestEvent(this, req);
+  QEvent* ev = new events::ServerInfoRequestEvent(this, req);
   notify(ev);
 }
 
 void IServer::serverProperty(const events_info::ServerPropertyInfoRequest& req) {
   emit startedLoadServerProperty(req);
-  QEvent *ev = new events::ServerPropertyInfoRequestEvent(this, req);
+  QEvent* ev = new events::ServerPropertyInfoRequestEvent(this, req);
   notify(ev);
 }
 
 void IServer::requestHistoryInfo(const events_info::ServerInfoHistoryRequest& req) {
   emit startedLoadServerHistoryInfo(req);
-  QEvent *ev = new events::ServerInfoHistoryRequestEvent(this, req);
+  QEvent* ev = new events::ServerInfoHistoryRequestEvent(this, req);
   notify(ev);
 }
 
 void IServer::clearHistory(const events_info::ClearServerHistoryRequest &req) {
   emit startedClearServerHistory(req);
-  QEvent *ev = new events::ClearServerHistoryRequestEvent(this, req);
+  QEvent* ev = new events::ClearServerHistoryRequestEvent(this, req);
   notify(ev);
 }
 
 void IServer::changeProperty(const events_info::ChangeServerPropertyInfoRequest& req) {
   emit startedChangeServerProperty(req);
-  QEvent *ev = new events::ChangeServerPropertyInfoRequestEvent(this, req);
+  QEvent* ev = new events::ChangeServerPropertyInfoRequestEvent(this, req);
   notify(ev);
 }
 
@@ -227,7 +227,7 @@ void IServer::customEvent(QEvent* event) {
   using namespace events;
   QEvent::Type type = event->type();
   if (type == static_cast<QEvent::Type>(ConnectResponceEvent::EventType)) {
-    ConnectResponceEvent *ev = static_cast<ConnectResponceEvent*>(event);
+    ConnectResponceEvent* ev = static_cast<ConnectResponceEvent*>(event);
     handleConnectEvent(ev);
 
     ConnectResponceEvent::value_type v = ev->value();
@@ -240,72 +240,72 @@ void IServer::customEvent(QEvent* event) {
       processConfigArgs(preq);
     }
   } else if (type == static_cast<QEvent::Type>(EnterModeEvent::EventType)) {
-    EnterModeEvent *ev = static_cast<EnterModeEvent*>(event);
+    EnterModeEvent* ev = static_cast<EnterModeEvent*>(event);
     handleEnterModeEvent(ev);
   } else if (type == static_cast<QEvent::Type>(LeaveModeEvent::EventType)) {
-    LeaveModeEvent *ev = static_cast<LeaveModeEvent*>(event);
+    LeaveModeEvent* ev = static_cast<LeaveModeEvent*>(event);
     handleLeaveModeEvent(ev);
   } else if (type == static_cast<QEvent::Type>(CommandRootCreatedEvent::EventType)) {
-    CommandRootCreatedEvent *ev = static_cast<CommandRootCreatedEvent*>(event);
+    CommandRootCreatedEvent* ev = static_cast<CommandRootCreatedEvent*>(event);
     CommandRootCreatedEvent::value_type v = ev->value();
     emit rootCreated(v);
   } else if (type == static_cast<QEvent::Type>(CommandRootCompleatedEvent::EventType)) {
-    CommandRootCompleatedEvent *ev = static_cast<CommandRootCompleatedEvent*>(event);
+    CommandRootCompleatedEvent* ev = static_cast<CommandRootCompleatedEvent*>(event);
     CommandRootCompleatedEvent::value_type v = ev->value();
     emit rootCompleated(v);
   } else if (type == static_cast<QEvent::Type>(DisconnectResponceEvent::EventType)) {
-    DisconnectResponceEvent *ev = static_cast<DisconnectResponceEvent*>(event);
+    DisconnectResponceEvent* ev = static_cast<DisconnectResponceEvent*>(event);
     handleDisconnectEvent(ev);
   } else if (type == static_cast<QEvent::Type>(LoadDatabasesInfoResponceEvent::EventType)) {
-    LoadDatabasesInfoResponceEvent *ev = static_cast<LoadDatabasesInfoResponceEvent*>(event);
+    LoadDatabasesInfoResponceEvent* ev = static_cast<LoadDatabasesInfoResponceEvent*>(event);
     handleLoadDatabaseInfosEvent(ev);
   } else if (type == static_cast<QEvent::Type>(ServerInfoResponceEvent::EventType)) {
-    ServerInfoResponceEvent *ev = static_cast<ServerInfoResponceEvent*>(event);
+    ServerInfoResponceEvent* ev = static_cast<ServerInfoResponceEvent*>(event);
     handleLoadServerInfoEvent(ev);
   } else if (type == static_cast<QEvent::Type>(ServerInfoHistoryResponceEvent::EventType)) {
-    ServerInfoHistoryResponceEvent *ev = static_cast<ServerInfoHistoryResponceEvent*>(event);
+    ServerInfoHistoryResponceEvent* ev = static_cast<ServerInfoHistoryResponceEvent*>(event);
     handleLoadServerInfoHistoryEvent(ev);
   } else if (type == static_cast<QEvent::Type>(ClearServerHistoryResponceEvent::EventType)) {
-    ClearServerHistoryResponceEvent *ev = static_cast<ClearServerHistoryResponceEvent*>(event);
+    ClearServerHistoryResponceEvent* ev = static_cast<ClearServerHistoryResponceEvent*>(event);
     handleClearServerHistoryResponceEvent(ev);
   } else if (type == static_cast<QEvent::Type>(ServerPropertyInfoResponceEvent::EventType)) {
-    ServerPropertyInfoResponceEvent *ev = static_cast<ServerPropertyInfoResponceEvent*>(event);
+    ServerPropertyInfoResponceEvent* ev = static_cast<ServerPropertyInfoResponceEvent*>(event);
     handleLoadServerPropertyEvent(ev);
   } else if (type == static_cast<QEvent::Type>(ChangeServerPropertyInfoResponceEvent::EventType)) {
-    ChangeServerPropertyInfoResponceEvent *ev = static_cast<ChangeServerPropertyInfoResponceEvent*>(event);
+    ChangeServerPropertyInfoResponceEvent* ev = static_cast<ChangeServerPropertyInfoResponceEvent*>(event);
     handleServerPropertyChangeEvent(ev);
   } else if (type == static_cast<QEvent::Type>(BackupResponceEvent::EventType)) {
-    BackupResponceEvent *ev = static_cast<BackupResponceEvent*>(event);
+    BackupResponceEvent* ev = static_cast<BackupResponceEvent*>(event);
     handleBackupEvent(ev);
   } else if (type == static_cast<QEvent::Type>(ExportResponceEvent::EventType)) {
-    ExportResponceEvent *ev = static_cast<ExportResponceEvent*>(event);
+    ExportResponceEvent* ev = static_cast<ExportResponceEvent*>(event);
     handleExportEvent(ev);
   } else if (type == static_cast<QEvent::Type>(ChangePasswordResponceEvent::EventType)) {
-    ChangePasswordResponceEvent *ev = static_cast<ChangePasswordResponceEvent*>(event);
+    ChangePasswordResponceEvent* ev = static_cast<ChangePasswordResponceEvent*>(event);
     handleChangePasswordEvent(ev);
   } else if (type == static_cast<QEvent::Type>(ChangeMaxConnectionResponceEvent::EventType)) {
-    ChangeMaxConnectionResponceEvent *ev = static_cast<ChangeMaxConnectionResponceEvent*>(event);
+    ChangeMaxConnectionResponceEvent* ev = static_cast<ChangeMaxConnectionResponceEvent*>(event);
     handleChangeMaxConnection(ev);
   } else if (type == static_cast<QEvent::Type>(LoadDatabaseContentResponceEvent::EventType)) {
-    LoadDatabaseContentResponceEvent *ev = static_cast<LoadDatabaseContentResponceEvent*>(event);
+    LoadDatabaseContentResponceEvent* ev = static_cast<LoadDatabaseContentResponceEvent*>(event);
     handleLoadDatabaseContentEvent(ev);
   } else if (type == static_cast<QEvent::Type>(ClearDatabaseResponceEvent::EventType)) {
-    ClearDatabaseResponceEvent *ev = static_cast<ClearDatabaseResponceEvent*>(event);
+    ClearDatabaseResponceEvent* ev = static_cast<ClearDatabaseResponceEvent*>(event);
     handleClearDatabaseResponceEvent(ev);
   } else if (type == static_cast<QEvent::Type>(SetDefaultDatabaseResponceEvent::EventType)) {
-    SetDefaultDatabaseResponceEvent *ev = static_cast<SetDefaultDatabaseResponceEvent*>(event);
+    SetDefaultDatabaseResponceEvent* ev = static_cast<SetDefaultDatabaseResponceEvent*>(event);
     handleSetDefaultDatabaseEvent(ev);
   } else if (type == static_cast<QEvent::Type>(ExecuteResponceEvent::EventType)) {
-    ExecuteResponceEvent *ev = static_cast<ExecuteResponceEvent*>(event);
+    ExecuteResponceEvent* ev = static_cast<ExecuteResponceEvent*>(event);
     handleExecuteResponceEvent(ev);
   } else if (type == static_cast<QEvent::Type>(CommandResponceEvent::EventType)) {
-    CommandResponceEvent *ev = static_cast<CommandResponceEvent*>(event);
+    CommandResponceEvent* ev = static_cast<CommandResponceEvent*>(event);
     handleCommandResponceEvent(ev);
   } else if (type == static_cast<QEvent::Type>(DiscoveryInfoResponceEvent::EventType)) {
-    DiscoveryInfoResponceEvent *ev = static_cast<DiscoveryInfoResponceEvent*>(event);
+    DiscoveryInfoResponceEvent* ev = static_cast<DiscoveryInfoResponceEvent*>(event);
     handleDiscoveryInfoResponceEvent(ev);
   } else if (type == static_cast<QEvent::Type>(ProgressResponceEvent::EventType)) {
-    ProgressResponceEvent *ev = static_cast<ProgressResponceEvent*>(event);
+    ProgressResponceEvent* ev = static_cast<ProgressResponceEvent*>(event);
     ProgressResponceEvent::value_type v = ev->value();
     emit progressChanged(v);
   }
@@ -492,7 +492,7 @@ void IServer::handleLeaveModeEvent(events::LeaveModeEvent* ev) {
   emit leavedMode(v);
 }
 
-void IServer::handleLoadServerInfoHistoryEvent(events::ServerInfoHistoryResponceEvent *ev) {
+void IServer::handleLoadServerInfoHistoryEvent(events::ServerInfoHistoryResponceEvent* ev) {
   auto v = ev->value();
   common::Error er = v.errorInfo();
   if (er && er->isError()) {
@@ -547,13 +547,13 @@ void IServer::handleCommandResponceEvent(events::CommandResponceEvent* ev) {
 }
 
 void IServer::processConfigArgs(const events_info::ProcessConfigArgsInfoRequest& req) {
-  QEvent *ev = new events::ProcessConfigArgsRequestEvent(this, req);
+  QEvent* ev = new events::ProcessConfigArgsRequestEvent(this, req);
   notify(ev);
 }
 
 void IServer::processDiscoveryInfo(const events_info::DiscoveryInfoRequest& req) {
   emit startedLoadDiscoveryInfo(req);
-  QEvent *ev = new events::DiscoveryInfoRequestEvent(this, req);
+  QEvent* ev = new events::DiscoveryInfoRequestEvent(this, req);
   notify(ev);
 }
 

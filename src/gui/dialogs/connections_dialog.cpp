@@ -72,7 +72,7 @@ ConnectionsDialog::ConnectionsDialog(QWidget* parent)
   VERIFY(connect(listWidget_, &QTreeWidget::itemSelectionChanged,
                  this, &ConnectionsDialog::connectionSelectChange));
 
-  QDialogButtonBox *buttonBox = new QDialogButtonBox(this);
+  QDialogButtonBox* buttonBox = new QDialogButtonBox(this);
   buttonBox->setOrientation(Qt::Horizontal);
   buttonBox->setStandardButtons(QDialogButtonBox::Cancel | QDialogButtonBox::Ok);
   buttonBox->button(QDialogButtonBox::Ok)->setIcon(GuiFactory::instance().serverIcon());
@@ -82,37 +82,37 @@ ConnectionsDialog::ConnectionsDialog(QWidget* parent)
   VERIFY(connect(buttonBox, &QDialogButtonBox::accepted, this, &ConnectionsDialog::accept));
   VERIFY(connect(buttonBox, &QDialogButtonBox::rejected, this, &ConnectionsDialog::reject));
 
-  QHBoxLayout *bottomLayout = new QHBoxLayout;
+  QHBoxLayout* bottomLayout = new QHBoxLayout;
   bottomLayout->addWidget(buttonBox);
 
-  QToolBar *savebar = new QToolBar;
+  QToolBar* savebar = new QToolBar;
 
-  QAction *addB = new QAction(GuiFactory::instance().loadIcon(),
+  QAction* addB = new QAction(GuiFactory::instance().loadIcon(),
                               translations::trAddConnection, savebar);
   VERIFY(connect(addB, &QAction::triggered, this, &ConnectionsDialog::add));
   savebar->addAction(addB);
 
-  QAction *addc = new QAction(GuiFactory::instance().clusterIcon(),
+  QAction* addc = new QAction(GuiFactory::instance().clusterIcon(),
                               translations::trAddClusterConnection, savebar);
   VERIFY(connect(addc, &QAction::triggered, this, &ConnectionsDialog::addCls));
   savebar->addAction(addc);
 
-  QAction *rmB = new QAction(GuiFactory::instance().removeIcon(),
+  QAction* rmB = new QAction(GuiFactory::instance().removeIcon(),
                              translations::trRemoveConnection, savebar);
   VERIFY(connect(rmB, &QAction::triggered, this, &ConnectionsDialog::remove));
   savebar->addAction(rmB);
 
-  QAction *editB = new QAction(GuiFactory::instance().editIcon(),
+  QAction* editB = new QAction(GuiFactory::instance().editIcon(),
                                translations::trEditConnection, savebar);
   VERIFY(connect(editB, &QAction::triggered, this, &ConnectionsDialog::edit));
   savebar->addAction(editB);
 
-  QVBoxLayout *firstColumnLayout = new QVBoxLayout;
+  QVBoxLayout* firstColumnLayout = new QVBoxLayout;
   firstColumnLayout->addWidget(savebar);
   firstColumnLayout->addWidget(listWidget_);
   firstColumnLayout->addLayout(bottomLayout);
 
-  QHBoxLayout *mainLayout = new QHBoxLayout(this);
+  QHBoxLayout* mainLayout = new QHBoxLayout(this);
   mainLayout->addLayout(firstColumnLayout, 1);
 
   // Populate list with connections
@@ -138,7 +138,7 @@ ConnectionsDialog::ConnectionsDialog(QWidget* parent)
 }
 
 IConnectionSettingsBaseSPtr ConnectionsDialog::selectedConnection() const {
-  ConnectionListWidgetItem *currentItem = dynamic_cast<ConnectionListWidgetItem *>(listWidget_->currentItem());
+  ConnectionListWidgetItem* currentItem = dynamic_cast<ConnectionListWidgetItem*>(listWidget_->currentItem());
   if (currentItem) {
     return currentItem->connection();
   }
@@ -147,7 +147,7 @@ IConnectionSettingsBaseSPtr ConnectionsDialog::selectedConnection() const {
 }
 
 IClusterSettingsBaseSPtr ConnectionsDialog::selectedCluster() const {
-  ClusterConnectionListWidgetItem *currentItem = dynamic_cast<ClusterConnectionListWidgetItem *>(listWidget_->currentItem());
+  ClusterConnectionListWidgetItem* currentItem = dynamic_cast<ClusterConnectionListWidgetItem*>(listWidget_->currentItem());
   if (currentItem) {
     return currentItem->connection();
   }
@@ -181,7 +181,7 @@ void ConnectionsDialog::remove() {
     return;
   }
 
-  ConnectionListWidgetItem* currentItem = dynamic_cast<ConnectionListWidgetItem *>(qitem);
+  ConnectionListWidgetItem* currentItem = dynamic_cast<ConnectionListWidgetItem*>(qitem);
   if (currentItem) {
     QTreeWidgetItem* qpitem = qitem->parent();
     if (!qpitem) {
@@ -202,7 +202,7 @@ void ConnectionsDialog::remove() {
     }
   }
 
-  ClusterConnectionListWidgetItem* clCurrentItem = dynamic_cast<ClusterConnectionListWidgetItem *>(qitem);
+  ClusterConnectionListWidgetItem* clCurrentItem = dynamic_cast<ClusterConnectionListWidgetItem*>(qitem);
   if (clCurrentItem) {
     // Ask user
     int answer = QMessageBox::question(this, "Connections",
@@ -224,7 +224,7 @@ void ConnectionsDialog::edit() {
     return;
   }
 
-  ConnectionListWidgetItem* currentItem = dynamic_cast<ConnectionListWidgetItem *>(qitem);
+  ConnectionListWidgetItem* currentItem = dynamic_cast<ConnectionListWidgetItem*>(qitem);
   if (currentItem) {
     QTreeWidgetItem* qpitem = qitem->parent();
     if (!qpitem) {
@@ -243,7 +243,7 @@ void ConnectionsDialog::edit() {
     }
   }
 
-  ClusterConnectionListWidgetItem* clCurrentItem = dynamic_cast<ClusterConnectionListWidgetItem *>(qitem);
+  ClusterConnectionListWidgetItem* clCurrentItem = dynamic_cast<ClusterConnectionListWidgetItem*>(qitem);
   if (clCurrentItem) {
     IClusterSettingsBaseSPtr con = clCurrentItem->connection();
     ClusterDialog dlg(this, con->clone());

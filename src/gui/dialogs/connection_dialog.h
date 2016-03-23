@@ -73,7 +73,7 @@ class ConnectionDialog
   QLineEdit* commandLine_;
 
   QPushButton* testButton_;
-  QDialogButtonBox *buttonBox_;
+  QDialogButtonBox* buttonBox_;
 
   QCheckBox* useSsh_;
 

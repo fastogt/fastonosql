@@ -52,7 +52,7 @@ std::string UnqliteConnectionSettings::fullAddress() const {
 }
 
 UnqliteConnectionSettings* UnqliteConnectionSettings::clone() const {
-  UnqliteConnectionSettings *red = new UnqliteConnectionSettings(*this);
+  UnqliteConnectionSettings* red = new UnqliteConnectionSettings(*this);
   return red;
 }
 

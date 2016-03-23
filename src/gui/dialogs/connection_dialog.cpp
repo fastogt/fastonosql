@@ -94,7 +94,7 @@ ConnectionDialog::ConnectionDialog(QWidget* parent, IConnectionSettingsBase* con
   VERIFY(connect(typeConnection_, static_cast<qind>(&QComboBox::currentIndexChanged),
                  this, &ConnectionDialog::typeConnectionChange));
 
-  QHBoxLayout *loggingLayout = new QHBoxLayout;
+  QHBoxLayout* loggingLayout = new QHBoxLayout;
   logging_ = new QCheckBox;;
   loggingMsec_ = new QSpinBox;
   loggingMsec_->setRange(0, INT32_MAX);
@@ -117,7 +117,7 @@ ConnectionDialog::ConnectionDialog(QWidget* parent, IConnectionSettingsBase* con
     commandLine_->setText(stableCommandLine(common::convertFromString<QString>(connection_->commandLine())));
   }
 
-  QVBoxLayout *inputLayout = new QVBoxLayout;
+  QVBoxLayout* inputLayout = new QVBoxLayout;
   inputLayout->addWidget(connectionName_);
   inputLayout->addWidget(typeConnection_);
   inputLayout->addLayout(loggingLayout);
@@ -125,7 +125,7 @@ ConnectionDialog::ConnectionDialog(QWidget* parent, IConnectionSettingsBase* con
 
   // ssh
 
-  IConnectionSettingsRemote * remoteSettings = dynamic_cast<IConnectionSettingsRemote *>(connection_.get());
+  IConnectionSettingsRemote* remoteSettings = dynamic_cast<IConnectionSettingsRemote*>(connection_.get());
 
   SSHInfo info;
   if (remoteSettings) {
@@ -185,12 +185,12 @@ ConnectionDialog::ConnectionDialog(QWidget* parent, IConnectionSettingsBase* con
 
   useSshWidget_ = new QWidget;
 
-  QHBoxLayout *hostAndPasswordLayout = new QHBoxLayout;
+  QHBoxLayout* hostAndPasswordLayout = new QHBoxLayout;
   hostAndPasswordLayout->addWidget(sshHostName_);
   hostAndPasswordLayout->addWidget(new QLabel(":"));
   hostAndPasswordLayout->addWidget(sshPort_);
 
-  QGridLayout *sshWidgetLayout = new QGridLayout;
+  QGridLayout* sshWidgetLayout = new QGridLayout;
   sshWidgetLayout->setAlignment(Qt::AlignTop);
   sshWidgetLayout->setColumnStretch(1, 1);
   sshWidgetLayout->addWidget(sshAddressLabel_ , 1, 0);
@@ -224,7 +224,7 @@ ConnectionDialog::ConnectionDialog(QWidget* parent, IConnectionSettingsBase* con
   VERIFY(connect(testButton_, &QPushButton::clicked,
                  this, &ConnectionDialog::testConnection));
 
-  QHBoxLayout *bottomLayout = new QHBoxLayout;
+  QHBoxLayout* bottomLayout = new QHBoxLayout;
   bottomLayout->addWidget(testButton_, 1, Qt::AlignLeft);
   buttonBox_ = new QDialogButtonBox(this);
   buttonBox_->setOrientation(Qt::Horizontal);
@@ -236,7 +236,7 @@ ConnectionDialog::ConnectionDialog(QWidget* parent, IConnectionSettingsBase* con
   bottomLayout->addWidget(buttonBox_);
 
 
-  QVBoxLayout *mainLayout = new QVBoxLayout;
+  QVBoxLayout* mainLayout = new QVBoxLayout;
   mainLayout->addLayout(inputLayout);
   mainLayout->addWidget(useSshWidget_);
   mainLayout->addLayout(bottomLayout);
@@ -284,7 +284,7 @@ void ConnectionDialog::typeConnectionChange(int index) {
     commandLine_->setToolTip(trHelp);
   }
 
-  QObject *send = qobject_cast<QObject*>(sender());
+  QObject* send = qobject_cast<QObject*>(sender());
   if (send) {
     QString deft = stableCommandLine(common::convertFromString<QString>(defaultCommandLine(currentType)));
     commandLine_->setText(deft);

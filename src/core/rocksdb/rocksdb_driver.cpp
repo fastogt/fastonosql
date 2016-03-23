@@ -137,7 +137,7 @@ common::Error RocksdbDriver::executeImpl(int argc, char** argv, FastoObject* out
   return impl_->execute(argc, argv, out);
 }
 
-common::Error RocksdbDriver::serverInfo(IServerInfo **info) {
+common::Error RocksdbDriver::serverInfo(IServerInfo** info) {
   LOG_COMMAND(type(), Command(INFO_REQUEST, common::Value::C_INNER));
   RocksdbServerInfo::Stats cm;
   common::Error err = impl_->info(nullptr, &cm);
@@ -152,7 +152,7 @@ common::Error RocksdbDriver::serverDiscoveryInfo(ServerDiscoveryInfo** dinfo, IS
                                                  IDataBaseInfo** dbinfo) {
   UNUSED(dinfo);
 
-  IServerInfo *lsinfo = nullptr;
+  IServerInfo* lsinfo = nullptr;
   common::Error er = serverInfo(&lsinfo);
   if (er && er->isError()) {
     return er;
@@ -182,11 +182,11 @@ common::Error RocksdbDriver::currentDataBaseInfo(IDataBaseInfo** info) {
   return common::Error();
 }
 
-void RocksdbDriver::handleConnectEvent(events::ConnectRequestEvent *ev) {
+void RocksdbDriver::handleConnectEvent(events::ConnectRequestEvent* ev) {
   QObject* sender = ev->sender();
   notifyProgress(sender, 0);
   events::ConnectResponceEvent::value_type res(ev->value());
-  RocksdbConnectionSettings *set = dynamic_cast<RocksdbConnectionSettings*>(settings_.get());
+  RocksdbConnectionSettings* set = dynamic_cast<RocksdbConnectionSettings*>(settings_.get());
   if (set) {
     impl_->config_ = set->info();
   notifyProgress(sender, 25);
@@ -219,7 +219,7 @@ void RocksdbDriver::handleExecuteEvent(events::ExecuteRequestEvent* ev) {
   QObject* sender = ev->sender();
   notifyProgress(sender, 0);
   events::ExecuteResponceEvent::value_type res(ev->value());
-  const char *inputLine = common::utils::c_strornull(res.text);
+  const char* inputLine = common::utils::c_strornull(res.text);
 
   common::Error er;
   if (inputLine) {

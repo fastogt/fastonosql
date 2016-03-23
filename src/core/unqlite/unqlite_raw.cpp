@@ -201,7 +201,7 @@ common::Error UnqliteRaw::dbsize(size_t* size) {
   }
 
   /* Allocate a new cursor instance */
-  unqlite_kv_cursor *pCur; /* Cursor handle */
+  unqlite_kv_cursor* pCur; /* Cursor handle */
   int rc = unqlite_kv_cursor_init(unqlite_, &pCur);
   if (rc != UNQLITE_OK) {
     char buff[1024] = {0};
@@ -273,7 +273,7 @@ common::Error UnqliteRaw::del(const std::string& key) {
 common::Error UnqliteRaw::keys(const std::string& key_start, const std::string& key_end,
                    uint64_t limit, std::vector<std::string> *ret) {
   /* Allocate a new cursor instance */
-  unqlite_kv_cursor *pCur; /* Cursor handle */
+  unqlite_kv_cursor* pCur; /* Cursor handle */
   int rc = unqlite_kv_cursor_init(unqlite_, &pCur);
   if (rc != UNQLITE_OK) {
     char buff[1024] = {0};
@@ -305,7 +305,7 @@ common::Error UnqliteRaw::help(int argc, char** argv) {
 }
 
 common::Error UnqliteRaw::flushdb() {
-  unqlite_kv_cursor *pCur; /* Cursor handle */
+  unqlite_kv_cursor* pCur; /* Cursor handle */
   int rc = unqlite_kv_cursor_init(unqlite_, &pCur);
   if (rc != UNQLITE_OK) {
     char buff[1024] = {0};
@@ -336,7 +336,7 @@ common::Error set(CommandHandler* handler, int argc, char** argv, FastoObject* o
   UnqliteRaw* unq = static_cast<UnqliteRaw*>(handler);
   common::Error er = unq->set(argv[0], argv[1]);
   if (!er) {
-    common::StringValue * val = common::Value::createStringValue("STORED");
+    common::StringValue* val = common::Value::createStringValue("STORED");
     FastoObject* child = new FastoObject(out, val, unq->config_.delimiter);
     out->addChildren(child);
   }
@@ -349,7 +349,7 @@ common::Error get(CommandHandler* handler, int argc, char** argv, FastoObject* o
   std::string ret;
   common::Error er = unq->get(argv[0], &ret);
   if (!er) {
-    common::StringValue *val = common::Value::createStringValue(ret);
+    common::StringValue* val = common::Value::createStringValue(ret);
     FastoObject* child = new FastoObject(out, val, unq->config_.delimiter);
     out->addChildren(child);
   }
@@ -361,7 +361,7 @@ common::Error del(CommandHandler* handler, int argc, char** argv, FastoObject* o
   UnqliteRaw* unq = static_cast<UnqliteRaw*>(handler);
   common::Error er = unq->del(argv[0]);
   if (!er) {
-    common::StringValue *val = common::Value::createStringValue("DELETED");
+    common::StringValue* val = common::Value::createStringValue("DELETED");
     FastoObject* child = new FastoObject(out, val, unq->config_.delimiter);
     out->addChildren(child);
   }
@@ -376,7 +376,7 @@ common::Error keys(CommandHandler* handler, int argc, char** argv, FastoObject* 
   if (!er) {
     common::ArrayValue* ar = common::Value::createArrayValue();
     for (size_t i = 0; i < keysout.size(); ++i) {
-      common::StringValue *val = common::Value::createStringValue(keysout[i]);
+      common::StringValue* val = common::Value::createStringValue(keysout[i]);
       ar->append(val);
     }
     FastoObjectArray* child = new FastoObjectArray(out, ar, unq->config_.delimiter);
@@ -392,7 +392,7 @@ common::Error info(CommandHandler* handler, int argc, char** argv, FastoObject* 
   common::Error er = unq->info(argc == 1 ? argv[0] : nullptr, &statsout);
   if (!er) {
     UnqliteServerInfo uinf(statsout);
-    common::StringValue *val = common::Value::createStringValue(uinf.toString());
+    common::StringValue* val = common::Value::createStringValue(uinf.toString());
     FastoObject* child = new FastoObject(out, val, unq->config_.delimiter);
     out->addChildren(child);
   }

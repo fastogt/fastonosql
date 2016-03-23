@@ -93,7 +93,7 @@ class MemcachedServerInfo
 std::ostream& operator << (std::ostream& out, const MemcachedServerInfo& value);
 
 MemcachedServerInfo* makeMemcachedServerInfo(const std::string& content);
-MemcachedServerInfo* makeMemcachedServerInfo(FastoObject *root);
+MemcachedServerInfo* makeMemcachedServerInfo(FastoObject* root);
 
 class MemcachedDataBaseInfo
   : public IDataBaseInfo {

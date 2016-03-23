@@ -43,8 +43,8 @@
 
 namespace {
 
-QPushButton *createButtonWithIcon(const QIcon &icon) {
-  QPushButton *button = new QPushButton;
+QPushButton* createButtonWithIcon(const QIcon& icon) {
+  QPushButton* button = new QPushButton;
   button->setIcon(icon);
   button->setFixedSize(24, 24);
   button->setFlat(true);
@@ -54,34 +54,34 @@ QPushButton *createButtonWithIcon(const QIcon &icon) {
 class NumericDelegate
   : public QStyledItemDelegate {
  public:
-  explicit NumericDelegate(QObject *parent = 0)
+  explicit NumericDelegate(QObject* parent = 0)
   : QStyledItemDelegate(parent) {
 }
 
-QWidget* createEditor(QWidget *parent, const QStyleOptionViewItem &, const QModelIndex &) const {
+QWidget* createEditor(QWidget* parent, const QStyleOptionViewItem& , const QModelIndex& ) const {
   QSpinBox* editor = new QSpinBox(parent);
   editor->setRange(-1, INT32_MAX);
   editor->setValue(-1);
   return editor;
 }
 
-void setEditorData(QWidget *editor, const QModelIndex &index) const {
+void setEditorData(QWidget* editor, const QModelIndex &index) const {
   int value = index.model()->data(index, Qt::EditRole).toInt();
 
-  QSpinBox *spinBox = static_cast<QSpinBox*>(editor);
+  QSpinBox* spinBox = static_cast<QSpinBox*>(editor);
   spinBox->setValue(value);
 }
 
-void setModelData(QWidget *editor, QAbstractItemModel* model, const QModelIndex& index) const {
-  QSpinBox *spinBox = static_cast<QSpinBox*>(editor);
+void setModelData(QWidget* editor, QAbstractItemModel* model, const QModelIndex& index) const {
+  QSpinBox* spinBox = static_cast<QSpinBox*>(editor);
   spinBox->interpretText();
   int value = spinBox->value();
 
   model->setData(index, value, Qt::EditRole);
 }
 
-void updateEditorGeometry(QWidget *editor, const QStyleOptionViewItem &option,
-                          const QModelIndex &) const {
+void updateEditorGeometry(QWidget* editor, const QStyleOptionViewItem& option,
+                          const QModelIndex& ) const {
   editor->setGeometry(option.rect);
 }
 };
@@ -104,7 +104,7 @@ ViewKeysDialog::ViewKeysDialog(const QString& title, IDatabaseSPtr db, QWidget* 
   setWindowTitle(title);
 
   // main layout
-  QVBoxLayout *mainlayout = new QVBoxLayout;
+  QVBoxLayout* mainlayout = new QVBoxLayout;
 
   QHBoxLayout* searchLayout = new QHBoxLayout;
   searchBox_ = new QLineEdit;
@@ -238,7 +238,7 @@ void ViewKeysDialog::finishExecuteCommand(const events_info::CommandResponce& re
 
   CommandKeySPtr key = res.cmd;
   if (key->type() == CommandKey::C_CHANGE_TTL) {
-    CommandChangeTTL * cttl = dynamic_cast<CommandChangeTTL*>(key.get());
+    CommandChangeTTL* cttl = dynamic_cast<CommandChangeTTL*>(key.get());
     if (cttl) {
       NDbKValue dbv = cttl->newKey();
       keysModel_->changeValue(dbv);

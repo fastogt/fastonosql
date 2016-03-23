@@ -79,8 +79,8 @@ class FastoEditor
   void setShowAutoCompletion(bool showA);
   QMenu* createStandardContextMenu();
 
-  void setLexer(QsciLexer *lexer);
-  QsciLexer *lexer() const;
+  void setLexer(QsciLexer* lexer);
+  QsciLexer* lexer() const;
 
   void setCallTipsStyle(int style);
   void sendScintilla(unsigned int msg, unsigned long wParam = 0, long lParam = 0);
@@ -106,7 +106,7 @@ class FastoEditorOutput
   : public QWidget {
   Q_OBJECT
  public:
-  explicit FastoEditorOutput(const QString& delemitr, QWidget *parent = 0);
+  explicit FastoEditorOutput(const QString& delemitr, QWidget* parent = 0);
 
   void setModel(QAbstractItemModel* model);
 
@@ -149,7 +149,7 @@ class FastoEditorShell
   void showContextMenu(const QPoint& pt);
 
  protected:
-  explicit FastoEditorShell(bool showAutoCompl, QWidget *parent = 0);
+  explicit FastoEditorShell(bool showAutoCompl, QWidget* parent = 0);
 };
 
 }  // namespace fastonosql

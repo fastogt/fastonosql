@@ -52,7 +52,7 @@ class LmdbServerInfo
 std::ostream& operator << (std::ostream& out, const LmdbServerInfo& value);
 
 LmdbServerInfo* makeLmdbServerInfo(const std::string& content);
-LmdbServerInfo* makeLmdbServerInfo(FastoObject *root);
+LmdbServerInfo* makeLmdbServerInfo(FastoObject* root);
 
 class LmdbDataBaseInfo
     : public IDataBaseInfo {

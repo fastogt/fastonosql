@@ -60,7 +60,7 @@ class RocksdbServerInfo
 std::ostream& operator << (std::ostream& out, const RocksdbServerInfo& value);
 
 RocksdbServerInfo* makeRocksdbServerInfo(const std::string& content);
-RocksdbServerInfo* makeRocksdbServerInfo(FastoObject *root);
+RocksdbServerInfo* makeRocksdbServerInfo(FastoObject* root);
 
 class RocksdbDataBaseInfo
   : public IDataBaseInfo {

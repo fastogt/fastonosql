@@ -31,7 +31,7 @@ namespace rocksdb {
 
 namespace {
 
-void parseOptions(int argc, char **argv, RocksdbConfig& cfg) {
+void parseOptions(int argc, char** argv, RocksdbConfig& cfg) {
   for (int i = 0; i < argc; i++) {
     int lastarg = i == argc-1;
 
@@ -92,7 +92,7 @@ fastonosql::rocksdb::RocksdbConfig convertFromString(const std::string& line) {
   fastonosql::rocksdb::RocksdbConfig cfg;
   enum { kMaxArgs = 64 };
   int argc = 0;
-  char *argv[kMaxArgs] = {0};
+  char* argv[kMaxArgs] = {0};
 
   char* p2 = strtok((char*)line.c_str(), " ");
   while (p2) {

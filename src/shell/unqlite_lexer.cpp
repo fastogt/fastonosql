@@ -26,7 +26,7 @@
 namespace fastonosql {
 namespace shell {
 
-UnqliteApi::UnqliteApi(QsciLexer *lexer)
+UnqliteApi::UnqliteApi(QsciLexer* lexer)
   : BaseQsciApiCommandHolder(unqlite::unqliteCommands, lexer) {
 }
 

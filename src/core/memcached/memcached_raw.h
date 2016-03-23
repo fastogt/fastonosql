@@ -46,7 +46,7 @@ struct MemcachedRaw
   common::Error info(const char* args, MemcachedServerInfo::Common* statsout);
   common::Error dbsize(size_t* size);
 
-  common::Error get(const std::string& key, std::string *ret_val);
+  common::Error get(const std::string& key, std::string* ret_val);
   common::Error set(const std::string& key, const std::string& value,
                     time_t expiration, uint32_t flags);
   common::Error add(const std::string& key, const std::string& value,

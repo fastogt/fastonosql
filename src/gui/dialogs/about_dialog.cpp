@@ -60,8 +60,8 @@ AboutDialog::AboutDialog(QWidget* parent)
   copyRightLabel->setOpenExternalLinks(true);
   copyRightLabel->setTextInteractionFlags(Qt::TextBrowserInteraction);
 
-  QDialogButtonBox *buttonBox = new QDialogButtonBox(QDialogButtonBox::Close);
-  QPushButton *closeButton = buttonBox->button(QDialogButtonBox::Close);
+  QDialogButtonBox* buttonBox = new QDialogButtonBox(QDialogButtonBox::Close);
+  QPushButton* closeButton = buttonBox->button(QDialogButtonBox::Close);
   buttonBox->addButton(closeButton, QDialogButtonBox::ButtonRole(QDialogButtonBox::RejectRole | QDialogButtonBox::AcceptRole));
   VERIFY(connect(buttonBox, &QDialogButtonBox::rejected, this, &AboutDialog::reject));
 

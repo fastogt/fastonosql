@@ -166,13 +166,13 @@ MainWindow::MainWindow()
   VERIFY(connect(exitAction_, &QAction::triggered, this, &MainWindow::close));
 
   // File menu
-  QMenu *fileMenu = new QMenu(this);
+  QMenu* fileMenu = new QMenu(this);
   fileAction_ = menuBar()->addMenu(fileMenu);
   fileMenu->addAction(openAction_);
   fileMenu->addAction(loadFromFileAction_);
   fileMenu->addAction(importAction_);
   fileMenu->addAction(exportAction_);
-  QMenu *recentMenu = new QMenu(this);
+  QMenu* recentMenu = new QMenu(this);
   recentConnections_ = fileMenu->addMenu(recentMenu);
   for (auto i = 0; i < max_recent_connections; ++i) {
     recentConnectionsActs_[i] = new QAction(this);
@@ -194,12 +194,12 @@ MainWindow::MainWindow()
   preferencesAction_->setIcon(GuiFactory::instance().preferencesIcon());
   VERIFY(connect(preferencesAction_, &QAction::triggered, this, &MainWindow::openPreferences));
 
-  QMenu *editMenu = new QMenu(this);
+  QMenu* editMenu = new QMenu(this);
   editAction_ = menuBar()->addMenu(editMenu);
   editMenu->addAction(preferencesAction_);
 
   // tools menu
-  QMenu *tools = new QMenu(this);
+  QMenu* tools = new QMenu(this);
   toolsAction_ = menuBar()->addMenu(tools);
 
   encodeDecodeDialogAction_ = new QAction(this);
@@ -209,17 +209,17 @@ MainWindow::MainWindow()
   tools->addAction(encodeDecodeDialogAction_);
 
   // window menu
-  QMenu *window = new QMenu(this);
+  QMenu* window = new QMenu(this);
   windowAction_ = menuBar()->addMenu(window);
   fullScreanAction_ = new QAction(this);
   fullScreanAction_->setShortcut(fullScreenKey);
   VERIFY(connect(fullScreanAction_, &QAction::triggered, this, &MainWindow::enterLeaveFullScreen));
   window->addAction(fullScreanAction_);
 
-  QMenu *views = new QMenu(translations::trViews, this);
+  QMenu* views = new QMenu(translations::trViews, this);
   window->addMenu(views);
 
-  QMenu *helpMenu = new QMenu(this);
+  QMenu* helpMenu = new QMenu(this);
   aboutAction_ = new QAction(this);
   VERIFY(connect(aboutAction_, &QAction::triggered, this, &MainWindow::about));
 
@@ -237,7 +237,7 @@ MainWindow::MainWindow()
   helpMenu->addSeparator();
   helpMenu->addAction(aboutAction_);
 
-  MainWidget *mainW = new MainWidget;
+  MainWidget* mainW = new MainWidget;
   setCentralWidget(mainW);
 
   exp_ = new ExplorerTreeView(this);
@@ -259,7 +259,7 @@ MainWindow::MainWindow()
   expDock_->setVisible(true);
   addDockWidget(Qt::LeftDockWidgetArea, expDock_);
 
-  LogTabWidget *log = new LogTabWidget(this);
+  LogTabWidget* log = new LogTabWidget(this);
   VERIFY(connect(&fasto::qt::Logger::instance(), &fasto::qt::Logger::printed,
                  log, &LogTabWidget::addLogMessage));
   VERIFY(connect(&CommandLogger::instance(), &CommandLogger::printed,
@@ -358,7 +358,7 @@ void MainWindow::openEncodeDecodeDialog() {
 }
 
 void MainWindow::openRecentConnection() {
-  QAction *action = qobject_cast<QAction *>(sender());
+  QAction* action = qobject_cast<QAction*>(sender());
   if (!action) {
     return;
   }
@@ -550,9 +550,9 @@ void MainWindow::versionAvailible(bool succesResult, const QString& version) {
 }
 
 #ifdef OS_ANDROID
-bool MainWindow::event(QEvent *event) {
+bool MainWindow::event(QEvent* event) {
   if (event->type() == QEvent::Gesture) {
-    QGestureEvent *gest = static_cast<QGestureEvent*>(event);
+    QGestureEvent* gest = static_cast<QGestureEvent*>(event);
     if (gest) {
       return gestureEvent(gest);
     }
@@ -560,21 +560,21 @@ bool MainWindow::event(QEvent *event) {
   return QMainWindow::event(event);
 }
 
-bool MainWindow::gestureEvent(QGestureEvent *event) {
-  /*if (QGesture *qpan = event->gesture(Qt::PanGesture)){
+bool MainWindow::gestureEvent(QGestureEvent* event) {
+  /*if (QGesture* qpan = event->gesture(Qt::PanGesture)){
     QPanGesture* pan = static_cast<QPanGesture*>(qpan);
   }
-  if (QGesture *qpinch = event->gesture(Qt::PinchGesture)){
+  if (QGesture* qpinch = event->gesture(Qt::PinchGesture)){
     QPinchGesture* pinch = static_cast<QPinchGesture*>(qpinch);
   }
-  if (QGesture *qtap = event->gesture(Qt::TapGesture)){
+  if (QGesture* qtap = event->gesture(Qt::TapGesture)){
     QTapGesture* tap = static_cast<QTapGesture*>(qtap);
   }*/
 
-  if (QGesture *qswipe = event->gesture(Qt::SwipeGesture)) {
+  if (QGesture* qswipe = event->gesture(Qt::SwipeGesture)) {
     QSwipeGesture* swipe = static_cast<QSwipeGesture*>(qswipe);
     swipeTriggered(swipe);
-  } else if (QGesture *qtapandhold = event->gesture(Qt::TapAndHoldGesture)) {
+  } else if (QGesture* qtapandhold = event->gesture(Qt::TapAndHoldGesture)) {
     QTapAndHoldGesture* tapandhold = static_cast<QTapAndHoldGesture*>(qtapandhold);
     tapAndHoldTriggered(tapandhold);
     event->accept();
@@ -596,7 +596,7 @@ void MainWindow::tapAndHoldTriggered(QTapAndHoldGesture* tapEvent) {
 
 void MainWindow::createToolBar() {
 #ifdef BUILD_WITH_SOCIAL_BUTTONS
-  QToolBar *toolBar = new QToolBar(tr("Share toolbar"));
+  QToolBar* toolBar = new QToolBar(tr("Share toolbar"));
 
   facebookAction_ = new QAction(this);
   facebookAction_->setIcon(GuiFactory::instance().facebookIcon());

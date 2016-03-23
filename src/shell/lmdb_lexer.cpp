@@ -26,7 +26,7 @@
 namespace fastonosql {
 namespace shell {
 
-LmdbApi::LmdbApi(QsciLexer *lexer)
+LmdbApi::LmdbApi(QsciLexer* lexer)
   : BaseQsciApiCommandHolder(lmdb::lmdbCommands, lexer) {
 }
 

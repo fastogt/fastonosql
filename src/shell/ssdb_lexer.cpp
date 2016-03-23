@@ -26,7 +26,7 @@
 namespace fastonosql {
 namespace shell {
 
-SsdbApi::SsdbApi(QsciLexer *lexer)
+SsdbApi::SsdbApi(QsciLexer* lexer)
   : BaseQsciApiCommandHolder(ssdb::ssdbCommands, lexer) {
 }
 

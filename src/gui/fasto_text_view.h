@@ -42,7 +42,7 @@ class FastoTextView
   void saveChanges();
 
  protected:
-  virtual void changeEvent(QEvent *);
+  virtual void changeEvent(QEvent* ev);
 
  private:
   void retranslateUi();

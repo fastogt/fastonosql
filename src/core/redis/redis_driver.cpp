@@ -153,7 +153,7 @@ common::Error RedisDriver::serverInfo(IServerInfo** info) {
 
 common::Error RedisDriver::serverDiscoveryInfo(ServerDiscoveryInfo** dinfo, IServerInfo** sinfo,
                                                IDataBaseInfo** dbinfo) {
-  IServerInfo *lsinfo = nullptr;
+  IServerInfo* lsinfo = nullptr;
   common::Error er = serverInfo(&lsinfo);
   if (er && er->isError()) {
     return er;
@@ -208,7 +208,7 @@ void RedisDriver::handleConnectEvent(events::ConnectRequestEvent* ev) {
   QObject* sender = ev->sender();
   notifyProgress(sender, 0);
   events::ConnectResponceEvent::value_type res(ev->value());
-  RedisConnectionSettings *set = dynamic_cast<RedisConnectionSettings*>(settings_.get());
+  RedisConnectionSettings* set = dynamic_cast<RedisConnectionSettings*>(settings_.get());
   if (set) {
     impl_->config_ = set->info();
     impl_->sinfo_ = set->sshInfo();
@@ -492,7 +492,7 @@ void RedisDriver::handleExecuteEvent(events::ExecuteRequestEvent* ev) {
   QObject* sender = ev->sender();
   notifyProgress(sender, 0);
   events::ExecuteResponceEvent::value_type res(ev->value());
-  const char *inputLine = common::utils::c_strornull(res.text);
+  const char* inputLine = common::utils::c_strornull(res.text);
 
   common::Error er;
   if (inputLine) {
@@ -561,7 +561,7 @@ void RedisDriver::handleCommandRequestEvent(events::CommandRequestEvent* ev) {
   notifyProgress(sender, 100);
 }
 
-void RedisDriver::handleDisconnectEvent(events::DisconnectRequestEvent *ev) {
+void RedisDriver::handleDisconnectEvent(events::DisconnectRequestEvent* ev) {
   QObject* sender = ev->sender();
   notifyProgress(sender, 0);
   events::DisconnectResponceEvent::value_type res(ev->value());

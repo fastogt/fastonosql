@@ -39,7 +39,7 @@ QueryWidget::QueryWidget(IServerSPtr server, QWidget* parent)
   splitter->setOrientation(Qt::Vertical);
   splitter->setHandleWidth(1);
 
-  QVBoxLayout *mainLayout = new QVBoxLayout;
+  QVBoxLayout* mainLayout = new QVBoxLayout;
   splitter->addWidget(shellWidget_);
   splitter->addWidget(outputWidget_);
   splitter->setStretchFactor(0, 0);
@@ -51,7 +51,7 @@ QueryWidget::QueryWidget(IServerSPtr server, QWidget* parent)
 }
 
 QueryWidget* QueryWidget::clone(const QString& text) {
-  QueryWidget *result = new QueryWidget(server_, parentWidget());
+  QueryWidget* result = new QueryWidget(server_, parentWidget());
   result->shellWidget_->setText(text);
   return result;
 }

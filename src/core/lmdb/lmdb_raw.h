@@ -34,7 +34,7 @@ namespace lmdb {
 common::Error testConnection(LmdbConnectionSettings* settings);
 
 struct lmdb {
-  MDB_env *env;
+  MDB_env* env;
   MDB_dbi dbir;
 };
 

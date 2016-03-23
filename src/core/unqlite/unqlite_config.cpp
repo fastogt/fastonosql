@@ -90,7 +90,7 @@ fastonosql::unqlite::UnqliteConfig convertFromString(const std::string& line) {
   fastonosql::unqlite::UnqliteConfig cfg;
   enum { kMaxArgs = 64 };
   int argc = 0;
-  char *argv[kMaxArgs] = {0};
+  char* argv[kMaxArgs] = {0};
 
   char* p2 = strtok((char*)line.c_str(), " ");
   while (p2) {

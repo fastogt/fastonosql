@@ -57,7 +57,7 @@ FastoEditor::FastoEditor(QWidget* parent)
   close_->setIconSize(QSize(16, 16));
   findLine_->setAlignment(Qt::AlignLeft | Qt::AlignAbsolute);
 
-  QHBoxLayout *layout = new QHBoxLayout;
+  QHBoxLayout* layout = new QHBoxLayout;
   layout->addWidget(close_);
   layout->addWidget(findLine_);
   layout->addWidget(next_);
@@ -69,7 +69,7 @@ FastoEditor::FastoEditor(QWidget* parent)
 
   scin_->installEventFilter(this);
 
-  QVBoxLayout *mainL = new QVBoxLayout;
+  QVBoxLayout* mainL = new QVBoxLayout;
   mainL->addWidget(scin_);
   mainL->addWidget(findPanel_);
   mainL->setContentsMargins(0, 0, 0, 0);
@@ -137,7 +137,7 @@ void FastoEditor::setLexer(QsciLexer* lexer) {
   scin_->setAutoCompletionCaseSensitivity(false);
 }
 
-QsciLexer *FastoEditor::lexer() const {
+QsciLexer* FastoEditor::lexer() const {
   return scin_->lexer();
 }
 
@@ -169,7 +169,7 @@ void FastoEditor::keyPressEvent(QKeyEvent* keyEvent) {
 bool FastoEditor::eventFilter(QObject* object, QEvent* event) {
   if (object == scin_) {
     if (event->type() == QEvent::KeyPress) {
-      QKeyEvent *keyEvent = (QKeyEvent *)event;
+      QKeyEvent* keyEvent = static_cast<QKeyEvent*>(event);
       if (((keyEvent->modifiers() & Qt::ControlModifier) && keyEvent->key() == Qt::Key_F)) {
         findPanel_->show();
         findLine_->setFocus();
@@ -231,7 +231,7 @@ FastoEditorOutput::FastoEditorOutput(const QString& delemitr, QWidget* parent)
   editor_ = new FastoHexEdit;
   VERIFY(connect(editor_, &FastoHexEdit::textChanged, this, &FastoEditorOutput::textChanged));
 
-  QVBoxLayout *mainL = new QVBoxLayout;
+  QVBoxLayout* mainL = new QVBoxLayout;
   mainL->addWidget(editor_);
   mainL->setContentsMargins(0, 0, 0, 0);
   setLayout(mainL);

@@ -49,7 +49,7 @@ CreateDbKeyDialog::CreateDbKeyDialog(const QString& title, connectionTypes type,
   setWindowIcon(GuiFactory::instance().icon(type_));
   setWindowTitle(title);
 
-  QGridLayout *kvLayout = new QGridLayout;
+  QGridLayout* kvLayout = new QGridLayout;
 
   kvLayout->addWidget(new QLabel(tr("Type:")), 0, 0);
   typesCombo_ = new QComboBox;
@@ -122,7 +122,7 @@ CreateDbKeyDialog::CreateDbKeyDialog(const QString& title, connectionTypes type,
   generalBox_->setLayout(kvLayout);
 
   // main layout
-  QVBoxLayout *layout = new QVBoxLayout(this);
+  QVBoxLayout* layout = new QVBoxLayout(this);
   layout->addWidget(generalBox_);
 
   QDialogButtonBox* buttonBox = new QDialogButtonBox(this);

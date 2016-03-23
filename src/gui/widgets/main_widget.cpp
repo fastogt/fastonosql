@@ -49,17 +49,17 @@ MainWidget::MainWidget(QWidget* parent)
   setDocumentMode(true);
 }
 
-QueryWidget *MainWidget::currentWidget() const {
+QueryWidget* MainWidget::currentWidget() const {
   return qobject_cast<QueryWidget*>(QTabWidget::currentWidget());
 }
 
-QueryWidget *MainWidget::widget(int index) const {
+QueryWidget* MainWidget::widget(int index) const {
   return qobject_cast<QueryWidget*>(QTabWidget::widget(index));
 }
 
 void MainWidget::openConsole(IServerSPtr server, const QString& text) {
   if (server) {
-    QueryWidget *queryWidget = new QueryWidget(server);
+    QueryWidget* queryWidget = new QueryWidget(server);
     addWidgetToTab(queryWidget, server->name());
     queryWidget->setInputText(text);
   }
@@ -110,7 +110,7 @@ void MainWidget::previousTab() {
 
 void MainWidget::reloadeCurrentTab() {
   int curIndex = currentIndex();
-  QueryWidget *shw = widget(curIndex);
+  QueryWidget* shw = widget(curIndex);
   if (shw) {
     shw->reload();
   }

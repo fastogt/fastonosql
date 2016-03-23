@@ -96,7 +96,7 @@ EncodeDecodeDialog::EncodeDecodeDialog(QWidget* parent)
 bool EncodeDecodeDialog::eventFilter(QObject* object, QEvent* event) {
   if (object == output_ || object == input_) {
     if (event->type() == QEvent::KeyPress) {
-      QKeyEvent *keyEvent = static_cast<QKeyEvent *>(event);
+      QKeyEvent* keyEvent = static_cast<QKeyEvent*>(event);
       if (keyEvent->key() == Qt::Key_Escape) {
         reject();
         return true;

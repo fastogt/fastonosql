@@ -173,7 +173,7 @@ common::Error LeveldbRaw::info(const char* args, LeveldbServerInfo::Stats* stats
 
   LeveldbServerInfo::Stats lstats;
   if (rets.size() > sizeof(LEVELDB_HEADER_STATS)) {
-    const char * retsc = rets.c_str() + sizeof(LEVELDB_HEADER_STATS);
+    const char* retsc = rets.c_str() + sizeof(LEVELDB_HEADER_STATS);
     char* p2 = strtok((char*)retsc, " ");
     int pos = 0;
     while (p2) {
@@ -240,7 +240,7 @@ common::Error LeveldbRaw::del(const std::string& key) {
 }
 
 common::Error LeveldbRaw::keys(const std::string& key_start, const std::string& key_end,
-                   uint64_t limit, std::vector<std::string> *ret) {
+                   uint64_t limit, std::vector<std::string>* ret) {
   ::leveldb::ReadOptions ro;
   ::leveldb::Iterator* it = leveldb_->NewIterator(ro);  // keys(key_start, key_end, limit, ret);
   for (it->Seek(key_start); it->Valid() && it->key().ToString() < key_end; it->Next()) {
@@ -298,7 +298,7 @@ common::Error dbsize(CommandHandler* handler, int argc, char** argv, FastoObject
   size_t dbsize = 0;
   common::Error er = level->dbsize(&dbsize);
   if (!er) {
-    common::FundamentalValue *val = common::Value::createUIntegerValue(dbsize);
+    common::FundamentalValue* val = common::Value::createUIntegerValue(dbsize);
     FastoObject* child = new FastoObject(out, val, level->config_.delimiter);
     out->addChildren(child);
   }
@@ -312,7 +312,7 @@ common::Error info(CommandHandler* handler, int argc, char** argv, FastoObject* 
   common::Error er = level->info(argc == 1 ? argv[0] : nullptr, &statsout);
   if (!er) {
     LeveldbServerInfo linf(statsout);
-    common::StringValue *val = common::Value::createStringValue(linf.toString());
+    common::StringValue* val = common::Value::createStringValue(linf.toString());
     FastoObject* child = new FastoObject(out, val, level->config_.delimiter);
     out->addChildren(child);
   }
@@ -324,7 +324,7 @@ common::Error set(CommandHandler* handler, int argc, char** argv, FastoObject* o
 
   common::Error er = level->set(argv[0], argv[1]);
   if (!er) {
-    common::StringValue *val = common::Value::createStringValue("STORED");
+    common::StringValue* val = common::Value::createStringValue("STORED");
     FastoObject* child = new FastoObject(out, val, level->config_.delimiter);
     out->addChildren(child);
   }
@@ -337,7 +337,7 @@ common::Error get(CommandHandler* handler, int argc, char** argv, FastoObject* o
   std::string ret;
   common::Error er = level->get(argv[0], &ret);
   if (!er) {
-    common::StringValue *val = common::Value::createStringValue(ret);
+    common::StringValue* val = common::Value::createStringValue(ret);
     FastoObject* child = new FastoObject(out, val, level->config_.delimiter);
     out->addChildren(child);
   }
@@ -349,7 +349,7 @@ common::Error del(CommandHandler* handler, int argc, char** argv, FastoObject* o
 
   common::Error er = level->del(argv[0]);
   if (!er) {
-    common::StringValue *val = common::Value::createStringValue("DELETED");
+    common::StringValue* val = common::Value::createStringValue("DELETED");
     FastoObject* child = new FastoObject(out, val, level->config_.delimiter);
     out->addChildren(child);
   }
@@ -364,7 +364,7 @@ common::Error keys(CommandHandler* handler, int argc, char** argv, FastoObject* 
   if (!er) {
     common::ArrayValue* ar = common::Value::createArrayValue();
     for (size_t i = 0; i < keysout.size(); ++i) {
-      common::StringValue *val = common::Value::createStringValue(keysout[i]);
+      common::StringValue* val = common::Value::createStringValue(keysout[i]);
       ar->append(val);
     }
     FastoObjectArray* child = new FastoObjectArray(out, ar, level->config_.delimiter);

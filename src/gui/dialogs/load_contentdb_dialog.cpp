@@ -41,7 +41,7 @@ LoadContentDbDialog::LoadContentDbDialog(const QString& title,
   VERIFY(connect(buttonBox, &QDialogButtonBox::accepted, this, &LoadContentDbDialog::accept));
   VERIFY(connect(buttonBox, &QDialogButtonBox::rejected, this, &LoadContentDbDialog::reject));
 
-  QVBoxLayout *mainLayout = new QVBoxLayout;
+  QVBoxLayout* mainLayout = new QVBoxLayout;
 
   QHBoxLayout* countLayout = new QHBoxLayout;
   countLayout->addWidget(new QLabel(tr("Keys count:")));

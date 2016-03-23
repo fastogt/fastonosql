@@ -138,7 +138,7 @@ common::Error RocksdbRaw::info(const char* args, RocksdbServerInfo::Stats* stats
 
   RocksdbServerInfo::Stats lstatsout;
   if (rets.size() > sizeof(ROCKSDB_HEADER_STATS)) {
-    const char * retsc = rets.c_str() + sizeof(ROCKSDB_HEADER_STATS);
+    const char* retsc = rets.c_str() + sizeof(ROCKSDB_HEADER_STATS);
     char* p2 = strtok((char*)retsc, " ");
     int pos = 0;
     while (p2) {
@@ -231,7 +231,7 @@ common::Error RocksdbRaw::get(const std::string& key, std::string* ret_val) {
   return common::Error();
 }
 
-common::Error RocksdbRaw::mget(const std::vector< ::rocksdb::Slice>& keys, std::vector<std::string> *ret) {
+common::Error RocksdbRaw::mget(const std::vector< ::rocksdb::Slice>& keys, std::vector<std::string>* ret) {
   ::rocksdb::ReadOptions ro;
   auto sts = rocksdb_->MultiGet(ro, keys, ret);
   for (size_t i = 0; i < sts.size(); ++i) {
@@ -268,7 +268,7 @@ common::Error RocksdbRaw::del(const std::string& key) {
 }
 
 common::Error RocksdbRaw::keys(const std::string& key_start, const std::string& key_end,
-                   uint64_t limit, std::vector<std::string> *ret) {
+                   uint64_t limit, std::vector<std::string>* ret) {
   ret->clear();
 
   ::rocksdb::ReadOptions ro;
@@ -327,7 +327,7 @@ common::Error info(CommandHandler* handler, int argc, char** argv, FastoObject* 
   RocksdbServerInfo::Stats statsout;
   common::Error er = rocks->info(argc == 1 ? argv[0] : nullptr, &statsout);
   if (!er) {
-    common::StringValue *val = common::Value::createStringValue(RocksdbServerInfo(statsout).toString());
+    common::StringValue* val = common::Value::createStringValue(RocksdbServerInfo(statsout).toString());
     FastoObject* child = new FastoObject(out, val, rocks->config_.delimiter);
     out->addChildren(child);
   }
@@ -340,7 +340,7 @@ common::Error dbsize(CommandHandler* handler, int argc, char** argv, FastoObject
   size_t dbsize = 0;
   common::Error er = rocks->dbsize(&dbsize);
   if (!er) {
-    common::FundamentalValue *val = common::Value::createUIntegerValue(dbsize);
+    common::FundamentalValue* val = common::Value::createUIntegerValue(dbsize);
     FastoObject* child = new FastoObject(out, val, rocks->config_.delimiter);
     out->addChildren(child);
   }
@@ -352,7 +352,7 @@ common::Error set(CommandHandler* handler, int argc, char** argv, FastoObject* o
   RocksdbRaw* rocks = static_cast<RocksdbRaw*>(handler);
   common::Error er = rocks->set(argv[0], argv[1]);
   if (!er) {
-    common::StringValue *val = common::Value::createStringValue("STORED");
+    common::StringValue* val = common::Value::createStringValue("STORED");
     FastoObject* child = new FastoObject(out, val, rocks->config_.delimiter);
     out->addChildren(child);
   }
@@ -365,7 +365,7 @@ common::Error get(CommandHandler* handler, int argc, char** argv, FastoObject* o
   std::string ret;
   common::Error er = rocks->get(argv[0], &ret);
   if (!er) {
-    common::StringValue *val = common::Value::createStringValue(ret);
+    common::StringValue* val = common::Value::createStringValue(ret);
     FastoObject* child = new FastoObject(out, val, rocks->config_.delimiter);
     out->addChildren(child);
   }
@@ -385,7 +385,7 @@ common::Error mget(CommandHandler* handler, int argc, char** argv, FastoObject* 
   if (!er) {
     common::ArrayValue* ar = common::Value::createArrayValue();
     for (size_t i = 0; i < keysout.size(); ++i) {
-      common::StringValue *val = common::Value::createStringValue(keysout[i]);
+      common::StringValue* val = common::Value::createStringValue(keysout[i]);
       ar->append(val);
     }
     FastoObjectArray* child = new FastoObjectArray(out, ar, rocks->config_.delimiter);
@@ -399,7 +399,7 @@ common::Error merge(CommandHandler* handler, int argc, char** argv, FastoObject*
   RocksdbRaw* rocks = static_cast<RocksdbRaw*>(handler);
   common::Error er = rocks->merge(argv[0], argv[1]);
   if (!er) {
-    common::StringValue *val = common::Value::createStringValue("STORED");
+    common::StringValue* val = common::Value::createStringValue("STORED");
     FastoObject* child = new FastoObject(out, val, rocks->config_.delimiter);
     out->addChildren(child);
   }
@@ -411,7 +411,7 @@ common::Error del(CommandHandler* handler, int argc, char** argv, FastoObject* o
   RocksdbRaw* rocks = static_cast<RocksdbRaw*>(handler);
   common::Error er = rocks->del(argv[0]);
   if (!er) {
-    common::StringValue *val = common::Value::createStringValue("DELETED");
+    common::StringValue* val = common::Value::createStringValue("DELETED");
     FastoObject* child = new FastoObject(out, val, rocks->config_.delimiter);
     out->addChildren(child);
   }
@@ -426,7 +426,7 @@ common::Error keys(CommandHandler* handler, int argc, char** argv, FastoObject* 
   if (!er) {
     common::ArrayValue* ar = common::Value::createArrayValue();
     for (size_t i = 0; i < keysout.size(); ++i) {
-      common::StringValue *val = common::Value::createStringValue(keysout[i]);
+      common::StringValue* val = common::Value::createStringValue(keysout[i]);
       ar->append(val);
     }
     FastoObjectArray* child = new FastoObjectArray(out, ar, rocks->config_.delimiter);

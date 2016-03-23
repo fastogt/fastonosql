@@ -88,7 +88,7 @@ BaseShellWidget::BaseShellWidget(IServerSPtr server, const QString& filePath, QW
   QVBoxLayout* mainlayout = new QVBoxLayout;
   QHBoxLayout* hlayout = new QHBoxLayout;
 
-  QToolBar *savebar = new QToolBar;
+  QToolBar* savebar = new QToolBar;
   savebar->setStyleSheet("QToolBar { border: 0px; }");
 
   loadAction_ = new QAction(GuiFactory::instance().loadIcon(), translations::trLoad, savebar);
@@ -123,7 +123,7 @@ BaseShellWidget::BaseShellWidget(IServerSPtr server, const QString& filePath, QW
   VERIFY(connect(executeAction_, &QAction::triggered, this, &BaseShellWidget::execute));
   savebar->addAction(executeAction_);
 
-  QAction *stopAction = new QAction(GuiFactory::instance().stopIcon(),
+  QAction* stopAction = new QAction(GuiFactory::instance().stopIcon(),
                                     translations::trStop, savebar);
   VERIFY(connect(stopAction, &QAction::triggered, this, &BaseShellWidget::stop));
   savebar->addAction(stopAction);
@@ -137,7 +137,7 @@ BaseShellWidget::BaseShellWidget(IServerSPtr server, const QString& filePath, QW
 
   hlayout->addWidget(savebar);
 
-  QSplitter *splitter = new QSplitter;
+  QSplitter* splitter = new QSplitter;
   splitter->setOrientation(Qt::Horizontal);
   splitter->setHandleWidth(1);
   hlayout->addWidget(splitter);
@@ -157,7 +157,7 @@ BaseShellWidget::BaseShellWidget(IServerSPtr server, const QString& filePath, QW
 
   apilayout->addWidget(new QLabel(tr("Supported commands count: %1").arg(input_->commandsCount())));
 
-  QSplitter *splitterButtom = new QSplitter;
+  QSplitter* splitterButtom = new QSplitter;
   splitterButtom->setOrientation(Qt::Horizontal);
   splitterButtom->setHandleWidth(1);
   apilayout->addWidget(splitterButtom);
@@ -337,7 +337,7 @@ void BaseShellWidget::finishSetDefaultDatabase(const events_info::SetDefaultData
     return;
   }
 
-  IServer *serv = qobject_cast<IServer *>(sender());
+  IServer* serv = qobject_cast<IServer*>(sender());
   DCHECK(serv);
   if (!serv) {
     return;
@@ -365,8 +365,8 @@ void BaseShellWidget::startLoadDiscoveryInfo(const events_info::DiscoveryInfoReq
 }
 
 void BaseShellWidget::finishLoadDiscoveryInfo(const events_info::DiscoveryInfoResponce& res) {
-  common::Error er = res.errorInfo();
-  if (er && er->isError()) {
+  common::Error err = res.errorInfo();
+  if (err && err->isError()) {
     return;
   }
 

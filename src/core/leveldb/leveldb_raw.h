@@ -47,7 +47,7 @@ struct LeveldbRaw
   common::Error get(const std::string& key, std::string* ret_val);
   common::Error del(const std::string& key);
   common::Error keys(const std::string& key_start, const std::string& key_end,
-                     uint64_t limit, std::vector<std::string> *ret);
+                     uint64_t limit, std::vector<std::string>* ret);
 
   // extended api
   common::Error dbsize(size_t* size);

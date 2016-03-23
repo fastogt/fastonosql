@@ -99,7 +99,7 @@ fastonosql::ssdb::SsdbConfig convertFromString(const std::string& line) {
   fastonosql::ssdb::SsdbConfig cfg;
   enum { kMaxArgs = 64 };
   int argc = 0;
-  char *argv[kMaxArgs] = {0};
+  char* argv[kMaxArgs] = {0};
 
   char* p2 = strtok((char*)line.c_str(), " ");
   while (p2) {

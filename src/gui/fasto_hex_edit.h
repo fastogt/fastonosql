@@ -28,7 +28,7 @@ class FastoHexEdit
   Q_OBJECT
  public:
   typedef QPlainTextEdit base_class;
-  explicit FastoHexEdit(QWidget *parent = 0);
+  explicit FastoHexEdit(QWidget* parent = 0);
 
   enum DisplayMode {
     TEXT_MODE,
@@ -43,11 +43,11 @@ class FastoHexEdit
 
  public Q_SLOTS:
   void setMode(DisplayMode mode);
-  void setData(const QByteArray &arr);
+  void setData(const QByteArray& arr);
   void clear();
 
  protected:
-  virtual void paintEvent(QPaintEvent *event);
+  virtual void paintEvent(QPaintEvent* event);
 
   virtual void mousePressEvent(QMouseEvent* event);
   virtual void mouseMoveEvent(QMouseEvent* event);

@@ -54,7 +54,7 @@ void SsdbConnectionSettings::setInfo(const SsdbConfig& info) {
 }
 
 SsdbConnectionSettings* SsdbConnectionSettings::clone() const {
-  SsdbConnectionSettings *red = new SsdbConnectionSettings(*this);
+  SsdbConnectionSettings* red = new SsdbConnectionSettings(*this);
   return red;
 }
 

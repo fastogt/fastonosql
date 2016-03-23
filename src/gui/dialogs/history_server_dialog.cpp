@@ -45,9 +45,9 @@ ServerHistoryDialog::ServerHistoryDialog(IServerSPtr server, QWidget* parent)
 
   graphWidget_ = new fasto::qt::gui::GraphWidget;
   settingsGraph_ = new QWidget;
-  QHBoxLayout *mainL = new QHBoxLayout;
+  QHBoxLayout* mainL = new QHBoxLayout;
 
-  QSplitter *splitter = new QSplitter;
+  QSplitter* splitter = new QSplitter;
   splitter->setOrientation(Qt::Horizontal);
   splitter->setHandleWidth(1);
 
@@ -69,7 +69,7 @@ ServerHistoryDialog::ServerHistoryDialog(IServerSPtr server, QWidget* parent)
   for (size_t i = 0; i < headers.size(); ++i) {
       serverInfoGroupsNames_->addItem(common::convertFromString<QString>(headers[i]));
   }
-  QVBoxLayout *setingsLayout = new QVBoxLayout;
+  QVBoxLayout* setingsLayout = new QVBoxLayout;
   setingsLayout->addWidget(clearHistory_);
   setingsLayout->addWidget(serverInfoGroupsNames_);
   setingsLayout->addWidget(serverInfoFields_);
