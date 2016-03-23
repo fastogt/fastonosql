@@ -204,7 +204,7 @@ common::Error RedisDriver::currentDataBaseInfo(IDataBaseInfo** info) {
   return impl_->select(impl_->config_.dbnum, info);
 }
 
-void RedisDriver::handleConnectEvent(events::ConnectRequestEvent *ev) {
+void RedisDriver::handleConnectEvent(events::ConnectRequestEvent* ev) {
   QObject* sender = ev->sender();
   notifyProgress(sender, 0);
   events::ConnectResponceEvent::value_type res(ev->value());
@@ -356,7 +356,7 @@ void RedisDriver::handleChangeMaxConnectionEvent(events::ChangeMaxConnectionRequ
   notifyProgress(sender, 100);
 }
 
-common::Error RedisDriver::interacteveMode(events::ProcessConfigArgsRequestEvent *ev) {
+common::Error RedisDriver::interacteveMode(events::ProcessConfigArgsRequestEvent* ev) {
   QObject* sender = ev->sender();
   notifyProgress(sender, 0);
   events::EnterModeEvent::value_type res(this, InteractiveMode);
@@ -488,7 +488,7 @@ common::Error RedisDriver::scanMode(events::ProcessConfigArgsRequestEvent* ev) {
   return er;
 }
 
-void RedisDriver::handleExecuteEvent(events::ExecuteRequestEvent *ev) {
+void RedisDriver::handleExecuteEvent(events::ExecuteRequestEvent* ev) {
   QObject* sender = ev->sender();
   notifyProgress(sender, 0);
   events::ExecuteResponceEvent::value_type res(ev->value());
@@ -576,7 +576,7 @@ void RedisDriver::handleDisconnectEvent(events::DisconnectRequestEvent *ev) {
   notifyProgress(sender, 100);
 }
 
-void RedisDriver::handleLoadDatabaseInfosEvent(events::LoadDatabasesInfoRequestEvent *ev) {
+void RedisDriver::handleLoadDatabaseInfosEvent(events::LoadDatabasesInfoRequestEvent* ev) {
   QObject* sender = ev->sender();
   notifyProgress(sender, 0);
   events::LoadDatabasesInfoResponceEvent::value_type res(ev->value());
@@ -629,7 +629,7 @@ done:
   notifyProgress(sender, 100);
 }
 
-void RedisDriver::handleLoadDatabaseContentEvent(events::LoadDatabaseContentRequestEvent *ev) {
+void RedisDriver::handleLoadDatabaseContentEvent(events::LoadDatabaseContentRequestEvent* ev) {
   QObject* sender = ev->sender();
   notifyProgress(sender, 0);
   events::LoadDatabaseContentResponceEvent::value_type res(ev->value());
@@ -772,7 +772,7 @@ void RedisDriver::handleSetDefaultDatabaseEvent(events::SetDefaultDatabaseReques
   notifyProgress(sender, 100);
 }
 
-void RedisDriver::handleLoadServerPropertyEvent(events::ServerPropertyInfoRequestEvent *ev) {
+void RedisDriver::handleLoadServerPropertyEvent(events::ServerPropertyInfoRequestEvent* ev) {
   QObject* sender = ev->sender();
   notifyProgress(sender, 0);
   events::ServerPropertyInfoResponceEvent::value_type res(ev->value());
@@ -799,7 +799,7 @@ void RedisDriver::handleLoadServerPropertyEvent(events::ServerPropertyInfoReques
   notifyProgress(sender, 100);
 }
 
-void RedisDriver::handleServerPropertyChangeEvent(events::ChangeServerPropertyInfoRequestEvent *ev) {
+void RedisDriver::handleServerPropertyChangeEvent(events::ChangeServerPropertyInfoRequestEvent* ev) {
   QObject* sender = ev->sender();
   notifyProgress(sender, 0);
   events::ChangeServerPropertyInfoResponceEvent::value_type res(ev->value());

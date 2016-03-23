@@ -28,7 +28,7 @@ namespace memcached {
 
 namespace {
 
-void parseOptions(int argc, char **argv, MemcachedConfig& cfg) {
+void parseOptions(int argc, char** argv, MemcachedConfig& cfg) {
   for (int i = 0; i < argc; i++) {
     int lastarg = i == argc-1;
 
@@ -60,7 +60,7 @@ void parseOptions(int argc, char **argv, MemcachedConfig& cfg) {
 }  // namespace
 
 MemcachedConfig::MemcachedConfig()
-  : RemoteConfig(common::net::hostAndPort("localhost", 11211)), user(), password() {
+  : RemoteConfig(common::net::hostAndPort::createLocalHost(11211)), user(), password() {
 }
 
 }  // namespace memcached

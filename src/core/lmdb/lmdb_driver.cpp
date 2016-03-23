@@ -130,11 +130,11 @@ void LmdbDriver::initImpl() {
 void LmdbDriver::clearImpl() {
 }
 
-common::Error LmdbDriver::executeImpl(int argc, char **argv, FastoObject* out) {
+common::Error LmdbDriver::executeImpl(int argc, char** argv, FastoObject* out) {
   return impl_->execute(argc, argv, out);
 }
 
-common::Error LmdbDriver::serverInfo(IServerInfo **info) {
+common::Error LmdbDriver::serverInfo(IServerInfo** info) {
   LOG_COMMAND(type(), Command(INFO_REQUEST, common::Value::C_INNER));
   LmdbServerInfo::Stats cm;
   common::Error err = impl_->info(nullptr, &cm);
@@ -145,7 +145,7 @@ common::Error LmdbDriver::serverInfo(IServerInfo **info) {
   return err;
 }
 
-common::Error LmdbDriver::serverDiscoveryInfo(ServerDiscoveryInfo **dinfo, IServerInfo **sinfo,
+common::Error LmdbDriver::serverDiscoveryInfo(ServerDiscoveryInfo** dinfo, IServerInfo** sinfo,
                                               IDataBaseInfo** dbinfo) {
   UNUSED(dinfo);
 
@@ -282,7 +282,7 @@ void LmdbDriver::handleCommandRequestEvent(events::CommandRequestEvent* ev) {
   notifyProgress(sender, 100);
 }
 
-void LmdbDriver::handleLoadDatabaseContentEvent(events::LoadDatabaseContentRequestEvent *ev) {
+void LmdbDriver::handleLoadDatabaseContentEvent(events::LoadDatabaseContentRequestEvent* ev) {
   QObject* sender = ev->sender();
   notifyProgress(sender, 0);
   events::LoadDatabaseContentResponceEvent::value_type res(ev->value());

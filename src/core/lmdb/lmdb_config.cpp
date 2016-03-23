@@ -31,28 +31,28 @@ namespace lmdb {
 
 namespace {
 
-void parseOptions(int argc, char **argv, LmdbConfig& cfg) {
+void parseOptions(int argc, char** argv, LmdbConfig& cfg) {
   for (int i = 0; i < argc; i++) {
-      int lastarg = i == argc-1;
+    int lastarg = i == argc-1;
 
-      if (!strcmp(argv[i], "-d") && !lastarg) {
-        cfg.delimiter = argv[++i];
-      } else if (!strcmp(argv[i], "-f") && !lastarg) {
-        cfg.dbname = argv[++i];
-      } else if (!strcmp(argv[i], "-c")) {
-        cfg.create_if_missing = true;
+    if (!strcmp(argv[i], "-d") && !lastarg) {
+      cfg.delimiter = argv[++i];
+    } else if (!strcmp(argv[i], "-f") && !lastarg) {
+      cfg.dbname = argv[++i];
+    } else if (!strcmp(argv[i], "-c")) {
+      cfg.create_if_missing = true;
+    } else {
+      if (argv[i][0] == '-') {
+        const uint16_t size_buff = 256;
+        char buff[size_buff] = {0};
+        common::SNPrintf(buff, sizeof(buff), "Unrecognized option or bad number of args for: '%s'", argv[i]);
+        LOG_MSG(buff, common::logging::L_WARNING, true);
+        break;
       } else {
-          if (argv[i][0] == '-') {
-              const uint16_t size_buff = 256;
-              char buff[size_buff] = {0};
-              common::SNPrintf(buff, sizeof(buff), "Unrecognized option or bad number of args for: '%s'", argv[i]);
-              LOG_MSG(buff, common::logging::L_WARNING, true);
-              break;
-          } else {
-              /* Likely the command name, stop here. */
-              break;
-          }
+        /* Likely the command name, stop here. */
+        break;
       }
+    }
   }
 }
 

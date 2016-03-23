@@ -34,12 +34,12 @@ class LmdbServerInfo
  public:
   // Compactions\nLevel  Files Size(MB) Time(sec) Read(MB) Write(MB)\n
   struct Stats
-          : FieldByIndex {
-      Stats();
-      explicit Stats(const std::string& common_text);
-      common::Value* valueByIndex(unsigned char index) const;
+      : FieldByIndex {
+    Stats();
+    explicit Stats(const std::string& common_text);
+    common::Value* valueByIndex(unsigned char index) const;
 
-      std::string file_name;
+    std::string file_name;
   } stats_;
 
   LmdbServerInfo();
@@ -55,7 +55,7 @@ LmdbServerInfo* makeLmdbServerInfo(const std::string& content);
 LmdbServerInfo* makeLmdbServerInfo(FastoObject *root);
 
 class LmdbDataBaseInfo
-      : public IDataBaseInfo {
+    : public IDataBaseInfo {
  public:
   LmdbDataBaseInfo(const std::string& name, bool isDefault, size_t size,
                    const keys_cont_type& keys = keys_cont_type());
@@ -63,7 +63,7 @@ class LmdbDataBaseInfo
 };
 
 class LmdbCommand
-      : public FastoObjectCommand {
+    : public FastoObjectCommand {
  public:
   LmdbCommand(FastoObject* parent, common::CommandValue* cmd, const std::string& delemitr);
   virtual bool isReadOnly() const;

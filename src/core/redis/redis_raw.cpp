@@ -90,10 +90,11 @@ extern "C" {
 
 namespace {
 
-void anetSetError(char *err, const char *fmt, ...) {
+void anetSetError(char* err, const char* fmt, ...) {
   va_list ap;
 
-  if (!err) return;
+  if (!err)
+    return;
   va_start(ap, fmt);
   vsnprintf(err, ANET_ERR_LEN, fmt, ap);
   va_end(ap);
@@ -191,7 +192,7 @@ const struct RedisInit {
 /* Return the specified INFO field from the INFO command output "info".
  * A new buffer is allocated for the result, that needs to be free'd.
  * If the field is not found NULL is returned. */
-char* getInfoField(char *info, const char *field) {
+char* getInfoField(char* info, const char* field) {
   char *p = strstr(info,field);
   char *n1, *n2;
   char *result;
@@ -245,8 +246,9 @@ void bytesToHuman(char *s, size_t len, long long n) {
   }
 }
 
-bool isPipeLineCommand(const char *command) {
+bool isPipeLineCommand(const char* command) {
   if (!command) {
+      DNOTREACHED();
       return false;
   }
 
@@ -271,24 +273,28 @@ namespace fastonosql {
 namespace redis {
 namespace {
 
-int toIntType(common::Error& er, char *key, char *type) {
+common::Error toIntType(char* key, char* type, int* res) {
   if (!strcmp(type, "string")) {
-      return RTYPE_STRING;
+    *res = RTYPE_STRING;
+    return common::Error();
   } else if (!strcmp(type, "list")) {
-      return RTYPE_LIST;
+    *res = RTYPE_LIST;
+    return common::Error();
   } else if (!strcmp(type, "set")) {
-      return RTYPE_SET;
+    *res = RTYPE_SET;
+    return common::Error();
   } else if (!strcmp(type, "hash")) {
-      return RTYPE_HASH;
+    *res = RTYPE_HASH;
+    return common::Error();
   } else if (!strcmp(type, "zset")) {
-      return RTYPE_ZSET;
+    *res = RTYPE_ZSET;
+    return common::Error();
   } else if (!strcmp(type, "none")) {
-      return RTYPE_NONE;
+    *res = RTYPE_NONE;
+    return common::Error();
   } else {
-      char buff[4096];
-      common::SNPrintf(buff, sizeof(buff), "Unknown type '%s' for key '%s'", type, key);
-      er.reset(new common::ErrorValue(buff, common::Value::E_ERROR));
-      return -1;
+    return common::make_error_value(common::MemSPrintf("Unknown type '%s' for key '%s'", type, key),
+                                    common::Value::E_ERROR);
   }
 }
 }
@@ -893,22 +899,20 @@ common::Error RedisRaw::dbsize(size_t* size) {
   return common::Error();
 }
 
-common::Error RedisRaw::getKeyTypes(redisReply *keys, int *types) {
+common::Error RedisRaw::getKeyTypes(redisReply* keys, int* types) {
   DCHECK(types);
   if (!types) {
     return common::make_error_value("Invalid input argument(s)", common::ErrorValue::E_ERROR);
   }
 
-  redisReply *reply;
-  unsigned int i;
-
-    /* Pipeline TYPE commands */
-  for (i=0; i<keys->elements; i++) {
+  /* Pipeline TYPE commands */
+  for (size_t i = 0; i < keys->elements; i++) {
     redisAppendCommand(context_, "TYPE %s", keys->element[i]->str);
   }
 
+  redisReply *reply = NULL;
   /* Retrieve types */
-  for (i = 0; i < keys->elements; i++) {
+  for (size_t i = 0; i < keys->elements; i++) {
     if (redisGetReply(context_, (void**)&reply)!=REDIS_OK) {
       char buff[4096];
       common::SNPrintf(buff, sizeof(buff), "Error getting type for key '%s' (%d: %s)",
@@ -923,26 +927,25 @@ common::Error RedisRaw::getKeyTypes(redisReply *keys, int *types) {
       return common::make_error_value(buff, common::Value::E_ERROR);
     }
 
-    common::Error er;
-    int res = toIntType(er, keys->element[i]->str, reply->str);
+    int res = 0;
+    common::Error err = toIntType(keys->element[i]->str, reply->str, &res);
     freeReplyObject(reply);
-    if (res != -1) {
-      types[i] = res;
-    } else {
-      return er;
+    if (err && err->isError()) {
+      return err;
     }
+
+    types[i] = res;
   }
 
   return common::Error();
 }
 
 common::Error RedisRaw::getKeySizes(redisReply *keys, int *types, unsigned long long *sizes) {
-  redisReply *reply;
-  const char *sizecmds[] = {"STRLEN", "LLEN", "SCARD", "HLEN", "ZCARD"};
-  unsigned int i;
+  redisReply* reply;
+  const char* sizecmds[] = {"STRLEN", "LLEN", "SCARD", "HLEN", "ZCARD"};
 
   /* Pipeline size commands */
-  for (i=0; i<keys->elements; i++) {
+  for (size_t i = 0; i < keys->elements; i++) {
     /* Skip keys that were deleted */
     if (types[i] == RTYPE_NONE)
       continue;
@@ -951,7 +954,7 @@ common::Error RedisRaw::getKeySizes(redisReply *keys, int *types, unsigned long 
   }
 
   /* Retreive sizes */
-  for (i=0;i<keys->elements;i++) {
+  for (size_t i = 0; i < keys->elements; i++) {
     /* Skip keys that dissapeared between SCAN and TYPE */
     if (types[i] == RTYPE_NONE) {
       sizes[i] = 0;
@@ -1072,7 +1075,7 @@ common::Error RedisRaw::findBigKeys(FastoObject* out) {
     }
 
     /* Now update our stats */
-    for (i=0;i<keys->elements;i++) {
+    for (i = 0; i < keys->elements; i++) {
       if ((type = types[i]) == RTYPE_NONE)
         continue;
 
@@ -1146,7 +1149,7 @@ common::Error RedisRaw::findBigKeys(FastoObject* out) {
   }
 
   /* Free sds strings containing max keys */
-  for (i=0;i<RTYPE_NONE;i++) {
+  for (i = 0; i < RTYPE_NONE; i++) {
     sdsfree(maxkeys[i]);
   }
 
@@ -1326,7 +1329,7 @@ common::Error RedisRaw::cliAuth() {
 }
 
 common::Error RedisRaw::select(int num, IDataBaseInfo **info) {
-  redisReply *reply = static_cast<redisReply*>(redisCommand(context_, "SELECT %d", num));
+  redisReply *reply = reinterpret_cast<redisReply*>(redisCommand(context_, "SELECT %d", num));
   if (reply) {
     size_t sz = 0;
     dbsize(&sz);
@@ -1348,46 +1351,45 @@ common::Error RedisRaw::select(int num, IDataBaseInfo **info) {
 common::Error RedisRaw::cliFormatReplyRaw(FastoObjectArray* ar, redisReply *r) {
   DCHECK(ar);
   if (!ar) {
-      return common::make_error_value("Invalid input argument(s)", common::ErrorValue::E_ERROR);
+    return common::make_error_value("Invalid input argument(s)", common::ErrorValue::E_ERROR);
   }
 
   switch (r->type) {
     case REDIS_REPLY_NIL: {
-        common::Value* val = common::Value::createNullValue();
-        ar->append(val);
-
-        break;
+      common::Value* val = common::Value::createNullValue();
+      ar->append(val);
+      break;
     }
     case REDIS_REPLY_ERROR: {
-        common::ErrorValue* val = common::Value::createErrorValue(std::string(r->str, r->len),
-                                                                  common::ErrorValue::E_NONE,
-                                                                  common::logging::L_WARNING);
-        ar->append(val);
-        break;
+      common::ErrorValue* val = common::Value::createErrorValue(std::string(r->str, r->len),
+                                                                common::ErrorValue::E_NONE,
+                                                                common::logging::L_WARNING);
+      ar->append(val);
+      break;
     }
     case REDIS_REPLY_STATUS:
     case REDIS_REPLY_STRING: {
-        common::StringValue *val = common::Value::createStringValue(std::string(r->str, r->len));
-        ar->append(val);
-        break;
+      common::StringValue *val = common::Value::createStringValue(std::string(r->str, r->len));
+      ar->append(val);
+      break;
     }
     case REDIS_REPLY_INTEGER: {
-        common::FundamentalValue *val = common::Value::createIntegerValue(r->integer);
-        ar->append(val);
-        break;
+      common::FundamentalValue *val = common::Value::createIntegerValue(r->integer);
+      ar->append(val);
+      break;
     }
     case REDIS_REPLY_ARRAY: {
-        common::ArrayValue* arv = common::Value::createArrayValue();
-        FastoObjectArray* child = new FastoObjectArray(ar, arv, config_.delimiter);
-        ar->addChildren(child);
+      common::ArrayValue* arv = common::Value::createArrayValue();
+      FastoObjectArray* child = new FastoObjectArray(ar, arv, config_.delimiter);
+      ar->addChildren(child);
 
-        for (size_t i = 0; i < r->elements; ++i) {
-            common::Error er = cliFormatReplyRaw(child, r->element[i]);
-            if (er && er->isError()) {
-                return er;
-            }
+      for (size_t i = 0; i < r->elements; ++i) {
+        common::Error er = cliFormatReplyRaw(child, r->element[i]);
+        if (er && er->isError()) {
+          return er;
         }
-        break;
+      }
+      break;
     }
     default: {
       char tmp2[128] = {0};
@@ -1401,7 +1403,7 @@ common::Error RedisRaw::cliFormatReplyRaw(FastoObjectArray* ar, redisReply *r) {
   return common::Error();
 }
 
-common::Error RedisRaw::cliFormatReplyRaw(FastoObject* out, redisReply *r) {
+common::Error RedisRaw::cliFormatReplyRaw(FastoObject* out, redisReply* r) {
   DCHECK(out);
   if (!out) {
     return common::make_error_value("Invalid input argument(s)", common::ErrorValue::E_ERROR);
@@ -1474,7 +1476,7 @@ common::Error RedisRaw::cliOutputGenericHelp(FastoObject* out) {
   return common::Error();
 }
 
-common::Error RedisRaw::cliOutputHelp(FastoObject* out, int argc, char **argv) {
+common::Error RedisRaw::cliOutputHelp(FastoObject* out, int argc, char** argv) {
   DCHECK(out);
   if (!out) {
     return common::make_error_value("Invalid input argument(s)", common::ErrorValue::E_ERROR);
@@ -1535,7 +1537,7 @@ common::Error RedisRaw::cliReadReply(FastoObject* out) {
     return common::make_error_value("Invalid input argument(s)", common::ErrorValue::E_ERROR);
   }
 
-  void *_reply = nullptr;
+  void *_reply = NULL;
   if (redisGetReply(context_, &_reply) != REDIS_OK) {
     /* Filter cases where we should reconnect */
     if (context_->err == REDIS_ERR_IO && errno == ECONNRESET) {

@@ -29,7 +29,7 @@
 namespace {
 
 std::once_flag leveldb_version_once;
-void leveldb_version_startup_function(char * version) {
+void leveldb_version_startup_function(char* version) {
   sprintf(version, "%d.%d", leveldb::kMajorVersion, leveldb::kMinorVersion);
 }
 

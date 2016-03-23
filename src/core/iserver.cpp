@@ -145,7 +145,7 @@ void IServer::setDefaultDB(const events_info::SetDefaultDatabaseRequest& req) {
   notify(ev);
 }
 
-void IServer::clearDB(const events_info::ClearDatabaseRequest &req) {
+void IServer::clearDB(const events_info::ClearDatabaseRequest& req) {
   emit startedClearDatabase(req);
   QEvent *ev = new events::ClearDatabaseRequestEvent(this, req);
   notify(ev);
@@ -223,7 +223,7 @@ void IServer::changeProperty(const events_info::ChangeServerPropertyInfoRequest&
   notify(ev);
 }
 
-void IServer::customEvent(QEvent *event) {
+void IServer::customEvent(QEvent* event) {
   using namespace events;
   QEvent::Type type = event->type();
   if (type == static_cast<QEvent::Type>(ConnectResponceEvent::EventType)) {
@@ -313,7 +313,7 @@ void IServer::customEvent(QEvent *event) {
   return QObject::customEvent(event);
 }
 
-void IServer::notify(QEvent *ev) {
+void IServer::notify(QEvent* ev) {
   events_info::ProgressInfoResponce resp(0);
   emit progressChanged(resp);
   qApp->postEvent(drv_, ev);
@@ -546,7 +546,7 @@ void IServer::handleCommandResponceEvent(events::CommandResponceEvent* ev) {
   emit finishedExecuteCommand(v);
 }
 
-void IServer::processConfigArgs(const events_info::ProcessConfigArgsInfoRequest &req) {
+void IServer::processConfigArgs(const events_info::ProcessConfigArgsInfoRequest& req) {
   QEvent *ev = new events::ProcessConfigArgsRequestEvent(this, req);
   notify(ev);
 }

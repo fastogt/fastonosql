@@ -131,10 +131,10 @@ class IDriver
   void handleDiscoveryInfoRequestEvent(events::DiscoveryInfoRequestEvent* ev);
   void handleClearServerHistoryRequestEvent(events::ClearServerHistoryRequestEvent *ev);
 
-  virtual common::Error executeImpl(int argc, char **argv, FastoObject* out) = 0;
+  virtual common::Error executeImpl(int argc, char** argv, FastoObject* out) = 0;
 
   // notification of execute events
-  virtual void addedChildren(FastoObject *child);
+  virtual void addedChildren(FastoObject* child);
   virtual void updated(FastoObject* item, common::Value* val);
 
   // internal methods

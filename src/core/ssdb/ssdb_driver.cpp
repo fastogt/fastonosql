@@ -184,7 +184,7 @@ common::Error SsdbDriver::serverInfo(IServerInfo **info) {
 }
 
 common::Error SsdbDriver::serverDiscoveryInfo(ServerDiscoveryInfo** dinfo, IServerInfo** sinfo,
-                                              IDataBaseInfo **dbinfo) {
+                                              IDataBaseInfo** dbinfo) {
   UNUSED(dinfo);
 
   IServerInfo *lsinfo = nullptr;
@@ -322,7 +322,7 @@ void SsdbDriver::handleCommandRequestEvent(events::CommandRequestEvent* ev) {
   notifyProgress(sender, 100);
 }
 
-void SsdbDriver::handleLoadDatabaseContentEvent(events::LoadDatabaseContentRequestEvent *ev) {
+void SsdbDriver::handleLoadDatabaseContentEvent(events::LoadDatabaseContentRequestEvent* ev) {
   QObject* sender = ev->sender();
   notifyProgress(sender, 0);
     events::LoadDatabaseContentResponceEvent::value_type res(ev->value());

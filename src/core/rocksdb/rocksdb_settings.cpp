@@ -43,7 +43,7 @@ RocksdbConfig RocksdbConnectionSettings::info() const {
   return info_;
 }
 
-void RocksdbConnectionSettings::setInfo(const RocksdbConfig &info) {
+void RocksdbConnectionSettings::setInfo(const RocksdbConfig& info) {
   info_ = info;
 }
 

@@ -69,5 +69,5 @@ struct RedisConfig
 }  // namespace fastonosql
 
 namespace common {
-  std::string convertToString(const fastonosql::redis::RedisConfig &conf);
+  std::string convertToString(const fastonosql::redis::RedisConfig& conf);
 }  // namespace common

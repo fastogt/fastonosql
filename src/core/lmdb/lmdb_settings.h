@@ -38,7 +38,7 @@ class LmdbConnectionSettings
   virtual void setCommandLine(const std::string& line);
 
   LmdbConfig info() const;
-  void setInfo(const LmdbConfig &info);
+  void setInfo(const LmdbConfig& info);
 
   virtual std::string fullAddress() const;
 

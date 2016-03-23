@@ -454,22 +454,22 @@ struct RedisRaw {
   common::Error sendSync(unsigned long long& payload) WARN_UNUSED_RESULT;
   common::Error slaveMode(FastoObject* out) WARN_UNUSED_RESULT;
   common::Error getRDB(FastoObject* out) WARN_UNUSED_RESULT;
-  redisReply *sendScan(common::Error& er, unsigned long long *it);
+  redisReply* sendScan(common::Error& er, unsigned long long* it);
   common::Error dbsize(size_t* size) WARN_UNUSED_RESULT;
-  common::Error getKeyTypes(redisReply *keys, int *types) WARN_UNUSED_RESULT;
-  common::Error getKeySizes(redisReply *keys, int *types,
-                          unsigned long long *sizes) WARN_UNUSED_RESULT;
+  common::Error getKeyTypes(redisReply* keys, int* types) WARN_UNUSED_RESULT;
+  common::Error getKeySizes(redisReply* keys, int* types,
+                          unsigned long long* sizes) WARN_UNUSED_RESULT;
   common::Error findBigKeys(FastoObject* out) WARN_UNUSED_RESULT;
   common::Error statMode(FastoObject* out) WARN_UNUSED_RESULT;
   common::Error scanMode(FastoObject* out) WARN_UNUSED_RESULT;
   common::Error cliAuth() WARN_UNUSED_RESULT;
-  common::Error select(int num, IDataBaseInfo **info) WARN_UNUSED_RESULT;
-  common::Error cliFormatReplyRaw(FastoObjectArray* ar, redisReply *r) WARN_UNUSED_RESULT;
+  common::Error select(int num, IDataBaseInfo** info) WARN_UNUSED_RESULT;
+  common::Error cliFormatReplyRaw(FastoObjectArray* ar, redisReply* r) WARN_UNUSED_RESULT;
   common::Error cliFormatReplyRaw(FastoObject* out, redisReply *r) WARN_UNUSED_RESULT;
   common::Error cliOutputGenericHelp(FastoObject* out) WARN_UNUSED_RESULT;
-  common::Error cliOutputHelp(FastoObject* out, int argc, char **argv) WARN_UNUSED_RESULT;
+  common::Error cliOutputHelp(FastoObject* out, int argc, char** argv) WARN_UNUSED_RESULT;
   common::Error cliReadReply(FastoObject* out) WARN_UNUSED_RESULT;
-  common::Error execute(int argc, char **argv, FastoObject* out) WARN_UNUSED_RESULT;
+  common::Error execute(int argc, char** argv, FastoObject* out) WARN_UNUSED_RESULT;
   common::Error executeAsPipeline(std::vector<FastoObjectCommandIPtr> cmds) WARN_UNUSED_RESULT;
 
   RedisConfig config_;

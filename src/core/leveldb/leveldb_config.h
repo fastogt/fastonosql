@@ -40,5 +40,5 @@ struct LeveldbConfig
 }  // namespace fastonosql
 
 namespace common {
-  std::string convertToString(const fastonosql::leveldb::LeveldbConfig &conf);
+  std::string convertToString(const fastonosql::leveldb::LeveldbConfig& conf);
 }  // namespace common

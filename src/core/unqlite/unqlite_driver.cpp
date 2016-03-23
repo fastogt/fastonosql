@@ -131,11 +131,11 @@ void UnqliteDriver::initImpl() {
 void UnqliteDriver::clearImpl() {
 }
 
-common::Error UnqliteDriver::executeImpl(int argc, char **argv, FastoObject* out) {
+common::Error UnqliteDriver::executeImpl(int argc, char** argv, FastoObject* out) {
   return impl_->execute(argc, argv, out);
 }
 
-common::Error UnqliteDriver::serverInfo(IServerInfo **info) {
+common::Error UnqliteDriver::serverInfo(IServerInfo** info) {
   LOG_COMMAND(type(), Command(INFO_REQUEST, common::Value::C_INNER));
   UnqliteServerInfo::Stats cm;
   common::Error err = impl_->info(nullptr, &cm);
@@ -146,7 +146,7 @@ common::Error UnqliteDriver::serverInfo(IServerInfo **info) {
   return err;
 }
 
-common::Error UnqliteDriver::serverDiscoveryInfo(ServerDiscoveryInfo **dinfo, IServerInfo **sinfo,
+common::Error UnqliteDriver::serverDiscoveryInfo(ServerDiscoveryInfo** dinfo, IServerInfo** sinfo,
                                                  IDataBaseInfo** dbinfo) {
   UNUSED(dinfo);
 
@@ -179,7 +179,7 @@ common::Error UnqliteDriver::currentDataBaseInfo(IDataBaseInfo** info) {
   return common::Error();
 }
 
-void UnqliteDriver::handleConnectEvent(events::ConnectRequestEvent *ev) {
+void UnqliteDriver::handleConnectEvent(events::ConnectRequestEvent* ev) {
   QObject* sender = ev->sender();
   notifyProgress(sender, 0);
   events::ConnectResponceEvent::value_type res(ev->value());

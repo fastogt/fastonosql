@@ -29,7 +29,7 @@ namespace fastonosql {
 namespace ssdb {
 namespace {
 
-void parseOptions(int argc, char **argv, SsdbConfig& cfg) {
+void parseOptions(int argc, char** argv, SsdbConfig& cfg) {
   for (int i = 0; i < argc; i++) {
     int lastarg = i == argc - 1;
 
@@ -62,7 +62,7 @@ void parseOptions(int argc, char **argv, SsdbConfig& cfg) {
 }  // namespace
 
 SsdbConfig::SsdbConfig()
-  : RemoteConfig(common::net::hostAndPort("localhost", 8888)), user(), password() {
+  : RemoteConfig(common::net::hostAndPort::createLocalHost(8888)), user(), password() {
 }
 
 }  // namespace ssdb
@@ -70,7 +70,7 @@ SsdbConfig::SsdbConfig()
 
 namespace common {
 
-std::string convertToString(const fastonosql::ssdb::SsdbConfig &conf) {
+std::string convertToString(const fastonosql::ssdb::SsdbConfig& conf) {
   std::vector<std::string> argv = conf.args();
 
   if (!conf.user.empty()) {

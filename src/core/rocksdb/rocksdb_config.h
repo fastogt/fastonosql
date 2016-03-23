@@ -40,5 +40,5 @@ struct RocksdbConfig
 }  // namespace fastonosql
 
 namespace common {
-  std::string convertToString(const fastonosql::rocksdb::RocksdbConfig &conf);
+  std::string convertToString(const fastonosql::rocksdb::RocksdbConfig& conf);
 }

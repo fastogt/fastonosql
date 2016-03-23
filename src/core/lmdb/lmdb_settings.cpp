@@ -43,7 +43,7 @@ LmdbConfig LmdbConnectionSettings::info() const {
   return info_;
 }
 
-void LmdbConnectionSettings::setInfo(const LmdbConfig &info) {
+void LmdbConnectionSettings::setInfo(const LmdbConfig& info) {
   info_ = info;
 }
 

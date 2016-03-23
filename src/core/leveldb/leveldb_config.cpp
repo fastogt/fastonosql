@@ -31,7 +31,7 @@ namespace leveldb {
 
 namespace {
 
-void parseOptions(int argc, char **argv, LeveldbConfig& cfg) {
+void parseOptions(int argc, char** argv, LeveldbConfig& cfg) {
   for (int i = 0; i < argc; i++) {
     int lastarg = i == argc-1;
 
@@ -69,7 +69,7 @@ LeveldbConfig::LeveldbConfig()
 
 namespace common {
 
-std::string convertToString(const fastonosql::leveldb::LeveldbConfig &conf) {
+std::string convertToString(const fastonosql::leveldb::LeveldbConfig& conf) {
   std::vector<std::string> argv = conf.args();
 
   if (conf.options.create_if_missing) {

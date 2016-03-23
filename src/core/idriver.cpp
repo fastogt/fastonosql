@@ -88,7 +88,7 @@ bool getStamp(common::buffer_type stamp, common::time64_t* timeOut) {
 namespace fastonosql {
 namespace {
 
-void notifyProgressImpl(IDriver* sender, QObject *reciver, int value) {
+void notifyProgressImpl(IDriver* sender, QObject* reciver, int value) {
   IDriver::reply(reciver, new events::ProgressResponceEvent(sender, events::ProgressResponceEvent::value_type(value)));
 }
 
@@ -252,7 +252,7 @@ void IDriver::clear() {
   clearImpl();
 }
 
-void IDriver::customEvent(QEvent *event) {
+void IDriver::customEvent(QEvent* event) {
   using namespace events;
   QEvent::Type type = event->type();
   if (type == static_cast<QEvent::Type>(ConnectRequestEvent::EventType)) {
@@ -449,7 +449,7 @@ void IDriver::handleLoadServerInfoEvent(events::ServerInfoRequestEvent* ev) {
   notifyProgress(sender, 100);
 }
 
-void IDriver::handleLoadServerInfoHistoryEvent(events::ServerInfoHistoryRequestEvent *ev) {
+void IDriver::handleLoadServerInfoHistoryEvent(events::ServerInfoHistoryRequestEvent* ev) {
   QObject* sender = ev->sender();
   events::ServerInfoHistoryResponceEvent::value_type res(ev->value());
 
@@ -492,7 +492,7 @@ void IDriver::handleLoadServerInfoHistoryEvent(events::ServerInfoHistoryRequestE
   reply(sender, new events::ServerInfoHistoryResponceEvent(this, res));
 }
 
-void IDriver::handleClearServerHistoryRequestEvent(events::ClearServerHistoryRequestEvent *ev) {
+void IDriver::handleClearServerHistoryRequestEvent(events::ClearServerHistoryRequestEvent* ev) {
   QObject* sender = ev->sender();
   events::ClearServerHistoryResponceEvent::value_type res(ev->value());
 

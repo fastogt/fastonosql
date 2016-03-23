@@ -38,7 +38,7 @@ class LeveldbConnectionSettings
   virtual void setCommandLine(const std::string& line);
 
   LeveldbConfig info() const;
-  void setInfo(const LeveldbConfig &info);
+  void setInfo(const LeveldbConfig& info);
 
   virtual std::string fullAddress() const;
 

@@ -30,7 +30,7 @@ namespace fastonosql {
 namespace unqlite {
 namespace {
 
-void parseOptions(int argc, char **argv, UnqliteConfig& cfg) {
+void parseOptions(int argc, char** argv, UnqliteConfig& cfg) {
   for (int i = 0; i < argc; i++) {
     int lastarg = i == argc-1;
 

@@ -66,11 +66,11 @@ void MemcachedDriver::initImpl() {
 void MemcachedDriver::clearImpl() {
 }
 
-common::Error MemcachedDriver::executeImpl(int argc, char **argv, FastoObject* out) {
+common::Error MemcachedDriver::executeImpl(int argc, char** argv, FastoObject* out) {
   return impl_->execute(argc, argv, out);
 }
 
-common::Error MemcachedDriver::serverInfo(IServerInfo **info) {
+common::Error MemcachedDriver::serverInfo(IServerInfo** info) {
   LOG_COMMAND(type(), Command(INFO_REQUEST, common::Value::C_INNER));
   MemcachedServerInfo::Common cm;
   common::Error err = impl_->info(nullptr, &cm);
@@ -81,7 +81,7 @@ common::Error MemcachedDriver::serverInfo(IServerInfo **info) {
   return err;
 }
 
-common::Error MemcachedDriver::serverDiscoveryInfo(ServerDiscoveryInfo** dinfo, IServerInfo **sinfo,
+common::Error MemcachedDriver::serverDiscoveryInfo(ServerDiscoveryInfo** dinfo, IServerInfo** sinfo,
                                                    IDataBaseInfo** dbinfo) {
   UNUSED(dinfo);
 
@@ -219,7 +219,7 @@ void MemcachedDriver::handleCommandRequestEvent(events::CommandRequestEvent* ev)
   notifyProgress(sender, 100);
 }
 
-void MemcachedDriver::handleLoadDatabaseContentEvent(events::LoadDatabaseContentRequestEvent *ev) {
+void MemcachedDriver::handleLoadDatabaseContentEvent(events::LoadDatabaseContentRequestEvent* ev) {
   QObject* sender = ev->sender();
   notifyProgress(sender, 0);
   events::LoadDatabaseContentResponceEvent::value_type res(ev->value());

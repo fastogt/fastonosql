@@ -43,7 +43,7 @@ LeveldbConfig LeveldbConnectionSettings::info() const {
   return info_;
 }
 
-void LeveldbConnectionSettings::setInfo(const LeveldbConfig &info) {
+void LeveldbConnectionSettings::setInfo(const LeveldbConfig& info) {
   info_ = info;
 }
 

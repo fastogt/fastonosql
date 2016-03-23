@@ -49,7 +49,7 @@ RedisConfig RedisConnectionSettings::info() const {
   return info_;
 }
 
-void RedisConnectionSettings::setInfo(const RedisConfig &info) {
+void RedisConnectionSettings::setInfo(const RedisConfig& info) {
   info_ =  info;
 }
 

@@ -133,7 +133,7 @@ void RocksdbDriver::initImpl() {
 void RocksdbDriver::clearImpl() {
 }
 
-common::Error RocksdbDriver::executeImpl(int argc, char **argv, FastoObject* out) {
+common::Error RocksdbDriver::executeImpl(int argc, char** argv, FastoObject* out) {
   return impl_->execute(argc, argv, out);
 }
 
@@ -148,7 +148,7 @@ common::Error RocksdbDriver::serverInfo(IServerInfo **info) {
   return err;
 }
 
-common::Error RocksdbDriver::serverDiscoveryInfo(ServerDiscoveryInfo **dinfo, IServerInfo **sinfo,
+common::Error RocksdbDriver::serverDiscoveryInfo(ServerDiscoveryInfo** dinfo, IServerInfo** sinfo,
                                                  IDataBaseInfo** dbinfo) {
   UNUSED(dinfo);
 
@@ -287,7 +287,7 @@ void RocksdbDriver::handleCommandRequestEvent(events::CommandRequestEvent* ev) {
   notifyProgress(sender, 100);
 }
 
-void RocksdbDriver::handleLoadDatabaseContentEvent(events::LoadDatabaseContentRequestEvent *ev) {
+void RocksdbDriver::handleLoadDatabaseContentEvent(events::LoadDatabaseContentRequestEvent* ev) {
   QObject* sender = ev->sender();
   notifyProgress(sender, 0);
   events::LoadDatabaseContentResponceEvent::value_type res(ev->value());

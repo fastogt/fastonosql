@@ -44,14 +44,14 @@ struct RocksdbRaw
 
   std::string currentDbName() const;
 
-  common::Error info(const char* args, RocksdbServerInfo::Stats *statsout);
+  common::Error info(const char* args, RocksdbServerInfo::Stats* statsout);
   common::Error set(const std::string& key, const std::string& value);
   common::Error get(const std::string& key, std::string* ret_val);
-  common::Error mget(const std::vector< ::rocksdb::Slice>& keys, std::vector<std::string> *ret);
+  common::Error mget(const std::vector< ::rocksdb::Slice>& keys, std::vector<std::string>* ret);
   common::Error merge(const std::string& key, const std::string& value);
   common::Error del(const std::string& key);
   common::Error keys(const std::string& key_start, const std::string& key_end,
-                     uint64_t limit, std::vector<std::string> *ret);
+                     uint64_t limit, std::vector<std::string>* ret);
 
   // extended api
   common::Error dbsize(size_t* size);

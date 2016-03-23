@@ -47,7 +47,7 @@ class RedisDriver
   virtual void initImpl();
   virtual void clearImpl();
 
-  virtual common::Error executeImpl(int argc, char **argv, FastoObject* out);
+  virtual common::Error executeImpl(int argc, char** argv, FastoObject* out);
 
   virtual common::Error serverInfo(IServerInfo** info);
   virtual common::Error serverDiscoveryInfo(ServerDiscoveryInfo** dinfo, IServerInfo** sinfo,

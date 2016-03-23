@@ -93,7 +93,7 @@ LmdbServerInfo::LmdbServerInfo()
   : IServerInfo(LMDB) {
 }
 
-LmdbServerInfo::LmdbServerInfo(const Stats &stats)
+LmdbServerInfo::LmdbServerInfo(const Stats& stats)
   : IServerInfo(LMDB), stats_(stats) {
 }
 
@@ -156,7 +156,7 @@ LmdbServerInfo* makeLmdbServerInfo(FastoObject* root) {
 }
 
 LmdbDataBaseInfo::LmdbDataBaseInfo(const std::string& name, bool isDefault,
-                                   size_t size, const keys_cont_type &keys)
+                                   size_t size, const keys_cont_type& keys)
   : IDataBaseInfo(name, isDefault, LMDB, size, keys) {
 }
 

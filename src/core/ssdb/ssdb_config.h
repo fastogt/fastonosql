@@ -39,5 +39,5 @@ struct SsdbConfig
 }  // namespace fastonosql
 
 namespace common {
-  std::string convertToString(const fastonosql::ssdb::SsdbConfig &conf);
+  std::string convertToString(const fastonosql::ssdb::SsdbConfig& conf);
 }

@@ -69,7 +69,7 @@ RocksdbConfig::RocksdbConfig()
 
 namespace common {
 
-std::string convertToString(const fastonosql::rocksdb::RocksdbConfig &conf) {
+std::string convertToString(const fastonosql::rocksdb::RocksdbConfig& conf) {
   std::vector<std::string> argv = conf.args();
 
   if (conf.options.create_if_missing) {

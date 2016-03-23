@@ -194,42 +194,42 @@ RedisServerInfo::Server::Server(const std::string& server_text)
   size_t pos = 0;
   size_t start = 0;
   while ((pos = server_text.find("\r\n", start)) != std::string::npos) {
-      std::string line = server_text.substr(start, pos-start);
-      size_t delem = line.find_first_of(':');
-      std::string field = line.substr(0, delem);
-      std::string value = line.substr(delem + 1);
-      if (field == REDIS_VERSION_LABEL) {
-        redis_version_ = value;
-      } else if (field == REDIS_GIT_SHA1_LABEL) {
-        redis_git_sha1_ = value;
-      } else if (field == REDIS_GIT_DIRTY_LABEL) {
-        redis_git_dirty_ = value;
-      } else if (field == REDIS_MODE_LABEL) {
-        redis_mode_ = value;
-      } else if (field == REDIS_OS_LABEL) {
-        os_ = value;
-      } else if (field == REDIS_ARCH_BITS_LABEL) {
-        arch_bits_ = common::convertFromString<uint32_t>(value);
-      } else if (field == REDIS_MULTIPLEXING_API_LABEL) {
-        multiplexing_api_ = value;
-      } else if (field == REDIS_GCC_VERSION_LABEL) {
-        gcc_version_ = value;
-      } else if (field == REDIS_PROCESS_ID_LABEL) {;
-        process_id_ = common::convertFromString<uint32_t>(value);
-      } else if (field == REDIS_RUN_ID_LABEL) {
-        run_id_ = value;
-      } else if (field == REDIS_TCP_PORT_LABEL) {
-        tcp_port_ = common::convertFromString<uint32_t>(value);
-      } else if (field == REDIS_UPTIME_IN_SECONDS_LABEL) {
-        uptime_in_seconds_ = common::convertFromString<uint32_t>(value);
-      } else if (field == REDIS_UPTIME_IN_DAYS_LABEL) {
-        uptime_in_days_ = common::convertFromString<uint32_t>(value);
-      } else if (field == REDIS_HZ_LABEL) {
-        hz_ = common::convertFromString<uint32_t>(value);
-      } else if (field == REDIS_LRU_CLOCK_LABEL) {
-        lru_clock_ = common::convertFromString<uint32_t>(value);
-      }
-      start = pos + 2;
+    std::string line = server_text.substr(start, pos-start);
+    size_t delem = line.find_first_of(':');
+    std::string field = line.substr(0, delem);
+    std::string value = line.substr(delem + 1);
+    if (field == REDIS_VERSION_LABEL) {
+      redis_version_ = value;
+    } else if (field == REDIS_GIT_SHA1_LABEL) {
+      redis_git_sha1_ = value;
+    } else if (field == REDIS_GIT_DIRTY_LABEL) {
+      redis_git_dirty_ = value;
+    } else if (field == REDIS_MODE_LABEL) {
+      redis_mode_ = value;
+    } else if (field == REDIS_OS_LABEL) {
+      os_ = value;
+    } else if (field == REDIS_ARCH_BITS_LABEL) {
+      arch_bits_ = common::convertFromString<uint32_t>(value);
+    } else if (field == REDIS_MULTIPLEXING_API_LABEL) {
+      multiplexing_api_ = value;
+    } else if (field == REDIS_GCC_VERSION_LABEL) {
+      gcc_version_ = value;
+    } else if (field == REDIS_PROCESS_ID_LABEL) {;
+      process_id_ = common::convertFromString<uint32_t>(value);
+    } else if (field == REDIS_RUN_ID_LABEL) {
+      run_id_ = value;
+    } else if (field == REDIS_TCP_PORT_LABEL) {
+      tcp_port_ = common::convertFromString<uint32_t>(value);
+    } else if (field == REDIS_UPTIME_IN_SECONDS_LABEL) {
+      uptime_in_seconds_ = common::convertFromString<uint32_t>(value);
+    } else if (field == REDIS_UPTIME_IN_DAYS_LABEL) {
+      uptime_in_days_ = common::convertFromString<uint32_t>(value);
+    } else if (field == REDIS_HZ_LABEL) {
+      hz_ = common::convertFromString<uint32_t>(value);
+    } else if (field == REDIS_LRU_CLOCK_LABEL) {
+      lru_clock_ = common::convertFromString<uint32_t>(value);
+    }
+    start = pos + 2;
   }
 }
 

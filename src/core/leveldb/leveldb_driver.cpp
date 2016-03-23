@@ -133,7 +133,7 @@ void LeveldbDriver::initImpl() {
 void LeveldbDriver::clearImpl() {
 }
 
-common::Error LeveldbDriver::executeImpl(int argc, char **argv, FastoObject* out) {
+common::Error LeveldbDriver::executeImpl(int argc, char** argv, FastoObject* out) {
   return impl_->execute(argc, argv, out);
 }
 
@@ -285,7 +285,7 @@ void LeveldbDriver::handleCommandRequestEvent(events::CommandRequestEvent* ev) {
   notifyProgress(sender, 100);
 }
 
-void LeveldbDriver::handleLoadDatabaseContentEvent(events::LoadDatabaseContentRequestEvent *ev) {
+void LeveldbDriver::handleLoadDatabaseContentEvent(events::LoadDatabaseContentRequestEvent* ev) {
   QObject* sender = ev->sender();
   notifyProgress(sender, 0);
   events::LoadDatabaseContentResponceEvent::value_type res(ev->value());
