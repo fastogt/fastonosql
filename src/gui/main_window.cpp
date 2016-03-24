@@ -66,6 +66,9 @@ namespace {
 
 const QString trImportSettingsFailed = QObject::tr("Import settings failed!");
 const QString trExportSettingsFailed = QObject::tr("Export settings failed!");
+const QString trSettingsLoadedS = QObject::tr("Settings successfully loaded!");
+const QString trSettingsImportedS = QObject::tr("Settings successfully imported!");
+const QString trSettingsExportedS = QObject::tr("Settings successfully encrypted and exported!");
 
 bool isNeededUpdate(const QString& serverVersion) {
   if (serverVersion.isEmpty()) {
@@ -384,8 +387,7 @@ void MainWindow::loadConnection() {
   }
 
   SettingsManager::instance().reloadFromPath(common::convertToString(filepathR), false);
-  QMessageBox::information(this, translations::trInfo,
-                           QObject::tr("Settings successfully loaded!"));
+  QMessageBox::information(this, translations::trInfo, trSettingsLoadedS);
 }
 
 void MainWindow::importConnection() {
@@ -459,7 +461,7 @@ void MainWindow::importConnection() {
   if (err && err->isError()) {
     DNOTREACHED();
   }
-  QMessageBox::information(this, trInfo, QObject::tr("Settings successfully imported!"));
+  QMessageBox::information(this, trInfo, trSettingsImportedS);
 }
 
 void MainWindow::exportConnection() {
@@ -525,8 +527,7 @@ void MainWindow::exportConnection() {
     }
   }
 
-  QMessageBox::information(this, translations::trInfo,
-                           QObject::tr("Settings successfully encrypted and exported!"));
+  QMessageBox::information(this, translations::trInfo, trSettingsExportedS);
 }
 
 void MainWindow::versionAvailible(bool succesResult, const QString& version) {

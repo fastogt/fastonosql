@@ -33,6 +33,13 @@
 
 #include "translations/global.h"
 
+namespace {
+  const QString trPassword = QObject::tr("Password:");
+  const QString trCPassword = QObject::tr("Confirm Password:");
+  const QString trInvalidInput = QObject::tr("Invalid input!");
+  const QString trPasswordChS = QObject::tr("Password successfully changed!");
+}
+
 namespace fastonosql {
 
 ChangePasswordServerDialog::ChangePasswordServerDialog(const QString& title,
@@ -42,17 +49,21 @@ ChangePasswordServerDialog::ChangePasswordServerDialog(const QString& title,
 
   setWindowTitle(title);
   setWindowFlags(windowFlags() & ~Qt::WindowContextHelpButtonHint);
-  QGridLayout* mainLayout = new QGridLayout;
+  QVBoxLayout* mainLayout = new QVBoxLayout;
 
-  mainLayout->addWidget(new QLabel(tr("Password:")), 0, 0);
+  QHBoxLayout* passLayout = new QHBoxLayout;
+  passLayout->addWidget(new QLabel(trPassword));
   passwordLineEdit_ = new QLineEdit;
   passwordLineEdit_->setEchoMode(QLineEdit::Password);
-  mainLayout->addWidget(passwordLineEdit_, 0, 1);
+  passLayout->addWidget(passwordLineEdit_);
+  mainLayout->addLayout(passLayout);
 
-  mainLayout->addWidget(new QLabel(tr("Confirm Password:")), 1, 0);
+  QHBoxLayout* cpassLayout = new QHBoxLayout;
+  cpassLayout->addWidget(new QLabel(trCPassword));
   confPasswordLineEdit_ = new QLineEdit;
   confPasswordLineEdit_->setEchoMode(QLineEdit::Password);
-  mainLayout->addWidget(confPasswordLineEdit_, 1, 1);
+  cpassLayout->addWidget(confPasswordLineEdit_);
+  mainLayout->addLayout(cpassLayout);
 
   QDialogButtonBox* buttonBox = new QDialogButtonBox;
   buttonBox->setOrientation(Qt::Horizontal);
@@ -78,10 +89,10 @@ ChangePasswordServerDialog::ChangePasswordServerDialog(const QString& title,
 
 void ChangePasswordServerDialog::tryToCreatePassword() {
   if (validateInput()) {
-    events_info::ChangePasswordRequest req(this, "", common::convertToString(passwordLineEdit_->text()));
+    events_info::ChangePasswordRequest req(this, std::string(), common::convertToString(passwordLineEdit_->text()));
     server_->changePassword(req);
   } else {
-    QMessageBox::critical(this, translations::trError, QObject::tr("Invalid input!"));
+    QMessageBox::critical(this, translations::trError, trInvalidInput);
   }
 }
 
@@ -91,12 +102,12 @@ void ChangePasswordServerDialog::startChangePassword(const events_info::ChangePa
 
 void ChangePasswordServerDialog::finishChangePassword(const events_info::ChangePasswordResponce& res) {
   glassWidget_->stop();
-  common::Error er = res.errorInfo();
-  if (er && er->isError()) {
+  common::Error err = res.errorInfo();
+  if (err && err->isError()) {
     return;
   }
 
-  QMessageBox::information(this, translations::trInfo, QObject::tr("Password successfully changed!"));
+  QMessageBox::information(this, translations::trInfo, trPasswordChS);
   ChangePasswordServerDialog::accept();
 }
 

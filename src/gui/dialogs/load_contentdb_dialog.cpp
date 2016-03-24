@@ -28,6 +28,10 @@
 #include "gui/gui_factory.h"
 #include "translations/global.h"
 
+namespace {
+  const QString trInvalidPattern = QObject::tr("Invalid pattern!");
+}
+
 namespace fastonosql {
 
 LoadContentDbDialog::LoadContentDbDialog(const QString& title,
@@ -77,7 +81,7 @@ QString LoadContentDbDialog::pattern() const {
 void LoadContentDbDialog::accept() {
   QString pattern = patternEdit_->text();
   if (pattern.isEmpty()) {
-    QMessageBox::warning(this, translations::trError, QObject::tr("Invalid pattern!"));
+    QMessageBox::warning(this, translations::trError, trInvalidPattern);
     countSpinEdit_->setFocus();
     return;
   }

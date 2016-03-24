@@ -40,7 +40,7 @@ class ChangePasswordServerDialog
   Q_OBJECT
  public:
   enum {
-    fix_height = 160,
+    fix_height = 120,
     fix_width = 240
   };
 

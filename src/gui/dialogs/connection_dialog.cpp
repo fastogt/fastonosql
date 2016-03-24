@@ -43,6 +43,8 @@
 
 namespace {
 
+const QString invalidDbType = QObject::tr("Invalid database type!");
+
 QString stableCommandLine(QString input) {
   return input.replace('\n', "\\n");
 }
@@ -404,7 +406,7 @@ bool ConnectionDialog::validateAndApply() {
 
     return true;
   } else {
-    QMessageBox::critical(this, translations::trError, QObject::tr("Invalid database type!"));
+    QMessageBox::critical(this, translations::trError, invalidDbType);
     return false;
   }
 }

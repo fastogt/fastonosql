@@ -49,6 +49,7 @@
 
 namespace {
   const QString defaultNameConnection = "New Cluster Connection";
+  const QString invalidDbType = QObject::tr("Invalid database type!");
 }
 
 namespace fastonosql {
@@ -375,7 +376,7 @@ bool ClusterDialog::validateAndApply() {
     }
     return true;
   } else {
-    QMessageBox::critical(this, translations::trError, QObject::tr("Invalid database type!"));
+    QMessageBox::critical(this, translations::trError, invalidDbType);
     return false;
   }
 }
