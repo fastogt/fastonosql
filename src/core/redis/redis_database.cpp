@@ -27,8 +27,7 @@ RedisDatabase::RedisDatabase(IServerSPtr server, IDataBaseInfoSPtr info)
   : IDatabase(server, info) {
   DCHECK(server);
   DCHECK(info);
-  DCHECK(server->type() == REDIS);
-  DCHECK(info->type() == REDIS);
+  DCHECK(server->type() == info->type() == REDIS);
 }
 
 }  // namespace redis

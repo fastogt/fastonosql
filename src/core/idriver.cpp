@@ -112,8 +112,8 @@ void replyNotImplementedYet(IDriver* sender, event_request_type* ev, const char*
 }
 
 common::Error IDriver::execute(FastoObjectCommand* cmd) {
-  DCHECK(cmd);
   if (!cmd) {
+    DNOTREACHED();
     return common::make_error_value("Invalid input argument(s)", common::ErrorValue::E_ERROR);
   }
 
@@ -242,7 +242,7 @@ void IDriver::interrupt() {
 void IDriver::init() {
   int interval = settings_->loggingMsTimeInterval();
   timer_info_id_ = startTimer(interval);
-  DCHECK(timer_info_id_);
+  DCHECK(timer_info_id_ != 0);
   initImpl();
 }
 
@@ -417,6 +417,7 @@ void IDriver::handleSetDefaultDatabaseEvent(events::SetDefaultDatabaseRequestEve
 IDriver::RootLocker::RootLocker(IDriver* parent, QObject* receiver, const std::string& text)
   : parent_(parent), receiver_(receiver), tstart_(common::time::current_mstime()) {
   DCHECK(parent_);
+
   root_ = FastoObject::createRoot(text, parent_);
   events::CommandRootCreatedEvent::value_type res(this, root_);
   reply(receiver_, new events::CommandRootCreatedEvent(parent_, res));
@@ -535,6 +536,7 @@ void IDriver::handleDiscoveryInfoRequestEvent(events::DiscoveryInfoRequestEvent*
     } else {
       DCHECK(info);
       DCHECK(db);
+
       server_info_.reset(info);
       server_disc_info_.reset(disc);
       current_database_info_.reset(db);
@@ -551,8 +553,8 @@ void IDriver::handleDiscoveryInfoRequestEvent(events::DiscoveryInfoRequestEvent*
 }
 
 void IDriver::addedChildren(FastoObject* child) {
-  DCHECK(child);
   if (!child) {
+    DNOTREACHED();
     return;
   }
 

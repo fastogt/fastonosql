@@ -338,8 +338,8 @@ void BaseShellWidget::finishSetDefaultDatabase(const events_info::SetDefaultData
   }
 
   IServer* serv = qobject_cast<IServer*>(sender());
-  DCHECK(serv);
   if (!serv) {
+    DNOTREACHED();
     return;
   }
 

@@ -108,11 +108,11 @@ BaseShell::BaseShell(connectionTypes type, bool showAutoCompl, QWidget* parent)
 
 QString BaseShell::version() const {
   BaseQsciLexer* red = dynamic_cast<BaseQsciLexer*>(lexer());
-  DCHECK(red);
   if (red) {
     return common::convertFromString<QString>(red->version());
   }
 
+  DNOTREACHED();
   return QString();
 }
 

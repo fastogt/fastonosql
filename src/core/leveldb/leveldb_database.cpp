@@ -27,8 +27,7 @@ LeveldbDatabase::LeveldbDatabase(IServerSPtr server, IDataBaseInfoSPtr info)
   : IDatabase(server, info) {
   DCHECK(server);
   DCHECK(info);
-  DCHECK(server->type() == LEVELDB);
-  DCHECK(info->type() == LEVELDB);
+  DCHECK(server->type() == info->type() == LEVELDB);
 }
 
 }  // namespace leveldb

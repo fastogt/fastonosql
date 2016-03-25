@@ -682,7 +682,6 @@ void RedisDriver::handleLoadDatabaseContentEvent(events::LoadDatabaseContentRequ
       for (size_t i = 0; i < ar->size(); ++i) {
         std::string key;
         bool isok = ar->getString(i, &key);
-        DCHECK(isok);
         if (isok) {
           NKey k(key);
           NDbKValue ress(k, NValue());

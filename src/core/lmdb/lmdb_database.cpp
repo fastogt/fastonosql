@@ -27,8 +27,7 @@ LmdbDatabase::LmdbDatabase(IServerSPtr server, IDataBaseInfoSPtr info)
   : IDatabase(server, info) {
   DCHECK(server);
   DCHECK(info);
-  DCHECK(server->type() == LMDB);
-  DCHECK(info->type() == LMDB);
+  DCHECK(server->type() == info->type() == LMDB);
 }
 
 }  // namespace lmdb

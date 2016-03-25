@@ -27,8 +27,7 @@ SsdbDatabase::SsdbDatabase(IServerSPtr server, IDataBaseInfoSPtr info)
   : IDatabase(server, info) {
   DCHECK(server);
   DCHECK(info);
-  DCHECK(server->type() == SSDB);
-  DCHECK(info->type() == SSDB);
+  DCHECK(server->type() == info->type() == SSDB);
 }
 
 }

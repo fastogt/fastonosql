@@ -237,7 +237,7 @@ void InfoServerDialog::finishServerInfo(const events_info::ServerInfoResponce& r
 
   connectionTypes type = server_->type();
 
-DCHECK(type == inf->type());
+  DCHECK(type == inf->type());
 #ifdef BUILD_WITH_REDIS
   if (type == REDIS) {
     redis::RedisServerInfo* infr = dynamic_cast<redis::RedisServerInfo*>(inf.get());

@@ -129,14 +129,14 @@ ExplorerTreeView::ExplorerTreeView(QWidget* parent)
 }
 
 void ExplorerTreeView::addServer(IServerSPtr server) {
-  DCHECK(server);
   if (!server) {
+    DNOTREACHED();
     return;
   }
 
   ExplorerTreeModel* mod = static_cast<ExplorerTreeModel*>(model());
-  DCHECK(mod);
   if (!mod) {
+    DNOTREACHED();
     return;
   }
 
@@ -146,14 +146,14 @@ void ExplorerTreeView::addServer(IServerSPtr server) {
 }
 
 void ExplorerTreeView::removeServer(IServerSPtr server) {
-  DCHECK(server);
   if (!server) {
+    DNOTREACHED();
     return;
   }
 
   ExplorerTreeModel* mod = static_cast<ExplorerTreeModel*>(model());
-  DCHECK(mod);
   if (!mod) {
+    DNOTREACHED();
     return;
   }
 
@@ -165,8 +165,8 @@ void ExplorerTreeView::removeServer(IServerSPtr server) {
 
 void ExplorerTreeView::addCluster(IClusterSPtr cluster) {
   ExplorerTreeModel* mod = static_cast<ExplorerTreeModel*>(model());
-  DCHECK(mod);
   if (!mod) {
+    DNOTREACHED();
     return;
   }
 
@@ -179,14 +179,14 @@ void ExplorerTreeView::addCluster(IClusterSPtr cluster) {
 }
 
 void ExplorerTreeView::removeCluster(IClusterSPtr cluster) {
-  DCHECK(cluster);
   if (!cluster) {
+    DNOTREACHED();
     return;
   }
 
   ExplorerTreeModel* mod = static_cast<ExplorerTreeModel*>(model());
-  DCHECK(mod);
   if (!mod) {
+    DNOTREACHED();
     return;
   }
 
@@ -206,8 +206,8 @@ void ExplorerTreeView::showContextMenu(const QPoint& point) {
   QModelIndex sel = selectedIndex();
   if (sel.isValid()) {
     IExplorerTreeItem* node = common::utils_qt::item<IExplorerTreeItem*>(sel);
-    DCHECK(node);
     if (!node) {
+      DNOTREACHED();
       return;
     }
 
@@ -699,12 +699,13 @@ void ExplorerTreeView::finishLoadDatabases(const events_info::LoadDatabasesInfoR
   IServer* serv = qobject_cast<IServer*>(sender());
   DCHECK(serv);
   if (!serv) {
+    DNOTREACHED();
     return;
   }
 
   ExplorerTreeModel* mod = qobject_cast<ExplorerTreeModel*>(model());
-  DCHECK(mod);
   if (!mod) {
+    DNOTREACHED();
     return;
   }
 
@@ -726,15 +727,15 @@ void ExplorerTreeView::finishSetDefaultDatabase(const events_info::SetDefaultDat
   }
 
   IServer* serv = qobject_cast<IServer*>(sender());
-  DCHECK(serv);
   if (!serv) {
+    DNOTREACHED();
     return;
   }
 
   IDataBaseInfoSPtr db = res.inf;
   ExplorerTreeModel* mod = qobject_cast<ExplorerTreeModel*>(model());
-  DCHECK(mod);
   if (!mod) {
+    DNOTREACHED();
     return;
   }
 
@@ -751,14 +752,14 @@ void ExplorerTreeView::finishLoadDatabaseContent(const events_info::LoadDatabase
   }
 
   IServer* serv = qobject_cast<IServer*>(sender());
-  DCHECK(serv);
   if (!serv) {
+    DNOTREACHED();
     return;
   }
 
   ExplorerTreeModel* mod = qobject_cast<ExplorerTreeModel*>(model());
-  DCHECK(mod);
   if (!mod) {
+    DNOTREACHED();
     return;
   }
 
@@ -783,14 +784,14 @@ void ExplorerTreeView::finishClearDatabase(const events_info::ClearDatabaseRespo
   }
 
   IServer* serv = qobject_cast<IServer*>(sender());
-  DCHECK(serv);
   if (!serv) {
+    DNOTREACHED();
     return;
   }
 
   ExplorerTreeModel* mod = qobject_cast<ExplorerTreeModel*>(model());
-  DCHECK(mod);
   if (!mod) {
+    DNOTREACHED();
     return;
   }
 
@@ -807,14 +808,14 @@ void ExplorerTreeView::finishExecuteCommand(const events_info::CommandResponce& 
   }
 
   IServer* serv = qobject_cast<IServer*>(sender());
-  DCHECK(serv);
   if (!serv) {
+    DNOTREACHED();
     return;
   }
 
   ExplorerTreeModel* mod = qobject_cast<ExplorerTreeModel*>(model());
-  DCHECK(mod);
   if (!mod) {
+    DNOTREACHED();
     return;
   }
 

@@ -334,7 +334,7 @@ ServerPropertyInfo makeServerProperty(const FastoObjectArray* array) {
   }
 
   ServerPropertyInfo inf;
-  for (size_t i = 0; i < ar->size(); i+=2) {
+  for (size_t i = 0; i < ar->size(); i += 2) {
     std::string c1;
     std::string c2;
     bool res = ar->getString(i, &c1);

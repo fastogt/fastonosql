@@ -95,13 +95,13 @@ IDatabaseSPtr IServer::createDatabaseByInfo(IDataBaseInfoSPtr inf) {
 }
 
 bool IServer::containsDatabase(IDataBaseInfoSPtr inf) const {
-  DCHECK(inf);
   if (!inf) {
+    DNOTREACHED();
     return false;
   }
 
-  DCHECK(type() == inf->type());
   if (type() != inf->type()) {
+    DNOTREACHED();
     return false;
   }
 

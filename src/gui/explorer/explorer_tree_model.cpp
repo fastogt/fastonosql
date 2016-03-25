@@ -83,7 +83,7 @@ IClusterSPtr ExplorerClusterItem::cluster() const {
 
 ExplorerDatabaseItem::ExplorerDatabaseItem(IDatabaseSPtr db, ExplorerServerItem* parent)
   : IExplorerTreeItem(parent), db_(db) {
-  DCHECK(db);
+  DCHECK(db_);
 }
 
 ExplorerServerItem* ExplorerDatabaseItem::parent() const {
@@ -349,8 +349,8 @@ void ExplorerTreeModel::addCluster(IClusterSPtr cluster) {
   ExplorerClusterItem* cl = findClusterItem(cluster);
   if (!cl) {
     fasto::qt::gui::TreeItem* parent = dynamic_cast<fasto::qt::gui::TreeItem*>(root_);
-    DCHECK(parent);
     if (!parent) {
+      DNOTREACHED();
       return;
     }
 
@@ -361,8 +361,8 @@ void ExplorerTreeModel::addCluster(IClusterSPtr cluster) {
 
 void ExplorerTreeModel::removeCluster(IClusterSPtr cluster) {
   fasto::qt::gui::TreeItem* par = dynamic_cast<fasto::qt::gui::TreeItem*>(root_);
-  DCHECK(par);
   if (!par) {
+    NOTREACHED();
     return;
   }
 
@@ -380,8 +380,8 @@ void ExplorerTreeModel::addServer(IServerSPtr server) {
   ExplorerServerItem* serv = findServerItem(server.get());
   if (!serv) {
     fasto::qt::gui::TreeItem* parent = dynamic_cast<fasto::qt::gui::TreeItem*>(root_);
-    DCHECK(parent);
     if (!parent) {
+      DNOTREACHED();
       return;
     }
 
@@ -392,8 +392,8 @@ void ExplorerTreeModel::addServer(IServerSPtr server) {
 
 void ExplorerTreeModel::removeServer(IServerSPtr server) {
   fasto::qt::gui::TreeItem* par = dynamic_cast<fasto::qt::gui::TreeItem*>(root_);
-  DCHECK(par);
   if (!par) {
+    DNOTREACHED();
     return;
   }
 
@@ -405,8 +405,8 @@ void ExplorerTreeModel::removeServer(IServerSPtr server) {
 
 void ExplorerTreeModel::addDatabase(IServer* server, IDataBaseInfoSPtr db) {
   ExplorerServerItem* parent = findServerItem(server);
-  DCHECK(parent);
   if (!parent) {
+    DNOTREACHED();
     return;
   }
 
@@ -420,8 +420,8 @@ void ExplorerTreeModel::addDatabase(IServer* server, IDataBaseInfoSPtr db) {
 
 void ExplorerTreeModel::removeDatabase(IServer* server, IDataBaseInfoSPtr db) {
   ExplorerServerItem* parent = findServerItem(server);
-  DCHECK(parent);
   if (!parent) {
+    DNOTREACHED();
     return;
   }
 
@@ -434,14 +434,14 @@ void ExplorerTreeModel::removeDatabase(IServer* server, IDataBaseInfoSPtr db) {
 
 void ExplorerTreeModel::setDefaultDb(IServer* server, IDataBaseInfoSPtr db) {
   ExplorerServerItem* parent = findServerItem(server);
-  DCHECK(parent);
   if (!parent) {
+    DNOTREACHED();
     return;
   }
 
   ExplorerDatabaseItem* dbs = findDatabaseItem(parent, db);
-  DCHECK(dbs);
   if (!dbs) {
+    DNOTREACHED();
     return;
   }
 
@@ -452,14 +452,14 @@ void ExplorerTreeModel::setDefaultDb(IServer* server, IDataBaseInfoSPtr db) {
 
 void ExplorerTreeModel::updateDb(IServer* server, IDataBaseInfoSPtr db) {
   ExplorerServerItem* parent = findServerItem(server);
-  DCHECK(parent);
   if (!parent) {
+    DNOTREACHED();
     return;
   }
 
   ExplorerDatabaseItem* dbs = findDatabaseItem(parent, db);
-  DCHECK(dbs);
   if (!dbs) {
+    DNOTREACHED();
     return;
   }
 
@@ -539,8 +539,8 @@ ExplorerClusterItem* ExplorerTreeModel::findClusterItem(IClusterSPtr cl) {
 
 ExplorerServerItem* ExplorerTreeModel::findServerItem(IServer* server) const {
   fasto::qt::gui::TreeItem* parent = dynamic_cast<fasto::qt::gui::TreeItem*>(root_);
-  DCHECK(parent);
   if (!parent) {
+    DNOTREACHED();
     return nullptr;
   }
 
@@ -575,8 +575,8 @@ ExplorerDatabaseItem* ExplorerTreeModel::findDatabaseItem(ExplorerServerItem* se
 
   for (size_t i = 0; i < server->childrenCount() ; ++i) {
     ExplorerDatabaseItem* item = dynamic_cast<ExplorerDatabaseItem*>(server->child(i));
-    DCHECK(item);
     if (!item) {
+      DNOTREACHED();
       continue;
     }
 
@@ -597,8 +597,8 @@ ExplorerKeyItem* ExplorerTreeModel::findKeyItem(ExplorerDatabaseItem* db,
 
   for (size_t i = 0; i < db->childrenCount() ; ++i) {
     ExplorerKeyItem* item = dynamic_cast<ExplorerKeyItem*>(db->child(i));
-    DCHECK(item);
     if (!item) {
+      DNOTREACHED();
       continue;
     }
 

@@ -27,8 +27,7 @@ MemcachedDatabase::MemcachedDatabase(IServerSPtr server, IDataBaseInfoSPtr info)
   : IDatabase(server, info) {
   DCHECK(server);
   DCHECK(info);
-  DCHECK(server->type() == MEMCACHED);
-  DCHECK(info->type() == MEMCACHED);
+  DCHECK(server->type() == info->type() == MEMCACHED);
 }
 
 }  // namespace memcached

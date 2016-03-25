@@ -24,7 +24,7 @@ namespace fastonosql {
 
 FastoObject::FastoObject(FastoObject* parent, common::Value* val, const std::string& delemitr)
   : observer_(nullptr), value_(val), parent_(parent), childrens_(), delemitr_(delemitr) {
-  DCHECK(val);
+  DCHECK(value_);
 }
 
 FastoObject::~FastoObject() {

@@ -27,8 +27,7 @@ RocksdbDatabase::RocksdbDatabase(IServerSPtr server, IDataBaseInfoSPtr info)
   : IDatabase(server, info) {
   DCHECK(server);
   DCHECK(info);
-  DCHECK(server->type() == ROCKSDB);
-  DCHECK(info->type() == ROCKSDB);
+  DCHECK(server->type() == ROCKSDB && info->type() == ROCKSDB);
 }
 
 }  // namespace rocksdb

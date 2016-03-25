@@ -27,8 +27,7 @@ UnqliteDatabase::UnqliteDatabase(IServerSPtr server, IDataBaseInfoSPtr info)
   : IDatabase(server, info) {
   DCHECK(server);
   DCHECK(info);
-  DCHECK(server->type() == UNQLITE);
-  DCHECK(info->type() == UNQLITE);
+  DCHECK(server->type() == info->type() == UNQLITE);
 }
 
 }

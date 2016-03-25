@@ -37,8 +37,8 @@ ICluster::nodes_type ICluster::nodes() const {
 }
 
 void ICluster::addServer(IServerSPtr serv) {
-  DCHECK(serv);
   if (!serv) {
+    DNOTREACHED();
     return;
   }
 

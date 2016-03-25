@@ -156,7 +156,6 @@ void MainWidget::addWidgetToTab(QueryWidget* wid, const QString& title) {
 
 void MainWidget::openNewTab(QueryWidget* src, const QString& title, const QString& text) {
   QueryWidget* newWid = src->clone(text);
-  DCHECK(newWid);
   addWidgetToTab(newWid, title);
 }
 
