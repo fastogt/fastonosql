@@ -195,10 +195,6 @@ int main(int argc, char *argv[]) {
         continue;
 
       if ( client[i].revents & ( POLLRDNORM | POLLERR ) ) {
-        clients_requests++;
-        if (!daemon_mode) {
-          printf(PROJECT_NAME " request number: %u\r\n", clients_requests);
-        }
         char buf[MAXLINE] = {0};
         ssize_t n = 0;
         if ((n = read(sockfd, buf, MAXLINE)) < 0) {
@@ -216,6 +212,10 @@ int main(int argc, char *argv[]) {
         } else {
           size_t spos = strcspn(buf, "\r\n");
           buf[spos] = 0;
+          clients_requests++;
+          if (!daemon_mode) {
+            printf(PROJECT_NAME " request: %s/%u\r\n", buf, clients_requests);
+          }
           struct setting * setting = find_setting(buf);
           if (setting) {
             write(sockfd, setting->value, strlen(setting->value));
