@@ -41,6 +41,7 @@
 #include "translations/global.h"
 
 namespace fastonosql {
+namespace gui {
 
 ConnectionsDialog::ConnectionsDialog(QWidget* parent)
   : QDialog(parent) {
@@ -291,4 +292,5 @@ void ConnectionsDialog::addCluster(IClusterSettingsBaseSPtr con) {
   listWidget_->addTopLevelItem(item);
 }
 
+}  // namespace gui
 }  // namespace fastonosql

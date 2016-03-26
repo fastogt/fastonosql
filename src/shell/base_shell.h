@@ -28,7 +28,7 @@ namespace fastonosql {
 namespace shell {
 
 class BaseShell
-  : public FastoEditorShell {
+  : public gui::FastoEditorShell {
   Q_OBJECT
  public:
   std::vector<uint32_t> supportedVersions() const;

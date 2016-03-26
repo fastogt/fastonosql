@@ -41,6 +41,7 @@ namespace {
 }
 
 namespace fastonosql {
+namespace gui {
 
 ChangePasswordServerDialog::ChangePasswordServerDialog(const QString& title,
                                                        IServerSPtr server, QWidget* parent)
@@ -121,4 +122,5 @@ bool ChangePasswordServerDialog::validateInput() {
   return pass == cpass;
 }
 
+}  // namespace gui
 }  // namespace fastonosql

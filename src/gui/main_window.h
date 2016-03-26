@@ -32,6 +32,7 @@ class QTapAndHoldGesture;
 #endif
 
 namespace fastonosql {
+namespace gui {
 
 class ExplorerTreeView;
 
@@ -136,4 +137,5 @@ class UpdateChecker
   void routine();
 };
 
+}  // namespace gui
 }  // namespace fastonosql

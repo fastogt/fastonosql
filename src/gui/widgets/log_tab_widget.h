@@ -26,6 +26,7 @@
 #include "core/connection_types.h"
 
 namespace fastonosql {
+namespace gui {
 
 class LogWidget;
 class CommandsWidget;
@@ -49,4 +50,5 @@ class LogTabWidget
   CommandsWidget* commands_;
 };
 
+}  // namespace gui
 }  // namespace fastonosql

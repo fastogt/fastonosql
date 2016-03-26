@@ -34,6 +34,7 @@ class GlassWidget;
 }
 
 namespace fastonosql {
+namespace gui {
 
 class ChangePasswordServerDialog
   : public QDialog {
@@ -59,4 +60,5 @@ class ChangePasswordServerDialog
   const IServerSPtr server_;
 };
 
+}  // namespace gui
 }  // namespace fastonosql

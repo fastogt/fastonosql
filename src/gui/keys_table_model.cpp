@@ -25,6 +25,7 @@
 #include "translations/global.h"
 
 namespace fastonosql {
+namespace gui {
 
 KeyTableItem::KeyTableItem(const NDbKValue& key)
   : key_(key) {
@@ -176,4 +177,5 @@ void KeysTableModel::clear() {
   endResetModel();
 }
 
+}  // namespace gui
 }  // namespace fastonosql

@@ -23,6 +23,7 @@
 #include "core/types.h"
 
 namespace fastonosql {
+namespace gui {
 
 class FastoCommonModel
   : public fasto::qt::gui::TreeModel {
@@ -44,4 +45,5 @@ class FastoCommonModel
   void changedValue(CommandKeySPtr cmd);
 };
 
+}  // namespace gui
 }  // namespace fastonosql

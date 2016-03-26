@@ -25,6 +25,7 @@ class QPushButton;
 class QAbstractItemModel;
 
 namespace fastonosql {
+namespace gui {
 
 class FastoEditorOutput;
 class FastoTextView
@@ -57,4 +58,5 @@ class FastoTextView
   QPushButton* saveChangeButton_;
 };
 
+}  // namespace gui
 }  // namespace fastonosql

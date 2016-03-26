@@ -30,6 +30,7 @@ class QSpinBox;
 class QLabel;
 
 namespace fastonosql {
+namespace gui {
 
 class FastoTableView;
 class KeysTableModel;
@@ -87,4 +88,5 @@ class ViewKeysDialog
   IDatabaseSPtr db_;
 };
 
+}  // namespace gui
 }  // namespace fastonosql

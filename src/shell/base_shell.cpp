@@ -58,7 +58,7 @@ namespace fastonosql {
 namespace shell {
 
 BaseShell::BaseShell(connectionTypes type, bool showAutoCompl, QWidget* parent)
-  : FastoEditorShell(showAutoCompl, parent) {
+  : gui::FastoEditorShell(showAutoCompl, parent) {
   VERIFY(connect(this, &BaseShell::customContextMenuRequested, this, &BaseShell::showContextMenu));
   BaseQsciLexer* lex = nullptr;
 #ifdef BUILD_WITH_REDIS
@@ -97,7 +97,7 @@ BaseShell::BaseShell(connectionTypes type, bool showAutoCompl, QWidget* parent)
   }
 #endif
   registerImage(BaseQsciLexer::Command,
-                GuiFactory::instance().commandIcon(type).pixmap(image_size));
+                gui::GuiFactory::instance().commandIcon(type).pixmap(image_size));
 
   CHECK(lex);
   if (lex) {

@@ -27,6 +27,7 @@
 #include "gui/widgets/query_widget.h"
 
 namespace fastonosql {
+namespace gui {
 
 MainWidget::MainWidget(QWidget* parent)
   : QTabWidget(parent) {
@@ -159,5 +160,5 @@ void MainWidget::openNewTab(QueryWidget* src, const QString& title, const QStrin
   addWidgetToTab(newWid, title);
 }
 
+}  // namespace gui
 }  // namespace fastonosql
-

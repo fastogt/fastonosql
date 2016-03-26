@@ -28,6 +28,7 @@
 #include "translations/global.h"
 
 namespace fastonosql {
+namespace gui {
 
 LogTabWidget::LogTabWidget(QWidget* parent)
   : QTabWidget(parent) {
@@ -66,4 +67,5 @@ void LogTabWidget::retranslateUi() {
   setTabText(1, translations::trCommands);
 }
 
+}  // namespace gui
 }  // namespace fastonosql

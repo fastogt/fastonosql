@@ -39,6 +39,7 @@ namespace {
 }
 
 namespace fastonosql {
+namespace gui {
 
 TestConnection::TestConnection(IConnectionSettingsBaseSPtr conn, QObject* parent)
   : QObject(parent), connection_(conn), startTime_(common::time::current_mstime()) {
@@ -131,4 +132,5 @@ void ConnectionDiagnosticDialog::testConnection(IConnectionSettingsBaseSPtr conn
   th->start();
 }
 
+}  // namespace gui
 }  // namespace fastonosql

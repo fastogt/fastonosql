@@ -19,6 +19,7 @@
 #include "gui/shortcuts.h"
 
 namespace fastonosql {
+namespace gui {
 
 /*bool isDuplicateTabShortcut(QKeyEvent* keyEvent) {
   bool ctrlShiftT = (keyEvent->modifiers() & Qt::ControlModifier) &&
@@ -101,4 +102,5 @@ bool isExecuteScriptShortcut(QKeyEvent* keyEvent) {
          ((keyEvent->modifiers() & Qt::ControlModifier) && (keyEvent->modifiers() & Qt::ShiftModifier) && (keyEvent->key() == Qt::Key_C));
 }*/
 
+}  // namespace gui
 }  // namespace fastonosql

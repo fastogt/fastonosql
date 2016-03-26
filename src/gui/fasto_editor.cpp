@@ -38,6 +38,7 @@
 #include "translations/global.h"
 
 namespace fastonosql {
+namespace gui {
 
 FastoEditor::FastoEditor(QWidget* parent)
   : QWidget(parent), scin_(nullptr) {
@@ -437,4 +438,5 @@ void FastoEditorShell::showContextMenu(const QPoint& pt) {
   delete menu;
 }
 
+}  // namespace gui
 }  // namespace fastonosql

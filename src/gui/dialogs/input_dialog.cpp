@@ -27,6 +27,7 @@
 #include "gui/gui_factory.h"
 
 namespace fastonosql {
+namespace gui {
 
 InputDialog::InputDialog(QWidget* parent, const QString& title, InputType type,
                        const QString& firstLabelText, const QString& secondLabelText)
@@ -67,4 +68,5 @@ QString InputDialog::secondText() const {
   return secondLine_->text();
 }
 
+}  // namespace gui
 }  // namespace fastonosql

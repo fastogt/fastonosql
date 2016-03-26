@@ -30,6 +30,7 @@ namespace {
 }
 
 namespace fastonosql {
+namespace gui {
 
 FastoHexEdit::FastoHexEdit(QWidget* parent)
   : base_class(parent), mode_(TEXT_MODE), in_selection_state_(false) {
@@ -259,4 +260,5 @@ int FastoHexEdit::positionAtPoint(const QPoint& point) const {
   return -1;
 }
 
+}  // namespace gui
 }  // namespace fastonosql

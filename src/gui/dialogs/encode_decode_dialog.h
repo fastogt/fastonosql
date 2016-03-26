@@ -24,6 +24,7 @@ class QComboBox;
 class QRadioButton;
 
 namespace fastonosql {
+namespace gui {
 
 class FastoEditor;
 class EncodeDecodeDialog
@@ -54,4 +55,5 @@ class EncodeDecodeDialog
   QRadioButton* decodeButton_;
 };
 
+}  // namespace gui
 }  // namespace fastonosql

@@ -35,6 +35,7 @@ namespace gui {
 }
 
 namespace fastonosql {
+namespace gui {
 
 class FastoTextView;
 class FastoTreeView;
@@ -77,4 +78,5 @@ class OutputWidget
   const IServerSPtr server_;
 };
 
+}  // namespace gui
 }  // namespace fastonosql

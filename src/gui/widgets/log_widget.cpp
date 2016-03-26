@@ -29,6 +29,7 @@
 #include "translations/global.h"
 
 namespace fastonosql {
+namespace gui {
 
 LogWidget::LogWidget(QWidget* parent)
   : QWidget(parent), logTextEdit_(new QTextEdit) {
@@ -75,4 +76,5 @@ void LogWidget::retranslateUi() {
   clear_->setText(translations::trClearAll);
 }
 
+}  // namespace gui
 }  // namespace fastonosql

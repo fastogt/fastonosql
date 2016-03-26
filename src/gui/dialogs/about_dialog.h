@@ -21,6 +21,7 @@
 #include <QDialog>
 
 namespace fastonosql {
+namespace gui {
 
 class AboutDialog
   : public QDialog {
@@ -29,4 +30,5 @@ class AboutDialog
   explicit AboutDialog(QWidget* parent);
 };
 
+}  // namespace gui
 }  // namespace fastonosql

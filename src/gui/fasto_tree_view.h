@@ -21,6 +21,7 @@
 #include <QTreeView>
 
 namespace fastonosql {
+namespace gui {
 
 class FastoTreeView
   : public QTreeView {
@@ -35,5 +36,6 @@ class FastoTreeView
   virtual void resizeEvent(QResizeEvent* event);
 };
 
+}  // namespace gui
 }  // namespace fastonosql
 

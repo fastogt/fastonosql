@@ -44,6 +44,7 @@
 #include "translations/global.h"
 
 namespace fastonosql {
+namespace gui {
 
 ExplorerTreeView::ExplorerTreeView(QWidget* parent)
   : QTreeView(parent) {
@@ -929,4 +930,5 @@ QModelIndex ExplorerTreeView::selectedIndex() const {
   return indexses[0];
 }
 
+}  // namespace gui
 }  // namespace fastonosql

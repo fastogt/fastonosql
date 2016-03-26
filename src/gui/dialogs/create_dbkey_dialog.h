@@ -29,6 +29,7 @@ class QTableWidget;
 class QGroupBox;
 
 namespace fastonosql {
+namespace gui {
 
 class CreateDbKeyDialog
   : public QDialog {
@@ -70,4 +71,5 @@ class CreateDbKeyDialog
   NValue value_;
 };
 
+}  // namespace gui
 }  // namespace fastonosql

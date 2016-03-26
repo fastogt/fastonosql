@@ -29,6 +29,7 @@
 #include "common/text_decoders/hex_edcoder.h"
 
 namespace fastonosql {
+namespace gui {
 
 FastoCommonItem::FastoCommonItem(const NDbKValue& key, const std::string& delemitr, bool isReadOnly,
                                  TreeItem* parent, void* internalPointer)
@@ -198,4 +199,5 @@ QString fromHexMsgPack(FastoCommonItem* item) {
   return value;
 }
 
+}  // namespace gui
 }  // namespace fastonosql

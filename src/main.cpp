@@ -34,7 +34,7 @@ int main(int argc, char* argv[]) {
   app.setApplicationName(PROJECT_NAME);
   app.setApplicationVersion(PROJECT_VERSION);
   app.setAttribute(Qt::AA_UseHighDpiPixmaps);
-  app.setWindowIcon(fastonosql::GuiFactory::instance().logoIcon());  // default icon for app
+  app.setWindowIcon(fastonosql::gui::GuiFactory::instance().logoIcon());  // default icon for app
 
 #ifdef NDEBUG
   SET_LOG_LEVEL(common::logging::L_INFO);
@@ -42,7 +42,7 @@ int main(int argc, char* argv[]) {
   SET_LOG_LEVEL(common::logging::L_DEBUG);
 #endif
 
-  fastonosql::MainWindow win;
+  fastonosql::gui::MainWindow win;
   QRect screenGeometry = app.desktop()->availableGeometry();
   QSize screenSize(screenGeometry.width(), screenGeometry.height());
 

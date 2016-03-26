@@ -23,6 +23,7 @@
 #include "core/types.h"
 
 namespace fastonosql {
+namespace gui {
 
 struct PropertyTableItem
   : public fasto::qt::gui::TableItem {
@@ -57,6 +58,5 @@ class PropertyTableModel
   void changedProperty(const PropertyType& pr);
 };
 
+}  // namespace gui
 }  // namespace fastonosql
-
-

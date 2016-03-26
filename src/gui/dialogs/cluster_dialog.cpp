@@ -53,6 +53,7 @@ namespace {
 }
 
 namespace fastonosql {
+namespace gui {
 
 ClusterDialog::ClusterDialog(QWidget* parent, IClusterSettingsBase* connection)
   : QDialog(parent), cluster_connection_(connection) {
@@ -386,4 +387,5 @@ void ClusterDialog::addConnection(IConnectionSettingsBaseSPtr con) {
   listWidget_->addTopLevelItem(item);
 }
 
+}  // namespace gui
 }  // namespace fastonosql

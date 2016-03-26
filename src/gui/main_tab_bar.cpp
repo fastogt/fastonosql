@@ -28,6 +28,7 @@
 #include "translations/global.h"
 
 namespace fastonosql {
+namespace gui {
 
 MainTabBar::MainTabBar(QWidget* parent)
   : QTabBar(parent) {
@@ -103,4 +104,5 @@ void MainTabBar::retranslateUi() {
   closeOtherShellsAction_->setText(translations::trCloseOtherTab);
 }
 
+}  // namespace gui
 }  // namespace fastonosql

@@ -24,6 +24,7 @@
 #include "core/settings_manager.h"
 
 namespace fastonosql {
+namespace gui {
 
 const QIcon& GuiFactory::homePageIcon() const {
   static QIcon homepage(":" PROJECT_NAME_LOWERCASE "/images/64x64/homepage.png");
@@ -379,4 +380,5 @@ const QIcon& GuiFactory::lmdbConnectionIcon() const {
   return main;
 }
 
+}  // namespace gui
 }  // namespace fastonosql

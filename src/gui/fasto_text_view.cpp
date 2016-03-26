@@ -33,6 +33,7 @@
 #include "gui/gui_factory.h"
 
 namespace fastonosql {
+namespace gui {
 
 FastoTextView::FastoTextView(const QString& delemitr, QWidget* parent)
   : QWidget(parent) {
@@ -158,4 +159,5 @@ void FastoTextView::retranslateUi() {
   saveChangeButton_->setText(trSave);
 }
 
+}  // namespace gui
 }  // namespace fastonosql

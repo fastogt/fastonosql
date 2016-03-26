@@ -26,6 +26,7 @@ class QAction;
 #include "core/events/events_info.h"
 
 namespace fastonosql {
+namespace gui {
 
 class ExplorerTreeView
   : public QTreeView {
@@ -120,4 +121,5 @@ class ExplorerTreeView
   QAction* shutdownAction_;
 };
 
+}  // namespace gui
 }  // namespace fastonosql

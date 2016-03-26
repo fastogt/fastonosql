@@ -62,6 +62,7 @@ class GlassWidget;
 }
 
 namespace fastonosql {
+namespace gui {
 
 class InfoServerDialog
   : public QDialog {
@@ -113,4 +114,5 @@ class InfoServerDialog
   const IServerSPtr server_;
 };
 
+}  // namespace gui
 }  // namespace fastonosql

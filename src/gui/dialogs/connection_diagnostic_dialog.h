@@ -34,6 +34,7 @@ class GlassWidget;
 }
 
 namespace fastonosql {
+namespace gui {
 
 class TestConnection
   : public QObject {
@@ -77,4 +78,5 @@ class ConnectionDiagnosticDialog
   QLabel* iconLabel_;
 };
 
+}  // namespace gui
 }  // namespace fastonosql

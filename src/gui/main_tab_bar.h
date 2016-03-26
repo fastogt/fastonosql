@@ -21,6 +21,7 @@
 #include <QTabBar>
 
 namespace fastonosql {
+namespace gui {
 
 class MainTabBar
   : public QTabBar {
@@ -55,4 +56,5 @@ class MainTabBar
   QAction* closeOtherShellsAction_;
 };
 
+}  // namespace gui
 }  // namespace fastonosql

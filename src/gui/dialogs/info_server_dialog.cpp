@@ -156,6 +156,7 @@ const QString lmdbTextServerTemplate = QObject::tr("<h2>Stats:</h2><br/>"
 }  // namespace
 
 namespace fastonosql {
+namespace gui {
 
 InfoServerDialog::InfoServerDialog(IServerSPtr server, QWidget* parent)
   : QDialog(parent), server_(server) {
@@ -491,4 +492,5 @@ void InfoServerDialog::updateText(const lmdb::LmdbServerInfo& serv) {
 }
 #endif
 
+}  // namespace gui
 }  // namespace fastonosql

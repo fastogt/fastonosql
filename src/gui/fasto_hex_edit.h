@@ -22,6 +22,7 @@
 #include <QByteArray>
 
 namespace fastonosql {
+namespace gui {
 
 class FastoHexEdit
   : public QPlainTextEdit {
@@ -69,4 +70,5 @@ class FastoHexEdit
   int positionAtPoint(const QPoint &point) const;
 };
 
+}  // namespace gui
 }  // namespace fastonosql

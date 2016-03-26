@@ -27,6 +27,7 @@
 #include "common/patterns/singleton_pattern.h"
 
 namespace fastonosql {
+namespace gui {
 
 class GuiFactory
   : public common::patterns::LazySingleton<GuiFactory> {
@@ -98,4 +99,5 @@ class GuiFactory
   const QIcon& lmdbConnectionIcon() const;
 };
 
+}  // namespace gui
 }  // namespace fastonosql

@@ -23,6 +23,7 @@
 #include "gui/gui_factory.h"
 
 namespace fastonosql {
+namespace gui {
 
 ConnectionListWidgetItem::ConnectionListWidgetItem(IConnectionSettingsBaseSPtr connection)
   : connection_() {
@@ -80,4 +81,5 @@ IClusterSettingsBaseSPtr ClusterConnectionListWidgetItem::connection() const {
   return connection_;
 }
 
+}  // namespace gui
 }  // namespace fastonosql

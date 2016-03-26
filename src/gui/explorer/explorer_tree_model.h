@@ -26,6 +26,7 @@
 #include "core/types.h"
 
 namespace fastonosql {
+namespace gui {
 
 struct IExplorerTreeItem
   : public fasto::qt::gui::TreeItem {
@@ -158,4 +159,5 @@ class ExplorerTreeModel
   ExplorerKeyItem* findKeyItem(ExplorerDatabaseItem* db, const NDbKValue &key) const;
 };
 
+}  // namespace gui
 }  // namespace fastonosql

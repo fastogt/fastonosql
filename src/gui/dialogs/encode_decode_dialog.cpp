@@ -40,6 +40,7 @@
 #include "translations/global.h"
 
 namespace fastonosql {
+namespace gui {
 
 EncodeDecodeDialog::EncodeDecodeDialog(QWidget* parent)
   : QDialog(parent) {
@@ -150,4 +151,5 @@ void EncodeDecodeDialog::retranslateUi() {
   decodeButton_->setText(translations::trDecode);
 }
 
+}  // namespace gui
 }  // namespace fastonosql

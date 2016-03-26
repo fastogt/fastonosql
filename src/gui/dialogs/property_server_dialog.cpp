@@ -30,6 +30,7 @@
 #include "translations/global.h"
 
 namespace fastonosql {
+namespace gui {
 
 PropertyServerDialog::PropertyServerDialog(IServerSPtr server, QWidget* parent)
   : QDialog(parent), server_(server) {
@@ -126,4 +127,5 @@ void PropertyServerDialog::retranslateUi() {
   setWindowTitle(tr("%1 properties").arg(server_->name()));
 }
 
+}  // namespace gui
 }  // namespace fastonosql

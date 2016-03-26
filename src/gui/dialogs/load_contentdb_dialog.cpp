@@ -33,6 +33,7 @@ namespace {
 }
 
 namespace fastonosql {
+namespace gui {
 
 LoadContentDbDialog::LoadContentDbDialog(const QString& title,
                                          connectionTypes type, QWidget* parent)
@@ -89,4 +90,5 @@ void LoadContentDbDialog::accept() {
   QDialog::accept();
 }
 
+}  // namespace gui
 }  // namespace fastonosql

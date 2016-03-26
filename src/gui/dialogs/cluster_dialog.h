@@ -28,13 +28,13 @@ class QDialogButtonBox;
 class QPushButton;
 class QCheckBox;
 class QSpinBox;
-
-#include "core/connection_settings.h"
-
 class QTreeWidget;
 class QToolBar;
 
+#include "core/connection_settings.h"
+
 namespace fastonosql {
+namespace gui {
 
 class ClusterDialog
   : public QDialog {
@@ -82,4 +82,5 @@ class ClusterDialog
   QAction* setDefault_;
 };
 
+}  // namespace gui
 }  // namespace fastonosql

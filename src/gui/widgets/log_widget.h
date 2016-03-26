@@ -26,6 +26,7 @@ class QAction;
 #include "common/log_levels.h"
 
 namespace fastonosql {
+namespace gui {
 
 class LogWidget
   : public QWidget {
@@ -48,4 +49,5 @@ class LogWidget
   QAction* clear_;
 };
 
+}  // namespace gui
 }  // namespace fastonosql

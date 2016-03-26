@@ -120,6 +120,7 @@ const QKeySequence explorerKeySequence = Qt::CTRL + Qt::Key_T;
 }  // namespace
 
 namespace fastonosql {
+namespace gui {
 
 MainWindow::MainWindow()
   : QMainWindow(), isCheckedInSession_(false) {
@@ -780,5 +781,6 @@ void UpdateChecker::routine() {
   return;
 }
 
+}  // namespace gui
 }  // namespace fastonosql
 

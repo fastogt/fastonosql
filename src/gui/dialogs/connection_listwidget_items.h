@@ -23,6 +23,7 @@
 #include "core/connection_settings.h"
 
 namespace fastonosql {
+namespace gui {
 
 class ConnectionListWidgetItem
   : public QTreeWidgetItem {
@@ -52,4 +53,5 @@ class ClusterConnectionListWidgetItem
   IClusterSettingsBaseSPtr connection_;
 };
 
+}  // namespace gui
 }  // namespace fastonosql

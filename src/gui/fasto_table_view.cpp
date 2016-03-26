@@ -24,6 +24,7 @@
 #include "common/macros.h"
 
 namespace fastonosql {
+namespace gui {
 
 FastoTableView::FastoTableView(QWidget* parent)
   : QTableView(parent) {
@@ -55,4 +56,5 @@ void FastoTableView::resizeEvent(QResizeEvent* event) {
   QTableView::resizeEvent(event);
 }
 
+}  // namespace gui
 }  // namespace fastonosql

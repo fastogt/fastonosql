@@ -27,6 +27,7 @@ class QAction;
 #include "core/connection_types.h"
 
 namespace fastonosql {
+namespace gui {
 
 class CommandsWidget
   : public QWidget {
@@ -49,4 +50,5 @@ class CommandsWidget
   QAction* clear_;
 };
 
+}  // namespace gui
 }  // namespace fastonosql

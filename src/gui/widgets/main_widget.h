@@ -24,6 +24,7 @@
 #include "core/connection_settings.h"
 
 namespace fastonosql {
+namespace gui {
 
 class QueryWidget;
 class MainWidget
@@ -55,4 +56,5 @@ class MainWidget
   void openNewTab(QueryWidget* src, const QString& title, const QString& text);
 };
 
+}  // namespace gui
 }  // namespace fastonosql

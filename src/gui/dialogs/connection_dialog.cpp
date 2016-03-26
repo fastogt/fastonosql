@@ -57,6 +57,7 @@ const QString defaultNameConnection = "New Connection";
 }  // namespace
 
 namespace fastonosql {
+namespace gui {
 
 ConnectionDialog::ConnectionDialog(QWidget* parent, IConnectionSettingsBase* connection,
                                    const std::vector<connectionTypes>& availibleTypes)
@@ -436,4 +437,5 @@ void ConnectionDialog::updateSshControls(bool isValidType) {
   passwordLabel_->setEnabled(isValidType);
 }
 
+}  // namespace gui
 }  // namespace fastonosql

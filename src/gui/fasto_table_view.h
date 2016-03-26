@@ -21,6 +21,7 @@
 #include <QTableView>
 
 namespace fastonosql {
+namespace gui {
 
 class FastoTableView
   : public QTableView {
@@ -35,5 +36,5 @@ class FastoTableView
   virtual void resizeEvent(QResizeEvent* event);
 };
 
+}  // namespace gui
 }  // namespace fastonosql
-

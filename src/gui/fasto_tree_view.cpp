@@ -24,6 +24,7 @@
 #include "common/macros.h"
 
 namespace fastonosql {
+namespace gui {
 
 FastoTreeView::FastoTreeView(QWidget* parent)
   : QTreeView(parent) {
@@ -49,4 +50,5 @@ void FastoTreeView::resizeEvent(QResizeEvent* event) {
   QTreeView::resizeEvent(event);
 }
 
+}  // namespace gui
 }  // namespace fastonosql

@@ -28,6 +28,7 @@ class QLineEdit;
 class QGroupBox;
 
 namespace fastonosql {
+namespace gui {
 
 class PreferencesDialog
   : public QDialog {
@@ -71,4 +72,5 @@ class PreferencesDialog
   QCheckBox* fastViewKeys_;
 };
 
+}  // namespace gui
 }  // namespace fastonosql

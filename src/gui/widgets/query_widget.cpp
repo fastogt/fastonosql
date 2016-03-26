@@ -26,6 +26,7 @@
 #include "gui/widgets/output_widget.h"
 
 namespace fastonosql {
+namespace gui {
 
 QueryWidget::QueryWidget(IServerSPtr server, QWidget* parent)
   : QWidget(parent), server_(server) {
@@ -75,4 +76,5 @@ void QueryWidget::execute(const QString& text) {
 void QueryWidget::reload() {
 }
 
+}  // namespace gui
 }  // namespace fastonosql

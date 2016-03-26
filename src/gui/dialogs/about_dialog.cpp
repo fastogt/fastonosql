@@ -48,6 +48,7 @@ const QString description = QObject::tr(
 }  // namespace
 
 namespace fastonosql {
+namespace gui {
 
 AboutDialog::AboutDialog(QWidget* parent)
   : QDialog(parent) {
@@ -77,4 +78,5 @@ AboutDialog::AboutDialog(QWidget* parent)
   glayout->setSizeConstraint(QLayout::SetFixedSize);
 }
 
+}  // namespace gui
 }  // namespace fastonosql

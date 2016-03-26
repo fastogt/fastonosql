@@ -21,6 +21,8 @@
 #include "fasto/qt/gui/shortcuts.h"
 
 namespace fastonosql {
+namespace gui {
+
   //  global variables
   extern const fasto::qt::gui::FastoQKeySequence openKey;
   extern const fasto::qt::gui::FastoQKeySequence saveKey;
@@ -45,4 +47,6 @@ namespace fastonosql {
   bool isRefreshShortcut(QKeyEvent* keyEvent);
   bool isFullScreenShortcut(QKeyEvent* keyEvent);
   bool isExecuteScriptShortcut(QKeyEvent* keyEvent);
+
+}  // namespace gui
 }  // namespace fastonosql

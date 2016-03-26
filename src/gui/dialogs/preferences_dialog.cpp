@@ -41,6 +41,7 @@
 #include "core/servers_manager.h"
 
 namespace fastonosql {
+namespace gui {
 
 PreferencesDialog::PreferencesDialog(QWidget* parent)
   : QDialog(parent) {
@@ -187,4 +188,5 @@ void PreferencesDialog::retranslateUi() {
   logDirLabel_->setText(tr("Logging directory:"));
 }
 
+}  // namespace gui
 }  // namespace fastonosql

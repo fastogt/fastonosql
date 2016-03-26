@@ -28,6 +28,8 @@ namespace shell {
 class BaseShellWidget;
 }
 
+namespace gui {
+
 class OutputWidget;
 class QueryWidget
         : public QWidget {
@@ -53,4 +55,5 @@ class QueryWidget
   const IServerSPtr server_;
 };
 
+}  // namespace gui
 }  // namespace fastonosql

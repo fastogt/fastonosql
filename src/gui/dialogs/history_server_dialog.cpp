@@ -36,6 +36,7 @@
 #include "translations/global.h"
 
 namespace fastonosql {
+namespace gui {
 
 ServerHistoryDialog::ServerHistoryDialog(IServerSPtr server, QWidget* parent)
   : QDialog(parent, Qt::WindowMinMaxButtonsHint | Qt::WindowCloseButtonHint ), server_(server) {
@@ -204,4 +205,5 @@ void ServerHistoryDialog::requestHistoryInfo() {
   server_->requestHistoryInfo(req);
 }
 
+}  // namespace gui
 }  // namespace fastonosql

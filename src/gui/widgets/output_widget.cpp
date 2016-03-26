@@ -43,6 +43,7 @@
 #include "common/logger.h"
 
 namespace fastonosql {
+namespace gui {
 namespace {
 
 FastoCommonItem* createItem(fasto::qt::gui::TreeItem* parent, const std::string& key,
@@ -119,7 +120,7 @@ OutputWidget::OutputWidget(IServerSPtr server, QWidget* parent)
 
 void OutputWidget::rootCreate(const events_info::CommandRootCreatedInfo& res) {
   FastoObject* rootObj = res.root.get();
-  fastonosql::FastoCommonItem* root = createItem(nullptr, std::string(), true, rootObj);
+  fastonosql::gui::FastoCommonItem* root = createItem(nullptr, std::string(), true, rootObj);
   commonModel_->setRoot(root);
 }
 
@@ -167,11 +168,11 @@ void OutputWidget::addChild(FastoObject* child) {
       return;
     }
 
-    fastonosql::FastoCommonItem* par = nullptr;
+    fastonosql::gui::FastoCommonItem* par = nullptr;
     if (!parent.isValid()) {
-      par = static_cast<fastonosql::FastoCommonItem*>(commonModel_->root());
+      par = static_cast<fastonosql::gui::FastoCommonItem*>(commonModel_->root());
     } else {
-      par = common::utils_qt::item<fastonosql::FastoCommonItem*>(parent);
+      par = common::utils_qt::item<fastonosql::gui::FastoCommonItem*>(parent);
     }
 
     if (!par) {
@@ -180,8 +181,7 @@ void OutputWidget::addChild(FastoObject* child) {
     }
 
     std::string inputArgs = command->inputArgs();
-
-    fastonosql::FastoCommonItem* comChild = createItem(par, getFirstWordFromLine(inputArgs),
+    fastonosql::gui::FastoCommonItem* comChild = createItem(par, getFirstWordFromLine(inputArgs),
                                                        command->isReadOnly(), child);
     commonModel_->insertItem(parent, comChild);
   } else {
@@ -193,11 +193,11 @@ void OutputWidget::addChild(FastoObject* child) {
         return;
       }
 
-      fastonosql::FastoCommonItem* par = nullptr;
+      fastonosql::gui::FastoCommonItem* par = nullptr;
       if (!parent.isValid()) {
-        par = static_cast<fastonosql::FastoCommonItem*>(commonModel_->root());
+        par = static_cast<fastonosql::gui::FastoCommonItem*>(commonModel_->root());
       } else {
-        par = common::utils_qt::item<fastonosql::FastoCommonItem*>(parent);
+        par = common::utils_qt::item<fastonosql::gui::FastoCommonItem*>(parent);
       }
 
       if (!par) {
@@ -205,7 +205,7 @@ void OutputWidget::addChild(FastoObject* child) {
         return;
       }
 
-      fastonosql::FastoCommonItem* comChild = createItem(par, std::string(), true, child);
+      fastonosql::gui::FastoCommonItem* comChild = createItem(par, std::string(), true, child);
       commonModel_->insertItem(parent, comChild);
     } else {
       NOTREACHED();
@@ -220,7 +220,7 @@ void OutputWidget::itemUpdate(FastoObject* item, common::Value* newValue) {
     return;
   }
 
-  fastonosql::FastoCommonItem* it = common::utils_qt::item<fastonosql::FastoCommonItem*>(index);
+  fastonosql::gui::FastoCommonItem* it = common::utils_qt::item<fastonosql::gui::FastoCommonItem*>(index);
   if (!it) {
     return;
   }
@@ -272,4 +272,5 @@ void OutputWidget::updateTimeLabel(const events_info::EventInfoBase& evinfo) {
   timeLabel_->setText(QString("%1 msec").arg(evinfo.elapsedTime()));
 }
 
+}  // namespace gui
 }  // namespace fastonosql

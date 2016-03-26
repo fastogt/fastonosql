@@ -23,6 +23,7 @@
 #include "fasto/qt/gui/base/table_model.h"
 
 namespace fastonosql {
+namespace gui {
 
 class KeyTableItem
   : public fasto::qt::gui::TableItem {
@@ -70,6 +71,5 @@ class KeysTableModel
   void changedValue(CommandKeySPtr cmd);
 };
 
+}  // namespace gui
 }  // namespace fastonosql
-
-

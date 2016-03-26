@@ -28,6 +28,7 @@
 #include "translations/global.h"
 
 namespace fastonosql {
+namespace gui {
 
 FastoCommonModel::FastoCommonModel(QObject* parent)
   : TreeModel(parent) {
@@ -163,4 +164,5 @@ void FastoCommonModel::changeValue(const NDbKValue& value) {
   }
 }
 
+}  // namespace gui
 }  // namespace fastonosql

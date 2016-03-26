@@ -45,8 +45,9 @@ class FastoScintilla;
 }
 
 namespace fastonosql {
-class FastoHexEdit;
+namespace gui {
 
+class FastoHexEdit;
 class FastoEditor
   : public QWidget {
   Q_OBJECT
@@ -152,4 +153,5 @@ class FastoEditorShell
   explicit FastoEditorShell(bool showAutoCompl, QWidget* parent = 0);
 };
 
+}  // namespace gui
 }  // namespace fastonosql

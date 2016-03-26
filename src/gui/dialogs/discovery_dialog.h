@@ -38,6 +38,7 @@ class GlassWidget;
 }
 
 namespace fastonosql {
+namespace gui {
 
 class DiscoveryConnection
   : public QObject {
@@ -88,4 +89,5 @@ class DiscoveryDiagnosticDialog
   IClusterSettingsBaseSPtr cluster_;
 };
 
+}  // namespace gui
 }  // namespace fastonosql

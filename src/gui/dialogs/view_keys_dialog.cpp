@@ -89,6 +89,7 @@ void updateEditorGeometry(QWidget* editor, const QStyleOptionViewItem& option,
 }  // namespace
 
 namespace fastonosql {
+namespace gui {
 
 ViewKeysDialog::ViewKeysDialog(const QString& title, IDatabaseSPtr db, QWidget* parent)
   : QDialog(parent), db_(db), cursorStack_(), curPos_(0) {
@@ -317,4 +318,5 @@ size_t ViewKeysDialog::keysCount() const {
   return countKey_->value();
 }
 
+}  // namespace gui
 }  // namespace fastonosql

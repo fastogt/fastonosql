@@ -43,6 +43,7 @@ namespace {
 }
 
 namespace fastonosql {
+namespace gui {
 
 DiscoveryConnection::DiscoveryConnection(IConnectionSettingsBaseSPtr conn, QObject* parent)
   : QObject(parent), connection_(conn), startTime_(common::time::current_mstime()) {
@@ -177,4 +178,5 @@ void DiscoveryDiagnosticDialog::testConnection(IConnectionSettingsBaseSPtr conne
   th->start();
 }
 
+}  // namespace gui
 }  // namespace fastonosql

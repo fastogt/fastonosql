@@ -30,6 +30,7 @@
 #include "core/icluster.h"
 
 namespace fastonosql {
+namespace gui {
 
 IExplorerTreeItem::IExplorerTreeItem(TreeItem* parent)
   : TreeItem(parent) {
@@ -610,4 +611,5 @@ ExplorerKeyItem* ExplorerTreeModel::findKeyItem(ExplorerDatabaseItem* db,
   return nullptr;
 }
 
+}  // namespace gui
 }  // namespace fastonosql

@@ -91,48 +91,48 @@ BaseShellWidget::BaseShellWidget(IServerSPtr server, const QString& filePath, QW
   QToolBar* savebar = new QToolBar;
   savebar->setStyleSheet("QToolBar { border: 0px; }");
 
-  loadAction_ = new QAction(GuiFactory::instance().loadIcon(), translations::trLoad, savebar);
+  loadAction_ = new QAction(gui::GuiFactory::instance().loadIcon(), translations::trLoad, savebar);
   typedef void (BaseShellWidget::*lf)();
   VERIFY(connect(loadAction_, &QAction::triggered,
                  this, static_cast<lf>(&BaseShellWidget::loadFromFile)));
   savebar->addAction(loadAction_);
 
-  saveAction_ = new QAction(GuiFactory::instance().saveIcon(), translations::trSave, savebar);
+  saveAction_ = new QAction(gui::GuiFactory::instance().saveIcon(), translations::trSave, savebar);
   VERIFY(connect(saveAction_, &QAction::triggered,
                  this, &BaseShellWidget::saveToFile));
   savebar->addAction(saveAction_);
 
-  saveAsAction_ = new QAction(GuiFactory::instance().saveAsIcon(), translations::trSaveAs, savebar);
+  saveAsAction_ = new QAction(gui::GuiFactory::instance().saveAsIcon(), translations::trSaveAs, savebar);
   VERIFY(connect(saveAsAction_, &QAction::triggered, this, &BaseShellWidget::saveToFileAs));
   savebar->addAction(saveAsAction_);
 
-  connectAction_ = new QAction(GuiFactory::instance().connectIcon(),
+  connectAction_ = new QAction(gui::GuiFactory::instance().connectIcon(),
                                translations::trConnect, savebar);
   VERIFY(connect(connectAction_, &QAction::triggered, this, &BaseShellWidget::connectToServer));
   savebar->addAction(connectAction_);
 
-  disConnectAction_ = new QAction(GuiFactory::instance().disConnectIcon(),
+  disConnectAction_ = new QAction(gui::GuiFactory::instance().disConnectIcon(),
                                   translations::trDisconnect, savebar);
   VERIFY(connect(disConnectAction_, &QAction::triggered,
                  this, &BaseShellWidget::disconnectFromServer));
   savebar->addAction(disConnectAction_);
 
-  executeAction_ = new QAction(GuiFactory::instance().executeIcon(),
+  executeAction_ = new QAction(gui::GuiFactory::instance().executeIcon(),
                                translations::trExecute, savebar);
-  executeAction_->setShortcut(executeKey);
+  executeAction_->setShortcut(gui::executeKey);
   VERIFY(connect(executeAction_, &QAction::triggered, this, &BaseShellWidget::execute));
   savebar->addAction(executeAction_);
 
-  QAction* stopAction = new QAction(GuiFactory::instance().stopIcon(),
+  QAction* stopAction = new QAction(gui::GuiFactory::instance().stopIcon(),
                                     translations::trStop, savebar);
   VERIFY(connect(stopAction, &QAction::triggered, this, &BaseShellWidget::stop));
   savebar->addAction(stopAction);
 
   const ConnectionMode mode = InteractiveMode;
-  connectionMode_ = new fasto::qt::gui::IconLabel(GuiFactory::instance().modeIcon(mode),
+  connectionMode_ = new fasto::qt::gui::IconLabel(gui::GuiFactory::instance().modeIcon(mode),
                                                   common::convertFromString<QString>(common::convertToString(mode)), iconSize);
 
-  dbName_ = new fasto::qt::gui::IconLabel(GuiFactory::instance().databaseIcon(),
+  dbName_ = new fasto::qt::gui::IconLabel(gui::GuiFactory::instance().databaseIcon(),
                                           "Calculate...", iconSize);
 
   hlayout->addWidget(savebar);
@@ -171,7 +171,7 @@ BaseShellWidget::BaseShellWidget(IServerSPtr server, const QString& filePath, QW
   for (size_t i = 0; i < versions.size(); ++i) {
     uint32_t cur = versions[i];
     std::string curVers = convertVersionNumberToReadableString(cur);
-    commandsVersionApi_->addItem(GuiFactory::instance().unknownIcon(),
+    commandsVersionApi_->addItem(gui::GuiFactory::instance().unknownIcon(),
                                  common::convertFromString<QString>(curVers), cur);
     commandsVersionApi_->setCurrentIndex(i);
   }
@@ -201,7 +201,7 @@ void BaseShellWidget::syncServerInfo(IServerInfoSPtr inf) {
     QVariant var = commandsVersionApi_->itemData(i);
     uint32_t version = qvariant_cast<uint32_t>(var);
     if (version == UNDEFINED_SINCE) {
-      commandsVersionApi_->setItemIcon(i, GuiFactory::instance().unknownIcon());
+      commandsVersionApi_->setItemIcon(i, gui::GuiFactory::instance().unknownIcon());
       continue;
     }
 
@@ -209,12 +209,12 @@ void BaseShellWidget::syncServerInfo(IServerInfoSPtr inf) {
       if (!updatedComboIndex) {
         updatedComboIndex = true;
         commandsVersionApi_->setCurrentIndex(i);
-        commandsVersionApi_->setItemIcon(i, GuiFactory::instance().successIcon());
+        commandsVersionApi_->setItemIcon(i, gui::GuiFactory::instance().successIcon());
       } else {
-        commandsVersionApi_->setItemIcon(i, GuiFactory::instance().failIcon());
+        commandsVersionApi_->setItemIcon(i, gui::GuiFactory::instance().failIcon());
       }
     } else {
-      commandsVersionApi_->setItemIcon(i, GuiFactory::instance().successIcon());
+      commandsVersionApi_->setItemIcon(i, gui::GuiFactory::instance().successIcon());
     }
   }
 }
@@ -353,7 +353,7 @@ void BaseShellWidget::progressChange(const events_info::ProgressInfoResponce& re
 
 void BaseShellWidget::enterMode(const events_info::EnterModeInfo& res) {
   ConnectionMode mode = res.mode;
-  connectionMode_->setIcon(GuiFactory::instance().modeIcon(mode), iconSize);
+  connectionMode_->setIcon(gui::GuiFactory::instance().modeIcon(mode), iconSize);
   std::string modeText = common::convertToString(mode);
   connectionMode_->setText(common::convertFromString<QString>(modeText));
 }

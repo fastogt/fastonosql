@@ -43,6 +43,7 @@
 #include "translations/global.h"
 
 namespace fastonosql {
+namespace gui {
 
 CreateDbKeyDialog::CreateDbKeyDialog(const QString& title, connectionTypes type, QWidget* parent)
   : QDialog(parent), type_(type), value_() {
@@ -336,4 +337,5 @@ common::Value* CreateDbKeyDialog::item() const {
   }
 }
 
+}  // namespace gui
 }  // namespace fastonosql

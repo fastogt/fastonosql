@@ -36,6 +36,7 @@ class GraphWidget;
 }
 
 namespace fastonosql {
+namespace gui {
 
 class ServerHistoryDialog
   : public QDialog {
@@ -78,4 +79,5 @@ class ServerHistoryDialog
   const IServerSPtr server_;
 };
 
+}  // namespace gui
 }  // namespace fastonosql
