@@ -41,7 +41,7 @@ namespace {
 namespace fastonosql {
 namespace gui {
 
-TestConnection::TestConnection(IConnectionSettingsBaseSPtr conn, QObject* parent)
+TestConnection::TestConnection(core::IConnectionSettingsBaseSPtr conn, QObject* parent)
   : QObject(parent), connection_(conn), startTime_(common::time::current_mstime()) {
 }
 
@@ -52,7 +52,7 @@ void TestConnection::routine() {
     return;
   }
 
-  common::Error er = ServersManager::instance().testConnection(connection_);
+  common::Error er = core::ServersManager::instance().testConnection(connection_);
 
   if (er && er->isError()) {
     emit connectionResult(false, common::time::current_mstime() - startTime_,
@@ -63,7 +63,7 @@ void TestConnection::routine() {
 }
 
 ConnectionDiagnosticDialog::ConnectionDiagnosticDialog(QWidget* parent,
-                                                       IConnectionSettingsBaseSPtr connection)
+                                                       core::IConnectionSettingsBaseSPtr connection)
   : QDialog(parent) {
   setWindowTitle(translations::trConnectionDiagnostic);
   setWindowIcon(GuiFactory::instance().icon(connection->type()));
@@ -119,7 +119,7 @@ void ConnectionDiagnosticDialog::showEvent(QShowEvent* e) {
   glassWidget_->start();
 }
 
-void ConnectionDiagnosticDialog::testConnection(IConnectionSettingsBaseSPtr connection) {
+void ConnectionDiagnosticDialog::testConnection(core::IConnectionSettingsBaseSPtr connection) {
   QThread* th = new QThread;
   TestConnection* cheker = new TestConnection(connection);
   cheker->moveToThread(th);

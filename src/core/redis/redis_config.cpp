@@ -27,6 +27,7 @@
 #include "fasto/qt/logger.h"
 
 namespace fastonosql {
+namespace core {
 namespace redis {
 namespace {
 
@@ -195,11 +196,12 @@ RedisConfig::~RedisConfig() {
 }
 
 }  // namespace redis
+}  // namespace core
 }  // namespace fastonosql
 
 namespace common {
 
-std::string convertToString(const fastonosql::redis::RedisConfig& conf) {
+std::string convertToString(const fastonosql::core::redis::RedisConfig& conf) {
   std::vector<std::string> argv = conf.args();
 
   if (!conf.hostsocket.empty()) {
@@ -280,8 +282,8 @@ std::string convertToString(const fastonosql::redis::RedisConfig& conf) {
 }
 
 template<>
-fastonosql::redis::RedisConfig convertFromString(const std::string& line) {
-  fastonosql::redis::RedisConfig cfg;
+fastonosql::core::redis::RedisConfig convertFromString(const std::string& line) {
+  fastonosql::core::redis::RedisConfig cfg;
   enum { kMaxArgs = 64 };
   int argc = 0;
   char* argv[kMaxArgs] = {0};
@@ -292,7 +294,7 @@ fastonosql::redis::RedisConfig convertFromString(const std::string& line) {
     p2 = strtok(0, " ");
   }
 
-  fastonosql::redis::parseOptions(argc, argv, cfg);
+  fastonosql::core::redis::parseOptions(argc, argv, cfg);
   return cfg;
 }
 

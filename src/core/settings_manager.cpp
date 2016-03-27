@@ -62,6 +62,8 @@ QString fontName() {
 
 
 namespace fastonosql {
+namespace core {
+
 SettingsManager::SettingsManager()
   : views_(), cur_style_(), cur_font_name_(), cur_language_(), connections_(),
     logging_dir_(),
@@ -357,4 +359,5 @@ void SettingsManager::save() {
   settings.setValue(FASTVIEWKEYS, fast_view_keys_);
 }
 
+}  // namespace core
 }  // namespace fastonosql

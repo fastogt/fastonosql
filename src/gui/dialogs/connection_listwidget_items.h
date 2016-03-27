@@ -28,29 +28,29 @@ namespace gui {
 class ConnectionListWidgetItem
   : public QTreeWidgetItem {
  public:
-  explicit ConnectionListWidgetItem(IConnectionSettingsBaseSPtr connection);
-  void setConnection(IConnectionSettingsBaseSPtr cons);
-  IConnectionSettingsBaseSPtr connection() const;
+  explicit ConnectionListWidgetItem(core::IConnectionSettingsBaseSPtr connection);
+  void setConnection(core::IConnectionSettingsBaseSPtr cons);
+  core::IConnectionSettingsBaseSPtr connection() const;
 
  private:
-  IConnectionSettingsBaseSPtr connection_;
+  core::IConnectionSettingsBaseSPtr connection_;
 };
 
 class ConnectionListWidgetItemEx
   : public ConnectionListWidgetItem {
  public:
-  ConnectionListWidgetItemEx(IConnectionSettingsBaseSPtr connection, serverTypes st);
+  ConnectionListWidgetItemEx(core::IConnectionSettingsBaseSPtr connection, core::serverTypes st);
 };
 
 class ClusterConnectionListWidgetItem
       : public QTreeWidgetItem {
  public:
-  explicit ClusterConnectionListWidgetItem(IClusterSettingsBaseSPtr connection);
-  void setConnection(IClusterSettingsBaseSPtr cons);
-  IClusterSettingsBaseSPtr connection() const;
+  explicit ClusterConnectionListWidgetItem(core::IClusterSettingsBaseSPtr connection);
+  void setConnection(core::IClusterSettingsBaseSPtr cons);
+  core::IClusterSettingsBaseSPtr connection() const;
 
  private:
-  IClusterSettingsBaseSPtr connection_;
+  core::IClusterSettingsBaseSPtr connection_;
 };
 
 }  // namespace gui

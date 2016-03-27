@@ -25,49 +25,49 @@
 namespace fastonosql {
 namespace gui {
 
-ConnectionListWidgetItem::ConnectionListWidgetItem(IConnectionSettingsBaseSPtr connection)
+ConnectionListWidgetItem::ConnectionListWidgetItem(core::IConnectionSettingsBaseSPtr connection)
   : connection_() {
   setConnection(connection);
 }
 
-void ConnectionListWidgetItem::setConnection(IConnectionSettingsBaseSPtr cons) {
+void ConnectionListWidgetItem::setConnection(core::IConnectionSettingsBaseSPtr cons) {
   if (!cons) {
     return;
   }
 
   connection_ = cons;
   setText(0, common::convertFromString<QString>(connection_->name()));
-  connectionTypes conType = connection_->type();
+  core::connectionTypes conType = connection_->type();
   setIcon(0, GuiFactory::instance().icon(conType));
   setText(1, common::convertFromString<QString>(connection_->fullAddress()));
 }
 
-IConnectionSettingsBaseSPtr ConnectionListWidgetItem::connection() const {
+core::IConnectionSettingsBaseSPtr ConnectionListWidgetItem::connection() const {
   return connection_;
 }
 
-ConnectionListWidgetItemEx::ConnectionListWidgetItemEx(IConnectionSettingsBaseSPtr connection,
-                                                       serverTypes st)
+ConnectionListWidgetItemEx::ConnectionListWidgetItemEx(core::IConnectionSettingsBaseSPtr connection,
+                                                       core::serverTypes st)
   : ConnectionListWidgetItem(connection) {
   std::string sert = common::convertToString(st);
   setText(2, common::convertFromString<QString>(sert));
 }
 
-ClusterConnectionListWidgetItem::ClusterConnectionListWidgetItem(IClusterSettingsBaseSPtr connection)
+ClusterConnectionListWidgetItem::ClusterConnectionListWidgetItem(core::IClusterSettingsBaseSPtr connection)
   : connection_(connection) {
   setText(0, common::convertFromString<QString>(connection_->name()));
   setIcon(0, GuiFactory::instance().clusterIcon());
 
-  IClusterSettingsBase::cluster_connection_type servers = connection_->nodes();
+  core::IClusterSettingsBase::cluster_connection_type servers = connection_->nodes();
 
   for (size_t i = 0; i < servers.size(); ++i) {
-    IConnectionSettingsBaseSPtr con = servers[i];
+    core::IConnectionSettingsBaseSPtr con = servers[i];
     ConnectionListWidgetItem* item = new ConnectionListWidgetItem(con);
     addChild(item);
   }
 }
 
-void ClusterConnectionListWidgetItem::setConnection(IClusterSettingsBaseSPtr cons) {
+void ClusterConnectionListWidgetItem::setConnection(core::IClusterSettingsBaseSPtr cons) {
   if (!cons) {
     return;
   }
@@ -77,7 +77,7 @@ void ClusterConnectionListWidgetItem::setConnection(IClusterSettingsBaseSPtr con
   setIcon(0, GuiFactory::instance().clusterIcon());
 }
 
-IClusterSettingsBaseSPtr ClusterConnectionListWidgetItem::connection() const {
+core::IClusterSettingsBaseSPtr ClusterConnectionListWidgetItem::connection() const {
   return connection_;
 }
 

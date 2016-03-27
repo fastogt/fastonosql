@@ -44,17 +44,17 @@ class DiscoveryConnection
   : public QObject {
   Q_OBJECT
  public:
-  explicit DiscoveryConnection(IConnectionSettingsBaseSPtr conn, QObject* parent = 0);
+  explicit DiscoveryConnection(core::IConnectionSettingsBaseSPtr conn, QObject* parent = 0);
 
  Q_SIGNALS:
   void connectionResult(bool suc, qint64 msTimeExecute, const QString& resultText,
-                        std::vector<ServerDiscoveryInfoSPtr> infos);
+                        std::vector<core::ServerDiscoveryInfoSPtr> infos);
 
  public Q_SLOTS:
   void routine();
 
  private:
-  IConnectionSettingsBaseSPtr connection_;
+  core::IConnectionSettingsBaseSPtr connection_;
   common::time64_t startTime_;
 };
 
@@ -67,26 +67,26 @@ class DiscoveryDiagnosticDialog
     fix_width = 480
   };
 
-  DiscoveryDiagnosticDialog(QWidget* parent, IConnectionSettingsBaseSPtr connection,
-                            IClusterSettingsBaseSPtr cluster);
-  std::vector<IConnectionSettingsBaseSPtr> selectedConnections() const;
+  DiscoveryDiagnosticDialog(QWidget* parent, core::IConnectionSettingsBaseSPtr connection,
+                            core::IClusterSettingsBaseSPtr cluster);
+  std::vector<core::IConnectionSettingsBaseSPtr> selectedConnections() const;
 
  private Q_SLOTS:
-  void connectionResult(bool suc, qint64 mstimeExecute, const QString&resultText,
-                        std::vector<ServerDiscoveryInfoSPtr> infos);
+  void connectionResult(bool suc, qint64 mstimeExecute, const QString& resultText,
+                        std::vector<core::ServerDiscoveryInfoSPtr> infos);
 
  protected:
   virtual void showEvent(QShowEvent* e);
 
  private:
-  void testConnection(IConnectionSettingsBaseSPtr connection);
+  void testConnection(core::IConnectionSettingsBaseSPtr connection);
 
   fasto::qt::gui::GlassWidget* glassWidget_;
   QLabel* executeTimeLabel_;
   QLabel* statusLabel_;
   QTreeWidget* listWidget_;
   QLabel* iconLabel_;
-  IClusterSettingsBaseSPtr cluster_;
+  core::IClusterSettingsBaseSPtr cluster_;
 };
 
 }  // namespace gui

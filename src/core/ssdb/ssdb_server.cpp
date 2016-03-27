@@ -22,6 +22,7 @@
 #include "core/ssdb/ssdb_database.h"
 
 namespace fastonosql {
+namespace core {
 namespace ssdb {
 
 SsdbServer::SsdbServer(IConnectionSettingsBaseSPtr settings)
@@ -42,4 +43,5 @@ IDatabaseSPtr SsdbServer::createDatabase(IDataBaseInfoSPtr info) {
 }
 
 }  // namespace ssdb
+}  // namespace core
 }  // namespace fastonosql

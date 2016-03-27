@@ -27,7 +27,7 @@
 #define MARKER "\n"
 
 namespace fastonosql {
-
+namespace core {
 namespace {
 
 const std::vector<Field>  redisServerFields = {
@@ -1022,4 +1022,5 @@ bool RedisCommand::isReadOnly() const {
 }
 
 }  // namespace redis
+}  // namespace core
 }  // namespace fastonosql

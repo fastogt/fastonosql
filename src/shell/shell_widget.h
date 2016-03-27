@@ -44,7 +44,7 @@ class BaseShellWidget
   : public QWidget {
   Q_OBJECT
  public:
-  explicit BaseShellWidget(IServerSPtr server,
+  explicit BaseShellWidget(core::IServerSPtr server,
                            const QString& filePath = QString(), QWidget* parent = 0);
   virtual ~BaseShellWidget();
 
@@ -66,29 +66,29 @@ class BaseShellWidget
 
   void changeVersionApi(int index);
 
-  void startConnect(const events_info::ConnectInfoRequest& req);
-  void finishConnect(const events_info::ConnectInfoResponce& res);
-  void startDisconnect(const events_info::DisConnectInfoRequest& req);
-  void finishDisconnect(const events_info::DisConnectInfoResponce& res);
+  void startConnect(const core::events_info::ConnectInfoRequest& req);
+  void finishConnect(const core::events_info::ConnectInfoResponce& res);
+  void startDisconnect(const core::events_info::DisConnectInfoRequest& req);
+  void finishDisconnect(const core::events_info::DisConnectInfoResponce& res);
 
-  void startSetDefaultDatabase(const events_info::SetDefaultDatabaseRequest& req);
-  void finishSetDefaultDatabase(const events_info::SetDefaultDatabaseResponce& res);
+  void startSetDefaultDatabase(const core::events_info::SetDefaultDatabaseRequest& req);
+  void finishSetDefaultDatabase(const core::events_info::SetDefaultDatabaseResponce& res);
 
-  void progressChange(const events_info::ProgressInfoResponce& res);
+  void progressChange(const core::events_info::ProgressInfoResponce& res);
 
-  void enterMode(const events_info::EnterModeInfo& res);
-  void leaveMode(const events_info::LeaveModeInfo& res);
+  void enterMode(const core::events_info::EnterModeInfo& res);
+  void leaveMode(const core::events_info::LeaveModeInfo& res);
 
-  void startLoadDiscoveryInfo(const events_info::DiscoveryInfoRequest& res);
-  void finishLoadDiscoveryInfo(const events_info::DiscoveryInfoResponce& res);
+  void startLoadDiscoveryInfo(const core::events_info::DiscoveryInfoRequest& res);
+  void finishLoadDiscoveryInfo(const core::events_info::DiscoveryInfoResponce& res);
 
  private:
   void syncConnectionActions();
-  void syncServerInfo(IServerInfoSPtr inf);
-  void updateDefaultDatabase(IDataBaseInfoSPtr dbs);
-  void initShellByType(connectionTypes type);
+  void syncServerInfo(core::IServerInfoSPtr inf);
+  void updateDefaultDatabase(core::IDataBaseInfoSPtr dbs);
+  void initShellByType(core::connectionTypes type);
 
-  const IServerSPtr server_;
+  const core::IServerSPtr server_;
   QAction* executeAction_;
   QAction* connectAction_;
   QAction* disConnectAction_;

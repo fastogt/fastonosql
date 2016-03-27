@@ -25,6 +25,7 @@
 #include "core/unqlite/unqlite_config.h"
 
 namespace fastonosql {
+namespace core {
 namespace unqlite {
 
 class UnqliteConnectionSettings
@@ -49,4 +50,5 @@ class UnqliteConnectionSettings
 };
 
 }  // namespace unqlite
+}  // namespace core
 }  // namespace fastonosql

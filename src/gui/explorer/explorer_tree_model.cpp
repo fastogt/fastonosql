@@ -36,7 +36,7 @@ IExplorerTreeItem::IExplorerTreeItem(TreeItem* parent)
   : TreeItem(parent) {
 }
 
-ExplorerServerItem::ExplorerServerItem(IServerSPtr server, TreeItem* parent)
+ExplorerServerItem::ExplorerServerItem(core::IServerSPtr server, TreeItem* parent)
   : IExplorerTreeItem(parent), server_(server) {
 }
 
@@ -44,7 +44,7 @@ QString ExplorerServerItem::name() const {
   return server_->name();
 }
 
-IServerSPtr ExplorerServerItem::server() const {
+core::IServerSPtr ExplorerServerItem::server() const {
   return server_;
 }
 
@@ -53,13 +53,13 @@ ExplorerServerItem::eType ExplorerServerItem::type() const {
 }
 
 void ExplorerServerItem::loadDatabases() {
-  events_info::LoadDatabasesInfoRequest req(this);
+  core::events_info::LoadDatabasesInfoRequest req(this);
   return server_->loadDatabases(req);
 }
 
-ExplorerClusterItem::ExplorerClusterItem(IClusterSPtr cluster, TreeItem* parent)
+ExplorerClusterItem::ExplorerClusterItem(core::IClusterSPtr cluster, TreeItem* parent)
   : IExplorerTreeItem(parent), cluster_(cluster) {
-  ICluster::nodes_type nodes = cluster_->nodes();
+  core::ICluster::nodes_type nodes = cluster_->nodes();
   for (size_t i = 0; i < nodes.size(); ++i) {
     ExplorerServerItem* ser = new ExplorerServerItem(nodes[i], this);
     addChildren(ser);
@@ -70,7 +70,7 @@ QString ExplorerClusterItem::name() const {
   return cluster_->name();
 }
 
-IServerSPtr ExplorerClusterItem::server() const {
+core::IServerSPtr ExplorerClusterItem::server() const {
   return cluster_->root();
 }
 
@@ -78,11 +78,11 @@ ExplorerClusterItem::eType ExplorerClusterItem::type() const {
   return eCluster;
 }
 
-IClusterSPtr ExplorerClusterItem::cluster() const {
+core::IClusterSPtr ExplorerClusterItem::cluster() const {
   return cluster_;
 }
 
-ExplorerDatabaseItem::ExplorerDatabaseItem(IDatabaseSPtr db, ExplorerServerItem* parent)
+ExplorerDatabaseItem::ExplorerDatabaseItem(core::IDatabaseSPtr db, ExplorerServerItem* parent)
   : IExplorerTreeItem(parent), db_(db) {
   DCHECK(db_);
 }
@@ -104,84 +104,84 @@ bool ExplorerDatabaseItem::isDefault() const {
 }
 
 size_t ExplorerDatabaseItem::sizeDB() const {
-  IDataBaseInfoSPtr inf = info();
+  core::IDataBaseInfoSPtr inf = info();
   return inf->sizeDB();
 }
 
 size_t ExplorerDatabaseItem::loadedSize() const {
-  IDataBaseInfoSPtr inf = info();
+  core::IDataBaseInfoSPtr inf = info();
   return inf->loadedSize();
 }
 
-IServerSPtr ExplorerDatabaseItem::server() const {
+core::IServerSPtr ExplorerDatabaseItem::server() const {
   ExplorerServerItem* serv = dynamic_cast<ExplorerServerItem*>(parent_);
   if (!serv) {
-    return IServerSPtr();
+    return core::IServerSPtr();
   }
 
   return serv->server();
 }
 
-IDatabaseSPtr ExplorerDatabaseItem::db() const {
+core::IDatabaseSPtr ExplorerDatabaseItem::db() const {
   return db_;
 }
 
 void ExplorerDatabaseItem::loadContent(const std::string& pattern, uint32_t countKeys) {
-  IDatabaseSPtr dbs = db();
+  core::IDatabaseSPtr dbs = db();
   if (dbs) {
-    events_info::LoadDatabaseContentRequest req(this, dbs->info(), pattern, countKeys);
+    core::events_info::LoadDatabaseContentRequest req(this, dbs->info(), pattern, countKeys);
     dbs->loadContent(req);
   }
 }
 
 void ExplorerDatabaseItem::setDefault() {
-  IDatabaseSPtr dbs = db();
+  core::IDatabaseSPtr dbs = db();
   if (dbs) {
-    events_info::SetDefaultDatabaseRequest req(this, dbs->info());
+    core::events_info::SetDefaultDatabaseRequest req(this, dbs->info());
     dbs->setDefault(req);
   }
 }
 
-IDataBaseInfoSPtr ExplorerDatabaseItem::info() const {
+core::IDataBaseInfoSPtr ExplorerDatabaseItem::info() const {
   return db_->info();
 }
 
-void ExplorerDatabaseItem::removeKey(const NDbKValue& key) {
-  IDatabaseSPtr dbs = db();
+void ExplorerDatabaseItem::removeKey(const core::NDbKValue& key) {
+  core::IDatabaseSPtr dbs = db();
   if (dbs) {
-    CommandKeySPtr cmd(new CommandDeleteKey(key));
-    events_info::CommandRequest req(this, dbs->info(), cmd);
+    core::CommandKeySPtr cmd(new core::CommandDeleteKey(key));
+    core::events_info::CommandRequest req(this, dbs->info(), cmd);
     dbs->executeCommand(req);
   }
 }
 
-void ExplorerDatabaseItem::loadValue(const NDbKValue& key) {
-  IDatabaseSPtr dbs = db();
+void ExplorerDatabaseItem::loadValue(const core::NDbKValue& key) {
+  core::IDatabaseSPtr dbs = db();
   if (dbs) {
-    CommandKeySPtr cmd(new CommandLoadKey(key));
-    events_info::CommandRequest req(this, dbs->info(), cmd);
+    core::CommandKeySPtr cmd(new core::CommandLoadKey(key));
+    core::events_info::CommandRequest req(this, dbs->info(), cmd);
     dbs->executeCommand(req);
   }
 }
 
-void ExplorerDatabaseItem::createKey(const NDbKValue &key) {
-  IDatabaseSPtr dbs = db();
+void ExplorerDatabaseItem::createKey(const core::NDbKValue &key) {
+  core::IDatabaseSPtr dbs = db();
   if (dbs) {
-    CommandKeySPtr cmd(new CommandCreateKey(key));
-    events_info::CommandRequest req(this, dbs->info(), cmd);
+    core::CommandKeySPtr cmd(new core::CommandCreateKey(key));
+    core::events_info::CommandRequest req(this, dbs->info(), cmd);
     dbs->executeCommand(req);
   }
 }
 
 void ExplorerDatabaseItem::removeAllKeys() {
-  IDatabaseSPtr dbs = db();
+  core::IDatabaseSPtr dbs = db();
   if (dbs) {
-    events_info::ClearDatabaseRequest req(this, dbs->info());
+    core::events_info::ClearDatabaseRequest req(this, dbs->info());
     dbs->removeAllKeys(req);
   }
 }
 
-ExplorerKeyItem::ExplorerKeyItem(const NDbKValue& key, ExplorerDatabaseItem* parent)
+ExplorerKeyItem::ExplorerKeyItem(const core::NDbKValue& key, ExplorerDatabaseItem* parent)
     : IExplorerTreeItem(parent), key_(key) {
 }
 
@@ -189,7 +189,7 @@ ExplorerDatabaseItem* ExplorerKeyItem::parent() const {
   return dynamic_cast<ExplorerDatabaseItem*>(parent_);
 }
 
-NDbKValue ExplorerKeyItem::key() const {
+core::NDbKValue ExplorerKeyItem::key() const {
   return key_;
 }
 
@@ -197,10 +197,10 @@ QString ExplorerKeyItem::name() const {
   return common::convertFromString<QString>(key_.keyString());
 }
 
-IServerSPtr ExplorerKeyItem::server() const {
+core::IServerSPtr ExplorerKeyItem::server() const {
   ExplorerDatabaseItem* db = dynamic_cast<ExplorerDatabaseItem*>(parent_);
   if (!db) {
-    return IServerSPtr();
+    return core::IServerSPtr();
   }
 
   return db->server();
@@ -243,9 +243,9 @@ QVariant ExplorerTreeModel::data(const QModelIndex& index, int role) const {
   IExplorerTreeItem::eType t = node->type();
 
   if (role == Qt::ToolTipRole) {
-    IServerSPtr server = node->server();
+    core::IServerSPtr server = node->server();
     if (t == IExplorerTreeItem::eServer && server) {
-      ServerDiscoveryInfoSPtr disc = server->discoveryInfo();
+      core::ServerDiscoveryInfoSPtr disc = server->discoveryInfo();
       if (disc) {
         QString dname = common::convertFromString<QString>(disc->name());
         QString dtype = common::convertFromString<QString>(common::convertToString(disc->type()));
@@ -257,7 +257,7 @@ QVariant ExplorerTreeModel::data(const QModelIndex& index, int role) const {
         QString sname = server->name();
         bool isCanRemote = server->isCanRemote();
         if (isCanRemote) {
-          IServerRemote* rserver = dynamic_cast<IServerRemote*>(server.get());
+          core::IServerRemote* rserver = dynamic_cast<core::IServerRemote*>(server.get());
           CHECK(rserver);
           QString stype = common::convertFromString<QString>(common::convertToString(rserver->role()));
           QString shost = common::convertFromString<QString>(common::convertToString(rserver->host()));
@@ -265,7 +265,7 @@ QVariant ExplorerTreeModel::data(const QModelIndex& index, int role) const {
                          "<b>Type:</b> %2<br/>"
                          "<b>Host:</b> %3<br/>").arg(sname).arg(stype).arg(shost);
         } else {
-          IServerLocal* lserver = dynamic_cast<IServerLocal*>(server.get());
+          core::IServerLocal* lserver = dynamic_cast<core::IServerLocal*>(server.get());
           CHECK(lserver);
           QString spath = common::convertFromString<QString>(lserver->path());
           return QString("<b>Name:</b> %1<br/>"
@@ -346,7 +346,7 @@ int ExplorerTreeModel::columnCount(const QModelIndex& parent) const {
   return ExplorerServerItem::eCountColumns;
 }
 
-void ExplorerTreeModel::addCluster(IClusterSPtr cluster) {
+void ExplorerTreeModel::addCluster(core::IClusterSPtr cluster) {
   ExplorerClusterItem* cl = findClusterItem(cluster);
   if (!cl) {
     fasto::qt::gui::TreeItem* parent = dynamic_cast<fasto::qt::gui::TreeItem*>(root_);
@@ -360,7 +360,7 @@ void ExplorerTreeModel::addCluster(IClusterSPtr cluster) {
   }
 }
 
-void ExplorerTreeModel::removeCluster(IClusterSPtr cluster) {
+void ExplorerTreeModel::removeCluster(core::IClusterSPtr cluster) {
   fasto::qt::gui::TreeItem* par = dynamic_cast<fasto::qt::gui::TreeItem*>(root_);
   if (!par) {
     NOTREACHED();
@@ -373,7 +373,7 @@ void ExplorerTreeModel::removeCluster(IClusterSPtr cluster) {
   }
 }
 
-void ExplorerTreeModel::addServer(IServerSPtr server) {
+void ExplorerTreeModel::addServer(core::IServerSPtr server) {
   if (!server) {
     return;
   }
@@ -391,7 +391,7 @@ void ExplorerTreeModel::addServer(IServerSPtr server) {
   }
 }
 
-void ExplorerTreeModel::removeServer(IServerSPtr server) {
+void ExplorerTreeModel::removeServer(core::IServerSPtr server) {
   fasto::qt::gui::TreeItem* par = dynamic_cast<fasto::qt::gui::TreeItem*>(root_);
   if (!par) {
     DNOTREACHED();
@@ -404,7 +404,7 @@ void ExplorerTreeModel::removeServer(IServerSPtr server) {
   }
 }
 
-void ExplorerTreeModel::addDatabase(IServer* server, IDataBaseInfoSPtr db) {
+void ExplorerTreeModel::addDatabase(core::IServer* server, core::IDataBaseInfoSPtr db) {
   ExplorerServerItem* parent = findServerItem(server);
   if (!parent) {
     DNOTREACHED();
@@ -419,7 +419,7 @@ void ExplorerTreeModel::addDatabase(IServer* server, IDataBaseInfoSPtr db) {
   }
 }
 
-void ExplorerTreeModel::removeDatabase(IServer* server, IDataBaseInfoSPtr db) {
+void ExplorerTreeModel::removeDatabase(core::IServer* server, core::IDataBaseInfoSPtr db) {
   ExplorerServerItem* parent = findServerItem(server);
   if (!parent) {
     DNOTREACHED();
@@ -433,7 +433,7 @@ void ExplorerTreeModel::removeDatabase(IServer* server, IDataBaseInfoSPtr db) {
   }
 }
 
-void ExplorerTreeModel::setDefaultDb(IServer* server, IDataBaseInfoSPtr db) {
+void ExplorerTreeModel::setDefaultDb(core::IServer* server, core::IDataBaseInfoSPtr db) {
   ExplorerServerItem* parent = findServerItem(server);
   if (!parent) {
     DNOTREACHED();
@@ -451,7 +451,7 @@ void ExplorerTreeModel::setDefaultDb(IServer* server, IDataBaseInfoSPtr db) {
   updateItem(parent_index, dbs_last_index);
 }
 
-void ExplorerTreeModel::updateDb(IServer* server, IDataBaseInfoSPtr db) {
+void ExplorerTreeModel::updateDb(core::IServer* server, core::IDataBaseInfoSPtr db) {
   ExplorerServerItem* parent = findServerItem(server);
   if (!parent) {
     DNOTREACHED();
@@ -470,7 +470,7 @@ void ExplorerTreeModel::updateDb(IServer* server, IDataBaseInfoSPtr db) {
   updateItem(dbs_index1, dbs_index2);
 }
 
-void ExplorerTreeModel::addKey(IServer* server, IDataBaseInfoSPtr db, const NDbKValue &dbv) {
+void ExplorerTreeModel::addKey(core::IServer* server, core::IDataBaseInfoSPtr db, const core::NDbKValue &dbv) {
   ExplorerServerItem* parent = findServerItem(server);
   if (!parent) {
     return;
@@ -489,7 +489,7 @@ void ExplorerTreeModel::addKey(IServer* server, IDataBaseInfoSPtr db, const NDbK
   }
 }
 
-void ExplorerTreeModel::removeKey(IServer* server, IDataBaseInfoSPtr db, const NDbKValue &key) {
+void ExplorerTreeModel::removeKey(core::IServer* server, core::IDataBaseInfoSPtr db, const core::NDbKValue &key) {
   ExplorerServerItem* parent = findServerItem(server);
   if (!parent) {
     return;
@@ -507,7 +507,7 @@ void ExplorerTreeModel::removeKey(IServer* server, IDataBaseInfoSPtr db, const N
   }
 }
 
-void ExplorerTreeModel::removeAllKeys(IServer* server, IDataBaseInfoSPtr db) {
+void ExplorerTreeModel::removeAllKeys(core::IServer* server, core::IDataBaseInfoSPtr db) {
   ExplorerServerItem* parent = findServerItem(server);
   if (!parent) {
     return;
@@ -522,7 +522,7 @@ void ExplorerTreeModel::removeAllKeys(IServer* server, IDataBaseInfoSPtr db) {
   removeAllItems(parentdb);
 }
 
-ExplorerClusterItem* ExplorerTreeModel::findClusterItem(IClusterSPtr cl) {
+ExplorerClusterItem* ExplorerTreeModel::findClusterItem(core::IClusterSPtr cl) {
   fasto::qt::gui::TreeItem* parent = dynamic_cast<fasto::qt::gui::TreeItem*>(root_);
   if (!parent) {
     DNOTREACHED();
@@ -538,7 +538,7 @@ ExplorerClusterItem* ExplorerTreeModel::findClusterItem(IClusterSPtr cl) {
   return nullptr;
 }
 
-ExplorerServerItem* ExplorerTreeModel::findServerItem(IServer* server) const {
+ExplorerServerItem* ExplorerTreeModel::findServerItem(core::IServer* server) const {
   fasto::qt::gui::TreeItem* parent = dynamic_cast<fasto::qt::gui::TreeItem*>(root_);
   if (!parent) {
     DNOTREACHED();
@@ -569,7 +569,7 @@ ExplorerServerItem* ExplorerTreeModel::findServerItem(IServer* server) const {
 }
 
 ExplorerDatabaseItem* ExplorerTreeModel::findDatabaseItem(ExplorerServerItem* server,
-                                                          IDataBaseInfoSPtr db) const {
+                                                          core::IDataBaseInfoSPtr db) const {
   if (!server) {
     return nullptr;
   }
@@ -581,7 +581,7 @@ ExplorerDatabaseItem* ExplorerTreeModel::findDatabaseItem(ExplorerServerItem* se
       continue;
     }
 
-    IDatabaseSPtr inf = item->db();
+    core::IDatabaseSPtr inf = item->db();
     if (inf && inf->name() == db->name()) {
       return item;
     }
@@ -591,7 +591,7 @@ ExplorerDatabaseItem* ExplorerTreeModel::findDatabaseItem(ExplorerServerItem* se
 }
 
 ExplorerKeyItem* ExplorerTreeModel::findKeyItem(ExplorerDatabaseItem* db,
-                                                const NDbKValue &key) const {
+                                                const core::NDbKValue &key) const {
   if (!db) {
     return nullptr;
   }

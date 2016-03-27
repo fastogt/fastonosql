@@ -25,6 +25,7 @@
 #include "core/lmdb/lmdb_raw.h"
 
 namespace fastonosql {
+namespace core {
 namespace lmdb {
 
 class LmdbDriver
@@ -73,4 +74,5 @@ class LmdbDriver
 };
 
 }  // namespace lmdb
+}  // namespace core
 }  // namespace fastonosql

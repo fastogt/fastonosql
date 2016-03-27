@@ -36,6 +36,7 @@ class File;
 }
 
 namespace fastonosql {
+namespace core {
 
 class IDriver
   : public QObject, private IFastoObjectObserver {
@@ -80,7 +81,7 @@ class IDriver
   void notifyProgress(QObject* reciver, int value);
 
  protected:
-  IDriver(IConnectionSettingsBaseSPtr settings);
+  explicit IDriver(IConnectionSettingsBaseSPtr settings);
 
   // handle server events
   virtual void handleConnectEvent(events::ConnectRequestEvent* ev) = 0;
@@ -173,7 +174,7 @@ class IDriverLocal
   virtual std::string path() const = 0;
 
  protected:
-  IDriverLocal(IConnectionSettingsBaseSPtr settings);
+  explicit IDriverLocal(IConnectionSettingsBaseSPtr settings);
 };
 
 class IDriverRemote
@@ -183,7 +184,8 @@ class IDriverRemote
   virtual common::net::hostAndPort host() const = 0;
 
  protected:
-  IDriverRemote(IConnectionSettingsBaseSPtr settings);
+  explicit IDriverRemote(IConnectionSettingsBaseSPtr settings);
 };
 
+}  // namespace core
 }  // namespace fastonosql

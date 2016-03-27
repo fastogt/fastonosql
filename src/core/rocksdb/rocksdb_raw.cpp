@@ -33,6 +33,7 @@
                                 "--------------------------------------\n"
 
 namespace fastonosql {
+namespace core {
 namespace rocksdb {
 
 namespace {
@@ -447,4 +448,5 @@ common::Error flushdb(CommandHandler* handler, int argc, char** argv, FastoObjec
 }
 
 }  // namespace rocksdb
+}  // namespace core
 }  // namespace fastonosql

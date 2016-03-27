@@ -27,6 +27,7 @@
 #include "core/rocksdb/rocksdb_infos.h"
 
 namespace fastonosql {
+namespace core {
 namespace rocksdb {
 
 common::Error testConnection(RocksdbConnectionSettings* settings);
@@ -111,4 +112,5 @@ static const std::vector<CommandHolder> rocksdbCommands = {
 };
 
 }  // namespace rocksdb
+}  // namespace core
 }  // namespace fastonosql

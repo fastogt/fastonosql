@@ -21,6 +21,7 @@
 #include "core/events/events_info.h"
 
 namespace fastonosql {
+namespace core {
 namespace events {
 
 typedef common::utils_qt::Event<events_info::ConnectInfoRequest, QEvent::User + 1> ConnectRequestEvent;
@@ -92,4 +93,5 @@ typedef common::utils_qt::Event<events_info::ChangeMaxConnectionResponce, QEvent
 typedef common::utils_qt::Event<events_info::ProgressInfoResponce, QEvent::User + 100> ProgressResponceEvent;
 
 }  // namespace events
+}  // namespace core
 }  // namespace fastonosql

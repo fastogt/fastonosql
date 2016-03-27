@@ -27,6 +27,7 @@
 #define MARKER "\r\n"
 
 namespace fastonosql {
+namespace core {
 namespace {
 
 const std::vector<Field> lmdbCommonFields = {
@@ -180,4 +181,5 @@ bool LmdbCommand::isReadOnly() const {
 }
 
 }  // namespace lmdb
+}  // namespace core
 }  // namespace fastonosql

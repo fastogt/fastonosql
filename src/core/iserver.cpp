@@ -30,6 +30,7 @@
 #include "core/idriver.h"
 
 namespace fastonosql {
+namespace core {
 
 IServerBase::~IServerBase() {
 }
@@ -567,4 +568,5 @@ IServerRemote::IServerRemote(IDriver* drv)
   CHECK(isRemoteType(drv->type()));
 }
 
+}  // namespace core
 }  // namespace fastonosql

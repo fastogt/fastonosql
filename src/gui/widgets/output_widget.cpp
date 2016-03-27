@@ -48,33 +48,33 @@ namespace {
 
 FastoCommonItem* createItem(fasto::qt::gui::TreeItem* parent, const std::string& key,
                             bool readOnly, FastoObject* item) {
-  NValue val = common::make_value(item->value()->deepCopy());
-  NDbKValue nkey(NKey(key), val);
+  core::NValue val = common::make_value(item->value()->deepCopy());
+  core::NDbKValue nkey(core::NKey(key), val);
   return new FastoCommonItem(nkey, item->delemitr(), readOnly, parent, item);
 }
 
 }
 
-OutputWidget::OutputWidget(IServerSPtr server, QWidget* parent)
+OutputWidget::OutputWidget(core::IServerSPtr server, QWidget* parent)
   : QWidget(parent), server_(server) {
   CHECK(server_);
 
   commonModel_ = new FastoCommonModel(this);
   VERIFY(connect(commonModel_, &FastoCommonModel::changedValue, this,
                  &OutputWidget::executeCommand, Qt::DirectConnection));
-  VERIFY(connect(server_.get(), &IServer::startedExecuteCommand, this,
+  VERIFY(connect(server_.get(), &core::IServer::startedExecuteCommand, this,
                  &OutputWidget::startExecuteCommand, Qt::DirectConnection));
-  VERIFY(connect(server_.get(), &IServer::finishedExecuteCommand, this,
+  VERIFY(connect(server_.get(), &core::IServer::finishedExecuteCommand, this,
                  &OutputWidget::finishExecuteCommand, Qt::DirectConnection));
 
-  VERIFY(connect(server_.get(), &IServer::rootCreated,
+  VERIFY(connect(server_.get(), &core::IServer::rootCreated,
                  this, &OutputWidget::rootCreate, Qt::DirectConnection));
-  VERIFY(connect(server_.get(), &IServer::rootCompleated,
+  VERIFY(connect(server_.get(), &core::IServer::rootCompleated,
                  this, &OutputWidget::rootCompleate, Qt::DirectConnection));
 
-  VERIFY(connect(server_.get(), &IServer::addedChild,
+  VERIFY(connect(server_.get(), &core::IServer::addedChild,
                  this, &OutputWidget::addChild, Qt::DirectConnection));
-  VERIFY(connect(server_.get(), &IServer::itemUpdated,
+  VERIFY(connect(server_.get(), &core::IServer::itemUpdated,
                  this, &OutputWidget::itemUpdate, Qt::DirectConnection));
 
   treeView_ = new FastoTreeView;
@@ -118,20 +118,20 @@ OutputWidget::OutputWidget(IServerSPtr server, QWidget* parent)
   syncWithSettings();
 }
 
-void OutputWidget::rootCreate(const events_info::CommandRootCreatedInfo& res) {
+void OutputWidget::rootCreate(const core::events_info::CommandRootCreatedInfo& res) {
   FastoObject* rootObj = res.root.get();
   fastonosql::gui::FastoCommonItem* root = createItem(nullptr, std::string(), true, rootObj);
   commonModel_->setRoot(root);
 }
 
-void OutputWidget::rootCompleate(const events_info::CommandRootCompleatedInfo& res) {
+void OutputWidget::rootCompleate(const core::events_info::CommandRootCompleatedInfo& res) {
   updateTimeLabel(res);
 }
 
-void OutputWidget::startExecuteCommand(const events_info::CommandRequest& req) {
+void OutputWidget::startExecuteCommand(const core::events_info::CommandRequest& req) {
 }
 
-void OutputWidget::finishExecuteCommand(const events_info::CommandResponce& res) {
+void OutputWidget::finishExecuteCommand(const core::events_info::CommandResponce& res) {
   common::Error er = res.errorInfo();
   if (er && er->isError()) {
     return;
@@ -143,9 +143,9 @@ void OutputWidget::finishExecuteCommand(const events_info::CommandResponce& res)
     return;
   }
 
-  CommandKeySPtr key = res.cmd;
-  if (key->type() == CommandKey::C_CREATE) {
-    NDbKValue dbv = key->key();
+  core::CommandKeySPtr key = res.cmd;
+  if (key->type() == core::CommandKey::C_CREATE) {
+    core::NDbKValue dbv = key->key();
     commonModel_->changeValue(dbv);
   }
 }
@@ -220,21 +220,21 @@ void OutputWidget::itemUpdate(FastoObject* item, common::Value* newValue) {
     return;
   }
 
-  fastonosql::gui::FastoCommonItem* it = common::utils_qt::item<fastonosql::gui::FastoCommonItem*>(index);
+  FastoCommonItem* it = common::utils_qt::item<FastoCommonItem*>(index);
   if (!it) {
     return;
   }
 
   DCHECK(item->value() == newValue);
 
-  NValue nval = common::make_value(newValue->deepCopy());
+  core::NValue nval = common::make_value(newValue->deepCopy());
   it->setValue(nval);
   commonModel_->updateItem(index.parent(), index);
 }
 
-void OutputWidget::executeCommand(CommandKeySPtr cmd) {
+void OutputWidget::executeCommand(core::CommandKeySPtr cmd) {
   if (server_) {
-    events_info::CommandRequest req(this, server_->currentDatabaseInfo(), cmd);
+    core::events_info::CommandRequest req(this, server_->currentDatabaseInfo(), cmd);
     server_->executeCommand(req);
   }
 }
@@ -258,7 +258,7 @@ void OutputWidget::setTextView() {
 }
 
 void OutputWidget::syncWithSettings() {
-  supportedViews curV = SettingsManager::instance().defaultView();
+  supportedViews curV = core::SettingsManager::instance().defaultView();
   if (curV == Tree) {
     setTreeView();
   } else if (curV == Table) {
@@ -268,7 +268,7 @@ void OutputWidget::syncWithSettings() {
   }
 }
 
-void OutputWidget::updateTimeLabel(const events_info::EventInfoBase& evinfo) {
+void OutputWidget::updateTimeLabel(const core::events_info::EventInfoBase& evinfo) {
   timeLabel_->setText(QString("%1 msec").arg(evinfo.elapsedTime()));
 }
 

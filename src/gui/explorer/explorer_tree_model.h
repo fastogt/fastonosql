@@ -45,41 +45,41 @@ struct IExplorerTreeItem
   explicit IExplorerTreeItem(TreeItem* parent);
 
   virtual QString name() const = 0;
-  virtual IServerSPtr server() const = 0;
+  virtual core::IServerSPtr server() const = 0;
   virtual eType type() const = 0;
 };
 
 struct ExplorerServerItem
   : public IExplorerTreeItem {
-  ExplorerServerItem(IServerSPtr server, TreeItem* parent);
+  ExplorerServerItem(core::IServerSPtr server, TreeItem* parent);
 
   virtual QString name() const;
-  virtual IServerSPtr server() const;
+  virtual core::IServerSPtr server() const;
   virtual eType type() const;
 
   void loadDatabases();
 
  private:
-  const IServerSPtr server_;
+  const core::IServerSPtr server_;
 };
 
 struct ExplorerClusterItem
   : public IExplorerTreeItem {
-  ExplorerClusterItem(IClusterSPtr cluster, TreeItem* parent);
+  ExplorerClusterItem(core::IClusterSPtr cluster, TreeItem* parent);
 
   virtual QString name() const;
-  virtual IServerSPtr server() const;
+  virtual core::IServerSPtr server() const;
   virtual eType type() const;
 
-  IClusterSPtr cluster() const;
+  core::IClusterSPtr cluster() const;
 
  private:
-  const IClusterSPtr cluster_;
+  const core::IClusterSPtr cluster_;
 };
 
 struct ExplorerDatabaseItem
   : public IExplorerTreeItem {
-  ExplorerDatabaseItem(IDatabaseSPtr db, ExplorerServerItem* parent);
+  ExplorerDatabaseItem(core::IDatabaseSPtr db, ExplorerServerItem* parent);
 
   ExplorerServerItem* parent() const;
 
@@ -89,40 +89,40 @@ struct ExplorerDatabaseItem
   size_t sizeDB() const;
   size_t loadedSize() const;
 
-  virtual IServerSPtr server() const;
-  IDatabaseSPtr db() const;
+  virtual core::IServerSPtr server() const;
+  core::IDatabaseSPtr db() const;
 
   void loadContent(const std::string& pattern, uint32_t countKeys);
   void setDefault();
 
-  IDataBaseInfoSPtr info() const;
+  core::IDataBaseInfoSPtr info() const;
 
-  void removeKey(const NDbKValue& key);
-  void loadValue(const NDbKValue& key);
-  void createKey(const NDbKValue& key);
+  void removeKey(const core::NDbKValue& key);
+  void loadValue(const core::NDbKValue& key);
+  void createKey(const core::NDbKValue& key);
 
   void removeAllKeys();
  private:
-  const IDatabaseSPtr db_;
+  const core::IDatabaseSPtr db_;
 };
 
 struct ExplorerKeyItem
   : public IExplorerTreeItem {
-  ExplorerKeyItem(const NDbKValue& key, ExplorerDatabaseItem* parent);
+  ExplorerKeyItem(const core::NDbKValue& key, ExplorerDatabaseItem* parent);
 
   ExplorerDatabaseItem* parent() const;
 
-  NDbKValue key() const;
+  core::NDbKValue key() const;
 
   virtual QString name() const;
-  virtual IServerSPtr server() const;
+  virtual core::IServerSPtr server() const;
   virtual eType type() const;
 
   void removeFromDb();
   void loadValueFromDb();
 
  private:
-  NDbKValue key_;
+  core::NDbKValue key_;
 };
 
 class ExplorerTreeModel
@@ -137,26 +137,26 @@ class ExplorerTreeModel
                               int role = Qt::DisplayRole) const;
   virtual int columnCount(const QModelIndex &parent) const;
 
-  void addCluster(IClusterSPtr cluster);
-  void removeCluster(IClusterSPtr cluster);
+  void addCluster(core::IClusterSPtr cluster);
+  void removeCluster(core::IClusterSPtr cluster);
 
-  void addServer(IServerSPtr server);
-  void removeServer(IServerSPtr server);
+  void addServer(core::IServerSPtr server);
+  void removeServer(core::IServerSPtr server);
 
-  void addDatabase(IServer* server, IDataBaseInfoSPtr db);
-  void removeDatabase(IServer* server, IDataBaseInfoSPtr db);
-  void setDefaultDb(IServer* server, IDataBaseInfoSPtr db);
-  void updateDb(IServer* server, IDataBaseInfoSPtr db);
+  void addDatabase(core::IServer* server, core::IDataBaseInfoSPtr db);
+  void removeDatabase(core::IServer* server, core::IDataBaseInfoSPtr db);
+  void setDefaultDb(core::IServer* server, core::IDataBaseInfoSPtr db);
+  void updateDb(core::IServer* server, core::IDataBaseInfoSPtr db);
 
-  void addKey(IServer* server, IDataBaseInfoSPtr db, const NDbKValue &dbv);
-  void removeKey(IServer* server, IDataBaseInfoSPtr db, const NDbKValue &key);
-  void removeAllKeys(IServer* server, IDataBaseInfoSPtr db);
+  void addKey(core::IServer* server, core::IDataBaseInfoSPtr db, const core::NDbKValue &dbv);
+  void removeKey(core::IServer* server, core::IDataBaseInfoSPtr db, const core::NDbKValue &key);
+  void removeAllKeys(core::IServer* server, core::IDataBaseInfoSPtr db);
 
  private:
-  ExplorerClusterItem* findClusterItem(IClusterSPtr cl);
-  ExplorerServerItem* findServerItem(IServer* server) const;
-  ExplorerDatabaseItem* findDatabaseItem(ExplorerServerItem* server, IDataBaseInfoSPtr db) const;
-  ExplorerKeyItem* findKeyItem(ExplorerDatabaseItem* db, const NDbKValue &key) const;
+  ExplorerClusterItem* findClusterItem(core::IClusterSPtr cl);
+  ExplorerServerItem* findServerItem(core::IServer* server) const;
+  ExplorerDatabaseItem* findDatabaseItem(ExplorerServerItem* server, core::IDataBaseInfoSPtr db) const;
+  ExplorerKeyItem* findKeyItem(ExplorerDatabaseItem* db, const core::NDbKValue &key) const;
 };
 
 }  // namespace gui

@@ -135,11 +135,11 @@ MainWindow::MainWindow()
   // grabGesture(Qt::PanGesture);  // drag and drop
   // grabGesture(Qt::PinchGesture);  // zoom
 #endif
-  QString lang = SettingsManager::instance().currentLanguage();
+  QString lang = core::SettingsManager::instance().currentLanguage();
   QString newLang = fasto::qt::translations::applyLanguage(lang);
-  SettingsManager::instance().setCurrentLanguage(newLang);
+  core::SettingsManager::instance().setCurrentLanguage(newLang);
 
-  QString style = SettingsManager::instance().currentStyle();
+  QString style = core::SettingsManager::instance().currentStyle();
   fasto::qt::gui::applyStyle(style);
 
   setWindowTitle(PROJECT_NAME_TITLE " " PROJECT_VERSION);
@@ -247,9 +247,9 @@ MainWindow::MainWindow()
   exp_ = new ExplorerTreeView(this);
   VERIFY(connect(exp_, &ExplorerTreeView::openedConsole, mainW, &MainWidget::openConsole));
   VERIFY(connect(exp_, &ExplorerTreeView::closeServer,
-                 &ServersManager::instance(), &ServersManager::closeServer));
+                 &core::ServersManager::instance(), &core::ServersManager::closeServer));
   VERIFY(connect(exp_, &ExplorerTreeView::closeCluster,
-                 &ServersManager::instance(), &ServersManager::closeCluster));
+                 &core::ServersManager::instance(), &core::ServersManager::closeCluster));
   expDock_ = new QDockWidget(this);
   explorerAction_ = expDock_->toggleViewAction();
   explorerAction_->setShortcut(explorerKeySequence);
@@ -266,7 +266,7 @@ MainWindow::MainWindow()
   LogTabWidget* log = new LogTabWidget(this);
   VERIFY(connect(&fasto::qt::Logger::instance(), &fasto::qt::Logger::printed,
                  log, &LogTabWidget::addLogMessage));
-  VERIFY(connect(&CommandLogger::instance(), &CommandLogger::printed,
+  VERIFY(connect(&core::CommandLogger::instance(), &core::CommandLogger::printed,
                  log, &LogTabWidget::addCommand));
   logDock_ = new QDockWidget(this);
   logsAction_ = logDock_->toggleViewAction();
@@ -288,7 +288,7 @@ MainWindow::MainWindow()
 }
 
 MainWindow::~MainWindow() {
-  ServersManager::instance().clear();
+  core::ServersManager::instance().clear();
 }
 
 void MainWindow::changeEvent(QEvent* ev) {
@@ -301,7 +301,7 @@ void MainWindow::changeEvent(QEvent* ev) {
 
 void MainWindow::showEvent(QShowEvent* ev) {
   QMainWindow::showEvent(ev);
-  bool isA = SettingsManager::instance().autoCheckUpdates();
+  bool isA = core::SettingsManager::instance().autoCheckUpdates();
   if (isA && !isCheckedInSession_) {
     isCheckedInSession_ = true;
     checkUpdate();
@@ -312,9 +312,9 @@ void MainWindow::open() {
   ConnectionsDialog dlg(this);
   int result = dlg.exec();
   if (result == QDialog::Accepted) {
-    if (IConnectionSettingsBaseSPtr con = dlg.selectedConnection()) {
+    if (core::IConnectionSettingsBaseSPtr con = dlg.selectedConnection()) {
       createServer(con);
-    } else if (IClusterSettingsBaseSPtr clus = dlg.selectedCluster()) {
+    } else if (core::IClusterSettingsBaseSPtr clus = dlg.selectedCluster()) {
       createCluster(clus);
     }
   }
@@ -369,9 +369,9 @@ void MainWindow::openRecentConnection() {
 
   QString rcon = action->text();
   std::string srcon = common::convertToString(rcon);
-  SettingsManager::ConnectionSettingsContainerType conns = SettingsManager::instance().connections();
+  core::SettingsManager::ConnectionSettingsContainerType conns = core::SettingsManager::instance().connections();
   for (auto it = conns.begin(); it != conns.end(); ++it) {
-    IConnectionSettingsBaseSPtr con = *it;
+    core::IConnectionSettingsBaseSPtr con = *it;
     if (con && con->name() == srcon) {
       createServer(con);
       return;
@@ -380,27 +380,27 @@ void MainWindow::openRecentConnection() {
 }
 
 void MainWindow::loadConnection() {
-  QString standardIni = common::convertFromString<QString>(SettingsManager::settingsFilePath());
+  QString standardIni = common::convertFromString<QString>(core::SettingsManager::settingsFilePath());
   QString filepathR = QFileDialog::getOpenFileName(this, tr("Select settings file"),
                                                    standardIni, tr("Settings files (*.ini)"));
   if (filepathR.isNull()) {
     return;
   }
 
-  SettingsManager::instance().reloadFromPath(common::convertToString(filepathR), false);
+  core::SettingsManager::instance().reloadFromPath(common::convertToString(filepathR), false);
   QMessageBox::information(this, translations::trInfo, trSettingsLoadedS);
 }
 
 void MainWindow::importConnection() {
   using namespace translations;
   QString filepathR = QFileDialog::getOpenFileName(this, tr("Select encrypted settings file"),
-                                                   SettingsManager::settingsDirPath(),
+                                                   core::SettingsManager::settingsDirPath(),
                                                    tr("Encrypted settings files (*.cini)"));
   if (filepathR.isNull()) {
     return;
   }
 
-  std::string tmp = SettingsManager::settingsFilePath() + ".tmp";
+  std::string tmp = core::SettingsManager::settingsFilePath() + ".tmp";
 
   common::file_system::Path wp(tmp);
   common::file_system::File writeFile(wp);
@@ -457,7 +457,7 @@ void MainWindow::importConnection() {
   }
 
   writeFile.close();
-  SettingsManager::instance().reloadFromPath(tmp, false);
+  core::SettingsManager::instance().reloadFromPath(tmp, false);
   common::Error err = common::file_system::remove_file(tmp);
   if (err && err->isError()) {
     DNOTREACHED();
@@ -468,7 +468,7 @@ void MainWindow::importConnection() {
 void MainWindow::exportConnection() {
   using namespace translations;
   QString filepathW = QFileDialog::getSaveFileName(this, tr("Select file to save settings"),
-                                                   SettingsManager::settingsDirPath(),
+                                                   core::SettingsManager::settingsDirPath(),
                                                    tr("Settings files (*.cini)"));
   if (filepathW.isNull()) {
     return;
@@ -482,7 +482,7 @@ void MainWindow::exportConnection() {
     return;
   }
 
-  common::file_system::Path rp(SettingsManager::settingsFilePath());
+  common::file_system::Path rp(core::SettingsManager::settingsFilePath());
   common::file_system::File readFile(rp);
   bool openedr = readFile.open("rb");
   if (!openedr) {
@@ -677,7 +677,7 @@ void MainWindow::retranslateUi() {
 }
 
 void MainWindow::updateRecentConnectionActions() {
-  QStringList connections = SettingsManager::instance().recentConnections();
+  QStringList connections = core::SettingsManager::instance().recentConnections();
 
   int numRecentFiles = qMin(connections.size(), static_cast<int>(max_recent_connections));
 
@@ -697,22 +697,22 @@ void MainWindow::updateRecentConnectionActions() {
 }
 
 void MainWindow::clearRecentConnectionsMenu() {
-  SettingsManager::instance().clearRConnections();
+  core::SettingsManager::instance().clearRConnections();
   updateRecentConnectionActions();
 }
 
-void MainWindow::createServer(IConnectionSettingsBaseSPtr settings) {
+void MainWindow::createServer(core::IConnectionSettingsBaseSPtr settings) {
   if (!settings) {
     return;
   }
 
   QString rcon = common::convertFromString<QString>(settings->name());
-  SettingsManager::instance().removeRConnection(rcon);
-  IServerSPtr server = ServersManager::instance().createServer(settings);
+  core::SettingsManager::instance().removeRConnection(rcon);
+  core::IServerSPtr server = core::ServersManager::instance().createServer(settings);
   exp_->addServer(server);
-  SettingsManager::instance().addRConnection(rcon);
+  core::SettingsManager::instance().addRConnection(rcon);
   updateRecentConnectionActions();
-  if (SettingsManager::instance().autoOpenConsole()) {
+  if (core::SettingsManager::instance().autoOpenConsole()) {
     MainWidget* mwidg = qobject_cast<MainWidget*>(centralWidget());
     if (mwidg) {
       mwidg->openConsole(server, "");
@@ -720,18 +720,18 @@ void MainWindow::createServer(IConnectionSettingsBaseSPtr settings) {
   }
 }
 
-void MainWindow::createCluster(IClusterSettingsBaseSPtr settings) {
+void MainWindow::createCluster(core::IClusterSettingsBaseSPtr settings) {
   if (!settings) {
     return;
   }
 
-  IClusterSPtr cl = ServersManager::instance().createCluster(settings);
+  core::IClusterSPtr cl = core::ServersManager::instance().createCluster(settings);
   if (!cl) {
     return;
   }
 
   exp_->addCluster(cl);
-  if (SettingsManager::instance().autoOpenConsole()) {
+  if (core::SettingsManager::instance().autoOpenConsole()) {
     MainWidget* mwidg = qobject_cast<MainWidget*>(centralWidget());
     if (mwidg) {
       mwidg->openConsole(cl->root(), "");

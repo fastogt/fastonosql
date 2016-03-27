@@ -25,6 +25,7 @@
 #include "core/redis/redis_config.h"
 
 namespace fastonosql {
+namespace core {
 namespace redis {
 
 class RedisConnectionSettings
@@ -48,4 +49,5 @@ class RedisConnectionSettings
 };
 
 }  // namespace redis
+}  // namespace core
 }  // namespace fastonosql

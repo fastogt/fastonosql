@@ -27,6 +27,7 @@
 #include "fasto/qt/logger.h"
 
 namespace fastonosql {
+namespace core {
 namespace rocksdb {
 
 namespace {
@@ -65,11 +66,12 @@ RocksdbConfig::RocksdbConfig()
 }
 
 }  // namespace rocksdb
+}  // namespace core
 }  // namespace fastonosql
 
 namespace common {
 
-std::string convertToString(const fastonosql::rocksdb::RocksdbConfig& conf) {
+std::string convertToString(const fastonosql::core::rocksdb::RocksdbConfig& conf) {
   std::vector<std::string> argv = conf.args();
 
   if (conf.options.create_if_missing) {
@@ -88,8 +90,8 @@ std::string convertToString(const fastonosql::rocksdb::RocksdbConfig& conf) {
 }
 
 template<>
-fastonosql::rocksdb::RocksdbConfig convertFromString(const std::string& line) {
-  fastonosql::rocksdb::RocksdbConfig cfg;
+fastonosql::core::rocksdb::RocksdbConfig convertFromString(const std::string& line) {
+  fastonosql::core::rocksdb::RocksdbConfig cfg;
   enum { kMaxArgs = 64 };
   int argc = 0;
   char* argv[kMaxArgs] = {0};
@@ -100,7 +102,7 @@ fastonosql::rocksdb::RocksdbConfig convertFromString(const std::string& line) {
     p2 = strtok(0, " ");
   }
 
-  fastonosql::rocksdb::parseOptions(argc, argv, cfg);
+  fastonosql::core::rocksdb::parseOptions(argc, argv, cfg);
   return cfg;
 }
 

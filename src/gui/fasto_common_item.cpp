@@ -31,7 +31,7 @@
 namespace fastonosql {
 namespace gui {
 
-FastoCommonItem::FastoCommonItem(const NDbKValue& key, const std::string& delemitr, bool isReadOnly,
+FastoCommonItem::FastoCommonItem(const core::NDbKValue& key, const std::string& delemitr, bool isReadOnly,
                                  TreeItem* parent, void* internalPointer)
   : TreeItem(parent, internalPointer), key_(key), delemitr_(delemitr), read_only_(isReadOnly) {
 }
@@ -41,13 +41,13 @@ QString FastoCommonItem::key() const {
 }
 
 QString FastoCommonItem::value() const {
-  NValue nval = key_.value();
+  core::NValue nval = key_.value();
   common::Value* val = nval.get();
   std::string valstr = common::convertToString(val, delemitr_);
   return common::convertFromString<QString>(valstr);
 }
 
-void FastoCommonItem::setValue(NValue val) {
+void FastoCommonItem::setValue(core::NValue val) {
   key_.setValue(val);
 }
 

@@ -21,6 +21,7 @@
 #include <string>
 
 namespace fastonosql {
+namespace core {
 namespace redis {
 
 RedisCluster::RedisCluster(const std::string& name)
@@ -28,4 +29,5 @@ RedisCluster::RedisCluster(const std::string& name)
 }
 
 }  // namespace redis
+}  // namespace core
 }  // namespace fastonosql

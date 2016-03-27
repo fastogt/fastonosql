@@ -25,6 +25,7 @@
 #include "core/connection_confg.h"
 
 namespace fastonosql {
+namespace core {
 namespace memcached {
 
 struct MemcachedConfig
@@ -36,8 +37,9 @@ struct MemcachedConfig
 };
 
 }  // namespace memcached
+}  // namespace core
 }  // namespace fastonosql
 
 namespace common {
-  std::string convertToString(const fastonosql::memcached::MemcachedConfig& conf);
+  std::string convertToString(const fastonosql::core::memcached::MemcachedConfig& conf);
 }  // namespace common

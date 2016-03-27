@@ -33,6 +33,7 @@
 #define SET_KEY_PATTERN_2ARGS_SS "SET %s 0 0 %s"
 
 namespace fastonosql {
+namespace core {
 namespace memcached {
 
 MemcachedDriver::MemcachedDriver(IConnectionSettingsBaseSPtr settings)
@@ -334,4 +335,5 @@ IServerInfoSPtr MemcachedDriver::makeServerInfoFromString(const std::string& val
 }
 
 }  // namespace memcached
+}  // namespace core
 }  // namespace fastonosql

@@ -35,6 +35,7 @@
 #define DELETE_KEY_PATTERN_1ARGS_S "DEL %s"
 
 namespace fastonosql {
+namespace core {
 namespace lmdb {
 
 LmdbDriver::LmdbDriver(IConnectionSettingsBaseSPtr settings)
@@ -348,4 +349,5 @@ IServerInfoSPtr LmdbDriver::makeServerInfoFromString(const std::string& val) {
 }
 
 }  // namespace lmdb
+}  // namespace core
 }  // namespace fastonosql

@@ -23,6 +23,7 @@
 #include "core/icluster.h"
 
 namespace fastonosql {
+namespace core {
 namespace redis {
 
 class RedisCluster
@@ -33,4 +34,5 @@ class RedisCluster
 };
 
 }  // namespace redis
+}  // namespace core
 }  // namespace fastonosql

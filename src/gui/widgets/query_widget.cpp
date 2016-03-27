@@ -28,7 +28,7 @@
 namespace fastonosql {
 namespace gui {
 
-QueryWidget::QueryWidget(IServerSPtr server, QWidget* parent)
+QueryWidget::QueryWidget(core::IServerSPtr server, QWidget* parent)
   : QWidget(parent), server_(server) {
   shellWidget_ = new shell::BaseShellWidget(server);
   outputWidget_ = new OutputWidget(server);
@@ -57,7 +57,7 @@ QueryWidget* QueryWidget::clone(const QString& text) {
   return result;
 }
 
-connectionTypes QueryWidget::connectionType() const {
+core::connectionTypes QueryWidget::connectionType() const {
   return server_->type();
 }
 

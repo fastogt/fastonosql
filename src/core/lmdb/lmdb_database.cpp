@@ -21,14 +21,16 @@
 #include "core/iserver.h"
 
 namespace fastonosql {
+namespace core {
 namespace lmdb {
 
 LmdbDatabase::LmdbDatabase(IServerSPtr server, IDataBaseInfoSPtr info)
   : IDatabase(server, info) {
   DCHECK(server);
   DCHECK(info);
-  DCHECK(server->type() == info->type() == LMDB);
+  DCHECK(server->type() == LMDB && info->type() == LMDB);
 }
 
 }  // namespace lmdb
+}  // namespace core
 }  // namespace fastonosql

@@ -46,15 +46,15 @@ class OutputWidget
   : public QWidget {
   Q_OBJECT
  public:
-  explicit OutputWidget(IServerSPtr server, QWidget* parent = 0);
+  explicit OutputWidget(core::IServerSPtr server, QWidget* parent = 0);
 
  private Q_SLOTS:
-  void executeCommand(CommandKeySPtr cmd);
-  void startExecuteCommand(const events_info::CommandRequest& req);
-  void finishExecuteCommand(const events_info::CommandResponce& res);
+  void executeCommand(core::CommandKeySPtr cmd);
+  void startExecuteCommand(const core::events_info::CommandRequest& req);
+  void finishExecuteCommand(const core::events_info::CommandResponce& res);
 
-  void rootCreate(const events_info::CommandRootCreatedInfo& res);
-  void rootCompleate(const events_info::CommandRootCompleatedInfo& res);
+  void rootCreate(const core::events_info::CommandRootCreatedInfo& res);
+  void rootCompleate(const core::events_info::CommandRootCompleatedInfo& res);
 
   void addChild(FastoObject* child);
   void itemUpdate(FastoObject* item, common::Value* newValue);
@@ -65,7 +65,7 @@ class OutputWidget
 
  private:
   void syncWithSettings();
-  void updateTimeLabel(const events_info::EventInfoBase& evinfo);
+  void updateTimeLabel(const core::events_info::EventInfoBase& evinfo);
   fasto::qt::gui::IconLabel* timeLabel_;
   QPushButton* treeButton_;
   QPushButton* tableButton_;
@@ -75,7 +75,7 @@ class OutputWidget
   FastoTreeView* treeView_;
   FastoTableView* tableView_;
   FastoTextView* textView_;
-  const IServerSPtr server_;
+  const core::IServerSPtr server_;
 };
 
 }  // namespace gui

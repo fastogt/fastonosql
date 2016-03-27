@@ -29,6 +29,7 @@
 #include "core/connection_settings.h"
 
 namespace fastonosql {
+namespace core {
 
 class ServersManager
   : public QObject, public common::patterns::LazySingleton<ServersManager> {
@@ -58,4 +59,5 @@ class ServersManager
   servers_container_t servers_;
 };
 
+}  // namespace core
 }  // namespace fastonosql

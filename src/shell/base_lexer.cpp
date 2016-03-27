@@ -27,7 +27,7 @@ BaseQsciApi::BaseQsciApi(QsciLexer* lexer)
   : QsciAbstractAPIs(lexer), filtered_version_(UNDEFINED_SINCE) {
 }
 
-bool BaseQsciApi::canSkipCommand(const CommandInfo& info) const {
+bool BaseQsciApi::canSkipCommand(const core::CommandInfo& info) const {
   if (filtered_version_ == UNDEFINED_SINCE) {
     return false;
   }
@@ -43,7 +43,7 @@ void BaseQsciApi::setFilteredVersion(uint32_t version) {
   filtered_version_ = version;
 }
 
-BaseQsciApiCommandHolder::BaseQsciApiCommandHolder(const std::vector<CommandHolder>& commands,
+BaseQsciApiCommandHolder::BaseQsciApiCommandHolder(const std::vector<core::CommandHolder>& commands,
                                                    QsciLexer* lexer)
   : BaseQsciApi(lexer), commands_(commands) {
 
@@ -53,7 +53,7 @@ void BaseQsciApiCommandHolder::updateAutoCompletionList(const QStringList& conte
   for (QStringList::const_iterator it = context.begin(); it != context.end(); ++it) {
     QString val = *it;
     for (size_t i = 0; i < commands_.size(); ++i) {
-      CommandInfo cmd = commands_[i];
+      core::CommandInfo cmd = commands_[i];
       if (canSkipCommand(cmd)) {
         continue;
       }
@@ -71,7 +71,7 @@ QStringList BaseQsciApiCommandHolder::callTips(const QStringList& context, int c
   for (QStringList::const_iterator it = context.begin(); it != context.end(); ++it) {
     QString val = *it;
     for (size_t i = 0; i < commands_.size(); ++i) {
-      CommandInfo cmd = commands_[i];
+      core::CommandInfo cmd = commands_[i];
 
       QString jval = common::convertFromString<QString>(cmd.name);
       if (QString::compare(jval, val, Qt::CaseInsensitive) == 0) {
@@ -109,7 +109,7 @@ QColor BaseQsciLexer::defaultColor(int style) const {
   return Qt::black;
 }
 
-BaseQsciLexerCommandHolder::BaseQsciLexerCommandHolder(const std::vector<CommandHolder>& commands,
+BaseQsciLexerCommandHolder::BaseQsciLexerCommandHolder(const std::vector<core::CommandHolder>& commands,
                                                        QObject* parent)
   : BaseQsciLexer(parent), commands_(commands) {
 
@@ -118,7 +118,7 @@ BaseQsciLexerCommandHolder::BaseQsciLexerCommandHolder(const std::vector<Command
 std::vector<uint32_t> BaseQsciLexerCommandHolder::supportedVersions() const {
   std::vector<uint32_t> result;
   for (size_t i = 0; i < commands_.size(); ++i) {
-    CommandInfo cmd = commands_[i];
+    core::CommandInfo cmd = commands_[i];
 
     bool needed_insert = true;
     for (size_t j = 0; j < result.size(); ++j) {
@@ -161,7 +161,7 @@ void BaseQsciLexerCommandHolder::styleText(int start, int end) {
 
 void BaseQsciLexerCommandHolder::paintCommands(const QString& source, int start) {
   for (size_t i = 0; i < commands_.size(); ++i) {
-    CommandInfo cmd = commands_[i];
+    core::CommandInfo cmd = commands_[i];
     QString word = common::convertFromString<QString>(cmd.name);
     int index = 0;
     int begin = 0;
@@ -175,8 +175,8 @@ void BaseQsciLexerCommandHolder::paintCommands(const QString& source, int start)
   }
 }
 
-QString makeCallTip(const CommandInfo& info) {
-  std::string since_str = convertVersionNumberToReadableString(info.since);
+QString makeCallTip(const core::CommandInfo& info) {
+  std::string since_str = core::convertVersionNumberToReadableString(info.since);
   QString qsince_str = common::convertFromString<QString>(since_str);
   return QString("Arguments: %1\nSummary: %2\nSince: %3\nExample: %4")
       .arg(common::convertFromString<QString>(info.params))

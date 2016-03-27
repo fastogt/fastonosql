@@ -23,6 +23,7 @@
 #include "core/ssdb/ssdb_raw.h"
 
 namespace fastonosql {
+namespace core {
 namespace ssdb {
 
 common::Error testConnection(SsdbConnectionSettings* settings);
@@ -74,4 +75,5 @@ class SsdbDriver
 };
 
 }  // namespace ssdb
+}  // namespace core
 }  // namespace fastonosql

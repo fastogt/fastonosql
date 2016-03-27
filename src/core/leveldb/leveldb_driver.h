@@ -24,6 +24,7 @@
 #include "core/leveldb/leveldb_raw.h"
 
 namespace fastonosql {
+namespace core {
 namespace leveldb {
 
 class LeveldbDriver
@@ -72,4 +73,5 @@ class LeveldbDriver
 };
 
 }  // namespace leveldb
+}  // namespace core
 }  // namespace fastonosql

@@ -55,7 +55,7 @@ namespace {
 namespace fastonosql {
 namespace gui {
 
-ClusterDialog::ClusterDialog(QWidget* parent, IClusterSettingsBase* connection)
+ClusterDialog::ClusterDialog(QWidget* parent, core::IClusterSettingsBase* connection)
   : QDialog(parent), cluster_connection_(connection) {
   setWindowIcon(GuiFactory::instance().serverIcon());
   setWindowFlags(windowFlags() & ~Qt::WindowContextHelpButtonHint);  // Remove help button (?)
@@ -68,8 +68,8 @@ ClusterDialog::ClusterDialog(QWidget* parent, IClusterSettingsBase* connection)
   connectionName_->setText(conName);
   typeConnection_ = new QComboBox;
 
-  for (int i = 0; i < SIZEOFMASS(connnectionType); ++i) {
-    connectionTypes ct = static_cast<connectionTypes>(i);
+  for (size_t i = 0; i < SIZEOFMASS(core::connnectionType); ++i) {
+    core::connectionTypes ct = static_cast<core::connectionTypes>(i);
     std::string str = common::convertToString(ct);
     typeConnection_->addItem(GuiFactory::instance().icon(ct),
                              common::convertFromString<QString>(str), i);
@@ -118,10 +118,10 @@ ClusterDialog::ClusterDialog(QWidget* parent, IClusterSettingsBase* connection)
   VERIFY(connect(setDefault_, &QAction::triggered, this, &ClusterDialog::setStartNode));
 
   if (cluster_connection_) {
-    IClusterSettingsBase::cluster_connection_type clusters = cluster_connection_->nodes();
-    for (IClusterSettingsBase::cluster_connection_type::const_iterator it = clusters.begin();
+    core::IClusterSettingsBase::cluster_connection_type clusters = cluster_connection_->nodes();
+    for (core::IClusterSettingsBase::cluster_connection_type::const_iterator it = clusters.begin();
         it != clusters.end(); ++it) {
-      IConnectionSettingsBaseSPtr serv = (*it);
+      core::IConnectionSettingsBaseSPtr serv = (*it);
       addConnection(serv);
     }
   }
@@ -192,7 +192,7 @@ ClusterDialog::ClusterDialog(QWidget* parent, IClusterSettingsBase* connection)
   retranslateUi();
 }
 
-IClusterSettingsBaseSPtr ClusterDialog::connection() const {
+core::IClusterSettingsBaseSPtr ClusterDialog::connection() const {
   return cluster_connection_;
 }
 
@@ -204,8 +204,8 @@ void ClusterDialog::accept() {
 
 void ClusterDialog::typeConnectionChange(int index) {
   QVariant var = typeConnection_->itemData(index);
-  connectionTypes currentType = (connectionTypes)qvariant_cast<unsigned char>(var);
-  bool isValidType = currentType == REDIS;
+  core::connectionTypes currentType = (core::connectionTypes)qvariant_cast<unsigned char>(var);
+  bool isValidType = currentType == core::REDIS;
   connectionName_->setEnabled(isValidType);
   buttonBox_->button(QDialogButtonBox::Save)->setEnabled(isValidType);
   savebar_->setEnabled(isValidType);
@@ -245,7 +245,7 @@ void ClusterDialog::discoveryCluster() {
   DiscoveryDiagnosticDialog diag(this, currentItem->connection(), cluster_connection_);
   int result = diag.exec();
   if (result == QDialog::Accepted) {
-    std::vector<IConnectionSettingsBaseSPtr> conns = diag.selectedConnections();
+    std::vector<core::IConnectionSettingsBaseSPtr> conns = diag.selectedConnections();
     for (size_t i = 0; i < conns.size(); ++i) {
       addConnection(conns[i]);
     }
@@ -282,17 +282,17 @@ void ClusterDialog::setStartNode() {
     return;
   }
 
-  IConnectionSettingsBaseSPtr tc = top->connection();
-  IConnectionSettingsBaseSPtr cc = currentItem->connection();
+  core::IConnectionSettingsBaseSPtr tc = top->connection();
+  core::IConnectionSettingsBaseSPtr cc = currentItem->connection();
   currentItem->setConnection(tc);
   top->setConnection(cc);
 }
 
 void ClusterDialog::add() {
-  const std::vector<connectionTypes> avail = { DBUNKNOWN, REDIS };
+  const std::vector<core::connectionTypes> avail = { core::DBUNKNOWN, core::REDIS };
   ConnectionDialog dlg(this, nullptr, avail);
   int result = dlg.exec();
-  IConnectionSettingsBaseSPtr p = dlg.connection();
+  core::IConnectionSettingsBaseSPtr p = dlg.connection();
   if (result == QDialog::Accepted && p) {
     addConnection(p);
   }
@@ -323,12 +323,12 @@ void ClusterDialog::edit() {
     return;
   }
 
-  IConnectionSettingsBaseSPtr oldConnection = currentItem->connection();
+  core::IConnectionSettingsBaseSPtr oldConnection = currentItem->connection();
 
-  static const std::vector<connectionTypes> avail = { DBUNKNOWN, REDIS };
+  static const std::vector<core::connectionTypes> avail = { core::DBUNKNOWN, core::REDIS };
   ConnectionDialog dlg(this, oldConnection->clone(), avail);
   int result = dlg.exec();
-  IConnectionSettingsBaseSPtr newConnection = dlg.connection();
+  core::IConnectionSettingsBaseSPtr newConnection = dlg.connection();
   if (result == QDialog::Accepted && newConnection) {
     currentItem->setConnection(newConnection);
   }
@@ -357,11 +357,11 @@ void ClusterDialog::retranslateUi() {
 }
 
 bool ClusterDialog::validateAndApply() {
-  connectionTypes currentType = common::convertFromString<connectionTypes>(common::convertToString(typeConnection_->currentText()));
-  bool isValidType = currentType != DBUNKNOWN;
+  core::connectionTypes currentType = common::convertFromString<core::connectionTypes>(common::convertToString(typeConnection_->currentText()));
+  bool isValidType = currentType != core::DBUNKNOWN;
   if (isValidType) {
     std::string conName = common::convertToString(connectionName_->text());
-    IClusterSettingsBase* newConnection = IClusterSettingsBase::createFromType(currentType, conName);
+    core::IClusterSettingsBase* newConnection = core::IClusterSettingsBase::createFromType(currentType, conName);
     if (newConnection) {
       cluster_connection_.reset(newConnection);
       if (logging_->isChecked()) {
@@ -370,7 +370,7 @@ bool ClusterDialog::validateAndApply() {
       for (size_t i = 0; i < listWidget_->topLevelItemCount(); ++i) {
         ConnectionListWidgetItem* item = dynamic_cast<ConnectionListWidgetItem*>(listWidget_->topLevelItem(i));
         if (item) {
-          IConnectionSettingsBaseSPtr con = item->connection();
+          core::IConnectionSettingsBaseSPtr con = item->connection();
           cluster_connection_->addNode(con);
         }
       }
@@ -382,7 +382,7 @@ bool ClusterDialog::validateAndApply() {
   }
 }
 
-void ClusterDialog::addConnection(IConnectionSettingsBaseSPtr con) {
+void ClusterDialog::addConnection(core::IConnectionSettingsBaseSPtr con) {
   ConnectionListWidgetItem* item = new ConnectionListWidgetItem(con);
   listWidget_->addTopLevelItem(item);
 }

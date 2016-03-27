@@ -24,6 +24,7 @@
 #include "core/iserver.h"
 
 namespace fastonosql {
+namespace core {
 
 class ICluster
   : public IServerBase {
@@ -44,4 +45,5 @@ class ICluster
   nodes_type nodes_;
 };
 
+}  // namespace core
 }  // namespace fastonosql

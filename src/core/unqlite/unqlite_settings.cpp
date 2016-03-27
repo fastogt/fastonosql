@@ -21,6 +21,7 @@
 #include <string>
 
 namespace fastonosql {
+namespace core {
 namespace unqlite {
 
 UnqliteConnectionSettings::UnqliteConnectionSettings(const std::string& connectionName)
@@ -57,4 +58,5 @@ UnqliteConnectionSettings* UnqliteConnectionSettings::clone() const {
 }
 
 }  // namespace unqlite
+}  // namespace core
 }  // namespace fastonosql

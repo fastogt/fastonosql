@@ -25,6 +25,7 @@
 #include "core/connection_confg.h"
 
 namespace fastonosql {
+namespace core {
 namespace unqlite {
 
 struct UnqliteConfig
@@ -35,8 +36,9 @@ struct UnqliteConfig
 };
 
 }  // namespace unqlite
+}  // namespace core
 }  // namespace fastonosql
 
 namespace common {
-  std::string convertToString(const fastonosql::unqlite::UnqliteConfig& conf);
+  std::string convertToString(const fastonosql::core::unqlite::UnqliteConfig& conf);
 }

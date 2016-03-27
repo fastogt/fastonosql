@@ -44,7 +44,7 @@ namespace fastonosql {
 namespace gui {
 
 ChangePasswordServerDialog::ChangePasswordServerDialog(const QString& title,
-                                                       IServerSPtr server, QWidget* parent)
+                                                       core::IServerSPtr server, QWidget* parent)
   : QDialog(parent), server_(server) {
   DCHECK(server_);
 
@@ -74,9 +74,9 @@ ChangePasswordServerDialog::ChangePasswordServerDialog(const QString& title,
   VERIFY(connect(buttonBox, &QDialogButtonBox::rejected,
                  this, &ChangePasswordServerDialog::reject));
 
-  VERIFY(connect(server_.get(), &IServer::startedChangePassword,
+  VERIFY(connect(server_.get(), &core::IServer::startedChangePassword,
                  this, &ChangePasswordServerDialog::startChangePassword));
-  VERIFY(connect(server_.get(), &IServer::finishedChangePassword,
+  VERIFY(connect(server_.get(), &core::IServer::finishedChangePassword,
                  this, &ChangePasswordServerDialog::finishChangePassword));
 
   mainLayout->addWidget(buttonBox);
@@ -90,18 +90,18 @@ ChangePasswordServerDialog::ChangePasswordServerDialog(const QString& title,
 
 void ChangePasswordServerDialog::tryToCreatePassword() {
   if (validateInput()) {
-    events_info::ChangePasswordRequest req(this, std::string(), common::convertToString(passwordLineEdit_->text()));
+    core::events_info::ChangePasswordRequest req(this, std::string(), common::convertToString(passwordLineEdit_->text()));
     server_->changePassword(req);
   } else {
     QMessageBox::critical(this, translations::trError, trInvalidInput);
   }
 }
 
-void ChangePasswordServerDialog::startChangePassword(const events_info::ChangePasswordRequest& req) {
+void ChangePasswordServerDialog::startChangePassword(const core::events_info::ChangePasswordRequest& req) {
   glassWidget_->start();
 }
 
-void ChangePasswordServerDialog::finishChangePassword(const events_info::ChangePasswordResponce& res) {
+void ChangePasswordServerDialog::finishChangePassword(const core::events_info::ChangePasswordResponce& res) {
   glassWidget_->stop();
   common::Error err = res.errorInfo();
   if (err && err->isError()) {

@@ -25,6 +25,7 @@
 #include "core/lmdb/lmdb_config.h"
 
 namespace fastonosql {
+namespace core {
 namespace lmdb {
 
 class LmdbConnectionSettings
@@ -49,4 +50,5 @@ class LmdbConnectionSettings
 };
 
 }  // namespace lmdb
+}  // namespace core
 }  // namespace fastonosql

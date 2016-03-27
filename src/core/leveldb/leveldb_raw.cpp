@@ -36,6 +36,7 @@ void leveldb_version_startup_function(char* version) {
 }
 
 namespace fastonosql {
+namespace core {
 namespace leveldb {
 
 namespace {
@@ -384,4 +385,5 @@ common::Error flushdb(CommandHandler* handler, int argc, char** argv, FastoObjec
 }
 
 }  // namespace leveldb
+}  // namespace core
 }  // namespace fastonosql

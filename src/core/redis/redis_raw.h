@@ -39,6 +39,7 @@ struct redisContext;
 struct redisReply;
 
 namespace fastonosql {
+namespace core {
 namespace redis {
 
 static const std::vector<CommandInfo> redisCommands = {
@@ -440,7 +441,7 @@ public:
 };
 
 struct RedisRaw {
-  RedisRaw(IRedisRawOwner* observer);
+  explicit RedisRaw(IRedisRawOwner* observer);
   ~RedisRaw();
 
   static const char* versionApi();
@@ -485,4 +486,5 @@ private:
 
 
 }  // namespace redis
+}  // namespace core
 }  // namespace fastonosql

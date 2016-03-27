@@ -57,42 +57,42 @@ namespace {
 namespace fastonosql {
 namespace shell {
 
-BaseShell::BaseShell(connectionTypes type, bool showAutoCompl, QWidget* parent)
+BaseShell::BaseShell(core::connectionTypes type, bool showAutoCompl, QWidget* parent)
   : gui::FastoEditorShell(showAutoCompl, parent) {
   VERIFY(connect(this, &BaseShell::customContextMenuRequested, this, &BaseShell::showContextMenu));
   BaseQsciLexer* lex = nullptr;
 #ifdef BUILD_WITH_REDIS
-  if (type == REDIS) {
+  if (type == core::REDIS) {
     lex = new RedisLexer(this);
   }
 #endif
 #ifdef BUILD_WITH_MEMCACHED
-  if (type == MEMCACHED) {
+  if (type == core::MEMCACHED) {
     lex = new MemcachedLexer(this);
   }
 #endif
 #ifdef BUILD_WITH_SSDB
-  if (type == SSDB) {
+  if (type == core::SSDB) {
     lex = new SsdbLexer(this);
   }
 #endif
 #ifdef BUILD_WITH_LEVELDB
-  if (type == LEVELDB) {
+  if (type == core::LEVELDB) {
     lex = new LeveldbLexer(this);
   }
 #endif
 #ifdef BUILD_WITH_ROCKSDB
-  if (type == ROCKSDB) {
+  if (type == core::ROCKSDB) {
     lex = new RocksdbLexer(this);
   }
 #endif
 #ifdef BUILD_WITH_UNQLITE
-  if (type == UNQLITE) {
+  if (type == core::UNQLITE) {
     lex = new UnqliteLexer(this);
   }
 #endif
 #ifdef BUILD_WITH_LMDB
-  if (type == LMDB) {
+  if (type == core::LMDB) {
     lex = new LmdbLexer(this);
   }
 #endif
@@ -162,7 +162,7 @@ void BaseShell::setFilteredVersion(uint32_t version) {
   api->setFilteredVersion(version);
 }
 
-BaseShell* BaseShell::createFromType(connectionTypes type, bool showAutoCompl) {
+BaseShell* BaseShell::createFromType(core::connectionTypes type, bool showAutoCompl) {
   return new BaseShell(type, showAutoCompl);
 }
 

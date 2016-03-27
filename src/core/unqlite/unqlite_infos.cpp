@@ -27,6 +27,7 @@
 #define MARKER "\r\n"
 
 namespace fastonosql {
+namespace core {
 namespace {
 
 const std::vector<Field> unqliteCommonFields = {
@@ -182,4 +183,5 @@ bool UnqliteCommand::isReadOnly() const {
 }
 
 }  // namespace unqlite
+}  // namespace core
 }  // namespace fastonosql

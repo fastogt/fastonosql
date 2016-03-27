@@ -25,6 +25,7 @@
 #include "core/rocksdb/rocksdb_raw.h"
 
 namespace fastonosql {
+namespace core {
 namespace rocksdb {
 
 class RocksdbDriver
@@ -74,4 +75,5 @@ class RocksdbDriver
 };
 
 }  // namespace rocksdb
+}  // namespace core
 }  // namespace fastonosql

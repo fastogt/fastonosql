@@ -36,7 +36,7 @@ class CommandsWidget
   explicit CommandsWidget(QWidget* parent = 0);
 
  public Q_SLOTS:
-  void addCommand(connectionTypes type, const Command& command);
+  void addCommand(core::connectionTypes type, const Command& command);
 
  private Q_SLOTS:
   void showContextMenu(const QPoint& pt);

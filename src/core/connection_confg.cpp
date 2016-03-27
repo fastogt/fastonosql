@@ -24,6 +24,7 @@
 #include "common/convert2string.h"
 
 namespace fastonosql {
+namespace core {
 
 LocalConfig::LocalConfig(const std::string& dbname)
   : BaseConfig<LOCAL>(), dbname(dbname) {
@@ -67,4 +68,5 @@ std::vector<std::string> RemoteConfig::args() const {
   return argv;
 }
 
+}  // namespace core
 }  // namespace fastonosql

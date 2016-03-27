@@ -21,14 +21,16 @@
 #include "core/iserver.h"
 
 namespace fastonosql {
+namespace core {
 namespace ssdb {
 
 SsdbDatabase::SsdbDatabase(IServerSPtr server, IDataBaseInfoSPtr info)
   : IDatabase(server, info) {
   DCHECK(server);
   DCHECK(info);
-  DCHECK(server->type() == info->type() == SSDB);
+  DCHECK(server->type() == SSDB && info->type() == SSDB);
 }
 
 }
+}  // namespace core
 }  // namespace fastonosql

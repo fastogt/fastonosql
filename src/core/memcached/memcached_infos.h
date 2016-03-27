@@ -48,6 +48,7 @@
 #define MEMCACHED_THREADS_LABEL "threads"
 
 namespace fastonosql {
+namespace core {
 namespace memcached {
 
 class MemcachedServerInfo
@@ -111,4 +112,5 @@ class MemcachedCommand
 };
 
 }  // namespace memcached
+}  // namespace core
 }  // namespace fastonosql

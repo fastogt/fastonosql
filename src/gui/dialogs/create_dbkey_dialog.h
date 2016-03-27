@@ -40,8 +40,8 @@ class CreateDbKeyDialog
     min_width = 320
   };
 
-  explicit CreateDbKeyDialog(const QString& title, connectionTypes type, QWidget* parent = 0);
-  NDbKValue key() const;
+  explicit CreateDbKeyDialog(const QString& title, core::connectionTypes type, QWidget* parent = 0);
+  core::NDbKValue key() const;
 
  public Q_SLOTS:
   virtual void accept();
@@ -59,7 +59,7 @@ class CreateDbKeyDialog
   void retranslateUi();
 
   common::Value* item() const;
-  const connectionTypes type_;
+  const core::connectionTypes type_;
   QGroupBox* generalBox_;
   QLineEdit* keyEdit_;
   QComboBox* typesCombo_;
@@ -68,7 +68,7 @@ class CreateDbKeyDialog
   QTableWidget* valueTableEdit_;
   QPushButton* addItemButton_;
   QPushButton* removeItemButton_;
-  NValue value_;
+  core::NValue value_;
 };
 
 }  // namespace gui

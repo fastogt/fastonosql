@@ -116,6 +116,7 @@
 #define REDIS_USED_CPU_USER_CHILDREN_LABEL "used_cpu_user_children"
 
 namespace fastonosql {
+namespace core {
 namespace redis {
 
 class RedisDiscoveryInfo
@@ -298,4 +299,5 @@ class RedisCommand
 };
 
 }  // namespace redis
+}  // namespace core
 }  // namespace fastonosql

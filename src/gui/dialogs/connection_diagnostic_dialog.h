@@ -40,7 +40,7 @@ class TestConnection
   : public QObject {
   Q_OBJECT
  public:
-  explicit TestConnection(IConnectionSettingsBaseSPtr conn, QObject* parent = 0);
+  explicit TestConnection(core::IConnectionSettingsBaseSPtr conn, QObject* parent = 0);
 
  Q_SIGNALS:
   void connectionResult(bool suc, qint64 msTimeExecute, const QString& resultText);
@@ -49,7 +49,7 @@ class TestConnection
   void routine();
 
  private:
-  IConnectionSettingsBaseSPtr connection_;
+  core::IConnectionSettingsBaseSPtr connection_;
   common::time64_t startTime_;
 };
 
@@ -62,7 +62,7 @@ class ConnectionDiagnosticDialog
     fix_width = 240
   };
 
-  ConnectionDiagnosticDialog(QWidget* parent, IConnectionSettingsBaseSPtr connection);
+  ConnectionDiagnosticDialog(QWidget* parent, core::IConnectionSettingsBaseSPtr connection);
 
  private Q_SLOTS:
   void connectionResult(bool suc, qint64 mstimeExecute, const QString& resultText);
@@ -71,7 +71,7 @@ class ConnectionDiagnosticDialog
   virtual void showEvent(QShowEvent* e);
 
  private:
-  void testConnection(IConnectionSettingsBaseSPtr connection);
+  void testConnection(core::IConnectionSettingsBaseSPtr connection);
   fasto::qt::gui::GlassWidget* glassWidget_;
   QLabel* executeTimeLabel_;
   QLabel* statusLabel_;

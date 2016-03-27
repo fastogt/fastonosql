@@ -27,6 +27,7 @@
 #define MARKER "\r\n"
 
 namespace fastonosql {
+namespace core {
 
 namespace {
   const std::vector<Field> memcachedCommonFields = {
@@ -324,4 +325,5 @@ bool MemcachedCommand::isReadOnly() const {
 }
 
 }  // namespace memcached
+}  // namespace core
 }  // namespace fastonosql

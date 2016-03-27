@@ -29,6 +29,7 @@
 #define LMDB_OK 0
 
 namespace fastonosql {
+namespace core {
 namespace lmdb {
 
 namespace {
@@ -120,7 +121,7 @@ common::Error createConnection(LmdbConnectionSettings* settings, struct lmdb** c
 
 }  // namespace
 
-common::Error testConnection(fastonosql::lmdb::LmdbConnectionSettings* settings) {
+common::Error testConnection(fastonosql::core::lmdb::LmdbConnectionSettings* settings) {
   if (!settings) {
     return common::make_error_value("Invalid input argument(s)", common::ErrorValue::E_ERROR);
   }
@@ -480,4 +481,5 @@ common::Error flushdb(CommandHandler* handler, int argc, char** argv, FastoObjec
 }
 
 }  // namespace lmdb
+}  // namespace core
 }  // namespace fastonosql

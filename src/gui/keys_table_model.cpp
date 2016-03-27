@@ -27,7 +27,7 @@
 namespace fastonosql {
 namespace gui {
 
-KeyTableItem::KeyTableItem(const NDbKValue& key)
+KeyTableItem::KeyTableItem(const core::NDbKValue& key)
   : key_(key) {
 }
 
@@ -40,7 +40,7 @@ QString KeyTableItem::typeText() const {
 }
 
 int32_t KeyTableItem::TTL() const {
-  NKey key = key_.key();
+  core::NKey key = key_.key();
   return key.ttl_sec;
 }
 
@@ -48,11 +48,11 @@ common::Value::Type KeyTableItem::type() const {
   return key_.type();
 }
 
-NDbKValue KeyTableItem::dbv() const {
+core::NDbKValue KeyTableItem::dbv() const {
   return key_;
 }
 
-void KeyTableItem::setDbv(const NDbKValue& val) {
+void KeyTableItem::setDbv(const core::NDbKValue& val) {
   key_ = val;
 }
 
@@ -111,8 +111,8 @@ bool KeysTableModel::setData(const QModelIndex& index, const QVariant& value, in
       bool isOk = false;
       int32_t newValue = value.toInt(&isOk);
       if (isOk && newValue != node->TTL()) {
-        NDbKValue dbv = node->dbv();
-        CommandKeySPtr com(new CommandChangeTTL(dbv, newValue));
+        core::NDbKValue dbv = node->dbv();
+        core::CommandKeySPtr com(new core::CommandChangeTTL(dbv, newValue));
         emit changedValue(com);
       }
     }
@@ -156,7 +156,7 @@ int KeysTableModel::columnCount(const QModelIndex& parent) const {
   return KeyTableItem::kCountColumns;
 }
 
-void KeysTableModel::changeValue(const NDbKValue& value) {
+void KeysTableModel::changeValue(const core::NDbKValue& value) {
   const QString key = common::convertFromString<QString>(value.keyString());
   for (size_t i = 0; i < data_.size(); ++i) {
     KeyTableItem* it = dynamic_cast<KeyTableItem*>(data_[i]);

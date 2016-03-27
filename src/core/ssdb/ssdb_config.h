@@ -25,6 +25,7 @@
 #include "common/convert2string.h"
 
 namespace fastonosql {
+namespace core {
 namespace ssdb {
 
 struct SsdbConfig
@@ -36,8 +37,9 @@ struct SsdbConfig
 };
 
 }
+}  // namespace core
 }  // namespace fastonosql
 
 namespace common {
-  std::string convertToString(const fastonosql::ssdb::SsdbConfig& conf);
+  std::string convertToString(const fastonosql::core::ssdb::SsdbConfig& conf);
 }

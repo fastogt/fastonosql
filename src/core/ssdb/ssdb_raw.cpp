@@ -21,6 +21,7 @@
 #include "common/sprintf.h"
 
 namespace fastonosql {
+namespace core {
 namespace ssdb {
 
 namespace {
@@ -1333,4 +1334,5 @@ common::Error flushdb(CommandHandler* handler, int argc, char** argv, FastoObjec
 
 
 }  // namespace ssdb
+}  // namespace core
 }  // namespace fastonosql

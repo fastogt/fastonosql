@@ -26,6 +26,7 @@
 #include "fasto/qt/logger.h"
 
 namespace fastonosql {
+namespace core {
 namespace ssdb {
 namespace {
 
@@ -66,11 +67,12 @@ SsdbConfig::SsdbConfig()
 }
 
 }  // namespace ssdb
+}  // namespace core
 }  // namespace fastonosql
 
 namespace common {
 
-std::string convertToString(const fastonosql::ssdb::SsdbConfig& conf) {
+std::string convertToString(const fastonosql::core::ssdb::SsdbConfig& conf) {
   std::vector<std::string> argv = conf.args();
 
   if (!conf.user.empty()) {
@@ -95,8 +97,8 @@ std::string convertToString(const fastonosql::ssdb::SsdbConfig& conf) {
 }
 
 template<>
-fastonosql::ssdb::SsdbConfig convertFromString(const std::string& line) {
-  fastonosql::ssdb::SsdbConfig cfg;
+fastonosql::core::ssdb::SsdbConfig convertFromString(const std::string& line) {
+  fastonosql::core::ssdb::SsdbConfig cfg;
   enum { kMaxArgs = 64 };
   int argc = 0;
   char* argv[kMaxArgs] = {0};
@@ -107,7 +109,7 @@ fastonosql::ssdb::SsdbConfig convertFromString(const std::string& line) {
     p2 = strtok(0, " ");
   }
 
-  fastonosql::ssdb::parseOptions(argc, argv, cfg);
+  fastonosql::core::ssdb::parseOptions(argc, argv, cfg);
   return cfg;
 }
 

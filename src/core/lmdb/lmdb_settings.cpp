@@ -21,6 +21,7 @@
 #include <string>
 
 namespace fastonosql {
+namespace core {
 namespace lmdb {
 
 LmdbConnectionSettings::LmdbConnectionSettings(const std::string& connectionName)
@@ -57,4 +58,5 @@ LmdbConnectionSettings* LmdbConnectionSettings::clone() const {
 }
 
 }  // namespace lmdb
+}  // namespace core
 }  // namespace fastonosql

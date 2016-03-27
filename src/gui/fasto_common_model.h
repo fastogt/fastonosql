@@ -39,10 +39,10 @@ class FastoCommonModel
 
   virtual int columnCount(const QModelIndex& parent) const;
 
-  void changeValue(const NDbKValue& value);
+  void changeValue(const core::NDbKValue& value);
 
  Q_SIGNALS:
-  void changedValue(CommandKeySPtr cmd);
+  void changedValue(core::CommandKeySPtr cmd);
 };
 
 }  // namespace gui

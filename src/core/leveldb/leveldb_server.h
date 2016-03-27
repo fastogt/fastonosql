@@ -22,6 +22,7 @@
 #include "core/iserver.h"
 
 namespace fastonosql {
+namespace core {
 namespace leveldb {
 
 class LeveldbServer
@@ -36,4 +37,5 @@ class LeveldbServer
 };
 
 }  // namespace leveldb
+}  // namespace core
 }  // namespace fastonosql

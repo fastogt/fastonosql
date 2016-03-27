@@ -125,49 +125,49 @@ const QIcon& GuiFactory::keyIcon() const {
   return db;
 }
 
-const QIcon& GuiFactory::icon(connectionTypes type) const {
-  if (type == REDIS) {
+const QIcon& GuiFactory::icon(core::connectionTypes type) const {
+  if (type == core::REDIS) {
     return redisConnectionIcon();
-  } else if (type == MEMCACHED) {
+  } else if (type == core::MEMCACHED) {
     return memcachedConnectionIcon();
-  } else if (type == SSDB) {
+  } else if (type == core::SSDB) {
     return ssdbConnectionIcon();
-  } else if (type == LEVELDB) {
+  } else if (type == core::LEVELDB) {
     return leveldbConnectionIcon();
-  } else if (type == ROCKSDB) {
+  } else if (type == core::ROCKSDB) {
     return rocksdbConnectionIcon();
-  } else if (type == UNQLITE) {
+  } else if (type == core::UNQLITE) {
     return unqliteConnectionIcon();
-  } else if (type == LMDB) {
+  } else if (type == core::LMDB) {
     return lmdbConnectionIcon();
   } else {
     return serverIcon();
   }
 }
 
-const QIcon& GuiFactory::modeIcon(ConnectionMode mode) const {
-  if (mode == LatencyMode) {
+const QIcon& GuiFactory::modeIcon(core::ConnectionMode mode) const {
+  if (mode == core::LatencyMode) {
     static QIcon i(":" PROJECT_NAME_LOWERCASE "/images/64x64/latency_mode.png");
     return i;
-  } else if (mode == SlaveMode) {
+  } else if (mode == core::SlaveMode) {
     static QIcon i(":" PROJECT_NAME_LOWERCASE "/images/64x64/slave_mode.png");
     return i;
-  } else if (mode == GetRDBMode) {
+  } else if (mode == core::GetRDBMode) {
     static QIcon i(":" PROJECT_NAME_LOWERCASE "/images/64x64/rdb_mode.png");
     return i;
-  } else if (mode == PipeMode) {
+  } else if (mode == core::PipeMode) {
     static QIcon i(":" PROJECT_NAME_LOWERCASE "/images/64x64/pipe_mode.png");
     return i;
-  } else if (mode == FindBigKeysMode) {
+  } else if (mode == core::FindBigKeysMode) {
     static QIcon i(":" PROJECT_NAME_LOWERCASE "/images/64x64/bigkeys_mode.png");
     return i;
-  } else if (mode == StatMode) {
+  } else if (mode == core::StatMode) {
     static QIcon i(":" PROJECT_NAME_LOWERCASE "/images/64x64/stat_mode.png");
     return i;
-  } else if (mode == ScanMode) {
+  } else if (mode == core::ScanMode) {
     static QIcon i(":" PROJECT_NAME_LOWERCASE "/images/64x64/scan_mode.png");
     return i;
-  } else if (mode == InteractiveMode) {
+  } else if (mode == core::InteractiveMode) {
     static QIcon i(":" PROJECT_NAME_LOWERCASE "/images/64x64/interactive_mode.png");
     return i;
   } else {
@@ -301,20 +301,20 @@ const QIcon& GuiFactory::close16Icon() const {
   return close;
 }
 
-const QIcon& GuiFactory::commandIcon(connectionTypes type) const {
-  if (type == REDIS) {
+const QIcon& GuiFactory::commandIcon(core::connectionTypes type) const {
+  if (type == core::REDIS) {
     return redisConnectionIcon();
-  } else if (type == MEMCACHED) {
+  } else if (type == core::MEMCACHED) {
     return memcachedConnectionIcon();
-  } else if (type == SSDB) {
+  } else if (type == core::SSDB) {
     return ssdbConnectionIcon();
-  } else if (type == LEVELDB) {
+  } else if (type == core::LEVELDB) {
     return leveldbConnectionIcon();
-  } else if (type == ROCKSDB) {
+  } else if (type == core::ROCKSDB) {
     return rocksdbConnectionIcon();
-  } else if (type == UNQLITE) {
+  } else if (type == core::UNQLITE) {
     return unqliteConnectionIcon();
-  } else if (type == LMDB) {
+  } else if (type == core::LMDB) {
     return lmdbConnectionIcon();
   } else {
     return serverIcon();
@@ -337,7 +337,7 @@ const QIcon& GuiFactory::unknownIcon() const {
 }
 
 QFont GuiFactory::font() const {
-  return QFont(SettingsManager::instance().currentFontName());
+  return QFont(core::SettingsManager::instance().currentFontName());
 }
 
 const QString& GuiFactory::pathToLoadingGif() const {

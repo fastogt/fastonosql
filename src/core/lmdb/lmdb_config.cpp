@@ -27,6 +27,7 @@
 #include "fasto/qt/logger.h"
 
 namespace fastonosql {
+namespace core {
 namespace lmdb {
 
 namespace {
@@ -63,11 +64,12 @@ LmdbConfig::LmdbConfig()
 }
 
 }  // namespace lmdb
+}  // namespace core
 }  // namespace fastonosql
 
 namespace common {
 
-std::string convertToString(const fastonosql::lmdb::LmdbConfig& conf) {
+std::string convertToString(const fastonosql::core::lmdb::LmdbConfig& conf) {
   std::vector<std::string> argv = conf.args();
 
   if (conf.create_if_missing) {
@@ -86,8 +88,8 @@ std::string convertToString(const fastonosql::lmdb::LmdbConfig& conf) {
 }
 
 template<>
-fastonosql::lmdb::LmdbConfig convertFromString(const std::string& line) {
-  fastonosql::lmdb::LmdbConfig cfg;
+fastonosql::core::lmdb::LmdbConfig convertFromString(const std::string& line) {
+  fastonosql::core::lmdb::LmdbConfig cfg;
   enum { kMaxArgs = 64 };
   int argc = 0;
   char* argv[kMaxArgs] = {0};
@@ -98,7 +100,7 @@ fastonosql::lmdb::LmdbConfig convertFromString(const std::string& line) {
     p2 = strtok(0, " ");
   }
 
-  fastonosql::lmdb::parseOptions(argc, argv, cfg);
+  fastonosql::core::lmdb::parseOptions(argc, argv, cfg);
   return cfg;
 }
 

@@ -21,14 +21,16 @@
 #include "core/iserver.h"
 
 namespace fastonosql {
+namespace core {
 namespace memcached {
 
 MemcachedDatabase::MemcachedDatabase(IServerSPtr server, IDataBaseInfoSPtr info)
   : IDatabase(server, info) {
   DCHECK(server);
   DCHECK(info);
-  DCHECK(server->type() == info->type() == MEMCACHED);
+  DCHECK(server->type() == MEMCACHED && info->type() == MEMCACHED);
 }
 
 }  // namespace memcached
+}  // namespace core
 }  // namespace fastonosql

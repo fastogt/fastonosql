@@ -19,14 +19,16 @@
 #include "core/command_logger.h"
 
 namespace fastonosql {
+namespace core {
 
 CommandLogger::CommandLogger() {
   qRegisterMetaType<fastonosql::Command>("Command");
-  qRegisterMetaType<fastonosql::connectionTypes>("connectionTypes");
+  qRegisterMetaType<connectionTypes>("connectionTypes");
 }
 
 void CommandLogger::print(connectionTypes type, const Command& command) {
   emit printed(type, command);
 }
 
+}  // namespace core
 }  // namespace fastonosql

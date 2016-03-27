@@ -76,6 +76,7 @@ common::Value::Type convertFromStringRType(const std::string& type) {
 }
 
 namespace fastonosql {
+namespace core {
 namespace redis {
 
 namespace {
@@ -923,4 +924,5 @@ IServerInfoSPtr RedisDriver::makeServerInfoFromString(const std::string& val) {
 }
 
 }  // namespace redis
+}  // namespace core
 }  // namespace fastonosql

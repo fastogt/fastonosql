@@ -21,6 +21,7 @@
 #include "common/smart_ptr.h"
 
 namespace fastonosql {
+namespace core {
 
 class IDatabase;
 typedef common::shared_ptr<IDatabase> IDatabaseSPtr;
@@ -31,4 +32,5 @@ typedef common::shared_ptr<IServer> IServerSPtr;
 class ICluster;
 typedef common::shared_ptr<ICluster> IClusterSPtr;
 
+}  // namespace core
 }  // namespace fastonosql

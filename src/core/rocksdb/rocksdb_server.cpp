@@ -22,6 +22,7 @@
 #include "core/rocksdb/rocksdb_database.h"
 
 namespace fastonosql {
+namespace core {
 namespace rocksdb {
 
 RocksdbServer::RocksdbServer(IConnectionSettingsBaseSPtr settings)
@@ -38,4 +39,5 @@ IDatabaseSPtr RocksdbServer::createDatabase(IDataBaseInfoSPtr info) {
 }
 
 }  // namespace rocksdb
+}  // namespace core {
 }  // namespace fastonosql

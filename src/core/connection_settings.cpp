@@ -64,6 +64,7 @@ namespace {
 }
 
 namespace fastonosql {
+namespace core {
 
 IConnectionSettings::IConnectionSettings(const std::string& connectionName, connectionTypes type)
   : connection_name_(connectionName), type_(type), msinterval_(0) {
@@ -542,4 +543,5 @@ IConnectionSettingsBaseSPtr IClusterSettingsBase::findSettingsByHost(const commo
   return IConnectionSettingsBaseSPtr();
 }
 
+}  // namespace core
 }  // namespace fastonosql

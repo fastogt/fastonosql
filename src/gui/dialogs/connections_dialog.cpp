@@ -117,17 +117,17 @@ ConnectionsDialog::ConnectionsDialog(QWidget* parent)
   mainLayout->addLayout(firstColumnLayout, 1);
 
   // Populate list with connections
-  SettingsManager::ConnectionSettingsContainerType connections = SettingsManager::instance().connections();
-  for (SettingsManager::ConnectionSettingsContainerType::const_iterator it = connections.begin();
+  auto connections = core::SettingsManager::instance().connections();
+  for (core::SettingsManager::ConnectionSettingsContainerType::const_iterator it = connections.begin();
        it != connections.end(); ++it) {
-    IConnectionSettingsBaseSPtr connectionModel = (*it);
+    core::IConnectionSettingsBaseSPtr connectionModel = (*it);
     addConnection(connectionModel);
   }
 
-  SettingsManager::ClusterSettingsContainerType clusters = SettingsManager::instance().clusters();
-  for (SettingsManager::ClusterSettingsContainerType::const_iterator it = clusters.begin();
+  auto clusters = core::SettingsManager::instance().clusters();
+  for (core::SettingsManager::ClusterSettingsContainerType::const_iterator it = clusters.begin();
        it != clusters.end(); ++it) {
-    IClusterSettingsBaseSPtr connectionModel = (*it);
+    core::IClusterSettingsBaseSPtr connectionModel = (*it);
     addCluster(connectionModel);
   }
 
@@ -138,30 +138,30 @@ ConnectionsDialog::ConnectionsDialog(QWidget* parent)
   retranslateUi();
 }
 
-IConnectionSettingsBaseSPtr ConnectionsDialog::selectedConnection() const {
+core::IConnectionSettingsBaseSPtr ConnectionsDialog::selectedConnection() const {
   ConnectionListWidgetItem* currentItem = dynamic_cast<ConnectionListWidgetItem*>(listWidget_->currentItem());
   if (currentItem) {
     return currentItem->connection();
   }
 
-  return IConnectionSettingsBaseSPtr();
+  return core::IConnectionSettingsBaseSPtr();
 }
 
-IClusterSettingsBaseSPtr ConnectionsDialog::selectedCluster() const {
+core::IClusterSettingsBaseSPtr ConnectionsDialog::selectedCluster() const {
   ClusterConnectionListWidgetItem* currentItem = dynamic_cast<ClusterConnectionListWidgetItem*>(listWidget_->currentItem());
   if (currentItem) {
     return currentItem->connection();
   }
 
-  return IClusterSettingsBaseSPtr();
+  return core::IClusterSettingsBaseSPtr();
 }
 
 void ConnectionsDialog::add() {
   ConnectionDialog dlg(this);
   int result = dlg.exec();
-  IConnectionSettingsBaseSPtr p = dlg.connection();
+  core::IConnectionSettingsBaseSPtr p = dlg.connection();
   if (result == QDialog::Accepted && p) {
-    SettingsManager::instance().addConnection(p);
+    core::SettingsManager::instance().addConnection(p);
     addConnection(p);
   }
 }
@@ -169,9 +169,9 @@ void ConnectionsDialog::add() {
 void ConnectionsDialog::addCls() {
   ClusterDialog dlg(this);
   int result = dlg.exec();
-  IClusterSettingsBaseSPtr p = dlg.connection();
+  core::IClusterSettingsBaseSPtr p = dlg.connection();
   if (result == QDialog::Accepted && p) {
-    SettingsManager::instance().addCluster(p);
+    core::SettingsManager::instance().addCluster(p);
     addCluster(p);
   }
 }
@@ -194,9 +194,9 @@ void ConnectionsDialog::remove() {
       if (answer != QMessageBox::Yes)
         return;
 
-      IConnectionSettingsBaseSPtr connection = currentItem->connection();
+      core::IConnectionSettingsBaseSPtr connection = currentItem->connection();
       delete currentItem;
-      SettingsManager::instance().removeConnection(connection);
+      core::SettingsManager::instance().removeConnection(connection);
       return;
     } else {
       qitem = qpitem;
@@ -213,9 +213,9 @@ void ConnectionsDialog::remove() {
     if (answer != QMessageBox::Yes)
       return;
 
-    IClusterSettingsBaseSPtr connection = clCurrentItem->connection();
+    core::IClusterSettingsBaseSPtr connection = clCurrentItem->connection();
     delete clCurrentItem;
-    SettingsManager::instance().removeCluster(connection);
+    core::SettingsManager::instance().removeCluster(connection);
   }
 }
 
@@ -229,14 +229,14 @@ void ConnectionsDialog::edit() {
   if (currentItem) {
     QTreeWidgetItem* qpitem = qitem->parent();
     if (!qpitem) {
-      IConnectionSettingsBaseSPtr con = currentItem->connection();
+      core::IConnectionSettingsBaseSPtr con = currentItem->connection();
       ConnectionDialog dlg(this, con->clone());
       int result = dlg.exec();
-      IConnectionSettingsBaseSPtr newConnection = dlg.connection();
+      core::IConnectionSettingsBaseSPtr newConnection = dlg.connection();
       if (result == QDialog::Accepted && newConnection) {
         currentItem->setConnection(newConnection);
-        SettingsManager::instance().removeConnection(con);
-        SettingsManager::instance().addConnection(newConnection);
+        core::SettingsManager::instance().removeConnection(con);
+        core::SettingsManager::instance().addConnection(newConnection);
       }
       return;
     } else {
@@ -246,14 +246,14 @@ void ConnectionsDialog::edit() {
 
   ClusterConnectionListWidgetItem* clCurrentItem = dynamic_cast<ClusterConnectionListWidgetItem*>(qitem);
   if (clCurrentItem) {
-    IClusterSettingsBaseSPtr con = clCurrentItem->connection();
+    core::IClusterSettingsBaseSPtr con = clCurrentItem->connection();
     ClusterDialog dlg(this, con->clone());
     int result = dlg.exec();
-    IClusterSettingsBaseSPtr newConnection = dlg.connection();
+    core::IClusterSettingsBaseSPtr newConnection = dlg.connection();
     if (result == QDialog::Accepted && newConnection) {
       clCurrentItem->setConnection(newConnection);
-      SettingsManager::instance().removeCluster(con);
-      SettingsManager::instance().addCluster(newConnection);
+      core::SettingsManager::instance().removeCluster(con);
+      core::SettingsManager::instance().addCluster(newConnection);
     }
   }
 }
@@ -282,12 +282,12 @@ void ConnectionsDialog::retranslateUi() {
   acButton_->setText(translations::trOpen);
 }
 
-void ConnectionsDialog::addConnection(IConnectionSettingsBaseSPtr con) {
+void ConnectionsDialog::addConnection(core::IConnectionSettingsBaseSPtr con) {
   ConnectionListWidgetItem* item = new ConnectionListWidgetItem(con);
   listWidget_->addTopLevelItem(item);
 }
 
-void ConnectionsDialog::addCluster(IClusterSettingsBaseSPtr con) {
+void ConnectionsDialog::addCluster(core::IClusterSettingsBaseSPtr con) {
   ClusterConnectionListWidgetItem* item = new ClusterConnectionListWidgetItem(con);
   listWidget_->addTopLevelItem(item);
 }

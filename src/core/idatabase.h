@@ -24,6 +24,7 @@
 #include "core/events/events_info.h"
 
 namespace fastonosql {
+namespace core {
 
 class IDatabase {
  public:
@@ -49,4 +50,5 @@ class IDatabase {
   const IServerSPtr server_;
 };
 
+}  // namespace core
 }  // namespace fastonosql

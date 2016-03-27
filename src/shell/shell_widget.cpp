@@ -55,34 +55,34 @@ namespace {
 namespace fastonosql {
 namespace shell {
 
-BaseShellWidget::BaseShellWidget(IServerSPtr server, const QString& filePath, QWidget* parent)
+BaseShellWidget::BaseShellWidget(core::IServerSPtr server, const QString& filePath, QWidget* parent)
   : QWidget(parent), server_(server), filePath_(filePath), input_(nullptr) {
   CHECK(server_);
 
-  VERIFY(connect(server_.get(), &IServer::startedConnect,
+  VERIFY(connect(server_.get(), &core::IServer::startedConnect,
                  this, &BaseShellWidget::startConnect));
-  VERIFY(connect(server_.get(), &IServer::finishedConnect,
+  VERIFY(connect(server_.get(), &core::IServer::finishedConnect,
                  this, &BaseShellWidget::finishConnect));
-  VERIFY(connect(server_.get(), &IServer::startedDisconnect,
+  VERIFY(connect(server_.get(), &core::IServer::startedDisconnect,
                  this, &BaseShellWidget::startDisconnect));
-  VERIFY(connect(server_.get(), &IServer::finishedDisconnect,
+  VERIFY(connect(server_.get(), &core::IServer::finishedDisconnect,
                  this, &BaseShellWidget::finishDisconnect));
-  VERIFY(connect(server_.get(), &IServer::progressChanged,
+  VERIFY(connect(server_.get(), &core::IServer::progressChanged,
                  this, &BaseShellWidget::progressChange));
 
-  VERIFY(connect(server_.get(), &IServer::startedSetDefaultDatabase,
+  VERIFY(connect(server_.get(), &core::IServer::startedSetDefaultDatabase,
                  this, &BaseShellWidget::startSetDefaultDatabase));
-  VERIFY(connect(server_.get(), &IServer::finishedSetDefaultDatabase,
+  VERIFY(connect(server_.get(), &core::IServer::finishedSetDefaultDatabase,
                  this, &BaseShellWidget::finishSetDefaultDatabase));
 
-  VERIFY(connect(server_.get(), &IServer::enteredMode,
+  VERIFY(connect(server_.get(), &core::IServer::enteredMode,
                  this, &BaseShellWidget::enterMode));
-  VERIFY(connect(server_.get(), &IServer::leavedMode,
+  VERIFY(connect(server_.get(), &core::IServer::leavedMode,
                  this, &BaseShellWidget::leaveMode));
 
-  VERIFY(connect(server_.get(), &IServer::startedLoadDiscoveryInfo,
+  VERIFY(connect(server_.get(), &core::IServer::startedLoadDiscoveryInfo,
                  this, &BaseShellWidget::startLoadDiscoveryInfo));
-  VERIFY(connect(server_.get(), &IServer::finishedLoadDiscoveryInfo,
+  VERIFY(connect(server_.get(), &core::IServer::finishedLoadDiscoveryInfo,
                  this, &BaseShellWidget::finishLoadDiscoveryInfo));
 
   QVBoxLayout* mainlayout = new QVBoxLayout;
@@ -128,7 +128,7 @@ BaseShellWidget::BaseShellWidget(IServerSPtr server, const QString& filePath, QW
   VERIFY(connect(stopAction, &QAction::triggered, this, &BaseShellWidget::stop));
   savebar->addAction(stopAction);
 
-  const ConnectionMode mode = InteractiveMode;
+  core::ConnectionMode mode = core::InteractiveMode;
   connectionMode_ = new fasto::qt::gui::IconLabel(gui::GuiFactory::instance().modeIcon(mode),
                                                   common::convertFromString<QString>(common::convertToString(mode)), iconSize);
 
@@ -170,7 +170,7 @@ BaseShellWidget::BaseShellWidget(IServerSPtr server, const QString& filePath, QW
   std::vector<uint32_t> versions = input_->supportedVersions();
   for (size_t i = 0; i < versions.size(); ++i) {
     uint32_t cur = versions[i];
-    std::string curVers = convertVersionNumberToReadableString(cur);
+    std::string curVers = core::convertVersionNumberToReadableString(cur);
     commandsVersionApi_->addItem(gui::GuiFactory::instance().unknownIcon(),
                                  common::convertFromString<QString>(curVers), cur);
     commandsVersionApi_->setCurrentIndex(i);
@@ -186,7 +186,7 @@ BaseShellWidget::BaseShellWidget(IServerSPtr server, const QString& filePath, QW
   updateDefaultDatabase(server_->currentDatabaseInfo());
 }
 
-void BaseShellWidget::syncServerInfo(IServerInfoSPtr inf) {
+void BaseShellWidget::syncServerInfo(core::IServerInfoSPtr inf) {
   if (!inf) {
     return;
   }
@@ -219,8 +219,8 @@ void BaseShellWidget::syncServerInfo(IServerInfoSPtr inf) {
   }
 }
 
-void BaseShellWidget::initShellByType(connectionTypes type) {
-  input_ = BaseShell::createFromType(type, SettingsManager::instance().autoCompletion());
+void BaseShellWidget::initShellByType(core::connectionTypes type) {
+  input_ = BaseShell::createFromType(type, core::SettingsManager::instance().autoCompletion());
   setToolTip(tr("Based on %1 version: %2").arg(input_->basedOn()).arg(input_->version()));
   input_->setContextMenuPolicy(Qt::CustomContextMenu);
 }
@@ -247,7 +247,7 @@ void BaseShellWidget::execute() {
     selected = input_->text();
   }
 
-  events_info::ExecuteInfoRequest req(this, common::convertToString(selected));
+  core::events_info::ExecuteInfoRequest req(this, common::convertToString(selected));
   server_->execute(req);
 }
 
@@ -256,12 +256,12 @@ void BaseShellWidget::stop() {
 }
 
 void BaseShellWidget::connectToServer() {
-  events_info::ConnectInfoRequest req(this);
+  core::events_info::ConnectInfoRequest req(this);
   server_->connect(req);
 }
 
 void BaseShellWidget::disconnectFromServer() {
-  events_info::DisConnectInfoRequest req(this);
+  core::events_info::DisConnectInfoRequest req(this);
   server_->disconnect(req);
 }
 
@@ -312,59 +312,59 @@ void BaseShellWidget::saveToFile() {
   }
 }
 
-void BaseShellWidget::startConnect(const events_info::ConnectInfoRequest& req) {
+void BaseShellWidget::startConnect(const core::events_info::ConnectInfoRequest& req) {
   syncConnectionActions();
 }
 
-void BaseShellWidget::finishConnect(const events_info::ConnectInfoResponce& res) {
+void BaseShellWidget::finishConnect(const core::events_info::ConnectInfoResponce& res) {
   syncConnectionActions();
 }
 
-void BaseShellWidget::startDisconnect(const events_info::DisConnectInfoRequest& req) {
+void BaseShellWidget::startDisconnect(const core::events_info::DisConnectInfoRequest& req) {
   syncConnectionActions();
 }
 
-void BaseShellWidget::finishDisconnect(const events_info::DisConnectInfoResponce& res) {
+void BaseShellWidget::finishDisconnect(const core::events_info::DisConnectInfoResponce& res) {
   syncConnectionActions();
 }
 
-void BaseShellWidget::startSetDefaultDatabase(const events_info::SetDefaultDatabaseRequest& req) {
+void BaseShellWidget::startSetDefaultDatabase(const core::events_info::SetDefaultDatabaseRequest& req) {
 }
 
-void BaseShellWidget::finishSetDefaultDatabase(const events_info::SetDefaultDatabaseResponce& res) {
+void BaseShellWidget::finishSetDefaultDatabase(const core::events_info::SetDefaultDatabaseResponce& res) {
   common::Error er = res.errorInfo();
   if (er && er->isError()) {
     return;
   }
 
-  IServer* serv = qobject_cast<IServer*>(sender());
+  core::IServer* serv = qobject_cast<core::IServer*>(sender());
   if (!serv) {
     DNOTREACHED();
     return;
   }
 
-  IDataBaseInfoSPtr db = res.inf;
+  core::IDataBaseInfoSPtr db = res.inf;
   updateDefaultDatabase(db);
 }
 
-void BaseShellWidget::progressChange(const events_info::ProgressInfoResponce& res) {
+void BaseShellWidget::progressChange(const core::events_info::ProgressInfoResponce& res) {
   workProgressBar_->setValue(res.progress);
 }
 
-void BaseShellWidget::enterMode(const events_info::EnterModeInfo& res) {
-  ConnectionMode mode = res.mode;
+void BaseShellWidget::enterMode(const core::events_info::EnterModeInfo& res) {
+  core::ConnectionMode mode = res.mode;
   connectionMode_->setIcon(gui::GuiFactory::instance().modeIcon(mode), iconSize);
   std::string modeText = common::convertToString(mode);
   connectionMode_->setText(common::convertFromString<QString>(modeText));
 }
 
-void BaseShellWidget::leaveMode(const events_info::LeaveModeInfo& res) {
+void BaseShellWidget::leaveMode(const core::events_info::LeaveModeInfo& res) {
 }
 
-void BaseShellWidget::startLoadDiscoveryInfo(const events_info::DiscoveryInfoRequest& res) {
+void BaseShellWidget::startLoadDiscoveryInfo(const core::events_info::DiscoveryInfoRequest& res) {
 }
 
-void BaseShellWidget::finishLoadDiscoveryInfo(const events_info::DiscoveryInfoResponce& res) {
+void BaseShellWidget::finishLoadDiscoveryInfo(const core::events_info::DiscoveryInfoResponce& res) {
   common::Error err = res.errorInfo();
   if (err && err->isError()) {
     return;
@@ -374,7 +374,7 @@ void BaseShellWidget::finishLoadDiscoveryInfo(const events_info::DiscoveryInfoRe
   updateDefaultDatabase(res.dbinfo);
 }
 
-void BaseShellWidget::updateDefaultDatabase(IDataBaseInfoSPtr dbs) {
+void BaseShellWidget::updateDefaultDatabase(core::IDataBaseInfoSPtr dbs) {
   if (dbs) {
     std::string name = dbs->name();
     dbName_->setText(common::convertFromString<QString>(name));

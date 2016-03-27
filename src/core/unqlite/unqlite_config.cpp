@@ -27,6 +27,7 @@
 #include "fasto/qt/logger.h"
 
 namespace fastonosql {
+namespace core {
 namespace unqlite {
 namespace {
 
@@ -63,11 +64,12 @@ UnqliteConfig::UnqliteConfig()
 }
 
 }  // namespace unqlite
+}  // namespace core
 }  // namespace fastonosql
 
 namespace common {
 
-std::string convertToString(const fastonosql::unqlite::UnqliteConfig &conf) {
+std::string convertToString(const fastonosql::core::unqlite::UnqliteConfig &conf) {
   std::vector<std::string> argv = conf.args();
 
   if (conf.create_if_missing) {
@@ -86,8 +88,8 @@ std::string convertToString(const fastonosql::unqlite::UnqliteConfig &conf) {
 }
 
 template<>
-fastonosql::unqlite::UnqliteConfig convertFromString(const std::string& line) {
-  fastonosql::unqlite::UnqliteConfig cfg;
+fastonosql::core::unqlite::UnqliteConfig convertFromString(const std::string& line) {
+  fastonosql::core::unqlite::UnqliteConfig cfg;
   enum { kMaxArgs = 64 };
   int argc = 0;
   char* argv[kMaxArgs] = {0};
@@ -98,7 +100,7 @@ fastonosql::unqlite::UnqliteConfig convertFromString(const std::string& line) {
     p2 = strtok(NULL, " ");
   }
 
-  fastonosql::unqlite::parseOptions(argc, argv, cfg);
+  fastonosql::core::unqlite::parseOptions(argc, argv, cfg);
   return cfg;
 }
 

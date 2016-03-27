@@ -96,6 +96,7 @@ int unqlite_data_callback(const void* pData, unsigned int nDatalen, void* str) {
 }  // namespace
 
 namespace fastonosql {
+namespace core {
 namespace unqlite {
 namespace {
 
@@ -423,6 +424,6 @@ common::Error flushdb(CommandHandler* handler, int argc, char** argv, FastoObjec
   return unq->flushdb();
 }
 
-
 }  // namespace unqlite
+}  // namespace core
 }  // namespace fastonosql

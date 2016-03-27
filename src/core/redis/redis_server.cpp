@@ -22,6 +22,7 @@
 #include "core/redis/redis_database.h"
 
 namespace fastonosql {
+namespace core {
 namespace redis {
 
 RedisServer::RedisServer(IConnectionSettingsBaseSPtr settings)
@@ -59,4 +60,5 @@ void RedisServer::handleDiscoveryInfoResponceEvent(events::DiscoveryInfoResponce
 }
 
 }  // namespace redis
+}  // namespace core
 }  // namespace fastonosql

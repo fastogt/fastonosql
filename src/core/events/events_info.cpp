@@ -24,6 +24,7 @@
 #include "common/time.h"
 
 namespace fastonosql {
+namespace core {
 namespace events_info {
 
 EventInfoBase::EventInfoBase(initiator_type sender, error_type er)
@@ -259,4 +260,5 @@ ProgressInfoResponce::ProgressInfoResponce(uint8_t pr)
 }
 
 }  // namespace events_info
+}  // namespace core
 }  // namespace fastonosql

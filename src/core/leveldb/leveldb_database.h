@@ -21,6 +21,7 @@
 #include "core/idatabase.h"
 
 namespace fastonosql {
+namespace core {
 namespace leveldb {
 
 class LeveldbDatabase
@@ -30,4 +31,5 @@ class LeveldbDatabase
 };
 
 }  // namespace leveldb
+}  // namespace core
 }  // namespace fastonosql

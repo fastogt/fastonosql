@@ -36,6 +36,7 @@
 #define DELETE_KEY_PATTERN_1ARGS_S "DEL %s"
 
 namespace fastonosql {
+namespace core {
 namespace leveldb {
 
 LeveldbDriver::LeveldbDriver(IConnectionSettingsBaseSPtr settings)
@@ -352,4 +353,5 @@ IServerInfoSPtr LeveldbDriver::makeServerInfoFromString(const std::string& val) 
 }
 
 }  // namespace leveldb
+}  // namespace core
 }  // namespace fastonosql

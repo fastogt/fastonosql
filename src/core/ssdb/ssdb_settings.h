@@ -25,6 +25,7 @@
 #include "core/ssdb/ssdb_config.h"
 
 namespace fastonosql {
+namespace core {
 namespace ssdb {
 
 class SsdbConnectionSettings
@@ -48,4 +49,5 @@ class SsdbConnectionSettings
 };
 
 }  // namespace ssdb
+}  // namespace core
 }  // namespace fastonosql

@@ -36,7 +36,7 @@ class BaseQsciApi
   void setFilteredVersion(uint32_t version);
 
  protected:
-  bool canSkipCommand(const CommandInfo& info) const;
+  bool canSkipCommand(const core::CommandInfo& info) const;
 
  private:
   uint32_t filtered_version_;
@@ -50,10 +50,10 @@ class BaseQsciApiCommandHolder
   virtual QStringList callTips(const QStringList& context, int commas,
                                QsciScintilla::CallTipsStyle style, QList<int>& shifts);
  protected:
-  BaseQsciApiCommandHolder(const std::vector<CommandHolder>& commands, QsciLexer* lexer);
+  BaseQsciApiCommandHolder(const std::vector<core::CommandHolder>& commands, QsciLexer* lexer);
 
  private:
-  const std::vector<CommandHolder>& commands_;
+  const std::vector<core::CommandHolder>& commands_;
 };
 
 class BaseQsciLexer
@@ -86,16 +86,16 @@ class BaseQsciLexerCommandHolder
   virtual size_t commandsCount() const;
 
  protected:
-  explicit BaseQsciLexerCommandHolder(const std::vector<CommandHolder>& commands, QObject* parent = 0);
+  explicit BaseQsciLexerCommandHolder(const std::vector<core::CommandHolder>& commands, QObject* parent = 0);
 
  private:
   virtual void styleText(int start, int end);
   void paintCommands(const QString& source, int start);
 
-  const std::vector<CommandHolder>& commands_;
+  const std::vector<core::CommandHolder>& commands_;
 };
 
-QString makeCallTip(const CommandInfo& info);
+QString makeCallTip(const core::CommandInfo& info);
 
 }  // namespace shell
 }  // namespace fastonosql

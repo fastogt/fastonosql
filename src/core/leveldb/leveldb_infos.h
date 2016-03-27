@@ -31,6 +31,7 @@
 #define LEVELDB_WRITE_MB_LABEL "write_mb"
 
 namespace fastonosql {
+namespace core {
 namespace leveldb {
 
 class LeveldbServerInfo
@@ -78,4 +79,5 @@ class LeveldbCommand
 };
 
 }  // namespace leveldb
+}  // namespace core
 }  // namespace fastonosql

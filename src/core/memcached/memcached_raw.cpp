@@ -26,6 +26,7 @@
 #include "common/sprintf.h"
 
 namespace fastonosql {
+namespace core {
 namespace memcached {
 namespace {
 
@@ -556,4 +557,5 @@ common::Error help(CommandHandler* handler, int argc, char** argv, FastoObject* 
 }
 
 }  // namespace memcached
+}  // namespace core
 }  // namespace fastonosql

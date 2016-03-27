@@ -50,7 +50,7 @@ void LogTabWidget::addLogMessage(const QString& message, common::logging::LEVEL_
   log_->addLogMessage(message, level);
 }
 
-void LogTabWidget::addCommand(connectionTypes type, const Command& command) {
+void LogTabWidget::addCommand(core::connectionTypes type, const Command& command) {
   commands_->addCommand(type, command);
 }
 

@@ -80,16 +80,16 @@ bool FastoCommonModel::setData(const QModelIndex& index, const QVariant& value, 
 
     if (column == FastoCommonItem::eKey) {
     } else if (column == FastoCommonItem::eValue) {
-      const QString newValue = value.toString();
+      QString newValue = value.toString();
       if (newValue != node->value()) {
         const std::string key = common::convertToString(node->key());
         const std::string value = common::convertToString(newValue);
 
         //  node->type() TODO: create according type
         common::ValueSPtr vs = common::make_value(common::Value::createStringValue(value));
-        NValue val(vs);
-        NDbKValue dbv(NKey(key), val);
-        CommandKeySPtr com(new CommandCreateKey(dbv));
+        core::NValue val(vs);
+        core::NDbKValue dbv(core::NKey(key), val);
+        core::CommandKeySPtr com(new core::CommandCreateKey(dbv));
         emit changedValue(com);
       }
     }
@@ -132,7 +132,7 @@ int FastoCommonModel::columnCount(const QModelIndex& parent) const {
   return FastoCommonItem::eCountColumns;
 }
 
-void FastoCommonModel::changeValue(const NDbKValue& value) {
+void FastoCommonModel::changeValue(const core::NDbKValue& value) {
   QModelIndex ind = index(0, 0);
   if (!ind.isValid()) {
     return;

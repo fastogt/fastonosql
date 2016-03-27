@@ -35,18 +35,18 @@ class KeyTableItem
     kCountColumns = 3
   };
 
-  explicit KeyTableItem(const NDbKValue& key);
+  explicit KeyTableItem(const core::NDbKValue& key);
 
   QString key() const;
   QString typeText() const;
   int32_t TTL() const;
   common::Value::Type type() const;
 
-  NDbKValue dbv() const;
-  void setDbv(const NDbKValue& val);
+  core::NDbKValue dbv() const;
+  void setDbv(const core::NDbKValue& val);
 
  private:
-  NDbKValue key_;
+  core::NDbKValue key_;
 };
 
 class KeysTableModel
@@ -65,10 +65,10 @@ class KeysTableModel
   virtual int columnCount(const QModelIndex& parent) const;
   void clear();
 
-  void changeValue(const NDbKValue& value);
+  void changeValue(const core::NDbKValue& value);
 
  Q_SIGNALS:
-  void changedValue(CommandKeySPtr cmd);
+  void changedValue(core::CommandKeySPtr cmd);
 };
 
 }  // namespace gui

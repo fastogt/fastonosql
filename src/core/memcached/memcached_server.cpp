@@ -22,6 +22,7 @@
 #include "core/memcached/memcached_database.h"
 
 namespace fastonosql {
+namespace core {
 namespace memcached {
 
 MemcachedServer::MemcachedServer(IConnectionSettingsBaseSPtr settings)
@@ -42,4 +43,5 @@ IDatabaseSPtr MemcachedServer::createDatabase(IDataBaseInfoSPtr info) {
 }
 
 }  // namespace memcached
+}  // namespace core
 }  // namespace fastonosql

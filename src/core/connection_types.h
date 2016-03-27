@@ -23,6 +23,7 @@
 #include "common/convert2string.h"
 
 namespace fastonosql {
+namespace core {
 
 enum connectionTypes {
   DBUNKNOWN = 0,
@@ -84,10 +85,11 @@ enum ConnectionMode {
   InteractiveMode
 };
 
+}  // namespace core
 }  // namespace fastonosql
 
 namespace common {
-  std::string convertToString(fastonosql::connectionTypes t);
-  std::string convertToString(fastonosql::serverTypes st);
-  std::string convertToString(fastonosql::ConnectionMode t);
+  std::string convertToString(fastonosql::core::connectionTypes t);
+  std::string convertToString(fastonosql::core::serverTypes st);
+  std::string convertToString(fastonosql::core::ConnectionMode t);
 }

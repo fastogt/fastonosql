@@ -34,6 +34,7 @@
 #define DELETE_KEY_PATTERN_1ARGS_S "DEL %s"
 
 namespace fastonosql {
+namespace core {
 namespace unqlite {
 
 UnqliteDriver::UnqliteDriver(IConnectionSettingsBaseSPtr settings)
@@ -350,4 +351,5 @@ IServerInfoSPtr UnqliteDriver::makeServerInfoFromString(const std::string& val) 
 }
 
 }  // namespace unqlite
+}  // namespace core
 }  // namespace fastonosql

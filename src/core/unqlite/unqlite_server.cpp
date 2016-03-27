@@ -22,6 +22,7 @@
 #include "core/unqlite/unqlite_database.h"
 
 namespace fastonosql {
+namespace core {
 namespace unqlite {
 
 UnqliteServer::UnqliteServer(IConnectionSettingsBaseSPtr settings)
@@ -38,4 +39,5 @@ IDatabaseSPtr UnqliteServer::createDatabase(IDataBaseInfoSPtr info) {
 }
 
 }  // namespace unqlite
+}  // namespace core
 }  // namespace fastonosql

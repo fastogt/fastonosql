@@ -32,7 +32,7 @@
 namespace fastonosql {
 namespace gui {
 
-PropertyServerDialog::PropertyServerDialog(IServerSPtr server, QWidget* parent)
+PropertyServerDialog::PropertyServerDialog(core::IServerSPtr server, QWidget* parent)
   : QDialog(parent), server_(server) {
   CHECK(server_);
 
@@ -52,50 +52,50 @@ PropertyServerDialog::PropertyServerDialog(IServerSPtr server, QWidget* parent)
                                                  translations::trLoading, 0.5,
                                                  QColor(111, 111, 100), this);
 
-  VERIFY(connect(server.get(), &IServer::startedLoadServerProperty,
+  VERIFY(connect(server.get(), &core::IServer::startedLoadServerProperty,
                  this, &PropertyServerDialog::startServerProperty));
-  VERIFY(connect(server.get(), &IServer::finishedLoadServerProperty,
+  VERIFY(connect(server.get(), &core::IServer::finishedLoadServerProperty,
                  this, &PropertyServerDialog::finishServerProperty));
-  VERIFY(connect(server.get(), &IServer::startedChangeServerProperty,
+  VERIFY(connect(server.get(), &core::IServer::startedChangeServerProperty,
                  this, &PropertyServerDialog::startServerChangeProperty));
-  VERIFY(connect(server.get(), &IServer::finishedChangeServerProperty,
+  VERIFY(connect(server.get(), &core::IServer::finishedChangeServerProperty,
                  this, &PropertyServerDialog::finishServerChangeProperty));
   retranslateUi();
 }
 
-void PropertyServerDialog::startServerProperty(const events_info::ServerPropertyInfoRequest& req) {
+void PropertyServerDialog::startServerProperty(const core::events_info::ServerPropertyInfoRequest& req) {
   glassWidget_->start();
 }
 
-void PropertyServerDialog::finishServerProperty(const events_info::ServerPropertyInfoResponce& res) {
+void PropertyServerDialog::finishServerProperty(const core::events_info::ServerPropertyInfoResponce& res) {
   glassWidget_->stop();
   common::Error er = res.errorInfo();
   if (er && er->isError()) {
     return;
   }
 
-  if (server_->type() == REDIS) {
-    ServerPropertyInfo inf = res.info;
+  if (server_->type() == core::REDIS) {
+    core::ServerPropertyInfo inf = res.info;
     PropertyTableModel* model = qobject_cast<PropertyTableModel*>(propertyes_table_->model());
     for (size_t i = 0; i < inf.propertyes.size(); ++i) {
-      PropertyType it = inf.propertyes[i];
+      core::PropertyType it = inf.propertyes[i];
       model->insertItem(new PropertyTableItem(common::convertFromString<QString>(it.first),
                                               common::convertFromString<QString>(it.second)));
     }
   }
 }
 
-void PropertyServerDialog::startServerChangeProperty(const events_info::ChangeServerPropertyInfoRequest& req) {
+void PropertyServerDialog::startServerChangeProperty(const core::events_info::ChangeServerPropertyInfoRequest& req) {
 }
 
-void PropertyServerDialog::finishServerChangeProperty(const events_info::ChangeServerPropertyInfoResponce& res) {
+void PropertyServerDialog::finishServerChangeProperty(const core::events_info::ChangeServerPropertyInfoResponce& res) {
   common::Error er = res.errorInfo();
   if (er && er->isError()) {
     return;
   }
 
-  if (server_->type() == REDIS) {
-    PropertyType pr = res.new_item;
+  if (server_->type() == core::REDIS) {
+    core::PropertyType pr = res.new_item;
     if (res.is_change) {
       PropertyTableModel* model = qobject_cast<PropertyTableModel*>(propertyes_table_->model());
       model->changeProperty(pr);
@@ -103,8 +103,8 @@ void PropertyServerDialog::finishServerChangeProperty(const events_info::ChangeS
   }
 }
 
-void PropertyServerDialog::changedProperty(const PropertyType& prop) {
-  events_info::ChangeServerPropertyInfoRequest req(this, prop);
+void PropertyServerDialog::changedProperty(const core::PropertyType& prop) {
+  core::events_info::ChangeServerPropertyInfoRequest req(this, prop);
   server_->changeProperty(req);
 }
 
@@ -119,7 +119,7 @@ void PropertyServerDialog::showEvent(QShowEvent* e) {
   QDialog::showEvent(e);
   emit showed();
 
-  events_info::ServerPropertyInfoRequest req(this);
+  core::events_info::ServerPropertyInfoRequest req(this);
   server_->serverProperty(req);
 }
 

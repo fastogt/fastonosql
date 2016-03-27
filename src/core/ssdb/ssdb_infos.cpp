@@ -27,6 +27,7 @@
 #define MARKER "\r\n"
 
 namespace fastonosql {
+namespace core {
 namespace {
 
 const std::vector<Field> SsdbCommonFields = {
@@ -208,4 +209,5 @@ bool SsdbCommand::isReadOnly() const {
 }
 
 }  // namespace ssdb
+}  // namespace core
 }  // namespace fastonosql

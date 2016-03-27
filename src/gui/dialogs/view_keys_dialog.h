@@ -48,16 +48,16 @@ class ViewKeysDialog
     step_keys_on_page = defaults_key
   };
 
-  explicit ViewKeysDialog(const QString& title, IDatabaseSPtr db, QWidget* parent = 0);
+  explicit ViewKeysDialog(const QString& title, core::IDatabaseSPtr db, QWidget* parent = 0);
 
  private Q_SLOTS:
-  void startLoadDatabaseContent(const events_info::LoadDatabaseContentRequest& req);
-  void finishLoadDatabaseContent(const events_info::LoadDatabaseContentResponce& res);
+  void startLoadDatabaseContent(const core::events_info::LoadDatabaseContentRequest& req);
+  void finishLoadDatabaseContent(const core::events_info::LoadDatabaseContentResponce& res);
 
-  void startExecuteCommand(const events_info::CommandRequest& req);
-  void finishExecuteCommand(const events_info::CommandResponce& res);
+  void startExecuteCommand(const core::events_info::CommandRequest& req);
+  void finishExecuteCommand(const core::events_info::CommandResponce& res);
 
-  void executeCommand(CommandKeySPtr cmd);
+  void executeCommand(core::CommandKeySPtr cmd);
 
   void searchLineChanged(const QString& text);
   void leftPageClicked();
@@ -85,7 +85,7 @@ class ViewKeysDialog
   QPushButton* rightButtonList_;
   FastoTableView* keysTable_;
   KeysTableModel* keysModel_;
-  IDatabaseSPtr db_;
+  core::IDatabaseSPtr db_;
 };
 
 }  // namespace gui

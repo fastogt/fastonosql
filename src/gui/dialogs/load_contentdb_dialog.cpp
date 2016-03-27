@@ -36,7 +36,7 @@ namespace fastonosql {
 namespace gui {
 
 LoadContentDbDialog::LoadContentDbDialog(const QString& title,
-                                         connectionTypes type, QWidget* parent)
+                                         core::connectionTypes type, QWidget* parent)
   : QDialog(parent), type_(type) {
   setWindowIcon(GuiFactory::instance().icon(type_));
   setWindowTitle(title);

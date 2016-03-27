@@ -27,6 +27,7 @@
 #include "core/connection_confg.h"
 
 namespace fastonosql {
+namespace core {
 namespace leveldb {
 
 struct LeveldbConfig
@@ -37,8 +38,9 @@ struct LeveldbConfig
 };
 
 }  // namespace leveldb
+}  // namespace core
 }  // namespace fastonosql
 
 namespace common {
-  std::string convertToString(const fastonosql::leveldb::LeveldbConfig& conf);
+  std::string convertToString(const fastonosql::core::leveldb::LeveldbConfig& conf);
 }  // namespace common

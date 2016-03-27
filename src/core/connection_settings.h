@@ -28,6 +28,7 @@
 #include "core/ssh_info.h"
 
 namespace fastonosql {
+namespace core {
 
 class IConnectionSettings {
  public:
@@ -154,4 +155,5 @@ class IClusterSettingsBase
 
 typedef common::shared_ptr<IClusterSettingsBase> IClusterSettingsBaseSPtr;
 
+}  // namespace core
 }  // namespace fastonosql

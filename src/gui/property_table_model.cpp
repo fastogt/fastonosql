@@ -69,7 +69,7 @@ bool PropertyTableModel::setData(const QModelIndex& index, const QVariant& value
      } else if (column == PropertyTableItem::eValue) {
        const QString&newValue = value.toString();
        if (newValue != node->value_) {
-         PropertyType pr;
+         core::PropertyType pr;
          pr.first = common::convertToString(node->key_);
          pr.second = common::convertToString(newValue);
          emit changedProperty(pr);
@@ -112,7 +112,7 @@ int PropertyTableModel::columnCount(const QModelIndex& parent) const {
 }
 
 
-void PropertyTableModel::changeProperty(const PropertyType& pr) {
+void PropertyTableModel::changeProperty(const core::PropertyType& pr) {
   const QString key = common::convertFromString<QString>(pr.first);
   for (size_t i = 0; i < data_.size(); ++i) {
     PropertyTableItem* it = dynamic_cast<PropertyTableItem*>(data_[i]);

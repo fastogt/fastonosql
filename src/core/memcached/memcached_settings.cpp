@@ -23,6 +23,7 @@
 #include "common/utils.h"
 
 namespace fastonosql {
+namespace core {
 namespace memcached {
 
 MemcachedConnectionSettings::MemcachedConnectionSettings(const std::string& connectionName)
@@ -59,4 +60,5 @@ MemcachedConnectionSettings* MemcachedConnectionSettings::clone() const {
 }
 
 }  // namespace memcached
+}  // namespace core
 }  // namespace fastonosql

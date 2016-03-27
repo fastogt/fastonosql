@@ -25,6 +25,7 @@
 #include "core/memcached/memcached_raw.h"
 
 namespace fastonosql {
+namespace core {
 namespace memcached {
 
 class MemcachedDriver
@@ -77,4 +78,5 @@ class MemcachedDriver
 };
 
 }  // namespace memcached
+}  // namespace core
 }  // namespace fastonosql

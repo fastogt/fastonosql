@@ -24,6 +24,7 @@
 #include "common/net/types.h"
 
 namespace fastonosql {
+namespace core {
 
 enum ConfigType {
   LOCAL,
@@ -64,4 +65,5 @@ struct RemoteConfig
   common::net::hostAndPort host;
 };
 
+}  // namespace core
 }  // namespace fastonosql

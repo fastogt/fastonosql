@@ -31,6 +31,7 @@
 #define ROCKSDB_WRITE_MB_LABEL "write_mb"
 
 namespace fastonosql {
+namespace core {
 namespace rocksdb {
 
 class RocksdbServerInfo
@@ -78,4 +79,5 @@ class RocksdbCommand
 };
 
 }  // namespace rocksdb
+}  // namespace core
 }  // namespace fastonosql

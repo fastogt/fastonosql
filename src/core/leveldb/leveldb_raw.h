@@ -27,6 +27,7 @@
 #include "core/leveldb/leveldb_infos.h"
 
 namespace fastonosql {
+namespace core {
 namespace leveldb {
 
 common::Error testConnection(LeveldbConnectionSettings* settings);
@@ -99,4 +100,5 @@ static const std::vector<CommandHolder> leveldbCommands = {
 };
 
 }  // namespace leveldb
+}  // namespace core
 }  // namespace fastonosql

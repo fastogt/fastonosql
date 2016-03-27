@@ -40,9 +40,9 @@ class ClusterDialog
   : public QDialog {
   Q_OBJECT
  public:
-  typedef std::vector<IConnectionSettingsBaseSPtr> cluster_connection_type;
-  explicit ClusterDialog(QWidget* parent, IClusterSettingsBase* connection = nullptr);  // get ownerships connection
-  IClusterSettingsBaseSPtr connection() const;
+  typedef std::vector<core::IConnectionSettingsBaseSPtr> cluster_connection_type;
+  explicit ClusterDialog(QWidget* parent, core::IClusterSettingsBase* connection = nullptr);  // get ownerships connection
+  core::IClusterSettingsBaseSPtr connection() const;
 
  public Q_SLOTS:
   virtual void accept();
@@ -65,9 +65,9 @@ class ClusterDialog
  private:
   void retranslateUi();
   bool validateAndApply();
-  void addConnection(IConnectionSettingsBaseSPtr con);
+  void addConnection(core::IConnectionSettingsBaseSPtr con);
 
-  IClusterSettingsBaseSPtr cluster_connection_;
+  core::IClusterSettingsBaseSPtr cluster_connection_;
   QLineEdit* connectionName_;
   QComboBox* typeConnection_;
   QCheckBox* logging_;

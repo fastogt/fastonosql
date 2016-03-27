@@ -59,6 +59,7 @@
 #endif
 
 namespace fastonosql {
+namespace core {
 
 ServersManager::ServersManager() {
   qRegisterMetaType<ServerInfoSnapShoot>("ServerInfoSnapShoot");
@@ -151,37 +152,37 @@ common::Error ServersManager::testConnection(IConnectionSettingsBaseSPtr connect
   connectionTypes type = connection->type();
 #ifdef BUILD_WITH_REDIS
   if (type == REDIS) {
-    return fastonosql::redis::testConnection(dynamic_cast<redis::RedisConnectionSettings*>(connection.get()));
+    return fastonosql::core::redis::testConnection(dynamic_cast<redis::RedisConnectionSettings*>(connection.get()));
   }
 #endif
 #ifdef BUILD_WITH_MEMCACHED
   if (type == MEMCACHED) {
-    return fastonosql::memcached::testConnection(dynamic_cast<memcached::MemcachedConnectionSettings*>(connection.get()));
+    return fastonosql::core::memcached::testConnection(dynamic_cast<memcached::MemcachedConnectionSettings*>(connection.get()));
   }
 #endif
 #ifdef BUILD_WITH_SSDB
   if (type == SSDB) {
-    return fastonosql::ssdb::testConnection(dynamic_cast<ssdb::SsdbConnectionSettings*>(connection.get()));
+    return fastonosql::core::ssdb::testConnection(dynamic_cast<ssdb::SsdbConnectionSettings*>(connection.get()));
   }
 #endif
 #ifdef BUILD_WITH_LEVELDB
   if (type == LEVELDB) {
-    return fastonosql::leveldb::testConnection(dynamic_cast<leveldb::LeveldbConnectionSettings*>(connection.get()));
+    return fastonosql::core::leveldb::testConnection(dynamic_cast<leveldb::LeveldbConnectionSettings*>(connection.get()));
   }
 #endif
 #ifdef BUILD_WITH_ROCKSDB
   if (type == ROCKSDB) {
-    return fastonosql::rocksdb::testConnection(dynamic_cast<rocksdb::RocksdbConnectionSettings*>(connection.get()));
+    return fastonosql::core::rocksdb::testConnection(dynamic_cast<rocksdb::RocksdbConnectionSettings*>(connection.get()));
   }
 #endif
 #ifdef BUILD_WITH_UNQLITE
   if (type == UNQLITE) {
-    return fastonosql::unqlite::testConnection(dynamic_cast<unqlite::UnqliteConnectionSettings*>(connection.get()));
+    return fastonosql::core::unqlite::testConnection(dynamic_cast<unqlite::UnqliteConnectionSettings*>(connection.get()));
   }
 #endif
 #ifdef BUILD_WITH_LMDB
   if (type == LMDB) {
-    return fastonosql::lmdb::testConnection(dynamic_cast<lmdb::LmdbConnectionSettings*>(connection.get()));
+    return fastonosql::core::lmdb::testConnection(dynamic_cast<lmdb::LmdbConnectionSettings*>(connection.get()));
   }
 #endif
   return common::make_error_value("Invalid setting type", common::ErrorValue::E_ERROR);
@@ -196,7 +197,7 @@ common::Error ServersManager::discoveryConnection(IConnectionSettingsBaseSPtr co
   connectionTypes type = connection->type();
 #ifdef BUILD_WITH_REDIS
   if (type == REDIS) {
-    return fastonosql::redis::discoveryConnection(dynamic_cast<redis::RedisConnectionSettings*>(connection.get()), inf);
+    return fastonosql::core::redis::discoveryConnection(dynamic_cast<redis::RedisConnectionSettings*>(connection.get()), inf);
   }
 #endif
 #ifdef BUILD_WITH_MEMCACHED
@@ -247,4 +248,5 @@ void ServersManager::closeCluster(cluster_t cluster) {
   }
 }
 
+}  // namespace core
 }  // namespace fastonosql

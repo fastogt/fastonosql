@@ -23,6 +23,7 @@
 #include "common/utils.h"
 
 namespace fastonosql {
+namespace core {
 namespace ssdb {
 
 SsdbConnectionSettings::SsdbConnectionSettings(const std::string& connectionName)
@@ -59,4 +60,5 @@ SsdbConnectionSettings* SsdbConnectionSettings::clone() const {
 }
 
 }  // namespace ssdb
+}  // namespace core
 }  // namespace fastonosql

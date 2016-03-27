@@ -35,6 +35,7 @@
 #define INFINITE_COMMAND_ARGS UINT8_MAX
 
 namespace fastonosql {
+namespace core {
 
 struct CommandInfo {
   CommandInfo(const std::string& name, const std::string& params,
@@ -309,4 +310,5 @@ FastoObjectCommand* createCommand(FastoObjectIPtr parent, const std::string& inp
   return createCommand<Command>(parent.get(), stableCommand(input), ct);
 }
 
+}  // namespace core
 }  // namespace fastonosql

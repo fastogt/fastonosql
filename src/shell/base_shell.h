@@ -37,10 +37,10 @@ class BaseShell
   QString basedOn() const;
   void setFilteredVersion(uint32_t version);
 
-  static BaseShell* createFromType(connectionTypes type, bool showAutoCompl);
+  static BaseShell* createFromType(core::connectionTypes type, bool showAutoCompl);
 
  protected:
-  BaseShell(connectionTypes type, bool showAutoCompl, QWidget* parent = 0);
+  BaseShell(core::connectionTypes type, bool showAutoCompl, QWidget* parent = 0);
 };
 
 }  // namespace shell

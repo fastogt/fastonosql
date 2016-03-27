@@ -88,8 +88,8 @@ class MainWindow
   void retranslateUi();
   void updateRecentConnectionActions();
   void clearRecentConnectionsMenu();
-  void createServer(IConnectionSettingsBaseSPtr settings);
-  void createCluster(IClusterSettingsBaseSPtr settings);
+  void createServer(core::IConnectionSettingsBaseSPtr settings);
+  void createCluster(core::IClusterSettingsBaseSPtr settings);
 
   QAction* openAction_;
   QAction* loadFromFileAction_;

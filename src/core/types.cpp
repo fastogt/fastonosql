@@ -25,6 +25,7 @@
 #include "common/sprintf.h"
 
 namespace fastonosql {
+namespace core {
 
 CommandInfo::CommandInfo(const std::string& name, const std::string& params,
                          const std::string& summary, uint32_t since,
@@ -439,4 +440,5 @@ NValue CommandCreateKey::value() const {
   return key_.value();
 }
 
+}  // namespace core
 }  // namespace fastonosql

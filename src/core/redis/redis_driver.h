@@ -26,6 +26,7 @@
 #include "core/redis/redis_raw.h"
 
 namespace fastonosql {
+namespace core {
 namespace redis {
 
 class RedisDriver
@@ -96,4 +97,5 @@ class RedisDriver
 };
 
 }  // namespace redis
+}  // namespace core
 }  // namespace fastonosql

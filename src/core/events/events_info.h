@@ -25,6 +25,7 @@
 #include "common/qt/utils_qt.h"
 
 namespace fastonosql {
+namespace core {
 namespace events_info {
 
 class EventInfoBase
@@ -383,4 +384,5 @@ struct ProgressInfoResponce {
 };
 
 }  // namespace events_info
+}  // namespace core
 }  // namespace fastonosql

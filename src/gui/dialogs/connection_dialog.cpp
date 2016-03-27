@@ -59,8 +59,8 @@ const QString defaultNameConnection = "New Connection";
 namespace fastonosql {
 namespace gui {
 
-ConnectionDialog::ConnectionDialog(QWidget* parent, IConnectionSettingsBase* connection,
-                                   const std::vector<connectionTypes>& availibleTypes)
+ConnectionDialog::ConnectionDialog(QWidget* parent, core::IConnectionSettingsBase* connection,
+                                   const std::vector<core::connectionTypes>& availibleTypes)
   : QDialog(parent), connection_(connection) {
   setWindowIcon(GuiFactory::instance().serverIcon());
   setWindowFlags(windowFlags() & ~Qt::WindowContextHelpButtonHint);  // Remove help button (?)
@@ -74,15 +74,15 @@ ConnectionDialog::ConnectionDialog(QWidget* parent, IConnectionSettingsBase* con
   typeConnection_ = new QComboBox;
 
   if (availibleTypes.empty()) {
-    for (size_t i = 0; i < SIZEOFMASS(connnectionType); ++i) {
-      connectionTypes ct = static_cast<connectionTypes>(i);
+    for (size_t i = 0; i < SIZEOFMASS(core::connnectionType); ++i) {
+      core::connectionTypes ct = static_cast<core::connectionTypes>(i);
       std::string str = common::convertToString(ct);
       typeConnection_->addItem(GuiFactory::instance().icon(ct),
                                common::convertFromString<QString>(str), ct);
     }
   } else {
     for (size_t i = 0; i < availibleTypes.size(); ++i) {
-      connectionTypes ct = availibleTypes[i];
+      core::connectionTypes ct = availibleTypes[i];
       std::string str = common::convertToString(ct);
       typeConnection_->addItem(GuiFactory::instance().icon(ct),
                                common::convertFromString<QString>(str), ct);
@@ -128,9 +128,9 @@ ConnectionDialog::ConnectionDialog(QWidget* parent, IConnectionSettingsBase* con
 
   // ssh
 
-  IConnectionSettingsRemote* remoteSettings = dynamic_cast<IConnectionSettingsRemote*>(connection_.get());
+  core::IConnectionSettingsRemote* remoteSettings = dynamic_cast<core::IConnectionSettingsRemote*>(connection_.get());
 
-  SSHInfo info;
+  core::SSHInfo info;
   if (remoteSettings) {
     info = remoteSettings->sshInfo();
   }
@@ -159,7 +159,7 @@ ConnectionDialog::ConnectionDialog(QWidget* parent, IConnectionSettingsBase* con
 
   security_ = new QComboBox;
   security_->addItems(QStringList() << translations::trPassword << translations::trPrivateKey);
-  if (info.authMethod() == SSHInfo::PUBLICKEY) {
+  if (info.authMethod() == core::SSHInfo::PUBLICKEY) {
     security_->setCurrentText(translations::trPrivateKey);
   } else {
     security_->setCurrentText(translations::trPassword);
@@ -261,7 +261,7 @@ ConnectionDialog::ConnectionDialog(QWidget* parent, IConnectionSettingsBase* con
   typeConnection_->addItem(GuiFactory::instance().icon(type), common::convertFromString<QString>(str), type);
 }*/
 
-IConnectionSettingsBaseSPtr ConnectionDialog::connection() const {
+core::IConnectionSettingsBaseSPtr ConnectionDialog::connection() const {
   return connection_;
 }
 
@@ -273,15 +273,15 @@ void ConnectionDialog::accept() {
 
 void ConnectionDialog::typeConnectionChange(int index) {
   QVariant var = typeConnection_->itemData(index);
-  connectionTypes currentType = (connectionTypes)qvariant_cast<unsigned char>(var);
-  bool isValidType = currentType != DBUNKNOWN;
+  core::connectionTypes currentType = (core::connectionTypes)qvariant_cast<unsigned char>(var);
+  bool isValidType = currentType != core::DBUNKNOWN;
   bool isRType = isRemoteType(currentType);
 
   connectionName_->setEnabled(isValidType);
   commandLine_->setEnabled(isValidType);
   buttonBox_->button(QDialogButtonBox::Save)->setEnabled(isValidType);
 
-  const char* helpText = useHelpText(currentType);
+  const char* helpText = core::useHelpText(currentType);
   if (helpText) {
     QString trHelp = tr(helpText);
     commandLine_->setToolTip(trHelp);
@@ -304,7 +304,7 @@ void ConnectionDialog::loggingStateChange(int value) {
 }
 
 void ConnectionDialog::securityChange(const QString& ) {
-  bool isKey = selectedAuthMethod() == SSHInfo::PUBLICKEY;
+  bool isKey = selectedAuthMethod() == core::SSHInfo::PUBLICKEY;
   sshPrivateKeyLabel_->setVisible(isKey);
   privateKeyBox_->setVisible(isKey);
   selectPrivateFileButton_->setVisible(isKey);
@@ -370,18 +370,18 @@ void ConnectionDialog::retranslateUi() {
 }
 
 bool ConnectionDialog::validateAndApply() {
-  connectionTypes currentType = common::convertFromString<connectionTypes>(common::convertToString(typeConnection_->currentText()));
-  bool isValidType = currentType != DBUNKNOWN;
+  core::connectionTypes currentType = common::convertFromString<core::connectionTypes>(common::convertToString(typeConnection_->currentText()));
+  bool isValidType = currentType != core::DBUNKNOWN;
 
   if (isValidType) {
     bool isRType = isRemoteType(currentType);
     std::string conName = common::convertToString(connectionName_->text());
 
     if (isRType) {
-      IConnectionSettingsRemote* newConnection = IConnectionSettingsRemote::createFromType(currentType, conName, common::net::hostAndPort());
+      core::IConnectionSettingsRemote* newConnection = core::IConnectionSettingsRemote::createFromType(currentType, conName, common::net::hostAndPort());
       connection_.reset(newConnection);
 
-      SSHInfo info = newConnection->sshInfo();
+      core::SSHInfo info = newConnection->sshInfo();
       info.host = common::net::hostAndPort(common::convertToString(sshHostName_->text()),
                                              sshPort_->text().toInt());
       info.user_name = common::convertToString(userName_->text());
@@ -392,11 +392,11 @@ bool ConnectionDialog::validateAndApply() {
       if (useSsh_->isChecked()) {
         info.current_method = selectedAuthMethod();
       } else {
-        info.current_method = SSHInfo::UNKNOWN;
+        info.current_method = core::SSHInfo::UNKNOWN;
       }
         newConnection->setSshInfo(info);
     } else {
-      IConnectionSettingsBase* newConnection = IConnectionSettingsBase::createFromType(currentType,
+      core::IConnectionSettingsBase* newConnection = core::IConnectionSettingsBase::createFromType(currentType,
                                                                                        conName);
       connection_.reset(newConnection);
     }
@@ -412,12 +412,12 @@ bool ConnectionDialog::validateAndApply() {
   }
 }
 
-SSHInfo::SupportedAuthenticationMetods ConnectionDialog::selectedAuthMethod() const {
+core::SSHInfo::SupportedAuthenticationMetods ConnectionDialog::selectedAuthMethod() const {
   if (security_->currentText() == translations::trPrivateKey) {
-    return SSHInfo::PUBLICKEY;
+    return core::SSHInfo::PUBLICKEY;
   }
 
-  return SSHInfo::PASSWORD;
+  return core::SSHInfo::PASSWORD;
 }
 
 void ConnectionDialog::updateSshControls(bool isValidType) {

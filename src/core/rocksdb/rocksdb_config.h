@@ -27,6 +27,7 @@
 #include "core/connection_confg.h"
 
 namespace fastonosql {
+namespace core {
 namespace rocksdb {
 
 struct RocksdbConfig
@@ -37,8 +38,9 @@ struct RocksdbConfig
 };
 
 }  // namespace rocksdb
+}  // namespace core
 }  // namespace fastonosql
 
 namespace common {
-  std::string convertToString(const fastonosql::rocksdb::RocksdbConfig& conf);
+  std::string convertToString(const fastonosql::core::rocksdb::RocksdbConfig& conf);
 }

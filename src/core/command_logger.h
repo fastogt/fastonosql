@@ -26,6 +26,7 @@
 #include "core/connection_types.h"
 
 namespace fastonosql {
+namespace core {
 
 class CommandLogger
   : public QObject, public common::patterns::LazySingleton<CommandLogger> {
@@ -45,4 +46,5 @@ inline void LOG_COMMAND(connectionTypes type, const Command& command) {
   return CommandLogger::instance().print(type, command);
 }
 
+}  // namespace core
 }  // namespace fastonosql

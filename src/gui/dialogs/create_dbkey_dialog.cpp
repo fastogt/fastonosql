@@ -45,7 +45,7 @@
 namespace fastonosql {
 namespace gui {
 
-CreateDbKeyDialog::CreateDbKeyDialog(const QString& title, connectionTypes type, QWidget* parent)
+CreateDbKeyDialog::CreateDbKeyDialog(const QString& title, core::connectionTypes type, QWidget* parent)
   : QDialog(parent), type_(type), value_() {
   setWindowIcon(GuiFactory::instance().icon(type_));
   setWindowTitle(title);
@@ -139,9 +139,9 @@ CreateDbKeyDialog::CreateDbKeyDialog(const QString& title, connectionTypes type,
   retranslateUi();
 }
 
-NDbKValue CreateDbKeyDialog::key() const {
-  NKey key(common::convertToString(keyEdit_->text()));
-  return NDbKValue(key, value_);
+core::NDbKValue CreateDbKeyDialog::key() const {
+  core::NKey key(common::convertToString(keyEdit_->text()));
+  return core::NDbKValue(key, value_);
 }
 
 void CreateDbKeyDialog::accept() {

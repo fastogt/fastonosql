@@ -33,6 +33,7 @@
 #define MARKER "\r\n"
 
 namespace fastonosql {
+namespace core {
 
 SSHInfo::SSHInfo()
   : host(DEFAULT_SSH_HOST, DEFAULT_SSH_PORT),
@@ -90,11 +91,12 @@ SSHInfo::SupportedAuthenticationMetods SSHInfo::authMethod() const {
   return current_method;
 }
 
+}  // namespace core
 }  // namespace fastonosql
 
 namespace common {
 
-std::string convertToString(const fastonosql::SSHInfo& ssh_info) {
+std::string convertToString(const fastonosql::core::SSHInfo& ssh_info) {
   return  HOST":" + common::convertToString(ssh_info.host) + MARKER
           USER":" + ssh_info.user_name + MARKER
           PASSWORD":" + ssh_info.password + MARKER
@@ -105,8 +107,8 @@ std::string convertToString(const fastonosql::SSHInfo& ssh_info) {
 }
 
 template<>
-fastonosql::SSHInfo convertFromString(const std::string& text) {
-  return fastonosql::SSHInfo(text);
+fastonosql::core::SSHInfo convertFromString(const std::string& text) {
+  return fastonosql::core::SSHInfo(text);
 }
 
 }  // namespace common

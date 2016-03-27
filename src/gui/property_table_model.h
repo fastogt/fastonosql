@@ -52,10 +52,10 @@ class PropertyTableModel
 
   virtual int columnCount(const QModelIndex& parent = QModelIndex()) const;
 
-  void changeProperty(const PropertyType& pr);
+  void changeProperty(const core::PropertyType& pr);
 
  Q_SIGNALS:
-  void changedProperty(const PropertyType& pr);
+  void changedProperty(const core::PropertyType& pr);
 };
 
 }  // namespace gui

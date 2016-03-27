@@ -22,6 +22,7 @@
 #include "core/leveldb/leveldb_database.h"
 
 namespace fastonosql {
+namespace core {
 namespace leveldb {
 
 LeveldbServer::LeveldbServer(IConnectionSettingsBaseSPtr settings)
@@ -38,4 +39,5 @@ IDatabaseSPtr LeveldbServer::createDatabase(IDataBaseInfoSPtr info) {
 }
 
 }  // namespace leveldb
+}  // namespace core
 }  // namespace fastonosql

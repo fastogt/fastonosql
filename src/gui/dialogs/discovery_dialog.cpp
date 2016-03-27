@@ -45,13 +45,13 @@ namespace {
 namespace fastonosql {
 namespace gui {
 
-DiscoveryConnection::DiscoveryConnection(IConnectionSettingsBaseSPtr conn, QObject* parent)
+DiscoveryConnection::DiscoveryConnection(core::IConnectionSettingsBaseSPtr conn, QObject* parent)
   : QObject(parent), connection_(conn), startTime_(common::time::current_mstime()) {
-  qRegisterMetaType<std::vector<ServerDiscoveryInfoSPtr> >("std::vector<ServerDiscoveryInfoSPtr>");
+  qRegisterMetaType<std::vector<core::ServerDiscoveryInfoSPtr> >("std::vector<core::ServerDiscoveryInfoSPtr>");
 }
 
 void DiscoveryConnection::routine() {
-  std::vector<ServerDiscoveryInfoSPtr> inf;
+  std::vector<core::ServerDiscoveryInfoSPtr> inf;
 
   if (!connection_) {
     emit connectionResult(false, common::time::current_mstime() - startTime_,
@@ -59,7 +59,7 @@ void DiscoveryConnection::routine() {
     return;
   }
 
-  common::Error er = ServersManager::instance().discoveryConnection(connection_, &inf);
+  common::Error er = core::ServersManager::instance().discoveryConnection(connection_, &inf);
 
   if (er && er->isError()) {
     emit connectionResult(false, common::time::current_mstime() - startTime_,
@@ -71,8 +71,8 @@ void DiscoveryConnection::routine() {
 }
 
 DiscoveryDiagnosticDialog::DiscoveryDiagnosticDialog(QWidget* parent,
-                                                     IConnectionSettingsBaseSPtr connection,
-                                                     IClusterSettingsBaseSPtr cluster)
+                                                     core::IConnectionSettingsBaseSPtr connection,
+                                                     core::IClusterSettingsBaseSPtr cluster)
   : QDialog(parent), cluster_(cluster) {
   setWindowTitle(translations::trConnectionDiscovery);
   setWindowIcon(GuiFactory::instance().serverIcon());
@@ -123,8 +123,8 @@ DiscoveryDiagnosticDialog::DiscoveryDiagnosticDialog(QWidget* parent,
   testConnection(connection);
 }
 
-std::vector<IConnectionSettingsBaseSPtr> DiscoveryDiagnosticDialog::selectedConnections() const {
-  std::vector<IConnectionSettingsBaseSPtr> res;
+std::vector<core::IConnectionSettingsBaseSPtr> DiscoveryDiagnosticDialog::selectedConnections() const {
+  std::vector<core::IConnectionSettingsBaseSPtr> res;
   for (size_t i = 0; i < listWidget_->topLevelItemCount(); ++i) {
     ConnectionListWidgetItemEx* item = dynamic_cast<ConnectionListWidgetItemEx*>(listWidget_->topLevelItem(i));
     if (item && item->isSelected()) {
@@ -136,7 +136,7 @@ std::vector<IConnectionSettingsBaseSPtr> DiscoveryDiagnosticDialog::selectedConn
 
 void DiscoveryDiagnosticDialog::connectionResult(bool suc, qint64 mstimeExecute,
                                                  const QString& resultText,
-                                                 std::vector<ServerDiscoveryInfoSPtr> infos) {
+                                                 std::vector<core::ServerDiscoveryInfoSPtr> infos) {
   glassWidget_->stop();
 
   executeTimeLabel_->setText(timeTemplate.arg(mstimeExecute));
@@ -148,9 +148,9 @@ void DiscoveryDiagnosticDialog::connectionResult(bool suc, qint64 mstimeExecute,
     iconLabel_->setPixmap(pm);
 
     for (size_t i = 0; i < infos.size(); ++i) {
-      ServerDiscoveryInfoSPtr inf = infos[i];
+      core::ServerDiscoveryInfoSPtr inf = infos[i];
       common::net::hostAndPort host = inf->host();
-      IConnectionSettingsBaseSPtr con(IConnectionSettingsRemote::createFromType(inf->connectionType(),
+      core::IConnectionSettingsBaseSPtr con(core::IConnectionSettingsRemote::createFromType(inf->connectionType(),
                                                                                 inf->name(), host));
       ConnectionListWidgetItemEx* item = new ConnectionListWidgetItemEx(con, inf->type());
       item->setDisabled(inf->self() || cluster_->findSettingsByHost(host));
@@ -165,7 +165,7 @@ void DiscoveryDiagnosticDialog::showEvent(QShowEvent* e) {
   glassWidget_->start();
 }
 
-void DiscoveryDiagnosticDialog::testConnection(IConnectionSettingsBaseSPtr connection) {
+void DiscoveryDiagnosticDialog::testConnection(core::IConnectionSettingsBaseSPtr connection) {
   QThread* th = new QThread;
   DiscoveryConnection* cheker = new DiscoveryConnection(connection);
   cheker->moveToThread(th);

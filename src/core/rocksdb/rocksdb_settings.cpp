@@ -21,6 +21,7 @@
 #include <string>
 
 namespace fastonosql {
+namespace core {
 namespace rocksdb {
 
 RocksdbConnectionSettings::RocksdbConnectionSettings(const std::string& connectionName)
@@ -57,4 +58,5 @@ RocksdbConnectionSettings* RocksdbConnectionSettings::clone() const {
 }
 
 }  // namespace rocksdb
+}  // namespace core
 }  // namespace fastonosql

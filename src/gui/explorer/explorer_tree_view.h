@@ -35,16 +35,16 @@ class ExplorerTreeView
   explicit ExplorerTreeView(QWidget* parent);
 
  Q_SIGNALS:
-  void openedConsole(IServerSPtr server, const QString& text);
-  void closeServer(IServerSPtr server);
-  void closeCluster(IClusterSPtr cluster);
+  void openedConsole(core::IServerSPtr server, const QString& text);
+  void closeServer(core::IServerSPtr server);
+  void closeCluster(core::IClusterSPtr cluster);
 
  public Q_SLOTS:
-  void addServer(IServerSPtr server);
-  void removeServer(IServerSPtr server);
+  void addServer(core::IServerSPtr server);
+  void removeServer(core::IServerSPtr server);
 
-  void addCluster(IClusterSPtr cluster);
-  void removeCluster(IClusterSPtr cluster);
+  void addCluster(core::IClusterSPtr cluster);
+  void removeCluster(core::IClusterSPtr cluster);
 
  private Q_SLOTS:
   void showContextMenu(const QPoint& point);
@@ -72,28 +72,28 @@ class ExplorerTreeView
   void getValue();
   void deleteKey();
 
-  void startLoadDatabases(const events_info::LoadDatabasesInfoRequest& req);
-  void finishLoadDatabases(const events_info::LoadDatabasesInfoResponce& res);
+  void startLoadDatabases(const core::events_info::LoadDatabasesInfoRequest& req);
+  void finishLoadDatabases(const core::events_info::LoadDatabasesInfoResponce& res);
 
-  void startSetDefaultDatabase(const events_info::SetDefaultDatabaseRequest& req);
-  void finishSetDefaultDatabase(const events_info::SetDefaultDatabaseResponce& res);
+  void startSetDefaultDatabase(const core::events_info::SetDefaultDatabaseRequest& req);
+  void finishSetDefaultDatabase(const core::events_info::SetDefaultDatabaseResponce& res);
 
-  void startLoadDatabaseContent(const events_info::LoadDatabaseContentRequest& req);
-  void finishLoadDatabaseContent(const events_info::LoadDatabaseContentResponce& res);
+  void startLoadDatabaseContent(const core::events_info::LoadDatabaseContentRequest& req);
+  void finishLoadDatabaseContent(const core::events_info::LoadDatabaseContentResponce& res);
 
-  void startClearDatabase(const events_info::ClearDatabaseRequest& req);
-  void finishClearDatabase(const events_info::ClearDatabaseResponce& res);
+  void startClearDatabase(const core::events_info::ClearDatabaseRequest& req);
+  void finishClearDatabase(const core::events_info::ClearDatabaseResponce& res);
 
-  void startExecuteCommand(const events_info::CommandRequest& req);
-  void finishExecuteCommand(const events_info::CommandResponce& res);
+  void startExecuteCommand(const core::events_info::CommandRequest& req);
+  void finishExecuteCommand(const core::events_info::CommandResponce& res);
 
  protected:
   virtual void changeEvent(QEvent* ev);
   virtual void mouseDoubleClickEvent(QMouseEvent* ev);
 
  private:
-  void syncWithServer(IServer* server);
-  void unsyncWithServer(IServer* server);
+  void syncWithServer(core::IServer* server);
+  void unsyncWithServer(core::IServer* server);
 
   void retranslateUi();
   QModelIndex selectedIndex() const;

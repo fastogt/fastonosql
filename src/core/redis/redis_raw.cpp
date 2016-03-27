@@ -270,6 +270,7 @@ bool isPipeLineCommand(const char* command) {
 }
 
 namespace fastonosql {
+namespace core {
 namespace redis {
 namespace {
 
@@ -1717,4 +1718,5 @@ common::Error RedisRaw::executeAsPipeline(std::vector<FastoObjectCommandIPtr> cm
 }
 
 }  // namespace redis
+}  // namespace core
 }  // namespace fastonosql

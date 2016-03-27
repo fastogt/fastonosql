@@ -26,6 +26,7 @@
 #define DEFAULT_SSH_HOST std::string()
 
 namespace fastonosql {
+namespace core {
 
 struct SSHInfo {
   enum SupportedAuthenticationMetods {
@@ -60,8 +61,9 @@ inline bool operator == (const SSHInfo& r, const SSHInfo& l) {
       r.passphrase == l.passphrase && r.user_name == l.user_name;
 }
 
+}  // namespace core
 }  // namespace fastonosql
 
 namespace common {
-  std::string convertToString(const fastonosql::SSHInfo& ssh_info);
+  std::string convertToString(const fastonosql::core::SSHInfo& ssh_info);
 }  // namespace common

@@ -38,7 +38,7 @@
 namespace fastonosql {
 namespace gui {
 
-ServerHistoryDialog::ServerHistoryDialog(IServerSPtr server, QWidget* parent)
+ServerHistoryDialog::ServerHistoryDialog(core::IServerSPtr server, QWidget* parent)
   : QDialog(parent, Qt::WindowMinMaxButtonsHint | Qt::WindowCloseButtonHint ), server_(server) {
   CHECK(server_);
 
@@ -82,24 +82,24 @@ ServerHistoryDialog::ServerHistoryDialog(IServerSPtr server, QWidget* parent)
   glassWidget_ = new fasto::qt::gui::GlassWidget(GuiFactory::instance().pathToLoadingGif(),
                                                  translations::trLoading, 0.5,
                                                  QColor(111, 111, 100), this);
-  VERIFY(connect(server.get(), &IServer::startedLoadServerHistoryInfo,
+  VERIFY(connect(server.get(), &core::IServer::startedLoadServerHistoryInfo,
                  this, &ServerHistoryDialog::startLoadServerHistoryInfo));
-  VERIFY(connect(server.get(), &IServer::finishedLoadServerHistoryInfo,
+  VERIFY(connect(server.get(), &core::IServer::finishedLoadServerHistoryInfo,
                  this, &ServerHistoryDialog::finishLoadServerHistoryInfo));
-  VERIFY(connect(server.get(), &IServer::startedClearServerHistory,
+  VERIFY(connect(server.get(), &core::IServer::startedClearServerHistory,
                  this, &ServerHistoryDialog::startClearServerHistory));
-  VERIFY(connect(server.get(), &IServer::finishedClearServerHistory,
+  VERIFY(connect(server.get(), &core::IServer::finishedClearServerHistory,
                  this, &ServerHistoryDialog::finishClearServerHistory));
-  VERIFY(connect(server.get(), &IServer::serverInfoSnapShoot,
+  VERIFY(connect(server.get(), &core::IServer::serverInfoSnapShoot,
                  this, &ServerHistoryDialog::snapShotAdd));
   retranslateUi();
 }
 
-void ServerHistoryDialog::startLoadServerHistoryInfo(const events_info::ServerInfoHistoryRequest& req) {
+void ServerHistoryDialog::startLoadServerHistoryInfo(const core::events_info::ServerInfoHistoryRequest& req) {
   glassWidget_->start();
 }
 
-void ServerHistoryDialog::finishLoadServerHistoryInfo(const events_info::ServerInfoHistoryResponce& res) {
+void ServerHistoryDialog::finishLoadServerHistoryInfo(const core::events_info::ServerInfoHistoryResponce& res) {
   glassWidget_->stop();
   common::Error er = res.errorInfo();
   if (er && er->isError()) {
@@ -110,10 +110,10 @@ void ServerHistoryDialog::finishLoadServerHistoryInfo(const events_info::ServerI
   reset();
 }
 
-void ServerHistoryDialog::startClearServerHistory(const events_info::ClearServerHistoryRequest& req) {
+void ServerHistoryDialog::startClearServerHistory(const core::events_info::ClearServerHistoryRequest& req) {
 }
 
-void ServerHistoryDialog::finishClearServerHistory(const events_info::ClearServerHistoryResponce& res) {
+void ServerHistoryDialog::finishClearServerHistory(const core::events_info::ClearServerHistoryResponce& res) {
   common::Error er = res.errorInfo();
   if (er && er->isError()) {
     return;
@@ -122,13 +122,13 @@ void ServerHistoryDialog::finishClearServerHistory(const events_info::ClearServe
   requestHistoryInfo();
 }
 
-void ServerHistoryDialog::snapShotAdd(ServerInfoSnapShoot snapshot) {
+void ServerHistoryDialog::snapShotAdd(core::ServerInfoSnapShoot snapshot) {
   infos_.push_back(snapshot);
   reset();
 }
 
 void ServerHistoryDialog::clearHistory() {
-  events_info::ClearServerHistoryRequest req(this);
+  core::events_info::ClearServerHistoryRequest req(this);
   server_->clearHistory(req);
 }
 
@@ -139,10 +139,10 @@ void ServerHistoryDialog::refreshInfoFields(int index) {
 
   serverInfoFields_->clear();
 
-  std::vector< std::vector<Field> > fields = infoFieldsFromType(server_->type());
-  std::vector<Field> field = fields[index];
-  for (int i = 0; i < field.size(); ++i) {
-    Field fl = field[i];
+  std::vector< std::vector<core::Field> > fields = infoFieldsFromType(server_->type());
+  std::vector<core::Field> field = fields[index];
+  for (size_t i = 0; i < field.size(); ++i) {
+    core::Field fl = field[i];
     if (fl.isIntegral()) {
       serverInfoFields_->addItem(common::convertFromString<QString>(fl.name), i);
     }
@@ -158,9 +158,9 @@ void ServerHistoryDialog::refreshGraph(int index) {
   QVariant var = serverInfoFields_->itemData(index);
   unsigned char indexIn = qvariant_cast<unsigned char>(var);
   fasto::qt::gui::GraphWidget::nodes_container_type nodes;
-  for (events_info::ServerInfoHistoryResponce::infos_container_type::iterator it = infos_.begin();
+  for (core::events_info::ServerInfoHistoryResponce::infos_container_type::iterator it = infos_.begin();
       it != infos_.end(); ++it) {
-    events_info::ServerInfoHistoryResponce::infos_container_type::value_type val = *it;
+    core::events_info::ServerInfoHistoryResponce::infos_container_type::value_type val = *it;
     if (!val.isValid()) {
       continue;
     }
@@ -201,7 +201,7 @@ void ServerHistoryDialog::retranslateUi() {
 }
 
 void ServerHistoryDialog::requestHistoryInfo() {
-  events_info::ServerInfoHistoryRequest req(this);
+  core::events_info::ServerInfoHistoryRequest req(this);
   server_->requestHistoryInfo(req);
 }
 

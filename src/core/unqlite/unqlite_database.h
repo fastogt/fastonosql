@@ -21,6 +21,7 @@
 #include "core/idatabase.h"
 
 namespace fastonosql {
+namespace core {
 namespace unqlite {
 
 class UnqliteDatabase
@@ -30,4 +31,5 @@ class UnqliteDatabase
 };
 
 }
+}  // namespace core
 }  // namespace fastonosql

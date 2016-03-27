@@ -21,14 +21,16 @@
 #include "core/iserver.h"
 
 namespace fastonosql {
+namespace core {
 namespace leveldb {
 
 LeveldbDatabase::LeveldbDatabase(IServerSPtr server, IDataBaseInfoSPtr info)
   : IDatabase(server, info) {
   DCHECK(server);
   DCHECK(info);
-  DCHECK(server->type() == info->type() == LEVELDB);
+  DCHECK(server->type() == LEVELDB && info->type() == LEVELDB);
 }
 
 }  // namespace leveldb
+}  // namespace core
 }  // namespace fastonosql

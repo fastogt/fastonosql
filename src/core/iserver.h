@@ -25,6 +25,7 @@
 #include "core/events/events.h"
 
 namespace fastonosql {
+namespace core {
 
 class IServerBase
   : public QObject {
@@ -207,7 +208,7 @@ class IServerLocal
  public:
   virtual std::string path() const = 0;
  protected:
-  IServerLocal(IDriver* drv);
+  explicit IServerLocal(IDriver* drv);
 };
 
 class IServerRemote
@@ -217,7 +218,8 @@ class IServerRemote
   virtual serverTypes role() const = 0;
   virtual common::net::hostAndPort host() const = 0;
  protected:
-  IServerRemote(IDriver* drv);
+  explicit IServerRemote(IDriver* drv);
 };
 
+}  // namespace core
 }  // namespace fastonosql

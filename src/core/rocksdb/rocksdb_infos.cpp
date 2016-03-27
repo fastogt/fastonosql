@@ -27,6 +27,7 @@
 #define MARKER "\r\n"
 
 namespace fastonosql {
+namespace core {
 namespace {
 
 const std::vector<Field> rockCommonFields = {
@@ -206,4 +207,5 @@ bool RocksdbCommand::isReadOnly() const {
 }
 
 }  // namespace rocksdb
+}  // namespace core
 }  // namespace fastonosql

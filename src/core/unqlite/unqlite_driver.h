@@ -25,6 +25,7 @@
 #include "core/unqlite/unqlite_raw.h"
 
 namespace fastonosql {
+namespace core {
 namespace unqlite {
 
 class UnqliteDriver
@@ -74,4 +75,5 @@ class UnqliteDriver
 };
 
 }  // namespace unqlite
+}  // namespace core
 }  // namespace fastonosql

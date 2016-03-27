@@ -42,17 +42,17 @@ class ServerHistoryDialog
   : public QDialog {
   Q_OBJECT
  public:
-  explicit ServerHistoryDialog(IServerSPtr server, QWidget* parent = 0);
+  explicit ServerHistoryDialog(core::IServerSPtr server, QWidget* parent = 0);
 
  Q_SIGNALS:
   void showed();
 
  private Q_SLOTS:
-  void startLoadServerHistoryInfo(const events_info::ServerInfoHistoryRequest& req);
-  void finishLoadServerHistoryInfo(const events_info::ServerInfoHistoryResponce& res);
-  void startClearServerHistory(const events_info::ClearServerHistoryRequest& req);
-  void finishClearServerHistory(const events_info::ClearServerHistoryResponce& res);
-  void snapShotAdd(ServerInfoSnapShoot snapshot);
+  void startLoadServerHistoryInfo(const core::events_info::ServerInfoHistoryRequest& req);
+  void finishLoadServerHistoryInfo(const core::events_info::ServerInfoHistoryResponce& res);
+  void startClearServerHistory(const core::events_info::ClearServerHistoryRequest& req);
+  void finishClearServerHistory(const core::events_info::ClearServerHistoryResponce& res);
+  void snapShotAdd(core::ServerInfoSnapShoot snapshot);
   void clearHistory();
 
   void refreshInfoFields(int index);
@@ -75,8 +75,8 @@ class ServerHistoryDialog
   fasto::qt::gui::GraphWidget* graphWidget_;
 
   fasto::qt::gui::GlassWidget* glassWidget_;
-  events_info::ServerInfoHistoryResponce::infos_container_type infos_;
-  const IServerSPtr server_;
+  core::events_info::ServerInfoHistoryResponce::infos_container_type infos_;
+  const core::IServerSPtr server_;
 };
 
 }  // namespace gui

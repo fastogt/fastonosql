@@ -31,6 +31,7 @@
 #define SSDB_BINLOGS_LABEL "binlogs"
 
 namespace fastonosql {
+namespace core {
 namespace ssdb {
 
 class SsdbServerInfo
@@ -77,4 +78,5 @@ class SsdbCommand
 };
 
 }  // namespace ssdb
+}  // namespace core
 }  // namespace fastonosql

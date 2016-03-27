@@ -27,6 +27,7 @@
 #define MARKER "\r\n"
 
 namespace fastonosql {
+namespace core {
 
 namespace {
 
@@ -207,4 +208,5 @@ bool LeveldbCommand::isReadOnly() const {
 }
 
 }  // namespace leveldb
+}  // namespace core
 }  // namespace fastonosql

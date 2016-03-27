@@ -39,10 +39,10 @@ class ConnectionDialog
   : public QDialog {
   Q_OBJECT
  public:
-  ConnectionDialog(QWidget* parent, IConnectionSettingsBase* connection = nullptr,
-                   const std::vector<connectionTypes>& availibleTypes = std::vector<connectionTypes>());  // get ownerships connection
+  ConnectionDialog(QWidget* parent, core::IConnectionSettingsBase* connection = nullptr,
+                   const std::vector<core::connectionTypes>& availibleTypes = std::vector<core::connectionTypes>());  // get ownerships connection
 
-  IConnectionSettingsBaseSPtr connection() const;
+  core::IConnectionSettingsBaseSPtr connection() const;
 
  public Q_SLOTS:
   virtual void accept();
@@ -63,10 +63,10 @@ class ConnectionDialog
  private:
   void retranslateUi();
   bool validateAndApply();
-  SSHInfo::SupportedAuthenticationMetods selectedAuthMethod() const;
+  core::SSHInfo::SupportedAuthenticationMetods selectedAuthMethod() const;
   void updateSshControls(bool isValidType);
 
-  IConnectionSettingsBaseSPtr connection_;
+  core::IConnectionSettingsBaseSPtr connection_;
   QLineEdit* connectionName_;
   QComboBox* typeConnection_;
   QCheckBox* logging_;

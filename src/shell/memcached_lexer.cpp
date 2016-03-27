@@ -27,11 +27,11 @@ namespace fastonosql {
 namespace shell {
 
 MemcachedApi::MemcachedApi(QsciLexer* lexer)
-  : BaseQsciApiCommandHolder(memcached::memcachedCommands, lexer) {
+  : BaseQsciApiCommandHolder(core::memcached::memcachedCommands, lexer) {
 }
 
 MemcachedLexer::MemcachedLexer(QObject* parent)
-  : BaseQsciLexerCommandHolder(memcached::memcachedCommands, parent) {
+  : BaseQsciLexerCommandHolder(core::memcached::memcachedCommands, parent) {
   setAPIs(new MemcachedApi(this));
 }
 
@@ -40,7 +40,7 @@ const char* MemcachedLexer::language() const {
 }
 
 const char* MemcachedLexer::version() const {
-  return memcached::MemcachedRaw::versionApi();
+  return core::memcached::MemcachedRaw::versionApi();
 }
 
 const char* MemcachedLexer::basedOn() const {

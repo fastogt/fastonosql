@@ -30,6 +30,7 @@
 #include "core/connection_settings.h"
 
 namespace fastonosql {
+namespace core {
 
 class SettingsManager
   : public common::patterns::LazySingleton<SettingsManager> {
@@ -108,4 +109,5 @@ class SettingsManager
   bool fast_view_keys_;
 };
 
+}  // namespace core
 }  // namespace fastonosql

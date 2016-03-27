@@ -26,6 +26,7 @@
 #include "core/connection_confg.h"
 
 namespace fastonosql {
+namespace core {
 namespace redis {
 
 struct RedisConfig
@@ -66,8 +67,9 @@ struct RedisConfig
 };
 
 }  // namespace redis
+}  // namespace core
 }  // namespace fastonosql
 
 namespace common {
-  std::string convertToString(const fastonosql::redis::RedisConfig& conf);
+  std::string convertToString(const fastonosql::core::redis::RedisConfig& conf);
 }  // namespace common

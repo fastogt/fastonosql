@@ -27,6 +27,7 @@
 #define LMDB_FILE_NAME_LABEL "file_name"
 
 namespace fastonosql {
+namespace core {
 namespace lmdb {
 
 class LmdbServerInfo
@@ -70,4 +71,5 @@ class LmdbCommand
 };
 
 }  // namespace lmdb
+}  // namespace core
 }  // namespace fastonosql

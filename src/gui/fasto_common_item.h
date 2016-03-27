@@ -35,7 +35,7 @@ class FastoCommonItem
     eType = 2,
     eCountColumns = 3
   };
-  FastoCommonItem(const NDbKValue& key, const std::string& delemitr, bool isReadOnly,
+  FastoCommonItem(const core::NDbKValue& key, const std::string& delemitr, bool isReadOnly,
                   TreeItem* parent, void* internalPointer);
 
   QString key() const;
@@ -44,10 +44,10 @@ class FastoCommonItem
 
   bool isReadOnly() const;
 
-  void setValue(NValue val);
+  void setValue(core::NValue val);
 
  private:
-  NDbKValue key_;
+  core::NDbKValue key_;
   const std::string delemitr_;
   const bool read_only_;
 };

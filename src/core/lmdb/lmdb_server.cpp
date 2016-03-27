@@ -22,6 +22,7 @@
 #include "core/lmdb/lmdb_database.h"
 
 namespace fastonosql {
+namespace core {
 namespace lmdb {
 
 LmdbServer::LmdbServer(IConnectionSettingsBaseSPtr settings)
@@ -38,4 +39,5 @@ IDatabaseSPtr LmdbServer::createDatabase(IDataBaseInfoSPtr info) {
 }
 
 }  // namespace lmdb
+}  // namespace core
 }  // namespace fastonosql

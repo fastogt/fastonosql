@@ -21,6 +21,7 @@
 #include <string>
 
 namespace fastonosql {
+namespace core {
 namespace redis {
 
 RedisClusterSettings::RedisClusterSettings(const std::string& connectionName)
@@ -33,4 +34,5 @@ RedisClusterSettings* RedisClusterSettings::clone() const {
 }
 
 }  // namespace redis
+}  // namespace core
 }  // namespace fastonosql

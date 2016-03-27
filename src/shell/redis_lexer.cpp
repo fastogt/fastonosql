@@ -33,8 +33,8 @@ RedisApi::RedisApi(QsciLexer* lexer)
 void RedisApi::updateAutoCompletionList(const QStringList& context, QStringList& list) {
   for (QStringList::const_iterator it = context.begin(); it != context.end(); ++it) {
     QString val = *it;
-    for (size_t i = 0; i < redis::redisCommands.size(); ++i) {
-      CommandInfo cmd = redis::redisCommands[i];
+    for (size_t i = 0; i < core::redis::redisCommands.size(); ++i) {
+      core::CommandInfo cmd = core::redis::redisCommands[i];
       if (canSkipCommand(cmd)) {
         continue;
       }
@@ -51,8 +51,8 @@ QStringList RedisApi::callTips(const QStringList& context, int commas,
                                QsciScintilla::CallTipsStyle style, QList<int>& shifts) {
   for (QStringList::const_iterator it = context.begin(); it != context.end(); ++it) {
     QString val = *it;
-    for (size_t i = 0; i < redis::redisCommands.size(); ++i) {
-      CommandInfo cmd = redis::redisCommands[i];
+    for (size_t i = 0; i < core::redis::redisCommands.size(); ++i) {
+      core::CommandInfo cmd = core::redis::redisCommands[i];
       QString jval = common::convertFromString<QString>(cmd.name);
       if (QString::compare(jval, val, Qt::CaseInsensitive) == 0) {
         return QStringList() << makeCallTip(cmd);
@@ -73,7 +73,7 @@ const char* RedisLexer::language() const {
 }
 
 const char* RedisLexer::version() const {
-  return redis::RedisRaw::versionApi();
+  return core::redis::RedisRaw::versionApi();
 }
 
 const char* RedisLexer::basedOn() const {
@@ -82,8 +82,8 @@ const char* RedisLexer::basedOn() const {
 
 std::vector<uint32_t> RedisLexer::supportedVersions() const {
   std::vector<uint32_t> result;
-  for(size_t i = 0; i < redis::redisCommands.size(); ++i){
-    CommandInfo cmd = redis::redisCommands[i];
+  for(size_t i = 0; i < core::redis::redisCommands.size(); ++i){
+    core::CommandInfo cmd = core::redis::redisCommands[i];
 
     bool needed_insert = true;
     for (size_t j = 0; j < result.size(); ++j) {
@@ -103,7 +103,7 @@ std::vector<uint32_t> RedisLexer::supportedVersions() const {
 }
 
 size_t RedisLexer::commandsCount() const {
-  return redis::redisCommands.size();
+  return core::redis::redisCommands.size();
 }
 
 void RedisLexer::styleText(int start, int end) {
@@ -124,8 +124,8 @@ void RedisLexer::styleText(int start, int end) {
 }
 
 void RedisLexer::paintCommands(const QString& source, int start) {
-  for (size_t i = 0; i < redis::redisCommands.size(); ++i) {
-    CommandInfo cmd = redis::redisCommands[i];
+  for (size_t i = 0; i < core::redis::redisCommands.size(); ++i) {
+    core::CommandInfo cmd = core::redis::redisCommands[i];
     QString word = common::convertFromString<QString>(cmd.name);
     int index = 0;
     int begin = 0;

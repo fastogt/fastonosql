@@ -27,11 +27,11 @@ namespace fastonosql {
 namespace shell {
 
 UnqliteApi::UnqliteApi(QsciLexer* lexer)
-  : BaseQsciApiCommandHolder(unqlite::unqliteCommands, lexer) {
+  : BaseQsciApiCommandHolder(core::unqlite::unqliteCommands, lexer) {
 }
 
 UnqliteLexer::UnqliteLexer(QObject* parent)
-  : BaseQsciLexerCommandHolder(unqlite::unqliteCommands, parent) {
+  : BaseQsciLexerCommandHolder(core::unqlite::unqliteCommands, parent) {
   setAPIs(new UnqliteApi(this));
 }
 
@@ -40,7 +40,7 @@ const char* UnqliteLexer::language() const {
 }
 
 const char* UnqliteLexer::version() const {
-  return unqlite::UnqliteRaw::versionApi();
+  return core::unqlite::UnqliteRaw::versionApi();
 }
 
 const char* UnqliteLexer::basedOn() const {

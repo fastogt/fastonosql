@@ -22,6 +22,7 @@
 #include "core/iserver.h"
 
 namespace fastonosql {
+namespace core {
 namespace memcached {
 
 class MemcachedServer
@@ -37,4 +38,5 @@ class MemcachedServer
 };
 
 }  // namespace memcached
+}  // namespace core
 }  // namespace fastonosql

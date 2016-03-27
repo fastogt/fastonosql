@@ -21,6 +21,7 @@
 #include <string>
 
 namespace fastonosql {
+namespace core {
 namespace leveldb {
 
 LeveldbConnectionSettings::LeveldbConnectionSettings(const std::string& connectionName)
@@ -57,4 +58,5 @@ LeveldbConnectionSettings* LeveldbConnectionSettings::clone() const {
 }
 
 }  // namespace leveldb
+}  // namespace core
 }  // namespace fastonosql

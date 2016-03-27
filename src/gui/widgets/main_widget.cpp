@@ -58,7 +58,7 @@ QueryWidget* MainWidget::widget(int index) const {
   return qobject_cast<QueryWidget*>(QTabWidget::widget(index));
 }
 
-void MainWidget::openConsole(IServerSPtr server, const QString& text) {
+void MainWidget::openConsole(core::IServerSPtr server, const QString& text) {
   if (server) {
     QueryWidget* queryWidget = new QueryWidget(server);
     addWidgetToTab(queryWidget, server->name());
@@ -66,7 +66,7 @@ void MainWidget::openConsole(IServerSPtr server, const QString& text) {
   }
 }
 
-void MainWidget::executeText(IServerSPtr server, const QString& text) {
+void MainWidget::executeText(core::IServerSPtr server, const QString& text) {
   if (server) {
     QueryWidget* queryWidget = new QueryWidget(server);
     addWidgetToTab(queryWidget, server->name());

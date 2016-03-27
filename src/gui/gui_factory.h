@@ -56,8 +56,8 @@ class GuiFactory
   const QIcon& databaseIcon() const;
   const QIcon& keyIcon() const;
 
-  const QIcon& icon(connectionTypes type) const;
-  const QIcon& modeIcon(ConnectionMode mode) const;
+  const QIcon& icon(core::connectionTypes type) const;
+  const QIcon& modeIcon(core::ConnectionMode mode) const;
   const QIcon& icon(common::Value::Type type) const;
 
   const QIcon& importIcon() const;
@@ -80,7 +80,7 @@ class GuiFactory
   const QIcon& rightIcon() const;
 
   const QIcon& close16Icon() const;
-  const QIcon& commandIcon(connectionTypes type) const;
+  const QIcon& commandIcon(core::connectionTypes type) const;
 
   const QIcon& successIcon() const;
   const QIcon& failIcon() const;

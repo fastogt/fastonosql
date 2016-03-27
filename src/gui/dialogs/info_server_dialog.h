@@ -68,7 +68,7 @@ class InfoServerDialog
   : public QDialog {
   Q_OBJECT
  public:
-  explicit InfoServerDialog(IServerSPtr server, QWidget* parent = 0);
+  explicit InfoServerDialog(core::IServerSPtr server, QWidget* parent = 0);
   enum {
     min_height = 320,
     min_width = 240
@@ -78,8 +78,8 @@ class InfoServerDialog
   void showed();
 
  private Q_SLOTS:
-  void startServerInfo(const events_info::ServerInfoRequest& req);
-  void finishServerInfo(const events_info::ServerInfoResponce& res);
+  void startServerInfo(const core::events_info::ServerInfoRequest& req);
+  void finishServerInfo(const core::events_info::ServerInfoResponce& res);
 
  protected:
   virtual void changeEvent(QEvent* e);
@@ -88,30 +88,30 @@ class InfoServerDialog
  private:
   void retranslateUi();
 #ifdef BUILD_WITH_REDIS
-  void updateText(const redis::RedisServerInfo& serv);
+  void updateText(const core::redis::RedisServerInfo& serv);
 #endif
 #ifdef BUILD_WITH_MEMCACHED
-  void updateText(const memcached::MemcachedServerInfo& serv);
+  void updateText(const core::memcached::MemcachedServerInfo& serv);
 #endif
 #ifdef BUILD_WITH_SSDB
-  void updateText(const ssdb::SsdbServerInfo& serv);
+  void updateText(const core::ssdb::SsdbServerInfo& serv);
 #endif
 #ifdef BUILD_WITH_LEVELDB
-  void updateText(const leveldb::LeveldbServerInfo& serv);
+  void updateText(const core::leveldb::LeveldbServerInfo& serv);
 #endif
 #ifdef BUILD_WITH_ROCKSDB
-  void updateText(const rocksdb::RocksdbServerInfo& serv);
+  void updateText(const core::rocksdb::RocksdbServerInfo& serv);
 #endif
 #ifdef BUILD_WITH_UNQLITE
-  void updateText(const unqlite::UnqliteServerInfo& serv);
+  void updateText(const core::unqlite::UnqliteServerInfo& serv);
 #endif
 #ifdef BUILD_WITH_LMDB
-  void updateText(const lmdb::LmdbServerInfo& serv);
+  void updateText(const core::lmdb::LmdbServerInfo& serv);
 #endif
   QLabel* serverTextInfo_;
   QLabel* hardwareTextInfo_;
   fasto::qt::gui::GlassWidget* glassWidget_;
-  const IServerSPtr server_;
+  const core::IServerSPtr server_;
 };
 
 }  // namespace gui

@@ -22,6 +22,7 @@
 #include "core/iserver.h"
 
 namespace fastonosql {
+namespace core {
 
 IDatabase::IDatabase(IServerSPtr server, IDataBaseInfoSPtr info)
   : info_(info), server_(server) {
@@ -81,4 +82,5 @@ void IDatabase::removeAllKeys(const events_info::ClearDatabaseRequest& req) {
   server_->clearDB(req);
 }
 
+}  // namespace core
 }  // namespace fastonosql

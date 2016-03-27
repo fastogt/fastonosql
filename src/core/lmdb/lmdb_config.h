@@ -25,6 +25,7 @@
 #include "core/connection_confg.h"
 
 namespace fastonosql {
+namespace core {
 namespace lmdb {
 
 struct LmdbConfig
@@ -35,8 +36,9 @@ struct LmdbConfig
 };
 
 }  // namespace lmdb
+}  // namespace core
 }  // namespace fastonosql
 
 namespace common {
-  std::string convertToString(const fastonosql::lmdb::LmdbConfig& conf);
+  std::string convertToString(const fastonosql::core::lmdb::LmdbConfig& conf);
 }  // namespace common

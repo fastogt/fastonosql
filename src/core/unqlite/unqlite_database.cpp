@@ -21,14 +21,16 @@
 #include "core/iserver.h"
 
 namespace fastonosql {
+namespace core {
 namespace unqlite {
 
 UnqliteDatabase::UnqliteDatabase(IServerSPtr server, IDataBaseInfoSPtr info)
   : IDatabase(server, info) {
   DCHECK(server);
   DCHECK(info);
-  DCHECK(server->type() == info->type() == UNQLITE);
+  DCHECK(server->type() == UNQLITE && info->type() == UNQLITE);
 }
 
 }
+}  // namespace core
 }  // namespace fastonosql

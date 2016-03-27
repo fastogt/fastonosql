@@ -44,6 +44,7 @@
 #define SET_KEY_HASH_PATTERN_2ARGS_SS "HMSET %s %s"
 
 namespace fastonosql {
+namespace core {
 namespace ssdb {
 
 SsdbDriver::SsdbDriver(IConnectionSettingsBaseSPtr settings)
@@ -390,4 +391,5 @@ IServerInfoSPtr SsdbDriver::makeServerInfoFromString(const std::string& val) {
 }
 
 }
+}  // namespace core
 }  // namespace fastonosql

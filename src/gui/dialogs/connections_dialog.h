@@ -37,8 +37,8 @@ class ConnectionsDialog
   };
 
   explicit ConnectionsDialog(QWidget* parent = 0);
-  IConnectionSettingsBaseSPtr selectedConnection() const;
-  IClusterSettingsBaseSPtr selectedCluster() const;
+  core::IConnectionSettingsBaseSPtr selectedConnection() const;
+  core::IClusterSettingsBaseSPtr selectedCluster() const;
 
   virtual void accept();
 
@@ -54,8 +54,8 @@ class ConnectionsDialog
 
  private:
   void retranslateUi();
-  void addConnection(IConnectionSettingsBaseSPtr con);
-  void addCluster(IClusterSettingsBaseSPtr con);
+  void addConnection(core::IConnectionSettingsBaseSPtr con);
+  void addCluster(core::IClusterSettingsBaseSPtr con);
 
   QTreeWidget* listWidget_;
   QPushButton* acButton_;

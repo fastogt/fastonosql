@@ -23,6 +23,7 @@
 #include "common/qt/convert_string.h"
 
 namespace fastonosql {
+namespace core {
 
 ICluster::ICluster(const std::string& name)
   : name_(name) {
@@ -57,4 +58,5 @@ IServerSPtr ICluster::root() const {
   return IServerSPtr();
 }
 
+}  // namespace core
 }  // namespace fastonosql

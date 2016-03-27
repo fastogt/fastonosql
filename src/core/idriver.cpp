@@ -86,6 +86,8 @@ bool getStamp(common::buffer_type stamp, common::time64_t* timeOut) {
 }
 
 namespace fastonosql {
+namespace core {
+
 namespace {
 
 void notifyProgressImpl(IDriver* sender, QObject* reciver, int value) {
@@ -575,4 +577,5 @@ IDriverRemote::IDriverRemote(IConnectionSettingsBaseSPtr settings)
   CHECK(isRemoteType(type()));
 }
 
+}  // namespace core
 }  // namespace fastonosql

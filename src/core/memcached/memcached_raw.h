@@ -27,6 +27,7 @@
 #include "core/memcached/memcached_infos.h"
 
 namespace fastonosql {
+namespace core {
 namespace memcached {
 
 common::Error testConnection(MemcachedConnectionSettings* settings);
@@ -132,4 +133,5 @@ static const std::vector<CommandHolder> memcachedCommands = {
 };
 
 }  // namespace memcached
+}  // namespace core
 }  // namespace fastonosql

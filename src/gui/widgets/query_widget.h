@@ -40,10 +40,10 @@ class QueryWidget
     min_width = 540
   };
 
-  explicit QueryWidget(IServerSPtr server, QWidget* parent = 0);
+  explicit QueryWidget(core::IServerSPtr server, QWidget* parent = 0);
 
   QueryWidget* clone(const QString& text);
-  connectionTypes connectionType() const;
+  core::connectionTypes connectionType() const;
   QString inputText() const;
   void setInputText(const QString& text);
   void execute(const QString& text);
@@ -52,7 +52,7 @@ class QueryWidget
  private:
   shell::BaseShellWidget* shellWidget_;
   OutputWidget* outputWidget_;
-  const IServerSPtr server_;
+  const core::IServerSPtr server_;
 };
 
 }  // namespace gui

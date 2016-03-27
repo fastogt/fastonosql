@@ -29,6 +29,7 @@ extern "C" {
 #include "core/lmdb/lmdb_infos.h"
 
 namespace fastonosql {
+namespace core {
 namespace lmdb {
 
 common::Error testConnection(LmdbConnectionSettings* settings);
@@ -108,4 +109,5 @@ static const std::vector<CommandHolder> lmdbCommands = {
 };
 
 }  // namespace lmdb
+}  // namespace core
 }  // namespace fastonosql

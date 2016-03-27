@@ -49,7 +49,7 @@ CommandsWidget::CommandsWidget(QWidget* parent)
   retranslateUi();
 }
 
-void CommandsWidget::addCommand(connectionTypes type, const Command& command) {
+void CommandsWidget::addCommand(core::connectionTypes type, const Command& command) {
   QTime time = QTime::currentTime();
   logTextEdit_->setTextColor(command.type() == common::Value::C_INNER ?
                                QColor(Qt::gray) : QColor(Qt::black));

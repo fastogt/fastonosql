@@ -91,14 +91,14 @@ void updateEditorGeometry(QWidget* editor, const QStyleOptionViewItem& option,
 namespace fastonosql {
 namespace gui {
 
-ViewKeysDialog::ViewKeysDialog(const QString& title, IDatabaseSPtr db, QWidget* parent)
+ViewKeysDialog::ViewKeysDialog(const QString& title, core::IDatabaseSPtr db, QWidget* parent)
   : QDialog(parent), db_(db), cursorStack_(), curPos_(0) {
   DCHECK(db_);
   if (db_) {
-    IServerSPtr serv = db_->server();
-    VERIFY(connect(serv.get(), &IServer::startedLoadDataBaseContent,
+    core::IServerSPtr serv = db_->server();
+    VERIFY(connect(serv.get(), &core::IServer::startedLoadDataBaseContent,
                    this, &ViewKeysDialog::startLoadDatabaseContent));
-    VERIFY(connect(serv.get(), &IServer::finishedLoadDatabaseContent,
+    VERIFY(connect(serv.get(), &core::IServer::finishedLoadDatabaseContent,
                    this, &ViewKeysDialog::finishLoadDatabaseContent));
   }
 
@@ -132,10 +132,10 @@ ViewKeysDialog::ViewKeysDialog(const QString& title, IDatabaseSPtr db, QWidget* 
   VERIFY(connect(keysModel_, &KeysTableModel::changedValue,
                  this, &ViewKeysDialog::executeCommand, Qt::DirectConnection));
   if (db_) {
-    IServerSPtr serv = db_->server();
-    VERIFY(connect(serv.get(), &IServer::startedExecuteCommand,
+    core::IServerSPtr serv = db_->server();
+    VERIFY(connect(serv.get(), &core::IServer::startedExecuteCommand,
                    this, &ViewKeysDialog::startExecuteCommand, Qt::DirectConnection));
-    VERIFY(connect(serv.get(), &IServer::finishedExecuteCommand,
+    VERIFY(connect(serv.get(), &core::IServer::finishedExecuteCommand,
                    this, &ViewKeysDialog::finishExecuteCommand, Qt::DirectConnection));
   }
   keysTable_ = new FastoTableView;
@@ -156,7 +156,7 @@ ViewKeysDialog::ViewKeysDialog(const QString& title, IDatabaseSPtr db, QWidget* 
   VERIFY(connect(rightButtonList_, &QPushButton::clicked, this, &ViewKeysDialog::rightPageClicked));
   QHBoxLayout* pagingLayout = new QHBoxLayout;
   pagingLayout->addWidget(leftButtonList_);
-  IDataBaseInfoSPtr inf = db_->info();
+  core::IDataBaseInfoSPtr inf = db_->info();
   size_t sizeKey = inf->sizeDB();
   currentKey_ = new QSpinBox;
   currentKey_->setEnabled(false);
@@ -182,11 +182,11 @@ ViewKeysDialog::ViewKeysDialog(const QString& title, IDatabaseSPtr db, QWidget* 
   retranslateUi();
 }
 
-void ViewKeysDialog::startLoadDatabaseContent(const events_info::LoadDatabaseContentRequest& req) {
+void ViewKeysDialog::startLoadDatabaseContent(const core::events_info::LoadDatabaseContentRequest& req) {
   keysModel_->clear();
 }
 
-void ViewKeysDialog::finishLoadDatabaseContent(const events_info::LoadDatabaseContentResponce& res) {
+void ViewKeysDialog::finishLoadDatabaseContent(const core::events_info::LoadDatabaseContentResponce& res) {
   common::Error er = res.errorInfo();
   if (er && er->isError()) {
     return;
@@ -196,11 +196,11 @@ void ViewKeysDialog::finishLoadDatabaseContent(const events_info::LoadDatabaseCo
     return;
   }
 
-  events_info::LoadDatabaseContentResponce::keys_cont_type keys = res.keys;
+  core::events_info::LoadDatabaseContentResponce::keys_cont_type keys = res.keys;
 
   size_t size = keys.size();
   for (size_t i = 0; i < size; ++i) {
-    NDbKValue key = keys[i];
+    core::NDbKValue key = keys[i];
     keysModel_->insertItem(new KeyTableItem(key));
   }
 
@@ -215,17 +215,17 @@ void ViewKeysDialog::finishLoadDatabaseContent(const events_info::LoadDatabaseCo
   updateControls();
 }
 
-void ViewKeysDialog::executeCommand(CommandKeySPtr cmd) {
+void ViewKeysDialog::executeCommand(core::CommandKeySPtr cmd) {
   if (db_) {
-    events_info::CommandRequest req(this, db_->info(), cmd);
+    core::events_info::CommandRequest req(this, db_->info(), cmd);
     db_->executeCommand(req);
   }
 }
 
-void ViewKeysDialog::startExecuteCommand(const events_info::CommandRequest& req) {
+void ViewKeysDialog::startExecuteCommand(const core::events_info::CommandRequest& req) {
 }
 
-void ViewKeysDialog::finishExecuteCommand(const events_info::CommandResponce& res) {
+void ViewKeysDialog::finishExecuteCommand(const core::events_info::CommandResponce& res) {
   common::Error er = res.errorInfo();
   if (er && er->isError()) {
     return;
@@ -237,11 +237,11 @@ void ViewKeysDialog::finishExecuteCommand(const events_info::CommandResponce& re
     return;
   }
 
-  CommandKeySPtr key = res.cmd;
-  if (key->type() == CommandKey::C_CHANGE_TTL) {
-    CommandChangeTTL* cttl = dynamic_cast<CommandChangeTTL*>(key.get());
+  core::CommandKeySPtr key = res.cmd;
+  if (key->type() == core::CommandKey::C_CHANGE_TTL) {
+    core::CommandChangeTTL* cttl = dynamic_cast<core::CommandChangeTTL*>(key.get());
     if (cttl) {
-      NDbKValue dbv = cttl->newKey();
+      core::NDbKValue dbv = cttl->newKey();
       keysModel_->changeValue(dbv);
     }
   }
@@ -263,14 +263,14 @@ void ViewKeysDialog::search(bool forward) {
 
   DCHECK_EQ(cursorStack_[0], 0);
   if (forward) {
-    events_info::LoadDatabaseContentRequest req(this, db_->info(),
+    core::events_info::LoadDatabaseContentRequest req(this, db_->info(),
                                                common::convertToString(pattern),
                                                countSpinEdit_->value(), cursorStack_[curPos_]);
     db_->loadContent(req);
     ++curPos_;
   } else {
     if (curPos_ > 0) {
-      events_info::LoadDatabaseContentRequest req(this, db_->info(),
+      core::events_info::LoadDatabaseContentRequest req(this, db_->info(),
                                                  common::convertToString(pattern),
                                                  countSpinEdit_->value(), cursorStack_[--curPos_]);
       db_->loadContent(req);

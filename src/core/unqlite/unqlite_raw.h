@@ -29,6 +29,7 @@ extern "C" {
 #include "core/unqlite/unqlite_infos.h"
 
 namespace fastonosql {
+namespace core {
 namespace unqlite {
 
 common::Error testConnection(UnqliteConnectionSettings* settings);
@@ -101,4 +102,5 @@ static const std::vector<CommandHolder> unqliteCommands = {
 };
 
 }  // namespace unqlite
+}  // namespace core
 }  // namespace fastonosql

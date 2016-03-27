@@ -36,6 +36,7 @@
 #define DELETE_KEY_PATTERN_1ARGS_S "DEL %s"
 
 namespace fastonosql {
+namespace core {
 namespace rocksdb {
 
 RocksdbDriver::RocksdbDriver(IConnectionSettingsBaseSPtr settings)
@@ -354,4 +355,5 @@ IServerInfoSPtr RocksdbDriver::makeServerInfoFromString(const std::string& val) 
 }
 
 }  // namespace rocksdb
+}  // namespace core
 }  // namespace fastonosql

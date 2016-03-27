@@ -27,6 +27,7 @@
 #define UNQLITE_FILE_NAME_LABEL "file_name"
 
 namespace fastonosql {
+namespace core {
 namespace unqlite {
 
 class UnqliteServerInfo
@@ -69,4 +70,5 @@ class UnqliteCommand
 };
 
 }  // namespace unqlite
+}  // namespace core
 }  // namespace fastonosql

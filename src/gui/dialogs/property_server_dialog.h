@@ -40,19 +40,19 @@ class PropertyServerDialog
   : public QDialog {
   Q_OBJECT
  public:
-  explicit PropertyServerDialog(IServerSPtr server, QWidget* parent = 0);
+  explicit PropertyServerDialog(core::IServerSPtr server, QWidget* parent = 0);
 
  Q_SIGNALS:
   void showed();
 
  private Q_SLOTS:
-  void startServerProperty(const events_info::ServerPropertyInfoRequest& req);
-  void finishServerProperty(const events_info::ServerPropertyInfoResponce& res);
+  void startServerProperty(const core::events_info::ServerPropertyInfoRequest& req);
+  void finishServerProperty(const core::events_info::ServerPropertyInfoResponce& res);
 
-  void startServerChangeProperty(const events_info::ChangeServerPropertyInfoRequest& req);
-  void finishServerChangeProperty(const events_info::ChangeServerPropertyInfoResponce& res);
+  void startServerChangeProperty(const core::events_info::ChangeServerPropertyInfoRequest& req);
+  void finishServerChangeProperty(const core::events_info::ChangeServerPropertyInfoResponce& res);
 
-  void changedProperty(const PropertyType& prop);
+  void changedProperty(const core::PropertyType& prop);
  protected:
   virtual void changeEvent(QEvent* e);
   virtual void showEvent(QShowEvent* e);
@@ -62,7 +62,7 @@ class PropertyServerDialog
 
   fasto::qt::gui::GlassWidget* glassWidget_;
   QTableView* propertyes_table_;
-  const IServerSPtr server_;
+  const core::IServerSPtr server_;
 };
 
 }  // namespace gui
