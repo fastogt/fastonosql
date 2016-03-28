@@ -142,6 +142,8 @@ MainWindow::MainWindow()
   QString style = core::SettingsManager::instance().currentStyle();
   fasto::qt::gui::applyStyle(style);
 
+  fasto::qt::gui::applyFont(gui::GuiFactory::instance().font());
+
   setWindowTitle(PROJECT_NAME_TITLE " " PROJECT_VERSION);
 
   openAction_ = new QAction(this);
@@ -715,7 +717,7 @@ void MainWindow::createServer(core::IConnectionSettingsBaseSPtr settings) {
   if (core::SettingsManager::instance().autoOpenConsole()) {
     MainWidget* mwidg = qobject_cast<MainWidget*>(centralWidget());
     if (mwidg) {
-      mwidg->openConsole(server, "");
+      mwidg->openConsole(server, QString());
     }
   }
 }
@@ -734,7 +736,7 @@ void MainWindow::createCluster(core::IClusterSettingsBaseSPtr settings) {
   if (core::SettingsManager::instance().autoOpenConsole()) {
     MainWidget* mwidg = qobject_cast<MainWidget*>(centralWidget());
     if (mwidg) {
-      mwidg->openConsole(cl->root(), "");
+      mwidg->openConsole(cl->root(), QString());
     }
   }
 }

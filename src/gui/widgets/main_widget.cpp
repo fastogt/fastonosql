@@ -59,19 +59,14 @@ QueryWidget* MainWidget::widget(int index) const {
 }
 
 void MainWidget::openConsole(core::IServerSPtr server, const QString& text) {
-  if (server) {
-    QueryWidget* queryWidget = new QueryWidget(server);
-    addWidgetToTab(queryWidget, server->name());
-    queryWidget->setInputText(text);
+  if (!server) {
+    DNOTREACHED();
+    return;
   }
-}
 
-void MainWidget::executeText(core::IServerSPtr server, const QString& text) {
-  if (server) {
-    QueryWidget* queryWidget = new QueryWidget(server);
-    addWidgetToTab(queryWidget, server->name());
-    queryWidget->execute(text);
-  }
+  QueryWidget* queryWidget = new QueryWidget(server);
+  addWidgetToTab(queryWidget, server->name());
+  queryWidget->setInputText(text);
 }
 
 void MainWidget::createNewTab() {

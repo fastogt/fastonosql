@@ -56,6 +56,10 @@ QVariant FastoCommonModel::data(const QModelIndex& index, int role) const {
     return QColor(Qt::gray);
   }
 
+  if (role == Qt::FontRole) {
+    return gui::GuiFactory::instance().font();
+  }
+
   if (role == Qt::DisplayRole) {
     if (col == FastoCommonItem::eKey) {
       result = node->key();

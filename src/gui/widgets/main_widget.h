@@ -38,7 +38,6 @@ class MainWidget
 
  public Q_SLOTS:
   void openConsole(core::IServerSPtr server, const QString& text);
-  void executeText(core::IServerSPtr server, const QString& text);
 
  private Q_SLOTS:
   void createNewTab();

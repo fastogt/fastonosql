@@ -138,6 +138,7 @@ void PreferencesDialog::accept() {
   core::SettingsManager::instance().setCurrentStyle(stylesComboBox_->currentText());
 
   core::SettingsManager::instance().setCurrentFontName(fontComboBox_->currentText());
+  fasto::qt::gui::applyFont(gui::GuiFactory::instance().font());
 
   std::string defCombo = common::convertToString(defaultViewComboBox_->currentText());
   supportedViews v = common::convertFromString<supportedViews>(defCombo);

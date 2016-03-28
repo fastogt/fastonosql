@@ -42,8 +42,6 @@ namespace gui {
 
 FastoEditor::FastoEditor(QWidget* parent)
   : QWidget(parent), scin_(nullptr) {
-  QFont font = GuiFactory::instance().font();
-  setFont(font);
   scin_ = new fasto::qt::gui::FastoScintilla;
 
   findPanel_ = new QFrame;
@@ -226,9 +224,6 @@ void FastoEditor::findElement(bool forward) {
 
 FastoEditorOutput::FastoEditorOutput(const QString& delemitr, QWidget* parent)
   : QWidget(parent), model_(nullptr), view_method_(JSON), delemitr_(delemitr) {
-  QFont font = GuiFactory::instance().font();
-  setFont(font);
-
   editor_ = new FastoHexEdit;
   VERIFY(connect(editor_, &FastoHexEdit::textChanged, this, &FastoEditorOutput::textChanged));
 
