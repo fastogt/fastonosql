@@ -21,6 +21,7 @@
 #include <string>
 
 #include <QSettings>
+#include <QFont>
 
 #include "fasto/qt/translations/translations.h"
 #include "fasto/qt/gui/app_style.h"
@@ -49,13 +50,14 @@ namespace {
 const std::string iniPath("~/.config/" PROJECT_NAME "/config.ini");
 
 QString fontName() {
-#if defined(OS_MACOSX) || defined(OS_FREEBSD)
+/*#if defined(OS_MACOSX) || defined(OS_FREEBSD)
   return "Monaco";
 #elif defined(OS_LINUX) || defined(OS_ANDROID)
   return "Monospace";
 #elif defined(OS_WIN)
   return "Courier";
-#endif
+#endif*/
+  return QFont().defaultFamily();
 }
 
 }  // namespace
@@ -255,7 +257,7 @@ void SettingsManager::reloadFromPath(const std::string& path, bool merge) {
   int view = settings.value(VIEW, Tree).toInt();
   views_ = static_cast<supportedViews>(view);
 
-  QList<QVariant> clusters = settings.value(CLUSTERS, "").toList();
+  QList<QVariant> clusters = settings.value(CLUSTERS).toList();
   for (QList<QVariant>::const_iterator it = clusters.begin(); it != clusters.end(); ++it) {
     QVariant var = *it;
     QString string = var.toString();
@@ -268,7 +270,7 @@ void SettingsManager::reloadFromPath(const std::string& path, bool merge) {
     }
   }
 
-  QList<QVariant> connections = settings.value(CONNECTIONS, "").toList();
+  QList<QVariant> connections = settings.value(CONNECTIONS).toList();
   for (QList<QVariant>::const_iterator it = connections.begin(); it != connections.end(); ++it) {
     QVariant var = *it;
     QString string = var.toString();

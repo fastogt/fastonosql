@@ -102,7 +102,7 @@ BaseShell::BaseShell(core::connectionTypes type, bool showAutoCompl, QWidget* pa
   CHECK(lex);
   if (lex) {
     setLexer(lex);
-    //lex->setFont(gui::GuiFactory::instance().font());
+    lex->setFont(gui::GuiFactory::instance().font());
   }
 }
 

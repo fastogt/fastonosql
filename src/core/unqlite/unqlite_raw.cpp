@@ -35,7 +35,7 @@ std::string unqlite_constext_strerror(unqlite* context) {
 
 std::string unqlite_strerror(int unqlite_error) {
   if (unqlite_error == UNQLITE_OK) {
-    return "";
+    return std::string();
   } else if (unqlite_error == UNQLITE_NOMEM) {
     return "Out of memory";
   } else if (unqlite_error == UNQLITE_ABORT) {

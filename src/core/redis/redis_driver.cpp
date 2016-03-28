@@ -83,7 +83,7 @@ namespace {
 
 RedisCommand* createCommandFast(const std::string& input, common::Value::CommandLoggingType ct) {
   common::CommandValue* cmd = common::Value::createCommand(input, ct);
-  RedisCommand* fs = new RedisCommand(nullptr, cmd, "");
+  RedisCommand* fs = new RedisCommand(nullptr, cmd, std::string());
   return fs;
 }
 
