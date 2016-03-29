@@ -68,7 +68,7 @@ ClusterDialog::ClusterDialog(QWidget* parent, core::IClusterSettingsBase* connec
   connectionName_->setText(conName);
   typeConnection_ = new QComboBox;
 
-  for (size_t i = 0; i < SIZEOFMASS(core::connnectionType); ++i) {
+  for (int i = 0; i < SIZEOFMASS(core::connnectionType); ++i) {
     core::connectionTypes ct = static_cast<core::connectionTypes>(i);
     std::string str = common::convertToString(ct);
     typeConnection_->addItem(GuiFactory::instance().icon(ct),
