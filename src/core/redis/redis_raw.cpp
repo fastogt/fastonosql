@@ -1368,7 +1368,8 @@ common::Error RedisRaw::cliFormatReplyRaw(FastoObjectArray* ar, redisReply* r) {
       break;
     }
     case REDIS_REPLY_ERROR: {
-      common::ErrorValue* val = common::Value::createErrorValue(std::string(r->str, r->len),
+      std::string str(r->str, r->len);
+      common::ErrorValue* val = common::Value::createErrorValue(str,
                                                                 common::ErrorValue::E_NONE,
                                                                 common::logging::L_WARNING);
       ar->append(val);
@@ -1428,11 +1429,13 @@ common::Error RedisRaw::cliFormatReplyRaw(FastoObject* out, redisReply* r) {
       if (strcasestr(r->str, "NOAUTH")) { //"NOAUTH Authentication required."
         isAuth_ = false;
       }
-      return common::make_error_value(r->str, common::ErrorValue::E_ERROR);
+      std::string str(r->str, r->len);
+      return common::make_error_value(str, common::ErrorValue::E_ERROR);
     }
     case REDIS_REPLY_STATUS:
     case REDIS_REPLY_STRING: {
-      common::StringValue* val = common::Value::createStringValue(r->str);
+      std::string str(r->str, r->len);
+      common::StringValue* val = common::Value::createStringValue(str);
       obj = new FastoObject(out, val, config_.delimiter);
       out->addChildren(obj);
       break;
@@ -1617,7 +1620,14 @@ common::Error RedisRaw::execute(int argc, char** argv, FastoObject* out) {
   if (strcasecmp(command, "subscribe") == 0 || strcasecmp(command, "psubscribe") == 0) config_.pubsub_mode = 1;
   if (strcasecmp(command, "sync") == 0 || strcasecmp(command, "psync") == 0) config_.slave_mode = 1;
 
-  redisAppendCommandArgv(context_, argc, (const char**)argv, NULL);
+  size_t* argvlen = (size_t*)malloc(argc * sizeof(size_t));
+  for (int j = 0; j < argc; j++) {
+    size_t len =  sdslen(argv[j]);
+    argvlen[j] = len;
+  }
+
+  redisAppendCommandArgv(context_, argc, (const char**)argv, argvlen);
+  free(argvlen);
   while (config_.monitor_mode) {
     common::Error er = cliReadReply(out);
     if (er && er->isError()) {

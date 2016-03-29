@@ -509,7 +509,7 @@ void RedisDriver::handleExecuteEvent(events::ExecuteRequestEvent* ev) {
         break;
       }
 
-      if (inputLine[n] == '\n' || n == length-1) {
+      if (inputLine[n] == '\n' || n == length - 1) {
         notifyProgress(sender, step * n);
         char command[128] = {0};
         if (n == length - 1) {
