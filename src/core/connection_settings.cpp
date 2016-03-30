@@ -235,6 +235,10 @@ bool isRemoteType(connectionTypes type) {
   return type == REDIS || type == MEMCACHED || type == SSDB;
 }
 
+bool isCanSSHConnection(connectionTypes type) {
+  return type == REDIS;
+}
+
 std::string IConnectionSettingsBase::toString() const {
   DCHECK(type_ != DBUNKNOWN);
 

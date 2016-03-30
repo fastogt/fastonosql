@@ -126,7 +126,7 @@ common::Error testConnection(MemcachedConnectionSettings* settings) {
 }
 
 MemcachedRaw::MemcachedRaw()
-  : CommandHandler(memcachedCommands), memc_(nullptr) {
+  : StaticDbApiRaw<MemcachedConfig>(memcachedCommands), memc_(nullptr) {
 }
 
 MemcachedRaw::~MemcachedRaw() {
@@ -140,51 +140,13 @@ const char* MemcachedRaw::versionApi() {
   return memcached_lib_version();
 }
 
-bool MemcachedRaw::isConnected() const {
-  if (!memc_) {
-    return false;
-  }
-
-  memcached_instance_st* servers = memc_->servers;
-  if (!servers) {
-    return false;
-  }
-
-  return servers->state == MEMCACHED_SERVER_STATE_CONNECTED;
-}
-
-common::Error MemcachedRaw::connect() {
-  if (isConnected()) {
-    return common::Error();
-  }
-
-  struct memcached_st* context = NULL;
-  common::Error err = createConnection(config_, &context);
-  if (err && err->isError()) {
-    return err;
-  }
-
-  memc_ = context;
-  return common::Error();
-}
-
-common::Error MemcachedRaw::disconnect() {
-  if (!isConnected()) {
-    return common::Error();
-  }
-
-  if (memc_) {
-    memcached_free(memc_);
-  }
-  memc_ = nullptr;
-  return common::Error();
-}
-
 common::Error MemcachedRaw::keys(const char* args) {
   return notSupported("keys");
 }
 
 common::Error MemcachedRaw::info(const char* args, MemcachedServerInfo::Common* statsout) {
+  CHECK(memc_);
+
   if (!statsout) {
     return common::make_error_value("Invalid input argument(s)", common::ErrorValue::E_ERROR);
   }
@@ -233,6 +195,8 @@ common::Error MemcachedRaw::dbsize(size_t* size) {
 }
 
 common::Error MemcachedRaw::get(const std::string& key, std::string* ret_val) {
+  CHECK(memc_);
+
   if (!ret_val) {
     return common::make_error_value("Invalid input argument(s)", common::ErrorValue::E_ERROR);
   }
@@ -257,6 +221,8 @@ common::Error MemcachedRaw::get(const std::string& key, std::string* ret_val) {
 
 common::Error MemcachedRaw::set(const std::string& key, const std::string& value,
                   time_t expiration, uint32_t flags) {
+  CHECK(memc_);
+
   memcached_return_t error = memcached_set(memc_, key.c_str(), key.length(),
                                            value.c_str(), value.length(), expiration, flags);
   if (error != MEMCACHED_SUCCESS) {
@@ -271,6 +237,8 @@ common::Error MemcachedRaw::set(const std::string& key, const std::string& value
 
 common::Error MemcachedRaw::add(const std::string& key, const std::string& value,
                   time_t expiration, uint32_t flags) {
+  CHECK(memc_);
+
   memcached_return_t error = memcached_add(memc_, key.c_str(), key.length(),
                                            value.c_str(), value.length(), expiration, flags);
   if (error != MEMCACHED_SUCCESS) {
@@ -285,6 +253,8 @@ common::Error MemcachedRaw::add(const std::string& key, const std::string& value
 
 common::Error MemcachedRaw::replace(const std::string& key, const std::string& value,
                       time_t expiration, uint32_t flags) {
+  CHECK(memc_);
+
   memcached_return_t error = memcached_replace(memc_, key.c_str(), key.length(),
                                                value.c_str(), value.length(), expiration, flags);
   if (error != MEMCACHED_SUCCESS) {
@@ -299,6 +269,8 @@ common::Error MemcachedRaw::replace(const std::string& key, const std::string& v
 
 common::Error MemcachedRaw::append(const std::string& key, const std::string& value,
                      time_t expiration, uint32_t flags) {
+  CHECK(memc_);
+
   memcached_return_t error = memcached_append(memc_, key.c_str(), key.length(), value.c_str(),
                                               value.length(), expiration, flags);
   if (error != MEMCACHED_SUCCESS) {
@@ -313,6 +285,8 @@ common::Error MemcachedRaw::append(const std::string& key, const std::string& va
 
 common::Error MemcachedRaw::prepend(const std::string& key, const std::string& value,
                       time_t expiration, uint32_t flags) {
+  CHECK(memc_);
+
   memcached_return_t error = memcached_prepend(memc_, key.c_str(), key.length(),
                                                value.c_str(), value.length(), expiration, flags);
   if (error != MEMCACHED_SUCCESS) {
@@ -326,6 +300,8 @@ common::Error MemcachedRaw::prepend(const std::string& key, const std::string& v
 }
 
 common::Error MemcachedRaw::incr(const std::string& key, uint64_t value) {
+  CHECK(memc_);
+
   memcached_return_t error = memcached_increment(memc_, key.c_str(), key.length(), 0, &value);
   if (error != MEMCACHED_SUCCESS) {
     char buff[1024] = {0};
@@ -338,6 +314,8 @@ common::Error MemcachedRaw::incr(const std::string& key, uint64_t value) {
 }
 
 common::Error MemcachedRaw::decr(const std::string& key, uint64_t value) {
+  CHECK(memc_);
+
   memcached_return_t error = memcached_decrement(memc_, key.c_str(), key.length(), 0, &value);
   if (error != MEMCACHED_SUCCESS) {
     char buff[1024] = {0};
@@ -350,6 +328,8 @@ common::Error MemcachedRaw::decr(const std::string& key, uint64_t value) {
 }
 
 common::Error MemcachedRaw::del(const std::string& key, time_t expiration) {
+  CHECK(memc_);
+
   memcached_return_t error = memcached_delete(memc_, key.c_str(), key.length(), expiration);
   if (error != MEMCACHED_SUCCESS) {
     char buff[1024] = {0};
@@ -362,6 +342,8 @@ common::Error MemcachedRaw::del(const std::string& key, time_t expiration) {
 }
 
 common::Error MemcachedRaw::flush_all(time_t expiration) {
+  CHECK(memc_);
+
   memcached_return_t error = memcached_flush(memc_, expiration);
   if (error != MEMCACHED_SUCCESS) {
     char buff[1024] = {0};
@@ -374,6 +356,8 @@ common::Error MemcachedRaw::flush_all(time_t expiration) {
 }
 
 common::Error MemcachedRaw::version_server() const {
+  CHECK(memc_);
+
   memcached_return_t error = memcached_version(memc_);
   if (error != MEMCACHED_SUCCESS) {
     char buff[1024] = {0};
@@ -387,6 +371,38 @@ common::Error MemcachedRaw::version_server() const {
 
 common::Error MemcachedRaw::help(int argc, char** argv) {
   return notSupported("HELP");
+}
+
+bool MemcachedRaw::isConnectedImpl() const {
+  if (!memc_) {
+    return false;
+  }
+
+  memcached_instance_st* servers = memc_->servers;
+  if (!servers) {
+    return false;
+  }
+
+  return servers->state == MEMCACHED_SERVER_STATE_CONNECTED;
+}
+
+common::Error MemcachedRaw::connectImpl(const MemcachedConfig& config) {
+  struct memcached_st* context = NULL;
+  common::Error err = createConnection(config, &context);
+  if (err && err->isError()) {
+    return err;
+  }
+
+  memc_ = context;
+  return common::Error();
+}
+
+common::Error MemcachedRaw::disconnectImpl() {
+  if (memc_) {
+    memcached_free(memc_);
+  }
+  memc_ = nullptr;
+  return common::Error();
 }
 
 common::Error keys(CommandHandler* handler, int argc, char** argv, FastoObject* out) {
@@ -406,7 +422,7 @@ common::Error stats(CommandHandler* handler, int argc, char** argv, FastoObject*
   if (!er) {
     MemcachedServerInfo minf(statsout);
     common::StringValue* val = common::Value::createStringValue(minf.toString());
-    FastoObject* child = new FastoObject(out, val, mem->config_.delimiter);
+    FastoObject* child = new FastoObject(out, val, mem->delimiter());
     out->addChildren(child);
   }
 
@@ -419,7 +435,7 @@ common::Error get(CommandHandler* handler, int argc, char** argv, FastoObject* o
   common::Error er = mem->get(argv[0], &ret);
   if (!er) {
     common::StringValue* val = common::Value::createStringValue(ret);
-    FastoObject* child = new FastoObject(out, val, mem->config_.delimiter);
+    FastoObject* child = new FastoObject(out, val, mem->delimiter());
     out->addChildren(child);
   }
 
@@ -431,7 +447,7 @@ common::Error set(CommandHandler* handler, int argc, char** argv, FastoObject* o
   common::Error er = mem->set(argv[0], argv[3], atoi(argv[1]), atoi(argv[2]));
   if (!er) {
     common::StringValue* val = common::Value::createStringValue("STORED");
-    FastoObject* child = new FastoObject(out, val, mem->config_.delimiter);
+    FastoObject* child = new FastoObject(out, val, mem->delimiter());
     out->addChildren(child);
   }
 
@@ -443,7 +459,7 @@ common::Error add(CommandHandler* handler, int argc, char** argv, FastoObject* o
   common::Error er = mem->add(argv[0], argv[3], atoi(argv[1]), atoi(argv[2]));
   if (!er) {
     common::StringValue* val = common::Value::createStringValue("STORED");
-    FastoObject* child = new FastoObject(out, val, mem->config_.delimiter);
+    FastoObject* child = new FastoObject(out, val, mem->delimiter());
     out->addChildren(child);
   }
 
@@ -455,7 +471,7 @@ common::Error replace(CommandHandler* handler, int argc, char** argv, FastoObjec
   common::Error er = mem->replace(argv[0], argv[3], atoi(argv[1]), atoi(argv[2]));
   if (!er) {
     common::StringValue* val = common::Value::createStringValue("STORED");
-    FastoObject* child = new FastoObject(out, val, mem->config_.delimiter);
+    FastoObject* child = new FastoObject(out, val, mem->delimiter());
     out->addChildren(child);
   }
 
@@ -467,7 +483,7 @@ common::Error append(CommandHandler* handler, int argc, char** argv, FastoObject
   common::Error er = mem->append(argv[0], argv[3], atoi(argv[1]), atoi(argv[2]));
   if (!er) {
     common::StringValue* val = common::Value::createStringValue("STORED");
-    FastoObject* child = new FastoObject(out, val, mem->config_.delimiter);
+    FastoObject* child = new FastoObject(out, val, mem->delimiter());
     out->addChildren(child);
   }
 
@@ -479,7 +495,7 @@ common::Error prepend(CommandHandler* handler, int argc, char** argv, FastoObjec
   common::Error er = mem->prepend(argv[0], argv[3], atoi(argv[1]), atoi(argv[2]));
   if (!er) {
     common::StringValue* val = common::Value::createStringValue("STORED");
-    FastoObject* child = new FastoObject(out, val, mem->config_.delimiter);
+    FastoObject* child = new FastoObject(out, val, mem->delimiter());
     out->addChildren(child);
   }
 
@@ -491,7 +507,7 @@ common::Error incr(CommandHandler* handler, int argc, char** argv, FastoObject* 
   common::Error er = mem->incr(argv[0], common::convertFromString<uint64_t>(argv[1]));
   if (!er) {
     common::StringValue* val = common::Value::createStringValue("STORED");
-    FastoObject* child = new FastoObject(out, val, mem->config_.delimiter);
+    FastoObject* child = new FastoObject(out, val, mem->delimiter());
     out->addChildren(child);
   }
 
@@ -503,7 +519,7 @@ common::Error decr(CommandHandler* handler, int argc, char** argv, FastoObject* 
   common::Error er = mem->decr(argv[0], common::convertFromString<uint64_t>(argv[1]));
   if (!er) {
     common::StringValue* val = common::Value::createStringValue("STORED");
-    FastoObject* child = new FastoObject(out, val, mem->config_.delimiter);
+    FastoObject* child = new FastoObject(out, val, mem->delimiter());
     out->addChildren(child);
   }
 
@@ -515,7 +531,7 @@ common::Error del(CommandHandler* handler, int argc, char** argv, FastoObject* o
   common::Error er = mem->del(argv[0], argc == 2 ? atoll(argv[1]) : 0);
   if (!er) {
     common::StringValue* val = common::Value::createStringValue("DELETED");
-    FastoObject* child = new FastoObject(out, val, mem->config_.delimiter);
+    FastoObject* child = new FastoObject(out, val, mem->delimiter());
     out->addChildren(child);
   }
 
@@ -527,7 +543,7 @@ common::Error flush_all(CommandHandler* handler, int argc, char** argv, FastoObj
   common::Error er = mem->flush_all(argc == 1 ? common::convertFromString<time_t>(argv[0]) : 0);
   if (!er) {
     common::StringValue* val = common::Value::createStringValue("STORED");
-    FastoObject* child = new FastoObject(out, val, mem->config_.delimiter);
+    FastoObject* child = new FastoObject(out, val, mem->delimiter());
     out->addChildren(child);
   }
 
@@ -545,7 +561,7 @@ common::Error dbsize(CommandHandler* handler, int argc, char** argv, FastoObject
   common::Error er = mem->dbsize(&dbsize);
   if (!er) {
     common::FundamentalValue* val = common::Value::createUIntegerValue(dbsize);
-    FastoObject* child = new FastoObject(out, val, mem->config_.delimiter);
+    FastoObject* child = new FastoObject(out, val, mem->delimiter());
     out->addChildren(child);
   }
 

@@ -36,13 +36,14 @@ class RedisDriver
   explicit RedisDriver(IConnectionSettingsBaseSPtr settings);
   virtual ~RedisDriver();
 
+  virtual bool isInterrupted() const;
+
   virtual bool isConnected() const;
   virtual bool isAuthenticated() const;
   virtual common::net::hostAndPort host() const;
   virtual std::string outputDelemitr() const;
 
- private:
-  virtual bool isInterrupted() const;
+ private:  
   virtual void currentDataBaseChanged(IDataBaseInfo* info);
 
   virtual void initImpl();

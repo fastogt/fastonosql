@@ -106,16 +106,16 @@ std::string RedisDriver::outputDelemitr() const {
   return impl_->config_.delimiter;
 }
 
+bool RedisDriver::isInterrupted() const {
+  return IDriverRemote::isInterrupted();
+}
+
 bool RedisDriver::isConnected() const {
   return impl_->isConnected();
 }
 
 bool RedisDriver::isAuthenticated() const {
   return impl_->isAuthenticated();
-}
-
-bool RedisDriver::isInterrupted() const {
-  return interrupt_;
 }
 
 void RedisDriver::currentDataBaseChanged(IDataBaseInfo* info) {
@@ -213,12 +213,14 @@ void RedisDriver::handleConnectEvent(events::ConnectRequestEvent* ev) {
   if (set) {
     impl_->config_ = set->info();
     impl_->sinfo_ = set->sshInfo();
-  notifyProgress(sender, 25);
+    notifyProgress(sender, 25);
     common::Error er = impl_->connect(false);
     if (er && er->isError()) {
       res.setErrorInfo(er);
     }
-  notifyProgress(sender, 75);
+    notifyProgress(sender, 75);
+  } else {
+    NOTREACHED();
   }
   reply(sender, new events::ConnectResponceEvent(this, res));
   notifyProgress(sender, 100);
@@ -503,7 +505,7 @@ void RedisDriver::handleExecuteEvent(events::ExecuteRequestEvent* ev) {
     FastoObjectIPtr outRoot = lock.root_;
     double step = 100.0f / length;
     for (size_t n = 0; n < length; ++n) {
-      if (interrupt_) {
+      if (isInterrupted()) {
         er.reset(new common::ErrorValue("Interrupted exec.", common::ErrorValue::E_INTERRUPTED));
         res.setErrorInfo(er);
         break;

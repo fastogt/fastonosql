@@ -56,6 +56,7 @@ class IConnectionSettings {
 };
 
 bool isRemoteType(connectionTypes type);
+bool isCanSSHConnection(connectionTypes type);
 
 class IConnectionSettingsBase
   : public IConnectionSettings {

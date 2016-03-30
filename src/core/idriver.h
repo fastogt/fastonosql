@@ -60,6 +60,8 @@ class IDriver
                               std::string* cmdstring) const WARN_UNUSED_RESULT;
 
   void interrupt();
+  bool isInterrupted() const;
+
   virtual bool isConnected() const = 0;
   virtual bool isAuthenticated() const = 0;
 
@@ -104,7 +106,6 @@ class IDriver
   virtual void handleSetDefaultDatabaseEvent(events::SetDefaultDatabaseRequestEvent* ev);
 
   const IConnectionSettingsBaseSPtr settings_;
-  bool interrupt_;
 
   class RootLocker {
   public:
@@ -158,6 +159,7 @@ class IDriver
                                              std::string* cmdstring) const WARN_UNUSED_RESULT = 0;
 
  private:
+  bool interrupt_;
   IServerInfoSPtr server_info_;
   ServerDiscoveryInfoSPtr server_disc_info_;
   IDataBaseInfoSPtr current_database_info_;

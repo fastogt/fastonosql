@@ -33,42 +33,39 @@ namespace memcached {
 common::Error testConnection(MemcachedConnectionSettings* settings);
 
 struct MemcachedRaw
-  : public CommandHandler {
+  : public StaticDbApiRaw<MemcachedConfig> {
   MemcachedRaw();
   ~MemcachedRaw();
 
   static const char* versionApi();
 
-  bool isConnected() const;
-  common::Error connect();
-  common::Error disconnect();
+  common::Error keys(const char* args) WARN_UNUSED_RESULT;
+  common::Error info(const char* args, MemcachedServerInfo::Common* statsout) WARN_UNUSED_RESULT;
+  common::Error dbsize(size_t* size) WARN_UNUSED_RESULT;
 
-  common::Error keys(const char* args);
-  common::Error info(const char* args, MemcachedServerInfo::Common* statsout);
-  common::Error dbsize(size_t* size);
-
-  common::Error get(const std::string& key, std::string* ret_val);
+  common::Error get(const std::string& key, std::string* ret_val) WARN_UNUSED_RESULT;
   common::Error set(const std::string& key, const std::string& value,
-                    time_t expiration, uint32_t flags);
+                    time_t expiration, uint32_t flags) WARN_UNUSED_RESULT;
   common::Error add(const std::string& key, const std::string& value,
-                    time_t expiration, uint32_t flags);
+                    time_t expiration, uint32_t flags) WARN_UNUSED_RESULT;
   common::Error replace(const std::string& key, const std::string& value,
-                        time_t expiration, uint32_t flags);
+                        time_t expiration, uint32_t flags)WARN_UNUSED_RESULT;
   common::Error append(const std::string& key, const std::string& value,
-                       time_t expiration, uint32_t flags);
+                       time_t expiration, uint32_t flags) WARN_UNUSED_RESULT;
   common::Error prepend(const std::string& key, const std::string& value,
-                        time_t expiration, uint32_t flags);
-  common::Error incr(const std::string& key, uint64_t value);
-  common::Error decr(const std::string& key, uint64_t value);
-  common::Error del(const std::string& key, time_t expiration);
-  common::Error flush_all(time_t expiration);
-  common::Error version_server() const;
-  common::Error help(int argc, char** argv);
-
-  MemcachedConfig config_;
-  SSHInfo sinfo_;
+                        time_t expiration, uint32_t flags) WARN_UNUSED_RESULT;
+  common::Error incr(const std::string& key, uint64_t value) WARN_UNUSED_RESULT;
+  common::Error decr(const std::string& key, uint64_t value) WARN_UNUSED_RESULT;
+  common::Error del(const std::string& key, time_t expiration) WARN_UNUSED_RESULT;
+  common::Error flush_all(time_t expiration) WARN_UNUSED_RESULT;
+  common::Error version_server() const WARN_UNUSED_RESULT;
+  common::Error help(int argc, char** argv) WARN_UNUSED_RESULT;
 
  private:
+  virtual bool isConnectedImpl() const;
+  virtual common::Error connectImpl(const MemcachedConfig& config);
+  virtual common::Error disconnectImpl();
+
   memcached_st* memc_;
 };
 

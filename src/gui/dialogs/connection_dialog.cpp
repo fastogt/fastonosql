@@ -275,7 +275,7 @@ void ConnectionDialog::typeConnectionChange(int index) {
   QVariant var = typeConnection_->itemData(index);
   core::connectionTypes currentType = (core::connectionTypes)qvariant_cast<unsigned char>(var);
   bool isValidType = currentType != core::DBUNKNOWN;
-  bool isRType = isRemoteType(currentType);
+  bool isRType = isCanSSHConnection(currentType);
 
   connectionName_->setEnabled(isValidType);
   commandLine_->setEnabled(isValidType);
@@ -374,7 +374,7 @@ bool ConnectionDialog::validateAndApply() {
   bool isValidType = currentType != core::DBUNKNOWN;
 
   if (isValidType) {
-    bool isRType = isRemoteType(currentType);
+    bool isRType = isCanSSHConnection(currentType);
     std::string conName = common::convertToString(connectionName_->text());
 
     if (isRType) {

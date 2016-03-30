@@ -118,11 +118,12 @@ common::Error LmdbDriver::commandChangeTTLImpl(CommandChangeTTL* command,
 // ============== commands =============//
 
 std::string LmdbDriver::path() const {
-  return impl_->config_.dbname;
+  LmdbConfig config = impl_->config();
+  return config.dbname;
 }
 
 std::string LmdbDriver::outputDelemitr() const {
-  return impl_->config_.delimiter;
+  return impl_->delimiter();
 }
 
 void LmdbDriver::initImpl() {
@@ -185,13 +186,14 @@ void LmdbDriver::handleConnectEvent(events::ConnectRequestEvent* ev) {
   events::ConnectResponceEvent::value_type res(ev->value());
   LmdbConnectionSettings* set = dynamic_cast<LmdbConnectionSettings*>(settings_.get());
   if (set) {
-    impl_->config_ = set->info();
     notifyProgress(sender, 25);
-    common::Error er = impl_->connect();
+    common::Error er = impl_->connect(set->info());
     if (er && er->isError()) {
       res.setErrorInfo(er);
     }
     notifyProgress(sender, 75);
+  } else {
+    NOTREACHED();
   }
   reply(sender, new events::ConnectResponceEvent(this, res));
   notifyProgress(sender, 100);
@@ -226,7 +228,7 @@ void LmdbDriver::handleExecuteEvent(events::ExecuteRequestEvent* ev) {
     FastoObjectIPtr outRoot = lock.root_;
     double step = 100.0f/length;
     for (size_t n = 0; n < length; ++n) {
-      if (interrupt_) {
+      if (isInterrupted()) {
         er.reset(new common::ErrorValue("Interrupted exec.", common::ErrorValue::E_INTERRUPTED));
         res.setErrorInfo(er);
         break;

@@ -1,7 +1,9 @@
-0.5.9
+0.6.1
 [Alexandr Topilski]
+- [Memcached] Not connected to server, impossible to get discovery info #4
 - Server roles
 - Clear database
+- Property to change font globally
 
 0.5.8 / Fabruary 20, 2016
 [Alexandr Topilski]

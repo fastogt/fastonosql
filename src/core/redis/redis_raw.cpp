@@ -1594,6 +1594,8 @@ common::Error RedisRaw::cliReadReply(FastoObject* out) {
 }
 
 common::Error RedisRaw::execute(int argc, char** argv, FastoObject* out) {
+  CHECK(context_);
+
   if (!out) {
     DNOTREACHED();
     return common::make_error_value("Invalid input argument(s)", common::ErrorValue::E_ERROR);
@@ -1610,10 +1612,6 @@ common::Error RedisRaw::execute(int argc, char** argv, FastoObject* out) {
 
   if (strcasecmp(command, "help") == 0 || strcasecmp(command, "?") == 0) {
     return cliOutputHelp(out, --argc, ++argv);
-  }
-
-  if (!context_) {
-    return common::make_error_value("Not connected", common::Value::E_ERROR);
   }
 
   if (strcasecmp(command, "monitor") == 0) config_.monitor_mode = 1;

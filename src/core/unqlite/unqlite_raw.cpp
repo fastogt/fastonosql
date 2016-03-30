@@ -146,57 +146,26 @@ common::Error testConnection(UnqliteConnectionSettings* settings) {
 }
 
 UnqliteRaw::UnqliteRaw()
-  : CommandHandler(unqliteCommands), unqlite_(nullptr) {
-}
-
-bool UnqliteRaw::isConnected() const {
-  if (!unqlite_) {
-    return false;
-  }
-
-  return true;
-}
-
-common::Error UnqliteRaw::connect() {
-  if (isConnected()) {
-    return common::Error();
-  }
-
-  struct unqlite* context = nullptr;
-  common::Error er = createConnection(config_, &context);
-  if (er && er->isError()) {
-    return er;
-  }
-
-  unqlite_ = context;
-  return common::Error();
-}
-
-common::Error UnqliteRaw::disconnect() {
-  if (!isConnected()) {
-    return common::Error();
-  }
-
-  unqlite_close(unqlite_);
-  unqlite_ = nullptr;
-  return common::Error();
+  : StaticDbApiRaw<UnqliteConfig>(unqliteCommands), unqlite_(nullptr) {
 }
 
 common::Error UnqliteRaw::info(const char* args, UnqliteServerInfo::Stats* statsout) {
+  CHECK(unqlite_);
+
   if (!statsout) {
-    NOTREACHED();
-    return common::make_error_value("Invalid input argument for command: INFO",
-                                    common::ErrorValue::E_ERROR);
+    return common::make_error_value("Invalid input argument(s)", common::ErrorValue::E_ERROR);
   }
 
   UnqliteServerInfo::Stats linfo;
-  linfo.file_name = config_.dbname;
-
+  UnqliteConfig conf = config();
+  linfo.file_name = conf.dbname;
   *statsout = linfo;
   return common::Error();
 }
 
 common::Error UnqliteRaw::dbsize(size_t* size) {
+  CHECK(unqlite_);
+
   if (!size) {
     return common::make_error_value("Invalid input argument(s)", common::ErrorValue::E_ERROR);
   }
@@ -239,6 +208,8 @@ const char* UnqliteRaw::versionApi() {
 }
 
 common::Error UnqliteRaw::set(const std::string& key, const std::string& value) {
+  CHECK(unqlite_);
+
   int rc = unqlite_kv_store(unqlite_, key.c_str(), key.size(), value.c_str(), value.length());
   if (rc != UNQLITE_OK) {
     char buff[1024] = {0};
@@ -250,6 +221,8 @@ common::Error UnqliteRaw::set(const std::string& key, const std::string& value) 
 }
 
 common::Error UnqliteRaw::get(const std::string& key, std::string* ret_val) {
+  CHECK(unqlite_);
+
   int rc = unqlite_kv_fetch_callback(unqlite_, key.c_str(), key.size(), unqlite_data_callback, ret_val);
   if (rc != UNQLITE_OK) {
     char buff[1024] = {0};
@@ -261,6 +234,8 @@ common::Error UnqliteRaw::get(const std::string& key, std::string* ret_val) {
 }
 
 common::Error UnqliteRaw::del(const std::string& key) {
+  CHECK(unqlite_);
+
   int rc = unqlite_kv_delete(unqlite_, key.c_str(), key.size());
   if (rc != UNQLITE_OK) {
     char buff[1024] = {0};
@@ -273,6 +248,8 @@ common::Error UnqliteRaw::del(const std::string& key) {
 
 common::Error UnqliteRaw::keys(const std::string& key_start, const std::string& key_end,
                    uint64_t limit, std::vector<std::string> *ret) {
+  CHECK(unqlite_);
+
   /* Allocate a new cursor instance */
   unqlite_kv_cursor* pCur; /* Cursor handle */
   int rc = unqlite_kv_cursor_init(unqlite_, &pCur);
@@ -306,6 +283,8 @@ common::Error UnqliteRaw::help(int argc, char** argv) {
 }
 
 common::Error UnqliteRaw::flushdb() {
+  CHECK(unqlite_);
+
   unqlite_kv_cursor* pCur; /* Cursor handle */
   int rc = unqlite_kv_cursor_init(unqlite_, &pCur);
   if (rc != UNQLITE_OK) {
@@ -333,12 +312,37 @@ common::Error UnqliteRaw::flushdb() {
   return common::Error();
 }
 
+bool UnqliteRaw::isConnectedImpl() const {
+  if (!unqlite_) {
+    return false;
+  }
+
+  return true;
+}
+
+common::Error UnqliteRaw::connectImpl(const UnqliteConfig& config) {
+  struct unqlite* context = nullptr;
+  common::Error er = createConnection(config, &context);
+  if (er && er->isError()) {
+    return er;
+  }
+
+  unqlite_ = context;
+  return common::Error();
+}
+
+common::Error UnqliteRaw::disconnectImpl() {
+  unqlite_close(unqlite_);
+  unqlite_ = nullptr;
+  return common::Error();
+}
+
 common::Error set(CommandHandler* handler, int argc, char** argv, FastoObject* out) {
   UnqliteRaw* unq = static_cast<UnqliteRaw*>(handler);
   common::Error er = unq->set(argv[0], argv[1]);
   if (!er) {
     common::StringValue* val = common::Value::createStringValue("STORED");
-    FastoObject* child = new FastoObject(out, val, unq->config_.delimiter);
+    FastoObject* child = new FastoObject(out, val, unq->delimiter());
     out->addChildren(child);
   }
 
@@ -351,7 +355,7 @@ common::Error get(CommandHandler* handler, int argc, char** argv, FastoObject* o
   common::Error er = unq->get(argv[0], &ret);
   if (!er) {
     common::StringValue* val = common::Value::createStringValue(ret);
-    FastoObject* child = new FastoObject(out, val, unq->config_.delimiter);
+    FastoObject* child = new FastoObject(out, val, unq->delimiter());
     out->addChildren(child);
   }
 
@@ -363,7 +367,7 @@ common::Error del(CommandHandler* handler, int argc, char** argv, FastoObject* o
   common::Error er = unq->del(argv[0]);
   if (!er) {
     common::StringValue* val = common::Value::createStringValue("DELETED");
-    FastoObject* child = new FastoObject(out, val, unq->config_.delimiter);
+    FastoObject* child = new FastoObject(out, val, unq->delimiter());
     out->addChildren(child);
   }
 
@@ -380,7 +384,7 @@ common::Error keys(CommandHandler* handler, int argc, char** argv, FastoObject* 
       common::StringValue* val = common::Value::createStringValue(keysout[i]);
       ar->append(val);
     }
-    FastoObjectArray* child = new FastoObjectArray(out, ar, unq->config_.delimiter);
+    FastoObjectArray* child = new FastoObjectArray(out, ar, unq->delimiter());
     out->addChildren(child);
   }
 
@@ -394,7 +398,7 @@ common::Error info(CommandHandler* handler, int argc, char** argv, FastoObject* 
   if (!er) {
     UnqliteServerInfo uinf(statsout);
     common::StringValue* val = common::Value::createStringValue(uinf.toString());
-    FastoObject* child = new FastoObject(out, val, unq->config_.delimiter);
+    FastoObject* child = new FastoObject(out, val, unq->delimiter());
     out->addChildren(child);
   }
 
@@ -407,7 +411,7 @@ common::Error dbsize(CommandHandler* handler, int argc, char** argv, FastoObject
   common::Error er = unq->dbsize(&size);
   if (!er) {
     common::FundamentalValue* val = common::Value::createUIntegerValue(size);
-    FastoObject* child = new FastoObject(out, val, unq->config_.delimiter);
+    FastoObject* child = new FastoObject(out, val, unq->delimiter());
     out->addChildren(child);
   }
 

@@ -33,34 +33,33 @@ namespace rocksdb {
 common::Error testConnection(RocksdbConnectionSettings* settings);
 
 struct RocksdbRaw
-  : public CommandHandler {
+  : public StaticDbApiRaw<RocksdbConfig> {
   RocksdbRaw();
   ~RocksdbRaw();
 
   static const char* versionApi();
 
-  bool isConnected() const;
-  common::Error connect();
-  common::Error disconnect();
-
   std::string currentDbName() const;
 
-  common::Error info(const char* args, RocksdbServerInfo::Stats* statsout);
-  common::Error set(const std::string& key, const std::string& value);
-  common::Error get(const std::string& key, std::string* ret_val);
+  common::Error info(const char* args, RocksdbServerInfo::Stats* statsout) WARN_UNUSED_RESULT;
+  common::Error set(const std::string& key, const std::string& value) WARN_UNUSED_RESULT;
+  common::Error get(const std::string& key, std::string* ret_val) WARN_UNUSED_RESULT;
   common::Error mget(const std::vector< ::rocksdb::Slice>& keys, std::vector<std::string>* ret);
-  common::Error merge(const std::string& key, const std::string& value);
-  common::Error del(const std::string& key);
+  common::Error merge(const std::string& key, const std::string& value) WARN_UNUSED_RESULT;
+  common::Error del(const std::string& key) WARN_UNUSED_RESULT;
   common::Error keys(const std::string& key_start, const std::string& key_end,
-                     uint64_t limit, std::vector<std::string>* ret);
+                     uint64_t limit, std::vector<std::string>* ret) WARN_UNUSED_RESULT;
 
   // extended api
-  common::Error dbsize(size_t* size);
-  common::Error help(int argc, char** argv);
-  common::Error flushdb();
+  common::Error dbsize(size_t* size) WARN_UNUSED_RESULT;
+  common::Error help(int argc, char** argv) WARN_UNUSED_RESULT;
+  common::Error flushdb() WARN_UNUSED_RESULT;
 
-  RocksdbConfig config_;
  private:
+  virtual bool isConnectedImpl() const;
+  virtual common::Error connectImpl(const RocksdbConfig& config);
+  virtual common::Error disconnectImpl();
+
   ::rocksdb::DB* rocksdb_;
 };
 

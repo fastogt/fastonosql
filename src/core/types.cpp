@@ -326,11 +326,13 @@ ServerPropertyInfo::ServerPropertyInfo() {
 
 ServerPropertyInfo makeServerProperty(const FastoObjectArray* array) {
   if (!array) {
+    DNOTREACHED();
     return ServerPropertyInfo();
   }
 
   common::ArrayValue* ar = array->array();
   if (!ar) {
+    DNOTREACHED();
     return ServerPropertyInfo();
   }
 
@@ -340,7 +342,7 @@ ServerPropertyInfo makeServerProperty(const FastoObjectArray* array) {
     std::string c2;
     bool res = ar->getString(i, &c1);
     DCHECK(res);
-    res = ar->getString(i+1, &c2);
+    res = ar->getString(i + 1, &c2);
     DCHECK(res);
     inf.propertyes.push_back(std::make_pair(c1, c2));
   }

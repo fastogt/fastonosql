@@ -86,7 +86,7 @@ common::Error testConnection(LeveldbConnectionSettings* settings) {
 }
 
 LeveldbRaw::LeveldbRaw()
-  : CommandHandler(leveldbCommands), leveldb_(nullptr) {
+  : StaticDbApiRaw<LeveldbConfig>(leveldbCommands), leveldb_(nullptr) {
 }
 
 LeveldbRaw::~LeveldbRaw() {
@@ -99,39 +99,9 @@ const char* LeveldbRaw::versionApi() {
   return leveldb_version;
 }
 
-bool LeveldbRaw::isConnected() const {
-  if (!leveldb_) {
-    return false;
-  }
-
-  return true;
-}
-
-common::Error LeveldbRaw::connect() {
-  if (isConnected()) {
-    return common::Error();
-  }
-
-  ::leveldb::DB* context = nullptr;
-  common::Error er = createConnection(config_, &context);
-  if (er && er->isError()) {
-    return er;
-  }
-
-  leveldb_ = context;
-  return common::Error();
-}
-
-common::Error LeveldbRaw::disconnect() {
-  if (!isConnected()) {
-    return common::Error();
-  }
-
-  destroy(&leveldb_);
-  return common::Error();
-}
-
 common::Error LeveldbRaw::dbsize(size_t* size) {
+  CHECK(leveldb_);
+
   if (!size) {
     return common::make_error_value("Invalid input argument(s)", common::ErrorValue::E_ERROR);
   }
@@ -161,6 +131,7 @@ common::Error LeveldbRaw::info(const char* args, LeveldbServerInfo::Stats* stats
   // stats
   // char prop[1024] = {0};
   // common::SNPrintf(prop, sizeof(prop), "leveldb.%s", args ? args : "stats");
+  CHECK(leveldb_);
 
   if (!statsout) {
     return common::make_error_value("Invalid input argument(s)", common::ErrorValue::E_ERROR);
@@ -206,6 +177,8 @@ common::Error LeveldbRaw::info(const char* args, LeveldbServerInfo::Stats* stats
 }
 
 common::Error LeveldbRaw::set(const std::string& key, const std::string& value) {
+  CHECK(leveldb_);
+
   ::leveldb::WriteOptions wo;
   auto st = leveldb_->Put(wo, key, value);
   if (!st.ok()) {
@@ -218,6 +191,8 @@ common::Error LeveldbRaw::set(const std::string& key, const std::string& value) 
 }
 
 common::Error LeveldbRaw::get(const std::string& key, std::string* ret_val) {
+  CHECK(leveldb_);
+
   ::leveldb::ReadOptions ro;
   auto st = leveldb_->Get(ro, key, ret_val);
   if (!st.ok()) {
@@ -230,6 +205,8 @@ common::Error LeveldbRaw::get(const std::string& key, std::string* ret_val) {
 }
 
 common::Error LeveldbRaw::del(const std::string& key) {
+  CHECK(leveldb_);
+
   ::leveldb::WriteOptions wo;
   auto st = leveldb_->Delete(wo, key);
   if (!st.ok()) {
@@ -242,6 +219,8 @@ common::Error LeveldbRaw::del(const std::string& key) {
 
 common::Error LeveldbRaw::keys(const std::string& key_start, const std::string& key_end,
                    uint64_t limit, std::vector<std::string>* ret) {
+  CHECK(leveldb_);
+
   ::leveldb::ReadOptions ro;
   ::leveldb::Iterator* it = leveldb_->NewIterator(ro);  // keys(key_start, key_end, limit, ret);
   for (it->Seek(key_start); it->Valid() && it->key().ToString() < key_end; it->Next()) {
@@ -269,6 +248,8 @@ common::Error LeveldbRaw::help(int argc, char** argv) {
 }
 
 common::Error LeveldbRaw::flushdb() {
+  CHECK(leveldb_);
+
   ::leveldb::ReadOptions ro;
   ::leveldb::WriteOptions wo;
   ::leveldb::Iterator* it = leveldb_->NewIterator(ro);
@@ -293,6 +274,30 @@ common::Error LeveldbRaw::flushdb() {
   return common::Error();
 }
 
+bool LeveldbRaw::isConnectedImpl() const {
+  if (!leveldb_) {
+    return false;
+  }
+
+  return true;
+}
+
+common::Error LeveldbRaw::connectImpl(const LeveldbConfig& config) {
+  ::leveldb::DB* context = nullptr;
+  common::Error er = createConnection(config, &context);
+  if (er && er->isError()) {
+    return er;
+  }
+
+  leveldb_ = context;
+  return common::Error();
+}
+
+common::Error LeveldbRaw::disconnectImpl() {
+  destroy(&leveldb_);
+  return common::Error();
+}
+
 common::Error dbsize(CommandHandler* handler, int argc, char** argv, FastoObject* out) {
   LeveldbRaw* level = static_cast<LeveldbRaw*>(handler);
 
@@ -300,7 +305,7 @@ common::Error dbsize(CommandHandler* handler, int argc, char** argv, FastoObject
   common::Error er = level->dbsize(&dbsize);
   if (!er) {
     common::FundamentalValue* val = common::Value::createUIntegerValue(dbsize);
-    FastoObject* child = new FastoObject(out, val, level->config_.delimiter);
+    FastoObject* child = new FastoObject(out, val, level->delimiter());
     out->addChildren(child);
   }
   return er;
@@ -314,7 +319,7 @@ common::Error info(CommandHandler* handler, int argc, char** argv, FastoObject* 
   if (!er) {
     LeveldbServerInfo linf(statsout);
     common::StringValue* val = common::Value::createStringValue(linf.toString());
-    FastoObject* child = new FastoObject(out, val, level->config_.delimiter);
+    FastoObject* child = new FastoObject(out, val, level->delimiter());
     out->addChildren(child);
   }
   return er;
@@ -326,7 +331,7 @@ common::Error set(CommandHandler* handler, int argc, char** argv, FastoObject* o
   common::Error er = level->set(argv[0], argv[1]);
   if (!er) {
     common::StringValue* val = common::Value::createStringValue("STORED");
-    FastoObject* child = new FastoObject(out, val, level->config_.delimiter);
+    FastoObject* child = new FastoObject(out, val, level->delimiter());
     out->addChildren(child);
   }
   return er;
@@ -339,7 +344,7 @@ common::Error get(CommandHandler* handler, int argc, char** argv, FastoObject* o
   common::Error er = level->get(argv[0], &ret);
   if (!er) {
     common::StringValue* val = common::Value::createStringValue(ret);
-    FastoObject* child = new FastoObject(out, val, level->config_.delimiter);
+    FastoObject* child = new FastoObject(out, val, level->delimiter());
     out->addChildren(child);
   }
   return er;
@@ -351,7 +356,7 @@ common::Error del(CommandHandler* handler, int argc, char** argv, FastoObject* o
   common::Error er = level->del(argv[0]);
   if (!er) {
     common::StringValue* val = common::Value::createStringValue("DELETED");
-    FastoObject* child = new FastoObject(out, val, level->config_.delimiter);
+    FastoObject* child = new FastoObject(out, val, level->delimiter());
     out->addChildren(child);
   }
   return er;
@@ -368,7 +373,7 @@ common::Error keys(CommandHandler* handler, int argc, char** argv, FastoObject* 
       common::StringValue* val = common::Value::createStringValue(keysout[i]);
       ar->append(val);
     }
-    FastoObjectArray* child = new FastoObjectArray(out, ar, level->config_.delimiter);
+    FastoObjectArray* child = new FastoObjectArray(out, ar, level->delimiter());
     out->addChildren(child);
   }
   return er;

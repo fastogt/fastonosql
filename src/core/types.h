@@ -84,6 +84,59 @@ class CommandHandler {
   const std::vector<commands_type> commands_;
 };
 
+template<typename C>
+class StaticDbApiRaw
+    : public CommandHandler {
+public:
+  bool isConnected() const {
+    return isConnectedImpl();
+  }
+  common::Error connect(const C& config) WARN_UNUSED_RESULT {
+    if (isConnected()) {
+      return common::Error();
+    }
+
+    common::Error err = connectImpl(config);
+    if (err && err->isError()) {
+      return err;
+    }
+
+    config_ = config;
+    return common::Error();
+  }
+  common::Error disconnect() WARN_UNUSED_RESULT {
+    if (!isConnected()) {
+      return common::Error();
+    }
+
+    common::Error err = disconnectImpl();
+    if (err && err->isError()) {
+      return err;
+    }
+
+    config_ = C();
+    return common::Error();
+  }
+  C config() const {
+    return config_;
+  }
+  std::string delimiter() const {
+    return config_.delimiter;
+  }
+
+protected:
+  explicit StaticDbApiRaw(const std::vector<commands_type>& commands)
+    : CommandHandler(commands) {
+  }
+
+private:
+  virtual bool isConnectedImpl() const = 0;
+  virtual common::Error connectImpl(const C& config) = 0;
+  virtual common::Error disconnectImpl() = 0;
+
+  C config_;
+};
+
 std::string convertVersionNumberToReadableString(uint32_t version);
 
 struct NKey {
@@ -288,17 +341,18 @@ typedef common::shared_ptr<CommandKey> CommandKeySPtr;
 template<typename Command>
 FastoObjectCommand* createCommand(FastoObject* parent, const std::string& input,
                                   common::Value::CommandLoggingType ct) {
-  if (input.empty()) {
-    DNOTREACHED();
-    return nullptr;
-  }
-
   if (!parent) {
     DNOTREACHED();
     return nullptr;
   }
 
-  common::CommandValue* cmd = common::Value::createCommand(input, ct);
+  std::string stable_input = stableCommand(input);
+  if (stable_input.empty()) {
+    DNOTREACHED();
+    return nullptr;
+  }
+
+  common::CommandValue* cmd = common::Value::createCommand(stable_input, ct);
   FastoObjectCommand* fs = new Command(parent, cmd, parent->delemitr());
   parent->addChildren(fs);
   return fs;
@@ -307,7 +361,7 @@ FastoObjectCommand* createCommand(FastoObject* parent, const std::string& input,
 template<typename Command>
 FastoObjectCommand* createCommand(FastoObjectIPtr parent, const std::string& input,
                                   common::Value::CommandLoggingType ct) {
-  return createCommand<Command>(parent.get(), stableCommand(input), ct);
+  return createCommand<Command>(parent.get(), input, ct);
 }
 
 }  // namespace core

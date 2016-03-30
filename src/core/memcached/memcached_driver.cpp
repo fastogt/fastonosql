@@ -54,11 +54,12 @@ bool MemcachedDriver::isAuthenticated() const {
 }
 
 common::net::hostAndPort MemcachedDriver::host() const {
-  return impl_->config_.host;
+  MemcachedConfig conf = impl_->config();
+  return conf.host;
 }
 
 std::string MemcachedDriver::outputDelemitr() const {
-  return impl_->config_.delimiter;
+  return impl_->delimiter();
 }
 
 void MemcachedDriver::initImpl() {
@@ -121,14 +122,14 @@ void MemcachedDriver::handleConnectEvent(events::ConnectRequestEvent* ev) {
   events::ConnectResponceEvent::value_type res(ev->value());
   MemcachedConnectionSettings* set = dynamic_cast<MemcachedConnectionSettings*>(settings_.get());
   if (set) {
-    impl_->config_ = set->info();
-    impl_->sinfo_ = set->sshInfo();
-  notifyProgress(sender, 25);
-    common::Error er = impl_->connect();
+    notifyProgress(sender, 25);
+    common::Error er = impl_->connect(set->info());
     if (er && er->isError()) {
       res.setErrorInfo(er);
     }
-  notifyProgress(sender, 75);
+    notifyProgress(sender, 75);
+  } else {
+    NOTREACHED();
   }
   reply(sender, new events::ConnectResponceEvent(this, res));
   notifyProgress(sender, 100);
@@ -163,7 +164,7 @@ void MemcachedDriver::handleExecuteEvent(events::ExecuteRequestEvent* ev) {
     FastoObjectIPtr outRoot = lock.root_;
     double step = 100.0f/length;
     for (size_t n = 0; n < length; ++n) {
-      if (interrupt_) {
+      if (isInterrupted()) {
         er.reset(new common::ErrorValue("Interrupted exec.", common::ErrorValue::E_INTERRUPTED));
         res.setErrorInfo(er);
         break;

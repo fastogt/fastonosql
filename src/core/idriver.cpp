@@ -241,6 +241,10 @@ void IDriver::interrupt() {
   interrupt_ = true;
 }
 
+bool IDriver::isInterrupted() const {
+  return interrupt_;
+}
+
 void IDriver::init() {
   if (settings_->loggingEnabled()) {
     int interval = settings_->loggingMsTimeInterval();

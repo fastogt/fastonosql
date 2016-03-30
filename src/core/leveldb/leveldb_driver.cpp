@@ -121,11 +121,12 @@ common::Error LeveldbDriver::commandChangeTTLImpl(CommandChangeTTL* command,
 // ============== commands =============//
 
 std::string LeveldbDriver::path() const {
-  return impl_->config_.dbname;
+  LeveldbConfig config = impl_->config();
+  return config.dbname;
 }
 
 std::string LeveldbDriver::outputDelemitr() const {
-  return impl_->config_.delimiter;
+  return impl_->delimiter();
 }
 
 void LeveldbDriver::initImpl() {
@@ -188,13 +189,14 @@ void LeveldbDriver::handleConnectEvent(events::ConnectRequestEvent* ev) {
   events::ConnectResponceEvent::value_type res(ev->value());
   LeveldbConnectionSettings* set = dynamic_cast<LeveldbConnectionSettings*>(settings_.get());
   if (set) {
-    impl_->config_ = set->info();
-  notifyProgress(sender, 25);
-    common::Error er = impl_->connect();
+    notifyProgress(sender, 25);
+    common::Error er = impl_->connect(set->info());
     if (er && er->isError()) {
       res.setErrorInfo(er);
     }
-  notifyProgress(sender, 75);
+    notifyProgress(sender, 75);
+  } else {
+    NOTREACHED();
   }
   reply(sender, new events::ConnectResponceEvent(this, res));
   notifyProgress(sender, 100);
@@ -229,7 +231,7 @@ void LeveldbDriver::handleExecuteEvent(events::ExecuteRequestEvent* ev) {
     FastoObjectIPtr outRoot = lock.root_;
     double step = 100.0f/length;
     for (size_t n = 0; n < length; ++n) {
-      if (interrupt_) {
+      if (isInterrupted()) {
         er.reset(new common::ErrorValue("Interrupted exec.", common::ErrorValue::E_INTERRUPTED));
         res.setErrorInfo(er);
         break;

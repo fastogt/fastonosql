@@ -119,11 +119,12 @@ common::Error UnqliteDriver::commandChangeTTLImpl(CommandChangeTTL* command,
 // ============== commands =============//
 
 std::string UnqliteDriver::path() const {
-  return impl_->config_.dbname;
+  UnqliteConfig conf = impl_->config();
+  return conf.dbname;
 }
 
 std::string UnqliteDriver::outputDelemitr() const {
-  return impl_->config_.delimiter;
+  return impl_->delimiter();
 }
 
 void UnqliteDriver::initImpl() {
@@ -186,13 +187,14 @@ void UnqliteDriver::handleConnectEvent(events::ConnectRequestEvent* ev) {
   events::ConnectResponceEvent::value_type res(ev->value());
   UnqliteConnectionSettings* set = dynamic_cast<UnqliteConnectionSettings*>(settings_.get());
   if (set) {
-    impl_->config_ = set->info();
-  notifyProgress(sender, 25);
-    common::Error er = impl_->connect();
+    notifyProgress(sender, 25);
+    common::Error er = impl_->connect(set->info());
     if (er && er->isError()) {
       res.setErrorInfo(er);
     }
-  notifyProgress(sender, 75);
+    notifyProgress(sender, 75);
+  } else {
+    NOTREACHED();
   }
   reply(sender, new events::ConnectResponceEvent(this, res));
   notifyProgress(sender, 100);
@@ -227,7 +229,7 @@ void UnqliteDriver::handleExecuteEvent(events::ExecuteRequestEvent* ev) {
     FastoObjectIPtr outRoot = lock.root_;
     double step = 100.0f/length;
     for (size_t n = 0; n < length; ++n) {
-      if (interrupt_) {
+      if (isInterrupted()) {
         er.reset(new common::ErrorValue("Interrupted exec.", common::ErrorValue::E_INTERRUPTED));
         res.setErrorInfo(er);
         break;

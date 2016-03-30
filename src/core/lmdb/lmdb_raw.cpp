@@ -138,7 +138,7 @@ common::Error testConnection(fastonosql::core::lmdb::LmdbConnectionSettings* set
 }
 
 LmdbRaw::LmdbRaw()
-  : CommandHandler(lmdbCommands), lmdb_(nullptr) {
+  : StaticDbApiRaw<LmdbConfig>(lmdbCommands), lmdb_(nullptr) {
 }
 
 LmdbRaw::~LmdbRaw() {
@@ -147,38 +147,6 @@ LmdbRaw::~LmdbRaw() {
 
 const char* LmdbRaw::versionApi() {
   return STRINGIZE(MDB_VERSION_MAJOR) "." STRINGIZE(MDB_VERSION_MINOR) "." STRINGIZE(MDB_VERSION_PATCH);
-}
-
-bool LmdbRaw::isConnected() const {
-  if (!lmdb_) {
-    return false;
-  }
-
-  return true;
-}
-
-common::Error LmdbRaw::connect() {
-  if (isConnected()) {
-    return common::Error();
-  }
-
-  struct lmdb* context = nullptr;
-  common::Error er = createConnection(config_, &context);
-  if (er && er->isError()) {
-    return er;
-  }
-
-  lmdb_ = context;
-  return common::Error();
-}
-
-common::Error LmdbRaw::disconnect() {
-  if (!isConnected()) {
-      return common::Error();
-  }
-
-  lmdb_close(&lmdb_);
-  return common::Error();
 }
 
 MDB_dbi LmdbRaw::curDb() const {
@@ -190,6 +158,8 @@ MDB_dbi LmdbRaw::curDb() const {
 }
 
 common::Error LmdbRaw::info(const char* args, LmdbServerInfo::Stats* statsout) {
+  CHECK(lmdb_);
+
   if (!statsout) {
     NOTREACHED();
     return common::make_error_value("Invalid input argument for command: INFO",
@@ -197,13 +167,16 @@ common::Error LmdbRaw::info(const char* args, LmdbServerInfo::Stats* statsout) {
   }
 
   LmdbServerInfo::Stats linfo;
-  linfo.file_name = config_.dbname;
+  LmdbConfig conf = config();
+  linfo.file_name = conf.dbname;
 
   *statsout = linfo;
   return common::Error();
 }
 
 common::Error LmdbRaw::dbsize(size_t* size) {
+  CHECK(lmdb_);
+
   if (!size) {
     return common::make_error_value("Invalid input argument(s)", common::ErrorValue::E_ERROR);
   }
@@ -236,6 +209,8 @@ common::Error LmdbRaw::dbsize(size_t* size) {
 }
 
 common::Error LmdbRaw::set(const std::string& key, const std::string& value) {
+  CHECK(lmdb_);
+
   MDB_val mkey;
   mkey.mv_size = key.size();
   mkey.mv_data = (void*)key.c_str();
@@ -264,6 +239,8 @@ common::Error LmdbRaw::set(const std::string& key, const std::string& value) {
 }
 
 common::Error LmdbRaw::get(const std::string& key, std::string* ret_val) {
+  CHECK(lmdb_);
+
   MDB_val mkey;
   mkey.mv_size = key.size();
   mkey.mv_data = (void*)key.c_str();
@@ -288,6 +265,8 @@ common::Error LmdbRaw::get(const std::string& key, std::string* ret_val) {
 }
 
 common::Error LmdbRaw::del(const std::string& key) {
+  CHECK(lmdb_);
+
   MDB_val mkey;
   mkey.mv_size = key.size();
   mkey.mv_data = (void*)key.c_str();
@@ -314,6 +293,8 @@ common::Error LmdbRaw::del(const std::string& key) {
 
 common::Error LmdbRaw::keys(const std::string& key_start, const std::string& key_end,
                             uint64_t limit, std::vector<std::string>* ret) {
+  CHECK(lmdb_);
+
   MDB_cursor* cursor = NULL;
   MDB_txn* txn = NULL;
   int rc = mdb_txn_begin(lmdb_->env, NULL, MDB_RDONLY, &txn);
@@ -347,6 +328,8 @@ common::Error LmdbRaw::help(int argc, char** argv) {
 }
 
 common::Error LmdbRaw::flushdb() {
+  CHECK(lmdb_);
+
   MDB_cursor* cursor = NULL;
   MDB_txn* txn = NULL;
   int rc = mdb_txn_begin(lmdb_->env, NULL, 0, &txn);
@@ -389,6 +372,29 @@ common::Error LmdbRaw::flushdb() {
   return common::Error();
 }
 
+bool LmdbRaw::isConnectedImpl() const {
+  if (!lmdb_) {
+    return false;
+  }
+
+  return true;
+}
+
+common::Error LmdbRaw::connectImpl(const LmdbConfig& config) {
+  struct lmdb* context = nullptr;
+  common::Error er = createConnection(config, &context);
+  if (er && er->isError()) {
+    return er;
+  }
+
+  lmdb_ = context;
+  return common::Error();
+}
+
+common::Error LmdbRaw::disconnectImpl() {
+  lmdb_close(&lmdb_);
+  return common::Error();
+}
 
 common::Error info(CommandHandler* handler, int argc, char** argv, FastoObject* out) {
   LmdbRaw* mdb = static_cast<LmdbRaw*>(handler);
@@ -396,7 +402,7 @@ common::Error info(CommandHandler* handler, int argc, char** argv, FastoObject* 
   common::Error er = mdb->info(argc == 1 ? argv[0] : nullptr, &statsout);
   if (!er) {
     common::StringValue* val = common::Value::createStringValue(LmdbServerInfo(statsout).toString());
-    FastoObject* child = new FastoObject(out, val, mdb->config_.delimiter);
+    FastoObject* child = new FastoObject(out, val, mdb->delimiter());
     out->addChildren(child);
   }
 
@@ -409,7 +415,7 @@ common::Error dbsize(CommandHandler* handler, int argc, char** argv, FastoObject
   common::Error er = mdb->dbsize(&dbsize);
   if (!er) {
     common::FundamentalValue* val = common::Value::createUIntegerValue(dbsize);
-    FastoObject* child = new FastoObject(out, val, mdb->config_.delimiter);
+    FastoObject* child = new FastoObject(out, val, mdb->delimiter());
     out->addChildren(child);
   }
 
@@ -421,7 +427,7 @@ common::Error set(CommandHandler* handler, int argc, char** argv, FastoObject* o
   common::Error er = mdb->set(argv[0], argv[1]);
   if (!er) {
     common::StringValue* val = common::Value::createStringValue("STORED");
-    FastoObject* child = new FastoObject(out, val, mdb->config_.delimiter);
+    FastoObject* child = new FastoObject(out, val, mdb->delimiter());
     out->addChildren(child);
   }
 
@@ -434,7 +440,7 @@ common::Error get(CommandHandler* handler, int argc, char** argv, FastoObject* o
   common::Error er = mdb->get(argv[0], &ret);
   if (!er) {
     common::StringValue* val = common::Value::createStringValue(ret);
-    FastoObject* child = new FastoObject(out, val, mdb->config_.delimiter);
+    FastoObject* child = new FastoObject(out, val, mdb->delimiter());
     out->addChildren(child);
   }
 
@@ -446,7 +452,7 @@ common::Error del(CommandHandler* handler, int argc, char** argv, FastoObject* o
   common::Error er = mdb->del(argv[0]);
   if (!er) {
     common::StringValue* val = common::Value::createStringValue("DELETED");
-    FastoObject* child = new FastoObject(out, val, mdb->config_.delimiter);
+    FastoObject* child = new FastoObject(out, val, mdb->delimiter());
     out->addChildren(child);
   }
 
@@ -463,7 +469,7 @@ common::Error keys(CommandHandler* handler, int argc, char** argv, FastoObject* 
       common::StringValue* val = common::Value::createStringValue(keysout[i]);
       ar->append(val);
     }
-    FastoObjectArray* child = new FastoObjectArray(out, ar, mdb->config_.delimiter);
+    FastoObjectArray* child = new FastoObjectArray(out, ar, mdb->delimiter());
     out->addChildren(child);
   }
 
