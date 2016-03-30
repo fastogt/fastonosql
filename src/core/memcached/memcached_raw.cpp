@@ -19,6 +19,7 @@
 #include "core/memcached/memcached_raw.h"
 
 #include <libmemcached/util.h>
+#include <libmemcached/instance.hpp>
 
 #include <string>
 
@@ -144,12 +145,12 @@ bool MemcachedRaw::isConnected() const {
     return false;
   }
 
-  memcached_server_st* server = (memcached_server_st*)memc_->servers;
-  if (!server) {
+  memcached_instance_st* servers = memc_->servers;
+  if (!servers) {
     return false;
   }
 
-  return server->state == MEMCACHED_SERVER_STATE_CONNECTED;
+  return servers->state == MEMCACHED_SERVER_STATE_CONNECTED;
 }
 
 common::Error MemcachedRaw::connect() {

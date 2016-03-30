@@ -242,15 +242,19 @@ void IDriver::interrupt() {
 }
 
 void IDriver::init() {
-  int interval = settings_->loggingMsTimeInterval();
-  timer_info_id_ = startTimer(interval);
-  DCHECK(timer_info_id_ != 0);
+  if (settings_->loggingEnabled()) {
+    int interval = settings_->loggingMsTimeInterval();
+    timer_info_id_ = startTimer(interval);
+    DCHECK(timer_info_id_ != 0);
+  }
   initImpl();
 }
 
 void IDriver::clear() {
-  killTimer(timer_info_id_);
-  timer_info_id_ = 0;
+  if (timer_info_id_ != 0) {
+    killTimer(timer_info_id_);
+    timer_info_id_ = 0;
+  }
   clearImpl();
 }
 
@@ -324,7 +328,7 @@ void IDriver::customEvent(QEvent* event) {
 }
 
 void IDriver::timerEvent(QTimerEvent* event) {
-  if (timer_info_id_ == event->timerId() && isConnected() && settings_->loggingEnabled()) {
+  if (timer_info_id_ == event->timerId() && settings_->loggingEnabled() && isConnected()) {
     if (!log_file_) {
       std::string path = settings_->loggingPath();
       std::string dir = common::file_system::get_dir_path(path);
