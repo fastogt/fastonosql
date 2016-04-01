@@ -37,11 +37,25 @@ void leveldb_version_startup_function(char* version) {
 
 namespace fastonosql {
 namespace core {
+template<>
+common::Error DBAllocatorTraits<leveldb::LevelDBConnection, leveldb::LeveldbConfig>::connect(const leveldb::LeveldbConfig& config, leveldb::LevelDBConnection** hout) {
+  leveldb::LevelDBConnection* context = nullptr;
+  common::Error er = leveldb::createConnection(config, &context);
+  if (er && er->isError()) {
+    return er;
+  }
+
+  *hout = context;
+  return common::Error();
+}
+template<>
+common::Error DBAllocatorTraits<leveldb::LevelDBConnection, leveldb::LeveldbConfig>::disconnect(leveldb::LevelDBConnection** handle) {
+  destroy(handle);
+  return common::Error();
+}
 namespace leveldb {
 
-namespace {
-
-common::Error createConnection(const LeveldbConfig& config, ::leveldb::DB** context) {
+common::Error createConnection(const LeveldbConfig& config, LevelDBConnection** context) {
   if (!context) {
     return common::make_error_value("Invalid input argument(s)", common::ErrorValue::E_ERROR);
   }
@@ -59,7 +73,7 @@ common::Error createConnection(const LeveldbConfig& config, ::leveldb::DB** cont
   return common::Error();
 }
 
-common::Error createConnection(LeveldbConnectionSettings* settings, ::leveldb::DB** context) {
+common::Error createConnection(LeveldbConnectionSettings* settings, LevelDBConnection** context) {
   if (!settings) {
     return common::make_error_value("Invalid input argument(s)", common::ErrorValue::E_ERROR);
   }
@@ -68,14 +82,12 @@ common::Error createConnection(LeveldbConnectionSettings* settings, ::leveldb::D
   return createConnection(config, context);
 }
 
-}  // namespace
-
 common::Error testConnection(LeveldbConnectionSettings* settings) {
   if (!settings) {
     return common::make_error_value("Invalid input argument(s)", common::ErrorValue::E_ERROR);
   }
 
-  ::leveldb::DB* ldb = nullptr;
+  leveldb::LevelDBConnection* ldb = nullptr;
   common::Error er = createConnection(settings, &ldb);
   if (er && er->isError()) {
     return er;
@@ -86,11 +98,7 @@ common::Error testConnection(LeveldbConnectionSettings* settings) {
 }
 
 LeveldbRaw::LeveldbRaw()
-  : StaticDbApiRaw<LeveldbConfig>(leveldbCommands), leveldb_(nullptr) {
-}
-
-LeveldbRaw::~LeveldbRaw() {
-  destroy(&leveldb_);
+  : DBApiRaw<LeveldbAllocTrait>(leveldbCommands) {
 }
 
 const char* LeveldbRaw::versionApi() {
@@ -100,14 +108,14 @@ const char* LeveldbRaw::versionApi() {
 }
 
 common::Error LeveldbRaw::dbsize(size_t* size) {
-  CHECK(leveldb_);
+  CHECK(isConnected());
 
   if (!size) {
     return common::make_error_value("Invalid input argument(s)", common::ErrorValue::E_ERROR);
   }
 
   ::leveldb::ReadOptions ro;
-  ::leveldb::Iterator* it = leveldb_->NewIterator(ro);
+  ::leveldb::Iterator* it = handle_->NewIterator(ro);
   size_t sz = 0;
   for (it->SeekToFirst(); it->Valid(); it->Next()) {
     sz++;
@@ -131,14 +139,14 @@ common::Error LeveldbRaw::info(const char* args, LeveldbServerInfo::Stats* stats
   // stats
   // char prop[1024] = {0};
   // common::SNPrintf(prop, sizeof(prop), "leveldb.%s", args ? args : "stats");
-  CHECK(leveldb_);
+  CHECK(isConnected());
 
   if (!statsout) {
     return common::make_error_value("Invalid input argument(s)", common::ErrorValue::E_ERROR);
   }
 
   std::string rets;
-  bool isok = leveldb_->GetProperty("leveldb.stats", &rets);
+  bool isok = handle_->GetProperty("leveldb.stats", &rets);
   if (!isok) {
     return common::make_error_value("info function failed", common::ErrorValue::E_ERROR);
   }
@@ -177,10 +185,10 @@ common::Error LeveldbRaw::info(const char* args, LeveldbServerInfo::Stats* stats
 }
 
 common::Error LeveldbRaw::set(const std::string& key, const std::string& value) {
-  CHECK(leveldb_);
+  CHECK(isConnected());
 
   ::leveldb::WriteOptions wo;
-  auto st = leveldb_->Put(wo, key, value);
+  auto st = handle_->Put(wo, key, value);
   if (!st.ok()) {
     char buff[1024] = {0};
     common::SNPrintf(buff, sizeof(buff), "set function error: %s", st.ToString());
@@ -191,10 +199,10 @@ common::Error LeveldbRaw::set(const std::string& key, const std::string& value) 
 }
 
 common::Error LeveldbRaw::get(const std::string& key, std::string* ret_val) {
-  CHECK(leveldb_);
+  CHECK(isConnected());
 
   ::leveldb::ReadOptions ro;
-  auto st = leveldb_->Get(ro, key, ret_val);
+  auto st = handle_->Get(ro, key, ret_val);
   if (!st.ok()) {
     char buff[1024] = {0};
     common::SNPrintf(buff, sizeof(buff), "get function error: %s", st.ToString());
@@ -205,10 +213,10 @@ common::Error LeveldbRaw::get(const std::string& key, std::string* ret_val) {
 }
 
 common::Error LeveldbRaw::del(const std::string& key) {
-  CHECK(leveldb_);
+  CHECK(isConnected());
 
   ::leveldb::WriteOptions wo;
-  auto st = leveldb_->Delete(wo, key);
+  auto st = handle_->Delete(wo, key);
   if (!st.ok()) {
     char buff[1024] = {0};
     common::SNPrintf(buff, sizeof(buff), "del function error: %s", st.ToString());
@@ -219,10 +227,10 @@ common::Error LeveldbRaw::del(const std::string& key) {
 
 common::Error LeveldbRaw::keys(const std::string& key_start, const std::string& key_end,
                    uint64_t limit, std::vector<std::string>* ret) {
-  CHECK(leveldb_);
+  CHECK(isConnected());
 
   ::leveldb::ReadOptions ro;
-  ::leveldb::Iterator* it = leveldb_->NewIterator(ro);  // keys(key_start, key_end, limit, ret);
+  ::leveldb::Iterator* it = handle_->NewIterator(ro);  // keys(key_start, key_end, limit, ret);
   for (it->Seek(key_start); it->Valid() && it->key().ToString() < key_end; it->Next()) {
     std::string key = it->key().ToString();
     if (ret->size() <= limit) {
@@ -248,14 +256,14 @@ common::Error LeveldbRaw::help(int argc, char** argv) {
 }
 
 common::Error LeveldbRaw::flushdb() {
-  CHECK(leveldb_);
+  CHECK(isConnected());
 
   ::leveldb::ReadOptions ro;
   ::leveldb::WriteOptions wo;
-  ::leveldb::Iterator* it = leveldb_->NewIterator(ro);
+  ::leveldb::Iterator* it = handle_->NewIterator(ro);
   for (it->SeekToFirst(); it->Valid(); it->Next()) {
     std::string key = it->key().ToString();
-    auto st = leveldb_->Delete(wo, key);
+    auto st = handle_->Delete(wo, key);
     if (!st.ok()) {
       delete it;
       std::string buff = common::MemSPrintf("del function error: %s", st.ToString());
@@ -271,30 +279,6 @@ common::Error LeveldbRaw::flushdb() {
     common::SNPrintf(buff, sizeof(buff), "Keys function error: %s", st.ToString());
     return common::make_error_value(buff, common::ErrorValue::E_ERROR);
   }
-  return common::Error();
-}
-
-bool LeveldbRaw::isConnectedImpl() const {
-  if (!leveldb_) {
-    return false;
-  }
-
-  return true;
-}
-
-common::Error LeveldbRaw::connectImpl(const LeveldbConfig& config) {
-  ::leveldb::DB* context = nullptr;
-  common::Error er = createConnection(config, &context);
-  if (er && er->isError()) {
-    return er;
-  }
-
-  leveldb_ = context;
-  return common::Error();
-}
-
-common::Error LeveldbRaw::disconnectImpl() {
-  destroy(&leveldb_);
   return common::Error();
 }
 

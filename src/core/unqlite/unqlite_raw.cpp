@@ -97,8 +97,24 @@ int unqlite_data_callback(const void* pData, unsigned int nDatalen, void* str) {
 
 namespace fastonosql {
 namespace core {
+template<>
+common::Error DBAllocatorTraits<unqlite::UnQLiteConnection, unqlite::UnqliteConfig>::connect(const unqlite::UnqliteConfig& config, unqlite::UnQLiteConnection** hout) {
+  unqlite::UnQLiteConnection* context = nullptr;
+  common::Error er = unqlite::createConnection(config, &context);
+  if (er && er->isError()) {
+    return er;
+  }
+
+  *hout = context;
+  return common::Error();
+}
+template<>
+common::Error DBAllocatorTraits<unqlite::UnQLiteConnection, unqlite::UnqliteConfig>::disconnect(unqlite::UnQLiteConnection** handle) {
+  unqlite_close(*handle);
+  *handle = nullptr;
+  return common::Error();
+}
 namespace unqlite {
-namespace {
 
 common::Error createConnection(const UnqliteConfig& config, struct unqlite** context) {
   if (!context) {
@@ -128,7 +144,6 @@ common::Error createConnection(UnqliteConnectionSettings* settings, struct unqli
   UnqliteConfig config = settings->info();
   return createConnection(config, context);
 }
-}  // namespace
 
 common::Error testConnection(UnqliteConnectionSettings* settings) {
   if (!settings) {
@@ -146,11 +161,11 @@ common::Error testConnection(UnqliteConnectionSettings* settings) {
 }
 
 UnqliteRaw::UnqliteRaw()
-  : StaticDbApiRaw<UnqliteConfig>(unqliteCommands), unqlite_(nullptr) {
+  : DBApiRaw<UnQLiteAllocTrait>(unqliteCommands) {
 }
 
 common::Error UnqliteRaw::info(const char* args, UnqliteServerInfo::Stats* statsout) {
-  CHECK(unqlite_);
+  CHECK(isConnected());
 
   if (!statsout) {
     return common::make_error_value("Invalid input argument(s)", common::ErrorValue::E_ERROR);
@@ -164,7 +179,7 @@ common::Error UnqliteRaw::info(const char* args, UnqliteServerInfo::Stats* stats
 }
 
 common::Error UnqliteRaw::dbsize(size_t* size) {
-  CHECK(unqlite_);
+  CHECK(isConnected());
 
   if (!size) {
     return common::make_error_value("Invalid input argument(s)", common::ErrorValue::E_ERROR);
@@ -172,7 +187,7 @@ common::Error UnqliteRaw::dbsize(size_t* size) {
 
   /* Allocate a new cursor instance */
   unqlite_kv_cursor* pCur; /* Cursor handle */
-  int rc = unqlite_kv_cursor_init(unqlite_, &pCur);
+  int rc = unqlite_kv_cursor_init(handle_, &pCur);
   if (rc != UNQLITE_OK) {
     char buff[1024] = {0};
     common::SNPrintf(buff, sizeof(buff), "dbsize function error: %s", unqlite_strerror(rc));
@@ -189,18 +204,10 @@ common::Error UnqliteRaw::dbsize(size_t* size) {
     unqlite_kv_cursor_next_entry(pCur);
   }
   /* Finally, Release our cursor */
-  unqlite_kv_cursor_release(unqlite_, pCur);
+  unqlite_kv_cursor_release(handle_, pCur);
 
   *size = sz;
   return common::Error();
-}
-
-UnqliteRaw::~UnqliteRaw() {
-  if (unqlite_) {
-    int rc = unqlite_close(unqlite_);
-    DCHECK(rc == UNQLITE_OK);
-  }
-  unqlite_ = nullptr;
 }
 
 const char* UnqliteRaw::versionApi() {
@@ -208,9 +215,9 @@ const char* UnqliteRaw::versionApi() {
 }
 
 common::Error UnqliteRaw::set(const std::string& key, const std::string& value) {
-  CHECK(unqlite_);
+  CHECK(isConnected());
 
-  int rc = unqlite_kv_store(unqlite_, key.c_str(), key.size(), value.c_str(), value.length());
+  int rc = unqlite_kv_store(handle_, key.c_str(), key.size(), value.c_str(), value.length());
   if (rc != UNQLITE_OK) {
     char buff[1024] = {0};
     common::SNPrintf(buff, sizeof(buff), "set function error: %s", unqlite_strerror(rc));
@@ -221,9 +228,9 @@ common::Error UnqliteRaw::set(const std::string& key, const std::string& value) 
 }
 
 common::Error UnqliteRaw::get(const std::string& key, std::string* ret_val) {
-  CHECK(unqlite_);
+  CHECK(isConnected());
 
-  int rc = unqlite_kv_fetch_callback(unqlite_, key.c_str(), key.size(), unqlite_data_callback, ret_val);
+  int rc = unqlite_kv_fetch_callback(handle_, key.c_str(), key.size(), unqlite_data_callback, ret_val);
   if (rc != UNQLITE_OK) {
     char buff[1024] = {0};
     common::SNPrintf(buff, sizeof(buff), "get function error: %s", unqlite_strerror(rc));
@@ -234,9 +241,9 @@ common::Error UnqliteRaw::get(const std::string& key, std::string* ret_val) {
 }
 
 common::Error UnqliteRaw::del(const std::string& key) {
-  CHECK(unqlite_);
+  CHECK(isConnected());
 
-  int rc = unqlite_kv_delete(unqlite_, key.c_str(), key.size());
+  int rc = unqlite_kv_delete(handle_, key.c_str(), key.size());
   if (rc != UNQLITE_OK) {
     char buff[1024] = {0};
     common::SNPrintf(buff, sizeof(buff), "delete function error: %s", unqlite_strerror(rc));
@@ -248,11 +255,11 @@ common::Error UnqliteRaw::del(const std::string& key) {
 
 common::Error UnqliteRaw::keys(const std::string& key_start, const std::string& key_end,
                    uint64_t limit, std::vector<std::string> *ret) {
-  CHECK(unqlite_);
+  CHECK(isConnected());
 
   /* Allocate a new cursor instance */
   unqlite_kv_cursor* pCur; /* Cursor handle */
-  int rc = unqlite_kv_cursor_init(unqlite_, &pCur);
+  int rc = unqlite_kv_cursor_init(handle_, &pCur);
   if (rc != UNQLITE_OK) {
     char buff[1024] = {0};
     common::SNPrintf(buff, sizeof(buff), "Keys function error: %s", unqlite_strerror(rc));
@@ -273,7 +280,7 @@ common::Error UnqliteRaw::keys(const std::string& key_start, const std::string& 
     unqlite_kv_cursor_next_entry(pCur);
   }
   /* Finally, Release our cursor */
-  unqlite_kv_cursor_release(unqlite_, pCur);
+  unqlite_kv_cursor_release(handle_, pCur);
 
   return common::Error();
 }
@@ -283,10 +290,10 @@ common::Error UnqliteRaw::help(int argc, char** argv) {
 }
 
 common::Error UnqliteRaw::flushdb() {
-  CHECK(unqlite_);
+  CHECK(isConnected());
 
   unqlite_kv_cursor* pCur; /* Cursor handle */
-  int rc = unqlite_kv_cursor_init(unqlite_, &pCur);
+  int rc = unqlite_kv_cursor_init(handle_, &pCur);
   if (rc != UNQLITE_OK) {
     char buff[1024] = {0};
     common::SNPrintf(buff, sizeof(buff), "FlushDB function error: %s", unqlite_strerror(rc));
@@ -306,34 +313,9 @@ common::Error UnqliteRaw::flushdb() {
     /* Point to the next entry */
     unqlite_kv_cursor_next_entry(pCur);
   }
+
   /* Finally, Release our cursor */
-  unqlite_kv_cursor_release(unqlite_, pCur);
-
-  return common::Error();
-}
-
-bool UnqliteRaw::isConnectedImpl() const {
-  if (!unqlite_) {
-    return false;
-  }
-
-  return true;
-}
-
-common::Error UnqliteRaw::connectImpl(const UnqliteConfig& config) {
-  struct unqlite* context = nullptr;
-  common::Error er = createConnection(config, &context);
-  if (er && er->isError()) {
-    return er;
-  }
-
-  unqlite_ = context;
-  return common::Error();
-}
-
-common::Error UnqliteRaw::disconnectImpl() {
-  unqlite_close(unqlite_);
-  unqlite_ = nullptr;
+  unqlite_kv_cursor_release(handle_, pCur);
   return common::Error();
 }
 

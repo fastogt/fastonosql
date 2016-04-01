@@ -28,12 +28,16 @@ namespace fastonosql {
 namespace core {
 namespace ssdb {
 
+typedef ::ssdb::Client SSDBConnection;
+typedef DBAllocatorTraits<SSDBConnection, SsdbConfig> SSDBAllocTrait;
+
+common::Error createConnection(const SsdbConfig& config, ::ssdb::Client** context);
+common::Error createConnection(SsdbConnectionSettings* settings, ::ssdb::Client** context);
 common::Error testConnection(SsdbConnectionSettings* settings);
 
 struct SsdbRaw
-  : public StaticDbApiRaw<SsdbConfig> {
+  : public DBApiRaw<SSDBAllocTrait> {
   SsdbRaw();
-  ~SsdbRaw();
 
   static const char* versionApi();
 
@@ -107,13 +111,6 @@ struct SsdbRaw
   common::Error dbsize(size_t* size) WARN_UNUSED_RESULT;
   common::Error help(int argc, char** argv) WARN_UNUSED_RESULT;
   common::Error flushdb() WARN_UNUSED_RESULT;
-
- private:
-  virtual bool isConnectedImpl() const;
-  virtual common::Error connectImpl(const SsdbConfig& config);
-  virtual common::Error disconnectImpl();
-
-  ::ssdb::Client* ssdb_;
 };
 
 common::Error info(CommandHandler* handler, int argc, char** argv, FastoObject* out);

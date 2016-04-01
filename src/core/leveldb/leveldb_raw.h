@@ -30,12 +30,16 @@ namespace fastonosql {
 namespace core {
 namespace leveldb {
 
+typedef ::leveldb::DB LevelDBConnection;
+typedef DBAllocatorTraits<LevelDBConnection, LeveldbConfig> LeveldbAllocTrait;
+
+common::Error createConnection(const LeveldbConfig& config, LevelDBConnection** context);
+common::Error createConnection(LeveldbConnectionSettings* settings, LevelDBConnection** context);
 common::Error testConnection(LeveldbConnectionSettings* settings);
 
 struct LeveldbRaw
-  : public StaticDbApiRaw<LeveldbConfig> {
+  : public DBApiRaw<LeveldbAllocTrait> {
   LeveldbRaw();
-  ~LeveldbRaw();
 
   static const char* versionApi();
 
@@ -50,13 +54,6 @@ struct LeveldbRaw
   common::Error dbsize(size_t* size) WARN_UNUSED_RESULT;
   common::Error help(int argc, char** argv) WARN_UNUSED_RESULT;
   common::Error flushdb() WARN_UNUSED_RESULT;
-
- private:
-  virtual bool isConnectedImpl() const;
-  virtual common::Error connectImpl(const LeveldbConfig& config);
-  virtual common::Error disconnectImpl();
-
-  ::leveldb::DB* leveldb_;
 };
 
 common::Error info(CommandHandler* handler, int argc, char** argv, FastoObject* out);

@@ -30,12 +30,16 @@ namespace fastonosql {
 namespace core {
 namespace rocksdb {
 
+typedef ::rocksdb::DB RocksDBConnection;
+typedef DBAllocatorTraits<RocksDBConnection, RocksdbConfig> RocksDBAllocTrait;
+
+common::Error createConnection(const RocksdbConfig& config, ::rocksdb::DB** context);
+common::Error createConnection(RocksdbConnectionSettings* settings, ::rocksdb::DB** context);
 common::Error testConnection(RocksdbConnectionSettings* settings);
 
 struct RocksdbRaw
-  : public StaticDbApiRaw<RocksdbConfig> {
+  : public DBApiRaw<RocksDBAllocTrait> {
   RocksdbRaw();
-  ~RocksdbRaw();
 
   static const char* versionApi();
 
@@ -54,13 +58,6 @@ struct RocksdbRaw
   common::Error dbsize(size_t* size) WARN_UNUSED_RESULT;
   common::Error help(int argc, char** argv) WARN_UNUSED_RESULT;
   common::Error flushdb() WARN_UNUSED_RESULT;
-
- private:
-  virtual bool isConnectedImpl() const;
-  virtual common::Error connectImpl(const RocksdbConfig& config);
-  virtual common::Error disconnectImpl();
-
-  ::rocksdb::DB* rocksdb_;
 };
 
 common::Error info(CommandHandler* handler, int argc, char** argv, FastoObject* out);

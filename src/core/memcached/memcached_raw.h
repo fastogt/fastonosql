@@ -30,13 +30,18 @@ namespace fastonosql {
 namespace core {
 namespace memcached {
 
+typedef memcached_st MemcachedConnection;
+typedef DBAllocatorTraits<MemcachedConnection, MemcachedConfig> MemcachedAllocTrait;
+
+common::Error createConnection(const MemcachedConfig& config, struct memcached_st** context);
+common::Error createConnection(MemcachedConnectionSettings* settings, struct memcached_st** context);
 common::Error testConnection(MemcachedConnectionSettings* settings);
 
 struct MemcachedRaw
-  : public StaticDbApiRaw<MemcachedConfig> {
+  : public DBApiRaw<MemcachedAllocTrait> {
   MemcachedRaw();
-  ~MemcachedRaw();
 
+  bool isConnected() const;
   static const char* versionApi();
 
   common::Error keys(const char* args) WARN_UNUSED_RESULT;
@@ -60,13 +65,6 @@ struct MemcachedRaw
   common::Error flush_all(time_t expiration) WARN_UNUSED_RESULT;
   common::Error version_server() const WARN_UNUSED_RESULT;
   common::Error help(int argc, char** argv) WARN_UNUSED_RESULT;
-
- private:
-  virtual bool isConnectedImpl() const;
-  virtual common::Error connectImpl(const MemcachedConfig& config);
-  virtual common::Error disconnectImpl();
-
-  memcached_st* memc_;
 };
 
 common::Error keys(CommandHandler* handler, int argc, char** argv, FastoObject* out);

@@ -32,13 +32,17 @@ namespace fastonosql {
 namespace core {
 namespace unqlite {
 
+typedef struct unqlite UnQLiteConnection;
+typedef DBAllocatorTraits<UnQLiteConnection, UnqliteConfig> UnQLiteAllocTrait;
+
+common::Error createConnection(const UnqliteConfig& config, struct unqlite** context);
+common::Error createConnection(UnqliteConnectionSettings* settings, struct unqlite** context);
 common::Error testConnection(UnqliteConnectionSettings* settings);
 
 class UnqliteRaw
-  : public StaticDbApiRaw<UnqliteConfig> {
+  : public DBApiRaw<UnQLiteAllocTrait> {
  public:
   UnqliteRaw();
-  ~UnqliteRaw();
 
   static const char* versionApi();
 
@@ -53,13 +57,6 @@ class UnqliteRaw
   common::Error dbsize(size_t* size) WARN_UNUSED_RESULT;
   common::Error help(int argc, char** argv) WARN_UNUSED_RESULT;
   common::Error flushdb() WARN_UNUSED_RESULT;
-
- private:
-  virtual bool isConnectedImpl() const;
-  virtual common::Error connectImpl(const UnqliteConfig& config);
-  virtual common::Error disconnectImpl();
-
-  struct unqlite* unqlite_;
 };
 
 common::Error info(CommandHandler* handler, int argc, char** argv, FastoObject* out);

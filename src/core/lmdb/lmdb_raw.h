@@ -32,17 +32,21 @@ namespace fastonosql {
 namespace core {
 namespace lmdb {
 
-common::Error testConnection(LmdbConnectionSettings* settings);
-
 struct lmdb {
   MDB_env* env;
   MDB_dbi dbir;
 };
 
+typedef lmdb LMDBConnection;
+typedef DBAllocatorTraits<LMDBConnection, LmdbConfig> LMDBAllocTrait;
+
+common::Error createConnection(const LmdbConfig& config, struct lmdb** context);
+common::Error createConnection(LmdbConnectionSettings* settings, struct lmdb** context);
+common::Error testConnection(LmdbConnectionSettings* settings);
+
 struct LmdbRaw
-    : public StaticDbApiRaw<LmdbConfig> {
+    : public DBApiRaw<LMDBAllocTrait> {
   LmdbRaw();
-  ~LmdbRaw();
 
   static const char* versionApi();
 
@@ -59,13 +63,6 @@ struct LmdbRaw
   common::Error dbsize(size_t* size) WARN_UNUSED_RESULT;
   common::Error help(int argc, char** argv) WARN_UNUSED_RESULT;
   common::Error flushdb() WARN_UNUSED_RESULT;
-
- private:
-  virtual bool isConnectedImpl() const;
-  virtual common::Error connectImpl(const LmdbConfig& config);
-  virtual common::Error disconnectImpl();
-
-  struct lmdb* lmdb_;
 };
 
 common::Error info(CommandHandler* handler, int argc, char** argv, FastoObject* out);

@@ -84,24 +84,50 @@ class CommandHandler {
   const std::vector<commands_type> commands_;
 };
 
-template<typename C>
-class StaticDbApiRaw
-    : public CommandHandler {
-public:
-  bool isConnected() const {
-    return isConnectedImpl();
+template<typename H, typename C>
+struct DBAllocatorTraits {
+  typedef H handle_t;
+  typedef C config_t;
+
+  static common::Error connect(const config_t& config, handle_t** hout);  // allocate handle
+  static common::Error disconnect(handle_t** handle);  // deallocate handle
+};
+
+template<typename DBAllocatorTraits>
+class DBApiRaw
+  : public CommandHandler {
+ public:
+  typedef DBAllocatorTraits db_traits_t;
+  typedef typename db_traits_t::config_t config_t;
+  typedef typename db_traits_t::handle_t handle_t;
+
+  DBApiRaw(const std::vector<commands_type>& commands)
+    : CommandHandler(commands), config_(), handle_(nullptr) {
   }
-  common::Error connect(const C& config) WARN_UNUSED_RESULT {
+  ~DBApiRaw() {
+    disconnect();
+  }
+
+  bool isConnected() const {
+    if (!handle_) {
+      return false;
+    }
+
+    return true;
+  }
+  common::Error connect(const config_t& config) WARN_UNUSED_RESULT {
     if (isConnected()) {
       return common::Error();
     }
 
-    common::Error err = connectImpl(config);
+    handle_t* handle = nullptr;
+    common::Error err = db_traits_t::connect(config, &handle);
     if (err && err->isError()) {
       return err;
     }
 
     config_ = config;
+    handle_ = handle;
     return common::Error();
   }
   common::Error disconnect() WARN_UNUSED_RESULT {
@@ -109,15 +135,17 @@ public:
       return common::Error();
     }
 
-    common::Error err = disconnectImpl();
+    common::Error err = db_traits_t::disconnect(&handle_);
     if (err && err->isError()) {
       return err;
     }
 
-    config_ = C();
+    config_ = config_t();
+    handle_ = nullptr;
     return common::Error();
   }
-  C config() const {
+
+  config_t config() const {
     return config_;
   }
   std::string delimiter() const {
@@ -125,16 +153,8 @@ public:
   }
 
 protected:
-  explicit StaticDbApiRaw(const std::vector<commands_type>& commands)
-    : CommandHandler(commands) {
-  }
-
-private:
-  virtual bool isConnectedImpl() const = 0;
-  virtual common::Error connectImpl(const C& config) = 0;
-  virtual common::Error disconnectImpl() = 0;
-
-  C config_;
+  config_t config_;
+  handle_t* handle_;
 };
 
 std::string convertVersionNumberToReadableString(uint32_t version);
