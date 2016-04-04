@@ -68,11 +68,11 @@ ClusterDialog::ClusterDialog(QWidget* parent, core::IClusterSettingsBase* connec
   connectionName_->setText(conName);
   typeConnection_ = new QComboBox;
 
-  for (int i = 0; i < SIZEOFMASS(core::connnectionType); ++i) {
-    core::connectionTypes ct = static_cast<core::connectionTypes>(i);
-    std::string str = common::convertToString(ct);
+  for (size_t i = 0; i < SIZEOFMASS(core::connnectionType); ++i) {
+    std::string str = core::connnectionType[i];
+    core::connectionTypes ct = common::convertFromString<core::connectionTypes>(str);
     typeConnection_->addItem(GuiFactory::instance().icon(ct),
-                             common::convertFromString<QString>(str), i);
+                             common::convertFromString<QString>(str), ct);
   }
 
   if (cluster_connection_) {
@@ -90,10 +90,10 @@ ClusterDialog::ClusterDialog(QWidget* parent, core::IClusterSettingsBase* connec
   loggingMsec_->setSingleStep(1000);
 
   if (cluster_connection_) {
-      logging_->setChecked(cluster_connection_->loggingEnabled());
-      loggingMsec_->setValue(cluster_connection_->loggingMsTimeInterval());
+    logging_->setChecked(cluster_connection_->loggingEnabled());
+    loggingMsec_->setValue(cluster_connection_->loggingMsTimeInterval());
   } else {
-      logging_->setChecked(false);
+    logging_->setChecked(false);
   }
   VERIFY(connect(logging_, &QCheckBox::stateChanged, this, &ClusterDialog::loggingStateChange));
 
@@ -289,7 +289,11 @@ void ClusterDialog::setStartNode() {
 }
 
 void ClusterDialog::add() {
-  const std::vector<core::connectionTypes> avail = { core::DBUNKNOWN, core::REDIS };
+#ifdef BUILD_WITH_REDIS
+  static const std::vector<core::connectionTypes> avail = { core::REDIS };
+#else
+  static const std::vector<core::connectionTypes> avail = { };
+#endif
   ConnectionDialog dlg(this, nullptr, avail);
   int result = dlg.exec();
   core::IConnectionSettingsBaseSPtr p = dlg.connection();
@@ -324,8 +328,11 @@ void ClusterDialog::edit() {
   }
 
   core::IConnectionSettingsBaseSPtr oldConnection = currentItem->connection();
-
-  static const std::vector<core::connectionTypes> avail = { core::DBUNKNOWN, core::REDIS };
+#ifdef BUILD_WITH_REDIS
+  static const std::vector<core::connectionTypes> avail = { core::REDIS };
+#else
+  static const std::vector<core::connectionTypes> avail = { };
+#endif
   ConnectionDialog dlg(this, oldConnection->clone(), avail);
   int result = dlg.exec();
   core::IConnectionSettingsBaseSPtr newConnection = dlg.connection();
@@ -357,29 +364,25 @@ void ClusterDialog::retranslateUi() {
 }
 
 bool ClusterDialog::validateAndApply() {
-  core::connectionTypes currentType = common::convertFromString<core::connectionTypes>(common::convertToString(typeConnection_->currentText()));
-  bool isValidType = currentType != core::DBUNKNOWN;
-  if (isValidType) {
-    std::string conName = common::convertToString(connectionName_->text());
-    core::IClusterSettingsBase* newConnection = core::IClusterSettingsBase::createFromType(currentType, conName);
-    if (newConnection) {
-      cluster_connection_.reset(newConnection);
-      if (logging_->isChecked()) {
-        cluster_connection_->setLoggingMsTimeInterval(loggingMsec_->value());
-      }
-      for (size_t i = 0; i < listWidget_->topLevelItemCount(); ++i) {
-        ConnectionListWidgetItem* item = dynamic_cast<ConnectionListWidgetItem*>(listWidget_->topLevelItem(i));
-        if (item) {
-          core::IConnectionSettingsBaseSPtr con = item->connection();
-          cluster_connection_->addNode(con);
-        }
+  QVariant var = typeConnection_->currentData();
+  core::connectionTypes currentType = (core::connectionTypes)qvariant_cast<unsigned char>(var);
+
+  std::string conName = common::convertToString(connectionName_->text());
+  core::IClusterSettingsBase* newConnection = core::IClusterSettingsBase::createFromType(currentType, conName);
+  if (newConnection) {
+    cluster_connection_.reset(newConnection);
+    if (logging_->isChecked()) {
+      cluster_connection_->setLoggingMsTimeInterval(loggingMsec_->value());
+    }
+    for (size_t i = 0; i < listWidget_->topLevelItemCount(); ++i) {
+      ConnectionListWidgetItem* item = dynamic_cast<ConnectionListWidgetItem*>(listWidget_->topLevelItem(i));
+      if (item) {
+        core::IConnectionSettingsBaseSPtr con = item->connection();
+        cluster_connection_->addNode(con);
       }
     }
-    return true;
-  } else {
-    QMessageBox::critical(this, translations::trError, invalidDbType);
-    return false;
   }
+  return true;
 }
 
 void ClusterDialog::addConnection(core::IConnectionSettingsBaseSPtr con) {

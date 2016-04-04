@@ -26,8 +26,7 @@ namespace fastonosql {
 namespace core {
 
 enum connectionTypes {
-  DBUNKNOWN = 0,
-  REDIS,
+  REDIS = 1,
   MEMCACHED,
   SSDB,
   LEVELDB,
@@ -37,12 +36,11 @@ enum connectionTypes {
 };
 
 enum serverTypes {
-  MASTER,
+  MASTER = 0,
   SLAVE
 };
 
 static const std::string connnectionType[] = {
-  "Unknown",
 #ifdef BUILD_WITH_REDIS
   "Redis",
 #endif

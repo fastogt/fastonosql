@@ -60,20 +60,19 @@ common::Error CommandHolder::execute(CommandHandler *handler, int argc, char** a
   return func_(handler, argc, argv, out);
 }
 
-CommandHandler::CommandHandler(const std::vector<commands_type>& commands)
+CommandHandler::CommandHandler(const std::vector<commands_t> &commands)
   : commands_(commands) {
 }
 
 common::Error CommandHandler::execute(int argc, char** argv, FastoObject* out) {
   char * input_cmd = argv[0];
   for(size_t i = 0; i < commands_.size(); ++i) {
-    commands_type cmd = commands_[i];
+    commands_t cmd = commands_[i];
     if (cmd.isCommand(input_cmd)) {
       int argc_to_call = argc - 1;
       char** argv_to_call = argv + 1;
       if (argc_to_call > cmd.maxArgumentsCount() || argc_to_call < cmd.minArgumentsCount()) {
-        char buff[256] = {0};
-        common::SNPrintf(buff, sizeof(buff), "Invalid input argument for command: %s", input_cmd);
+        std::string buff = common::MemSPrintf("Invalid input argument for command: %s", input_cmd);
         return common::make_error_value(buff, common::ErrorValue::E_ERROR);
       }
 
@@ -85,8 +84,7 @@ common::Error CommandHandler::execute(int argc, char** argv, FastoObject* out) {
 }
 
 common::Error CommandHandler::notSupported(const char* cmd) {
-  char buff[1024] = {0};
-  common::SNPrintf(buff, sizeof(buff), "Not supported command: %s", cmd);
+  std::string buff = common::MemSPrintf("Not supported command: %s", cmd);
   return common::make_error_value(buff, common::ErrorValue::E_ERROR);
 }
 

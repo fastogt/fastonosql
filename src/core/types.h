@@ -75,13 +75,13 @@ class CommandHolder
 
 class CommandHandler {
  public:
-  typedef CommandHolder commands_type;
-  explicit CommandHandler(const std::vector<commands_type>& commands);
+  typedef CommandHolder commands_t;
+  explicit CommandHandler(const std::vector<commands_t>& commands);
   common::Error execute(int argc, char** argv, FastoObject* out);
 
   static common::Error notSupported(const char* cmd);
  private:
-  const std::vector<commands_type> commands_;
+  const std::vector<commands_t> commands_;
 };
 
 template<typename H, typename C>
@@ -101,7 +101,7 @@ class DBApiRaw
   typedef typename db_traits_t::config_t config_t;
   typedef typename db_traits_t::handle_t handle_t;
 
-  DBApiRaw(const std::vector<commands_type>& commands)
+  DBApiRaw(const std::vector<commands_t>& commands)
     : CommandHandler(commands), config_(), handle_(nullptr) {
   }
   ~DBApiRaw() {
@@ -245,12 +245,12 @@ template<connectionTypes ct>
 struct DBTraits {
   static std::vector<common::Value::Type> supportedTypes();
   static std::vector<std::string> infoHeaders();
-  static std::vector< std::vector<Field> > infoFields();
+  static std::vector<std::vector<Field> > infoFields();
 };
 
 std::vector<common::Value::Type> supportedTypesFromType(connectionTypes type);
 std::vector<std::string> infoHeadersFromType(connectionTypes type);
-std::vector< std::vector<Field> > infoFieldsFromType(connectionTypes type);
+std::vector<std::vector<Field> > infoFieldsFromType(connectionTypes type);
 
 typedef common::shared_ptr<IServerInfo> IServerInfoSPtr;
 

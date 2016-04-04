@@ -34,11 +34,12 @@ template<>
 fastonosql::core::connectionTypes convertFromString(const std::string& text) {
   for (size_t i = 0; i < SIZEOFMASS(fastonosql::core::connnectionType); ++i) {
     if (text == fastonosql::core::connnectionType[i]) {
-      return static_cast<fastonosql::core::connectionTypes>(i);
+      return static_cast<fastonosql::core::connectionTypes>(i + fastonosql::core::connectionTypes::REDIS);
     }
   }
 
-  return fastonosql::core::DBUNKNOWN;
+  NOTREACHED();
+  return fastonosql::core::REDIS;
 }
 
 std::string convertToString(fastonosql::core::connectionTypes t) {
@@ -49,10 +50,11 @@ template<>
 fastonosql::core::serverTypes convertFromString(const std::string& text) {
   for (size_t i = 0; i < SIZEOFMASS(serverTypes); ++i) {
     if (text == serverTypes[i]) {
-      return static_cast<fastonosql::core::serverTypes>(i);
+      return static_cast<fastonosql::core::serverTypes>(i + fastonosql::core::serverTypes::MASTER);
     }
   }
 
+  NOTREACHED();
   return fastonosql::core::MASTER;
 }
 

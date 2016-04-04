@@ -31,33 +31,32 @@
 #ifdef BUILD_WITH_REDIS
 #include "core/redis/redis_settings.h"
 #include "core/redis/redis_cluster_settings.h"
+#define LOGGING_REDIS_FILE_EXTENSION ".red"
 #endif
 #ifdef BUILD_WITH_MEMCACHED
 #include "core/memcached/memcached_settings.h"
+#define LOGGING_MEMCACHED_FILE_EXTENSION ".mem"
 #endif
 #ifdef BUILD_WITH_SSDB
 #include "core/ssdb/ssdb_settings.h"
+#define LOGGING_SSDB_FILE_EXTENSION ".ssdb"
 #endif
 #ifdef BUILD_WITH_LEVELDB
 #include "core/leveldb/leveldb_settings.h"
+#define LOGGING_LEVELDB_FILE_EXTENSION ".leveldb"
 #endif
 #ifdef BUILD_WITH_ROCKSDB
 #include "core/rocksdb/rocksdb_settings.h"
+#define LOGGING_ROCKSDB_FILE_EXTENSION ".rocksdb"
 #endif
 #ifdef BUILD_WITH_UNQLITE
 #include "core/unqlite/unqlite_settings.h"
+#define LOGGING_UNQLITE_FILE_EXTENSION ".unq"
 #endif
 #ifdef BUILD_WITH_LMDB
 #include "core/lmdb/lmdb_settings.h"
-#endif
-
-#define LOGGING_REDIS_FILE_EXTENSION ".red"
-#define LOGGING_MEMCACHED_FILE_EXTENSION ".mem"
-#define LOGGING_SSDB_FILE_EXTENSION ".ssdb"
-#define LOGGING_LEVELDB_FILE_EXTENSION ".levdb"
-#define LOGGING_ROCKSDB_FILE_EXTENSION ".rocksdb"
-#define LOGGING_UNQLITE_FILE_EXTENSION ".unq"
 #define LOGGING_LMDB_FILE_EXTENSION ".lmdb"
+#endif
 
 namespace {
   const char magicNumber = 0x1E;
@@ -112,10 +111,9 @@ IConnectionSettingsBase::~IConnectionSettingsBase() {
 }
 
 void IConnectionSettingsBase::setConnectionNameAndUpdateHash(const std::string& name) {
-  using namespace common::utils;
   setName(name);
   common::buffer_type bcon = common::convertFromString<common::buffer_type>(connection_name_);
-  uint64_t v = hash::crc64(0, bcon);
+  uint64_t v = common::utils::hash::crc64(0, bcon);
   hash_ = common::convertToString(v);
 }
 
@@ -125,23 +123,40 @@ std::string IConnectionSettingsBase::hash() const {
 
 std::string IConnectionSettingsBase::loggingPath() const {
   std::string logDir = common::convertToString(SettingsManager::instance().loggingDirectory());
-  std::string ext;
+  std::string prefix = logDir + hash();
+#ifdef BUILD_WITH_REDIS
   if (type_ == REDIS) {
-    ext = LOGGING_REDIS_FILE_EXTENSION;
-  } else if (type_ == MEMCACHED) {
-    ext = LOGGING_MEMCACHED_FILE_EXTENSION;
-  } else if (type_ == SSDB) {
-    ext = LOGGING_SSDB_FILE_EXTENSION;
-  } else if (type_ == LEVELDB) {
-    ext = LOGGING_LEVELDB_FILE_EXTENSION;
-  } else if (type_ == ROCKSDB) {
-    ext = LOGGING_ROCKSDB_FILE_EXTENSION;
-  } else if (type_ == UNQLITE) {
-    ext = LOGGING_UNQLITE_FILE_EXTENSION;
-  } else {
-    NOTREACHED();
+    return prefix + LOGGING_REDIS_FILE_EXTENSION;
   }
-  return logDir + hash() + ext;
+#endif
+#ifdef BUILD_WITH_MEMCACHED
+  if (type_ == MEMCACHED) {
+    return prefix + LOGGING_MEMCACHED_FILE_EXTENSION;
+  }
+#endif
+#ifdef BUILD_WITH_SSDB
+  if (type_ == SSDB) {
+    return prefix + LOGGING_SSDB_FILE_EXTENSION;
+  }
+#endif
+#ifdef BUILD_WITH_LEVELDB
+  if (type_ == LEVELDB) {
+    return prefix + LOGGING_LEVELDB_FILE_EXTENSION;
+  }
+#endif
+#ifdef BUILD_WITH_LEVELDB
+  if (type_ == ROCKSDB) {
+    return prefix + LOGGING_ROCKSDB_FILE_EXTENSION;
+  }
+#endif
+#ifdef BUILD_WITH_LEVELDB
+  if (type_ == UNQLITE) {
+    return prefix + LOGGING_UNQLITE_FILE_EXTENSION;
+  }
+#endif
+
+  NOTREACHED();
+  return std::string();
 }
 
 IConnectionSettingsBase* IConnectionSettingsBase::createFromType(connectionTypes type,
@@ -240,8 +255,6 @@ bool isCanSSHConnection(connectionTypes type) {
 }
 
 std::string IConnectionSettingsBase::toString() const {
-  DCHECK(type_ != DBUNKNOWN);
-
   std::stringstream str;
   str << IConnectionSettings::toString() << ',' << commandLine();
   std::string res = str.str();
@@ -298,8 +311,6 @@ IConnectionSettingsRemote* IConnectionSettingsRemote::createFromType(connectionT
 }
 
 std::string IConnectionSettingsRemote::toString() const {
-  DCHECK(type_ != DBUNKNOWN);
-
   std::stringstream str;
   str << IConnectionSettingsBase::toString() << ',' << common::convertToString(ssh_info_);
   std::string res = str.str();
@@ -315,9 +326,6 @@ void IConnectionSettingsRemote::setSshInfo(const SSHInfo& info) {
 }
 
 const char* useHelpText(connectionTypes type) {
-  if (type == DBUNKNOWN) {
-    return nullptr;
-  }
   if (type == REDIS) {
     return "<b>Usage: [OPTIONS] [cmd [arg [arg ...]]]</b><br/>"
            "<b>-h &lt;hostname&gt;</b>      Server hostname (default: 127.0.0.1).<br/>"
@@ -519,8 +527,6 @@ IClusterSettingsBase* IClusterSettingsBase::fromString(const std::string& val) {
 }
 
 std::string IClusterSettingsBase::toString() const {
-  DCHECK(type_ != DBUNKNOWN);
-
   std::stringstream str;
   str << IConnectionSettings::toString() << ',';
   for (size_t i = 0; i < clusters_nodes_.size(); ++i) {

@@ -75,8 +75,8 @@ ConnectionDialog::ConnectionDialog(QWidget* parent, core::IConnectionSettingsBas
 
   if (availibleTypes.empty()) {
     for (size_t i = 0; i < SIZEOFMASS(core::connnectionType); ++i) {
-      core::connectionTypes ct = static_cast<core::connectionTypes>(i);
-      std::string str = common::convertToString(ct);
+      std::string str = core::connnectionType[i];
+      core::connectionTypes ct = common::convertFromString<core::connectionTypes>(str);
       typeConnection_->addItem(GuiFactory::instance().icon(ct),
                                common::convertFromString<QString>(str), ct);
     }
@@ -129,7 +129,6 @@ ConnectionDialog::ConnectionDialog(QWidget* parent, core::IConnectionSettingsBas
   // ssh
 
   core::IConnectionSettingsRemote* remoteSettings = dynamic_cast<core::IConnectionSettingsRemote*>(connection_.get());
-
   core::SSHInfo info;
   if (remoteSettings) {
     info = remoteSettings->sshInfo();
@@ -254,13 +253,6 @@ ConnectionDialog::ConnectionDialog(QWidget* parent, core::IConnectionSettingsBas
   retranslateUi();
 }
 
-/*void ConnectionDialog::setConnectionTypeOnly(connectionTypes type)
-{
-  typeConnection_->clear();
-  std::string str = common::convertToString(type);
-  typeConnection_->addItem(GuiFactory::instance().icon(type), common::convertFromString<QString>(str), type);
-}*/
-
 core::IConnectionSettingsBaseSPtr ConnectionDialog::connection() const {
   return connection_;
 }
@@ -274,29 +266,20 @@ void ConnectionDialog::accept() {
 void ConnectionDialog::typeConnectionChange(int index) {
   QVariant var = typeConnection_->itemData(index);
   core::connectionTypes currentType = (core::connectionTypes)qvariant_cast<unsigned char>(var);
-  bool isValidType = currentType != core::DBUNKNOWN;
-  bool isRType = isCanSSHConnection(currentType);
-
-  connectionName_->setEnabled(isValidType);
-  commandLine_->setEnabled(isValidType);
-  buttonBox_->button(QDialogButtonBox::Save)->setEnabled(isValidType);
+  bool isSSHType = isCanSSHConnection(currentType);
 
   const char* helpText = core::useHelpText(currentType);
+  DCHECK(helpText);
   if (helpText) {
     QString trHelp = tr(helpText);
     commandLine_->setToolTip(trHelp);
   }
 
-  QObject* send = qobject_cast<QObject*>(sender());
-  if (send) {
-    QString deft = stableCommandLine(common::convertFromString<QString>(defaultCommandLine(currentType)));
-    commandLine_->setText(deft);
-  }
+  QString deft = stableCommandLine(common::convertFromString<QString>(defaultCommandLine(currentType)));
+  commandLine_->setText(deft);
 
-  useSsh_->setEnabled(isRType);
-  updateSshControls(isRType);
-  testButton_->setEnabled(isValidType);
-  logging_->setEnabled(isValidType);
+  useSsh_->setEnabled(isSSHType);
+  updateSshControls(isSSHType);
 }
 
 void ConnectionDialog::loggingStateChange(int value) {
@@ -370,46 +353,41 @@ void ConnectionDialog::retranslateUi() {
 }
 
 bool ConnectionDialog::validateAndApply() {
-  core::connectionTypes currentType = common::convertFromString<core::connectionTypes>(common::convertToString(typeConnection_->currentText()));
-  bool isValidType = currentType != core::DBUNKNOWN;
+  QVariant var = typeConnection_->currentData();
+  core::connectionTypes currentType = (core::connectionTypes)qvariant_cast<unsigned char>(var);
 
-  if (isValidType) {
-    bool isRType = isCanSSHConnection(currentType);
-    std::string conName = common::convertToString(connectionName_->text());
+  bool isSSHType = isCanSSHConnection(currentType);
+  std::string conName = common::convertToString(connectionName_->text());
 
-    if (isRType) {
-      core::IConnectionSettingsRemote* newConnection = core::IConnectionSettingsRemote::createFromType(currentType, conName, common::net::hostAndPort());
-      connection_.reset(newConnection);
+  if (isSSHType) {
+    core::IConnectionSettingsRemote* newConnection = core::IConnectionSettingsRemote::createFromType(currentType, conName, common::net::hostAndPort());
+    connection_.reset(newConnection);
 
-      core::SSHInfo info = newConnection->sshInfo();
-      info.host = common::net::hostAndPort(common::convertToString(sshHostName_->text()),
-                                             sshPort_->text().toInt());
-      info.user_name = common::convertToString(userName_->text());
-      info.password = common::convertToString(passwordBox_->text());
-      info.public_key = "";
-      info.private_key = common::convertToString(privateKeyBox_->text());
-      info.passphrase = common::convertToString(passphraseBox_->text());
-      if (useSsh_->isChecked()) {
-        info.current_method = selectedAuthMethod();
-      } else {
-        info.current_method = core::SSHInfo::UNKNOWN;
-      }
-        newConnection->setSshInfo(info);
+    core::SSHInfo info = newConnection->sshInfo();
+    info.host = common::net::hostAndPort(common::convertToString(sshHostName_->text()),
+                                           sshPort_->text().toInt());
+    info.user_name = common::convertToString(userName_->text());
+    info.password = common::convertToString(passwordBox_->text());
+    info.public_key = "";
+    info.private_key = common::convertToString(privateKeyBox_->text());
+    info.passphrase = common::convertToString(passphraseBox_->text());
+    if (useSsh_->isChecked()) {
+      info.current_method = selectedAuthMethod();
     } else {
-      core::IConnectionSettingsBase* newConnection = core::IConnectionSettingsBase::createFromType(currentType,
-                                                                                       conName);
-      connection_.reset(newConnection);
+      info.current_method = core::SSHInfo::UNKNOWN;
     }
-    connection_->setCommandLine(common::convertToString(toRawCommandLine(commandLine_->text())));
-    if (logging_->isChecked()) {
-      connection_->setLoggingMsTimeInterval(loggingMsec_->value());
-    }
-
-    return true;
+      newConnection->setSshInfo(info);
   } else {
-    QMessageBox::critical(this, translations::trError, invalidDbType);
-    return false;
+    core::IConnectionSettingsBase* newConnection = core::IConnectionSettingsBase::createFromType(currentType,
+                                                                                     conName);
+    connection_.reset(newConnection);
   }
+  connection_->setCommandLine(common::convertToString(toRawCommandLine(commandLine_->text())));
+  if (logging_->isChecked()) {
+    connection_->setLoggingMsTimeInterval(loggingMsec_->value());
+  }
+
+  return true;
 }
 
 core::SSHInfo::SupportedAuthenticationMetods ConnectionDialog::selectedAuthMethod() const {
