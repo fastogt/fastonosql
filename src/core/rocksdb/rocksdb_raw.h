@@ -37,10 +37,19 @@ common::Error createConnection(const RocksdbConfig& config, ::rocksdb::DB** cont
 common::Error createConnection(RocksdbConnectionSettings* settings, ::rocksdb::DB** context);
 common::Error testConnection(RocksdbConnectionSettings* settings);
 
-struct RocksdbRaw
-  : public DBApiRaw<RocksDBAllocTrait> {
+class RocksdbRaw
+  : public CommandHandler {
+ public:
+  typedef DBConnection<RocksDBAllocTrait> connection_t;
+  typedef connection_t::config_t config_t;
   RocksdbRaw();
 
+  common::Error connect(const config_t& config) WARN_UNUSED_RESULT;
+  common::Error disconnect() WARN_UNUSED_RESULT;
+  bool isConnected() const;
+
+  std::string delimiter() const;
+  config_t config() const;
   static const char* versionApi();
 
   std::string currentDbName() const;
@@ -58,6 +67,9 @@ struct RocksdbRaw
   common::Error dbsize(size_t* size) WARN_UNUSED_RESULT;
   common::Error help(int argc, char** argv) WARN_UNUSED_RESULT;
   common::Error flushdb() WARN_UNUSED_RESULT;
+
+ private:
+  connection_t connection_;
 };
 
 common::Error info(CommandHandler* handler, int argc, char** argv, FastoObject* out);

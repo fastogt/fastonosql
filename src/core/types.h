@@ -91,29 +91,25 @@ struct DBAllocatorTraits {
 
   static common::Error connect(const config_t& config, handle_t** hout);  // allocate handle
   static common::Error disconnect(handle_t** handle);  // deallocate handle
+  static bool isConnected(handle_t* handle);
 };
 
 template<typename DBAllocatorTraits>
-class DBApiRaw
-  : public CommandHandler {
+class DBConnection {
  public:
   typedef DBAllocatorTraits db_traits_t;
   typedef typename db_traits_t::config_t config_t;
   typedef typename db_traits_t::handle_t handle_t;
 
-  DBApiRaw(const std::vector<commands_t>& commands)
-    : CommandHandler(commands), config_(), handle_(nullptr) {
+  DBConnection()
+    : config_(), handle_(nullptr) {
   }
-  ~DBApiRaw() {
+  ~DBConnection() {
     disconnect();
   }
 
   bool isConnected() const {
-    if (!handle_) {
-      return false;
-    }
-
-    return true;
+    return db_traits_t::isConnected(handle_);
   }
   common::Error connect(const config_t& config) WARN_UNUSED_RESULT {
     if (isConnected()) {
@@ -145,14 +141,6 @@ class DBApiRaw
     return common::Error();
   }
 
-  config_t config() const {
-    return config_;
-  }
-  std::string delimiter() const {
-    return config_.delimiter;
-  }
-
-protected:
   config_t config_;
   handle_t* handle_;
 };

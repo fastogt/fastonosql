@@ -53,6 +53,14 @@ common::Error DBAllocatorTraits<leveldb::LevelDBConnection, leveldb::LeveldbConf
   destroy(handle);
   return common::Error();
 }
+template<>
+bool DBAllocatorTraits<leveldb::LevelDBConnection, leveldb::LeveldbConfig>::isConnected(leveldb::LevelDBConnection* handle) {
+  if (!handle) {
+    return false;
+  }
+
+  return true;
+}
 namespace leveldb {
 
 common::Error createConnection(const LeveldbConfig& config, LevelDBConnection** context) {
@@ -98,7 +106,27 @@ common::Error testConnection(LeveldbConnectionSettings* settings) {
 }
 
 LeveldbRaw::LeveldbRaw()
-  : DBApiRaw<LeveldbAllocTrait>(leveldbCommands) {
+  : CommandHandler(leveldbCommands), connection_() {
+}
+
+common::Error LeveldbRaw::connect(const config_t& config) {
+  return connection_.connect(config);
+}
+
+common::Error LeveldbRaw::disconnect() {
+  return connection_.disconnect();
+}
+
+bool LeveldbRaw::isConnected() const {
+  return connection_.isConnected();
+}
+
+std::string LeveldbRaw::delimiter() const {
+  return connection_.config_.delimiter;
+}
+
+LeveldbRaw::config_t LeveldbRaw::config() const {
+  return connection_.config_;
 }
 
 const char* LeveldbRaw::versionApi() {
@@ -115,7 +143,7 @@ common::Error LeveldbRaw::dbsize(size_t* size) {
   }
 
   ::leveldb::ReadOptions ro;
-  ::leveldb::Iterator* it = handle_->NewIterator(ro);
+  ::leveldb::Iterator* it = connection_.handle_->NewIterator(ro);
   size_t sz = 0;
   for (it->SeekToFirst(); it->Valid(); it->Next()) {
     sz++;
@@ -146,7 +174,7 @@ common::Error LeveldbRaw::info(const char* args, LeveldbServerInfo::Stats* stats
   }
 
   std::string rets;
-  bool isok = handle_->GetProperty("leveldb.stats", &rets);
+  bool isok = connection_.handle_->GetProperty("leveldb.stats", &rets);
   if (!isok) {
     return common::make_error_value("info function failed", common::ErrorValue::E_ERROR);
   }
@@ -188,7 +216,7 @@ common::Error LeveldbRaw::set(const std::string& key, const std::string& value) 
   CHECK(isConnected());
 
   ::leveldb::WriteOptions wo;
-  auto st = handle_->Put(wo, key, value);
+  auto st = connection_.handle_->Put(wo, key, value);
   if (!st.ok()) {
     char buff[1024] = {0};
     common::SNPrintf(buff, sizeof(buff), "set function error: %s", st.ToString());
@@ -202,7 +230,7 @@ common::Error LeveldbRaw::get(const std::string& key, std::string* ret_val) {
   CHECK(isConnected());
 
   ::leveldb::ReadOptions ro;
-  auto st = handle_->Get(ro, key, ret_val);
+  auto st = connection_.handle_->Get(ro, key, ret_val);
   if (!st.ok()) {
     char buff[1024] = {0};
     common::SNPrintf(buff, sizeof(buff), "get function error: %s", st.ToString());
@@ -216,7 +244,7 @@ common::Error LeveldbRaw::del(const std::string& key) {
   CHECK(isConnected());
 
   ::leveldb::WriteOptions wo;
-  auto st = handle_->Delete(wo, key);
+  auto st = connection_.handle_->Delete(wo, key);
   if (!st.ok()) {
     char buff[1024] = {0};
     common::SNPrintf(buff, sizeof(buff), "del function error: %s", st.ToString());
@@ -230,7 +258,7 @@ common::Error LeveldbRaw::keys(const std::string& key_start, const std::string& 
   CHECK(isConnected());
 
   ::leveldb::ReadOptions ro;
-  ::leveldb::Iterator* it = handle_->NewIterator(ro);  // keys(key_start, key_end, limit, ret);
+  ::leveldb::Iterator* it = connection_.handle_->NewIterator(ro);  // keys(key_start, key_end, limit, ret);
   for (it->Seek(key_start); it->Valid() && it->key().ToString() < key_end; it->Next()) {
     std::string key = it->key().ToString();
     if (ret->size() <= limit) {
@@ -260,10 +288,10 @@ common::Error LeveldbRaw::flushdb() {
 
   ::leveldb::ReadOptions ro;
   ::leveldb::WriteOptions wo;
-  ::leveldb::Iterator* it = handle_->NewIterator(ro);
+  ::leveldb::Iterator* it = connection_.handle_->NewIterator(ro);
   for (it->SeekToFirst(); it->Valid(); it->Next()) {
     std::string key = it->key().ToString();
-    auto st = handle_->Delete(wo, key);
+    auto st = connection_.handle_->Delete(wo, key);
     if (!st.ok()) {
       delete it;
       std::string buff = common::MemSPrintf("del function error: %s", st.ToString());

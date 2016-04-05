@@ -368,7 +368,7 @@ bool ConnectionDialog::validateAndApply() {
                                            sshPort_->text().toInt());
     info.user_name = common::convertToString(userName_->text());
     info.password = common::convertToString(passwordBox_->text());
-    info.public_key = "";
+    info.public_key = std::string();
     info.private_key = common::convertToString(privateKeyBox_->text());
     info.passphrase = common::convertToString(passphraseBox_->text());
     if (useSsh_->isChecked()) {

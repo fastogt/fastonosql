@@ -38,10 +38,18 @@ common::Error createConnection(MemcachedConnectionSettings* settings, struct mem
 common::Error testConnection(MemcachedConnectionSettings* settings);
 
 struct MemcachedRaw
-  : public DBApiRaw<MemcachedAllocTrait> {
+  : public CommandHandler {
+ public:
+  typedef DBConnection<MemcachedAllocTrait> connection_t;
+  typedef connection_t::config_t config_t;
   MemcachedRaw();
 
+  common::Error connect(const config_t& config) WARN_UNUSED_RESULT;
+  common::Error disconnect() WARN_UNUSED_RESULT;
   bool isConnected() const;
+
+  std::string delimiter() const;
+  config_t config() const;
   static const char* versionApi();
 
   common::Error keys(const char* args) WARN_UNUSED_RESULT;
@@ -65,6 +73,9 @@ struct MemcachedRaw
   common::Error flush_all(time_t expiration) WARN_UNUSED_RESULT;
   common::Error version_server() const WARN_UNUSED_RESULT;
   common::Error help(int argc, char** argv) WARN_UNUSED_RESULT;
+
+ private:
+  connection_t connection_;
 };
 
 common::Error keys(CommandHandler* handler, int argc, char** argv, FastoObject* out);

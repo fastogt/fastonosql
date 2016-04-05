@@ -48,6 +48,19 @@ common::Error DBAllocatorTraits<memcached::MemcachedConnection, memcached::Memca
   lhandle = nullptr;
   return common::Error();
 }
+template<>
+bool DBAllocatorTraits<memcached::MemcachedConnection, memcached::MemcachedConfig>::isConnected(memcached::MemcachedConnection* handle) {
+  if (!handle) {
+    return false;
+  }
+
+  memcached_instance_st* servers = handle->servers;
+  if (!servers) {
+    return false;
+  }
+
+  return servers->state == MEMCACHED_SERVER_STATE_CONNECTED;
+}
 namespace memcached {
 
 common::Error createConnection(const MemcachedConfig& config, struct memcached_st** context) {
@@ -144,20 +157,27 @@ common::Error testConnection(MemcachedConnectionSettings* settings) {
 }
 
 MemcachedRaw::MemcachedRaw()
-  : DBApiRaw<MemcachedAllocTrait>(memcachedCommands) {
+  : CommandHandler(memcachedCommands), connection_() {
+}
+
+common::Error MemcachedRaw::connect(const config_t& config) {
+  return connection_.connect(config);
+}
+
+common::Error MemcachedRaw::disconnect() {
+  return connection_.disconnect();
 }
 
 bool MemcachedRaw::isConnected() const {
-  if (!handle_) {
-    return false;
-  }
+  return connection_.isConnected();
+}
 
-  memcached_instance_st* servers = handle_->servers;
-  if (!servers) {
-    return false;
-  }
+std::string MemcachedRaw::delimiter() const {
+  return connection_.config_.delimiter;
+}
 
-  return servers->state == MEMCACHED_SERVER_STATE_CONNECTED;
+MemcachedRaw::config_t MemcachedRaw::config() const {
+  return connection_.config_;
 }
 
 const char* MemcachedRaw::versionApi() {
@@ -176,11 +196,11 @@ common::Error MemcachedRaw::info(const char* args, MemcachedServerInfo::Common* 
   }
 
   memcached_return_t error;
-  memcached_stat_st* st = memcached_stat(handle_, (char*)args, &error);
+  memcached_stat_st* st = memcached_stat(connection_.handle_, (char*)args, &error);
   if (error != MEMCACHED_SUCCESS) {
     char buff[1024] = {0};
     common::SNPrintf(buff, sizeof(buff), "Stats function error: %s",
-                     memcached_strerror(handle_, error));
+                     memcached_strerror(connection_.handle_, error));
     return common::make_error_value(buff, common::ErrorValue::E_ERROR);
   }
 
@@ -229,11 +249,11 @@ common::Error MemcachedRaw::get(const std::string& key, std::string* ret_val) {
   memcached_return error;
   size_t value_length = 0;
 
-  char* value = memcached_get(handle_, key.c_str(), key.length(), &value_length, &flags, &error);
+  char* value = memcached_get(connection_.handle_, key.c_str(), key.length(), &value_length, &flags, &error);
   if (error != MEMCACHED_SUCCESS) {
     char buff[1024] = {0};
     common::SNPrintf(buff, sizeof(buff), "Get function error: %s",
-                     memcached_strerror(handle_, error));
+                     memcached_strerror(connection_.handle_, error));
     return common::make_error_value(buff, common::ErrorValue::E_ERROR);
   }
 
@@ -247,12 +267,12 @@ common::Error MemcachedRaw::set(const std::string& key, const std::string& value
                   time_t expiration, uint32_t flags) {
   CHECK(isConnected());
 
-  memcached_return_t error = memcached_set(handle_, key.c_str(), key.length(),
+  memcached_return_t error = memcached_set(connection_.handle_, key.c_str(), key.length(),
                                            value.c_str(), value.length(), expiration, flags);
   if (error != MEMCACHED_SUCCESS) {
     char buff[1024] = {0};
     common::SNPrintf(buff, sizeof(buff), "Set function error: %s",
-                     memcached_strerror(handle_, error));
+                     memcached_strerror(connection_.handle_, error));
     return common::make_error_value(buff, common::ErrorValue::E_ERROR);
   }
 
@@ -263,12 +283,12 @@ common::Error MemcachedRaw::add(const std::string& key, const std::string& value
                   time_t expiration, uint32_t flags) {
   CHECK(isConnected());
 
-  memcached_return_t error = memcached_add(handle_, key.c_str(), key.length(),
+  memcached_return_t error = memcached_add(connection_.handle_, key.c_str(), key.length(),
                                            value.c_str(), value.length(), expiration, flags);
   if (error != MEMCACHED_SUCCESS) {
     char buff[1024] = {0};
     common::SNPrintf(buff, sizeof(buff), "Add function error: %s",
-                     memcached_strerror(handle_, error));
+                     memcached_strerror(connection_.handle_, error));
     return common::make_error_value(buff, common::ErrorValue::E_ERROR);
   }
 
@@ -279,12 +299,12 @@ common::Error MemcachedRaw::replace(const std::string& key, const std::string& v
                       time_t expiration, uint32_t flags) {
   CHECK(isConnected());
 
-  memcached_return_t error = memcached_replace(handle_, key.c_str(), key.length(),
+  memcached_return_t error = memcached_replace(connection_.handle_, key.c_str(), key.length(),
                                                value.c_str(), value.length(), expiration, flags);
   if (error != MEMCACHED_SUCCESS) {
     char buff[1024] = {0};
     common::SNPrintf(buff, sizeof(buff), "Replace function error: %s",
-                     memcached_strerror(handle_, error));
+                     memcached_strerror(connection_.handle_, error));
     return common::make_error_value(buff, common::ErrorValue::E_ERROR);
   }
 
@@ -295,12 +315,12 @@ common::Error MemcachedRaw::append(const std::string& key, const std::string& va
                      time_t expiration, uint32_t flags) {
   CHECK(isConnected());
 
-  memcached_return_t error = memcached_append(handle_, key.c_str(), key.length(), value.c_str(),
+  memcached_return_t error = memcached_append(connection_.handle_, key.c_str(), key.length(), value.c_str(),
                                               value.length(), expiration, flags);
   if (error != MEMCACHED_SUCCESS) {
     char buff[1024] = {0};
     common::SNPrintf(buff, sizeof(buff), "Append function error: %s",
-                     memcached_strerror(handle_, error));
+                     memcached_strerror(connection_.handle_, error));
     return common::make_error_value(buff, common::ErrorValue::E_ERROR);
   }
 
@@ -311,12 +331,12 @@ common::Error MemcachedRaw::prepend(const std::string& key, const std::string& v
                       time_t expiration, uint32_t flags) {
   CHECK(isConnected());
 
-  memcached_return_t error = memcached_prepend(handle_, key.c_str(), key.length(),
+  memcached_return_t error = memcached_prepend(connection_.handle_, key.c_str(), key.length(),
                                                value.c_str(), value.length(), expiration, flags);
   if (error != MEMCACHED_SUCCESS) {
     char buff[1024] = {0};
     common::SNPrintf(buff, sizeof(buff), "Prepend function error: %s",
-                     memcached_strerror(handle_, error));
+                     memcached_strerror(connection_.handle_, error));
     return common::make_error_value(buff, common::ErrorValue::E_ERROR);
   }
 
@@ -326,11 +346,11 @@ common::Error MemcachedRaw::prepend(const std::string& key, const std::string& v
 common::Error MemcachedRaw::incr(const std::string& key, uint64_t value) {
   CHECK(isConnected());
 
-  memcached_return_t error = memcached_increment(handle_, key.c_str(), key.length(), 0, &value);
+  memcached_return_t error = memcached_increment(connection_.handle_, key.c_str(), key.length(), 0, &value);
   if (error != MEMCACHED_SUCCESS) {
     char buff[1024] = {0};
     common::SNPrintf(buff, sizeof(buff), "Incr function error: %s",
-                     memcached_strerror(handle_, error));
+                     memcached_strerror(connection_.handle_, error));
     return common::make_error_value(buff, common::ErrorValue::E_ERROR);
   }
 
@@ -340,11 +360,11 @@ common::Error MemcachedRaw::incr(const std::string& key, uint64_t value) {
 common::Error MemcachedRaw::decr(const std::string& key, uint64_t value) {
   CHECK(isConnected());
 
-  memcached_return_t error = memcached_decrement(handle_, key.c_str(), key.length(), 0, &value);
+  memcached_return_t error = memcached_decrement(connection_.handle_, key.c_str(), key.length(), 0, &value);
   if (error != MEMCACHED_SUCCESS) {
     char buff[1024] = {0};
     common::SNPrintf(buff, sizeof(buff), "Decr function error: %s",
-                     memcached_strerror(handle_, error));
+                     memcached_strerror(connection_.handle_, error));
     return common::make_error_value(buff, common::ErrorValue::E_ERROR);
   }
 
@@ -354,11 +374,11 @@ common::Error MemcachedRaw::decr(const std::string& key, uint64_t value) {
 common::Error MemcachedRaw::del(const std::string& key, time_t expiration) {
   CHECK(isConnected());
 
-  memcached_return_t error = memcached_delete(handle_, key.c_str(), key.length(), expiration);
+  memcached_return_t error = memcached_delete(connection_.handle_, key.c_str(), key.length(), expiration);
   if (error != MEMCACHED_SUCCESS) {
     char buff[1024] = {0};
     common::SNPrintf(buff, sizeof(buff), "Delete function error: %s",
-                     memcached_strerror(handle_, error));
+                     memcached_strerror(connection_.handle_, error));
     return common::make_error_value(buff, common::ErrorValue::E_ERROR);
   }
 
@@ -368,11 +388,11 @@ common::Error MemcachedRaw::del(const std::string& key, time_t expiration) {
 common::Error MemcachedRaw::flush_all(time_t expiration) {
   CHECK(isConnected());
 
-  memcached_return_t error = memcached_flush(handle_, expiration);
+  memcached_return_t error = memcached_flush(connection_.handle_, expiration);
   if (error != MEMCACHED_SUCCESS) {
     char buff[1024] = {0};
     common::SNPrintf(buff, sizeof(buff), "Fluss all function error: %s",
-                     memcached_strerror(handle_, error));
+                     memcached_strerror(connection_.handle_, error));
     return common::make_error_value(buff, common::ErrorValue::E_ERROR);
   }
 
@@ -382,11 +402,11 @@ common::Error MemcachedRaw::flush_all(time_t expiration) {
 common::Error MemcachedRaw::version_server() const {
   CHECK(isConnected());
 
-  memcached_return_t error = memcached_version(handle_);
+  memcached_return_t error = memcached_version(connection_.handle_);
   if (error != MEMCACHED_SUCCESS) {
     char buff[1024] = {0};
     common::SNPrintf(buff, sizeof(buff), "Get server version error: %s",
-                     memcached_strerror(handle_, error));
+                     memcached_strerror(connection_.handle_, error));
     return common::make_error_value(buff, common::ErrorValue::E_ERROR);
   }
 

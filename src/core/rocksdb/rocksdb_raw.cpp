@@ -50,6 +50,14 @@ common::Error DBAllocatorTraits<rocksdb::RocksDBConnection, rocksdb::RocksdbConf
   destroy(handle);
   return common::Error();
 }
+template<>
+bool DBAllocatorTraits<rocksdb::RocksDBConnection, rocksdb::RocksdbConfig>::isConnected(rocksdb::RocksDBConnection* handle) {
+  if (!handle) {
+    return false;
+  }
+
+  return true;
+}
 namespace rocksdb {
 
 common::Error createConnection(const RocksdbConfig& config, ::rocksdb::DB** context) {
@@ -95,7 +103,27 @@ common::Error testConnection(RocksdbConnectionSettings* settings) {
 }
 
 RocksdbRaw::RocksdbRaw()
-  : DBApiRaw<RocksDBAllocTrait>(rocksdbCommands) {
+  : CommandHandler(rocksdbCommands), connection_() {
+}
+
+common::Error RocksdbRaw::connect(const config_t& config) {
+  return connection_.connect(config);
+}
+
+common::Error RocksdbRaw::disconnect() {
+  return connection_.disconnect();
+}
+
+bool RocksdbRaw::isConnected() const {
+  return connection_.isConnected();
+}
+
+std::string RocksdbRaw::delimiter() const {
+  return connection_.config_.delimiter;
+}
+
+RocksdbRaw::config_t RocksdbRaw::config() const {
+  return connection_.config_;
 }
 
 const char* RocksdbRaw::versionApi() {
@@ -114,7 +142,7 @@ common::Error RocksdbRaw::info(const char* args, RocksdbServerInfo::Stats* stats
   }
 
   std::string rets;
-  bool isok = handle_->GetProperty("rocksdb.stats", &rets);
+  bool isok = connection_.handle_->GetProperty("rocksdb.stats", &rets);
   if (!isok) {
     return common::make_error_value("info function failed", common::ErrorValue::E_ERROR);
   }
@@ -160,7 +188,7 @@ common::Error RocksdbRaw::dbsize(size_t* size) {
   }
 
   ::rocksdb::ReadOptions ro;
-  ::rocksdb::Iterator* it = handle_->NewIterator(ro);
+  ::rocksdb::Iterator* it = connection_.handle_->NewIterator(ro);
   size_t sz = 0;
   for (it->SeekToFirst(); it->Valid(); it->Next()) {
     sz++;
@@ -182,7 +210,7 @@ common::Error RocksdbRaw::dbsize(size_t* size) {
 std::string RocksdbRaw::currentDbName() const {
   CHECK(isConnected());
 
-  ::rocksdb::ColumnFamilyHandle* fam = handle_->DefaultColumnFamily();
+  ::rocksdb::ColumnFamilyHandle* fam = connection_.handle_->DefaultColumnFamily();
   if (fam) {
     return fam->GetName();
   }
@@ -194,7 +222,7 @@ common::Error RocksdbRaw::set(const std::string& key, const std::string& value) 
   CHECK(isConnected());
 
   ::rocksdb::WriteOptions wo;
-  auto st = handle_->Put(wo, key, value);
+  auto st = connection_.handle_->Put(wo, key, value);
   if (!st.ok()) {
     char buff[1024] = {0};
     common::SNPrintf(buff, sizeof(buff), "set function error: %s", st.ToString());
@@ -208,7 +236,7 @@ common::Error RocksdbRaw::get(const std::string& key, std::string* ret_val) {
   CHECK(isConnected());
 
   ::rocksdb::ReadOptions ro;
-  auto st = handle_->Get(ro, key, ret_val);
+  auto st = connection_.handle_->Get(ro, key, ret_val);
   if (!st.ok()) {
     char buff[1024] = {0};
     common::SNPrintf(buff, sizeof(buff), "get function error: %s", st.ToString());
@@ -222,7 +250,7 @@ common::Error RocksdbRaw::mget(const std::vector< ::rocksdb::Slice>& keys, std::
   CHECK(isConnected());
 
   ::rocksdb::ReadOptions ro;
-  auto sts = handle_->MultiGet(ro, keys, ret);
+  auto sts = connection_.handle_->MultiGet(ro, keys, ret);
   for (size_t i = 0; i < sts.size(); ++i) {
     auto st = sts[i];
     if (st.ok()) {
@@ -237,7 +265,7 @@ common::Error RocksdbRaw::merge(const std::string& key, const std::string& value
   CHECK(isConnected());
 
   ::rocksdb::WriteOptions wo;
-  auto st = handle_->Merge(wo, key, value);
+  auto st = connection_.handle_->Merge(wo, key, value);
   if (!st.ok()) {
     char buff[1024] = {0};
     common::SNPrintf(buff, sizeof(buff), "merge function error: %s", st.ToString());
@@ -251,7 +279,7 @@ common::Error RocksdbRaw::del(const std::string& key) {
   CHECK(isConnected());
 
   ::rocksdb::WriteOptions wo;
-  auto st = handle_->Delete(wo, key);
+  auto st = connection_.handle_->Delete(wo, key);
   if (!st.ok()) {
     char buff[1024] = {0};
     common::SNPrintf(buff, sizeof(buff), "del function error: %s", st.ToString());
@@ -265,7 +293,7 @@ common::Error RocksdbRaw::keys(const std::string& key_start, const std::string& 
   CHECK(isConnected());
 
   ::rocksdb::ReadOptions ro;
-  ::rocksdb::Iterator* it = handle_->NewIterator(ro);  // keys(key_start, key_end, limit, ret);
+  ::rocksdb::Iterator* it = connection_.handle_->NewIterator(ro);  // keys(key_start, key_end, limit, ret);
   for (it->Seek(key_start); it->Valid() && it->key().ToString() < key_end; it->Next()) {
     std::string key = it->key().ToString();
     if (ret->size() <= limit) {
@@ -295,10 +323,10 @@ common::Error RocksdbRaw::flushdb() {
 
   ::rocksdb::ReadOptions ro;
   ::rocksdb::WriteOptions wo;
-  ::rocksdb::Iterator* it = handle_->NewIterator(ro);
+  ::rocksdb::Iterator* it = connection_.handle_->NewIterator(ro);
   for (it->SeekToFirst(); it->Valid(); it->Next()) {
     std::string key = it->key().ToString();
-    auto st = handle_->Delete(wo, key);
+    auto st = connection_.handle_->Delete(wo, key);
     if (!st.ok()) {
       delete it;
       std::string buff = common::MemSPrintf("del function error: %s", st.ToString());

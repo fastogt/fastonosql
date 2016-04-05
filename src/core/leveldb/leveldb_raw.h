@@ -37,10 +37,19 @@ common::Error createConnection(const LeveldbConfig& config, LevelDBConnection** 
 common::Error createConnection(LeveldbConnectionSettings* settings, LevelDBConnection** context);
 common::Error testConnection(LeveldbConnectionSettings* settings);
 
-struct LeveldbRaw
-  : public DBApiRaw<LeveldbAllocTrait> {
+class LeveldbRaw
+  : public CommandHandler {
+ public:
+  typedef DBConnection<LeveldbAllocTrait> connection_t;
+  typedef connection_t::config_t config_t;
   LeveldbRaw();
 
+  common::Error connect(const config_t& config) WARN_UNUSED_RESULT;
+  common::Error disconnect() WARN_UNUSED_RESULT;
+  bool isConnected() const;
+
+  std::string delimiter() const;
+  config_t config() const;
   static const char* versionApi();
 
   common::Error info(const char* args, LeveldbServerInfo::Stats* statsout) WARN_UNUSED_RESULT;
@@ -54,6 +63,9 @@ struct LeveldbRaw
   common::Error dbsize(size_t* size) WARN_UNUSED_RESULT;
   common::Error help(int argc, char** argv) WARN_UNUSED_RESULT;
   common::Error flushdb() WARN_UNUSED_RESULT;
+
+ private:
+  connection_t connection_;
 };
 
 common::Error info(CommandHandler* handler, int argc, char** argv, FastoObject* out);

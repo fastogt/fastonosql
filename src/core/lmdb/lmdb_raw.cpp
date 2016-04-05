@@ -137,7 +137,27 @@ common::Error testConnection(LmdbConnectionSettings* settings) {
 }
 
 LmdbRaw::LmdbRaw()
-  : DBApiRaw<LMDBAllocTrait>(lmdbCommands) {
+  : CommandHandler(lmdbCommands), connection_() {
+}
+
+common::Error LmdbRaw::connect(const config_t& config) {
+  return connection_.connect(config);
+}
+
+common::Error LmdbRaw::disconnect() {
+  return connection_.disconnect();
+}
+
+bool LmdbRaw::isConnected() const {
+  return connection_.isConnected();
+}
+
+std::string LmdbRaw::delimiter() const {
+  return connection_.config_.delimiter;
+}
+
+LmdbRaw::config_t LmdbRaw::config() const {
+  return connection_.config_;
 }
 
 const char* LmdbRaw::versionApi() {
@@ -145,8 +165,8 @@ const char* LmdbRaw::versionApi() {
 }
 
 MDB_dbi LmdbRaw::curDb() const {
-  if (handle_) {
-    return handle_->dbir;
+  if (connection_.handle_) {
+    return connection_.handle_->dbir;
   }
 
   return 0;
@@ -178,9 +198,9 @@ common::Error LmdbRaw::dbsize(size_t* size) {
 
   MDB_cursor* cursor = NULL;
   MDB_txn* txn = NULL;
-  int rc = mdb_txn_begin(handle_->env, NULL, MDB_RDONLY, &txn);
+  int rc = mdb_txn_begin(connection_.handle_->env, NULL, MDB_RDONLY, &txn);
   if (rc == LMDB_OK) {
-    rc = mdb_cursor_open(txn, handle_->dbir, &cursor);
+    rc = mdb_cursor_open(txn, connection_.handle_->dbir, &cursor);
   }
 
   if (rc != LMDB_OK) {
@@ -214,9 +234,9 @@ common::Error LmdbRaw::set(const std::string& key, const std::string& value) {
   mval.mv_data = (void*)value.c_str();
 
   MDB_txn* txn = NULL;
-  int rc = mdb_txn_begin(handle_->env, NULL, 0, &txn);
+  int rc = mdb_txn_begin(connection_.handle_->env, NULL, 0, &txn);
   if (rc == LMDB_OK) {
-    rc = mdb_put(txn, handle_->dbir, &mkey, &mval, 0);
+    rc = mdb_put(txn, connection_.handle_->dbir, &mkey, &mval, 0);
     if (rc == LMDB_OK) {
       rc = mdb_txn_commit(txn);
     } else {
@@ -242,9 +262,9 @@ common::Error LmdbRaw::get(const std::string& key, std::string* ret_val) {
   MDB_val mval;
 
   MDB_txn* txn = NULL;
-  int rc = mdb_txn_begin(handle_->env, NULL, MDB_RDONLY, &txn);
+  int rc = mdb_txn_begin(connection_.handle_->env, NULL, MDB_RDONLY, &txn);
   if (rc == LMDB_OK) {
-    rc = mdb_get(txn, handle_->dbir, &mkey, &mval);
+    rc = mdb_get(txn, connection_.handle_->dbir, &mkey, &mval);
   }
   mdb_txn_abort(txn);
 
@@ -267,9 +287,9 @@ common::Error LmdbRaw::del(const std::string& key) {
   mkey.mv_data = (void*)key.c_str();
 
   MDB_txn* txn = NULL;
-  int rc = mdb_txn_begin(handle_->env, NULL, 0, &txn);
+  int rc = mdb_txn_begin(connection_.handle_->env, NULL, 0, &txn);
   if (rc == LMDB_OK) {
-    rc = mdb_del(txn, handle_->dbir, &mkey, NULL);
+    rc = mdb_del(txn, connection_.handle_->dbir, &mkey, NULL);
     if (rc == LMDB_OK) {
       rc = mdb_txn_commit(txn);
     } else {
@@ -292,9 +312,9 @@ common::Error LmdbRaw::keys(const std::string& key_start, const std::string& key
 
   MDB_cursor* cursor = NULL;
   MDB_txn* txn = NULL;
-  int rc = mdb_txn_begin(handle_->env, NULL, MDB_RDONLY, &txn);
+  int rc = mdb_txn_begin(connection_.handle_->env, NULL, MDB_RDONLY, &txn);
   if (rc == LMDB_OK) {
-    rc = mdb_cursor_open(txn, handle_->dbir, &cursor);
+    rc = mdb_cursor_open(txn, connection_.handle_->dbir, &cursor);
   }
 
   if (rc != LMDB_OK) {
@@ -327,9 +347,9 @@ common::Error LmdbRaw::flushdb() {
 
   MDB_cursor* cursor = NULL;
   MDB_txn* txn = NULL;
-  int rc = mdb_txn_begin(handle_->env, NULL, 0, &txn);
+  int rc = mdb_txn_begin(connection_.handle_->env, NULL, 0, &txn);
   if (rc == LMDB_OK) {
-    rc = mdb_cursor_open(txn, handle_->dbir, &cursor);
+    rc = mdb_cursor_open(txn, connection_.handle_->dbir, &cursor);
   }
 
   if (rc != LMDB_OK) {
@@ -344,7 +364,7 @@ common::Error LmdbRaw::flushdb() {
   size_t sz = 0;
   while (mdb_cursor_get(cursor, &key, &data, MDB_NEXT) == LMDB_OK) {
     sz++;
-    rc = mdb_del(txn, handle_->dbir, &key, NULL);
+    rc = mdb_del(txn, connection_.handle_->dbir, &key, NULL);
     if (rc != LMDB_OK) {
       mdb_cursor_close(cursor);
       mdb_txn_abort(txn);
@@ -474,6 +494,14 @@ common::Error DBAllocatorTraits<lmdb::LMDBConnection, lmdb::LmdbConfig>::disconn
   lmdb::lmdb_close(handle);
   *handle = nullptr;
   return common::Error();
+}
+template<>
+bool DBAllocatorTraits<lmdb::LMDBConnection, lmdb::LmdbConfig>::isConnected(lmdb::LMDBConnection* handle) {
+  if (!handle) {
+    return false;
+  }
+
+  return true;
 }
 }  // namespace core
 }  // namespace fastonosql

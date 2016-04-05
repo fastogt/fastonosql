@@ -38,6 +38,14 @@ common::Error DBAllocatorTraits<ssdb::SSDBConnection, ssdb::SsdbConfig>::disconn
   destroy(handle);
   return common::Error();
 }
+template<>
+bool DBAllocatorTraits<ssdb::SSDBConnection, ssdb::SsdbConfig>::isConnected(ssdb::SSDBConnection* handle) {
+  if (!handle) {
+    return false;
+  }
+
+  return true;
+}
 namespace ssdb {
 
 common::Error createConnection(const SsdbConfig& config, ::ssdb::Client** context) {
@@ -82,7 +90,27 @@ common::Error testConnection(SsdbConnectionSettings* settings) {
 
 
 SsdbRaw::SsdbRaw()
-  : DBApiRaw<SSDBAllocTrait>(ssdbCommands) {
+  : CommandHandler(ssdbCommands), connection_() {
+}
+
+common::Error SsdbRaw::connect(const config_t& config) {
+  return connection_.connect(config);
+}
+
+common::Error SsdbRaw::disconnect() {
+  return connection_.disconnect();
+}
+
+bool SsdbRaw::isConnected() const {
+  return connection_.isConnected();
+}
+
+std::string SsdbRaw::delimiter() const {
+  return connection_.config_.delimiter;
+}
+
+SsdbRaw::config_t SsdbRaw::config() const {
+  return connection_.config_;
 }
 
 const char* SsdbRaw::versionApi() {
@@ -98,7 +126,7 @@ common::Error SsdbRaw::info(const char* args, SsdbServerInfo::Common* statsout) 
   }
 
   std::vector<std::string> ret;
-  auto st = handle_->info(args ? args : std::string(), &ret);
+  auto st = connection_.handle_->info(args ? args : std::string(), &ret);
   if (st.error()) {
     char buff[1024] = {0};
     common::SNPrintf(buff, sizeof(buff), "info function error: %s", st.code());
@@ -132,7 +160,7 @@ common::Error SsdbRaw::dbsize(size_t* size) {
   }
 
   int64_t sz = 0;
-  auto st = handle_->dbsize(&sz);
+  auto st = connection_.handle_->dbsize(&sz);
   if (st.error()) {
     char buff[1024] = {0};
     common::SNPrintf(buff, sizeof(buff), "Couldn't determine DBSIZE error: %s", st.code());
@@ -146,7 +174,7 @@ common::Error SsdbRaw::dbsize(size_t* size) {
 common::Error SsdbRaw::auth(const std::string& password) {
   CHECK(isConnected());
 
-  auto st = handle_->auth(password);
+  auto st = connection_.handle_->auth(password);
   if (st.error()) {
     char buff[1024] = {0};
     common::SNPrintf(buff, sizeof(buff), "password function error: %s", st.code());
@@ -158,7 +186,7 @@ common::Error SsdbRaw::auth(const std::string& password) {
 common::Error SsdbRaw::get(const std::string& key, std::string* ret_val) {
   CHECK(isConnected());
 
-  auto st = handle_->get(key, ret_val);
+  auto st = connection_.handle_->get(key, ret_val);
   if (st.error()) {
     char buff[1024] = {0};
     common::SNPrintf(buff, sizeof(buff), "get function error: %s", st.code());
@@ -170,7 +198,7 @@ common::Error SsdbRaw::get(const std::string& key, std::string* ret_val) {
 common::Error SsdbRaw::set(const std::string& key, const std::string& value) {
   CHECK(isConnected());
 
-  auto st = handle_->set(key, value);
+  auto st = connection_.handle_->set(key, value);
   if (st.error()) {
     char buff[1024] = {0};
     common::SNPrintf(buff, sizeof(buff), "set function error: %s", st.code());
@@ -182,7 +210,7 @@ common::Error SsdbRaw::set(const std::string& key, const std::string& value) {
 common::Error SsdbRaw::setx(const std::string& key, const std::string& value, int ttl) {
   CHECK(isConnected());
 
-  auto st = handle_->setx(key, value, ttl);
+  auto st = connection_.handle_->setx(key, value, ttl);
   if (st.error()) {
     char buff[1024] = {0};
     common::SNPrintf(buff, sizeof(buff), "setx function error: %s", st.code());
@@ -194,7 +222,7 @@ common::Error SsdbRaw::setx(const std::string& key, const std::string& value, in
 common::Error SsdbRaw::del(const std::string& key) {
   CHECK(isConnected());
 
-  auto st = handle_->del(key);
+  auto st = connection_.handle_->del(key);
   if (st.error()) {
     char buff[1024] = {0};
     common::SNPrintf(buff, sizeof(buff), "del function error: %s", st.code());
@@ -206,7 +234,7 @@ common::Error SsdbRaw::del(const std::string& key) {
 common::Error SsdbRaw::incr(const std::string& key, int64_t incrby, int64_t* ret) {
   CHECK(isConnected());
 
-  auto st = handle_->incr(key, incrby, ret);
+  auto st = connection_.handle_->incr(key, incrby, ret);
   if (st.error()) {
     char buff[1024] = {0};
     common::SNPrintf(buff, sizeof(buff), "Incr function error: %s", st.code());
@@ -219,7 +247,7 @@ common::Error SsdbRaw::keys(const std::string& key_start, const std::string& key
                    uint64_t limit, std::vector<std::string>* ret) {
   CHECK(isConnected());
 
-  auto st = handle_->keys(key_start, key_end, limit, ret);
+  auto st = connection_.handle_->keys(key_start, key_end, limit, ret);
   if (st.error()) {
     char buff[1024] = {0};
     common::SNPrintf(buff, sizeof(buff), "Keys function error: %s", st.code());
@@ -232,7 +260,7 @@ common::Error SsdbRaw::scan(const std::string& key_start, const std::string& key
                    uint64_t limit, std::vector<std::string>* ret) {
   CHECK(isConnected());
 
-  auto st = handle_->scan(key_start, key_end, limit, ret);
+  auto st = connection_.handle_->scan(key_start, key_end, limit, ret);
   if (st.error()) {
     char buff[1024] = {0};
     common::SNPrintf(buff, sizeof(buff), "scan function error: %s", st.code());
@@ -245,7 +273,7 @@ common::Error SsdbRaw::rscan(const std::string& key_start, const std::string& ke
                     uint64_t limit, std::vector<std::string>* ret) {
   CHECK(isConnected());
 
-  auto st = handle_->rscan(key_start, key_end, limit, ret);
+  auto st = connection_.handle_->rscan(key_start, key_end, limit, ret);
   if (st.error()) {
     char buff[1024] = {0};
     common::SNPrintf(buff, sizeof(buff), "rscan function error: %s", st.code());
@@ -257,7 +285,7 @@ common::Error SsdbRaw::rscan(const std::string& key_start, const std::string& ke
 common::Error SsdbRaw::multi_get(const std::vector<std::string>& keys, std::vector<std::string>* ret) {
   CHECK(isConnected());
 
-  auto st = handle_->multi_get(keys, ret);
+  auto st = connection_.handle_->multi_get(keys, ret);
   if (st.error()) {
     char buff[1024] = {0};
     common::SNPrintf(buff, sizeof(buff), "multi_get function error: %s", st.code());
@@ -269,7 +297,7 @@ common::Error SsdbRaw::multi_get(const std::vector<std::string>& keys, std::vect
 common::Error SsdbRaw::multi_set(const std::map<std::string, std::string> &kvs) {
   CHECK(isConnected());
 
-  auto st = handle_->multi_set(kvs);
+  auto st = connection_.handle_->multi_set(kvs);
   if (st.error()) {
     char buff[1024] = {0};
     common::SNPrintf(buff, sizeof(buff), "multi_set function error: %s", st.code());
@@ -281,7 +309,7 @@ common::Error SsdbRaw::multi_set(const std::map<std::string, std::string> &kvs) 
 common::Error SsdbRaw::multi_del(const std::vector<std::string>& keys) {
   CHECK(isConnected());
 
-  auto st = handle_->multi_del(keys);
+  auto st = connection_.handle_->multi_del(keys);
   if (st.error()) {
     char buff[1024] = {0};
     common::SNPrintf(buff, sizeof(buff), "multi_del function error: %s", st.code());
@@ -293,7 +321,7 @@ common::Error SsdbRaw::multi_del(const std::vector<std::string>& keys) {
 common::Error SsdbRaw::hget(const std::string& name, const std::string& key, std::string* val) {
   CHECK(isConnected());
 
-  auto st = handle_->hget(name, key, val);
+  auto st = connection_.handle_->hget(name, key, val);
   if (st.error()) {
     char buff[1024] = {0};
     common::SNPrintf(buff, sizeof(buff), "hget function error: %s", st.code());
@@ -305,7 +333,7 @@ common::Error SsdbRaw::hget(const std::string& name, const std::string& key, std
 common::Error SsdbRaw::hset(const std::string& name, const std::string& key, const std::string& val) {
   CHECK(isConnected());
 
-  auto st = handle_->hset(name, key, val);
+  auto st = connection_.handle_->hset(name, key, val);
   if (st.error()) {
     char buff[1024] = {0};
     common::SNPrintf(buff, sizeof(buff), "hset function error: %s", st.code());
@@ -318,7 +346,7 @@ common::Error SsdbRaw::hset(const std::string& name, const std::string& key, con
 common::Error SsdbRaw::hdel(const std::string& name, const std::string& key) {
   CHECK(isConnected());
 
-  auto st = handle_->hdel(name, key);
+  auto st = connection_.handle_->hdel(name, key);
   if (st.error()) {
     char buff[1024] = {0};
     common::SNPrintf(buff, sizeof(buff), "hdel function error: %s", st.code());
@@ -331,7 +359,7 @@ common::Error SsdbRaw::hincr(const std::string& name, const std::string& key,
                     int64_t incrby, int64_t* ret) {
   CHECK(isConnected());
 
-  auto st = handle_->hincr(name, key, incrby, ret);
+  auto st = connection_.handle_->hincr(name, key, incrby, ret);
   if (st.error()) {
     char buff[1024] = {0};
     common::SNPrintf(buff, sizeof(buff), "hincr function error: %s", st.code());
@@ -343,7 +371,7 @@ common::Error SsdbRaw::hincr(const std::string& name, const std::string& key,
 common::Error SsdbRaw::hsize(const std::string& name, int64_t* ret) {
   CHECK(isConnected());
 
-  auto st = handle_->hsize(name, ret);
+  auto st = connection_.handle_->hsize(name, ret);
   if (st.error()) {
     char buff[1024] = {0};
     common::SNPrintf(buff, sizeof(buff), "hset function error: %s", st.code());
@@ -355,7 +383,7 @@ common::Error SsdbRaw::hsize(const std::string& name, int64_t* ret) {
 common::Error SsdbRaw::hclear(const std::string& name, int64_t* ret) {
   CHECK(isConnected());
 
-  auto st = handle_->hclear(name, ret);
+  auto st = connection_.handle_->hclear(name, ret);
   if (st.error()) {
     char buff[1024] = {0};
     common::SNPrintf(buff, sizeof(buff), "hclear function error: %s", st.code());
@@ -368,7 +396,7 @@ common::Error SsdbRaw::hkeys(const std::string& name, const std::string& key_sta
                     const std::string& key_end, uint64_t limit, std::vector<std::string>* ret) {
   CHECK(isConnected());
 
-  auto st = handle_->hkeys(name, key_start, key_end, limit, ret);
+  auto st = connection_.handle_->hkeys(name, key_start, key_end, limit, ret);
   if (st.error()) {
     char buff[1024] = {0};
     common::SNPrintf(buff, sizeof(buff), "hkeys function error: %s", st.code());
@@ -381,7 +409,7 @@ common::Error SsdbRaw::hscan(const std::string& name, const std::string& key_sta
                     const std::string& key_end, uint64_t limit, std::vector<std::string>* ret) {
   CHECK(isConnected());
 
-  auto st = handle_->hscan(name, key_start, key_end, limit, ret);
+  auto st = connection_.handle_->hscan(name, key_start, key_end, limit, ret);
   if (st.error()) {
     char buff[1024] = {0};
     common::SNPrintf(buff, sizeof(buff), "hscan function error: %s", st.code());
@@ -394,7 +422,7 @@ common::Error SsdbRaw::hrscan(const std::string& name, const std::string& key_st
                      const std::string& key_end, uint64_t limit, std::vector<std::string>* ret) {
   CHECK(isConnected());
 
-  auto st = handle_->hrscan(name, key_start, key_end, limit, ret);
+  auto st = connection_.handle_->hrscan(name, key_start, key_end, limit, ret);
   if (st.error()) {
     char buff[1024] = {0};
     common::SNPrintf(buff, sizeof(buff), "hrscan function error: %s", st.code());
@@ -407,7 +435,7 @@ common::Error SsdbRaw::multi_hget(const std::string& name, const std::vector<std
                          std::vector<std::string>* ret) {
   CHECK(isConnected());
 
-  auto st = handle_->multi_hget(name, keys, ret);
+  auto st = connection_.handle_->multi_hget(name, keys, ret);
   if (st.error()) {
     char buff[1024] = {0};
     common::SNPrintf(buff, sizeof(buff), "hrscan function error: %s", st.code());
@@ -420,7 +448,7 @@ common::Error SsdbRaw::multi_hset(const std::string& name,
                          const std::map<std::string, std::string> &keys) {
   CHECK(isConnected());
 
-  auto st = handle_->multi_hset(name, keys);
+  auto st = connection_.handle_->multi_hset(name, keys);
   if (st.error()) {
     char buff[1024] = {0};
     common::SNPrintf(buff, sizeof(buff), "multi_hset function error: %s", st.code());
@@ -432,7 +460,7 @@ common::Error SsdbRaw::multi_hset(const std::string& name,
 common::Error SsdbRaw::zget(const std::string& name, const std::string& key, int64_t* ret) {
   CHECK(isConnected());
 
-  auto st = handle_->zget(name, key, ret);
+  auto st = connection_.handle_->zget(name, key, ret);
   if (st.error()) {
     char buff[1024] = {0};
     common::SNPrintf(buff, sizeof(buff), "zget function error: %s", st.code());
@@ -444,7 +472,7 @@ common::Error SsdbRaw::zget(const std::string& name, const std::string& key, int
 common::Error SsdbRaw::zset(const std::string& name, const std::string& key, int64_t score) {
   CHECK(isConnected());
 
-  auto st = handle_->zset(name, key, score);
+  auto st = connection_.handle_->zset(name, key, score);
   if (st.error()) {
     char buff[1024] = {0};
     common::SNPrintf(buff, sizeof(buff), "zset function error: %s", st.code());
@@ -456,7 +484,7 @@ common::Error SsdbRaw::zset(const std::string& name, const std::string& key, int
 common::Error SsdbRaw::zdel(const std::string& name, const std::string& key) {
   CHECK(isConnected());
 
-  auto st = handle_->zdel(name, key);
+  auto st = connection_.handle_->zdel(name, key);
   if (st.error()) {
     char buff[1024] = {0};
     common::SNPrintf(buff, sizeof(buff), "Zdel function error: %s", st.code());
@@ -468,7 +496,7 @@ common::Error SsdbRaw::zdel(const std::string& name, const std::string& key) {
 common::Error SsdbRaw::zincr(const std::string& name, const std::string& key, int64_t incrby, int64_t* ret) {
   CHECK(isConnected());
 
-  auto st = handle_->zincr(name, key, incrby, ret);
+  auto st = connection_.handle_->zincr(name, key, incrby, ret);
   if (st.error()) {
     char buff[1024] = {0};
     common::SNPrintf(buff, sizeof(buff), "Zincr function error: %s", st.code());
@@ -480,7 +508,7 @@ common::Error SsdbRaw::zincr(const std::string& name, const std::string& key, in
 common::Error SsdbRaw::zsize(const std::string& name, int64_t* ret) {
   CHECK(isConnected());
 
-  auto st = handle_->zsize(name, ret);
+  auto st = connection_.handle_->zsize(name, ret);
   if (st.error()) {
     char buff[1024] = {0};
     common::SNPrintf(buff, sizeof(buff), "zsize function error: %s", st.code());
@@ -492,7 +520,7 @@ common::Error SsdbRaw::zsize(const std::string& name, int64_t* ret) {
 common::Error SsdbRaw::zclear(const std::string& name, int64_t* ret) {
   CHECK(isConnected());
 
-  auto st = handle_->zclear(name, ret);
+  auto st = connection_.handle_->zclear(name, ret);
   if (st.error()) {
     char buff[1024] = {0};
     common::SNPrintf(buff, sizeof(buff), "zclear function error: %s", st.code());
@@ -504,7 +532,7 @@ common::Error SsdbRaw::zclear(const std::string& name, int64_t* ret) {
 common::Error SsdbRaw::zrank(const std::string& name, const std::string& key, int64_t* ret) {
   CHECK(isConnected());
 
-  auto st = handle_->zrank(name, key, ret);
+  auto st = connection_.handle_->zrank(name, key, ret);
   if (st.error()) {
     char buff[1024] = {0};
     common::SNPrintf(buff, sizeof(buff), "zrank function error: %s", st.code());
@@ -516,7 +544,7 @@ common::Error SsdbRaw::zrank(const std::string& name, const std::string& key, in
 common::Error SsdbRaw::zrrank(const std::string& name, const std::string& key, int64_t* ret) {
   CHECK(isConnected());
 
-  auto st = handle_->zrrank(name, key, ret);
+  auto st = connection_.handle_->zrrank(name, key, ret);
   if (st.error()) {
     char buff[1024] = {0};
     common::SNPrintf(buff, sizeof(buff), "zrrank function error: %s", st.code());
@@ -529,7 +557,7 @@ common::Error SsdbRaw::zrange(const std::string& name, uint64_t offset, uint64_t
         std::vector<std::string>* ret) {
   CHECK(isConnected());
 
-  auto st = handle_->zrange(name, offset, limit, ret);
+  auto st = connection_.handle_->zrange(name, offset, limit, ret);
   if (st.error()) {
     char buff[1024] = {0};
     common::SNPrintf(buff, sizeof(buff), "zrange function error: %s", st.code());
@@ -543,7 +571,7 @@ common::Error SsdbRaw::zrrange(const std::string& name,
         std::vector<std::string>* ret) {
   CHECK(isConnected());
 
-  auto st = handle_->zrrange(name, offset, limit, ret);
+  auto st = connection_.handle_->zrrange(name, offset, limit, ret);
   if (st.error()) {
     char buff[1024] = {0};
     common::SNPrintf(buff, sizeof(buff), "zrrange function error: %s", st.code());
@@ -557,7 +585,7 @@ common::Error SsdbRaw::zkeys(const std::string& name, const std::string& key_sta
     uint64_t limit, std::vector<std::string>* ret) {
   CHECK(isConnected());
 
-  auto st = handle_->zkeys(name, key_start, score_start, score_end, limit, ret);
+  auto st = connection_.handle_->zkeys(name, key_start, score_start, score_end, limit, ret);
   if (st.error()) {
     char buff[1024] = {0};
     common::SNPrintf(buff, sizeof(buff), "zkeys function error: %s", st.code());
@@ -571,7 +599,7 @@ common::Error SsdbRaw::zscan(const std::string& name, const std::string& key_sta
     uint64_t limit, std::vector<std::string>* ret) {
   CHECK(isConnected());
 
-  auto st = handle_->zscan(name, key_start, score_start, score_end, limit, ret);
+  auto st = connection_.handle_->zscan(name, key_start, score_start, score_end, limit, ret);
   if (st.error()) {
     char buff[1024] = {0};
     common::SNPrintf(buff, sizeof(buff), "zscan function error: %s", st.code());
@@ -585,7 +613,7 @@ common::Error SsdbRaw::zrscan(const std::string& name, const std::string& key_st
     uint64_t limit, std::vector<std::string>* ret) {
   CHECK(isConnected());
 
-  auto st = handle_->zrscan(name, key_start, score_start, score_end, limit, ret);
+  auto st = connection_.handle_->zrscan(name, key_start, score_start, score_end, limit, ret);
   if (st.error()) {
     char buff[1024] = {0};
     common::SNPrintf(buff, sizeof(buff), "zrscan function error: %s", st.code());
@@ -598,7 +626,7 @@ common::Error SsdbRaw::multi_zget(const std::string& name, const std::vector<std
     std::vector<std::string>* ret) {
   CHECK(isConnected());
 
-  auto st = handle_->multi_zget(name, keys, ret);
+  auto st = connection_.handle_->multi_zget(name, keys, ret);
   if (st.error()) {
     char buff[1024] = {0};
     common::SNPrintf(buff, sizeof(buff), "multi_zget function error: %s", st.code());
@@ -610,7 +638,7 @@ common::Error SsdbRaw::multi_zget(const std::string& name, const std::vector<std
 common::Error SsdbRaw::multi_zset(const std::string& name, const std::map<std::string, int64_t>& kss) {
   CHECK(isConnected());
 
-  auto st = handle_->multi_zset(name, kss);
+  auto st = connection_.handle_->multi_zset(name, kss);
   if (st.error()) {
     char buff[1024] = {0};
     common::SNPrintf(buff, sizeof(buff), "multi_zset function error: %s", st.code());
@@ -622,7 +650,7 @@ common::Error SsdbRaw::multi_zset(const std::string& name, const std::map<std::s
 common::Error SsdbRaw::multi_zdel(const std::string& name, const std::vector<std::string>& keys) {
   CHECK(isConnected());
 
-  auto st = handle_->multi_zdel(name, keys);
+  auto st = connection_.handle_->multi_zdel(name, keys);
   if (st.error()) {
     char buff[1024] = {0};
     common::SNPrintf(buff, sizeof(buff), "multi_zdel function error: %s", st.code());
@@ -634,7 +662,7 @@ common::Error SsdbRaw::multi_zdel(const std::string& name, const std::vector<std
 common::Error SsdbRaw::qpush(const std::string& name, const std::string& item) {
   CHECK(isConnected());
 
-  auto st = handle_->qpush(name, item);
+  auto st = connection_.handle_->qpush(name, item);
   if (st.error()) {
     char buff[1024] = {0};
     common::SNPrintf(buff, sizeof(buff), "qpush function error: %s", st.code());
@@ -646,7 +674,7 @@ common::Error SsdbRaw::qpush(const std::string& name, const std::string& item) {
 common::Error SsdbRaw::qpop(const std::string& name, std::string* item) {
   CHECK(isConnected());
 
-  auto st = handle_->qpop(name, item);
+  auto st = connection_.handle_->qpop(name, item);
   if (st.error()) {
     char buff[1024] = {0};
     common::SNPrintf(buff, sizeof(buff), "qpop function error: %s", st.code());
@@ -659,7 +687,7 @@ common::Error SsdbRaw::qslice(const std::string& name, int64_t begin, int64_t en
                      std::vector<std::string>* ret) {
   CHECK(isConnected());
 
-  auto st = handle_->qslice(name, begin, end, ret);
+  auto st = connection_.handle_->qslice(name, begin, end, ret);
   if (st.error()) {
     char buff[1024] = {0};
     common::SNPrintf(buff, sizeof(buff), "qslice function error: %s", st.code());
@@ -671,7 +699,7 @@ common::Error SsdbRaw::qslice(const std::string& name, int64_t begin, int64_t en
 common::Error SsdbRaw::qclear(const std::string& name, int64_t* ret) {
   CHECK(isConnected());
 
-  auto st = handle_->qclear(name, ret);
+  auto st = connection_.handle_->qclear(name, ret);
   if (st.error()) {
     char buff[1024] = {0};
     common::SNPrintf(buff, sizeof(buff), "qclear function error: %s", st.code());
@@ -688,7 +716,7 @@ common::Error SsdbRaw::flushdb() {
   CHECK(isConnected());
 
   std::vector<std::string> ret;
-  auto st = handle_->keys(std::string(), std::string(), 0, &ret);
+  auto st = connection_.handle_->keys(std::string(), std::string(), 0, &ret);
   if (st.error()) {
     char buff[1024] = {0};
     common::SNPrintf(buff, sizeof(buff), "Flushdb function error: %s", st.code());

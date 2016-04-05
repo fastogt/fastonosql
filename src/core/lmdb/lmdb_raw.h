@@ -45,8 +45,17 @@ common::Error createConnection(LmdbConnectionSettings* settings, struct lmdb** c
 common::Error testConnection(LmdbConnectionSettings* settings);
 
 struct LmdbRaw
-    : public DBApiRaw<LMDBAllocTrait> {
+    : public CommandHandler {
+  typedef DBConnection<LMDBAllocTrait> connection_t;
+  typedef connection_t::config_t config_t;
   LmdbRaw();
+
+  common::Error connect(const config_t& config) WARN_UNUSED_RESULT;
+  common::Error disconnect() WARN_UNUSED_RESULT;
+  bool isConnected() const;
+
+  std::string delimiter() const;
+  config_t config() const;
 
   static const char* versionApi();
 
@@ -63,6 +72,9 @@ struct LmdbRaw
   common::Error dbsize(size_t* size) WARN_UNUSED_RESULT;
   common::Error help(int argc, char** argv) WARN_UNUSED_RESULT;
   common::Error flushdb() WARN_UNUSED_RESULT;
+
+ private:
+  connection_t connection_;
 };
 
 common::Error info(CommandHandler* handler, int argc, char** argv, FastoObject* out);

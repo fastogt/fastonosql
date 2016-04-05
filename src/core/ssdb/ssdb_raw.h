@@ -36,9 +36,17 @@ common::Error createConnection(SsdbConnectionSettings* settings, ::ssdb::Client*
 common::Error testConnection(SsdbConnectionSettings* settings);
 
 struct SsdbRaw
-  : public DBApiRaw<SSDBAllocTrait> {
+  : public CommandHandler {
+  typedef DBConnection<SSDBAllocTrait> connection_t;
+  typedef connection_t::config_t config_t;
   SsdbRaw();
 
+  common::Error connect(const config_t& config) WARN_UNUSED_RESULT;
+  common::Error disconnect() WARN_UNUSED_RESULT;
+  bool isConnected() const;
+
+  std::string delimiter() const;
+  config_t config() const;
   static const char* versionApi();
 
   common::Error info(const char* args, SsdbServerInfo::Common* statsout) WARN_UNUSED_RESULT;
@@ -111,6 +119,8 @@ struct SsdbRaw
   common::Error dbsize(size_t* size) WARN_UNUSED_RESULT;
   common::Error help(int argc, char** argv) WARN_UNUSED_RESULT;
   common::Error flushdb() WARN_UNUSED_RESULT;
+ private:
+  connection_t connection_;
 };
 
 common::Error info(CommandHandler* handler, int argc, char** argv, FastoObject* out);

@@ -40,9 +40,18 @@ common::Error createConnection(UnqliteConnectionSettings* settings, struct unqli
 common::Error testConnection(UnqliteConnectionSettings* settings);
 
 class UnqliteRaw
-  : public DBApiRaw<UnQLiteAllocTrait> {
+  : public CommandHandler {
  public:
+  typedef DBConnection<UnQLiteAllocTrait> connection_t;
+  typedef connection_t::config_t config_t;
   UnqliteRaw();
+
+  common::Error connect(const config_t& config) WARN_UNUSED_RESULT;
+  common::Error disconnect() WARN_UNUSED_RESULT;
+  bool isConnected() const;
+
+  std::string delimiter() const;
+  config_t config() const;
 
   static const char* versionApi();
 
@@ -57,6 +66,9 @@ class UnqliteRaw
   common::Error dbsize(size_t* size) WARN_UNUSED_RESULT;
   common::Error help(int argc, char** argv) WARN_UNUSED_RESULT;
   common::Error flushdb() WARN_UNUSED_RESULT;
+
+ private:
+  connection_t connection_;
 };
 
 common::Error info(CommandHandler* handler, int argc, char** argv, FastoObject* out);
