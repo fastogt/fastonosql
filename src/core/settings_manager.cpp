@@ -44,6 +44,7 @@
 #define RCONNECTIONS PREFIX"rconnections"
 #define AUTOOPENCONSOLE PREFIX"autoopenconsole"
 #define FASTVIEWKEYS PREFIX"fastviewkeys"
+#define CONFIG_VERSION PREFIX"version"
 
 namespace {
 
@@ -67,7 +68,7 @@ namespace fastonosql {
 namespace core {
 
 SettingsManager::SettingsManager()
-  : views_(), cur_style_(), cur_font_name_(), cur_language_(), connections_(),
+  : config_version_(), views_(), cur_style_(), cur_font_name_(), cur_language_(), connections_(),
     logging_dir_(),
     auto_check_update_(), auto_completion_(), auto_open_console_(), fast_view_keys_() {
   load();
@@ -85,6 +86,10 @@ QString SettingsManager::settingsDirPath() {
 
 std::string SettingsManager::settingsFilePath() {
   return common::file_system::prepare_path(iniPath);
+}
+
+uint32_t SettingsManager::configVersion() const {
+  return config_version_;
 }
 
 supportedViews SettingsManager::defaultView() const {
@@ -300,6 +305,7 @@ void SettingsManager::reloadFromPath(const std::string& path, bool merge) {
   auto_completion_ = settings.value(AUTOCOMPLETION, true).toBool();
   auto_open_console_ = settings.value(AUTOOPENCONSOLE, true).toBool();
   fast_view_keys_ = settings.value(FASTVIEWKEYS, true).toBool();
+  config_version_ = settings.value(CONFIG_VERSION, PROJECT_VERSION_NUMBER).toUInt();
 }
 
 void SettingsManager::load() {
@@ -359,6 +365,7 @@ void SettingsManager::save() {
   settings.setValue(AUTOCOMPLETION, auto_completion_);
   settings.setValue(AUTOOPENCONSOLE, auto_open_console_);
   settings.setValue(FASTVIEWKEYS, fast_view_keys_);
+  settings.setValue(CONFIG_VERSION, config_version_);
 }
 
 }  // namespace core

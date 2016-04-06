@@ -758,6 +758,7 @@ void UpdateChecker::routine() {
     emit versionAvailibled(false, QString());
     return;
   }
+
   ssize_t nwrite = 0;
 #if defined(FASTONOSQL)
   err = s.write(GET_FASTONOSQL_VERSION, sizeof(GET_FASTONOSQL_VERSION), &nwrite);
@@ -774,11 +775,15 @@ void UpdateChecker::routine() {
 
   char version[128] = {0};
   ssize_t nread = 0;
-  err = s.read(version, 128, &nread);
+  err = s.read(version, sizeof(version), &nread);
+  if (err && err->isError()) {
+    emit versionAvailibled(false, QString());
+    s.close();
+    return;
+  }
 
   QString vers = common::convertFromString<QString>(version);
-  emit versionAvailibled(!(err && err->isError()), vers);
-
+  emit versionAvailibled(true, vers);
   s.close();
   return;
 }

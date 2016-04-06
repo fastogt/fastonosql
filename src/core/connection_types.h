@@ -26,7 +26,7 @@ namespace fastonosql {
 namespace core {
 
 enum connectionTypes {
-  REDIS = 1,
+  REDIS = 0,
   MEMCACHED,
   SSDB,
   LEVELDB,

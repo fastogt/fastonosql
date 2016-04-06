@@ -42,6 +42,8 @@ class SettingsManager
   static QString settingsDirPath();
   static std::string settingsFilePath();
 
+  uint32_t configVersion() const;
+
   void setDefaultView(supportedViews view);
   supportedViews defaultView() const;
 
@@ -95,6 +97,7 @@ class SettingsManager
   SettingsManager();
   ~SettingsManager();
 
+  uint32_t config_version_;
   supportedViews views_;
   QString cur_style_;
   QString cur_font_name_;

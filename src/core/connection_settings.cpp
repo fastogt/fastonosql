@@ -196,7 +196,8 @@ IConnectionSettingsBase* IConnectionSettingsBase::createFromType(connectionTypes
     return new lmdb::LmdbConnectionSettings(conName);
   }
 #endif
-  NOTREACHED();
+
+  DNOTREACHED();
   return nullptr;
 }
 
@@ -214,8 +215,8 @@ IConnectionSettingsBase* IConnectionSettingsBase::fromString(const std::string& 
     char ch = val[i];
     if (ch == ',') {
       if (commaCount == 0) {
-        int crT = elText[0] - 48;
-        result = createFromType((connectionTypes)crT, std::string());
+        connectionTypes crT = static_cast<connectionTypes>(elText[0] - 48);
+        result = createFromType(crT, std::string());
         if (!result) {
           return nullptr;
         }
