@@ -759,7 +759,7 @@ common::Error RedisRaw::slaveMode(FastoObject* out) {
       break;
     }
 
-    if (!isInterrupted()) {
+    if (isInterrupted()) {
       return common::make_error_value("Interrupted.", common::ErrorValue::E_INTERRUPTED);
     }
   }
@@ -1629,7 +1629,13 @@ common::Error RedisRaw::execute(int argc, char** argv, FastoObject* out) {
   while (config_.monitor_mode) {
     common::Error er = cliReadReply(out);
     if (er && er->isError()) {
+      config_.monitor_mode = 0;
       return er;
+    }
+
+    if (isInterrupted()) {
+      config_.monitor_mode = 0;
+      return common::make_error_value("Interrupted.", common::ErrorValue::E_INTERRUPTED);
     }
   }
 
@@ -1637,7 +1643,13 @@ common::Error RedisRaw::execute(int argc, char** argv, FastoObject* out) {
     while (1) {
       common::Error er = cliReadReply(out);
       if (er && er->isError()) {
+        config_.pubsub_mode = 0;
         return er;
+      }
+
+      if (isInterrupted()) {
+        config_.pubsub_mode = 0;
+        return common::make_error_value("Interrupted.", common::ErrorValue::E_INTERRUPTED);
       }
     }
   }

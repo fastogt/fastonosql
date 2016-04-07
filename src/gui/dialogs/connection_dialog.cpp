@@ -275,8 +275,13 @@ void ConnectionDialog::typeConnectionChange(int index) {
     commandLine_->setToolTip(trHelp);
   }
 
-  QString deft = stableCommandLine(common::convertFromString<QString>(defaultCommandLine(currentType)));
-  commandLine_->setText(deft);
+  std::string commandLineText;
+  if (connection_ && currentType == connection_->type()) {
+    commandLineText = connection_->commandLine();
+  } else {
+    commandLineText = defaultCommandLine(currentType);
+  }
+  commandLine_->setText(stableCommandLine(common::convertFromString<QString>(commandLineText)));
 
   useSsh_->setEnabled(isSSHType);
   updateSshControls(isSSHType);
