@@ -84,13 +84,17 @@
 /* Defined in hiredis.c */
 void __redisSetError(redisContext *c, int type, const char *str);
 
+#ifdef FASTO
 static void redisContextCloseFd(redisContext *c) {
     if (c && c->fd >= 0) {
+#ifdef OS_WIN
+        closesocket(c->fd);
+#else
         close(c->fd);
+#endif
         c->fd = -1;
     }
 }
-#ifdef FASTO
 #ifdef OS_WIN
 int strerror_r(int err, char *text, int size)
 {
@@ -112,6 +116,13 @@ int strerror_r(int err, char *text, int size)
     return retval;
 }
 #endif
+#else
+static void redisContextCloseFd(redisContext *c) {
+    if (c && c->fd >= 0) {
+        close(c->fd);
+        c->fd = -1;
+    }
+}
 #endif
 
 static void __redisSetErrorFromErrno(redisContext *c, int type, const char *prefix) {

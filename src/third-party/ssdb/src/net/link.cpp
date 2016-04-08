@@ -66,7 +66,15 @@ Link::~Link(){
 
 void Link::close(){
 	if(sock >= 0){
+#ifdef FASTO
+#ifdef OS_WIN
+    ::closesocket(sock);
+#else
+    ::close(sock);
+#endif
+#else
 		::close(sock);
+#endif
 	}
 }
 
@@ -201,7 +209,7 @@ Link* Link::connect(const char *host, int port){
     sock_err:
         //log_debug("connect to %s:%d failed: %s", ip, port, strerror(errno));
         if(sock >= 0){
-            ::close(sock);
+            ::closesocket(sock);
         }
         return NULL;
     #else
@@ -348,7 +356,15 @@ Link* Link::listen(const char *ip, int port){
 sock_err:
 	//log_debug("listen %s:%d failed: %s", ip, port, strerror(errno));
 	if(sock >= 0){
-		::close(sock);
+#ifdef FASTO
+#ifdef OS_WIN
+    ::closesocket(sock);
+#else
+    ::close(sock);
+#endif
+#else
+    ::close(sock);
+#endif
 	}
 	return NULL;
 }

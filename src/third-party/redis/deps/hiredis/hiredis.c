@@ -641,7 +641,27 @@ void redisFree(redisContext *c) {
         libssh2_session_disconnect(c->session, "Client disconnecting normally");
         libssh2_session_free(c->session);
     }
+    if (c->fd > 0) {
+#ifdef OS_WIN
+        closesocket(c->fd);
+#else
+        close(c->fd);
 #endif
+    }
+    if (c->obuf != NULL)
+        sdsfree(c->obuf);
+    if (c->reader != NULL)
+        redisReaderFree(c->reader);
+    if (c->tcp.host)
+        free(c->tcp.host);
+    if (c->tcp.source_addr)
+        free(c->tcp.source_addr);
+    if (c->unix_sock.path)
+        free(c->unix_sock.path);
+    if (c->timeout)
+        free(c->timeout);
+    free(c);
+#else
     if (c->fd > 0)
         close(c->fd);
     if (c->obuf != NULL)
@@ -657,6 +677,7 @@ void redisFree(redisContext *c) {
     if (c->timeout)
         free(c->timeout);
     free(c);
+#endif
 }
 
 int redisFreeKeepFd(redisContext *c) {
@@ -671,7 +692,15 @@ int redisReconnect(redisContext *c) {
     memset(c->errstr, '\0', strlen(c->errstr));
 
     if (c->fd > 0) {
+#ifdef FASTO
+#ifdef OS_WIN
+        closesocket(c->fd);
+#else
         close(c->fd);
+#endif
+#else
+        close(c->fd);
+#endif
     }
 
     sdsfree(c->obuf);
@@ -766,23 +795,19 @@ redisContext *redisConnect(const char *ip, int port, const char *ssh_address, in
                 //"Authentication by password failed!";
                 return NULL;
             }
-        }
-        else if (auth_pw & 2) {
+        } else if (auth_pw & 2) {
             /* Or via keyboard-interactive */
-            if (libssh2_userauth_keyboard_interactive(session, username, &kbd_callback) )
-            {
+            if (libssh2_userauth_keyboard_interactive(session, username, &kbd_callback) ) {
                 //"Authentication by keyboard-interactive failed!";
                 return NULL;
             }
-        }
-        else if (auth_pw & 4 && curMethod == SSH_PUBLICKEY) {
+        } else if (auth_pw & 4 && curMethod == SSH_PUBLICKEY) {
             /* Or by public key */
             if (libssh2_userauth_publickey_fromfile(session, username, public_key, private_key, passphrase)){
                 //"Authentication by public key failed!";
                 return NULL;
             }
-        }
-        else {
+        } else {
             //"No supported authentication methods found!";
             return NULL;
         }
