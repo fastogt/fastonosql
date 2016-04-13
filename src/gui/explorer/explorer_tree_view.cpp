@@ -428,7 +428,8 @@ void ExplorerTreeView::openMaxClientSetDialog() {
   }
 
   bool ok;
-  int maxcl = QInputDialog::getInt(this, tr("Set max connection on %1 server").arg(server->name()),
+  QString name = common::convertFromString<QString>(server->name());
+  int maxcl = QInputDialog::getInt(this, tr("Set max connection on %1 server").arg(name),
                                          tr("Maximum connection:"), 10000, 1, INT32_MAX, 100, &ok);
   if (ok) {
     core::events_info::ChangeMaxConnectionRequest req(this, maxcl);
@@ -571,8 +572,9 @@ void ExplorerTreeView::shutdownServer() {
   core::IServerSPtr server = node->server();
   if (server && server->isConnected()) {
     // Ask user
+    QString name = common::convertFromString<QString>(server->name());
     int answer = QMessageBox::question(this, "Shutdown",
-                                       QString("Really shutdown \"%1\" server?").arg(server->name()),
+                                       QString("Really shutdown \"%1\" server?").arg(name),
                                        QMessageBox::Yes, QMessageBox::No, QMessageBox::NoButton);
 
     if (answer != QMessageBox::Yes) {

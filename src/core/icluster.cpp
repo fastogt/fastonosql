@@ -20,8 +20,6 @@
 
 #include <string>
 
-#include "common/qt/convert_string.h"
-
 namespace fastonosql {
 namespace core {
 
@@ -29,8 +27,8 @@ ICluster::ICluster(const std::string& name)
   : name_(name) {
 }
 
-QString ICluster::name() const {
-  return common::convertFromString<QString>(name_);
+std::string ICluster::name() const {
+  return name_;
 }
 
 ICluster::nodes_type ICluster::nodes() const {

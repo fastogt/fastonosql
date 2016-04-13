@@ -46,6 +46,7 @@ class IDatabase {
  protected:
   IDatabase(IServerSPtr server, IDataBaseInfoSPtr info);
 
+ private:
   IDataBaseInfoSPtr info_;
   const IServerSPtr server_;
 };

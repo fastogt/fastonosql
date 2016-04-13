@@ -31,8 +31,8 @@ namespace ssdb {
 typedef ::ssdb::Client SSDBConnection;
 typedef DBAllocatorTraits<SSDBConnection, SsdbConfig> SSDBAllocTrait;
 
-common::Error createConnection(const SsdbConfig& config, ::ssdb::Client** context);
-common::Error createConnection(SsdbConnectionSettings* settings, ::ssdb::Client** context);
+common::Error createConnection(const SsdbConfig& config, SSDBConnection** context);
+common::Error createConnection(SsdbConnectionSettings* settings, SSDBConnection** context);
 common::Error testConnection(SsdbConnectionSettings* settings);
 
 struct SsdbRaw

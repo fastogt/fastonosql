@@ -27,7 +27,7 @@ namespace fastonosql {
 namespace gui {
 
 PropertyTableItem::PropertyTableItem(const QString& key, const QString& value)
-  : key_(key), value_(value) {
+  : key(key), value(value) {
 }
 
 PropertyTableModel::PropertyTableModel(QObject* parent)
@@ -35,26 +35,23 @@ PropertyTableModel::PropertyTableModel(QObject* parent)
 }
 
 QVariant PropertyTableModel::data(const QModelIndex& index, int role) const {
-  QVariant result;
-
   if (!index.isValid())
-    return result;
+    return QVariant();
 
   PropertyTableItem* node = common::utils_qt::item<PropertyTableItem*>(index);
 
   if (!node)
-    return result;
+    return QVariant();
 
   int col = index.column();
-
   if (role == Qt::DisplayRole) {
     if (col == PropertyTableItem::eKey) {
-      result = node->key_;
+      return node->key;
     } else if (col == PropertyTableItem::eValue) {
-      result = node->value_;
+      return node->value;
     }
   }
-  return result;
+  return QVariant();
 }
 
 bool PropertyTableModel::setData(const QModelIndex& index, const QVariant& value, int role) {
@@ -67,10 +64,10 @@ bool PropertyTableModel::setData(const QModelIndex& index, const QVariant& value
 
      if (column == PropertyTableItem::eKey) {
      } else if (column == PropertyTableItem::eValue) {
-       const QString&newValue = value.toString();
-       if (newValue != node->value_) {
+       QString newValue = value.toString();
+       if (newValue != node->value) {
          core::PropertyType pr;
-         pr.first = common::convertToString(node->key_);
+         pr.first = common::convertToString(node->key);
          pr.second = common::convertToString(newValue);
          emit changedProperty(pr);
        }
@@ -111,15 +108,14 @@ int PropertyTableModel::columnCount(const QModelIndex& parent) const {
   return PropertyTableItem::eCountColumns;
 }
 
-
 void PropertyTableModel::changeProperty(const core::PropertyType& pr) {
-  const QString key = common::convertFromString<QString>(pr.first);
+  QString key = common::convertFromString<QString>(pr.first);
   for (size_t i = 0; i < data_.size(); ++i) {
     PropertyTableItem* it = dynamic_cast<PropertyTableItem*>(data_[i]);
-    if (it && it->key_ == key) {
-      it->value_ = common::convertFromString<QString>(pr.second);
+    if (it && it->key == key) {
+      it->value = common::convertFromString<QString>(pr.second);
       emit dataChanged(index(i, 0), index(i, 1));
-      break;
+      return;
     }
   }
 }

@@ -22,7 +22,6 @@
 
 #include <QApplication>
 
-#include "common/qt/convert_string.h"
 #include "fasto/qt/logger.h"
 #include "common/net/net.h"
 
@@ -70,8 +69,8 @@ connectionTypes IServer::type() const {
   return drv_->type();
 }
 
-QString IServer::name() const {
-  return common::convertFromString<QString>(drv_->connectionName());
+std::string IServer::name() const {
+  return drv_->connectionName();
 }
 
 ServerDiscoveryInfoSPtr IServer::discoveryInfo() const {

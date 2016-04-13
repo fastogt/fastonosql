@@ -27,7 +27,7 @@ namespace core {
 namespace redis {
 
 RedisConnectionSettings::RedisConnectionSettings(const std::string& connectionName)
-  : IConnectionSettingsRemote(connectionName, REDIS), info_() {
+  : IConnectionSettingsRemoteSSH(connectionName, REDIS), info_() {
 }
 
 void RedisConnectionSettings::setHost(const common::net::hostAndPort& host) {

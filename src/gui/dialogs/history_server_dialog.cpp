@@ -196,7 +196,8 @@ void ServerHistoryDialog::reset() {
 }
 
 void ServerHistoryDialog::retranslateUi() {
-  setWindowTitle(tr("%1 history").arg(server_->name()));
+  QString name = common::convertFromString<QString>(server_->name());
+  setWindowTitle(tr("%1 history").arg(name));
   clearHistory_->setText(translations::trClearHistory);
 }
 

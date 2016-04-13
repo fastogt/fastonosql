@@ -39,7 +39,7 @@ class KeyTableItem
 
   QString key() const;
   QString typeText() const;
-  int32_t TTL() const;
+  int32_t ttl() const;
   common::Value::Type type() const;
 
   core::NDbKValue dbv() const;

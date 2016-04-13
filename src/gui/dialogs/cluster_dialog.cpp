@@ -97,7 +97,7 @@ ClusterDialog::ClusterDialog(QWidget* parent, core::IClusterSettingsBase* connec
   }
   VERIFY(connect(logging_, &QCheckBox::stateChanged, this, &ClusterDialog::loggingStateChange));
 
-  loggingLayout->addLayout(loggingLayout);
+  loggingLayout->addWidget(logging_);
   loggingLayout->addWidget(loggingMsec_);
 
   listWidget_ = new QTreeWidget;
@@ -119,8 +119,7 @@ ClusterDialog::ClusterDialog(QWidget* parent, core::IClusterSettingsBase* connec
 
   if (cluster_connection_) {
     core::IClusterSettingsBase::cluster_connection_type clusters = cluster_connection_->nodes();
-    for (core::IClusterSettingsBase::cluster_connection_type::const_iterator it = clusters.begin();
-        it != clusters.end(); ++it) {
+    for (auto it = clusters.begin(); it != clusters.end(); ++it) {
       core::IConnectionSettingsBaseSPtr serv = (*it);
       addConnection(serv);
     }
@@ -156,7 +155,7 @@ ClusterDialog::ClusterDialog(QWidget* parent, core::IClusterSettingsBase* connec
   QVBoxLayout* inputLayout = new QVBoxLayout;
   inputLayout->addWidget(connectionName_);
   inputLayout->addWidget(typeConnection_);
-  inputLayout->addWidget(logging_);
+  inputLayout->addLayout(loggingLayout);
   inputLayout->addLayout(toolBarLayout);
   inputLayout->addWidget(listWidget_);
 
@@ -291,15 +290,13 @@ void ClusterDialog::setStartNode() {
 void ClusterDialog::add() {
 #ifdef BUILD_WITH_REDIS
   static const std::vector<core::connectionTypes> avail = { core::REDIS };
-#else
-  static const std::vector<core::connectionTypes> avail = { };
-#endif
   ConnectionDialog dlg(this, nullptr, avail);
   int result = dlg.exec();
   core::IConnectionSettingsBaseSPtr p = dlg.connection();
   if (result == QDialog::Accepted && p) {
     addConnection(p);
   }
+#endif
 }
 
 void ClusterDialog::remove() {
@@ -327,18 +324,16 @@ void ClusterDialog::edit() {
     return;
   }
 
-  core::IConnectionSettingsBaseSPtr oldConnection = currentItem->connection();
 #ifdef BUILD_WITH_REDIS
+  core::IConnectionSettingsBaseSPtr oldConnection = currentItem->connection();
   static const std::vector<core::connectionTypes> avail = { core::REDIS };
-#else
-  static const std::vector<core::connectionTypes> avail = { };
-#endif
   ConnectionDialog dlg(this, oldConnection->clone(), avail);
   int result = dlg.exec();
   core::IConnectionSettingsBaseSPtr newConnection = dlg.connection();
   if (result == QDialog::Accepted && newConnection) {
     currentItem->setConnection(newConnection);
   }
+#endif
 }
 
 void ClusterDialog::itemSelectionChanged() {

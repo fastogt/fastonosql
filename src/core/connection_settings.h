@@ -49,9 +49,10 @@ class IConnectionSettings {
 
  protected:
   IConnectionSettings(const std::string& connectionName, connectionTypes type);
-
   std::string connection_name_;
   const connectionTypes type_;
+
+ private:
   uint32_t msinterval_;
 };
 
@@ -84,7 +85,6 @@ class IConnectionSettingsBase
 
  private:
   using IConnectionSettings::setName;
-
   std::string hash_;
 };
 
@@ -113,19 +113,29 @@ class IConnectionSettingsRemote
   static IConnectionSettingsRemote* createFromType(connectionTypes type, const std::string& conName,
                                                    const common::net::hostAndPort& host);
 
-  virtual std::string toString() const;
+ protected:
+  IConnectionSettingsRemote(const std::string& connectionName, connectionTypes type);
+};
 
+class IConnectionSettingsRemoteSSH
+  : public IConnectionSettingsRemote {
+ public:
   SSHInfo sshInfo() const;
   void setSshInfo(const SSHInfo& info);
 
+  virtual std::string toString() const;
+
+  static IConnectionSettingsRemoteSSH* createFromType(connectionTypes type, const std::string& conName,
+                                                   const common::net::hostAndPort& host);
+
  protected:
-  IConnectionSettingsRemote(const std::string& connectionName, connectionTypes type);
+  IConnectionSettingsRemoteSSH(const std::string& connectionName, connectionTypes type);
 
  private:
   SSHInfo ssh_info_;
 };
 
-const char* useHelpText(connectionTypes type);
+const char* commandLineHelpText(connectionTypes type);
 std::string defaultCommandLine(connectionTypes type);
 
 typedef common::shared_ptr<IConnectionSettingsBase> IConnectionSettingsBaseSPtr;
@@ -151,7 +161,7 @@ class IClusterSettingsBase
   IClusterSettingsBase(const std::string& connectionName, connectionTypes type);
 
  private:
-  cluster_connection_type clusters_nodes_;  // first element is root!!!
+  cluster_connection_type clusters_nodes_;
 };
 
 typedef common::shared_ptr<IClusterSettingsBase> IClusterSettingsBaseSPtr;

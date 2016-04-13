@@ -29,7 +29,7 @@ namespace core {
 namespace redis {
 
 class RedisConnectionSettings
-  : public IConnectionSettingsRemote {
+  : public IConnectionSettingsRemoteSSH {
  public:
   explicit RedisConnectionSettings(const std::string& connectionName);
 

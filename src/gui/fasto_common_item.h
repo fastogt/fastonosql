@@ -43,7 +43,6 @@ class FastoCommonItem
   common::Value::Type type() const;
 
   bool isReadOnly() const;
-
   void setValue(core::NValue val);
 
  private:

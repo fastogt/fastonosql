@@ -187,7 +187,7 @@ RocksdbDataBaseInfo::RocksdbDataBaseInfo(const std::string& name, bool isDefault
   : IDataBaseInfo(name, isDefault, ROCKSDB, size, keys) {
 }
 
-IDataBaseInfo* RocksdbDataBaseInfo::clone() const {
+RocksdbDataBaseInfo* RocksdbDataBaseInfo::clone() const {
   return new RocksdbDataBaseInfo(*this);
 }
 

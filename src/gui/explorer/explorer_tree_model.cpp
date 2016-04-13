@@ -41,7 +41,7 @@ ExplorerServerItem::ExplorerServerItem(core::IServerSPtr server, TreeItem* paren
 }
 
 QString ExplorerServerItem::name() const {
-  return server_->name();
+  return common::convertFromString<QString>(server_->name());
 }
 
 core::IServerSPtr ExplorerServerItem::server() const {
@@ -67,7 +67,7 @@ ExplorerClusterItem::ExplorerClusterItem(core::IClusterSPtr cluster, TreeItem* p
 }
 
 QString ExplorerClusterItem::name() const {
-  return cluster_->name();
+  return common::convertFromString<QString>(cluster_->name());
 }
 
 core::IServerSPtr ExplorerClusterItem::server() const {
@@ -254,7 +254,7 @@ QVariant ExplorerTreeModel::data(const QModelIndex& index, int role) const {
                        "<b>Type:</b> %2<br/>"
                        "<b>Host:</b> %3<br/>").arg(dname).arg(dtype).arg(dhost);
       } else {
-        QString sname = server->name();
+        QString sname = common::convertFromString<QString>(server->name());
         bool isCanRemote = server->isCanRemote();
         if (isCanRemote) {
           core::IServerRemote* rserver = dynamic_cast<core::IServerRemote*>(server.get());

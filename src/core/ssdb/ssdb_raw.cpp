@@ -48,7 +48,7 @@ bool DBAllocatorTraits<ssdb::SSDBConnection, ssdb::SsdbConfig>::isConnected(ssdb
 }
 namespace ssdb {
 
-common::Error createConnection(const SsdbConfig& config, ::ssdb::Client** context) {
+common::Error createConnection(const SsdbConfig& config, SSDBConnection** context) {
   if (!context) {
     return common::make_error_value("Invalid input argument(s)", common::ErrorValue::E_ERROR);
   }
@@ -63,7 +63,7 @@ common::Error createConnection(const SsdbConfig& config, ::ssdb::Client** contex
   return common::Error();
 }
 
-common::Error createConnection(SsdbConnectionSettings* settings, ::ssdb::Client** context) {
+common::Error createConnection(SsdbConnectionSettings* settings, SSDBConnection** context) {
   if (!settings) {
     return common::make_error_value("Invalid input argument(s)", common::ErrorValue::E_ERROR);
   }

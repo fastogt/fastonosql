@@ -31,7 +31,7 @@ class IServerBase
   : public QObject {
   Q_OBJECT
  public:
-  virtual QString name() const = 0;
+  virtual std::string name() const = 0;
   virtual ~IServerBase();
 };
 
@@ -52,7 +52,7 @@ class IServer
   bool isCanRemote() const;
 
   connectionTypes type() const;
-  QString name() const;
+  virtual std::string name() const;
 
   IDataBaseInfoSPtr currentDatabaseInfo() const;
   ServerDiscoveryInfoSPtr discoveryInfo() const;

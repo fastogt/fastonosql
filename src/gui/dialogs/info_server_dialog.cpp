@@ -313,7 +313,8 @@ void InfoServerDialog::changeEvent(QEvent* e) {
 }
 
 void InfoServerDialog::retranslateUi() {
-  setWindowTitle(tr("%1 info").arg(server_->name()));
+  QString name = common::convertFromString<QString>(server_->name());
+  setWindowTitle(tr("%1 info").arg(name));
 }
 
 #ifdef BUILD_WITH_REDIS

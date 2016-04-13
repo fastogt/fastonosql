@@ -34,8 +34,8 @@ struct PropertyTableItem
   };
   PropertyTableItem(const QString& key, const QString& value);
 
-  QString key_;
-  QString value_;
+  QString key;
+  QString value;
 };
 
 class PropertyTableModel

@@ -188,7 +188,7 @@ LeveldbDataBaseInfo::LeveldbDataBaseInfo(const std::string& name, bool isDefault
   : IDataBaseInfo(name, isDefault, LEVELDB, size, keys) {
 }
 
-IDataBaseInfo* LeveldbDataBaseInfo::clone() const {
+LeveldbDataBaseInfo* LeveldbDataBaseInfo::clone() const {
   return new LeveldbDataBaseInfo(*this);
 }
 

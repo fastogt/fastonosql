@@ -188,7 +188,7 @@ SsdbDataBaseInfo::SsdbDataBaseInfo(const std::string& name, bool isDefault,
   : IDataBaseInfo(name, isDefault, SSDB, size, keys) {
 }
 
-IDataBaseInfo* SsdbDataBaseInfo::clone() const {
+SsdbDataBaseInfo* SsdbDataBaseInfo::clone() const {
   return new SsdbDataBaseInfo(*this);
 }
 

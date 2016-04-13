@@ -118,15 +118,13 @@ ConnectionsDialog::ConnectionsDialog(QWidget* parent)
 
   // Populate list with connections
   auto connections = core::SettingsManager::instance().connections();
-  for (core::SettingsManager::ConnectionSettingsContainerType::const_iterator it = connections.begin();
-       it != connections.end(); ++it) {
+  for (auto it = connections.begin(); it != connections.end(); ++it) {
     core::IConnectionSettingsBaseSPtr connectionModel = (*it);
     addConnection(connectionModel);
   }
 
   auto clusters = core::SettingsManager::instance().clusters();
-  for (core::SettingsManager::ClusterSettingsContainerType::const_iterator it = clusters.begin();
-       it != clusters.end(); ++it) {
+  for (auto it = clusters.begin(); it != clusters.end(); ++it) {
     core::IClusterSettingsBaseSPtr connectionModel = (*it);
     addCluster(connectionModel);
   }

@@ -101,7 +101,7 @@ class MemcachedDataBaseInfo
  public:
   MemcachedDataBaseInfo(const std::string& name, bool isDefault, size_t size,
                         const keys_cont_type& keys = keys_cont_type());
-  virtual IDataBaseInfo* clone() const;
+  virtual MemcachedDataBaseInfo* clone() const;
 };
 
 class MemcachedCommand

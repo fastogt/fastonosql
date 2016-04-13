@@ -124,7 +124,7 @@ bool DBAllocatorTraits<unqlite::UnQLiteConnection, unqlite::UnqliteConfig>::isCo
 }
 namespace unqlite {
 
-common::Error createConnection(const UnqliteConfig& config, struct unqlite** context) {
+common::Error createConnection(const UnqliteConfig& config, UnQLiteConnection** context) {
   if (!context) {
     return common::make_error_value("Invalid input argument(s)", common::ErrorValue::E_ERROR);
   }
@@ -144,7 +144,7 @@ common::Error createConnection(const UnqliteConfig& config, struct unqlite** con
   return common::Error();
 }
 
-common::Error createConnection(UnqliteConnectionSettings* settings, struct unqlite** context) {
+common::Error createConnection(UnqliteConnectionSettings* settings, UnQLiteConnection **context) {
   if (!settings) {
     return common::make_error_value("Invalid input argument(s)", common::ErrorValue::E_ERROR);
   }

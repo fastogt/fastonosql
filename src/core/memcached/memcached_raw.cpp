@@ -63,7 +63,7 @@ bool DBAllocatorTraits<memcached::MemcachedConnection, memcached::MemcachedConfi
 }
 namespace memcached {
 
-common::Error createConnection(const MemcachedConfig& config, struct memcached_st** context) {
+common::Error createConnection(const MemcachedConfig& config, MemcachedConnection** context) {
   if (!context) {
     return common::make_error_value("Invalid input argument(s)", common::ErrorValue::E_ERROR);
   }
@@ -114,7 +114,7 @@ common::Error createConnection(const MemcachedConfig& config, struct memcached_s
   return common::Error();
 }
 
-common::Error createConnection(MemcachedConnectionSettings* settings, struct memcached_st** context) {
+common::Error createConnection(MemcachedConnectionSettings* settings, MemcachedConnection** context) {
   if (!settings) {
     return common::make_error_value("Invalid input argument(s)", common::ErrorValue::E_ERROR);
   }

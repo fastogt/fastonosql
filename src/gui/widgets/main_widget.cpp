@@ -65,7 +65,8 @@ void MainWidget::openConsole(core::IServerSPtr server, const QString& text) {
   }
 
   QueryWidget* queryWidget = new QueryWidget(server);
-  addWidgetToTab(queryWidget, server->name());
+  QString name = common::convertFromString<QString>(server->name());
+  addWidgetToTab(queryWidget, name);
   queryWidget->setInputText(text);
 }
 

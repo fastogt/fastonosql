@@ -1003,7 +1003,7 @@ RedisDataBaseInfo::RedisDataBaseInfo(const std::string& name, bool isDefault, si
   : IDataBaseInfo(name, isDefault, REDIS, size, keys) {
 }
 
-IDataBaseInfo* RedisDataBaseInfo::clone() const {
+RedisDataBaseInfo* RedisDataBaseInfo::clone() const {
   return new RedisDataBaseInfo(*this);
 }
 

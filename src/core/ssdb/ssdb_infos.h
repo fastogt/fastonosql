@@ -38,16 +38,16 @@ class SsdbServerInfo
   : public IServerInfo {
  public:
   struct Common
-    : FieldByIndex {
-      Common();
-      explicit Common(const std::string& common_text);
-      common::Value* valueByIndex(unsigned char index) const;
+      : FieldByIndex {
+    Common();
+    explicit Common(const std::string& common_text);
+    common::Value* valueByIndex(unsigned char index) const;
 
-      std::string version;
-      uint32_t links;
-      uint32_t total_calls;
-      uint32_t dbsize;
-      std::string binlogs;
+    std::string version;
+    uint32_t links;
+    uint32_t total_calls;
+    uint32_t dbsize;
+    std::string binlogs;
   } common_;
 
   SsdbServerInfo();
@@ -67,7 +67,7 @@ class SsdbDataBaseInfo
  public:
   SsdbDataBaseInfo(const std::string& name, bool isDefault, size_t size,
                    const keys_cont_type& keys = keys_cont_type());
-  virtual IDataBaseInfo* clone() const;
+  virtual SsdbDataBaseInfo* clone() const;
 };
 
 class SsdbCommand

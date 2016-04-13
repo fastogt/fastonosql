@@ -278,6 +278,7 @@ class IDataBaseInfo {
   keys_cont_type keys() const;
   void setKeys(const keys_cont_type& keys);
   void clearKeys();
+
  protected:
   IDataBaseInfo(const std::string& name, bool isDefault, connectionTypes type,
                size_t size, const keys_cont_type& keys);

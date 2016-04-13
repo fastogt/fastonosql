@@ -60,7 +60,7 @@ bool DBAllocatorTraits<rocksdb::RocksDBConnection, rocksdb::RocksdbConfig>::isCo
 }
 namespace rocksdb {
 
-common::Error createConnection(const RocksdbConfig& config, ::rocksdb::DB** context) {
+common::Error createConnection(const RocksdbConfig& config, RocksDBConnection** context) {
   if (!context) {
     return common::make_error_value("Invalid input argument(s)", common::ErrorValue::E_ERROR);
   }
@@ -78,7 +78,7 @@ common::Error createConnection(const RocksdbConfig& config, ::rocksdb::DB** cont
   return common::Error();
 }
 
-common::Error createConnection(RocksdbConnectionSettings* settings, ::rocksdb::DB** context) {
+common::Error createConnection(RocksdbConnectionSettings* settings, RocksDBConnection** context) {
   if (!settings) {
     return common::make_error_value("Invalid input argument(s)", common::ErrorValue::E_ERROR);
   }

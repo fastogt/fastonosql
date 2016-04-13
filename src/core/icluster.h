@@ -31,7 +31,7 @@ class ICluster
  public:
   typedef std::vector<IServerSPtr> nodes_type;
 
-  QString name() const;
+  std::string name() const;
   nodes_type nodes() const;
   void addServer(IServerSPtr serv);
 

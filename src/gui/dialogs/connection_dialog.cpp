@@ -128,7 +128,7 @@ ConnectionDialog::ConnectionDialog(QWidget* parent, core::IConnectionSettingsBas
 
   // ssh
 
-  core::IConnectionSettingsRemote* remoteSettings = dynamic_cast<core::IConnectionSettingsRemote*>(connection_.get());
+  core::IConnectionSettingsRemoteSSH* remoteSettings = dynamic_cast<core::IConnectionSettingsRemoteSSH*>(connection_.get());
   core::SSHInfo info;
   if (remoteSettings) {
     info = remoteSettings->sshInfo();
@@ -268,7 +268,7 @@ void ConnectionDialog::typeConnectionChange(int index) {
   core::connectionTypes currentType = (core::connectionTypes)qvariant_cast<unsigned char>(var);
   bool isSSHType = isCanSSHConnection(currentType);
 
-  const char* helpText = core::useHelpText(currentType);
+  const char* helpText = core::commandLineHelpText(currentType);
   DCHECK(helpText);
   if (helpText) {
     QString trHelp = tr(helpText);
@@ -365,7 +365,7 @@ bool ConnectionDialog::validateAndApply() {
   std::string conName = common::convertToString(connectionName_->text());
 
   if (isSSHType) {
-    core::IConnectionSettingsRemote* newConnection = core::IConnectionSettingsRemote::createFromType(currentType, conName, common::net::hostAndPort());
+    core::IConnectionSettingsRemoteSSH* newConnection = core::IConnectionSettingsRemoteSSH::createFromType(currentType, conName, common::net::hostAndPort());
     connection_.reset(newConnection);
 
     core::SSHInfo info = newConnection->sshInfo();
@@ -381,7 +381,7 @@ bool ConnectionDialog::validateAndApply() {
     } else {
       info.current_method = core::SSHInfo::UNKNOWN;
     }
-      newConnection->setSshInfo(info);
+    newConnection->setSshInfo(info);
   } else {
     core::IConnectionSettingsBase* newConnection = core::IConnectionSettingsBase::createFromType(currentType,
                                                                                      conName);

@@ -93,7 +93,7 @@ void lmdb_close(lmdb** context) {
 
 }  // namespace
 
-common::Error createConnection(const LmdbConfig& config, struct lmdb** context) {
+common::Error createConnection(const LmdbConfig& config, LMDBConnection** context) {
   if (!context) {
     return common::make_error_value("Invalid input argument(s)", common::ErrorValue::E_ERROR);
   }
@@ -112,7 +112,7 @@ common::Error createConnection(const LmdbConfig& config, struct lmdb** context) 
   return common::Error();
 }
 
-common::Error createConnection(LmdbConnectionSettings* settings, struct lmdb** context) {
+common::Error createConnection(LmdbConnectionSettings* settings, LMDBConnection** context) {
   if (!settings) {
     return common::make_error_value("Invalid input argument(s)", common::ErrorValue::E_ERROR);
   }

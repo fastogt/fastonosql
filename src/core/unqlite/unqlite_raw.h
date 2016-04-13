@@ -35,8 +35,8 @@ namespace unqlite {
 typedef struct unqlite UnQLiteConnection;
 typedef DBAllocatorTraits<UnQLiteConnection, UnqliteConfig> UnQLiteAllocTrait;
 
-common::Error createConnection(const UnqliteConfig& config, struct unqlite** context);
-common::Error createConnection(UnqliteConnectionSettings* settings, struct unqlite** context);
+common::Error createConnection(const UnqliteConfig& config, UnQLiteConnection** context);
+common::Error createConnection(UnqliteConnectionSettings* settings, UnQLiteConnection** context);
 common::Error testConnection(UnqliteConnectionSettings* settings);
 
 class UnqliteRaw

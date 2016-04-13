@@ -31,8 +31,8 @@
 namespace fastonosql {
 namespace gui {
 
-FastoCommonItem::FastoCommonItem(const core::NDbKValue& key, const std::string& delemitr, bool isReadOnly,
-                                 TreeItem* parent, void* internalPointer)
+FastoCommonItem::FastoCommonItem(const core::NDbKValue& key, const std::string& delemitr,
+                                 bool isReadOnly, TreeItem* parent, void* internalPointer)
   : TreeItem(parent, internalPointer), key_(key), delemitr_(delemitr), read_only_(isReadOnly) {
 }
 
@@ -65,7 +65,8 @@ QString toJson(FastoCommonItem* item) {
   }
 
   if (!item->childrenCount()) {
-    std::string res = common::json::parseJson(common::convertToString(item->value()));
+    std::string json = common::convertToString(item->value());
+    std::string res = common::json::parseJson(json);
     return common::convertFromString<QString>(res);
   }
 
@@ -169,7 +170,7 @@ QString fromGzip(FastoCommonItem* item) {
 
 QString fromHexMsgPack(FastoCommonItem* item) {
   if (!item) {
-      return QString();
+    return QString();
   }
 
   if (!item->childrenCount()) {

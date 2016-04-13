@@ -33,8 +33,8 @@ namespace memcached {
 typedef memcached_st MemcachedConnection;
 typedef DBAllocatorTraits<MemcachedConnection, MemcachedConfig> MemcachedAllocTrait;
 
-common::Error createConnection(const MemcachedConfig& config, struct memcached_st** context);
-common::Error createConnection(MemcachedConnectionSettings* settings, struct memcached_st** context);
+common::Error createConnection(const MemcachedConfig& config, MemcachedConnection** context);
+common::Error createConnection(MemcachedConnectionSettings* settings, MemcachedConnection** context);
 common::Error testConnection(MemcachedConnectionSettings* settings);
 
 struct MemcachedRaw

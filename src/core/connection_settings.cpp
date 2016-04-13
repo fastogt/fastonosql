@@ -231,7 +231,7 @@ IConnectionSettingsBase* IConnectionSettingsBase::fromString(const std::string& 
         }
       } else if (commaCount == 3) {
         result->setCommandLine(elText);
-        IConnectionSettingsRemote* remote = dynamic_cast<IConnectionSettingsRemote*>(result);
+        IConnectionSettingsRemoteSSH* remote = dynamic_cast<IConnectionSettingsRemoteSSH*>(result);
         if (remote) {
           SSHInfo sinf(val.substr(i + 1));
           remote->setSshInfo(sinf);
@@ -272,7 +272,7 @@ IConnectionSettingsLocal::IConnectionSettingsLocal(const std::string& connection
 
 IConnectionSettingsRemote::IConnectionSettingsRemote(const std::string& connectionName,
                                                      connectionTypes type)
-  : IConnectionSettingsBase(connectionName, type), ssh_info_() {
+  : IConnectionSettingsBase(connectionName, type) {
   CHECK(isRemoteType(type));
 }
 
@@ -311,22 +311,45 @@ IConnectionSettingsRemote* IConnectionSettingsRemote::createFromType(connectionT
   return remote;
 }
 
-std::string IConnectionSettingsRemote::toString() const {
+IConnectionSettingsRemoteSSH::IConnectionSettingsRemoteSSH(const std::string& connectionName,
+                                                           connectionTypes type)
+  : IConnectionSettingsRemote(connectionName, type), ssh_info_() {
+}
+
+IConnectionSettingsRemoteSSH* IConnectionSettingsRemoteSSH::createFromType(connectionTypes type,
+                                                                     const std::string& conName,
+                                                                     const common::net::hostAndPort& host) {
+  IConnectionSettingsRemoteSSH* remote = nullptr;
+#ifdef BUILD_WITH_REDIS
+  if (type == REDIS) {
+    remote = new redis::RedisConnectionSettings(conName);
+  }
+#endif
+  if (!remote) {
+    NOTREACHED();
+    return nullptr;
+  }
+
+  remote->setHost(host);
+  return remote;
+}
+
+std::string IConnectionSettingsRemoteSSH::toString() const {
   std::stringstream str;
   str << IConnectionSettingsBase::toString() << ',' << common::convertToString(ssh_info_);
   std::string res = str.str();
   return res;
 }
 
-SSHInfo IConnectionSettingsRemote::sshInfo() const {
+SSHInfo IConnectionSettingsRemoteSSH::sshInfo() const {
   return ssh_info_;
 }
 
-void IConnectionSettingsRemote::setSshInfo(const SSHInfo& info) {
+void IConnectionSettingsRemoteSSH::setSshInfo(const SSHInfo& info) {
   ssh_info_ = info;
 }
 
-const char* useHelpText(connectionTypes type) {
+const char* commandLineHelpText(connectionTypes type) {
   if (type == REDIS) {
     return "<b>Usage: [OPTIONS] [cmd [arg [arg ...]]]</b><br/>"
            "<b>-h &lt;hostname&gt;</b>      Server hostname (default: 127.0.0.1).<br/>"

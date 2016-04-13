@@ -161,7 +161,7 @@ LmdbDataBaseInfo::LmdbDataBaseInfo(const std::string& name, bool isDefault,
   : IDataBaseInfo(name, isDefault, LMDB, size, keys) {
 }
 
-IDataBaseInfo* LmdbDataBaseInfo::clone() const {
+LmdbDataBaseInfo* LmdbDataBaseInfo::clone() const {
   return new LmdbDataBaseInfo(*this);
 }
 

@@ -305,7 +305,7 @@ MemcachedDataBaseInfo::MemcachedDataBaseInfo(const std::string& name, bool isDef
   : IDataBaseInfo(name, isDefault, MEMCACHED, size, keys) {
 }
 
-IDataBaseInfo* MemcachedDataBaseInfo::clone() const {
+MemcachedDataBaseInfo* MemcachedDataBaseInfo::clone() const {
   return new MemcachedDataBaseInfo(*this);
 }
 

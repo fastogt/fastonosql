@@ -39,16 +39,16 @@ class RocksdbServerInfo
  public:
   // Compactions\nLevel  Files Size(MB) Time(sec) Read(MB) Write(MB)\n
   struct Stats
-    : FieldByIndex {
-      Stats();
-      explicit Stats(const std::string& common_text);
-      common::Value* valueByIndex(unsigned char index) const;
+      : FieldByIndex {
+    Stats();
+    explicit Stats(const std::string& common_text);
+    common::Value* valueByIndex(unsigned char index) const;
 
-      uint32_t compactions_level;
-      uint32_t file_size_mb;
-      uint32_t time_sec;
-      uint32_t read_mb;
-      uint32_t write_mb;
+    uint32_t compactions_level;
+    uint32_t file_size_mb;
+    uint32_t time_sec;
+    uint32_t read_mb;
+    uint32_t write_mb;
   } stats_;
 
   RocksdbServerInfo();
@@ -68,7 +68,7 @@ class RocksdbDataBaseInfo
  public:
   RocksdbDataBaseInfo(const std::string& name, bool isDefault, size_t size,
                       const keys_cont_type& keys = keys_cont_type());
-  virtual IDataBaseInfo* clone() const;
+  virtual RocksdbDataBaseInfo* clone() const;
 };
 
 class RocksdbCommand

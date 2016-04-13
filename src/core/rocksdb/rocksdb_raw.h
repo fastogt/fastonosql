@@ -33,8 +33,8 @@ namespace rocksdb {
 typedef ::rocksdb::DB RocksDBConnection;
 typedef DBAllocatorTraits<RocksDBConnection, RocksdbConfig> RocksDBAllocTrait;
 
-common::Error createConnection(const RocksdbConfig& config, ::rocksdb::DB** context);
-common::Error createConnection(RocksdbConnectionSettings* settings, ::rocksdb::DB** context);
+common::Error createConnection(const RocksdbConfig& config, RocksDBConnection** context);
+common::Error createConnection(RocksdbConnectionSettings* settings, RocksDBConnection** context);
 common::Error testConnection(RocksdbConnectionSettings* settings);
 
 class RocksdbRaw

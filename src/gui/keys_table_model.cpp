@@ -39,7 +39,7 @@ QString KeyTableItem::typeText() const {
   return common::convertFromString<QString>(common::Value::toString(key_.type()));
 }
 
-int32_t KeyTableItem::TTL() const {
+int32_t KeyTableItem::ttl() const {
   core::NKey key = key_.key();
   return key.ttl_sec;
 }
@@ -90,7 +90,7 @@ QVariant KeysTableModel::data(const QModelIndex& index, int role) const {
     } else if (col == KeyTableItem::kType) {
       result = node->typeText();
     } else if (col == KeyTableItem::kTTL) {
-      result = node->TTL();
+      result = node->ttl();
     }
   }
 
@@ -109,8 +109,8 @@ bool KeysTableModel::setData(const QModelIndex& index, const QVariant& value, in
     if (column == KeyTableItem::kKey) {
     } else if (column == KeyTableItem::kTTL) {
       bool isOk = false;
-      int32_t newValue = value.toInt(&isOk);
-      if (isOk && newValue != node->TTL()) {
+      int newValue = value.toInt(&isOk);
+      if (isOk && newValue != node->ttl()) {
         core::NDbKValue dbv = node->dbv();
         core::CommandKeySPtr com(new core::CommandChangeTTL(dbv, newValue));
         emit changedValue(com);

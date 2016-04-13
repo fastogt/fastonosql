@@ -163,7 +163,7 @@ UnqliteDataBaseInfo::UnqliteDataBaseInfo(const std::string& name, bool isDefault
   : IDataBaseInfo(name, isDefault, UNQLITE, size, keys) {
 }
 
-IDataBaseInfo* UnqliteDataBaseInfo::clone() const {
+UnqliteDataBaseInfo* UnqliteDataBaseInfo::clone() const {
   return new UnqliteDataBaseInfo(*this);
 }
 
