@@ -766,7 +766,7 @@ void ExplorerTreeView::finishLoadDatabaseContent(const core::events_info::LoadDa
     return;
   }
 
-  core::events_info::LoadDatabaseContentResponce::keys_cont_type keys = res.keys;
+  core::events_info::LoadDatabaseContentResponce::keys_container_t keys = res.keys;
 
   for (size_t i = 0; i < keys.size(); ++i) {
     core::NDbKValue key = keys[i];

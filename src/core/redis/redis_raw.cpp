@@ -1674,7 +1674,7 @@ common::Error RedisRaw::execute(int argc, char** argv, FastoObject* out) {
         observer_->currentDataBaseChanged(info);
       }
     } else if (strcasecmp(command, "auth") == 0) {
-      FastoObject::child_container_type rchildrens = out->childrens();
+      auto rchildrens = out->childrens();
       if (rchildrens.size() == 1) {
         FastoObject* obj = rchildrens[0];
         isAuth_ = obj && obj->toString() == "OK";

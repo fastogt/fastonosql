@@ -67,7 +67,7 @@ class RocksdbDataBaseInfo
   : public IDataBaseInfo {
  public:
   RocksdbDataBaseInfo(const std::string& name, bool isDefault, size_t size,
-                      const keys_cont_type& keys = keys_cont_type());
+                      const keys_container_t& keys = keys_container_t());
   virtual RocksdbDataBaseInfo* clone() const;
 };
 

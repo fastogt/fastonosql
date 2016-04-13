@@ -184,7 +184,7 @@ LeveldbServerInfo* makeLeveldbServerInfo(FastoObject* root) {
 }
 
 LeveldbDataBaseInfo::LeveldbDataBaseInfo(const std::string& name, bool isDefault,
-                                         size_t size, const keys_cont_type &keys)
+                                         size_t size, const keys_container_t &keys)
   : IDataBaseInfo(name, isDefault, LEVELDB, size, keys) {
 }
 

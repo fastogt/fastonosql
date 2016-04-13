@@ -999,7 +999,7 @@ common::Error makeAllDiscoveryInfo(const common::net::hostAndPort& parentHost,
 }
 
 RedisDataBaseInfo::RedisDataBaseInfo(const std::string& name, bool isDefault, size_t size,
-                                     const keys_cont_type& keys)
+                                     const keys_container_t& keys)
   : IDataBaseInfo(name, isDefault, REDIS, size, keys) {
 }
 

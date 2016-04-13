@@ -58,7 +58,7 @@ ClusterConnectionListWidgetItem::ClusterConnectionListWidgetItem(core::IClusterS
   setText(0, common::convertFromString<QString>(connection_->name()));
   setIcon(0, GuiFactory::instance().clusterIcon());
 
-  core::IClusterSettingsBase::cluster_connection_type servers = connection_->nodes();
+  core::IClusterSettingsBase::cluster_connection_t servers = connection_->nodes();
 
   for (size_t i = 0; i < servers.size(); ++i) {
     core::IConnectionSettingsBaseSPtr con = servers[i];

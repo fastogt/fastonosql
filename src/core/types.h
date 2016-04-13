@@ -262,7 +262,7 @@ ServerPropertyInfo makeServerProperty(const FastoObjectArray* array);
 
 class IDataBaseInfo {
  public:
-  typedef std::vector<NDbKValue> keys_cont_type;
+  typedef std::vector<NDbKValue> keys_container_t;
   connectionTypes type() const;
   std::string name() const;
   size_t sizeDB() const;
@@ -275,19 +275,19 @@ class IDataBaseInfo {
   virtual IDataBaseInfo* clone() const = 0;
   virtual ~IDataBaseInfo();
 
-  keys_cont_type keys() const;
-  void setKeys(const keys_cont_type& keys);
+  keys_container_t keys() const;
+  void setKeys(const keys_container_t& keys);
   void clearKeys();
 
  protected:
   IDataBaseInfo(const std::string& name, bool isDefault, connectionTypes type,
-               size_t size, const keys_cont_type& keys);
+               size_t size, const keys_container_t& keys);
 
  private:
   const std::string name_;
   bool is_default_;
   size_t size_;
-  keys_cont_type keys_;
+  keys_container_t keys_;
 
   const connectionTypes type_;
 };

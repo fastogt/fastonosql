@@ -339,7 +339,7 @@ void SsdbDriver::handleLoadDatabaseContentEvent(events::LoadDatabaseContentReque
     if (er && er->isError()) {
       res.setErrorInfo(er);
     } else {
-      FastoObject::child_container_type rchildrens = cmd->childrens();
+      FastoObject::child_container_t rchildrens = cmd->childrens();
       if (rchildrens.size()) {
         DCHECK_EQ(rchildrens.size(), 1);
         FastoObjectArray* array = dynamic_cast<FastoObjectArray*>(rchildrens[0]);

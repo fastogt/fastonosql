@@ -196,7 +196,7 @@ void ViewKeysDialog::finishLoadDatabaseContent(const core::events_info::LoadData
     return;
   }
 
-  core::events_info::LoadDatabaseContentResponce::keys_cont_type keys = res.keys;
+  core::events_info::LoadDatabaseContentResponce::keys_container_t keys = res.keys;
 
   size_t size = keys.size();
   for (size_t i = 0; i < size; ++i) {

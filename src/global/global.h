@@ -27,7 +27,7 @@ class IFastoObjectObserver;
 class FastoObject
   : public common::intrusive_ptr_base<FastoObject> {
  public:
-  typedef std::vector<FastoObject*> child_container_type;
+  typedef std::vector<FastoObject*> child_container_t;
 
   FastoObject(FastoObject* parent, common::Value* val, const std::string& delemitr = std::string());
   virtual ~FastoObject();
@@ -37,7 +37,7 @@ class FastoObject
 
   static FastoObject* createRoot(const std::string& text, IFastoObjectObserver* observer = nullptr);
 
-  child_container_type childrens() const;
+  child_container_t childrens() const;
   void addChildren(FastoObject* child);
   FastoObject* parent() const;
   void clear();
@@ -54,7 +54,7 @@ class FastoObject
   DISALLOW_COPY_AND_ASSIGN(FastoObject);
 
   FastoObject* const parent_;
-  child_container_type childrens_;
+  child_container_t childrens_;
   const std::string delemitr_;
 };
 

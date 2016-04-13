@@ -65,7 +65,7 @@ std::string createStamp(common::time64_t time) {
   return magicNumber + common::convertToString(time) + '\n';
 }
 
-bool getStamp(common::buffer_type stamp, common::time64_t* timeOut) {
+bool getStamp(common::buffer_t stamp, common::time64_t* timeOut) {
   if (stamp.empty()) {
     return false;
   }
@@ -471,10 +471,10 @@ void IDriver::handleLoadServerInfoHistoryEvent(events::ServerInfoHistoryRequestE
     events::ServerInfoHistoryResponceEvent::value_type::infos_container_type tmpInfos;
 
     common::time64_t curStamp = 0;
-    common::buffer_type dataInfo;
+    common::buffer_t dataInfo;
 
     while(!readFile.isEof()) {
-      common::buffer_type data;
+      common::buffer_t data;
       bool res = readFile.readLine(&data);
       if (!res || readFile.isEof()) {
         if (curStamp) {

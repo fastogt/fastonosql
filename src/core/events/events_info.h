@@ -241,10 +241,10 @@ struct LoadDatabaseContentRequest
 struct LoadDatabaseContentResponce
   : LoadDatabaseContentRequest {
   typedef LoadDatabaseContentRequest base_class;
-  typedef std::vector<NDbKValue> keys_cont_type;
+  typedef std::vector<NDbKValue> keys_container_t;
   explicit LoadDatabaseContentResponce(const base_class& request);
 
-  keys_cont_type keys;
+  keys_container_t keys;
   uint32_t cursor_out;
   size_t dbsize;
 };

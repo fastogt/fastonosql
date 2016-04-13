@@ -183,7 +183,7 @@ RocksdbServerInfo* makeRocksdbServerInfo(FastoObject* root) {
 }
 
 RocksdbDataBaseInfo::RocksdbDataBaseInfo(const std::string& name, bool isDefault, size_t size,
-                                         const keys_cont_type &keys)
+                                         const keys_container_t &keys)
   : IDataBaseInfo(name, isDefault, ROCKSDB, size, keys) {
 }
 

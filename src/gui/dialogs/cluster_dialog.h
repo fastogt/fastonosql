@@ -40,7 +40,7 @@ class ClusterDialog
   : public QDialog {
   Q_OBJECT
  public:
-  typedef std::vector<core::IConnectionSettingsBaseSPtr> cluster_connection_type;
+  typedef std::vector<core::IConnectionSettingsBaseSPtr> cluster_connection_t;
   explicit ClusterDialog(QWidget* parent, core::IClusterSettingsBase* connection = nullptr);  // get ownerships connection
   core::IClusterSettingsBaseSPtr connection() const;
 

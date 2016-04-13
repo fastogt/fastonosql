@@ -138,7 +138,7 @@ common::Error RedisDriver::serverInfo(IServerInfo** info) {
                                                         common::Value::C_INNER);
   common::Error res = execute(cmd);
   if (!res) {
-    FastoObject::child_container_type ch = root->childrens();
+    auto ch = root->childrens();
     if (ch.size()) {
       *info = makeRedisServerInfo(ch[0]);
     }
@@ -185,7 +185,7 @@ common::Error RedisDriver::serverDiscoveryInfo(ServerDiscoveryInfo** dinfo, ISer
     return common::Error(); //not error serverInfo is valid
   }
 
-  FastoObject::child_container_type ch = cmd->childrens();
+  auto ch = cmd->childrens();
   if (ch.size()) {
     FastoObject* obj = ch[0];
     if (obj) {
@@ -591,7 +591,7 @@ void RedisDriver::handleLoadDatabaseInfosEvent(events::LoadDatabasesInfoRequestE
   if (er && er->isError()) {
     res.setErrorInfo(er);
   } else {
-    FastoObject::child_container_type rchildrens = cmd->childrens();
+    FastoObject::child_container_t rchildrens = cmd->childrens();
     if (rchildrens.size()) {
       DCHECK_EQ(rchildrens.size(), 1);
       FastoObjectArray* array = dynamic_cast<FastoObjectArray*>(rchildrens[0]);
@@ -647,7 +647,7 @@ void RedisDriver::handleLoadDatabaseContentEvent(events::LoadDatabaseContentRequ
   if (er && er->isError()) {
     res.setErrorInfo(er);
   } else {
-    FastoObject::child_container_type rchildrens = cmd->childrens();
+    FastoObject::child_container_t rchildrens = cmd->childrens();
     if (rchildrens.size()) {
       DCHECK_EQ(rchildrens.size(), 1);
       FastoObjectArray* array = dynamic_cast<FastoObjectArray*>(rchildrens[0]);
@@ -701,7 +701,7 @@ void RedisDriver::handleLoadDatabaseContentEvent(events::LoadDatabaseContentRequ
 
       for (size_t i = 0; i < res.keys.size(); ++i) {
         FastoObjectIPtr cmdType = cmds[i*2];
-        FastoObject::child_container_type tchildrens = cmdType->childrens();
+        FastoObject::child_container_t tchildrens = cmdType->childrens();
         if (tchildrens.size()) {
           DCHECK_EQ(tchildrens.size(), 1);
           if (tchildrens.size() == 1) {
@@ -787,7 +787,7 @@ void RedisDriver::handleLoadServerPropertyEvent(events::ServerPropertyInfoReques
   if (er && er->isError()) {
     res.setErrorInfo(er);
   } else {
-    FastoObject::child_container_type ch = cmd->childrens();
+    FastoObject::child_container_t ch = cmd->childrens();
     if (ch.size()) {
       DCHECK_EQ(ch.size(), 1);
       FastoObjectArray* array = dynamic_cast<FastoObjectArray*>(ch[0]);

@@ -53,7 +53,7 @@ FastoObject* FastoObject::createRoot(const std::string& text, IFastoObjectObserv
   return root;
 }
 
-FastoObject::child_container_type FastoObject::childrens() const {
+FastoObject::child_container_t FastoObject::childrens() const {
   return childrens_;
 }
 
@@ -73,7 +73,7 @@ FastoObject* FastoObject::parent() const {
 }
 
 void FastoObject::clear() {
-  for (child_container_type::const_iterator it = childrens_.begin(); it != childrens_.end(); ++it) {
+  for (auto it = childrens_.begin(); it != childrens_.end(); ++it) {
     FastoObject* child = (*it);
     delete child;
   }
@@ -221,16 +221,14 @@ common::ArrayValue* FastoObjectArray::array() const {
 namespace common {
 
 std::string convertToString(fastonosql::FastoObject* obj) {
-  using namespace fastonosql;
   std::string result;
   if (obj) {
     std::string str = obj->toString();
     if (!str.empty()) {
       result += str + obj->delemitr();
     }
-    FastoObject::child_container_type childrens = obj->childrens();
-    for(FastoObject::child_container_type::const_iterator it = childrens.begin();
-        it != childrens.end(); ++it ){
+    auto childrens = obj->childrens();
+    for(auto it = childrens.begin(); it != childrens.end(); ++it ){
       result += convertToString(*it);
     }
   }

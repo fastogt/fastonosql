@@ -112,7 +112,7 @@ IConnectionSettingsBase::~IConnectionSettingsBase() {
 
 void IConnectionSettingsBase::setConnectionNameAndUpdateHash(const std::string& name) {
   setName(name);
-  common::buffer_type bcon = common::convertFromString<common::buffer_type>(connection_name_);
+  common::buffer_t bcon = common::convertFromString<common::buffer_t>(connection_name_);
   uint64_t v = common::utils::hash::crc64(0, bcon);
   hash_ = common::convertToString(v);
 }
@@ -477,7 +477,7 @@ IClusterSettingsBase::IClusterSettingsBase(const std::string& connectionName, co
   : IConnectionSettings(connectionName, type) {
 }
 
-IClusterSettingsBase::cluster_connection_type IClusterSettingsBase::nodes() const {
+IClusterSettingsBase::cluster_connection_t IClusterSettingsBase::nodes() const {
   return clusters_nodes_;
 }
 

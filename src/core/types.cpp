@@ -348,7 +348,7 @@ ServerPropertyInfo makeServerProperty(const FastoObjectArray* array) {
 }
 
 IDataBaseInfo::IDataBaseInfo(const std::string& name, bool isDefault, connectionTypes type,
-                           size_t size, const keys_cont_type& keys)
+                           size_t size, const keys_container_t& keys)
   : name_(name), is_default_(isDefault), type_(type), size_(size), keys_(keys) {
 }
 
@@ -383,7 +383,7 @@ void IDataBaseInfo::setIsDefault(bool isDef) {
   is_default_ = isDef;
 }
 
-void IDataBaseInfo::setKeys(const keys_cont_type& keys) {
+void IDataBaseInfo::setKeys(const keys_container_t& keys) {
   keys_ = keys;
 }
 
@@ -391,7 +391,7 @@ void IDataBaseInfo::clearKeys() {
   keys_.clear();
 }
 
-IDataBaseInfo::keys_cont_type IDataBaseInfo::keys() const {
+IDataBaseInfo::keys_container_t IDataBaseInfo::keys() const {
   return keys_;
 }
 
