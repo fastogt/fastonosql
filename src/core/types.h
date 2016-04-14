@@ -146,12 +146,13 @@ class DBConnection {
 };
 
 std::string convertVersionNumberToReadableString(uint32_t version);
+typedef int32_t ttl_t;
 
 struct NKey {
-  explicit NKey(const std::string& key, int32_t ttl_sec = -1);
+  explicit NKey(const std::string& key, ttl_t ttl_sec = -1);
 
   std::string key;
-  int32_t ttl_sec;
+  ttl_t ttl_sec;
 };
 
 typedef common::ValueSPtr NValue;
@@ -164,7 +165,7 @@ class NDbKValue {
   NValue value() const;
   common::Value::Type type() const;
 
-  void setTTL(int32_t ttl);
+  void setTTL(ttl_t ttl);
   void setValue(NValue value);
 
   std::string keyString() const;
@@ -337,12 +338,12 @@ class CommandCreateKey
 class CommandChangeTTL
   : public CommandKey {
  public:
-  CommandChangeTTL(const NDbKValue& dbv, int32_t newTTL);
-  int32_t newTTL() const;
+  CommandChangeTTL(const NDbKValue& dbv, ttl_t newTTL);
+  ttl_t newTTL() const;
   NDbKValue newKey() const;
 
  private:
-  int32_t new_ttl_;
+  ttl_t new_ttl_;
 };
 
 typedef common::shared_ptr<CommandKey> CommandKeySPtr;

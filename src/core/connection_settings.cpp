@@ -97,9 +97,7 @@ void IConnectionSettings::setLoggingMsTimeInterval(uint32_t mstime) {
 }
 
 std::string IConnectionSettings::toString() const {
-  char buff[1024] = {0};
-  common::SNPrintf(buff, sizeof(buff), "%d,%s,%" PRIu32, type_, connection_name_, msinterval_);
-  return buff;
+  return common::MemSPrintf("%d,%s,%" PRIu32, type_, connection_name_, msinterval_);
 }
 
 IConnectionSettingsBase::IConnectionSettingsBase(const std::string& connectionName, connectionTypes type)

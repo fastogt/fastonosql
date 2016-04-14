@@ -42,7 +42,6 @@ class IServer
   Q_OBJECT
  public:
   typedef std::vector<IDataBaseInfoSPtr> databases_container_t;
-
   virtual ~IServer();
 
   //sync methods
@@ -183,7 +182,6 @@ class IServer
 
   // handle command events
   virtual void handleCommandResponceEvent(events::CommandResponceEvent* ev);
-
   virtual void handleDiscoveryInfoResponceEvent(events::DiscoveryInfoResponceEvent* ev);
 
   IDriver* const drv_;
@@ -195,7 +193,6 @@ class IServer
 
   // handle info events
   void handleLoadServerInfoHistoryEvent(events::ServerInfoHistoryResponceEvent* ev);
-
   void handleClearServerHistoryResponceEvent(events::ClearServerHistoryResponceEvent* ev);
 
   void processConfigArgs(const events_info::ProcessConfigArgsInfoRequest& req);

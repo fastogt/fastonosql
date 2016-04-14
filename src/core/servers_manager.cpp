@@ -25,7 +25,7 @@
 #ifdef BUILD_WITH_REDIS
 #include "core/redis/redis_cluster.h"
 #include "core/redis/redis_server.h"
-#include "core/redis/redis_driver.h"
+#include "core/redis/redis_raw.h"
 #endif
 
 #ifdef BUILD_WITH_MEMCACHED

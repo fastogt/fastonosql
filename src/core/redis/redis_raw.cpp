@@ -334,27 +334,25 @@ common::Error createConnection(const RedisConfig& config,
     }
 
     if (!lcontext) {
-      char buff[512] = {0};
+      std::string buff;
       if (!is_local) {
         std::string host_str = common::convertToString(config.host);
-        common::SNPrintf(buff, sizeof(buff), "Could not connect to Redis at %s : no context",
-                         host_str);
+        buff = common::MemSPrintf("Could not connect to Redis at %s : no context", host_str);
       } else {
-        common::SNPrintf(buff, sizeof(buff), "Could not connect to Redis at %s : no context",
-                         config.hostsocket);
+        buff = common::MemSPrintf( "Could not connect to Redis at %s : no context", config.hostsocket);
       }
       return common::make_error_value(buff, common::Value::E_ERROR);
     }
 
     if (lcontext->err) {
-      char buff[512] = {0};
+      std::string buff;
       if (is_local) {
-        common::SNPrintf(buff, sizeof(buff), "Could not connect to Redis at %s : %s",
-                         config.hostsocket, lcontext->errstr);
+        buff = common::MemSPrintf("Could not connect to Redis at %s : %s", config.hostsocket,
+                                  lcontext->errstr);
       } else {
         std::string host_str = common::convertToString(config.host);
-        common::SNPrintf(buff, sizeof(buff), "Could not connect to Redis at %s : %s",
-                         host_str, lcontext->errstr);
+        buff = common::MemSPrintf("Could not connect to Redis at %s : %s", host_str,
+                                  lcontext->errstr);
       }
       return common::make_error_value(buff, common::Value::E_ERROR);
     }
@@ -378,8 +376,7 @@ common::Error cliPrintContextError(redisContext* context) {
     return common::make_error_value("Not connected", common::Value::E_ERROR);
   }
 
-  char buff[512] = {0};
-  common::SNPrintf(buff, sizeof(buff), "Error: %s", context->errstr);
+  std::string buff = common::MemSPrintf("Error: %s", context->errstr);
   return common::make_error_value(buff, common::ErrorValue::E_ERROR);
 }
 
@@ -390,15 +387,13 @@ common::Error cliOutputCommandHelp(FastoObject* out, struct commandHelp* help, i
     return common::make_error_value("Invalid input argument(s)", common::ErrorValue::E_ERROR);
   }
 
-  char buff[1024] = {0};
-  common::SNPrintf(buff, sizeof(buff), "name: %s %s\r\n  summary: %s\r\n  since: %s",
-                   help->name, help->params, help->summary, help->since);
+  std::string buff = common::MemSPrintf("name: %s %s\n  summary: %s\n  since: %s",
+                                        help->name, help->params, help->summary, help->since);
   common::StringValue* val =common::Value::createStringValue(buff);
   FastoObject* child = new FastoObject(out, val, delimiter);
   out->addChildren(child);
   if (group) {
-    char buff2[1024] = {0};
-    common::SNPrintf(buff2, sizeof(buff2), "  group: %s", commandGroups[help->group]);
+    std::string buff2 = common::MemSPrintf("group: %s", commandGroups[help->group]);
     val = common::Value::createStringValue(buff2);
     FastoObject* gchild = new FastoObject(out, val, delimiter);
     out->addChildren(gchild);
@@ -416,8 +411,7 @@ common::Error authContext(const RedisConfig& config, redisContext* context) {
   redisReply* reply = static_cast<redisReply*>(redisCommand(context, "AUTH %s", auth_str));
   if (reply) {
     if (reply->type == REDIS_REPLY_ERROR) {
-      char buff[512] = {0};
-      common::SNPrintf(buff, sizeof(buff), "Authentification error: %s", reply->str);
+      std::string buff = common::MemSPrintf("Authentification error: %s", reply->str);
       freeReplyObject(reply);
       return common::make_error_value(buff, common::ErrorValue::E_ERROR);
     }
@@ -642,9 +636,8 @@ common::Error RedisRaw::latencyMode(FastoObject* out) {
       avg = (double) tot/count;
     }
 
-    char buff[1024];
-    common::SNPrintf(buff, sizeof(buff), "min: %lld, max: %lld, avg: %.2f (%lld samples)",
-                        min, max, avg, count);
+    std::string buff = common::MemSPrintf("min: %lld, max: %lld, avg: %.2f (%lld samples)",
+                                          min, max, avg, count);
     common::Value *val = common::Value::createStringValue(buff);
 
     if (!child) {
@@ -710,8 +703,7 @@ common::Error RedisRaw::sendSync(unsigned long long* payload) {
   }
   *p = '\0';
   if (buf[0] == '-') {
-    char buf2[4096];
-    common::SNPrintf(buf2, sizeof(buf2), "SYNC with master failed: %s", buf);
+    std::string buf2 = common::MemSPrintf("SYNC with master failed: %s", buf);
     return common::make_error_value(buf2, common::ErrorValue::E_ERROR);
   }
 
@@ -802,10 +794,8 @@ common::Error RedisRaw::getRDB(FastoObject* out) {
   } else {
     fd = open(config_.rdb_filename.c_str(), O_CREAT | O_WRONLY, 0644);
     if (fd == INVALID_DESCRIPTOR) {
-      char bufeEr[2048];
-      common::SNPrintf(bufeEr, sizeof(bufeEr), "Error opening '%s': %s", config_.rdb_filename,
-                       strerror(errno));
-
+      std::string bufeEr = common::MemSPrintf("Error opening '%s': %s", config_.rdb_filename,
+                                              strerror(errno));
       return common::make_error_value(bufeEr, common::ErrorValue::E_ERROR);
     }
   }
@@ -833,9 +823,7 @@ common::Error RedisRaw::getRDB(FastoObject* out) {
     }
 
     if (nwritten != nread) {
-      char bufeEr[2048];
-      common::SNPrintf(bufeEr, sizeof(bufeEr), "Error writing data to file: %s", strerror(errno));
-
+      std::string bufeEr = common::MemSPrintf("Error writing data to file: %s", strerror(errno));
       if (fd != INVALID_DESCRIPTOR) {
         close(fd);
       }
@@ -870,8 +858,7 @@ common::Error RedisRaw::sendScan(unsigned long long* it, redisReply** out){
   if (!reply) {
     return common::make_error_value("I/O error", common::Value::E_ERROR);
   } else if (reply->type == REDIS_REPLY_ERROR) {
-    char buff[512];
-    common::SNPrintf(buff, sizeof(buff), "SCAN error: %s", reply->str);
+    std::string buff = common::MemSPrintf("SCAN error: %s", reply->str);
     return common::make_error_value(buff, common::Value::E_ERROR);
   } else if (reply->type != REDIS_REPLY_ARRAY) {
     return common::make_error_value("Non ARRAY response from SCAN!", common::Value::E_ERROR);
@@ -921,16 +908,12 @@ common::Error RedisRaw::getKeyTypes(redisReply* keys, int* types) {
   /* Retrieve types */
   for (size_t i = 0; i < keys->elements; i++) {
     if (redisGetReply(context_, (void**)&reply)!=REDIS_OK) {
-      char buff[4096];
-      common::SNPrintf(buff, sizeof(buff), "Error getting type for key '%s' (%d: %s)",
-      keys->element[i]->str, context_->err, context_->errstr);
-
+      std::string buff = common::MemSPrintf("Error getting type for key '%s' (%d: %s)",
+                                            keys->element[i]->str, context_->err, context_->errstr);
       return common::make_error_value(buff, common::Value::E_ERROR);
     } else if (reply->type != REDIS_REPLY_STATUS) {
-      char buff[4096];
-      common::SNPrintf(buff, sizeof(buff), "Invalid reply type (%d) for TYPE on key '%s'!",
-      reply->type, keys->element[i]->str);
-
+      std::string buff = common::MemSPrintf("Invalid reply type (%d) for TYPE on key '%s'!",
+                                            reply->type, keys->element[i]->str);
       return common::make_error_value(buff, common::Value::E_ERROR);
     }
 
@@ -970,16 +953,14 @@ common::Error RedisRaw::getKeySizes(redisReply* keys, int* types, unsigned long 
 
     /* Retreive size */
     if (redisGetReply(context_, (void**)&reply)!=REDIS_OK) {
-      char buff[4096];
-      common::SNPrintf(buff, sizeof(buff), "Error getting size for key '%s' (%d: %s)",
-          keys->element[i]->str, context_->err, context_->errstr);
+      std::string buff = common::MemSPrintf("Error getting size for key '%s' (%d: %s)",
+                                            keys->element[i]->str, context_->err, context_->errstr);
       return common::make_error_value(buff, common::Value::E_ERROR);
     } else if (reply->type != REDIS_REPLY_INTEGER) {
       /* Theoretically the key could have been removed and
       * added as a different type between TYPE and SIZE */
-      char buff[4096];
-      common::SNPrintf(buff, sizeof(buff), "Warning:  %s on '%s' failed (may have changed type)",
-            sizecmds[types[i]], keys->element[i]->str);
+      std::string buff = common::MemSPrintf("Warning:  %s on '%s' failed (may have changed type)",
+                                            sizecmds[types[i]], keys->element[i]->str);
       LOG_MSG(buff, common::logging::L_WARNING, true);
       sizes[i] = 0;
     } else {
@@ -1092,11 +1073,9 @@ common::Error RedisRaw::findBigKeys(FastoObject* out) {
       sampled++;
 
       if (biggest[type]<sizes[i]) {
-        char buff[4096];
-        common::SNPrintf(buff, sizeof(buff),
-                         "[%05.2f%%] Biggest %-6s found so far '%s' with %llu %s",
-                         pct, typeName[type], keys->element[i]->str, sizes[i], typeunit[type]);
-
+        std::string buff = common::MemSPrintf("[%05.2f%%] Biggest %-6s found so far '%s' with %llu %s",
+                                              pct, typeName[type], keys->element[i]->str,
+                                              sizes[i], typeunit[type]);
         LOG_MSG(buff, common::logging::L_INFO, true);
 
         /* Keep track of biggest key name for this type */
@@ -1123,33 +1102,31 @@ common::Error RedisRaw::findBigKeys(FastoObject* out) {
   common::utils::freeifnotnull(sizes);
 
   /* We're done */
-  char buff[4096];
-  common::SNPrintf(buff, sizeof(buff), "Sampled %llu keys in the keyspace!", sampled);
+  std::string buff = common::MemSPrintf("Sampled %llu keys in the keyspace!", sampled);
   LOG_MSG(buff, common::logging::L_INFO, true);
 
-  memset(&buff, 0, sizeof(buff));
-  common::SNPrintf(buff, sizeof(buff), "Total key length in bytes is %llu (avg len %.2f)",
-     totlen, totlen ? (double)totlen/sampled : 0);
+  buff = common::MemSPrintf("Total key length in bytes is %llu (avg len %.2f)", totlen,
+                            totlen ? (double)totlen/sampled : 0);
   LOG_MSG(buff, common::logging::L_INFO, true);
 
   /* Output the biggest keys we found, for types we did find */
-  for (i=0;i<RTYPE_NONE;i++) {
+  for (i = 0; i < RTYPE_NONE; i++) {
     if (sdslen(maxkeys[i])>0) {
       memset(&buff, 0, sizeof(buff));
-      common::SNPrintf(buff, sizeof(buff), "Biggest %6s found '%s' has %llu %s", typeName[i],
-                       maxkeys[i], biggest[i], typeunit[i]);
+      buff = common::MemSPrintf("Biggest %6s found '%s' has %llu %s", typeName[i], maxkeys[i],
+                                biggest[i], typeunit[i]);
       common::StringValue *val = common::Value::createStringValue(buff);
       FastoObject* obj = new FastoObject(cmd, val, config_.delimiter);
       cmd->addChildren(obj);
     }
   }
 
-  for (i=0;i<RTYPE_NONE;i++) {
+  for (i = 0; i < RTYPE_NONE; i++) {
     memset(&buff, 0, sizeof(buff));
-    common::SNPrintf(buff, sizeof(buff), "%llu %ss with %llu %s (%05.2f%% of keys, avg size %.2f)",
-       counts[i], typeName[i], totalsize[i], typeunit[i],
-       sampled ? 100 * (double)counts[i]/sampled : 0,
-       counts[i] ? (double)totalsize[i]/counts[i] : 0);
+    buff = common::MemSPrintf("%llu %ss with %llu %s (%05.2f%% of keys, avg size %.2f)",
+                              counts[i], typeName[i], totalsize[i], typeunit[i],
+                              sampled ? 100 * (double)counts[i]/sampled : 0,
+                              counts[i] ? (double)totalsize[i]/counts[i] : 0);
     common::StringValue *val = common::Value::createStringValue(buff);
     FastoObject* obj = new FastoObject(cmd, val, config_.delimiter);
     cmd->addChildren(obj);
@@ -1186,25 +1163,22 @@ common::Error RedisRaw::statMode(FastoObject* out) {
   long requests = 0;
 
   while (!isInterrupted()) {
-    char buf[64];
-    int j;
-
-    redisReply *reply = nullptr;
+    redisReply *reply = NULL;
     while (!reply) {
       reply = (redisReply*)redisCommand(context_, command.c_str());
       if (context_->err && !(context_->err & (REDIS_ERR_IO | REDIS_ERR_EOF))) {
-        char buff[2048];
-        common::SNPrintf(buff, sizeof(buff), "ERROR: %s", context_->errstr);
+        std::string buff = common::MemSPrintf("ERROR: %s", context_->errstr);
         return common::make_error_value(buff, common::ErrorValue::E_ERROR);
       }
     }
 
     if (reply->type == REDIS_REPLY_ERROR) {
-      char buff[2048];
-      common::SNPrintf(buff, sizeof(buff), "ERROR: %s", reply->str);
+      std::string buff = common::MemSPrintf("ERROR: %s", reply->str);
       return common::make_error_value(buff, common::ErrorValue::E_ERROR);
     }
 
+    char buf[64];
+    int j;
     /* Keys */
     long aux = 0;
     for (j = 0; j < 20; j++) {
@@ -1305,8 +1279,7 @@ common::Error RedisRaw::scanMode(FastoObject* out) {
     if (reply == NULL) {
       return common::make_error_value("I/O error", common::ErrorValue::E_ERROR);
     } else if (reply->type == REDIS_REPLY_ERROR) {
-      char buff[2048];
-      common::SNPrintf(buff, sizeof(buff), "ERROR: %s", reply->str);
+      std::string buff = common::MemSPrintf("ERROR: %s", reply->str);
       return common::make_error_value(buff, common::ErrorValue::E_ERROR);
     } else {
       unsigned int j;
@@ -1576,9 +1549,8 @@ common::Error RedisRaw::cliReadReply(FastoObject* out) {
     *s = '\0';
     config_.host = common::net::hostAndPort(p + 1, atoi(s + 1));
     std::string host_str = common::convertToString(config_.host);
-    char redir[512] = {0};
-    common::SNPrintf(redir, sizeof(redir), "-> Redirected to slot [%d] located at %s",
-                     slot, host_str);
+    std::string redir = common::MemSPrintf("-> Redirected to slot [%d] located at %s",
+                                           slot, host_str);
     common::StringValue* val = common::Value::createStringValue(redir);
     FastoObject* child = new FastoObject(out, val, config_.delimiter);
     out->addChildren(child);

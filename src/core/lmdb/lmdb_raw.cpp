@@ -103,8 +103,7 @@ common::Error createConnection(const LmdbConfig& config, LMDBConnection** contex
   const char* dbname = common::utils::c_strornull(config.dbname);
   int st = lmdb_open(&lcontext, dbname, config.create_if_missing);
   if (st != LMDB_OK) {
-    char buff[1024] = {0};
-    common::SNPrintf(buff, sizeof(buff), "Fail open database: %s", mdb_strerror(st));
+    std::string buff = common::MemSPrintf("Fail open database: %s", mdb_strerror(st));
     return common::make_error_value(buff, common::ErrorValue::E_ERROR);
   }
 
@@ -205,8 +204,7 @@ common::Error LmdbRaw::dbsize(size_t* size) {
 
   if (rc != LMDB_OK) {
     mdb_txn_abort(txn);
-    char buff[1024] = {0};
-    common::SNPrintf(buff, sizeof(buff), "dbsize function error: %s", mdb_strerror(rc));
+    std::string buff = common::MemSPrintf("dbsize function error: %s", mdb_strerror(rc));
     return common::make_error_value(buff, common::ErrorValue::E_ERROR);
   }
 
@@ -245,8 +243,7 @@ common::Error LmdbRaw::set(const std::string& key, const std::string& value) {
   }
 
   if (rc != LMDB_OK) {
-    char buff[1024] = {0};
-    common::SNPrintf(buff, sizeof(buff), "set function error: %s", mdb_strerror(rc));
+    std::string buff = common::MemSPrintf("set function error: %s", mdb_strerror(rc));
     return common::make_error_value(buff, common::ErrorValue::E_ERROR);
   }
 
@@ -269,8 +266,7 @@ common::Error LmdbRaw::get(const std::string& key, std::string* ret_val) {
   mdb_txn_abort(txn);
 
   if (rc != LMDB_OK) {
-    char buff[1024] = {0};
-    common::SNPrintf(buff, sizeof(buff), "get function error: %s", mdb_strerror(rc));
+    std::string buff = common::MemSPrintf("get function error: %s", mdb_strerror(rc));
     return common::make_error_value(buff, common::ErrorValue::E_ERROR);
   }
 
@@ -298,8 +294,7 @@ common::Error LmdbRaw::del(const std::string& key) {
   }
 
   if (rc != LMDB_OK) {
-    char buff[1024] = {0};
-    common::SNPrintf(buff, sizeof(buff), "delete function error: %s", mdb_strerror(rc));
+    std::string buff = common::MemSPrintf("delete function error: %s", mdb_strerror(rc));
     return common::make_error_value(buff, common::ErrorValue::E_ERROR);
   }
 
@@ -319,8 +314,7 @@ common::Error LmdbRaw::keys(const std::string& key_start, const std::string& key
 
   if (rc != LMDB_OK) {
     mdb_txn_abort(txn);
-    char buff[1024] = {0};
-    common::SNPrintf(buff, sizeof(buff), "Keys function error: %s", mdb_strerror(rc));
+    std::string buff = common::MemSPrintf("Keys function error: %s", mdb_strerror(rc));
     return common::make_error_value(buff, common::ErrorValue::E_ERROR);
   }
 
@@ -354,8 +348,7 @@ common::Error LmdbRaw::flushdb() {
 
   if (rc != LMDB_OK) {
     mdb_txn_abort(txn);
-    char buff[1024] = {0};
-    common::SNPrintf(buff, sizeof(buff), "flushdb function error: %s", mdb_strerror(rc));
+    std::string buff = common::MemSPrintf("flushdb function error: %s", mdb_strerror(rc));
     return common::make_error_value(buff, common::ErrorValue::E_ERROR);
   }
 

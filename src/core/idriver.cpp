@@ -100,10 +100,7 @@ void replyNotImplementedYet(IDriver* sender, event_request_type* ev, const char*
   notifyProgressImpl(sender, esender, 0);
   typename event_responce_type::value_type res(ev->value());
 
-  char patternResult[1024] = {0};
-  common::SNPrintf(patternResult, sizeof(patternResult),
-                   "Sorry, but now " PROJECT_NAME_TITLE " not supported %s.", eventCommandText);
-
+  std::string patternResult = common::MemSPrintf("Sorry, but now " PROJECT_NAME_TITLE " not supported %s command.", eventCommandText);
   common::Error er = common::make_error_value(patternResult, common::ErrorValue::E_ERROR);
   res.setErrorInfo(er);
   event_responce_type* resp = new event_responce_type(sender, res);
@@ -377,31 +374,31 @@ void IDriver::notifyProgress(QObject* reciver, int value) {
 }
 
 void IDriver::handleLoadServerPropertyEvent(events::ServerPropertyInfoRequestEvent* ev) {
-  replyNotImplementedYet<events::ServerPropertyInfoRequestEvent, events::ServerPropertyInfoResponceEvent>(this, ev, "server property command");
+  replyNotImplementedYet<events::ServerPropertyInfoRequestEvent, events::ServerPropertyInfoResponceEvent>(this, ev, "server property");
 }
 
 void IDriver::handleServerPropertyChangeEvent(events::ChangeServerPropertyInfoRequestEvent* ev) {
-  replyNotImplementedYet<events::ChangeServerPropertyInfoRequestEvent, events::ChangeServerPropertyInfoResponceEvent>(this, ev, "change server property command");
+  replyNotImplementedYet<events::ChangeServerPropertyInfoRequestEvent, events::ChangeServerPropertyInfoResponceEvent>(this, ev, "change server property");
 }
 
 void IDriver::handleShutdownEvent(events::ShutDownRequestEvent* ev) {
-  replyNotImplementedYet<events::ShutDownRequestEvent, events::ShutDownResponceEvent>(this, ev, "shutdown command");
+  replyNotImplementedYet<events::ShutDownRequestEvent, events::ShutDownResponceEvent>(this, ev, "shutdown");
 }
 
 void IDriver::handleBackupEvent(events::BackupRequestEvent* ev) {
-  replyNotImplementedYet<events::BackupRequestEvent, events::BackupResponceEvent>(this, ev, "backup server command");
+  replyNotImplementedYet<events::BackupRequestEvent, events::BackupResponceEvent>(this, ev, "backup server");
 }
 
 void IDriver::handleExportEvent(events::ExportRequestEvent* ev) {
-  replyNotImplementedYet<events::ExportRequestEvent, events::ExportResponceEvent>(this, ev, "export server command");
+  replyNotImplementedYet<events::ExportRequestEvent, events::ExportResponceEvent>(this, ev, "export server");
 }
 
 void IDriver::handleChangePasswordEvent(events::ChangePasswordRequestEvent* ev) {
-  replyNotImplementedYet<events::ChangePasswordRequestEvent, events::ChangePasswordResponceEvent>(this, ev, "change password command");
+  replyNotImplementedYet<events::ChangePasswordRequestEvent, events::ChangePasswordResponceEvent>(this, ev, "change password");
 }
 
 void IDriver::handleChangeMaxConnectionEvent(events::ChangeMaxConnectionRequestEvent* ev) {
-  replyNotImplementedYet<events::ChangeMaxConnectionRequestEvent, events::ChangeMaxConnectionResponceEvent>(this, ev, "change maximum connection command");
+  replyNotImplementedYet<events::ChangeMaxConnectionRequestEvent, events::ChangeMaxConnectionResponceEvent>(this, ev, "change maximum connection");
 }
 
 void IDriver::handleLoadDatabaseInfosEvent(events::LoadDatabasesInfoRequestEvent* ev) {
@@ -417,11 +414,11 @@ void IDriver::handleLoadDatabaseInfosEvent(events::LoadDatabasesInfoRequestEvent
 }
 
 void IDriver::handleClearDatabaseEvent(events::ClearDatabaseRequestEvent* ev) {
-  replyNotImplementedYet<events::ClearDatabaseRequestEvent, events::ClearDatabaseResponceEvent>(this, ev, "clear database command");
+  replyNotImplementedYet<events::ClearDatabaseRequestEvent, events::ClearDatabaseResponceEvent>(this, ev, "clear database");
 }
 
 void IDriver::handleSetDefaultDatabaseEvent(events::SetDefaultDatabaseRequestEvent* ev) {
-  replyNotImplementedYet<events::SetDefaultDatabaseRequestEvent, events::SetDefaultDatabaseResponceEvent>(this, ev, "set default database command");
+  replyNotImplementedYet<events::SetDefaultDatabaseRequestEvent, events::SetDefaultDatabaseResponceEvent>(this, ev, "set default database");
 }
 
 IDriver::RootLocker::RootLocker(IDriver* parent, QObject* receiver, const std::string& text)
@@ -436,6 +433,10 @@ IDriver::RootLocker::RootLocker(IDriver* parent, QObject* receiver, const std::s
 IDriver::RootLocker::~RootLocker() {
   events::CommandRootCompleatedEvent::value_type res(this, tstart_, root_);
   reply(receiver_, new events::CommandRootCompleatedEvent(parent_, res));
+}
+
+FastoObject* IDriver::RootLocker::root() const {
+  return root_.get();
 }
 
 void IDriver::setCurrentDatabaseInfo(IDataBaseInfo* inf) {

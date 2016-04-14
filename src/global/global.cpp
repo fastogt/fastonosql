@@ -242,7 +242,6 @@ std::string convertToString(common::Value* value, const std::string& delemitr) {
   }
 
   common::Value::Type t = value->type();
-
   if (t == common::Value::TYPE_ARRAY) {
     return convertToString(dynamic_cast<ArrayValue*>(value), delemitr);
   } else if(t == common::Value::TYPE_SET) {

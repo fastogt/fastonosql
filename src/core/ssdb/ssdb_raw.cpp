@@ -128,8 +128,7 @@ common::Error SsdbRaw::info(const char* args, SsdbServerInfo::Common* statsout) 
   std::vector<std::string> ret;
   auto st = connection_.handle_->info(args ? args : std::string(), &ret);
   if (st.error()) {
-    char buff[1024] = {0};
-    common::SNPrintf(buff, sizeof(buff), "info function error: %s", st.code());
+    std::string buff = common::MemSPrintf("info function error: %s", st.code());
     return common::make_error_value(buff, common::ErrorValue::E_ERROR);
   }
 
@@ -162,8 +161,7 @@ common::Error SsdbRaw::dbsize(size_t* size) {
   int64_t sz = 0;
   auto st = connection_.handle_->dbsize(&sz);
   if (st.error()) {
-    char buff[1024] = {0};
-    common::SNPrintf(buff, sizeof(buff), "Couldn't determine DBSIZE error: %s", st.code());
+    std::string buff = common::MemSPrintf("Couldn't determine DBSIZE error: %s", st.code());
     return common::make_error_value(buff, common::ErrorValue::E_ERROR);
   }
 
@@ -176,8 +174,7 @@ common::Error SsdbRaw::auth(const std::string& password) {
 
   auto st = connection_.handle_->auth(password);
   if (st.error()) {
-    char buff[1024] = {0};
-    common::SNPrintf(buff, sizeof(buff), "password function error: %s", st.code());
+    std::string buff = common::MemSPrintf("password function error: %s", st.code());
     return common::make_error_value(buff, common::ErrorValue::E_ERROR);
   }
   return common::Error();
@@ -188,8 +185,7 @@ common::Error SsdbRaw::get(const std::string& key, std::string* ret_val) {
 
   auto st = connection_.handle_->get(key, ret_val);
   if (st.error()) {
-    char buff[1024] = {0};
-    common::SNPrintf(buff, sizeof(buff), "get function error: %s", st.code());
+    std::string buff = common::MemSPrintf("get function error: %s", st.code());
     return common::make_error_value(buff, common::ErrorValue::E_ERROR);
   }
   return common::Error();
@@ -200,8 +196,7 @@ common::Error SsdbRaw::set(const std::string& key, const std::string& value) {
 
   auto st = connection_.handle_->set(key, value);
   if (st.error()) {
-    char buff[1024] = {0};
-    common::SNPrintf(buff, sizeof(buff), "set function error: %s", st.code());
+    std::string buff = common::MemSPrintf("set function error: %s", st.code());
     return common::make_error_value(buff, common::ErrorValue::E_ERROR);
   }
   return common::Error();
@@ -212,8 +207,7 @@ common::Error SsdbRaw::setx(const std::string& key, const std::string& value, in
 
   auto st = connection_.handle_->setx(key, value, ttl);
   if (st.error()) {
-    char buff[1024] = {0};
-    common::SNPrintf(buff, sizeof(buff), "setx function error: %s", st.code());
+    std::string buff = common::MemSPrintf("setx function error: %s", st.code());
     return common::make_error_value(buff, common::ErrorValue::E_ERROR);
   }
   return common::Error();
@@ -224,8 +218,7 @@ common::Error SsdbRaw::del(const std::string& key) {
 
   auto st = connection_.handle_->del(key);
   if (st.error()) {
-    char buff[1024] = {0};
-    common::SNPrintf(buff, sizeof(buff), "del function error: %s", st.code());
+    std::string buff = common::MemSPrintf("del function error: %s", st.code());
     return common::make_error_value(buff, common::ErrorValue::E_ERROR);
   }
   return common::Error();
@@ -236,8 +229,7 @@ common::Error SsdbRaw::incr(const std::string& key, int64_t incrby, int64_t* ret
 
   auto st = connection_.handle_->incr(key, incrby, ret);
   if (st.error()) {
-    char buff[1024] = {0};
-    common::SNPrintf(buff, sizeof(buff), "Incr function error: %s", st.code());
+    std::string buff = common::MemSPrintf("Incr function error: %s", st.code());
     return common::make_error_value(buff, common::ErrorValue::E_ERROR);
   }
   return common::Error();
@@ -249,8 +241,7 @@ common::Error SsdbRaw::keys(const std::string& key_start, const std::string& key
 
   auto st = connection_.handle_->keys(key_start, key_end, limit, ret);
   if (st.error()) {
-    char buff[1024] = {0};
-    common::SNPrintf(buff, sizeof(buff), "Keys function error: %s", st.code());
+    std::string buff = common::MemSPrintf("Keys function error: %s", st.code());
     return common::make_error_value(buff, common::ErrorValue::E_ERROR);
   }
   return common::Error();
@@ -262,8 +253,7 @@ common::Error SsdbRaw::scan(const std::string& key_start, const std::string& key
 
   auto st = connection_.handle_->scan(key_start, key_end, limit, ret);
   if (st.error()) {
-    char buff[1024] = {0};
-    common::SNPrintf(buff, sizeof(buff), "scan function error: %s", st.code());
+    std::string buff = common::MemSPrintf("scan function error: %s", st.code());
     return common::make_error_value(buff, common::ErrorValue::E_ERROR);
   }
   return common::Error();
@@ -275,8 +265,7 @@ common::Error SsdbRaw::rscan(const std::string& key_start, const std::string& ke
 
   auto st = connection_.handle_->rscan(key_start, key_end, limit, ret);
   if (st.error()) {
-    char buff[1024] = {0};
-    common::SNPrintf(buff, sizeof(buff), "rscan function error: %s", st.code());
+    std::string buff = common::MemSPrintf("rscan function error: %s", st.code());
     return common::make_error_value(buff, common::ErrorValue::E_ERROR);
   }
   return common::Error();
@@ -287,8 +276,7 @@ common::Error SsdbRaw::multi_get(const std::vector<std::string>& keys, std::vect
 
   auto st = connection_.handle_->multi_get(keys, ret);
   if (st.error()) {
-    char buff[1024] = {0};
-    common::SNPrintf(buff, sizeof(buff), "multi_get function error: %s", st.code());
+    std::string buff = common::MemSPrintf("multi_get function error: %s", st.code());
     return common::make_error_value(buff, common::ErrorValue::E_ERROR);
   }
   return common::Error();
@@ -299,8 +287,7 @@ common::Error SsdbRaw::multi_set(const std::map<std::string, std::string> &kvs) 
 
   auto st = connection_.handle_->multi_set(kvs);
   if (st.error()) {
-    char buff[1024] = {0};
-    common::SNPrintf(buff, sizeof(buff), "multi_set function error: %s", st.code());
+    std::string buff = common::MemSPrintf("multi_set function error: %s", st.code());
     return common::make_error_value(buff, common::ErrorValue::E_ERROR);
   }
   return common::Error();
@@ -311,8 +298,7 @@ common::Error SsdbRaw::multi_del(const std::vector<std::string>& keys) {
 
   auto st = connection_.handle_->multi_del(keys);
   if (st.error()) {
-    char buff[1024] = {0};
-    common::SNPrintf(buff, sizeof(buff), "multi_del function error: %s", st.code());
+    std::string buff = common::MemSPrintf("multi_del function error: %s", st.code());
     return common::make_error_value(buff, common::ErrorValue::E_ERROR);
   }
   return common::Error();
@@ -323,8 +309,7 @@ common::Error SsdbRaw::hget(const std::string& name, const std::string& key, std
 
   auto st = connection_.handle_->hget(name, key, val);
   if (st.error()) {
-    char buff[1024] = {0};
-    common::SNPrintf(buff, sizeof(buff), "hget function error: %s", st.code());
+    std::string buff = common::MemSPrintf("hget function error: %s", st.code());
     return common::make_error_value(buff, common::ErrorValue::E_ERROR);
   }
   return common::Error();
@@ -335,8 +320,7 @@ common::Error SsdbRaw::hset(const std::string& name, const std::string& key, con
 
   auto st = connection_.handle_->hset(name, key, val);
   if (st.error()) {
-    char buff[1024] = {0};
-    common::SNPrintf(buff, sizeof(buff), "hset function error: %s", st.code());
+    std::string buff = common::MemSPrintf("hset function error: %s", st.code());
     return common::make_error_value(buff, common::ErrorValue::E_ERROR);
   }
 
@@ -348,8 +332,7 @@ common::Error SsdbRaw::hdel(const std::string& name, const std::string& key) {
 
   auto st = connection_.handle_->hdel(name, key);
   if (st.error()) {
-    char buff[1024] = {0};
-    common::SNPrintf(buff, sizeof(buff), "hdel function error: %s", st.code());
+    std::string buff = common::MemSPrintf("hdel function error: %s", st.code());
     return common::make_error_value(buff, common::ErrorValue::E_ERROR);
   }
   return common::Error();
@@ -361,8 +344,7 @@ common::Error SsdbRaw::hincr(const std::string& name, const std::string& key,
 
   auto st = connection_.handle_->hincr(name, key, incrby, ret);
   if (st.error()) {
-    char buff[1024] = {0};
-    common::SNPrintf(buff, sizeof(buff), "hincr function error: %s", st.code());
+    std::string buff = common::MemSPrintf("hincr function error: %s", st.code());
     return common::make_error_value(buff, common::ErrorValue::E_ERROR);
   }
   return common::Error();
@@ -373,8 +355,7 @@ common::Error SsdbRaw::hsize(const std::string& name, int64_t* ret) {
 
   auto st = connection_.handle_->hsize(name, ret);
   if (st.error()) {
-    char buff[1024] = {0};
-    common::SNPrintf(buff, sizeof(buff), "hset function error: %s", st.code());
+    std::string buff = common::MemSPrintf("hset function error: %s", st.code());
     return common::make_error_value(buff, common::ErrorValue::E_ERROR);
   }
   return common::Error();
@@ -385,8 +366,7 @@ common::Error SsdbRaw::hclear(const std::string& name, int64_t* ret) {
 
   auto st = connection_.handle_->hclear(name, ret);
   if (st.error()) {
-    char buff[1024] = {0};
-    common::SNPrintf(buff, sizeof(buff), "hclear function error: %s", st.code());
+    std::string buff = common::MemSPrintf("hclear function error: %s", st.code());
     return common::make_error_value(buff, common::ErrorValue::E_ERROR);
   }
   return common::Error();
@@ -398,8 +378,7 @@ common::Error SsdbRaw::hkeys(const std::string& name, const std::string& key_sta
 
   auto st = connection_.handle_->hkeys(name, key_start, key_end, limit, ret);
   if (st.error()) {
-    char buff[1024] = {0};
-    common::SNPrintf(buff, sizeof(buff), "hkeys function error: %s", st.code());
+    std::string buff = common::MemSPrintf("hkeys function error: %s", st.code());
     return common::make_error_value(buff, common::ErrorValue::E_ERROR);
   }
   return common::Error();
@@ -411,8 +390,7 @@ common::Error SsdbRaw::hscan(const std::string& name, const std::string& key_sta
 
   auto st = connection_.handle_->hscan(name, key_start, key_end, limit, ret);
   if (st.error()) {
-    char buff[1024] = {0};
-    common::SNPrintf(buff, sizeof(buff), "hscan function error: %s", st.code());
+    std::string buff = common::MemSPrintf("hscan function error: %s", st.code());
     return common::make_error_value(buff, common::ErrorValue::E_ERROR);
   }
   return common::Error();
@@ -424,8 +402,7 @@ common::Error SsdbRaw::hrscan(const std::string& name, const std::string& key_st
 
   auto st = connection_.handle_->hrscan(name, key_start, key_end, limit, ret);
   if (st.error()) {
-    char buff[1024] = {0};
-    common::SNPrintf(buff, sizeof(buff), "hrscan function error: %s", st.code());
+    std::string buff = common::MemSPrintf("hrscan function error: %s", st.code());
     return common::make_error_value(buff, common::ErrorValue::E_ERROR);
   }
   return common::Error();
@@ -437,8 +414,7 @@ common::Error SsdbRaw::multi_hget(const std::string& name, const std::vector<std
 
   auto st = connection_.handle_->multi_hget(name, keys, ret);
   if (st.error()) {
-    char buff[1024] = {0};
-    common::SNPrintf(buff, sizeof(buff), "hrscan function error: %s", st.code());
+    std::string buff = common::MemSPrintf("hrscan function error: %s", st.code());
     return common::make_error_value(buff, common::ErrorValue::E_ERROR);
   }
   return common::Error();
@@ -450,8 +426,7 @@ common::Error SsdbRaw::multi_hset(const std::string& name,
 
   auto st = connection_.handle_->multi_hset(name, keys);
   if (st.error()) {
-    char buff[1024] = {0};
-    common::SNPrintf(buff, sizeof(buff), "multi_hset function error: %s", st.code());
+    std::string buff = common::MemSPrintf("multi_hset function error: %s", st.code());
     return common::make_error_value(buff, common::ErrorValue::E_ERROR);
   }
   return common::Error();
@@ -462,8 +437,7 @@ common::Error SsdbRaw::zget(const std::string& name, const std::string& key, int
 
   auto st = connection_.handle_->zget(name, key, ret);
   if (st.error()) {
-    char buff[1024] = {0};
-    common::SNPrintf(buff, sizeof(buff), "zget function error: %s", st.code());
+    std::string buff = common::MemSPrintf("zget function error: %s", st.code());
     return common::make_error_value(buff, common::ErrorValue::E_ERROR);
   }
   return common::Error();
@@ -474,8 +448,7 @@ common::Error SsdbRaw::zset(const std::string& name, const std::string& key, int
 
   auto st = connection_.handle_->zset(name, key, score);
   if (st.error()) {
-    char buff[1024] = {0};
-    common::SNPrintf(buff, sizeof(buff), "zset function error: %s", st.code());
+    std::string buff = common::MemSPrintf("zset function error: %s", st.code());
     return common::make_error_value(buff, common::ErrorValue::E_ERROR);
   }
   return common::Error();
@@ -486,8 +459,7 @@ common::Error SsdbRaw::zdel(const std::string& name, const std::string& key) {
 
   auto st = connection_.handle_->zdel(name, key);
   if (st.error()) {
-    char buff[1024] = {0};
-    common::SNPrintf(buff, sizeof(buff), "Zdel function error: %s", st.code());
+    std::string buff = common::MemSPrintf("Zdel function error: %s", st.code());
     return common::make_error_value(buff, common::ErrorValue::E_ERROR);
   }
   return common::Error();
@@ -498,8 +470,7 @@ common::Error SsdbRaw::zincr(const std::string& name, const std::string& key, in
 
   auto st = connection_.handle_->zincr(name, key, incrby, ret);
   if (st.error()) {
-    char buff[1024] = {0};
-    common::SNPrintf(buff, sizeof(buff), "Zincr function error: %s", st.code());
+    std::string buff = common::MemSPrintf("Zincr function error: %s", st.code());
     return common::make_error_value(buff, common::ErrorValue::E_ERROR);
   }
   return common::Error();
@@ -510,8 +481,7 @@ common::Error SsdbRaw::zsize(const std::string& name, int64_t* ret) {
 
   auto st = connection_.handle_->zsize(name, ret);
   if (st.error()) {
-    char buff[1024] = {0};
-    common::SNPrintf(buff, sizeof(buff), "zsize function error: %s", st.code());
+    std::string buff = common::MemSPrintf("zsize function error: %s", st.code());
     return common::make_error_value(buff, common::ErrorValue::E_ERROR);
   }
   return common::Error();
@@ -522,8 +492,7 @@ common::Error SsdbRaw::zclear(const std::string& name, int64_t* ret) {
 
   auto st = connection_.handle_->zclear(name, ret);
   if (st.error()) {
-    char buff[1024] = {0};
-    common::SNPrintf(buff, sizeof(buff), "zclear function error: %s", st.code());
+    std::string buff = common::MemSPrintf("zclear function error: %s", st.code());
     return common::make_error_value(buff, common::ErrorValue::E_ERROR);
   }
   return common::Error();
@@ -534,8 +503,7 @@ common::Error SsdbRaw::zrank(const std::string& name, const std::string& key, in
 
   auto st = connection_.handle_->zrank(name, key, ret);
   if (st.error()) {
-    char buff[1024] = {0};
-    common::SNPrintf(buff, sizeof(buff), "zrank function error: %s", st.code());
+    std::string buff = common::MemSPrintf("zrank function error: %s", st.code());
     return common::make_error_value(buff, common::ErrorValue::E_ERROR);
   }
   return common::Error();
@@ -546,8 +514,7 @@ common::Error SsdbRaw::zrrank(const std::string& name, const std::string& key, i
 
   auto st = connection_.handle_->zrrank(name, key, ret);
   if (st.error()) {
-    char buff[1024] = {0};
-    common::SNPrintf(buff, sizeof(buff), "zrrank function error: %s", st.code());
+    std::string buff = common::MemSPrintf("zrrank function error: %s", st.code());
     return common::make_error_value(buff, common::ErrorValue::E_ERROR);
   }
   return common::Error();
@@ -559,8 +526,7 @@ common::Error SsdbRaw::zrange(const std::string& name, uint64_t offset, uint64_t
 
   auto st = connection_.handle_->zrange(name, offset, limit, ret);
   if (st.error()) {
-    char buff[1024] = {0};
-    common::SNPrintf(buff, sizeof(buff), "zrange function error: %s", st.code());
+    std::string buff = common::MemSPrintf("zrange function error: %s", st.code());
     return common::make_error_value(buff, common::ErrorValue::E_ERROR);
   }
   return common::Error();
@@ -573,8 +539,7 @@ common::Error SsdbRaw::zrrange(const std::string& name,
 
   auto st = connection_.handle_->zrrange(name, offset, limit, ret);
   if (st.error()) {
-    char buff[1024] = {0};
-    common::SNPrintf(buff, sizeof(buff), "zrrange function error: %s", st.code());
+    std::string buff = common::MemSPrintf("zrrange function error: %s", st.code());
     return common::make_error_value(buff, common::ErrorValue::E_ERROR);
   }
   return common::Error();
@@ -587,8 +552,7 @@ common::Error SsdbRaw::zkeys(const std::string& name, const std::string& key_sta
 
   auto st = connection_.handle_->zkeys(name, key_start, score_start, score_end, limit, ret);
   if (st.error()) {
-    char buff[1024] = {0};
-    common::SNPrintf(buff, sizeof(buff), "zkeys function error: %s", st.code());
+    std::string buff = common::MemSPrintf("zkeys function error: %s", st.code());
     return common::make_error_value(buff, common::ErrorValue::E_ERROR);
   }
   return common::Error();
@@ -601,8 +565,7 @@ common::Error SsdbRaw::zscan(const std::string& name, const std::string& key_sta
 
   auto st = connection_.handle_->zscan(name, key_start, score_start, score_end, limit, ret);
   if (st.error()) {
-    char buff[1024] = {0};
-    common::SNPrintf(buff, sizeof(buff), "zscan function error: %s", st.code());
+    std::string buff = common::MemSPrintf("zscan function error: %s", st.code());
     return common::make_error_value(buff, common::ErrorValue::E_ERROR);
   }
   return common::Error();
@@ -615,8 +578,7 @@ common::Error SsdbRaw::zrscan(const std::string& name, const std::string& key_st
 
   auto st = connection_.handle_->zrscan(name, key_start, score_start, score_end, limit, ret);
   if (st.error()) {
-    char buff[1024] = {0};
-    common::SNPrintf(buff, sizeof(buff), "zrscan function error: %s", st.code());
+    std::string buff = common::MemSPrintf("zrscan function error: %s", st.code());
     return common::make_error_value(buff, common::ErrorValue::E_ERROR);
   }
   return common::Error();
@@ -628,8 +590,7 @@ common::Error SsdbRaw::multi_zget(const std::string& name, const std::vector<std
 
   auto st = connection_.handle_->multi_zget(name, keys, ret);
   if (st.error()) {
-    char buff[1024] = {0};
-    common::SNPrintf(buff, sizeof(buff), "multi_zget function error: %s", st.code());
+    std::string buff = common::MemSPrintf("multi_zget function error: %s", st.code());
     return common::make_error_value(buff, common::ErrorValue::E_ERROR);
   }
   return common::Error();
@@ -640,8 +601,7 @@ common::Error SsdbRaw::multi_zset(const std::string& name, const std::map<std::s
 
   auto st = connection_.handle_->multi_zset(name, kss);
   if (st.error()) {
-    char buff[1024] = {0};
-    common::SNPrintf(buff, sizeof(buff), "multi_zset function error: %s", st.code());
+    std::string buff = common::MemSPrintf("multi_zset function error: %s", st.code());
     return common::make_error_value(buff, common::ErrorValue::E_ERROR);
   }
   return common::Error();
@@ -652,8 +612,7 @@ common::Error SsdbRaw::multi_zdel(const std::string& name, const std::vector<std
 
   auto st = connection_.handle_->multi_zdel(name, keys);
   if (st.error()) {
-    char buff[1024] = {0};
-    common::SNPrintf(buff, sizeof(buff), "multi_zdel function error: %s", st.code());
+    std::string buff = common::MemSPrintf("multi_zdel function error: %s", st.code());
     return common::make_error_value(buff, common::ErrorValue::E_ERROR);
   }
   return common::Error();
@@ -664,8 +623,7 @@ common::Error SsdbRaw::qpush(const std::string& name, const std::string& item) {
 
   auto st = connection_.handle_->qpush(name, item);
   if (st.error()) {
-    char buff[1024] = {0};
-    common::SNPrintf(buff, sizeof(buff), "qpush function error: %s", st.code());
+    std::string buff = common::MemSPrintf("qpush function error: %s", st.code());
     return common::make_error_value(buff, common::ErrorValue::E_ERROR);
   }
   return common::Error();
@@ -676,8 +634,7 @@ common::Error SsdbRaw::qpop(const std::string& name, std::string* item) {
 
   auto st = connection_.handle_->qpop(name, item);
   if (st.error()) {
-    char buff[1024] = {0};
-    common::SNPrintf(buff, sizeof(buff), "qpop function error: %s", st.code());
+    std::string buff = common::MemSPrintf("qpop function error: %s", st.code());
     return common::make_error_value(buff, common::ErrorValue::E_ERROR);
   }
   return common::Error();
@@ -689,8 +646,7 @@ common::Error SsdbRaw::qslice(const std::string& name, int64_t begin, int64_t en
 
   auto st = connection_.handle_->qslice(name, begin, end, ret);
   if (st.error()) {
-    char buff[1024] = {0};
-    common::SNPrintf(buff, sizeof(buff), "qslice function error: %s", st.code());
+    std::string buff = common::MemSPrintf("qslice function error: %s", st.code());
     return common::make_error_value(buff, common::ErrorValue::E_ERROR);
   }
   return common::Error();
@@ -701,8 +657,7 @@ common::Error SsdbRaw::qclear(const std::string& name, int64_t* ret) {
 
   auto st = connection_.handle_->qclear(name, ret);
   if (st.error()) {
-    char buff[1024] = {0};
-    common::SNPrintf(buff, sizeof(buff), "qclear function error: %s", st.code());
+    std::string buff = common::MemSPrintf("qclear function error: %s", st.code());
     return common::make_error_value(buff, common::ErrorValue::E_ERROR);
   }
   return common::Error();
@@ -718,8 +673,7 @@ common::Error SsdbRaw::flushdb() {
   std::vector<std::string> ret;
   auto st = connection_.handle_->keys(std::string(), std::string(), 0, &ret);
   if (st.error()) {
-    char buff[1024] = {0};
-    common::SNPrintf(buff, sizeof(buff), "Flushdb function error: %s", st.code());
+    std::string buff = common::MemSPrintf("Flushdb function error: %s", st.code());
     return common::make_error_value(buff, common::ErrorValue::E_ERROR);
   }
 

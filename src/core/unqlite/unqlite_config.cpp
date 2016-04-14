@@ -43,10 +43,7 @@ void parseOptions(int argc, char** argv, UnqliteConfig& cfg) {
       cfg.create_if_missing = true;
     } else {
       if (argv[i][0] == '-') {
-        const uint16_t size_buff = 256;
-        char buff[size_buff] = {0};
-        common::SNPrintf(buff, sizeof(buff),
-                         "Unrecognized option or bad number of args for: '%s'", argv[i]);
+        std::string buff = common::MemSPrintf("Unrecognized option or bad number of args for: '%s'", argv[i]);
         LOG_MSG(buff, common::logging::L_WARNING, true);
         break;
       } else {

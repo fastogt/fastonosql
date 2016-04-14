@@ -323,11 +323,9 @@ void RedisDriver::handleChangePasswordEvent(events::ChangePasswordRequestEvent* 
   notifyProgress(sender, 0);
   events::ChangePasswordResponceEvent::value_type res(ev->value());
   notifyProgress(sender, 25);
-  char patternResult[1024] = {0};
-  common::SNPrintf(patternResult, sizeof(patternResult), SET_PASSWORD_1ARGS_S, res.new_password);
+  std::string patternResult = common::MemSPrintf(SET_PASSWORD_1ARGS_S, res.new_password);
   FastoObjectIPtr root = FastoObject::createRoot(patternResult);
-  FastoObjectCommand* cmd = createCommand<RedisCommand>(root, patternResult,
-                                                        common::Value::C_INNER);
+  FastoObjectCommand* cmd = createCommand<RedisCommand>(root, patternResult, common::Value::C_INNER);
   common::Error er = execute(cmd);
   if (er && er->isError()) {
     res.setErrorInfo(er);
@@ -343,12 +341,9 @@ void RedisDriver::handleChangeMaxConnectionEvent(events::ChangeMaxConnectionRequ
   notifyProgress(sender, 0);
   events::ChangeMaxConnectionResponceEvent::value_type res(ev->value());
   notifyProgress(sender, 25);
-  char patternResult[1024] = {0};
-  common::SNPrintf(patternResult, sizeof(patternResult),
-                   SET_MAX_CONNECTIONS_1ARGS_I, res.max_connection);
+  std::string patternResult = common::MemSPrintf(SET_MAX_CONNECTIONS_1ARGS_I, res.max_connection);
   FastoObjectIPtr root = FastoObject::createRoot(patternResult);
-  FastoObjectCommand* cmd = createCommand<RedisCommand>(root,
-                                                        patternResult, common::Value::C_INNER);
+  FastoObjectCommand* cmd = createCommand<RedisCommand>(root, patternResult, common::Value::C_INNER);
   common::Error er = execute(cmd);
   if (er && er->isError()) {
     res.setErrorInfo(er);
@@ -380,8 +375,8 @@ common::Error RedisDriver::latencyMode(events::ProcessConfigArgsRequestEvent* ev
   events::LeaveModeEvent::value_type res(this, LatencyMode);
   RootLocker lock = make_locker(sender, LATENCY_REQUEST);
 
-  FastoObjectIPtr obj = lock.root_;
-  common::Error er = impl_->latencyMode(obj.get());
+  FastoObject* obj = lock.root();
+  common::Error er = impl_->latencyMode(obj);
   if (er && er->isError()) {
     res.setErrorInfo(er);
   }
@@ -400,8 +395,8 @@ common::Error RedisDriver::slaveMode(events::ProcessConfigArgsRequestEvent* ev) 
   events::LeaveModeEvent::value_type res(this, SlaveMode);
   RootLocker lock = make_locker(sender, SYNC_REQUEST);
 
-  FastoObjectIPtr obj = lock.root_;
-  common::Error er = impl_->slaveMode(obj.get());
+  FastoObject* obj = lock.root();
+  common::Error er = impl_->slaveMode(obj);
   if (er && er->isError()) {
     res.setErrorInfo(er);
   }
@@ -420,8 +415,8 @@ common::Error RedisDriver::getRDBMode(events::ProcessConfigArgsRequestEvent* ev)
   events::LeaveModeEvent::value_type res(this, GetRDBMode);
   RootLocker lock = make_locker(sender, RDM_REQUEST);
 
-  FastoObjectIPtr obj = lock.root_;
-  common::Error er = impl_->getRDB(obj.get());
+  FastoObject* obj = lock.root();
+  common::Error er = impl_->getRDB(obj);
   if (er && er->isError()) {
     res.setErrorInfo(er);
   }
@@ -440,8 +435,8 @@ common::Error RedisDriver::findBigKeysMode(events::ProcessConfigArgsRequestEvent
   events::LeaveModeEvent::value_type res(this, FindBigKeysMode);
   RootLocker lock = make_locker(sender, FIND_BIG_KEYS_REQUEST);
 
-  FastoObjectIPtr obj = lock.root_;
-  common::Error er = impl_->findBigKeys(obj.get());
+  FastoObject* obj = lock.root();
+  common::Error er = impl_->findBigKeys(obj);
   if (er && er->isError()) {
     res.setErrorInfo(er);
   }
@@ -460,8 +455,8 @@ common::Error RedisDriver::statMode(events::ProcessConfigArgsRequestEvent* ev) {
   events::LeaveModeEvent::value_type res(this, StatMode);
   RootLocker lock = make_locker(sender, STAT_MODE_REQUEST);
 
-  FastoObjectIPtr obj = lock.root_;
-  common::Error er = impl_->statMode(obj.get());
+  FastoObject* obj = lock.root();
+  common::Error er = impl_->statMode(obj);
   if (er && er->isError()) {
     res.setErrorInfo(er);
   }
@@ -480,8 +475,8 @@ common::Error RedisDriver::scanMode(events::ProcessConfigArgsRequestEvent* ev) {
   events::LeaveModeEvent::value_type res(this, ScanMode);
   RootLocker lock = make_locker(sender, SCAN_MODE_REQUEST);
 
-  FastoObjectIPtr obj = lock.root_;
-  common::Error er = impl_->scanMode(obj.get());
+  FastoObject* obj = lock.root();
+  common::Error er = impl_->scanMode(obj);
   if (er && er->isError()) {
     res.setErrorInfo(er);
   }
@@ -502,7 +497,7 @@ void RedisDriver::handleExecuteEvent(events::ExecuteRequestEvent* ev) {
     size_t length = strlen(inputLine);
     int offset = 0;
     RootLocker lock = make_locker(sender, inputLine);
-    FastoObjectIPtr outRoot = lock.root_;
+    FastoObject* obj = lock.root();
     double step = 100.0f / length;
     for (size_t n = 0; n < length; ++n) {
       if (isInterrupted()) {
@@ -521,7 +516,7 @@ void RedisDriver::handleExecuteEvent(events::ExecuteRequestEvent* ev) {
         }
 
         offset = n + 1;
-        FastoObjectCommand* cmd = createCommand<RedisCommand>(outRoot, command,
+        FastoObjectCommand* cmd = createCommand<RedisCommand>(obj, command,
                                                               common::Value::C_USER);
         er = execute(cmd);
         if (er && er->isError()) {
@@ -553,8 +548,8 @@ void RedisDriver::handleCommandRequestEvent(events::CommandRequestEvent* ev) {
   }
 
   RootLocker lock = make_locker(sender, cmdtext);
-  FastoObjectIPtr root = lock.root_;
-  FastoObjectCommand* cmd = createCommand<RedisCommand>(root, cmdtext, common::Value::C_INNER);
+  FastoObject* obj = lock.root();
+  FastoObjectCommand* cmd = createCommand<RedisCommand>(obj, cmdtext, common::Value::C_INNER);
   notifyProgress(sender, 50);
   er = execute(cmd);
   if (er && er->isError()) {
@@ -636,13 +631,11 @@ void RedisDriver::handleLoadDatabaseContentEvent(events::LoadDatabaseContentRequ
   QObject* sender = ev->sender();
   notifyProgress(sender, 0);
   events::LoadDatabaseContentResponceEvent::value_type res(ev->value());
-  char patternResult[1024] = {0};
-  common::SNPrintf(patternResult, sizeof(patternResult),
-                   GET_KEYS_PATTERN_3ARGS_ISI, res.cursor_in, res.pattern, res.count_keys);
+  std::string patternResult = common::MemSPrintf(GET_KEYS_PATTERN_3ARGS_ISI, res.cursor_in,
+                                                 res.pattern, res.count_keys);
   FastoObjectIPtr root = FastoObject::createRoot(patternResult);
   notifyProgress(sender, 50);
-  FastoObjectCommand* cmd = createCommand<RedisCommand>(root, patternResult,
-                                                        common::Value::C_INNER);
+  FastoObjectCommand* cmd = createCommand<RedisCommand>(root, patternResult, common::Value::C_INNER);
   common::Error er = execute(cmd);
   if (er && er->isError()) {
     res.setErrorInfo(er);
@@ -721,7 +714,7 @@ void RedisDriver::handleLoadDatabaseContentEvent(events::LoadDatabaseContentRequ
           if (tchildrens.size() == 1) {
             FastoObject* fttl = tchildrens[0];
             common::Value* vttl = fttl->value();
-            int32_t ttl = 0;
+            ttl_t ttl = 0;
             if (vttl->getAsInteger(&ttl)) {
                 res.keys[i].setTTL(ttl);
             }
@@ -828,12 +821,8 @@ common::Error RedisDriver::commandDeleteImpl(CommandDeleteKey* command,
     return common::make_error_value("Invalid input argument(s)", common::ErrorValue::E_ERROR);
   }
 
-  char patternResult[1024] = {0};
-  const NDbKValue key = command->key();
-  common::SNPrintf(patternResult, sizeof(patternResult),
-                   DELETE_KEY_PATTERN_1ARGS_S, key.keyString());
-
-  *cmdstring = patternResult;
+  NDbKValue key = command->key();
+  *cmdstring = common::MemSPrintf(DELETE_KEY_PATTERN_1ARGS_S, key.keyString());
   return common::Error();
 }
 
@@ -842,23 +831,18 @@ common::Error RedisDriver::commandLoadImpl(CommandLoadKey* command, std::string*
     return common::make_error_value("Invalid input argument(s)", common::ErrorValue::E_ERROR);
   }
 
-  char patternResult[1024] = {0};
-  const NDbKValue key = command->key();
+  std::string patternResult;
+  NDbKValue key = command->key();
   if (key.type() == common::Value::TYPE_ARRAY) {
-    common::SNPrintf(patternResult, sizeof(patternResult),
-                     GET_KEY_LIST_PATTERN_1ARGS_S, key.keyString());
+    patternResult = common::MemSPrintf(GET_KEY_LIST_PATTERN_1ARGS_S, key.keyString());
   } else if (key.type() == common::Value::TYPE_SET) {
-    common::SNPrintf(patternResult, sizeof(patternResult),
-                     GET_KEY_SET_PATTERN_1ARGS_S, key.keyString());
+    patternResult = common::MemSPrintf(GET_KEY_SET_PATTERN_1ARGS_S, key.keyString());
   } else if (key.type() == common::Value::TYPE_ZSET) {
-    common::SNPrintf(patternResult, sizeof(patternResult),
-                     GET_KEY_ZSET_PATTERN_1ARGS_S, key.keyString());
+    patternResult = common::MemSPrintf(GET_KEY_ZSET_PATTERN_1ARGS_S, key.keyString());
   } else if (key.type() == common::Value::TYPE_HASH) {
-    common::SNPrintf(patternResult, sizeof(patternResult),
-                     GET_KEY_HASH_PATTERN_1ARGS_S, key.keyString());
+    patternResult = common::MemSPrintf(GET_KEY_HASH_PATTERN_1ARGS_S, key.keyString());
   } else {
-    common::SNPrintf(patternResult, sizeof(patternResult),
-                     GET_KEY_PATTERN_1ARGS_S, key.keyString());
+    patternResult = common::MemSPrintf(GET_KEY_PATTERN_1ARGS_S, key.keyString());
   }
 
   *cmdstring = patternResult;
@@ -871,7 +855,7 @@ common::Error RedisDriver::commandCreateImpl(CommandCreateKey* command,
     return common::make_error_value("Invalid input argument(s)", common::ErrorValue::E_ERROR);
   }
 
-  char patternResult[1024] = {0};
+  std::string patternResult;
   NDbKValue key = command->key();
   NValue val = command->value();
   common::Value* rval = val.get();
@@ -879,20 +863,15 @@ common::Error RedisDriver::commandCreateImpl(CommandCreateKey* command,
   std::string value_str = common::convertToString(rval, " ");
   common::Value::Type t = key.type();
   if (t == common::Value::TYPE_ARRAY) {
-    common::SNPrintf(patternResult, sizeof(patternResult),
-                     SET_KEY_LIST_PATTERN_2ARGS_SS, key_str, value_str);
+    patternResult = common::MemSPrintf(SET_KEY_LIST_PATTERN_2ARGS_SS, key_str, value_str);
   } else if (t == common::Value::TYPE_SET) {
-    common::SNPrintf(patternResult, sizeof(patternResult),
-                     SET_KEY_SET_PATTERN_2ARGS_SS, key_str, value_str);
+    patternResult = common::MemSPrintf(SET_KEY_SET_PATTERN_2ARGS_SS, key_str, value_str);
   } else if (t == common::Value::TYPE_ZSET) {
-    common::SNPrintf(patternResult, sizeof(patternResult),
-                     SET_KEY_ZSET_PATTERN_2ARGS_SS, key_str, value_str);
+    patternResult = common::MemSPrintf(SET_KEY_ZSET_PATTERN_2ARGS_SS, key_str, value_str);
   } else if (t == common::Value::TYPE_HASH) {
-    common::SNPrintf(patternResult, sizeof(patternResult),
-                     SET_KEY_HASH_PATTERN_2ARGS_SS, key_str, value_str);
+    patternResult = common::MemSPrintf(SET_KEY_HASH_PATTERN_2ARGS_SS, key_str, value_str);
   } else {
-    common::SNPrintf(patternResult, sizeof(patternResult),
-                     SET_KEY_PATTERN_2ARGS_SS, key_str, value_str);
+    patternResult = common::MemSPrintf(SET_KEY_PATTERN_2ARGS_SS, key_str, value_str);
   }
 
   *cmdstring = patternResult;
@@ -905,15 +884,13 @@ common::Error RedisDriver::commandChangeTTLImpl(CommandChangeTTL* command,
     return common::make_error_value("Invalid input argument(s)", common::ErrorValue::E_ERROR);
   }
 
-  char patternResult[1024] = {0};
+  std::string patternResult;
   NDbKValue key = command->key();
-  uint32_t new_ttl = command->newTTL();
+  ttl_t new_ttl = command->newTTL();
   if (new_ttl == -1) {
-    common::SNPrintf(patternResult, sizeof(patternResult),
-                     PERSIST_KEY_1ARGS_S, key.keyString());
+    patternResult = common::MemSPrintf(PERSIST_KEY_1ARGS_S, key.keyString());
   } else {
-    common::SNPrintf(patternResult, sizeof(patternResult),
-                     CHANGE_TTL_2ARGS_SI, key.keyString(), new_ttl);
+    patternResult = common::MemSPrintf(CHANGE_TTL_2ARGS_SI, key.keyString(), new_ttl);
   }
 
   *cmdstring = patternResult;

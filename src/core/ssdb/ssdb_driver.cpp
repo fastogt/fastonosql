@@ -71,12 +71,8 @@ common::Error SsdbDriver::commandDeleteImpl(CommandDeleteKey* command,
     return common::make_error_value("Invalid input argument(s)", common::ErrorValue::E_ERROR);
   }
 
-  char patternResult[1024] = {0};
   NDbKValue key = command->key();
-  common::SNPrintf(patternResult, sizeof(patternResult),
-                   DELETE_KEY_PATTERN_1ARGS_S, key.keyString());
-
-  *cmdstring = patternResult;
+  *cmdstring = common::MemSPrintf(DELETE_KEY_PATTERN_1ARGS_S, key.keyString());
   return common::Error();
 }
 
@@ -85,24 +81,19 @@ common::Error SsdbDriver::commandLoadImpl(CommandLoadKey* command, std::string* 
     return common::make_error_value("Invalid input argument(s)", common::ErrorValue::E_ERROR);
   }
 
-  char patternResult[1024] = {0};
+  std::string patternResult;
   NDbKValue key = command->key();
   common::Value::Type t = key.type();
   if (t == common::Value::TYPE_ARRAY) {
-    common::SNPrintf(patternResult, sizeof(patternResult),
-                     GET_KEY_LIST_PATTERN_1ARGS_S, key.keyString());
+    patternResult = common::MemSPrintf(GET_KEY_LIST_PATTERN_1ARGS_S, key.keyString());
   } else if (t == common::Value::TYPE_SET) {
-    common::SNPrintf(patternResult, sizeof(patternResult),
-                     GET_KEY_SET_PATTERN_1ARGS_S, key.keyString());
+    patternResult = common::MemSPrintf(GET_KEY_SET_PATTERN_1ARGS_S, key.keyString());
   } else if (t == common::Value::TYPE_ZSET) {
-    common::SNPrintf(patternResult, sizeof(patternResult),
-                     GET_KEY_ZSET_PATTERN_1ARGS_S, key.keyString());
+    patternResult = common::MemSPrintf(GET_KEY_ZSET_PATTERN_1ARGS_S, key.keyString());
   } else if (t == common::Value::TYPE_HASH) {
-    common::SNPrintf(patternResult, sizeof(patternResult),
-                     GET_KEY_HASH_PATTERN_1ARGS_S, key.keyString());
+    patternResult = common::MemSPrintf(GET_KEY_HASH_PATTERN_1ARGS_S, key.keyString());
   } else {
-    common::SNPrintf(patternResult, sizeof(patternResult),
-                     GET_KEY_PATTERN_1ARGS_S, key.keyString());
+    patternResult = common::MemSPrintf(GET_KEY_PATTERN_1ARGS_S, key.keyString());
   }
 
   *cmdstring = patternResult;
@@ -115,7 +106,7 @@ common::Error SsdbDriver::commandCreateImpl(CommandCreateKey* command,
     return common::make_error_value("Invalid input argument(s)", common::ErrorValue::E_ERROR);
   }
 
-  char patternResult[1024] = {0};
+  std::string patternResult;
   NDbKValue key = command->key();
   NValue val = command->value();
   common::Value* rval = val.get();
@@ -123,20 +114,15 @@ common::Error SsdbDriver::commandCreateImpl(CommandCreateKey* command,
   std::string value_str = common::convertToString(rval, " ");
   common::Value::Type t = key.type();
   if (t == common::Value::TYPE_ARRAY) {
-    common::SNPrintf(patternResult, sizeof(patternResult), SET_KEY_LIST_PATTERN_2ARGS_SS,
-                     key_str, value_str);
+    patternResult = common::MemSPrintf(SET_KEY_LIST_PATTERN_2ARGS_SS, key_str, value_str);
   } else if (t == common::Value::TYPE_SET) {
-    common::SNPrintf(patternResult, sizeof(patternResult), SET_KEY_SET_PATTERN_2ARGS_SS,
-                     key_str, value_str);
+    patternResult = common::MemSPrintf(SET_KEY_SET_PATTERN_2ARGS_SS, key_str, value_str);
   } else if (t == common::Value::TYPE_ZSET) {
-    common::SNPrintf(patternResult, sizeof(patternResult), SET_KEY_ZSET_PATTERN_2ARGS_SS,
-                     key_str, value_str);
+    patternResult = common::MemSPrintf(SET_KEY_ZSET_PATTERN_2ARGS_SS, key_str, value_str);
   } else if (t == common::Value::TYPE_HASH) {
-    common::SNPrintf(patternResult, sizeof(patternResult), SET_KEY_HASH_PATTERN_2ARGS_SS,
-                     key_str, value_str);
+    patternResult = common::MemSPrintf(SET_KEY_HASH_PATTERN_2ARGS_SS, key_str, value_str);
   } else {
-    common::SNPrintf(patternResult, sizeof(patternResult), SET_KEY_PATTERN_2ARGS_SS,
-                     key_str, value_str);
+    patternResult = common::MemSPrintf(SET_KEY_PATTERN_2ARGS_SS, key_str, value_str);
   }
 
   *cmdstring = patternResult;
@@ -145,12 +131,12 @@ common::Error SsdbDriver::commandCreateImpl(CommandCreateKey* command,
 
 common::Error SsdbDriver::commandChangeTTLImpl(CommandChangeTTL* command,
                                                std::string* cmdstring) const {
-  UNUSED(command);
-  UNUSED(cmdstring);
-  char errorMsg[1024] = {0};
-  common::SNPrintf(errorMsg, sizeof(errorMsg),
-                   "Sorry, but now " PROJECT_NAME_TITLE " not supported change ttl command for %s.",
-                   common::convertToString(type()));
+  if (!command || !cmdstring) {
+    return common::make_error_value("Invalid input argument(s)", common::ErrorValue::E_ERROR);
+  }
+
+  std::string errorMsg = common::MemSPrintf("Sorry, but now " PROJECT_NAME_TITLE " not supported change ttl command for %s.",
+                                          common::convertToString(type()));
   return common::make_error_value(errorMsg, common::ErrorValue::E_ERROR);
 }
 // ============== commands =============//
@@ -264,7 +250,7 @@ void SsdbDriver::handleExecuteEvent(events::ExecuteRequestEvent* ev) {
     size_t length = strlen(inputLine);
     int offset = 0;
     RootLocker lock = make_locker(sender, inputLine);
-    FastoObjectIPtr outRoot = lock.root_;
+    FastoObject* obj = lock.root();
     double step = 100.0f/length;
     for (size_t n = 0; n < length; ++n) {
       if (isInterrupted()) {
@@ -281,8 +267,7 @@ void SsdbDriver::handleExecuteEvent(events::ExecuteRequestEvent* ev) {
           strncpy(command, inputLine + offset, n - offset);
         }
         offset = n + 1;
-        FastoObjectCommand* cmd = createCommand<SsdbCommand>(outRoot, command,
-                                                             common::Value::C_USER);
+        FastoObjectCommand* cmd = createCommand<SsdbCommand>(obj, command, common::Value::C_USER);
         er = execute(cmd);
         if (er && er->isError()) {
           res.setErrorInfo(er);
@@ -313,8 +298,8 @@ void SsdbDriver::handleCommandRequestEvent(events::CommandRequestEvent* ev) {
     }
 
     RootLocker lock = make_locker(sender, cmdtext);
-    FastoObjectIPtr root = lock.root_;
-    FastoObjectCommand* cmd = createCommand<SsdbCommand>(root, cmdtext, common::Value::C_INNER);
+    FastoObject* obj = lock.root();
+    FastoObjectCommand* cmd = createCommand<SsdbCommand>(obj, cmdtext, common::Value::C_INNER);
   notifyProgress(sender, 50);
     er = execute(cmd);
     if (er && er->isError()) {
@@ -328,9 +313,7 @@ void SsdbDriver::handleLoadDatabaseContentEvent(events::LoadDatabaseContentReque
   QObject* sender = ev->sender();
   notifyProgress(sender, 0);
     events::LoadDatabaseContentResponceEvent::value_type res(ev->value());
-    char patternResult[1024] = {0};
-    common::SNPrintf(patternResult, sizeof(patternResult), GET_KEYS_PATTERN_1ARGS_I,
-                     res.count_keys);
+    std::string patternResult = common::MemSPrintf(GET_KEYS_PATTERN_1ARGS_I, res.count_keys);
     FastoObjectIPtr root = FastoObject::createRoot(patternResult);
   notifyProgress(sender, 50);
     FastoObjectCommand* cmd = createCommand<SsdbCommand>(root, patternResult,

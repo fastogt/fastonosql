@@ -72,8 +72,7 @@ common::Error createConnection(const LeveldbConfig& config, LevelDBConnection** 
   ::leveldb::DB* lcontext = nullptr;
   auto st = ::leveldb::DB::Open(config.options, config.dbname, &lcontext);
   if (!st.ok()) {
-    char buff[1024] = {0};
-    common::SNPrintf(buff, sizeof(buff), "Fail connect to server: %s!", st.ToString());
+    std::string buff = common::MemSPrintf("Fail connect to server: %s!", st.ToString());
     return common::make_error_value(buff, common::ErrorValue::E_ERROR);
   }
 
@@ -153,8 +152,7 @@ common::Error LeveldbRaw::dbsize(size_t* size) {
   delete it;
 
   if (!st.ok()) {
-    char buff[1024] = {0};
-    common::SNPrintf(buff, sizeof(buff), "Couldn't determine DBSIZE error: %s", st.ToString());
+    std::string buff = common::MemSPrintf("Couldn't determine DBSIZE error: %s", st.ToString());
     return common::make_error_value(buff, common::ErrorValue::E_ERROR);
   }
 
@@ -163,10 +161,6 @@ common::Error LeveldbRaw::dbsize(size_t* size) {
 }
 
 common::Error LeveldbRaw::info(const char* args, LeveldbServerInfo::Stats* statsout) {
-  // sstables
-  // stats
-  // char prop[1024] = {0};
-  // common::SNPrintf(prop, sizeof(prop), "leveldb.%s", args ? args : "stats");
   CHECK(isConnected());
 
   if (!statsout) {
@@ -218,8 +212,7 @@ common::Error LeveldbRaw::set(const std::string& key, const std::string& value) 
   ::leveldb::WriteOptions wo;
   auto st = connection_.handle_->Put(wo, key, value);
   if (!st.ok()) {
-    char buff[1024] = {0};
-    common::SNPrintf(buff, sizeof(buff), "set function error: %s", st.ToString());
+    std::string buff = common::MemSPrintf("set function error: %s", st.ToString());
     return common::make_error_value(buff, common::ErrorValue::E_ERROR);
   }
 
@@ -232,8 +225,7 @@ common::Error LeveldbRaw::get(const std::string& key, std::string* ret_val) {
   ::leveldb::ReadOptions ro;
   auto st = connection_.handle_->Get(ro, key, ret_val);
   if (!st.ok()) {
-    char buff[1024] = {0};
-    common::SNPrintf(buff, sizeof(buff), "get function error: %s", st.ToString());
+    std::string buff = common::MemSPrintf("get function error: %s", st.ToString());
     return common::make_error_value(buff, common::ErrorValue::E_ERROR);
   }
 
@@ -246,8 +238,7 @@ common::Error LeveldbRaw::del(const std::string& key) {
   ::leveldb::WriteOptions wo;
   auto st = connection_.handle_->Delete(wo, key);
   if (!st.ok()) {
-    char buff[1024] = {0};
-    common::SNPrintf(buff, sizeof(buff), "del function error: %s", st.ToString());
+    std::string buff = common::MemSPrintf("del function error: %s", st.ToString());
     return common::make_error_value(buff, common::ErrorValue::E_ERROR);
   }
   return common::Error();
@@ -272,8 +263,7 @@ common::Error LeveldbRaw::keys(const std::string& key_start, const std::string& 
   delete it;
 
   if (!st.ok()) {
-    char buff[1024] = {0};
-    common::SNPrintf(buff, sizeof(buff), "Keys function error: %s", st.ToString());
+    std::string buff = common::MemSPrintf("Keys function error: %s", st.ToString());
     return common::make_error_value(buff, common::ErrorValue::E_ERROR);
   }
   return common::Error();
@@ -303,8 +293,7 @@ common::Error LeveldbRaw::flushdb() {
   delete it;
 
   if (!st.ok()) {
-    char buff[1024] = {0};
-    common::SNPrintf(buff, sizeof(buff), "Keys function error: %s", st.ToString());
+    std::string buff = common::MemSPrintf("Keys function error: %s", st.ToString());
     return common::make_error_value(buff, common::ErrorValue::E_ERROR);
   }
   return common::Error();

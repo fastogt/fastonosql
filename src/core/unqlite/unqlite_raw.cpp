@@ -135,8 +135,7 @@ common::Error createConnection(const UnqliteConfig& config, UnQLiteConnection** 
   int st = unqlite_open(&lcontext, dbname, config.create_if_missing ?
                           UNQLITE_OPEN_CREATE : UNQLITE_OPEN_READWRITE);
   if (st != UNQLITE_OK) {
-    char buff[1024] = {0};
-    common::SNPrintf(buff, sizeof(buff), "Fail open database: %s!", unqlite_strerror(st));
+    std::string buff = common::MemSPrintf("Fail open database: %s!", unqlite_strerror(st));
     return common::make_error_value(buff, common::ErrorValue::E_ERROR);
   }
 
@@ -197,8 +196,7 @@ common::Error UnqliteRaw::dbsize(size_t* size) {
   unqlite_kv_cursor* pCur; /* Cursor handle */
   int rc = unqlite_kv_cursor_init(connection_.handle_, &pCur);
   if (rc != UNQLITE_OK) {
-    char buff[1024] = {0};
-    common::SNPrintf(buff, sizeof(buff), "dbsize function error: %s", unqlite_strerror(rc));
+    std::string buff = common::MemSPrintf("dbsize function error: %s", unqlite_strerror(rc));
     return common::make_error_value(buff, common::ErrorValue::E_ERROR);
   }
   /* Point to the first record */
@@ -247,8 +245,7 @@ common::Error UnqliteRaw::set(const std::string& key, const std::string& value) 
 
   int rc = unqlite_kv_store(connection_.handle_, key.c_str(), key.size(), value.c_str(), value.length());
   if (rc != UNQLITE_OK) {
-    char buff[1024] = {0};
-    common::SNPrintf(buff, sizeof(buff), "set function error: %s", unqlite_strerror(rc));
+    std::string buff = common::MemSPrintf("set function error: %s", unqlite_strerror(rc));
     return common::make_error_value(buff, common::ErrorValue::E_ERROR);
   }
 
@@ -260,8 +257,7 @@ common::Error UnqliteRaw::get(const std::string& key, std::string* ret_val) {
 
   int rc = unqlite_kv_fetch_callback(connection_.handle_, key.c_str(), key.size(), unqlite_data_callback, ret_val);
   if (rc != UNQLITE_OK) {
-    char buff[1024] = {0};
-    common::SNPrintf(buff, sizeof(buff), "get function error: %s", unqlite_strerror(rc));
+    std::string buff = common::MemSPrintf("get function error: %s", unqlite_strerror(rc));
     return common::make_error_value(buff, common::ErrorValue::E_ERROR);
   }
 
@@ -273,8 +269,7 @@ common::Error UnqliteRaw::del(const std::string& key) {
 
   int rc = unqlite_kv_delete(connection_.handle_, key.c_str(), key.size());
   if (rc != UNQLITE_OK) {
-    char buff[1024] = {0};
-    common::SNPrintf(buff, sizeof(buff), "delete function error: %s", unqlite_strerror(rc));
+    std::string buff = common::MemSPrintf("delete function error: %s", unqlite_strerror(rc));
     return common::make_error_value(buff, common::ErrorValue::E_ERROR);
   }
 
@@ -289,8 +284,7 @@ common::Error UnqliteRaw::keys(const std::string& key_start, const std::string& 
   unqlite_kv_cursor* pCur; /* Cursor handle */
   int rc = unqlite_kv_cursor_init(connection_.handle_, &pCur);
   if (rc != UNQLITE_OK) {
-    char buff[1024] = {0};
-    common::SNPrintf(buff, sizeof(buff), "Keys function error: %s", unqlite_strerror(rc));
+    std::string buff = common::MemSPrintf("Keys function error: %s", unqlite_strerror(rc));
     return common::make_error_value(buff, common::ErrorValue::E_ERROR);
   }
   /* Point to the first record */
@@ -323,8 +317,7 @@ common::Error UnqliteRaw::flushdb() {
   unqlite_kv_cursor* pCur; /* Cursor handle */
   int rc = unqlite_kv_cursor_init(connection_.handle_, &pCur);
   if (rc != UNQLITE_OK) {
-    char buff[1024] = {0};
-    common::SNPrintf(buff, sizeof(buff), "FlushDB function error: %s", unqlite_strerror(rc));
+    std::string buff = common::MemSPrintf("FlushDB function error: %s", unqlite_strerror(rc));
     return common::make_error_value(buff, common::ErrorValue::E_ERROR);
   }
   /* Point to the first record */

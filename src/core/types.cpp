@@ -96,7 +96,7 @@ std::string convertVersionNumberToReadableString(uint32_t version) {
   return UNDEFINED_SINCE_STR;
 }
 
-NKey::NKey(const std::string& key, int32_t ttl_sec)
+NKey::NKey(const std::string& key, ttl_t ttl_sec)
   : key(key), ttl_sec(ttl_sec) {
 }
 
@@ -120,7 +120,7 @@ common::Value::Type NDbKValue::type() const {
   return value_->type();
 }
 
-void NDbKValue::setTTL(int32_t ttl) {
+void NDbKValue::setTTL(ttl_t ttl) {
   key_.ttl_sec = ttl;
 }
 
@@ -422,11 +422,11 @@ CommandCreateKey::CommandCreateKey(const NDbKValue& dbv)
   : CommandKey(dbv, C_CREATE) {
 }
 
-CommandChangeTTL::CommandChangeTTL(const NDbKValue& dbv, int32_t newTTL)
+CommandChangeTTL::CommandChangeTTL(const NDbKValue& dbv, ttl_t newTTL)
   : CommandKey(dbv, C_CHANGE_TTL), new_ttl_(newTTL) {
 }
 
-int32_t CommandChangeTTL::newTTL() const {
+ttl_t CommandChangeTTL::newTTL() const {
   return new_ttl_;
 }
 

@@ -61,12 +61,8 @@ common::Error UnqliteDriver::commandDeleteImpl(CommandDeleteKey* command,
     return common::make_error_value("Invalid input argument(s)", common::ErrorValue::E_ERROR);
   }
 
-  char patternResult[1024] = {0};
   NDbKValue key = command->key();
-  common::SNPrintf(patternResult, sizeof(patternResult),
-                   DELETE_KEY_PATTERN_1ARGS_S, key.keyString());
-
-  *cmdstring = patternResult;
+  *cmdstring = common::MemSPrintf(DELETE_KEY_PATTERN_1ARGS_S, key.keyString());
   return common::Error();
 }
 
@@ -76,11 +72,8 @@ common::Error UnqliteDriver::commandLoadImpl(CommandLoadKey* command,
     return common::make_error_value("Invalid input argument(s)", common::ErrorValue::E_ERROR);
   }
 
-  char patternResult[1024] = {0};
   NDbKValue key = command->key();
-  common::SNPrintf(patternResult, sizeof(patternResult), GET_KEY_PATTERN_1ARGS_S, key.keyString());
-
-  *cmdstring = patternResult;
+  *cmdstring = common::MemSPrintf(GET_KEY_PATTERN_1ARGS_S, key.keyString());
   return common::Error();
 }
 
@@ -90,16 +83,12 @@ common::Error UnqliteDriver::commandCreateImpl(CommandCreateKey* command,
     return common::make_error_value("Invalid input argument(s)", common::ErrorValue::E_ERROR);
   }
 
-  char patternResult[1024] = {0};
   NDbKValue key = command->key();
   NValue val = command->value();
   common::Value* rval = val.get();
   std::string key_str = key.keyString();
   std::string value_str = common::convertToString(rval, " ");
-  common::SNPrintf(patternResult, sizeof(patternResult),
-                   SET_KEY_PATTERN_2ARGS_SS, key_str, value_str);
-
-  *cmdstring = patternResult;
+  *cmdstring = common::MemSPrintf(SET_KEY_PATTERN_2ARGS_SS, key_str, value_str);
   return common::Error();
 }
 
@@ -109,10 +98,8 @@ common::Error UnqliteDriver::commandChangeTTLImpl(CommandChangeTTL* command,
     return common::make_error_value("Invalid input argument(s)", common::ErrorValue::E_ERROR);
   }
 
-  char errorMsg[1024] = {0};
-  common::SNPrintf(errorMsg, sizeof(errorMsg),
-                   "Sorry, but now " PROJECT_NAME_TITLE " not supported change ttl command for %s.",
-                   common::convertToString(type()));
+  std::string errorMsg = common::MemSPrintf("Sorry, but now " PROJECT_NAME_TITLE " not supported change ttl command for %s.",
+                                            common::convertToString(type()));
   return common::make_error_value(errorMsg, common::ErrorValue::E_ERROR);
 }
 
@@ -226,7 +213,7 @@ void UnqliteDriver::handleExecuteEvent(events::ExecuteRequestEvent* ev) {
     size_t length = strlen(inputLine);
     int offset = 0;
     RootLocker lock = make_locker(sender, inputLine);
-    FastoObjectIPtr outRoot = lock.root_;
+    FastoObject* obj = lock.root();
     double step = 100.0f/length;
     for (size_t n = 0; n < length; ++n) {
       if (isInterrupted()) {
@@ -243,8 +230,7 @@ void UnqliteDriver::handleExecuteEvent(events::ExecuteRequestEvent* ev) {
           strncpy(command, inputLine + offset, n - offset);
         }
         offset = n + 1;
-        FastoObjectCommand* cmd = createCommand<UnqliteCommand>(outRoot, command,
-                                                                common::Value::C_USER);
+        FastoObjectCommand* cmd = createCommand<UnqliteCommand>(obj, command, common::Value::C_USER);
         er = execute(cmd);
         if (er && er->isError()) {
           res.setErrorInfo(er);
@@ -275,8 +261,8 @@ void UnqliteDriver::handleCommandRequestEvent(events::CommandRequestEvent* ev) {
   }
 
   RootLocker lock = make_locker(sender, cmdtext);
-  FastoObjectIPtr root = lock.root_;
-  FastoObjectCommand* cmd = createCommand<UnqliteCommand>(root, cmdtext, common::Value::C_INNER);
+  FastoObject* obj = lock.root();
+  FastoObjectCommand* cmd = createCommand<UnqliteCommand>(obj, cmdtext, common::Value::C_INNER);
   notifyProgress(sender, 50);
   er = execute(cmd);
   if (er && er->isError()) {
@@ -290,8 +276,7 @@ void UnqliteDriver::handleLoadDatabaseContentEvent(events::LoadDatabaseContentRe
   QObject* sender = ev->sender();
   notifyProgress(sender, 0);
   events::LoadDatabaseContentResponceEvent::value_type res(ev->value());
-  char patternResult[1024] = {0};
-  common::SNPrintf(patternResult, sizeof(patternResult), GET_KEYS_PATTERN_1ARGS_I, res.count_keys);
+  std::string patternResult = common::MemSPrintf(GET_KEYS_PATTERN_1ARGS_I, res.count_keys);
   FastoObjectIPtr root = FastoObject::createRoot(patternResult);
   notifyProgress(sender, 50);
   FastoObjectCommand* cmd = createCommand<UnqliteCommand>(root, patternResult,

@@ -69,8 +69,7 @@ common::Error createConnection(const RocksdbConfig& config, RocksDBConnection** 
   ::rocksdb::DB* lcontext = nullptr;
   auto st = ::rocksdb::DB::Open(config.options, config.dbname, &lcontext);
   if (!st.ok()) {
-    char buff[1024] = {0};
-    common::SNPrintf(buff, sizeof(buff), "Fail open database: %s!", st.ToString());
+    std::string buff = common::MemSPrintf("Fail open database: %s!", st.ToString());
     return common::make_error_value(buff, common::ErrorValue::E_ERROR);
   }
 
@@ -133,10 +132,6 @@ const char* RocksdbRaw::versionApi() {
 common::Error RocksdbRaw::info(const char* args, RocksdbServerInfo::Stats* statsout) {
   CHECK(isConnected());
 
-  // sstables
-  // stats
-  // char prop[1024] = {0};
-  // common::SNPrintf(prop, sizeof(prop), "rocksdb.%s", args ? args : "stats");
   if (!statsout) {
     return common::make_error_value("Invalid input argument(s)", common::ErrorValue::E_ERROR);
   }
@@ -198,8 +193,7 @@ common::Error RocksdbRaw::dbsize(size_t* size) {
   delete it;
 
   if (!st.ok()) {
-    char buff[1024] = {0};
-    common::SNPrintf(buff, sizeof(buff), "Couldn't determine DBSIZE error: %s", st.ToString());
+    std::string buff = common::MemSPrintf("Couldn't determine DBSIZE error: %s", st.ToString());
     return common::make_error_value(buff, common::ErrorValue::E_ERROR);
   }
 
@@ -224,8 +218,7 @@ common::Error RocksdbRaw::set(const std::string& key, const std::string& value) 
   ::rocksdb::WriteOptions wo;
   auto st = connection_.handle_->Put(wo, key, value);
   if (!st.ok()) {
-    char buff[1024] = {0};
-    common::SNPrintf(buff, sizeof(buff), "set function error: %s", st.ToString());
+    std::string buff = common::MemSPrintf("set function error: %s", st.ToString());
     return common::make_error_value(buff, common::ErrorValue::E_ERROR);
   }
 
@@ -238,8 +231,7 @@ common::Error RocksdbRaw::get(const std::string& key, std::string* ret_val) {
   ::rocksdb::ReadOptions ro;
   auto st = connection_.handle_->Get(ro, key, ret_val);
   if (!st.ok()) {
-    char buff[1024] = {0};
-    common::SNPrintf(buff, sizeof(buff), "get function error: %s", st.ToString());
+    std::string buff = common::MemSPrintf("get function error: %s", st.ToString());
     return common::make_error_value(buff, common::ErrorValue::E_ERROR);
   }
 
@@ -267,8 +259,7 @@ common::Error RocksdbRaw::merge(const std::string& key, const std::string& value
   ::rocksdb::WriteOptions wo;
   auto st = connection_.handle_->Merge(wo, key, value);
   if (!st.ok()) {
-    char buff[1024] = {0};
-    common::SNPrintf(buff, sizeof(buff), "merge function error: %s", st.ToString());
+    std::string buff = common::MemSPrintf("merge function error: %s", st.ToString());
     return common::make_error_value(buff, common::ErrorValue::E_ERROR);
   }
 
@@ -281,8 +272,7 @@ common::Error RocksdbRaw::del(const std::string& key) {
   ::rocksdb::WriteOptions wo;
   auto st = connection_.handle_->Delete(wo, key);
   if (!st.ok()) {
-    char buff[1024] = {0};
-    common::SNPrintf(buff, sizeof(buff), "del function error: %s", st.ToString());
+    std::string buff = common::MemSPrintf("del function error: %s", st.ToString());
     return common::make_error_value(buff, common::ErrorValue::E_ERROR);
   }
   return common::Error();
@@ -307,8 +297,7 @@ common::Error RocksdbRaw::keys(const std::string& key_start, const std::string& 
   delete it;
 
   if (!st.ok()) {
-    char buff[1024] = {0};
-    common::SNPrintf(buff, sizeof(buff), "Keys function error: %s", st.ToString());
+    std::string buff = common::MemSPrintf("Keys function error: %s", st.ToString());
     return common::make_error_value(buff, common::ErrorValue::E_ERROR);
   }
   return common::Error();
@@ -338,8 +327,7 @@ common::Error RocksdbRaw::flushdb() {
   delete it;
 
   if (!st.ok()) {
-    char buff[1024] = {0};
-    common::SNPrintf(buff, sizeof(buff), "Keys function error: %s", st.ToString());
+    std::string buff = common::MemSPrintf("Keys function error: %s", st.ToString());
     return common::make_error_value(buff, common::ErrorValue::E_ERROR);
   }
   return common::Error();
