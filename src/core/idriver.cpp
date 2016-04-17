@@ -435,8 +435,8 @@ IDriver::RootLocker::~RootLocker() {
   reply(receiver_, new events::CommandRootCompleatedEvent(parent_, res));
 }
 
-FastoObject* IDriver::RootLocker::root() const {
-  return root_.get();
+FastoObjectIPtr IDriver::RootLocker::root() const {
+  return root_;
 }
 
 void IDriver::setCurrentDatabaseInfo(IDataBaseInfo* inf) {

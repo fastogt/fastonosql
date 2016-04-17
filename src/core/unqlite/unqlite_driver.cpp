@@ -213,7 +213,7 @@ void UnqliteDriver::handleExecuteEvent(events::ExecuteRequestEvent* ev) {
     size_t length = strlen(inputLine);
     int offset = 0;
     RootLocker lock = make_locker(sender, inputLine);
-    FastoObject* obj = lock.root();
+    FastoObjectIPtr obj = lock.root();
     double step = 100.0f/length;
     for (size_t n = 0; n < length; ++n) {
       if (isInterrupted()) {
@@ -261,7 +261,7 @@ void UnqliteDriver::handleCommandRequestEvent(events::CommandRequestEvent* ev) {
   }
 
   RootLocker lock = make_locker(sender, cmdtext);
-  FastoObject* obj = lock.root();
+  FastoObjectIPtr obj = lock.root();
   FastoObjectCommand* cmd = createCommand<UnqliteCommand>(obj, cmdtext, common::Value::C_INNER);
   notifyProgress(sender, 50);
   er = execute(cmd);

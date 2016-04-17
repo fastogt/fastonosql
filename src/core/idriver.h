@@ -112,7 +112,7 @@ class IDriver
     RootLocker(IDriver* parent, QObject* receiver, const std::string& text);
     ~RootLocker();
 
-    FastoObject* root() const;
+    FastoObjectIPtr root() const;
 
   private:
     FastoObjectIPtr root_;
