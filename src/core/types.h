@@ -104,6 +104,7 @@ class DBConnection {
   DBConnection()
     : config_(), handle_(nullptr) {
   }
+
   ~DBConnection() {
     disconnect();
   }
@@ -111,6 +112,7 @@ class DBConnection {
   bool isConnected() const {
     return db_traits_t::isConnected(handle_);
   }
+
   common::Error connect(const config_t& config) WARN_UNUSED_RESULT {
     if (isConnected()) {
       return common::Error();
@@ -126,6 +128,7 @@ class DBConnection {
     handle_ = handle;
     return common::Error();
   }
+
   common::Error disconnect() WARN_UNUSED_RESULT {
     if (!isConnected()) {
       return common::Error();
