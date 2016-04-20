@@ -150,9 +150,9 @@ void DiscoveryDiagnosticDialog::connectionResult(bool suc, qint64 mstimeExecute,
     for (size_t i = 0; i < infos.size(); ++i) {
       core::ServerDiscoveryInfoSPtr inf = infos[i];
       common::net::hostAndPort host = inf->host();
-      core::IConnectionSettingsBaseSPtr con(core::IConnectionSettingsRemote::createFromType(inf->connectionType(),
-                                                                                inf->name(), host));
-      ConnectionListWidgetItemEx* item = new ConnectionListWidgetItemEx(con, inf->type());
+      core::IConnectionSettingsBase::connection_path_t path(inf->name());
+      core::IConnectionSettingsBaseSPtr con(core::IConnectionSettingsRemote::createFromType(inf->connectionType(), path, host));
+      ConnectionListWidgetItemEx* item = new ConnectionListWidgetItemEx(con, inf->type(), nullptr);
       item->setDisabled(inf->self() || cluster_->findSettingsByHost(host));
       listWidget_->addTopLevelItem(item);
     }

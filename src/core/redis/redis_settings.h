@@ -31,7 +31,7 @@ namespace redis {
 class RedisConnectionSettings
   : public IConnectionSettingsRemoteSSH {
  public:
-  explicit RedisConnectionSettings(const std::string& connectionName);
+  explicit RedisConnectionSettings(const connection_path_t& connectionName);
 
   virtual std::string commandLine() const;
   virtual void setCommandLine(const std::string& line);

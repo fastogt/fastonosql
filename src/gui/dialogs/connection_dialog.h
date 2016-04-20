@@ -68,6 +68,8 @@ class ConnectionDialog
 
   core::IConnectionSettingsBaseSPtr connection_;
   QLineEdit* connectionName_;
+  QLabel* folderLabel_;
+  QLineEdit* connectionFolder_;
   QComboBox* typeConnection_;
   QCheckBox* logging_;
   QSpinBox* loggingMsec_;

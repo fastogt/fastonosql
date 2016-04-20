@@ -34,6 +34,8 @@ class GuiFactory
  public:
   friend class common::patterns::LazySingleton<GuiFactory>;
 
+  const QIcon& directoryIcon() const;
+
   const QIcon& homePageIcon() const;
   const QIcon& facebookIcon() const;
   const QIcon& twitterIcon() const;

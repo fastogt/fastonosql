@@ -24,11 +24,11 @@ namespace fastonosql {
 namespace core {
 namespace rocksdb {
 
-RocksdbConnectionSettings::RocksdbConnectionSettings(const std::string& connectionName)
+RocksdbConnectionSettings::RocksdbConnectionSettings(const connection_path_t& connectionName)
   : IConnectionSettingsLocal(connectionName, ROCKSDB), info_() {
 }
 
-std::string RocksdbConnectionSettings::path() const {
+std::string RocksdbConnectionSettings::dbpath() const {
   return info_.dbname;
 }
 

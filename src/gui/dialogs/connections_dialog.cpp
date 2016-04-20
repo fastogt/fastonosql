@@ -226,7 +226,8 @@ void ConnectionsDialog::edit() {
   ConnectionListWidgetItem* currentItem = dynamic_cast<ConnectionListWidgetItem*>(qitem);
   if (currentItem) {
     QTreeWidgetItem* qpitem = qitem->parent();
-    if (!qpitem) {
+    ClusterConnectionListWidgetItem* clitem = dynamic_cast<ClusterConnectionListWidgetItem*>(qpitem);
+    if (!clitem) {
       core::IConnectionSettingsBaseSPtr con = currentItem->connection();
       ConnectionDialog dlg(this, con->clone());
       int result = dlg.exec();
@@ -238,7 +239,7 @@ void ConnectionsDialog::edit() {
       }
       return;
     } else {
-      qitem = qpitem;
+      qitem = clitem;
     }
   }
 
@@ -281,13 +282,51 @@ void ConnectionsDialog::retranslateUi() {
 }
 
 void ConnectionsDialog::addConnection(core::IConnectionSettingsBaseSPtr con) {
-  ConnectionListWidgetItem* item = new ConnectionListWidgetItem(con);
-  listWidget_->addTopLevelItem(item);
+  core::IConnectionSettingsBase::connection_path_t path = con->path();
+  core::IConnectionSettingsBase::connection_path_t dir(path.directory());
+  if (dir == core::IConnectionSettingsBase::connection_path_t::root()) {
+    ConnectionListWidgetItem* item = new ConnectionListWidgetItem(con, nullptr);
+    listWidget_->addTopLevelItem(item);
+  } else {
+    DirectoryListWidgetItem* dirItem = findFolderByPath(dir);
+    if(!dirItem) {
+      dirItem = new DirectoryListWidgetItem(dir);
+    }
+
+    ConnectionListWidgetItem* item = new ConnectionListWidgetItem(con, dirItem);
+    dirItem->addChild(item);
+    listWidget_->addTopLevelItem(dirItem);
+  }
 }
 
 void ConnectionsDialog::addCluster(core::IClusterSettingsBaseSPtr con) {
-  ClusterConnectionListWidgetItem* item = new ClusterConnectionListWidgetItem(con);
-  listWidget_->addTopLevelItem(item);
+  core::IConnectionSettingsBase::connection_path_t path = con->path();
+  core::IConnectionSettingsBase::connection_path_t dir(path.directory());
+  if (dir == core::IConnectionSettingsBase::connection_path_t::root()) {
+    ClusterConnectionListWidgetItem* item = new ClusterConnectionListWidgetItem(con, nullptr);
+    listWidget_->addTopLevelItem(item);
+  } else {
+    DirectoryListWidgetItem* dirItem = findFolderByPath(dir);
+    if(!dirItem) {
+      dirItem = new DirectoryListWidgetItem(dir);
+    }
+
+    ClusterConnectionListWidgetItem* item = new ClusterConnectionListWidgetItem(con, dirItem);
+    dirItem->addChild(item);
+    listWidget_->addTopLevelItem(dirItem);
+  }
+}
+
+DirectoryListWidgetItem* ConnectionsDialog::findFolderByPath(const core::IConnectionSettingsBase::connection_path_t& path) const {
+  int count = listWidget_->topLevelItemCount();
+  for (int i = 0; i < count; ++i) {
+    QTreeWidgetItem* item = listWidget_->topLevelItem(i);
+    DirectoryListWidgetItem* dirItem = dynamic_cast<DirectoryListWidgetItem*>(item);
+    if (dirItem && dirItem->path() == path) {
+      return dirItem;
+    }
+  }
+  return nullptr;
 }
 
 }  // namespace gui

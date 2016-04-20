@@ -24,11 +24,11 @@ namespace fastonosql {
 namespace core {
 namespace lmdb {
 
-LmdbConnectionSettings::LmdbConnectionSettings(const std::string& connectionName)
+LmdbConnectionSettings::LmdbConnectionSettings(const connection_path_t& connectionName)
   : IConnectionSettingsLocal(connectionName, LMDB), info_() {
 }
 
-std::string LmdbConnectionSettings::path() const {
+std::string LmdbConnectionSettings::dbpath() const {
   return info_.dbname;
 }
 

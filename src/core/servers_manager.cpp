@@ -128,7 +128,7 @@ ServersManager::cluster_t ServersManager::createCluster(IClusterSettingsBaseSPtr
   connectionTypes conT = settings->type();
 #ifdef BUILD_WITH_REDIS
   if (conT == REDIS) {
-    IClusterSPtr cl(new redis::RedisCluster(settings->name()));
+    IClusterSPtr cl(new redis::RedisCluster(settings->path().toString()));
     IClusterSettingsBase::cluster_connection_t nodes = settings->nodes();
     for (size_t i = 0; i < nodes.size(); ++i) {
       IConnectionSettingsBaseSPtr nd = nodes[i];

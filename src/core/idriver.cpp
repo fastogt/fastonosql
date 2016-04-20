@@ -162,8 +162,8 @@ ServerDiscoveryInfoSPtr IDriver::serverDiscoveryInfo() const {
   return server_disc_info_;
 }
 
-std::string IDriver::connectionName() const {
-  return settings_->name();
+IConnectionSettings::connection_path_t IDriver::connectionPath() const {
+  return settings_->path();
 }
 
 IServerInfoSPtr IDriver::serverInfo() const {
@@ -338,7 +338,7 @@ void IDriver::timerEvent(QTimerEvent* event) {
 
       }
       if (common::file_system::is_directory(dir) == common::SUCCESS) {
-        common::file_system::Path p(path);
+        common::file_system::ascii_string_path p(path);
         log_file_ = new common::file_system::File(p);
       }
     }
@@ -466,7 +466,7 @@ void IDriver::handleLoadServerInfoHistoryEvent(events::ServerInfoHistoryRequestE
   events::ServerInfoHistoryResponceEvent::value_type res(ev->value());
 
   std::string path = settings_->loggingPath();
-  common::file_system::Path p(path);
+  common::file_system::ascii_string_path p(path);
   common::file_system::File readFile(p);
   if (readFile.open("rb")) {
     events::ServerInfoHistoryResponceEvent::value_type::infos_container_type tmpInfos;

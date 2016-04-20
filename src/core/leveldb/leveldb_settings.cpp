@@ -24,11 +24,11 @@ namespace fastonosql {
 namespace core {
 namespace leveldb {
 
-LeveldbConnectionSettings::LeveldbConnectionSettings(const std::string& connectionName)
+LeveldbConnectionSettings::LeveldbConnectionSettings(const connection_path_t& connectionName)
   : IConnectionSettingsLocal(connectionName, LEVELDB), info_() {
 }
 
-std::string LeveldbConnectionSettings::path() const {
+std::string LeveldbConnectionSettings::dbpath() const {
   return info_.dbname;
 }
 

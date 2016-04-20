@@ -31,7 +31,7 @@ namespace memcached {
 class MemcachedConnectionSettings
   : public IConnectionSettingsRemote {
  public:
-  explicit MemcachedConnectionSettings(const std::string& connectionName);
+  explicit MemcachedConnectionSettings(const connection_path_t& connectionName);
 
   virtual std::string commandLine() const;
   virtual void setCommandLine(const std::string& line);

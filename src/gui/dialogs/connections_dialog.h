@@ -27,6 +27,8 @@ class QTreeWidget;
 namespace fastonosql {
 namespace gui {
 
+class DirectoryListWidgetItem;
+
 class ConnectionsDialog
   : public QDialog {
   Q_OBJECT
@@ -56,6 +58,7 @@ class ConnectionsDialog
   void retranslateUi();
   void addConnection(core::IConnectionSettingsBaseSPtr con);
   void addCluster(core::IClusterSettingsBaseSPtr con);
+  DirectoryListWidgetItem* findFolderByPath(const core::IConnectionSettings::connection_path_t& path) const;
 
   QTreeWidget* listWidget_;
   QPushButton* acButton_;

@@ -30,6 +30,7 @@ class QCheckBox;
 class QSpinBox;
 class QTreeWidget;
 class QToolBar;
+class QLabel;
 
 #include "core/connection_settings.h"
 
@@ -69,6 +70,8 @@ class ClusterDialog
 
   core::IClusterSettingsBaseSPtr cluster_connection_;
   QLineEdit* connectionName_;
+  QLabel* folderLabel_;
+  QLineEdit* connectionFolder_;
   QComboBox* typeConnection_;
   QCheckBox* logging_;
   QSpinBox* loggingMsec_;

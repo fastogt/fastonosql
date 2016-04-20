@@ -24,11 +24,11 @@ namespace fastonosql {
 namespace core {
 namespace unqlite {
 
-UnqliteConnectionSettings::UnqliteConnectionSettings(const std::string& connectionName)
+UnqliteConnectionSettings::UnqliteConnectionSettings(const connection_path_t& connectionName)
   : IConnectionSettingsLocal(connectionName, UNQLITE), info_() {
 }
 
-std::string UnqliteConnectionSettings::path() const {
+std::string UnqliteConnectionSettings::dbpath() const {
   return info_.dbname;
 }
 

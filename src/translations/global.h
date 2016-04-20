@@ -79,6 +79,7 @@ namespace translations {
   extern const QString trShow;
   extern const QString trJson;
   extern const QString trCsv;
+  extern const QString trFolder;
   extern const QString trHex;
   extern const QString trMsgPack;
   extern const QString trGzip;

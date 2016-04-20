@@ -54,6 +54,7 @@ QString toRawCommandLine(QString input) {
 }
 
 const QString defaultNameConnection = "New Connection";
+const QString defaultNameConnectionFolder = "/";
 }  // namespace
 
 namespace fastonosql {
@@ -66,11 +67,23 @@ ConnectionDialog::ConnectionDialog(QWidget* parent, core::IConnectionSettingsBas
   setWindowFlags(windowFlags() & ~Qt::WindowContextHelpButtonHint);  // Remove help button (?)
 
   connectionName_ = new QLineEdit;
+  connectionFolder_ = new QLineEdit;
+  folderLabel_ = new QLabel;
+  QHBoxLayout* folderLayout = new QHBoxLayout;
+  folderLayout->addWidget(folderLabel_);
+  folderLayout->addWidget(connectionFolder_);
+
+  QString conFolder = defaultNameConnectionFolder;
   QString conName = defaultNameConnection;
+
   if (connection_) {
-    conName = common::convertFromString<QString>(connection_->name());
+    core::IConnectionSettings::connection_path_t path = connection_->path();
+    conName = common::convertFromString<QString>(path.name());
+    conFolder = common::convertFromString<QString>(path.directory());
   }
   connectionName_->setText(conName);
+  connectionFolder_->setText(conFolder);
+
   typeConnection_ = new QComboBox;
 
   if (availibleTypes.empty()) {
@@ -122,6 +135,7 @@ ConnectionDialog::ConnectionDialog(QWidget* parent, core::IConnectionSettingsBas
 
   QVBoxLayout* inputLayout = new QVBoxLayout;
   inputLayout->addWidget(connectionName_);
+  inputLayout->addLayout(folderLayout);
   inputLayout->addWidget(typeConnection_);
   inputLayout->addLayout(loggingLayout);
   inputLayout->addWidget(commandLine_);
@@ -347,6 +361,7 @@ void ConnectionDialog::changeEvent(QEvent* e) {
 
 void ConnectionDialog::retranslateUi() {
   setWindowTitle(tr("Connection Settings"));
+  folderLabel_->setText(translations::trFolder);
   logging_->setText(tr("Logging enabled"));
   useSsh_->setText(tr("Use SSH tunnel"));
   passwordLabel_->setText(tr("User Password:"));
@@ -363,9 +378,10 @@ bool ConnectionDialog::validateAndApply() {
 
   bool isSSHType = isCanSSHConnection(currentType);
   std::string conName = common::convertToString(connectionName_->text());
-
-  if (isSSHType) {
-    core::IConnectionSettingsRemoteSSH* newConnection = core::IConnectionSettingsRemoteSSH::createFromType(currentType, conName, common::net::hostAndPort());
+  std::string conFolder = common::convertToString(connectionFolder_->text());
+  core::IConnectionSettingsRemoteSSH::connection_path_t path(common::file_system::stable_dir_path(conFolder) + conName);
+  if (isSSHType) {    
+    core::IConnectionSettingsRemoteSSH* newConnection = core::IConnectionSettingsRemoteSSH::createFromType(currentType, path, common::net::hostAndPort());
     connection_.reset(newConnection);
 
     core::SSHInfo info = newConnection->sshInfo();
@@ -383,8 +399,7 @@ bool ConnectionDialog::validateAndApply() {
     }
     newConnection->setSshInfo(info);
   } else {
-    core::IConnectionSettingsBase* newConnection = core::IConnectionSettingsBase::createFromType(currentType,
-                                                                                     conName);
+    core::IConnectionSettingsBase* newConnection = core::IConnectionSettingsBase::createFromType(currentType, path);
     connection_.reset(newConnection);
   }
   connection_->setCommandLine(common::convertToString(toRawCommandLine(commandLine_->text())));

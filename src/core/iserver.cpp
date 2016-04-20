@@ -70,7 +70,8 @@ connectionTypes IServer::type() const {
 }
 
 std::string IServer::name() const {
-  return drv_->connectionName();
+  IConnectionSettings::connection_path_t path = drv_->connectionPath();
+  return path.name();
 }
 
 ServerDiscoveryInfoSPtr IServer::discoveryInfo() const {

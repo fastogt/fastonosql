@@ -371,10 +371,11 @@ void MainWindow::openRecentConnection() {
 
   QString rcon = action->text();
   std::string srcon = common::convertToString(rcon);
+  core::ConnectionSettingsPath path(srcon);
   core::SettingsManager::ConnectionSettingsContainerType conns = core::SettingsManager::instance().connections();
   for (auto it = conns.begin(); it != conns.end(); ++it) {
     core::IConnectionSettingsBaseSPtr con = *it;
-    if (con && con->name() == srcon) {
+    if (con && con->path() == path) {
       createServer(con);
       return;
     }
@@ -404,7 +405,7 @@ void MainWindow::importConnection() {
 
   std::string tmp = core::SettingsManager::settingsFilePath() + ".tmp";
 
-  common::file_system::Path wp(tmp);
+  common::file_system::ascii_string_path wp(tmp);
   common::file_system::File writeFile(wp);
   bool openedw = writeFile.open("wb");
   if (!openedw) {
@@ -412,7 +413,7 @@ void MainWindow::importConnection() {
     return;
   }
 
-  common::file_system::Path rp(common::convertToString(filepathR));
+  common::file_system::ascii_string_path rp(common::convertToString(filepathR));
   common::file_system::File readFile(rp);
   bool openedr = readFile.open("rb");
   if (!openedr) {
@@ -476,7 +477,7 @@ void MainWindow::exportConnection() {
     return;
   }
 
-  common::file_system::Path wp(common::convertToString(filepathW));
+  common::file_system::ascii_string_path wp(common::convertToString(filepathW));
   common::file_system::File writeFile(wp);
   bool openedw = writeFile.open("wb");
   if (!openedw) {
@@ -484,7 +485,7 @@ void MainWindow::exportConnection() {
     return;
   }
 
-  common::file_system::Path rp(core::SettingsManager::settingsFilePath());
+  common::file_system::ascii_string_path rp(core::SettingsManager::settingsFilePath());
   common::file_system::File readFile(rp);
   bool openedr = readFile.open("rb");
   if (!openedr) {
@@ -708,7 +709,8 @@ void MainWindow::createServer(core::IConnectionSettingsBaseSPtr settings) {
     return;
   }
 
-  QString rcon = common::convertFromString<QString>(settings->name());
+  std::string path = settings->path().toString();
+  QString rcon = common::convertFromString<QString>(path);
   core::SettingsManager::instance().removeRConnection(rcon);
   core::IServerSPtr server = core::ServersManager::instance().createServer(settings);
   exp_->addServer(server);

@@ -24,7 +24,7 @@ namespace fastonosql {
 namespace core {
 namespace redis {
 
-RedisClusterSettings::RedisClusterSettings(const std::string& connectionName)
+RedisClusterSettings::RedisClusterSettings(const connection_path_t& connectionName)
   : IClusterSettingsBase(connectionName, REDIS) {
 }
 

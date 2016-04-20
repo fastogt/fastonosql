@@ -4,6 +4,7 @@
 - Clear database
 - Property to change font globally
 - Config version
+- Folders for connections
 
 0.8.1 / February 20, 2016
 [Alexandr Topilski]

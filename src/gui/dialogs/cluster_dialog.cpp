@@ -35,6 +35,7 @@
 #include <QAction>
 #include <QCheckBox>
 #include <QSpinBox>
+#include <QLabel>
 
 #include "gui/dialogs/connection_diagnostic_dialog.h"
 #include "gui/dialogs/connection_dialog.h"
@@ -49,6 +50,7 @@
 
 namespace {
   const QString defaultNameConnection = "New Cluster Connection";
+  const QString defaultNameConnectionFolder = "/";
   const QString invalidDbType = QObject::tr("Invalid database type!");
 }
 
@@ -61,11 +63,22 @@ ClusterDialog::ClusterDialog(QWidget* parent, core::IClusterSettingsBase* connec
   setWindowFlags(windowFlags() & ~Qt::WindowContextHelpButtonHint);  // Remove help button (?)
 
   connectionName_ = new QLineEdit;
+  connectionFolder_ = new QLineEdit;
+  folderLabel_ = new QLabel;
+  QHBoxLayout* folderLayout = new QHBoxLayout;
+  folderLayout->addWidget(folderLabel_);
+  folderLayout->addWidget(connectionFolder_);
+  QString conFolder = defaultNameConnectionFolder;
   QString conName = defaultNameConnection;
+
   if (cluster_connection_) {
-    conName = common::convertFromString<QString>(cluster_connection_->name());
+    core::IConnectionSettings::connection_path_t path = cluster_connection_->path();
+    conName = common::convertFromString<QString>(path.name());
+    conFolder = common::convertFromString<QString>(path.directory());
   }
   connectionName_->setText(conName);
+  connectionFolder_->setText(conFolder);
+
   typeConnection_ = new QComboBox;
 
   for (size_t i = 0; i < SIZEOFMASS(core::connnectionType); ++i) {
@@ -154,6 +167,7 @@ ClusterDialog::ClusterDialog(QWidget* parent, core::IClusterSettingsBase* connec
 
   QVBoxLayout* inputLayout = new QVBoxLayout;
   inputLayout->addWidget(connectionName_);
+  inputLayout->addLayout(folderLayout);
   inputLayout->addWidget(typeConnection_);
   inputLayout->addLayout(loggingLayout);
   inputLayout->addLayout(toolBarLayout);
@@ -355,6 +369,7 @@ void ClusterDialog::changeEvent(QEvent* e) {
 
 void ClusterDialog::retranslateUi() {
   logging_->setText(tr("Logging enabled"));
+  folderLabel_->setText(translations::trFolder);
   setDefault_->setText(translations::trSetAsStartNode);
 }
 
@@ -363,7 +378,9 @@ bool ClusterDialog::validateAndApply() {
   core::connectionTypes currentType = (core::connectionTypes)qvariant_cast<unsigned char>(var);
 
   std::string conName = common::convertToString(connectionName_->text());
-  core::IClusterSettingsBase* newConnection = core::IClusterSettingsBase::createFromType(currentType, conName);
+  std::string conFolder = common::convertToString(connectionFolder_->text());
+  core::IClusterSettingsBase::connection_path_t path(common::file_system::stable_dir_path(conFolder) + conName);
+  core::IClusterSettingsBase* newConnection = core::IClusterSettingsBase::createFromType(currentType, path);
   if (newConnection) {
     cluster_connection_.reset(newConnection);
     if (logging_->isChecked()) {
@@ -381,7 +398,7 @@ bool ClusterDialog::validateAndApply() {
 }
 
 void ClusterDialog::addConnection(core::IConnectionSettingsBaseSPtr con) {
-  ConnectionListWidgetItem* item = new ConnectionListWidgetItem(con);
+  ConnectionListWidgetItem* item = new ConnectionListWidgetItem(con, nullptr);
   listWidget_->addTopLevelItem(item);
 }
 

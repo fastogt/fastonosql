@@ -31,9 +31,9 @@ namespace lmdb {
 class LmdbConnectionSettings
   : public IConnectionSettingsLocal {
  public:
-  explicit LmdbConnectionSettings(const std::string& connectionName);
+  explicit LmdbConnectionSettings(const connection_path_t& connectionName);
 
-  virtual std::string path() const;
+  virtual std::string dbpath() const;
 
   virtual std::string commandLine() const;
   virtual void setCommandLine(const std::string& line);

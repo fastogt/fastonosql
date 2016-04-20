@@ -48,7 +48,7 @@ class IDriver
 
   // sync methods
   connectionTypes type() const;
-  std::string connectionName() const;
+  IConnectionSettings::connection_path_t connectionPath() const;
 
   ServerDiscoveryInfoSPtr serverDiscoveryInfo() const;
   IServerInfoSPtr serverInfo() const;

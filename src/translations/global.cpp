@@ -79,6 +79,7 @@ namespace translations {
   const QString trShow = QObject::tr("Show");
   const QString trJson = QObject::tr("Json");
   const QString trCsv = QObject::tr("Csv");
+  const QString trFolder = QObject::tr("Folder");
   const QString trHex = QObject::tr("Hex");
   const QString trMsgPack = QObject::tr("MsgPack");
   const QString trGzip = QObject::tr("Gzip");

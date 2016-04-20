@@ -31,9 +31,9 @@ namespace rocksdb {
 class RocksdbConnectionSettings
   : public IConnectionSettingsLocal {
  public:
-  explicit RocksdbConnectionSettings(const std::string& connectionName);
+  explicit RocksdbConnectionSettings(const connection_path_t& connectionName);
 
-  virtual std::string path() const;
+  virtual std::string dbpath() const;
 
   virtual std::string commandLine() const;
   virtual void setCommandLine(const std::string& line);

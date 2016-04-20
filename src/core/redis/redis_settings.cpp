@@ -26,7 +26,7 @@ namespace fastonosql {
 namespace core {
 namespace redis {
 
-RedisConnectionSettings::RedisConnectionSettings(const std::string& connectionName)
+RedisConnectionSettings::RedisConnectionSettings(const connection_path_t& connectionName)
   : IConnectionSettingsRemoteSSH(connectionName, REDIS), info_() {
 }
 

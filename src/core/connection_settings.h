@@ -23,6 +23,7 @@
 
 #include "common/smart_ptr.h"
 #include "common/net/net.h"
+#include "common/file_system.h"
 
 #include "core/connection_types.h"
 #include "core/ssh_info.h"
@@ -30,12 +31,33 @@
 namespace fastonosql {
 namespace core {
 
-class IConnectionSettings {
+class ConnectionSettingsPath {
  public:
-  virtual ~IConnectionSettings();
+  ConnectionSettingsPath();
+  explicit ConnectionSettingsPath(const std::string& path);
 
   std::string name() const;
-  void setName(const std::string& name);
+  std::string directory() const;
+  bool equals(const ConnectionSettingsPath& path) const;
+  std::string toString() const;
+  static ConnectionSettingsPath root();
+
+ private:
+  ConnectionSettingsPath(const common::file_system::ascii_string_path& path);
+  common::file_system::ascii_string_path path_;
+};
+
+inline bool operator == (const ConnectionSettingsPath& r, const ConnectionSettingsPath& l) {
+  return r.equals(l);
+}
+
+class IConnectionSettings {
+ public:
+  typedef ConnectionSettingsPath connection_path_t;
+  virtual ~IConnectionSettings();
+
+  connection_path_t path() const;
+  void setPath(const connection_path_t& path);
 
   connectionTypes type() const;
 
@@ -48,8 +70,8 @@ class IConnectionSettings {
   virtual IConnectionSettings* clone() const = 0;
 
  protected:
-  IConnectionSettings(const std::string& connectionName, connectionTypes type);
-  std::string connection_name_;
+  IConnectionSettings(const connection_path_t& connectionPath, connectionTypes type);
+  connection_path_t connection_path_;
   const connectionTypes type_;
 
  private:
@@ -67,34 +89,34 @@ class IConnectionSettingsBase
 
   std::string loggingPath() const;
 
-  void setConnectionNameAndUpdateHash(const std::string& name);
+  void setConnectionPathAndUpdateHash(const connection_path_t& name);
 
   virtual std::string commandLine() const = 0;
   virtual void setCommandLine(const std::string& line) = 0;
 
   virtual std::string fullAddress() const = 0;
 
-  static IConnectionSettingsBase* createFromType(connectionTypes type, const std::string& conName);
+  static IConnectionSettingsBase* createFromType(connectionTypes type, const connection_path_t& conName);
   static IConnectionSettingsBase* fromString(const std::string& val);
 
   virtual std::string toString() const;
   virtual IConnectionSettingsBase* clone() const = 0;
 
  protected:
-  IConnectionSettingsBase(const std::string& connectionName, connectionTypes type);
+  IConnectionSettingsBase(const connection_path_t& connectionPath, connectionTypes type);
 
  private:
-  using IConnectionSettings::setName;
+  using IConnectionSettings::setPath;
   std::string hash_;
 };
 
 class IConnectionSettingsLocal
   : public IConnectionSettingsBase {
  public:
-  virtual std::string path() const = 0;
+  virtual std::string dbpath() const = 0;
 
  protected:
-  IConnectionSettingsLocal(const std::string& connectionName, connectionTypes type);
+  IConnectionSettingsLocal(const connection_path_t& connectionPath, connectionTypes type);
 };
 
 class IConnectionSettingsRemote
@@ -110,11 +132,11 @@ class IConnectionSettingsRemote
 
   virtual std::string fullAddress() const;
 
-  static IConnectionSettingsRemote* createFromType(connectionTypes type, const std::string& conName,
+  static IConnectionSettingsRemote* createFromType(connectionTypes type, const connection_path_t& conName,
                                                    const common::net::hostAndPort& host);
 
  protected:
-  IConnectionSettingsRemote(const std::string& connectionName, connectionTypes type);
+  IConnectionSettingsRemote(const connection_path_t& connectionPath, connectionTypes type);
 };
 
 class IConnectionSettingsRemoteSSH
@@ -125,11 +147,11 @@ class IConnectionSettingsRemoteSSH
 
   virtual std::string toString() const;
 
-  static IConnectionSettingsRemoteSSH* createFromType(connectionTypes type, const std::string& conName,
+  static IConnectionSettingsRemoteSSH* createFromType(connectionTypes type, const connection_path_t& conName,
                                                    const common::net::hostAndPort& host);
 
  protected:
-  IConnectionSettingsRemoteSSH(const std::string& connectionName, connectionTypes type);
+  IConnectionSettingsRemoteSSH(const connection_path_t& connectionName, connectionTypes type);
 
  private:
   SSHInfo ssh_info_;
@@ -148,8 +170,7 @@ class IClusterSettingsBase
 
   void addNode(IConnectionSettingsBaseSPtr node);
 
-  static IClusterSettingsBase* createFromType(connectionTypes type,
-                                              const std::string& conName = std::string());
+  static IClusterSettingsBase* createFromType(connectionTypes type, const connection_path_t& conName);
   static IClusterSettingsBase* fromString(const std::string& val);
 
   virtual std::string toString() const;
@@ -158,7 +179,7 @@ class IClusterSettingsBase
   IConnectionSettingsBaseSPtr findSettingsByHost(const common::net::hostAndPort& host) const;
 
  protected:
-  IClusterSettingsBase(const std::string& connectionName, connectionTypes type);
+  IClusterSettingsBase(const connection_path_t& connectionName, connectionTypes type);
 
  private:
   cluster_connection_t clusters_nodes_;

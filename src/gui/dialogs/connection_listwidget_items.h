@@ -25,10 +25,20 @@
 namespace fastonosql {
 namespace gui {
 
+class DirectoryListWidgetItem
+  : public QTreeWidgetItem {
+ public:
+  DirectoryListWidgetItem(const core::IConnectionSettingsBase::connection_path_t& path);
+  core::IConnectionSettingsBase::connection_path_t path() const;
+
+ private:
+  core::IConnectionSettingsBase::connection_path_t path_;
+};
+
 class ConnectionListWidgetItem
   : public QTreeWidgetItem {
  public:
-  explicit ConnectionListWidgetItem(core::IConnectionSettingsBaseSPtr connection);
+  explicit ConnectionListWidgetItem(core::IConnectionSettingsBaseSPtr connection, QTreeWidgetItem* parent);
   void setConnection(core::IConnectionSettingsBaseSPtr cons);
   core::IConnectionSettingsBaseSPtr connection() const;
 
@@ -39,13 +49,13 @@ class ConnectionListWidgetItem
 class ConnectionListWidgetItemEx
   : public ConnectionListWidgetItem {
  public:
-  ConnectionListWidgetItemEx(core::IConnectionSettingsBaseSPtr connection, core::serverTypes st);
+  ConnectionListWidgetItemEx(core::IConnectionSettingsBaseSPtr connection, core::serverTypes st, QTreeWidgetItem* parent);
 };
 
 class ClusterConnectionListWidgetItem
       : public QTreeWidgetItem {
  public:
-  explicit ClusterConnectionListWidgetItem(core::IClusterSettingsBaseSPtr connection);
+  explicit ClusterConnectionListWidgetItem(core::IClusterSettingsBaseSPtr connection, QTreeWidgetItem* parent);
   void setConnection(core::IClusterSettingsBaseSPtr cons);
   core::IClusterSettingsBaseSPtr connection() const;
 

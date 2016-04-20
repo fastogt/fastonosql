@@ -26,6 +26,11 @@
 namespace fastonosql {
 namespace gui {
 
+const QIcon& GuiFactory::directoryIcon() const {
+  static QIcon open = qApp->style()->standardIcon(QStyle::SP_DirIcon);
+  return open;
+}
+
 const QIcon& GuiFactory::homePageIcon() const {
   static QIcon homepage(":" PROJECT_NAME_LOWERCASE "/images/64x64/homepage.png");
   return homepage;

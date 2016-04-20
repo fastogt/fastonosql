@@ -25,8 +25,20 @@
 namespace fastonosql {
 namespace gui {
 
-ConnectionListWidgetItem::ConnectionListWidgetItem(core::IConnectionSettingsBaseSPtr connection)
-  : connection_() {
+DirectoryListWidgetItem::DirectoryListWidgetItem(const core::IConnectionSettings::connection_path_t &path)
+  : path_(path) {
+  std::string dir_name = path.name();
+  setText(0, common::convertFromString<QString>(dir_name));
+  setIcon(0, GuiFactory::instance().directoryIcon());
+  setText(1, common::convertFromString<QString>(path_.directory()));
+}
+
+core::IConnectionSettingsBase::connection_path_t DirectoryListWidgetItem::path() const {
+  return path_;
+}
+
+ConnectionListWidgetItem::ConnectionListWidgetItem(core::IConnectionSettingsBaseSPtr connection, QTreeWidgetItem *parent)
+  : QTreeWidgetItem(parent), connection_() {
   setConnection(connection);
 }
 
@@ -36,7 +48,10 @@ void ConnectionListWidgetItem::setConnection(core::IConnectionSettingsBaseSPtr c
   }
 
   connection_ = cons;
-  setText(0, common::convertFromString<QString>(connection_->name()));
+  core::IConnectionSettingsBase::connection_path_t path = connection_->path();
+  QString conName = common::convertFromString<QString>(path.name());
+
+  setText(0, conName);
   core::connectionTypes conType = connection_->type();
   setIcon(0, GuiFactory::instance().icon(conType));
   setText(1, common::convertFromString<QString>(connection_->fullAddress()));
@@ -47,22 +62,23 @@ core::IConnectionSettingsBaseSPtr ConnectionListWidgetItem::connection() const {
 }
 
 ConnectionListWidgetItemEx::ConnectionListWidgetItemEx(core::IConnectionSettingsBaseSPtr connection,
-                                                       core::serverTypes st)
-  : ConnectionListWidgetItem(connection) {
+                                                       core::serverTypes st, QTreeWidgetItem* parent)
+  : ConnectionListWidgetItem(connection, parent) {
   std::string sert = common::convertToString(st);
   setText(2, common::convertFromString<QString>(sert));
 }
 
-ClusterConnectionListWidgetItem::ClusterConnectionListWidgetItem(core::IClusterSettingsBaseSPtr connection)
-  : connection_(connection) {
-  setText(0, common::convertFromString<QString>(connection_->name()));
+ClusterConnectionListWidgetItem::ClusterConnectionListWidgetItem(core::IClusterSettingsBaseSPtr connection, QTreeWidgetItem* parent)
+  : QTreeWidgetItem(parent), connection_(connection) {
+  std::string path = connection_->path().toString();
+  setText(0, common::convertFromString<QString>(path));
   setIcon(0, GuiFactory::instance().clusterIcon());
 
   core::IClusterSettingsBase::cluster_connection_t servers = connection_->nodes();
 
   for (size_t i = 0; i < servers.size(); ++i) {
     core::IConnectionSettingsBaseSPtr con = servers[i];
-    ConnectionListWidgetItem* item = new ConnectionListWidgetItem(con);
+    ConnectionListWidgetItem* item = new ConnectionListWidgetItem(con, this);
     addChild(item);
   }
 }
@@ -73,7 +89,8 @@ void ClusterConnectionListWidgetItem::setConnection(core::IClusterSettingsBaseSP
   }
 
   connection_ = cons;
-  setText(0, common::convertFromString<QString>(connection_->name()));
+  std::string path = connection_->path().toString();
+  setText(0, common::convertFromString<QString>(path));
   setIcon(0, GuiFactory::instance().clusterIcon());
 }
 

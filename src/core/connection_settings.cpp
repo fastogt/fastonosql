@@ -65,19 +65,52 @@ namespace {
 namespace fastonosql {
 namespace core {
 
-IConnectionSettings::IConnectionSettings(const std::string& connectionName, connectionTypes type)
-  : connection_name_(connectionName), type_(type), msinterval_(0) {
+ConnectionSettingsPath::ConnectionSettingsPath()
+  : path_() {
 }
 
-void IConnectionSettings::setName(const std::string& name) {
-  connection_name_ = name;
+ConnectionSettingsPath::ConnectionSettingsPath(const std::string& path)
+  : path_(path) {
+}
+
+ConnectionSettingsPath::ConnectionSettingsPath(const common::file_system::ascii_string_path &path)
+  : path_(path) {
+}
+
+bool ConnectionSettingsPath::equals(const ConnectionSettingsPath& path) const {
+  return path_.equals(path.path_);
+}
+
+std::string ConnectionSettingsPath::name() const {
+  return path_.fileName();
+}
+
+std::string ConnectionSettingsPath::directory() const {
+  return path_.directory();
+}
+
+std::string ConnectionSettingsPath::toString() const {
+  return common::convertToString(path_);
+}
+
+ConnectionSettingsPath ConnectionSettingsPath::root() {
+  static common::file_system::ascii_string_path root(common::file_system::get_separator_string<char>());
+  return ConnectionSettingsPath(root);
+}
+
+IConnectionSettings::IConnectionSettings(const connection_path_t& connectionPath, connectionTypes type)
+  : connection_path_(connectionPath), type_(type), msinterval_(0) {
 }
 
 IConnectionSettings::~IConnectionSettings() {
 }
 
-std::string IConnectionSettings::name() const {
-  return connection_name_;
+void IConnectionSettings::setPath(const connection_path_t& path) {
+  connection_path_ = path;
+}
+
+IConnectionSettings::connection_path_t IConnectionSettings::path() const {
+  return connection_path_;
 }
 
 connectionTypes IConnectionSettings::type() const {
@@ -97,20 +130,21 @@ void IConnectionSettings::setLoggingMsTimeInterval(uint32_t mstime) {
 }
 
 std::string IConnectionSettings::toString() const {
-  return common::MemSPrintf("%d,%s,%" PRIu32, type_, connection_name_, msinterval_);
+  return common::MemSPrintf("%d,%s,%" PRIu32, type_, connection_path_.toString(), msinterval_);
 }
 
-IConnectionSettingsBase::IConnectionSettingsBase(const std::string& connectionName, connectionTypes type)
-  : IConnectionSettings(connectionName, type), hash_() {
-  setConnectionNameAndUpdateHash(connectionName);
+IConnectionSettingsBase::IConnectionSettingsBase(const connection_path_t& connectionPath, connectionTypes type)
+  : IConnectionSettings(connectionPath, type), hash_() {
+  setConnectionPathAndUpdateHash(connectionPath);
 }
 
 IConnectionSettingsBase::~IConnectionSettingsBase() {
 }
 
-void IConnectionSettingsBase::setConnectionNameAndUpdateHash(const std::string& name) {
-  setName(name);
-  common::buffer_t bcon = common::convertFromString<common::buffer_t>(connection_name_);
+void IConnectionSettingsBase::setConnectionPathAndUpdateHash(const connection_path_t& name) {
+  setPath(name);
+  std::string path = connection_path_.toString();
+  common::buffer_t bcon = common::convertFromString<common::buffer_t>(path);
   uint64_t v = common::utils::hash::crc64(0, bcon);
   hash_ = common::convertToString(v);
 }
@@ -158,7 +192,7 @@ std::string IConnectionSettingsBase::loggingPath() const {
 }
 
 IConnectionSettingsBase* IConnectionSettingsBase::createFromType(connectionTypes type,
-                                                                 const std::string& conName) {
+                                                                 const connection_path_t& conName) {
 #ifdef BUILD_WITH_REDIS
   if (type == REDIS) {
     return new redis::RedisConnectionSettings(conName);
@@ -214,12 +248,13 @@ IConnectionSettingsBase* IConnectionSettingsBase::fromString(const std::string& 
     if (ch == ',') {
       if (commaCount == 0) {
         connectionTypes crT = static_cast<connectionTypes>(elText[0] - 48);
-        result = createFromType(crT, std::string());
+        result = createFromType(crT, connection_path_t());
         if (!result) {
           return nullptr;
         }
       } else if (commaCount == 1) {
-        result->setConnectionNameAndUpdateHash(elText);
+        connection_path_t path(elText);
+        result->setConnectionPathAndUpdateHash(path);
       } else if (commaCount == 2) {
         uint32_t msTime = common::convertFromString<uint32_t>(elText);
         result->setLoggingMsTimeInterval(msTime);
@@ -260,17 +295,17 @@ std::string IConnectionSettingsBase::toString() const {
   return res;
 }
 
-IConnectionSettingsLocal::IConnectionSettingsLocal(const std::string& connectionName,
+IConnectionSettingsLocal::IConnectionSettingsLocal(const connection_path_t& connectionPath,
                                                    connectionTypes type)
-  : IConnectionSettingsBase(connectionName, type) {
+  : IConnectionSettingsBase(connectionPath, type) {
   CHECK(!isRemoteType(type));
 }
 
 ////===================== IConnectionSettingsRemote =====================////
 
-IConnectionSettingsRemote::IConnectionSettingsRemote(const std::string& connectionName,
+IConnectionSettingsRemote::IConnectionSettingsRemote(const connection_path_t& connectionPath,
                                                      connectionTypes type)
-  : IConnectionSettingsBase(connectionName, type) {
+  : IConnectionSettingsBase(connectionPath, type) {
   CHECK(isRemoteType(type));
 }
 
@@ -282,7 +317,7 @@ std::string IConnectionSettingsRemote::fullAddress() const {
 }
 
 IConnectionSettingsRemote* IConnectionSettingsRemote::createFromType(connectionTypes type,
-                                                                     const std::string& conName,
+                                                                     const connection_path_t& conName,
                                                                      const common::net::hostAndPort& host) {
   IConnectionSettingsRemote* remote = nullptr;
 #ifdef BUILD_WITH_REDIS
@@ -309,13 +344,13 @@ IConnectionSettingsRemote* IConnectionSettingsRemote::createFromType(connectionT
   return remote;
 }
 
-IConnectionSettingsRemoteSSH::IConnectionSettingsRemoteSSH(const std::string& connectionName,
+IConnectionSettingsRemoteSSH::IConnectionSettingsRemoteSSH(const connection_path_t& connectionName,
                                                            connectionTypes type)
   : IConnectionSettingsRemote(connectionName, type), ssh_info_() {
 }
 
 IConnectionSettingsRemoteSSH* IConnectionSettingsRemoteSSH::createFromType(connectionTypes type,
-                                                                     const std::string& conName,
+                                                                     const connection_path_t& conName,
                                                                      const common::net::hostAndPort& host) {
   IConnectionSettingsRemoteSSH* remote = nullptr;
 #ifdef BUILD_WITH_REDIS
@@ -471,7 +506,7 @@ std::string defaultCommandLine(connectionTypes type) {
   return std::string();
 }
 
-IClusterSettingsBase::IClusterSettingsBase(const std::string& connectionName, connectionTypes type)
+IClusterSettingsBase::IClusterSettingsBase(const connection_path_t& connectionName, connectionTypes type)
   : IConnectionSettings(connectionName, type) {
 }
 
@@ -489,7 +524,7 @@ void IClusterSettingsBase::addNode(IConnectionSettingsBaseSPtr node) {
 }
 
 IClusterSettingsBase* IClusterSettingsBase::createFromType(connectionTypes type,
-                                                           const std::string& conName) {
+                                                           const connection_path_t& conName) {
 #ifdef BUILD_WITH_REDIS
   if (type == REDIS) {
     return new redis::RedisClusterSettings(conName);
@@ -516,12 +551,13 @@ IClusterSettingsBase* IClusterSettingsBase::fromString(const std::string& val) {
     if (ch == ',') {
       if (commaCount == 0) {
         int crT = elText[0] - 48;
-        result = createFromType((connectionTypes)crT);
+        result = createFromType((connectionTypes)crT, connection_path_t());
         if (!result) {
           return nullptr;
         }
       } else if (commaCount == 1) {
-        result->setName(elText);
+        connection_path_t path(elText);
+        result->setPath(path);
       } else if (commaCount == 2) {
         uint32_t msTime = common::convertFromString<uint32_t>(elText);
         result->setLoggingMsTimeInterval(msTime);

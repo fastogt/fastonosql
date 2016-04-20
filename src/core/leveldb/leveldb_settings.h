@@ -31,9 +31,9 @@ namespace leveldb {
 class LeveldbConnectionSettings
   : public IConnectionSettingsLocal {
  public:
-  explicit LeveldbConnectionSettings(const std::string& connectionName);
+  explicit LeveldbConnectionSettings(const connection_path_t& connectionName);
 
-  virtual std::string path() const;
+  virtual std::string dbpath() const;
 
   virtual std::string commandLine() const;
   virtual void setCommandLine(const std::string& line);
