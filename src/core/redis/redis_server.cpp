@@ -26,7 +26,7 @@ namespace core {
 namespace redis {
 
 RedisServer::RedisServer(IConnectionSettingsBaseSPtr settings)
-  : IServerRemote(new RedisDriver(settings)), role_(SLAVE) {
+  : IServerRemote(new RedisDriver(settings)), role_(MASTER) {
 }
 
 serverTypes RedisServer::role() const {

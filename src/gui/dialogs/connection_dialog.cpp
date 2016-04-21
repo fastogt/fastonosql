@@ -68,7 +68,7 @@ ConnectionDialog::ConnectionDialog(QWidget* parent, core::IConnectionSettingsBas
 
   connectionName_ = new QLineEdit;
   connectionFolder_ = new QLineEdit;
-  QRegExp rxf("^/[a-zA-z0-9]+");
+  QRegExp rxf("^/[A-z0-9]+/$");
   connectionFolder_->setValidator(new QRegExpValidator(rxf, this));
 
   folderLabel_ = new QLabel;

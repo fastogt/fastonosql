@@ -734,11 +734,16 @@ void MainWindow::createCluster(core::IClusterSettingsBaseSPtr settings) {
     return;
   }
 
+  core::IServerSPtr root = cl->root();
+  if (!root) {
+    return;
+  }
+
   exp_->addCluster(cl);
   if (core::SettingsManager::instance().autoOpenConsole()) {
     MainWidget* mwidg = qobject_cast<MainWidget*>(centralWidget());
     if (mwidg) {
-      mwidg->openConsole(cl->root(), QString());
+      mwidg->openConsole(root, QString());
     }
   }
 }
