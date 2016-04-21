@@ -48,7 +48,7 @@
 
 namespace {
 
-const std::string iniPath("~/.config/" PROJECT_NAME "/config.ini");
+const std::string iniPath("~/.config/" PROJECT_NAME "/conf.ini");
 
 QString fontName() {
 /*#if defined(OS_MACOSX) || defined(OS_FREEBSD)

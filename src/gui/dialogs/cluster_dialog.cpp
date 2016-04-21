@@ -50,7 +50,7 @@
 
 namespace {
   const QString defaultNameConnection = "New Cluster Connection";
-  const QString defaultNameConnectionFolder = "/";
+  const char* defaultNameConnectionFolder = "/";
   const QString invalidDbType = QObject::tr("Invalid database type!");
 }
 
@@ -64,6 +64,9 @@ ClusterDialog::ClusterDialog(QWidget* parent, core::IClusterSettingsBase* connec
 
   connectionName_ = new QLineEdit;
   connectionFolder_ = new QLineEdit;
+  QRegExp rxf("^/[a-zA-z0-9]+");
+  connectionFolder_->setValidator(new QRegExpValidator(rxf, this));
+
   folderLabel_ = new QLabel;
   QHBoxLayout* folderLayout = new QHBoxLayout;
   folderLayout->addWidget(folderLabel_);
@@ -379,6 +382,9 @@ bool ClusterDialog::validateAndApply() {
 
   std::string conName = common::convertToString(connectionName_->text());
   std::string conFolder = common::convertToString(connectionFolder_->text());
+  if (conFolder.empty()) {
+    conFolder = defaultNameConnectionFolder;
+  }
   core::IClusterSettingsBase::connection_path_t path(common::file_system::stable_dir_path(conFolder) + conName);
   core::IClusterSettingsBase* newConnection = core::IClusterSettingsBase::createFromType(currentType, path);
   if (newConnection) {

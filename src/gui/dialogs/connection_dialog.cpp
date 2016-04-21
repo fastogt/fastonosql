@@ -54,7 +54,7 @@ QString toRawCommandLine(QString input) {
 }
 
 const QString defaultNameConnection = "New Connection";
-const QString defaultNameConnectionFolder = "/";
+const char* defaultNameConnectionFolder = "/";
 }  // namespace
 
 namespace fastonosql {
@@ -68,6 +68,9 @@ ConnectionDialog::ConnectionDialog(QWidget* parent, core::IConnectionSettingsBas
 
   connectionName_ = new QLineEdit;
   connectionFolder_ = new QLineEdit;
+  QRegExp rxf("^/[a-zA-z0-9]+");
+  connectionFolder_->setValidator(new QRegExpValidator(rxf, this));
+
   folderLabel_ = new QLabel;
   QHBoxLayout* folderLayout = new QHBoxLayout;
   folderLayout->addWidget(folderLabel_);
@@ -379,6 +382,9 @@ bool ConnectionDialog::validateAndApply() {
   bool isSSHType = isCanSSHConnection(currentType);
   std::string conName = common::convertToString(connectionName_->text());
   std::string conFolder = common::convertToString(connectionFolder_->text());
+  if (conFolder.empty()) {
+    conFolder = defaultNameConnectionFolder;
+  }
   core::IConnectionSettingsRemoteSSH::connection_path_t path(common::file_system::stable_dir_path(conFolder) + conName);
   if (isSSHType) {    
     core::IConnectionSettingsRemoteSSH* newConnection = core::IConnectionSettingsRemoteSSH::createFromType(currentType, path, common::net::hostAndPort());
