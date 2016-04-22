@@ -749,7 +749,7 @@ void MainWindow::createCluster(core::IClusterSettingsBaseSPtr settings) {
 }
 
 UpdateChecker::UpdateChecker(QObject* parent)
-    : QObject(parent) {
+  : QObject(parent) {
 }
 
 void UpdateChecker::routine() {
