@@ -23,6 +23,10 @@
 #include "common/convert2string.h"
 #include "common/file_system.h"
 
+#define DEFAULT_SSH_PORT 22
+#define DEFAULT_PUB_KEY_PATH "~/.ssh/id_rsa.pub"
+#define DEFAULT_PRIVATE_KEY_PATH "~/.ssh/id_rsa"
+
 #define HOST "host"
 #define USER "user"
 #define PASSWORD "password"
@@ -36,12 +40,12 @@ namespace fastonosql {
 namespace core {
 
 SSHInfo::SSHInfo()
-  : host(DEFAULT_SSH_HOST, DEFAULT_SSH_PORT),
-    user_name(), password(), public_key(common::file_system::prepare_path("~/.ssh/id_rsa.pub")),
-    private_key(common::file_system::prepare_path("~/.ssh/id_rsa")), current_method(UNKNOWN) {
+  : host(common::net::hostAndPort::createLocalHost(DEFAULT_SSH_PORT)),
+    user_name(), password(), public_key(common::file_system::prepare_path(DEFAULT_PUB_KEY_PATH)),
+    private_key(common::file_system::prepare_path(DEFAULT_PRIVATE_KEY_PATH)), current_method(UNKNOWN) {
 }
 
-SSHInfo::SSHInfo(const common::net::hostAndPort &host, const std::string& userName,
+SSHInfo::SSHInfo(const common::net::hostAndPort& host, const std::string& userName,
                  const std::string& password, const std::string& publicKey,
                  const std::string& privateKey, const std::string& passphrase,
                  SupportedAuthenticationMetods method)
@@ -51,9 +55,9 @@ SSHInfo::SSHInfo(const common::net::hostAndPort &host, const std::string& userNa
 }
 
 SSHInfo::SSHInfo(const std::string& text)
-  : host(DEFAULT_SSH_HOST, DEFAULT_SSH_PORT), user_name(), password(),
-    public_key(common::file_system::prepare_path("~/.ssh/id_rsa.pub")),
-    private_key(common::file_system::prepare_path("~/.ssh/id_rsa")), passphrase(),
+  : host(common::net::hostAndPort::createLocalHost(DEFAULT_SSH_PORT)), user_name(), password(),
+    public_key(common::file_system::prepare_path(DEFAULT_PUB_KEY_PATH)),
+    private_key(common::file_system::prepare_path(DEFAULT_PRIVATE_KEY_PATH)), passphrase(),
     current_method(UNKNOWN) {
   size_t pos = 0;
   size_t start = 0;

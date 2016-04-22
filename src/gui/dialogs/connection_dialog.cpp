@@ -270,6 +270,10 @@ ConnectionDialog::ConnectionDialog(QWidget* parent, core::IConnectionSettingsBas
   retranslateUi();
 }
 
+void ConnectionDialog::setFolderEnabled(bool val) {
+  connectionFolder_->setEnabled(val);
+}
+
 core::IConnectionSettingsBaseSPtr ConnectionDialog::connection() const {
   return connection_;
 }

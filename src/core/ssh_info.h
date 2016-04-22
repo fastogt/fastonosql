@@ -22,9 +22,6 @@
 
 #include "common/net/types.h"
 
-#define DEFAULT_SSH_PORT 22
-#define DEFAULT_SSH_HOST std::string()
-
 namespace fastonosql {
 namespace core {
 

@@ -183,7 +183,8 @@ void ConnectionsDialog::remove() {
   ConnectionListWidgetItem* currentItem = dynamic_cast<ConnectionListWidgetItem*>(qitem);
   if (currentItem) {
     QTreeWidgetItem* qpitem = qitem->parent();
-    if (!qpitem) {
+    ClusterConnectionListWidgetItem* clitem = dynamic_cast<ClusterConnectionListWidgetItem*>(qpitem);
+    if (!clitem) {
       // Ask user
       int answer = QMessageBox::question(this, "Connections",
                                          QString("Really delete \"%1\" connection?").arg(currentItem->text(0)),
@@ -197,7 +198,7 @@ void ConnectionsDialog::remove() {
       core::SettingsManager::instance().removeConnection(connection);
       return;
     } else {
-      qitem = qpitem;
+      qitem = clitem;
     }
   }
 

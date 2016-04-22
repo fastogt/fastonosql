@@ -42,6 +42,7 @@ class ConnectionDialog
   ConnectionDialog(QWidget* parent, core::IConnectionSettingsBase* connection = nullptr,
                    const std::vector<core::connectionTypes>& availibleTypes = std::vector<core::connectionTypes>());  // get ownerships connection
 
+  void setFolderEnabled(bool val);
   core::IConnectionSettingsBaseSPtr connection() const;
 
  public Q_SLOTS:
