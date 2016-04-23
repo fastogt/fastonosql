@@ -171,6 +171,10 @@ std::string MemcachedRaw::delimiter() const {
   return connection_.config_.delimiter;
 }
 
+std::string MemcachedRaw::nsSeparator() const {
+  return connection_.config_.ns_separator;
+}
+
 MemcachedRaw::config_t MemcachedRaw::config() const {
   return connection_.config_;
 }
@@ -416,7 +420,7 @@ common::Error stats(CommandHandler* handler, int argc, char** argv, FastoObject*
   if (!er) {
     MemcachedServerInfo minf(statsout);
     common::StringValue* val = common::Value::createStringValue(minf.toString());
-    FastoObject* child = new FastoObject(out, val, mem->delimiter());
+    FastoObject* child = new FastoObject(out, val, mem->delimiter(), mem->nsSeparator());
     out->addChildren(child);
   }
 
@@ -429,7 +433,7 @@ common::Error get(CommandHandler* handler, int argc, char** argv, FastoObject* o
   common::Error er = mem->get(argv[0], &ret);
   if (!er) {
     common::StringValue* val = common::Value::createStringValue(ret);
-    FastoObject* child = new FastoObject(out, val, mem->delimiter());
+    FastoObject* child = new FastoObject(out, val, mem->delimiter(), mem->nsSeparator());
     out->addChildren(child);
   }
 
@@ -441,7 +445,7 @@ common::Error set(CommandHandler* handler, int argc, char** argv, FastoObject* o
   common::Error er = mem->set(argv[0], argv[3], atoi(argv[1]), atoi(argv[2]));
   if (!er) {
     common::StringValue* val = common::Value::createStringValue("STORED");
-    FastoObject* child = new FastoObject(out, val, mem->delimiter());
+    FastoObject* child = new FastoObject(out, val, mem->delimiter(), mem->nsSeparator());
     out->addChildren(child);
   }
 
@@ -453,7 +457,7 @@ common::Error add(CommandHandler* handler, int argc, char** argv, FastoObject* o
   common::Error er = mem->add(argv[0], argv[3], atoi(argv[1]), atoi(argv[2]));
   if (!er) {
     common::StringValue* val = common::Value::createStringValue("STORED");
-    FastoObject* child = new FastoObject(out, val, mem->delimiter());
+    FastoObject* child = new FastoObject(out, val, mem->delimiter(), mem->nsSeparator());
     out->addChildren(child);
   }
 
@@ -465,7 +469,7 @@ common::Error replace(CommandHandler* handler, int argc, char** argv, FastoObjec
   common::Error er = mem->replace(argv[0], argv[3], atoi(argv[1]), atoi(argv[2]));
   if (!er) {
     common::StringValue* val = common::Value::createStringValue("STORED");
-    FastoObject* child = new FastoObject(out, val, mem->delimiter());
+    FastoObject* child = new FastoObject(out, val, mem->delimiter(), mem->nsSeparator());
     out->addChildren(child);
   }
 
@@ -477,7 +481,7 @@ common::Error append(CommandHandler* handler, int argc, char** argv, FastoObject
   common::Error er = mem->append(argv[0], argv[3], atoi(argv[1]), atoi(argv[2]));
   if (!er) {
     common::StringValue* val = common::Value::createStringValue("STORED");
-    FastoObject* child = new FastoObject(out, val, mem->delimiter());
+    FastoObject* child = new FastoObject(out, val, mem->delimiter(), mem->nsSeparator());
     out->addChildren(child);
   }
 
@@ -489,7 +493,7 @@ common::Error prepend(CommandHandler* handler, int argc, char** argv, FastoObjec
   common::Error er = mem->prepend(argv[0], argv[3], atoi(argv[1]), atoi(argv[2]));
   if (!er) {
     common::StringValue* val = common::Value::createStringValue("STORED");
-    FastoObject* child = new FastoObject(out, val, mem->delimiter());
+    FastoObject* child = new FastoObject(out, val, mem->delimiter(), mem->nsSeparator());
     out->addChildren(child);
   }
 
@@ -501,7 +505,7 @@ common::Error incr(CommandHandler* handler, int argc, char** argv, FastoObject* 
   common::Error er = mem->incr(argv[0], common::convertFromString<uint64_t>(argv[1]));
   if (!er) {
     common::StringValue* val = common::Value::createStringValue("STORED");
-    FastoObject* child = new FastoObject(out, val, mem->delimiter());
+    FastoObject* child = new FastoObject(out, val, mem->delimiter(), mem->nsSeparator());
     out->addChildren(child);
   }
 
@@ -513,7 +517,7 @@ common::Error decr(CommandHandler* handler, int argc, char** argv, FastoObject* 
   common::Error er = mem->decr(argv[0], common::convertFromString<uint64_t>(argv[1]));
   if (!er) {
     common::StringValue* val = common::Value::createStringValue("STORED");
-    FastoObject* child = new FastoObject(out, val, mem->delimiter());
+    FastoObject* child = new FastoObject(out, val, mem->delimiter(), mem->nsSeparator());
     out->addChildren(child);
   }
 
@@ -525,7 +529,7 @@ common::Error del(CommandHandler* handler, int argc, char** argv, FastoObject* o
   common::Error er = mem->del(argv[0], argc == 2 ? atoll(argv[1]) : 0);
   if (!er) {
     common::StringValue* val = common::Value::createStringValue("DELETED");
-    FastoObject* child = new FastoObject(out, val, mem->delimiter());
+    FastoObject* child = new FastoObject(out, val, mem->delimiter(), mem->nsSeparator());
     out->addChildren(child);
   }
 
@@ -537,7 +541,7 @@ common::Error flush_all(CommandHandler* handler, int argc, char** argv, FastoObj
   common::Error er = mem->flush_all(argc == 1 ? common::convertFromString<time_t>(argv[0]) : 0);
   if (!er) {
     common::StringValue* val = common::Value::createStringValue("STORED");
-    FastoObject* child = new FastoObject(out, val, mem->delimiter());
+    FastoObject* child = new FastoObject(out, val, mem->delimiter(), mem->nsSeparator());
     out->addChildren(child);
   }
 
@@ -555,7 +559,7 @@ common::Error dbsize(CommandHandler* handler, int argc, char** argv, FastoObject
   common::Error er = mem->dbsize(&dbsize);
   if (!er) {
     common::FundamentalValue* val = common::Value::createUIntegerValue(dbsize);
-    FastoObject* child = new FastoObject(out, val, mem->delimiter());
+    FastoObject* child = new FastoObject(out, val, mem->delimiter(), mem->nsSeparator());
     out->addChildren(child);
   }
 

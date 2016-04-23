@@ -74,7 +74,8 @@ class RocksdbDataBaseInfo
 class RocksdbCommand
   : public FastoObjectCommand {
  public:
-  RocksdbCommand(FastoObject* parent, common::CommandValue* cmd, const std::string& delemitr);
+  RocksdbCommand(FastoObject* parent, common::CommandValue* cmd, const std::string& delemitr,
+                 const std::string& ns_separator);
   virtual bool isReadOnly() const;
 };
 

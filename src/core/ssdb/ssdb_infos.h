@@ -73,7 +73,8 @@ class SsdbDataBaseInfo
 class SsdbCommand
   : public FastoObjectCommand {
  public:
-  SsdbCommand(FastoObject* parent, common::CommandValue* cmd, const std::string& delemitr);
+  SsdbCommand(FastoObject* parent, common::CommandValue* cmd, const std::string& delemitr,
+              const std::string& ns_separator);
   virtual bool isReadOnly() const;
 };
 

@@ -22,8 +22,10 @@
 
 namespace fastonosql {
 
-FastoObject::FastoObject(FastoObject* parent, common::Value* val, const std::string& delemitr)
-  : observer_(nullptr), value_(val), parent_(parent), childrens_(), delemitr_(delemitr) {
+FastoObject::FastoObject(FastoObject* parent, common::Value* val,
+                         const std::string& delemitr, const std::string& ns_separator)
+  : observer_(nullptr), value_(val), parent_(parent), childrens_(),
+    delemitr_(delemitr), ns_separator_(ns_separator) {
   DCHECK(value_);
 }
 
@@ -48,7 +50,8 @@ std::string FastoObject::toString() const {
 }
 
 FastoObject* FastoObject::createRoot(const std::string& text, IFastoObjectObserver* observer) {
-  FastoObject* root =  new FastoObject(NULL, common::Value::createStringValue(text), std::string());
+  FastoObject* root =  new FastoObject(NULL, common::Value::createStringValue(text),
+                                       std::string(), std::string());
   root->observer_ = observer;
   return root;
 }
@@ -84,6 +87,10 @@ std::string FastoObject::delemitr() const {
   return delemitr_;
 }
 
+std::string FastoObject::nsSeparator() const {
+  return ns_separator_;
+}
+
 common::Value* FastoObject::value() const {
   return value_.get();
 }
@@ -96,8 +103,8 @@ void FastoObject::setValue(common::Value* val) {
 }
 
 FastoObjectCommand::FastoObjectCommand(FastoObject* parent, common::CommandValue* cmd,
-                                       const std::string& delemitr)
-  : FastoObject(parent, cmd, delemitr) {
+                                       const std::string& delemitr, const std::string& ns_separator)
+  : FastoObject(parent, cmd, delemitr, ns_separator) {
 }
 
 FastoObjectCommand::~FastoObjectCommand() {
@@ -193,8 +200,8 @@ std::string getFirstWordFromLine(const std::string& input) {
 }
 
 FastoObjectArray::FastoObjectArray(FastoObject* parent, common::ArrayValue* ar,
-                                   const std::string& delemitr)
-  : FastoObject(parent, ar, delemitr) {
+                                   const std::string& delemitr, const std::string& ns_separator)
+  : FastoObject(parent, ar, delemitr, ns_separator) {
 }
 
 void FastoObjectArray::append(common::Value* in_value) {

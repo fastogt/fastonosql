@@ -35,7 +35,7 @@ enum ConfigType {
 template<ConfigType ctype>
 struct BaseConfig {
   BaseConfig()
-    : delimiter("\n") {
+    : delimiter("\n"), ns_separator(":") {
   }
 
   static ConfigType type() {
@@ -43,6 +43,7 @@ struct BaseConfig {
   }
 
   std::string delimiter;
+  std::string ns_separator;
 };
 
 // -f -d

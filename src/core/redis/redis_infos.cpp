@@ -1007,8 +1007,9 @@ RedisDataBaseInfo* RedisDataBaseInfo::clone() const {
   return new RedisDataBaseInfo(*this);
 }
 
-RedisCommand::RedisCommand(FastoObject* parent, common::CommandValue* cmd, const std::string& delemitr)
-  : FastoObjectCommand(parent, cmd, delemitr) {
+RedisCommand::RedisCommand(FastoObject* parent, common::CommandValue* cmd,
+                           const std::string& delemitr, const std::string& ns_separator)
+  : FastoObjectCommand(parent, cmd, delemitr, ns_separator) {
 }
 
 bool RedisCommand::isReadOnly() const {

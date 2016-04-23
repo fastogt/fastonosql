@@ -55,6 +55,7 @@ struct LmdbRaw
   bool isConnected() const;
 
   std::string delimiter() const;
+  std::string nsSeparator() const;
   config_t config() const;
 
   static const char* versionApi();

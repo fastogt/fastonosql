@@ -94,6 +94,8 @@ void parseOptions(int argc, char** argv, RedisConfig& cfg) {
       cfg.cluster_mode = 1;
     } else if (!strcmp(argv[i], "-d") && !lastarg) {
       cfg.delimiter = argv[++i];
+    } else if (!strcmp(argv[i], "-ns") && !lastarg) {
+      cfg.ns_separator = argv[++i];
     }
     /*else if (!strcmp(argv[i], "-v") || !strcmp(argv[i], "--version")) {
       sds version = cliVersion();

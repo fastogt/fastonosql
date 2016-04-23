@@ -43,6 +43,11 @@ std::vector<std::string> LocalConfig::args() const {
     argv.push_back(delimiter);
   }
 
+  if (!ns_separator.empty()) {
+    argv.push_back("-ns");
+    argv.push_back(ns_separator);
+  }
+
   return argv;
 }
 
@@ -63,6 +68,11 @@ std::vector<std::string> RemoteConfig::args() const {
   if (!delimiter.empty()) {
     argv.push_back("-d");
     argv.push_back(delimiter);
+  }
+
+  if (!ns_separator.empty()) {
+    argv.push_back("-ns");
+    argv.push_back(ns_separator);
   }
 
   return argv;

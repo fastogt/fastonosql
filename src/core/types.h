@@ -366,7 +366,7 @@ FastoObjectCommand* createCommand(FastoObject* parent, const std::string& input,
   }
 
   common::CommandValue* cmd = common::Value::createCommand(stable_input, ct);
-  FastoObjectCommand* fs = new Command(parent, cmd, parent->delemitr());
+  FastoObjectCommand* fs = new Command(parent, cmd, parent->delemitr(), parent->nsSeparator());
   parent->addChildren(fs);
   return fs;
 }

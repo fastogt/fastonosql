@@ -232,6 +232,10 @@ std::string UnqliteRaw::delimiter() const {
   return connection_.config_.delimiter;
 }
 
+std::string UnqliteRaw::nsSeparator() const {
+  return connection_.config_.ns_separator;
+}
+
 UnqliteRaw::config_t UnqliteRaw::config() const {
   return connection_.config_;
 }
@@ -345,7 +349,7 @@ common::Error set(CommandHandler* handler, int argc, char** argv, FastoObject* o
   common::Error er = unq->set(argv[0], argv[1]);
   if (!er) {
     common::StringValue* val = common::Value::createStringValue("STORED");
-    FastoObject* child = new FastoObject(out, val, unq->delimiter());
+    FastoObject* child = new FastoObject(out, val, unq->delimiter(), unq->nsSeparator());
     out->addChildren(child);
   }
 
@@ -358,7 +362,7 @@ common::Error get(CommandHandler* handler, int argc, char** argv, FastoObject* o
   common::Error er = unq->get(argv[0], &ret);
   if (!er) {
     common::StringValue* val = common::Value::createStringValue(ret);
-    FastoObject* child = new FastoObject(out, val, unq->delimiter());
+    FastoObject* child = new FastoObject(out, val, unq->delimiter(), unq->nsSeparator());
     out->addChildren(child);
   }
 
@@ -370,7 +374,7 @@ common::Error del(CommandHandler* handler, int argc, char** argv, FastoObject* o
   common::Error er = unq->del(argv[0]);
   if (!er) {
     common::StringValue* val = common::Value::createStringValue("DELETED");
-    FastoObject* child = new FastoObject(out, val, unq->delimiter());
+    FastoObject* child = new FastoObject(out, val, unq->delimiter(), unq->nsSeparator());
     out->addChildren(child);
   }
 
@@ -387,7 +391,7 @@ common::Error keys(CommandHandler* handler, int argc, char** argv, FastoObject* 
       common::StringValue* val = common::Value::createStringValue(keysout[i]);
       ar->append(val);
     }
-    FastoObjectArray* child = new FastoObjectArray(out, ar, unq->delimiter());
+    FastoObjectArray* child = new FastoObjectArray(out, ar, unq->delimiter(), unq->nsSeparator());
     out->addChildren(child);
   }
 
@@ -401,7 +405,7 @@ common::Error info(CommandHandler* handler, int argc, char** argv, FastoObject* 
   if (!er) {
     UnqliteServerInfo uinf(statsout);
     common::StringValue* val = common::Value::createStringValue(uinf.toString());
-    FastoObject* child = new FastoObject(out, val, unq->delimiter());
+    FastoObject* child = new FastoObject(out, val, unq->delimiter(), unq->nsSeparator());
     out->addChildren(child);
   }
 
@@ -414,7 +418,7 @@ common::Error dbsize(CommandHandler* handler, int argc, char** argv, FastoObject
   common::Error er = unq->dbsize(&size);
   if (!er) {
     common::FundamentalValue* val = common::Value::createUIntegerValue(size);
-    FastoObject* child = new FastoObject(out, val, unq->delimiter());
+    FastoObject* child = new FastoObject(out, val, unq->delimiter(), unq->nsSeparator());
     out->addChildren(child);
   }
 

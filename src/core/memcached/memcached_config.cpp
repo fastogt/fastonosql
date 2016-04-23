@@ -43,6 +43,8 @@ void parseOptions(int argc, char** argv, MemcachedConfig& cfg) {
       cfg.password = argv[++i];
     } else if (!strcmp(argv[i], "-d") && !lastarg) {
       cfg.delimiter = argv[++i];
+    } else if (!strcmp(argv[i], "-ns") && !lastarg) {
+      cfg.ns_separator = argv[++i];
     } else {
       if (argv[i][0] == '-') {
         const uint16_t size_buff = 256;

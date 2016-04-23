@@ -192,8 +192,8 @@ RocksdbDataBaseInfo* RocksdbDataBaseInfo::clone() const {
 }
 
 RocksdbCommand::RocksdbCommand(FastoObject* parent, common::CommandValue* cmd,
-                               const std::string& delemitr)
-  : FastoObjectCommand(parent, cmd, delemitr) {
+                               const std::string& delemitr, const std::string& ns_separator)
+  : FastoObjectCommand(parent, cmd, delemitr, ns_separator) {
 }
 
 bool RocksdbCommand::isReadOnly() const {

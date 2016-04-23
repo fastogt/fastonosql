@@ -394,6 +394,7 @@ const char* commandLineHelpText(connectionTypes type) {
            "                   It is possible to specify sub-second times like <b>-i</b> 0.1.<br/>"
            "<b>-n &lt;db&gt;</b>            Database number.<br/>"
            "<b>-d &lt;delimiter&gt;</b>     Multi-bulk delimiter in for raw formatting (default: \\n).<br/>"
+           "<b>-ns &lt;separator&gt;</b>    Namespace separator.<br/>"
            "<b>-c</b>                 Enable cluster mode (follow -ASK and -MOVED redirections).<br/>"
            "<b>--latency</b>          Enter a special mode continuously sampling latency.<br/>"
            "<b>--latency-history</b>  Like <b>--latency</b> but tracking latency changes over time.<br/>"
@@ -417,37 +418,43 @@ const char* commandLineHelpText(connectionTypes type) {
              "<b>-p &lt;port&gt;</b>          Server port (default: 11211).<br/>"
              "<b>-u &lt;username&gt;</b>      Username to use when connecting to the server.<br/>"
              "<b>-a &lt;password&gt;</b>      Password to use when connecting to the server.<br/>"
-             "<b>-d &lt;delimiter&gt;</b>     Multi-bulk delimiter in for raw formatting (default: \\n).<br/>";
+             "<b>-d &lt;delimiter&gt;</b>     Multi-bulk delimiter in for raw formatting (default: \\n).<br/>"
+             "<b>-ns &lt;separator&gt;</b>    Namespace separator.<br/>";
   }
   if (type == SSDB) {
       return "<b>Usage: [OPTIONS] [cmd [arg [arg ...]]]</b><br/>"
              "<b>-u &lt;username&gt;</b>      Username to use when connecting to the server.<br/>"
              "<b>-a &lt;password&gt;</b>      Password to use when connecting to the server.<br/>"
-             "<b>-d &lt;delimiter&gt;</b>     Multi-bulk delimiter in for raw formatting (default: \\n).<br/>";
+             "<b>-d &lt;delimiter&gt;</b>     Multi-bulk delimiter in for raw formatting (default: \\n).<br/>"
+             "<b>-ns &lt;separator&gt;</b>    Namespace separator.<br/>";
   }
   if (type == LEVELDB) {
       return "<b>Usage: [OPTIONS] [cmd [arg [arg ...]]]</b><br/>"
              "<b>-f &lt;db&gt;</b>            File path to database.<br/>"
              "<b>-c </b>            Create database if missing.<br/>"
-             "<b>-d &lt;delimiter&gt;</b>     Multi-bulk delimiter in for raw formatting (default: \\n).<br/>";
+             "<b>-d &lt;delimiter&gt;</b>     Multi-bulk delimiter in for raw formatting (default: \\n).<br/>"
+             "<b>-ns &lt;separator&gt;</b>    Namespace separator.<br/>";
   }
   if (type == ROCKSDB) {
       return "<b>Usage: [OPTIONS] [cmd [arg [arg ...]]]</b><br/>"
              "<b>-f &lt;db&gt;</b>            File path to database.<br/>"
              "<b>-c </b>            Create database if missing.<br/>"
-             "<b>-d &lt;delimiter&gt;</b>     Multi-bulk delimiter in for raw formatting (default: \\n).<br/>";
+             "<b>-d &lt;delimiter&gt;</b>     Multi-bulk delimiter in for raw formatting (default: \\n).<br/>"
+             "<b>-ns &lt;separator&gt;</b>    Namespace separator.<br/>";
   }
   if (type == UNQLITE) {
       return "<b>Usage: [OPTIONS] [cmd [arg [arg ...]]]</b><br/>"
              "<b>-f &lt;db&gt;</b>            File path to database.<br/>"
              "<b>-c </b>            Create database if missing.<br/>"
-             "<b>-d &lt;delimiter&gt;</b>     Multi-bulk delimiter in for raw formatting (default: \\n).<br/>";
+             "<b>-d &lt;delimiter&gt;</b>     Multi-bulk delimiter in for raw formatting (default: \\n).<br/>"
+             "<b>-ns &lt;separator&gt;</b>    Namespace separator.<br/>";
   }
   if (type == LMDB) {
       return "<b>Usage: [OPTIONS] [cmd [arg [arg ...]]]</b><br/>"
              "<b>-f &lt;db&gt;</b>            File path to database.<br/>"
              "<b>-c </b>            Create database if missing.<br/>"
-             "<b>-d &lt;delimiter&gt;</b>     Multi-bulk delimiter in for raw formatting (default: \\n).<br/>";
+             "<b>-d &lt;delimiter&gt;</b>     Multi-bulk delimiter in for raw formatting (default: \\n).<br/>"
+             "<b>-ns &lt;separator&gt;</b>    Namespace separator.<br/>";
   }
 
   NOTREACHED();

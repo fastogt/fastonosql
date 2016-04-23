@@ -37,6 +37,8 @@ void parseOptions(int argc, char** argv, UnqliteConfig& cfg) {
 
     if (!strcmp(argv[i], "-d") && !lastarg) {
       cfg.delimiter = argv[++i];
+    } else if (!strcmp(argv[i], "-ns") && !lastarg) {
+      cfg.ns_separator = argv[++i];
     } else if (!strcmp(argv[i], "-f") && !lastarg) {
       cfg.dbname = argv[++i];
     } else if (!strcmp(argv[i], "-c")) {

@@ -29,7 +29,8 @@ class FastoObject
  public:
   typedef std::vector<FastoObject*> child_container_t;
 
-  FastoObject(FastoObject* parent, common::Value* val, const std::string& delemitr = std::string());
+  FastoObject(FastoObject* parent, common::Value* val,
+              const std::string& delemitr, const std::string& ns_separator);
   virtual ~FastoObject();
 
   common::Value::Type type() const;
@@ -42,6 +43,7 @@ class FastoObject
   FastoObject* parent() const;
   void clear();
   std::string delemitr() const;
+  std::string nsSeparator() const;
 
   common::Value* value() const;
   void setValue(common::Value* val);
@@ -56,6 +58,7 @@ class FastoObject
   FastoObject* const parent_;
   child_container_t childrens_;
   const std::string delemitr_;
+  const std::string ns_separator_;
 };
 
 class FastoObjectCommand
@@ -74,7 +77,8 @@ class FastoObjectCommand
   common::Value::CommandLoggingType commandLoggingType() const;
 
  protected:
-  FastoObjectCommand(FastoObject* parent, common::CommandValue* cmd, const std::string &delemitr);
+  FastoObjectCommand(FastoObject* parent, common::CommandValue* cmd,
+                     const std::string& delemitr, const std::string& ns_separator);
 };
 
 std::string stableCommand(std::string command);
@@ -84,7 +88,8 @@ std::string getFirstWordFromLine(const std::string& input);
 class FastoObjectArray
   : public FastoObject {
  public:
-  FastoObjectArray(FastoObject* parent, common::ArrayValue* ar, const std::string& delemitr);
+  FastoObjectArray(FastoObject* parent, common::ArrayValue* ar, const std::string& delemitr,
+                   const std::string& ns_separator);
 
   // Appends a Value to the end of the list.
   void append(common::Value* in_value);

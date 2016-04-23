@@ -44,6 +44,8 @@ void parseOptions(int argc, char** argv, SsdbConfig& cfg) {
       cfg.password = argv[++i];
     } else if (!strcmp(argv[i], "-d") && !lastarg) {
       cfg.delimiter = argv[++i];
+    } else if (!strcmp(argv[i], "-ns") && !lastarg) {
+      cfg.ns_separator = argv[++i];
     } else {
       if (argv[i][0] == '-') {
         std::string buff = common::MemSPrintf("Unrecognized option or bad number of args for: '%s'", argv[i]);
