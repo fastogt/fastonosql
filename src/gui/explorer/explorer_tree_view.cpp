@@ -767,10 +767,10 @@ void ExplorerTreeView::finishLoadDatabaseContent(const core::events_info::LoadDa
   }
 
   core::events_info::LoadDatabaseContentResponce::keys_container_t keys = res.keys;
-
+  std::string ns = serv->nsSeparator();
   for (size_t i = 0; i < keys.size(); ++i) {
     core::NDbKValue key = keys[i];
-    mod->addKey(serv, res.inf, key);
+    mod->addKey(serv, res.inf, key, ns);
   }
 
   mod->updateDb(serv, res.inf);
@@ -822,12 +822,13 @@ void ExplorerTreeView::finishExecuteCommand(const core::events_info::CommandResp
     return;
   }
 
+  std::string ns = serv->nsSeparator();
   core::CommandKeySPtr key = res.cmd;
   core::NDbKValue dbv = key->key();
   if (key->type() == core::CommandKey::C_DELETE) {
     mod->removeKey(serv, res.inf, dbv);
   } else if (key->type() == core::CommandKey::C_CREATE) {
-    mod->addKey(serv, res.inf, dbv);
+    mod->addKey(serv, res.inf, dbv, ns);
   }
 }
 

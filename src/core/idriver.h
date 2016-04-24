@@ -66,6 +66,7 @@ class IDriver
   virtual bool isAuthenticated() const = 0;
 
   virtual std::string outputDelemitr() const = 0;
+  virtual std::string nsSeparator() const = 0;
 
  Q_SIGNALS:
   void addedChild(FastoObject* child);

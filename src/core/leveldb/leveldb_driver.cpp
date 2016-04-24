@@ -112,6 +112,10 @@ std::string LeveldbDriver::path() const {
   return config.dbname;
 }
 
+std::string LeveldbDriver::nsSeparator() const {
+  return impl_->nsSeparator();
+}
+
 std::string LeveldbDriver::outputDelemitr() const {
   return impl_->delimiter();
 }

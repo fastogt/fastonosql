@@ -38,6 +38,7 @@ class LmdbDriver
   virtual bool isConnected() const;
   virtual bool isAuthenticated() const;
   virtual std::string path() const;
+  virtual std::string nsSeparator() const;
   virtual std::string outputDelemitr() const;
 
  private:

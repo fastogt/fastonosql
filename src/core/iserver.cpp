@@ -86,8 +86,12 @@ IDataBaseInfoSPtr IServer::currentDatabaseInfo() const {
   return drv_->currentDatabaseInfo();
 }
 
-QString IServer::outputDelemitr() const {
-  return common::convertFromString<QString>(drv_->outputDelemitr());
+std::string IServer::outputDelemitr() const {
+  return drv_->outputDelemitr();
+}
+
+std::string IServer::nsSeparator() const {
+  return drv_->nsSeparator();
 }
 
 IDatabaseSPtr IServer::createDatabaseByInfo(IDataBaseInfoSPtr inf) {

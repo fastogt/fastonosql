@@ -58,6 +58,10 @@ common::net::hostAndPort MemcachedDriver::host() const {
   return conf.host;
 }
 
+std::string MemcachedDriver::nsSeparator() const {
+  return impl_->nsSeparator();
+}
+
 std::string MemcachedDriver::outputDelemitr() const {
   return impl_->delimiter();
 }

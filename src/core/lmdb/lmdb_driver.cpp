@@ -110,6 +110,10 @@ std::string LmdbDriver::path() const {
   return config.dbname;
 }
 
+std::string LmdbDriver::nsSeparator() const {
+  return impl_->nsSeparator();
+}
+
 std::string LmdbDriver::outputDelemitr() const {
   return impl_->delimiter();
 }

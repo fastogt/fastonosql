@@ -41,6 +41,7 @@ class RedisDriver
   virtual bool isConnected() const;
   virtual bool isAuthenticated() const;
   virtual common::net::hostAndPort host() const;
+  virtual std::string nsSeparator() const;
   virtual std::string outputDelemitr() const;
 
  private:  

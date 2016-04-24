@@ -57,7 +57,8 @@ class IServer
   ServerDiscoveryInfoSPtr discoveryInfo() const;
   IServerInfoSPtr serverInfo() const;
 
-  QString outputDelemitr() const;
+  std::string outputDelemitr() const;
+  std::string nsSeparator() const;
   IDatabaseSPtr createDatabaseByInfo(IDataBaseInfoSPtr inf);
   bool containsDatabase(IDataBaseInfoSPtr inf) const;
 

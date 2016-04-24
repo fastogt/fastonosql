@@ -28,8 +28,9 @@
 namespace fastonosql {
 namespace gui {
 
-struct IExplorerTreeItem
+class IExplorerTreeItem
   : public fasto::qt::gui::TreeItem {
+ public:
   enum eColumn {
     eName = 0,
     eCountColumns
@@ -39,6 +40,7 @@ struct IExplorerTreeItem
     eCluster,
     eServer,
     eDatabase,
+    eNamespace,
     eKey
   };
 
@@ -49,8 +51,9 @@ struct IExplorerTreeItem
   virtual eType type() const = 0;
 };
 
-struct ExplorerServerItem
+class ExplorerServerItem
   : public IExplorerTreeItem {
+ public:
   ExplorerServerItem(core::IServerSPtr server, TreeItem* parent);
 
   virtual QString name() const;
@@ -63,8 +66,9 @@ struct ExplorerServerItem
   const core::IServerSPtr server_;
 };
 
-struct ExplorerClusterItem
+class ExplorerClusterItem
   : public IExplorerTreeItem {
+ public:
   ExplorerClusterItem(core::IClusterSPtr cluster, TreeItem* parent);
 
   virtual QString name() const;
@@ -77,17 +81,17 @@ struct ExplorerClusterItem
   const core::IClusterSPtr cluster_;
 };
 
-struct ExplorerDatabaseItem
+class ExplorerDatabaseItem
   : public IExplorerTreeItem {
+ public:
   ExplorerDatabaseItem(core::IDatabaseSPtr db, ExplorerServerItem* parent);
-
-  ExplorerServerItem* parent() const;
 
   virtual QString name() const;
   virtual eType type() const;
   bool isDefault() const;
   size_t sizeDB() const;
   size_t loadedSize() const;
+  size_t keyCount() const;
 
   virtual core::IServerSPtr server() const;
   core::IDatabaseSPtr db() const;
@@ -106,11 +110,25 @@ struct ExplorerDatabaseItem
   const core::IDatabaseSPtr db_;
 };
 
-struct ExplorerKeyItem
+class ExplorerNSItem
   : public IExplorerTreeItem {
-  ExplorerKeyItem(const core::NDbKValue& key, ExplorerDatabaseItem* parent);
+ public:
+  ExplorerNSItem(const QString& name, IExplorerTreeItem* parent);
+  ExplorerDatabaseItem* db() const;
 
-  ExplorerDatabaseItem* parent() const;
+  virtual QString name() const;
+  virtual core::IServerSPtr server() const;
+  virtual eType type() const;
+
+ private:
+  QString name_;
+};
+
+class ExplorerKeyItem
+  : public IExplorerTreeItem {
+ public:
+  ExplorerKeyItem(const core::NDbKValue& key, IExplorerTreeItem* parent);
+  ExplorerDatabaseItem* db() const;
 
   core::NDbKValue key() const;
 
@@ -148,7 +166,8 @@ class ExplorerTreeModel
   void setDefaultDb(core::IServer* server, core::IDataBaseInfoSPtr db);
   void updateDb(core::IServer* server, core::IDataBaseInfoSPtr db);
 
-  void addKey(core::IServer* server, core::IDataBaseInfoSPtr db, const core::NDbKValue &dbv);
+  void addKey(core::IServer* server, core::IDataBaseInfoSPtr db,
+              const core::NDbKValue &dbv, const std::string& ns_separator);
   void removeKey(core::IServer* server, core::IDataBaseInfoSPtr db, const core::NDbKValue &key);
   void removeAllKeys(core::IServer* server, core::IDataBaseInfoSPtr db);
 
@@ -156,7 +175,9 @@ class ExplorerTreeModel
   ExplorerClusterItem* findClusterItem(core::IClusterSPtr cl);
   ExplorerServerItem* findServerItem(core::IServer* server) const;
   ExplorerDatabaseItem* findDatabaseItem(ExplorerServerItem* server, core::IDataBaseInfoSPtr db) const;
-  ExplorerKeyItem* findKeyItem(ExplorerDatabaseItem* db, const core::NDbKValue &key) const;
+  ExplorerKeyItem* findKeyItem(IExplorerTreeItem* db_or_ns, const core::NDbKValue& key) const;
+  ExplorerNSItem* findNSItem(IExplorerTreeItem* db_or_ns, const QString& name) const;
+  ExplorerNSItem* findOrCreateNSItem(IExplorerTreeItem* db_or_ns, const core::KeyInfo& kinf);
 };
 
 }  // namespace gui

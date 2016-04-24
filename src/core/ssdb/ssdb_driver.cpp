@@ -146,6 +146,10 @@ common::net::hostAndPort SsdbDriver::host() const {
   return conf.host;
 }
 
+std::string SsdbDriver::nsSeparator() const {
+  return impl_->nsSeparator();
+}
+
 std::string SsdbDriver::outputDelemitr() const {
   return impl_->delimiter();
 }

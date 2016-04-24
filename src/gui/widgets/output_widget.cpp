@@ -83,7 +83,8 @@ OutputWidget::OutputWidget(core::IServerSPtr server, QWidget* parent)
   tableView_ = new FastoTableView;
   tableView_->setModel(commonModel_);
 
-  textView_ = new FastoTextView(server_->outputDelemitr());
+  QString delemitr = common::convertFromString<QString>(server_->outputDelemitr());
+  textView_ = new FastoTextView(delemitr);
   textView_->setModel(commonModel_);
 
   timeLabel_ = new fasto::qt::gui::IconLabel(GuiFactory::instance().timeIcon(), "0", QSize(32, 32));

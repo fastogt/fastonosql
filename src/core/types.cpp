@@ -96,8 +96,48 @@ std::string convertVersionNumberToReadableString(uint32_t version) {
   return UNDEFINED_SINCE_STR;
 }
 
+std::string KeyInfo::key() const {
+  return JoinString(splited_namespaces_and_key, ns_separator);
+}
+
+bool KeyInfo::hasNamespace() const {
+  size_t ns_size = nspaceSize();
+  return ns_size > 0;
+}
+
+std::string KeyInfo::nspace() const {
+  return joinNamespace(splited_namespaces_and_key.size() - 1);
+}
+
+size_t KeyInfo::nspaceSize() const {
+  if (splited_namespaces_and_key.empty()) {
+    return 0;
+  }
+
+  return splited_namespaces_and_key.size() - 1;
+}
+
+std::string KeyInfo::joinNamespace(size_t pos) const {
+  size_t ns_size = nspaceSize();
+  if (ns_size > pos) {
+    std::vector<std::string> copy;
+    for (size_t i = 0; i <= pos; ++i) {
+      copy.push_back(splited_namespaces_and_key[i]);
+    }
+    return JoinString(copy, ns_separator);
+  }
+
+  return std::string();
+}
+
 NKey::NKey(const std::string& key, ttl_t ttl_sec)
   : key(key), ttl_sec(ttl_sec) {
+}
+
+KeyInfo NKey::info(const std::string& ns_separator) const {
+  std::vector<std::string> tokens;
+  Tokenize(key, ns_separator, &tokens);
+  return KeyInfo{tokens, ns_separator};
 }
 
 NDbKValue::NDbKValue(const NKey& key, NValue value)

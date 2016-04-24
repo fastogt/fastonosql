@@ -110,6 +110,10 @@ std::string UnqliteDriver::path() const {
   return conf.dbname;
 }
 
+std::string UnqliteDriver::nsSeparator() const {
+  return impl_->nsSeparator();
+}
+
 std::string UnqliteDriver::outputDelemitr() const {
   return impl_->delimiter();
 }

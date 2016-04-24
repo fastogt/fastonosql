@@ -102,6 +102,10 @@ common::net::hostAndPort RedisDriver::host() const {
   return impl_->config_.host;
 }
 
+std::string RedisDriver::nsSeparator() const {
+  return impl_->config_.ns_separator;
+}
+
 std::string RedisDriver::outputDelemitr() const {
   return impl_->config_.delimiter;
 }

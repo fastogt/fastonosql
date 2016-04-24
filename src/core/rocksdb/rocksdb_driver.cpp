@@ -112,6 +112,10 @@ std::string RocksdbDriver::path() const {
   return conf.dbname;
 }
 
+std::string RocksdbDriver::nsSeparator() const {
+  return impl_->nsSeparator();
+}
+
 std::string RocksdbDriver::outputDelemitr() const {
   return impl_->delimiter();
 }

@@ -5,6 +5,7 @@
 - Property to change font globally
 - Config version
 - Folders for connections
+- Keys namespaces
 
 0.8.1 / February 20, 2016
 [Alexandr Topilski]
