@@ -305,11 +305,11 @@ QVariant ExplorerTreeModel::data(const QModelIndex& index, int role) const {
   }
 
   int col = index.column();
-  IExplorerTreeItem::eType t = node->type();
+  IExplorerTreeItem::eType type = node->type();
 
   if (role == Qt::ToolTipRole) {
     core::IServerSPtr server = node->server();
-    if (t == IExplorerTreeItem::eServer && server) {
+    if (type == IExplorerTreeItem::eServer && server) {
       core::ServerDiscoveryInfoSPtr disc = server->discoveryInfo();
       if (disc) {
         QString dname = common::convertFromString<QString>(disc->name());
@@ -337,24 +337,29 @@ QVariant ExplorerTreeModel::data(const QModelIndex& index, int role) const {
                          "<b>Path:</b> %3<br/>").arg(sname).arg(spath);
         }
       }
-    } else if (t == IExplorerTreeItem::eDatabase) {
-        ExplorerDatabaseItem* db = dynamic_cast<ExplorerDatabaseItem*>(node);
-        if (db && db->isDefault()) {
-          return QString("<b>Db size:</b> %1 keys<br/>").arg(db->sizeDB());
+    } else if (type == IExplorerTreeItem::eDatabase) {
+      ExplorerDatabaseItem* db = dynamic_cast<ExplorerDatabaseItem*>(node);
+      if (db && db->isDefault()) {
+        return QString("<b>Db size:</b> %1 keys<br/>").arg(db->sizeDB());
+      }
+    } else if (type == IExplorerTreeItem::eNamespace) {
+        ExplorerNSItem* ns = dynamic_cast<ExplorerNSItem*>(node);
+        if (ns) {
+          return QString("<b>Group size:</b> %1 keys<br/>").arg(ns->keyCount());
         }
-    }
+      }
   }
 
   if (role == Qt::DecorationRole && col == ExplorerServerItem::eName) {
-    if (t == IExplorerTreeItem::eCluster) {
+    if (type == IExplorerTreeItem::eCluster) {
       return GuiFactory::instance().clusterIcon();
-    } else if (t == IExplorerTreeItem::eServer) {
+    } else if (type == IExplorerTreeItem::eServer) {
       return GuiFactory::instance().icon(node->server()->type());
-    } else if (t == IExplorerTreeItem::eKey) {
+    } else if (type == IExplorerTreeItem::eKey) {
       return GuiFactory::instance().keyIcon();
-    } else if (t == IExplorerTreeItem::eDatabase) {
+    } else if (type == IExplorerTreeItem::eDatabase) {
       return GuiFactory::instance().databaseIcon();
-    } else if (t == IExplorerTreeItem::eNamespace) {
+    } else if (type == IExplorerTreeItem::eNamespace) {
       return GuiFactory::instance().directoryIcon();
     } else {
       NOTREACHED();
@@ -363,27 +368,27 @@ QVariant ExplorerTreeModel::data(const QModelIndex& index, int role) const {
 
   if (role == Qt::DisplayRole) {
     if (col == IExplorerTreeItem::eName) {
-      if (t == IExplorerTreeItem::eKey) {
+      if (type == IExplorerTreeItem::eKey) {
         return node->name();
-      } else if (t == IExplorerTreeItem::eDatabase) {
+      } else if (type == IExplorerTreeItem::eDatabase) {
         ExplorerDatabaseItem* db = dynamic_cast<ExplorerDatabaseItem*>(node);
         CHECK(db);
         return QString("%1 (%2/%3)").arg(node->name()).arg(db->keyCount()).arg(db->sizeDB());  // db
-      } else if(t == IExplorerTreeItem::eNamespace) {
+      } else if(type == IExplorerTreeItem::eNamespace) {
         ExplorerNSItem* db = dynamic_cast<ExplorerNSItem*>(node);
         CHECK(db);
         return QString("%1 (%2)").arg(node->name()).arg(db->keyCount());  // db
       } else {
-        return QString("%1 (%2)").arg(node->name()).arg(node->childrenCount());  // server
+        return QString("%1 (%2)").arg(node->name()).arg(node->childrenCount());  // server, cluster
       }
     }
   }
 
   if (role == Qt::ForegroundRole) {
-    if (t == IExplorerTreeItem::eDatabase) {
+    if (type == IExplorerTreeItem::eDatabase) {
       ExplorerDatabaseItem* db = dynamic_cast<ExplorerDatabaseItem*>(node);
       if (db && db->isDefault()) {
-        return QVariant( QColor( Qt::red ) );
+        return QVariant(QColor(Qt::red));
       }
     }
   }

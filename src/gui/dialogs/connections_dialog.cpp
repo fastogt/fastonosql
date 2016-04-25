@@ -237,6 +237,9 @@ void ConnectionsDialog::edit() {
         currentItem->setConnection(newConnection);
         core::SettingsManager::instance().removeConnection(con);
         core::SettingsManager::instance().addConnection(newConnection);
+
+        delete currentItem;
+        addConnection(newConnection);
       }
       return;
     } else {
@@ -254,6 +257,9 @@ void ConnectionsDialog::edit() {
       clCurrentItem->setConnection(newConnection);
       core::SettingsManager::instance().removeCluster(con);
       core::SettingsManager::instance().addCluster(newConnection);
+
+      delete clCurrentItem;
+      addCluster(newConnection);
     }
   }
 }
