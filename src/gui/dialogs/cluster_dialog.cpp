@@ -239,8 +239,9 @@ void ClusterDialog::testConnection() {
   ConnectionListWidgetItem* currentItem = dynamic_cast<ConnectionListWidgetItem*>(listWidget_->currentItem());
 
   // Do nothing if no item selected
-  if (!currentItem)
+  if (!currentItem) {
     return;
+  }
 
   ConnectionDiagnosticDialog diag(this, currentItem->connection());
   diag.exec();
@@ -321,8 +322,9 @@ void ClusterDialog::remove() {
   ConnectionListWidgetItem* currentItem = dynamic_cast<ConnectionListWidgetItem*>(listWidget_->currentItem());
 
   // Do nothing if no item selected
-  if (!currentItem)
+  if (!currentItem) {
     return;
+  }
 
   // Ask user
   int answer = QMessageBox::question(this, "Connections", QString("Really delete \"%1\" connection?").arg(currentItem->text(0)),
@@ -357,7 +359,6 @@ void ClusterDialog::edit() {
 
 void ClusterDialog::itemSelectionChanged() {
   ConnectionListWidgetItem* currentItem = dynamic_cast<ConnectionListWidgetItem*>(listWidget_->currentItem());
-
   bool isValidConnection = currentItem != nullptr;
 
   testButton_->setEnabled(isValidConnection);

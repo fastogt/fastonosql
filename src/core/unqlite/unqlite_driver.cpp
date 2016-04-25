@@ -177,16 +177,13 @@ void UnqliteDriver::handleConnectEvent(events::ConnectRequestEvent* ev) {
   notifyProgress(sender, 0);
   events::ConnectResponceEvent::value_type res(ev->value());
   UnqliteConnectionSettings* set = dynamic_cast<UnqliteConnectionSettings*>(settings_.get());
-  if (set) {
-    notifyProgress(sender, 25);
-    common::Error er = impl_->connect(set->info());
-    if (er && er->isError()) {
-      res.setErrorInfo(er);
-    }
-    notifyProgress(sender, 75);
-  } else {
-    NOTREACHED();
+  CHECK(set);
+  notifyProgress(sender, 25);
+  common::Error er = impl_->connect(set->info());
+  if (er && er->isError()) {
+    res.setErrorInfo(er);
   }
+  notifyProgress(sender, 75);
   reply(sender, new events::ConnectResponceEvent(this, res));
   notifyProgress(sender, 100);
 }

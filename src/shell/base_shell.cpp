@@ -100,65 +100,39 @@ BaseShell::BaseShell(core::connectionTypes type, bool showAutoCompl, QWidget* pa
                 gui::GuiFactory::instance().commandIcon(type).pixmap(image_size));
 
   CHECK(lex);
-  if (lex) {
-    setLexer(lex);
-    lex->setFont(gui::GuiFactory::instance().font());
-  }
+  setLexer(lex);
+  lex->setFont(gui::GuiFactory::instance().font());
+}
+
+BaseQsciLexer* BaseShell::lexer() const {
+  BaseQsciLexer* lex = dynamic_cast<BaseQsciLexer*>(gui::FastoEditorShell::lexer());
+  CHECK(lex);
+  return lex;
 }
 
 QString BaseShell::version() const {
-  BaseQsciLexer* red = dynamic_cast<BaseQsciLexer*>(lexer());
-  if (red) {
-    return common::convertFromString<QString>(red->version());
-  }
-
-  DNOTREACHED();
-  return QString();
+  BaseQsciLexer* lex = lexer();
+  return common::convertFromString<QString>(lex->version());
 }
 
 QString BaseShell::basedOn() const {
-  BaseQsciLexer* lex = dynamic_cast<BaseQsciLexer*>(lexer());
-  if (!lex) {
-    NOTREACHED();
-    return QString();
-  }
-
+  BaseQsciLexer* lex = lexer();
   return common::convertFromString<QString>(lex->basedOn());
 }
 
 std::vector<uint32_t> BaseShell::supportedVersions() const {
-  BaseQsciLexer* lex = dynamic_cast<BaseQsciLexer*>(lexer());
-  if (!lex) {
-    NOTREACHED();
-    return std::vector<uint32_t>();
-  }
-
+  BaseQsciLexer* lex = lexer();
   return lex->supportedVersions();
 }
 
 size_t BaseShell::commandsCount() const {
-  BaseQsciLexer* lex = dynamic_cast<BaseQsciLexer*>(lexer());
-  if (!lex) {
-    NOTREACHED();
-    return 0;
-  }
-
+  BaseQsciLexer* lex = lexer();
   return lex->commandsCount();
 }
 
 void BaseShell::setFilteredVersion(uint32_t version) {
-  BaseQsciLexer* lex = dynamic_cast<BaseQsciLexer*>(lexer());
-  if (!lex) {
-    NOTREACHED();
-    return;
-  }
-
-  BaseQsciApi* api = dynamic_cast<BaseQsciApi*>(lex->apis());
-  if (!api) {
-    NOTREACHED();
-    return;
-  }
-
+  BaseQsciLexer* lex = lexer();
+  BaseQsciApi* api = lex->apis();
   api->setFilteredVersion(version);
 }
 

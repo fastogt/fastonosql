@@ -109,6 +109,12 @@ QColor BaseQsciLexer::defaultColor(int style) const {
   return Qt::black;
 }
 
+BaseQsciApi* BaseQsciLexer::apis() const {
+  BaseQsciApi* api = dynamic_cast<BaseQsciApi*>(QsciLexerCustom::apis());
+  CHECK(api);
+  return api;
+}
+
 BaseQsciLexerCommandHolder::BaseQsciLexerCommandHolder(const std::vector<core::CommandHolder>& commands,
                                                        QObject* parent)
   : BaseQsciLexer(parent), commands_(commands) {

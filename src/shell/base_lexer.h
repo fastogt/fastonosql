@@ -74,6 +74,8 @@ class BaseQsciLexer
   virtual QString description(int style) const;
   virtual QColor defaultColor(int style) const;
 
+  BaseQsciApi* apis() const;
+
  protected:
   explicit BaseQsciLexer(QObject* parent = 0);
 };

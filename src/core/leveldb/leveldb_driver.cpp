@@ -179,16 +179,13 @@ void LeveldbDriver::handleConnectEvent(events::ConnectRequestEvent* ev) {
   notifyProgress(sender, 0);
   events::ConnectResponceEvent::value_type res(ev->value());
   LeveldbConnectionSettings* set = dynamic_cast<LeveldbConnectionSettings*>(settings_.get());
-  if (set) {
-    notifyProgress(sender, 25);
-    common::Error er = impl_->connect(set->info());
-    if (er && er->isError()) {
-      res.setErrorInfo(er);
-    }
-    notifyProgress(sender, 75);
-  } else {
-    NOTREACHED();
+  CHECK(set);
+  notifyProgress(sender, 25);
+  common::Error er = impl_->connect(set->info());
+  if (er && er->isError()) {
+    res.setErrorInfo(er);
   }
+  notifyProgress(sender, 75);
   reply(sender, new events::ConnectResponceEvent(this, res));
   notifyProgress(sender, 100);
 }
@@ -293,7 +290,7 @@ void LeveldbDriver::handleLoadDatabaseContentEvent(events::LoadDatabaseContentRe
   } else {
     FastoObject::child_container_t rchildrens = cmd->childrens();
     if (rchildrens.size()) {
-      DCHECK_EQ(rchildrens.size(), 1);
+      CHECK_EQ(rchildrens.size(), 1);
       FastoObjectArray* array = dynamic_cast<FastoObjectArray*>(rchildrens[0]);
       if (!array) {
         goto done;

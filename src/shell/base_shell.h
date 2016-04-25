@@ -27,6 +27,7 @@
 namespace fastonosql {
 namespace shell {
 
+class BaseQsciLexer;
 class BaseShell
   : public gui::FastoEditorShell {
   Q_OBJECT
@@ -41,6 +42,7 @@ class BaseShell
 
  protected:
   BaseShell(core::connectionTypes type, bool showAutoCompl, QWidget* parent = 0);
+  BaseQsciLexer* lexer() const;
 };
 
 }  // namespace shell

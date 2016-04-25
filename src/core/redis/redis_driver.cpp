@@ -214,18 +214,15 @@ void RedisDriver::handleConnectEvent(events::ConnectRequestEvent* ev) {
   notifyProgress(sender, 0);
   events::ConnectResponceEvent::value_type res(ev->value());
   RedisConnectionSettings* set = dynamic_cast<RedisConnectionSettings*>(settings_.get());
-  if (set) {
-    impl_->config_ = set->info();
-    impl_->sinfo_ = set->sshInfo();
-    notifyProgress(sender, 25);
-    common::Error er = impl_->connect(false);
-    if (er && er->isError()) {
-      res.setErrorInfo(er);
-    }
-    notifyProgress(sender, 75);
-  } else {
-    NOTREACHED();
+  CHECK(set);
+  impl_->config_ = set->info();
+  impl_->sinfo_ = set->sshInfo();
+  notifyProgress(sender, 25);
+  common::Error er = impl_->connect(false);
+  if (er && er->isError()) {
+    res.setErrorInfo(er);
   }
+  notifyProgress(sender, 75);
   reply(sender, new events::ConnectResponceEvent(this, res));
   notifyProgress(sender, 100);
 }
@@ -592,7 +589,7 @@ void RedisDriver::handleLoadDatabaseInfosEvent(events::LoadDatabasesInfoRequestE
   } else {
     FastoObject::child_container_t rchildrens = cmd->childrens();
     if (rchildrens.size()) {
-      DCHECK_EQ(rchildrens.size(), 1);
+      CHECK_EQ(rchildrens.size(), 1);
       FastoObjectArray* array = dynamic_cast<FastoObjectArray*>(rchildrens[0]);
       if (!array) {
         goto done;
@@ -646,7 +643,7 @@ void RedisDriver::handleLoadDatabaseContentEvent(events::LoadDatabaseContentRequ
   } else {
     FastoObject::child_container_t rchildrens = cmd->childrens();
     if (rchildrens.size()) {
-      DCHECK_EQ(rchildrens.size(), 1);
+      CHECK_EQ(rchildrens.size(), 1);
       FastoObjectArray* array = dynamic_cast<FastoObjectArray*>(rchildrens[0]);
       if (!array) {
         goto done;
@@ -786,7 +783,7 @@ void RedisDriver::handleLoadServerPropertyEvent(events::ServerPropertyInfoReques
   } else {
     FastoObject::child_container_t ch = cmd->childrens();
     if (ch.size()) {
-      DCHECK_EQ(ch.size(), 1);
+      CHECK_EQ(ch.size(), 1);
       FastoObjectArray* array = dynamic_cast<FastoObjectArray*>(ch[0]);
       if (array) {
         res.info = makeServerProperty(array);
