@@ -69,7 +69,7 @@ QVariant KeysTableModel::data(const QModelIndex& index, int role) const {
   if (!index.isValid())
     return result;
 
-  KeyTableItem* node = common::utils_qt::item<KeyTableItem*>(index);
+  KeyTableItem* node = common::utils_qt::item<fasto::qt::gui::TableItem*, KeyTableItem*>(index);
 
   if (!node)
     return result;
@@ -100,7 +100,7 @@ QVariant KeysTableModel::data(const QModelIndex& index, int role) const {
 bool KeysTableModel::setData(const QModelIndex& index, const QVariant& value, int role) {
   if (index.isValid() && role == Qt::EditRole) {
     int column = index.column();
-    KeyTableItem* node = common::utils_qt::item<KeyTableItem*>(index);
+    KeyTableItem* node = common::utils_qt::item<fasto::qt::gui::TableItem*, KeyTableItem*>(index);
 
     if (!node) {
       return false;
@@ -126,7 +126,7 @@ Qt::ItemFlags KeysTableModel::flags(const QModelIndex& index) const {
   if (index.isValid()) {
     result = Qt::ItemIsSelectable | Qt::ItemIsEnabled;
     int col = index.column();
-    KeyTableItem* node = common::utils_qt::item<KeyTableItem*>(index);
+    KeyTableItem* node = common::utils_qt::item<fasto::qt::gui::TableItem*, KeyTableItem*>(index);
     if (node && col == KeyTableItem::kTTL) {
       result |= Qt::ItemIsEditable;
     }

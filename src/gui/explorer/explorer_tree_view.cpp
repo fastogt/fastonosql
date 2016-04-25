@@ -209,7 +209,7 @@ void ExplorerTreeView::showContextMenu(const QPoint& point) {
 
   QModelIndex sel = selectedIndex();
   if (sel.isValid()) {
-    IExplorerTreeItem* node = common::utils_qt::item<IExplorerTreeItem*>(sel);
+    IExplorerTreeItem* node = common::utils_qt::item<fasto::qt::gui::TreeItem*, IExplorerTreeItem*>(sel);
     if (!node) {
       DNOTREACHED();
       return;
@@ -321,7 +321,7 @@ void ExplorerTreeView::connectDisconnectToServer() {
     return;
   }
 
-  ExplorerServerItem* node = common::utils_qt::item<ExplorerServerItem*>(sel);
+  ExplorerServerItem* node = common::utils_qt::item<fasto::qt::gui::TreeItem*, ExplorerServerItem*>(sel);
   if (!node) {
     return;
   }
@@ -346,7 +346,7 @@ void ExplorerTreeView::openConsole() {
     return;
   }
 
-  ExplorerServerItem* node = common::utils_qt::item<ExplorerServerItem*>(sel);
+  ExplorerServerItem* node = common::utils_qt::item<fasto::qt::gui::TreeItem*, ExplorerServerItem*>(sel);
   if (node) {
     emit openedConsole(node->server(), QString());
   }
@@ -358,7 +358,7 @@ void ExplorerTreeView::loadDatabases() {
     return;
   }
 
-  ExplorerServerItem* node = common::utils_qt::item<ExplorerServerItem*>(sel);
+  ExplorerServerItem* node = common::utils_qt::item<fasto::qt::gui::TreeItem*, ExplorerServerItem*>(sel);
   if (node) {
     node->loadDatabases();
   }
@@ -370,7 +370,7 @@ void ExplorerTreeView::openInfoServerDialog() {
     return;
   }
 
-  ExplorerServerItem* node = common::utils_qt::item<ExplorerServerItem*>(sel);
+  ExplorerServerItem* node = common::utils_qt::item<fasto::qt::gui::TreeItem*, ExplorerServerItem*>(sel);
   if (!node) {
     return;
   }
@@ -390,7 +390,7 @@ void ExplorerTreeView::openPropertyServerDialog() {
     return;
   }
 
-  ExplorerServerItem* node = common::utils_qt::item<ExplorerServerItem*>(sel);
+  ExplorerServerItem* node = common::utils_qt::item<fasto::qt::gui::TreeItem*, ExplorerServerItem*>(sel);
   if (!node) {
     return;
   }
@@ -410,7 +410,7 @@ void ExplorerTreeView::openSetPasswordServerDialog() {
     return;
   }
 
-  ExplorerServerItem* node = common::utils_qt::item<ExplorerServerItem*>(sel);
+  ExplorerServerItem* node = common::utils_qt::item<fasto::qt::gui::TreeItem*, ExplorerServerItem*>(sel);
   if (!node) {
     return;
   }
@@ -431,7 +431,7 @@ void ExplorerTreeView::openMaxClientSetDialog() {
     return;
   }
 
-  ExplorerServerItem* node = common::utils_qt::item<ExplorerServerItem*>(sel);
+  ExplorerServerItem* node = common::utils_qt::item<fasto::qt::gui::TreeItem*, ExplorerServerItem*>(sel);
   if (!node) {
     return;
   }
@@ -457,7 +457,7 @@ void ExplorerTreeView::openHistoryServerDialog() {
     return;
   }
 
-  ExplorerServerItem* node = common::utils_qt::item<ExplorerServerItem*>(sel);
+  ExplorerServerItem* node = common::utils_qt::item<fasto::qt::gui::TreeItem*, ExplorerServerItem*>(sel);
   if (!node) {
     return;
   }
@@ -477,7 +477,7 @@ void ExplorerTreeView::clearHistory() {
     return;
   }
 
-  ExplorerServerItem* node = common::utils_qt::item<ExplorerServerItem*>(sel);
+  ExplorerServerItem* node = common::utils_qt::item<fasto::qt::gui::TreeItem*, ExplorerServerItem*>(sel);
   if (!node) {
     return;
   }
@@ -497,7 +497,7 @@ void ExplorerTreeView::closeServerConnection() {
     return;
   }
 
-  ExplorerServerItem* snode = common::utils_qt::item<ExplorerServerItem*>(sel);
+  ExplorerServerItem* snode = common::utils_qt::item<fasto::qt::gui::TreeItem*, ExplorerServerItem*>(sel);
   if (snode) {
     core::IServerSPtr server = snode->server();
     if (server) {
@@ -506,7 +506,7 @@ void ExplorerTreeView::closeServerConnection() {
     return;
   }
 
-  ExplorerClusterItem* cnode = common::utils_qt::item<ExplorerClusterItem*>(sel);
+  ExplorerClusterItem* cnode = common::utils_qt::item<fasto::qt::gui::TreeItem*, ExplorerClusterItem*>(sel);
   if (cnode && cnode->type() == IExplorerTreeItem::eCluster) {
     core::IClusterSPtr server = cnode->cluster();
     if (server) {
@@ -522,7 +522,7 @@ void ExplorerTreeView::closeClusterConnection() {
     return;
   }
 
-  ExplorerClusterItem* cnode = common::utils_qt::item<ExplorerClusterItem*>(sel);
+  ExplorerClusterItem* cnode = common::utils_qt::item<fasto::qt::gui::TreeItem*, ExplorerClusterItem*>(sel);
   if (cnode) {
     core::IClusterSPtr server = cnode->cluster();
     if (server) {
@@ -538,7 +538,7 @@ void ExplorerTreeView::backupServer() {
     return;
   }
 
-  ExplorerServerItem* node = common::utils_qt::item<ExplorerServerItem*>(sel);
+  ExplorerServerItem* node = common::utils_qt::item<fasto::qt::gui::TreeItem*, ExplorerServerItem*>(sel);
   if (!node) {
     return;
   }
@@ -558,7 +558,7 @@ void ExplorerTreeView::importServer() {
     return;
   }
 
-  ExplorerServerItem* node = common::utils_qt::item<ExplorerServerItem*>(sel);
+  ExplorerServerItem* node = common::utils_qt::item<fasto::qt::gui::TreeItem*, ExplorerServerItem*>(sel);
   if (!node) {
     return;
   }
@@ -578,7 +578,7 @@ void ExplorerTreeView::shutdownServer() {
     return;
   }
 
-  ExplorerServerItem* node = common::utils_qt::item<ExplorerServerItem*>(sel);
+  ExplorerServerItem* node = common::utils_qt::item<fasto::qt::gui::TreeItem*, ExplorerServerItem*>(sel);
   if (!node) {
     return;
   }
@@ -606,7 +606,7 @@ void ExplorerTreeView::loadContentDb() {
     return;
   }
 
-  ExplorerDatabaseItem* node = common::utils_qt::item<ExplorerDatabaseItem*>(sel);
+  ExplorerDatabaseItem* node = common::utils_qt::item<fasto::qt::gui::TreeItem*, ExplorerDatabaseItem*>(sel);
   if (node) {
     LoadContentDbDialog loadDb(QString("Load %1 content").arg(node->name()),
                                node->server()->type(), this);
@@ -623,7 +623,7 @@ void ExplorerTreeView::removeAllKeys() {
     return;
   }
 
-  ExplorerDatabaseItem* node = common::utils_qt::item<ExplorerDatabaseItem*>(sel);
+  ExplorerDatabaseItem* node = common::utils_qt::item<fasto::qt::gui::TreeItem*, ExplorerDatabaseItem*>(sel);
   if (node) {
     int answer = QMessageBox::question(this, "Clear database",
                                        QString("Really remove all keys from %1 database?").arg(node->name()),
@@ -643,7 +643,7 @@ void ExplorerTreeView::removeBranch() {
     return;
   }
 
-  ExplorerNSItem* node = common::utils_qt::item<ExplorerNSItem*>(sel);
+  ExplorerNSItem* node = common::utils_qt::item<fasto::qt::gui::TreeItem*, ExplorerNSItem*>(sel);
   if (node) {
     int answer = QMessageBox::question(this, "Remove branch",
                                        QString("Really remove all keys from branch %1?").arg(node->name()),
@@ -663,7 +663,7 @@ void ExplorerTreeView::setDefaultDb() {
     return;
   }
 
-  ExplorerDatabaseItem* node = common::utils_qt::item<ExplorerDatabaseItem*>(sel);
+  ExplorerDatabaseItem* node = common::utils_qt::item<fasto::qt::gui::TreeItem*, ExplorerDatabaseItem*>(sel);
   if (node) {
     node->setDefault();
   }
@@ -675,7 +675,7 @@ void ExplorerTreeView::createKey() {
     return;
   }
 
-  ExplorerDatabaseItem* node = common::utils_qt::item<ExplorerDatabaseItem*>(sel);
+  ExplorerDatabaseItem* node = common::utils_qt::item<fasto::qt::gui::TreeItem*, ExplorerDatabaseItem*>(sel);
   if (node) {
     CreateDbKeyDialog loadDb(QString("Create key for %1 database").arg(node->name()),
                              node->server()->type(), this);
@@ -693,7 +693,7 @@ void ExplorerTreeView::viewKeys() {
     return;
   }
 
-  ExplorerDatabaseItem* node = common::utils_qt::item<ExplorerDatabaseItem*>(sel);
+  ExplorerDatabaseItem* node = common::utils_qt::item<fasto::qt::gui::TreeItem*, ExplorerDatabaseItem*>(sel);
   if (node) {
     ViewKeysDialog diag(QString("View key in %1 database").arg(node->name()), node->db(), this);
     diag.exec();
@@ -706,7 +706,7 @@ void ExplorerTreeView::getValue() {
     return;
   }
 
-  ExplorerKeyItem* node = common::utils_qt::item<ExplorerKeyItem*>(sel);
+  ExplorerKeyItem* node = common::utils_qt::item<fasto::qt::gui::TreeItem*, ExplorerKeyItem*>(sel);
   if (node) {
     node->loadValueFromDb();
   }
@@ -718,7 +718,7 @@ void ExplorerTreeView::deleteKey() {
     return;
   }
 
-  ExplorerKeyItem* node = common::utils_qt::item<ExplorerKeyItem*>(sel);
+  ExplorerKeyItem* node = common::utils_qt::item<fasto::qt::gui::TreeItem*, ExplorerKeyItem*>(sel);
   if (node) {
     node->removeFromDb();
   }

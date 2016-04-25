@@ -79,7 +79,7 @@ std::string convertToString(const fastonosql::core::lmdb::LmdbConfig& conf) {
   std::string result;
   for (size_t i = 0; i < argv.size(); ++i) {
     result += argv[i];
-    if (i != argv.size()-1) {
+    if (i != argv.size() - 1) {
       result += " ";
     }
   }

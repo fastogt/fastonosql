@@ -298,7 +298,7 @@ QVariant ExplorerTreeModel::data(const QModelIndex& index, int role) const {
     return QVariant();
   }
 
-  IExplorerTreeItem* node = common::utils_qt::item<IExplorerTreeItem*>(index);
+  IExplorerTreeItem* node = common::utils_qt::item<fasto::qt::gui::TreeItem*, IExplorerTreeItem*>(index);
 
   if (!node) {
     return QVariant();
