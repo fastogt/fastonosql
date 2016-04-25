@@ -111,12 +111,15 @@ size_t ExplorerDatabaseItem::loadedSize() const {
 
 size_t ExplorerDatabaseItem::keyCount() const {
   size_t sz = 0;
-  for (size_t i = 0; i < childrenCount(); ++i) {
-     ExplorerKeyItem* item = dynamic_cast<ExplorerKeyItem*>(child(i));
-     if (item) {
-       sz++;
-     }
-   }
+  fasto::qt::gui::forEachRecursive(this, [&sz](const fasto::qt::gui::TreeItem* item) {
+    const ExplorerKeyItem* key_item = dynamic_cast<const ExplorerKeyItem*>(item);
+    if (!key_item) {
+      return;
+    }
+
+    sz++;
+  });
+
   return sz;
 }
 
@@ -259,6 +262,33 @@ ExplorerNSItem::eType ExplorerNSItem::type() const {
   return eNamespace;
 }
 
+size_t ExplorerNSItem::keyCount() const {
+  size_t sz = 0;
+  fasto::qt::gui::forEachRecursive(this, [&sz](const fasto::qt::gui::TreeItem* item) {
+    const ExplorerKeyItem* key_item = dynamic_cast<const ExplorerKeyItem*>(item);
+    if (!key_item) {
+      return;
+    }
+
+    sz++;
+  });
+
+  return sz;
+}
+
+void ExplorerNSItem::removeBranch() {
+  ExplorerDatabaseItem* par = db();
+  CHECK(par);
+  fasto::qt::gui::forEachRecursive(this, [par](fasto::qt::gui::TreeItem* item) {
+    ExplorerKeyItem* key_item = dynamic_cast<ExplorerKeyItem*>(item);
+    if (!key_item) {
+      return;
+    }
+
+    par->removeKey(key_item->key());
+  });
+}
+
 ExplorerTreeModel::ExplorerTreeModel(QObject* parent)
   : TreeModel(parent) {
 }
@@ -333,13 +363,16 @@ QVariant ExplorerTreeModel::data(const QModelIndex& index, int role) const {
 
   if (role == Qt::DisplayRole) {
     if (col == IExplorerTreeItem::eName) {
-      if (t == IExplorerTreeItem::eKey || t == IExplorerTreeItem::eNamespace) {
+      if (t == IExplorerTreeItem::eKey) {
         return node->name();
       } else if (t == IExplorerTreeItem::eDatabase) {
         ExplorerDatabaseItem* db = dynamic_cast<ExplorerDatabaseItem*>(node);
-        if (db) {
-          return QString("%1 (%2/%3)").arg(node->name()).arg(db->keyCount()).arg(db->sizeDB());  // db
-        }
+        CHECK(db);
+        return QString("%1 (%2/%3)").arg(node->name()).arg(db->keyCount()).arg(db->sizeDB());  // db
+      } else if(t == IExplorerTreeItem::eNamespace) {
+        ExplorerNSItem* db = dynamic_cast<ExplorerNSItem*>(node);
+        CHECK(db);
+        return QString("%1 (%2)").arg(node->name()).arg(db->keyCount());  // db
       } else {
         return QString("%1 (%2)").arg(node->name()).arg(node->childrenCount());  // server
       }

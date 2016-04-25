@@ -106,6 +106,7 @@ class ExplorerDatabaseItem
   void createKey(const core::NDbKValue& key);
 
   void removeAllKeys();
+
  private:
   const core::IDatabaseSPtr db_;
 };
@@ -119,6 +120,9 @@ class ExplorerNSItem
   virtual QString name() const;
   virtual core::IServerSPtr server() const;
   virtual eType type() const;
+  size_t keyCount() const;
+
+  void removeBranch();
 
  private:
   QString name_;

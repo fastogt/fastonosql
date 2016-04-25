@@ -125,6 +125,7 @@ namespace translations {
   extern const QString trLoadAndExecuteFile;
   extern const QString trLoadContOfDataBases;
   extern const QString trRemoveAllKeys;
+  extern const QString trRemoveBranch;
   extern const QString trCreateKey;
   extern const QString trViewKeysDialog;
   extern const QString trEncodeDecode;

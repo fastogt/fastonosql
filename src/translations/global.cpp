@@ -125,6 +125,7 @@ namespace translations {
   const QString trLoadAndExecuteFile = QObject::tr("Load and execute file");
   const QString trLoadContOfDataBases = QObject::tr("Load content of database");
   const QString trRemoveAllKeys = QObject::tr("Remove all keys");
+  const QString trRemoveBranch = QObject::tr("Remove branch");
   const QString trCreateKey = QObject::tr("Create key");
   const QString trViewKeysDialog = QObject::tr("View keys dialog");
   const QString trEncodeDecode = QObject::tr("Encode/Decode");

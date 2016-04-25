@@ -111,6 +111,9 @@ ExplorerTreeView::ExplorerTreeView(QWidget* parent)
   removeAllKeysAction_ = new QAction(this);
   VERIFY(connect(removeAllKeysAction_, &QAction::triggered, this, &ExplorerTreeView::removeAllKeys));
 
+  removeBranchAction_ = new QAction(this);
+  VERIFY(connect(removeBranchAction_, &QAction::triggered, this, &ExplorerTreeView::removeBranch));
+
   setDefaultDbAction_ = new QAction(this);
   VERIFY(connect(setDefaultDbAction_, &QAction::triggered, this, &ExplorerTreeView::setDefaultDb));
 
@@ -285,6 +288,17 @@ void ExplorerTreeView::showContextMenu(const QPoint& point) {
 
       menu.addAction(setDefaultDbAction_);
       setDefaultDbAction_->setEnabled(!isDefault && isCon);
+      menu.exec(menuPoint);
+    } else if (node->type() == IExplorerTreeItem::eNamespace) {
+      ExplorerNSItem* ns = dynamic_cast<ExplorerNSItem*>(node);
+      QMenu menu(this);
+      core::IServerSPtr server = node->server();
+      ExplorerDatabaseItem* db = ns->db();
+      bool isDefault = db && db->isDefault();
+      bool isCon = server->isConnected();
+
+      menu.addAction(removeBranchAction_);
+      removeBranchAction_->setEnabled(isDefault && isCon);
       menu.exec(menuPoint);
     } else if (node->type() == IExplorerTreeItem::eKey) {
       QMenu menu(this);
@@ -623,6 +637,26 @@ void ExplorerTreeView::removeAllKeys() {
   }
 }
 
+void ExplorerTreeView::removeBranch() {
+  QModelIndex sel = selectedIndex();
+  if (!sel.isValid()) {
+    return;
+  }
+
+  ExplorerNSItem* node = common::utils_qt::item<ExplorerNSItem*>(sel);
+  if (node) {
+    int answer = QMessageBox::question(this, "Remove branch",
+                                       QString("Really remove all keys from branch %1?").arg(node->name()),
+                                       QMessageBox::Yes, QMessageBox::No, QMessageBox::NoButton);
+
+    if (answer != QMessageBox::Yes) {
+      return;
+    }
+
+    node->removeBranch();
+  }
+}
+
 void ExplorerTreeView::setDefaultDb() {
   QModelIndex sel = selectedIndex();
   if (!sel.isValid()) {
@@ -916,6 +950,7 @@ void ExplorerTreeView::retranslateUi() {
 
   loadContentAction_->setText(translations::trLoadContOfDataBases);
   removeAllKeysAction_->setText(translations::trRemoveAllKeys);
+  removeBranchAction_->setText(translations::trRemoveBranch);
   createKeyAction_->setText(translations::trCreateKey);
   viewKeysAction_->setText(translations::trViewKeysDialog);
   setDefaultDbAction_->setText(translations::trSetDefault);

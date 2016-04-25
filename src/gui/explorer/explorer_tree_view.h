@@ -66,6 +66,7 @@ class ExplorerTreeView
 
   void loadContentDb();
   void removeAllKeys();
+  void removeBranch();
   void setDefaultDb();
   void createKey();
   void viewKeys();
@@ -103,6 +104,7 @@ class ExplorerTreeView
   QAction* loadDatabaseAction_;
   QAction* loadContentAction_;
   QAction* removeAllKeysAction_;
+  QAction* removeBranchAction_;
   QAction* setDefaultDbAction_;
   QAction* createKeyAction_;
   QAction* viewKeysAction_;
