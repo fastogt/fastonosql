@@ -159,8 +159,9 @@ int KeysTableModel::columnCount(const QModelIndex& parent) const {
 void KeysTableModel::changeValue(const core::NDbKValue& value) {
   const QString key = common::convertFromString<QString>(value.keyString());
   for (size_t i = 0; i < data_.size(); ++i) {
-    KeyTableItem* it = dynamic_cast<KeyTableItem*>(data_[i]);
-    if (it && it->key() == key) {
+    KeyTableItem* it = dynamic_cast<KeyTableItem*>(data_[i]);  // +
+    CHECK(it);
+    if (it->key() == key) {
       it->setDbv(value);
       emit dataChanged(index(i, KeyTableItem::kTTL), index(i, KeyTableItem::kTTL));
       break;

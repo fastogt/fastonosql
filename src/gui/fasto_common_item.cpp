@@ -72,7 +72,7 @@ QString toJson(FastoCommonItem* item) {
 
   QString value;
   for (size_t i = 0; i < item->childrenCount(); ++i) {
-    value += toJson(dynamic_cast<FastoCommonItem*>(item->child(i)));
+    value += toJson(dynamic_cast<FastoCommonItem*>(item->child(i)));  // +
   }
 
   return value;
@@ -89,7 +89,7 @@ QString toRaw(FastoCommonItem* item) {
 
   QString value;
   for (size_t i = 0; i < item->childrenCount(); ++i) {
-    value += toRaw(dynamic_cast<FastoCommonItem*>(item->child(i)));
+    value += toRaw(dynamic_cast<FastoCommonItem*>(item->child(i)));  // +
   }
 
   return value;
@@ -116,7 +116,7 @@ QString toHex(FastoCommonItem* item) {
 
   QString value;
   for (size_t i = 0; i < item->childrenCount(); ++i) {
-    value += toHex(dynamic_cast<FastoCommonItem*>(item->child(i)));
+    value += toHex(dynamic_cast<FastoCommonItem*>(item->child(i)));  // +
   }
 
   return value;
@@ -133,7 +133,7 @@ QString toCsv(FastoCommonItem* item, const QString& delemitr) {
 
   QString value;
   for (size_t i = 0; i < item->childrenCount(); ++i) {
-    value += toCsv(dynamic_cast<FastoCommonItem*>(item->child(i)), delemitr);
+    value += toCsv(dynamic_cast<FastoCommonItem*>(item->child(i)), delemitr);  // +
     if (i != item->childrenCount() - 1) {
       value += ",";
     }
@@ -162,7 +162,7 @@ QString fromGzip(FastoCommonItem* item) {
 
   QString value;
   for (size_t i = 0; i < item->childrenCount(); ++i) {
-    value += fromGzip(dynamic_cast<FastoCommonItem*>(item->child(i)));
+    value += fromGzip(dynamic_cast<FastoCommonItem*>(item->child(i)));  // +
   }
 
   return value;
@@ -194,7 +194,7 @@ QString fromHexMsgPack(FastoCommonItem* item) {
 
   QString value;
   for (size_t i = 0; i < item->childrenCount(); ++i) {
-    value += fromHexMsgPack(dynamic_cast<FastoCommonItem*>(item->child(i)));
+    value += fromHexMsgPack(dynamic_cast<FastoCommonItem*>(item->child(i)));  // +
   }
 
   return value;

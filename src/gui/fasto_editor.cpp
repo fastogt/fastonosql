@@ -384,14 +384,14 @@ void FastoEditorOutput::layoutChanged() {
     return;
   }
 
-  FastoCommonItem* root = dynamic_cast<FastoCommonItem*>(child->parent());
+  fasto::qt::gui::TreeItem* root = child->parent();
   if (!root) {
     return;
   }
 
   QString result;
   for (size_t i = 0; i < root->childrenCount(); ++i) {
-    FastoCommonItem* child = dynamic_cast<FastoCommonItem*>(root->child(i));
+    FastoCommonItem* child = dynamic_cast<FastoCommonItem*>(root->child(i));  // +
     if (!child) {
       continue;
     }

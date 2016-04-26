@@ -201,32 +201,20 @@ common::Error IDriver::commandByType(CommandKeySPtr command, std::string* cmdstr
   CommandKey::cmdtype t = command->type();
 
   if (t == CommandKey::C_DELETE) {
-    CommandDeleteKey* delc = dynamic_cast<CommandDeleteKey*>(command.get());
-    if (!delc) {
-      DNOTREACHED();
-      return common::make_error_value("Invalid input argument(s)", common::ErrorValue::E_ERROR);
-    }
+    CommandDeleteKey* delc = dynamic_cast<CommandDeleteKey*>(command.get());  // +
+    CHECK(delc);
     return commandDeleteImpl(delc, cmdstring);
   } else if (t == CommandKey::C_LOAD) {
-    CommandLoadKey* loadc = dynamic_cast<CommandLoadKey*>(command.get());
-    if (!loadc) {
-      DNOTREACHED();
-      return common::make_error_value("Invalid input argument(s)", common::ErrorValue::E_ERROR);
-    }
+    CommandLoadKey* loadc = dynamic_cast<CommandLoadKey*>(command.get());  // +
+    CHECK(loadc);
     return commandLoadImpl(loadc, cmdstring);
   } else if (t == CommandKey::C_CREATE) {
-    CommandCreateKey* createc = dynamic_cast<CommandCreateKey*>(command.get());
-    if (!createc) {
-      DNOTREACHED();
-      return common::make_error_value("Invalid input argument(s)", common::ErrorValue::E_ERROR);
-    }
+    CommandCreateKey* createc = dynamic_cast<CommandCreateKey*>(command.get());  // +
+    CHECK(createc);
     return commandCreateImpl(createc, cmdstring);
   } else if (t == CommandKey::C_CHANGE_TTL) {
-    CommandChangeTTL* changettl = dynamic_cast<CommandChangeTTL*>(command.get());
-    if (!changettl) {
-      DNOTREACHED();
-      return common::make_error_value("Invalid input argument(s)", common::ErrorValue::E_ERROR);
-    }
+    CommandChangeTTL* changettl = dynamic_cast<CommandChangeTTL*>(command.get());  // +
+    CHECK(changettl);
     return commandChangeTTLImpl(changettl, cmdstring);
   } else {
     NOTREACHED();

@@ -126,9 +126,12 @@ DiscoveryDiagnosticDialog::DiscoveryDiagnosticDialog(QWidget* parent,
 std::vector<core::IConnectionSettingsBaseSPtr> DiscoveryDiagnosticDialog::selectedConnections() const {
   std::vector<core::IConnectionSettingsBaseSPtr> res;
   for (size_t i = 0; i < listWidget_->topLevelItemCount(); ++i) {
-    ConnectionListWidgetItemEx* item = dynamic_cast<ConnectionListWidgetItemEx*>(listWidget_->topLevelItem(i));
-    if (item && item->isSelected()) {
-      res.push_back(item->connection());
+    QTreeWidgetItem *citem = listWidget_->topLevelItem(i);
+    if (citem->isSelected()) {
+      ConnectionListWidgetItemEx* item = dynamic_cast<ConnectionListWidgetItemEx*>(citem);  // +
+      if (item) {
+        res.push_back(item->connection());
+      }
     }
   }
   return res;

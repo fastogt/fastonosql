@@ -137,7 +137,7 @@ ConnectionsDialog::ConnectionsDialog(QWidget* parent)
 }
 
 core::IConnectionSettingsBaseSPtr ConnectionsDialog::selectedConnection() const {
-  ConnectionListWidgetItem* currentItem = dynamic_cast<ConnectionListWidgetItem*>(listWidget_->currentItem());
+  ConnectionListWidgetItem* currentItem = dynamic_cast<ConnectionListWidgetItem*>(listWidget_->currentItem());  // +
   if (currentItem) {
     return currentItem->connection();
   }
@@ -146,7 +146,7 @@ core::IConnectionSettingsBaseSPtr ConnectionsDialog::selectedConnection() const 
 }
 
 core::IClusterSettingsBaseSPtr ConnectionsDialog::selectedCluster() const {
-  ClusterConnectionListWidgetItem* currentItem = dynamic_cast<ClusterConnectionListWidgetItem*>(listWidget_->currentItem());
+  ClusterConnectionListWidgetItem* currentItem = dynamic_cast<ClusterConnectionListWidgetItem*>(listWidget_->currentItem());  // +
   if (currentItem) {
     return currentItem->connection();
   }
@@ -180,10 +180,10 @@ void ConnectionsDialog::remove() {
     return;
   }
 
-  ConnectionListWidgetItem* currentItem = dynamic_cast<ConnectionListWidgetItem*>(qitem);
+  ConnectionListWidgetItem* currentItem = dynamic_cast<ConnectionListWidgetItem*>(qitem);  // +
   if (currentItem) {
     QTreeWidgetItem* qpitem = qitem->parent();
-    ClusterConnectionListWidgetItem* clitem = dynamic_cast<ClusterConnectionListWidgetItem*>(qpitem);
+    ClusterConnectionListWidgetItem* clitem = dynamic_cast<ClusterConnectionListWidgetItem*>(qpitem);  // +
     if (!clitem) {
       // Ask user
       int answer = QMessageBox::question(this, "Connections",
@@ -202,7 +202,7 @@ void ConnectionsDialog::remove() {
     }
   }
 
-  ClusterConnectionListWidgetItem* clCurrentItem = dynamic_cast<ClusterConnectionListWidgetItem*>(qitem);
+  ClusterConnectionListWidgetItem* clCurrentItem = dynamic_cast<ClusterConnectionListWidgetItem*>(qitem);  // +
   if (clCurrentItem) {
     // Ask user
     int answer = QMessageBox::question(this, "Connections",
@@ -224,10 +224,10 @@ void ConnectionsDialog::edit() {
     return;
   }
 
-  ConnectionListWidgetItem* currentItem = dynamic_cast<ConnectionListWidgetItem*>(qitem);
+  ConnectionListWidgetItem* currentItem = dynamic_cast<ConnectionListWidgetItem*>(qitem);  // +
   if (currentItem) {
     QTreeWidgetItem* qpitem = qitem->parent();
-    ClusterConnectionListWidgetItem* clitem = dynamic_cast<ClusterConnectionListWidgetItem*>(qpitem);
+    ClusterConnectionListWidgetItem* clitem = dynamic_cast<ClusterConnectionListWidgetItem*>(qpitem);  // +
     if (!clitem) {
       core::IConnectionSettingsBaseSPtr con = currentItem->connection();
       ConnectionDialog dlg(this, con->clone());
@@ -247,7 +247,7 @@ void ConnectionsDialog::edit() {
     }
   }
 
-  ClusterConnectionListWidgetItem* clCurrentItem = dynamic_cast<ClusterConnectionListWidgetItem*>(qitem);
+  ClusterConnectionListWidgetItem* clCurrentItem = dynamic_cast<ClusterConnectionListWidgetItem*>(qitem);  // +
   if (clCurrentItem) {
     core::IClusterSettingsBaseSPtr con = clCurrentItem->connection();
     ClusterDialog dlg(this, con->clone());
@@ -328,7 +328,7 @@ DirectoryListWidgetItem* ConnectionsDialog::findFolderByPath(const core::IConnec
   int count = listWidget_->topLevelItemCount();
   for (int i = 0; i < count; ++i) {
     QTreeWidgetItem* item = listWidget_->topLevelItem(i);
-    DirectoryListWidgetItem* dirItem = dynamic_cast<DirectoryListWidgetItem*>(item);
+    DirectoryListWidgetItem* dirItem = dynamic_cast<DirectoryListWidgetItem*>(item);  // +
     if (dirItem && dirItem->path() == path) {
       return dirItem;
     }

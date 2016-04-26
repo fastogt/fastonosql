@@ -179,7 +179,7 @@ void RocksdbDriver::handleConnectEvent(events::ConnectRequestEvent* ev) {
   QObject* sender = ev->sender();
   notifyProgress(sender, 0);
   events::ConnectResponceEvent::value_type res(ev->value());
-  RocksdbConnectionSettings* set = dynamic_cast<RocksdbConnectionSettings*>(settings_.get());
+  RocksdbConnectionSettings* set = dynamic_cast<RocksdbConnectionSettings*>(settings_.get());  // +
   CHECK(set);
   notifyProgress(sender, 25);
   common::Error er = impl_->connect(set->info());
@@ -293,7 +293,7 @@ void RocksdbDriver::handleLoadDatabaseContentEvent(events::LoadDatabaseContentRe
     FastoObject::child_container_t rchildrens = cmd->childrens();
     if (rchildrens.size()) {
       CHECK_EQ(rchildrens.size(), 1);
-      FastoObjectArray* array = dynamic_cast<FastoObjectArray*>(rchildrens[0]);
+      FastoObjectArray* array = dynamic_cast<FastoObjectArray*>(rchildrens[0]);  // +
       if (!array) {
         goto done;
       }

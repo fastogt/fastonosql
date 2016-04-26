@@ -239,11 +239,10 @@ void ViewKeysDialog::finishExecuteCommand(const core::events_info::CommandRespon
 
   core::CommandKeySPtr key = res.cmd;
   if (key->type() == core::CommandKey::C_CHANGE_TTL) {
-    core::CommandChangeTTL* cttl = dynamic_cast<core::CommandChangeTTL*>(key.get());
-    if (cttl) {
-      core::NDbKValue dbv = cttl->newKey();
-      keysModel_->changeValue(dbv);
-    }
+    core::CommandChangeTTL* cttl = dynamic_cast<core::CommandChangeTTL*>(key.get());  // +
+    CHECK(cttl);
+    core::NDbKValue dbv = cttl->newKey();
+    keysModel_->changeValue(dbv);
   }
 }
 

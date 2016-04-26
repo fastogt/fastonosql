@@ -105,7 +105,7 @@ BaseShell::BaseShell(core::connectionTypes type, bool showAutoCompl, QWidget* pa
 }
 
 BaseQsciLexer* BaseShell::lexer() const {
-  BaseQsciLexer* lex = dynamic_cast<BaseQsciLexer*>(gui::FastoEditorShell::lexer());
+  BaseQsciLexer* lex = dynamic_cast<BaseQsciLexer*>(gui::FastoEditorShell::lexer());  // +
   CHECK(lex);
   return lex;
 }

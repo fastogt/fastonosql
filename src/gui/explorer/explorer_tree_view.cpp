@@ -226,11 +226,12 @@ void ExplorerTreeView::showContextMenu(const QPoint& point) {
       menu.addAction(openConsoleAction_);
 
       core::IServerSPtr server = node->server();
+      CHECK(server);
       bool isCon = server->isConnected();
       bool isAuth = server->isAuthenticated();
       bool isRedis = server->type() == core::REDIS;
 
-      bool isClusterMember = dynamic_cast<ExplorerClusterItem*>(node->parent()) != nullptr;
+      bool isClusterMember = dynamic_cast<ExplorerClusterItem*>(node->parent()) != nullptr;  // +
 
       loadDatabaseAction_->setEnabled(isAuth);
       menu.addAction(loadDatabaseAction_);
@@ -253,7 +254,7 @@ void ExplorerTreeView::showContextMenu(const QPoint& point) {
       bool isCanRemote = server->isCanRemote();
       bool isLocal = true;
       if (isCanRemote) {
-        core::IServerRemote* rserver = dynamic_cast<core::IServerRemote*>(server.get());
+        core::IServerRemote* rserver = dynamic_cast<core::IServerRemote*>(server.get());  // +
         CHECK(rserver);
         common::net::hostAndPort host = rserver->host();
         isLocal = host.isLocalHost();
@@ -268,10 +269,12 @@ void ExplorerTreeView::showContextMenu(const QPoint& point) {
 
       menu.exec(menuPoint);
     } else if (node->type() == IExplorerTreeItem::eDatabase) {
-      ExplorerDatabaseItem* db = dynamic_cast<ExplorerDatabaseItem*>(node);
+      ExplorerDatabaseItem* db = dynamic_cast<ExplorerDatabaseItem*>(node);  // +
+      CHECK(db);
+
       QMenu menu(this);
       menu.addAction(loadContentAction_);
-      bool isDefault = db && db->isDefault();
+      bool isDefault = db->isDefault();
       core::IServerSPtr server = node->server();
 
       bool isCon = server->isConnected();
@@ -290,7 +293,9 @@ void ExplorerTreeView::showContextMenu(const QPoint& point) {
       setDefaultDbAction_->setEnabled(!isDefault && isCon);
       menu.exec(menuPoint);
     } else if (node->type() == IExplorerTreeItem::eNamespace) {
-      ExplorerNSItem* ns = dynamic_cast<ExplorerNSItem*>(node);
+      ExplorerNSItem* ns = dynamic_cast<ExplorerNSItem*>(node);  // +
+      CHECK(ns);
+
       QMenu menu(this);
       core::IServerSPtr server = node->server();
       ExplorerDatabaseItem* db = ns->db();

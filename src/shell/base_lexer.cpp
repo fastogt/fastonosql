@@ -110,7 +110,7 @@ QColor BaseQsciLexer::defaultColor(int style) const {
 }
 
 BaseQsciApi* BaseQsciLexer::apis() const {
-  BaseQsciApi* api = dynamic_cast<BaseQsciApi*>(QsciLexerCustom::apis());
+  BaseQsciApi* api = dynamic_cast<BaseQsciApi*>(QsciLexerCustom::apis());  // +
   CHECK(api);
   return api;
 }

@@ -145,7 +145,7 @@ ConnectionDialog::ConnectionDialog(QWidget* parent, core::IConnectionSettingsBas
 
   // ssh
 
-  core::IConnectionSettingsRemoteSSH* remoteSettings = dynamic_cast<core::IConnectionSettingsRemoteSSH*>(connection_.get());
+  core::IConnectionSettingsRemoteSSH* remoteSettings = dynamic_cast<core::IConnectionSettingsRemoteSSH*>(connection_.get());  // +
   core::SSHInfo info;
   if (remoteSettings) {
     info = remoteSettings->sshInfo();

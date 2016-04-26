@@ -176,7 +176,7 @@ void UnqliteDriver::handleConnectEvent(events::ConnectRequestEvent* ev) {
   QObject* sender = ev->sender();
   notifyProgress(sender, 0);
   events::ConnectResponceEvent::value_type res(ev->value());
-  UnqliteConnectionSettings* set = dynamic_cast<UnqliteConnectionSettings*>(settings_.get());
+  UnqliteConnectionSettings* set = dynamic_cast<UnqliteConnectionSettings*>(settings_.get());  // +
   CHECK(set);
   notifyProgress(sender, 25);
   common::Error er = impl_->connect(set->info());
@@ -289,7 +289,7 @@ void UnqliteDriver::handleLoadDatabaseContentEvent(events::LoadDatabaseContentRe
     FastoObject::child_container_t rchildrens = cmd->childrens();
     if (rchildrens.size()) {
       DCHECK_EQ(rchildrens.size(), 1);
-      FastoObjectArray* array = dynamic_cast<FastoObjectArray*>(rchildrens[0]);
+      FastoObjectArray* array = dynamic_cast<FastoObjectArray*>(rchildrens[0]);  // +
       if (!array) {
         goto done;
       }

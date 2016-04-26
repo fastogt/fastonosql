@@ -236,7 +236,7 @@ void ClusterDialog::loggingStateChange(int value) {
 }
 
 void ClusterDialog::testConnection() {
-  ConnectionListWidgetItem* currentItem = dynamic_cast<ConnectionListWidgetItem*>(listWidget_->currentItem());
+  ConnectionListWidgetItem* currentItem = dynamic_cast<ConnectionListWidgetItem*>(listWidget_->currentItem());  // +
 
   // Do nothing if no item selected
   if (!currentItem) {
@@ -248,7 +248,7 @@ void ClusterDialog::testConnection() {
 }
 
 void ClusterDialog::discoveryCluster() {
-  ConnectionListWidgetItem* currentItem = dynamic_cast<ConnectionListWidgetItem*>(listWidget_->currentItem());
+  ConnectionListWidgetItem* currentItem = dynamic_cast<ConnectionListWidgetItem*>(listWidget_->currentItem());  // +
 
   // Do nothing if no item selected
   if (!currentItem) {
@@ -270,7 +270,7 @@ void ClusterDialog::discoveryCluster() {
 }
 
 void ClusterDialog::showContextMenu(const QPoint& point) {
-  ConnectionListWidgetItem* currentItem = dynamic_cast<ConnectionListWidgetItem*>(listWidget_->currentItem());
+  ConnectionListWidgetItem* currentItem = dynamic_cast<ConnectionListWidgetItem*>(listWidget_->currentItem());  // +
 
   // Do nothing if no item selected
   if (!currentItem) {
@@ -287,14 +287,14 @@ void ClusterDialog::showContextMenu(const QPoint& point) {
 }
 
 void ClusterDialog::setStartNode() {
-  ConnectionListWidgetItem* currentItem = dynamic_cast<ConnectionListWidgetItem*>(listWidget_->currentItem());
+  ConnectionListWidgetItem* currentItem = dynamic_cast<ConnectionListWidgetItem*>(listWidget_->currentItem());  // +
 
   // Do nothing if no item selected
   if (!currentItem) {
     return;
   }
 
-  ConnectionListWidgetItem* top = dynamic_cast<ConnectionListWidgetItem*>(listWidget_->topLevelItem(0));
+  ConnectionListWidgetItem* top = dynamic_cast<ConnectionListWidgetItem*>(listWidget_->topLevelItem(0));  // +
   if (top == currentItem) {
     return;
   }
@@ -319,7 +319,7 @@ void ClusterDialog::add() {
 }
 
 void ClusterDialog::remove() {
-  ConnectionListWidgetItem* currentItem = dynamic_cast<ConnectionListWidgetItem*>(listWidget_->currentItem());
+  ConnectionListWidgetItem* currentItem = dynamic_cast<ConnectionListWidgetItem*>(listWidget_->currentItem());  // +
 
   // Do nothing if no item selected
   if (!currentItem) {
@@ -337,7 +337,7 @@ void ClusterDialog::remove() {
 }
 
 void ClusterDialog::edit() {
-  ConnectionListWidgetItem* currentItem = dynamic_cast<ConnectionListWidgetItem*>(listWidget_->currentItem());
+  ConnectionListWidgetItem* currentItem = dynamic_cast<ConnectionListWidgetItem*>(listWidget_->currentItem());  // +
 
   // Do nothing if no item selected
   if (!currentItem) {
@@ -358,7 +358,7 @@ void ClusterDialog::edit() {
 }
 
 void ClusterDialog::itemSelectionChanged() {
-  ConnectionListWidgetItem* currentItem = dynamic_cast<ConnectionListWidgetItem*>(listWidget_->currentItem());
+  ConnectionListWidgetItem* currentItem = dynamic_cast<ConnectionListWidgetItem*>(listWidget_->currentItem());  // +
   bool isValidConnection = currentItem != nullptr;
 
   testButton_->setEnabled(isValidConnection);
@@ -396,7 +396,7 @@ bool ClusterDialog::validateAndApply() {
       cluster_connection_->setLoggingMsTimeInterval(loggingMsec_->value());
     }
     for (size_t i = 0; i < listWidget_->topLevelItemCount(); ++i) {
-      ConnectionListWidgetItem* item = dynamic_cast<ConnectionListWidgetItem*>(listWidget_->topLevelItem(i));
+      ConnectionListWidgetItem* item = dynamic_cast<ConnectionListWidgetItem*>(listWidget_->topLevelItem(i));  // +
       if (item) {
         core::IConnectionSettingsBaseSPtr con = item->connection();
         cluster_connection_->addNode(con);

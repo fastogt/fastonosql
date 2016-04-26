@@ -240,58 +240,51 @@ void InfoServerDialog::finishServerInfo(const core::events_info::ServerInfoRespo
   CHECK(type == inf->type());
 #ifdef BUILD_WITH_REDIS
   if (type == core::REDIS) {
-    core::redis::RedisServerInfo* infr = dynamic_cast<core::redis::RedisServerInfo*>(inf.get());
-    if (infr) {
-        updateText(*infr);
-    }
+    core::redis::RedisServerInfo* infr = dynamic_cast<core::redis::RedisServerInfo*>(inf.get());  // +
+    CHECK(infr);
+    updateText(*infr);
   }
 #endif
 #ifdef BUILD_WITH_MEMCACHED
   if (type == core::MEMCACHED) {
-    core::memcached::MemcachedServerInfo* infr = dynamic_cast<core::memcached::MemcachedServerInfo*>(inf.get());
-    if (infr) {
-      updateText(*infr);
-    }
+    core::memcached::MemcachedServerInfo* infr = dynamic_cast<core::memcached::MemcachedServerInfo*>(inf.get());  // +
+    CHECK(infr);
+    updateText(*infr);
   }
 #endif
 #ifdef BUILD_WITH_SSDB
   if (type == core::SSDB) {
-    core::ssdb::SsdbServerInfo* infr = dynamic_cast<core::ssdb::SsdbServerInfo*>(inf.get());
-    if (infr) {
-      updateText(*infr);
-    }
+    core::ssdb::SsdbServerInfo* infr = dynamic_cast<core::ssdb::SsdbServerInfo*>(inf.get());  // +
+    CHECK(infr);
+    updateText(*infr);
   }
 #endif
 #ifdef BUILD_WITH_LEVELDB
   if (type == core::LEVELDB) {
-    core::leveldb::LeveldbServerInfo* infr = dynamic_cast<core::leveldb::LeveldbServerInfo*>(inf.get());
-    if (infr) {
-        updateText(*infr);
-    }
+    core::leveldb::LeveldbServerInfo* infr = dynamic_cast<core::leveldb::LeveldbServerInfo*>(inf.get());  // +
+    CHECK(infr);
+    updateText(*infr);
   }
 #endif
 #ifdef BUILD_WITH_ROCKSDB
   if (type == core::ROCKSDB) {
-    core::rocksdb::RocksdbServerInfo* infr = dynamic_cast<core::rocksdb::RocksdbServerInfo*>(inf.get());
-    if (infr) {
-      updateText(*infr);
-    }
+    core::rocksdb::RocksdbServerInfo* infr = dynamic_cast<core::rocksdb::RocksdbServerInfo*>(inf.get());  // +
+    CHECK(infr);
+    updateText(*infr);
   }
 #endif
 #ifdef BUILD_WITH_UNQLITE
   if (type == core::UNQLITE) {
-    core::unqlite::UnqliteServerInfo* infr = dynamic_cast<core::unqlite::UnqliteServerInfo*>(inf.get());
-    if (infr) {
-      updateText(*infr);
-    }
+    core::unqlite::UnqliteServerInfo* infr = dynamic_cast<core::unqlite::UnqliteServerInfo*>(inf.get());  // +
+    CHECK(infr);
+    updateText(*infr);
   }
 #endif
 #ifdef BUILD_WITH_LMDB
   if (type == core::LMDB) {
-    core::lmdb::LmdbServerInfo* infr = dynamic_cast<core::lmdb::LmdbServerInfo*>(inf.get());
-    if (infr) {
-      updateText(*infr);
-    }
+    core::lmdb::LmdbServerInfo* infr = dynamic_cast<core::lmdb::LmdbServerInfo*>(inf.get());  // +
+    CHECK(infr);
+    updateText(*infr);
   }
 #endif
 }

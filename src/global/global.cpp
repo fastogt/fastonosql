@@ -111,7 +111,7 @@ FastoObjectCommand::~FastoObjectCommand() {
 }
 
 common::CommandValue* FastoObjectCommand::cmd() const {
-  return dynamic_cast<common::CommandValue*>(value_.get());
+  return dynamic_cast<common::CommandValue*>(value_.get());  // +
 }
 
 std::string FastoObjectCommand::toString() const {
@@ -250,13 +250,13 @@ std::string convertToString(common::Value* value, const std::string& delemitr) {
 
   common::Value::Type t = value->type();
   if (t == common::Value::TYPE_ARRAY) {
-    return convertToString(dynamic_cast<ArrayValue*>(value), delemitr);
+    return convertToString(dynamic_cast<ArrayValue*>(value), delemitr);  // +
   } else if(t == common::Value::TYPE_SET) {
-    return convertToString(dynamic_cast<SetValue*>(value), delemitr);
+    return convertToString(dynamic_cast<SetValue*>(value), delemitr);  // +
   } else if(t == common::Value::TYPE_ZSET) {
-    return convertToString(dynamic_cast<ZSetValue*>(value), delemitr);
+    return convertToString(dynamic_cast<ZSetValue*>(value), delemitr);  // +
   } else if(t == common::Value::TYPE_HASH) {
-    return convertToString(dynamic_cast<HashValue*>(value), delemitr);
+    return convertToString(dynamic_cast<HashValue*>(value), delemitr);  // +
   } else {
     return value->toString();
   }

@@ -154,12 +154,12 @@ void OutputWidget::finishExecuteCommand(const core::events_info::CommandResponce
 void OutputWidget::addChild(FastoObject* child) {
   DCHECK(child->parent());
 
-  FastoObjectCommand* command = dynamic_cast<FastoObjectCommand*>(child);
+  FastoObjectCommand* command = dynamic_cast<FastoObjectCommand*>(child);  // +
   if (command) {
     return;
   }
 
-  command = dynamic_cast<FastoObjectCommand*>(child->parent());
+  command = dynamic_cast<FastoObjectCommand*>(child->parent());  // +
   if (command) {
     void* parentinner = command->parent();
 
@@ -186,31 +186,29 @@ void OutputWidget::addChild(FastoObject* child) {
                                                        command->isReadOnly(), child);
     commonModel_->insertItem(parent, comChild);
   } else {
-    FastoObjectArray* arr = dynamic_cast<FastoObjectArray*>(child->parent());
-    if (arr) {
-      QModelIndex parent;
-      bool isFound = commonModel_->findItem(arr, &parent);
-      if (!isFound) {
-        return;
-      }
+    FastoObjectArray* arr = dynamic_cast<FastoObjectArray*>(child->parent());  // +
+    CHECK(arr);
 
-      fastonosql::gui::FastoCommonItem* par = nullptr;
-      if (!parent.isValid()) {
-        par = static_cast<fastonosql::gui::FastoCommonItem*>(commonModel_->root());
-      } else {
-        par = common::utils_qt::item<fasto::qt::gui::TreeItem*, fastonosql::gui::FastoCommonItem*>(parent);
-      }
-
-      if (!par) {
-        DNOTREACHED();
-        return;
-      }
-
-      fastonosql::gui::FastoCommonItem* comChild = createItem(par, std::string(), true, child);
-      commonModel_->insertItem(parent, comChild);
-    } else {
-      NOTREACHED();
+    QModelIndex parent;
+    bool isFound = commonModel_->findItem(arr, &parent);
+    if (!isFound) {
+      return;
     }
+
+    fastonosql::gui::FastoCommonItem* par = nullptr;
+    if (!parent.isValid()) {
+      par = static_cast<fastonosql::gui::FastoCommonItem*>(commonModel_->root());
+    } else {
+      par = common::utils_qt::item<fasto::qt::gui::TreeItem*, fastonosql::gui::FastoCommonItem*>(parent);
+    }
+
+    if (!par) {
+      DNOTREACHED();
+      return;
+    }
+
+    fastonosql::gui::FastoCommonItem* comChild = createItem(par, std::string(), true, child);
+    commonModel_->insertItem(parent, comChild);
   }
 }
 
