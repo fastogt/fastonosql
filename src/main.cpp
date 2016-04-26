@@ -35,7 +35,6 @@ int main(int argc, char* argv[]) {
   app.setApplicationVersion(PROJECT_VERSION);
   app.setAttribute(Qt::AA_UseHighDpiPixmaps);
   app.setWindowIcon(fastonosql::gui::GuiFactory::instance().logoIcon());  // default icon for app
-
 #ifdef NDEBUG
   SET_LOG_LEVEL(common::logging::L_INFO);
 #else

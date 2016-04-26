@@ -92,6 +92,7 @@ class GuiFactory
   const QString& pathToLoadingGif() const;
 
  private:
+  GuiFactory();
   const QIcon& redisConnectionIcon() const;
   const QIcon& memcachedConnectionIcon() const;
   const QIcon& ssdbConnectionIcon() const;

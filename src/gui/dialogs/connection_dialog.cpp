@@ -290,11 +290,9 @@ void ConnectionDialog::typeConnectionChange(int index) {
   bool isSSHType = isCanSSHConnection(currentType);
 
   const char* helpText = core::commandLineHelpText(currentType);
-  DCHECK(helpText);
-  if (helpText) {
-    QString trHelp = tr(helpText);
-    commandLine_->setToolTip(trHelp);
-  }
+  CHECK(helpText);
+  QString trHelp = tr(helpText);
+  commandLine_->setToolTip(trHelp);
 
   std::string commandLineText;
   if (connection_ && currentType == connection_->type()) {

@@ -93,14 +93,12 @@ namespace gui {
 
 ViewKeysDialog::ViewKeysDialog(const QString& title, core::IDatabaseSPtr db, QWidget* parent)
   : QDialog(parent), db_(db), cursorStack_(), curPos_(0) {
-  DCHECK(db_);
-  if (db_) {
-    core::IServerSPtr serv = db_->server();
-    VERIFY(connect(serv.get(), &core::IServer::startedLoadDataBaseContent,
-                   this, &ViewKeysDialog::startLoadDatabaseContent));
-    VERIFY(connect(serv.get(), &core::IServer::finishedLoadDatabaseContent,
-                   this, &ViewKeysDialog::finishLoadDatabaseContent));
-  }
+  CHECK(db_);
+  core::IServerSPtr serv = db_->server();
+  VERIFY(connect(serv.get(), &core::IServer::startedLoadDataBaseContent,
+                 this, &ViewKeysDialog::startLoadDatabaseContent));
+  VERIFY(connect(serv.get(), &core::IServer::finishedLoadDatabaseContent,
+                 this, &ViewKeysDialog::finishLoadDatabaseContent));
 
   setWindowTitle(title);
 
@@ -131,13 +129,11 @@ ViewKeysDialog::ViewKeysDialog(const QString& title, core::IDatabaseSPtr db, QWi
   keysModel_ = new KeysTableModel(this);
   VERIFY(connect(keysModel_, &KeysTableModel::changedValue,
                  this, &ViewKeysDialog::executeCommand, Qt::DirectConnection));
-  if (db_) {
-    core::IServerSPtr serv = db_->server();
-    VERIFY(connect(serv.get(), &core::IServer::startedExecuteCommand,
-                   this, &ViewKeysDialog::startExecuteCommand, Qt::DirectConnection));
-    VERIFY(connect(serv.get(), &core::IServer::finishedExecuteCommand,
-                   this, &ViewKeysDialog::finishExecuteCommand, Qt::DirectConnection));
-  }
+
+  VERIFY(connect(serv.get(), &core::IServer::startedExecuteCommand,
+                 this, &ViewKeysDialog::startExecuteCommand, Qt::DirectConnection));
+  VERIFY(connect(serv.get(), &core::IServer::finishedExecuteCommand,
+                 this, &ViewKeysDialog::finishExecuteCommand, Qt::DirectConnection));
   keysTable_ = new FastoTableView;
   keysTable_->setModel(keysModel_);
   keysTable_->setItemDelegateForColumn(KeyTableItem::kTTL, new NumericDelegate(this));
@@ -216,10 +212,8 @@ void ViewKeysDialog::finishLoadDatabaseContent(const core::events_info::LoadData
 }
 
 void ViewKeysDialog::executeCommand(core::CommandKeySPtr cmd) {
-  if (db_) {
-    core::events_info::CommandRequest req(this, db_->info(), cmd);
-    db_->executeCommand(req);
-  }
+  core::events_info::CommandRequest req(this, db_->info(), cmd);
+  db_->executeCommand(req);
 }
 
 void ViewKeysDialog::startExecuteCommand(const core::events_info::CommandRequest& req) {
@@ -247,10 +241,6 @@ void ViewKeysDialog::finishExecuteCommand(const core::events_info::CommandRespon
 }
 
 void ViewKeysDialog::search(bool forward) {
-  if (!db_) {
-    return;
-  }
-
   QString pattern = searchBox_->text();
   if (pattern.isEmpty()) {
     return;

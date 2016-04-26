@@ -26,6 +26,9 @@
 namespace fastonosql {
 namespace gui {
 
+GuiFactory::GuiFactory() {
+}
+
 const QIcon& GuiFactory::directoryIcon() const {
   static QIcon open = qApp->style()->standardIcon(QStyle::SP_DirIcon);
   return open;

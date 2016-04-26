@@ -46,7 +46,7 @@ namespace gui {
 ChangePasswordServerDialog::ChangePasswordServerDialog(const QString& title,
                                                        core::IServerSPtr server, QWidget* parent)
   : QDialog(parent), server_(server) {
-  DCHECK(server_);
+  CHECK(server_);
 
   setWindowTitle(title);
   setWindowFlags(windowFlags() & ~Qt::WindowContextHelpButtonHint);
