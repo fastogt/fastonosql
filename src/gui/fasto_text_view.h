@@ -35,10 +35,9 @@ class FastoTextView
   FastoTextView(const QString& delemitr, QWidget* parent = 0);
 
   void setModel(QAbstractItemModel* model);
-  void setReadOnly(bool ro);
 
  private Q_SLOTS:
-  void viewChanged(bool checked);
+  void viewChange(bool checked);
   void textChange();
   void saveChanges();
 

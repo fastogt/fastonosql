@@ -210,6 +210,13 @@ void FastoHexEdit::mouseReleaseEvent(QMouseEvent* event) {
   base_class::mouseReleaseEvent(event);
 }
 
+bool FastoHexEdit::event(QEvent* event) {
+  if (event->type() == QEvent::ReadOnlyChange) {
+    emit readOnlyChanged();
+  }
+  base_class::event(event);
+}
+
 QRect FastoHexEdit::stableRect(const QRect& rect) {
   const int yPosStart = rect.top() + TextMarginXY;
   const int xPosStart = rect.left() + TextMarginXY;

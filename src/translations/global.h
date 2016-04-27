@@ -83,6 +83,7 @@ namespace translations {
   extern const QString trHex;
   extern const QString trMsgPack;
   extern const QString trGzip;
+  extern const QString trCannotConvertPattern1ArgsS;
   extern const QString trSearch;
   extern const QString trBackup;
   extern const QString trShutdown;

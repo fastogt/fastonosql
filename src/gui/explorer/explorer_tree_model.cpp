@@ -398,16 +398,17 @@ QVariant ExplorerTreeModel::data(const QModelIndex& index, int role) const {
 }
 
 Qt::ItemFlags ExplorerTreeModel::flags(const QModelIndex& index) const {
-  Qt::ItemFlags result = 0;
   if (index.isValid()) {
-    result = Qt::ItemIsSelectable | Qt::ItemIsEnabled;
+    return Qt::ItemIsSelectable | Qt::ItemIsEnabled;
   }
-  return result;
+
+  return Qt::NoItemFlags;
 }
 
 QVariant ExplorerTreeModel::headerData(int section, Qt::Orientation orientation, int role) const {
-  if (role != Qt::DisplayRole)
+  if (role != Qt::DisplayRole) {
     return QVariant();
+  }
 
   if (orientation == Qt::Horizontal && role == Qt::DisplayRole) {
     if (section == ExplorerServerItem::eName) {

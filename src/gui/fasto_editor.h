@@ -115,13 +115,15 @@ class FastoEditorOutput
   bool setData(const QModelIndex& index, const QVariant& value);
   int viewMethod() const;
   QString text() const;
+  bool isReadOnly() const;
 
  Q_SIGNALS:
   void textChanged();
+  void readOnlyChanged();
 
  public Q_SLOTS:
   void setReadOnly(bool ro);
-  void viewChanged(int viewMethod);
+  void viewChange(int viewMethod);
 
  private Q_SLOTS:
   void modelDestroyed();

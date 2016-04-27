@@ -42,6 +42,9 @@ class FastoHexEdit
 
   QString text() const;
 
+ Q_SIGNALS:
+  void readOnlyChanged();
+
  public Q_SLOTS:
   void setMode(DisplayMode mode);
   void setData(const QByteArray& arr);
@@ -53,6 +56,7 @@ class FastoHexEdit
   virtual void mousePressEvent(QMouseEvent* event);
   virtual void mouseMoveEvent(QMouseEvent* event);
   virtual void mouseReleaseEvent(QMouseEvent* event);
+  virtual bool event(QEvent* event);
 
  private:
   static QRect stableRect(const QRect& rect);

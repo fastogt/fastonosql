@@ -52,14 +52,15 @@ FastoTextView::FastoTextView(const QString& delemitr, QWidget* parent)
   saveChangeButton_->setIcon(GuiFactory::instance().saveIcon());
   saveChangeButton_->setEnabled(false);
 
-  VERIFY(connect(jsonRadioButton_, &QRadioButton::toggled, this, &FastoTextView::viewChanged));
-  VERIFY(connect(csvRadioButton_, &QRadioButton::toggled, this, &FastoTextView::viewChanged));
-  VERIFY(connect(rawRadioButton_, &QRadioButton::toggled, this, &FastoTextView::viewChanged));
-  VERIFY(connect(hexRadioButton_, &QRadioButton::toggled, this, &FastoTextView::viewChanged));
-  VERIFY(connect(msgPackRadioButton_, &QRadioButton::toggled, this, &FastoTextView::viewChanged));
-  VERIFY(connect(gzipRadioButton_, &QRadioButton::toggled, this, &FastoTextView::viewChanged));
+  VERIFY(connect(jsonRadioButton_, &QRadioButton::toggled, this, &FastoTextView::viewChange));
+  VERIFY(connect(csvRadioButton_, &QRadioButton::toggled, this, &FastoTextView::viewChange));
+  VERIFY(connect(rawRadioButton_, &QRadioButton::toggled, this, &FastoTextView::viewChange));
+  VERIFY(connect(hexRadioButton_, &QRadioButton::toggled, this, &FastoTextView::viewChange));
+  VERIFY(connect(msgPackRadioButton_, &QRadioButton::toggled, this, &FastoTextView::viewChange));
+  VERIFY(connect(gzipRadioButton_, &QRadioButton::toggled, this, &FastoTextView::viewChange));
   VERIFY(connect(saveChangeButton_, &QPushButton::clicked, this, &FastoTextView::saveChanges));
   VERIFY(connect(editor_, &FastoEditorOutput::textChanged, this, &FastoTextView::textChange));
+  VERIFY(connect(editor_, &FastoEditorOutput::readOnlyChanged, this, &FastoTextView::textChange));
 
   QHBoxLayout* radLaout = new QHBoxLayout;
   radLaout->addWidget(jsonRadioButton_);
@@ -86,10 +87,6 @@ void FastoTextView::setModel(QAbstractItemModel* model) {
   editor_->setModel(model);
 }
 
-void FastoTextView::setReadOnly(bool ro) {
-  editor_->setReadOnly(ro);
-}
-
 void FastoTextView::saveChanges() {
   QModelIndex index = editor_->selectedItem(1); //eValue
   editor_->setData(index, editor_->text().simplified());
@@ -97,45 +94,45 @@ void FastoTextView::saveChanges() {
 
 void FastoTextView::textChange() {
   QModelIndex index = editor_->selectedItem(1); //eValue
-  bool isEnabled = index.isValid()
+  bool isEnabled = !editor_->isReadOnly() && index.isValid()
       && (index.flags() & Qt::ItemIsEditable)
       && index.data() != editor_->text().simplified();
 
   saveChangeButton_->setEnabled(isEnabled);
 }
 
-void FastoTextView::viewChanged(bool checked) {
+void FastoTextView::viewChange(bool checked) {
   if (!checked){
     return;
   }
 
   if(jsonRadioButton_->isChecked()){
-    editor_->viewChanged(JSON);
+    editor_->viewChange(JSON);
     return;
   }
 
   if(csvRadioButton_->isChecked()){
-    editor_->viewChanged(CSV);
+    editor_->viewChange(CSV);
     return;
   }
 
   if(rawRadioButton_->isChecked()){
-    editor_->viewChanged(RAW);
+    editor_->viewChange(RAW);
     return;
   }
 
   if(hexRadioButton_->isChecked()){
-    editor_->viewChanged(HEX);
+    editor_->viewChange(HEX);
     return;
   }
 
   if(msgPackRadioButton_->isChecked()){
-    editor_->viewChanged(MSGPACK);
+    editor_->viewChange(MSGPACK);
     return;
   }
 
   if(gzipRadioButton_->isChecked()){
-    editor_->viewChanged(GZIP);
+    editor_->viewChange(GZIP);
     return;
   }
 }

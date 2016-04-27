@@ -226,6 +226,7 @@ FastoEditorOutput::FastoEditorOutput(const QString& delemitr, QWidget* parent)
   : QWidget(parent), model_(nullptr), view_method_(JSON), delemitr_(delemitr) {
   editor_ = new FastoHexEdit;
   VERIFY(connect(editor_, &FastoHexEdit::textChanged, this, &FastoEditorOutput::textChanged));
+  VERIFY(connect(editor_, &FastoHexEdit::readOnlyChanged, this, &FastoEditorOutput::readOnlyChanged));
 
   QVBoxLayout* mainL = new QVBoxLayout;
   mainL->addWidget(editor_);
@@ -306,7 +307,7 @@ void FastoEditorOutput::setReadOnly(bool ro) {
   editor_->setReadOnly(ro);
 }
 
-void FastoEditorOutput::viewChanged(int viewMethod) {
+void FastoEditorOutput::viewChange(int viewMethod) {
   view_method_ = viewMethod;
   layoutChanged();
 }
@@ -368,6 +369,10 @@ QString FastoEditorOutput::text() const {
   return editor_->text();
 }
 
+bool FastoEditorOutput::isReadOnly() const {
+  return editor_->isReadOnly();
+}
+
 void FastoEditorOutput::layoutChanged() {
   editor_->clear();
   if (!model_) {
@@ -387,6 +392,24 @@ void FastoEditorOutput::layoutChanged() {
   fasto::qt::gui::TreeItem* root = child->parent();
   if (!root) {
     return;
+  }
+
+  using namespace translations;
+  QString methodText;
+  if (view_method_ == JSON) {
+    methodText = trJson;
+  } else if (view_method_ == CSV) {
+    methodText = trCsv;
+  } else if (view_method_ == RAW) {
+    methodText = trRawText;
+  } else if (view_method_ == HEX) {
+    methodText = trHex;
+  } else if (view_method_ == MSGPACK) {
+    methodText = trMsgPack;
+  } else if (view_method_ == GZIP) {
+    methodText = trGzip;
+  } else {
+    NOTREACHED();
   }
 
   QString result;
@@ -417,6 +440,10 @@ void FastoEditorOutput::layoutChanged() {
   }
 
   editor_->setMode(view_method_ == HEX ? FastoHexEdit::HEX_MODE : FastoHexEdit::TEXT_MODE);
+  if (result.isEmpty()) {
+    result = QString(trCannotConvertPattern1ArgsS).arg(methodText);
+    editor_->setReadOnly(true);
+  }
   editor_->setData(result.toUtf8());
 }
 
