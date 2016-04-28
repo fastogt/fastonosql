@@ -96,82 +96,6 @@ std::string convertVersionNumberToReadableString(uint32_t version) {
   return UNDEFINED_SINCE_STR;
 }
 
-std::string KeyInfo::key() const {
-  return JoinString(splited_namespaces_and_key, ns_separator);
-}
-
-bool KeyInfo::hasNamespace() const {
-  size_t ns_size = nspaceSize();
-  return ns_size > 0;
-}
-
-std::string KeyInfo::nspace() const {
-  return joinNamespace(splited_namespaces_and_key.size() - 1);
-}
-
-size_t KeyInfo::nspaceSize() const {
-  if (splited_namespaces_and_key.empty()) {
-    return 0;
-  }
-
-  return splited_namespaces_and_key.size() - 1;
-}
-
-std::string KeyInfo::joinNamespace(size_t pos) const {
-  size_t ns_size = nspaceSize();
-  if (ns_size > pos) {
-    std::vector<std::string> copy;
-    for (size_t i = 0; i <= pos; ++i) {
-      copy.push_back(splited_namespaces_and_key[i]);
-    }
-    return JoinString(copy, ns_separator);
-  }
-
-  return std::string();
-}
-
-NKey::NKey(const std::string& key, ttl_t ttl_sec)
-  : key(key), ttl_sec(ttl_sec) {
-}
-
-KeyInfo NKey::info(const std::string& ns_separator) const {
-  std::vector<std::string> tokens;
-  Tokenize(key, ns_separator, &tokens);
-  return KeyInfo{tokens, ns_separator};
-}
-
-NDbKValue::NDbKValue(const NKey& key, NValue value)
-  : key_(key), value_(value) {
-}
-
-NKey NDbKValue::key() const {
-  return key_;
-}
-
-NValue NDbKValue::value() const {
-  return value_;
-}
-
-common::Value::Type NDbKValue::type() const {
-  if (!value_) {
-    return common::Value::TYPE_NULL;
-  }
-
-  return value_->type();
-}
-
-void NDbKValue::setTTL(ttl_t ttl) {
-  key_.ttl_sec = ttl;
-}
-
-void NDbKValue::setValue(NValue value) {
-  value_ = value;
-}
-
-std::string NDbKValue::keyString() const {
-  return key_.key;
-}
-
 ServerDiscoveryInfo::ServerDiscoveryInfo(connectionTypes ctype, serverTypes type, bool self)
   : host_(), name_(), self_(self), type_(type), ctype_(ctype) {
 }
@@ -359,34 +283,6 @@ bool ServerInfoSnapShoot::isValid() const {
   return msec > 0 && info;
 }
 
-ServerPropertyInfo::ServerPropertyInfo() {
-}
-
-ServerPropertyInfo makeServerProperty(const FastoObjectArray* array) {
-  if (!array) {
-    DNOTREACHED();
-    return ServerPropertyInfo();
-  }
-
-  common::ArrayValue* ar = array->array();
-  if (!ar) {
-    DNOTREACHED();
-    return ServerPropertyInfo();
-  }
-
-  ServerPropertyInfo inf;
-  for (size_t i = 0; i < ar->size(); i += 2) {
-    std::string c1;
-    std::string c2;
-    bool res = ar->getString(i, &c1);
-    DCHECK(res);
-    res = ar->getString(i + 1, &c2);
-    DCHECK(res);
-    inf.propertyes.push_back(std::make_pair(c1, c2));
-  }
-  return inf;
-}
-
 IDataBaseInfo::IDataBaseInfo(const std::string& name, bool isDefault, connectionTypes type,
                            size_t size, const keys_container_t& keys)
   : name_(name), is_default_(isDefault), type_(type), size_(size), keys_(keys) {
@@ -433,51 +329,6 @@ void IDataBaseInfo::clearKeys() {
 
 IDataBaseInfo::keys_container_t IDataBaseInfo::keys() const {
   return keys_;
-}
-
-CommandKey::CommandKey(const NDbKValue &key, cmdtype type)
-  : type_(type), key_(key) {
-}
-
-CommandKey::cmdtype CommandKey::type() const {
-  return type_;
-}
-
-NDbKValue CommandKey::key() const {
-  return key_;
-}
-
-CommandKey::~CommandKey() {
-}
-
-CommandDeleteKey::CommandDeleteKey(const NDbKValue &key)
-  : CommandKey(key, C_DELETE) {
-}
-
-CommandLoadKey::CommandLoadKey(const NDbKValue &key)
-  : CommandKey(key, C_LOAD) {
-}
-
-CommandCreateKey::CommandCreateKey(const NDbKValue& dbv)
-  : CommandKey(dbv, C_CREATE) {
-}
-
-CommandChangeTTL::CommandChangeTTL(const NDbKValue& dbv, ttl_t newTTL)
-  : CommandKey(dbv, C_CHANGE_TTL), new_ttl_(newTTL) {
-}
-
-ttl_t CommandChangeTTL::newTTL() const {
-  return new_ttl_;
-}
-
-NDbKValue CommandChangeTTL::newKey() const {
-  NDbKValue nk = key();
-  nk.setTTL(new_ttl_);
-  return nk;
-}
-
-NValue CommandCreateKey::value() const {
-  return key_.value();
 }
 
 }  // namespace core

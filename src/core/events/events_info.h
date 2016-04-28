@@ -21,8 +21,11 @@
 #include <vector>
 #include <string>
 
-#include "core/types.h"
 #include "common/qt/utils_qt.h"
+
+#include "core/types.h"
+#include "core/command_key.h"
+#include "core/server_property_info.h"
 
 namespace fastonosql {
 namespace core {

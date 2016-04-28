@@ -25,7 +25,7 @@
 #include "global/global.h"
 
 #include "core/connection_types.h"
-
+#include "core/db_key.h"
 #include "common/net/net.h"
 
 #define UNDEFINED_SINCE 0x00000000U
@@ -84,111 +84,7 @@ class CommandHandler {
   const std::vector<commands_t> commands_;
 };
 
-template<typename H, typename C>
-struct DBAllocatorTraits {
-  typedef H handle_t;
-  typedef C config_t;
-
-  static common::Error connect(const config_t& config, handle_t** hout);  // allocate handle
-  static common::Error disconnect(handle_t** handle);  // deallocate handle
-  static bool isConnected(handle_t* handle);
-};
-
-template<typename DBAllocatorTraits>
-class DBConnection {
- public:
-  typedef DBAllocatorTraits db_traits_t;
-  typedef typename db_traits_t::config_t config_t;
-  typedef typename db_traits_t::handle_t handle_t;
-
-  DBConnection()
-    : config_(), handle_(nullptr) {
-  }
-
-  ~DBConnection() {
-    disconnect();
-  }
-
-  bool isConnected() const {
-    return db_traits_t::isConnected(handle_);
-  }
-
-  common::Error connect(const config_t& config) WARN_UNUSED_RESULT {
-    if (isConnected()) {
-      return common::Error();
-    }
-
-    handle_t* handle = nullptr;
-    common::Error err = db_traits_t::connect(config, &handle);
-    if (err && err->isError()) {
-      return err;
-    }
-
-    config_ = config;
-    handle_ = handle;
-    return common::Error();
-  }
-
-  common::Error disconnect() WARN_UNUSED_RESULT {
-    if (!isConnected()) {
-      return common::Error();
-    }
-
-    common::Error err = db_traits_t::disconnect(&handle_);
-    if (err && err->isError()) {
-      return err;
-    }
-
-    config_ = config_t();
-    handle_ = nullptr;
-    return common::Error();
-  }
-
-  config_t config_;
-  handle_t* handle_;
-};
-
 std::string convertVersionNumberToReadableString(uint32_t version);
-typedef int32_t ttl_t;
-
-struct KeyInfo {
-  std::string key() const;
-  bool hasNamespace() const;
-  std::string nspace() const;
-  std::string joinNamespace(size_t pos) const;
-  size_t nspaceSize() const;
-
-  std::vector<std::string> splited_namespaces_and_key;
-  std::string ns_separator;
-};
-
-struct NKey {
-  explicit NKey(const std::string& key, ttl_t ttl_sec = -1);
-  KeyInfo info(const std::string& ns_separator) const;
-
-  std::string key;
-  ttl_t ttl_sec;
-};
-
-typedef common::ValueSPtr NValue;
-
-class NDbKValue {
- public:
-  NDbKValue(const NKey& key, NValue value);
-
-  NKey key() const;
-  NValue value() const;
-  common::Value::Type type() const;
-
-  void setTTL(ttl_t ttl);
-  void setValue(NValue value);
-
-  std::string keyString() const;
-
- private:
-  NKey key_;
-  NValue value_;
-};
 
 class ServerDiscoveryInfo {
  public:
@@ -267,15 +163,6 @@ struct ServerInfoSnapShoot {
   IServerInfoSPtr info;
 };
 
-typedef std::pair<std::string, std::string> PropertyType;
-
-struct ServerPropertyInfo {
-  ServerPropertyInfo();
-  std::vector<PropertyType> propertyes;
-};
-
-ServerPropertyInfo makeServerProperty(const FastoObjectArray* array);
-
 class IDataBaseInfo {
  public:
   typedef std::vector<NDbKValue> keys_container_t;
@@ -309,85 +196,6 @@ class IDataBaseInfo {
 };
 
 typedef common::shared_ptr<IDataBaseInfo> IDataBaseInfoSPtr;
-
-class CommandKey {
- public:
-  enum cmdtype {
-    C_DELETE,
-    C_LOAD,
-    C_CREATE,
-    C_CHANGE_TTL
-  };
-
-  cmdtype type() const;
-  NDbKValue key() const;
-
-  virtual ~CommandKey();
-
- protected:
-  CommandKey(const NDbKValue& key, cmdtype type);
-
-  const cmdtype type_;
-  const NDbKValue key_;
-};
-
-class CommandDeleteKey
-      : public CommandKey {
- public:
-  explicit CommandDeleteKey(const NDbKValue& key);
-};
-
-class CommandLoadKey
-  : public CommandKey {
- public:
-  explicit CommandLoadKey(const NDbKValue& key);
-};
-
-class CommandCreateKey
-  : public CommandKey {
- public:
-  explicit CommandCreateKey(const NDbKValue& dbv);
-  NValue value() const;
-};
-
-class CommandChangeTTL
-  : public CommandKey {
- public:
-  CommandChangeTTL(const NDbKValue& dbv, ttl_t newTTL);
-  ttl_t newTTL() const;
-  NDbKValue newKey() const;
-
- private:
-  ttl_t new_ttl_;
-};
-
-typedef common::shared_ptr<CommandKey> CommandKeySPtr;
-
-template<typename Command>
-FastoObjectCommand* createCommand(FastoObject* parent, const std::string& input,
-                                  common::Value::CommandLoggingType ct) {
-  if (!parent) {
-    DNOTREACHED();
-    return nullptr;
-  }
-
-  std::string stable_input = stableCommand(input);
-  if (stable_input.empty()) {
-    DNOTREACHED();
-    return nullptr;
-  }
-
-  common::CommandValue* cmd = common::Value::createCommand(stable_input, ct);
-  FastoObjectCommand* fs = new Command(parent, cmd, parent->delemitr(), parent->nsSeparator());
-  parent->addChildren(fs);
-  return fs;
-}
-
-template<typename Command>
-FastoObjectCommand* createCommand(FastoObjectIPtr parent, const std::string& input,
-                                  common::Value::CommandLoggingType ct) {
-  return createCommand<Command>(parent.get(), input, ct);
-}
 
 }  // namespace core
 }  // namespace fastonosql

@@ -64,6 +64,7 @@ extern "C" {
 #include "fasto/qt/logger.h"
 
 #include "core/command_logger.h"
+#include "core/command_key.h"
 
 #define HIREDIS_VERSION STRINGIZE(HIREDIS_MAJOR) "." STRINGIZE(HIREDIS_MINOR) "." STRINGIZE(HIREDIS_PATCH)
 #define REDIS_CLI_KEEPALIVE_INTERVAL 15 /* seconds */
@@ -93,8 +94,9 @@ namespace {
 void anetSetError(char* err, const char* fmt, ...) {
   va_list ap;
 
-  if (!err)
+  if (!err) {
     return;
+  }
   va_start(ap, fmt);
   vsnprintf(err, ANET_ERR_LEN, fmt, ap);
   va_end(ap);

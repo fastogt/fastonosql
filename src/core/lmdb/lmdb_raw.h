@@ -24,6 +24,7 @@ extern "C" {
 
 #include <string>
 
+#include "core/db_connection.h"
 #include "core/lmdb/lmdb_settings.h"
 #include "core/lmdb/lmdb_config.h"
 #include "core/lmdb/lmdb_infos.h"

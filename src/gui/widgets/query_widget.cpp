@@ -18,7 +18,7 @@
 
 #include "gui/widgets/query_widget.h"
 
-#include <QHBoxLayout>
+#include <QVBoxLayout>
 #include <QSplitter>
 
 #include "shell/shell_widget.h"

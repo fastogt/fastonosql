@@ -39,7 +39,7 @@ QString KeyTableItem::typeText() const {
   return common::convertFromString<QString>(common::Value::toString(key_.type()));
 }
 
-int32_t KeyTableItem::ttl() const {
+core::ttl_t KeyTableItem::ttl() const {
   core::NKey key = key_.key();
   return key.ttl_sec;
 }

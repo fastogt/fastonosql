@@ -18,32 +18,21 @@
 
 #pragma once
 
-#include "fasto/qt/gui/base/tree_model.h"
+#include <vector>
 
-#include "core/command_key.h"
+#include "global/global.h"
 
 namespace fastonosql {
-namespace gui {
+namespace core {
 
-class FastoCommonModel
-  : public fasto::qt::gui::TreeModel {
-  Q_OBJECT
- public:
-  explicit FastoCommonModel(QObject* parent = 0);
+typedef std::pair<std::string, std::string> PropertyType;
 
-  virtual QVariant data(const QModelIndex& index, int role = Qt::DisplayRole) const;
-  virtual bool setData(const QModelIndex& index, const QVariant& value, int role);
-  virtual Qt::ItemFlags flags(const QModelIndex& index) const;
-  virtual QVariant headerData(int section, Qt::Orientation orientation,
-                              int role = Qt::DisplayRole) const;
-
-  virtual int columnCount(const QModelIndex& parent) const;
-
-  void changeValue(const core::NDbKValue& value);
-
- Q_SIGNALS:
-  void changedValue(core::CommandKeySPtr cmd);
+struct ServerPropertyInfo {
+  ServerPropertyInfo();
+  std::vector<PropertyType> propertyes;
 };
 
-}  // namespace gui
+ServerPropertyInfo makeServerProperty(const FastoObjectArray* array);
+
+}  // namespace core
 }  // namespace fastonosql

@@ -18,7 +18,7 @@
 
 #pragma once
 
-#include "core/types.h"
+#include "core/command_key.h"
 
 #include "fasto/qt/gui/base/table_model.h"
 
@@ -39,7 +39,7 @@ class KeyTableItem
 
   QString key() const;
   QString typeText() const;
-  int32_t ttl() const;
+  core::ttl_t ttl() const;
   common::Value::Type type() const;
 
   core::NDbKValue dbv() const;

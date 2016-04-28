@@ -22,6 +22,7 @@
 
 #include <leveldb/db.h>
 
+#include "core/db_connection.h"
 #include "core/leveldb/leveldb_settings.h"
 #include "core/leveldb/leveldb_config.h"
 #include "core/leveldb/leveldb_infos.h"
