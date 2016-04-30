@@ -631,7 +631,7 @@ ExplorerKeyItem* ExplorerTreeModel::findKeyItem(IExplorerTreeItem* db_or_ns,
     {
       ExplorerKeyItem* key_item = dynamic_cast<ExplorerKeyItem*>(item);  // +
       if (!key_item) {
-        return nullptr;
+        return false;
       }
 
       core::NDbKValue ckey = key_item->key();
@@ -644,7 +644,7 @@ ExplorerNSItem* ExplorerTreeModel::findNSItem(IExplorerTreeItem* db_or_ns, const
     {
       ExplorerNSItem* ns_item = dynamic_cast<ExplorerNSItem*>(item);  // +
       if (!ns_item) {
-        return nullptr;
+        return false;
       }
 
       return ns_item->name() == name;

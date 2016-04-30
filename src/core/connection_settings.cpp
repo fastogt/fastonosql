@@ -176,12 +176,12 @@ std::string IConnectionSettingsBase::loggingPath() const {
     return prefix + LOGGING_LEVELDB_FILE_EXTENSION;
   }
 #endif
-#ifdef BUILD_WITH_LEVELDB
+#ifdef BUILD_WITH_ROCKSDB
   if (type_ == ROCKSDB) {
     return prefix + LOGGING_ROCKSDB_FILE_EXTENSION;
   }
 #endif
-#ifdef BUILD_WITH_LEVELDB
+#ifdef BUILD_WITH_UNQLITE
   if (type_ == UNQLITE) {
     return prefix + LOGGING_UNQLITE_FILE_EXTENSION;
   }
