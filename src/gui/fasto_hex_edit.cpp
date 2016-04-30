@@ -214,7 +214,8 @@ bool FastoHexEdit::event(QEvent* event) {
   if (event->type() == QEvent::ReadOnlyChange) {
     emit readOnlyChanged();
   }
-  base_class::event(event);
+
+  return base_class::event(event);
 }
 
 QRect FastoHexEdit::stableRect(const QRect& rect) {

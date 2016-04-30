@@ -45,7 +45,10 @@ class DBConnection {
   }
 
   ~DBConnection() {
-    disconnect();
+    common::Error err = disconnect();
+    if (err && err->isError()) {
+      DNOTREACHED();
+    }
   }
 
   bool isConnected() const {
