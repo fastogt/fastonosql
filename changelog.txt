@@ -1,4 +1,4 @@
-0.6.1
+0.6.1 / April 30, 2016
 [Alexandr Topilski]
 - [Memcached] Not connected to server, impossible to get discovery info #4
 - Server roles
