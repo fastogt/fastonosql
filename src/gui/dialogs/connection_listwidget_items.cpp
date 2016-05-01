@@ -68,11 +68,36 @@ ConnectionListWidgetItemEx::ConnectionListWidgetItemEx(core::IConnectionSettings
   setText(2, common::convertFromString<QString>(sert));
 }
 
-ClusterConnectionListWidgetItem::ClusterConnectionListWidgetItem(core::IClusterSettingsBaseSPtr connection, QTreeWidgetItem* parent)
-  : QTreeWidgetItem(parent), connection_(connection) {
+SentinelConnectionListWidgetItem::SentinelConnectionListWidgetItem(core::ISentinelSettingsBaseSPtr connection, QTreeWidgetItem* parent)
+  : QTreeWidgetItem(parent), connection_() {
+  setConnection(connection);
+
+  core::IClusterSettingsBase::cluster_connection_t servers = connection_->nodes();
+  for (size_t i = 0; i < servers.size(); ++i) {
+    core::IConnectionSettingsBaseSPtr con = servers[i];
+    ConnectionListWidgetItem* item = new ConnectionListWidgetItem(con, this);
+    addChild(item);
+  }
+}
+
+void SentinelConnectionListWidgetItem::setConnection(core::ISentinelSettingsBaseSPtr cons) {
+  if (!cons) {
+    return;
+  }
+
+  connection_ = cons;
   std::string path = connection_->path().toString();
   setText(0, common::convertFromString<QString>(path));
-  setIcon(0, GuiFactory::instance().clusterIcon());
+  setIcon(0, GuiFactory::instance().sentinelIcon());
+}
+
+core::ISentinelSettingsBaseSPtr SentinelConnectionListWidgetItem::connection() const {
+  return connection_;
+}
+
+ClusterConnectionListWidgetItem::ClusterConnectionListWidgetItem(core::IClusterSettingsBaseSPtr connection, QTreeWidgetItem* parent)
+  : QTreeWidgetItem(parent), connection_() {
+  setConnection(connection);
 
   core::IClusterSettingsBase::cluster_connection_t servers = connection_->nodes();
 

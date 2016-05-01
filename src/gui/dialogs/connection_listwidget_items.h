@@ -52,6 +52,17 @@ class ConnectionListWidgetItemEx
   ConnectionListWidgetItemEx(core::IConnectionSettingsBaseSPtr connection, core::serverTypes st, QTreeWidgetItem* parent);
 };
 
+class SentinelConnectionListWidgetItem
+      : public QTreeWidgetItem {
+ public:
+  explicit SentinelConnectionListWidgetItem(core::ISentinelSettingsBaseSPtr connection, QTreeWidgetItem* parent);
+  void setConnection(core::ISentinelSettingsBaseSPtr cons);
+  core::ISentinelSettingsBaseSPtr connection() const;
+
+ private:
+  core::ISentinelSettingsBaseSPtr connection_;
+};
+
 class ClusterConnectionListWidgetItem
       : public QTreeWidgetItem {
  public:

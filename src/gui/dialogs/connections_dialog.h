@@ -47,6 +47,7 @@ class ConnectionsDialog
  private Q_SLOTS:
   void add();
   void addCls();
+  void addSent();
   void remove();
   void edit();
   void connectionSelectChange();
@@ -58,6 +59,7 @@ class ConnectionsDialog
   void retranslateUi();
   void addConnection(core::IConnectionSettingsBaseSPtr con);
   void addCluster(core::IClusterSettingsBaseSPtr con);
+  void addSentinel(core::ISentinelSettingsBaseSPtr con);
   DirectoryListWidgetItem* findFolderByPath(const core::IConnectionSettings::connection_path_t& path) const;
 
   QTreeWidget* listWidget_;

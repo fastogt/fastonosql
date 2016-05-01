@@ -27,6 +27,7 @@
 
 #define INFO_REQUEST "INFO"
 #define GET_SERVER_TYPE "CLUSTER NODES"
+#define GET_SENTINEL_SLAVES_PATTERN_1ARGS_S "SENTINEL SLAVES %s"
 
 #define LATENCY_REQUEST "LATENCY"
 #define RDM_REQUEST "RDM"
@@ -433,6 +434,7 @@ static const std::vector<CommandInfo> redisCommands = {
 
 common::Error testConnection(RedisConnectionSettings* settings);
 common::Error discoveryClusterConnection(RedisConnectionSettings* settings, std::vector<ServerDiscoveryClusterInfoSPtr>* infos);
+common::Error discoverySentinelConnection(RedisConnectionSettings* settings, std::vector<ServerDiscoverySentinelInfoSPtr>* infos);
 
 class IRedisRawOwner {
 public:

@@ -197,7 +197,7 @@ common::Error ServersManager::discoveryClusterConnection(IConnectionSettingsBase
   connectionTypes type = connection->type();
 #ifdef BUILD_WITH_REDIS
   if (type == REDIS) {
-    return fastonosql::core::redis::discoveryClusterConnection(dynamic_cast<redis::RedisConnectionSettings*>(connection.get()), inf);  // +
+    return redis::discoveryClusterConnection(dynamic_cast<redis::RedisConnectionSettings*>(connection.get()), inf);  // +
   }
 #endif
 #ifdef BUILD_WITH_MEMCACHED
@@ -243,7 +243,7 @@ common::Error ServersManager::discoverySentinelConnection(IConnectionSettingsBas
   connectionTypes type = connection->type();
 #ifdef BUILD_WITH_REDIS
   if (type == REDIS) {
-    return common::make_error_value("Not supported setting type", common::ErrorValue::E_ERROR);
+    return redis::discoverySentinelConnection(dynamic_cast<redis::RedisConnectionSettings*>(connection.get()), inf);  // +
   }
 #endif
 #ifdef BUILD_WITH_MEMCACHED

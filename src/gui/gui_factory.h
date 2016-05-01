@@ -67,6 +67,7 @@ class GuiFactory
 
   const QIcon& loadIcon() const;
   const QIcon& clusterIcon() const;
+  const QIcon& sentinelIcon() const;
   const QIcon& saveIcon() const;
   const QIcon& saveAsIcon() const;
   const QIcon& textIcon() const;

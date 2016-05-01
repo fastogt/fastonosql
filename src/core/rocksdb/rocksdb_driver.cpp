@@ -141,7 +141,7 @@ common::Error RocksdbDriver::serverInfo(IServerInfo** info) {
   return err;
 }
 
-common::Error RocksdbDriver::serverDiscoveryInfo(ServerDiscoveryInfo** dinfo, IServerInfo** sinfo,
+common::Error RocksdbDriver::serverDiscoveryClusterInfo(ServerDiscoveryClusterInfo **dinfo, IServerInfo** sinfo,
                                                  IDataBaseInfo** dbinfo) {
   UNUSED(dinfo);
 

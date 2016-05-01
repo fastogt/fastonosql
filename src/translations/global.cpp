@@ -30,6 +30,7 @@ namespace translations {
   const QString trLoad = QObject::tr("Load");
   const QString trAddConnection = QObject::tr("Add connnection");
   const QString trAddClusterConnection = QObject::tr("Add cluster connnection");
+  const QString trAddSentinelConnection = QObject::tr("Add sentinel connnection");
   const QString trRemoveConnection = QObject::tr("Remove connnection");
   const QString trEditConnection = QObject::tr("Edit connection");
   const QString trOpen = QObject::tr("Open");

@@ -36,6 +36,7 @@
     <file>@PROJECT_NAME_LOWERCASE@/images/64x64/save.png</file>
     <file>@PROJECT_NAME_LOWERCASE@/images/64x64/saveas.png</file>
     <file>@PROJECT_NAME_LOWERCASE@/images/64x64/cluster.png</file>
+    <file>@PROJECT_NAME_LOWERCASE@/images/64x64/sentinel.png</file>
     <file>@PROJECT_NAME_LOWERCASE@/images/64x64/tree.png</file>
     <file>@PROJECT_NAME_LOWERCASE@/images/64x64/table.png</file>
     <file>@PROJECT_NAME_LOWERCASE@/images/64x64/text.png</file>

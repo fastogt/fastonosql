@@ -278,7 +278,7 @@ RedisServerInfo* makeRedisServerInfo(FastoObject* root);
 
 ServerDiscoveryClusterInfo* makeOwnRedisDiscoveryInfo(const std::string& text);
 ServerDiscoveryClusterInfo* makeOwnRedisDiscoveryInfo(FastoObject* root);
-common::Error makeAllDiscoveryInfo(const common::net::hostAndPort& parentHost,
+common::Error makeDiscoveryClusterInfo(const common::net::hostAndPort& parentHost,
                                    const std::string& text,
                                    std::vector<ServerDiscoveryClusterInfoSPtr>* infos);
 

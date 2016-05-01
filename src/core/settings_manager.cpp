@@ -125,47 +125,68 @@ void SettingsManager::setCurrentLanguage(const QString& lang) {
 }
 
 void SettingsManager::addConnection(IConnectionSettingsBaseSPtr connection) {
-  if (connection) {
-    ConnectionSettingsContainerType::iterator it = std::find(connections_.begin(),
-                                                             connections_.end(), connection);
-    if (it == connections_.end()) {
-      connections_.push_back(connection);
-    }
+  if (!connection) {
+    return;
+  }
+
+  auto it = std::find(connections_.begin(), connections_.end(), connection);
+  if (it == connections_.end()) {
+    connections_.push_back(connection);
   }
 }
 
 void SettingsManager::removeConnection(IConnectionSettingsBaseSPtr connection) {
-  if (connection) {
-    ConnectionSettingsContainerType::iterator it = std::find(connections_.begin(),
-                                                             connections_.end(), connection);
-    if (it != connections_.end()) {
-      connections_.erase(it);
-    }
+  if (!connection) {
+    return;
   }
+
+  connections_.erase(std::remove(connections_.begin(), connections_.end(), connection));
 }
 
 SettingsManager::ConnectionSettingsContainerType SettingsManager::connections() const {
   return connections_;
 }
 
+void SettingsManager::addSentinel(ISentinelSettingsBaseSPtr sentinel) {
+  if (!sentinel) {
+    return;
+  }
+
+  auto it = std::find(sentinels_.begin(), sentinels_.end(), sentinel);
+  if (it == sentinels_.end()) {
+    sentinels_.push_back(sentinel);
+  }
+}
+
+void SettingsManager::removeSentinel(ISentinelSettingsBaseSPtr sentinel) {
+  if (!sentinel) {
+    return;
+  }
+
+  sentinels_.erase(std::remove(sentinels_.begin(), sentinels_.end(), sentinel));
+}
+
+SettingsManager::SentinelSettingsContainerType SettingsManager::sentinels() const {
+  return sentinels_;
+}
+
 void SettingsManager::addCluster(IClusterSettingsBaseSPtr cluster) {
-  if (cluster) {
-    ClusterSettingsContainerType::iterator it = std::find(clusters_.begin(),
-                                                          clusters_.end(), cluster);
-    if (it == clusters_.end()) {
-      clusters_.push_back(cluster);
-    }
+  if (!cluster) {
+    return;
+  }
+
+  auto it = std::find(clusters_.begin(), clusters_.end(), cluster);
+  if (it == clusters_.end()) {
+    clusters_.push_back(cluster);
   }
 }
 
 void SettingsManager::removeCluster(IClusterSettingsBaseSPtr cluster) {
-  if (cluster) {
-    ClusterSettingsContainerType::iterator it = std::find(clusters_.begin(),
-                                                          clusters_.end(), cluster);
-    if (it != clusters_.end()) {
-      clusters_.erase(it);
-    }
+  if (!cluster) {
+    return;
   }
+
+  clusters_.erase(std::remove(clusters_.begin(), clusters_.end(), cluster));
 }
 
 SettingsManager::ClusterSettingsContainerType SettingsManager::clusters() const {

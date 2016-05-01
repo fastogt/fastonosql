@@ -938,7 +938,7 @@ ServerDiscoveryClusterInfo* makeOwnRedisDiscoveryInfo(FastoObject* root) {
   return makeOwnRedisDiscoveryInfo(content);
 }
 
-common::Error makeAllDiscoveryInfo(const common::net::hostAndPort& parentHost,
+common::Error makeDiscoveryClusterInfo(const common::net::hostAndPort& parentHost,
                                    const std::string& text,
                                    std::vector<ServerDiscoveryClusterInfoSPtr>* infos) {
   if (text.empty() || !infos) {

@@ -477,7 +477,7 @@ common::Error discoveryClusterConnection(RedisConnectionSettings* settings,
   }
 
   if (reply->type == REDIS_REPLY_STRING) {
-    err = makeAllDiscoveryInfo(settings->host(), std::string(reply->str, reply->len), infos);
+    err = makeDiscoveryClusterInfo(settings->host(), std::string(reply->str, reply->len), infos);
   } else if (reply->type == REDIS_REPLY_ERROR) {
     err = common::make_error_value(std::string(reply->str, reply->len), common::Value::E_ERROR);
   } else {
@@ -489,6 +489,47 @@ common::Error discoveryClusterConnection(RedisConnectionSettings* settings,
   return err;
 }
 
+common::Error discoverySentinelConnection(RedisConnectionSettings* settings,
+                                          std::vector<ServerDiscoverySentinelInfoSPtr>* infos) {
+  if (!settings || !infos) {
+    return common::make_error_value("Invalid input argument(s)", common::ErrorValue::E_ERROR);
+  }
+
+  redisContext* context = nullptr;
+  common::Error err = createConnection(settings, &context);
+  if (err && err->isError()) {
+    return err;
+  }
+
+  RedisConfig config = settings->info();
+  err = authContext(config, context);
+  if (err && err->isError()) {
+    redisFree(context);
+    return err;
+  }
+
+  const char* master_name = NULL;
+
+  /* Send the GET SLAVES command. */
+  redisReply* reply = (redisReply*)redisCommand(context, GET_SENTINEL_SLAVES_PATTERN_1ARGS_S, master_name);
+  if (!reply) {
+    err = common::make_error_value("I/O error", common::Value::E_ERROR);
+    redisFree(context);
+    return err;
+  }
+
+  if (reply->type == REDIS_REPLY_ARRAY) {
+    // err = makeDiscoveryClusterInfo(settings->host(), std::string(reply->str, reply->len), infos);
+  } else if (reply->type == REDIS_REPLY_ERROR) {
+    err = common::make_error_value(std::string(reply->str, reply->len), common::Value::E_ERROR);
+  } else {
+    NOTREACHED();
+  }
+
+  freeReplyObject(reply);
+  redisFree(context);
+  return err;
+}
 
 RedisRaw::RedisRaw(IRedisRawOwner* observer)
   : context_(nullptr), isAuth_(false), observer_(observer) {

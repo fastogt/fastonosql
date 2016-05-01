@@ -244,6 +244,11 @@ const QIcon& GuiFactory::clusterIcon() const {
   return cluster;
 }
 
+const QIcon& GuiFactory::sentinelIcon() const {
+  static QIcon sentinel(":" PROJECT_NAME_LOWERCASE "/images/64x64/sentinel.png");
+  return sentinel;
+}
+
 const QIcon& GuiFactory::saveIcon() const {
   static QIcon start(":" PROJECT_NAME_LOWERCASE "/images/64x64/save.png");
   return start;
