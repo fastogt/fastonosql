@@ -156,7 +156,7 @@ common::Error RedisDriver::serverInfo(IServerInfo** info) {
   return res;
 }
 
-common::Error RedisDriver::serverDiscoveryInfo(ServerDiscoveryInfo** dinfo, IServerInfo** sinfo,
+common::Error RedisDriver::serverDiscoveryClusterInfo(ServerDiscoveryClusterInfo** dinfo, IServerInfo** sinfo,
                                                IDataBaseInfo** dbinfo) {
   IServerInfo* lsinfo = nullptr;
   common::Error er = serverInfo(&lsinfo);

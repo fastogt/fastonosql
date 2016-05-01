@@ -120,7 +120,7 @@ namespace core {
 namespace redis {
 
 class RedisDiscoveryInfo
-      : public ServerDiscoveryInfo {
+      : public ServerDiscoveryClusterInfo {
  public:
   RedisDiscoveryInfo(serverTypes type, bool self);
 
@@ -276,11 +276,11 @@ std::ostream& operator<<(std::ostream& out, const RedisServerInfo& value);
 RedisServerInfo* makeRedisServerInfo(const std::string& content);
 RedisServerInfo* makeRedisServerInfo(FastoObject* root);
 
-ServerDiscoveryInfo* makeOwnRedisDiscoveryInfo(const std::string& text);
-ServerDiscoveryInfo* makeOwnRedisDiscoveryInfo(FastoObject* root);
+ServerDiscoveryClusterInfo* makeOwnRedisDiscoveryInfo(const std::string& text);
+ServerDiscoveryClusterInfo* makeOwnRedisDiscoveryInfo(FastoObject* root);
 common::Error makeAllDiscoveryInfo(const common::net::hostAndPort& parentHost,
                                    const std::string& text,
-                                   std::vector<ServerDiscoveryInfoSPtr>* infos);
+                                   std::vector<ServerDiscoveryClusterInfoSPtr>* infos);
 
 class RedisDataBaseInfo
       : public IDataBaseInfo {

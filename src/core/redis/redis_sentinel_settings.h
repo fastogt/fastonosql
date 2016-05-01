@@ -18,22 +18,23 @@
 
 #pragma once
 
-#include "common/smart_ptr.h"
+#include <string>
+
+#include "core/connection_settings.h"
+
+#include "core/redis/redis_config.h"
 
 namespace fastonosql {
 namespace core {
+namespace redis {
 
-class IDatabase;
-typedef common::shared_ptr<IDatabase> IDatabaseSPtr;
+class RedisSentinelSettings
+  : public ISentinelSettingsBase {
+ public:
+  explicit RedisSentinelSettings(const connection_path_t& connectionName);
+  virtual RedisSentinelSettings* clone() const;
+};
 
-class IServer;
-typedef common::shared_ptr<IServer> IServerSPtr;
-
-class ICluster;
-typedef common::shared_ptr<ICluster> IClusterSPtr;
-
-class ISentinel;
-typedef common::shared_ptr<ISentinel> ISentinelSPtr;
-
+}  // namespace redis
 }  // namespace core
 }  // namespace fastonosql

@@ -86,13 +86,12 @@ class CommandHandler {
 
 std::string convertVersionNumberToReadableString(uint32_t version);
 
-class ServerDiscoveryInfo {
+class IServerDiscoveryInfo {
  public:
-  virtual ~ServerDiscoveryInfo();
+  virtual ~IServerDiscoveryInfo();
 
   connectionTypes connectionType() const;
   serverTypes type() const;
-  bool self() const;
 
   std::string name() const;
   void setName(const std::string& name);
@@ -101,18 +100,31 @@ class ServerDiscoveryInfo {
   void setHost(const common::net::hostAndPort& host);
 
  protected:
-  ServerDiscoveryInfo(connectionTypes ctype, serverTypes type, bool self);
+  IServerDiscoveryInfo(connectionTypes ctype, serverTypes type);
   common::net::hostAndPort host_;
   std::string name_;
 
  private:
-  const bool self_;
   const serverTypes type_;
   const connectionTypes ctype_;
-  DISALLOW_COPY_AND_ASSIGN(ServerDiscoveryInfo);
 };
 
-typedef common::shared_ptr<ServerDiscoveryInfo> ServerDiscoveryInfoSPtr;
+typedef IServerDiscoveryInfo ServerDiscoverySentinelInfo;
+typedef common::shared_ptr<ServerDiscoverySentinelInfo> ServerDiscoverySentinelInfoSPtr;
+
+class ServerDiscoveryClusterInfo
+    : public IServerDiscoveryInfo{
+ public:
+  bool self() const;
+
+ protected:
+  ServerDiscoveryClusterInfo(connectionTypes ctype, serverTypes type, bool self);
+
+ private:
+  const bool self_;
+};
+
+typedef common::shared_ptr<ServerDiscoveryClusterInfo> ServerDiscoveryClusterInfoSPtr;
 
 class IServerInfo {
  public:

@@ -310,7 +310,7 @@ QVariant ExplorerTreeModel::data(const QModelIndex& index, int role) const {
   if (role == Qt::ToolTipRole) {
     core::IServerSPtr server = node->server();
     if (type == IExplorerTreeItem::eServer && server) {
-      core::ServerDiscoveryInfoSPtr disc = server->discoveryInfo();
+      core::ServerDiscoveryClusterInfoSPtr disc = server->discoveryClusterInfo();
       if (disc) {
         QString dname = common::convertFromString<QString>(disc->name());
         QString dtype = common::convertFromString<QString>(common::convertToString(disc->type()));

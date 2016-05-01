@@ -139,7 +139,7 @@ common::Error UnqliteDriver::serverInfo(IServerInfo** info) {
   return err;
 }
 
-common::Error UnqliteDriver::serverDiscoveryInfo(ServerDiscoveryInfo** dinfo, IServerInfo** sinfo,
+common::Error UnqliteDriver::serverDiscoveryClusterInfo(ServerDiscoveryClusterInfo** dinfo, IServerInfo** sinfo,
                                                  IDataBaseInfo** dbinfo) {
   UNUSED(dinfo);
 

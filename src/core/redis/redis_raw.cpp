@@ -449,8 +449,8 @@ common::Error testConnection(RedisConnectionSettings* settings) {
   return common::Error();
 }
 
-common::Error discoveryConnection(RedisConnectionSettings* settings,
-                                  std::vector<ServerDiscoveryInfoSPtr>* infos) {
+common::Error discoveryClusterConnection(RedisConnectionSettings* settings,
+                                  std::vector<ServerDiscoveryClusterInfoSPtr>* infos) {
   if (!settings || !infos) {
     return common::make_error_value("Invalid input argument(s)", common::ErrorValue::E_ERROR);
   }

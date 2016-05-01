@@ -24,8 +24,10 @@ SET(HEADERS_GUI_TO_MOC
     gui/dialogs/connections_dialog.h
     gui/dialogs/connection_dialog.h
     gui/dialogs/cluster_dialog.h
+    gui/dialogs/sentinel_dialog.h
     gui/dialogs/connection_diagnostic_dialog.h
-    gui/dialogs/discovery_dialog.h
+    gui/dialogs/discovery_cluster_dialog.h
+    gui/dialogs/discovery_sentinel_dialog.h
     gui/dialogs/encode_decode_dialog.h
     gui/dialogs/load_contentdb_dialog.h
     gui/dialogs/create_dbkey_dialog.h
@@ -62,8 +64,10 @@ SET(SOURCES_GUI
     gui/dialogs/connections_dialog.cpp
     gui/dialogs/connection_dialog.cpp
     gui/dialogs/cluster_dialog.cpp
+    gui/dialogs/sentinel_dialog.cpp
     gui/dialogs/connection_diagnostic_dialog.cpp
-    gui/dialogs/discovery_dialog.cpp
+    gui/dialogs/discovery_cluster_dialog.cpp
+    gui/dialogs/discovery_sentinel_dialog.cpp
     gui/dialogs/connection_listwidget_items.cpp
     gui/dialogs/info_server_dialog.cpp
     gui/dialogs/property_server_dialog.cpp
@@ -101,6 +105,7 @@ SET(HEADERS_CORE
     core/connection_confg.h
     core/core_fwd.h
     core/icluster.h
+    core/isentinel.h
     core/idatabase.h
     core/settings_manager.h
     core/connection_settings.h
@@ -123,6 +128,7 @@ SET(SOURCES_CORE
     core/idriver.cpp
     core/iserver.cpp
     core/icluster.cpp
+    core/isentinel.cpp
     core/idatabase.cpp
     core/servers_manager.cpp
     core/types.cpp
@@ -193,6 +199,7 @@ IF(BUILD_WITH_REDIS)
     SET(INCLUDE_DIRS ${INCLUDE_DIRS} third-party/redis/src third-party/redis/deps third-party/sds)
 
     SET(HEADERS_REDIS_TO_MOC
+        core/redis/redis_sentinel.h
         core/redis/redis_cluster.h
         core/redis/redis_server.h
         core/redis/redis_driver.h
@@ -204,17 +211,20 @@ IF(BUILD_WITH_REDIS)
         core/redis/redis_database.h
         core/redis/redis_settings.h
         core/redis/redis_cluster_settings.h
+        core/redis/redis_sentinel_settings.h
     )
     SET(SOURCES_REDIS
         core/redis/redis_raw.cpp
         core/redis/redis_config.cpp
         core/redis/redis_infos.cpp
         core/redis/redis_cluster.cpp
+        core/redis/redis_sentinel.cpp
         core/redis/redis_server.cpp
         core/redis/redis_driver.cpp
         core/redis/redis_database.cpp
         core/redis/redis_settings.cpp
         core/redis/redis_cluster_settings.cpp
+        core/redis/redis_sentinel_settings.cpp
     )
     SET(OBJECT_LIBS ${OBJECT_LIBS} $<TARGET_OBJECTS:hiredis> $<TARGET_OBJECTS:libssh2>)
 ENDIF(BUILD_WITH_REDIS)

@@ -43,9 +43,11 @@ class ServersManager
   server_t createServer(IConnectionSettingsBaseSPtr settings);
   cluster_t createCluster(IClusterSettingsBaseSPtr settings);
 
-  common::Error testConnection(IConnectionSettingsBaseSPtr connection);
-  common::Error discoveryConnection(IConnectionSettingsBaseSPtr connection,
-                                    std::vector<ServerDiscoveryInfoSPtr>* inf);
+  common::Error testConnection(IConnectionSettingsBaseSPtr connection) WARN_UNUSED_RESULT;
+  common::Error discoveryClusterConnection(IConnectionSettingsBaseSPtr connection,
+                                    std::vector<ServerDiscoveryClusterInfoSPtr>* inf) WARN_UNUSED_RESULT;
+  common::Error discoverySentinelConnection(IConnectionSettingsBaseSPtr connection,
+                                            std::vector<ServerDiscoverySentinelInfoSPtr>* inf) WARN_UNUSED_RESULT;
 
   void clear();
 

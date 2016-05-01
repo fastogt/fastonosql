@@ -18,22 +18,32 @@
 
 #pragma once
 
-#include "common/smart_ptr.h"
+#include <vector>
+#include <string>
+
+#include "core/iserver.h"
 
 namespace fastonosql {
 namespace core {
 
-class IDatabase;
-typedef common::shared_ptr<IDatabase> IDatabaseSPtr;
+class ISentinel
+  : public IServerBase {
+ public:
+  typedef std::vector<IServerSPtr> nodes_type;
 
-class IServer;
-typedef common::shared_ptr<IServer> IServerSPtr;
+  std::string name() const;
+  nodes_type nodes() const;
+  void addServer(IServerSPtr serv);
 
-class ICluster;
-typedef common::shared_ptr<ICluster> IClusterSPtr;
+  IServerSPtr root() const;
 
-class ISentinel;
-typedef common::shared_ptr<ISentinel> ISentinelSPtr;
+ protected:
+  explicit ISentinel(const std::string& name);
+
+ private:
+  const std::string name_;
+  nodes_type nodes_;
+};
 
 }  // namespace core
 }  // namespace fastonosql

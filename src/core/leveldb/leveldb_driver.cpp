@@ -141,7 +141,7 @@ common::Error LeveldbDriver::serverInfo(IServerInfo** info) {
   return err;
 }
 
-common::Error LeveldbDriver::serverDiscoveryInfo(ServerDiscoveryInfo** dinfo, IServerInfo** sinfo,
+common::Error LeveldbDriver::serverDiscoveryClusterInfo(ServerDiscoveryClusterInfo** dinfo, IServerInfo** sinfo,
                                                  IDataBaseInfo** dbinfo) {
   UNUSED(dinfo);
 

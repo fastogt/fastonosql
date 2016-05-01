@@ -16,7 +16,7 @@
     along with FastoNoSQL.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-#include "gui/dialogs/discovery_dialog.h"
+#include "gui/dialogs/discovery_sentinel_dialog.h"
 
 #include <string>
 #include <vector>
@@ -45,13 +45,13 @@ namespace {
 namespace fastonosql {
 namespace gui {
 
-DiscoveryConnection::DiscoveryConnection(core::IConnectionSettingsBaseSPtr conn, QObject* parent)
+DiscoverySentinelConnection::DiscoverySentinelConnection(core::IConnectionSettingsBaseSPtr conn, QObject* parent)
   : QObject(parent), connection_(conn), startTime_(common::time::current_mstime()) {
-  qRegisterMetaType<std::vector<core::ServerDiscoveryInfoSPtr> >("std::vector<core::ServerDiscoveryInfoSPtr>");
+  qRegisterMetaType<std::vector<core::ServerDiscoverySentinelInfo> >("std::vector<core::ServerDiscoverySentinelInfoSPtr>");
 }
 
-void DiscoveryConnection::routine() {
-  std::vector<core::ServerDiscoveryInfoSPtr> inf;
+void DiscoverySentinelConnection::routine() {
+  std::vector<core::ServerDiscoverySentinelInfoSPtr> inf;
 
   if (!connection_) {
     emit connectionResult(false, common::time::current_mstime() - startTime_,
@@ -59,7 +59,7 @@ void DiscoveryConnection::routine() {
     return;
   }
 
-  common::Error er = core::ServersManager::instance().discoveryConnection(connection_, &inf);
+  common::Error er = core::ServersManager::instance().discoverySentinelConnection(connection_, &inf);
 
   if (er && er->isError()) {
     emit connectionResult(false, common::time::current_mstime() - startTime_,
@@ -70,10 +70,10 @@ void DiscoveryConnection::routine() {
   }
 }
 
-DiscoveryDiagnosticDialog::DiscoveryDiagnosticDialog(QWidget* parent,
+DiscoverySentinelDiagnosticDialog::DiscoverySentinelDiagnosticDialog(QWidget* parent,
                                                      core::IConnectionSettingsBaseSPtr connection,
-                                                     core::IClusterSettingsBaseSPtr cluster)
-  : QDialog(parent), cluster_(cluster) {
+                                                     core::ISentinelSettingsBaseSPtr sentinel)
+  : QDialog(parent), sentinel_(sentinel) {
   setWindowTitle(translations::trConnectionDiscovery);
   setWindowIcon(GuiFactory::instance().serverIcon());
   setWindowFlags(windowFlags() & ~Qt::WindowContextHelpButtonHint);  // Remove help button (?)
@@ -106,12 +106,12 @@ DiscoveryDiagnosticDialog::DiscoveryDiagnosticDialog(QWidget* parent,
 
   mainLayout->addWidget(listWidget_);
   listWidget_->setEnabled(false);
-  listWidget_->setToolTip(tr("Select items which you want add to cluster."));
+  listWidget_->setToolTip(tr("Select items which you want add to sentinel."));
 
   QDialogButtonBox* buttonBox = new QDialogButtonBox;
   buttonBox->setOrientation(Qt::Horizontal);
   buttonBox->setStandardButtons(QDialogButtonBox::Ok);
-  VERIFY(connect(buttonBox, &QDialogButtonBox::accepted, this, &DiscoveryDiagnosticDialog::accept));
+  VERIFY(connect(buttonBox, &QDialogButtonBox::accepted, this, &DiscoverySentinelDiagnosticDialog::accept));
 
   mainLayout->addWidget(buttonBox);
   setFixedSize(QSize(fix_width, fix_height));
@@ -123,7 +123,7 @@ DiscoveryDiagnosticDialog::DiscoveryDiagnosticDialog(QWidget* parent,
   testConnection(connection);
 }
 
-std::vector<core::IConnectionSettingsBaseSPtr> DiscoveryDiagnosticDialog::selectedConnections() const {
+std::vector<core::IConnectionSettingsBaseSPtr> DiscoverySentinelDiagnosticDialog::selectedConnections() const {
   std::vector<core::IConnectionSettingsBaseSPtr> res;
   for (size_t i = 0; i < listWidget_->topLevelItemCount(); ++i) {
     QTreeWidgetItem *citem = listWidget_->topLevelItem(i);
@@ -137,9 +137,9 @@ std::vector<core::IConnectionSettingsBaseSPtr> DiscoveryDiagnosticDialog::select
   return res;
 }
 
-void DiscoveryDiagnosticDialog::connectionResult(bool suc, qint64 mstimeExecute,
+void DiscoverySentinelDiagnosticDialog::connectionResult(bool suc, qint64 mstimeExecute,
                                                  const QString& resultText,
-                                                 std::vector<core::ServerDiscoveryInfoSPtr> infos) {
+                                                 std::vector<core::ServerDiscoverySentinelInfoSPtr> infos) {
   glassWidget_->stop();
 
   executeTimeLabel_->setText(timeTemplate.arg(mstimeExecute));
@@ -151,32 +151,32 @@ void DiscoveryDiagnosticDialog::connectionResult(bool suc, qint64 mstimeExecute,
     iconLabel_->setPixmap(pm);
 
     for (size_t i = 0; i < infos.size(); ++i) {
-      core::ServerDiscoveryInfoSPtr inf = infos[i];
+      core::ServerDiscoverySentinelInfoSPtr inf = infos[i];
       common::net::hostAndPort host = inf->host();
       core::IConnectionSettingsBase::connection_path_t path(inf->name());
       core::IConnectionSettingsBaseSPtr con(core::IConnectionSettingsRemote::createFromType(inf->connectionType(), path, host));
       ConnectionListWidgetItemEx* item = new ConnectionListWidgetItemEx(con, inf->type(), nullptr);
-      item->setDisabled(inf->self() || cluster_->findSettingsByHost(host));
+      // item->setDisabled(sentinel_->findSettingsByHost(host));
       listWidget_->addTopLevelItem(item);
     }
   }
   statusLabel_->setText(connectionStatusTemplate.arg(resultText));
 }
 
-void DiscoveryDiagnosticDialog::showEvent(QShowEvent* e) {
+void DiscoverySentinelDiagnosticDialog::showEvent(QShowEvent* e) {
   QDialog::showEvent(e);
   glassWidget_->start();
 }
 
-void DiscoveryDiagnosticDialog::testConnection(core::IConnectionSettingsBaseSPtr connection) {
+void DiscoverySentinelDiagnosticDialog::testConnection(core::IConnectionSettingsBaseSPtr connection) {
   QThread* th = new QThread;
-  DiscoveryConnection* cheker = new DiscoveryConnection(connection);
+  DiscoverySentinelConnection* cheker = new DiscoverySentinelConnection(connection);
   cheker->moveToThread(th);
-  VERIFY(connect(th, &QThread::started, cheker, &DiscoveryConnection::routine));
-  VERIFY(connect(cheker, &DiscoveryConnection::connectionResult, this,
-                 &DiscoveryDiagnosticDialog::connectionResult));
-  VERIFY(connect(cheker, &DiscoveryConnection::connectionResult, th, &QThread::quit));
-  VERIFY(connect(th, &QThread::finished, cheker, &DiscoveryConnection::deleteLater));
+  VERIFY(connect(th, &QThread::started, cheker, &DiscoverySentinelConnection::routine));
+  VERIFY(connect(cheker, &DiscoverySentinelConnection::connectionResult, this,
+                 &DiscoverySentinelDiagnosticDialog::connectionResult));
+  VERIFY(connect(cheker, &DiscoverySentinelConnection::connectionResult, th, &QThread::quit));
+  VERIFY(connect(th, &QThread::finished, cheker, &DiscoverySentinelConnection::deleteLater));
   VERIFY(connect(th, &QThread::finished, th, &QThread::deleteLater));
   th->start();
 }

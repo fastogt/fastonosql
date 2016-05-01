@@ -139,7 +139,7 @@ common::Error LmdbDriver::serverInfo(IServerInfo** info) {
   return err;
 }
 
-common::Error LmdbDriver::serverDiscoveryInfo(ServerDiscoveryInfo** dinfo, IServerInfo** sinfo,
+common::Error LmdbDriver::serverDiscoveryClusterInfo(ServerDiscoveryClusterInfo** dinfo, IServerInfo** sinfo,
                                               IDataBaseInfo** dbinfo) {
   UNUSED(dinfo);
 

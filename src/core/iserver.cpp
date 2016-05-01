@@ -74,8 +74,8 @@ std::string IServer::name() const {
   return path.name();
 }
 
-ServerDiscoveryInfoSPtr IServer::discoveryInfo() const {
-  return drv_->serverDiscoveryInfo();
+ServerDiscoveryClusterInfoSPtr IServer::discoveryClusterInfo() const {
+  return drv_->discoveryClusterInfo();
 }
 
 IServerInfoSPtr IServer::serverInfo() const {

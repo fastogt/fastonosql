@@ -16,24 +16,45 @@
     along with FastoNoSQL.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-#pragma once
+#include "core/isentinel.h"
 
-#include "common/smart_ptr.h"
+#include <string>
 
 namespace fastonosql {
 namespace core {
 
-class IDatabase;
-typedef common::shared_ptr<IDatabase> IDatabaseSPtr;
+ISentinel::ISentinel(const std::string& name)
+  : name_(name) {
+}
 
-class IServer;
-typedef common::shared_ptr<IServer> IServerSPtr;
+std::string ISentinel::name() const {
+  return name_;
+}
 
-class ICluster;
-typedef common::shared_ptr<ICluster> IClusterSPtr;
+ISentinel::nodes_type ISentinel::nodes() const {
+  return nodes_;
+}
 
-class ISentinel;
-typedef common::shared_ptr<ISentinel> ISentinelSPtr;
+void ISentinel::addServer(IServerSPtr serv) {
+  if (!serv) {
+    DNOTREACHED();
+    return;
+  }
+
+  nodes_.push_back(serv);
+}
+
+IServerSPtr ISentinel::root() const {
+  for (size_t i = 0; i < nodes_.size(); ++i) {
+    IServerRemote* rserver = dynamic_cast<IServerRemote*>(nodes_[i].get());  // +
+    CHECK(rserver);
+    if (rserver->role() == MASTER) {
+      return nodes_[i];
+    }
+  }
+
+  return IServerSPtr();
+}
 
 }  // namespace core
 }  // namespace fastonosql

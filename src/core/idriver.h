@@ -50,7 +50,7 @@ class IDriver
   connectionTypes type() const;
   IConnectionSettings::connection_path_t connectionPath() const;
 
-  ServerDiscoveryInfoSPtr serverDiscoveryInfo() const;
+  ServerDiscoveryClusterInfoSPtr discoveryClusterInfo() const;
   IServerInfoSPtr serverInfo() const;
   IDataBaseInfoSPtr currentDatabaseInfo() const;
 
@@ -144,7 +144,7 @@ class IDriver
   // internal methods
   virtual IServerInfoSPtr makeServerInfoFromString(const std::string& val) = 0;
   virtual common::Error serverInfo(IServerInfo** info) = 0;
-  virtual common::Error serverDiscoveryInfo(ServerDiscoveryInfo** dinfo, IServerInfo** sinfo,
+  virtual common::Error serverDiscoveryClusterInfo(ServerDiscoveryClusterInfo** dinfo, IServerInfo** sinfo,
                                             IDataBaseInfo** dbinfo) = 0;
   virtual common::Error currentDataBaseInfo(IDataBaseInfo** info) = 0;
   virtual void initImpl() = 0;
@@ -163,7 +163,7 @@ class IDriver
  private:
   bool interrupt_;
   IServerInfoSPtr server_info_;
-  ServerDiscoveryInfoSPtr server_disc_info_;
+  ServerDiscoveryClusterInfoSPtr server_disc_info_;
   IDataBaseInfoSPtr current_database_info_;
 
   QThread* thread_;

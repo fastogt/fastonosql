@@ -16,24 +16,23 @@
     along with FastoNoSQL.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-#pragma once
+#include "core/redis/redis_sentinel_settings.h"
 
-#include "common/smart_ptr.h"
+#include <string>
 
 namespace fastonosql {
 namespace core {
+namespace redis {
 
-class IDatabase;
-typedef common::shared_ptr<IDatabase> IDatabaseSPtr;
+RedisSentinelSettings::RedisSentinelSettings(const connection_path_t& connectionName)
+  : ISentinelSettingsBase(connectionName, REDIS) {
+}
 
-class IServer;
-typedef common::shared_ptr<IServer> IServerSPtr;
+RedisSentinelSettings* RedisSentinelSettings::clone() const {
+  RedisSentinelSettings* red = new RedisSentinelSettings(*this);
+  return red;
+}
 
-class ICluster;
-typedef common::shared_ptr<ICluster> IClusterSPtr;
-
-class ISentinel;
-typedef common::shared_ptr<ISentinel> ISentinelSPtr;
-
+}  // namespace redis
 }  // namespace core
 }  // namespace fastonosql

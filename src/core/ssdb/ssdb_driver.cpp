@@ -175,7 +175,7 @@ common::Error SsdbDriver::serverInfo(IServerInfo** info) {
   return err;
 }
 
-common::Error SsdbDriver::serverDiscoveryInfo(ServerDiscoveryInfo** dinfo, IServerInfo** sinfo,
+common::Error SsdbDriver::serverDiscoveryClusterInfo(ServerDiscoveryClusterInfo** dinfo, IServerInfo** sinfo,
                                               IDataBaseInfo** dbinfo) {
   UNUSED(dinfo);
 

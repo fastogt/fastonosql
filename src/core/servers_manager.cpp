@@ -188,8 +188,8 @@ common::Error ServersManager::testConnection(IConnectionSettingsBaseSPtr connect
   return common::make_error_value("Invalid setting type", common::ErrorValue::E_ERROR);
 }
 
-common::Error ServersManager::discoveryConnection(IConnectionSettingsBaseSPtr connection,
-                                                  std::vector<ServerDiscoveryInfoSPtr>* inf) {
+common::Error ServersManager::discoveryClusterConnection(IConnectionSettingsBaseSPtr connection,
+                                                  std::vector<ServerDiscoveryClusterInfoSPtr>* inf) {
   if (!connection || !inf) {
     return common::make_error_value("Invalid input argument(s)", common::ErrorValue::E_ERROR);
   }
@@ -197,7 +197,53 @@ common::Error ServersManager::discoveryConnection(IConnectionSettingsBaseSPtr co
   connectionTypes type = connection->type();
 #ifdef BUILD_WITH_REDIS
   if (type == REDIS) {
-    return fastonosql::core::redis::discoveryConnection(dynamic_cast<redis::RedisConnectionSettings*>(connection.get()), inf);  // +
+    return fastonosql::core::redis::discoveryClusterConnection(dynamic_cast<redis::RedisConnectionSettings*>(connection.get()), inf);  // +
+  }
+#endif
+#ifdef BUILD_WITH_MEMCACHED
+  if (type == MEMCACHED) {
+    return common::make_error_value("Not supported setting type", common::ErrorValue::E_ERROR);
+  }
+#endif
+#ifdef BUILD_WITH_SSDB
+  if (type == SSDB) {
+    return common::make_error_value("Not supported setting type", common::ErrorValue::E_ERROR);
+  }
+#endif
+#ifdef BUILD_WITH_LEVELDB
+  if (type == LEVELDB) {
+    return common::make_error_value("Not supported setting type", common::ErrorValue::E_ERROR);
+  }
+#endif
+#ifdef BUILD_WITH_ROCKSDB
+  if (type == ROCKSDB) {
+    return common::make_error_value("Not supported setting type", common::ErrorValue::E_ERROR);
+  }
+#endif
+#ifdef BUILD_WITH_UNQLITE
+  if (type == UNQLITE) {
+    return common::make_error_value("Not supported setting type", common::ErrorValue::E_ERROR);
+  }
+#endif
+#ifdef BUILD_WITH_LMDB
+  if (type == LMDB) {
+    return common::make_error_value("Not supported setting type", common::ErrorValue::E_ERROR);
+  }
+#endif
+  NOTREACHED();
+  return common::make_error_value("Invalid setting type", common::ErrorValue::E_ERROR);
+}
+
+common::Error ServersManager::discoverySentinelConnection(IConnectionSettingsBaseSPtr connection,
+                                          std::vector<ServerDiscoverySentinelInfoSPtr>* inf) {
+  if (!connection || !inf) {
+    return common::make_error_value("Invalid input argument(s)", common::ErrorValue::E_ERROR);
+  }
+
+  connectionTypes type = connection->type();
+#ifdef BUILD_WITH_REDIS
+  if (type == REDIS) {
+    return common::make_error_value("Not supported setting type", common::ErrorValue::E_ERROR);
   }
 #endif
 #ifdef BUILD_WITH_MEMCACHED

@@ -31,6 +31,7 @@
 #ifdef BUILD_WITH_REDIS
 #include "core/redis/redis_settings.h"
 #include "core/redis/redis_cluster_settings.h"
+#include "core/redis/redis_sentinel_settings.h"
 #define LOGGING_REDIS_FILE_EXTENSION ".red"
 #endif
 #ifdef BUILD_WITH_MEMCACHED
@@ -513,8 +514,12 @@ std::string defaultCommandLine(connectionTypes type) {
   return std::string();
 }
 
-IClusterSettingsBase::IClusterSettingsBase(const connection_path_t& connectionName, connectionTypes type)
-  : IConnectionSettings(connectionName, type) {
+ISetSettingsBase::ISetSettingsBase(const connection_path_t& connectionPath, connectionTypes type)
+  : IConnectionSettings(connectionPath, type) {
+}
+
+IClusterSettingsBase::IClusterSettingsBase(const connection_path_t& connectionPath, connectionTypes type)
+  : ISetSettingsBase(connectionPath, type) {
 }
 
 IClusterSettingsBase::cluster_connection_t IClusterSettingsBase::nodes() const {
@@ -608,6 +613,113 @@ std::string IClusterSettingsBase::toString() const {
 IConnectionSettingsBaseSPtr IClusterSettingsBase::findSettingsByHost(const common::net::hostAndPort& host) const {
   for (size_t i = 0; i < clusters_nodes_.size(); ++i) {
     IConnectionSettingsBaseSPtr cur = clusters_nodes_[i];
+    IConnectionSettingsRemote* remote = dynamic_cast<IConnectionSettingsRemote*>(cur.get());  // +
+    CHECK(remote);
+    if (remote->host() == host) {
+      return cur;
+    }
+  }
+
+  return IConnectionSettingsBaseSPtr();
+}
+
+//
+
+ISentinelSettingsBase::ISentinelSettingsBase(const connection_path_t& connectionName, connectionTypes type)
+  : ISetSettingsBase(connectionName, type) {
+}
+
+ISentinelSettingsBase::sentinel_connection_t ISentinelSettingsBase::nodes() const {
+  return sentinel_nodes_;
+}
+
+void ISentinelSettingsBase::addNode(IConnectionSettingsBaseSPtr node) {
+  if (!node) {
+    NOTREACHED();
+    return;
+  }
+
+  sentinel_nodes_.push_back(node);
+}
+
+ISentinelSettingsBase* ISentinelSettingsBase::createFromType(connectionTypes type,
+                                                           const connection_path_t& conName) {
+#ifdef BUILD_WITH_REDIS
+  if (type == REDIS) {
+    return new redis::RedisSentinelSettings(conName);
+  }
+#endif
+
+  NOTREACHED();
+  return nullptr;
+}
+
+ISentinelSettingsBase* ISentinelSettingsBase::fromString(const std::string& val) {
+  if (val.empty()) {
+    return nullptr;
+  }
+
+  ISentinelSettingsBase* result = nullptr;
+  size_t len = val.size();
+
+  uint8_t commaCount = 0;
+  std::string elText;
+
+  for (size_t i = 0; i < len; ++i) {
+    char ch = val[i];
+    if (ch == ',') {
+      if (commaCount == 0) {
+        int crT = elText[0] - 48;
+        result = createFromType((connectionTypes)crT, connection_path_t());
+        if (!result) {
+          return nullptr;
+        }
+      } else if (commaCount == 1) {
+        connection_path_t path(elText);
+        result->setPath(path);
+      } else if (commaCount == 2) {
+        uint32_t msTime = common::convertFromString<uint32_t>(elText);
+        result->setLoggingMsTimeInterval(msTime);
+        std::string serText;
+        for (size_t j = i + 2; j < len; ++j) {
+          ch = val[j];
+          if (ch == magicNumber || j == len - 1) {
+            IConnectionSettingsBaseSPtr ser(IConnectionSettingsBase::fromString(serText));
+            result->addNode(ser);
+            serText.clear();
+          } else {
+            serText += ch;
+          }
+        }
+        break;
+      }
+      commaCount++;
+      elText.clear();
+    } else {
+      elText += ch;
+    }
+  }
+
+  return result;
+}
+
+std::string ISentinelSettingsBase::toString() const {
+  std::stringstream str;
+  str << IConnectionSettings::toString() << ',';
+  for (size_t i = 0; i < sentinel_nodes_.size(); ++i) {
+    IConnectionSettingsBaseSPtr serv = sentinel_nodes_[i];
+    if (serv) {
+      str << magicNumber << serv->toString();
+    }
+  }
+
+  std::string res = str.str();
+  return res;
+}
+
+IConnectionSettingsBaseSPtr ISentinelSettingsBase::findSettingsByHost(const common::net::hostAndPort& host) const {
+  for (size_t i = 0; i < sentinel_nodes_.size(); ++i) {
+    IConnectionSettingsBaseSPtr cur = sentinel_nodes_[i];
     IConnectionSettingsRemote* remote = dynamic_cast<IConnectionSettingsRemote*>(cur.get());  // +
     CHECK(remote);
     if (remote->host() == host) {

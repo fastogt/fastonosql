@@ -170,7 +170,7 @@ std::vector< std::vector<Field> > DBTraits<REDIS>::infoFields() {
 namespace redis {
 
 RedisDiscoveryInfo::RedisDiscoveryInfo(serverTypes type, bool self)
-  : ServerDiscoveryInfo(REDIS, type, self), hash_() {
+  : ServerDiscoveryClusterInfo(REDIS, type, self), hash_() {
 }
 
 std::string RedisDiscoveryInfo::hash() const {
@@ -878,7 +878,7 @@ RedisServerInfo* makeRedisServerInfo(FastoObject* root) {
   return makeRedisServerInfo(content);
 }
 
-ServerDiscoveryInfo* makeOwnRedisDiscoveryInfo(const std::string& text) {
+ServerDiscoveryClusterInfo* makeOwnRedisDiscoveryInfo(const std::string& text) {
   if (text.empty()) {
     return nullptr;
   }
@@ -933,14 +933,14 @@ ServerDiscoveryInfo* makeOwnRedisDiscoveryInfo(const std::string& text) {
   return nullptr;
 }
 
-ServerDiscoveryInfo* makeOwnRedisDiscoveryInfo(FastoObject* root) {
+ServerDiscoveryClusterInfo* makeOwnRedisDiscoveryInfo(FastoObject* root) {
   std::string content = common::convertToString(root);
   return makeOwnRedisDiscoveryInfo(content);
 }
 
 common::Error makeAllDiscoveryInfo(const common::net::hostAndPort& parentHost,
                                    const std::string& text,
-                                   std::vector<ServerDiscoveryInfoSPtr>* infos) {
+                                   std::vector<ServerDiscoveryClusterInfoSPtr>* infos) {
   if (text.empty() || !infos) {
     return common::make_error_value("Invalid input argument(s)", common::ErrorValue::E_ERROR);;
   }
@@ -990,7 +990,7 @@ common::Error makeAllDiscoveryInfo(const common::net::hostAndPort& parentHost,
     ser->setHash(hash);
     ser->setName(hash);
     ser->setHost(hport);
-    infos->push_back(ServerDiscoveryInfoSPtr(ser));
+    infos->push_back(ServerDiscoveryClusterInfoSPtr(ser));
 
     start = pos + 1;
   }

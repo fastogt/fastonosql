@@ -40,15 +40,15 @@ class GlassWidget;
 namespace fastonosql {
 namespace gui {
 
-class DiscoveryConnection
+class DiscoverySentinelConnection
   : public QObject {
   Q_OBJECT
  public:
-  explicit DiscoveryConnection(core::IConnectionSettingsBaseSPtr conn, QObject* parent = 0);
+  explicit DiscoverySentinelConnection(core::IConnectionSettingsBaseSPtr conn, QObject* parent = 0);
 
  Q_SIGNALS:
   void connectionResult(bool suc, qint64 msTimeExecute, const QString& resultText,
-                        std::vector<core::ServerDiscoveryInfoSPtr> infos);
+                        std::vector<core::ServerDiscoverySentinelInfoSPtr> infos);
 
  public Q_SLOTS:
   void routine();
@@ -58,7 +58,7 @@ class DiscoveryConnection
   common::time64_t startTime_;
 };
 
-class DiscoveryDiagnosticDialog
+class DiscoverySentinelDiagnosticDialog
   : public QDialog {
   Q_OBJECT
  public:
@@ -67,13 +67,13 @@ class DiscoveryDiagnosticDialog
     fix_width = 480
   };
 
-  DiscoveryDiagnosticDialog(QWidget* parent, core::IConnectionSettingsBaseSPtr connection,
-                            core::IClusterSettingsBaseSPtr cluster);
+  DiscoverySentinelDiagnosticDialog(QWidget* parent, core::IConnectionSettingsBaseSPtr connection,
+                            core::ISentinelSettingsBaseSPtr sentinel);
   std::vector<core::IConnectionSettingsBaseSPtr> selectedConnections() const;
 
  private Q_SLOTS:
   void connectionResult(bool suc, qint64 mstimeExecute, const QString& resultText,
-                        std::vector<core::ServerDiscoveryInfoSPtr> infos);
+                        std::vector<core::ServerDiscoverySentinelInfoSPtr> infos);
 
  protected:
   virtual void showEvent(QShowEvent* e);
@@ -86,7 +86,7 @@ class DiscoveryDiagnosticDialog
   QLabel* statusLabel_;
   QTreeWidget* listWidget_;
   QLabel* iconLabel_;
-  core::IClusterSettingsBaseSPtr cluster_;
+  core::ISentinelSettingsBaseSPtr sentinel_;
 };
 
 }  // namespace gui

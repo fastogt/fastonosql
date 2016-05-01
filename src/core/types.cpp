@@ -96,40 +96,43 @@ std::string convertVersionNumberToReadableString(uint32_t version) {
   return UNDEFINED_SINCE_STR;
 }
 
-ServerDiscoveryInfo::ServerDiscoveryInfo(connectionTypes ctype, serverTypes type, bool self)
-  : host_(), name_(), self_(self), type_(type), ctype_(ctype) {
+IServerDiscoveryInfo::IServerDiscoveryInfo(connectionTypes ctype, serverTypes type)
+  : host_(), name_(), type_(type), ctype_(ctype) {
 }
 
-connectionTypes ServerDiscoveryInfo::connectionType() const {
+connectionTypes IServerDiscoveryInfo::connectionType() const {
   return ctype_;
 }
 
-serverTypes ServerDiscoveryInfo::type() const {
+serverTypes IServerDiscoveryInfo::type() const {
   return type_;
 }
 
-bool ServerDiscoveryInfo::self() const {
-  return self_;
-}
-
-std::string ServerDiscoveryInfo::name() const {
+std::string IServerDiscoveryInfo::name() const {
   return name_;
 }
 
-void ServerDiscoveryInfo::setName(const std::string& name) {
+void IServerDiscoveryInfo::setName(const std::string& name) {
   name_ = name;
 }
 
-common::net::hostAndPort ServerDiscoveryInfo::host() const {
+common::net::hostAndPort IServerDiscoveryInfo::host() const {
   return host_;
 }
 
-void ServerDiscoveryInfo::setHost(const common::net::hostAndPort& host) {
+void IServerDiscoveryInfo::setHost(const common::net::hostAndPort& host) {
   host_ = host;
 }
 
+IServerDiscoveryInfo::~IServerDiscoveryInfo() {
+}
 
-ServerDiscoveryInfo::~ServerDiscoveryInfo() {
+ServerDiscoveryClusterInfo::ServerDiscoveryClusterInfo(connectionTypes ctype, serverTypes type, bool self)
+  : IServerDiscoveryInfo(ctype, type), self_(self) {
+}
+
+bool ServerDiscoveryClusterInfo::self() const {
+  return self_;
 }
 
 IServerInfo::~IServerInfo() {

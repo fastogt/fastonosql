@@ -147,7 +147,7 @@ struct DiscoveryInfoResponce
   explicit DiscoveryInfoResponce(const base_class& request);
 
   IServerInfoSPtr sinfo;
-  ServerDiscoveryInfoSPtr dinfo;
+  ServerDiscoveryClusterInfoSPtr dinfo;
   IDataBaseInfoSPtr dbinfo;
 };
 

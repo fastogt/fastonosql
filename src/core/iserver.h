@@ -54,7 +54,7 @@ class IServer
   virtual std::string name() const;
 
   IDataBaseInfoSPtr currentDatabaseInfo() const;
-  ServerDiscoveryInfoSPtr discoveryInfo() const;
+  ServerDiscoveryClusterInfoSPtr discoveryClusterInfo() const;
   IServerInfoSPtr serverInfo() const;
 
   std::string outputDelemitr() const;

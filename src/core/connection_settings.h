@@ -162,15 +162,24 @@ std::string defaultCommandLine(connectionTypes type);
 
 typedef common::shared_ptr<IConnectionSettingsBase> IConnectionSettingsBaseSPtr;
 
-class IClusterSettingsBase
+class ISetSettingsBase
   : public IConnectionSettings {
+  public:
+    virtual IConnectionSettingsBaseSPtr findSettingsByHost(const common::net::hostAndPort& host) const = 0;
+
+  protected:
+    ISetSettingsBase(const connection_path_t& connectionPath, connectionTypes type);
+};
+
+class IClusterSettingsBase
+  : public ISetSettingsBase {
  public:
   typedef std::vector<IConnectionSettingsBaseSPtr> cluster_connection_t;
   cluster_connection_t nodes() const;
 
   void addNode(IConnectionSettingsBaseSPtr node);
 
-  static IClusterSettingsBase* createFromType(connectionTypes type, const connection_path_t& conName);
+  static IClusterSettingsBase* createFromType(connectionTypes type, const connection_path_t& connectionPath);
   static IClusterSettingsBase* fromString(const std::string& val);
 
   virtual std::string toString() const;
@@ -186,6 +195,30 @@ class IClusterSettingsBase
 };
 
 typedef common::shared_ptr<IClusterSettingsBase> IClusterSettingsBaseSPtr;
+
+class ISentinelSettingsBase
+  : public ISetSettingsBase {
+ public:
+  typedef std::vector<IConnectionSettingsBaseSPtr> sentinel_connection_t;
+  sentinel_connection_t nodes() const;
+
+  void addNode(IConnectionSettingsBaseSPtr node);
+
+  static ISentinelSettingsBase* createFromType(connectionTypes type, const connection_path_t& conName);
+  static ISentinelSettingsBase* fromString(const std::string& val);
+
+  virtual std::string toString() const;
+  virtual ISentinelSettingsBase* clone() const = 0;
+
+  IConnectionSettingsBaseSPtr findSettingsByHost(const common::net::hostAndPort& host) const;
+
+ protected:
+  ISentinelSettingsBase(const connection_path_t& connectionName, connectionTypes type);
+
+ private:
+  sentinel_connection_t sentinel_nodes_;
+};
+typedef common::shared_ptr<ISentinelSettingsBase> ISentinelSettingsBaseSPtr;
 
 }  // namespace core
 }  // namespace fastonosql

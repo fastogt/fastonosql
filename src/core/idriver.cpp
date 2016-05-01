@@ -158,7 +158,7 @@ connectionTypes IDriver::type() const {
   return settings_->type();
 }
 
-ServerDiscoveryInfoSPtr IDriver::serverDiscoveryInfo() const {
+ServerDiscoveryClusterInfoSPtr IDriver::discoveryClusterInfo() const {
   return server_disc_info_;
 }
 
@@ -526,10 +526,10 @@ void IDriver::handleDiscoveryInfoRequestEvent(events::DiscoveryInfoRequestEvent*
   events::DiscoveryInfoResponceEvent::value_type res(ev->value());
 
   if (isConnected()) {
-    ServerDiscoveryInfo* disc = nullptr;
+    ServerDiscoveryClusterInfo* disc = nullptr;
     IServerInfo* info = nullptr;
     IDataBaseInfo* db = nullptr;
-    common::Error err = serverDiscoveryInfo(&disc, &info, &db);
+    common::Error err = serverDiscoveryClusterInfo(&disc, &info, &db);
     if (err && err->isError()) {
       res.setErrorInfo(err);
     } else {

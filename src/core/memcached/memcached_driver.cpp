@@ -87,7 +87,7 @@ common::Error MemcachedDriver::serverInfo(IServerInfo** info) {
   return err;
 }
 
-common::Error MemcachedDriver::serverDiscoveryInfo(ServerDiscoveryInfo** dinfo, IServerInfo** sinfo,
+common::Error MemcachedDriver::serverDiscoveryClusterInfo(ServerDiscoveryClusterInfo** dinfo, IServerInfo** sinfo,
                                                    IDataBaseInfo** dbinfo) {
   UNUSED(dinfo);
 
