@@ -24,8 +24,6 @@
 #include <algorithm>
 #include <string>
 
-#define MARKER "\n"
-
 namespace fastonosql {
 namespace core {
 namespace {
@@ -168,18 +166,6 @@ std::vector< std::vector<Field> > DBTraits<REDIS>::infoFields() {
 }
 
 namespace redis {
-
-RedisDiscoveryInfo::RedisDiscoveryInfo(serverTypes type, bool self)
-  : ServerDiscoveryClusterInfo(REDIS, type, self), hash_() {
-}
-
-std::string RedisDiscoveryInfo::hash() const {
-  return hash_;
-}
-
-void RedisDiscoveryInfo::setHash(const std::string& hash) {
-  hash_ = hash;
-}
 
 RedisServerInfo::Server::Server::Server()
   : redis_version_(), redis_git_sha1_(), redis_git_dirty_(), redis_mode_(), os_(),
@@ -876,126 +862,6 @@ RedisServerInfo* makeRedisServerInfo(const std::string& content) {
 RedisServerInfo* makeRedisServerInfo(FastoObject* root) {
   std::string content = common::convertToString(root);
   return makeRedisServerInfo(content);
-}
-
-ServerDiscoveryClusterInfo* makeOwnRedisDiscoveryInfo(const std::string& text) {
-  if (text.empty()) {
-    return nullptr;
-  }
-
-  size_t pos = 0;
-  size_t start = 0;
-
-  while ((pos = text.find(MARKER, start)) != std::string::npos) {
-    std::string line = text.substr(start, pos - start);
-    size_t posm = line.find("myself");
-    if (posm != std::string::npos) {
-      std::string word;
-
-      std::string hash;
-      std::string hport;
-      serverTypes t = MASTER;
-      int fieldpos = 0;
-      for (size_t i = 0; i < line.size(); ++i) {
-        char ch = line[i];
-        if (ch == ' ') {
-          switch (fieldpos) {
-          case 0:
-            hash = word;
-            break;
-          case 1:
-            hport = word;
-            break;
-          case 2:
-            if (word == "myself,slave") {
-              t = SLAVE;
-            }
-            break;
-          default:
-            break;
-          }
-          word.clear();
-          ++fieldpos;
-        } else {
-          word += ch;
-        }
-      }
-
-      RedisDiscoveryInfo* ser = new RedisDiscoveryInfo(t, true);
-      ser->setHash(hash);
-      ser->setName(hash);
-      ser->setHost(common::convertFromString<common::net::hostAndPort>(hport));
-      return ser;
-    }
-    start = pos + 1;
-  }
-
-  return nullptr;
-}
-
-ServerDiscoveryClusterInfo* makeOwnRedisDiscoveryInfo(FastoObject* root) {
-  std::string content = common::convertToString(root);
-  return makeOwnRedisDiscoveryInfo(content);
-}
-
-common::Error makeDiscoveryClusterInfo(const common::net::hostAndPort& parentHost,
-                                   const std::string& text,
-                                   std::vector<ServerDiscoveryClusterInfoSPtr>* infos) {
-  if (text.empty() || !infos) {
-    return common::make_error_value("Invalid input argument(s)", common::ErrorValue::E_ERROR);;
-  }
-
-  size_t pos = 0;
-  size_t start = 0;
-
-  while ((pos = text.find(MARKER, start)) != std::string::npos) {
-    std::string line = text.substr(start, pos - start);
-
-    std::string word;
-    std::string hash;
-    common::net::hostAndPort hport;
-    serverTypes t = MASTER;
-    bool self = false;
-    int fieldpos = 0;
-    for (size_t i = 0; i < line.size(); ++i) {
-      char ch = line[i];
-      if (ch == ' ') {
-        switch (fieldpos) {
-        case 0:
-          hash = word;
-          break;
-        case 1:
-          hport = common::convertFromString<common::net::hostAndPort>(word);
-          if (common::net::isLocalHost(hport.host)) {
-            hport.host = parentHost.host;
-          }
-          break;
-        case 2:
-          if (word.find("slave") != std::string::npos) {
-            t = SLAVE;
-          }
-          self = word.find("myself") != std::string::npos;
-          break;
-        default:
-          break;
-        }
-        word.clear();
-        ++fieldpos;
-      } else {
-        word += ch;
-      }
-    }
-
-    RedisDiscoveryInfo* ser = new RedisDiscoveryInfo(t, self);
-    ser->setHash(hash);
-    ser->setName(hash);
-    ser->setHost(hport);
-    infos->push_back(ServerDiscoveryClusterInfoSPtr(ser));
-
-    start = pos + 1;
-  }
-
-  return common::Error();
 }
 
 RedisDataBaseInfo::RedisDataBaseInfo(const std::string& name, bool isDefault, size_t size,

@@ -23,6 +23,8 @@
 
 #include "core/command_logger.h"
 
+#include "core/redis/redis_cluster_infos.h"
+
 #define SHUTDOWN "SHUTDOWN"
 #define BACKUP "SAVE"
 #define SET_PASSWORD_1ARGS_S "CONFIG SET requirepass %s"
@@ -195,7 +197,8 @@ common::Error RedisDriver::serverDiscoveryClusterInfo(ServerDiscoveryClusterInfo
     if (obj) {
       common::Value::Type t = obj->type();
       if (t == common::Value::TYPE_STRING) {
-        *dinfo = makeOwnRedisDiscoveryInfo(obj);
+        std::string content = common::convertToString(obj);
+        *dinfo = makeOwnRedisDiscoveryInfo(content);
       }
     }
   }

@@ -86,6 +86,12 @@ class CommandHandler {
 
 std::string convertVersionNumberToReadableString(uint32_t version);
 
+struct ServerCommonInfo {
+  std::string name;
+  serverTypes type;
+  common::net::hostAndPort host;
+};
+
 class IServerDiscoveryInfo {
  public:
   virtual ~IServerDiscoveryInfo();
@@ -100,17 +106,12 @@ class IServerDiscoveryInfo {
   void setHost(const common::net::hostAndPort& host);
 
  protected:
-  IServerDiscoveryInfo(connectionTypes ctype, serverTypes type);
-  common::net::hostAndPort host_;
-  std::string name_;
+  IServerDiscoveryInfo(connectionTypes ctype, const ServerCommonInfo& info);
 
  private:
-  const serverTypes type_;
   const connectionTypes ctype_;
+  ServerCommonInfo info_;
 };
-
-typedef IServerDiscoveryInfo ServerDiscoverySentinelInfo;
-typedef common::shared_ptr<ServerDiscoverySentinelInfo> ServerDiscoverySentinelInfoSPtr;
 
 class ServerDiscoveryClusterInfo
     : public IServerDiscoveryInfo{
@@ -118,7 +119,7 @@ class ServerDiscoveryClusterInfo
   bool self() const;
 
  protected:
-  ServerDiscoveryClusterInfo(connectionTypes ctype, serverTypes type, bool self);
+  ServerDiscoveryClusterInfo(connectionTypes ctype, const ServerCommonInfo& info, bool self);
 
  private:
   const bool self_;
@@ -138,8 +139,27 @@ class IServerInfo {
 
  private:
   const connectionTypes type_;
-  DISALLOW_COPY_AND_ASSIGN(IServerInfo);
 };
+
+typedef common::shared_ptr<IServerInfo> IServerInfoSPtr;
+
+class ServerDiscoverySentinelInfo
+  : public IServerDiscoveryInfo {
+ public:
+  typedef ServerCommonInfo server_t;
+  typedef std::vector<server_t> servers_t;
+
+  servers_t servers() const;
+  void addServerInfo(server_t server);
+
+ protected:
+  ServerDiscoverySentinelInfo(connectionTypes ctype, const ServerCommonInfo& info);
+
+ private:
+  servers_t servers_;
+};
+
+typedef common::shared_ptr<ServerDiscoverySentinelInfo> ServerDiscoverySentinelInfoSPtr;
 
 struct FieldByIndex {
   virtual common::Value* valueByIndex(unsigned char index) const = 0;
@@ -163,8 +183,6 @@ struct DBTraits {
 std::vector<common::Value::Type> supportedTypesFromType(connectionTypes type);
 std::vector<std::string> infoHeadersFromType(connectionTypes type);
 std::vector<std::vector<Field> > infoFieldsFromType(connectionTypes type);
-
-typedef common::shared_ptr<IServerInfo> IServerInfoSPtr;
 
 struct ServerInfoSnapShoot {
   ServerInfoSnapShoot();

@@ -119,18 +119,6 @@ namespace fastonosql {
 namespace core {
 namespace redis {
 
-class RedisDiscoveryInfo
-      : public ServerDiscoveryClusterInfo {
- public:
-  RedisDiscoveryInfo(serverTypes type, bool self);
-
-  std::string hash() const;
-  void setHash(const std::string& hash);
-
- private:
-  std::string hash_;
-};
-
 struct RedisServerInfo
       : public IServerInfo {
   struct Server
@@ -275,12 +263,6 @@ std::ostream& operator<<(std::ostream& out, const RedisServerInfo& value);
 
 RedisServerInfo* makeRedisServerInfo(const std::string& content);
 RedisServerInfo* makeRedisServerInfo(FastoObject* root);
-
-ServerDiscoveryClusterInfo* makeOwnRedisDiscoveryInfo(const std::string& text);
-ServerDiscoveryClusterInfo* makeOwnRedisDiscoveryInfo(FastoObject* root);
-common::Error makeDiscoveryClusterInfo(const common::net::hostAndPort& parentHost,
-                                   const std::string& text,
-                                   std::vector<ServerDiscoveryClusterInfoSPtr>* infos);
 
 class RedisDataBaseInfo
       : public IDataBaseInfo {

@@ -66,6 +66,9 @@ extern "C" {
 #include "core/command_logger.h"
 #include "core/command_key.h"
 
+#include "core/redis/redis_sentinel_info.h"
+#include "core/redis/redis_cluster_infos.h"
+
 #define HIREDIS_VERSION STRINGIZE(HIREDIS_MAJOR) "." STRINGIZE(HIREDIS_MINOR) "." STRINGIZE(HIREDIS_PATCH)
 #define REDIS_CLI_KEEPALIVE_INTERVAL 15 /* seconds */
 #define CLI_HELP_COMMAND 1
@@ -300,6 +303,7 @@ common::Error toIntType(char* key, char* type, int* res) {
                                     common::Value::E_ERROR);
   }
 }
+
 }
 
 namespace {
@@ -495,7 +499,7 @@ common::Error discoverySentinelConnection(RedisConnectionSettings* settings,
     return common::make_error_value("Invalid input argument(s)", common::ErrorValue::E_ERROR);
   }
 
-  redisContext* context = nullptr;
+  redisContext* context = NULL;
   common::Error err = createConnection(settings, &context);
   if (err && err->isError()) {
     return err;
@@ -508,27 +512,57 @@ common::Error discoverySentinelConnection(RedisConnectionSettings* settings,
     return err;
   }
 
-  const char* master_name = NULL;
-
-  /* Send the GET SLAVES command. */
-  redisReply* reply = (redisReply*)redisCommand(context, GET_SENTINEL_SLAVES_PATTERN_1ARGS_S, master_name);
-  if (!reply) {
-    err = common::make_error_value("I/O error", common::Value::E_ERROR);
+  /* Send the GET MASTERS command. */
+  redisReply* masters_reply = (redisReply*)redisCommand(context, GET_SENTINEL_MASTERS);
+  if (!masters_reply) {
     redisFree(context);
-    return err;
+    return common::make_error_value("I/O error", common::Value::E_ERROR);
   }
 
-  if (reply->type == REDIS_REPLY_ARRAY) {
-    // err = makeDiscoveryClusterInfo(settings->host(), std::string(reply->str, reply->len), infos);
-  } else if (reply->type == REDIS_REPLY_ERROR) {
-    err = common::make_error_value(std::string(reply->str, reply->len), common::Value::E_ERROR);
-  } else {
-    NOTREACHED();
+  for (size_t i = 0; i < masters_reply->elements; ++i) {
+    redisReply* master_info = masters_reply->element[i];
+    ServerCommonInfo sinf;
+    common::Error lerr = make_server_common_info_from_reply(master_info, &sinf);
+    if (lerr && lerr->isError()) {
+      continue;
+    }
+
+    const char* master_name = sinf.name.c_str();
+    ServerDiscoverySentinelInfoSPtr sent(new RedisDiscoverySentinelInfo(sinf));
+    /* Send the GET SLAVES command. */
+    redisReply* reply = (redisReply*)redisCommand(context, GET_SENTINEL_SLAVES_PATTERN_1ARGS_S, master_name);
+    if (!reply) {
+      freeReplyObject(masters_reply);
+      redisFree(context);
+      return common::make_error_value("I/O error", common::Value::E_ERROR);
+    }
+
+    if (reply->type == REDIS_REPLY_ARRAY) {
+      for (size_t j = 0; j < reply->elements; ++j) {
+        redisReply* server_info = masters_reply->element[j];
+        ServerCommonInfo slsinf;
+        lerr = make_server_common_info_from_reply(server_info, &slsinf);
+        if (lerr && lerr->isError()) {
+          continue;
+        }
+        sent->addServerInfo(slsinf);
+      }
+    } else if (reply->type == REDIS_REPLY_ERROR) {
+      freeReplyObject(reply);
+      freeReplyObject(masters_reply);
+      redisFree(context);
+      return common::make_error_value(std::string(reply->str, reply->len), common::Value::E_ERROR);
+    } else {
+      NOTREACHED();
+    }
+
+    infos->push_back(sent);
+    freeReplyObject(reply);
   }
 
-  freeReplyObject(reply);
+  freeReplyObject(masters_reply);
   redisFree(context);
-  return err;
+  return common::Error();
 }
 
 RedisRaw::RedisRaw(IRedisRawOwner* observer)

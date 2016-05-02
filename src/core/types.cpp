@@ -96,8 +96,8 @@ std::string convertVersionNumberToReadableString(uint32_t version) {
   return UNDEFINED_SINCE_STR;
 }
 
-IServerDiscoveryInfo::IServerDiscoveryInfo(connectionTypes ctype, serverTypes type)
-  : host_(), name_(), type_(type), ctype_(ctype) {
+IServerDiscoveryInfo::IServerDiscoveryInfo(connectionTypes ctype, const ServerCommonInfo &info)
+  : info_(info), ctype_(ctype) {
 }
 
 connectionTypes IServerDiscoveryInfo::connectionType() const {
@@ -105,30 +105,30 @@ connectionTypes IServerDiscoveryInfo::connectionType() const {
 }
 
 serverTypes IServerDiscoveryInfo::type() const {
-  return type_;
+  return info_.type;
 }
 
 std::string IServerDiscoveryInfo::name() const {
-  return name_;
+  return info_.name;
 }
 
 void IServerDiscoveryInfo::setName(const std::string& name) {
-  name_ = name;
+  info_.name = name;
 }
 
 common::net::hostAndPort IServerDiscoveryInfo::host() const {
-  return host_;
+  return info_.host;
 }
 
 void IServerDiscoveryInfo::setHost(const common::net::hostAndPort& host) {
-  host_ = host;
+  info_.host = host;
 }
 
 IServerDiscoveryInfo::~IServerDiscoveryInfo() {
 }
 
-ServerDiscoveryClusterInfo::ServerDiscoveryClusterInfo(connectionTypes ctype, serverTypes type, bool self)
-  : IServerDiscoveryInfo(ctype, type), self_(self) {
+ServerDiscoveryClusterInfo::ServerDiscoveryClusterInfo(connectionTypes ctype, const ServerCommonInfo& info, bool self)
+  : IServerDiscoveryInfo(ctype, info), self_(self) {
 }
 
 bool ServerDiscoveryClusterInfo::self() const {
@@ -144,6 +144,18 @@ connectionTypes IServerInfo::type() const {
 
 IServerInfo::IServerInfo(connectionTypes type)
   : type_(type) {
+}
+
+ServerDiscoverySentinelInfo::ServerDiscoverySentinelInfo(connectionTypes ctype, const ServerCommonInfo& info)
+  : IServerDiscoveryInfo(ctype, info) {
+}
+
+ServerDiscoverySentinelInfo::servers_t ServerDiscoverySentinelInfo::servers() const {
+  return servers_;
+}
+
+void ServerDiscoverySentinelInfo::addServerInfo(server_t server) {
+  servers_.push_back(server);
 }
 
 Field::Field(const std::string& name, common::Value::Type type)

@@ -207,6 +207,8 @@ IF(BUILD_WITH_REDIS)
     SET(HEADERS_REDIS
         core/redis/redis_raw.h
         core/redis/redis_infos.h
+        core/redis/redis_sentinel_info.h
+        core/redis/redis_cluster_infos.h
         core/redis/redis_config.h
         core/redis/redis_database.h
         core/redis/redis_settings.h
@@ -217,6 +219,8 @@ IF(BUILD_WITH_REDIS)
         core/redis/redis_raw.cpp
         core/redis/redis_config.cpp
         core/redis/redis_infos.cpp
+        core/redis/redis_sentinel_info.cpp
+        core/redis/redis_cluster_infos.cpp
         core/redis/redis_cluster.cpp
         core/redis/redis_sentinel.cpp
         core/redis/redis_server.cpp
