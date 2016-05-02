@@ -36,6 +36,7 @@
 #define STYLE PREFIX"style"
 #define FONT PREFIX"font"
 #define CONNECTIONS PREFIX"connections"
+#define SENTINELS PREFIX"sentinels"
 #define CLUSTERS PREFIX"clusters"
 #define VIEW PREFIX"view"
 #define LOGGINGDIR PREFIX"loggingdir"
@@ -283,8 +284,8 @@ void SettingsManager::reloadFromPath(const std::string& path, bool merge) {
   int view = settings.value(VIEW, Tree).toInt();
   views_ = static_cast<supportedViews>(view);
 
-  QList<QVariant> clusters = settings.value(CLUSTERS).toList();
-  for (QList<QVariant>::const_iterator it = clusters.begin(); it != clusters.end(); ++it) {
+  auto clusters = settings.value(CLUSTERS).toList();
+  for (auto it = clusters.begin(); it != clusters.end(); ++it) {
     QVariant var = *it;
     QString string = var.toString();
     std::string encoded = common::convertToString(string);
@@ -296,8 +297,21 @@ void SettingsManager::reloadFromPath(const std::string& path, bool merge) {
     }
   }
 
-  QList<QVariant> connections = settings.value(CONNECTIONS).toList();
-  for (QList<QVariant>::const_iterator it = connections.begin(); it != connections.end(); ++it) {
+  auto sentinels = settings.value(SENTINELS).toList();
+  for (auto it = sentinels.begin(); it != sentinels.end(); ++it) {
+    QVariant var = *it;
+    QString string = var.toString();
+    std::string encoded = common::convertToString(string);
+    std::string raw = common::utils::base64::decode64(encoded);
+
+    ISentinelSettingsBaseSPtr sett(ISentinelSettingsBase::fromString(raw));
+    if (sett) {
+      sentinels_.push_back(sett);
+    }
+  }
+
+  auto connections = settings.value(CONNECTIONS).toList();
+  for (auto it = connections.begin(); it != connections.end(); ++it) {
     QVariant var = *it;
     QString string = var.toString();
     std::string encoded = common::convertToString(string);
@@ -310,7 +324,7 @@ void SettingsManager::reloadFromPath(const std::string& path, bool merge) {
   }
 
   QStringList rconnections = settings.value(RCONNECTIONS).toStringList();
-  for (QStringList::const_iterator it = rconnections.begin(); it != rconnections.end(); ++it) {
+  for (auto it = rconnections.begin(); it != rconnections.end(); ++it) {
     QString string = *it;
     std::string encoded = common::convertToString(string);
     std::string raw = common::utils::base64::decode64(encoded);
@@ -343,8 +357,7 @@ void SettingsManager::save() {
   settings.setValue(VIEW, views_);
 
   QList<QVariant> clusters;
-  for (ClusterSettingsContainerType::const_iterator it = clusters_.begin();
-    it != clusters_.end(); ++it) {
+  for (auto it = clusters_.begin(); it != clusters_.end(); ++it) {
     IClusterSettingsBaseSPtr conn = *it;
     if (conn) {
       std::string raw = conn->toString();
@@ -355,9 +368,20 @@ void SettingsManager::save() {
   }
   settings.setValue(CLUSTERS, clusters);
 
+  QList<QVariant> sentinels;
+  for (auto it = sentinels_.begin(); it != sentinels_.end(); ++it) {
+    ISentinelSettingsBaseSPtr conn = *it;
+    if (conn) {
+      std::string raw = conn->toString();
+      std::string enc = common::utils::base64::encode64(raw);
+      QString qdata = common::convertFromString<QString>(enc);
+      sentinels.push_back(qdata);
+    }
+  }
+  settings.setValue(SENTINELS, sentinels);
+
   QList<QVariant> connections;
-  for (ConnectionSettingsContainerType::const_iterator it = connections_.begin();
-    it != connections_.end(); ++it) {
+  for (auto it = connections_.begin(); it != connections_.end(); ++it) {
     IConnectionSettingsBaseSPtr conn = *it;
     if (conn) {
       std::string raw = conn->toString();
@@ -369,8 +393,7 @@ void SettingsManager::save() {
   settings.setValue(CONNECTIONS, connections);
 
   QStringList rconnections;
-  for (QStringList::const_iterator it = recent_connections_.begin();
-    it != recent_connections_.end(); ++it) {
+  for (auto it = recent_connections_.begin(); it != recent_connections_.end(); ++it) {
     QString conn = *it;
     if (!conn.isEmpty()) {
       std::string raw = common::convertToString(conn);
