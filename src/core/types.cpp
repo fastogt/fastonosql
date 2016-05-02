@@ -96,6 +96,10 @@ std::string convertVersionNumberToReadableString(uint32_t version) {
   return UNDEFINED_SINCE_STR;
 }
 
+ServerCommonInfo::ServerCommonInfo()
+  : name(), type(MASTER), host() {
+}
+
 IServerDiscoveryInfo::IServerDiscoveryInfo(connectionTypes ctype, const ServerCommonInfo &info)
   : info_(info), ctype_(ctype) {
 }

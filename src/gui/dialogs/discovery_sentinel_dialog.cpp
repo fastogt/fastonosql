@@ -47,7 +47,7 @@ namespace gui {
 
 DiscoverySentinelConnection::DiscoverySentinelConnection(core::IConnectionSettingsBaseSPtr conn, QObject* parent)
   : QObject(parent), connection_(conn), startTime_(common::time::current_mstime()) {
-  qRegisterMetaType<std::vector<core::ServerDiscoverySentinelInfo> >("std::vector<core::ServerDiscoverySentinelInfoSPtr>");
+  qRegisterMetaType<std::vector<core::ServerDiscoverySentinelInfoSPtr> >("std::vector<core::ServerDiscoverySentinelInfoSPtr>");
 }
 
 void DiscoverySentinelConnection::routine() {
@@ -137,7 +137,7 @@ std::vector<core::IConnectionSettingsBaseSPtr> DiscoverySentinelDiagnosticDialog
   return res;
 }
 
-void DiscoverySentinelDiagnosticDialog::connectionResult(bool suc, qint64 mstimeExecute,
+void DiscoverySentinelDiagnosticDialog::connectionResultReady(bool suc, qint64 mstimeExecute,
                                                  const QString& resultText,
                                                  std::vector<core::ServerDiscoverySentinelInfoSPtr> infos) {
   glassWidget_->stop();
@@ -147,7 +147,7 @@ void DiscoverySentinelDiagnosticDialog::connectionResult(bool suc, qint64 mstime
   listWidget_->clear();
   if (suc) {
     QIcon icon = GuiFactory::instance().successIcon();
-    const QPixmap pm = icon.pixmap(stateIconSize);
+    QPixmap pm = icon.pixmap(stateIconSize);
     iconLabel_->setPixmap(pm);
 
     for (size_t i = 0; i < infos.size(); ++i) {
@@ -155,8 +155,8 @@ void DiscoverySentinelDiagnosticDialog::connectionResult(bool suc, qint64 mstime
       common::net::hostAndPort host = inf->host();
       core::IConnectionSettingsBase::connection_path_t path(inf->name());
       core::IConnectionSettingsBaseSPtr con(core::IConnectionSettingsRemote::createFromType(inf->connectionType(), path, host));
+
       ConnectionListWidgetItemEx* item = new ConnectionListWidgetItemEx(con, inf->type(), nullptr);
-      // item->setDisabled(sentinel_->findSettingsByHost(host));
       listWidget_->addTopLevelItem(item);
     }
   }
@@ -174,7 +174,7 @@ void DiscoverySentinelDiagnosticDialog::testConnection(core::IConnectionSettings
   cheker->moveToThread(th);
   VERIFY(connect(th, &QThread::started, cheker, &DiscoverySentinelConnection::routine));
   VERIFY(connect(cheker, &DiscoverySentinelConnection::connectionResult, this,
-                 &DiscoverySentinelDiagnosticDialog::connectionResult));
+                 &DiscoverySentinelDiagnosticDialog::connectionResultReady));
   VERIFY(connect(cheker, &DiscoverySentinelConnection::connectionResult, th, &QThread::quit));
   VERIFY(connect(th, &QThread::finished, cheker, &DiscoverySentinelConnection::deleteLater));
   VERIFY(connect(th, &QThread::finished, th, &QThread::deleteLater));

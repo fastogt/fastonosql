@@ -51,7 +51,6 @@ ServerDiscoveryClusterInfo* makeOwnRedisDiscoveryInfo(const std::string& text) {
       std::string word;
 
       ServerCommonInfo inf;
-      inf.type = MASTER;
       int fieldpos = 0;
       for (size_t i = 0; i < line.size(); ++i) {
         char ch = line[i];
@@ -104,7 +103,6 @@ common::Error makeDiscoveryClusterInfo(const common::net::hostAndPort& parentHos
 
     std::string word;
     ServerCommonInfo inf;
-    inf.type = MASTER;
     bool self = false;
     int fieldpos = 0;
     for (size_t i = 0; i < line.size(); ++i) {

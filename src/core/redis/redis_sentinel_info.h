@@ -32,7 +32,7 @@ class RedisDiscoverySentinelInfo
   RedisDiscoverySentinelInfo(const ServerCommonInfo& args);
 };
 
-common::Error make_server_common_info_from_reply(struct redisReply* repl_info, ServerCommonInfo* info);
+common::Error makeServerCommonInfo(struct redisReply* repl_info, ServerCommonInfo* info);
 
 }  // namespace redis
 }  // namespace core

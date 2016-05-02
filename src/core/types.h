@@ -87,6 +87,8 @@ class CommandHandler {
 std::string convertVersionNumberToReadableString(uint32_t version);
 
 struct ServerCommonInfo {
+  ServerCommonInfo();
+
   std::string name;
   serverTypes type;
   common::net::hostAndPort host;

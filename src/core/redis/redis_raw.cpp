@@ -522,7 +522,7 @@ common::Error discoverySentinelConnection(RedisConnectionSettings* settings,
   for (size_t i = 0; i < masters_reply->elements; ++i) {
     redisReply* master_info = masters_reply->element[i];
     ServerCommonInfo sinf;
-    common::Error lerr = make_server_common_info_from_reply(master_info, &sinf);
+    common::Error lerr = makeServerCommonInfo(master_info, &sinf);
     if (lerr && lerr->isError()) {
       continue;
     }
@@ -539,9 +539,9 @@ common::Error discoverySentinelConnection(RedisConnectionSettings* settings,
 
     if (reply->type == REDIS_REPLY_ARRAY) {
       for (size_t j = 0; j < reply->elements; ++j) {
-        redisReply* server_info = masters_reply->element[j];
+        redisReply* server_info = reply->element[j];
         ServerCommonInfo slsinf;
-        lerr = make_server_common_info_from_reply(server_info, &slsinf);
+        lerr = makeServerCommonInfo(server_info, &slsinf);
         if (lerr && lerr->isError()) {
           continue;
         }

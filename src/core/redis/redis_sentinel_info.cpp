@@ -27,11 +27,11 @@ namespace fastonosql {
 namespace core {
 namespace redis {
 
-RedisDiscoverySentinelInfo::RedisDiscoverySentinelInfo(const ServerCommonInfo &args)
+RedisDiscoverySentinelInfo::RedisDiscoverySentinelInfo(const ServerCommonInfo& args)
   : ServerDiscoverySentinelInfo(REDIS, args){
 }
 
-common::Error make_server_common_info_from_reply(struct redisReply* repl_info, ServerCommonInfo *info) {
+common::Error makeServerCommonInfo(struct redisReply* repl_info, ServerCommonInfo* info) {
   if (!repl_info || !info) {
     return common::make_error_value("Invalid input argument(s)", common::ErrorValue::E_ERROR);
   }
@@ -44,6 +44,10 @@ common::Error make_server_common_info_from_reply(struct redisReply* repl_info, S
        std::string str_type = repl_info->element[j + 1]->str;
        if (str_type == "master") {
          linf.type = MASTER;
+       } else if (str_type == "slave") {
+         linf.type = SLAVE;
+       } else {
+         NOTREACHED();
        }
     } else if (strcmp(repl_info->element[j]->str, HOSTNAME_FIELD) == 0) {
        linf.host.host = repl_info->element[j + 1]->str;
