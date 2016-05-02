@@ -529,6 +529,7 @@ common::Error discoverySentinelConnection(RedisConnectionSettings* settings,
 
     const char* master_name = sinf.name.c_str();
     ServerDiscoverySentinelInfoSPtr sent(new RedisDiscoverySentinelInfo(sinf));
+    infos->push_back(sent);
     /* Send the GET SLAVES command. */
     redisReply* reply = (redisReply*)redisCommand(context, GET_SENTINEL_SLAVES_PATTERN_1ARGS_S, master_name);
     if (!reply) {
@@ -545,7 +546,8 @@ common::Error discoverySentinelConnection(RedisConnectionSettings* settings,
         if (lerr && lerr->isError()) {
           continue;
         }
-        sent->addServerInfo(slsinf);
+        ServerDiscoverySentinelInfoSPtr lsent(new RedisDiscoverySentinelInfo(slsinf));
+        infos->push_back(lsent);
       }
     } else if (reply->type == REDIS_REPLY_ERROR) {
       freeReplyObject(reply);
@@ -555,8 +557,6 @@ common::Error discoverySentinelConnection(RedisConnectionSettings* settings,
     } else {
       NOTREACHED();
     }
-
-    infos->push_back(sent);
     freeReplyObject(reply);
   }
 

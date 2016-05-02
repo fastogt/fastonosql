@@ -154,14 +154,6 @@ ServerDiscoverySentinelInfo::ServerDiscoverySentinelInfo(connectionTypes ctype, 
   : IServerDiscoveryInfo(ctype, info) {
 }
 
-ServerDiscoverySentinelInfo::servers_t ServerDiscoverySentinelInfo::servers() const {
-  return servers_;
-}
-
-void ServerDiscoverySentinelInfo::addServerInfo(server_t server) {
-  servers_.push_back(server);
-}
-
 Field::Field(const std::string& name, common::Value::Type type)
   : name(name), type(type) {
 }

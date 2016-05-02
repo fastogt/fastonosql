@@ -147,18 +147,8 @@ typedef common::shared_ptr<IServerInfo> IServerInfoSPtr;
 
 class ServerDiscoverySentinelInfo
   : public IServerDiscoveryInfo {
- public:
-  typedef ServerCommonInfo server_t;
-  typedef std::vector<server_t> servers_t;
-
-  servers_t servers() const;
-  void addServerInfo(server_t server);
-
  protected:
   ServerDiscoverySentinelInfo(connectionTypes ctype, const ServerCommonInfo& info);
-
- private:
-  servers_t servers_;
 };
 
 typedef common::shared_ptr<ServerDiscoverySentinelInfo> ServerDiscoverySentinelInfoSPtr;
