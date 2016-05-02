@@ -40,7 +40,8 @@ class ConnectionDialog
   Q_OBJECT
  public:
   ConnectionDialog(QWidget* parent, core::IConnectionSettingsBase* connection = nullptr,
-                   const std::vector<core::connectionTypes>& availibleTypes = std::vector<core::connectionTypes>());  // get ownerships connection
+                   const std::vector<core::connectionTypes>& availibleTypes = std::vector<core::connectionTypes>(),
+                   const QString& connectionName = "New Connection");  // get ownerships connection
 
   void setFolderEnabled(bool val);
   core::IConnectionSettingsBaseSPtr connection() const;

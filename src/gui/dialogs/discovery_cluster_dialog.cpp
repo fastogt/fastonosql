@@ -123,14 +123,14 @@ DiscoveryClusterDiagnosticDialog::DiscoveryClusterDiagnosticDialog(QWidget* pare
   testConnection(connection);
 }
 
-std::vector<core::IConnectionSettingsBaseSPtr> DiscoveryClusterDiagnosticDialog::selectedConnections() const {
-  std::vector<core::IConnectionSettingsBaseSPtr> res;
+std::vector<ConnectionListWidgetItemEx*> DiscoveryClusterDiagnosticDialog::selectedConnections() const {
+  std::vector<ConnectionListWidgetItemEx*> res;
   for (size_t i = 0; i < listWidget_->topLevelItemCount(); ++i) {
     QTreeWidgetItem *citem = listWidget_->topLevelItem(i);
     if (citem->isSelected()) {
       ConnectionListWidgetItemEx* item = dynamic_cast<ConnectionListWidgetItemEx*>(citem);  // +
       if (item) {
-        res.push_back(item->connection());
+        res.push_back(item);
       }
     }
   }

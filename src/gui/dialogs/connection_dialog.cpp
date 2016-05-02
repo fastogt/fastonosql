@@ -53,7 +53,6 @@ QString toRawCommandLine(QString input) {
   return input.replace("\\n", "\n");
 }
 
-const QString defaultNameConnection = "New Connection";
 const char* defaultNameConnectionFolder = "/";
 }  // namespace
 
@@ -61,7 +60,7 @@ namespace fastonosql {
 namespace gui {
 
 ConnectionDialog::ConnectionDialog(QWidget* parent, core::IConnectionSettingsBase* connection,
-                                   const std::vector<core::connectionTypes>& availibleTypes)
+                                   const std::vector<core::connectionTypes>& availibleTypes, const QString& connectionName)
   : QDialog(parent), connection_(connection) {
   setWindowIcon(GuiFactory::instance().serverIcon());
   setWindowFlags(windowFlags() & ~Qt::WindowContextHelpButtonHint);  // Remove help button (?)
@@ -77,7 +76,7 @@ ConnectionDialog::ConnectionDialog(QWidget* parent, core::IConnectionSettingsBas
   folderLayout->addWidget(connectionFolder_);
 
   QString conFolder = defaultNameConnectionFolder;
-  QString conName = defaultNameConnection;
+  QString conName = connectionName;
 
   if (connection_) {
     core::IConnectionSettings::connection_path_t path = connection_->path();

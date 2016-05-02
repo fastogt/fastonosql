@@ -63,9 +63,13 @@ core::IConnectionSettingsBaseSPtr ConnectionListWidgetItem::connection() const {
 
 ConnectionListWidgetItemEx::ConnectionListWidgetItemEx(core::IConnectionSettingsBaseSPtr connection,
                                                        core::serverTypes st, QTreeWidgetItem* parent)
-  : ConnectionListWidgetItem(connection, parent) {
+  : ConnectionListWidgetItem(connection, parent), server_type_(st) {
   std::string sert = common::convertToString(st);
   setText(2, common::convertFromString<QString>(sert));
+}
+
+core::serverTypes ConnectionListWidgetItemEx::serverType() const {
+  return server_type_;
 }
 
 SentinelConnectionListWidgetItem::SentinelConnectionListWidgetItem(core::ISentinelSettingsBaseSPtr connection, QTreeWidgetItem* parent)

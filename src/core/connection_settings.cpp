@@ -626,11 +626,19 @@ IConnectionSettingsBaseSPtr IClusterSettingsBase::findSettingsByHost(const commo
 //
 
 ISentinelSettingsBase::ISentinelSettingsBase(const connection_path_t& connectionName, connectionTypes type)
-  : ISetSettingsBase(connectionName, type) {
+  : ISetSettingsBase(connectionName, type), sentinel_() {
 }
 
 ISentinelSettingsBase::sentinel_connection_t ISentinelSettingsBase::nodes() const {
   return sentinel_nodes_;
+}
+
+IConnectionSettingsBaseSPtr ISentinelSettingsBase::sentinel() const {
+  return sentinel_;
+}
+
+void ISentinelSettingsBase::setSentinel(IConnectionSettingsBaseSPtr sent) {
+  sentinel_ = sent;
 }
 
 void ISentinelSettingsBase::addNode(IConnectionSettingsBaseSPtr node) {
@@ -680,6 +688,13 @@ ISentinelSettingsBase* ISentinelSettingsBase::fromString(const std::string& val)
       } else if (commaCount == 2) {
         uint32_t msTime = common::convertFromString<uint32_t>(elText);
         result->setLoggingMsTimeInterval(msTime);
+      } else if (commaCount == 3) {
+        std::string raw = common::utils::base64::decode64(elText);
+        IConnectionSettingsBaseSPtr sent_set(IConnectionSettingsBase::fromString(raw));
+        if (sent_set) {
+          result->setSentinel(sent_set);
+        }
+
         std::string serText;
         for (size_t j = i + 2; j < len; ++j) {
           ch = val[j];
@@ -705,7 +720,12 @@ ISentinelSettingsBase* ISentinelSettingsBase::fromString(const std::string& val)
 
 std::string ISentinelSettingsBase::toString() const {
   std::stringstream str;
-  str << IConnectionSettings::toString() << ',';
+  std::string sentinel_str;
+  if (sentinel_) {
+    sentinel_str = sentinel_->toString();
+  }
+  std::string enc = common::utils::base64::encode64(sentinel_str);
+  str << IConnectionSettings::toString() << ',' << enc << ',';
   for (size_t i = 0; i < sentinel_nodes_.size(); ++i) {
     IConnectionSettingsBaseSPtr serv = sentinel_nodes_[i];
     if (serv) {

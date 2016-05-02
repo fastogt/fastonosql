@@ -65,7 +65,7 @@ class ClusterDialog
 
  private:
   void retranslateUi();
-  bool validateAndApply();
+  bool validateAndApply();  // always return true and init cluster_connection_
   void addConnection(core::IConnectionSettingsBaseSPtr con);
 
   core::IClusterSettingsBaseSPtr cluster_connection_;

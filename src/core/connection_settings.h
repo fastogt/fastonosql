@@ -201,8 +201,10 @@ class ISentinelSettingsBase
  public:
   typedef std::vector<IConnectionSettingsBaseSPtr> sentinel_connection_t;
   sentinel_connection_t nodes() const;
-
   void addNode(IConnectionSettingsBaseSPtr node);
+
+  IConnectionSettingsBaseSPtr sentinel() const;
+  void setSentinel(IConnectionSettingsBaseSPtr sent);
 
   static ISentinelSettingsBase* createFromType(connectionTypes type, const connection_path_t& conName);
   static ISentinelSettingsBase* fromString(const std::string& val);
@@ -216,6 +218,7 @@ class ISentinelSettingsBase
   ISentinelSettingsBase(const connection_path_t& connectionName, connectionTypes type);
 
  private:
+  IConnectionSettingsBaseSPtr sentinel_;
   sentinel_connection_t sentinel_nodes_;
 };
 typedef common::shared_ptr<ISentinelSettingsBase> ISentinelSettingsBaseSPtr;

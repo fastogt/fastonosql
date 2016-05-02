@@ -53,8 +53,6 @@ class SentinelDialog
   void loggingStateChange(int value);
   void testConnection();
   void discoverySentinel();
-  void showContextMenu(const QPoint& point);
-  void setStartNode();
   void add();
   void remove();
   void edit();
@@ -65,7 +63,7 @@ class SentinelDialog
 
  private:
   void retranslateUi();
-  bool validateAndApply();
+  bool validateAndApply();  // always return true and init sentinel_connection_
   void addConnection(core::IConnectionSettingsBaseSPtr con);
 
   core::ISentinelSettingsBaseSPtr sentinel_connection_;
@@ -82,7 +80,6 @@ class SentinelDialog
   QPushButton* testButton_;
   QPushButton* discoveryButton_;
   QDialogButtonBox* buttonBox_;
-  QAction* setDefault_;
 };
 
 }  // namespace gui

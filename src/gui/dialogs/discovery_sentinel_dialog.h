@@ -58,6 +58,7 @@ class DiscoverySentinelConnection
   common::time64_t startTime_;
 };
 
+class ConnectionListWidgetItemEx;
 class DiscoverySentinelDiagnosticDialog
   : public QDialog {
   Q_OBJECT
@@ -67,9 +68,8 @@ class DiscoverySentinelDiagnosticDialog
     fix_width = 480
   };
 
-  DiscoverySentinelDiagnosticDialog(QWidget* parent, core::IConnectionSettingsBaseSPtr connection,
-                            core::ISentinelSettingsBaseSPtr sentinel);
-  std::vector<core::IConnectionSettingsBaseSPtr> selectedConnections() const;
+  DiscoverySentinelDiagnosticDialog(QWidget* parent, core::IConnectionSettingsBaseSPtr connection);
+  std::vector<ConnectionListWidgetItemEx*> selectedConnections() const;
 
  private Q_SLOTS:
   void connectionResultReady(bool suc, qint64 mstimeExecute, const QString& resultText,
@@ -86,7 +86,6 @@ class DiscoverySentinelDiagnosticDialog
   QLabel* statusLabel_;
   QTreeWidget* listWidget_;
   QLabel* iconLabel_;
-  core::ISentinelSettingsBaseSPtr sentinel_;
 };
 
 }  // namespace gui

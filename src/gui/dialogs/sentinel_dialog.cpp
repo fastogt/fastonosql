@@ -126,13 +126,6 @@ SentinelDialog::SentinelDialog(QWidget* parent, core::ISentinelSettingsBase* con
   listWidget_->setSelectionMode(QAbstractItemView::SingleSelection);  // single item can be draged or droped
   listWidget_->setSelectionBehavior(QAbstractItemView::SelectRows);
 
-  listWidget_->setContextMenuPolicy(Qt::CustomContextMenu);
-  VERIFY(connect(listWidget_, &QTreeWidget::customContextMenuRequested,
-                 this, &SentinelDialog::showContextMenu));
-
-  setDefault_ = new QAction(this);
-  VERIFY(connect(setDefault_, &QAction::triggered, this, &SentinelDialog::setStartNode));
-
   if (sentinel_connection_) {
     core::ISentinelSettingsBase::sentinel_connection_t sent = sentinel_connection_->nodes();
     for (auto it = sent.begin(); it != sent.end(); ++it) {
@@ -184,7 +177,6 @@ SentinelDialog::SentinelDialog(QWidget* parent, core::ISentinelSettingsBase* con
   discoveryButton_ = new QPushButton("&Discovery");
   discoveryButton_->setIcon(GuiFactory::instance().discoveryIcon());
   VERIFY(connect(discoveryButton_, &QPushButton::clicked, this, &SentinelDialog::discoverySentinel));
-  discoveryButton_->setEnabled(false);
 
   QHBoxLayout* bottomLayout = new QHBoxLayout;
   bottomLayout->addWidget(testButton_, 0, Qt::AlignLeft);
@@ -248,62 +240,29 @@ void SentinelDialog::testConnection() {
 }
 
 void SentinelDialog::discoverySentinel() {
-  ConnectionListWidgetItem* currentItem = dynamic_cast<ConnectionListWidgetItem*>(listWidget_->currentItem());  // +
-
-  // Do nothing if no item selected
-  if (!currentItem) {
-    return;
-  }
-
   if (!validateAndApply()) {
     return;
   }
 
-
-  DiscoverySentinelDiagnosticDialog diag(this, currentItem->connection(), sentinel_connection_);
-  int result = diag.exec();
-  if (result == QDialog::Accepted) {
-    std::vector<core::IConnectionSettingsBaseSPtr> conns = diag.selectedConnections();
-    for (size_t i = 0; i < conns.size(); ++i) {
-      addConnection(conns[i]);
+  static const std::vector<core::connectionTypes> avail = { core::REDIS };
+  core::IConnectionSettingsBaseSPtr sentinel_connection_root = sentinel_connection_->sentinel();
+  core::IConnectionSettingsBase* clone_or_null = sentinel_connection_root ? sentinel_connection_root->clone() : nullptr;
+  ConnectionDialog dlg(this, clone_or_null, avail, "New Sentinel Discovery Connection");
+  dlg.setFolderEnabled(false);
+  int result = dlg.exec();
+  core::IConnectionSettingsBaseSPtr sent_connection = dlg.connection();
+  if (result == QDialog::Accepted && sent_connection) {
+    sentinel_connection_->setSentinel(sent_connection);
+    DiscoverySentinelDiagnosticDialog diag(this, sent_connection);
+    int result = diag.exec();
+    if (result == QDialog::Accepted) {
+      std::vector<ConnectionListWidgetItemEx*> conns = diag.selectedConnections();
+      for (size_t i = 0; i < conns.size(); ++i) {
+        ConnectionListWidgetItemEx* it = conns[i];
+        addConnection(it->connection());
+      }
     }
   }
-}
-
-void SentinelDialog::showContextMenu(const QPoint& point) {
-  ConnectionListWidgetItem* currentItem = dynamic_cast<ConnectionListWidgetItem*>(listWidget_->currentItem());  // +
-
-  // Do nothing if no item selected
-  if (!currentItem) {
-      return;
-  }
-
-  QMenu menu(this);
-  bool isPrimary = listWidget_->topLevelItem(0) == currentItem;
-  setDefault_->setEnabled(!isPrimary);
-  menu.addAction(setDefault_);
-
-  QPoint menuPoint = listWidget_->mapToGlobal(point);
-  menu.exec(menuPoint);
-}
-
-void SentinelDialog::setStartNode() {
-  ConnectionListWidgetItem* currentItem = dynamic_cast<ConnectionListWidgetItem*>(listWidget_->currentItem());  // +
-
-  // Do nothing if no item selected
-  if (!currentItem) {
-    return;
-  }
-
-  ConnectionListWidgetItem* top = dynamic_cast<ConnectionListWidgetItem*>(listWidget_->topLevelItem(0));  // +
-  if (top == currentItem) {
-    return;
-  }
-
-  core::IConnectionSettingsBaseSPtr tc = top->connection();
-  core::IConnectionSettingsBaseSPtr cc = currentItem->connection();
-  currentItem->setConnection(tc);
-  top->setConnection(cc);
 }
 
 void SentinelDialog::add() {
@@ -361,9 +320,7 @@ void SentinelDialog::edit() {
 void SentinelDialog::itemSelectionChanged() {
   ConnectionListWidgetItem* currentItem = dynamic_cast<ConnectionListWidgetItem*>(listWidget_->currentItem());  // +
   bool isValidConnection = currentItem != nullptr;
-
   testButton_->setEnabled(isValidConnection);
-  discoveryButton_->setEnabled(isValidConnection);
 }
 
 void SentinelDialog::changeEvent(QEvent* e) {
@@ -377,33 +334,34 @@ void SentinelDialog::changeEvent(QEvent* e) {
 void SentinelDialog::retranslateUi() {
   logging_->setText(tr("Logging enabled"));
   folderLabel_->setText(translations::trFolder);
-  setDefault_->setText(translations::trSetAsStartNode);
 }
 
 bool SentinelDialog::validateAndApply() {
   QVariant var = typeConnection_->currentData();
   core::connectionTypes currentType = (core::connectionTypes)qvariant_cast<unsigned char>(var);
-
   std::string conName = common::convertToString(connectionName_->text());
   std::string conFolder = common::convertToString(connectionFolder_->text());
   if (conFolder.empty()) {
     conFolder = defaultNameConnectionFolder;
   }
+
   core::ISentinelSettingsBase::connection_path_t path(common::file_system::stable_dir_path(conFolder) + conName);
   core::ISentinelSettingsBase* newConnection = core::ISentinelSettingsBase::createFromType(currentType, path);
-  if (newConnection) {
-    sentinel_connection_.reset(newConnection);
-    if (logging_->isChecked()) {
-      sentinel_connection_->setLoggingMsTimeInterval(loggingMsec_->value());
-    }
-    for (size_t i = 0; i < listWidget_->topLevelItemCount(); ++i) {
-      ConnectionListWidgetItem* item = dynamic_cast<ConnectionListWidgetItem*>(listWidget_->topLevelItem(i));  // +
-      if (item) {
-        core::IConnectionSettingsBaseSPtr con = item->connection();
-        sentinel_connection_->addNode(con);
-      }
+  core::IConnectionSettingsBaseSPtr sentinel_connection_root = sentinel_connection_ ? sentinel_connection_->sentinel() : core::IConnectionSettingsBaseSPtr();
+  newConnection->setSentinel(sentinel_connection_root);
+  if (logging_->isChecked()) {
+    newConnection->setLoggingMsTimeInterval(loggingMsec_->value());
+  }
+
+  for (size_t i = 0; i < listWidget_->topLevelItemCount(); ++i) {
+    ConnectionListWidgetItem* item = dynamic_cast<ConnectionListWidgetItem*>(listWidget_->topLevelItem(i));  // +
+    if (item) {
+      core::IConnectionSettingsBaseSPtr con = item->connection();
+      newConnection->addNode(con);
     }
   }
+
+  sentinel_connection_.reset(newConnection);
   return true;
 }
 

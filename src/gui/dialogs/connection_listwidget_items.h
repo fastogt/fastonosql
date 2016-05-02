@@ -50,6 +50,10 @@ class ConnectionListWidgetItemEx
   : public ConnectionListWidgetItem {
  public:
   ConnectionListWidgetItemEx(core::IConnectionSettingsBaseSPtr connection, core::serverTypes st, QTreeWidgetItem* parent);
+  core::serverTypes serverType() const;
+
+ private:
+  core::serverTypes server_type_;
 };
 
 class SentinelConnectionListWidgetItem
