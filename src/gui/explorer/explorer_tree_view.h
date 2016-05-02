@@ -37,11 +37,15 @@ class ExplorerTreeView
  Q_SIGNALS:
   void openedConsole(core::IServerSPtr server, const QString& text);
   void closeServer(core::IServerSPtr server);
+  void closeSentinel(core::ISentinelSPtr sentinel);
   void closeCluster(core::IClusterSPtr cluster);
 
  public Q_SLOTS:
   void addServer(core::IServerSPtr server);
   void removeServer(core::IServerSPtr server);
+
+  void addSentinel(core::ISentinelSPtr sentinel);
+  void removeSentinel(core::ISentinelSPtr sentinel);
 
   void addCluster(core::IClusterSPtr cluster);
   void removeCluster(core::IClusterSPtr cluster);

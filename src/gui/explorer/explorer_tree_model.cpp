@@ -28,6 +28,7 @@
 #include "common/qt/convert_string.h"
 
 #include "core/icluster.h"
+#include "core/isentinel.h"
 
 namespace fastonosql {
 namespace gui {
@@ -55,6 +56,26 @@ ExplorerServerItem::eType ExplorerServerItem::type() const {
 void ExplorerServerItem::loadDatabases() {
   core::events_info::LoadDatabasesInfoRequest req(this);
   return server_->loadDatabases(req);
+}
+
+ExplorerSentinelItem::ExplorerSentinelItem(core::ISentinelSPtr sentinel, TreeItem* parent)
+  : IExplorerTreeItem(parent), sentinel_(sentinel) {
+}
+
+QString ExplorerSentinelItem::name() const {
+  return common::convertFromString<QString>(sentinel_->name());
+}
+
+core::IServerSPtr ExplorerSentinelItem::server() const {
+  return sentinel_->root();
+}
+
+ExplorerSentinelItem::eType ExplorerSentinelItem::type() const {
+  return eSentinel;
+}
+
+core::ISentinelSPtr ExplorerSentinelItem::sentinel() const {
+  return sentinel_;
 }
 
 ExplorerClusterItem::ExplorerClusterItem(core::IClusterSPtr cluster, TreeItem* parent)
@@ -353,6 +374,8 @@ QVariant ExplorerTreeModel::data(const QModelIndex& index, int role) const {
   if (role == Qt::DecorationRole && col == ExplorerServerItem::eName) {
     if (type == IExplorerTreeItem::eCluster) {
       return GuiFactory::instance().clusterIcon();
+    } else if (type == IExplorerTreeItem::eSentinel) {
+      return GuiFactory::instance().sentinelIcon();
     } else if (type == IExplorerTreeItem::eServer) {
       return GuiFactory::instance().icon(node->server()->type());
     } else if (type == IExplorerTreeItem::eKey) {
@@ -458,6 +481,24 @@ void ExplorerTreeModel::addServer(core::IServerSPtr server) {
 
 void ExplorerTreeModel::removeServer(core::IServerSPtr server) {
   ExplorerServerItem* serverItem = findServerItem(server.get());
+  if (serverItem) {
+    removeItem(QModelIndex(), serverItem);
+  }
+}
+
+void ExplorerTreeModel::addSentinel(core::ISentinelSPtr sentinel) {
+  ExplorerSentinelItem* cl = findSentinelItem(sentinel);
+  if (!cl) {
+    fasto::qt::gui::TreeItem* parent = root_;
+    CHECK(parent);
+
+    ExplorerSentinelItem* item = new ExplorerSentinelItem(sentinel, parent);
+    insertItem(QModelIndex(), item);
+  }
+}
+
+void ExplorerTreeModel::removeSentinel(core::ISentinelSPtr sentinel) {
+  ExplorerSentinelItem* serverItem = findSentinelItem(sentinel);
   if (serverItem) {
     removeItem(QModelIndex(), serverItem);
   }
@@ -572,6 +613,19 @@ ExplorerClusterItem* ExplorerTreeModel::findClusterItem(core::IClusterSPtr cl) {
   for (size_t i = 0; i < parent->childrenCount() ; ++i) {
     ExplorerClusterItem* item = dynamic_cast<ExplorerClusterItem*>(parent->child(i));  // +
     if (item && item->cluster() == cl) {
+      return item;
+    }
+  }
+  return nullptr;
+}
+
+ExplorerSentinelItem* ExplorerTreeModel::findSentinelItem(core::ISentinelSPtr sentinel) {
+  fasto::qt::gui::TreeItem* parent = root_;
+  CHECK(parent);
+
+  for (size_t i = 0; i < parent->childrenCount() ; ++i) {
+    ExplorerSentinelItem* item = dynamic_cast<ExplorerSentinelItem*>(parent->child(i));  // +
+    if (item && item->sentinel() == sentinel) {
       return item;
     }
   }

@@ -24,6 +24,7 @@
 
 #ifdef BUILD_WITH_REDIS
 #include "core/redis/redis_cluster.h"
+#include "core/redis/redis_sentinel.h"
 #include "core/redis/redis_server.h"
 #include "core/redis/redis_raw.h"
 #endif
@@ -68,7 +69,7 @@ ServersManager::ServersManager() {
 ServersManager::server_t ServersManager::createServer(IConnectionSettingsBaseSPtr settings) {
   if (!settings) {
     NOTREACHED();
-    return IServerSPtr();
+    return server_t();
   }
 
   connectionTypes conT = settings->type();
@@ -111,25 +112,49 @@ ServersManager::server_t ServersManager::createServer(IConnectionSettingsBaseSPt
 
   if (!server) {
     NOTREACHED();
-    return IServerSPtr();
+    return server_t();
   }
 
-  IServerSPtr sh(server);
+  server_t sh(server);
   servers_.push_back(sh);
   return sh;
 }
 
-ServersManager::cluster_t ServersManager::createCluster(IClusterSettingsBaseSPtr settings) {
+ServersManager::sentinel_t ServersManager::createSentinel(ISentinelSettingsBaseSPtr settings) {
   if (!settings) {
     NOTREACHED();
-    return IClusterSPtr();
+    return sentinel_t();
   }
 
   connectionTypes conT = settings->type();
 #ifdef BUILD_WITH_REDIS
   if (conT == REDIS) {
-    IClusterSPtr cl(new redis::RedisCluster(settings->path().toString()));
-    IClusterSettingsBase::cluster_connection_t nodes = settings->nodes();
+    sentinel_t sent(new redis::RedisSentinel(settings->path().toString()));
+    auto nodes = settings->nodes();
+    for (size_t i = 0; i < nodes.size(); ++i) {
+      IConnectionSettingsBaseSPtr nd = nodes[i];
+      IServerSPtr serv = createServer(nd);
+      sent->addServer(serv);
+    }
+    return sent;
+  }
+#endif
+
+  NOTREACHED();
+  return sentinel_t();
+}
+
+ServersManager::cluster_t ServersManager::createCluster(IClusterSettingsBaseSPtr settings) {
+  if (!settings) {
+    NOTREACHED();
+    return cluster_t();
+  }
+
+  connectionTypes conT = settings->type();
+#ifdef BUILD_WITH_REDIS
+  if (conT == REDIS) {
+    cluster_t cl(new redis::RedisCluster(settings->path().toString()));
+    auto nodes = settings->nodes();
     for (size_t i = 0; i < nodes.size(); ++i) {
       IConnectionSettingsBaseSPtr nd = nodes[i];
       IServerSPtr serv = createServer(nd);
@@ -140,7 +165,7 @@ ServersManager::cluster_t ServersManager::createCluster(IClusterSettingsBaseSPtr
 #endif
 
   NOTREACHED();
-  return IClusterSPtr();
+  return cluster_t();
 }
 
 common::Error ServersManager::testConnection(IConnectionSettingsBaseSPtr connection) {

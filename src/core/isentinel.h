@@ -35,7 +35,7 @@ class ISentinel
   nodes_type nodes() const;
   void addServer(IServerSPtr serv);
 
-  IServerSPtr root() const;
+  IServerSPtr root() const; //sentinel server
 
  protected:
   explicit ISentinel(const std::string& name);

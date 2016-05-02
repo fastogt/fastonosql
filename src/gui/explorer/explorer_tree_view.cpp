@@ -40,6 +40,7 @@
 
 #include "core/settings_manager.h"
 #include "core/icluster.h"
+#include "core/isentinel.h"
 
 #include "translations/global.h"
 
@@ -167,13 +168,44 @@ void ExplorerTreeView::removeServer(core::IServerSPtr server) {
   emit closeServer(server);
 }
 
-void ExplorerTreeView::addCluster(core::IClusterSPtr cluster) {
-  ExplorerTreeModel* mod = static_cast<ExplorerTreeModel*>(model());
-  if (!mod) {
+void ExplorerTreeView::addSentinel(core::ISentinelSPtr sentinel) {
+  if (!sentinel) {
     DNOTREACHED();
     return;
   }
 
+  ExplorerTreeModel* mod = static_cast<ExplorerTreeModel*>(model());
+  core::ISentinel::nodes_type nodes = sentinel->nodes();
+  for (size_t i = 0; i < nodes.size(); ++i) {
+    syncWithServer(nodes[i].get());
+  }
+
+  mod->addSentinel(sentinel);
+}
+
+void ExplorerTreeView::removeSentinel(core::ISentinelSPtr sentinel) {
+  if (!sentinel) {
+    DNOTREACHED();
+    return;
+  }
+
+  ExplorerTreeModel* mod = static_cast<ExplorerTreeModel*>(model());
+  core::ISentinel::nodes_type nodes = sentinel->nodes();
+  for (size_t i = 0; i < nodes.size(); ++i) {
+    unsyncWithServer(nodes[i].get());
+  }
+
+  mod->removeSentinel(sentinel);
+  emit closeSentinel(sentinel);
+}
+
+void ExplorerTreeView::addCluster(core::IClusterSPtr cluster) {
+  if (!cluster) {
+    DNOTREACHED();
+    return;
+  }
+
+  ExplorerTreeModel* mod = static_cast<ExplorerTreeModel*>(model());
   core::ICluster::nodes_type nodes = cluster->nodes();
   for (size_t i = 0; i < nodes.size(); ++i) {
     syncWithServer(nodes[i].get());
@@ -189,11 +221,6 @@ void ExplorerTreeView::removeCluster(core::IClusterSPtr cluster) {
   }
 
   ExplorerTreeModel* mod = static_cast<ExplorerTreeModel*>(model());
-  if (!mod) {
-    DNOTREACHED();
-    return;
-  }
-
   core::ICluster::nodes_type nodes = cluster->nodes();
   for (size_t i = 0; i < nodes.size(); ++i) {
     unsyncWithServer(nodes[i].get());

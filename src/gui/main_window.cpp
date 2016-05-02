@@ -47,6 +47,7 @@
 #include "core/settings_manager.h"
 #include "core/command_logger.h"
 #include "core/icluster.h"
+#include "core/isentinel.h"
 
 #include "server_config_daemon/server_config.h"
 
@@ -318,6 +319,8 @@ void MainWindow::open() {
       createServer(con);
     } else if (core::IClusterSettingsBaseSPtr clus = dlg.selectedCluster()) {
       createCluster(clus);
+    } else if (core::ISentinelSettingsBaseSPtr sent = dlg.selectedSentinel()) {
+      createSentinel(sent);
     }
   }
 }
@@ -545,9 +548,8 @@ void MainWindow::versionAvailible(bool succesResult, const QString& version) {
         QMessageBox::information(this, translations::trCheckVersion,
                                  QObject::tr("Availible new version: %1").arg(version));
       } else {
-          QMessageBox::information(this, translations::trCheckVersion,
-              QObject::tr("<h3>You're' up-to-date!</h3>" PROJECT_NAME_TITLE " %1 is currently the newest version available.")
-                  .arg(version));
+        QMessageBox::information(this, translations::trCheckVersion,
+                                 QObject::tr("<h3>You're' up-to-date!</h3>" PROJECT_NAME_TITLE " %1 is currently the newest version available.").arg(version));
       }
 
       checkUpdateAction_->setEnabled(isn);
@@ -720,6 +722,30 @@ void MainWindow::createServer(core::IConnectionSettingsBaseSPtr settings) {
     MainWidget* mwidg = qobject_cast<MainWidget*>(centralWidget());
     if (mwidg) {
       mwidg->openConsole(server, QString());
+    }
+  }
+}
+
+void MainWindow::createSentinel(core::ISentinelSettingsBaseSPtr settings) {
+  if (!settings) {
+    return;
+  }
+
+  core::ISentinelSPtr sent = core::ServersManager::instance().createSentinel(settings);
+  if (!sent) {
+    return;
+  }
+
+  core::IServerSPtr root = sent->root();
+  if (!root) {
+    return;
+  }
+
+  exp_->addSentinel(sent);
+  if (core::SettingsManager::instance().autoOpenConsole()) {
+    MainWidget* mwidg = qobject_cast<MainWidget*>(centralWidget());
+    if (mwidg) {
+      mwidg->openConsole(root, QString());
     }
   }
 }

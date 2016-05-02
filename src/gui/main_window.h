@@ -89,6 +89,7 @@ class MainWindow
   void updateRecentConnectionActions();
   void clearRecentConnectionsMenu();
   void createServer(core::IConnectionSettingsBaseSPtr settings);
+  void createSentinel(core::ISentinelSettingsBaseSPtr settings);
   void createCluster(core::IClusterSettingsBaseSPtr settings);
 
   QAction* openAction_;

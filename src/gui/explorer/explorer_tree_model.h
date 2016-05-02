@@ -38,6 +38,7 @@ class IExplorerTreeItem
 
   enum eType {
     eCluster,
+    eSentinel,
     eServer,
     eDatabase,
     eNamespace,
@@ -64,6 +65,21 @@ class ExplorerServerItem
 
  private:
   const core::IServerSPtr server_;
+};
+
+class ExplorerSentinelItem
+  : public IExplorerTreeItem {
+ public:
+  ExplorerSentinelItem(core::ISentinelSPtr sentinel, TreeItem* parent);
+
+  virtual QString name() const;
+  virtual core::IServerSPtr server() const;
+  virtual eType type() const;
+
+  core::ISentinelSPtr sentinel() const;
+
+ private:
+  const core::ISentinelSPtr sentinel_;
 };
 
 class ExplorerClusterItem
@@ -165,6 +181,9 @@ class ExplorerTreeModel
   void addServer(core::IServerSPtr server);
   void removeServer(core::IServerSPtr server);
 
+  void addSentinel(core::ISentinelSPtr sentinel);
+  void removeSentinel(core::ISentinelSPtr sentinel);
+
   void addDatabase(core::IServer* server, core::IDataBaseInfoSPtr db);
   void removeDatabase(core::IServer* server, core::IDataBaseInfoSPtr db);
   void setDefaultDb(core::IServer* server, core::IDataBaseInfoSPtr db);
@@ -177,6 +196,7 @@ class ExplorerTreeModel
 
  private:
   ExplorerClusterItem* findClusterItem(core::IClusterSPtr cl);
+  ExplorerSentinelItem* findSentinelItem(core::ISentinelSPtr sentinel);
   ExplorerServerItem* findServerItem(core::IServer* server) const;
   ExplorerDatabaseItem* findDatabaseItem(ExplorerServerItem* server, core::IDataBaseInfoSPtr db) const;
   ExplorerKeyItem* findKeyItem(IExplorerTreeItem* db_or_ns, const core::NDbKValue& key) const;

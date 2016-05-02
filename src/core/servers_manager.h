@@ -38,9 +38,11 @@ class ServersManager
  public:
   typedef IServerSPtr server_t;
   typedef IClusterSPtr cluster_t;
+  typedef ISentinelSPtr sentinel_t;
   typedef std::vector<server_t> servers_container_t;
 
   server_t createServer(IConnectionSettingsBaseSPtr settings);
+  sentinel_t createSentinel(ISentinelSettingsBaseSPtr settings);
   cluster_t createCluster(IClusterSettingsBaseSPtr settings);
 
   common::Error testConnection(IConnectionSettingsBaseSPtr connection) WARN_UNUSED_RESULT;

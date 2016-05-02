@@ -157,6 +157,15 @@ core::IConnectionSettingsBaseSPtr ConnectionsDialog::selectedConnection() const 
   return core::IConnectionSettingsBaseSPtr();
 }
 
+core::ISentinelSettingsBaseSPtr ConnectionsDialog::selectedSentinel() const {
+  SentinelConnectionListWidgetItem* currentItem = dynamic_cast<SentinelConnectionListWidgetItem*>(listWidget_->currentItem());  // +
+  if (currentItem) {
+    return currentItem->connection();
+  }
+
+  return core::ISentinelSettingsBaseSPtr();
+}
+
 core::IClusterSettingsBaseSPtr ConnectionsDialog::selectedCluster() const {
   ClusterConnectionListWidgetItem* currentItem = dynamic_cast<ClusterConnectionListWidgetItem*>(listWidget_->currentItem());  // +
   if (currentItem) {

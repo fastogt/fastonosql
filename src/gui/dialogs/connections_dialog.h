@@ -40,6 +40,7 @@ class ConnectionsDialog
 
   explicit ConnectionsDialog(QWidget* parent = 0);
   core::IConnectionSettingsBaseSPtr selectedConnection() const;
+  core::ISentinelSettingsBaseSPtr selectedSentinel() const;
   core::IClusterSettingsBaseSPtr selectedCluster() const;
 
   virtual void accept();
