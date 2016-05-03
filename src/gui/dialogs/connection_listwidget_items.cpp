@@ -61,6 +61,10 @@ core::IConnectionSettingsBaseSPtr ConnectionListWidgetItem::connection() const {
   return connection_;
 }
 
+SentinelConnectionWidgetItem::SentinelConnectionWidgetItem(core::IConnectionSettingsBaseSPtr connection, QTreeWidgetItem* parent)
+  : ConnectionListWidgetItem(connection, parent) {
+}
+
 ConnectionListWidgetItemEx::ConnectionListWidgetItemEx(core::IConnectionSettingsBaseSPtr connection,
                                                        core::serverTypes st, QTreeWidgetItem* parent)
   : ConnectionListWidgetItem(connection, parent), server_type_(st) {
@@ -72,19 +76,24 @@ core::serverTypes ConnectionListWidgetItemEx::serverType() const {
   return server_type_;
 }
 
-SentinelConnectionListWidgetItem::SentinelConnectionListWidgetItem(core::ISentinelSettingsBaseSPtr connection, QTreeWidgetItem* parent)
+SentinelConnectionListWidgetItemContainer::SentinelConnectionListWidgetItemContainer(core::ISentinelSettingsBaseSPtr connection, QTreeWidgetItem* parent)
   : QTreeWidgetItem(parent), connection_() {
   setConnection(connection);
 
-  core::IClusterSettingsBase::cluster_connection_t servers = connection_->nodes();
-  for (size_t i = 0; i < servers.size(); ++i) {
-    core::IConnectionSettingsBaseSPtr con = servers[i];
-    ConnectionListWidgetItem* item = new ConnectionListWidgetItem(con, this);
+  core::ISentinelSettingsBase::sentinel_connections_t sentinels = connection_->sentinels();
+  for (size_t i = 0; i < sentinels.size(); ++i) {
+    core::SentinelSettings sent = sentinels[i];
+    SentinelConnectionWidgetItem* item = new SentinelConnectionWidgetItem(sent.sentinel, this);
     addChild(item);
+    for (size_t j = 0; j < sent.sentinel_nodes.size(); ++j) {
+      core::IConnectionSettingsBaseSPtr con = sent.sentinel_nodes[j];
+      ConnectionListWidgetItem* child = new ConnectionListWidgetItem(con, item);
+      item->addChild(child);
+    }
   }
 }
 
-void SentinelConnectionListWidgetItem::setConnection(core::ISentinelSettingsBaseSPtr cons) {
+void SentinelConnectionListWidgetItemContainer::setConnection(core::ISentinelSettingsBaseSPtr cons) {
   if (!cons) {
     return;
   }
@@ -95,7 +104,7 @@ void SentinelConnectionListWidgetItem::setConnection(core::ISentinelSettingsBase
   setIcon(0, GuiFactory::instance().sentinelIcon());
 }
 
-core::ISentinelSettingsBaseSPtr SentinelConnectionListWidgetItem::connection() const {
+core::ISentinelSettingsBaseSPtr SentinelConnectionListWidgetItemContainer::connection() const {
   return connection_;
 }
 

@@ -264,15 +264,6 @@ std::ostream& operator<<(std::ostream& out, const RedisServerInfo& value);
 RedisServerInfo* makeRedisServerInfo(const std::string& content);
 RedisServerInfo* makeRedisServerInfo(FastoObject* root);
 
-class RedisDataBaseInfo
-      : public IDataBaseInfo {
- public:
-  RedisDataBaseInfo(const std::string& name, bool isDefault, size_t size,
-                    const keys_container_t& keys = keys_container_t());
-
-  virtual RedisDataBaseInfo* clone() const;
-};
-
 class RedisCommand
       : public FastoObjectCommand {
  public:

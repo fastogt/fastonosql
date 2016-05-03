@@ -514,12 +514,8 @@ std::string defaultCommandLine(connectionTypes type) {
   return std::string();
 }
 
-ISetSettingsBase::ISetSettingsBase(const connection_path_t& connectionPath, connectionTypes type)
-  : IConnectionSettings(connectionPath, type) {
-}
-
 IClusterSettingsBase::IClusterSettingsBase(const connection_path_t& connectionPath, connectionTypes type)
-  : ISetSettingsBase(connectionPath, type) {
+  : IConnectionSettings(connectionPath, type) {
 }
 
 IClusterSettingsBase::cluster_connection_t IClusterSettingsBase::nodes() const {
@@ -623,31 +619,90 @@ IConnectionSettingsBaseSPtr IClusterSettingsBase::findSettingsByHost(const commo
   return IConnectionSettingsBaseSPtr();
 }
 
+SentinelSettings::SentinelSettings()
+  : sentinel(), sentinel_nodes() {
+}
+
+std::string sentinelSettingsToString(const SentinelSettings& sent) {
+  std::stringstream str;
+  std::string sent_raw = sent.sentinel->toString();
+  str << common::utils::base64::encode64(sent_raw) << ',';
+
+  std::string sents_raw;
+  for (size_t i = 0; i < sent.sentinel_nodes.size(); ++i) {
+    IConnectionSettingsBaseSPtr serv = sent.sentinel_nodes[i];
+    if (serv) {
+      sents_raw += magicNumber;
+      sents_raw += serv->toString();
+    }
+  }
+
+  str << common::utils::base64::encode64(sents_raw);
+  std::string res = str.str();
+  return res;
+}
+
+bool sentinelSettingsfromString(const std::string& text, SentinelSettings* sent) {
+  if (text.empty() || !sent) {
+    return false;
+  }
+
+  SentinelSettings result;
+  size_t len = text.size();
+
+  uint8_t commaCount = 0;
+  std::string elText;
+  for (size_t i = 0; i < len; ++i) {
+    char ch = text[i];
+    if (ch == ',' || i == len - 1) {
+      if (commaCount == 0) {
+        std::string sent_raw = common::utils::base64::decode64(elText);
+        IConnectionSettingsBaseSPtr sent(IConnectionSettingsBase::fromString(sent_raw));
+        if (!sent) {
+          return false;
+        }
+
+        result.sentinel = sent;
+      } else if (commaCount == 1) {
+        std::string serText;
+        for (size_t j = i + 2; j < len; ++j) {
+          ch = text[j];
+          if (ch == magicNumber || j == len - 1) {
+            std::string raw_sent = common::utils::base64::decode64(serText);
+            IConnectionSettingsBaseSPtr ser(IConnectionSettingsBase::fromString(raw_sent));
+            if (ser) {
+              result.sentinel_nodes.push_back(ser);
+            }
+            serText.clear();
+          } else {
+            serText += ch;
+          }
+        }
+        break;
+      }
+      commaCount++;
+      elText.clear();
+    } else {
+      elText += ch;
+    }
+  }
+
+  *sent = result;
+  return true;
+}
+
 //
 
 ISentinelSettingsBase::ISentinelSettingsBase(const connection_path_t& connectionName, connectionTypes type)
-  : ISetSettingsBase(connectionName, type), sentinel_() {
+  : IConnectionSettings(connectionName, type), sentinel_nodes_() {
 }
 
-ISentinelSettingsBase::sentinel_connection_t ISentinelSettingsBase::nodes() const {
+ISentinelSettingsBase::sentinel_connections_t ISentinelSettingsBase::sentinels() const {
   return sentinel_nodes_;
 }
 
-IConnectionSettingsBaseSPtr ISentinelSettingsBase::sentinel() const {
-  return sentinel_;
-}
-
-void ISentinelSettingsBase::setSentinel(IConnectionSettingsBaseSPtr sent) {
-  sentinel_ = sent;
-}
-
-void ISentinelSettingsBase::addNode(IConnectionSettingsBaseSPtr node) {
-  if (!node) {
-    NOTREACHED();
-    return;
-  }
-
-  sentinel_nodes_.push_back(node);
+void ISentinelSettingsBase::addSentinel(sentinel_connection_t sent) {
+  sentinel_nodes_.push_back(sent);
 }
 
 ISentinelSettingsBase* ISentinelSettingsBase::createFromType(connectionTypes type,
@@ -688,19 +743,16 @@ ISentinelSettingsBase* ISentinelSettingsBase::fromString(const std::string& val)
       } else if (commaCount == 2) {
         uint32_t msTime = common::convertFromString<uint32_t>(elText);
         result->setLoggingMsTimeInterval(msTime);
-      } else if (commaCount == 3) {
-        std::string raw = common::utils::base64::decode64(elText);
-        IConnectionSettingsBaseSPtr sent_set(IConnectionSettingsBase::fromString(raw));
-        if (sent_set) {
-          result->setSentinel(sent_set);
-        }
 
         std::string serText;
         for (size_t j = i + 2; j < len; ++j) {
           ch = val[j];
           if (ch == magicNumber || j == len - 1) {
-            IConnectionSettingsBaseSPtr ser(IConnectionSettingsBase::fromString(serText));
-            result->addNode(ser);
+            SentinelSettings sent;
+            bool res = sentinelSettingsfromString(serText, &sent);
+            if (res) {
+              result->addSentinel(sent);
+            }
             serText.clear();
           } else {
             serText += ch;
@@ -720,34 +772,15 @@ ISentinelSettingsBase* ISentinelSettingsBase::fromString(const std::string& val)
 
 std::string ISentinelSettingsBase::toString() const {
   std::stringstream str;
-  std::string sentinel_str;
-  if (sentinel_) {
-    sentinel_str = sentinel_->toString();
-  }
-  std::string enc = common::utils::base64::encode64(sentinel_str);
-  str << IConnectionSettings::toString() << ',' << enc << ',';
+  str << IConnectionSettings::toString() << ',';
   for (size_t i = 0; i < sentinel_nodes_.size(); ++i) {
-    IConnectionSettingsBaseSPtr serv = sentinel_nodes_[i];
-    if (serv) {
-      str << magicNumber << serv->toString();
-    }
+    sentinel_connection_t sent = sentinel_nodes_[i];
+    std::string sent_raw = sentinelSettingsToString(sent);
+    str << magicNumber << sent_raw;
   }
 
   std::string res = str.str();
   return res;
-}
-
-IConnectionSettingsBaseSPtr ISentinelSettingsBase::findSettingsByHost(const common::net::hostAndPort& host) const {
-  for (size_t i = 0; i < sentinel_nodes_.size(); ++i) {
-    IConnectionSettingsBaseSPtr cur = sentinel_nodes_[i];
-    IConnectionSettingsRemote* remote = dynamic_cast<IConnectionSettingsRemote*>(cur.get());  // +
-    CHECK(remote);
-    if (remote->host() == host) {
-      return cur;
-    }
-  }
-
-  return IConnectionSettingsBaseSPtr();
 }
 
 }  // namespace core

@@ -46,6 +46,12 @@ class ConnectionListWidgetItem
   core::IConnectionSettingsBaseSPtr connection_;
 };
 
+class SentinelConnectionWidgetItem
+  : public ConnectionListWidgetItem {
+  public:
+    SentinelConnectionWidgetItem(core::IConnectionSettingsBaseSPtr connection, QTreeWidgetItem* parent);
+};
+
 class ConnectionListWidgetItemEx
   : public ConnectionListWidgetItem {
  public:
@@ -56,10 +62,10 @@ class ConnectionListWidgetItemEx
   core::serverTypes server_type_;
 };
 
-class SentinelConnectionListWidgetItem
+class SentinelConnectionListWidgetItemContainer
       : public QTreeWidgetItem {
  public:
-  explicit SentinelConnectionListWidgetItem(core::ISentinelSettingsBaseSPtr connection, QTreeWidgetItem* parent);
+  explicit SentinelConnectionListWidgetItemContainer(core::ISentinelSettingsBaseSPtr connection, QTreeWidgetItem* parent);
   void setConnection(core::ISentinelSettingsBaseSPtr cons);
   core::ISentinelSettingsBaseSPtr connection() const;
 

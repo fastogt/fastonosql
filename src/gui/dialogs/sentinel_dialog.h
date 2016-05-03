@@ -31,6 +31,7 @@ class QSpinBox;
 class QTreeWidget;
 class QToolBar;
 class QLabel;
+class QTreeWidgetItem;
 
 #include "core/connection_settings.h"
 
@@ -53,7 +54,7 @@ class SentinelDialog
   void loggingStateChange(int value);
   void testConnection();
   void discoverySentinel();
-  void add();
+  void addConnectionSettings();
   void remove();
   void edit();
   void itemSelectionChanged();
@@ -64,7 +65,7 @@ class SentinelDialog
  private:
   void retranslateUi();
   bool validateAndApply();  // always return true and init sentinel_connection_
-  void addConnection(core::IConnectionSettingsBaseSPtr con);
+  void addSentinel(core::SentinelSettings sent);
 
   core::ISentinelSettingsBaseSPtr sentinel_connection_;
   QLineEdit* connectionName_;

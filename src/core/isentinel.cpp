@@ -24,7 +24,7 @@ namespace fastonosql {
 namespace core {
 
 ISentinel::ISentinel(const std::string& name)
-  : name_(name) {
+  : name_(name), root_(), nodes_(){
 }
 
 std::string ISentinel::name() const {
@@ -44,16 +44,12 @@ void ISentinel::addServer(IServerSPtr serv) {
   nodes_.push_back(serv);
 }
 
-IServerSPtr ISentinel::root() const {
-  for (size_t i = 0; i < nodes_.size(); ++i) {
-    IServerRemote* rserver = dynamic_cast<IServerRemote*>(nodes_[i].get());  // +
-    CHECK(rserver);
-    if (rserver->role() == MASTER) {
-      return nodes_[i];
-    }
-  }
+void ISentinel::setRoot(IServerSPtr root) {
+  root_ = root;
+}
 
-  return IServerSPtr();
+IServerSPtr ISentinel::root() const {
+  return root_;
 }
 
 }  // namespace core

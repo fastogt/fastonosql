@@ -60,10 +60,14 @@ void ExplorerServerItem::loadDatabases() {
 
 ExplorerSentinelItem::ExplorerSentinelItem(core::ISentinelSPtr sentinel, TreeItem* parent)
   : IExplorerTreeItem(parent), sentinel_(sentinel) {
-  core::ISentinel::nodes_type nodes = sentinel->nodes();
+  core::IServerSPtr root = sentinel->root();
+  ExplorerServerItem* rser = new ExplorerServerItem(root, this);
+  addChildren(rser);
+
+  core::ISentinel::nodes_type nodes = sentinel->nodes();  
   for (size_t i = 0; i < nodes.size(); ++i) {
-    ExplorerServerItem* ser = new ExplorerServerItem(nodes[i], this);
-    addChildren(ser);
+    ExplorerServerItem* ser = new ExplorerServerItem(nodes[i], rser);
+    rser->addChildren(ser);
   }
 }
 

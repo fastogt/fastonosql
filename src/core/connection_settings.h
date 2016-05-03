@@ -162,17 +162,8 @@ std::string defaultCommandLine(connectionTypes type);
 
 typedef common::shared_ptr<IConnectionSettingsBase> IConnectionSettingsBaseSPtr;
 
-class ISetSettingsBase
-  : public IConnectionSettings {
-  public:
-    virtual IConnectionSettingsBaseSPtr findSettingsByHost(const common::net::hostAndPort& host) const = 0;
-
-  protected:
-    ISetSettingsBase(const connection_path_t& connectionPath, connectionTypes type);
-};
-
 class IClusterSettingsBase
-  : public ISetSettingsBase {
+  : public IConnectionSettings {
  public:
   typedef std::vector<IConnectionSettingsBaseSPtr> cluster_connection_t;
   cluster_connection_t nodes() const;
@@ -185,7 +176,7 @@ class IClusterSettingsBase
   virtual std::string toString() const;
   virtual IClusterSettingsBase* clone() const = 0;
 
-  IConnectionSettingsBaseSPtr findSettingsByHost(const common::net::hostAndPort& host) const;
+  virtual IConnectionSettingsBaseSPtr findSettingsByHost(const common::net::hostAndPort& host) const;
 
  protected:
   IClusterSettingsBase(const connection_path_t& connectionName, connectionTypes type);
@@ -196,15 +187,25 @@ class IClusterSettingsBase
 
 typedef common::shared_ptr<IClusterSettingsBase> IClusterSettingsBaseSPtr;
 
-class ISentinelSettingsBase
-  : public ISetSettingsBase {
- public:
-  typedef std::vector<IConnectionSettingsBaseSPtr> sentinel_connection_t;
-  sentinel_connection_t nodes() const;
-  void addNode(IConnectionSettingsBaseSPtr node);
+struct SentinelSettings {
+  typedef std::vector<IConnectionSettingsBaseSPtr> sentinel_nodes_t;
+  SentinelSettings();
 
-  IConnectionSettingsBaseSPtr sentinel() const;
-  void setSentinel(IConnectionSettingsBaseSPtr sent);
+  IConnectionSettingsBaseSPtr sentinel;
+  sentinel_nodes_t sentinel_nodes;
+};
+
+std::string sentinelSettingsToString(const SentinelSettings& sent);
+bool sentinelSettingsfromString(const std::string& text, SentinelSettings* sent);
+
+class ISentinelSettingsBase
+  : public IConnectionSettings {
+ public:
+  typedef SentinelSettings sentinel_connection_t;
+  typedef std::vector<sentinel_connection_t> sentinel_connections_t;
+
+  sentinel_connections_t sentinels() const;
+  void addSentinel(sentinel_connection_t sent);
 
   static ISentinelSettingsBase* createFromType(connectionTypes type, const connection_path_t& conName);
   static ISentinelSettingsBase* fromString(const std::string& val);
@@ -212,14 +213,11 @@ class ISentinelSettingsBase
   virtual std::string toString() const;
   virtual ISentinelSettingsBase* clone() const = 0;
 
-  IConnectionSettingsBaseSPtr findSettingsByHost(const common::net::hostAndPort& host) const;
-
  protected:
   ISentinelSettingsBase(const connection_path_t& connectionName, connectionTypes type);
 
  private:
-  IConnectionSettingsBaseSPtr sentinel_;
-  sentinel_connection_t sentinel_nodes_;
+  sentinel_connections_t sentinel_nodes_;
 };
 typedef common::shared_ptr<ISentinelSettingsBase> ISentinelSettingsBaseSPtr;
 

@@ -864,15 +864,6 @@ RedisServerInfo* makeRedisServerInfo(FastoObject* root) {
   return makeRedisServerInfo(content);
 }
 
-RedisDataBaseInfo::RedisDataBaseInfo(const std::string& name, bool isDefault, size_t size,
-                                     const keys_container_t& keys)
-  : IDataBaseInfo(name, isDefault, REDIS, size, keys) {
-}
-
-RedisDataBaseInfo* RedisDataBaseInfo::clone() const {
-  return new RedisDataBaseInfo(*this);
-}
-
 RedisCommand::RedisCommand(FastoObject* parent, common::CommandValue* cmd,
                            const std::string& delemitr, const std::string& ns_separator)
   : FastoObjectCommand(parent, cmd, delemitr, ns_separator) {

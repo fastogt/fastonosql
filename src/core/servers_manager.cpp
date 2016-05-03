@@ -130,11 +130,15 @@ ServersManager::sentinel_t ServersManager::createSentinel(ISentinelSettingsBaseS
 #ifdef BUILD_WITH_REDIS
   if (conT == REDIS) {
     sentinel_t sent(new redis::RedisSentinel(settings->path().toString()));
-    auto nodes = settings->nodes();
+    auto nodes = settings->sentinels();
     for (size_t i = 0; i < nodes.size(); ++i) {
-      IConnectionSettingsBaseSPtr nd = nodes[i];
-      IServerSPtr serv = createServer(nd);
-      sent->addServer(serv);
+      SentinelSettings nd = nodes[i];
+      IServerSPtr root = createServer(nd.sentinel);
+      sent->setRoot(root);
+      for (size_t j = 0; j < nd.sentinel_nodes.size(); ++j) {
+        IServerSPtr serv = createServer(nd.sentinel_nodes[j]);
+        sent->addServer(serv);
+      }
     }
     return sent;
   }

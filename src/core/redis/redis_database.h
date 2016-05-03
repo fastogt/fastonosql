@@ -24,6 +24,15 @@ namespace fastonosql {
 namespace core {
 namespace redis {
 
+class RedisDataBaseInfo
+      : public IDataBaseInfo {
+ public:
+  RedisDataBaseInfo(const std::string& name, bool isDefault, size_t size,
+                    const keys_container_t& keys = keys_container_t());
+
+  virtual RedisDataBaseInfo* clone() const;
+};
+
 class RedisDatabase
   : public IDatabase {
  public:
