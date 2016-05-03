@@ -1,4 +1,6 @@
 0.8.3 /
+[Alexandr Topilski]
+- Sentinel support
 
 0.8.2 / April 30, 2016
 [Alexandr Topilski]

@@ -28,6 +28,9 @@ namespace fastonosql {
 namespace gui {
 
 class DirectoryListWidgetItem;
+class ClusterConnectionListWidgetItemContainer;
+class SentinelConnectionListWidgetItemContainer;
+class ConnectionListWidgetItem;
 
 class ConnectionsDialog
   : public QDialog {
@@ -39,6 +42,7 @@ class ConnectionsDialog
   };
 
   explicit ConnectionsDialog(QWidget* parent = 0);
+
   core::IConnectionSettingsBaseSPtr selectedConnection() const;
   core::ISentinelSettingsBaseSPtr selectedSentinel() const;
   core::IClusterSettingsBaseSPtr selectedCluster() const;
@@ -51,13 +55,21 @@ class ConnectionsDialog
   void addSent();
   void remove();
   void edit();
-  void connectionSelectChange();
 
  protected:
   virtual void changeEvent(QEvent* ev);
 
  private:
+  void editConnection(ConnectionListWidgetItem* connectionItem);
+  void editCluster(ClusterConnectionListWidgetItemContainer* clusterItem);
+  void editSentinel(SentinelConnectionListWidgetItemContainer* sentinelItem);
+
+  void removeConnection(ConnectionListWidgetItem* connectionItem);
+  void removeCluster(ClusterConnectionListWidgetItemContainer* clusterItem);
+  void removeSentinel(SentinelConnectionListWidgetItemContainer* sentinelItem);
+
   void retranslateUi();
+
   void addConnection(core::IConnectionSettingsBaseSPtr con);
   void addCluster(core::IClusterSettingsBaseSPtr con);
   void addSentinel(core::ISentinelSettingsBaseSPtr con);

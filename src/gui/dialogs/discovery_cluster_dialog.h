@@ -58,7 +58,7 @@ class DiscoveryConnection
   common::time64_t startTime_;
 };
 
-class ConnectionListWidgetItemEx;
+class ConnectionListWidgetItemDiscovered;
 class DiscoveryClusterDiagnosticDialog
   : public QDialog {
   Q_OBJECT
@@ -70,7 +70,7 @@ class DiscoveryClusterDiagnosticDialog
 
   DiscoveryClusterDiagnosticDialog(QWidget* parent, core::IConnectionSettingsBaseSPtr connection,
                             core::IClusterSettingsBaseSPtr cluster);
-  std::vector<fastonosql::gui::ConnectionListWidgetItemEx*> selectedConnections() const;
+  std::vector<fastonosql::gui::ConnectionListWidgetItemDiscovered*> selectedConnections() const;
 
  private Q_SLOTS:
   void connectionResult(bool suc, qint64 mstimeExecute, const QString& resultText,

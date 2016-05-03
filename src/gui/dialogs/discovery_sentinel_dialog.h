@@ -58,7 +58,7 @@ class DiscoverySentinelConnection
   common::time64_t startTime_;
 };
 
-class ConnectionListWidgetItemEx;
+class ConnectionListWidgetItemDiscovered;
 class DiscoverySentinelDiagnosticDialog
   : public QDialog {
   Q_OBJECT
@@ -69,7 +69,7 @@ class DiscoverySentinelDiagnosticDialog
   };
 
   DiscoverySentinelDiagnosticDialog(QWidget* parent, core::IConnectionSettingsBaseSPtr connection);
-  std::vector<ConnectionListWidgetItemEx*> selectedConnections() const;
+  std::vector<ConnectionListWidgetItemDiscovered*> selectedConnections() const;
 
  private Q_SLOTS:
   void connectionResultReady(bool suc, qint64 mstimeExecute, const QString& resultText,

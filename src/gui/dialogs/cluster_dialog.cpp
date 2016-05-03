@@ -262,7 +262,7 @@ void ClusterDialog::discoveryCluster() {
   DiscoveryClusterDiagnosticDialog diag(this, currentItem->connection(), cluster_connection_);
   int result = diag.exec();
   if (result == QDialog::Accepted) {
-    std::vector<ConnectionListWidgetItemEx*> conns = diag.selectedConnections();
+    std::vector<ConnectionListWidgetItemDiscovered*> conns = diag.selectedConnections();
     for (size_t i = 0; i < conns.size(); ++i) {
       core::IConnectionSettingsBaseSPtr it = conns[i]->connection();
       addConnection(it);
@@ -408,7 +408,8 @@ bool ClusterDialog::validateAndApply() {
 }
 
 void ClusterDialog::addConnection(core::IConnectionSettingsBaseSPtr con) {
-  ConnectionListWidgetItem* item = new ConnectionListWidgetItem(con, nullptr);
+  ConnectionListWidgetItem* item = new ConnectionListWidgetItem(nullptr);
+  item->setConnection(con);
   listWidget_->addTopLevelItem(item);
 }
 

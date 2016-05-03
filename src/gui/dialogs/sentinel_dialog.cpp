@@ -254,11 +254,12 @@ void SentinelDialog::discoverySentinel() {
   DiscoverySentinelDiagnosticDialog diag(this, sentItem->connection());
   int result = diag.exec();
   if (result == QDialog::Accepted) {
-    std::vector<ConnectionListWidgetItemEx*> conns = diag.selectedConnections();
+    std::vector<ConnectionListWidgetItemDiscovered*> conns = diag.selectedConnections();
     for (size_t i = 0; i < conns.size(); ++i) {
-      ConnectionListWidgetItemEx* it = conns[i];
+      ConnectionListWidgetItemDiscovered* it = conns[i];
 
-      ConnectionListWidgetItem* item = new ConnectionListWidgetItem(it->connection(), sentItem);
+      ConnectionListWidgetItem* item = new ConnectionListWidgetItem(sentItem);
+      item->setConnection(it->connection());
       sentItem->addChild(item);
     }
   }
@@ -374,11 +375,13 @@ bool SentinelDialog::validateAndApply() {
 }
 
 void SentinelDialog::addSentinel(core::SentinelSettings sent) {
-  SentinelConnectionWidgetItem* sent_item = new SentinelConnectionWidgetItem(sent.sentinel, nullptr);
+  SentinelConnectionWidgetItem* sent_item = new SentinelConnectionWidgetItem(nullptr);
+  sent_item->setConnection(sent.sentinel);
   auto nodes = sent.sentinel_nodes;
   for (auto it = nodes.begin(); it != nodes.end(); ++it) {
     core::IConnectionSettingsBaseSPtr con = *it;
-    ConnectionListWidgetItem* item = new ConnectionListWidgetItem(con, sent_item);
+    ConnectionListWidgetItem* item = new ConnectionListWidgetItem(sent_item);
+    item->setConnection(con);
     sent_item->addChild(item);
   }
   listWidget_->addTopLevelItem(sent_item);

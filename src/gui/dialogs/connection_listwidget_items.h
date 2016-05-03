@@ -25,7 +25,7 @@
 namespace fastonosql {
 namespace gui {
 
-class DirectoryListWidgetItem
+class DirectoryListWidgetItem  // directory can hold many (common, cluster or sentinel_container)
   : public QTreeWidgetItem {
  public:
   DirectoryListWidgetItem(const core::IConnectionSettingsBase::connection_path_t& path);
@@ -35,35 +35,42 @@ class DirectoryListWidgetItem
   core::IConnectionSettingsBase::connection_path_t path_;
 };
 
-class ConnectionListWidgetItem
+class IConnectionListWidgetItem  // base class
   : public QTreeWidgetItem {
  public:
-  explicit ConnectionListWidgetItem(core::IConnectionSettingsBaseSPtr connection, QTreeWidgetItem* parent);
-  void setConnection(core::IConnectionSettingsBaseSPtr cons);
+  enum itemConnectionType { Common, Discovered, Sentinel };
+  virtual void setConnection(core::IConnectionSettingsBaseSPtr cons);
   core::IConnectionSettingsBaseSPtr connection() const;
+  virtual itemConnectionType type() const = 0;
+
+ protected:
+  explicit IConnectionListWidgetItem(QTreeWidgetItem* parent);
 
  private:
   core::IConnectionSettingsBaseSPtr connection_;
 };
 
-class SentinelConnectionWidgetItem
-  : public ConnectionListWidgetItem {
-  public:
-    SentinelConnectionWidgetItem(core::IConnectionSettingsBaseSPtr connection, QTreeWidgetItem* parent);
+class ConnectionListWidgetItem  // common connection
+  : public IConnectionListWidgetItem {
+ public:
+  explicit ConnectionListWidgetItem(QTreeWidgetItem* parent);
+  virtual void setConnection(core::IConnectionSettingsBaseSPtr cons);
+  virtual itemConnectionType type() const;
 };
 
-class ConnectionListWidgetItemEx
+class ConnectionListWidgetItemDiscovered  // returned after discovered
   : public ConnectionListWidgetItem {
  public:
-  ConnectionListWidgetItemEx(core::IConnectionSettingsBaseSPtr connection, core::serverTypes st, QTreeWidgetItem* parent);
+  ConnectionListWidgetItemDiscovered(core::serverTypes st, QTreeWidgetItem* parent);
   core::serverTypes serverType() const;
+  virtual itemConnectionType type() const;
 
  private:
   core::serverTypes server_type_;
 };
 
-class SentinelConnectionListWidgetItemContainer
-      : public QTreeWidgetItem {
+class SentinelConnectionListWidgetItemContainer  // can hold many sentinel connections
+  : public QTreeWidgetItem {
  public:
   explicit SentinelConnectionListWidgetItemContainer(core::ISentinelSettingsBaseSPtr connection, QTreeWidgetItem* parent);
   void setConnection(core::ISentinelSettingsBaseSPtr cons);
@@ -73,10 +80,17 @@ class SentinelConnectionListWidgetItemContainer
   core::ISentinelSettingsBaseSPtr connection_;
 };
 
-class ClusterConnectionListWidgetItem
-      : public QTreeWidgetItem {
+class SentinelConnectionWidgetItem  // sentinel connection
+  : public ConnectionListWidgetItem {
  public:
-  explicit ClusterConnectionListWidgetItem(core::IClusterSettingsBaseSPtr connection, QTreeWidgetItem* parent);
+  SentinelConnectionWidgetItem(SentinelConnectionListWidgetItemContainer* parent);
+  virtual itemConnectionType type() const;
+};
+
+class ClusterConnectionListWidgetItemContainer  // can hold many connections
+  : public QTreeWidgetItem {
+ public:
+  explicit ClusterConnectionListWidgetItemContainer(core::IClusterSettingsBaseSPtr connection, QTreeWidgetItem* parent);
   void setConnection(core::IClusterSettingsBaseSPtr cons);
   core::IClusterSettingsBaseSPtr connection() const;
 

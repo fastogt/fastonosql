@@ -123,12 +123,12 @@ DiscoveryClusterDiagnosticDialog::DiscoveryClusterDiagnosticDialog(QWidget* pare
   testConnection(connection);
 }
 
-std::vector<ConnectionListWidgetItemEx*> DiscoveryClusterDiagnosticDialog::selectedConnections() const {
-  std::vector<ConnectionListWidgetItemEx*> res;
+std::vector<ConnectionListWidgetItemDiscovered*> DiscoveryClusterDiagnosticDialog::selectedConnections() const {
+  std::vector<ConnectionListWidgetItemDiscovered*> res;
   for (size_t i = 0; i < listWidget_->topLevelItemCount(); ++i) {
     QTreeWidgetItem *citem = listWidget_->topLevelItem(i);
     if (citem->isSelected()) {
-      ConnectionListWidgetItemEx* item = dynamic_cast<ConnectionListWidgetItemEx*>(citem);  // +
+      ConnectionListWidgetItemDiscovered* item = dynamic_cast<ConnectionListWidgetItemDiscovered*>(citem);  // +
       if (item) {
         res.push_back(item);
       }
@@ -155,7 +155,8 @@ void DiscoveryClusterDiagnosticDialog::connectionResult(bool suc, qint64 mstimeE
       common::net::hostAndPort host = inf->host();
       core::IConnectionSettingsBase::connection_path_t path(inf->name());
       core::IConnectionSettingsBaseSPtr con(core::IConnectionSettingsRemote::createFromType(inf->connectionType(), path, host));
-      ConnectionListWidgetItemEx* item = new ConnectionListWidgetItemEx(con, inf->type(), nullptr);
+      ConnectionListWidgetItemDiscovered* item = new ConnectionListWidgetItemDiscovered(inf->type(), nullptr);
+      item->setConnection(con);
       item->setDisabled(inf->self() || cluster_->findSettingsByHost(host));
       listWidget_->addTopLevelItem(item);
     }
