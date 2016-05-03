@@ -663,13 +663,14 @@ bool sentinelSettingsfromString(const std::string& text, SentinelSettings* sent)
         }
 
         result.sentinel = sent;
-      } else if (commaCount == 1) {
+
         std::string serText;
-        for (size_t j = i + 2; j < len; ++j) {
-          ch = text[j];
+        std::string raw_sent = common::utils::base64::decode64(text.substr(i + 1));
+        len = raw_sent.length();
+        for (size_t j = 0; j < len; ++j) {
+          ch = raw_sent[j];
           if (ch == magicNumber || j == len - 1) {
-            std::string raw_sent = common::utils::base64::decode64(serText);
-            IConnectionSettingsBaseSPtr ser(IConnectionSettingsBase::fromString(raw_sent));
+            IConnectionSettingsBaseSPtr ser(IConnectionSettingsBase::fromString(serText));
             if (ser) {
               result.sentinel_nodes.push_back(ser);
             }
@@ -774,9 +775,8 @@ std::string ISentinelSettingsBase::toString() const {
   std::stringstream str;
   str << IConnectionSettings::toString() << ',';
   for (size_t i = 0; i < sentinel_nodes_.size(); ++i) {
-    sentinel_connection_t sent = sentinel_nodes_[i];
-    std::string sent_raw = sentinelSettingsToString(sent);
-    str << magicNumber << sent_raw;
+    sentinel_connection_t sent = sentinel_nodes_[i]; 
+    str << magicNumber << sentinelSettingsToString(sent);
   }
 
   std::string res = str.str();

@@ -175,9 +175,13 @@ void ExplorerTreeView::addSentinel(core::ISentinelSPtr sentinel) {
   }
 
   ExplorerTreeModel* mod = static_cast<ExplorerTreeModel*>(model());
-  core::ISentinel::nodes_type nodes = sentinel->nodes();
+  core::ISentinel::sentinels_t nodes = sentinel->sentinels();
   for (size_t i = 0; i < nodes.size(); ++i) {
-    syncWithServer(nodes[i].get());
+    core::Sentinel sent = nodes[i];
+    syncWithServer(sent.sentinel.get());
+    for (size_t j = 0; j < sent.sentinels_nodes.size(); ++j) {
+      syncWithServer(sent.sentinels_nodes[i].get());
+    }
   }
 
   mod->addSentinel(sentinel);
@@ -190,9 +194,13 @@ void ExplorerTreeView::removeSentinel(core::ISentinelSPtr sentinel) {
   }
 
   ExplorerTreeModel* mod = static_cast<ExplorerTreeModel*>(model());
-  core::ISentinel::nodes_type nodes = sentinel->nodes();
+  core::ISentinel::sentinels_t nodes = sentinel->sentinels();
   for (size_t i = 0; i < nodes.size(); ++i) {
-    unsyncWithServer(nodes[i].get());
+    core::Sentinel sent = nodes[i];
+    unsyncWithServer(sent.sentinel.get());
+    for (size_t j = 0; j < sent.sentinels_nodes.size(); ++j) {
+      unsyncWithServer(sent.sentinels_nodes[i].get());
+    }
   }
 
   mod->removeSentinel(sentinel);

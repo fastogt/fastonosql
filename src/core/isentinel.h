@@ -26,25 +26,31 @@
 namespace fastonosql {
 namespace core {
 
+struct Sentinel {
+  typedef std::vector<IServerSPtr> nodes_t;
+
+  IServerSPtr sentinel;
+  nodes_t sentinels_nodes;
+};
+
 class ISentinel
   : public IServerBase {
  public:
-  typedef std::vector<IServerSPtr> nodes_type;
+  typedef Sentinel sentinel_t;
+  typedef std::vector<sentinel_t> sentinels_t;
 
   std::string name() const;
-  nodes_type nodes() const;
-  void addServer(IServerSPtr serv);
 
-  void setRoot(IServerSPtr root);
-  IServerSPtr root() const; //sentinel server
+  IServerSPtr root() const;
+  void addSentinel(sentinel_t root);
+  sentinels_t sentinels() const;
 
  protected:
   explicit ISentinel(const std::string& name);
 
  private:
   const std::string name_;
-  IServerSPtr root_;
-  nodes_type nodes_;
+  sentinels_t sentinels_;
 };
 
 }  // namespace core

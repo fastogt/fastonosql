@@ -24,32 +24,27 @@ namespace fastonosql {
 namespace core {
 
 ISentinel::ISentinel(const std::string& name)
-  : name_(name), root_(), nodes_(){
+  : name_(name), sentinels_(){
 }
 
 std::string ISentinel::name() const {
   return name_;
 }
 
-ISentinel::nodes_type ISentinel::nodes() const {
-  return nodes_;
-}
-
-void ISentinel::addServer(IServerSPtr serv) {
-  if (!serv) {
-    DNOTREACHED();
-    return;
+IServerSPtr ISentinel::root() const {
+  if (sentinels_.empty()) {
+    return IServerSPtr();
   }
 
-  nodes_.push_back(serv);
+  return sentinels_[0].sentinel;
 }
 
-void ISentinel::setRoot(IServerSPtr root) {
-  root_ = root;
+void ISentinel::addSentinel(sentinel_t serv) {
+  sentinels_.push_back(serv);
 }
 
-IServerSPtr ISentinel::root() const {
-  return root_;
+ISentinel::sentinels_t ISentinel::sentinels() const {
+  return sentinels_;
 }
 
 }  // namespace core

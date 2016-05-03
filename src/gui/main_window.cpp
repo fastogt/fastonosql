@@ -736,8 +736,8 @@ void MainWindow::createSentinel(core::ISentinelSettingsBaseSPtr settings) {
     return;
   }
 
-  core::IServerSPtr root = sent->root();
-  if (!root) {
+  auto sentinels = sent->sentinels();
+  if (sentinels.empty()) {
     return;
   }
 
@@ -745,7 +745,10 @@ void MainWindow::createSentinel(core::ISentinelSettingsBaseSPtr settings) {
   if (core::SettingsManager::instance().autoOpenConsole()) {
     MainWidget* mwidg = qobject_cast<MainWidget*>(centralWidget());
     if (mwidg) {
-      mwidg->openConsole(root, QString());
+      for (size_t i = 0; i < sentinels.size(); ++i) {
+        core::IServerSPtr serv = sentinels[i].sentinel;
+        mwidg->openConsole(serv, QString());
+      }
     }
   }
 }
