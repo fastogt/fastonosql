@@ -256,12 +256,12 @@ void ExplorerTreeView::showContextMenu(const QPoint& point) {
       menu.addAction(closeClusterAction_);
       menu.exec(menuPoint);
     } else if (node->type() == IExplorerTreeItem::eServer) {
+      ExplorerServerItem* server_node = static_cast<ExplorerServerItem*>(node);
+
       QMenu menu(this);
       menu.addAction(connectAction_);
       menu.addAction(openConsoleAction_);
-
-      core::IServerSPtr server = node->server();
-      CHECK(server);
+      core::IServerSPtr server = server_node->server();
       bool isCon = server->isConnected();
       bool isAuth = server->isAuthenticated();
       bool isRedis = server->type() == core::REDIS;
@@ -304,13 +304,12 @@ void ExplorerTreeView::showContextMenu(const QPoint& point) {
 
       menu.exec(menuPoint);
     } else if (node->type() == IExplorerTreeItem::eDatabase) {
-      ExplorerDatabaseItem* db = dynamic_cast<ExplorerDatabaseItem*>(node);  // +
-      CHECK(db);
+      ExplorerDatabaseItem* db = static_cast<ExplorerDatabaseItem*>(node);
 
       QMenu menu(this);
       menu.addAction(loadContentAction_);
       bool isDefault = db->isDefault();
-      core::IServerSPtr server = node->server();
+      core::IServerSPtr server = db->server();
 
       bool isCon = server->isConnected();
       loadContentAction_->setEnabled(isDefault && isCon);
@@ -328,11 +327,10 @@ void ExplorerTreeView::showContextMenu(const QPoint& point) {
       setDefaultDbAction_->setEnabled(!isDefault && isCon);
       menu.exec(menuPoint);
     } else if (node->type() == IExplorerTreeItem::eNamespace) {
-      ExplorerNSItem* ns = dynamic_cast<ExplorerNSItem*>(node);  // +
-      CHECK(ns);
+      ExplorerNSItem* ns = static_cast<ExplorerNSItem*>(node);
 
       QMenu menu(this);
-      core::IServerSPtr server = node->server();
+      core::IServerSPtr server = ns->server();
       ExplorerDatabaseItem* db = ns->db();
       bool isDefault = db && db->isDefault();
       bool isCon = server->isConnected();
@@ -341,8 +339,10 @@ void ExplorerTreeView::showContextMenu(const QPoint& point) {
       removeBranchAction_->setEnabled(isDefault && isCon);
       menu.exec(menuPoint);
     } else if (node->type() == IExplorerTreeItem::eKey) {
+      ExplorerKeyItem* key = static_cast<ExplorerKeyItem*>(node);
+
       QMenu menu(this);
-      core::IServerSPtr server = node->server();
+      core::IServerSPtr server = key->server();
 
       bool isCon = server->isConnected();
       menu.addAction(getValueAction_);

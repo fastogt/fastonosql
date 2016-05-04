@@ -31,14 +31,6 @@ std::string ISentinel::name() const {
   return name_;
 }
 
-IServerSPtr ISentinel::root() const {
-  if (sentinels_.empty()) {
-    return IServerSPtr();
-  }
-
-  return sentinels_[0].sentinel;
-}
-
 void ISentinel::addSentinel(sentinel_t serv) {
   sentinels_.push_back(serv);
 }

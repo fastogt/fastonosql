@@ -240,35 +240,35 @@ void InfoServerDialog::finishServerInfo(const core::events_info::ServerInfoRespo
   CHECK(type == inf->type());
 #ifdef BUILD_WITH_REDIS
   if (type == core::REDIS) {
-    core::redis::RedisServerInfo* infr = dynamic_cast<core::redis::RedisServerInfo*>(inf.get());  // +
+    core::redis::RedisServerInfo* infr = static_cast<core::redis::RedisServerInfo*>(inf.get());
     CHECK(infr);
     updateText(*infr);
   }
 #endif
 #ifdef BUILD_WITH_MEMCACHED
   if (type == core::MEMCACHED) {
-    core::memcached::MemcachedServerInfo* infr = dynamic_cast<core::memcached::MemcachedServerInfo*>(inf.get());  // +
+    core::memcached::MemcachedServerInfo* infr = static_cast<core::memcached::MemcachedServerInfo*>(inf.get());
     CHECK(infr);
     updateText(*infr);
   }
 #endif
 #ifdef BUILD_WITH_SSDB
   if (type == core::SSDB) {
-    core::ssdb::SsdbServerInfo* infr = dynamic_cast<core::ssdb::SsdbServerInfo*>(inf.get());  // +
+    core::ssdb::SsdbServerInfo* infr = static_cast<core::ssdb::SsdbServerInfo*>(inf.get());
     CHECK(infr);
     updateText(*infr);
   }
 #endif
 #ifdef BUILD_WITH_LEVELDB
   if (type == core::LEVELDB) {
-    core::leveldb::LeveldbServerInfo* infr = dynamic_cast<core::leveldb::LeveldbServerInfo*>(inf.get());  // +
+    core::leveldb::LeveldbServerInfo* infr = static_cast<core::leveldb::LeveldbServerInfo*>(inf.get());
     CHECK(infr);
     updateText(*infr);
   }
 #endif
 #ifdef BUILD_WITH_ROCKSDB
   if (type == core::ROCKSDB) {
-    core::rocksdb::RocksdbServerInfo* infr = dynamic_cast<core::rocksdb::RocksdbServerInfo*>(inf.get());  // +
+    core::rocksdb::RocksdbServerInfo* infr = static_cast<core::rocksdb::RocksdbServerInfo*>(inf.get());
     CHECK(infr);
     updateText(*infr);
   }

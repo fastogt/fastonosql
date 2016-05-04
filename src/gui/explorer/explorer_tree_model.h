@@ -48,7 +48,6 @@ class IExplorerTreeItem
   explicit IExplorerTreeItem(TreeItem* parent);
 
   virtual QString name() const = 0;
-  virtual core::IServerSPtr server() const = 0;
   virtual eType type() const = 0;
 };
 
@@ -58,7 +57,7 @@ class ExplorerServerItem
   ExplorerServerItem(core::IServerSPtr server, TreeItem* parent);
 
   virtual QString name() const;
-  virtual core::IServerSPtr server() const;
+  core::IServerSPtr server() const;
   virtual eType type() const;
 
   void loadDatabases();
@@ -73,7 +72,6 @@ class ExplorerSentinelItem
   ExplorerSentinelItem(core::ISentinelSPtr sentinel, TreeItem* parent);
 
   virtual QString name() const;
-  virtual core::IServerSPtr server() const;
   virtual eType type() const;
 
   core::ISentinelSPtr sentinel() const;
@@ -88,7 +86,6 @@ class ExplorerClusterItem
   ExplorerClusterItem(core::IClusterSPtr cluster, TreeItem* parent);
 
   virtual QString name() const;
-  virtual core::IServerSPtr server() const;
   virtual eType type() const;
 
   core::IClusterSPtr cluster() const;
@@ -109,7 +106,7 @@ class ExplorerDatabaseItem
   size_t loadedSize() const;
   size_t keyCount() const;
 
-  virtual core::IServerSPtr server() const;
+  core::IServerSPtr server() const;
   core::IDatabaseSPtr db() const;
 
   void loadContent(const std::string& pattern, uint32_t countKeys);
@@ -134,7 +131,7 @@ class ExplorerNSItem
   ExplorerDatabaseItem* db() const;
 
   virtual QString name() const;
-  virtual core::IServerSPtr server() const;
+  core::IServerSPtr server() const;
   virtual eType type() const;
   size_t keyCount() const;
 
@@ -153,7 +150,7 @@ class ExplorerKeyItem
   core::NDbKValue key() const;
 
   virtual QString name() const;
-  virtual core::IServerSPtr server() const;
+  core::IServerSPtr server() const;
   virtual eType type() const;
 
   void removeFromDb();

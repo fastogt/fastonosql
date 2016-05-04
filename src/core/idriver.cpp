@@ -201,20 +201,16 @@ common::Error IDriver::commandByType(CommandKeySPtr command, std::string* cmdstr
   CommandKey::cmdtype t = command->type();
 
   if (t == CommandKey::C_DELETE) {
-    CommandDeleteKey* delc = dynamic_cast<CommandDeleteKey*>(command.get());  // +
-    CHECK(delc);
+    CommandDeleteKey* delc = static_cast<CommandDeleteKey*>(command.get());
     return commandDeleteImpl(delc, cmdstring);
   } else if (t == CommandKey::C_LOAD) {
-    CommandLoadKey* loadc = dynamic_cast<CommandLoadKey*>(command.get());  // +
-    CHECK(loadc);
+    CommandLoadKey* loadc = static_cast<CommandLoadKey*>(command.get());
     return commandLoadImpl(loadc, cmdstring);
   } else if (t == CommandKey::C_CREATE) {
-    CommandCreateKey* createc = dynamic_cast<CommandCreateKey*>(command.get());  // +
-    CHECK(createc);
+    CommandCreateKey* createc = static_cast<CommandCreateKey*>(command.get());
     return commandCreateImpl(createc, cmdstring);
   } else if (t == CommandKey::C_CHANGE_TTL) {
-    CommandChangeTTL* changettl = dynamic_cast<CommandChangeTTL*>(command.get());  // +
-    CHECK(changettl);
+    CommandChangeTTL* changettl = static_cast<CommandChangeTTL*>(command.get());
     return commandChangeTTLImpl(changettl, cmdstring);
   } else {
     NOTREACHED();

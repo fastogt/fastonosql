@@ -118,7 +118,6 @@ BaseQsciApi* BaseQsciLexer::apis() const {
 BaseQsciLexerCommandHolder::BaseQsciLexerCommandHolder(const std::vector<core::CommandHolder>& commands,
                                                        QObject* parent)
   : BaseQsciLexer(parent), commands_(commands) {
-
 }
 
 std::vector<uint32_t> BaseQsciLexerCommandHolder::supportedVersions() const {

@@ -77,10 +77,6 @@ QString ExplorerSentinelItem::name() const {
   return common::convertFromString<QString>(sentinel_->name());
 }
 
-core::IServerSPtr ExplorerSentinelItem::server() const {
-  return sentinel_->root();
-}
-
 ExplorerSentinelItem::eType ExplorerSentinelItem::type() const {
   return eSentinel;
 }
@@ -100,10 +96,6 @@ ExplorerClusterItem::ExplorerClusterItem(core::IClusterSPtr cluster, TreeItem* p
 
 QString ExplorerClusterItem::name() const {
   return common::convertFromString<QString>(cluster_->name());
-}
-
-core::IServerSPtr ExplorerClusterItem::server() const {
-  return cluster_->root();
 }
 
 ExplorerClusterItem::eType ExplorerClusterItem::type() const {
@@ -331,17 +323,18 @@ QVariant ExplorerTreeModel::data(const QModelIndex& index, int role) const {
   }
 
   IExplorerTreeItem* node = common::utils_qt::item<fasto::qt::gui::TreeItem*, IExplorerTreeItem*>(index);
-
   if (!node) {
+    NOTREACHED();
     return QVariant();
   }
 
   int col = index.column();
   IExplorerTreeItem::eType type = node->type();
 
-  if (role == Qt::ToolTipRole) {
-    core::IServerSPtr server = node->server();
-    if (type == IExplorerTreeItem::eServer && server) {
+  if (role == Qt::ToolTipRole) {    
+    if (type == IExplorerTreeItem::eServer) {
+      ExplorerServerItem* server_node = static_cast<ExplorerServerItem*>(node);
+      core::IServerSPtr server = server_node->server();
       core::ServerDiscoveryClusterInfoSPtr disc = server->discoveryClusterInfo();
       if (disc) {
         QString dname = common::convertFromString<QString>(disc->name());
@@ -370,14 +363,12 @@ QVariant ExplorerTreeModel::data(const QModelIndex& index, int role) const {
         }
       }
     } else if (type == IExplorerTreeItem::eDatabase) {
-      ExplorerDatabaseItem* db = dynamic_cast<ExplorerDatabaseItem*>(node);  // +
-      CHECK(db);
+      ExplorerDatabaseItem* db = static_cast<ExplorerDatabaseItem*>(node);
       if (db->isDefault()) {
         return QString("<b>Db size:</b> %1 keys<br/>").arg(db->sizeDB());
       }
     } else if (type == IExplorerTreeItem::eNamespace) {
-      ExplorerNSItem* ns = dynamic_cast<ExplorerNSItem*>(node);  // +
-      CHECK(ns);
+      ExplorerNSItem* ns = static_cast<ExplorerNSItem*>(node);
       return QString("<b>Group size:</b> %1 keys<br/>").arg(ns->keyCount());
     }
   }
@@ -388,7 +379,9 @@ QVariant ExplorerTreeModel::data(const QModelIndex& index, int role) const {
     } else if (type == IExplorerTreeItem::eSentinel) {
       return GuiFactory::instance().sentinelIcon();
     } else if (type == IExplorerTreeItem::eServer) {
-      return GuiFactory::instance().icon(node->server()->type());
+      ExplorerServerItem* server_node = static_cast<ExplorerServerItem*>(node);
+      core::IServerSPtr server = server_node->server();
+      return GuiFactory::instance().icon(server->type());
     } else if (type == IExplorerTreeItem::eKey) {
       return GuiFactory::instance().keyIcon();
     } else if (type == IExplorerTreeItem::eDatabase) {
@@ -405,13 +398,11 @@ QVariant ExplorerTreeModel::data(const QModelIndex& index, int role) const {
       if (type == IExplorerTreeItem::eKey) {
         return node->name();
       } else if (type == IExplorerTreeItem::eDatabase) {
-        ExplorerDatabaseItem* db = dynamic_cast<ExplorerDatabaseItem*>(node);  // +
-        CHECK(db);
+        ExplorerDatabaseItem* db = static_cast<ExplorerDatabaseItem*>(node);
         return QString("%1 (%2/%3)").arg(node->name()).arg(db->keyCount()).arg(db->sizeDB());  // db
       } else if(type == IExplorerTreeItem::eNamespace) {
-        ExplorerNSItem* db = dynamic_cast<ExplorerNSItem*>(node);  // +
-        CHECK(db);
-        return QString("%1 (%2)").arg(node->name()).arg(db->keyCount());  // db
+        ExplorerNSItem* ns = static_cast<ExplorerNSItem*>(node);
+        return QString("%1 (%2)").arg(node->name()).arg(ns->keyCount());  // db
       } else {
         return QString("%1 (%2)").arg(node->name()).arg(node->childrenCount());  // server, cluster
       }
@@ -420,8 +411,7 @@ QVariant ExplorerTreeModel::data(const QModelIndex& index, int role) const {
 
   if (role == Qt::ForegroundRole) {
     if (type == IExplorerTreeItem::eDatabase) {
-      ExplorerDatabaseItem* db = dynamic_cast<ExplorerDatabaseItem*>(node);  // +
-      CHECK(db);
+      ExplorerDatabaseItem* db = static_cast<ExplorerDatabaseItem*>(node);
       if (db->isDefault()) {
         return QVariant(QColor(Qt::red));
       }

@@ -41,7 +41,6 @@ class ISentinel
 
   std::string name() const;
 
-  IServerSPtr root() const;
   void addSentinel(sentinel_t root);
   sentinels_t sentinels() const;
 

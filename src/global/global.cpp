@@ -111,7 +111,7 @@ FastoObjectCommand::~FastoObjectCommand() {
 }
 
 common::CommandValue* FastoObjectCommand::cmd() const {
-  return dynamic_cast<common::CommandValue*>(value_.get());  // +
+  return static_cast<common::CommandValue*>(value_.get());
 }
 
 std::string FastoObjectCommand::toString() const {
@@ -205,12 +205,7 @@ FastoObjectArray::FastoObjectArray(FastoObject* parent, common::ArrayValue* ar,
 }
 
 void FastoObjectArray::append(common::Value* in_value) {
-  common::ArrayValue* ar = dynamic_cast<common::ArrayValue*>(value_.get());
-  if (!ar) {
-    NOTREACHED();
-    return;
-  }
-
+  common::ArrayValue* ar = static_cast<common::ArrayValue*>(value_.get());
   ar->append(in_value);
 }
 
@@ -220,7 +215,7 @@ std::string FastoObjectArray::toString() const {
 }
 
 common::ArrayValue* FastoObjectArray::array() const {
-  return dynamic_cast<common::ArrayValue*>(value_.get());
+  return static_cast<common::ArrayValue*>(value_.get());
 }
 
 }
@@ -250,13 +245,13 @@ std::string convertToString(common::Value* value, const std::string& delemitr) {
 
   common::Value::Type t = value->type();
   if (t == common::Value::TYPE_ARRAY) {
-    return convertToString(dynamic_cast<ArrayValue*>(value), delemitr);  // +
+    return convertToString(static_cast<ArrayValue*>(value), delemitr);
   } else if(t == common::Value::TYPE_SET) {
-    return convertToString(dynamic_cast<SetValue*>(value), delemitr);  // +
+    return convertToString(static_cast<SetValue*>(value), delemitr);
   } else if(t == common::Value::TYPE_ZSET) {
-    return convertToString(dynamic_cast<ZSetValue*>(value), delemitr);  // +
+    return convertToString(static_cast<ZSetValue*>(value), delemitr);
   } else if(t == common::Value::TYPE_HASH) {
-    return convertToString(dynamic_cast<HashValue*>(value), delemitr);  // +
+    return convertToString(static_cast<HashValue*>(value), delemitr);
   } else {
     return value->toString();
   }
