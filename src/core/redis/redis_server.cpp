@@ -26,11 +26,15 @@ namespace core {
 namespace redis {
 
 RedisServer::RedisServer(IConnectionSettingsBaseSPtr settings)
-  : IServerRemote(new RedisDriver(settings)), role_(MASTER) {
+  : IServerRemote(new RedisDriver(settings)), role_(MASTER), mode_(STANDALONE) {
 }
 
 serverTypes RedisServer::role() const {
   return role_;
+}
+
+serverMode RedisServer::mode() const {
+  return mode_;
 }
 
 common::net::hostAndPort RedisServer::host() const {
@@ -52,8 +56,14 @@ void RedisServer::handleDiscoveryInfoResponceEvent(events::DiscoveryInfoResponce
       role_ = MASTER;
     } else if(rinf->replication_.role_ == "slave") {
       role_ = SLAVE;
-    } else {
-      NOTREACHED();
+    }
+
+    if (rinf->server_.redis_mode_ == "standalone") {
+      mode_ = STANDALONE;
+    } else if (rinf->server_.redis_mode_ == "sentinel") {
+      mode_ = SENTINEL;
+    } else if (rinf->server_.redis_mode_ == "cluster") {
+      mode_ = CLUSTER;
     }
   }
   IServer::handleDiscoveryInfoResponceEvent(ev);

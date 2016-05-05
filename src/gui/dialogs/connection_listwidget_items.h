@@ -61,11 +61,13 @@ class ConnectionListWidgetItem  // common connection
 class ConnectionListWidgetItemDiscovered  // returned after discovered
   : public ConnectionListWidgetItem {
  public:
-  ConnectionListWidgetItemDiscovered(core::serverTypes st, QTreeWidgetItem* parent);
+  ConnectionListWidgetItemDiscovered(core::serverTypes st, core::serverMode md, QTreeWidgetItem* parent);
   core::serverTypes serverType() const;
+  core::serverMode serverMode() const;
   virtual itemConnectionType type() const;
 
  private:
+  core::serverMode server_mode_;
   core::serverTypes server_type_;
 };
 
@@ -81,9 +83,9 @@ class SentinelConnectionListWidgetItemContainer  // can hold many sentinel conne
 };
 
 class SentinelConnectionWidgetItem  // sentinel connection
-  : public ConnectionListWidgetItem {
+  : public ConnectionListWidgetItemDiscovered {
  public:
-  SentinelConnectionWidgetItem(SentinelConnectionListWidgetItemContainer* parent);
+  SentinelConnectionWidgetItem(core::serverTypes st, SentinelConnectionListWidgetItemContainer* parent);
   virtual itemConnectionType type() const;
 };
 

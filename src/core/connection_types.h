@@ -40,6 +40,12 @@ enum serverTypes {
   SLAVE
 };
 
+enum serverMode {
+  STANDALONE = 0,
+  SENTINEL,
+  CLUSTER
+};
+
 static const std::string connnectionType[] = {
 #ifdef BUILD_WITH_REDIS
   "Redis",
@@ -89,5 +95,6 @@ enum ConnectionMode {
 namespace common {
   std::string convertToString(fastonosql::core::connectionTypes t);
   std::string convertToString(fastonosql::core::serverTypes st);
+  std::string convertToString(fastonosql::core::serverMode md);
   std::string convertToString(fastonosql::core::ConnectionMode t);
 }

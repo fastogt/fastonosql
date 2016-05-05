@@ -30,6 +30,7 @@ class LeveldbServer
   Q_OBJECT
  public:
   explicit LeveldbServer(IConnectionSettingsBaseSPtr settings);
+  serverMode mode() const;
   virtual std::string path() const;
 
  private:

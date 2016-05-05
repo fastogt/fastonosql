@@ -30,6 +30,7 @@ class SsdbServer
   Q_OBJECT
  public:
   explicit SsdbServer(IConnectionSettingsBaseSPtr settings);
+  virtual serverMode mode() const;
   virtual serverTypes role() const;
   virtual common::net::hostAndPort host() const;
 

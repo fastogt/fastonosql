@@ -29,6 +29,10 @@ LeveldbServer::LeveldbServer(IConnectionSettingsBaseSPtr settings)
   : IServerLocal(new LeveldbDriver(settings)) {
 }
 
+serverMode LeveldbServer::mode() const {
+  return STANDALONE;
+}
+
 std::string LeveldbServer::path() const {
   LeveldbDriver* const ldrv = static_cast<LeveldbDriver* const>(drv_);
   return ldrv->path();

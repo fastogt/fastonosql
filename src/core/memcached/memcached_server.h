@@ -31,6 +31,7 @@ class MemcachedServer
  public:
   explicit MemcachedServer(IConnectionSettingsBaseSPtr settings);
   virtual serverTypes role() const;
+  virtual serverMode mode() const;
   virtual common::net::hostAndPort host() const;
 
  private:

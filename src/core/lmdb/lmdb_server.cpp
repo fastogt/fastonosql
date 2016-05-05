@@ -29,6 +29,10 @@ LmdbServer::LmdbServer(IConnectionSettingsBaseSPtr settings)
   : IServerLocal(new LmdbDriver(settings)) {
 }
 
+serverMode LmdbServer::mode() const {
+  return STANDALONE;
+}
+
 std::string LmdbServer::path() const {
   LmdbDriver* const ldrv = static_cast<LmdbDriver* const>(drv_);
   return ldrv->path();

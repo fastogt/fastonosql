@@ -154,7 +154,7 @@ void DiscoverySentinelDiagnosticDialog::connectionResultReady(bool suc, qint64 m
       core::IConnectionSettingsBase::connection_path_t path(common::file_system::get_separator_string<char>() + inf->name());
       core::IConnectionSettingsBaseSPtr con(core::IConnectionSettingsRemote::createFromType(inf->connectionType(), path, host));
 
-      ConnectionListWidgetItemDiscovered* item = new ConnectionListWidgetItemDiscovered(inf->type(), nullptr);
+      ConnectionListWidgetItemDiscovered* item = new ConnectionListWidgetItemDiscovered(inf->type(), core::STANDALONE, nullptr);
       item->setConnection(con);
       listWidget_->addTopLevelItem(item);
     }

@@ -30,6 +30,7 @@ class UnqliteServer
   Q_OBJECT
  public:
   explicit UnqliteServer(IConnectionSettingsBaseSPtr settings);
+  virtual serverMode mode() const;
   virtual std::string path() const;
 
  private:

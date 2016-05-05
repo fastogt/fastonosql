@@ -134,7 +134,8 @@ ServersManager::sentinel_t ServersManager::createSentinel(ISentinelSettingsBaseS
     for (size_t i = 0; i < nodes.size(); ++i) {
       SentinelSettings nd = nodes[i];
       Sentinel sentt;
-      sentt.sentinel = createServer(nd.sentinel);
+      IServerSPtr sent_serv = createServer(nd.sentinel);
+      sentt.sentinel = sent_serv;
       for (size_t j = 0; j < nd.sentinel_nodes.size(); ++j) {
         IServerSPtr serv = createServer(nd.sentinel_nodes[j]);
         sentt.sentinels_nodes.push_back(serv);

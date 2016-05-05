@@ -155,7 +155,7 @@ void DiscoveryClusterDiagnosticDialog::connectionResult(bool suc, qint64 mstimeE
       common::net::hostAndPort host = inf->host();
       core::IConnectionSettingsBase::connection_path_t path(inf->name());
       core::IConnectionSettingsBaseSPtr con(core::IConnectionSettingsRemote::createFromType(inf->connectionType(), path, host));
-      ConnectionListWidgetItemDiscovered* item = new ConnectionListWidgetItemDiscovered(inf->type(), nullptr);
+      ConnectionListWidgetItemDiscovered* item = new ConnectionListWidgetItemDiscovered(inf->type(), core::STANDALONE, nullptr);
       item->setConnection(con);
       item->setDisabled(inf->self() || cluster_->findSettingsByHost(host));
       listWidget_->addTopLevelItem(item);

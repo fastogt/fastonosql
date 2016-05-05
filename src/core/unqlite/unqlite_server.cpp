@@ -29,6 +29,10 @@ UnqliteServer::UnqliteServer(IConnectionSettingsBaseSPtr settings)
   : IServerLocal(new UnqliteDriver(settings)) {
 }
 
+serverMode UnqliteServer::mode() const {
+  return STANDALONE;
+}
+
 std::string UnqliteServer::path() const {
   UnqliteDriver* const ldrv = static_cast<UnqliteDriver* const>(drv_);
   return ldrv->path();

@@ -29,6 +29,10 @@ SsdbServer::SsdbServer(IConnectionSettingsBaseSPtr settings)
   : IServerRemote(new SsdbDriver(settings)) {
 }
 
+serverMode SsdbServer::mode() const {
+  return STANDALONE;
+}
+
 serverTypes SsdbServer::role() const {
   return MASTER;
 }

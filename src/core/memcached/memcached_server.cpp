@@ -33,6 +33,10 @@ serverTypes MemcachedServer::role() const {
   return MASTER;
 }
 
+serverMode MemcachedServer::mode() const {
+  return STANDALONE;
+}
+
 common::net::hostAndPort MemcachedServer::host() const {
   MemcachedDriver* const rdrv = static_cast<MemcachedDriver* const>(drv_);
   return rdrv->host();

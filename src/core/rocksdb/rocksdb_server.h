@@ -30,7 +30,8 @@ class RocksdbServer
   Q_OBJECT
  public:
   explicit RocksdbServer(IConnectionSettingsBaseSPtr settings);
-  std::string path() const;
+  serverMode mode() const;
+  virtual std::string path() const;
 
  private:
   virtual IDatabaseSPtr createDatabase(IDataBaseInfoSPtr info);

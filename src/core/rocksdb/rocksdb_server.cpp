@@ -29,6 +29,10 @@ RocksdbServer::RocksdbServer(IConnectionSettingsBaseSPtr settings)
   : IServerLocal(new RocksdbDriver(settings)) {
 }
 
+serverMode RocksdbServer::mode() const {
+  return STANDALONE;
+}
+
 std::string RocksdbServer::path() const {
   RocksdbDriver* const ldrv = static_cast<RocksdbDriver* const>(drv_);
   return ldrv->path();

@@ -350,16 +350,20 @@ QVariant ExplorerTreeModel::data(const QModelIndex& index, int role) const {
           core::IServerRemote* rserver = dynamic_cast<core::IServerRemote*>(server.get());  // +
           CHECK(rserver);
           QString stype = common::convertFromString<QString>(common::convertToString(rserver->role()));
+          QString mtype = common::convertFromString<QString>(common::convertToString(rserver->mode()));
           QString shost = common::convertFromString<QString>(common::convertToString(rserver->host()));
           return QString("<b>Name:</b> %1<br/>"
                          "<b>Type:</b> %2<br/>"
-                         "<b>Host:</b> %3<br/>").arg(sname).arg(stype).arg(shost);
+                         "<b>Mode:</b> %3<br/>"
+                         "<b>Host:</b> %4<br/>").arg(sname).arg(stype).arg(mtype).arg(shost);
         } else {
           core::IServerLocal* lserver = dynamic_cast<core::IServerLocal*>(server.get());  // +
           CHECK(lserver);
           QString spath = common::convertFromString<QString>(lserver->path());
+          QString mtype = common::convertFromString<QString>(common::convertToString(lserver->mode()));
           return QString("<b>Name:</b> %1<br/>"
-                         "<b>Path:</b> %3<br/>").arg(sname).arg(spath);
+                         "<b>Mode:</b> %2<br/>"
+                         "<b>Path:</b> %3<br/>").arg(sname).arg(mtype).arg(spath);
         }
       }
     } else if (type == IExplorerTreeItem::eDatabase) {

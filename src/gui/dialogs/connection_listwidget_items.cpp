@@ -73,22 +73,26 @@ IConnectionListWidgetItem::itemConnectionType ConnectionListWidgetItem::type() c
   return Common;
 }
 
-SentinelConnectionWidgetItem::SentinelConnectionWidgetItem(SentinelConnectionListWidgetItemContainer* parent)
-  : ConnectionListWidgetItem(parent) {
+SentinelConnectionWidgetItem::SentinelConnectionWidgetItem(core::serverTypes st, SentinelConnectionListWidgetItemContainer* parent)
+  : ConnectionListWidgetItemDiscovered(st, core::SENTINEL, parent) {
 }
 
 IConnectionListWidgetItem::itemConnectionType SentinelConnectionWidgetItem::type() const {
   return Sentinel;
 }
 
-ConnectionListWidgetItemDiscovered::ConnectionListWidgetItemDiscovered(core::serverTypes st, QTreeWidgetItem* parent)
-  : ConnectionListWidgetItem(parent), server_type_(st) {
+ConnectionListWidgetItemDiscovered::ConnectionListWidgetItemDiscovered(core::serverTypes st, core::serverMode md, QTreeWidgetItem* parent)
+  : ConnectionListWidgetItem(parent), server_type_(st), server_mode_(md) {
   std::string sert = common::convertToString(st);
   setText(2, common::convertFromString<QString>(sert));
 }
 
 core::serverTypes ConnectionListWidgetItemDiscovered::serverType() const {
   return server_type_;
+}
+
+core::serverMode ConnectionListWidgetItemDiscovered::serverMode() const {
+  return server_mode_;
 }
 
 IConnectionListWidgetItem::itemConnectionType ConnectionListWidgetItemDiscovered::type() const {
@@ -102,7 +106,7 @@ SentinelConnectionListWidgetItemContainer::SentinelConnectionListWidgetItemConta
   core::ISentinelSettingsBase::sentinel_connections_t sentinels = connection_->sentinels();
   for (size_t i = 0; i < sentinels.size(); ++i) {
     core::SentinelSettings sent = sentinels[i];
-    SentinelConnectionWidgetItem* item = new SentinelConnectionWidgetItem(this);
+    SentinelConnectionWidgetItem* item = new SentinelConnectionWidgetItem(core::MASTER, this);
     item->setConnection(sent.sentinel);
     addChild(item);
     for (size_t j = 0; j < sent.sentinel_nodes.size(); ++j) {

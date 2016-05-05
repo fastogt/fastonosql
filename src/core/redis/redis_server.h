@@ -31,6 +31,7 @@ class RedisServer
  public:
   explicit RedisServer(IConnectionSettingsBaseSPtr settings);
   virtual serverTypes role() const;
+  virtual serverMode mode() const;
   virtual common::net::hostAndPort host() const;
 
  protected:
@@ -39,6 +40,7 @@ class RedisServer
  private:
   virtual IDatabaseSPtr createDatabase(IDataBaseInfoSPtr info);
   serverTypes role_;
+  serverMode mode_;
 };
 
 }  // namespace redis

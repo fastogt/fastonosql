@@ -30,6 +30,7 @@ class LmdbServer
   Q_OBJECT
  public:
   explicit LmdbServer(IConnectionSettingsBaseSPtr settings);
+  serverMode mode() const;
   virtual std::string path() const;
 
  private:

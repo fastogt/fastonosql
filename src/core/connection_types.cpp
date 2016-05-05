@@ -26,6 +26,7 @@ namespace {
                                           "Find big keys mode", "Stat mode",
                                           "Scan mode", "Interactive mode" };
   const std::string serverTypes[] = { "Master", "Slave" };
+  const std::string serverModes[] = { "Standalone", "Sentinel", "Cluster" };
 }  // namespace
 
 namespace common {
@@ -60,6 +61,10 @@ fastonosql::core::serverTypes convertFromString(const std::string& text) {
 
 std::string convertToString(fastonosql::core::serverTypes st) {
   return serverTypes[st];
+}
+
+std::string convertToString(fastonosql::core::serverMode md) {
+  return serverModes[md];
 }
 
 std::string convertToString(fastonosql::core::ConnectionMode t) {

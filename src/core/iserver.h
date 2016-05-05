@@ -52,6 +52,7 @@ class IServer
 
   connectionTypes type() const;
   virtual std::string name() const;
+  virtual serverMode mode() const = 0;
 
   IDataBaseInfoSPtr currentDatabaseInfo() const;
   ServerDiscoveryClusterInfoSPtr discoveryClusterInfo() const;
