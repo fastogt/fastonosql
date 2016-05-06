@@ -24,6 +24,8 @@
 #include "common/sprintf.h"
 
 #include "core/command_logger.h"
+#include "core/memcached/memcached_database.h"
+#include "core/memcached/memcached_command.h"
 
 #define INFO_REQUEST "STATS"
 #define GET_KEYS "STATS ITEMS"

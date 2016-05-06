@@ -22,7 +22,6 @@
 #include <string>
 
 #include "common/types.h"
-#include "global/global.h"
 #include "core/types.h"
 
 #define REDIS_SERVER_LABEL "# Server"
@@ -263,14 +262,6 @@ std::ostream& operator<<(std::ostream& out, const RedisServerInfo& value);
 
 RedisServerInfo* makeRedisServerInfo(const std::string& content);
 RedisServerInfo* makeRedisServerInfo(FastoObject* root);
-
-class RedisCommand
-      : public FastoObjectCommand {
- public:
-  RedisCommand(FastoObject* parent, common::CommandValue* cmd,
-               const std::string& delemitr, const std::string& ns_separator);
-  virtual bool isReadOnly() const;
-};
 
 }  // namespace redis
 }  // namespace core

@@ -63,22 +63,6 @@ std::ostream& operator << (std::ostream& out, const RocksdbServerInfo& value);
 RocksdbServerInfo* makeRocksdbServerInfo(const std::string& content);
 RocksdbServerInfo* makeRocksdbServerInfo(FastoObject* root);
 
-class RocksdbDataBaseInfo
-  : public IDataBaseInfo {
- public:
-  RocksdbDataBaseInfo(const std::string& name, bool isDefault, size_t size,
-                      const keys_container_t& keys = keys_container_t());
-  virtual RocksdbDataBaseInfo* clone() const;
-};
-
-class RocksdbCommand
-  : public FastoObjectCommand {
- public:
-  RocksdbCommand(FastoObject* parent, common::CommandValue* cmd, const std::string& delemitr,
-                 const std::string& ns_separator);
-  virtual bool isReadOnly() const;
-};
-
 }  // namespace rocksdb
 }  // namespace core
 }  // namespace fastonosql

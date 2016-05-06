@@ -24,6 +24,14 @@ namespace fastonosql {
 namespace core {
 namespace ssdb {
 
+class SsdbDataBaseInfo
+  : public IDataBaseInfo {
+ public:
+  SsdbDataBaseInfo(const std::string& name, bool isDefault, size_t size,
+                   const keys_container_t& keys = keys_container_t());
+  virtual SsdbDataBaseInfo* clone() const;
+};
+
 class SsdbDatabase
   : public IDatabase {
  public:

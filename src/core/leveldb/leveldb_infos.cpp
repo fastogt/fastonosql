@@ -183,30 +183,6 @@ LeveldbServerInfo* makeLeveldbServerInfo(FastoObject* root) {
   return makeLeveldbServerInfo(content);
 }
 
-LeveldbDataBaseInfo::LeveldbDataBaseInfo(const std::string& name, bool isDefault,
-                                         size_t size, const keys_container_t &keys)
-  : IDataBaseInfo(name, isDefault, LEVELDB, size, keys) {
-}
-
-LeveldbDataBaseInfo* LeveldbDataBaseInfo::clone() const {
-  return new LeveldbDataBaseInfo(*this);
-}
-
-LeveldbCommand::LeveldbCommand(FastoObject* parent, common::CommandValue* cmd,
-                               const std::string& delemitr, const std::string& ns_separator)
-  : FastoObjectCommand(parent, cmd, delemitr, ns_separator) {
-}
-
-bool LeveldbCommand::isReadOnly() const {
-  std::string key = inputCmd();
-  if (key.empty()) {
-    return true;
-  }
-
-  std::transform(key.begin(), key.end(), key.begin(), ::tolower);
-  return key != "get";
-}
-
 }  // namespace leveldb
 }  // namespace core
 }  // namespace fastonosql

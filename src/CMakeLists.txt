@@ -206,6 +206,7 @@ IF(BUILD_WITH_REDIS)
     )
     SET(HEADERS_REDIS
         core/redis/redis_raw.h
+        core/redis/redis_command.h
         core/redis/redis_infos.h
         core/redis/redis_sentinel_info.h
         core/redis/redis_cluster_infos.h
@@ -217,6 +218,7 @@ IF(BUILD_WITH_REDIS)
     )
     SET(SOURCES_REDIS
         core/redis/redis_raw.cpp
+        core/redis/redis_command.cpp
         core/redis/redis_config.cpp
         core/redis/redis_infos.cpp
         core/redis/redis_sentinel_info.cpp
@@ -259,6 +261,7 @@ IF(BUILD_WITH_MEMCACHED)
     )
     SET(HEADERS_MEMCACHED
         core/memcached/memcached_raw.h
+        core/memcached/memcached_command.h
         core/memcached/memcached_infos.h
         core/memcached/memcached_config.h
         core/memcached/memcached_database.h
@@ -266,6 +269,7 @@ IF(BUILD_WITH_MEMCACHED)
     )
     SET(SOURCES_MEMCACHED
         core/memcached/memcached_raw.cpp
+        core/memcached/memcached_command.cpp
         core/memcached/memcached_config.cpp
         core/memcached/memcached_infos.cpp
         core/memcached/memcached_server.cpp
@@ -296,6 +300,7 @@ IF(BUILD_WITH_SSDB)
     )
     SET(HEADERS_SSDB
         core/ssdb/ssdb_raw.h
+        core/ssdb/ssdb_command.h
         core/ssdb/ssdb_infos.h
         core/ssdb/ssdb_config.h
         core/ssdb/ssdb_database.h
@@ -303,6 +308,7 @@ IF(BUILD_WITH_SSDB)
     )
     SET(SOURCES_SSDB
         core/ssdb/ssdb_raw.cpp
+        core/ssdb/ssdb_command.cpp
         core/ssdb/ssdb_config.cpp
         core/ssdb/ssdb_infos.cpp
         core/ssdb/ssdb_server.cpp
@@ -333,6 +339,7 @@ IF(BUILD_WITH_LEVELDB)
     )
     SET(HEADERS_LEVELDB
         core/leveldb/leveldb_raw.h
+        core/leveldb/leveldb_command.h
         core/leveldb/leveldb_infos.h
         core/leveldb/leveldb_config.h
         core/leveldb/leveldb_database.h
@@ -340,6 +347,7 @@ IF(BUILD_WITH_LEVELDB)
     )
     SET(SOURCES_LEVELDB
         core/leveldb/leveldb_raw.cpp
+        core/leveldb/leveldb_command.cpp
         core/leveldb/leveldb_config.cpp
         core/leveldb/leveldb_infos.cpp
         core/leveldb/leveldb_server.cpp
@@ -370,6 +378,7 @@ IF(BUILD_WITH_ROCKSDB)
     )
     SET(HEADERS_ROCKSDB
         core/rocksdb/rocksdb_raw.h
+        core/rocksdb/rocksdb_command.h
         core/rocksdb/rocksdb_infos.h
         core/rocksdb/rocksdb_config.h
         core/rocksdb/rocksdb_database.h
@@ -377,6 +386,7 @@ IF(BUILD_WITH_ROCKSDB)
     )
     SET(SOURCES_ROCKSDB
         core/rocksdb/rocksdb_raw.cpp
+        core/rocksdb/rocksdb_command.cpp
         core/rocksdb/rocksdb_config.cpp
         core/rocksdb/rocksdb_infos.cpp
         core/rocksdb/rocksdb_server.cpp
@@ -407,6 +417,7 @@ IF(BUILD_WITH_UNQLITE)
     )
     SET(HEADERS_UNQLITE
         core/unqlite/unqlite_raw.h
+        core/unqlite/unqlite_command.h
         core/unqlite/unqlite_infos.h
         core/unqlite/unqlite_config.h
         core/unqlite/unqlite_database.h
@@ -414,6 +425,7 @@ IF(BUILD_WITH_UNQLITE)
     )
     SET(SOURCES_UNQLITE
         core/unqlite/unqlite_raw.cpp
+        core/unqlite/unqlite_command.cpp
         core/unqlite/unqlite_config.cpp
         core/unqlite/unqlite_infos.cpp
         core/unqlite/unqlite_server.cpp
@@ -444,6 +456,7 @@ IF(BUILD_WITH_LMDB)
     )
     SET(HEADERS_LMDB
         core/lmdb/lmdb_raw.h
+        core/lmdb/lmdb_command.h
         core/lmdb/lmdb_infos.h
         core/lmdb/lmdb_config.h
         core/lmdb/lmdb_database.h
@@ -451,6 +464,7 @@ IF(BUILD_WITH_LMDB)
     )
     SET(SOURCES_LMDB
         core/lmdb/lmdb_raw.cpp
+        core/lmdb/lmdb_command.cpp
         core/lmdb/lmdb_config.cpp
         core/lmdb/lmdb_infos.cpp
         core/lmdb/lmdb_server.cpp

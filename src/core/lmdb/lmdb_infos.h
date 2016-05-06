@@ -55,22 +55,6 @@ std::ostream& operator << (std::ostream& out, const LmdbServerInfo& value);
 LmdbServerInfo* makeLmdbServerInfo(const std::string& content);
 LmdbServerInfo* makeLmdbServerInfo(FastoObject* root);
 
-class LmdbDataBaseInfo
-    : public IDataBaseInfo {
- public:
-  LmdbDataBaseInfo(const std::string& name, bool isDefault, size_t size,
-                   const keys_container_t& keys = keys_container_t());
-  virtual LmdbDataBaseInfo* clone() const;
-};
-
-class LmdbCommand
-    : public FastoObjectCommand {
- public:
-  LmdbCommand(FastoObject* parent, common::CommandValue* cmd, const std::string& delemitr,
-              const std::string& ns_separator);
-  virtual bool isReadOnly() const;
-};
-
 }  // namespace lmdb
 }  // namespace core
 }  // namespace fastonosql

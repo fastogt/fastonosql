@@ -24,6 +24,15 @@ namespace fastonosql {
 namespace core {
 namespace leveldb {
 
+LeveldbDataBaseInfo::LeveldbDataBaseInfo(const std::string& name, bool isDefault,
+                                         size_t size, const keys_container_t &keys)
+  : IDataBaseInfo(name, isDefault, LEVELDB, size, keys) {
+}
+
+LeveldbDataBaseInfo* LeveldbDataBaseInfo::clone() const {
+  return new LeveldbDataBaseInfo(*this);
+}
+
 LeveldbDatabase::LeveldbDatabase(IServerSPtr server, IDataBaseInfoSPtr info)
   : IDatabase(server, info) {
   DCHECK(server);

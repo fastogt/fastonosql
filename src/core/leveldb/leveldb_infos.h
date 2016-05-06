@@ -63,22 +63,6 @@ std::ostream& operator << (std::ostream& out, const LeveldbServerInfo& value);
 LeveldbServerInfo* makeLeveldbServerInfo(const std::string& content);
 LeveldbServerInfo* makeLeveldbServerInfo(FastoObject* root);
 
-class LeveldbDataBaseInfo
-  : public IDataBaseInfo {
- public:
-  LeveldbDataBaseInfo(const std::string& name, bool isDefault, size_t size,
-                      const keys_container_t& keys = keys_container_t());
-  virtual LeveldbDataBaseInfo* clone() const;
-};
-
-class LeveldbCommand
-  : public FastoObjectCommand {
- public:
-  LeveldbCommand(FastoObject* parent, common::CommandValue* cmd, const std::string& delemitr,
-                 const std::string& ns_separator);
-  virtual bool isReadOnly() const;
-};
-
 }  // namespace leveldb
 }  // namespace core
 }  // namespace fastonosql

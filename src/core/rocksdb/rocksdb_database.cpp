@@ -24,6 +24,15 @@ namespace fastonosql {
 namespace core {
 namespace rocksdb {
 
+RocksdbDataBaseInfo::RocksdbDataBaseInfo(const std::string& name, bool isDefault, size_t size,
+                                         const keys_container_t &keys)
+  : IDataBaseInfo(name, isDefault, ROCKSDB, size, keys) {
+}
+
+RocksdbDataBaseInfo* RocksdbDataBaseInfo::clone() const {
+  return new RocksdbDataBaseInfo(*this);
+}
+
 RocksdbDatabase::RocksdbDatabase(IServerSPtr server, IDataBaseInfoSPtr info)
   : IDatabase(server, info) {
   DCHECK(server);

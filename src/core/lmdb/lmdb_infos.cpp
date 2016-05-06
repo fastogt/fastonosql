@@ -156,30 +156,6 @@ LmdbServerInfo* makeLmdbServerInfo(FastoObject* root) {
   return makeLmdbServerInfo(content);
 }
 
-LmdbDataBaseInfo::LmdbDataBaseInfo(const std::string& name, bool isDefault,
-                                   size_t size, const keys_container_t& keys)
-  : IDataBaseInfo(name, isDefault, LMDB, size, keys) {
-}
-
-LmdbDataBaseInfo* LmdbDataBaseInfo::clone() const {
-  return new LmdbDataBaseInfo(*this);
-}
-
-LmdbCommand::LmdbCommand(FastoObject* parent, common::CommandValue* cmd,
-                         const std::string& delemitr, const std::string& ns_separator)
-  : FastoObjectCommand(parent, cmd, delemitr, ns_separator) {
-}
-
-bool LmdbCommand::isReadOnly() const {
-  std::string key = inputCmd();
-  if (key.empty()) {
-    return true;
-  }
-
-  std::transform(key.begin(), key.end(), key.begin(), ::tolower);
-  return key != "get";
-}
-
 }  // namespace lmdb
 }  // namespace core
 }  // namespace fastonosql

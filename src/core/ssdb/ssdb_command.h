@@ -18,26 +18,22 @@
 
 #pragma once
 
-#include "core/idatabase.h"
+#include <string>
+
+#include "global/global.h"
 
 namespace fastonosql {
 namespace core {
-namespace rocksdb {
+namespace ssdb {
 
-class RocksdbDataBaseInfo
-  : public IDataBaseInfo {
+class SsdbCommand
+  : public FastoObjectCommand {
  public:
-  RocksdbDataBaseInfo(const std::string& name, bool isDefault, size_t size,
-                      const keys_container_t& keys = keys_container_t());
-  virtual RocksdbDataBaseInfo* clone() const;
+  SsdbCommand(FastoObject* parent, common::CommandValue* cmd, const std::string& delemitr,
+              const std::string& ns_separator);
+  virtual bool isReadOnly() const;
 };
 
-class RocksdbDatabase
-  : public IDatabase {
- public:
-  RocksdbDatabase(IServerSPtr server, IDataBaseInfoSPtr info);
-};
-
-}  // namespace rocksdb
+}  // namespace ssdb
 }  // namespace core
 }  // namespace fastonosql

@@ -25,6 +25,7 @@
 
 #include "core/redis/redis_cluster_infos.h"
 #include "core/redis/redis_database.h"
+#include "core/redis/redis_command.h"
 
 #define SHUTDOWN "SHUTDOWN"
 #define BACKUP "SAVE"

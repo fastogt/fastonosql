@@ -27,6 +27,9 @@
 
 #include "core/command_logger.h"
 
+#include "core/lmdb/lmdb_database.h"
+#include "core/lmdb/lmdb_command.h"
+
 #define INFO_REQUEST "INFO"
 #define GET_KEY_PATTERN_1ARGS_S "GET %s"
 #define SET_KEY_PATTERN_2ARGS_SS "SET %s %s"

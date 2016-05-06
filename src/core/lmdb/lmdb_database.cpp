@@ -24,6 +24,15 @@ namespace fastonosql {
 namespace core {
 namespace lmdb {
 
+LmdbDataBaseInfo::LmdbDataBaseInfo(const std::string& name, bool isDefault,
+                                   size_t size, const keys_container_t& keys)
+  : IDataBaseInfo(name, isDefault, LMDB, size, keys) {
+}
+
+LmdbDataBaseInfo* LmdbDataBaseInfo::clone() const {
+  return new LmdbDataBaseInfo(*this);
+}
+
 LmdbDatabase::LmdbDatabase(IServerSPtr server, IDataBaseInfoSPtr info)
   : IDatabase(server, info) {
   DCHECK(server);

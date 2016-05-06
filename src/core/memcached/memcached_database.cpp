@@ -24,6 +24,15 @@ namespace fastonosql {
 namespace core {
 namespace memcached {
 
+MemcachedDataBaseInfo::MemcachedDataBaseInfo(const std::string& name, bool isDefault,
+                                             size_t size, const keys_container_t &keys)
+  : IDataBaseInfo(name, isDefault, MEMCACHED, size, keys) {
+}
+
+MemcachedDataBaseInfo* MemcachedDataBaseInfo::clone() const {
+  return new MemcachedDataBaseInfo(*this);
+}
+
 MemcachedDatabase::MemcachedDatabase(IServerSPtr server, IDataBaseInfoSPtr info)
   : IDatabase(server, info) {
   DCHECK(server);

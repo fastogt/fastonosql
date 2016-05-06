@@ -158,30 +158,6 @@ UnqliteServerInfo* makeUnqliteServerInfo(FastoObject* root) {
   return makeUnqliteServerInfo(content);
 }
 
-UnqliteDataBaseInfo::UnqliteDataBaseInfo(const std::string& name, bool isDefault,
-                                         size_t size, const keys_container_t &keys)
-  : IDataBaseInfo(name, isDefault, UNQLITE, size, keys) {
-}
-
-UnqliteDataBaseInfo* UnqliteDataBaseInfo::clone() const {
-  return new UnqliteDataBaseInfo(*this);
-}
-
-UnqliteCommand::UnqliteCommand(FastoObject* parent, common::CommandValue* cmd,
-                               const std::string& delemitr, const std::string& ns_separator)
-  : FastoObjectCommand(parent, cmd, delemitr, ns_separator) {
-}
-
-bool UnqliteCommand::isReadOnly() const {
-  std::string key = inputCmd();
-  if (key.empty()) {
-    return true;
-  }
-
-  std::transform(key.begin(), key.end(), key.begin(), ::tolower);
-  return key != "get";
-}
-
 }  // namespace unqlite
 }  // namespace core
 }  // namespace fastonosql

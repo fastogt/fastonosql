@@ -96,22 +96,6 @@ std::ostream& operator << (std::ostream& out, const MemcachedServerInfo& value);
 MemcachedServerInfo* makeMemcachedServerInfo(const std::string& content);
 MemcachedServerInfo* makeMemcachedServerInfo(FastoObject* root);
 
-class MemcachedDataBaseInfo
-  : public IDataBaseInfo {
- public:
-  MemcachedDataBaseInfo(const std::string& name, bool isDefault, size_t size,
-                        const keys_container_t& keys = keys_container_t());
-  virtual MemcachedDataBaseInfo* clone() const;
-};
-
-class MemcachedCommand
-  : public FastoObjectCommand {
- public:
-  MemcachedCommand(FastoObject* parent, common::CommandValue* cmd,
-                   const std::string& delemitr, const std::string& ns_separator);
-  virtual bool isReadOnly() const;
-};
-
 }  // namespace memcached
 }  // namespace core
 }  // namespace fastonosql

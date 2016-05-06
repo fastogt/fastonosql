@@ -183,31 +183,6 @@ SsdbServerInfo* makeSsdbServerInfo(FastoObject* root) {
   return makeSsdbServerInfo(content);
 }
 
-SsdbDataBaseInfo::SsdbDataBaseInfo(const std::string& name, bool isDefault,
-                                   size_t size, const keys_container_t& keys)
-  : IDataBaseInfo(name, isDefault, SSDB, size, keys) {
-}
-
-SsdbDataBaseInfo* SsdbDataBaseInfo::clone() const {
-  return new SsdbDataBaseInfo(*this);
-}
-
-
-SsdbCommand::SsdbCommand(FastoObject* parent, common::CommandValue* cmd,
-                         const std::string& delemitr, const std::string& ns_separator)
-  : FastoObjectCommand(parent, cmd, delemitr, ns_separator) {
-}
-
-bool SsdbCommand::isReadOnly() const {
-  std::string key = inputCmd();
-  if (key.empty()) {
-    return true;
-  }
-
-  std::transform(key.begin(), key.end(), key.begin(), ::tolower);
-  return key != "get";
-}
-
 }  // namespace ssdb
 }  // namespace core
 }  // namespace fastonosql

@@ -182,30 +182,6 @@ RocksdbServerInfo* makeRocksdbServerInfo(FastoObject* root) {
   return makeRocksdbServerInfo(content);
 }
 
-RocksdbDataBaseInfo::RocksdbDataBaseInfo(const std::string& name, bool isDefault, size_t size,
-                                         const keys_container_t &keys)
-  : IDataBaseInfo(name, isDefault, ROCKSDB, size, keys) {
-}
-
-RocksdbDataBaseInfo* RocksdbDataBaseInfo::clone() const {
-  return new RocksdbDataBaseInfo(*this);
-}
-
-RocksdbCommand::RocksdbCommand(FastoObject* parent, common::CommandValue* cmd,
-                               const std::string& delemitr, const std::string& ns_separator)
-  : FastoObjectCommand(parent, cmd, delemitr, ns_separator) {
-}
-
-bool RocksdbCommand::isReadOnly() const {
-  std::string key = inputCmd();
-  if (key.empty()) {
-    return true;
-  }
-
-  std::transform(key.begin(), key.end(), key.begin(), ::tolower);
-  return key != "get";
-}
-
 }  // namespace rocksdb
 }  // namespace core
 }  // namespace fastonosql

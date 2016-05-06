@@ -62,22 +62,6 @@ std::ostream& operator << (std::ostream& out, const SsdbServerInfo& value);
 SsdbServerInfo* makeSsdbServerInfo(const std::string& content);
 SsdbServerInfo* makeSsdbServerInfo(FastoObject* root);
 
-class SsdbDataBaseInfo
-  : public IDataBaseInfo {
- public:
-  SsdbDataBaseInfo(const std::string& name, bool isDefault, size_t size,
-                   const keys_container_t& keys = keys_container_t());
-  virtual SsdbDataBaseInfo* clone() const;
-};
-
-class SsdbCommand
-  : public FastoObjectCommand {
- public:
-  SsdbCommand(FastoObject* parent, common::CommandValue* cmd, const std::string& delemitr,
-              const std::string& ns_separator);
-  virtual bool isReadOnly() const;
-};
-
 }  // namespace ssdb
 }  // namespace core
 }  // namespace fastonosql

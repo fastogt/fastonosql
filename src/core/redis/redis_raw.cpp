@@ -69,6 +69,7 @@ extern "C" {
 #include "core/redis/redis_sentinel_info.h"
 #include "core/redis/redis_cluster_infos.h"
 #include "core/redis/redis_database.h"
+#include "core/redis/redis_command.h"
 
 #define HIREDIS_VERSION STRINGIZE(HIREDIS_MAJOR) "." STRINGIZE(HIREDIS_MINOR) "." STRINGIZE(HIREDIS_PATCH)
 #define REDIS_CLI_KEEPALIVE_INTERVAL 15 /* seconds */

@@ -16,28 +16,27 @@
     along with FastoNoSQL.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-#pragma once
-
-#include "core/idatabase.h"
+#include "core/ssdb/ssdb_command.h"
 
 namespace fastonosql {
 namespace core {
-namespace rocksdb {
+namespace ssdb {
 
-class RocksdbDataBaseInfo
-  : public IDataBaseInfo {
- public:
-  RocksdbDataBaseInfo(const std::string& name, bool isDefault, size_t size,
-                      const keys_container_t& keys = keys_container_t());
-  virtual RocksdbDataBaseInfo* clone() const;
-};
+SsdbCommand::SsdbCommand(FastoObject* parent, common::CommandValue* cmd,
+                         const std::string& delemitr, const std::string& ns_separator)
+  : FastoObjectCommand(parent, cmd, delemitr, ns_separator) {
+}
 
-class RocksdbDatabase
-  : public IDatabase {
- public:
-  RocksdbDatabase(IServerSPtr server, IDataBaseInfoSPtr info);
-};
+bool SsdbCommand::isReadOnly() const {
+  std::string key = inputCmd();
+  if (key.empty()) {
+    return true;
+  }
 
-}  // namespace rocksdb
+  std::transform(key.begin(), key.end(), key.begin(), ::tolower);
+  return key != "get";
+}
+
+}  // namespace ssdb
 }  // namespace core
 }  // namespace fastonosql

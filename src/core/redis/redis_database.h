@@ -36,7 +36,7 @@ class RedisDataBaseInfo
 class RedisDatabase
   : public IDatabase {
  public:
-    RedisDatabase(IServerSPtr server, IDataBaseInfoSPtr info);
+  RedisDatabase(IServerSPtr server, IDataBaseInfoSPtr info);
 };
 
 }  // namespace redis

@@ -24,6 +24,14 @@ namespace fastonosql {
 namespace core {
 namespace unqlite {
 
+class UnqliteDataBaseInfo
+  : public IDataBaseInfo {
+ public:
+  UnqliteDataBaseInfo(const std::string& name, bool isDefault, size_t size,
+                      const keys_container_t& keys = keys_container_t());
+  virtual UnqliteDataBaseInfo* clone() const;
+};
+
 class UnqliteDatabase
   : public IDatabase {
  public:

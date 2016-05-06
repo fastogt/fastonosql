@@ -27,6 +27,8 @@
 #include "common/utils.h"
 
 #include "core/command_logger.h"
+#include "core/leveldb/leveldb_database.h"
+#include "core/leveldb/leveldb_command.h"
 
 #define INFO_REQUEST "INFO"
 #define GET_KEY_PATTERN_1ARGS_S "GET %s"

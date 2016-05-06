@@ -27,6 +27,9 @@
 
 #include "core/command_logger.h"
 
+#include "core/ssdb/ssdb_database.h"
+#include "core/ssdb/ssdb_command.h"
+
 #define INFO_REQUEST "INFO"
 #define GET_KEYS_PATTERN_1ARGS_I "KEYS a z %d"
 #define DELETE_KEY_PATTERN_1ARGS_S "DEL %s"
