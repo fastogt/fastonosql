@@ -97,6 +97,10 @@ ExplorerTreeView::ExplorerTreeView(QWidget* parent)
   VERIFY(connect(closeClusterAction_, &QAction::triggered,
                  this, &ExplorerTreeView::closeClusterConnection));
 
+  closeSentinelAction_ = new QAction(this);
+  VERIFY(connect(closeSentinelAction_, &QAction::triggered,
+                 this, &ExplorerTreeView::closeSentinelConnection));
+
   importAction_ = new QAction(this);
   VERIFY(connect(importAction_, &QAction::triggered, this, &ExplorerTreeView::importServer));
 
@@ -180,7 +184,7 @@ void ExplorerTreeView::addSentinel(core::ISentinelSPtr sentinel) {
     core::Sentinel sent = nodes[i];
     syncWithServer(sent.sentinel.get());
     for (size_t j = 0; j < sent.sentinels_nodes.size(); ++j) {
-      syncWithServer(sent.sentinels_nodes[i].get());
+      syncWithServer(sent.sentinels_nodes[j].get());
     }
   }
 
@@ -199,7 +203,7 @@ void ExplorerTreeView::removeSentinel(core::ISentinelSPtr sentinel) {
     core::Sentinel sent = nodes[i];
     unsyncWithServer(sent.sentinel.get());
     for (size_t j = 0; j < sent.sentinels_nodes.size(); ++j) {
-      unsyncWithServer(sent.sentinels_nodes[i].get());
+      unsyncWithServer(sent.sentinels_nodes[j].get());
     }
   }
 
@@ -254,6 +258,11 @@ void ExplorerTreeView::showContextMenu(const QPoint& point) {
       QMenu menu(this);
       closeClusterAction_->setEnabled(true);
       menu.addAction(closeClusterAction_);
+      menu.exec(menuPoint);
+    } else if (node->type() == IExplorerTreeItem::eSentinel) {
+      QMenu menu(this);
+      closeSentinelAction_->setEnabled(true);
+      menu.addAction(closeSentinelAction_);
       menu.exec(menuPoint);
     } else if (node->type() == IExplorerTreeItem::eServer) {
       ExplorerServerItem* server_node = static_cast<ExplorerServerItem*>(node);
@@ -567,6 +576,22 @@ void ExplorerTreeView::closeClusterConnection() {
     core::IClusterSPtr server = cnode->cluster();
     if (server) {
       removeCluster(server);
+    }
+    return;
+  }
+}
+
+void ExplorerTreeView::closeSentinelConnection() {
+  QModelIndex sel = selectedIndex();
+  if (!sel.isValid()) {
+    return;
+  }
+
+  ExplorerSentinelItem* snode = common::utils_qt::item<fasto::qt::gui::TreeItem*, ExplorerSentinelItem*>(sel);
+  if (snode) {
+    core::ISentinelSPtr sent = snode->sentinel();
+    if (sent) {
+      removeSentinel(sent);
     }
     return;
   }
@@ -984,6 +1009,7 @@ void ExplorerTreeView::retranslateUi() {
   clearHistoryServerAction_->setText(translations::trClearHistory);
   closeServerAction_->setText(translations::trClose);
   closeClusterAction_->setText(translations::trClose);
+  closeSentinelAction_->setText(translations::trClose);
   backupAction_->setText(translations::trBackup);
   importAction_->setText(translations::trImport);
   shutdownAction_->setText(translations::trShutdown);

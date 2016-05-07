@@ -515,9 +515,10 @@ void ExplorerTreeModel::addDatabase(core::IServer* server, core::IDataBaseInfoSP
 
   ExplorerDatabaseItem* dbs = findDatabaseItem(parent, db);
   if (!dbs) {
-    QModelIndex ind = index(root_->indexOf(parent), 0, QModelIndex());
+    fasto::qt::gui::TreeItem* parent_server = parent->parent();
+    QModelIndex parent_index = createIndex(parent_server->indexOf(parent), 0, parent);
     ExplorerDatabaseItem* item = new ExplorerDatabaseItem(server->createDatabaseByInfo(db), parent);
-    insertItem(ind, item);
+    insertItem(parent_index, item);
   }
 }
 
@@ -527,8 +528,9 @@ void ExplorerTreeModel::removeDatabase(core::IServer* server, core::IDataBaseInf
 
   ExplorerDatabaseItem* dbs = findDatabaseItem(parent, db);
   if (dbs) {
-    QModelIndex ind = index(root_->indexOf(parent), 0, QModelIndex());
-    removeItem(ind, dbs);
+    fasto::qt::gui::TreeItem* parent_server = parent->parent();
+    QModelIndex index = createIndex(parent_server->indexOf(parent), 0, dbs);
+    removeItem(index.parent(), dbs);
   }
 }
 
@@ -637,31 +639,16 @@ ExplorerSentinelItem* ExplorerTreeModel::findSentinelItem(core::ISentinelSPtr se
   return nullptr;
 }
 
-ExplorerServerItem* ExplorerTreeModel::findServerItem(core::IServer* server) const {
-  fasto::qt::gui::TreeItem* parent = root_;
-  CHECK(parent);
-
-  for (size_t i = 0; i < parent->childrenCount(); ++i) {
-    ExplorerServerItem* item = dynamic_cast<ExplorerServerItem*>(parent->child(i));  // +
-    if (item) {
-      if (item->server().get() == server) {
-        return item;
+ExplorerServerItem* ExplorerTreeModel::findServerItem(core::IServer* server) const {  
+  return static_cast<ExplorerServerItem*>(fasto::qt::gui::findItemRecursive(root_, [server](fasto::qt::gui::TreeItem* item) -> bool
+    {
+      ExplorerServerItem* server_item = dynamic_cast<ExplorerServerItem*>(item);  // +
+      if (!server_item) {
+        return false;
       }
-    } else {
-      ExplorerClusterItem* citem = dynamic_cast<ExplorerClusterItem*>(parent->child(i));  // +
-      if (citem) {
-        for (size_t j = 0; j < citem->childrenCount(); ++j) {
-          ExplorerServerItem* item = dynamic_cast<ExplorerServerItem*>(citem->child(i));  // +
-           if (item) {
-             if (item->server().get() == server) {
-               return item;
-             }
-           }
-         }
-       }
-    }
-  }
-  return nullptr;
+
+      return server_item->server().get() == server;
+    }));
 }
 
 ExplorerDatabaseItem* ExplorerTreeModel::findDatabaseItem(ExplorerServerItem* server,

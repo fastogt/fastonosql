@@ -63,6 +63,7 @@ class ExplorerTreeView
   void clearHistory();
   void closeServerConnection();
   void closeClusterConnection();
+  void closeSentinelConnection();
 
   void backupServer();
   void importServer();
@@ -122,6 +123,7 @@ class ExplorerTreeView
   QAction* clearHistoryServerAction_;
   QAction* closeServerAction_;
   QAction* closeClusterAction_;
+  QAction* closeSentinelAction_;
   QAction* importAction_;
   QAction* backupAction_;
   QAction* shutdownAction_;

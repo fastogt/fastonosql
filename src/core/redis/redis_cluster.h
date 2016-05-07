@@ -28,6 +28,7 @@ namespace redis {
 
 class RedisCluster
   : public ICluster {
+  Q_OBJECT
  public:
   explicit RedisCluster(const std::string& name);
 };
