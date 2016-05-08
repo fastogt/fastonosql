@@ -18,6 +18,8 @@
 
 #include "core/redis/redis_sentinel_info.h"
 
+#include <stdlib.h>
+
 #define NAME_FIELD "name"
 #define TYPE_FIELD "flags"
 #define HOSTNAME_FIELD "ip"
