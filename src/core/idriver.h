@@ -41,7 +41,7 @@ namespace core {
 class IDriver
   : public QObject, private IFastoObjectObserver {
   Q_OBJECT
- public:  
+ public:
   virtual ~IDriver();
 
   static void reply(QObject* reciver, QEvent* ev);

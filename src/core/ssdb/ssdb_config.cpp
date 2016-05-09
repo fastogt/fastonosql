@@ -25,12 +25,14 @@
 
 #include "fasto/qt/logger.h"
 
+#define DEFAULT_SSDB_SERVER_PORT 8888
+
 namespace fastonosql {
 namespace core {
 namespace ssdb {
 namespace {
 
-void parseOptions(int argc, char** argv, SsdbConfig& cfg) {
+void parseOptions(int argc, char** argv, Config& cfg) {
   for (int i = 0; i < argc; i++) {
     int lastarg = i == argc - 1;
 
@@ -61,8 +63,8 @@ void parseOptions(int argc, char** argv, SsdbConfig& cfg) {
 
 }  // namespace
 
-SsdbConfig::SsdbConfig()
-  : RemoteConfig(common::net::hostAndPort::createLocalHost(8888)), user(), password() {
+Config::Config()
+  : RemoteConfig(common::net::hostAndPort::createLocalHost(DEFAULT_SSDB_SERVER_PORT)), user(), password() {
 }
 
 }  // namespace ssdb
@@ -71,7 +73,7 @@ SsdbConfig::SsdbConfig()
 
 namespace common {
 
-std::string convertToString(const fastonosql::core::ssdb::SsdbConfig& conf) {
+std::string convertToString(const fastonosql::core::ssdb::Config& conf) {
   std::vector<std::string> argv = conf.args();
 
   if (!conf.user.empty()) {
@@ -96,8 +98,8 @@ std::string convertToString(const fastonosql::core::ssdb::SsdbConfig& conf) {
 }
 
 template<>
-fastonosql::core::ssdb::SsdbConfig convertFromString(const std::string& line) {
-  fastonosql::core::ssdb::SsdbConfig cfg;
+fastonosql::core::ssdb::Config convertFromString(const std::string& line) {
+  fastonosql::core::ssdb::Config cfg;
   enum { kMaxArgs = 64 };
   int argc = 0;
   char* argv[kMaxArgs] = {0};

@@ -37,14 +37,14 @@ std::string LmdbConnectionSettings::commandLine() const {
 }
 
 void LmdbConnectionSettings::setCommandLine(const std::string& line) {
-  info_ = common::convertFromString<LmdbConfig>(line);
+  info_ = common::convertFromString<Config>(line);
 }
 
-LmdbConfig LmdbConnectionSettings::info() const {
+Config LmdbConnectionSettings::info() const {
   return info_;
 }
 
-void LmdbConnectionSettings::setInfo(const LmdbConfig& info) {
+void LmdbConnectionSettings::setInfo(const Config &info) {
   info_ = info;
 }
 

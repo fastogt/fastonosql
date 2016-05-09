@@ -109,7 +109,7 @@ common::Error LmdbDriver::commandChangeTTLImpl(CommandChangeTTL* command,
 // ============== commands =============//
 
 std::string LmdbDriver::path() const {
-  LmdbConfig config = impl_->config();
+  Config config = impl_->config();
   return config.dbname;
 }
 

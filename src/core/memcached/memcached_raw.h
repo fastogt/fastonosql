@@ -34,9 +34,9 @@ namespace core {
 namespace memcached {
 
 typedef memcached_st MemcachedConnection;
-typedef DBAllocatorTraits<MemcachedConnection, MemcachedConfig> MemcachedAllocTrait;
+typedef DBAllocatorTraits<MemcachedConnection, Config> MemcachedAllocTrait;
 
-common::Error createConnection(const MemcachedConfig& config, MemcachedConnection** context);
+common::Error createConnection(const Config& config, MemcachedConnection** context);
 common::Error createConnection(MemcachedConnectionSettings* settings, MemcachedConnection** context);
 common::Error testConnection(MemcachedConnectionSettings* settings);
 

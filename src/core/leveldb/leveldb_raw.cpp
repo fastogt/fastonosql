@@ -38,7 +38,7 @@ void leveldb_version_startup_function(char* version) {
 namespace fastonosql {
 namespace core {
 template<>
-common::Error DBAllocatorTraits<leveldb::LevelDBConnection, leveldb::LeveldbConfig>::connect(const leveldb::LeveldbConfig& config, leveldb::LevelDBConnection** hout) {
+common::Error DBAllocatorTraits<leveldb::LevelDBConnection, leveldb::Config>::connect(const leveldb::Config& config, leveldb::LevelDBConnection** hout) {
   leveldb::LevelDBConnection* context = nullptr;
   common::Error er = leveldb::createConnection(config, &context);
   if (er && er->isError()) {
@@ -49,12 +49,12 @@ common::Error DBAllocatorTraits<leveldb::LevelDBConnection, leveldb::LeveldbConf
   return common::Error();
 }
 template<>
-common::Error DBAllocatorTraits<leveldb::LevelDBConnection, leveldb::LeveldbConfig>::disconnect(leveldb::LevelDBConnection** handle) {
+common::Error DBAllocatorTraits<leveldb::LevelDBConnection, leveldb::Config>::disconnect(leveldb::LevelDBConnection** handle) {
   destroy(handle);
   return common::Error();
 }
 template<>
-bool DBAllocatorTraits<leveldb::LevelDBConnection, leveldb::LeveldbConfig>::isConnected(leveldb::LevelDBConnection* handle) {
+bool DBAllocatorTraits<leveldb::LevelDBConnection, leveldb::Config>::isConnected(leveldb::LevelDBConnection* handle) {
   if (!handle) {
     return false;
   }
@@ -63,7 +63,7 @@ bool DBAllocatorTraits<leveldb::LevelDBConnection, leveldb::LeveldbConfig>::isCo
 }
 namespace leveldb {
 
-common::Error createConnection(const LeveldbConfig& config, LevelDBConnection** context) {
+common::Error createConnection(const Config& config, LevelDBConnection** context) {
   if (!context) {
     return common::make_error_value("Invalid input argument(s)", common::ErrorValue::E_ERROR);
   }
@@ -85,7 +85,7 @@ common::Error createConnection(LeveldbConnectionSettings* settings, LevelDBConne
     return common::make_error_value("Invalid input argument(s)", common::ErrorValue::E_ERROR);
   }
 
-  LeveldbConfig config = settings->info();
+  Config config = settings->info();
   return createConnection(config, context);
 }
 

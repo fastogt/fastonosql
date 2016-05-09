@@ -37,14 +37,14 @@ std::string RocksdbConnectionSettings::commandLine() const {
 }
 
 void RocksdbConnectionSettings::setCommandLine(const std::string& line) {
-  info_ = common::convertFromString<RocksdbConfig>(line);
+  info_ = common::convertFromString<Config>(line);
 }
 
-RocksdbConfig RocksdbConnectionSettings::info() const {
+Config RocksdbConnectionSettings::info() const {
   return info_;
 }
 
-void RocksdbConnectionSettings::setInfo(const RocksdbConfig& info) {
+void RocksdbConnectionSettings::setInfo(const Config& info) {
   info_ = info;
 }
 

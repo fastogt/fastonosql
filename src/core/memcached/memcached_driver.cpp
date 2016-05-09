@@ -56,7 +56,7 @@ bool MemcachedDriver::isAuthenticated() const {
 }
 
 common::net::hostAndPort MemcachedDriver::host() const {
-  MemcachedConfig conf = impl_->config();
+  Config conf = impl_->config();
   return conf.host;
 }
 

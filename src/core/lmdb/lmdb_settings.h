@@ -38,15 +38,15 @@ class LmdbConnectionSettings
   virtual std::string commandLine() const;
   virtual void setCommandLine(const std::string& line);
 
-  LmdbConfig info() const;
-  void setInfo(const LmdbConfig& info);
+  Config info() const;
+  void setInfo(const Config& info);
 
   virtual std::string fullAddress() const;
 
   virtual LmdbConnectionSettings* clone() const;
 
  private:
-  LmdbConfig info_;
+  Config info_;
 };
 
 }  // namespace lmdb

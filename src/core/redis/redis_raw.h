@@ -478,7 +478,7 @@ struct RedisRaw {
   common::Error execute(int argc, char** argv, FastoObject* out) WARN_UNUSED_RESULT;
   common::Error executeAsPipeline(std::vector<FastoObjectCommandIPtr> cmds) WARN_UNUSED_RESULT;
 
-  RedisConfig config_;
+  Config config_;
   SSHInfo sinfo_;
 
 private:

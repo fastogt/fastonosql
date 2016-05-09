@@ -34,9 +34,9 @@ namespace core {
 namespace rocksdb {
 
 typedef ::rocksdb::DB RocksDBConnection;
-typedef DBAllocatorTraits<RocksDBConnection, RocksdbConfig> RocksDBAllocTrait;
+typedef DBAllocatorTraits<RocksDBConnection, Config> RocksDBAllocTrait;
 
-common::Error createConnection(const RocksdbConfig& config, RocksDBConnection** context);
+common::Error createConnection(const Config& config, RocksDBConnection** context);
 common::Error createConnection(RocksdbConnectionSettings* settings, RocksDBConnection** context);
 common::Error testConnection(RocksdbConnectionSettings* settings);
 

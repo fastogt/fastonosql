@@ -34,9 +34,9 @@ namespace core {
 namespace leveldb {
 
 typedef ::leveldb::DB LevelDBConnection;
-typedef DBAllocatorTraits<LevelDBConnection, LeveldbConfig> LeveldbAllocTrait;
+typedef DBAllocatorTraits<LevelDBConnection, Config> LeveldbAllocTrait;
 
-common::Error createConnection(const LeveldbConfig& config, LevelDBConnection** context);
+common::Error createConnection(const Config& config, LevelDBConnection** context);
 common::Error createConnection(LeveldbConnectionSettings* settings, LevelDBConnection** context);
 common::Error testConnection(LeveldbConnectionSettings* settings);
 

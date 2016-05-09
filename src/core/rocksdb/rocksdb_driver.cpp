@@ -111,7 +111,7 @@ common::Error RocksdbDriver::commandChangeTTLImpl(CommandChangeTTL* command,
 // ============== commands =============//
 
 std::string RocksdbDriver::path() const {
-  RocksdbConfig conf = impl_->config();
+  Config conf = impl_->config();
   return conf.dbname;
 }
 

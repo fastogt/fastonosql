@@ -158,9 +158,8 @@ void ServerHistoryDialog::refreshGraph(int index) {
   QVariant var = serverInfoFields_->itemData(index);
   unsigned char indexIn = qvariant_cast<unsigned char>(var);
   fasto::qt::gui::GraphWidget::nodes_container_type nodes;
-  for (core::events_info::ServerInfoHistoryResponce::infos_container_type::iterator it = infos_.begin();
-      it != infos_.end(); ++it) {
-    core::events_info::ServerInfoHistoryResponce::infos_container_type::value_type val = *it;
+  for (auto it = infos_.begin(); it != infos_.end(); ++it) {
+    auto val = *it;
     if (!val.isValid()) {
       continue;
     }

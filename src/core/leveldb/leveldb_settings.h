@@ -38,15 +38,15 @@ class LeveldbConnectionSettings
   virtual std::string commandLine() const;
   virtual void setCommandLine(const std::string& line);
 
-  LeveldbConfig info() const;
-  void setInfo(const LeveldbConfig& info);
+  Config info() const;
+  void setInfo(const Config& info);
 
   virtual std::string fullAddress() const;
 
   virtual LeveldbConnectionSettings* clone() const;
 
  private:
-  LeveldbConfig info_;
+  Config info_;
 };
 
 }  // namespace leveldb

@@ -310,7 +310,7 @@ common::Error toIntType(char* key, char* type, int* res) {
 
 namespace {
 
-common::Error createConnection(const RedisConfig& config,
+common::Error createConnection(const Config& config,
                                const SSHInfo& sinfo, struct redisContext** context) {
     if (!context) {
       return common::make_error_value("Invalid input argument(s)", common::ErrorValue::E_ERROR);
@@ -374,7 +374,7 @@ common::Error createConnection(RedisConnectionSettings* settings, redisContext**
     return common::make_error_value("Invalid input argument(s)", common::ErrorValue::E_ERROR);
   }
 
-  RedisConfig config = settings->info();
+  Config config = settings->info();
   SSHInfo sinfo = settings->sshInfo();
   return createConnection(config, sinfo, context);
 }
@@ -410,7 +410,7 @@ common::Error cliOutputCommandHelp(FastoObject* out, struct commandHelp* help, i
   return common::Error();
 }
 
-common::Error authContext(const RedisConfig& config, redisContext* context) {
+common::Error authContext(const Config& config, redisContext* context) {
   const char* auth_str = common::utils::c_strornull(config.auth);
   if (!auth_str) {
     return common::Error();
@@ -444,7 +444,7 @@ common::Error testConnection(RedisConnectionSettings* settings) {
     return err;
   }
 
-  RedisConfig config = settings->info();
+  Config config = settings->info();
   err = authContext(config, context);
   if (err && err->isError()) {
     redisFree(context);
@@ -467,7 +467,7 @@ common::Error discoveryClusterConnection(RedisConnectionSettings* settings,
     return err;
   }
 
-  RedisConfig config = settings->info();
+  Config config = settings->info();
   err = authContext(config, context);
   if (err && err->isError()) {
     redisFree(context);
@@ -507,7 +507,7 @@ common::Error discoverySentinelConnection(RedisConnectionSettings* settings,
     return err;
   }
 
-  RedisConfig config = settings->info();
+  Config config = settings->info();
   err = authContext(config, context);
   if (err && err->isError()) {
     redisFree(context);

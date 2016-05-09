@@ -465,46 +465,46 @@ const char* commandLineHelpText(connectionTypes type) {
 std::string defaultCommandLine(connectionTypes type) {
 #ifdef BUILD_WITH_REDIS
   if (type == REDIS) {
-    redis::RedisConfig r;
+    redis::Config r;
     return common::convertToString(r);
   }
 #endif
 #ifdef BUILD_WITH_MEMCACHED
   if (type == MEMCACHED) {
-    memcached::MemcachedConfig r;
+    memcached::Config r;
     return common::convertToString(r);
   }
 #endif
 #ifdef BUILD_WITH_SSDB
   if (type == SSDB) {
-    ssdb::SsdbConfig r;
+    ssdb::Config r;
     return common::convertToString(r);
   }
 #endif
 #ifdef BUILD_WITH_LEVELDB
   if (type == LEVELDB) {
-    leveldb::LeveldbConfig r;
+    leveldb::Config r;
     r.options.create_if_missing = true;
     return common::convertToString(r);
   }
 #endif
 #ifdef BUILD_WITH_ROCKSDB
   if (type == ROCKSDB) {
-    rocksdb::RocksdbConfig r;
+    rocksdb::Config r;
     r.options.create_if_missing = true;
     return common::convertToString(r);
   }
 #endif
 #ifdef BUILD_WITH_UNQLITE
   if (type == UNQLITE) {
-    unqlite::UnqliteConfig r;
+    unqlite::Config r;
     r.create_if_missing = true;
     return common::convertToString(r);
   }
 #endif
 #ifdef BUILD_WITH_LMDB
   if (type == LMDB) {
-    lmdb::LmdbConfig r;
+    lmdb::Config r;
     r.create_if_missing = true;
     return common::convertToString(r);
   }

@@ -38,15 +38,15 @@ class RocksdbConnectionSettings
   virtual std::string commandLine() const;
   virtual void setCommandLine(const std::string& line);
 
-  RocksdbConfig info() const;
-  void setInfo(const RocksdbConfig &info);
+  Config info() const;
+  void setInfo(const Config& info);
 
   virtual std::string fullAddress() const;
 
   virtual RocksdbConnectionSettings* clone() const;
 
  private:
-  RocksdbConfig info_;
+  Config info_;
 };
 
 }  // namespace rocksdb

@@ -39,13 +39,13 @@ class MemcachedConnectionSettings
   virtual void setHost(const common::net::hostAndPort& host);
   virtual common::net::hostAndPort host() const;
 
-  MemcachedConfig info() const;
-  void setInfo(const MemcachedConfig& info);
+  Config info() const;
+  void setInfo(const Config& info);
 
   virtual MemcachedConnectionSettings* clone() const;
 
  private:
-  MemcachedConfig info_;
+  Config info_;
 };
 
 }  // namespace memcached

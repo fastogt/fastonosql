@@ -35,7 +35,7 @@
 namespace fastonosql {
 namespace core {
 template<>
-common::Error DBAllocatorTraits<rocksdb::RocksDBConnection, rocksdb::RocksdbConfig>::connect(const rocksdb::RocksdbConfig& config, rocksdb::RocksDBConnection** hout) {
+common::Error DBAllocatorTraits<rocksdb::RocksDBConnection, rocksdb::Config>::connect(const rocksdb::Config& config, rocksdb::RocksDBConnection** hout) {
   rocksdb::RocksDBConnection* context = nullptr;
   common::Error er = rocksdb::createConnection(config, &context);
   if (er && er->isError()) {
@@ -46,12 +46,12 @@ common::Error DBAllocatorTraits<rocksdb::RocksDBConnection, rocksdb::RocksdbConf
   return common::Error();
 }
 template<>
-common::Error DBAllocatorTraits<rocksdb::RocksDBConnection, rocksdb::RocksdbConfig>::disconnect(rocksdb::RocksDBConnection** handle) {
+common::Error DBAllocatorTraits<rocksdb::RocksDBConnection, rocksdb::Config>::disconnect(rocksdb::RocksDBConnection** handle) {
   destroy(handle);
   return common::Error();
 }
 template<>
-bool DBAllocatorTraits<rocksdb::RocksDBConnection, rocksdb::RocksdbConfig>::isConnected(rocksdb::RocksDBConnection* handle) {
+bool DBAllocatorTraits<rocksdb::RocksDBConnection, rocksdb::Config>::isConnected(rocksdb::RocksDBConnection* handle) {
   if (!handle) {
     return false;
   }
@@ -60,7 +60,7 @@ bool DBAllocatorTraits<rocksdb::RocksDBConnection, rocksdb::RocksdbConfig>::isCo
 }
 namespace rocksdb {
 
-common::Error createConnection(const RocksdbConfig& config, RocksDBConnection** context) {
+common::Error createConnection(const Config& config, RocksDBConnection** context) {
   if (!context) {
     return common::make_error_value("Invalid input argument(s)", common::ErrorValue::E_ERROR);
   }
@@ -82,7 +82,7 @@ common::Error createConnection(RocksdbConnectionSettings* settings, RocksDBConne
     return common::make_error_value("Invalid input argument(s)", common::ErrorValue::E_ERROR);
   }
 
-  RocksdbConfig config = settings->info();
+  Config config = settings->info();
   return createConnection(config, context);
 }
 

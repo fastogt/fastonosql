@@ -32,9 +32,9 @@ namespace core {
 namespace ssdb {
 
 typedef ::ssdb::Client SSDBConnection;
-typedef DBAllocatorTraits<SSDBConnection, SsdbConfig> SSDBAllocTrait;
+typedef DBAllocatorTraits<SSDBConnection, Config> SSDBAllocTrait;
 
-common::Error createConnection(const SsdbConfig& config, SSDBConnection** context);
+common::Error createConnection(const Config& config, SSDBConnection** context);
 common::Error createConnection(SsdbConnectionSettings* settings, SSDBConnection** context);
 common::Error testConnection(SsdbConnectionSettings* settings);
 

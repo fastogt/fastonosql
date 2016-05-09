@@ -26,12 +26,14 @@
 
 #include "fasto/qt/logger.h"
 
+#define DEFAULT_REDIS_SERVER_PORT 6379
+
 namespace fastonosql {
 namespace core {
 namespace redis {
 namespace {
 
-void parseOptions(int argc, char** argv, RedisConfig& cfg) {
+void parseOptions(int argc, char** argv, Config& cfg) {
   for (int i = 0; i < argc; i++) {
     int lastarg = i == argc - 1;
 
@@ -119,23 +121,23 @@ void parseOptions(int argc, char** argv, RedisConfig& cfg) {
 
 }  // namespace
 
-RedisConfig::RedisConfig()
-  : RemoteConfig(common::net::hostAndPort::createLocalHost(6379)) {
+Config::Config()
+  : RemoteConfig(common::net::hostAndPort::createLocalHost(DEFAULT_REDIS_SERVER_PORT)) {
   init();
 }
 
-RedisConfig::RedisConfig(const RedisConfig& other)
+Config::Config(const Config& other)
   : RemoteConfig(other.host) {
   init();
   copy(other);
 }
 
-RedisConfig& RedisConfig::operator=(const RedisConfig& other) {
+Config& Config::operator=(const Config& other) {
   copy(other);
   return *this;
 }
 
-void RedisConfig::copy(const RedisConfig& other) {
+void Config::copy(const Config& other) {
   hostsocket = other.hostsocket;
 
   repeat = other.repeat;
@@ -168,7 +170,7 @@ void RedisConfig::copy(const RedisConfig& other) {
   RemoteConfig::operator=(other);
 }
 
-void RedisConfig::init() {
+void Config::init() {
   hostsocket = std::string();
   repeat = 1;
   interval = 0;
@@ -194,16 +196,13 @@ void RedisConfig::init() {
   last_cmd_type = -1;
 }
 
-RedisConfig::~RedisConfig() {
-}
-
 }  // namespace redis
 }  // namespace core
 }  // namespace fastonosql
 
 namespace common {
 
-std::string convertToString(const fastonosql::core::redis::RedisConfig& conf) {
+std::string convertToString(const fastonosql::core::redis::Config& conf) {
   std::vector<std::string> argv = conf.args();
 
   if (!conf.hostsocket.empty()) {
@@ -284,8 +283,8 @@ std::string convertToString(const fastonosql::core::redis::RedisConfig& conf) {
 }
 
 template<>
-fastonosql::core::redis::RedisConfig convertFromString(const std::string& line) {
-  fastonosql::core::redis::RedisConfig cfg;
+fastonosql::core::redis::Config convertFromString(const std::string& line) {
+  fastonosql::core::redis::Config cfg;
   enum { kMaxArgs = 64 };
   int argc = 0;
   char* argv[kMaxArgs] = {0};

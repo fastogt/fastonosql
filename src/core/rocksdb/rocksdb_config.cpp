@@ -32,7 +32,7 @@ namespace rocksdb {
 
 namespace {
 
-void parseOptions(int argc, char** argv, RocksdbConfig& cfg) {
+void parseOptions(int argc, char** argv, Config& cfg) {
   for (int i = 0; i < argc; i++) {
     int lastarg = i == argc-1;
 
@@ -59,7 +59,7 @@ void parseOptions(int argc, char** argv, RocksdbConfig& cfg) {
 
 }  // namespace
 
-RocksdbConfig::RocksdbConfig()
+Config::Config()
   : LocalConfig(common::file_system::prepare_path("~/test.rocksdb")) {
   options.create_if_missing = false;
 }
@@ -70,7 +70,7 @@ RocksdbConfig::RocksdbConfig()
 
 namespace common {
 
-std::string convertToString(const fastonosql::core::rocksdb::RocksdbConfig& conf) {
+std::string convertToString(const fastonosql::core::rocksdb::Config &conf) {
   std::vector<std::string> argv = conf.args();
 
   if (conf.options.create_if_missing) {
@@ -89,8 +89,8 @@ std::string convertToString(const fastonosql::core::rocksdb::RocksdbConfig& conf
 }
 
 template<>
-fastonosql::core::rocksdb::RocksdbConfig convertFromString(const std::string& line) {
-  fastonosql::core::rocksdb::RocksdbConfig cfg;
+fastonosql::core::rocksdb::Config convertFromString(const std::string& line) {
+  fastonosql::core::rocksdb::Config cfg;
   enum { kMaxArgs = 64 };
   int argc = 0;
   char* argv[kMaxArgs] = {0};

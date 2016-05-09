@@ -38,15 +38,15 @@ class UnqliteConnectionSettings
   virtual std::string commandLine() const;
   virtual void setCommandLine(const std::string& line);
 
-  UnqliteConfig info() const;
-  void setInfo(const UnqliteConfig& info);
+  Config info() const;
+  void setInfo(const Config& info);
 
   virtual std::string fullAddress() const;
 
   virtual UnqliteConnectionSettings* clone() const;
 
  private:
-  UnqliteConfig info_;
+  Config info_;
 };
 
 }  // namespace unqlite

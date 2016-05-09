@@ -110,7 +110,7 @@ common::Error LeveldbDriver::commandChangeTTLImpl(CommandChangeTTL* command,
 // ============== commands =============//
 
 std::string LeveldbDriver::path() const {
-  LeveldbConfig config = impl_->config();
+  Config config = impl_->config();
   return config.dbname;
 }
 

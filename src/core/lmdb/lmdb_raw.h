@@ -41,9 +41,9 @@ struct lmdb {
 };
 
 typedef lmdb LMDBConnection;
-typedef DBAllocatorTraits<LMDBConnection, LmdbConfig> LMDBAllocTrait;
+typedef DBAllocatorTraits<LMDBConnection, Config> LMDBAllocTrait;
 
-common::Error createConnection(const LmdbConfig& config, LMDBConnection** context);
+common::Error createConnection(const Config& config, LMDBConnection** context);
 common::Error createConnection(LmdbConnectionSettings* settings, LMDBConnection** context);
 common::Error testConnection(LmdbConnectionSettings* settings);
 

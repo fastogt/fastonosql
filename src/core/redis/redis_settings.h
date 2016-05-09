@@ -39,13 +39,13 @@ class RedisConnectionSettings
   virtual void setHost(const common::net::hostAndPort& host);
   virtual common::net::hostAndPort host() const;
 
-  RedisConfig info() const;
-  void setInfo(const RedisConfig& info);
+  Config info() const;
+  void setInfo(const Config& info);
 
   virtual RedisConnectionSettings* clone() const;
 
  private:
-  RedisConfig info_;
+  Config info_;
 };
 
 }  // namespace redis

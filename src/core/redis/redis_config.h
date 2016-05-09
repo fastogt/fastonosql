@@ -29,13 +29,11 @@ namespace fastonosql {
 namespace core {
 namespace redis {
 
-struct RedisConfig
+struct Config
   : public RemoteConfig {
-  RedisConfig();
-  RedisConfig(const RedisConfig& other);
-  RedisConfig& operator=(const RedisConfig &other);
-
-  ~RedisConfig();
+  Config();
+  Config(const Config& other);
+  Config& operator=(const Config &other);
 
   std::string hostsocket;
   long repeat;
@@ -62,7 +60,7 @@ struct RedisConfig
   int last_cmd_type;
 
  protected:
-  void copy(const RedisConfig& other);
+  void copy(const Config& other);
   void init();
 };
 
@@ -71,5 +69,5 @@ struct RedisConfig
 }  // namespace fastonosql
 
 namespace common {
-  std::string convertToString(const fastonosql::core::redis::RedisConfig& conf);
+  std::string convertToString(const fastonosql::core::redis::Config& conf);
 }  // namespace common

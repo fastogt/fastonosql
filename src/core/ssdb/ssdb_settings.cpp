@@ -35,7 +35,7 @@ std::string SsdbConnectionSettings::commandLine() const {
 }
 
 void SsdbConnectionSettings::setCommandLine(const std::string& line) {
-  info_ = common::convertFromString<SsdbConfig>(line);
+  info_ = common::convertFromString<Config>(line);
 }
 
 void SsdbConnectionSettings::setHost(const common::net::hostAndPort& host) {
@@ -46,11 +46,11 @@ common::net::hostAndPort SsdbConnectionSettings::host() const {
   return info_.host;
 }
 
-SsdbConfig SsdbConnectionSettings::info() const {
+Config SsdbConnectionSettings::info() const {
   return info_;
 }
 
-void SsdbConnectionSettings::setInfo(const SsdbConfig& info) {
+void SsdbConnectionSettings::setInfo(const Config &info) {
   info_ = info;
 }
 

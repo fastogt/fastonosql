@@ -37,14 +37,14 @@ std::string UnqliteConnectionSettings::commandLine() const {
 }
 
 void UnqliteConnectionSettings::setCommandLine(const std::string& line) {
-  info_ = common::convertFromString<UnqliteConfig>(line);
+  info_ = common::convertFromString<Config>(line);
 }
 
-UnqliteConfig UnqliteConnectionSettings::info() const {
+Config UnqliteConnectionSettings::info() const {
   return info_;
 }
 
-void UnqliteConnectionSettings::setInfo(const UnqliteConfig& info) {
+void UnqliteConnectionSettings::setInfo(const Config &info) {
   info_ = info;
 }
 

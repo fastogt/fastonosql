@@ -98,7 +98,7 @@ int unqlite_data_callback(const void* pData, unsigned int nDatalen, void* str) {
 namespace fastonosql {
 namespace core {
 template<>
-common::Error DBAllocatorTraits<unqlite::UnQLiteConnection, unqlite::UnqliteConfig>::connect(const unqlite::UnqliteConfig& config, unqlite::UnQLiteConnection** hout) {
+common::Error DBAllocatorTraits<unqlite::UnQLiteConnection, unqlite::Config>::connect(const unqlite::Config& config, unqlite::UnQLiteConnection** hout) {
   unqlite::UnQLiteConnection* context = nullptr;
   common::Error er = unqlite::createConnection(config, &context);
   if (er && er->isError()) {
@@ -109,13 +109,13 @@ common::Error DBAllocatorTraits<unqlite::UnQLiteConnection, unqlite::UnqliteConf
   return common::Error();
 }
 template<>
-common::Error DBAllocatorTraits<unqlite::UnQLiteConnection, unqlite::UnqliteConfig>::disconnect(unqlite::UnQLiteConnection** handle) {
+common::Error DBAllocatorTraits<unqlite::UnQLiteConnection, unqlite::Config>::disconnect(unqlite::UnQLiteConnection** handle) {
   unqlite_close(*handle);
   *handle = nullptr;
   return common::Error();
 }
 template<>
-bool DBAllocatorTraits<unqlite::UnQLiteConnection, unqlite::UnqliteConfig>::isConnected(unqlite::UnQLiteConnection* handle) {
+bool DBAllocatorTraits<unqlite::UnQLiteConnection, unqlite::Config>::isConnected(unqlite::UnQLiteConnection* handle) {
   if (!handle) {
     return false;
   }
@@ -124,7 +124,7 @@ bool DBAllocatorTraits<unqlite::UnQLiteConnection, unqlite::UnqliteConfig>::isCo
 }
 namespace unqlite {
 
-common::Error createConnection(const UnqliteConfig& config, UnQLiteConnection** context) {
+common::Error createConnection(const Config& config, UnQLiteConnection** context) {
   if (!context) {
     return common::make_error_value("Invalid input argument(s)", common::ErrorValue::E_ERROR);
   }
@@ -148,7 +148,7 @@ common::Error createConnection(UnqliteConnectionSettings* settings, UnQLiteConne
     return common::make_error_value("Invalid input argument(s)", common::ErrorValue::E_ERROR);
   }
 
-  UnqliteConfig config = settings->info();
+  Config config = settings->info();
   return createConnection(config, context);
 }
 
@@ -179,7 +179,7 @@ common::Error UnqliteRaw::info(const char* args, UnqliteServerInfo::Stats* stats
   }
 
   UnqliteServerInfo::Stats linfo;
-  UnqliteConfig conf = config();
+  Config conf = config();
   linfo.file_name = conf.dbname;
   *statsout = linfo;
   return common::Error();

@@ -145,7 +145,7 @@ common::Error SsdbDriver::commandChangeTTLImpl(CommandChangeTTL* command,
 // ============== commands =============//
 
 common::net::hostAndPort SsdbDriver::host() const {
-  SsdbConfig conf = impl_->config();
+  Config conf = impl_->config();
   return conf.host;
 }
 

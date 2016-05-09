@@ -93,7 +93,7 @@ void lmdb_close(lmdb** context) {
 
 }  // namespace
 
-common::Error createConnection(const LmdbConfig& config, LMDBConnection** context) {
+common::Error createConnection(const Config& config, LMDBConnection** context) {
   if (!context) {
     return common::make_error_value("Invalid input argument(s)", common::ErrorValue::E_ERROR);
   }
@@ -116,7 +116,7 @@ common::Error createConnection(LmdbConnectionSettings* settings, LMDBConnection*
     return common::make_error_value("Invalid input argument(s)", common::ErrorValue::E_ERROR);
   }
 
-  LmdbConfig config = settings->info();
+  Config config = settings->info();
   return createConnection(config, context);
 }
 
@@ -185,7 +185,7 @@ common::Error LmdbRaw::info(const char* args, LmdbServerInfo::Stats* statsout) {
   }
 
   LmdbServerInfo::Stats linfo;
-  LmdbConfig conf = config();
+  Config conf = config();
   linfo.file_name = conf.dbname;
 
   *statsout = linfo;
@@ -476,7 +476,7 @@ common::Error flushdb(CommandHandler* handler, int argc, char** argv, FastoObjec
 
 }  // namespace lmdb
 template<>
-common::Error DBAllocatorTraits<lmdb::LMDBConnection, lmdb::LmdbConfig>::connect(const lmdb::LmdbConfig& config, lmdb::LMDBConnection** hout) {
+common::Error DBAllocatorTraits<lmdb::LMDBConnection, lmdb::Config>::connect(const lmdb::Config& config, lmdb::LMDBConnection** hout) {
   lmdb::LMDBConnection* context = nullptr;
   common::Error er = lmdb::createConnection(config, &context);
   if (er && er->isError()) {
@@ -487,13 +487,13 @@ common::Error DBAllocatorTraits<lmdb::LMDBConnection, lmdb::LmdbConfig>::connect
   return common::Error();
 }
 template<>
-common::Error DBAllocatorTraits<lmdb::LMDBConnection, lmdb::LmdbConfig>::disconnect(lmdb::LMDBConnection** handle) {
+common::Error DBAllocatorTraits<lmdb::LMDBConnection, lmdb::Config>::disconnect(lmdb::LMDBConnection** handle) {
   lmdb::lmdb_close(handle);
   *handle = nullptr;
   return common::Error();
 }
 template<>
-bool DBAllocatorTraits<lmdb::LMDBConnection, lmdb::LmdbConfig>::isConnected(lmdb::LMDBConnection* handle) {
+bool DBAllocatorTraits<lmdb::LMDBConnection, lmdb::Config>::isConnected(lmdb::LMDBConnection* handle) {
   if (!handle) {
     return false;
   }

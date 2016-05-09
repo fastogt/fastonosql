@@ -23,7 +23,7 @@
 namespace fastonosql {
 namespace core {
 template<>
-common::Error DBAllocatorTraits<ssdb::SSDBConnection, ssdb::SsdbConfig>::connect(const ssdb::SsdbConfig& config, ssdb::SSDBConnection** hout) {
+common::Error DBAllocatorTraits<ssdb::SSDBConnection, ssdb::Config>::connect(const ssdb::Config& config, ssdb::SSDBConnection** hout) {
   ssdb::SSDBConnection* context = nullptr;
   common::Error er = ssdb::createConnection(config, &context);
   if (er && er->isError()) {
@@ -34,12 +34,12 @@ common::Error DBAllocatorTraits<ssdb::SSDBConnection, ssdb::SsdbConfig>::connect
   return common::Error();
 }
 template<>
-common::Error DBAllocatorTraits<ssdb::SSDBConnection, ssdb::SsdbConfig>::disconnect(ssdb::SSDBConnection** handle) {
+common::Error DBAllocatorTraits<ssdb::SSDBConnection, ssdb::Config>::disconnect(ssdb::SSDBConnection** handle) {
   destroy(handle);
   return common::Error();
 }
 template<>
-bool DBAllocatorTraits<ssdb::SSDBConnection, ssdb::SsdbConfig>::isConnected(ssdb::SSDBConnection* handle) {
+bool DBAllocatorTraits<ssdb::SSDBConnection, ssdb::Config>::isConnected(ssdb::SSDBConnection* handle) {
   if (!handle) {
     return false;
   }
@@ -48,7 +48,7 @@ bool DBAllocatorTraits<ssdb::SSDBConnection, ssdb::SsdbConfig>::isConnected(ssdb
 }
 namespace ssdb {
 
-common::Error createConnection(const SsdbConfig& config, SSDBConnection** context) {
+common::Error createConnection(const Config& config, SSDBConnection** context) {
   if (!context) {
     return common::make_error_value("Invalid input argument(s)", common::ErrorValue::E_ERROR);
   }
@@ -68,7 +68,7 @@ common::Error createConnection(SsdbConnectionSettings* settings, SSDBConnection*
     return common::make_error_value("Invalid input argument(s)", common::ErrorValue::E_ERROR);
   }
 
-  SsdbConfig config = settings->info();
+  Config config = settings->info();
   return createConnection(config, context);
 }
 

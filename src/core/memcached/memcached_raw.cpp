@@ -29,7 +29,7 @@
 namespace fastonosql {
 namespace core {
 template<>
-common::Error DBAllocatorTraits<memcached::MemcachedConnection, memcached::MemcachedConfig>::connect(const memcached::MemcachedConfig& config, memcached::MemcachedConnection** hout) {
+common::Error DBAllocatorTraits<memcached::MemcachedConnection, memcached::Config>::connect(const memcached::Config& config, memcached::MemcachedConnection** hout) {
   memcached::MemcachedConnection* context = nullptr;
   common::Error er = memcached::createConnection(config, &context);
   if (er && er->isError()) {
@@ -40,7 +40,7 @@ common::Error DBAllocatorTraits<memcached::MemcachedConnection, memcached::Memca
   return common::Error();
 }
 template<>
-common::Error DBAllocatorTraits<memcached::MemcachedConnection, memcached::MemcachedConfig>::disconnect(memcached::MemcachedConnection** handle) {
+common::Error DBAllocatorTraits<memcached::MemcachedConnection, memcached::Config>::disconnect(memcached::MemcachedConnection** handle) {
   memcached::MemcachedConnection* lhandle = *handle;
   if (lhandle) {
     memcached_free(lhandle);
@@ -49,7 +49,7 @@ common::Error DBAllocatorTraits<memcached::MemcachedConnection, memcached::Memca
   return common::Error();
 }
 template<>
-bool DBAllocatorTraits<memcached::MemcachedConnection, memcached::MemcachedConfig>::isConnected(memcached::MemcachedConnection* handle) {
+bool DBAllocatorTraits<memcached::MemcachedConnection, memcached::Config>::isConnected(memcached::MemcachedConnection* handle) {
   if (!handle) {
     return false;
   }
@@ -63,7 +63,7 @@ bool DBAllocatorTraits<memcached::MemcachedConnection, memcached::MemcachedConfi
 }
 namespace memcached {
 
-common::Error createConnection(const MemcachedConfig& config, MemcachedConnection** context) {
+common::Error createConnection(const Config& config, MemcachedConnection** context) {
   if (!context) {
     return common::make_error_value("Invalid input argument(s)", common::ErrorValue::E_ERROR);
   }
@@ -116,7 +116,7 @@ common::Error createConnection(MemcachedConnectionSettings* settings, MemcachedC
     return common::make_error_value("Invalid input argument(s)", common::ErrorValue::E_ERROR);
   }
 
-  MemcachedConfig config = settings->info();
+  Config config = settings->info();
   return createConnection(config, context);
 }
 
@@ -125,7 +125,7 @@ common::Error testConnection(MemcachedConnectionSettings* settings) {
     return common::make_error_value("Invalid input argument(s)", common::ErrorValue::E_ERROR);
   }
 
-  MemcachedConfig inf = settings->info();
+  Config inf = settings->info();
   const char* user = common::utils::c_strornull(inf.user);
   const char* passwd = common::utils::c_strornull(inf.password);
   const char* host = common::utils::c_strornull(inf.host.host);

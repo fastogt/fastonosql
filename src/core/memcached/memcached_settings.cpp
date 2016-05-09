@@ -35,7 +35,7 @@ std::string MemcachedConnectionSettings::commandLine() const {
 }
 
 void MemcachedConnectionSettings::setCommandLine(const std::string& line) {
-  info_ = common::convertFromString<MemcachedConfig>(line);
+  info_ = common::convertFromString<Config>(line);
 }
 
 void MemcachedConnectionSettings::setHost(const common::net::hostAndPort& host) {
@@ -46,11 +46,11 @@ common::net::hostAndPort MemcachedConnectionSettings::host() const {
   return info_.host;
 }
 
-MemcachedConfig MemcachedConnectionSettings::info() const {
+Config MemcachedConnectionSettings::info() const {
   return info_;
 }
 
-void MemcachedConnectionSettings::setInfo(const MemcachedConfig& info) {
+void MemcachedConnectionSettings::setInfo(const Config &info) {
   info_ = info;
 }
 

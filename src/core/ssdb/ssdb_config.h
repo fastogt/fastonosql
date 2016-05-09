@@ -28,9 +28,9 @@ namespace fastonosql {
 namespace core {
 namespace ssdb {
 
-struct SsdbConfig
+struct Config
   : public RemoteConfig {
-  SsdbConfig();
+  Config();
 
   std::string user;
   std::string password;
@@ -41,5 +41,5 @@ struct SsdbConfig
 }  // namespace fastonosql
 
 namespace common {
-  std::string convertToString(const fastonosql::core::ssdb::SsdbConfig& conf);
+  std::string convertToString(const fastonosql::core::ssdb::Config& conf);
 }

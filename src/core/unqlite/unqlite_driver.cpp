@@ -109,7 +109,7 @@ common::Error UnqliteDriver::commandChangeTTLImpl(CommandChangeTTL* command,
 // ============== commands =============//
 
 std::string UnqliteDriver::path() const {
-  UnqliteConfig conf = impl_->config();
+  Config conf = impl_->config();
   return conf.dbname;
 }
 

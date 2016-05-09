@@ -37,14 +37,14 @@ std::string LeveldbConnectionSettings::commandLine() const {
 }
 
 void LeveldbConnectionSettings::setCommandLine(const std::string& line) {
-  info_ = common::convertFromString<LeveldbConfig>(line);
+  info_ = common::convertFromString<Config>(line);
 }
 
-LeveldbConfig LeveldbConnectionSettings::info() const {
+Config LeveldbConnectionSettings::info() const {
   return info_;
 }
 
-void LeveldbConnectionSettings::setInfo(const LeveldbConfig& info) {
+void LeveldbConnectionSettings::setInfo(const Config &info) {
   info_ = info;
 }
 
