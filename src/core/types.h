@@ -28,63 +28,8 @@
 #include "core/db_key.h"
 #include "common/net/net.h"
 
-#define UNDEFINED_SINCE 0x00000000U
-#define UNDEFINED_SINCE_STR "Undefined"
-#define UNDEFINED_EXAMPLE_STR "Unspecified"
-#define UNDEFINED_STR_IN_PROGRESS "Undefined in progress"
-#define INFINITE_COMMAND_ARGS UINT8_MAX
-
 namespace fastonosql {
 namespace core {
-
-struct CommandInfo {
-  CommandInfo(const std::string& name, const std::string& params,
-              const std::string& summary, uint32_t since,
-              const std::string& example, uint8_t required_arguments_count,
-              uint8_t optional_arguments_count);
-
-  uint16_t maxArgumentsCount() const;
-  uint8_t minArgumentsCount() const;
-
-  const std::string name;
-  const std::string params;
-  const std::string summary;
-  const uint32_t since;
-  const std::string example;
-
-  const uint8_t required_arguments_count;
-  const uint8_t optional_arguments_count;
-};
-
-class CommandHandler;
-class CommandHolder
-    : public CommandInfo {
- public:
-  typedef std::function<common::Error(CommandHandler*, int, char**, FastoObject*)> function_type;
-
-  CommandHolder(const std::string& name, const std::string& params,
-                const std::string& summary, uint32_t since,
-                const std::string& example, uint8_t required_arguments_count,
-                uint8_t optional_arguments_count, function_type func);
-  bool isCommand(const std::string& cmd);
-  common::Error execute(CommandHandler* handler, int argc, char** argv, FastoObject* out);
-
- private:
-  const function_type func_;
-};
-
-class CommandHandler {
- public:
-  typedef CommandHolder commands_t;
-  explicit CommandHandler(const std::vector<commands_t>& commands);
-  common::Error execute(int argc, char** argv, FastoObject* out);
-
-  static common::Error notSupported(const char* cmd);
- private:
-  const std::vector<commands_t> commands_;
-};
-
-std::string convertVersionNumberToReadableString(uint32_t version);
 
 struct ServerCommonInfo {
   ServerCommonInfo();
@@ -115,8 +60,16 @@ class IServerDiscoveryInfo {
   ServerCommonInfo info_;
 };
 
+class ServerDiscoverySentinelInfo
+  : public IServerDiscoveryInfo {
+ protected:
+  ServerDiscoverySentinelInfo(connectionTypes ctype, const ServerCommonInfo& info);
+};
+
+typedef common::shared_ptr<ServerDiscoverySentinelInfo> ServerDiscoverySentinelInfoSPtr;
+
 class ServerDiscoveryClusterInfo
-    : public IServerDiscoveryInfo{
+  : public IServerDiscoveryInfo{
  public:
   bool self() const;
 
@@ -144,14 +97,6 @@ class IServerInfo {
 };
 
 typedef common::shared_ptr<IServerInfo> IServerInfoSPtr;
-
-class ServerDiscoverySentinelInfo
-  : public IServerDiscoveryInfo {
- protected:
-  ServerDiscoverySentinelInfo(connectionTypes ctype, const ServerCommonInfo& info);
-};
-
-typedef common::shared_ptr<ServerDiscoverySentinelInfo> ServerDiscoverySentinelInfoSPtr;
 
 struct FieldByIndex {
   virtual common::Value* valueByIndex(unsigned char index) const = 0;

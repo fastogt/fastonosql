@@ -24,7 +24,9 @@ extern "C" {
 
 #include <string>
 
+#include "core/command_handler.h"
 #include "core/db_connection.h"
+
 #include "core/unqlite/unqlite_settings.h"
 #include "core/unqlite/unqlite_config.h"
 #include "core/unqlite/unqlite_infos.h"

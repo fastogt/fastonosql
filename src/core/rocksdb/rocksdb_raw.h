@@ -22,7 +22,9 @@
 
 #include <rocksdb/db.h>
 
+#include "core/command_handler.h"
 #include "core/db_connection.h"
+
 #include "core/rocksdb/rocksdb_settings.h"
 #include "core/rocksdb/rocksdb_config.h"
 #include "core/rocksdb/rocksdb_infos.h"

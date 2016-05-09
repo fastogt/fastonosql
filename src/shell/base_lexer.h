@@ -23,7 +23,7 @@
 
 #include <vector>
 
-#include "core/types.h"
+#include "core/command_handler.h"
 
 namespace fastonosql {
 namespace shell {

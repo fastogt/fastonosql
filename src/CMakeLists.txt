@@ -112,6 +112,7 @@ SET(HEADERS_CORE
     core/events/events.h
     core/events/events_info.h
     core/types.h
+    core/command_handler.h
     core/command_key.h
     core/db_key.h
     core/db_connection.h
@@ -132,6 +133,7 @@ SET(SOURCES_CORE
     core/idatabase.cpp
     core/servers_manager.cpp
     core/types.cpp
+    core/command_handler.cpp
     core/command_key.cpp
     core/db_key.cpp
     core/db_connection.cpp

@@ -25,6 +25,8 @@ extern "C" {
 #include <string>
 
 #include "core/db_connection.h"
+#include "core/command_handler.h"
+
 #include "core/lmdb/lmdb_settings.h"
 #include "core/lmdb/lmdb_config.h"
 #include "core/lmdb/lmdb_infos.h"
@@ -46,7 +48,7 @@ common::Error createConnection(LmdbConnectionSettings* settings, LMDBConnection*
 common::Error testConnection(LmdbConnectionSettings* settings);
 
 struct LmdbRaw
-    : public CommandHandler {
+  : public CommandHandler {
   typedef DBConnection<LMDBAllocTrait> connection_t;
   typedef connection_t::config_t config_t;
   LmdbRaw();
