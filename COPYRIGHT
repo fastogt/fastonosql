@@ -1,11 +1,11 @@
-FastoRedis, cross-platform Redis management tool.
+FastoNoSQL, cross-platform open source Redis, Memcached, SSDB, LevelDB, RocksDB, UnQLite, LMDB GUI management tool.
 
-Copyright 2014, Fasto.
+Copyright 2016, FastoGT.
 
-The FltoRedis is released under the terms of the GNU General Public
+The FastoNoSQL is released under the terms of the GNU General Public
 License, version 3.
 
-The FastoRedis Project includes files written by third parties
+The FastoNoSQL Project includes files written by third parties
 and used with permission or subject to their respective license
 agreements.
 

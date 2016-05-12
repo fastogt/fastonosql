@@ -223,16 +223,19 @@ common::ArrayValue* FastoObjectArray::array() const {
 namespace common {
 
 std::string convertToString(fastonosql::FastoObject* obj) {
+  if (!obj) {
+    return std::string();
+  }
+
   std::string result;
-  if (obj) {
-    std::string str = obj->toString();
-    if (!str.empty()) {
-      result += str + obj->delemitr();
-    }
-    auto childrens = obj->childrens();
-    for(auto it = childrens.begin(); it != childrens.end(); ++it ){
-      result += convertToString(*it);
-    }
+  std::string str = obj->toString();
+  if (!str.empty()) {
+    result += str + obj->delemitr();
+  }
+
+  auto childrens = obj->childrens();
+  for(auto it = childrens.begin(); it != childrens.end(); ++it ){
+    result += convertToString(*it);
   }
 
   return result;
