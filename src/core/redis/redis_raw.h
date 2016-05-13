@@ -25,7 +25,7 @@
 
 #include "core/redis/redis_settings.h"
 #include "core/redis/config.h"
-#include "core/redis/redis_infos.h"
+#include "core/redis/server_info.h"
 
 #define INFO_REQUEST "INFO"
 #define GET_SERVER_TYPE "CLUSTER NODES"

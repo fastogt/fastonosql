@@ -169,10 +169,10 @@ common::Error SsdbDriver::executeImpl(int argc, char** argv, FastoObject* out) {
 
 common::Error SsdbDriver::serverInfo(IServerInfo** info) {
   LOG_COMMAND(type(), fastonosql::Command(INFO_REQUEST, common::Value::C_INNER));
-  SsdbServerInfo::Common cm;
+  ServerInfo::Common cm;
   common::Error err = impl_->info(nullptr, &cm);
   if (!err) {
-    *info = new SsdbServerInfo(cm);
+    *info = new ServerInfo(cm);
   }
 
   return err;

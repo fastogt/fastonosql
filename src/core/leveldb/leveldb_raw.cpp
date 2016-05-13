@@ -164,7 +164,7 @@ common::Error LeveldbRaw::dbsize(size_t* size) {
   return common::Error();
 }
 
-common::Error LeveldbRaw::info(const char* args, LeveldbServerInfo::Stats* statsout) {
+common::Error LeveldbRaw::info(const char* args, ServerInfo::Stats* statsout) {
   CHECK(isConnected());
 
   if (!statsout) {
@@ -177,7 +177,7 @@ common::Error LeveldbRaw::info(const char* args, LeveldbServerInfo::Stats* stats
     return common::make_error_value("info function failed", common::ErrorValue::E_ERROR);
   }
 
-  LeveldbServerInfo::Stats lstats;
+  ServerInfo::Stats lstats;
   if (rets.size() > sizeof(LEVELDB_HEADER_STATS)) {
     const char* retsc = rets.c_str() + sizeof(LEVELDB_HEADER_STATS);
     char* p2 = strtok((char*)retsc, " ");
@@ -319,10 +319,10 @@ common::Error dbsize(CommandHandler* handler, int argc, char** argv, FastoObject
 common::Error info(CommandHandler* handler, int argc, char** argv, FastoObject* out) {
   LeveldbRaw* level = static_cast<LeveldbRaw*>(handler);
 
-  LeveldbServerInfo::Stats statsout;
+  ServerInfo::Stats statsout;
   common::Error er = level->info(argc == 1 ? argv[0] : nullptr, &statsout);
   if (!er) {
-    LeveldbServerInfo linf(statsout);
+    ServerInfo linf(statsout);
     common::StringValue* val = common::Value::createStringValue(linf.toString());
     FastoObject* child = new FastoObject(out, val, level->delimiter(), level->nsSeparator());
     out->addChildren(child);

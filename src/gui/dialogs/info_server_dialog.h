@@ -24,31 +24,31 @@
 #include "core/events/events_info.h"
 
 #ifdef BUILD_WITH_REDIS
-#include "core/redis/redis_infos.h"
+#include "core/redis/server_info.h"
 #endif
 
 #ifdef BUILD_WITH_MEMCACHED
-#include "core/memcached/memcached_infos.h"
+#include "core/memcached/server_info.h"
 #endif
 
 #ifdef BUILD_WITH_SSDB
-#include "core/ssdb/ssdb_infos.h"
+#include "core/ssdb/server_info.h"
 #endif
 
 #ifdef BUILD_WITH_LEVELDB
-#include "core/leveldb/leveldb_infos.h"
+#include "core/leveldb/server_info.h"
 #endif
 
 #ifdef BUILD_WITH_ROCKSDB
-#include "core/rocksdb/rocksdb_infos.h"
+#include "core/rocksdb/server_info.h"
 #endif
 
 #ifdef BUILD_WITH_UNQLITE
-#include "core/unqlite/unqlite_infos.h"
+#include "core/unqlite/server_info.h"
 #endif
 
 #ifdef BUILD_WITH_LMDB
-#include "core/lmdb/lmdb_infos.h"
+#include "core/lmdb/server_info.h"
 #endif
 
 class QLabel;
@@ -88,25 +88,25 @@ class InfoServerDialog
  private:
   void retranslateUi();
 #ifdef BUILD_WITH_REDIS
-  void updateText(const core::redis::RedisServerInfo& serv);
+  void updateText(const core::redis::ServerInfo& serv);
 #endif
 #ifdef BUILD_WITH_MEMCACHED
-  void updateText(const core::memcached::MemcachedServerInfo& serv);
+  void updateText(const core::memcached::ServerInfo& serv);
 #endif
 #ifdef BUILD_WITH_SSDB
-  void updateText(const core::ssdb::SsdbServerInfo& serv);
+  void updateText(const core::ssdb::ServerInfo& serv);
 #endif
 #ifdef BUILD_WITH_LEVELDB
-  void updateText(const core::leveldb::LeveldbServerInfo& serv);
+  void updateText(const core::leveldb::ServerInfo& serv);
 #endif
 #ifdef BUILD_WITH_ROCKSDB
-  void updateText(const core::rocksdb::RocksdbServerInfo& serv);
+  void updateText(const core::rocksdb::ServerInfo& serv);
 #endif
 #ifdef BUILD_WITH_UNQLITE
-  void updateText(const core::unqlite::UnqliteServerInfo& serv);
+  void updateText(const core::unqlite::ServerInfo& serv);
 #endif
 #ifdef BUILD_WITH_LMDB
-  void updateText(const core::lmdb::LmdbServerInfo& serv);
+  void updateText(const core::lmdb::ServerInfo& serv);
 #endif
   QLabel* serverTextInfo_;
   QLabel* hardwareTextInfo_;

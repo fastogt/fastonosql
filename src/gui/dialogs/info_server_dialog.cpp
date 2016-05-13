@@ -179,37 +179,37 @@ InfoServerDialog::InfoServerDialog(core::IServerSPtr server, QWidget* parent)
                                                  QColor(111, 111, 100), this);
 #ifdef BUILD_WITH_REDIS
   if (type == core::REDIS) {
-    updateText(core::redis::RedisServerInfo());
+    updateText(core::redis::ServerInfo());
   }
 #endif
 #ifdef BUILD_WITH_MEMCACHED
   if (type == core::MEMCACHED) {
-    updateText(core::memcached::MemcachedServerInfo());
+    updateText(core::memcached::ServerInfo());
   }
 #endif
 #ifdef BUILD_WITH_SSDB
   if (type == core::SSDB) {
-    updateText(core::ssdb::SsdbServerInfo());
+    updateText(core::ssdb::ServerInfo());
   }
 #endif
 #ifdef BUILD_WITH_LEVELDB
   if (type == core::LEVELDB) {
-    updateText(core::leveldb::LeveldbServerInfo());
+    updateText(core::leveldb::ServerInfo());
   }
 #endif
 #ifdef BUILD_WITH_ROCKSDB
   if (type == core::ROCKSDB) {
-    updateText(core::rocksdb::RocksdbServerInfo());
+    updateText(core::rocksdb::ServerInfo());
   }
 #endif
 #ifdef BUILD_WITH_UNQLITE
   if (type == core::UNQLITE) {
-    updateText(core::unqlite::UnqliteServerInfo());
+    updateText(core::unqlite::ServerInfo());
   }
 #endif
 #ifdef BUILD_WITH_LMDB
   if (type == core::LMDB) {
-    updateText(core::lmdb::LmdbServerInfo());
+    updateText(core::lmdb::ServerInfo());
   }
 #endif
 
@@ -240,49 +240,49 @@ void InfoServerDialog::finishServerInfo(const core::events_info::ServerInfoRespo
   CHECK(type == inf->type());
 #ifdef BUILD_WITH_REDIS
   if (type == core::REDIS) {
-    core::redis::RedisServerInfo* infr = static_cast<core::redis::RedisServerInfo*>(inf.get());
+    core::redis::ServerInfo* infr = static_cast<core::redis::ServerInfo*>(inf.get());
     CHECK(infr);
     updateText(*infr);
   }
 #endif
 #ifdef BUILD_WITH_MEMCACHED
   if (type == core::MEMCACHED) {
-    core::memcached::MemcachedServerInfo* infr = static_cast<core::memcached::MemcachedServerInfo*>(inf.get());
+    core::memcached::ServerInfo* infr = static_cast<core::memcached::ServerInfo*>(inf.get());
     CHECK(infr);
     updateText(*infr);
   }
 #endif
 #ifdef BUILD_WITH_SSDB
   if (type == core::SSDB) {
-    core::ssdb::SsdbServerInfo* infr = static_cast<core::ssdb::SsdbServerInfo*>(inf.get());
+    core::ssdb::ServerInfo* infr = static_cast<core::ssdb::ServerInfo*>(inf.get());
     CHECK(infr);
     updateText(*infr);
   }
 #endif
 #ifdef BUILD_WITH_LEVELDB
   if (type == core::LEVELDB) {
-    core::leveldb::LeveldbServerInfo* infr = static_cast<core::leveldb::LeveldbServerInfo*>(inf.get());
+    core::leveldb::ServerInfo* infr = static_cast<core::leveldb::ServerInfo*>(inf.get());
     CHECK(infr);
     updateText(*infr);
   }
 #endif
 #ifdef BUILD_WITH_ROCKSDB
   if (type == core::ROCKSDB) {
-    core::rocksdb::RocksdbServerInfo* infr = static_cast<core::rocksdb::RocksdbServerInfo*>(inf.get());
+    core::rocksdb::ServerInfo* infr = static_cast<core::rocksdb::ServerInfo*>(inf.get());
     CHECK(infr);
     updateText(*infr);
   }
 #endif
 #ifdef BUILD_WITH_UNQLITE
   if (type == core::UNQLITE) {
-    core::unqlite::UnqliteServerInfo* infr = dynamic_cast<core::unqlite::UnqliteServerInfo*>(inf.get());  // +
+    core::unqlite::ServerInfo* infr = dynamic_cast<core::unqlite::ServerInfo*>(inf.get());  // +
     CHECK(infr);
     updateText(*infr);
   }
 #endif
 #ifdef BUILD_WITH_LMDB
   if (type == core::LMDB) {
-    core::lmdb::LmdbServerInfo* infr = dynamic_cast<core::lmdb::LmdbServerInfo*>(inf.get());  // +
+    core::lmdb::ServerInfo* infr = dynamic_cast<core::lmdb::ServerInfo*>(inf.get());  // +
     CHECK(infr);
     updateText(*infr);
   }
@@ -310,8 +310,8 @@ void InfoServerDialog::retranslateUi() {
 }
 
 #ifdef BUILD_WITH_REDIS
-void InfoServerDialog::updateText(const core::redis::RedisServerInfo& serv) {
-  core::redis::RedisServerInfo::Server ser = serv.server_;
+void InfoServerDialog::updateText(const core::redis::ServerInfo& serv) {
+  core::redis::ServerInfo::Server ser = serv.server_;
   QString textServ = redisTextServerTemplate
           .arg(common::convertFromString<QString>(ser.redis_version_))
           .arg(common::convertFromString<QString>(ser.redis_git_sha1_))
@@ -329,13 +329,13 @@ void InfoServerDialog::updateText(const core::redis::RedisServerInfo& serv) {
           .arg(ser.hz_)
           .arg(ser.lru_clock_);
 
-  core::redis::RedisServerInfo::Clients cl = serv.clients_;
+  core::redis::ServerInfo::Clients cl = serv.clients_;
   QString textCl = redisTextClientsTemplate.arg(cl.connected_clients_)
           .arg(cl.client_longest_output_list_)
           .arg(cl.client_biggest_input_buf_)
           .arg(cl.blocked_clients_);
 
-  core::redis::RedisServerInfo::Memory mem = serv.memory_;
+  core::redis::ServerInfo::Memory mem = serv.memory_;
   QString textMem = redisTextMemoryTemplate.arg(mem.used_memory_)
           .arg(common::convertFromString<QString>(mem.used_memory_human_))
           .arg(mem.used_memory_rss_)
@@ -345,7 +345,7 @@ void InfoServerDialog::updateText(const core::redis::RedisServerInfo& serv) {
           .arg(mem.mem_fragmentation_ratio_)
           .arg(common::convertFromString<QString>(mem.mem_allocator_));
 
-  core::redis::RedisServerInfo::Persistence per = serv.persistence_;
+  core::redis::ServerInfo::Persistence per = serv.persistence_;
   QString textPer = redisTextPersistenceTemplate.arg(per.loading_)
           .arg(per.rdb_changes_since_last_save_)
           .arg(per.rdb_bgsave_in_progress_)
@@ -361,7 +361,7 @@ void InfoServerDialog::updateText(const core::redis::RedisServerInfo& serv) {
           .arg(common::convertFromString<QString>(per.aof_last_bgrewrite_status_))
           .arg(common::convertFromString<QString>(per.aof_last_write_status_));
 
-  core::redis::RedisServerInfo::Stats stat = serv.stats_;
+  core::redis::ServerInfo::Stats stat = serv.stats_;
   QString textStat = redisTextStatsTemplate.arg(stat.total_connections_received_)
           .arg(stat.total_commands_processed_)
           .arg(stat.instantaneous_ops_per_sec_)
@@ -377,7 +377,7 @@ void InfoServerDialog::updateText(const core::redis::RedisServerInfo& serv) {
           .arg(stat.pubsub_patterns_)
           .arg(stat.latest_fork_usec_);
 
-  core::redis::RedisServerInfo::Replication repl = serv.replication_;
+  core::redis::ServerInfo::Replication repl = serv.replication_;
   QString textRepl = redisTextReplicationTemplate
           .arg(common::convertFromString<QString>(repl.role_))
           .arg(repl.connected_slaves_)
@@ -387,7 +387,7 @@ void InfoServerDialog::updateText(const core::redis::RedisServerInfo& serv) {
           .arg(repl.backlog_first_byte_offset_)
           .arg(repl.backlog_histen_);
 
-  core::redis::RedisServerInfo::Cpu cpu = serv.cpu_;
+  core::redis::ServerInfo::Cpu cpu = serv.cpu_;
   QString textCpu = redisTextCpuTemplate.arg(cpu.used_cpu_sys_)
           .arg(cpu.used_cpu_user_)
           .arg(cpu.used_cpu_sys_children_)
@@ -399,8 +399,8 @@ void InfoServerDialog::updateText(const core::redis::RedisServerInfo& serv) {
 #endif
 
 #ifdef BUILD_WITH_MEMCACHED
-void InfoServerDialog::updateText(const core::memcached::MemcachedServerInfo& serv) {
-  core::memcached::MemcachedServerInfo::Common com = serv.common_;
+void InfoServerDialog::updateText(const core::memcached::ServerInfo& serv) {
+  core::memcached::ServerInfo::Common com = serv.common_;
 
   QString textServ = memcachedTextServerTemplate.arg(com.pid)
           .arg(com.uptime)
@@ -432,8 +432,8 @@ void InfoServerDialog::updateText(const core::memcached::MemcachedServerInfo& se
 #endif
 
 #ifdef BUILD_WITH_SSDB
-void InfoServerDialog::updateText(const core::ssdb::SsdbServerInfo& serv) {
-  core::ssdb::SsdbServerInfo::Common com = serv.common_;
+void InfoServerDialog::updateText(const core::ssdb::ServerInfo& serv) {
+  core::ssdb::ServerInfo::Common com = serv.common_;
   QString textServ = ssdbTextServerTemplate.arg(common::convertFromString<QString>(com.version))
           .arg(com.links)
           .arg(com.total_calls)
@@ -445,8 +445,8 @@ void InfoServerDialog::updateText(const core::ssdb::SsdbServerInfo& serv) {
 #endif
 
 #ifdef BUILD_WITH_LEVELDB
-void InfoServerDialog::updateText(const core::leveldb::LeveldbServerInfo& serv) {
-  core::leveldb::LeveldbServerInfo::Stats stats = serv.stats_;
+void InfoServerDialog::updateText(const core::leveldb::ServerInfo& serv) {
+  core::leveldb::ServerInfo::Stats stats = serv.stats_;
   QString textServ = leveldbTextServerTemplate.arg(stats.compactions_level)
           .arg(stats.file_size_mb)
           .arg(stats.time_sec)
@@ -457,8 +457,8 @@ void InfoServerDialog::updateText(const core::leveldb::LeveldbServerInfo& serv) 
 }
 #endif
 #ifdef BUILD_WITH_ROCKSDB
-void InfoServerDialog::updateText(const core::rocksdb::RocksdbServerInfo& serv) {
-  core::rocksdb::RocksdbServerInfo::Stats stats = serv.stats_;
+void InfoServerDialog::updateText(const core::rocksdb::ServerInfo& serv) {
+  core::rocksdb::ServerInfo::Stats stats = serv.stats_;
   QString textServ = leveldbTextServerTemplate.arg(stats.compactions_level)
           .arg(stats.file_size_mb)
           .arg(stats.time_sec)
@@ -469,16 +469,16 @@ void InfoServerDialog::updateText(const core::rocksdb::RocksdbServerInfo& serv) 
 }
 #endif
 #ifdef BUILD_WITH_UNQLITE
-void InfoServerDialog::updateText(const core::unqlite::UnqliteServerInfo& serv) {
-  core::unqlite::UnqliteServerInfo::Stats stats = serv.stats_;
+void InfoServerDialog::updateText(const core::unqlite::ServerInfo& serv) {
+  core::unqlite::ServerInfo::Stats stats = serv.stats_;
   QString textServ = unqliteTextServerTemplate.arg(common::convertFromString<QString>(stats.file_name));
 
   serverTextInfo_->setText(textServ);
 }
 #endif
 #ifdef BUILD_WITH_LMDB
-void InfoServerDialog::updateText(const core::lmdb::LmdbServerInfo& serv) {
-  core::lmdb::LmdbServerInfo::Stats stats = serv.stats_;
+void InfoServerDialog::updateText(const core::lmdb::ServerInfo& serv) {
+  core::lmdb::ServerInfo::Stats stats = serv.stats_;
   QString textServ = lmdbTextServerTemplate.arg(common::convertFromString<QString>(stats.file_name));
 
   serverTextInfo_->setText(textServ);

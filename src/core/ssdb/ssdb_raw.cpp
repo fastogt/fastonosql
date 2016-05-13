@@ -121,7 +121,7 @@ const char* SsdbRaw::versionApi() {
   return "1.9.2";
 }
 
-common::Error SsdbRaw::info(const char* args, SsdbServerInfo::Common* statsout) {
+common::Error SsdbRaw::info(const char* args, ServerInfo::Common* statsout) {
   CHECK(isConnected());
 
   if (!statsout) {
@@ -136,7 +136,7 @@ common::Error SsdbRaw::info(const char* args, SsdbServerInfo::Common* statsout) 
     return common::make_error_value(buff, common::ErrorValue::E_ERROR);
   }
 
-  SsdbServerInfo::Common lstatsout;
+  ServerInfo::Common lstatsout;
   for (size_t i = 0; i < ret.size(); i += 2) {
     if (ret[i] == SSDB_VERSION_LABEL) {
       lstatsout.version = ret[i + 1];
@@ -694,10 +694,10 @@ common::Error SsdbRaw::flushdb() {
 
 common::Error info(CommandHandler* handler, int argc, char** argv, FastoObject* out) {
   SsdbRaw* ssdb = static_cast<SsdbRaw*>(handler);
-  SsdbServerInfo::Common statsout;
+  ServerInfo::Common statsout;
   common::Error er = ssdb->info(argc == 1 ? argv[0] : 0, &statsout);
   if (!er) {
-    SsdbServerInfo sinf(statsout);
+    ServerInfo sinf(statsout);
     common::StringValue* val = common::Value::createStringValue(sinf.toString());
     FastoObject* child = new FastoObject(out, val, ssdb->delimiter(), ssdb->nsSeparator());
     out->addChildren(child);

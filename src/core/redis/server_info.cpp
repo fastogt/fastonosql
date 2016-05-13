@@ -16,7 +16,7 @@
     along with FastoNoSQL.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-#include "core/redis/redis_infos.h"
+#include "core/redis/server_info.h"
 
 #include <ostream>
 #include <sstream>
@@ -167,13 +167,13 @@ std::vector< std::vector<Field> > DBTraits<REDIS>::infoFields() {
 
 namespace redis {
 
-RedisServerInfo::Server::Server::Server()
+ServerInfo::Server::Server::Server()
   : redis_version_(), redis_git_sha1_(), redis_git_dirty_(), redis_mode_(), os_(),
   arch_bits_(0), multiplexing_api_(), gcc_version_(), process_id_(0),
   run_id_(), tcp_port_(0), uptime_in_seconds_(0), uptime_in_days_(0), hz_(0), lru_clock_(0) {
 }
 
-RedisServerInfo::Server::Server(const std::string& server_text)
+ServerInfo::Server::Server(const std::string& server_text)
   : redis_version_(), redis_git_sha1_(), redis_git_dirty_(), redis_mode_(), os_(),
   arch_bits_(0), multiplexing_api_(), gcc_version_(), process_id_(0),
   run_id_(), tcp_port_(0), uptime_in_seconds_(0), uptime_in_days_(0), hz_(0), lru_clock_(0) {
@@ -219,7 +219,7 @@ RedisServerInfo::Server::Server(const std::string& server_text)
   }
 }
 
-common::Value* RedisServerInfo::Server::valueByIndex(unsigned char index) const {
+common::Value* ServerInfo::Server::valueByIndex(unsigned char index) const {
   switch (index) {
   case 0:
     return new common::StringValue(redis_version_);
@@ -260,12 +260,12 @@ common::Value* RedisServerInfo::Server::valueByIndex(unsigned char index) const 
   return nullptr;
 }
 
-RedisServerInfo::Clients::Clients()
+ServerInfo::Clients::Clients()
   : connected_clients_(0), client_longest_output_list_(0),
   client_biggest_input_buf_(0), blocked_clients_(0) {
 }
 
-RedisServerInfo::Clients::Clients(const std::string& client_text)
+ServerInfo::Clients::Clients(const std::string& client_text)
   : connected_clients_(0), client_longest_output_list_(0),
   client_biggest_input_buf_(0), blocked_clients_(0) {
   size_t pos = 0;
@@ -288,7 +288,7 @@ RedisServerInfo::Clients::Clients(const std::string& client_text)
   }
 }
 
-common::Value* RedisServerInfo::Clients::valueByIndex(unsigned char index) const {
+common::Value* ServerInfo::Clients::valueByIndex(unsigned char index) const {
   switch (index) {
     case 0:
       return new common::FundamentalValue(connected_clients_);
@@ -305,12 +305,12 @@ common::Value* RedisServerInfo::Clients::valueByIndex(unsigned char index) const
   return nullptr;
 }
 
-RedisServerInfo::Memory::Memory()
+ServerInfo::Memory::Memory()
   : used_memory_(0), used_memory_human_(), used_memory_rss_(0), used_memory_peak_(0),
     used_memory_peak_human_(), used_memory_lua_(0), mem_fragmentation_ratio_(0), mem_allocator_() {
 }
 
-RedisServerInfo::Memory::Memory(const std::string& memory_text)
+ServerInfo::Memory::Memory(const std::string& memory_text)
   : used_memory_(0), used_memory_human_(), used_memory_rss_(0), used_memory_peak_(0),
     used_memory_peak_human_(), used_memory_lua_(0), mem_fragmentation_ratio_(0), mem_allocator_() {
   size_t pos = 0;
@@ -341,7 +341,7 @@ RedisServerInfo::Memory::Memory(const std::string& memory_text)
   }
 }
 
-common::Value* RedisServerInfo::Memory::valueByIndex(unsigned char index) const {
+common::Value* ServerInfo::Memory::valueByIndex(unsigned char index) const {
   switch (index) {
     case 0:
       return new common::FundamentalValue(used_memory_);
@@ -366,7 +366,7 @@ common::Value* RedisServerInfo::Memory::valueByIndex(unsigned char index) const 
   return nullptr;
 }
 
-RedisServerInfo::Persistence::Persistence()
+ServerInfo::Persistence::Persistence()
   : loading_(0), rdb_changes_since_last_save_(0), rdb_bgsave_in_progress_(0),
     rdb_last_save_time_(0), rdb_last_bgsave_status_(),
     rdb_last_bgsave_time_sec_(0), rdb_current_bgsave_time_sec_(0),
@@ -375,7 +375,7 @@ RedisServerInfo::Persistence::Persistence()
     aof_last_bgrewrite_status_(), aof_last_write_status_() {
 }
 
-RedisServerInfo::Persistence::Persistence(const std::string& persistence_text)
+ServerInfo::Persistence::Persistence(const std::string& persistence_text)
   : loading_(0), rdb_changes_since_last_save_(0), rdb_bgsave_in_progress_(0),
     rdb_last_save_time_(0), rdb_last_bgsave_status_(),
     rdb_last_bgsave_time_sec_(0), rdb_current_bgsave_time_sec_(0),
@@ -422,7 +422,7 @@ RedisServerInfo::Persistence::Persistence(const std::string& persistence_text)
   }
 }
 
-common::Value* RedisServerInfo::Persistence::valueByIndex(unsigned char index) const {
+common::Value* ServerInfo::Persistence::valueByIndex(unsigned char index) const {
   switch (index) {
     case 0:
       return new common::FundamentalValue(loading_);
@@ -459,7 +459,7 @@ common::Value* RedisServerInfo::Persistence::valueByIndex(unsigned char index) c
   return nullptr;
 }
 
-RedisServerInfo::Stats::Stats()
+ServerInfo::Stats::Stats()
   : total_connections_received_(0), total_commands_processed_(0),
     instantaneous_ops_per_sec_(0), rejected_connections_(0),
     sync_full_(0), sync_partial_ok_(0), sync_partial_err_(0),
@@ -468,7 +468,7 @@ RedisServerInfo::Stats::Stats()
     pubsub_patterns_(0), latest_fork_usec_(0) {
 }
 
-RedisServerInfo::Stats::Stats(const std::string& stats_text)
+ServerInfo::Stats::Stats(const std::string& stats_text)
   : total_connections_received_(0), total_commands_processed_(0),
     instantaneous_ops_per_sec_(0), rejected_connections_(0),
     sync_full_(0), sync_partial_ok_(0), sync_partial_err_(0),
@@ -515,7 +515,7 @@ RedisServerInfo::Stats::Stats(const std::string& stats_text)
   }
 }
 
-common::Value* RedisServerInfo::Stats::valueByIndex(unsigned char index) const {
+common::Value* ServerInfo::Stats::valueByIndex(unsigned char index) const {
   switch (index) {
     case 0:
       return new common::FundamentalValue(total_connections_received_);
@@ -552,14 +552,14 @@ common::Value* RedisServerInfo::Stats::valueByIndex(unsigned char index) const {
   return nullptr;
 }
 
-RedisServerInfo::Replication::Replication()
+ServerInfo::Replication::Replication()
   : role_(), connected_slaves_(0),
     master_repl_offset_(0), backlog_active_(0),
     backlog_size_(0), backlog_first_byte_offset_(0),
     backlog_histen_(0) {
 }
 
-RedisServerInfo::Replication::Replication(const std::string& replication_text)
+ServerInfo::Replication::Replication(const std::string& replication_text)
   : role_(), connected_slaves_(0),
     master_repl_offset_(0), backlog_active_(0),
     backlog_size_(0), backlog_first_byte_offset_(0),
@@ -591,7 +591,7 @@ RedisServerInfo::Replication::Replication(const std::string& replication_text)
   }
 }
 
-common::Value* RedisServerInfo::Replication::valueByIndex(unsigned char index) const {
+common::Value* ServerInfo::Replication::valueByIndex(unsigned char index) const {
   switch (index) {
     case 0:
       return new common::StringValue(role_);
@@ -614,11 +614,11 @@ common::Value* RedisServerInfo::Replication::valueByIndex(unsigned char index) c
   return nullptr;
 }
 
-RedisServerInfo::Cpu::Cpu()
+ServerInfo::Cpu::Cpu()
   : used_cpu_sys_(0), used_cpu_user_(0), used_cpu_sys_children_(0), used_cpu_user_children_(0) {
 }
 
-RedisServerInfo::Cpu::Cpu(const std::string& cpu_text)
+ServerInfo::Cpu::Cpu(const std::string& cpu_text)
   : used_cpu_sys_(0), used_cpu_user_(0), used_cpu_sys_children_(0), used_cpu_user_children_(0) {
   size_t pos = 0;
   size_t start = 0;
@@ -640,7 +640,7 @@ RedisServerInfo::Cpu::Cpu(const std::string& cpu_text)
   }
 }
 
-common::Value* RedisServerInfo::Cpu::valueByIndex(unsigned char index) const {
+common::Value* ServerInfo::Cpu::valueByIndex(unsigned char index) const {
   switch (index) {
     case 0:
       return new common::FundamentalValue(used_cpu_sys_);
@@ -657,22 +657,22 @@ common::Value* RedisServerInfo::Cpu::valueByIndex(unsigned char index) const {
   return nullptr;
 }
 
-common::Value* RedisServerInfo::Keyspace::valueByIndex(unsigned char index) const {
+common::Value* ServerInfo::Keyspace::valueByIndex(unsigned char index) const {
   return nullptr;
 }
 
-RedisServerInfo::RedisServerInfo()
+ServerInfo::ServerInfo()
   : IServerInfo(REDIS) {
 }
 
-RedisServerInfo::RedisServerInfo(const Server &serv, const Clients &clients, const Memory &memory,
+ServerInfo::ServerInfo(const Server &serv, const Clients &clients, const Memory &memory,
                      const Persistence &pers, const Stats &stats, const Replication &repl,
                                  const Cpu &cpu, const Keyspace &key)
   : IServerInfo(REDIS), server_(serv), clients_(clients), memory_(memory), persistence_(pers),
     stats_(stats), replication_(repl), cpu_(cpu), keySp_(key) {
 }
 
-common::Value* RedisServerInfo::valueByIndexes(unsigned char property, unsigned char field) const {
+common::Value* ServerInfo::valueByIndexes(unsigned char property, unsigned char field) const {
   switch (property) {
     case 0:
       return server_.valueByIndex(field);
@@ -697,7 +697,7 @@ common::Value* RedisServerInfo::valueByIndexes(unsigned char property, unsigned 
   return nullptr;
 }
 
-std::ostream& operator<<(std::ostream& out, const RedisServerInfo::Server& value) {
+std::ostream& operator<<(std::ostream& out, const ServerInfo::Server& value) {
   return out  << REDIS_VERSION_LABEL":" << value.redis_version_ << ("\r\n")
               << REDIS_GIT_SHA1_LABEL":" << value.redis_git_sha1_ << ("\r\n")
               << REDIS_GIT_DIRTY_LABEL":" << value.redis_git_dirty_ << ("\r\n")
@@ -715,14 +715,14 @@ std::ostream& operator<<(std::ostream& out, const RedisServerInfo::Server& value
               << REDIS_LRU_CLOCK_LABEL":" << value.lru_clock_ << ("\r\n");
 }
 
-std::ostream& operator<<(std::ostream& out, const RedisServerInfo::Clients& value) {
+std::ostream& operator<<(std::ostream& out, const ServerInfo::Clients& value) {
   return out << REDIS_CONNECTED_CLIENTS_LABEL":" << value.connected_clients_ << ("\r\n")
              << REDIS_CLIENT_LONGEST_OUTPUT_LIST_LABEL":" << value.client_longest_output_list_ << ("\r\n")
              << REDIS_CLIENT_BIGGEST_INPUT_BUF_LABEL":" << value.client_biggest_input_buf_ << ("\r\n")
              << REDIS_BLOCKED_CLIENTS_LABEL":" << value.blocked_clients_ << ("\r\n");
 }
 
-std::ostream& operator<<(std::ostream& out, const RedisServerInfo::Memory& value) {
+std::ostream& operator<<(std::ostream& out, const ServerInfo::Memory& value) {
   return out << REDIS_USED_MEMORY_LABEL":" << value.used_memory_ << ("\r\n")
              << REDIS_USED_MEMORY_HUMAN_LABEL":" << value.used_memory_human_ << ("\r\n")
              << REDIS_USED_MEMORY_RSS_LABEL":" << value.used_memory_rss_ << ("\r\n")
@@ -733,7 +733,7 @@ std::ostream& operator<<(std::ostream& out, const RedisServerInfo::Memory& value
              << REDIS_MEM_ALLOCATOR_LABEL":" << value.mem_allocator_ << ("\r\n");
 }
 
-std::ostream& operator<<(std::ostream& out, const RedisServerInfo::Persistence& value) {
+std::ostream& operator<<(std::ostream& out, const ServerInfo::Persistence& value) {
   return out  << REDIS_LOADING_LABEL":" << value.loading_ << ("\r\n")
               << REDIS_RDB_CHANGES_SINCE_LAST_SAVE_LABEL":" << value.rdb_changes_since_last_save_ << ("\r\n")
               << REDIS_RDB_DGSAVE_IN_PROGRESS_LABEL":" << value.rdb_bgsave_in_progress_ << ("\r\n")
@@ -750,7 +750,7 @@ std::ostream& operator<<(std::ostream& out, const RedisServerInfo::Persistence& 
               << REDIS_AOF_LAST_WRITE_STATUS_LABEL":" << value.aof_last_write_status_ << ("\r\n");
 }
 
-std::ostream& operator<<(std::ostream& out, const RedisServerInfo::Stats& value) {
+std::ostream& operator<<(std::ostream& out, const ServerInfo::Stats& value) {
   return out  << REDIS_TOTAL_CONNECTIONS_RECEIVED_LABEL":" << value.total_connections_received_ << ("\r\n")
               << REDIS_TOTAL_COMMANDS_PROCESSED_LABEL":" << value.total_commands_processed_ << ("\r\n")
               << REDIS_INSTANTANEOUS_OPS_PER_SEC_LABEL":" << value.instantaneous_ops_per_sec_ << ("\r\n")
@@ -767,7 +767,7 @@ std::ostream& operator<<(std::ostream& out, const RedisServerInfo::Stats& value)
               << REDIS_LATEST_FORK_USEC_LABEL":" << value.latest_fork_usec_ << ("\r\n");
 }
 
-std::ostream& operator<<(std::ostream& out, const RedisServerInfo::Replication& value) {
+std::ostream& operator<<(std::ostream& out, const ServerInfo::Replication& value) {
   return out  << REDIS_ROLE_LABEL":" << value.role_ << ("\r\n")
               << REDIS_CONNECTED_SLAVES_LABEL":" << value.connected_slaves_ << ("\r\n")
               << REDIS_MASTER_REPL_OFFSET_LABEL":" << value.master_repl_offset_ << ("\r\n")
@@ -777,14 +777,14 @@ std::ostream& operator<<(std::ostream& out, const RedisServerInfo::Replication& 
               << REDIS_BACKLOG_HISTEN_LABEL":" << value.backlog_histen_ << ("\r\n");
 }
 
-std::ostream& operator<<(std::ostream& out, const RedisServerInfo::Cpu& value) {
+std::ostream& operator<<(std::ostream& out, const ServerInfo::Cpu& value) {
   return out << REDIS_USED_CPU_SYS_LABEL":" << value.used_cpu_sys_ << ("\r\n")
              << REDIS_USED_CPU_USER_LABEL":" << value.used_cpu_user_ << ("\r\n")
              << REDIS_USED_CPU_SYS_CHILDREN_LABEL":" << value.used_cpu_sys_children_ << ("\r\n")
              << REDIS_USED_CPU_USER_CHILDREN_LABEL":" << value.used_cpu_user_children_ << ("\r\n");
 }
 
-std::string RedisServerInfo::toString() const {
+std::string ServerInfo::toString() const {
   std::stringstream str;
   str << REDIS_SERVER_LABEL"\r\n" << server_ << REDIS_CLIENTS_LABEL"\r\n" << clients_ << REDIS_MEMORY_LABEL"\r\n" << memory_
                      << REDIS_PERSISTENCE_LABEL"\r\n" << persistence_ << REDIS_STATS_LABEL"\r\n" << stats_
@@ -792,21 +792,21 @@ std::string RedisServerInfo::toString() const {
   return str.str();
 }
 
-uint32_t RedisServerInfo::version() const {
+uint32_t ServerInfo::version() const {
   return common::convertVersionNumberFromString(server_.redis_version_);
 }
 
-std::ostream& operator<<(std::ostream& out, const RedisServerInfo& value) {
+std::ostream& operator<<(std::ostream& out, const ServerInfo& value) {
   // "# Server", "# Clients", "# Memory", "# Persistence", "# Stats", "# Replication", "# CPU", "# Keyspace"
   return out << value.toString();
 }
 
-RedisServerInfo* makeRedisServerInfo(const std::string& content) {
+ServerInfo* makeRedisServerInfo(const std::string& content) {
   if (content.empty()) {
     return nullptr;
   }
 
-  RedisServerInfo* result = new RedisServerInfo;
+  ServerInfo* result = new ServerInfo;
   int j = 0;
   std::string word;
   size_t pos = 0;
@@ -826,25 +826,25 @@ RedisServerInfo* makeRedisServerInfo(const std::string& content) {
         std::string part = content.substr(i + 1, pos - i - 1);
         switch (j) {
           case 0:
-            result->server_ = RedisServerInfo::Server(part);
+            result->server_ = ServerInfo::Server(part);
             break;
           case 1:
-            result->clients_ = RedisServerInfo::Clients(part);
+            result->clients_ = ServerInfo::Clients(part);
             break;
           case 2:
-            result->memory_ = RedisServerInfo::Memory(part);
+            result->memory_ = ServerInfo::Memory(part);
             break;
           case 3:
-            result->persistence_ = RedisServerInfo::Persistence(part);
+            result->persistence_ = ServerInfo::Persistence(part);
             break;
           case 4:
-            result->stats_ = RedisServerInfo::Stats(part);
+            result->stats_ = ServerInfo::Stats(part);
             break;
           case 5:
-            result->replication_ = RedisServerInfo::Replication(part);
+            result->replication_ = ServerInfo::Replication(part);
             break;
           case 6:
-            result->cpu_ = RedisServerInfo::Cpu(part);
+            result->cpu_ = ServerInfo::Cpu(part);
             break;
           default:
             break;
@@ -859,7 +859,7 @@ RedisServerInfo* makeRedisServerInfo(const std::string& content) {
   return result;
 }
 
-RedisServerInfo* makeRedisServerInfo(FastoObject* root) {
+ServerInfo* makeRedisServerInfo(FastoObject* root) {
   std::string content = common::convertToString(root);
   return makeRedisServerInfo(content);
 }

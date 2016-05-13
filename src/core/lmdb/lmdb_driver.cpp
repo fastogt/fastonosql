@@ -133,10 +133,10 @@ common::Error LmdbDriver::executeImpl(int argc, char** argv, FastoObject* out) {
 
 common::Error LmdbDriver::serverInfo(IServerInfo** info) {
   LOG_COMMAND(type(), fastonosql::Command(INFO_REQUEST, common::Value::C_INNER));
-  LmdbServerInfo::Stats cm;
+  ServerInfo::Stats cm;
   common::Error err = impl_->info(nullptr, &cm);
   if (!err) {
-    *info = new LmdbServerInfo(cm);
+    *info = new ServerInfo(cm);
   }
 
   return err;

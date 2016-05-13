@@ -50,7 +50,7 @@ void RedisServer::handleDiscoveryInfoResponceEvent(events::DiscoveryInfoResponce
   auto v = ev->value();
   common::Error er = v.errorInfo();
   if (!er) {
-    RedisServerInfo* rinf = dynamic_cast<RedisServerInfo*>(v.sinfo.get());  // +
+    ServerInfo* rinf = dynamic_cast<ServerInfo*>(v.sinfo.get());  // +
     CHECK(rinf);
     if (rinf->replication_.role_ == "master") {
       role_ = MASTER;

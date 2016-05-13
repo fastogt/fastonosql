@@ -80,10 +80,10 @@ common::Error MemcachedDriver::executeImpl(int argc, char** argv, FastoObject* o
 
 common::Error MemcachedDriver::serverInfo(IServerInfo** info) {
   LOG_COMMAND(type(), fastonosql::Command(INFO_REQUEST, common::Value::C_INNER));
-  MemcachedServerInfo::Common cm;
+  ServerInfo::Common cm;
   common::Error err = impl_->info(nullptr, &cm);
   if (!err) {
-    *info = new MemcachedServerInfo(cm);
+    *info = new ServerInfo(cm);
   }
 
   return err;

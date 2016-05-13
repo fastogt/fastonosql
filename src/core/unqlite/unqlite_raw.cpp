@@ -171,14 +171,14 @@ UnqliteRaw::UnqliteRaw()
   : CommandHandler(unqliteCommands), connection_() {
 }
 
-common::Error UnqliteRaw::info(const char* args, UnqliteServerInfo::Stats* statsout) {
+common::Error UnqliteRaw::info(const char* args, ServerInfo::Stats* statsout) {
   CHECK(isConnected());
 
   if (!statsout) {
     return common::make_error_value("Invalid input argument(s)", common::ErrorValue::E_ERROR);
   }
 
-  UnqliteServerInfo::Stats linfo;
+  ServerInfo::Stats linfo;
   Config conf = config();
   linfo.file_name = conf.dbname;
   *statsout = linfo;
@@ -400,10 +400,10 @@ common::Error keys(CommandHandler* handler, int argc, char** argv, FastoObject* 
 
 common::Error info(CommandHandler* handler, int argc, char** argv, FastoObject* out) {
   UnqliteRaw* unq = static_cast<UnqliteRaw*>(handler);
-  UnqliteServerInfo::Stats statsout;
+  ServerInfo::Stats statsout;
   common::Error er = unq->info(argc == 1 ? argv[0] : nullptr, &statsout);
   if (!er) {
-    UnqliteServerInfo uinf(statsout);
+    ServerInfo uinf(statsout);
     common::StringValue* val = common::Value::createStringValue(uinf.toString());
     FastoObject* child = new FastoObject(out, val, unq->delimiter(), unq->nsSeparator());
     out->addChildren(child);

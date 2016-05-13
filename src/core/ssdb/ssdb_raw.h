@@ -25,7 +25,7 @@
 
 #include "core/ssdb/ssdb_settings.h"
 #include "core/ssdb/config.h"
-#include "core/ssdb/ssdb_infos.h"
+#include "core/ssdb/server_info.h"
 
 namespace fastonosql {
 namespace core {
@@ -53,7 +53,7 @@ struct SsdbRaw
   config_t config() const;
   static const char* versionApi();
 
-  common::Error info(const char* args, SsdbServerInfo::Common* statsout) WARN_UNUSED_RESULT;
+  common::Error info(const char* args, ServerInfo::Common* statsout) WARN_UNUSED_RESULT;
   common::Error auth(const std::string& password) WARN_UNUSED_RESULT;
   common::Error get(const std::string& key, std::string* ret_val) WARN_UNUSED_RESULT;
   common::Error set(const std::string& key, const std::string& value) WARN_UNUSED_RESULT;

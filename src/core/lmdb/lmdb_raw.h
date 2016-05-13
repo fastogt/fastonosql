@@ -29,7 +29,7 @@ extern "C" {
 
 #include "core/lmdb/lmdb_settings.h"
 #include "core/lmdb/config.h"
-#include "core/lmdb/lmdb_infos.h"
+#include "core/lmdb/server_info.h"
 
 namespace fastonosql {
 namespace core {
@@ -65,7 +65,7 @@ struct LmdbRaw
 
   MDB_dbi curDb() const;
 
-  common::Error info(const char* args, LmdbServerInfo::Stats* statsout) WARN_UNUSED_RESULT;
+  common::Error info(const char* args, ServerInfo::Stats* statsout) WARN_UNUSED_RESULT;
   common::Error set(const std::string& key, const std::string& value) WARN_UNUSED_RESULT;
   common::Error get(const std::string& key, std::string* ret_val) WARN_UNUSED_RESULT;
   common::Error del(const std::string& key) WARN_UNUSED_RESULT;

@@ -53,7 +53,7 @@ namespace fastonosql {
 namespace core {
 namespace memcached {
 
-class MemcachedServerInfo
+class ServerInfo
   : public IServerInfo {
  public:
   struct Common
@@ -86,17 +86,18 @@ class MemcachedServerInfo
     uint32_t threads;
   } common_;
 
-  MemcachedServerInfo();
-  explicit MemcachedServerInfo(const Common& common);
+  ServerInfo();
+  explicit ServerInfo(const Common& common);
+
   virtual common::Value* valueByIndexes(unsigned char property, unsigned char field) const;
   virtual std::string toString() const;
   virtual uint32_t version() const;
 };
 
-std::ostream& operator << (std::ostream& out, const MemcachedServerInfo& value);
+std::ostream& operator << (std::ostream& out, const ServerInfo& value);
 
-MemcachedServerInfo* makeMemcachedServerInfo(const std::string& content);
-MemcachedServerInfo* makeMemcachedServerInfo(FastoObject* root);
+ServerInfo* makeMemcachedServerInfo(const std::string& content);
+ServerInfo* makeMemcachedServerInfo(FastoObject* root);
 
 }  // namespace memcached
 }  // namespace core

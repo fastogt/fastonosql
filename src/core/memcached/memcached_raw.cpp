@@ -187,7 +187,7 @@ common::Error MemcachedRaw::keys(const char* args) {
   return notSupported("keys");
 }
 
-common::Error MemcachedRaw::info(const char* args, MemcachedServerInfo::Common* statsout) {
+common::Error MemcachedRaw::info(const char* args, ServerInfo::Common* statsout) {
   CHECK(isConnected());
 
   if (!statsout) {
@@ -202,7 +202,7 @@ common::Error MemcachedRaw::info(const char* args, MemcachedServerInfo::Common* 
     return common::make_error_value(buff, common::ErrorValue::E_ERROR);
   }
 
-  MemcachedServerInfo::Common lstatsout;
+  ServerInfo::Common lstatsout;
   lstatsout.pid = st->pid;
   lstatsout.uptime = st->uptime;
   lstatsout.time = st->time;
@@ -415,10 +415,10 @@ common::Error stats(CommandHandler* handler, int argc, char** argv, FastoObject*
     return mem->keys(args);
   }
 
-  MemcachedServerInfo::Common statsout;
+  ServerInfo::Common statsout;
   common::Error er = mem->info(args, &statsout);
   if (!er) {
-    MemcachedServerInfo minf(statsout);
+    ServerInfo minf(statsout);
     common::StringValue* val = common::Value::createStringValue(minf.toString());
     FastoObject* child = new FastoObject(out, val, mem->delimiter(), mem->nsSeparator());
     out->addChildren(child);

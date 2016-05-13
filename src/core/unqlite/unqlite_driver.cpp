@@ -133,10 +133,10 @@ common::Error UnqliteDriver::executeImpl(int argc, char** argv, FastoObject* out
 
 common::Error UnqliteDriver::serverInfo(IServerInfo** info) {
   LOG_COMMAND(type(), fastonosql::Command(INFO_REQUEST, common::Value::C_INNER));
-  UnqliteServerInfo::Stats cm;
+  ServerInfo::Stats cm;
   common::Error err = impl_->info(nullptr, &cm);
   if (!err) {
-    *info = new UnqliteServerInfo(cm);
+    *info = new ServerInfo(cm);
   }
 
   return err;

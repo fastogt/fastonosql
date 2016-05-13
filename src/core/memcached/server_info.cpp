@@ -16,7 +16,7 @@
     along with FastoNoSQL.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-#include "core/memcached/memcached_infos.h"
+#include "core/memcached/server_info.h"
 
 #include <ostream>
 #include <sstream>
@@ -80,10 +80,10 @@ std::vector<std::vector<Field> > DBTraits<MEMCACHED>::infoFields() {
 
 namespace memcached {
 
-MemcachedServerInfo::Common::Common() {
+ServerInfo::Common::Common() {
 }
 
-MemcachedServerInfo::Common::Common(const std::string& common_text) {
+ServerInfo::Common::Common(const std::string& common_text) {
   size_t pos = 0;
   size_t start = 0;
 
@@ -141,7 +141,7 @@ MemcachedServerInfo::Common::Common(const std::string& common_text) {
   }
 }
 
-common::Value* MemcachedServerInfo::Common::valueByIndex(unsigned char index) const {
+common::Value* ServerInfo::Common::valueByIndex(unsigned char index) const {
   switch (index) {
   case 0:
     return new common::FundamentalValue(pid);
@@ -194,15 +194,15 @@ common::Value* MemcachedServerInfo::Common::valueByIndex(unsigned char index) co
   return nullptr;
 }
 
-MemcachedServerInfo::MemcachedServerInfo()
+ServerInfo::ServerInfo()
   : IServerInfo(MEMCACHED) {
 }
 
-MemcachedServerInfo::MemcachedServerInfo(const Common& common)
+ServerInfo::ServerInfo(const Common& common)
   : IServerInfo(MEMCACHED), common_(common) {
 }
 
-common::Value* MemcachedServerInfo::valueByIndexes(unsigned char property,
+common::Value* ServerInfo::valueByIndexes(unsigned char property,
                                                    unsigned char field) const {
   switch (property) {
   case 0:
@@ -214,7 +214,7 @@ common::Value* MemcachedServerInfo::valueByIndexes(unsigned char property,
   return nullptr;
 }
 
-std::ostream& operator<<(std::ostream& out, const MemcachedServerInfo::Common& value) {
+std::ostream& operator<<(std::ostream& out, const ServerInfo::Common& value) {
   return out << MEMCACHED_PID_LABEL":" << value.pid << MARKER
               << MEMCACHED_UPTIME_LABEL":" << value.uptime << MARKER
               << MEMCACHED_TIME_LABEL":" << value.time << MARKER
@@ -239,16 +239,16 @@ std::ostream& operator<<(std::ostream& out, const MemcachedServerInfo::Common& v
               << MEMCACHED_THREADS_LABEL":" << value.threads << MARKER;
 }
 
-std::ostream& operator<<(std::ostream& out, const MemcachedServerInfo& value) {
+std::ostream& operator<<(std::ostream& out, const ServerInfo& value) {
   return out << value.toString();
 }
 
-MemcachedServerInfo* makeMemcachedServerInfo(const std::string& content) {
+ServerInfo* makeMemcachedServerInfo(const std::string& content) {
   if (content.empty()) {
     return nullptr;
   }
 
-  MemcachedServerInfo* result = new MemcachedServerInfo;
+  ServerInfo* result = new ServerInfo;
 
   int j = 0;
   std::string word;
@@ -269,7 +269,7 @@ MemcachedServerInfo* makeMemcachedServerInfo(const std::string& content) {
         std::string part = content.substr(i + 1, pos - i - 1);
         switch (j) {
         case 0:
-          result->common_ = MemcachedServerInfo::Common(part);
+          result->common_ = ServerInfo::Common(part);
           break;
         default:
           break;
@@ -285,17 +285,17 @@ MemcachedServerInfo* makeMemcachedServerInfo(const std::string& content) {
 }
 
 
-std::string MemcachedServerInfo::toString() const {
+std::string ServerInfo::toString() const {
   std::stringstream str;
   str << MEMCACHED_COMMON_LABEL MARKER << common_;
   return str.str();
 }
 
-uint32_t MemcachedServerInfo::version() const {
+uint32_t ServerInfo::version() const {
   return common::convertVersionNumberFromString(common_.version);
 }
 
-MemcachedServerInfo* makeMemcachedServerInfo(FastoObject* root) {
+ServerInfo* makeMemcachedServerInfo(FastoObject* root) {
   std::string content = common::convertToString(root);
   return makeMemcachedServerInfo(content);
 }

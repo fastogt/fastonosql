@@ -16,7 +16,7 @@
     along with FastoNoSQL.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-#include "core/unqlite/unqlite_infos.h"
+#include "core/unqlite/server_info.h"
 
 #include <ostream>
 #include <sstream>
@@ -60,11 +60,11 @@ std::vector<std::vector<Field> > DBTraits<UNQLITE>::infoFields() {
 
 namespace unqlite {
 
-UnqliteServerInfo::Stats::Stats()
+ServerInfo::Stats::Stats()
   : file_name() {
 }
 
-UnqliteServerInfo::Stats::Stats(const std::string& common_text) {
+ServerInfo::Stats::Stats(const std::string& common_text) {
   size_t pos = 0;
   size_t start = 0;
 
@@ -80,7 +80,7 @@ UnqliteServerInfo::Stats::Stats(const std::string& common_text) {
   }
 }
 
-common::Value* UnqliteServerInfo::Stats::valueByIndex(unsigned char index) const {
+common::Value* ServerInfo::Stats::valueByIndex(unsigned char index) const {
   switch (index) {
   case 0:
     return new common::StringValue(file_name);
@@ -91,15 +91,15 @@ common::Value* UnqliteServerInfo::Stats::valueByIndex(unsigned char index) const
   return nullptr;
 }
 
-UnqliteServerInfo::UnqliteServerInfo()
+ServerInfo::ServerInfo()
   : IServerInfo(UNQLITE) {
 }
 
-UnqliteServerInfo::UnqliteServerInfo(const Stats &stats)
+ServerInfo::ServerInfo(const Stats &stats)
   : IServerInfo(UNQLITE), stats_(stats) {
 }
 
-common::Value* UnqliteServerInfo::valueByIndexes(unsigned char property,
+common::Value* ServerInfo::valueByIndexes(unsigned char property,
                                                  unsigned char field) const {
   switch (property) {
   case 0:
@@ -111,20 +111,20 @@ common::Value* UnqliteServerInfo::valueByIndexes(unsigned char property,
   return nullptr;
 }
 
-std::ostream& operator<<(std::ostream& out, const UnqliteServerInfo::Stats& value) {
+std::ostream& operator<<(std::ostream& out, const ServerInfo::Stats& value) {
   return out << UNQLITE_FILE_NAME_LABEL":" << value.file_name << MARKER;
 }
 
-std::ostream& operator<<(std::ostream& out, const UnqliteServerInfo& value) {
+std::ostream& operator<<(std::ostream& out, const ServerInfo& value) {
   return out << value.toString();
 }
 
-UnqliteServerInfo* makeUnqliteServerInfo(const std::string& content) {
+ServerInfo* makeUnqliteServerInfo(const std::string& content) {
   if (content.empty()) {
       return nullptr;
   }
 
-  UnqliteServerInfo* result = new UnqliteServerInfo;
+  ServerInfo* result = new ServerInfo;
 
   const std::vector<std::string> headers = DBTraits<UNQLITE>::infoHeaders();
   std::string word;
@@ -134,7 +134,7 @@ UnqliteServerInfo* makeUnqliteServerInfo(const std::string& content) {
       word += content[i];
       if (word == headers[0]) {
           std::string part = content.substr(i + 1);
-          result->stats_ = UnqliteServerInfo::Stats(part);
+          result->stats_ = ServerInfo::Stats(part);
           break;
       }
   }
@@ -143,17 +143,17 @@ UnqliteServerInfo* makeUnqliteServerInfo(const std::string& content) {
 }
 
 
-std::string UnqliteServerInfo::toString() const {
+std::string ServerInfo::toString() const {
   std::stringstream str;
   str << UNQLITE_STATS_LABEL MARKER << stats_;
   return str.str();
 }
 
-uint32_t UnqliteServerInfo::version() const {
+uint32_t ServerInfo::version() const {
   return 0;
 }
 
-UnqliteServerInfo* makeUnqliteServerInfo(FastoObject* root) {
+ServerInfo* makeUnqliteServerInfo(FastoObject* root) {
   std::string content = common::convertToString(root);
   return makeUnqliteServerInfo(content);
 }

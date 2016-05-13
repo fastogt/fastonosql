@@ -121,7 +121,7 @@ namespace fastonosql {
 namespace core {
 namespace redis {
 
-struct RedisServerInfo
+struct ServerInfo
       : public IServerInfo {
   struct Server
       : FieldByIndex {
@@ -251,20 +251,20 @@ struct RedisServerInfo
     common::Value* valueByIndex(unsigned char index) const;
   } keySp_;
 
-  virtual common::Value* valueByIndexes(unsigned char property, unsigned char field) const;
-
-  RedisServerInfo();
-  RedisServerInfo(const Server &serv, const Clients &clients, const Memory &memory,
+  ServerInfo();
+  ServerInfo(const Server &serv, const Clients &clients, const Memory &memory,
                   const Persistence &pers, const Stats &stats, const Replication &repl,
                   const Cpu &cpu, const Keyspace &key);
+
+  virtual common::Value* valueByIndexes(unsigned char property, unsigned char field) const;
   virtual std::string toString() const;
   virtual uint32_t version() const;
 };
 
-std::ostream& operator<<(std::ostream& out, const RedisServerInfo& value);
+std::ostream& operator<<(std::ostream& out, const ServerInfo& value);
 
-RedisServerInfo* makeRedisServerInfo(const std::string& content);
-RedisServerInfo* makeRedisServerInfo(FastoObject* root);
+ServerInfo* makeRedisServerInfo(const std::string& content);
+ServerInfo* makeRedisServerInfo(FastoObject* root);
 
 }  // namespace redis
 }  // namespace core

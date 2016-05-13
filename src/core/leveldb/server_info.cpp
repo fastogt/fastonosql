@@ -16,7 +16,7 @@
     along with FastoNoSQL.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-#include "core/leveldb/leveldb_infos.h"
+#include "core/leveldb/server_info.h"
 
 #include <ostream>
 #include <sstream>
@@ -65,11 +65,11 @@ std::vector<std::vector<Field> > DBTraits<LEVELDB>::infoFields() {
 
 namespace leveldb {
 
-LeveldbServerInfo::Stats::Stats()
+ServerInfo::Stats::Stats()
   : compactions_level(0), file_size_mb(0), time_sec(0), read_mb(0), write_mb(0) {
 }
 
-LeveldbServerInfo::Stats::Stats(const std::string& common_text) {
+ServerInfo::Stats::Stats(const std::string& common_text) {
   size_t pos = 0;
   size_t start = 0;
 
@@ -93,7 +93,7 @@ LeveldbServerInfo::Stats::Stats(const std::string& common_text) {
   }
 }
 
-common::Value* LeveldbServerInfo::Stats::valueByIndex(unsigned char index) const {
+common::Value* ServerInfo::Stats::valueByIndex(unsigned char index) const {
   switch (index) {
   case 0:
     return new common::FundamentalValue(compactions_level);
@@ -112,15 +112,15 @@ common::Value* LeveldbServerInfo::Stats::valueByIndex(unsigned char index) const
   return nullptr;
 }
 
-LeveldbServerInfo::LeveldbServerInfo()
+ServerInfo::ServerInfo()
   : IServerInfo(LEVELDB) {
 }
 
-LeveldbServerInfo::LeveldbServerInfo(const Stats &stats)
+ServerInfo::ServerInfo(const Stats &stats)
   : IServerInfo(LEVELDB), stats_(stats) {
 }
 
-common::Value* LeveldbServerInfo::valueByIndexes(unsigned char property,
+common::Value* ServerInfo::valueByIndexes(unsigned char property,
                                                  unsigned char field) const {
   switch (property) {
   case 0:
@@ -132,7 +132,7 @@ common::Value* LeveldbServerInfo::valueByIndexes(unsigned char property,
   return nullptr;
 }
 
-std::ostream& operator<<(std::ostream& out, const LeveldbServerInfo::Stats& value) {
+std::ostream& operator<<(std::ostream& out, const ServerInfo::Stats& value) {
   return out << LEVELDB_CAMPACTIONS_LEVEL_LABEL":" << value.compactions_level << MARKER
              << LEVELDB_FILE_SIZE_MB_LABEL":" << value.file_size_mb << MARKER
              << LEVELDB_TIME_SEC_LABEL":" << value.time_sec << MARKER
@@ -140,16 +140,16 @@ std::ostream& operator<<(std::ostream& out, const LeveldbServerInfo::Stats& valu
              << LEVELDB_WRITE_MB_LABEL":" << value.write_mb << MARKER;
 }
 
-std::ostream& operator<<(std::ostream& out, const LeveldbServerInfo& value) {
+std::ostream& operator<<(std::ostream& out, const ServerInfo& value) {
   return out << value.toString();
 }
 
-LeveldbServerInfo* makeLeveldbServerInfo(const std::string& content) {
+ServerInfo* makeLeveldbServerInfo(const std::string& content) {
   if (content.empty()) {
     return nullptr;
   }
 
-  LeveldbServerInfo* result = new LeveldbServerInfo;
+  ServerInfo* result = new ServerInfo;
 
   const std::vector<std::string> headers = DBTraits<LEVELDB>::infoHeaders();
   std::string word;
@@ -159,7 +159,7 @@ LeveldbServerInfo* makeLeveldbServerInfo(const std::string& content) {
     word += content[i];
     if (word == headers[0]) {
       std::string part = content.substr(i + 1);
-      result->stats_ = LeveldbServerInfo::Stats(part);
+      result->stats_ = ServerInfo::Stats(part);
       break;
     }
   }
@@ -168,17 +168,17 @@ LeveldbServerInfo* makeLeveldbServerInfo(const std::string& content) {
 }
 
 
-std::string LeveldbServerInfo::toString() const {
+std::string ServerInfo::toString() const {
   std::stringstream str;
   str << LEVELDB_STATS_LABEL MARKER << stats_;
   return str.str();
 }
 
-uint32_t LeveldbServerInfo::version() const {
+uint32_t ServerInfo::version() const {
   return 0;
 }
 
-LeveldbServerInfo* makeLeveldbServerInfo(FastoObject* root) {
+ServerInfo* makeLeveldbServerInfo(FastoObject* root) {
   std::string content = common::convertToString(root);
   return makeLeveldbServerInfo(content);
 }

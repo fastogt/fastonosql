@@ -133,7 +133,7 @@ const char* RocksdbRaw::versionApi() {
   return STRINGIZE(ROCKSDB_MAJOR) "." STRINGIZE(ROCKSDB_MINOR) "." STRINGIZE(ROCKSDB_PATCH);
 }
 
-common::Error RocksdbRaw::info(const char* args, RocksdbServerInfo::Stats* statsout) {
+common::Error RocksdbRaw::info(const char* args, ServerInfo::Stats* statsout) {
   CHECK(isConnected());
 
   if (!statsout) {
@@ -146,7 +146,7 @@ common::Error RocksdbRaw::info(const char* args, RocksdbServerInfo::Stats* stats
     return common::make_error_value("info function failed", common::ErrorValue::E_ERROR);
   }
 
-  RocksdbServerInfo::Stats lstatsout;
+  ServerInfo::Stats lstatsout;
   if (rets.size() > sizeof(ROCKSDB_HEADER_STATS)) {
     const char* retsc = rets.c_str() + sizeof(ROCKSDB_HEADER_STATS);
     char* p2 = strtok((char*)retsc, " ");
@@ -339,10 +339,10 @@ common::Error RocksdbRaw::flushdb() {
 
 common::Error info(CommandHandler* handler, int argc, char** argv, FastoObject* out) {
   RocksdbRaw* rocks = static_cast<RocksdbRaw*>(handler);
-  RocksdbServerInfo::Stats statsout;
+  ServerInfo::Stats statsout;
   common::Error er = rocks->info(argc == 1 ? argv[0] : nullptr, &statsout);
   if (!er) {
-    common::StringValue* val = common::Value::createStringValue(RocksdbServerInfo(statsout).toString());
+    common::StringValue* val = common::Value::createStringValue(ServerInfo(statsout).toString());
     FastoObject* child = new FastoObject(out, val, rocks->delimiter(), rocks->nsSeparator());
     out->addChildren(child);
   }

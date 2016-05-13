@@ -135,10 +135,10 @@ common::Error RocksdbDriver::executeImpl(int argc, char** argv, FastoObject* out
 
 common::Error RocksdbDriver::serverInfo(IServerInfo** info) {
   LOG_COMMAND(type(), fastonosql::Command(INFO_REQUEST, common::Value::C_INNER));
-  RocksdbServerInfo::Stats cm;
+  ServerInfo::Stats cm;
   common::Error err = impl_->info(nullptr, &cm);
   if (!err) {
-    *info = new RocksdbServerInfo(cm);
+    *info = new ServerInfo(cm);
   }
 
   return err;

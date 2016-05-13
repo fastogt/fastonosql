@@ -16,7 +16,7 @@
     along with FastoNoSQL.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-#include "core/ssdb/ssdb_infos.h"
+#include "core/ssdb/server_info.h"
 
 #include <ostream>
 #include <sstream>
@@ -67,10 +67,10 @@ std::vector<std::vector<Field> > DBTraits<SSDB>::infoFields() {
 
 namespace ssdb {
 
-SsdbServerInfo::Common::Common() {
+ServerInfo::Common::Common() {
 }
 
-SsdbServerInfo::Common::Common(const std::string& common_text) {
+ServerInfo::Common::Common(const std::string& common_text) {
   size_t pos = 0;
   size_t start = 0;
 
@@ -94,7 +94,7 @@ SsdbServerInfo::Common::Common(const std::string& common_text) {
   }
 }
 
-common::Value* SsdbServerInfo::Common::valueByIndex(unsigned char index) const {
+common::Value* ServerInfo::Common::valueByIndex(unsigned char index) const {
   switch (index) {
   case 0:
     return new common::StringValue(version);
@@ -113,15 +113,15 @@ common::Value* SsdbServerInfo::Common::valueByIndex(unsigned char index) const {
   return nullptr;
 }
 
-SsdbServerInfo::SsdbServerInfo()
+ServerInfo::ServerInfo()
   : IServerInfo(SSDB) {
 }
 
-SsdbServerInfo::SsdbServerInfo(const Common& common)
+ServerInfo::ServerInfo(const Common& common)
   : IServerInfo(SSDB), common_(common) {
 }
 
-common::Value* SsdbServerInfo::valueByIndexes(unsigned char property, unsigned char field) const {
+common::Value* ServerInfo::valueByIndexes(unsigned char property, unsigned char field) const {
   switch (property) {
   case 0:
     return common_.valueByIndex(field);
@@ -133,7 +133,7 @@ common::Value* SsdbServerInfo::valueByIndexes(unsigned char property, unsigned c
   return nullptr;
 }
 
-std::ostream& operator<<(std::ostream& out, const SsdbServerInfo::Common& value) {
+std::ostream& operator<<(std::ostream& out, const ServerInfo::Common& value) {
   return out << SSDB_VERSION_LABEL":" << value.version << MARKER
              << SSDB_LINKS_LABEL":" << value.links << MARKER
              << SSDB_TOTAL_CALLS_LABEL":" << value.total_calls << MARKER
@@ -141,16 +141,16 @@ std::ostream& operator<<(std::ostream& out, const SsdbServerInfo::Common& value)
              << SSDB_BINLOGS_LABEL":" << value.binlogs << MARKER;
 }
 
-std::ostream& operator<<(std::ostream& out, const SsdbServerInfo& value) {
+std::ostream& operator<<(std::ostream& out, const ServerInfo& value) {
   return out << value.toString();
 }
 
-SsdbServerInfo* makeSsdbServerInfo(const std::string& content) {
+ServerInfo* makeSsdbServerInfo(const std::string& content) {
   if (content.empty()) {
     return nullptr;
   }
 
-  SsdbServerInfo* result = new SsdbServerInfo;
+  ServerInfo* result = new ServerInfo;
   const std::vector<std::string> headers = DBTraits<SSDB>::infoHeaders();
   std::string word;
   DCHECK_EQ(headers.size(), 1);
@@ -159,7 +159,7 @@ SsdbServerInfo* makeSsdbServerInfo(const std::string& content) {
     word += content[i];
     if (word == headers[0]) {
       std::string part = content.substr(i + 1);
-      result->common_ = SsdbServerInfo::Common(part);
+      result->common_ = ServerInfo::Common(part);
       break;
     }
   }
@@ -168,17 +168,17 @@ SsdbServerInfo* makeSsdbServerInfo(const std::string& content) {
 }
 
 
-std::string SsdbServerInfo::toString() const {
+std::string ServerInfo::toString() const {
   std::stringstream str;
   str << SSDB_COMMON_LABEL MARKER << common_;
   return str.str();
 }
 
-uint32_t SsdbServerInfo::version() const {
+uint32_t ServerInfo::version() const {
   return common::convertVersionNumberFromString(common_.version);
 }
 
-SsdbServerInfo* makeSsdbServerInfo(FastoObject* root) {
+ServerInfo* makeSsdbServerInfo(FastoObject* root) {
   std::string content = common::convertToString(root);
   return makeSsdbServerInfo(content);
 }

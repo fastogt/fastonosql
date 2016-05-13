@@ -29,7 +29,7 @@ extern "C" {
 
 #include "core/unqlite/unqlite_settings.h"
 #include "core/unqlite/config.h"
-#include "core/unqlite/unqlite_infos.h"
+#include "core/unqlite/server_info.h"
 
 namespace fastonosql {
 namespace core {
@@ -59,7 +59,7 @@ class UnqliteRaw
 
   static const char* versionApi();
 
-  common::Error info(const char* args, UnqliteServerInfo::Stats* statsout) WARN_UNUSED_RESULT;
+  common::Error info(const char* args, ServerInfo::Stats* statsout) WARN_UNUSED_RESULT;
   common::Error set(const std::string& key, const std::string& value) WARN_UNUSED_RESULT;
   common::Error get(const std::string& key, std::string* ret_val) WARN_UNUSED_RESULT;
   common::Error del(const std::string& key) WARN_UNUSED_RESULT;

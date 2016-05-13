@@ -27,7 +27,7 @@
 
 #include "core/memcached/memcached_settings.h"
 #include "core/memcached/config.h"
-#include "core/memcached/memcached_infos.h"
+#include "core/memcached/server_info.h"
 
 namespace fastonosql {
 namespace core {
@@ -57,7 +57,7 @@ struct MemcachedRaw
   static const char* versionApi();
 
   common::Error keys(const char* args) WARN_UNUSED_RESULT;
-  common::Error info(const char* args, MemcachedServerInfo::Common* statsout) WARN_UNUSED_RESULT;
+  common::Error info(const char* args, ServerInfo::Common* statsout) WARN_UNUSED_RESULT;
   common::Error dbsize(size_t* size) WARN_UNUSED_RESULT;
 
   common::Error get(const std::string& key, std::string* ret_val) WARN_UNUSED_RESULT;

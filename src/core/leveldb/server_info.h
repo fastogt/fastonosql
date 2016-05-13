@@ -24,15 +24,19 @@
 
 #include "core/types.h"
 
-#define LMDB_STATS_LABEL "# Stats"
+#define LEVELDB_STATS_LABEL "# Stats"
 
-#define LMDB_FILE_NAME_LABEL "file_name"
+#define LEVELDB_CAMPACTIONS_LEVEL_LABEL "compactions_level"
+#define LEVELDB_FILE_SIZE_MB_LABEL "file_size_mb"
+#define LEVELDB_TIME_SEC_LABEL "time_sec"
+#define LEVELDB_READ_MB_LABEL "read_mb"
+#define LEVELDB_WRITE_MB_LABEL "write_mb"
 
 namespace fastonosql {
 namespace core {
-namespace lmdb {
+namespace leveldb {
 
-class LmdbServerInfo
+class ServerInfo
   : public IServerInfo {
  public:
   // Compactions\nLevel  Files Size(MB) Time(sec) Read(MB) Write(MB)\n
@@ -42,21 +46,26 @@ class LmdbServerInfo
     explicit Stats(const std::string& common_text);
     common::Value* valueByIndex(unsigned char index) const;
 
-    std::string file_name;
+    uint32_t compactions_level;
+    uint32_t file_size_mb;
+    uint32_t time_sec;
+    uint32_t read_mb;
+    uint32_t write_mb;
   } stats_;
 
-  LmdbServerInfo();
-  explicit LmdbServerInfo(const Stats& stats);
+  ServerInfo();
+  explicit ServerInfo(const Stats& stats);
+
   virtual common::Value* valueByIndexes(unsigned char property, unsigned char field) const;
   virtual std::string toString() const;
   virtual uint32_t version() const;
 };
 
-std::ostream& operator << (std::ostream& out, const LmdbServerInfo& value);
+std::ostream& operator << (std::ostream& out, const ServerInfo& value);
 
-LmdbServerInfo* makeLmdbServerInfo(const std::string& content);
-LmdbServerInfo* makeLmdbServerInfo(FastoObject* root);
+ServerInfo* makeLeveldbServerInfo(const std::string& content);
+ServerInfo* makeLeveldbServerInfo(FastoObject* root);
 
-}  // namespace lmdb
+}  // namespace leveldb
 }  // namespace core
 }  // namespace fastonosql

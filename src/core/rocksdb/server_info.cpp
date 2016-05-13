@@ -16,7 +16,7 @@
     along with FastoNoSQL.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-#include "core/rocksdb/rocksdb_infos.h"
+#include "core/rocksdb/server_info.h"
 
 #include <ostream>
 #include <sstream>
@@ -64,11 +64,11 @@ std::vector<std::vector<Field> > DBTraits<ROCKSDB>::infoFields() {
 
 namespace rocksdb {
 
-RocksdbServerInfo::Stats::Stats()
+ServerInfo::Stats::Stats()
   : compactions_level(0), file_size_mb(0), time_sec(0), read_mb(0), write_mb(0) {
 }
 
-RocksdbServerInfo::Stats::Stats(const std::string& common_text) {
+ServerInfo::Stats::Stats(const std::string& common_text) {
   size_t pos = 0;
   size_t start = 0;
 
@@ -92,7 +92,7 @@ RocksdbServerInfo::Stats::Stats(const std::string& common_text) {
   }
 }
 
-common::Value* RocksdbServerInfo::Stats::valueByIndex(unsigned char index) const {
+common::Value* ServerInfo::Stats::valueByIndex(unsigned char index) const {
   switch (index) {
     case 0:
       return new common::FundamentalValue(compactions_level);
@@ -111,15 +111,15 @@ common::Value* RocksdbServerInfo::Stats::valueByIndex(unsigned char index) const
   return nullptr;
 }
 
-RocksdbServerInfo::RocksdbServerInfo()
+ServerInfo::ServerInfo()
   : IServerInfo(ROCKSDB) {
 }
 
-RocksdbServerInfo::RocksdbServerInfo(const Stats &stats)
+ServerInfo::ServerInfo(const Stats &stats)
   : IServerInfo(ROCKSDB), stats_(stats) {
 }
 
-common::Value* RocksdbServerInfo::valueByIndexes(unsigned char property,
+common::Value* ServerInfo::valueByIndexes(unsigned char property,
                                                  unsigned char field) const {
   switch (property) {
     case 0:
@@ -131,7 +131,7 @@ common::Value* RocksdbServerInfo::valueByIndexes(unsigned char property,
   return nullptr;
 }
 
-std::ostream& operator<<(std::ostream& out, const RocksdbServerInfo::Stats& value) {
+std::ostream& operator<<(std::ostream& out, const ServerInfo::Stats& value) {
   return out << ROCKSDB_CAMPACTIONS_LEVEL_LABEL":" << value.compactions_level << MARKER
              << ROCKSDB_FILE_SIZE_MB_LABEL":" << value.file_size_mb << MARKER
              << ROCKSDB_TIME_SEC_LABEL":" << value.time_sec << MARKER
@@ -139,16 +139,16 @@ std::ostream& operator<<(std::ostream& out, const RocksdbServerInfo::Stats& valu
              << ROCKSDB_WRITE_MB_LABEL":" << value.write_mb << MARKER;
 }
 
-std::ostream& operator<<(std::ostream& out, const RocksdbServerInfo& value) {
+std::ostream& operator<<(std::ostream& out, const ServerInfo& value) {
   return out << value.toString();
 }
 
-RocksdbServerInfo* makeRocksdbServerInfo(const std::string& content) {
+ServerInfo* makeRocksdbServerInfo(const std::string& content) {
   if (content.empty()) {
     return nullptr;
   }
 
-  RocksdbServerInfo* result = new RocksdbServerInfo;
+  ServerInfo* result = new ServerInfo;
 
   const std::vector<std::string> headers = DBTraits<ROCKSDB>::infoHeaders();
   std::string word;
@@ -158,7 +158,7 @@ RocksdbServerInfo* makeRocksdbServerInfo(const std::string& content) {
     word += content[i];
     if (word == headers[0]) {
       std::string part = content.substr(i + 1);
-      result->stats_ = RocksdbServerInfo::Stats(part);
+      result->stats_ = ServerInfo::Stats(part);
       break;
     }
   }
@@ -167,17 +167,17 @@ RocksdbServerInfo* makeRocksdbServerInfo(const std::string& content) {
 }
 
 
-std::string RocksdbServerInfo::toString() const {
+std::string ServerInfo::toString() const {
   std::stringstream str;
   str << ROCKSDB_STATS_LABEL MARKER << stats_;
   return str.str();
 }
 
-uint32_t RocksdbServerInfo::version() const {
+uint32_t ServerInfo::version() const {
   return 0;
 }
 
-RocksdbServerInfo* makeRocksdbServerInfo(FastoObject* root) {
+ServerInfo* makeRocksdbServerInfo(FastoObject* root) {
   std::string content = common::convertToString(root);
   return makeRocksdbServerInfo(content);
 }

@@ -24,46 +24,40 @@
 
 #include "core/types.h"
 
-#define SSDB_COMMON_LABEL "# Common"
+#define LMDB_STATS_LABEL "# Stats"
 
-#define SSDB_VERSION_LABEL "version"
-#define SSDB_LINKS_LABEL "links"
-#define SSDB_TOTAL_CALLS_LABEL "total_calls"
-#define SSDB_DBSIZE_LABEL "dbsize"
-#define SSDB_BINLOGS_LABEL "binlogs"
+#define LMDB_FILE_NAME_LABEL "file_name"
 
 namespace fastonosql {
 namespace core {
-namespace ssdb {
+namespace lmdb {
 
-class SsdbServerInfo
+class ServerInfo
   : public IServerInfo {
  public:
-  struct Common
+  // Compactions\nLevel  Files Size(MB) Time(sec) Read(MB) Write(MB)\n
+  struct Stats
       : FieldByIndex {
-    Common();
-    explicit Common(const std::string& common_text);
+    Stats();
+    explicit Stats(const std::string& common_text);
     common::Value* valueByIndex(unsigned char index) const;
 
-    std::string version;
-    uint32_t links;
-    uint32_t total_calls;
-    uint32_t dbsize;
-    std::string binlogs;
-  } common_;
+    std::string file_name;
+  } stats_;
 
-  SsdbServerInfo();
-  explicit SsdbServerInfo(const Common& common);
+  ServerInfo();
+  explicit ServerInfo(const Stats& stats);
+
   virtual common::Value* valueByIndexes(unsigned char property, unsigned char field) const;
   virtual std::string toString() const;
   virtual uint32_t version() const;
 };
 
-std::ostream& operator << (std::ostream& out, const SsdbServerInfo& value);
+std::ostream& operator << (std::ostream& out, const ServerInfo& value);
 
-SsdbServerInfo* makeSsdbServerInfo(const std::string& content);
-SsdbServerInfo* makeSsdbServerInfo(FastoObject* root);
+ServerInfo* makeLmdbServerInfo(const std::string& content);
+ServerInfo* makeLmdbServerInfo(FastoObject* root);
 
-}  // namespace ssdb
+}  // namespace lmdb
 }  // namespace core
 }  // namespace fastonosql

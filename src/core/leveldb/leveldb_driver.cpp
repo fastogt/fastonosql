@@ -134,10 +134,10 @@ common::Error LeveldbDriver::executeImpl(int argc, char** argv, FastoObject* out
 
 common::Error LeveldbDriver::serverInfo(IServerInfo** info) {
   LOG_COMMAND(type(), fastonosql::Command(INFO_REQUEST, common::Value::C_INNER));
-  LeveldbServerInfo::Stats cm;
+  ServerInfo::Stats cm;
   common::Error err = impl_->info(nullptr, &cm);
   if (!err) {
-    *info = new LeveldbServerInfo(cm);
+    *info = new ServerInfo(cm);
   }
 
   return err;

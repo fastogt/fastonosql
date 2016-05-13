@@ -27,7 +27,7 @@
 
 #include "core/leveldb/leveldb_settings.h"
 #include "core/leveldb/config.h"
-#include "core/leveldb/leveldb_infos.h"
+#include "core/leveldb/server_info.h"
 
 namespace fastonosql {
 namespace core {
@@ -56,7 +56,7 @@ class LeveldbRaw
   config_t config() const;
   static const char* versionApi();
 
-  common::Error info(const char* args, LeveldbServerInfo::Stats* statsout) WARN_UNUSED_RESULT;
+  common::Error info(const char* args, ServerInfo::Stats* statsout) WARN_UNUSED_RESULT;
   common::Error set(const std::string& key, const std::string& value) WARN_UNUSED_RESULT;
   common::Error get(const std::string& key, std::string* ret_val) WARN_UNUSED_RESULT;
   common::Error del(const std::string& key) WARN_UNUSED_RESULT;

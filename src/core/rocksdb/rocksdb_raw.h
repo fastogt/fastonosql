@@ -27,7 +27,7 @@
 
 #include "core/rocksdb/rocksdb_settings.h"
 #include "core/rocksdb/config.h"
-#include "core/rocksdb/rocksdb_infos.h"
+#include "core/rocksdb/server_info.h"
 
 namespace fastonosql {
 namespace core {
@@ -58,7 +58,7 @@ class RocksdbRaw
 
   std::string currentDbName() const;
 
-  common::Error info(const char* args, RocksdbServerInfo::Stats* statsout) WARN_UNUSED_RESULT;
+  common::Error info(const char* args, ServerInfo::Stats* statsout) WARN_UNUSED_RESULT;
   common::Error set(const std::string& key, const std::string& value) WARN_UNUSED_RESULT;
   common::Error get(const std::string& key, std::string* ret_val) WARN_UNUSED_RESULT;
   common::Error mget(const std::vector< ::rocksdb::Slice>& keys, std::vector<std::string>* ret);

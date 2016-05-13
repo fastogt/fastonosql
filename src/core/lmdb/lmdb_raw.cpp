@@ -175,7 +175,7 @@ MDB_dbi LmdbRaw::curDb() const {
   return 0;
 }
 
-common::Error LmdbRaw::info(const char* args, LmdbServerInfo::Stats* statsout) {
+common::Error LmdbRaw::info(const char* args, ServerInfo::Stats* statsout) {
   CHECK(isConnected());
 
   if (!statsout) {
@@ -184,7 +184,7 @@ common::Error LmdbRaw::info(const char* args, LmdbServerInfo::Stats* statsout) {
                                     common::ErrorValue::E_ERROR);
   }
 
-  LmdbServerInfo::Stats linfo;
+  ServerInfo::Stats linfo;
   Config conf = config();
   linfo.file_name = conf.dbname;
 
@@ -386,10 +386,10 @@ common::Error LmdbRaw::flushdb() {
 
 common::Error info(CommandHandler* handler, int argc, char** argv, FastoObject* out) {
   LmdbRaw* mdb = static_cast<LmdbRaw*>(handler);
-  LmdbServerInfo::Stats statsout;
+  ServerInfo::Stats statsout;
   common::Error er = mdb->info(argc == 1 ? argv[0] : nullptr, &statsout);
   if (!er) {
-    common::StringValue* val = common::Value::createStringValue(LmdbServerInfo(statsout).toString());
+    common::StringValue* val = common::Value::createStringValue(ServerInfo(statsout).toString());
     FastoObject* child = new FastoObject(out, val, mdb->delimiter(), mdb->nsSeparator());
     out->addChildren(child);
   }

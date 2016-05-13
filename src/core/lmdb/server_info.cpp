@@ -16,7 +16,7 @@
     along with FastoNoSQL.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-#include "core/lmdb/lmdb_infos.h"
+#include "core/lmdb/server_info.h"
 
 #include <ostream>
 #include <sstream>
@@ -59,11 +59,11 @@ std::vector<std::vector<Field> > DBTraits<LMDB>::infoFields() {
 }
 namespace lmdb {
 
-LmdbServerInfo::Stats::Stats()
+ServerInfo::Stats::Stats()
   : file_name() {
 }
 
-LmdbServerInfo::Stats::Stats(const std::string& common_text) {
+ServerInfo::Stats::Stats(const std::string& common_text) {
   size_t pos = 0;
   size_t start = 0;
 
@@ -79,7 +79,7 @@ LmdbServerInfo::Stats::Stats(const std::string& common_text) {
   }
 }
 
-common::Value* LmdbServerInfo::Stats::valueByIndex(unsigned char index) const {
+common::Value* ServerInfo::Stats::valueByIndex(unsigned char index) const {
   switch (index) {
   case 0:
     return new common::StringValue(file_name);
@@ -90,15 +90,15 @@ common::Value* LmdbServerInfo::Stats::valueByIndex(unsigned char index) const {
   return nullptr;
 }
 
-LmdbServerInfo::LmdbServerInfo()
+ServerInfo::ServerInfo()
   : IServerInfo(LMDB) {
 }
 
-LmdbServerInfo::LmdbServerInfo(const Stats& stats)
+ServerInfo::ServerInfo(const Stats& stats)
   : IServerInfo(LMDB), stats_(stats) {
 }
 
-common::Value* LmdbServerInfo::valueByIndexes(unsigned char property, unsigned char field) const {
+common::Value* ServerInfo::valueByIndexes(unsigned char property, unsigned char field) const {
   switch (property) {
   case 0:
     return stats_.valueByIndex(field);
@@ -109,20 +109,20 @@ common::Value* LmdbServerInfo::valueByIndexes(unsigned char property, unsigned c
   return nullptr;
 }
 
-std::ostream& operator<<(std::ostream& out, const LmdbServerInfo::Stats& value) {
+std::ostream& operator<<(std::ostream& out, const ServerInfo::Stats& value) {
   return out << LMDB_FILE_NAME_LABEL ":" << value.file_name << MARKER;
 }
 
-std::ostream& operator<<(std::ostream& out, const LmdbServerInfo& value) {
+std::ostream& operator<<(std::ostream& out, const ServerInfo& value) {
   return out << value.toString();
 }
 
-LmdbServerInfo* makeLmdbServerInfo(const std::string& content) {
+ServerInfo* makeLmdbServerInfo(const std::string& content) {
   if (content.empty()) {
     return nullptr;
   }
 
-  LmdbServerInfo* result = new LmdbServerInfo;
+  ServerInfo* result = new ServerInfo;
 
   const std::vector<std::string> headers = DBTraits<LMDB>::infoHeaders();
   std::string word;
@@ -132,7 +132,7 @@ LmdbServerInfo* makeLmdbServerInfo(const std::string& content) {
     word += content[i];
     if (word == headers[0]) {
       std::string part = content.substr(i + 1);
-      result->stats_ = LmdbServerInfo::Stats(part);
+      result->stats_ = ServerInfo::Stats(part);
       break;
     }
   }
@@ -141,17 +141,17 @@ LmdbServerInfo* makeLmdbServerInfo(const std::string& content) {
 }
 
 
-std::string LmdbServerInfo::toString() const {
+std::string ServerInfo::toString() const {
   std::stringstream str;
   str << LMDB_STATS_LABEL MARKER << stats_;
   return str.str();
 }
 
-uint32_t LmdbServerInfo::version() const {
+uint32_t ServerInfo::version() const {
   return 0;
 }
 
-LmdbServerInfo* makeLmdbServerInfo(FastoObject* root) {
+ServerInfo* makeLmdbServerInfo(FastoObject* root) {
   std::string content = common::convertToString(root);
   return makeLmdbServerInfo(content);
 }
