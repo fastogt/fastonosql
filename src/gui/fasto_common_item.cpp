@@ -28,6 +28,8 @@
 #include "common/text_decoders/msgpack_edcoder.h"
 #include "common/text_decoders/hex_edcoder.h"
 
+#include "global/global.h"
+
 namespace fastonosql {
 namespace gui {
 

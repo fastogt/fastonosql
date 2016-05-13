@@ -22,7 +22,7 @@
 
 #include "core/connection_settings.h"
 
-#include "core/memcached/memcached_config.h"
+#include "core/memcached/config.h"
 
 namespace fastonosql {
 namespace core {

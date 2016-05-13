@@ -22,7 +22,10 @@
 #include <string>
 
 #include "common/types.h"
+
 #include "core/types.h"
+
+#include "global/global.h"
 
 #define REDIS_SERVER_LABEL "# Server"
 #define REDIS_CLIENTS_LABEL "# Clients"

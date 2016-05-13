@@ -19,12 +19,9 @@
 #pragma once
 
 #include <vector>
-#include <utility>
 #include <string>
 
 #include "common/net/net.h"
-
-#include "global/global.h"
 
 #include "core/connection_types.h"
 #include "core/db_key.h"

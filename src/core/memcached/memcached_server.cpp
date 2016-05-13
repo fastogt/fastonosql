@@ -19,7 +19,7 @@
 #include "core/memcached/memcached_server.h"
 
 #include "core/memcached/memcached_driver.h"
-#include "core/memcached/memcached_database.h"
+#include "core/memcached/database.h"
 
 namespace fastonosql {
 namespace core {
@@ -43,7 +43,7 @@ common::net::hostAndPort MemcachedServer::host() const {
 }
 
 IDatabaseSPtr MemcachedServer::createDatabase(IDataBaseInfoSPtr info) {
-  return IDatabaseSPtr(new MemcachedDatabase(shared_from_this(), info));
+  return IDatabaseSPtr(new Database(shared_from_this(), info));
 }
 
 }  // namespace memcached

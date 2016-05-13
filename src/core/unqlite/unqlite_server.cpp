@@ -19,7 +19,7 @@
 #include "core/unqlite/unqlite_server.h"
 
 #include "core/unqlite/unqlite_driver.h"
-#include "core/unqlite/unqlite_database.h"
+#include "core/unqlite/database.h"
 
 namespace fastonosql {
 namespace core {
@@ -39,7 +39,7 @@ std::string UnqliteServer::path() const {
 }
 
 IDatabaseSPtr UnqliteServer::createDatabase(IDataBaseInfoSPtr info) {
-  return IDatabaseSPtr(new UnqliteDatabase(shared_from_this(), info));
+  return IDatabaseSPtr(new Database(shared_from_this(), info));
 }
 
 }  // namespace unqlite

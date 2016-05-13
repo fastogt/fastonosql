@@ -27,8 +27,8 @@
 
 #include "core/command_logger.h"
 
-#include "core/ssdb/ssdb_database.h"
-#include "core/ssdb/ssdb_command.h"
+#include "core/ssdb/database.h"
+#include "core/ssdb/command.h"
 
 #define INFO_REQUEST "INFO"
 #define GET_KEYS_PATTERN_1ARGS_I "KEYS a z %d"
@@ -168,7 +168,7 @@ common::Error SsdbDriver::executeImpl(int argc, char** argv, FastoObject* out) {
 }
 
 common::Error SsdbDriver::serverInfo(IServerInfo** info) {
-  LOG_COMMAND(type(), Command(INFO_REQUEST, common::Value::C_INNER));
+  LOG_COMMAND(type(), fastonosql::Command(INFO_REQUEST, common::Value::C_INNER));
   SsdbServerInfo::Common cm;
   common::Error err = impl_->info(nullptr, &cm);
   if (!err) {
@@ -207,7 +207,7 @@ common::Error SsdbDriver::currentDataBaseInfo(IDataBaseInfo** info) {
 
   size_t dbsize = 0;
   impl_->dbsize(&dbsize);
-  SsdbDataBaseInfo* sinfo = new SsdbDataBaseInfo("0", true, dbsize);
+  DataBaseInfo* sinfo = new DataBaseInfo("0", true, dbsize);
   *info = sinfo;
   return common::Error();
 }
@@ -271,7 +271,7 @@ void SsdbDriver::handleExecuteEvent(events::ExecuteRequestEvent* ev) {
           strncpy(command, inputLine + offset, n - offset);
         }
         offset = n + 1;
-        FastoObjectCommand* cmd = createCommand<SsdbCommand>(obj, command, common::Value::C_USER);
+        FastoObjectCommand* cmd = createCommand<Command>(obj, command, common::Value::C_USER);
         er = execute(cmd);
         if (er && er->isError()) {
           res.setErrorInfo(er);
@@ -303,7 +303,7 @@ void SsdbDriver::handleCommandRequestEvent(events::CommandRequestEvent* ev) {
 
     RootLocker lock = make_locker(sender, cmdtext);
     FastoObjectIPtr obj = lock.root();
-    FastoObjectCommand* cmd = createCommand<SsdbCommand>(obj, cmdtext, common::Value::C_INNER);
+    FastoObjectCommand* cmd = createCommand<Command>(obj, cmdtext, common::Value::C_INNER);
   notifyProgress(sender, 50);
     er = execute(cmd);
     if (er && er->isError()) {
@@ -320,7 +320,7 @@ void SsdbDriver::handleLoadDatabaseContentEvent(events::LoadDatabaseContentReque
     std::string patternResult = common::MemSPrintf(GET_KEYS_PATTERN_1ARGS_I, res.count_keys);
     FastoObjectIPtr root = FastoObject::createRoot(patternResult);
   notifyProgress(sender, 50);
-    FastoObjectCommand* cmd = createCommand<SsdbCommand>(root, patternResult,
+    FastoObjectCommand* cmd = createCommand<Command>(root, patternResult,
                                                          common::Value::C_INNER);
     common::Error er = execute(cmd);
     if (er && er->isError()) {

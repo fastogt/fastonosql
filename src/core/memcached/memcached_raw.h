@@ -26,7 +26,7 @@
 #include "core/db_connection.h"
 
 #include "core/memcached/memcached_settings.h"
-#include "core/memcached/memcached_config.h"
+#include "core/memcached/config.h"
 #include "core/memcached/memcached_infos.h"
 
 namespace fastonosql {

@@ -19,7 +19,7 @@
 #include "core/ssdb/ssdb_server.h"
 
 #include "core/ssdb/ssdb_driver.h"
-#include "core/ssdb/ssdb_database.h"
+#include "core/ssdb/database.h"
 
 namespace fastonosql {
 namespace core {
@@ -43,7 +43,7 @@ common::net::hostAndPort SsdbServer::host() const {
 }
 
 IDatabaseSPtr SsdbServer::createDatabase(IDataBaseInfoSPtr info) {
-  return IDatabaseSPtr(new SsdbDatabase(shared_from_this(), info));
+  return IDatabaseSPtr(new Database(shared_from_this(), info));
 }
 
 }  // namespace ssdb

@@ -28,7 +28,7 @@ extern "C" {
 #include "core/db_connection.h"
 
 #include "core/unqlite/unqlite_settings.h"
-#include "core/unqlite/unqlite_config.h"
+#include "core/unqlite/config.h"
 #include "core/unqlite/unqlite_infos.h"
 
 namespace fastonosql {

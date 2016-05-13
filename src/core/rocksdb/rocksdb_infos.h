@@ -22,6 +22,8 @@
 
 #include "core/types.h"
 
+#include "global/global.h"
+
 #define ROCKSDB_STATS_LABEL "# Stats"
 
 #define ROCKSDB_CAMPACTIONS_LEVEL_LABEL "compactions_level"

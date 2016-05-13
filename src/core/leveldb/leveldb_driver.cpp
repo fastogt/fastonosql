@@ -27,8 +27,8 @@
 #include "common/utils.h"
 
 #include "core/command_logger.h"
-#include "core/leveldb/leveldb_database.h"
-#include "core/leveldb/leveldb_command.h"
+#include "core/leveldb/database.h"
+#include "core/leveldb/command.h"
 
 #define INFO_REQUEST "INFO"
 #define GET_KEY_PATTERN_1ARGS_S "GET %s"
@@ -133,7 +133,7 @@ common::Error LeveldbDriver::executeImpl(int argc, char** argv, FastoObject* out
 }
 
 common::Error LeveldbDriver::serverInfo(IServerInfo** info) {
-  LOG_COMMAND(type(), Command(INFO_REQUEST, common::Value::C_INNER));
+  LOG_COMMAND(type(), fastonosql::Command(INFO_REQUEST, common::Value::C_INNER));
   LeveldbServerInfo::Stats cm;
   common::Error err = impl_->info(nullptr, &cm);
   if (!err) {
@@ -172,7 +172,7 @@ common::Error LeveldbDriver::currentDataBaseInfo(IDataBaseInfo** info) {
 
   size_t dbsize = 0;
   impl_->dbsize(&dbsize);
-  *info = new LeveldbDataBaseInfo("0", true, dbsize);
+  *info = new DataBaseInfo("0", true, dbsize);
   return common::Error();
 }
 
@@ -235,7 +235,7 @@ void LeveldbDriver::handleExecuteEvent(events::ExecuteRequestEvent* ev) {
           strncpy(command, inputLine + offset, n - offset);
         }
         offset = n + 1;
-        FastoObjectCommand* cmd = createCommand<LeveldbCommand>(obj, command, common::Value::C_USER);
+        FastoObjectCommand* cmd = createCommand<Command>(obj, command, common::Value::C_USER);
         er = execute(cmd);
         if (er && er->isError()) {
           res.setErrorInfo(er);
@@ -267,7 +267,7 @@ void LeveldbDriver::handleCommandRequestEvent(events::CommandRequestEvent* ev) {
 
   RootLocker lock = make_locker(sender, cmdtext);
   FastoObjectIPtr obj = lock.root();
-  FastoObjectCommand* cmd = createCommand<LeveldbCommand>(obj, cmdtext, common::Value::C_INNER);
+  FastoObjectCommand* cmd = createCommand<Command>(obj, cmdtext, common::Value::C_INNER);
   notifyProgress(sender, 50);
   er = execute(cmd);
   if (er && er->isError()) {
@@ -284,7 +284,7 @@ void LeveldbDriver::handleLoadDatabaseContentEvent(events::LoadDatabaseContentRe
   std::string patternResult = common::MemSPrintf(GET_KEYS_PATTERN_1ARGS_I, res.count_keys);
   FastoObjectIPtr root = FastoObject::createRoot(patternResult);
   notifyProgress(sender, 50);
-  FastoObjectCommand* cmd = createCommand<LeveldbCommand>(root, patternResult,
+  FastoObjectCommand* cmd = createCommand<Command>(root, patternResult,
                                                           common::Value::C_INNER);
   common::Error er = execute(cmd);
   if (er && er->isError()) {

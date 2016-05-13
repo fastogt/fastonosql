@@ -27,8 +27,8 @@
 
 #include "core/command_logger.h"
 
-#include "core/lmdb/lmdb_database.h"
-#include "core/lmdb/lmdb_command.h"
+#include "core/lmdb/database.h"
+#include "core/lmdb/command.h"
 
 #define INFO_REQUEST "INFO"
 #define GET_KEY_PATTERN_1ARGS_S "GET %s"
@@ -132,7 +132,7 @@ common::Error LmdbDriver::executeImpl(int argc, char** argv, FastoObject* out) {
 }
 
 common::Error LmdbDriver::serverInfo(IServerInfo** info) {
-  LOG_COMMAND(type(), Command(INFO_REQUEST, common::Value::C_INNER));
+  LOG_COMMAND(type(), fastonosql::Command(INFO_REQUEST, common::Value::C_INNER));
   LmdbServerInfo::Stats cm;
   common::Error err = impl_->info(nullptr, &cm);
   if (!err) {
@@ -171,7 +171,7 @@ common::Error LmdbDriver::currentDataBaseInfo(IDataBaseInfo** info) {
 
   size_t dbsize = 0;
   impl_->dbsize(&dbsize);
-  *info = new LmdbDataBaseInfo(common::convertToString(impl_->curDb()), true, dbsize);
+  *info = new DataBaseInfo(common::convertToString(impl_->curDb()), true, dbsize);
   return common::Error();
 }
 
@@ -234,7 +234,7 @@ void LmdbDriver::handleExecuteEvent(events::ExecuteRequestEvent* ev) {
           strncpy(command, inputLine + offset, n - offset);
         }
         offset = n + 1;
-        FastoObjectCommand* cmd = createCommand<LmdbCommand>(obj, command, common::Value::C_USER);
+        FastoObjectCommand* cmd = createCommand<Command>(obj, command, common::Value::C_USER);
         er = execute(cmd);
         if (er && er->isError()) {
           res.setErrorInfo(er);
@@ -266,7 +266,7 @@ void LmdbDriver::handleCommandRequestEvent(events::CommandRequestEvent* ev) {
 
   RootLocker lock = make_locker(sender, cmdtext);
   FastoObjectIPtr obj = lock.root();
-  FastoObjectCommand* cmd = createCommand<LmdbCommand>(obj, cmdtext, common::Value::C_INNER);
+  FastoObjectCommand* cmd = createCommand<Command>(obj, cmdtext, common::Value::C_INNER);
   notifyProgress(sender, 50);
   er = execute(cmd);
   if (er && er->isError()) {
@@ -283,7 +283,7 @@ void LmdbDriver::handleLoadDatabaseContentEvent(events::LoadDatabaseContentReque
   std::string patternResult = common::MemSPrintf(GET_KEYS_PATTERN_1ARGS_I, res.count_keys);
   FastoObjectIPtr root = FastoObject::createRoot(patternResult);
   notifyProgress(sender, 50);
-  FastoObjectCommand* cmd = createCommand<LmdbCommand>(root, patternResult, common::Value::C_INNER);
+  FastoObjectCommand* cmd = createCommand<Command>(root, patternResult, common::Value::C_INNER);
   common::Error er = execute(cmd);
   if (er && er->isError()) {
     res.setErrorInfo(er);

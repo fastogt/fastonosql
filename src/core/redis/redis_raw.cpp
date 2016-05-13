@@ -68,8 +68,8 @@ extern "C" {
 
 #include "core/redis/redis_sentinel_info.h"
 #include "core/redis/redis_cluster_infos.h"
-#include "core/redis/redis_database.h"
-#include "core/redis/redis_command.h"
+#include "core/redis/database.h"
+#include "core/redis/command.h"
 
 #define HIREDIS_VERSION STRINGIZE(HIREDIS_MAJOR) "." STRINGIZE(HIREDIS_MINOR) "." STRINGIZE(HIREDIS_PATCH)
 #define REDIS_CLI_KEEPALIVE_INTERVAL 15 /* seconds */
@@ -671,7 +671,7 @@ common::Error RedisRaw::latencyMode(FastoObject* out) {
     return common::make_error_value("Invalid input argument(s)", common::ErrorValue::E_ERROR);
   }
 
-  FastoObjectCommand* cmd = createCommand<RedisCommand>(out, "PING", common::Value::C_INNER);
+  FastoObjectCommand* cmd = createCommand<Command>(out, "PING", common::Value::C_INNER);
   if (!cmd) {
     DNOTREACHED();
     return common::make_error_value("Invalid createCommand input argument",
@@ -802,7 +802,7 @@ common::Error RedisRaw::slaveMode(FastoObject* out) {
     return er;
   }
 
-  FastoObjectCommand* cmd = createCommand<RedisCommand>(out, SYNC_REQUEST,
+  FastoObjectCommand* cmd = createCommand<Command>(out, SYNC_REQUEST,
                                                         common::Value::C_INNER);
   if (!cmd) {
     DNOTREACHED();
@@ -857,7 +857,7 @@ common::Error RedisRaw::getRDB(FastoObject* out) {
   }
 
   common::ArrayValue* val = NULL;
-  FastoObjectCommand* cmd = createCommand<RedisCommand>(out, RDM_REQUEST, common::Value::C_INNER);
+  FastoObjectCommand* cmd = createCommand<Command>(out, RDM_REQUEST, common::Value::C_INNER);
   if (!cmd) {
     DNOTREACHED();
     return common::make_error_value("Invalid createCommand input argument",
@@ -1058,7 +1058,7 @@ common::Error RedisRaw::findBigKeys(FastoObject* out) {
     return common::make_error_value("Invalid input argument(s)", common::ErrorValue::E_ERROR);
   }
 
-  FastoObjectCommand* cmd = createCommand<RedisCommand>(out, FIND_BIG_KEYS_REQUEST,
+  FastoObjectCommand* cmd = createCommand<Command>(out, FIND_BIG_KEYS_REQUEST,
                                                         common::Value::C_INNER);
   if (!cmd) {
     DNOTREACHED();
@@ -1230,7 +1230,7 @@ common::Error RedisRaw::statMode(FastoObject* out) {
     return common::make_error_value("Invalid input argument(s)", common::ErrorValue::E_ERROR);
   }
 
-  FastoObjectCommand* cmd = createCommand<RedisCommand>(out, INFO_REQUEST,
+  FastoObjectCommand* cmd = createCommand<Command>(out, INFO_REQUEST,
                                                         common::Value::C_INNER);
   if (!cmd) {
     DNOTREACHED();
@@ -1338,7 +1338,7 @@ common::Error RedisRaw::scanMode(FastoObject* out) {
     return common::make_error_value("Invalid input argument(s)", common::ErrorValue::E_ERROR);
   }
 
-  FastoObjectCommand* cmd = createCommand<RedisCommand>(out, SCAN_MODE_REQUEST,
+  FastoObjectCommand* cmd = createCommand<Command>(out, SCAN_MODE_REQUEST,
                                                         common::Value::C_INNER);
   if (!cmd) {
     DNOTREACHED();
@@ -1392,7 +1392,7 @@ common::Error RedisRaw::select(int num, IDataBaseInfo** info) {
   if (reply) {
     size_t sz = 0;
     dbsize(&sz);
-    RedisDataBaseInfo* linfo = new RedisDataBaseInfo(common::convertToString(num), true, sz);
+    DataBaseInfo* linfo = new DataBaseInfo(common::convertToString(num), true, sz);
     if (observer_) {
       observer_->currentDataBaseChanged(linfo);
     }
@@ -1723,7 +1723,7 @@ common::Error RedisRaw::execute(int argc, char** argv, FastoObject* out) {
       config_.dbnum = atoi(argv[1]);
       size_t sz = 0;
       dbsize(&sz);
-      RedisDataBaseInfo* info = new RedisDataBaseInfo(common::convertToString(config_.dbnum), true, sz);
+      DataBaseInfo* info = new DataBaseInfo(common::convertToString(config_.dbnum), true, sz);
       if (observer_) {
         observer_->currentDataBaseChanged(info);
       }
@@ -1766,7 +1766,7 @@ common::Error RedisRaw::executeAsPipeline(std::vector<FastoObjectCommandIPtr> cm
       continue;
     }
 
-    LOG_COMMAND(REDIS, Command(cmdc));
+    LOG_COMMAND(REDIS, fastonosql::Command(cmdc));
     int argc = 0;
     sds* argv = sdssplitargs(ccommand, &argc);
 

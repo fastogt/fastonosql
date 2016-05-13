@@ -22,7 +22,7 @@
 
 #include "core/connection_settings.h"
 
-#include "core/unqlite/unqlite_config.h"
+#include "core/unqlite/config.h"
 
 namespace fastonosql {
 namespace core {

@@ -24,7 +24,7 @@
 #include "core/db_connection.h"
 
 #include "core/ssdb/ssdb_settings.h"
-#include "core/ssdb/ssdb_config.h"
+#include "core/ssdb/config.h"
 #include "core/ssdb/ssdb_infos.h"
 
 namespace fastonosql {

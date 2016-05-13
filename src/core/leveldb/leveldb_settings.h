@@ -22,7 +22,7 @@
 
 #include "core/connection_settings.h"
 
-#include "core/leveldb/leveldb_config.h"
+#include "core/leveldb/config.h"
 
 namespace fastonosql {
 namespace core {

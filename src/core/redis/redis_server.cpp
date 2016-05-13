@@ -19,7 +19,7 @@
 #include "core/redis/redis_server.h"
 
 #include "core/redis/redis_driver.h"
-#include "core/redis/redis_database.h"
+#include "core/redis/database.h"
 
 namespace fastonosql {
 namespace core {
@@ -43,7 +43,7 @@ common::net::hostAndPort RedisServer::host() const {
 }
 
 IDatabaseSPtr RedisServer::createDatabase(IDataBaseInfoSPtr info) {
-  return IDatabaseSPtr(new RedisDatabase(shared_from_this(), info));
+  return IDatabaseSPtr(new Database(shared_from_this(), info));
 }
 
 void RedisServer::handleDiscoveryInfoResponceEvent(events::DiscoveryInfoResponceEvent* ev) {

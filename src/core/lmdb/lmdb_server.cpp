@@ -19,7 +19,7 @@
 #include "core/lmdb/lmdb_server.h"
 
 #include "core/lmdb/lmdb_driver.h"
-#include "core/lmdb/lmdb_database.h"
+#include "core/lmdb/database.h"
 
 namespace fastonosql {
 namespace core {
@@ -39,7 +39,7 @@ std::string LmdbServer::path() const {
 }
 
 IDatabaseSPtr LmdbServer::createDatabase(IDataBaseInfoSPtr info) {
-  return IDatabaseSPtr(new LmdbDatabase(shared_from_this(), info));
+  return IDatabaseSPtr(new Database(shared_from_this(), info));
 }
 
 }  // namespace lmdb

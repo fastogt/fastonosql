@@ -22,7 +22,7 @@
 
 #include "core/connection_settings.h"
 
-#include "core/ssdb/ssdb_config.h"
+#include "core/ssdb/config.h"
 
 namespace fastonosql {
 namespace core {

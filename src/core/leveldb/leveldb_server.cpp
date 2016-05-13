@@ -19,7 +19,7 @@
 #include "core/leveldb/leveldb_server.h"
 
 #include "core/leveldb/leveldb_driver.h"
-#include "core/leveldb/leveldb_database.h"
+#include "core/leveldb/database.h"
 
 namespace fastonosql {
 namespace core {
@@ -39,7 +39,7 @@ std::string LeveldbServer::path() const {
 }
 
 IDatabaseSPtr LeveldbServer::createDatabase(IDataBaseInfoSPtr info) {
-  return IDatabaseSPtr(new LeveldbDatabase(shared_from_this(), info));
+  return IDatabaseSPtr(new Database(shared_from_this(), info));
 }
 
 }  // namespace leveldb

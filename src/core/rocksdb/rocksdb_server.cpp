@@ -19,7 +19,7 @@
 #include "core/rocksdb/rocksdb_server.h"
 
 #include "core/rocksdb/rocksdb_driver.h"
-#include "core/rocksdb/rocksdb_database.h"
+#include "core/rocksdb/database.h"
 
 namespace fastonosql {
 namespace core {
@@ -39,7 +39,7 @@ std::string RocksdbServer::path() const {
 }
 
 IDatabaseSPtr RocksdbServer::createDatabase(IDataBaseInfoSPtr info) {
-  return IDatabaseSPtr(new RocksdbDatabase(shared_from_this(), info));
+  return IDatabaseSPtr(new Database(shared_from_this(), info));
 }
 
 }  // namespace rocksdb

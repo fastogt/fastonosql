@@ -20,6 +20,8 @@
 
 #include <string>
 
+#include "global/global.h"
+
 #include "core/types.h"
 
 #define SSDB_COMMON_LABEL "# Common"

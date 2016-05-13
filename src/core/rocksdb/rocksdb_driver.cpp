@@ -28,8 +28,8 @@
 
 #include "core/command_logger.h"
 
-#include "core/rocksdb/rocksdb_database.h"
-#include "core/rocksdb/rocksdb_command.h"
+#include "core/rocksdb/database.h"
+#include "core/rocksdb/command.h"
 
 #define INFO_REQUEST "INFO"
 #define GET_KEY_PATTERN_1ARGS_S "GET %s"
@@ -134,7 +134,7 @@ common::Error RocksdbDriver::executeImpl(int argc, char** argv, FastoObject* out
 }
 
 common::Error RocksdbDriver::serverInfo(IServerInfo** info) {
-  LOG_COMMAND(type(), Command(INFO_REQUEST, common::Value::C_INNER));
+  LOG_COMMAND(type(), fastonosql::Command(INFO_REQUEST, common::Value::C_INNER));
   RocksdbServerInfo::Stats cm;
   common::Error err = impl_->info(nullptr, &cm);
   if (!err) {
@@ -174,7 +174,7 @@ common::Error RocksdbDriver::currentDataBaseInfo(IDataBaseInfo** info) {
   std::string name = impl_->currentDbName();
   size_t dbsize = 0;
   impl_->dbsize(&dbsize);
-  *info = new RocksdbDataBaseInfo(name, true, dbsize);
+  *info = new DataBaseInfo(name, true, dbsize);
   return common::Error();
 }
 
@@ -238,7 +238,7 @@ void RocksdbDriver::handleExecuteEvent(events::ExecuteRequestEvent* ev) {
           strncpy(command, inputLine + offset, n - offset);
         }
         offset = n + 1;
-        FastoObjectCommand* cmd = createCommand<RocksdbCommand>(obj, command, common::Value::C_USER);
+        FastoObjectCommand* cmd = createCommand<Command>(obj, command, common::Value::C_USER);
         er = execute(cmd);
         if (er && er->isError()) {
           res.setErrorInfo(er);
@@ -270,7 +270,7 @@ void RocksdbDriver::handleCommandRequestEvent(events::CommandRequestEvent* ev) {
 
   RootLocker lock = make_locker(sender, cmdtext);
   FastoObjectIPtr obj = lock.root();
-  FastoObjectCommand* cmd = createCommand<RocksdbCommand>(obj, cmdtext, common::Value::C_INNER);
+  FastoObjectCommand* cmd = createCommand<Command>(obj, cmdtext, common::Value::C_INNER);
   notifyProgress(sender, 50);
   er = execute(cmd);
   if (er && er->isError()) {
@@ -287,7 +287,7 @@ void RocksdbDriver::handleLoadDatabaseContentEvent(events::LoadDatabaseContentRe
   std::string patternResult = common::MemSPrintf(GET_KEYS_PATTERN_1ARGS_I, res.count_keys);
   FastoObjectIPtr root = FastoObject::createRoot(patternResult);
   notifyProgress(sender, 50);
-  FastoObjectCommand* cmd = createCommand<RocksdbCommand>(root, patternResult,
+  FastoObjectCommand* cmd = createCommand<Command>(root, patternResult,
                                                           common::Value::C_INNER);
   common::Error er = execute(cmd);
   if (er && er->isError()) {

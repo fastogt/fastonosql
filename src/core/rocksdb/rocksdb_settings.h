@@ -22,7 +22,7 @@
 
 #include "core/connection_settings.h"
 
-#include "core/rocksdb/rocksdb_config.h"
+#include "core/rocksdb/config.h"
 
 namespace fastonosql {
 namespace core {

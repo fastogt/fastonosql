@@ -24,8 +24,8 @@
 #include "common/sprintf.h"
 
 #include "core/command_logger.h"
-#include "core/memcached/memcached_database.h"
-#include "core/memcached/memcached_command.h"
+#include "core/memcached/database.h"
+#include "core/memcached/command.h"
 
 #define INFO_REQUEST "STATS"
 #define GET_KEYS "STATS ITEMS"
@@ -79,7 +79,7 @@ common::Error MemcachedDriver::executeImpl(int argc, char** argv, FastoObject* o
 }
 
 common::Error MemcachedDriver::serverInfo(IServerInfo** info) {
-  LOG_COMMAND(type(), Command(INFO_REQUEST, common::Value::C_INNER));
+  LOG_COMMAND(type(), fastonosql::Command(INFO_REQUEST, common::Value::C_INNER));
   MemcachedServerInfo::Common cm;
   common::Error err = impl_->info(nullptr, &cm);
   if (!err) {
@@ -118,7 +118,7 @@ common::Error MemcachedDriver::currentDataBaseInfo(IDataBaseInfo** info) {
 
   size_t dbsize = 0;
   impl_->dbsize(&dbsize);
-  *info = new MemcachedDataBaseInfo("0", true, dbsize);
+  *info = new DataBaseInfo("0", true, dbsize);
   return common::Error();
 }
 
@@ -181,7 +181,7 @@ void MemcachedDriver::handleExecuteEvent(events::ExecuteRequestEvent* ev) {
           strncpy(command, inputLine + offset, n - offset);
         }
         offset = n + 1;
-        FastoObjectCommand* cmd = createCommand<MemcachedCommand>(obj, command,
+        FastoObjectCommand* cmd = createCommand<Command>(obj, command,
                                                                   common::Value::C_USER);
         er = execute(cmd);
         if (er && er->isError()) {
@@ -214,7 +214,7 @@ void MemcachedDriver::handleCommandRequestEvent(events::CommandRequestEvent* ev)
 
   RootLocker lock = make_locker(sender, cmdtext);
   FastoObjectIPtr obj = lock.root();
-  FastoObjectCommand* cmd = createCommand<MemcachedCommand>(obj, cmdtext, common::Value::C_INNER);
+  FastoObjectCommand* cmd = createCommand<Command>(obj, cmdtext, common::Value::C_INNER);
   notifyProgress(sender, 50);
   er = execute(cmd);
   if (er && er->isError()) {
@@ -230,7 +230,7 @@ void MemcachedDriver::handleLoadDatabaseContentEvent(events::LoadDatabaseContent
   events::LoadDatabaseContentResponceEvent::value_type res(ev->value());
   FastoObjectIPtr root = FastoObject::createRoot(GET_KEYS);
   notifyProgress(sender, 50);
-  FastoObjectCommand* cmd = createCommand<MemcachedCommand>(root, GET_KEYS, common::Value::C_INNER);
+  FastoObjectCommand* cmd = createCommand<Command>(root, GET_KEYS, common::Value::C_INNER);
   common::Error er = execute(cmd);
   if (er && er->isError()) {
     res.setErrorInfo(er);

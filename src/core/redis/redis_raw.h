@@ -24,7 +24,7 @@
 #include "core/command_handler.h"
 
 #include "core/redis/redis_settings.h"
-#include "core/redis/redis_config.h"
+#include "core/redis/config.h"
 #include "core/redis/redis_infos.h"
 
 #define INFO_REQUEST "INFO"

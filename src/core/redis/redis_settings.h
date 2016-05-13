@@ -22,7 +22,7 @@
 
 #include "core/connection_settings.h"
 
-#include "core/redis/redis_config.h"
+#include "core/redis/config.h"
 
 namespace fastonosql {
 namespace core {
