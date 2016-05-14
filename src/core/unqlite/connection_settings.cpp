@@ -16,49 +16,47 @@
     along with FastoNoSQL.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-#include "core/redis/redis_settings.h"
+#include "core/unqlite/connection_settings.h"
 
 #include <string>
 
-#include "common/utils.h"
-
 namespace fastonosql {
 namespace core {
-namespace redis {
+namespace unqlite {
 
-RedisConnectionSettings::RedisConnectionSettings(const connection_path_t& connectionName)
-  : IConnectionSettingsRemoteSSH(connectionName, REDIS), info_() {
+ConnectionSettings::ConnectionSettings(const connection_path_t& connectionName)
+  : IConnectionSettingsLocal(connectionName, UNQLITE), info_() {
 }
 
-void RedisConnectionSettings::setHost(const common::net::hostAndPort& host) {
-  info_.host = host;
+std::string ConnectionSettings::dbpath() const {
+  return info_.dbname;
 }
 
-common::net::hostAndPort RedisConnectionSettings::host() const {
-  return info_.host;
-}
-
-void RedisConnectionSettings::setCommandLine(const std::string& line) {
-  info_ = common::convertFromString<Config>(line);
-}
-
-std::string RedisConnectionSettings::commandLine() const {
+std::string ConnectionSettings::commandLine() const {
   return common::convertToString(info_);
 }
 
-Config RedisConnectionSettings::info() const {
+void ConnectionSettings::setCommandLine(const std::string& line) {
+  info_ = common::convertFromString<Config>(line);
+}
+
+Config ConnectionSettings::info() const {
   return info_;
 }
 
-void RedisConnectionSettings::setInfo(const Config &info) {
-  info_ =  info;
+void ConnectionSettings::setInfo(const Config &info) {
+  info_ = info;
 }
 
-RedisConnectionSettings* RedisConnectionSettings::clone() const {
-  RedisConnectionSettings* red = new RedisConnectionSettings(*this);
+std::string ConnectionSettings::fullAddress() const {
+  return info_.dbname;
+}
+
+ConnectionSettings* ConnectionSettings::clone() const {
+  ConnectionSettings* red = new ConnectionSettings(*this);
   return red;
 }
 
-}  // namespace redis
+}  // namespace unqlite
 }  // namespace core
 }  // namespace fastonosql

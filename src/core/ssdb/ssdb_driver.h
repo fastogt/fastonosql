@@ -20,13 +20,13 @@
 
 #include "core/idriver.h"
 
-#include "core/ssdb/ssdb_raw.h"
+#include "core/ssdb/db_connection.h"
 
 namespace fastonosql {
 namespace core {
 namespace ssdb {
 
-common::Error testConnection(SsdbConnectionSettings* settings);
+common::Error testConnection(ConnectionSettings* settings);
 
 class SsdbDriver
   : public IDriverRemote {
@@ -72,7 +72,7 @@ class SsdbDriver
   IServerInfoSPtr makeServerInfoFromString(const std::string& val);
 
  private:
-  SsdbRaw* const impl_;
+  DBConnection* const impl_;
 };
 
 }  // namespace ssdb

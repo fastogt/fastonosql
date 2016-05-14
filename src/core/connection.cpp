@@ -16,38 +16,10 @@
     along with FastoNoSQL.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-#pragma once
-
-#include <string>
-
-#include "core/connection_settings.h"
-
-#include "core/redis/config.h"
+#include "core/connection.h"
 
 namespace fastonosql {
 namespace core {
-namespace redis {
 
-class RedisConnectionSettings
-  : public IConnectionSettingsRemoteSSH {
- public:
-  explicit RedisConnectionSettings(const connection_path_t& connectionName);
-
-  virtual std::string commandLine() const;
-  virtual void setCommandLine(const std::string& line);
-
-  virtual void setHost(const common::net::hostAndPort& host);
-  virtual common::net::hostAndPort host() const;
-
-  Config info() const;
-  void setInfo(const Config& info);
-
-  virtual RedisConnectionSettings* clone() const;
-
- private:
-  Config info_;
-};
-
-}  // namespace redis
 }  // namespace core
 }  // namespace fastonosql

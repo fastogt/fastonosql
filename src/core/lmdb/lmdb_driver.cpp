@@ -42,7 +42,7 @@ namespace core {
 namespace lmdb {
 
 LmdbDriver::LmdbDriver(IConnectionSettingsBaseSPtr settings)
-  : IDriverLocal(settings), impl_(new LmdbRaw) {
+  : IDriverLocal(settings), impl_(new DBConnection) {
   CHECK(type() == LMDB);
 }
 
@@ -179,7 +179,7 @@ void LmdbDriver::handleConnectEvent(events::ConnectRequestEvent* ev) {
   QObject* sender = ev->sender();
   notifyProgress(sender, 0);
   events::ConnectResponceEvent::value_type res(ev->value());
-  LmdbConnectionSettings* set = dynamic_cast<LmdbConnectionSettings*>(settings_.get());  // +
+  ConnectionSettings* set = dynamic_cast<ConnectionSettings*>(settings_.get());  // +
   CHECK(set);
   notifyProgress(sender, 25);
   common::Error er = impl_->connect(set->info());

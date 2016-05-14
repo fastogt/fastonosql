@@ -16,7 +16,7 @@
     along with FastoNoSQL.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-#include "core/memcached/memcached_raw.h"
+#include "core/memcached/db_connection.h"
 
 #include <libmemcached/util.h>
 #include <libmemcached/instance.hpp>
@@ -29,8 +29,8 @@
 namespace fastonosql {
 namespace core {
 template<>
-common::Error DBAllocatorTraits<memcached::MemcachedConnection, memcached::Config>::connect(const memcached::Config& config, memcached::MemcachedConnection** hout) {
-  memcached::MemcachedConnection* context = nullptr;
+common::Error ConnectionAllocatorTraits<memcached::NativeConnection, memcached::Config>::connect(const memcached::Config& config, memcached::NativeConnection** hout) {
+  memcached::NativeConnection* context = nullptr;
   common::Error er = memcached::createConnection(config, &context);
   if (er && er->isError()) {
     return er;
@@ -40,8 +40,8 @@ common::Error DBAllocatorTraits<memcached::MemcachedConnection, memcached::Confi
   return common::Error();
 }
 template<>
-common::Error DBAllocatorTraits<memcached::MemcachedConnection, memcached::Config>::disconnect(memcached::MemcachedConnection** handle) {
-  memcached::MemcachedConnection* lhandle = *handle;
+common::Error ConnectionAllocatorTraits<memcached::NativeConnection, memcached::Config>::disconnect(memcached::NativeConnection** handle) {
+  memcached::NativeConnection* lhandle = *handle;
   if (lhandle) {
     memcached_free(lhandle);
   }
@@ -49,7 +49,7 @@ common::Error DBAllocatorTraits<memcached::MemcachedConnection, memcached::Confi
   return common::Error();
 }
 template<>
-bool DBAllocatorTraits<memcached::MemcachedConnection, memcached::Config>::isConnected(memcached::MemcachedConnection* handle) {
+bool ConnectionAllocatorTraits<memcached::NativeConnection, memcached::Config>::isConnected(memcached::NativeConnection* handle) {
   if (!handle) {
     return false;
   }
@@ -63,7 +63,7 @@ bool DBAllocatorTraits<memcached::MemcachedConnection, memcached::Config>::isCon
 }
 namespace memcached {
 
-common::Error createConnection(const Config& config, MemcachedConnection** context) {
+common::Error createConnection(const Config& config, NativeConnection** context) {
   if (!context) {
     return common::make_error_value("Invalid input argument(s)", common::ErrorValue::E_ERROR);
   }
@@ -111,7 +111,7 @@ common::Error createConnection(const Config& config, MemcachedConnection** conte
   return common::Error();
 }
 
-common::Error createConnection(MemcachedConnectionSettings* settings, MemcachedConnection** context) {
+common::Error createConnection(ConnectionSettings* settings, NativeConnection** context) {
   if (!settings) {
     return common::make_error_value("Invalid input argument(s)", common::ErrorValue::E_ERROR);
   }
@@ -120,7 +120,7 @@ common::Error createConnection(MemcachedConnectionSettings* settings, MemcachedC
   return createConnection(config, context);
 }
 
-common::Error testConnection(MemcachedConnectionSettings* settings) {
+common::Error testConnection(ConnectionSettings* settings) {
   if (!settings) {
     return common::make_error_value("Invalid input argument(s)", common::ErrorValue::E_ERROR);
   }
@@ -151,43 +151,43 @@ common::Error testConnection(MemcachedConnectionSettings* settings) {
   return common::Error();
 }
 
-MemcachedRaw::MemcachedRaw()
+DBConnection::DBConnection()
   : CommandHandler(memcachedCommands), connection_() {
 }
 
-common::Error MemcachedRaw::connect(const config_t& config) {
+common::Error DBConnection::connect(const config_t& config) {
   return connection_.connect(config);
 }
 
-common::Error MemcachedRaw::disconnect() {
+common::Error DBConnection::disconnect() {
   return connection_.disconnect();
 }
 
-bool MemcachedRaw::isConnected() const {
+bool DBConnection::isConnected() const {
   return connection_.isConnected();
 }
 
-std::string MemcachedRaw::delimiter() const {
+std::string DBConnection::delimiter() const {
   return connection_.config_.delimiter;
 }
 
-std::string MemcachedRaw::nsSeparator() const {
+std::string DBConnection::nsSeparator() const {
   return connection_.config_.ns_separator;
 }
 
-MemcachedRaw::config_t MemcachedRaw::config() const {
+DBConnection::config_t DBConnection::config() const {
   return connection_.config_;
 }
 
-const char* MemcachedRaw::versionApi() {
+const char* DBConnection::versionApi() {
   return memcached_lib_version();
 }
 
-common::Error MemcachedRaw::keys(const char* args) {
+common::Error DBConnection::keys(const char* args) {
   return notSupported("keys");
 }
 
-common::Error MemcachedRaw::info(const char* args, ServerInfo::Common* statsout) {
+common::Error DBConnection::info(const char* args, ServerInfo::Common* statsout) {
   CHECK(isConnected());
 
   if (!statsout) {
@@ -231,12 +231,12 @@ common::Error MemcachedRaw::info(const char* args, ServerInfo::Common* statsout)
   return common::Error();
 }
 
-common::Error MemcachedRaw::dbsize(size_t* size) {
+common::Error DBConnection::dbsize(size_t* size) {
   *size = 0;
   return common::Error();
 }
 
-common::Error MemcachedRaw::get(const std::string& key, std::string* ret_val) {
+common::Error DBConnection::get(const std::string& key, std::string* ret_val) {
   CHECK(isConnected());
 
   if (!ret_val) {
@@ -260,7 +260,7 @@ common::Error MemcachedRaw::get(const std::string& key, std::string* ret_val) {
   return common::Error();
 }
 
-common::Error MemcachedRaw::set(const std::string& key, const std::string& value,
+common::Error DBConnection::set(const std::string& key, const std::string& value,
                   time_t expiration, uint32_t flags) {
   CHECK(isConnected());
 
@@ -275,7 +275,7 @@ common::Error MemcachedRaw::set(const std::string& key, const std::string& value
   return common::Error();
 }
 
-common::Error MemcachedRaw::add(const std::string& key, const std::string& value,
+common::Error DBConnection::add(const std::string& key, const std::string& value,
                   time_t expiration, uint32_t flags) {
   CHECK(isConnected());
 
@@ -290,7 +290,7 @@ common::Error MemcachedRaw::add(const std::string& key, const std::string& value
   return common::Error();
 }
 
-common::Error MemcachedRaw::replace(const std::string& key, const std::string& value,
+common::Error DBConnection::replace(const std::string& key, const std::string& value,
                       time_t expiration, uint32_t flags) {
   CHECK(isConnected());
 
@@ -304,7 +304,7 @@ common::Error MemcachedRaw::replace(const std::string& key, const std::string& v
   return common::Error();
 }
 
-common::Error MemcachedRaw::append(const std::string& key, const std::string& value,
+common::Error DBConnection::append(const std::string& key, const std::string& value,
                      time_t expiration, uint32_t flags) {
   CHECK(isConnected());
 
@@ -319,7 +319,7 @@ common::Error MemcachedRaw::append(const std::string& key, const std::string& va
   return common::Error();
 }
 
-common::Error MemcachedRaw::prepend(const std::string& key, const std::string& value,
+common::Error DBConnection::prepend(const std::string& key, const std::string& value,
                       time_t expiration, uint32_t flags) {
   CHECK(isConnected());
 
@@ -334,7 +334,7 @@ common::Error MemcachedRaw::prepend(const std::string& key, const std::string& v
   return common::Error();
 }
 
-common::Error MemcachedRaw::incr(const std::string& key, uint64_t value) {
+common::Error DBConnection::incr(const std::string& key, uint64_t value) {
   CHECK(isConnected());
 
   memcached_return_t error = memcached_increment(connection_.handle_, key.c_str(), key.length(), 0, &value);
@@ -347,7 +347,7 @@ common::Error MemcachedRaw::incr(const std::string& key, uint64_t value) {
   return common::Error();
 }
 
-common::Error MemcachedRaw::decr(const std::string& key, uint64_t value) {
+common::Error DBConnection::decr(const std::string& key, uint64_t value) {
   CHECK(isConnected());
 
   memcached_return_t error = memcached_decrement(connection_.handle_, key.c_str(), key.length(), 0, &value);
@@ -360,7 +360,7 @@ common::Error MemcachedRaw::decr(const std::string& key, uint64_t value) {
   return common::Error();
 }
 
-common::Error MemcachedRaw::del(const std::string& key, time_t expiration) {
+common::Error DBConnection::del(const std::string& key, time_t expiration) {
   CHECK(isConnected());
 
   memcached_return_t error = memcached_delete(connection_.handle_, key.c_str(), key.length(), expiration);
@@ -373,7 +373,7 @@ common::Error MemcachedRaw::del(const std::string& key, time_t expiration) {
   return common::Error();
 }
 
-common::Error MemcachedRaw::flush_all(time_t expiration) {
+common::Error DBConnection::flush_all(time_t expiration) {
   CHECK(isConnected());
 
   memcached_return_t error = memcached_flush(connection_.handle_, expiration);
@@ -386,7 +386,7 @@ common::Error MemcachedRaw::flush_all(time_t expiration) {
   return common::Error();
 }
 
-common::Error MemcachedRaw::version_server() const {
+common::Error DBConnection::version_server() const {
   CHECK(isConnected());
 
   memcached_return_t error = memcached_version(connection_.handle_);
@@ -399,17 +399,17 @@ common::Error MemcachedRaw::version_server() const {
   return common::Error();
 }
 
-common::Error MemcachedRaw::help(int argc, char** argv) {
+common::Error DBConnection::help(int argc, char** argv) {
   return notSupported("HELP");
 }
 
 common::Error keys(CommandHandler* handler, int argc, char** argv, FastoObject* out) {
-  MemcachedRaw* mem = static_cast<MemcachedRaw*>(handler);
+  DBConnection* mem = static_cast<DBConnection*>(handler);
   return mem->keys("items");
 }
 
 common::Error stats(CommandHandler* handler, int argc, char** argv, FastoObject* out) {
-  MemcachedRaw* mem = static_cast<MemcachedRaw*>(handler);
+  DBConnection* mem = static_cast<DBConnection*>(handler);
   const char* args = argc == 1 ? argv[0] : nullptr;
   if (args && strcasecmp(args, "items") == 0) {
     return mem->keys(args);
@@ -428,7 +428,7 @@ common::Error stats(CommandHandler* handler, int argc, char** argv, FastoObject*
 }
 
 common::Error get(CommandHandler* handler, int argc, char** argv, FastoObject* out) {
-  MemcachedRaw* mem = static_cast<MemcachedRaw*>(handler);
+  DBConnection* mem = static_cast<DBConnection*>(handler);
   std::string ret;
   common::Error er = mem->get(argv[0], &ret);
   if (!er) {
@@ -441,7 +441,7 @@ common::Error get(CommandHandler* handler, int argc, char** argv, FastoObject* o
 }
 
 common::Error set(CommandHandler* handler, int argc, char** argv, FastoObject* out) {
-  MemcachedRaw* mem = static_cast<MemcachedRaw*>(handler);
+  DBConnection* mem = static_cast<DBConnection*>(handler);
   common::Error er = mem->set(argv[0], argv[3], atoi(argv[1]), atoi(argv[2]));
   if (!er) {
     common::StringValue* val = common::Value::createStringValue("STORED");
@@ -453,7 +453,7 @@ common::Error set(CommandHandler* handler, int argc, char** argv, FastoObject* o
 }
 
 common::Error add(CommandHandler* handler, int argc, char** argv, FastoObject* out) {
-  MemcachedRaw* mem = static_cast<MemcachedRaw*>(handler);
+  DBConnection* mem = static_cast<DBConnection*>(handler);
   common::Error er = mem->add(argv[0], argv[3], atoi(argv[1]), atoi(argv[2]));
   if (!er) {
     common::StringValue* val = common::Value::createStringValue("STORED");
@@ -465,7 +465,7 @@ common::Error add(CommandHandler* handler, int argc, char** argv, FastoObject* o
 }
 
 common::Error replace(CommandHandler* handler, int argc, char** argv, FastoObject* out) {
-  MemcachedRaw* mem = static_cast<MemcachedRaw*>(handler);
+  DBConnection* mem = static_cast<DBConnection*>(handler);
   common::Error er = mem->replace(argv[0], argv[3], atoi(argv[1]), atoi(argv[2]));
   if (!er) {
     common::StringValue* val = common::Value::createStringValue("STORED");
@@ -477,7 +477,7 @@ common::Error replace(CommandHandler* handler, int argc, char** argv, FastoObjec
 }
 
 common::Error append(CommandHandler* handler, int argc, char** argv, FastoObject* out) {
-  MemcachedRaw* mem = static_cast<MemcachedRaw*>(handler);
+  DBConnection* mem = static_cast<DBConnection*>(handler);
   common::Error er = mem->append(argv[0], argv[3], atoi(argv[1]), atoi(argv[2]));
   if (!er) {
     common::StringValue* val = common::Value::createStringValue("STORED");
@@ -489,7 +489,7 @@ common::Error append(CommandHandler* handler, int argc, char** argv, FastoObject
 }
 
 common::Error prepend(CommandHandler* handler, int argc, char** argv, FastoObject* out) {
-  MemcachedRaw* mem = static_cast<MemcachedRaw*>(handler);
+  DBConnection* mem = static_cast<DBConnection*>(handler);
   common::Error er = mem->prepend(argv[0], argv[3], atoi(argv[1]), atoi(argv[2]));
   if (!er) {
     common::StringValue* val = common::Value::createStringValue("STORED");
@@ -501,7 +501,7 @@ common::Error prepend(CommandHandler* handler, int argc, char** argv, FastoObjec
 }
 
 common::Error incr(CommandHandler* handler, int argc, char** argv, FastoObject* out) {
-  MemcachedRaw* mem = static_cast<MemcachedRaw*>(handler);
+  DBConnection* mem = static_cast<DBConnection*>(handler);
   common::Error er = mem->incr(argv[0], common::convertFromString<uint64_t>(argv[1]));
   if (!er) {
     common::StringValue* val = common::Value::createStringValue("STORED");
@@ -513,7 +513,7 @@ common::Error incr(CommandHandler* handler, int argc, char** argv, FastoObject* 
 }
 
 common::Error decr(CommandHandler* handler, int argc, char** argv, FastoObject* out) {
-  MemcachedRaw* mem = static_cast<MemcachedRaw*>(handler);
+  DBConnection* mem = static_cast<DBConnection*>(handler);
   common::Error er = mem->decr(argv[0], common::convertFromString<uint64_t>(argv[1]));
   if (!er) {
     common::StringValue* val = common::Value::createStringValue("STORED");
@@ -525,7 +525,7 @@ common::Error decr(CommandHandler* handler, int argc, char** argv, FastoObject* 
 }
 
 common::Error del(CommandHandler* handler, int argc, char** argv, FastoObject* out) {
-  MemcachedRaw* mem = static_cast<MemcachedRaw*>(handler);
+  DBConnection* mem = static_cast<DBConnection*>(handler);
   common::Error er = mem->del(argv[0], argc == 2 ? atoll(argv[1]) : 0);
   if (!er) {
     common::StringValue* val = common::Value::createStringValue("DELETED");
@@ -537,7 +537,7 @@ common::Error del(CommandHandler* handler, int argc, char** argv, FastoObject* o
 }
 
 common::Error flush_all(CommandHandler* handler, int argc, char** argv, FastoObject* out) {
-  MemcachedRaw* mem = static_cast<MemcachedRaw*>(handler);
+  DBConnection* mem = static_cast<DBConnection*>(handler);
   common::Error er = mem->flush_all(argc == 1 ? common::convertFromString<time_t>(argv[0]) : 0);
   if (!er) {
     common::StringValue* val = common::Value::createStringValue("STORED");
@@ -549,12 +549,12 @@ common::Error flush_all(CommandHandler* handler, int argc, char** argv, FastoObj
 }
 
 common::Error version_server(CommandHandler* handler, int argc, char** argv, FastoObject* out) {
-  MemcachedRaw* mem = static_cast<MemcachedRaw*>(handler);
+  DBConnection* mem = static_cast<DBConnection*>(handler);
   return mem->version_server();
 }
 
 common::Error dbsize(CommandHandler* handler, int argc, char** argv, FastoObject* out) {
-  MemcachedRaw* mem = static_cast<MemcachedRaw*>(handler);
+  DBConnection* mem = static_cast<DBConnection*>(handler);
   size_t dbsize = 0;
   common::Error er = mem->dbsize(&dbsize);
   if (!er) {
@@ -567,7 +567,7 @@ common::Error dbsize(CommandHandler* handler, int argc, char** argv, FastoObject
 }
 
 common::Error help(CommandHandler* handler, int argc, char** argv, FastoObject* out) {
-  MemcachedRaw* mem = static_cast<MemcachedRaw*>(handler);
+  DBConnection* mem = static_cast<DBConnection*>(handler);
   return mem->help(argc - 1, argv + 1);
 }
 

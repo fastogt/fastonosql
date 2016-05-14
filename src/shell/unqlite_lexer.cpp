@@ -21,7 +21,7 @@
 #include <vector>
 #include <algorithm>
 
-#include "core/unqlite/unqlite_raw.h"
+#include "core/unqlite/db_connection.h"
 
 namespace fastonosql {
 namespace shell {
@@ -40,7 +40,7 @@ const char* UnqliteLexer::language() const {
 }
 
 const char* UnqliteLexer::version() const {
-  return core::unqlite::UnqliteRaw::versionApi();
+  return core::unqlite::DBConnection::versionApi();
 }
 
 const char* UnqliteLexer::basedOn() const {

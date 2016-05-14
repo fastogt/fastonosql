@@ -21,7 +21,7 @@
 #include <vector>
 #include <algorithm>
 
-#include "core/leveldb/leveldb_raw.h"
+#include "core/leveldb/db_connection.h"
 
 namespace fastonosql {
 namespace shell {
@@ -40,7 +40,7 @@ const char* LeveldbLexer::language() const {
 }
 
 const char* LeveldbLexer::version() const {
-  return core::leveldb::LeveldbRaw::versionApi();
+  return core::leveldb::DBConnection::versionApi();
 }
 
 const char* LeveldbLexer::basedOn() const {

@@ -22,7 +22,7 @@
 
 #include "core/idriver.h"
 
-#include "core/unqlite/unqlite_raw.h"
+#include "core/unqlite/db_connection.h"
 
 namespace fastonosql {
 namespace core {
@@ -72,7 +72,7 @@ class UnqliteDriver
   IServerInfoSPtr makeServerInfoFromString(const std::string& val);
 
  private:
-  UnqliteRaw* const impl_;
+  DBConnection* const impl_;
 };
 
 }  // namespace unqlite

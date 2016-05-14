@@ -16,15 +16,15 @@
     along with FastoNoSQL.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-#include "core/ssdb/ssdb_raw.h"
+#include "core/ssdb/db_connection.h"
 
 #include "common/sprintf.h"
 
 namespace fastonosql {
 namespace core {
 template<>
-common::Error DBAllocatorTraits<ssdb::SSDBConnection, ssdb::Config>::connect(const ssdb::Config& config, ssdb::SSDBConnection** hout) {
-  ssdb::SSDBConnection* context = nullptr;
+common::Error ConnectionAllocatorTraits<ssdb::NativeConnection, ssdb::Config>::connect(const ssdb::Config& config, ssdb::NativeConnection** hout) {
+  ssdb::NativeConnection* context = nullptr;
   common::Error er = ssdb::createConnection(config, &context);
   if (er && er->isError()) {
     return er;
@@ -34,12 +34,12 @@ common::Error DBAllocatorTraits<ssdb::SSDBConnection, ssdb::Config>::connect(con
   return common::Error();
 }
 template<>
-common::Error DBAllocatorTraits<ssdb::SSDBConnection, ssdb::Config>::disconnect(ssdb::SSDBConnection** handle) {
+common::Error ConnectionAllocatorTraits<ssdb::NativeConnection, ssdb::Config>::disconnect(ssdb::NativeConnection** handle) {
   destroy(handle);
   return common::Error();
 }
 template<>
-bool DBAllocatorTraits<ssdb::SSDBConnection, ssdb::Config>::isConnected(ssdb::SSDBConnection* handle) {
+bool ConnectionAllocatorTraits<ssdb::NativeConnection, ssdb::Config>::isConnected(ssdb::NativeConnection* handle) {
   if (!handle) {
     return false;
   }
@@ -48,7 +48,7 @@ bool DBAllocatorTraits<ssdb::SSDBConnection, ssdb::Config>::isConnected(ssdb::SS
 }
 namespace ssdb {
 
-common::Error createConnection(const Config& config, SSDBConnection** context) {
+common::Error createConnection(const Config& config, NativeConnection** context) {
   if (!context) {
     return common::make_error_value("Invalid input argument(s)", common::ErrorValue::E_ERROR);
   }
@@ -63,7 +63,7 @@ common::Error createConnection(const Config& config, SSDBConnection** context) {
   return common::Error();
 }
 
-common::Error createConnection(SsdbConnectionSettings* settings, SSDBConnection** context) {
+common::Error createConnection(ConnectionSettings* settings, NativeConnection** context) {
   if (!settings) {
     return common::make_error_value("Invalid input argument(s)", common::ErrorValue::E_ERROR);
   }
@@ -72,7 +72,7 @@ common::Error createConnection(SsdbConnectionSettings* settings, SSDBConnection*
   return createConnection(config, context);
 }
 
-common::Error testConnection(SsdbConnectionSettings* settings) {
+common::Error testConnection(ConnectionSettings* settings) {
   if (!settings) {
     return common::make_error_value("Invalid input argument(s)", common::ErrorValue::E_ERROR);
   }
@@ -89,39 +89,39 @@ common::Error testConnection(SsdbConnectionSettings* settings) {
 }
 
 
-SsdbRaw::SsdbRaw()
+DBConnection::DBConnection()
   : CommandHandler(ssdbCommands), connection_() {
 }
 
-common::Error SsdbRaw::connect(const config_t& config) {
+common::Error DBConnection::connect(const config_t& config) {
   return connection_.connect(config);
 }
 
-common::Error SsdbRaw::disconnect() {
+common::Error DBConnection::disconnect() {
   return connection_.disconnect();
 }
 
-bool SsdbRaw::isConnected() const {
+bool DBConnection::isConnected() const {
   return connection_.isConnected();
 }
 
-std::string SsdbRaw::delimiter() const {
+std::string DBConnection::delimiter() const {
   return connection_.config_.delimiter;
 }
 
-std::string SsdbRaw::nsSeparator() const {
+std::string DBConnection::nsSeparator() const {
   return connection_.config_.ns_separator;
 }
 
-SsdbRaw::config_t SsdbRaw::config() const {
+DBConnection::config_t DBConnection::config() const {
   return connection_.config_;
 }
 
-const char* SsdbRaw::versionApi() {
+const char* DBConnection::versionApi() {
   return "1.9.2";
 }
 
-common::Error SsdbRaw::info(const char* args, ServerInfo::Common* statsout) {
+common::Error DBConnection::info(const char* args, ServerInfo::Common* statsout) {
   CHECK(isConnected());
 
   if (!statsout) {
@@ -155,7 +155,7 @@ common::Error SsdbRaw::info(const char* args, ServerInfo::Common* statsout) {
   return common::Error();
 }
 
-common::Error SsdbRaw::dbsize(size_t* size) {
+common::Error DBConnection::dbsize(size_t* size) {
   CHECK(isConnected());
 
   if (!size) {
@@ -173,7 +173,7 @@ common::Error SsdbRaw::dbsize(size_t* size) {
   return common::Error();
 }
 
-common::Error SsdbRaw::auth(const std::string& password) {
+common::Error DBConnection::auth(const std::string& password) {
   CHECK(isConnected());
 
   auto st = connection_.handle_->auth(password);
@@ -184,7 +184,7 @@ common::Error SsdbRaw::auth(const std::string& password) {
   return common::Error();
 }
 
-common::Error SsdbRaw::get(const std::string& key, std::string* ret_val) {
+common::Error DBConnection::get(const std::string& key, std::string* ret_val) {
   CHECK(isConnected());
 
   auto st = connection_.handle_->get(key, ret_val);
@@ -195,7 +195,7 @@ common::Error SsdbRaw::get(const std::string& key, std::string* ret_val) {
   return common::Error();
 }
 
-common::Error SsdbRaw::set(const std::string& key, const std::string& value) {
+common::Error DBConnection::set(const std::string& key, const std::string& value) {
   CHECK(isConnected());
 
   auto st = connection_.handle_->set(key, value);
@@ -206,7 +206,7 @@ common::Error SsdbRaw::set(const std::string& key, const std::string& value) {
   return common::Error();
 }
 
-common::Error SsdbRaw::setx(const std::string& key, const std::string& value, int ttl) {
+common::Error DBConnection::setx(const std::string& key, const std::string& value, int ttl) {
   CHECK(isConnected());
 
   auto st = connection_.handle_->setx(key, value, ttl);
@@ -217,7 +217,7 @@ common::Error SsdbRaw::setx(const std::string& key, const std::string& value, in
   return common::Error();
 }
 
-common::Error SsdbRaw::del(const std::string& key) {
+common::Error DBConnection::del(const std::string& key) {
   CHECK(isConnected());
 
   auto st = connection_.handle_->del(key);
@@ -228,7 +228,7 @@ common::Error SsdbRaw::del(const std::string& key) {
   return common::Error();
 }
 
-common::Error SsdbRaw::incr(const std::string& key, int64_t incrby, int64_t* ret) {
+common::Error DBConnection::incr(const std::string& key, int64_t incrby, int64_t* ret) {
   CHECK(isConnected());
 
   auto st = connection_.handle_->incr(key, incrby, ret);
@@ -239,7 +239,7 @@ common::Error SsdbRaw::incr(const std::string& key, int64_t incrby, int64_t* ret
   return common::Error();
 }
 
-common::Error SsdbRaw::keys(const std::string& key_start, const std::string& key_end,
+common::Error DBConnection::keys(const std::string& key_start, const std::string& key_end,
                    uint64_t limit, std::vector<std::string>* ret) {
   CHECK(isConnected());
 
@@ -251,7 +251,7 @@ common::Error SsdbRaw::keys(const std::string& key_start, const std::string& key
   return common::Error();
 }
 
-common::Error SsdbRaw::scan(const std::string& key_start, const std::string& key_end,
+common::Error DBConnection::scan(const std::string& key_start, const std::string& key_end,
                    uint64_t limit, std::vector<std::string>* ret) {
   CHECK(isConnected());
 
@@ -263,7 +263,7 @@ common::Error SsdbRaw::scan(const std::string& key_start, const std::string& key
   return common::Error();
 }
 
-common::Error SsdbRaw::rscan(const std::string& key_start, const std::string& key_end,
+common::Error DBConnection::rscan(const std::string& key_start, const std::string& key_end,
                     uint64_t limit, std::vector<std::string>* ret) {
   CHECK(isConnected());
 
@@ -275,7 +275,7 @@ common::Error SsdbRaw::rscan(const std::string& key_start, const std::string& ke
   return common::Error();
 }
 
-common::Error SsdbRaw::multi_get(const std::vector<std::string>& keys, std::vector<std::string>* ret) {
+common::Error DBConnection::multi_get(const std::vector<std::string>& keys, std::vector<std::string>* ret) {
   CHECK(isConnected());
 
   auto st = connection_.handle_->multi_get(keys, ret);
@@ -286,7 +286,7 @@ common::Error SsdbRaw::multi_get(const std::vector<std::string>& keys, std::vect
   return common::Error();
 }
 
-common::Error SsdbRaw::multi_set(const std::map<std::string, std::string> &kvs) {
+common::Error DBConnection::multi_set(const std::map<std::string, std::string> &kvs) {
   CHECK(isConnected());
 
   auto st = connection_.handle_->multi_set(kvs);
@@ -297,7 +297,7 @@ common::Error SsdbRaw::multi_set(const std::map<std::string, std::string> &kvs) 
   return common::Error();
 }
 
-common::Error SsdbRaw::multi_del(const std::vector<std::string>& keys) {
+common::Error DBConnection::multi_del(const std::vector<std::string>& keys) {
   CHECK(isConnected());
 
   auto st = connection_.handle_->multi_del(keys);
@@ -308,7 +308,7 @@ common::Error SsdbRaw::multi_del(const std::vector<std::string>& keys) {
   return common::Error();
 }
 
-common::Error SsdbRaw::hget(const std::string& name, const std::string& key, std::string* val) {
+common::Error DBConnection::hget(const std::string& name, const std::string& key, std::string* val) {
   CHECK(isConnected());
 
   auto st = connection_.handle_->hget(name, key, val);
@@ -319,7 +319,7 @@ common::Error SsdbRaw::hget(const std::string& name, const std::string& key, std
   return common::Error();
 }
 
-common::Error SsdbRaw::hset(const std::string& name, const std::string& key, const std::string& val) {
+common::Error DBConnection::hset(const std::string& name, const std::string& key, const std::string& val) {
   CHECK(isConnected());
 
   auto st = connection_.handle_->hset(name, key, val);
@@ -331,7 +331,7 @@ common::Error SsdbRaw::hset(const std::string& name, const std::string& key, con
   return common::Error();
 }
 
-common::Error SsdbRaw::hdel(const std::string& name, const std::string& key) {
+common::Error DBConnection::hdel(const std::string& name, const std::string& key) {
   CHECK(isConnected());
 
   auto st = connection_.handle_->hdel(name, key);
@@ -342,7 +342,7 @@ common::Error SsdbRaw::hdel(const std::string& name, const std::string& key) {
   return common::Error();
 }
 
-common::Error SsdbRaw::hincr(const std::string& name, const std::string& key,
+common::Error DBConnection::hincr(const std::string& name, const std::string& key,
                     int64_t incrby, int64_t* ret) {
   CHECK(isConnected());
 
@@ -354,7 +354,7 @@ common::Error SsdbRaw::hincr(const std::string& name, const std::string& key,
   return common::Error();
 }
 
-common::Error SsdbRaw::hsize(const std::string& name, int64_t* ret) {
+common::Error DBConnection::hsize(const std::string& name, int64_t* ret) {
   CHECK(isConnected());
 
   auto st = connection_.handle_->hsize(name, ret);
@@ -365,7 +365,7 @@ common::Error SsdbRaw::hsize(const std::string& name, int64_t* ret) {
   return common::Error();
 }
 
-common::Error SsdbRaw::hclear(const std::string& name, int64_t* ret) {
+common::Error DBConnection::hclear(const std::string& name, int64_t* ret) {
   CHECK(isConnected());
 
   auto st = connection_.handle_->hclear(name, ret);
@@ -376,7 +376,7 @@ common::Error SsdbRaw::hclear(const std::string& name, int64_t* ret) {
   return common::Error();
 }
 
-common::Error SsdbRaw::hkeys(const std::string& name, const std::string& key_start,
+common::Error DBConnection::hkeys(const std::string& name, const std::string& key_start,
                     const std::string& key_end, uint64_t limit, std::vector<std::string>* ret) {
   CHECK(isConnected());
 
@@ -388,7 +388,7 @@ common::Error SsdbRaw::hkeys(const std::string& name, const std::string& key_sta
   return common::Error();
 }
 
-common::Error SsdbRaw::hscan(const std::string& name, const std::string& key_start,
+common::Error DBConnection::hscan(const std::string& name, const std::string& key_start,
                     const std::string& key_end, uint64_t limit, std::vector<std::string>* ret) {
   CHECK(isConnected());
 
@@ -400,7 +400,7 @@ common::Error SsdbRaw::hscan(const std::string& name, const std::string& key_sta
   return common::Error();
 }
 
-common::Error SsdbRaw::hrscan(const std::string& name, const std::string& key_start,
+common::Error DBConnection::hrscan(const std::string& name, const std::string& key_start,
                      const std::string& key_end, uint64_t limit, std::vector<std::string>* ret) {
   CHECK(isConnected());
 
@@ -412,7 +412,7 @@ common::Error SsdbRaw::hrscan(const std::string& name, const std::string& key_st
   return common::Error();
 }
 
-common::Error SsdbRaw::multi_hget(const std::string& name, const std::vector<std::string>& keys,
+common::Error DBConnection::multi_hget(const std::string& name, const std::vector<std::string>& keys,
                          std::vector<std::string>* ret) {
   CHECK(isConnected());
 
@@ -424,7 +424,7 @@ common::Error SsdbRaw::multi_hget(const std::string& name, const std::vector<std
   return common::Error();
 }
 
-common::Error SsdbRaw::multi_hset(const std::string& name,
+common::Error DBConnection::multi_hset(const std::string& name,
                          const std::map<std::string, std::string> &keys) {
   CHECK(isConnected());
 
@@ -436,7 +436,7 @@ common::Error SsdbRaw::multi_hset(const std::string& name,
   return common::Error();
 }
 
-common::Error SsdbRaw::zget(const std::string& name, const std::string& key, int64_t* ret) {
+common::Error DBConnection::zget(const std::string& name, const std::string& key, int64_t* ret) {
   CHECK(isConnected());
 
   auto st = connection_.handle_->zget(name, key, ret);
@@ -447,7 +447,7 @@ common::Error SsdbRaw::zget(const std::string& name, const std::string& key, int
   return common::Error();
 }
 
-common::Error SsdbRaw::zset(const std::string& name, const std::string& key, int64_t score) {
+common::Error DBConnection::zset(const std::string& name, const std::string& key, int64_t score) {
   CHECK(isConnected());
 
   auto st = connection_.handle_->zset(name, key, score);
@@ -458,7 +458,7 @@ common::Error SsdbRaw::zset(const std::string& name, const std::string& key, int
   return common::Error();
 }
 
-common::Error SsdbRaw::zdel(const std::string& name, const std::string& key) {
+common::Error DBConnection::zdel(const std::string& name, const std::string& key) {
   CHECK(isConnected());
 
   auto st = connection_.handle_->zdel(name, key);
@@ -469,7 +469,7 @@ common::Error SsdbRaw::zdel(const std::string& name, const std::string& key) {
   return common::Error();
 }
 
-common::Error SsdbRaw::zincr(const std::string& name, const std::string& key, int64_t incrby, int64_t* ret) {
+common::Error DBConnection::zincr(const std::string& name, const std::string& key, int64_t incrby, int64_t* ret) {
   CHECK(isConnected());
 
   auto st = connection_.handle_->zincr(name, key, incrby, ret);
@@ -480,7 +480,7 @@ common::Error SsdbRaw::zincr(const std::string& name, const std::string& key, in
   return common::Error();
 }
 
-common::Error SsdbRaw::zsize(const std::string& name, int64_t* ret) {
+common::Error DBConnection::zsize(const std::string& name, int64_t* ret) {
   CHECK(isConnected());
 
   auto st = connection_.handle_->zsize(name, ret);
@@ -491,7 +491,7 @@ common::Error SsdbRaw::zsize(const std::string& name, int64_t* ret) {
   return common::Error();
 }
 
-common::Error SsdbRaw::zclear(const std::string& name, int64_t* ret) {
+common::Error DBConnection::zclear(const std::string& name, int64_t* ret) {
   CHECK(isConnected());
 
   auto st = connection_.handle_->zclear(name, ret);
@@ -502,7 +502,7 @@ common::Error SsdbRaw::zclear(const std::string& name, int64_t* ret) {
   return common::Error();
 }
 
-common::Error SsdbRaw::zrank(const std::string& name, const std::string& key, int64_t* ret) {
+common::Error DBConnection::zrank(const std::string& name, const std::string& key, int64_t* ret) {
   CHECK(isConnected());
 
   auto st = connection_.handle_->zrank(name, key, ret);
@@ -513,7 +513,7 @@ common::Error SsdbRaw::zrank(const std::string& name, const std::string& key, in
   return common::Error();
 }
 
-common::Error SsdbRaw::zrrank(const std::string& name, const std::string& key, int64_t* ret) {
+common::Error DBConnection::zrrank(const std::string& name, const std::string& key, int64_t* ret) {
   CHECK(isConnected());
 
   auto st = connection_.handle_->zrrank(name, key, ret);
@@ -524,7 +524,7 @@ common::Error SsdbRaw::zrrank(const std::string& name, const std::string& key, i
   return common::Error();
 }
 
-common::Error SsdbRaw::zrange(const std::string& name, uint64_t offset, uint64_t limit,
+common::Error DBConnection::zrange(const std::string& name, uint64_t offset, uint64_t limit,
         std::vector<std::string>* ret) {
   CHECK(isConnected());
 
@@ -536,7 +536,7 @@ common::Error SsdbRaw::zrange(const std::string& name, uint64_t offset, uint64_t
   return common::Error();
 }
 
-common::Error SsdbRaw::zrrange(const std::string& name,
+common::Error DBConnection::zrrange(const std::string& name,
         uint64_t offset, uint64_t limit,
         std::vector<std::string>* ret) {
   CHECK(isConnected());
@@ -549,7 +549,7 @@ common::Error SsdbRaw::zrrange(const std::string& name,
   return common::Error();
 }
 
-common::Error SsdbRaw::zkeys(const std::string& name, const std::string& key_start,
+common::Error DBConnection::zkeys(const std::string& name, const std::string& key_start,
     int64_t* score_start, int64_t* score_end,
     uint64_t limit, std::vector<std::string>* ret) {
   CHECK(isConnected());
@@ -562,7 +562,7 @@ common::Error SsdbRaw::zkeys(const std::string& name, const std::string& key_sta
   return common::Error();
 }
 
-common::Error SsdbRaw::zscan(const std::string& name, const std::string& key_start,
+common::Error DBConnection::zscan(const std::string& name, const std::string& key_start,
     int64_t* score_start, int64_t* score_end,
     uint64_t limit, std::vector<std::string>* ret) {
   CHECK(isConnected());
@@ -575,7 +575,7 @@ common::Error SsdbRaw::zscan(const std::string& name, const std::string& key_sta
   return common::Error();
 }
 
-common::Error SsdbRaw::zrscan(const std::string& name, const std::string& key_start,
+common::Error DBConnection::zrscan(const std::string& name, const std::string& key_start,
     int64_t* score_start, int64_t* score_end,
     uint64_t limit, std::vector<std::string>* ret) {
   CHECK(isConnected());
@@ -588,7 +588,7 @@ common::Error SsdbRaw::zrscan(const std::string& name, const std::string& key_st
   return common::Error();
 }
 
-common::Error SsdbRaw::multi_zget(const std::string& name, const std::vector<std::string>& keys,
+common::Error DBConnection::multi_zget(const std::string& name, const std::vector<std::string>& keys,
     std::vector<std::string>* ret) {
   CHECK(isConnected());
 
@@ -600,7 +600,7 @@ common::Error SsdbRaw::multi_zget(const std::string& name, const std::vector<std
   return common::Error();
 }
 
-common::Error SsdbRaw::multi_zset(const std::string& name, const std::map<std::string, int64_t>& kss) {
+common::Error DBConnection::multi_zset(const std::string& name, const std::map<std::string, int64_t>& kss) {
   CHECK(isConnected());
 
   auto st = connection_.handle_->multi_zset(name, kss);
@@ -611,7 +611,7 @@ common::Error SsdbRaw::multi_zset(const std::string& name, const std::map<std::s
   return common::Error();
 }
 
-common::Error SsdbRaw::multi_zdel(const std::string& name, const std::vector<std::string>& keys) {
+common::Error DBConnection::multi_zdel(const std::string& name, const std::vector<std::string>& keys) {
   CHECK(isConnected());
 
   auto st = connection_.handle_->multi_zdel(name, keys);
@@ -622,7 +622,7 @@ common::Error SsdbRaw::multi_zdel(const std::string& name, const std::vector<std
   return common::Error();
 }
 
-common::Error SsdbRaw::qpush(const std::string& name, const std::string& item) {
+common::Error DBConnection::qpush(const std::string& name, const std::string& item) {
   CHECK(isConnected());
 
   auto st = connection_.handle_->qpush(name, item);
@@ -633,7 +633,7 @@ common::Error SsdbRaw::qpush(const std::string& name, const std::string& item) {
   return common::Error();
 }
 
-common::Error SsdbRaw::qpop(const std::string& name, std::string* item) {
+common::Error DBConnection::qpop(const std::string& name, std::string* item) {
   CHECK(isConnected());
 
   auto st = connection_.handle_->qpop(name, item);
@@ -644,7 +644,7 @@ common::Error SsdbRaw::qpop(const std::string& name, std::string* item) {
   return common::Error();
 }
 
-common::Error SsdbRaw::qslice(const std::string& name, int64_t begin, int64_t end,
+common::Error DBConnection::qslice(const std::string& name, int64_t begin, int64_t end,
                      std::vector<std::string>* ret) {
   CHECK(isConnected());
 
@@ -656,7 +656,7 @@ common::Error SsdbRaw::qslice(const std::string& name, int64_t begin, int64_t en
   return common::Error();
 }
 
-common::Error SsdbRaw::qclear(const std::string& name, int64_t* ret) {
+common::Error DBConnection::qclear(const std::string& name, int64_t* ret) {
   CHECK(isConnected());
 
   auto st = connection_.handle_->qclear(name, ret);
@@ -667,11 +667,11 @@ common::Error SsdbRaw::qclear(const std::string& name, int64_t* ret) {
   return common::Error();
 }
 
-common::Error SsdbRaw::help(int argc, char** argv) {
+common::Error DBConnection::help(int argc, char** argv) {
   return notSupported("HELP");
 }
 
-common::Error SsdbRaw::flushdb() {
+common::Error DBConnection::flushdb() {
   CHECK(isConnected());
 
   std::vector<std::string> ret;
@@ -693,7 +693,7 @@ common::Error SsdbRaw::flushdb() {
 }
 
 common::Error info(CommandHandler* handler, int argc, char** argv, FastoObject* out) {
-  SsdbRaw* ssdb = static_cast<SsdbRaw*>(handler);
+  DBConnection* ssdb = static_cast<DBConnection*>(handler);
   ServerInfo::Common statsout;
   common::Error er = ssdb->info(argc == 1 ? argv[0] : 0, &statsout);
   if (!er) {
@@ -707,7 +707,7 @@ common::Error info(CommandHandler* handler, int argc, char** argv, FastoObject* 
 }
 
 common::Error dbsize(CommandHandler* handler, int argc, char** argv, FastoObject* out) {
-  SsdbRaw* ssdb = static_cast<SsdbRaw*>(handler);
+  DBConnection* ssdb = static_cast<DBConnection*>(handler);
   size_t dbsize = 0;
   common::Error er = ssdb->dbsize(&dbsize);
   if (!er) {
@@ -720,7 +720,7 @@ common::Error dbsize(CommandHandler* handler, int argc, char** argv, FastoObject
 }
 
 common::Error auth(CommandHandler* handler, int argc, char** argv, FastoObject* out) {
-  SsdbRaw* ssdb = static_cast<SsdbRaw*>(handler);
+  DBConnection* ssdb = static_cast<DBConnection*>(handler);
   common::Error er = ssdb->auth(argv[0]);
   if (!er) {
     common::StringValue* val = common::Value::createStringValue("OK");
@@ -732,7 +732,7 @@ common::Error auth(CommandHandler* handler, int argc, char** argv, FastoObject* 
 }
 
 common::Error get(CommandHandler* handler, int argc, char** argv, FastoObject* out) {
-  SsdbRaw* ssdb = static_cast<SsdbRaw*>(handler);
+  DBConnection* ssdb = static_cast<DBConnection*>(handler);
   std::string ret;
   common::Error er = ssdb->get(argv[0], &ret);
   if (!er) {
@@ -745,7 +745,7 @@ common::Error get(CommandHandler* handler, int argc, char** argv, FastoObject* o
 }
 
 common::Error set(CommandHandler* handler, int argc, char** argv, FastoObject* out) {
-  SsdbRaw* ssdb = static_cast<SsdbRaw*>(handler);
+  DBConnection* ssdb = static_cast<DBConnection*>(handler);
   common::Error er = ssdb->set(argv[0], argv[1]);
   if (!er) {
     common::StringValue* val = common::Value::createStringValue("STORED");
@@ -757,7 +757,7 @@ common::Error set(CommandHandler* handler, int argc, char** argv, FastoObject* o
 }
 
 common::Error setx(CommandHandler* handler, int argc, char** argv, FastoObject* out) {
-  SsdbRaw* ssdb = static_cast<SsdbRaw*>(handler);
+  DBConnection* ssdb = static_cast<DBConnection*>(handler);
   common::Error er = ssdb->setx(argv[0], argv[1], atoi(argv[2]));
   if (!er) {
     common::StringValue* val = common::Value::createStringValue("STORED");
@@ -769,7 +769,7 @@ common::Error setx(CommandHandler* handler, int argc, char** argv, FastoObject* 
 }
 
 common::Error del(CommandHandler* handler, int argc, char** argv, FastoObject* out) {
-  SsdbRaw* ssdb = static_cast<SsdbRaw*>(handler);
+  DBConnection* ssdb = static_cast<DBConnection*>(handler);
   common::Error er = ssdb->del(argv[0]);
   if (!er) {
     common::StringValue* val = common::Value::createStringValue("DELETED");
@@ -781,7 +781,7 @@ common::Error del(CommandHandler* handler, int argc, char** argv, FastoObject* o
 }
 
 common::Error incr(CommandHandler* handler, int argc, char** argv, FastoObject* out) {
-  SsdbRaw* ssdb = static_cast<SsdbRaw*>(handler);
+  DBConnection* ssdb = static_cast<DBConnection*>(handler);
   int64_t ret = 0;
   common::Error er = ssdb->incr(argv[0], atoll(argv[1]), &ret);
   if (!er) {
@@ -794,7 +794,7 @@ common::Error incr(CommandHandler* handler, int argc, char** argv, FastoObject* 
 }
 
 common::Error keys(CommandHandler* handler, int argc, char** argv, FastoObject* out) {
-  SsdbRaw* ssdb = static_cast<SsdbRaw*>(handler);
+  DBConnection* ssdb = static_cast<DBConnection*>(handler);
   std::vector<std::string> keysout;
   common::Error er = ssdb->keys(argv[0], argv[1], atoll(argv[2]), &keysout);
   if (!er) {
@@ -811,7 +811,7 @@ common::Error keys(CommandHandler* handler, int argc, char** argv, FastoObject* 
 }
 
 common::Error scan(CommandHandler* handler, int argc, char** argv, FastoObject* out) {
-  SsdbRaw* ssdb = static_cast<SsdbRaw*>(handler);
+  DBConnection* ssdb = static_cast<DBConnection*>(handler);
   std::vector<std::string> keysout;
   common::Error er = ssdb->scan(argv[0], argv[1], atoll(argv[2]), &keysout);
   if (!er) {
@@ -828,7 +828,7 @@ common::Error scan(CommandHandler* handler, int argc, char** argv, FastoObject* 
 }
 
 common::Error rscan(CommandHandler* handler, int argc, char** argv, FastoObject* out) {
-  SsdbRaw* ssdb = static_cast<SsdbRaw*>(handler);
+  DBConnection* ssdb = static_cast<DBConnection*>(handler);
   std::vector<std::string> keysout;
   common::Error er = ssdb->rscan(argv[0], argv[1], atoll(argv[2]), &keysout);
   if (!er) {
@@ -845,7 +845,7 @@ common::Error rscan(CommandHandler* handler, int argc, char** argv, FastoObject*
 }
 
 common::Error multi_get(CommandHandler* handler, int argc, char** argv, FastoObject* out) {
-  SsdbRaw* ssdb = static_cast<SsdbRaw*>(handler);
+  DBConnection* ssdb = static_cast<DBConnection*>(handler);
   std::vector<std::string> keysget;
   for (int i = 0; i < argc; ++i) {
     keysget.push_back(argv[i]);
@@ -867,7 +867,7 @@ common::Error multi_get(CommandHandler* handler, int argc, char** argv, FastoObj
 }
 
 common::Error multi_set(CommandHandler* handler, int argc, char** argv, FastoObject* out) {
-  SsdbRaw* ssdb = static_cast<SsdbRaw*>(handler);
+  DBConnection* ssdb = static_cast<DBConnection*>(handler);
   std::map<std::string, std::string> keysset;
   for (size_t i = 0; i < argc; i += 2) {
     keysset[argv[i]] = argv[i + 1];
@@ -884,7 +884,7 @@ common::Error multi_set(CommandHandler* handler, int argc, char** argv, FastoObj
 }
 
 common::Error multi_del(CommandHandler* handler, int argc, char** argv, FastoObject* out) {
-  SsdbRaw* ssdb = static_cast<SsdbRaw*>(handler);
+  DBConnection* ssdb = static_cast<DBConnection*>(handler);
   std::vector<std::string> keysget;
   for (size_t i = 0; i < argc; ++i) {
     keysget.push_back(argv[i]);
@@ -901,7 +901,7 @@ common::Error multi_del(CommandHandler* handler, int argc, char** argv, FastoObj
 }
 
 common::Error hget(CommandHandler* handler, int argc, char** argv, FastoObject* out) {
-  SsdbRaw* ssdb = static_cast<SsdbRaw*>(handler);
+  DBConnection* ssdb = static_cast<DBConnection*>(handler);
   std::string ret;
   common::Error er = ssdb->hget(argv[0], argv[1], &ret);
   if (!er) {
@@ -914,7 +914,7 @@ common::Error hget(CommandHandler* handler, int argc, char** argv, FastoObject* 
 }
 
 common::Error hset(CommandHandler* handler, int argc, char** argv, FastoObject* out) {
-  SsdbRaw* ssdb = static_cast<SsdbRaw*>(handler);
+  DBConnection* ssdb = static_cast<DBConnection*>(handler);
   common::Error er = ssdb->hset(argv[0], argv[1], argv[2]);
   if (!er) {
     common::StringValue* val = common::Value::createStringValue("STORED");
@@ -926,7 +926,7 @@ common::Error hset(CommandHandler* handler, int argc, char** argv, FastoObject* 
 }
 
 common::Error hdel(CommandHandler* handler, int argc, char** argv, FastoObject* out) {
-  SsdbRaw* ssdb = static_cast<SsdbRaw*>(handler);
+  DBConnection* ssdb = static_cast<DBConnection*>(handler);
   common::Error er = ssdb->hdel(argv[0], argv[1]);
   if (!er) {
      common::StringValue* val = common::Value::createStringValue("DELETED");
@@ -938,7 +938,7 @@ common::Error hdel(CommandHandler* handler, int argc, char** argv, FastoObject* 
 }
 
 common::Error hincr(CommandHandler* handler, int argc, char** argv, FastoObject* out) {
-  SsdbRaw* ssdb = static_cast<SsdbRaw*>(handler);
+  DBConnection* ssdb = static_cast<DBConnection*>(handler);
   int64_t res = 0;
   common::Error er = ssdb->hincr(argv[0], argv[1], atoll(argv[2]), &res);
   if (!er) {
@@ -951,7 +951,7 @@ common::Error hincr(CommandHandler* handler, int argc, char** argv, FastoObject*
 }
 
 common::Error hsize(CommandHandler* handler, int argc, char** argv, FastoObject* out) {
-  SsdbRaw* ssdb = static_cast<SsdbRaw*>(handler);
+  DBConnection* ssdb = static_cast<DBConnection*>(handler);
   int64_t res = 0;
   common::Error er = ssdb->hsize(argv[0], &res);
   if (!er) {
@@ -964,7 +964,7 @@ common::Error hsize(CommandHandler* handler, int argc, char** argv, FastoObject*
 }
 
 common::Error hclear(CommandHandler* handler, int argc, char** argv, FastoObject* out) {
-  SsdbRaw* ssdb = static_cast<SsdbRaw*>(handler);
+  DBConnection* ssdb = static_cast<DBConnection*>(handler);
   int64_t res = 0;
   common::Error er = ssdb->hclear(argv[0], &res);
   if (!er) {
@@ -977,7 +977,7 @@ common::Error hclear(CommandHandler* handler, int argc, char** argv, FastoObject
 }
 
 common::Error hkeys(CommandHandler* handler, int argc, char** argv, FastoObject* out) {
-  SsdbRaw* ssdb = static_cast<SsdbRaw*>(handler);
+  DBConnection* ssdb = static_cast<DBConnection*>(handler);
   std::vector<std::string> keysout;
   common::Error er = ssdb->hkeys(argv[0], argv[1], argv[2], atoll(argv[3]), &keysout);
   if (!er) {
@@ -994,7 +994,7 @@ common::Error hkeys(CommandHandler* handler, int argc, char** argv, FastoObject*
 }
 
 common::Error hscan(CommandHandler* handler, int argc, char** argv, FastoObject* out) {
-  SsdbRaw* ssdb = static_cast<SsdbRaw*>(handler);
+  DBConnection* ssdb = static_cast<DBConnection*>(handler);
   std::vector<std::string> keysout;
   common::Error er = ssdb->hscan(argv[0], argv[1], argv[2], atoll(argv[3]), &keysout);
   if (!er) {
@@ -1011,7 +1011,7 @@ common::Error hscan(CommandHandler* handler, int argc, char** argv, FastoObject*
 }
 
 common::Error hrscan(CommandHandler* handler, int argc, char** argv, FastoObject* out) {
-  SsdbRaw* ssdb = static_cast<SsdbRaw*>(handler);
+  DBConnection* ssdb = static_cast<DBConnection*>(handler);
   std::vector<std::string> keysout;
   common::Error er = ssdb->hrscan(argv[0], argv[1], argv[2], atoll(argv[3]), &keysout);
   if (!er) {
@@ -1028,7 +1028,7 @@ common::Error hrscan(CommandHandler* handler, int argc, char** argv, FastoObject
 }
 
 common::Error multi_hget(CommandHandler* handler, int argc, char** argv, FastoObject* out) {
-  SsdbRaw* ssdb = static_cast<SsdbRaw*>(handler);
+  DBConnection* ssdb = static_cast<DBConnection*>(handler);
   std::vector<std::string> keysget;
   for (int i = 1; i < argc; ++i) {
     keysget.push_back(argv[i]);
@@ -1050,7 +1050,7 @@ common::Error multi_hget(CommandHandler* handler, int argc, char** argv, FastoOb
 }
 
 common::Error multi_hset(CommandHandler* handler, int argc, char** argv, FastoObject* out) {
-  SsdbRaw* ssdb = static_cast<SsdbRaw*>(handler);
+  DBConnection* ssdb = static_cast<DBConnection*>(handler);
   std::map<std::string, std::string> keys;
   for (int i = 1; i < argc; i += 2) {
     keys[argv[i]] = argv[i + 1];
@@ -1067,7 +1067,7 @@ common::Error multi_hset(CommandHandler* handler, int argc, char** argv, FastoOb
 }
 
 common::Error zget(CommandHandler* handler, int argc, char** argv, FastoObject* out) {
-  SsdbRaw* ssdb = static_cast<SsdbRaw*>(handler);
+  DBConnection* ssdb = static_cast<DBConnection*>(handler);
   int64_t ret;
   common::Error er = ssdb->zget(argv[0], argv[1], &ret);
   if (!er) {
@@ -1080,7 +1080,7 @@ common::Error zget(CommandHandler* handler, int argc, char** argv, FastoObject* 
 }
 
 common::Error zset(CommandHandler* handler, int argc, char** argv, FastoObject* out) {
-  SsdbRaw* ssdb = static_cast<SsdbRaw*>(handler);
+  DBConnection* ssdb = static_cast<DBConnection*>(handler);
   common::Error er = ssdb->zset(argv[0], argv[1], atoll(argv[2]));
   if (!er) {
     common::StringValue* val = common::Value::createStringValue("STORED");
@@ -1092,7 +1092,7 @@ common::Error zset(CommandHandler* handler, int argc, char** argv, FastoObject* 
 }
 
 common::Error zdel(CommandHandler* handler, int argc, char** argv, FastoObject* out) {
-  SsdbRaw* ssdb = static_cast<SsdbRaw*>(handler);
+  DBConnection* ssdb = static_cast<DBConnection*>(handler);
   common::Error er = ssdb->zdel(argv[0], argv[1]);
   if (!er) {
       common::StringValue* val = common::Value::createStringValue("DELETED");
@@ -1103,7 +1103,7 @@ common::Error zdel(CommandHandler* handler, int argc, char** argv, FastoObject* 
 }
 
 common::Error zincr(CommandHandler* handler, int argc, char** argv, FastoObject* out) {
-  SsdbRaw* ssdb = static_cast<SsdbRaw*>(handler);
+  DBConnection* ssdb = static_cast<DBConnection*>(handler);
   int64_t ret = 0;
   common::Error er = ssdb->zincr(argv[0], argv[1], atoll(argv[2]), &ret);
   if (!er) {
@@ -1116,7 +1116,7 @@ common::Error zincr(CommandHandler* handler, int argc, char** argv, FastoObject*
 }
 
 common::Error zsize(CommandHandler* handler, int argc, char** argv, FastoObject* out) {
-  SsdbRaw* ssdb = static_cast<SsdbRaw*>(handler);
+  DBConnection* ssdb = static_cast<DBConnection*>(handler);
   int64_t res = 0;
   common::Error er = ssdb->zsize(argv[0], &res);
   if (!er) {
@@ -1129,7 +1129,7 @@ common::Error zsize(CommandHandler* handler, int argc, char** argv, FastoObject*
 }
 
 common::Error zclear(CommandHandler* handler, int argc, char** argv, FastoObject* out) {
-  SsdbRaw* ssdb = static_cast<SsdbRaw*>(handler);
+  DBConnection* ssdb = static_cast<DBConnection*>(handler);
   int64_t res = 0;
   common::Error er = ssdb->zclear(argv[0], &res);
   if (!er) {
@@ -1142,7 +1142,7 @@ common::Error zclear(CommandHandler* handler, int argc, char** argv, FastoObject
 }
 
 common::Error zrank(CommandHandler* handler, int argc, char** argv, FastoObject* out) {
-  SsdbRaw* ssdb = static_cast<SsdbRaw*>(handler);
+  DBConnection* ssdb = static_cast<DBConnection*>(handler);
   int64_t res = 0;
   common::Error er = ssdb->zrank(argv[0], argv[1], &res);
   if (!er) {
@@ -1155,7 +1155,7 @@ common::Error zrank(CommandHandler* handler, int argc, char** argv, FastoObject*
 }
 
 common::Error zrrank(CommandHandler* handler, int argc, char** argv, FastoObject* out) {
-  SsdbRaw* ssdb = static_cast<SsdbRaw*>(handler);
+  DBConnection* ssdb = static_cast<DBConnection*>(handler);
   int64_t res = 0;
   common::Error er = ssdb->zrrank(argv[0], argv[1], &res);
   if (!er) {
@@ -1168,7 +1168,7 @@ common::Error zrrank(CommandHandler* handler, int argc, char** argv, FastoObject
 }
 
 common::Error zrange(CommandHandler* handler, int argc, char** argv, FastoObject* out) {
-  SsdbRaw* ssdb = static_cast<SsdbRaw*>(handler);
+  DBConnection* ssdb = static_cast<DBConnection*>(handler);
   std::vector<std::string> res;
   common::Error er = ssdb->zrange(argv[0], atoll(argv[1]), atoll(argv[2]), &res);
   if (!er) {
@@ -1185,7 +1185,7 @@ common::Error zrange(CommandHandler* handler, int argc, char** argv, FastoObject
 }
 
 common::Error zrrange(CommandHandler* handler, int argc, char** argv, FastoObject* out) {
-  SsdbRaw* ssdb = static_cast<SsdbRaw*>(handler);
+  DBConnection* ssdb = static_cast<DBConnection*>(handler);
   std::vector<std::string> res;
   common::Error er = ssdb->zrrange(argv[0], atoll(argv[1]), atoll(argv[2]), &res);
   if (!er) {
@@ -1202,7 +1202,7 @@ common::Error zrrange(CommandHandler* handler, int argc, char** argv, FastoObjec
 }
 
 common::Error zkeys(CommandHandler* handler, int argc, char** argv, FastoObject* out) {
-  SsdbRaw* ssdb = static_cast<SsdbRaw*>(handler);
+  DBConnection* ssdb = static_cast<DBConnection*>(handler);
   std::vector<std::string> res;
   int64_t st = atoll(argv[2]);
   int64_t end = atoll(argv[3]);
@@ -1221,7 +1221,7 @@ common::Error zkeys(CommandHandler* handler, int argc, char** argv, FastoObject*
 }
 
 common::Error zscan(CommandHandler* handler, int argc, char** argv, FastoObject* out) {
-  SsdbRaw* ssdb = static_cast<SsdbRaw*>(handler);
+  DBConnection* ssdb = static_cast<DBConnection*>(handler);
   std::vector<std::string> res;
   int64_t st = atoll(argv[2]);
   int64_t end = atoll(argv[3]);
@@ -1240,7 +1240,7 @@ common::Error zscan(CommandHandler* handler, int argc, char** argv, FastoObject*
 }
 
 common::Error zrscan(CommandHandler* handler, int argc, char** argv, FastoObject* out) {
-  SsdbRaw* ssdb = static_cast<SsdbRaw*>(handler);
+  DBConnection* ssdb = static_cast<DBConnection*>(handler);
   std::vector<std::string> res;
   int64_t st = atoll(argv[2]);
   int64_t end = atoll(argv[3]);
@@ -1259,7 +1259,7 @@ common::Error zrscan(CommandHandler* handler, int argc, char** argv, FastoObject
 }
 
 common::Error multi_zget(CommandHandler* handler, int argc, char** argv, FastoObject* out) {
-  SsdbRaw* ssdb = static_cast<SsdbRaw*>(handler);
+  DBConnection* ssdb = static_cast<DBConnection*>(handler);
   std::vector<std::string> keysget;
   for (int i = 1; i < argc; ++i) {
     keysget.push_back(argv[i]);
@@ -1281,7 +1281,7 @@ common::Error multi_zget(CommandHandler* handler, int argc, char** argv, FastoOb
 }
 
 common::Error multi_zset(CommandHandler* handler, int argc, char** argv, FastoObject* out) {
-  SsdbRaw* ssdb = static_cast<SsdbRaw*>(handler);
+  DBConnection* ssdb = static_cast<DBConnection*>(handler);
   std::map<std::string, int64_t> keysget;
   for (int i = 1; i < argc; i += 2) {
     keysget[argv[i]] = atoll(argv[i+1]);
@@ -1298,7 +1298,7 @@ common::Error multi_zset(CommandHandler* handler, int argc, char** argv, FastoOb
 }
 
 common::Error multi_zdel(CommandHandler* handler, int argc, char** argv, FastoObject* out) {
-  SsdbRaw* ssdb = static_cast<SsdbRaw*>(handler);
+  DBConnection* ssdb = static_cast<DBConnection*>(handler);
   std::vector<std::string> keysget;
   for (int i = 1; i < argc; ++i) {
     keysget.push_back(argv[i]);
@@ -1315,7 +1315,7 @@ common::Error multi_zdel(CommandHandler* handler, int argc, char** argv, FastoOb
 }
 
 common::Error qpush(CommandHandler* handler, int argc, char** argv, FastoObject* out) {
-  SsdbRaw* ssdb = static_cast<SsdbRaw*>(handler);
+  DBConnection* ssdb = static_cast<DBConnection*>(handler);
   common::Error er = ssdb->qpush(argv[0], argv[1]);
   if (!er) {
     common::StringValue* val = common::Value::createStringValue("STORED");
@@ -1327,7 +1327,7 @@ common::Error qpush(CommandHandler* handler, int argc, char** argv, FastoObject*
 }
 
 common::Error qpop(CommandHandler* handler, int argc, char** argv, FastoObject* out) {
-  SsdbRaw* ssdb = static_cast<SsdbRaw*>(handler);
+  DBConnection* ssdb = static_cast<DBConnection*>(handler);
   std::string ret;
   common::Error er = ssdb->qpop(argv[0], &ret);
   if (!er) {
@@ -1340,7 +1340,7 @@ common::Error qpop(CommandHandler* handler, int argc, char** argv, FastoObject* 
 }
 
 common::Error qslice(CommandHandler* handler, int argc, char** argv, FastoObject* out) {
-  SsdbRaw* ssdb = static_cast<SsdbRaw*>(handler);
+  DBConnection* ssdb = static_cast<DBConnection*>(handler);
   int64_t begin = atoll(argv[1]);
   int64_t end = atoll(argv[2]);
 
@@ -1360,7 +1360,7 @@ common::Error qslice(CommandHandler* handler, int argc, char** argv, FastoObject
 }
 
 common::Error qclear(CommandHandler* handler, int argc, char** argv, FastoObject* out) {
-  SsdbRaw* ssdb = static_cast<SsdbRaw*>(handler);
+  DBConnection* ssdb = static_cast<DBConnection*>(handler);
   int64_t res = 0;
   common::Error er = ssdb->qclear(argv[0], &res);
   if (!er) {
@@ -1373,12 +1373,12 @@ common::Error qclear(CommandHandler* handler, int argc, char** argv, FastoObject
 }
 
 common::Error help(CommandHandler* handler, int argc, char** argv, FastoObject* out) {
-  SsdbRaw* ssdb = static_cast<SsdbRaw*>(handler);
+  DBConnection* ssdb = static_cast<DBConnection*>(handler);
   return ssdb->help(argc - 1, argv + 1);
 }
 
 common::Error flushdb(CommandHandler* handler, int argc, char** argv, FastoObject* out) {
-  SsdbRaw* ssdb = static_cast<SsdbRaw*>(handler);
+  DBConnection* ssdb = static_cast<DBConnection*>(handler);
   return ssdb->flushdb();
 }
 

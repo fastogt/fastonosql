@@ -23,14 +23,14 @@
 
 #include "core/idriver.h"
 
-#include "core/redis/redis_raw.h"
+#include "core/redis/db_connection.h"
 
 namespace fastonosql {
 namespace core {
 namespace redis {
 
 class RedisDriver
-  : public IDriverRemote, public IRedisRawOwner {
+  : public IDriverRemote, public IDBConnectionOwner {
  Q_OBJECT
  public:
   explicit RedisDriver(IConnectionSettingsBaseSPtr settings);
@@ -87,7 +87,7 @@ class RedisDriver
 
   IServerInfoSPtr makeServerInfoFromString(const std::string& val);
 
-  RedisRaw* const impl_;
+  DBConnection* const impl_;
 
   common::Error interacteveMode(events::ProcessConfigArgsRequestEvent* ev);
   common::Error latencyMode(events::ProcessConfigArgsRequestEvent* ev);

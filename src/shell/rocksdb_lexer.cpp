@@ -21,7 +21,7 @@
 #include <vector>
 #include <algorithm>
 
-#include "core/rocksdb/rocksdb_raw.h"
+#include "core/rocksdb/db_connection.h"
 
 namespace fastonosql {
 namespace shell {
@@ -40,7 +40,7 @@ const char* RocksdbLexer::language() const {
 }
 
 const char* RocksdbLexer::version() const {
-  return core::rocksdb::RocksdbRaw::versionApi();
+  return core::rocksdb::DBConnection::versionApi();
 }
 
 const char* RocksdbLexer::basedOn() const {

@@ -51,7 +51,7 @@ namespace core {
 namespace ssdb {
 
 SsdbDriver::SsdbDriver(IConnectionSettingsBaseSPtr settings)
-  : IDriverRemote(settings), impl_(new SsdbRaw) {
+  : IDriverRemote(settings), impl_(new DBConnection) {
   CHECK(type() == SSDB);
 }
 
@@ -216,7 +216,7 @@ void SsdbDriver::handleConnectEvent(events::ConnectRequestEvent* ev) {
   QObject* sender = ev->sender();
   notifyProgress(sender, 0);
   events::ConnectResponceEvent::value_type res(ev->value());
-  SsdbConnectionSettings* set = dynamic_cast<SsdbConnectionSettings*>(settings_.get());  // +
+  ConnectionSettings* set = dynamic_cast<ConnectionSettings*>(settings_.get());  // +
   CHECK(set);
   notifyProgress(sender, 25);
   common::Error er = impl_->connect(set->info());

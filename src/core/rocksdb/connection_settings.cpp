@@ -16,49 +16,47 @@
     along with FastoNoSQL.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-#include "core/ssdb/ssdb_settings.h"
+#include "core/rocksdb/connection_settings.h"
 
 #include <string>
 
-#include "common/utils.h"
-
 namespace fastonosql {
 namespace core {
-namespace ssdb {
+namespace rocksdb {
 
-SsdbConnectionSettings::SsdbConnectionSettings(const connection_path_t& connectionName)
-  : IConnectionSettingsRemote(connectionName, SSDB), info_() {
+ConnectionSettings::ConnectionSettings(const connection_path_t& connectionName)
+  : IConnectionSettingsLocal(connectionName, ROCKSDB), info_() {
 }
 
-std::string SsdbConnectionSettings::commandLine() const {
+std::string ConnectionSettings::dbpath() const {
+  return info_.dbname;
+}
+
+std::string ConnectionSettings::commandLine() const {
   return common::convertToString(info_);
 }
 
-void SsdbConnectionSettings::setCommandLine(const std::string& line) {
+void ConnectionSettings::setCommandLine(const std::string& line) {
   info_ = common::convertFromString<Config>(line);
 }
 
-void SsdbConnectionSettings::setHost(const common::net::hostAndPort& host) {
-  info_.host = host;
-}
-
-common::net::hostAndPort SsdbConnectionSettings::host() const {
-  return info_.host;
-}
-
-Config SsdbConnectionSettings::info() const {
+Config ConnectionSettings::info() const {
   return info_;
 }
 
-void SsdbConnectionSettings::setInfo(const Config &info) {
+void ConnectionSettings::setInfo(const Config& info) {
   info_ = info;
 }
 
-SsdbConnectionSettings* SsdbConnectionSettings::clone() const {
-  SsdbConnectionSettings* red = new SsdbConnectionSettings(*this);
+std::string ConnectionSettings::fullAddress() const {
+  return info_.dbname;
+}
+
+ConnectionSettings* ConnectionSettings::clone() const {
+  ConnectionSettings* red = new ConnectionSettings(*this);
   return red;
 }
 
-}  // namespace ssdb
+}  // namespace rocksdb
 }  // namespace core
 }  // namespace fastonosql

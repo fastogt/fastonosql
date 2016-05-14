@@ -21,7 +21,7 @@
 #include <vector>
 #include <algorithm>
 
-#include "core/redis/redis_raw.h"
+#include "core/redis/db_connection.h"
 
 namespace fastonosql {
 namespace shell {
@@ -73,7 +73,7 @@ const char* RedisLexer::language() const {
 }
 
 const char* RedisLexer::version() const {
-  return core::redis::RedisRaw::versionApi();
+  return core::redis::DBConnection::versionApi();
 }
 
 const char* RedisLexer::basedOn() const {

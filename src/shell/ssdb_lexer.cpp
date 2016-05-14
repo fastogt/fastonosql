@@ -21,7 +21,7 @@
 #include <vector>
 #include <algorithm>
 
-#include "core/ssdb/ssdb_raw.h"
+#include "core/ssdb/db_connection.h"
 
 namespace fastonosql {
 namespace shell {
@@ -40,7 +40,7 @@ const char* SsdbLexer::language() const {
 }
 
 const char* SsdbLexer::version() const {
-  return core::ssdb::SsdbRaw::versionApi();
+  return core::ssdb::DBConnection::versionApi();
 }
 
 const char* SsdbLexer::basedOn() const {

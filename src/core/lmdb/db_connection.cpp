@@ -16,7 +16,7 @@
     along with FastoNoSQL.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-#include "core/lmdb/lmdb_raw.h"
+#include "core/lmdb/db_connection.h"
 
 #include <errno.h>
 
@@ -93,7 +93,7 @@ void lmdb_close(lmdb** context) {
 
 }  // namespace
 
-common::Error createConnection(const Config& config, LMDBConnection** context) {
+common::Error createConnection(const Config& config, NativeConnection** context) {
   if (!context) {
     return common::make_error_value("Invalid input argument(s)", common::ErrorValue::E_ERROR);
   }
@@ -111,7 +111,7 @@ common::Error createConnection(const Config& config, LMDBConnection** context) {
   return common::Error();
 }
 
-common::Error createConnection(LmdbConnectionSettings* settings, LMDBConnection** context) {
+common::Error createConnection(ConnectionSettings* settings, NativeConnection** context) {
   if (!settings) {
     return common::make_error_value("Invalid input argument(s)", common::ErrorValue::E_ERROR);
   }
@@ -120,7 +120,7 @@ common::Error createConnection(LmdbConnectionSettings* settings, LMDBConnection*
   return createConnection(config, context);
 }
 
-common::Error testConnection(LmdbConnectionSettings* settings) {
+common::Error testConnection(ConnectionSettings* settings) {
   if (!settings) {
     return common::make_error_value("Invalid input argument(s)", common::ErrorValue::E_ERROR);
   }
@@ -135,39 +135,39 @@ common::Error testConnection(LmdbConnectionSettings* settings) {
   return common::Error();
 }
 
-LmdbRaw::LmdbRaw()
+DBConnection::DBConnection()
   : CommandHandler(lmdbCommands), connection_() {
 }
 
-common::Error LmdbRaw::connect(const config_t& config) {
+common::Error DBConnection::connect(const config_t& config) {
   return connection_.connect(config);
 }
 
-common::Error LmdbRaw::disconnect() {
+common::Error DBConnection::disconnect() {
   return connection_.disconnect();
 }
 
-bool LmdbRaw::isConnected() const {
+bool DBConnection::isConnected() const {
   return connection_.isConnected();
 }
 
-std::string LmdbRaw::delimiter() const {
+std::string DBConnection::delimiter() const {
   return connection_.config_.delimiter;
 }
 
-std::string LmdbRaw::nsSeparator() const {
+std::string DBConnection::nsSeparator() const {
   return connection_.config_.ns_separator;
 }
 
-LmdbRaw::config_t LmdbRaw::config() const {
+DBConnection::config_t DBConnection::config() const {
   return connection_.config_;
 }
 
-const char* LmdbRaw::versionApi() {
+const char* DBConnection::versionApi() {
   return STRINGIZE(MDB_VERSION_MAJOR) "." STRINGIZE(MDB_VERSION_MINOR) "." STRINGIZE(MDB_VERSION_PATCH);
 }
 
-MDB_dbi LmdbRaw::curDb() const {
+MDB_dbi DBConnection::curDb() const {
   if (connection_.handle_) {
     return connection_.handle_->dbir;
   }
@@ -175,7 +175,7 @@ MDB_dbi LmdbRaw::curDb() const {
   return 0;
 }
 
-common::Error LmdbRaw::info(const char* args, ServerInfo::Stats* statsout) {
+common::Error DBConnection::info(const char* args, ServerInfo::Stats* statsout) {
   CHECK(isConnected());
 
   if (!statsout) {
@@ -192,7 +192,7 @@ common::Error LmdbRaw::info(const char* args, ServerInfo::Stats* statsout) {
   return common::Error();
 }
 
-common::Error LmdbRaw::dbsize(size_t* size) {
+common::Error DBConnection::dbsize(size_t* size) {
   CHECK(isConnected());
 
   if (!size) {
@@ -225,7 +225,7 @@ common::Error LmdbRaw::dbsize(size_t* size) {
   return common::Error();
 }
 
-common::Error LmdbRaw::set(const std::string& key, const std::string& value) {
+common::Error DBConnection::set(const std::string& key, const std::string& value) {
   CHECK(isConnected());
 
   MDB_val mkey;
@@ -254,7 +254,7 @@ common::Error LmdbRaw::set(const std::string& key, const std::string& value) {
   return common::Error();
 }
 
-common::Error LmdbRaw::get(const std::string& key, std::string* ret_val) {
+common::Error DBConnection::get(const std::string& key, std::string* ret_val) {
   CHECK(isConnected());
 
   MDB_val mkey;
@@ -279,7 +279,7 @@ common::Error LmdbRaw::get(const std::string& key, std::string* ret_val) {
   return common::Error();
 }
 
-common::Error LmdbRaw::del(const std::string& key) {
+common::Error DBConnection::del(const std::string& key) {
   CHECK(isConnected());
 
   MDB_val mkey;
@@ -305,7 +305,7 @@ common::Error LmdbRaw::del(const std::string& key) {
   return common::Error();
 }
 
-common::Error LmdbRaw::keys(const std::string& key_start, const std::string& key_end,
+common::Error DBConnection::keys(const std::string& key_start, const std::string& key_end,
                             uint64_t limit, std::vector<std::string>* ret) {
   CHECK(isConnected());
 
@@ -336,11 +336,11 @@ common::Error LmdbRaw::keys(const std::string& key_start, const std::string& key
   return common::Error();
 }
 
-common::Error LmdbRaw::help(int argc, char** argv) {
+common::Error DBConnection::help(int argc, char** argv) {
   return notSupported("HELP");
 }
 
-common::Error LmdbRaw::flushdb() {
+common::Error DBConnection::flushdb() {
   CHECK(isConnected());
 
   MDB_cursor* cursor = NULL;
@@ -385,7 +385,7 @@ common::Error LmdbRaw::flushdb() {
 }
 
 common::Error info(CommandHandler* handler, int argc, char** argv, FastoObject* out) {
-  LmdbRaw* mdb = static_cast<LmdbRaw*>(handler);
+  DBConnection* mdb = static_cast<DBConnection*>(handler);
   ServerInfo::Stats statsout;
   common::Error er = mdb->info(argc == 1 ? argv[0] : nullptr, &statsout);
   if (!er) {
@@ -398,7 +398,7 @@ common::Error info(CommandHandler* handler, int argc, char** argv, FastoObject* 
 }
 
 common::Error dbsize(CommandHandler* handler, int argc, char** argv, FastoObject* out) {
-  LmdbRaw* mdb = static_cast<LmdbRaw*>(handler);
+  DBConnection* mdb = static_cast<DBConnection*>(handler);
   size_t dbsize = 0;
   common::Error er = mdb->dbsize(&dbsize);
   if (!er) {
@@ -411,7 +411,7 @@ common::Error dbsize(CommandHandler* handler, int argc, char** argv, FastoObject
 }
 
 common::Error set(CommandHandler* handler, int argc, char** argv, FastoObject* out) {
-  LmdbRaw* mdb = static_cast<LmdbRaw*>(handler);
+  DBConnection* mdb = static_cast<DBConnection*>(handler);
   common::Error er = mdb->set(argv[0], argv[1]);
   if (!er) {
     common::StringValue* val = common::Value::createStringValue("STORED");
@@ -423,7 +423,7 @@ common::Error set(CommandHandler* handler, int argc, char** argv, FastoObject* o
 }
 
 common::Error get(CommandHandler* handler, int argc, char** argv, FastoObject* out) {
-  LmdbRaw* mdb = static_cast<LmdbRaw*>(handler);
+  DBConnection* mdb = static_cast<DBConnection*>(handler);
   std::string ret;
   common::Error er = mdb->get(argv[0], &ret);
   if (!er) {
@@ -436,7 +436,7 @@ common::Error get(CommandHandler* handler, int argc, char** argv, FastoObject* o
 }
 
 common::Error del(CommandHandler* handler, int argc, char** argv, FastoObject* out) {
-  LmdbRaw* mdb = static_cast<LmdbRaw*>(handler);
+  DBConnection* mdb = static_cast<DBConnection*>(handler);
   common::Error er = mdb->del(argv[0]);
   if (!er) {
     common::StringValue* val = common::Value::createStringValue("DELETED");
@@ -448,7 +448,7 @@ common::Error del(CommandHandler* handler, int argc, char** argv, FastoObject* o
 }
 
 common::Error keys(CommandHandler* handler, int argc, char** argv, FastoObject* out) {
-  LmdbRaw* mdb = static_cast<LmdbRaw*>(handler);
+  DBConnection* mdb = static_cast<DBConnection*>(handler);
   std::vector<std::string> keysout;
   common::Error er = mdb->keys(argv[0], argv[1], atoll(argv[2]), &keysout);
   if (!er) {
@@ -465,19 +465,19 @@ common::Error keys(CommandHandler* handler, int argc, char** argv, FastoObject* 
 }
 
 common::Error help(CommandHandler* handler, int argc, char** argv, FastoObject* out) {
-  LmdbRaw* mdb = static_cast<LmdbRaw*>(handler);
+  DBConnection* mdb = static_cast<DBConnection*>(handler);
   return mdb->help(argc - 1, argv + 1);
 }
 
 common::Error flushdb(CommandHandler* handler, int argc, char** argv, FastoObject* out) {
-  LmdbRaw* mdb = static_cast<LmdbRaw*>(handler);
+  DBConnection* mdb = static_cast<DBConnection*>(handler);
   return mdb->flushdb();
 }
 
 }  // namespace lmdb
 template<>
-common::Error DBAllocatorTraits<lmdb::LMDBConnection, lmdb::Config>::connect(const lmdb::Config& config, lmdb::LMDBConnection** hout) {
-  lmdb::LMDBConnection* context = nullptr;
+common::Error ConnectionAllocatorTraits<lmdb::NativeConnection, lmdb::Config>::connect(const lmdb::Config& config, lmdb::NativeConnection** hout) {
+  lmdb::NativeConnection* context = nullptr;
   common::Error er = lmdb::createConnection(config, &context);
   if (er && er->isError()) {
     return er;
@@ -487,13 +487,13 @@ common::Error DBAllocatorTraits<lmdb::LMDBConnection, lmdb::Config>::connect(con
   return common::Error();
 }
 template<>
-common::Error DBAllocatorTraits<lmdb::LMDBConnection, lmdb::Config>::disconnect(lmdb::LMDBConnection** handle) {
+common::Error ConnectionAllocatorTraits<lmdb::NativeConnection, lmdb::Config>::disconnect(lmdb::NativeConnection** handle) {
   lmdb::lmdb_close(handle);
   *handle = nullptr;
   return common::Error();
 }
 template<>
-bool DBAllocatorTraits<lmdb::LMDBConnection, lmdb::Config>::isConnected(lmdb::LMDBConnection* handle) {
+bool ConnectionAllocatorTraits<lmdb::NativeConnection, lmdb::Config>::isConnected(lmdb::NativeConnection* handle) {
   if (!handle) {
     return false;
   }

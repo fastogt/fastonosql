@@ -24,7 +24,7 @@ namespace fastonosql {
 namespace core {
 
 template<typename H, typename C>
-struct DBAllocatorTraits {
+struct ConnectionAllocatorTraits {
   typedef H handle_t;
   typedef C config_t;
 
@@ -33,18 +33,18 @@ struct DBAllocatorTraits {
   static bool isConnected(handle_t* handle);
 };
 
-template<typename DBAllocatorTraits>
-class DBConnection {
+template<typename ConnectionAllocatorTraits>
+class Connection {
  public:
-  typedef DBAllocatorTraits db_traits_t;
-  typedef typename db_traits_t::config_t config_t;
-  typedef typename db_traits_t::handle_t handle_t;
+  typedef ConnectionAllocatorTraits traits_t;
+  typedef typename traits_t::config_t config_t;
+  typedef typename traits_t::handle_t handle_t;
 
-  DBConnection()
+  Connection()
     : config_(), handle_(nullptr) {
   }
 
-  ~DBConnection() {
+  ~Connection() {
     common::Error err = disconnect();
     if (err && err->isError()) {
       DNOTREACHED();
@@ -52,7 +52,7 @@ class DBConnection {
   }
 
   bool isConnected() const {
-    return db_traits_t::isConnected(handle_);
+    return traits_t::isConnected(handle_);
   }
 
   common::Error connect(const config_t& config) WARN_UNUSED_RESULT {
@@ -61,7 +61,7 @@ class DBConnection {
     }
 
     handle_t* handle = nullptr;
-    common::Error err = db_traits_t::connect(config, &handle);
+    common::Error err = traits_t::connect(config, &handle);
     if (err && err->isError()) {
       return err;
     }
@@ -76,7 +76,7 @@ class DBConnection {
       return common::Error();
     }
 
-    common::Error err = db_traits_t::disconnect(&handle_);
+    common::Error err = traits_t::disconnect(&handle_);
     if (err && err->isError()) {
       return err;
     }

@@ -16,47 +16,49 @@
     along with FastoNoSQL.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-#include "core/lmdb/lmdb_settings.h"
+#include "core/ssdb/connection_settings.h"
 
 #include <string>
 
+#include "common/utils.h"
+
 namespace fastonosql {
 namespace core {
-namespace lmdb {
+namespace ssdb {
 
-LmdbConnectionSettings::LmdbConnectionSettings(const connection_path_t& connectionName)
-  : IConnectionSettingsLocal(connectionName, LMDB), info_() {
+ConnectionSettings::ConnectionSettings(const connection_path_t& connectionName)
+  : IConnectionSettingsRemote(connectionName, SSDB), info_() {
 }
 
-std::string LmdbConnectionSettings::dbpath() const {
-  return info_.dbname;
-}
-
-std::string LmdbConnectionSettings::commandLine() const {
+std::string ConnectionSettings::commandLine() const {
   return common::convertToString(info_);
 }
 
-void LmdbConnectionSettings::setCommandLine(const std::string& line) {
+void ConnectionSettings::setCommandLine(const std::string& line) {
   info_ = common::convertFromString<Config>(line);
 }
 
-Config LmdbConnectionSettings::info() const {
+void ConnectionSettings::setHost(const common::net::hostAndPort& host) {
+  info_.host = host;
+}
+
+common::net::hostAndPort ConnectionSettings::host() const {
+  return info_.host;
+}
+
+Config ConnectionSettings::info() const {
   return info_;
 }
 
-void LmdbConnectionSettings::setInfo(const Config &info) {
+void ConnectionSettings::setInfo(const Config &info) {
   info_ = info;
 }
 
-std::string LmdbConnectionSettings::fullAddress() const {
-  return info_.dbname;
-}
-
-LmdbConnectionSettings* LmdbConnectionSettings::clone() const {
-  LmdbConnectionSettings* red = new LmdbConnectionSettings(*this);
+ConnectionSettings* ConnectionSettings::clone() const {
+  ConnectionSettings* red = new ConnectionSettings(*this);
   return red;
 }
 
-}  // namespace lmdb
+}  // namespace ssdb
 }  // namespace core
 }  // namespace fastonosql

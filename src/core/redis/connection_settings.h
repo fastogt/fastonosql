@@ -22,33 +22,32 @@
 
 #include "core/connection_settings.h"
 
-#include "core/unqlite/config.h"
+#include "core/redis/config.h"
 
 namespace fastonosql {
 namespace core {
-namespace unqlite {
+namespace redis {
 
-class UnqliteConnectionSettings
-  : public IConnectionSettingsLocal {
+class ConnectionSettings
+  : public IConnectionSettingsRemoteSSH {
  public:
-  explicit UnqliteConnectionSettings(const connection_path_t& connectionName);
-
-  virtual std::string dbpath() const;
+  explicit ConnectionSettings(const connection_path_t& connectionName);
 
   virtual std::string commandLine() const;
   virtual void setCommandLine(const std::string& line);
 
+  virtual void setHost(const common::net::hostAndPort& host);
+  virtual common::net::hostAndPort host() const;
+
   Config info() const;
   void setInfo(const Config& info);
 
-  virtual std::string fullAddress() const;
-
-  virtual UnqliteConnectionSettings* clone() const;
+  virtual ConnectionSettings* clone() const;
 
  private:
   Config info_;
 };
 
-}  // namespace unqlite
+}  // namespace redis
 }  // namespace core
 }  // namespace fastonosql

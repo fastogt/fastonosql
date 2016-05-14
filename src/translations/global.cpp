@@ -109,7 +109,7 @@ namespace translations {
   const QString trExpTree = QObject::tr("Explorer tree");
   const QString trRecentConnections = QObject::tr("Recent Connections");
   const QString trCheckVersion = QObject::tr("Check version");
-  const QString trConnectionErrorText = QObject::tr("Connection error!");
+  const QString trConnectionErrorText = QObject::tr("DBConnection error!");
   const QString trNewTab = QObject::tr("New Tab");
   const QString trNextTab = QObject::tr("Next Tab");
   const QString trPrevTab = QObject::tr("Prev Tab");
@@ -133,8 +133,8 @@ namespace translations {
   const QString trEncodeDecode = QObject::tr("Encode/Decode");
   const QString trEncode = QObject::tr("Encode");
   const QString trDecode = QObject::tr("Decode");
-  const QString trConnectionDiagnostic = QObject::tr("Connection diagnostic");
-  const QString trConnectionDiscovery = QObject::tr("Connection discovery");
+  const QString trConnectionDiagnostic = QObject::tr("DBConnection diagnostic");
+  const QString trConnectionDiscovery = QObject::tr("DBConnection discovery");
   const QString trKeyCountOnThePage = QObject::tr("Key count on the page");
 
 }  // namespace translations

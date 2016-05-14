@@ -21,9 +21,9 @@
 #include <SSDB.h>
 
 #include "core/command_handler.h"
-#include "core/db_connection.h"
+#include "core/connection.h"
 
-#include "core/ssdb/ssdb_settings.h"
+#include "core/ssdb/connection_settings.h"
 #include "core/ssdb/config.h"
 #include "core/ssdb/server_info.h"
 
@@ -31,18 +31,18 @@ namespace fastonosql {
 namespace core {
 namespace ssdb {
 
-typedef ::ssdb::Client SSDBConnection;
-typedef DBAllocatorTraits<SSDBConnection, Config> SSDBAllocTrait;
+typedef ::ssdb::Client NativeConnection;
 
-common::Error createConnection(const Config& config, SSDBConnection** context);
-common::Error createConnection(SsdbConnectionSettings* settings, SSDBConnection** context);
-common::Error testConnection(SsdbConnectionSettings* settings);
+common::Error createConnection(const Config& config, NativeConnection** context);
+common::Error createConnection(ConnectionSettings* settings, NativeConnection** context);
+common::Error testConnection(ConnectionSettings* settings);
 
-struct SsdbRaw
+struct DBConnection
   : public CommandHandler {
-  typedef DBConnection<SSDBAllocTrait> connection_t;
+  typedef ConnectionAllocatorTraits<NativeConnection, Config> ConnectionAllocatorTrait;
+  typedef Connection<ConnectionAllocatorTrait> connection_t;
   typedef connection_t::config_t config_t;
-  SsdbRaw();
+  DBConnection();
 
   common::Error connect(const config_t& config) WARN_UNUSED_RESULT;
   common::Error disconnect() WARN_UNUSED_RESULT;

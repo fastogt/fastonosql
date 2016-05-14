@@ -16,7 +16,7 @@
     along with FastoNoSQL.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-#include "core/redis/redis_raw.h"
+#include "core/redis/db_connection.h"
 
 #ifdef __MINGW32__
 char* strcasestr(const char* s, const char* find) {
@@ -369,7 +369,7 @@ common::Error createConnection(const Config& config,
     return common::Error();
 }
 
-common::Error createConnection(RedisConnectionSettings* settings, redisContext** context) {
+common::Error createConnection(ConnectionSettings* settings, redisContext** context) {
   if (!settings) {
     return common::make_error_value("Invalid input argument(s)", common::ErrorValue::E_ERROR);
   }
@@ -433,7 +433,7 @@ common::Error authContext(const Config& config, redisContext* context) {
 
 }
 
-common::Error testConnection(RedisConnectionSettings* settings) {
+common::Error testConnection(ConnectionSettings* settings) {
   if (!settings) {
     return common::make_error_value("Invalid input argument(s)", common::ErrorValue::E_ERROR);
   }
@@ -455,7 +455,7 @@ common::Error testConnection(RedisConnectionSettings* settings) {
   return common::Error();
 }
 
-common::Error discoveryClusterConnection(RedisConnectionSettings* settings,
+common::Error discoveryClusterConnection(ConnectionSettings* settings,
                                   std::vector<ServerDiscoveryClusterInfoSPtr>* infos) {
   if (!settings || !infos) {
     return common::make_error_value("Invalid input argument(s)", common::ErrorValue::E_ERROR);
@@ -495,7 +495,7 @@ common::Error discoveryClusterConnection(RedisConnectionSettings* settings,
   return err;
 }
 
-common::Error discoverySentinelConnection(RedisConnectionSettings* settings,
+common::Error discoverySentinelConnection(ConnectionSettings* settings,
                                           std::vector<ServerDiscoverySentinelInfoSPtr>* infos) {
   if (!settings || !infos) {
     return common::make_error_value("Invalid input argument(s)", common::ErrorValue::E_ERROR);
@@ -567,26 +567,26 @@ common::Error discoverySentinelConnection(RedisConnectionSettings* settings,
   return common::Error();
 }
 
-RedisRaw::RedisRaw(IRedisRawOwner* observer)
+DBConnection::DBConnection(IDBConnectionOwner* observer)
   : context_(nullptr), isAuth_(false), observer_(observer) {
 }
 
-RedisRaw::~RedisRaw() {
+DBConnection::~DBConnection() {
   if (context_) {
     redisFree(context_);
     context_ = nullptr;
   }
 }
 
-const char* RedisRaw::versionApi() {
+const char* DBConnection::versionApi() {
   return HIREDIS_VERSION;
 }
 
-bool RedisRaw::isConnected() const {
+bool DBConnection::isConnected() const {
   return context_;
 }
 
-bool RedisRaw::isAuthenticated() const {
+bool DBConnection::isAuthenticated() const {
   if (!isConnected()) {
     return false;
   }
@@ -594,7 +594,7 @@ bool RedisRaw::isAuthenticated() const {
   return isAuth_;
 }
 
-common::Error RedisRaw::connect(bool force) {
+common::Error DBConnection::connect(bool force) {
   if (context_ == nullptr || force) {
     if (context_) {
       redisFree(context_);
@@ -640,7 +640,7 @@ common::Error RedisRaw::connect(bool force) {
   return common::Error();
 }
 
-common::Error RedisRaw::disconnect() {
+common::Error DBConnection::disconnect() {
   if (!isConnected()) {
     return common::Error();
   }
@@ -653,7 +653,7 @@ common::Error RedisRaw::disconnect() {
   return common::Error();
 }
 
-bool RedisRaw::isInterrupted() const {
+bool DBConnection::isInterrupted() const {
  if (!observer_) {
    return false;
  }
@@ -665,7 +665,7 @@ bool RedisRaw::isInterrupted() const {
  * Latency and latency history modes
  *--------------------------------------------------------------------------- */
 
-common::Error RedisRaw::latencyMode(FastoObject* out) {
+common::Error DBConnection::latencyMode(FastoObject* out) {
   if (!out) {
     DNOTREACHED();
     return common::make_error_value("Invalid input argument(s)", common::ErrorValue::E_ERROR);
@@ -746,7 +746,7 @@ common::Error RedisRaw::latencyMode(FastoObject* out) {
 
 /* Sends SYNC and reads the number of bytes in the payload. Used both by
  * slaveMode() and getRDB(). */
-common::Error RedisRaw::sendSync(unsigned long long* payload) {
+common::Error DBConnection::sendSync(unsigned long long* payload) {
   if (!payload) {
     DNOTREACHED();
     return common::make_error_value("Invalid input argument(s)", common::ErrorValue::E_ERROR);
@@ -790,7 +790,7 @@ common::Error RedisRaw::sendSync(unsigned long long* payload) {
   return common::Error();
 }
 
-common::Error RedisRaw::slaveMode(FastoObject* out) {
+common::Error DBConnection::slaveMode(FastoObject* out) {
   if (!out) {
     DNOTREACHED();
     return common::make_error_value("Invalid input argument(s)", common::ErrorValue::E_ERROR);
@@ -844,7 +844,7 @@ common::Error RedisRaw::slaveMode(FastoObject* out) {
 
 /* This function implements --rdb, so it uses the replication protocol in order
  * to fetch the RDB file from a remote server. */
-common::Error RedisRaw::getRDB(FastoObject* out) {
+common::Error DBConnection::getRDB(FastoObject* out) {
   if (!out) {
     DNOTREACHED();
     return common::make_error_value("Invalid input argument(s)", common::ErrorValue::E_ERROR);
@@ -925,7 +925,7 @@ common::Error RedisRaw::getRDB(FastoObject* out) {
  * Find big keys
  *--------------------------------------------------------------------------- */
 
-common::Error RedisRaw::sendScan(unsigned long long* it, redisReply** out){
+common::Error DBConnection::sendScan(unsigned long long* it, redisReply** out){
   if (!out) {
     DNOTREACHED();
     return common::make_error_value("Invalid input argument(s)", common::ErrorValue::E_ERROR);
@@ -955,7 +955,7 @@ common::Error RedisRaw::sendScan(unsigned long long* it, redisReply** out){
   return common::Error();
 }
 
-common::Error RedisRaw::dbsize(size_t* size) {
+common::Error DBConnection::dbsize(size_t* size) {
   if (!size) {
     return common::make_error_value("Invalid input argument(s)", common::ErrorValue::E_ERROR);
   }
@@ -972,7 +972,7 @@ common::Error RedisRaw::dbsize(size_t* size) {
   return common::Error();
 }
 
-common::Error RedisRaw::getKeyTypes(redisReply* keys, int* types) {
+common::Error DBConnection::getKeyTypes(redisReply* keys, int* types) {
   if (!types) {
     DNOTREACHED();
     return common::make_error_value("Invalid input argument(s)", common::ErrorValue::E_ERROR);
@@ -1009,7 +1009,7 @@ common::Error RedisRaw::getKeyTypes(redisReply* keys, int* types) {
   return common::Error();
 }
 
-common::Error RedisRaw::getKeySizes(redisReply* keys, int* types, unsigned long long* sizes) {
+common::Error DBConnection::getKeySizes(redisReply* keys, int* types, unsigned long long* sizes) {
   redisReply* reply;
   const char* sizecmds[] = {"STRLEN", "LLEN", "SCARD", "HLEN", "ZCARD"};
 
@@ -1052,7 +1052,7 @@ common::Error RedisRaw::getKeySizes(redisReply* keys, int* types, unsigned long 
   return common::Error();
 }
 
-common::Error RedisRaw::findBigKeys(FastoObject* out) {
+common::Error DBConnection::findBigKeys(FastoObject* out) {
   if (!out) {
     DNOTREACHED();
     return common::make_error_value("Invalid input argument(s)", common::ErrorValue::E_ERROR);
@@ -1224,7 +1224,7 @@ common::Error RedisRaw::findBigKeys(FastoObject* out) {
  * Stats mode
  *--------------------------------------------------------------------------- */
 
-common::Error RedisRaw::statMode(FastoObject* out) {
+common::Error DBConnection::statMode(FastoObject* out) {
   if (!out) {
     DNOTREACHED();
     return common::make_error_value("Invalid input argument(s)", common::ErrorValue::E_ERROR);
@@ -1332,7 +1332,7 @@ common::Error RedisRaw::statMode(FastoObject* out) {
  * Scan mode
  *--------------------------------------------------------------------------- */
 
-common::Error RedisRaw::scanMode(FastoObject* out) {
+common::Error DBConnection::scanMode(FastoObject* out) {
   if (!out) {
     DNOTREACHED();
     return common::make_error_value("Invalid input argument(s)", common::ErrorValue::E_ERROR);
@@ -1376,7 +1376,7 @@ common::Error RedisRaw::scanMode(FastoObject* out) {
   return common::Error();
 }
 
-common::Error RedisRaw::cliAuth() {
+common::Error DBConnection::cliAuth() {
   common::Error err = authContext(config_, context_);
   if (err && err->isError()) {
     isAuth_ = false;
@@ -1387,7 +1387,7 @@ common::Error RedisRaw::cliAuth() {
   return common::Error();
 }
 
-common::Error RedisRaw::select(int num, IDataBaseInfo** info) {
+common::Error DBConnection::select(int num, IDataBaseInfo** info) {
   redisReply* reply = reinterpret_cast<redisReply*>(redisCommand(context_, "SELECT %d", num));
   if (reply) {
     size_t sz = 0;
@@ -1407,7 +1407,7 @@ common::Error RedisRaw::select(int num, IDataBaseInfo** info) {
   return cliPrintContextError(context_);
 }
 
-common::Error RedisRaw::cliFormatReplyRaw(FastoObjectArray* ar, redisReply* r) {
+common::Error DBConnection::cliFormatReplyRaw(FastoObjectArray* ar, redisReply* r) {
   if (!ar) {
     DNOTREACHED();
     return common::make_error_value("Invalid input argument(s)", common::ErrorValue::E_ERROR);
@@ -1463,7 +1463,7 @@ common::Error RedisRaw::cliFormatReplyRaw(FastoObjectArray* ar, redisReply* r) {
   return common::Error();
 }
 
-common::Error RedisRaw::cliFormatReplyRaw(FastoObject* out, redisReply* r) {
+common::Error DBConnection::cliFormatReplyRaw(FastoObject* out, redisReply* r) {
   if (!out) {
     DNOTREACHED();
     return common::make_error_value("Invalid input argument(s)", common::ErrorValue::E_ERROR);
@@ -1522,7 +1522,7 @@ common::Error RedisRaw::cliFormatReplyRaw(FastoObject* out, redisReply* r) {
   return common::Error();
 }
 
-common::Error RedisRaw::cliOutputGenericHelp(FastoObject* out) {
+common::Error DBConnection::cliOutputGenericHelp(FastoObject* out) {
   if (!out) {
     DNOTREACHED();
     return common::make_error_value("Invalid input argument(s)", common::ErrorValue::E_ERROR);
@@ -1539,7 +1539,7 @@ common::Error RedisRaw::cliOutputGenericHelp(FastoObject* out) {
   return common::Error();
 }
 
-common::Error RedisRaw::cliOutputHelp(FastoObject* out, int argc, char** argv) {
+common::Error DBConnection::cliOutputHelp(FastoObject* out, int argc, char** argv) {
   if (!out) {
     DNOTREACHED();
     return common::make_error_value("Invalid input argument(s)", common::ErrorValue::E_ERROR);
@@ -1596,7 +1596,7 @@ common::Error RedisRaw::cliOutputHelp(FastoObject* out, int argc, char** argv) {
   return common::Error();
 }
 
-common::Error RedisRaw::cliReadReply(FastoObject* out) {
+common::Error DBConnection::cliReadReply(FastoObject* out) {
   if (!out) {
     DNOTREACHED();
     return common::make_error_value("Invalid input argument(s)", common::ErrorValue::E_ERROR);
@@ -1647,7 +1647,7 @@ common::Error RedisRaw::cliReadReply(FastoObject* out) {
   return er;
 }
 
-common::Error RedisRaw::execute(int argc, char** argv, FastoObject* out) {
+common::Error DBConnection::execute(int argc, char** argv, FastoObject* out) {
   CHECK(context_);
 
   if (!out) {
@@ -1745,7 +1745,7 @@ common::Error RedisRaw::execute(int argc, char** argv, FastoObject* out) {
   return common::Error();
 }
 
-common::Error RedisRaw::executeAsPipeline(std::vector<FastoObjectCommandIPtr> cmds) {
+common::Error DBConnection::executeAsPipeline(std::vector<FastoObjectCommandIPtr> cmds) {
   if (cmds.empty()) {
     return common::make_error_value("Invalid input command", common::ErrorValue::E_ERROR);
   }

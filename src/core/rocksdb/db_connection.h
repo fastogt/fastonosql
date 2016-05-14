@@ -18,40 +18,34 @@
 
 #pragma once
 
-extern "C" {
-  #include <lmdb.h>
-}
-
 #include <string>
 
-#include "core/db_connection.h"
-#include "core/command_handler.h"
+#include <rocksdb/db.h>
 
-#include "core/lmdb/lmdb_settings.h"
-#include "core/lmdb/config.h"
-#include "core/lmdb/server_info.h"
+#include "core/command_handler.h"
+#include "core/connection.h"
+
+#include "core/rocksdb/connection_settings.h"
+#include "core/rocksdb/config.h"
+#include "core/rocksdb/server_info.h"
 
 namespace fastonosql {
 namespace core {
-namespace lmdb {
+namespace rocksdb {
 
-struct lmdb {
-  MDB_env* env;
-  MDB_dbi dbir;
-};
+typedef ::rocksdb::DB NativeConnection;
 
-typedef lmdb LMDBConnection;
-typedef DBAllocatorTraits<LMDBConnection, Config> LMDBAllocTrait;
+common::Error createConnection(const Config& config, NativeConnection** context);
+common::Error createConnection(ConnectionSettings* settings, NativeConnection** context);
+common::Error testConnection(ConnectionSettings* settings);
 
-common::Error createConnection(const Config& config, LMDBConnection** context);
-common::Error createConnection(LmdbConnectionSettings* settings, LMDBConnection** context);
-common::Error testConnection(LmdbConnectionSettings* settings);
-
-struct LmdbRaw
+class DBConnection
   : public CommandHandler {
-  typedef DBConnection<LMDBAllocTrait> connection_t;
+ public:
+  typedef ConnectionAllocatorTraits<NativeConnection, Config> ConnectionAllocatorTrait;
+  typedef Connection<ConnectionAllocatorTrait> connection_t;
   typedef connection_t::config_t config_t;
-  LmdbRaw();
+  DBConnection();
 
   common::Error connect(const config_t& config) WARN_UNUSED_RESULT;
   common::Error disconnect() WARN_UNUSED_RESULT;
@@ -60,17 +54,18 @@ struct LmdbRaw
   std::string delimiter() const;
   std::string nsSeparator() const;
   config_t config() const;
-
   static const char* versionApi();
 
-  MDB_dbi curDb() const;
+  std::string currentDbName() const;
 
   common::Error info(const char* args, ServerInfo::Stats* statsout) WARN_UNUSED_RESULT;
   common::Error set(const std::string& key, const std::string& value) WARN_UNUSED_RESULT;
   common::Error get(const std::string& key, std::string* ret_val) WARN_UNUSED_RESULT;
+  common::Error mget(const std::vector< ::rocksdb::Slice>& keys, std::vector<std::string>* ret);
+  common::Error merge(const std::string& key, const std::string& value) WARN_UNUSED_RESULT;
   common::Error del(const std::string& key) WARN_UNUSED_RESULT;
-  common::Error keys(const std::string& key_start, const std::string& key_end, uint64_t limit,
-                     std::vector<std::string>* ret) WARN_UNUSED_RESULT;
+  common::Error keys(const std::string& key_start, const std::string& key_end,
+                     uint64_t limit, std::vector<std::string>* ret) WARN_UNUSED_RESULT;
 
   // extended api
   common::Error dbsize(size_t* size) WARN_UNUSED_RESULT;
@@ -84,6 +79,8 @@ struct LmdbRaw
 common::Error info(CommandHandler* handler, int argc, char** argv, FastoObject* out);
 common::Error set(CommandHandler* handler, int argc, char** argv, FastoObject* out);
 common::Error get(CommandHandler* handler, int argc, char** argv, FastoObject* out);
+common::Error mget(CommandHandler* handler, int argc, char** argv, FastoObject* out);
+common::Error merge(CommandHandler* handler, int argc, char** argv, FastoObject* out);
 common::Error del(CommandHandler* handler, int argc, char** argv, FastoObject* out);
 common::Error keys(CommandHandler* handler, int argc, char** argv, FastoObject* out);
 
@@ -91,13 +88,19 @@ common::Error dbsize(CommandHandler* handler, int argc, char** argv, FastoObject
 common::Error help(CommandHandler* handler, int argc, char** argv, FastoObject* out);
 common::Error flushdb(CommandHandler* handler, int argc, char** argv, FastoObject* out);
 
-static const std::vector<CommandHolder> lmdbCommands = {
+static const std::vector<CommandHolder> rocksdbCommands = {
   CommandHolder("SET", "<key> <value>",
               "Set the value of a key.",
               UNDEFINED_SINCE, UNDEFINED_EXAMPLE_STR, 2, 0, &set),
   CommandHolder("GET", "<key>",
               "Get the value of a key.",
               UNDEFINED_SINCE, UNDEFINED_EXAMPLE_STR, 1, 0, &get),
+  CommandHolder("MGET", "<keys>",
+              "Get the value of a key.",
+              UNDEFINED_SINCE, UNDEFINED_EXAMPLE_STR, 1, 0, &mget),
+  CommandHolder("MERGE", "<key> <value>",
+              "Merge the database entry for \"key\" with \"value\"",
+              UNDEFINED_SINCE, UNDEFINED_EXAMPLE_STR, 2, 0, &merge),
   CommandHolder("DEL", "<key>",
               "Delete key.",
               UNDEFINED_SINCE, UNDEFINED_EXAMPLE_STR, 1, 0, &del),
@@ -120,6 +123,6 @@ static const std::vector<CommandHolder> lmdbCommands = {
               UNDEFINED_SINCE, UNDEFINED_EXAMPLE_STR, 0, 1, &flushdb)
 };
 
-}  // namespace lmdb
+}  // namespace rocksdb
 }  // namespace core
 }  // namespace fastonosql

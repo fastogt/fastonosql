@@ -23,7 +23,7 @@
 
 #include "core/command_handler.h"
 
-#include "core/redis/redis_settings.h"
+#include "core/redis/connection_settings.h"
 #include "core/redis/config.h"
 #include "core/redis/server_info.h"
 
@@ -435,19 +435,19 @@ static const std::vector<CommandInfo> redisCommands = {
               UNDEFINED_SINCE, UNDEFINED_EXAMPLE_STR, 0, 2)
 };
 
-common::Error testConnection(RedisConnectionSettings* settings);
-common::Error discoveryClusterConnection(RedisConnectionSettings* settings, std::vector<ServerDiscoveryClusterInfoSPtr>* infos);
-common::Error discoverySentinelConnection(RedisConnectionSettings* settings, std::vector<ServerDiscoverySentinelInfoSPtr>* infos);
+common::Error testConnection(ConnectionSettings* settings);
+common::Error discoveryClusterConnection(ConnectionSettings* settings, std::vector<ServerDiscoveryClusterInfoSPtr>* infos);
+common::Error discoverySentinelConnection(ConnectionSettings* settings, std::vector<ServerDiscoverySentinelInfoSPtr>* infos);
 
-class IRedisRawOwner {
+class IDBConnectionOwner {
 public:
   virtual bool isInterrupted() const = 0;
   virtual void currentDataBaseChanged(IDataBaseInfo* info) = 0;
 };
 
-struct RedisRaw {
-  explicit RedisRaw(IRedisRawOwner* observer);
-  ~RedisRaw();
+struct DBConnection {
+  explicit DBConnection(IDBConnectionOwner* observer);
+  ~DBConnection();
 
   static const char* versionApi();
   bool isConnected() const;
@@ -486,7 +486,7 @@ private:
 
   redisContext* context_;
   bool isAuth_;
-  IRedisRawOwner* const observer_;
+  IDBConnectionOwner* const observer_;
 };
 
 

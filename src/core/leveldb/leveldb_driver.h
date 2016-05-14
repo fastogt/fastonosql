@@ -21,7 +21,7 @@
 #include <string>
 
 #include "core/idriver.h"
-#include "core/leveldb/leveldb_raw.h"
+#include "core/leveldb/db_connection.h"
 
 namespace fastonosql {
 namespace core {
@@ -70,7 +70,7 @@ class LeveldbDriver
   virtual void handleCommandRequestEvent(events::CommandRequestEvent* ev);
   IServerInfoSPtr makeServerInfoFromString(const std::string& val);
 
-  LeveldbRaw* const impl_;
+  DBConnection* const impl_;
 };
 
 }  // namespace leveldb

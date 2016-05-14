@@ -21,7 +21,7 @@
 #include <vector>
 #include <algorithm>
 
-#include "core/lmdb/lmdb_raw.h"
+#include "core/lmdb/db_connection.h"
 
 namespace fastonosql {
 namespace shell {
@@ -40,7 +40,7 @@ const char* LmdbLexer::language() const {
 }
 
 const char* LmdbLexer::version() const {
-  return core::lmdb::LmdbRaw::versionApi();
+  return core::lmdb::DBConnection::versionApi();
 }
 
 const char* LmdbLexer::basedOn() const {

@@ -26,37 +26,37 @@
 #include "core/redis/redis_cluster.h"
 #include "core/redis/redis_sentinel.h"
 #include "core/redis/redis_server.h"
-#include "core/redis/redis_raw.h"
+#include "core/redis/db_connection.h"
 #endif
 
 #ifdef BUILD_WITH_MEMCACHED
 #include "core/memcached/memcached_server.h"
-#include "core/memcached/memcached_raw.h"
+#include "core/memcached/db_connection.h"
 #endif
 
 #ifdef BUILD_WITH_SSDB
 #include "core/ssdb/ssdb_server.h"
-#include "core/ssdb/ssdb_raw.h"
+#include "core/ssdb/db_connection.h"
 #endif
 
 #ifdef BUILD_WITH_LEVELDB
 #include "core/leveldb/leveldb_server.h"
-#include "core/leveldb/leveldb_raw.h"
+#include "core/leveldb/db_connection.h"
 #endif
 
 #ifdef BUILD_WITH_ROCKSDB
 #include "core/rocksdb/rocksdb_server.h"
-#include "core/rocksdb/rocksdb_raw.h"
+#include "core/rocksdb/db_connection.h"
 #endif
 
 #ifdef BUILD_WITH_UNQLITE
 #include "core/unqlite/unqlite_server.h"
-#include "core/unqlite/unqlite_raw.h"
+#include "core/unqlite/db_connection.h"
 #endif
 
 #ifdef BUILD_WITH_LMDB
 #include "core/lmdb/lmdb_server.h"
-#include "core/lmdb/lmdb_raw.h"
+#include "core/lmdb/db_connection.h"
 #endif
 
 namespace fastonosql {
@@ -183,37 +183,37 @@ common::Error ServersManager::testConnection(IConnectionSettingsBaseSPtr connect
   connectionTypes type = connection->type();
 #ifdef BUILD_WITH_REDIS
   if (type == REDIS) {
-    return fastonosql::core::redis::testConnection(static_cast<redis::RedisConnectionSettings*>(connection.get()));
+    return fastonosql::core::redis::testConnection(static_cast<redis::ConnectionSettings*>(connection.get()));
   }
 #endif
 #ifdef BUILD_WITH_MEMCACHED
   if (type == MEMCACHED) {
-    return fastonosql::core::memcached::testConnection(static_cast<memcached::MemcachedConnectionSettings*>(connection.get()));
+    return fastonosql::core::memcached::testConnection(static_cast<memcached::ConnectionSettings*>(connection.get()));
   }
 #endif
 #ifdef BUILD_WITH_SSDB
   if (type == SSDB) {
-    return fastonosql::core::ssdb::testConnection(static_cast<ssdb::SsdbConnectionSettings*>(connection.get()));
+    return fastonosql::core::ssdb::testConnection(static_cast<ssdb::ConnectionSettings*>(connection.get()));
   }
 #endif
 #ifdef BUILD_WITH_LEVELDB
   if (type == LEVELDB) {
-    return fastonosql::core::leveldb::testConnection(static_cast<leveldb::LeveldbConnectionSettings*>(connection.get()));
+    return fastonosql::core::leveldb::testConnection(static_cast<leveldb::ConnectionSettings*>(connection.get()));
   }
 #endif
 #ifdef BUILD_WITH_ROCKSDB
   if (type == ROCKSDB) {
-    return fastonosql::core::rocksdb::testConnection(static_cast<rocksdb::RocksdbConnectionSettings*>(connection.get()));
+    return fastonosql::core::rocksdb::testConnection(static_cast<rocksdb::ConnectionSettings*>(connection.get()));
   }
 #endif
 #ifdef BUILD_WITH_UNQLITE
   if (type == UNQLITE) {
-    return fastonosql::core::unqlite::testConnection(static_cast<unqlite::UnqliteConnectionSettings*>(connection.get()));
+    return fastonosql::core::unqlite::testConnection(static_cast<unqlite::ConnectionSettings*>(connection.get()));
   }
 #endif
 #ifdef BUILD_WITH_LMDB
   if (type == LMDB) {
-    return fastonosql::core::lmdb::testConnection(static_cast<lmdb::LmdbConnectionSettings*>(connection.get()));
+    return fastonosql::core::lmdb::testConnection(static_cast<lmdb::ConnectionSettings*>(connection.get()));
   }
 #endif
   NOTREACHED();
@@ -229,7 +229,7 @@ common::Error ServersManager::discoveryClusterConnection(IConnectionSettingsBase
   connectionTypes type = connection->type();
 #ifdef BUILD_WITH_REDIS
   if (type == REDIS) {
-    return redis::discoveryClusterConnection(static_cast<redis::RedisConnectionSettings*>(connection.get()), inf);
+    return redis::discoveryClusterConnection(static_cast<redis::ConnectionSettings*>(connection.get()), inf);
   }
 #endif
 #ifdef BUILD_WITH_MEMCACHED
@@ -275,7 +275,7 @@ common::Error ServersManager::discoverySentinelConnection(IConnectionSettingsBas
   connectionTypes type = connection->type();
 #ifdef BUILD_WITH_REDIS
   if (type == REDIS) {
-    return redis::discoverySentinelConnection(static_cast<redis::RedisConnectionSettings*>(connection.get()), inf);
+    return redis::discoverySentinelConnection(static_cast<redis::ConnectionSettings*>(connection.get()), inf);
   }
 #endif
 #ifdef BUILD_WITH_MEMCACHED

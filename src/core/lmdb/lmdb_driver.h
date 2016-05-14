@@ -22,7 +22,7 @@
 
 #include "core/idriver.h"
 
-#include "core/lmdb/lmdb_raw.h"
+#include "core/lmdb/db_connection.h"
 
 namespace fastonosql {
 namespace core {
@@ -71,7 +71,7 @@ class LmdbDriver
   virtual void handleCommandRequestEvent(events::CommandRequestEvent* ev);
   IServerInfoSPtr makeServerInfoFromString(const std::string& val);
 
-  LmdbRaw* const impl_;
+  DBConnection* const impl_;
 };
 
 }  // namespace lmdb

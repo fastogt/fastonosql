@@ -28,10 +28,10 @@ namespace fastonosql {
 namespace core {
 namespace lmdb {
 
-class LmdbConnectionSettings
+class ConnectionSettings
   : public IConnectionSettingsLocal {
  public:
-  explicit LmdbConnectionSettings(const connection_path_t& connectionName);
+  explicit ConnectionSettings(const connection_path_t& connectionName);
 
   virtual std::string dbpath() const;
 
@@ -43,7 +43,7 @@ class LmdbConnectionSettings
 
   virtual std::string fullAddress() const;
 
-  virtual LmdbConnectionSettings* clone() const;
+  virtual ConnectionSettings* clone() const;
 
  private:
   Config info_;

@@ -16,47 +16,49 @@
     along with FastoNoSQL.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-#include "core/leveldb/leveldb_settings.h"
+#include "core/redis/connection_settings.h"
 
 #include <string>
 
+#include "common/utils.h"
+
 namespace fastonosql {
 namespace core {
-namespace leveldb {
+namespace redis {
 
-LeveldbConnectionSettings::LeveldbConnectionSettings(const connection_path_t& connectionName)
-  : IConnectionSettingsLocal(connectionName, LEVELDB), info_() {
+ConnectionSettings::ConnectionSettings(const connection_path_t& connectionName)
+  : IConnectionSettingsRemoteSSH(connectionName, REDIS), info_() {
 }
 
-std::string LeveldbConnectionSettings::dbpath() const {
-  return info_.dbname;
+void ConnectionSettings::setHost(const common::net::hostAndPort& host) {
+  info_.host = host;
 }
 
-std::string LeveldbConnectionSettings::commandLine() const {
-  return common::convertToString(info_);
+common::net::hostAndPort ConnectionSettings::host() const {
+  return info_.host;
 }
 
-void LeveldbConnectionSettings::setCommandLine(const std::string& line) {
+void ConnectionSettings::setCommandLine(const std::string& line) {
   info_ = common::convertFromString<Config>(line);
 }
 
-Config LeveldbConnectionSettings::info() const {
+std::string ConnectionSettings::commandLine() const {
+  return common::convertToString(info_);
+}
+
+Config ConnectionSettings::info() const {
   return info_;
 }
 
-void LeveldbConnectionSettings::setInfo(const Config &info) {
-  info_ = info;
+void ConnectionSettings::setInfo(const Config &info) {
+  info_ =  info;
 }
 
-std::string LeveldbConnectionSettings::fullAddress() const {
-  return info_.dbname;
-}
-
-LeveldbConnectionSettings* LeveldbConnectionSettings::clone() const {
-  LeveldbConnectionSettings* red = new LeveldbConnectionSettings(*this);
+ConnectionSettings* ConnectionSettings::clone() const {
+  ConnectionSettings* red = new ConnectionSettings(*this);
   return red;
 }
 
-}  // namespace leveldb
+}  // namespace redis
 }  // namespace core
 }  // namespace fastonosql

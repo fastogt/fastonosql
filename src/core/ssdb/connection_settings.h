@@ -22,33 +22,32 @@
 
 #include "core/connection_settings.h"
 
-#include "core/rocksdb/config.h"
+#include "core/ssdb/config.h"
 
 namespace fastonosql {
 namespace core {
-namespace rocksdb {
+namespace ssdb {
 
-class RocksdbConnectionSettings
-  : public IConnectionSettingsLocal {
+class ConnectionSettings
+  : public IConnectionSettingsRemote {
  public:
-  explicit RocksdbConnectionSettings(const connection_path_t& connectionName);
-
-  virtual std::string dbpath() const;
+  explicit ConnectionSettings(const connection_path_t& connectionName);
 
   virtual std::string commandLine() const;
   virtual void setCommandLine(const std::string& line);
 
+  virtual void setHost(const common::net::hostAndPort& host);
+  virtual common::net::hostAndPort host() const;
+
   Config info() const;
-  void setInfo(const Config& info);
+  void setInfo(const Config &info);
 
-  virtual std::string fullAddress() const;
-
-  virtual RocksdbConnectionSettings* clone() const;
+  virtual ConnectionSettings* clone() const;
 
  private:
   Config info_;
 };
 
-}  // namespace rocksdb
+}  // namespace ssdb
 }  // namespace core
 }  // namespace fastonosql

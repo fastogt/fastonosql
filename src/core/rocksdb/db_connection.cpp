@@ -16,7 +16,7 @@
     along with FastoNoSQL.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-#include "core/rocksdb/rocksdb_raw.h"
+#include "core/rocksdb/db_connection.h"
 
 #include <vector>
 #include <string>
@@ -35,8 +35,8 @@
 namespace fastonosql {
 namespace core {
 template<>
-common::Error DBAllocatorTraits<rocksdb::RocksDBConnection, rocksdb::Config>::connect(const rocksdb::Config& config, rocksdb::RocksDBConnection** hout) {
-  rocksdb::RocksDBConnection* context = nullptr;
+common::Error ConnectionAllocatorTraits<rocksdb::NativeConnection, rocksdb::Config>::connect(const rocksdb::Config& config, rocksdb::NativeConnection** hout) {
+  rocksdb::NativeConnection* context = nullptr;
   common::Error er = rocksdb::createConnection(config, &context);
   if (er && er->isError()) {
     return er;
@@ -46,12 +46,12 @@ common::Error DBAllocatorTraits<rocksdb::RocksDBConnection, rocksdb::Config>::co
   return common::Error();
 }
 template<>
-common::Error DBAllocatorTraits<rocksdb::RocksDBConnection, rocksdb::Config>::disconnect(rocksdb::RocksDBConnection** handle) {
+common::Error ConnectionAllocatorTraits<rocksdb::NativeConnection, rocksdb::Config>::disconnect(rocksdb::NativeConnection** handle) {
   destroy(handle);
   return common::Error();
 }
 template<>
-bool DBAllocatorTraits<rocksdb::RocksDBConnection, rocksdb::Config>::isConnected(rocksdb::RocksDBConnection* handle) {
+bool ConnectionAllocatorTraits<rocksdb::NativeConnection, rocksdb::Config>::isConnected(rocksdb::NativeConnection* handle) {
   if (!handle) {
     return false;
   }
@@ -60,7 +60,7 @@ bool DBAllocatorTraits<rocksdb::RocksDBConnection, rocksdb::Config>::isConnected
 }
 namespace rocksdb {
 
-common::Error createConnection(const Config& config, RocksDBConnection** context) {
+common::Error createConnection(const Config& config, NativeConnection** context) {
   if (!context) {
     return common::make_error_value("Invalid input argument(s)", common::ErrorValue::E_ERROR);
   }
@@ -77,7 +77,7 @@ common::Error createConnection(const Config& config, RocksDBConnection** context
   return common::Error();
 }
 
-common::Error createConnection(RocksdbConnectionSettings* settings, RocksDBConnection** context) {
+common::Error createConnection(ConnectionSettings* settings, NativeConnection** context) {
   if (!settings) {
     return common::make_error_value("Invalid input argument(s)", common::ErrorValue::E_ERROR);
   }
@@ -86,7 +86,7 @@ common::Error createConnection(RocksdbConnectionSettings* settings, RocksDBConne
   return createConnection(config, context);
 }
 
-common::Error testConnection(RocksdbConnectionSettings* settings) {
+common::Error testConnection(ConnectionSettings* settings) {
   if (!settings) {
     return common::make_error_value("Invalid input argument(s)", common::ErrorValue::E_ERROR);
   }
@@ -101,39 +101,39 @@ common::Error testConnection(RocksdbConnectionSettings* settings) {
   return common::Error();
 }
 
-RocksdbRaw::RocksdbRaw()
+DBConnection::DBConnection()
   : CommandHandler(rocksdbCommands), connection_() {
 }
 
-common::Error RocksdbRaw::connect(const config_t& config) {
+common::Error DBConnection::connect(const config_t& config) {
   return connection_.connect(config);
 }
 
-common::Error RocksdbRaw::disconnect() {
+common::Error DBConnection::disconnect() {
   return connection_.disconnect();
 }
 
-bool RocksdbRaw::isConnected() const {
+bool DBConnection::isConnected() const {
   return connection_.isConnected();
 }
 
-std::string RocksdbRaw::delimiter() const {
+std::string DBConnection::delimiter() const {
   return connection_.config_.delimiter;
 }
 
-std::string RocksdbRaw::nsSeparator() const {
+std::string DBConnection::nsSeparator() const {
   return connection_.config_.ns_separator;
 }
 
-RocksdbRaw::config_t RocksdbRaw::config() const {
+DBConnection::config_t DBConnection::config() const {
   return connection_.config_;
 }
 
-const char* RocksdbRaw::versionApi() {
+const char* DBConnection::versionApi() {
   return STRINGIZE(ROCKSDB_MAJOR) "." STRINGIZE(ROCKSDB_MINOR) "." STRINGIZE(ROCKSDB_PATCH);
 }
 
-common::Error RocksdbRaw::info(const char* args, ServerInfo::Stats* statsout) {
+common::Error DBConnection::info(const char* args, ServerInfo::Stats* statsout) {
   CHECK(isConnected());
 
   if (!statsout) {
@@ -179,7 +179,7 @@ common::Error RocksdbRaw::info(const char* args, ServerInfo::Stats* statsout) {
   return common::Error();
 }
 
-common::Error RocksdbRaw::dbsize(size_t* size) {
+common::Error DBConnection::dbsize(size_t* size) {
   CHECK(isConnected());
 
   if (!size) {
@@ -205,7 +205,7 @@ common::Error RocksdbRaw::dbsize(size_t* size) {
   return common::Error();
 }
 
-std::string RocksdbRaw::currentDbName() const {
+std::string DBConnection::currentDbName() const {
   CHECK(isConnected());
 
   ::rocksdb::ColumnFamilyHandle* fam = connection_.handle_->DefaultColumnFamily();
@@ -216,7 +216,7 @@ std::string RocksdbRaw::currentDbName() const {
   return "default";
 }
 
-common::Error RocksdbRaw::set(const std::string& key, const std::string& value) {
+common::Error DBConnection::set(const std::string& key, const std::string& value) {
   CHECK(isConnected());
 
   ::rocksdb::WriteOptions wo;
@@ -229,7 +229,7 @@ common::Error RocksdbRaw::set(const std::string& key, const std::string& value) 
   return common::Error();
 }
 
-common::Error RocksdbRaw::get(const std::string& key, std::string* ret_val) {
+common::Error DBConnection::get(const std::string& key, std::string* ret_val) {
   CHECK(isConnected());
 
   ::rocksdb::ReadOptions ro;
@@ -242,7 +242,7 @@ common::Error RocksdbRaw::get(const std::string& key, std::string* ret_val) {
   return common::Error();
 }
 
-common::Error RocksdbRaw::mget(const std::vector< ::rocksdb::Slice>& keys, std::vector<std::string>* ret) {
+common::Error DBConnection::mget(const std::vector< ::rocksdb::Slice>& keys, std::vector<std::string>* ret) {
   CHECK(isConnected());
 
   ::rocksdb::ReadOptions ro;
@@ -257,7 +257,7 @@ common::Error RocksdbRaw::mget(const std::vector< ::rocksdb::Slice>& keys, std::
   return common::make_error_value("mget function unknown error", common::ErrorValue::E_ERROR);
 }
 
-common::Error RocksdbRaw::merge(const std::string& key, const std::string& value) {
+common::Error DBConnection::merge(const std::string& key, const std::string& value) {
   CHECK(isConnected());
 
   ::rocksdb::WriteOptions wo;
@@ -270,7 +270,7 @@ common::Error RocksdbRaw::merge(const std::string& key, const std::string& value
   return common::Error();
 }
 
-common::Error RocksdbRaw::del(const std::string& key) {
+common::Error DBConnection::del(const std::string& key) {
   CHECK(isConnected());
 
   ::rocksdb::WriteOptions wo;
@@ -282,7 +282,7 @@ common::Error RocksdbRaw::del(const std::string& key) {
   return common::Error();
 }
 
-common::Error RocksdbRaw::keys(const std::string& key_start, const std::string& key_end,
+common::Error DBConnection::keys(const std::string& key_start, const std::string& key_end,
                    uint64_t limit, std::vector<std::string>* ret) {
   CHECK(isConnected());
 
@@ -307,11 +307,11 @@ common::Error RocksdbRaw::keys(const std::string& key_start, const std::string& 
   return common::Error();
 }
 
-common::Error RocksdbRaw::help(int argc, char** argv) {
+common::Error DBConnection::help(int argc, char** argv) {
   return notSupported("HELP");
 }
 
-common::Error RocksdbRaw::flushdb() {
+common::Error DBConnection::flushdb() {
   CHECK(isConnected());
 
   ::rocksdb::ReadOptions ro;
@@ -338,7 +338,7 @@ common::Error RocksdbRaw::flushdb() {
 }
 
 common::Error info(CommandHandler* handler, int argc, char** argv, FastoObject* out) {
-  RocksdbRaw* rocks = static_cast<RocksdbRaw*>(handler);
+  DBConnection* rocks = static_cast<DBConnection*>(handler);
   ServerInfo::Stats statsout;
   common::Error er = rocks->info(argc == 1 ? argv[0] : nullptr, &statsout);
   if (!er) {
@@ -351,7 +351,7 @@ common::Error info(CommandHandler* handler, int argc, char** argv, FastoObject* 
 }
 
 common::Error dbsize(CommandHandler* handler, int argc, char** argv, FastoObject* out) {
-  RocksdbRaw* rocks = static_cast<RocksdbRaw*>(handler);
+  DBConnection* rocks = static_cast<DBConnection*>(handler);
   size_t dbsize = 0;
   common::Error er = rocks->dbsize(&dbsize);
   if (!er) {
@@ -364,7 +364,7 @@ common::Error dbsize(CommandHandler* handler, int argc, char** argv, FastoObject
 }
 
 common::Error set(CommandHandler* handler, int argc, char** argv, FastoObject* out) {
-  RocksdbRaw* rocks = static_cast<RocksdbRaw*>(handler);
+  DBConnection* rocks = static_cast<DBConnection*>(handler);
   common::Error er = rocks->set(argv[0], argv[1]);
   if (!er) {
     common::StringValue* val = common::Value::createStringValue("STORED");
@@ -376,7 +376,7 @@ common::Error set(CommandHandler* handler, int argc, char** argv, FastoObject* o
 }
 
 common::Error get(CommandHandler* handler, int argc, char** argv, FastoObject* out) {
-  RocksdbRaw* rocks = static_cast<RocksdbRaw*>(handler);
+  DBConnection* rocks = static_cast<DBConnection*>(handler);
   std::string ret;
   common::Error er = rocks->get(argv[0], &ret);
   if (!er) {
@@ -389,7 +389,7 @@ common::Error get(CommandHandler* handler, int argc, char** argv, FastoObject* o
 }
 
 common::Error mget(CommandHandler* handler, int argc, char** argv, FastoObject* out) {
-  RocksdbRaw* rocks = static_cast<RocksdbRaw*>(handler);
+  DBConnection* rocks = static_cast<DBConnection*>(handler);
   std::vector< ::rocksdb::Slice> keysget;
   for (size_t i = 0; i < argc; ++i) {
     keysget.push_back(argv[i]);
@@ -411,7 +411,7 @@ common::Error mget(CommandHandler* handler, int argc, char** argv, FastoObject* 
 }
 
 common::Error merge(CommandHandler* handler, int argc, char** argv, FastoObject* out) {
-  RocksdbRaw* rocks = static_cast<RocksdbRaw*>(handler);
+  DBConnection* rocks = static_cast<DBConnection*>(handler);
   common::Error er = rocks->merge(argv[0], argv[1]);
   if (!er) {
     common::StringValue* val = common::Value::createStringValue("STORED");
@@ -423,7 +423,7 @@ common::Error merge(CommandHandler* handler, int argc, char** argv, FastoObject*
 }
 
 common::Error del(CommandHandler* handler, int argc, char** argv, FastoObject* out) {
-  RocksdbRaw* rocks = static_cast<RocksdbRaw*>(handler);
+  DBConnection* rocks = static_cast<DBConnection*>(handler);
   common::Error er = rocks->del(argv[0]);
   if (!er) {
     common::StringValue* val = common::Value::createStringValue("DELETED");
@@ -435,7 +435,7 @@ common::Error del(CommandHandler* handler, int argc, char** argv, FastoObject* o
 }
 
 common::Error keys(CommandHandler* handler, int argc, char** argv, FastoObject* out) {
-  RocksdbRaw* rocks = static_cast<RocksdbRaw*>(handler);
+  DBConnection* rocks = static_cast<DBConnection*>(handler);
   std::vector<std::string> keysout;
   common::Error er = rocks->keys(argv[0], argv[1], atoll(argv[2]), &keysout);
   if (!er) {
@@ -452,12 +452,12 @@ common::Error keys(CommandHandler* handler, int argc, char** argv, FastoObject* 
 }
 
 common::Error help(CommandHandler* handler, int argc, char** argv, FastoObject* out) {
-  RocksdbRaw* rocks = static_cast<RocksdbRaw*>(handler);
+  DBConnection* rocks = static_cast<DBConnection*>(handler);
   return rocks->help(argc - 1, argv + 1);
 }
 
 common::Error flushdb(CommandHandler* handler, int argc, char** argv, FastoObject* out) {
-  RocksdbRaw* rocks = static_cast<RocksdbRaw*>(handler);
+  DBConnection* rocks = static_cast<DBConnection*>(handler);
   return rocks->flushdb();
 }
 

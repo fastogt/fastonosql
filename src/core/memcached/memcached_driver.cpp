@@ -39,7 +39,7 @@ namespace core {
 namespace memcached {
 
 MemcachedDriver::MemcachedDriver(IConnectionSettingsBaseSPtr settings)
-  : IDriverRemote(settings), impl_(new MemcachedRaw) {
+  : IDriverRemote(settings), impl_(new DBConnection) {
   CHECK(type() == MEMCACHED);
 }
 
@@ -126,7 +126,7 @@ void MemcachedDriver::handleConnectEvent(events::ConnectRequestEvent* ev) {
   QObject* sender = ev->sender();
   notifyProgress(sender, 0);
   events::ConnectResponceEvent::value_type res(ev->value());
-  MemcachedConnectionSettings* set = dynamic_cast<MemcachedConnectionSettings*>(settings_.get());  // +
+  ConnectionSettings* set = dynamic_cast<ConnectionSettings*>(settings_.get());  // +
   CHECK(set);
   notifyProgress(sender, 25);
   common::Error er = impl_->connect(set->info());

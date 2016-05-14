@@ -29,33 +29,33 @@
 #include "core/settings_manager.h"
 
 #ifdef BUILD_WITH_REDIS
-#include "core/redis/redis_settings.h"
+#include "core/redis/connection_settings.h"
 #include "core/redis/redis_cluster_settings.h"
 #include "core/redis/redis_sentinel_settings.h"
 #define LOGGING_REDIS_FILE_EXTENSION ".red"
 #endif
 #ifdef BUILD_WITH_MEMCACHED
-#include "core/memcached/memcached_settings.h"
+#include "core/memcached/connection_settings.h"
 #define LOGGING_MEMCACHED_FILE_EXTENSION ".mem"
 #endif
 #ifdef BUILD_WITH_SSDB
-#include "core/ssdb/ssdb_settings.h"
+#include "core/ssdb/connection_settings.h"
 #define LOGGING_SSDB_FILE_EXTENSION ".ssdb"
 #endif
 #ifdef BUILD_WITH_LEVELDB
-#include "core/leveldb/leveldb_settings.h"
+#include "core/leveldb/connection_settings.h"
 #define LOGGING_LEVELDB_FILE_EXTENSION ".leveldb"
 #endif
 #ifdef BUILD_WITH_ROCKSDB
-#include "core/rocksdb/rocksdb_settings.h"
+#include "core/rocksdb/connection_settings.h"
 #define LOGGING_ROCKSDB_FILE_EXTENSION ".rocksdb"
 #endif
 #ifdef BUILD_WITH_UNQLITE
-#include "core/unqlite/unqlite_settings.h"
+#include "core/unqlite/connection_settings.h"
 #define LOGGING_UNQLITE_FILE_EXTENSION ".unq"
 #endif
 #ifdef BUILD_WITH_LMDB
-#include "core/lmdb/lmdb_settings.h"
+#include "core/lmdb/connection_settings.h"
 #define LOGGING_LMDB_FILE_EXTENSION ".lmdb"
 #endif
 
@@ -196,37 +196,37 @@ IConnectionSettingsBase* IConnectionSettingsBase::createFromType(connectionTypes
                                                                  const connection_path_t& conName) {
 #ifdef BUILD_WITH_REDIS
   if (type == REDIS) {
-    return new redis::RedisConnectionSettings(conName);
+    return new redis::ConnectionSettings(conName);
   }
 #endif
 #ifdef BUILD_WITH_MEMCACHED
   if (type == MEMCACHED) {
-    return new memcached::MemcachedConnectionSettings(conName);
+    return new memcached::ConnectionSettings(conName);
   }
 #endif
 #ifdef BUILD_WITH_SSDB
   if (type == SSDB) {
-    return new ssdb::SsdbConnectionSettings(conName);
+    return new ssdb::ConnectionSettings(conName);
   }
 #endif
 #ifdef BUILD_WITH_LEVELDB
   if (type == LEVELDB) {
-    return new leveldb::LeveldbConnectionSettings(conName);
+    return new leveldb::ConnectionSettings(conName);
   }
 #endif
 #ifdef BUILD_WITH_ROCKSDB
   if (type == ROCKSDB) {
-    return new rocksdb::RocksdbConnectionSettings(conName);
+    return new rocksdb::ConnectionSettings(conName);
   }
 #endif
 #ifdef BUILD_WITH_UNQLITE
   if (type == UNQLITE) {
-    return new unqlite::UnqliteConnectionSettings(conName);
+    return new unqlite::ConnectionSettings(conName);
   }
 #endif
 #ifdef BUILD_WITH_LMDB
   if (type == LMDB) {
-    return new lmdb::LmdbConnectionSettings(conName);
+    return new lmdb::ConnectionSettings(conName);
   }
 #endif
 
@@ -323,17 +323,17 @@ IConnectionSettingsRemote* IConnectionSettingsRemote::createFromType(connectionT
   IConnectionSettingsRemote* remote = nullptr;
 #ifdef BUILD_WITH_REDIS
   if (type == REDIS) {
-    remote = new redis::RedisConnectionSettings(conName);
+    remote = new redis::ConnectionSettings(conName);
   }
 #endif
 #ifdef BUILD_WITH_MEMCACHED
   if (type == MEMCACHED) {
-    remote = new memcached::MemcachedConnectionSettings(conName);
+    remote = new memcached::ConnectionSettings(conName);
   }
 #endif
 #ifdef BUILD_WITH_SSDB
   if (type == SSDB) {
-    remote = new ssdb::SsdbConnectionSettings(conName);
+    remote = new ssdb::ConnectionSettings(conName);
   }
 #endif
   if (!remote) {
@@ -356,7 +356,7 @@ IConnectionSettingsRemoteSSH* IConnectionSettingsRemoteSSH::createFromType(conne
   IConnectionSettingsRemoteSSH* remote = nullptr;
 #ifdef BUILD_WITH_REDIS
   if (type == REDIS) {
-    remote = new redis::RedisConnectionSettings(conName);
+    remote = new redis::ConnectionSettings(conName);
   }
 #endif
   if (!remote) {

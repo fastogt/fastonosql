@@ -23,9 +23,9 @@
 #include <string>
 
 #include "core/command_handler.h"
-#include "core/db_connection.h"
+#include "core/connection.h"
 
-#include "core/memcached/memcached_settings.h"
+#include "core/memcached/connection_settings.h"
 #include "core/memcached/config.h"
 #include "core/memcached/server_info.h"
 
@@ -33,19 +33,19 @@ namespace fastonosql {
 namespace core {
 namespace memcached {
 
-typedef memcached_st MemcachedConnection;
-typedef DBAllocatorTraits<MemcachedConnection, Config> MemcachedAllocTrait;
+typedef memcached_st NativeConnection;
 
-common::Error createConnection(const Config& config, MemcachedConnection** context);
-common::Error createConnection(MemcachedConnectionSettings* settings, MemcachedConnection** context);
-common::Error testConnection(MemcachedConnectionSettings* settings);
+common::Error createConnection(const Config& config, NativeConnection** context);
+common::Error createConnection(ConnectionSettings* settings, NativeConnection** context);
+common::Error testConnection(ConnectionSettings* settings);
 
-struct MemcachedRaw
+struct DBConnection
   : public CommandHandler {
  public:
-  typedef DBConnection<MemcachedAllocTrait> connection_t;
+  typedef ConnectionAllocatorTraits<NativeConnection, Config> ConnectionAllocatorTrait;
+  typedef Connection<ConnectionAllocatorTrait> connection_t;
   typedef connection_t::config_t config_t;
-  MemcachedRaw();
+  DBConnection();
 
   common::Error connect(const config_t& config) WARN_UNUSED_RESULT;
   common::Error disconnect() WARN_UNUSED_RESULT;

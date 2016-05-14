@@ -42,7 +42,7 @@ namespace core {
 namespace leveldb {
 
 LeveldbDriver::LeveldbDriver(IConnectionSettingsBaseSPtr settings)
-  : IDriverLocal(settings), impl_(new LeveldbRaw) {
+  : IDriverLocal(settings), impl_(new DBConnection) {
   CHECK(type() == LEVELDB);
 }
 
@@ -180,7 +180,7 @@ void LeveldbDriver::handleConnectEvent(events::ConnectRequestEvent* ev) {
   QObject* sender = ev->sender();
   notifyProgress(sender, 0);
   events::ConnectResponceEvent::value_type res(ev->value());
-  LeveldbConnectionSettings* set = dynamic_cast<LeveldbConnectionSettings*>(settings_.get());  // +
+  ConnectionSettings* set = dynamic_cast<ConnectionSettings*>(settings_.get());  // +
   CHECK(set);
   notifyProgress(sender, 25);
   common::Error er = impl_->connect(set->info());

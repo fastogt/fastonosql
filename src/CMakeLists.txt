@@ -115,7 +115,7 @@ SET(HEADERS_CORE
     core/command_handler.h
     core/command_key.h
     core/db_key.h
-    core/db_connection.h
+    core/connection.h
     core/server_property_info.h
     core/ssh_info.h
 )
@@ -136,7 +136,7 @@ SET(SOURCES_CORE
     core/command_handler.cpp
     core/command_key.cpp
     core/db_key.cpp
-    core/db_connection.cpp
+    core/connection.cpp
     core/server_property_info.cpp
     core/ssh_info.cpp
 )
@@ -211,30 +211,30 @@ IF(BUILD_WITH_REDIS)
         core/redis/database.h
         core/redis/command.h
         core/redis/server_info.h
+        core/redis/connection_settings.h
+        core/redis/db_connection.h
 
-        core/redis/redis_raw.h
         core/redis/redis_sentinel_info.h
-        core/redis/redis_cluster_infos.h
-        core/redis/redis_settings.h
-        core/redis/redis_cluster_settings.h
         core/redis/redis_sentinel_settings.h
+        core/redis/redis_cluster_infos.h
+        core/redis/redis_cluster_settings.h
     )
     SET(SOURCES_REDIS
         core/redis/config.cpp
         core/redis/database.cpp
         core/redis/command.cpp
         core/redis/server_info.cpp
+        core/redis/connection_settings.cpp
+        core/redis/db_connection.cpp
 
-        core/redis/redis_raw.cpp
-        core/redis/redis_sentinel_info.cpp
-        core/redis/redis_cluster_infos.cpp
-        core/redis/redis_cluster.cpp
-        core/redis/redis_sentinel.cpp
         core/redis/redis_server.cpp
         core/redis/redis_driver.cpp
-        core/redis/redis_settings.cpp
-        core/redis/redis_cluster_settings.cpp
+        core/redis/redis_sentinel_info.cpp
+        core/redis/redis_sentinel.cpp
         core/redis/redis_sentinel_settings.cpp
+        core/redis/redis_cluster_infos.cpp
+        core/redis/redis_cluster.cpp
+        core/redis/redis_cluster_settings.cpp
     )
     SET(OBJECT_LIBS ${OBJECT_LIBS} $<TARGET_OBJECTS:hiredis> $<TARGET_OBJECTS:libssh2>)
 ENDIF(BUILD_WITH_REDIS)
@@ -268,20 +268,19 @@ IF(BUILD_WITH_MEMCACHED)
         core/memcached/database.h
         core/memcached/command.h
         core/memcached/server_info.h
-
-        core/memcached/memcached_raw.h
-        core/memcached/memcached_settings.h
+        core/memcached/connection_settings.h
+        core/memcached/db_connection.h
     )
     SET(SOURCES_MEMCACHED
         core/memcached/config.cpp
         core/memcached/database.cpp
         core/memcached/command.cpp
         core/memcached/server_info.cpp
+        core/memcached/connection_settings.cpp
+        core/memcached/db_connection.cpp
 
-        core/memcached/memcached_raw.cpp
         core/memcached/memcached_server.cpp
         core/memcached/memcached_driver.cpp
-        core/memcached/memcached_settings.cpp
     )
     SET(OBJECT_LIBS ${OBJECT_LIBS} $<TARGET_OBJECTS:libmemcached>)
 ENDIF(BUILD_WITH_MEMCACHED)
@@ -309,20 +308,19 @@ IF(BUILD_WITH_SSDB)
         core/ssdb/database.h
         core/ssdb/command.h
         core/ssdb/server_info.h
-
-        core/ssdb/ssdb_raw.h
-        core/ssdb/ssdb_settings.h
+        core/ssdb/connection_settings.h
+        core/ssdb/db_connection.h
     )
     SET(SOURCES_SSDB
         core/ssdb/config.cpp
         core/ssdb/database.cpp
         core/ssdb/command.cpp
         core/ssdb/server_info.cpp
+        core/ssdb/connection_settings.cpp
+        core/ssdb/db_connection.cpp
 
-        core/ssdb/ssdb_raw.cpp
         core/ssdb/ssdb_server.cpp
         core/ssdb/ssdb_driver.cpp
-        core/ssdb/ssdb_settings.cpp
     )
     SET(OBJECT_LIBS ${OBJECT_LIBS} $<TARGET_OBJECTS:ssdb>)
 ENDIF(BUILD_WITH_SSDB)
@@ -350,20 +348,19 @@ IF(BUILD_WITH_LEVELDB)
         core/leveldb/database.h
         core/leveldb/command.h
         core/leveldb/server_info.h
-
-        core/leveldb/leveldb_raw.h
-        core/leveldb/leveldb_settings.h
+        core/leveldb/connection_settings.h
+        core/leveldb/db_connection.h
     )
     SET(SOURCES_LEVELDB
         core/leveldb/config.cpp
         core/leveldb/database.cpp
         core/leveldb/command.cpp
         core/leveldb/server_info.cpp
+        core/leveldb/connection_settings.cpp
+        core/leveldb/db_connection.cpp
 
-        core/leveldb/leveldb_raw.cpp
         core/leveldb/leveldb_server.cpp
         core/leveldb/leveldb_driver.cpp
-        core/leveldb/leveldb_settings.cpp
     )
     SET(OBJECT_LIBS ${OBJECT_LIBS} $<TARGET_OBJECTS:leveldb>)
 ENDIF(BUILD_WITH_LEVELDB)
@@ -391,20 +388,19 @@ IF(BUILD_WITH_ROCKSDB)
         core/rocksdb/database.h
         core/rocksdb/command.h
         core/rocksdb/server_info.h
-
-        core/rocksdb/rocksdb_raw.h
-        core/rocksdb/rocksdb_settings.h
+        core/rocksdb/connection_settings.h
+        core/rocksdb/db_connection.h
     )
     SET(SOURCES_ROCKSDB
         core/rocksdb/config.cpp
         core/rocksdb/database.cpp
         core/rocksdb/command.cpp
         core/rocksdb/server_info.cpp
+        core/rocksdb/connection_settings.cpp
+        core/rocksdb/db_connection.cpp
 
-        core/rocksdb/rocksdb_raw.cpp
         core/rocksdb/rocksdb_server.cpp
         core/rocksdb/rocksdb_driver.cpp
-        core/rocksdb/rocksdb_settings.cpp
     )
     SET(OBJECT_LIBS ${OBJECT_LIBS} $<TARGET_OBJECTS:rocksdb>)
 ENDIF(BUILD_WITH_ROCKSDB)
@@ -432,20 +428,19 @@ IF(BUILD_WITH_UNQLITE)
         core/unqlite/database.h
         core/unqlite/command.h
         core/unqlite/server_info.h
-
-        core/unqlite/unqlite_raw.h
-        core/unqlite/unqlite_settings.h
+        core/unqlite/connection_settings.h
+        core/unqlite/db_connection.h
     )
     SET(SOURCES_UNQLITE
         core/unqlite/config.cpp
         core/unqlite/database.cpp
         core/unqlite/command.cpp
         core/unqlite/server_info.cpp
+        core/unqlite/connection_settings.cpp
+        core/unqlite/db_connection.cpp
 
-        core/unqlite/unqlite_raw.cpp
         core/unqlite/unqlite_server.cpp
         core/unqlite/unqlite_driver.cpp
-        core/unqlite/unqlite_settings.cpp
     )
     SET(OBJECT_LIBS ${OBJECT_LIBS} $<TARGET_OBJECTS:unqlite>)
 ENDIF(BUILD_WITH_UNQLITE)
@@ -473,20 +468,19 @@ IF(BUILD_WITH_LMDB)
         core/lmdb/database.h
         core/lmdb/command.h
         core/lmdb/server_info.h
-
-        core/lmdb/lmdb_raw.h
-        core/lmdb/lmdb_settings.h
+        core/lmdb/connection_settings.h
+        core/lmdb/db_connection.h
     )
     SET(SOURCES_LMDB
         core/lmdb/config.cpp
         core/lmdb/database.cpp
         core/lmdb/command.cpp
         core/lmdb/server_info.cpp
+        core/lmdb/connection_settings.cpp
+        core/lmdb/db_connection.cpp
 
-        core/lmdb/lmdb_raw.cpp
         core/lmdb/lmdb_server.cpp
         core/lmdb/lmdb_driver.cpp
-        core/lmdb/lmdb_settings.cpp
     )
     SET(OBJECT_LIBS ${OBJECT_LIBS} $<TARGET_OBJECTS:lmdb>)
 ENDIF(BUILD_WITH_LMDB)

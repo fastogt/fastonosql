@@ -19,35 +19,39 @@
 #pragma once
 
 extern "C" {
-  #include <unqlite.h>
+  #include <lmdb.h>
 }
 
 #include <string>
 
+#include "core/connection.h"
 #include "core/command_handler.h"
-#include "core/db_connection.h"
 
-#include "core/unqlite/unqlite_settings.h"
-#include "core/unqlite/config.h"
-#include "core/unqlite/server_info.h"
+#include "core/lmdb/connection_settings.h"
+#include "core/lmdb/config.h"
+#include "core/lmdb/server_info.h"
 
 namespace fastonosql {
 namespace core {
-namespace unqlite {
+namespace lmdb {
 
-typedef struct unqlite UnQLiteConnection;
-typedef DBAllocatorTraits<UnQLiteConnection, Config> UnQLiteAllocTrait;
+struct lmdb {
+  MDB_env* env;
+  MDB_dbi dbir;
+};
 
-common::Error createConnection(const Config& config, UnQLiteConnection** context);
-common::Error createConnection(UnqliteConnectionSettings* settings, UnQLiteConnection** context);
-common::Error testConnection(UnqliteConnectionSettings* settings);
+typedef lmdb NativeConnection;
 
-class UnqliteRaw
+common::Error createConnection(const Config& config, NativeConnection** context);
+common::Error createConnection(ConnectionSettings* settings, NativeConnection** context);
+common::Error testConnection(ConnectionSettings* settings);
+
+struct DBConnection
   : public CommandHandler {
- public:
-  typedef DBConnection<UnQLiteAllocTrait> connection_t;
+  typedef ConnectionAllocatorTraits<NativeConnection, Config> ConnectionAllocatorTrait;
+  typedef Connection<ConnectionAllocatorTrait> connection_t;
   typedef connection_t::config_t config_t;
-  UnqliteRaw();
+  DBConnection();
 
   common::Error connect(const config_t& config) WARN_UNUSED_RESULT;
   common::Error disconnect() WARN_UNUSED_RESULT;
@@ -59,12 +63,14 @@ class UnqliteRaw
 
   static const char* versionApi();
 
+  MDB_dbi curDb() const;
+
   common::Error info(const char* args, ServerInfo::Stats* statsout) WARN_UNUSED_RESULT;
   common::Error set(const std::string& key, const std::string& value) WARN_UNUSED_RESULT;
   common::Error get(const std::string& key, std::string* ret_val) WARN_UNUSED_RESULT;
   common::Error del(const std::string& key) WARN_UNUSED_RESULT;
-  common::Error keys(const std::string& key_start, const std::string& key_end,
-                     uint64_t limit, std::vector<std::string>* ret) WARN_UNUSED_RESULT;
+  common::Error keys(const std::string& key_start, const std::string& key_end, uint64_t limit,
+                     std::vector<std::string>* ret) WARN_UNUSED_RESULT;
 
   // extended api
   common::Error dbsize(size_t* size) WARN_UNUSED_RESULT;
@@ -85,7 +91,7 @@ common::Error dbsize(CommandHandler* handler, int argc, char** argv, FastoObject
 common::Error help(CommandHandler* handler, int argc, char** argv, FastoObject* out);
 common::Error flushdb(CommandHandler* handler, int argc, char** argv, FastoObject* out);
 
-static const std::vector<CommandHolder> unqliteCommands = {
+static const std::vector<CommandHolder> lmdbCommands = {
   CommandHolder("SET", "<key> <value>",
               "Set the value of a key.",
               UNDEFINED_SINCE, UNDEFINED_EXAMPLE_STR, 2, 0, &set),
@@ -102,6 +108,7 @@ static const std::vector<CommandHolder> unqliteCommands = {
               "These command return database information.",
               UNDEFINED_SINCE, UNDEFINED_EXAMPLE_STR, 1, 0, &info),
 
+  // extended commands
   CommandHolder("DBSIZE", "-",
               "Return the number of keys in the selected database",
               UNDEFINED_SINCE, UNDEFINED_EXAMPLE_STR, 0, 0, &dbsize),
@@ -113,6 +120,6 @@ static const std::vector<CommandHolder> unqliteCommands = {
               UNDEFINED_SINCE, UNDEFINED_EXAMPLE_STR, 0, 1, &flushdb)
 };
 
-}  // namespace unqlite
+}  // namespace lmdb
 }  // namespace core
 }  // namespace fastonosql

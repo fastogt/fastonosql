@@ -41,7 +41,7 @@ namespace core {
 namespace unqlite {
 
 UnqliteDriver::UnqliteDriver(IConnectionSettingsBaseSPtr settings)
-  : IDriverLocal(settings), impl_(new UnqliteRaw) {
+  : IDriverLocal(settings), impl_(new DBConnection) {
   CHECK(type() == UNQLITE);
 }
 
@@ -179,7 +179,7 @@ void UnqliteDriver::handleConnectEvent(events::ConnectRequestEvent* ev) {
   QObject* sender = ev->sender();
   notifyProgress(sender, 0);
   events::ConnectResponceEvent::value_type res(ev->value());
-  UnqliteConnectionSettings* set = dynamic_cast<UnqliteConnectionSettings*>(settings_.get());  // +
+  ConnectionSettings* set = dynamic_cast<ConnectionSettings*>(settings_.get());  // +
   CHECK(set);
   notifyProgress(sender, 25);
   common::Error er = impl_->connect(set->info());

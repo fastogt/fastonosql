@@ -94,7 +94,7 @@ Command* createCommandFast(const std::string& input, common::Value::CommandLoggi
 }
 
 RedisDriver::RedisDriver(IConnectionSettingsBaseSPtr settings)
-  : IDriverRemote(settings), impl_(new RedisRaw(this)) {
+  : IDriverRemote(settings), impl_(new DBConnection(this)) {
   CHECK(type() == REDIS);
 }
 
@@ -218,7 +218,7 @@ void RedisDriver::handleConnectEvent(events::ConnectRequestEvent* ev) {
   QObject* sender = ev->sender();
   notifyProgress(sender, 0);
   events::ConnectResponceEvent::value_type res(ev->value());
-  RedisConnectionSettings* set = dynamic_cast<RedisConnectionSettings*>(settings_.get());  // +
+  ConnectionSettings* set = dynamic_cast<ConnectionSettings*>(settings_.get());  // +
   CHECK(set);
   impl_->config_ = set->info();
   impl_->sinfo_ = set->sshInfo();

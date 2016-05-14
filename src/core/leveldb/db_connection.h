@@ -23,9 +23,9 @@
 #include <leveldb/db.h>
 
 #include "core/command_handler.h"
-#include "core/db_connection.h"
+#include "core/connection.h"
 
-#include "core/leveldb/leveldb_settings.h"
+#include "core/leveldb/connection_settings.h"
 #include "core/leveldb/config.h"
 #include "core/leveldb/server_info.h"
 
@@ -33,19 +33,19 @@ namespace fastonosql {
 namespace core {
 namespace leveldb {
 
-typedef ::leveldb::DB LevelDBConnection;
-typedef DBAllocatorTraits<LevelDBConnection, Config> LeveldbAllocTrait;
+typedef ::leveldb::DB NativeConnection;
 
-common::Error createConnection(const Config& config, LevelDBConnection** context);
-common::Error createConnection(LeveldbConnectionSettings* settings, LevelDBConnection** context);
-common::Error testConnection(LeveldbConnectionSettings* settings);
+common::Error createConnection(const Config& config, NativeConnection** context);
+common::Error createConnection(ConnectionSettings* settings, NativeConnection** context);
+common::Error testConnection(ConnectionSettings* settings);
 
-class LeveldbRaw
+class DBConnection
   : public CommandHandler {
  public:
-  typedef DBConnection<LeveldbAllocTrait> connection_t;
+  typedef ConnectionAllocatorTraits<NativeConnection, Config> ConnectionAllocatorTrait;
+  typedef Connection<ConnectionAllocatorTrait> connection_t;
   typedef connection_t::config_t config_t;
-  LeveldbRaw();
+  DBConnection();
 
   common::Error connect(const config_t& config) WARN_UNUSED_RESULT;
   common::Error disconnect() WARN_UNUSED_RESULT;

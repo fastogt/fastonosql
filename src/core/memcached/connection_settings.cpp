@@ -16,47 +16,49 @@
     along with FastoNoSQL.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-#include "core/unqlite/unqlite_settings.h"
+#include "core/memcached/connection_settings.h"
 
 #include <string>
 
+#include "common/utils.h"
+
 namespace fastonosql {
 namespace core {
-namespace unqlite {
+namespace memcached {
 
-UnqliteConnectionSettings::UnqliteConnectionSettings(const connection_path_t& connectionName)
-  : IConnectionSettingsLocal(connectionName, UNQLITE), info_() {
+ConnectionSettings::ConnectionSettings(const connection_path_t& connectionName)
+  : IConnectionSettingsRemote(connectionName, MEMCACHED), info_() {
 }
 
-std::string UnqliteConnectionSettings::dbpath() const {
-  return info_.dbname;
-}
-
-std::string UnqliteConnectionSettings::commandLine() const {
+std::string ConnectionSettings::commandLine() const {
   return common::convertToString(info_);
 }
 
-void UnqliteConnectionSettings::setCommandLine(const std::string& line) {
+void ConnectionSettings::setCommandLine(const std::string& line) {
   info_ = common::convertFromString<Config>(line);
 }
 
-Config UnqliteConnectionSettings::info() const {
+void ConnectionSettings::setHost(const common::net::hostAndPort& host) {
+  info_.host = host;
+}
+
+common::net::hostAndPort ConnectionSettings::host() const {
+  return info_.host;
+}
+
+Config ConnectionSettings::info() const {
   return info_;
 }
 
-void UnqliteConnectionSettings::setInfo(const Config &info) {
+void ConnectionSettings::setInfo(const Config &info) {
   info_ = info;
 }
 
-std::string UnqliteConnectionSettings::fullAddress() const {
-  return info_.dbname;
-}
-
-UnqliteConnectionSettings* UnqliteConnectionSettings::clone() const {
-  UnqliteConnectionSettings* red = new UnqliteConnectionSettings(*this);
+ConnectionSettings* ConnectionSettings::clone() const {
+  ConnectionSettings* red = new ConnectionSettings(*this);
   return red;
 }
 
-}  // namespace unqlite
+}  // namespace memcached
 }  // namespace core
 }  // namespace fastonosql

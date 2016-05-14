@@ -16,7 +16,7 @@
     along with FastoNoSQL.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-#include "core/unqlite/unqlite_raw.h"
+#include "core/unqlite/db_connection.h"
 
 #include <string>
 #include <vector>
@@ -98,8 +98,8 @@ int unqlite_data_callback(const void* pData, unsigned int nDatalen, void* str) {
 namespace fastonosql {
 namespace core {
 template<>
-common::Error DBAllocatorTraits<unqlite::UnQLiteConnection, unqlite::Config>::connect(const unqlite::Config& config, unqlite::UnQLiteConnection** hout) {
-  unqlite::UnQLiteConnection* context = nullptr;
+common::Error ConnectionAllocatorTraits<unqlite::NativeConnection, unqlite::Config>::connect(const unqlite::Config& config, unqlite::NativeConnection** hout) {
+  unqlite::NativeConnection* context = nullptr;
   common::Error er = unqlite::createConnection(config, &context);
   if (er && er->isError()) {
     return er;
@@ -109,13 +109,13 @@ common::Error DBAllocatorTraits<unqlite::UnQLiteConnection, unqlite::Config>::co
   return common::Error();
 }
 template<>
-common::Error DBAllocatorTraits<unqlite::UnQLiteConnection, unqlite::Config>::disconnect(unqlite::UnQLiteConnection** handle) {
+common::Error ConnectionAllocatorTraits<unqlite::NativeConnection, unqlite::Config>::disconnect(unqlite::NativeConnection** handle) {
   unqlite_close(*handle);
   *handle = nullptr;
   return common::Error();
 }
 template<>
-bool DBAllocatorTraits<unqlite::UnQLiteConnection, unqlite::Config>::isConnected(unqlite::UnQLiteConnection* handle) {
+bool ConnectionAllocatorTraits<unqlite::NativeConnection, unqlite::Config>::isConnected(unqlite::NativeConnection* handle) {
   if (!handle) {
     return false;
   }
@@ -124,7 +124,7 @@ bool DBAllocatorTraits<unqlite::UnQLiteConnection, unqlite::Config>::isConnected
 }
 namespace unqlite {
 
-common::Error createConnection(const Config& config, UnQLiteConnection** context) {
+common::Error createConnection(const Config& config, NativeConnection** context) {
   if (!context) {
     return common::make_error_value("Invalid input argument(s)", common::ErrorValue::E_ERROR);
   }
@@ -143,7 +143,7 @@ common::Error createConnection(const Config& config, UnQLiteConnection** context
   return common::Error();
 }
 
-common::Error createConnection(UnqliteConnectionSettings* settings, UnQLiteConnection **context) {
+common::Error createConnection(ConnectionSettings* settings, NativeConnection **context) {
   if (!settings) {
     return common::make_error_value("Invalid input argument(s)", common::ErrorValue::E_ERROR);
   }
@@ -152,7 +152,7 @@ common::Error createConnection(UnqliteConnectionSettings* settings, UnQLiteConne
   return createConnection(config, context);
 }
 
-common::Error testConnection(UnqliteConnectionSettings* settings) {
+common::Error testConnection(ConnectionSettings* settings) {
   if (!settings) {
     return common::make_error_value("Invalid input argument(s)", common::ErrorValue::E_ERROR);
   }
@@ -167,11 +167,11 @@ common::Error testConnection(UnqliteConnectionSettings* settings) {
   return common::Error();
 }
 
-UnqliteRaw::UnqliteRaw()
+DBConnection::DBConnection()
   : CommandHandler(unqliteCommands), connection_() {
 }
 
-common::Error UnqliteRaw::info(const char* args, ServerInfo::Stats* statsout) {
+common::Error DBConnection::info(const char* args, ServerInfo::Stats* statsout) {
   CHECK(isConnected());
 
   if (!statsout) {
@@ -185,7 +185,7 @@ common::Error UnqliteRaw::info(const char* args, ServerInfo::Stats* statsout) {
   return common::Error();
 }
 
-common::Error UnqliteRaw::dbsize(size_t* size) {
+common::Error DBConnection::dbsize(size_t* size) {
   CHECK(isConnected());
 
   if (!size) {
@@ -216,35 +216,35 @@ common::Error UnqliteRaw::dbsize(size_t* size) {
   return common::Error();
 }
 
-common::Error UnqliteRaw::connect(const config_t& config) {
+common::Error DBConnection::connect(const config_t& config) {
   return connection_.connect(config);
 }
 
-common::Error UnqliteRaw::disconnect() {
+common::Error DBConnection::disconnect() {
   return connection_.disconnect();
 }
 
-bool UnqliteRaw::isConnected() const {
+bool DBConnection::isConnected() const {
   return connection_.isConnected();
 }
 
-std::string UnqliteRaw::delimiter() const {
+std::string DBConnection::delimiter() const {
   return connection_.config_.delimiter;
 }
 
-std::string UnqliteRaw::nsSeparator() const {
+std::string DBConnection::nsSeparator() const {
   return connection_.config_.ns_separator;
 }
 
-UnqliteRaw::config_t UnqliteRaw::config() const {
+DBConnection::config_t DBConnection::config() const {
   return connection_.config_;
 }
 
-const char* UnqliteRaw::versionApi() {
+const char* DBConnection::versionApi() {
   return UNQLITE_VERSION;
 }
 
-common::Error UnqliteRaw::set(const std::string& key, const std::string& value) {
+common::Error DBConnection::set(const std::string& key, const std::string& value) {
   CHECK(isConnected());
 
   int rc = unqlite_kv_store(connection_.handle_, key.c_str(), key.size(), value.c_str(), value.length());
@@ -256,7 +256,7 @@ common::Error UnqliteRaw::set(const std::string& key, const std::string& value) 
   return common::Error();
 }
 
-common::Error UnqliteRaw::get(const std::string& key, std::string* ret_val) {
+common::Error DBConnection::get(const std::string& key, std::string* ret_val) {
   CHECK(isConnected());
 
   int rc = unqlite_kv_fetch_callback(connection_.handle_, key.c_str(), key.size(), unqlite_data_callback, ret_val);
@@ -268,7 +268,7 @@ common::Error UnqliteRaw::get(const std::string& key, std::string* ret_val) {
   return common::Error();
 }
 
-common::Error UnqliteRaw::del(const std::string& key) {
+common::Error DBConnection::del(const std::string& key) {
   CHECK(isConnected());
 
   int rc = unqlite_kv_delete(connection_.handle_, key.c_str(), key.size());
@@ -280,7 +280,7 @@ common::Error UnqliteRaw::del(const std::string& key) {
   return common::Error();
 }
 
-common::Error UnqliteRaw::keys(const std::string& key_start, const std::string& key_end,
+common::Error DBConnection::keys(const std::string& key_start, const std::string& key_end,
                    uint64_t limit, std::vector<std::string> *ret) {
   CHECK(isConnected());
 
@@ -311,11 +311,11 @@ common::Error UnqliteRaw::keys(const std::string& key_start, const std::string& 
   return common::Error();
 }
 
-common::Error UnqliteRaw::help(int argc, char** argv) {
+common::Error DBConnection::help(int argc, char** argv) {
   return notSupported("HELP");
 }
 
-common::Error UnqliteRaw::flushdb() {
+common::Error DBConnection::flushdb() {
   CHECK(isConnected());
 
   unqlite_kv_cursor* pCur; /* Cursor handle */
@@ -345,7 +345,7 @@ common::Error UnqliteRaw::flushdb() {
 }
 
 common::Error set(CommandHandler* handler, int argc, char** argv, FastoObject* out) {
-  UnqliteRaw* unq = static_cast<UnqliteRaw*>(handler);
+  DBConnection* unq = static_cast<DBConnection*>(handler);
   common::Error er = unq->set(argv[0], argv[1]);
   if (!er) {
     common::StringValue* val = common::Value::createStringValue("STORED");
@@ -357,7 +357,7 @@ common::Error set(CommandHandler* handler, int argc, char** argv, FastoObject* o
 }
 
 common::Error get(CommandHandler* handler, int argc, char** argv, FastoObject* out) {
-  UnqliteRaw* unq = static_cast<UnqliteRaw*>(handler);
+  DBConnection* unq = static_cast<DBConnection*>(handler);
   std::string ret;
   common::Error er = unq->get(argv[0], &ret);
   if (!er) {
@@ -370,7 +370,7 @@ common::Error get(CommandHandler* handler, int argc, char** argv, FastoObject* o
 }
 
 common::Error del(CommandHandler* handler, int argc, char** argv, FastoObject* out) {
-  UnqliteRaw* unq = static_cast<UnqliteRaw*>(handler);
+  DBConnection* unq = static_cast<DBConnection*>(handler);
   common::Error er = unq->del(argv[0]);
   if (!er) {
     common::StringValue* val = common::Value::createStringValue("DELETED");
@@ -382,7 +382,7 @@ common::Error del(CommandHandler* handler, int argc, char** argv, FastoObject* o
 }
 
 common::Error keys(CommandHandler* handler, int argc, char** argv, FastoObject* out) {
-  UnqliteRaw* unq = static_cast<UnqliteRaw*>(handler);
+  DBConnection* unq = static_cast<DBConnection*>(handler);
   std::vector<std::string> keysout;
   common::Error er = unq->keys(argv[0], argv[1], atoll(argv[2]), &keysout);
   if (!er) {
@@ -399,7 +399,7 @@ common::Error keys(CommandHandler* handler, int argc, char** argv, FastoObject* 
 }
 
 common::Error info(CommandHandler* handler, int argc, char** argv, FastoObject* out) {
-  UnqliteRaw* unq = static_cast<UnqliteRaw*>(handler);
+  DBConnection* unq = static_cast<DBConnection*>(handler);
   ServerInfo::Stats statsout;
   common::Error er = unq->info(argc == 1 ? argv[0] : nullptr, &statsout);
   if (!er) {
@@ -413,7 +413,7 @@ common::Error info(CommandHandler* handler, int argc, char** argv, FastoObject* 
 }
 
 common::Error dbsize(CommandHandler* handler, int argc, char** argv, FastoObject* out) {
-  UnqliteRaw* unq = static_cast<UnqliteRaw*>(handler);
+  DBConnection* unq = static_cast<DBConnection*>(handler);
   size_t size = 0;
   common::Error er = unq->dbsize(&size);
   if (!er) {
@@ -426,12 +426,12 @@ common::Error dbsize(CommandHandler* handler, int argc, char** argv, FastoObject
 }
 
 common::Error help(CommandHandler* handler, int argc, char** argv, FastoObject* out) {
-  UnqliteRaw* unq = static_cast<UnqliteRaw*>(handler);
+  DBConnection* unq = static_cast<DBConnection*>(handler);
   return unq->help(argc - 1, argv + 1);
 }
 
 common::Error flushdb(CommandHandler* handler, int argc, char** argv, FastoObject* out) {
-  UnqliteRaw* unq = static_cast<UnqliteRaw*>(handler);
+  DBConnection* unq = static_cast<DBConnection*>(handler);
   return unq->flushdb();
 }
 

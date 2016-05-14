@@ -43,7 +43,7 @@ namespace core {
 namespace rocksdb {
 
 RocksdbDriver::RocksdbDriver(IConnectionSettingsBaseSPtr settings)
-  : IDriverLocal(settings), impl_(new RocksdbRaw) {
+  : IDriverLocal(settings), impl_(new DBConnection) {
   CHECK(type() == ROCKSDB);
 }
 
@@ -182,7 +182,7 @@ void RocksdbDriver::handleConnectEvent(events::ConnectRequestEvent* ev) {
   QObject* sender = ev->sender();
   notifyProgress(sender, 0);
   events::ConnectResponceEvent::value_type res(ev->value());
-  RocksdbConnectionSettings* set = dynamic_cast<RocksdbConnectionSettings*>(settings_.get());  // +
+  ConnectionSettings* set = dynamic_cast<ConnectionSettings*>(settings_.get());  // +
   CHECK(set);
   notifyProgress(sender, 25);
   common::Error er = impl_->connect(set->info());

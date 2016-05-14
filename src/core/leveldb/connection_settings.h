@@ -22,32 +22,33 @@
 
 #include "core/connection_settings.h"
 
-#include "core/memcached/config.h"
+#include "core/leveldb/config.h"
 
 namespace fastonosql {
 namespace core {
-namespace memcached {
+namespace leveldb {
 
-class MemcachedConnectionSettings
-  : public IConnectionSettingsRemote {
+class ConnectionSettings
+  : public IConnectionSettingsLocal {
  public:
-  explicit MemcachedConnectionSettings(const connection_path_t& connectionName);
+  explicit ConnectionSettings(const connection_path_t& connectionName);
+
+  virtual std::string dbpath() const;
 
   virtual std::string commandLine() const;
   virtual void setCommandLine(const std::string& line);
 
-  virtual void setHost(const common::net::hostAndPort& host);
-  virtual common::net::hostAndPort host() const;
-
   Config info() const;
   void setInfo(const Config& info);
 
-  virtual MemcachedConnectionSettings* clone() const;
+  virtual std::string fullAddress() const;
+
+  virtual ConnectionSettings* clone() const;
 
  private:
   Config info_;
 };
 
-}  // namespace memcached
+}  // namespace leveldb
 }  // namespace core
 }  // namespace fastonosql

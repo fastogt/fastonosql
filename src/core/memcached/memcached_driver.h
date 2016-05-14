@@ -22,7 +22,7 @@
 
 #include "core/idriver.h"
 
-#include "core/memcached/memcached_raw.h"
+#include "core/memcached/db_connection.h"
 
 namespace fastonosql {
 namespace core {
@@ -75,7 +75,7 @@ class MemcachedDriver
   // ============== command =============//
   IServerInfoSPtr makeServerInfoFromString(const std::string& val);
 
-  MemcachedRaw* const impl_;
+  DBConnection* const impl_;
 };
 
 }  // namespace memcached

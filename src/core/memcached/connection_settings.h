@@ -22,16 +22,16 @@
 
 #include "core/connection_settings.h"
 
-#include "core/ssdb/config.h"
+#include "core/memcached/config.h"
 
 namespace fastonosql {
 namespace core {
-namespace ssdb {
+namespace memcached {
 
-class SsdbConnectionSettings
+class ConnectionSettings
   : public IConnectionSettingsRemote {
  public:
-  explicit SsdbConnectionSettings(const connection_path_t& connectionName);
+  explicit ConnectionSettings(const connection_path_t& connectionName);
 
   virtual std::string commandLine() const;
   virtual void setCommandLine(const std::string& line);
@@ -40,14 +40,14 @@ class SsdbConnectionSettings
   virtual common::net::hostAndPort host() const;
 
   Config info() const;
-  void setInfo(const Config &info);
+  void setInfo(const Config& info);
 
-  virtual SsdbConnectionSettings* clone() const;
+  virtual ConnectionSettings* clone() const;
 
  private:
   Config info_;
 };
 
-}  // namespace ssdb
+}  // namespace memcached
 }  // namespace core
 }  // namespace fastonosql

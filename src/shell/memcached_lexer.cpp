@@ -21,7 +21,7 @@
 #include <vector>
 #include <algorithm>
 
-#include "core/memcached/memcached_raw.h"
+#include "core/memcached/db_connection.h"
 
 namespace fastonosql {
 namespace shell {
@@ -40,7 +40,7 @@ const char* MemcachedLexer::language() const {
 }
 
 const char* MemcachedLexer::version() const {
-  return core::memcached::MemcachedRaw::versionApi();
+  return core::memcached::DBConnection::versionApi();
 }
 
 const char* MemcachedLexer::basedOn() const {

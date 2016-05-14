@@ -22,16 +22,16 @@
 
 #include "core/connection_settings.h"
 
-#include "core/leveldb/config.h"
+#include "core/unqlite/config.h"
 
 namespace fastonosql {
 namespace core {
-namespace leveldb {
+namespace unqlite {
 
-class LeveldbConnectionSettings
+class ConnectionSettings
   : public IConnectionSettingsLocal {
  public:
-  explicit LeveldbConnectionSettings(const connection_path_t& connectionName);
+  explicit ConnectionSettings(const connection_path_t& connectionName);
 
   virtual std::string dbpath() const;
 
@@ -43,12 +43,12 @@ class LeveldbConnectionSettings
 
   virtual std::string fullAddress() const;
 
-  virtual LeveldbConnectionSettings* clone() const;
+  virtual ConnectionSettings* clone() const;
 
  private:
   Config info_;
 };
 
-}  // namespace leveldb
+}  // namespace unqlite
 }  // namespace core
 }  // namespace fastonosql

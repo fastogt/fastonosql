@@ -16,7 +16,7 @@
     along with FastoNoSQL.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-#include "core/leveldb/leveldb_raw.h"
+#include "core/leveldb/db_connection.h"
 
 #include <mutex>
 
@@ -38,8 +38,8 @@ void leveldb_version_startup_function(char* version) {
 namespace fastonosql {
 namespace core {
 template<>
-common::Error DBAllocatorTraits<leveldb::LevelDBConnection, leveldb::Config>::connect(const leveldb::Config& config, leveldb::LevelDBConnection** hout) {
-  leveldb::LevelDBConnection* context = nullptr;
+common::Error ConnectionAllocatorTraits<leveldb::NativeConnection, leveldb::Config>::connect(const leveldb::Config& config, leveldb::NativeConnection** hout) {
+  leveldb::NativeConnection* context = nullptr;
   common::Error er = leveldb::createConnection(config, &context);
   if (er && er->isError()) {
     return er;
@@ -49,12 +49,12 @@ common::Error DBAllocatorTraits<leveldb::LevelDBConnection, leveldb::Config>::co
   return common::Error();
 }
 template<>
-common::Error DBAllocatorTraits<leveldb::LevelDBConnection, leveldb::Config>::disconnect(leveldb::LevelDBConnection** handle) {
+common::Error ConnectionAllocatorTraits<leveldb::NativeConnection, leveldb::Config>::disconnect(leveldb::NativeConnection** handle) {
   destroy(handle);
   return common::Error();
 }
 template<>
-bool DBAllocatorTraits<leveldb::LevelDBConnection, leveldb::Config>::isConnected(leveldb::LevelDBConnection* handle) {
+bool ConnectionAllocatorTraits<leveldb::NativeConnection, leveldb::Config>::isConnected(leveldb::NativeConnection* handle) {
   if (!handle) {
     return false;
   }
@@ -63,7 +63,7 @@ bool DBAllocatorTraits<leveldb::LevelDBConnection, leveldb::Config>::isConnected
 }
 namespace leveldb {
 
-common::Error createConnection(const Config& config, LevelDBConnection** context) {
+common::Error createConnection(const Config& config, NativeConnection** context) {
   if (!context) {
     return common::make_error_value("Invalid input argument(s)", common::ErrorValue::E_ERROR);
   }
@@ -80,7 +80,7 @@ common::Error createConnection(const Config& config, LevelDBConnection** context
   return common::Error();
 }
 
-common::Error createConnection(LeveldbConnectionSettings* settings, LevelDBConnection** context) {
+common::Error createConnection(ConnectionSettings* settings, NativeConnection** context) {
   if (!settings) {
     return common::make_error_value("Invalid input argument(s)", common::ErrorValue::E_ERROR);
   }
@@ -89,12 +89,12 @@ common::Error createConnection(LeveldbConnectionSettings* settings, LevelDBConne
   return createConnection(config, context);
 }
 
-common::Error testConnection(LeveldbConnectionSettings* settings) {
+common::Error testConnection(ConnectionSettings* settings) {
   if (!settings) {
     return common::make_error_value("Invalid input argument(s)", common::ErrorValue::E_ERROR);
   }
 
-  leveldb::LevelDBConnection* ldb = nullptr;
+  leveldb::NativeConnection* ldb = nullptr;
   common::Error er = createConnection(settings, &ldb);
   if (er && er->isError()) {
     return er;
@@ -104,41 +104,41 @@ common::Error testConnection(LeveldbConnectionSettings* settings) {
   return common::Error();
 }
 
-LeveldbRaw::LeveldbRaw()
+DBConnection::DBConnection()
   : CommandHandler(leveldbCommands), connection_() {
 }
 
-common::Error LeveldbRaw::connect(const config_t& config) {
+common::Error DBConnection::connect(const config_t& config) {
   return connection_.connect(config);
 }
 
-common::Error LeveldbRaw::disconnect() {
+common::Error DBConnection::disconnect() {
   return connection_.disconnect();
 }
 
-bool LeveldbRaw::isConnected() const {
+bool DBConnection::isConnected() const {
   return connection_.isConnected();
 }
 
-std::string LeveldbRaw::delimiter() const {
+std::string DBConnection::delimiter() const {
   return connection_.config_.delimiter;
 }
 
-std::string LeveldbRaw::nsSeparator() const {
+std::string DBConnection::nsSeparator() const {
   return connection_.config_.ns_separator;
 }
 
-LeveldbRaw::config_t LeveldbRaw::config() const {
+DBConnection::config_t DBConnection::config() const {
   return connection_.config_;
 }
 
-const char* LeveldbRaw::versionApi() {
+const char* DBConnection::versionApi() {
   static char leveldb_version[32] = {0};
   std::call_once(leveldb_version_once, leveldb_version_startup_function, leveldb_version);
   return leveldb_version;
 }
 
-common::Error LeveldbRaw::dbsize(size_t* size) {
+common::Error DBConnection::dbsize(size_t* size) {
   CHECK(isConnected());
 
   if (!size) {
@@ -164,7 +164,7 @@ common::Error LeveldbRaw::dbsize(size_t* size) {
   return common::Error();
 }
 
-common::Error LeveldbRaw::info(const char* args, ServerInfo::Stats* statsout) {
+common::Error DBConnection::info(const char* args, ServerInfo::Stats* statsout) {
   CHECK(isConnected());
 
   if (!statsout) {
@@ -210,7 +210,7 @@ common::Error LeveldbRaw::info(const char* args, ServerInfo::Stats* statsout) {
   return common::Error();
 }
 
-common::Error LeveldbRaw::set(const std::string& key, const std::string& value) {
+common::Error DBConnection::set(const std::string& key, const std::string& value) {
   CHECK(isConnected());
 
   ::leveldb::WriteOptions wo;
@@ -223,7 +223,7 @@ common::Error LeveldbRaw::set(const std::string& key, const std::string& value) 
   return common::Error();
 }
 
-common::Error LeveldbRaw::get(const std::string& key, std::string* ret_val) {
+common::Error DBConnection::get(const std::string& key, std::string* ret_val) {
   CHECK(isConnected());
 
   ::leveldb::ReadOptions ro;
@@ -236,7 +236,7 @@ common::Error LeveldbRaw::get(const std::string& key, std::string* ret_val) {
   return common::Error();
 }
 
-common::Error LeveldbRaw::del(const std::string& key) {
+common::Error DBConnection::del(const std::string& key) {
   CHECK(isConnected());
 
   ::leveldb::WriteOptions wo;
@@ -248,7 +248,7 @@ common::Error LeveldbRaw::del(const std::string& key) {
   return common::Error();
 }
 
-common::Error LeveldbRaw::keys(const std::string& key_start, const std::string& key_end,
+common::Error DBConnection::keys(const std::string& key_start, const std::string& key_end,
                    uint64_t limit, std::vector<std::string>* ret) {
   CHECK(isConnected());
 
@@ -273,11 +273,11 @@ common::Error LeveldbRaw::keys(const std::string& key_start, const std::string& 
   return common::Error();
 }
 
-common::Error LeveldbRaw::help(int argc, char** argv) {
+common::Error DBConnection::help(int argc, char** argv) {
   return notSupported("HELP");
 }
 
-common::Error LeveldbRaw::flushdb() {
+common::Error DBConnection::flushdb() {
   CHECK(isConnected());
 
   ::leveldb::ReadOptions ro;
@@ -304,7 +304,7 @@ common::Error LeveldbRaw::flushdb() {
 }
 
 common::Error dbsize(CommandHandler* handler, int argc, char** argv, FastoObject* out) {
-  LeveldbRaw* level = static_cast<LeveldbRaw*>(handler);
+  DBConnection* level = static_cast<DBConnection*>(handler);
 
   size_t dbsize = 0;
   common::Error er = level->dbsize(&dbsize);
@@ -317,7 +317,7 @@ common::Error dbsize(CommandHandler* handler, int argc, char** argv, FastoObject
 }
 
 common::Error info(CommandHandler* handler, int argc, char** argv, FastoObject* out) {
-  LeveldbRaw* level = static_cast<LeveldbRaw*>(handler);
+  DBConnection* level = static_cast<DBConnection*>(handler);
 
   ServerInfo::Stats statsout;
   common::Error er = level->info(argc == 1 ? argv[0] : nullptr, &statsout);
@@ -331,7 +331,7 @@ common::Error info(CommandHandler* handler, int argc, char** argv, FastoObject* 
 }
 
 common::Error set(CommandHandler* handler, int argc, char** argv, FastoObject* out) {
-  LeveldbRaw* level = static_cast<LeveldbRaw*>(handler);
+  DBConnection* level = static_cast<DBConnection*>(handler);
 
   common::Error er = level->set(argv[0], argv[1]);
   if (!er) {
@@ -343,7 +343,7 @@ common::Error set(CommandHandler* handler, int argc, char** argv, FastoObject* o
 }
 
 common::Error get(CommandHandler* handler, int argc, char** argv, FastoObject* out) {
-  LeveldbRaw* level = static_cast<LeveldbRaw*>(handler);
+  DBConnection* level = static_cast<DBConnection*>(handler);
 
   std::string ret;
   common::Error er = level->get(argv[0], &ret);
@@ -356,7 +356,7 @@ common::Error get(CommandHandler* handler, int argc, char** argv, FastoObject* o
 }
 
 common::Error del(CommandHandler* handler, int argc, char** argv, FastoObject* out) {
-  LeveldbRaw* level = static_cast<LeveldbRaw*>(handler);
+  DBConnection* level = static_cast<DBConnection*>(handler);
 
   common::Error er = level->del(argv[0]);
   if (!er) {
@@ -368,7 +368,7 @@ common::Error del(CommandHandler* handler, int argc, char** argv, FastoObject* o
 }
 
 common::Error keys(CommandHandler* handler, int argc, char** argv, FastoObject* out) {
-  LeveldbRaw* level = static_cast<LeveldbRaw*>(handler);
+  DBConnection* level = static_cast<DBConnection*>(handler);
 
   std::vector<std::string> keysout;
   common::Error er = level->keys(argv[0], argv[1], atoll(argv[2]), &keysout);
@@ -385,12 +385,12 @@ common::Error keys(CommandHandler* handler, int argc, char** argv, FastoObject* 
 }
 
 common::Error help(CommandHandler* handler, int argc, char** argv, FastoObject* out) {
-  LeveldbRaw* level = static_cast<LeveldbRaw*>(handler);
+  DBConnection* level = static_cast<DBConnection*>(handler);
   return level->help(argc - 1, argv + 1);
 }
 
 common::Error flushdb(CommandHandler* handler, int argc, char** argv, FastoObject* out) {
-  LeveldbRaw* level = static_cast<LeveldbRaw*>(handler);
+  DBConnection* level = static_cast<DBConnection*>(handler);
   return level->flushdb();
 }
 

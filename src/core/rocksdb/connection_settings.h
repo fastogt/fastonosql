@@ -16,10 +16,39 @@
     along with FastoNoSQL.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-#include "core/db_connection.h"
+#pragma once
+
+#include <string>
+
+#include "core/connection_settings.h"
+
+#include "core/rocksdb/config.h"
 
 namespace fastonosql {
 namespace core {
+namespace rocksdb {
 
+class ConnectionSettings
+  : public IConnectionSettingsLocal {
+ public:
+  explicit ConnectionSettings(const connection_path_t& connectionName);
+
+  virtual std::string dbpath() const;
+
+  virtual std::string commandLine() const;
+  virtual void setCommandLine(const std::string& line);
+
+  Config info() const;
+  void setInfo(const Config& info);
+
+  virtual std::string fullAddress() const;
+
+  virtual ConnectionSettings* clone() const;
+
+ private:
+  Config info_;
+};
+
+}  // namespace rocksdb
 }  // namespace core
 }  // namespace fastonosql

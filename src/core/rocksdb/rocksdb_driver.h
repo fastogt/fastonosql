@@ -22,7 +22,7 @@
 
 #include "core/idriver.h"
 
-#include "core/rocksdb/rocksdb_raw.h"
+#include "core/rocksdb/db_connection.h"
 
 namespace fastonosql {
 namespace core {
@@ -72,7 +72,7 @@ class RocksdbDriver
   IServerInfoSPtr makeServerInfoFromString(const std::string& val);
 
  private:
-  RocksdbRaw* const impl_;
+  DBConnection* const impl_;
 };
 
 }  // namespace rocksdb

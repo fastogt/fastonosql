@@ -16,47 +16,47 @@
     along with FastoNoSQL.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-#include "core/rocksdb/rocksdb_settings.h"
+#include "core/lmdb/connection_settings.h"
 
 #include <string>
 
 namespace fastonosql {
 namespace core {
-namespace rocksdb {
+namespace lmdb {
 
-RocksdbConnectionSettings::RocksdbConnectionSettings(const connection_path_t& connectionName)
-  : IConnectionSettingsLocal(connectionName, ROCKSDB), info_() {
+ConnectionSettings::ConnectionSettings(const connection_path_t& connectionName)
+  : IConnectionSettingsLocal(connectionName, LMDB), info_() {
 }
 
-std::string RocksdbConnectionSettings::dbpath() const {
+std::string ConnectionSettings::dbpath() const {
   return info_.dbname;
 }
 
-std::string RocksdbConnectionSettings::commandLine() const {
+std::string ConnectionSettings::commandLine() const {
   return common::convertToString(info_);
 }
 
-void RocksdbConnectionSettings::setCommandLine(const std::string& line) {
+void ConnectionSettings::setCommandLine(const std::string& line) {
   info_ = common::convertFromString<Config>(line);
 }
 
-Config RocksdbConnectionSettings::info() const {
+Config ConnectionSettings::info() const {
   return info_;
 }
 
-void RocksdbConnectionSettings::setInfo(const Config& info) {
+void ConnectionSettings::setInfo(const Config &info) {
   info_ = info;
 }
 
-std::string RocksdbConnectionSettings::fullAddress() const {
+std::string ConnectionSettings::fullAddress() const {
   return info_.dbname;
 }
 
-RocksdbConnectionSettings* RocksdbConnectionSettings::clone() const {
-  RocksdbConnectionSettings* red = new RocksdbConnectionSettings(*this);
+ConnectionSettings* ConnectionSettings::clone() const {
+  ConnectionSettings* red = new ConnectionSettings(*this);
   return red;
 }
 
-}  // namespace rocksdb
+}  // namespace lmdb
 }  // namespace core
 }  // namespace fastonosql
