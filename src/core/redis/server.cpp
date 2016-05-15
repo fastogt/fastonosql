@@ -16,37 +16,37 @@
     along with FastoNoSQL.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-#include "core/redis/redis_server.h"
+#include "core/redis/server.h"
 
-#include "core/redis/redis_driver.h"
+#include "core/redis/driver.h"
 #include "core/redis/database.h"
 
 namespace fastonosql {
 namespace core {
 namespace redis {
 
-RedisServer::RedisServer(IConnectionSettingsBaseSPtr settings)
-  : IServerRemote(new RedisDriver(settings)), role_(MASTER), mode_(STANDALONE) {
+Server::Server(IConnectionSettingsBaseSPtr settings)
+  : IServerRemote(new Driver(settings)), role_(MASTER), mode_(STANDALONE) {
 }
 
-serverTypes RedisServer::role() const {
+serverTypes Server::role() const {
   return role_;
 }
 
-serverMode RedisServer::mode() const {
+serverMode Server::mode() const {
   return mode_;
 }
 
-common::net::hostAndPort RedisServer::host() const {
-  RedisDriver* const rdrv = static_cast<RedisDriver* const>(drv_);
+common::net::hostAndPort Server::host() const {
+  Driver* const rdrv = static_cast<Driver* const>(drv_);
   return rdrv->host();
 }
 
-IDatabaseSPtr RedisServer::createDatabase(IDataBaseInfoSPtr info) {
+IDatabaseSPtr Server::createDatabase(IDataBaseInfoSPtr info) {
   return IDatabaseSPtr(new Database(shared_from_this(), info));
 }
 
-void RedisServer::handleDiscoveryInfoResponceEvent(events::DiscoveryInfoResponceEvent* ev) {
+void Server::handleDiscoveryInfoResponceEvent(events::DiscoveryInfoResponceEvent* ev) {
   auto v = ev->value();
   common::Error er = v.errorInfo();
   if (!er) {

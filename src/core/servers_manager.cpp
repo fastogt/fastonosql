@@ -25,37 +25,37 @@
 #ifdef BUILD_WITH_REDIS
 #include "core/redis/redis_cluster.h"
 #include "core/redis/redis_sentinel.h"
-#include "core/redis/redis_server.h"
+#include "core/redis/server.h"
 #include "core/redis/db_connection.h"
 #endif
 
 #ifdef BUILD_WITH_MEMCACHED
-#include "core/memcached/memcached_server.h"
+#include "core/memcached/server.h"
 #include "core/memcached/db_connection.h"
 #endif
 
 #ifdef BUILD_WITH_SSDB
-#include "core/ssdb/ssdb_server.h"
+#include "core/ssdb/server.h"
 #include "core/ssdb/db_connection.h"
 #endif
 
 #ifdef BUILD_WITH_LEVELDB
-#include "core/leveldb/leveldb_server.h"
+#include "core/leveldb/server.h"
 #include "core/leveldb/db_connection.h"
 #endif
 
 #ifdef BUILD_WITH_ROCKSDB
-#include "core/rocksdb/rocksdb_server.h"
+#include "core/rocksdb/server.h"
 #include "core/rocksdb/db_connection.h"
 #endif
 
 #ifdef BUILD_WITH_UNQLITE
-#include "core/unqlite/unqlite_server.h"
+#include "core/unqlite/server.h"
 #include "core/unqlite/db_connection.h"
 #endif
 
 #ifdef BUILD_WITH_LMDB
-#include "core/lmdb/lmdb_server.h"
+#include "core/lmdb/server.h"
 #include "core/lmdb/db_connection.h"
 #endif
 
@@ -76,37 +76,37 @@ ServersManager::server_t ServersManager::createServer(IConnectionSettingsBaseSPt
   IServer* server = nullptr;
 #ifdef BUILD_WITH_REDIS
   if (conT == REDIS) {
-    server = new redis::RedisServer(settings);
+    server = new redis::Server(settings);
   }
 #endif
 #ifdef BUILD_WITH_MEMCACHED
   if (conT == MEMCACHED) {
-    server = new memcached::MemcachedServer(settings);
+    server = new memcached::Server(settings);
   }
 #endif
 #ifdef BUILD_WITH_SSDB
   if (conT == SSDB) {
-    server = new ssdb::SsdbServer(settings);
+    server = new ssdb::Server(settings);
   }
 #endif
 #ifdef BUILD_WITH_LEVELDB
   if (conT == LEVELDB) {
-    server = new leveldb::LeveldbServer(settings);
+    server = new leveldb::Server(settings);
   }
 #endif
 #ifdef BUILD_WITH_ROCKSDB
   if (conT == ROCKSDB) {
-    server = new rocksdb::RocksdbServer(settings);
+    server = new rocksdb::Server(settings);
   }
 #endif
 #ifdef BUILD_WITH_UNQLITE
   if (conT == UNQLITE) {
-    server = new unqlite::UnqliteServer(settings);
+    server = new unqlite::Server(settings);
   }
 #endif
 #ifdef BUILD_WITH_LMDB
   if (conT == LMDB) {
-    server = new lmdb::LmdbServer(settings);
+    server = new lmdb::Server(settings);
   }
 #endif
 

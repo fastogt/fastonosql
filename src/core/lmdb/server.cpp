@@ -16,36 +16,32 @@
     along with FastoNoSQL.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-#include "core/memcached/memcached_server.h"
+#include "core/lmdb/server.h"
 
-#include "core/memcached/memcached_driver.h"
-#include "core/memcached/database.h"
+#include "core/lmdb/driver.h"
+#include "core/lmdb/database.h"
 
 namespace fastonosql {
 namespace core {
-namespace memcached {
+namespace lmdb {
 
-MemcachedServer::MemcachedServer(IConnectionSettingsBaseSPtr settings)
-  : IServerRemote(new MemcachedDriver(settings)) {
+Server::Server(IConnectionSettingsBaseSPtr settings)
+  : IServerLocal(new Driver(settings)) {
 }
 
-serverTypes MemcachedServer::role() const {
-  return MASTER;
-}
-
-serverMode MemcachedServer::mode() const {
+serverMode Server::mode() const {
   return STANDALONE;
 }
 
-common::net::hostAndPort MemcachedServer::host() const {
-  MemcachedDriver* const rdrv = static_cast<MemcachedDriver* const>(drv_);
-  return rdrv->host();
+std::string Server::path() const {
+  Driver* const ldrv = static_cast<Driver* const>(drv_);
+  return ldrv->path();
 }
 
-IDatabaseSPtr MemcachedServer::createDatabase(IDataBaseInfoSPtr info) {
+IDatabaseSPtr Server::createDatabase(IDataBaseInfoSPtr info) {
   return IDatabaseSPtr(new Database(shared_from_this(), info));
 }
 
-}  // namespace memcached
+}  // namespace lmdb
 }  // namespace core
 }  // namespace fastonosql

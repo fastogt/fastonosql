@@ -203,8 +203,8 @@ IF(BUILD_WITH_REDIS)
     SET(HEADERS_REDIS_TO_MOC
         core/redis/redis_sentinel.h
         core/redis/redis_cluster.h
-        core/redis/redis_server.h
-        core/redis/redis_driver.h
+        core/redis/server.h
+        core/redis/driver.h
     )
     SET(HEADERS_REDIS
         core/redis/config.h
@@ -226,9 +226,9 @@ IF(BUILD_WITH_REDIS)
         core/redis/server_info.cpp
         core/redis/connection_settings.cpp
         core/redis/db_connection.cpp
+        core/redis/server.cpp
+        core/redis/driver.cpp
 
-        core/redis/redis_server.cpp
-        core/redis/redis_driver.cpp
         core/redis/redis_sentinel_info.cpp
         core/redis/redis_sentinel.cpp
         core/redis/redis_sentinel_settings.cpp
@@ -260,8 +260,8 @@ IF(BUILD_WITH_MEMCACHED)
     SET(INCLUDE_DIRS ${INCLUDE_DIRS} third-party/memcached/src)
 
     SET(HEADERS_MEMCACHED_TO_MOC
-        core/memcached/memcached_server.h
-        core/memcached/memcached_driver.h
+        core/memcached/server.h
+        core/memcached/driver.h
     )
     SET(HEADERS_MEMCACHED
         core/memcached/config.h
@@ -278,9 +278,8 @@ IF(BUILD_WITH_MEMCACHED)
         core/memcached/server_info.cpp
         core/memcached/connection_settings.cpp
         core/memcached/db_connection.cpp
-
-        core/memcached/memcached_server.cpp
-        core/memcached/memcached_driver.cpp
+        core/memcached/server.cpp
+        core/memcached/driver.cpp
     )
     SET(OBJECT_LIBS ${OBJECT_LIBS} $<TARGET_OBJECTS:libmemcached>)
 ENDIF(BUILD_WITH_MEMCACHED)
@@ -300,8 +299,8 @@ IF(BUILD_WITH_SSDB)
     SET(INCLUDE_DIRS ${INCLUDE_DIRS} third-party/ssdb/src)
 
     SET(HEADERS_SSDB_TO_MOC
-        core/ssdb/ssdb_server.h
-        core/ssdb/ssdb_driver.h
+        core/ssdb/server.h
+        core/ssdb/driver.h
     )
     SET(HEADERS_SSDB
         core/ssdb/config.h
@@ -318,9 +317,8 @@ IF(BUILD_WITH_SSDB)
         core/ssdb/server_info.cpp
         core/ssdb/connection_settings.cpp
         core/ssdb/db_connection.cpp
-
-        core/ssdb/ssdb_server.cpp
-        core/ssdb/ssdb_driver.cpp
+        core/ssdb/server.cpp
+        core/ssdb/driver.cpp
     )
     SET(OBJECT_LIBS ${OBJECT_LIBS} $<TARGET_OBJECTS:ssdb>)
 ENDIF(BUILD_WITH_SSDB)
@@ -340,8 +338,8 @@ IF(BUILD_WITH_LEVELDB)
     SET(INCLUDE_DIRS ${INCLUDE_DIRS} third-party/leveldb/src/include)
 
     SET(HEADERS_LEVELDB_TO_MOC
-        core/leveldb/leveldb_server.h
-        core/leveldb/leveldb_driver.h
+        core/leveldb/server.h
+        core/leveldb/driver.h
     )
     SET(HEADERS_LEVELDB
         core/leveldb/config.h
@@ -358,9 +356,8 @@ IF(BUILD_WITH_LEVELDB)
         core/leveldb/server_info.cpp
         core/leveldb/connection_settings.cpp
         core/leveldb/db_connection.cpp
-
-        core/leveldb/leveldb_server.cpp
-        core/leveldb/leveldb_driver.cpp
+        core/leveldb/server.cpp
+        core/leveldb/driver.cpp
     )
     SET(OBJECT_LIBS ${OBJECT_LIBS} $<TARGET_OBJECTS:leveldb>)
 ENDIF(BUILD_WITH_LEVELDB)
@@ -380,8 +377,8 @@ IF(BUILD_WITH_ROCKSDB)
     SET(INCLUDE_DIRS ${INCLUDE_DIRS} third-party/rocksdb/src/include)
 
     SET(HEADERS_ROCKSDB_TO_MOC
-        core/rocksdb/rocksdb_server.h
-        core/rocksdb/rocksdb_driver.h
+        core/rocksdb/server.h
+        core/rocksdb/driver.h
     )
     SET(HEADERS_ROCKSDB
         core/rocksdb/config.h
@@ -398,9 +395,8 @@ IF(BUILD_WITH_ROCKSDB)
         core/rocksdb/server_info.cpp
         core/rocksdb/connection_settings.cpp
         core/rocksdb/db_connection.cpp
-
-        core/rocksdb/rocksdb_server.cpp
-        core/rocksdb/rocksdb_driver.cpp
+        core/rocksdb/server.cpp
+        core/rocksdb/driver.cpp
     )
     SET(OBJECT_LIBS ${OBJECT_LIBS} $<TARGET_OBJECTS:rocksdb>)
 ENDIF(BUILD_WITH_ROCKSDB)
@@ -420,8 +416,8 @@ IF(BUILD_WITH_UNQLITE)
     SET(INCLUDE_DIRS ${INCLUDE_DIRS} third-party/unqlite/src)
 
     SET(HEADERS_UNQLITE_TO_MOC
-        core/unqlite/unqlite_server.h
-        core/unqlite/unqlite_driver.h
+        core/unqlite/server.h
+        core/unqlite/driver.h
     )
     SET(HEADERS_UNQLITE
         core/unqlite/config.h
@@ -438,9 +434,8 @@ IF(BUILD_WITH_UNQLITE)
         core/unqlite/server_info.cpp
         core/unqlite/connection_settings.cpp
         core/unqlite/db_connection.cpp
-
-        core/unqlite/unqlite_server.cpp
-        core/unqlite/unqlite_driver.cpp
+        core/unqlite/server.cpp
+        core/unqlite/driver.cpp
     )
     SET(OBJECT_LIBS ${OBJECT_LIBS} $<TARGET_OBJECTS:unqlite>)
 ENDIF(BUILD_WITH_UNQLITE)
@@ -460,8 +455,8 @@ IF(BUILD_WITH_LMDB)
     SET(INCLUDE_DIRS ${INCLUDE_DIRS} third-party/lmdb/src/libraries/liblmdb)
 
     SET(HEADERS_LMDB_TO_MOC
-        core/lmdb/lmdb_server.h
-        core/lmdb/lmdb_driver.h
+        core/lmdb/server.h
+        core/lmdb/driver.h
     )
     SET(HEADERS_LMDB
         core/lmdb/config.h
@@ -478,9 +473,8 @@ IF(BUILD_WITH_LMDB)
         core/lmdb/server_info.cpp
         core/lmdb/connection_settings.cpp
         core/lmdb/db_connection.cpp
-
-        core/lmdb/lmdb_server.cpp
-        core/lmdb/lmdb_driver.cpp
+        core/lmdb/server.cpp
+        core/lmdb/driver.cpp
     )
     SET(OBJECT_LIBS ${OBJECT_LIBS} $<TARGET_OBJECTS:lmdb>)
 ENDIF(BUILD_WITH_LMDB)

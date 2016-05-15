@@ -23,26 +23,21 @@
 
 namespace fastonosql {
 namespace core {
-namespace redis {
+namespace memcached {
 
-class RedisServer
+class Server
   : public IServerRemote {
   Q_OBJECT
  public:
-  explicit RedisServer(IConnectionSettingsBaseSPtr settings);
+  explicit Server(IConnectionSettingsBaseSPtr settings);
   virtual serverTypes role() const;
   virtual serverMode mode() const;
   virtual common::net::hostAndPort host() const;
 
- protected:
-  virtual void handleDiscoveryInfoResponceEvent(events::DiscoveryInfoResponceEvent* ev);
-
  private:
   virtual IDatabaseSPtr createDatabase(IDataBaseInfoSPtr info);
-  serverTypes role_;
-  serverMode mode_;
 };
 
-}  // namespace redis
+}  // namespace memcached
 }  // namespace core
 }  // namespace fastonosql

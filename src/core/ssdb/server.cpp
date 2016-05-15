@@ -16,32 +16,36 @@
     along with FastoNoSQL.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-#include "core/rocksdb/rocksdb_server.h"
+#include "core/ssdb/server.h"
 
-#include "core/rocksdb/rocksdb_driver.h"
-#include "core/rocksdb/database.h"
+#include "core/ssdb/driver.h"
+#include "core/ssdb/database.h"
 
 namespace fastonosql {
 namespace core {
-namespace rocksdb {
+namespace ssdb {
 
-RocksdbServer::RocksdbServer(IConnectionSettingsBaseSPtr settings)
-  : IServerLocal(new RocksdbDriver(settings)) {
+Server::Server(IConnectionSettingsBaseSPtr settings)
+  : IServerRemote(new Driver(settings)) {
 }
 
-serverMode RocksdbServer::mode() const {
+serverMode Server::mode() const {
   return STANDALONE;
 }
 
-std::string RocksdbServer::path() const {
-  RocksdbDriver* const ldrv = static_cast<RocksdbDriver* const>(drv_);
-  return ldrv->path();
+serverTypes Server::role() const {
+  return MASTER;
 }
 
-IDatabaseSPtr RocksdbServer::createDatabase(IDataBaseInfoSPtr info) {
+common::net::hostAndPort Server::host() const {
+  Driver* const rdrv = static_cast<Driver* const>(drv_);
+  return rdrv->host();
+}
+
+IDatabaseSPtr Server::createDatabase(IDataBaseInfoSPtr info) {
   return IDatabaseSPtr(new Database(shared_from_this(), info));
 }
 
-}  // namespace rocksdb
-}  // namespace core {
+}  // namespace ssdb
+}  // namespace core
 }  // namespace fastonosql

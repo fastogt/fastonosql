@@ -21,19 +21,18 @@
 #include <string>
 
 #include "core/idriver.h"
-
-#include "core/unqlite/db_connection.h"
+#include "core/leveldb/db_connection.h"
 
 namespace fastonosql {
 namespace core {
-namespace unqlite {
+namespace leveldb {
 
-class UnqliteDriver
+class Driver
   : public IDriverLocal {
   Q_OBJECT
  public:
-  explicit UnqliteDriver(IConnectionSettingsBaseSPtr settings);
-  virtual ~UnqliteDriver();
+  explicit Driver(IConnectionSettingsBaseSPtr settings);
+  virtual ~Driver();
 
   virtual bool isConnected() const;
   virtual bool isAuthenticated() const;
@@ -71,10 +70,9 @@ class UnqliteDriver
   virtual void handleCommandRequestEvent(events::CommandRequestEvent* ev);
   IServerInfoSPtr makeServerInfoFromString(const std::string& val);
 
- private:
   DBConnection* const impl_;
 };
 
-}  // namespace unqlite
+}  // namespace leveldb
 }  // namespace core
 }  // namespace fastonosql

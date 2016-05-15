@@ -18,26 +18,26 @@
 
 #pragma once
 
+#include <string>
+
 #include "core/idriver.h"
 
-#include "core/ssdb/db_connection.h"
+#include "core/unqlite/db_connection.h"
 
 namespace fastonosql {
 namespace core {
-namespace ssdb {
+namespace unqlite {
 
-common::Error testConnection(ConnectionSettings* settings);
-
-class SsdbDriver
-  : public IDriverRemote {
+class Driver
+  : public IDriverLocal {
   Q_OBJECT
  public:
-  explicit SsdbDriver(IConnectionSettingsBaseSPtr settings);
-  virtual ~SsdbDriver();
+  explicit Driver(IConnectionSettingsBaseSPtr settings);
+  virtual ~Driver();
 
   virtual bool isConnected() const;
   virtual bool isAuthenticated() const;
-  virtual common::net::hostAndPort host() const;
+  virtual std::string path() const;
   virtual std::string nsSeparator() const;
   virtual std::string outputDelemitr() const;
 
@@ -75,6 +75,6 @@ class SsdbDriver
   DBConnection* const impl_;
 };
 
-}  // namespace ssdb
+}  // namespace unqlite
 }  // namespace core
 }  // namespace fastonosql

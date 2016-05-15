@@ -16,27 +16,32 @@
     along with FastoNoSQL.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-#pragma once
+#include "core/leveldb/server.h"
 
-#include "core/connection_settings.h"
-#include "core/iserver.h"
+#include "core/leveldb/driver.h"
+#include "core/leveldb/database.h"
 
 namespace fastonosql {
 namespace core {
-namespace rocksdb {
+namespace leveldb {
 
-class RocksdbServer
-  : public IServerLocal {
-  Q_OBJECT
- public:
-  explicit RocksdbServer(IConnectionSettingsBaseSPtr settings);
-  serverMode mode() const;
-  virtual std::string path() const;
+Server::Server(IConnectionSettingsBaseSPtr settings)
+  : IServerLocal(new Driver(settings)) {
+}
 
- private:
-  virtual IDatabaseSPtr createDatabase(IDataBaseInfoSPtr info);
-};
+serverMode Server::mode() const {
+  return STANDALONE;
+}
 
-}  // namespace rocksdb
+std::string Server::path() const {
+  Driver* const ldrv = static_cast<Driver* const>(drv_);
+  return ldrv->path();
+}
+
+IDatabaseSPtr Server::createDatabase(IDataBaseInfoSPtr info) {
+  return IDatabaseSPtr(new Database(shared_from_this(), info));
+}
+
+}  // namespace leveldb
 }  // namespace core
 }  // namespace fastonosql

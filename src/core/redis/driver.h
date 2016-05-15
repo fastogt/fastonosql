@@ -18,34 +18,40 @@
 
 #pragma once
 
+#include <vector>
 #include <string>
 
 #include "core/idriver.h"
 
-#include "core/rocksdb/db_connection.h"
+#include "core/redis/db_connection.h"
 
 namespace fastonosql {
 namespace core {
-namespace rocksdb {
+namespace redis {
 
-class RocksdbDriver
-  : public IDriverLocal {
-  Q_OBJECT
+class Driver
+  : public IDriverRemote, public IDBConnectionOwner {
+ Q_OBJECT
  public:
-  explicit RocksdbDriver(IConnectionSettingsBaseSPtr settings);
-  virtual ~RocksdbDriver();
+  explicit Driver(IConnectionSettingsBaseSPtr settings);
+  virtual ~Driver();
+
+  virtual bool isInterrupted() const;
 
   virtual bool isConnected() const;
   virtual bool isAuthenticated() const;
-  virtual std::string path() const;
+  virtual common::net::hostAndPort host() const;
   virtual std::string nsSeparator() const;
   virtual std::string outputDelemitr() const;
 
- private:
+ private:  
+  virtual void currentDataBaseChanged(IDataBaseInfo* info);
+
   virtual void initImpl();
   virtual void clearImpl();
 
   virtual common::Error executeImpl(int argc, char** argv, FastoObject* out);
+
   virtual common::Error serverInfo(IServerInfo** info);
   virtual common::Error serverDiscoveryClusterInfo(ServerDiscoveryClusterInfo** dinfo, IServerInfo** sinfo,
                                             IDataBaseInfo** dbinfo);
@@ -54,7 +60,15 @@ class RocksdbDriver
   virtual void handleConnectEvent(events::ConnectRequestEvent* ev);
   virtual void handleDisconnectEvent(events::DisconnectRequestEvent* ev);
   virtual void handleExecuteEvent(events::ExecuteRequestEvent* ev);
+  virtual void handleLoadDatabaseInfosEvent(events::LoadDatabasesInfoRequestEvent* ev);
+  virtual void handleLoadServerPropertyEvent(events::ServerPropertyInfoRequestEvent* ev);
+  virtual void handleServerPropertyChangeEvent(events::ChangeServerPropertyInfoRequestEvent* ev);
   virtual void handleProcessCommandLineArgs(events::ProcessConfigArgsRequestEvent* ev);
+  virtual void handleShutdownEvent(events::ShutDownRequestEvent* ev);
+  virtual void handleBackupEvent(events::BackupRequestEvent* ev);
+  virtual void handleExportEvent(events::ExportRequestEvent* ev);
+  virtual void handleChangePasswordEvent(events::ChangePasswordRequestEvent* ev);
+  virtual void handleChangeMaxConnectionEvent(events::ChangeMaxConnectionRequestEvent* ev);
 
   virtual common::Error commandDeleteImpl(CommandDeleteKey* command,
                                           std::string* cmdstring) const WARN_UNUSED_RESULT;
@@ -67,14 +81,23 @@ class RocksdbDriver
 
   virtual void handleLoadDatabaseContentEvent(events::LoadDatabaseContentRequestEvent* ev);
   virtual void handleClearDatabaseEvent(events::ClearDatabaseRequestEvent* ev);
+  virtual void handleSetDefaultDatabaseEvent(events::SetDefaultDatabaseRequestEvent* ev);
 
   virtual void handleCommandRequestEvent(events::CommandRequestEvent* ev);
+
   IServerInfoSPtr makeServerInfoFromString(const std::string& val);
 
- private:
   DBConnection* const impl_;
+
+  common::Error interacteveMode(events::ProcessConfigArgsRequestEvent* ev);
+  common::Error latencyMode(events::ProcessConfigArgsRequestEvent* ev);
+  common::Error slaveMode(events::ProcessConfigArgsRequestEvent* ev);
+  common::Error getRDBMode(events::ProcessConfigArgsRequestEvent* ev);
+  common::Error findBigKeysMode(events::ProcessConfigArgsRequestEvent* ev);
+  common::Error statMode(events::ProcessConfigArgsRequestEvent* ev);
+  common::Error scanMode(events::ProcessConfigArgsRequestEvent* ev);
 };
 
-}  // namespace rocksdb
+}  // namespace redis
 }  // namespace core
 }  // namespace fastonosql

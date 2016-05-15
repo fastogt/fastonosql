@@ -23,21 +23,20 @@
 
 namespace fastonosql {
 namespace core {
-namespace ssdb {
+namespace lmdb {
 
-class SsdbServer
-  : public IServerRemote {
+class Server
+  : public IServerLocal {
   Q_OBJECT
  public:
-  explicit SsdbServer(IConnectionSettingsBaseSPtr settings);
-  virtual serverMode mode() const;
-  virtual serverTypes role() const;
-  virtual common::net::hostAndPort host() const;
+  explicit Server(IConnectionSettingsBaseSPtr settings);
+  serverMode mode() const;
+  virtual std::string path() const;
 
  private:
   virtual IDatabaseSPtr createDatabase(IDataBaseInfoSPtr info);
 };
 
-}  // namespace ssdb
+}
 }  // namespace core
 }  // namespace fastonosql

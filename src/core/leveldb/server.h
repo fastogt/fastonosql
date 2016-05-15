@@ -23,21 +23,20 @@
 
 namespace fastonosql {
 namespace core {
-namespace memcached {
+namespace leveldb {
 
-class MemcachedServer
-  : public IServerRemote {
+class Server
+  : public IServerLocal {
   Q_OBJECT
  public:
-  explicit MemcachedServer(IConnectionSettingsBaseSPtr settings);
-  virtual serverTypes role() const;
-  virtual serverMode mode() const;
-  virtual common::net::hostAndPort host() const;
+  explicit Server(IConnectionSettingsBaseSPtr settings);
+  serverMode mode() const;
+  virtual std::string path() const;
 
  private:
   virtual IDatabaseSPtr createDatabase(IDataBaseInfoSPtr info);
 };
 
-}  // namespace memcached
+}  // namespace leveldb
 }  // namespace core
 }  // namespace fastonosql

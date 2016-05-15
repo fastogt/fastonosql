@@ -18,40 +18,34 @@
 
 #pragma once
 
-#include <vector>
 #include <string>
 
 #include "core/idriver.h"
 
-#include "core/redis/db_connection.h"
+#include "core/lmdb/db_connection.h"
 
 namespace fastonosql {
 namespace core {
-namespace redis {
+namespace lmdb {
 
-class RedisDriver
-  : public IDriverRemote, public IDBConnectionOwner {
- Q_OBJECT
+class Driver
+  : public IDriverLocal {
+  Q_OBJECT
  public:
-  explicit RedisDriver(IConnectionSettingsBaseSPtr settings);
-  virtual ~RedisDriver();
-
-  virtual bool isInterrupted() const;
+  explicit Driver(IConnectionSettingsBaseSPtr settings);
+  virtual ~Driver();
 
   virtual bool isConnected() const;
   virtual bool isAuthenticated() const;
-  virtual common::net::hostAndPort host() const;
+  virtual std::string path() const;
   virtual std::string nsSeparator() const;
   virtual std::string outputDelemitr() const;
 
- private:  
-  virtual void currentDataBaseChanged(IDataBaseInfo* info);
-
+ private:
   virtual void initImpl();
   virtual void clearImpl();
 
   virtual common::Error executeImpl(int argc, char** argv, FastoObject* out);
-
   virtual common::Error serverInfo(IServerInfo** info);
   virtual common::Error serverDiscoveryClusterInfo(ServerDiscoveryClusterInfo** dinfo, IServerInfo** sinfo,
                                             IDataBaseInfo** dbinfo);
@@ -60,15 +54,7 @@ class RedisDriver
   virtual void handleConnectEvent(events::ConnectRequestEvent* ev);
   virtual void handleDisconnectEvent(events::DisconnectRequestEvent* ev);
   virtual void handleExecuteEvent(events::ExecuteRequestEvent* ev);
-  virtual void handleLoadDatabaseInfosEvent(events::LoadDatabasesInfoRequestEvent* ev);
-  virtual void handleLoadServerPropertyEvent(events::ServerPropertyInfoRequestEvent* ev);
-  virtual void handleServerPropertyChangeEvent(events::ChangeServerPropertyInfoRequestEvent* ev);
   virtual void handleProcessCommandLineArgs(events::ProcessConfigArgsRequestEvent* ev);
-  virtual void handleShutdownEvent(events::ShutDownRequestEvent* ev);
-  virtual void handleBackupEvent(events::BackupRequestEvent* ev);
-  virtual void handleExportEvent(events::ExportRequestEvent* ev);
-  virtual void handleChangePasswordEvent(events::ChangePasswordRequestEvent* ev);
-  virtual void handleChangeMaxConnectionEvent(events::ChangeMaxConnectionRequestEvent* ev);
 
   virtual common::Error commandDeleteImpl(CommandDeleteKey* command,
                                           std::string* cmdstring) const WARN_UNUSED_RESULT;
@@ -81,23 +67,13 @@ class RedisDriver
 
   virtual void handleLoadDatabaseContentEvent(events::LoadDatabaseContentRequestEvent* ev);
   virtual void handleClearDatabaseEvent(events::ClearDatabaseRequestEvent* ev);
-  virtual void handleSetDefaultDatabaseEvent(events::SetDefaultDatabaseRequestEvent* ev);
 
   virtual void handleCommandRequestEvent(events::CommandRequestEvent* ev);
-
   IServerInfoSPtr makeServerInfoFromString(const std::string& val);
 
   DBConnection* const impl_;
-
-  common::Error interacteveMode(events::ProcessConfigArgsRequestEvent* ev);
-  common::Error latencyMode(events::ProcessConfigArgsRequestEvent* ev);
-  common::Error slaveMode(events::ProcessConfigArgsRequestEvent* ev);
-  common::Error getRDBMode(events::ProcessConfigArgsRequestEvent* ev);
-  common::Error findBigKeysMode(events::ProcessConfigArgsRequestEvent* ev);
-  common::Error statMode(events::ProcessConfigArgsRequestEvent* ev);
-  common::Error scanMode(events::ProcessConfigArgsRequestEvent* ev);
 };
 
-}  // namespace redis
+}  // namespace lmdb
 }  // namespace core
 }  // namespace fastonosql

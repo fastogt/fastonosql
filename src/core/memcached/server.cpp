@@ -16,27 +16,36 @@
     along with FastoNoSQL.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-#pragma once
+#include "core/memcached/server.h"
 
-#include "core/connection_settings.h"
-#include "core/iserver.h"
+#include "core/memcached/driver.h"
+#include "core/memcached/database.h"
 
 namespace fastonosql {
 namespace core {
-namespace unqlite {
+namespace memcached {
 
-class UnqliteServer
-  : public IServerLocal {
-  Q_OBJECT
- public:
-  explicit UnqliteServer(IConnectionSettingsBaseSPtr settings);
-  virtual serverMode mode() const;
-  virtual std::string path() const;
+Server::Server(IConnectionSettingsBaseSPtr settings)
+  : IServerRemote(new Driver(settings)) {
+}
 
- private:
-  virtual IDatabaseSPtr createDatabase(IDataBaseInfoSPtr info);
-};
+serverTypes Server::role() const {
+  return MASTER;
+}
 
-}  // namespace unqlite
+serverMode Server::mode() const {
+  return STANDALONE;
+}
+
+common::net::hostAndPort Server::host() const {
+  Driver* const rdrv = static_cast<Driver* const>(drv_);
+  return rdrv->host();
+}
+
+IDatabaseSPtr Server::createDatabase(IDataBaseInfoSPtr info) {
+  return IDatabaseSPtr(new Database(shared_from_this(), info));
+}
+
+}  // namespace memcached
 }  // namespace core
 }  // namespace fastonosql

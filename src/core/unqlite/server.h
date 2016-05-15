@@ -23,20 +23,20 @@
 
 namespace fastonosql {
 namespace core {
-namespace lmdb {
+namespace unqlite {
 
-class LmdbServer
+class Server
   : public IServerLocal {
   Q_OBJECT
  public:
-  explicit LmdbServer(IConnectionSettingsBaseSPtr settings);
-  serverMode mode() const;
+  explicit Server(IConnectionSettingsBaseSPtr settings);
+  virtual serverMode mode() const;
   virtual std::string path() const;
 
  private:
   virtual IDatabaseSPtr createDatabase(IDataBaseInfoSPtr info);
 };
 
-}
+}  // namespace unqlite
 }  // namespace core
 }  // namespace fastonosql

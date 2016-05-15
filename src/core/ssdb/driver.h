@@ -18,22 +18,22 @@
 
 #pragma once
 
-#include <string>
-
 #include "core/idriver.h"
 
-#include "core/memcached/db_connection.h"
+#include "core/ssdb/db_connection.h"
 
 namespace fastonosql {
 namespace core {
-namespace memcached {
+namespace ssdb {
 
-class MemcachedDriver
+common::Error testConnection(ConnectionSettings* settings);
+
+class Driver
   : public IDriverRemote {
   Q_OBJECT
  public:
-  explicit MemcachedDriver(IConnectionSettingsBaseSPtr settings);
-  virtual ~MemcachedDriver();
+  explicit Driver(IConnectionSettingsBaseSPtr settings);
+  virtual ~Driver();
 
   virtual bool isConnected() const;
   virtual bool isAuthenticated() const;
@@ -56,7 +56,6 @@ class MemcachedDriver
   virtual void handleExecuteEvent(events::ExecuteRequestEvent* ev);
   virtual void handleProcessCommandLineArgs(events::ProcessConfigArgsRequestEvent* ev);
 
-  // ============== commands =============//
   virtual common::Error commandDeleteImpl(CommandDeleteKey* command,
                                           std::string* cmdstring) const WARN_UNUSED_RESULT;
   virtual common::Error commandLoadImpl(CommandLoadKey* command,
@@ -65,19 +64,17 @@ class MemcachedDriver
                                           std::string* cmdstring) const WARN_UNUSED_RESULT;
   virtual common::Error commandChangeTTLImpl(CommandChangeTTL* command,
                                              std::string* cmdstring) const WARN_UNUSED_RESULT;
-  // ============== commands =============//
 
-  // ============== database =============//
   virtual void handleLoadDatabaseContentEvent(events::LoadDatabaseContentRequestEvent* ev);
-  // ============== database =============//
-  // ============== command =============//
+  virtual void handleClearDatabaseEvent(events::ClearDatabaseRequestEvent* ev);
+
   virtual void handleCommandRequestEvent(events::CommandRequestEvent* ev);
-  // ============== command =============//
   IServerInfoSPtr makeServerInfoFromString(const std::string& val);
 
+ private:
   DBConnection* const impl_;
 };
 
-}  // namespace memcached
+}  // namespace ssdb
 }  // namespace core
 }  // namespace fastonosql

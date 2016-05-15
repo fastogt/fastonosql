@@ -16,7 +16,7 @@
     along with FastoNoSQL.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-#include "core/memcached/memcached_driver.h"
+#include "core/memcached/driver.h"
 
 #include <string>
 
@@ -38,47 +38,47 @@ namespace fastonosql {
 namespace core {
 namespace memcached {
 
-MemcachedDriver::MemcachedDriver(IConnectionSettingsBaseSPtr settings)
+Driver::Driver(IConnectionSettingsBaseSPtr settings)
   : IDriverRemote(settings), impl_(new DBConnection) {
   CHECK(type() == MEMCACHED);
 }
 
-MemcachedDriver::~MemcachedDriver() {
+Driver::~Driver() {
   delete impl_;
 }
 
-bool MemcachedDriver::isConnected() const {
+bool Driver::isConnected() const {
   return impl_->isConnected();
 }
 
-bool MemcachedDriver::isAuthenticated() const {
+bool Driver::isAuthenticated() const {
   return impl_->isConnected();
 }
 
-common::net::hostAndPort MemcachedDriver::host() const {
+common::net::hostAndPort Driver::host() const {
   Config conf = impl_->config();
   return conf.host;
 }
 
-std::string MemcachedDriver::nsSeparator() const {
+std::string Driver::nsSeparator() const {
   return impl_->nsSeparator();
 }
 
-std::string MemcachedDriver::outputDelemitr() const {
+std::string Driver::outputDelemitr() const {
   return impl_->delimiter();
 }
 
-void MemcachedDriver::initImpl() {
+void Driver::initImpl() {
 }
 
-void MemcachedDriver::clearImpl() {
+void Driver::clearImpl() {
 }
 
-common::Error MemcachedDriver::executeImpl(int argc, char** argv, FastoObject* out) {
+common::Error Driver::executeImpl(int argc, char** argv, FastoObject* out) {
   return impl_->execute(argc, argv, out);
 }
 
-common::Error MemcachedDriver::serverInfo(IServerInfo** info) {
+common::Error Driver::serverInfo(IServerInfo** info) {
   LOG_COMMAND(type(), fastonosql::Command(INFO_REQUEST, common::Value::C_INNER));
   ServerInfo::Common cm;
   common::Error err = impl_->info(nullptr, &cm);
@@ -89,7 +89,7 @@ common::Error MemcachedDriver::serverInfo(IServerInfo** info) {
   return err;
 }
 
-common::Error MemcachedDriver::serverDiscoveryClusterInfo(ServerDiscoveryClusterInfo** dinfo, IServerInfo** sinfo,
+common::Error Driver::serverDiscoveryClusterInfo(ServerDiscoveryClusterInfo** dinfo, IServerInfo** sinfo,
                                                    IDataBaseInfo** dbinfo) {
   UNUSED(dinfo);
 
@@ -111,7 +111,7 @@ common::Error MemcachedDriver::serverDiscoveryClusterInfo(ServerDiscoveryCluster
   return er;
 }
 
-common::Error MemcachedDriver::currentDataBaseInfo(IDataBaseInfo** info) {
+common::Error Driver::currentDataBaseInfo(IDataBaseInfo** info) {
   if (!info) {
     return common::make_error_value("Invalid input argument(s)", common::ErrorValue::E_ERROR);
   }
@@ -122,7 +122,7 @@ common::Error MemcachedDriver::currentDataBaseInfo(IDataBaseInfo** info) {
   return common::Error();
 }
 
-void MemcachedDriver::handleConnectEvent(events::ConnectRequestEvent* ev) {
+void Driver::handleConnectEvent(events::ConnectRequestEvent* ev) {
   QObject* sender = ev->sender();
   notifyProgress(sender, 0);
   events::ConnectResponceEvent::value_type res(ev->value());
@@ -138,7 +138,7 @@ void MemcachedDriver::handleConnectEvent(events::ConnectRequestEvent* ev) {
   notifyProgress(sender, 100);
 }
 
-void MemcachedDriver::handleDisconnectEvent(events::DisconnectRequestEvent* ev) {
+void Driver::handleDisconnectEvent(events::DisconnectRequestEvent* ev) {
   QObject* sender = ev->sender();
   notifyProgress(sender, 0);
   events::DisconnectResponceEvent::value_type res(ev->value());
@@ -153,7 +153,7 @@ void MemcachedDriver::handleDisconnectEvent(events::DisconnectRequestEvent* ev) 
   notifyProgress(sender, 100);
 }
 
-void MemcachedDriver::handleExecuteEvent(events::ExecuteRequestEvent* ev) {
+void Driver::handleExecuteEvent(events::ExecuteRequestEvent* ev) {
   QObject* sender = ev->sender();
   notifyProgress(sender, 0);
   events::ExecuteResponceEvent::value_type res(ev->value());
@@ -199,7 +199,7 @@ void MemcachedDriver::handleExecuteEvent(events::ExecuteRequestEvent* ev) {
   notifyProgress(sender, 100);
 }
 
-void MemcachedDriver::handleCommandRequestEvent(events::CommandRequestEvent* ev) {
+void Driver::handleCommandRequestEvent(events::CommandRequestEvent* ev) {
   QObject* sender = ev->sender();
   notifyProgress(sender, 0);
   events::CommandResponceEvent::value_type res(ev->value());
@@ -224,7 +224,7 @@ void MemcachedDriver::handleCommandRequestEvent(events::CommandRequestEvent* ev)
   notifyProgress(sender, 100);
 }
 
-void MemcachedDriver::handleLoadDatabaseContentEvent(events::LoadDatabaseContentRequestEvent* ev) {
+void Driver::handleLoadDatabaseContentEvent(events::LoadDatabaseContentRequestEvent* ev) {
   QObject* sender = ev->sender();
   notifyProgress(sender, 0);
   events::LoadDatabaseContentResponceEvent::value_type res(ev->value());
@@ -267,7 +267,7 @@ done:
 }
 
 // ============== commands =============//
-common::Error MemcachedDriver::commandDeleteImpl(CommandDeleteKey* command,
+common::Error Driver::commandDeleteImpl(CommandDeleteKey* command,
                                                  std::string* cmdstring) const {
   if (!command || !cmdstring) {
     return common::make_error_value("Invalid input argument(s)", common::ErrorValue::E_ERROR);
@@ -278,7 +278,7 @@ common::Error MemcachedDriver::commandDeleteImpl(CommandDeleteKey* command,
   return common::Error();
 }
 
-common::Error MemcachedDriver::commandLoadImpl(CommandLoadKey* command,
+common::Error Driver::commandLoadImpl(CommandLoadKey* command,
                                                std::string* cmdstring) const {
   if (!command || !cmdstring) {
     return common::make_error_value("Invalid input argument(s)", common::ErrorValue::E_ERROR);
@@ -289,7 +289,7 @@ common::Error MemcachedDriver::commandLoadImpl(CommandLoadKey* command,
   return common::Error();
 }
 
-common::Error MemcachedDriver::commandCreateImpl(CommandCreateKey* command,
+common::Error Driver::commandCreateImpl(CommandCreateKey* command,
                                                  std::string* cmdstring) const {
   if (!command || !cmdstring) {
     return common::make_error_value("Invalid input argument(s)", common::ErrorValue::E_ERROR);
@@ -304,7 +304,7 @@ common::Error MemcachedDriver::commandCreateImpl(CommandCreateKey* command,
   return common::Error();
 }
 
-common::Error MemcachedDriver::commandChangeTTLImpl(CommandChangeTTL* command,
+common::Error Driver::commandChangeTTLImpl(CommandChangeTTL* command,
                                                     std::string* cmdstring) const {
   if (!command || !cmdstring) {
     return common::make_error_value("Invalid input argument(s)", common::ErrorValue::E_ERROR);
@@ -317,10 +317,10 @@ common::Error MemcachedDriver::commandChangeTTLImpl(CommandChangeTTL* command,
 
 // ============== commands =============//
 
-void MemcachedDriver::handleProcessCommandLineArgs(events::ProcessConfigArgsRequestEvent* ev) {
+void Driver::handleProcessCommandLineArgs(events::ProcessConfigArgsRequestEvent* ev) {
 }
 
-IServerInfoSPtr MemcachedDriver::makeServerInfoFromString(const std::string& val) {
+IServerInfoSPtr Driver::makeServerInfoFromString(const std::string& val) {
   IServerInfoSPtr res(makeMemcachedServerInfo(val));
   return res;
 }

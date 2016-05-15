@@ -16,36 +16,33 @@
     along with FastoNoSQL.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-#include "core/ssdb/ssdb_server.h"
+#pragma once
 
-#include "core/ssdb/ssdb_driver.h"
-#include "core/ssdb/database.h"
+#include "core/connection_settings.h"
+#include "core/iserver.h"
 
 namespace fastonosql {
 namespace core {
-namespace ssdb {
+namespace redis {
 
-SsdbServer::SsdbServer(IConnectionSettingsBaseSPtr settings)
-  : IServerRemote(new SsdbDriver(settings)) {
-}
+class Server
+  : public IServerRemote {
+  Q_OBJECT
+ public:
+  explicit Server(IConnectionSettingsBaseSPtr settings);
+  virtual serverTypes role() const;
+  virtual serverMode mode() const;
+  virtual common::net::hostAndPort host() const;
 
-serverMode SsdbServer::mode() const {
-  return STANDALONE;
-}
+ protected:
+  virtual void handleDiscoveryInfoResponceEvent(events::DiscoveryInfoResponceEvent* ev);
 
-serverTypes SsdbServer::role() const {
-  return MASTER;
-}
+ private:
+  virtual IDatabaseSPtr createDatabase(IDataBaseInfoSPtr info);
+  serverTypes role_;
+  serverMode mode_;
+};
 
-common::net::hostAndPort SsdbServer::host() const {
-  SsdbDriver* const rdrv = static_cast<SsdbDriver* const>(drv_);
-  return rdrv->host();
-}
-
-IDatabaseSPtr SsdbServer::createDatabase(IDataBaseInfoSPtr info) {
-  return IDatabaseSPtr(new Database(shared_from_this(), info));
-}
-
-}  // namespace ssdb
+}  // namespace redis
 }  // namespace core
 }  // namespace fastonosql

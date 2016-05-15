@@ -16,32 +16,27 @@
     along with FastoNoSQL.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-#include "core/unqlite/unqlite_server.h"
+#pragma once
 
-#include "core/unqlite/unqlite_driver.h"
-#include "core/unqlite/database.h"
+#include "core/connection_settings.h"
+#include "core/iserver.h"
 
 namespace fastonosql {
 namespace core {
-namespace unqlite {
+namespace rocksdb {
 
-UnqliteServer::UnqliteServer(IConnectionSettingsBaseSPtr settings)
-  : IServerLocal(new UnqliteDriver(settings)) {
-}
+class Server
+  : public IServerLocal {
+  Q_OBJECT
+ public:
+  explicit Server(IConnectionSettingsBaseSPtr settings);
+  serverMode mode() const;
+  virtual std::string path() const;
 
-serverMode UnqliteServer::mode() const {
-  return STANDALONE;
-}
+ private:
+  virtual IDatabaseSPtr createDatabase(IDataBaseInfoSPtr info);
+};
 
-std::string UnqliteServer::path() const {
-  UnqliteDriver* const ldrv = static_cast<UnqliteDriver* const>(drv_);
-  return ldrv->path();
-}
-
-IDatabaseSPtr UnqliteServer::createDatabase(IDataBaseInfoSPtr info) {
-  return IDatabaseSPtr(new Database(shared_from_this(), info));
-}
-
-}  // namespace unqlite
+}  // namespace rocksdb
 }  // namespace core
 }  // namespace fastonosql

@@ -22,18 +22,18 @@
 
 #include "core/idriver.h"
 
-#include "core/lmdb/db_connection.h"
+#include "core/rocksdb/db_connection.h"
 
 namespace fastonosql {
 namespace core {
-namespace lmdb {
+namespace rocksdb {
 
-class LmdbDriver
+class Driver
   : public IDriverLocal {
   Q_OBJECT
  public:
-  explicit LmdbDriver(IConnectionSettingsBaseSPtr settings);
-  virtual ~LmdbDriver();
+  explicit Driver(IConnectionSettingsBaseSPtr settings);
+  virtual ~Driver();
 
   virtual bool isConnected() const;
   virtual bool isAuthenticated() const;
@@ -71,9 +71,10 @@ class LmdbDriver
   virtual void handleCommandRequestEvent(events::CommandRequestEvent* ev);
   IServerInfoSPtr makeServerInfoFromString(const std::string& val);
 
+ private:
   DBConnection* const impl_;
 };
 
-}  // namespace lmdb
+}  // namespace rocksdb
 }  // namespace core
 }  // namespace fastonosql

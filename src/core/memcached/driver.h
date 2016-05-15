@@ -21,22 +21,23 @@
 #include <string>
 
 #include "core/idriver.h"
-#include "core/leveldb/db_connection.h"
+
+#include "core/memcached/db_connection.h"
 
 namespace fastonosql {
 namespace core {
-namespace leveldb {
+namespace memcached {
 
-class LeveldbDriver
-  : public IDriverLocal {
+class Driver
+  : public IDriverRemote {
   Q_OBJECT
  public:
-  explicit LeveldbDriver(IConnectionSettingsBaseSPtr settings);
-  virtual ~LeveldbDriver();
+  explicit Driver(IConnectionSettingsBaseSPtr settings);
+  virtual ~Driver();
 
   virtual bool isConnected() const;
   virtual bool isAuthenticated() const;
-  virtual std::string path() const;
+  virtual common::net::hostAndPort host() const;
   virtual std::string nsSeparator() const;
   virtual std::string outputDelemitr() const;
 
@@ -55,6 +56,7 @@ class LeveldbDriver
   virtual void handleExecuteEvent(events::ExecuteRequestEvent* ev);
   virtual void handleProcessCommandLineArgs(events::ProcessConfigArgsRequestEvent* ev);
 
+  // ============== commands =============//
   virtual common::Error commandDeleteImpl(CommandDeleteKey* command,
                                           std::string* cmdstring) const WARN_UNUSED_RESULT;
   virtual common::Error commandLoadImpl(CommandLoadKey* command,
@@ -63,16 +65,19 @@ class LeveldbDriver
                                           std::string* cmdstring) const WARN_UNUSED_RESULT;
   virtual common::Error commandChangeTTLImpl(CommandChangeTTL* command,
                                              std::string* cmdstring) const WARN_UNUSED_RESULT;
+  // ============== commands =============//
 
+  // ============== database =============//
   virtual void handleLoadDatabaseContentEvent(events::LoadDatabaseContentRequestEvent* ev);
-  virtual void handleClearDatabaseEvent(events::ClearDatabaseRequestEvent* ev);
-
+  // ============== database =============//
+  // ============== command =============//
   virtual void handleCommandRequestEvent(events::CommandRequestEvent* ev);
+  // ============== command =============//
   IServerInfoSPtr makeServerInfoFromString(const std::string& val);
 
   DBConnection* const impl_;
 };
 
-}  // namespace leveldb
+}  // namespace memcached
 }  // namespace core
 }  // namespace fastonosql

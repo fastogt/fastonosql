@@ -16,19 +16,18 @@
     along with FastoNoSQL.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-#include "core/lmdb/lmdb_driver.h"
+#include "core/unqlite/driver.h"
 
-#include <vector>
 #include <string>
+#include <vector>
 
 #include "common/sprintf.h"
 #include "common/utils.h"
-#include "common/file_system.h"
 
 #include "core/command_logger.h"
 
-#include "core/lmdb/database.h"
-#include "core/lmdb/command.h"
+#include "core/unqlite/database.h"
+#include "core/unqlite/command.h"
 
 #define INFO_REQUEST "INFO"
 #define GET_KEY_PATTERN_1ARGS_S "GET %s"
@@ -39,28 +38,28 @@
 
 namespace fastonosql {
 namespace core {
-namespace lmdb {
+namespace unqlite {
 
-LmdbDriver::LmdbDriver(IConnectionSettingsBaseSPtr settings)
+Driver::Driver(IConnectionSettingsBaseSPtr settings)
   : IDriverLocal(settings), impl_(new DBConnection) {
-  CHECK(type() == LMDB);
+  CHECK(type() == UNQLITE);
 }
 
-LmdbDriver::~LmdbDriver() {
+Driver::~Driver() {
   delete impl_;
 }
 
-bool LmdbDriver::isConnected() const {
+bool Driver::isConnected() const {
   return impl_->isConnected();
 }
 
-bool LmdbDriver::isAuthenticated() const {
+bool Driver::isAuthenticated() const {
   return impl_->isConnected();
 }
 
 // ============== commands =============//
-common::Error LmdbDriver::commandDeleteImpl(CommandDeleteKey* command,
-                                            std::string* cmdstring) const {
+common::Error Driver::commandDeleteImpl(CommandDeleteKey* command,
+                                               std::string* cmdstring) const {
   if (!command || !cmdstring) {
     return common::make_error_value("Invalid input argument(s)", common::ErrorValue::E_ERROR);
   }
@@ -70,7 +69,8 @@ common::Error LmdbDriver::commandDeleteImpl(CommandDeleteKey* command,
   return common::Error();
 }
 
-common::Error LmdbDriver::commandLoadImpl(CommandLoadKey* command, std::string* cmdstring) const {
+common::Error Driver::commandLoadImpl(CommandLoadKey* command,
+                                             std::string* cmdstring) const {
   if (!command || !cmdstring) {
     return common::make_error_value("Invalid input argument(s)", common::ErrorValue::E_ERROR);
   }
@@ -80,8 +80,8 @@ common::Error LmdbDriver::commandLoadImpl(CommandLoadKey* command, std::string* 
   return common::Error();
 }
 
-common::Error LmdbDriver::commandCreateImpl(CommandCreateKey* command,
-                                            std::string* cmdstring) const {
+common::Error Driver::commandCreateImpl(CommandCreateKey* command,
+                                               std::string* cmdstring) const {
   if (!command || !cmdstring) {
     return common::make_error_value("Invalid input argument(s)", common::ErrorValue::E_ERROR);
   }
@@ -95,43 +95,43 @@ common::Error LmdbDriver::commandCreateImpl(CommandCreateKey* command,
   return common::Error();
 }
 
-common::Error LmdbDriver::commandChangeTTLImpl(CommandChangeTTL* command,
-                                               std::string* cmdstring) const {
+common::Error Driver::commandChangeTTLImpl(CommandChangeTTL* command,
+                                                  std::string* cmdstring) const {
   if (!command || !cmdstring) {
     return common::make_error_value("Invalid input argument(s)", common::ErrorValue::E_ERROR);
   }
 
   std::string errorMsg = common::MemSPrintf("Sorry, but now " PROJECT_NAME_TITLE " not supported change ttl command for %s.",
-                   common::convertToString(type()));
+                                            common::convertToString(type()));
   return common::make_error_value(errorMsg, common::ErrorValue::E_ERROR);
 }
 
 // ============== commands =============//
 
-std::string LmdbDriver::path() const {
-  Config config = impl_->config();
-  return config.dbname;
+std::string Driver::path() const {
+  Config conf = impl_->config();
+  return conf.dbname;
 }
 
-std::string LmdbDriver::nsSeparator() const {
+std::string Driver::nsSeparator() const {
   return impl_->nsSeparator();
 }
 
-std::string LmdbDriver::outputDelemitr() const {
+std::string Driver::outputDelemitr() const {
   return impl_->delimiter();
 }
 
-void LmdbDriver::initImpl() {
+void Driver::initImpl() {
 }
 
-void LmdbDriver::clearImpl() {
+void Driver::clearImpl() {
 }
 
-common::Error LmdbDriver::executeImpl(int argc, char** argv, FastoObject* out) {
+common::Error Driver::executeImpl(int argc, char** argv, FastoObject* out) {
   return impl_->execute(argc, argv, out);
 }
 
-common::Error LmdbDriver::serverInfo(IServerInfo** info) {
+common::Error Driver::serverInfo(IServerInfo** info) {
   LOG_COMMAND(type(), fastonosql::Command(INFO_REQUEST, common::Value::C_INNER));
   ServerInfo::Stats cm;
   common::Error err = impl_->info(nullptr, &cm);
@@ -142,40 +142,40 @@ common::Error LmdbDriver::serverInfo(IServerInfo** info) {
   return err;
 }
 
-common::Error LmdbDriver::serverDiscoveryClusterInfo(ServerDiscoveryClusterInfo** dinfo, IServerInfo** sinfo,
-                                              IDataBaseInfo** dbinfo) {
+common::Error Driver::serverDiscoveryClusterInfo(ServerDiscoveryClusterInfo** dinfo, IServerInfo** sinfo,
+                                                 IDataBaseInfo** dbinfo) {
   UNUSED(dinfo);
 
-  IServerInfo *lsinfo = nullptr;
-  common::Error er = serverInfo(&lsinfo);
-  if (er && er->isError()) {
-    return er;
+  IServerInfo* lsinfo = nullptr;
+  common::Error err = serverInfo(&lsinfo);
+  if (err && err->isError()) {
+    return err;
   }
 
   IDataBaseInfo* ldbinfo = nullptr;
-  er = currentDataBaseInfo(&ldbinfo);
-  if (er && er->isError()) {
+  err = currentDataBaseInfo(&ldbinfo);
+  if (err && err->isError()) {
     delete lsinfo;
-    return er;
+    return err;
   }
 
   *sinfo = lsinfo;
   *dbinfo = ldbinfo;
-  return er;
+  return err;
 }
 
-common::Error LmdbDriver::currentDataBaseInfo(IDataBaseInfo** info) {
+common::Error Driver::currentDataBaseInfo(IDataBaseInfo** info) {
   if (!info) {
     return common::make_error_value("Invalid input argument(s)", common::ErrorValue::E_ERROR);
   }
 
   size_t dbsize = 0;
   impl_->dbsize(&dbsize);
-  *info = new DataBaseInfo(common::convertToString(impl_->curDb()), true, dbsize);
+  *info = new DataBaseInfo("0", true, dbsize);
   return common::Error();
 }
 
-void LmdbDriver::handleConnectEvent(events::ConnectRequestEvent* ev) {
+void Driver::handleConnectEvent(events::ConnectRequestEvent* ev) {
   QObject* sender = ev->sender();
   notifyProgress(sender, 0);
   events::ConnectResponceEvent::value_type res(ev->value());
@@ -191,7 +191,7 @@ void LmdbDriver::handleConnectEvent(events::ConnectRequestEvent* ev) {
   notifyProgress(sender, 100);
 }
 
-void LmdbDriver::handleDisconnectEvent(events::DisconnectRequestEvent* ev) {
+void Driver::handleDisconnectEvent(events::DisconnectRequestEvent* ev) {
   QObject* sender = ev->sender();
   notifyProgress(sender, 0);
   events::DisconnectResponceEvent::value_type res(ev->value());
@@ -206,7 +206,7 @@ void LmdbDriver::handleDisconnectEvent(events::DisconnectRequestEvent* ev) {
   notifyProgress(sender, 100);
 }
 
-void LmdbDriver::handleExecuteEvent(events::ExecuteRequestEvent* ev) {
+void Driver::handleExecuteEvent(events::ExecuteRequestEvent* ev) {
   QObject* sender = ev->sender();
   notifyProgress(sender, 0);
   events::ExecuteResponceEvent::value_type res(ev->value());
@@ -225,10 +225,10 @@ void LmdbDriver::handleExecuteEvent(events::ExecuteRequestEvent* ev) {
         res.setErrorInfo(er);
         break;
       }
-      if (inputLine[n] == '\n' || n == length - 1) {
+      if (inputLine[n] == '\n' || n == length-1) {
         notifyProgress(sender, step * n);
         char command[128] = {0};
-        if (n == length - 1) {
+        if (n == length-1) {
           strcpy(command, inputLine + offset);
         } else {
           strncpy(command, inputLine + offset, n - offset);
@@ -251,7 +251,7 @@ void LmdbDriver::handleExecuteEvent(events::ExecuteRequestEvent* ev) {
   notifyProgress(sender, 100);
 }
 
-void LmdbDriver::handleCommandRequestEvent(events::CommandRequestEvent* ev) {
+void Driver::handleCommandRequestEvent(events::CommandRequestEvent* ev) {
   QObject* sender = ev->sender();
   notifyProgress(sender, 0);
   events::CommandResponceEvent::value_type res(ev->value());
@@ -276,21 +276,22 @@ void LmdbDriver::handleCommandRequestEvent(events::CommandRequestEvent* ev) {
   notifyProgress(sender, 100);
 }
 
-void LmdbDriver::handleLoadDatabaseContentEvent(events::LoadDatabaseContentRequestEvent* ev) {
+void Driver::handleLoadDatabaseContentEvent(events::LoadDatabaseContentRequestEvent* ev) {
   QObject* sender = ev->sender();
   notifyProgress(sender, 0);
   events::LoadDatabaseContentResponceEvent::value_type res(ev->value());
   std::string patternResult = common::MemSPrintf(GET_KEYS_PATTERN_1ARGS_I, res.count_keys);
   FastoObjectIPtr root = FastoObject::createRoot(patternResult);
   notifyProgress(sender, 50);
-  FastoObjectCommand* cmd = createCommand<Command>(root, patternResult, common::Value::C_INNER);
+  FastoObjectCommand* cmd = createCommand<Command>(root, patternResult,
+                                                          common::Value::C_INNER);
   common::Error er = execute(cmd);
   if (er && er->isError()) {
     res.setErrorInfo(er);
   } else {
     FastoObject::child_container_t rchildrens = cmd->childrens();
     if (rchildrens.size()) {
-      CHECK_EQ(rchildrens.size(), 1);
+      DCHECK_EQ(rchildrens.size(), 1);
       FastoObjectArray* array = dynamic_cast<FastoObjectArray*>(rchildrens[0]);  // +
       if (!array) {
         goto done;
@@ -306,11 +307,11 @@ void LmdbDriver::handleLoadDatabaseContentEvent(events::LoadDatabaseContentReque
           NKey k(key);
           NDbKValue ress(k, NValue());
           res.keys.push_back(ress);
-        }
-      }
+         }
+       }
 
-      impl_->dbsize(&res.dbsize);
-    }
+        impl_->dbsize(&res.dbsize);
+     }
   }
 done:
   notifyProgress(sender, 75);
@@ -318,7 +319,7 @@ done:
   notifyProgress(sender, 100);
 }
 
-void LmdbDriver::handleClearDatabaseEvent(events::ClearDatabaseRequestEvent* ev) {
+void Driver::handleClearDatabaseEvent(events::ClearDatabaseRequestEvent* ev) {
   QObject* sender = ev->sender();
   notifyProgress(sender, 0);
   events::ClearDatabaseResponceEvent::value_type res(ev->value());
@@ -332,14 +333,14 @@ void LmdbDriver::handleClearDatabaseEvent(events::ClearDatabaseRequestEvent* ev)
   notifyProgress(sender, 100);
 }
 
-void LmdbDriver::handleProcessCommandLineArgs(events::ProcessConfigArgsRequestEvent* ev) {
+void Driver::handleProcessCommandLineArgs(events::ProcessConfigArgsRequestEvent* ev) {
 }
 
-IServerInfoSPtr LmdbDriver::makeServerInfoFromString(const std::string& val) {
-  IServerInfoSPtr res(makeLmdbServerInfo(val));
+IServerInfoSPtr Driver::makeServerInfoFromString(const std::string& val) {
+  IServerInfoSPtr res(makeUnqliteServerInfo(val));
   return res;
 }
 
-}  // namespace lmdb
+}  // namespace unqlite
 }  // namespace core
 }  // namespace fastonosql

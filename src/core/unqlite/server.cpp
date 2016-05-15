@@ -16,32 +16,32 @@
     along with FastoNoSQL.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-#include "core/lmdb/lmdb_server.h"
+#include "core/unqlite/server.h"
 
-#include "core/lmdb/lmdb_driver.h"
-#include "core/lmdb/database.h"
+#include "core/unqlite/driver.h"
+#include "core/unqlite/database.h"
 
 namespace fastonosql {
 namespace core {
-namespace lmdb {
+namespace unqlite {
 
-LmdbServer::LmdbServer(IConnectionSettingsBaseSPtr settings)
-  : IServerLocal(new LmdbDriver(settings)) {
+Server::Server(IConnectionSettingsBaseSPtr settings)
+  : IServerLocal(new Driver(settings)) {
 }
 
-serverMode LmdbServer::mode() const {
+serverMode Server::mode() const {
   return STANDALONE;
 }
 
-std::string LmdbServer::path() const {
-  LmdbDriver* const ldrv = static_cast<LmdbDriver* const>(drv_);
+std::string Server::path() const {
+  Driver* const ldrv = static_cast<Driver* const>(drv_);
   return ldrv->path();
 }
 
-IDatabaseSPtr LmdbServer::createDatabase(IDataBaseInfoSPtr info) {
+IDatabaseSPtr Server::createDatabase(IDataBaseInfoSPtr info) {
   return IDatabaseSPtr(new Database(shared_from_this(), info));
 }
 
-}  // namespace lmdb
+}  // namespace unqlite
 }  // namespace core
 }  // namespace fastonosql
