@@ -153,26 +153,26 @@ common::Error DBConnection::info(const char* args, ServerInfo::Stats* statsout) 
     int pos = 0;
     while (p2) {
       switch (pos++) {
-        case 0:
-          lstatsout.compactions_level = atoi(p2);
-          break;
-        case 1:
-          lstatsout.file_size_mb = atoi(p2);
-          break;
-        case 2:
-          lstatsout.time_sec = atoi(p2);
-          break;
-        case 3:
-          lstatsout.read_mb = atoi(p2);
-          break;
-        case 4:
-          lstatsout.write_mb = atoi(p2);
-          break;
-        default:
-          break;
-        }
-        p2 = strtok(0, " ");
+      case 0:
+        lstatsout.compactions_level = atoi(p2);
+        break;
+      case 1:
+        lstatsout.file_size_mb = atoi(p2);
+        break;
+      case 2:
+        lstatsout.time_sec = atoi(p2);
+        break;
+      case 3:
+        lstatsout.read_mb = atoi(p2);
+        break;
+      case 4:
+        lstatsout.write_mb = atoi(p2);
+        break;
+      default:
+        break;
       }
+      p2 = strtok(0, " ");
+    }
   }
 
   *statsout = lstatsout;

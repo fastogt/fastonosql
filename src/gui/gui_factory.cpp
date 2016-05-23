@@ -187,40 +187,40 @@ const QIcon& GuiFactory::modeIcon(core::ConnectionMode mode) const {
 
 const QIcon& GuiFactory::icon(common::Value::Type type) const {
   switch (type) {
-    case common::Value::TYPE_NULL:
-      static QIcon u(":" PROJECT_NAME_LOWERCASE "/images/64x64/null.png");
-      return u;
-    case common::Value::TYPE_BOOLEAN:
-      static QIcon b(":" PROJECT_NAME_LOWERCASE "/images/64x64/bool.png");
-      return b;
-    case common::Value::TYPE_STRING:
-      static QIcon s(":" PROJECT_NAME_LOWERCASE "/images/64x64/string.png");
-      return s;
-    case common::Value::TYPE_BYTE_ARRAY:
-      static QIcon by(":" PROJECT_NAME_LOWERCASE "/images/64x64/byte.png");
-      return by;
-    case common::Value::TYPE_SET:
-    case common::Value::TYPE_ARRAY:
-      static QIcon a(":" PROJECT_NAME_LOWERCASE "/images/64x64/array.png");
-      return a;
-    case common::Value::TYPE_HASH:
-      static QIcon h(":" PROJECT_NAME_LOWERCASE "/images/64x64/hash.png");
-      return h;
-    case common::Value::TYPE_ZSET:
-      static QIcon z(":" PROJECT_NAME_LOWERCASE "/images/64x64/zset.png");
-      return z;
-    case common::Value::TYPE_INTEGER:
-    case common::Value::TYPE_DOUBLE:
-    case common::Value::TYPE_UINTEGER:
-      static QIcon i(":" PROJECT_NAME_LOWERCASE "/images/64x64/integer.png");
-      return i;
-    case common::Value::TYPE_ERROR:
-      static QIcon er(":" PROJECT_NAME_LOWERCASE "/images/64x64/error.png");
-      return er;
-    default:
-      static QIcon err(":" PROJECT_NAME_LOWERCASE "/images/64x64/error.png");
-      NOTREACHED();
-      return err;
+  case common::Value::TYPE_NULL:
+    static QIcon u(":" PROJECT_NAME_LOWERCASE "/images/64x64/null.png");
+    return u;
+  case common::Value::TYPE_BOOLEAN:
+    static QIcon b(":" PROJECT_NAME_LOWERCASE "/images/64x64/bool.png");
+    return b;
+  case common::Value::TYPE_STRING:
+    static QIcon s(":" PROJECT_NAME_LOWERCASE "/images/64x64/string.png");
+    return s;
+  case common::Value::TYPE_BYTE_ARRAY:
+    static QIcon by(":" PROJECT_NAME_LOWERCASE "/images/64x64/byte.png");
+    return by;
+  case common::Value::TYPE_SET:
+  case common::Value::TYPE_ARRAY:
+    static QIcon a(":" PROJECT_NAME_LOWERCASE "/images/64x64/array.png");
+    return a;
+  case common::Value::TYPE_HASH:
+    static QIcon h(":" PROJECT_NAME_LOWERCASE "/images/64x64/hash.png");
+    return h;
+  case common::Value::TYPE_ZSET:
+    static QIcon z(":" PROJECT_NAME_LOWERCASE "/images/64x64/zset.png");
+    return z;
+  case common::Value::TYPE_INTEGER:
+  case common::Value::TYPE_DOUBLE:
+  case common::Value::TYPE_UINTEGER:
+    static QIcon i(":" PROJECT_NAME_LOWERCASE "/images/64x64/integer.png");
+    return i;
+  case common::Value::TYPE_ERROR:
+    static QIcon er(":" PROJECT_NAME_LOWERCASE "/images/64x64/error.png");
+    return er;
+  default:
+    static QIcon err(":" PROJECT_NAME_LOWERCASE "/images/64x64/error.png");
+    NOTREACHED();
+    return err;
   }
 }
 

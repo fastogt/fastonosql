@@ -290,17 +290,17 @@ ServerInfo::Clients::Clients(const std::string& client_text)
 
 common::Value* ServerInfo::Clients::valueByIndex(unsigned char index) const {
   switch (index) {
-    case 0:
-      return new common::FundamentalValue(connected_clients_);
-    case 1:
-      return new common::FundamentalValue(client_longest_output_list_);
-    case 2:
-      return new common::FundamentalValue(client_biggest_input_buf_);
-    case 3:
-      return new common::FundamentalValue(blocked_clients_);
-    default:
-      NOTREACHED();
-      break;
+  case 0:
+    return new common::FundamentalValue(connected_clients_);
+  case 1:
+    return new common::FundamentalValue(client_longest_output_list_);
+  case 2:
+    return new common::FundamentalValue(client_biggest_input_buf_);
+  case 3:
+    return new common::FundamentalValue(blocked_clients_);
+  default:
+    NOTREACHED();
+    break;
   }
   return nullptr;
 }
@@ -343,25 +343,25 @@ ServerInfo::Memory::Memory(const std::string& memory_text)
 
 common::Value* ServerInfo::Memory::valueByIndex(unsigned char index) const {
   switch (index) {
-    case 0:
-      return new common::FundamentalValue(used_memory_);
-    case 1:
-      return new common::StringValue(used_memory_human_);
-    case 2:
-      return new common::FundamentalValue(used_memory_rss_);
-    case 3:
-      return new common::FundamentalValue(used_memory_peak_);
-    case 4:
-      return new common::StringValue(used_memory_peak_human_);
-    case 5:
-      return new common::FundamentalValue(used_memory_lua_);
-    case 6:
-      return new common::FundamentalValue(mem_fragmentation_ratio_);
-    case 7:
-      return new common::StringValue(mem_allocator_);
-    default:
-      NOTREACHED();
-    break;
+  case 0:
+    return new common::FundamentalValue(used_memory_);
+  case 1:
+    return new common::StringValue(used_memory_human_);
+  case 2:
+    return new common::FundamentalValue(used_memory_rss_);
+  case 3:
+    return new common::FundamentalValue(used_memory_peak_);
+  case 4:
+    return new common::StringValue(used_memory_peak_human_);
+  case 5:
+    return new common::FundamentalValue(used_memory_lua_);
+  case 6:
+    return new common::FundamentalValue(mem_fragmentation_ratio_);
+  case 7:
+    return new common::StringValue(mem_allocator_);
+  default:
+    NOTREACHED();
+  break;
   }
   return nullptr;
 }
@@ -424,37 +424,37 @@ ServerInfo::Persistence::Persistence(const std::string& persistence_text)
 
 common::Value* ServerInfo::Persistence::valueByIndex(unsigned char index) const {
   switch (index) {
-    case 0:
-      return new common::FundamentalValue(loading_);
-    case 1:
-      return new common::FundamentalValue(rdb_changes_since_last_save_);
-    case 2:
-      return new common::FundamentalValue(rdb_bgsave_in_progress_);
-    case 3:
-      return new common::FundamentalValue(rdb_last_save_time_);
-    case 4:
-      return new common::StringValue(rdb_last_bgsave_status_);
-    case 5:
-      return new common::FundamentalValue(rdb_last_bgsave_time_sec_);
-    case 6:
-      return new common::FundamentalValue(rdb_current_bgsave_time_sec_);
-    case 7:
-      return new common::FundamentalValue(aof_enabled_);
-    case 8:
-      return new common::FundamentalValue(aof_rewrite_in_progress_);
-    case 9:
-      return new common::FundamentalValue(aof_rewrite_scheduled_);
-    case 10:
-      return new common::FundamentalValue(aof_last_rewrite_time_sec_);
-    case 11:
-      return new common::FundamentalValue(aof_current_rewrite_time_sec_);
-    case 12:
-      return new common::StringValue(aof_last_bgrewrite_status_);
-    case 13:
-      return new common::StringValue(aof_last_write_status_);
-    default:
-      NOTREACHED();
-      break;
+  case 0:
+    return new common::FundamentalValue(loading_);
+  case 1:
+    return new common::FundamentalValue(rdb_changes_since_last_save_);
+  case 2:
+    return new common::FundamentalValue(rdb_bgsave_in_progress_);
+  case 3:
+    return new common::FundamentalValue(rdb_last_save_time_);
+  case 4:
+    return new common::StringValue(rdb_last_bgsave_status_);
+  case 5:
+    return new common::FundamentalValue(rdb_last_bgsave_time_sec_);
+  case 6:
+    return new common::FundamentalValue(rdb_current_bgsave_time_sec_);
+  case 7:
+    return new common::FundamentalValue(aof_enabled_);
+  case 8:
+    return new common::FundamentalValue(aof_rewrite_in_progress_);
+  case 9:
+    return new common::FundamentalValue(aof_rewrite_scheduled_);
+  case 10:
+    return new common::FundamentalValue(aof_last_rewrite_time_sec_);
+  case 11:
+    return new common::FundamentalValue(aof_current_rewrite_time_sec_);
+  case 12:
+    return new common::StringValue(aof_last_bgrewrite_status_);
+  case 13:
+    return new common::StringValue(aof_last_write_status_);
+  default:
+    NOTREACHED();
+    break;
   }
   return nullptr;
 }
@@ -517,37 +517,37 @@ ServerInfo::Stats::Stats(const std::string& stats_text)
 
 common::Value* ServerInfo::Stats::valueByIndex(unsigned char index) const {
   switch (index) {
-    case 0:
-      return new common::FundamentalValue(total_connections_received_);
-    case 1:
-      return new common::FundamentalValue(total_commands_processed_);
-    case 2:
-      return new common::FundamentalValue(instantaneous_ops_per_sec_);
-    case 3:
-      return new common::FundamentalValue(rejected_connections_);
-    case 4:
-      return new common::FundamentalValue(sync_full_);
-    case 5:
-      return new common::FundamentalValue(sync_partial_ok_);
-    case 6:
-      return new common::FundamentalValue(sync_partial_err_);
-    case 7:
-      return new common::FundamentalValue(expired_keys_);
-    case 8:
-      return new common::FundamentalValue(evicted_keys_);
-    case 9:
-      return new common::FundamentalValue(keyspace_hits_);
-    case 10:
-      return new common::FundamentalValue(keyspace_misses_);
-    case 11:
-      return new common::FundamentalValue(pubsub_channels_);
-    case 12:
-      return new common::FundamentalValue(pubsub_patterns_);
-    case 13:
-      return new common::FundamentalValue(latest_fork_usec_);
-    default:
-      NOTREACHED();
-      break;
+  case 0:
+    return new common::FundamentalValue(total_connections_received_);
+  case 1:
+    return new common::FundamentalValue(total_commands_processed_);
+  case 2:
+    return new common::FundamentalValue(instantaneous_ops_per_sec_);
+  case 3:
+    return new common::FundamentalValue(rejected_connections_);
+  case 4:
+    return new common::FundamentalValue(sync_full_);
+  case 5:
+    return new common::FundamentalValue(sync_partial_ok_);
+  case 6:
+    return new common::FundamentalValue(sync_partial_err_);
+  case 7:
+    return new common::FundamentalValue(expired_keys_);
+  case 8:
+    return new common::FundamentalValue(evicted_keys_);
+  case 9:
+    return new common::FundamentalValue(keyspace_hits_);
+  case 10:
+    return new common::FundamentalValue(keyspace_misses_);
+  case 11:
+    return new common::FundamentalValue(pubsub_channels_);
+  case 12:
+    return new common::FundamentalValue(pubsub_patterns_);
+  case 13:
+    return new common::FundamentalValue(latest_fork_usec_);
+  default:
+    NOTREACHED();
+    break;
   }
   return nullptr;
 }
@@ -593,23 +593,23 @@ ServerInfo::Replication::Replication(const std::string& replication_text)
 
 common::Value* ServerInfo::Replication::valueByIndex(unsigned char index) const {
   switch (index) {
-    case 0:
-      return new common::StringValue(role_);
-    case 1:
-      return new common::FundamentalValue(connected_slaves_);
-    case 2:
-      return new common::FundamentalValue(master_repl_offset_);
-    case 3:
-      return new common::FundamentalValue(backlog_active_);
-    case 4:
-      return new common::FundamentalValue(backlog_size_);
-    case 5:
-      return new common::FundamentalValue(backlog_first_byte_offset_);
-    case 6:
-      return new common::FundamentalValue(backlog_histen_);
-    default:
-      NOTREACHED();
-      break;
+  case 0:
+    return new common::StringValue(role_);
+  case 1:
+    return new common::FundamentalValue(connected_slaves_);
+  case 2:
+    return new common::FundamentalValue(master_repl_offset_);
+  case 3:
+    return new common::FundamentalValue(backlog_active_);
+  case 4:
+    return new common::FundamentalValue(backlog_size_);
+  case 5:
+    return new common::FundamentalValue(backlog_first_byte_offset_);
+  case 6:
+    return new common::FundamentalValue(backlog_histen_);
+  default:
+    NOTREACHED();
+    break;
   }
   return nullptr;
 }
@@ -642,17 +642,17 @@ ServerInfo::Cpu::Cpu(const std::string& cpu_text)
 
 common::Value* ServerInfo::Cpu::valueByIndex(unsigned char index) const {
   switch (index) {
-    case 0:
-      return new common::FundamentalValue(used_cpu_sys_);
-    case 1:
-      return new common::FundamentalValue(used_cpu_user_);
-    case 2:
-      return new common::FundamentalValue(used_cpu_sys_children_);
-    case 3:
-      return new common::FundamentalValue(used_cpu_user_children_);
-    default:
-      NOTREACHED();
-      break;
+  case 0:
+    return new common::FundamentalValue(used_cpu_sys_);
+  case 1:
+    return new common::FundamentalValue(used_cpu_user_);
+  case 2:
+    return new common::FundamentalValue(used_cpu_sys_children_);
+  case 3:
+    return new common::FundamentalValue(used_cpu_user_children_);
+  default:
+    NOTREACHED();
+    break;
   }
   return nullptr;
 }
@@ -674,25 +674,25 @@ ServerInfo::ServerInfo(const Server &serv, const Clients &clients, const Memory 
 
 common::Value* ServerInfo::valueByIndexes(unsigned char property, unsigned char field) const {
   switch (property) {
-    case 0:
-      return server_.valueByIndex(field);
-    case 1:
-      return clients_.valueByIndex(field);
-    case 2:
-      return memory_.valueByIndex(field);
-    case 3:
-      return persistence_.valueByIndex(field);
-    case 4:
-      return stats_.valueByIndex(field);
-    case 5:
-      return replication_.valueByIndex(field);
-    case 6:
-      return cpu_.valueByIndex(field);
-    case 7:
-      return keySp_.valueByIndex(field);
-    default:
-      NOTREACHED();
-      break;
+  case 0:
+    return server_.valueByIndex(field);
+  case 1:
+    return clients_.valueByIndex(field);
+  case 2:
+    return memory_.valueByIndex(field);
+  case 3:
+    return persistence_.valueByIndex(field);
+  case 4:
+    return stats_.valueByIndex(field);
+  case 5:
+    return replication_.valueByIndex(field);
+  case 6:
+    return cpu_.valueByIndex(field);
+  case 7:
+    return keySp_.valueByIndex(field);
+  default:
+    NOTREACHED();
+    break;
   }
   return nullptr;
 }
@@ -825,29 +825,29 @@ ServerInfo* makeRedisServerInfo(const std::string& content) {
       if (pos != std::string::npos) {
         std::string part = content.substr(i + 1, pos - i - 1);
         switch (j) {
-          case 0:
-            result->server_ = ServerInfo::Server(part);
-            break;
-          case 1:
-            result->clients_ = ServerInfo::Clients(part);
-            break;
-          case 2:
-            result->memory_ = ServerInfo::Memory(part);
-            break;
-          case 3:
-            result->persistence_ = ServerInfo::Persistence(part);
-            break;
-          case 4:
-            result->stats_ = ServerInfo::Stats(part);
-            break;
-          case 5:
-            result->replication_ = ServerInfo::Replication(part);
-            break;
-          case 6:
-            result->cpu_ = ServerInfo::Cpu(part);
-            break;
-          default:
-            break;
+        case 0:
+          result->server_ = ServerInfo::Server(part);
+          break;
+        case 1:
+          result->clients_ = ServerInfo::Clients(part);
+          break;
+        case 2:
+          result->memory_ = ServerInfo::Memory(part);
+          break;
+        case 3:
+          result->persistence_ = ServerInfo::Persistence(part);
+          break;
+        case 4:
+          result->stats_ = ServerInfo::Stats(part);
+          break;
+        case 5:
+          result->replication_ = ServerInfo::Replication(part);
+          break;
+        case 6:
+          result->cpu_ = ServerInfo::Cpu(part);
+          break;
+        default:
+          break;
         }
         i = pos-1;
         ++j;

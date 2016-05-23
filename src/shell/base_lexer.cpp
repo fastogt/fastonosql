@@ -89,10 +89,10 @@ BaseQsciLexer::BaseQsciLexer(QObject* parent)
 
 QString BaseQsciLexer::description(int style) const {
   switch (style) {
-    case Default:
-      return "Default";
-    case Command:
-      return "Command";
+  case Default:
+    return "Default";
+  case Command:
+    return "Command";
   }
 
   return QString(style);
@@ -100,10 +100,10 @@ QString BaseQsciLexer::description(int style) const {
 
 QColor BaseQsciLexer::defaultColor(int style) const {
   switch (style) {
-    case Default:
-      return Qt::black;
-    case Command:
-      return Qt::red;
+  case Default:
+    return Qt::black;
+  case Command:
+    return Qt::red;
   }
 
   return Qt::black;

@@ -1414,50 +1414,50 @@ common::Error DBConnection::cliFormatReplyRaw(FastoObjectArray* ar, redisReply* 
   }
 
   switch (r->type) {
-    case REDIS_REPLY_NIL: {
-      common::Value* val = common::Value::createNullValue();
-      ar->append(val);
-      break;
-    }
-    case REDIS_REPLY_ERROR: {
-      std::string str(r->str, r->len);
-      common::ErrorValue* val = common::Value::createErrorValue(str,
-                                                                common::ErrorValue::E_NONE,
-                                                                common::logging::L_WARNING);
-      ar->append(val);
-      break;
-    }
-    case REDIS_REPLY_STATUS:
-    case REDIS_REPLY_STRING: {
-      common::StringValue* val = common::Value::createStringValue(std::string(r->str, r->len));
-      ar->append(val);
-      break;
-    }
-    case REDIS_REPLY_INTEGER: {
-      common::FundamentalValue* val = common::Value::createIntegerValue(r->integer);
-      ar->append(val);
-      break;
-    }
-    case REDIS_REPLY_ARRAY: {
-      common::ArrayValue* arv = common::Value::createArrayValue();
-      FastoObjectArray* child = new FastoObjectArray(ar, arv, config_.delimiter, config_.ns_separator);
-      ar->addChildren(child);
+  case REDIS_REPLY_NIL: {
+    common::Value* val = common::Value::createNullValue();
+    ar->append(val);
+    break;
+  }
+  case REDIS_REPLY_ERROR: {
+    std::string str(r->str, r->len);
+    common::ErrorValue* val = common::Value::createErrorValue(str,
+                                                              common::ErrorValue::E_NONE,
+                                                              common::logging::L_WARNING);
+    ar->append(val);
+    break;
+  }
+  case REDIS_REPLY_STATUS:
+  case REDIS_REPLY_STRING: {
+    common::StringValue* val = common::Value::createStringValue(std::string(r->str, r->len));
+    ar->append(val);
+    break;
+  }
+  case REDIS_REPLY_INTEGER: {
+    common::FundamentalValue* val = common::Value::createIntegerValue(r->integer);
+    ar->append(val);
+    break;
+  }
+  case REDIS_REPLY_ARRAY: {
+    common::ArrayValue* arv = common::Value::createArrayValue();
+    FastoObjectArray* child = new FastoObjectArray(ar, arv, config_.delimiter, config_.ns_separator);
+    ar->addChildren(child);
 
-      for (size_t i = 0; i < r->elements; ++i) {
-        common::Error er = cliFormatReplyRaw(child, r->element[i]);
-        if (er && er->isError()) {
-          return er;
-        }
+    for (size_t i = 0; i < r->elements; ++i) {
+      common::Error er = cliFormatReplyRaw(child, r->element[i]);
+      if (er && er->isError()) {
+        return er;
       }
-      break;
     }
-    default: {
-      char tmp2[128] = {0};
-      common::SNPrintf(tmp2, sizeof(tmp2), "Unknown reply type: %d", r->type);
-      common::ErrorValue* val = common::Value::createErrorValue(tmp2, common::ErrorValue::E_NONE,
-                                                                common::logging::L_WARNING);
-      ar->append(val);
-    }
+    break;
+  }
+  default: {
+    char tmp2[128] = {0};
+    common::SNPrintf(tmp2, sizeof(tmp2), "Unknown reply type: %d", r->type);
+    common::ErrorValue* val = common::Value::createErrorValue(tmp2, common::ErrorValue::E_NONE,
+                                                              common::logging::L_WARNING);
+    ar->append(val);
+  }
   }
 
   return common::Error();
@@ -1471,52 +1471,52 @@ common::Error DBConnection::cliFormatReplyRaw(FastoObject* out, redisReply* r) {
 
   FastoObject* obj = nullptr;
   switch (r->type) {
-    case REDIS_REPLY_NIL: {
-      common::Value* val = common::Value::createNullValue();
-      obj = new FastoObject(out, val, config_.delimiter, config_.ns_separator);
-      out->addChildren(obj);
-      break;
+  case REDIS_REPLY_NIL: {
+    common::Value* val = common::Value::createNullValue();
+    obj = new FastoObject(out, val, config_.delimiter, config_.ns_separator);
+    out->addChildren(obj);
+    break;
+  }
+  case REDIS_REPLY_ERROR: {
+    if (strcasestr(r->str, "NOAUTH")) { //"NOAUTH Authentication required."
+      isAuth_ = false;
     }
-    case REDIS_REPLY_ERROR: {
-      if (strcasestr(r->str, "NOAUTH")) { //"NOAUTH Authentication required."
-        isAuth_ = false;
-      }
-      std::string str(r->str, r->len);
-      return common::make_error_value(str, common::ErrorValue::E_ERROR);
-    }
-    case REDIS_REPLY_STATUS:
-    case REDIS_REPLY_STRING: {
-      std::string str(r->str, r->len);
-      common::StringValue* val = common::Value::createStringValue(str);
-      obj = new FastoObject(out, val, config_.delimiter, config_.ns_separator);
-      out->addChildren(obj);
-      break;
-    }
-    case REDIS_REPLY_INTEGER: {
-      common::FundamentalValue* val = common::Value::createIntegerValue(r->integer);
-      obj = new FastoObject(out, val, config_.delimiter, config_.ns_separator);
-      out->addChildren(obj);
-      break;
-    }
-    case REDIS_REPLY_ARRAY: {
-      common::ArrayValue* arv = common::Value::createArrayValue();
-      FastoObjectArray* child = new FastoObjectArray(out, arv, config_.delimiter,
-                                                     config_.ns_separator);
-      out->addChildren(child);
+    std::string str(r->str, r->len);
+    return common::make_error_value(str, common::ErrorValue::E_ERROR);
+  }
+  case REDIS_REPLY_STATUS:
+  case REDIS_REPLY_STRING: {
+    std::string str(r->str, r->len);
+    common::StringValue* val = common::Value::createStringValue(str);
+    obj = new FastoObject(out, val, config_.delimiter, config_.ns_separator);
+    out->addChildren(obj);
+    break;
+  }
+  case REDIS_REPLY_INTEGER: {
+    common::FundamentalValue* val = common::Value::createIntegerValue(r->integer);
+    obj = new FastoObject(out, val, config_.delimiter, config_.ns_separator);
+    out->addChildren(obj);
+    break;
+  }
+  case REDIS_REPLY_ARRAY: {
+    common::ArrayValue* arv = common::Value::createArrayValue();
+    FastoObjectArray* child = new FastoObjectArray(out, arv, config_.delimiter,
+                                                   config_.ns_separator);
+    out->addChildren(child);
 
-      for (size_t i = 0; i < r->elements; ++i) {
-        common::Error er = cliFormatReplyRaw(child, r->element[i]);
-        if (er && er->isError()) {
-          return er;
-        }
+    for (size_t i = 0; i < r->elements; ++i) {
+      common::Error er = cliFormatReplyRaw(child, r->element[i]);
+      if (er && er->isError()) {
+        return er;
       }
-      break;
     }
-    default: {
-      char tmp2[128] = {0};
-      common::SNPrintf(tmp2, sizeof(tmp2), "Unknown reply type: %d", r->type);
-      return common::make_error_value(tmp2, common::ErrorValue::E_ERROR);
-    }
+    break;
+  }
+  default: {
+    char tmp2[128] = {0};
+    common::SNPrintf(tmp2, sizeof(tmp2), "Unknown reply type: %d", r->type);
+    return common::make_error_value(tmp2, common::ErrorValue::E_ERROR);
+  }
   }
 
   return common::Error();

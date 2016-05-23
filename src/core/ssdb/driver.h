@@ -26,8 +26,6 @@ namespace fastonosql {
 namespace core {
 namespace ssdb {
 
-common::Error testConnection(ConnectionSettings* settings);
-
 class Driver
   : public IDriverRemote {
   Q_OBJECT

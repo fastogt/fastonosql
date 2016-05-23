@@ -94,19 +94,19 @@ ServerInfo::Stats::Stats(const std::string& common_text) {
 
 common::Value* ServerInfo::Stats::valueByIndex(unsigned char index) const {
   switch (index) {
-    case 0:
-      return new common::FundamentalValue(compactions_level);
-    case 1:
-      return new common::FundamentalValue(file_size_mb);
-    case 2:
-      return new common::FundamentalValue(time_sec);
-    case 3:
-      return new common::FundamentalValue(read_mb);
-    case 4:
-      return new common::FundamentalValue(write_mb);
-    default:
-      NOTREACHED();
-      break;
+  case 0:
+    return new common::FundamentalValue(compactions_level);
+  case 1:
+    return new common::FundamentalValue(file_size_mb);
+  case 2:
+    return new common::FundamentalValue(time_sec);
+  case 3:
+    return new common::FundamentalValue(read_mb);
+  case 4:
+    return new common::FundamentalValue(write_mb);
+  default:
+    NOTREACHED();
+    break;
   }
   return nullptr;
 }
@@ -122,11 +122,11 @@ ServerInfo::ServerInfo(const Stats &stats)
 common::Value* ServerInfo::valueByIndexes(unsigned char property,
                                                  unsigned char field) const {
   switch (property) {
-    case 0:
-      return stats_.valueByIndex(field);
-    default:
-      NOTREACHED();
-      break;
+  case 0:
+    return stats_.valueByIndex(field);
+  default:
+    NOTREACHED();
+    break;
   }
   return nullptr;
 }
