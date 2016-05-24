@@ -43,7 +43,7 @@ class ConnectionSettingsPath {
   static ConnectionSettingsPath root();
 
  private:
-  ConnectionSettingsPath(const common::file_system::ascii_string_path& path);
+  explicit ConnectionSettingsPath(const common::file_system::ascii_string_path& path);
   common::file_system::ascii_string_path path_;
 };
 

@@ -29,7 +29,7 @@ namespace redis {
 class RedisDiscoverySentinelInfo
   : public ServerDiscoverySentinelInfo {
  public:
-  RedisDiscoverySentinelInfo(const ServerCommonInfo& args);
+  explicit RedisDiscoverySentinelInfo(const ServerCommonInfo& args);
 };
 
 common::Error makeServerCommonInfo(struct redisReply* repl_info, ServerCommonInfo* info);
