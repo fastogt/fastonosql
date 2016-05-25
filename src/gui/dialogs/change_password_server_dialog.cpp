@@ -20,18 +20,19 @@
 
 #include <QDialogButtonBox>
 #include <QLayout>
-#include <QLineEdit>
 #include <QLabel>
+#include <QLineEdit>
 #include <QMessageBox>
 
 #include "common/qt/convert_string.h"
 
+#include "fasto/qt/gui/glass_widget.h"
+
 #include "core/iserver.h"
 
-#include "fasto/qt/gui/glass_widget.h"
-#include "gui/gui_factory.h"
-
 #include "translations/global.h"
+
+#include "gui/gui_factory.h"
 
 namespace {
   const QString trPassword = QObject::tr("Password:");
@@ -90,7 +91,8 @@ ChangePasswordServerDialog::ChangePasswordServerDialog(const QString& title,
 
 void ChangePasswordServerDialog::tryToCreatePassword() {
   if (validateInput()) {
-    core::events_info::ChangePasswordRequest req(this, std::string(), common::convertToString(passwordLineEdit_->text()));
+    std::string password = common::convertToString(passwordLineEdit_->text());
+    core::events_info::ChangePasswordRequest req(this, std::string(), password);
     server_->changePassword(req);
   } else {
     QMessageBox::critical(this, translations::trError, trInvalidInput);

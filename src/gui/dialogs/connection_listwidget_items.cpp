@@ -73,7 +73,8 @@ IConnectionListWidgetItem::itemConnectionType ConnectionListWidgetItem::type() c
   return Common;
 }
 
-SentinelConnectionWidgetItem::SentinelConnectionWidgetItem(core::serverTypes st, SentinelConnectionListWidgetItemContainer* parent)
+SentinelConnectionWidgetItem::SentinelConnectionWidgetItem(core::serverTypes st,
+                                                           SentinelConnectionListWidgetItemContainer* parent)
   : ConnectionListWidgetItemDiscovered(st, core::SENTINEL, parent) {
 }
 
@@ -81,7 +82,9 @@ IConnectionListWidgetItem::itemConnectionType SentinelConnectionWidgetItem::type
   return Sentinel;
 }
 
-ConnectionListWidgetItemDiscovered::ConnectionListWidgetItemDiscovered(core::serverTypes st, core::serverMode md, QTreeWidgetItem* parent)
+ConnectionListWidgetItemDiscovered::ConnectionListWidgetItemDiscovered(core::serverTypes st,
+                                                                       core::serverMode md,
+                                                                       QTreeWidgetItem* parent)
   : ConnectionListWidgetItem(parent), server_type_(st), server_mode_(md) {
   std::string sert = common::convertToString(st);
   setText(2, common::convertFromString<QString>(sert));
@@ -99,7 +102,8 @@ IConnectionListWidgetItem::itemConnectionType ConnectionListWidgetItemDiscovered
   return Discovered;
 }
 
-SentinelConnectionListWidgetItemContainer::SentinelConnectionListWidgetItemContainer(core::ISentinelSettingsBaseSPtr connection, QTreeWidgetItem* parent)
+SentinelConnectionListWidgetItemContainer::SentinelConnectionListWidgetItemContainer(core::ISentinelSettingsBaseSPtr connection,
+                                                                                     QTreeWidgetItem* parent)
   : QTreeWidgetItem(parent), connection_() {
   setConnection(connection);
 
@@ -133,7 +137,8 @@ core::ISentinelSettingsBaseSPtr SentinelConnectionListWidgetItemContainer::conne
   return connection_;
 }
 
-ClusterConnectionListWidgetItemContainer::ClusterConnectionListWidgetItemContainer(core::IClusterSettingsBaseSPtr connection, QTreeWidgetItem* parent)
+ClusterConnectionListWidgetItemContainer::ClusterConnectionListWidgetItemContainer(core::IClusterSettingsBaseSPtr connection,
+                                                                                   QTreeWidgetItem* parent)
   : QTreeWidgetItem(parent), connection_() {
   setConnection(connection);
 

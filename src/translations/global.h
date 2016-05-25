@@ -67,6 +67,12 @@ namespace translations {
   extern const QString trExecute;
   extern const QString trPreferences;
   extern const QString trConnections;
+  extern const QString trDeleteConnectionTemplate_1S;
+  extern const QString trDeleteClusterTemplate_1S;
+  extern const QString trDeleteSentinelTemplate_1S;
+  extern const QString trTimeTemplate_1S;
+  extern const QString trConnectionStatusTemplate_1S;
+  extern const QString trSuccess;
   extern const QString trReload;
   extern const QString trDuplicate;
   extern const QString trType;
@@ -81,6 +87,7 @@ namespace translations {
   extern const QString trJson;
   extern const QString trCsv;
   extern const QString trFolder;
+  extern const QString trLoggingEnabled;
   extern const QString trHex;
   extern const QString trMsgPack;
   extern const QString trGzip;

@@ -57,7 +57,7 @@ class ServerInfo
   : public IServerInfo {
  public:
   struct Common
-    : FieldByIndex {
+    : IStateField {
     Common();
     explicit Common(const std::string& common_text);
     common::Value* valueByIndex(unsigned char index) const;

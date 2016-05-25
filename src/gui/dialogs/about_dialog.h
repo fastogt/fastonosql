@@ -27,7 +27,7 @@ class AboutDialog
   : public QDialog {
   Q_OBJECT
  public:
-  explicit AboutDialog(QWidget* parent);
+  explicit AboutDialog(QWidget* parent = 0);
 };
 
 }  // namespace gui

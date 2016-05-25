@@ -288,7 +288,7 @@ void SentinelDialog::remove() {
   }
 
   // Ask user
-  int answer = QMessageBox::question(this, "Connections", QString("Really delete \"%1\" connection?").arg(currentItem->text(0)),
+  int answer = QMessageBox::question(this, translations::trConnections, translations::trDeleteConnectionTemplate_1S.arg(currentItem->text(0)),
                                      QMessageBox::Yes, QMessageBox::No, QMessageBox::NoButton);
 
   if (answer != QMessageBox::Yes)
@@ -338,7 +338,7 @@ void SentinelDialog::changeEvent(QEvent* e) {
 }
 
 void SentinelDialog::retranslateUi() {
-  logging_->setText(tr("Logging enabled"));
+  logging_->setText(translations::trLoggingEnabled);
   folderLabel_->setText(translations::trFolder);
 }
 

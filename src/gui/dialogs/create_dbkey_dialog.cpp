@@ -21,26 +21,33 @@
 #include <vector>
 #include <string>
 
-#include <QDialogButtonBox>
-#include <QLineEdit>
 #include <QComboBox>
-#include <QMessageBox>
-#include <QLabel>
-#include <QListWidget>
-#include <QTableWidget>
-#include <QHeaderView>
-#include <QPushButton>
-#include <QMenu>
+#include <QDialogButtonBox>
+#include <QEvent>
 #include <QGridLayout>
 #include <QGroupBox>
-#include <QEvent>
+#include <QHeaderView>
+#include <QLabel>
+#include <QLineEdit>
+#include <QListWidget>
+#include <QMessageBox>
+#include <QMenu>
+#include <QPushButton>
+#include <QTableWidget>
 
 #include "common/qt/convert_string.h"
+
+#include "translations/global.h"
 
 #include "gui/gui_factory.h"
 #include "gui/dialogs/input_dialog.h"
 
-#include "translations/global.h"
+namespace {
+  const QString trType = QObject::tr("Type:");
+  const QString trKey = QObject::tr("Key:");
+  const QString trValue = QObject::tr("Value:");
+  const QString trInput = QObject::tr("Key/Value input");
+}
 
 namespace fastonosql {
 namespace gui {
@@ -52,7 +59,7 @@ CreateDbKeyDialog::CreateDbKeyDialog(const QString& title, core::connectionTypes
 
   QGridLayout* kvLayout = new QGridLayout;
 
-  kvLayout->addWidget(new QLabel(tr("Type:")), 0, 0);
+  kvLayout->addWidget(new QLabel(trType), 0, 0);
   typesCombo_ = new QComboBox;
   std::vector<common::Value::Type> types = supportedTypesFromType(type);
   int string_index = 0;
@@ -71,12 +78,12 @@ CreateDbKeyDialog::CreateDbKeyDialog(const QString& title, core::connectionTypes
   kvLayout->addWidget(typesCombo_, 0, 1);
 
   // key layout
-  kvLayout->addWidget(new QLabel(tr("Key:")), 1, 0);
+  kvLayout->addWidget(new QLabel(trKey), 1, 0);
   keyEdit_ = new QLineEdit;
   kvLayout->addWidget(keyEdit_, 1, 1);
 
   // value layout
-  kvLayout->addWidget(new QLabel(tr("Value:")), 2, 0);
+  kvLayout->addWidget(new QLabel(trValue), 2, 0);
   valueEdit_ = new QLineEdit;
   kvLayout->addWidget(valueEdit_, 2, 1);
   valueEdit_->setVisible(true);
@@ -266,7 +273,7 @@ bool CreateDbKeyDialog::validateAndApply() {
 }
 
 void CreateDbKeyDialog::retranslateUi() {
-  generalBox_->setTitle(tr("Key/Value input"));
+  generalBox_->setTitle(trInput);
 }
 
 common::Value* CreateDbKeyDialog::item() const {

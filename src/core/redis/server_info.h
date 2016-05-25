@@ -124,7 +124,7 @@ namespace redis {
 struct ServerInfo
       : public IServerInfo {
   struct Server
-      : FieldByIndex {
+      : IStateField {
     Server();
     explicit Server(const std::string& server_text);
     common::Value* valueByIndex(unsigned char index) const;
@@ -148,7 +148,7 @@ struct ServerInfo
   } server_;
 
   struct Clients
-      : FieldByIndex {
+      : IStateField {
     Clients();
     explicit Clients(const std::string& client_text);
     common::Value* valueByIndex(unsigned char index) const;
@@ -160,7 +160,7 @@ struct ServerInfo
   } clients_;
 
   struct Memory
-      : FieldByIndex {
+      : IStateField {
     Memory();
     explicit Memory(const std::string& memory_text);
     common::Value* valueByIndex(unsigned char index) const;
@@ -176,7 +176,7 @@ struct ServerInfo
   } memory_;
 
   struct Persistence
-      : FieldByIndex {
+      : IStateField {
     Persistence();
     explicit Persistence(const std::string& persistence_text);
     common::Value* valueByIndex(unsigned char index) const;
@@ -198,7 +198,7 @@ struct ServerInfo
   } persistence_;
 
   struct Stats
-      : FieldByIndex {
+      : IStateField {
     Stats();
     explicit Stats(const std::string& stats_text);
     common::Value* valueByIndex(unsigned char index) const;
@@ -220,7 +220,7 @@ struct ServerInfo
   } stats_;
 
   struct Replication
-      : FieldByIndex {
+      : IStateField {
     Replication();
     explicit Replication(const std::string& replication_text);
     common::Value* valueByIndex(unsigned char index) const;
@@ -235,7 +235,7 @@ struct ServerInfo
   } replication_;
 
   struct Cpu
-      : FieldByIndex {
+      : IStateField {
     Cpu();
     explicit Cpu(const std::string& cpu_text);
     common::Value* valueByIndex(unsigned char index) const;
@@ -247,7 +247,7 @@ struct ServerInfo
   } cpu_;
 
   struct Keyspace
-      : FieldByIndex {
+      : IStateField {
     common::Value* valueByIndex(unsigned char index) const;
   } keySp_;
 

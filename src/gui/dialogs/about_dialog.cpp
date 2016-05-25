@@ -18,16 +18,15 @@
 
 #include "gui/dialogs/about_dialog.h"
 
-#include <QPushButton>
-#include <QLabel>
 #include <QDialogButtonBox>
 #include <QGridLayout>
+#include <QLabel>
+#include <QPushButton>
 
 #include "gui/gui_factory.h"
 
 namespace {
-
-const QString description = QObject::tr(
+  const QString trDescription = QObject::tr(
 #if defined(PROJECT_BUILD_TYPE_VERSION) && defined(PROJECT_BUILD_RELEASE)
     "<h3>" PROJECT_NAME_TITLE " " PROJECT_VERSION "<br/>Revision:" PROJECT_GIT_VERSION "</h3>"
 #else
@@ -45,6 +44,8 @@ const QString description = QObject::tr(
     "The program is provided AS IS with NO WARRANTY OF ANY KIND, "
     "INCLUDING THE WARRANTY OF DESIGN, MERCHANTABILITY AND FITNESS FOR A "
     "PARTICULAR PURPOSE.<br/>");
+
+  const QString tAboutTitle = QObject::tr("About " PROJECT_NAME_TITLE);
 }  // namespace
 
 namespace fastonosql {
@@ -52,11 +53,11 @@ namespace gui {
 
 AboutDialog::AboutDialog(QWidget* parent)
   : QDialog(parent) {
-  setWindowTitle("About " PROJECT_NAME_TITLE);
+  setWindowTitle(tAboutTitle);
   setWindowFlags(windowFlags() & ~Qt::WindowContextHelpButtonHint);
   QGridLayout* glayout = new QGridLayout;
 
-  QLabel* copyRightLabel = new QLabel(description);
+  QLabel* copyRightLabel = new QLabel(trDescription);
   copyRightLabel->setWordWrap(true);
   copyRightLabel->setOpenExternalLinks(true);
   copyRightLabel->setTextInteractionFlags(Qt::TextBrowserInteraction);

@@ -665,7 +665,7 @@ void MainWindow::retranslateUi() {
   windowAction_->setText(translations::trWindow);
   fullScreanAction_->setText(translations::trEnterFullScreen);
   reportBugAction_->setText(translations::trReportBug);
-  aboutAction_->setText(tr("About %1...").arg(PROJECT_NAME));
+  aboutAction_->setText(tr("About %1...").arg(PROJECT_NAME_TITLE));
   helpAction_->setText(translations::trHelp);
   explorerAction_->setText(translations::trExpTree);
   logsAction_->setText(translations::trLogs);

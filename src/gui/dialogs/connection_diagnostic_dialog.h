@@ -72,6 +72,7 @@ class ConnectionDiagnosticDialog
 
  private:
   void testConnection(core::IConnectionSettingsBaseSPtr connection);
+
   fasto::qt::gui::GlassWidget* glassWidget_;
   QLabel* executeTimeLabel_;
   QLabel* statusLabel_;

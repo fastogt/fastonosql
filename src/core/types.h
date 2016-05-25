@@ -96,7 +96,7 @@ class IServerInfo {
 
 typedef common::shared_ptr<IServerInfo> IServerInfoSPtr;
 
-struct FieldByIndex {
+struct IStateField {
   virtual common::Value* valueByIndex(unsigned char index) const = 0;
 };
 

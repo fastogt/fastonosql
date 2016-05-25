@@ -44,6 +44,10 @@
 namespace {
 
 const QString invalidDbType = QObject::tr("Invalid database type!");
+const QString trTitle = QObject::tr("Connection Settings");
+const QString trSelectPrivateKey = QObject::tr("Select private key file");
+const QString trPrivateKey = QObject::tr("Private key files (*.*)");
+const char* defaultNameConnectionFolder = "/";
 
 QString stableCommandLine(QString input) {
   return input.replace('\n', "\\n");
@@ -53,14 +57,14 @@ QString toRawCommandLine(QString input) {
   return input.replace("\\n", "\n");
 }
 
-const char* defaultNameConnectionFolder = "/";
 }  // namespace
 
 namespace fastonosql {
 namespace gui {
 
 ConnectionDialog::ConnectionDialog(QWidget* parent, core::IConnectionSettingsBase* connection,
-                                   const std::vector<core::connectionTypes>& availibleTypes, const QString& connectionName)
+                                   const std::vector<core::connectionTypes>& availibleTypes,
+                                   const QString& connectionName)
   : QDialog(parent), connection_(connection) {
   setWindowIcon(GuiFactory::instance().serverIcon());
   setWindowFlags(windowFlags() & ~Qt::WindowContextHelpButtonHint);  // Remove help button (?)
@@ -340,8 +344,8 @@ void ConnectionDialog::togglePassphraseEchoMode() {
 }
 
 void ConnectionDialog::setPrivateFile() {
-  QString filepath = QFileDialog::getOpenFileName(this, tr("Select private key file"),
-  privateKeyBox_->text(), tr("Private key files (*.*)"));
+  QString filepath = QFileDialog::getOpenFileName(this, trSelectPrivateKey,
+                                                  privateKeyBox_->text(), trPrivateKey);
   if (filepath.isNull()) {
     return;
   }
@@ -364,9 +368,9 @@ void ConnectionDialog::changeEvent(QEvent* e) {
 }
 
 void ConnectionDialog::retranslateUi() {
-  setWindowTitle(tr("Connection Settings"));
+  setWindowTitle(trTitle);
   folderLabel_->setText(translations::trFolder);
-  logging_->setText(tr("Logging enabled"));
+  logging_->setText(translations::trLoggingEnabled);
   useSsh_->setText(tr("Use SSH tunnel"));
   passwordLabel_->setText(tr("User Password:"));
   sshPrivateKeyLabel_->setText(tr("Private key:"));
@@ -387,7 +391,7 @@ bool ConnectionDialog::validateAndApply() {
     conFolder = defaultNameConnectionFolder;
   }
   core::IConnectionSettingsRemoteSSH::connection_path_t path(common::file_system::stable_dir_path(conFolder) + conName);
-  if (isSSHType) {    
+  if (isSSHType) {
     core::IConnectionSettingsRemoteSSH* newConnection = core::IConnectionSettingsRemoteSSH::createFromType(currentType, path, common::net::hostAndPort());
     connection_.reset(newConnection);
 

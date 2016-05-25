@@ -41,7 +41,7 @@ class ServerInfo
  public:
   // Compactions\nLevel  Files Size(MB) Time(sec) Read(MB) Write(MB)\n
   struct Stats
-      : FieldByIndex {
+      : IStateField {
     Stats();
     explicit Stats(const std::string& common_text);
     common::Value* valueByIndex(unsigned char index) const;

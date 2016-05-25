@@ -45,7 +45,8 @@ class ChangePasswordServerDialog
     fix_width = 240
   };
 
-  explicit ChangePasswordServerDialog(const QString& title, core::IServerSPtr server, QWidget* parent);
+  explicit ChangePasswordServerDialog(const QString& title, core::IServerSPtr server,
+                                      QWidget* parent = 0);
 
  private Q_SLOTS:
   void tryToCreatePassword();
@@ -54,6 +55,7 @@ class ChangePasswordServerDialog
 
  private:
   bool validateInput();
+
   fasto::qt::gui::GlassWidget* glassWidget_;
   QLineEdit* passwordLineEdit_;
   QLineEdit* confPasswordLineEdit_;

@@ -21,21 +21,20 @@
 #include <vector>
 #include <string>
 
-#include <QDialogButtonBox>
-#include <QEvent>
-#include <QMenu>
-#include <QPushButton>
-#include <QHBoxLayout>
-#include <QCheckBox>
-#include <QComboBox>
-#include <QLineEdit>
-#include <QMessageBox>
-#include <QTreeWidget>
-#include <QToolBar>
 #include <QAction>
 #include <QCheckBox>
-#include <QSpinBox>
+#include <QComboBox>
+#include <QDialogButtonBox>
+#include <QEvent>
+#include <QHBoxLayout>
 #include <QLabel>
+#include <QLineEdit>
+#include <QMenu>
+#include <QMessageBox>
+#include <QPushButton>
+#include <QSpinBox>
+#include <QTreeWidget>
+#include <QToolBar>
 
 #include "gui/dialogs/connection_diagnostic_dialog.h"
 #include "gui/dialogs/connection_dialog.h"
@@ -44,14 +43,13 @@
 
 #include "common/qt/convert_string.h"
 
-#include "gui/gui_factory.h"
-
 #include "translations/global.h"
+
+#include "gui/gui_factory.h"
 
 namespace {
   const QString defaultNameConnection = "New Cluster Connection";
   const char* defaultNameConnectionFolder = "/";
-  const QString invalidDbType = QObject::tr("Invalid database type!");
 }
 
 namespace fastonosql {
@@ -328,7 +326,7 @@ void ClusterDialog::remove() {
   }
 
   // Ask user
-  int answer = QMessageBox::question(this, "Connections", QString("Really delete \"%1\" connection?").arg(currentItem->text(0)),
+  int answer = QMessageBox::question(this, translations::trConnections, translations::trDeleteConnectionTemplate_1S.arg(currentItem->text(0)),
                                      QMessageBox::Yes, QMessageBox::No, QMessageBox::NoButton);
 
   if (answer != QMessageBox::Yes)
@@ -375,7 +373,7 @@ void ClusterDialog::changeEvent(QEvent* e) {
 }
 
 void ClusterDialog::retranslateUi() {
-  logging_->setText(tr("Logging enabled"));
+  logging_->setText(translations::trLoggingEnabled);
   folderLabel_->setText(translations::trFolder);
   setDefault_->setText(translations::trSetAsStartNode);
 }

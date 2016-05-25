@@ -66,6 +66,12 @@ namespace translations {
   const QString trExecute = QObject::tr("Execute");
   const QString trPreferences = QObject::tr("Preferences");
   const QString trConnections = QObject::tr("Connections");
+  const QString trDeleteConnectionTemplate_1S = QObject::tr("Really delete \"%1\" connection?");
+  const QString trDeleteClusterTemplate_1S = QObject::tr("Really delete \"%1\" cluster?");
+  const QString trDeleteSentinelTemplate_1S = QObject::tr("Really delete \"%1\" sentinel?");
+  const QString trTimeTemplate_1S = QObject::tr("Time execute msec: %1");
+  const QString trConnectionStatusTemplate_1S = QObject::tr("Connection state: %1");
+  const QString trSuccess = QObject::tr("Success");
   const QString trReload = QObject::tr("Reload");
   const QString trDuplicate = QObject::tr("Duplicate");
   const QString trType = QObject::tr("Type");
@@ -81,6 +87,7 @@ namespace translations {
   const QString trJson = QObject::tr("Json");
   const QString trCsv = QObject::tr("Csv");
   const QString trFolder = QObject::tr("Folder");
+  const QString trLoggingEnabled = QObject::tr("Logging enabled");
   const QString trHex = QObject::tr("Hex");
   const QString trMsgPack = QObject::tr("MsgPack");
   const QString trGzip = QObject::tr("Gzip");

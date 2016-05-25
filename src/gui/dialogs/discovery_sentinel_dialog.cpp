@@ -37,8 +37,6 @@
 #include "translations/global.h"
 
 namespace {
-  const QString timeTemplate = "Time execute msec: %1";
-  const QString connectionStatusTemplate = "Connection state: %1";
   const QSize stateIconSize = QSize(64, 64);
 }
 
@@ -66,7 +64,7 @@ void DiscoverySentinelConnection::routine() {
                           common::convertFromString<QString>(er->description()), inf);
   } else {
     emit connectionResult(true, common::time::current_mstime() - startTime_,
-                          "Success", inf);
+                          translations::trSuccess, inf);
   }
 }
 
@@ -79,10 +77,10 @@ DiscoverySentinelDiagnosticDialog::DiscoverySentinelDiagnosticDialog(QWidget* pa
   QVBoxLayout* mainLayout = new QVBoxLayout;
 
   executeTimeLabel_ = new QLabel;
-  executeTimeLabel_->setText(connectionStatusTemplate.arg("execute..."));
+  executeTimeLabel_->setText(translations::trConnectionStatusTemplate_1S.arg("execute..."));
   mainLayout->addWidget(executeTimeLabel_);
 
-  statusLabel_ = new QLabel(timeTemplate.arg("calculate..."));
+  statusLabel_ = new QLabel(translations::trTimeTemplate_1S.arg("calculate..."));
   iconLabel_ = new QLabel;
   QIcon icon = GuiFactory::instance().failIcon();
   const QPixmap pm = icon.pixmap(stateIconSize);
@@ -140,7 +138,7 @@ void DiscoverySentinelDiagnosticDialog::connectionResultReady(bool suc, qint64 m
                                                  std::vector<core::ServerDiscoverySentinelInfoSPtr> infos) {
   glassWidget_->stop();
 
-  executeTimeLabel_->setText(timeTemplate.arg(mstimeExecute));
+  executeTimeLabel_->setText(translations::trTimeTemplate_1S.arg(mstimeExecute));
   listWidget_->setEnabled(suc);
   listWidget_->clear();
   if (suc) {
@@ -159,7 +157,7 @@ void DiscoverySentinelDiagnosticDialog::connectionResultReady(bool suc, qint64 m
       listWidget_->addTopLevelItem(item);
     }
   }
-  statusLabel_->setText(connectionStatusTemplate.arg(resultText));
+  statusLabel_->setText(translations::trConnectionStatusTemplate_1S.arg(resultText));
 }
 
 void DiscoverySentinelDiagnosticDialog::showEvent(QShowEvent* e) {

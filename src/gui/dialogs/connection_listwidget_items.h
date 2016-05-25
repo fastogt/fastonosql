@@ -61,7 +61,8 @@ class ConnectionListWidgetItem  // common connection
 class ConnectionListWidgetItemDiscovered  // returned after discovered
   : public ConnectionListWidgetItem {
  public:
-  ConnectionListWidgetItemDiscovered(core::serverTypes st, core::serverMode md, QTreeWidgetItem* parent);
+  ConnectionListWidgetItemDiscovered(core::serverTypes st, core::serverMode md,
+                                     QTreeWidgetItem* parent);
   core::serverTypes serverType() const;
   core::serverMode serverMode() const;
   virtual itemConnectionType type() const;
@@ -74,7 +75,8 @@ class ConnectionListWidgetItemDiscovered  // returned after discovered
 class SentinelConnectionListWidgetItemContainer  // can hold many sentinel connections
   : public QTreeWidgetItem {
  public:
-  explicit SentinelConnectionListWidgetItemContainer(core::ISentinelSettingsBaseSPtr connection, QTreeWidgetItem* parent);
+  explicit SentinelConnectionListWidgetItemContainer(core::ISentinelSettingsBaseSPtr connection,
+                                                     QTreeWidgetItem* parent);
   void setConnection(core::ISentinelSettingsBaseSPtr cons);
   core::ISentinelSettingsBaseSPtr connection() const;
 
@@ -85,14 +87,16 @@ class SentinelConnectionListWidgetItemContainer  // can hold many sentinel conne
 class SentinelConnectionWidgetItem  // sentinel connection
   : public ConnectionListWidgetItemDiscovered {
  public:
-  SentinelConnectionWidgetItem(core::serverTypes st, SentinelConnectionListWidgetItemContainer* parent);
+  SentinelConnectionWidgetItem(core::serverTypes st,
+                               SentinelConnectionListWidgetItemContainer* parent);
   virtual itemConnectionType type() const;
 };
 
 class ClusterConnectionListWidgetItemContainer  // can hold many connections
   : public QTreeWidgetItem {
  public:
-  explicit ClusterConnectionListWidgetItemContainer(core::IClusterSettingsBaseSPtr connection, QTreeWidgetItem* parent);
+  explicit ClusterConnectionListWidgetItemContainer(core::IClusterSettingsBaseSPtr connection,
+                                                    QTreeWidgetItem* parent);
   void setConnection(core::IClusterSettingsBaseSPtr cons);
   core::IClusterSettingsBaseSPtr connection() const;
 

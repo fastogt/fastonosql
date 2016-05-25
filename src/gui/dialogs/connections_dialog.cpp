@@ -18,28 +18,28 @@
 
 #include "gui/dialogs/connections_dialog.h"
 
-#include <QHeaderView>
+#include <QAction>
 #include <QDialogButtonBox>
-#include <QPushButton>
+#include <QEvent>
+#include <QHeaderView>
 #include <QVBoxLayout>
 #include <QLabel>
 #include <QMessageBox>
-#include <QEvent>
+#include <QPushButton>
 #include <QToolBar>
-#include <QAction>
 
 #include "common/qt/convert_string.h"
 
 #include "core/settings_manager.h"
 #include "core/connection_settings.h"
 
-#include "gui/gui_factory.h"
-#include "gui/dialogs/connection_listwidget_items.h"
-#include "gui/dialogs/connection_dialog.h"
-#include "gui/dialogs/cluster_dialog.h"
-#include "gui/dialogs/sentinel_dialog.h"
-
 #include "translations/global.h"
+
+#include "gui/gui_factory.h"
+#include "gui/dialogs/cluster_dialog.h"
+#include "gui/dialogs/connection_dialog.h"
+#include "gui/dialogs/connection_listwidget_items.h"
+#include "gui/dialogs/sentinel_dialog.h"
 
 namespace fastonosql {
 namespace gui {
@@ -341,8 +341,8 @@ void ConnectionsDialog::removeConnection(ConnectionListWidgetItem* connectionIte
   CHECK(connectionItem);
 
   // Ask user
-  int answer = QMessageBox::question(this, "Connections",
-                                     QString("Really delete \"%1\" connection?").arg(connectionItem->text(0)),
+  int answer = QMessageBox::question(this, translations::trConnections,
+                                     translations::trDeleteConnectionTemplate_1S.arg(connectionItem->text(0)),
                                      QMessageBox::Yes, QMessageBox::No, QMessageBox::NoButton);
 
   if (answer != QMessageBox::Yes)
@@ -357,8 +357,8 @@ void ConnectionsDialog::removeCluster(ClusterConnectionListWidgetItemContainer* 
   CHECK(clusterItem);
 
   // Ask user
-  int answer = QMessageBox::question(this, "Connections",
-                                     QString("Really delete \"%1\" cluster?").arg(clusterItem->text(0)),
+  int answer = QMessageBox::question(this, translations::trConnections,
+                                     translations::trDeleteClusterTemplate_1S.arg(clusterItem->text(0)),
                                      QMessageBox::Yes, QMessageBox::No, QMessageBox::NoButton);
 
   if (answer != QMessageBox::Yes)
@@ -373,8 +373,8 @@ void ConnectionsDialog::removeSentinel(SentinelConnectionListWidgetItemContainer
   CHECK(sentinelItem);
 
   // Ask user
-  int answer = QMessageBox::question(this, "Connections",
-                                     QString("Really delete \"%1\" sentinel?").arg(sentinelItem->text(0)),
+  int answer = QMessageBox::question(this, translations::trConnections,
+                                     translations::trDeleteSentinelTemplate_1S.arg(sentinelItem->text(0)),
                                      QMessageBox::Yes, QMessageBox::No, QMessageBox::NoButton);
 
   if (answer != QMessageBox::Yes)

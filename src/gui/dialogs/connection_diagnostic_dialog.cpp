@@ -18,23 +18,22 @@
 
 #include "gui/dialogs/connection_diagnostic_dialog.h"
 
-#include <QVBoxLayout>
 #include <QDialogButtonBox>
-#include <QThread>
 #include <QLabel>
+#include <QVBoxLayout>
+#include <QThread>
 
 #include "common/time.h"
 
-#include "core/servers_manager.h"
-
-#include "gui/gui_factory.h"
 #include "fasto/qt/gui/glass_widget.h"
+
+#include "core/servers_manager.h"
 
 #include "translations/global.h"
 
+#include "gui/gui_factory.h"
+
 namespace {
-  const QString timeTemplate = "Time execute msec: %1";
-  const QString connectionStatusTemplate = "Connection state: %1";
   const QSize stateIconSize = QSize(64, 64);
 }
 
@@ -58,7 +57,7 @@ void TestConnection::routine() {
     emit connectionResult(false, common::time::current_mstime() - startTime_,
                           common::convertFromString<QString>(er->description()));
   } else {
-    emit connectionResult(true, common::time::current_mstime() - startTime_, "Success");
+    emit connectionResult(true, common::time::current_mstime() - startTime_, translations::trSuccess);
   }
 }
 
@@ -72,10 +71,10 @@ ConnectionDiagnosticDialog::ConnectionDiagnosticDialog(QWidget* parent,
   QVBoxLayout* mainLayout = new QVBoxLayout;
 
   executeTimeLabel_ = new QLabel;
-  executeTimeLabel_->setText(connectionStatusTemplate.arg("execute..."));
+  executeTimeLabel_->setText(translations::trConnectionStatusTemplate_1S.arg("execute..."));
   mainLayout->addWidget(executeTimeLabel_);
 
-  statusLabel_ = new QLabel(timeTemplate.arg("calculate..."));
+  statusLabel_ = new QLabel(translations::trTimeTemplate_1S.arg("calculate..."));
   statusLabel_->setWordWrap(true);
   iconLabel_ = new QLabel;
   QIcon icon = GuiFactory::instance().failIcon();
@@ -105,13 +104,13 @@ void ConnectionDiagnosticDialog::connectionResult(bool suc,
                                                   qint64 mstimeExecute, const QString& resultText) {
   glassWidget_->stop();
 
-  executeTimeLabel_->setText(timeTemplate.arg(mstimeExecute));
+  executeTimeLabel_->setText(translations::trTimeTemplate_1S.arg(mstimeExecute));
   if (suc) {
     QIcon icon = GuiFactory::instance().successIcon();
     const QPixmap pm = icon.pixmap(stateIconSize);
     iconLabel_->setPixmap(pm);
   }
-  statusLabel_->setText(connectionStatusTemplate.arg(resultText));
+  statusLabel_->setText(translations::trConnectionStatusTemplate_1S.arg(resultText));
 }
 
 void ConnectionDiagnosticDialog::showEvent(QShowEvent* e) {
