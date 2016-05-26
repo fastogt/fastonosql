@@ -16,3 +16,6 @@
 [submodule "src/third-party/lmdb/src"]
 	path = src/third-party/lmdb/src
 	url = https://github.com/fastogt/lmdb.git
+[submodule "src/third-party/rocksdb/src"]
+	path = src/third-party/rocksdb/src
+	url = https://github.com/fastogt/rocksdb.git
