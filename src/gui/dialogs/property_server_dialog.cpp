@@ -23,11 +23,16 @@
 
 #include "fasto/qt/gui/glass_widget.h"
 
-#include "gui/gui_factory.h"
-#include "gui/property_table_model.h"
 #include "core/iserver.h"
 
 #include "translations/global.h"
+
+#include "gui/gui_factory.h"
+#include "gui/property_table_model.h"
+
+namespace {
+  const QString trPropertiesTemplate_1S = QObject::tr("%1 properties");
+}
 
 namespace fastonosql {
 namespace gui {
@@ -125,7 +130,7 @@ void PropertyServerDialog::showEvent(QShowEvent* e) {
 
 void PropertyServerDialog::retranslateUi() {
   QString name = common::convertFromString<QString>(server_->name());
-  setWindowTitle(tr("%1 properties").arg(name));
+  setWindowTitle(trPropertiesTemplate_1S.arg(name));
 }
 
 }  // namespace gui

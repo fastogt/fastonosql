@@ -21,16 +21,17 @@
 #include <QLabel>
 #include <QHBoxLayout>
 
-#include "core/iserver.h"
-
-#include "gui/gui_factory.h"
 #include "fasto/qt/gui/glass_widget.h"
 
 #include "translations/global.h"
 
+#include "core/iserver.h"
+
+#include "gui/gui_factory.h"
+
 namespace {
 
-const QString redisTextServerTemplate = QObject::tr("<h2>Server:</h2><br/>"
+const QString trRedisTextServerTemplate = QObject::tr("<h2>Server:</h2><br/>"
                                               "Redis version: %1<br/>"
                                               "Redis git_sha1: %2<br/>"
                                               "Redis git_dirty: %3<br/>"
@@ -47,13 +48,13 @@ const QString redisTextServerTemplate = QObject::tr("<h2>Server:</h2><br/>"
                                               "Hz: %14<br/>"
                                               "Lru clock: %15");
 
-const QString redisTextClientsTemplate = QObject::tr("<h2>Clients:</h2><br/>"
+const QString trRedisTextClientsTemplate = QObject::tr("<h2>Clients:</h2><br/>"
                                                      "Connected clients_: %1<br/>"
                                                      "Client longest output list: %2<br/>"
                                                      "Client biggest input buf: %3<br/>"
                                                      "Blocked clients: %4");
 
-const QString redisTextMemoryTemplate = QObject::tr("<h2>Memory:</h2><br/>"
+const QString trRedisTextMemoryTemplate = QObject::tr("<h2>Memory:</h2><br/>"
                                               "Used memory: %1<br/>"
                                               "Used memory human: %2<br/>"
                                               "Used memory rss: %3<br/>"
@@ -63,7 +64,7 @@ const QString redisTextMemoryTemplate = QObject::tr("<h2>Memory:</h2><br/>"
                                               "Mem fragmentation ratio: %7<br/>"
                                               "Mem allocator: %8");
 
-const QString redisTextPersistenceTemplate = QObject::tr("<h2>Persistence:</h2><br/>"
+const QString trRedisTextPersistenceTemplate = QObject::tr("<h2>Persistence:</h2><br/>"
                                               "Loading: %1<br/>"
                                               "Rdb changes since last save: %2<br/>"
                                               "Rdb bgsave in_progress: %3<br/>"
@@ -79,7 +80,7 @@ const QString redisTextPersistenceTemplate = QObject::tr("<h2>Persistence:</h2><
                                               "Aof last bgrewrite status: %13<br/>"
                                               "Aof last write status: %14");
 
-const QString redisTextStatsTemplate = QObject::tr("<h2>Stats:</h2><br/>"
+const QString trRedisTextStatsTemplate = QObject::tr("<h2>Stats:</h2><br/>"
                                               "Total connections received: %1<br/>"
                                               "Total commands processed: %2<br/>"
                                               "Instantaneous ops per sec: %3<br/>"
@@ -95,7 +96,7 @@ const QString redisTextStatsTemplate = QObject::tr("<h2>Stats:</h2><br/>"
                                               "Pubsub patterns: %13<br/>"
                                               "Latest fork usec: %14");
 
-const QString redisTextReplicationTemplate = QObject::tr("<h2>Replication:</h2><br/>"
+const QString trRedisTextReplicationTemplate = QObject::tr("<h2>Replication:</h2><br/>"
                                                "Role: %1<br/>"
                                                "Connected slaves: %2<br/>"
                                                "Master reply offset: %3<br/>"
@@ -104,13 +105,13 @@ const QString redisTextReplicationTemplate = QObject::tr("<h2>Replication:</h2><
                                                "Backlog first byte offset: %6<br/>"
                                                "Backlog histen: %7");
 
-const QString redisTextCpuTemplate = QObject::tr("<h2>Cpu:</h2><br/>"
+const QString trRedisTextCpuTemplate = QObject::tr("<h2>Cpu:</h2><br/>"
                                                      "Used cpu sys: %1<br/>"
                                                      "Used cpu user: %2<br/>"
                                                      "Used cpu sys children: %3<br/>"
                                                      "Used cpu user children: %4");
 
-const QString memcachedTextServerTemplate = QObject::tr("<h2>Common:</h2><br/>"
+const QString trMemcachedTextServerTemplate = QObject::tr("<h2>Common:</h2><br/>"
                                                         "Pid: %1<br/>"
                                                         "Update time: %2<br/>"
                                                         "Time: %3<br/>"
@@ -134,24 +135,31 @@ const QString memcachedTextServerTemplate = QObject::tr("<h2>Common:</h2><br/>"
                                                         "Limit max bytes: %21<br/>"
                                                         "Threads: %22");
 
-const QString ssdbTextServerTemplate = QObject::tr("<h2>Common:</h2><br/>"
+const QString trSsdbTextServerTemplate = QObject::tr("<h2>Common:</h2><br/>"
                                                         "Version: %1<br/>"
                                                         "Links: %2<br/>"
                                                         "Total calls: %3<br/>"
                                                         "Dbsize: %4<br/>"
                                                         "Binlogs: %5");
 
-const QString leveldbTextServerTemplate = QObject::tr("<h2>Stats:</h2><br/>"
+const QString trLeveldbTextServerTemplate = QObject::tr("<h2>Stats:</h2><br/>"
                                                         "Compactions level: %1<br/>"
                                                         "File size mb: %2<br/>"
                                                         "Time sec: %3<br/>"
                                                         "Read mb: %4<br/>"
                                                         "Write mb: %5");
 
-const QString unqliteTextServerTemplate = QObject::tr("<h2>Stats:</h2><br/>"
+const QString trRocksdbTextServerTemplate = QObject::tr("<h2>Stats:</h2><br/>"
+                                                        "Compactions level: %1<br/>"
+                                                        "File size mb: %2<br/>"
+                                                        "Time sec: %3<br/>"
+                                                        "Read mb: %4<br/>"
+                                                        "Write mb: %5");
+
+const QString trUnqliteTextServerTemplate = QObject::tr("<h2>Stats:</h2><br/>"
                                                         "File name: %1<br/>");
 
-const QString lmdbTextServerTemplate = QObject::tr("<h2>Stats:</h2><br/>"
+const QString trLmdbTextServerTemplate = QObject::tr("<h2>Stats:</h2><br/>"
                                                         "File name: %1<br/>");
 }  // namespace
 
@@ -312,7 +320,7 @@ void InfoServerDialog::retranslateUi() {
 #ifdef BUILD_WITH_REDIS
 void InfoServerDialog::updateText(const core::redis::ServerInfo& serv) {
   core::redis::ServerInfo::Server ser = serv.server_;
-  QString textServ = redisTextServerTemplate
+  QString textServ = trRedisTextServerTemplate
           .arg(common::convertFromString<QString>(ser.redis_version_))
           .arg(common::convertFromString<QString>(ser.redis_git_sha1_))
           .arg(common::convertFromString<QString>(ser.redis_git_dirty_))
@@ -330,13 +338,13 @@ void InfoServerDialog::updateText(const core::redis::ServerInfo& serv) {
           .arg(ser.lru_clock_);
 
   core::redis::ServerInfo::Clients cl = serv.clients_;
-  QString textCl = redisTextClientsTemplate.arg(cl.connected_clients_)
+  QString textCl = trRedisTextClientsTemplate.arg(cl.connected_clients_)
           .arg(cl.client_longest_output_list_)
           .arg(cl.client_biggest_input_buf_)
           .arg(cl.blocked_clients_);
 
   core::redis::ServerInfo::Memory mem = serv.memory_;
-  QString textMem = redisTextMemoryTemplate.arg(mem.used_memory_)
+  QString textMem = trRedisTextMemoryTemplate.arg(mem.used_memory_)
           .arg(common::convertFromString<QString>(mem.used_memory_human_))
           .arg(mem.used_memory_rss_)
           .arg(mem.used_memory_peak_)
@@ -346,7 +354,7 @@ void InfoServerDialog::updateText(const core::redis::ServerInfo& serv) {
           .arg(common::convertFromString<QString>(mem.mem_allocator_));
 
   core::redis::ServerInfo::Persistence per = serv.persistence_;
-  QString textPer = redisTextPersistenceTemplate.arg(per.loading_)
+  QString textPer = trRedisTextPersistenceTemplate.arg(per.loading_)
           .arg(per.rdb_changes_since_last_save_)
           .arg(per.rdb_bgsave_in_progress_)
           .arg(per.rdb_last_save_time_)
@@ -362,7 +370,7 @@ void InfoServerDialog::updateText(const core::redis::ServerInfo& serv) {
           .arg(common::convertFromString<QString>(per.aof_last_write_status_));
 
   core::redis::ServerInfo::Stats stat = serv.stats_;
-  QString textStat = redisTextStatsTemplate.arg(stat.total_connections_received_)
+  QString textStat = trRedisTextStatsTemplate.arg(stat.total_connections_received_)
           .arg(stat.total_commands_processed_)
           .arg(stat.instantaneous_ops_per_sec_)
           .arg(stat.rejected_connections_)
@@ -378,7 +386,7 @@ void InfoServerDialog::updateText(const core::redis::ServerInfo& serv) {
           .arg(stat.latest_fork_usec_);
 
   core::redis::ServerInfo::Replication repl = serv.replication_;
-  QString textRepl = redisTextReplicationTemplate
+  QString textRepl = trRedisTextReplicationTemplate
           .arg(common::convertFromString<QString>(repl.role_))
           .arg(repl.connected_slaves_)
           .arg(repl.master_repl_offset_)
@@ -388,7 +396,7 @@ void InfoServerDialog::updateText(const core::redis::ServerInfo& serv) {
           .arg(repl.backlog_histen_);
 
   core::redis::ServerInfo::Cpu cpu = serv.cpu_;
-  QString textCpu = redisTextCpuTemplate.arg(cpu.used_cpu_sys_)
+  QString textCpu = trRedisTextCpuTemplate.arg(cpu.used_cpu_sys_)
           .arg(cpu.used_cpu_user_)
           .arg(cpu.used_cpu_sys_children_)
           .arg(cpu.used_cpu_user_children_);
@@ -402,7 +410,7 @@ void InfoServerDialog::updateText(const core::redis::ServerInfo& serv) {
 void InfoServerDialog::updateText(const core::memcached::ServerInfo& serv) {
   core::memcached::ServerInfo::Common com = serv.common_;
 
-  QString textServ = memcachedTextServerTemplate.arg(com.pid)
+  QString textServ = trMemcachedTextServerTemplate.arg(com.pid)
           .arg(com.uptime)
           .arg(com.time)
           .arg(common::convertFromString<QString>(com.version))
@@ -434,7 +442,7 @@ void InfoServerDialog::updateText(const core::memcached::ServerInfo& serv) {
 #ifdef BUILD_WITH_SSDB
 void InfoServerDialog::updateText(const core::ssdb::ServerInfo& serv) {
   core::ssdb::ServerInfo::Common com = serv.common_;
-  QString textServ = ssdbTextServerTemplate.arg(common::convertFromString<QString>(com.version))
+  QString textServ = trSsdbTextServerTemplate.arg(common::convertFromString<QString>(com.version))
           .arg(com.links)
           .arg(com.total_calls)
           .arg(com.dbsize)
@@ -447,7 +455,7 @@ void InfoServerDialog::updateText(const core::ssdb::ServerInfo& serv) {
 #ifdef BUILD_WITH_LEVELDB
 void InfoServerDialog::updateText(const core::leveldb::ServerInfo& serv) {
   core::leveldb::ServerInfo::Stats stats = serv.stats_;
-  QString textServ = leveldbTextServerTemplate.arg(stats.compactions_level)
+  QString textServ = trLeveldbTextServerTemplate.arg(stats.compactions_level)
           .arg(stats.file_size_mb)
           .arg(stats.time_sec)
           .arg(stats.read_mb)
@@ -459,7 +467,7 @@ void InfoServerDialog::updateText(const core::leveldb::ServerInfo& serv) {
 #ifdef BUILD_WITH_ROCKSDB
 void InfoServerDialog::updateText(const core::rocksdb::ServerInfo& serv) {
   core::rocksdb::ServerInfo::Stats stats = serv.stats_;
-  QString textServ = leveldbTextServerTemplate.arg(stats.compactions_level)
+  QString textServ = trRocksdbTextServerTemplate.arg(stats.compactions_level)
           .arg(stats.file_size_mb)
           .arg(stats.time_sec)
           .arg(stats.read_mb)
@@ -471,7 +479,7 @@ void InfoServerDialog::updateText(const core::rocksdb::ServerInfo& serv) {
 #ifdef BUILD_WITH_UNQLITE
 void InfoServerDialog::updateText(const core::unqlite::ServerInfo& serv) {
   core::unqlite::ServerInfo::Stats stats = serv.stats_;
-  QString textServ = unqliteTextServerTemplate.arg(common::convertFromString<QString>(stats.file_name));
+  QString textServ = trUnqliteTextServerTemplate.arg(common::convertFromString<QString>(stats.file_name));
 
   serverTextInfo_->setText(textServ);
 }
@@ -479,7 +487,7 @@ void InfoServerDialog::updateText(const core::unqlite::ServerInfo& serv) {
 #ifdef BUILD_WITH_LMDB
 void InfoServerDialog::updateText(const core::lmdb::ServerInfo& serv) {
   core::lmdb::ServerInfo::Stats stats = serv.stats_;
-  QString textServ = lmdbTextServerTemplate.arg(common::convertFromString<QString>(stats.file_name));
+  QString textServ = trLmdbTextServerTemplate.arg(common::convertFromString<QString>(stats.file_name));
 
   serverTextInfo_->setText(textServ);
 }

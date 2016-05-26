@@ -18,11 +18,11 @@
 
 #include "gui/dialogs/input_dialog.h"
 
-#include <QPushButton>
-#include <QLabel>
-#include <QLineEdit>
 #include <QDialogButtonBox>
 #include <QGridLayout>
+#include <QLabel>
+#include <QLineEdit>
+#include <QPushButton>
 
 #include "gui/gui_factory.h"
 

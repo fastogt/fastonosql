@@ -20,15 +20,30 @@
 
 #include <string>
 
-#include "translations/global.h"
-
-#include "gui/gui_factory.h"
-
 #include "common/qt/utils_qt.h"
 #include "common/qt/convert_string.h"
 
 #include "core/icluster.h"
 #include "core/isentinel.h"
+
+#include "translations/global.h"
+
+#include "gui/gui_factory.h"
+
+namespace {
+  const QString trDiscoveryToolTipTemplate_3S = QObject::tr("<b>Name:</b> %1<br/>"
+                                                            "<b>Type:</b> %2<br/>"
+                                                            "<b>Host:</b> %3<br/>");
+  const QString trRemoteServerToolTipTemplate_4S = QObject::tr("<b>Name:</b> %1<br/>"
+                                                               "<b>Type:</b> %2<br/>"
+                                                               "<b>Mode:</b> %3<br/>"
+                                                               "<b>Host:</b> %4<br/>");
+  const QString trLocalServerToolTipTemplate_3S = QObject::tr("<b>Name:</b> %1<br/>"
+                                                              "<b>Mode:</b> %2<br/>"
+                                                              "<b>Path:</b> %3<br/>");
+  const QString trDbToolTipTemplate_1S = QObject::tr("<b>Db size:</b> %1 keys<br/>");
+  const QString trNamespace_1S = QObject::tr("<b>Group size:</b> %1 keys<br/>");
+}
 
 namespace fastonosql {
 namespace gui {
@@ -340,9 +355,7 @@ QVariant ExplorerTreeModel::data(const QModelIndex& index, int role) const {
         QString dname = common::convertFromString<QString>(disc->name());
         QString dtype = common::convertFromString<QString>(common::convertToString(disc->type()));
         QString dhost = common::convertFromString<QString>(common::convertToString(disc->host()));
-        return QString("<b>Name:</b> %1<br/>"
-                       "<b>Type:</b> %2<br/>"
-                       "<b>Host:</b> %3<br/>").arg(dname).arg(dtype).arg(dhost);
+        return trDiscoveryToolTipTemplate_3S.arg(dname).arg(dtype).arg(dhost);
       } else {
         QString sname = common::convertFromString<QString>(server->name());
         bool isCanRemote = server->isCanRemote();
@@ -352,28 +365,23 @@ QVariant ExplorerTreeModel::data(const QModelIndex& index, int role) const {
           QString stype = common::convertFromString<QString>(common::convertToString(rserver->role()));
           QString mtype = common::convertFromString<QString>(common::convertToString(rserver->mode()));
           QString shost = common::convertFromString<QString>(common::convertToString(rserver->host()));
-          return QString("<b>Name:</b> %1<br/>"
-                         "<b>Type:</b> %2<br/>"
-                         "<b>Mode:</b> %3<br/>"
-                         "<b>Host:</b> %4<br/>").arg(sname).arg(stype).arg(mtype).arg(shost);
+          return trRemoteServerToolTipTemplate_4S.arg(sname).arg(stype).arg(mtype).arg(shost);
         } else {
           core::IServerLocal* lserver = dynamic_cast<core::IServerLocal*>(server.get());  // +
           CHECK(lserver);
           QString spath = common::convertFromString<QString>(lserver->path());
           QString mtype = common::convertFromString<QString>(common::convertToString(lserver->mode()));
-          return QString("<b>Name:</b> %1<br/>"
-                         "<b>Mode:</b> %2<br/>"
-                         "<b>Path:</b> %3<br/>").arg(sname).arg(mtype).arg(spath);
+          return trLocalServerToolTipTemplate_3S.arg(sname).arg(mtype).arg(spath);
         }
       }
     } else if (type == IExplorerTreeItem::eDatabase) {
       ExplorerDatabaseItem* db = static_cast<ExplorerDatabaseItem*>(node);
       if (db->isDefault()) {
-        return QString("<b>Db size:</b> %1 keys<br/>").arg(db->sizeDB());
+        return trDbToolTipTemplate_1S.arg(db->sizeDB());
       }
     } else if (type == IExplorerTreeItem::eNamespace) {
       ExplorerNSItem* ns = static_cast<ExplorerNSItem*>(node);
-      return QString("<b>Group size:</b> %1 keys<br/>").arg(ns->keyCount());
+      return trNamespace_1S.arg(ns->keyCount());
     }
   }
 

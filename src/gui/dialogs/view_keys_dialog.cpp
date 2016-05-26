@@ -19,13 +19,13 @@
 #include "gui/dialogs/view_keys_dialog.h"
 
 #include <QDialogButtonBox>
-#include <QPushButton>
-#include <QVBoxLayout>
 #include <QEvent>
-#include <QLineEdit>
-#include <QSpinBox>
+#include <QVBoxLayout>
 #include <QLabel>
+#include <QLineEdit>
+#include <QPushButton>
 #include <QScrollBar>
+#include <QSpinBox>
 #include <QSplitter>
 #include <QStyledItemDelegate>
 
@@ -35,11 +35,11 @@
 #include "core/iserver.h"
 #include "core/idatabase.h"
 
+#include "translations/global.h"
+
 #include "gui/keys_table_model.h"
 #include "gui/fasto_table_view.h"
 #include "gui/gui_factory.h"
-
-#include "translations/global.h"
 
 namespace {
 

@@ -21,32 +21,30 @@
 #include <vector>
 #include <string>
 
-#include <QDialogButtonBox>
-#include <QEvent>
-#include <QMenu>
-#include <QPushButton>
-#include <QHBoxLayout>
-#include <QCheckBox>
-#include <QComboBox>
-#include <QLineEdit>
-#include <QMessageBox>
-#include <QTreeWidget>
-#include <QToolBar>
 #include <QAction>
 #include <QCheckBox>
-#include <QSpinBox>
+#include <QComboBox>
+#include <QDialogButtonBox>
+#include <QEvent>
+#include <QHBoxLayout>
 #include <QLabel>
+#include <QLineEdit>
+#include <QMenu>
+#include <QMessageBox>
+#include <QPushButton>
+#include <QSpinBox>
+#include <QTreeWidget>
+#include <QToolBar>
 
+#include "common/qt/convert_string.h"
+
+#include "translations/global.h"
+
+#include "gui/gui_factory.h"
 #include "gui/dialogs/connection_diagnostic_dialog.h"
 #include "gui/dialogs/connection_dialog.h"
 #include "gui/dialogs/discovery_sentinel_dialog.h"
 #include "gui/dialogs/connection_listwidget_items.h"
-
-#include "common/qt/convert_string.h"
-
-#include "gui/gui_factory.h"
-
-#include "translations/global.h"
 
 namespace {
   const QString defaultNameConnection = "New Sentinel Connection";

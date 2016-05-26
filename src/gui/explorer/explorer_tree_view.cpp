@@ -18,22 +18,12 @@
 
 #include "gui/explorer/explorer_tree_view.h"
 
-#include <QMenu>
-#include <QMessageBox>
-#include <QHeaderView>
 #include <QAction>
+#include <QHeaderView>
 #include <QFileDialog>
 #include <QInputDialog>
-
-#include "gui/explorer/explorer_tree_model.h"
-
-#include "gui/dialogs/info_server_dialog.h"
-#include "gui/dialogs/property_server_dialog.h"
-#include "gui/dialogs/history_server_dialog.h"
-#include "gui/dialogs/load_contentdb_dialog.h"
-#include "gui/dialogs/create_dbkey_dialog.h"
-#include "gui/dialogs/view_keys_dialog.h"
-#include "gui/dialogs/change_password_server_dialog.h"
+#include <QMenu>
+#include <QMessageBox>
 
 #include "common/qt/convert_string.h"
 #include "common/logger.h"
@@ -43,6 +33,30 @@
 #include "core/isentinel.h"
 
 #include "translations/global.h"
+
+#include "gui/explorer/explorer_tree_model.h"
+#include "gui/dialogs/info_server_dialog.h"
+#include "gui/dialogs/property_server_dialog.h"
+#include "gui/dialogs/history_server_dialog.h"
+#include "gui/dialogs/load_contentdb_dialog.h"
+#include "gui/dialogs/create_dbkey_dialog.h"
+#include "gui/dialogs/view_keys_dialog.h"
+#include "gui/dialogs/change_password_server_dialog.h"
+
+namespace {
+  const QString trCreateKeyForDbTemplate_1S = QObject::tr("Create key for %1 database");
+  const QString trRemoveBranch = QObject::tr("Remove branch");
+  const QString trRemoveAllKeysTemplate_1S = QObject::tr("Really remove all keys from branch %1?");
+  const QString trViewKeyTemplate_1S = QObject::tr("View key in %1 database");
+  const QString trConnectDisconnect = QObject::tr("Connect/Disconnect");
+  const QString trClearDb = QObject::tr("Clear database");
+  const QString trRealyRemoveAllKeysTemplate_1S = QObject::tr("Really remove all keys from %1 database?");
+  const QString trLoadContentTemplate_1S = QObject::tr("Load %1 content");
+  const QString trReallyShutdownTemplate_1S = QObject::tr("Really shutdown \"%1\" server?");
+  const QString trSetMaxConnectionOnServerTemplate_1S = QObject::tr("Set max connection on %1 server");
+  const QString trMaximumConnectionTemplate = QObject::tr("Maximum connection:");
+  const QString trChangePasswordTemplate_1S = QObject::tr("Change password for %1 server");
+}
 
 namespace fastonosql {
 namespace gui {
@@ -469,7 +483,7 @@ void ExplorerTreeView::openSetPasswordServerDialog() {
     return;
   }
 
-  ChangePasswordServerDialog pass(QString("Change password for %1 server").arg(node->name()),
+  ChangePasswordServerDialog pass(trChangePasswordTemplate_1S.arg(node->name()),
                                   server, this);
   pass.exec();
 }
@@ -492,8 +506,8 @@ void ExplorerTreeView::openMaxClientSetDialog() {
 
   bool ok;
   QString name = common::convertFromString<QString>(server->name());
-  int maxcl = QInputDialog::getInt(this, tr("Set max connection on %1 server").arg(name),
-                                         tr("Maximum connection:"), 10000, 1, INT32_MAX, 100, &ok);
+  int maxcl = QInputDialog::getInt(this, trSetMaxConnectionOnServerTemplate_1S.arg(name),
+                                         trMaximumConnectionTemplate, 10000, 1, INT32_MAX, 100, &ok);
   if (ok) {
     core::events_info::ChangeMaxConnectionRequest req(this, maxcl);
     server->setMaxConnection(req);
@@ -652,8 +666,7 @@ void ExplorerTreeView::shutdownServer() {
   if (server && server->isConnected()) {
     // Ask user
     QString name = common::convertFromString<QString>(server->name());
-    int answer = QMessageBox::question(this, "Shutdown",
-                                       QString("Really shutdown \"%1\" server?").arg(name),
+    int answer = QMessageBox::question(this, translations::trShutdown, trReallyShutdownTemplate_1S.arg(name),
                                        QMessageBox::Yes, QMessageBox::No, QMessageBox::NoButton);
 
     if (answer != QMessageBox::Yes) {
@@ -673,8 +686,7 @@ void ExplorerTreeView::loadContentDb() {
 
   ExplorerDatabaseItem* node = common::utils_qt::item<fasto::qt::gui::TreeItem*, ExplorerDatabaseItem*>(sel);
   if (node) {
-    LoadContentDbDialog loadDb(QString("Load %1 content").arg(node->name()),
-                               node->server()->type(), this);
+    LoadContentDbDialog loadDb(trLoadContentTemplate_1S.arg(node->name()), node->server()->type(), this);
     int result = loadDb.exec();
     if (result == QDialog::Accepted) {
       node->loadContent(common::convertToString(loadDb.pattern()), loadDb.count());
@@ -690,8 +702,8 @@ void ExplorerTreeView::removeAllKeys() {
 
   ExplorerDatabaseItem* node = common::utils_qt::item<fasto::qt::gui::TreeItem*, ExplorerDatabaseItem*>(sel);
   if (node) {
-    int answer = QMessageBox::question(this, "Clear database",
-                                       QString("Really remove all keys from %1 database?").arg(node->name()),
+    int answer = QMessageBox::question(this, trClearDb,
+                                       trRealyRemoveAllKeysTemplate_1S.arg(node->name()),
                                        QMessageBox::Yes, QMessageBox::No, QMessageBox::NoButton);
 
     if (answer != QMessageBox::Yes) {
@@ -710,8 +722,7 @@ void ExplorerTreeView::removeBranch() {
 
   ExplorerNSItem* node = common::utils_qt::item<fasto::qt::gui::TreeItem*, ExplorerNSItem*>(sel);
   if (node) {
-    int answer = QMessageBox::question(this, "Remove branch",
-                                       QString("Really remove all keys from branch %1?").arg(node->name()),
+    int answer = QMessageBox::question(this, trRemoveBranch, trRemoveAllKeysTemplate_1S.arg(node->name()),
                                        QMessageBox::Yes, QMessageBox::No, QMessageBox::NoButton);
 
     if (answer != QMessageBox::Yes) {
@@ -742,8 +753,7 @@ void ExplorerTreeView::createKey() {
 
   ExplorerDatabaseItem* node = common::utils_qt::item<fasto::qt::gui::TreeItem*, ExplorerDatabaseItem*>(sel);
   if (node) {
-    CreateDbKeyDialog loadDb(QString("Create key for %1 database").arg(node->name()),
-                             node->server()->type(), this);
+    CreateDbKeyDialog loadDb(trCreateKeyForDbTemplate_1S.arg(node->name()), node->server()->type(), this);
     int result = loadDb.exec();
     if (result == QDialog::Accepted) {
       core::NDbKValue key = loadDb.key();
@@ -760,7 +770,7 @@ void ExplorerTreeView::viewKeys() {
 
   ExplorerDatabaseItem* node = common::utils_qt::item<fasto::qt::gui::TreeItem*, ExplorerDatabaseItem*>(sel);
   if (node) {
-    ViewKeysDialog diag(QString("View key in %1 database").arg(node->name()), node->db(), this);
+    ViewKeysDialog diag(trViewKeyTemplate_1S.arg(node->name()), node->db(), this);
     diag.exec();
   }
 }
@@ -998,7 +1008,7 @@ void ExplorerTreeView::unsyncWithServer(core::IServer* server) {
 }
 
 void ExplorerTreeView::retranslateUi() {
-  connectAction_->setText(tr("Connect/Disconnect"));
+  connectAction_->setText(trConnectDisconnect);
   openConsoleAction_->setText(translations::trOpenConsole);
   loadDatabaseAction_->setText(translations::trLoadDataBases);
   infoServerAction_->setText(translations::trInfo);

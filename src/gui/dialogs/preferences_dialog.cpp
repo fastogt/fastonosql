@@ -20,25 +20,41 @@
 
 #include <string>
 
-#include <QDialogButtonBox>
-#include <QLineEdit>
 #include <QCheckBox>
 #include <QComboBox>
-#include <QLabel>
+#include <QDialogButtonBox>
+#include <QEvent>
+#include <QFontComboBox>
 #include <QGroupBox>
+#include <QLabel>
+#include <QLineEdit>
 #include <QHBoxLayout>
 #include <QPushButton>
-#include <QFontComboBox>
-#include <QEvent>
+
+#include "common/qt/convert_string.h"
 
 #include "fasto/qt/gui/app_style.h"
 #include "fasto/qt/translations/translations.h"
-#include "common/qt/convert_string.h"
-
-#include "gui/gui_factory.h"
 
 #include "core/settings_manager.h"
 #include "core/servers_manager.h"
+
+#include "gui/gui_factory.h"
+
+namespace {
+  const QString trPreferences = QObject::tr("Preferences " PROJECT_NAME_TITLE);
+  const QString trGeneralSettings = QObject::tr("General settings");
+  const QString trAutoCheckUpd = QObject::tr("Automatically check for updates");
+  const QString trShowAutoCompletion = QObject::tr("Show autocompletion");
+  const QString trAutoOpenConsole = QObject::tr("Automatically open console");
+  const QString trFastViewValues = QObject::tr("Fast view values");
+  const QString trLanguage = QObject::tr("Language:");
+  const QString trSupportedUiStyles = QObject::tr("Supported UI styles:");
+  const QString trSupportedFonts = QObject::tr("Supported fonts:");
+  const QString trServerGlobalSettings = QObject::tr("Servers global settings");
+  const QString trDefaultViews = QObject::tr("Default views:");
+  const QString trLoggingDirectory = QObject::tr("Logging directory:");
+}
 
 namespace fastonosql {
 namespace gui {
@@ -86,7 +102,7 @@ PreferencesDialog::PreferencesDialog(QWidget* parent)
 
   generalBox_->setLayout(generalLayout);
 
-//      servers settings
+  // servers settings
   serverSettingsBox_ = new QGroupBox;
 
   QHBoxLayout* defaultViewLayaut = new QHBoxLayout;
@@ -109,7 +125,7 @@ PreferencesDialog::PreferencesDialog(QWidget* parent)
   serverSettingsLayout->addLayout(logLayout);
   serverSettingsBox_->setLayout(serverSettingsLayout);
 
-  //  main layout
+  // main layout
   QVBoxLayout* layout = new QVBoxLayout(this);
   layout->addWidget(generalBox_);
   layout->addWidget(serverSettingsBox_);
@@ -173,20 +189,20 @@ void PreferencesDialog::changeEvent(QEvent* e) {
 }
 
 void PreferencesDialog::retranslateUi() {
-  setWindowTitle(tr("Preferences " PROJECT_NAME_TITLE));
+  setWindowTitle(trPreferences);
 
-  generalBox_->setTitle(tr("General settings"));
-  autoCheckUpdates_->setText(tr("Automatically check for updates"));
-  autoComletionEnable_->setText(tr("Show autocompletion"));
-  autoOpenConsole_->setText(tr("Automatically open console"));
-  fastViewKeys_->setText(tr("Fast view values"));
-  langLabel_->setText(tr("Language:"));
-  stylesLabel_->setText(tr("Supported UI styles:"));
-  fontLabel_->setText(tr("Supported fonts:"));
+  generalBox_->setTitle(trGeneralSettings);
+  autoCheckUpdates_->setText(trAutoCheckUpd);
+  autoComletionEnable_->setText(trShowAutoCompletion);
+  autoOpenConsole_->setText(trAutoOpenConsole);
+  fastViewKeys_->setText(trFastViewValues);
+  langLabel_->setText(trLanguage);
+  stylesLabel_->setText(trSupportedUiStyles);
+  fontLabel_->setText(trSupportedFonts);
 
-  serverSettingsBox_->setTitle(tr("Servers global settings"));
-  defaultViewLabel_->setText(tr("Default views:"));
-  logDirLabel_->setText(tr("Logging directory:"));
+  serverSettingsBox_->setTitle(trServerGlobalSettings);
+  defaultViewLabel_->setText(trDefaultViews);
+  logDirLabel_->setText(trLoggingDirectory);
 }
 
 }  // namespace gui

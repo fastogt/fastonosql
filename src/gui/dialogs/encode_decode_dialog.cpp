@@ -20,24 +20,24 @@
 
 #include <string>
 
-#include <QPushButton>
-#include <QLabel>
-#include <QDialogButtonBox>
-#include <QVBoxLayout>
-#include <QSplitter>
-#include <QToolButton>
 #include <QComboBox>
-#include <QRadioButton>
+#include <QDialogButtonBox>
 #include <QEvent>
 #include <QKeyEvent>
-
-#include "gui/gui_factory.h"
-#include "gui/fasto_editor.h"
+#include <QLabel>
+#include <QVBoxLayout>
+#include <QPushButton>
+#include <QRadioButton>
+#include <QSplitter>
+#include <QToolButton>
 
 #include "common/text_decoders/iedcoder.h"
 #include "common/qt/convert_string.h"
 
 #include "translations/global.h"
+
+#include "gui/gui_factory.h"
+#include "gui/fasto_editor.h"
 
 namespace fastonosql {
 namespace gui {
@@ -61,7 +61,9 @@ EncodeDecodeDialog::EncodeDecodeDialog(QWidget* parent)
 
   decoders_ = new QComboBox;
   for (size_t i = 0; i < SIZEOFMASS(common::EDecoderTypes); ++i) {
-    decoders_->addItem(common::convertFromString<QString>(common::EDecoderTypes[i]));
+    std::string estr = common::EDecoderTypes[i];
+    common::EDTypes etype = common::convertFromString<common::EDTypes>(estr);
+    decoders_->addItem(common::convertFromString<QString>(estr), etype);
   }
 
   QHBoxLayout* toolBarLayout = new QHBoxLayout;
@@ -117,29 +119,20 @@ void EncodeDecodeDialog::changeEvent(QEvent* e) {
 }
 
 void EncodeDecodeDialog::decode() {
-  const QString in = input_->text();
+  QString in = input_->text();
   if (in.isEmpty()) {
     return;
   }
 
   output_->clear();
-  QString decoderText = decoders_->currentText();
-  std::string sdec = common::convertToString(decoderText);
-  common::IEDcoder* dec = common::IEDcoder::createEDCoder(sdec);
-
-  if (!dec) {
-    return;
-  }
+  QVariant var = decoders_->currentData();
+  common::EDTypes currentType = (common::EDTypes)qvariant_cast<unsigned char>(var);
+  common::IEDcoder* dec = common::IEDcoder::createEDCoder(currentType);
+  CHECK(dec);
 
   std::string sin = common::convertToString(in);
   std::string out;
-  common::Error er;
-  if (encodeButton_->isChecked()) {
-    er = dec->encode(sin, &out);
-  } else {
-    er = dec->decode(sin, &out);
-  }
-
+  common::Error er = encodeButton_->isChecked() ? dec->encode(sin, &out) : dec->decode(sin, &out);
   if (!er) {
     output_->setText(common::convertFromString<QString>(out));
   }

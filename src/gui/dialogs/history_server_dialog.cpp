@@ -21,19 +21,23 @@
 #include <string>
 #include <vector>
 
-#include <QHBoxLayout>
-#include <QSplitter>
 #include <QComboBox>
+#include <QHBoxLayout>
 #include <QPushButton>
+#include <QSplitter>
 
 #include "fasto/qt/gui/base/graph_widget.h"
 #include "fasto/qt/gui/glass_widget.h"
+
+#include "translations/global.h"
 
 #include "core/iserver.h"
 
 #include "gui/gui_factory.h"
 
-#include "translations/global.h"
+namespace {
+  const QString trHistoryTemplate_1S = QObject::tr("%1 history");
+}
 
 namespace fastonosql {
 namespace gui {
@@ -196,7 +200,7 @@ void ServerHistoryDialog::reset() {
 
 void ServerHistoryDialog::retranslateUi() {
   QString name = common::convertFromString<QString>(server_->name());
-  setWindowTitle(tr("%1 history").arg(name));
+  setWindowTitle(trHistoryTemplate_1S.arg(name));
   clearHistory_->setText(translations::trClearHistory);
 }
 
