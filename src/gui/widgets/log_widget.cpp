@@ -18,13 +18,13 @@
 
 #include "gui/widgets/log_widget.h"
 
-#include <QEvent>
-#include <QScrollBar>
-#include <QTime>
-#include <QMenu>
 #include <QAction>
+#include <QEvent>
+#include <QMenu>
 #include <QHBoxLayout>
+#include <QScrollBar>
 #include <QTextEdit>
+#include <QTime>
 
 #include "translations/global.h"
 

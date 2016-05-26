@@ -18,8 +18,8 @@
 
 #include "gui/fasto_tree_view.h"
 
-#include <QMenu>
 #include <QHeaderView>
+#include <QMenu>
 
 #include "common/macros.h"
 

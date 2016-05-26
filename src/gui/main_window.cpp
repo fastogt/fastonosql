@@ -21,14 +21,14 @@
 #include <string>
 
 #include <QAction>
-#include <QMenuBar>
-#include <QDockWidget>
-#include <QMessageBox>
-#include <QThread>
 #include <QApplication>
-#include <QFileDialog>
-#include <QToolBar>
 #include <QDesktopServices>
+#include <QDockWidget>
+#include <QFileDialog>
+#include <QMenuBar>
+#include <QMessageBox>
+#include <QToolBar>
+#include <QThread>
 
 #ifdef OS_ANDROID
 #include <QGestureEvent>
@@ -398,9 +398,9 @@ void MainWindow::loadConnection() {
 }
 
 void MainWindow::importConnection() {
-  using namespace translations;
+  std::string dir_path = core::SettingsManager::settingsDirPath();
   QString filepathR = QFileDialog::getOpenFileName(this, tr("Select encrypted settings file"),
-                                                   core::SettingsManager::settingsDirPath(),
+                                                   common::convertFromString<QString>(dir_path),
                                                    tr("Encrypted settings files (*.cini)"));
   if (filepathR.isNull()) {
     return;
@@ -412,7 +412,7 @@ void MainWindow::importConnection() {
   common::file_system::File writeFile(wp);
   bool openedw = writeFile.open("wb");
   if (!openedw) {
-    QMessageBox::critical(this, trError, trImportSettingsFailed);
+    QMessageBox::critical(this, translations::trError, trImportSettingsFailed);
     return;
   }
 
@@ -425,7 +425,7 @@ void MainWindow::importConnection() {
     if (err && err->isError()) {
       DNOTREACHED();
     }
-    QMessageBox::critical(this, trError, trImportSettingsFailed);
+    QMessageBox::critical(this, translations::trError, trImportSettingsFailed);
     return;
   }
 
@@ -436,7 +436,7 @@ void MainWindow::importConnection() {
     if (err && err->isError()) {
       DNOTREACHED();
     }
-    QMessageBox::critical(this, trError, trImportSettingsFailed);
+    QMessageBox::critical(this, translations::trError, trImportSettingsFailed);
     return;
   }
 
@@ -455,7 +455,7 @@ void MainWindow::importConnection() {
       if (err && err->isError()) {
         DNOTREACHED();
       }
-      QMessageBox::critical(this, trError, trImportSettingsFailed);
+      QMessageBox::critical(this, translations::trError, trImportSettingsFailed);
       return;
     } else {
       writeFile.write(edata);
@@ -468,13 +468,13 @@ void MainWindow::importConnection() {
   if (err && err->isError()) {
     DNOTREACHED();
   }
-  QMessageBox::information(this, trInfo, trSettingsImportedS);
+  QMessageBox::information(this, translations::trInfo, trSettingsImportedS);
 }
 
 void MainWindow::exportConnection() {
-  using namespace translations;
+  std::string dir_path = core::SettingsManager::settingsDirPath();
   QString filepathW = QFileDialog::getSaveFileName(this, tr("Select file to save settings"),
-                                                   core::SettingsManager::settingsDirPath(),
+                                                   common::convertFromString<QString>(dir_path),
                                                    tr("Settings files (*.cini)"));
   if (filepathW.isNull()) {
     return;
@@ -484,7 +484,7 @@ void MainWindow::exportConnection() {
   common::file_system::File writeFile(wp);
   bool openedw = writeFile.open("wb");
   if (!openedw) {
-    QMessageBox::critical(this, trError, trExportSettingsFailed);
+    QMessageBox::critical(this, translations::trError, trExportSettingsFailed);
     return;
   }
 
@@ -497,7 +497,7 @@ void MainWindow::exportConnection() {
     if (err && err->isError()) {
       DNOTREACHED();
     }
-    QMessageBox::critical(this, trError, trExportSettingsFailed);
+    QMessageBox::critical(this, translations::trError, trExportSettingsFailed);
     return;
   }
 
@@ -508,7 +508,7 @@ void MainWindow::exportConnection() {
     if (err && err->isError()) {
       DNOTREACHED();
     }
-    QMessageBox::critical(this, trError, trExportSettingsFailed);
+    QMessageBox::critical(this, translations::trError, trExportSettingsFailed);
     return;
   }
 
@@ -527,7 +527,7 @@ void MainWindow::exportConnection() {
       if (err && err->isError()) {
         DNOTREACHED();
       }
-      QMessageBox::critical(this, trError, trExportSettingsFailed);
+      QMessageBox::critical(this, translations::trError, trExportSettingsFailed);
       return;
     } else {
       writeFile.write(edata);

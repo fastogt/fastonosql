@@ -80,9 +80,8 @@ SettingsManager::~SettingsManager() {
   save();
 }
 
-QString SettingsManager::settingsDirPath() {
-  std::string dir = common::file_system::get_dir_path(iniPath);
-  return common::convertFromString<QString>(dir);
+std::string SettingsManager::settingsDirPath() {
+  return common::file_system::get_dir_path(iniPath);
 }
 
 std::string SettingsManager::settingsFilePath() {
@@ -335,7 +334,8 @@ void SettingsManager::reloadFromPath(const std::string& path, bool merge) {
     }
   }
 
-  logging_dir_ = settings.value(LOGGINGDIR, settingsDirPath()).toString();
+  std::string dir_path = settingsDirPath();
+  logging_dir_ = settings.value(LOGGINGDIR, common::convertFromString<QString>(dir_path)).toString();
   auto_check_update_ = settings.value(CHECKUPDATES, true).toBool();
   auto_completion_ = settings.value(AUTOCOMPLETION, true).toBool();
   auto_open_console_ = settings.value(AUTOOPENCONSOLE, true).toBool();

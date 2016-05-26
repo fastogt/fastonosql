@@ -22,8 +22,9 @@
 
 #include <QApplication>
 
-#include "fasto/qt/logger.h"
 #include "common/net/net.h"
+
+#include "fasto/qt/logger.h"
 
 #include "core/idatabase.h"
 #include "core/idriver.h"

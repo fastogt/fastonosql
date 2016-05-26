@@ -18,24 +18,26 @@
 
 #include "gui/fasto_editor.h"
 
-#include <QMenu>
-#include <QHBoxLayout>
-#include <QLineEdit>
-#include <QToolButton>
-#include <QPushButton>
+
 #include <QCheckBox>
-#include <QMessageBox>
+#include <QHBoxLayout>
 #include <QKeyEvent>
+#include <QLineEdit>
+#include <QMenu>
+#include <QMessageBox>
+#include <QPushButton>
+#include <QToolButton>
 
 #include "common/qt/convert_string.h"
 #include "common/qt/utils_qt.h"
 
-#include "gui/fasto_common_item.h"
-#include "gui/gui_factory.h"
-#include "gui/fasto_hex_edit.h"
 #include "fasto/qt/gui/fasto_scintilla.h"
 
 #include "translations/global.h"
+
+#include "gui/fasto_common_item.h"
+#include "gui/gui_factory.h"
+#include "gui/fasto_hex_edit.h"
 
 namespace fastonosql {
 namespace gui {

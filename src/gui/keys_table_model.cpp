@@ -20,9 +20,9 @@
 
 #include "common/qt/utils_qt.h"
 
-#include "gui/gui_factory.h"
-
 #include "translations/global.h"
+
+#include "gui/gui_factory.h"
 
 namespace fastonosql {
 namespace gui {

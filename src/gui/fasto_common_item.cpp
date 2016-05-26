@@ -20,9 +20,9 @@
 
 #include <string>
 
-#include "common/qt/convert_string.h"
-
 #include "common/json_utils.h"
+
+#include "common/qt/convert_string.h"
 
 #include "common/text_decoders/compress_edcoder.h"
 #include "common/text_decoders/msgpack_edcoder.h"

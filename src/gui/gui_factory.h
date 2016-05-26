@@ -21,10 +21,10 @@
 #include <QIcon>
 #include <QFont>
 
-#include "core/connection_types.h"
-
 #include "common/value.h"
 #include "common/patterns/singleton_pattern.h"
+
+#include "core/connection_types.h"
 
 namespace fastonosql {
 namespace gui {

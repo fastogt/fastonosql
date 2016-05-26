@@ -18,14 +18,14 @@
 
 #include "gui/widgets/log_tab_widget.h"
 
-#include <QTabBar>
 #include <QEvent>
+#include <QTabBar>
+
+#include "translations/global.h"
 
 #include "gui/widgets/log_widget.h"
 #include "gui/widgets/commands_widget.h"
 #include "gui/gui_factory.h"
-
-#include "translations/global.h"
 
 namespace fastonosql {
 namespace gui {

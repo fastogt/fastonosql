@@ -18,9 +18,9 @@
 
 #pragma once
 
-#include "core/command_key.h"
-
 #include "fasto/qt/gui/base/table_model.h"
+
+#include "core/command_key.h"
 
 namespace fastonosql {
 namespace gui {

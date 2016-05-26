@@ -19,13 +19,10 @@
 #include "gui/fasto_text_view.h"
 
 #include <QVBoxLayout>
-#include <QRadioButton>
 #include <QEvent>
 #include <QPushButton>
+#include <QRadioButton>
 #include <QSplitter>
-#include <QDebug>
-
-#include "common/macros.h"
 
 #include "translations/global.h"
 

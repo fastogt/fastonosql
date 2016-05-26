@@ -18,14 +18,14 @@
 
 #include "gui/main_tab_bar.h"
 
-#include <QMenu>
 #include <QEvent>
+#include <QMenu>
 
 #include "common/macros.h"
 
-#include "gui/shortcuts.h"
-
 #include "translations/global.h"
+
+#include "gui/shortcuts.h"
 
 namespace fastonosql {
 namespace gui {

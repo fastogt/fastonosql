@@ -102,8 +102,8 @@
          * then GNU strerror_r returned an internal static buffer and we       \
          * need to copy the result into our private buffer. */                 \
         if (err_str != (buf)) {                                                \
-            buf[(len)] = '\0';                                                 \
-            strncat((buf), err_str, ((len) - 1));                              \
+            strncpy((buf), err_str, ((len) - 1));                              \
+            buf[(len)-1] = '\0';                                               \
         }                                                                      \
     } while (0)
 #endif
@@ -122,7 +122,7 @@ extern "C" {
 typedef struct redisReply {
     int type; /* REDIS_REPLY_* */
     long long integer; /* The integer when type is REDIS_REPLY_INTEGER */
-    int len; /* Length of string */
+    size_t len; /* Length of string */
     char *str; /* Used for both REDIS_REPLY_ERROR and REDIS_REPLY_STRING */
     size_t elements; /* number of elements, for REDIS_REPLY_ARRAY */
     struct redisReply **element; /* elements vector for REDIS_REPLY_ARRAY */

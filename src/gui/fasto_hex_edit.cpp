@@ -18,12 +18,10 @@
 
 #include "gui/fasto_hex_edit.h"
 
-#include <QScrollBar>
+#include <QKeyEvent>
 #include <QPainter>
 #include <QPaintEvent>
-#include <QKeyEvent>
-
-#include "common/macros.h"
+#include <QScrollBar>
 
 namespace {
   const QColor selectedColor = QColor(0x6d, 0x9e, 0xff, 0xff);

@@ -40,7 +40,7 @@ class SettingsManager
   typedef std::vector<ISentinelSettingsBaseSPtr> SentinelSettingsContainerType;
   friend class common::patterns::LazySingleton<SettingsManager>;
 
-  static QString settingsDirPath();
+  static std::string settingsDirPath();
   static std::string settingsFilePath();
 
   uint32_t configVersion() const;

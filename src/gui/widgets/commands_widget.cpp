@@ -18,13 +18,13 @@
 
 #include "gui/widgets/commands_widget.h"
 
+#include <QAction>
+#include <QEvent>
+#include <QHBoxLayout>
+#include <QMenu>
 #include <QScrollBar>
 #include <QTime>
-#include <QMenu>
-#include <QAction>
-#include <QHBoxLayout>
 #include <QTextEdit>
-#include <QEvent>
 
 #include "common/qt/convert_string.h"
 

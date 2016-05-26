@@ -21,26 +21,26 @@
 #include <string>
 
 #include <QHBoxLayout>
+#include <QHeaderView>
 #include <QPushButton>
 #include <QSplitter>
-#include <QHeaderView>
 
-#include "gui/fasto_text_view.h"
-#include "gui/fasto_table_view.h"
-#include "gui/fasto_tree_view.h"
-#include "gui/fasto_common_model.h"
-#include "gui/fasto_common_item.h"
+#include "common/time.h"
+#include "common/logger.h"
+#include "common/qt/convert_string.h"
+#include "common/utf_string_conversions.h"
 
-#include "gui/gui_factory.h"
 #include "fasto/qt/gui/icon_label.h"
 
 #include "core/settings_manager.h"
 #include "core/iserver.h"
 
-#include "common/qt/convert_string.h"
-#include "common/utf_string_conversions.h"
-#include "common/time.h"
-#include "common/logger.h"
+#include "gui/gui_factory.h"
+#include "gui/fasto_text_view.h"
+#include "gui/fasto_table_view.h"
+#include "gui/fasto_tree_view.h"
+#include "gui/fasto_common_model.h"
+#include "gui/fasto_common_item.h"
 
 namespace fastonosql {
 namespace gui {

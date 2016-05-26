@@ -20,12 +20,13 @@
 
 #include <string>
 
-#include "gui/fasto_common_item.h"
-#include "gui/gui_factory.h"
-
 #include "common/qt/utils_qt.h"
 #include "common/qt/convert_string.h"
+
 #include "translations/global.h"
+
+#include "gui/fasto_common_item.h"
+#include "gui/gui_factory.h"
 
 namespace fastonosql {
 namespace gui {
@@ -37,8 +38,9 @@ FastoCommonModel::FastoCommonModel(QObject* parent)
 QVariant FastoCommonModel::data(const QModelIndex& index, int role) const {
   QVariant result;
 
-  if (!index.isValid())
+  if (!index.isValid()) {
     return result;
+  }
 
   FastoCommonItem* node = common::utils_qt::item<fasto::qt::gui::TreeItem*, FastoCommonItem*>(index);
 
