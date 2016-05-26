@@ -118,7 +118,7 @@ DBConnection::config_t DBConnection::config() const {
 }
 
 const char* DBConnection::versionApi() {
-  return "1.9.2";
+  return "1.9.3";
 }
 
 common::Error DBConnection::info(const char* args, ServerInfo::Common* statsout) {
@@ -314,6 +314,17 @@ common::Error DBConnection::hget(const std::string& name, const std::string& key
   auto st = connection_.handle_->hget(name, key, val);
   if (st.error()) {
     std::string buff = common::MemSPrintf("hget function error: %s", st.code());
+    return common::make_error_value(buff, common::ErrorValue::E_ERROR);
+  }
+  return common::Error();
+}
+
+common::Error DBConnection::hgetall(const std::string& name, std::vector<std::string> *ret) {
+  CHECK(isConnected());
+
+  auto st = connection_.handle_->hgetall(name, ret);
+  if (st.error()) {
+    std::string buff = common::MemSPrintf("hgetall function error: %s", st.code());
     return common::make_error_value(buff, common::ErrorValue::E_ERROR);
   }
   return common::Error();
@@ -907,6 +918,23 @@ common::Error hget(CommandHandler* handler, int argc, char** argv, FastoObject* 
   if (!er) {
     common::StringValue* val = common::Value::createStringValue(ret);
     FastoObject* child = new FastoObject(out, val, ssdb->delimiter(), ssdb->nsSeparator());
+    out->addChildren(child);
+  }
+
+  return er;
+}
+
+common::Error hgetall(CommandHandler* handler, int argc, char** argv, FastoObject* out) {
+  DBConnection* ssdb = static_cast<DBConnection*>(handler);
+  std::vector<std::string> keysout;
+  common::Error er = ssdb->hgetall(argv[0], &keysout);
+  if (!er) {
+    common::ArrayValue* ar = common::Value::createArrayValue();
+    for (size_t i = 0; i < keysout.size(); ++i) {
+      common::StringValue* val = common::Value::createStringValue(keysout[i]);
+      ar->append(val);
+    }
+    FastoObjectArray* child = new FastoObjectArray(out, ar, ssdb->delimiter(), ssdb->nsSeparator());
     out->addChildren(child);
   }
 

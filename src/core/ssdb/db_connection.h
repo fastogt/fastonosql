@@ -70,6 +70,7 @@ struct DBConnection
   common::Error multi_set(const std::map<std::string, std::string> &kvs) WARN_UNUSED_RESULT;
   common::Error multi_del(const std::vector<std::string>& keys) WARN_UNUSED_RESULT;
   common::Error hget(const std::string& name, const std::string& key, std::string* val) WARN_UNUSED_RESULT;
+  common::Error hgetall(const std::string& name, std::vector<std::string> *ret) WARN_UNUSED_RESULT;
   common::Error hset(const std::string& name, const std::string& key, const std::string& val) WARN_UNUSED_RESULT;
   common::Error hdel(const std::string& name, const std::string& key) WARN_UNUSED_RESULT;
   common::Error hincr(const std::string& name, const std::string& key,
@@ -141,6 +142,7 @@ common::Error multi_get(CommandHandler* handler, int argc, char** argv, FastoObj
 common::Error multi_set(CommandHandler* handler, int argc, char** argv, FastoObject* out);
 common::Error multi_del(CommandHandler* handler, int argc, char** argv, FastoObject* out);
 common::Error hget(CommandHandler* handler, int argc, char** argv, FastoObject* out);
+common::Error hgetall(CommandHandler* handler, int argc, char** argv, FastoObject* out);
 common::Error hset(CommandHandler* handler, int argc, char** argv, FastoObject* out);
 common::Error hdel(CommandHandler* handler, int argc, char** argv, FastoObject* out);
 common::Error hincr(CommandHandler* handler, int argc, char** argv, FastoObject* out);
@@ -239,6 +241,9 @@ static const std::vector<CommandHolder> ssdbCommands = {
   CommandHolder("HKEYS", "<name> <key_start> <key_end> <limit>",
               "List keys of a hashmap in range (key_start, key_end].",
               UNDEFINED_SINCE, UNDEFINED_EXAMPLE_STR, 4, 0, &hkeys),
+  CommandHolder("HGETALL", "<name>",
+              "Returns the whole hash, as an array of strings indexed by strings.",
+              UNDEFINED_SINCE, UNDEFINED_EXAMPLE_STR, 1, 0, &hgetall),
   CommandHolder("HSCAN", "<name> <key_start> <key_end> <limit>",
               "List key-value pairs of a hashmap with keys in range (key_start, key_end].",
               UNDEFINED_SINCE, UNDEFINED_EXAMPLE_STR, 4, 0, &hscan),
