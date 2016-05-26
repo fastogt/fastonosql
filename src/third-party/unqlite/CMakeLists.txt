@@ -4,11 +4,11 @@ PROJECT(unqlite)
 INCLUDE_DIRECTORIES(${CMAKE_CURRENT_LIST_DIR}/src)
 
 SET(HEADERS_UNQLITE
-    src/unqlite.h
+  src/unqlite.h
 )
 
 SET(SOURCES_UNQLITE
-    src/unqlite.c
+  src/unqlite.c
 )
 
 ADD_LIBRARY(unqlite OBJECT ${HEADERS_UNQLITE} ${SOURCES_UNQLITE})

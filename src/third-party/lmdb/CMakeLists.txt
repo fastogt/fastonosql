@@ -2,18 +2,18 @@ CMAKE_MINIMUM_REQUIRED(VERSION 3.0.0)
 PROJECT(lmdb)
 
 IF(OS_FREEBSD OR OS_ANDROID)
-    ADD_DEFINITIONS(-DMDB_DSYNC=O_SYNC)
+  ADD_DEFINITIONS(-DMDB_DSYNC=O_SYNC)
 ENDIF(OS_FREEBSD OR OS_ANDROID)
 
 INCLUDE_DIRECTORIES(${CMAKE_CURRENT_LIST_DIR}/src/libraries/liblmdb)
 
 SET(HEADERS_LMDB
-    src/libraries/liblmdb/lmdb.h
+  src/libraries/liblmdb/lmdb.h
 )
 
 SET(SOURCES_LMDB
-    src/libraries/liblmdb/mdb.c
-    src/libraries/liblmdb/midl.c
+  src/libraries/liblmdb/mdb.c
+  src/libraries/liblmdb/midl.c
 )
 
 ADD_LIBRARY(lmdb OBJECT ${HEADERS_LMDB} ${SOURCES_LMDB})
