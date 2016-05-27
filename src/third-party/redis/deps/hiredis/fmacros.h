@@ -10,10 +10,20 @@
 #include <sys/cdefs.h>
 #endif
 
-#if defined(__sun__)
-#define _POSIX_C_SOURCE 200112L
+#ifdef FASTO
+  #if defined(__sun__)
+  #define _POSIX_C_SOURCE 200112L
+  #elif defined(__linux__) || defined(__OpenBSD__) || defined(__NetBSD__)
+  #define _XOPEN_SOURCE 600
+  #else
+  #define _XOPEN_SOURCE
+  #endif
 #else
-#define _XOPEN_SOURCE 600
+  #if defined(__sun__)
+  #define _POSIX_C_SOURCE 200112L
+  #else
+  #define _XOPEN_SOURCE 600
+  #endif
 #endif
 
 #if defined(__APPLE__) && defined(__MACH__)

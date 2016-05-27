@@ -135,7 +135,7 @@ SET(BUILD_VERSION_CC ${CMAKE_CURRENT_SOURCE_DIR}/src/util/build_version.cc)
 CONFIGURE_FILE("${CMAKE_CURRENT_SOURCE_DIR}/build_version.cc.in" ${BUILD_VERSION_CC} @ONLY IMMEDIATE)
 
 IF(OS_POSIX)
-  SET(SOURCES_ROCKSDB ${SOURCES_ROCKSDB} src/port/port_posix.cc src/util/env_posix.cc src/util/thread_posix.cc src/util/io_posix.cc)
+  SET(SOURCES_ROCKSDB ${SOURCES_ROCKSDB} src/port/port_posix.cc src/util/env_posix.cc src/util/io_posix.cc)
 ELSEIF(OS_WINDOWS)
   SET(SOURCES_ROCKSDB ${SOURCES_ROCKSDB} src/port/win/port_win.cc src/port/win/env_win.cc src/port/win/io_win.cc src/port/win/win_logger.cc src/port/win/env_default.cc)
   #SET(PLATFORM_LIBRARIES Rpcrt4)
