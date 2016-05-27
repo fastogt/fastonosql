@@ -31,7 +31,7 @@ RedisApi::RedisApi(QsciLexer* lexer)
 }
 
 void RedisApi::updateAutoCompletionList(const QStringList& context, QStringList& list) {
-  for (QStringList::const_iterator it = context.begin(); it != context.end(); ++it) {
+  for (auto it = context.begin(); it != context.end(); ++it) {
     QString val = *it;
     for (size_t i = 0; i < core::redis::redisCommands.size(); ++i) {
       core::CommandInfo cmd = core::redis::redisCommands[i];
@@ -49,7 +49,7 @@ void RedisApi::updateAutoCompletionList(const QStringList& context, QStringList&
 
 QStringList RedisApi::callTips(const QStringList& context, int commas,
                                QsciScintilla::CallTipsStyle style, QList<int>& shifts) {
-  for (QStringList::const_iterator it = context.begin(); it != context.end(); ++it) {
+  for (auto it = context.begin(); it != context.end(); ++it) {
     QString val = *it;
     for (size_t i = 0; i < core::redis::redisCommands.size(); ++i) {
       core::CommandInfo cmd = core::redis::redisCommands[i];

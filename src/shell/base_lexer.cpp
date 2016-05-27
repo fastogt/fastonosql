@@ -50,7 +50,7 @@ BaseQsciApiCommandHolder::BaseQsciApiCommandHolder(const std::vector<core::Comma
 }
 
 void BaseQsciApiCommandHolder::updateAutoCompletionList(const QStringList& context, QStringList& list) {
-  for (QStringList::const_iterator it = context.begin(); it != context.end(); ++it) {
+  for (auto it = context.begin(); it != context.end(); ++it) {
     QString val = *it;
     for (size_t i = 0; i < commands_.size(); ++i) {
       core::CommandInfo cmd = commands_[i];
@@ -68,7 +68,7 @@ void BaseQsciApiCommandHolder::updateAutoCompletionList(const QStringList& conte
 
 QStringList BaseQsciApiCommandHolder::callTips(const QStringList& context, int commas,
                                  QsciScintilla::CallTipsStyle style, QList<int>& shifts) {
-  for (QStringList::const_iterator it = context.begin(); it != context.end(); ++it) {
+  for (auto it = context.begin(); it != context.end(); ++it) {
     QString val = *it;
     for (size_t i = 0; i < commands_.size(); ++i) {
       core::CommandInfo cmd = commands_[i];

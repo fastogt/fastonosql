@@ -183,7 +183,7 @@ std::pair<std::string, std::string> getKeyValueFromLine(const std::string& input
 
   std::string trimed;
   common::TrimWhitespaceASCII(value, common::TRIM_ALL, &trimed);
-  return std::make_pair(key, value);
+  return std::make_pair(key, trimed);
 }
 
 std::string getFirstWordFromLine(const std::string& input) {
@@ -266,8 +266,8 @@ std::string convertToString(common::ArrayValue* array, const std::string& delemi
   }
 
   std::string result;
-  common::ArrayValue::const_iterator lastIt = std::prev(array->end());
-  for (common::ArrayValue::const_iterator it = array->begin(); it != array->end(); ++it) {
+  auto lastIt = std::prev(array->end());
+  for (auto it = array->begin(); it != array->end(); ++it) {
     std::string val = (*it)->toString();
     if(val.empty()){
       continue;
@@ -288,8 +288,8 @@ std::string convertToString(common::SetValue* set, const std::string& delemitr) 
   }
 
   std::string result;
-  const common::SetValue::const_iterator lastIt = std::prev(set->end());
-  for (common::SetValue::const_iterator it = set->begin(); it != set->end(); ++it) {
+  auto lastIt = std::prev(set->end());
+  for (auto it = set->begin(); it != set->end(); ++it) {
     std::string val = (*it)->toString();
     if(val.empty()){
       continue;
@@ -310,9 +310,9 @@ std::string convertToString(common::ZSetValue* zset, const std::string& delemitr
   }
 
   std::string result;
-  const common::ZSetValue::const_iterator lastIt = std::prev(zset->end());
-  for (common::ZSetValue::const_iterator it = zset->begin(); it != zset->end(); ++it) {
-    common::ZSetValue::value_type v = *it;
+  auto lastIt = std::prev(zset->end());
+  for (auto it = zset->begin(); it != zset->end(); ++it) {
+    auto v = *it;
     std::string key = (v.first)->toString();
     std::string val = (v.second)->toString();
     if(val.empty() || key.empty()){
@@ -333,8 +333,8 @@ std::string convertToString(common::HashValue* hash, const std::string& delemitr
   }
 
   std::string result;
-  for (common::HashValue::const_iterator it = hash->begin(); it != hash->end(); ++it) {
-    common::HashValue::value_type v = *it;
+  for (auto it = hash->begin(); it != hash->end(); ++it) {
+    auto v = *it;
     std::string key = (v.first)->toString();
     std::string val = (v.second)->toString();
     if (val.empty() || key.empty()) {

@@ -195,7 +195,7 @@ SettingsManager::ClusterSettingsContainerType SettingsManager::clusters() const 
 
 void SettingsManager::addRConnection(const QString& connection) {
   if (!connection.isEmpty()) {
-    QStringList::iterator it = std::find(recent_connections_.begin(),
+    auto it = std::find(recent_connections_.begin(),
                                          recent_connections_.end(), connection);
     if (it == recent_connections_.end()) {
       recent_connections_.push_front(connection);
@@ -205,7 +205,7 @@ void SettingsManager::addRConnection(const QString& connection) {
 
 void SettingsManager::removeRConnection(const QString& connection) {
   if (!connection.isEmpty()) {
-    QStringList::iterator it = std::find(recent_connections_.begin(),
+    auto it = std::find(recent_connections_.begin(),
                                          recent_connections_.end(), connection);
     if (it != recent_connections_.end()) {
       recent_connections_.erase(it);
