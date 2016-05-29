@@ -30,16 +30,15 @@ class IDatabase {
  public:
   virtual ~IDatabase();
 
-  connectionTypes type() const;
   IServerSPtr server() const;
+  IDataBaseInfoSPtr info() const;
+
+  connectionTypes type() const;
   bool isDefault() const;
   std::string name() const;
 
   void loadContent(const events_info::LoadDatabaseContentRequest& req);
   void setDefault(const events_info::SetDefaultDatabaseRequest& req);
-
-  IDataBaseInfoSPtr info() const;
-  void setInfo(IDataBaseInfoSPtr info);
 
   void executeCommand(const events_info::CommandRequest& req);
   void removeAllKeys(const events_info::ClearDatabaseRequest& req);
@@ -48,7 +47,7 @@ class IDatabase {
   IDatabase(IServerSPtr server, IDataBaseInfoSPtr info);
 
  private:
-  IDataBaseInfoSPtr info_;
+  const IDataBaseInfoSPtr info_;
   const IServerSPtr server_;
 };
 

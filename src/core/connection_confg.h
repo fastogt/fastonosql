@@ -48,7 +48,7 @@ struct BaseConfig {
 
 // -f -d
 struct LocalConfig
-        : public BaseConfig<LOCAL> {
+    : public BaseConfig<LOCAL> {
   explicit LocalConfig(const std::string& dbname);
 
   std::vector<std::string> args() const;
@@ -58,7 +58,7 @@ struct LocalConfig
 
 // -h -p -d
 struct RemoteConfig
-        : public BaseConfig<REMOTE> {
+    : public BaseConfig<REMOTE> {
   explicit RemoteConfig(const common::net::hostAndPort& host);
 
   std::vector<std::string> args() const;

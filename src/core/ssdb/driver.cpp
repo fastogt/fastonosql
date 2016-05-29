@@ -249,20 +249,20 @@ void Driver::handleExecuteEvent(events::ExecuteRequestEvent* ev) {
   events::ExecuteResponceEvent::value_type res(ev->value());
   const char* inputLine = common::utils::c_strornull(res.text);
 
-  common::Error er;
   if (inputLine) {
     size_t length = strlen(inputLine);
     int offset = 0;
     RootLocker lock = make_locker(sender, inputLine);
     FastoObjectIPtr obj = lock.root();
-    double step = 100.0f/length;
+    const double step = 100.0 / length;
     for (size_t n = 0; n < length; ++n) {
       if (isInterrupted()) {
-        er.reset(new common::ErrorValue("Interrupted exec.", common::ErrorValue::E_INTERRUPTED));
-        res.setErrorInfo(er);
+        res.setErrorInfo(common::make_error_value("Interrupted exec.",
+                                                  common::ErrorValue::E_INTERRUPTED,
+                                                  common::logging::L_WARNING));
         break;
       }
-      if (inputLine[n] == '\n' || n == length-1) {
+      if (inputLine[n] == '\n' || n == length - 1) {
         notifyProgress(sender, step * n);
         char command[128] = {0};
         if (n == length - 1) {
@@ -272,7 +272,7 @@ void Driver::handleExecuteEvent(events::ExecuteRequestEvent* ev) {
         }
         offset = n + 1;
         FastoObjectCommand* cmd = createCommand<Command>(obj, command, common::Value::C_USER);
-        er = execute(cmd);
+        common::Error er = execute(cmd);
         if (er && er->isError()) {
           res.setErrorInfo(er);
           break;
@@ -280,8 +280,7 @@ void Driver::handleExecuteEvent(events::ExecuteRequestEvent* ev) {
       }
     }
   } else {
-    er.reset(new common::ErrorValue("Empty command line.", common::ErrorValue::E_ERROR));
-    res.setErrorInfo(er);
+    res.setErrorInfo(common::make_error_value("Empty command line.", common::ErrorValue::E_ERROR));
   }
 
   reply(sender, new events::ExecuteResponceEvent(this, res));

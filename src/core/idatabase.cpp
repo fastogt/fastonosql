@@ -66,10 +66,6 @@ IDataBaseInfoSPtr IDatabase::info() const {
   return info_;
 }
 
-void IDatabase::setInfo(IDataBaseInfoSPtr info) {
-  info_ = info;
-}
-
 void IDatabase::executeCommand(const events_info::CommandRequest& req) {
   DCHECK_EQ(req.inf, info_);
 

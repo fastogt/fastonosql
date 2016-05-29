@@ -37,10 +37,8 @@ struct ServerCommonInfo {
   common::net::hostAndPort host;
 };
 
-class IServerDiscoveryInfo {
+class ServerDiscoveryInfoBase {
  public:
-  virtual ~IServerDiscoveryInfo();
-
   connectionTypes connectionType() const;
   serverTypes type() const;
 
@@ -51,7 +49,8 @@ class IServerDiscoveryInfo {
   void setHost(const common::net::hostAndPort& host);
 
  protected:
-  IServerDiscoveryInfo(connectionTypes ctype, const ServerCommonInfo& info);
+  ServerDiscoveryInfoBase(connectionTypes ctype, const ServerCommonInfo& info);
+  ~ServerDiscoveryInfoBase();
 
  private:
   const connectionTypes ctype_;
@@ -59,7 +58,7 @@ class IServerDiscoveryInfo {
 };
 
 class ServerDiscoverySentinelInfo
-  : public IServerDiscoveryInfo {
+  : public ServerDiscoveryInfoBase {
  protected:
   ServerDiscoverySentinelInfo(connectionTypes ctype, const ServerCommonInfo& info);
 };
@@ -67,7 +66,7 @@ class ServerDiscoverySentinelInfo
 typedef common::shared_ptr<ServerDiscoverySentinelInfo> ServerDiscoverySentinelInfoSPtr;
 
 class ServerDiscoveryClusterInfo
-  : public IServerDiscoveryInfo{
+  : public ServerDiscoveryInfoBase{
  public:
   bool self() const;
 

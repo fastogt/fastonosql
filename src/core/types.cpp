@@ -31,39 +31,39 @@ ServerCommonInfo::ServerCommonInfo()
   : name(), type(MASTER), host() {
 }
 
-IServerDiscoveryInfo::IServerDiscoveryInfo(connectionTypes ctype, const ServerCommonInfo &info)
+ServerDiscoveryInfoBase::ServerDiscoveryInfoBase(connectionTypes ctype, const ServerCommonInfo &info)
   : info_(info), ctype_(ctype) {
 }
 
-connectionTypes IServerDiscoveryInfo::connectionType() const {
+connectionTypes ServerDiscoveryInfoBase::connectionType() const {
   return ctype_;
 }
 
-serverTypes IServerDiscoveryInfo::type() const {
+serverTypes ServerDiscoveryInfoBase::type() const {
   return info_.type;
 }
 
-std::string IServerDiscoveryInfo::name() const {
+std::string ServerDiscoveryInfoBase::name() const {
   return info_.name;
 }
 
-void IServerDiscoveryInfo::setName(const std::string& name) {
+void ServerDiscoveryInfoBase::setName(const std::string& name) {
   info_.name = name;
 }
 
-common::net::hostAndPort IServerDiscoveryInfo::host() const {
+common::net::hostAndPort ServerDiscoveryInfoBase::host() const {
   return info_.host;
 }
 
-void IServerDiscoveryInfo::setHost(const common::net::hostAndPort& host) {
+void ServerDiscoveryInfoBase::setHost(const common::net::hostAndPort& host) {
   info_.host = host;
 }
 
-IServerDiscoveryInfo::~IServerDiscoveryInfo() {
+ServerDiscoveryInfoBase::~ServerDiscoveryInfoBase() {
 }
 
 ServerDiscoveryClusterInfo::ServerDiscoveryClusterInfo(connectionTypes ctype, const ServerCommonInfo& info, bool self)
-  : IServerDiscoveryInfo(ctype, info), self_(self) {
+  : ServerDiscoveryInfoBase(ctype, info), self_(self) {
 }
 
 bool ServerDiscoveryClusterInfo::self() const {
@@ -82,7 +82,7 @@ IServerInfo::IServerInfo(connectionTypes type)
 }
 
 ServerDiscoverySentinelInfo::ServerDiscoverySentinelInfo(connectionTypes ctype, const ServerCommonInfo& info)
-  : IServerDiscoveryInfo(ctype, info) {
+  : ServerDiscoveryInfoBase(ctype, info) {
 }
 
 Field::Field(const std::string& name, common::Value::Type type)
