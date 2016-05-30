@@ -69,13 +69,8 @@ std::vector<common::Value::Type> DBTraits<MEMCACHED>::supportedTypes() {
 }
 
 template<>
-std::vector<std::string> DBTraits<MEMCACHED>::infoHeaders() {
-  return  { MEMCACHED_COMMON_LABEL };
-}
-
-template<>
-std::vector<std::vector<Field> > DBTraits<MEMCACHED>::infoFields() {
-  return  { memcachedCommonFields };
+std::vector<info_field_t> DBTraits<MEMCACHED>::infoFields() {
+  return  { std::make_pair(MEMCACHED_COMMON_LABEL, memcachedCommonFields) };
 }
 
 namespace memcached {
@@ -249,18 +244,16 @@ ServerInfo* makeMemcachedServerInfo(const std::string& content) {
   }
 
   ServerInfo* result = new ServerInfo;
-
-  int j = 0;
+  size_t j = 0;
   std::string word;
   size_t pos = 0;
-  const std::vector<std::string> headers = DBTraits<MEMCACHED>::infoHeaders();
-
+  static const std::vector<info_field_t> fields = DBTraits<MEMCACHED>::infoFields();
   for (size_t i = 0; i < content.size(); ++i) {
     char ch = content[i];
     word += ch;
-    if (word == headers[j]) {
-      if (j+1 != headers.size()) {
-        pos = content.find(headers[j+1], pos);
+    if (word == fields[j].first) {
+      if (j + 1 != fields.size()) {
+        pos = content.find(fields[j + 1].first, pos);
       } else {
         break;
       }

@@ -70,9 +70,10 @@ ServerHistoryDialog::ServerHistoryDialog(core::IServerSPtr server, QWidget* pare
   VERIFY(connect(serverInfoFields_, static_cast<curc>(&QComboBox::currentIndexChanged),
                  this, &ServerHistoryDialog::refreshGraph));
 
-  const std::vector<std::string> headers = infoHeadersFromType(server_->type());
-  for (size_t i = 0; i < headers.size(); ++i) {
-      serverInfoGroupsNames_->addItem(common::convertFromString<QString>(headers[i]));
+  const std::vector<core::info_field_t> fields = core::infoFieldsFromType(server_->type());
+  for (size_t i = 0; i < fields.size(); ++i) {
+    core::info_field_t field = fields[i];
+    serverInfoGroupsNames_->addItem(common::convertFromString<QString>(field.first));
   }
   QVBoxLayout* setingsLayout = new QVBoxLayout;
   setingsLayout->addWidget(clearHistory_);
@@ -143,9 +144,9 @@ void ServerHistoryDialog::refreshInfoFields(int index) {
 
   serverInfoFields_->clear();
 
-  std::vector< std::vector<core::Field> > fields = infoFieldsFromType(server_->type());
-  std::vector<core::Field> field = fields[index];
-  for (int i = 0; i < field.size(); ++i) {
+  std::vector<core::info_field_t> fields = infoFieldsFromType(server_->type());
+  std::vector<core::Field> field = fields[index].second;
+  for (size_t i = 0; i < field.size(); ++i) {
     core::Field fl = field[i];
     if (fl.isIntegral()) {
       serverInfoFields_->addItem(common::convertFromString<QString>(fl.name), i);

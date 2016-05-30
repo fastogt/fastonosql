@@ -66,6 +66,9 @@ ServerDiscoveryClusterInfo::ServerDiscoveryClusterInfo(connectionTypes ctype, co
   : ServerDiscoveryInfoBase(ctype, info), self_(self) {
 }
 
+ServerDiscoveryClusterInfo::~ServerDiscoveryClusterInfo() {
+}
+
 bool ServerDiscoveryClusterInfo::self() const {
   return self_;
 }
@@ -83,6 +86,9 @@ IServerInfo::IServerInfo(connectionTypes type)
 
 ServerDiscoverySentinelInfo::ServerDiscoverySentinelInfo(connectionTypes ctype, const ServerCommonInfo& info)
   : ServerDiscoveryInfoBase(ctype, info) {
+}
+
+ServerDiscoverySentinelInfo::~ServerDiscoverySentinelInfo() {
 }
 
 Field::Field(const std::string& name, common::Value::Type type)
@@ -133,47 +139,7 @@ std::vector<common::Value::Type> supportedTypesFromType(connectionTypes type) {
   return std::vector<common::Value::Type>();
 }
 
-std::vector<std::string> infoHeadersFromType(connectionTypes type) {
-#ifdef BUILD_WITH_REDIS
-  if (type == REDIS) {
-    return DBTraits<REDIS>::infoHeaders();
-  }
-#endif
-#ifdef BUILD_WITH_MEMCACHED
-  if (type == MEMCACHED) {
-    return DBTraits<MEMCACHED>::infoHeaders();
-  }
-#endif
-#ifdef BUILD_WITH_SSDB
-  if (type == SSDB) {
-    return DBTraits<SSDB>::infoHeaders();
-  }
-#endif
-#ifdef BUILD_WITH_LEVELDB
-  if (type == LEVELDB) {
-    return DBTraits<LEVELDB>::infoHeaders();
-  }
-#endif
-#ifdef BUILD_WITH_ROCKSDB
-  if (type == ROCKSDB) {
-    return DBTraits<ROCKSDB>::infoHeaders();
-  }
-#endif
-#ifdef BUILD_WITH_UNQLITE
-  if (type == UNQLITE) {
-    return DBTraits<UNQLITE>::infoHeaders();
-  }
-#endif
-#ifdef BUILD_WITH_LMDB
-  if (type == LMDB) {
-    return DBTraits<LMDB>::infoHeaders();
-  }
-#endif
-  NOTREACHED();
-  return std::vector<std::string>();
-}
-
-std::vector< std::vector<Field> > infoFieldsFromType(connectionTypes type) {
+std::vector<info_field_t> infoFieldsFromType(connectionTypes type) {
 #ifdef BUILD_WITH_REDIS
   if (type == REDIS) {
     return DBTraits<REDIS>::infoFields();
@@ -210,7 +176,7 @@ std::vector< std::vector<Field> > infoFieldsFromType(connectionTypes type) {
   }
 #endif
   NOTREACHED();
-  return std::vector<std::vector<Field>>();
+  return std::vector<info_field_t>();
 }
 
 ServerInfoSnapShoot::ServerInfoSnapShoot()

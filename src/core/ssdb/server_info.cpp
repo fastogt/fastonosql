@@ -56,13 +56,8 @@ std::vector<common::Value::Type> DBTraits<SSDB>::supportedTypes() {
 }
 
 template<>
-std::vector<std::string> DBTraits<SSDB>::infoHeaders() {
-  return { SSDB_COMMON_LABEL };
-}
-
-template<>
-std::vector<std::vector<Field> > DBTraits<SSDB>::infoFields() {
-  return { SsdbCommonFields };
+std::vector<info_field_t> DBTraits<SSDB>::infoFields() {
+  return { std::make_pair(SSDB_COMMON_LABEL, SsdbCommonFields) };
 }
 
 namespace ssdb {
@@ -151,13 +146,13 @@ ServerInfo* makeSsdbServerInfo(const std::string& content) {
   }
 
   ServerInfo* result = new ServerInfo;
-  const std::vector<std::string> headers = DBTraits<SSDB>::infoHeaders();
+  static const std::vector<info_field_t> fields = DBTraits<SSDB>::infoFields();
   std::string word;
-  DCHECK_EQ(headers.size(), 1);
+  DCHECK_EQ(fields.size(), 1);
 
   for (size_t i = 0; i < content.size(); ++i) {
     word += content[i];
-    if (word == headers[0]) {
+    if (word == fields[0].first) {
       std::string part = content.substr(i + 1);
       result->common_ = ServerInfo::Common(part);
       break;

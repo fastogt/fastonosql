@@ -138,30 +138,16 @@ std::vector<common::Value::Type> DBTraits<REDIS>::supportedTypes() {
 }
 
 template<>
-std::vector<std::string> DBTraits<REDIS>::infoHeaders() {
+std::vector<info_field_t> DBTraits<REDIS>::infoFields() {
   return  {
-              REDIS_SERVER_LABEL,
-              REDIS_CLIENTS_LABEL,
-              REDIS_MEMORY_LABEL,
-              REDIS_PERSISTENCE_LABEL,
-              REDIS_STATS_LABEL,
-              REDIS_REPLICATION_LABEL,
-              REDIS_CPU_LABEL,
-              REDIS_KEYSPACE_LABEL
-          };
-}
-
-template<>
-std::vector< std::vector<Field> > DBTraits<REDIS>::infoFields() {
-  return  {
-              redisServerFields,
-              redisClientFields,
-              redisMemoryFields,
-              redisPersistenceFields,
-              redisStatsFields,
-              redisReplicationFields,
-              redisCpuFields,
-              redisKeySpaceFields
+              std::make_pair(REDIS_SERVER_LABEL, redisServerFields),
+              std::make_pair(REDIS_CLIENTS_LABEL, redisClientFields),
+              std::make_pair(REDIS_MEMORY_LABEL, redisMemoryFields),
+              std::make_pair(REDIS_PERSISTENCE_LABEL, redisPersistenceFields),
+              std::make_pair(REDIS_STATS_LABEL, redisStatsFields),
+              std::make_pair(REDIS_REPLICATION_LABEL, redisReplicationFields),
+              std::make_pair(REDIS_CPU_LABEL, redisCpuFields),
+              std::make_pair(REDIS_KEYSPACE_LABEL, redisKeySpaceFields)
           };
 }
 
@@ -807,17 +793,16 @@ ServerInfo* makeRedisServerInfo(const std::string& content) {
   }
 
   ServerInfo* result = new ServerInfo;
-  int j = 0;
+  size_t j = 0;
   std::string word;
   size_t pos = 0;
-  const std::vector<std::string> headers = DBTraits<REDIS>::infoHeaders();
-
+  static const std::vector<core::info_field_t> fields = DBTraits<REDIS>::infoFields();
   for (size_t i = 0; i < content.size(); ++i) {
     char ch = content[i];
     word += ch;
-    if (word == headers[j]) {
-      if (j+1 != headers.size()) {
-        pos = content.find(headers[j+1], pos);
+    if (word == fields[j].first) {
+      if (j + 1 != fields.size()) {
+        pos = content.find(fields[j + 1].first, pos);
       } else {
         break;
       }

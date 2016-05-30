@@ -59,6 +59,9 @@ class ServerDiscoveryInfoBase {
 
 class ServerDiscoverySentinelInfo
   : public ServerDiscoveryInfoBase {
+ public:
+  virtual ~ServerDiscoverySentinelInfo();
+
  protected:
   ServerDiscoverySentinelInfo(connectionTypes ctype, const ServerCommonInfo& info);
 };
@@ -69,6 +72,7 @@ class ServerDiscoveryClusterInfo
   : public ServerDiscoveryInfoBase{
  public:
   bool self() const;
+  virtual ~ServerDiscoveryClusterInfo();
 
  protected:
   ServerDiscoveryClusterInfo(connectionTypes ctype, const ServerCommonInfo& info, bool self);
@@ -107,16 +111,15 @@ struct Field {
   common::Value::Type type;
 };
 
+typedef std::pair<std::string, std::vector<Field> > info_field_t;
 template<connectionTypes ct>
 struct DBTraits {
   static std::vector<common::Value::Type> supportedTypes();
-  static std::vector<std::string> infoHeaders();
-  static std::vector<std::vector<Field> > infoFields();
+  static std::vector<info_field_t> infoFields();
 };
 
 std::vector<common::Value::Type> supportedTypesFromType(connectionTypes type);
-std::vector<std::string> infoHeadersFromType(connectionTypes type);
-std::vector<std::vector<Field> > infoFieldsFromType(connectionTypes type);
+std::vector<info_field_t> infoFieldsFromType(connectionTypes type);
 
 struct ServerInfoSnapShoot {
   ServerInfoSnapShoot();

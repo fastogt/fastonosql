@@ -49,13 +49,8 @@ std::vector<common::Value::Type> DBTraits<UNQLITE>::supportedTypes() {
 }
 
 template<>
-std::vector<std::string> DBTraits<UNQLITE>::infoHeaders() {
-  return { UNQLITE_STATS_LABEL };
-}
-
-template<>
-std::vector<std::vector<Field> > DBTraits<UNQLITE>::infoFields() {
-  return { unqliteCommonFields };
+std::vector<info_field_t> DBTraits<UNQLITE>::infoFields() {
+  return { std::make_pair(UNQLITE_STATS_LABEL, unqliteCommonFields) };
 }
 
 namespace unqlite {
@@ -126,17 +121,17 @@ ServerInfo* makeUnqliteServerInfo(const std::string& content) {
 
   ServerInfo* result = new ServerInfo;
 
-  const std::vector<std::string> headers = DBTraits<UNQLITE>::infoHeaders();
+  static const std::vector<info_field_t> fields = DBTraits<UNQLITE>::infoFields();
   std::string word;
-  DCHECK_EQ(headers.size(), 1);
+  DCHECK_EQ(fields.size(), 1);
 
   for (size_t i = 0; i < content.size(); ++i) {
-      word += content[i];
-      if (word == headers[0]) {
-          std::string part = content.substr(i + 1);
-          result->stats_ = ServerInfo::Stats(part);
-          break;
-      }
+    word += content[i];
+    if (word == fields[0].first) {
+      std::string part = content.substr(i + 1);
+      result->stats_ = ServerInfo::Stats(part);
+      break;
+    }
   }
 
   return result;

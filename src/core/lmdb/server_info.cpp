@@ -49,13 +49,8 @@ std::vector<common::Value::Type> DBTraits<LMDB>::supportedTypes() {
 }
 
 template<>
-std::vector<std::string> DBTraits<LMDB>::infoHeaders() {
-  return { LMDB_STATS_LABEL };
-}
-
-template<>
-std::vector<std::vector<Field> > DBTraits<LMDB>::infoFields() {
-  return { lmdbCommonFields };
+std::vector<info_field_t> DBTraits<LMDB>::infoFields() {
+  return { std::make_pair(LMDB_STATS_LABEL, lmdbCommonFields) };
 }
 namespace lmdb {
 
@@ -123,14 +118,13 @@ ServerInfo* makeLmdbServerInfo(const std::string& content) {
   }
 
   ServerInfo* result = new ServerInfo;
-
-  const std::vector<std::string> headers = DBTraits<LMDB>::infoHeaders();
+  static const std::vector<info_field_t> fields = DBTraits<LMDB>::infoFields();
   std::string word;
-  DCHECK_EQ(headers.size(), 1);
+  DCHECK_EQ(fields.size(), 1);
 
   for (size_t i = 0; i < content.size(); ++i) {
     word += content[i];
-    if (word == headers[0]) {
+    if (word == fields[0].first) {
       std::string part = content.substr(i + 1);
       result->stats_ = ServerInfo::Stats(part);
       break;
