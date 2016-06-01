@@ -503,19 +503,20 @@ void MainWindow::versionAvailible(bool succesResult, const QString& version) {
     QMessageBox::information(this, translations::trCheckVersion,
                              translations::trConnectionErrorText);
     checkUpdateAction_->setEnabled(true);
-  } else {
-    std::string sver = common::convertToString(version);
-    bool isn = isNeededUpdate(sver);
-    if (isn) {
-      QMessageBox::information(this, translations::trCheckVersion,
-                               QObject::tr("Availible new version: %1").arg(version));
-    } else {
-      QMessageBox::information(this, translations::trCheckVersion,
-                               QObject::tr("<h3>You're' up-to-date!</h3>" PROJECT_NAME_TITLE " %1 is currently the newest version available.").arg(version));
-    }
-
-    checkUpdateAction_->setEnabled(isn);
+    return;
   }
+
+  std::string sver = common::convertToString(version);
+  bool isn = isNeededUpdate(sver);
+  if (isn) {
+    QMessageBox::information(this, translations::trCheckVersion,
+                             QObject::tr("Availible new version: %1").arg(version));
+  } else {
+    QMessageBox::information(this, translations::trCheckVersion,
+                             QObject::tr("<h3>You're' up-to-date!</h3>" PROJECT_NAME_TITLE " %1 is currently the newest version available.").arg(version));
+  }
+
+  checkUpdateAction_->setEnabled(isn);
 }
 
 #ifdef OS_ANDROID

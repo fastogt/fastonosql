@@ -64,18 +64,16 @@ KeysTableModel::~KeysTableModel() {
 }
 
 QVariant KeysTableModel::data(const QModelIndex& index, int role) const {
-  QVariant result;
-
-  if (!index.isValid())
-    return result;
+  if (!index.isValid()) {
+    return QVariant();
+  }
 
   KeyTableItem* node = common::utils_qt::item<fasto::qt::gui::TableItem*, KeyTableItem*>(index);
-
-  if (!node)
-    return result;
+  if (!node) {
+    return QVariant();
+  }
 
   int col = index.column();
-
   if (role == Qt::DecorationRole && col == KeyTableItem::kKey) {
     return GuiFactory::instance().icon(node->type());
   }
@@ -84,6 +82,7 @@ QVariant KeysTableModel::data(const QModelIndex& index, int role) const {
     return QColor(Qt::gray);
   }
 
+  QVariant result;
   if (role == Qt::DisplayRole) {
     if (col == KeyTableItem::kKey) {
       result = node->key();
@@ -136,8 +135,9 @@ Qt::ItemFlags KeysTableModel::flags(const QModelIndex& index) const {
 }
 
 QVariant KeysTableModel::headerData(int section, Qt::Orientation orientation, int role) const {
-  if (role != Qt::DisplayRole)
+  if (role != Qt::DisplayRole) {
     return QVariant();
+  }
 
   if (orientation == Qt::Horizontal && role == Qt::DisplayRole) {
     if (section == KeyTableItem::kKey) {
