@@ -26,29 +26,47 @@
 namespace fastonosql {
 namespace gui {
 
-PropertyTableItem::PropertyTableItem(const QString& key, const QString& value)
-  : key(key), value(value) {
+PropertyTableItem::PropertyTableItem(const core::property_t& prop)
+  : prop_(prop) {
+}
+
+QString PropertyTableItem::key() const {
+  return common::convertFromString<QString>(prop_.first);
+}
+
+QString PropertyTableItem::value() const {
+  return common::convertFromString<QString>(prop_.second);
+}
+
+core::property_t PropertyTableItem::property() const {
+  return prop_;
+}
+
+void PropertyTableItem::setProperty(const core::property_t& prop) {
+  prop_ = prop;
 }
 
 PropertyTableModel::PropertyTableModel(QObject* parent)
   : TableModel(parent) {
+  qRegisterMetaType<core::property_t>("core::property_t");
 }
 
 QVariant PropertyTableModel::data(const QModelIndex& index, int role) const {
-  if (!index.isValid())
+  if (!index.isValid()) {
     return QVariant();
+  }
 
   PropertyTableItem* node = common::utils_qt::item<fasto::qt::gui::TableItem*, PropertyTableItem*>(index);
-
-  if (!node)
+  if (!node) {
     return QVariant();
+  }
 
   int col = index.column();
   if (role == Qt::DisplayRole) {
     if (col == PropertyTableItem::eKey) {
-      return node->key;
+      return node->key();
     } else if (col == PropertyTableItem::eValue) {
-      return node->value;
+      return node->value();
     }
   }
   return QVariant();
@@ -65,9 +83,8 @@ bool PropertyTableModel::setData(const QModelIndex& index, const QVariant& value
      if (column == PropertyTableItem::eKey) {
      } else if (column == PropertyTableItem::eValue) {
        QString newValue = value.toString();
-       if (newValue != node->value) {
-         core::PropertyType pr;
-         pr.first = common::convertToString(node->key);
+       if (newValue != node->value()) {
+         core::property_t pr = node->property();
          pr.second = common::convertToString(newValue);
          emit changedProperty(pr);
        }
@@ -108,13 +125,13 @@ int PropertyTableModel::columnCount(const QModelIndex& parent) const {
   return PropertyTableItem::eCountColumns;
 }
 
-void PropertyTableModel::changeProperty(const core::PropertyType& pr) {
-  QString key = common::convertFromString<QString>(pr.first);
+void PropertyTableModel::changeProperty(const core::property_t& pr) {
   for (size_t i = 0; i < data_.size(); ++i) {
     PropertyTableItem* it = dynamic_cast<PropertyTableItem*>(data_[i]);  // +
     CHECK(it);
-    if (it->key == key) {
-      it->value = common::convertFromString<QString>(pr.second);
+    core::property_t prop = it->property();
+    if (prop.first == pr.first) {
+      it->setProperty(pr);
       emit dataChanged(index(i, 0), index(i, 1));
       return;
     }

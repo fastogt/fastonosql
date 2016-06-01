@@ -237,7 +237,7 @@ ServerPropertyInfoResponce::ServerPropertyInfoResponce(const base_class &request
 }
 
 ChangeServerPropertyInfoRequest::ChangeServerPropertyInfoRequest(initiator_type sender,
-                                                                 const PropertyType &pt,
+                                                                 const property_t &pt,
                                                                  error_type er)
   : base_class(sender, er), new_item(pt) {
 }

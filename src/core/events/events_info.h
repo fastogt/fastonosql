@@ -350,10 +350,10 @@ struct ServerPropertyInfoResponce
 struct ChangeServerPropertyInfoRequest
   : public EventInfoBase {
   typedef EventInfoBase base_class;
-  ChangeServerPropertyInfoRequest(initiator_type sender, const PropertyType& pt,
+  ChangeServerPropertyInfoRequest(initiator_type sender, const property_t& pt,
                                   error_type er = error_type());
 
-  PropertyType new_item;
+  property_t new_item;
 };
 
 struct ChangeServerPropertyInfoResponce

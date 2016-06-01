@@ -25,11 +25,10 @@
 namespace fastonosql {
 namespace core {
 
-typedef std::pair<std::string, std::string> PropertyType;
+typedef std::pair<std::string, std::string> property_t;
 
 struct ServerPropertyInfo {
-  ServerPropertyInfo();
-  std::vector<PropertyType> propertyes;
+  std::vector<property_t> propertyes;
 };
 
 ServerPropertyInfo makeServerProperty(const FastoObjectArray* array);

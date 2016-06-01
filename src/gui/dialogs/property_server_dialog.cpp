@@ -83,9 +83,8 @@ void PropertyServerDialog::finishServerProperty(const core::events_info::ServerP
     core::ServerPropertyInfo inf = res.info;
     PropertyTableModel* model = qobject_cast<PropertyTableModel*>(propertyes_table_->model());
     for (size_t i = 0; i < inf.propertyes.size(); ++i) {
-      core::PropertyType it = inf.propertyes[i];
-      model->insertItem(new PropertyTableItem(common::convertFromString<QString>(it.first),
-                                              common::convertFromString<QString>(it.second)));
+      core::property_t it = inf.propertyes[i];
+      model->insertItem(new PropertyTableItem(it));
     }
   }
 }
@@ -100,7 +99,7 @@ void PropertyServerDialog::finishServerChangeProperty(const core::events_info::C
   }
 
   if (server_->type() == core::REDIS) {
-    core::PropertyType pr = res.new_item;
+    core::property_t pr = res.new_item;
     if (res.is_change) {
       PropertyTableModel* model = qobject_cast<PropertyTableModel*>(propertyes_table_->model());
       model->changeProperty(pr);
@@ -108,7 +107,7 @@ void PropertyServerDialog::finishServerChangeProperty(const core::events_info::C
   }
 }
 
-void PropertyServerDialog::changedProperty(const core::PropertyType& prop) {
+void PropertyServerDialog::changedProperty(const core::property_t& prop) {
   core::events_info::ChangeServerPropertyInfoRequest req(this, prop);
   server_->changeProperty(req);
 }

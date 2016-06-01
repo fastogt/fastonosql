@@ -52,7 +52,7 @@ class PropertyServerDialog
   void startServerChangeProperty(const core::events_info::ChangeServerPropertyInfoRequest& req);
   void finishServerChangeProperty(const core::events_info::ChangeServerPropertyInfoResponce& res);
 
-  void changedProperty(const core::PropertyType& prop);
+  void changedProperty(const core::property_t& prop);
  protected:
   virtual void changeEvent(QEvent* e);
   virtual void showEvent(QShowEvent* e);
