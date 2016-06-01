@@ -48,7 +48,7 @@ int main(int argc, char* argv[]) {
 #ifdef OS_ANDROID
   win.resize(screenSize);
 #else
-  QSize size(screenGeometry.width()/2, screenGeometry.height()/2);
+  QSize size(screenGeometry.width() / 2, screenGeometry.height() / 2);
   if (preferedSize.height() <= screenSize.height() && preferedSize.width() <= screenSize.width()) {
     win.resize(preferedSize);
   } else {

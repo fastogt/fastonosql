@@ -71,48 +71,9 @@ const QString trSettingsLoadedS = QObject::tr("Settings successfully loaded!");
 const QString trSettingsImportedS = QObject::tr("Settings successfully imported!");
 const QString trSettingsExportedS = QObject::tr("Settings successfully encrypted and exported!");
 
-bool isNeededUpdate(const QString& serverVersion) {
-  if (serverVersion.isEmpty()) {
-    return false;
-  }
-
-  QString curVer;
-  int pos = 0;
-  uint serMaj = 0;
-  uint serMin = 0;
-  uint serPatch = 0;
-
-  for (int i = 0; i < serverVersion.length(); ++i) {
-    QChar ch = serverVersion[i];
-    if (ch == '.') {
-      if (pos == 0) {
-        serMaj = curVer.toUInt();
-      } else if (pos == 1) {
-        serMin = curVer.toUInt();
-      } else if (pos == 2) {
-        serPatch = curVer.toUInt();
-      }
-
-      ++pos;
-      curVer.clear();
-      } else {
-        curVer += ch;
-      }
-  }
-
-  if (pos != 3) {
-    return false;
-  }
-
-  if (PROJECT_VERSION_MAJOR < serMaj) {
-    return true;
-  }
-
-  if (PROJECT_VERSION_MINOR < serMin) {
-    return true;
-  }
-
-  return PROJECT_VERSION_PATCH < serPatch;
+bool isNeededUpdate(const std::string& sversion) {
+  uint32_t cver = common::convertVersionNumberFromString(sversion);
+  return PROJECT_VERSION_NUMBER < cver;
 }
 
 const QKeySequence logsKeySequence = Qt::CTRL + Qt::Key_L;
@@ -539,20 +500,21 @@ void MainWindow::exportConnection() {
 
 void MainWindow::versionAvailible(bool succesResult, const QString& version) {
   if (!succesResult) {
-      QMessageBox::information(this, translations::trCheckVersion,
-                               translations::trConnectionErrorText);
-      checkUpdateAction_->setEnabled(true);
+    QMessageBox::information(this, translations::trCheckVersion,
+                             translations::trConnectionErrorText);
+    checkUpdateAction_->setEnabled(true);
   } else {
-      bool isn = isNeededUpdate(version);
-      if (isn) {
-        QMessageBox::information(this, translations::trCheckVersion,
-                                 QObject::tr("Availible new version: %1").arg(version));
-      } else {
-        QMessageBox::information(this, translations::trCheckVersion,
-                                 QObject::tr("<h3>You're' up-to-date!</h3>" PROJECT_NAME_TITLE " %1 is currently the newest version available.").arg(version));
-      }
+    std::string sver = common::convertToString(version);
+    bool isn = isNeededUpdate(sver);
+    if (isn) {
+      QMessageBox::information(this, translations::trCheckVersion,
+                               QObject::tr("Availible new version: %1").arg(version));
+    } else {
+      QMessageBox::information(this, translations::trCheckVersion,
+                               QObject::tr("<h3>You're' up-to-date!</h3>" PROJECT_NAME_TITLE " %1 is currently the newest version available.").arg(version));
+    }
 
-      checkUpdateAction_->setEnabled(isn);
+    checkUpdateAction_->setEnabled(isn);
   }
 }
 
