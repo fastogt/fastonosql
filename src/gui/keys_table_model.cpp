@@ -98,13 +98,13 @@ QVariant KeysTableModel::data(const QModelIndex& index, int role) const {
 
 bool KeysTableModel::setData(const QModelIndex& index, const QVariant& value, int role) {
   if (index.isValid() && role == Qt::EditRole) {
-    int column = index.column();
     KeyTableItem* node = common::utils_qt::item<fasto::qt::gui::TableItem*, KeyTableItem*>(index);
 
     if (!node) {
       return false;
     }
 
+    int column = index.column();
     if (column == KeyTableItem::kKey) {
     } else if (column == KeyTableItem::kTTL) {
       bool isOk = false;

@@ -48,6 +48,10 @@ QVariant FastoCommonModel::data(const QModelIndex& index, int role) const {
     return result;
   }
 
+  if (role == Qt::FontRole) {
+    return gui::GuiFactory::instance().font();
+  }
+
   int col = index.column();
 
   if (role == Qt::DecorationRole && col == FastoCommonItem::eKey) {
@@ -56,10 +60,6 @@ QVariant FastoCommonModel::data(const QModelIndex& index, int role) const {
 
   if (role == Qt::TextColorRole && col == FastoCommonItem::eType) {
     return QColor(Qt::gray);
-  }
-
-  if (role == Qt::FontRole) {
-    return gui::GuiFactory::instance().font();
   }
 
   if (role == Qt::DisplayRole) {
@@ -77,13 +77,13 @@ QVariant FastoCommonModel::data(const QModelIndex& index, int role) const {
 
 bool FastoCommonModel::setData(const QModelIndex& index, const QVariant& value, int role) {
   if (index.isValid() && role == Qt::EditRole) {
-    int column = index.column();
     FastoCommonItem* node = common::utils_qt::item<fasto::qt::gui::TreeItem*, FastoCommonItem*>(index);
 
     if (!node) {
       return false;
     }
 
+    int column = index.column();
     if (column == FastoCommonItem::eKey) {
     } else if (column == FastoCommonItem::eValue) {
       QString newValue = value.toString();

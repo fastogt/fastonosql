@@ -275,14 +275,18 @@ void MainWindow::showEvent(QShowEvent* ev) {
 void MainWindow::open() {
   ConnectionsDialog dlg(this);
   int result = dlg.exec();
-  if (result == QDialog::Accepted) {
-    if (core::IConnectionSettingsBaseSPtr con = dlg.selectedConnection()) {
-      createServer(con);
-    } else if (core::IClusterSettingsBaseSPtr clus = dlg.selectedCluster()) {
-      createCluster(clus);
-    } else if (core::ISentinelSettingsBaseSPtr sent = dlg.selectedSentinel()) {
-      createSentinel(sent);
-    }
+  if (result != QDialog::Accepted) {
+    return;
+  }
+
+  if (core::IConnectionSettingsBaseSPtr con = dlg.selectedConnection()) {
+    createServer(con);
+  } else if (core::IClusterSettingsBaseSPtr clus = dlg.selectedCluster()) {
+    createCluster(clus);
+  } else if (core::ISentinelSettingsBaseSPtr sent = dlg.selectedSentinel()) {
+    createSentinel(sent);
+  } else {
+    NOTREACHED();
   }
 }
 
@@ -670,9 +674,7 @@ void MainWindow::clearRecentConnectionsMenu() {
 }
 
 void MainWindow::createServer(core::IConnectionSettingsBaseSPtr settings) {
-  if (!settings) {
-    return;
-  }
+  CHECK(settings);
 
   std::string path = settings->path().toString();
   QString rcon = common::convertFromString<QString>(path);
@@ -690,9 +692,7 @@ void MainWindow::createServer(core::IConnectionSettingsBaseSPtr settings) {
 }
 
 void MainWindow::createSentinel(core::ISentinelSettingsBaseSPtr settings) {
-  if (!settings) {
-    return;
-  }
+  CHECK(settings);
 
   core::ISentinelSPtr sent = core::ServersManager::instance().createSentinel(settings);
   if (!sent) {
@@ -717,9 +717,7 @@ void MainWindow::createSentinel(core::ISentinelSettingsBaseSPtr settings) {
 }
 
 void MainWindow::createCluster(core::IClusterSettingsBaseSPtr settings) {
-  if (!settings) {
-    return;
-  }
+  CHECK(settings);
 
   core::IClusterSPtr cl = core::ServersManager::instance().createCluster(settings);
   if (!cl) {

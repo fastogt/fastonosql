@@ -60,8 +60,8 @@ QVariant PropertyTableModel::data(const QModelIndex& index, int role) const {
     return QVariant();
   }
 
-  int col = index.column();
   if (role == Qt::DisplayRole) {
+    int col = index.column();
     if (col == PropertyTableItem::eKey) {
       return node->key();
     } else if (col == PropertyTableItem::eValue) {
@@ -73,12 +73,11 @@ QVariant PropertyTableModel::data(const QModelIndex& index, int role) const {
 
 bool PropertyTableModel::setData(const QModelIndex& index, const QVariant& value, int role) {
   if (index.isValid() && role == Qt::EditRole) {
-    int column = index.column();
     PropertyTableItem* node = common::utils_qt::item<fasto::qt::gui::TableItem*, PropertyTableItem*>(index);
-
     if (!node)
       return false;
 
+     int column = index.column();
      if (column == PropertyTableItem::eKey) {
      } else if (column == PropertyTableItem::eValue) {
        QString newValue = value.toString();
@@ -106,8 +105,9 @@ Qt::ItemFlags PropertyTableModel::flags(const QModelIndex &index) const {
 }
 
 QVariant PropertyTableModel::headerData(int section, Qt::Orientation orientation, int role) const {
-  if (role != Qt::DisplayRole)
+  if (role != Qt::DisplayRole) {
     return QVariant();
+  }
 
   if (orientation == Qt::Horizontal && role == Qt::DisplayRole) {
     if (section == PropertyTableItem::eKey) {

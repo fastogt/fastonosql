@@ -18,7 +18,6 @@
 
 #include "gui/fasto_editor.h"
 
-
 #include <QCheckBox>
 #include <QHBoxLayout>
 #include <QKeyEvent>
