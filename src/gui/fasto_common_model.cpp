@@ -164,7 +164,7 @@ void FastoCommonModel::changeValue(const core::NDbKValue& value) {
 
     if (child->key() == key) {
       child->setValue(value.value());
-      emit dataChanged(index(i, FastoCommonItem::eValue), index(i, FastoCommonItem::eType));
+      updateItem(index(i, FastoCommonItem::eValue), index(i, FastoCommonItem::eType));
       break;
     }
   }

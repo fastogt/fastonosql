@@ -163,7 +163,7 @@ void KeysTableModel::changeValue(const core::NDbKValue& value) {
     CHECK(it);
     if (it->key() == key) {
       it->setDbv(value);
-      emit dataChanged(index(i, KeyTableItem::kTTL), index(i, KeyTableItem::kTTL));
+      updateItem(index(i, KeyTableItem::kKey), index(i, KeyTableItem::kTTL));
       break;
     }
   }

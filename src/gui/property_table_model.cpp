@@ -48,7 +48,6 @@ void PropertyTableItem::setProperty(const core::property_t& prop) {
 
 PropertyTableModel::PropertyTableModel(QObject* parent)
   : TableModel(parent) {
-  qRegisterMetaType<core::property_t>("core::property_t");
 }
 
 QVariant PropertyTableModel::data(const QModelIndex& index, int role) const {
@@ -132,7 +131,7 @@ void PropertyTableModel::changeProperty(const core::property_t& pr) {
     core::property_t prop = it->property();
     if (prop.first == pr.first) {
       it->setProperty(pr);
-      emit dataChanged(index(i, 0), index(i, 1));
+      updateItem(index(i, PropertyTableItem::eKey), index(i, PropertyTableItem::eValue));
       return;
     }
   }
