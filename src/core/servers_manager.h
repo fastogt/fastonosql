@@ -39,7 +39,7 @@ class ServersManager
   typedef IServerSPtr server_t;
   typedef IClusterSPtr cluster_t;
   typedef ISentinelSPtr sentinel_t;
-  typedef std::vector<server_t> servers_container_t;
+  typedef std::vector<server_t> servers_t;
 
   server_t createServer(IConnectionSettingsBaseSPtr settings);
   sentinel_t createSentinel(ISentinelSettingsBaseSPtr settings);
@@ -60,7 +60,7 @@ class ServersManager
  private:
   ServersManager();
 
-  servers_container_t servers_;
+  servers_t servers_;
 };
 
 }  // namespace core

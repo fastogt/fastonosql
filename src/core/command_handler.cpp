@@ -65,7 +65,7 @@ CommandHandler::CommandHandler(const std::vector<commands_t> &commands)
 }
 
 common::Error CommandHandler::execute(int argc, char** argv, FastoObject* out) {
-  char * input_cmd = argv[0];
+  char* input_cmd = argv[0];
   for(size_t i = 0; i < commands_.size(); ++i) {
     commands_t cmd = commands_[i];
     if (cmd.isCommand(input_cmd)) {

@@ -321,7 +321,7 @@ void ServersManager::closeServer(server_t server) {
 }
 
 void ServersManager::closeCluster(cluster_t cluster) {
-  ICluster::nodes_type nodes = cluster->nodes();
+  auto nodes = cluster->nodes();
   for (size_t i = 0; i < nodes.size(); ++i) {
     closeServer(nodes[i]);
   }

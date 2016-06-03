@@ -41,7 +41,8 @@ class IServer
   : public IServerBase, public std::enable_shared_from_this<IServer> {
   Q_OBJECT
  public:
-  typedef std::vector<IDataBaseInfoSPtr> databases_container_t;
+  typedef IDataBaseInfoSPtr database_t;
+  typedef std::vector<database_t> databases_t;
   virtual ~IServer();
 
   //sync methods
@@ -187,7 +188,7 @@ class IServer
   virtual void handleDiscoveryInfoResponceEvent(events::DiscoveryInfoResponceEvent* ev);
 
   IDriver* const drv_;
-  databases_container_t databases_;
+  databases_t databases_;
 
  private:
   void handleEnterModeEvent(events::EnterModeEvent* ev);

@@ -35,9 +35,9 @@ namespace core {
 class SettingsManager
   : public common::patterns::LazySingleton<SettingsManager> {
  public:
-  typedef std::vector<IConnectionSettingsBaseSPtr> ConnectionSettingsContainerType;
-  typedef std::vector<IClusterSettingsBaseSPtr> ClusterSettingsContainerType;
-  typedef std::vector<ISentinelSettingsBaseSPtr> SentinelSettingsContainerType;
+  typedef std::vector<IConnectionSettingsBaseSPtr> connection_settings_t;
+  typedef std::vector<IClusterSettingsBaseSPtr> cluster_settings_t;
+  typedef std::vector<ISentinelSettingsBaseSPtr> sentinel_settings_t;
   friend class common::patterns::LazySingleton<SettingsManager>;
 
   static std::string settingsDirPath();
@@ -61,19 +61,19 @@ class SettingsManager
   void addConnection(IConnectionSettingsBaseSPtr connection);
   void removeConnection(IConnectionSettingsBaseSPtr connection);
 
-  ConnectionSettingsContainerType connections() const;
+  connection_settings_t connections() const;
 
   // sentinels
   void addSentinel(ISentinelSettingsBaseSPtr sentinel);
   void removeSentinel(ISentinelSettingsBaseSPtr sentinel);
 
-  SentinelSettingsContainerType sentinels() const;
+  sentinel_settings_t sentinels() const;
 
   // clusters
   void addCluster(IClusterSettingsBaseSPtr cluster);
   void removeCluster(IClusterSettingsBaseSPtr cluster);
 
-  ClusterSettingsContainerType clusters() const;
+  cluster_settings_t clusters() const;
 
   void addRConnection(const QString& connection);
   void removeRConnection(const QString& connection);
@@ -109,9 +109,9 @@ class SettingsManager
   QString cur_style_;
   QString cur_font_name_;
   QString cur_language_;
-  ConnectionSettingsContainerType connections_;
-  SentinelSettingsContainerType sentinels_;
-  ClusterSettingsContainerType clusters_;
+  connection_settings_t connections_;
+  sentinel_settings_t sentinels_;
+  cluster_settings_t clusters_;
   QStringList recent_connections_;
   QString logging_dir_;
   bool auto_check_update_;

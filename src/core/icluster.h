@@ -29,20 +29,21 @@ namespace core {
 class ICluster
   : public IServerBase {
  public:
-  typedef std::vector<IServerSPtr> nodes_type;
+  typedef IServerSPtr node_t;
+  typedef std::vector<node_t> nodes_t;
 
   std::string name() const;
-  nodes_type nodes() const;
-  void addServer(IServerSPtr serv);
+  nodes_t nodes() const;
+  void addServer(node_t serv);
 
-  IServerSPtr root() const;
+  node_t root() const;
 
  protected:
   explicit ICluster(const std::string& name);
 
  private:
   const std::string name_;
-  nodes_type nodes_;
+  nodes_t nodes_;
 };
 
 }  // namespace core

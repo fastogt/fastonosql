@@ -116,7 +116,7 @@ std::ostream& operator<<(std::ostream& out, const ServerInfo& value) {
 
 ServerInfo* makeUnqliteServerInfo(const std::string& content) {
   if (content.empty()) {
-      return nullptr;
+    return nullptr;
   }
 
   ServerInfo* result = new ServerInfo;

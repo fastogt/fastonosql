@@ -102,7 +102,7 @@ core::ISentinelSPtr ExplorerSentinelItem::sentinel() const {
 
 ExplorerClusterItem::ExplorerClusterItem(core::IClusterSPtr cluster, TreeItem* parent)
   : IExplorerTreeItem(parent), cluster_(cluster) {
-  core::ICluster::nodes_type nodes = cluster_->nodes();
+  auto nodes = cluster_->nodes();
   for (size_t i = 0; i < nodes.size(); ++i) {
     ExplorerServerItem* ser = new ExplorerServerItem(nodes[i], this);
     addChildren(ser);

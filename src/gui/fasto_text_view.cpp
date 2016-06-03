@@ -143,14 +143,13 @@ void FastoTextView::changeEvent(QEvent* ev) {
 }
 
 void FastoTextView::retranslateUi() {
-  using namespace translations;
-  jsonRadioButton_->setText(trJson);
-  csvRadioButton_->setText(trCsv);
-  rawRadioButton_->setText(trRawText);
-  hexRadioButton_->setText(trHex);
-  msgPackRadioButton_->setText(trMsgPack);
-  gzipRadioButton_->setText(trGzip);
-  saveChangeButton_->setText(trSave);
+  jsonRadioButton_->setText(translations::trJson);
+  csvRadioButton_->setText(translations::trCsv);
+  rawRadioButton_->setText(translations::trRawText);
+  hexRadioButton_->setText(translations::trHex);
+  msgPackRadioButton_->setText(translations::trMsgPack);
+  gzipRadioButton_->setText(translations::trGzip);
+  saveChangeButton_->setText(translations::trSave);
 }
 
 }  // namespace gui

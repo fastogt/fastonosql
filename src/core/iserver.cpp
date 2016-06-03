@@ -112,7 +112,7 @@ bool IServer::containsDatabase(IDataBaseInfoSPtr inf) const {
   }
 
   for (size_t i = 0; i < databases_.size(); ++i) {
-    IDataBaseInfoSPtr db = databases_[i];
+    database_t db = databases_[i];
     if (db->name() == inf->name()) {
       return true;
     }

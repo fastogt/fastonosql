@@ -340,7 +340,7 @@ void MainWindow::openRecentConnection() {
   QString rcon = action->text();
   std::string srcon = common::convertToString(rcon);
   core::ConnectionSettingsPath path(srcon);
-  core::SettingsManager::ConnectionSettingsContainerType conns = core::SettingsManager::instance().connections();
+  auto conns = core::SettingsManager::instance().connections();
   for (auto it = conns.begin(); it != conns.end(); ++it) {
     core::IConnectionSettingsBaseSPtr con = *it;
     if (con && con->path() == path) {

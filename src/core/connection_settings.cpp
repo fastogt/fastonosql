@@ -518,7 +518,7 @@ IClusterSettingsBase::IClusterSettingsBase(const connection_path_t& connectionPa
   : IConnectionSettings(connectionPath, type) {
 }
 
-IClusterSettingsBase::cluster_connection_t IClusterSettingsBase::nodes() const {
+IClusterSettingsBase::cluster_nodes_t IClusterSettingsBase::nodes() const {
   return clusters_nodes_;
 }
 

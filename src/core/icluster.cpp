@@ -31,11 +31,11 @@ std::string ICluster::name() const {
   return name_;
 }
 
-ICluster::nodes_type ICluster::nodes() const {
+ICluster::nodes_t ICluster::nodes() const {
   return nodes_;
 }
 
-void ICluster::addServer(IServerSPtr serv) {
+void ICluster::addServer(node_t serv) {
   if (!serv) {
     DNOTREACHED();
     return;
@@ -44,7 +44,7 @@ void ICluster::addServer(IServerSPtr serv) {
   nodes_.push_back(serv);
 }
 
-IServerSPtr ICluster::root() const {
+ICluster::node_t ICluster::root() const {
   for (size_t i = 0; i < nodes_.size(); ++i) {
     IServerRemote* rserver = dynamic_cast<IServerRemote*>(nodes_[i].get());  // +
     CHECK(rserver);
@@ -53,7 +53,7 @@ IServerSPtr ICluster::root() const {
     }
   }
 
-  return IServerSPtr();
+  return node_t();
 }
 
 }  // namespace core

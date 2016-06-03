@@ -395,20 +395,19 @@ void FastoEditorOutput::layoutChanged() {
     return;
   }
 
-  using namespace translations;
   QString methodText;
   if (view_method_ == JSON) {
-    methodText = trJson;
+    methodText = translations::trJson;
   } else if (view_method_ == CSV) {
-    methodText = trCsv;
+    methodText = translations::trCsv;
   } else if (view_method_ == RAW) {
-    methodText = trRawText;
+    methodText = translations::trRawText;
   } else if (view_method_ == HEX) {
-    methodText = trHex;
+    methodText = translations::trHex;
   } else if (view_method_ == MSGPACK) {
-    methodText = trMsgPack;
+    methodText = translations::trMsgPack;
   } else if (view_method_ == GZIP) {
-    methodText = trGzip;
+    methodText = translations::trGzip;
   } else {
     NOTREACHED();
   }
@@ -442,7 +441,7 @@ void FastoEditorOutput::layoutChanged() {
 
   editor_->setMode(view_method_ == HEX ? FastoHexEdit::HEX_MODE : FastoHexEdit::TEXT_MODE);
   if (result.isEmpty()) {
-    result = QString(trCannotConvertPattern1ArgsS).arg(methodText);
+    result = QString(translations::trCannotConvertPattern1ArgsS).arg(methodText);
     editor_->setReadOnly(true);
   }
   editor_->setData(result.toUtf8());

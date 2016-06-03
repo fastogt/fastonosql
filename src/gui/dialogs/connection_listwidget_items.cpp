@@ -142,10 +142,9 @@ ClusterConnectionListWidgetItemContainer::ClusterConnectionListWidgetItemContain
   : QTreeWidgetItem(parent), connection_() {
   setConnection(connection);
 
-  core::IClusterSettingsBase::cluster_connection_t servers = connection_->nodes();
-
-  for (size_t i = 0; i < servers.size(); ++i) {
-    core::IConnectionSettingsBaseSPtr con = servers[i];
+  auto nodes = connection_->nodes();
+  for (size_t i = 0; i < nodes.size(); ++i) {
+    core::IConnectionSettingsBaseSPtr con = nodes[i];
     ConnectionListWidgetItem* item = new ConnectionListWidgetItem(this);
     item->setConnection(con);
     addChild(item);

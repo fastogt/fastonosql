@@ -165,8 +165,9 @@ typedef common::shared_ptr<IConnectionSettingsBase> IConnectionSettingsBaseSPtr;
 class IClusterSettingsBase
   : public IConnectionSettings {
  public:
-  typedef std::vector<IConnectionSettingsBaseSPtr> cluster_connection_t;
-  cluster_connection_t nodes() const;
+  typedef IConnectionSettingsBaseSPtr cluster_node_t;
+  typedef std::vector<cluster_node_t> cluster_nodes_t;
+  cluster_nodes_t nodes() const;
 
   void addNode(IConnectionSettingsBaseSPtr node);
 
@@ -182,7 +183,7 @@ class IClusterSettingsBase
   IClusterSettingsBase(const connection_path_t& connectionName, connectionTypes type);
 
  private:
-  cluster_connection_t clusters_nodes_;
+  cluster_nodes_t clusters_nodes_;
 };
 
 typedef common::shared_ptr<IClusterSettingsBase> IClusterSettingsBaseSPtr;

@@ -132,10 +132,9 @@ ClusterDialog::ClusterDialog(QWidget* parent, core::IClusterSettingsBase* connec
   VERIFY(connect(setDefault_, &QAction::triggered, this, &ClusterDialog::setStartNode));
 
   if (cluster_connection_) {
-    core::IClusterSettingsBase::cluster_connection_t clusters = cluster_connection_->nodes();
-    for (auto it = clusters.begin(); it != clusters.end(); ++it) {
-      core::IConnectionSettingsBaseSPtr serv = (*it);
-      addConnection(serv);
+    auto nodes = cluster_connection_->nodes();
+    for (const auto& node: nodes) {
+      addConnection(node);
     }
   }
 

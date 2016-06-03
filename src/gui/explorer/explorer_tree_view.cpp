@@ -232,7 +232,7 @@ void ExplorerTreeView::addCluster(core::IClusterSPtr cluster) {
   }
 
   ExplorerTreeModel* mod = static_cast<ExplorerTreeModel*>(model());
-  core::ICluster::nodes_type nodes = cluster->nodes();
+  auto nodes = cluster->nodes();
   for (size_t i = 0; i < nodes.size(); ++i) {
     syncWithServer(nodes[i].get());
   }
@@ -247,7 +247,7 @@ void ExplorerTreeView::removeCluster(core::IClusterSPtr cluster) {
   }
 
   ExplorerTreeModel* mod = static_cast<ExplorerTreeModel*>(model());
-  core::ICluster::nodes_type nodes = cluster->nodes();
+  auto nodes = cluster->nodes();
   for (size_t i = 0; i < nodes.size(); ++i) {
     unsyncWithServer(nodes[i].get());
   }
