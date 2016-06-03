@@ -70,7 +70,7 @@ ServerHistoryDialog::ServerHistoryDialog(core::IServerSPtr server, QWidget* pare
   VERIFY(connect(serverInfoFields_, static_cast<curc>(&QComboBox::currentIndexChanged),
                  this, &ServerHistoryDialog::refreshGraph));
 
-  const std::vector<core::info_field_t> fields = core::infoFieldsFromType(server_->type());
+  const auto fields = core::infoFieldsFromType(server_->type());
   for (size_t i = 0; i < fields.size(); ++i) {
     core::info_field_t field = fields[i];
     serverInfoGroupsNames_->addItem(common::convertFromString<QString>(field.first));

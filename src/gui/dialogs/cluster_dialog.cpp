@@ -272,7 +272,7 @@ void ClusterDialog::showContextMenu(const QPoint& point) {
 
   // Do nothing if no item selected
   if (!currentItem) {
-      return;
+    return;
   }
 
   QMenu menu(this);
@@ -328,8 +328,9 @@ void ClusterDialog::remove() {
   int answer = QMessageBox::question(this, translations::trConnections, translations::trDeleteConnectionTemplate_1S.arg(currentItem->text(0)),
                                      QMessageBox::Yes, QMessageBox::No, QMessageBox::NoButton);
 
-  if (answer != QMessageBox::Yes)
+  if (answer != QMessageBox::Yes) {
     return;
+  }
 
   delete currentItem;
 }

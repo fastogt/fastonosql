@@ -649,14 +649,14 @@ ExplorerSentinelItem* ExplorerTreeModel::findSentinelItem(core::ISentinelSPtr se
 
 ExplorerServerItem* ExplorerTreeModel::findServerItem(core::IServer* server) const {  
   return static_cast<ExplorerServerItem*>(fasto::qt::gui::findItemRecursive(root_, [server](fasto::qt::gui::TreeItem* item) -> bool
-    {
-      ExplorerServerItem* server_item = dynamic_cast<ExplorerServerItem*>(item);  // +
-      if (!server_item) {
-        return false;
-      }
+  {
+    ExplorerServerItem* server_item = dynamic_cast<ExplorerServerItem*>(item);  // +
+    if (!server_item) {
+      return false;
+    }
 
-      return server_item->server().get() == server;
-    }));
+    return server_item->server().get() == server;
+  }));
 }
 
 ExplorerDatabaseItem* ExplorerTreeModel::findDatabaseItem(ExplorerServerItem* server,
@@ -682,27 +682,27 @@ ExplorerDatabaseItem* ExplorerTreeModel::findDatabaseItem(ExplorerServerItem* se
 ExplorerKeyItem* ExplorerTreeModel::findKeyItem(IExplorerTreeItem* db_or_ns,
                                                 const core::NDbKValue& key) const {
   return static_cast<ExplorerKeyItem*>(fasto::qt::gui::findItemRecursive(db_or_ns, [key](fasto::qt::gui::TreeItem* item) -> bool
-    {
-      ExplorerKeyItem* key_item = dynamic_cast<ExplorerKeyItem*>(item);  // +
-      if (!key_item) {
-        return false;
-      }
+  {
+    ExplorerKeyItem* key_item = dynamic_cast<ExplorerKeyItem*>(item);  // +
+    if (!key_item) {
+      return false;
+    }
 
-      core::NDbKValue ckey = key_item->key();
-      return ckey.keyString() == key.keyString();
-    }));
+    core::NDbKValue ckey = key_item->key();
+    return ckey.keyString() == key.keyString();
+  }));
 }
 
 ExplorerNSItem* ExplorerTreeModel::findNSItem(IExplorerTreeItem* db_or_ns, const QString& name) const {
   return static_cast<ExplorerNSItem*>(fasto::qt::gui::findItemRecursive(db_or_ns, [name](fasto::qt::gui::TreeItem* item) -> bool
-    {
-      ExplorerNSItem* ns_item = dynamic_cast<ExplorerNSItem*>(item);  // +
-      if (!ns_item) {
-        return false;
-      }
+  {
+    ExplorerNSItem* ns_item = dynamic_cast<ExplorerNSItem*>(item);  // +
+    if (!ns_item) {
+      return false;
+    }
 
-      return ns_item->name() == name;
-    }));
+    return ns_item->name() == name;
+  }));
 }
 
 ExplorerNSItem* ExplorerTreeModel::findOrCreateNSItem(IExplorerTreeItem* db_or_ns, const core::KeyInfo& kinf) {

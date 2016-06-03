@@ -221,10 +221,10 @@ InfoServerDialog::InfoServerDialog(core::IServerSPtr server, QWidget* parent)
   }
 #endif
 
-VERIFY(connect(server.get(), &core::IServer::startedLoadServerInfo,
-               this, &InfoServerDialog::startServerInfo));
-VERIFY(connect(server.get(), &core::IServer::finishedLoadServerInfo,
-               this, &InfoServerDialog::finishServerInfo));
+  VERIFY(connect(server.get(), &core::IServer::startedLoadServerInfo,
+                 this, &InfoServerDialog::startServerInfo));
+  VERIFY(connect(server.get(), &core::IServer::finishedLoadServerInfo,
+                 this, &InfoServerDialog::finishServerInfo));
   retranslateUi();
 }
 

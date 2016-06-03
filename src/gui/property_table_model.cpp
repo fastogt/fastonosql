@@ -93,13 +93,14 @@ bool PropertyTableModel::setData(const QModelIndex& index, const QVariant& value
 }
 
 Qt::ItemFlags PropertyTableModel::flags(const QModelIndex &index) const {
-  Qt::ItemFlags result = 0;
   if (index.isValid()) {
-    result = Qt::ItemIsSelectable | Qt::ItemIsEnabled;
-    int col = index.column();
-    if (col == PropertyTableItem::eValue) {
-      result |= Qt::ItemIsEditable;
-    }
+    return 0;
+  }
+
+  Qt::ItemFlags result = Qt::ItemIsSelectable | Qt::ItemIsEnabled;
+  int col = index.column();
+  if (col == PropertyTableItem::eValue) {
+    result |= Qt::ItemIsEditable;
   }
   return result;
 }

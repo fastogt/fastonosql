@@ -259,7 +259,7 @@ int FastoHexEdit::positionAtPoint(const QPoint& point) const {
 
     int firstLineIdx = verticalScrollBar()->value();
     int posy = (py - yPosStart) / charH;
-    pos = pos + (firstLineIdx + posy) * acharInLine * 2;
+    pos += (firstLineIdx + posy) * acharInLine * 2;
     return pos;
   }
 

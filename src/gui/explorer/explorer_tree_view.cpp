@@ -586,12 +586,13 @@ void ExplorerTreeView::closeClusterConnection() {
   }
 
   ExplorerClusterItem* cnode = common::utils_qt::item<fasto::qt::gui::TreeItem*, ExplorerClusterItem*>(sel);
-  if (cnode) {
-    core::IClusterSPtr server = cnode->cluster();
-    if (server) {
-      removeCluster(server);
-    }
+  if (!cnode) {
     return;
+  }
+
+  core::IClusterSPtr server = cnode->cluster();
+  if (server) {
+    removeCluster(server);
   }
 }
 
@@ -602,12 +603,13 @@ void ExplorerTreeView::closeSentinelConnection() {
   }
 
   ExplorerSentinelItem* snode = common::utils_qt::item<fasto::qt::gui::TreeItem*, ExplorerSentinelItem*>(sel);
-  if (snode) {
-    core::ISentinelSPtr sent = snode->sentinel();
-    if (sent) {
-      removeSentinel(sent);
-    }
+  if (!snode) {
     return;
+  }
+
+  core::ISentinelSPtr sent = snode->sentinel();
+  if (sent) {
+    removeSentinel(sent);
   }
 }
 
@@ -685,12 +687,14 @@ void ExplorerTreeView::loadContentDb() {
   }
 
   ExplorerDatabaseItem* node = common::utils_qt::item<fasto::qt::gui::TreeItem*, ExplorerDatabaseItem*>(sel);
-  if (node) {
-    LoadContentDbDialog loadDb(trLoadContentTemplate_1S.arg(node->name()), node->server()->type(), this);
-    int result = loadDb.exec();
-    if (result == QDialog::Accepted) {
-      node->loadContent(common::convertToString(loadDb.pattern()), loadDb.count());
-    }
+  if (!node) {
+    return;
+  }
+
+  LoadContentDbDialog loadDb(trLoadContentTemplate_1S.arg(node->name()), node->server()->type(), this);
+  int result = loadDb.exec();
+  if (result == QDialog::Accepted) {
+    node->loadContent(common::convertToString(loadDb.pattern()), loadDb.count());
   }
 }
 
@@ -722,15 +726,17 @@ void ExplorerTreeView::removeBranch() {
 
   ExplorerNSItem* node = common::utils_qt::item<fasto::qt::gui::TreeItem*, ExplorerNSItem*>(sel);
   if (node) {
-    int answer = QMessageBox::question(this, trRemoveBranch, trRemoveAllKeysTemplate_1S.arg(node->name()),
-                                       QMessageBox::Yes, QMessageBox::No, QMessageBox::NoButton);
-
-    if (answer != QMessageBox::Yes) {
-      return;
-    }
-
-    node->removeBranch();
+    return;
   }
+
+  int answer = QMessageBox::question(this, trRemoveBranch, trRemoveAllKeysTemplate_1S.arg(node->name()),
+                                     QMessageBox::Yes, QMessageBox::No, QMessageBox::NoButton);
+
+  if (answer != QMessageBox::Yes) {
+    return;
+  }
+
+  node->removeBranch();
 }
 
 void ExplorerTreeView::setDefaultDb() {
@@ -752,13 +758,15 @@ void ExplorerTreeView::createKey() {
   }
 
   ExplorerDatabaseItem* node = common::utils_qt::item<fasto::qt::gui::TreeItem*, ExplorerDatabaseItem*>(sel);
-  if (node) {
-    CreateDbKeyDialog loadDb(trCreateKeyForDbTemplate_1S.arg(node->name()), node->server()->type(), this);
-    int result = loadDb.exec();
-    if (result == QDialog::Accepted) {
-      core::NDbKValue key = loadDb.key();
-      node->createKey(key);
-    }
+  if (!node) {
+    return;
+  }
+
+  CreateDbKeyDialog loadDb(trCreateKeyForDbTemplate_1S.arg(node->name()), node->server()->type(), this);
+  int result = loadDb.exec();
+  if (result == QDialog::Accepted) {
+    core::NDbKValue key = loadDb.key();
+    node->createKey(key);
   }
 }
 
@@ -809,20 +817,12 @@ void ExplorerTreeView::finishLoadDatabases(const core::events_info::LoadDatabase
   }
 
   core::IServer* serv = qobject_cast<core::IServer*>(sender());
-  DCHECK(serv);
-  if (!serv) {
-    DNOTREACHED();
-    return;
-  }
+  CHECK(serv);
 
   ExplorerTreeModel* mod = qobject_cast<ExplorerTreeModel*>(model());
-  if (!mod) {
-    DNOTREACHED();
-    return;
-  }
+  CHECK(mod);
 
   core::events_info::LoadDatabasesInfoResponce::database_info_cont_type dbs = res.databases;
-
   for (size_t i = 0; i < dbs.size(); ++i) {
     core::IDataBaseInfoSPtr db = dbs[i];
     mod->addDatabase(serv, db);
@@ -839,18 +839,11 @@ void ExplorerTreeView::finishSetDefaultDatabase(const core::events_info::SetDefa
   }
 
   core::IServer* serv = qobject_cast<core::IServer*>(sender());
-  if (!serv) {
-    DNOTREACHED();
-    return;
-  }
+  CHECK(serv);
 
   core::IDataBaseInfoSPtr db = res.inf;
   ExplorerTreeModel* mod = qobject_cast<ExplorerTreeModel*>(model());
-  if (!mod) {
-    DNOTREACHED();
-    return;
-  }
-
+  CHECK(mod);
   mod->setDefaultDb(serv, db);
 }
 
@@ -864,16 +857,10 @@ void ExplorerTreeView::finishLoadDatabaseContent(const core::events_info::LoadDa
   }
 
   core::IServer* serv = qobject_cast<core::IServer*>(sender());
-  if (!serv) {
-    DNOTREACHED();
-    return;
-  }
+  CHECK(serv);
 
   ExplorerTreeModel* mod = qobject_cast<ExplorerTreeModel*>(model());
-  if (!mod) {
-    DNOTREACHED();
-    return;
-  }
+  CHECK(mod);
 
   core::events_info::LoadDatabaseContentResponce::keys_container_t keys = res.keys;
   std::string ns = serv->nsSeparator();
@@ -896,16 +883,10 @@ void ExplorerTreeView::finishClearDatabase(const core::events_info::ClearDatabas
   }
 
   core::IServer* serv = qobject_cast<core::IServer*>(sender());
-  if (!serv) {
-    DNOTREACHED();
-    return;
-  }
+  CHECK(serv);
 
   ExplorerTreeModel* mod = qobject_cast<ExplorerTreeModel*>(model());
-  if (!mod) {
-    DNOTREACHED();
-    return;
-  }
+  CHECK(mod);
 
   mod->removeAllKeys(serv, res.inf);
 }
@@ -920,16 +901,10 @@ void ExplorerTreeView::finishExecuteCommand(const core::events_info::CommandResp
   }
 
   core::IServer* serv = qobject_cast<core::IServer*>(sender());
-  if (!serv) {
-    DNOTREACHED();
-    return;
-  }
+  CHECK(serv);
 
   ExplorerTreeModel* mod = qobject_cast<ExplorerTreeModel*>(model());
-  if (!mod) {
-    DNOTREACHED();
-    return;
-  }
+  CHECK(mod);
 
   std::string ns = serv->nsSeparator();
   core::CommandKeySPtr key = res.cmd;

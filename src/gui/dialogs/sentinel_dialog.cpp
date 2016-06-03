@@ -125,10 +125,9 @@ SentinelDialog::SentinelDialog(QWidget* parent, core::ISentinelSettingsBase* con
   listWidget_->setSelectionBehavior(QAbstractItemView::SelectRows);
 
   if (sentinel_connection_) {
-    auto sent = sentinel_connection_->sentinels();
-    for (auto it = sent.begin(); it != sent.end(); ++it) {
-      core::SentinelSettings sent = (*it);
-      addSentinel(sent);
+    auto sentinels = sentinel_connection_->sentinels();
+    for (const auto& sentinel: sentinels) {
+      addSentinel(sentinel);
     }
   }
 
@@ -251,15 +250,17 @@ void SentinelDialog::discoverySentinel() {
 
   DiscoverySentinelDiagnosticDialog diag(this, sentItem->connection());
   int result = diag.exec();
-  if (result == QDialog::Accepted) {
-    std::vector<ConnectionListWidgetItemDiscovered*> conns = diag.selectedConnections();
-    for (size_t i = 0; i < conns.size(); ++i) {
-      ConnectionListWidgetItemDiscovered* it = conns[i];
+  if (result != QDialog::Accepted) {
+    return;
+  }
 
-      ConnectionListWidgetItem* item = new ConnectionListWidgetItem(sentItem);
-      item->setConnection(it->connection());
-      sentItem->addChild(item);
-    }
+  std::vector<ConnectionListWidgetItemDiscovered*> conns = diag.selectedConnections();
+  for (size_t i = 0; i < conns.size(); ++i) {
+    ConnectionListWidgetItemDiscovered* it = conns[i];
+
+    ConnectionListWidgetItem* item = new ConnectionListWidgetItem(sentItem);
+    item->setConnection(it->connection());
+    sentItem->addChild(item);
   }
 }
 
@@ -376,10 +377,9 @@ void SentinelDialog::addSentinel(core::SentinelSettings sent) {
   SentinelConnectionWidgetItem* sent_item = new SentinelConnectionWidgetItem(core::MASTER, nullptr);
   sent_item->setConnection(sent.sentinel);
   auto nodes = sent.sentinel_nodes;
-  for (auto it = nodes.begin(); it != nodes.end(); ++it) {
-    core::IConnectionSettingsBaseSPtr con = *it;
+  for (const auto& node: nodes) {
     ConnectionListWidgetItem* item = new ConnectionListWidgetItem(sent_item);
-    item->setConnection(con);
+    item->setConnection(node);
     sent_item->addChild(item);
   }
   listWidget_->addTopLevelItem(sent_item);
