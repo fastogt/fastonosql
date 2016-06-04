@@ -56,7 +56,7 @@ FastoObject* FastoObject::createRoot(const std::string& text, IFastoObjectObserv
   return root;
 }
 
-FastoObject::child_container_t FastoObject::childrens() const {
+FastoObject::childs_t FastoObject::childrens() const {
   return childrens_;
 }
 

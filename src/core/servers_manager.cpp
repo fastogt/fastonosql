@@ -73,40 +73,40 @@ ServersManager::server_t ServersManager::createServer(IConnectionSettingsBaseSPt
   }
 
   connectionTypes conT = settings->type();
-  IServer* server = nullptr;
+  server_t server;
 #ifdef BUILD_WITH_REDIS
   if (conT == REDIS) {
-    server = new redis::Server(settings);
+    server = common::make_shared<redis::Server>(settings);
   }
 #endif
 #ifdef BUILD_WITH_MEMCACHED
   if (conT == MEMCACHED) {
-    server = new memcached::Server(settings);
+    server = common::make_shared<memcached::Server>(settings);
   }
 #endif
 #ifdef BUILD_WITH_SSDB
   if (conT == SSDB) {
-    server = new ssdb::Server(settings);
+    server = common::make_shared<ssdb::Server>(settings);
   }
 #endif
 #ifdef BUILD_WITH_LEVELDB
   if (conT == LEVELDB) {
-    server = new leveldb::Server(settings);
+    server = common::make_shared<leveldb::Server>(settings);
   }
 #endif
 #ifdef BUILD_WITH_ROCKSDB
   if (conT == ROCKSDB) {
-    server = new rocksdb::Server(settings);
+    server = common::make_shared<rocksdb::Server>(settings);
   }
 #endif
 #ifdef BUILD_WITH_UNQLITE
   if (conT == UNQLITE) {
-    server = new unqlite::Server(settings);
+    server = common::make_shared<unqlite::Server>(settings);
   }
 #endif
 #ifdef BUILD_WITH_LMDB
   if (conT == LMDB) {
-    server = new lmdb::Server(settings);
+    server = common::make_shared<lmdb::Server>(settings);
   }
 #endif
 
@@ -115,9 +115,8 @@ ServersManager::server_t ServersManager::createServer(IConnectionSettingsBaseSPt
     return server_t();
   }
 
-  server_t sh(server);
-  servers_.push_back(sh);
-  return sh;
+  servers_.push_back(server);
+  return server;
 }
 
 ServersManager::sentinel_t ServersManager::createSentinel(ISentinelSettingsBaseSPtr settings) {
@@ -129,7 +128,7 @@ ServersManager::sentinel_t ServersManager::createSentinel(ISentinelSettingsBaseS
   connectionTypes conT = settings->type();
 #ifdef BUILD_WITH_REDIS
   if (conT == REDIS) {
-    sentinel_t sent(new redis::RedisSentinel(settings->path().toString()));
+    sentinel_t sent = common::make_shared<redis::RedisSentinel>(settings->path().toString());
     auto nodes = settings->sentinels();
     for (size_t i = 0; i < nodes.size(); ++i) {
       SentinelSettings nd = nodes[i];
@@ -160,7 +159,7 @@ ServersManager::cluster_t ServersManager::createCluster(IClusterSettingsBaseSPtr
   connectionTypes conT = settings->type();
 #ifdef BUILD_WITH_REDIS
   if (conT == REDIS) {
-    cluster_t cl(new redis::RedisCluster(settings->path().toString()));
+    cluster_t cl = common::make_shared<redis::RedisCluster>(settings->path().toString());
     auto nodes = settings->nodes();
     for (size_t i = 0; i < nodes.size(); ++i) {
       IConnectionSettingsBaseSPtr nd = nodes[i];

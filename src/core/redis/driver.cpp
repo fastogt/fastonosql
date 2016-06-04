@@ -591,7 +591,7 @@ void Driver::handleLoadDatabaseInfosEvent(events::LoadDatabasesInfoRequestEvent*
   if (er && er->isError()) {
     res.setErrorInfo(er);
   } else {
-    FastoObject::child_container_t rchildrens = cmd->childrens();
+    FastoObject::childs_t rchildrens = cmd->childrens();
     if (rchildrens.size()) {
       CHECK_EQ(rchildrens.size(), 1);
       FastoObjectArray* array = dynamic_cast<FastoObjectArray*>(rchildrens[0]);  // +
@@ -645,7 +645,7 @@ void Driver::handleLoadDatabaseContentEvent(events::LoadDatabaseContentRequestEv
   if (er && er->isError()) {
     res.setErrorInfo(er);
   } else {
-    FastoObject::child_container_t rchildrens = cmd->childrens();
+    FastoObject::childs_t rchildrens = cmd->childrens();
     if (rchildrens.size()) {
       CHECK_EQ(rchildrens.size(), 1);
       FastoObjectArray* array = dynamic_cast<FastoObjectArray*>(rchildrens[0]);  // +
@@ -699,7 +699,7 @@ void Driver::handleLoadDatabaseContentEvent(events::LoadDatabaseContentRequestEv
 
       for (size_t i = 0; i < res.keys.size(); ++i) {
         FastoObjectIPtr cmdType = cmds[i*2];
-        FastoObject::child_container_t tchildrens = cmdType->childrens();
+        FastoObject::childs_t tchildrens = cmdType->childrens();
         if (tchildrens.size()) {
           DCHECK_EQ(tchildrens.size(), 1);
           if (tchildrens.size() == 1) {
@@ -785,7 +785,7 @@ void Driver::handleLoadServerPropertyEvent(events::ServerPropertyInfoRequestEven
   if (er && er->isError()) {
     res.setErrorInfo(er);
   } else {
-    FastoObject::child_container_t ch = cmd->childrens();
+    FastoObject::childs_t ch = cmd->childrens();
     if (ch.size()) {
       CHECK_EQ(ch.size(), 1);
       FastoObjectArray* array = dynamic_cast<FastoObjectArray*>(ch[0]);  // +
