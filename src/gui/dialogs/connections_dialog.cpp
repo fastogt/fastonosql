@@ -209,8 +209,7 @@ void ConnectionsDialog::edit() {
     return;
   }
 
-  ConnectionListWidgetItem* currentItem = dynamic_cast<ConnectionListWidgetItem*>(qitem);  // +
-  if (currentItem) {
+  if (ConnectionListWidgetItem* currentItem = dynamic_cast<ConnectionListWidgetItem*>(qitem)) {
     IConnectionListWidgetItem::itemConnectionType type = currentItem->type();
     if (type == IConnectionListWidgetItem::Common || type == IConnectionListWidgetItem::Discovered) {
       QTreeWidgetItem* qpitem = qitem->parent();
@@ -233,14 +232,12 @@ void ConnectionsDialog::edit() {
     }
   }
 
-  ClusterConnectionListWidgetItemContainer* clCurrentItem = dynamic_cast<ClusterConnectionListWidgetItemContainer*>(qitem);  // +
-  if (clCurrentItem) {
+  if (ClusterConnectionListWidgetItemContainer* clCurrentItem = dynamic_cast<ClusterConnectionListWidgetItemContainer*>(qitem)) {
     editCluster(clCurrentItem);
     return;
   }
 
-  SentinelConnectionListWidgetItemContainer* sentCurrentItem = dynamic_cast<SentinelConnectionListWidgetItemContainer*>(qitem);  // +
-  if (sentCurrentItem) {
+  if (SentinelConnectionListWidgetItemContainer* sentCurrentItem = dynamic_cast<SentinelConnectionListWidgetItemContainer*>(qitem)) {
     editSentinel(sentCurrentItem);
     return;
   }
@@ -252,8 +249,7 @@ void ConnectionsDialog::remove() {
     return;
   }
 
-  ConnectionListWidgetItem* currentItem = dynamic_cast<ConnectionListWidgetItem*>(qitem);  // +
-  if (currentItem) {
+  if (ConnectionListWidgetItem* currentItem = dynamic_cast<ConnectionListWidgetItem*>(qitem)) {
     IConnectionListWidgetItem::itemConnectionType type = currentItem->type();
     if (type == IConnectionListWidgetItem::Common || type == IConnectionListWidgetItem::Discovered) {
       QTreeWidgetItem* qpitem = qitem->parent();
@@ -276,14 +272,12 @@ void ConnectionsDialog::remove() {
     }
   }
 
-  ClusterConnectionListWidgetItemContainer* clCurrentItem = dynamic_cast<ClusterConnectionListWidgetItemContainer*>(qitem);  // +
-  if (clCurrentItem) {
+  if (ClusterConnectionListWidgetItemContainer* clCurrentItem = dynamic_cast<ClusterConnectionListWidgetItemContainer*>(qitem)) {
     removeCluster(clCurrentItem);
     return;
   }
 
-  SentinelConnectionListWidgetItemContainer* sentCurrentItem = dynamic_cast<SentinelConnectionListWidgetItemContainer*>(qitem);  // +
-  if (sentCurrentItem) {
+  if (SentinelConnectionListWidgetItemContainer* sentCurrentItem = dynamic_cast<SentinelConnectionListWidgetItemContainer*>(qitem)) {
     removeSentinel(sentCurrentItem);
     return;
   }

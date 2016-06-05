@@ -191,7 +191,6 @@ void ServerHistoryDialog::changeEvent(QEvent* e) {
 
 void ServerHistoryDialog::showEvent(QShowEvent* e) {
   QDialog::showEvent(e);
-  emit showed();
   requestHistoryInfo();
 }
 

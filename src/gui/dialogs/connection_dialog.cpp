@@ -149,10 +149,7 @@ ConnectionDialog::ConnectionDialog(QWidget* parent, core::IConnectionSettingsBas
   // ssh
 
   core::IConnectionSettingsRemoteSSH* remoteSettings = dynamic_cast<core::IConnectionSettingsRemoteSSH*>(connection_.get());  // +
-  core::SSHInfo info;
-  if (remoteSettings) {
-    info = remoteSettings->sshInfo();
-  }
+  core::SSHInfo info = remoteSettings ? remoteSettings->sshInfo() : core::SSHInfo();
   useSsh_ = new QCheckBox;
   useSsh_->setChecked(info.isValid());
 

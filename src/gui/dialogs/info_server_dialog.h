@@ -74,9 +74,6 @@ class InfoServerDialog
     min_width = 240
   };
 
- Q_SIGNALS:
-  void showed();
-
  private Q_SLOTS:
   void startServerInfo(const core::events_info::ServerInfoRequest& req);
   void finishServerInfo(const core::events_info::ServerInfoResponce& res);

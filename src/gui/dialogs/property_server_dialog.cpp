@@ -121,8 +121,6 @@ void PropertyServerDialog::changeEvent(QEvent* e) {
 
 void PropertyServerDialog::showEvent(QShowEvent* e) {
   QDialog::showEvent(e);
-  emit showed();
-
   core::events_info::ServerPropertyInfoRequest req(this);
   server_->serverProperty(req);
 }

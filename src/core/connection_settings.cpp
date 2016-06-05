@@ -265,8 +265,7 @@ IConnectionSettingsBase* IConnectionSettingsBase::fromString(const std::string& 
         }
       } else if (commaCount == 3) {
         result->setCommandLine(elText);
-        IConnectionSettingsRemoteSSH* remote = dynamic_cast<IConnectionSettingsRemoteSSH*>(result);  // +
-        if (remote) {
+        if (IConnectionSettingsRemoteSSH* remote = dynamic_cast<IConnectionSettingsRemoteSSH*>(result)) {
           SSHInfo sinf(val.substr(i + 1));
           remote->setSshInfo(sinf);
         }

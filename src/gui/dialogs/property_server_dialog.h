@@ -42,9 +42,6 @@ class PropertyServerDialog
  public:
   explicit PropertyServerDialog(core::IServerSPtr server, QWidget* parent = 0);
 
- Q_SIGNALS:
-  void showed();
-
  private Q_SLOTS:
   void startServerProperty(const core::events_info::ServerPropertyInfoRequest& req);
   void finishServerProperty(const core::events_info::ServerPropertyInfoResponce& res);

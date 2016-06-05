@@ -107,7 +107,7 @@ void ConnectionDiagnosticDialog::connectionResult(bool suc,
   executeTimeLabel_->setText(translations::trTimeTemplate_1S.arg(mstimeExecute));
   if (suc) {
     QIcon icon = GuiFactory::instance().successIcon();
-    const QPixmap pm = icon.pixmap(stateIconSize);
+    QPixmap pm = icon.pixmap(stateIconSize);
     iconLabel_->setPixmap(pm);
   }
   statusLabel_->setText(translations::trConnectionStatusTemplate_1S.arg(resultText));

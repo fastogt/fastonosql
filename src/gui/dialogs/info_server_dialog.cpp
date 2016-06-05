@@ -299,8 +299,6 @@ void InfoServerDialog::finishServerInfo(const core::events_info::ServerInfoRespo
 
 void InfoServerDialog::showEvent(QShowEvent* e) {
   QDialog::showEvent(e);
-  emit showed();
-
   core::events_info::ServerInfoRequest req(this);
   server_->loadServerInfo(req);
 }

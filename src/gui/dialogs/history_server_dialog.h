@@ -44,9 +44,6 @@ class ServerHistoryDialog
  public:
   explicit ServerHistoryDialog(core::IServerSPtr server, QWidget* parent = 0);
 
- Q_SIGNALS:
-  void showed();
-
  private Q_SLOTS:
   void startLoadServerHistoryInfo(const core::events_info::ServerInfoHistoryRequest& req);
   void finishLoadServerHistoryInfo(const core::events_info::ServerInfoHistoryResponce& res);

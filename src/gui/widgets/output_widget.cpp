@@ -48,7 +48,8 @@ namespace {
 
 FastoCommonItem* createItem(fasto::qt::gui::TreeItem* parent, const std::string& key,
                             bool readOnly, FastoObject* item) {
-  core::NValue val = common::make_value(item->value()->deepCopy());
+  common::Value* value = item->value();
+  core::NValue val = common::make_value(value->deepCopy());
   core::NDbKValue nkey(core::NKey(key), val);
   return new FastoCommonItem(nkey, item->delemitr(), readOnly, parent, item);
 }
