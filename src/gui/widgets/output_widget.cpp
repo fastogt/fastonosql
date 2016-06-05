@@ -54,6 +54,16 @@ FastoCommonItem* createItem(fasto::qt::gui::TreeItem* parent, const std::string&
   return new FastoCommonItem(nkey, item->delemitr(), readOnly, parent, item);
 }
 
+FastoCommonItem* createRootItem(FastoObject* item) {
+  common::Value* value = item->value();
+  std::string str;
+  bool res = value->getAsString(&str);
+  CHECK(res);
+  core::NValue val(common::Value::createStringValue(str));
+  core::NDbKValue nkey(core::NKey(std::string()), val);
+  return new FastoCommonItem(nkey, item->delemitr(), true, NULL, item);
+}
+
 }
 
 OutputWidget::OutputWidget(core::IServerSPtr server, QWidget* parent)
@@ -122,7 +132,7 @@ OutputWidget::OutputWidget(core::IServerSPtr server, QWidget* parent)
 
 void OutputWidget::rootCreate(const core::events_info::CommandRootCreatedInfo& res) {
   FastoObject* rootObj = res.root.get();
-  fastonosql::gui::FastoCommonItem* root = createItem(nullptr, std::string(), true, rootObj);
+  fastonosql::gui::FastoCommonItem* root = createRootItem(rootObj);
   commonModel_->setRoot(root);
 }
 
