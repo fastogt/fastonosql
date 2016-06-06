@@ -188,7 +188,10 @@ common::Error DBConnection::keys(const char* args) {
 }
 
 common::Error DBConnection::info(const char* args, ServerInfo::Common* statsout) {
-  CHECK(isConnected());
+  if (!isConnected()) {
+    DNOTREACHED();
+    return common::make_error_value("Not connected", common::Value::E_ERROR);
+  }
 
   if (!statsout) {
     return common::make_error_value("Invalid input argument(s)", common::ErrorValue::E_ERROR);
@@ -237,7 +240,10 @@ common::Error DBConnection::dbsize(size_t* size) {
 }
 
 common::Error DBConnection::get(const std::string& key, std::string* ret_val) {
-  CHECK(isConnected());
+  if (!isConnected()) {
+    DNOTREACHED();
+    return common::make_error_value("Not connected", common::Value::E_ERROR);
+  }
 
   if (!ret_val) {
     return common::make_error_value("Invalid input argument(s)", common::ErrorValue::E_ERROR);
@@ -262,7 +268,10 @@ common::Error DBConnection::get(const std::string& key, std::string* ret_val) {
 
 common::Error DBConnection::set(const std::string& key, const std::string& value,
                   time_t expiration, uint32_t flags) {
-  CHECK(isConnected());
+  if (!isConnected()) {
+    DNOTREACHED();
+    return common::make_error_value("Not connected", common::Value::E_ERROR);
+  }
 
   memcached_return_t error = memcached_set(connection_.handle_, key.c_str(), key.length(),
                                            value.c_str(), value.length(), expiration, flags);
@@ -277,7 +286,10 @@ common::Error DBConnection::set(const std::string& key, const std::string& value
 
 common::Error DBConnection::add(const std::string& key, const std::string& value,
                   time_t expiration, uint32_t flags) {
-  CHECK(isConnected());
+  if (!isConnected()) {
+    DNOTREACHED();
+    return common::make_error_value("Not connected", common::Value::E_ERROR);
+  }
 
   memcached_return_t error = memcached_add(connection_.handle_, key.c_str(), key.length(),
                                            value.c_str(), value.length(), expiration, flags);
@@ -292,7 +304,10 @@ common::Error DBConnection::add(const std::string& key, const std::string& value
 
 common::Error DBConnection::replace(const std::string& key, const std::string& value,
                       time_t expiration, uint32_t flags) {
-  CHECK(isConnected());
+  if (!isConnected()) {
+    DNOTREACHED();
+    return common::make_error_value("Not connected", common::Value::E_ERROR);
+  }
 
   memcached_return_t error = memcached_replace(connection_.handle_, key.c_str(), key.length(),
                                                value.c_str(), value.length(), expiration, flags);
@@ -306,7 +321,10 @@ common::Error DBConnection::replace(const std::string& key, const std::string& v
 
 common::Error DBConnection::append(const std::string& key, const std::string& value,
                      time_t expiration, uint32_t flags) {
-  CHECK(isConnected());
+  if (!isConnected()) {
+    DNOTREACHED();
+    return common::make_error_value("Not connected", common::Value::E_ERROR);
+  }
 
   memcached_return_t error = memcached_append(connection_.handle_, key.c_str(), key.length(), value.c_str(),
                                               value.length(), expiration, flags);
@@ -321,7 +339,10 @@ common::Error DBConnection::append(const std::string& key, const std::string& va
 
 common::Error DBConnection::prepend(const std::string& key, const std::string& value,
                       time_t expiration, uint32_t flags) {
-  CHECK(isConnected());
+  if (!isConnected()) {
+    DNOTREACHED();
+    return common::make_error_value("Not connected", common::Value::E_ERROR);
+  }
 
   memcached_return_t error = memcached_prepend(connection_.handle_, key.c_str(), key.length(),
                                                value.c_str(), value.length(), expiration, flags);
@@ -335,7 +356,10 @@ common::Error DBConnection::prepend(const std::string& key, const std::string& v
 }
 
 common::Error DBConnection::incr(const std::string& key, uint64_t value) {
-  CHECK(isConnected());
+  if (!isConnected()) {
+    DNOTREACHED();
+    return common::make_error_value("Not connected", common::Value::E_ERROR);
+  }
 
   memcached_return_t error = memcached_increment(connection_.handle_, key.c_str(), key.length(), 0, &value);
   if (error != MEMCACHED_SUCCESS) {
@@ -348,7 +372,10 @@ common::Error DBConnection::incr(const std::string& key, uint64_t value) {
 }
 
 common::Error DBConnection::decr(const std::string& key, uint64_t value) {
-  CHECK(isConnected());
+  if (!isConnected()) {
+    DNOTREACHED();
+    return common::make_error_value("Not connected", common::Value::E_ERROR);
+  }
 
   memcached_return_t error = memcached_decrement(connection_.handle_, key.c_str(), key.length(), 0, &value);
   if (error != MEMCACHED_SUCCESS) {
@@ -361,7 +388,10 @@ common::Error DBConnection::decr(const std::string& key, uint64_t value) {
 }
 
 common::Error DBConnection::del(const std::string& key, time_t expiration) {
-  CHECK(isConnected());
+  if (!isConnected()) {
+    DNOTREACHED();
+    return common::make_error_value("Not connected", common::Value::E_ERROR);
+  }
 
   memcached_return_t error = memcached_delete(connection_.handle_, key.c_str(), key.length(), expiration);
   if (error != MEMCACHED_SUCCESS) {
@@ -374,7 +404,10 @@ common::Error DBConnection::del(const std::string& key, time_t expiration) {
 }
 
 common::Error DBConnection::flush_all(time_t expiration) {
-  CHECK(isConnected());
+  if (!isConnected()) {
+    DNOTREACHED();
+    return common::make_error_value("Not connected", common::Value::E_ERROR);
+  }
 
   memcached_return_t error = memcached_flush(connection_.handle_, expiration);
   if (error != MEMCACHED_SUCCESS) {
@@ -387,7 +420,10 @@ common::Error DBConnection::flush_all(time_t expiration) {
 }
 
 common::Error DBConnection::version_server() const {
-  CHECK(isConnected());
+  if (!isConnected()) {
+    DNOTREACHED();
+    return common::make_error_value("Not connected", common::Value::E_ERROR);
+  }
 
   memcached_return_t error = memcached_version(connection_.handle_);
   if (error != MEMCACHED_SUCCESS) {

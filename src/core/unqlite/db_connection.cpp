@@ -172,7 +172,10 @@ DBConnection::DBConnection()
 }
 
 common::Error DBConnection::info(const char* args, ServerInfo::Stats* statsout) {
-  CHECK(isConnected());
+  if (!isConnected()) {
+    DNOTREACHED();
+    return common::make_error_value("Not connected", common::Value::E_ERROR);
+  }
 
   if (!statsout) {
     return common::make_error_value("Invalid input argument(s)", common::ErrorValue::E_ERROR);
@@ -186,7 +189,10 @@ common::Error DBConnection::info(const char* args, ServerInfo::Stats* statsout) 
 }
 
 common::Error DBConnection::dbsize(size_t* size) {
-  CHECK(isConnected());
+  if (!isConnected()) {
+    DNOTREACHED();
+    return common::make_error_value("Not connected", common::Value::E_ERROR);
+  }
 
   if (!size) {
     return common::make_error_value("Invalid input argument(s)", common::ErrorValue::E_ERROR);
@@ -245,7 +251,10 @@ const char* DBConnection::versionApi() {
 }
 
 common::Error DBConnection::set(const std::string& key, const std::string& value) {
-  CHECK(isConnected());
+  if (!isConnected()) {
+    DNOTREACHED();
+    return common::make_error_value("Not connected", common::Value::E_ERROR);
+  }
 
   int rc = unqlite_kv_store(connection_.handle_, key.c_str(), key.size(), value.c_str(), value.length());
   if (rc != UNQLITE_OK) {
@@ -257,7 +266,10 @@ common::Error DBConnection::set(const std::string& key, const std::string& value
 }
 
 common::Error DBConnection::get(const std::string& key, std::string* ret_val) {
-  CHECK(isConnected());
+  if (!isConnected()) {
+    DNOTREACHED();
+    return common::make_error_value("Not connected", common::Value::E_ERROR);
+  }
 
   int rc = unqlite_kv_fetch_callback(connection_.handle_, key.c_str(), key.size(), unqlite_data_callback, ret_val);
   if (rc != UNQLITE_OK) {
@@ -269,7 +281,10 @@ common::Error DBConnection::get(const std::string& key, std::string* ret_val) {
 }
 
 common::Error DBConnection::del(const std::string& key) {
-  CHECK(isConnected());
+  if (!isConnected()) {
+    DNOTREACHED();
+    return common::make_error_value("Not connected", common::Value::E_ERROR);
+  }
 
   int rc = unqlite_kv_delete(connection_.handle_, key.c_str(), key.size());
   if (rc != UNQLITE_OK) {
@@ -282,7 +297,10 @@ common::Error DBConnection::del(const std::string& key) {
 
 common::Error DBConnection::keys(const std::string& key_start, const std::string& key_end,
                    uint64_t limit, std::vector<std::string> *ret) {
-  CHECK(isConnected());
+  if (!isConnected()) {
+    DNOTREACHED();
+    return common::make_error_value("Not connected", common::Value::E_ERROR);
+  }
 
   /* Allocate a new cursor instance */
   unqlite_kv_cursor* pCur; /* Cursor handle */
@@ -316,7 +334,10 @@ common::Error DBConnection::help(int argc, char** argv) {
 }
 
 common::Error DBConnection::flushdb() {
-  CHECK(isConnected());
+  if (!isConnected()) {
+    DNOTREACHED();
+    return common::make_error_value("Not connected", common::Value::E_ERROR);
+  }
 
   unqlite_kv_cursor* pCur; /* Cursor handle */
   int rc = unqlite_kv_cursor_init(connection_.handle_, &pCur);

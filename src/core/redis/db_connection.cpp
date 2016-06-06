@@ -381,6 +381,7 @@ common::Error createConnection(ConnectionSettings* settings, redisContext** cont
 
 common::Error cliPrintContextError(redisContext* context) {
   if (!context) {
+    DNOTREACHED();
     return common::make_error_value("Not connected", common::Value::E_ERROR);
   }
 
@@ -687,6 +688,7 @@ common::Error DBConnection::latencyMode(FastoObject* out) {
   common::time64_t history_start = common::time::current_mstime();
 
   if (!context_) {
+    DNOTREACHED();
     return common::make_error_value("Not connected", common::Value::E_ERROR);
   }
 
@@ -1751,6 +1753,7 @@ common::Error DBConnection::executeAsPipeline(std::vector<FastoObjectCommandIPtr
   }
 
   if (!context_) {
+    DNOTREACHED();
     return common::make_error_value("Not connected", common::Value::E_ERROR);
   }
 

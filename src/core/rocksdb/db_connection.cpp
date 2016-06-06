@@ -134,7 +134,10 @@ const char* DBConnection::versionApi() {
 }
 
 common::Error DBConnection::info(const char* args, ServerInfo::Stats* statsout) {
-  CHECK(isConnected());
+  if (!isConnected()) {
+    DNOTREACHED();
+    return common::make_error_value("Not connected", common::Value::E_ERROR);
+  }
 
   if (!statsout) {
     return common::make_error_value("Invalid input argument(s)", common::ErrorValue::E_ERROR);
@@ -180,7 +183,10 @@ common::Error DBConnection::info(const char* args, ServerInfo::Stats* statsout) 
 }
 
 common::Error DBConnection::dbsize(size_t* size) {
-  CHECK(isConnected());
+  if (!isConnected()) {
+    DNOTREACHED();
+    return common::make_error_value("Not connected", common::Value::E_ERROR);
+  }
 
   if (!size) {
     return common::make_error_value("Invalid input argument(s)", common::ErrorValue::E_ERROR);
@@ -206,7 +212,10 @@ common::Error DBConnection::dbsize(size_t* size) {
 }
 
 std::string DBConnection::currentDbName() const {
-  CHECK(isConnected());
+  if (!isConnected()) {
+    DNOTREACHED();
+    return "unknown";
+  }
 
   ::rocksdb::ColumnFamilyHandle* fam = connection_.handle_->DefaultColumnFamily();
   if (fam) {
@@ -217,7 +226,10 @@ std::string DBConnection::currentDbName() const {
 }
 
 common::Error DBConnection::set(const std::string& key, const std::string& value) {
-  CHECK(isConnected());
+  if (!isConnected()) {
+    DNOTREACHED();
+    return common::make_error_value("Not connected", common::Value::E_ERROR);
+  }
 
   ::rocksdb::WriteOptions wo;
   auto st = connection_.handle_->Put(wo, key, value);
@@ -230,7 +242,10 @@ common::Error DBConnection::set(const std::string& key, const std::string& value
 }
 
 common::Error DBConnection::get(const std::string& key, std::string* ret_val) {
-  CHECK(isConnected());
+  if (!isConnected()) {
+    DNOTREACHED();
+    return common::make_error_value("Not connected", common::Value::E_ERROR);
+  }
 
   ::rocksdb::ReadOptions ro;
   auto st = connection_.handle_->Get(ro, key, ret_val);
@@ -243,7 +258,10 @@ common::Error DBConnection::get(const std::string& key, std::string* ret_val) {
 }
 
 common::Error DBConnection::mget(const std::vector< ::rocksdb::Slice>& keys, std::vector<std::string>* ret) {
-  CHECK(isConnected());
+  if (!isConnected()) {
+    DNOTREACHED();
+    return common::make_error_value("Not connected", common::Value::E_ERROR);
+  }
 
   ::rocksdb::ReadOptions ro;
   auto sts = connection_.handle_->MultiGet(ro, keys, ret);
@@ -258,7 +276,10 @@ common::Error DBConnection::mget(const std::vector< ::rocksdb::Slice>& keys, std
 }
 
 common::Error DBConnection::merge(const std::string& key, const std::string& value) {
-  CHECK(isConnected());
+  if (!isConnected()) {
+    DNOTREACHED();
+    return common::make_error_value("Not connected", common::Value::E_ERROR);
+  }
 
   ::rocksdb::WriteOptions wo;
   auto st = connection_.handle_->Merge(wo, key, value);
@@ -271,7 +292,10 @@ common::Error DBConnection::merge(const std::string& key, const std::string& val
 }
 
 common::Error DBConnection::del(const std::string& key) {
-  CHECK(isConnected());
+  if (!isConnected()) {
+    DNOTREACHED();
+    return common::make_error_value("Not connected", common::Value::E_ERROR);
+  }
 
   ::rocksdb::WriteOptions wo;
   auto st = connection_.handle_->Delete(wo, key);
@@ -284,7 +308,10 @@ common::Error DBConnection::del(const std::string& key) {
 
 common::Error DBConnection::keys(const std::string& key_start, const std::string& key_end,
                    uint64_t limit, std::vector<std::string>* ret) {
-  CHECK(isConnected());
+  if (!isConnected()) {
+    DNOTREACHED();
+    return common::make_error_value("Not connected", common::Value::E_ERROR);
+  }
 
   ::rocksdb::ReadOptions ro;
   ::rocksdb::Iterator* it = connection_.handle_->NewIterator(ro);  // keys(key_start, key_end, limit, ret);
@@ -312,7 +339,10 @@ common::Error DBConnection::help(int argc, char** argv) {
 }
 
 common::Error DBConnection::flushdb() {
-  CHECK(isConnected());
+  if (!isConnected()) {
+    DNOTREACHED();
+    return common::make_error_value("Not connected", common::Value::E_ERROR);
+  }
 
   ::rocksdb::ReadOptions ro;
   ::rocksdb::WriteOptions wo;
