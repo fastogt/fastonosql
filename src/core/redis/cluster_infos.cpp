@@ -16,7 +16,7 @@
     along with FastoNoSQL.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-#include "core/redis/redis_cluster_infos.h"
+#include "core/redis/cluster_infos.h"
 
 #define MARKER "\n"
 
@@ -24,19 +24,19 @@ namespace fastonosql {
 namespace core {
 namespace redis {
 
-RedisDiscoveryInfo::RedisDiscoveryInfo(const ServerCommonInfo& info, bool self)
+DiscoveryClusterInfo::DiscoveryClusterInfo(const ServerCommonInfo& info, bool self)
   : ServerDiscoveryClusterInfo(REDIS, info, self), hash_() {
 }
 
-std::string RedisDiscoveryInfo::hash() const {
+std::string DiscoveryClusterInfo::hash() const {
   return hash_;
 }
 
-void RedisDiscoveryInfo::setHash(const std::string& hash) {
+void DiscoveryClusterInfo::setHash(const std::string& hash) {
   hash_ = hash;
 }
 
-ServerDiscoveryClusterInfo* makeOwnRedisDiscoveryInfo(const std::string& text) {
+ServerDiscoveryClusterInfo* makeOwnDiscoveryClusterInfo(const std::string& text) {
   if (text.empty()) {
     return nullptr;
   }
@@ -78,7 +78,7 @@ ServerDiscoveryClusterInfo* makeOwnRedisDiscoveryInfo(const std::string& text) {
       }
 
 
-      RedisDiscoveryInfo* ser = new RedisDiscoveryInfo(inf, true);
+      DiscoveryClusterInfo* ser = new DiscoveryClusterInfo(inf, true);
       ser->setHash(inf.name);
       return ser;
     }
@@ -138,7 +138,7 @@ common::Error makeDiscoveryClusterInfo(const common::net::hostAndPort& parentHos
       }
     }
 
-    RedisDiscoveryInfo* ser = new RedisDiscoveryInfo(inf, self);
+    DiscoveryClusterInfo* ser = new DiscoveryClusterInfo(inf, self);
     ser->setHash(inf.name);
     infos->push_back(ServerDiscoveryClusterInfoSPtr(ser));
 

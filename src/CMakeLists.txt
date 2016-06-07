@@ -201,8 +201,8 @@ IF(BUILD_WITH_REDIS)
   SET(INCLUDE_DIRS ${INCLUDE_DIRS} third-party/redis/src third-party/redis/deps third-party/sds)
 
   SET(HEADERS_REDIS_TO_MOC
-    core/redis/redis_sentinel.h
-    core/redis/redis_cluster.h
+    core/redis/sentinel.h
+    core/redis/cluster.h
     core/redis/server.h
     core/redis/driver.h
   )
@@ -214,10 +214,10 @@ IF(BUILD_WITH_REDIS)
     core/redis/connection_settings.h
     core/redis/db_connection.h
 
-    core/redis/redis_sentinel_info.h
-    core/redis/redis_sentinel_settings.h
-    core/redis/redis_cluster_infos.h
-    core/redis/redis_cluster_settings.h
+    core/redis/sentinel_info.h
+    core/redis/sentinel_settings.h
+    core/redis/cluster_infos.h
+    core/redis/cluster_settings.h
   )
   SET(SOURCES_REDIS
     core/redis/config.cpp
@@ -229,12 +229,12 @@ IF(BUILD_WITH_REDIS)
     core/redis/server.cpp
     core/redis/driver.cpp
 
-    core/redis/redis_sentinel_info.cpp
-    core/redis/redis_sentinel.cpp
-    core/redis/redis_sentinel_settings.cpp
-    core/redis/redis_cluster_infos.cpp
-    core/redis/redis_cluster.cpp
-    core/redis/redis_cluster_settings.cpp
+    core/redis/sentinel_info.cpp
+    core/redis/sentinel.cpp
+    core/redis/sentinel_settings.cpp
+    core/redis/cluster_infos.cpp
+    core/redis/cluster.cpp
+    core/redis/cluster_settings.cpp
   )
   SET(OBJECT_LIBS ${OBJECT_LIBS} $<TARGET_OBJECTS:hiredis> $<TARGET_OBJECTS:libssh2>)
 ENDIF(BUILD_WITH_REDIS)

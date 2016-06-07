@@ -16,22 +16,22 @@
     along with FastoNoSQL.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-#pragma once
+#include "core/redis/sentinel_settings.h"
 
 #include <string>
-
-#include "core/icluster.h"
 
 namespace fastonosql {
 namespace core {
 namespace redis {
 
-class RedisCluster
-  : public ICluster {
-  Q_OBJECT
- public:
-  explicit RedisCluster(const std::string& name);
-};
+SentinelSettings::SentinelSettings(const connection_path_t& connectionName)
+  : ISentinelSettingsBase(connectionName, REDIS) {
+}
+
+SentinelSettings* SentinelSettings::clone() const {
+  SentinelSettings* red = new SentinelSettings(*this);
+  return red;
+}
 
 }  // namespace redis
 }  // namespace core

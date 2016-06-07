@@ -20,17 +20,17 @@
 
 #include <string>
 
-#include "core/isentinel.h"
+#include "core/icluster.h"
 
 namespace fastonosql {
 namespace core {
 namespace redis {
 
-class RedisSentinel
-  : public ISentinel {
+class Cluster
+  : public ICluster {
   Q_OBJECT
  public:
-  explicit RedisSentinel(const std::string& name);
+  explicit Cluster(const std::string& name);
 };
 
 }  // namespace redis

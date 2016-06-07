@@ -23,8 +23,8 @@
 #include "core/icluster.h"
 
 #ifdef BUILD_WITH_REDIS
-#include "core/redis/redis_cluster.h"
-#include "core/redis/redis_sentinel.h"
+#include "core/redis/cluster.h"
+#include "core/redis/sentinel.h"
 #include "core/redis/server.h"
 #include "core/redis/db_connection.h"
 #endif
@@ -128,7 +128,7 @@ ServersManager::sentinel_t ServersManager::createSentinel(ISentinelSettingsBaseS
   connectionTypes conT = settings->type();
 #ifdef BUILD_WITH_REDIS
   if (conT == REDIS) {
-    sentinel_t sent = common::make_shared<redis::RedisSentinel>(settings->path().toString());
+    sentinel_t sent = common::make_shared<redis::Sentinel>(settings->path().toString());
     auto nodes = settings->sentinels();
     for (size_t i = 0; i < nodes.size(); ++i) {
       SentinelSettings nd = nodes[i];
@@ -159,7 +159,7 @@ ServersManager::cluster_t ServersManager::createCluster(IClusterSettingsBaseSPtr
   connectionTypes conT = settings->type();
 #ifdef BUILD_WITH_REDIS
   if (conT == REDIS) {
-    cluster_t cl = common::make_shared<redis::RedisCluster>(settings->path().toString());
+    cluster_t cl = common::make_shared<redis::Cluster>(settings->path().toString());
     auto nodes = settings->nodes();
     for (size_t i = 0; i < nodes.size(); ++i) {
       IConnectionSettingsBaseSPtr nd = nodes[i];

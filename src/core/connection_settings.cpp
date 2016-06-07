@@ -30,8 +30,8 @@
 
 #ifdef BUILD_WITH_REDIS
 #include "core/redis/connection_settings.h"
-#include "core/redis/redis_cluster_settings.h"
-#include "core/redis/redis_sentinel_settings.h"
+#include "core/redis/cluster_settings.h"
+#include "core/redis/sentinel_settings.h"
 #define LOGGING_REDIS_FILE_EXTENSION ".red"
 #endif
 #ifdef BUILD_WITH_MEMCACHED
@@ -534,7 +534,7 @@ IClusterSettingsBase* IClusterSettingsBase::createFromType(connectionTypes type,
                                                            const connection_path_t& conName) {
 #ifdef BUILD_WITH_REDIS
   if (type == REDIS) {
-    return new redis::RedisClusterSettings(conName);
+    return new redis::ClusterSettings(conName);
   }
 #endif
 
@@ -709,7 +709,7 @@ ISentinelSettingsBase* ISentinelSettingsBase::createFromType(connectionTypes typ
                                                            const connection_path_t& conName) {
 #ifdef BUILD_WITH_REDIS
   if (type == REDIS) {
-    return new redis::RedisSentinelSettings(conName);
+    return new redis::SentinelSettings(conName);
   }
 #endif
 

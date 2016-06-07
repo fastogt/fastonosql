@@ -66,8 +66,8 @@ extern "C" {
 #include "core/command_logger.h"
 #include "core/command_key.h"
 
-#include "core/redis/redis_sentinel_info.h"
-#include "core/redis/redis_cluster_infos.h"
+#include "core/redis/sentinel_info.h"
+#include "core/redis/cluster_infos.h"
 #include "core/redis/database.h"
 #include "core/redis/command.h"
 
@@ -316,9 +316,9 @@ common::Error createConnection(const Config& config,
       return common::make_error_value("Invalid input argument(s)", common::ErrorValue::E_ERROR);
     }
 
-    redisContext* lcontext = nullptr;
+    redisContext* lcontext = NULL;
 
-    DCHECK(*context == nullptr);
+    DCHECK(*context == NULL);
     bool is_local = !config.hostsocket.empty();
 
     if (is_local) {
@@ -439,7 +439,7 @@ common::Error testConnection(ConnectionSettings* settings) {
     return common::make_error_value("Invalid input argument(s)", common::ErrorValue::E_ERROR);
   }
 
-  redisContext* context = nullptr;
+  redisContext* context = NULL;
   common::Error err = createConnection(settings, &context);
   if (err && err->isError()) {
     return err;
@@ -462,7 +462,7 @@ common::Error discoveryClusterConnection(ConnectionSettings* settings,
     return common::make_error_value("Invalid input argument(s)", common::ErrorValue::E_ERROR);
   }
 
-  redisContext* context = nullptr;
+  redisContext* context = NULL;
   common::Error err = createConnection(settings, &context);
   if (err && err->isError()) {
     return err;
@@ -531,7 +531,7 @@ common::Error discoverySentinelConnection(ConnectionSettings* settings,
     }
 
     const char* master_name = sinf.name.c_str();
-    ServerDiscoverySentinelInfoSPtr sent(new RedisDiscoverySentinelInfo(sinf));
+    ServerDiscoverySentinelInfoSPtr sent(new DiscoverySentinelInfo(sinf));
     infos->push_back(sent);
     /* Send the GET SLAVES command. */
     redisReply* reply = (redisReply*)redisCommand(context, GET_SENTINEL_SLAVES_PATTERN_1ARGS_S, master_name);
@@ -549,7 +549,7 @@ common::Error discoverySentinelConnection(ConnectionSettings* settings,
         if (lerr && lerr->isError()) {
           continue;
         }
-        ServerDiscoverySentinelInfoSPtr lsent(new RedisDiscoverySentinelInfo(slsinf));
+        ServerDiscoverySentinelInfoSPtr lsent(new DiscoverySentinelInfo(slsinf));
         infos->push_back(lsent);
       }
     } else if (reply->type == REDIS_REPLY_ERROR) {
@@ -569,13 +569,13 @@ common::Error discoverySentinelConnection(ConnectionSettings* settings,
 }
 
 DBConnection::DBConnection(IDBConnectionOwner* observer)
-  : context_(nullptr), isAuth_(false), observer_(observer) {
+  : context_(NULL), isAuth_(false), observer_(observer) {
 }
 
 DBConnection::~DBConnection() {
   if (context_) {
     redisFree(context_);
-    context_ = nullptr;
+    context_ = NULL;
   }
 }
 
@@ -584,7 +584,7 @@ const char* DBConnection::versionApi() {
 }
 
 bool DBConnection::isConnected() const {
-  return context_;
+  return context_ != NULL;
 }
 
 bool DBConnection::isAuthenticated() const {
@@ -596,13 +596,13 @@ bool DBConnection::isAuthenticated() const {
 }
 
 common::Error DBConnection::connect(bool force) {
-  if (context_ == nullptr || force) {
+  if (context_ == NULL || force) {
     if (context_) {
       redisFree(context_);
-      context_ = nullptr;
+      context_ = NULL;
     }
 
-    redisContext* context = nullptr;
+    redisContext* context = NULL;
     common::Error er = createConnection(config_, sinfo_, &context);
     if (er && er->isError()) {
       return er;
@@ -648,7 +648,7 @@ common::Error DBConnection::disconnect() {
 
   if (context_) {
     redisFree(context_);
-    context_ = nullptr;
+    context_ = NULL;
   }
 
   return common::Error();
@@ -1069,14 +1069,14 @@ common::Error DBConnection::findBigKeys(FastoObject* out) {
   }
 
   unsigned long long biggest[5] = {0}, counts[5] = {0}, totalsize[5] = {0};
-  unsigned long long sampled = 0, totlen=0, *sizes = nullptr, it = 0;
+  unsigned long long sampled = 0, totlen=0, *sizes = NULL, it = 0;
   size_t total_keys = 0;
   sds maxkeys[5] = {0};
   const char* typeName[] = {"string","list","set","hash","zset"};
   const char* typeunit[] = {"bytes","items","members","fields","members"};
   redisReply* reply, *keys;
   unsigned int arrsize = 0, i;
-  int type, *types = nullptr;
+  int type, *types = NULL;
 
   /* Total keys pre scanning */
   common::Error er = dbsize(&total_keys);

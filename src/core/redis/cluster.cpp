@@ -16,7 +16,7 @@
     along with FastoNoSQL.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-#include "core/redis/redis_cluster_settings.h"
+#include "core/redis/cluster.h"
 
 #include <string>
 
@@ -24,13 +24,8 @@ namespace fastonosql {
 namespace core {
 namespace redis {
 
-RedisClusterSettings::RedisClusterSettings(const connection_path_t& connectionName)
-  : IClusterSettingsBase(connectionName, REDIS) {
-}
-
-RedisClusterSettings* RedisClusterSettings::clone() const {
-  RedisClusterSettings* red = new RedisClusterSettings(*this);
-  return red;
+Cluster::Cluster(const std::string& name)
+  : ICluster(name) {
 }
 
 }  // namespace redis

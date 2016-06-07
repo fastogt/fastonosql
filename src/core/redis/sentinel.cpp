@@ -16,7 +16,7 @@
     along with FastoNoSQL.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-#include "core/redis/redis_cluster.h"
+#include "core/redis/sentinel.h"
 
 #include <string>
 
@@ -24,8 +24,8 @@ namespace fastonosql {
 namespace core {
 namespace redis {
 
-RedisCluster::RedisCluster(const std::string& name)
-  : ICluster(name) {
+Sentinel::Sentinel(const std::string& name)
+  : ISentinel(name) {
 }
 
 }  // namespace redis

@@ -16,22 +16,24 @@
     along with FastoNoSQL.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-#include "core/redis/redis_sentinel_settings.h"
+#pragma once
 
 #include <string>
+
+#include "core/connection_settings.h"
+
+#include "core/redis/config.h"
 
 namespace fastonosql {
 namespace core {
 namespace redis {
 
-RedisSentinelSettings::RedisSentinelSettings(const connection_path_t& connectionName)
-  : ISentinelSettingsBase(connectionName, REDIS) {
-}
-
-RedisSentinelSettings* RedisSentinelSettings::clone() const {
-  RedisSentinelSettings* red = new RedisSentinelSettings(*this);
-  return red;
-}
+class ClusterSettings
+  : public IClusterSettingsBase {
+ public:
+  explicit ClusterSettings(const connection_path_t& connectionName);
+  virtual ClusterSettings* clone() const;
+};
 
 }  // namespace redis
 }  // namespace core

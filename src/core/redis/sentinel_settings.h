@@ -28,11 +28,11 @@ namespace fastonosql {
 namespace core {
 namespace redis {
 
-class RedisSentinelSettings
+class SentinelSettings
   : public ISentinelSettingsBase {
  public:
-  explicit RedisSentinelSettings(const connection_path_t& connectionName);
-  virtual RedisSentinelSettings* clone() const;
+  explicit SentinelSettings(const connection_path_t& connectionName);
+  virtual SentinelSettings* clone() const;
 };
 
 }  // namespace redis

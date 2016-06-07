@@ -18,22 +18,30 @@
 
 #pragma once
 
-#include <string>
+#include <hiredis/hiredis.h>
 
-#include "core/connection_settings.h"
-
-#include "core/redis/config.h"
+#include "core/types.h"
 
 namespace fastonosql {
 namespace core {
 namespace redis {
 
-class RedisClusterSettings
-  : public IClusterSettingsBase {
+class DiscoveryClusterInfo
+  : public ServerDiscoveryClusterInfo {
  public:
-  explicit RedisClusterSettings(const connection_path_t& connectionName);
-  virtual RedisClusterSettings* clone() const;
+  DiscoveryClusterInfo(const ServerCommonInfo& info, bool self);
+
+  std::string hash() const;
+  void setHash(const std::string& hash);
+
+ private:
+  std::string hash_;
 };
+
+ServerDiscoveryClusterInfo* makeOwnDiscoveryClusterInfo(const std::string& text);
+common::Error makeDiscoveryClusterInfo(const common::net::hostAndPort& parentHost,
+                                   const std::string& text,
+                                   std::vector<ServerDiscoveryClusterInfoSPtr>* infos);
 
 }  // namespace redis
 }  // namespace core

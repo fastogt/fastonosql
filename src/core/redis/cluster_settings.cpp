@@ -16,23 +16,22 @@
     along with FastoNoSQL.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-#pragma once
+#include "core/redis/cluster_settings.h"
 
-#include <hiredis/hiredis.h>
-
-#include "core/types.h"
+#include <string>
 
 namespace fastonosql {
 namespace core {
 namespace redis {
 
-class RedisDiscoverySentinelInfo
-  : public ServerDiscoverySentinelInfo {
- public:
-  explicit RedisDiscoverySentinelInfo(const ServerCommonInfo& args);
-};
+ClusterSettings::ClusterSettings(const connection_path_t& connectionName)
+  : IClusterSettingsBase(connectionName, REDIS) {
+}
 
-common::Error makeServerCommonInfo(struct redisReply* repl_info, ServerCommonInfo* info);
+ClusterSettings* ClusterSettings::clone() const {
+  ClusterSettings* red = new ClusterSettings(*this);
+  return red;
+}
 
 }  // namespace redis
 }  // namespace core

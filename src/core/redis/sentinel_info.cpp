@@ -16,7 +16,7 @@
     along with FastoNoSQL.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-#include "core/redis/redis_sentinel_info.h"
+#include "core/redis/sentinel_info.h"
 
 #include <stdlib.h>
 
@@ -29,7 +29,7 @@ namespace fastonosql {
 namespace core {
 namespace redis {
 
-RedisDiscoverySentinelInfo::RedisDiscoverySentinelInfo(const ServerCommonInfo& args)
+DiscoverySentinelInfo::DiscoverySentinelInfo(const ServerCommonInfo& args)
   : ServerDiscoverySentinelInfo(REDIS, args){
 }
 

@@ -26,22 +26,13 @@ namespace fastonosql {
 namespace core {
 namespace redis {
 
-class RedisDiscoveryInfo
-  : public ServerDiscoveryClusterInfo {
+class DiscoverySentinelInfo
+  : public ServerDiscoverySentinelInfo {
  public:
-  RedisDiscoveryInfo(const ServerCommonInfo& info, bool self);
-
-  std::string hash() const;
-  void setHash(const std::string& hash);
-
- private:
-  std::string hash_;
+  explicit DiscoverySentinelInfo(const ServerCommonInfo& args);
 };
 
-ServerDiscoveryClusterInfo* makeOwnRedisDiscoveryInfo(const std::string& text);
-common::Error makeDiscoveryClusterInfo(const common::net::hostAndPort& parentHost,
-                                   const std::string& text,
-                                   std::vector<ServerDiscoveryClusterInfoSPtr>* infos);
+common::Error makeServerCommonInfo(struct redisReply* repl_info, ServerCommonInfo* info);
 
 }  // namespace redis
 }  // namespace core

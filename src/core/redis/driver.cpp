@@ -23,7 +23,7 @@
 
 #include "core/command_logger.h"
 
-#include "core/redis/redis_cluster_infos.h"
+#include "core/redis/cluster_infos.h"
 #include "core/redis/database.h"
 #include "core/redis/command.h"
 
@@ -200,7 +200,7 @@ common::Error Driver::serverDiscoveryClusterInfo(ServerDiscoveryClusterInfo** di
       common::Value::Type t = obj->type();
       if (t == common::Value::TYPE_STRING) {
         std::string content = common::convertToString(obj);
-        *dinfo = makeOwnRedisDiscoveryInfo(content);
+        *dinfo = makeOwnDiscoveryClusterInfo(content);
       }
     }
   }
