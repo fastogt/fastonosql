@@ -355,7 +355,7 @@ QVariant ExplorerTreeModel::data(const QModelIndex& index, int role) const {
         QString dname = common::convertFromString<QString>(disc->name());
         QString dtype = common::convertFromString<QString>(common::convertToString(disc->type()));
         QString dhost = common::convertFromString<QString>(common::convertToString(disc->host()));
-        return trDiscoveryToolTipTemplate_3S.arg(dname).arg(dtype).arg(dhost);
+        return trDiscoveryToolTipTemplate_3S.arg(dname, dtype, dhost);
       } else {
         QString sname = common::convertFromString<QString>(server->name());
         bool isCanRemote = server->isCanRemote();
@@ -365,13 +365,13 @@ QVariant ExplorerTreeModel::data(const QModelIndex& index, int role) const {
           QString stype = common::convertFromString<QString>(common::convertToString(rserver->role()));
           QString mtype = common::convertFromString<QString>(common::convertToString(rserver->mode()));
           QString shost = common::convertFromString<QString>(common::convertToString(rserver->host()));
-          return trRemoteServerToolTipTemplate_4S.arg(sname).arg(stype).arg(mtype).arg(shost);
+          return trRemoteServerToolTipTemplate_4S.arg(sname, stype, mtype, shost);
         } else {
           core::IServerLocal* lserver = dynamic_cast<core::IServerLocal*>(server.get());  // +
           CHECK(lserver);
           QString spath = common::convertFromString<QString>(lserver->path());
           QString mtype = common::convertFromString<QString>(common::convertToString(lserver->mode()));
-          return trLocalServerToolTipTemplate_3S.arg(sname).arg(mtype).arg(spath);
+          return trLocalServerToolTipTemplate_3S.arg(sname, mtype, spath);
         }
       }
     } else if (type == IExplorerTreeItem::eDatabase) {

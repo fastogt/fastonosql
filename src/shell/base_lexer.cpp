@@ -184,10 +184,10 @@ QString makeCallTip(const core::CommandInfo& info) {
   std::string since_str = core::convertVersionNumberToReadableString(info.since);
   QString qsince_str = common::convertFromString<QString>(since_str);
   return QString("Arguments: %1\nSummary: %2\nSince: %3\nExample: %4")
-      .arg(common::convertFromString<QString>(info.params))
-      .arg(common::convertFromString<QString>(info.summary))
-      .arg(qsince_str)
-      .arg(common::convertFromString<QString>(info.example));
+      .arg(common::convertFromString<QString>(info.params),
+           common::convertFromString<QString>(info.summary),
+           qsince_str,
+           common::convertFromString<QString>(info.example));
 }
 
 }  // namespace shell

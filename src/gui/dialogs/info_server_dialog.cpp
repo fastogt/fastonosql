@@ -319,14 +319,14 @@ void InfoServerDialog::retranslateUi() {
 void InfoServerDialog::updateText(const core::redis::ServerInfo& serv) {
   core::redis::ServerInfo::Server ser = serv.server_;
   QString textServ = trRedisTextServerTemplate
-          .arg(common::convertFromString<QString>(ser.redis_version_))
-          .arg(common::convertFromString<QString>(ser.redis_git_sha1_))
-          .arg(common::convertFromString<QString>(ser.redis_git_dirty_))
-          .arg(common::convertFromString<QString>(ser.redis_mode_))
-          .arg(common::convertFromString<QString>(ser.os_))
+          .arg(common::convertFromString<QString>(ser.redis_version_),
+               common::convertFromString<QString>(ser.redis_git_sha1_),
+               common::convertFromString<QString>(ser.redis_git_dirty_),
+               common::convertFromString<QString>(ser.redis_mode_),
+               common::convertFromString<QString>(ser.os_))
           .arg(ser.arch_bits_)
-          .arg(common::convertFromString<QString>(ser.multiplexing_api_))
-          .arg(common::convertFromString<QString>(ser.gcc_version_))
+          .arg(common::convertFromString<QString>(ser.multiplexing_api_),
+               common::convertFromString<QString>(ser.gcc_version_))
           .arg(ser.process_id_)
           .arg(common::convertFromString<QString>(ser.run_id_))
           .arg(ser.tcp_port_)
@@ -364,8 +364,8 @@ void InfoServerDialog::updateText(const core::redis::ServerInfo& serv) {
           .arg(per.aof_rewrite_scheduled_)
           .arg(per.aof_last_rewrite_time_sec_)
           .arg(per.aof_current_rewrite_time_sec_)
-          .arg(common::convertFromString<QString>(per.aof_last_bgrewrite_status_))
-          .arg(common::convertFromString<QString>(per.aof_last_write_status_));
+          .arg(common::convertFromString<QString>(per.aof_last_bgrewrite_status_),
+               common::convertFromString<QString>(per.aof_last_write_status_));
 
   core::redis::ServerInfo::Stats stat = serv.stats_;
   QString textStat = trRedisTextStatsTemplate.arg(stat.total_connections_received_)

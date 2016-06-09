@@ -121,14 +121,15 @@ bool KeysTableModel::setData(const QModelIndex& index, const QVariant& value, in
 }
 
 Qt::ItemFlags KeysTableModel::flags(const QModelIndex& index) const {
-  Qt::ItemFlags result = 0;
-  if (index.isValid()) {
-    result = Qt::ItemIsSelectable | Qt::ItemIsEnabled;
-    int col = index.column();
-    KeyTableItem* node = common::utils_qt::item<fasto::qt::gui::TableItem*, KeyTableItem*>(index);
-    if (node && col == KeyTableItem::kTTL) {
-      result |= Qt::ItemIsEditable;
-    }
+  if (!index.isValid()) {
+    return 0;
+  }
+
+  Qt::ItemFlags result = Qt::ItemIsSelectable | Qt::ItemIsEnabled;
+  int col = index.column();
+  KeyTableItem* node = common::utils_qt::item<fasto::qt::gui::TableItem*, KeyTableItem*>(index);
+  if (node && col == KeyTableItem::kTTL) {
+    result |= Qt::ItemIsEditable;
   }
 
   return result;

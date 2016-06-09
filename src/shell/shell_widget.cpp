@@ -222,7 +222,7 @@ void BaseShellWidget::syncServerInfo(core::IServerInfoSPtr inf) {
 
 void BaseShellWidget::initShellByType(core::connectionTypes type) {
   input_ = BaseShell::createFromType(type, core::SettingsManager::instance().autoCompletion());
-  setToolTip(tr("Based on %1 version: %2").arg(input_->basedOn()).arg(input_->version()));
+  setToolTip(tr("Based on <b>%1</b> version: <b>%2</b>").arg(input_->basedOn(), input_->version()));
   input_->setContextMenuPolicy(Qt::CustomContextMenu);
 }
 

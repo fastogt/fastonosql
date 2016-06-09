@@ -127,7 +127,7 @@ MESSAGE(STATUS "CMAKE_INSTALL_PREFIX: ${CMAKE_INSTALL_PREFIX}")
 ############################################################################
 
 SET(CMAKE_MODULE_PATH ${CMAKE_MODULE_PATH} "${CMAKE_CURRENT_LIST_DIR}/cmake")
-INCLUDE(fasto_config) ###################
+INCLUDE(config) ###################
 DEFINE_DEFAULT_DEFINITIONS()
 
 # Search libraries
