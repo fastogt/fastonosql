@@ -138,17 +138,12 @@ bool ExplorerDatabaseItem::isDefault() const {
   return info()->isDefault();
 }
 
-size_t ExplorerDatabaseItem::sizeDB() const {
+size_t ExplorerDatabaseItem::totalKeysCount() const {
   core::IDataBaseInfoSPtr inf = info();
-  return inf->sizeDB();
+  return inf->dbKeysCount();
 }
 
-size_t ExplorerDatabaseItem::loadedSize() const {
-  core::IDataBaseInfoSPtr inf = info();
-  return inf->loadedSize();
-}
-
-size_t ExplorerDatabaseItem::keyCount() const {
+size_t ExplorerDatabaseItem::loadedKeysCount() const {
   size_t sz = 0;
   fasto::qt::gui::forEachRecursive(this, [&sz](const fasto::qt::gui::TreeItem* item) {
     const ExplorerKeyItem* key_item = dynamic_cast<const ExplorerKeyItem*>(item);  // +
@@ -377,7 +372,7 @@ QVariant ExplorerTreeModel::data(const QModelIndex& index, int role) const {
     } else if (type == IExplorerTreeItem::eDatabase) {
       ExplorerDatabaseItem* db = static_cast<ExplorerDatabaseItem*>(node);
       if (db->isDefault()) {
-        return trDbToolTipTemplate_1S.arg(db->sizeDB());
+        return trDbToolTipTemplate_1S.arg(db->totalKeysCount());
       }
     } else if (type == IExplorerTreeItem::eNamespace) {
       ExplorerNSItem* ns = static_cast<ExplorerNSItem*>(node);
@@ -411,7 +406,7 @@ QVariant ExplorerTreeModel::data(const QModelIndex& index, int role) const {
         return node->name();
       } else if (type == IExplorerTreeItem::eDatabase) {
         ExplorerDatabaseItem* db = static_cast<ExplorerDatabaseItem*>(node);
-        return QString("%1 (%2/%3)").arg(node->name()).arg(db->keyCount()).arg(db->sizeDB());  // db
+        return QString("%1 (%2/%3)").arg(node->name()).arg(db->loadedKeysCount()).arg(db->totalKeysCount());  // db
       } else if(type == IExplorerTreeItem::eNamespace) {
         ExplorerNSItem* ns = static_cast<ExplorerNSItem*>(node);
         return QString("%1 (%2)").arg(node->name()).arg(ns->keyCount());  // db

@@ -153,15 +153,15 @@ ViewKeysDialog::ViewKeysDialog(const QString& title, core::IDatabaseSPtr db, QWi
   QHBoxLayout* pagingLayout = new QHBoxLayout;
   pagingLayout->addWidget(leftButtonList_);
   core::IDataBaseInfoSPtr inf = db_->info();
-  size_t sizeKey = inf->sizeDB();
+  size_t keysCount = inf->dbKeysCount();
   currentKey_ = new QSpinBox;
   currentKey_->setEnabled(false);
   currentKey_->setValue(0);
   currentKey_->setMinimum(0);
-  currentKey_->setMaximum(sizeKey);
+  currentKey_->setMaximum(keysCount);
   countKey_ = new QSpinBox;
   countKey_->setEnabled(false);
-  countKey_->setValue(sizeKey);
+  countKey_->setValue(keysCount);
   pagingLayout->addWidget(new QSplitter(Qt::Horizontal));
   pagingLayout->addWidget(currentKey_);
   pagingLayout->addWidget(countKey_);

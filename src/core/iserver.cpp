@@ -457,7 +457,7 @@ void IServer::handleLoadDatabaseContentEvent(events::LoadDatabaseContentResponce
   } else {
     if (containsDatabase(v.inf)) {
       v.inf->setKeys(v.keys);
-      v.inf->setSizeDB(v.dbsize);
+      v.inf->setDBKeysCount(v.db_keys_count);
     }
   }
 

@@ -102,9 +102,8 @@ class ExplorerDatabaseItem
   virtual QString name() const;
   virtual eType type() const;
   bool isDefault() const;
-  size_t sizeDB() const;
-  size_t loadedSize() const;
-  size_t keyCount() const;
+  size_t totalKeysCount() const;
+  size_t loadedKeysCount() const;
 
   core::IServerSPtr server() const;
   core::IDatabaseSPtr db() const;

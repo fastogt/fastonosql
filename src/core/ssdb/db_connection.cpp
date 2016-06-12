@@ -158,7 +158,28 @@ common::Error DBConnection::info(const char* args, ServerInfo::Common* statsout)
   return common::Error();
 }
 
-common::Error DBConnection::dbsize(size_t* size) {
+common::Error DBConnection::dbsize(int64_t* size) {
+  if (!isConnected()) {
+    DNOTREACHED();
+    return common::make_error_value("Not connected", common::Value::E_ERROR);
+  }
+
+  if (!size) {
+    return common::make_error_value("Invalid input argument(s)", common::ErrorValue::E_ERROR);
+  }
+
+  int64_t ret;
+  auto st = connection_.handle_->dbsize(&ret);
+  if (st.error()) {
+    std::string buff = common::MemSPrintf("Couldn't determine DBSIZE error: %s", st.code());
+    return common::make_error_value(buff, common::ErrorValue::E_ERROR);
+  }
+
+  *size = ret;
+  return common::Error();
+}
+
+common::Error DBConnection::dbkcount(size_t* size){
   if (!isConnected()) {
     DNOTREACHED();
     return common::make_error_value("Not connected", common::Value::E_ERROR);
@@ -171,7 +192,7 @@ common::Error DBConnection::dbsize(size_t* size) {
   std::vector<std::string> ret;
   auto st = connection_.handle_->keys("", "", UINT64_MAX, &ret);
   if (st.error()) {
-    std::string buff = common::MemSPrintf("Couldn't determine DBSIZE error: %s", st.code());
+    std::string buff = common::MemSPrintf("Couldn't determine DBKCOUNT error: %s", st.code());
     return common::make_error_value(buff, common::ErrorValue::E_ERROR);
   }
 
@@ -860,7 +881,7 @@ common::Error info(CommandHandler* handler, int argc, char** argv, FastoObject* 
 
 common::Error dbsize(CommandHandler* handler, int argc, char** argv, FastoObject* out) {
   DBConnection* ssdb = static_cast<DBConnection*>(handler);
-  size_t dbsize = 0;
+  int64_t dbsize = 0;
   common::Error er = ssdb->dbsize(&dbsize);
   if (!er) {
     common::FundamentalValue* val = common::Value::createUIntegerValue(dbsize);
@@ -1536,6 +1557,19 @@ common::Error qclear(CommandHandler* handler, int argc, char** argv, FastoObject
       common::FundamentalValue* val = common::Value::createIntegerValue(res);
       FastoObject* child = new FastoObject(out, val, ssdb->delimiter(), ssdb->nsSeparator());
       out->addChildren(child);
+  }
+
+  return er;
+}
+
+common::Error dbkcount(CommandHandler* handler, int argc, char** argv, FastoObject* out) {
+  DBConnection* ssdb = static_cast<DBConnection*>(handler);
+  size_t dbkcount = 0;
+  common::Error er = ssdb->dbkcount(&dbkcount);
+  if (!er) {
+    common::FundamentalValue* val = common::Value::createUIntegerValue(dbkcount);
+    FastoObject* child = new FastoObject(out, val, ssdb->delimiter(), ssdb->nsSeparator());
+    out->addChildren(child);
   }
 
   return er;

@@ -524,7 +524,7 @@ struct DBConnection {
   common::Error slaveMode(FastoObject* out) WARN_UNUSED_RESULT;
   common::Error getRDB(FastoObject* out) WARN_UNUSED_RESULT;
   common::Error sendScan(unsigned long long* it, redisReply** out) WARN_UNUSED_RESULT;
-  common::Error dbsize(size_t* size) WARN_UNUSED_RESULT;
+  common::Error dbkcount(size_t* size) WARN_UNUSED_RESULT;
   common::Error getKeyTypes(redisReply* keys, int* types) WARN_UNUSED_RESULT;
   common::Error getKeySizes(redisReply* keys, int* types,
                           unsigned long long* sizes) WARN_UNUSED_RESULT;

@@ -182,7 +182,7 @@ common::Error DBConnection::info(const char* args, ServerInfo::Stats* statsout) 
   return common::Error();
 }
 
-common::Error DBConnection::dbsize(size_t* size) {
+common::Error DBConnection::dbkcount(size_t* size) {
   if (!isConnected()) {
     DNOTREACHED();
     return common::make_error_value("Not connected", common::Value::E_ERROR);
@@ -203,7 +203,7 @@ common::Error DBConnection::dbsize(size_t* size) {
   delete it;
 
   if (!st.ok()) {
-    std::string buff = common::MemSPrintf("Couldn't determine DBSIZE error: %s", st.ToString());
+    std::string buff = common::MemSPrintf("Couldn't determine DBKCOUNT error: %s", st.ToString());
     return common::make_error_value(buff, common::ErrorValue::E_ERROR);
   }
 
@@ -380,19 +380,6 @@ common::Error info(CommandHandler* handler, int argc, char** argv, FastoObject* 
   return er;
 }
 
-common::Error dbsize(CommandHandler* handler, int argc, char** argv, FastoObject* out) {
-  DBConnection* rocks = static_cast<DBConnection*>(handler);
-  size_t dbsize = 0;
-  common::Error er = rocks->dbsize(&dbsize);
-  if (!er) {
-    common::FundamentalValue* val = common::Value::createUIntegerValue(dbsize);
-    FastoObject* child = new FastoObject(out, val, rocks->delimiter(), rocks->nsSeparator());
-    out->addChildren(child);
-  }
-
-  return er;
-}
-
 common::Error set(CommandHandler* handler, int argc, char** argv, FastoObject* out) {
   DBConnection* rocks = static_cast<DBConnection*>(handler);
   common::Error er = rocks->set(argv[0], argv[1]);
@@ -475,6 +462,19 @@ common::Error keys(CommandHandler* handler, int argc, char** argv, FastoObject* 
       ar->append(val);
     }
     FastoObjectArray* child = new FastoObjectArray(out, ar, rocks->delimiter(), rocks->nsSeparator());
+    out->addChildren(child);
+  }
+
+  return er;
+}
+
+common::Error dbkcount(CommandHandler* handler, int argc, char** argv, FastoObject* out) {
+  DBConnection* rocks = static_cast<DBConnection*>(handler);
+  size_t dbkcount = 0;
+  common::Error er = rocks->dbkcount(&dbkcount);
+  if (!er) {
+    common::FundamentalValue* val = common::Value::createUIntegerValue(dbkcount);
+    FastoObject* child = new FastoObject(out, val, rocks->delimiter(), rocks->nsSeparator());
     out->addChildren(child);
   }
 

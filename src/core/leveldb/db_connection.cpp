@@ -138,7 +138,7 @@ const char* DBConnection::versionApi() {
   return leveldb_version;
 }
 
-common::Error DBConnection::dbsize(size_t* size) {
+common::Error DBConnection::dbkcount(size_t* size) {
   if (!isConnected()) {
     DNOTREACHED();
     return common::make_error_value("Not connected", common::Value::E_ERROR);
@@ -159,7 +159,7 @@ common::Error DBConnection::dbsize(size_t* size) {
   delete it;
 
   if (!st.ok()) {
-    std::string buff = common::MemSPrintf("Couldn't determine DBSIZE error: %s", st.ToString());
+    std::string buff = common::MemSPrintf("Couldn't determine DBKCOUNT error: %s", st.ToString());
     return common::make_error_value(buff, common::ErrorValue::E_ERROR);
   }
 
@@ -324,13 +324,13 @@ common::Error DBConnection::flushdb() {
   return common::Error();
 }
 
-common::Error dbsize(CommandHandler* handler, int argc, char** argv, FastoObject* out) {
+common::Error dbkcount(CommandHandler* handler, int argc, char** argv, FastoObject* out) {
   DBConnection* level = static_cast<DBConnection*>(handler);
 
-  size_t dbsize = 0;
-  common::Error er = level->dbsize(&dbsize);
+  size_t dbkcount = 0;
+  common::Error er = level->dbkcount(&dbkcount);
   if (!er) {
-    common::FundamentalValue* val = common::Value::createUIntegerValue(dbsize);
+    common::FundamentalValue* val = common::Value::createUIntegerValue(dbkcount);
     FastoObject* child = new FastoObject(out, val, level->delimiter(), level->nsSeparator());
     out->addChildren(child);
   }

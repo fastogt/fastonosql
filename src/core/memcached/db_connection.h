@@ -58,7 +58,7 @@ struct DBConnection
 
   common::Error keys(const char* args) WARN_UNUSED_RESULT;
   common::Error info(const char* args, ServerInfo::Common* statsout) WARN_UNUSED_RESULT;
-  common::Error dbsize(size_t* size) WARN_UNUSED_RESULT;
+  common::Error dbkcount(size_t* size) WARN_UNUSED_RESULT;
 
   common::Error get(const std::string& key, std::string* ret_val) WARN_UNUSED_RESULT;
   common::Error set(const std::string& key, const std::string& value,
@@ -95,7 +95,7 @@ common::Error decr(CommandHandler* handler, int argc, char** argv, FastoObject* 
 common::Error del(CommandHandler* handler, int argc, char** argv, FastoObject* out);
 common::Error flush_all(CommandHandler* handler, int argc, char** argv, FastoObject* out);
 common::Error version_server(CommandHandler* handler, int argc, char** argv, FastoObject* out);
-common::Error dbsize(CommandHandler* handler, int argc, char** argv, FastoObject* out);
+common::Error dbkcount(CommandHandler* handler, int argc, char** argv, FastoObject* out);
 common::Error help(CommandHandler* handler, int argc, char** argv, FastoObject* out);
 
 // TODO: cas command implementation
@@ -134,9 +134,9 @@ static const std::vector<CommandHolder> memcachedCommands = {
   CommandHolder("GET", "<key>",
               "Get the value of a key.", UNDEFINED_SINCE, UNDEFINED_EXAMPLE_STR, 1, 0, &get),
 
-  CommandHolder("DBSIZE", "-",
+  CommandHolder("DBKCOUNT", "-",
               "Return the number of keys in the selected database",
-              UNDEFINED_SINCE, UNDEFINED_EXAMPLE_STR, 0, 0, &dbsize),
+              UNDEFINED_SINCE, UNDEFINED_EXAMPLE_STR, 0, 0, &dbkcount),
   CommandHolder("HELP", "<command>",
               "Return how to use command",
               UNDEFINED_SINCE, UNDEFINED_EXAMPLE_STR, 0, 1, &help)

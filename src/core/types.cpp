@@ -192,8 +192,8 @@ bool ServerInfoSnapShoot::isValid() const {
 }
 
 IDataBaseInfo::IDataBaseInfo(const std::string& name, bool isDefault, connectionTypes type,
-                           size_t size, const keys_container_t& keys)
-  : name_(name), is_default_(isDefault), type_(type), size_(size), keys_(keys) {
+                           size_t dbkcount, const keys_container_t& keys)
+  : name_(name), is_default_(isDefault), type_(type), db_kcount_(dbkcount), keys_(keys) {
 }
 
 IDataBaseInfo::~IDataBaseInfo() {
@@ -207,15 +207,15 @@ std::string IDataBaseInfo::name() const {
   return name_;
 }
 
-size_t IDataBaseInfo::sizeDB() const {
-  return size_;
+size_t IDataBaseInfo::dbKeysCount() const {
+  return db_kcount_;
 }
 
-void IDataBaseInfo::setSizeDB(size_t size) {
-  size_ = size;
+void IDataBaseInfo::setDBKeysCount(size_t size) {
+  db_kcount_ = size;
 }
 
-size_t IDataBaseInfo::loadedSize() const {
+size_t IDataBaseInfo::loadedKeysCount() const {
   return keys_.size();
 }
 

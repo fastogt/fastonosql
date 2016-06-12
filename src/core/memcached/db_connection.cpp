@@ -184,7 +184,7 @@ const char* DBConnection::versionApi() {
 }
 
 common::Error DBConnection::keys(const char* args) {
-  return notSupported("keys");
+  return notSupported("KEYS");
 }
 
 common::Error DBConnection::info(const char* args, ServerInfo::Common* statsout) {
@@ -234,9 +234,8 @@ common::Error DBConnection::info(const char* args, ServerInfo::Common* statsout)
   return common::Error();
 }
 
-common::Error DBConnection::dbsize(size_t* size) {
-  *size = 0;
-  return common::Error();
+common::Error DBConnection::dbkcount(size_t* size) {
+  return notSupported("DBKCOUNT");
 }
 
 common::Error DBConnection::get(const std::string& key, std::string* ret_val) {
@@ -589,12 +588,12 @@ common::Error version_server(CommandHandler* handler, int argc, char** argv, Fas
   return mem->version_server();
 }
 
-common::Error dbsize(CommandHandler* handler, int argc, char** argv, FastoObject* out) {
+common::Error dbkcount(CommandHandler* handler, int argc, char** argv, FastoObject* out) {
   DBConnection* mem = static_cast<DBConnection*>(handler);
-  size_t dbsize = 0;
-  common::Error er = mem->dbsize(&dbsize);
+  size_t dbkcount = 0;
+  common::Error er = mem->dbkcount(&dbkcount);
   if (!er) {
-    common::FundamentalValue* val = common::Value::createUIntegerValue(dbsize);
+    common::FundamentalValue* val = common::Value::createUIntegerValue(dbkcount);
     FastoObject* child = new FastoObject(out, val, mem->delimiter(), mem->nsSeparator());
     out->addChildren(child);
   }

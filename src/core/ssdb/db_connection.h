@@ -119,9 +119,10 @@ struct DBConnection
   common::Error qslice(const std::string& name, int64_t begin, int64_t end,
                        std::vector<std::string>* ret) WARN_UNUSED_RESULT;
   common::Error qclear(const std::string& name, int64_t* ret) WARN_UNUSED_RESULT;
+  common::Error dbsize(int64_t *size) WARN_UNUSED_RESULT;
 
   // extended api
-  common::Error dbsize(size_t* size) WARN_UNUSED_RESULT;
+  common::Error dbkcount(size_t* size) WARN_UNUSED_RESULT;
   common::Error help(int argc, char** argv) WARN_UNUSED_RESULT;
   common::Error flushdb() WARN_UNUSED_RESULT;
  private:
@@ -173,8 +174,9 @@ common::Error qpush(CommandHandler* handler, int argc, char** argv, FastoObject*
 common::Error qpop(CommandHandler* handler, int argc, char** argv, FastoObject* out);
 common::Error qslice(CommandHandler* handler, int argc, char** argv, FastoObject* out);
 common::Error qclear(CommandHandler* handler, int argc, char** argv, FastoObject* out);
-
 common::Error dbsize(CommandHandler* handler, int argc, char** argv, FastoObject* out);
+
+common::Error dbkcount(CommandHandler* handler, int argc, char** argv, FastoObject* out);
 common::Error help(CommandHandler* handler, int argc, char** argv, FastoObject* out);
 common::Error flushdb(CommandHandler* handler, int argc, char** argv, FastoObject* out);
 
@@ -326,10 +328,13 @@ static const std::vector<CommandHolder> ssdbCommands = {
   CommandHolder("QCLEAR", "<name>",
               "Clear the queue.",
               UNDEFINED_SINCE, UNDEFINED_EXAMPLE_STR, 1, 0, &qclear),
-
   CommandHolder("DBSIZE", "-",
-              "Return the number of keys in the selected database",
+              "Return the approximate size of the database, in bytes. If compression is enabled, the size will be of the compressed data.",
               UNDEFINED_SINCE, UNDEFINED_EXAMPLE_STR, 0, 0, &dbsize),
+
+  CommandHolder("DBKCOUNT", "-",
+              "Return the number of keys in the selected database",
+              UNDEFINED_SINCE, UNDEFINED_EXAMPLE_STR, 0, 0, &dbkcount),
   CommandHolder("HELP", "<command>",
               "Return how to use command",
               UNDEFINED_SINCE, UNDEFINED_EXAMPLE_STR, 0, 1, &help),

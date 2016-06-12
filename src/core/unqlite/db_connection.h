@@ -67,7 +67,7 @@ class DBConnection
                      uint64_t limit, std::vector<std::string>* ret) WARN_UNUSED_RESULT;
 
   // extended api
-  common::Error dbsize(size_t* size) WARN_UNUSED_RESULT;
+  common::Error dbkcount(size_t* size) WARN_UNUSED_RESULT;
   common::Error help(int argc, char** argv) WARN_UNUSED_RESULT;
   common::Error flushdb() WARN_UNUSED_RESULT;
 
@@ -81,7 +81,7 @@ common::Error get(CommandHandler* handler, int argc, char** argv, FastoObject* o
 common::Error del(CommandHandler* handler, int argc, char** argv, FastoObject* out);
 common::Error keys(CommandHandler* handler, int argc, char** argv, FastoObject* out);
 
-common::Error dbsize(CommandHandler* handler, int argc, char** argv, FastoObject* out);
+common::Error dbkcount(CommandHandler* handler, int argc, char** argv, FastoObject* out);
 common::Error help(CommandHandler* handler, int argc, char** argv, FastoObject* out);
 common::Error flushdb(CommandHandler* handler, int argc, char** argv, FastoObject* out);
 
@@ -102,9 +102,9 @@ static const std::vector<CommandHolder> unqliteCommands = {
               "These command return database information.",
               UNDEFINED_SINCE, UNDEFINED_EXAMPLE_STR, 1, 0, &info),
 
-  CommandHolder("DBSIZE", "-",
+  CommandHolder("DBKCOUNT", "-",
               "Return the number of keys in the selected database",
-              UNDEFINED_SINCE, UNDEFINED_EXAMPLE_STR, 0, 0, &dbsize),
+              UNDEFINED_SINCE, UNDEFINED_EXAMPLE_STR, 0, 0, &dbkcount),
   CommandHolder("HELP", "<command>",
               "Return how to use command",
               UNDEFINED_SINCE, UNDEFINED_EXAMPLE_STR, 0, 1, &help),

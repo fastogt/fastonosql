@@ -727,7 +727,7 @@ void Driver::handleLoadDatabaseContentEvent(events::LoadDatabaseContentRequestEv
         }
       }
 
-      impl_->dbsize(&res.dbsize);
+      impl_->dbkcount(&res.db_keys_count);
     }
   }
 done:

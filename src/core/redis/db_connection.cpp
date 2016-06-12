@@ -957,7 +957,7 @@ common::Error DBConnection::sendScan(unsigned long long* it, redisReply** out){
   return common::Error();
 }
 
-common::Error DBConnection::dbsize(size_t* size) {
+common::Error DBConnection::dbkcount(size_t* size) {
   if (!size) {
     return common::make_error_value("Invalid input argument(s)", common::ErrorValue::E_ERROR);
   }
@@ -1079,7 +1079,7 @@ common::Error DBConnection::findBigKeys(FastoObject* out) {
   int type, *types = NULL;
 
   /* Total keys pre scanning */
-  common::Error er = dbsize(&total_keys);
+  common::Error er = dbkcount(&total_keys);
   if (er && er->isError()) {
     return er;
   }
@@ -1393,7 +1393,7 @@ common::Error DBConnection::select(int num, IDataBaseInfo** info) {
   redisReply* reply = reinterpret_cast<redisReply*>(redisCommand(context_, "SELECT %d", num));
   if (reply) {
     size_t sz = 0;
-    dbsize(&sz);
+    dbkcount(&sz);
     DataBaseInfo* linfo = new DataBaseInfo(common::convertToString(num), true, sz);
     if (observer_) {
       observer_->currentDataBaseChanged(linfo);
@@ -1724,7 +1724,7 @@ common::Error DBConnection::execute(int argc, char** argv, FastoObject* out) {
     if (strcasecmp(command, "select") == 0 && argc == 2) {
       config_.dbnum = atoi(argv[1]);
       size_t sz = 0;
-      dbsize(&sz);
+      dbkcount(&sz);
       DataBaseInfo* info = new DataBaseInfo(common::convertToString(config_.dbnum), true, sz);
       if (observer_) {
         observer_->currentDataBaseChanged(info);

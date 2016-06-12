@@ -188,7 +188,7 @@ common::Error DBConnection::info(const char* args, ServerInfo::Stats* statsout) 
   return common::Error();
 }
 
-common::Error DBConnection::dbsize(size_t* size) {
+common::Error DBConnection::dbkcount(size_t* size) {
   if (!isConnected()) {
     DNOTREACHED();
     return common::make_error_value("Not connected", common::Value::E_ERROR);
@@ -202,7 +202,7 @@ common::Error DBConnection::dbsize(size_t* size) {
   unqlite_kv_cursor* pCur; /* Cursor handle */
   int rc = unqlite_kv_cursor_init(connection_.handle_, &pCur);
   if (rc != UNQLITE_OK) {
-    std::string buff = common::MemSPrintf("dbsize function error: %s", unqlite_strerror(rc));
+    std::string buff = common::MemSPrintf("DBKCOUNT function error: %s", unqlite_strerror(rc));
     return common::make_error_value(buff, common::ErrorValue::E_ERROR);
   }
   /* Point to the first record */
@@ -433,12 +433,12 @@ common::Error info(CommandHandler* handler, int argc, char** argv, FastoObject* 
   return er;
 }
 
-common::Error dbsize(CommandHandler* handler, int argc, char** argv, FastoObject* out) {
+common::Error dbkcount(CommandHandler* handler, int argc, char** argv, FastoObject* out) {
   DBConnection* unq = static_cast<DBConnection*>(handler);
-  size_t size = 0;
-  common::Error er = unq->dbsize(&size);
+  size_t dbkcount = 0;
+  common::Error er = unq->dbkcount(&dbkcount);
   if (!er) {
-    common::FundamentalValue* val = common::Value::createUIntegerValue(size);
+    common::FundamentalValue* val = common::Value::createUIntegerValue(dbkcount);
     FastoObject* child = new FastoObject(out, val, unq->delimiter(), unq->nsSeparator());
     out->addChildren(child);
   }

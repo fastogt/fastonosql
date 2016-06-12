@@ -25,8 +25,8 @@ namespace core {
 namespace leveldb {
 
 DataBaseInfo::DataBaseInfo(const std::string& name, bool isDefault,
-                                         size_t size, const keys_container_t &keys)
-  : IDataBaseInfo(name, isDefault, LEVELDB, size, keys) {
+                                         size_t dbkcount, const keys_container_t &keys)
+  : IDataBaseInfo(name, isDefault, LEVELDB, dbkcount, keys) {
 }
 
 DataBaseInfo* DataBaseInfo::clone() const {

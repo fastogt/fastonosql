@@ -195,7 +195,7 @@ common::Error DBConnection::info(const char* args, ServerInfo::Stats* statsout) 
   return common::Error();
 }
 
-common::Error DBConnection::dbsize(size_t* size) {
+common::Error DBConnection::dbkcount(size_t* size) {
   if (!isConnected()) {
     DNOTREACHED();
     return common::make_error_value("Not connected", common::Value::E_ERROR);
@@ -214,7 +214,7 @@ common::Error DBConnection::dbsize(size_t* size) {
 
   if (rc != LMDB_OK) {
     mdb_txn_abort(txn);
-    std::string buff = common::MemSPrintf("dbsize function error: %s", mdb_strerror(rc));
+    std::string buff = common::MemSPrintf("DBKCOUNT function error: %s", mdb_strerror(rc));
     return common::make_error_value(buff, common::ErrorValue::E_ERROR);
   }
 
@@ -418,12 +418,12 @@ common::Error info(CommandHandler* handler, int argc, char** argv, FastoObject* 
   return er;
 }
 
-common::Error dbsize(CommandHandler* handler, int argc, char** argv, FastoObject* out) {
+common::Error dbkcount(CommandHandler* handler, int argc, char** argv, FastoObject* out) {
   DBConnection* mdb = static_cast<DBConnection*>(handler);
-  size_t dbsize = 0;
-  common::Error er = mdb->dbsize(&dbsize);
+  size_t dbkcount = 0;
+  common::Error er = mdb->dbkcount(&dbkcount);
   if (!er) {
-    common::FundamentalValue* val = common::Value::createUIntegerValue(dbsize);
+    common::FundamentalValue* val = common::Value::createUIntegerValue(dbkcount);
     FastoObject* child = new FastoObject(out, val, mdb->delimiter(), mdb->nsSeparator());
     out->addChildren(child);
   }

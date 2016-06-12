@@ -135,9 +135,9 @@ class IDataBaseInfo {
   typedef std::vector<NDbKValue> keys_container_t;
   connectionTypes type() const;
   std::string name() const;
-  size_t sizeDB() const;
-  void setSizeDB(size_t size);
-  size_t loadedSize() const;
+  size_t dbKeysCount() const;
+  void setDBKeysCount(size_t size);
+  size_t loadedKeysCount() const;
 
   bool isDefault() const;
   void setIsDefault(bool isDef);
@@ -151,12 +151,12 @@ class IDataBaseInfo {
 
  protected:
   IDataBaseInfo(const std::string& name, bool isDefault, connectionTypes type,
-               size_t size, const keys_container_t& keys);
+               size_t dbkcount, const keys_container_t& keys);
 
  private:
   const std::string name_;
   bool is_default_;
-  size_t size_;
+  size_t db_kcount_;
   keys_container_t keys_;
 
   const connectionTypes type_;
