@@ -272,7 +272,8 @@ common::Error Driver::commandDeleteImpl(CommandDeleteKey* command,
   }
 
   NDbKValue key = command->key();
-  *cmdstring = common::MemSPrintf(DELETE_KEY_PATTERN_1ARGS_S, key.keyString());
+  std::string key_str = key.keyString();
+  *cmdstring = common::MemSPrintf(DELETE_KEY_PATTERN_1ARGS_S, key_str);
   return common::Error();
 }
 
@@ -283,7 +284,8 @@ common::Error Driver::commandLoadImpl(CommandLoadKey* command,
   }
 
   NDbKValue key = command->key();
-  *cmdstring = common::MemSPrintf(GET_KEY_PATTERN_1ARGS_S, key.keyString());
+  std::string key_str = key.keyString();
+  *cmdstring = common::MemSPrintf(GET_KEY_PATTERN_1ARGS_S, key_str);
   return common::Error();
 }
 

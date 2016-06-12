@@ -685,10 +685,10 @@ void Driver::handleLoadDatabaseContentEvent(events::LoadDatabaseContentRequestEv
         bool isok = ar->getString(i, &key);
         if (isok) {
           NKey k(key);
-          NDbKValue ress(k, NValue());
-          cmds.push_back(createCommandFast("TYPE " + ress.keyString(), common::Value::C_INNER));
-          cmds.push_back(createCommandFast("TTL " + ress.keyString(), common::Value::C_INNER));
-          res.keys.push_back(ress);
+          NDbKValue dbv(k, NValue());
+          cmds.push_back(createCommandFast("TYPE " + key, common::Value::C_INNER));
+          cmds.push_back(createCommandFast("TTL " + key, common::Value::C_INNER));
+          res.keys.push_back(dbv);
         }
       }
 
@@ -712,7 +712,7 @@ void Driver::handleLoadDatabaseContentEvent(events::LoadDatabaseContentRequestEv
           }
         }
 
-        FastoObjectIPtr cmdType2 = cmds[i*2+1];
+        FastoObjectIPtr cmdType2 = cmds[i * 2 + 1];
         tchildrens = cmdType2->childrens();
         if (tchildrens.size()) {
           DCHECK_EQ(tchildrens.size(), 1);
@@ -827,7 +827,8 @@ common::Error Driver::commandDeleteImpl(CommandDeleteKey* command,
   }
 
   NDbKValue key = command->key();
-  *cmdstring = common::MemSPrintf(DELETE_KEY_PATTERN_1ARGS_S, key.keyString());
+  std::string key_str = key.keyString();
+  *cmdstring = common::MemSPrintf(DELETE_KEY_PATTERN_1ARGS_S, key_str);
   return common::Error();
 }
 
@@ -838,16 +839,17 @@ common::Error Driver::commandLoadImpl(CommandLoadKey* command, std::string* cmds
 
   std::string patternResult;
   NDbKValue key = command->key();
+  std::string key_str = key.keyString();
   if (key.type() == common::Value::TYPE_ARRAY) {
-    patternResult = common::MemSPrintf(GET_KEY_LIST_PATTERN_1ARGS_S, key.keyString());
+    patternResult = common::MemSPrintf(GET_KEY_LIST_PATTERN_1ARGS_S, key_str);
   } else if (key.type() == common::Value::TYPE_SET) {
-    patternResult = common::MemSPrintf(GET_KEY_SET_PATTERN_1ARGS_S, key.keyString());
+    patternResult = common::MemSPrintf(GET_KEY_SET_PATTERN_1ARGS_S, key_str);
   } else if (key.type() == common::Value::TYPE_ZSET) {
-    patternResult = common::MemSPrintf(GET_KEY_ZSET_PATTERN_1ARGS_S, key.keyString());
+    patternResult = common::MemSPrintf(GET_KEY_ZSET_PATTERN_1ARGS_S, key_str);
   } else if (key.type() == common::Value::TYPE_HASH) {
-    patternResult = common::MemSPrintf(GET_KEY_HASH_PATTERN_1ARGS_S, key.keyString());
+    patternResult = common::MemSPrintf(GET_KEY_HASH_PATTERN_1ARGS_S, key_str);
   } else {
-    patternResult = common::MemSPrintf(GET_KEY_PATTERN_1ARGS_S, key.keyString());
+    patternResult = common::MemSPrintf(GET_KEY_PATTERN_1ARGS_S, key_str);
   }
 
   *cmdstring = patternResult;
@@ -892,10 +894,11 @@ common::Error Driver::commandChangeTTLImpl(CommandChangeTTL* command,
   std::string patternResult;
   NDbKValue key = command->key();
   ttl_t new_ttl = command->newTTL();
+  std::string key_str = key.keyString();
   if (new_ttl == -1) {
-    patternResult = common::MemSPrintf(PERSIST_KEY_1ARGS_S, key.keyString());
+    patternResult = common::MemSPrintf(PERSIST_KEY_1ARGS_S, key_str);
   } else {
-    patternResult = common::MemSPrintf(CHANGE_TTL_2ARGS_SI, key.keyString(), new_ttl);
+    patternResult = common::MemSPrintf(CHANGE_TTL_2ARGS_SI, key_str, new_ttl);
   }
 
   *cmdstring = patternResult;

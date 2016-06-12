@@ -75,7 +75,8 @@ common::Error Driver::commandDeleteImpl(CommandDeleteKey* command,
   }
 
   NDbKValue key = command->key();
-  *cmdstring = common::MemSPrintf(DELETE_KEY_PATTERN_1ARGS_S, key.keyString());
+  std::string key_str = key.keyString();
+  *cmdstring = common::MemSPrintf(DELETE_KEY_PATTERN_1ARGS_S, key_str);
   return common::Error();
 }
 
@@ -87,16 +88,17 @@ common::Error Driver::commandLoadImpl(CommandLoadKey* command, std::string* cmds
   std::string patternResult;
   NDbKValue key = command->key();
   common::Value::Type t = key.type();
+  std::string key_str = key.keyString();
   if (t == common::Value::TYPE_ARRAY) {
-    patternResult = common::MemSPrintf(GET_KEY_LIST_PATTERN_1ARGS_S, key.keyString());
+    patternResult = common::MemSPrintf(GET_KEY_LIST_PATTERN_1ARGS_S, key_str);
   } else if (t == common::Value::TYPE_SET) {
-    patternResult = common::MemSPrintf(GET_KEY_SET_PATTERN_1ARGS_S, key.keyString());
+    patternResult = common::MemSPrintf(GET_KEY_SET_PATTERN_1ARGS_S, key_str);
   } else if (t == common::Value::TYPE_ZSET) {
-    patternResult = common::MemSPrintf(GET_KEY_ZSET_PATTERN_1ARGS_S, key.keyString());
+    patternResult = common::MemSPrintf(GET_KEY_ZSET_PATTERN_1ARGS_S, key_str);
   } else if (t == common::Value::TYPE_HASH) {
-    patternResult = common::MemSPrintf(GET_KEY_HASH_PATTERN_1ARGS_S, key.keyString());
+    patternResult = common::MemSPrintf(GET_KEY_HASH_PATTERN_1ARGS_S, key_str);
   } else {
-    patternResult = common::MemSPrintf(GET_KEY_PATTERN_1ARGS_S, key.keyString());
+    patternResult = common::MemSPrintf(GET_KEY_PATTERN_1ARGS_S, key_str);
   }
 
   *cmdstring = patternResult;
