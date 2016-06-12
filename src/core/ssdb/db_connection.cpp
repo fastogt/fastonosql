@@ -168,14 +168,14 @@ common::Error DBConnection::dbsize(size_t* size) {
     return common::make_error_value("Invalid input argument(s)", common::ErrorValue::E_ERROR);
   }
 
-  int64_t sz = 0;
-  auto st = connection_.handle_->dbsize(&sz);
+  std::vector<std::string> ret;
+  auto st = connection_.handle_->keys("", "", UINT64_MAX, &ret);
   if (st.error()) {
     std::string buff = common::MemSPrintf("Couldn't determine DBSIZE error: %s", st.code());
     return common::make_error_value(buff, common::ErrorValue::E_ERROR);
   }
 
-  *size = sz;
+  *size = ret.size();
   return common::Error();
 }
 
