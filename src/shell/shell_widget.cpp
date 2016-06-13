@@ -51,6 +51,8 @@
 
 namespace {
   const QSize iconSize = QSize(24, 24);
+  const QString trSupportedCommandsCountTemplate_1S = QObject::tr("Supported commands count: %1");
+  const QString trCommandsVersion = QObject::tr("Command version:");
 }
 
 namespace fastonosql {
@@ -155,8 +157,7 @@ BaseShellWidget::BaseShellWidget(core::IServerSPtr server, const QString& filePa
   mainlayout->addWidget(input_);
 
   QHBoxLayout* apilayout = new QHBoxLayout;
-
-  apilayout->addWidget(new QLabel(tr("Supported commands count: %1").arg(input_->commandsCount())));
+  apilayout->addWidget(new QLabel(trSupportedCommandsCountTemplate_1S.arg(input_->commandsCount())));
 
   QSplitter* splitterButtom = new QSplitter;
   splitterButtom->setOrientation(Qt::Horizontal);
@@ -176,7 +177,7 @@ BaseShellWidget::BaseShellWidget(core::IServerSPtr server, const QString& filePa
                                  common::convertFromString<QString>(curVers), cur);
     commandsVersionApi_->setCurrentIndex(i);
   }
-  apilayout->addWidget(new QLabel(tr("Command version:")));
+  apilayout->addWidget(new QLabel(trCommandsVersion));
   apilayout->addWidget(commandsVersionApi_);
   mainlayout->addLayout(apilayout);
 
