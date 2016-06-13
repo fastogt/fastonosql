@@ -38,7 +38,7 @@ void parseOptions(int argc, char** argv, Config& cfg) {
     if (!strcmp(argv[i], "-h") && !lastarg) {
       cfg.host.host = argv[++i];
     } else if (!strcmp(argv[i], "-p") && !lastarg) {
-      cfg.host.port = atoi(argv[++i]);
+      cfg.host.port = common::convertFromString<uint16_t>(argv[++i]);
     } else if (!strcmp(argv[i], "-u") && !lastarg) {
       cfg.user = argv[++i];
     } else if (!strcmp(argv[i], "-a") && !lastarg) {

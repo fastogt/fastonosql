@@ -46,7 +46,7 @@ void parseOptions(int argc, char** argv, Config& cfg) {
     } else if (!strcmp(argv[i], "-x")) {
       cfg.stdinarg = 1;
     }*/ else if (!strcmp(argv[i], "-p") && !lastarg) {
-      cfg.host.port = atoi(argv[++i]);
+      cfg.host.port = common::convertFromString<uint16_t>(argv[++i]);
     } else if (!strcmp(argv[i], "-s") && !lastarg) {
       cfg.hostsocket = argv[++i];
     } else if (!strcmp(argv[i], "-r") && !lastarg) {
@@ -55,7 +55,7 @@ void parseOptions(int argc, char** argv, Config& cfg) {
       double seconds = atof(argv[++i]);
       cfg.interval = seconds*1000000;
     } else if (!strcmp(argv[i], "-n") && !lastarg) {
-      cfg.dbnum = atoi(argv[++i]);
+      cfg.dbnum = common::convertFromString<int>(argv[++i]);
     } else if (!strcmp(argv[i], "-a") && !lastarg) {
       cfg.auth = argv[++i];
     }
@@ -80,14 +80,14 @@ void parseOptions(int argc, char** argv, Config& cfg) {
       cfg.pattern = argv[++i];
     } else if (!strcmp(argv[i], "--intrinsic-latency") && !lastarg) {
       cfg.intrinsic_latency_mode = 1;
-      cfg.intrinsic_latency_duration = atoi(argv[++i]);
+      cfg.intrinsic_latency_duration = common::convertFromString<int>(argv[++i]);
     } else if (!strcmp(argv[i], "--rdb") && !lastarg) {
       cfg.getrdb_mode = 1;
       cfg.rdb_filename = argv[++i];
     /*} else if (!strcmp(argv[i], "--pipe")) {
       cfg.pipe_mode = 1;
     } else if (!strcmp(argv[i], "--pipe-timeout") && !lastarg) {
-      cfg.pipe_timeout = atoi(argv[++i]);*/
+      cfg.pipe_timeout = common::convertFromString<int>(argv[++i]);*/
     } else if (!strcmp(argv[i], "--bigkeys")) {
       cfg.bigkeys = 1;
     } else if (!strcmp(argv[i], "--eval") && !lastarg) {

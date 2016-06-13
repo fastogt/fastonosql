@@ -54,7 +54,7 @@ common::Error makeServerCommonInfo(struct redisReply* repl_info, ServerCommonInf
     } else if (strcmp(repl_info->element[j]->str, HOSTNAME_FIELD) == 0) {
        linf.host.host = repl_info->element[j + 1]->str;
     } else if (strcmp(repl_info->element[j]->str, PORT_FIELD) == 0) {
-       linf.host.port = atoi(repl_info->element[j + 1]->str);
+       linf.host.port = common::convertFromString<uint16_t>(repl_info->element[j + 1]->str);
     }
   }
 

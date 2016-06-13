@@ -931,7 +931,7 @@ common::Error set(CommandHandler* handler, int argc, char** argv, FastoObject* o
 
 common::Error setx(CommandHandler* handler, int argc, char** argv, FastoObject* out) {
   DBConnection* ssdb = static_cast<DBConnection*>(handler);
-  common::Error er = ssdb->setx(argv[0], argv[1], atoi(argv[2]));
+  common::Error er = ssdb->setx(argv[0], argv[1], common::convertFromString<int>(argv[2]));
   if (!er) {
     common::StringValue* val = common::Value::createStringValue("STORED");
     FastoObject* child = new FastoObject(out, val, ssdb->delimiter(), ssdb->nsSeparator());

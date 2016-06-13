@@ -952,7 +952,7 @@ common::Error DBConnection::sendScan(unsigned long long* it, redisReply** out){
   DCHECK(reply->element[1]->type == REDIS_REPLY_ARRAY);
 
   /* Update iterator */
-  *it = atoi(reply->element[0]->str);
+  *it = atoll(reply->element[0]->str);
   *out = reply;
   return common::Error();
 }
@@ -1628,10 +1628,10 @@ common::Error DBConnection::cliReadReply(FastoObject* out) {
     s = strchr(p,' ');      /* MOVED[S]3999 127.0.0.1:6381 */
     p = strchr(s+1,' ');    /* MOVED[S]3999[P]127.0.0.1:6381 */
     *p = '\0';
-    slot = atoi(s+1);
+    slot = common::convertFromString<int>(s + 1);
     s = strchr(p+1,':');    /* MOVED 3999[P]127.0.0.1[S]6381 */
     *s = '\0';
-    config_.host = common::net::hostAndPort(p + 1, atoi(s + 1));
+    config_.host = common::net::hostAndPort(p + 1, common::convertFromString<uint16_t>(s + 1));
     std::string host_str = common::convertToString(config_.host);
     std::string redir = common::MemSPrintf("-> Redirected to slot [%d] located at %s",
                                            slot, host_str);
@@ -1661,7 +1661,7 @@ common::Error DBConnection::execute(int argc, char** argv, FastoObject* out) {
 
   if (argc == 3 && strcasecmp(command, "connect") == 0) {
     config_.host.host = argv[1];
-    config_.host.port = atoi(argv[2]);
+    config_.host.port = common::convertFromString<uint16_t>(argv[2]);
     sdsfreesplitres(argv, argc);
     return connect(true);
   }
@@ -1722,7 +1722,7 @@ common::Error DBConnection::execute(int argc, char** argv, FastoObject* out) {
   } else {
     /* Store database number when SELECT was successfully executed. */
     if (strcasecmp(command, "select") == 0 && argc == 2) {
-      config_.dbnum = atoi(argv[1]);
+      config_.dbnum = common::convertFromString<int>(argv[1]);
       size_t sz = 0;
       dbkcount(&sz);
       DataBaseInfo* info = new DataBaseInfo(common::convertToString(config_.dbnum), true, sz);
