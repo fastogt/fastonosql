@@ -77,7 +77,6 @@ ConnectionsDialog::ConnectionsDialog(QWidget* parent)
   buttonBox->setStandardButtons(QDialogButtonBox::Cancel | QDialogButtonBox::Ok);
   buttonBox->button(QDialogButtonBox::Ok)->setIcon(GuiFactory::instance().serverIcon());
   acButton_ = buttonBox->button(QDialogButtonBox::Ok);
-  acButton_->setEnabled(false);
 
   VERIFY(connect(buttonBox, &QDialogButtonBox::accepted, this, &ConnectionsDialog::accept));
   VERIFY(connect(buttonBox, &QDialogButtonBox::rejected, this, &ConnectionsDialog::reject));
@@ -139,6 +138,8 @@ ConnectionsDialog::ConnectionsDialog(QWidget* parent)
     addCluster(connectionModel);
   }
 
+  VERIFY(connect(listWidget_, &QTreeWidget::itemSelectionChanged,
+                 this, &ConnectionsDialog::itemSelectionChange));
   // Highlight first item
   if (listWidget_->topLevelItemCount() > 0) {
     listWidget_->setCurrentItem(listWidget_->topLevelItem(0));
@@ -201,6 +202,16 @@ void ConnectionsDialog::addSent() {
     core::SettingsManager::instance().addSentinel(p);
     addSentinel(p);
   }
+}
+
+void ConnectionsDialog::itemSelectionChange() {
+  QTreeWidgetItem* qitem = listWidget_->currentItem();
+  if (!qitem) {
+    return;
+  }
+
+  DirectoryListWidgetItem* currentItem = dynamic_cast<DirectoryListWidgetItem*>(qitem);
+  acButton_->setEnabled(!currentItem);
 }
 
 void ConnectionsDialog::edit() {
@@ -380,9 +391,19 @@ void ConnectionsDialog::removeSentinel(SentinelConnectionListWidgetItemContainer
 }
 
 /**
- * @brief This function is called when user clicks on "Connect" button.
+ * @brief This function is called when user clicks on "Open" button.
  */
 void ConnectionsDialog::accept() {
+  QTreeWidgetItem* qitem = listWidget_->currentItem();
+  if (!qitem) {
+    return;
+  }
+
+  DirectoryListWidgetItem* currentItem = dynamic_cast<DirectoryListWidgetItem*>(qitem);
+  if (currentItem) {
+    return;
+  }
+
   QDialog::accept();
 }
 

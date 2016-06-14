@@ -55,6 +55,7 @@ class ConnectionsDialog
   void addSent();
   void remove();
   void edit();
+  void itemSelectionChange();
 
  protected:
   virtual void changeEvent(QEvent* ev);
