@@ -21,7 +21,7 @@
 #include <vector>
 #include <string>
 
-#include "core/command_handler.h"
+#include "core/command_info.h"
 
 #include "core/redis/connection_settings.h"
 #include "core/redis/config.h"

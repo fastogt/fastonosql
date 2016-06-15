@@ -21,44 +21,10 @@
 #include <vector>
 #include <string>
 
-#include "common/string_util.h"
 #include "common/sprintf.h"
 
 namespace fastonosql {
 namespace core {
-
-CommandInfo::CommandInfo(const std::string& name, const std::string& params,
-                         const std::string& summary, uint32_t since,
-                         const std::string& example, uint8_t required_arguments_count,
-                         uint8_t optional_arguments_count)
-  : name(name), params(params), summary(summary), since(since), example(example),
-    required_arguments_count(required_arguments_count),
-    optional_arguments_count(optional_arguments_count) {
-}
-
-uint16_t CommandInfo::maxArgumentsCount() const {
-  return required_arguments_count + optional_arguments_count;
-}
-
-uint8_t CommandInfo::minArgumentsCount() const {
-  return required_arguments_count;
-}
-
-CommandHolder::CommandHolder(const std::string& name, const std::string& params,
-                             const std::string& summary, uint32_t since,
-                             const std::string& example, uint8_t required_arguments_count,
-                             uint8_t optional_arguments_count, function_t func)
-  : CommandInfo(name, params, summary, since, example,
-                required_arguments_count, optional_arguments_count), func_(func){
-}
-
-bool CommandHolder::isCommand(const std::string& cmd) {
-  return FullEqualsASCII(cmd, name, false);
-}
-
-common::Error CommandHolder::execute(CommandHandler *handler, int argc, char** argv, FastoObject* out) {
-  return func_(handler, argc, argv, out);
-}
 
 CommandHandler::CommandHandler(const std::vector<commands_t> &commands)
   : commands_(commands) {
@@ -86,14 +52,6 @@ common::Error CommandHandler::execute(int argc, char** argv, FastoObject* out) {
 common::Error CommandHandler::notSupported(const char* cmd) {
   std::string buff = common::MemSPrintf("Not supported command: %s", cmd);
   return common::make_error_value(buff, common::ErrorValue::E_ERROR);
-}
-
-std::string convertVersionNumberToReadableString(uint32_t version) {
-  if (version != UNDEFINED_SINCE) {
-    return common::convertVersionNumberToString(version);
-  }
-
-  return UNDEFINED_SINCE_STR;
 }
 
 }  // namespace core

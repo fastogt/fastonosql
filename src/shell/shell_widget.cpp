@@ -40,7 +40,7 @@
 
 #include "core/settings_manager.h"
 #include "core/iserver.h"
-#include "core/command_handler.h"
+#include "core/command_info.h"
 
 #include "shell/base_shell.h"
 #include "gui/shortcuts.h"

@@ -18,24 +18,38 @@
 
 #pragma once
 
-#include <vector>
 #include <string>
 
-#include "core/command_holder.h"
+#define UNDEFINED_SINCE 0x00000000U
+#define UNDEFINED_SINCE_STR "Undefined"
+#define UNDEFINED_EXAMPLE_STR "Unspecified"
+#define UNDEFINED_STR_IN_PROGRESS "Undefined in progress"
+#define INFINITE_COMMAND_ARGS UINT8_MAX
 
 namespace fastonosql {
 namespace core {
 
-class CommandHandler {
- public:
-  typedef CommandHolder commands_t;
-  explicit CommandHandler(const std::vector<commands_t>& commands);
-  common::Error execute(int argc, char** argv, FastoObject* out) WARN_UNUSED_RESULT;
+struct CommandInfo {
+  CommandInfo(const std::string& name, const std::string& params,
+              const std::string& summary, uint32_t since,
+              const std::string& example,
+              uint8_t required_arguments_count,
+              uint8_t optional_arguments_count);
 
-  static common::Error notSupported(const char* cmd);
- private:
-  const std::vector<commands_t> commands_;
+  uint16_t maxArgumentsCount() const;
+  uint8_t minArgumentsCount() const;
+
+  const std::string name;
+  const std::string params;
+  const std::string summary;
+  const uint32_t since;
+  const std::string example;
+
+  const uint8_t required_arguments_count;
+  const uint8_t optional_arguments_count;
 };
+
+std::string convertVersionNumberToReadableString(uint32_t version);
 
 }  // namespace core
 }  // namespace fastonosql

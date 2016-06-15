@@ -25,12 +25,13 @@
 #include "common/logger.h"
 
 namespace {
-  const QSize preferedSize(1024, 768);
+  const QSize preferedSize = QSize(1024, 768);
 }
 
 int main(int argc, char* argv[]) {
   QApplication app(argc, argv);
   app.setOrganizationName(PROJECT_COMPANYNAME);
+  app.setOrganizationDomain(PROJECT_COMPANYNAME_DOMAIN);
   app.setApplicationName(PROJECT_NAME);
   app.setApplicationVersion(PROJECT_VERSION);
   app.setAttribute(Qt::AA_UseHighDpiPixmaps);

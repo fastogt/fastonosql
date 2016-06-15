@@ -16,26 +16,31 @@
     along with FastoNoSQL.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-#pragma once
+#include "core/command_holder.h"
 
 #include <vector>
 #include <string>
 
-#include "core/command_holder.h"
+#include "common/string_util.h"
 
 namespace fastonosql {
 namespace core {
 
-class CommandHandler {
- public:
-  typedef CommandHolder commands_t;
-  explicit CommandHandler(const std::vector<commands_t>& commands);
-  common::Error execute(int argc, char** argv, FastoObject* out) WARN_UNUSED_RESULT;
+CommandHolder::CommandHolder(const std::string& name, const std::string& params,
+                             const std::string& summary, uint32_t since,
+                             const std::string& example, uint8_t required_arguments_count,
+                             uint8_t optional_arguments_count, function_t func)
+  : CommandInfo(name, params, summary, since, example,
+                required_arguments_count, optional_arguments_count), func_(func){
+}
 
-  static common::Error notSupported(const char* cmd);
- private:
-  const std::vector<commands_t> commands_;
-};
+bool CommandHolder::isCommand(const std::string& cmd) {
+  return FullEqualsASCII(cmd, name, false);
+}
+
+common::Error CommandHolder::execute(CommandHandler *handler, int argc, char** argv, FastoObject* out) {
+  return func_(handler, argc, argv, out);
+}
 
 }  // namespace core
 }  // namespace fastonosql

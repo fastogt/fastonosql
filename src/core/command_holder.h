@@ -18,23 +18,32 @@
 
 #pragma once
 
-#include <vector>
 #include <string>
 
-#include "core/command_holder.h"
+#include "common/error.h"
+
+#include "global/global.h"
+
+#include "core/command_info.h"
 
 namespace fastonosql {
 namespace core {
 
-class CommandHandler {
+class CommandHandler;
+class CommandHolder
+    : public CommandInfo {
  public:
-  typedef CommandHolder commands_t;
-  explicit CommandHandler(const std::vector<commands_t>& commands);
-  common::Error execute(int argc, char** argv, FastoObject* out) WARN_UNUSED_RESULT;
+  typedef std::function<common::Error(CommandHandler*, int, char**, FastoObject*)> function_t;
 
-  static common::Error notSupported(const char* cmd);
+  CommandHolder(const std::string& name, const std::string& params,
+                const std::string& summary, uint32_t since,
+                const std::string& example, uint8_t required_arguments_count,
+                uint8_t optional_arguments_count, function_t func);
+  bool isCommand(const std::string& cmd);
+  common::Error execute(CommandHandler* handler, int argc, char** argv, FastoObject* out) WARN_UNUSED_RESULT;
+
  private:
-  const std::vector<commands_t> commands_;
+  const function_t func_;
 };
 
 }  // namespace core
