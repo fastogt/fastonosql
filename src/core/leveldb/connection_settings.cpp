@@ -33,11 +33,11 @@ std::string ConnectionSettings::dbpath() const {
 }
 
 std::string ConnectionSettings::commandLine() const {
-  return common::convertToString(info_);
+  return common::ConvertToString(info_);
 }
 
 void ConnectionSettings::setCommandLine(const std::string& line) {
-  info_ = common::convertFromString<Config>(line);
+  info_ = common::ConvertFromString<Config>(line);
 }
 
 Config ConnectionSettings::info() const {

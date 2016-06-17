@@ -55,7 +55,7 @@ void TestConnection::routine() {
 
   if (er && er->isError()) {
     emit connectionResult(false, common::time::current_mstime() - startTime_,
-                          common::convertFromString<QString>(er->description()));
+                          common::ConvertFromString<QString>(er->description()));
   } else {
     emit connectionResult(true, common::time::current_mstime() - startTime_, translations::trSuccess);
   }

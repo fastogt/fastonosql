@@ -199,7 +199,7 @@ common::Error Driver::serverDiscoveryClusterInfo(ServerDiscoveryClusterInfo** di
     if (obj) {
       common::Value::Type t = obj->type();
       if (t == common::Value::TYPE_STRING) {
-        std::string content = common::convertToString(obj);
+        std::string content = common::ConvertToString(obj);
         *dinfo = makeOwnDiscoveryClusterInfo(content);
       }
     }
@@ -609,10 +609,10 @@ void Driver::handleLoadDatabaseInfosEvent(events::LoadDatabasesInfoRequestEvent*
         std::string scountDb;
         bool isok = ar->getString(1, &scountDb);
         if (isok) {
-            int countDb = common::convertFromString<int>(scountDb);
+            int countDb = common::ConvertFromString<int>(scountDb);
             if (countDb > 0) {
               for (size_t i = 0; i < countDb; ++i) {
-                IDataBaseInfoSPtr dbInf(new DataBaseInfo(common::convertToString(i), false, 0));
+                IDataBaseInfoSPtr dbInf(new DataBaseInfo(common::ConvertToString(i), false, 0));
                 if (dbInf->name() == curdb->name()) {
                   res.databases.push_back(curdb);
                 } else {
@@ -664,7 +664,7 @@ void Driver::handleLoadDatabaseContentEvent(events::LoadDatabaseContentRequestEv
         goto done;
       }
 
-      res.cursor_out = common::convertFromString<uint32_t>(cursor);
+      res.cursor_out = common::ConvertFromString<uint32_t>(cursor);
 
       rchildrens = array->childrens();
       if (!rchildrens.size()) {
@@ -867,7 +867,7 @@ common::Error Driver::commandCreateImpl(CommandCreateKey* command,
   NValue val = command->value();
   common::Value* rval = val.get();
   std::string key_str = key.keyString();
-  std::string value_str = common::convertToString(rval, " ");
+  std::string value_str = common::ConvertToString(rval, " ");
   common::Value::Type t = key.type();
   if (t == common::Value::TYPE_ARRAY) {
     patternResult = common::MemSPrintf(SET_KEY_LIST_PATTERN_2ARGS_SS, key_str, value_str);

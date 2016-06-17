@@ -70,7 +70,7 @@ Config::Config()
 
 namespace common {
 
-std::string convertToString(const fastonosql::core::rocksdb::Config &conf) {
+std::string ConvertToString(const fastonosql::core::rocksdb::Config &conf) {
   std::vector<std::string> argv = conf.args();
 
   if (conf.options.create_if_missing) {
@@ -89,7 +89,7 @@ std::string convertToString(const fastonosql::core::rocksdb::Config &conf) {
 }
 
 template<>
-fastonosql::core::rocksdb::Config convertFromString(const std::string& line) {
+fastonosql::core::rocksdb::Config ConvertFromString(const std::string& line) {
   fastonosql::core::rocksdb::Config cfg;
   enum { kMaxArgs = 64 };
   int argc = 0;

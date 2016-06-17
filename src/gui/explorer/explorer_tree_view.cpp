@@ -505,7 +505,7 @@ void ExplorerTreeView::openMaxClientSetDialog() {
   }
 
   bool ok;
-  QString name = common::convertFromString<QString>(server->name());
+  QString name = common::ConvertFromString<QString>(server->name());
   int maxcl = QInputDialog::getInt(this, trSetMaxConnectionOnServerTemplate_1S.arg(name),
                                          trMaximumConnectionTemplate, 10000, 1, INT32_MAX, 100, &ok);
   if (ok) {
@@ -628,7 +628,7 @@ void ExplorerTreeView::backupServer() {
   QString filepath = QFileDialog::getOpenFileName(this, translations::trBackup,
                                                   QString(), translations::trfilterForRdb);
   if (!filepath.isEmpty() && server) {
-    core::events_info::BackupInfoRequest req(this, common::convertToString(filepath));
+    core::events_info::BackupInfoRequest req(this, common::ConvertToString(filepath));
     server->backupToPath(req);
   }
 }
@@ -648,7 +648,7 @@ void ExplorerTreeView::importServer() {
   QString filepath = QFileDialog::getOpenFileName(this, translations::trImport,
                                                   QString(), translations::trfilterForRdb);
   if (filepath.isEmpty() && server) {
-    core::events_info::ExportInfoRequest req(this, common::convertToString(filepath));
+    core::events_info::ExportInfoRequest req(this, common::ConvertToString(filepath));
     server->exportFromPath(req);
   }
 }
@@ -667,7 +667,7 @@ void ExplorerTreeView::shutdownServer() {
   core::IServerSPtr server = node->server();
   if (server && server->isConnected()) {
     // Ask user
-    QString name = common::convertFromString<QString>(server->name());
+    QString name = common::ConvertFromString<QString>(server->name());
     int answer = QMessageBox::question(this, translations::trShutdown, trReallyShutdownTemplate_1S.arg(name),
                                        QMessageBox::Yes, QMessageBox::No, QMessageBox::NoButton);
 
@@ -694,7 +694,7 @@ void ExplorerTreeView::loadContentDb() {
   LoadContentDbDialog loadDb(trLoadContentTemplate_1S.arg(node->name()), node->server()->type(), this);
   int result = loadDb.exec();
   if (result == QDialog::Accepted) {
-    node->loadContent(common::convertToString(loadDb.pattern()), loadDb.count());
+    node->loadContent(common::ConvertToString(loadDb.pattern()), loadDb.count());
   }
 }
 

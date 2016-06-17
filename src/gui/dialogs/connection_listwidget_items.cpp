@@ -28,9 +28,9 @@ namespace gui {
 DirectoryListWidgetItem::DirectoryListWidgetItem(const core::IConnectionSettings::connection_path_t& path)
   : path_(path) {
   std::string dir_name = path.name();
-  setText(0, common::convertFromString<QString>(dir_name));
+  setText(0, common::ConvertFromString<QString>(dir_name));
   setIcon(0, GuiFactory::instance().directoryIcon());
-  setText(1, common::convertFromString<QString>(path_.directory()));
+  setText(1, common::ConvertFromString<QString>(path_.directory()));
 }
 
 core::IConnectionSettingsBase::connection_path_t DirectoryListWidgetItem::path() const {
@@ -60,12 +60,12 @@ void ConnectionListWidgetItem::setConnection(core::IConnectionSettingsBaseSPtr c
   }
 
   core::IConnectionSettingsBase::connection_path_t path = cons->path();
-  QString conName = common::convertFromString<QString>(path.name());
+  QString conName = common::ConvertFromString<QString>(path.name());
 
   setText(0, conName);
   core::connectionTypes conType = cons->type();
   setIcon(0, GuiFactory::instance().icon(conType));
-  setText(1, common::convertFromString<QString>(cons->fullAddress()));
+  setText(1, common::ConvertFromString<QString>(cons->fullAddress()));
   IConnectionListWidgetItem::setConnection(cons);
 }
 
@@ -86,8 +86,8 @@ ConnectionListWidgetItemDiscovered::ConnectionListWidgetItemDiscovered(core::ser
                                                                        core::serverMode md,
                                                                        QTreeWidgetItem* parent)
   : ConnectionListWidgetItem(parent), server_type_(st), server_mode_(md) {
-  std::string sert = common::convertToString(st);
-  setText(2, common::convertFromString<QString>(sert));
+  std::string sert = common::ConvertToString(st);
+  setText(2, common::ConvertFromString<QString>(sert));
 }
 
 core::serverTypes ConnectionListWidgetItemDiscovered::serverType() const {
@@ -129,7 +129,7 @@ void SentinelConnectionListWidgetItemContainer::setConnection(core::ISentinelSet
 
   connection_ = cons;
   std::string path = connection_->path().toString();
-  setText(0, common::convertFromString<QString>(path));
+  setText(0, common::ConvertFromString<QString>(path));
   setIcon(0, GuiFactory::instance().sentinelIcon());
 }
 
@@ -158,7 +158,7 @@ void ClusterConnectionListWidgetItemContainer::setConnection(core::IClusterSetti
 
   connection_ = cons;
   std::string path = connection_->path().toString();
-  setText(0, common::convertFromString<QString>(path));
+  setText(0, common::ConvertFromString<QString>(path));
   setIcon(0, GuiFactory::instance().clusterIcon());
 }
 

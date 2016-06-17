@@ -68,7 +68,7 @@ QVariant FastoCommonModel::data(const QModelIndex& index, int role) const {
     } else if (col == FastoCommonItem::eValue) {
       result = node->value();
     } else if (col == FastoCommonItem::eType) {
-      result = common::convertFromString<QString>(common::Value::toString(node->type()));
+      result = common::ConvertFromString<QString>(common::Value::toString(node->type()));
     }
   }
 
@@ -88,8 +88,8 @@ bool FastoCommonModel::setData(const QModelIndex& index, const QVariant& value, 
     } else if (column == FastoCommonItem::eValue) {
       QString newValue = value.toString();
       if (newValue != node->value()) {
-        const std::string key = common::convertToString(node->key());
-        const std::string value = common::convertToString(newValue);
+        const std::string key = common::ConvertToString(node->key());
+        const std::string value = common::ConvertToString(newValue);
 
         //  node->type() TODO: create according type
         common::ValueSPtr vs = common::make_value(common::Value::createStringValue(value));
@@ -154,7 +154,7 @@ void FastoCommonModel::changeValue(const core::NDbKValue& value) {
     return;
   }
 
-  const QString key = common::convertFromString<QString>(value.keyString());
+  const QString key = common::ConvertFromString<QString>(value.keyString());
   for (size_t i = 0; i < root->childrenCount(); ++i) {
     FastoCommonItem* child = dynamic_cast<FastoCommonItem*>(root->child(i));  // +
     if (!child) {

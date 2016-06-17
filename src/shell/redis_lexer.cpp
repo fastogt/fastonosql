@@ -39,7 +39,7 @@ void RedisApi::updateAutoCompletionList(const QStringList& context, QStringList&
         continue;
       }
 
-      QString jval = common::convertFromString<QString>(cmd.name);
+      QString jval = common::ConvertFromString<QString>(cmd.name);
       if(jval.startsWith(val, Qt::CaseInsensitive)){
         list.append(jval + "?1");
       }
@@ -53,7 +53,7 @@ QStringList RedisApi::callTips(const QStringList& context, int commas,
     QString val = *it;
     for (size_t i = 0; i < core::redis::redisCommands.size(); ++i) {
       core::CommandInfo cmd = core::redis::redisCommands[i];
-      QString jval = common::convertFromString<QString>(cmd.name);
+      QString jval = common::ConvertFromString<QString>(cmd.name);
       if (QString::compare(jval, val, Qt::CaseInsensitive) == 0) {
         return QStringList() << makeCallTip(cmd);
       }
@@ -126,7 +126,7 @@ void RedisLexer::styleText(int start, int end) {
 void RedisLexer::paintCommands(const QString& source, int start) {
   for (size_t i = 0; i < core::redis::redisCommands.size(); ++i) {
     core::CommandInfo cmd = core::redis::redisCommands[i];
-    QString word = common::convertFromString<QString>(cmd.name);
+    QString word = common::ConvertFromString<QString>(cmd.name);
     int index = 0;
     int begin = 0;
     while ((begin = source.indexOf(word, index, Qt::CaseInsensitive)) != -1){

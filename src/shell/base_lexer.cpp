@@ -18,8 +18,6 @@
 
 #include "shell/base_lexer.h"
 
-#include "common/convert2string.h"
-
 namespace fastonosql {
 namespace shell {
 
@@ -58,7 +56,7 @@ void BaseQsciApiCommandHolder::updateAutoCompletionList(const QStringList& conte
         continue;
       }
 
-      QString jval = common::convertFromString<QString>(cmd.name);
+      QString jval = common::ConvertFromString<QString>(cmd.name);
       if (jval.startsWith(val, Qt::CaseInsensitive)) {
         list.append(jval + "?1");
       }
@@ -73,7 +71,7 @@ QStringList BaseQsciApiCommandHolder::callTips(const QStringList& context, int c
     for (size_t i = 0; i < commands_.size(); ++i) {
       core::CommandInfo cmd = commands_[i];
 
-      QString jval = common::convertFromString<QString>(cmd.name);
+      QString jval = common::ConvertFromString<QString>(cmd.name);
       if (QString::compare(jval, val, Qt::CaseInsensitive) == 0) {
         return QStringList() << makeCallTip(cmd);
       }
@@ -167,7 +165,7 @@ void BaseQsciLexerCommandHolder::styleText(int start, int end) {
 void BaseQsciLexerCommandHolder::paintCommands(const QString& source, int start) {
   for (size_t i = 0; i < commands_.size(); ++i) {
     core::CommandInfo cmd = commands_[i];
-    QString word = common::convertFromString<QString>(cmd.name);
+    QString word = common::ConvertFromString<QString>(cmd.name);
     int index = 0;
     int begin = 0;
     while ((begin = source.indexOf(word, index, Qt::CaseInsensitive)) != -1) {
@@ -182,12 +180,12 @@ void BaseQsciLexerCommandHolder::paintCommands(const QString& source, int start)
 
 QString makeCallTip(const core::CommandInfo& info) {
   std::string since_str = core::convertVersionNumberToReadableString(info.since);
-  QString qsince_str = common::convertFromString<QString>(since_str);
+  QString qsince_str = common::ConvertFromString<QString>(since_str);
   return QString("Arguments: %1\nSummary: %2\nSince: %3\nExample: %4")
-      .arg(common::convertFromString<QString>(info.params),
-           common::convertFromString<QString>(info.summary),
+      .arg(common::ConvertFromString<QString>(info.params),
+           common::ConvertFromString<QString>(info.summary),
            qsince_str,
-           common::convertFromString<QString>(info.example));
+           common::ConvertFromString<QString>(info.example));
 }
 
 }  // namespace shell

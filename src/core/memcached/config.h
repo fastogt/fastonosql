@@ -41,5 +41,5 @@ struct Config
 }  // namespace fastonosql
 
 namespace common {
-  std::string convertToString(const fastonosql::core::memcached::Config& conf);
+  std::string ConvertToString(const fastonosql::core::memcached::Config& conf);
 }  // namespace common

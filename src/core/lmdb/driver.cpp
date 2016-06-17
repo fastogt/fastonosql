@@ -92,7 +92,7 @@ common::Error Driver::commandCreateImpl(CommandCreateKey* command,
   NValue val = command->value();
   common::Value* rval = val.get();
   std::string key_str = key.keyString();
-  std::string value_str = common::convertToString(rval, " ");
+  std::string value_str = common::ConvertToString(rval, " ");
   *cmdstring = common::MemSPrintf(SET_KEY_PATTERN_2ARGS_SS, key_str, value_str);
   return common::Error();
 }
@@ -104,7 +104,7 @@ common::Error Driver::commandChangeTTLImpl(CommandChangeTTL* command,
   }
 
   std::string errorMsg = common::MemSPrintf("Sorry, but now " PROJECT_NAME_TITLE " not supported change ttl command for %s.",
-                   common::convertToString(type()));
+                   common::ConvertToString(type()));
   return common::make_error_value(errorMsg, common::ErrorValue::E_ERROR);
 }
 
@@ -173,7 +173,7 @@ common::Error Driver::currentDataBaseInfo(IDataBaseInfo** info) {
 
   size_t dbkcount = 0;
   impl_->dbkcount(&dbkcount);
-  *info = new DataBaseInfo(common::convertToString(impl_->curDb()), true, dbkcount);
+  *info = new DataBaseInfo(common::ConvertToString(impl_->curDb()), true, dbkcount);
   return common::Error();
 }
 

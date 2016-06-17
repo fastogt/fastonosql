@@ -91,7 +91,7 @@ ChangePasswordServerDialog::ChangePasswordServerDialog(const QString& title,
 
 void ChangePasswordServerDialog::tryToCreatePassword() {
   if (validateInput()) {
-    std::string password = common::convertToString(passwordLineEdit_->text());
+    std::string password = common::ConvertToString(passwordLineEdit_->text());
     core::events_info::ChangePasswordRequest req(this, std::string(), password);
     server_->changePassword(req);
   } else {

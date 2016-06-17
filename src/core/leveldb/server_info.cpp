@@ -74,15 +74,15 @@ ServerInfo::Stats::Stats(const std::string& common_text) {
     std::string field = line.substr(0, delem);
     std::string value = line.substr(delem + 1);
     if (field == LEVELDB_CAMPACTIONS_LEVEL_LABEL) {
-      compactions_level = common::convertFromString<uint32_t>(value);
+      compactions_level = common::ConvertFromString<uint32_t>(value);
     } else if (field == LEVELDB_FILE_SIZE_MB_LABEL) {
-      file_size_mb = common::convertFromString<uint32_t>(value);
+      file_size_mb = common::ConvertFromString<uint32_t>(value);
     } else if (field == LEVELDB_TIME_SEC_LABEL) {
-      time_sec = common::convertFromString<uint32_t>(value);
+      time_sec = common::ConvertFromString<uint32_t>(value);
     } else if (field == LEVELDB_READ_MB_LABEL) {
-      read_mb = common::convertFromString<uint32_t>(value);
+      read_mb = common::ConvertFromString<uint32_t>(value);
     } else if (field == LEVELDB_WRITE_MB_LABEL) {
-      write_mb = common::convertFromString<uint32_t>(value);
+      write_mb = common::ConvertFromString<uint32_t>(value);
     }
     start = pos + 2;
   }
@@ -173,7 +173,7 @@ uint32_t ServerInfo::version() const {
 }
 
 ServerInfo* makeLeveldbServerInfo(FastoObject* root) {
-  std::string content = common::convertToString(root);
+  std::string content = common::ConvertToString(root);
   return makeLeveldbServerInfo(content);
 }
 

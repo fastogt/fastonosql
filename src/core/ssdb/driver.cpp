@@ -116,7 +116,7 @@ common::Error Driver::commandCreateImpl(CommandCreateKey* command,
   NValue val = command->value();
   common::Value* rval = val.get();
   std::string key_str = key.keyString();
-  std::string value_str = common::convertToString(rval, " ");
+  std::string value_str = common::ConvertToString(rval, " ");
   common::Value::Type t = key.type();
   if (t == common::Value::TYPE_ARRAY) {
     patternResult = common::MemSPrintf(SET_KEY_LIST_PATTERN_2ARGS_SS, key_str, value_str);
@@ -141,7 +141,7 @@ common::Error Driver::commandChangeTTLImpl(CommandChangeTTL* command,
   }
 
   std::string errorMsg = common::MemSPrintf("Sorry, but now " PROJECT_NAME_TITLE " not supported change ttl command for %s.",
-                                          common::convertToString(type()));
+                                          common::ConvertToString(type()));
   return common::make_error_value(errorMsg, common::ErrorValue::E_ERROR);
 }
 // ============== commands =============//

@@ -126,7 +126,7 @@ void PropertyServerDialog::showEvent(QShowEvent* e) {
 }
 
 void PropertyServerDialog::retranslateUi() {
-  QString name = common::convertFromString<QString>(server_->name());
+  QString name = common::ConvertFromString<QString>(server_->name());
   setWindowTitle(trPropertiesTemplate_1S.arg(name));
 }
 

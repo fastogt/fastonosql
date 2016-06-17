@@ -18,9 +18,6 @@
 
 #include "shell/unqlite_lexer.h"
 
-#include <vector>
-#include <algorithm>
-
 #include "core/unqlite/db_connection.h"
 
 namespace fastonosql {

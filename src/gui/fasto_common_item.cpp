@@ -39,14 +39,14 @@ FastoCommonItem::FastoCommonItem(const core::NDbKValue& key, const std::string& 
 }
 
 QString FastoCommonItem::key() const {
-  return common::convertFromString<QString>(key_.keyString());
+  return common::ConvertFromString<QString>(key_.keyString());
 }
 
 QString FastoCommonItem::value() const {
   core::NValue nval = key_.value();
   common::Value* val = nval.get();
-  std::string valstr = common::convertToString(val, delemitr_);
-  return common::convertFromString<QString>(valstr);
+  std::string valstr = common::ConvertToString(val, delemitr_);
+  return common::ConvertFromString<QString>(valstr);
 }
 
 void FastoCommonItem::setValue(core::NValue val) {
@@ -67,9 +67,9 @@ QString toJson(FastoCommonItem* item) {
   }
 
   if (!item->childrenCount()) {
-    std::string json = common::convertToString(item->value());
+    std::string json = common::ConvertToString(item->value());
     std::string res = common::json::parseJson(json);
-    return common::convertFromString<QString>(res);
+    return common::ConvertFromString<QString>(res);
   }
 
   QString value;
@@ -104,7 +104,7 @@ QString toHex(FastoCommonItem* item) {
 
   if (!item->childrenCount()) {
     QString val = item->value();
-    std::string sval = common::convertToString(val);
+    std::string sval = common::ConvertToString(val);
 
     std::string hexstr;
     common::HexEDcoder hex;
@@ -113,7 +113,7 @@ QString toHex(FastoCommonItem* item) {
       return QString();
     }
 
-    return common::convertFromString<QString>(hexstr);
+    return common::ConvertFromString<QString>(hexstr);
   }
 
   QString value;
@@ -151,14 +151,14 @@ QString fromGzip(FastoCommonItem* item) {
 
   if (!item->childrenCount()) {
     QString val = item->value();
-    std::string sval = common::convertToString(val);
+    std::string sval = common::ConvertToString(val);
     std::string out;
     common::CompressEDcoder enc;
     common::Error err = enc.decode(sval, &out);
     if (err && err->isError()) {
       return QString();
     } else {
-      return common::convertFromString<QString>(out);
+      return common::ConvertFromString<QString>(out);
     }
   }
 
@@ -176,7 +176,7 @@ QString fromHexMsgPack(FastoCommonItem* item) {
   }
 
   if (!item->childrenCount()) {
-    std::string sval = common::convertToString(item->value());
+    std::string sval = common::ConvertToString(item->value());
 
     common::HexEDcoder hex;
     std::string hexstr;
@@ -191,7 +191,7 @@ QString fromHexMsgPack(FastoCommonItem* item) {
     if (err && err->isError()) {
       return QString();
     }
-    return common::convertFromString<QString>(upack);
+    return common::ConvertFromString<QString>(upack);
   }
 
   QString value;

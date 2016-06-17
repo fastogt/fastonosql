@@ -31,11 +31,11 @@ ConnectionSettings::ConnectionSettings(const connection_path_t& connectionName)
 }
 
 std::string ConnectionSettings::commandLine() const {
-  return common::convertToString(info_);
+  return common::ConvertToString(info_);
 }
 
 void ConnectionSettings::setCommandLine(const std::string& line) {
-  info_ = common::convertFromString<Config>(line);
+  info_ = common::ConvertFromString<Config>(line);
 }
 
 void ConnectionSettings::setHost(const common::net::hostAndPort& host) {

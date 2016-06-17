@@ -44,7 +44,7 @@ uint8_t CommandInfo::minArgumentsCount() const {
 
 std::string convertVersionNumberToReadableString(uint32_t version) {
   if (version != UNDEFINED_SINCE) {
-    return common::convertVersionNumberToString(version);
+    return common::ConvertVersionNumberToString(version);
   }
 
   return UNDEFINED_SINCE_STR;

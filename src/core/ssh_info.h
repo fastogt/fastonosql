@@ -62,5 +62,5 @@ inline bool operator == (const SSHInfo& r, const SSHInfo& l) {
 }  // namespace fastonosql
 
 namespace common {
-  std::string convertToString(const fastonosql::core::SSHInfo& ssh_info);
+  std::string ConvertToString(const fastonosql::core::SSHInfo& ssh_info);
 }  // namespace common

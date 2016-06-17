@@ -74,8 +74,8 @@ SentinelDialog::SentinelDialog(QWidget* parent, core::ISentinelSettingsBase* con
 
   if (sentinel_connection_) {
     core::IConnectionSettings::connection_path_t path = sentinel_connection_->path();
-    conName = common::convertFromString<QString>(path.name());
-    conFolder = common::convertFromString<QString>(path.directory());
+    conName = common::ConvertFromString<QString>(path.name());
+    conFolder = common::ConvertFromString<QString>(path.directory());
   }
   connectionName_->setText(conName);
   connectionFolder_->setText(conFolder);
@@ -84,9 +84,9 @@ SentinelDialog::SentinelDialog(QWidget* parent, core::ISentinelSettingsBase* con
 
   for (size_t i = 0; i < SIZEOFMASS(core::connnectionType); ++i) {
     std::string str = core::connnectionType[i];
-    core::connectionTypes ct = common::convertFromString<core::connectionTypes>(str);
+    core::connectionTypes ct = common::ConvertFromString<core::connectionTypes>(str);
     typeConnection_->addItem(GuiFactory::instance().icon(ct),
-                             common::convertFromString<QString>(str), ct);
+                             common::ConvertFromString<QString>(str), ct);
   }
 
   if (sentinel_connection_) {
@@ -344,8 +344,8 @@ void SentinelDialog::retranslateUi() {
 bool SentinelDialog::validateAndApply() {
   QVariant var = typeConnection_->currentData();
   core::connectionTypes currentType = (core::connectionTypes)qvariant_cast<unsigned char>(var);
-  std::string conName = common::convertToString(connectionName_->text());
-  std::string conFolder = common::convertToString(connectionFolder_->text());
+  std::string conName = common::ConvertToString(connectionName_->text());
+  std::string conFolder = common::ConvertToString(connectionFolder_->text());
   if (conFolder.empty()) {
     conFolder = defaultNameConnectionFolder;
   }

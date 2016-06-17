@@ -40,5 +40,5 @@ struct Config
 }  // namespace fastonosql
 
 namespace common {
-  std::string convertToString(const fastonosql::core::unqlite::Config &conf);
+  std::string ConvertToString(const fastonosql::core::unqlite::Config &conf);
 }

@@ -73,7 +73,7 @@ ServerHistoryDialog::ServerHistoryDialog(core::IServerSPtr server, QWidget* pare
   const auto fields = core::infoFieldsFromType(server_->type());
   for (size_t i = 0; i < fields.size(); ++i) {
     core::info_field_t field = fields[i];
-    serverInfoGroupsNames_->addItem(common::convertFromString<QString>(field.first));
+    serverInfoGroupsNames_->addItem(common::ConvertFromString<QString>(field.first));
   }
   QVBoxLayout* setingsLayout = new QVBoxLayout;
   setingsLayout->addWidget(clearHistory_);
@@ -149,7 +149,7 @@ void ServerHistoryDialog::refreshInfoFields(int index) {
   for (uint32_t i = 0; i < field.size(); ++i) {
     core::Field fl = field[i];
     if (fl.isIntegral()) {
-      serverInfoFields_->addItem(common::convertFromString<QString>(fl.name), i);
+      serverInfoFields_->addItem(common::ConvertFromString<QString>(fl.name), i);
     }
   }
 }
@@ -199,7 +199,7 @@ void ServerHistoryDialog::reset() {
 }
 
 void ServerHistoryDialog::retranslateUi() {
-  QString name = common::convertFromString<QString>(server_->name());
+  QString name = common::ConvertFromString<QString>(server_->name());
   setWindowTitle(trHistoryTemplate_1S.arg(name));
   clearHistory_->setText(translations::trClearHistory);
 }

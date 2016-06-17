@@ -18,8 +18,6 @@
 
 #pragma once
 
-#include <vector>
-
 #include "shell/base_lexer.h"
 
 namespace fastonosql {

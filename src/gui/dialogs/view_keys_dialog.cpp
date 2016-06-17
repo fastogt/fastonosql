@@ -252,14 +252,14 @@ void ViewKeysDialog::search(bool forward) {
   DCHECK_EQ(cursorStack_[0], 0);
   if (forward) {
     core::events_info::LoadDatabaseContentRequest req(this, db_->info(),
-                                               common::convertToString(pattern),
+                                               common::ConvertToString(pattern),
                                                countSpinEdit_->value(), cursorStack_[curPos_]);
     db_->loadContent(req);
     ++curPos_;
   } else {
     if (curPos_ > 0) {
       core::events_info::LoadDatabaseContentRequest req(this, db_->info(),
-                                                 common::convertToString(pattern),
+                                                 common::ConvertToString(pattern),
                                                  countSpinEdit_->value(), cursorStack_[--curPos_]);
       db_->loadContent(req);
     }

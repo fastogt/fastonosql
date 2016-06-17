@@ -46,7 +46,7 @@ void parseOptions(int argc, char** argv, Config& cfg) {
     } else if (!strcmp(argv[i], "-x")) {
       cfg.stdinarg = 1;
     }*/ else if (!strcmp(argv[i], "-p") && !lastarg) {
-      cfg.host.port = common::convertFromString<uint16_t>(argv[++i]);
+      cfg.host.port = common::ConvertFromString<uint16_t>(argv[++i]);
     } else if (!strcmp(argv[i], "-s") && !lastarg) {
       cfg.hostsocket = argv[++i];
     } else if (!strcmp(argv[i], "-r") && !lastarg) {
@@ -55,7 +55,7 @@ void parseOptions(int argc, char** argv, Config& cfg) {
       double seconds = atof(argv[++i]);
       cfg.interval = seconds*1000000;
     } else if (!strcmp(argv[i], "-n") && !lastarg) {
-      cfg.dbnum = common::convertFromString<int>(argv[++i]);
+      cfg.dbnum = common::ConvertFromString<int>(argv[++i]);
     } else if (!strcmp(argv[i], "-a") && !lastarg) {
       cfg.auth = argv[++i];
     }
@@ -80,14 +80,14 @@ void parseOptions(int argc, char** argv, Config& cfg) {
       cfg.pattern = argv[++i];
     } else if (!strcmp(argv[i], "--intrinsic-latency") && !lastarg) {
       cfg.intrinsic_latency_mode = 1;
-      cfg.intrinsic_latency_duration = common::convertFromString<int>(argv[++i]);
+      cfg.intrinsic_latency_duration = common::ConvertFromString<int>(argv[++i]);
     } else if (!strcmp(argv[i], "--rdb") && !lastarg) {
       cfg.getrdb_mode = 1;
       cfg.rdb_filename = argv[++i];
     /*} else if (!strcmp(argv[i], "--pipe")) {
       cfg.pipe_mode = 1;
     } else if (!strcmp(argv[i], "--pipe-timeout") && !lastarg) {
-      cfg.pipe_timeout = common::convertFromString<int>(argv[++i]);*/
+      cfg.pipe_timeout = common::ConvertFromString<int>(argv[++i]);*/
     } else if (!strcmp(argv[i], "--bigkeys")) {
       cfg.bigkeys = 1;
     } else if (!strcmp(argv[i], "--eval") && !lastarg) {
@@ -202,7 +202,7 @@ void Config::init() {
 
 namespace common {
 
-std::string convertToString(const fastonosql::core::redis::Config& conf) {
+std::string ConvertToString(const fastonosql::core::redis::Config& conf) {
   std::vector<std::string> argv = conf.args();
 
   if (!conf.hostsocket.empty()) {
@@ -211,15 +211,15 @@ std::string convertToString(const fastonosql::core::redis::Config& conf) {
   }
   if (conf.repeat) {
     argv.push_back("-r");
-    argv.push_back(convertToString(conf.repeat));
+    argv.push_back(ConvertToString(conf.repeat));
   }
   if (conf.interval) {
     argv.push_back("-i");
-    argv.push_back(convertToString(conf.interval/1000000));
+    argv.push_back(ConvertToString(conf.interval/1000000));
   }
   if (conf.dbnum) {
     argv.push_back("-n");
-    argv.push_back(convertToString(conf.dbnum));
+    argv.push_back(ConvertToString(conf.dbnum));
   }
 
   if (!conf.auth.empty()) {
@@ -250,8 +250,8 @@ std::string convertToString(const fastonosql::core::redis::Config& conf) {
   }
   if (conf.intrinsic_latency_mode) {
     argv.push_back("--intrinsic-latency");
-    argv.push_back(convertToString(conf.intrinsic_latency_mode));
-    argv.push_back(convertToString(conf.intrinsic_latency_duration));
+    argv.push_back(ConvertToString(conf.intrinsic_latency_mode));
+    argv.push_back(ConvertToString(conf.intrinsic_latency_duration));
   }
 
   if (conf.getrdb_mode) {
@@ -283,7 +283,7 @@ std::string convertToString(const fastonosql::core::redis::Config& conf) {
 }
 
 template<>
-fastonosql::core::redis::Config convertFromString(const std::string& line) {
+fastonosql::core::redis::Config ConvertFromString(const std::string& line) {
   fastonosql::core::redis::Config cfg;
   enum { kMaxArgs = 64 };
   int argc = 0;

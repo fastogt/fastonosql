@@ -68,7 +68,7 @@ CreateDbKeyDialog::CreateDbKeyDialog(const QString& title, core::connectionTypes
     if (t == common::Value::TYPE_STRING) {
       string_index = i;
     }
-    QString type = common::convertFromString<QString>(common::Value::toString(t));
+    QString type = common::ConvertFromString<QString>(common::Value::toString(t));
     typesCombo_->addItem(GuiFactory::instance().icon(t), type, t);
   }
 
@@ -147,7 +147,7 @@ CreateDbKeyDialog::CreateDbKeyDialog(const QString& title, core::connectionTypes
 }
 
 core::NDbKValue CreateDbKeyDialog::key() const {
-  core::NKey key(common::convertToString(keyEdit_->text()));
+  core::NKey key(common::ConvertToString(keyEdit_->text()));
   return core::NDbKValue(key, value_);
 }
 
@@ -286,7 +286,7 @@ common::Value* CreateDbKeyDialog::item() const {
     }
     common::ArrayValue* ar = common::Value::createArrayValue();
     for (size_t i = 0; i < valueListEdit_->count(); ++i) {
-      std::string val = common::convertToString(valueListEdit_->item(i)->text());
+      std::string val = common::ConvertToString(valueListEdit_->item(i)->text());
       ar->appendString(val);
     }
 
@@ -297,7 +297,7 @@ common::Value* CreateDbKeyDialog::item() const {
     }
     common::SetValue* ar = common::Value::createSetValue();
     for (size_t i = 0; i < valueListEdit_->count(); ++i) {
-      std::string val = common::convertToString(valueListEdit_->item(i)->text());
+      std::string val = common::ConvertToString(valueListEdit_->item(i)->text());
       ar->insert(val);
     }
 
@@ -312,8 +312,8 @@ common::Value* CreateDbKeyDialog::item() const {
       QTableWidgetItem* kitem = valueTableEdit_->item(i, 0);
       QTableWidgetItem* vitem = valueTableEdit_->item(i, 0);
 
-      std::string key = common::convertToString(kitem->text());
-      std::string val = common::convertToString(vitem->text());
+      std::string key = common::ConvertToString(kitem->text());
+      std::string val = common::ConvertToString(vitem->text());
       ar->insert(key, val);
     }
 
@@ -328,8 +328,8 @@ common::Value* CreateDbKeyDialog::item() const {
       QTableWidgetItem* kitem = valueTableEdit_->item(i, 0);
       QTableWidgetItem* vitem = valueTableEdit_->item(i, 0);
 
-      std::string key = common::convertToString(kitem->text());
-      std::string val = common::convertToString(vitem->text());
+      std::string key = common::ConvertToString(kitem->text());
+      std::string val = common::ConvertToString(vitem->text());
       ar->insert(key, val);
     }
 
@@ -340,7 +340,7 @@ common::Value* CreateDbKeyDialog::item() const {
       return nullptr;
     }
 
-    return common::Value::createStringValue(common::convertToString(text));
+    return common::Value::createStringValue(common::ConvertToString(text));
   }
 }
 

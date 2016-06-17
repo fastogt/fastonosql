@@ -50,12 +50,12 @@ common::Value::CommandLoggingType Command::type() const {
 
 namespace common {
 
-std::string convertToString(fastonosql::supportedViews v) {
+std::string ConvertToString(fastonosql::supportedViews v) {
   return fastonosql::viewsText[v];
 }
 
 template<>
-fastonosql::supportedViews convertFromString(const std::string& from) {
+fastonosql::supportedViews ConvertFromString(const std::string& from) {
   for(size_t i = 0; i < SIZEOFMASS(fastonosql::viewsText); ++i){
     if(from == fastonosql::viewsText[i]){
       return static_cast<fastonosql::supportedViews>(i);

@@ -40,5 +40,5 @@ struct Config
 }  // namespace fastonosql
 
 namespace common {
-  std::string convertToString(const fastonosql::core::lmdb::Config& conf);
+  std::string ConvertToString(const fastonosql::core::lmdb::Config& conf);
 }  // namespace common

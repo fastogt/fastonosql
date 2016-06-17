@@ -133,7 +133,7 @@ BaseShellWidget::BaseShellWidget(core::IServerSPtr server, const QString& filePa
 
   core::ConnectionMode mode = core::InteractiveMode;
   connectionMode_ = new fasto::qt::gui::IconLabel(gui::GuiFactory::instance().modeIcon(mode),
-                                                  common::convertFromString<QString>(common::convertToString(mode)), iconSize);
+                                                  common::ConvertFromString<QString>(common::ConvertToString(mode)), iconSize);
 
   dbName_ = new fasto::qt::gui::IconLabel(gui::GuiFactory::instance().databaseIcon(),
                                           "Calculate...", iconSize);
@@ -174,7 +174,7 @@ BaseShellWidget::BaseShellWidget(core::IServerSPtr server, const QString& filePa
     uint32_t cur = versions[i];
     std::string curVers = core::convertVersionNumberToReadableString(cur);
     commandsVersionApi_->addItem(gui::GuiFactory::instance().unknownIcon(),
-                                 common::convertFromString<QString>(curVers), cur);
+                                 common::ConvertFromString<QString>(curVers), cur);
     commandsVersionApi_->setCurrentIndex(i);
   }
   apilayout->addWidget(new QLabel(trCommandsVersion));
@@ -249,7 +249,7 @@ void BaseShellWidget::execute() {
     selected = input_->text();
   }
 
-  core::events_info::ExecuteInfoRequest req(this, common::convertToString(selected));
+  core::events_info::ExecuteInfoRequest req(this, common::ConvertToString(selected));
   server_->execute(req);
 }
 
@@ -356,8 +356,8 @@ void BaseShellWidget::progressChange(const core::events_info::ProgressInfoRespon
 void BaseShellWidget::enterMode(const core::events_info::EnterModeInfo& res) {
   core::ConnectionMode mode = res.mode;
   connectionMode_->setIcon(gui::GuiFactory::instance().modeIcon(mode), iconSize);
-  std::string modeText = common::convertToString(mode);
-  connectionMode_->setText(common::convertFromString<QString>(modeText));
+  std::string modeText = common::ConvertToString(mode);
+  connectionMode_->setText(common::ConvertFromString<QString>(modeText));
 }
 
 void BaseShellWidget::leaveMode(const core::events_info::LeaveModeInfo& res) {
@@ -379,7 +379,7 @@ void BaseShellWidget::finishLoadDiscoveryInfo(const core::events_info::Discovery
 void BaseShellWidget::updateDefaultDatabase(core::IDataBaseInfoSPtr dbs) {
   if (dbs) {
     std::string name = dbs->name();
-    dbName_->setText(common::convertFromString<QString>(name));
+    dbName_->setText(common::ConvertFromString<QString>(name));
   }
 }
 

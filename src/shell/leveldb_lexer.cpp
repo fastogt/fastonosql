@@ -18,9 +18,6 @@
 
 #include "shell/leveldb_lexer.h"
 
-#include <vector>
-#include <algorithm>
-
 #include "core/leveldb/db_connection.h"
 
 namespace fastonosql {

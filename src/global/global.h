@@ -111,12 +111,12 @@ typedef common::intrusive_ptr<FastoObjectCommand> FastoObjectCommandIPtr;
 
 namespace common {
 
-std::string convertToString(fastonosql::FastoObject* obj);
+std::string ConvertToString(fastonosql::FastoObject* obj);
 
-std::string convertToString(common::Value* value, const std::string& delemitr);
-std::string convertToString(common::ArrayValue* array, const std::string& delemitr);
-std::string convertToString(common::SetValue* set, const std::string& delemitr);
-std::string convertToString(common::ZSetValue* zset, const std::string& delemitr);
-std::string convertToString(common::HashValue* hash, const std::string& delemitr);
+std::string ConvertToString(common::Value* value, const std::string& delemitr);
+std::string ConvertToString(common::ArrayValue* array, const std::string& delemitr);
+std::string ConvertToString(common::SetValue* set, const std::string& delemitr);
+std::string ConvertToString(common::ZSetValue* zset, const std::string& delemitr);
+std::string ConvertToString(common::HashValue* hash, const std::string& delemitr);
 
 }

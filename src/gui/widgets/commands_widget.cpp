@@ -53,9 +53,9 @@ void CommandsWidget::addCommand(core::connectionTypes type, const Command& comma
   QTime time = QTime::currentTime();
   logTextEdit_->setTextColor(command.type() == common::Value::C_INNER ?
                                QColor(Qt::gray) : QColor(Qt::black));
-  QString mess = common::convertFromString<QString>(command.message());
-  std::string stype = common::convertToString(type);
-  QString qstype = common::convertFromString<QString>(stype);
+  QString mess = common::ConvertFromString<QString>(command.message());
+  std::string stype = common::ConvertToString(type);
+  QString qstype = common::ConvertFromString<QString>(stype);
   logTextEdit_->append(time.toString("[%1] h:mm:ss AP: %2").arg(qstype.toUpper(), mess));
   QScrollBar* sb = logTextEdit_->verticalScrollBar();
   sb->setValue(sb->maximum());

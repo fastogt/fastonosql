@@ -32,11 +32,11 @@ KeyTableItem::KeyTableItem(const core::NDbKValue& key)
 }
 
 QString KeyTableItem::key() const {
-  return common::convertFromString<QString>(key_.keyString());
+  return common::ConvertFromString<QString>(key_.keyString());
 }
 
 QString KeyTableItem::typeText() const {
-  return common::convertFromString<QString>(common::Value::toString(key_.type()));
+  return common::ConvertFromString<QString>(common::Value::toString(key_.type()));
 }
 
 core::ttl_t KeyTableItem::ttl() const {
@@ -158,7 +158,7 @@ int KeysTableModel::columnCount(const QModelIndex& parent) const {
 }
 
 void KeysTableModel::changeValue(const core::NDbKValue& value) {
-  const QString key = common::convertFromString<QString>(value.keyString());
+  const QString key = common::ConvertFromString<QString>(value.keyString());
   for (size_t i = 0; i < data_.size(); ++i) {
     KeyTableItem* it = dynamic_cast<KeyTableItem*>(data_[i]);  // +
     CHECK(it);

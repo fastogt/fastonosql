@@ -68,7 +68,7 @@ SSHInfo::SSHInfo(const std::string& text)
       std::string field = line.substr(0, delem);
       std::string value = line.substr(delem + 1);
       if (field == HOST) {
-        host = common::convertFromString<common::net::hostAndPort>(value);
+        host = common::ConvertFromString<common::net::hostAndPort>(value);
       } else if (field == USER) {
         user_name = value;
       } else if (field == PASSWORD) {
@@ -80,7 +80,7 @@ SSHInfo::SSHInfo(const std::string& text)
       } else if (field == PASSPHRASE) {
         passphrase = value;
       } else if (field == CURMETHOD) {
-        current_method = (SupportedAuthenticationMetods)common::convertFromString<int>(value);
+        current_method = (SupportedAuthenticationMetods)common::ConvertFromString<int>(value);
       }
     }
     start = pos + sizeof(MARKER) - 1;
@@ -100,18 +100,18 @@ SSHInfo::SupportedAuthenticationMetods SSHInfo::authMethod() const {
 
 namespace common {
 
-std::string convertToString(const fastonosql::core::SSHInfo& ssh_info) {
-  return  HOST":" + common::convertToString(ssh_info.host) + MARKER
+std::string ConvertToString(const fastonosql::core::SSHInfo& ssh_info) {
+  return  HOST":" + common::ConvertToString(ssh_info.host) + MARKER
           USER":" + ssh_info.user_name + MARKER
           PASSWORD":" + ssh_info.password + MARKER
           PUBKEY":" + ssh_info.public_key + MARKER
           PRIVKEY":" + ssh_info.private_key + MARKER
           PASSPHRASE":" + ssh_info.passphrase + MARKER
-          CURMETHOD":" + common::convertToString(ssh_info.current_method) + MARKER;
+          CURMETHOD":" + common::ConvertToString(ssh_info.current_method) + MARKER;
 }
 
 template<>
-fastonosql::core::SSHInfo convertFromString(const std::string& text) {
+fastonosql::core::SSHInfo ConvertFromString(const std::string& text) {
   return fastonosql::core::SSHInfo(text);
 }
 

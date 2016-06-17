@@ -31,11 +31,11 @@ PropertyTableItem::PropertyTableItem(const core::property_t& prop)
 }
 
 QString PropertyTableItem::key() const {
-  return common::convertFromString<QString>(prop_.first);
+  return common::ConvertFromString<QString>(prop_.first);
 }
 
 QString PropertyTableItem::value() const {
-  return common::convertFromString<QString>(prop_.second);
+  return common::ConvertFromString<QString>(prop_.second);
 }
 
 core::property_t PropertyTableItem::property() const {
@@ -83,7 +83,7 @@ bool PropertyTableModel::setData(const QModelIndex& index, const QVariant& value
        QString newValue = value.toString();
        if (newValue != node->value()) {
          core::property_t pr = node->property();
-         pr.second = common::convertToString(newValue);
+         pr.second = common::ConvertToString(newValue);
          emit changedProperty(pr);
        }
      }

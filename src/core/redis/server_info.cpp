@@ -181,25 +181,25 @@ ServerInfo::Server::Server(const std::string& server_text)
     } else if (field == REDIS_OS_LABEL) {
       os_ = value;
     } else if (field == REDIS_ARCH_BITS_LABEL) {
-      arch_bits_ = common::convertFromString<uint32_t>(value);
+      arch_bits_ = common::ConvertFromString<uint32_t>(value);
     } else if (field == REDIS_MULTIPLEXING_API_LABEL) {
       multiplexing_api_ = value;
     } else if (field == REDIS_GCC_VERSION_LABEL) {
       gcc_version_ = value;
     } else if (field == REDIS_PROCESS_ID_LABEL) {;
-      process_id_ = common::convertFromString<uint32_t>(value);
+      process_id_ = common::ConvertFromString<uint32_t>(value);
     } else if (field == REDIS_RUN_ID_LABEL) {
       run_id_ = value;
     } else if (field == REDIS_TCP_PORT_LABEL) {
-      tcp_port_ = common::convertFromString<uint32_t>(value);
+      tcp_port_ = common::ConvertFromString<uint32_t>(value);
     } else if (field == REDIS_UPTIME_IN_SECONDS_LABEL) {
-      uptime_in_seconds_ = common::convertFromString<uint32_t>(value);
+      uptime_in_seconds_ = common::ConvertFromString<uint32_t>(value);
     } else if (field == REDIS_UPTIME_IN_DAYS_LABEL) {
-      uptime_in_days_ = common::convertFromString<uint32_t>(value);
+      uptime_in_days_ = common::ConvertFromString<uint32_t>(value);
     } else if (field == REDIS_HZ_LABEL) {
-      hz_ = common::convertFromString<uint32_t>(value);
+      hz_ = common::ConvertFromString<uint32_t>(value);
     } else if (field == REDIS_LRU_CLOCK_LABEL) {
-      lru_clock_ = common::convertFromString<uint32_t>(value);
+      lru_clock_ = common::ConvertFromString<uint32_t>(value);
     }
     start = pos + 2;
   }
@@ -262,13 +262,13 @@ ServerInfo::Clients::Clients(const std::string& client_text)
     std::string field = line.substr(0, delem);
     std::string value = line.substr(delem + 1);
     if (field == REDIS_CONNECTED_CLIENTS_LABEL) {
-        connected_clients_ = common::convertFromString<uint32_t>(value);
+        connected_clients_ = common::ConvertFromString<uint32_t>(value);
     } else if (field == REDIS_CLIENT_LONGEST_OUTPUT_LIST_LABEL) {
-        client_longest_output_list_ = common::convertFromString<uint32_t>(value);
+        client_longest_output_list_ = common::ConvertFromString<uint32_t>(value);
     } else if (field == REDIS_CLIENT_BIGGEST_INPUT_BUF_LABEL) {
-        client_biggest_input_buf_ = common::convertFromString<uint32_t>(value);
+        client_biggest_input_buf_ = common::ConvertFromString<uint32_t>(value);
     } else if (field == REDIS_BLOCKED_CLIENTS_LABEL) {
-        blocked_clients_ = common::convertFromString<uint32_t>(value);
+        blocked_clients_ = common::ConvertFromString<uint32_t>(value);
     }
     start = pos + 2;
   }
@@ -307,19 +307,19 @@ ServerInfo::Memory::Memory(const std::string& memory_text)
     std::string field = line.substr(0, delem);
     std::string value = line.substr(delem + 1);
     if (field == REDIS_USED_MEMORY_LABEL) {
-      used_memory_ = common::convertFromString<uint32_t>(value);
+      used_memory_ = common::ConvertFromString<uint32_t>(value);
     } else if (field == REDIS_USED_MEMORY_HUMAN_LABEL) {
       used_memory_human_ = value;
     } else if (field == REDIS_USED_MEMORY_RSS_LABEL) {
-      used_memory_rss_ = common::convertFromString<uint32_t>(value);
+      used_memory_rss_ = common::ConvertFromString<uint32_t>(value);
     } else if (field == REDIS_USED_MEMORY_PEAK_LABEL) {
-      used_memory_peak_ = common::convertFromString<uint32_t>(value);
+      used_memory_peak_ = common::ConvertFromString<uint32_t>(value);
     } else if (field == REDIS_USED_MEMORY_PEAK_HUMAN_LABEL) {
       used_memory_peak_human_ = value;
     } else if (field == REDIS_USED_MEMORY_LUA_LABEL) {
-      used_memory_lua_ = common::convertFromString<uint32_t>(value);
+      used_memory_lua_ = common::ConvertFromString<uint32_t>(value);
     } else if (field == REDIS_MEM_FRAGMENTATION_RATIO_LABEL) {
-      mem_fragmentation_ratio_ = common::convertFromString<float>(value);
+      mem_fragmentation_ratio_ = common::ConvertFromString<float>(value);
     } else if (field == REDIS_MEM_ALLOCATOR_LABEL) {
       mem_allocator_ = value;
     }
@@ -376,29 +376,29 @@ ServerInfo::Persistence::Persistence(const std::string& persistence_text)
     std::string field = line.substr(0, delem);
     std::string value = line.substr(delem + 1);
     if (field == REDIS_LOADING_LABEL) {
-      loading_ = common::convertFromString<uint32_t>(value);
+      loading_ = common::ConvertFromString<uint32_t>(value);
     } else if (field == REDIS_RDB_CHANGES_SINCE_LAST_SAVE_LABEL) {
-      rdb_changes_since_last_save_ = common::convertFromString<uint32_t>(value);
+      rdb_changes_since_last_save_ = common::ConvertFromString<uint32_t>(value);
     } else if (field == REDIS_RDB_DGSAVE_IN_PROGRESS_LABEL) {
-      rdb_bgsave_in_progress_ = common::convertFromString<uint32_t>(value);
+      rdb_bgsave_in_progress_ = common::ConvertFromString<uint32_t>(value);
     } else if (field == REDIS_RDB_LAST_SAVE_TIME_LABEL) {
-      rdb_last_save_time_ = common::convertFromString<uint32_t>(value);
+      rdb_last_save_time_ = common::ConvertFromString<uint32_t>(value);
     } else if (field == REDIS_RDB_LAST_DGSAVE_STATUS_LABEL) {
       rdb_last_bgsave_status_ = value;
     } else if (field == REDIS_RDB_LAST_DGSAVE_TIME_SEC_LABEL) {
-      rdb_last_bgsave_time_sec_ = common::convertFromString<int>(value);
+      rdb_last_bgsave_time_sec_ = common::ConvertFromString<int>(value);
     } else if (field == REDIS_RDB_CURRENT_DGSAVE_TIME_SEC_LABEL) {
-      rdb_current_bgsave_time_sec_ = common::convertFromString<int>(value);
+      rdb_current_bgsave_time_sec_ = common::ConvertFromString<int>(value);
     } else if (field == REDIS_AOF_ENABLED_LABEL) {
-      aof_enabled_ = common::convertFromString<uint32_t>(value);
+      aof_enabled_ = common::ConvertFromString<uint32_t>(value);
     } else if (field == REDIS_AOF_REWRITE_IN_PROGRESS_LABEL) {
-      aof_rewrite_in_progress_ = common::convertFromString<uint32_t>(value);
+      aof_rewrite_in_progress_ = common::ConvertFromString<uint32_t>(value);
     } else if (field == REDIS_AOF_REWRITE_SHEDULED_LABEL) {
-      aof_rewrite_scheduled_ = common::convertFromString<uint32_t>(value);
+      aof_rewrite_scheduled_ = common::ConvertFromString<uint32_t>(value);
     } else if (field == REDIS_AOF_LAST_REWRITE_TIME_SEC_LABEL) {
-      aof_last_rewrite_time_sec_ = common::convertFromString<int>(value);
+      aof_last_rewrite_time_sec_ = common::ConvertFromString<int>(value);
     } else if (field == REDIS_AOF_CURRENT_REWRITE_TIME_SEC_LABEL) {
-      aof_current_rewrite_time_sec_ = common::convertFromString<int>(value);
+      aof_current_rewrite_time_sec_ = common::ConvertFromString<int>(value);
     } else if (field == REDIS_AOF_LAST_DGREWRITE_STATUS_LABEL) {
       aof_last_bgrewrite_status_ = value;
     } else if (field == REDIS_AOF_LAST_WRITE_STATUS_LABEL) {
@@ -469,33 +469,33 @@ ServerInfo::Stats::Stats(const std::string& stats_text)
     std::string field = line.substr(0, delem);
     std::string value = line.substr(delem + 1);
     if (field == REDIS_TOTAL_CONNECTIONS_RECEIVED_LABEL) {
-      total_connections_received_ = common::convertFromString<uint32_t>(value);
+      total_connections_received_ = common::ConvertFromString<uint32_t>(value);
     } else if (field == REDIS_TOTAL_COMMANDS_PROCESSED_LABEL) {
-      total_commands_processed_ = common::convertFromString<uint32_t>(value);
+      total_commands_processed_ = common::ConvertFromString<uint32_t>(value);
     } else if (field == REDIS_INSTANTANEOUS_OPS_PER_SEC_LABEL) {
-      instantaneous_ops_per_sec_ = common::convertFromString<uint32_t>(value);
+      instantaneous_ops_per_sec_ = common::ConvertFromString<uint32_t>(value);
     } else if (field == REDIS_REJECTED_CONNECTIONS_LABEL) {
-      rejected_connections_ = common::convertFromString<uint32_t>(value);
+      rejected_connections_ = common::ConvertFromString<uint32_t>(value);
     } else if (field == REDIS_SYNC_FULL_LABEL) {
-      sync_full_ = common::convertFromString<uint32_t>(value);
+      sync_full_ = common::ConvertFromString<uint32_t>(value);
     } else if (field == REDIS_SYNC_PARTIAL_OK_LABEL) {
-      sync_partial_ok_ = common::convertFromString<uint32_t>(value);
+      sync_partial_ok_ = common::ConvertFromString<uint32_t>(value);
     } else if (field == REDIS_SYNC_PARTIAL_ERR_LABEL) {
-      sync_partial_err_ = common::convertFromString<uint32_t>(value);
+      sync_partial_err_ = common::ConvertFromString<uint32_t>(value);
     } else if (field == REDIS_EXPIRED_KEYS_LABEL) {
-      expired_keys_ = common::convertFromString<uint32_t>(value);
+      expired_keys_ = common::ConvertFromString<uint32_t>(value);
     } else if (field == REDIS_EVICTED_KEYS_LABEL) {
-      evicted_keys_ = common::convertFromString<uint32_t>(value);
+      evicted_keys_ = common::ConvertFromString<uint32_t>(value);
     } else if (field == REDIS_KEYSPACE_HITS_LABEL) {
-      keyspace_hits_ = common::convertFromString<uint32_t>(value);
+      keyspace_hits_ = common::ConvertFromString<uint32_t>(value);
     } else if (field == REDIS_KEYSPACE_MISSES_LABEL) {
-      keyspace_misses_ = common::convertFromString<uint32_t>(value);
+      keyspace_misses_ = common::ConvertFromString<uint32_t>(value);
     } else if (field == REDIS_PUBSUB_CHANNELS_LABEL) {
-      pubsub_channels_ = common::convertFromString<uint32_t>(value);
+      pubsub_channels_ = common::ConvertFromString<uint32_t>(value);
     } else if (field == REDIS_PUBSUB_PATTERNS_LABEL) {
-      pubsub_patterns_ = common::convertFromString<uint32_t>(value);
+      pubsub_patterns_ = common::ConvertFromString<uint32_t>(value);
     } else if (field == REDIS_LATEST_FORK_USEC_LABEL) {
-      latest_fork_usec_ = common::convertFromString<uint32_t>(value);
+      latest_fork_usec_ = common::ConvertFromString<uint32_t>(value);
     }
     start = pos + 2;
   }
@@ -561,17 +561,17 @@ ServerInfo::Replication::Replication(const std::string& replication_text)
     if (field == REDIS_ROLE_LABEL) {
       role_ = value;
     } else if (field == REDIS_CONNECTED_SLAVES_LABEL) {
-      connected_slaves_ = common::convertFromString<uint32_t>(value);
+      connected_slaves_ = common::ConvertFromString<uint32_t>(value);
     } else if (field == REDIS_MASTER_REPL_OFFSET_LABEL) {
-      master_repl_offset_ = common::convertFromString<uint32_t>(value);
+      master_repl_offset_ = common::ConvertFromString<uint32_t>(value);
     } else if (field == REDIS_BACKLOG_ACTIVE_LABEL) {
-      backlog_active_ = common::convertFromString<uint32_t>(value);
+      backlog_active_ = common::ConvertFromString<uint32_t>(value);
     } else if (field == REDIS_BACKLOG_SIZE_LABEL) {
-      backlog_size_ = common::convertFromString<uint32_t>(value);
+      backlog_size_ = common::ConvertFromString<uint32_t>(value);
     } else if (field == REDIS_BACKLOG_FIRST_BYTE_OFFSET_LABEL) {
-      backlog_first_byte_offset_ = common::convertFromString<uint32_t>(value);
+      backlog_first_byte_offset_ = common::ConvertFromString<uint32_t>(value);
     } else if (field == REDIS_BACKLOG_HISTEN_LABEL) {
-      backlog_histen_ = common::convertFromString<uint32_t>(value);
+      backlog_histen_ = common::ConvertFromString<uint32_t>(value);
     }
     start = pos + 2;
   }
@@ -614,13 +614,13 @@ ServerInfo::Cpu::Cpu(const std::string& cpu_text)
     std::string field = line.substr(0, delem);
     std::string value = line.substr(delem + 1);
     if (field == (REDIS_USED_CPU_SYS_LABEL)) {
-        used_cpu_sys_ = common::convertFromString<float>(value);
+        used_cpu_sys_ = common::ConvertFromString<float>(value);
     } else if (field == REDIS_USED_CPU_USER_LABEL) {
-        used_cpu_user_ = common::convertFromString<float>(value);
+        used_cpu_user_ = common::ConvertFromString<float>(value);
     } else if (field == REDIS_USED_CPU_SYS_CHILDREN_LABEL) {
-        used_cpu_sys_children_ = common::convertFromString<float>(value);
+        used_cpu_sys_children_ = common::ConvertFromString<float>(value);
     } else if (field == REDIS_USED_CPU_USER_CHILDREN_LABEL) {
-        used_cpu_user_children_ = common::convertFromString<float>(value);
+        used_cpu_user_children_ = common::ConvertFromString<float>(value);
     }
     start = pos + 2;
   }
@@ -779,7 +779,7 @@ std::string ServerInfo::toString() const {
 }
 
 uint32_t ServerInfo::version() const {
-  return common::convertVersionNumberFromString(server_.redis_version_);
+  return common::ConvertVersionNumberFromString(server_.redis_version_);
 }
 
 std::ostream& operator<<(std::ostream& out, const ServerInfo& value) {
@@ -845,7 +845,7 @@ ServerInfo* makeRedisServerInfo(const std::string& content) {
 }
 
 ServerInfo* makeRedisServerInfo(FastoObject* root) {
-  std::string content = common::convertToString(root);
+  std::string content = common::ConvertToString(root);
   return makeRedisServerInfo(content);
 }
 

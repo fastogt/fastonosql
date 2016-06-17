@@ -39,11 +39,11 @@ common::net::hostAndPort ConnectionSettings::host() const {
 }
 
 void ConnectionSettings::setCommandLine(const std::string& line) {
-  info_ = common::convertFromString<Config>(line);
+  info_ = common::ConvertFromString<Config>(line);
 }
 
 std::string ConnectionSettings::commandLine() const {
-  return common::convertToString(info_);
+  return common::ConvertToString(info_);
 }
 
 Config ConnectionSettings::info() const {

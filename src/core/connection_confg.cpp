@@ -62,7 +62,7 @@ std::vector<std::string> RemoteConfig::args() const {
     argv.push_back("-h");
     argv.push_back(host.host);
     argv.push_back("-p");
-    argv.push_back(common::convertToString(host.port));
+    argv.push_back(common::ConvertToString(host.port));
   }
 
   if (!delimiter.empty()) {

@@ -72,7 +72,7 @@ const QString trSettingsImportedS = QObject::tr("Settings successfully imported!
 const QString trSettingsExportedS = QObject::tr("Settings successfully encrypted and exported!");
 
 bool isNeededUpdate(const std::string& sversion) {
-  uint32_t cver = common::convertVersionNumberFromString(sversion);
+  uint32_t cver = common::ConvertVersionNumberFromString(sversion);
   return PROJECT_VERSION_NUMBER < cver;
 }
 
@@ -338,7 +338,7 @@ void MainWindow::openRecentConnection() {
   }
 
   QString rcon = action->text();
-  std::string srcon = common::convertToString(rcon);
+  std::string srcon = common::ConvertToString(rcon);
   core::ConnectionSettingsPath path(srcon);
   auto conns = core::SettingsManager::instance().connections();
   for (auto it = conns.begin(); it != conns.end(); ++it) {
@@ -351,21 +351,21 @@ void MainWindow::openRecentConnection() {
 }
 
 void MainWindow::loadConnection() {
-  QString standardIni = common::convertFromString<QString>(core::SettingsManager::settingsFilePath());
+  QString standardIni = common::ConvertFromString<QString>(core::SettingsManager::settingsFilePath());
   QString filepathR = QFileDialog::getOpenFileName(this, tr("Select settings file"),
                                                    standardIni, tr("Settings files (*.ini)"));
   if (filepathR.isNull()) {
     return;
   }
 
-  core::SettingsManager::instance().reloadFromPath(common::convertToString(filepathR), false);
+  core::SettingsManager::instance().reloadFromPath(common::ConvertToString(filepathR), false);
   QMessageBox::information(this, translations::trInfo, trSettingsLoadedS);
 }
 
 void MainWindow::importConnection() {
   std::string dir_path = core::SettingsManager::settingsDirPath();
   QString filepathR = QFileDialog::getOpenFileName(this, tr("Select encrypted settings file"),
-                                                   common::convertFromString<QString>(dir_path),
+                                                   common::ConvertFromString<QString>(dir_path),
                                                    tr("Encrypted settings files (*.cini)"));
   if (filepathR.isNull()) {
     return;
@@ -381,7 +381,7 @@ void MainWindow::importConnection() {
     return;
   }
 
-  common::file_system::ascii_string_path rp(common::convertToString(filepathR));
+  common::file_system::ascii_string_path rp(common::ConvertToString(filepathR));
   common::file_system::File readFile(rp);
   bool openedr = readFile.open("rb");
   if (!openedr) {
@@ -439,13 +439,13 @@ void MainWindow::importConnection() {
 void MainWindow::exportConnection() {
   std::string dir_path = core::SettingsManager::settingsDirPath();
   QString filepathW = QFileDialog::getSaveFileName(this, tr("Select file to save settings"),
-                                                   common::convertFromString<QString>(dir_path),
+                                                   common::ConvertFromString<QString>(dir_path),
                                                    tr("Settings files (*.cini)"));
   if (filepathW.isNull()) {
     return;
   }
 
-  common::file_system::ascii_string_path wp(common::convertToString(filepathW));
+  common::file_system::ascii_string_path wp(common::ConvertToString(filepathW));
   common::file_system::File writeFile(wp);
   bool openedw = writeFile.open("wb");
   if (!openedw) {
@@ -510,7 +510,7 @@ void MainWindow::versionAvailible(bool succesResult, const QString& version) {
     return;
   }
 
-  std::string sver = common::convertToString(version);
+  std::string sver = common::ConvertToString(version);
   bool isn = isNeededUpdate(sver);
   if (isn) {
     QMessageBox::information(this, translations::trCheckVersion,
@@ -677,7 +677,7 @@ void MainWindow::createServer(core::IConnectionSettingsBaseSPtr settings) {
   CHECK(settings);
 
   std::string path = settings->path().toString();
-  QString rcon = common::convertFromString<QString>(path);
+  QString rcon = common::ConvertFromString<QString>(path);
   core::SettingsManager::instance().removeRConnection(rcon);
   core::IServerSPtr server = core::ServersManager::instance().createServer(settings);
   exp_->addServer(server);
@@ -779,7 +779,7 @@ void UpdateChecker::routine() {
     return;
   }
 
-  QString vers = common::convertFromString<QString>(version);
+  QString vers = common::ConvertFromString<QString>(version);
   emit versionAvailibled(true, vers);
   s.close();
   return;

@@ -18,9 +18,6 @@
 
 #include "shell/memcached_lexer.h"
 
-#include <vector>
-#include <algorithm>
-
 #include "core/memcached/db_connection.h"
 
 namespace fastonosql {

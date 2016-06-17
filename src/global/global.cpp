@@ -46,7 +46,7 @@ common::Value::Type FastoObject::type() const {
 }
 
 std::string FastoObject::toString() const {
-  return convertToString(value_.get(), delemitr());
+  return ConvertToString(value_.get(), delemitr());
 }
 
 FastoObject* FastoObject::createRoot(const std::string& text, IFastoObjectObserver* observer) {
@@ -211,7 +211,7 @@ void FastoObjectArray::append(common::Value* in_value) {
 
 std::string FastoObjectArray::toString() const {
   common::ArrayValue* ar = array();
-  return convertToString(ar, delemitr());
+  return ConvertToString(ar, delemitr());
 }
 
 common::ArrayValue* FastoObjectArray::array() const {
@@ -222,7 +222,7 @@ common::ArrayValue* FastoObjectArray::array() const {
 
 namespace common {
 
-std::string convertToString(fastonosql::FastoObject* obj) {
+std::string ConvertToString(fastonosql::FastoObject* obj) {
   if (!obj) {
     return std::string();
   }
@@ -235,32 +235,32 @@ std::string convertToString(fastonosql::FastoObject* obj) {
 
   auto childrens = obj->childrens();
   for(auto it = childrens.begin(); it != childrens.end(); ++it ){
-    result += convertToString(*it);
+    result += ConvertToString(*it);
   }
 
   return result;
 }
 
-std::string convertToString(common::Value* value, const std::string& delemitr) {
+std::string ConvertToString(common::Value* value, const std::string& delemitr) {
   if (!value) {
     return std::string();
   }
 
   common::Value::Type t = value->type();
   if (t == common::Value::TYPE_ARRAY) {
-    return convertToString(static_cast<ArrayValue*>(value), delemitr);
+    return ConvertToString(static_cast<ArrayValue*>(value), delemitr);
   } else if(t == common::Value::TYPE_SET) {
-    return convertToString(static_cast<SetValue*>(value), delemitr);
+    return ConvertToString(static_cast<SetValue*>(value), delemitr);
   } else if(t == common::Value::TYPE_ZSET) {
-    return convertToString(static_cast<ZSetValue*>(value), delemitr);
+    return ConvertToString(static_cast<ZSetValue*>(value), delemitr);
   } else if(t == common::Value::TYPE_HASH) {
-    return convertToString(static_cast<HashValue*>(value), delemitr);
+    return ConvertToString(static_cast<HashValue*>(value), delemitr);
   } else {
     return value->toString();
   }
 }
 
-std::string convertToString(common::ArrayValue* array, const std::string& delemitr) {
+std::string ConvertToString(common::ArrayValue* array, const std::string& delemitr) {
   if (!array) {
     return std::string();
   }
@@ -282,7 +282,7 @@ std::string convertToString(common::ArrayValue* array, const std::string& delemi
   return result;
 }
 
-std::string convertToString(common::SetValue* set, const std::string& delemitr) {
+std::string ConvertToString(common::SetValue* set, const std::string& delemitr) {
   if (!set) {
     return std::string();
   }
@@ -304,7 +304,7 @@ std::string convertToString(common::SetValue* set, const std::string& delemitr) 
   return result;
 }
 
-std::string convertToString(common::ZSetValue* zset, const std::string& delemitr) {
+std::string ConvertToString(common::ZSetValue* zset, const std::string& delemitr) {
   if (!zset) {
     return std::string();
   }
@@ -327,7 +327,7 @@ std::string convertToString(common::ZSetValue* zset, const std::string& delemitr
   return result;
 }
 
-std::string convertToString(common::HashValue* hash, const std::string& delemitr) {
+std::string ConvertToString(common::HashValue* hash, const std::string& delemitr) {
   if (!hash) {
     return std::string();
   }

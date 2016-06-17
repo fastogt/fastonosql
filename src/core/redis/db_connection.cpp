@@ -344,7 +344,7 @@ common::Error createConnection(const Config& config,
     if (!lcontext) {
       std::string buff;
       if (!is_local) {
-        std::string host_str = common::convertToString(config.host);
+        std::string host_str = common::ConvertToString(config.host);
         buff = common::MemSPrintf("Could not connect to Redis at %s : no context", host_str);
       } else {
         buff = common::MemSPrintf( "Could not connect to Redis at %s : no context", config.hostsocket);
@@ -358,7 +358,7 @@ common::Error createConnection(const Config& config,
         buff = common::MemSPrintf("Could not connect to Redis at %s : %s", config.hostsocket,
                                   lcontext->errstr);
       } else {
-        std::string host_str = common::convertToString(config.host);
+        std::string host_str = common::ConvertToString(config.host);
         buff = common::MemSPrintf("Could not connect to Redis at %s : %s", host_str,
                                   lcontext->errstr);
       }
@@ -1394,7 +1394,7 @@ common::Error DBConnection::select(int num, IDataBaseInfo** info) {
   if (reply) {
     size_t sz = 0;
     dbkcount(&sz);
-    DataBaseInfo* linfo = new DataBaseInfo(common::convertToString(num), true, sz);
+    DataBaseInfo* linfo = new DataBaseInfo(common::ConvertToString(num), true, sz);
     if (observer_) {
       observer_->currentDataBaseChanged(linfo);
     }
@@ -1628,11 +1628,11 @@ common::Error DBConnection::cliReadReply(FastoObject* out) {
     s = strchr(p,' ');      /* MOVED[S]3999 127.0.0.1:6381 */
     p = strchr(s+1,' ');    /* MOVED[S]3999[P]127.0.0.1:6381 */
     *p = '\0';
-    slot = common::convertFromString<int>(s + 1);
+    slot = common::ConvertFromString<int>(s + 1);
     s = strchr(p+1,':');    /* MOVED 3999[P]127.0.0.1[S]6381 */
     *s = '\0';
-    config_.host = common::net::hostAndPort(p + 1, common::convertFromString<uint16_t>(s + 1));
-    std::string host_str = common::convertToString(config_.host);
+    config_.host = common::net::hostAndPort(p + 1, common::ConvertFromString<uint16_t>(s + 1));
+    std::string host_str = common::ConvertToString(config_.host);
     std::string redir = common::MemSPrintf("-> Redirected to slot [%d] located at %s",
                                            slot, host_str);
     common::StringValue* val = common::Value::createStringValue(redir);
@@ -1661,7 +1661,7 @@ common::Error DBConnection::execute(int argc, char** argv, FastoObject* out) {
 
   if (argc == 3 && strcasecmp(command, "connect") == 0) {
     config_.host.host = argv[1];
-    config_.host.port = common::convertFromString<uint16_t>(argv[2]);
+    config_.host.port = common::ConvertFromString<uint16_t>(argv[2]);
     sdsfreesplitres(argv, argc);
     return connect(true);
   }
@@ -1722,10 +1722,10 @@ common::Error DBConnection::execute(int argc, char** argv, FastoObject* out) {
   } else {
     /* Store database number when SELECT was successfully executed. */
     if (strcasecmp(command, "select") == 0 && argc == 2) {
-      config_.dbnum = common::convertFromString<int>(argv[1]);
+      config_.dbnum = common::ConvertFromString<int>(argv[1]);
       size_t sz = 0;
       dbkcount(&sz);
-      DataBaseInfo* info = new DataBaseInfo(common::convertToString(config_.dbnum), true, sz);
+      DataBaseInfo* info = new DataBaseInfo(common::ConvertToString(config_.dbnum), true, sz);
       if (observer_) {
         observer_->currentDataBaseChanged(info);
       }

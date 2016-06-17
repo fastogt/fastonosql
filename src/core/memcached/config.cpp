@@ -38,7 +38,7 @@ void parseOptions(int argc, char** argv, Config& cfg) {
     if (!strcmp(argv[i], "-h") && !lastarg) {
       cfg.host.host = argv[++i];
     } else if (!strcmp(argv[i], "-p") && !lastarg) {
-      cfg.host.port = common::convertFromString<uint16_t>(argv[++i]);
+      cfg.host.port = common::ConvertFromString<uint16_t>(argv[++i]);
     } else if (!strcmp(argv[i], "-u") && !lastarg) {
       cfg.user = argv[++i];
     } else if (!strcmp(argv[i], "-a") && !lastarg) {
@@ -74,7 +74,7 @@ Config::Config()
 
 namespace common {
 
-std::string convertToString(const fastonosql::core::memcached::Config &conf) {
+std::string ConvertToString(const fastonosql::core::memcached::Config &conf) {
   std::vector<std::string> argv = conf.args();
 
   if (!conf.user.empty()) {
@@ -99,7 +99,7 @@ std::string convertToString(const fastonosql::core::memcached::Config &conf) {
 }
 
 template<>
-fastonosql::core::memcached::Config convertFromString(const std::string& line) {
+fastonosql::core::memcached::Config ConvertFromString(const std::string& line) {
   fastonosql::core::memcached::Config cfg;
   enum { kMaxArgs = 64 };
   int argc = 0;

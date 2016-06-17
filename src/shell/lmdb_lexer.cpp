@@ -18,9 +18,6 @@
 
 #include "shell/lmdb_lexer.h"
 
-#include <vector>
-#include <algorithm>
-
 #include "core/lmdb/db_connection.h"
 
 namespace fastonosql {

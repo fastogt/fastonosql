@@ -88,49 +88,49 @@ ServerInfo::Common::Common(const std::string& common_text) {
     std::string field = line.substr(0, delem);
     std::string value = line.substr(delem + 1);
     if (field == MEMCACHED_PID_LABEL) {
-      pid = common::convertFromString<uint32_t>(value);
+      pid = common::ConvertFromString<uint32_t>(value);
     } else if (field == MEMCACHED_UPTIME_LABEL) {
-      uptime = common::convertFromString<uint32_t>(value);
+      uptime = common::ConvertFromString<uint32_t>(value);
     } else if (field == MEMCACHED_TIME_LABEL) {
-      time = common::convertFromString<uint32_t>(value);
+      time = common::ConvertFromString<uint32_t>(value);
     } else if (field == MEMCACHED_VERSION_LABEL) {
       version = value;
     } else if (field == MEMCACHED_POINTER_SIZE_LABEL) {
-      pointer_size = common::convertFromString<uint32_t>(value);
+      pointer_size = common::ConvertFromString<uint32_t>(value);
     } else if (field == MEMCACHED_RUSAGE_USER_LABEL) {
-      rusage_user = common::convertFromString<uint32_t>(value);
+      rusage_user = common::ConvertFromString<uint32_t>(value);
     } else if (field == MEMCACHED_RUSAGE_SYSTEM_LABEL) {
-      rusage_system = common::convertFromString<uint32_t>(value);
+      rusage_system = common::ConvertFromString<uint32_t>(value);
     } else if (field == MEMCACHED_CURR_ITEMS_LABEL) {
-      curr_items = common::convertFromString<uint32_t>(value);
+      curr_items = common::ConvertFromString<uint32_t>(value);
     } else if (field == MEMCACHED_TOTAL_ITEMS_LABEL) {
-      total_items = common::convertFromString<uint32_t>(value);
+      total_items = common::ConvertFromString<uint32_t>(value);
     } else if (field == MEMCACHED_BYTES_LABEL) {
-      bytes = common::convertFromString<uint32_t>(value);
+      bytes = common::ConvertFromString<uint32_t>(value);
     } else if (field == MEMCACHED_CURR_CONNECTIONS_LABEL) {
-      curr_connections = common::convertFromString<uint32_t>(value);
+      curr_connections = common::ConvertFromString<uint32_t>(value);
     } else if (field == MEMCACHED_TOTAL_CONNECTIONS_LABEL) {
-      total_connections = common::convertFromString<uint32_t>(value);
+      total_connections = common::ConvertFromString<uint32_t>(value);
     } else if (field == MEMCACHED_CONNECTION_STRUCTURES_LABEL) {
-      connection_structures = common::convertFromString<uint32_t>(value);
+      connection_structures = common::ConvertFromString<uint32_t>(value);
     } else if (field == MEMCACHED_CMD_GET_LABEL) {
-      cmd_get = common::convertFromString<uint32_t>(value);
+      cmd_get = common::ConvertFromString<uint32_t>(value);
     } else if (field == MEMCACHED_CMD_SET_LABEL) {
-      cmd_set = common::convertFromString<uint32_t>(value);
+      cmd_set = common::ConvertFromString<uint32_t>(value);
     } else if (field == MEMCACHED_GET_HITS_LABEL) {
-      get_hits = common::convertFromString<uint32_t>(value);
+      get_hits = common::ConvertFromString<uint32_t>(value);
     } else if (field == MEMCACHED_GET_MISSES_LABEL) {
-      get_misses = common::convertFromString<uint32_t>(value);
+      get_misses = common::ConvertFromString<uint32_t>(value);
     } else if (field == MEMCACHED_EVICTIONS_LABEL) {
-      evictions = common::convertFromString<uint32_t>(value);
+      evictions = common::ConvertFromString<uint32_t>(value);
     } else if (field == MEMCACHED_BYTES_READ_LABEL) {
-      bytes_read = common::convertFromString<uint32_t>(value);
+      bytes_read = common::ConvertFromString<uint32_t>(value);
     } else if (field == MEMCACHED_BYTES_WRITTEN_LABEL) {
-      bytes_written = common::convertFromString<uint32_t>(value);
+      bytes_written = common::ConvertFromString<uint32_t>(value);
     } else if (field == MEMCACHED_LIMIT_MAXBYTES_LABEL) {
-      limit_maxbytes = common::convertFromString<uint32_t>(value);
+      limit_maxbytes = common::ConvertFromString<uint32_t>(value);
     } else if (field == MEMCACHED_THREADS_LABEL) {
-      threads = common::convertFromString<uint32_t>(value);
+      threads = common::ConvertFromString<uint32_t>(value);
     }
     start = pos + 2;
   }
@@ -285,11 +285,11 @@ std::string ServerInfo::toString() const {
 }
 
 uint32_t ServerInfo::version() const {
-  return common::convertVersionNumberFromString(common_.version);
+  return common::ConvertVersionNumberFromString(common_.version);
 }
 
 ServerInfo* makeMemcachedServerInfo(FastoObject* root) {
-  std::string content = common::convertToString(root);
+  std::string content = common::ConvertToString(root);
   return makeMemcachedServerInfo(content);
 }
 

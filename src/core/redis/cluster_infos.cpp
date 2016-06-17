@@ -60,7 +60,7 @@ ServerDiscoveryClusterInfo* makeOwnDiscoveryClusterInfo(const std::string& text)
             inf.name = word;
             break;
           case 1:
-            inf.host = common::convertFromString<common::net::hostAndPort>(word);
+            inf.host = common::ConvertFromString<common::net::hostAndPort>(word);
             break;
           case 2:
             if (word == "myself,slave") {
@@ -114,7 +114,7 @@ common::Error makeDiscoveryClusterInfo(const common::net::hostAndPort& parentHos
           break;
         }
         case 1: {
-          common::net::hostAndPort hport = common::convertFromString<common::net::hostAndPort>(word);
+          common::net::hostAndPort hport = common::ConvertFromString<common::net::hostAndPort>(word);
           if (common::net::isLocalHost(hport.host)) {
             hport.host = parentHost.host;
           }

@@ -57,7 +57,7 @@ ExplorerServerItem::ExplorerServerItem(core::IServerSPtr server, TreeItem* paren
 }
 
 QString ExplorerServerItem::name() const {
-  return common::convertFromString<QString>(server_->name());
+  return common::ConvertFromString<QString>(server_->name());
 }
 
 core::IServerSPtr ExplorerServerItem::server() const {
@@ -89,7 +89,7 @@ ExplorerSentinelItem::ExplorerSentinelItem(core::ISentinelSPtr sentinel, TreeIte
 }
 
 QString ExplorerSentinelItem::name() const {
-  return common::convertFromString<QString>(sentinel_->name());
+  return common::ConvertFromString<QString>(sentinel_->name());
 }
 
 ExplorerSentinelItem::eType ExplorerSentinelItem::type() const {
@@ -110,7 +110,7 @@ ExplorerClusterItem::ExplorerClusterItem(core::IClusterSPtr cluster, TreeItem* p
 }
 
 QString ExplorerClusterItem::name() const {
-  return common::convertFromString<QString>(cluster_->name());
+  return common::ConvertFromString<QString>(cluster_->name());
 }
 
 ExplorerClusterItem::eType ExplorerClusterItem::type() const {
@@ -127,7 +127,7 @@ ExplorerDatabaseItem::ExplorerDatabaseItem(core::IDatabaseSPtr db, ExplorerServe
 }
 
 QString ExplorerDatabaseItem::name() const {
-  return common::convertFromString<QString>(db_->name());
+  return common::ConvertFromString<QString>(db_->name());
 }
 
 ExplorerDatabaseItem::eType ExplorerDatabaseItem::type() const {
@@ -239,7 +239,7 @@ core::NDbKValue ExplorerKeyItem::key() const {
 }
 
 QString ExplorerKeyItem::name() const {
-  return common::convertFromString<QString>(key_.keyString());
+  return common::ConvertFromString<QString>(key_.keyString());
 }
 
 core::IServerSPtr ExplorerKeyItem::server() const {
@@ -347,25 +347,25 @@ QVariant ExplorerTreeModel::data(const QModelIndex& index, int role) const {
       core::IServerSPtr server = server_node->server();
       core::ServerDiscoveryClusterInfoSPtr disc = server->discoveryClusterInfo();
       if (disc) {
-        QString dname = common::convertFromString<QString>(disc->name());
-        QString dtype = common::convertFromString<QString>(common::convertToString(disc->type()));
-        QString dhost = common::convertFromString<QString>(common::convertToString(disc->host()));
+        QString dname = common::ConvertFromString<QString>(disc->name());
+        QString dtype = common::ConvertFromString<QString>(common::ConvertToString(disc->type()));
+        QString dhost = common::ConvertFromString<QString>(common::ConvertToString(disc->host()));
         return trDiscoveryToolTipTemplate_3S.arg(dname, dtype, dhost);
       } else {
-        QString sname = common::convertFromString<QString>(server->name());
+        QString sname = common::ConvertFromString<QString>(server->name());
         bool isCanRemote = server->isCanRemote();
         if (isCanRemote) {
           core::IServerRemote* rserver = dynamic_cast<core::IServerRemote*>(server.get());  // +
           CHECK(rserver);
-          QString stype = common::convertFromString<QString>(common::convertToString(rserver->role()));
-          QString mtype = common::convertFromString<QString>(common::convertToString(rserver->mode()));
-          QString shost = common::convertFromString<QString>(common::convertToString(rserver->host()));
+          QString stype = common::ConvertFromString<QString>(common::ConvertToString(rserver->role()));
+          QString mtype = common::ConvertFromString<QString>(common::ConvertToString(rserver->mode()));
+          QString shost = common::ConvertFromString<QString>(common::ConvertToString(rserver->host()));
           return trRemoteServerToolTipTemplate_4S.arg(sname, stype, mtype, shost);
         } else {
           core::IServerLocal* lserver = dynamic_cast<core::IServerLocal*>(server.get());  // +
           CHECK(lserver);
-          QString spath = common::convertFromString<QString>(lserver->path());
-          QString mtype = common::convertFromString<QString>(common::convertToString(lserver->mode()));
+          QString spath = common::ConvertFromString<QString>(lserver->path());
+          QString mtype = common::ConvertFromString<QString>(common::ConvertToString(lserver->mode()));
           return trLocalServerToolTipTemplate_3S.arg(sname, mtype, spath);
         }
       }
@@ -702,7 +702,7 @@ ExplorerNSItem* ExplorerTreeModel::findNSItem(IExplorerTreeItem* db_or_ns, const
 
 ExplorerNSItem* ExplorerTreeModel::findOrCreateNSItem(IExplorerTreeItem* db_or_ns, const core::KeyInfo& kinf) {
   std::string nspace = kinf.nspace();
-  QString qnspace = common::convertFromString<QString>(nspace);
+  QString qnspace = common::ConvertFromString<QString>(nspace);
   ExplorerNSItem* founded_item = findNSItem(db_or_ns, qnspace);
   if (founded_item) {
     return founded_item;
@@ -713,7 +713,7 @@ ExplorerNSItem* ExplorerTreeModel::findOrCreateNSItem(IExplorerTreeItem* db_or_n
   for (size_t i = 0; i < sz; ++i) {
     ExplorerNSItem* item = nullptr;
     nspace = kinf.joinNamespace(i);
-    qnspace = common::convertFromString<QString>(nspace);
+    qnspace = common::ConvertFromString<QString>(nspace);
     for (size_t j = 0; j < par->childrenCount(); ++j) {
       ExplorerNSItem* ns_item = dynamic_cast<ExplorerNSItem*>(par->child(j));  // +
       if (!ns_item) {

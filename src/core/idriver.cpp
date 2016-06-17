@@ -62,7 +62,7 @@ struct SigIgnInit {
 
 const char magicNumber = 0x1E;
 std::string createStamp(common::time64_t time) {
-  return magicNumber + common::convertToString(time) + '\n';
+  return magicNumber + common::ConvertToString(time) + '\n';
 }
 
 bool getStamp(common::buffer_t stamp, common::time64_t* timeOut) {
@@ -78,7 +78,7 @@ bool getStamp(common::buffer_t stamp, common::time64_t* timeOut) {
     stamp.pop_back();
   }
 
-  common::time64_t ltimeOut = common::convertFromString<common::time64_t>((const char*)(stamp.data() + 1));
+  common::time64_t ltimeOut = common::ConvertFromString<common::time64_t>((const char*)(stamp.data() + 1));
   *timeOut = ltimeOut;
   return ltimeOut != 0;
 }
@@ -463,7 +463,7 @@ void IDriver::handleLoadServerInfoHistoryEvent(events::ServerInfoHistoryRequestE
       bool res = readFile.readLine(&data);
       if (!res || readFile.isEof()) {
         if (curStamp) {
-          tmpInfos.push_back(ServerInfoSnapShoot(curStamp, makeServerInfoFromString(common::convertToString(dataInfo))));
+          tmpInfos.push_back(ServerInfoSnapShoot(curStamp, makeServerInfoFromString(common::ConvertToString(dataInfo))));
         }
         break;
       }
@@ -472,7 +472,7 @@ void IDriver::handleLoadServerInfoHistoryEvent(events::ServerInfoHistoryRequestE
       bool isSt = getStamp(data, &tmpStamp);
       if (isSt) {
         if (curStamp) {
-          tmpInfos.push_back(ServerInfoSnapShoot(curStamp, makeServerInfoFromString(common::convertToString(dataInfo))));
+          tmpInfos.push_back(ServerInfoSnapShoot(curStamp, makeServerInfoFromString(common::ConvertToString(dataInfo))));
         }
         curStamp = tmpStamp;
         dataInfo.clear();

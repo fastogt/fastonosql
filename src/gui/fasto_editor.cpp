@@ -421,21 +421,21 @@ void FastoEditorOutput::layoutChanged() {
 
     if (view_method_ == JSON) {
       QString json = toJson(child);
-      result += common::escapedText(json);
+      result += common::EscapedText(json);
     } else if (view_method_ == CSV) {
       QString csv = toCsv(child, delemitr_);
-      result += common::escapedText(csv);
+      result += common::EscapedText(csv);
     } else if (view_method_ == RAW) {
       QString raw = toRaw(child);
-      result += common::escapedText(raw);
+      result += common::EscapedText(raw);
     } else if (view_method_ == HEX) {
       result += toRaw(child);
     } else if (view_method_ == MSGPACK) {
       QString msgp = fromHexMsgPack(child);
-      result += common::escapedText(msgp);
+      result += common::EscapedText(msgp);
     } else if (view_method_ == GZIP) {
       QString gzip = fromGzip(child);
-      result += common::escapedText(gzip);
+      result += common::EscapedText(gzip);
     }
   }
 

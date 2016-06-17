@@ -146,7 +146,7 @@ uint32_t ServerInfo::version() const {
 }
 
 ServerInfo* makeLmdbServerInfo(FastoObject* root) {
-  std::string content = common::convertToString(root);
+  std::string content = common::ConvertToString(root);
   return makeLmdbServerInfo(content);
 }
 

@@ -18,9 +18,6 @@
 
 #include "shell/ssdb_lexer.h"
 
-#include <vector>
-#include <algorithm>
-
 #include "core/ssdb/db_connection.h"
 
 namespace fastonosql {

@@ -149,7 +149,7 @@ uint32_t ServerInfo::version() const {
 }
 
 ServerInfo* makeUnqliteServerInfo(FastoObject* root) {
-  std::string content = common::convertToString(root);
+  std::string content = common::ConvertToString(root);
   return makeUnqliteServerInfo(content);
 }
 

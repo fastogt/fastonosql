@@ -272,7 +272,7 @@ void SettingsManager::reloadFromPath(const std::string& path, bool merge) {
     recent_connections_.clear();
   }
 
-  QString inip = common::convertFromString<QString>(common::file_system::prepare_path(path));
+  QString inip = common::ConvertFromString<QString>(common::file_system::prepare_path(path));
   QSettings settings(inip, QSettings::IniFormat);
   DCHECK(settings.status() == QSettings::NoError);
 
@@ -286,7 +286,7 @@ void SettingsManager::reloadFromPath(const std::string& path, bool merge) {
   QList<QVariant> clusters = settings.value(CLUSTERS).toList();
   for (const auto& cluster: clusters) {
     QString string = cluster.toString();
-    std::string encoded = common::convertToString(string);
+    std::string encoded = common::ConvertToString(string);
     std::string raw = common::utils::base64::decode64(encoded);
 
     IClusterSettingsBaseSPtr sett(IClusterSettingsBase::fromString(raw));
@@ -298,7 +298,7 @@ void SettingsManager::reloadFromPath(const std::string& path, bool merge) {
   QList<QVariant> sentinels = settings.value(SENTINELS).toList();
   for (const auto& sentinel: sentinels) {
     QString string = sentinel.toString();
-    std::string encoded = common::convertToString(string);
+    std::string encoded = common::ConvertToString(string);
     std::string raw = common::utils::base64::decode64(encoded);
 
     ISentinelSettingsBaseSPtr sett(ISentinelSettingsBase::fromString(raw));
@@ -310,7 +310,7 @@ void SettingsManager::reloadFromPath(const std::string& path, bool merge) {
   QList<QVariant> connections = settings.value(CONNECTIONS).toList();
   for (const auto& connection: connections) {
     QString string = connection.toString();
-    std::string encoded = common::convertToString(string);
+    std::string encoded = common::ConvertToString(string);
     std::string raw = common::utils::base64::decode64(encoded);
 
     IConnectionSettingsBaseSPtr sett(IConnectionSettingsBase::fromString(raw));
@@ -321,17 +321,17 @@ void SettingsManager::reloadFromPath(const std::string& path, bool merge) {
 
   QStringList rconnections = settings.value(RCONNECTIONS).toStringList();
   for (const auto& rconnection: rconnections) {
-    std::string encoded = common::convertToString(rconnection);
+    std::string encoded = common::ConvertToString(rconnection);
     std::string raw = common::utils::base64::decode64(encoded);
 
-    QString qdata = common::convertFromString<QString>(raw);
+    QString qdata = common::ConvertFromString<QString>(raw);
     if (!qdata.isEmpty()) {
       recent_connections_.push_back(qdata);
     }
   }
 
   std::string dir_path = settingsDirPath();
-  logging_dir_ = settings.value(LOGGINGDIR, common::convertFromString<QString>(dir_path)).toString();
+  logging_dir_ = settings.value(LOGGINGDIR, common::ConvertFromString<QString>(dir_path)).toString();
   auto_check_update_ = settings.value(CHECKUPDATES, true).toBool();
   auto_completion_ = settings.value(AUTOCOMPLETION, true).toBool();
   auto_open_console_ = settings.value(AUTOOPENCONSOLE, true).toBool();
@@ -344,7 +344,7 @@ void SettingsManager::load() {
 }
 
 void SettingsManager::save() {
-  QSettings settings(common::convertFromString<QString>(settingsFilePath()), QSettings::IniFormat);
+  QSettings settings(common::ConvertFromString<QString>(settingsFilePath()), QSettings::IniFormat);
   DCHECK(settings.status() == QSettings::NoError);
 
   settings.setValue(STYLE, cur_style_);
@@ -357,7 +357,7 @@ void SettingsManager::save() {
     if (cluster) {
       std::string raw = cluster->toString();
       std::string enc = common::utils::base64::encode64(raw);
-      QString qdata = common::convertFromString<QString>(enc);
+      QString qdata = common::ConvertFromString<QString>(enc);
       clusters.push_back(qdata);
     }
   }
@@ -368,7 +368,7 @@ void SettingsManager::save() {
     if (sentinel) {
       std::string raw = sentinel->toString();
       std::string enc = common::utils::base64::encode64(raw);
-      QString qdata = common::convertFromString<QString>(enc);
+      QString qdata = common::ConvertFromString<QString>(enc);
       sentinels.push_back(qdata);
     }
   }
@@ -379,7 +379,7 @@ void SettingsManager::save() {
     if (connection) {
       std::string raw = connection->toString();
       std::string enc = common::utils::base64::encode64(raw);
-      QString qdata = common::convertFromString<QString>(enc);
+      QString qdata = common::ConvertFromString<QString>(enc);
       connections.push_back(qdata);
     }
   }
@@ -388,9 +388,9 @@ void SettingsManager::save() {
   QStringList rconnections;
   for (const auto& rconnection: recent_connections_) {
     if (!rconnection.isEmpty()) {
-      std::string raw = common::convertToString(rconnection);
+      std::string raw = common::ConvertToString(rconnection);
       std::string enc = common::utils::base64::encode64(raw);
-      QString qdata = common::convertFromString<QString>(enc);
+      QString qdata = common::ConvertFromString<QString>(enc);
       rconnections.push_back(qdata);
     }
   }

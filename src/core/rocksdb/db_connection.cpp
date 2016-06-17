@@ -157,19 +157,19 @@ common::Error DBConnection::info(const char* args, ServerInfo::Stats* statsout) 
     while (p2) {
       switch (pos++) {
       case 0:
-        lstatsout.compactions_level = common::convertFromString<uint32_t>(p2);
+        lstatsout.compactions_level = common::ConvertFromString<uint32_t>(p2);
         break;
       case 1:
-        lstatsout.file_size_mb = common::convertFromString<uint32_t>(p2);
+        lstatsout.file_size_mb = common::ConvertFromString<uint32_t>(p2);
         break;
       case 2:
-        lstatsout.time_sec = common::convertFromString<uint32_t>(p2);
+        lstatsout.time_sec = common::ConvertFromString<uint32_t>(p2);
         break;
       case 3:
-        lstatsout.read_mb = common::convertFromString<uint32_t>(p2);
+        lstatsout.read_mb = common::ConvertFromString<uint32_t>(p2);
         break;
       case 4:
-        lstatsout.write_mb = common::convertFromString<uint32_t>(p2);
+        lstatsout.write_mb = common::ConvertFromString<uint32_t>(p2);
         break;
       default:
         break;

@@ -144,11 +144,11 @@ common::Error DBConnection::info(const char* args, ServerInfo::Common* statsout)
     if (ret[i] == SSDB_VERSION_LABEL) {
       lstatsout.version = ret[i + 1];
     } else if (ret[i] == SSDB_LINKS_LABEL) {
-      lstatsout.links = common::convertFromString<uint32_t>(ret[i + 1]);
+      lstatsout.links = common::ConvertFromString<uint32_t>(ret[i + 1]);
     } else if (ret[i] == SSDB_TOTAL_CALLS_LABEL) {
-      lstatsout.total_calls = common::convertFromString<uint32_t>(ret[i + 1]);
+      lstatsout.total_calls = common::ConvertFromString<uint32_t>(ret[i + 1]);
     } else if (ret[i] == SSDB_DBSIZE_LABEL) {
-      lstatsout.dbsize = common::convertFromString<uint32_t>(ret[i + 1]);
+      lstatsout.dbsize = common::ConvertFromString<uint32_t>(ret[i + 1]);
     } else if (ret[i] == SSDB_BINLOGS_LABEL) {
       lstatsout.binlogs = ret[i + 1];
     }
@@ -931,7 +931,7 @@ common::Error set(CommandHandler* handler, int argc, char** argv, FastoObject* o
 
 common::Error setx(CommandHandler* handler, int argc, char** argv, FastoObject* out) {
   DBConnection* ssdb = static_cast<DBConnection*>(handler);
-  common::Error er = ssdb->setx(argv[0], argv[1], common::convertFromString<int>(argv[2]));
+  common::Error er = ssdb->setx(argv[0], argv[1], common::ConvertFromString<int>(argv[2]));
   if (!er) {
     common::StringValue* val = common::Value::createStringValue("STORED");
     FastoObject* child = new FastoObject(out, val, ssdb->delimiter(), ssdb->nsSeparator());

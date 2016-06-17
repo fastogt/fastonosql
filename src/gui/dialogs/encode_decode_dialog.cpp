@@ -62,8 +62,8 @@ EncodeDecodeDialog::EncodeDecodeDialog(QWidget* parent)
   decoders_ = new QComboBox;
   for (size_t i = 0; i < SIZEOFMASS(common::EDecoderTypes); ++i) {
     std::string estr = common::EDecoderTypes[i];
-    common::EDTypes etype = common::convertFromString<common::EDTypes>(estr);
-    decoders_->addItem(common::convertFromString<QString>(estr), etype);
+    common::EDTypes etype = common::ConvertFromString<common::EDTypes>(estr);
+    decoders_->addItem(common::ConvertFromString<QString>(estr), etype);
   }
 
   QHBoxLayout* toolBarLayout = new QHBoxLayout;
@@ -130,11 +130,11 @@ void EncodeDecodeDialog::decode() {
   common::IEDcoder* dec = common::IEDcoder::createEDCoder(currentType);
   CHECK(dec);
 
-  std::string sin = common::convertToString(in);
+  std::string sin = common::ConvertToString(in);
   std::string out;
   common::Error er = encodeButton_->isChecked() ? dec->encode(sin, &out) : dec->decode(sin, &out);
   if (!er) {
-    output_->setText(common::convertFromString<QString>(out));
+    output_->setText(common::ConvertFromString<QString>(out));
   }
   delete dec;
 }

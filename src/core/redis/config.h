@@ -69,5 +69,5 @@ struct Config
 }  // namespace fastonosql
 
 namespace common {
-  std::string convertToString(const fastonosql::core::redis::Config& conf);
+  std::string ConvertToString(const fastonosql::core::redis::Config& conf);
 }  // namespace common

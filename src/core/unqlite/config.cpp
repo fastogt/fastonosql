@@ -68,7 +68,7 @@ Config::Config()
 
 namespace common {
 
-std::string convertToString(const fastonosql::core::unqlite::Config &conf) {
+std::string ConvertToString(const fastonosql::core::unqlite::Config &conf) {
   std::vector<std::string> argv = conf.args();
 
   if (conf.create_if_missing) {
@@ -87,7 +87,7 @@ std::string convertToString(const fastonosql::core::unqlite::Config &conf) {
 }
 
 template<>
-fastonosql::core::unqlite::Config convertFromString(const std::string& line) {
+fastonosql::core::unqlite::Config ConvertFromString(const std::string& line) {
   fastonosql::core::unqlite::Config cfg;
   enum { kMaxArgs = 64 };
   int argc = 0;

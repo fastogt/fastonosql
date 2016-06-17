@@ -91,7 +91,7 @@ std::string ConnectionSettingsPath::directory() const {
 }
 
 std::string ConnectionSettingsPath::toString() const {
-  return common::convertToString(path_);
+  return common::ConvertToString(path_);
 }
 
 ConnectionSettingsPath ConnectionSettingsPath::root() {
@@ -145,9 +145,9 @@ IConnectionSettingsBase::~IConnectionSettingsBase() {
 void IConnectionSettingsBase::setConnectionPathAndUpdateHash(const connection_path_t& name) {
   setPath(name);
   std::string path = connection_path_.toString();
-  common::buffer_t bcon = common::convertFromString<common::buffer_t>(path);
+  common::buffer_t bcon = common::ConvertFromString<common::buffer_t>(path);
   uint64_t v = common::utils::hash::crc64(0, bcon);
-  hash_ = common::convertToString(v);
+  hash_ = common::ConvertToString(v);
 }
 
 std::string IConnectionSettingsBase::hash() const {
@@ -155,7 +155,7 @@ std::string IConnectionSettingsBase::hash() const {
 }
 
 std::string IConnectionSettingsBase::loggingPath() const {
-  std::string logDir = common::convertToString(SettingsManager::instance().loggingDirectory());
+  std::string logDir = common::ConvertToString(SettingsManager::instance().loggingDirectory());
   std::string prefix = logDir + hash();
 #ifdef BUILD_WITH_REDIS
   if (type_ == REDIS) {
@@ -257,7 +257,7 @@ IConnectionSettingsBase* IConnectionSettingsBase::fromString(const std::string& 
         connection_path_t path(elText);
         result->setConnectionPathAndUpdateHash(path);
       } else if (commaCount == 2) {
-        uint32_t msTime = common::convertFromString<uint32_t>(elText);
+        uint32_t msTime = common::ConvertFromString<uint32_t>(elText);
         result->setLoggingMsTimeInterval(msTime);
         if (!isRemoteType(result->type())) {
           result->setCommandLine(val.substr(i+1));
@@ -313,7 +313,7 @@ IConnectionSettingsRemote::~IConnectionSettingsRemote() {
 }
 
 std::string IConnectionSettingsRemote::fullAddress() const {
-  return common::convertToString(host());
+  return common::ConvertToString(host());
 }
 
 IConnectionSettingsRemote* IConnectionSettingsRemote::createFromType(connectionTypes type,
@@ -369,7 +369,7 @@ IConnectionSettingsRemoteSSH* IConnectionSettingsRemoteSSH::createFromType(conne
 
 std::string IConnectionSettingsRemoteSSH::toString() const {
   std::stringstream str;
-  str << IConnectionSettingsBase::toString() << ',' << common::convertToString(ssh_info_);
+  str << IConnectionSettingsBase::toString() << ',' << common::ConvertToString(ssh_info_);
   std::string res = str.str();
   return res;
 }
@@ -465,47 +465,47 @@ std::string defaultCommandLine(connectionTypes type) {
 #ifdef BUILD_WITH_REDIS
   if (type == REDIS) {
     redis::Config r;
-    return common::convertToString(r);
+    return common::ConvertToString(r);
   }
 #endif
 #ifdef BUILD_WITH_MEMCACHED
   if (type == MEMCACHED) {
     memcached::Config r;
-    return common::convertToString(r);
+    return common::ConvertToString(r);
   }
 #endif
 #ifdef BUILD_WITH_SSDB
   if (type == SSDB) {
     ssdb::Config r;
-    return common::convertToString(r);
+    return common::ConvertToString(r);
   }
 #endif
 #ifdef BUILD_WITH_LEVELDB
   if (type == LEVELDB) {
     leveldb::Config r;
     r.options.create_if_missing = true;
-    return common::convertToString(r);
+    return common::ConvertToString(r);
   }
 #endif
 #ifdef BUILD_WITH_ROCKSDB
   if (type == ROCKSDB) {
     rocksdb::Config r;
     r.options.create_if_missing = true;
-    return common::convertToString(r);
+    return common::ConvertToString(r);
   }
 #endif
 #ifdef BUILD_WITH_UNQLITE
   if (type == UNQLITE) {
     unqlite::Config r;
     r.create_if_missing = true;
-    return common::convertToString(r);
+    return common::ConvertToString(r);
   }
 #endif
 #ifdef BUILD_WITH_LMDB
   if (type == LMDB) {
     lmdb::Config r;
     r.create_if_missing = true;
-    return common::convertToString(r);
+    return common::ConvertToString(r);
   }
 #endif
 
@@ -566,7 +566,7 @@ IClusterSettingsBase* IClusterSettingsBase::fromString(const std::string& val) {
         connection_path_t path(elText);
         result->setPath(path);
       } else if (commaCount == 2) {
-        uint32_t msTime = common::convertFromString<uint32_t>(elText);
+        uint32_t msTime = common::ConvertFromString<uint32_t>(elText);
         result->setLoggingMsTimeInterval(msTime);
         std::string serText;
         for (size_t j = i + 2; j < len; ++j) {
@@ -741,7 +741,7 @@ ISentinelSettingsBase* ISentinelSettingsBase::fromString(const std::string& val)
         connection_path_t path(elText);
         result->setPath(path);
       } else if (commaCount == 2) {
-        uint32_t msTime = common::convertFromString<uint32_t>(elText);
+        uint32_t msTime = common::ConvertFromString<uint32_t>(elText);
         result->setLoggingMsTimeInterval(msTime);
 
         std::string serText;

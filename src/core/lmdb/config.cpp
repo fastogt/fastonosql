@@ -69,7 +69,7 @@ Config::Config()
 
 namespace common {
 
-std::string convertToString(const fastonosql::core::lmdb::Config& conf) {
+std::string ConvertToString(const fastonosql::core::lmdb::Config& conf) {
   std::vector<std::string> argv = conf.args();
 
   if (conf.create_if_missing) {
@@ -88,7 +88,7 @@ std::string convertToString(const fastonosql::core::lmdb::Config& conf) {
 }
 
 template<>
-fastonosql::core::lmdb::Config convertFromString(const std::string& line) {
+fastonosql::core::lmdb::Config ConvertFromString(const std::string& line) {
   fastonosql::core::lmdb::Config cfg;
   enum { kMaxArgs = 64 };
   int argc = 0;

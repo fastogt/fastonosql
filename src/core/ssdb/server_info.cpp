@@ -77,11 +77,11 @@ ServerInfo::Common::Common(const std::string& common_text) {
     if (field == SSDB_VERSION_LABEL) {
       version = value;
     } else if (field == SSDB_LINKS_LABEL) {
-      links = common::convertFromString<uint32_t>(value);
+      links = common::ConvertFromString<uint32_t>(value);
     } else if (field == SSDB_TOTAL_CALLS_LABEL) {
-      total_calls = common::convertFromString<uint32_t>(value);
+      total_calls = common::ConvertFromString<uint32_t>(value);
     } else if (field == SSDB_DBSIZE_LABEL) {
-        dbsize = common::convertFromString<uint32_t>(value);
+        dbsize = common::ConvertFromString<uint32_t>(value);
     } else if (field == SSDB_BINLOGS_LABEL) {
         binlogs = value;
     }
@@ -170,11 +170,11 @@ std::string ServerInfo::toString() const {
 }
 
 uint32_t ServerInfo::version() const {
-  return common::convertVersionNumberFromString(common_.version);
+  return common::ConvertVersionNumberFromString(common_.version);
 }
 
 ServerInfo* makeSsdbServerInfo(FastoObject* root) {
-  std::string content = common::convertToString(root);
+  std::string content = common::ConvertToString(root);
   return makeSsdbServerInfo(content);
 }
 

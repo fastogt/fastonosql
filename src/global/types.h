@@ -47,5 +47,5 @@ class Command {
 }
 
 namespace common {
-  std::string convertToString(fastonosql::supportedViews v);
+  std::string ConvertToString(fastonosql::supportedViews v);
 }

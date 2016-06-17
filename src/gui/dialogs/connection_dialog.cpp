@@ -84,8 +84,8 @@ ConnectionDialog::ConnectionDialog(QWidget* parent, core::IConnectionSettingsBas
 
   if (connection_) {
     core::IConnectionSettings::connection_path_t path = connection_->path();
-    conName = common::convertFromString<QString>(path.name());
-    conFolder = common::convertFromString<QString>(path.directory());
+    conName = common::ConvertFromString<QString>(path.name());
+    conFolder = common::ConvertFromString<QString>(path.directory());
   }
   connectionName_->setText(conName);
   connectionFolder_->setText(conFolder);
@@ -95,16 +95,16 @@ ConnectionDialog::ConnectionDialog(QWidget* parent, core::IConnectionSettingsBas
   if (availibleTypes.empty()) {
     for (size_t i = 0; i < SIZEOFMASS(core::connnectionType); ++i) {
       std::string str = core::connnectionType[i];
-      core::connectionTypes ct = common::convertFromString<core::connectionTypes>(str);
+      core::connectionTypes ct = common::ConvertFromString<core::connectionTypes>(str);
       typeConnection_->addItem(GuiFactory::instance().icon(ct),
-                               common::convertFromString<QString>(str), ct);
+                               common::ConvertFromString<QString>(str), ct);
     }
   } else {
     for (size_t i = 0; i < availibleTypes.size(); ++i) {
       core::connectionTypes ct = availibleTypes[i];
-      std::string str = common::convertToString(ct);
+      std::string str = common::ConvertToString(ct);
       typeConnection_->addItem(GuiFactory::instance().icon(ct),
-                               common::convertFromString<QString>(str), ct);
+                               common::ConvertFromString<QString>(str), ct);
     }
   }
 
@@ -136,7 +136,7 @@ ConnectionDialog::ConnectionDialog(QWidget* parent, core::IConnectionSettingsBas
   commandLine_ = new QLineEdit;
   commandLine_->setMinimumWidth(240);
   if (connection_) {
-    commandLine_->setText(stableCommandLine(common::convertFromString<QString>(connection_->commandLine())));
+    commandLine_->setText(stableCommandLine(common::ConvertFromString<QString>(connection_->commandLine())));
   }
 
   QVBoxLayout* inputLayout = new QVBoxLayout;
@@ -155,10 +155,10 @@ ConnectionDialog::ConnectionDialog(QWidget* parent, core::IConnectionSettingsBas
 
   sshHostName_ = new QLineEdit;
   common::net::hostAndPort host = info.host;
-  sshHostName_->setText(common::convertFromString<QString>(host.host));
+  sshHostName_->setText(common::ConvertFromString<QString>(host.host));
 
   userName_ = new QLineEdit;
-  userName_->setText(common::convertFromString<QString>(info.user_name));
+  userName_->setText(common::ConvertFromString<QString>(info.user_name));
 
   sshPort_ = new QLineEdit;
   sshPort_->setFixedWidth(80);
@@ -186,17 +186,17 @@ ConnectionDialog::ConnectionDialog(QWidget* parent, core::IConnectionSettingsBas
                  this, &ConnectionDialog::securityChange));
 
   passwordBox_ = new QLineEdit;
-  passwordBox_->setText(common::convertFromString<QString>(info.password));
+  passwordBox_->setText(common::ConvertFromString<QString>(info.password));
   passwordBox_->setEchoMode(QLineEdit::Password);
   passwordEchoModeButton_ = new QPushButton(translations::trShow);
   VERIFY(connect(passwordEchoModeButton_, &QPushButton::clicked,
                  this, &ConnectionDialog::togglePasswordEchoMode));
 
   privateKeyBox_ = new QLineEdit;
-  privateKeyBox_->setText(common::convertFromString<QString>(info.private_key));
+  privateKeyBox_->setText(common::ConvertFromString<QString>(info.private_key));
 
   passphraseBox_ = new QLineEdit;
-  passphraseBox_->setText(common::convertFromString<QString>(info.passphrase));
+  passphraseBox_->setText(common::ConvertFromString<QString>(info.passphrase));
   passphraseBox_->setEchoMode(QLineEdit::Password);
   passphraseEchoModeButton_ = new QPushButton(translations::trShow);
   VERIFY(connect(passphraseEchoModeButton_, &QPushButton::clicked,
@@ -300,7 +300,7 @@ void ConnectionDialog::typeConnectionChange(int index) {
   } else {
     commandLineText = defaultCommandLine(currentType);
   }
-  commandLine_->setText(stableCommandLine(common::convertFromString<QString>(commandLineText)));
+  commandLine_->setText(stableCommandLine(common::ConvertFromString<QString>(commandLineText)));
 
   useSsh_->setEnabled(isSSHType);
   updateSshControls(isSSHType);
@@ -382,8 +382,8 @@ bool ConnectionDialog::validateAndApply() {
   core::connectionTypes currentType = (core::connectionTypes)qvariant_cast<unsigned char>(var);
 
   bool isSSHType = isCanSSHConnection(currentType);
-  std::string conName = common::convertToString(connectionName_->text());
-  std::string conFolder = common::convertToString(connectionFolder_->text());
+  std::string conName = common::ConvertToString(connectionName_->text());
+  std::string conFolder = common::ConvertToString(connectionFolder_->text());
   if (conFolder.empty()) {
     conFolder = defaultNameConnectionFolder;
   }
@@ -393,13 +393,13 @@ bool ConnectionDialog::validateAndApply() {
     connection_.reset(newConnection);
 
     core::SSHInfo info = newConnection->sshInfo();
-    info.host = common::net::hostAndPort(common::convertToString(sshHostName_->text()),
+    info.host = common::net::hostAndPort(common::ConvertToString(sshHostName_->text()),
                                            sshPort_->text().toInt());
-    info.user_name = common::convertToString(userName_->text());
-    info.password = common::convertToString(passwordBox_->text());
+    info.user_name = common::ConvertToString(userName_->text());
+    info.password = common::ConvertToString(passwordBox_->text());
     info.public_key = std::string();
-    info.private_key = common::convertToString(privateKeyBox_->text());
-    info.passphrase = common::convertToString(passphraseBox_->text());
+    info.private_key = common::ConvertToString(privateKeyBox_->text());
+    info.passphrase = common::ConvertToString(passphraseBox_->text());
     if (useSsh_->isChecked()) {
       info.current_method = selectedAuthMethod();
     } else {
@@ -410,7 +410,7 @@ bool ConnectionDialog::validateAndApply() {
     core::IConnectionSettingsBase* newConnection = core::IConnectionSettingsBase::createFromType(currentType, path);
     connection_.reset(newConnection);
   }
-  connection_->setCommandLine(common::convertToString(toRawCommandLine(commandLine_->text())));
+  connection_->setCommandLine(common::ConvertToString(toRawCommandLine(commandLine_->text())));
   if (logging_->isChecked()) {
     connection_->setLoggingMsTimeInterval(loggingMsec_->value());
   }

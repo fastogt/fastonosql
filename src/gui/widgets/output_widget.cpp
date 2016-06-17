@@ -94,7 +94,7 @@ OutputWidget::OutputWidget(core::IServerSPtr server, QWidget* parent)
   tableView_ = new FastoTableView;
   tableView_->setModel(commonModel_);
 
-  QString delemitr = common::convertFromString<QString>(server_->outputDelemitr());
+  QString delemitr = common::ConvertFromString<QString>(server_->outputDelemitr());
   textView_ = new FastoTextView(delemitr);
   textView_->setModel(commonModel_);
 
