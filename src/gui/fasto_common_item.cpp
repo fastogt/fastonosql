@@ -68,7 +68,7 @@ QString toJson(FastoCommonItem* item) {
 
   if (!item->childrenCount()) {
     std::string json = common::ConvertToString(item->value());
-    std::string res = common::json::parseJson(json);
+    std::string res = common::json::ParseJson(json);
     return common::ConvertFromString<QString>(res);
   }
 
