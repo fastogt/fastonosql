@@ -100,6 +100,8 @@ void ChangePasswordServerDialog::tryToCreatePassword() {
 }
 
 void ChangePasswordServerDialog::startChangePassword(const core::events_info::ChangePasswordRequest& req) {
+  UNUSED(req);
+
   glassWidget_->start();
 }
 

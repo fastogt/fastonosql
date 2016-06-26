@@ -135,6 +135,8 @@ QVariant FastoCommonModel::headerData(int section, Qt::Orientation orientation, 
 }
 
 int FastoCommonModel::columnCount(const QModelIndex& parent) const {
+  UNUSED(parent);
+
   return FastoCommonItem::eCountColumns;
 }
 

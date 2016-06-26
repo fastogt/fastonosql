@@ -255,6 +255,6 @@ private:
 	void operator=(const Client&);
 };
 
-}; // namespace ssdb
+} // namespace ssdb
 
 #endif

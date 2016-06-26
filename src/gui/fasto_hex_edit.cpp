@@ -23,6 +23,8 @@
 #include <QPaintEvent>
 #include <QScrollBar>
 
+#include "common/macros.h"
+
 namespace {
   const QColor selectedColor = QColor(0x6d, 0x9e, 0xff, 0xff);
 }
@@ -86,8 +88,10 @@ QSize FastoHexEdit::fullSize() const {
 
   const QRect rect = stableRect(viewport()->rect());
   const int yPosStart = rect.top();
+  UNUSED(yPosStart);
   const int xPosStart = rect.left();
   const int yPosEnd = rect.bottom();
+  UNUSED(yPosEnd);
   const int xPosEnd = rect.right();
 
   const int wid = xPosEnd - xPosStart;
@@ -128,6 +132,7 @@ void FastoHexEdit::paintEvent(QPaintEvent* event) {
 
     const int wid = xPosEnd - xPosStart;
     const int height = yPosEnd - yPosStart;
+    UNUSED(height);
     const int widchars = wid - TextMarginXY * 2;
     const int acharInLine = asciiCharInLine(widchars);
     if (acharInLine <= 0) {

@@ -336,6 +336,7 @@ void Driver::handleClearDatabaseEvent(events::ClearDatabaseRequestEvent* ev) {
 }
 
 void Driver::handleProcessCommandLineArgs(events::ProcessConfigArgsRequestEvent* ev) {
+  UNUSED(ev);
 }
 
 IServerInfoSPtr Driver::makeServerInfoFromString(const std::string& val) {

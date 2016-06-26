@@ -838,6 +838,9 @@ common::Error DBConnection::qclear(const std::string& name, int64_t* ret) {
 }
 
 common::Error DBConnection::help(int argc, char** argv) {
+  UNUSED(argc);
+  UNUSED(argv);
+
   return notSupported("HELP");
 }
 
@@ -880,6 +883,9 @@ common::Error info(CommandHandler* handler, int argc, char** argv, FastoObject* 
 }
 
 common::Error dbsize(CommandHandler* handler, int argc, char** argv, FastoObject* out) {
+  UNUSED(argc);
+  UNUSED(argv);
+
   DBConnection* ssdb = static_cast<DBConnection*>(handler);
   int64_t dbsize = 0;
   common::Error er = ssdb->dbsize(&dbsize);
@@ -893,6 +899,8 @@ common::Error dbsize(CommandHandler* handler, int argc, char** argv, FastoObject
 }
 
 common::Error auth(CommandHandler* handler, int argc, char** argv, FastoObject* out) {
+  UNUSED(argc);
+
   DBConnection* ssdb = static_cast<DBConnection*>(handler);
   common::Error er = ssdb->auth(argv[0]);
   if (!er) {
@@ -905,6 +913,8 @@ common::Error auth(CommandHandler* handler, int argc, char** argv, FastoObject* 
 }
 
 common::Error get(CommandHandler* handler, int argc, char** argv, FastoObject* out) {
+  UNUSED(argc);
+
   DBConnection* ssdb = static_cast<DBConnection*>(handler);
   std::string ret;
   common::Error er = ssdb->get(argv[0], &ret);
@@ -918,6 +928,8 @@ common::Error get(CommandHandler* handler, int argc, char** argv, FastoObject* o
 }
 
 common::Error set(CommandHandler* handler, int argc, char** argv, FastoObject* out) {
+  UNUSED(argc);
+
   DBConnection* ssdb = static_cast<DBConnection*>(handler);
   common::Error er = ssdb->set(argv[0], argv[1]);
   if (!er) {
@@ -930,6 +942,8 @@ common::Error set(CommandHandler* handler, int argc, char** argv, FastoObject* o
 }
 
 common::Error setx(CommandHandler* handler, int argc, char** argv, FastoObject* out) {
+  UNUSED(argc);
+
   DBConnection* ssdb = static_cast<DBConnection*>(handler);
   common::Error er = ssdb->setx(argv[0], argv[1], common::ConvertFromString<int>(argv[2]));
   if (!er) {
@@ -942,6 +956,8 @@ common::Error setx(CommandHandler* handler, int argc, char** argv, FastoObject* 
 }
 
 common::Error del(CommandHandler* handler, int argc, char** argv, FastoObject* out) {
+  UNUSED(argc);
+
   DBConnection* ssdb = static_cast<DBConnection*>(handler);
   common::Error er = ssdb->del(argv[0]);
   if (!er) {
@@ -954,6 +970,8 @@ common::Error del(CommandHandler* handler, int argc, char** argv, FastoObject* o
 }
 
 common::Error incr(CommandHandler* handler, int argc, char** argv, FastoObject* out) {
+  UNUSED(argc);
+
   DBConnection* ssdb = static_cast<DBConnection*>(handler);
   int64_t ret = 0;
   common::Error er = ssdb->incr(argv[0], atoll(argv[1]), &ret);
@@ -967,6 +985,8 @@ common::Error incr(CommandHandler* handler, int argc, char** argv, FastoObject* 
 }
 
 common::Error keys(CommandHandler* handler, int argc, char** argv, FastoObject* out) {
+  UNUSED(argc);
+
   DBConnection* ssdb = static_cast<DBConnection*>(handler);
   std::vector<std::string> keysout;
   common::Error er = ssdb->keys(argv[0], argv[1], atoll(argv[2]), &keysout);
@@ -984,6 +1004,8 @@ common::Error keys(CommandHandler* handler, int argc, char** argv, FastoObject* 
 }
 
 common::Error scan(CommandHandler* handler, int argc, char** argv, FastoObject* out) {
+  UNUSED(argc);
+
   DBConnection* ssdb = static_cast<DBConnection*>(handler);
   std::vector<std::string> keysout;
   common::Error er = ssdb->scan(argv[0], argv[1], atoll(argv[2]), &keysout);
@@ -1001,6 +1023,8 @@ common::Error scan(CommandHandler* handler, int argc, char** argv, FastoObject* 
 }
 
 common::Error rscan(CommandHandler* handler, int argc, char** argv, FastoObject* out) {
+  UNUSED(argc);
+
   DBConnection* ssdb = static_cast<DBConnection*>(handler);
   std::vector<std::string> keysout;
   common::Error er = ssdb->rscan(argv[0], argv[1], atoll(argv[2]), &keysout);
@@ -1042,7 +1066,7 @@ common::Error multi_get(CommandHandler* handler, int argc, char** argv, FastoObj
 common::Error multi_set(CommandHandler* handler, int argc, char** argv, FastoObject* out) {
   DBConnection* ssdb = static_cast<DBConnection*>(handler);
   std::map<std::string, std::string> keysset;
-  for (size_t i = 0; i < argc; i += 2) {
+  for (int i = 0; i < argc; i += 2) {
     keysset[argv[i]] = argv[i + 1];
   }
 
@@ -1059,7 +1083,7 @@ common::Error multi_set(CommandHandler* handler, int argc, char** argv, FastoObj
 common::Error multi_del(CommandHandler* handler, int argc, char** argv, FastoObject* out) {
   DBConnection* ssdb = static_cast<DBConnection*>(handler);
   std::vector<std::string> keysget;
-  for (size_t i = 0; i < argc; ++i) {
+  for (int i = 0; i < argc; ++i) {
     keysget.push_back(argv[i]);
   }
 
@@ -1074,6 +1098,8 @@ common::Error multi_del(CommandHandler* handler, int argc, char** argv, FastoObj
 }
 
 common::Error hget(CommandHandler* handler, int argc, char** argv, FastoObject* out) {
+  UNUSED(argc);
+
   DBConnection* ssdb = static_cast<DBConnection*>(handler);
   std::string ret;
   common::Error er = ssdb->hget(argv[0], argv[1], &ret);
@@ -1087,6 +1113,8 @@ common::Error hget(CommandHandler* handler, int argc, char** argv, FastoObject* 
 }
 
 common::Error hgetall(CommandHandler* handler, int argc, char** argv, FastoObject* out) {
+  UNUSED(argc);
+
   DBConnection* ssdb = static_cast<DBConnection*>(handler);
   std::vector<std::string> keysout;
   common::Error er = ssdb->hgetall(argv[0], &keysout);
@@ -1104,6 +1132,8 @@ common::Error hgetall(CommandHandler* handler, int argc, char** argv, FastoObjec
 }
 
 common::Error hset(CommandHandler* handler, int argc, char** argv, FastoObject* out) {
+  UNUSED(argc);
+
   DBConnection* ssdb = static_cast<DBConnection*>(handler);
   common::Error er = ssdb->hset(argv[0], argv[1], argv[2]);
   if (!er) {
@@ -1116,6 +1146,8 @@ common::Error hset(CommandHandler* handler, int argc, char** argv, FastoObject* 
 }
 
 common::Error hdel(CommandHandler* handler, int argc, char** argv, FastoObject* out) {
+  UNUSED(argc);
+
   DBConnection* ssdb = static_cast<DBConnection*>(handler);
   common::Error er = ssdb->hdel(argv[0], argv[1]);
   if (!er) {
@@ -1128,6 +1160,8 @@ common::Error hdel(CommandHandler* handler, int argc, char** argv, FastoObject* 
 }
 
 common::Error hincr(CommandHandler* handler, int argc, char** argv, FastoObject* out) {
+  UNUSED(argc);
+
   DBConnection* ssdb = static_cast<DBConnection*>(handler);
   int64_t res = 0;
   common::Error er = ssdb->hincr(argv[0], argv[1], atoll(argv[2]), &res);
@@ -1141,6 +1175,8 @@ common::Error hincr(CommandHandler* handler, int argc, char** argv, FastoObject*
 }
 
 common::Error hsize(CommandHandler* handler, int argc, char** argv, FastoObject* out) {
+  UNUSED(argc);
+
   DBConnection* ssdb = static_cast<DBConnection*>(handler);
   int64_t res = 0;
   common::Error er = ssdb->hsize(argv[0], &res);
@@ -1154,6 +1190,8 @@ common::Error hsize(CommandHandler* handler, int argc, char** argv, FastoObject*
 }
 
 common::Error hclear(CommandHandler* handler, int argc, char** argv, FastoObject* out) {
+  UNUSED(argc);
+
   DBConnection* ssdb = static_cast<DBConnection*>(handler);
   int64_t res = 0;
   common::Error er = ssdb->hclear(argv[0], &res);
@@ -1167,6 +1205,8 @@ common::Error hclear(CommandHandler* handler, int argc, char** argv, FastoObject
 }
 
 common::Error hkeys(CommandHandler* handler, int argc, char** argv, FastoObject* out) {
+  UNUSED(argc);
+
   DBConnection* ssdb = static_cast<DBConnection*>(handler);
   std::vector<std::string> keysout;
   common::Error er = ssdb->hkeys(argv[0], argv[1], argv[2], atoll(argv[3]), &keysout);
@@ -1184,6 +1224,8 @@ common::Error hkeys(CommandHandler* handler, int argc, char** argv, FastoObject*
 }
 
 common::Error hscan(CommandHandler* handler, int argc, char** argv, FastoObject* out) {
+  UNUSED(argc);
+
   DBConnection* ssdb = static_cast<DBConnection*>(handler);
   std::vector<std::string> keysout;
   common::Error er = ssdb->hscan(argv[0], argv[1], argv[2], atoll(argv[3]), &keysout);
@@ -1201,6 +1243,8 @@ common::Error hscan(CommandHandler* handler, int argc, char** argv, FastoObject*
 }
 
 common::Error hrscan(CommandHandler* handler, int argc, char** argv, FastoObject* out) {
+  UNUSED(argc);
+
   DBConnection* ssdb = static_cast<DBConnection*>(handler);
   std::vector<std::string> keysout;
   common::Error er = ssdb->hrscan(argv[0], argv[1], argv[2], atoll(argv[3]), &keysout);
@@ -1257,6 +1301,8 @@ common::Error multi_hset(CommandHandler* handler, int argc, char** argv, FastoOb
 }
 
 common::Error zget(CommandHandler* handler, int argc, char** argv, FastoObject* out) {
+  UNUSED(argc);
+
   DBConnection* ssdb = static_cast<DBConnection*>(handler);
   int64_t ret;
   common::Error er = ssdb->zget(argv[0], argv[1], &ret);
@@ -1270,6 +1316,8 @@ common::Error zget(CommandHandler* handler, int argc, char** argv, FastoObject* 
 }
 
 common::Error zset(CommandHandler* handler, int argc, char** argv, FastoObject* out) {
+  UNUSED(argc);
+
   DBConnection* ssdb = static_cast<DBConnection*>(handler);
   common::Error er = ssdb->zset(argv[0], argv[1], atoll(argv[2]));
   if (!er) {
@@ -1282,6 +1330,8 @@ common::Error zset(CommandHandler* handler, int argc, char** argv, FastoObject* 
 }
 
 common::Error zdel(CommandHandler* handler, int argc, char** argv, FastoObject* out) {
+  UNUSED(argc);
+
   DBConnection* ssdb = static_cast<DBConnection*>(handler);
   common::Error er = ssdb->zdel(argv[0], argv[1]);
   if (!er) {
@@ -1293,6 +1343,8 @@ common::Error zdel(CommandHandler* handler, int argc, char** argv, FastoObject* 
 }
 
 common::Error zincr(CommandHandler* handler, int argc, char** argv, FastoObject* out) {
+  UNUSED(argc);
+
   DBConnection* ssdb = static_cast<DBConnection*>(handler);
   int64_t ret = 0;
   common::Error er = ssdb->zincr(argv[0], argv[1], atoll(argv[2]), &ret);
@@ -1306,6 +1358,8 @@ common::Error zincr(CommandHandler* handler, int argc, char** argv, FastoObject*
 }
 
 common::Error zsize(CommandHandler* handler, int argc, char** argv, FastoObject* out) {
+  UNUSED(argc);
+
   DBConnection* ssdb = static_cast<DBConnection*>(handler);
   int64_t res = 0;
   common::Error er = ssdb->zsize(argv[0], &res);
@@ -1319,6 +1373,8 @@ common::Error zsize(CommandHandler* handler, int argc, char** argv, FastoObject*
 }
 
 common::Error zclear(CommandHandler* handler, int argc, char** argv, FastoObject* out) {
+  UNUSED(argc);
+
   DBConnection* ssdb = static_cast<DBConnection*>(handler);
   int64_t res = 0;
   common::Error er = ssdb->zclear(argv[0], &res);
@@ -1332,6 +1388,8 @@ common::Error zclear(CommandHandler* handler, int argc, char** argv, FastoObject
 }
 
 common::Error zrank(CommandHandler* handler, int argc, char** argv, FastoObject* out) {
+  UNUSED(argc);
+
   DBConnection* ssdb = static_cast<DBConnection*>(handler);
   int64_t res = 0;
   common::Error er = ssdb->zrank(argv[0], argv[1], &res);
@@ -1345,6 +1403,8 @@ common::Error zrank(CommandHandler* handler, int argc, char** argv, FastoObject*
 }
 
 common::Error zrrank(CommandHandler* handler, int argc, char** argv, FastoObject* out) {
+  UNUSED(argc);
+
   DBConnection* ssdb = static_cast<DBConnection*>(handler);
   int64_t res = 0;
   common::Error er = ssdb->zrrank(argv[0], argv[1], &res);
@@ -1358,6 +1418,8 @@ common::Error zrrank(CommandHandler* handler, int argc, char** argv, FastoObject
 }
 
 common::Error zrange(CommandHandler* handler, int argc, char** argv, FastoObject* out) {
+  UNUSED(argc);
+
   DBConnection* ssdb = static_cast<DBConnection*>(handler);
   std::vector<std::string> res;
   common::Error er = ssdb->zrange(argv[0], atoll(argv[1]), atoll(argv[2]), &res);
@@ -1375,6 +1437,8 @@ common::Error zrange(CommandHandler* handler, int argc, char** argv, FastoObject
 }
 
 common::Error zrrange(CommandHandler* handler, int argc, char** argv, FastoObject* out) {
+  UNUSED(argc);
+
   DBConnection* ssdb = static_cast<DBConnection*>(handler);
   std::vector<std::string> res;
   common::Error er = ssdb->zrrange(argv[0], atoll(argv[1]), atoll(argv[2]), &res);
@@ -1392,6 +1456,8 @@ common::Error zrrange(CommandHandler* handler, int argc, char** argv, FastoObjec
 }
 
 common::Error zkeys(CommandHandler* handler, int argc, char** argv, FastoObject* out) {
+  UNUSED(argc);
+
   DBConnection* ssdb = static_cast<DBConnection*>(handler);
   std::vector<std::string> res;
   int64_t st = atoll(argv[2]);
@@ -1411,6 +1477,8 @@ common::Error zkeys(CommandHandler* handler, int argc, char** argv, FastoObject*
 }
 
 common::Error zscan(CommandHandler* handler, int argc, char** argv, FastoObject* out) {
+  UNUSED(argc);
+
   DBConnection* ssdb = static_cast<DBConnection*>(handler);
   std::vector<std::string> res;
   int64_t st = atoll(argv[2]);
@@ -1430,6 +1498,8 @@ common::Error zscan(CommandHandler* handler, int argc, char** argv, FastoObject*
 }
 
 common::Error zrscan(CommandHandler* handler, int argc, char** argv, FastoObject* out) {
+  UNUSED(argc);
+
   DBConnection* ssdb = static_cast<DBConnection*>(handler);
   std::vector<std::string> res;
   int64_t st = atoll(argv[2]);
@@ -1505,6 +1575,8 @@ common::Error multi_zdel(CommandHandler* handler, int argc, char** argv, FastoOb
 }
 
 common::Error qpush(CommandHandler* handler, int argc, char** argv, FastoObject* out) {
+  UNUSED(argc);
+
   DBConnection* ssdb = static_cast<DBConnection*>(handler);
   common::Error er = ssdb->qpush(argv[0], argv[1]);
   if (!er) {
@@ -1517,6 +1589,8 @@ common::Error qpush(CommandHandler* handler, int argc, char** argv, FastoObject*
 }
 
 common::Error qpop(CommandHandler* handler, int argc, char** argv, FastoObject* out) {
+  UNUSED(argc);
+
   DBConnection* ssdb = static_cast<DBConnection*>(handler);
   std::string ret;
   common::Error er = ssdb->qpop(argv[0], &ret);
@@ -1530,6 +1604,8 @@ common::Error qpop(CommandHandler* handler, int argc, char** argv, FastoObject* 
 }
 
 common::Error qslice(CommandHandler* handler, int argc, char** argv, FastoObject* out) {
+  UNUSED(argc);
+
   DBConnection* ssdb = static_cast<DBConnection*>(handler);
   int64_t begin = atoll(argv[1]);
   int64_t end = atoll(argv[2]);
@@ -1550,6 +1626,8 @@ common::Error qslice(CommandHandler* handler, int argc, char** argv, FastoObject
 }
 
 common::Error qclear(CommandHandler* handler, int argc, char** argv, FastoObject* out) {
+  UNUSED(argc);
+
   DBConnection* ssdb = static_cast<DBConnection*>(handler);
   int64_t res = 0;
   common::Error er = ssdb->qclear(argv[0], &res);
@@ -1563,6 +1641,9 @@ common::Error qclear(CommandHandler* handler, int argc, char** argv, FastoObject
 }
 
 common::Error dbkcount(CommandHandler* handler, int argc, char** argv, FastoObject* out) {
+  UNUSED(argc);
+  UNUSED(argv);
+
   DBConnection* ssdb = static_cast<DBConnection*>(handler);
   size_t dbkcount = 0;
   common::Error er = ssdb->dbkcount(&dbkcount);
@@ -1576,11 +1657,17 @@ common::Error dbkcount(CommandHandler* handler, int argc, char** argv, FastoObje
 }
 
 common::Error help(CommandHandler* handler, int argc, char** argv, FastoObject* out) {
+  UNUSED(out);
+
   DBConnection* ssdb = static_cast<DBConnection*>(handler);
   return ssdb->help(argc - 1, argv + 1);
 }
 
 common::Error flushdb(CommandHandler* handler, int argc, char** argv, FastoObject* out) {
+  UNUSED(argc);
+  UNUSED(argv);
+  UNUSED(out);
+
   DBConnection* ssdb = static_cast<DBConnection*>(handler);
   return ssdb->flushdb();
 }

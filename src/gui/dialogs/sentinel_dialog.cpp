@@ -356,7 +356,7 @@ bool SentinelDialog::validateAndApply() {
     newConnection->setLoggingMsTimeInterval(loggingMsec_->value());
   }
 
-  for (size_t i = 0; i < listWidget_->topLevelItemCount(); ++i) {
+  for (int i = 0; i < listWidget_->topLevelItemCount(); ++i) {
     SentinelConnectionWidgetItem* item = dynamic_cast<SentinelConnectionWidgetItem*>(listWidget_->topLevelItem(i));  // +
     CHECK(item);
     core::SentinelSettings sent;

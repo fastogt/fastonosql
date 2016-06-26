@@ -59,7 +59,7 @@ namespace fastonosql {
 namespace shell {
 
 BaseShellWidget::BaseShellWidget(core::IServerSPtr server, const QString& filePath, QWidget* parent)
-  : QWidget(parent), server_(server), filePath_(filePath), input_(nullptr) {
+  : QWidget(parent), server_(server), input_(nullptr), filePath_(filePath) {
   CHECK(server_);
 
   VERIFY(connect(server_.get(), &core::IServer::startedConnect,
@@ -315,22 +315,31 @@ void BaseShellWidget::saveToFile() {
 }
 
 void BaseShellWidget::startConnect(const core::events_info::ConnectInfoRequest& req) {
+  UNUSED(req);
+
   syncConnectionActions();
 }
 
 void BaseShellWidget::finishConnect(const core::events_info::ConnectInfoResponce& res) {
+  UNUSED(res);
+
   syncConnectionActions();
 }
 
 void BaseShellWidget::startDisconnect(const core::events_info::DisConnectInfoRequest& req) {
+  UNUSED(req);
+
   syncConnectionActions();
 }
 
 void BaseShellWidget::finishDisconnect(const core::events_info::DisConnectInfoResponce& res) {
+  UNUSED(res);
+
   syncConnectionActions();
 }
 
 void BaseShellWidget::startSetDefaultDatabase(const core::events_info::SetDefaultDatabaseRequest& req) {
+  UNUSED(req);
 }
 
 void BaseShellWidget::finishSetDefaultDatabase(const core::events_info::SetDefaultDatabaseResponce& res) {
@@ -361,9 +370,11 @@ void BaseShellWidget::enterMode(const core::events_info::EnterModeInfo& res) {
 }
 
 void BaseShellWidget::leaveMode(const core::events_info::LeaveModeInfo& res) {
+  UNUSED(res);
 }
 
 void BaseShellWidget::startLoadDiscoveryInfo(const core::events_info::DiscoveryInfoRequest& res) {
+  UNUSED(res);
 }
 
 void BaseShellWidget::finishLoadDiscoveryInfo(const core::events_info::DiscoveryInfoResponce& res) {

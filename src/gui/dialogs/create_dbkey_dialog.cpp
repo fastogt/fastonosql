@@ -285,7 +285,7 @@ common::Value* CreateDbKeyDialog::item() const {
       return nullptr;
     }
     common::ArrayValue* ar = common::Value::createArrayValue();
-    for (size_t i = 0; i < valueListEdit_->count(); ++i) {
+    for (int i = 0; i < valueListEdit_->count(); ++i) {
       std::string val = common::ConvertToString(valueListEdit_->item(i)->text());
       ar->appendString(val);
     }
@@ -296,7 +296,7 @@ common::Value* CreateDbKeyDialog::item() const {
       return nullptr;
     }
     common::SetValue* ar = common::Value::createSetValue();
-    for (size_t i = 0; i < valueListEdit_->count(); ++i) {
+    for (int i = 0; i < valueListEdit_->count(); ++i) {
       std::string val = common::ConvertToString(valueListEdit_->item(i)->text());
       ar->insert(val);
     }
@@ -308,7 +308,7 @@ common::Value* CreateDbKeyDialog::item() const {
     }
 
     common::ZSetValue* ar = common::Value::createZSetValue();
-    for (size_t i = 0; i < valueTableEdit_->rowCount(); ++i) {
+    for (int i = 0; i < valueTableEdit_->rowCount(); ++i) {
       QTableWidgetItem* kitem = valueTableEdit_->item(i, 0);
       QTableWidgetItem* vitem = valueTableEdit_->item(i, 0);
 
@@ -324,7 +324,7 @@ common::Value* CreateDbKeyDialog::item() const {
     }
 
     common::HashValue* ar = common::Value::createHashValue();
-    for (size_t i = 0; i < valueTableEdit_->rowCount(); ++i) {
+    for (int i = 0; i < valueTableEdit_->rowCount(); ++i) {
       QTableWidgetItem* kitem = valueTableEdit_->item(i, 0);
       QTableWidgetItem* vitem = valueTableEdit_->item(i, 0);
 

@@ -92,7 +92,7 @@ namespace fastonosql {
 namespace gui {
 
 ViewKeysDialog::ViewKeysDialog(const QString& title, core::IDatabaseSPtr db, QWidget* parent)
-  : QDialog(parent), db_(db), cursorStack_(), curPos_(0) {
+  : QDialog(parent), cursorStack_(), curPos_(0), db_(db) {
   CHECK(db_);
   core::IServerSPtr serv = db_->server();
   VERIFY(connect(serv.get(), &core::IServer::startedLoadDataBaseContent,
@@ -179,6 +179,8 @@ ViewKeysDialog::ViewKeysDialog(const QString& title, core::IDatabaseSPtr db, QWi
 }
 
 void ViewKeysDialog::startLoadDatabaseContent(const core::events_info::LoadDatabaseContentRequest& req) {
+  UNUSED(req);
+
   keysModel_->clear();
 }
 
@@ -217,6 +219,7 @@ void ViewKeysDialog::executeCommand(core::CommandKeySPtr cmd) {
 }
 
 void ViewKeysDialog::startExecuteCommand(const core::events_info::CommandRequest& req) {
+  UNUSED(req);
 }
 
 void ViewKeysDialog::finishExecuteCommand(const core::events_info::CommandResponce& res) {
@@ -267,6 +270,8 @@ void ViewKeysDialog::search(bool forward) {
 }
 
 void ViewKeysDialog::searchLineChanged(const QString& text) {
+  UNUSED(text);
+
   cursorStack_.clear();
   curPos_ = 0;
   currentKey_->setValue(0);

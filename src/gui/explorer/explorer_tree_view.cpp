@@ -808,6 +808,7 @@ void ExplorerTreeView::deleteKey() {
 }
 
 void ExplorerTreeView::startLoadDatabases(const core::events_info::LoadDatabasesInfoRequest& req) {
+  UNUSED(req);
 }
 
 void ExplorerTreeView::finishLoadDatabases(const core::events_info::LoadDatabasesInfoResponce& res) {
@@ -830,6 +831,7 @@ void ExplorerTreeView::finishLoadDatabases(const core::events_info::LoadDatabase
 }
 
 void ExplorerTreeView::startSetDefaultDatabase(const core::events_info::SetDefaultDatabaseRequest& req) {
+  UNUSED(req);
 }
 
 void ExplorerTreeView::finishSetDefaultDatabase(const core::events_info::SetDefaultDatabaseResponce& res) {
@@ -848,6 +850,7 @@ void ExplorerTreeView::finishSetDefaultDatabase(const core::events_info::SetDefa
 }
 
 void ExplorerTreeView::startLoadDatabaseContent(const core::events_info::LoadDatabaseContentRequest& req) {
+  UNUSED(req);
 }
 
 void ExplorerTreeView::finishLoadDatabaseContent(const core::events_info::LoadDatabaseContentResponce& res) {
@@ -873,7 +876,7 @@ void ExplorerTreeView::finishLoadDatabaseContent(const core::events_info::LoadDa
 }
 
 void ExplorerTreeView::startClearDatabase(const core::events_info::ClearDatabaseRequest& req) {
-
+  UNUSED(req);
 }
 
 void ExplorerTreeView::finishClearDatabase(const core::events_info::ClearDatabaseResponce& res) {
@@ -892,6 +895,7 @@ void ExplorerTreeView::finishClearDatabase(const core::events_info::ClearDatabas
 }
 
 void ExplorerTreeView::startExecuteCommand(const core::events_info::CommandRequest& req) {
+  UNUSED(req);
 }
 
 void ExplorerTreeView::finishExecuteCommand(const core::events_info::CommandResponce& res) {

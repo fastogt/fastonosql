@@ -451,6 +451,8 @@ QVariant ExplorerTreeModel::headerData(int section, Qt::Orientation orientation,
 }
 
 int ExplorerTreeModel::columnCount(const QModelIndex& parent) const {
+  UNUSED(parent);
+
   return ExplorerServerItem::eCountColumns;
 }
 

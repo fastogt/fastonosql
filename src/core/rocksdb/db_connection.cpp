@@ -134,6 +134,8 @@ const char* DBConnection::versionApi() {
 }
 
 common::Error DBConnection::info(const char* args, ServerInfo::Stats* statsout) {
+  UNUSED(args);
+
   if (!isConnected()) {
     DNOTREACHED();
     return common::make_error_value("Not connected", common::Value::E_ERROR);
@@ -335,6 +337,9 @@ common::Error DBConnection::keys(const std::string& key_start, const std::string
 }
 
 common::Error DBConnection::help(int argc, char** argv) {
+  UNUSED(argc);
+  UNUSED(argv);
+
   return notSupported("HELP");
 }
 
@@ -381,6 +386,8 @@ common::Error info(CommandHandler* handler, int argc, char** argv, FastoObject* 
 }
 
 common::Error set(CommandHandler* handler, int argc, char** argv, FastoObject* out) {
+  UNUSED(argc);
+
   DBConnection* rocks = static_cast<DBConnection*>(handler);
   common::Error er = rocks->set(argv[0], argv[1]);
   if (!er) {
@@ -393,6 +400,8 @@ common::Error set(CommandHandler* handler, int argc, char** argv, FastoObject* o
 }
 
 common::Error get(CommandHandler* handler, int argc, char** argv, FastoObject* out) {
+  UNUSED(argc);
+
   DBConnection* rocks = static_cast<DBConnection*>(handler);
   std::string ret;
   common::Error er = rocks->get(argv[0], &ret);
@@ -408,7 +417,7 @@ common::Error get(CommandHandler* handler, int argc, char** argv, FastoObject* o
 common::Error mget(CommandHandler* handler, int argc, char** argv, FastoObject* out) {
   DBConnection* rocks = static_cast<DBConnection*>(handler);
   std::vector< ::rocksdb::Slice> keysget;
-  for (size_t i = 0; i < argc; ++i) {
+  for (int i = 0; i < argc; ++i) {
     keysget.push_back(argv[i]);
   }
 
@@ -428,6 +437,8 @@ common::Error mget(CommandHandler* handler, int argc, char** argv, FastoObject* 
 }
 
 common::Error merge(CommandHandler* handler, int argc, char** argv, FastoObject* out) {
+  UNUSED(argc);
+
   DBConnection* rocks = static_cast<DBConnection*>(handler);
   common::Error er = rocks->merge(argv[0], argv[1]);
   if (!er) {
@@ -440,6 +451,8 @@ common::Error merge(CommandHandler* handler, int argc, char** argv, FastoObject*
 }
 
 common::Error del(CommandHandler* handler, int argc, char** argv, FastoObject* out) {
+  UNUSED(argc);
+
   DBConnection* rocks = static_cast<DBConnection*>(handler);
   common::Error er = rocks->del(argv[0]);
   if (!er) {
@@ -452,6 +465,8 @@ common::Error del(CommandHandler* handler, int argc, char** argv, FastoObject* o
 }
 
 common::Error keys(CommandHandler* handler, int argc, char** argv, FastoObject* out) {
+  UNUSED(argc);
+
   DBConnection* rocks = static_cast<DBConnection*>(handler);
   std::vector<std::string> keysout;
   common::Error er = rocks->keys(argv[0], argv[1], atoll(argv[2]), &keysout);
@@ -469,6 +484,9 @@ common::Error keys(CommandHandler* handler, int argc, char** argv, FastoObject* 
 }
 
 common::Error dbkcount(CommandHandler* handler, int argc, char** argv, FastoObject* out) {
+  UNUSED(argc);
+  UNUSED(argv);
+
   DBConnection* rocks = static_cast<DBConnection*>(handler);
   size_t dbkcount = 0;
   common::Error er = rocks->dbkcount(&dbkcount);
@@ -482,11 +500,17 @@ common::Error dbkcount(CommandHandler* handler, int argc, char** argv, FastoObje
 }
 
 common::Error help(CommandHandler* handler, int argc, char** argv, FastoObject* out) {
+  UNUSED(out);
+
   DBConnection* rocks = static_cast<DBConnection*>(handler);
   return rocks->help(argc - 1, argv + 1);
 }
 
 common::Error flushdb(CommandHandler* handler, int argc, char** argv, FastoObject* out) {
+  UNUSED(argc);
+  UNUSED(argv);
+  UNUSED(out);
+
   DBConnection* rocks = static_cast<DBConnection*>(handler);
   return rocks->flushdb();
 }

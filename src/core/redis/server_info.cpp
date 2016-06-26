@@ -644,6 +644,8 @@ common::Value* ServerInfo::Cpu::valueByIndex(unsigned char index) const {
 }
 
 common::Value* ServerInfo::Keyspace::valueByIndex(unsigned char index) const {
+  UNUSED(index);
+
   return nullptr;
 }
 

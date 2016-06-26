@@ -85,7 +85,7 @@ IConnectionListWidgetItem::itemConnectionType SentinelConnectionWidgetItem::type
 ConnectionListWidgetItemDiscovered::ConnectionListWidgetItemDiscovered(core::serverTypes st,
                                                                        core::serverMode md,
                                                                        QTreeWidgetItem* parent)
-  : ConnectionListWidgetItem(parent), server_type_(st), server_mode_(md) {
+  : ConnectionListWidgetItem(parent), server_mode_(md), server_type_(st) {
   std::string sert = common::ConvertToString(st);
   setText(2, common::ConvertFromString<QString>(sert));
 }

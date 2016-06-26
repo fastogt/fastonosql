@@ -184,6 +184,8 @@ const char* DBConnection::versionApi() {
 }
 
 common::Error DBConnection::keys(const char* args) {
+  UNUSED(args);
+
   return notSupported("KEYS");
 }
 
@@ -235,6 +237,8 @@ common::Error DBConnection::info(const char* args, ServerInfo::Common* statsout)
 }
 
 common::Error DBConnection::dbkcount(size_t* size) {
+  UNUSED(size);
+
   return notSupported("DBKCOUNT");
 }
 
@@ -435,10 +439,17 @@ common::Error DBConnection::version_server() const {
 }
 
 common::Error DBConnection::help(int argc, char** argv) {
+  UNUSED(argc);
+  UNUSED(argv);
+
   return notSupported("HELP");
 }
 
 common::Error keys(CommandHandler* handler, int argc, char** argv, FastoObject* out) {
+  UNUSED(argc);
+  UNUSED(argv);
+  UNUSED(out);
+
   DBConnection* mem = static_cast<DBConnection*>(handler);
   return mem->keys("items");
 }
@@ -463,6 +474,8 @@ common::Error stats(CommandHandler* handler, int argc, char** argv, FastoObject*
 }
 
 common::Error get(CommandHandler* handler, int argc, char** argv, FastoObject* out) {
+  UNUSED(argc);
+
   DBConnection* mem = static_cast<DBConnection*>(handler);
   std::string ret;
   common::Error er = mem->get(argv[0], &ret);
@@ -476,6 +489,8 @@ common::Error get(CommandHandler* handler, int argc, char** argv, FastoObject* o
 }
 
 common::Error set(CommandHandler* handler, int argc, char** argv, FastoObject* out) {
+  UNUSED(argc);
+
   DBConnection* mem = static_cast<DBConnection*>(handler);
   common::Error er = mem->set(argv[0], argv[3], common::ConvertFromString<time_t>(argv[1]), common::ConvertFromString<uint32_t>(argv[2]));
   if (!er) {
@@ -488,6 +503,8 @@ common::Error set(CommandHandler* handler, int argc, char** argv, FastoObject* o
 }
 
 common::Error add(CommandHandler* handler, int argc, char** argv, FastoObject* out) {
+  UNUSED(argc);
+
   DBConnection* mem = static_cast<DBConnection*>(handler);
   common::Error er = mem->add(argv[0], argv[3], common::ConvertFromString<time_t>(argv[1]), common::ConvertFromString<uint32_t>(argv[2]));
   if (!er) {
@@ -500,6 +517,8 @@ common::Error add(CommandHandler* handler, int argc, char** argv, FastoObject* o
 }
 
 common::Error replace(CommandHandler* handler, int argc, char** argv, FastoObject* out) {
+  UNUSED(argc);
+
   DBConnection* mem = static_cast<DBConnection*>(handler);
   common::Error er = mem->replace(argv[0], argv[3], common::ConvertFromString<time_t>(argv[1]), common::ConvertFromString<uint32_t>(argv[2]));
   if (!er) {
@@ -512,6 +531,8 @@ common::Error replace(CommandHandler* handler, int argc, char** argv, FastoObjec
 }
 
 common::Error append(CommandHandler* handler, int argc, char** argv, FastoObject* out) {
+  UNUSED(argc);
+
   DBConnection* mem = static_cast<DBConnection*>(handler);
   common::Error er = mem->append(argv[0], argv[3], common::ConvertFromString<time_t>(argv[1]), common::ConvertFromString<uint32_t>(argv[2]));
   if (!er) {
@@ -524,6 +545,8 @@ common::Error append(CommandHandler* handler, int argc, char** argv, FastoObject
 }
 
 common::Error prepend(CommandHandler* handler, int argc, char** argv, FastoObject* out) {
+  UNUSED(argc);
+
   DBConnection* mem = static_cast<DBConnection*>(handler);
   common::Error er = mem->prepend(argv[0], argv[3], common::ConvertFromString<time_t>(argv[1]), common::ConvertFromString<uint32_t>(argv[2]));
   if (!er) {
@@ -536,6 +559,8 @@ common::Error prepend(CommandHandler* handler, int argc, char** argv, FastoObjec
 }
 
 common::Error incr(CommandHandler* handler, int argc, char** argv, FastoObject* out) {
+  UNUSED(argc);
+
   DBConnection* mem = static_cast<DBConnection*>(handler);
   common::Error er = mem->incr(argv[0], common::ConvertFromString<uint64_t>(argv[1]));
   if (!er) {
@@ -548,6 +573,8 @@ common::Error incr(CommandHandler* handler, int argc, char** argv, FastoObject* 
 }
 
 common::Error decr(CommandHandler* handler, int argc, char** argv, FastoObject* out) {
+  UNUSED(argc);
+
   DBConnection* mem = static_cast<DBConnection*>(handler);
   common::Error er = mem->decr(argv[0], common::ConvertFromString<uint64_t>(argv[1]));
   if (!er) {
@@ -584,11 +611,18 @@ common::Error flush_all(CommandHandler* handler, int argc, char** argv, FastoObj
 }
 
 common::Error version_server(CommandHandler* handler, int argc, char** argv, FastoObject* out) {
+  UNUSED(argc);
+  UNUSED(argv);
+  UNUSED(out);
+
   DBConnection* mem = static_cast<DBConnection*>(handler);
   return mem->version_server();
 }
 
 common::Error dbkcount(CommandHandler* handler, int argc, char** argv, FastoObject* out) {
+  UNUSED(argc);
+  UNUSED(argv);
+
   DBConnection* mem = static_cast<DBConnection*>(handler);
   size_t dbkcount = 0;
   common::Error er = mem->dbkcount(&dbkcount);
@@ -602,6 +636,8 @@ common::Error dbkcount(CommandHandler* handler, int argc, char** argv, FastoObje
 }
 
 common::Error help(CommandHandler* handler, int argc, char** argv, FastoObject* out) {
+  UNUSED(out);
+
   DBConnection* mem = static_cast<DBConnection*>(handler);
   return mem->help(argc - 1, argv + 1);
 }

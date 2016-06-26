@@ -32,7 +32,7 @@ ServerCommonInfo::ServerCommonInfo()
 }
 
 ServerDiscoveryInfoBase::ServerDiscoveryInfoBase(connectionTypes ctype, const ServerCommonInfo &info)
-  : info_(info), ctype_(ctype) {
+  : ctype_(ctype), info_(info) {
 }
 
 connectionTypes ServerDiscoveryInfoBase::connectionType() const {
@@ -193,7 +193,7 @@ bool ServerInfoSnapShoot::isValid() const {
 
 IDataBaseInfo::IDataBaseInfo(const std::string& name, bool isDefault, connectionTypes type,
                            size_t dbkcount, const keys_container_t& keys)
-  : name_(name), is_default_(isDefault), type_(type), db_kcount_(dbkcount), keys_(keys) {
+  : name_(name), is_default_(isDefault), db_kcount_(dbkcount), keys_(keys), type_(type) {
 }
 
 IDataBaseInfo::~IDataBaseInfo() {

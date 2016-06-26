@@ -154,6 +154,8 @@ QVariant KeysTableModel::headerData(int section, Qt::Orientation orientation, in
 }
 
 int KeysTableModel::columnCount(const QModelIndex& parent) const {
+  UNUSED(parent);
+
   return KeyTableItem::kCountColumns;
 }
 

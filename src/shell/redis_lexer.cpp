@@ -49,6 +49,10 @@ void RedisApi::updateAutoCompletionList(const QStringList& context, QStringList&
 
 QStringList RedisApi::callTips(const QStringList& context, int commas,
                                QsciScintilla::CallTipsStyle style, QList<int>& shifts) {
+  UNUSED(commas);
+  UNUSED(style);
+  UNUSED(shifts);
+
   for (auto it = context.begin(); it != context.end(); ++it) {
     QString val = *it;
     for (size_t i = 0; i < core::redis::redisCommands.size(); ++i) {

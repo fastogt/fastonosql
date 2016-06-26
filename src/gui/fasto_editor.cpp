@@ -317,6 +317,9 @@ void FastoEditorOutput::modelDestroyed() {
 }
 
 void FastoEditorOutput::dataChanged(QModelIndex first, QModelIndex last) {
+  UNUSED(first);
+  UNUSED(last);
+
   layoutChanged();
 }
 
@@ -324,22 +327,41 @@ void FastoEditorOutput::headerDataChanged() {
 }
 
 void FastoEditorOutput::rowsInserted(QModelIndex index, int r, int c) {
+  UNUSED(index);
+  UNUSED(r);
+  UNUSED(c);
+
   layoutChanged();
 }
 
 void FastoEditorOutput::rowsAboutToBeRemoved(QModelIndex index, int r, int c) {
+  UNUSED(index);
+  UNUSED(r);
+  UNUSED(c);
 }
 
 void FastoEditorOutput::rowsRemoved(QModelIndex index, int r, int c) {
+  UNUSED(index);
+  UNUSED(r);
+  UNUSED(c);
 }
 
 void FastoEditorOutput::columnsAboutToBeRemoved(QModelIndex index, int r, int c) {
+  UNUSED(index);
+  UNUSED(r);
+  UNUSED(c);
 }
 
 void FastoEditorOutput::columnsRemoved(QModelIndex index, int r, int c) {
+  UNUSED(index);
+  UNUSED(r);
+  UNUSED(c);
 }
 
 void FastoEditorOutput::columnsInserted(QModelIndex index, int r, int c) {
+  UNUSED(index);
+  UNUSED(r);
+  UNUSED(c);
 }
 
 void FastoEditorOutput::reset() {

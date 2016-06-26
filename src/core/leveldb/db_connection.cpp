@@ -168,6 +168,8 @@ common::Error DBConnection::dbkcount(size_t* size) {
 }
 
 common::Error DBConnection::info(const char* args, ServerInfo::Stats* statsout) {
+  UNUSED(args);
+
   if (!isConnected()) {
     DNOTREACHED();
     return common::make_error_value("Not connected", common::Value::E_ERROR);
@@ -292,6 +294,9 @@ common::Error DBConnection::keys(const std::string& key_start, const std::string
 }
 
 common::Error DBConnection::help(int argc, char** argv) {
+  UNUSED(argc);
+  UNUSED(argv);
+
   return notSupported("HELP");
 }
 
@@ -325,6 +330,9 @@ common::Error DBConnection::flushdb() {
 }
 
 common::Error dbkcount(CommandHandler* handler, int argc, char** argv, FastoObject* out) {
+  UNUSED(argc);
+  UNUSED(argv);
+
   DBConnection* level = static_cast<DBConnection*>(handler);
 
   size_t dbkcount = 0;
@@ -352,6 +360,8 @@ common::Error info(CommandHandler* handler, int argc, char** argv, FastoObject* 
 }
 
 common::Error set(CommandHandler* handler, int argc, char** argv, FastoObject* out) {
+  UNUSED(argc);
+
   DBConnection* level = static_cast<DBConnection*>(handler);
 
   common::Error er = level->set(argv[0], argv[1]);
@@ -364,6 +374,8 @@ common::Error set(CommandHandler* handler, int argc, char** argv, FastoObject* o
 }
 
 common::Error get(CommandHandler* handler, int argc, char** argv, FastoObject* out) {
+  UNUSED(argc);
+
   DBConnection* level = static_cast<DBConnection*>(handler);
 
   std::string ret;
@@ -377,6 +389,8 @@ common::Error get(CommandHandler* handler, int argc, char** argv, FastoObject* o
 }
 
 common::Error del(CommandHandler* handler, int argc, char** argv, FastoObject* out) {
+  UNUSED(argc);
+
   DBConnection* level = static_cast<DBConnection*>(handler);
 
   common::Error er = level->del(argv[0]);
@@ -389,6 +403,8 @@ common::Error del(CommandHandler* handler, int argc, char** argv, FastoObject* o
 }
 
 common::Error keys(CommandHandler* handler, int argc, char** argv, FastoObject* out) {
+  UNUSED(argc);
+
   DBConnection* level = static_cast<DBConnection*>(handler);
 
   std::vector<std::string> keysout;
@@ -406,11 +422,17 @@ common::Error keys(CommandHandler* handler, int argc, char** argv, FastoObject* 
 }
 
 common::Error help(CommandHandler* handler, int argc, char** argv, FastoObject* out) {
+  UNUSED(out);
+
   DBConnection* level = static_cast<DBConnection*>(handler);
   return level->help(argc - 1, argv + 1);
 }
 
 common::Error flushdb(CommandHandler* handler, int argc, char** argv, FastoObject* out) {
+  UNUSED(argc);
+  UNUSED(argv);
+  UNUSED(out);
+
   DBConnection* level = static_cast<DBConnection*>(handler);
   return level->flushdb();
 }

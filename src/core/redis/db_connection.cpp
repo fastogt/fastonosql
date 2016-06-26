@@ -727,7 +727,7 @@ common::Error DBConnection::latencyMode(FastoObject* out) {
       continue;
     }
 
-    if (config_.latency_history && curTime - history_start > history_interval) {
+    if (config_.latency_history && (curTime - history_start > history_interval)) {
       child = new FastoObject(cmd, val, config_.delimiter, config_.ns_separator);
       cmd->addChildren(child);
       history_start = curTime;

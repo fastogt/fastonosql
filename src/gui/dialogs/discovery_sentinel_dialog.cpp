@@ -121,7 +121,7 @@ DiscoverySentinelDiagnosticDialog::DiscoverySentinelDiagnosticDialog(QWidget* pa
 
 std::vector<ConnectionListWidgetItemDiscovered*> DiscoverySentinelDiagnosticDialog::selectedConnections() const {
   std::vector<ConnectionListWidgetItemDiscovered*> res;
-  for (size_t i = 0; i < listWidget_->topLevelItemCount(); ++i) {
+  for (int i = 0; i < listWidget_->topLevelItemCount(); ++i) {
     QTreeWidgetItem *citem = listWidget_->topLevelItem(i);
     if (citem->isSelected()) {
       ConnectionListWidgetItemDiscovered* item = dynamic_cast<ConnectionListWidgetItemDiscovered*>(citem);  // +

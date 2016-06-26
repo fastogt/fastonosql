@@ -141,6 +141,7 @@ void OutputWidget::rootCompleate(const core::events_info::CommandRootCompleatedI
 }
 
 void OutputWidget::startExecuteCommand(const core::events_info::CommandRequest& req) {
+  UNUSED(req);
 }
 
 void OutputWidget::finishExecuteCommand(const core::events_info::CommandResponce& res) {

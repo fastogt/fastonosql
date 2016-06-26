@@ -609,7 +609,7 @@ void Driver::handleLoadDatabaseInfosEvent(events::LoadDatabasesInfoRequestEvent*
         std::string scountDb;
         bool isok = ar->getString(1, &scountDb);
         if (isok) {
-            int countDb = common::ConvertFromString<int>(scountDb);
+            size_t countDb = common::ConvertFromString<size_t>(scountDb);
             if (countDb > 0) {
               for (size_t i = 0; i < countDb; ++i) {
                 IDataBaseInfoSPtr dbInf(new DataBaseInfo(common::ConvertToString(i), false, 0));
