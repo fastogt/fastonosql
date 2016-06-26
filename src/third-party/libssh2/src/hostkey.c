@@ -66,6 +66,7 @@ hostkey_method_ssh_rsa_init(LIBSSH2_SESSION * session,
     libssh2_rsa_ctx *rsactx;
     const unsigned char *s, *e, *n;
     unsigned long len, e_len, n_len;
+    int ret;
 
     (void) hostkey_data_len;
 
@@ -92,9 +93,11 @@ hostkey_method_ssh_rsa_init(LIBSSH2_SESSION * session,
     s += 4;
     n = s;
 
-    if (_libssh2_rsa_new(&rsactx, e, e_len, n, n_len, NULL, 0,
-                         NULL, 0, NULL, 0, NULL, 0, NULL, 0, NULL, 0))
+    ret = _libssh2_rsa_new(&rsactx, e, e_len, n, n_len, NULL, 0,
+                           NULL, 0, NULL, 0, NULL, 0, NULL, 0, NULL, 0);
+    if (ret) {
         return -1;
+    }
 
     *abstract = rsactx;
 
@@ -197,6 +200,11 @@ hostkey_method_ssh_rsa_signv(LIBSSH2_SESSION * session,
                              void **abstract)
 {
     libssh2_rsa_ctx *rsactx = (libssh2_rsa_ctx *) (*abstract);
+
+#ifdef _libssh2_rsa_sha1_signv
+    return _libssh2_rsa_sha1_signv(session, signature, signature_len,
+                                   veccount, datavec, rsactx);
+#else
     int ret;
     int i;
     unsigned char hash[SHA_DIGEST_LENGTH];
@@ -215,6 +223,7 @@ hostkey_method_ssh_rsa_signv(LIBSSH2_SESSION * session,
     }
 
     return 0;
+#endif
 }
 
 /*
@@ -234,6 +243,10 @@ hostkey_method_ssh_rsa_dtor(LIBSSH2_SESSION * session, void **abstract)
 
     return 0;
 }
+
+#ifdef OPENSSL_NO_MD5
+#define MD5_DIGEST_LENGTH 16
+#endif
 
 static const LIBSSH2_HOSTKEY_METHOD hostkey_method_ssh_rsa = {
     "ssh-rsa",
@@ -270,6 +283,8 @@ hostkey_method_ssh_dss_init(LIBSSH2_SESSION * session,
     libssh2_dsa_ctx *dsactx;
     const unsigned char *p, *q, *g, *y, *s;
     unsigned long p_len, q_len, g_len, y_len, len;
+    int ret;
+
     (void) hostkey_data_len;
 
     if (*abstract) {
@@ -302,7 +317,11 @@ hostkey_method_ssh_dss_init(LIBSSH2_SESSION * session,
     y = s;
     /* s += y_len; */
 
-    _libssh2_dsa_new(&dsactx, p, p_len, q, q_len, g, g_len, y, y_len, NULL, 0);
+    ret = _libssh2_dsa_new(&dsactx, p, p_len, q, q_len,
+                           g, g_len, y, y_len, NULL, 0);
+    if (ret) {
+        return -1;
+    }
 
     *abstract = dsactx;
 

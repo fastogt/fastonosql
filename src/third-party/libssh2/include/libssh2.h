@@ -40,18 +40,18 @@
 #ifndef LIBSSH2_H
 #define LIBSSH2_H 1
 
-#define LIBSSH2_COPYRIGHT "2004-2015 The libssh2 project and its contributors."
+#define LIBSSH2_COPYRIGHT "2004-2016 The libssh2 project and its contributors."
 
 /* We use underscore instead of dash when appending DEV in dev versions just
    to make the BANNER define (used by src/session.c) be a valid SSH
    banner. Release versions have no appended strings and may of course not
    have dashes either. */
-#define LIBSSH2_VERSION "1.6.0"
+#define LIBSSH2_VERSION "1.7.0"
 
 /* The numeric version number is also available "in parts" by using these
    defines: */
 #define LIBSSH2_VERSION_MAJOR 1
-#define LIBSSH2_VERSION_MINOR 6
+#define LIBSSH2_VERSION_MINOR 7
 #define LIBSSH2_VERSION_PATCH 0
 
 /* This is the numeric version of the libssh2 version number, meant for easier
@@ -69,7 +69,7 @@
    and it is always a greater number in a more recent release. It makes
    comparisons with greater than and less than work.
 */
-#define LIBSSH2_VERSION_NUM 0x010600
+#define LIBSSH2_VERSION_NUM 0x010700
 
 /*
  * This is the date and time when the full source package was created. The
@@ -80,7 +80,7 @@
  *
  * "Mon Feb 12 11:35:33 UTC 2007"
  */
-#define LIBSSH2_TIMESTAMP "Fri Jun 12 06:58:26 UTC 2015"
+#define LIBSSH2_TIMESTAMP "tis 23 feb 2016 07:56:30 UTC"
 
 #ifndef RC_INVOKED
 
@@ -90,9 +90,6 @@ extern "C" {
 #ifdef _WIN32
 # include <basetsd.h>
 # include <winsock2.h>
-#ifdef FASTO
-# include <ws2tcpip.h>
-#endif
 #endif
 
 #include <stddef.h>
@@ -147,6 +144,68 @@ typedef SOCKET libssh2_socket_t;
 typedef int libssh2_socket_t;
 #define LIBSSH2_INVALID_SOCKET -1
 #endif /* WIN32 */
+
+/*
+ * Determine whether there is small or large file support on windows.
+ */
+
+#if defined(_MSC_VER) && !defined(_WIN32_WCE)
+#  if (_MSC_VER >= 900) && (_INTEGRAL_MAX_BITS >= 64)
+#    define LIBSSH2_USE_WIN32_LARGE_FILES
+#  else
+#    define LIBSSH2_USE_WIN32_SMALL_FILES
+#  endif
+#endif
+
+#if defined(__MINGW32__) && !defined(LIBSSH2_USE_WIN32_LARGE_FILES)
+#  define LIBSSH2_USE_WIN32_LARGE_FILES
+#endif
+
+#if defined(__WATCOMC__) && !defined(LIBSSH2_USE_WIN32_LARGE_FILES)
+#  define LIBSSH2_USE_WIN32_LARGE_FILES
+#endif
+
+#if defined(__POCC__)
+#  undef LIBSSH2_USE_WIN32_LARGE_FILES
+#endif
+
+#if defined(_WIN32) && !defined(LIBSSH2_USE_WIN32_LARGE_FILES) && \
+    !defined(LIBSSH2_USE_WIN32_SMALL_FILES)
+#  define LIBSSH2_USE_WIN32_SMALL_FILES
+#endif
+
+/*
+ * Large file (>2Gb) support using WIN32 functions.
+ */
+
+#ifdef LIBSSH2_USE_WIN32_LARGE_FILES
+#  include <io.h>
+#  include <sys/types.h>
+#  include <sys/stat.h>
+#  define LIBSSH2_STRUCT_STAT_SIZE_FORMAT    "%I64d"
+typedef struct _stati64 libssh2_struct_stat;
+typedef __int64 libssh2_struct_stat_size;
+#endif
+
+/*
+ * Small file (<2Gb) support using WIN32 functions.
+ */
+
+#ifdef LIBSSH2_USE_WIN32_SMALL_FILES
+#  include <sys/types.h>
+#  include <sys/stat.h>
+#  ifndef _WIN32_WCE
+#    define LIBSSH2_STRUCT_STAT_SIZE_FORMAT    "%d"
+typedef struct _stat libssh2_struct_stat;
+typedef off_t libssh2_struct_stat_size;
+#  endif
+#endif
+
+#ifndef LIBSSH2_STRUCT_STAT_SIZE_FORMAT
+#  define LIBSSH2_STRUCT_STAT_SIZE_FORMAT      "%zd"
+typedef struct stat libssh2_struct_stat;
+typedef off_t libssh2_struct_stat_size;
+#endif
 
 /* Part of every banner, user specified or not */
 #define LIBSSH2_SSH_BANNER                  "SSH-2.0-libssh2_" LIBSSH2_VERSION
@@ -509,6 +568,9 @@ LIBSSH2_API int libssh2_session_last_error(LIBSSH2_SESSION *session,
                                            char **errmsg,
                                            int *errmsg_len, int want_buf);
 LIBSSH2_API int libssh2_session_last_errno(LIBSSH2_SESSION *session);
+LIBSSH2_API int libssh2_session_set_last_error(LIBSSH2_SESSION* session,
+                                               int errcode,
+                                               const char* errmsg);
 LIBSSH2_API int libssh2_session_block_directions(LIBSSH2_SESSION *session);
 
 LIBSSH2_API int libssh2_session_flag(LIBSSH2_SESSION *session, int flag,
@@ -599,7 +661,8 @@ LIBSSH2_API int
 libssh2_userauth_keyboard_interactive_ex(LIBSSH2_SESSION* session,
                                          const char *username,
                                          unsigned int username_len,
-                                         LIBSSH2_USERAUTH_KBDINT_RESPONSE_FUNC((*response_callback)));
+                                         LIBSSH2_USERAUTH_KBDINT_RESPONSE_FUNC(
+                                                       (*response_callback)));
 
 #define libssh2_userauth_keyboard_interactive(session, username,        \
                                               response_callback)        \
@@ -808,9 +871,14 @@ LIBSSH2_API int libssh2_channel_close(LIBSSH2_CHANNEL *channel);
 LIBSSH2_API int libssh2_channel_wait_closed(LIBSSH2_CHANNEL *channel);
 LIBSSH2_API int libssh2_channel_free(LIBSSH2_CHANNEL *channel);
 
+/* libssh2_scp_recv is DEPRECATED, do not use! */
 LIBSSH2_API LIBSSH2_CHANNEL *libssh2_scp_recv(LIBSSH2_SESSION *session,
                                               const char *path,
                                               struct stat *sb);
+/* Use libssh2_scp_recv2 for large (> 2GB) file support on windows */
+LIBSSH2_API LIBSSH2_CHANNEL *libssh2_scp_recv2(LIBSSH2_SESSION *session,
+                                               const char *path,
+                                               libssh2_struct_stat *sb);
 LIBSSH2_API LIBSSH2_CHANNEL *libssh2_scp_send_ex(LIBSSH2_SESSION *session,
                                                  const char *path, int mode,
                                                  size_t size, long mtime,

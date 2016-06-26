@@ -5,6 +5,7 @@
 - [SSDB] DBKCOUNT command
 - [RocksDB] Up sources to version 4.8.0
 - Update QScintilla to version 2.9.2
+- Update libssh to version libssh 1.7.0
 
 0.6.2 / May 7, 2016
 [Alexandr Topilski]

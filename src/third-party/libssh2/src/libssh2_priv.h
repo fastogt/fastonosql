@@ -132,6 +132,11 @@ static inline int writev(int sock, struct iovec *iov, int nvecs)
 
 #endif /* WIN32 */
 
+#ifdef __OS400__
+/* Force parameter type. */
+#define send(s, b, l, f)    send((s), (unsigned char *) (b), (l), (f))
+#endif
+
 #include "crypto.h"
 
 #ifdef HAVE_WINSOCK2_H
@@ -149,6 +154,7 @@ static inline int writev(int sock, struct iovec *iov, int nvecs)
  * padding length, payload, padding, and MAC.)."
  */
 #define MAX_SSH_PACKET_LEN 35000
+#define MAX_SHA_DIGEST_LEN SHA256_DIGEST_LENGTH
 
 #define LIBSSH2_ALLOC(session, count) \
   session->alloc((count), &(session)->abstract)
@@ -182,9 +188,9 @@ static inline int writev(int sock, struct iovec *iov, int nvecs)
                       (channel), &(channel)->abstract)
 
 #define LIBSSH2_SEND_FD(session, fd, buffer, length, flags) \
-    session->send(fd, buffer, length, flags, &session->abstract)
+    (session->send)(fd, buffer, length, flags, &session->abstract)
 #define LIBSSH2_RECV_FD(session, fd, buffer, length, flags) \
-    session->recv(fd, buffer, length, flags, &session->abstract)
+    (session->recv)(fd, buffer, length, flags, &session->abstract)
 
 #define LIBSSH2_SEND(session, buffer, length, flags)  \
     LIBSSH2_SEND_FD(session, session->socket_fd, buffer, length, flags)
@@ -215,7 +221,8 @@ typedef enum
     libssh2_NB_state_jump2,
     libssh2_NB_state_jump3,
     libssh2_NB_state_jump4,
-    libssh2_NB_state_jump5
+    libssh2_NB_state_jump5,
+    libssh2_NB_state_end
 } libssh2_nonblocking_states;
 
 typedef struct packet_require_state_t
@@ -229,13 +236,13 @@ typedef struct packet_requirev_state_t
     time_t start;
 } packet_requirev_state_t;
 
-typedef struct kmdhgGPsha1kex_state_t
+typedef struct kmdhgGPshakex_state_t
 {
     libssh2_nonblocking_states state;
     unsigned char *e_packet;
     unsigned char *s_packet;
     unsigned char *tmp;
-    unsigned char h_sig_comp[SHA_DIGEST_LENGTH];
+    unsigned char h_sig_comp[MAX_SHA_DIGEST_LEN];
     unsigned char c;
     size_t e_packet_len;
     size_t s_packet_len;
@@ -252,16 +259,16 @@ typedef struct kmdhgGPsha1kex_state_t
     size_t f_value_len;
     size_t k_value_len;
     size_t h_sig_len;
-    libssh2_sha1_ctx exchange_hash;
+    void *exchange_hash;
     packet_require_state_t req_state;
     libssh2_nonblocking_states burn_state;
-} kmdhgGPsha1kex_state_t;
+} kmdhgGPshakex_state_t;
 
 typedef struct key_exchange_state_low_t
 {
     libssh2_nonblocking_states state;
     packet_require_state_t req_state;
-    kmdhgGPsha1kex_state_t exchange_state;
+    kmdhgGPshakex_state_t exchange_state;
     _libssh2_bn *p;             /* SSH2 defined value (p_value) */
     _libssh2_bn *g;             /* SSH2 defined value (2) */
     unsigned char request[13];
@@ -629,6 +636,7 @@ struct _LIBSSH2_SESSION
     /* Error tracking */
     const char *err_msg;
     int err_code;
+    int err_flags;
 
     /* struct members for packet-level reading */
     struct transportpacket packet;
@@ -779,7 +787,7 @@ struct _LIBSSH2_SESSION
     int sftpInit_sent; /* number of bytes from the buffer that have been
                           sent */
 
-    /* State variables used in libssh2_scp_recv() */
+    /* State variables used in libssh2_scp_recv() / libssh_scp_recv2() */
     libssh2_nonblocking_states scpRecv_state;
     unsigned char *scpRecv_command;
     size_t scpRecv_command_len;
@@ -790,6 +798,9 @@ struct _LIBSSH2_SESSION
     /* we have the type and we can parse such numbers */
     long long scpRecv_size;
 #define scpsize_strtol strtoll
+#elif defined(HAVE_STRTOI64)
+    __int64 scpRecv_size;
+#define scpsize_strtol _strtoi64
 #else
     long scpRecv_size;
 #define scpsize_strtol strtol
@@ -945,6 +956,10 @@ _libssh2_debug(LIBSSH2_SESSION * session, int context, const char *format, ...)
 /* Something very bad is going on */
 #define LIBSSH2_MAC_INVALID                     -1
 
+/* Flags for _libssh2_error_flags */
+/* Error message is allocated on the heap */
+#define LIBSSH2_ERR_FLAG_DUP                     1
+
 /* SSH Packet Types -- Defined by internet draft */
 /* Transport Layer */
 #define SSH_MSG_DISCONNECT                          1
@@ -961,7 +976,7 @@ _libssh2_debug(LIBSSH2_SESSION * session, int context, const char *format, ...)
 #define SSH_MSG_KEXDH_INIT                          30
 #define SSH_MSG_KEXDH_REPLY                         31
 
-/* diffie-hellman-group-exchange-sha1 */
+/* diffie-hellman-group-exchange-sha1 and diffie-hellman-group-exchange-sha256 */
 #define SSH_MSG_KEX_DH_GEX_REQUEST_OLD              30
 #define SSH_MSG_KEX_DH_GEX_REQUEST                  34
 #define SSH_MSG_KEX_DH_GEX_GROUP                    31

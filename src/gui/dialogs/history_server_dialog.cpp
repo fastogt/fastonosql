@@ -101,6 +101,8 @@ ServerHistoryDialog::ServerHistoryDialog(core::IServerSPtr server, QWidget* pare
 }
 
 void ServerHistoryDialog::startLoadServerHistoryInfo(const core::events_info::ServerInfoHistoryRequest& req) {
+  UNUSED(req);
+
   glassWidget_->start();
 }
 
@@ -116,6 +118,8 @@ void ServerHistoryDialog::finishLoadServerHistoryInfo(const core::events_info::S
 }
 
 void ServerHistoryDialog::startClearServerHistory(const core::events_info::ClearServerHistoryRequest& req) {
+
+  UNUSED(req);
 }
 
 void ServerHistoryDialog::finishClearServerHistory(const core::events_info::ClearServerHistoryResponce& res) {

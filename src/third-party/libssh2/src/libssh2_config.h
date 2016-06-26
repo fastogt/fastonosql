@@ -12,29 +12,31 @@
 /* Define to 1 if using `alloca.c'. */
 /* #undef C_ALLOCA */
 
-#if defined(OS_POSIX) && !defined(OS_FREEBSD)
 /* Define to 1 if you have `alloca', as a function or macro. */
 #define HAVE_ALLOCA 1
 
 /* Define to 1 if you have <alloca.h> and it should be used (not on Ultrix).
    */
-#define HAVE_ALLOCA_H 1
-#endif
+/* #undef HAVE_ALLOCA_H */
 
 /* Define to 1 if you have the <arpa/inet.h> header file. */
-#define HAVE_ARPA_INET_H 1
+/* #undef HAVE_ARPA_INET_H */
+
+/* Define to 1 if you have the declaration of `SecureZeroMemory', and to 0 if
+   you don't. */
+/* #undef HAVE_DECL_SECUREZEROMEMORY */
 
 /* disabled non-blocking sockets */
 /* #undef HAVE_DISABLED_NONBLOCKING */
 
 /* Define to 1 if you have the <dlfcn.h> header file. */
-#define HAVE_DLFCN_H 1
+/* #undef HAVE_DLFCN_H */
 
 /* Define to 1 if you have the <errno.h> header file. */
 #define HAVE_ERRNO_H 1
 
 /* Define to 1 if you have the `EVP_aes_128_ctr' function. */
-/* #undef HAVE_EVP_AES_128_CTR */
+#define HAVE_EVP_AES_128_CTR 1
 
 /* Define to 1 if you have the <fcntl.h> header file. */
 #define HAVE_FCNTL_H 1
@@ -49,7 +51,7 @@
 #define HAVE_INTTYPES_H 1
 
 /* use ioctlsocket() for non-blocking sockets */
-/* #undef HAVE_IOCTLSOCKET */
+#define HAVE_IOCTLSOCKET 1
 
 /* use Ioctlsocket() for non-blocking sockets */
 /* #undef HAVE_IOCTLSOCKET_CASE */
@@ -67,7 +69,7 @@
 #define HAVE_LIBSSL 1
 
 /* Define if you have the z library. */
-/* #undef HAVE_LIBZ */
+#define HAVE_LIBZ 1
 
 /* Define to 1 if the compiler supports the 'long long' data type. */
 #define HAVE_LONGLONG 1
@@ -76,7 +78,7 @@
 #define HAVE_MEMORY_H 1
 
 /* Define to 1 if you have the <netinet/in.h> header file. */
-#define HAVE_NETINET_IN_H 1
+/* #undef HAVE_NETINET_IN_H */
 
 /* Define to 1 if you have the <ntdef.h> header file. */
 /* #undef HAVE_NTDEF_H */
@@ -84,20 +86,14 @@
 /* Define to 1 if you have the <ntstatus.h> header file. */
 /* #undef HAVE_NTSTATUS_H */
 
-#ifdef OS_POSIX
 /* use O_NONBLOCK for non-blocking sockets */
-#define HAVE_O_NONBLOCK 1
-#else
-#define HAVE_IOCTLSOCKET 1
-#endif
+/* #undef HAVE_O_NONBLOCK */
 
-#ifdef OS_WIN
+/* Define to 1 if you have the `poll' function. */
+/* #undef HAVE_POLL */
+
 /* Define to 1 if you have the select function. */
 #define HAVE_SELECT 1
-#else
-/* Define to 1 if you have the `poll' function. */
-#define HAVE_POLL 1
-#endif
 
 /* use SO_NONBLOCK for non-blocking sockets */
 /* #undef HAVE_SO_NONBLOCK */
@@ -120,18 +116,14 @@
 /* Define to 1 if you have the `strtoll' function. */
 #define HAVE_STRTOLL 1
 
-#ifdef OS_POSIX
 /* Define to 1 if you have the <sys/ioctl.h> header file. */
-#define HAVE_SYS_IOCTL_H 1
-#endif
+/* #undef HAVE_SYS_IOCTL_H */
 
 /* Define to 1 if you have the <sys/select.h> header file. */
-#define HAVE_SYS_SELECT_H 1
+/* #undef HAVE_SYS_SELECT_H */
 
-#ifdef OS_POSIX
 /* Define to 1 if you have the <sys/socket.h> header file. */
-#define HAVE_SYS_SOCKET_H 1
-#endif
+/* #undef HAVE_SYS_SOCKET_H */
 
 /* Define to 1 if you have the <sys/stat.h> header file. */
 #define HAVE_SYS_STAT_H 1
@@ -142,28 +134,29 @@
 /* Define to 1 if you have the <sys/types.h> header file. */
 #define HAVE_SYS_TYPES_H 1
 
-#ifdef OS_POSIX
 /* Define to 1 if you have the <sys/uio.h> header file. */
-#define HAVE_SYS_UIO_H 1
-#endif
+/* #undef HAVE_SYS_UIO_H */
 
 /* Define to 1 if you have the <sys/un.h> header file. */
-#define HAVE_SYS_UN_H 1
+/* #undef HAVE_SYS_UN_H */
 
 /* Define to 1 if you have the <unistd.h> header file. */
 #define HAVE_UNISTD_H 1
 
 /* Define to 1 if you have the <windows.h> header file. */
-/* #undef HAVE_WINDOWS_H */
+#define HAVE_WINDOWS_H 1
 
 /* Define to 1 if you have the <winsock2.h> header file. */
-/* #undef HAVE_WINSOCK2_H */
+#define HAVE_WINSOCK2_H 1
 
 /* Define to 1 if you have the <ws2tcpip.h> header file. */
-/* #undef HAVE_WS2TCPIP_H */
+#define HAVE_WS2TCPIP_H 1
 
 /* to make a symbol visible */
 /* #undef LIBSSH2_API */
+
+/* Enable clearing of memory before being freed */
+/* #undef LIBSSH2_CLEAR_MEMORY */
 
 /* Enable "none" cipher -- NOT RECOMMENDED */
 /* #undef LIBSSH2_CRYPT_NONE */
@@ -172,7 +165,7 @@
 #define LIBSSH2_DH_GEX_NEW 1
 
 /* Compile in zlib support */
-/* #undef LIBSSH2_HAVE_ZLIB */
+#define LIBSSH2_HAVE_ZLIB 1
 
 /* Use libgcrypt */
 /* #undef LIBSSH2_LIBGCRYPT */
@@ -191,7 +184,7 @@
 #define LT_OBJDIR ".libs/"
 
 /* Define to 1 if _REENTRANT preprocessor symbol must be defined. */
-/* #undef NEED_REENTRANT */
+#define NEED_REENTRANT 1
 
 /* Name of package */
 #define PACKAGE "libssh2"
@@ -246,7 +239,7 @@
 #endif
 
 /* Number of bits in a file offset, on hosts where this is settable. */
-/* #undef _FILE_OFFSET_BITS */
+#define _FILE_OFFSET_BITS 64
 
 /* Define for large files, on AIX-style hosts. */
 /* #undef _LARGE_FILES */

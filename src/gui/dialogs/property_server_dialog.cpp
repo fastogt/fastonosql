@@ -69,6 +69,8 @@ PropertyServerDialog::PropertyServerDialog(core::IServerSPtr server, QWidget* pa
 }
 
 void PropertyServerDialog::startServerProperty(const core::events_info::ServerPropertyInfoRequest& req) {
+  UNUSED(req);
+
   glassWidget_->start();
 }
 
@@ -90,6 +92,7 @@ void PropertyServerDialog::finishServerProperty(const core::events_info::ServerP
 }
 
 void PropertyServerDialog::startServerChangeProperty(const core::events_info::ChangeServerPropertyInfoRequest& req) {
+  UNUSED(req);
 }
 
 void PropertyServerDialog::finishServerChangeProperty(const core::events_info::ChangeServerPropertyInfoResponce& res) {

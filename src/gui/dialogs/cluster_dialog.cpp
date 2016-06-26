@@ -394,7 +394,7 @@ bool ClusterDialog::validateAndApply() {
     if (logging_->isChecked()) {
       cluster_connection_->setLoggingMsTimeInterval(loggingMsec_->value());
     }
-    for (size_t i = 0; i < listWidget_->topLevelItemCount(); ++i) {
+    for (int i = 0; i < listWidget_->topLevelItemCount(); ++i) {
       ConnectionListWidgetItem* item = dynamic_cast<ConnectionListWidgetItem*>(listWidget_->topLevelItem(i));  // +
       if (item) {
         core::IConnectionSettingsBaseSPtr con = item->connection();

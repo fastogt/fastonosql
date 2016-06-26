@@ -122,6 +122,8 @@ QVariant PropertyTableModel::headerData(int section, Qt::Orientation orientation
 }
 
 int PropertyTableModel::columnCount(const QModelIndex& parent) const {
+  UNUSED(parent);
+
   return PropertyTableItem::eCountColumns;
 }
 

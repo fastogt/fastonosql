@@ -229,6 +229,8 @@ InfoServerDialog::InfoServerDialog(core::IServerSPtr server, QWidget* parent)
 }
 
 void InfoServerDialog::startServerInfo(const core::events_info::ServerInfoRequest& req) {
+  UNUSED(req);
+
   glassWidget_->start();
 }
 
