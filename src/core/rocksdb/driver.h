@@ -22,11 +22,11 @@
 
 #include "core/idriver.h"
 
-#include "core/rocksdb/db_connection.h"
-
 namespace fastonosql {
 namespace core {
 namespace rocksdb {
+
+class DBConnection;
 
 class Driver
   : public IDriverLocal {

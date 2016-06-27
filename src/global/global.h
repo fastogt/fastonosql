@@ -28,6 +28,7 @@ class FastoObject
   : public common::intrusive_ptr_base<FastoObject> {
  public:
   typedef std::vector<FastoObject*> childs_t;
+  typedef common::scoped_ptr<common::Value> value_t;
 
   FastoObject(FastoObject* parent, common::Value* val,
               const std::string& delemitr, const std::string& ns_separator);
@@ -50,7 +51,7 @@ class FastoObject
 
  protected:
   IFastoObjectObserver* observer_;
-  common::scoped_ptr<common::Value> value_;
+  value_t value_;
 
  private:
   DISALLOW_COPY_AND_ASSIGN(FastoObject);

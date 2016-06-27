@@ -22,11 +22,11 @@
 
 #include "core/idriver.h"
 
-#include "core/lmdb/db_connection.h"
-
 namespace fastonosql {
 namespace core {
 namespace lmdb {
+
+class DBConnection;
 
 class Driver
   : public IDriverLocal {

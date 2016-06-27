@@ -1,1 +1,2 @@
 memcached/src/mem_config.h
+libssh2/src/libssh2_config.h

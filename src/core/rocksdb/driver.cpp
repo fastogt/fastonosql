@@ -30,6 +30,7 @@
 
 #include "core/rocksdb/database.h"
 #include "core/rocksdb/command.h"
+#include "core/rocksdb/db_connection.h"
 
 #define INFO_REQUEST "INFO"
 #define GET_KEY_PATTERN_1ARGS_S "GET %s"

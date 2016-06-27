@@ -29,6 +29,7 @@
 
 #include "core/lmdb/database.h"
 #include "core/lmdb/command.h"
+#include "core/lmdb/db_connection.h"
 
 #define INFO_REQUEST "INFO"
 #define GET_KEY_PATTERN_1ARGS_S "GET %s"

@@ -22,11 +22,11 @@
 
 #include "core/idriver.h"
 
-#include "core/memcached/db_connection.h"
-
 namespace fastonosql {
 namespace core {
 namespace memcached {
+
+class DBConnection;
 
 class Driver
   : public IDriverRemote {

@@ -18,8 +18,6 @@
 
 #include "core/leveldb/driver.h"
 
-#include <leveldb/db.h>
-
 #include <vector>
 #include <string>
 
@@ -27,8 +25,10 @@
 #include "common/utils.h"
 
 #include "core/command_logger.h"
+
 #include "core/leveldb/database.h"
 #include "core/leveldb/command.h"
+#include "core/leveldb/db_connection.h"
 
 #define INFO_REQUEST "INFO"
 #define GET_KEY_PATTERN_1ARGS_S "GET %s"

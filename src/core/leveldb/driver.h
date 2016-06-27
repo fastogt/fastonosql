@@ -21,11 +21,12 @@
 #include <string>
 
 #include "core/idriver.h"
-#include "core/leveldb/db_connection.h"
 
 namespace fastonosql {
 namespace core {
 namespace leveldb {
+
+class DBConnection;
 
 class Driver
   : public IDriverLocal {

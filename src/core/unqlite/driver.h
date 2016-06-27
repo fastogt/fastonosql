@@ -22,11 +22,11 @@
 
 #include "core/idriver.h"
 
-#include "core/unqlite/db_connection.h"
-
 namespace fastonosql {
 namespace core {
 namespace unqlite {
+
+class DBConnection;
 
 class Driver
   : public IDriverLocal {

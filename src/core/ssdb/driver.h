@@ -20,11 +20,11 @@
 
 #include "core/idriver.h"
 
-#include "core/ssdb/db_connection.h"
-
 namespace fastonosql {
 namespace core {
 namespace ssdb {
+
+class DBConnection;
 
 class Driver
   : public IDriverRemote {
