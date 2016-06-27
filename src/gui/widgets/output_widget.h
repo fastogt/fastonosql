@@ -57,7 +57,7 @@ class OutputWidget
   void rootCompleate(const core::events_info::CommandRootCompleatedInfo& res);
 
   void addChild(FastoObject* child);
-  void itemUpdate(FastoObject* item, common::Value* newValue);
+  void itemUpdate(FastoObject* item, FastoObject::value_t newValue);
 
   void setTreeView();
   void setTableView();

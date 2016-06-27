@@ -18,11 +18,13 @@
 
 #include "global/global.h"
 
+#include <QMetaType>
+
 #include "common/string_util.h"
 
 namespace fastonosql {
 
-FastoObject::FastoObject(FastoObject* parent, common::Value* val,
+FastoObject::FastoObject(FastoObject* parent, common::Value *val,
                          const std::string& delemitr, const std::string& ns_separator)
   : observer_(nullptr), value_(val), parent_(parent), childrens_(),
     delemitr_(delemitr), ns_separator_(ns_separator) {
@@ -61,13 +63,15 @@ FastoObject::childs_t FastoObject::childrens() const {
 }
 
 void FastoObject::addChildren(FastoObject* child) {
-  if (child) {
-    DCHECK(child->parent_ == this);
-    childrens_.push_back(child);
-    if (observer_) {
-      observer_->addedChildren(child);
-      child->observer_ = observer_;
-    }
+  if (!child) {
+    return;
+  }
+
+  CHECK(child->parent_ == this);
+  childrens_.push_back(child);
+  if (observer_) {
+    observer_->addedChildren(child);
+    child->observer_ = observer_;
   }
 }
 
@@ -91,12 +95,12 @@ std::string FastoObject::nsSeparator() const {
   return ns_separator_;
 }
 
-common::Value* FastoObject::value() const {
-  return value_.get();
+FastoObject::value_t FastoObject::value() const {
+  return value_;
 }
 
-void FastoObject::setValue(common::Value* val) {
-  value_.reset(val);
+void FastoObject::setValue(value_t val) {
+  value_ = val;
   if (observer_) {
     observer_->updated(this, val);
   }

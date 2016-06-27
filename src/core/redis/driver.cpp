@@ -718,7 +718,7 @@ void Driver::handleLoadDatabaseContentEvent(events::LoadDatabaseContentRequestEv
           DCHECK_EQ(tchildrens.size(), 1);
           if (tchildrens.size() == 1) {
             FastoObject* fttl = tchildrens[0];
-            common::Value* vttl = fttl->value();
+            auto vttl = fttl->value();
             ttl_t ttl = 0;
             if (vttl->getAsInteger(&ttl)) {
                 res.keys[i].setTTL(ttl);

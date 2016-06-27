@@ -144,6 +144,8 @@ IDriver::IDriver(IConnectionSettingsBaseSPtr settings)
 
   VERIFY(connect(thread_, &QThread::started, this, &IDriver::init));
   VERIFY(connect(thread_, &QThread::finished, this, &IDriver::clear));
+
+  qRegisterMetaType<FastoObject::value_t>("FastoObject::value_t");
 }
 
 IDriver::~IDriver() {
@@ -556,7 +558,7 @@ void IDriver::addedChildren(FastoObject* child) {
   emit addedChild(child);
 }
 
-void IDriver::updated(FastoObject* item, common::Value* val) {
+void IDriver::updated(FastoObject* item, FastoObject::value_t val) {
   emit itemUpdated(item, val);
 }
 

@@ -48,14 +48,13 @@ namespace {
 
 FastoCommonItem* createItem(fasto::qt::gui::TreeItem* parent, const std::string& key,
                             bool readOnly, FastoObject* item) {
-  common::Value* value = item->value();
-  core::NValue val = common::make_value(value->deepCopy());
+  core::NValue val = item->value();
   core::NDbKValue nkey(core::NKey(key), val);
   return new FastoCommonItem(nkey, item->delemitr(), readOnly, parent, item);
 }
 
 FastoCommonItem* createRootItem(FastoObject* item) {
-  common::Value* value = item->value();
+  auto value = item->value();
   std::string str;
   bool res = value->getAsString(&str);
   CHECK(res);
@@ -224,7 +223,7 @@ void OutputWidget::addChild(FastoObject* child) {
   }
 }
 
-void OutputWidget::itemUpdate(FastoObject* item, common::Value* newValue) {
+void OutputWidget::itemUpdate(FastoObject* item, FastoObject::value_t newValue) {
   QModelIndex index;
   bool isFound = commonModel_->findItem(item, &index);
   if (!isFound) {
@@ -236,9 +235,9 @@ void OutputWidget::itemUpdate(FastoObject* item, common::Value* newValue) {
     return;
   }
 
-  DCHECK(item->value() == newValue);
+  CHECK(item->value() == newValue);
 
-  core::NValue nval = common::make_value(newValue->deepCopy());
+  core::NValue nval = newValue;
   it->setValue(nval);
   commonModel_->updateItem(index.parent(), index);
 }

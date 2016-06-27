@@ -719,7 +719,7 @@ common::Error DBConnection::latencyMode(FastoObject* out) {
 
     std::string buff = common::MemSPrintf("min: %lld, max: %lld, avg: %.2f (%lld samples)",
                                           min, max, avg, count);
-    common::Value *val = common::Value::createStringValue(buff);
+    common::Value* val = common::Value::createStringValue(buff);
 
     if (!child) {
       child = new FastoObject(cmd, val, config_.delimiter, config_.ns_separator);
@@ -733,7 +733,7 @@ common::Error DBConnection::latencyMode(FastoObject* out) {
       history_start = curTime;
       min = max = tot = count = 0;
     } else {
-      child->setValue(val);
+      child->setValue(common::make_value(val));
     }
 
     common::utils::msleep(LATENCY_SAMPLE_RATE);

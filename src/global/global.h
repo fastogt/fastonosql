@@ -23,15 +23,20 @@
 
 namespace fastonosql {
 
-class IFastoObjectObserver;
 class FastoObject
   : public common::intrusive_ptr_base<FastoObject> {
  public:
   typedef std::vector<FastoObject*> childs_t;
-  typedef common::scoped_ptr<common::Value> value_t;
+  typedef common::shared_ptr<common::Value> value_t;
+
+  class IFastoObjectObserver {
+   public:
+    virtual void addedChildren(FastoObject* child) = 0;
+    virtual void updated(FastoObject* item, value_t val) = 0;
+  };
 
   FastoObject(FastoObject* parent, common::Value* val,
-              const std::string& delemitr, const std::string& ns_separator);
+              const std::string& delemitr, const std::string& ns_separator);  // val take ownerships
   virtual ~FastoObject();
 
   common::Value::Type type() const;
@@ -46,8 +51,8 @@ class FastoObject
   std::string delemitr() const;
   std::string nsSeparator() const;
 
-  common::Value* value() const;
-  void setValue(common::Value* val);
+  value_t value() const;
+  void setValue(value_t val);
 
  protected:
   IFastoObjectObserver* observer_;
@@ -97,12 +102,6 @@ class FastoObjectArray
   virtual std::string toString() const;
 
   common::ArrayValue* array() const;
-};
-
-class IFastoObjectObserver {
- public:
-  virtual void addedChildren(FastoObject* child) = 0;
-  virtual void updated(FastoObject* item, common::Value* val) = 0;
 };
 
 typedef common::intrusive_ptr<FastoObject> FastoObjectIPtr;

@@ -132,7 +132,7 @@ class IServer
 
  Q_SIGNALS:
   void addedChild(FastoObject* child);
-  void itemUpdated(FastoObject* item, common::Value* val);
+  void itemUpdated(FastoObject* item, FastoObject::value_t val);
   void serverInfoSnapShoot(ServerInfoSnapShoot shot);
 
  public:

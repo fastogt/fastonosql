@@ -39,7 +39,7 @@ namespace fastonosql {
 namespace core {
 
 class IDriver
-  : public QObject, private IFastoObjectObserver {
+  : public QObject, private FastoObject::IFastoObjectObserver {
   Q_OBJECT
  public:
   virtual ~IDriver();
@@ -70,7 +70,7 @@ class IDriver
 
  Q_SIGNALS:
   void addedChild(FastoObject* child);
-  void itemUpdated(FastoObject* item, common::Value* val);
+  void itemUpdated(FastoObject* item, FastoObject::value_t val);
   void serverInfoSnapShoot(ServerInfoSnapShoot shot);
 
  private Q_SLOTS:
@@ -139,7 +139,7 @@ class IDriver
 
   // notification of execute events
   virtual void addedChildren(FastoObject* child);
-  virtual void updated(FastoObject* item, common::Value* val);
+  virtual void updated(FastoObject* item, FastoObject::value_t val);
 
   // internal methods
   virtual IServerInfoSPtr makeServerInfoFromString(const std::string& val) = 0;
