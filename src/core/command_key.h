@@ -89,7 +89,7 @@ FastoObjectCommand* createCommand(FastoObject* parent, const std::string& input,
     return nullptr;
   }
 
-  std::string stable_input = stableCommand(input);
+  std::string stable_input = StableCommand(input);
   if (stable_input.empty()) {
     DNOTREACHED();
     return nullptr;

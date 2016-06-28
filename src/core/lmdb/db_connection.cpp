@@ -20,6 +20,10 @@
 
 #include <errno.h>
 
+extern "C" {
+  #include <lmdb.h>
+}
+
 #include <vector>
 #include <string>
 
@@ -31,6 +35,11 @@
 namespace fastonosql {
 namespace core {
 namespace lmdb {
+
+struct lmdb {
+  MDB_env* env;
+  MDB_dbi dbir;
+};
 
 namespace {
 
@@ -98,8 +107,8 @@ common::Error createConnection(const Config& config, NativeConnection** context)
     return common::make_error_value("Invalid input argument(s)", common::ErrorValue::E_ERROR);
   }
 
-  DCHECK(*context == nullptr);
-  struct lmdb* lcontext = nullptr;
+  DCHECK(*context == NULL);
+  struct lmdb* lcontext = NULL;
   const char* dbname = common::utils::c_strornull(config.dbname);
   int st = lmdb_open(&lcontext, dbname, config.create_if_missing);
   if (st != LMDB_OK) {
@@ -125,7 +134,7 @@ common::Error testConnection(ConnectionSettings* settings) {
     return common::make_error_value("Invalid input argument(s)", common::ErrorValue::E_ERROR);
   }
 
-  struct lmdb* ldb = nullptr;
+  struct lmdb* ldb = NULL;
   common::Error er = createConnection(settings, &ldb);
   if (er && er->isError()) {
     return er;
@@ -167,7 +176,7 @@ const char* DBConnection::versionApi() {
   return STRINGIZE(MDB_VERSION_MAJOR) "." STRINGIZE(MDB_VERSION_MINOR) "." STRINGIZE(MDB_VERSION_PATCH);
 }
 
-MDB_dbi DBConnection::curDb() const {
+unsigned int DBConnection::curDb() const {
   if (connection_.handle_) {
     return connection_.handle_->dbir;
   }

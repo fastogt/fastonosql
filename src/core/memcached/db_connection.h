@@ -18,8 +18,6 @@
 
 #pragma once
 
-#include <libmemcached/memcached.h>
-
 #include <string>
 
 #include "core/command_handler.h"
@@ -28,6 +26,8 @@
 #include "core/memcached/connection_settings.h"
 #include "core/memcached/config.h"
 #include "core/memcached/server_info.h"
+
+struct memcached_st;
 
 namespace fastonosql {
 namespace core {

@@ -20,9 +20,9 @@
 
 #include <string>
 
-#include "core/connection_confg.h"
+#include "common/qt/convert_string.h"
 
-#include "common/convert2string.h"
+#include "core/connection_confg.h"
 
 namespace fastonosql {
 namespace core {

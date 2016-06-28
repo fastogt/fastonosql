@@ -193,7 +193,7 @@ void OutputWidget::addChild(FastoObject* child) {
     }
 
     std::string inputArgs = command->inputArgs();
-    fastonosql::gui::FastoCommonItem* comChild = createItem(par, getFirstWordFromLine(inputArgs),
+    fastonosql::gui::FastoCommonItem* comChild = createItem(par, GetFirstWordFromLine(inputArgs),
                                                        command->isReadOnly(), child);
     commonModel_->insertItem(parent, comChild);
   } else {

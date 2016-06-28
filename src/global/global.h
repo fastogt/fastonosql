@@ -19,7 +19,6 @@
 #pragma once
 
 #include "common/value.h"
-#include "common/convert2string.h"
 
 namespace fastonosql {
 
@@ -87,9 +86,9 @@ class FastoObjectCommand
                      const std::string& delemitr, const std::string& ns_separator);
 };
 
-std::string stableCommand(std::string command);
-std::pair<std::string, std::string> getKeyValueFromLine(const std::string& input);
-std::string getFirstWordFromLine(const std::string& input);
+std::string StableCommand(std::string command);
+std::pair<std::string, std::string> GetKeyValueFromLine(const std::string& input);
+std::string GetFirstWordFromLine(const std::string& input);
 
 class FastoObjectArray
   : public FastoObject {

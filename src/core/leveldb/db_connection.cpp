@@ -20,6 +20,8 @@
 
 #include <mutex>
 
+#include <leveldb/db.h>
+
 #include "common/sprintf.h"
 
 #define LEVELDB_HEADER_STATS    "                               Compactions\n"\

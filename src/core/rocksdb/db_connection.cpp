@@ -21,6 +21,8 @@
 #include <vector>
 #include <string>
 
+#include <rocksdb/db.h>
+
 #include "common/sprintf.h"
 
 #define ROCKSDB_HEADER_STATS    "\n** Compaction Stats [default] **\n"\

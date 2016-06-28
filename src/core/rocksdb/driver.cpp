@@ -21,8 +21,6 @@
 #include <vector>
 #include <string>
 
-#include <rocksdb/db.h>
-
 #include "common/sprintf.h"
 #include "common/utils.h"
 

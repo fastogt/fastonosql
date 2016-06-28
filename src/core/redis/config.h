@@ -18,10 +18,9 @@
 
 #pragma once
 
-#include <algorithm>
 #include <string>
 
-#include "common/convert2string.h"
+#include "common/qt/convert_string.h"
 
 #include "core/connection_confg.h"
 

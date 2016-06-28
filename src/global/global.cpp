@@ -125,7 +125,7 @@ std::string FastoObjectCommand::toString() const {
 std::string FastoObjectCommand::inputCmd() const {
   common::CommandValue* command = cmd();
   if (command) {
-    std::pair<std::string, std::string> kv = getKeyValueFromLine(command->inputCommand());
+    std::pair<std::string, std::string> kv = GetKeyValueFromLine(command->inputCommand());
     return kv.first;
   }
 
@@ -135,7 +135,7 @@ std::string FastoObjectCommand::inputCmd() const {
 std::string FastoObjectCommand::inputArgs() const {
   common::CommandValue* command = cmd();
   if (command) {
-    std::pair<std::string, std::string> kv = getKeyValueFromLine(command->inputCommand());
+    std::pair<std::string, std::string> kv = GetKeyValueFromLine(command->inputCommand());
     return kv.second;
   }
 
@@ -160,7 +160,7 @@ common::Value::CommandLoggingType FastoObjectCommand::commandLoggingType() const
   return common::Value::C_UNKNOWN;
 }
 
-std::string stableCommand(std::string command) {
+std::string StableCommand(std::string command) {
   if (command.empty()) {
     return std::string();
   }
@@ -172,7 +172,7 @@ std::string stableCommand(std::string command) {
   return command;
 }
 
-std::pair<std::string, std::string> getKeyValueFromLine(const std::string& input) {
+std::pair<std::string, std::string> GetKeyValueFromLine(const std::string& input) {
   if (input.empty()) {
     return std::pair<std::string, std::string>();
   }
@@ -190,7 +190,7 @@ std::pair<std::string, std::string> getKeyValueFromLine(const std::string& input
   return std::make_pair(key, trimed);
 }
 
-std::string getFirstWordFromLine(const std::string& input) {
+std::string GetFirstWordFromLine(const std::string& input) {
   if (input.empty()) {
     return std::string();
   }

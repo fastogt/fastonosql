@@ -18,9 +18,9 @@
 
 #pragma once
 
-#include <hiredis/hiredis.h>
-
 #include "core/types.h"
+
+struct redisReply;
 
 namespace fastonosql {
 namespace core {

@@ -18,6 +18,10 @@
 
 #include "core/unqlite/db_connection.h"
 
+extern "C" {
+  #include <unqlite.h>
+}
+
 #include <string>
 #include <vector>
 
@@ -99,7 +103,7 @@ namespace fastonosql {
 namespace core {
 template<>
 common::Error ConnectionAllocatorTraits<unqlite::NativeConnection, unqlite::Config>::connect(const unqlite::Config& config, unqlite::NativeConnection** hout) {
-  unqlite::NativeConnection* context = nullptr;
+  unqlite::NativeConnection* context = NULL;
   common::Error er = unqlite::createConnection(config, &context);
   if (er && er->isError()) {
     return er;
@@ -111,7 +115,7 @@ common::Error ConnectionAllocatorTraits<unqlite::NativeConnection, unqlite::Conf
 template<>
 common::Error ConnectionAllocatorTraits<unqlite::NativeConnection, unqlite::Config>::disconnect(unqlite::NativeConnection** handle) {
   unqlite_close(*handle);
-  *handle = nullptr;
+  *handle = NULL;
   return common::Error();
 }
 template<>
@@ -129,8 +133,8 @@ common::Error createConnection(const Config& config, NativeConnection** context)
     return common::make_error_value("Invalid input argument(s)", common::ErrorValue::E_ERROR);
   }
 
-  DCHECK(*context == nullptr);
-  struct unqlite* lcontext = nullptr;
+  DCHECK(*context == NULL);
+  struct unqlite* lcontext = NULL;
   const char* dbname = common::utils::c_strornull(config.dbname);
   int st = unqlite_open(&lcontext, dbname, config.create_if_missing ?
                           UNQLITE_OPEN_CREATE : UNQLITE_OPEN_READWRITE);

@@ -18,10 +18,6 @@
 
 #pragma once
 
-extern "C" {
-  #include <lmdb.h>
-}
-
 #include <string>
 
 #include "core/connection.h"
@@ -35,10 +31,7 @@ namespace fastonosql {
 namespace core {
 namespace lmdb {
 
-struct lmdb {
-  MDB_env* env;
-  MDB_dbi dbir;
-};
+struct lmdb;
 
 typedef lmdb NativeConnection;
 
@@ -63,7 +56,7 @@ struct DBConnection
 
   static const char* versionApi();
 
-  MDB_dbi curDb() const;
+  unsigned int curDb() const;
 
   common::Error info(const char* args, ServerInfo::Stats* statsout) WARN_UNUSED_RESULT;
   common::Error set(const std::string& key, const std::string& value) WARN_UNUSED_RESULT;

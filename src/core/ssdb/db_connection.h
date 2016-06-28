@@ -18,14 +18,16 @@
 
 #pragma once
 
-#include <SSDB.h>
-
 #include "core/command_handler.h"
 #include "core/connection.h"
 
 #include "core/ssdb/connection_settings.h"
 #include "core/ssdb/config.h"
 #include "core/ssdb/server_info.h"
+
+namespace ssdb {
+  class Client;
+}
 
 namespace fastonosql {
 namespace core {

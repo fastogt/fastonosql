@@ -33,7 +33,7 @@ namespace {
 
 void parseOptions(int argc, char** argv, Config& cfg) {
   for (int i = 0; i < argc; i++) {
-    int lastarg = i == argc-1;
+    const bool lastarg = i == argc-1;
 
     if (!strcmp(argv[i], "-d") && !lastarg) {
       cfg.delimiter = argv[++i];

@@ -18,6 +18,7 @@
 
 #include "core/memcached/db_connection.h"
 
+#include <libmemcached/memcached.h>
 #include <libmemcached/util.h>
 #include <libmemcached/instance.hpp>
 

@@ -18,10 +18,10 @@
 
 #pragma once
 
+#include <vector>
+
 #include <Qsci/qsciabstractapis.h>
 #include <Qsci/qscilexercustom.h>
-
-#include <vector>
 
 #include "core/command_holder.h"
 

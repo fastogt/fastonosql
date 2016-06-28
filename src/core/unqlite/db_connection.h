@@ -18,10 +18,6 @@
 
 #pragma once
 
-extern "C" {
-  #include <unqlite.h>
-}
-
 #include <string>
 
 #include "core/command_handler.h"
@@ -30,6 +26,8 @@ extern "C" {
 #include "core/unqlite/connection_settings.h"
 #include "core/unqlite/config.h"
 #include "core/unqlite/server_info.h"
+
+struct unqlite;
 
 namespace fastonosql {
 namespace core {

@@ -49,7 +49,7 @@ const QString trSelectPrivateKey = QObject::tr("Select private key file");
 const QString trPrivateKey = QObject::tr("Private key files (*.*)");
 const char* defaultNameConnectionFolder = "/";
 
-QString stableCommandLine(QString input) {
+QString StableCommandLine(QString input) {
   return input.replace('\n', "\\n");
 }
 
@@ -136,7 +136,7 @@ ConnectionDialog::ConnectionDialog(QWidget* parent, core::IConnectionSettingsBas
   commandLine_ = new QLineEdit;
   commandLine_->setMinimumWidth(240);
   if (connection_) {
-    commandLine_->setText(stableCommandLine(common::ConvertFromString<QString>(connection_->commandLine())));
+    commandLine_->setText(StableCommandLine(common::ConvertFromString<QString>(connection_->commandLine())));
   }
 
   QVBoxLayout* inputLayout = new QVBoxLayout;
@@ -300,7 +300,7 @@ void ConnectionDialog::typeConnectionChange(int index) {
   } else {
     commandLineText = defaultCommandLine(currentType);
   }
-  commandLine_->setText(stableCommandLine(common::ConvertFromString<QString>(commandLineText)));
+  commandLine_->setText(StableCommandLine(common::ConvertFromString<QString>(commandLineText)));
 
   useSsh_->setEnabled(isSSHType);
   updateSshControls(isSSHType);

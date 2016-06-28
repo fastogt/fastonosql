@@ -18,6 +18,8 @@
 
 #include "core/ssdb/db_connection.h"
 
+#include <SSDB.h>
+
 #include "common/sprintf.h"
 
 namespace fastonosql {

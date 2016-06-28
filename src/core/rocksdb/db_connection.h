@@ -20,14 +20,16 @@
 
 #include <string>
 
-#include <rocksdb/db.h>
-
 #include "core/command_handler.h"
 #include "core/connection.h"
 
 #include "core/rocksdb/connection_settings.h"
 #include "core/rocksdb/config.h"
 #include "core/rocksdb/server_info.h"
+
+namespace rocksdb {
+  class DB;
+}
 
 namespace fastonosql {
 namespace core {

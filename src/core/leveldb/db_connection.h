@@ -20,14 +20,16 @@
 
 #include <string>
 
-#include <leveldb/db.h>
-
 #include "core/command_handler.h"
 #include "core/connection.h"
 
 #include "core/leveldb/connection_settings.h"
 #include "core/leveldb/config.h"
 #include "core/leveldb/server_info.h"
+
+namespace leveldb {
+  class DB;
+}
 
 namespace fastonosql {
 namespace core {
