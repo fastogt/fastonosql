@@ -112,4 +112,6 @@ Executable will be placed to: target/debug/app/out
 -->
 
 **Style**<br/>
-cpplint --linelength=100 --filter=-build/header_guard
+cmake -DCHECK_STYLE=ON
+make check_style
+Note: needed clang-tidy

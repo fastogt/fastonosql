@@ -84,6 +84,7 @@ OPTION(CPACK_SUPPORT "Enable package support" ON)
 OPTION(DEVELOPER_DYNAMIC_RUNTIME "Build with dynamic C++ runtime" ON)
 OPTION(DEVELOPER_FEATURES "Use some debug tricks for developers" OFF)
 OPTION(DEVELOPER_ENABLE_TESTS "Enable tests for ${PROJECT_NAME_TITLE} project" OFF)
+OPTION(CHECK_STYLE "Enable check style for ${PROJECT_NAME_TITLE} project" ON)
 
 IF(MSVC)
   IF(CMAKE_CL_64)
