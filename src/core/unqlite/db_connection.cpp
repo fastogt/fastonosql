@@ -31,7 +31,7 @@ extern "C" {
 namespace {
 
 std::string unqlite_constext_strerror(unqlite* context) {
-  const char* zErr = nullptr;
+  const char* zErr = NULL;
   int iLen = 0;
   unqlite_config(context, UNQLITE_CONFIG_ERR_LOG, &zErr, &iLen);
   return std::string(zErr, iLen);

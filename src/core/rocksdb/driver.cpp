@@ -233,7 +233,7 @@ void Driver::handleExecuteEvent(events::ExecuteRequestEvent* ev) {
         notifyProgress(sender, step * n);
         char command[128] = {0};
         if (n == length - 1) {
-          strcpy(command, inputLine + offset);
+          common::strlcpy(command, inputLine + offset, sizeof(command));
         } else {
           strncpy(command, inputLine + offset, n - offset);
         }
