@@ -286,7 +286,7 @@ void ConnectionDialog::accept() {
 
 void ConnectionDialog::typeConnectionChange(int index) {
   QVariant var = typeConnection_->itemData(index);
-  core::connectionTypes currentType = (core::connectionTypes)qvariant_cast<unsigned char>(var);
+  core::connectionTypes currentType = static_cast<core::connectionTypes>(qvariant_cast<unsigned char>(var));
   bool isSSHType = isCanSSHConnection(currentType);
 
   const char* helpText = core::commandLineHelpText(currentType);
@@ -379,7 +379,7 @@ void ConnectionDialog::retranslateUi() {
 
 bool ConnectionDialog::validateAndApply() {
   QVariant var = typeConnection_->currentData();
-  core::connectionTypes currentType = (core::connectionTypes)qvariant_cast<unsigned char>(var);
+  core::connectionTypes currentType = static_cast<core::connectionTypes>(qvariant_cast<unsigned char>(var));
 
   bool isSSHType = isCanSSHConnection(currentType);
   std::string conName = common::ConvertToString(connectionName_->text());

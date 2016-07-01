@@ -74,19 +74,20 @@ QVariant PropertyTableModel::data(const QModelIndex& index, int role) const {
 bool PropertyTableModel::setData(const QModelIndex& index, const QVariant& value, int role) {
   if (index.isValid() && role == Qt::EditRole) {
     PropertyTableItem* node = common::utils_qt::item<fasto::qt::gui::TableItem*, PropertyTableItem*>(index);
-    if (!node)
+    if (!node) {
       return false;
+    }
 
-     int column = index.column();
-     if (column == PropertyTableItem::eKey) {
-     } else if (column == PropertyTableItem::eValue) {
-       QString newValue = value.toString();
-       if (newValue != node->value()) {
-         core::property_t pr = node->property();
-         pr.second = common::ConvertToString(newValue);
-         emit changedProperty(pr);
-       }
-     }
+    int column = index.column();
+    if (column == PropertyTableItem::eKey) {
+    } else if (column == PropertyTableItem::eValue) {
+      QString newValue = value.toString();
+      if (newValue != node->value()) {
+        core::property_t pr = node->property();
+        pr.second = common::ConvertToString(newValue);
+        emit changedProperty(pr);
+      }
+    }
   }
 
   return false;

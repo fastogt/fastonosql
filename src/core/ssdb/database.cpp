@@ -40,6 +40,6 @@ Database::Database(IServerSPtr server, IDataBaseInfoSPtr info)
   DCHECK(server->type() == SSDB && info->type() == SSDB);
 }
 
-}
+}  // namespace ssdb
 }  // namespace core
 }  // namespace fastonosql

@@ -54,7 +54,7 @@ namespace {
   const QString trServerGlobalSettings = QObject::tr("Servers global settings");
   const QString trDefaultViews = QObject::tr("Default views:");
   const QString trLoggingDirectory = QObject::tr("Logging directory:");
-}
+}  //
 
 namespace fastonosql {
 namespace gui {

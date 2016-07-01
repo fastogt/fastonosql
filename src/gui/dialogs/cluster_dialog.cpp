@@ -217,7 +217,7 @@ void ClusterDialog::accept() {
 
 void ClusterDialog::typeConnectionChange(int index) {
   QVariant var = typeConnection_->itemData(index);
-  core::connectionTypes currentType = (core::connectionTypes)qvariant_cast<unsigned char>(var);
+  core::connectionTypes currentType = static_cast<core::connectionTypes>(qvariant_cast<unsigned char>(var));
   bool isValidType = currentType == core::REDIS;
   connectionName_->setEnabled(isValidType);
   buttonBox_->button(QDialogButtonBox::Save)->setEnabled(isValidType);
@@ -380,7 +380,7 @@ void ClusterDialog::retranslateUi() {
 
 bool ClusterDialog::validateAndApply() {
   QVariant var = typeConnection_->currentData();
-  core::connectionTypes currentType = (core::connectionTypes)qvariant_cast<unsigned char>(var);
+  core::connectionTypes currentType = static_cast<core::connectionTypes>(qvariant_cast<unsigned char>(var));
 
   std::string conName = common::ConvertToString(connectionName_->text());
   std::string conFolder = common::ConvertToString(connectionFolder_->text());

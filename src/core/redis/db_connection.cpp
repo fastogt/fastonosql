@@ -229,7 +229,7 @@ long getLongInfoField(char *info, const char *field) {
 
 /* Convert number of bytes into a human readable string of the form:
  * 100B, 2G, 100M, 4K, and so forth. */
-void bytesToHuman(char* s, size_t len, long long n) {
+void bytesToHuman(char* s, size_t len, int64_t n) {
   double d;
 
   if (n < 0) {
@@ -516,7 +516,7 @@ common::Error discoverySentinelConnection(ConnectionSettings* settings,
   }
 
   /* Send the GET MASTERS command. */
-  redisReply* masters_reply = (redisReply*)redisCommand(context, GET_SENTINEL_MASTERS);
+  redisReply* masters_reply = reinterpret_cast<redisReply*>(redisCommand(context, GET_SENTINEL_MASTERS));
   if (!masters_reply) {
     redisFree(context);
     return common::make_error_value("I/O error", common::Value::E_ERROR);
@@ -534,7 +534,7 @@ common::Error discoverySentinelConnection(ConnectionSettings* settings,
     ServerDiscoverySentinelInfoSPtr sent(new DiscoverySentinelInfo(sinf));
     infos->push_back(sent);
     /* Send the GET SLAVES command. */
-    redisReply* reply = (redisReply*)redisCommand(context, GET_SENTINEL_SLAVES_PATTERN_1ARGS_S, master_name);
+    redisReply* reply = reinterpret_cast<redisReply*>(redisCommand(context, GET_SENTINEL_SLAVES_PATTERN_1ARGS_S, master_name));
     if (!reply) {
       freeReplyObject(masters_reply);
       redisFree(context);
@@ -1244,9 +1244,9 @@ common::Error DBConnection::statMode(FastoObject* out) {
   long requests = 0;
 
   while (!isInterrupted()) {
-    redisReply *reply = NULL;
+    redisReply* reply = NULL;
     while (!reply) {
-      reply = (redisReply*)redisCommand(context_, command.c_str());
+      reply = reinterpret_cast<redisReply*>(redisCommand(context_, command.c_str()));
       if (context_->err && !(context_->err & (REDIS_ERR_IO | REDIS_ERR_EOF))) {
         std::string buff = common::MemSPrintf("ERROR: %s", context_->errstr);
         return common::make_error_value(buff, common::ErrorValue::E_ERROR);
@@ -1258,14 +1258,15 @@ common::Error DBConnection::statMode(FastoObject* out) {
       return common::make_error_value(buff, common::ErrorValue::E_ERROR);
     }
 
-    char buf[64];
-    int j;
+    char buf[64] = {0};
     /* Keys */
-    long aux = 0;
-    for (j = 0; j < 20; j++) {
+    int64_t aux = 0;
+    for (int j = 0; j < 20; j++) {
       common::SNPrintf(buf, sizeof(buf), "db%d:keys", j);
       long k = getLongInfoField(reply->str, buf);
-      if (k == LONG_MIN) continue;
+      if (k == LONG_MIN) {
+        continue;
+      }
       aux += k;
     }
 

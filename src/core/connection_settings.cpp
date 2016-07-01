@@ -558,7 +558,7 @@ IClusterSettingsBase* IClusterSettingsBase::fromString(const std::string& val) {
     if (ch == ',') {
       if (commaCount == 0) {
         int crT = elText[0] - 48;
-        result = createFromType((connectionTypes)crT, connection_path_t());
+        result = createFromType(static_cast<connectionTypes>(crT), connection_path_t());
         if (!result) {
           return nullptr;
         }
@@ -733,7 +733,7 @@ ISentinelSettingsBase* ISentinelSettingsBase::fromString(const std::string& val)
     if (ch == ',') {
       if (commaCount == 0) {
         int crT = elText[0] - 48;
-        result = createFromType((connectionTypes)crT, connection_path_t());
+        result = createFromType(static_cast<connectionTypes>(crT), connection_path_t());
         if (!result) {
           return nullptr;
         }

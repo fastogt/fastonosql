@@ -126,7 +126,7 @@ void EncodeDecodeDialog::decode() {
 
   output_->clear();
   QVariant var = decoders_->currentData();
-  common::EDTypes currentType = (common::EDTypes)qvariant_cast<unsigned char>(var);
+  common::EDTypes currentType = static_cast<common::EDTypes>(qvariant_cast<unsigned char>(var));
   common::IEDcoder* dec = common::IEDcoder::createEDCoder(currentType);
   CHECK(dec);
 

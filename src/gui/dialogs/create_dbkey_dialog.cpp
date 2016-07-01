@@ -159,7 +159,7 @@ void CreateDbKeyDialog::accept() {
 
 void CreateDbKeyDialog::typeChanged(int index) {
   QVariant var = typesCombo_->itemData(index);
-  common::Value::Type type = (common::Value::Type)qvariant_cast<unsigned char>(var);
+  common::Value::Type type = static_cast<common::Value::Type>(qvariant_cast<unsigned char>(var));
 
   valueEdit_->clear();
   valueTableEdit_->clear();
@@ -214,7 +214,7 @@ void CreateDbKeyDialog::addItem() {
   } else if (valueTableEdit_->isVisible()) {
     int index = typesCombo_->currentIndex();
     QVariant var = typesCombo_->itemData(index);
-    common::Value::Type t = (common::Value::Type)qvariant_cast<unsigned char>(var);
+    common::Value::Type t = static_cast<common::Value::Type>(qvariant_cast<unsigned char>(var));
 
     InputDialog diag(this, translations::trAddItem, InputDialog::DoubleLine,
                      t == common::Value::TYPE_HASH ? translations::trField :
@@ -279,7 +279,7 @@ void CreateDbKeyDialog::retranslateUi() {
 common::Value* CreateDbKeyDialog::item() const {
   int index = typesCombo_->currentIndex();
   QVariant var = typesCombo_->itemData(index);
-  common::Value::Type t = (common::Value::Type)qvariant_cast<unsigned char>(var);
+  common::Value::Type t = static_cast<common::Value::Type>(qvariant_cast<unsigned char>(var));
   if (t == common::Value::TYPE_ARRAY) {
     if (valueListEdit_->count() == 0) {
       return nullptr;

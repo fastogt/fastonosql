@@ -537,8 +537,26 @@ IF (CHECK_STYLE)
   IF (CLANG_TIDY)
     MESSAGE(STATUS "Looking for clang-tidy - found")
     SET(CT_CHECK_FILES ${HEADERS} ${HEADERS_TOMOC} ${SOURCES} ${PLATFORM_HDRS} ${PLATFORM_SRCS})
-    LIST(APPEND CT_CHECKS "google-*")
-    STRING(REPLACE ";" "," ALL_CHECKS "${CT_CHECKS}")
+    LIST(APPEND CT_CHECKS
+      "google-build-explicit-make-pair"
+      "google-build-namespaces"
+      "google-build-using-namespace"
+      "google-default-arguments"
+      "google-explicit-constructor"
+      "google-global-names-in-headers"
+      "google-readability-braces-around-statements"
+      "google-readability-casting"
+      "google-readability-function-size"
+      "google-readability-namespace-comments"
+      "google-readability-redundant-smartptr-get"
+      "google-readability-todo"
+      "google-runtime-int"
+      "google-runtime-member-string-references"
+      "google-runtime-memset"
+      "google-runtime-operator"
+      "google-runtime-references"
+    )
+    MESSAGE("${ALL_CHECKS}")
     ADD_CUSTOM_TARGET(check_style
       COMMAND ${CLANG_TIDY} -p ${CMAKE_BINARY_DIR} -checks="${ALL_CHECKS}" ${CT_CHECK_FILES}
       WORKING_DIRECTORY ${CMAKE_CURRENT_LIST_DIR}
