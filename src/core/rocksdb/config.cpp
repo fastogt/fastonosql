@@ -32,7 +32,8 @@ namespace rocksdb {
 
 namespace {
 
-void parseOptions(int argc, char** argv, Config& cfg) {
+Config parseOptions(int argc, char** argv) {
+  Config cfg;
   for (int i = 0; i < argc; i++) {
     const bool lastarg = i == argc-1;
 
@@ -46,7 +47,7 @@ void parseOptions(int argc, char** argv, Config& cfg) {
       cfg.options.create_if_missing = true;
     } else {
       if (argv[i][0] == '-') {
-        std::string buff = common::MemSPrintf("Unrecognized option or bad number of args for: '%s'", argv[i]);
+        const std::string buff = common::MemSPrintf("Unrecognized option or bad number of args for: '%s'", argv[i]);
         LOG_MSG(buff, common::logging::L_WARNING, true);
         break;
       } else {
@@ -55,6 +56,7 @@ void parseOptions(int argc, char** argv, Config& cfg) {
       }
     }
   }
+  return cfg;
 }
 
 }  // namespace
@@ -101,8 +103,7 @@ fastonosql::core::rocksdb::Config ConvertFromString(const std::string& line) {
     p2 = strtok(0, " ");
   }
 
-  fastonosql::core::rocksdb::parseOptions(argc, argv, cfg);
-  return cfg;
+  return fastonosql::core::rocksdb::parseOptions(argc, argv);
 }
 
 }  // namespace common

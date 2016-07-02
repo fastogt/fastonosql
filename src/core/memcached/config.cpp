@@ -21,6 +21,8 @@
 #include <string>
 #include <vector>
 
+#include "common/sprintf.h"
+
 #include "fasto/qt/logger.h"
 
 #define DEFAULT_MEMCACHED_SERVER_PORT 11211
@@ -31,7 +33,8 @@ namespace memcached {
 
 namespace {
 
-void parseOptions(int argc, char** argv, Config& cfg) {
+Config parseOptions(int argc, char** argv) {
+  Config cfg;
   for (int i = 0; i < argc; i++) {
     const bool lastarg = i == argc-1;
 
@@ -49,9 +52,7 @@ void parseOptions(int argc, char** argv, Config& cfg) {
       cfg.ns_separator = argv[++i];
     } else {
       if (argv[i][0] == '-') {
-        const uint16_t size_buff = 256;
-        char buff[size_buff] = {0};
-        sprintf(buff, "Unrecognized option or bad number of args for: '%s'", argv[i]);
+        const std::string buff = common::MemSPrintf("Unrecognized option or bad number of args for: '%s'", argv[i]);
         LOG_MSG(buff, common::logging::L_WARNING, true);
         break;
       } else {
@@ -60,6 +61,8 @@ void parseOptions(int argc, char** argv, Config& cfg) {
       }
     }
   }
+
+  return cfg;
 }
 
 }  // namespace
@@ -100,7 +103,6 @@ std::string ConvertToString(const fastonosql::core::memcached::Config &conf) {
 
 template<>
 fastonosql::core::memcached::Config ConvertFromString(const std::string& line) {
-  fastonosql::core::memcached::Config cfg;
   enum { kMaxArgs = 64 };
   int argc = 0;
   char* argv[kMaxArgs] = {0};
@@ -111,8 +113,7 @@ fastonosql::core::memcached::Config ConvertFromString(const std::string& line) {
     p2 = strtok(0, " ");
   }
 
-  fastonosql::core::memcached::parseOptions(argc, argv, cfg);
-  return cfg;
+  return fastonosql::core::memcached::parseOptions(argc, argv);
 }
 
 }  // namespace common

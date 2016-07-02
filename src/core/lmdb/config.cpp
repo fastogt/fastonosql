@@ -32,7 +32,8 @@ namespace lmdb {
 
 namespace {
 
-void parseOptions(int argc, char** argv, Config& cfg) {
+Config parseOptions(int argc, char** argv) {
+  Config cfg;
   for (int i = 0; i < argc; i++) {
     const bool lastarg = i == argc-1;
 
@@ -46,7 +47,7 @@ void parseOptions(int argc, char** argv, Config& cfg) {
       cfg.create_if_missing = true;
     } else {
       if (argv[i][0] == '-') {
-        std::string buff = common::MemSPrintf("Unrecognized option or bad number of args for: '%s'", argv[i]);
+        const std::string buff = common::MemSPrintf("Unrecognized option or bad number of args for: '%s'", argv[i]);
         LOG_MSG(buff, common::logging::L_WARNING, true);
         break;
       } else {
@@ -55,6 +56,7 @@ void parseOptions(int argc, char** argv, Config& cfg) {
       }
     }
   }
+  return cfg;
 }
 
 }  // namespace
@@ -89,7 +91,6 @@ std::string ConvertToString(const fastonosql::core::lmdb::Config& conf) {
 
 template<>
 fastonosql::core::lmdb::Config ConvertFromString(const std::string& line) {
-  fastonosql::core::lmdb::Config cfg;
   enum { kMaxArgs = 64 };
   int argc = 0;
   char* argv[kMaxArgs] = {0};
@@ -100,8 +101,7 @@ fastonosql::core::lmdb::Config ConvertFromString(const std::string& line) {
     p2 = strtok(0, " ");
   }
 
-  fastonosql::core::lmdb::parseOptions(argc, argv, cfg);
-  return cfg;
+  return fastonosql::core::lmdb::parseOptions(argc, argv);
 }
 
 }  // namespace comon
