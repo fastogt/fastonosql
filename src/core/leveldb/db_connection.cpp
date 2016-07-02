@@ -190,7 +190,7 @@ common::Error DBConnection::info(const char* args, ServerInfo::Stats* statsout) 
   ServerInfo::Stats lstats;
   if (rets.size() > sizeof(LEVELDB_HEADER_STATS)) {
     const char* retsc = rets.c_str() + sizeof(LEVELDB_HEADER_STATS);
-    char* p2 = strtok((char*)retsc, " ");
+    char* p2 = strtok(const_cast<char*>(retsc), " ");
     int pos = 0;
     while (p2) {
       switch (pos++) {

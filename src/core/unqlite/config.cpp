@@ -21,6 +21,10 @@
 #include <string>
 #include <vector>
 
+extern "C" {
+  #include "sds.h"
+}
+
 #include "common/sprintf.h"
 #include "common/file_system.h"
 
@@ -90,18 +94,15 @@ std::string ConvertToString(const fastonosql::core::unqlite::Config &conf) {
 
 template<>
 fastonosql::core::unqlite::Config ConvertFromString(const std::string& line) {
-  fastonosql::core::unqlite::Config cfg;
-  enum { kMaxArgs = 64 };
   int argc = 0;
-  char* argv[kMaxArgs] = {0};
-
-  char* p2 = strtok((char*)line.c_str(), " ");
-  while (p2) {
-    argv[argc++] = p2;
-    p2 = strtok(NULL, " ");
+  sds* argv = sdssplitargswithspecsymbols(line.c_str(), &argc);
+  if (argv) {
+    auto cfg = fastonosql::core::unqlite::parseOptions(argc, argv);
+    sdsfreesplitres(argv, argc);
+    return cfg;
   }
 
-  return fastonosql::core::unqlite::parseOptions(argc, argv);
+  return fastonosql::core::unqlite::Config();
 }
 
 }  // namespace common

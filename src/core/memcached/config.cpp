@@ -21,6 +21,10 @@
 #include <string>
 #include <vector>
 
+extern "C" {
+  #include "sds.h"
+}
+
 #include "common/sprintf.h"
 
 #include "fasto/qt/logger.h"
@@ -103,17 +107,15 @@ std::string ConvertToString(const fastonosql::core::memcached::Config &conf) {
 
 template<>
 fastonosql::core::memcached::Config ConvertFromString(const std::string& line) {
-  enum { kMaxArgs = 64 };
   int argc = 0;
-  char* argv[kMaxArgs] = {0};
-
-  char* p2 = strtok((char*)line.c_str(), " ");
-  while(p2){
-    argv[argc++] = p2;
-    p2 = strtok(0, " ");
+  sds* argv = sdssplitargswithspecsymbols(line.c_str(), &argc);
+  if (argv) {
+    auto cfg = fastonosql::core::memcached::parseOptions(argc, argv);
+    sdsfreesplitres(argv, argc);
+    return cfg;
   }
 
-  return fastonosql::core::memcached::parseOptions(argc, argv);
+  return fastonosql::core::memcached::Config();
 }
 
 }  // namespace common

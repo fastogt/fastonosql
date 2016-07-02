@@ -21,6 +21,10 @@
 #include <string>
 #include <vector>
 
+extern "C" {
+  #include "sds.h"
+}
+
 #include "common/sprintf.h"
 #include "common/file_system.h"
 
@@ -93,17 +97,15 @@ std::string ConvertToString(const fastonosql::core::leveldb::Config &conf) {
 
 template<>
 fastonosql::core::leveldb::Config ConvertFromString(const std::string& line) {
-  enum { kMaxArgs = 64 };
   int argc = 0;
-  char* argv[kMaxArgs] = {0};
-
-  char* p2 = strtok((char*)line.c_str(), " ");
-  while (p2) {
-    argv[argc++] = p2;
-    p2 = strtok(0, " ");
+  sds* argv = sdssplitargswithspecsymbols(line.c_str(), &argc);
+  if (argv) {
+    auto cfg = fastonosql::core::leveldb::parseOptions(argc, argv);
+    sdsfreesplitres(argv, argc);
+    return cfg;
   }
 
-  return fastonosql::core::leveldb::parseOptions(argc, argv);
+  return fastonosql::core::leveldb::Config();
 }
 
 }  // namespace common
