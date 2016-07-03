@@ -106,4 +106,4 @@ fastonosql::core::lmdb::Config ConvertFromString(const std::string& line) {
   return fastonosql::core::lmdb::Config();
 }
 
-}  // namespace comon
+}  // namespace common

@@ -38,6 +38,6 @@ class Database
   Database(IServerSPtr server, IDataBaseInfoSPtr info);
 };
 
-}
+}  // namespace unqlite
 }  // namespace core
 }  // namespace fastonosql

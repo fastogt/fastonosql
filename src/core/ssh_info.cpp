@@ -36,6 +36,45 @@
 #define CURMETHOD "currentMethod"
 #define MARKER "\r\n"
 
+namespace {
+  const std::string sshMethods[] = { "UNKNOWN", "PASSWORD", "PUBLICKEY" };
+}
+
+namespace common {
+
+std::string ConvertToString(const fastonosql::core::SSHInfo& ssh_info) {
+  return  HOST":" + common::ConvertToString(ssh_info.host) + MARKER
+          USER":" + ssh_info.user_name + MARKER
+          PASSWORD":" + ssh_info.password + MARKER
+          PUBKEY":" + ssh_info.public_key + MARKER
+          PRIVKEY":" + ssh_info.private_key + MARKER
+          PASSPHRASE":" + ssh_info.passphrase + MARKER
+          CURMETHOD":" + common::ConvertToString(ssh_info.current_method) + MARKER;
+}
+
+template<>
+fastonosql::core::SSHInfo ConvertFromString(const std::string& text) {
+  return fastonosql::core::SSHInfo(text);
+}
+
+std::string ConvertToString(fastonosql::core::SSHInfo::SupportedAuthenticationMetods method) {
+  return sshMethods[method];
+}
+
+template<>
+fastonosql::core::SSHInfo::SupportedAuthenticationMetods ConvertFromString(const std::string& text) {
+  for (size_t i = 0; i < SIZEOFMASS(sshMethods); ++i) {
+    if (text == sshMethods[i]) {
+      return static_cast<fastonosql::core::SSHInfo::SupportedAuthenticationMetods>(i);
+    }
+  }
+
+  NOTREACHED();
+  return fastonosql::core::SSHInfo::UNKNOWN;
+}
+
+}  // namespace common
+
 namespace fastonosql {
 namespace core {
 
@@ -80,7 +119,7 @@ SSHInfo::SSHInfo(const std::string& text)
       } else if (field == PASSPHRASE) {
         passphrase = value;
       } else if (field == CURMETHOD) {
-        current_method = (SupportedAuthenticationMetods)common::ConvertFromString<int>(value);
+        current_method = common::ConvertFromString<SupportedAuthenticationMetods>(value);
       }
     }
     start = pos + sizeof(MARKER) - 1;
@@ -97,22 +136,3 @@ SSHInfo::SupportedAuthenticationMetods SSHInfo::authMethod() const {
 
 }  // namespace core
 }  // namespace fastonosql
-
-namespace common {
-
-std::string ConvertToString(const fastonosql::core::SSHInfo& ssh_info) {
-  return  HOST":" + common::ConvertToString(ssh_info.host) + MARKER
-          USER":" + ssh_info.user_name + MARKER
-          PASSWORD":" + ssh_info.password + MARKER
-          PUBKEY":" + ssh_info.public_key + MARKER
-          PRIVKEY":" + ssh_info.private_key + MARKER
-          PASSPHRASE":" + ssh_info.passphrase + MARKER
-          CURMETHOD":" + common::ConvertToString(ssh_info.current_method) + MARKER;
-}
-
-template<>
-fastonosql::core::SSHInfo ConvertFromString(const std::string& text) {
-  return fastonosql::core::SSHInfo(text);
-}
-
-}  // namespace common

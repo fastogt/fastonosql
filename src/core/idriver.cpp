@@ -78,12 +78,13 @@ bool getStamp(common::buffer_t stamp, common::time64_t* timeOut) {
     stamp.pop_back();
   }
 
-  common::time64_t ltimeOut = common::ConvertFromString<common::time64_t>((const char*)(stamp.data() + 1));
+  const common::byte_t* data = stamp.data() + 1;
+  common::time64_t ltimeOut = common::ConvertFromString<common::time64_t>(reinterpret_cast<const char*>(data));
   *timeOut = ltimeOut;
   return ltimeOut != 0;
 }
 
-}
+}  // namespace
 
 namespace fastonosql {
 namespace core {
@@ -108,7 +109,7 @@ void replyNotImplementedYet(IDriver* sender, event_request_type* ev, const char*
   notifyProgressImpl(sender, esender, 100);
 }
 
-}
+}  // namespace
 
 common::Error IDriver::execute(FastoObjectCommand* cmd) {
   if (!cmd) {

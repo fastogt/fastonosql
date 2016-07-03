@@ -63,7 +63,7 @@ FastoCommonItem* createRootItem(FastoObject* item) {
   return new FastoCommonItem(nkey, item->delemitr(), true, NULL, item);
 }
 
-}
+}  // namespace
 
 OutputWidget::OutputWidget(core::IServerSPtr server, QWidget* parent)
   : QWidget(parent), server_(server) {

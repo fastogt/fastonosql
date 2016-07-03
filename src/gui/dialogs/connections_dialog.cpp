@@ -350,8 +350,9 @@ void ConnectionsDialog::removeConnection(ConnectionListWidgetItem* connectionIte
                                      translations::trDeleteConnectionTemplate_1S.arg(connectionItem->text(0)),
                                      QMessageBox::Yes, QMessageBox::No, QMessageBox::NoButton);
 
-  if (answer != QMessageBox::Yes)
+  if (answer != QMessageBox::Yes) {
     return;
+  }
 
   core::IConnectionSettingsBaseSPtr connection = connectionItem->connection();
   delete connectionItem;
@@ -366,8 +367,9 @@ void ConnectionsDialog::removeCluster(ClusterConnectionListWidgetItemContainer* 
                                      translations::trDeleteClusterTemplate_1S.arg(clusterItem->text(0)),
                                      QMessageBox::Yes, QMessageBox::No, QMessageBox::NoButton);
 
-  if (answer != QMessageBox::Yes)
+  if (answer != QMessageBox::Yes) {
     return;
+  }
 
   core::IClusterSettingsBaseSPtr connection = clusterItem->connection();
   delete clusterItem;
@@ -382,8 +384,9 @@ void ConnectionsDialog::removeSentinel(SentinelConnectionListWidgetItemContainer
                                      translations::trDeleteSentinelTemplate_1S.arg(sentinelItem->text(0)),
                                      QMessageBox::Yes, QMessageBox::No, QMessageBox::NoButton);
 
-  if (answer != QMessageBox::Yes)
+  if (answer != QMessageBox::Yes) {
     return;
+  }
 
   core::ISentinelSettingsBaseSPtr connection = sentinelItem->connection();
   delete sentinelItem;

@@ -142,7 +142,7 @@ QsciLexer* FastoEditor::lexer() const {
 }
 
 void FastoEditor::setCallTipsStyle(int style) {
-  scin_->setCallTipsStyle((QsciScintilla::CallTipsStyle)style);
+  scin_->setCallTipsStyle(static_cast<QsciScintilla::CallTipsStyle>(style));
 }
 
 void FastoEditor::sendScintilla(unsigned int msg, unsigned long wParam, long lParam) {

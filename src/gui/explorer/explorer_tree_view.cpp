@@ -56,7 +56,7 @@ namespace {
   const QString trSetMaxConnectionOnServerTemplate_1S = QObject::tr("Set max connection on %1 server");
   const QString trMaximumConnectionTemplate = QObject::tr("Maximum connection:");
   const QString trChangePasswordTemplate_1S = QObject::tr("Change password for %1 server");
-}  //
+}  // namespace
 
 namespace fastonosql {
 namespace gui {

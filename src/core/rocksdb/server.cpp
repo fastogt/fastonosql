@@ -43,5 +43,5 @@ IDatabaseSPtr Server::createDatabase(IDataBaseInfoSPtr info) {
 }
 
 }  // namespace rocksdb
-}  // namespace core {
+}  // namespace core
 }  // namespace fastonosql

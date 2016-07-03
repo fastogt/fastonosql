@@ -50,7 +50,7 @@ namespace {
   const QString defaultNameConnection = "New Sentinel Connection";
   const char* defaultNameConnectionFolder = "/";
   const QString invalidDbType = QObject::tr("Invalid database type!");
-}
+}  // namespace
 
 namespace fastonosql {
 namespace gui {
@@ -290,8 +290,9 @@ void SentinelDialog::remove() {
   int answer = QMessageBox::question(this, translations::trConnections, translations::trDeleteConnectionTemplate_1S.arg(currentItem->text(0)),
                                      QMessageBox::Yes, QMessageBox::No, QMessageBox::NoButton);
 
-  if (answer != QMessageBox::Yes)
+  if (answer != QMessageBox::Yes) {
     return;
+  }
 
   delete currentItem;
 }

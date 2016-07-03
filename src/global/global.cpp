@@ -222,7 +222,7 @@ common::ArrayValue* FastoObjectArray::array() const {
   return static_cast<common::ArrayValue*>(value_.get());
 }
 
-}
+}  // namespace fastonosql
 
 namespace common {
 
@@ -353,4 +353,4 @@ std::string ConvertToString(common::HashValue* hash, const std::string& delemitr
   return result;
 }
 
-}
+}  // namespace common

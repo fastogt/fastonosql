@@ -43,7 +43,7 @@ namespace {
                                                               "<b>Path:</b> %3<br/>");
   const QString trDbToolTipTemplate_1S = QObject::tr("<b>Db size:</b> %1 keys<br/>");
   const QString trNamespace_1S = QObject::tr("<b>Group size:</b> %1 keys<br/>");
-}
+}  // namespace
 
 namespace fastonosql {
 namespace gui {

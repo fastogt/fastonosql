@@ -44,8 +44,8 @@ class Command {
   common::Value::CommandLoggingType type_;
 };
 
-}
+}  // namespace fastonosql
 
 namespace common {
   std::string ConvertToString(fastonosql::supportedViews v);
-}
+}  // namespace common

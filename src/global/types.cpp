@@ -46,7 +46,7 @@ common::Value::CommandLoggingType Command::type() const {
   return type_;
 }
 
-}
+}  // namespace fastonosql
 
 namespace common {
 
@@ -65,4 +65,4 @@ fastonosql::supportedViews ConvertFromString(const std::string& from) {
   return fastonosql::Tree;
 }
 
-}
+}  // namespace common

@@ -310,7 +310,7 @@ common::Error DBConnection::del(const std::string& key) {
 
   MDB_val mkey;
   mkey.mv_size = key.size();
-  mkey.mv_data = (void*)key.c_str();
+  mkey.mv_data = reinterpret_cast<void*>(key.c_str());
 
   MDB_txn* txn = NULL;
   int rc = mdb_txn_begin(connection_.handle_->env, NULL, 0, &txn);
@@ -354,7 +354,7 @@ common::Error DBConnection::keys(const std::string& key_start, const std::string
   MDB_val key;
   MDB_val data;
   while ((mdb_cursor_get(cursor, &key, &data, MDB_NEXT) == LMDB_OK) && limit > ret->size()) {
-    std::string skey((const char*)key.mv_data, key.mv_size);
+    std::string skey(reinterpret_cast<const char*>(key.mv_data), key.mv_size);
     if (key_start < skey && key_end > skey) {
       ret->push_back(skey);
     }

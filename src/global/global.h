@@ -106,7 +106,7 @@ class FastoObjectArray
 typedef common::intrusive_ptr<FastoObject> FastoObjectIPtr;
 typedef common::intrusive_ptr<FastoObjectCommand> FastoObjectCommandIPtr;
 
-}
+}  // namespace fastonosql
 
 namespace common {
 
@@ -118,4 +118,4 @@ std::string ConvertToString(common::SetValue* set, const std::string& delemitr);
 std::string ConvertToString(common::ZSetValue* zset, const std::string& delemitr);
 std::string ConvertToString(common::HashValue* hash, const std::string& delemitr);
 
-}
+}  // namespace common

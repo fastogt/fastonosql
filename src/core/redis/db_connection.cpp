@@ -113,7 +113,7 @@ void anetSetError(char* err, const char* fmt, ...) {
 int anetKeepAlive(char *err, int fd, int interval) {
   int val = 1;
 
-  if (setsockopt(fd, SOL_SOCKET, SO_KEEPALIVE, (char*)&val, sizeof(val)) == -1) {
+  if (setsockopt(fd, SOL_SOCKET, SO_KEEPALIVE, &val, sizeof(val)) == -1) {
     anetSetError(err, "setsockopt SO_KEEPALIVE: %s", strerror(errno));
     return ANET_ERR;
   }
@@ -176,7 +176,7 @@ const struct RedisInit {
       helpEntry tmp;
 
       tmp.argc = 1;
-      tmp.argv = (sds*)malloc(sizeof(sds));
+      tmp.argv = reinterpret_cast<sds*>(malloc(sizeof(sds)));
       tmp.argv[0] = sdscatprintf(sdsempty(), "@%s", commandGroups[i]);
       tmp.full = tmp.argv[0];
       tmp.type = CLI_HELP_GROUP;
@@ -208,8 +208,10 @@ char* getInfoField(char* info, const char* field) {
   p += strlen(field)+1;
   n1 = strchr(p,'\r');
   n2 = strchr(p,',');
-  if (n2 && n2 < n1) n1 = n2;
-  result = (char*)malloc(sizeof(char)*(n1-p)+1);
+  if (n2 && n2 < n1) {
+    n1 = n2;
+  }
+  result = reinterpret_cast<char*>(malloc(sizeof(char)*(n1 - p) + 1));
   memcpy(result,p,(n1-p));
   result[n1-p] = '\0';
   return result;
@@ -217,12 +219,13 @@ char* getInfoField(char* info, const char* field) {
 
 /* Like the above function but automatically convert the result into
  * a long. On error (missing field) LONG_MIN is returned. */
-long getLongInfoField(char *info, const char *field) {
+long getLongInfoField(char* info, const char* field) {
   char* value = getInfoField(info,field);
-  long l;
+  if (!value) {
+    return LONG_MIN;
+  }
 
-  if (!value) return LONG_MIN;
-  l = strtol(value, NULL, 10);
+  long l = strtol(value, NULL, 10);
   free(value);
   return l;
 }
@@ -242,13 +245,13 @@ void bytesToHuman(char* s, size_t len, int64_t n) {
     common::SNPrintf(s, len, "%lluB", n);
     return;
   } else if (n < (1024*1024)) {
-    d = (double)n/(1024);
+    d = static_cast<double>(n / (1024));
     common::SNPrintf(s, len, "%.2fK", d);
   } else if (n < (1024LL*1024*1024)) {
-    d = (double)n/(1024*1024);
+    d = static_cast<double>(n / (1024*1024));
     common::SNPrintf(s, len, "%.2fM", d);
   } else if (n < (1024LL*1024*1024*1024)) {
-    d = (double)n/(1024LL*1024*1024);
+    d = static_cast<double>(n / (1024LL*1024*1024));
     common::SNPrintf(s, len, "%.2fG", d);
   }
 }
@@ -274,7 +277,7 @@ bool isPipeLineCommand(const char* command) {
   return !skip;
 }
 
-}
+}  // namespace
 
 namespace fastonosql {
 namespace core {
@@ -306,7 +309,7 @@ common::Error toIntType(char* key, char* type, int* res) {
   }
 }
 
-}
+}  // namespace
 
 namespace {
 
@@ -432,7 +435,7 @@ common::Error authContext(const Config& config, redisContext* context) {
   return cliPrintContextError(context);
 }
 
-}
+}  // namespace
 
 common::Error testConnection(ConnectionSettings* settings) {
   if (!settings) {
@@ -476,7 +479,7 @@ common::Error discoveryClusterConnection(ConnectionSettings* settings,
   }
 
   /* Send the GET CLUSTER command. */
-  redisReply* reply = (redisReply*)redisCommand(context, GET_SERVER_TYPE);
+  redisReply* reply = reinterpret_cast<redisReply*>(redisCommand(context, GET_SERVER_TYPE));
   if (!reply) {
     err = common::make_error_value("I/O error", common::Value::E_ERROR);
     redisFree(context);
@@ -684,7 +687,6 @@ common::Error DBConnection::latencyMode(FastoObject* out) {
   uint64_t history_interval =
           config_.interval ? config_.interval/1000 :
                             LATENCY_HISTORY_DEFAULT_INTERVAL;
-  double avg;
   common::time64_t history_start = common::time::current_mstime();
 
   if (!context_) {
@@ -695,9 +697,10 @@ common::Error DBConnection::latencyMode(FastoObject* out) {
   FastoObject* child = nullptr;
   std::string command = cmd->inputCommand();
 
+  double avg;
   while (!isInterrupted()) {
     start = common::time::current_mstime();
-    redisReply *reply = (redisReply*)redisCommand(context_, command.c_str());
+    redisReply *reply = reinterpret_cast<redisReply*>(redisCommand(context_, command.c_str()));
     if (!reply) {
       return common::make_error_value("I/O error", common::Value::E_ERROR);
     }
@@ -709,12 +712,12 @@ common::Error DBConnection::latencyMode(FastoObject* out) {
     count++;
     if (count == 1) {
       min = max = tot = latency;
-      avg = (double) latency;
+      avg = static_cast<double>(latency);
     } else {
       if (latency < min) min = latency;
       if (latency > max) max = latency;
       tot += latency;
-      avg = (double) tot/count;
+      avg = static_cast<double>(tot / count);
     }
 
     std::string buff = common::MemSPrintf("min: %lld, max: %lld, avg: %.2f (%lld samples)",
@@ -933,7 +936,7 @@ common::Error DBConnection::sendScan(unsigned long long* it, redisReply** out){
     return common::make_error_value("Invalid input argument(s)", common::ErrorValue::E_ERROR);
   }
 
-  redisReply* reply = (redisReply*)redisCommand(context_, "SCAN %llu", *it);
+  redisReply* reply = reinterpret_cast<redisReply*>(redisCommand(context_, "SCAN %llu", *it));
 
   /* Handle any error conditions */
   if (!reply) {
@@ -962,7 +965,7 @@ common::Error DBConnection::dbkcount(size_t* size) {
     return common::make_error_value("Invalid input argument(s)", common::ErrorValue::E_ERROR);
   }
 
-  redisReply* reply = (redisReply*)redisCommand(context_, DBSIZE);
+  redisReply* reply = reinterpret_cast<redisReply*>(redisCommand(context_, DBSIZE));
 
   if (!reply || reply->type != REDIS_REPLY_INTEGER) {
     return common::make_error_value("Couldn't determine DBSIZE!", common::Value::E_ERROR);
@@ -988,7 +991,7 @@ common::Error DBConnection::getKeyTypes(redisReply* keys, int* types) {
   redisReply* reply = NULL;
   /* Retrieve types */
   for (size_t i = 0; i < keys->elements; i++) {
-    if (redisGetReply(context_, (void**)&reply)!=REDIS_OK) {
+    if (redisGetReply(context_, reinterpret_cast<void**>(&reply))!=REDIS_OK) {
       std::string buff = common::MemSPrintf("Error getting type for key '%s' (%d: %s)",
                                             keys->element[i]->str, context_->err, context_->errstr);
       return common::make_error_value(buff, common::Value::E_ERROR);
@@ -1018,8 +1021,9 @@ common::Error DBConnection::getKeySizes(redisReply* keys, int* types, unsigned l
   /* Pipeline size commands */
   for (size_t i = 0; i < keys->elements; i++) {
     /* Skip keys that were deleted */
-    if (types[i] == RTYPE_NONE)
+    if (types[i] == RTYPE_NONE) {
       continue;
+    }
 
     redisAppendCommand(context_, "%s %s", sizecmds[types[i]], keys->element[i]->str);
   }
@@ -1033,7 +1037,7 @@ common::Error DBConnection::getKeySizes(redisReply* keys, int* types, unsigned l
     }
 
     /* Retreive size */
-    if (redisGetReply(context_, (void**)&reply)!=REDIS_OK) {
+    if (redisGetReply(context_, reinterpret_cast<void**>(&reply))!=REDIS_OK) {
       std::string buff = common::MemSPrintf("Error getting size for key '%s' (%d: %s)",
                                             keys->element[i]->str, context_->err, context_->errstr);
       return common::make_error_value(buff, common::Value::E_ERROR);
@@ -1103,7 +1107,7 @@ common::Error DBConnection::findBigKeys(FastoObject* out) {
   /* SCAN loop */
   do {
     /* Calculate approximate percentage completion */
-    double pct = 100 * (double)sampled/total_keys;
+    double pct = 100 * static_cast<double>(sampled / total_keys);
 
     /* Grab some keys and point to the keys array */
     er = sendScan(&it, &reply);
@@ -1115,14 +1119,14 @@ common::Error DBConnection::findBigKeys(FastoObject* out) {
 
     /* Reallocate our type and size array if we need to */
     if (keys->elements > arrsize) {
-      int* ltypes = (int*)realloc(types, sizeof(int)*keys->elements);
+      int* ltypes = reinterpret_cast<int*>(realloc(types, sizeof(int)*keys->elements));
       if (!ltypes) {
         free(types);
         return common::make_error_value("Failed to allocate storage for keys!",
                                         common::Value::E_ERROR);
       }
       types = ltypes;
-      unsigned long long* lsizes = (unsigned long long*)realloc(sizes, sizeof(unsigned long long)*keys->elements);
+      unsigned long long* lsizes = reinterpret_cast<unsigned long long*>(realloc(sizes, sizeof(unsigned long long)*keys->elements));
       if (!lsizes) {
         free(sizes);
         return common::make_error_value("Failed to allocate storage for keys!",
@@ -1145,8 +1149,9 @@ common::Error DBConnection::findBigKeys(FastoObject* out) {
 
     /* Now update our stats */
     for (i = 0; i < keys->elements; i++) {
-      if ((type = types[i]) == RTYPE_NONE)
+      if ((type = types[i]) == RTYPE_NONE) {
         continue;
+      }
 
       totalsize[type] += sizes[i];
       counts[type]++;
@@ -1187,7 +1192,7 @@ common::Error DBConnection::findBigKeys(FastoObject* out) {
   LOG_MSG(buff, common::logging::L_INFO, true);
 
   buff = common::MemSPrintf("Total key length in bytes is %llu (avg len %.2f)", totlen,
-                            totlen ? (double)totlen/sampled : 0);
+                            totlen ? static_cast<double>(totlen / sampled) : 0);
   LOG_MSG(buff, common::logging::L_INFO, true);
 
   /* Output the biggest keys we found, for types we did find */
@@ -1206,8 +1211,8 @@ common::Error DBConnection::findBigKeys(FastoObject* out) {
     memset(&buff, 0, sizeof(buff));
     buff = common::MemSPrintf("%llu %ss with %llu %s (%05.2f%% of keys, avg size %.2f)",
                               counts[i], typeName[i], totalsize[i], typeunit[i],
-                              sampled ? 100 * (double)counts[i]/sampled : 0,
-                              counts[i] ? (double)totalsize[i]/counts[i] : 0);
+                              sampled ? 100 * static_cast<double>(counts[i] / sampled) : 0,
+                              counts[i] ? static_cast<double>(totalsize[i] / counts[i]) : 0);
     common::StringValue *val = common::Value::createStringValue(buff);
     FastoObject* obj = new FastoObject(cmd, val, config_.delimiter, config_.ns_separator);
     cmd->addChildren(obj);
@@ -1354,10 +1359,11 @@ common::Error DBConnection::scanMode(FastoObject* out) {
   const char* pattern = common::utils::c_strornull(config_.pattern);
 
   do {
-    if (pattern)
-      reply = (redisReply*)redisCommand(context_, "SCAN %llu MATCH %s", cur, pattern);
-    else
-      reply = (redisReply*)redisCommand(context_, "SCAN %llu", cur);
+    if (pattern) {
+      reply = reinterpret_cast<redisReply*>(redisCommand(context_, "SCAN %llu MATCH %s", cur, pattern));
+    } else {
+      reply = reinterpret_cast<redisReply*>(redisCommand(context_, "SCAN %llu", cur));
+    }
     if (reply == NULL) {
       return common::make_error_value("I/O error", common::ErrorValue::E_ERROR);
     } else if (reply->type == REDIS_REPLY_ERROR) {
@@ -1605,7 +1611,7 @@ common::Error DBConnection::cliReadReply(FastoObject* out) {
     return common::make_error_value("Invalid input argument(s)", common::ErrorValue::E_ERROR);
   }
 
-  void* _reply = NULL;
+  void*_reply = NULL;
   if (redisGetReply(context_, &_reply) != REDIS_OK) {
     /* Filter cases where we should reconnect */
     if (context_->err == REDIS_ERR_IO && errno == ECONNRESET) {
@@ -1675,7 +1681,7 @@ common::Error DBConnection::execute(int argc, char** argv, FastoObject* out) {
   if (strcasecmp(command, "subscribe") == 0 || strcasecmp(command, "psubscribe") == 0) config_.pubsub_mode = 1;
   if (strcasecmp(command, "sync") == 0 || strcasecmp(command, "psync") == 0) config_.slave_mode = 1;
 
-  size_t* argvlen = (size_t*)malloc(argc * sizeof(size_t));
+  size_t* argvlen = reinterpret_cast<size_t*>(malloc(argc * sizeof(size_t)));
   for (int j = 0; j < argc; j++) {
     size_t len =  sdslen(argv[j]);
     argvlen[j] = len;

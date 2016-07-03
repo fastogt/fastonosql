@@ -77,7 +77,7 @@ common::Value::Type convertFromStringRType(const std::string& type) {
   }
 }
 
-}
+}  // namespace
 
 namespace fastonosql {
 namespace core {
@@ -91,7 +91,7 @@ Command* createCommandFast(const std::string& input, common::Value::CommandLoggi
   return fs;
 }
 
-}
+}  // namespace
 
 Driver::Driver(IConnectionSettingsBaseSPtr settings)
   : IDriverRemote(settings), impl_(new DBConnection(this)) {
