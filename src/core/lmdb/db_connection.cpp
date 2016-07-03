@@ -310,7 +310,7 @@ common::Error DBConnection::del(const std::string& key) {
 
   MDB_val mkey;
   mkey.mv_size = key.size();
-  mkey.mv_data = reinterpret_cast<void*>(key.c_str());
+  mkey.mv_data = (void*)(key.c_str());
 
   MDB_txn* txn = NULL;
   int rc = mdb_txn_begin(connection_.handle_->env, NULL, 0, &txn);

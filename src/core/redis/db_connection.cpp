@@ -112,8 +112,8 @@ void anetSetError(char* err, const char* fmt, ...) {
  * the probe send time, interval, and count. */
 int anetKeepAlive(char *err, int fd, int interval) {
   int val = 1;
-
-  if (setsockopt(fd, SOL_SOCKET, SO_KEEPALIVE, &val, sizeof(val)) == -1) {
+  const char* cval = reinterpret_cast<const char*>(&val);
+  if (setsockopt(fd, SOL_SOCKET, SO_KEEPALIVE, cval, sizeof(val)) == -1) {
     anetSetError(err, "setsockopt SO_KEEPALIVE: %s", strerror(errno));
     return ANET_ERR;
   }
