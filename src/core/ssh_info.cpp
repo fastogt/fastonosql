@@ -37,7 +37,7 @@
 #define MARKER "\r\n"
 
 namespace {
-  const std::string sshMethods[] = { "UNKNOWN", "PASSWORD", "PUBLICKEY" };
+  const std::string sshMethods[] = { "0", "1", "2" };
 }
 
 namespace common {
