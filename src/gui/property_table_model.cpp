@@ -135,7 +135,7 @@ void PropertyTableModel::changeProperty(const core::property_t& pr) {
     core::property_t prop = it->property();
     if (prop.first == pr.first) {
       it->setProperty(pr);
-      updateItem(index(i, PropertyTableItem::eKey), index(i, PropertyTableItem::eValue));
+      updateItem(index(i, PropertyTableItem::eKey, QModelIndex()), index(i, PropertyTableItem::eValue, QModelIndex()));
       return;
     }
   }

@@ -142,7 +142,7 @@ int FastoCommonModel::columnCount(const QModelIndex& parent) const {
 }
 
 void FastoCommonModel::changeValue(const core::NDbKValue& value) {
-  QModelIndex ind = index(0, 0);
+  QModelIndex ind = index(0, 0, QModelIndex());
   if (!ind.isValid()) {
     return;
   }
@@ -166,7 +166,7 @@ void FastoCommonModel::changeValue(const core::NDbKValue& value) {
 
     if (child->key() == key) {
       child->setValue(value.value());
-      updateItem(index(i, FastoCommonItem::eValue), index(i, FastoCommonItem::eType));
+      updateItem(index(i, FastoCommonItem::eValue, QModelIndex()), index(i, FastoCommonItem::eType, QModelIndex()));
       break;
     }
   }
