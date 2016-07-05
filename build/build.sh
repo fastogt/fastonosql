@@ -18,10 +18,10 @@ createPackage() {
     cd "$dir_path"
     if [ "$platform" = 'android' ] ; then
         if [ -n "$branding_complex_variables" ]; then
-            cmake ../../ -G "Unix Makefiles" -DCMAKE_TOOLCHAIN_FILE=../../cmake/android.toolchain.cmake -DCMAKE_BUILD_TYPE=RELEASE -DOS_ARCH=$os_arch \
+            cmake ../../ -G "Unix Makefiles" -DCMAKE_TOOLCHAIN_FILE=../../cmake/android.toolchain.cmake -DCMAKE_BUILD_TYPE=RELEASE -DLOG_TO_FILE=ON -DOS_ARCH=$os_arch \
             -DOPENSSL_USE_STATIC=1 $branding_variables "$branding_complex_variables"
         else
-            cmake ../../ -G "Unix Makefiles" -DCMAKE_TOOLCHAIN_FILE=../../cmake/android.toolchain.cmake -DCMAKE_BUILD_TYPE=RELEASE -DOS_ARCH=$os_arch \
+            cmake ../../ -G "Unix Makefiles" -DCMAKE_TOOLCHAIN_FILE=../../cmake/android.toolchain.cmake -DCMAKE_BUILD_TYPE=RELEASE -DLOG_TO_FILE=ON -DOS_ARCH=$os_arch \
             -DOPENSSL_USE_STATIC=1 $branding_variables
         fi
         make install -j2
@@ -30,10 +30,10 @@ createPackage() {
         make apk_signed_aligned
     else
         if [ -n "$branding_complex_variables" ]; then
-            cmake ../../ -G "Unix Makefiles" -DCMAKE_BUILD_TYPE=RELEASE -DOS_ARCH=$os_arch -DOPENSSL_USE_STATIC=1 \
+            cmake ../../ -G "Unix Makefiles" -DCMAKE_BUILD_TYPE=RELEASE -DLOG_TO_FILE=ON -DOS_ARCH=$os_arch -DOPENSSL_USE_STATIC=1 \
             $branding_variables "$branding_complex_variables"
         else
-            cmake ../../ -G "Unix Makefiles" -DCMAKE_BUILD_TYPE=RELEASE -DOS_ARCH=$os_arch -DOPENSSL_USE_STATIC=1 \
+            cmake ../../ -G "Unix Makefiles" -DCMAKE_BUILD_TYPE=RELEASE -DLOG_TO_FILE=ON -DOS_ARCH=$os_arch -DOPENSSL_USE_STATIC=1 \
             $branding_variables 
         fi
         make install -j2
