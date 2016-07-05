@@ -48,7 +48,11 @@ common::Error makeServerCommonInfo(struct redisReply* repl_info, ServerCommonInf
        std::string str_type = repl_info->element[j + 1]->str;
        if (str_type == "master") {
          linf.type = MASTER;
+       } else if(str_type == "s_down,master") {
+         linf.type = MASTER;
        } else if (str_type == "slave") {
+         linf.type = SLAVE;
+       } else if (str_type == "s_down,slave") {
          linf.type = SLAVE;
        } else {
          NOTREACHED();
