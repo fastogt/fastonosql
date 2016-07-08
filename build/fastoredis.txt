@@ -12,8 +12,8 @@
 -DBRANDING_PROJECT_COMPANYNAME_DOMAIN:STRING=www.fastogt.com 
 -DBRANDING_PROJECT_GITHUB_FORK:STRING=www.github.com/fastogt/fastoredis 
 -DBRANDING_PROJECT_GITHUB_ISSUES:STRING=www.github.com/fastogt/fastoredis/issues 
--DBRANDING_PROJECT_HOMEPAGE_LINK:STRING=http://www.fastoredis.com
--DBRANDING_PROJECT_FACEBOOK_LINK:STRING=https://www.facebook.com/profile.php?id=100004938436506
--DBRANDING_PROJECT_TWITTER_LINK:STRING=https://www.twitter.com/FastoRedis
+-DBRANDING_PROJECT_HOMEPAGE_LINK:STRING=http://www.fastoredis.com 
+-DBRANDING_PROJECT_FACEBOOK_LINK:STRING=https://www.facebook.com/profile.php?id=100004938436506 
+-DBRANDING_PROJECT_TWITTER_LINK:STRING=https://www.twitter.com/FastoRedis 
 -DBRANDING_PROJECT_GITHUB_LINK:STRING=https://www.github.com/fastogt/fastoredis 
 -DBRANDING_PROJECT_CHANGELOG_FILE:STRING=../fastoredis_changelog.txt 

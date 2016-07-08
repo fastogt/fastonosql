@@ -32,7 +32,7 @@ namespace {
 #else
     "<h3>" PROJECT_NAME_TITLE " " PROJECT_VERSION " " PROJECT_BUILD_TYPE_VERSION STRINGIZE(PROJECT_VERSION_TWEAK) "<br/>Revision:" PROJECT_GIT_VERSION "</h3>"
 #endif
-    PROJECT_BREF_DESCRIPTION
+    PROJECT_SUMMARY
     "<br/>"
     "<br/>"
     "Visit " PROJECT_NAME_TITLE " website: <a href=\"http://" PROJECT_DOMAIN "\">" PROJECT_DOMAIN "</a> <br/>"

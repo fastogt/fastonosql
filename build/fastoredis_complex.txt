@@ -1,1 +1,1 @@
--DBRANDING_PROJECT_BREF_DESCRIPTION:STRING=Cross-platform open source Redis GUI management tool.
+-DBRANDING_PROJECT_SUMMARY:STRING=Cross-platform open source Redis GUI management tool.
