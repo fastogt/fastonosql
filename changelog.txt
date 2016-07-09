@@ -1,4 +1,4 @@
-0.6.3 /
+0.6.3 / Jule 9, 2016
 [Alexandr Topilski]
 - [Redis] Commands update
 - [SSDB] Up sources to version 1.9.3

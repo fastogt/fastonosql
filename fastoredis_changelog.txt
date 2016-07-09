@@ -1,4 +1,4 @@
-0.8.4 /
+0.8.4 / Jule 9, 2016
 [Alexandr Topilski]
 - Commands update
 - Update QScintilla to version 2.9.2
