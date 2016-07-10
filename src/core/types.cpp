@@ -43,14 +43,6 @@ connectionTypes ServerDiscoveryInfoBase::connectionType() const {
   return ctype_;
 }
 
-serverTypes ServerDiscoveryInfoBase::type() const {
-  return info_.type;
-}
-
-serverState ServerDiscoveryInfoBase::state() const {
-  return info_.state;
-}
-
 ServerCommonInfo ServerDiscoveryInfoBase::info() const {
   return info_;
 }

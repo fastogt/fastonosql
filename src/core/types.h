@@ -42,8 +42,6 @@ struct ServerCommonInfo {
 class ServerDiscoveryInfoBase {
  public:
   connectionTypes connectionType() const;
-  serverTypes type() const;
-  serverState state() const;
   ServerCommonInfo info() const;
 
   std::string name() const;
