@@ -40,9 +40,14 @@ common::Error makeServerCommonInfoFromLine(const std::string& line, ServerCommon
   bool lself = false;
   int fieldpos = 0;
   std::string word;
-  for (size_t i = 0; i < line.size(); ++i) {
+  const size_t len = line.size();
+  for (size_t i = 0; i < len; ++i) {
     char ch = line[i];
-    if (ch == ' ') {
+    if (ch != ' ') {
+      word += ch;
+    }
+
+    if (ch == ' ' || i == len - 1) {
       switch (fieldpos) {
       case 0: {
         linfo.name = word;
@@ -53,10 +58,52 @@ common::Error makeServerCommonInfoFromLine(const std::string& line, ServerCommon
         break;
       }
       case 2: {
-        if (word.find("slave") != std::string::npos) {
+        if (word == "slave") {
           linfo.type = SLAVE;
+          lself = false;
+        } else if (word == "myself,slave") {
+          linfo.type = SLAVE;
+          lself = true;
+        } else if (word == "slave,fail") {
+          linfo.type = SLAVE;
+          lself = false;
+        } else if (word == "master") {
+          linfo.type = MASTER;
+          lself = false;
+        } else if (word == "myself,master") {
+          linfo.type = MASTER;
+          lself = true;
+        } else if (word == "master,fail") {
+          linfo.type = MASTER;
+          lself = false;
+        } else {
+          NOTREACHED();
         }
-        lself = word.find("myself") != std::string::npos;
+        break;
+      }
+      case 3: {  // dep
+        break;
+      }
+      case 4: {  //
+        break;
+      }
+      case 5: {  //
+        break;
+      }
+      case 6: {  //
+        break;
+      }
+      case 7: {  // connected/disconnected
+        if (word == "connected") {
+          linfo.state = SUP;
+        } else if (word == "disconnected") {
+          linfo.state = SDOWN;
+        } else {
+          NOTREACHED();
+        }
+        break;
+      }
+      case 8: {  // slots
         break;
       }
       default:
@@ -64,8 +111,6 @@ common::Error makeServerCommonInfoFromLine(const std::string& line, ServerCommon
       }
       word.clear();
       ++fieldpos;
-    } else {
-      word += ch;
     }
   }
 
@@ -95,7 +140,7 @@ common::Error makeDiscoveryClusterInfo(const common::net::HostAndPort& parentHos
     if (lerr && lerr->isError()) {
       continue;
     }
-    if (common::net::isLocalHost(inf.host.host)) {
+    if (common::net::isLocalHost(inf.host.host)) {  // for direct connection
       inf.host.host = parentHost.host;
     }
 

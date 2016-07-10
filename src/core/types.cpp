@@ -31,6 +31,10 @@ ServerCommonInfo::ServerCommonInfo()
   : name(), type(MASTER), state(SUP), host() {
 }
 
+ServerCommonInfo::ServerCommonInfo(const std::string& name, serverTypes type, serverState state)
+  : name(name), type(type), state(state) {
+}
+
 ServerDiscoveryInfoBase::ServerDiscoveryInfoBase(connectionTypes ctype, const ServerCommonInfo &info)
   : ctype_(ctype), info_(info) {
 }
@@ -45,6 +49,10 @@ serverTypes ServerDiscoveryInfoBase::type() const {
 
 serverState ServerDiscoveryInfoBase::state() const {
   return info_.state;
+}
+
+ServerCommonInfo ServerDiscoveryInfoBase::info() const {
+  return info_;
 }
 
 std::string ServerDiscoveryInfoBase::name() const {

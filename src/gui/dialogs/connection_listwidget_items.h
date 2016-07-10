@@ -20,6 +20,7 @@
 
 #include <QTreeWidgetItem>
 
+#include "core/types.h"
 #include "core/connection_settings.h"
 
 namespace fastonosql {
@@ -61,15 +62,11 @@ class ConnectionListWidgetItem  // common connection
 class ConnectionListWidgetItemDiscovered  // returned after discovered
   : public ConnectionListWidgetItem {
  public:
-  ConnectionListWidgetItemDiscovered(core::serverTypes st, core::serverMode md,
-                                     QTreeWidgetItem* parent);
-  core::serverTypes serverType() const;
-  core::serverMode serverMode() const;
+  ConnectionListWidgetItemDiscovered(const core::ServerCommonInfo& info, QTreeWidgetItem* parent);
   virtual itemConnectionType type() const;
 
  private:
-  core::serverMode server_mode_;
-  core::serverTypes server_type_;
+  core::ServerCommonInfo info_;
 };
 
 class SentinelConnectionListWidgetItemContainer  // can hold many sentinel connections
@@ -87,8 +84,7 @@ class SentinelConnectionListWidgetItemContainer  // can hold many sentinel conne
 class SentinelConnectionWidgetItem  // sentinel connection
   : public ConnectionListWidgetItemDiscovered {
  public:
-  SentinelConnectionWidgetItem(core::serverTypes st,
-                               SentinelConnectionListWidgetItemContainer* parent);
+  SentinelConnectionWidgetItem(const core::ServerCommonInfo& info, SentinelConnectionListWidgetItemContainer* parent);
   virtual itemConnectionType type() const;
 };
 

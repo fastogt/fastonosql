@@ -93,7 +93,7 @@ DiscoverySentinelDiagnosticDialog::DiscoverySentinelDiagnosticDialog(QWidget* pa
   listWidget_->setIndentation(5);
 
   QStringList colums;
-  colums << translations::trName << translations::trAddress << translations::trType;
+  colums << translations::trName << translations::trAddress << translations::trType << translations::trState;
   listWidget_->setHeaderLabels(colums);
   listWidget_->setContextMenuPolicy(Qt::ActionsContextMenu);
   listWidget_->setIndentation(15);
@@ -152,7 +152,7 @@ void DiscoverySentinelDiagnosticDialog::connectionResultReady(bool suc, qint64 m
       core::IConnectionSettingsBase::connection_path_t path(common::file_system::get_separator_string<char>() + inf->name());
       core::IConnectionSettingsBaseSPtr con(core::IConnectionSettingsRemote::createFromType(inf->connectionType(), path, host));
 
-      ConnectionListWidgetItemDiscovered* item = new ConnectionListWidgetItemDiscovered(inf->type(), core::STANDALONE, nullptr);
+      ConnectionListWidgetItemDiscovered* item = new ConnectionListWidgetItemDiscovered(inf->info(), nullptr);
       item->setConnection(con);
       listWidget_->addTopLevelItem(item);
     }

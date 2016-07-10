@@ -375,7 +375,7 @@ bool SentinelDialog::validateAndApply() {
 }
 
 void SentinelDialog::addSentinel(core::SentinelSettings sent) {
-  SentinelConnectionWidgetItem* sent_item = new SentinelConnectionWidgetItem(core::MASTER, nullptr);
+  SentinelConnectionWidgetItem* sent_item = new SentinelConnectionWidgetItem(core::ServerCommonInfo(), nullptr);
   sent_item->setConnection(sent.sentinel);
   auto nodes = sent.sentinel_nodes;
   for (const auto& node: nodes) {

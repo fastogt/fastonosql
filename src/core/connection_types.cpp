@@ -26,6 +26,7 @@ namespace {
                                           "Find big keys mode", "Stat mode",
                                           "Scan mode", "Interactive mode" };
   const std::string serverTypes[] = { "Master", "Slave" };
+  const std::string serverState[] = { "Up", "Down" };
   const std::string serverModes[] = { "Standalone", "Sentinel", "Cluster" };
 }  // namespace
 
@@ -59,8 +60,24 @@ fastonosql::core::serverTypes ConvertFromString(const std::string& text) {
   return fastonosql::core::MASTER;
 }
 
+template<>
+fastonosql::core::serverState ConvertFromString(const std::string& text) {
+  for (size_t i = 0; i < SIZEOFMASS(serverState); ++i) {
+    if (text == serverState[i]) {
+      return static_cast<fastonosql::core::serverState>(i);
+    }
+  }
+
+  NOTREACHED();
+  return fastonosql::core::SUP;
+}
+
 std::string ConvertToString(fastonosql::core::serverTypes st) {
   return serverTypes[st];
+}
+
+std::string ConvertToString(fastonosql::core::serverState st) {
+  return serverState[st];
 }
 
 std::string ConvertToString(fastonosql::core::serverMode md) {

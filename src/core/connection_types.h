@@ -100,6 +100,7 @@ enum ConnectionMode {
 namespace common {
   std::string ConvertToString(fastonosql::core::connectionTypes t);
   std::string ConvertToString(fastonosql::core::serverTypes st);
+  std::string ConvertToString(fastonosql::core::serverState st);
   std::string ConvertToString(fastonosql::core::serverMode md);
   std::string ConvertToString(fastonosql::core::ConnectionMode t);
 }

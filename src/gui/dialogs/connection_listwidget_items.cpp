@@ -73,29 +73,20 @@ IConnectionListWidgetItem::itemConnectionType ConnectionListWidgetItem::type() c
   return Common;
 }
 
-SentinelConnectionWidgetItem::SentinelConnectionWidgetItem(core::serverTypes st,
-                                                           SentinelConnectionListWidgetItemContainer* parent)
-  : ConnectionListWidgetItemDiscovered(st, core::SENTINEL, parent) {
+SentinelConnectionWidgetItem::SentinelConnectionWidgetItem(const core::ServerCommonInfo& info, SentinelConnectionListWidgetItemContainer* parent)
+  : ConnectionListWidgetItemDiscovered(info, parent) {  // core::SENTINEL
 }
 
 IConnectionListWidgetItem::itemConnectionType SentinelConnectionWidgetItem::type() const {
   return Sentinel;
 }
 
-ConnectionListWidgetItemDiscovered::ConnectionListWidgetItemDiscovered(core::serverTypes st,
-                                                                       core::serverMode md,
-                                                                       QTreeWidgetItem* parent)
-  : ConnectionListWidgetItem(parent), server_mode_(md), server_type_(st) {
-  std::string sert = common::ConvertToString(st);
-  setText(2, common::ConvertFromString<QString>(sert));
-}
-
-core::serverTypes ConnectionListWidgetItemDiscovered::serverType() const {
-  return server_type_;
-}
-
-core::serverMode ConnectionListWidgetItemDiscovered::serverMode() const {
-  return server_mode_;
+ConnectionListWidgetItemDiscovered::ConnectionListWidgetItemDiscovered(const core::ServerCommonInfo& info, QTreeWidgetItem* parent)
+  : ConnectionListWidgetItem(parent), info_(info) {
+  std::string stype = common::ConvertToString(info_.type);
+  setText(2, common::ConvertFromString<QString>(stype));
+  std::string sstate = common::ConvertToString(info_.state);
+  setText(3, common::ConvertFromString<QString>(sstate));
 }
 
 IConnectionListWidgetItem::itemConnectionType ConnectionListWidgetItemDiscovered::type() const {
@@ -110,7 +101,7 @@ SentinelConnectionListWidgetItemContainer::SentinelConnectionListWidgetItemConta
   core::ISentinelSettingsBase::sentinel_connections_t sentinels = connection_->sentinels();
   for (size_t i = 0; i < sentinels.size(); ++i) {
     core::SentinelSettings sent = sentinels[i];
-    SentinelConnectionWidgetItem* item = new SentinelConnectionWidgetItem(core::MASTER, this);
+    SentinelConnectionWidgetItem* item = new SentinelConnectionWidgetItem(core::ServerCommonInfo(), this);
     item->setConnection(sent.sentinel);
     addChild(item);
     for (size_t j = 0; j < sent.sentinel_nodes.size(); ++j) {

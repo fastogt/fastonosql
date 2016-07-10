@@ -76,6 +76,7 @@ namespace translations {
   extern const QString trReload;
   extern const QString trDuplicate;
   extern const QString trType;
+  extern const QString trState;
   extern const QString trTTL;
   extern const QString trCommands;
   extern const QString trErrors;
