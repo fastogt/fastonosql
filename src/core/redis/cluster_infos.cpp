@@ -25,68 +25,9 @@ namespace core {
 namespace redis {
 
 DiscoveryClusterInfo::DiscoveryClusterInfo(const ServerCommonInfo& info, bool self)
-  : ServerDiscoveryClusterInfo(REDIS, info, self), hash_() {
+  : ServerDiscoveryClusterInfo(REDIS, info, self) {
 }
 
-std::string DiscoveryClusterInfo::hash() const {
-  return hash_;
-}
-
-void DiscoveryClusterInfo::setHash(const std::string& hash) {
-  hash_ = hash;
-}
-
-ServerDiscoveryClusterInfo* makeOwnDiscoveryClusterInfo(const std::string& text) {
-  if (text.empty()) {
-    return nullptr;
-  }
-
-  size_t pos = 0;
-  size_t start = 0;
-
-  while ((pos = text.find(MARKER, start)) != std::string::npos) {
-    std::string line = text.substr(start, pos - start);
-    size_t posm = line.find("myself");
-    if (posm != std::string::npos) {
-      std::string word;
-
-      ServerCommonInfo inf;
-      int fieldpos = 0;
-      for (size_t i = 0; i < line.size(); ++i) {
-        char ch = line[i];
-        if (ch == ' ') {
-          switch (fieldpos) {
-          case 0:
-            inf.name = word;
-            break;
-          case 1:
-            inf.host = common::ConvertFromString<common::net::hostAndPort>(word);
-            break;
-          case 2:
-            if (word == "myself,slave") {
-              inf.type = SLAVE;
-            }
-            break;
-          default:
-            break;
-          }
-          word.clear();
-          ++fieldpos;
-        } else {
-          word += ch;
-        }
-      }
-
-
-      DiscoveryClusterInfo* ser = new DiscoveryClusterInfo(inf, true);
-      ser->setHash(inf.name);
-      return ser;
-    }
-    start = pos + 1;
-  }
-
-  return nullptr;
-}
 
 namespace {
 
@@ -108,7 +49,7 @@ common::Error makeServerCommonInfoFromLine(const std::string& line, ServerCommon
         break;
       }
       case 1: {
-        linfo.host = common::ConvertFromString<common::net::hostAndPort>(word);
+        linfo.host = common::ConvertFromString<common::net::HostAndPortAndSlot>(word);
         break;
       }
       case 2: {
@@ -135,7 +76,7 @@ common::Error makeServerCommonInfoFromLine(const std::string& line, ServerCommon
 
 }
 
-common::Error makeDiscoveryClusterInfo(const common::net::hostAndPort& parentHost,
+common::Error makeDiscoveryClusterInfo(const common::net::HostAndPort& parentHost,
                                    const std::string& text,
                                    std::vector<ServerDiscoveryClusterInfoSPtr>* infos) {
   if (text.empty() || !infos) {
@@ -158,10 +99,8 @@ common::Error makeDiscoveryClusterInfo(const common::net::hostAndPort& parentHos
       inf.host.host = parentHost.host;
     }
 
-    DiscoveryClusterInfo* ser = new DiscoveryClusterInfo(inf, self);
-    ser->setHash(inf.name);
-    infos->push_back(ServerDiscoveryClusterInfoSPtr(ser));
-
+    ServerDiscoveryClusterInfoSPtr ser(new DiscoveryClusterInfo(inf, self));
+    infos->push_back(ser);
     start = pos + 1;
   }
 

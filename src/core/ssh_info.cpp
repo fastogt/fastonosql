@@ -79,12 +79,12 @@ namespace fastonosql {
 namespace core {
 
 SSHInfo::SSHInfo()
-  : host(common::net::hostAndPort::createLocalHost(DEFAULT_SSH_PORT)),
+  : host(common::net::HostAndPort::createLocalHost(DEFAULT_SSH_PORT)),
     user_name(), password(), public_key(common::file_system::prepare_path(DEFAULT_PUB_KEY_PATH)),
     private_key(common::file_system::prepare_path(DEFAULT_PRIVATE_KEY_PATH)), current_method(UNKNOWN) {
 }
 
-SSHInfo::SSHInfo(const common::net::hostAndPort& host, const std::string& userName,
+SSHInfo::SSHInfo(const common::net::HostAndPort& host, const std::string& userName,
                  const std::string& password, const std::string& publicKey,
                  const std::string& privateKey, const std::string& passphrase,
                  SupportedAuthenticationMetods method)
@@ -94,7 +94,7 @@ SSHInfo::SSHInfo(const common::net::hostAndPort& host, const std::string& userNa
 }
 
 SSHInfo::SSHInfo(const std::string& text)
-  : host(common::net::hostAndPort::createLocalHost(DEFAULT_SSH_PORT)), user_name(), password(),
+  : host(common::net::HostAndPort::createLocalHost(DEFAULT_SSH_PORT)), user_name(), password(),
     public_key(common::file_system::prepare_path(DEFAULT_PUB_KEY_PATH)),
     private_key(common::file_system::prepare_path(DEFAULT_PRIVATE_KEY_PATH)), passphrase(),
     current_method(UNKNOWN) {
@@ -107,7 +107,7 @@ SSHInfo::SSHInfo(const std::string& text)
       std::string field = line.substr(0, delem);
       std::string value = line.substr(delem + 1);
       if (field == HOST) {
-        host = common::ConvertFromString<common::net::hostAndPort>(value);
+        host = common::ConvertFromString<common::net::HostAndPort>(value);
       } else if (field == USER) {
         user_name = value;
       } else if (field == PASSWORD) {

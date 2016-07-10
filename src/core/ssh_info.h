@@ -33,7 +33,7 @@ struct SSHInfo {
   };
 
   SSHInfo();
-  SSHInfo(const common::net::hostAndPort& host, const std::string& userName,
+  SSHInfo(const common::net::HostAndPort& host, const std::string& userName,
           const std::string& password, const std::string& publicKey, const std::string& privateKey,
           const std::string& passphrase, SupportedAuthenticationMetods method);
 
@@ -42,7 +42,7 @@ struct SSHInfo {
   bool isValid() const;
   SupportedAuthenticationMetods authMethod() const;
 
-  common::net::hostAndPort host;
+  common::net::HostAndPort host;
   std::string user_name;
   std::string password;
   std::string public_key;

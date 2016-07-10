@@ -33,7 +33,7 @@ class Server
   virtual serverTypes role() const;
   virtual serverMode mode() const;
   virtual serverState state() const;
-  virtual common::net::hostAndPort host() const;
+  virtual common::net::HostAndPort host() const;
 
  private:
   virtual IDatabaseSPtr createDatabase(IDataBaseInfoSPtr info);

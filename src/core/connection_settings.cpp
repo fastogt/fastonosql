@@ -318,7 +318,7 @@ std::string IConnectionSettingsRemote::fullAddress() const {
 
 IConnectionSettingsRemote* IConnectionSettingsRemote::createFromType(connectionTypes type,
                                                                      const connection_path_t& conName,
-                                                                     const common::net::hostAndPort& host) {
+                                                                     const common::net::HostAndPort& host) {
   IConnectionSettingsRemote* remote = nullptr;
 #ifdef BUILD_WITH_REDIS
   if (type == REDIS) {
@@ -351,7 +351,7 @@ IConnectionSettingsRemoteSSH::IConnectionSettingsRemoteSSH(const connection_path
 
 IConnectionSettingsRemoteSSH* IConnectionSettingsRemoteSSH::createFromType(connectionTypes type,
                                                                      const connection_path_t& conName,
-                                                                     const common::net::hostAndPort& host) {
+                                                                     const common::net::HostAndPort& host) {
   IConnectionSettingsRemoteSSH* remote = nullptr;
 #ifdef BUILD_WITH_REDIS
   if (type == REDIS) {
@@ -605,7 +605,7 @@ std::string IClusterSettingsBase::toString() const {
   return res;
 }
 
-IConnectionSettingsBaseSPtr IClusterSettingsBase::findSettingsByHost(const common::net::hostAndPort& host) const {
+IConnectionSettingsBaseSPtr IClusterSettingsBase::findSettingsByHost(const common::net::HostAndPort& host) const {
   for (size_t i = 0; i < clusters_nodes_.size(); ++i) {
     IConnectionSettingsBaseSPtr cur = clusters_nodes_[i];
     IConnectionSettingsRemote* remote = dynamic_cast<IConnectionSettingsRemote*>(cur.get());  // +

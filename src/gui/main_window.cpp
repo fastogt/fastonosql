@@ -744,9 +744,9 @@ UpdateChecker::UpdateChecker(QObject* parent)
 
 void UpdateChecker::routine() {
 #if defined(FASTONOSQL)
-  common::net::ClientSocketTcp s(common::net::hostAndPort(FASTONOSQL_URL, SERV_PORT));
+  common::net::ClientSocketTcp s(common::net::HostAndPort(FASTONOSQL_URL, SERV_PORT));
 #elif defined(FASTOREDIS)
-  common::net::ClientSocketTcp s(common::net::hostAndPort(FASTOREDIS_URL, SERV_PORT));
+  common::net::ClientSocketTcp s(common::net::HostAndPort(FASTOREDIS_URL, SERV_PORT));
 #else
   #error please specify url and port of version information
 #endif

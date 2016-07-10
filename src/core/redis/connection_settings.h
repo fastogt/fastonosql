@@ -36,8 +36,8 @@ class ConnectionSettings
   virtual std::string commandLine() const;
   virtual void setCommandLine(const std::string& line);
 
-  virtual void setHost(const common::net::hostAndPort& host);
-  virtual common::net::hostAndPort host() const;
+  virtual void setHost(const common::net::HostAndPort& host);
+  virtual common::net::HostAndPort host() const;
 
   Config info() const;
   void setInfo(const Config& info);

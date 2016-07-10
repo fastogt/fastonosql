@@ -30,11 +30,11 @@ ConnectionSettings::ConnectionSettings(const connection_path_t& connectionName)
   : IConnectionSettingsRemoteSSH(connectionName, REDIS), info_() {
 }
 
-void ConnectionSettings::setHost(const common::net::hostAndPort& host) {
+void ConnectionSettings::setHost(const common::net::HostAndPort& host) {
   info_.host = host;
 }
 
-common::net::hostAndPort ConnectionSettings::host() const {
+common::net::HostAndPort ConnectionSettings::host() const {
   return info_.host;
 }
 

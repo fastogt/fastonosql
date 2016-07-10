@@ -59,11 +59,11 @@ struct LocalConfig
 // -h -p -d
 struct RemoteConfig
     : public BaseConfig<REMOTE> {
-  explicit RemoteConfig(const common::net::hostAndPort& host);
+  explicit RemoteConfig(const common::net::HostAndPort& host);
 
   std::vector<std::string> args() const;
 
-  common::net::hostAndPort host;
+  common::net::HostAndPort host;
 };
 
 }  // namespace core

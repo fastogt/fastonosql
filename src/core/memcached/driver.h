@@ -37,7 +37,7 @@ class Driver
 
   virtual bool isConnected() const;
   virtual bool isAuthenticated() const;
-  virtual common::net::hostAndPort host() const;
+  virtual common::net::HostAndPort host() const;
   virtual std::string nsSeparator() const;
   virtual std::string outputDelemitr() const;
 
@@ -47,8 +47,6 @@ class Driver
 
   virtual common::Error executeImpl(int argc, char** argv, FastoObject* out);
   virtual common::Error serverInfo(IServerInfo** info);
-  virtual common::Error serverDiscoveryClusterInfo(ServerDiscoveryClusterInfo** dinfo, IServerInfo** sinfo,
-                                            IDataBaseInfo** dbinfo);
   virtual common::Error currentDataBaseInfo(IDataBaseInfo** info);
 
   virtual void handleConnectEvent(events::ConnectRequestEvent* ev);

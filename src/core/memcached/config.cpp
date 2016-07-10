@@ -72,7 +72,7 @@ Config parseOptions(int argc, char** argv) {
 }  // namespace
 
 Config::Config()
-  : RemoteConfig(common::net::hostAndPort::createLocalHost(DEFAULT_MEMCACHED_SERVER_PORT)), user(), password() {
+  : RemoteConfig(common::net::HostAndPort::createLocalHost(DEFAULT_MEMCACHED_SERVER_PORT)), user(), password() {
 }
 
 }  // namespace memcached

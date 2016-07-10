@@ -138,7 +138,7 @@ common::Error IDriver::execute(FastoObjectCommand* cmd) {
 }
 
 IDriver::IDriver(IConnectionSettingsBaseSPtr settings)
-  : settings_(settings), interrupt_(false), server_disc_info_(), thread_(nullptr),
+  : settings_(settings), interrupt_(false), thread_(nullptr),
     timer_info_id_(0), log_file_(nullptr) {
   thread_ = new QThread(this);
   moveToThread(thread_);
@@ -159,10 +159,6 @@ void IDriver::reply(QObject* reciver, QEvent* ev) {
 
 connectionTypes IDriver::type() const {
   return settings_->type();
-}
-
-ServerDiscoveryClusterInfoSPtr IDriver::discoveryClusterInfo() const {
-  return server_disc_info_;
 }
 
 IConnectionSettings::connection_path_t IDriver::connectionPath() const {
@@ -525,10 +521,9 @@ void IDriver::handleDiscoveryInfoRequestEvent(events::DiscoveryInfoRequestEvent*
   events::DiscoveryInfoResponceEvent::value_type res(ev->value());
 
   if (isConnected()) {
-    ServerDiscoveryClusterInfo* disc = nullptr;
     IServerInfo* info = nullptr;
     IDataBaseInfo* db = nullptr;
-    common::Error err = serverDiscoveryClusterInfo(&disc, &info, &db);
+    common::Error err = serverDiscoveryInfo(&info, &db);
     if (err && err->isError()) {
       res.setErrorInfo(err);
     } else {
@@ -536,11 +531,9 @@ void IDriver::handleDiscoveryInfoRequestEvent(events::DiscoveryInfoRequestEvent*
       DCHECK(db);
 
       server_info_.reset(info);
-      server_disc_info_.reset(disc);
       current_database_info_.reset(db);
 
       res.sinfo = server_info_;
-      res.dinfo = server_disc_info_;
       res.dbinfo = current_database_info_;
     }
   } else {
@@ -557,6 +550,25 @@ void IDriver::addedChildren(FastoObject* child) {
   }
 
   emit addedChild(child);
+}
+
+common::Error IDriver::serverDiscoveryInfo(IServerInfo** sinfo, IDataBaseInfo** dbinfo) {
+  IServerInfo* lsinfo = nullptr;
+  common::Error er = serverInfo(&lsinfo);
+  if (er && er->isError()) {
+    return er;
+  }
+
+  IDataBaseInfo* ldbinfo = nullptr;
+  er = currentDataBaseInfo(&ldbinfo);
+  if (er && er->isError()) {
+    delete lsinfo;
+    return er;
+  }
+
+  *sinfo = lsinfo;
+  *dbinfo = ldbinfo;
+  return er;
 }
 
 void IDriver::updated(FastoObject* item, FastoObject::value_t val) {

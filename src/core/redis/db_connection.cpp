@@ -332,7 +332,7 @@ common::Error createConnection(const Config& config,
       uint16_t port = config.host.port;
       const char* username = common::utils::c_strornull(sinfo.user_name);
       const char* password = common::utils::c_strornull(sinfo.password);
-      common::net::hostAndPort ssh_host = sinfo.host;
+      common::net::HostAndPort ssh_host = sinfo.host;
       const char* ssh_address = common::utils::c_strornull(ssh_host.host);
       int ssh_port = ssh_host.port;
       int curM = sinfo.current_method;
@@ -1638,7 +1638,7 @@ common::Error DBConnection::cliReadReply(FastoObject* out) {
     slot = common::ConvertFromString<int>(s + 1);
     s = strchr(p+1,':');    /* MOVED 3999[P]127.0.0.1[S]6381 */
     *s = '\0';
-    config_.host = common::net::hostAndPort(p + 1, common::ConvertFromString<uint16_t>(s + 1));
+    config_.host = common::net::HostAndPort(p + 1, common::ConvertFromString<uint16_t>(s + 1));
     std::string host_str = common::ConvertToString(config_.host);
     std::string redir = common::MemSPrintf("-> Redirected to slot [%d] located at %s",
                                            slot, host_str);

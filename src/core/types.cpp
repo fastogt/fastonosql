@@ -55,11 +55,11 @@ void ServerDiscoveryInfoBase::setName(const std::string& name) {
   info_.name = name;
 }
 
-common::net::hostAndPort ServerDiscoveryInfoBase::host() const {
+common::net::HostAndPortAndSlot ServerDiscoveryInfoBase::host() const {
   return info_.host;
 }
 
-void ServerDiscoveryInfoBase::setHost(const common::net::hostAndPort& host) {
+void ServerDiscoveryInfoBase::setHost(const common::net::HostAndPortAndSlot& host) {
   info_.host = host;
 }
 

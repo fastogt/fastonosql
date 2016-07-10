@@ -128,7 +128,7 @@ Config parseOptions(int argc, char** argv) {
 }  // namespace
 
 Config::Config()
-  : RemoteConfig(common::net::hostAndPort::createLocalHost(DEFAULT_REDIS_SERVER_PORT)) {
+  : RemoteConfig(common::net::HostAndPort::createLocalHost(DEFAULT_REDIS_SERVER_PORT)) {
   init();
 }
 

@@ -35,7 +35,7 @@ struct ServerCommonInfo {
   std::string name;  // name
   serverTypes type;  // role
   serverState state;  // state
-  common::net::hostAndPort host;
+  common::net::HostAndPortAndSlot host;
 };
 
 class ServerDiscoveryInfoBase {
@@ -47,8 +47,8 @@ class ServerDiscoveryInfoBase {
   std::string name() const;
   void setName(const std::string& name);
 
-  common::net::hostAndPort host() const;
-  void setHost(const common::net::hostAndPort& host);
+  common::net::HostAndPortAndSlot host() const;
+  void setHost(const common::net::HostAndPortAndSlot& host);
 
  protected:
   ServerDiscoveryInfoBase(connectionTypes ctype, const ServerCommonInfo& info);
@@ -71,7 +71,7 @@ class ServerDiscoverySentinelInfo
 typedef common::shared_ptr<ServerDiscoverySentinelInfo> ServerDiscoverySentinelInfoSPtr;
 
 class ServerDiscoveryClusterInfo
-  : public ServerDiscoveryInfoBase{
+  : public ServerDiscoveryInfoBase {
  public:
   bool self() const;
   virtual ~ServerDiscoveryClusterInfo();

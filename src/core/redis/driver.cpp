@@ -102,7 +102,7 @@ Driver::~Driver() {
   delete impl_;
 }
 
-common::net::hostAndPort Driver::host() const {
+common::net::HostAndPort Driver::host() const {
   return impl_->config_.host;
 }
 
@@ -158,56 +158,6 @@ common::Error Driver::serverInfo(IServerInfo** info) {
   }
 
   return res;
-}
-
-common::Error Driver::serverDiscoveryClusterInfo(ServerDiscoveryClusterInfo** dinfo, IServerInfo** sinfo,
-                                               IDataBaseInfo** dbinfo) {
-  IServerInfo* lsinfo = nullptr;
-  common::Error er = serverInfo(&lsinfo);
-  if (er && er->isError()) {
-    return er;
-  }
-
-  IDataBaseInfo* ldbinfo = nullptr;
-  er = currentDataBaseInfo(&ldbinfo);
-  if (er && er->isError()) {
-    delete lsinfo;
-    return er;
-  }
-
-  uint32_t version = lsinfo->version();
-  if (version < PROJECT_VERSION_CHECK(3,0,0)) {
-    *sinfo = lsinfo;
-    *dbinfo = ldbinfo;
-    return common::Error(); //not error server not support cluster command
-  }
-
-  FastoObjectIPtr root = FastoObject::createRoot(GET_SERVER_TYPE);
-  FastoObjectCommand* cmd = createCommand<Command>(root,
-                                                        GET_SERVER_TYPE, common::Value::C_INNER);
-  er = execute(cmd);
-
-  if (er && er->isError()) {
-    *sinfo = lsinfo;
-    *dbinfo = ldbinfo;
-    return common::Error(); //not error serverInfo is valid
-  }
-
-  auto ch = cmd->childrens();
-  if (ch.size()) {
-    FastoObject* obj = ch[0];
-    if (obj) {
-      common::Value::Type t = obj->type();
-      if (t == common::Value::TYPE_STRING) {
-        std::string content = common::ConvertToString(obj);
-        *dinfo = makeOwnDiscoveryClusterInfo(content);
-      }
-    }
-  }
-
-  *sinfo = lsinfo;
-  *dbinfo = ldbinfo;
-  return er;
 }
 
 common::Error Driver::currentDataBaseInfo(IDataBaseInfo** info) {

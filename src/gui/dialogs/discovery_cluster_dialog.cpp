@@ -151,8 +151,8 @@ void DiscoveryClusterDiagnosticDialog::connectionResult(bool suc, qint64 mstimeE
 
     for (size_t i = 0; i < infos.size(); ++i) {
       core::ServerDiscoveryClusterInfoSPtr inf = infos[i];
-      common::net::hostAndPort host = inf->host();
-      core::IConnectionSettingsBase::connection_path_t path(inf->name());
+      common::net::HostAndPortAndSlot host = inf->host();
+      core::IConnectionSettingsBase::connection_path_t path(common::file_system::get_separator_string<char>() + inf->name());
       core::IConnectionSettingsBaseSPtr con(core::IConnectionSettingsRemote::createFromType(inf->connectionType(), path, host));
       ConnectionListWidgetItemDiscovered* item = new ConnectionListWidgetItemDiscovered(inf->type(), core::STANDALONE, nullptr);
       item->setConnection(con);

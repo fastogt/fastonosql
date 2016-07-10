@@ -154,7 +154,7 @@ ConnectionDialog::ConnectionDialog(QWidget* parent, core::IConnectionSettingsBas
   useSsh_->setChecked(info.isValid());
 
   sshHostName_ = new QLineEdit;
-  common::net::hostAndPort host = info.host;
+  common::net::HostAndPort host = info.host;
   sshHostName_->setText(common::ConvertFromString<QString>(host.host));
 
   userName_ = new QLineEdit;
@@ -389,11 +389,11 @@ bool ConnectionDialog::validateAndApply() {
   }
   core::IConnectionSettingsRemoteSSH::connection_path_t path(common::file_system::stable_dir_path(conFolder) + conName);
   if (isSSHType) {
-    core::IConnectionSettingsRemoteSSH* newConnection = core::IConnectionSettingsRemoteSSH::createFromType(currentType, path, common::net::hostAndPort());
+    core::IConnectionSettingsRemoteSSH* newConnection = core::IConnectionSettingsRemoteSSH::createFromType(currentType, path, common::net::HostAndPort());
     connection_.reset(newConnection);
 
     core::SSHInfo info = newConnection->sshInfo();
-    info.host = common::net::hostAndPort(common::ConvertToString(sshHostName_->text()),
+    info.host = common::net::HostAndPort(common::ConvertToString(sshHostName_->text()),
                                            sshPort_->text().toInt());
     info.user_name = common::ConvertToString(userName_->text());
     info.password = common::ConvertToString(passwordBox_->text());

@@ -145,28 +145,6 @@ common::Error Driver::serverInfo(IServerInfo** info) {
   return err;
 }
 
-common::Error Driver::serverDiscoveryClusterInfo(ServerDiscoveryClusterInfo** dinfo, IServerInfo** sinfo,
-                                                 IDataBaseInfo** dbinfo) {
-  UNUSED(dinfo);
-
-  IServerInfo* lsinfo = nullptr;
-  common::Error err = serverInfo(&lsinfo);
-  if (err && err->isError()) {
-    return err;
-  }
-
-  IDataBaseInfo* ldbinfo = nullptr;
-  err = currentDataBaseInfo(&ldbinfo);
-  if (err && err->isError()) {
-    delete lsinfo;
-    return err;
-  }
-
-  *sinfo = lsinfo;
-  *dbinfo = ldbinfo;
-  return err;
-}
-
 common::Error Driver::currentDataBaseInfo(IDataBaseInfo** info) {
   if (!info) {
     return common::make_error_value("Invalid input argument(s)", common::ErrorValue::E_ERROR);

@@ -55,7 +55,6 @@ class IServer
   virtual std::string name() const;
 
   IDataBaseInfoSPtr currentDatabaseInfo() const;
-  ServerDiscoveryClusterInfoSPtr discoveryClusterInfo() const;
   IServerInfoSPtr serverInfo() const;
 
   std::string outputDelemitr() const;
@@ -214,7 +213,7 @@ class IServerRemote
   : public IServer {
   Q_OBJECT
  public:  
-  virtual common::net::hostAndPort host() const = 0;
+  virtual common::net::HostAndPort host() const = 0;
   virtual serverMode mode() const = 0;
   virtual serverTypes role() const = 0;
   virtual serverState state() const = 0;

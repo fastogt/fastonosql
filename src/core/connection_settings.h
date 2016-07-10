@@ -124,8 +124,8 @@ class IConnectionSettingsRemote
  public:
   virtual ~IConnectionSettingsRemote();
 
-  virtual void setHost(const common::net::hostAndPort& host) = 0;
-  virtual common::net::hostAndPort host() const = 0;
+  virtual void setHost(const common::net::HostAndPort& host) = 0;
+  virtual common::net::HostAndPort host() const = 0;
 
   virtual std::string commandLine() const = 0;
   virtual void setCommandLine(const std::string& line) = 0;
@@ -133,7 +133,7 @@ class IConnectionSettingsRemote
   virtual std::string fullAddress() const;
 
   static IConnectionSettingsRemote* createFromType(connectionTypes type, const connection_path_t& conName,
-                                                   const common::net::hostAndPort& host);
+                                                   const common::net::HostAndPort& host);
 
  protected:
   IConnectionSettingsRemote(const connection_path_t& connectionPath, connectionTypes type);
@@ -148,7 +148,7 @@ class IConnectionSettingsRemoteSSH
   virtual std::string toString() const;
 
   static IConnectionSettingsRemoteSSH* createFromType(connectionTypes type, const connection_path_t& conName,
-                                                   const common::net::hostAndPort& host);
+                                                   const common::net::HostAndPort& host);
 
  protected:
   IConnectionSettingsRemoteSSH(const connection_path_t& connectionName, connectionTypes type);
@@ -177,7 +177,7 @@ class IClusterSettingsBase
   virtual std::string toString() const;
   virtual IClusterSettingsBase* clone() const = 0;
 
-  virtual IConnectionSettingsBaseSPtr findSettingsByHost(const common::net::hostAndPort& host) const;
+  virtual IConnectionSettingsBaseSPtr findSettingsByHost(const common::net::HostAndPort& host) const;
 
  protected:
   IClusterSettingsBase(const connection_path_t& connectionName, connectionTypes type);

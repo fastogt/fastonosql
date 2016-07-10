@@ -51,7 +51,7 @@ std::vector<std::string> LocalConfig::args() const {
   return argv;
 }
 
-RemoteConfig::RemoteConfig(const common::net::hostAndPort& host)
+RemoteConfig::RemoteConfig(const common::net::HostAndPort& host)
   : BaseConfig<REMOTE>(), host(host) {
 }
 

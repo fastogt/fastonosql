@@ -148,7 +148,7 @@ void DiscoverySentinelDiagnosticDialog::connectionResultReady(bool suc, qint64 m
 
     for (size_t i = 0; i < infos.size(); ++i) {
       core::ServerDiscoverySentinelInfoSPtr inf = infos[i];
-      common::net::hostAndPort host = inf->host();
+      common::net::HostAndPort host = inf->host();
       core::IConnectionSettingsBase::connection_path_t path(common::file_system::get_separator_string<char>() + inf->name());
       core::IConnectionSettingsBaseSPtr con(core::IConnectionSettingsRemote::createFromType(inf->connectionType(), path, host));
 

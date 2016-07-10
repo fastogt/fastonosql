@@ -30,16 +30,9 @@ class DiscoveryClusterInfo
   : public ServerDiscoveryClusterInfo {
  public:
   DiscoveryClusterInfo(const ServerCommonInfo& info, bool self);
-
-  std::string hash() const;
-  void setHash(const std::string& hash);
-
- private:
-  std::string hash_;
 };
 
-ServerDiscoveryClusterInfo* makeOwnDiscoveryClusterInfo(const std::string& text);
-common::Error makeDiscoveryClusterInfo(const common::net::hostAndPort& parentHost,
+common::Error makeDiscoveryClusterInfo(const common::net::HostAndPort& parentHost,
                                    const std::string& text,
                                    std::vector<ServerDiscoveryClusterInfoSPtr>* infos);
 

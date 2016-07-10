@@ -147,7 +147,7 @@ common::Error Driver::commandChangeTTLImpl(CommandChangeTTL* command,
 }
 // ============== commands =============//
 
-common::net::hostAndPort Driver::host() const {
+common::net::HostAndPort Driver::host() const {
   Config conf = impl_->config();
   return conf.host;
 }
@@ -179,28 +179,6 @@ common::Error Driver::serverInfo(IServerInfo** info) {
   }
 
   return err;
-}
-
-common::Error Driver::serverDiscoveryClusterInfo(ServerDiscoveryClusterInfo** dinfo, IServerInfo** sinfo,
-                                              IDataBaseInfo** dbinfo) {
-  UNUSED(dinfo);
-
-  IServerInfo* lsinfo = nullptr;
-  common::Error er = serverInfo(&lsinfo);
-  if (er && er->isError()) {
-    return er;
-  }
-
-  IDataBaseInfo* ldbinfo = nullptr;
-  er = currentDataBaseInfo(&ldbinfo);
-  if (er && er->isError()) {
-    delete lsinfo;
-    return er;
-  }
-
-  *sinfo = lsinfo;
-  *dbinfo = ldbinfo;
-  return er;
 }
 
 common::Error Driver::currentDataBaseInfo(IDataBaseInfo** info) {

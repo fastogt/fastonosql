@@ -344,14 +344,6 @@ QVariant ExplorerTreeModel::data(const QModelIndex& index, int role) const {
     if (type == IExplorerTreeItem::eServer) {
       ExplorerServerItem* server_node = static_cast<ExplorerServerItem*>(node);
       core::IServerSPtr server = server_node->server();
-      core::ServerDiscoveryClusterInfoSPtr disc = server->discoveryClusterInfo();
-      if (disc) {  // cluster
-        QString dname = common::ConvertFromString<QString>(disc->name());
-        QString dtype = common::ConvertFromString<QString>(common::ConvertToString(disc->type()));
-        QString dhost = common::ConvertFromString<QString>(common::ConvertToString(disc->host()));
-        return trDiscoveryToolTipTemplate_3S.arg(dname, dtype, dhost);
-      }
-
       QString sname = common::ConvertFromString<QString>(server->name());
       bool isCanRemote = server->isCanRemote();
       if (isCanRemote) {
