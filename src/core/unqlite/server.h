@@ -30,7 +30,6 @@ class Server
   Q_OBJECT
  public:
   explicit Server(IConnectionSettingsBaseSPtr settings);
-  virtual serverMode mode() const;
   virtual std::string path() const;
 
  private:

@@ -32,8 +32,9 @@ namespace core {
 struct ServerCommonInfo {
   ServerCommonInfo();
 
-  std::string name;
-  serverTypes type;
+  std::string name;  // name
+  serverTypes type;  // role
+  serverState state;  // state
   common::net::hostAndPort host;
 };
 
@@ -41,6 +42,7 @@ class ServerDiscoveryInfoBase {
  public:
   connectionTypes connectionType() const;
   serverTypes type() const;
+  serverState state() const;
 
   std::string name() const;
   void setName(const std::string& name);

@@ -40,6 +40,11 @@ enum serverTypes {
   SLAVE
 };
 
+enum serverState {
+  SUP,
+  SDOWN
+};
+
 enum serverMode {
   STANDALONE = 0,
   SENTINEL,

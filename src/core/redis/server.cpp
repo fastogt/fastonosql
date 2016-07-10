@@ -37,6 +37,10 @@ serverMode Server::mode() const {
   return mode_;
 }
 
+serverState Server::state() const {
+  return SUP;
+}
+
 common::net::hostAndPort Server::host() const {
   Driver* const rdrv = static_cast<Driver* const>(drv_);
   return rdrv->host();

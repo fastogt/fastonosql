@@ -29,10 +29,6 @@ Server::Server(IConnectionSettingsBaseSPtr settings)
   : IServerLocal(new Driver(settings)) {
 }
 
-serverMode Server::mode() const {
-  return STANDALONE;
-}
-
 std::string Server::path() const {
   Driver* const ldrv = static_cast<Driver* const>(drv_);
   return ldrv->path();

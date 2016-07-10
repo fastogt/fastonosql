@@ -28,7 +28,7 @@ namespace fastonosql {
 namespace core {
 
 ServerCommonInfo::ServerCommonInfo()
-  : name(), type(MASTER), host() {
+  : name(), type(MASTER), state(SUP), host() {
 }
 
 ServerDiscoveryInfoBase::ServerDiscoveryInfoBase(connectionTypes ctype, const ServerCommonInfo &info)
@@ -41,6 +41,10 @@ connectionTypes ServerDiscoveryInfoBase::connectionType() const {
 
 serverTypes ServerDiscoveryInfoBase::type() const {
   return info_.type;
+}
+
+serverState ServerDiscoveryInfoBase::state() const {
+  return info_.state;
 }
 
 std::string ServerDiscoveryInfoBase::name() const {

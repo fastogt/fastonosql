@@ -53,7 +53,6 @@ class IServer
 
   connectionTypes type() const;
   virtual std::string name() const;
-  virtual serverMode mode() const = 0;
 
   IDataBaseInfoSPtr currentDatabaseInfo() const;
   ServerDiscoveryClusterInfoSPtr discoveryClusterInfo() const;
@@ -214,9 +213,11 @@ class IServerLocal
 class IServerRemote
   : public IServer {
   Q_OBJECT
- public:
-  virtual serverTypes role() const = 0;
+ public:  
   virtual common::net::hostAndPort host() const = 0;
+  virtual serverMode mode() const = 0;
+  virtual serverTypes role() const = 0;
+  virtual serverState state() const = 0;
  protected:
   explicit IServerRemote(IDriver* drv);
 };

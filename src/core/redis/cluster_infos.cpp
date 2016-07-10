@@ -88,6 +88,53 @@ ServerDiscoveryClusterInfo* makeOwnDiscoveryClusterInfo(const std::string& text)
   return nullptr;
 }
 
+namespace {
+
+common::Error makeServerCommonInfoFromLine(const std::string& line, ServerCommonInfo* info, bool* self) {
+  if (line.empty() || !info || !self) {
+    return common::make_error_value("Invalid input argument(s)", common::ErrorValue::E_ERROR);
+  }
+
+  ServerCommonInfo linfo;
+  bool lself = false;
+  int fieldpos = 0;
+  std::string word;
+  for (size_t i = 0; i < line.size(); ++i) {
+    char ch = line[i];
+    if (ch == ' ') {
+      switch (fieldpos) {
+      case 0: {
+        linfo.name = word;
+        break;
+      }
+      case 1: {
+        linfo.host = common::ConvertFromString<common::net::hostAndPort>(word);
+        break;
+      }
+      case 2: {
+        if (word.find("slave") != std::string::npos) {
+          linfo.type = SLAVE;
+        }
+        lself = word.find("myself") != std::string::npos;
+        break;
+      }
+      default:
+        break;
+      }
+      word.clear();
+      ++fieldpos;
+    } else {
+      word += ch;
+    }
+  }
+
+  *info = linfo;
+  *self = lself;
+  return common::Error();
+}
+
+}
+
 common::Error makeDiscoveryClusterInfo(const common::net::hostAndPort& parentHost,
                                    const std::string& text,
                                    std::vector<ServerDiscoveryClusterInfoSPtr>* infos) {
@@ -101,41 +148,14 @@ common::Error makeDiscoveryClusterInfo(const common::net::hostAndPort& parentHos
   while ((pos = text.find(MARKER, start)) != std::string::npos) {
     std::string line = text.substr(start, pos - start);
 
-    std::string word;
     ServerCommonInfo inf;
     bool self = false;
-    int fieldpos = 0;
-    for (size_t i = 0; i < line.size(); ++i) {
-      char ch = line[i];
-      if (ch == ' ') {
-        switch (fieldpos) {
-        case 0: {
-          inf.name = word;
-          break;
-        }
-        case 1: {
-          common::net::hostAndPort hport = common::ConvertFromString<common::net::hostAndPort>(word);
-          if (common::net::isLocalHost(hport.host)) {
-            hport.host = parentHost.host;
-          }
-          inf.host = hport;
-          break;
-        }
-        case 2: {
-          if (word.find("slave") != std::string::npos) {
-            inf.type = SLAVE;
-          }
-          self = word.find("myself") != std::string::npos;
-          break;
-        }
-        default:
-          break;
-        }
-        word.clear();
-        ++fieldpos;
-      } else {
-        word += ch;
-      }
+    common::Error lerr = makeServerCommonInfoFromLine(line, &inf, &self);
+    if (lerr && lerr->isError()) {
+      continue;
+    }
+    if (common::net::isLocalHost(inf.host.host)) {
+      inf.host.host = parentHost.host;
     }
 
     DiscoveryClusterInfo* ser = new DiscoveryClusterInfo(inf, self);

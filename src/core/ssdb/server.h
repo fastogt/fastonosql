@@ -32,6 +32,7 @@ class Server
   explicit Server(IConnectionSettingsBaseSPtr settings);
   virtual serverMode mode() const;
   virtual serverTypes role() const;
+  virtual serverState state() const;
   virtual common::net::hostAndPort host() const;
 
  private:
