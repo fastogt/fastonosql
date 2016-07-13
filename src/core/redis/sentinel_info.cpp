@@ -22,6 +22,8 @@
 
 #include <hiredis/hiredis.h>
 
+#include "common/string_util.h"
+
 #define NAME_FIELD "name"
 #define TYPE_FIELD "flags"
 #define HOSTNAME_FIELD "ip"
@@ -46,20 +48,21 @@ common::Error makeServerCommonInfo(struct redisReply* repl_info, ServerCommonInf
       linf.name = repl_info->element[j + 1]->str;
     } else if (strcmp(repl_info->element[j]->str, TYPE_FIELD) == 0) {
        std::string str_type = repl_info->element[j + 1]->str;
-       if (str_type == "master") {
-         linf.type = MASTER;
-         linf.state = SUP;
-       } else if(str_type == "s_down,master") {
-         linf.type = MASTER;
-         linf.state = SDOWN;
-       } else if (str_type == "slave") {
-         linf.type = SLAVE;
-         linf.state = SUP;
-       } else if (str_type == "s_down,slave") {
-         linf.type = SLAVE;
-         linf.state = SDOWN;
-       } else {
-         NOTREACHED();
+       std::vector<std::string> flags;
+       const size_t len = common::Tokenize(str_type, ",", &flags);
+       for (size_t i = 0; i < len; ++i) {
+         const std::string flag = flags[i];
+         if (flag == "master") {
+           linf.type = MASTER;
+         } else if (flag == "slave") {
+           linf.type = SLAVE;
+         } else if (flag == "s_down") {
+           linf.state = SDOWN;
+         } else if (flag == "disconnected") {
+           linf.cstate = SDISCONNECTED;
+         } else {
+           NOTREACHED();
+         }
        }
     } else if (strcmp(repl_info->element[j]->str, HOSTNAME_FIELD) == 0) {
        linf.host.host = repl_info->element[j + 1]->str;

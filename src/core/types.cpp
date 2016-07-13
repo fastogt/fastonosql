@@ -28,11 +28,11 @@ namespace fastonosql {
 namespace core {
 
 ServerCommonInfo::ServerCommonInfo()
-  : name(), type(MASTER), state(SUP), host() {
+  : name(), type(MASTER), state(SUP), cstate(SCONNECTED), host() {
 }
 
-ServerCommonInfo::ServerCommonInfo(const std::string& name, serverTypes type, serverState state)
-  : name(name), type(type), state(state) {
+ServerCommonInfo::ServerCommonInfo(const std::string& name, serverTypes type, serverState state, serverConnectState cstate)
+  : name(name), type(type), state(state), cstate(cstate) {
 }
 
 ServerDiscoveryInfoBase::ServerDiscoveryInfoBase(connectionTypes ctype, const ServerCommonInfo &info)

@@ -28,7 +28,7 @@ namespace fastonosql {
 namespace core {
 
 std::string KeyInfo::key() const {
-  return JoinString(splited_namespaces_and_key, ns_separator);
+  return common::JoinString(splited_namespaces_and_key, ns_separator);
 }
 
 bool KeyInfo::hasNamespace() const {
@@ -55,7 +55,7 @@ std::string KeyInfo::joinNamespace(size_t pos) const {
     for (size_t i = 0; i <= pos; ++i) {
       copy.push_back(splited_namespaces_and_key[i]);
     }
-    return JoinString(copy, ns_separator);
+    return common::JoinString(copy, ns_separator);
   }
 
   return std::string();
@@ -67,7 +67,7 @@ NKey::NKey(const std::string& key, ttl_t ttl_sec)
 
 KeyInfo NKey::info(const std::string& ns_separator) const {
   std::vector<std::string> tokens;
-  Tokenize(key, ns_separator, &tokens);
+  common::Tokenize(key, ns_separator, &tokens);
   return KeyInfo{tokens, ns_separator};
 }
 

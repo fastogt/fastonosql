@@ -45,6 +45,11 @@ enum serverState {
   SDOWN
 };
 
+enum serverConnectState {
+  SCONNECTED,
+  SDISCONNECTED
+};
+
 enum serverMode {
   STANDALONE = 0,
   SENTINEL,

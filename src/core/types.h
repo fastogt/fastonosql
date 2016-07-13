@@ -31,11 +31,12 @@ namespace core {
 
 struct ServerCommonInfo {
   ServerCommonInfo();
-  ServerCommonInfo(const std::string& name, serverTypes type, serverState state);
+  ServerCommonInfo(const std::string& name, serverTypes type, serverState state, serverConnectState cstate);
 
   std::string name;  // name
   serverTypes type;  // role
   serverState state;  // state
+  serverConnectState cstate; // conection state
   common::net::HostAndPortAndSlot host;
 };
 

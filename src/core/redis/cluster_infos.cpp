@@ -18,6 +18,8 @@
 
 #include "core/redis/cluster_infos.h"
 
+#include "common/string_util.h"
+
 #define MARKER "\n"
 
 namespace fastonosql {
@@ -58,26 +60,20 @@ common::Error makeServerCommonInfoFromLine(const std::string& line, ServerCommon
         break;
       }
       case 2: {
-        if (word == "slave") {
-          linfo.type = SLAVE;
-          lself = false;
-        } else if (word == "myself,slave") {
-          linfo.type = SLAVE;
-          lself = true;
-        } else if (word == "slave,fail") {
-          linfo.type = SLAVE;
-          lself = false;
-        } else if (word == "master") {
-          linfo.type = MASTER;
-          lself = false;
-        } else if (word == "myself,master") {
-          linfo.type = MASTER;
-          lself = true;
-        } else if (word == "master,fail") {
-          linfo.type = MASTER;
-          lself = false;
-        } else {
-          NOTREACHED();
+        std::vector<std::string> flags;
+        const size_t len = common::Tokenize(word, ",", &flags);
+        for (size_t i = 0; i < len; ++i) {
+          const std::string flag = flags[i];
+          if (flag == "master") {
+            linfo.type = MASTER;
+          } else if (flag == "slave") {
+            linfo.type = SLAVE;
+          } else if (flag == "myself") {
+            lself = true;
+          } else if (flag == "fail") {
+          } else {
+            NOTREACHED();
+          }
         }
         break;
       }

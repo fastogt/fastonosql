@@ -35,7 +35,7 @@ CommandHolder::CommandHolder(const std::string& name, const std::string& params,
 }
 
 bool CommandHolder::isCommand(const std::string& cmd) {
-  return FullEqualsASCII(cmd, name, false);
+  return common::FullEqualsASCII(cmd, name, false);
 }
 
 common::Error CommandHolder::execute(CommandHandler *handler, int argc, char** argv, FastoObject* out) {
