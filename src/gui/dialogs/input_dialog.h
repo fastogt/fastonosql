@@ -36,6 +36,9 @@ class InputDialog
   QString firstText() const;
   QString secondText() const;
 
+  void setFirstPlaceholderText(const QString& placeh);
+  void setSecondPlaceholderText(const QString& placeh);
+
  private:
   QLineEdit* firstLine_;
   QLineEdit* secondLine_;

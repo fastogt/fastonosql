@@ -56,6 +56,7 @@ namespace translations {
   extern const QString trLogs;
   extern const QString trKey;
   extern const QString trValue;
+  extern const QString trMember;
   extern const QString trScore;
   extern const QString trField;
   extern const QString trDelete;

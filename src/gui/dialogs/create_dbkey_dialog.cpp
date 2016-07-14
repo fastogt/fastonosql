@@ -80,11 +80,13 @@ CreateDbKeyDialog::CreateDbKeyDialog(const QString& title, core::connectionTypes
   // key layout
   kvLayout->addWidget(new QLabel(trKey), 1, 0);
   keyEdit_ = new QLineEdit;
+  keyEdit_->setPlaceholderText("[key]");
   kvLayout->addWidget(keyEdit_, 1, 1);
 
   // value layout
   kvLayout->addWidget(new QLabel(trValue), 2, 0);
   valueEdit_ = new QLineEdit;
+  valueEdit_->setPlaceholderText("[value]");
   kvLayout->addWidget(valueEdit_, 2, 1);
   valueEdit_->setVisible(true);
 
@@ -198,8 +200,18 @@ void CreateDbKeyDialog::typeChanged(int index) {
 }
 
 void CreateDbKeyDialog::addItem() {
-  if (valueListEdit_->isVisible()) {
+  int index = typesCombo_->currentIndex();
+  QVariant var = typesCombo_->itemData(index);
+  common::Value::Type t = static_cast<common::Value::Type>(qvariant_cast<unsigned char>(var));
+
+  if (valueListEdit_->isVisible()) { // array
+    CHECK(t == common::Value::TYPE_SET || t == common::Value::TYPE_ARRAY);
     InputDialog diag(this, translations::trAddItem, InputDialog::SingleLine, translations::trValue);
+    if (t == common::Value::TYPE_SET) {
+      diag.setFirstPlaceholderText("[member]");
+    } else if (t == common::Value::TYPE_ARRAY) {
+      diag.setFirstPlaceholderText("[value]");
+    }
     int result = diag.exec();
     if (result != QDialog::Accepted) {
       return;
@@ -212,20 +224,25 @@ void CreateDbKeyDialog::addItem() {
       valueListEdit_->addItem(nitem);
     }
   } else if (valueTableEdit_->isVisible()) {
-    int index = typesCombo_->currentIndex();
-    QVariant var = typesCombo_->itemData(index);
-    common::Value::Type t = static_cast<common::Value::Type>(qvariant_cast<unsigned char>(var));
+    CHECK(t == common::Value::TYPE_HASH || t == common::Value::TYPE_ZSET);
+    common::scoped_ptr<InputDialog> diag;
+    if (t == common::Value::TYPE_HASH) {
+      diag.reset(new InputDialog(this, translations::trAddItem, InputDialog::DoubleLine, translations::trField, translations::trValue));
+      diag->setFirstPlaceholderText("[field]");
+      diag->setSecondPlaceholderText("[value]");
+    } else if (t == common::Value::TYPE_ZSET) {
+      diag.reset(new InputDialog(this, translations::trAddItem, InputDialog::DoubleLine, translations::trScore, translations::trMember));
+      diag->setFirstPlaceholderText("[score]");
+      diag->setSecondPlaceholderText("[member]");
+    }
 
-    InputDialog diag(this, translations::trAddItem, InputDialog::DoubleLine,
-                     t == common::Value::TYPE_HASH ? translations::trField :
-                                                     translations::trScore, translations::trValue);
-    int result = diag.exec();
+    int result = diag->exec();
     if (result != QDialog::Accepted) {
       return;
     }
 
-    QString ftext = diag.firstText();
-    QString stext = diag.secondText();
+    QString ftext = diag->firstText();
+    QString stext = diag->secondText();
 
     if (!ftext.isEmpty() && !stext.isEmpty()) {
       QTableWidgetItem* fitem = new QTableWidgetItem(ftext);
@@ -238,6 +255,12 @@ void CreateDbKeyDialog::addItem() {
       valueTableEdit_->setItem(0, 0, fitem);
       valueTableEdit_->setItem(0, 1, sitem);
     }
+  } else if (valueEdit_->isVisible()) {
+    CHECK(t == common::Value::TYPE_BOOLEAN || t == common::Value::TYPE_DOUBLE ||
+          t == common::Value::TYPE_INTEGER || t == common::Value::TYPE_UINTEGER ||
+          t == common::Value::TYPE_STRING);
+  } else {
+    NOTREACHED();
   }
 }
 
@@ -284,6 +307,7 @@ common::Value* CreateDbKeyDialog::item() const {
     if (valueListEdit_->count() == 0) {
       return nullptr;
     }
+
     common::ArrayValue* ar = common::Value::createArrayValue();
     for (int i = 0; i < valueListEdit_->count(); ++i) {
       std::string val = common::ConvertToString(valueListEdit_->item(i)->text());
@@ -295,6 +319,7 @@ common::Value* CreateDbKeyDialog::item() const {
     if (valueListEdit_->count() == 0) {
       return nullptr;
     }
+
     common::SetValue* ar = common::Value::createSetValue();
     for (int i = 0; i < valueListEdit_->count(); ++i) {
       std::string val = common::ConvertToString(valueListEdit_->item(i)->text());
@@ -310,7 +335,7 @@ common::Value* CreateDbKeyDialog::item() const {
     common::ZSetValue* ar = common::Value::createZSetValue();
     for (int i = 0; i < valueTableEdit_->rowCount(); ++i) {
       QTableWidgetItem* kitem = valueTableEdit_->item(i, 0);
-      QTableWidgetItem* vitem = valueTableEdit_->item(i, 0);
+      QTableWidgetItem* vitem = valueTableEdit_->item(i, 1);
 
       std::string key = common::ConvertToString(kitem->text());
       std::string val = common::ConvertToString(vitem->text());
@@ -326,7 +351,7 @@ common::Value* CreateDbKeyDialog::item() const {
     common::HashValue* ar = common::Value::createHashValue();
     for (int i = 0; i < valueTableEdit_->rowCount(); ++i) {
       QTableWidgetItem* kitem = valueTableEdit_->item(i, 0);
-      QTableWidgetItem* vitem = valueTableEdit_->item(i, 0);
+      QTableWidgetItem* vitem = valueTableEdit_->item(i, 1);
 
       std::string key = common::ConvertToString(kitem->text());
       std::string val = common::ConvertToString(vitem->text());

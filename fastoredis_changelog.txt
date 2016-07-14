@@ -1,3 +1,9 @@
+0.9.0
+[Alexandr Topilski]
+- Stable sentinel connection
+- Stable cluster connection
+- Stable create keys dialog
+
 0.8.4 / Jule 9, 2016
 [Alexandr Topilski]
 - Commands update

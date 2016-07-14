@@ -68,5 +68,13 @@ QString InputDialog::secondText() const {
   return secondLine_->text();
 }
 
+void InputDialog::setFirstPlaceholderText(const QString& placeh) {
+  firstLine_->setPlaceholderText(placeh);
+}
+
+void InputDialog::setSecondPlaceholderText(const QString& placeh) {
+  secondLine_->setPlaceholderText(placeh);
+}
+
 }  // namespace gui
 }  // namespace fastonosql

@@ -55,6 +55,7 @@ namespace translations {
   const QString trLogs = QObject::tr("Logs");
   const QString trKey = QObject::tr("Key");
   const QString trValue = QObject::tr("Value");
+  const QString trMember = QObject::tr("Member");
   const QString trScore = QObject::tr("Score");
   const QString trField = QObject::tr("Field");
   const QString trDelete = QObject::tr("Delete");

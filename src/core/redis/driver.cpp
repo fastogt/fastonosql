@@ -38,13 +38,13 @@
 #define GET_KEY_LIST_PATTERN_1ARGS_S "LRANGE %s 0 -1"
 #define GET_KEY_SET_PATTERN_1ARGS_S "SMEMBERS %s"
 #define GET_KEY_ZSET_PATTERN_1ARGS_S "ZRANGE %s 0 -1"
-#define GET_KEY_HASH_PATTERN_1ARGS_S "HGETALL %s"
+#define GET_KEY_HASHM_PATTERN_1ARGS_S "HGETALL %s"
 
 #define SET_KEY_PATTERN_2ARGS_SS "SET %s %s"
 #define SET_KEY_LIST_PATTERN_2ARGS_SS "LPUSH %s %s"
 #define SET_KEY_SET_PATTERN_2ARGS_SS "SADD %s %s"
 #define SET_KEY_ZSET_PATTERN_2ARGS_SS "ZADD %s %s"
-#define SET_KEY_HASH_PATTERN_2ARGS_SS "HMSET %s %s"
+#define SET_KEY_HASHM_PATTERN_2ARGS_SS "HMSET %s %s"
 
 #define GET_KEYS_PATTERN_3ARGS_ISI "SCAN %d MATCH %s COUNT %d"
 
@@ -797,7 +797,7 @@ common::Error Driver::commandLoadImpl(CommandLoadKey* command, std::string* cmds
   } else if (key.type() == common::Value::TYPE_ZSET) {
     patternResult = common::MemSPrintf(GET_KEY_ZSET_PATTERN_1ARGS_S, key_str);
   } else if (key.type() == common::Value::TYPE_HASH) {
-    patternResult = common::MemSPrintf(GET_KEY_HASH_PATTERN_1ARGS_S, key_str);
+    patternResult = common::MemSPrintf(GET_KEY_HASHM_PATTERN_1ARGS_S, key_str);
   } else {
     patternResult = common::MemSPrintf(GET_KEY_PATTERN_1ARGS_S, key_str);
   }
@@ -826,7 +826,7 @@ common::Error Driver::commandCreateImpl(CommandCreateKey* command,
   } else if (t == common::Value::TYPE_ZSET) {
     patternResult = common::MemSPrintf(SET_KEY_ZSET_PATTERN_2ARGS_SS, key_str, value_str);
   } else if (t == common::Value::TYPE_HASH) {
-    patternResult = common::MemSPrintf(SET_KEY_HASH_PATTERN_2ARGS_SS, key_str, value_str);
+    patternResult = common::MemSPrintf(SET_KEY_HASHM_PATTERN_2ARGS_SS, key_str, value_str);
   } else {
     patternResult = common::MemSPrintf(SET_KEY_PATTERN_2ARGS_SS, key_str, value_str);
   }

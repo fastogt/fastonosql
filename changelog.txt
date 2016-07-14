@@ -1,3 +1,9 @@
+0.7.0
+[Alexandr Topilski]
+- [Redis] Stable sentinel connection
+- [Redis] Stable cluster connection
+- Stable create keys dialog
+
 0.6.3 / Jule 9, 2016
 [Alexandr Topilski]
 - [Redis] Commands update
