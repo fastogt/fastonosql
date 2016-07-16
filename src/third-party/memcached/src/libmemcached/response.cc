@@ -240,9 +240,9 @@ static memcached_return_t textual_read_one_response(memcached_instance_st* insta
         /* Find the space, and then move one past it to copy version */
         #ifdef FASTO
           #ifdef OS_ANDROID
-            char *response_ptr= index(buffer, ' ');
-          #else
             char *response_ptr= strchr(buffer, ' ');
+          #else
+            char *response_ptr= index(buffer, ' ');
           #endif
         #else
           char *response_ptr= index(buffer, ' ');
