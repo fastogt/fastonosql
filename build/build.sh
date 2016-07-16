@@ -1,5 +1,5 @@
 #!/bin/sh
-set -e
+#set -e
 
 createPackage() {
     branding_variables="$(cat $1)"
