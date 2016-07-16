@@ -238,8 +238,15 @@ static memcached_return_t textual_read_one_response(memcached_instance_st* insta
       else if (buffer[1] == 'E' and buffer[2] == 'R' and buffer[3] == 'S' and buffer[4] == 'I' and buffer[5] == 'O' and buffer[6] == 'N') /* VERSION */
       {
         /* Find the space, and then move one past it to copy version */
-        char *response_ptr= index(buffer, ' ');
-
+        #ifdef FASTO
+          #ifdef OS_ANDROID
+            char *response_ptr= index(buffer, ' ');
+          #else
+            char *response_ptr= strchr(buffer, ' ');
+          #endif
+        #else
+          char *response_ptr= index(buffer, ' ');
+        #endif
         char *endptr;
         errno= 0;
         long int version= strtol(response_ptr, &endptr, 10);
