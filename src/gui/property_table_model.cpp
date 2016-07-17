@@ -94,7 +94,7 @@ bool PropertyTableModel::setData(const QModelIndex& index, const QVariant& value
 }
 
 Qt::ItemFlags PropertyTableModel::flags(const QModelIndex &index) const {
-  if (index.isValid()) {
+  if (!index.isValid()) {
     return 0;
   }
 

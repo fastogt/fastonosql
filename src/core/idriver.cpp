@@ -481,7 +481,7 @@ void IDriver::handleLoadServerInfoHistoryEvent(events::ServerInfoHistoryRequestE
     }
     res.setInfos(tmpInfos);
   } else {
-    res.setErrorInfo(common::make_error_value("Logging file not found", common::ErrorValue::E_ERROR));
+    res.setErrorInfo(common::make_error_value("History file not found", common::ErrorValue::E_ERROR));
   }
 
   reply(sender, new events::ServerInfoHistoryResponceEvent(this, res));
