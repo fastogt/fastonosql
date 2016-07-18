@@ -1,3 +1,5 @@
+0.7.1 /
+
 0.7.0 / Jule 17, 2016
 [Alexandr Topilski]
 - [Redis] Stable sentinel connection

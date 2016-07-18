@@ -104,7 +104,7 @@ int main(int argc, char *argv[]) {
         daemon_mode = 1;
         break;
       default: /* '?' */
-        fprintf(stderr, "Usage: %s [-t nsecs] [-n] name\n", argv[0]);
+        fprintf(stderr, "Usage: %s [-c config path] [-d daemon mode]\n", argv[0]);
         exit(EXIT_FAILURE);
       }
   }
@@ -117,11 +117,9 @@ int main(int argc, char *argv[]) {
 
   /* Open the log file */
   openlog(PROJECT_NAME, LOG_PID, LOG_DAEMON);
-
   read_config_file(config_path);
 
   const int max_fd = sysconf(_SC_OPEN_MAX);
-
   struct pollfd           client[max_fd];
   struct sockaddr_in      servaddr;
 
@@ -135,8 +133,8 @@ int main(int argc, char *argv[]) {
   memset(&servaddr, 0, sizeof(servaddr));
 
   servaddr.sin_family      = AF_INET;
-  servaddr.sin_addr.s_addr = htonl( INADDR_ANY );
-  servaddr.sin_port        = htons( SERV_PORT );
+  servaddr.sin_addr.s_addr = htonl(INADDR_ANY);
+  servaddr.sin_port        = htons(SERV_PORT);
   int res = bind(listenfd, (struct sockaddr *)&servaddr, sizeof( servaddr ));
   if (res < 0) {
     syslog(LOG_NOTICE, PROJECT_NAME" bind errno: %d", errno);
@@ -156,7 +154,7 @@ int main(int argc, char *argv[]) {
   int i, maxi , connfd , sockfd;
   int nready;
 
-  for( i = 1 ; i < max_fd ; i ++ ){
+  for(i = 1; i < max_fd; i++){
     client[i].fd = -1;
   }
   maxi = 0;
@@ -190,11 +188,12 @@ int main(int argc, char *argv[]) {
       }
     }
 
-    for (i = 1 ; i <= maxi ; i ++) {
-      if (( sockfd = client[i].fd ) < 0)
+    for (i = 1; i <= maxi; i++) {
+      if (( sockfd = client[i].fd ) < 0) {
         continue;
+      }
 
-      if ( client[i].revents & ( POLLRDNORM | POLLERR ) ) {
+      if (client[i].revents & (POLLRDNORM | POLLERR)) {
         char buf[MAXLINE] = {0};
         ssize_t n = 0;
         if ((n = read(sockfd, buf, MAXLINE)) < 0) {
@@ -214,19 +213,20 @@ int main(int argc, char *argv[]) {
           buf[spos] = 0;
           clients_requests++;
           if (!daemon_mode) {
-            printf(PROJECT_NAME " request: %s/%u\r\n", buf, clients_requests);
+            fprintf(stdout, PROJECT_NAME " request: %s/%u\r\n", buf, clients_requests);
           }
-          struct setting * setting = find_setting(buf);
+          struct setting* setting = find_setting(buf);
           if (setting) {
             write(sockfd, setting->value, strlen(setting->value));
           }
 
-          close( sockfd );
+          close(sockfd);
           client[i].fd = -1;
         }
 
-        if(--nready <= 0)
-          break;
+        if(--nready <= 0) {
+          break;        
+        }
       }
     }
   }
@@ -242,7 +242,7 @@ exit:
 
 void read_config_file(const char *configFilename) {
   delete_all_setting();
-  FILE *configfp = fopen(configFilename, "r");
+  FILE* configfp = fopen(configFilename, "r");
   if (!configfp) {
     syslog(LOG_NOTICE, "File %s could not open errno: %d", configFilename, errno);
     return;
