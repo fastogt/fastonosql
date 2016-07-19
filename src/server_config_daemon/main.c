@@ -13,12 +13,13 @@
 #include <netinet/in.h>
 
 #include "uthash.h"
-
+#include "../fasto/common/third-party/json-c/json-c/json.h"
 #include "server_config.h"
 
-#define MAXLINE 80
+#define MAXLINE 1024
 #define SBUF_SIZE 256
 #define SAVE_FREE(x) if(x) { free(x); x = NULL; }
+#define UNKNOWN "Unknown"
 
 sig_atomic_t is_stop = 0;
 
@@ -27,8 +28,8 @@ void read_config_file(const char *configFilename);
 void signal_handler(int sig);
 
 struct setting {
-  char *key;          /* key */
-  char *value;          /* value */
+  char* key;          /* key */
+  char* value;          /* value */
   UT_hash_handle hh;         /* makes this structure hashable */
 };
 
@@ -40,7 +41,6 @@ struct setting * alloc_setting(const char *key, const char *value) {
 
   st->key = strdup(key);
   st->value = strdup(value);
-
   return st;
 }
 
@@ -121,7 +121,12 @@ int main(int argc, char *argv[]) {
 
   const int max_fd = sysconf(_SC_OPEN_MAX);
   struct pollfd           client[max_fd];
+
   struct sockaddr_in      servaddr;
+  memset(&servaddr, 0, sizeof(servaddr));
+  servaddr.sin_family      = AF_INET;
+  servaddr.sin_addr.s_addr = htonl(INADDR_ANY);
+  servaddr.sin_port        = htons(SERV_VERSION_PORT);
 
   int listenfd = socket(AF_INET, SOCK_STREAM, 0);
   if (listenfd < 0) {
@@ -130,11 +135,7 @@ int main(int argc, char *argv[]) {
     goto exit;
   }
 
-  memset(&servaddr, 0, sizeof(servaddr));
 
-  servaddr.sin_family      = AF_INET;
-  servaddr.sin_addr.s_addr = htonl(INADDR_ANY);
-  servaddr.sin_port        = htons(SERV_PORT);
   int res = bind(listenfd, (struct sockaddr *)&servaddr, sizeof( servaddr ));
   if (res < 0) {
     syslog(LOG_NOTICE, PROJECT_NAME" bind errno: %d", errno);
@@ -196,7 +197,7 @@ int main(int argc, char *argv[]) {
       if (client[i].revents & (POLLRDNORM | POLLERR)) {
         char buf[MAXLINE] = {0};
         ssize_t n = 0;
-        if ((n = read(sockfd, buf, MAXLINE)) < 0) {
+        if ((n = read(sockfd, buf, sizeof(buf))) < 0) {
           if (errno == ECONNRESET) {
             syslog(LOG_NOTICE, PROJECT_NAME" client[%d] aborted connection", i);
             close(sockfd);
@@ -211,13 +212,68 @@ int main(int argc, char *argv[]) {
         } else {
           size_t spos = strcspn(buf, "\r\n");
           buf[spos] = 0;
-          clients_requests++;
-          if (!daemon_mode) {
-            fprintf(stdout, PROJECT_NAME " request: %s/%u\r\n", buf, clients_requests);
-          }
-          struct setting* setting = find_setting(buf);
-          if (setting) {
-            write(sockfd, setting->value, strlen(setting->value));
+
+          json_object* stats = json_tokener_parse(buf);
+          if (stats) {
+            json_object* jos = NULL;
+            json_object_object_get_ex(stats, FIELD_OS, &jos);
+            const char* os_name = UNKNOWN;
+            const char* os_version = UNKNOWN;
+            const char* os_arch = UNKNOWN;
+            if (jos) {
+              json_object* jos_name = NULL;
+              json_object_object_get_ex(jos, FIELD_OS_NAME, &jos_name);
+              if (jos_name) {
+                os_name = json_object_get_string(jos_name);
+              }
+              json_object* jos_version = NULL;
+              json_object_object_get_ex(jos, FIELD_OS_VERSION, &jos_version);
+              if (jos_version) {
+                os_version = json_object_get_string(jos_version);
+              }
+              json_object* jos_arch = NULL;
+              json_object_object_get_ex(jos, FILED_OS_ARCH, &jos_arch);
+              if (jos_arch) {
+                os_arch = json_object_get_string(jos_arch);
+              }
+            }
+
+            json_object* jproj = NULL;
+            json_object_object_get_ex(stats, FIELD_PROJECT, &jproj);
+            const char* proj_name = UNKNOWN;
+            const char* proj_version = UNKNOWN;
+            const char* proj_arch = UNKNOWN;
+            if (jproj) {
+              json_object* jporj_name = NULL;
+              json_object_object_get_ex(jproj, FIELD_PROJECT_NAME, &jporj_name);
+              if (jporj_name) {
+                proj_name = json_object_get_string(jporj_name);
+              }
+              json_object* jporj_version = NULL;
+              json_object_object_get_ex(jproj, FIELD_PROJECT_VERSION, &jporj_version);
+              if (jporj_version) {
+                proj_version = json_object_get_string(jporj_version);
+              }
+              json_object* jporj_arch = NULL;
+              json_object_object_get_ex(jproj, FILED_PROJECT_ARCH, &jporj_arch);
+              if (jporj_arch) {
+                proj_arch = json_object_get_string(jporj_arch);
+              }
+            }
+            fprintf(stdout, PROJECT_NAME " os: name: %s, version: %s, arch: %s\r\n"
+                                         " project: name: %s, version: %s, arch: %s\r\n",
+                    os_name, os_version, os_arch,
+                    proj_name, proj_version, proj_arch);
+            json_object_put(stats);
+          } else { // old version
+            clients_requests++;
+            if (!daemon_mode) {
+              fprintf(stdout, PROJECT_NAME " request: %s/%u\r\n", buf, clients_requests);
+            }
+            struct setting* setting = find_setting(buf);
+            if (setting) {
+              write(sockfd, setting->value, strlen(setting->value));
+            }
           }
 
           close(sockfd);

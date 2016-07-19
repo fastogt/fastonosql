@@ -33,6 +33,7 @@
 #define PREFIX "settings/"
 
 #define LANGUAGE PREFIX"language"
+#define SENDED_STATISTIC PREFIX"sended_statistic"
 #define STYLE PREFIX"style"
 #define FONT PREFIX"font"
 #define CONNECTIONS PREFIX"connections"
@@ -69,7 +70,7 @@ namespace fastonosql {
 namespace core {
 
 SettingsManager::SettingsManager()
-  : config_version_(), views_(), cur_style_(), cur_font_name_(), cur_language_(), connections_(),
+  : config_version_(), sended_statistic_(), views_(), cur_style_(), cur_font_name_(), cur_language_(), connections_(),
     logging_dir_(),
     auto_check_update_(), auto_completion_(), auto_open_console_(), fast_view_keys_() {
   load();
@@ -90,6 +91,13 @@ std::string SettingsManager::settingsFilePath() {
 
 uint32_t SettingsManager::configVersion() const {
   return config_version_;
+}
+
+bool SettingsManager::isSendedStatistic() const {
+  return sended_statistic_;
+}
+void SettingsManager::setIsSendedStatistic(bool val) {
+  sended_statistic_ = val;
 }
 
 supportedViews SettingsManager::defaultView() const {
@@ -277,6 +285,7 @@ void SettingsManager::reloadFromPath(const std::string& path, bool merge) {
   DCHECK(settings.status() == QSettings::NoError);
 
   cur_style_ = settings.value(STYLE, fasto::qt::gui::defStyle).toString();
+  sended_statistic_ = settings.value(SENDED_STATISTIC, false).toBool();
   cur_font_name_ = settings.value(FONT, fontName()).toString();
   cur_language_ = settings.value(LANGUAGE, fasto::qt::translations::defLanguage).toString();
 
@@ -349,6 +358,7 @@ void SettingsManager::save() {
 
   settings.setValue(STYLE, cur_style_);
   settings.setValue(FONT, cur_font_name_);
+  settings.setValue(SENDED_STATISTIC, sended_statistic_);
   settings.setValue(LANGUAGE, cur_language_);
   settings.setValue(VIEW, views_);
 

@@ -131,6 +131,7 @@ namespace translations {
   extern const QString trEdit;
   extern const QString trReportBug;
   extern const QString trCheckUpdate;
+  extern const QString trSendStatistic;
   extern const QString trCloseOtherTab;
 
   extern const QString trLoadAndExecuteFile;

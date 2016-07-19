@@ -131,6 +131,7 @@ namespace translations {
   const QString trEdit = QObject::tr("Edit");
   const QString trReportBug = QObject::tr("Report bug...");
   const QString trCheckUpdate = QObject::tr("Check for updates...");
+  const QString trSendStatistic = QObject::tr("Send statistic");
   const QString trCloseOtherTab = QObject::tr("Close Other Tab");
 
   const QString trLoadAndExecuteFile = QObject::tr("Load and execute file");

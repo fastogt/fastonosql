@@ -38,6 +38,8 @@
 #include "common/net/socket_tcp.h"
 #include "common/text_decoders/iedcoder.h"
 #include "common/file_system.h"
+#include "common/third-party/json-c/json-c/json.h"
+#include "common/system_info/system_info.h"
 
 #include "fasto/qt/gui/app_style.h"
 #include "fasto/qt/translations/translations.h"
@@ -196,10 +198,15 @@ MainWindow::MainWindow()
   checkUpdateAction_ = new QAction(this);
   VERIFY(connect(checkUpdateAction_, &QAction::triggered, this, &MainWindow::checkUpdate));
 
+  sendStatisticAction_ = new QAction(this);
+  VERIFY(connect(sendStatisticAction_, &QAction::triggered, this, &MainWindow::sendStatistic));
+  sendStatisticAction_->setEnabled(!core::SettingsManager::instance().isSendedStatistic());
+
   reportBugAction_ = new QAction(this);
   VERIFY(connect(reportBugAction_, &QAction::triggered, this, &MainWindow::reportBug));
 
   helpMenu->addAction(checkUpdateAction_);
+  helpMenu->addAction(sendStatisticAction_);
   helpMenu->addSeparator();
   helpMenu->addAction(reportBugAction_);
   helpMenu->addSeparator();
@@ -308,6 +315,18 @@ void MainWindow::checkUpdate() {
   VERIFY(connect(cheker, &UpdateChecker::versionAvailibled, this, &MainWindow::versionAvailible));
   VERIFY(connect(cheker, &UpdateChecker::versionAvailibled, th, &QThread::quit));
   VERIFY(connect(th, &QThread::finished, cheker, &UpdateChecker::deleteLater));
+  VERIFY(connect(th, &QThread::finished, th, &QThread::deleteLater));
+  th->start();
+}
+
+void MainWindow::sendStatistic() {
+  QThread* th = new QThread;
+  StatisticSender* sender = new StatisticSender;
+  sender->moveToThread(th);
+  VERIFY(connect(th, &QThread::started, sender, &StatisticSender::routine));
+  VERIFY(connect(sender, &StatisticSender::statisticSended, this, &MainWindow::statitsticSent));
+  VERIFY(connect(sender, &StatisticSender::statisticSended, th, &QThread::quit));
+  VERIFY(connect(th, &QThread::finished, sender, &UpdateChecker::deleteLater));
   VERIFY(connect(th, &QThread::finished, th, &QThread::deleteLater));
   th->start();
 }
@@ -523,6 +542,18 @@ void MainWindow::versionAvailible(bool succesResult, const QString& version) {
   checkUpdateAction_->setEnabled(isn);
 }
 
+void MainWindow::statitsticSent(bool succesResult) {
+  if (succesResult) {
+    sendStatisticAction_->setEnabled(false);
+    core::SettingsManager::instance().setIsSendedStatistic(true);
+    QMessageBox::information(this, translations::trSendStatistic,
+                             QObject::tr("Your statistic will be considersed, Thank you for using " PROJECT_NAME_TITLE "."));
+  } else {
+    QMessageBox::information(this, translations::trSendStatistic,
+                             QObject::tr("Failed to send statistic."));
+  }
+}
+
 #ifdef OS_ANDROID
 bool MainWindow::event(QEvent* event) {
   if (event->type() == QEvent::Gesture) {
@@ -628,6 +659,7 @@ void MainWindow::retranslateUi() {
   encodeDecodeDialogAction_->setText(translations::trEncodeDecode);
   preferencesAction_->setText(translations::trPreferences);
   checkUpdateAction_->setText(translations::trCheckUpdate);
+  sendStatisticAction_->setText(translations::trSendStatistic);
   editAction_->setText(translations::trEdit);
   windowAction_->setText(translations::trWindow);
   fullScreanAction_->setText(translations::trEnterFullScreen);
@@ -744,9 +776,9 @@ UpdateChecker::UpdateChecker(QObject* parent)
 
 void UpdateChecker::routine() {
 #if defined(FASTONOSQL)
-  common::net::ClientSocketTcp s(common::net::HostAndPort(FASTONOSQL_URL, SERV_PORT));
+  common::net::ClientSocketTcp s(common::net::HostAndPort(FASTONOSQL_URL, SERV_VERSION_PORT));
 #elif defined(FASTOREDIS)
-  common::net::ClientSocketTcp s(common::net::HostAndPort(FASTOREDIS_URL, SERV_PORT));
+  common::net::ClientSocketTcp s(common::net::HostAndPort(FASTOREDIS_URL, SERV_VERSION_PORT));
 #else
   #error please specify url and port of version information
 #endif
@@ -781,6 +813,57 @@ void UpdateChecker::routine() {
 
   QString vers = common::ConvertFromString<QString>(version);
   emit versionAvailibled(true, vers);
+  s.close();
+  return;
+}
+
+StatisticSender::StatisticSender(QObject* parent)
+  : QObject(parent) {
+}
+
+void StatisticSender::routine() {
+#if defined(FASTONOSQL)
+  common::net::ClientSocketTcp s(common::net::HostAndPort(FASTONOSQL_URL, SERV_STATISTIC_PORT));
+#elif defined(FASTOREDIS)
+  common::net::ClientSocketTcp s(common::net::HostAndPort(FASTOREDIS_URL, SERV_STATISTIC_PORT));
+#else
+  #error please specify url and port to send statistic information
+#endif
+  common::ErrnoError err = s.connect();
+  if (err && err->isError()) {
+    emit statisticSended(false);
+    return;
+  }
+
+  json_object* stats_json = json_object_new_object();
+  std::string os_name = common::system_info::operatingSystemName();
+  std::string os_version = common::system_info::operatingSystemVersion();
+  std::string os_arch = common::system_info::operatingSystemArchitecture();
+
+  json_object* os_json = json_object_new_object();
+  json_object_object_add(os_json, FIELD_OS_NAME, json_object_new_string(os_name.c_str()));
+  json_object_object_add(os_json, FIELD_OS_VERSION, json_object_new_string(os_version.c_str()));
+  json_object_object_add(os_json, FILED_OS_ARCH, json_object_new_string(os_arch.c_str()));
+  json_object_object_add(stats_json, FIELD_OS, os_json);
+
+  json_object* project_json = json_object_new_object();
+  json_object_object_add(project_json, FIELD_PROJECT_NAME, json_object_new_string(PROJECT_NAME));
+  json_object_object_add(project_json, FIELD_PROJECT_VERSION, json_object_new_string(PROJECT_VERSION));
+  json_object_object_add(project_json, FILED_PROJECT_ARCH, json_object_new_string(PROJECT_ARCH));
+  json_object_object_add(stats_json, FIELD_PROJECT, project_json);
+
+  const char* stats_json_string = json_object_get_string(stats_json);
+
+  ssize_t nwrite = 0;
+  err = s.write(stats_json_string, strlen(stats_json_string), &nwrite);
+  json_object_put(stats_json);
+  if (err && err->isError()) {
+    emit statisticSended(false);
+    s.close();
+    return;
+  }
+
+  emit statisticSended(true);
   s.close();
   return;
 }

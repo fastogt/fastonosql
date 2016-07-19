@@ -45,6 +45,9 @@ class SettingsManager
 
   uint32_t configVersion() const;
 
+  bool isSendedStatistic() const;
+  void setIsSendedStatistic(bool val);
+
   void setDefaultView(supportedViews view);
   supportedViews defaultView() const;
 
@@ -105,6 +108,7 @@ class SettingsManager
   ~SettingsManager();
 
   uint32_t config_version_;
+  bool sended_statistic_;
   supportedViews views_;
   QString cur_style_;
   QString cur_font_name_;

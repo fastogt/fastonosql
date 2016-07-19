@@ -58,6 +58,7 @@ class MainWindow
   void about();
   void openPreferences();
   void checkUpdate();
+  void sendStatistic();
   void reportBug();
   void enterLeaveFullScreen();
   void openEncodeDecodeDialog();
@@ -73,7 +74,7 @@ class MainWindow
   void openGithubLink();
 
   void versionAvailible(bool succesResult, const QString& version);
-
+  void statitsticSent(bool succesResult);
  protected:
 #ifdef OS_ANDROID
   virtual bool event(QEvent* event);
@@ -105,6 +106,7 @@ class MainWindow
   QAction* fileAction_;
   QAction* editAction_;
   QAction* checkUpdateAction_;
+  QAction* sendStatisticAction_;
   QAction* toolsAction_;
   QAction* encodeDecodeDialogAction_;
   QAction* helpAction_;
@@ -133,6 +135,19 @@ class UpdateChecker
 
  Q_SIGNALS:
   void versionAvailibled(bool succesResult, const QString& version);
+
+ public Q_SLOTS:
+  void routine();
+};
+
+class StatisticSender
+  : public QObject {
+  Q_OBJECT
+ public:
+  explicit StatisticSender(QObject* parent = 0);
+
+ Q_SIGNALS:
+  void statisticSended(bool succesResult);
 
  public Q_SLOTS:
   void routine();
