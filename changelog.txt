@@ -1,4 +1,6 @@
 0.7.1 /
+[Alexandr Topilski]
+- Statitstics module
 
 0.7.0 / Jule 17, 2016
 [Alexandr Topilski]

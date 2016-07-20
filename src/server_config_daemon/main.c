@@ -261,7 +261,7 @@ int main(int argc, char *argv[]) {
               }
             }
             fprintf(stdout, PROJECT_NAME " os: name: %s, version: %s, arch: %s\r\n"
-                                         " project: name: %s, version: %s, arch: %s\r\n",
+                                         "  project: name: %s, version: %s, arch: %s\r\n",
                     os_name, os_version, os_arch,
                     proj_name, proj_version, proj_arch);
             json_object_put(stats);
