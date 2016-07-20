@@ -127,6 +127,7 @@ int main(int argc, char *argv[]) {
   servaddr.sin_family      = AF_INET;
   servaddr.sin_addr.s_addr = htonl(INADDR_ANY);
   servaddr.sin_port        = htons(SERV_VERSION_PORT);
+  int res = 0;
 
   int listenfd = socket(AF_INET, SOCK_STREAM, 0);
   if (listenfd < 0) {
@@ -135,8 +136,7 @@ int main(int argc, char *argv[]) {
     goto exit;
   }
 
-
-  int res = bind(listenfd, (struct sockaddr *)&servaddr, sizeof( servaddr ));
+  res = bind(listenfd, (struct sockaddr *)&servaddr, sizeof( servaddr ));
   if (res < 0) {
     syslog(LOG_NOTICE, PROJECT_NAME" bind errno: %d", errno);
     return_code = EXIT_FAILURE;
@@ -164,7 +164,7 @@ int main(int argc, char *argv[]) {
     nready = poll(client, maxi + 1 , -1);
     if (client[0].revents & POLLRDNORM) {
       struct sockaddr_in cliaddr;
-      int clilen = sizeof(cliaddr);
+      socklen_t clilen = sizeof(cliaddr);
       connfd = accept(listenfd, (struct sockaddr *)&cliaddr , &clilen);
 
       for (i = 1; i < max_fd; i ++) {

@@ -13,5 +13,5 @@ SET(CMAKE_MODULE_PATH ${CMAKE_MODULE_PATH} "${ROOT_DIR}/cmake")
 INCLUDE(config) ###################
 ADD_SUBDIRECTORY(${ROOT_DIR}/src/fasto/common/third-party/json-c json-c)
 
-ADD_EXECUTABLE(${PROJECT_NAME} main.c)
+ADD_EXECUTABLE(${PROJECT_NAME} main.cpp)
 TARGET_LINK_LIBRARIES(${PROJECT_NAME} json-c)
