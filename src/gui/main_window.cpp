@@ -547,7 +547,7 @@ void MainWindow::statitsticSent(bool succesResult) {
     sendStatisticAction_->setEnabled(false);
     core::SettingsManager::instance().setIsSendedStatistic(true);
     QMessageBox::information(this, translations::trSendStatistic,
-                             QObject::tr("Your statistic will be considersed, Thank you for using " PROJECT_NAME_TITLE "."));
+                             QObject::tr("Your statistic will be considersed, thank you for using " PROJECT_NAME_TITLE "."));
   } else {
     QMessageBox::information(this, translations::trSendStatistic,
                              QObject::tr("Failed to send statistic."));
@@ -836,14 +836,12 @@ void StatisticSender::routine() {
   }
 
   json_object* stats_json = json_object_new_object();
-  std::string os_name = common::system_info::operatingSystemName();
-  std::string os_version = common::system_info::operatingSystemVersion();
-  std::string os_arch = common::system_info::operatingSystemArchitecture();
+  common::system_info::SystemInfo inf = common::system_info::currentSystemInfo();
 
   json_object* os_json = json_object_new_object();
-  json_object_object_add(os_json, FIELD_OS_NAME, json_object_new_string(os_name.c_str()));
-  json_object_object_add(os_json, FIELD_OS_VERSION, json_object_new_string(os_version.c_str()));
-  json_object_object_add(os_json, FILED_OS_ARCH, json_object_new_string(os_arch.c_str()));
+  json_object_object_add(os_json, FIELD_OS_NAME, json_object_new_string(inf.name().c_str()));
+  json_object_object_add(os_json, FIELD_OS_VERSION, json_object_new_string(inf.version().c_str()));
+  json_object_object_add(os_json, FILED_OS_ARCH, json_object_new_string(inf.arch().c_str()));
   json_object_object_add(stats_json, FIELD_OS, os_json);
 
   json_object* project_json = json_object_new_object();

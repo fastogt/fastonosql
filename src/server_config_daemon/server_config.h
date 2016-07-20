@@ -1,3 +1,5 @@
+#pragma once
+
 #define SERV_VERSION_PORT 5000
 #define SERV_STATISTIC_PORT SERV_VERSION_PORT
 
