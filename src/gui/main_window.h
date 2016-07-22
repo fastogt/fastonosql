@@ -106,7 +106,6 @@ class MainWindow
   QAction* fileAction_;
   QAction* editAction_;
   QAction* checkUpdateAction_;
-  QAction* sendStatisticAction_;
   QAction* toolsAction_;
   QAction* encodeDecodeDialogAction_;
   QAction* helpAction_;

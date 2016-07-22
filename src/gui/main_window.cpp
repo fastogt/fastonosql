@@ -198,15 +198,10 @@ MainWindow::MainWindow()
   checkUpdateAction_ = new QAction(this);
   VERIFY(connect(checkUpdateAction_, &QAction::triggered, this, &MainWindow::checkUpdate));
 
-  sendStatisticAction_ = new QAction(this);
-  VERIFY(connect(sendStatisticAction_, &QAction::triggered, this, &MainWindow::sendStatistic));
-  sendStatisticAction_->setEnabled(!core::SettingsManager::instance().isSendedStatistic());
-
   reportBugAction_ = new QAction(this);
   VERIFY(connect(reportBugAction_, &QAction::triggered, this, &MainWindow::reportBug));
 
   helpMenu->addAction(checkUpdateAction_);
-  helpMenu->addAction(sendStatisticAction_);
   helpMenu->addSeparator();
   helpMenu->addAction(reportBugAction_);
   helpMenu->addSeparator();
@@ -276,6 +271,11 @@ void MainWindow::showEvent(QShowEvent* ev) {
   if (isA && !isCheckedInSession_) {
     isCheckedInSession_ = true;
     checkUpdate();
+  }
+
+  bool isSendedStatitic = core::SettingsManager::instance().isSendedStatistic();
+  if (!isSendedStatitic) {
+    sendStatistic();
   }
 }
 
@@ -544,13 +544,7 @@ void MainWindow::versionAvailible(bool succesResult, const QString& version) {
 
 void MainWindow::statitsticSent(bool succesResult) {
   if (succesResult) {
-    sendStatisticAction_->setEnabled(false);
     core::SettingsManager::instance().setIsSendedStatistic(true);
-    QMessageBox::information(this, translations::trSendStatistic,
-                             QObject::tr("Your statistic will be considersed, thank you for using " PROJECT_NAME_TITLE "."));
-  } else {
-    QMessageBox::information(this, translations::trSendStatistic,
-                             QObject::tr("Failed to send statistic."));
   }
 }
 
@@ -659,7 +653,6 @@ void MainWindow::retranslateUi() {
   encodeDecodeDialogAction_->setText(translations::trEncodeDecode);
   preferencesAction_->setText(translations::trPreferences);
   checkUpdateAction_->setText(translations::trCheckUpdate);
-  sendStatisticAction_->setText(translations::trSendStatistic);
   editAction_->setText(translations::trEdit);
   windowAction_->setText(translations::trWindow);
   fullScreanAction_->setText(translations::trEnterFullScreen);
