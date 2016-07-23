@@ -6,9 +6,11 @@
 #include <sys/stat.h>
 #include <syslog.h>
 #include <string.h>
+#include <stdarg.h>
 
 #include <errno.h>
 #include <sys/socket.h>
+#include <time.h>
 #include <poll.h>
 #include <netinet/in.h>
 
@@ -22,6 +24,16 @@
 #define UNKNOWN "Unknown"
 
 sig_atomic_t is_stop = 0;
+
+inline int vasprintf(char ** s, const char *format, ...) {
+  va_list ap;
+
+  va_start(ap, format);
+  int rc = ::vasprintf(s, format, ap);
+  va_end(ap);
+
+  return rc;
+}
 
 void skeleton_daemon();
 void read_config_file(const char *configFilename);
@@ -54,7 +66,7 @@ void free_setting(struct setting *st) {
   SAVE_FREE(st);
 }
 
-struct setting *settings = NULL;
+struct setting* settings = NULL;
 
 void add_setting(const char *key, const char *value) {
   struct setting *s = NULL;
@@ -69,7 +81,7 @@ void add_setting(const char *key, const char *value) {
   }
 }
 
-struct setting *find_setting(const char *key) {
+struct setting* find_setting(const char *key) {
   struct setting *s;
   HASH_FIND_STR(settings, key, s);  /* s: output pointer */
   return s;
@@ -89,14 +101,37 @@ void delete_all_setting() {
   }
 }
 
+void printToFile(FILE* out, const char* message) {
+  if (!out) {
+    return;
+  }
+
+  char buf[64] = {0};
+  struct timespec spec;
+  clock_gettime(CLOCK_REALTIME, &spec);
+  long ms = spec.tv_nsec / 1.0e6; // Convert nanoseconds to milliseconds
+  struct tm info;
+  localtime_r(&spec.tv_sec, &info);
+  strftime(buf, sizeof(buf), "%H:%M:%S", &info);
+
+  fprintf(out, "%s.%03ld " PROJECT_NAME " %s\n", buf, ms, message);
+  fflush(out);  // Needed on MSVC.
+}
+
+
 int main(int argc, char *argv[]) {
   int opt;
   int daemon_mode = 0;
   unsigned int clients_requests = 0;
+  unsigned int statistic_responce = 0;
   const char* config_path = CONFIG_FILE_PATH;
+  const char* output_path = PROJECT_NAME_LOWERCASE ".data";
 
-  while ((opt = getopt(argc, argv, "cd:")) != -1) {
+  while ((opt = getopt(argc, argv, "fcd:")) != -1) {
     switch (opt) {
+      case 'f':
+        output_path = argv[optind];
+        break;
       case 'c':
         config_path = argv[optind];
         break;
@@ -104,7 +139,7 @@ int main(int argc, char *argv[]) {
         daemon_mode = 1;
         break;
       default: /* '?' */
-        fprintf(stderr, "Usage: %s [-c config path] [-d daemon mode]\n", argv[0]);
+        fprintf(stderr, "Usage: %s [-c config path] %s [-f statistic output path] [-d daemon mode]\n", argv[0]);
         exit(EXIT_FAILURE);
       }
   }
@@ -118,6 +153,12 @@ int main(int argc, char *argv[]) {
   /* Open the log file */
   openlog(PROJECT_NAME, LOG_PID, LOG_DAEMON);
   read_config_file(config_path);
+
+  FILE* out = stdout;
+  FILE* outf = fopen(output_path, "ab+");
+  if (outf) {
+    out = outf;
+  }
 
   const int max_fd = sysconf(_SC_OPEN_MAX);
   struct pollfd           client[max_fd];
@@ -260,16 +301,18 @@ int main(int argc, char *argv[]) {
                 proj_arch = json_object_get_string(jporj_arch);
               }
             }
-            fprintf(stdout, PROJECT_NAME " os: name: %s, version: %s, arch: %s\r\n"
-                                         "  project: name: %s, version: %s, arch: %s\r\n",
-                    os_name, os_version, os_arch,
-                    proj_name, proj_version, proj_arch);
+            statistic_responce++;
+            char* ret = NULL;
+            vasprintf(&ret, "%u) os: %s, version: %s, arch: %s, project: %s, version: %s, arch: %s", statistic_responce, os_name, os_version, os_arch, proj_name, proj_version, proj_arch);
+            printToFile(out, ret);
+            free(ret);
             json_object_put(stats);
           } else { // old version
             clients_requests++;
-            if (!daemon_mode) {
-              fprintf(stdout, PROJECT_NAME " request: %s/%u\r\n", buf, clients_requests);
-            }
+            char* ret = NULL;
+            vasprintf(&ret, "%u) request: %s", clients_requests, buf);
+            printToFile(out, ret);
+            free(ret);
             struct setting* setting = find_setting(buf);
             if (setting) {
               write(sockfd, setting->value, strlen(setting->value));
@@ -291,6 +334,9 @@ exit:
   delete_all_setting();
   syslog(LOG_NOTICE, PROJECT_NAME" terminated.");
   closelog();
+  if (outf) {
+    fclose(outf);
+  }
 
   return return_code;
 }
