@@ -36,6 +36,8 @@ int main(int argc, char* argv[]) {
   app.setApplicationVersion(PROJECT_VERSION);
   app.setAttribute(Qt::AA_UseHighDpiPixmaps);
   app.setWindowIcon(fastonosql::gui::GuiFactory::instance().logoIcon());  // default icon for app
+  std::string log_path = common::file_system::prepare_path("~/" PROJECT_NAME_LOWERCASE ".log");
+  INIT_LOGGER(PROJECT_NAME_TITLE, log_path);
 #ifdef NDEBUG
   SET_LOG_LEVEL(common::logging::L_INFO);
 #else
