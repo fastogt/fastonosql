@@ -454,7 +454,7 @@ common::Error set(CommandHandler* handler, int argc, char** argv, FastoObject* o
   DBConnection* mdb = static_cast<DBConnection*>(handler);
   common::Error er = mdb->set(argv[0], argv[1]);
   if (!er) {
-    common::StringValue* val = common::Value::createStringValue("STORED");
+    common::StringValue* val = common::Value::createStringValue("OK");
     FastoObject* child = new FastoObject(out, val, mdb->delimiter(), mdb->nsSeparator());
     out->addChildren(child);
   }
@@ -483,7 +483,7 @@ common::Error del(CommandHandler* handler, int argc, char** argv, FastoObject* o
   DBConnection* mdb = static_cast<DBConnection*>(handler);
   common::Error er = mdb->del(argv[0]);
   if (!er) {
-    common::StringValue* val = common::Value::createStringValue("DELETED");
+    common::StringValue* val = common::Value::createStringValue("OK");
     FastoObject* child = new FastoObject(out, val, mdb->delimiter(), mdb->nsSeparator());
     out->addChildren(child);
   }

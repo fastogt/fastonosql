@@ -935,7 +935,7 @@ common::Error set(CommandHandler* handler, int argc, char** argv, FastoObject* o
   DBConnection* ssdb = static_cast<DBConnection*>(handler);
   common::Error er = ssdb->set(argv[0], argv[1]);
   if (!er) {
-    common::StringValue* val = common::Value::createStringValue("STORED");
+    common::StringValue* val = common::Value::createStringValue("OK");
     FastoObject* child = new FastoObject(out, val, ssdb->delimiter(), ssdb->nsSeparator());
     out->addChildren(child);
   }
@@ -949,7 +949,7 @@ common::Error setx(CommandHandler* handler, int argc, char** argv, FastoObject* 
   DBConnection* ssdb = static_cast<DBConnection*>(handler);
   common::Error er = ssdb->setx(argv[0], argv[1], common::ConvertFromString<int>(argv[2]));
   if (!er) {
-    common::StringValue* val = common::Value::createStringValue("STORED");
+    common::StringValue* val = common::Value::createStringValue("OK");
     FastoObject* child = new FastoObject(out, val, ssdb->delimiter(), ssdb->nsSeparator());
     out->addChildren(child);
   }
@@ -963,7 +963,7 @@ common::Error del(CommandHandler* handler, int argc, char** argv, FastoObject* o
   DBConnection* ssdb = static_cast<DBConnection*>(handler);
   common::Error er = ssdb->del(argv[0]);
   if (!er) {
-    common::StringValue* val = common::Value::createStringValue("DELETED");
+    common::StringValue* val = common::Value::createStringValue("OK");
     FastoObject* child = new FastoObject(out, val, ssdb->delimiter(), ssdb->nsSeparator());
     out->addChildren(child);
   }
@@ -1074,7 +1074,7 @@ common::Error multi_set(CommandHandler* handler, int argc, char** argv, FastoObj
 
   common::Error er = ssdb->multi_set(keysset);
   if (!er) {
-    common::StringValue* val = common::Value::createStringValue("STORED");
+    common::StringValue* val = common::Value::createStringValue("OK");
     FastoObject* child = new FastoObject(out, val, ssdb->delimiter(), ssdb->nsSeparator());
     out->addChildren(child);
   }
@@ -1091,7 +1091,7 @@ common::Error multi_del(CommandHandler* handler, int argc, char** argv, FastoObj
 
   common::Error er = ssdb->multi_del(keysget);
   if (!er) {
-    common::StringValue* val = common::Value::createStringValue("DELETED");
+    common::StringValue* val = common::Value::createStringValue("OK");
     FastoObject* child = new FastoObject(out, val, ssdb->delimiter(), ssdb->nsSeparator());
     out->addChildren(child);
   }
@@ -1139,7 +1139,7 @@ common::Error hset(CommandHandler* handler, int argc, char** argv, FastoObject* 
   DBConnection* ssdb = static_cast<DBConnection*>(handler);
   common::Error er = ssdb->hset(argv[0], argv[1], argv[2]);
   if (!er) {
-    common::StringValue* val = common::Value::createStringValue("STORED");
+    common::StringValue* val = common::Value::createStringValue("OK");
     FastoObject* child = new FastoObject(out, val, ssdb->delimiter(), ssdb->nsSeparator());
     out->addChildren(child);
   }
@@ -1153,7 +1153,7 @@ common::Error hdel(CommandHandler* handler, int argc, char** argv, FastoObject* 
   DBConnection* ssdb = static_cast<DBConnection*>(handler);
   common::Error er = ssdb->hdel(argv[0], argv[1]);
   if (!er) {
-     common::StringValue* val = common::Value::createStringValue("DELETED");
+     common::StringValue* val = common::Value::createStringValue("OK");
      FastoObject* child = new FastoObject(out, val, ssdb->delimiter(), ssdb->nsSeparator());
      out->addChildren(child);
   }
@@ -1294,7 +1294,7 @@ common::Error multi_hset(CommandHandler* handler, int argc, char** argv, FastoOb
 
   common::Error er = ssdb->multi_hset(argv[0], keys);
   if (!er) {
-    common::StringValue* val = common::Value::createStringValue("STORED");
+    common::StringValue* val = common::Value::createStringValue("OK");
     FastoObject* child = new FastoObject(out, val, ssdb->delimiter(), ssdb->nsSeparator());
     out->addChildren(child);
   }
@@ -1323,7 +1323,7 @@ common::Error zset(CommandHandler* handler, int argc, char** argv, FastoObject* 
   DBConnection* ssdb = static_cast<DBConnection*>(handler);
   common::Error er = ssdb->zset(argv[0], argv[1], atoll(argv[2]));
   if (!er) {
-    common::StringValue* val = common::Value::createStringValue("STORED");
+    common::StringValue* val = common::Value::createStringValue("OK");
     FastoObject* child = new FastoObject(out, val, ssdb->delimiter(), ssdb->nsSeparator());
     out->addChildren(child);
   }
@@ -1337,7 +1337,7 @@ common::Error zdel(CommandHandler* handler, int argc, char** argv, FastoObject* 
   DBConnection* ssdb = static_cast<DBConnection*>(handler);
   common::Error er = ssdb->zdel(argv[0], argv[1]);
   if (!er) {
-      common::StringValue* val = common::Value::createStringValue("DELETED");
+      common::StringValue* val = common::Value::createStringValue("OK");
       FastoObject* child = new FastoObject(out, val, ssdb->delimiter(), ssdb->nsSeparator());
       out->addChildren(child);
   }
@@ -1551,7 +1551,7 @@ common::Error multi_zset(CommandHandler* handler, int argc, char** argv, FastoOb
 
   common::Error er = ssdb->multi_zset(argv[0], keysget);
   if (!er) {
-    common::StringValue* val = common::Value::createStringValue("STORED");
+    common::StringValue* val = common::Value::createStringValue("OK");
     FastoObject* child = new FastoObject(out, val, ssdb->delimiter(), ssdb->nsSeparator());
     out->addChildren(child);
   }
@@ -1568,7 +1568,7 @@ common::Error multi_zdel(CommandHandler* handler, int argc, char** argv, FastoOb
 
   common::Error er = ssdb->multi_zdel(argv[0], keysget);
   if (!er) {
-    common::StringValue* val = common::Value::createStringValue("DELETED");
+    common::StringValue* val = common::Value::createStringValue("OK");
     FastoObject* child = new FastoObject(out, val, ssdb->delimiter(), ssdb->nsSeparator());
     out->addChildren(child);
   }
@@ -1582,7 +1582,7 @@ common::Error qpush(CommandHandler* handler, int argc, char** argv, FastoObject*
   DBConnection* ssdb = static_cast<DBConnection*>(handler);
   common::Error er = ssdb->qpush(argv[0], argv[1]);
   if (!er) {
-    common::StringValue* val = common::Value::createStringValue("STORED");
+    common::StringValue* val = common::Value::createStringValue("OK");
     FastoObject* child = new FastoObject(out, val, ssdb->delimiter(), ssdb->nsSeparator());
     out->addChildren(child);
   }

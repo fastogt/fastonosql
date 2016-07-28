@@ -393,7 +393,7 @@ common::Error set(CommandHandler* handler, int argc, char** argv, FastoObject* o
   DBConnection* rocks = static_cast<DBConnection*>(handler);
   common::Error er = rocks->set(argv[0], argv[1]);
   if (!er) {
-    common::StringValue* val = common::Value::createStringValue("STORED");
+    common::StringValue* val = common::Value::createStringValue("OK");
     FastoObject* child = new FastoObject(out, val, rocks->delimiter(), rocks->nsSeparator());
     out->addChildren(child);
   }
@@ -444,7 +444,7 @@ common::Error merge(CommandHandler* handler, int argc, char** argv, FastoObject*
   DBConnection* rocks = static_cast<DBConnection*>(handler);
   common::Error er = rocks->merge(argv[0], argv[1]);
   if (!er) {
-    common::StringValue* val = common::Value::createStringValue("STORED");
+    common::StringValue* val = common::Value::createStringValue("OK");
     FastoObject* child = new FastoObject(out, val, rocks->delimiter(), rocks->nsSeparator());
     out->addChildren(child);
   }
@@ -458,7 +458,7 @@ common::Error del(CommandHandler* handler, int argc, char** argv, FastoObject* o
   DBConnection* rocks = static_cast<DBConnection*>(handler);
   common::Error er = rocks->del(argv[0]);
   if (!er) {
-    common::StringValue* val = common::Value::createStringValue("DELETED");
+    common::StringValue* val = common::Value::createStringValue("OK");
     FastoObject* child = new FastoObject(out, val, rocks->delimiter(), rocks->nsSeparator());
     out->addChildren(child);
   }

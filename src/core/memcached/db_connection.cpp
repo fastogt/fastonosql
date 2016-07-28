@@ -495,7 +495,7 @@ common::Error set(CommandHandler* handler, int argc, char** argv, FastoObject* o
   DBConnection* mem = static_cast<DBConnection*>(handler);
   common::Error er = mem->set(argv[0], argv[3], common::ConvertFromString<time_t>(argv[1]), common::ConvertFromString<uint32_t>(argv[2]));
   if (!er) {
-    common::StringValue* val = common::Value::createStringValue("STORED");
+    common::StringValue* val = common::Value::createStringValue("OK");
     FastoObject* child = new FastoObject(out, val, mem->delimiter(), mem->nsSeparator());
     out->addChildren(child);
   }
@@ -509,7 +509,7 @@ common::Error add(CommandHandler* handler, int argc, char** argv, FastoObject* o
   DBConnection* mem = static_cast<DBConnection*>(handler);
   common::Error er = mem->add(argv[0], argv[3], common::ConvertFromString<time_t>(argv[1]), common::ConvertFromString<uint32_t>(argv[2]));
   if (!er) {
-    common::StringValue* val = common::Value::createStringValue("STORED");
+    common::StringValue* val = common::Value::createStringValue("OK");
     FastoObject* child = new FastoObject(out, val, mem->delimiter(), mem->nsSeparator());
     out->addChildren(child);
   }
@@ -523,7 +523,7 @@ common::Error replace(CommandHandler* handler, int argc, char** argv, FastoObjec
   DBConnection* mem = static_cast<DBConnection*>(handler);
   common::Error er = mem->replace(argv[0], argv[3], common::ConvertFromString<time_t>(argv[1]), common::ConvertFromString<uint32_t>(argv[2]));
   if (!er) {
-    common::StringValue* val = common::Value::createStringValue("STORED");
+    common::StringValue* val = common::Value::createStringValue("OK");
     FastoObject* child = new FastoObject(out, val, mem->delimiter(), mem->nsSeparator());
     out->addChildren(child);
   }
@@ -537,7 +537,7 @@ common::Error append(CommandHandler* handler, int argc, char** argv, FastoObject
   DBConnection* mem = static_cast<DBConnection*>(handler);
   common::Error er = mem->append(argv[0], argv[3], common::ConvertFromString<time_t>(argv[1]), common::ConvertFromString<uint32_t>(argv[2]));
   if (!er) {
-    common::StringValue* val = common::Value::createStringValue("STORED");
+    common::StringValue* val = common::Value::createStringValue("OK");
     FastoObject* child = new FastoObject(out, val, mem->delimiter(), mem->nsSeparator());
     out->addChildren(child);
   }
@@ -551,7 +551,7 @@ common::Error prepend(CommandHandler* handler, int argc, char** argv, FastoObjec
   DBConnection* mem = static_cast<DBConnection*>(handler);
   common::Error er = mem->prepend(argv[0], argv[3], common::ConvertFromString<time_t>(argv[1]), common::ConvertFromString<uint32_t>(argv[2]));
   if (!er) {
-    common::StringValue* val = common::Value::createStringValue("STORED");
+    common::StringValue* val = common::Value::createStringValue("OK");
     FastoObject* child = new FastoObject(out, val, mem->delimiter(), mem->nsSeparator());
     out->addChildren(child);
   }
@@ -565,7 +565,7 @@ common::Error incr(CommandHandler* handler, int argc, char** argv, FastoObject* 
   DBConnection* mem = static_cast<DBConnection*>(handler);
   common::Error er = mem->incr(argv[0], common::ConvertFromString<uint64_t>(argv[1]));
   if (!er) {
-    common::StringValue* val = common::Value::createStringValue("STORED");
+    common::StringValue* val = common::Value::createStringValue("OK");
     FastoObject* child = new FastoObject(out, val, mem->delimiter(), mem->nsSeparator());
     out->addChildren(child);
   }
@@ -579,7 +579,7 @@ common::Error decr(CommandHandler* handler, int argc, char** argv, FastoObject* 
   DBConnection* mem = static_cast<DBConnection*>(handler);
   common::Error er = mem->decr(argv[0], common::ConvertFromString<uint64_t>(argv[1]));
   if (!er) {
-    common::StringValue* val = common::Value::createStringValue("STORED");
+    common::StringValue* val = common::Value::createStringValue("OK");
     FastoObject* child = new FastoObject(out, val, mem->delimiter(), mem->nsSeparator());
     out->addChildren(child);
   }
@@ -591,7 +591,7 @@ common::Error del(CommandHandler* handler, int argc, char** argv, FastoObject* o
   DBConnection* mem = static_cast<DBConnection*>(handler);
   common::Error er = mem->del(argv[0], argc == 2 ? atoll(argv[1]) : 0);
   if (!er) {
-    common::StringValue* val = common::Value::createStringValue("DELETED");
+    common::StringValue* val = common::Value::createStringValue("OK");
     FastoObject* child = new FastoObject(out, val, mem->delimiter(), mem->nsSeparator());
     out->addChildren(child);
   }
@@ -603,7 +603,7 @@ common::Error flush_all(CommandHandler* handler, int argc, char** argv, FastoObj
   DBConnection* mem = static_cast<DBConnection*>(handler);
   common::Error er = mem->flush_all(argc == 1 ? common::ConvertFromString<time_t>(argv[0]) : 0);
   if (!er) {
-    common::StringValue* val = common::Value::createStringValue("STORED");
+    common::StringValue* val = common::Value::createStringValue("OK");
     FastoObject* child = new FastoObject(out, val, mem->delimiter(), mem->nsSeparator());
     out->addChildren(child);
   }
