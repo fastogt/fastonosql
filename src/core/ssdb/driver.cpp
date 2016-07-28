@@ -228,40 +228,43 @@ void Driver::handleExecuteEvent(events::ExecuteRequestEvent* ev) {
   QObject* sender = ev->sender();
   notifyProgress(sender, 0);
   events::ExecuteResponceEvent::value_type res(ev->value());
-  const char* inputLine = common::utils::c_strornull(res.text);
+  const std::string inputLine = res.text;
+  if (inputLine.empty()) {
+    res.setErrorInfo(common::make_error_value("Empty command line.", common::ErrorValue::E_ERROR));
+    reply(sender, new events::ExecuteResponceEvent(this, res));
+    notifyProgress(sender, 100);
+  }
 
-  if (inputLine) {
-    size_t length = strlen(inputLine);
-    int offset = 0;
-    RootLocker lock = make_locker(sender, inputLine);
-    FastoObjectIPtr obj = lock.root();
-    const double step = 100.0 / length;
-    for (size_t n = 0; n < length; ++n) {
-      if (isInterrupted()) {
-        res.setErrorInfo(common::make_error_value("Interrupted exec.",
-                                                  common::ErrorValue::E_INTERRUPTED,
-                                                  common::logging::L_WARNING));
+  size_t length = inputLine.length();
+  int offset = 0;
+  RootLocker lock = make_locker(sender, inputLine);
+  FastoObjectIPtr obj = lock.root();
+  const double step = 100.0 / length;
+  for (size_t i = 0; i < length; ++i) {
+    if (isInterrupted()) {
+      res.setErrorInfo(common::make_error_value("Interrupted exec.",
+                                                common::ErrorValue::E_INTERRUPTED,
+                                                common::logging::L_WARNING));
+      break;
+    }
+
+    if (inputLine[i] == '\n' || i == length - 1) {
+      notifyProgress(sender, step * i);
+      std::string command;
+      if (i == length - 1) {
+        command = inputLine.substr(offset);
+      } else {
+        command = inputLine.substr(offset, i - offset);
+      }
+
+      offset = i + 1;
+      FastoObjectCommand* cmd = createCommand<Command>(obj, command, common::Value::C_USER);
+      common::Error er = execute(cmd);
+      if (er && er->isError()) {
+        res.setErrorInfo(er);
         break;
       }
-      if (inputLine[n] == '\n' || n == length - 1) {
-        notifyProgress(sender, step * n);
-        char command[128] = {0};
-        if (n == length - 1) {
-          common::strlcpy(command, inputLine + offset, sizeof(command));
-        } else {
-          strncpy(command, inputLine + offset, n - offset);
-        }
-        offset = n + 1;
-        FastoObjectCommand* cmd = createCommand<Command>(obj, command, common::Value::C_USER);
-        common::Error er = execute(cmd);
-        if (er && er->isError()) {
-          res.setErrorInfo(er);
-          break;
-        }
-      }
     }
-  } else {
-    res.setErrorInfo(common::make_error_value("Empty command line.", common::ErrorValue::E_ERROR));
   }
 
   reply(sender, new events::ExecuteResponceEvent(this, res));

@@ -118,7 +118,7 @@ common::Error IDriver::execute(FastoObjectCommand* cmd) {
   }
 
   common::CommandValue* icmd = cmd->cmd();
-  std::string command = icmd->inputCommand();
+  const std::string command = icmd->inputCommand();
   const char* ccommand = common::utils::c_strornull(command);
   if (!ccommand) {
     return common::make_error_value("Invalid input argument(s)", common::ErrorValue::E_ERROR);
@@ -127,14 +127,13 @@ common::Error IDriver::execute(FastoObjectCommand* cmd) {
   LOG_COMMAND(type(), Command(icmd));
   int argc;
   sds* argv = sdssplitargs(ccommand, &argc);
-
-  if (argv) {
-    common::Error err = executeImpl(argc, argv, cmd);
-    sdsfreesplitres(argv, argc);
-    return err;
+  if (!argv) {
+    return common::make_error_value("Invalid input argument(s)", common::ErrorValue::E_ERROR);
   }
 
-  return common::make_error_value("Invalid input argument(s)", common::ErrorValue::E_ERROR);
+  common::Error err = executeImpl(argc, argv, cmd);
+  sdsfreesplitres(argv, argc);
+  return err;
 }
 
 IDriver::IDriver(IConnectionSettingsBaseSPtr settings)
