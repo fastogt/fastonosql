@@ -31,7 +31,7 @@ enum ConfigType {
   REMOTE
 };
 
-// -d
+// -d -ns
 template<ConfigType ctype>
 struct BaseConfig {
   BaseConfig()
@@ -46,7 +46,7 @@ struct BaseConfig {
   std::string ns_separator;
 };
 
-// -f -d
+// -f -d -ns
 struct LocalConfig
     : public BaseConfig<LOCAL> {
   explicit LocalConfig(const std::string& dbname);
@@ -56,7 +56,7 @@ struct LocalConfig
   std::string dbname;
 };
 
-// -h -p -d
+// -h -p -d -ns
 struct RemoteConfig
     : public BaseConfig<REMOTE> {
   explicit RemoteConfig(const common::net::HostAndPort& host);

@@ -34,10 +34,14 @@ struct KeysHolder {
   const std::string key_end;
   const uint64_t limit;
   std::vector<std::string>* r;
-  memcached_return_t addKey(const char *key, size_t key_length) {
-    std::string received_key(key, key_length);
-    if (r->size() < limit && key_start < received_key && received_key < key_end) {
-      r->push_back(received_key);
+  memcached_return_t addKey(const char* key, size_t key_length) {
+    if (r->size() < limit) {
+      std::string received_key(key, key_length);
+      if (key_start < received_key && key_end > received_key) {
+        r->push_back(received_key);
+        return MEMCACHED_SUCCESS;
+      }
+
       return MEMCACHED_SUCCESS;
     }
 
@@ -224,10 +228,10 @@ common::Error DBConnection::keys(const std::string& key_start, const std::string
   KeysHolder hld = {key_start, key_end, limit, ret};
   memcached_dump_fn func[1] = {0};
   func[0] = memcached_dump_callback;
-  memcached_return_t error = memcached_dump(connection_.handle_, func, &hld, SIZEOFMASS(func));
-  if (error == MEMCACHED_ERROR) {
+  memcached_return_t result = memcached_dump(connection_.handle_, func, &hld, SIZEOFMASS(func));
+  if (result == MEMCACHED_ERROR) {
     std::string buff = common::MemSPrintf("Keys function error: %s",
-                                          memcached_strerror(connection_.handle_, error));
+                                          memcached_strerror(connection_.handle_, result));
     return common::make_error_value(buff, common::ErrorValue::E_ERROR);
   }
 
