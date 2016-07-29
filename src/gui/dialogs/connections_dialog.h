@@ -37,8 +37,8 @@ class ConnectionsDialog
   Q_OBJECT
  public:
   enum {
-    min_height = 320,
-    min_width = 480
+    min_height = 480,
+    min_width = 640
   };
 
   explicit ConnectionsDialog(QWidget* parent = 0);

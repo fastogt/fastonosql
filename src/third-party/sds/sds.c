@@ -959,7 +959,7 @@ sds *sdssplitargswithspecsymbols(const char *line, int *argc) {
 
                       p++;
                       switch(*p) {
-                      case 'n': c = '\n'; break;
+                      //case 'n': c = '\n'; break;
                       case 'r': c = '\r'; break;
                       case 't': c = '\t'; break;
                       case 'b': c = '\b'; break;
@@ -996,7 +996,7 @@ sds *sdssplitargswithspecsymbols(const char *line, int *argc) {
               } else {
                   switch(*p) {
                   case ' ':
-                  case '\n':
+                  //case '\n':
                   case '\r':
                   case '\t':
                   case '\0':

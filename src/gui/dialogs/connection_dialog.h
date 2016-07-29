@@ -39,6 +39,10 @@ class ConnectionDialog
   : public QDialog {
   Q_OBJECT
  public:
+  enum {
+    fix_height = 240,
+    fix_width = 320
+  };
   ConnectionDialog(QWidget* parent, core::IConnectionSettingsBase* connection = nullptr,
                    const std::vector<core::connectionTypes>& availibleTypes = std::vector<core::connectionTypes>(),
                    const QString& connectionName = "New Connection");  // get ownerships connection

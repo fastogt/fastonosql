@@ -254,13 +254,13 @@ ConnectionDialog::ConnectionDialog(QWidget* parent, core::IConnectionSettingsBas
                  this, &ConnectionDialog::reject));
   bottomLayout->addWidget(buttonBox_);
 
-
   QVBoxLayout* mainLayout = new QVBoxLayout;
   mainLayout->addLayout(inputLayout);
   mainLayout->addWidget(useSshWidget_);
   mainLayout->addLayout(bottomLayout);
-  mainLayout->setSizeConstraint(QLayout::SetFixedSize);
   setLayout(mainLayout);
+
+  setFixedSize(QSize(fix_width, fix_height));
 
   // update controls
   sshSupportStateChange(useSsh_->checkState());
