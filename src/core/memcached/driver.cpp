@@ -30,7 +30,7 @@
 #include "core/memcached/db_connection.h"
 
 #define INFO_REQUEST "STATS"
-#define GET_KEYS "STATS ITEMS"
+#define GET_KEYS_PATTERN_1ARGS_I "KEYS a z %d"
 
 #define DELETE_KEY_PATTERN_1ARGS_S "DELETE %s"
 #define GET_KEY_PATTERN_1ARGS_S "GET %s"
@@ -209,9 +209,11 @@ void Driver::handleLoadDatabaseContentEvent(events::LoadDatabaseContentRequestEv
   QObject* sender = ev->sender();
   notifyProgress(sender, 0);
   events::LoadDatabaseContentResponceEvent::value_type res(ev->value());
-  FastoObjectIPtr root = FastoObject::createRoot(GET_KEYS);
+  std::string patternResult = common::MemSPrintf(GET_KEYS_PATTERN_1ARGS_I, res.count_keys);
+  FastoObjectIPtr root = FastoObject::createRoot(patternResult);
   notifyProgress(sender, 50);
-  FastoObjectCommand* cmd = createCommand<Command>(root, GET_KEYS, common::Value::C_INNER);
+  FastoObjectCommand* cmd = createCommand<Command>(root, patternResult,
+                                                            common::Value::C_INNER);
   common::Error er = execute(cmd);
   if (er && er->isError()) {
     res.setErrorInfo(er);
@@ -230,8 +232,7 @@ void Driver::handleLoadDatabaseContentEvent(events::LoadDatabaseContentRequestEv
 
       for (size_t i = 0; i < ar->size(); ++i) {
         std::string key;
-        bool isok = ar->getString(i, &key);
-        if (isok) {
+        if (ar->getString(i, &key)) {
           NKey k(key);
           NDbKValue ress(k, NValue());
           res.keys.push_back(ress);

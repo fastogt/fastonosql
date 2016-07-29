@@ -27,6 +27,36 @@
 #include "common/utils.h"
 #include "common/sprintf.h"
 
+namespace {
+
+struct KeysHolder {
+  const std::string key_start;
+  const std::string key_end;
+  const uint64_t limit;
+  std::vector<std::string>* r;
+  memcached_return_t addKey(const char *key, size_t key_length) {
+    std::string received_key(key, key_length);
+    if (r->size() <= limit && key_start < received_key && received_key < key_end) {
+      r->push_back(received_key);
+      return MEMCACHED_SUCCESS;
+    }
+
+    return MEMCACHED_SUCCESS;
+  }
+};
+
+memcached_return_t memcached_dump_callback(const memcached_st* ptr,
+                                                const char* key,
+                                                size_t key_length,
+                                                void* context) {
+  UNUSED(ptr);
+
+  KeysHolder* holder = static_cast<KeysHolder*>(context);
+  return holder->addKey(key, key_length);
+}
+
+}
+
 namespace fastonosql {
 namespace core {
 template<>
@@ -184,10 +214,24 @@ const char* DBConnection::versionApi() {
   return memcached_lib_version();
 }
 
-common::Error DBConnection::keys(const char* args) {
-  UNUSED(args);
+common::Error DBConnection::keys(const std::string& key_start, const std::string& key_end,
+                                 uint64_t limit, std::vector<std::string>* ret) {
+  if (!isConnected()) {
+    DNOTREACHED();
+    return common::make_error_value("Not connected", common::Value::E_ERROR);
+  }
 
-  return notSupported("KEYS");
+  KeysHolder hld = {key_start, key_end, limit, ret};
+  memcached_dump_fn func[1] = {0};
+  func[0] = memcached_dump_callback;
+  memcached_return_t error = memcached_dump(connection_.handle_, func, &hld, SIZEOFMASS(func));
+  if (error == MEMCACHED_ERROR) {
+    std::string buff = common::MemSPrintf("Keys function error: %s",
+                                          memcached_strerror(connection_.handle_, error));
+    return common::make_error_value(buff, common::ErrorValue::E_ERROR);
+  }
+
+  return common::Error();
 }
 
 common::Error DBConnection::info(const char* args, ServerInfo::Common* statsout) {
@@ -448,18 +492,32 @@ common::Error DBConnection::help(int argc, char** argv) {
 
 common::Error keys(CommandHandler* handler, int argc, char** argv, FastoObject* out) {
   UNUSED(argc);
-  UNUSED(argv);
-  UNUSED(out);
 
   DBConnection* mem = static_cast<DBConnection*>(handler);
-  return mem->keys("items");
+  std::vector<std::string> keysout;
+  common::Error er = mem->keys(argv[0], argv[1], atoll(argv[2]), &keysout);
+  if (!er) {
+    common::ArrayValue* ar = common::Value::createArrayValue();
+    for (size_t i = 0; i < keysout.size(); ++i) {
+      common::StringValue* val = common::Value::createStringValue(keysout[i]);
+      ar->append(val);
+    }
+    FastoObjectArray* child = new FastoObjectArray(out, ar, mem->delimiter(), mem->nsSeparator());
+    out->addChildren(child);
+  }
+
+  return er;
 }
 
 common::Error stats(CommandHandler* handler, int argc, char** argv, FastoObject* out) {
   DBConnection* mem = static_cast<DBConnection*>(handler);
   const char* args = argc == 1 ? argv[0] : nullptr;
   if (args && strcasecmp(args, "items") == 0) {
-    return mem->keys(args);
+    char* largv[3] = {0};
+    largv[0] = "a";
+    largv[1] = "z";
+    largv[2] = "100";
+    return keys(handler, SIZEOFMASS(argv), largv, out);
   }
 
   ServerInfo::Common statsout;

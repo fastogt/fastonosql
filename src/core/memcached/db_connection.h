@@ -56,7 +56,7 @@ struct DBConnection
   config_t config() const;
   static const char* versionApi();
 
-  common::Error keys(const char* args) WARN_UNUSED_RESULT;
+  common::Error keys(const std::string& key_start, const std::string& key_end, uint64_t limit, std::vector<std::string>* ret) WARN_UNUSED_RESULT;
   common::Error info(const char* args, ServerInfo::Common* statsout) WARN_UNUSED_RESULT;
   common::Error dbkcount(size_t* size) WARN_UNUSED_RESULT;
 
@@ -102,6 +102,9 @@ common::Error help(CommandHandler* handler, int argc, char** argv, FastoObject* 
 static const std::vector<CommandHolder> memcachedCommands = {
   CommandHolder("VERSION", "-",
               "Return the Memcached server version.", UNDEFINED_SINCE, UNDEFINED_EXAMPLE_STR, 0, 0, &version_server),
+  CommandHolder("KEYS", "<key_start> <key_end> <limit>",
+               "Find all keys matching the given limits.",
+               UNDEFINED_SINCE, UNDEFINED_EXAMPLE_STR, 3, 0, &keys),
   CommandHolder("STATS", "[<args>]",
               "These command can return various stats that we will explain.", UNDEFINED_SINCE, UNDEFINED_EXAMPLE_STR, 0, 1, &stats),
   CommandHolder("FLUSH_ALL", "[<time>]",
