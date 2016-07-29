@@ -321,7 +321,7 @@ common::Error DBConnection::keys(const std::string& key_start, const std::string
   ::rocksdb::Iterator* it = connection_.handle_->NewIterator(ro);  // keys(key_start, key_end, limit, ret);
   for (it->Seek(key_start); it->Valid() && it->key().ToString() < key_end; it->Next()) {
     std::string key = it->key().ToString();
-    if (ret->size() <= limit) {
+    if (ret->size() < limit) {
       ret->push_back(key);
     } else {
       break;

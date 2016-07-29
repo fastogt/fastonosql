@@ -36,12 +36,12 @@ struct KeysHolder {
   std::vector<std::string>* r;
   memcached_return_t addKey(const char *key, size_t key_length) {
     std::string received_key(key, key_length);
-    if (r->size() <= limit && key_start < received_key && received_key < key_end) {
+    if (r->size() < limit && key_start < received_key && received_key < key_end) {
       r->push_back(received_key);
       return MEMCACHED_SUCCESS;
     }
 
-    return MEMCACHED_SUCCESS;
+    return MEMCACHED_END;
   }
 };
 
