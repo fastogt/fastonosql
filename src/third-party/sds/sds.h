@@ -93,7 +93,7 @@ sds sdsfromlonglong(long long value);
 sds sdscatrepr(sds s, const char *p, size_t len);
 sds *sdssplitargs(const char *line, int *argc);
 #ifdef FASTO
-sds *sdssplitargswithspecsymbols(const char *line, int *argc);
+sds *sdssplitargslong(const char *line, int *argc);
 #endif
 sds sdsmapchars(sds s, const char *from, const char *to, size_t setlen);
 sds sdsjoin(char **argv, int argc, char *sep, size_t seplen);
