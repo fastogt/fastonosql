@@ -7,9 +7,6 @@
 [submodule "src/third-party/leveldb/src"]
 	path = src/third-party/leveldb/src
 	url = https://github.com/fastogt/leveldb
-[submodule "tests/gtest"]
-	path = tests/googletest
-	url = https://github.com/google/googletest.git
 [submodule "src/third-party/unqlite/src"]
 	path = src/third-party/unqlite/src
 	url = https://github.com/fastogt/unqlite.git
@@ -19,3 +16,6 @@
 [submodule "src/third-party/rocksdb/src"]
 	path = src/third-party/rocksdb/src
 	url = https://github.com/fastogt/rocksdb.git
+[submodule "tests/googletest"]
+	path = tests/googletest
+	url = https://github.com/google/googletest.git
