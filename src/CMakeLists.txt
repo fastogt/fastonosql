@@ -621,7 +621,7 @@ TARGET_BUNDLEFIX(${PROJECT_NAME} ${QT_LIBS_DIR})
 
 IF(DEVELOPER_ENABLE_TESTS)
 ########## PREPARE GTEST LIBRARY ##########
-  ADD_SUBDIRECTORY(${CMAKE_SOURCE_DIR}/tests/gtest gtest)
+  ADD_SUBDIRECTORY(${CMAKE_SOURCE_DIR}/tests/googletest/googletest googletest)
   INCLUDE_DIRECTORIES(${gtest_SOURCE_DIR}/include ${gtest_SOURCE_DIR})
 ########## PREPARE GTEST LIBRARY ##########
 
@@ -631,6 +631,7 @@ IF(DEVELOPER_ENABLE_TESTS)
     ${CMAKE_SOURCE_DIR}/tests/unit_test_common_strings.cpp
     ${CMAKE_SOURCE_DIR}/tests/unit_test_parsinng_command_line.cpp
     global/global.cpp
+    ${SOURCES_SDS}
   )
 
   TARGET_LINK_LIBRARIES(unit_tests gtest gtest_main fasto)

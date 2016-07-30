@@ -18,8 +18,6 @@
 
 #include "global/global.h"
 
-#include <QMetaType>
-
 #include "common/string_util.h"
 
 namespace fastonosql {

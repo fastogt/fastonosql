@@ -1,8 +1,8 @@
-#include "gtest/gtest.h"
+#include <gtest/gtest.h>
 
 #include "global/global.h"
 
-using namespace fastoredis;
+using namespace fastonosql;
 
 TEST(FastoObject, LifeTime)
 {
@@ -17,7 +17,7 @@ TEST(FastoObject, LifeTimeScope)
     common::StringValue* obj = common::Value::createStringValue("Sasha");
     {
         FastoObjectIPtr root = FastoObject::createRoot("root");
-        FastoObject* ptr(new FastoObject(root.get(), obj));
+        FastoObject* ptr = new FastoObject(root.get(), obj, "/n", ":");
         root->addChildren(ptr);
     }
 }

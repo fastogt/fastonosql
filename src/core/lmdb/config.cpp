@@ -96,7 +96,7 @@ std::string ConvertToString(const fastonosql::core::lmdb::Config& conf) {
 template<>
 fastonosql::core::lmdb::Config ConvertFromString(const std::string& line) {
   int argc = 0;
-  sds* argv = sdssplitargswithspecsymbols(line.c_str(), &argc);
+  sds* argv = sdssplitargslong(line.c_str(), &argc);
   if (argv) {
     auto cfg = fastonosql::core::lmdb::parseOptions(argc, argv);
     sdsfreesplitres(argv, argc);
