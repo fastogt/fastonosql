@@ -9,7 +9,7 @@
 	url = https://github.com/fastogt/leveldb
 [submodule "tests/gtest"]
 	path = tests/gtest
-	url = https://chromium.googlesource.com/external/googletest
+	url = https://github.com/google/googletest
 [submodule "src/third-party/unqlite/src"]
 	path = src/third-party/unqlite/src
 	url = https://github.com/fastogt/unqlite.git

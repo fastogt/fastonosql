@@ -626,9 +626,10 @@ IF(DEVELOPER_ENABLE_TESTS)
 ########## PREPARE GTEST LIBRARY ##########
 
   ADD_EXECUTABLE(unit_tests
-    ${CMAKE_SOURCE_DIR}/tests/test_fasto_objects.cpp
+    ${CMAKE_SOURCE_DIR}/tests/unit_test_fasto_objects.cpp
     ${CMAKE_SOURCE_DIR}/tests/unit_test_common_net.cpp
     ${CMAKE_SOURCE_DIR}/tests/unit_test_common_strings.cpp
+    ${CMAKE_SOURCE_DIR}/tests/unit_test_parsinng_command_line.cpp
     global/global.cpp
   )
 
