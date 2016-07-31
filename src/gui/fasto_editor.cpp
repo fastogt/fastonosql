@@ -158,9 +158,9 @@ void FastoEditor::keyPressEvent(QKeyEvent* keyEvent) {
     keyEvent->accept();
   } else if (keyEvent->key() == Qt::Key_Return && (keyEvent->modifiers() & Qt::ShiftModifier) &&
              isFocusScin && isShowFind) {
-        goToPrevElement();
+    goToPrevElement();
   } else if (keyEvent->key() == Qt::Key_Return && isFocusScin && isShowFind) {
-        goToNextElement();
+    goToNextElement();
   }
 
   QWidget::keyPressEvent(keyEvent);
@@ -461,7 +461,12 @@ void FastoEditorOutput::layoutChanged() {
     }
   }
 
-  editor_->setMode(view_method_ == HEX ? FastoHexEdit::HEX_MODE : FastoHexEdit::TEXT_MODE);
+  if (view_method_ == HEX) {
+    editor_->setMode(FastoHexEdit::HEX_MODE);
+  } else {
+    editor_->setMode(FastoHexEdit::TEXT_MODE);
+  }
+
   if (result.isEmpty()) {
     result = QString(translations::trCannotConvertPattern1ArgsS).arg(methodText);
     editor_->setReadOnly(true);

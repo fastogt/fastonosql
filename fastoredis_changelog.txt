@@ -1,5 +1,6 @@
 0.9.1 /
 [Alexandr Topilski]
+- Long size command fixes
 - Statitstics module
 
 0.9.0 / Jule 17, 2016

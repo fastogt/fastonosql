@@ -1,6 +1,7 @@
 0.7.1 /
 [Alexandr Topilski]
 - Statitstics module
+- Long size command fixes
 - [Memcached] content database and keys functionality
 
 0.7.0 / Jule 17, 2016

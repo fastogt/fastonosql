@@ -18,21 +18,22 @@
 
 #pragma once
 
-#include <QPlainTextEdit>
+#include <QTextEdit>
 #include <QByteArray>
 
 namespace fastonosql {
 namespace gui {
 
 class FastoHexEdit
-  : public QPlainTextEdit {
+  : public QTextEdit {
   Q_OBJECT
  public:
-  typedef QPlainTextEdit base_class;
+  typedef QTextEdit base_class;
   explicit FastoHexEdit(QWidget* parent = 0);
 
   enum DisplayMode {
     TEXT_MODE,
+    HTML_MODE,
     HEX_MODE
   };
 

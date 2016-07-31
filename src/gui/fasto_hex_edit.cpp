@@ -40,8 +40,10 @@ FastoHexEdit::FastoHexEdit(QWidget* parent)
 QString FastoHexEdit::text() const {
   if (mode_ == HEX_MODE) {
     return data_;
-  } else {
+  } else if(mode_ == TEXT_MODE) {
     return toPlainText();
+  } else if (mode_ == HTML_MODE) {
+    return toHtml();
   }
 }
 
@@ -55,8 +57,10 @@ void FastoHexEdit::setData(const QByteArray& arr) {
     verticalScrollBar()->setValue(0);
     data_ = arr;
     viewport()->update();
-  } else {
-    setPlainText(arr);
+  } else if(mode_ == TEXT_MODE) {
+    setText(arr);
+  } else if (mode_ == HTML_MODE) {
+    setHtml(arr);
   }
 }
 
