@@ -362,6 +362,6 @@ IServerInfoSPtr Driver::makeServerInfoFromString(const std::string& val) {
   return res;
 }
 
-}  // namesapce ssdb
+}  // namespace ssdb
 }  // namespace core
 }  // namespace fastonosql

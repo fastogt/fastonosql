@@ -250,10 +250,10 @@ common::Error DBConnection::set(const std::string& key, const std::string& value
 
   MDB_val mkey;
   mkey.mv_size = key.size();
-  mkey.mv_data = (void*)key.c_str();
+  mkey.mv_data = (void*)(key.c_str());
   MDB_val mval;
   mval.mv_size = value.size();
-  mval.mv_data = (void*)value.c_str();
+  mval.mv_data = (void*)(value.c_str());
 
   MDB_txn* txn = NULL;
   int rc = mdb_txn_begin(connection_.handle_->env, NULL, 0, &txn);
@@ -282,7 +282,7 @@ common::Error DBConnection::get(const std::string& key, std::string* ret_val) {
 
   MDB_val mkey;
   mkey.mv_size = key.size();
-  mkey.mv_data = (void*)key.c_str();
+  mkey.mv_data = (void*)(key.c_str());
   MDB_val mval;
 
   MDB_txn* txn = NULL;
@@ -297,8 +297,7 @@ common::Error DBConnection::get(const std::string& key, std::string* ret_val) {
     return common::make_error_value(buff, common::ErrorValue::E_ERROR);
   }
 
-  ret_val->assign((const char*)mval.mv_data, mval.mv_size);
-
+  ret_val->assign(reinterpret_cast<const char*>(mval.mv_data), mval.mv_size);
   return common::Error();
 }
 

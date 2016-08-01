@@ -39,8 +39,7 @@ IServer::IServer(IDriver* drv)
   : drv_(drv) {
   VERIFY(QObject::connect(drv_, &IDriver::addedChild, this, &IServer::addedChild));
   VERIFY(QObject::connect(drv_, &IDriver::itemUpdated, this, &IServer::itemUpdated));
-  VERIFY(QObject::connect(drv_, &IDriver::serverInfoSnapShoot,
-                          this, &IServer::serverInfoSnapShoot));
+  VERIFY(QObject::connect(drv_, &IDriver::serverInfoSnapShoot, this, &IServer::serverInfoSnapShoot));
   drv_->start();
 }
 
@@ -226,13 +225,12 @@ void IServer::changeProperty(const events_info::ChangeServerPropertyInfoRequest&
 }
 
 void IServer::customEvent(QEvent* event) {
-  using namespace events;
   QEvent::Type type = event->type();
-  if (type == static_cast<QEvent::Type>(ConnectResponceEvent::EventType)) {
-    ConnectResponceEvent* ev = static_cast<ConnectResponceEvent*>(event);
+  if (type == static_cast<QEvent::Type>(events::ConnectResponceEvent::EventType)) {
+    events::ConnectResponceEvent* ev = static_cast<events::ConnectResponceEvent*>(event);
     handleConnectEvent(ev);
 
-    ConnectResponceEvent::value_type v = ev->value();
+    events::ConnectResponceEvent::value_type v = ev->value();
     common::Error er(v.errorInfo());
     if (!er) {
       events_info::DiscoveryInfoRequest dreq(this);
@@ -241,74 +239,74 @@ void IServer::customEvent(QEvent* event) {
       events_info::ProcessConfigArgsInfoRequest preq(this);
       processConfigArgs(preq);
     }
-  } else if (type == static_cast<QEvent::Type>(EnterModeEvent::EventType)) {
-    EnterModeEvent* ev = static_cast<EnterModeEvent*>(event);
+  } else if (type == static_cast<QEvent::Type>(events::EnterModeEvent::EventType)) {
+    events::EnterModeEvent* ev = static_cast<events::EnterModeEvent*>(event);
     handleEnterModeEvent(ev);
-  } else if (type == static_cast<QEvent::Type>(LeaveModeEvent::EventType)) {
-    LeaveModeEvent* ev = static_cast<LeaveModeEvent*>(event);
+  } else if (type == static_cast<QEvent::Type>(events::LeaveModeEvent::EventType)) {
+    events::LeaveModeEvent* ev = static_cast<events::LeaveModeEvent*>(event);
     handleLeaveModeEvent(ev);
-  } else if (type == static_cast<QEvent::Type>(CommandRootCreatedEvent::EventType)) {
-    CommandRootCreatedEvent* ev = static_cast<CommandRootCreatedEvent*>(event);
-    CommandRootCreatedEvent::value_type v = ev->value();
+  } else if (type == static_cast<QEvent::Type>(events::CommandRootCreatedEvent::EventType)) {
+    events::CommandRootCreatedEvent* ev = static_cast<events::CommandRootCreatedEvent*>(event);
+    events::CommandRootCreatedEvent::value_type v = ev->value();
     emit rootCreated(v);
-  } else if (type == static_cast<QEvent::Type>(CommandRootCompleatedEvent::EventType)) {
-    CommandRootCompleatedEvent* ev = static_cast<CommandRootCompleatedEvent*>(event);
-    CommandRootCompleatedEvent::value_type v = ev->value();
+  } else if (type == static_cast<QEvent::Type>(events::CommandRootCompleatedEvent::EventType)) {
+    events::CommandRootCompleatedEvent* ev = static_cast<events::CommandRootCompleatedEvent*>(event);
+    events::CommandRootCompleatedEvent::value_type v = ev->value();
     emit rootCompleated(v);
-  } else if (type == static_cast<QEvent::Type>(DisconnectResponceEvent::EventType)) {
-    DisconnectResponceEvent* ev = static_cast<DisconnectResponceEvent*>(event);
+  } else if (type == static_cast<QEvent::Type>(events::DisconnectResponceEvent::EventType)) {
+    events::DisconnectResponceEvent* ev = static_cast<events::DisconnectResponceEvent*>(event);
     handleDisconnectEvent(ev);
-  } else if (type == static_cast<QEvent::Type>(LoadDatabasesInfoResponceEvent::EventType)) {
-    LoadDatabasesInfoResponceEvent* ev = static_cast<LoadDatabasesInfoResponceEvent*>(event);
+  } else if (type == static_cast<QEvent::Type>(events::LoadDatabasesInfoResponceEvent::EventType)) {
+    events::LoadDatabasesInfoResponceEvent* ev = static_cast<events::LoadDatabasesInfoResponceEvent*>(event);
     handleLoadDatabaseInfosEvent(ev);
-  } else if (type == static_cast<QEvent::Type>(ServerInfoResponceEvent::EventType)) {
-    ServerInfoResponceEvent* ev = static_cast<ServerInfoResponceEvent*>(event);
+  } else if (type == static_cast<QEvent::Type>(events::ServerInfoResponceEvent::EventType)) {
+    events::ServerInfoResponceEvent* ev = static_cast<events::ServerInfoResponceEvent*>(event);
     handleLoadServerInfoEvent(ev);
-  } else if (type == static_cast<QEvent::Type>(ServerInfoHistoryResponceEvent::EventType)) {
-    ServerInfoHistoryResponceEvent* ev = static_cast<ServerInfoHistoryResponceEvent*>(event);
+  } else if (type == static_cast<QEvent::Type>(events::ServerInfoHistoryResponceEvent::EventType)) {
+    events::ServerInfoHistoryResponceEvent* ev = static_cast<events::ServerInfoHistoryResponceEvent*>(event);
     handleLoadServerInfoHistoryEvent(ev);
-  } else if (type == static_cast<QEvent::Type>(ClearServerHistoryResponceEvent::EventType)) {
-    ClearServerHistoryResponceEvent* ev = static_cast<ClearServerHistoryResponceEvent*>(event);
+  } else if (type == static_cast<QEvent::Type>(events::ClearServerHistoryResponceEvent::EventType)) {
+    events::ClearServerHistoryResponceEvent* ev = static_cast<events::ClearServerHistoryResponceEvent*>(event);
     handleClearServerHistoryResponceEvent(ev);
-  } else if (type == static_cast<QEvent::Type>(ServerPropertyInfoResponceEvent::EventType)) {
-    ServerPropertyInfoResponceEvent* ev = static_cast<ServerPropertyInfoResponceEvent*>(event);
+  } else if (type == static_cast<QEvent::Type>(events::ServerPropertyInfoResponceEvent::EventType)) {
+    events::ServerPropertyInfoResponceEvent* ev = static_cast<events::ServerPropertyInfoResponceEvent*>(event);
     handleLoadServerPropertyEvent(ev);
-  } else if (type == static_cast<QEvent::Type>(ChangeServerPropertyInfoResponceEvent::EventType)) {
-    ChangeServerPropertyInfoResponceEvent* ev = static_cast<ChangeServerPropertyInfoResponceEvent*>(event);
+  } else if (type == static_cast<QEvent::Type>(events::ChangeServerPropertyInfoResponceEvent::EventType)) {
+    events::ChangeServerPropertyInfoResponceEvent* ev = static_cast<events::ChangeServerPropertyInfoResponceEvent*>(event);
     handleServerPropertyChangeEvent(ev);
-  } else if (type == static_cast<QEvent::Type>(BackupResponceEvent::EventType)) {
-    BackupResponceEvent* ev = static_cast<BackupResponceEvent*>(event);
+  } else if (type == static_cast<QEvent::Type>(events::BackupResponceEvent::EventType)) {
+    events::BackupResponceEvent* ev = static_cast<events::BackupResponceEvent*>(event);
     handleBackupEvent(ev);
-  } else if (type == static_cast<QEvent::Type>(ExportResponceEvent::EventType)) {
-    ExportResponceEvent* ev = static_cast<ExportResponceEvent*>(event);
+  } else if (type == static_cast<QEvent::Type>(events::ExportResponceEvent::EventType)) {
+    events::ExportResponceEvent* ev = static_cast<events::ExportResponceEvent*>(event);
     handleExportEvent(ev);
-  } else if (type == static_cast<QEvent::Type>(ChangePasswordResponceEvent::EventType)) {
-    ChangePasswordResponceEvent* ev = static_cast<ChangePasswordResponceEvent*>(event);
+  } else if (type == static_cast<QEvent::Type>(events::ChangePasswordResponceEvent::EventType)) {
+    events::ChangePasswordResponceEvent* ev = static_cast<events::ChangePasswordResponceEvent*>(event);
     handleChangePasswordEvent(ev);
-  } else if (type == static_cast<QEvent::Type>(ChangeMaxConnectionResponceEvent::EventType)) {
-    ChangeMaxConnectionResponceEvent* ev = static_cast<ChangeMaxConnectionResponceEvent*>(event);
+  } else if (type == static_cast<QEvent::Type>(events::ChangeMaxConnectionResponceEvent::EventType)) {
+    events::ChangeMaxConnectionResponceEvent* ev = static_cast<events::ChangeMaxConnectionResponceEvent*>(event);
     handleChangeMaxConnection(ev);
-  } else if (type == static_cast<QEvent::Type>(LoadDatabaseContentResponceEvent::EventType)) {
-    LoadDatabaseContentResponceEvent* ev = static_cast<LoadDatabaseContentResponceEvent*>(event);
+  } else if (type == static_cast<QEvent::Type>(events::LoadDatabaseContentResponceEvent::EventType)) {
+    events::LoadDatabaseContentResponceEvent* ev = static_cast<events::LoadDatabaseContentResponceEvent*>(event);
     handleLoadDatabaseContentEvent(ev);
-  } else if (type == static_cast<QEvent::Type>(ClearDatabaseResponceEvent::EventType)) {
-    ClearDatabaseResponceEvent* ev = static_cast<ClearDatabaseResponceEvent*>(event);
+  } else if (type == static_cast<QEvent::Type>(events::ClearDatabaseResponceEvent::EventType)) {
+    events::ClearDatabaseResponceEvent* ev = static_cast<events::ClearDatabaseResponceEvent*>(event);
     handleClearDatabaseResponceEvent(ev);
-  } else if (type == static_cast<QEvent::Type>(SetDefaultDatabaseResponceEvent::EventType)) {
-    SetDefaultDatabaseResponceEvent* ev = static_cast<SetDefaultDatabaseResponceEvent*>(event);
+  } else if (type == static_cast<QEvent::Type>(events::SetDefaultDatabaseResponceEvent::EventType)) {
+    events::SetDefaultDatabaseResponceEvent* ev = static_cast<events::SetDefaultDatabaseResponceEvent*>(event);
     handleSetDefaultDatabaseEvent(ev);
-  } else if (type == static_cast<QEvent::Type>(ExecuteResponceEvent::EventType)) {
-    ExecuteResponceEvent* ev = static_cast<ExecuteResponceEvent*>(event);
+  } else if (type == static_cast<QEvent::Type>(events::ExecuteResponceEvent::EventType)) {
+    events::ExecuteResponceEvent* ev = static_cast<events::ExecuteResponceEvent*>(event);
     handleExecuteResponceEvent(ev);
-  } else if (type == static_cast<QEvent::Type>(CommandResponceEvent::EventType)) {
-    CommandResponceEvent* ev = static_cast<CommandResponceEvent*>(event);
+  } else if (type == static_cast<QEvent::Type>(events::CommandResponceEvent::EventType)) {
+    events::CommandResponceEvent* ev = static_cast<events::CommandResponceEvent*>(event);
     handleCommandResponceEvent(ev);
-  } else if (type == static_cast<QEvent::Type>(DiscoveryInfoResponceEvent::EventType)) {
-    DiscoveryInfoResponceEvent* ev = static_cast<DiscoveryInfoResponceEvent*>(event);
+  } else if (type == static_cast<QEvent::Type>(events::DiscoveryInfoResponceEvent::EventType)) {
+    events::DiscoveryInfoResponceEvent* ev = static_cast<events::DiscoveryInfoResponceEvent*>(event);
     handleDiscoveryInfoResponceEvent(ev);
-  } else if (type == static_cast<QEvent::Type>(ProgressResponceEvent::EventType)) {
-    ProgressResponceEvent* ev = static_cast<ProgressResponceEvent*>(event);
-    ProgressResponceEvent::value_type v = ev->value();
+  } else if (type == static_cast<QEvent::Type>(events::ProgressResponceEvent::EventType)) {
+    events::ProgressResponceEvent* ev = static_cast<events::ProgressResponceEvent*>(event);
+    events::ProgressResponceEvent::value_type v = ev->value();
     emit progressChanged(v);
   }
 

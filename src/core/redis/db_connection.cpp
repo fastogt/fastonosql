@@ -765,7 +765,7 @@ common::Error DBConnection::sendSync(unsigned long long* payload) {
   /* Send the SYNC command. */
   ssize_t nwrite = 0;
   if (redisWriteFromBuffer(context_, "SYNC\r\n", &nwrite) == REDIS_ERR) {
-      return common::make_error_value("Error writing to master", common::ErrorValue::E_ERROR);
+    return common::make_error_value("Error writing to master", common::ErrorValue::E_ERROR);
   }
 
   /* Read $<payload>\r\n, making sure to read just up to "\n" */

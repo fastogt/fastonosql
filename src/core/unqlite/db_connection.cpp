@@ -93,7 +93,7 @@ std::string unqlite_strerror(int unqlite_error) {
 
 int unqlite_data_callback(const void* pData, unsigned int nDatalen, void* str) {
   std::string* out = static_cast<std::string*>(str);
-  out->assign((const char*)pData, nDatalen);
+  out->assign(reinterpret_cast<const char*>(pData), nDatalen);
   return UNQLITE_OK;
 }
 

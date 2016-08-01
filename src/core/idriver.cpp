@@ -242,66 +242,65 @@ void IDriver::clear() {
 }
 
 void IDriver::customEvent(QEvent* event) {
-  using namespace events;
   QEvent::Type type = event->type();
-  if (type == static_cast<QEvent::Type>(ConnectRequestEvent::EventType)) {
-    ConnectRequestEvent* ev = static_cast<ConnectRequestEvent*>(event);
+  if (type == static_cast<QEvent::Type>(events::ConnectRequestEvent::EventType)) {
+    events::ConnectRequestEvent* ev = static_cast<events::ConnectRequestEvent*>(event);
     handleConnectEvent(ev);
-  } else if (type == static_cast<QEvent::Type>(ShutDownRequestEvent::EventType)) {
-    ShutDownRequestEvent* ev = static_cast<ShutDownRequestEvent*>(event);
+  } else if (type == static_cast<QEvent::Type>(events::ShutDownRequestEvent::EventType)) {
+    events::ShutDownRequestEvent* ev = static_cast<events::ShutDownRequestEvent*>(event);
     handleShutdownEvent(ev);
-  } else if (type == static_cast<QEvent::Type>(ProcessConfigArgsRequestEvent::EventType)) {
-    ProcessConfigArgsRequestEvent* ev = static_cast<ProcessConfigArgsRequestEvent*>(event);
+  } else if (type == static_cast<QEvent::Type>(events::ProcessConfigArgsRequestEvent::EventType)) {
+    events::ProcessConfigArgsRequestEvent* ev = static_cast<events::ProcessConfigArgsRequestEvent*>(event);
     handleProcessCommandLineArgs(ev);
-  } else if (type == static_cast<QEvent::Type>(DisconnectRequestEvent::EventType)) {
-    DisconnectRequestEvent* ev = static_cast<DisconnectRequestEvent*>(event);
+  } else if (type == static_cast<QEvent::Type>(events::DisconnectRequestEvent::EventType)) {
+    events::DisconnectRequestEvent* ev = static_cast<events::DisconnectRequestEvent*>(event);
     handleDisconnectEvent(ev);
-  } else if (type == static_cast<QEvent::Type>(ExecuteRequestEvent::EventType)) {
-    ExecuteRequestEvent* ev = static_cast<ExecuteRequestEvent*>(event);
+  } else if (type == static_cast<QEvent::Type>(events::ExecuteRequestEvent::EventType)) {
+    events::ExecuteRequestEvent* ev = static_cast<events::ExecuteRequestEvent*>(event);
     handleExecuteEvent(ev);
-  } else if (type == static_cast<QEvent::Type>(LoadDatabasesInfoRequestEvent::EventType)) {
-    LoadDatabasesInfoRequestEvent* ev = static_cast<LoadDatabasesInfoRequestEvent*>(event);
+  } else if (type == static_cast<QEvent::Type>(events::LoadDatabasesInfoRequestEvent::EventType)) {
+    events::LoadDatabasesInfoRequestEvent* ev = static_cast<events::LoadDatabasesInfoRequestEvent*>(event);
     handleLoadDatabaseInfosEvent(ev);
-  } else if (type == static_cast<QEvent::Type>(ServerInfoRequestEvent::EventType)) {
-    ServerInfoRequestEvent* ev = static_cast<ServerInfoRequestEvent*>(event);
+  } else if (type == static_cast<QEvent::Type>(events::ServerInfoRequestEvent::EventType)) {
+    events::ServerInfoRequestEvent* ev = static_cast<events::ServerInfoRequestEvent*>(event);
     handleLoadServerInfoEvent(ev);
-  } else if (type == static_cast<QEvent::Type>(ServerInfoHistoryRequestEvent::EventType)) {
-    ServerInfoHistoryRequestEvent* ev = static_cast<ServerInfoHistoryRequestEvent*>(event);
+  } else if (type == static_cast<QEvent::Type>(events::ServerInfoHistoryRequestEvent::EventType)) {
+    events::ServerInfoHistoryRequestEvent* ev = static_cast<events::ServerInfoHistoryRequestEvent*>(event);
     handleLoadServerInfoHistoryEvent(ev);
-  } else if (type == static_cast<QEvent::Type>(ClearServerHistoryRequestEvent::EventType)) {
-    ClearServerHistoryRequestEvent* ev = static_cast<ClearServerHistoryRequestEvent*>(event);
+  } else if (type == static_cast<QEvent::Type>(events::ClearServerHistoryRequestEvent::EventType)) {
+    events::ClearServerHistoryRequestEvent* ev = static_cast<events::ClearServerHistoryRequestEvent*>(event);
     handleClearServerHistoryRequestEvent(ev);
-  } else if (type == static_cast<QEvent::Type>(ServerPropertyInfoRequestEvent::EventType)) {
-    ServerPropertyInfoRequestEvent* ev = static_cast<ServerPropertyInfoRequestEvent*>(event);
+  } else if (type == static_cast<QEvent::Type>(events::ServerPropertyInfoRequestEvent::EventType)) {
+    events::ServerPropertyInfoRequestEvent* ev = static_cast<events::ServerPropertyInfoRequestEvent*>(event);
     handleLoadServerPropertyEvent(ev);
-  } else if (type == static_cast<QEvent::Type>(ChangeServerPropertyInfoRequestEvent::EventType)) {
-    ChangeServerPropertyInfoRequestEvent* ev = static_cast<ChangeServerPropertyInfoRequestEvent*>(event);
+  } else if (type == static_cast<QEvent::Type>(events::ChangeServerPropertyInfoRequestEvent::EventType)) {
+    events::ChangeServerPropertyInfoRequestEvent* ev = static_cast<events::ChangeServerPropertyInfoRequestEvent*>(event);
     handleServerPropertyChangeEvent(ev);
-  } else if (type == static_cast<QEvent::Type>(BackupRequestEvent::EventType)) {
-    BackupRequestEvent* ev = static_cast<BackupRequestEvent*>(event);
+  } else if (type == static_cast<QEvent::Type>(events::BackupRequestEvent::EventType)) {
+    events::BackupRequestEvent* ev = static_cast<events::BackupRequestEvent*>(event);
     handleBackupEvent(ev);
-  } else if (type == static_cast<QEvent::Type>(ExportRequestEvent::EventType)) {
-    ExportRequestEvent* ev = static_cast<ExportRequestEvent*>(event);
+  } else if (type == static_cast<QEvent::Type>(events::ExportRequestEvent::EventType)) {
+    events::ExportRequestEvent* ev = static_cast<events::ExportRequestEvent*>(event);
     handleExportEvent(ev);
-  } else if (type == static_cast<QEvent::Type>(ChangePasswordRequestEvent::EventType)) {
-    ChangePasswordRequestEvent* ev = static_cast<ChangePasswordRequestEvent*>(event);
+  } else if (type == static_cast<QEvent::Type>(events::ChangePasswordRequestEvent::EventType)) {
+    events::ChangePasswordRequestEvent* ev = static_cast<events::ChangePasswordRequestEvent*>(event);
     handleChangePasswordEvent(ev);
-  } else if (type == static_cast<QEvent::Type>(ChangeMaxConnectionRequestEvent::EventType)) {
-    ChangeMaxConnectionRequestEvent* ev = static_cast<ChangeMaxConnectionRequestEvent*>(event);
+  } else if (type == static_cast<QEvent::Type>(events::ChangeMaxConnectionRequestEvent::EventType)) {
+    events::ChangeMaxConnectionRequestEvent* ev = static_cast<events::ChangeMaxConnectionRequestEvent*>(event);
     handleChangeMaxConnectionEvent(ev);
-  } else if (type == static_cast<QEvent::Type>(LoadDatabaseContentRequestEvent::EventType)) {
-    LoadDatabaseContentRequestEvent* ev = static_cast<LoadDatabaseContentRequestEvent*>(event);
+  } else if (type == static_cast<QEvent::Type>(events::LoadDatabaseContentRequestEvent::EventType)) {
+    events::LoadDatabaseContentRequestEvent* ev = static_cast<events::LoadDatabaseContentRequestEvent*>(event);
     handleLoadDatabaseContentEvent(ev);
-  } else if (type == static_cast<QEvent::Type>(ClearDatabaseRequestEvent::EventType)) {
-    ClearDatabaseRequestEvent* ev = static_cast<ClearDatabaseRequestEvent*>(event);
+  } else if (type == static_cast<QEvent::Type>(events::ClearDatabaseRequestEvent::EventType)) {
+    events::ClearDatabaseRequestEvent* ev = static_cast<events::ClearDatabaseRequestEvent*>(event);
     handleClearDatabaseEvent(ev);
-  } else if (type == static_cast<QEvent::Type>(SetDefaultDatabaseRequestEvent::EventType)) {
-    SetDefaultDatabaseRequestEvent* ev = static_cast<SetDefaultDatabaseRequestEvent*>(event);
+  } else if (type == static_cast<QEvent::Type>(events::SetDefaultDatabaseRequestEvent::EventType)) {
+    events::SetDefaultDatabaseRequestEvent* ev = static_cast<events::SetDefaultDatabaseRequestEvent*>(event);
     handleSetDefaultDatabaseEvent(ev);
-  } else if (type == static_cast<QEvent::Type>(CommandRequestEvent::EventType)) {
+  } else if (type == static_cast<QEvent::Type>(events::CommandRequestEvent::EventType)) {
     events::CommandRequestEvent* ev = static_cast<events::CommandRequestEvent*>(event);
     handleCommandRequestEvent(ev);
-  } else if (type == static_cast<QEvent::Type>(DiscoveryInfoRequestEvent::EventType)) {
+  } else if (type == static_cast<QEvent::Type>(events::DiscoveryInfoRequestEvent::EventType)) {
     events::DiscoveryInfoRequestEvent* ev = static_cast<events::DiscoveryInfoRequestEvent*>(event);
     handleDiscoveryInfoRequestEvent(ev);
   }

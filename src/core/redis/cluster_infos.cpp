@@ -115,7 +115,7 @@ common::Error makeServerCommonInfoFromLine(const std::string& line, ServerCommon
   return common::Error();
 }
 
-}
+}  // namespace
 
 common::Error makeDiscoveryClusterInfo(const common::net::HostAndPort& parentHost,
                                    const std::string& text,

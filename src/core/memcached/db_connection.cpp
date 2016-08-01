@@ -59,7 +59,7 @@ memcached_return_t memcached_dump_callback(const memcached_st* ptr,
   return holder->addKey(key, key_length);
 }
 
-}
+}  // namespace
 
 namespace fastonosql {
 namespace core {
@@ -249,7 +249,7 @@ common::Error DBConnection::info(const char* args, ServerInfo::Common* statsout)
   }
 
   memcached_return_t error;
-  memcached_stat_st* st = memcached_stat(connection_.handle_, (char*)args, &error);
+  memcached_stat_st* st = memcached_stat(connection_.handle_, const_cast<char*>(args), &error);
   if (error != MEMCACHED_SUCCESS) {
     std::string buff = common::MemSPrintf("Stats function error: %s",
                                           memcached_strerror(connection_.handle_, error));
