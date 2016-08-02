@@ -178,9 +178,8 @@ SentinelDialog::SentinelDialog(QWidget* parent, core::ISentinelSettingsBase* con
   QHBoxLayout* bottomLayout = new QHBoxLayout;
   bottomLayout->addWidget(testButton_, 0, Qt::AlignLeft);
   bottomLayout->addWidget(discoveryButton_, 0, Qt::AlignLeft);
-  buttonBox_ = new QDialogButtonBox(this);
+  buttonBox_ = new QDialogButtonBox(QDialogButtonBox::Cancel | QDialogButtonBox::Save);
   buttonBox_->setOrientation(Qt::Horizontal);
-  buttonBox_->setStandardButtons(QDialogButtonBox::Cancel | QDialogButtonBox::Save);
   VERIFY(connect(buttonBox_, &QDialogButtonBox::accepted, this, &SentinelDialog::accept));
   VERIFY(connect(buttonBox_, &QDialogButtonBox::rejected, this, &SentinelDialog::reject));
   bottomLayout->addWidget(buttonBox_);

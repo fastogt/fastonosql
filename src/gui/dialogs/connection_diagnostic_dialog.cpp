@@ -84,9 +84,8 @@ ConnectionDiagnosticDialog::ConnectionDiagnosticDialog(QWidget* parent,
   mainLayout->addWidget(statusLabel_);
   mainLayout->addWidget(iconLabel_, 1, Qt::AlignCenter);
 
-  QDialogButtonBox* buttonBox = new QDialogButtonBox;
+  QDialogButtonBox* buttonBox = new QDialogButtonBox(QDialogButtonBox::Ok);
   buttonBox->setOrientation(Qt::Horizontal);
-  buttonBox->setStandardButtons(QDialogButtonBox::Ok);
   VERIFY(connect(buttonBox, &QDialogButtonBox::accepted,
                  this, &ConnectionDiagnosticDialog::accept));
 

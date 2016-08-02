@@ -107,9 +107,8 @@ DiscoveryClusterDiagnosticDialog::DiscoveryClusterDiagnosticDialog(QWidget* pare
   listWidget_->setEnabled(false);
   listWidget_->setToolTip(tr("Select items which you want add to cluster."));
 
-  QDialogButtonBox* buttonBox = new QDialogButtonBox;
+  QDialogButtonBox* buttonBox = new QDialogButtonBox(QDialogButtonBox::Ok);
   buttonBox->setOrientation(Qt::Horizontal);
-  buttonBox->setStandardButtons(QDialogButtonBox::Ok);
   VERIFY(connect(buttonBox, &QDialogButtonBox::accepted, this, &DiscoveryClusterDiagnosticDialog::accept));
 
   mainLayout->addWidget(buttonBox);

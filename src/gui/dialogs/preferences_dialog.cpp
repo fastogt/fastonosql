@@ -130,9 +130,8 @@ PreferencesDialog::PreferencesDialog(QWidget* parent)
   layout->addWidget(generalBox_);
   layout->addWidget(serverSettingsBox_);
 
-  QDialogButtonBox* buttonBox = new QDialogButtonBox;
+  QDialogButtonBox* buttonBox = new QDialogButtonBox(QDialogButtonBox::Cancel | QDialogButtonBox::Save);
   buttonBox->setOrientation(Qt::Horizontal);
-  buttonBox->setStandardButtons(QDialogButtonBox::Cancel | QDialogButtonBox::Save);
   VERIFY(connect(buttonBox, &QDialogButtonBox::accepted, this, &PreferencesDialog::accept));
   VERIFY(connect(buttonBox, &QDialogButtonBox::rejected, this, &PreferencesDialog::reject));
   layout->addWidget(buttonBox);

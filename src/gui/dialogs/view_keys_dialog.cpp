@@ -138,9 +138,8 @@ ViewKeysDialog::ViewKeysDialog(const QString& title, core::IDatabaseSPtr db, QWi
   keysTable_->setModel(keysModel_);
   keysTable_->setItemDelegateForColumn(KeyTableItem::kTTL, new NumericDelegate(this));
 
-  QDialogButtonBox* buttonBox = new QDialogButtonBox;
+  QDialogButtonBox* buttonBox = new QDialogButtonBox(QDialogButtonBox::Cancel | QDialogButtonBox::Ok);
   buttonBox->setOrientation(Qt::Horizontal);
-  buttonBox->setStandardButtons(QDialogButtonBox::Cancel | QDialogButtonBox::Ok);
   VERIFY(connect(buttonBox, &QDialogButtonBox::accepted, this, &ViewKeysDialog::accept));
   VERIFY(connect(buttonBox, &QDialogButtonBox::rejected, this, &ViewKeysDialog::reject));
   mainlayout->addLayout(searchLayout);

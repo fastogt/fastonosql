@@ -128,23 +128,24 @@ CreateDbKeyDialog::CreateDbKeyDialog(const QString& title, core::connectionTypes
   kvLayout->addWidget(removeItemButton_, 3, 1);
   removeItemButton_->setVisible(false);
 
-  generalBox_ = new QGroupBox;
+  generalBox_ = new QGroupBox(this);
   generalBox_->setLayout(kvLayout);
 
   // main layout
-  QVBoxLayout* layout = new QVBoxLayout(this);
+  QVBoxLayout* layout = new QVBoxLayout;
   layout->addWidget(generalBox_);
 
-  QDialogButtonBox* buttonBox = new QDialogButtonBox(this);
+  QDialogButtonBox* buttonBox = new QDialogButtonBox(QDialogButtonBox::Cancel | QDialogButtonBox::Ok);
   buttonBox->setOrientation(Qt::Horizontal);
-  buttonBox->setStandardButtons(QDialogButtonBox::Cancel | QDialogButtonBox::Ok);
   VERIFY(connect(buttonBox, &QDialogButtonBox::accepted, this, &CreateDbKeyDialog::accept));
   VERIFY(connect(buttonBox, &QDialogButtonBox::rejected, this, &CreateDbKeyDialog::reject));
   layout->addWidget(buttonBox);
 
   typesCombo_->setCurrentIndex(string_index);
+
   setMinimumSize(QSize(min_width, min_height));
   setLayout(layout);
+
   retranslateUi();
 }
 

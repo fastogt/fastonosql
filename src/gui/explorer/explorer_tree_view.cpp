@@ -777,10 +777,12 @@ void ExplorerTreeView::viewKeys() {
   }
 
   ExplorerDatabaseItem* node = common::utils_qt::item<fasto::qt::gui::TreeItem*, ExplorerDatabaseItem*>(sel);
-  if (node) {
-    ViewKeysDialog diag(trViewKeyTemplate_1S.arg(node->name()), node->db(), this);
-    diag.exec();
+  if (!node) {
+    return;
   }
+
+  ViewKeysDialog diag(trViewKeyTemplate_1S.arg(node->name()), node->db(), this);
+  diag.exec();
 }
 
 void ExplorerTreeView::getValue() {
@@ -790,9 +792,11 @@ void ExplorerTreeView::getValue() {
   }
 
   ExplorerKeyItem* node = common::utils_qt::item<fasto::qt::gui::TreeItem*, ExplorerKeyItem*>(sel);
-  if (node) {
-    node->loadValueFromDb();
+  if (!node) {
+    return;
   }
+
+  node->loadValueFromDb();
 }
 
 void ExplorerTreeView::deleteKey() {
@@ -802,9 +806,11 @@ void ExplorerTreeView::deleteKey() {
   }
 
   ExplorerKeyItem* node = common::utils_qt::item<fasto::qt::gui::TreeItem*, ExplorerKeyItem*>(sel);
-  if (node) {
-    node->removeFromDb();
+  if (!node) {
+    return;
   }
+
+  node->removeFromDb();
 }
 
 void ExplorerTreeView::startLoadDatabases(const core::events_info::LoadDatabasesInfoRequest& req) {

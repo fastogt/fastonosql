@@ -67,9 +67,8 @@ ChangePasswordServerDialog::ChangePasswordServerDialog(const QString& title,
   cpassLayout->addWidget(confPasswordLineEdit_);
   mainLayout->addLayout(cpassLayout);
 
-  QDialogButtonBox* buttonBox = new QDialogButtonBox;
+  QDialogButtonBox* buttonBox = new QDialogButtonBox(QDialogButtonBox::Cancel | QDialogButtonBox::Ok);
   buttonBox->setOrientation(Qt::Horizontal);
-  buttonBox->setStandardButtons(QDialogButtonBox::Cancel | QDialogButtonBox::Ok);
   VERIFY(connect(buttonBox, &QDialogButtonBox::accepted,
                  this, &ChangePasswordServerDialog::tryToCreatePassword));
   VERIFY(connect(buttonBox, &QDialogButtonBox::rejected,

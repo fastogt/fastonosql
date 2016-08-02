@@ -186,9 +186,8 @@ ClusterDialog::ClusterDialog(QWidget* parent, core::IClusterSettingsBase* connec
   QHBoxLayout* bottomLayout = new QHBoxLayout;
   bottomLayout->addWidget(testButton_, 0, Qt::AlignLeft);
   bottomLayout->addWidget(discoveryButton_, 0, Qt::AlignLeft);
-  buttonBox_ = new QDialogButtonBox(this);
+  buttonBox_ = new QDialogButtonBox(QDialogButtonBox::Cancel | QDialogButtonBox::Save);
   buttonBox_->setOrientation(Qt::Horizontal);
-  buttonBox_->setStandardButtons(QDialogButtonBox::Cancel | QDialogButtonBox::Save);
   VERIFY(connect(buttonBox_, &QDialogButtonBox::accepted, this, &ClusterDialog::accept));
   VERIFY(connect(buttonBox_, &QDialogButtonBox::rejected, this, &ClusterDialog::reject));
   bottomLayout->addWidget(buttonBox_);

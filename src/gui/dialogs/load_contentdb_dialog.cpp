@@ -44,9 +44,8 @@ LoadContentDbDialog::LoadContentDbDialog(const QString& title,
   : QDialog(parent), type_(type) {
   setWindowIcon(GuiFactory::instance().icon(type_));
   setWindowTitle(title);
-  QDialogButtonBox* buttonBox = new QDialogButtonBox(this);
+  QDialogButtonBox* buttonBox = new QDialogButtonBox(QDialogButtonBox::Cancel | QDialogButtonBox::Ok);
   buttonBox->setOrientation(Qt::Horizontal);
-  buttonBox->setStandardButtons(QDialogButtonBox::Cancel | QDialogButtonBox::Ok);
   VERIFY(connect(buttonBox, &QDialogButtonBox::accepted, this, &LoadContentDbDialog::accept));
   VERIFY(connect(buttonBox, &QDialogButtonBox::rejected, this, &LoadContentDbDialog::reject));
 

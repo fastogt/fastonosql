@@ -72,9 +72,8 @@ ConnectionsDialog::ConnectionsDialog(QWidget* parent)
   setMinimumSize(QSize(min_width, min_height));
   VERIFY(connect(listWidget_, &QTreeWidget::itemDoubleClicked, this, &ConnectionsDialog::accept));
 
-  QDialogButtonBox* buttonBox = new QDialogButtonBox(this);
+  QDialogButtonBox* buttonBox = new QDialogButtonBox(QDialogButtonBox::Cancel | QDialogButtonBox::Ok);
   buttonBox->setOrientation(Qt::Horizontal);
-  buttonBox->setStandardButtons(QDialogButtonBox::Cancel | QDialogButtonBox::Ok);
   buttonBox->button(QDialogButtonBox::Ok)->setIcon(GuiFactory::instance().serverIcon());
   acButton_ = buttonBox->button(QDialogButtonBox::Ok);
 

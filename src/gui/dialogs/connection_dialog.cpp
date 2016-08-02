@@ -245,9 +245,8 @@ ConnectionDialog::ConnectionDialog(QWidget* parent, core::IConnectionSettingsBas
 
   QHBoxLayout* bottomLayout = new QHBoxLayout;
   bottomLayout->addWidget(testButton_, 1, Qt::AlignLeft);
-  buttonBox_ = new QDialogButtonBox(this);
+  buttonBox_ = new QDialogButtonBox(QDialogButtonBox::Cancel | QDialogButtonBox::Save);
   buttonBox_->setOrientation(Qt::Horizontal);
-  buttonBox_->setStandardButtons(QDialogButtonBox::Cancel | QDialogButtonBox::Save);
   VERIFY(connect(buttonBox_, &QDialogButtonBox::accepted,
                  this, &ConnectionDialog::accept));
   VERIFY(connect(buttonBox_, &QDialogButtonBox::rejected,

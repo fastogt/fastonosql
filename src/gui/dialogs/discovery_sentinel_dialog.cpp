@@ -104,9 +104,8 @@ DiscoverySentinelDiagnosticDialog::DiscoverySentinelDiagnosticDialog(QWidget* pa
   listWidget_->setEnabled(false);
   listWidget_->setToolTip(tr("Select items which you want add to sentinel."));
 
-  QDialogButtonBox* buttonBox = new QDialogButtonBox;
+  QDialogButtonBox* buttonBox = new QDialogButtonBox(QDialogButtonBox::Ok);
   buttonBox->setOrientation(Qt::Horizontal);
-  buttonBox->setStandardButtons(QDialogButtonBox::Ok);
   VERIFY(connect(buttonBox, &QDialogButtonBox::accepted, this, &DiscoverySentinelDiagnosticDialog::accept));
 
   mainLayout->addWidget(buttonBox);

@@ -75,8 +75,8 @@ AboutDialog::AboutDialog(QWidget* parent)
   glayout->addWidget(logoLabel, 0, 0, 1, 1);
   glayout->addWidget(copyRightLabel, 0, 1, 4, 4);
   glayout->addWidget(buttonBox, 4, 0, 1, 5);
-  setLayout(glayout);
   glayout->setSizeConstraint(QLayout::SetFixedSize);
+  setLayout(glayout);
 }
 
 }  // namespace gui
