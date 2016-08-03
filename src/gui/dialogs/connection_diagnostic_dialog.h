@@ -58,8 +58,8 @@ class ConnectionDiagnosticDialog
   Q_OBJECT
  public:
   enum {
-    fix_height = 160,
-    fix_width = 240
+    min_height = 160,
+    min_width = 240
   };
 
   ConnectionDiagnosticDialog(QWidget* parent, core::IConnectionSettingsBaseSPtr connection);

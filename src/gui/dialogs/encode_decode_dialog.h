@@ -34,16 +34,15 @@ class EncodeDecodeDialog
   explicit EncodeDecodeDialog(QWidget* parent);
 
   enum {
-    height = 480,
-    width = 640
+    min_height = 480,
+    min_width = 640
   };
 
  protected:
   virtual void changeEvent(QEvent* ev);
-  virtual bool eventFilter(QObject* object, QEvent* event);
 
  private Q_SLOTS:
-  void decode();
+  void decodeOrEncode();
 
  private:
   void retranslateUi();

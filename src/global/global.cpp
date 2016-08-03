@@ -267,6 +267,10 @@ std::string ConvertToString(common::ArrayValue* array, const std::string& delemi
     return std::string();
   }
 
+  if (array->size() == 0) {
+    return "(empty list)";
+  }
+
   std::string result;
   auto lastIt = std::prev(array->end());
   for (auto it = array->begin(); it != array->end(); ++it) {
@@ -287,6 +291,10 @@ std::string ConvertToString(common::ArrayValue* array, const std::string& delemi
 std::string ConvertToString(common::SetValue* set, const std::string& delemitr) {
   if (!set) {
     return std::string();
+  }
+
+  if (set->size() == 0) {
+    return "(empty set)";
   }
 
   std::string result;
@@ -311,6 +319,10 @@ std::string ConvertToString(common::ZSetValue* zset, const std::string& delemitr
     return std::string();
   }
 
+  if (zset->size() == 0) {
+    return "(empty zset)";
+  }
+
   std::string result;
   auto lastIt = std::prev(zset->end());
   for (auto it = zset->begin(); it != zset->end(); ++it) {
@@ -332,6 +344,10 @@ std::string ConvertToString(common::ZSetValue* zset, const std::string& delemitr
 std::string ConvertToString(common::HashValue* hash, const std::string& delemitr) {
   if (!hash) {
     return std::string();
+  }
+
+  if (hash->size() == 0) {
+    return "(empty hash)";
   }
 
   std::string result;

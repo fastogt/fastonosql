@@ -57,7 +57,7 @@ EncodeDecodeDialog::EncodeDecodeDialog(QWidget* parent)
 
   QToolButton* decode = new QToolButton;
   decode->setIcon(GuiFactory::instance().executeIcon());
-  VERIFY(connect(decode, &QToolButton::clicked, this, &EncodeDecodeDialog::decode));
+  VERIFY(connect(decode, &QToolButton::clicked, this, &EncodeDecodeDialog::decodeOrEncode));
 
   decoders_ = new QComboBox;
   for (size_t i = 0; i < SIZEOFMASS(common::EDecoderTypes); ++i) {
@@ -81,33 +81,17 @@ EncodeDecodeDialog::EncodeDecodeDialog(QWidget* parent)
   toolBarLayout->addWidget(splitter);
 
   input_ = new FastoEditor;
-  input_->installEventFilter(this);
   output_ = new FastoEditor;
-  output_->installEventFilter(this);
 
   layout->addWidget(input_);
   layout->addLayout(toolBarLayout);
   layout->addWidget(output_);
   layout->addWidget(buttonBox);
 
-  setMinimumSize(QSize(width, height));
+  setMinimumSize(QSize(min_width, min_height));
   setLayout(layout);
 
   retranslateUi();
-}
-
-bool EncodeDecodeDialog::eventFilter(QObject* object, QEvent* event) {
-  if (object == output_ || object == input_) {
-    if (event->type() == QEvent::KeyPress) {
-      QKeyEvent* keyEvent = static_cast<QKeyEvent*>(event);
-      if (keyEvent->key() == Qt::Key_Escape) {
-        reject();
-        return true;
-      }
-    }
-  }
-
-  return QWidget::eventFilter(object, event);
 }
 
 void EncodeDecodeDialog::changeEvent(QEvent* e) {
@@ -118,7 +102,7 @@ void EncodeDecodeDialog::changeEvent(QEvent* e) {
   QWidget::changeEvent(e);
 }
 
-void EncodeDecodeDialog::decode() {
+void EncodeDecodeDialog::decodeOrEncode() {
   QString in = input_->text();
   if (in.isEmpty()) {
     return;

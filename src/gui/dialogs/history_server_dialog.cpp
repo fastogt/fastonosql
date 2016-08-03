@@ -82,6 +82,7 @@ ServerHistoryDialog::ServerHistoryDialog(core::IServerSPtr server, QWidget* pare
   settingsGraph_->setLayout(setingsLayout);
 
   splitter->addWidget(graphWidget_);
+  setMinimumSize(QSize(min_width, min_height));
   setLayout(mainL);
 
   glassWidget_ = new fasto::qt::gui::GlassWidget(GuiFactory::instance().pathToLoadingGif(),

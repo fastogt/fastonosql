@@ -90,7 +90,7 @@ ConnectionDiagnosticDialog::ConnectionDiagnosticDialog(QWidget* parent,
                  this, &ConnectionDiagnosticDialog::accept));
 
   mainLayout->addWidget(buttonBox);
-  setFixedSize(QSize(fix_width, fix_height));
+  setMinimumSize(QSize(min_width, min_height));
   setLayout(mainLayout);
 
   glassWidget_ = new fasto::qt::gui::GlassWidget(GuiFactory::instance().pathToLoadingGif(),
