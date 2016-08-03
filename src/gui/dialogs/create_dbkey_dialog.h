@@ -64,6 +64,7 @@ class CreateDbKeyDialog
   QLineEdit* keyEdit_;
   QComboBox* typesCombo_;
   QLineEdit* valueEdit_;
+  QComboBox* boolValueEdit_;
   QListWidget* valueListEdit_;
   QTableWidget* valueTableEdit_;
   QPushButton* addItemButton_;

@@ -3,6 +3,7 @@
 - Statitstics module
 - Long size command fixes
 - [Memcached] content database and keys functionality
+- [Memcached] DBKCOUNT function
 
 0.7.0 / Jule 17, 2016
 [Alexandr Topilski]

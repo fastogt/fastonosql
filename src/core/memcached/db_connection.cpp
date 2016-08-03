@@ -286,9 +286,24 @@ common::Error DBConnection::info(const char* args, ServerInfo::Common* statsout)
 }
 
 common::Error DBConnection::dbkcount(size_t* size) {
-  UNUSED(size);
+  if (!isConnected()) {
+    DNOTREACHED();
+    return common::make_error_value("Not connected", common::Value::E_ERROR);
+  }
 
-  return notSupported("DBKCOUNT");
+  if (!size) {
+    return common::make_error_value("Invalid input argument(s)", common::ErrorValue::E_ERROR);
+  }
+
+  std::vector<std::string> ret;
+  common::Error err = keys("a", "z", UINT64_MAX, &ret);
+  if (err && err->isError()) {
+    std::string buff = common::MemSPrintf("Couldn't determine DBKCOUNT error: %s", err->description());
+    return common::make_error_value(buff, common::ErrorValue::E_ERROR);
+  }
+
+  *size = ret.size();
+  return common::Error();
 }
 
 common::Error DBConnection::get(const std::string& key, std::string* ret_val) {
@@ -517,10 +532,7 @@ common::Error stats(CommandHandler* handler, int argc, char** argv, FastoObject*
   DBConnection* mem = static_cast<DBConnection*>(handler);
   const char* args = argc == 1 ? argv[0] : nullptr;
   if (args && strcasecmp(args, "items") == 0) {
-    char* largv[3] = {0};
-    largv[0] = "a";
-    largv[1] = "z";
-    largv[2] = "100";
+    char* largv[3] = {"a", "z", "100"};
     return keys(handler, SIZEOFMASS(argv), largv, out);
   }
 
