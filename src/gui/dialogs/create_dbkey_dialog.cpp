@@ -90,6 +90,12 @@ CreateDbKeyDialog::CreateDbKeyDialog(const QString& title, core::connectionTypes
   kvLayout->addWidget(valueEdit_, 2, 1);
   valueEdit_->setVisible(true);
 
+  boolValueEdit_ = new QComboBox;
+  boolValueEdit_->addItem("true");
+  boolValueEdit_->addItem("false");
+  kvLayout->addWidget(boolValueEdit_, 2, 1);
+  boolValueEdit_->setVisible(false);
+
   valueListEdit_ = new QListWidget;
   valueListEdit_->setContextMenuPolicy(Qt::ActionsContextMenu);
   valueListEdit_->setSelectionMode(QAbstractItemView::SingleSelection);
@@ -171,17 +177,20 @@ void CreateDbKeyDialog::typeChanged(int index) {
   if (type == common::Value::TYPE_ARRAY || type == common::Value::TYPE_SET) {
     valueListEdit_->setVisible(true);
     valueEdit_->setVisible(false);
+    boolValueEdit_->setVisible(false);
     valueTableEdit_->setVisible(false);
     addItemButton_->setVisible(true);
     removeItemButton_->setVisible(true);
   } else if (type == common::Value::TYPE_ZSET || type == common::Value::TYPE_HASH) {
     valueTableEdit_->setVisible(true);
     valueEdit_->setVisible(false);
+    boolValueEdit_->setVisible(false);
     valueListEdit_->setVisible(false);
     addItemButton_->setVisible(true);
     removeItemButton_->setVisible(true);
   } else {
     valueEdit_->setVisible(true);
+    boolValueEdit_->setVisible(false);
     valueListEdit_->setVisible(false);
     valueTableEdit_->setVisible(false);
     addItemButton_->setVisible(false);
@@ -189,8 +198,8 @@ void CreateDbKeyDialog::typeChanged(int index) {
     if (type == common::Value::TYPE_INTEGER || type == common::Value::TYPE_UINTEGER) {
       valueEdit_->setValidator(new QIntValidator(this));
     } else if (type == common::Value::TYPE_BOOLEAN) {
-      QRegExp rx("true|false");
-      valueEdit_->setValidator(new QRegExpValidator(rx, this));
+      boolValueEdit_->setVisible(true);
+      valueEdit_->setVisible(false);
     } else if (type == common::Value::TYPE_DOUBLE) {
       valueEdit_->setValidator(new QDoubleValidator(this));
     } else {
@@ -257,9 +266,10 @@ void CreateDbKeyDialog::addItem() {
       valueTableEdit_->setItem(0, 1, sitem);
     }
   } else if (valueEdit_->isVisible()) {
-    CHECK(t == common::Value::TYPE_BOOLEAN || t == common::Value::TYPE_DOUBLE ||
-          t == common::Value::TYPE_INTEGER || t == common::Value::TYPE_UINTEGER ||
-          t == common::Value::TYPE_STRING);
+    CHECK(t == common::Value::TYPE_STRING || t == common::Value::TYPE_DOUBLE ||
+          t == common::Value::TYPE_INTEGER || t == common::Value::TYPE_UINTEGER );
+  } else if (boolValueEdit_->isVisible()) {
+    CHECK(t == common::Value::TYPE_BOOLEAN);
   } else {
     NOTREACHED();
   }
@@ -360,6 +370,13 @@ common::Value* CreateDbKeyDialog::item() const {
     }
 
     return ar;
+  } else if (t == common::Value::TYPE_BOOLEAN) {
+    int index = boolValueEdit_->currentIndex();
+    if (index == -1) {
+      return nullptr;
+    }
+
+    return common::Value::createBooleanValue(index == 0 ? true : false);
   } else {
     QString text = valueEdit_->text();
     if (text.isEmpty()) {

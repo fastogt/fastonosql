@@ -135,6 +135,7 @@ PreferencesDialog::PreferencesDialog(QWidget* parent)
   VERIFY(connect(buttonBox, &QDialogButtonBox::accepted, this, &PreferencesDialog::accept));
   VERIFY(connect(buttonBox, &QDialogButtonBox::rejected, this, &PreferencesDialog::reject));
   layout->addWidget(buttonBox);
+
   setMinimumSize(QSize(min_width, min_height));
   setLayout(layout);
 

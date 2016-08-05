@@ -178,9 +178,9 @@ InfoServerDialog::InfoServerDialog(core::IServerSPtr server, QWidget* parent)
   QHBoxLayout* mainL = new QHBoxLayout;
   mainL->addWidget(serverTextInfo_);
   mainL->addWidget(hardwareTextInfo_);
-  setLayout(mainL);
 
   setMinimumSize(QSize(min_height, min_width));
+  setLayout(mainL);
 
   glassWidget_ = new fasto::qt::gui::GlassWidget(GuiFactory::instance().pathToLoadingGif(),
                                                  translations::trLoading, 0.5,

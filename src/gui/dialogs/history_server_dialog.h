@@ -44,6 +44,11 @@ class ServerHistoryDialog
  public:
   explicit ServerHistoryDialog(core::IServerSPtr server, QWidget* parent = 0);
 
+  enum {
+    min_height = 480,
+    min_width = 640
+  };
+
  private Q_SLOTS:
   void startLoadServerHistoryInfo(const core::events_info::ServerInfoHistoryRequest& req);
   void finishLoadServerHistoryInfo(const core::events_info::ServerInfoHistoryResponce& res);

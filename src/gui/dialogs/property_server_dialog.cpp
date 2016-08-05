@@ -51,6 +51,8 @@ PropertyServerDialog::PropertyServerDialog(core::IServerSPtr server, QWidget* pa
 
   QHBoxLayout* mainL = new QHBoxLayout;
   mainL->addWidget(propertyes_table_);
+
+  setMinimumSize(QSize(min_width, min_height));
   setLayout(mainL);
 
   glassWidget_ = new fasto::qt::gui::GlassWidget(GuiFactory::instance().pathToLoadingGif(),

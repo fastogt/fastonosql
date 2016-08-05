@@ -41,6 +41,10 @@ class PropertyServerDialog
   Q_OBJECT
  public:
   explicit PropertyServerDialog(core::IServerSPtr server, QWidget* parent = 0);
+  enum {
+    min_height = 200,
+    min_width = 240
+  };
 
  private Q_SLOTS:
   void startServerProperty(const core::events_info::ServerPropertyInfoRequest& req);

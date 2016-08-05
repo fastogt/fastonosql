@@ -565,7 +565,9 @@ void ExplorerTreeModel::addKey(core::IServer* server, core::IDataBaseInfoSPtr db
   CHECK(parent);
 
   ExplorerDatabaseItem* dbs = findDatabaseItem(parent, db);
-  CHECK(dbs);
+  if (!dbs) {
+    return;
+  }
 
   ExplorerKeyItem* keyit = findKeyItem(dbs, dbv);
   if (!keyit) {

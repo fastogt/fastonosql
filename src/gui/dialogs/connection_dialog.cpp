@@ -257,9 +257,8 @@ ConnectionDialog::ConnectionDialog(QWidget* parent, core::IConnectionSettingsBas
   mainLayout->addLayout(inputLayout);
   mainLayout->addWidget(useSshWidget_);
   mainLayout->addLayout(bottomLayout);
+  setMinimumSize(QSize(min_width, min_height));
   setLayout(mainLayout);
-
-  setFixedSize(QSize(fix_width, fix_height));
 
   // update controls
   sshSupportStateChange(useSsh_->checkState());
