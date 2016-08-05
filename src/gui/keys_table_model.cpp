@@ -41,7 +41,7 @@ QString KeyTableItem::typeText() const {
 
 core::ttl_t KeyTableItem::ttl() const {
   core::NKey key = key_.key();
-  return key.ttl_sec;
+  return key.ttl();
 }
 
 common::Value::Type KeyTableItem::type() const {

@@ -23,28 +23,42 @@
 
 #include "common/value.h"
 
+#define NO_TTL -1
+
 namespace fastonosql {
 namespace core {
 
 typedef int32_t ttl_t;
 
-struct KeyInfo {
+class KeyInfo {
+ public:
+  typedef std::vector<std::string> splited_namespaces_t;
+  KeyInfo(const splited_namespaces_t& splited_namespaces_and_key, const std::string& ns_separator);
+
   std::string key() const;
   bool hasNamespace() const;
   std::string nspace() const;
   std::string joinNamespace(size_t pos) const;
   size_t nspaceSize() const;
 
-  std::vector<std::string> splited_namespaces_and_key;
-  std::string ns_separator;
+ private:
+  splited_namespaces_t splited_namespaces_and_key_;
+  std::string ns_separator_;
 };
 
-struct NKey {
-  explicit NKey(const std::string& key, ttl_t ttl_sec = -1);
+class NKey {
+ public:
+  explicit NKey(const std::string& key, ttl_t ttl_sec = NO_TTL);
   KeyInfo info(const std::string& ns_separator) const;
 
-  std::string key;
-  ttl_t ttl_sec;
+  std::string key() const;
+
+  ttl_t ttl() const;
+  void setTTL(ttl_t ttl);
+
+ private:
+  std::string key_;
+  ttl_t ttl_;
 };
 
 typedef common::ValueSPtr NValue;

@@ -27,8 +27,12 @@
 namespace fastonosql {
 namespace core {
 
+KeyInfo::KeyInfo(const splited_namespaces_t& splited_namespaces_and_key, const std::string& ns_separator)
+  : splited_namespaces_and_key_(splited_namespaces_and_key), ns_separator_(ns_separator) {
+}
+
 std::string KeyInfo::key() const {
-  return common::JoinString(splited_namespaces_and_key, ns_separator);
+  return common::JoinString(splited_namespaces_and_key_, ns_separator_);
 }
 
 bool KeyInfo::hasNamespace() const {
@@ -37,15 +41,15 @@ bool KeyInfo::hasNamespace() const {
 }
 
 std::string KeyInfo::nspace() const {
-  return joinNamespace(splited_namespaces_and_key.size() - 1);
+  return joinNamespace(splited_namespaces_and_key_.size() - 1);
 }
 
 size_t KeyInfo::nspaceSize() const {
-  if (splited_namespaces_and_key.empty()) {
+  if (splited_namespaces_and_key_.empty()) {
     return 0;
   }
 
-  return splited_namespaces_and_key.size() - 1;
+  return splited_namespaces_and_key_.size() - 1;
 }
 
 std::string KeyInfo::joinNamespace(size_t pos) const {
@@ -53,22 +57,34 @@ std::string KeyInfo::joinNamespace(size_t pos) const {
   if (ns_size > pos) {
     std::vector<std::string> copy;
     for (size_t i = 0; i <= pos; ++i) {
-      copy.push_back(splited_namespaces_and_key[i]);
+      copy.push_back(splited_namespaces_and_key_[i]);
     }
-    return common::JoinString(copy, ns_separator);
+    return common::JoinString(copy, ns_separator_);
   }
 
   return std::string();
 }
 
 NKey::NKey(const std::string& key, ttl_t ttl_sec)
-  : key(key), ttl_sec(ttl_sec) {
+  : key_(key), ttl_(ttl_sec) {
 }
 
 KeyInfo NKey::info(const std::string& ns_separator) const {
-  std::vector<std::string> tokens;
-  common::Tokenize(key, ns_separator, &tokens);
-  return KeyInfo{tokens, ns_separator};
+  KeyInfo::splited_namespaces_t tokens;
+  common::Tokenize(key_, ns_separator, &tokens);
+  return KeyInfo(tokens, ns_separator);
+}
+
+std::string NKey::key() const {
+  return key_;
+}
+
+ttl_t NKey::ttl() const {
+  return ttl_;
+}
+
+void NKey::setTTL(ttl_t ttl) {
+  ttl_ = ttl;
 }
 
 NDbKValue::NDbKValue(const NKey& key, NValue value)
@@ -92,7 +108,7 @@ common::Value::Type NDbKValue::type() const {
 }
 
 void NDbKValue::setTTL(ttl_t ttl) {
-  key_.ttl_sec = ttl;
+  key_.setTTL(ttl);
 }
 
 void NDbKValue::setValue(NValue value) {
@@ -100,7 +116,7 @@ void NDbKValue::setValue(NValue value) {
 }
 
 std::string NDbKValue::keyString() const {
-  return key_.key;
+  return key_.key();
 }
 
 }  // namespace core
