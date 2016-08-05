@@ -48,8 +48,7 @@ std::vector<common::Value::Type> DBTraits<LEVELDB>::supportedTypes() {
             common::Value::TYPE_INTEGER,
             common::Value::TYPE_UINTEGER,
             common::Value::TYPE_DOUBLE,
-            common::Value::TYPE_STRING,
-            common::Value::TYPE_ARRAY
+            common::Value::TYPE_STRING
           };
 }
 

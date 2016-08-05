@@ -30,12 +30,12 @@
 #include "core/unqlite/command.h"
 #include "core/unqlite/db_connection.h"
 
-#define INFO_REQUEST "INFO"
-#define GET_KEY_PATTERN_1ARGS_S "GET %s"
-#define SET_KEY_PATTERN_2ARGS_SS "SET %s %s"
+#define UNQLITE_INFO_REQUEST "INFO"
+#define UNQLITE_GET_KEY_PATTERN_1ARGS_S "GET %s"
+#define UNQLITE_SET_KEY_PATTERN_2ARGS_SS "SET %s %s"
 
-#define GET_KEYS_PATTERN_1ARGS_I "KEYS a z %d"
-#define DELETE_KEY_PATTERN_1ARGS_S "DEL %s"
+#define UNQLITE_GET_KEYS_PATTERN_1ARGS_I "KEYS a z %d"
+#define UNQLITE_DELETE_KEY_PATTERN_1ARGS_S "DEL %s"
 
 namespace fastonosql {
 namespace core {
@@ -67,7 +67,7 @@ common::Error Driver::commandDeleteImpl(CommandDeleteKey* command,
 
   NDbKValue key = command->key();
   std::string key_str = key.keyString();
-  *cmdstring = common::MemSPrintf(DELETE_KEY_PATTERN_1ARGS_S, key_str);
+  *cmdstring = common::MemSPrintf(UNQLITE_DELETE_KEY_PATTERN_1ARGS_S, key_str);
   return common::Error();
 }
 
@@ -79,7 +79,7 @@ common::Error Driver::commandLoadImpl(CommandLoadKey* command,
 
   NDbKValue key = command->key();
   std::string key_str = key.keyString();
-  *cmdstring = common::MemSPrintf(GET_KEY_PATTERN_1ARGS_S, key_str);
+  *cmdstring = common::MemSPrintf(UNQLITE_GET_KEY_PATTERN_1ARGS_S, key_str);
   return common::Error();
 }
 
@@ -94,7 +94,7 @@ common::Error Driver::commandCreateImpl(CommandCreateKey* command,
   common::Value* rval = val.get();
   std::string key_str = key.keyString();
   std::string value_str = common::ConvertToString(rval, " ");
-  *cmdstring = common::MemSPrintf(SET_KEY_PATTERN_2ARGS_SS, key_str, value_str);
+  *cmdstring = common::MemSPrintf(UNQLITE_SET_KEY_PATTERN_2ARGS_SS, key_str, value_str);
   return common::Error();
 }
 
@@ -135,7 +135,7 @@ common::Error Driver::executeImpl(int argc, char** argv, FastoObject* out) {
 }
 
 common::Error Driver::serverInfo(IServerInfo** info) {
-  LOG_COMMAND(type(), fastonosql::Command(INFO_REQUEST, common::Value::C_INNER));
+  LOG_COMMAND(type(), fastonosql::Command(UNQLITE_INFO_REQUEST, common::Value::C_INNER));
   ServerInfo::Stats cm;
   common::Error err = impl_->info(nullptr, &cm);
   if (!err) {
@@ -263,7 +263,7 @@ void Driver::handleLoadDatabaseContentEvent(events::LoadDatabaseContentRequestEv
   QObject* sender = ev->sender();
   notifyProgress(sender, 0);
   events::LoadDatabaseContentResponceEvent::value_type res(ev->value());
-  std::string patternResult = common::MemSPrintf(GET_KEYS_PATTERN_1ARGS_I, res.count_keys);
+  std::string patternResult = common::MemSPrintf(UNQLITE_GET_KEYS_PATTERN_1ARGS_I, res.count_keys);
   FastoObjectIPtr root = FastoObject::createRoot(patternResult);
   notifyProgress(sender, 50);
   FastoObjectCommand* cmd = createCommand<Command>(root, patternResult,

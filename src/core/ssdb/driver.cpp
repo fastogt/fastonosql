@@ -31,21 +31,21 @@
 #include "core/ssdb/command.h"
 #include "core/ssdb/db_connection.h"
 
-#define INFO_REQUEST "INFO"
-#define GET_KEYS_PATTERN_1ARGS_I "KEYS a z %d"
-#define DELETE_KEY_PATTERN_1ARGS_S "DEL %s"
+#define SSDB_INFO_REQUEST "INFO"
+#define SSDB_GET_KEYS_PATTERN_1ARGS_I "KEYS a z %d"
+#define SSDB_DELETE_KEY_PATTERN_1ARGS_S "DEL %s"
 
-#define GET_KEY_PATTERN_1ARGS_S "GET %s"
-#define GET_KEY_LIST_PATTERN_1ARGS_S "LRANGE %s 0 -1"
-#define GET_KEY_SET_PATTERN_1ARGS_S "SMEMBERS %s"
-#define GET_KEY_ZSET_PATTERN_1ARGS_S "ZRANGE %s 0 -1"
-#define GET_KEY_HASH_PATTERN_1ARGS_S "HGET %s"
+#define SSDB_GET_KEY_PATTERN_1ARGS_S "GET %s"
+#define SSDB_GET_KEY_LIST_PATTERN_1ARGS_S "LRANGE %s 0 -1"
+#define SSDB_GET_KEY_SET_PATTERN_1ARGS_S "SMEMBERS %s"
+#define SSDB_GET_KEY_ZSET_PATTERN_1ARGS_S "ZRANGE %s 0 -1"
+#define SSDB_GET_KEY_HASH_PATTERN_1ARGS_S "HGET %s"
 
-#define SET_KEY_PATTERN_2ARGS_SS "SET %s %s"
-#define SET_KEY_LIST_PATTERN_2ARGS_SS "LPUSH %s %s"
-#define SET_KEY_SET_PATTERN_2ARGS_SS "SADD %s %s"
-#define SET_KEY_ZSET_PATTERN_2ARGS_SS "ZADD %s %s"
-#define SET_KEY_HASH_PATTERN_2ARGS_SS "HMSET %s %s"
+#define SSDB_SET_KEY_PATTERN_2ARGS_SS "SET %s %s"
+#define SSDB_SET_KEY_LIST_PATTERN_2ARGS_SS "LPUSH %s %s"
+#define SSDB_SET_KEY_SET_PATTERN_2ARGS_SS "SADD %s %s"
+#define SSDB_SET_KEY_ZSET_PATTERN_2ARGS_SS "ZADD %s %s"
+#define SSDB_SET_KEY_HASH_PATTERN_2ARGS_SS "HMSET %s %s"
 
 namespace fastonosql {
 namespace core {
@@ -77,7 +77,7 @@ common::Error Driver::commandDeleteImpl(CommandDeleteKey* command,
 
   NDbKValue key = command->key();
   std::string key_str = key.keyString();
-  *cmdstring = common::MemSPrintf(DELETE_KEY_PATTERN_1ARGS_S, key_str);
+  *cmdstring = common::MemSPrintf(SSDB_DELETE_KEY_PATTERN_1ARGS_S, key_str);
   return common::Error();
 }
 
@@ -91,15 +91,15 @@ common::Error Driver::commandLoadImpl(CommandLoadKey* command, std::string* cmds
   common::Value::Type t = key.type();
   std::string key_str = key.keyString();
   if (t == common::Value::TYPE_ARRAY) {
-    patternResult = common::MemSPrintf(GET_KEY_LIST_PATTERN_1ARGS_S, key_str);
+    patternResult = common::MemSPrintf(SSDB_GET_KEY_LIST_PATTERN_1ARGS_S, key_str);
   } else if (t == common::Value::TYPE_SET) {
-    patternResult = common::MemSPrintf(GET_KEY_SET_PATTERN_1ARGS_S, key_str);
+    patternResult = common::MemSPrintf(SSDB_GET_KEY_SET_PATTERN_1ARGS_S, key_str);
   } else if (t == common::Value::TYPE_ZSET) {
-    patternResult = common::MemSPrintf(GET_KEY_ZSET_PATTERN_1ARGS_S, key_str);
+    patternResult = common::MemSPrintf(SSDB_GET_KEY_ZSET_PATTERN_1ARGS_S, key_str);
   } else if (t == common::Value::TYPE_HASH) {
-    patternResult = common::MemSPrintf(GET_KEY_HASH_PATTERN_1ARGS_S, key_str);
+    patternResult = common::MemSPrintf(SSDB_GET_KEY_HASH_PATTERN_1ARGS_S, key_str);
   } else {
-    patternResult = common::MemSPrintf(GET_KEY_PATTERN_1ARGS_S, key_str);
+    patternResult = common::MemSPrintf(SSDB_GET_KEY_PATTERN_1ARGS_S, key_str);
   }
 
   *cmdstring = patternResult;
@@ -120,15 +120,15 @@ common::Error Driver::commandCreateImpl(CommandCreateKey* command,
   std::string value_str = common::ConvertToString(rval, " ");
   common::Value::Type t = key.type();
   if (t == common::Value::TYPE_ARRAY) {
-    patternResult = common::MemSPrintf(SET_KEY_LIST_PATTERN_2ARGS_SS, key_str, value_str);
+    patternResult = common::MemSPrintf(SSDB_SET_KEY_LIST_PATTERN_2ARGS_SS, key_str, value_str);
   } else if (t == common::Value::TYPE_SET) {
-    patternResult = common::MemSPrintf(SET_KEY_SET_PATTERN_2ARGS_SS, key_str, value_str);
+    patternResult = common::MemSPrintf(SSDB_SET_KEY_SET_PATTERN_2ARGS_SS, key_str, value_str);
   } else if (t == common::Value::TYPE_ZSET) {
-    patternResult = common::MemSPrintf(SET_KEY_ZSET_PATTERN_2ARGS_SS, key_str, value_str);
+    patternResult = common::MemSPrintf(SSDB_SET_KEY_ZSET_PATTERN_2ARGS_SS, key_str, value_str);
   } else if (t == common::Value::TYPE_HASH) {
-    patternResult = common::MemSPrintf(SET_KEY_HASH_PATTERN_2ARGS_SS, key_str, value_str);
+    patternResult = common::MemSPrintf(SSDB_SET_KEY_HASH_PATTERN_2ARGS_SS, key_str, value_str);
   } else {
-    patternResult = common::MemSPrintf(SET_KEY_PATTERN_2ARGS_SS, key_str, value_str);
+    patternResult = common::MemSPrintf(SSDB_SET_KEY_PATTERN_2ARGS_SS, key_str, value_str);
   }
 
   *cmdstring = patternResult;
@@ -171,7 +171,7 @@ common::Error Driver::executeImpl(int argc, char** argv, FastoObject* out) {
 }
 
 common::Error Driver::serverInfo(IServerInfo** info) {
-  LOG_COMMAND(type(), fastonosql::Command(INFO_REQUEST, common::Value::C_INNER));
+  LOG_COMMAND(type(), fastonosql::Command(SSDB_INFO_REQUEST, common::Value::C_INNER));
   ServerInfo::Common cm;
   common::Error err = impl_->info(nullptr, &cm);
   if (!err) {
@@ -300,7 +300,7 @@ void Driver::handleLoadDatabaseContentEvent(events::LoadDatabaseContentRequestEv
   QObject* sender = ev->sender();
   notifyProgress(sender, 0);
     events::LoadDatabaseContentResponceEvent::value_type res(ev->value());
-    std::string patternResult = common::MemSPrintf(GET_KEYS_PATTERN_1ARGS_I, res.count_keys);
+    std::string patternResult = common::MemSPrintf(SSDB_GET_KEYS_PATTERN_1ARGS_I, res.count_keys);
     FastoObjectIPtr root = FastoObject::createRoot(patternResult);
   notifyProgress(sender, 50);
     FastoObjectCommand* cmd = createCommand<Command>(root, patternResult,

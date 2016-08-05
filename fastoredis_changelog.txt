@@ -2,6 +2,7 @@
 [Alexandr Topilski]
 - Long size command fixes
 - Statitstics module
+- Ui bug fixes
 
 0.9.0 / Jule 17, 2016
 [Alexandr Topilski]

@@ -27,33 +27,33 @@
 #include "core/redis/database.h"
 #include "core/redis/command.h"
 
-#define SHUTDOWN "SHUTDOWN"
-#define BACKUP "SAVE"
-#define SET_PASSWORD_1ARGS_S "CONFIG SET requirepass %s"
-#define SET_MAX_CONNECTIONS_1ARGS_I "CONFIG SET maxclients %d"
-#define GET_DATABASES "CONFIG GET databases"
-#define GET_PROPERTY_SERVER "CONFIG GET *"
+#define REDIS_SHUTDOWN "SHUTDOWN"
+#define REDIS_BACKUP "SAVE"
+#define REDIS_SET_PASSWORD_1ARGS_S "CONFIG SET requirepass %s"
+#define REDIS_SET_MAX_CONNECTIONS_1ARGS_I "CONFIG SET maxclients %d"
+#define REDIS_GET_DATABASES "CONFIG GET databases"
+#define REDIS_GET_PROPERTY_SERVER "CONFIG GET *"
 
-#define GET_KEY_PATTERN_1ARGS_S "GET %s"
-#define GET_KEY_LIST_PATTERN_1ARGS_S "LRANGE %s 0 -1"
-#define GET_KEY_SET_PATTERN_1ARGS_S "SMEMBERS %s"
-#define GET_KEY_ZSET_PATTERN_1ARGS_S "ZRANGE %s 0 -1"
-#define GET_KEY_HASHM_PATTERN_1ARGS_S "HGETALL %s"
+#define REDIS_GET_KEY_PATTERN_1ARGS_S "GET %s"
+#define REDIS_GET_KEY_LIST_PATTERN_1ARGS_S "LRANGE %s 0 -1"
+#define REDIS_GET_KEY_SET_PATTERN_1ARGS_S "SMEMBERS %s"
+#define REDIS_GET_KEY_ZSET_PATTERN_1ARGS_S "ZRANGE %s 0 -1"
+#define REDIS_GET_KEY_HASHM_PATTERN_1ARGS_S "HGETALL %s"
 
-#define SET_KEY_PATTERN_2ARGS_SS "SET %s %s"
-#define SET_KEY_LIST_PATTERN_2ARGS_SS "LPUSH %s %s"
-#define SET_KEY_SET_PATTERN_2ARGS_SS "SADD %s %s"
-#define SET_KEY_ZSET_PATTERN_2ARGS_SS "ZADD %s %s"
-#define SET_KEY_HASHM_PATTERN_2ARGS_SS "HMSET %s %s"
+#define REDIS_SET_KEY_PATTERN_2ARGS_SS "SET %s %s"
+#define REDIS_SET_KEY_LIST_PATTERN_2ARGS_SS "LPUSH %s %s"
+#define REDIS_SET_KEY_SET_PATTERN_2ARGS_SS "SADD %s %s"
+#define REDIS_SET_KEY_ZSET_PATTERN_2ARGS_SS "ZADD %s %s"
+#define REDIS_SET_KEY_HASHM_PATTERN_2ARGS_SS "HMSET %s %s"
 
-#define GET_KEYS_PATTERN_3ARGS_ISI "SCAN %d MATCH %s COUNT %d"
+#define REDIS_GET_KEYS_PATTERN_3ARGS_ISI "SCAN %d MATCH %s COUNT %d"
 
-#define SET_DEFAULT_DATABASE_PATTERN_1ARGS_S "SELECT %s"
+#define REDIS_SET_DEFAULT_DATABASE_PATTERN_1ARGS_S "SELECT %s"
 #define REDIS_FLUSHDB "FLUSHDB"
 
-#define CHANGE_TTL_2ARGS_SI "EXPIRE %s %d"
-#define PERSIST_KEY_1ARGS_S "PERSIST %s"
-#define DELETE_KEY_PATTERN_1ARGS_S "DEL %s"
+#define REDIS_CHANGE_TTL_2ARGS_SI "EXPIRE %s %d"
+#define REDIS_PERSIST_KEY_1ARGS_S "PERSIST %s"
+#define REDIS_DELETE_KEY_PATTERN_1ARGS_S "DEL %s"
 
 namespace {
 
@@ -228,8 +228,8 @@ void Driver::handleShutdownEvent(events::ShutDownRequestEvent* ev) {
   notifyProgress(sender, 0);
   events::ShutDownResponceEvent::value_type res(ev->value());
   notifyProgress(sender, 25);
-  FastoObjectIPtr root = FastoObject::createRoot(SHUTDOWN);
-  FastoObjectCommand* cmd = createCommand<Command>(root, SHUTDOWN, common::Value::C_INNER);
+  FastoObjectIPtr root = FastoObject::createRoot(REDIS_SHUTDOWN);
+  FastoObjectCommand* cmd = createCommand<Command>(root, REDIS_SHUTDOWN, common::Value::C_INNER);
   common::Error er = execute(cmd);
   if (er && er->isError()) {
     res.setErrorInfo(er);
@@ -244,8 +244,8 @@ void Driver::handleBackupEvent(events::BackupRequestEvent* ev) {
   notifyProgress(sender, 0);
   events::BackupResponceEvent::value_type res(ev->value());
   notifyProgress(sender, 25);
-  FastoObjectIPtr root = FastoObject::createRoot(BACKUP);
-  FastoObjectCommand* cmd = createCommand<Command>(root, BACKUP, common::Value::C_INNER);
+  FastoObjectIPtr root = FastoObject::createRoot(REDIS_BACKUP);
+  FastoObjectCommand* cmd = createCommand<Command>(root, REDIS_BACKUP, common::Value::C_INNER);
   common::Error er = execute(cmd);
   if (er && er->isError()) {
     res.setErrorInfo(er);
@@ -279,7 +279,7 @@ void Driver::handleChangePasswordEvent(events::ChangePasswordRequestEvent* ev) {
   notifyProgress(sender, 0);
   events::ChangePasswordResponceEvent::value_type res(ev->value());
   notifyProgress(sender, 25);
-  std::string patternResult = common::MemSPrintf(SET_PASSWORD_1ARGS_S, res.new_password);
+  std::string patternResult = common::MemSPrintf(REDIS_SET_PASSWORD_1ARGS_S, res.new_password);
   FastoObjectIPtr root = FastoObject::createRoot(patternResult);
   FastoObjectCommand* cmd = createCommand<Command>(root, patternResult, common::Value::C_INNER);
   common::Error er = execute(cmd);
@@ -297,7 +297,7 @@ void Driver::handleChangeMaxConnectionEvent(events::ChangeMaxConnectionRequestEv
   notifyProgress(sender, 0);
   events::ChangeMaxConnectionResponceEvent::value_type res(ev->value());
   notifyProgress(sender, 25);
-  std::string patternResult = common::MemSPrintf(SET_MAX_CONNECTIONS_1ARGS_I, res.max_connection);
+  std::string patternResult = common::MemSPrintf(REDIS_SET_MAX_CONNECTIONS_1ARGS_I, res.max_connection);
   FastoObjectIPtr root = FastoObject::createRoot(patternResult);
   FastoObjectCommand* cmd = createCommand<Command>(root, patternResult, common::Value::C_INNER);
   common::Error er = execute(cmd);
@@ -533,9 +533,9 @@ void Driver::handleLoadDatabaseInfosEvent(events::LoadDatabasesInfoRequestEvent*
   QObject* sender = ev->sender();
   notifyProgress(sender, 0);
   events::LoadDatabasesInfoResponceEvent::value_type res(ev->value());
-  FastoObjectIPtr root = FastoObject::createRoot(GET_DATABASES);
+  FastoObjectIPtr root = FastoObject::createRoot(REDIS_GET_DATABASES);
   notifyProgress(sender, 50);
-  FastoObjectCommand* cmd = createCommand<Command>(root, GET_DATABASES,
+  FastoObjectCommand* cmd = createCommand<Command>(root, REDIS_GET_DATABASES,
                                                         common::Value::C_INNER);
   common::Error er = execute(cmd);
   if (er && er->isError()) {
@@ -586,7 +586,7 @@ void Driver::handleLoadDatabaseContentEvent(events::LoadDatabaseContentRequestEv
   QObject* sender = ev->sender();
   notifyProgress(sender, 0);
   events::LoadDatabaseContentResponceEvent::value_type res(ev->value());
-  std::string patternResult = common::MemSPrintf(GET_KEYS_PATTERN_3ARGS_ISI, res.cursor_in,
+  std::string patternResult = common::MemSPrintf(REDIS_GET_KEYS_PATTERN_3ARGS_ISI, res.cursor_in,
                                                  res.pattern, res.count_keys);
   FastoObjectIPtr root = FastoObject::createRoot(patternResult);
   notifyProgress(sender, 50);
@@ -707,7 +707,7 @@ void Driver::handleSetDefaultDatabaseEvent(events::SetDefaultDatabaseRequestEven
   QObject* sender = ev->sender();
   notifyProgress(sender, 0);
   events::SetDefaultDatabaseResponceEvent::value_type res(ev->value());
-  std::string setDefCommand = common::MemSPrintf(SET_DEFAULT_DATABASE_PATTERN_1ARGS_S,
+  std::string setDefCommand = common::MemSPrintf(REDIS_SET_DEFAULT_DATABASE_PATTERN_1ARGS_S,
                                                  res.inf->name());
   FastoObjectIPtr root = FastoObject::createRoot(setDefCommand);
   notifyProgress(sender, 50);
@@ -726,10 +726,9 @@ void Driver::handleLoadServerPropertyEvent(events::ServerPropertyInfoRequestEven
   QObject* sender = ev->sender();
   notifyProgress(sender, 0);
   events::ServerPropertyInfoResponceEvent::value_type res(ev->value());
-  FastoObjectIPtr root = FastoObject::createRoot(GET_PROPERTY_SERVER);
+  FastoObjectIPtr root = FastoObject::createRoot(REDIS_GET_PROPERTY_SERVER);
   notifyProgress(sender, 50);
-  FastoObjectCommand* cmd = createCommand<Command>(root,
-                                                        GET_PROPERTY_SERVER,
+  FastoObjectCommand* cmd = createCommand<Command>(root, REDIS_GET_PROPERTY_SERVER,
                                                         common::Value::C_INNER);
   common::Error er = execute(cmd);
   if (er && er->isError()) {
@@ -778,7 +777,7 @@ common::Error Driver::commandDeleteImpl(CommandDeleteKey* command,
 
   NDbKValue key = command->key();
   std::string key_str = key.keyString();
-  *cmdstring = common::MemSPrintf(DELETE_KEY_PATTERN_1ARGS_S, key_str);
+  *cmdstring = common::MemSPrintf(REDIS_DELETE_KEY_PATTERN_1ARGS_S, key_str);
   return common::Error();
 }
 
@@ -791,15 +790,15 @@ common::Error Driver::commandLoadImpl(CommandLoadKey* command, std::string* cmds
   NDbKValue key = command->key();
   std::string key_str = key.keyString();
   if (key.type() == common::Value::TYPE_ARRAY) {
-    patternResult = common::MemSPrintf(GET_KEY_LIST_PATTERN_1ARGS_S, key_str);
+    patternResult = common::MemSPrintf(REDIS_GET_KEY_LIST_PATTERN_1ARGS_S, key_str);
   } else if (key.type() == common::Value::TYPE_SET) {
-    patternResult = common::MemSPrintf(GET_KEY_SET_PATTERN_1ARGS_S, key_str);
+    patternResult = common::MemSPrintf(REDIS_GET_KEY_SET_PATTERN_1ARGS_S, key_str);
   } else if (key.type() == common::Value::TYPE_ZSET) {
-    patternResult = common::MemSPrintf(GET_KEY_ZSET_PATTERN_1ARGS_S, key_str);
+    patternResult = common::MemSPrintf(REDIS_GET_KEY_ZSET_PATTERN_1ARGS_S, key_str);
   } else if (key.type() == common::Value::TYPE_HASH) {
-    patternResult = common::MemSPrintf(GET_KEY_HASHM_PATTERN_1ARGS_S, key_str);
+    patternResult = common::MemSPrintf(REDIS_GET_KEY_HASHM_PATTERN_1ARGS_S, key_str);
   } else {
-    patternResult = common::MemSPrintf(GET_KEY_PATTERN_1ARGS_S, key_str);
+    patternResult = common::MemSPrintf(REDIS_GET_KEY_PATTERN_1ARGS_S, key_str);
   }
 
   *cmdstring = patternResult;
@@ -820,15 +819,15 @@ common::Error Driver::commandCreateImpl(CommandCreateKey* command,
   std::string value_str = common::ConvertToString(rval, " ");
   common::Value::Type t = key.type();
   if (t == common::Value::TYPE_ARRAY) {
-    patternResult = common::MemSPrintf(SET_KEY_LIST_PATTERN_2ARGS_SS, key_str, value_str);
+    patternResult = common::MemSPrintf(REDIS_SET_KEY_LIST_PATTERN_2ARGS_SS, key_str, value_str);
   } else if (t == common::Value::TYPE_SET) {
-    patternResult = common::MemSPrintf(SET_KEY_SET_PATTERN_2ARGS_SS, key_str, value_str);
+    patternResult = common::MemSPrintf(REDIS_SET_KEY_SET_PATTERN_2ARGS_SS, key_str, value_str);
   } else if (t == common::Value::TYPE_ZSET) {
-    patternResult = common::MemSPrintf(SET_KEY_ZSET_PATTERN_2ARGS_SS, key_str, value_str);
+    patternResult = common::MemSPrintf(REDIS_SET_KEY_ZSET_PATTERN_2ARGS_SS, key_str, value_str);
   } else if (t == common::Value::TYPE_HASH) {
-    patternResult = common::MemSPrintf(SET_KEY_HASHM_PATTERN_2ARGS_SS, key_str, value_str);
+    patternResult = common::MemSPrintf(REDIS_SET_KEY_HASHM_PATTERN_2ARGS_SS, key_str, value_str);
   } else {
-    patternResult = common::MemSPrintf(SET_KEY_PATTERN_2ARGS_SS, key_str, value_str);
+    patternResult = common::MemSPrintf(REDIS_SET_KEY_PATTERN_2ARGS_SS, key_str, value_str);
   }
 
   *cmdstring = patternResult;
@@ -846,9 +845,9 @@ common::Error Driver::commandChangeTTLImpl(CommandChangeTTL* command,
   ttl_t new_ttl = command->newTTL();
   std::string key_str = key.keyString();
   if (new_ttl == -1) {
-    patternResult = common::MemSPrintf(PERSIST_KEY_1ARGS_S, key_str);
+    patternResult = common::MemSPrintf(REDIS_PERSIST_KEY_1ARGS_S, key_str);
   } else {
-    patternResult = common::MemSPrintf(CHANGE_TTL_2ARGS_SI, key_str, new_ttl);
+    patternResult = common::MemSPrintf(REDIS_CHANGE_TTL_2ARGS_SI, key_str, new_ttl);
   }
 
   *cmdstring = patternResult;
