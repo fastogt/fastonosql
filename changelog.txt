@@ -1,11 +1,11 @@
 0.7.1 / August 6, 2016
 [Alexandr Topilski]
 - [Memcached] content database and keys functionality
+- [Memcached] content database and keys functionality
+- [Memcached] DBKCOUNT function
 - Statitstics module
 - Long size command fixes
 - Ui bug fixes
-- [Memcached] content database and keys functionality
-- [Memcached] DBKCOUNT function
 
 0.7.0 / Jule 17, 2016
 [Alexandr Topilski]
@@ -60,30 +60,30 @@
 
 0.5.6 / October 18, 2015
 [Alexandr Topilski]
-- Font selection for widgets
-- Hex view for output data
 - [Redis] HGETALL for hash values
 - [Memcached] memcached connection fails with UNKNOWN READ #2 
+- Font selection for widgets
+- Hex view for output data
 
 0.5.5 / September 19, 2015
 [Alexandr Topilski]
+- [SSDB] dbsize extend command
+- [LevelDB] dbsize extend command
+- [RocksDB] dbsize extend command
 - Clear history
 - Logging mseconds option
 - Not able to view Graphical History Chart on Windows #5
 - UnQLite database support http://unqlite.org/
 - LMDB database support http://symas.com/mdb/
 - Bugs fixes
-- [SSDB] dbsize extend command
-- [LevelDB] dbsize extend command
-- [RocksDB] dbsize extend command
 - i386 build for windows
 
 0.3.5 / September 5, 2015
 [Alexandr Topilski]
+- [SSDB] Ssdb auth command #54
 - Package installation fails on Ubuntu 14 #56
 - RocksDB database support http://rocksdb.org/
 - Added social buttons
-- [SSDB] Ssdb auth command #54
 
 0.2.5 / August 22, 2015
 [Alexandr Topilski]
