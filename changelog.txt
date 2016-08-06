@@ -1,4 +1,4 @@
-0.7.1 /
+0.7.1 / August 6, 2016
 [Alexandr Topilski]
 - [Memcached] content database and keys functionality
 - Statitstics module

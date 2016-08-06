@@ -1,4 +1,4 @@
-0.9.1 /
+0.9.1 / August 6, 2016
 [Alexandr Topilski]
 - Long size command fixes
 - Statitstics module
