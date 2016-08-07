@@ -43,6 +43,8 @@
 
 namespace {
   const QString trPreferences = QObject::tr("Preferences " PROJECT_NAME_TITLE);
+  const QString trProfileSettings = QObject::tr("Profile settings");
+  const QString trLogin = QObject::tr("Login:");
   const QString trGeneralSettings = QObject::tr("General settings");
   const QString trAutoCheckUpd = QObject::tr("Automatically check for updates");
   const QString trShowAutoCompletion = QObject::tr("Show autocompletion");
@@ -62,6 +64,17 @@ namespace gui {
 PreferencesDialog::PreferencesDialog(QWidget* parent)
   : QDialog(parent) {
   setWindowFlags(windowFlags() & ~Qt::WindowContextHelpButtonHint);
+#ifndef IS_PUBLIC_LOGIN
+  profileBox_ = new QGroupBox;
+  QHBoxLayout* profileLayout = new QHBoxLayout;
+  loginLabel_ = new QLabel;
+  loginText_ = new QLineEdit;
+  loginText_->setText(USER_SPECIFIC_LOGIN);
+  loginText_->setEnabled(false);
+  profileLayout->addWidget(loginLabel_);
+  profileLayout->addWidget(loginText_);
+  profileBox_->setLayout(profileLayout);
+#endif
 
 //      ui settings
   generalBox_ = new QGroupBox;
@@ -127,6 +140,9 @@ PreferencesDialog::PreferencesDialog(QWidget* parent)
 
   // main layout
   QVBoxLayout* layout = new QVBoxLayout(this);
+#ifndef IS_PUBLIC_LOGIN
+  layout->addWidget(profileBox_);
+#endif
   layout->addWidget(generalBox_);
   layout->addWidget(serverSettingsBox_);
 
@@ -192,6 +208,10 @@ void PreferencesDialog::retranslateUi() {
   setWindowTitle(trPreferences);
 
   generalBox_->setTitle(trGeneralSettings);
+#ifndef IS_PUBLIC_LOGIN
+  profileBox_->setTitle(trProfileSettings);
+  loginLabel_->setText(trLogin);
+#endif
   autoCheckUpdates_->setText(trAutoCheckUpd);
   autoComletionEnable_->setText(trShowAutoCompletion);
   autoOpenConsole_->setText(trAutoOpenConsole);

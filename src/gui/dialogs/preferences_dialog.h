@@ -51,6 +51,11 @@ class PreferencesDialog
 
  private:
   void retranslateUi();
+#ifndef IS_PUBLIC_LOGIN
+  QGroupBox* profileBox_;
+  QLabel* loginLabel_;
+  QLineEdit* loginText_;
+#endif
 
   QGroupBox* generalBox_;
   QCheckBox* autoCheckUpdates_;
