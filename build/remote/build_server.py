@@ -19,7 +19,7 @@ class BuildError(Exception):
 def print_usage():
     print("Usage:\n"
         "[optional] argv[1] platform\n"
-        "[optional] argv[3] architecture\n")
+        "[optional] argv[2] architecture\n")
 
 def run_command(cmd):
     return subprocess.check_call(cmd)
@@ -65,7 +65,7 @@ class BuildRpcServer(object):
         log_to_file_args = '-DLOG_TO_FILE=ON'
         openssl_args = '-DOPENSSL_USE_STATIC=ON'
         branding_variables_list = shlex.split(branding_variables)
-        cmake_line = ['cmake', '../../../', '-GUnix Makefiles', '-DCMAKE_BUILD_TYPE=RELEASE', generator_args, arch_args, log_to_file_args, openssl_args]
+        cmake_line = ['time', 'cmake', '../../../', '-GNinja', '-DCMAKE_BUILD_TYPE=RELEASE', generator_args, arch_args, log_to_file_args, openssl_args]
         cmake_line.extend(branding_variables_list)
         try:
             run_command(cmake_line)
@@ -75,7 +75,7 @@ class BuildRpcServer(object):
             
         self.send_status(status_channel, routing_key, op_id, 20, 'Building package')
                          
-        make_line = ['make', 'package', '-j2']
+        make_line = ['time', 'ninja', 'package']
         try:
             run_command(make_line)
         except subprocess.CalledProcessError as ex:
