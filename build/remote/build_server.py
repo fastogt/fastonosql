@@ -65,7 +65,7 @@ class BuildRpcServer(object):
         log_to_file_args = '-DLOG_TO_FILE=ON'
         openssl_args = '-DOPENSSL_USE_STATIC=ON'
         branding_variables_list = shlex.split(branding_variables)
-        cmake_line = ['time', 'cmake', '../../../', '-GNinja', '-DCMAKE_BUILD_TYPE=RELEASE', generator_args, arch_args, log_to_file_args, openssl_args]
+        cmake_line = ['cmake', '../../../', '-GNinja', '-DCMAKE_BUILD_TYPE=RELEASE', generator_args, arch_args, log_to_file_args, openssl_args]
         cmake_line.extend(branding_variables_list)
         try:
             run_command(cmake_line)
@@ -75,7 +75,7 @@ class BuildRpcServer(object):
             
         self.send_status(status_channel, routing_key, op_id, 20, 'Building package')
                          
-        make_line = ['time', 'ninja', 'package']
+        make_line = ['ninja', 'package']
         try:
             run_command(make_line)
         except subprocess.CalledProcessError as ex:

@@ -10,7 +10,9 @@ createPackage() {
     os_arch="$4"
     dir_path="$5"
     cpack_generators="$6"
-
+    generator="Ninja"
+    build_system=ninja
+    
     if [ -d "$dir_path" ]; then
         rm -rf "$dir_path"
     fi
@@ -18,29 +20,29 @@ createPackage() {
     cd "$dir_path"
     if [ "$platform" = 'android' ] ; then
         if [ -n "$branding_complex_variables" ]; then
-            cmake ../../ -G "Unix Makefiles" -DCMAKE_TOOLCHAIN_FILE=../../cmake/android.toolchain.cmake -DCMAKE_BUILD_TYPE=RELEASE -DLOG_TO_FILE=ON -DOS_ARCH=$os_arch \
-            -DOPENSSL_USE_STATIC=1 $branding_variables "$branding_complex_variables"
+            cmake ../../ -G "$generator" -DCMAKE_TOOLCHAIN_FILE=../../cmake/android.toolchain.cmake -DCMAKE_BUILD_TYPE=RELEASE -DLOG_TO_FILE=ON -DOS_ARCH=$os_arch \
+            -DOPENSSL_USE_STATIC=ON $branding_variables "$branding_complex_variables"
         else
-            cmake ../../ -G "Unix Makefiles" -DCMAKE_TOOLCHAIN_FILE=../../cmake/android.toolchain.cmake -DCMAKE_BUILD_TYPE=RELEASE -DLOG_TO_FILE=ON -DOS_ARCH=$os_arch \
-            -DOPENSSL_USE_STATIC=1 $branding_variables
+            cmake ../../ -G "$generator" -DCMAKE_TOOLCHAIN_FILE=../../cmake/android.toolchain.cmake -DCMAKE_BUILD_TYPE=RELEASE -DLOG_TO_FILE=ON -DOS_ARCH=$os_arch \
+            -DOPENSSL_USE_STATIC=ON $branding_variables
         fi
-        make install -j2
-        make apk_release
-        make apk_signed
-        make apk_signed_aligned
+        $build_system install
+        $build_system apk_release
+        $build_system apk_signed
+        $build_system apk_signed_aligned
     else
         if [ -n "$branding_complex_variables" ]; then
-            cmake ../../ -G "Unix Makefiles" -DCMAKE_BUILD_TYPE=RELEASE -DLOG_TO_FILE=ON -DOS_ARCH=$os_arch -DOPENSSL_USE_STATIC=1 \
+            cmake ../../ -G "$generator" -DCMAKE_BUILD_TYPE=RELEASE -DLOG_TO_FILE=ON -DOS_ARCH=$os_arch -DOPENSSL_USE_STATIC=ON \
             $branding_variables "$branding_complex_variables"
         else
-            cmake ../../ -G "Unix Makefiles" -DCMAKE_BUILD_TYPE=RELEASE -DLOG_TO_FILE=ON -DOS_ARCH=$os_arch -DOPENSSL_USE_STATIC=1 \
+            cmake ../../ -G "$generator" -DCMAKE_BUILD_TYPE=RELEASE -DLOG_TO_FILE=ON -DOS_ARCH=$os_arch -DOPENSSL_USE_STATIC=ON \
             $branding_variables 
         fi
-        make install -j2
+        $build_system install
         
-        for generator in $cpack_generators
+        for genr in $cpack_generators
         do
-            cpack -G $generator
+            cpack -G $genr
         done
     fi
     cd ../
