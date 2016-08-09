@@ -31,6 +31,8 @@
 #include "core/ssdb/command.h"
 #include "core/ssdb/db_connection.h"
 
+#include "global/types.h"
+
 #define SSDB_INFO_REQUEST "INFO"
 #define SSDB_GET_KEYS_PATTERN_1ARGS_I "KEYS a z %d"
 #define SSDB_DELETE_KEY_PATTERN_1ARGS_S "DEL %s"

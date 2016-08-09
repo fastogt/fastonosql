@@ -61,6 +61,7 @@ extern "C" {
 #include "common/utils.h"
 #include "common/string_util.h"
 #include "common/sprintf.h"
+
 #include "fasto/qt/logger.h"
 
 #include "core/command_logger.h"
@@ -70,6 +71,8 @@ extern "C" {
 #include "core/redis/cluster_infos.h"
 #include "core/redis/database.h"
 #include "core/redis/command.h"
+
+#include "global/types.h"
 
 #define HIREDIS_VERSION STRINGIZE(HIREDIS_MAJOR) "." STRINGIZE(HIREDIS_MINOR) "." STRINGIZE(HIREDIS_PATCH)
 #define REDIS_CLI_KEEPALIVE_INTERVAL 15 /* seconds */

@@ -20,6 +20,8 @@
 
 #include <vector>
 
+#include <QIcon>
+
 #include "gui/gui_factory.h"
 
 #ifdef BUILD_WITH_REDIS

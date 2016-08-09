@@ -20,6 +20,8 @@
 
 #include <string>
 
+#include <QIcon>
+
 #include "common/qt/utils_qt.h"
 #include "common/qt/convert_string.h"
 

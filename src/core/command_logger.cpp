@@ -18,6 +18,10 @@
 
 #include "core/command_logger.h"
 
+#include <QMetaType>                    // for qRegisterMetaType
+
+#include "global/types.h"               // for Command
+
 namespace fastonosql {
 namespace core {
 

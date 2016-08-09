@@ -30,6 +30,8 @@
 #include "core/unqlite/command.h"
 #include "core/unqlite/db_connection.h"
 
+#include "global/types.h"
+
 #define UNQLITE_INFO_REQUEST "INFO"
 #define UNQLITE_GET_KEY_PATTERN_1ARGS_S "GET %s"
 #define UNQLITE_SET_KEY_PATTERN_2ARGS_SS "SET %s %s"

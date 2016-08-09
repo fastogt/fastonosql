@@ -34,36 +34,44 @@
 #include <QGestureEvent>
 #endif
 
-#include "common/qt/convert_string.h"
-#include "common/net/socket_tcp.h"
-#include "common/text_decoders/iedcoder.h"
-#include "common/file_system.h"
-#include "common/third-party/json-c/json-c/json.h"
-#include "common/system_info/system_info.h"
+#include "common/convert2string.h"      // for ConvertFromString, etc
+#include "common/error.h"               // for Error, ErrnoError, etc
+#include "common/file_system.h"         // for File, remove_file, etc
+#include "common/macros.h"              // for VERIFY, DNOTREACHED, CHECK, etc
+#include "common/net/socket_tcp.h"      // for ClientSocketTcp
+#include "common/net/types.h"           // for HostAndPort
+#include "common/qt/convert_string.h"   // for ConvertToString
+#include "common/system_info/system_info.h"  // for SystemInfo, etc
+#include "common/text_decoders/iedcoder.h"  // for IEDcoder, EDTypes::Hex
+#include "common/value.h"               // for ErrorValue
+#include "common/third-party/json-c/json-c/json_object.h"
 
-#include "fasto/qt/gui/app_style.h"
-#include "fasto/qt/translations/translations.h"
-#include "fasto/qt/logger.h"
+#include "core/command_logger.h"        // for CommandLogger
+#include "core/core_fwd.h"              // for IServerSPtr, IClusterSPtr, etc
+#include "core/icluster.h"              // for ICluster
+#include "core/isentinel.h"             // for ISentinel
+#include "core/servers_manager.h"       // for ServersManager
+#include "core/settings_manager.h"      // for SettingsManager
 
-#include "core/servers_manager.h"
-#include "core/settings_manager.h"
-#include "core/command_logger.h"
-#include "core/icluster.h"
-#include "core/isentinel.h"
+#include "fasto/qt/gui/app_style.h"     // for applyFont, applyStyle
+#include "fasto/qt/logger.h"            // for Logger
+#include "fasto/qt/translations/translations.h"  // for applyLanguage
+#include "fasto/qt/gui/shortcuts.h"           // for FastoQKeySequence
 
-#include "server_config_daemon/server_config.h"
+#include "gui/dialogs/about_dialog.h"   // for AboutDialog
+#include "gui/dialogs/connections_dialog.h"  // for ConnectionsDialog
+#include "gui/dialogs/encode_decode_dialog.h"  // for EncodeDecodeDialog
+#include "gui/dialogs/preferences_dialog.h"  // for PreferencesDialog
+#include "gui/explorer/explorer_tree_view.h"  // for ExplorerTreeView
+#include "gui/gui_factory.h"            // for GuiFactory
+#include "gui/shortcuts.h"              // for fullScreenKey, openKey, etc
+#include "gui/widgets/log_tab_widget.h"  // for LogTabWidget
+#include "gui/widgets/main_widget.h"    // for MainWidget
 
-#include "translations/global.h"
+#include "server_config_daemon/server_config.h"  // for FASTONOSQL_URL, etc
 
-#include "gui/shortcuts.h"
-#include "gui/gui_factory.h"
-#include "gui/dialogs/about_dialog.h"
-#include "gui/dialogs/preferences_dialog.h"
-#include "gui/dialogs/connections_dialog.h"
-#include "gui/widgets/log_tab_widget.h"
-#include "gui/widgets/main_widget.h"
-#include "gui/explorer/explorer_tree_view.h"
-#include "gui/dialogs/encode_decode_dialog.h"
+#include "translations/global.h"        // for trError, trCheckVersion, etc
+
 
 namespace {
 
@@ -791,7 +799,7 @@ void UpdateChecker::routine() {
 #endif
   if (err && err->isError()) {
     emit versionAvailibled(false, QString());
-    s.close();
+    MCHECK(s.close());
     return;
   }
 
@@ -800,13 +808,13 @@ void UpdateChecker::routine() {
   err = s.read(version, sizeof(version), &nread);
   if (err && err->isError()) {
     emit versionAvailibled(false, QString());
-    s.close();
+    MCHECK(s.close());
     return;
   }
 
   QString vers = common::ConvertFromString<QString>(version);
   emit versionAvailibled(true, vers);
-  s.close();
+  MCHECK(s.close());
   return;
 }
 
@@ -850,12 +858,12 @@ void StatisticSender::routine() {
   json_object_put(stats_json);
   if (err && err->isError()) {
     emit statisticSended(false);
-    s.close();
+    MCHECK(s.close());
     return;
   }
 
   emit statisticSended(true);
-  s.close();
+  MCHECK(s.close());
   return;
 }
 

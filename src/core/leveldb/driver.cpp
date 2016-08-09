@@ -30,6 +30,8 @@
 #include "core/leveldb/command.h"
 #include "core/leveldb/db_connection.h"
 
+#include "global/types.h"
+
 #define LEVELDB_INFO_REQUEST "INFO"
 #define LEVELDB_GET_KEY_PATTERN_1ARGS_S "GET %s"
 #define LEVELDB_SET_KEY_PATTERN_2ARGS_SS "SET %s %s"

@@ -29,6 +29,8 @@
 #include "core/memcached/command.h"
 #include "core/memcached/db_connection.h"
 
+#include "global/types.h"
+
 #define MEMCACHED_INFO_REQUEST "STATS"
 #define MEMCACHED_GET_KEYS_PATTERN_1ARGS_I "KEYS a z %d"
 

@@ -22,6 +22,7 @@
 #include <QLabel>
 #include <QVBoxLayout>
 #include <QThread>
+#include <QIcon>
 
 #include "common/time.h"
 

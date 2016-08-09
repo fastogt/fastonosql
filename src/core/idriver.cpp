@@ -40,6 +40,8 @@ extern "C" {
 
 #include "core/command_logger.h"
 
+#include "global/types.h"
+
 namespace {
 
 #ifdef OS_WIN

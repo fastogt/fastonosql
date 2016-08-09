@@ -20,10 +20,10 @@
 
 #include <QObject>
 
-#include "common/patterns/singleton_pattern.h"
+#include "common/patterns/singleton_pattern.h"  // for LazySingleton
+#include "core/connection_types.h"      // for connectionTypes
 
-#include "global/types.h"
-#include "core/connection_types.h"
+namespace fastonosql { class Command; }
 
 namespace fastonosql {
 namespace core {

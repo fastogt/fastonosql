@@ -31,6 +31,8 @@
 #include "core/lmdb/command.h"
 #include "core/lmdb/db_connection.h"
 
+#include "global/types.h"
+
 #define LMDB_INFO_REQUEST "INFO"
 #define LMDB_GET_KEY_PATTERN_1ARGS_S "GET %s"
 #define LMDB_SET_KEY_PATTERN_2ARGS_SS "SET %s %s"

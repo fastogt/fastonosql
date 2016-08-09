@@ -20,8 +20,12 @@
 
 #include <QApplication>
 #include <QStyle>
+#include <QIcon>
+#include <QString>
 
-#include "core/settings_manager.h"
+#include "common/macros.h"              // for NOTREACHED
+
+#include "core/settings_manager.h"      // for SettingsManager
 
 namespace fastonosql {
 namespace gui {

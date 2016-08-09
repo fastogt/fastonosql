@@ -18,6 +18,8 @@
 
 #include "gui/keys_table_model.h"
 
+#include <QIcon>
+
 #include "common/qt/utils_qt.h"
 
 #include "translations/global.h"
