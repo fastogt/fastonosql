@@ -799,7 +799,7 @@ void UpdateChecker::routine() {
 #endif
   if (err && err->isError()) {
     emit versionAvailibled(false, QString());
-    MCHECK(s.close());
+    MCHECK(!s.close());
     return;
   }
 
@@ -808,13 +808,13 @@ void UpdateChecker::routine() {
   err = s.read(version, sizeof(version), &nread);
   if (err && err->isError()) {
     emit versionAvailibled(false, QString());
-    MCHECK(s.close());
+    MCHECK(!s.close());
     return;
   }
 
   QString vers = common::ConvertFromString<QString>(version);
   emit versionAvailibled(true, vers);
-  MCHECK(s.close());
+  MCHECK(!s.close());
   return;
 }
 
@@ -858,12 +858,12 @@ void StatisticSender::routine() {
   json_object_put(stats_json);
   if (err && err->isError()) {
     emit statisticSended(false);
-    MCHECK(s.close());
+    MCHECK(!s.close());
     return;
   }
 
   emit statisticSended(true);
-  MCHECK(s.close());
+  MCHECK(!s.close());
   return;
 }
 
