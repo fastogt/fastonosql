@@ -18,12 +18,6 @@
 
 #include "core/command_key.h"
 
-#include <vector>
-#include <string>
-
-#include "common/string_util.h"
-#include "common/sprintf.h"
-
 namespace fastonosql {
 namespace core {
 

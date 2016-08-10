@@ -20,13 +20,13 @@
 
 #include <string>
 
-#include "common/error.h"
-
-#include "global/global.h"
-
-#include "core/command_info.h"
+#include "common/error.h"               // for Error
+#include "common/macros.h"              // for WARN_UNUSED_RESULT
+#include "core/command_info.h"          // for CommandInfo
 
 namespace fastonosql {
+class FastoObject;
+
 namespace core {
 
 class CommandHandler;

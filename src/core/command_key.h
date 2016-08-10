@@ -18,12 +18,14 @@
 
 #pragma once
 
-#include <vector>
-#include <utility>
-#include <string>
+#include <memory>                       // for shared_ptr
+#include <string>                       // for string
 
-#include "global/global.h"
-#include "core/db_key.h"
+#include "common/macros.h"              // for DNOTREACHED
+#include "common/value.h"               // for Value, etc
+
+#include "core/db_key.h"                // for NDbKValue, ttl_t, NValue
+#include "global/global.h"              // for FastoObject, etc
 
 namespace fastonosql {
 namespace core {

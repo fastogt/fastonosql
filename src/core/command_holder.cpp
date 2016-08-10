@@ -18,10 +18,9 @@
 
 #include "core/command_holder.h"
 
-#include <vector>
-#include <string>
+#include <string>                       // for string
 
-#include "common/string_util.h"
+#include "common/string_util.h"         // for FullEqualsASCII
 
 namespace fastonosql {
 namespace core {

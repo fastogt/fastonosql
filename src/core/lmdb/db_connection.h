@@ -18,13 +18,21 @@
 
 #pragma once
 
-#include <string>
+#include <stddef.h>                     // for size_t
+#include <stdint.h>                     // for uint64_t
+#include <string>                       // for string
+#include <vector>                       // for vector
 
-#include "core/connection.h"
-#include "core/command_handler.h"
+#include "common/error.h"               // for Error
+#include "common/macros.h"              // for WARN_UNUSED_RESULT
 
-#include "core/lmdb/connection_settings.h"
+#include "core/command_handler.h"       // for CommandHandler
+#include "core/command_holder.h"        // for CommandHolder, etc
+#include "core/command_info.h"          // for UNDEFINED_EXAMPLE_STR, etc
+#include "core/connection.h"            // for Connection, etc
+
 #include "core/lmdb/config.h"
+#include "core/lmdb/connection_settings.h"
 #include "core/lmdb/server_info.h"
 
 namespace fastonosql {
@@ -39,8 +47,9 @@ common::Error createConnection(const Config& config, NativeConnection** context)
 common::Error createConnection(ConnectionSettings* settings, NativeConnection** context);
 common::Error testConnection(ConnectionSettings* settings);
 
-struct DBConnection
+class DBConnection
   : public CommandHandler {
+ public:
   typedef ConnectionAllocatorTraits<NativeConnection, Config> ConnectionAllocatorTrait;
   typedef Connection<ConnectionAllocatorTrait> connection_t;
   typedef connection_t::config_t config_t;

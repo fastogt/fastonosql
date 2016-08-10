@@ -22,7 +22,6 @@
 #include <string>
 
 #include "common/string_util.h"
-#include "common/sprintf.h"
 
 namespace fastonosql {
 namespace core {

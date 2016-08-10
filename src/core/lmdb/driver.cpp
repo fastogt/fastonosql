@@ -153,7 +153,8 @@ common::Error Driver::currentDataBaseInfo(IDataBaseInfo** info) {
   }
 
   size_t dbkcount = 0;
-  impl_->dbkcount(&dbkcount);
+  common::Error err = impl_->dbkcount(&dbkcount);
+  MCHECK(!err);
   *info = new DataBaseInfo(common::ConvertToString(impl_->curDb()), true, dbkcount);
   return common::Error();
 }
@@ -294,7 +295,8 @@ void Driver::handleLoadDatabaseContentEvent(events::LoadDatabaseContentRequestEv
         }
       }
 
-      impl_->dbkcount(&res.db_keys_count);
+      common::Error err = impl_->dbkcount(&res.db_keys_count);
+      MCHECK(!err);
     }
   }
 done:

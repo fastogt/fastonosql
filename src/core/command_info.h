@@ -18,7 +18,8 @@
 
 #pragma once
 
-#include <string>
+#include <stdint.h>                     // for uint8_t, uint32_t, etc
+#include <string>                       // for string
 
 #define UNDEFINED_SINCE 0x00000000U
 #define UNDEFINED_SINCE_STR "Undefined"

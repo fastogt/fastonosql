@@ -18,16 +18,18 @@
 
 #include "core/lmdb/db_connection.h"
 
-#include <errno.h>
+#include <errno.h>                      // for EACCES
+#include <lmdb.h>                       // for MDB_val, mdb_txn_abort, etc
+#include <stdlib.h>                     // for free, atoll, calloc
 
-extern "C" {
-  #include <lmdb.h>
-}
+#include <memory>                       // for __shared_ptr
+#include <string>                       // for string, operator<, etc
+#include <vector>                       // for vector
 
-#include <vector>
-#include <string>
-
-#include "common/file_system.h"
+#include "common/file_system.h"         // for create_directory, etc
+#include "common/sprintf.h"             // for MemSPrintf
+#include "common/types.h"               // for tribool::SUCCESS
+#include "common/value.h"               // for Value::ErrorsType::E_ERROR, etc
 #include "common/utils.h"
 
 #define LMDB_OK 0
