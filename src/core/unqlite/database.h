@@ -18,7 +18,11 @@
 
 #pragma once
 
-#include "core/idatabase.h"
+#include <stddef.h>                     // for size_t
+#include <string>                       // for string
+
+#include "core/core_fwd.h"              // for IServerSPtr
+#include "core/idatabase.h"             // for IDatabase
 
 namespace fastonosql {
 namespace core {

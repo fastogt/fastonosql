@@ -18,7 +18,10 @@
 
 #include "core/redis/database.h"
 
-#include "core/iserver.h"
+#include "common/macros.h"              // for DCHECK
+
+#include "core/connection_types.h"      // for connectionTypes::REDIS
+#include "core/iserver.h"               // for IServer
 
 namespace fastonosql {
 namespace core {

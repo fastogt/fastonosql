@@ -18,20 +18,31 @@
 
 #include "core/lmdb/driver.h"
 
-#include <vector>
-#include <string>
+#include <stddef.h>                     // for size_t
 
-#include "common/sprintf.h"
-#include "common/utils.h"
-#include "common/file_system.h"
+#include <memory>                       // for __shared_ptr
+#include <string>                       // for string
 
-#include "core/command_logger.h"
+#include "common/convert2string.h"      // for ConvertToString
+#include "common/log_levels.h"          // for LEVEL_LOG::L_WARNING
+#include "common/qt/utils_qt.h"         // for Event<>::value_type
+#include "common/sprintf.h"             // for MemSPrintf
+#include "common/value.h"               // for ErrorValue, etc
 
-#include "core/lmdb/database.h"
-#include "core/lmdb/command.h"
-#include "core/lmdb/db_connection.h"
+#include "core/command_key.h"           // for createCommand, etc
+#include "core/command_logger.h"        // for LOG_COMMAND
+#include "core/connection_types.h"      // for ConvertToString, etc
+#include "core/db_key.h"                // for NDbKValue, NValue, NKey
+#include "core/events/events_info.h"
+#include "core/lmdb/command.h"          // for Command
+#include "core/lmdb/config.h"           // for Config
+#include "core/lmdb/connection_settings.h"  // for ConnectionSettings
+#include "core/lmdb/database.h"         // for DataBaseInfo
+#include "core/lmdb/db_connection.h"    // for DBConnection
+#include "core/lmdb/server_info.h"      // for ServerInfo, etc
 
-#include "global/types.h"
+#include "global/global.h"              // for FastoObject::childs_t, etc
+#include "global/types.h"               // for Command
 
 #define LMDB_INFO_REQUEST "INFO"
 #define LMDB_GET_KEY_PATTERN_1ARGS_S "GET %s"

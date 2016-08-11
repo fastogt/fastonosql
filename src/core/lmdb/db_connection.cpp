@@ -29,10 +29,13 @@
 #include "common/file_system.h"         // for create_directory, etc
 #include "common/sprintf.h"             // for MemSPrintf
 #include "common/types.h"               // for tribool::SUCCESS
+#include "common/utils.h"               // for c_strornull
 #include "common/value.h"               // for Value::ErrorsType::E_ERROR, etc
-#include "common/utils.h"
 
-#include "global/global.h"
+#include "core/lmdb/config.h"           // for Config
+#include "core/lmdb/connection_settings.h"  // for ConnectionSettings
+
+#include "global/global.h"              // for FastoObject, etc
 
 #define LMDB_OK 0
 

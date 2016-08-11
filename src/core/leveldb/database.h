@@ -23,7 +23,6 @@
 
 #include "core/core_fwd.h"              // for IServerSPtr
 #include "core/idatabase.h"             // for IDatabase
-#include "core/types.h"
 
 namespace fastonosql {
 namespace core {

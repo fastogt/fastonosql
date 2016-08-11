@@ -32,10 +32,14 @@
 namespace {
 
 struct KeysHolder {
+  KeysHolder(const std::string& key_start, const std::string& key_end, uint64_t limit, std::vector<std::string>* r)
+    : key_start(key_start), key_end(key_end), limit(limit), r(r) {}
+
   const std::string key_start;
   const std::string key_end;
   const uint64_t limit;
   std::vector<std::string>* r;
+
   memcached_return_t addKey(const char* key, size_t key_length) {
     if (r->size() < limit) {
       std::string received_key(key, key_length);
@@ -227,7 +231,7 @@ common::Error DBConnection::keys(const std::string& key_start, const std::string
     return common::make_error_value("Not connected", common::Value::E_ERROR);
   }
 
-  KeysHolder hld = {key_start, key_end, limit, ret};
+  KeysHolder hld(key_start, key_end, limit, ret);
   memcached_dump_fn func[1] = {0};
   func[0] = memcached_dump_callback;
   memcached_return_t result = memcached_dump(connection_.handle_, func, &hld, SIZEOFMASS(func));

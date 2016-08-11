@@ -22,8 +22,6 @@
 
 #include <rocksdb/options.h>
 
-#include "common/convert2string.h"
-
 #include "core/connection_confg.h"
 
 namespace fastonosql {

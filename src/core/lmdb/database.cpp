@@ -18,7 +18,12 @@
 
 #include "core/lmdb/database.h"
 
-#include "core/iserver.h"
+#include <memory>                       // for __shared_ptr
+
+#include "common/macros.h"              // for DCHECK
+
+#include "core/connection_types.h"      // for connectionTypes::LMDB
+#include "core/iserver.h"               // for IServer
 
 namespace fastonosql {
 namespace core {

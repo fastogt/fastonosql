@@ -18,6 +18,8 @@
 
 #include "core/lmdb/command.h"
 
+#include <algorithm>
+
 namespace fastonosql {
 namespace core {
 namespace lmdb {
