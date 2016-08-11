@@ -27,6 +27,8 @@
 #include "core/redis/config.h"
 #include "core/redis/server_info.h"
 
+#include "global/global.h"
+
 #define INFO_REQUEST "INFO"
 #define GET_SERVER_TYPE "CLUSTER NODES"
 #define GET_SENTINEL_MASTERS "SENTINEL MASTERS"

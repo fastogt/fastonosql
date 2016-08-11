@@ -18,19 +18,29 @@
 
 #include "core/leveldb/driver.h"
 
-#include <vector>
-#include <string>
+#include <stddef.h>                     // for size_t
+#include <memory>                       // for __shared_ptr
+#include <string>                       // for string
 
-#include "common/sprintf.h"
-#include "common/utils.h"
+#include "common/log_levels.h"          // for LEVEL_LOG::L_WARNING
+#include "common/qt/utils_qt.h"         // for Event<>::value_type
+#include "common/sprintf.h"             // for MemSPrintf
+#include "common/value.h"               // for ErrorValue, etc
 
-#include "core/command_logger.h"
+#include "core/command_key.h"           // for createCommand, etc
+#include "core/command_logger.h"        // for LOG_COMMAND
+#include "core/connection_types.h"      // for ConvertToString, etc
+#include "core/db_key.h"                // for NDbKValue, NValue, NKey
+#include "core/events/events_info.h"
+#include "core/leveldb/command.h"       // for Command
+#include "core/leveldb/config.h"        // for Config
+#include "core/leveldb/connection_settings.h"  // for ConnectionSettings
+#include "core/leveldb/database.h"      // for DataBaseInfo
+#include "core/leveldb/db_connection.h"  // for DBConnection
+#include "core/leveldb/server_info.h"   // for ServerInfo, etc
 
-#include "core/leveldb/database.h"
-#include "core/leveldb/command.h"
-#include "core/leveldb/db_connection.h"
-
-#include "global/types.h"
+#include "global/global.h"              // for FastoObject::childs_t, etc
+#include "global/types.h"               // for Command
 
 #define LEVELDB_INFO_REQUEST "INFO"
 #define LEVELDB_GET_KEY_PATTERN_1ARGS_S "GET %s"
@@ -153,7 +163,8 @@ common::Error Driver::currentDataBaseInfo(IDataBaseInfo** info) {
   }
 
   size_t dbkcount = 0;
-  impl_->dbkcount(&dbkcount);
+  common::Error err = impl_->dbkcount(&dbkcount);
+  MCHECK(!err);
   *info = new DataBaseInfo("0", true, dbkcount);
   return common::Error();
 }
@@ -295,7 +306,8 @@ void Driver::handleLoadDatabaseContentEvent(events::LoadDatabaseContentRequestEv
         }
       }
 
-      impl_->dbkcount(&res.db_keys_count);
+      common::Error err = impl_->dbkcount(&res.db_keys_count);
+      MCHECK(!err);
     }
   }
 done:

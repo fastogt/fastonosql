@@ -18,11 +18,12 @@
 
 #pragma once
 
-#include <string>
+#include <stdint.h>                     // for uint32_t
 
-#include "global/global.h"
+#include <iosfwd>                       // for ostream
+#include <string>                       // for string
 
-#include "core/types.h"
+#include "core/types.h"                 // for IStateField, IServerInfo
 
 #define LEVELDB_STATS_LABEL "# Stats"
 
@@ -31,6 +32,8 @@
 #define LEVELDB_TIME_SEC_LABEL "time_sec"
 #define LEVELDB_READ_MB_LABEL "read_mb"
 #define LEVELDB_WRITE_MB_LABEL "write_mb"
+
+namespace common { class Value; }
 
 namespace fastonosql {
 namespace core {
@@ -44,7 +47,7 @@ class ServerInfo
       : IStateField {
     Stats();
     explicit Stats(const std::string& common_text);
-    common::Value* valueByIndex(unsigned char index) const;
+    virtual common::Value* valueByIndex(unsigned char index) const override;
 
     uint32_t compactions_level;
     uint32_t file_size_mb;
@@ -56,15 +59,14 @@ class ServerInfo
   ServerInfo();
   explicit ServerInfo(const Stats& stats);
 
-  virtual common::Value* valueByIndexes(unsigned char property, unsigned char field) const;
-  virtual std::string toString() const;
-  virtual uint32_t version() const;
+  virtual common::Value* valueByIndexes(unsigned char property, unsigned char field) const override;
+  virtual std::string toString() const override;
+  virtual uint32_t version() const override;
 };
 
 std::ostream& operator << (std::ostream& out, const ServerInfo& value);
 
 ServerInfo* makeLeveldbServerInfo(const std::string& content);
-ServerInfo* makeLeveldbServerInfo(FastoObject* root);
 
 }  // namespace leveldb
 }  // namespace core

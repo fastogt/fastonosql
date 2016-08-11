@@ -32,6 +32,8 @@
 #include "common/value.h"               // for Value::ErrorsType::E_ERROR, etc
 #include "common/utils.h"
 
+#include "global/global.h"
+
 #define LMDB_OK 0
 
 namespace fastonosql {

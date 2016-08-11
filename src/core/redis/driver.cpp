@@ -148,7 +148,8 @@ common::Error Driver::serverInfo(IServerInfo** info) {
   if (!res) {
     auto ch = root->childrens();
     if (ch.size()) {
-      *info = makeRedisServerInfo(ch[0]);
+      std::string content = common::ConvertToString(ch[0]);
+      *info = makeRedisServerInfo(content);
     }
 
     if (*info == nullptr) {
@@ -591,9 +592,9 @@ void Driver::handleLoadDatabaseContentEvent(events::LoadDatabaseContentRequestEv
   FastoObjectIPtr root = FastoObject::createRoot(patternResult);
   notifyProgress(sender, 50);
   FastoObjectCommand* cmd = createCommand<Command>(root, patternResult, common::Value::C_INNER);
-  common::Error er = execute(cmd);
-  if (er && er->isError()) {
-    res.setErrorInfo(er);
+  common::Error err = execute(cmd);
+  if (err && err->isError()) {
+    res.setErrorInfo(err);
   } else {
     FastoObject::childs_t rchildrens = cmd->childrens();
     if (rchildrens.size()) {
@@ -642,8 +643,8 @@ void Driver::handleLoadDatabaseContentEvent(events::LoadDatabaseContentRequestEv
         }
       }
 
-      er = impl_->executeAsPipeline(cmds);
-      if (er && er->isError()) {
+      err = impl_->executeAsPipeline(cmds);
+      if (err && err->isError()) {
         goto done;
       }
 
@@ -677,7 +678,8 @@ void Driver::handleLoadDatabaseContentEvent(events::LoadDatabaseContentRequestEv
         }
       }
 
-      impl_->dbkcount(&res.db_keys_count);
+      err = impl_->dbkcount(&res.db_keys_count);
+      MCHECK(!err);
     }
   }
 done:

@@ -287,11 +287,6 @@ uint32_t ServerInfo::version() const {
   return common::ConvertVersionNumberFromString(common_.version);
 }
 
-ServerInfo* makeMemcachedServerInfo(FastoObject* root) {
-  std::string content = common::ConvertToString(root);
-  return makeMemcachedServerInfo(content);
-}
-
 }  // namespace memcached
 }  // namespace core
 }  // namespace fastonosql

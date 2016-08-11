@@ -56,7 +56,7 @@ class DBConnection
   std::string delimiter() const;
   std::string nsSeparator() const;
   config_t config() const;
-  static const char* versionApi();
+  static const char *versionApi();
 
   std::string currentDbName() const;
 

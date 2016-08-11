@@ -18,24 +18,28 @@
 
 #include "core/leveldb/db_connection.h"
 
-#include <mutex>
+#include <stdlib.h>                     // for atoll
+#include <string.h>                     // for strtok
 
+#include <memory>                       // for __shared_ptr
+
+#include <leveldb/c.h>                  // for leveldb_major_version, etc
+#include <leveldb/options.h>            // for ReadOptions, WriteOptions
 #include <leveldb/db.h>
 
+#include "common/convert2string.h"      // for ConvertFromString
+#include "common/value.h"               // for Value, etc
 #include "common/sprintf.h"
+
+#include "core/leveldb/config.h"        // for Config
+#include "core/leveldb/connection_settings.h"  // for ConnectionSettings
+
+#include "global/global.h"              // for FastoObject, etc
+
 
 #define LEVELDB_HEADER_STATS    "                               Compactions\n"\
                                 "Level  Files Size(MB) Time(sec) Read(MB) Write(MB)\n"\
                                 "--------------------------------------------------\n"
-
-namespace {
-
-std::once_flag leveldb_version_once;
-void leveldb_version_startup_function(char* version) {
-  sprintf(version, "%d.%d", leveldb::kMajorVersion, leveldb::kMinorVersion);
-}
-
-}
 
 namespace fastonosql {
 namespace core {
@@ -135,9 +139,8 @@ DBConnection::config_t DBConnection::config() const {
 }
 
 const char* DBConnection::versionApi() {
-  static char leveldb_version[32] = {0};
-  std::call_once(leveldb_version_once, leveldb_version_startup_function, leveldb_version);
-  return leveldb_version;
+  static std::string leveldb_version = common::MemSPrintf("%d.%d", leveldb_major_version(), leveldb_minor_version());
+  return leveldb_version.c_str();
 }
 
 common::Error DBConnection::dbkcount(size_t* size) {

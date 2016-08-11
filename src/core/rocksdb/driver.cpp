@@ -154,7 +154,8 @@ common::Error Driver::currentDataBaseInfo(IDataBaseInfo** info) {
 
   std::string name = impl_->currentDbName();
   size_t dbkcount = 0;
-  impl_->dbkcount(&dbkcount);
+  common::Error err = impl_->dbkcount(&dbkcount);
+  MCHECK(!err);
   *info = new DataBaseInfo(name, true, dbkcount);
   return common::Error();
 }
@@ -271,9 +272,9 @@ void Driver::handleLoadDatabaseContentEvent(events::LoadDatabaseContentRequestEv
   notifyProgress(sender, 50);
   FastoObjectCommand* cmd = createCommand<Command>(root, patternResult,
                                                           common::Value::C_INNER);
-  common::Error er = execute(cmd);
-  if (er && er->isError()) {
-    res.setErrorInfo(er);
+  common::Error err = execute(cmd);
+  if (err && err->isError()) {
+    res.setErrorInfo(err);
   } else {
     FastoObject::childs_t rchildrens = cmd->childrens();
     if (rchildrens.size()) {
@@ -296,7 +297,8 @@ void Driver::handleLoadDatabaseContentEvent(events::LoadDatabaseContentRequestEv
         }
       }
 
-      impl_->dbkcount(&res.db_keys_count);
+      err = impl_->dbkcount(&res.db_keys_count);
+      MCHECK(!err);
     }
   }
 done:

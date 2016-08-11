@@ -18,11 +18,18 @@
 
 #include "core/leveldb/server_info.h"
 
-#include <ostream>
+#include <stddef.h>                     // for size_t
 #include <sstream>
-#include <string>
-#include <vector>
-#include <algorithm>
+#include <ostream>                      // for operator<<, basic_ostream, etc
+#include <string>                       // for string, operator==, etc
+#include <utility>                      // for make_pair
+#include <vector>                       // for vector
+
+#include "common/convert2string.h"      // for ConvertFromString
+#include "common/macros.h"              // for NOTREACHED, DCHECK_EQ
+#include "common/value.h"               // for Value, FundamentalValue, etc
+
+#include "core/connection_types.h"      // for connectionTypes::LEVELDB
 
 #define MARKER "\r\n"
 
@@ -169,11 +176,6 @@ std::string ServerInfo::toString() const {
 
 uint32_t ServerInfo::version() const {
   return 0;
-}
-
-ServerInfo* makeLeveldbServerInfo(FastoObject* root) {
-  std::string content = common::ConvertToString(root);
-  return makeLeveldbServerInfo(content);
 }
 
 }  // namespace leveldb

@@ -28,6 +28,8 @@ extern "C" {
 #include "common/utils.h"
 #include "common/sprintf.h"
 
+#include "global/global.h"
+
 namespace {
 
 std::string unqlite_constext_strerror(unqlite* context) {

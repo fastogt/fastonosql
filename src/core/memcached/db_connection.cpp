@@ -27,6 +27,8 @@
 #include "common/utils.h"
 #include "common/sprintf.h"
 
+#include "global/global.h"
+
 namespace {
 
 struct KeysHolder {

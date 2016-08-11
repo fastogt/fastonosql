@@ -144,11 +144,6 @@ uint32_t ServerInfo::version() const {
   return 0;
 }
 
-ServerInfo* makeLmdbServerInfo(FastoObject* root) {
-  std::string content = common::ConvertToString(root);
-  return makeLmdbServerInfo(content);
-}
-
 }  // namespace lmdb
 }  // namespace core
 }  // namespace fastonosql

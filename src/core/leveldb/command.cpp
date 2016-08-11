@@ -16,6 +16,8 @@
     along with FastoNoSQL.  If not, see <http://www.gnu.org/licenses/>.
 */
 
+#include <algorithm>                    // for transform
+
 #include "core/leveldb/command.h"
 
 namespace fastonosql {

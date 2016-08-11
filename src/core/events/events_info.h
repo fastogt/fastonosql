@@ -18,14 +18,23 @@
 
 #pragma once
 
-#include <vector>
-#include <string>
+#include <stddef.h>                     // for size_t
+#include <stdint.h>                     // for uint32_t, uint8_t
 
-#include "common/qt/utils_qt.h"
+#include <string>                       // for string
+#include <vector>                       // for vector
 
-#include "core/types.h"
-#include "core/command_key.h"
-#include "core/server_property_info.h"
+#include "common/error.h"               // for Error
+#include "common/qt/utils_qt.h"         // for EventInfo<>::error_type, etc
+#include "common/types.h"               // for time64_t
+
+#include "core/command_key.h"           // for CommandKeySPtr
+#include "core/connection_types.h"      // for ConnectionMode
+#include "core/db_key.h"                // for NDbKValue
+#include "core/server_property_info.h"  // for property_t, etc
+#include "core/types.h"                 // for ServerInfoSnapShoot, etc
+
+#include "global/global.h"              // for FastoObjectIPtr
 
 namespace fastonosql {
 namespace core {

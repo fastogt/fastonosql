@@ -846,11 +846,6 @@ ServerInfo* makeRedisServerInfo(const std::string& content) {
   return result;
 }
 
-ServerInfo* makeRedisServerInfo(FastoObject* root) {
-  std::string content = common::ConvertToString(root);
-  return makeRedisServerInfo(content);
-}
-
 }  // namespace redis
 }  // namespace core
 }  // namespace fastonosql

@@ -18,17 +18,23 @@
 
 #include "core/leveldb/config.h"
 
-#include <string>
-#include <vector>
+#include <stddef.h>                     // for size_t
+#include <string.h>                     // for strcmp
+
+#include <string>                       // for string, basic_string
+#include <vector>                       // for vector
 
 extern "C" {
   #include "sds.h"
 }
 
-#include "common/sprintf.h"
-#include "common/file_system.h"
+#include "common/file_system.h"         // for prepare_path
+#include "common/log_levels.h"          // for LEVEL_LOG::L_WARNING
+#include "common/sprintf.h"             // for MemSPrintf
 
-#include "fasto/qt/logger.h"
+#include "fasto/qt/logger.h"            // for LOG_MSG
+
+#include "leveldb/options.h"            // for Options
 
 namespace fastonosql {
 namespace core {
@@ -39,7 +45,7 @@ namespace {
 Config parseOptions(int argc, char** argv) {
   Config cfg;
   for (int i = 0; i < argc; i++) {
-    const bool lastarg = i == argc-1;
+    bool lastarg = i == argc-1;
 
     if (!strcmp(argv[i], "-d") && !lastarg) {
       cfg.delimiter = argv[++i];
@@ -51,8 +57,7 @@ Config parseOptions(int argc, char** argv) {
       cfg.options.create_if_missing = true;
     } else {
       if (argv[i][0] == '-') {
-        const std::string buff = common::MemSPrintf("Unrecognized option or bad number of args for: '%s'",
-                                              argv[i]);
+        std::string buff = common::MemSPrintf("Unrecognized option or bad number of args for: '%s'", argv[i]);
         LOG_MSG(buff, common::logging::L_WARNING, true);
         break;
       } else {

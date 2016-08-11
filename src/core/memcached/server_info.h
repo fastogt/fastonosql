@@ -20,8 +20,6 @@
 
 #include <string>
 
-#include "global/global.h"
-
 #include "core/types.h"
 
 #define MEMCACHED_COMMON_LABEL "# Common"
@@ -97,7 +95,6 @@ class ServerInfo
 std::ostream& operator << (std::ostream& out, const ServerInfo& value);
 
 ServerInfo* makeMemcachedServerInfo(const std::string& content);
-ServerInfo* makeMemcachedServerInfo(FastoObject* root);
 
 }  // namespace memcached
 }  // namespace core

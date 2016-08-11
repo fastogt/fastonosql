@@ -22,8 +22,6 @@
 
 #include "core/types.h"
 
-#include "global/global.h"
-
 #define ROCKSDB_STATS_LABEL "# Stats"
 
 #define ROCKSDB_CAMPACTIONS_LEVEL_LABEL "compactions_level"
@@ -64,7 +62,6 @@ class ServerInfo
 std::ostream& operator << (std::ostream& out, const ServerInfo& value);
 
 ServerInfo* makeRocksdbServerInfo(const std::string& content);
-ServerInfo* makeRocksdbServerInfo(FastoObject* root);
 
 }  // namespace rocksdb
 }  // namespace core

@@ -170,11 +170,6 @@ uint32_t ServerInfo::version() const {
   return 0;
 }
 
-ServerInfo* makeRocksdbServerInfo(FastoObject* root) {
-  std::string content = common::ConvertToString(root);
-  return makeRocksdbServerInfo(content);
-}
-
 }  // namespace rocksdb
 }  // namespace core
 }  // namespace fastonosql

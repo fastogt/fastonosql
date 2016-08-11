@@ -25,8 +25,6 @@
 
 #include "core/types.h"
 
-#include "global/global.h"
-
 #define REDIS_SERVER_LABEL "# Server"
 #define REDIS_CLIENTS_LABEL "# Clients"
 #define REDIS_MEMORY_LABEL "# Memory"
@@ -264,7 +262,6 @@ struct ServerInfo
 std::ostream& operator<<(std::ostream& out, const ServerInfo& value);
 
 ServerInfo* makeRedisServerInfo(const std::string& content);
-ServerInfo* makeRedisServerInfo(FastoObject* root);
 
 }  // namespace redis
 }  // namespace core

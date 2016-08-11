@@ -20,8 +20,6 @@
 
 #include <string>
 
-#include "global/global.h"
-
 #include "core/types.h"
 
 #define UNQLITE_STATS_LABEL "# Stats"
@@ -55,7 +53,6 @@ class ServerInfo
 std::ostream& operator << (std::ostream& out, const ServerInfo& value);
 
 ServerInfo* makeUnqliteServerInfo(const std::string& content);
-ServerInfo* makeUnqliteServerInfo(FastoObject* root);
 
 }  // namespace unqlite
 }  // namespace core

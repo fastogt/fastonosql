@@ -25,6 +25,8 @@
 
 #include "common/sprintf.h"
 
+#include "global/global.h"
+
 #define ROCKSDB_HEADER_STATS    "\n** Compaction Stats [default] **\n"\
                                 "Level    Files   Size(MB) Score Read(GB)  Rn(GB) Rnp1(GB) "\
                                 "Write(GB) Wnew(GB) Moved(GB) W-Amp Rd(MB/s) Wr(MB/s) "\

@@ -20,8 +20,6 @@
 
 #include <string>
 
-#include "global/global.h"
-
 #include "core/types.h"
 
 #define LMDB_STATS_LABEL "# Stats"
@@ -56,7 +54,6 @@ class ServerInfo
 std::ostream& operator << (std::ostream& out, const ServerInfo& value);
 
 ServerInfo* makeLmdbServerInfo(const std::string& content);
-ServerInfo* makeLmdbServerInfo(FastoObject* root);
 
 }  // namespace lmdb
 }  // namespace core

@@ -147,11 +147,6 @@ uint32_t ServerInfo::version() const {
   return 0;
 }
 
-ServerInfo* makeUnqliteServerInfo(FastoObject* root) {
-  std::string content = common::ConvertToString(root);
-  return makeUnqliteServerInfo(content);
-}
-
 }  // namespace unqlite
 }  // namespace core
 }  // namespace fastonosql

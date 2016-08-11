@@ -20,8 +20,6 @@
 
 #include <string>
 
-#include "common/qt/convert_string.h"
-
 #include "core/connection_confg.h"
 
 namespace fastonosql {

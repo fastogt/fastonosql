@@ -22,6 +22,8 @@
 
 #include "common/sprintf.h"
 
+#include "global/global.h"
+
 namespace fastonosql {
 namespace core {
 template<>
