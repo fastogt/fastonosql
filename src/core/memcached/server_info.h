@@ -18,9 +18,12 @@
 
 #pragma once
 
-#include <string>
+#include <stdint.h>                     // for uint32_t
 
-#include "core/types.h"
+#include <iosfwd>                       // for ostream
+#include <string>                       // for string, basic_string
+
+#include "core/types.h"                 // for IStateField, IServerInfo
 
 #define MEMCACHED_COMMON_LABEL "# Common"
 

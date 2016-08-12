@@ -18,11 +18,12 @@
 
 #pragma once
 
-#include <string>
+#include <string>                       // for string
+
+#include "common/net/types.h"           // for HostAndPort
 
 #include "core/connection_settings.h"
-
-#include "core/redis/config.h"
+#include "core/redis/config.h"          // for Config
 
 namespace fastonosql {
 namespace core {
@@ -33,11 +34,11 @@ class ConnectionSettings
  public:
   explicit ConnectionSettings(const connection_path_t& connectionName);
 
-  virtual std::string commandLine() const;
-  virtual void setCommandLine(const std::string& line);
+  virtual std::string commandLine() const override;
+  virtual void setCommandLine(const std::string& line) override;
 
-  virtual void setHost(const common::net::HostAndPort& host);
-  virtual common::net::HostAndPort host() const;
+  virtual void setHost(const common::net::HostAndPort& host) override;
+  virtual common::net::HostAndPort host() const override;
 
   Config info() const;
   void setInfo(const Config& info);

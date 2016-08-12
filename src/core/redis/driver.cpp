@@ -18,14 +18,34 @@
 
 #include "core/redis/driver.h"
 
-#include "common/file_system.h"
-#include "common/utils.h"
+#include <stddef.h>                     // for size_t
+#include <stdint.h>                     // for uint32_t
 
-#include "core/command_logger.h"
+#include <memory>                       // for __shared_ptr, shared_ptr
+#include <vector>                       // for vector
 
-#include "core/redis/cluster_infos.h"
-#include "core/redis/database.h"
-#include "core/redis/command.h"
+#include "common/convert2string.h"      // for ConvertFromString, etc
+#include "common/file_system.h"         // for copy_file
+#include "common/intrusive_ptr.h"       // for intrusive_ptr
+#include "common/log_levels.h"          // for LEVEL_LOG::L_WARNING
+#include "common/qt/utils_qt.h"         // for Event<>::value_type
+#include "common/sprintf.h"             // for MemSPrintf
+#include "common/value.h"               // for Value, ErrorValue, etc
+
+#include "core/command_key.h"           // for createCommand, etc
+#include "core/connection_types.h"
+#include "core/db_key.h"                // for NDbKValue, NValue, ttl_t, etc
+#include "core/events/events_info.h"
+#include "core/server_property_info.h"  // for makeServerProperty, etc
+#include "core/ssh_info.h"              // for SSHInfo
+
+#include "core/redis/command.h"         // for Command
+#include "core/redis/config.h"          // for Config
+#include "core/redis/connection_settings.h"  // for ConnectionSettings
+#include "core/redis/database.h"        // for DataBaseInfo
+#include "core/redis/server_info.h"     // for ServerInfo, etc
+
+#include "global/global.h"              // for FastoObjectCommandIPtr, etc
 
 #define REDIS_SHUTDOWN "SHUTDOWN"
 #define REDIS_BACKUP "SAVE"

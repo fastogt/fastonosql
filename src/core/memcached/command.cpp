@@ -18,6 +18,8 @@
 
 #include "core/memcached/command.h"
 
+#include <algorithm>                    // for transform
+
 namespace fastonosql {
 namespace core {
 namespace memcached {

@@ -18,7 +18,7 @@
 
 #include "core/lmdb/command.h"
 
-#include <algorithm>
+#include <algorithm>                    // for transform
 
 namespace fastonosql {
 namespace core {

@@ -18,18 +18,30 @@
 
 #include "core/memcached/driver.h"
 
-#include <string>
+#include <stddef.h>                     // for size_t
+#include <memory>                       // for __shared_ptr
+#include <string>                       // for string
 
-#include "common/utils.h"
-#include "common/sprintf.h"
+#include "common/log_levels.h"          // for LEVEL_LOG::L_WARNING
+#include "common/qt/utils_qt.h"         // for Event<>::value_type
+#include "common/sprintf.h"             // for MemSPrintf
+#include "common/value.h"               // for ErrorValue, etc
 
-#include "core/command_logger.h"
+#include "core/command_key.h"           // for createCommand, etc
+#include "core/command_logger.h"        // for LOG_COMMAND
+#include "core/connection_types.h"      // for ConvertToString, etc
+#include "core/db_key.h"                // for NDbKValue, NValue, NKey
+#include "core/events/events_info.h"
 
-#include "core/memcached/database.h"
-#include "core/memcached/command.h"
-#include "core/memcached/db_connection.h"
+#include "core/memcached/command.h"     // for Command
+#include "core/memcached/config.h"      // for Config
+#include "core/memcached/connection_settings.h"  // for ConnectionSettings
+#include "core/memcached/database.h"    // for DataBaseInfo
+#include "core/memcached/db_connection.h"  // for DBConnection
+#include "core/memcached/server_info.h"  // for ServerInfo, etc
 
-#include "global/types.h"
+#include "global/global.h"              // for FastoObject::childs_t, etc
+#include "global/types.h"               // for Command
 
 #define MEMCACHED_INFO_REQUEST "STATS"
 #define MEMCACHED_GET_KEYS_PATTERN_1ARGS_I "KEYS a z %d"
@@ -99,7 +111,8 @@ common::Error Driver::currentDataBaseInfo(IDataBaseInfo** info) {
   }
 
   size_t dbkcount = 0;
-  impl_->dbkcount(&dbkcount);
+  common::Error err = impl_->dbkcount(&dbkcount);
+  MCHECK(!err);
   *info = new DataBaseInfo("0", true, dbkcount);
   return common::Error();
 }
@@ -216,9 +229,9 @@ void Driver::handleLoadDatabaseContentEvent(events::LoadDatabaseContentRequestEv
   notifyProgress(sender, 50);
   FastoObjectCommand* cmd = createCommand<Command>(root, patternResult,
                                                             common::Value::C_INNER);
-  common::Error er = execute(cmd);
-  if (er && er->isError()) {
-    res.setErrorInfo(er);
+  common::Error err = execute(cmd);
+  if (err && err->isError()) {
+    res.setErrorInfo(err);
   } else {
     FastoObject::childs_t rchildrens = cmd->childrens();
     if (rchildrens.size()) {
@@ -241,7 +254,8 @@ void Driver::handleLoadDatabaseContentEvent(events::LoadDatabaseContentRequestEv
         }
       }
 
-      impl_->dbkcount(&res.db_keys_count);
+      err = impl_->dbkcount(&res.db_keys_count);
+      MCHECK(!err);
     }
   }
 done:

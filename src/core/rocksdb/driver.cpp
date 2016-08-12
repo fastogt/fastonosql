@@ -18,19 +18,32 @@
 
 #include "core/rocksdb/driver.h"
 
-#include <vector>
-#include <string>
+#include <stddef.h>                     // for size_t
 
-#include "common/sprintf.h"
-#include "common/utils.h"
+#include <memory>                       // for __shared_ptr
+#include <string>                       // for string
 
-#include "core/command_logger.h"
+#include "common/log_levels.h"          // for LEVEL_LOG::L_WARNING
+#include "common/qt/utils_qt.h"         // for Event<>::value_type
+#include "common/sprintf.h"             // for MemSPrintf
+#include "common/value.h"               // for ErrorValue, etc
 
-#include "core/rocksdb/database.h"
-#include "core/rocksdb/command.h"
-#include "core/rocksdb/db_connection.h"
+#include "core/command_key.h"           // for createCommand, etc
+#include "core/command_logger.h"        // for LOG_COMMAND
+#include "core/connection_types.h"      // for ConvertToString, etc
+#include "core/db_key.h"                // for NDbKValue, NValue, NKey
 
-#include "global/types.h"
+#include "core/events/events_info.h"
+
+#include "core/rocksdb/command.h"       // for Command
+#include "core/rocksdb/config.h"        // for Config
+#include "core/rocksdb/connection_settings.h"  // for ConnectionSettings
+#include "core/rocksdb/database.h"      // for DataBaseInfo
+#include "core/rocksdb/db_connection.h"  // for DBConnection
+#include "core/rocksdb/server_info.h"   // for ServerInfo, etc
+
+#include "global/global.h"              // for FastoObject::childs_t, etc
+#include "global/types.h"               // for Command
 
 #define ROCKSDB_INFO_REQUEST "INFO"
 #define ROCKSDB_GET_KEY_PATTERN_1ARGS_S "GET %s"

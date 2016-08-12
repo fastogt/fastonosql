@@ -18,9 +18,9 @@
 
 #pragma once
 
-#include <string>
+#include <string>                       // for string
 
-#include "core/connection_confg.h"
+#include "core/connection_confg.h"      // for LocalConfig
 
 namespace fastonosql {
 namespace core {

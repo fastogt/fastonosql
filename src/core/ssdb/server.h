@@ -18,8 +18,13 @@
 
 #pragma once
 
-#include "core/connection_settings.h"
-#include "core/iserver.h"
+#include "common/net/types.h"           // for HostAndPort
+
+#include "core/connection_settings.h"   // for IConnectionSettingsBaseSPtr
+#include "core/connection_types.h"      // for serverMode, serverState, etc
+#include "core/core_fwd.h"              // for IDatabaseSPtr
+#include "core/iserver.h"               // for IServerRemote
+#include "core/types.h"                 // for IDataBaseInfoSPtr
 
 namespace fastonosql {
 namespace core {

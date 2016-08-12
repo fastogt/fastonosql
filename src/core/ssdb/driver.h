@@ -18,7 +18,16 @@
 
 #pragma once
 
-#include "core/idriver.h"
+#include <string>                       // for string
+
+#include "common/error.h"               // for Error
+#include "common/macros.h"              // for WARN_UNUSED_RESULT
+#include "common/net/types.h"           // for HostAndPort
+
+#include "core/connection_settings.h"   // for IConnectionSettingsBaseSPtr
+#include "core/events/events.h"         // for ClearDatabaseRequestEvent, etc
+#include "core/idriver.h"               // for IDriverRemote
+#include "core/types.h"                 // for IDataBaseInfo (ptr only), etc
 
 namespace fastonosql {
 namespace core {

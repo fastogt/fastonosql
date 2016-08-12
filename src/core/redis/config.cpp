@@ -18,18 +18,24 @@
 
 #include "core/redis/config.h"
 
-#include <string>
-#include <algorithm>
-#include <vector>
+#include <stddef.h>                     // for size_t
+#include <stdint.h>                     // for uint16_t
+#include <stdlib.h>                     // for atof, strtoll
+#include <string.h>                     // for strcmp, NULL
+
+#include <string>                       // for string, basic_string
+#include <vector>                       // for vector
 
 extern "C" {
   #include "sds.h"
 }
 
-#include "common/utils.h"
-#include "common/sprintf.h"
+#include "common/convert2string.h"      // for ConvertToString, etc
+#include "common/log_levels.h"          // for LEVEL_LOG::L_WARNING
+#include "common/net/types.h"           // for HostAndPort
+#include "common/sprintf.h"             // for MemSPrintf
 
-#include "fasto/qt/logger.h"
+#include "fasto/qt/logger.h"            // for LOG_MSG
 
 #define DEFAULT_REDIS_SERVER_PORT 6379
 

@@ -18,11 +18,16 @@
 
 #include "core/unqlite/server_info.h"
 
-#include <ostream>
-#include <sstream>
-#include <vector>
-#include <algorithm>
-#include <string>
+#include <stddef.h>                     // for size_t
+
+#include <sstream>                      // for operator<<, ostream, etc
+#include <string>                       // for string, operator<<, etc
+#include <utility>                      // for make_pair
+#include <vector>                       // for vector
+
+#include "common/macros.h"              // for NOTREACHED, DCHECK_EQ
+#include "common/value.h"               // for Value, Value::Type, etc
+#include "core/connection_types.h"      // for connectionTypes::UNQLITE
 
 #define MARKER "\r\n"
 

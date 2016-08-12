@@ -18,16 +18,26 @@
 
 #include "core/memcached/db_connection.h"
 
+#include <stdlib.h>                     // for atoll, free
+#include <string.h>                     // for strcasecmp
+
+#include <memory>                       // for __shared_ptr
+#include <string>                       // for string, operator<, etc
+
 #include <libmemcached/memcached.h>
 #include <libmemcached/util.h>
-#include <libmemcached/instance.hpp>
+#include <libmemcached/instance.hpp>    // for memcached_instance_st
 
-#include <string>
+#include "common/convert2string.h"      // for ConvertFromString
+#include "common/net/types.h"           // for HostAndPort
+#include "common/sprintf.h"             // for MemSPrintf
+#include "common/utils.h"               // for c_strornull
+#include "common/value.h"               // for Value::ErrorsType::E_ERROR, etc
 
-#include "common/utils.h"
-#include "common/sprintf.h"
+#include "core/memcached/config.h"      // for Config
+#include "core/memcached/connection_settings.h"  // for ConnectionSettings
 
-#include "global/global.h"
+#include "global/global.h"              // for FastoObject, etc
 
 namespace {
 

@@ -18,9 +18,11 @@
 
 #include "core/redis/connection_settings.h"
 
-#include <string>
+#include <string>                       // for string
 
-#include "common/utils.h"
+#include "common/convert2string.h"      // for ConvertFromString
+
+#include "core/connection_types.h"      // for connectionTypes::REDIS
 
 namespace fastonosql {
 namespace core {

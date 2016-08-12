@@ -18,16 +18,21 @@
 
 #pragma once
 
-#include <vector>
-#include <string>
+#include <stddef.h>                     // for size_t
 
-#include "core/command_info.h"
+#include <vector>                       // for vector
+
+#include "common/error.h"               // for Error
+#include "common/macros.h"              // for PROJECT_VERSION_GENERATE, etc
+
+#include "core/command_info.h"          // for CommandInfo, etc
+#include "core/ssh_info.h"              // for SSHInfo
+#include "core/types.h"                 // for IDataBaseInfo (ptr only), etc
 
 #include "core/redis/connection_settings.h"
 #include "core/redis/config.h"
-#include "core/redis/server_info.h"
 
-#include "global/global.h"
+#include "global/global.h"              // for FastoObject (ptr only), etc
 
 #define INFO_REQUEST "INFO"
 #define GET_SERVER_TYPE "CLUSTER NODES"

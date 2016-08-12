@@ -18,6 +18,8 @@
 
 #include "core/ssdb/command.h"
 
+#include <algorithm>                    // for transform
+
 namespace fastonosql {
 namespace core {
 namespace ssdb {

@@ -18,11 +18,22 @@
 
 #include "core/redis/sentinel_info.h"
 
-#include <stdlib.h>
+#include <stddef.h>                     // for size_t
+#include <stdint.h>                     // for uint16_t
+#include <string.h>                     // for strcmp
 
-#include <hiredis/hiredis.h>
+#include <string>                       // for string, operator==
+#include <vector>                       // for vector
 
-#include "common/string_util.h"
+#include <hiredis/hiredis.h>            // for redisReply
+
+#include "common/convert2string.h"      // for ConvertFromString
+#include "common/macros.h"              // for NOTREACHED
+#include "common/net/types.h"           // for HostAndPortAndSlot
+#include "common/string_util.h"         // for Tokenize
+#include "common/value.h"               // for ErrorValue, etc
+
+#include "core/connection_types.h"      // for connectionTypes::REDIS, etc
 
 #define NAME_FIELD "name"
 #define TYPE_FIELD "flags"

@@ -18,8 +18,15 @@
 
 #include "core/redis/server.h"
 
-#include "core/redis/driver.h"
-#include "core/redis/database.h"
+#include <string>                       // for operator==, basic_string
+
+#include "common/error.h"               // for Error
+#include "common/macros.h"              // for CHECK
+
+#include "core/events/events_info.h"    // for DiscoveryInfoResponce
+#include "core/redis/database.h"        // for Database
+#include "core/redis/driver.h"          // for Driver
+#include "core/redis/server_info.h"     // for ServerInfo, etc
 
 namespace fastonosql {
 namespace core {

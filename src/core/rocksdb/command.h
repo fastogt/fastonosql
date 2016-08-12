@@ -18,9 +18,9 @@
 
 #pragma once
 
-#include <string>
+#include <string>                       // for string
 
-#include "global/global.h"
+#include "global/global.h"              // for FastoObject (ptr only), etc
 
 namespace fastonosql {
 namespace core {

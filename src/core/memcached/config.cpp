@@ -18,16 +18,23 @@
 
 #include "core/memcached/config.h"
 
-#include <string>
-#include <vector>
+#include <stddef.h>                     // for size_t
+#include <stdint.h>                     // for uint16_t
+#include <string.h>                     // for strcmp
+
+#include <string>                       // for string, basic_string
+#include <vector>                       // for vector
 
 extern "C" {
   #include "sds.h"
 }
 
-#include "common/sprintf.h"
+#include "common/convert2string.h"      // for ConvertFromString
+#include "common/log_levels.h"          // for LEVEL_LOG::L_WARNING
+#include "common/net/types.h"           // for HostAndPort
+#include "common/sprintf.h"             // for MemSPrintf
 
-#include "fasto/qt/logger.h"
+#include "fasto/qt/logger.h"            // for LOG_MSG
 
 #define DEFAULT_MEMCACHED_SERVER_PORT 11211
 
@@ -40,7 +47,7 @@ namespace {
 Config parseOptions(int argc, char** argv) {
   Config cfg;
   for (int i = 0; i < argc; i++) {
-    const bool lastarg = i == argc-1;
+    const bool lastarg = i == argc - 1;
 
     if (!strcmp(argv[i], "-h") && !lastarg) {
       cfg.host.host = argv[++i];

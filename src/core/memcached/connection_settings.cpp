@@ -20,7 +20,9 @@
 
 #include <string>
 
-#include "common/utils.h"
+#include "common/convert2string.h"      // for ConvertFromString
+
+#include "core/connection_types.h"      // for connectionTypes::MEMCACHED
 
 namespace fastonosql {
 namespace core {

@@ -18,11 +18,12 @@
 
 #pragma once
 
-#include <string>
+#include <string>                       // for string
+
+#include "common/net/types.h"           // for HostAndPort
 
 #include "core/connection_settings.h"
-
-#include "core/ssdb/config.h"
+#include "core/ssdb/config.h"           // for Config
 
 namespace fastonosql {
 namespace core {

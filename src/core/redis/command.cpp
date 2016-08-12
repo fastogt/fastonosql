@@ -18,6 +18,8 @@
 
 #include "core/redis/command.h"
 
+#include <algorithm>                    // for transform
+
 namespace fastonosql {
 namespace core {
 namespace redis {

@@ -18,10 +18,19 @@
 
 #pragma once
 
-#include <string>
+#include <stddef.h>                     // for size_t
+#include <stdint.h>                     // for uint64_t
 
-#include "core/command_handler.h"
-#include "core/connection.h"
+#include <string>                       // for string
+#include <vector>                       // for vector
+
+#include "common/error.h"               // for Error
+#include "common/macros.h"              // for WARN_UNUSED_RESULT
+
+#include "core/command_handler.h"       // for CommandHandler
+#include "core/command_holder.h"        // for CommandHolder, etc
+#include "core/command_info.h"          // for UNDEFINED_EXAMPLE_STR, etc
+#include "core/connection.h"            // for Connection, etc
 
 #include "core/rocksdb/connection_settings.h"
 #include "core/rocksdb/config.h"

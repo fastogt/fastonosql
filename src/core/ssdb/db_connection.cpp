@@ -18,11 +18,20 @@
 
 #include "core/ssdb/db_connection.h"
 
-#include <SSDB.h>
+#include <stdlib.h>                     // for atoll
+#include <memory>                       // for __shared_ptr
 
-#include "common/sprintf.h"
+#include <SSDB.h>                       // for Status, Client
 
-#include "global/global.h"
+#include "common/convert2string.h"      // for ConvertFromString
+#include "common/net/types.h"           // for HostAndPort
+#include "common/sprintf.h"             // for MemSPrintf
+#include "common/value.h"               // for Value, etc
+
+#include "core/ssdb/config.h"           // for Config
+#include "core/ssdb/connection_settings.h"  // for ConnectionSettings
+
+#include "global/global.h"              // for FastoObject, etc
 
 namespace fastonosql {
 namespace core {

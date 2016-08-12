@@ -18,9 +18,9 @@
 
 #pragma once
 
-#include <string>
+#include <string>                       // for string
 
-#include "core/isentinel.h"
+#include "core/isentinel.h"             // for ISentinel
 
 namespace fastonosql {
 namespace core {

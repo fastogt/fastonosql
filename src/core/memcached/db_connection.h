@@ -18,7 +18,15 @@
 
 #pragma once
 
-#include <string>
+#include <stddef.h>                     // for size_t
+#include <stdint.h>                     // for uint32_t, uint64_t
+#include <time.h>                       // for time_t
+
+#include <string>                       // for string
+#include <vector>                       // for vector
+
+#include "common/error.h"               // for Error
+#include "common/macros.h"              // for WARN_UNUSED_RESULT
 
 #include "core/command_handler.h"
 #include "core/connection.h"
@@ -39,7 +47,7 @@ common::Error createConnection(const Config& config, NativeConnection** context)
 common::Error createConnection(ConnectionSettings* settings, NativeConnection** context);
 common::Error testConnection(ConnectionSettings* settings);
 
-struct DBConnection
+class DBConnection
   : public CommandHandler {
  public:
   typedef ConnectionAllocatorTraits<NativeConnection, Config> ConnectionAllocatorTrait;

@@ -18,6 +18,8 @@
 
 #include "core/rocksdb/command.h"
 
+#include <algorithm>                    // for transform
+
 namespace fastonosql {
 namespace core {
 namespace rocksdb {

@@ -18,11 +18,17 @@
 
 #include "core/redis/server_info.h"
 
-#include <ostream>
-#include <sstream>
-#include <vector>
-#include <algorithm>
-#include <string>
+#include <stddef.h>                     // for size_t
+
+#include <sstream>                      // for operator<<, basic_ostream, etc
+#include <string>                       // for operator==, string, etc
+#include <utility>                      // for make_pair
+#include <vector>                       // for vector
+
+#include "common/convert2string.h"      // for ConvertFromString, etc
+#include "common/macros.h"              // for NOTREACHED, UNUSED
+#include "common/value.h"               // for FundamentalValue, Value, etc
+#include "core/connection_types.h"      // for connectionTypes::REDIS
 
 namespace fastonosql {
 namespace core {

@@ -18,7 +18,11 @@
 
 #include "core/unqlite/connection_settings.h"
 
-#include <string>
+#include <string>                       // for string
+
+#include "common/convert2string.h"      // for ConvertFromString
+
+#include "core/connection_types.h"      // for connectionTypes::UNQLITE
 
 namespace fastonosql {
 namespace core {

@@ -18,20 +18,30 @@
 
 #include "core/ssdb/driver.h"
 
-#include <string>
-#include <vector>
-#include <map>
+#include <stddef.h>                     // for size_t
 
-#include "common/sprintf.h"
-#include "common/utils.h"
+#include <memory>                       // for __shared_ptr
+#include <string>                       // for string
 
-#include "core/command_logger.h"
+#include "common/log_levels.h"          // for LEVEL_LOG::L_WARNING
+#include "common/qt/utils_qt.h"         // for Event<>::value_type
+#include "common/sprintf.h"             // for MemSPrintf
+#include "common/value.h"               // for ErrorValue, Value, etc
 
-#include "core/ssdb/database.h"
-#include "core/ssdb/command.h"
-#include "core/ssdb/db_connection.h"
+#include "core/command_key.h"           // for createCommand, etc
+#include "core/command_logger.h"        // for LOG_COMMAND
+#include "core/connection_types.h"      // for ConvertToString, etc
+#include "core/db_key.h"                // for NDbKValue, NValue, NKey
+#include "core/events/events_info.h"
+#include "core/ssdb/command.h"          // for Command
+#include "core/ssdb/config.h"           // for Config
+#include "core/ssdb/connection_settings.h"  // for ConnectionSettings
+#include "core/ssdb/database.h"         // for DataBaseInfo
+#include "core/ssdb/db_connection.h"    // for DBConnection
+#include "core/ssdb/server_info.h"      // for ServerInfo, etc
 
-#include "global/types.h"
+#include "global/global.h"              // for FastoObject::childs_t, etc
+#include "global/types.h"               // for Command
 
 #define SSDB_INFO_REQUEST "INFO"
 #define SSDB_GET_KEYS_PATTERN_1ARGS_I "KEYS a z %d"
@@ -189,7 +199,8 @@ common::Error Driver::currentDataBaseInfo(IDataBaseInfo** info) {
   }
 
   size_t dbkcount = 0;
-  impl_->dbkcount(&dbkcount);
+  common::Error err = impl_->dbkcount(&dbkcount);
+  MCHECK(!err);
   DataBaseInfo* sinfo = new DataBaseInfo("0", true, dbkcount);
   *info = sinfo;
   return common::Error();
@@ -307,9 +318,9 @@ void Driver::handleLoadDatabaseContentEvent(events::LoadDatabaseContentRequestEv
   notifyProgress(sender, 50);
     FastoObjectCommand* cmd = createCommand<Command>(root, patternResult,
                                                          common::Value::C_INNER);
-    common::Error er = execute(cmd);
-    if (er && er->isError()) {
-      res.setErrorInfo(er);
+    common::Error err = execute(cmd);
+    if (err && err->isError()) {
+      res.setErrorInfo(err);
     } else {
       FastoObject::childs_t rchildrens = cmd->childrens();
       if (rchildrens.size()) {
@@ -332,7 +343,8 @@ void Driver::handleLoadDatabaseContentEvent(events::LoadDatabaseContentRequestEv
           }
         }
 
-        impl_->dbkcount(&res.db_keys_count);
+        err = impl_->dbkcount(&res.db_keys_count);
+        MCHECK(!err);
       }
     }
 done:

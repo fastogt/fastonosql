@@ -18,7 +18,7 @@
 
 #include "core/redis/sentinel_settings.h"
 
-#include <string>
+#include "core/connection_types.h"      // for connectionTypes::REDIS
 
 namespace fastonosql {
 namespace core {

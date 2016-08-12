@@ -18,12 +18,12 @@
 
 #pragma once
 
-#include <vector>
-#include <string>
+#include <stdint.h>                     // for uint32_t
 
-#include "common/types.h"
+#include <iosfwd>                       // for ostream
+#include <string>                       // for string, basic_string
 
-#include "core/types.h"
+#include "core/types.h"                 // for IStateField, IServerInfo
 
 #define REDIS_SERVER_LABEL "# Server"
 #define REDIS_CLIENTS_LABEL "# Clients"

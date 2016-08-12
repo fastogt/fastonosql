@@ -18,11 +18,7 @@
 
 #pragma once
 
-#include <string>
-
 #include "core/connection_settings.h"
-
-#include "core/redis/config.h"
 
 namespace fastonosql {
 namespace core {

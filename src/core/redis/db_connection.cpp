@@ -18,32 +18,24 @@
 
 #include "core/redis/db_connection.h"
 
-#ifdef __MINGW32__
-char* strcasestr(const char* s, const char* find) {
-  char c, sc;
-  if ((c = *find++) != 0) {
-    c = tolower((unsigned char)c);
-    size_t len = strlen(find);
-    do {
-      do {
-        if ((sc = *s++) == 0)
-          return NULL;
-      } while ((char)tolower((unsigned char)sc) != c);
-    } while (strncasecmp(s, find, len) != 0);
-    s--;
-  }
-  return ((char *)s);
-}
-#endif
-
 #include <errno.h>
 #include <fcntl.h>
 #include <unistd.h>
 #ifdef OS_POSIX
-#include <sys/socket.h>
 #include <netinet/in.h>
 #include <netinet/tcp.h>
 #endif
+
+#include <limits.h>                     // for LONG_MIN
+#include <stdarg.h>                     // for va_end, va_list, va_start
+#include <stdint.h>                     // for uint64_t, uint16_t, int64_t
+#include <stdio.h>                      // for vsnprintf
+#include <stdlib.h>                     // for free, malloc, realloc, etc
+#include <string.h>                     // for strcasecmp, NULL, strcmp, etc
+
+#include <memory>                       // for __shared_ptr
+#include <vector>
+#include <string>
 
 extern "C" {
   #include "sds.h"
@@ -51,28 +43,31 @@ extern "C" {
 
 #include <hiredis/hiredis.h>
 
-#include <vector>
-#include <algorithm>
-#include <string>
-
 #include "third-party/redis/src/help.h"
 
-#include "common/time.h"
-#include "common/utils.h"
-#include "common/string_util.h"
-#include "common/sprintf.h"
+#include "common/common_config.h"       // for INVALID_DESCRIPTOR
+#include "common/convert2string.h"      // for ConvertFromString, etc
+#include "common/intrusive_ptr.h"       // for intrusive_ptr
+#include "common/log_levels.h"          // for LEVEL_LOG::L_INFO, etc
+#include "common/net/types.h"           // for HostAndPort, etc
+#include "common/sprintf.h"             // for MemSPrintf, SNPrintf
+#include "common/time.h"                // for current_mstime
+#include "common/types.h"               // for time64_t
+#include "common/utils.h"               // for c_strornull, usleep, etc
+#include "common/value.h"               // for ErrorValue, etc
 
-#include "fasto/qt/logger.h"
+#include "core/command_key.h"           // for createCommand
+#include "core/command_logger.h"        // for LOG_COMMAND
+#include "core/connection_types.h"      // for connectionTypes::REDIS
+#include "core/redis/cluster_infos.h"   // for makeDiscoveryClusterInfo
+#include "core/redis/command.h"         // for Command
+#include "core/redis/connection_settings.h"  // for ConnectionSettings
+#include "core/redis/database.h"        // for DataBaseInfo
+#include "core/redis/sentinel_info.h"   // for DiscoverySentinelInfo, etc
 
-#include "core/command_logger.h"
-#include "core/command_key.h"
+#include "fasto/qt/logger.h"            // for LOG_MSG
 
-#include "core/redis/sentinel_info.h"
-#include "core/redis/cluster_infos.h"
-#include "core/redis/database.h"
-#include "core/redis/command.h"
-
-#include "global/types.h"
+#include "global/types.h"               // for Command
 
 #define HIREDIS_VERSION STRINGIZE(HIREDIS_MAJOR) "." STRINGIZE(HIREDIS_MINOR) "." STRINGIZE(HIREDIS_PATCH)
 #define REDIS_CLI_KEEPALIVE_INTERVAL 15 /* seconds */
@@ -1403,7 +1398,8 @@ common::Error DBConnection::select(int num, IDataBaseInfo** info) {
   redisReply* reply = reinterpret_cast<redisReply*>(redisCommand(context_, "SELECT %d", num));
   if (reply) {
     size_t sz = 0;
-    dbkcount(&sz);
+    common::Error err = dbkcount(&sz);
+    MCHECK(!err);
     DataBaseInfo* linfo = new DataBaseInfo(common::ConvertToString(num), true, sz);
     if (observer_) {
       observer_->currentDataBaseChanged(linfo);
@@ -1734,7 +1730,8 @@ common::Error DBConnection::execute(int argc, char** argv, FastoObject* out) {
     if (strcasecmp(command, "select") == 0 && argc == 2) {
       config_.dbnum = common::ConvertFromString<int>(argv[1]);
       size_t sz = 0;
-      dbkcount(&sz);
+      common::Error err = dbkcount(&sz);
+      MCHECK(!err);
       DataBaseInfo* info = new DataBaseInfo(common::ConvertToString(config_.dbnum), true, sz);
       if (observer_) {
         observer_->currentDataBaseChanged(info);

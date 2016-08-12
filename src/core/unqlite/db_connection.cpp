@@ -18,17 +18,23 @@
 
 #include "core/unqlite/db_connection.h"
 
+#include <stdlib.h>                     // for atoll
+
+#include <memory>                       // for __shared_ptr
+#include <string>                       // for string, operator<, etc
+#include <vector>                       // for vector
+
 extern "C" {
   #include <unqlite.h>
 }
 
-#include <string>
-#include <vector>
+#include "common/sprintf.h"             // for MemSPrintf
+#include "common/utils.h"               // for c_strornull
+#include "common/value.h"               // for Value::ErrorsType::E_ERROR, etc
+#include "core/unqlite/config.h"        // for Config
+#include "core/unqlite/connection_settings.h"  // for ConnectionSettings
 
-#include "common/utils.h"
-#include "common/sprintf.h"
-
-#include "global/global.h"
+#include "global/global.h"              // for FastoObject, etc
 
 namespace {
 
