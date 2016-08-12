@@ -21,7 +21,13 @@
 #include <string>
 
 #include "core/core_fwd.h"
-#include "core/events/events_info.h"
+#include "core/connection_types.h"      // for connectionTypes
+#include "core/types.h"                 // for IDataBaseInfoSPtr
+
+namespace fastonosql { namespace core { namespace events_info { struct ClearDatabaseRequest; } } }
+namespace fastonosql { namespace core { namespace events_info { struct CommandRequest; } } }
+namespace fastonosql { namespace core { namespace events_info { struct LoadDatabaseContentRequest; } } }
+namespace fastonosql { namespace core { namespace events_info { struct SetDefaultDatabaseRequest; } } }
 
 namespace fastonosql {
 namespace core {

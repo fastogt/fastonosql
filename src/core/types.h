@@ -18,13 +18,20 @@
 
 #pragma once
 
-#include <vector>
-#include <string>
+#include <stddef.h>                     // for size_t
+#include <stdint.h>                     // for uint32_t
 
-#include "common/net/net.h"
+#include <memory>                       // for shared_ptr
+#include <string>                       // for string
+#include <utility>                      // for pair
+#include <vector>                       // for vector
 
-#include "core/connection_types.h"
-#include "core/db_key.h"
+#include "common/net/types.h"           // for HostAndPortAndSlot
+#include "common/types.h"               // for time64_t
+#include "common/value.h"               // for Value, Value::Type
+
+#include "core/connection_types.h"      // for connectionTypes, etc
+#include "core/db_key.h"                // for NDbKValue
 
 namespace fastonosql {
 namespace core {

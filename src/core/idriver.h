@@ -18,14 +18,20 @@
 
 #pragma once
 
-#include <string>
-
 #include <QObject>
 
-#include "common/net/net.h"
-
+#include "common/error.h"               // for Error
+#include "common/macros.h"              // for WARN_UNUSED_RESULT
+#include "common/net/types.h"           // for HostAndPort
+#include "common/types.h"               // for time64_t
+#include "core/command_key.h"           // for CommandChangeTTL (ptr only), etc
+#include "core/connection_types.h"      // for connectionTypes
 #include "core/connection_settings.h"
+#include "core/types.h"                 // for IDataBaseInfo (ptr only), etc
+
 #include "core/events/events.h"
+
+#include "global/global.h"              // for FastoObject, etc
 
 class QThread;
 

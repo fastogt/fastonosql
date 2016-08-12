@@ -18,44 +18,55 @@
 
 #include "core/connection_settings.h"
 
-#include <sstream>
-#include <string>
+#include <inttypes.h>                   // for PRIu32
+#include <stddef.h>                     // for size_t
+#include <sstream>                      // for stringstream, basic_ostream, etc
+#include <string>                       // for string, allocator, etc
 
-#include "common/qt/convert_string.h"
-#include "common/utils.h"
-#include "common/net/net.h"
-#include "common/logger.h"
+#include "common/convert2string.h"      // for ConvertFromString, etc
+#include "common/macros.h"              // for NOTREACHED, CHECK, etc
+#include "common/qt/convert_string.h"   // for ConvertToString
+#include "common/sprintf.h"             // for MemSPrintf
+#include "common/types.h"               // for buffer_t
+#include "common/utils.h"               // for decode64, encode64, crc64
 
 #include "core/settings_manager.h"
 
 #ifdef BUILD_WITH_REDIS
-#include "core/redis/connection_settings.h"
-#include "core/redis/cluster_settings.h"
-#include "core/redis/sentinel_settings.h"
+#include "core/redis/cluster_settings.h"  // for ClusterSettings
+#include "core/redis/config.h"          // for ConvertToString, Config
+#include "core/redis/connection_settings.h"  // for ConnectionSettings
+#include "core/redis/sentinel_settings.h"  // for SentinelSettings
 #define LOGGING_REDIS_FILE_EXTENSION ".red"
 #endif
 #ifdef BUILD_WITH_MEMCACHED
-#include "core/memcached/connection_settings.h"
+#include "core/memcached/config.h"      // for ConvertToString, Config
+#include "core/memcached/connection_settings.h"  // for ConnectionSettings
 #define LOGGING_MEMCACHED_FILE_EXTENSION ".mem"
 #endif
 #ifdef BUILD_WITH_SSDB
-#include "core/ssdb/connection_settings.h"
+#include "core/ssdb/config.h"           // for ConvertToString, Config
+#include "core/ssdb/connection_settings.h"  // for ConnectionSettings
 #define LOGGING_SSDB_FILE_EXTENSION ".ssdb"
 #endif
 #ifdef BUILD_WITH_LEVELDB
-#include "core/leveldb/connection_settings.h"
+#include "core/leveldb/config.h"        // for Config, ConvertToString
+#include "core/leveldb/connection_settings.h"  // for ConnectionSettings
 #define LOGGING_LEVELDB_FILE_EXTENSION ".leveldb"
 #endif
 #ifdef BUILD_WITH_ROCKSDB
-#include "core/rocksdb/connection_settings.h"
+#include "core/rocksdb/config.h"        // for Config, ConvertToString
+#include "core/rocksdb/connection_settings.h"  // for ConnectionSettings
 #define LOGGING_ROCKSDB_FILE_EXTENSION ".rocksdb"
 #endif
 #ifdef BUILD_WITH_UNQLITE
-#include "core/unqlite/connection_settings.h"
+#include "core/unqlite/config.h"        // for Config, ConvertToString
+#include "core/unqlite/connection_settings.h"  // for ConnectionSettings
 #define LOGGING_UNQLITE_FILE_EXTENSION ".unq"
 #endif
 #ifdef BUILD_WITH_LMDB
-#include "core/lmdb/connection_settings.h"
+#include "core/lmdb/config.h"           // for Config, ConvertToString
+#include "core/lmdb/connection_settings.h"  // for ConnectionSettings
 #define LOGGING_LMDB_FILE_EXTENSION ".lmdb"
 #endif
 

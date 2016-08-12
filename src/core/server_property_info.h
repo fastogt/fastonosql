@@ -18,9 +18,11 @@
 
 #pragma once
 
-#include <vector>
+#include <string>                       // for string
+#include <utility>                      // for pair
+#include <vector>                       // for vector
 
-#include "global/global.h"
+namespace fastonosql { class FastoObjectArray; }
 
 namespace fastonosql {
 namespace core {

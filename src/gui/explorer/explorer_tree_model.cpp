@@ -27,6 +27,7 @@
 
 #include "core/icluster.h"
 #include "core/isentinel.h"
+#include "core/idatabase.h"
 
 #include "translations/global.h"
 

@@ -18,45 +18,61 @@
 
 #include "core/servers_manager.h"
 
-#include <vector>
+#include <stddef.h>                     // for size_t
 
-#include "core/icluster.h"
+#include <algorithm>                    // for remove
+#include <memory>                       // for __shared_ptr, shared_ptr, etc
+#include <vector>                       // for vector
+
+#include "common/smart_ptr.h"           // for make_shared
+#include "common/value.h"               // for ErrorValue, etc
+
+#include "core/connection_types.h"      // for connectionTypes, etc
+#include "core/icluster.h"              // for ICluster
+#include "core/isentinel.h"             // for Sentinel, ISentinel, etc
 
 #ifdef BUILD_WITH_REDIS
-#include "core/redis/cluster.h"
-#include "core/redis/sentinel.h"
-#include "core/redis/server.h"
-#include "core/redis/db_connection.h"
+#include "core/redis/cluster.h"         // for Cluster
+#include "core/redis/connection_settings.h"  // for ConnectionSettings
+#include "core/redis/db_connection.h"   // for discoveryClusterConnection, etc
+#include "core/redis/sentinel.h"        // for Sentinel
+#include "core/redis/server.h"          // for Server
 #endif
 
 #ifdef BUILD_WITH_MEMCACHED
-#include "core/memcached/server.h"
-#include "core/memcached/db_connection.h"
+#include "core/memcached/connection_settings.h"  // for ConnectionSettings
+#include "core/memcached/db_connection.h"  // for testConnection
+#include "core/memcached/server.h"      // for Server
 #endif
 
 #ifdef BUILD_WITH_SSDB
-#include "core/ssdb/server.h"
-#include "core/ssdb/db_connection.h"
+#include "core/ssdb/connection_settings.h"  // for ConnectionSettings
+#include "core/ssdb/db_connection.h"    // for testConnection
+#include "core/ssdb/server.h"           // for Server
 #endif
 
 #ifdef BUILD_WITH_LEVELDB
-#include "core/leveldb/server.h"
-#include "core/leveldb/db_connection.h"
+#include "core/leveldb/connection_settings.h"  // for ConnectionSettings
+#include "core/leveldb/db_connection.h"  // for testConnection
+#include "core/leveldb/server.h"        // for Server
 #endif
 
 #ifdef BUILD_WITH_ROCKSDB
-#include "core/rocksdb/server.h"
-#include "core/rocksdb/db_connection.h"
-#endif
-
-#ifdef BUILD_WITH_UNQLITE
-#include "core/unqlite/server.h"
-#include "core/unqlite/db_connection.h"
+#include "core/rocksdb/connection_settings.h"  // for ConnectionSettings
+#include "core/rocksdb/db_connection.h"  // for testConnection
+#include "core/rocksdb/server.h"        // for Server
 #endif
 
 #ifdef BUILD_WITH_LMDB
-#include "core/lmdb/server.h"
-#include "core/lmdb/db_connection.h"
+#include "core/lmdb/connection_settings.h"  // for ConnectionSettings
+#include "core/lmdb/db_connection.h"    // for testConnection
+#include "core/lmdb/server.h"           // for Server
+#endif
+
+#ifdef BUILD_WITH_UNQLITE
+#include "core/unqlite/connection_settings.h"  // for ConnectionSettings
+#include "core/unqlite/db_connection.h"  // for testConnection
+#include "core/unqlite/server.h"        // for Server
 #endif
 
 namespace fastonosql {

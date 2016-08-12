@@ -22,6 +22,8 @@
 
 #include <QIcon>
 
+#include "common/convert2string.h"
+
 #include "gui/gui_factory.h"
 
 #ifdef BUILD_WITH_REDIS

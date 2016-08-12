@@ -18,7 +18,12 @@
 
 #include "core/icluster.h"
 
-#include <string>
+#include <stddef.h>                     // for size_t
+#include <string>                       // for string
+
+#include "common/macros.h"              // for CHECK, DNOTREACHED
+
+#include "core/connection_types.h"      // for serverTypes::MASTER
 
 namespace fastonosql {
 namespace core {

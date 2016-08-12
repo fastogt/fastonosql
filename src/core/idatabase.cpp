@@ -15,11 +15,16 @@
     You should have received a copy of the GNU General Public License
     along with FastoNoSQL.  If not, see <http://www.gnu.org/licenses/>.
 */
+
 #include "core/idatabase.h"
 
-#include <string>
+#include <memory>                       // for __shared_ptr
+#include <string>                       // for string
 
-#include "core/iserver.h"
+#include "common/macros.h"              // for DCHECK_EQ, CHECK
+
+#include "core/events/events_info.h"    // for ClearDatabaseRequest, etc
+#include "core/iserver.h"               // for IServer
 
 namespace fastonosql {
 namespace core {

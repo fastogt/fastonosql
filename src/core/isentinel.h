@@ -18,10 +18,11 @@
 
 #pragma once
 
-#include <vector>
-#include <string>
+#include <string>                       // for string
+#include <vector>                       // for vector
 
-#include "core/iserver.h"
+#include "core/core_fwd.h"              // for IServerSPtr
+#include "core/iserver.h"               // for IServerBase
 
 namespace fastonosql {
 namespace core {

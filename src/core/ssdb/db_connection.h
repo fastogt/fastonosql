@@ -49,8 +49,9 @@ common::Error createConnection(const Config& config, NativeConnection** context)
 common::Error createConnection(ConnectionSettings* settings, NativeConnection** context);
 common::Error testConnection(ConnectionSettings* settings);
 
-struct DBConnection
+class DBConnection
   : public CommandHandler {
+ public:
   typedef ConnectionAllocatorTraits<NativeConnection, Config> ConnectionAllocatorTrait;
   typedef Connection<ConnectionAllocatorTrait> connection_t;
   typedef connection_t::config_t config_t;

@@ -18,15 +18,17 @@
 
 #pragma once
 
-#include <string>
-#include <vector>
+#include <stdint.h>                     // for uint32_t
 
-#include "common/smart_ptr.h"
-#include "common/net/net.h"
-#include "common/file_system.h"
+#include <memory>                       // for shared_ptr
+#include <string>                       // for string
+#include <vector>                       // for vector
 
-#include "core/connection_types.h"
-#include "core/ssh_info.h"
+#include "common/file_system.h"         // for ascii_string_path, etc
+#include "common/net/types.h"           // for HostAndPort
+
+#include "core/connection_types.h"      // for connectionTypes
+#include "core/ssh_info.h"              // for SSHInfo
 
 namespace fastonosql {
 namespace core {

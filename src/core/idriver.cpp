@@ -24,23 +24,31 @@
 #include <signal.h>
 #endif
 
-extern "C" {
-  #include "sds.h"
-}
+#include <stddef.h>                     // for NULL
 
-#include <string>
+#include <memory>                       // for __shared_ptr
+#include <string>                       // for allocator, string, etc
+#include <vector>                       // for vector
 
 #include <QThread>
 #include <QApplication>
 
-#include "common/file_system.h"
-#include "common/time.h"
-#include "common/sprintf.h"
-#include "common/utils.h"
+extern "C" {
+  #include "sds.h"
+}
 
-#include "core/command_logger.h"
+#include "common/convert2string.h"      // for ConvertToString, etc
+#include "common/file_system.h"         // for File, ascii_string_path, etc
+#include "common/qt/utils_qt.h"         // for Event<>::value_type
+#include "common/sprintf.h"             // for MemSPrintf
+#include "common/time.h"                // for current_mstime
+#include "common/utils.h"               // for c_strornull
+#include "common/value.h"               // for ErrorValue, etc
 
-#include "global/types.h"
+#include "core/command_logger.h"        // for LOG_COMMAND
+#include "core/events/events_info.h"
+
+#include "global/types.h"               // for Command
 
 namespace {
 

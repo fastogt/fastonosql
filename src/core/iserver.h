@@ -18,11 +18,18 @@
 
 #pragma once
 
-#include <string>
-#include <vector>
+#include <memory>                       // for enable_shared_from_this
+#include <string>                       // for string
+#include <vector>                       // for vector
 
-#include "core/idatabase.h"
-#include "core/events/events.h"
+#include "common/net/types.h"           // for HostAndPort
+
+#include "core/connection_types.h"      // for connectionTypes, serverMode, etc
+#include "core/core_fwd.h"              // for IDatabaseSPtr
+#include "core/events/events.h"         // for BackupResponceEvent, etc
+#include "core/types.h"                 // for IDataBaseInfoSPtr, etc
+
+#include "global/global.h"              // for FastoObject, etc
 
 namespace fastonosql {
 namespace core {

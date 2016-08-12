@@ -18,17 +18,21 @@
 
 #include "core/settings_manager.h"
 
-#include <string>
+#include <algorithm>                    // for find, remove
+#include <memory>                       // for shared_ptr, operator==, etc
+#include <string>                       // for string, char_traits
 
 #include <QSettings>
 #include <QFont>
 
-#include "fasto/qt/translations/translations.h"
-#include "fasto/qt/gui/app_style.h"
+#include "common/convert2string.h"      // for ConvertFromString
+#include "common/file_system.h"         // for prepare_path, get_dir_path
+#include "common/macros.h"              // for DCHECK
+#include "common/qt/convert_string.h"   // for ConvertToString
+#include "common/utils.h"               // for decode64, encode64
 
-#include "common/file_system.h"
-#include "common/qt/convert_string.h"
-#include "common/utils.h"
+#include "fasto/qt/gui/app_style.h"     // for defStyle
+#include "fasto/qt/translations/translations.h"  // for defLanguage
 
 #define PREFIX "settings/"
 

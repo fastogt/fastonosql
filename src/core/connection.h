@@ -18,6 +18,8 @@
 
 #pragma once
 
+#include <memory>                       // for __shared_ptr
+
 #include "common/error.h"               // for Error
 #include "common/macros.h"              // for WARN_UNUSED_RESULT, etc
 #include "common/value.h"               // for ErrorValue

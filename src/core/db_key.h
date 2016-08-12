@@ -18,10 +18,13 @@
 
 #pragma once
 
-#include <vector>
-#include <string>
+#include <stddef.h>                     // for size_t
+#include <stdint.h>                     // for int32_t
 
-#include "common/value.h"
+#include <string>                       // for string
+#include <vector>                       // for vector
+
+#include "common/value.h"               // for Value, Value::Type, etc
 
 #define NO_TTL -1
 

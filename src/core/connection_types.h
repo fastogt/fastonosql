@@ -18,9 +18,7 @@
 
 #pragma once
 
-#include <string>
-
-#include "common/convert2string.h"
+#include <string>                       // for string
 
 namespace fastonosql {
 namespace core {

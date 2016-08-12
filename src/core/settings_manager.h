@@ -18,16 +18,18 @@
 
 #pragma once
 
-#include <vector>
-#include <string>
+#include <stdint.h>                     // for uint32_t
+
+#include <string>                       // for string
+#include <vector>                       // for vector
 
 #include <QStringList>
 
-#include "global/types.h"
+#include "common/patterns/singleton_pattern.h"  // for LazySingleton
 
-#include "common/patterns/singleton_pattern.h"
+#include "core/connection_settings.h"   // for IClusterSettingsBaseSPtr, etc
 
-#include "core/connection_settings.h"
+#include "global/types.h"               // for supportedViews
 
 namespace fastonosql {
 namespace core {

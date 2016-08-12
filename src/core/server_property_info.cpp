@@ -18,7 +18,14 @@
 
 #include "core/server_property_info.h"
 
-#include <vector>
+#include <stddef.h>                     // for size_t
+
+#include <vector>                       // for vector
+
+#include "common/macros.h"              // for DCHECK, DNOTREACHED
+#include "common/value.h"               // for ArrayValue
+
+#include "global/global.h"              // for FastoObjectArray
 
 namespace fastonosql {
 namespace core {

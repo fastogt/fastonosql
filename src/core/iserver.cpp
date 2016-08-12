@@ -18,16 +18,21 @@
 
 #include "core/iserver.h"
 
-#include <string>
+#include <stddef.h>                     // for size_t
+#include <string>                       // for string, operator==, etc
 
 #include <QApplication>
 
-#include "common/net/net.h"
+#include "common/error.h"               // for Error
+#include "common/macros.h"              // for VERIFY, CHECK, DNOTREACHED
+#include "common/qt/utils_qt.h"         // for Event<>::value_type
+#include "common/value.h"               // for ErrorValue
 
-#include "fasto/qt/logger.h"
+#include "core/connection_settings.h"   // for isRemoteType, etc
+#include "core/events/events_info.h"    // for LoadDatabaseContentResponce, etc
+#include "core/idriver.h"               // for IDriver
 
-#include "core/idatabase.h"
-#include "core/idriver.h"
+#include "fasto/qt/logger.h"            // for LOG_ERROR
 
 namespace fastonosql {
 namespace core {

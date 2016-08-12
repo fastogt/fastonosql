@@ -18,10 +18,11 @@
 
 #include "core/db_key.h"
 
-#include <vector>
-#include <string>
+#include <memory>                       // for __shared_ptr
+#include <string>                       // for string
+#include <vector>                       // for vector
 
-#include "common/string_util.h"
+#include "common/string_util.h"         // for JoinString, Tokenize
 
 namespace fastonosql {
 namespace core {

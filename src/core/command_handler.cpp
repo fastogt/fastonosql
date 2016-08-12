@@ -18,10 +18,13 @@
 
 #include "core/command_handler.h"
 
-#include <vector>
-#include <string>
+#include <stddef.h>                     // for size_t
 
-#include "common/sprintf.h"
+#include <string>                       // for string
+#include <vector>                       // for vector
+
+#include "common/sprintf.h"             // for MemSPrintf
+#include "common/value.h"               // for ErrorValue, etc
 
 namespace fastonosql {
 namespace core {

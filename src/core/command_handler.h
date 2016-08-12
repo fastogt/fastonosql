@@ -24,6 +24,8 @@
 #include "common/macros.h"              // for WARN_UNUSED_RESULT
 #include "core/command_holder.h"        // for CommandHolder
 
+namespace fastonosql { class FastoObject; }
+
 namespace fastonosql {
 namespace core {
 
