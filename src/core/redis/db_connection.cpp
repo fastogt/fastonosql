@@ -1486,7 +1486,7 @@ common::Error DBConnection::cliFormatReplyRaw(FastoObject* out, redisReply* r) {
     break;
   }
   case REDIS_REPLY_ERROR: {
-    if (strcasestr(r->str, "NOAUTH")) { //"NOAUTH Authentication required."
+    if (common::strcasestr(r->str, "NOAUTH")) { //"NOAUTH Authentication required."
       isAuth_ = false;
     }
     std::string str(r->str, r->len);
