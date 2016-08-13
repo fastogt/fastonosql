@@ -21,6 +21,8 @@
 #include <QHBoxLayout>
 #include <QTableView>
 
+#include "common/convert2string.h"
+
 #include "fasto/qt/gui/glass_widget.h"
 
 #include "core/iserver.h"

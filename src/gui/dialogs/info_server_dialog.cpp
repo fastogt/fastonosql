@@ -21,6 +21,8 @@
 #include <QLabel>
 #include <QHBoxLayout>
 
+#include "common/convert2string.h"
+
 #include "fasto/qt/gui/glass_widget.h"
 
 #include "translations/global.h"

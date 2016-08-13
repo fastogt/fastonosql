@@ -21,6 +21,8 @@
 #include <vector>
 #include <algorithm>
 
+#include "common/convert2string.h"
+
 #include "core/redis/db_connection.h"
 
 namespace fastonosql {

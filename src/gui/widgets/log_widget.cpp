@@ -26,6 +26,8 @@
 #include <QTextEdit>
 #include <QTime>
 
+#include "common/macros.h"
+
 #include "translations/global.h"
 
 namespace fastonosql {

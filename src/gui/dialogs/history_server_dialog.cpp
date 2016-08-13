@@ -26,6 +26,8 @@
 #include <QPushButton>
 #include <QSplitter>
 
+#include "common/convert2string.h"
+
 #include "fasto/qt/gui/base/graph_widget.h"
 #include "fasto/qt/gui/glass_widget.h"
 

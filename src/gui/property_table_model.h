@@ -19,6 +19,7 @@
 #pragma once
 
 #include "fasto/qt/gui/base/table_model.h"
+#include "fasto/qt/gui/base/table_item.h"     // for TableItem
 
 #include "core/server_property_info.h"
 

@@ -18,6 +18,8 @@
 
 #include "global/types.h"
 
+#include "common/convert2string.h"
+
 namespace fastonosql {
 
 Command::Command()

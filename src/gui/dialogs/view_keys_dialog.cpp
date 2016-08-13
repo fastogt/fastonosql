@@ -29,7 +29,7 @@
 #include <QSplitter>
 #include <QStyledItemDelegate>
 
-#include "common/qt/convert_string.h"
+#include "common/qt/convert2string.h"
 #include "common/logger.h"
 
 #include "core/iserver.h"

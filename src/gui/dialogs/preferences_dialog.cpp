@@ -31,7 +31,8 @@
 #include <QHBoxLayout>
 #include <QPushButton>
 
-#include "common/qt/convert_string.h"
+#include "common/convert2string.h"
+#include "common/qt/convert2string.h"
 
 #include "fasto/qt/gui/app_style.h"
 #include "fasto/qt/translations/translations.h"

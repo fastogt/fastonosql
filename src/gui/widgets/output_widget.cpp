@@ -27,7 +27,8 @@
 
 #include "common/time.h"
 #include "common/logger.h"
-#include "common/qt/convert_string.h"
+#include "common/convert2string.h"
+#include "common/qt/convert2string.h"
 #include "common/utf_string_conversions.h"
 
 #include "fasto/qt/gui/icon_label.h"

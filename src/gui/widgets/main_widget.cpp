@@ -18,6 +18,8 @@
 
 #include "gui/widgets/main_widget.h"
 
+#include "common/convert2string.h"
+
 #include "core/iserver.h"
 
 #include "gui/shortcuts.h"

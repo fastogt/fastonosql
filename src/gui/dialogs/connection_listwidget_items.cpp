@@ -20,6 +20,8 @@
 
 #include <string>
 
+#include "common/convert2string.h"
+
 #include "gui/gui_factory.h"
 
 namespace fastonosql {

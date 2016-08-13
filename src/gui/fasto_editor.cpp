@@ -27,7 +27,7 @@
 #include <QPushButton>
 #include <QToolButton>
 
-#include "common/qt/convert_string.h"
+#include "common/qt/convert2string.h"
 #include "common/qt/utils_qt.h"
 
 #include "fasto/qt/gui/fasto_scintilla.h"

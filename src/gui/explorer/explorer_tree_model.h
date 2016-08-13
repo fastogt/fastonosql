@@ -21,6 +21,7 @@
 #include <string>
 
 #include "fasto/qt/gui/base/tree_model.h"
+#include "fasto/qt/gui/base/tree_item.h"      // for TreeItem
 
 #include "core/core_fwd.h"
 #include "core/types.h"

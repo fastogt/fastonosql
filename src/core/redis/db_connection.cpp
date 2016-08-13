@@ -45,7 +45,7 @@ extern "C" {
 
 #include "third-party/redis/src/help.h"
 
-#include "common/common_config.h"       // for INVALID_DESCRIPTOR
+#include "common/macros.h"       // for INVALID_DESCRIPTOR
 #include "common/convert2string.h"      // for ConvertFromString, etc
 #include "common/intrusive_ptr.h"       // for intrusive_ptr
 #include "common/log_levels.h"          // for LEVEL_LOG::L_INFO, etc

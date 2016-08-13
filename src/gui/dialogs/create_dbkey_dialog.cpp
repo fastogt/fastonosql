@@ -35,7 +35,8 @@
 #include <QPushButton>
 #include <QTableWidget>
 
-#include "common/qt/convert_string.h"
+#include "common/convert2string.h"
+#include "common/qt/convert2string.h"
 
 #include "translations/global.h"
 

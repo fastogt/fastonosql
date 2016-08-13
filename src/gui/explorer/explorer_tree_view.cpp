@@ -25,7 +25,8 @@
 #include <QMenu>
 #include <QMessageBox>
 
-#include "common/qt/convert_string.h"
+#include "common/convert2string.h"
+#include "common/qt/convert2string.h"
 #include "common/logger.h"
 
 #include "core/settings_manager.h"

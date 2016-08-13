@@ -40,7 +40,7 @@
 #include "common/macros.h"              // for VERIFY, DNOTREACHED, CHECK, etc
 #include "common/net/socket_tcp.h"      // for ClientSocketTcp
 #include "common/net/types.h"           // for HostAndPort
-#include "common/qt/convert_string.h"   // for ConvertToString
+#include "common/qt/convert2string.h"   // for ConvertToString
 #include "common/system_info/system_info.h"  // for SystemInfo, etc
 #include "common/text_decoders/iedcoder.h"  // for IEDcoder, EDTypes::Hex
 #include "common/value.h"               // for ErrorValue

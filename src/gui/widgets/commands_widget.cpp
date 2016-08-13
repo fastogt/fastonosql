@@ -26,7 +26,9 @@
 #include <QTime>
 #include <QTextEdit>
 
-#include "common/qt/convert_string.h"
+#include "common/convert2string.h"
+
+#include "global/types.h"
 
 #include "translations/global.h"
 

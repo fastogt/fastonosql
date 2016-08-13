@@ -18,6 +18,8 @@
 
 #include "gui/shortcuts.h"
 
+#include <QKeyEvent>
+
 namespace fastonosql {
 namespace gui {
 

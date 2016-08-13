@@ -22,8 +22,9 @@
 
 #include <QIcon>
 
+#include "common/convert2string.h"
 #include "common/qt/utils_qt.h"
-#include "common/qt/convert_string.h"
+#include "common/qt/convert2string.h"
 
 #include "core/icluster.h"
 #include "core/isentinel.h"

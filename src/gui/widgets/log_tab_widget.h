@@ -22,8 +22,9 @@
 
 #include "common/log_levels.h"
 
-#include "global/types.h"
 #include "core/connection_types.h"
+
+namespace fastonosql { class Command; }
 
 namespace fastonosql {
 namespace gui {

@@ -24,7 +24,7 @@
 #include <QLineEdit>
 #include <QMessageBox>
 
-#include "common/qt/convert_string.h"
+#include "common/qt/convert2string.h"
 
 #include "fasto/qt/gui/glass_widget.h"
 

@@ -28,7 +28,7 @@
 #include "common/convert2string.h"      // for ConvertFromString
 #include "common/file_system.h"         // for prepare_path, get_dir_path
 #include "common/macros.h"              // for DCHECK
-#include "common/qt/convert_string.h"   // for ConvertToString
+#include "common/qt/convert2string.h"   // for ConvertToString
 #include "common/utils.h"               // for decode64, encode64
 
 #include "fasto/qt/gui/app_style.h"     // for defStyle

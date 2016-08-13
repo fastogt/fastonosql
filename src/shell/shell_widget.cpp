@@ -30,8 +30,10 @@
 #include <QFileDialog>
 #include <QComboBox>
 #include <QLabel>
+#include <QMessageBox>
 
-#include "common/qt/convert_string.h"
+#include "common/convert2string.h"
+#include "common/qt/convert2string.h"
 #include "common/sprintf.h"
 
 #include "fasto/qt/logger.h"
@@ -53,6 +55,9 @@ namespace {
   const QSize iconSize = QSize(24, 24);
   const QString trSupportedCommandsCountTemplate_1S = QObject::tr("Supported commands count: %1");
   const QString trCommandsVersion = QObject::tr("Command version:");
+  const QString trCantReadTemplate_2S = QObject::tr(PROJECT_NAME_TITLE" can't read from %1:\n%2.");
+  const QString trCantSaveTemplate_2S = QObject::tr(PROJECT_NAME_TITLE" can't save to %1:\n%2.");
+
 }
 
 namespace fastonosql {
@@ -272,28 +277,37 @@ void BaseShellWidget::loadFromFile() {
 }
 
 bool BaseShellWidget::loadFromFile(const QString& path) {
-  bool res = false;
   QString filepath = QFileDialog::getOpenFileName(this, path, QString(),
                                                   translations::trfilterForScripts);
   if (!filepath.isEmpty()) {
     QString out;
-    if (common::utils_qt::loadFromFileText(filepath, out, this)) {
-      setText(out);
-      filePath_ = filepath;
-      res = true;
+    common::Error err = common::utils_qt::LoadFromFileText(filepath, &out);
+    if (err && err->isError()) {
+      LOG_ERROR(err, true);
+      QMessageBox::critical(this, translations::trError, trCantReadTemplate_2S.arg(filepath, common::ConvertFromString<QString>(err->description())));
+      return false;
     }
+
+    setText(out);
+    filePath_ = filepath;
+    return true;
   }
 
-  return res;
+  return false;
 }
 
 void BaseShellWidget::saveToFileAs() {
   QString filepath = QFileDialog::getSaveFileName(this, translations::trSaveAs, filePath_,
                                                   translations::trfilterForScripts);
 
-  if (common::utils_qt::saveToFileText(filepath, text(), this)) {
-    filePath_ = filepath;
+  common::Error err = common::utils_qt::SaveToFileText(filepath, text());
+  if (err && err->isError()) {
+    LOG_ERROR(err, true);
+    QMessageBox::critical(this, translations::trError, trCantSaveTemplate_2S.arg(filepath, common::ConvertFromString<QString>(err->description())));
+    return;
   }
+
+  filePath_ = filepath;
 }
 
 void BaseShellWidget::changeVersionApi(int index) {
@@ -310,7 +324,11 @@ void BaseShellWidget::saveToFile() {
   if (filePath_.isEmpty()) {
     saveToFileAs();
   } else {
-    common::utils_qt::saveToFileText(filePath_, text(), this);
+    common::Error err = common::utils_qt::SaveToFileText(filePath_, text());
+    if (err && err->isError()) {
+      LOG_ERROR(err, true);
+      QMessageBox::critical(this, translations::trError, trCantSaveTemplate_2S.arg(filePath_, common::ConvertFromString<QString>(err->description())));
+    }
   }
 }
 

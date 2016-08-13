@@ -35,7 +35,8 @@
 
 #include "gui/dialogs/connection_diagnostic_dialog.h"
 
-#include "common/qt/convert_string.h"
+#include "common/convert2string.h"
+#include "common/qt/convert2string.h"
 
 #include "gui/gui_factory.h"
 
