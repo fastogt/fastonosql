@@ -18,21 +18,28 @@
 
 #include "gui/dialogs/change_password_server_dialog.h"
 
+#include <memory>                       // for __shared_ptr
+#include <string>                       // for string
+
 #include <QDialogButtonBox>
 #include <QLayout>
 #include <QLabel>
 #include <QLineEdit>
 #include <QMessageBox>
 
-#include "common/qt/convert2string.h"
+#include "common/error.h"               // for Error
+#include "common/macros.h"              // for VERIFY, CHECK, UNUSED
+#include "common/qt/convert2string.h"   // for ConvertToString
+#include "common/value.h"               // for ErrorValue
 
-#include "fasto/qt/gui/glass_widget.h"
+#include "core/events/events_info.h"    // for ChangePasswordResponce, etc
+#include "core/iserver.h"               // for IServer
 
-#include "core/iserver.h"
+#include "fasto/qt/gui/glass_widget.h"  // for GlassWidget
 
-#include "translations/global.h"
+#include "gui/gui_factory.h"            // for GuiFactory
 
-#include "gui/gui_factory.h"
+#include "translations/global.h"        // for trError, trInfo, etc
 
 namespace {
   const QString trPassword = QObject::tr("Password:");

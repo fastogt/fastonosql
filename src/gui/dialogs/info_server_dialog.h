@@ -21,45 +21,20 @@
 #include <QDialog>
 
 #include "core/core_fwd.h"
-#include "core/events/events_info.h"
-
-#ifdef BUILD_WITH_REDIS
-#include "core/redis/server_info.h"
-#endif
-
-#ifdef BUILD_WITH_MEMCACHED
-#include "core/memcached/server_info.h"
-#endif
-
-#ifdef BUILD_WITH_SSDB
-#include "core/ssdb/server_info.h"
-#endif
-
-#ifdef BUILD_WITH_LEVELDB
-#include "core/leveldb/server_info.h"
-#endif
-
-#ifdef BUILD_WITH_ROCKSDB
-#include "core/rocksdb/server_info.h"
-#endif
-
-#ifdef BUILD_WITH_UNQLITE
-#include "core/unqlite/server_info.h"
-#endif
-
-#ifdef BUILD_WITH_LMDB
-#include "core/lmdb/server_info.h"
-#endif
 
 class QLabel;
 
-namespace fasto {
-namespace qt {
-namespace gui {
-class GlassWidget;
-}
-}
-}
+namespace fasto { namespace qt { namespace gui { class GlassWidget; } } }  // lines 59-59
+namespace fastonosql { namespace core { namespace events_info { class ServerInfoResponce; } } }
+namespace fastonosql { namespace core { namespace events_info { struct ServerInfoRequest; } } }
+
+namespace fastonosql { namespace core { namespace leveldb { class ServerInfo; } } }
+namespace fastonosql { namespace core { namespace lmdb { class ServerInfo; } } }
+namespace fastonosql { namespace core { namespace memcached { class ServerInfo; } } }
+namespace fastonosql { namespace core { namespace redis { struct ServerInfo; } } }
+namespace fastonosql { namespace core { namespace rocksdb { class ServerInfo; } } }
+namespace fastonosql { namespace core { namespace ssdb { class ServerInfo; } } }
+namespace fastonosql { namespace core { namespace unqlite { class ServerInfo; } } }
 
 namespace fastonosql {
 namespace gui {

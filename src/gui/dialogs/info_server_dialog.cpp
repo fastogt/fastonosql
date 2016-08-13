@@ -18,18 +18,57 @@
 
 #include "gui/dialogs/info_server_dialog.h"
 
+#include <stddef.h>                     // for offsetof
+#include <string.h>                     // for strcmp
+
+#include <memory>                       // for __shared_ptr
+
 #include <QLabel>
 #include <QHBoxLayout>
 
-#include "common/convert2string.h"
+#include "common/convert2string.h"      // for ConvertFromString
+#include "common/error.h"               // for Error
+#include "common/macros.h"              // for CHECK, VERIFY, UNUSED
+#include "common/value.h"               // for ErrorValue
 
-#include "fasto/qt/gui/glass_widget.h"
+#ifdef BUILD_WITH_REDIS
+#include "core/redis/server_info.h"
+#endif
 
-#include "translations/global.h"
+#ifdef BUILD_WITH_MEMCACHED
+#include "core/memcached/server_info.h"
+#endif
 
-#include "core/iserver.h"
+#ifdef BUILD_WITH_SSDB
+#include "core/ssdb/server_info.h"
+#endif
 
-#include "gui/gui_factory.h"
+#ifdef BUILD_WITH_LEVELDB
+#include "core/leveldb/server_info.h"
+#endif
+
+#ifdef BUILD_WITH_ROCKSDB
+#include "core/rocksdb/server_info.h"
+#endif
+
+#ifdef BUILD_WITH_UNQLITE
+#include "core/unqlite/server_info.h"
+#endif
+
+#ifdef BUILD_WITH_LMDB
+#include "core/lmdb/server_info.h"
+#endif
+
+#include "core/connection_types.h"      // for connectionTypes, etc
+#include "core/events/events_info.h"    // for ServerInfoResponce, etc
+#include "core/iserver.h"               // for IServer
+#include "core/types.h"                 // for IServerInfoSPtr, etc
+
+#include "fasto/qt/gui/glass_widget.h"  // for GlassWidget
+
+#include "gui/gui_factory.h"            // for GuiFactory
+
+#include "translations/global.h"        // for trLoading
 
 namespace {
 

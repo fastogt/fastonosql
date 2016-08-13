@@ -18,11 +18,18 @@
 
 #include "gui/dialogs/connection_listwidget_items.h"
 
-#include <string>
+#include <stddef.h>                     // for size_t
 
-#include "common/convert2string.h"
+#include <memory>                       // for __shared_ptr
+#include <string>                       // for string
+#include <vector>                       // for vector
 
-#include "gui/gui_factory.h"
+#include "common/convert2string.h"      // for ConvertFromString
+#include "common/macros.h"              // for DNOTREACHED
+
+#include "core/connection_types.h"      // for ConvertToString, etc
+
+#include "gui/gui_factory.h"            // for GuiFactory
 
 namespace fastonosql {
 namespace gui {

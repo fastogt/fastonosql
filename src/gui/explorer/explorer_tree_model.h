@@ -18,13 +18,21 @@
 
 #pragma once
 
-#include <string>
+#include <stddef.h>                     // for size_t
+#include <stdint.h>                     // for uint32_t
+#include <string>                       // for string
 
-#include "fasto/qt/gui/base/tree_model.h"
-#include "fasto/qt/gui/base/tree_item.h"      // for TreeItem
+#include "core/core_fwd.h"              // for IServerSPtr, IClusterSPtr, etc
+#include "core/db_key.h"                // for NDbKValue, etc
+#include "core/types.h"                 // for IDataBaseInfoSPtr
 
-#include "core/core_fwd.h"
-#include "core/types.h"
+#include "fasto/qt/gui/base/tree_item.h"  // for TreeItem
+#include "fasto/qt/gui/base/tree_model.h"  // for TreeModel
+
+class QModelIndex;
+class QObject;
+
+namespace fastonosql { namespace core { class IServer; } }
 
 namespace fastonosql {
 namespace gui {

@@ -24,13 +24,13 @@
 
 class QTreeWidget;
 
+namespace fastonosql { namespace gui { class ClusterConnectionListWidgetItemContainer; } }  // lines 31-31
+namespace fastonosql { namespace gui { class ConnectionListWidgetItem; } }  // lines 33-33
+namespace fastonosql { namespace gui { class DirectoryListWidgetItem; } }  // lines 30-30
+namespace fastonosql { namespace gui { class SentinelConnectionListWidgetItemContainer; } }  // lines 32-32
+
 namespace fastonosql {
 namespace gui {
-
-class DirectoryListWidgetItem;
-class ClusterConnectionListWidgetItemContainer;
-class SentinelConnectionListWidgetItemContainer;
-class ConnectionListWidgetItem;
 
 class ConnectionsDialog
   : public QDialog {

@@ -20,7 +20,8 @@
 
 #include <QDialog>
 
-class QLineEdit;
+class QLineEdit;  // lines 23-23
+class QWidget;
 
 namespace fastonosql {
 namespace gui {

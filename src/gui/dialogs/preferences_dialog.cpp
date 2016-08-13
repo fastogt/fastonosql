@@ -18,7 +18,9 @@
 
 #include "gui/dialogs/preferences_dialog.h"
 
-#include <string>
+#include <stddef.h>                     // for size_t
+
+#include <string>                       // for string
 
 #include <QCheckBox>
 #include <QComboBox>
@@ -29,18 +31,19 @@
 #include <QLabel>
 #include <QLineEdit>
 #include <QHBoxLayout>
-#include <QPushButton>
 
-#include "common/convert2string.h"
-#include "common/qt/convert2string.h"
+#include "common/convert2string.h"      // for ConvertFromString
+#include "common/macros.h"              // for VERIFY, SIZEOFMASS
+#include "common/qt/convert2string.h"   // for ConvertToString
 
-#include "fasto/qt/gui/app_style.h"
-#include "fasto/qt/translations/translations.h"
+#include "core/settings_manager.h"      // for SettingsManager
 
-#include "core/settings_manager.h"
-#include "core/servers_manager.h"
+#include "fasto/qt/gui/app_style.h"     // for applyFont, applyStyle, etc
+#include "fasto/qt/translations/translations.h"  // for applyLanguage, etc
 
-#include "gui/gui_factory.h"
+#include "global/types.h"               // for viewsText, ConvertToString, etc
+
+#include "gui/gui_factory.h"            // for GuiFactory
 
 namespace {
   const QString trPreferences = QObject::tr("Preferences " PROJECT_NAME_TITLE);

@@ -18,8 +18,12 @@
 
 #include "gui/dialogs/sentinel_dialog.h"
 
-#include <vector>
-#include <string>
+#include <stddef.h>                     // for size_t
+#include <stdint.h>                     // for INT32_MAX
+
+#include <memory>                       // for __shared_ptr
+#include <string>                       // for string, operator+, etc
+#include <vector>                       // for allocator, vector
 
 #include <QAction>
 #include <QCheckBox>
@@ -29,23 +33,27 @@
 #include <QHBoxLayout>
 #include <QLabel>
 #include <QLineEdit>
-#include <QMenu>
 #include <QMessageBox>
 #include <QPushButton>
 #include <QSpinBox>
 #include <QTreeWidget>
 #include <QToolBar>
 
-#include "common/convert2string.h"
-#include "common/qt/convert2string.h"
+#include "common/convert2string.h"      // for ConvertFromString
+#include "common/file_system.h"         // for stable_dir_path
+#include "common/macros.h"              // for VERIFY, CHECK, SIZEOFMASS
+#include "common/qt/convert2string.h"   // for ConvertToString
 
-#include "translations/global.h"
+#include "core/connection_types.h"      // for connectionTypes, etc
+#include "core/types.h"                 // for ServerCommonInfo
 
-#include "gui/gui_factory.h"
 #include "gui/dialogs/connection_diagnostic_dialog.h"
-#include "gui/dialogs/connection_dialog.h"
-#include "gui/dialogs/discovery_sentinel_dialog.h"
+#include "gui/dialogs/connection_dialog.h"  // for ConnectionDialog
 #include "gui/dialogs/connection_listwidget_items.h"
+#include "gui/dialogs/discovery_sentinel_dialog.h"
+#include "gui/gui_factory.h"            // for GuiFactory
+
+#include "translations/global.h"        // for trAddConnection, trAddress, etc
 
 namespace {
   const QString defaultNameConnection = "New Sentinel Connection";

@@ -18,6 +18,9 @@
 
 #include "gui/dialogs/connections_dialog.h"
 
+#include <memory>                       // for __shared_ptr
+#include <vector>                       // for vector
+
 #include <QAction>
 #include <QDialogButtonBox>
 #include <QEvent>
@@ -28,18 +31,18 @@
 #include <QPushButton>
 #include <QToolBar>
 
-#include "common/qt/convert2string.h"
+#include "common/macros.h"              // for VERIFY, CHECK, NOTREACHED
 
-#include "core/settings_manager.h"
-#include "core/connection_settings.h"
+#include "core/connection_settings.h"   // for IClusterSettingsBaseSPtr, etc
+#include "core/settings_manager.h"      // for SettingsManager
 
-#include "translations/global.h"
-
-#include "gui/gui_factory.h"
-#include "gui/dialogs/cluster_dialog.h"
-#include "gui/dialogs/connection_dialog.h"
+#include "gui/dialogs/cluster_dialog.h"  // for ClusterDialog
+#include "gui/dialogs/connection_dialog.h"  // for ConnectionDialog
 #include "gui/dialogs/connection_listwidget_items.h"
-#include "gui/dialogs/sentinel_dialog.h"
+#include "gui/dialogs/sentinel_dialog.h"  // for SentinelDialog
+#include "gui/gui_factory.h"            // for GuiFactory
+
+#include "translations/global.h"        // for trConnections, etc
 
 namespace fastonosql {
 namespace gui {

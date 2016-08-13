@@ -18,29 +18,34 @@
 
 #include "gui/dialogs/connection_dialog.h"
 
-#include <vector>
-#include <string>
+#include <stddef.h>                     // for size_t
+#include <stdint.h>                     // for INT32_MAX
 
-#include <QDialogButtonBox>
-#include <QEvent>
-#include <QFileDialog>
-#include <QLabel>
-#include <QPushButton>
-#include <QHBoxLayout>
-#include <QCheckBox>
+#include <memory>                       // for __shared_ptr
+#include <string>                       // for string, operator+, etc
+#include <vector>                       // for allocator, vector
+
 #include <QComboBox>
 #include <QLineEdit>
-#include <QMessageBox>
+#include <QHBoxLayout>
+#include <QLabel>
 #include <QSpinBox>
+#include <QCheckBox>
+#include <QPushButton>
+#include <QDialogButtonBox>
+#include <QFileDialog>
+#include <QEvent>
+
+#include "common/convert2string.h"      // for ConvertFromString
+#include "common/file_system.h"         // for stable_dir_path
+#include "common/macros.h"              // for VERIFY, CHECK, SIZEOFMASS
+#include "common/net/types.h"           // for HostAndPort
+#include "common/qt/convert2string.h"   // for ConvertToString
 
 #include "gui/dialogs/connection_diagnostic_dialog.h"
+#include "gui/gui_factory.h"            // for GuiFactory
 
-#include "common/convert2string.h"
-#include "common/qt/convert2string.h"
-
-#include "gui/gui_factory.h"
-
-#include "translations/global.h"
+#include "translations/global.h"        // for trShow, trPrivateKey, etc
 
 namespace {
 

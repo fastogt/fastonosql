@@ -20,13 +20,15 @@
 
 #include <QDialog>
 
-class QComboBox;
-class QRadioButton;
+class QComboBox;  // lines 23-23
+class QEvent;
+class QRadioButton;  // lines 24-24
+class QWidget;
+namespace fastonosql { namespace gui { class FastoEditor; } }  // lines 29-29
 
 namespace fastonosql {
 namespace gui {
 
-class FastoEditor;
 class EncodeDecodeDialog
   : public QDialog {
   Q_OBJECT

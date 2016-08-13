@@ -18,19 +18,28 @@
 
 #include "gui/dialogs/property_server_dialog.h"
 
+#include <stddef.h>                     // for size_t
+#include <memory>                       // for __shared_ptr
+#include <vector>                       // for vector
+
 #include <QHBoxLayout>
 #include <QTableView>
 
-#include "common/convert2string.h"
+#include "common/convert2string.h"      // for ConvertFromString
+#include "common/error.h"               // for Error
+#include "common/macros.h"              // for VERIFY, UNUSED, CHECK
+#include "common/value.h"               // for ErrorValue
 
-#include "fasto/qt/gui/glass_widget.h"
+#include "core/connection_types.h"      // for connectionTypes::REDIS
+#include "core/events/events_info.h"
+#include "core/iserver.h"               // for IServer
 
-#include "core/iserver.h"
+#include "fasto/qt/gui/glass_widget.h"  // for GlassWidget
 
-#include "translations/global.h"
+#include "gui/gui_factory.h"            // for GuiFactory
+#include "gui/property_table_model.h"   // for PropertyTableModel, etc
 
-#include "gui/gui_factory.h"
-#include "gui/property_table_model.h"
+#include "translations/global.h"        // for trLoading
 
 namespace {
   const QString trPropertiesTemplate_1S = QObject::tr("%1 properties");

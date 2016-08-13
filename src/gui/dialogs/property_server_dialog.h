@@ -20,18 +20,19 @@
 
 #include <QDialog>
 
-#include "core/core_fwd.h"
-#include "core/events/events_info.h"
+#include "core/core_fwd.h"              // for IServerSPtr
+#include "core/server_property_info.h"  // for property_t
 
-class QTableView;
+class QEvent;
+class QShowEvent;
+class QTableView;  // lines 26-26
+class QWidget;
 
-namespace fasto {
-namespace qt {
-namespace gui {
-class GlassWidget;
-}
-}
-}
+namespace fasto { namespace qt { namespace gui { class GlassWidget; } } }  // lines 31-31
+namespace fastonosql { namespace core { namespace events_info { struct ChangeServerPropertyInfoRequest; } } }
+namespace fastonosql { namespace core { namespace events_info { struct ChangeServerPropertyInfoResponce; } } }
+namespace fastonosql { namespace core { namespace events_info { struct ServerPropertyInfoRequest; } } }
+namespace fastonosql { namespace core { namespace events_info { struct ServerPropertyInfoResponce; } } }
 
 namespace fastonosql {
 namespace gui {

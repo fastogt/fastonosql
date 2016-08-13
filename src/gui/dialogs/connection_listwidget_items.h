@@ -20,8 +20,8 @@
 
 #include <QTreeWidgetItem>
 
-#include "core/types.h"
-#include "core/connection_settings.h"
+#include "core/connection_settings.h"   // for IClusterSettingsBaseSPtr, etc
+#include "core/types.h"                 // for ServerCommonInfo
 
 namespace fastonosql {
 namespace gui {

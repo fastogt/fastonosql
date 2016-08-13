@@ -20,12 +20,14 @@
 
 #include <QDialog>
 
-class QComboBox;
-class QFontComboBox;
-class QCheckBox;
-class QLabel;
-class QLineEdit;
-class QGroupBox;
+class QCheckBox;  // lines 25-25
+class QComboBox;  // lines 23-23
+class QEvent;
+class QFontComboBox;  // lines 24-24
+class QGroupBox;  // lines 28-28
+class QLabel;  // lines 26-26
+class QLineEdit;  // lines 27-27
+class QWidget;
 
 namespace fastonosql {
 namespace gui {

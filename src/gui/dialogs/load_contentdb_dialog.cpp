@@ -25,9 +25,11 @@
 #include <QMessageBox>
 #include <QSpinBox>
 
-#include "translations/global.h"
+#include "common/macros.h"              // for VERIFY
 
-#include "gui/gui_factory.h"
+#include "gui/gui_factory.h"            // for GuiFactory
+
+#include "translations/global.h"        // for trError
 
 namespace {
   const QString trInvalidPattern = QObject::tr("Invalid pattern!");

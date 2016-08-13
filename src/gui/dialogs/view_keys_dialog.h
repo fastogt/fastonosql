@@ -18,22 +18,32 @@
 
 #pragma once
 
-#include <vector>
+#include <stddef.h>                     // for size_t
+#include <stdint.h>                     // for uint32_t
+
+#include <vector>                       // for vector
 
 #include <QDialog>
 
-#include "core/core_fwd.h"
-#include "core/events/events_info.h"
+#include "core/command_key.h"           // for CommandKeySPtr
+#include "core/core_fwd.h"              // for IDatabaseSPtr
 
-class QLineEdit;
-class QSpinBox;
-class QLabel;
+class QEvent;
+class QLabel;  // lines 30-30
+class QLineEdit;  // lines 28-28
+class QPushButton;
+class QSpinBox;  // lines 29-29
+class QWidget;
+
+namespace fastonosql { namespace core { namespace events_info { struct CommandRequest; } } }
+namespace fastonosql { namespace core { namespace events_info { struct CommandResponce; } } }
+namespace fastonosql { namespace core { namespace events_info { struct LoadDatabaseContentRequest; } } }
+namespace fastonosql { namespace core { namespace events_info { struct LoadDatabaseContentResponce; } } }
+namespace fastonosql { namespace gui { class FastoTableView; } }  // lines 35-35
+namespace fastonosql { namespace gui { class KeysTableModel; } }  // lines 36-36
 
 namespace fastonosql {
 namespace gui {
-
-class FastoTableView;
-class KeysTableModel;
 
 class ViewKeysDialog
   : public QDialog {

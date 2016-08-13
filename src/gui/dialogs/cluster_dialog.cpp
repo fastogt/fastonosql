@@ -18,35 +18,41 @@
 
 #include "gui/dialogs/cluster_dialog.h"
 
-#include <vector>
-#include <string>
+#include <stddef.h>                     // for size_t
+#include <stdint.h>                     // for INT32_MAX
 
-#include <QAction>
-#include <QCheckBox>
-#include <QComboBox>
-#include <QDialogButtonBox>
-#include <QEvent>
+#include <memory>                       // for __shared_ptr
+#include <string>                       // for string, operator+, etc
+#include <vector>                       // for allocator, vector
+
 #include <QHBoxLayout>
 #include <QLabel>
 #include <QLineEdit>
-#include <QMenu>
-#include <QMessageBox>
-#include <QPushButton>
+#include <QComboBox>
+#include <QAction>
+#include <QCheckBox>
 #include <QSpinBox>
-#include <QTreeWidget>
 #include <QToolBar>
+#include <QPushButton>
+#include <QDialogButtonBox>
+#include <QMessageBox>
+#include <QEvent>
+#include <QMenu>
+
+#include "common/convert2string.h"      // for ConvertFromString
+#include "common/file_system.h"         // for stable_dir_path
+#include "common/macros.h"              // for VERIFY, SIZEOFMASS
+#include "common/qt/convert2string.h"   // for ConvertToString
+
+#include "core/connection_types.h"      // for connectionTypes, etc
 
 #include "gui/dialogs/connection_diagnostic_dialog.h"
-#include "gui/dialogs/connection_dialog.h"
-#include "gui/dialogs/discovery_cluster_dialog.h"
+#include "gui/dialogs/connection_dialog.h"  // for ConnectionDialog
 #include "gui/dialogs/connection_listwidget_items.h"
+#include "gui/dialogs/discovery_cluster_dialog.h"
+#include "gui/gui_factory.h"            // for GuiFactory
 
-#include "common/convert2string.h"
-#include "common/qt/convert2string.h"
-
-#include "translations/global.h"
-
-#include "gui/gui_factory.h"
+#include "translations/global.h"        // for trAddConnection, trAddress, etc
 
 namespace {
   const QString defaultNameConnection = "New Cluster Connection";

@@ -18,28 +18,36 @@
 
 #include "gui/dialogs/view_keys_dialog.h"
 
+#include <memory>                       // for __shared_ptr
+
 #include <QDialogButtonBox>
 #include <QEvent>
 #include <QVBoxLayout>
 #include <QLabel>
 #include <QLineEdit>
 #include <QPushButton>
-#include <QScrollBar>
 #include <QSpinBox>
 #include <QSplitter>
 #include <QStyledItemDelegate>
 
-#include "common/qt/convert2string.h"
-#include "common/logger.h"
+#include "common/error.h"               // for Error
+#include "common/log_levels.h"          // for LEVEL_LOG::L_DEBUG
+#include "common/logger.h"              // for DEBUG_MSG_FORMAT
+#include "common/macros.h"              // for VERIFY, UNUSED, CHECK, etc
+#include "common/qt/convert2string.h"   // for ConvertToString
+#include "common/value.h"               // for ErrorValue
 
-#include "core/iserver.h"
-#include "core/idatabase.h"
+#include "core/db_key.h"                // for NDbKValue
+#include "core/events/events_info.h"    // for CommandResponce, etc
+#include "core/idatabase.h"             // for IDatabase
+#include "core/iserver.h"               // for IServer
+#include "core/types.h"                 // for IDataBaseInfoSPtr, etc
 
-#include "translations/global.h"
+#include "gui/fasto_table_view.h"       // for FastoTableView
+#include "gui/gui_factory.h"            // for GuiFactory
+#include "gui/keys_table_model.h"       // for KeysTableModel, etc
 
-#include "gui/keys_table_model.h"
-#include "gui/fasto_table_view.h"
-#include "gui/gui_factory.h"
+#include "translations/global.h"        // for trKeyCountOnThePage, etc
 
 namespace {
 

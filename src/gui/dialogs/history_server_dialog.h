@@ -20,20 +20,18 @@
 
 #include <QDialog>
 
-class QComboBox;
-class QPushButton;
-
-#include "core/core_fwd.h"
+#include "core/core_fwd.h"              // for IServerSPtr
 #include "core/events/events_info.h"
 
-namespace fasto {
-namespace qt {
-namespace gui {
-class GlassWidget;
-class GraphWidget;
-}
-}
-}
+class QComboBox;  // lines 23-23
+class QEvent;
+class QPushButton;  // lines 24-24
+class QShowEvent;
+class QWidget;
+
+namespace fasto { namespace qt { namespace gui { class GlassWidget; } } }  // lines 32-32
+namespace fasto { namespace qt { namespace gui { class GraphWidget; } } }  // lines 33-33
+namespace fastonosql { namespace core { struct ServerInfoSnapShoot; } }
 
 namespace fastonosql {
 namespace gui {

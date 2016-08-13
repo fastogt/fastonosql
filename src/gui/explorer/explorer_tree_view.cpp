@@ -18,31 +18,49 @@
 
 #include "gui/explorer/explorer_tree_view.h"
 
+#include <stddef.h>                     // for size_t
+#include <stdint.h>                     // for INT32_MAX
+#include <memory>                       // for __shared_ptr
+#include <string>                       // for string
+#include <vector>                       // for vector
+
 #include <QAction>
-#include <QHeaderView>
-#include <QFileDialog>
-#include <QInputDialog>
 #include <QMenu>
 #include <QMessageBox>
+#include <QFileDialog>
+#include <QInputDialog>
+#include <QHeaderView>
 
-#include "common/convert2string.h"
-#include "common/qt/convert2string.h"
-#include "common/logger.h"
+#include "common/convert2string.h"      // for ConvertFromString
+#include "common/error.h"               // for Error
+#include "common/macros.h"              // for VERIFY, CHECK, DNOTREACHED, etc
+#include "common/net/types.h"           // for HostAndPort
+#include "common/qt/convert2string.h"   // for ConvertToString
+#include "common/qt/utils_qt.h"         // for item
+#include "common/value.h"               // for ErrorValue
 
-#include "core/settings_manager.h"
-#include "core/icluster.h"
-#include "core/isentinel.h"
+#include "core/command_key.h"           // for CommandKey, CommandKeySPtr, etc
+#include "core/connection_types.h"      // for connectionTypes::REDIS
+#include "core/db_key.h"                // for NDbKValue
+#include "core/events/events_info.h"    // for CommandResponce, etc
+#include "core/icluster.h"              // for ICluster
+#include "core/isentinel.h"             // for Sentinel, etc
+#include "core/iserver.h"               // for IServer, IServerRemote
+#include "core/settings_manager.h"      // for SettingsManager
+#include "core/types.h"                 // for IDataBaseInfoSPtr
 
-#include "translations/global.h"
-
-#include "gui/explorer/explorer_tree_model.h"
-#include "gui/dialogs/info_server_dialog.h"
-#include "gui/dialogs/property_server_dialog.h"
-#include "gui/dialogs/history_server_dialog.h"
-#include "gui/dialogs/load_contentdb_dialog.h"
-#include "gui/dialogs/create_dbkey_dialog.h"
-#include "gui/dialogs/view_keys_dialog.h"
 #include "gui/dialogs/change_password_server_dialog.h"
+#include "gui/dialogs/create_dbkey_dialog.h"  // for CreateDbKeyDialog
+#include "gui/dialogs/history_server_dialog.h"  // for ServerHistoryDialog
+#include "gui/dialogs/info_server_dialog.h"  // for InfoServerDialog
+#include "gui/dialogs/load_contentdb_dialog.h"  // for LoadContentDbDialog
+#include "gui/dialogs/property_server_dialog.h"
+#include "gui/dialogs/view_keys_dialog.h"  // for ViewKeysDialog
+#include "gui/explorer/explorer_tree_model.h"  // for ExplorerServerItem, etc
+
+#include "qt/gui/base/tree_item.h"      // for TreeItem
+
+#include "translations/global.h"        // for trClose, trBackup, trImport, etc
 
 namespace {
   const QString trCreateKeyForDbTemplate_1S = QObject::tr("Create key for %1 database");

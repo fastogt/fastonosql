@@ -18,6 +18,8 @@
 
 #pragma once
 
+#include <string>
+
 #include "common/value.h"
 
 namespace fastonosql {

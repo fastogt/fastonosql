@@ -18,23 +18,30 @@
 
 #include "gui/dialogs/discovery_sentinel_dialog.h"
 
-#include <string>
-#include <vector>
+#include <stddef.h>                     // for size_t
+#include <memory>                       // for __shared_ptr
+#include <string>                       // for operator+, basic_string, etc
+#include <vector>                       // for allocator, vector
 
 #include <QVBoxLayout>
 #include <QDialogButtonBox>
 #include <QThread>
 #include <QLabel>
-#include <QTreeWidget>
 
-#include "common/time.h"
-#include "common/convert2string.h"
+#include "common/convert2string.h"      // for ConvertFromString
+#include "common/error.h"               // for Error
+#include "common/file_system.h"         // for get_separator_string
+#include "common/macros.h"              // for VERIFY
+#include "common/net/types.h"           // for HostAndPort
+#include "common/time.h"                // for current_mstime
+#include "common/value.h"               // for ErrorValue
 
-#include "fasto/qt/gui/glass_widget.h"
+#include "core/servers_manager.h"       // for ServersManager
 
-#include "core/servers_manager.h"
-#include "gui/gui_factory.h"
+#include "fasto/qt/gui/glass_widget.h"  // for GlassWidget
+
 #include "gui/dialogs/connection_listwidget_items.h"
+#include "gui/gui_factory.h"            // for GuiFactory
 
 #include "translations/global.h"
 

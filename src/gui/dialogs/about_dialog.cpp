@@ -23,7 +23,8 @@
 #include <QLabel>
 #include <QPushButton>
 
-#include "gui/gui_factory.h"
+#include "common/macros.h"              // for STRINGIZE, VERIFY
+#include "gui/gui_factory.h"            // for GuiFactory
 
 namespace {
   const QString trDescription = QObject::tr(

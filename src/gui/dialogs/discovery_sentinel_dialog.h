@@ -18,24 +18,22 @@
 
 #pragma once
 
-#include <vector>
+#include <vector>                       // for vector
 
 #include <QDialog>
 
-#include "core/connection_settings.h"
+#include "common/types.h"               // for time64_t
+
+#include "core/connection_settings.h"   // for IConnectionSettingsBaseSPtr
 #include "core/types.h"
 
-class QMovie;
-class QLabel;
-class QTreeWidget;
+class QLabel;  // lines 29-29
+class QShowEvent;
+class QTreeWidget;  // lines 30-30
+class QWidget;
 
-namespace fasto {
-namespace qt {
-namespace gui {
-class GlassWidget;
-}
-}
-}
+namespace fasto { namespace qt { namespace gui { class GlassWidget; } } }  // lines 35-35
+namespace fastonosql { namespace gui { class ConnectionListWidgetItemDiscovered; } }  // lines 61-61
 
 namespace fastonosql {
 namespace gui {

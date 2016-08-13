@@ -18,24 +18,32 @@
 
 #include "gui/dialogs/history_server_dialog.h"
 
-#include <string>
-#include <vector>
+#include <stddef.h>                     // for size_t
+#include <stdint.h>                     // for uint32_t
+
+#include <memory>                       // for __shared_ptr
+#include <utility>                      // for make_pair
+#include <vector>                       // for vector
 
 #include <QComboBox>
 #include <QHBoxLayout>
 #include <QPushButton>
 #include <QSplitter>
 
-#include "common/convert2string.h"
+#include "common/convert2string.h"      // for ConvertFromString
+#include "common/error.h"               // for Error
+#include "common/macros.h"              // for VERIFY, UNUSED, CHECK
+#include "common/value.h"               // for ErrorValue, Value
 
-#include "fasto/qt/gui/base/graph_widget.h"
-#include "fasto/qt/gui/glass_widget.h"
+#include "core/iserver.h"               // for IServer
+#include "core/types.h"                 // for Field, info_field_t, etc
 
-#include "translations/global.h"
+#include "fasto/qt/gui/base/graph_widget.h"  // for GraphWidget, etc
+#include "fasto/qt/gui/glass_widget.h"  // for GlassWidget
 
-#include "core/iserver.h"
+#include "gui/gui_factory.h"            // for GuiFactory
 
-#include "gui/gui_factory.h"
+#include "translations/global.h"        // for trClearHistory, trLoading
 
 namespace {
   const QString trHistoryTemplate_1S = QObject::tr("%1 history");

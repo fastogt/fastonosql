@@ -18,27 +18,28 @@
 
 #include "gui/dialogs/encode_decode_dialog.h"
 
-#include <string>
+#include <stddef.h>                     // for size_t
+#include <string>                       // for string
 
 #include <QComboBox>
+#include <QToolButton>
 #include <QDialogButtonBox>
-#include <QEvent>
-#include <QKeyEvent>
-#include <QLabel>
-#include <QVBoxLayout>
-#include <QPushButton>
 #include <QRadioButton>
 #include <QSplitter>
-#include <QToolButton>
+#include <QVBoxLayout>
+#include <QEvent>
+#include <QPushButton>
 
-#include "common/text_decoders/iedcoder.h"
-#include "common/convert2string.h"
-#include "common/qt/convert2string.h"
+#include "common/convert2string.h"      // for ConvertFromString
+#include "common/error.h"               // for Error
+#include "common/macros.h"              // for VERIFY, CHECK, SIZEOFMASS
+#include "common/qt/convert2string.h"   // for ConvertToString
+#include "common/text_decoders/iedcoder.h"  // for EDTypes, IEDcoder, etc
 
-#include "translations/global.h"
+#include "gui/fasto_editor.h"           // for FastoEditor
+#include "gui/gui_factory.h"            // for GuiFactory
 
-#include "gui/gui_factory.h"
-#include "gui/fasto_editor.h"
+#include "translations/global.h"        // for trDecode, trEncode, etc"
 
 namespace fastonosql {
 namespace gui {

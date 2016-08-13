@@ -18,30 +18,36 @@
 
 #include "gui/dialogs/create_dbkey_dialog.h"
 
-#include <vector>
-#include <string>
+#include <stddef.h>                     // for size_t
+
+#include <memory>                       // for unique_ptr
+#include <string>                       // for string
+#include <vector>                       // for vector
 
 #include <QComboBox>
-#include <QDialogButtonBox>
-#include <QEvent>
-#include <QGridLayout>
-#include <QGroupBox>
-#include <QHeaderView>
 #include <QLabel>
+#include <QGridLayout>
 #include <QLineEdit>
 #include <QListWidget>
-#include <QMessageBox>
-#include <QMenu>
-#include <QPushButton>
 #include <QTableWidget>
+#include <QAction>
+#include <QPushButton>
+#include <QHeaderView>
+#include <QDialogButtonBox>
+#include <QGroupBox>
+#include <QEvent>
 
-#include "common/convert2string.h"
-#include "common/qt/convert2string.h"
+#include "common/convert2string.h"      // for ConvertFromString
+#include "common/macros.h"              // for VERIFY, CHECK, NOTREACHED
+#include "common/qt/convert2string.h"   // for ConvertToString
+#include "common/value.h"               // for Value, Value::Type, etc
 
-#include "translations/global.h"
+#include "core/types.h"                 // for supportedTypesFromType
 
-#include "gui/gui_factory.h"
-#include "gui/dialogs/input_dialog.h"
+#include "gui/dialogs/input_dialog.h"   // for InputDialog, etc
+#include "gui/gui_factory.h"            // for GuiFactory
+
+#include "translations/global.h"        // for trAddItem, trRemoveItem, etc
 
 namespace {
   const QString trType = QObject::tr("Type:");

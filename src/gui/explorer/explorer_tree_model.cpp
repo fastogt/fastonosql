@@ -18,21 +18,31 @@
 
 #include "gui/explorer/explorer_tree_model.h"
 
-#include <string>
+#include <memory>                       // for __shared_ptr, operator==, etc
+#include <string>                       // for operator==, string, etc
+#include <vector>                       // for vector
 
 #include <QIcon>
 
-#include "common/convert2string.h"
-#include "common/qt/utils_qt.h"
-#include "common/qt/convert2string.h"
+#include "common/convert2string.h"      // for ConvertFromString
+#include "common/macros.h"              // for CHECK, NOTREACHED, etc
+#include "common/net/types.h"           // for ConvertToString
+#include "common/qt/utils_qt.h"         // for item
 
-#include "core/icluster.h"
-#include "core/isentinel.h"
-#include "core/idatabase.h"
+#include "core/command_key.h"           // for CommandCreateKey, etc
+#include "core/connection_types.h"      // for ConvertToString
+#include "core/events/events_info.h"    // for CommandRequest, etc
+#include "core/icluster.h"              // for ICluster
+#include "core/idatabase.h"             // for IDatabase
+#include "core/isentinel.h"             // for ISentinel, Sentinel, etc
+#include "core/iserver.h"               // for IServer, IServerRemote, etc
 
-#include "translations/global.h"
+#include "gui/gui_factory.h"            // for GuiFactory
 
-#include "gui/gui_factory.h"
+#include "qt/gui/base/tree_item.h"      // for TreeItem, findItemRecursive, etc
+#include "qt/gui/base/tree_model.h"     // for TreeModel
+
+#include "translations/global.h"        // for trName
 
 namespace {
   const QString trDiscoveryToolTipTemplate_3S = QObject::tr("<b>Name:</b> %1<br/>"

@@ -21,6 +21,7 @@
 #include <QString>
 
 #include "fasto/qt/gui/base/tree_item.h"
+
 #include "core/types.h"
 
 namespace fastonosql {

@@ -21,17 +21,12 @@
 #include <QDialog>
 
 #include "core/core_fwd.h"
-#include "core/events/events_info.h"
 
 class QLineEdit;
 
-namespace fasto {
-namespace qt {
-namespace gui {
-class GlassWidget;
-}
-}
-}
+namespace fasto { namespace qt { namespace gui { class GlassWidget; } } }  // lines 31-31
+namespace fastonosql { namespace core { namespace events_info { struct ChangePasswordRequest; } } }
+namespace fastonosql { namespace core { namespace events_info { struct ChangePasswordResponce; } } }
 
 namespace fastonosql {
 namespace gui {

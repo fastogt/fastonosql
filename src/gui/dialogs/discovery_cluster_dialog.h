@@ -18,11 +18,13 @@
 
 #pragma once
 
-#include <vector>
+#include <vector>                       // for vector
 
 #include <QDialog>
 
-#include "core/connection_settings.h"
+#include "common/types.h"               // for time64_t
+
+#include "core/connection_settings.h"   // for IConnectionSettingsBaseSPtr, etc
 #include "core/types.h"
 
 class QMovie;

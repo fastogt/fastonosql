@@ -20,7 +20,9 @@
 
 #include <QDialog>
 
-#include "core/connection_settings.h"
+#include "common/types.h"               // for time64_t
+
+#include "core/connection_settings.h"   // for IConnectionSettingsBaseSPtr
 
 class QMovie;
 class QLabel;

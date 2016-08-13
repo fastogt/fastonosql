@@ -18,22 +18,23 @@
 
 #pragma once
 
-#include <vector>
+#include <vector>                       // for vector
 
 #include <QDialog>
 
-class QComboBox;
-class QLineEdit;
-class QDialogButtonBox;
-class QPushButton;
-class QCheckBox;
-class QSpinBox;
-class QTreeWidget;
-class QToolBar;
-class QLabel;
-class QTreeWidgetItem;
+#include "core/connection_settings.h"   // for IConnectionSettingsBaseSPtr, etc
 
-#include "core/connection_settings.h"
+class QCheckBox;  // lines 29-29
+class QComboBox;  // lines 25-25
+class QDialogButtonBox;  // lines 27-27
+class QEvent;
+class QLabel;  // lines 33-33
+class QLineEdit;  // lines 26-26
+class QPushButton;  // lines 28-28
+class QSpinBox;  // lines 30-30
+class QToolBar;  // lines 32-32
+class QTreeWidget;  // lines 31-31
+class QWidget;
 
 namespace fastonosql {
 namespace gui {

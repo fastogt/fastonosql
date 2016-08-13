@@ -20,10 +20,14 @@
 
 #include <QTreeView>
 
-class QAction;
-
-#include "core/core_fwd.h"
+#include "core/core_fwd.h"              // for IServerSPtr, IClusterSPtr, etc
 #include "core/events/events_info.h"
+
+class QAction;  // lines 23-23
+class QEvent;
+class QMouseEvent;
+class QPoint;
+class QWidget;
 
 namespace fastonosql {
 namespace gui {

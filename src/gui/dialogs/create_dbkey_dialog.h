@@ -20,7 +20,8 @@
 
 #include <QDialog>
 
-#include "core/types.h"
+#include "core/connection_types.h"      // for connectionTypes
+#include "core/db_key.h"                // for NDbKValue, NValue
 
 class QLineEdit;
 class QComboBox;
