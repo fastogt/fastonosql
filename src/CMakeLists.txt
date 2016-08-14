@@ -109,6 +109,8 @@ SET(HEADERS_CORE
   core/idatabase.h
   core/settings_manager.h
   core/connection_settings.h
+  core/sentinel_connection_settings.h
+  core/cluster_connection_settings.h
   core/events/events.h
   core/events/events_info.h
   core/types.h
@@ -128,6 +130,8 @@ SET(SOURCES_CORE
   core/connection_types.cpp
   core/settings_manager.cpp
   core/connection_settings.cpp
+  core/sentinel_connection_settings.cpp
+  core/cluster_connection_settings.cpp
   core/idriver.cpp
   core/iserver.cpp
   core/icluster.cpp

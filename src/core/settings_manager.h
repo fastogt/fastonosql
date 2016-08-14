@@ -28,6 +28,8 @@
 #include "common/patterns/singleton_pattern.h"  // for LazySingleton
 
 #include "core/connection_settings.h"   // for IClusterSettingsBaseSPtr, etc
+#include "core/sentinel_connection_settings.h"
+#include "core/cluster_connection_settings.h"
 
 #include "global/types.h"               // for supportedViews
 

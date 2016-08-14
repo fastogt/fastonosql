@@ -21,6 +21,8 @@
 #include <QDialog>
 
 #include "core/connection_settings.h"
+#include "core/sentinel_connection_settings.h"
+#include "core/cluster_connection_settings.h"
 
 class QTreeWidget;
 

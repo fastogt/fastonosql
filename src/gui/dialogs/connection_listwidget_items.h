@@ -21,6 +21,8 @@
 #include <QTreeWidgetItem>
 
 #include "core/connection_settings.h"   // for IClusterSettingsBaseSPtr, etc
+#include "core/sentinel_connection_settings.h"
+#include "core/cluster_connection_settings.h"
 #include "core/types.h"                 // for ServerCommonInfo
 
 namespace fastonosql {

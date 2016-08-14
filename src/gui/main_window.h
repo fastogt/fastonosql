@@ -21,6 +21,8 @@
 #include <QMainWindow>
 
 #include "core/connection_settings.h"   // for IClusterSettingsBaseSPtr, etc
+#include "core/sentinel_connection_settings.h"
+#include "core/cluster_connection_settings.h"
 
 class QAction;  // lines 25-25
 class QDockWidget;  // lines 26-26

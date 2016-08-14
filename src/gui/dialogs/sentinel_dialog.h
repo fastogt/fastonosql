@@ -23,6 +23,7 @@
 #include <QDialog>
 
 #include "core/connection_settings.h"   // for IConnectionSettingsBaseSPtr, etc
+#include "core/sentinel_connection_settings.h"
 
 class QCheckBox;  // lines 29-29
 class QComboBox;  // lines 25-25

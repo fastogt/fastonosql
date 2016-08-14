@@ -18,7 +18,7 @@
 
 #pragma once
 
-#include "core/connection_settings.h"
+#include "core/cluster_connection_settings.h"
 
 namespace fastonosql {
 namespace core {

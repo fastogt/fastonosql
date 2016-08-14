@@ -33,6 +33,8 @@
 namespace fastonosql {
 namespace core {
 
+static const char magicNumber = 0x1E;
+
 class ConnectionSettingsPath {
  public:
   ConnectionSettingsPath();
@@ -163,66 +165,6 @@ const char* commandLineHelpText(connectionTypes type);
 std::string defaultCommandLine(connectionTypes type);
 
 typedef common::shared_ptr<IConnectionSettingsBase> IConnectionSettingsBaseSPtr;
-
-class IClusterSettingsBase
-  : public IConnectionSettings {
- public:
-  typedef IConnectionSettingsBaseSPtr cluster_node_t;
-  typedef std::vector<cluster_node_t> cluster_nodes_t;
-  cluster_nodes_t nodes() const;
-
-  void addNode(IConnectionSettingsBaseSPtr node);
-
-  static IClusterSettingsBase* createFromType(connectionTypes type, const connection_path_t& connectionPath);
-  static IClusterSettingsBase* fromString(const std::string& val);
-
-  virtual std::string toString() const;
-  virtual IClusterSettingsBase* clone() const = 0;
-
-  virtual IConnectionSettingsBaseSPtr findSettingsByHost(const common::net::HostAndPort& host) const;
-
- protected:
-  IClusterSettingsBase(const connection_path_t& connectionName, connectionTypes type);
-
- private:
-  cluster_nodes_t clusters_nodes_;
-};
-
-typedef common::shared_ptr<IClusterSettingsBase> IClusterSettingsBaseSPtr;
-
-struct SentinelSettings {
-  typedef std::vector<IConnectionSettingsBaseSPtr> sentinel_nodes_t;
-  SentinelSettings();
-
-  IConnectionSettingsBaseSPtr sentinel;
-  sentinel_nodes_t sentinel_nodes;
-};
-
-std::string sentinelSettingsToString(const SentinelSettings& sent);
-bool sentinelSettingsfromString(const std::string& text, SentinelSettings* sent);
-
-class ISentinelSettingsBase
-  : public IConnectionSettings {
- public:
-  typedef SentinelSettings sentinel_connection_t;
-  typedef std::vector<sentinel_connection_t> sentinel_connections_t;
-
-  sentinel_connections_t sentinels() const;
-  void addSentinel(sentinel_connection_t sent);
-
-  static ISentinelSettingsBase* createFromType(connectionTypes type, const connection_path_t& conName);
-  static ISentinelSettingsBase* fromString(const std::string& val);
-
-  virtual std::string toString() const;
-  virtual ISentinelSettingsBase* clone() const = 0;
-
- protected:
-  ISentinelSettingsBase(const connection_path_t& connectionName, connectionTypes type);
-
- private:
-  sentinel_connections_t sentinel_nodes_;
-};
-typedef common::shared_ptr<ISentinelSettingsBase> ISentinelSettingsBaseSPtr;
 
 }  // namespace core
 }  // namespace fastonosql

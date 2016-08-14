@@ -25,6 +25,7 @@
 #include "common/types.h"               // for time64_t
 
 #include "core/connection_settings.h"   // for IConnectionSettingsBaseSPtr, etc
+#include "core/cluster_connection_settings.h"
 #include "core/types.h"
 
 class QMovie;
