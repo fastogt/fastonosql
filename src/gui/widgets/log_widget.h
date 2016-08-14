@@ -20,10 +20,12 @@
 
 #include <QWidget>
 
-class QTextEdit;
-class QAction;
+#include "common/log_levels.h"          // for LEVEL_LOG
 
-#include "common/log_levels.h"
+class QAction;  // lines 24-24
+class QEvent;
+class QPoint;
+class QTextEdit;  // lines 23-23
 
 namespace fastonosql {
 namespace gui {

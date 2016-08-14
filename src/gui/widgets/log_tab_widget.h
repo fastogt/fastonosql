@@ -20,11 +20,16 @@
 
 #include <QTabWidget>
 
-#include "common/log_levels.h"
+#include "common/log_levels.h"          // for LEVEL_LOG
 
-#include "core/connection_types.h"
+#include "core/connection_types.h"      // for connectionTypes
 
-namespace fastonosql { class Command; }
+class QEvent;
+class QWidget;
+
+namespace fastonosql { class Command; }  // lines 27-27
+namespace fastonosql { namespace gui { class CommandsWidget; } }  // lines 33-33
+namespace fastonosql { namespace gui { class LogWidget; } }  // lines 32-32
 
 namespace fastonosql {
 namespace gui {

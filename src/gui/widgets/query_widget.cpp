@@ -18,12 +18,16 @@
 
 #include "gui/widgets/query_widget.h"
 
+#include <memory>                       // for __shared_ptr
+
 #include <QVBoxLayout>
 #include <QSplitter>
 
-#include "shell/shell_widget.h"
+#include "core/iserver.h"               // for IServer
 
-#include "gui/widgets/output_widget.h"
+#include "gui/widgets/output_widget.h"  // for OutputWidget
+
+#include "shell/shell_widget.h"         // for BaseShellWidget
 
 namespace fastonosql {
 namespace gui {

@@ -20,14 +20,15 @@
 
 #include <QWidget>
 
-class QRadioButton;
-class QPushButton;
-class QAbstractItemModel;
+class QAbstractItemModel;  // lines 25-25
+class QEvent;
+class QPushButton;  // lines 24-24
+class QRadioButton;  // lines 23-23
+namespace fastonosql { namespace gui { class FastoEditorOutput; } }  // lines 30-30
 
 namespace fastonosql {
 namespace gui {
 
-class FastoEditorOutput;
 class FastoTextView
   : public QWidget {
   Q_OBJECT

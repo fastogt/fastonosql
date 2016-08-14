@@ -18,13 +18,16 @@
 
 #include "shell/base_shell.h"
 
-#include <vector>
+#include <vector>                       // for vector
 
 #include <QIcon>
 
-#include "common/convert2string.h"
+#include "common/convert2string.h"      // for ConvertFromString
+#include "common/macros.h"              // for CHECK, VERIFY
 
-#include "gui/gui_factory.h"
+#include "gui/gui_factory.h"            // for GuiFactory
+
+#include "shell/base_lexer.h"           // for BaseQsciLexer, BaseQsciApi, etc
 
 #ifdef BUILD_WITH_REDIS
 #include "shell/redis_lexer.h"
@@ -87,7 +90,7 @@ BaseShell::BaseShell(core::connectionTypes type, bool showAutoCompl, QWidget* pa
 #endif
 #ifdef BUILD_WITH_ROCKSDB
   if (type == core::ROCKSDB) {
-    lex = new RocksdbLexer(this);
+    lex = new RocksDBLexer(this);
   }
 #endif
 #ifdef BUILD_WITH_UNQLITE

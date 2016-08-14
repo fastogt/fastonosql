@@ -21,6 +21,12 @@
 #include <QTextEdit>
 #include <QByteArray>
 
+class QEvent;
+class QMouseEvent;
+class QPaintEvent;
+class QPoint;
+class QWidget;
+
 namespace fastonosql {
 namespace gui {
 

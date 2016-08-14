@@ -22,12 +22,13 @@
 #include <QEvent>
 #include <QPushButton>
 #include <QRadioButton>
-#include <QSplitter>
 
-#include "translations/global.h"
+#include "common/macros.h"              // for VERIFY
 
-#include "gui/fasto_editor.h"
-#include "gui/gui_factory.h"
+#include "gui/fasto_editor.h"           // for FastoEditorOutput, CSV, etc
+#include "gui/gui_factory.h"            // for GuiFactory
+
+#include "translations/global.h"        // for trCsv, trGzip, trHex, etc
 
 namespace fastonosql {
 namespace gui {

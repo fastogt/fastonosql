@@ -28,21 +28,21 @@
 #define MSGPACK 4
 #define GZIP 5
 
-class QLineEdit;
-class QToolButton;
-class QPushButton;
-class QCheckBox;
-class QFrame;
-class QsciLexer;
-class QMenu;
+class QCheckBox;  // lines 34-34
+class QEvent;
+class QFrame;  // lines 35-35
+class QKeyEvent;
+class QLineEdit;  // lines 31-31
+class QMenu;  // lines 37-37
+class QObject;
+class QPixmap;
+class QPoint;
+class QPushButton;  // lines 33-33
+class QToolButton;  // lines 32-32
+class QsciLexer;  // lines 36-36
 
-namespace fasto {
-namespace qt {
-namespace gui {
-class FastoScintilla;
-}
-}
-}
+namespace fasto { namespace qt { namespace gui { class FastoScintilla; } } }  // lines 42-42
+namespace fastonosql { namespace gui { class FastoHexEdit; } }  // lines 50-50
 
 namespace fastonosql {
 namespace gui {

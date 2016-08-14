@@ -20,26 +20,33 @@
 
 #include <QWidget>
 
-#include "core/iserver.h"
-#include "core/events/events_info.h"
+#include "core/connection_types.h"      // for connectionTypes
 
-class QAction;
-class QProgressBar;
-class QToolButton;
-class QComboBox;
+#include "core/core_fwd.h"              // for IServerSPtr
 
-namespace fasto {
-namespace qt {
-namespace gui {
-class IconLabel;
-}
-}
-}
+#include "core/types.h"                 // for IDataBaseInfoSPtr, etc
+
+class QAction;  // lines 26-26
+class QComboBox;  // lines 29-29
+class QProgressBar;  // lines 27-27
+
+namespace fasto { namespace qt { namespace gui { class IconLabel; } } }  // lines 34-34
+namespace fastonosql { namespace core { namespace events_info { struct ConnectInfoRequest; } } }
+namespace fastonosql { namespace core { namespace events_info { struct ConnectInfoResponce; } } }
+namespace fastonosql { namespace core { namespace events_info { struct DisConnectInfoRequest; } } }
+namespace fastonosql { namespace core { namespace events_info { struct DisConnectInfoResponce; } } }
+namespace fastonosql { namespace core { namespace events_info { struct DiscoveryInfoRequest; } } }
+namespace fastonosql { namespace core { namespace events_info { struct DiscoveryInfoResponce; } } }
+namespace fastonosql { namespace core { namespace events_info { struct EnterModeInfo; } } }
+namespace fastonosql { namespace core { namespace events_info { struct LeaveModeInfo; } } }
+namespace fastonosql { namespace core { namespace events_info { struct ProgressInfoResponce; } } }
+namespace fastonosql { namespace core { namespace events_info { struct SetDefaultDatabaseRequest; } } }
+namespace fastonosql { namespace core { namespace events_info { struct SetDefaultDatabaseResponce; } } }
+namespace fastonosql { namespace shell { class BaseShell; } }  // lines 42-42
 
 namespace fastonosql {
 namespace shell {
 
-class BaseShell;
 class BaseShellWidget
   : public QWidget {
   Q_OBJECT

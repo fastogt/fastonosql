@@ -21,11 +21,12 @@
 #include <QEvent>
 #include <QTabBar>
 
-#include "translations/global.h"
+#include "gui/gui_factory.h"            // for GuiFactory
 
-#include "gui/widgets/log_widget.h"
-#include "gui/widgets/commands_widget.h"
-#include "gui/gui_factory.h"
+#include "gui/widgets/commands_widget.h"  // for CommandsWidget
+#include "gui/widgets/log_widget.h"     // for LogWidget
+
+#include "translations/global.h"        // for trCommands, trLogs
 
 namespace fastonosql {
 namespace gui {

@@ -20,6 +20,10 @@
 
 #include <QTableView>
 
+class QPoint;
+class QResizeEvent;
+class QWidget;
+
 namespace fastonosql {
 namespace gui {
 

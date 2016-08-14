@@ -18,30 +18,39 @@
 
 #include "gui/widgets/output_widget.h"
 
-#include <string>
+#include <stddef.h>                     // for NULL
+#include <memory>                       // for __shared_ptr, operator==, etc
+#include <string>                       // for string
 
 #include <QHBoxLayout>
 #include <QHeaderView>
 #include <QPushButton>
 #include <QSplitter>
 
-#include "common/time.h"
-#include "common/logger.h"
-#include "common/convert2string.h"
-#include "common/qt/convert2string.h"
-#include "common/utf_string_conversions.h"
+#include "common/convert2string.h"      // for ConvertFromString
+#include "common/error.h"               // for Error
+#include "common/log_levels.h"          // for LEVEL_LOG::L_DEBUG
+#include "common/logger.h"              // for DEBUG_MSG_FORMAT
+#include "common/macros.h"              // for VERIFY, CHECK, DNOTREACHED, etc
+#include "common/qt/utils_qt.h"         // for item
+#include "common/value.h"               // for StringValue, Value, etc
 
-#include "fasto/qt/gui/icon_label.h"
+#include "core/db_key.h"                // for NKey, NDbKValue, NValue
+#include "core/events/events_info.h"    // for CommandResponce, etc
+#include "core/iserver.h"               // for IServer
+#include "core/settings_manager.h"      // for SettingsManager
 
-#include "core/settings_manager.h"
-#include "core/iserver.h"
+#include "fasto/qt/gui/icon_label.h"    // for IconLabel
+#include "fasto/qt/gui/base/tree_item.h"      // for TreeItem
 
-#include "gui/gui_factory.h"
-#include "gui/fasto_text_view.h"
-#include "gui/fasto_table_view.h"
-#include "gui/fasto_tree_view.h"
-#include "gui/fasto_common_model.h"
-#include "gui/fasto_common_item.h"
+#include "global/types.h"               // for supportedViews, etc
+
+#include "gui/fasto_common_item.h"      // for FastoCommonItem
+#include "gui/fasto_common_model.h"     // for FastoCommonModel
+#include "gui/fasto_table_view.h"       // for FastoTableView
+#include "gui/fasto_text_view.h"        // for FastoTextView
+#include "gui/fasto_tree_view.h"        // for FastoTreeView
+#include "gui/gui_factory.h"            // for GuiFactory
 
 namespace fastonosql {
 namespace gui {

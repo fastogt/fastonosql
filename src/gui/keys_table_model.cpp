@@ -18,15 +18,21 @@
 
 #include "gui/keys_table_model.h"
 
+#include <stddef.h>                     // for size_t
+#include <vector>                       // for vector
+
 #include <QIcon>
 
-#include "common/qt/utils_qt.h"
+#include "common/convert2string.h"      // for ConvertFromString
+#include "common/macros.h"              // for CHECK, UNUSED
+#include "common/qt/utils_qt.h"         // for item
 
-#include "translations/global.h"
+#include "fasto/qt/gui/base/table_item.h"     // for TableItem
+#include "fasto/qt/gui/base/table_model.h"    // for TableModel
 
-#include "common/convert2string.h"
+#include "gui/gui_factory.h"            // for GuiFactory
 
-#include "gui/gui_factory.h"
+#include "translations/global.h"        // for trKey, trTTL, trType
 
 namespace fastonosql {
 namespace gui {

@@ -20,12 +20,14 @@
 
 #include <QWidget>
 
-class QTextEdit;
-class QAction;
+#include "core/connection_types.h"      // for connectionTypes
 
-#include "core/connection_types.h"
+class QAction;  // lines 24-24
+class QEvent;
+class QPoint;
+class QTextEdit;  // lines 23-23
 
-namespace fastonosql { class Command; }
+namespace fastonosql { class Command; }  // lines 28-28
 
 namespace fastonosql {
 namespace gui {

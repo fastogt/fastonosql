@@ -20,6 +20,11 @@
 
 #include <QTabBar>
 
+class QAction;
+class QEvent;
+class QPoint;
+class QWidget;
+
 namespace fastonosql {
 namespace gui {
 

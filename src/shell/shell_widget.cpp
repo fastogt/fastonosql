@@ -18,8 +18,12 @@
 
 #include "shell/shell_widget.h"
 
-#include <string>
-#include <vector>
+#include <stddef.h>                     // for size_t
+#include <stdint.h>                     // for uint32_t
+
+#include <memory>                       // for __shared_ptr
+#include <string>                       // for string
+#include <vector>                       // for vector
 
 #include <QProgressBar>
 #include <QSplitter>
@@ -32,24 +36,28 @@
 #include <QLabel>
 #include <QMessageBox>
 
-#include "common/convert2string.h"
-#include "common/qt/convert2string.h"
-#include "common/sprintf.h"
+#include "common/convert2string.h"      // for ConvertFromString
+#include "common/error.h"               // for Error
+#include "common/macros.h"              // for VERIFY, UNUSED, CHECK, etc
+#include "common/qt/convert2string.h"   // for ConvertToString
+#include "common/value.h"               // for ErrorValue
 
-#include "fasto/qt/logger.h"
-#include "fasto/qt/gui/icon_label.h"
-#include "fasto/qt/utils_qt.h"
+#include "core/command_info.h"          // for UNDEFINED_SINCE, etc
+#include "core/events/events_info.h"    // for DiscoveryInfoResponce, etc
+#include "core/iserver.h"               // for IServer
+#include "core/settings_manager.h"      // for SettingsManager
 
-#include "core/settings_manager.h"
-#include "core/iserver.h"
-#include "core/command_info.h"
+#include "fasto/qt/gui/icon_label.h"    // for IconLabel
+#include "fasto/qt/logger.h"            // for LOG_ERROR
+#include "fasto/qt/utils_qt.h"          // for SaveToFileText, etc
+#include "fasto/qt/gui/shortcuts.h"           // for FastoQKeySequence
 
-#include "shell/base_shell.h"
-#include "gui/shortcuts.h"
+#include "gui/gui_factory.h"            // for GuiFactory
+#include "gui/shortcuts.h"              // for executeKey
 
-#include "gui/gui_factory.h"
+#include "shell/base_shell.h"           // for BaseShell
 
-#include "translations/global.h"
+#include "translations/global.h"        // for trError, trSaveAs, etc
 
 namespace {
   const QSize iconSize = QSize(24, 24);
@@ -57,7 +65,6 @@ namespace {
   const QString trCommandsVersion = QObject::tr("Command version:");
   const QString trCantReadTemplate_2S = QObject::tr(PROJECT_NAME_TITLE" can't read from %1:\n%2.");
   const QString trCantSaveTemplate_2S = QObject::tr(PROJECT_NAME_TITLE" can't save to %1:\n%2.");
-
 }
 
 namespace fastonosql {

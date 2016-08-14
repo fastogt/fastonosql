@@ -20,21 +20,22 @@
 
 #include <QMainWindow>
 
-#include "core/connection_settings.h"
+#include "core/connection_settings.h"   // for IClusterSettingsBaseSPtr, etc
 
-class QAction;
-class QDockWidget;
-
+class QAction;  // lines 25-25
+class QDockWidget;  // lines 26-26
+class QEvent;
+class QShowEvent;
 #ifdef OS_ANDROID
 class QGestureEvent;
 class QSwipeGesture;
 class QTapAndHoldGesture;
 #endif
 
+namespace fastonosql { namespace gui { class ExplorerTreeView; } }  // lines 37-37
+
 namespace fastonosql {
 namespace gui {
-
-class ExplorerTreeView;
 
 class MainWindow
   : public QMainWindow {

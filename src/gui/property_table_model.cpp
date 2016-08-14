@@ -18,12 +18,20 @@
 
 #include "gui/property_table_model.h"
 
-#include "common/convert2string.h"
+#include <stddef.h>                     // for size_t
 
-#include "common/qt/utils_qt.h"
-#include "common/qt/convert2string.h"
+#include <string>                       // for basic_string, operator==
+#include <vector>                       // for vector
 
-#include "translations/global.h"
+#include "common/convert2string.h"      // for ConvertFromString
+#include "common/macros.h"              // for CHECK, UNUSED
+#include "common/qt/convert2string.h"   // for ConvertToString
+#include "common/qt/utils_qt.h"         // for item
+
+#include "fasto/qt/gui/base/table_item.h"     // for TableItem
+#include "fasto/qt/gui/base/table_model.h"    // for TableModel
+
+#include "translations/global.h"        // for trKey, trValue
 
 namespace fastonosql {
 namespace gui {

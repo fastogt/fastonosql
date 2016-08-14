@@ -20,13 +20,14 @@
 
 #include <QTabWidget>
 
-#include "core/core_fwd.h"
-#include "core/connection_settings.h"
+#include "core/core_fwd.h"              // for IServerSPtr
+
+class QWidget;
+namespace fastonosql { namespace gui { class QueryWidget; } }  // lines 29-29
 
 namespace fastonosql {
 namespace gui {
 
-class QueryWidget;
 class MainWidget
   : public QTabWidget {
   Q_OBJECT

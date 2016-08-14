@@ -21,11 +21,13 @@
 #include <QEvent>
 #include <QMenu>
 
-#include "common/macros.h"
+#include "common/macros.h"              // for VERIFY
 
-#include "translations/global.h"
+#include "fasto/qt/gui/shortcuts.h"           // for FastoQKeySequence
 
-#include "gui/shortcuts.h"
+#include "gui/shortcuts.h"              // for closeKey, newTabKey, etc
+
+#include "translations/global.h"        // for trCloseOtherTab, trCloseTab, etc
 
 namespace fastonosql {
 namespace gui {

@@ -20,27 +20,26 @@
 
 #include <QWidget>
 
-#include "core/core_fwd.h"
-#include "core/events/events_info.h"
+#include "core/command_key.h"           // for CommandKeySPtr
+#include "core/core_fwd.h"              // for IServerSPtr
 
-class QAction;
-class QPushButton;
+#include "global/global.h"              // for FastoObject, etc
 
-namespace fasto {
-namespace qt {
-namespace gui {
-  class IconLabel;
-}
-}
-}
+class QPushButton;  // lines 27-27
+
+namespace fasto { namespace qt { namespace gui { class IconLabel; } } }  // lines 32-32
+namespace fastonosql { namespace core { namespace events_info { class EventInfoBase; } } }
+namespace fastonosql { namespace core { namespace events_info { struct CommandRequest; } } }
+namespace fastonosql { namespace core { namespace events_info { struct CommandResponce; } } }
+namespace fastonosql { namespace core { namespace events_info { struct CommandRootCompleatedInfo; } } }
+namespace fastonosql { namespace core { namespace events_info { struct CommandRootCreatedInfo; } } }
+namespace fastonosql { namespace gui { class FastoCommonModel; } }  // lines 43-43
+namespace fastonosql { namespace gui { class FastoTableView; } }  // lines 42-42
+namespace fastonosql { namespace gui { class FastoTextView; } }  // lines 40-40
+namespace fastonosql { namespace gui { class FastoTreeView; } }  // lines 41-41
 
 namespace fastonosql {
 namespace gui {
-
-class FastoTextView;
-class FastoTreeView;
-class FastoTableView;
-class FastoCommonModel;
 
 class OutputWidget
   : public QWidget {

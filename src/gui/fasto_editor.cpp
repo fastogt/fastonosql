@@ -18,6 +18,8 @@
 
 #include "gui/fasto_editor.h"
 
+#include <stddef.h>                     // for size_t
+
 #include <QCheckBox>
 #include <QHBoxLayout>
 #include <QKeyEvent>
@@ -27,16 +29,21 @@
 #include <QPushButton>
 #include <QToolButton>
 
-#include "common/qt/convert2string.h"
-#include "common/qt/utils_qt.h"
+#include <Qsci/qsciscintilla.h>         // for QsciScintilla, etc
 
-#include "fasto/qt/gui/fasto_scintilla.h"
+#include "common/macros.h"              // for VERIFY, UNUSED, NOTREACHED
+#include "common/qt/convert2string.h"   // for EscapedText
+#include "common/qt/utils_qt.h"         // for item
+
+#include "fasto/qt/gui/fasto_scintilla.h"  // for FastoScintilla
+
+#include "gui/fasto_common_item.h"      // for FastoCommonItem, toRaw, etc
+#include "gui/fasto_hex_edit.h"         // for FastoHexEdit, etc
+#include "gui/gui_factory.h"            // for GuiFactory
+
+#include "qt/gui/base/tree_item.h"      // for TreeItem
 
 #include "translations/global.h"
-
-#include "gui/fasto_common_item.h"
-#include "gui/gui_factory.h"
-#include "gui/fasto_hex_edit.h"
 
 namespace fastonosql {
 namespace gui {

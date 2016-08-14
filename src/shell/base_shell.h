@@ -18,16 +18,19 @@
 
 #pragma once
 
-#include <vector>
+#include <stddef.h>                     // for size_t
+#include <stdint.h>                     // for uint32_t
+#include <vector>                       // for vector
 
-#include "core/connection_types.h"
+#include "core/connection_types.h"      // for connectionTypes
 
-#include "gui/fasto_editor.h"
+#include "gui/fasto_editor.h"           // for FastoEditorShell
+
+namespace fastonosql { namespace shell { class BaseQsciLexer; } }  // lines 30-30
 
 namespace fastonosql {
 namespace shell {
 
-class BaseQsciLexer;
 class BaseShell
   : public gui::FastoEditorShell {
   Q_OBJECT

@@ -18,18 +18,27 @@
 
 #include "gui/fasto_common_model.h"
 
-#include <string>
+#include <stddef.h>                     // for size_t
+
+#include <string>                       // for string
 
 #include <QIcon>
 
-#include "common/convert2string.h"
-#include "common/qt/utils_qt.h"
-#include "common/qt/convert2string.h"
+#include "common/convert2string.h"      // for ConvertFromString
+#include "common/macros.h"              // for UNUSED
+#include "common/qt/convert2string.h"   // for ConvertToString
+#include "common/qt/utils_qt.h"         // for item
+#include "common/value.h"               // for Value, make_value, etc
 
-#include "translations/global.h"
+#include "fasto/qt/gui/base/tree_item.h"      // for TreeItem
+#include "fasto/qt/gui/base/tree_model.h"     // for TreeModel
 
-#include "gui/fasto_common_item.h"
-#include "gui/gui_factory.h"
+#include "core/db_key.h"                // for NDbKValue, NKey, NValue
+
+#include "gui/fasto_common_item.h"      // for FastoCommonItem, etc
+#include "gui/gui_factory.h"            // for GuiFactory
+
+#include "translations/global.h"        // for trKey, trType, trValue
 
 namespace fastonosql {
 namespace gui {

@@ -39,8 +39,8 @@
 
 #include "gui/gui_factory.h"            // for GuiFactory
 
-#include "qt/gui/base/tree_item.h"      // for TreeItem, findItemRecursive, etc
-#include "qt/gui/base/tree_model.h"     // for TreeModel
+#include "fasto/qt/gui/base/tree_item.h"      // for TreeItem, findItemRecursive, etc
+#include "fasto/qt/gui/base/tree_model.h"     // for TreeModel
 
 #include "translations/global.h"        // for trName
 

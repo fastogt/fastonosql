@@ -18,12 +18,14 @@
 
 #include "shell/redis_lexer.h"
 
-#include <vector>
-#include <algorithm>
+#include <algorithm>                    // for sort
+#include <vector>                       // for vector
 
-#include "common/convert2string.h"
+#include "common/convert2string.h"      // for ConvertFromString
+#include "common/macros.h"              // for UNUSED
 
-#include "core/redis/db_connection.h"
+#include "core/command_info.h"          // for CommandInfo
+#include "core/redis/db_connection.h"   // for redisCommands, DBConnection
 
 namespace fastonosql {
 namespace shell {

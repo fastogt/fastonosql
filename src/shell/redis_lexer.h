@@ -18,7 +18,9 @@
 
 #pragma once
 
-#include <vector>
+#include <stddef.h>                     // for size_t
+#include <stdint.h>                     // for uint32_t
+#include <vector>                       // for vector
 
 #include "shell/base_lexer.h"
 

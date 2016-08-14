@@ -20,9 +20,13 @@
 
 #include <QString>
 
-#include "fasto/qt/gui/base/tree_item.h"
+#include <string>                       // for string
 
-#include "core/types.h"
+#include "common/value.h"               // for Value, Value::Type
+
+#include "fasto/qt/gui/base/tree_item.h"  // for TreeItem
+
+#include "core/db_key.h"                // for NDbKValue, NValue
 
 namespace fastonosql {
 namespace gui {

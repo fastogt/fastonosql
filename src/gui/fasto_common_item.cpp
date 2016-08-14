@@ -18,18 +18,21 @@
 
 #include "gui/fasto_common_item.h"
 
-#include <string>
+#include <stddef.h>                     // for size_t
+#include <memory>                       // for __shared_ptr
+#include <string>                       // for string
 
-#include "common/json_utils.h"
+#include "common/convert2string.h"      // for ConvertFromString
+#include "common/error.h"               // for Error
+#include "common/json_utils.h"          // for ParseJson
+#include "common/qt/convert2string.h"   // for ConvertToString
+#include "common/text_decoders/compress_edcoder.h"  // for CompressEDcoder
+#include "common/text_decoders/hex_edcoder.h"  // for HexEDcoder
+#include "common/text_decoders/msgpack_edcoder.h"  // for MsgPackEDcoder
 
-#include "common/convert2string.h"
-#include "common/qt/convert2string.h"
+#include "fasto/qt/gui/base/tree_item.h"      // for TreeItem
 
-#include "common/text_decoders/compress_edcoder.h"
-#include "common/text_decoders/msgpack_edcoder.h"
-#include "common/text_decoders/hex_edcoder.h"
-
-#include "global/global.h"
+#include "global/global.h"              // for ConvertToString
 
 namespace fastonosql {
 namespace gui {

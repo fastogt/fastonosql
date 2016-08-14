@@ -20,6 +20,8 @@
 
 #include <QKeyEvent>
 
+#include "fasto/qt/gui/shortcuts.h"           // for FastoQKeySequence
+
 namespace fastonosql {
 namespace gui {
 

@@ -18,12 +18,15 @@
 
 #pragma once
 
-#include <vector>
+#include <stddef.h>                     // for size_t
+#include <stdint.h>                     // for uint32_t
+#include <vector>                       // for vector
 
 #include <Qsci/qsciabstractapis.h>
 #include <Qsci/qscilexercustom.h>
 
-#include "core/command_holder.h"
+namespace fastonosql { namespace core { class CommandHolder; } }
+namespace fastonosql { namespace core { struct CommandInfo; } }
 
 namespace fastonosql {
 namespace shell {

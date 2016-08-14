@@ -23,24 +23,24 @@
 namespace fastonosql {
 namespace shell {
 
-RocksdbApi::RocksdbApi(QsciLexer* lexer)
+RocksDBApi::RocksDBApi(QsciLexer* lexer)
   : BaseQsciApiCommandHolder(core::rocksdb::rocksdbCommands, lexer) {
 }
 
-RocksdbLexer::RocksdbLexer(QObject* parent)
+RocksDBLexer::RocksDBLexer(QObject* parent)
   : BaseQsciLexerCommandHolder(core::rocksdb::rocksdbCommands, parent) {
-  setAPIs(new RocksdbApi(this));
+  setAPIs(new RocksDBApi(this));
 }
 
-const char* RocksdbLexer::language() const {
+const char* RocksDBLexer::language() const {
   return "RocksDB";
 }
 
-const char* RocksdbLexer::version() const {
+const char* RocksDBLexer::version() const {
   return core::rocksdb::DBConnection::versionApi();
 }
 
-const char* RocksdbLexer::basedOn() const {
+const char* RocksDBLexer::basedOn() const {
   return "rocksdb";
 }
 

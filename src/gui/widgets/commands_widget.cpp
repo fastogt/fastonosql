@@ -18,6 +18,8 @@
 
 #include "gui/widgets/commands_widget.h"
 
+#include <string>                       // for string
+
 #include <QAction>
 #include <QEvent>
 #include <QHBoxLayout>
@@ -26,11 +28,13 @@
 #include <QTime>
 #include <QTextEdit>
 
-#include "common/convert2string.h"
+#include "common/convert2string.h"      // for ConvertFromString
+#include "common/macros.h"              // for VERIFY
+#include "common/value.h"               // for Value, etc
 
-#include "global/types.h"
+#include "global/types.h"               // for Command
 
-#include "translations/global.h"
+#include "translations/global.h"        // for trClearAll
 
 namespace fastonosql {
 namespace gui {

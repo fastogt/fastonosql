@@ -20,12 +20,14 @@
 
 #include "common/convert2string.h"
 
-#include "core/iserver.h"
+#include "common/convert2string.h"      // for ConvertFromString
+#include "common/macros.h"              // for VERIFY, DNOTREACHED
 
-#include "gui/shortcuts.h"
-#include "gui/main_tab_bar.h"
-#include "gui/gui_factory.h"
-#include "gui/widgets/query_widget.h"
+#include "core/iserver.h"               // for IServer
+
+#include "gui/gui_factory.h"            // for GuiFactory
+#include "gui/main_tab_bar.h"           // for MainTabBar
+#include "gui/widgets/query_widget.h"   // for QueryWidget
 
 namespace fastonosql {
 namespace gui {

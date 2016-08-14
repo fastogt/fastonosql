@@ -23,18 +23,18 @@
 namespace fastonosql {
 namespace shell {
 
-class RocksdbApi
+class RocksDBApi
   : public BaseQsciApiCommandHolder {
   Q_OBJECT
  public:
-  explicit RocksdbApi(QsciLexer* lexer);
+  explicit RocksDBApi(QsciLexer* lexer);
 };
 
-class RocksdbLexer
+class RocksDBLexer
   : public BaseQsciLexerCommandHolder {
   Q_OBJECT
  public:
-  explicit RocksdbLexer(QObject* parent = 0);
+  explicit RocksDBLexer(QObject* parent = 0);
 
   virtual const char* language() const;
   virtual const char* version() const;

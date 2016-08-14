@@ -18,9 +18,14 @@
 
 #pragma once
 
-#include "fasto/qt/gui/base/tree_model.h"
+#include "core/command_key.h"           // for CommandKeySPtr
 
-#include "core/command_key.h"
+#include "fasto/qt/gui/base/tree_model.h"  // for TreeModel
+
+class QModelIndex;
+class QObject;
+
+namespace fastonosql { namespace core { class NDbKValue; } }
 
 namespace fastonosql {
 namespace gui {

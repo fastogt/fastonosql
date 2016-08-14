@@ -20,19 +20,16 @@
 
 #include <QWidget>
 
-#include "core/core_fwd.h"
-#include "core/connection_types.h"
+#include "core/connection_types.h"      // for connectionTypes
+#include "core/core_fwd.h"              // for IServerSPtr
+namespace fastonosql { namespace gui { class OutputWidget; } }  // lines 33-33
+namespace fastonosql { namespace shell { class BaseShellWidget; } }  // lines 28-28
 
 namespace fastonosql {
-namespace shell {
-class BaseShellWidget;
-}
-
 namespace gui {
 
-class OutputWidget;
 class QueryWidget
-        : public QWidget {
+  : public QWidget {
   Q_OBJECT
  public:
   enum {

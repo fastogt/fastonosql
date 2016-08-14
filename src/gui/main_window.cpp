@@ -18,7 +18,14 @@
 
 #include "gui/main_window.h"
 
-#include <string>
+#include <stddef.h>                     // for size_t
+#include <stdint.h>                     // for uint32_t
+#include <string.h>                     // for strlen
+#include <sys/types.h>                  // for ssize_t
+
+#include <memory>                       // for __shared_ptr
+#include <string>                       // for allocator, string, etc
+#include <vector>                       // for vector
 
 #include <QAction>
 #include <QApplication>
