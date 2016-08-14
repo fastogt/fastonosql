@@ -222,6 +222,14 @@ void ExplorerDatabaseItem::createKey(const core::NDbKValue &key) {
   dbs->executeCommand(req);
 }
 
+void ExplorerDatabaseItem::setTTL(const core::NDbKValue& key, core::ttl_t ttl) {
+  core::IDatabaseSPtr dbs = db();
+  CHECK(dbs);
+  core::CommandKeySPtr cmd(new core::CommandChangeTTL(key, ttl));
+  core::events_info::CommandRequest req(this, dbs->info(), cmd);
+  dbs->executeCommand(req);
+}
+
 void ExplorerDatabaseItem::removeAllKeys() {
   core::IDatabaseSPtr dbs = db();
   CHECK(dbs);
@@ -251,6 +259,10 @@ core::NDbKValue ExplorerKeyItem::key() const {
   return key_;
 }
 
+void ExplorerKeyItem::setKey(const core::NDbKValue& key) {
+  key_ = key;
+}
+
 QString ExplorerKeyItem::name() const {
   return common::ConvertFromString<QString>(key_.keyString());
 }
@@ -275,6 +287,12 @@ void ExplorerKeyItem::loadValueFromDb() {
   ExplorerDatabaseItem* par = db();
   CHECK(par);
   par->loadValue(key_);
+}
+
+void ExplorerKeyItem::setTTL(core::ttl_t ttl) {
+  ExplorerDatabaseItem* par = db();
+  CHECK(par);
+  par->setTTL(key_, ttl);
 }
 
 ExplorerNSItem::ExplorerNSItem(const QString& name, IExplorerTreeItem* parent)
@@ -612,6 +630,24 @@ void ExplorerTreeModel::removeKey(core::IServer* server, core::IDataBaseInfoSPtr
     fasto::qt::gui::TreeItem* par = keyit->parent();
     QModelIndex index = createIndex(par->indexOf(keyit), 0, keyit);
     removeItem(index.parent(), keyit);
+  }
+}
+
+void ExplorerTreeModel::updateKey(core::IServer* server, core::IDataBaseInfoSPtr db, const core::NDbKValue &key) {
+  ExplorerServerItem* parent = findServerItem(server);
+  CHECK(parent);
+
+  ExplorerDatabaseItem* dbs = findDatabaseItem(parent, db);
+  CHECK(dbs);
+
+  ExplorerKeyItem* keyit = findKeyItem(dbs, key);
+  if (keyit) {
+    fasto::qt::gui::TreeItem* par = keyit->parent();
+    int index_key = par->indexOf(keyit);
+    keyit->setKey(key);
+    QModelIndex key_index1 = createIndex(index_key, ExplorerKeyItem::eName, dbs);
+    QModelIndex key_index2 = createIndex(index_key, ExplorerKeyItem::eCountColumns, dbs);
+    updateItem(key_index1, key_index2);
   }
 }
 

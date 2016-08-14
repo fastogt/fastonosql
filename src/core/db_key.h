@@ -75,6 +75,7 @@ class NDbKValue {
   common::Value::Type type() const;
 
   void setTTL(ttl_t ttl);
+  ttl_t TTL() const;
   void setValue(NValue value);
 
   std::string keyString() const;

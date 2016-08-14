@@ -1,4 +1,6 @@
 0.7.2
+[Alexandr Topilski]
+- [Redis] Set ttl context menu
 
 0.7.1 / August 6, 2016
 [Alexandr Topilski]

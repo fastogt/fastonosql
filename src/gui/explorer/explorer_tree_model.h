@@ -125,6 +125,7 @@ class ExplorerDatabaseItem
   void removeKey(const core::NDbKValue& key);
   void loadValue(const core::NDbKValue& key);
   void createKey(const core::NDbKValue& key);
+  void setTTL(const core::NDbKValue& key, core::ttl_t ttl);
 
   void removeAllKeys();
 
@@ -156,6 +157,7 @@ class ExplorerKeyItem
   ExplorerDatabaseItem* db() const;
 
   core::NDbKValue key() const;
+  void setKey(const core::NDbKValue& key);
 
   virtual QString name() const;
   core::IServerSPtr server() const;
@@ -163,6 +165,7 @@ class ExplorerKeyItem
 
   void removeFromDb();
   void loadValueFromDb();
+  void setTTL(core::ttl_t ttl);
 
  private:
   core::NDbKValue key_;
@@ -196,6 +199,7 @@ class ExplorerTreeModel
   void addKey(core::IServer* server, core::IDataBaseInfoSPtr db,
               const core::NDbKValue &dbv, const std::string& ns_separator);
   void removeKey(core::IServer* server, core::IDataBaseInfoSPtr db, const core::NDbKValue &key);
+  void updateKey(core::IServer* server, core::IDataBaseInfoSPtr db, const core::NDbKValue &key);
   void removeAllKeys(core::IServer* server, core::IDataBaseInfoSPtr db);
 
  private:

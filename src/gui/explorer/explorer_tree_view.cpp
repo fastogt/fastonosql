@@ -74,6 +74,9 @@ namespace {
   const QString trReallyShutdownTemplate_1S = QObject::tr("Really shutdown \"%1\" server?");
   const QString trSetMaxConnectionOnServerTemplate_1S = QObject::tr("Set max connection on %1 server");
   const QString trMaximumConnectionTemplate = QObject::tr("Maximum connection:");
+  const QString trSetTTLOnKeyTemplate_1S = QObject::tr("Set ttl for %1 key");
+  const QString trTTLValue = QObject::tr("New TTL:");
+  const QString trSetTTL = QObject::tr("Set TTL");
   const QString trChangePasswordTemplate_1S = QObject::tr("Change password for %1 server");
 }  // namespace
 
@@ -389,7 +392,12 @@ void ExplorerTreeView::showContextMenu(const QPoint& point) {
       bool isCon = server->isConnected();
       menu.addAction(getValueAction_);
       getValueAction_->setEnabled(isCon);
-
+      bool isRedis = server->type() == core::REDIS;
+      if (isRedis) {
+        QAction* setTTLKeyAction = new QAction(trSetTTL, this);
+        VERIFY(connect(setTTLKeyAction, &QAction::triggered, this, &ExplorerTreeView::setTTL));
+        menu.addAction(setTTLKeyAction);
+      }
       menu.addAction(deleteKeyAction_);
       deleteKeyAction_->setEnabled(isCon);
       menu.exec(menuPoint);
@@ -832,6 +840,27 @@ void ExplorerTreeView::deleteKey() {
   node->removeFromDb();
 }
 
+void ExplorerTreeView::setTTL() {
+  QModelIndex sel = selectedIndex();
+  if (!sel.isValid()) {
+    return;
+  }
+
+  ExplorerKeyItem* node = common::utils_qt::item<fasto::qt::gui::TreeItem*, ExplorerKeyItem*>(sel);
+  if (!node) {
+    return;
+  }
+
+  bool ok;
+  QString name = node->name();
+  core::NDbKValue key = node->key();
+  int ttl = QInputDialog::getInt(this, trSetTTLOnKeyTemplate_1S.arg(name),
+                                         trTTLValue, key.TTL(), -1, INT32_MAX, 100, &ok);
+  if (ok) {
+    node->setTTL(ttl);
+  }
+}
+
 void ExplorerTreeView::startLoadDatabases(const core::events_info::LoadDatabasesInfoRequest& req) {
   UNUSED(req);
 }
@@ -942,6 +971,13 @@ void ExplorerTreeView::finishExecuteCommand(const core::events_info::CommandResp
     mod->removeKey(serv, res.inf, dbv);
   } else if (key->type() == core::CommandKey::C_CREATE) {
     mod->addKey(serv, res.inf, dbv, ns);
+  } else if (key->type() == core::CommandKey::C_CHANGE_TTL) {
+    core::CommandChangeTTL* cttl = static_cast<core::CommandChangeTTL*>(key.get());
+    core::NDbKValue ndbv = cttl->newKey();
+    mod->updateKey(serv, res.inf, ndbv);
+  } else if (key->type() == core::CommandKey::C_LOAD) {
+  } else {
+    NOTREACHED();
   }
 }
 

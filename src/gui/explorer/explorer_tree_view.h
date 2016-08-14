@@ -79,8 +79,10 @@ class ExplorerTreeView
   void setDefaultDb();
   void createKey();
   void viewKeys();
+
   void getValue();
   void deleteKey();
+  void setTTL();
 
   void startLoadDatabases(const core::events_info::LoadDatabasesInfoRequest& req);
   void finishLoadDatabases(const core::events_info::LoadDatabasesInfoResponce& res);
