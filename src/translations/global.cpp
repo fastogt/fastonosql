@@ -111,6 +111,7 @@ const QString trSaveAs = QObject::tr("Save as");
 const QString trClearAll = QObject::tr("Clear All");
 const QString trClearMenu = QObject::tr("Clear Menu");
 const QString trPrivateKey = QObject::tr("Private Key");
+const QString trPublicPrivateKey = QObject::tr("Public/Private Key");
 const QString trOpenConsole = QObject::tr("Open console");
 const QString trSetDefault = QObject::tr("Set default");
 const QString trSetAsStartNode = QObject::tr("Set as start node");

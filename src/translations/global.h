@@ -111,6 +111,7 @@ extern const QString trSaveAs;
 extern const QString trClearAll;
 extern const QString trClearMenu;
 extern const QString trPrivateKey;
+extern const QString trPublicPrivateKey;
 extern const QString trOpenConsole;
 extern const QString trSetDefault;
 extern const QString trSetAsStartNode;

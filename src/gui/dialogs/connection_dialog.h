@@ -41,10 +41,6 @@ class ConnectionDialog
   : public QDialog {
   Q_OBJECT
  public:
-  enum {
-    min_height = 240,
-    min_width = 320
-  };
   ConnectionDialog(QWidget* parent, core::IConnectionSettingsBase* connection = nullptr,
                    const std::vector<core::connectionTypes>& availibleTypes = std::vector<core::connectionTypes>(),
                    const QString& connectionName = "New Connection");  // get ownerships connection
@@ -63,6 +59,7 @@ class ConnectionDialog
   void togglePasswordEchoMode();
   void togglePassphraseEchoMode();
   void setPrivateFile();
+  void setPublicFile();
   void testConnection();
 
  protected:
@@ -99,14 +96,17 @@ class ConnectionDialog
   QLabel* sshAuthMethodLabel_;
   QLabel* passwordLabel_;
   QLabel* sshPrivateKeyLabel_;
+  QLabel* sshPublicKeyLabel_;
 
   QComboBox* security_;
   QLineEdit* passwordBox_;
   QPushButton* passwordEchoModeButton_;
   QLineEdit* privateKeyBox_;
+  QLineEdit* publicKeyBox_;
   QLineEdit* passphraseBox_;
   QPushButton* passphraseEchoModeButton_;
   QPushButton* selectPrivateFileButton_;
+  QPushButton* selectPublicFileButton_;
 };
 
 }  // namespace gui

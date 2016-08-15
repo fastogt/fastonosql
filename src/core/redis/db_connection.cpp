@@ -334,12 +334,14 @@ common::Error createConnection(const Config& config,
       const char* ssh_address = common::utils::c_strornull(ssh_host.host);
       int ssh_port = ssh_host.port;
       int curM = sinfo.current_method;
-      const char* publicKey = common::utils::c_strornull(sinfo.public_key);
-      const char* privateKey = common::utils::c_strornull(sinfo.private_key);
+      const char* public_key = common::utils::c_strornull(sinfo.public_key);
+      const char* private_key = common::utils::c_strornull(sinfo.private_key);
       const char* passphrase = common::utils::c_strornull(sinfo.passphrase);
-
+      if (ssh_address && curM == SSH_PUBLICKEY && !private_key) {
+        return common::make_error_value("Invalid input argument(private key)", common::Value::E_ERROR);
+      }
       lcontext = redisConnect(host, port, ssh_address, ssh_port, username, password,
-                             publicKey, privateKey, passphrase, curM);
+                             public_key, private_key, passphrase, curM);
     }
 
     if (!lcontext) {
