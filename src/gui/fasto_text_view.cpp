@@ -25,7 +25,7 @@
 
 #include "common/macros.h"              // for VERIFY
 
-#include "gui/fasto_editor.h"           // for FastoEditorOutput, CSV, etc
+#include "gui/fasto_editor_output.h"           // for FastoEditorOutput, CSV, etc
 #include "gui/gui_factory.h"            // for GuiFactory
 
 #include "translations/global.h"        // for trCsv, trGzip, trHex, etc

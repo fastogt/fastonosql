@@ -24,7 +24,7 @@
 
 #include "core/connection_types.h"      // for connectionTypes
 
-#include "gui/fasto_editor.h"           // for FastoEditorShell
+#include "gui/fasto_editor_shell.h"           // for FastoEditorShell
 
 namespace fastonosql { namespace shell { class BaseQsciLexer; } }  // lines 30-30
 

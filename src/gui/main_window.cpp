@@ -48,10 +48,8 @@
 #include "common/net/socket_tcp.h"      // for ClientSocketTcp
 #include "common/net/types.h"           // for HostAndPort
 #include "common/qt/convert2string.h"   // for ConvertToString
-#include "common/system_info/system_info.h"  // for SystemInfo, etc
 #include "common/text_decoders/iedcoder.h"  // for IEDcoder, EDTypes::Hex
 #include "common/value.h"               // for ErrorValue
-#include "common/third-party/json-c/json-c/json_object.h"
 
 #include "core/command_logger.h"        // for CommandLogger
 #include "core/core_fwd.h"              // for IServerSPtr, IClusterSPtr, etc
@@ -74,8 +72,8 @@
 #include "gui/shortcuts.h"              // for fullScreenKey, openKey, etc
 #include "gui/widgets/log_tab_widget.h"  // for LogTabWidget
 #include "gui/widgets/main_widget.h"    // for MainWidget
-
-#include "server_config_daemon/server_config.h"  // for FASTONOSQL_URL, etc
+#include "gui/statistic_sender.h"
+#include "gui/update_checker.h"
 
 #include "translations/global.h"        // for trError, trCheckVersion, etc
 
@@ -776,102 +774,6 @@ void MainWindow::createCluster(core::IClusterSettingsBaseSPtr settings) {
       mwidg->openConsole(root, QString());
     }
   }
-}
-
-UpdateChecker::UpdateChecker(QObject* parent)
-  : QObject(parent) {
-}
-
-void UpdateChecker::routine() {
-#if defined(FASTONOSQL)
-  common::net::ClientSocketTcp s(common::net::HostAndPort(FASTONOSQL_URL, SERV_VERSION_PORT));
-#elif defined(FASTOREDIS)
-  common::net::ClientSocketTcp s(common::net::HostAndPort(FASTOREDIS_URL, SERV_VERSION_PORT));
-#else
-  #error please specify url and port of version information
-#endif
-  common::ErrnoError err = s.connect();
-  if (err && err->isError()) {
-    emit versionAvailibled(false, QString());
-    return;
-  }
-
-  ssize_t nwrite = 0;
-#if defined(FASTONOSQL)
-  err = s.write(GET_FASTONOSQL_VERSION, sizeof(GET_FASTONOSQL_VERSION), &nwrite);
-#elif defined(FASTOREDIS)
-  err = s.write(GET_FASTOREDIS_VERSION, sizeof(GET_FASTOREDIS_VERSION), &nwrite);
-#else
-  #error please specify request to get version information
-#endif
-  if (err && err->isError()) {
-    emit versionAvailibled(false, QString());
-    MCHECK(!s.close());
-    return;
-  }
-
-  char version[128] = {0};
-  ssize_t nread = 0;
-  err = s.read(version, sizeof(version), &nread);
-  if (err && err->isError()) {
-    emit versionAvailibled(false, QString());
-    MCHECK(!s.close());
-    return;
-  }
-
-  QString vers = common::ConvertFromString<QString>(version);
-  emit versionAvailibled(true, vers);
-  MCHECK(!s.close());
-  return;
-}
-
-StatisticSender::StatisticSender(QObject* parent)
-  : QObject(parent) {
-}
-
-void StatisticSender::routine() {
-#if defined(FASTONOSQL)
-  common::net::ClientSocketTcp s(common::net::HostAndPort(FASTONOSQL_URL, SERV_STATISTIC_PORT));
-#elif defined(FASTOREDIS)
-  common::net::ClientSocketTcp s(common::net::HostAndPort(FASTOREDIS_URL, SERV_STATISTIC_PORT));
-#else
-  #error please specify url and port to send statistic information
-#endif
-  common::ErrnoError err = s.connect();
-  if (err && err->isError()) {
-    emit statisticSended(false);
-    return;
-  }
-
-  json_object* stats_json = json_object_new_object();
-  common::system_info::SystemInfo inf = common::system_info::currentSystemInfo();
-
-  json_object* os_json = json_object_new_object();
-  json_object_object_add(os_json, FIELD_OS_NAME, json_object_new_string(inf.name().c_str()));
-  json_object_object_add(os_json, FIELD_OS_VERSION, json_object_new_string(inf.version().c_str()));
-  json_object_object_add(os_json, FILED_OS_ARCH, json_object_new_string(inf.arch().c_str()));
-  json_object_object_add(stats_json, FIELD_OS, os_json);
-
-  json_object* project_json = json_object_new_object();
-  json_object_object_add(project_json, FIELD_PROJECT_NAME, json_object_new_string(PROJECT_NAME));
-  json_object_object_add(project_json, FIELD_PROJECT_VERSION, json_object_new_string(PROJECT_VERSION));
-  json_object_object_add(project_json, FILED_PROJECT_ARCH, json_object_new_string(PROJECT_ARCH));
-  json_object_object_add(stats_json, FIELD_PROJECT, project_json);
-
-  const char* stats_json_string = json_object_get_string(stats_json);
-
-  ssize_t nwrite = 0;
-  err = s.write(stats_json_string, strlen(stats_json_string), &nwrite);
-  json_object_put(stats_json);
-  if (err && err->isError()) {
-    emit statisticSended(false);
-    MCHECK(!s.close());
-    return;
-  }
-
-  emit statisticSended(true);
-  MCHECK(!s.close());
-  return;
 }
 
 }  // namespace gui

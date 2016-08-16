@@ -9,6 +9,8 @@ SET(SOURCES_GLOBAL
 
 SET(HEADERS_GUI_TO_MOC
   gui/main_window.h
+  gui/statistic_sender.h
+  gui/update_checker.h
   gui/widgets/log_tab_widget.h
   gui/widgets/log_widget.h
   gui/widgets/commands_widget.h
@@ -36,6 +38,8 @@ SET(HEADERS_GUI_TO_MOC
   gui/widgets/main_widget.h
   gui/main_tab_bar.h
   gui/fasto_editor.h
+  gui/fasto_editor_shell.h
+  gui/fasto_editor_output.h
   gui/fasto_hex_edit.h
   gui/fasto_text_view.h
   gui/widgets/query_widget.h
@@ -53,6 +57,8 @@ SET(HEADERS_GUI
 )
 SET(SOURCES_GUI
   gui/main_window.cpp
+  gui/statistic_sender.cpp
+  gui/update_checker.cpp
   gui/gui_factory.cpp
   gui/widgets/log_tab_widget.cpp
   gui/widgets/log_widget.cpp
@@ -80,6 +86,8 @@ SET(SOURCES_GUI
   gui/widgets/main_widget.cpp
   gui/main_tab_bar.cpp
   gui/fasto_editor.cpp
+  gui/fasto_editor_shell.cpp
+  gui/fasto_editor_output.cpp
   gui/fasto_hex_edit.cpp
   gui/fasto_text_view.cpp
   gui/widgets/query_widget.cpp

@@ -21,13 +21,6 @@
 #include <QModelIndex>
 #include <QWidget>
 
-#define JSON 0
-#define CSV 1
-#define RAW 2
-#define HEX 3
-#define MSGPACK 4
-#define GZIP 5
-
 class QCheckBox;  // lines 34-34
 class QEvent;
 class QFrame;  // lines 35-35
@@ -42,12 +35,10 @@ class QToolButton;  // lines 32-32
 class QsciLexer;  // lines 36-36
 
 namespace fasto { namespace qt { namespace gui { class FastoScintilla; } } }  // lines 42-42
-namespace fastonosql { namespace gui { class FastoHexEdit; } }  // lines 50-50
 
 namespace fastonosql {
 namespace gui {
 
-class FastoHexEdit;
 class FastoEditor
   : public QWidget {
   Q_OBJECT
@@ -101,58 +92,6 @@ class FastoEditor
   QPushButton* next_;
   QPushButton* prev_;
   QCheckBox* caseSensitive_;
-};
-
-class FastoEditorOutput
-  : public QWidget {
-  Q_OBJECT
- public:
-  explicit FastoEditorOutput(const QString& delemitr, QWidget* parent = 0);
-
-  void setModel(QAbstractItemModel* model);
-
-  QModelIndex selectedItem(int column) const;
-  bool setData(const QModelIndex& index, const QVariant& value);
-  int viewMethod() const;
-  QString text() const;
-  bool isReadOnly() const;
-
- Q_SIGNALS:
-  void textChanged();
-  void readOnlyChanged();
-
- public Q_SLOTS:
-  void setReadOnly(bool ro);
-  void viewChange(int viewMethod);
-
- private Q_SLOTS:
-  void modelDestroyed();
-  void dataChanged(QModelIndex first, QModelIndex last);
-  void headerDataChanged();
-  void rowsInserted(QModelIndex index, int r, int c);
-  void rowsAboutToBeRemoved(QModelIndex index, int r, int c);
-  void rowsRemoved(QModelIndex index, int r, int c);
-  void columnsAboutToBeRemoved(QModelIndex index, int r, int c);
-  void columnsRemoved(QModelIndex index, int r, int c);
-  void columnsInserted(QModelIndex index, int r, int c);
-  void reset();
-  void layoutChanged();
-
- private:
-  FastoHexEdit* editor_;
-  QAbstractItemModel* model_;
-  int view_method_;
-  const QString delemitr_;
-};
-
-class FastoEditorShell
-  : public FastoEditor {
-  Q_OBJECT
- protected Q_SLOTS:
-  void showContextMenu(const QPoint& pt);
-
- protected:
-  explicit FastoEditorShell(bool showAutoCompl, QWidget* parent = 0);
 };
 
 }  // namespace gui

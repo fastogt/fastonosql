@@ -129,31 +129,5 @@ class MainWindow
   bool isCheckedInSession_;
 };
 
-class UpdateChecker
-  : public QObject {
-  Q_OBJECT
- public:
-  explicit UpdateChecker(QObject* parent = 0);
-
- Q_SIGNALS:
-  void versionAvailibled(bool succesResult, const QString& version);
-
- public Q_SLOTS:
-  void routine();
-};
-
-class StatisticSender
-  : public QObject {
-  Q_OBJECT
- public:
-  explicit StatisticSender(QObject* parent = 0);
-
- Q_SIGNALS:
-  void statisticSended(bool succesResult);
-
- public Q_SLOTS:
-  void routine();
-};
-
 }  // namespace gui
 }  // namespace fastonosql
