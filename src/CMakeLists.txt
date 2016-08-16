@@ -7,16 +7,7 @@ SET(SOURCES_GLOBAL
   global/types.cpp
 )
 
-SET(HEADERS_GUI_TO_MOC
-  gui/main_window.h
-  gui/statistic_sender.h
-  gui/update_checker.h
-  gui/widgets/log_tab_widget.h
-  gui/widgets/log_widget.h
-  gui/widgets/commands_widget.h
-  gui/property_table_model.h
-  gui/explorer/explorer_tree_view.h
-  gui/explorer/explorer_tree_model.h
+SET(HEADERS_GUI_DIALOGS_TO_MOC
   gui/dialogs/about_dialog.h
   gui/dialogs/input_dialog.h
   gui/dialogs/info_server_dialog.h
@@ -35,35 +26,13 @@ SET(HEADERS_GUI_TO_MOC
   gui/dialogs/create_dbkey_dialog.h
   gui/dialogs/view_keys_dialog.h
   gui/dialogs/change_password_server_dialog.h
-  gui/widgets/main_widget.h
-  gui/main_tab_bar.h
-  gui/fasto_editor.h
-  gui/fasto_editor_shell.h
-  gui/fasto_editor_output.h
-  gui/fasto_hex_edit.h
-  gui/fasto_text_view.h
-  gui/widgets/query_widget.h
-  gui/widgets/output_widget.h
-  gui/keys_table_model.h
-  gui/fasto_tree_view.h
-  gui/fasto_common_model.h
-  gui/fasto_table_view.h
 )
-SET(HEADERS_GUI
+
+SET(HEADERS_GUI_DIALOGS
   gui/dialogs/connection_listwidget_items.h
-  gui/gui_factory.h
-  gui/fasto_common_item.h
-  gui/shortcuts.h
 )
-SET(SOURCES_GUI
-  gui/main_window.cpp
-  gui/statistic_sender.cpp
-  gui/update_checker.cpp
-  gui/gui_factory.cpp
-  gui/widgets/log_tab_widget.cpp
-  gui/widgets/log_widget.cpp
-  gui/widgets/commands_widget.cpp
-  gui/property_table_model.cpp
+
+SET(SOURCES_GUI_DIALOGS
   gui/dialogs/about_dialog.cpp
   gui/dialogs/input_dialog.cpp
   gui/dialogs/preferences_dialog.cpp
@@ -83,18 +52,76 @@ SET(SOURCES_GUI
   gui/dialogs/create_dbkey_dialog.cpp
   gui/dialogs/view_keys_dialog.cpp
   gui/dialogs/change_password_server_dialog.cpp
-  gui/widgets/main_widget.cpp
-  gui/main_tab_bar.cpp
-  gui/fasto_editor.cpp
-  gui/fasto_editor_shell.cpp
-  gui/fasto_editor_output.cpp
-  gui/fasto_hex_edit.cpp
-  gui/fasto_text_view.cpp
-  gui/widgets/query_widget.cpp
-  gui/keys_table_model.cpp
-  gui/widgets/output_widget.cpp
+)
+
+SET(HEADERS_GUI_EDITOR_TO_MOC
+  gui/editor/fasto_editor.h
+  gui/editor/fasto_editor_shell.h
+  gui/editor/fasto_editor_output.h
+  gui/editor/fasto_hex_edit.h
+)
+
+SET(SOURCES_GUI_EDITOR
+  gui/editor/fasto_editor.cpp
+  gui/editor/fasto_editor_shell.cpp
+  gui/editor/fasto_editor_output.cpp
+  gui/editor/fasto_hex_edit.cpp
+)
+
+SET(HEADERS_GUI_EXPLORER_TO_MOC
+  gui/explorer/explorer_tree_view.h
+  gui/explorer/explorer_tree_model.h
+)
+
+SET(SOURCES_GUI_EXPLORER
   gui/explorer/explorer_tree_view.cpp
   gui/explorer/explorer_tree_model.cpp
+)
+
+SET(HEADERS_GUI_WIDGETS_TO_MOC
+  gui/widgets/log_tab_widget.h
+  gui/widgets/log_widget.h
+  gui/widgets/commands_widget.h
+  gui/widgets/query_widget.h
+  gui/widgets/output_widget.h
+  gui/widgets/main_widget.h
+)
+
+SET(SOURCES_GUI_WIDGETS
+  gui/widgets/log_tab_widget.cpp
+  gui/widgets/log_widget.cpp
+  gui/widgets/commands_widget.cpp
+  gui/widgets/main_widget.cpp
+  gui/widgets/query_widget.cpp
+  gui/widgets/output_widget.cpp
+)
+
+SET(HEADERS_GUI_TO_MOC
+  gui/main_window.h
+  gui/statistic_sender.h
+  gui/update_checker.h
+  gui/property_table_model.h 
+  gui/main_tab_bar.h
+  gui/fasto_text_view.h
+  gui/keys_table_model.h
+  gui/fasto_tree_view.h
+  gui/fasto_common_model.h
+  gui/fasto_table_view.h
+)
+SET(HEADERS_GUI
+  gui/gui_factory.h
+  gui/fasto_common_item.h
+  gui/shortcuts.h
+)
+SET(SOURCES_GUI
+  gui/main_window.cpp
+  gui/statistic_sender.cpp
+  gui/update_checker.cpp
+  gui/gui_factory.cpp
+  gui/property_table_model.cpp
+  gui/main_tab_bar.cpp
+  gui/fasto_text_view.cpp  
+  gui/keys_table_model.cpp  
   gui/fasto_tree_view.cpp
   gui/fasto_common_model.cpp
   gui/fasto_table_view.cpp
@@ -518,17 +545,27 @@ IF("${USER_SPECIFIC_PUBLIC_LOGIN}" STREQUAL "${USER_SPECIFIC_LOGIN}")
   ADD_DEFINITIONS(-DIS_PUBLIC_LOGIN)
 ENDIF("${USER_SPECIFIC_PUBLIC_LOGIN}" STREQUAL "${USER_SPECIFIC_LOGIN}")
 
-SET(HEADERS ${HEADERS} ${HEADERS_GLOBAL} ${HEADERS_GUI} ${HEADERS_CORE} ${HEADERS_SHELL}
+SET(HEADERS ${HEADERS} ${HEADERS_GLOBAL}
+  ${HEADERS_GUI} ${HEADERS_GUI_DIALOGS}
+  ${HEADERS_CORE} ${HEADERS_SHELL}
   ${HEADERS_REDIS} ${HEADERS_MEMCACHED} ${HEADERS_SSDB}
   ${HEADERS_LEVELDB} ${HEADERS_ROCKSDB} ${HEADERS_UNQLITE} ${HEADERS_LMDB}
-  ${HEADERS_TRANSLATIONS})
-SET(SOURCES ${SOURCES} ${SOURCES_GLOBAL} ${SOURCES_GUI} ${SOURCES_CORE} ${SOURCES_SHELL}
+  ${HEADERS_TRANSLATIONS}
+)
+SET(SOURCES ${SOURCES} ${SOURCES_GLOBAL}
+  ${SOURCES_GUI} ${SOURCES_GUI_DIALOGS} ${SOURCES_GUI_EDITOR}
+  ${SOURCES_GUI_WIDGETS} ${SOURCES_GUI_EXPLORER}
+  ${SOURCES_CORE} ${SOURCES_SHELL}
   ${SOURCES_REDIS} ${SOURCES_MEMCACHED} ${SOURCES_SSDB}
   ${SOURCES_LEVELDB} ${SOURCES_ROCKSDB} ${SOURCES_UNQLITE} ${SOURCES_LMDB}
-  ${SOURCES_TRANSLATIONS} ${SOURCES_SDS})
-SET(HEADERS_TOMOC ${HEADERS_GUI_TO_MOC} ${HEADERS_CORE_TO_MOC} ${HEADERS_SHELL_TO_MOC}
+  ${SOURCES_TRANSLATIONS} ${SOURCES_SDS}
+)
+SET(HEADERS_TOMOC ${HEADERS_GUI_TO_MOC} ${HEADERS_GUI_DIALOGS_TO_MOC} ${HEADERS_GUI_EDITOR_TO_MOC}
+  ${HEADERS_GUI_WIDGETS_TO_MOC} ${HEADERS_GUI_EXPLORER_TO_MOC}
+  ${HEADERS_CORE_TO_MOC} ${HEADERS_SHELL_TO_MOC}
   ${HEADERS_REDIS_TO_MOC} ${HEADERS_MEMCACHED_TO_MOC} ${HEADERS_SSDB_TO_MOC}
-  ${HEADERS_LEVELDB_TO_MOC} ${HEADERS_ROCKSDB_TO_MOC} ${HEADERS_UNQLITE_TO_MOC} ${HEADERS_LMDB_TO_MOC})
+  ${HEADERS_LEVELDB_TO_MOC} ${HEADERS_ROCKSDB_TO_MOC} ${HEADERS_UNQLITE_TO_MOC} ${HEADERS_LMDB_TO_MOC}
+)
 
 QT5_WRAP_CPP(MOC_FILES ${HEADERS_TOMOC})
 CONFIGURE_FILE("resources/gui.qrc.in" "${CMAKE_CURRENT_LIST_DIR}/resources/gui.qrc" @ONLY IMMEDIATE)

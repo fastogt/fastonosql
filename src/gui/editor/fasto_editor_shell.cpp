@@ -16,7 +16,7 @@
     along with FastoNoSQL.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-#include "gui/fasto_editor_shell.h"
+#include "gui/editor/fasto_editor_shell.h"
 
 #include <QMenu>
 

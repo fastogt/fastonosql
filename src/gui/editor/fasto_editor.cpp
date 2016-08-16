@@ -16,7 +16,7 @@
     along with FastoNoSQL.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-#include "gui/fasto_editor.h"
+#include "gui/editor/fasto_editor.h"
 
 #include <stddef.h>                     // for size_t
 
@@ -37,8 +37,6 @@
 #include "fasto/qt/gui/fasto_scintilla.h"  // for FastoScintilla
 
 #include "gui/gui_factory.h"            // for GuiFactory
-
-#include "qt/gui/base/tree_item.h"      // for TreeItem
 
 #include "translations/global.h"
 

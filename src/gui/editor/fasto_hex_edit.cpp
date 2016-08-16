@@ -16,7 +16,7 @@
     along with FastoNoSQL.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-#include "gui/fasto_hex_edit.h"
+#include "gui/editor/fasto_hex_edit.h"
 
 #include <QKeyEvent>
 #include <QPainter>

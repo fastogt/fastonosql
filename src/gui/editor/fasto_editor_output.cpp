@@ -16,7 +16,7 @@
     along with FastoNoSQL.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-#include "gui/fasto_editor_output.h"
+#include "gui/editor/fasto_editor_output.h"
 
 #include <QHBoxLayout>
 
@@ -25,7 +25,7 @@
 #include "common/qt/convert2string.h"
 
 #include "gui/fasto_common_item.h"      // for FastoCommonItem, toRaw, etc
-#include "gui/fasto_hex_edit.h"         // for FastoHexEdit, etc
+#include "gui/editor/fasto_hex_edit.h"         // for FastoHexEdit, etc
 
 #include "translations/global.h"
 

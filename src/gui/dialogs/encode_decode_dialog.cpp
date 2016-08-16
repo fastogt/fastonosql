@@ -36,7 +36,7 @@
 #include "common/qt/convert2string.h"   // for ConvertToString
 #include "common/text_decoders/iedcoder.h"  // for EDTypes, IEDcoder, etc
 
-#include "gui/fasto_editor.h"           // for FastoEditor
+#include "gui/editor/fasto_editor.h"           // for FastoEditor
 #include "gui/gui_factory.h"            // for GuiFactory
 
 #include "translations/global.h"        // for trDecode, trEncode, etc"
