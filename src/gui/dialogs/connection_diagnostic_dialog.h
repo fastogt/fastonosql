@@ -20,20 +20,13 @@
 
 #include <QDialog>
 
-#include "common/types.h"               // for time64_t
-
 #include "core/connection_settings.h"   // for IConnectionSettingsBaseSPtr
 
-class QMovie;
-class QLabel;
+class QLabel;  // lines 28-28
+class QShowEvent;
+class QWidget;
 
-namespace fasto {
-namespace qt {
-namespace gui {
-class GlassWidget;
-}
-}
-}
+namespace fasto { namespace qt { namespace gui { class GlassWidget; } } }  // lines 33-33
 
 namespace fastonosql {
 namespace gui {

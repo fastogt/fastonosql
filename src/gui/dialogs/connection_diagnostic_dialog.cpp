@@ -26,17 +26,10 @@
 #include <QIcon>
 #include <QThread>
 
-#include "common/convert2string.h"      // for ConvertFromString
-#include "common/error.h"               // for Error
 #include "common/macros.h"              // for VERIFY
-#include "common/time.h"                // for current_mstime
-#include "common/value.h"               // for ErrorValue
-
-#include "core/servers_manager.h"       // for ServersManager
 
 #include "fasto/qt/gui/glass_widget.h"  // for GlassWidget
-
-#include "gui/dialogs/test_connection.h"
+#include "gui/dialogs/test_connection.h"  // for TestConnection
 #include "gui/gui_factory.h"            // for GuiFactory
 
 #include "translations/global.h"

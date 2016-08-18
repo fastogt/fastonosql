@@ -20,11 +20,9 @@
 
 #include <stddef.h>                     // for size_t
 #include <stdint.h>                     // for uint32_t
-#include <string.h>                     // for strlen
-#include <sys/types.h>                  // for ssize_t
 
-#include <memory>                       // for __shared_ptr
-#include <string>                       // for allocator, string, etc
+#include <memory>                       // for allocator, __shared_ptr
+#include <string>                       // for string, operator+, etc
 #include <vector>                       // for vector
 
 #include <QAction>
@@ -42,11 +40,9 @@
 #endif
 
 #include "common/convert2string.h"      // for ConvertFromString, etc
-#include "common/error.h"               // for Error, ErrnoError, etc
+#include "common/error.h"               // for Error, ErrnoErrorValue
 #include "common/file_system.h"         // for File, remove_file, etc
 #include "common/macros.h"              // for VERIFY, DNOTREACHED, CHECK, etc
-#include "common/net/socket_tcp.h"      // for ClientSocketTcp
-#include "common/net/types.h"           // for HostAndPort
 #include "common/qt/convert2string.h"   // for ConvertToString
 #include "common/text_decoders/iedcoder.h"  // for IEDcoder, EDTypes::Hex
 #include "common/value.h"               // for ErrorValue
@@ -59,9 +55,9 @@
 #include "core/settings_manager.h"      // for SettingsManager
 
 #include "fasto/qt/gui/app_style.h"     // for applyFont, applyStyle
+#include "fasto/qt/gui/shortcuts.h"     // for FastoQKeySequence
 #include "fasto/qt/logger.h"            // for Logger
 #include "fasto/qt/translations/translations.h"  // for applyLanguage
-#include "fasto/qt/gui/shortcuts.h"           // for FastoQKeySequence
 
 #include "gui/dialogs/about_dialog.h"   // for AboutDialog
 #include "gui/dialogs/connections_dialog.h"  // for ConnectionsDialog
@@ -70,13 +66,12 @@
 #include "gui/explorer/explorer_tree_view.h"  // for ExplorerTreeView
 #include "gui/gui_factory.h"            // for GuiFactory
 #include "gui/shortcuts.h"              // for fullScreenKey, openKey, etc
+#include "gui/statistic_sender.h"       // for StatisticSender
+#include "gui/update_checker.h"         // for UpdateChecker
 #include "gui/widgets/log_tab_widget.h"  // for LogTabWidget
 #include "gui/widgets/main_widget.h"    // for MainWidget
-#include "gui/statistic_sender.h"
-#include "gui/update_checker.h"
 
 #include "translations/global.h"        // for trError, trCheckVersion, etc
-
 
 namespace {
 

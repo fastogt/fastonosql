@@ -20,7 +20,11 @@
 
 #include <QObject>
 
-#include "core/connection_settings.h"
+#include <vector>                       // for vector
+
+#include "common/types.h"               // for time64_t
+
+#include "core/connection_settings.h"   // for IConnectionSettingsBaseSPtr
 #include "core/types.h"
 
 namespace fastonosql {

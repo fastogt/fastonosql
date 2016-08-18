@@ -18,10 +18,16 @@
 
 #include "gui/update_checker.h"
 
-#include "common/convert2string.h"
-#include "common/net/socket_tcp.h"
+#include <sys/types.h>                  // for ssize_t
+#include <memory>                       // for __shared_ptr
 
-#include "server_config_daemon/server_config.h"  // for FASTONOSQL_URL, etc
+#include "common/convert2string.h"      // for ConvertFromString
+#include "common/error.h"               // for ErrnoError, ErrnoErrorValue
+#include "common/macros.h"              // for MCHECK
+#include "common/net/socket_tcp.h"      // for ClientSocketTcp
+#include "common/net/types.h"           // for HostAndPort
+
+#include "server_config_daemon/server_config.h"
 
 namespace fastonosql {
 namespace gui {

@@ -21,7 +21,6 @@
 #include "common/macros.h"              // for DCHECK
 
 #include "core/connection_types.h"      // for connectionTypes::MEMCACHED
-#include "core/iserver.h"               // for IServer
 
 namespace fastonosql {
 namespace core {
@@ -40,7 +39,7 @@ Database::Database(IServerSPtr server, IDataBaseInfoSPtr info)
   : IDatabase(server, info) {
   DCHECK(server);
   DCHECK(info);
-  DCHECK(server->type() == MEMCACHED && info->type() == MEMCACHED);
+  DCHECK(info->type() == MEMCACHED);
 }
 
 }  // namespace memcached

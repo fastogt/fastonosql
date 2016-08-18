@@ -18,12 +18,15 @@
 
 #include "gui/dialogs/discovery_connection.h"
 
-#include "common/time.h"
-#include "common/convert2string.h"
+#include <memory>                       // for __shared_ptr
 
-#include "core/servers_manager.h"
+#include "common/convert2string.h"      // for ConvertFromString
+#include "common/error.h"               // for Error
+#include "common/time.h"                // for current_mstime
+#include "common/value.h"               // for ErrorValue
+#include "core/servers_manager.h"       // for ServersManager
 
-#include "translations/global.h"
+#include "translations/global.h"        // for trSuccess
 
 namespace fastonosql {
 namespace gui {
