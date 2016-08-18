@@ -18,50 +18,30 @@
 
 #pragma once
 
-#include <QDialog>
+#include <QObject>
 
-#include "common/types.h"               // for time64_t
-
-#include "core/connection_settings.h"   // for IConnectionSettingsBaseSPtr
-
-class QMovie;
-class QLabel;
-
-namespace fasto {
-namespace qt {
-namespace gui {
-class GlassWidget;
-}
-}
-}
+#include "core/connection_settings.h"
+#include "core/types.h"
 
 namespace fastonosql {
 namespace gui {
 
-class ConnectionDiagnosticDialog
-  : public QDialog {
+class DiscoveryConnection
+  : public QObject {
   Q_OBJECT
  public:
-  enum {
-    min_height = 160,
-    min_width = 240
-  };
+  explicit DiscoveryConnection(core::IConnectionSettingsBaseSPtr conn, QObject* parent = 0);
 
-  ConnectionDiagnosticDialog(QWidget* parent, core::IConnectionSettingsBaseSPtr connection);
+ Q_SIGNALS:
+  void connectionResult(bool suc, qint64 msTimeExecute, const QString& resultText,
+                        std::vector<core::ServerDiscoveryClusterInfoSPtr> infos);
 
- private Q_SLOTS:
-  void connectionResult(bool suc, qint64 mstimeExecute, const QString& resultText);
-
- protected:
-  virtual void showEvent(QShowEvent* e);
+ public Q_SLOTS:
+  void routine();
 
  private:
-  void testConnection(core::IConnectionSettingsBaseSPtr connection);
-
-  fasto::qt::gui::GlassWidget* glassWidget_;
-  QLabel* executeTimeLabel_;
-  QLabel* statusLabel_;
-  QLabel* iconLabel_;
+  core::IConnectionSettingsBaseSPtr connection_;
+  common::time64_t start_time_;
 };
 
 }  // namespace gui

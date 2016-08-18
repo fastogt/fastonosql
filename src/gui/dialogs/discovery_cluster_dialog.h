@@ -32,34 +32,10 @@ class QMovie;
 class QLabel;
 class QTreeWidget;
 
-namespace fasto {
-namespace qt {
-namespace gui {
-class GlassWidget;
-}
-}
-}
+namespace fasto { namespace qt { namespace gui { class GlassWidget; } } }
 
 namespace fastonosql {
 namespace gui {
-
-class DiscoveryConnection
-  : public QObject {
-  Q_OBJECT
- public:
-  explicit DiscoveryConnection(core::IConnectionSettingsBaseSPtr conn, QObject* parent = 0);
-
- Q_SIGNALS:
-  void connectionResult(bool suc, qint64 msTimeExecute, const QString& resultText,
-                        std::vector<core::ServerDiscoveryClusterInfoSPtr> infos);
-
- public Q_SLOTS:
-  void routine();
-
- private:
-  core::IConnectionSettingsBaseSPtr connection_;
-  common::time64_t startTime_;
-};
 
 class ConnectionListWidgetItemDiscovered;
 class DiscoveryClusterDiagnosticDialog

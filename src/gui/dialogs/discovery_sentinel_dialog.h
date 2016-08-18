@@ -38,24 +38,6 @@ namespace fastonosql { namespace gui { class ConnectionListWidgetItemDiscovered;
 namespace fastonosql {
 namespace gui {
 
-class DiscoverySentinelConnection
-  : public QObject {
-  Q_OBJECT
- public:
-  explicit DiscoverySentinelConnection(core::IConnectionSettingsBaseSPtr conn, QObject* parent = 0);
-
- Q_SIGNALS:
-  void connectionResult(bool suc, qint64 msTimeExecute, const QString& resultText,
-                        std::vector<core::ServerDiscoverySentinelInfoSPtr> infos);
-
- public Q_SLOTS:
-  void routine();
-
- private:
-  core::IConnectionSettingsBaseSPtr connection_;
-  common::time64_t startTime_;
-};
-
 class ConnectionListWidgetItemDiscovered;
 class DiscoverySentinelDiagnosticDialog
   : public QDialog {

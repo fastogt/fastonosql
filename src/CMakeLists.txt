@@ -26,6 +26,9 @@ SET(HEADERS_GUI_DIALOGS_TO_MOC
   gui/dialogs/create_dbkey_dialog.h
   gui/dialogs/view_keys_dialog.h
   gui/dialogs/change_password_server_dialog.h
+  gui/dialogs/discovery_connection.h
+  gui/dialogs/discovery_sentinel_connection.h
+  gui/dialogs/test_connection.h
 )
 
 SET(HEADERS_GUI_DIALOGS
@@ -52,6 +55,9 @@ SET(SOURCES_GUI_DIALOGS
   gui/dialogs/create_dbkey_dialog.cpp
   gui/dialogs/view_keys_dialog.cpp
   gui/dialogs/change_password_server_dialog.cpp
+  gui/dialogs/discovery_connection.cpp
+  gui/dialogs/discovery_sentinel_connection.cpp
+  gui/dialogs/test_connection.cpp
 )
 
 SET(HEADERS_GUI_EDITOR_TO_MOC

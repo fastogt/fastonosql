@@ -41,6 +41,7 @@
 #include "fasto/qt/gui/glass_widget.h"  // for GlassWidget
 
 #include "gui/dialogs/connection_listwidget_items.h"
+#include "gui/dialogs/discovery_connection.h"
 #include "gui/gui_factory.h"            // for GuiFactory
 
 #include "translations/global.h"
@@ -51,31 +52,6 @@ namespace {
 
 namespace fastonosql {
 namespace gui {
-
-DiscoveryConnection::DiscoveryConnection(core::IConnectionSettingsBaseSPtr conn, QObject* parent)
-  : QObject(parent), connection_(conn), startTime_(common::time::current_mstime()) {
-  qRegisterMetaType<std::vector<core::ServerDiscoveryClusterInfoSPtr> >("std::vector<core::ServerDiscoveryClusterInfoSPtr>");
-}
-
-void DiscoveryConnection::routine() {
-  std::vector<core::ServerDiscoveryClusterInfoSPtr> inf;
-
-  if (!connection_) {
-    emit connectionResult(false, common::time::current_mstime() - startTime_,
-                          "Invalid connection settings", inf);
-    return;
-  }
-
-  common::Error er = core::ServersManager::instance().discoveryClusterConnection(connection_, &inf);
-
-  if (er && er->isError()) {
-    emit connectionResult(false, common::time::current_mstime() - startTime_,
-                          common::ConvertFromString<QString>(er->description()), inf);
-  } else {
-    emit connectionResult(true, common::time::current_mstime() - startTime_,
-                          translations::trSuccess, inf);
-  }
-}
 
 DiscoveryClusterDiagnosticDialog::DiscoveryClusterDiagnosticDialog(QWidget* parent,
                                                      core::IConnectionSettingsBaseSPtr connection,

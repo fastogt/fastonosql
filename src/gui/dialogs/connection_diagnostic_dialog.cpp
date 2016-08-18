@@ -36,6 +36,7 @@
 
 #include "fasto/qt/gui/glass_widget.h"  // for GlassWidget
 
+#include "gui/dialogs/test_connection.h"
 #include "gui/gui_factory.h"            // for GuiFactory
 
 #include "translations/global.h"
@@ -46,27 +47,6 @@ namespace {
 
 namespace fastonosql {
 namespace gui {
-
-TestConnection::TestConnection(core::IConnectionSettingsBaseSPtr conn, QObject* parent)
-  : QObject(parent), connection_(conn), startTime_(common::time::current_mstime()) {
-}
-
-void TestConnection::routine() {
-  if (!connection_) {
-    emit connectionResult(false, common::time::current_mstime() - startTime_,
-                          "Invalid connection settings");
-    return;
-  }
-
-  common::Error er = core::ServersManager::instance().testConnection(connection_);
-
-  if (er && er->isError()) {
-    emit connectionResult(false, common::time::current_mstime() - startTime_,
-                          common::ConvertFromString<QString>(er->description()));
-  } else {
-    emit connectionResult(true, common::time::current_mstime() - startTime_, translations::trSuccess);
-  }
-}
 
 ConnectionDiagnosticDialog::ConnectionDiagnosticDialog(QWidget* parent,
                                                        core::IConnectionSettingsBaseSPtr connection)
