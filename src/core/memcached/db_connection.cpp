@@ -525,6 +525,34 @@ common::Error DBConnection::help(int argc, char** argv) {
   return notSupported("HELP");
 }
 
+common::Error DBConnection::expire(const std::string& key, time_t expiration) {
+  if (!isConnected()) {
+    DNOTREACHED();
+    return common::make_error_value("Not connected", common::Value::E_ERROR);
+  }
+
+  uint32_t flags = 0;
+  memcached_return error;
+  size_t value_length = 0;
+
+  char* value = memcached_get(connection_.handle_, key.c_str(), key.length(), &value_length, &flags, &error);
+  if (error != MEMCACHED_SUCCESS) {
+    std::string buff = common::MemSPrintf("EXPIRE function error: %s",
+                                          memcached_strerror(connection_.handle_, error));
+    return common::make_error_value(buff, common::ErrorValue::E_ERROR);
+  }
+
+  error = memcached_set(connection_.handle_, key.c_str(), key.length(),
+                                           value, value_length, expiration, flags);
+  if (error != MEMCACHED_SUCCESS) {
+    std::string buff = common::MemSPrintf("EXPIRE function error: %s",
+                                          memcached_strerror(connection_.handle_, error));
+    return common::make_error_value(buff, common::ErrorValue::E_ERROR);
+  }
+
+  return common::Error();
+}
+
 common::Error keys(CommandHandler* handler, int argc, char** argv, FastoObject* out) {
   UNUSED(argc);
 
@@ -583,7 +611,7 @@ common::Error set(CommandHandler* handler, int argc, char** argv, FastoObject* o
   UNUSED(argc);
 
   DBConnection* mem = static_cast<DBConnection*>(handler);
-  common::Error er = mem->set(argv[0], argv[3], common::ConvertFromString<time_t>(argv[1]), common::ConvertFromString<uint32_t>(argv[2]));
+  common::Error er = mem->set(argv[0], argv[3], common::ConvertFromString<time_t>(argv[2]), common::ConvertFromString<uint32_t>(argv[1]));
   if (!er) {
     common::StringValue* val = common::Value::createStringValue("OK");
     FastoObject* child = new FastoObject(out, val, mem->delimiter(), mem->nsSeparator());
@@ -597,7 +625,7 @@ common::Error add(CommandHandler* handler, int argc, char** argv, FastoObject* o
   UNUSED(argc);
 
   DBConnection* mem = static_cast<DBConnection*>(handler);
-  common::Error er = mem->add(argv[0], argv[3], common::ConvertFromString<time_t>(argv[1]), common::ConvertFromString<uint32_t>(argv[2]));
+  common::Error er = mem->add(argv[0], argv[3], common::ConvertFromString<time_t>(argv[2]), common::ConvertFromString<uint32_t>(argv[1]));
   if (!er) {
     common::StringValue* val = common::Value::createStringValue("OK");
     FastoObject* child = new FastoObject(out, val, mem->delimiter(), mem->nsSeparator());
@@ -611,7 +639,7 @@ common::Error replace(CommandHandler* handler, int argc, char** argv, FastoObjec
   UNUSED(argc);
 
   DBConnection* mem = static_cast<DBConnection*>(handler);
-  common::Error er = mem->replace(argv[0], argv[3], common::ConvertFromString<time_t>(argv[1]), common::ConvertFromString<uint32_t>(argv[2]));
+  common::Error er = mem->replace(argv[0], argv[3], common::ConvertFromString<time_t>(argv[2]), common::ConvertFromString<uint32_t>(argv[1]));
   if (!er) {
     common::StringValue* val = common::Value::createStringValue("OK");
     FastoObject* child = new FastoObject(out, val, mem->delimiter(), mem->nsSeparator());
@@ -625,7 +653,7 @@ common::Error append(CommandHandler* handler, int argc, char** argv, FastoObject
   UNUSED(argc);
 
   DBConnection* mem = static_cast<DBConnection*>(handler);
-  common::Error er = mem->append(argv[0], argv[3], common::ConvertFromString<time_t>(argv[1]), common::ConvertFromString<uint32_t>(argv[2]));
+  common::Error er = mem->append(argv[0], argv[3], common::ConvertFromString<time_t>(argv[2]), common::ConvertFromString<uint32_t>(argv[1]));
   if (!er) {
     common::StringValue* val = common::Value::createStringValue("OK");
     FastoObject* child = new FastoObject(out, val, mem->delimiter(), mem->nsSeparator());
@@ -639,7 +667,7 @@ common::Error prepend(CommandHandler* handler, int argc, char** argv, FastoObjec
   UNUSED(argc);
 
   DBConnection* mem = static_cast<DBConnection*>(handler);
-  common::Error er = mem->prepend(argv[0], argv[3], common::ConvertFromString<time_t>(argv[1]), common::ConvertFromString<uint32_t>(argv[2]));
+  common::Error er = mem->prepend(argv[0], argv[3], common::ConvertFromString<time_t>(argv[2]), common::ConvertFromString<uint32_t>(argv[1]));
   if (!er) {
     common::StringValue* val = common::Value::createStringValue("OK");
     FastoObject* child = new FastoObject(out, val, mem->delimiter(), mem->nsSeparator());
@@ -731,6 +759,20 @@ common::Error help(CommandHandler* handler, int argc, char** argv, FastoObject* 
 
   DBConnection* mem = static_cast<DBConnection*>(handler);
   return mem->help(argc - 1, argv + 1);
+}
+
+common::Error expire(CommandHandler* handler, int argc, char** argv, FastoObject* out) {
+  UNUSED(out);
+
+  DBConnection* mem = static_cast<DBConnection*>(handler);
+  common::Error er = mem->expire(argv[0], common::ConvertFromString<time_t>(argv[1]));
+  if (!er) {
+    common::StringValue* val = common::Value::createStringValue("OK");
+    FastoObject* child = new FastoObject(out, val, mem->delimiter(), mem->nsSeparator());
+    out->addChildren(child);
+  }
+
+  return er;
 }
 
 }  // namespace memcached

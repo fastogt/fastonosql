@@ -85,6 +85,7 @@ class DBConnection
   common::Error flush_all(time_t expiration) WARN_UNUSED_RESULT;
   common::Error version_server() const WARN_UNUSED_RESULT;
   common::Error help(int argc, char** argv) WARN_UNUSED_RESULT;
+  common::Error expire(const std::string& key, time_t expiration) WARN_UNUSED_RESULT;
 
  private:
   connection_t connection_;
@@ -105,6 +106,7 @@ common::Error flush_all(CommandHandler* handler, int argc, char** argv, FastoObj
 common::Error version_server(CommandHandler* handler, int argc, char** argv, FastoObject* out);
 common::Error dbkcount(CommandHandler* handler, int argc, char** argv, FastoObject* out);
 common::Error help(CommandHandler* handler, int argc, char** argv, FastoObject* out);
+common::Error expire(CommandHandler* handler, int argc, char** argv, FastoObject* out);
 
 // TODO: cas command implementation
 static const std::vector<CommandHolder> memcachedCommands = {
@@ -150,9 +152,10 @@ static const std::vector<CommandHolder> memcachedCommands = {
               UNDEFINED_SINCE, UNDEFINED_EXAMPLE_STR, 0, 0, &dbkcount),
   CommandHolder("HELP", "<command>",
               "Return how to use command",
-              UNDEFINED_SINCE, UNDEFINED_EXAMPLE_STR, 0, 1, &help)
+              UNDEFINED_SINCE, UNDEFINED_EXAMPLE_STR, 0, 1, &help),
+  CommandHolder("EXPIRE", "<key> <exptime>",
+              "Set a key's time to live in seconds", UNDEFINED_SINCE, UNDEFINED_EXAMPLE_STR, 2, 0, &expire),
 };
-
 }  // namespace memcached
 }  // namespace core
 }  // namespace fastonosql

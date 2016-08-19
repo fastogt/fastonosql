@@ -49,6 +49,7 @@
 #define MEMCACHED_DELETE_KEY_PATTERN_1ARGS_S "DELETE %s"
 #define MEMCACHED_GET_KEY_PATTERN_1ARGS_S "GET %s"
 #define MEMCACHED_SET_KEY_PATTERN_2ARGS_SS "SET %s 0 0 %s"
+#define MEMCACHED_CHANGE_TTL_2ARGS_SI "EXPIRE %s %d"
 
 namespace fastonosql {
 namespace core {
@@ -310,9 +311,14 @@ common::Error Driver::commandChangeTTLImpl(CommandChangeTTL* command,
     return common::make_error_value("Invalid input argument(s)", common::ErrorValue::E_ERROR);
   }
 
-  std::string errorMsg = common::MemSPrintf("Sorry, but now " PROJECT_NAME_TITLE " not supported change ttl command for %s.",
-                                            common::ConvertToString(type()));
-  return common::make_error_value(errorMsg, common::ErrorValue::E_ERROR);
+  std::string patternResult;
+  NDbKValue key = command->key();
+  ttl_t new_ttl = command->newTTL();
+  std::string key_str = key.keyString();
+  patternResult = common::MemSPrintf(MEMCACHED_CHANGE_TTL_2ARGS_SI, key_str, new_ttl);
+
+  *cmdstring = patternResult;
+  return common::Error();
 }
 
 // ============== commands =============//
