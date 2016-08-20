@@ -38,7 +38,6 @@ namespace fastonosql { namespace gui { class ConnectionListWidgetItemDiscovered;
 namespace fastonosql {
 namespace gui {
 
-class ConnectionListWidgetItemDiscovered;
 class DiscoverySentinelDiagnosticDialog
   : public QDialog {
   Q_OBJECT

@@ -30,7 +30,6 @@
 #include <QAction>
 #include <QToolBar>
 #include <QVBoxLayout>
-#include <QApplication>
 #include <QFileDialog>
 #include <QComboBox>
 #include <QLabel>

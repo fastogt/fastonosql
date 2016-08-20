@@ -156,6 +156,7 @@ SET(HEADERS_CORE
   core/events/events_info.h
   core/types.h
   core/db_traits.h
+  core/command.h
   core/command_info.h
   core/command_holder.h
   core/command_handler.h
@@ -182,6 +183,7 @@ SET(SOURCES_CORE
   core/servers_manager.cpp
   core/types.cpp
   core/db_traits.cpp
+  core/command.cpp
   core/command_info.cpp
   core/command_holder.cpp
   core/command_handler.cpp

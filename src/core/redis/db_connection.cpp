@@ -56,7 +56,7 @@ extern "C" {
 #include "common/utils.h"               // for c_strornull, usleep, etc
 #include "common/value.h"               // for ErrorValue, etc
 
-#include "core/command_key.h"           // for createCommand
+#include "core/command.h"          // for createCommand
 #include "core/command_logger.h"        // for LOG_COMMAND
 #include "core/connection_types.h"      // for connectionTypes::REDIS
 #include "core/redis/cluster_infos.h"   // for makeDiscoveryClusterInfo
@@ -675,7 +675,7 @@ common::Error DBConnection::latencyMode(FastoObject* out) {
     return common::make_error_value("Invalid input argument(s)", common::ErrorValue::E_ERROR);
   }
 
-  FastoObjectCommand* cmd = createCommand<Command>(out, "PING", common::Value::C_INNER);
+  FastoObjectCommand* cmd = CreateCommand<Command>(out, "PING", common::Value::C_INNER);
   if (!cmd) {
     DNOTREACHED();
     return common::make_error_value("Invalid createCommand input argument",
@@ -807,7 +807,7 @@ common::Error DBConnection::slaveMode(FastoObject* out) {
     return er;
   }
 
-  FastoObjectCommand* cmd = createCommand<Command>(out, SYNC_REQUEST,
+  FastoObjectCommand* cmd = CreateCommand<Command>(out, SYNC_REQUEST,
                                                         common::Value::C_INNER);
   if (!cmd) {
     DNOTREACHED();
@@ -862,7 +862,7 @@ common::Error DBConnection::getRDB(FastoObject* out) {
   }
 
   common::ArrayValue* val = NULL;
-  FastoObjectCommand* cmd = createCommand<Command>(out, RDM_REQUEST, common::Value::C_INNER);
+  FastoObjectCommand* cmd = CreateCommand<Command>(out, RDM_REQUEST, common::Value::C_INNER);
   if (!cmd) {
     DNOTREACHED();
     return common::make_error_value("Invalid createCommand input argument",
@@ -1064,7 +1064,7 @@ common::Error DBConnection::findBigKeys(FastoObject* out) {
     return common::make_error_value("Invalid input argument(s)", common::ErrorValue::E_ERROR);
   }
 
-  FastoObjectCommand* cmd = createCommand<Command>(out, FIND_BIG_KEYS_REQUEST,
+  FastoObjectCommand* cmd = CreateCommand<Command>(out, FIND_BIG_KEYS_REQUEST,
                                                         common::Value::C_INNER);
   if (!cmd) {
     DNOTREACHED();
@@ -1237,7 +1237,7 @@ common::Error DBConnection::statMode(FastoObject* out) {
     return common::make_error_value("Invalid input argument(s)", common::ErrorValue::E_ERROR);
   }
 
-  FastoObjectCommand* cmd = createCommand<Command>(out, INFO_REQUEST,
+  FastoObjectCommand* cmd = CreateCommand<Command>(out, INFO_REQUEST,
                                                         common::Value::C_INNER);
   if (!cmd) {
     DNOTREACHED();
@@ -1346,7 +1346,7 @@ common::Error DBConnection::scanMode(FastoObject* out) {
     return common::make_error_value("Invalid input argument(s)", common::ErrorValue::E_ERROR);
   }
 
-  FastoObjectCommand* cmd = createCommand<Command>(out, SCAN_MODE_REQUEST,
+  FastoObjectCommand* cmd = CreateCommand<Command>(out, SCAN_MODE_REQUEST,
                                                         common::Value::C_INNER);
   if (!cmd) {
     DNOTREACHED();

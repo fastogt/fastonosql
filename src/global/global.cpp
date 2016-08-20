@@ -162,18 +162,6 @@ common::Value::CommandLoggingType FastoObjectCommand::commandLoggingType() const
   return common::Value::C_UNKNOWN;
 }
 
-std::string StableCommand(std::string command) {
-  if (command.empty()) {
-    return std::string();
-  }
-
-  if(command[command.size() - 1] == '\r'){
-    command.pop_back();
-  }
-
-  return command;
-}
-
 std::pair<std::string, std::string> GetKeyValueFromLine(const std::string& input) {
   if (input.empty()) {
     return std::pair<std::string, std::string>();

@@ -29,7 +29,7 @@
 #include "common/sprintf.h"             // for MemSPrintf
 #include "common/value.h"               // for ErrorValue, etc
 
-#include "core/command_key.h"           // for createCommand, etc
+#include "core/command.h"           // for createCommand, etc
 #include "core/command_logger.h"        // for LOG_COMMAND
 #include "core/connection_types.h"      // for ConvertToString, etc
 #include "core/db_key.h"                // for NDbKValue, NValue, NKey
@@ -235,7 +235,7 @@ void Driver::handleExecuteEvent(events::ExecuteRequestEvent* ev) {
       }
 
       offset = i + 1;
-      FastoObjectCommand* cmd = createCommand<Command>(obj, command, common::Value::C_USER);
+      FastoObjectCommand* cmd = CreateCommand<Command>(obj, command, common::Value::C_USER);
       common::Error er = execute(cmd);
       if (er && er->isError()) {
         res.setErrorInfo(er);
@@ -263,7 +263,7 @@ void Driver::handleCommandRequestEvent(events::CommandRequestEvent* ev) {
 
   RootLocker lock = make_locker(sender, cmdtext);
   FastoObjectIPtr obj = lock.root();
-  FastoObjectCommand* cmd = createCommand<Command>(obj, cmdtext, common::Value::C_INNER);
+  FastoObjectCommand* cmd = CreateCommand<Command>(obj, cmdtext, common::Value::C_INNER);
   notifyProgress(sender, 50);
   er = execute(cmd);
   if (er && er->isError()) {
@@ -280,7 +280,7 @@ void Driver::handleLoadDatabaseContentEvent(events::LoadDatabaseContentRequestEv
   std::string patternResult = common::MemSPrintf(LMDB_GET_KEYS_PATTERN_1ARGS_I, res.count_keys);
   FastoObjectIPtr root = FastoObject::createRoot(patternResult);
   notifyProgress(sender, 50);
-  FastoObjectCommand* cmd = createCommand<Command>(root, patternResult, common::Value::C_INNER);
+  FastoObjectCommand* cmd = CreateCommand<Command>(root, patternResult, common::Value::C_INNER);
   common::Error er = execute(cmd);
   if (er && er->isError()) {
     res.setErrorInfo(er);

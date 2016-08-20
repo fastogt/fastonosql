@@ -93,7 +93,6 @@ class FastoObjectCommand
                      const std::string& delemitr, const std::string& ns_separator);
 };
 
-std::string StableCommand(std::string command);
 std::pair<std::string, std::string> GetKeyValueFromLine(const std::string& input);
 std::string GetFirstWordFromLine(const std::string& input);
 
