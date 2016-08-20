@@ -36,7 +36,7 @@
 #include "common/value.h"               // for ErrorValue, Value
 
 #include "core/iserver.h"               // for IServer
-#include "core/types.h"                 // for Field, info_field_t, etc
+#include "core/db_traits.h"
 
 #include "fasto/qt/gui/base/graph_widget.h"  // for GraphWidget, etc
 #include "fasto/qt/gui/glass_widget.h"  // for GlassWidget

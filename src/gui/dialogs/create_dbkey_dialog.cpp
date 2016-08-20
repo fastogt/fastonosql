@@ -42,7 +42,7 @@
 #include "common/qt/convert2string.h"   // for ConvertToString
 #include "common/value.h"               // for Value, Value::Type, etc
 
-#include "core/types.h"                 // for supportedTypesFromType
+#include "core/db_traits.h"
 
 #include "gui/dialogs/input_dialog.h"   // for InputDialog, etc
 #include "gui/gui_factory.h"            // for GuiFactory

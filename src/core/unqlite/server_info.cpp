@@ -27,7 +27,9 @@
 
 #include "common/macros.h"              // for NOTREACHED, DCHECK_EQ
 #include "common/value.h"               // for Value, Value::Type, etc
+
 #include "core/connection_types.h"      // for connectionTypes::UNQLITE
+#include "core/db_traits.h"
 
 #define MARKER "\r\n"
 

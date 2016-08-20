@@ -29,6 +29,7 @@
 #include "common/value.h"               // for FundamentalValue, Value, etc
 
 #include "core/connection_types.h"      // for connectionTypes::MEMCACHED
+#include "core/db_traits.h"
 
 #define MARKER "\r\n"
 

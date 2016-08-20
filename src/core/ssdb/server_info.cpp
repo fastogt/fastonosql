@@ -30,6 +30,7 @@
 #include "common/value.h"               // for Value, FundamentalValue, etc
 
 #include "core/connection_types.h"      // for connectionTypes::SSDB
+#include "core/db_traits.h"
 
 #define MARKER "\r\n"
 

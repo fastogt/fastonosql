@@ -28,6 +28,7 @@
 #include "common/value.h"               // for Value, Value::Type, etc
 
 #include "core/connection_types.h"      // for connectionTypes::LMDB
+#include "core/db_traits.h"
 
 #define MARKER "\r\n"
 

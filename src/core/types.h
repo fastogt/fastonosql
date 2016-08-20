@@ -113,24 +113,6 @@ struct IStateField {
   virtual common::Value* valueByIndex(unsigned char index) const = 0;
 };
 
-struct Field {
-  Field(const std::string& name, common::Value::Type type);
-
-  bool isIntegral() const;
-  std::string name;
-  common::Value::Type type;
-};
-
-typedef std::pair<std::string, std::vector<Field> > info_field_t;
-template<connectionTypes ct>
-struct DBTraits {
-  static std::vector<common::Value::Type> supportedTypes();
-  static std::vector<info_field_t> infoFields();
-};
-
-std::vector<common::Value::Type> supportedTypesFromType(connectionTypes type);
-std::vector<info_field_t> infoFieldsFromType(connectionTypes type);
-
 struct ServerInfoSnapShoot {
   ServerInfoSnapShoot();
   ServerInfoSnapShoot(common::time64_t msec, IServerInfoSPtr info);

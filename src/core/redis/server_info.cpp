@@ -28,7 +28,9 @@
 #include "common/convert2string.h"      // for ConvertFromString, etc
 #include "common/macros.h"              // for NOTREACHED, UNUSED
 #include "common/value.h"               // for FundamentalValue, Value, etc
+
 #include "core/connection_types.h"      // for connectionTypes::REDIS
+#include "core/db_traits.h"
 
 namespace fastonosql {
 namespace core {
