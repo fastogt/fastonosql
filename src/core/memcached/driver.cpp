@@ -183,7 +183,7 @@ void Driver::handleExecuteEvent(events::ExecuteRequestEvent* ev) {
       }
 
       offset = i + 1;
-      FastoObjectCommand* cmd = CreateCommand<Command>(obj.get(), command, common::Value::C_USER);
+      FastoObjectCommand* cmd = CreateCommand<Command>(obj, command, common::Value::C_USER);
       common::Error er = execute(cmd);
       if (er && er->isError()) {
         res.setErrorInfo(er);
