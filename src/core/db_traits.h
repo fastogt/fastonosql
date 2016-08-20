@@ -18,11 +18,13 @@
 
 #pragma once
 
-#include <string>
+#include <string>                       // for string
+#include <utility>                      // for pair
+#include <vector>                       // for vector
 
-#include "common/value.h"
+#include "common/value.h"               // for Value, Value::Type
 
-#include "core/connection_types.h"
+#include "core/connection_types.h"      // for connectionTypes
 
 namespace fastonosql {
 namespace core {

@@ -23,15 +23,15 @@
 
 #include <memory>                       // for shared_ptr
 #include <string>                       // for string
-#include <utility>                      // for pair
 #include <vector>                       // for vector
 
 #include "common/net/types.h"           // for HostAndPortAndSlot
 #include "common/types.h"               // for time64_t
-#include "common/value.h"               // for Value, Value::Type
 
 #include "core/connection_types.h"      // for connectionTypes, etc
 #include "core/db_key.h"                // for NDbKValue
+
+namespace common { class Value; }
 
 namespace fastonosql {
 namespace core {

@@ -19,9 +19,6 @@
 #include "core/types.h"
 
 #include <string>                       // for string
-#include <vector>                       // for vector
-
-#include "common/macros.h"              // for NOTREACHED
 
 namespace fastonosql {
 namespace core {
