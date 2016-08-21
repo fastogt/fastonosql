@@ -123,15 +123,18 @@ Driver::~Driver() {
 }
 
 common::net::HostAndPort Driver::host() const {
-  return impl_->config_.host;
+  Config conf = impl_->config();
+  return conf.host;
 }
 
 std::string Driver::nsSeparator() const {
-  return impl_->config_.ns_separator;
+  Config conf = impl_->config();
+  return conf.ns_separator;
 }
 
 std::string Driver::outputDelemitr() const {
-  return impl_->config_.delimiter;
+  Config conf = impl_->config();
+  return conf.delimiter;
 }
 
 bool Driver::isInterrupted() const {
@@ -182,7 +185,8 @@ common::Error Driver::serverInfo(IServerInfo** info) {
 }
 
 common::Error Driver::currentDataBaseInfo(IDataBaseInfo** info) {
-  return impl_->select(impl_->config_.dbnum, info);
+  Config conf = impl_->config();
+  return impl_->select(conf.dbnum, info);
 }
 
 void Driver::handleConnectEvent(events::ConnectRequestEvent* ev) {
@@ -191,10 +195,8 @@ void Driver::handleConnectEvent(events::ConnectRequestEvent* ev) {
   events::ConnectResponceEvent::value_type res(ev->value());
   ConnectionSettings* set = dynamic_cast<ConnectionSettings*>(settings_.get());  // +
   CHECK(set);
-  impl_->config_ = set->info();
-  impl_->sinfo_ = set->sshInfo();
   notifyProgress(sender, 25);
-  common::Error er = impl_->connect(false);
+  common::Error er = impl_->connect(set->info(), set->sshInfo());
   if (er && er->isError()) {
     res.setErrorInfo(er);
   }
@@ -204,36 +206,34 @@ void Driver::handleConnectEvent(events::ConnectRequestEvent* ev) {
 }
 
 void Driver::handleProcessCommandLineArgs(events::ProcessConfigArgsRequestEvent* ev) {
+  const Config conf = impl_->config();
   /* Latency mode */
-  if (impl_->config_.latency_mode) {
+  if (conf.latency_mode) {
     latencyMode(ev);
   }
 
   /* Slave mode */
-  if (impl_->config_.slave_mode) {
+  if (conf.slave_mode) {
     slaveMode(ev);
   }
 
   /* Get RDB mode. */
-  if (impl_->config_.getrdb_mode) {
+  if (conf.getrdb_mode) {
     getRDBMode(ev);
   }
 
   /* Find big keys */
-  if (impl_->config_.bigkeys) {
+  if (conf.bigkeys) {
     findBigKeysMode(ev);
   }
 
   /* Stat mode */
-  if (impl_->config_.stat_mode) {
-    if (impl_->config_.interval == 0) {
-      impl_->config_.interval = 1000000;
-    }
+  if (conf.stat_mode) {
     statMode(ev);
   }
 
   /* Scan mode */
-  if (impl_->config_.scan_mode) {
+  if (conf.scan_mode) {
     scanMode(ev);
   }
 

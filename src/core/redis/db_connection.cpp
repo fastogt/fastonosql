@@ -598,50 +598,53 @@ bool DBConnection::isAuthenticated() const {
   return isAuth_;
 }
 
-common::Error DBConnection::connect(bool force) {
-  if (context_ == NULL || force) {
-    if (context_) {
-      redisFree(context_);
-      context_ = NULL;
-    }
+common::Error DBConnection::connect(const config_t& config, const SSHInfo& ssh) {
+  if (isConnected()) {
+    return common::Error();
+  }
 
-    redisContext* context = NULL;
-    common::Error er = createConnection(config_, sinfo_, &context);
-    if (er && er->isError()) {
-      return er;
-    }
+  redisContext* context = NULL;
+  common::Error er = createConnection(config, ssh, &context);
+  if (er && er->isError()) {
+    return er;
+  }
 
-    context_ = context;
+  context_ = context;
+  config_ = config;
+  sinfo_ = ssh;
 
-    /* Set aggressive KEEP_ALIVE socket option in the Redis context socket
-     * in order to prevent timeouts caused by the execution of long
-     * commands. At the same time this improves the detection of real
-     * errors. */
-    anetKeepAlive(NULL, context->fd, REDIS_CLI_KEEPALIVE_INTERVAL);
+  /* Set aggressive KEEP_ALIVE socket option in the Redis context socket
+   * in order to prevent timeouts caused by the execution of long
+   * commands. At the same time this improves the detection of real
+   * errors. */
+  anetKeepAlive(NULL, context->fd, REDIS_CLI_KEEPALIVE_INTERVAL);
 
-    /*struct timeval timeout;
-    timeout.tv_sec = 10;
-    timeout.tv_usec = 0;
-    int res = redisSetTimeout(context, timeout);
-    if (res == REDIS_ERR) {
-        char buff[512] = {0};
-        common::SNPrintf(buff, sizeof(buff), "Redis connection set timeout failed error is: %s.", context->errstr);
-        LOG_MSG(buff, common::logging::L_WARNING, true);
-    }*/
+  /*struct timeval timeout;
+  timeout.tv_sec = 10;
+  timeout.tv_usec = 0;
+  int res = redisSetTimeout(context, timeout);
+  if (res == REDIS_ERR) {
+      char buff[512] = {0};
+      common::SNPrintf(buff, sizeof(buff), "Redis connection set timeout failed error is: %s.", context->errstr);
+      LOG_MSG(buff, common::logging::L_WARNING, true);
+  }*/
 
-    /* Do AUTH and select the right DB. */
-    er = cliAuth();
-    if (er && er->isError()) {
-      return er;
-    }
+  /* Do AUTH and select the right DB. */
+  er = cliAuth();
+  if (er && er->isError()) {
+    return er;
+  }
 
-    er = select(config_.dbnum, nullptr);
-    if (er && er->isError()) {
-      return er;
-    }
+  er = select(config_.dbnum, NULL);
+  if (er && er->isError()) {
+    return er;
   }
 
   return common::Error();
+}
+
+DBConnection::config_t DBConnection::config() const {
+  return config_;
 }
 
 common::Error DBConnection::disconnect() {
@@ -1079,7 +1082,7 @@ common::Error DBConnection::findBigKeys(FastoObject* out) {
   const char* typeName[] = {"string","list","set","hash","zset"};
   const char* typeunit[] = {"bytes","items","members","fields","members"};
   redisReply* reply, *keys;
-  unsigned int arrsize = 0, i;
+  unsigned int arrsize = 0;
   int type, *types = NULL;
 
   /* Total keys pre scanning */
@@ -1096,7 +1099,7 @@ common::Error DBConnection::findBigKeys(FastoObject* out) {
   LOG_MSG("# per 100 SCAN commands (not usually needed).", common::logging::L_INFO, true);
 
   /* New up sds strings to keep track of overall biggest per type */
-  for (i=0;i<RTYPE_NONE; i++) {
+  for (int i = 0; i < RTYPE_NONE; i++) {
     maxkeys[i] = sdsempty();
     if (!maxkeys[i]) {
       return common::make_error_value("Failed to allocate memory for largest key names!",
@@ -1148,7 +1151,7 @@ common::Error DBConnection::findBigKeys(FastoObject* out) {
     }
 
     /* Now update our stats */
-    for (i = 0; i < keys->elements; i++) {
+    for (size_t i = 0; i < keys->elements; i++) {
       if ((type = types[i]) == RTYPE_NONE) {
         continue;
       }
@@ -1196,7 +1199,7 @@ common::Error DBConnection::findBigKeys(FastoObject* out) {
   LOG_MSG(buff, common::logging::L_INFO, true);
 
   /* Output the biggest keys we found, for types we did find */
-  for (i = 0; i < RTYPE_NONE; i++) {
+  for (int i = 0; i < RTYPE_NONE; i++) {
     if (sdslen(maxkeys[i])>0) {
       memset(&buff, 0, sizeof(buff));
       buff = common::MemSPrintf("Biggest %6s found '%s' has %llu %s", typeName[i], maxkeys[i],
@@ -1207,7 +1210,7 @@ common::Error DBConnection::findBigKeys(FastoObject* out) {
     }
   }
 
-  for (i = 0; i < RTYPE_NONE; i++) {
+  for (int i = 0; i < RTYPE_NONE; i++) {
     memset(&buff, 0, sizeof(buff));
     buff = common::MemSPrintf("%llu %ss with %llu %s (%05.2f%% of keys, avg size %.2f)",
                               counts[i], typeName[i], totalsize[i], typeunit[i],
@@ -1219,7 +1222,7 @@ common::Error DBConnection::findBigKeys(FastoObject* out) {
   }
 
   /* Free sds strings containing max keys */
-  for (i = 0; i < RTYPE_NONE; i++) {
+  for (int i = 0; i < RTYPE_NONE; i++) {
     sdsfree(maxkeys[i]);
   }
 
@@ -1243,6 +1246,10 @@ common::Error DBConnection::statMode(FastoObject* out) {
     DNOTREACHED();
     return common::make_error_value("Invalid createCommand input argument",
                                     common::ErrorValue::E_ERROR);
+  }
+
+  if (config_.interval == 0) {
+    config_.interval = 1000000;
   }
 
   std::string command = cmd->inputCommand();
@@ -1370,10 +1377,8 @@ common::Error DBConnection::scanMode(FastoObject* out) {
       std::string buff = common::MemSPrintf("ERROR: %s", reply->str);
       return common::make_error_value(buff, common::ErrorValue::E_ERROR);
     } else {
-      unsigned int j;
-
       cur = strtoull(reply->element[0]->str,NULL,10);
-      for (j = 0; j < reply->element[1]->elements; j++) {
+      for (size_t j = 0; j < reply->element[1]->elements; j++) {
         common::StringValue* val = common::Value::createStringValue(reply->element[1]->element[j]->str);
         FastoObject* obj = new FastoObject(cmd, val, config_.delimiter, config_.ns_separator);
         cmd->addChildren(obj);
@@ -1431,8 +1436,7 @@ common::Error DBConnection::cliFormatReplyRaw(FastoObjectArray* ar, redisReply* 
   }
   case REDIS_REPLY_ERROR: {
     std::string str(r->str, r->len);
-    common::ErrorValue* val = common::Value::createErrorValue(str,
-                                                              common::ErrorValue::E_NONE,
+    common::ErrorValue* val = common::Value::createErrorValue(str, common::ErrorValue::E_NONE,
                                                               common::logging::L_WARNING);
     ar->append(val);
     break;
@@ -1462,9 +1466,8 @@ common::Error DBConnection::cliFormatReplyRaw(FastoObjectArray* ar, redisReply* 
     break;
   }
   default: {
-    char tmp2[128] = {0};
-    common::SNPrintf(tmp2, sizeof(tmp2), "Unknown reply type: %d", r->type);
-    common::ErrorValue* val = common::Value::createErrorValue(tmp2, common::ErrorValue::E_NONE,
+    common::ErrorValue* val = common::Value::createErrorValue(common::MemSPrintf("Unknown reply type: %d", r->type),
+                                                              common::ErrorValue::E_NONE,
                                                               common::logging::L_WARNING);
     ar->append(val);
   }
@@ -1523,9 +1526,7 @@ common::Error DBConnection::cliFormatReplyRaw(FastoObject* out, redisReply* r) {
     break;
   }
   default: {
-    char tmp2[128] = {0};
-    common::SNPrintf(tmp2, sizeof(tmp2), "Unknown reply type: %d", r->type);
-    return common::make_error_value(tmp2, common::ErrorValue::E_ERROR);
+    return common::make_error_value(common::MemSPrintf("Unknown reply type: %d", r->type), common::ErrorValue::E_ERROR);
   }
   }
 
@@ -1658,7 +1659,10 @@ common::Error DBConnection::cliReadReply(FastoObject* out) {
 }
 
 common::Error DBConnection::execute(int argc, char** argv, FastoObject* out) {
-  CHECK(context_);
+  if (!isConnected()) {
+    DNOTREACHED();
+    return common::make_error_value("Not connected", common::Value::E_ERROR);
+  }
 
   if (!out) {
     DNOTREACHED();
@@ -1667,11 +1671,16 @@ common::Error DBConnection::execute(int argc, char** argv, FastoObject* out) {
 
   char* command = argv[0];
 
-  if (argc == 3 && strcasecmp(command, "connect") == 0) {
-    config_.host.host = argv[1];
-    config_.host.port = common::ConvertFromString<uint16_t>(argv[2]);
-    sdsfreesplitres(argv, argc);
-    return connect(true);
+  if (argc == 3 && strcasecmp(command, "connect") == 0) {   
+    common::Error err = disconnect();
+    if (err && err->isError()) {
+      return err;
+    }
+
+    Config conf = config_;
+    conf.host.host = argv[1];
+    conf.host.port = common::ConvertFromString<uint16_t>(argv[2]);
+    return connect(conf, SSHInfo());
   }
 
   if (strcasecmp(command, "help") == 0 || strcasecmp(command, "?") == 0) {
@@ -1757,13 +1766,13 @@ common::Error DBConnection::execute(int argc, char** argv, FastoObject* out) {
 }
 
 common::Error DBConnection::executeAsPipeline(std::vector<FastoObjectCommandIPtr> cmds) {
-  if (cmds.empty()) {
-    return common::make_error_value("Invalid input command", common::ErrorValue::E_ERROR);
-  }
-
-  if (!context_) {
+  if (!isConnected()) {
     DNOTREACHED();
     return common::make_error_value("Not connected", common::Value::E_ERROR);
+  }
+
+  if (cmds.empty()) {
+    return common::make_error_value("Invalid input command", common::ErrorValue::E_ERROR);
   }
 
   //start piplene mode
