@@ -28,6 +28,7 @@
 #include "core/command_info.h"          // for CommandInfo, etc
 #include "core/ssh_info.h"              // for SSHInfo
 #include "core/types.h"                 // for IDataBaseInfo (ptr only), etc
+#include "core/connection.h"
 
 #include "core/redis/connection_settings.h"
 #include "core/redis/config.h"
@@ -506,8 +507,15 @@ static const std::vector<CommandInfo> redisCommands = {
 };
 
 typedef redisContext NativeConnection;
+struct RConfig
+  : public Config{
+  explicit RConfig(const Config& config, const SSHInfo& sinfo);
+  RConfig();
 
-common::Error createConnection(const Config& config, const SSHInfo& sinfo, NativeConnection** context);
+  SSHInfo ssh_info;
+};
+
+common::Error createConnection(const RConfig& config, NativeConnection** context);
 common::Error createConnection(ConnectionSettings* settings, NativeConnection** context);
 common::Error testConnection(ConnectionSettings* settings);
 
@@ -522,23 +530,23 @@ public:
 
 class DBConnection {
  public:
-  typedef Config config_t;
+  typedef ConnectionAllocatorTraits<NativeConnection, RConfig> ConnectionAllocatorTrait;
+  typedef Connection<ConnectionAllocatorTrait> connection_t;
+  typedef connection_t::config_t config_t;
   explicit DBConnection(IDBConnectionOwner* observer);
-  ~DBConnection();
 
   static const char* versionApi();
   bool isConnected() const;
   bool isAuthenticated() const;
 
   common::Error disconnect() WARN_UNUSED_RESULT;
-  common::Error connect(const config_t& config, const SSHInfo& ssh) WARN_UNUSED_RESULT;
+  common::Error connect(const config_t& config) WARN_UNUSED_RESULT;
 
   std::string delimiter() const;
   std::string nsSeparator() const;
   config_t config() const;
 
   common::Error latencyMode(FastoObject* out) WARN_UNUSED_RESULT;
-  common::Error sendSync(unsigned long long* payload) WARN_UNUSED_RESULT;
   common::Error slaveMode(FastoObject* out) WARN_UNUSED_RESULT;
   common::Error getRDB(FastoObject* out) WARN_UNUSED_RESULT;
   common::Error dbkcount(size_t* size) WARN_UNUSED_RESULT;
@@ -551,6 +559,7 @@ class DBConnection {
   common::Error executeAsPipeline(std::vector<FastoObjectCommandIPtr> cmds) WARN_UNUSED_RESULT;
 
  private:
+  common::Error sendSync(unsigned long long* payload) WARN_UNUSED_RESULT;
   common::Error sendScan(unsigned long long* it, redisReply** out) WARN_UNUSED_RESULT;
   common::Error getKeyTypes(redisReply* keys, int* types) WARN_UNUSED_RESULT;
   common::Error getKeySizes(redisReply* keys, int* types,
@@ -565,9 +574,7 @@ class DBConnection {
 
   bool isInterrupted() const;
 
-  redisContext* context_;
-  config_t config_;
-  SSHInfo sinfo_;
+  connection_t connection_;
 
   bool isAuth_;
   IDBConnectionOwner* const observer_;

@@ -194,7 +194,8 @@ void Driver::handleConnectEvent(events::ConnectRequestEvent* ev) {
   ConnectionSettings* set = dynamic_cast<ConnectionSettings*>(settings_.get());  // +
   CHECK(set);
   notifyProgress(sender, 25);
-  common::Error er = impl_->connect(set->info(), set->sshInfo());
+  RConfig rconf(set->info(), set->sshInfo());
+  common::Error er = impl_->connect(rconf);
   if (er && er->isError()) {
     res.setErrorInfo(er);
   }
