@@ -248,6 +248,10 @@ void IDriver::clear() {
     killTimer(timer_info_id_);
     timer_info_id_ = 0;
   }
+  common::Error err = syncDisconnect();
+  if (err && err->isError()) {
+    DNOTREACHED();
+  }
   clearImpl();
 }
 

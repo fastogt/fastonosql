@@ -157,6 +157,17 @@ void Driver::initImpl() {
 void Driver::clearImpl() {
 }
 
+common::Error Driver::syncConnect() {
+  ConnectionSettings* set = dynamic_cast<ConnectionSettings*>(settings_.get());  // +
+  CHECK(set);
+  RConfig rconf(set->info(), set->sshInfo());
+  return impl_->connect(rconf);
+}
+
+common::Error Driver::syncDisconnect() {
+  return impl_->disconnect();
+}
+
 common::Error Driver::executeImpl(int argc, char** argv, FastoObject* out) {
   return impl_->execute(argc, argv, out);
 }
@@ -191,11 +202,8 @@ void Driver::handleConnectEvent(events::ConnectRequestEvent* ev) {
   QObject* sender = ev->sender();
   notifyProgress(sender, 0);
   events::ConnectResponceEvent::value_type res(ev->value());
-  ConnectionSettings* set = dynamic_cast<ConnectionSettings*>(settings_.get());  // +
-  CHECK(set);
   notifyProgress(sender, 25);
-  RConfig rconf(set->info(), set->sshInfo());
-  common::Error er = impl_->connect(rconf);
+  common::Error er = syncConnect();
   if (er && er->isError()) {
     res.setErrorInfo(er);
   }
@@ -540,7 +548,7 @@ void Driver::handleDisconnectEvent(events::DisconnectRequestEvent* ev) {
   events::DisconnectResponceEvent::value_type res(ev->value());
   notifyProgress(sender, 50);
 
-  common::Error er = impl_->disconnect();
+  common::Error er = syncDisconnect();
   if (er && er->isError()) {
     res.setErrorInfo(er);
   }
