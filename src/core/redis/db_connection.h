@@ -505,7 +505,12 @@ static const std::vector<CommandInfo> redisCommands = {
               UNDEFINED_SINCE, UNDEFINED_EXAMPLE_STR, 0, 2)
 };
 
+typedef redisContext NativeConnection;
+
+common::Error createConnection(const Config& config, const SSHInfo& sinfo, NativeConnection** context);
+common::Error createConnection(ConnectionSettings* settings, NativeConnection** context);
 common::Error testConnection(ConnectionSettings* settings);
+
 common::Error discoveryClusterConnection(ConnectionSettings* settings, std::vector<ServerDiscoveryClusterInfoSPtr>* infos);
 common::Error discoverySentinelConnection(ConnectionSettings* settings, std::vector<ServerDiscoverySentinelInfoSPtr>* infos);
 
@@ -515,7 +520,8 @@ public:
   virtual void currentDataBaseChanged(IDataBaseInfo* info) = 0;
 };
 
-struct DBConnection {
+class DBConnection {
+ public:
   typedef Config config_t;
   explicit DBConnection(IDBConnectionOwner* observer);
   ~DBConnection();
@@ -526,6 +532,9 @@ struct DBConnection {
 
   common::Error disconnect() WARN_UNUSED_RESULT;
   common::Error connect(const config_t& config, const SSHInfo& ssh) WARN_UNUSED_RESULT;
+
+  std::string delimiter() const;
+  std::string nsSeparator() const;
   config_t config() const;
 
   common::Error latencyMode(FastoObject* out) WARN_UNUSED_RESULT;
@@ -541,7 +550,7 @@ struct DBConnection {
   common::Error execute(int argc, char** argv, FastoObject* out) WARN_UNUSED_RESULT;
   common::Error executeAsPipeline(std::vector<FastoObjectCommandIPtr> cmds) WARN_UNUSED_RESULT;
 
-private:
+ private:
   common::Error sendScan(unsigned long long* it, redisReply** out) WARN_UNUSED_RESULT;
   common::Error getKeyTypes(redisReply* keys, int* types) WARN_UNUSED_RESULT;
   common::Error getKeySizes(redisReply* keys, int* types,
@@ -563,7 +572,6 @@ private:
   bool isAuth_;
   IDBConnectionOwner* const observer_;
 };
-
 
 }  // namespace redis
 }  // namespace core

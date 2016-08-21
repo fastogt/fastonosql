@@ -128,13 +128,11 @@ common::net::HostAndPort Driver::host() const {
 }
 
 std::string Driver::nsSeparator() const {
-  Config conf = impl_->config();
-  return conf.ns_separator;
+  return impl_->nsSeparator();
 }
 
 std::string Driver::outputDelemitr() const {
-  Config conf = impl_->config();
-  return conf.delimiter;
+  return impl_->delimiter();
 }
 
 bool Driver::isInterrupted() const {

@@ -311,77 +311,6 @@ common::Error toIntType(char* key, char* type, int* res) {
 
 namespace {
 
-common::Error createConnection(const Config& config,
-                               const SSHInfo& sinfo, struct redisContext** context) {
-    if (!context) {
-      return common::make_error_value("Invalid input argument(s)", common::ErrorValue::E_ERROR);
-    }
-
-    redisContext* lcontext = NULL;
-
-    DCHECK(*context == NULL);
-    bool is_local = !config.hostsocket.empty();
-
-    if (is_local) {
-      const char* hostsocket = common::utils::c_strornull(config.hostsocket);
-      lcontext = redisConnectUnix(hostsocket);
-    } else {
-      const char* host = common::utils::c_strornull(config.host.host);
-      uint16_t port = config.host.port;
-      const char* username = common::utils::c_strornull(sinfo.user_name);
-      const char* password = common::utils::c_strornull(sinfo.password);
-      common::net::HostAndPort ssh_host = sinfo.host;
-      const char* ssh_address = common::utils::c_strornull(ssh_host.host);
-      int ssh_port = ssh_host.port;
-      int curM = sinfo.current_method;
-      const char* public_key = common::utils::c_strornull(sinfo.public_key);
-      const char* private_key = common::utils::c_strornull(sinfo.private_key);
-      const char* passphrase = common::utils::c_strornull(sinfo.passphrase);
-      if (ssh_address && curM == SSH_PUBLICKEY && !private_key) {
-        return common::make_error_value("Invalid input argument(private key)", common::Value::E_ERROR);
-      }
-      lcontext = redisConnect(host, port, ssh_address, ssh_port, username, password,
-                             public_key, private_key, passphrase, curM);
-    }
-
-    if (!lcontext) {
-      std::string buff;
-      if (!is_local) {
-        std::string host_str = common::ConvertToString(config.host);
-        buff = common::MemSPrintf("Could not connect to Redis at %s : no context", host_str);
-      } else {
-        buff = common::MemSPrintf( "Could not connect to Redis at %s : no context", config.hostsocket);
-      }
-      return common::make_error_value(buff, common::Value::E_ERROR);
-    }
-
-    if (lcontext->err) {
-      std::string buff;
-      if (is_local) {
-        buff = common::MemSPrintf("Could not connect to Redis at %s : %s", config.hostsocket,
-                                  lcontext->errstr);
-      } else {
-        std::string host_str = common::ConvertToString(config.host);
-        buff = common::MemSPrintf("Could not connect to Redis at %s : %s", host_str,
-                                  lcontext->errstr);
-      }
-      return common::make_error_value(buff, common::Value::E_ERROR);
-    }
-
-    *context = lcontext;
-    return common::Error();
-}
-
-common::Error createConnection(ConnectionSettings* settings, redisContext** context) {
-  if (!settings) {
-    return common::make_error_value("Invalid input argument(s)", common::ErrorValue::E_ERROR);
-  }
-
-  Config config = settings->info();
-  SSHInfo sinfo = settings->sshInfo();
-  return createConnection(config, sinfo, context);
-}
-
 common::Error cliPrintContextError(redisContext* context) {
   if (!context) {
     DNOTREACHED();
@@ -436,6 +365,76 @@ common::Error authContext(const Config& config, redisContext* context) {
 }
 
 }  // namespace
+
+common::Error createConnection(const Config& config, const SSHInfo& sinfo, NativeConnection** context) {
+  if (!context) {
+    return common::make_error_value("Invalid input argument(s)", common::ErrorValue::E_ERROR);
+  }
+
+  redisContext* lcontext = NULL;
+
+  DCHECK(*context == NULL);
+  bool is_local = !config.hostsocket.empty();
+
+  if (is_local) {
+    const char* hostsocket = common::utils::c_strornull(config.hostsocket);
+    lcontext = redisConnectUnix(hostsocket);
+  } else {
+    const char* host = common::utils::c_strornull(config.host.host);
+    uint16_t port = config.host.port;
+    const char* username = common::utils::c_strornull(sinfo.user_name);
+    const char* password = common::utils::c_strornull(sinfo.password);
+    common::net::HostAndPort ssh_host = sinfo.host;
+    const char* ssh_address = common::utils::c_strornull(ssh_host.host);
+    int ssh_port = ssh_host.port;
+    int curM = sinfo.current_method;
+    const char* public_key = common::utils::c_strornull(sinfo.public_key);
+    const char* private_key = common::utils::c_strornull(sinfo.private_key);
+    const char* passphrase = common::utils::c_strornull(sinfo.passphrase);
+    if (ssh_address && curM == SSH_PUBLICKEY && !private_key) {
+      return common::make_error_value("Invalid input argument(private key)", common::Value::E_ERROR);
+    }
+    lcontext = redisConnect(host, port, ssh_address, ssh_port, username, password,
+                           public_key, private_key, passphrase, curM);
+  }
+
+  if (!lcontext) {
+    std::string buff;
+    if (!is_local) {
+      std::string host_str = common::ConvertToString(config.host);
+      buff = common::MemSPrintf("Could not connect to Redis at %s : no context", host_str);
+    } else {
+      buff = common::MemSPrintf( "Could not connect to Redis at %s : no context", config.hostsocket);
+    }
+    return common::make_error_value(buff, common::Value::E_ERROR);
+  }
+
+  if (lcontext->err) {
+    std::string buff;
+    if (is_local) {
+      buff = common::MemSPrintf("Could not connect to Redis at %s : %s", config.hostsocket,
+                                lcontext->errstr);
+    } else {
+      std::string host_str = common::ConvertToString(config.host);
+      buff = common::MemSPrintf("Could not connect to Redis at %s : %s", host_str,
+                                lcontext->errstr);
+    }
+    return common::make_error_value(buff, common::Value::E_ERROR);
+  }
+
+  *context = lcontext;
+  return common::Error();
+}
+
+common::Error createConnection(ConnectionSettings* settings, NativeConnection** context) {
+  if (!settings) {
+    return common::make_error_value("Invalid input argument(s)", common::ErrorValue::E_ERROR);
+  }
+
+  Config config = settings->info();
+  SSHInfo sinfo = settings->sshInfo();
+  return createConnection(config, sinfo, context);
+}
 
 common::Error testConnection(ConnectionSettings* settings) {
   if (!settings) {
@@ -641,6 +640,14 @@ common::Error DBConnection::connect(const config_t& config, const SSHInfo& ssh) 
   }
 
   return common::Error();
+}
+
+std::string DBConnection::delimiter() const {
+  return config_.delimiter;
+}
+
+std::string DBConnection::nsSeparator() const {
+  return config_.ns_separator;
 }
 
 DBConnection::config_t DBConnection::config() const {
