@@ -262,7 +262,7 @@ void IDriver::customEvent(QEvent* event) {
     handleConnectEvent(ev);
   } else if (type == static_cast<QEvent::Type>(events::ShutDownRequestEvent::EventType)) {
     events::ShutDownRequestEvent* ev = static_cast<events::ShutDownRequestEvent*>(event);
-    handleShutdownEvent(ev);
+    handleShutdownEvent(ev);  // ni
   } else if (type == static_cast<QEvent::Type>(events::ProcessConfigArgsRequestEvent::EventType)) {
     events::ProcessConfigArgsRequestEvent* ev = static_cast<events::ProcessConfigArgsRequestEvent*>(event);
     handleProcessCommandLineArgs(ev);
@@ -274,49 +274,49 @@ void IDriver::customEvent(QEvent* event) {
     handleExecuteEvent(ev);
   } else if (type == static_cast<QEvent::Type>(events::LoadDatabasesInfoRequestEvent::EventType)) {
     events::LoadDatabasesInfoRequestEvent* ev = static_cast<events::LoadDatabasesInfoRequestEvent*>(event);
-    handleLoadDatabaseInfosEvent(ev);
+    handleLoadDatabaseInfosEvent(ev);  //
   } else if (type == static_cast<QEvent::Type>(events::ServerInfoRequestEvent::EventType)) {
     events::ServerInfoRequestEvent* ev = static_cast<events::ServerInfoRequestEvent*>(event);
-    handleLoadServerInfoEvent(ev);
+    handleLoadServerInfoEvent(ev);  //
   } else if (type == static_cast<QEvent::Type>(events::ServerInfoHistoryRequestEvent::EventType)) {
     events::ServerInfoHistoryRequestEvent* ev = static_cast<events::ServerInfoHistoryRequestEvent*>(event);
-    handleLoadServerInfoHistoryEvent(ev);
+    handleLoadServerInfoHistoryEvent(ev);  //
   } else if (type == static_cast<QEvent::Type>(events::ClearServerHistoryRequestEvent::EventType)) {
     events::ClearServerHistoryRequestEvent* ev = static_cast<events::ClearServerHistoryRequestEvent*>(event);
-    handleClearServerHistoryRequestEvent(ev);
+    handleClearServerHistoryRequestEvent(ev);  //
   } else if (type == static_cast<QEvent::Type>(events::ServerPropertyInfoRequestEvent::EventType)) {
     events::ServerPropertyInfoRequestEvent* ev = static_cast<events::ServerPropertyInfoRequestEvent*>(event);
-    handleLoadServerPropertyEvent(ev);
+    handleLoadServerPropertyEvent(ev);  // ni
   } else if (type == static_cast<QEvent::Type>(events::ChangeServerPropertyInfoRequestEvent::EventType)) {
     events::ChangeServerPropertyInfoRequestEvent* ev = static_cast<events::ChangeServerPropertyInfoRequestEvent*>(event);
-    handleServerPropertyChangeEvent(ev);
+    handleServerPropertyChangeEvent(ev);  // ni
   } else if (type == static_cast<QEvent::Type>(events::BackupRequestEvent::EventType)) {
     events::BackupRequestEvent* ev = static_cast<events::BackupRequestEvent*>(event);
-    handleBackupEvent(ev);
+    handleBackupEvent(ev);  // ni
   } else if (type == static_cast<QEvent::Type>(events::ExportRequestEvent::EventType)) {
     events::ExportRequestEvent* ev = static_cast<events::ExportRequestEvent*>(event);
-    handleExportEvent(ev);
+    handleExportEvent(ev);  // ni
   } else if (type == static_cast<QEvent::Type>(events::ChangePasswordRequestEvent::EventType)) {
     events::ChangePasswordRequestEvent* ev = static_cast<events::ChangePasswordRequestEvent*>(event);
-    handleChangePasswordEvent(ev);
+    handleChangePasswordEvent(ev);  // ni
   } else if (type == static_cast<QEvent::Type>(events::ChangeMaxConnectionRequestEvent::EventType)) {
     events::ChangeMaxConnectionRequestEvent* ev = static_cast<events::ChangeMaxConnectionRequestEvent*>(event);
-    handleChangeMaxConnectionEvent(ev);
+    handleChangeMaxConnectionEvent(ev);  // ni
   } else if (type == static_cast<QEvent::Type>(events::LoadDatabaseContentRequestEvent::EventType)) {
     events::LoadDatabaseContentRequestEvent* ev = static_cast<events::LoadDatabaseContentRequestEvent*>(event);
     handleLoadDatabaseContentEvent(ev);
   } else if (type == static_cast<QEvent::Type>(events::ClearDatabaseRequestEvent::EventType)) {
     events::ClearDatabaseRequestEvent* ev = static_cast<events::ClearDatabaseRequestEvent*>(event);
-    handleClearDatabaseEvent(ev);
+    handleClearDatabaseEvent(ev);  // ni
   } else if (type == static_cast<QEvent::Type>(events::SetDefaultDatabaseRequestEvent::EventType)) {
     events::SetDefaultDatabaseRequestEvent* ev = static_cast<events::SetDefaultDatabaseRequestEvent*>(event);
-    handleSetDefaultDatabaseEvent(ev);
+    handleSetDefaultDatabaseEvent(ev);  // ni
   } else if (type == static_cast<QEvent::Type>(events::CommandRequestEvent::EventType)) {
     events::CommandRequestEvent* ev = static_cast<events::CommandRequestEvent*>(event);
     handleCommandRequestEvent(ev);
   } else if (type == static_cast<QEvent::Type>(events::DiscoveryInfoRequestEvent::EventType)) {
     events::DiscoveryInfoRequestEvent* ev = static_cast<events::DiscoveryInfoRequestEvent*>(event);
-    handleDiscoveryInfoRequestEvent(ev);
+    handleDiscoveryInfoRequestEvent(ev);  //
   }
 
   interrupt_ = false;
@@ -366,6 +366,35 @@ void IDriver::timerEvent(QTimerEvent* event) {
 
 void IDriver::notifyProgress(QObject* reciver, int value) {
   notifyProgressImpl(this, reciver, value);
+}
+
+void IDriver::handleConnectEvent(events::ConnectRequestEvent* ev) {
+  QObject* sender = ev->sender();
+  notifyProgress(sender, 0);
+  events::ConnectResponceEvent::value_type res(ev->value());
+  notifyProgress(sender, 25);
+  common::Error er = syncConnect();
+  if (er && er->isError()) {
+    res.setErrorInfo(er);
+  }
+  notifyProgress(sender, 75);
+  reply(sender, new events::ConnectResponceEvent(this, res));
+  notifyProgress(sender, 100);
+}
+
+void IDriver::handleDisconnectEvent(events::DisconnectRequestEvent* ev) {
+  QObject* sender = ev->sender();
+  notifyProgress(sender, 0);
+  events::DisconnectResponceEvent::value_type res(ev->value());
+  notifyProgress(sender, 50);
+
+  common::Error er = syncDisconnect();
+  if (er && er->isError()) {
+    res.setErrorInfo(er);
+  }
+
+  reply(sender, new events::DisconnectResponceEvent(this, res));
+  notifyProgress(sender, 100);
 }
 
 void IDriver::handleLoadServerPropertyEvent(events::ServerPropertyInfoRequestEvent* ev) {
@@ -530,7 +559,9 @@ void IDriver::handleClearServerHistoryRequestEvent(events::ClearServerHistoryReq
 
 void IDriver::handleDiscoveryInfoRequestEvent(events::DiscoveryInfoRequestEvent* ev) {
   QObject* sender = ev->sender();
+  notifyProgress(sender, 0);
   events::DiscoveryInfoResponceEvent::value_type res(ev->value());
+  notifyProgress(sender, 50);
 
   if (isConnected()) {
     IServerInfo* info = nullptr;
@@ -552,7 +583,9 @@ void IDriver::handleDiscoveryInfoRequestEvent(events::DiscoveryInfoRequestEvent*
     res.setErrorInfo(common::make_error_value("Not connected to server, impossible to get discovery info!", common::Value::E_ERROR));
   }
 
+  notifyProgress(sender, 75);
   reply(sender, new events::DiscoveryInfoResponceEvent(this, res));
+  notifyProgress(sender, 100);
 }
 
 void IDriver::addedChildren(FastoObject* child) {

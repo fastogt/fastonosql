@@ -64,8 +64,6 @@ class Driver
   virtual common::Error serverInfo(IServerInfo** info);
   virtual common::Error currentDataBaseInfo(IDataBaseInfo** info);
 
-  virtual void handleConnectEvent(events::ConnectRequestEvent* ev);
-  virtual void handleDisconnectEvent(events::DisconnectRequestEvent* ev);
   virtual void handleExecuteEvent(events::ExecuteRequestEvent* ev);
   virtual void handleLoadDatabaseInfosEvent(events::LoadDatabasesInfoRequestEvent* ev);
   virtual void handleLoadServerPropertyEvent(events::ServerPropertyInfoRequestEvent* ev);

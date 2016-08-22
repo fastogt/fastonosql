@@ -92,8 +92,9 @@ class IDriver
   explicit IDriver(IConnectionSettingsBaseSPtr settings);
 
   // handle server events
-  virtual void handleConnectEvent(events::ConnectRequestEvent* ev) = 0;
-  virtual void handleDisconnectEvent(events::DisconnectRequestEvent* ev) = 0;
+  virtual void handleConnectEvent(events::ConnectRequestEvent* ev);
+  virtual void handleDisconnectEvent(events::DisconnectRequestEvent* ev);
+
   virtual void handleProcessCommandLineArgs(events::ProcessConfigArgsRequestEvent* ev) = 0;
   virtual void handleExecuteEvent(events::ExecuteRequestEvent* ev) = 0;
   virtual void handleCommandRequestEvent(events::CommandRequestEvent* ev) = 0;

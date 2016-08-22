@@ -182,35 +182,6 @@ common::Error Driver::currentDataBaseInfo(IDataBaseInfo** info) {
   return common::Error();
 }
 
-void Driver::handleConnectEvent(events::ConnectRequestEvent* ev) {
-  QObject* sender = ev->sender();
-  notifyProgress(sender, 0);
-  events::ConnectResponceEvent::value_type res(ev->value());
-  notifyProgress(sender, 25);
-  common::Error er = syncConnect();
-  if (er && er->isError()) {
-    res.setErrorInfo(er);
-  }
-  notifyProgress(sender, 75);
-  reply(sender, new events::ConnectResponceEvent(this, res));
-  notifyProgress(sender, 100);
-}
-
-void Driver::handleDisconnectEvent(events::DisconnectRequestEvent* ev) {
-  QObject* sender = ev->sender();
-  notifyProgress(sender, 0);
-  events::DisconnectResponceEvent::value_type res(ev->value());
-  notifyProgress(sender, 50);
-
-  common::Error er = syncDisconnect();
-  if (er && er->isError()) {
-    res.setErrorInfo(er);
-  }
-
-  reply(sender, new events::DisconnectResponceEvent(this, res));
-  notifyProgress(sender, 100);
-}
-
 void Driver::handleExecuteEvent(events::ExecuteRequestEvent* ev) {
   QObject* sender = ev->sender();
   notifyProgress(sender, 0);
