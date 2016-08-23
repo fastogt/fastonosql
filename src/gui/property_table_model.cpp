@@ -23,38 +23,20 @@
 #include <string>                       // for basic_string, operator==
 #include <vector>                       // for vector
 
-#include "common/convert2string.h"      // for ConvertFromString
 #include "common/macros.h"              // for CHECK, UNUSED
-#include "common/qt/convert2string.h"   // for ConvertToString
+#include "common/convert2string.h"
+#include "common/qt/convert2string.h"
 #include "common/qt/utils_qt.h"         // for item
 
 #include "fasto/qt/gui/base/table_item.h"     // for TableItem
 #include "fasto/qt/gui/base/table_model.h"    // for TableModel
 
+#include "gui/property_table_item.h"
+
 #include "translations/global.h"        // for trKey, trValue
 
 namespace fastonosql {
 namespace gui {
-
-PropertyTableItem::PropertyTableItem(const core::property_t& prop)
-  : prop_(prop) {
-}
-
-QString PropertyTableItem::key() const {
-  return common::ConvertFromString<QString>(prop_.first);
-}
-
-QString PropertyTableItem::value() const {
-  return common::ConvertFromString<QString>(prop_.second);
-}
-
-core::property_t PropertyTableItem::property() const {
-  return prop_;
-}
-
-void PropertyTableItem::setProperty(const core::property_t& prop) {
-  prop_ = prop;
-}
 
 PropertyTableModel::PropertyTableModel(QObject* parent)
   : TableModel(parent) {

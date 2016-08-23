@@ -18,30 +18,31 @@
 
 #pragma once
 
-#include "fasto/qt/gui/base/table_model.h"  // for TableModel
+#include <QString>
 
 #include "core/server_property_info.h"  // for property_t
+
+#include "fasto/qt/gui/base/table_item.h"  // for TableItem
 
 namespace fastonosql {
 namespace gui {
 
-class PropertyTableModel
-  : public fasto::qt::gui::TableModel {
-  Q_OBJECT
- public:
-  explicit PropertyTableModel(QObject* parent = 0);
+struct PropertyTableItem
+  : public fasto::qt::gui::TableItem {
+  enum eColumn {
+    eKey = 0,
+    eValue = 1,
+    eCountColumns = 2
+  };
+  explicit PropertyTableItem(const core::property_t& prop);
+  QString key() const;
+  QString value() const;
 
-  virtual QVariant data(const QModelIndex& index, int role) const;
-  virtual bool setData(const QModelIndex& index, const QVariant& value, int role);
-  virtual Qt::ItemFlags flags(const QModelIndex& index) const;
-  virtual QVariant headerData(int section, Qt::Orientation orientation, int role) const;
+  core::property_t property() const;
+  void setProperty(const core::property_t& prop);
 
-  virtual int columnCount(const QModelIndex& parent) const;
-
-  void changeProperty(const core::property_t& pr);
-
- Q_SIGNALS:
-  void changedProperty(const core::property_t& pr);
+ private:
+  core::property_t prop_;
 };
 
 }  // namespace gui

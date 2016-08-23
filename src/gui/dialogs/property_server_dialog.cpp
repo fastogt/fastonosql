@@ -38,6 +38,7 @@
 
 #include "gui/gui_factory.h"            // for GuiFactory
 #include "gui/property_table_model.h"   // for PropertyTableModel, etc
+#include "gui/property_table_item.h"
 
 #include "translations/global.h"        // for trLoading
 

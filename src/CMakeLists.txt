@@ -106,6 +106,7 @@ SET(HEADERS_GUI_TO_MOC
   gui/main_window.h
   gui/statistic_sender.h
   gui/update_checker.h
+  gui/property_table_item.h
   gui/property_table_model.h 
   gui/main_tab_bar.h
   gui/fasto_text_view.h
@@ -124,6 +125,7 @@ SET(SOURCES_GUI
   gui/statistic_sender.cpp
   gui/update_checker.cpp
   gui/gui_factory.cpp
+  gui/property_table_item.cpp
   gui/property_table_model.cpp
   gui/main_tab_bar.cpp
   gui/fasto_text_view.cpp  

@@ -16,33 +16,32 @@
     along with FastoNoSQL.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-#pragma once
+#include "gui/property_table_item.h"
 
-#include "fasto/qt/gui/base/table_model.h"  // for TableModel
-
-#include "core/server_property_info.h"  // for property_t
+#include "common/convert2string.h"
 
 namespace fastonosql {
 namespace gui {
 
-class PropertyTableModel
-  : public fasto::qt::gui::TableModel {
-  Q_OBJECT
- public:
-  explicit PropertyTableModel(QObject* parent = 0);
+PropertyTableItem::PropertyTableItem(const core::property_t& prop)
+  : prop_(prop) {
+}
 
-  virtual QVariant data(const QModelIndex& index, int role) const;
-  virtual bool setData(const QModelIndex& index, const QVariant& value, int role);
-  virtual Qt::ItemFlags flags(const QModelIndex& index) const;
-  virtual QVariant headerData(int section, Qt::Orientation orientation, int role) const;
+QString PropertyTableItem::key() const {
+  return common::ConvertFromString<QString>(prop_.first);
+}
 
-  virtual int columnCount(const QModelIndex& parent) const;
+QString PropertyTableItem::value() const {
+  return common::ConvertFromString<QString>(prop_.second);
+}
 
-  void changeProperty(const core::property_t& pr);
+core::property_t PropertyTableItem::property() const {
+  return prop_;
+}
 
- Q_SIGNALS:
-  void changedProperty(const core::property_t& pr);
-};
+void PropertyTableItem::setProperty(const core::property_t& prop) {
+  prop_ = prop;
+}
 
 }  // namespace gui
 }  // namespace fastonosql
