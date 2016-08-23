@@ -431,8 +431,12 @@ common::Error createConnection(const RConfig& config, NativeConnection** context
     const char* public_key = common::utils::c_strornull(sinfo.public_key);
     const char* private_key = common::utils::c_strornull(sinfo.private_key);
     const char* passphrase = common::utils::c_strornull(sinfo.passphrase);
-    if (ssh_address && curM == SSH_PUBLICKEY && !private_key) {
-      return common::make_error_value("Invalid input argument(private key)", common::Value::E_ERROR);
+    if (ssh_address) {
+      if (curM == SSH_PUBLICKEY && !private_key) {
+        return common::make_error_value("Invalid input argument(private key)", common::Value::E_ERROR);
+      } else if (curM == SSH_PASSWORD && !password) {
+        return common::make_error_value("Invalid input argument(password)", common::Value::E_ERROR);
+      }
     }
     lcontext = redisConnect(host, port, ssh_address, ssh_port, username, password,
                            public_key, private_key, passphrase, curM);
