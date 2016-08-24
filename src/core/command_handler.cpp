@@ -34,14 +34,14 @@ CommandHandler::CommandHandler(const std::vector<commands_t> &commands)
 }
 
 common::Error CommandHandler::execute(int argc, char** argv, FastoObject* out) {
-  char* input_cmd = argv[0];
   for(size_t i = 0; i < commands_.size(); ++i) {
     commands_t cmd = commands_[i];
-    if (cmd.isCommand(input_cmd)) {
-      int argc_to_call = argc - 1;
-      char** argv_to_call = argv + 1;
+    size_t off = cmd.commandOffset(argc, argv);
+    if (off) {
+      int argc_to_call = argc - off;
+      char** argv_to_call = argv + off;
       if (argc_to_call > cmd.maxArgumentsCount() || argc_to_call < cmd.minArgumentsCount()) {
-        std::string buff = common::MemSPrintf("Invalid input argument for command: %s", input_cmd);
+        std::string buff = common::MemSPrintf("Invalid input argument for command: %s", argv[0]);
         return common::make_error_value(buff, common::ErrorValue::E_ERROR);
       }
 
@@ -49,7 +49,7 @@ common::Error CommandHandler::execute(int argc, char** argv, FastoObject* out) {
     }
   }
 
-  return notSupported(input_cmd);
+  return notSupported(argv[0]);
 }
 
 common::Error CommandHandler::notSupported(const char* cmd) {

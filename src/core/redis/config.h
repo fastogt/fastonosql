@@ -37,8 +37,6 @@ struct Config
   long interval;
   int dbnum;
   int interactive;
-  int monitor_mode;
-  int pubsub_mode;
   int latency_mode;
   int latency_history;
   int cluster_mode;

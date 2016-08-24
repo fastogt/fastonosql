@@ -374,8 +374,7 @@ common::Error cliOutputCommandHelp(FastoObject* out, struct commandHelp* help, i
   return common::Error();
 }
 
-common::Error authContext(const Config& config, redisContext* context) {
-  const char* auth_str = common::utils::c_strornull(config.auth);
+common::Error authContext(const char* auth_str, redisContext* context) {
   if (!auth_str) {
     return common::Error();
   }
@@ -396,6 +395,88 @@ common::Error authContext(const Config& config, redisContext* context) {
 }
 
 }  // namespace
+
+common::Error common_exec(CommandHandler* handler, int argc, char** argv, FastoObject* out) {
+  DBConnection* red = static_cast<DBConnection*>(handler);
+  return red->common_exec(argc + 1, argv - 1, out);
+}
+
+common::Error common_exec_off2(CommandHandler* handler, int argc, char** argv, FastoObject* out) {
+  DBConnection* red = static_cast<DBConnection*>(handler);
+  return red->common_exec(argc + 2, argv - 2, out);
+}
+
+common::Error auth(CommandHandler* handler, int argc, char** argv, FastoObject* out) {
+  UNUSED(argc);
+  DBConnection* red = static_cast<DBConnection*>(handler);
+  common::Error err = red->auth(argv[0]);
+  if (err && err->isError()) {
+    return err;
+  }
+
+  common::StringValue* val = common::Value::createStringValue("OK");
+  FastoObject* child = new FastoObject(out, val, red->delimiter(), red->nsSeparator());
+  out->addChildren(child);
+  return common::Error();
+}
+
+common::Error select(CommandHandler* handler, int argc, char** argv, FastoObject* out) {
+  UNUSED(argc);
+  DBConnection* red = static_cast<DBConnection*>(handler);
+  common::Error err = red->select(common::ConvertFromString<int>(argv[0]), NULL);
+  if (err && err->isError()) {
+    return err;
+  }
+
+  common::StringValue* val = common::Value::createStringValue("OK");
+  FastoObject* child = new FastoObject(out, val, red->delimiter(), red->nsSeparator());
+  out->addChildren(child);
+  return common::Error();
+}
+
+common::Error connect(CommandHandler* handler, int argc, char** argv, FastoObject* out) {
+  UNUSED(argc);
+  DBConnection* red = static_cast<DBConnection*>(handler);
+  common::Error err = red->disconnect();
+  if (err && err->isError()) {
+    return err;
+  }
+
+  auto conf = red->config();
+  conf.host.host = argv[0];
+  conf.host.port = common::ConvertFromString<uint16_t>(argv[1]);
+  err = red->connect(conf);
+  if (err && err->isError()) {
+    return err;
+  }
+
+  common::StringValue* val = common::Value::createStringValue("OK");
+  FastoObject* child = new FastoObject(out, val, red->delimiter(), red->nsSeparator());
+  out->addChildren(child);
+  return common::Error();
+}
+
+common::Error help(CommandHandler* handler, int argc, char** argv, FastoObject* out) {
+  DBConnection* red = static_cast<DBConnection*>(handler);
+  return red->help(argc, argv, out);
+}
+
+common::Error monitor(CommandHandler* handler, int argc, char** argv, FastoObject* out) {
+  DBConnection* red = static_cast<DBConnection*>(handler);
+  return red->monitor(argc + 1, argv - 1, out);
+}
+
+common::Error subscribe(CommandHandler* handler, int argc, char** argv, FastoObject* out) {
+  DBConnection* red = static_cast<DBConnection*>(handler);
+  return red->subscribe(argc + 1, argv - 1, out);
+}
+
+common::Error sync(CommandHandler* handler, int argc, char** argv, FastoObject* out) {
+  UNUSED(argc);
+  UNUSED(argv);
+  DBConnection* red = static_cast<DBConnection*>(handler);
+  return red->slaveMode(out);
+}
 
 RConfig::RConfig(const Config& config, const SSHInfo& sinfo)
   : Config(config), ssh_info(sinfo) {
@@ -483,7 +564,8 @@ common::Error testConnection(ConnectionSettings* settings) {
   }
 
   Config config = settings->info();
-  err = authContext(config, context);
+  const char* auth_str = common::utils::c_strornull(config.auth);
+  err = authContext(auth_str, context);
   if (err && err->isError()) {
     redisFree(context);
     return err;
@@ -506,7 +588,8 @@ common::Error discoveryClusterConnection(ConnectionSettings* settings,
   }
 
   Config config = settings->info();
-  err = authContext(config, context);
+  const char* auth_str = common::utils::c_strornull(config.auth);
+  err = authContext(auth_str, context);
   if (err && err->isError()) {
     redisFree(context);
     return err;
@@ -546,7 +629,8 @@ common::Error discoverySentinelConnection(ConnectionSettings* settings,
   }
 
   Config config = settings->info();
-  err = authContext(config, context);
+  const char* auth_str = common::utils::c_strornull(config.auth);
+  err = authContext(auth_str, context);
   if (err && err->isError()) {
     redisFree(context);
     return err;
@@ -606,7 +690,7 @@ common::Error discoverySentinelConnection(ConnectionSettings* settings,
 }
 
 DBConnection::DBConnection(IDBConnectionOwner* observer)
-  : connection_(), isAuth_(false), observer_(observer) {
+  : CommandHandler(redisCommands), connection_(), isAuth_(false), observer_(observer) {
 }
 
 const char* DBConnection::versionApi() {
@@ -632,7 +716,7 @@ common::Error DBConnection::connect(const config_t& config) {
   }
 
   /* Do AUTH and select the right DB. */
-  err = cliAuth();
+  err = auth(connection_.config_.auth);
   if (err && err->isError()) {
     return err;
   }
@@ -1421,17 +1505,6 @@ common::Error DBConnection::scanMode(FastoObject* out) {
   return common::Error();
 }
 
-common::Error DBConnection::cliAuth() {
-  common::Error err = authContext(connection_.config_, connection_.handle_);
-  if (err && err->isError()) {
-    isAuth_ = false;
-    return common::Error();
-  }
-
-  isAuth_ = true;
-  return common::Error();
-}
-
 common::Error DBConnection::select(int num, IDataBaseInfo** info) {
   if (!isConnected()) {
     DNOTREACHED();
@@ -1440,6 +1513,7 @@ common::Error DBConnection::select(int num, IDataBaseInfo** info) {
 
   redisReply* reply = reinterpret_cast<redisReply*>(redisCommand(connection_.handle_, "SELECT %d", num));
   if (reply) {
+    connection_.config_.dbnum = num;
     size_t sz = 0;
     common::Error err = dbkcount(&sz);
     MCHECK(!err);
@@ -1677,7 +1751,7 @@ common::Error DBConnection::cliReadReply(FastoObject* out) {
     std::string host_str = common::ConvertToString(connection_.config_.host);
     std::string redir = common::MemSPrintf("-> Redirected to slot [%d] located at %s", slot, host_str);
     common::StringValue* val = common::Value::createStringValue(redir);
-    FastoObject* child = new FastoObject(out, val, connection_.config_.delimiter, connection_.config_.ns_separator);
+    FastoObject* child = new FastoObject(out, val, delimiter(), nsSeparator());
     out->addChildren(child);
     connection_.config_.cluster_reissue_command = 1;
 
@@ -1688,119 +1762,6 @@ common::Error DBConnection::cliReadReply(FastoObject* out) {
   common::Error er = cliFormatReplyRaw(out, reply);
   freeReplyObject(reply);
   return er;
-}
-
-common::Error DBConnection::execute(int argc, char** argv, FastoObject* out) {
-  if (!isConnected()) {
-    DNOTREACHED();
-    return common::make_error_value("Not connected", common::Value::E_ERROR);
-  }
-
-  if (!out) {
-    DNOTREACHED();
-    return common::make_error_value("Invalid input argument(s)", common::ErrorValue::E_ERROR);
-  }
-
-  char* command = argv[0];
-
-  if (argc == 3 && strcasecmp(command, "connect") == 0) {   
-    common::Error err = disconnect();
-    if (err && err->isError()) {
-      return err;
-    }
-
-    config_t conf = connection_.config_;
-    conf.host.host = argv[1];
-    conf.host.port = common::ConvertFromString<uint16_t>(argv[2]);
-    return connect(conf);
-  }
-
-  if (strcasecmp(command, "help") == 0 || strcasecmp(command, "?") == 0) {
-    return cliOutputHelp(out, --argc, ++argv);
-  }
-
-  if (strcasecmp(command, "monitor") == 0) {
-    connection_.config_.monitor_mode = 1;
-  }
-  if (strcasecmp(command, "subscribe") == 0 || strcasecmp(command, "psubscribe") == 0) {
-    connection_.config_.pubsub_mode = 1;
-  }
-  if (strcasecmp(command, "sync") == 0 || strcasecmp(command, "psync") == 0) {
-    connection_.config_.slave_mode = 1;
-  }
-
-  size_t* argvlen = reinterpret_cast<size_t*>(malloc(argc * sizeof(size_t)));
-  for (int j = 0; j < argc; j++) {
-    size_t len =  sdslen(argv[j]);
-    argvlen[j] = len;
-  }
-
-  redisAppendCommandArgv(connection_.handle_, argc, (const char**)argv, argvlen);
-  free(argvlen);
-  while (connection_.config_.monitor_mode) {
-    common::Error er = cliReadReply(out);
-    if (er && er->isError()) {
-      connection_.config_.monitor_mode = 0;
-      return er;
-    }
-
-    if (isInterrupted()) {
-      connection_.config_.monitor_mode = 0;
-      return common::make_error_value("Interrupted.", common::ErrorValue::E_INTERRUPTED);
-    }
-  }
-
-  if (connection_.config_.pubsub_mode) {
-    while (1) {
-      common::Error er = cliReadReply(out);
-      if (er && er->isError()) {
-        connection_.config_.pubsub_mode = 0;
-        return er;
-      }
-
-      if (isInterrupted()) {
-        connection_.config_.pubsub_mode = 0;
-        return common::make_error_value("Interrupted.", common::ErrorValue::E_INTERRUPTED);
-      }
-    }
-  }
-
-  if (connection_.config_.slave_mode) {
-    common::Error er = slaveMode(out);
-    connection_.config_.slave_mode = 0;
-    return er;  /* Error = slaveMode lost connection to master */
-  }
-
-  common::Error er = cliReadReply(out);
-  if (er && er->isError()) {
-    return er;
-  }
-
-  /* Store database number when SELECT was successfully executed. */
-  if (strcasecmp(command, "select") == 0 && argc == 2) {
-    connection_.config_.dbnum = common::ConvertFromString<int>(argv[1]);
-    size_t sz = 0;
-    common::Error err = dbkcount(&sz);
-    MCHECK(!err);
-    DataBaseInfo* info = new DataBaseInfo(common::ConvertToString(connection_.config_.dbnum), true, sz);
-    if (observer_) {
-      observer_->currentDataBaseChanged(info);
-    }
-  } else if (strcasecmp(command, "auth") == 0) {
-    auto rchildrens = out->childrens();
-    if (rchildrens.size() == 1) {
-      FastoObject* obj = rchildrens[0];
-      isAuth_ = obj && obj->toString() == "OK";
-    } else {
-      isAuth_ = false;
-    }
-  }
-
-  if (connection_.config_.interval) {
-    common::utils::usleep(connection_.config_.interval);
-  }
-
-  return common::Error();
 }
 
 common::Error DBConnection::executeAsPipeline(std::vector<FastoObjectCommandIPtr> cmds) {
@@ -1846,6 +1807,119 @@ common::Error DBConnection::executeAsPipeline(std::vector<FastoObjectCommandIPtr
     }
   }
   //end piplene
+
+  return common::Error();
+}
+
+common::Error DBConnection::common_exec(int argc, char** argv, FastoObject* out) {
+  size_t* argvlen = reinterpret_cast<size_t*>(malloc(argc * sizeof(size_t)));
+  for (int j = 0; j < argc; j++) {
+    size_t len =  sdslen(argv[j]);
+    argvlen[j] = len;
+  }
+
+  redisAppendCommandArgv(connection_.handle_, argc, (const char**)argv, argvlen);
+  free(argvlen);
+  common::Error err = cliReadReply(out);
+  if (err && err->isError()) {
+    return err;
+  }
+
+  if (connection_.config_.interval) {
+    common::utils::usleep(connection_.config_.interval);
+  }
+  return common::Error();
+}
+
+common::Error DBConnection::common_exec_off2(int argc, char** argv, FastoObject* out) {
+  size_t* argvlen = reinterpret_cast<size_t*>(malloc(argc * sizeof(size_t)));
+  for (int j = 0; j < argc; j++) {
+    size_t len =  sdslen(argv[j]);
+    argvlen[j] = len;
+  }
+
+  redisAppendCommandArgv(connection_.handle_, argc, (const char**)argv, argvlen);
+  free(argvlen);
+  common::Error err = cliReadReply(out);
+  if (err && err->isError()) {
+    return err;
+  }
+
+  if (connection_.config_.interval) {
+    common::utils::usleep(connection_.config_.interval);
+  }
+  return common::Error();
+}
+
+common::Error DBConnection::auth(const std::string& password) {
+  const char* auth_str = common::utils::c_strornull(password);
+  common::Error err = authContext(auth_str, connection_.handle_);
+  if (err && err->isError()) {
+    isAuth_ = false;
+    return err;
+  }
+
+  connection_.config_.auth = password;
+  isAuth_ = true;
+  return common::Error();
+}
+
+common::Error DBConnection::help(int argc, char** argv, FastoObject* out) {
+  return cliOutputHelp(out, argc, argv);
+}
+
+common::Error DBConnection::monitor(int argc, char** argv, FastoObject* out) {
+  size_t* argvlen = reinterpret_cast<size_t*>(malloc(argc * sizeof(size_t)));
+  for (int j = 0; j < argc; j++) {
+    size_t len =  sdslen(argv[j]);
+    argvlen[j] = len;
+  }
+
+  redisAppendCommandArgv(connection_.handle_, argc, (const char**)argv, argvlen);
+  free(argvlen);
+  common::Error err = cliReadReply(out);
+  if (err && err->isError()) {
+    return err;
+  }
+
+  while (true) {
+    common::Error er = cliReadReply(out);
+    if (er && er->isError()) {
+      return er;
+    }
+
+    if (isInterrupted()) {
+      return common::make_error_value("Interrupted.", common::ErrorValue::E_INTERRUPTED);
+    }
+  }
+
+  return common::Error();
+}
+
+common::Error DBConnection::subscribe(int argc, char** argv, FastoObject* out) {
+  size_t* argvlen = reinterpret_cast<size_t*>(malloc(argc * sizeof(size_t)));
+  for (int j = 0; j < argc; j++) {
+    size_t len =  sdslen(argv[j]);
+    argvlen[j] = len;
+   }
+
+  redisAppendCommandArgv(connection_.handle_, argc, (const char**)argv, argvlen);
+  free(argvlen);
+  common::Error err = cliReadReply(out);
+  if (err && err->isError()) {
+    return err;
+  }
+
+  while (true) {
+    common::Error er = cliReadReply(out);
+    if (er && er->isError()) {
+      return er;
+    }
+
+    if (isInterrupted()) {
+      return common::make_error_value("Interrupted.", common::ErrorValue::E_INTERRUPTED);
+    }
+  }
 
   return common::Error();
 }

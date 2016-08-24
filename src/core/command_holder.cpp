@@ -30,11 +30,36 @@ CommandHolder::CommandHolder(const std::string& name, const std::string& params,
                              const std::string& example, uint8_t required_arguments_count,
                              uint8_t optional_arguments_count, function_t func)
   : CommandInfo(name, params, summary, since, example,
-                required_arguments_count, optional_arguments_count), func_(func){
+                required_arguments_count, optional_arguments_count), func_(func), white_spaces_count_(std::count_if(name.begin(), name.end(),
+                                                                                                                    [](char c){ return std::isspace(c); })) {
 }
 
-bool CommandHolder::isCommand(const std::string& cmd) {
-  return common::FullEqualsASCII(cmd, name, false);
+size_t CommandHolder::commandOffset(int argc, char** argv) {
+  if (white_spaces_count_ == 0) {
+    char* cmd = argv[0];
+    if (!common::FullEqualsASCII(cmd, name, false) ){
+      return 0;
+    }
+  } else {
+    if (argc == 1) {
+      return 0;
+    }
+
+    if (white_spaces_count_ > argc) {
+      return 0;
+    }
+
+    std::vector<std::string> merged;
+    for (size_t i = 0; i <= white_spaces_count_; ++i) {
+      merged.push_back(argv[i]);
+    }
+    std::string ws = common::JoinString(merged, ' ');
+    if (!common::FullEqualsASCII(ws, name, false)) {
+      return 0;
+    }
+  }
+
+  return white_spaces_count_ + 1;
 }
 
 common::Error CommandHolder::execute(CommandHandler *handler, int argc, char** argv, FastoObject* out) {

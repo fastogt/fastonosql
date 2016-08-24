@@ -156,8 +156,6 @@ void Config::copy(const Config& other) {
   interval = other.interval;
   dbnum = other.dbnum;
   interactive = other.interactive;
-  monitor_mode = other.monitor_mode;
-  pubsub_mode = other.pubsub_mode;
   latency_mode = other.latency_mode;
   latency_history = other.latency_history;
   cluster_mode = other.cluster_mode;
@@ -188,8 +186,6 @@ void Config::init() {
   interval = 0;
   dbnum = 0;
   interactive = 0;
-  monitor_mode = 0;
-  pubsub_mode = 0;
   latency_mode = 0;
   latency_history = 0;
   cluster_mode = 0;
