@@ -35,11 +35,6 @@ class ConnectionDiagnosticDialog
   : public QDialog {
   Q_OBJECT
  public:
-  enum {
-    min_height = 160,
-    min_width = 240
-  };
-
   ConnectionDiagnosticDialog(QWidget* parent, core::IConnectionSettingsBaseSPtr connection);
 
  private Q_SLOTS:

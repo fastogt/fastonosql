@@ -739,91 +739,107 @@ void **abstract)
 redisContext *redisConnect(const char *ip, int port, const char *ssh_address, int ssh_port, const char *username, const char *password,
                            const char *public_key, const char *private_key, const char *passphrase, int curMethod) {
 
-    LIBSSH2_SESSION *session = NULL;
-    if(ssh_address && curMethod != SSH_UNKNOWN){
-        int rc = libssh2_init(0);
-        if (rc != 0) {
-            return NULL;
-        }
+  redisContext *c = redisContextInit();
+  if (c == NULL) {
+    return NULL;
+  }
 
-        struct hostent* host = gethostbyname(ssh_address);
-        if(!host){
-            return NULL;
-        }
-
-        struct sockaddr_in sin;
-        /* Connect to SSH server */
-        int sock = socket(PF_INET, SOCK_STREAM, IPPROTO_TCP);
-        sin.sin_family = AF_INET;
-        sin.sin_addr = *(struct in_addr *)host->h_addr;
-        sin.sin_port = htons(ssh_port);
-        if (connect(sock, (struct sockaddr*)(&sin),
-                    sizeof(struct sockaddr_in)) != 0) {
-            return NULL;
-        }
-
-        /* Create a session instance */
-        session = libssh2_session_init();
-        if(!session) {
-            return NULL;
-        }
-
-        /* ... start it up. This will trade welcome banners, exchange keys,
-         * and setup crypto, compression, and MAC layers
-         */
-        rc = libssh2_session_handshake(session, sock);
-        if(rc) {
-            return NULL;
-        }
-
-        int auth_pw = 0;
-        libssh2_hostkey_hash(session, LIBSSH2_HOSTKEY_HASH_SHA1);
-        char *userauthlist = libssh2_userauth_list(session, username, strlen(username));
-        if (strstr(userauthlist, "password") != NULL) {
-            auth_pw |= 1;
-        }
-        if (strstr(userauthlist, "keyboard-interactive") != NULL) {
-            auth_pw |= 2;
-        }
-        if (strstr(userauthlist, "publickey") != NULL) {
-            auth_pw |= 4;
-        }
-
-        if (auth_pw & 1 && curMethod == SSH_PASSWORD) {
-            /* We could authenticate via password */
-            if (libssh2_userauth_password(session, username, password)) {
-                //"Authentication by password failed!";
-                return NULL;
-            }
-        } else if (auth_pw & 2) {
-            /* Or via keyboard-interactive */
-            if (libssh2_userauth_keyboard_interactive(session, username, &kbd_callback) ) {
-                //"Authentication by keyboard-interactive failed!";
-                return NULL;
-            }
-        } else if (auth_pw & 4 && curMethod == SSH_PUBLICKEY) {
-            /* Or by public key */
-            if (libssh2_userauth_publickey_fromfile(session, username, public_key, private_key, passphrase)){
-                //"Authentication by public key failed!";
-                return NULL;
-            }
-        } else {
-            //"No supported authentication methods found!";
-            return NULL;
-        }
+  LIBSSH2_SESSION *session = NULL;
+  if(ssh_address && curMethod != SSH_UNKNOWN){
+    if (curMethod == SSH_PUBLICKEY && !private_key) {
+      __redisSetError(c, REDIS_ERR_OTHER, "Invalid input argument(private key)");
+      return c;
+    } else if (curMethod == SSH_PASSWORD && !password) {
+      __redisSetError(c, REDIS_ERR_OTHER, "Invalid input argument(password)");
+      return c;
     }
 
-    redisContext *c;
+    int rc = libssh2_init(0);
+    if (rc != 0) {
+      __redisSetError(c, REDIS_ERR_OTHER, "Failed to init libssh library.");
+      return c;
+    }
 
-    c = redisContextInit();
-    if (c == NULL)
-        return NULL;
+    struct hostent* host = gethostbyname(ssh_address);
+    if(!host){
+      __redisSetError(c, REDIS_ERR_OTHER, "Failed to resolve ssh address.");
+      return c;
+    }
 
-    c->session = session;
+    struct sockaddr_in sin;
+    /* Connect to SSH server */
+    int sock = socket(PF_INET, SOCK_STREAM, IPPROTO_TCP);
+    sin.sin_family = AF_INET;
+    sin.sin_addr = *(struct in_addr *)host->h_addr;
+    sin.sin_port = htons(ssh_port);
+    if (connect(sock, (struct sockaddr*)(&sin),
+                sizeof(struct sockaddr_in)) != 0) {
+      __redisSetError(c, REDIS_ERR_OTHER, "Failed to connect (ssh_address).");
+      return c;
+    }
 
-    c->flags |= REDIS_BLOCK;
-    redisContextConnectTcp(c,ip,port,NULL);
-    return c;
+    /* Create a session instance */
+    session = libssh2_session_init();
+    if(!session) {
+      __redisSetError(c, REDIS_ERR_OTHER, "Failed to create ssh session.");
+      return c;
+    }
+
+    /* ... start it up. This will trade welcome banners, exchange keys,
+     * and setup crypto, compression, and MAC layers
+     */
+    rc = libssh2_session_handshake(session, sock);
+    if(rc) {
+      libssh2_session_free(session);
+      __redisSetError(c, REDIS_ERR_OTHER, "SSH handshake failed.");
+      return c;
+    }
+
+    int auth_pw = 0;
+    libssh2_hostkey_hash(session, LIBSSH2_HOSTKEY_HASH_SHA1);
+    char *userauthlist = libssh2_userauth_list(session, username, strlen(username));
+    if (strstr(userauthlist, "password") != NULL) {
+      auth_pw |= 1;
+    }
+    if (strstr(userauthlist, "keyboard-interactive") != NULL) {
+      auth_pw |= 2;
+    }
+    if (strstr(userauthlist, "publickey") != NULL) {
+      auth_pw |= 4;
+    }
+
+    if (auth_pw & 1 && curMethod == SSH_PASSWORD) {
+      /* We could authenticate via password */
+      if (libssh2_userauth_password(session, username, password)) {
+        libssh2_session_free(session);
+        __redisSetError(c, REDIS_ERR_OTHER, "Authentication by password failed!");
+        return c;
+      }
+    } else if (auth_pw & 2) {
+      /* Or via keyboard-interactive */
+      if (libssh2_userauth_keyboard_interactive(session, username, &kbd_callback) ) {
+        libssh2_session_free(session);
+        __redisSetError(c, REDIS_ERR_OTHER, "Authentication by keyboard-interactive failed!");
+        return c;
+      }
+    } else if (auth_pw & 4 && curMethod == SSH_PUBLICKEY) {
+      /* Or by public key */
+      if (libssh2_userauth_publickey_fromfile(session, username, public_key, private_key, passphrase)){
+        libssh2_session_free(session);
+        __redisSetError(c, REDIS_ERR_OTHER, "Authentication by public key failed!");
+        return c;
+      }
+    } else {
+      __redisSetError(c, REDIS_ERR_OTHER, "No supported authentication methods found!");
+      libssh2_session_free(session);
+      return c;
+    }
+  }
+
+  c->session = session;
+  c->flags |= REDIS_BLOCK;
+  redisContextConnectTcp(c,ip,port,NULL);
+  return c;
 }
 #else
 redisContext *redisConnect(const char *ip, int port) {
