@@ -96,10 +96,10 @@ void PropertyServerDialog::finishServerProperty(const core::events_info::ServerP
   }
 
   if (server_->type() == core::REDIS) {
-    core::ServerPropertyInfo inf = res.info;
+    core::ServerPropertiesInfo inf = res.info;
     PropertyTableModel* model = qobject_cast<PropertyTableModel*>(propertyes_table_->model());
-    for (size_t i = 0; i < inf.propertyes.size(); ++i) {
-      core::property_t it = inf.propertyes[i];
+    for (size_t i = 0; i < inf.properties.size(); ++i) {
+      core::property_t it = inf.properties[i];
       model->insertItem(new PropertyTableItem(it));
     }
   }

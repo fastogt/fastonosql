@@ -352,7 +352,7 @@ struct ServerPropertyInfoResponce
   typedef ServerPropertyInfoRequest base_class;
   explicit ServerPropertyInfoResponce(const base_class& request);
 
-  ServerPropertyInfo info;
+  ServerPropertiesInfo info;
 };
 
 struct ChangeServerPropertyInfoRequest

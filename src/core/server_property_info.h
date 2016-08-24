@@ -29,11 +29,11 @@ namespace core {
 
 typedef std::pair<std::string, std::string> property_t;
 
-struct ServerPropertyInfo {
-  std::vector<property_t> propertyes;
+struct ServerPropertiesInfo {
+  std::vector<property_t> properties;
 };
 
-ServerPropertyInfo makeServerProperty(const FastoObjectArray* array);
+ServerPropertiesInfo makeServerProperty(const FastoObjectArray* array);
 
 }  // namespace core
 }  // namespace fastonosql

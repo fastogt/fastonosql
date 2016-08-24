@@ -30,19 +30,19 @@
 namespace fastonosql {
 namespace core {
 
-ServerPropertyInfo makeServerProperty(const FastoObjectArray* array) {
+ServerPropertiesInfo makeServerProperty(const FastoObjectArray* array) {
   if (!array) {
     DNOTREACHED();
-    return ServerPropertyInfo();
+    return ServerPropertiesInfo();
   }
 
   common::ArrayValue* ar = array->array();
   if (!ar) {
     DNOTREACHED();
-    return ServerPropertyInfo();
+    return ServerPropertiesInfo();
   }
 
-  ServerPropertyInfo inf;
+  ServerPropertiesInfo inf;
   for (size_t i = 0; i < ar->size(); i += 2) {
     std::string c1;
     std::string c2;
@@ -50,7 +50,7 @@ ServerPropertyInfo makeServerProperty(const FastoObjectArray* array) {
     DCHECK(res);
     res = ar->getString(i + 1, &c2);
     DCHECK(res);
-    inf.propertyes.push_back(std::make_pair(c1, c2));
+    inf.properties.push_back(std::make_pair(c1, c2));
   }
   return inf;
 }
