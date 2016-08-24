@@ -131,7 +131,7 @@ int anetKeepAlive(char *err, int fd, int interval) {
   /* Send next probes after the specified interval. Note that we set the
    * delay as interval / 3, as we send three probes before detecting
    * an error (see the next setsockopt call). */
-  val = interval/3;
+  val = interval / 3;
   if (val == 0) val = 1;
   if (setsockopt(fd, IPPROTO_TCP, TCP_KEEPINTVL, &val, sizeof(val)) < 0) {
     anetSetError(err, "setsockopt TCP_KEEPINTVL: %s\n", strerror(errno));
@@ -146,7 +146,7 @@ int anetKeepAlive(char *err, int fd, int interval) {
     return ANET_ERR;
   }
 #else
-  ((void) interval); /* Avoid unused var warning for non Linux systems. */
+  UNUSED(interval);
 #endif
 
   return ANET_OK;
@@ -1667,16 +1667,15 @@ common::Error DBConnection::cliReadReply(FastoObject* out) {
     char* p = reply->str, *s;
     int slot;
 
-    s = strchr(p,' ');      /* MOVED[S]3999 127.0.0.1:6381 */
-    p = strchr(s+1,' ');    /* MOVED[S]3999[P]127.0.0.1:6381 */
+    s = strchr(p, ' ');      /* MOVED[S]3999 127.0.0.1:6381 */
+    p = strchr(s + 1, ' ');    /* MOVED[S]3999[P]127.0.0.1:6381 */
     *p = '\0';
     slot = common::ConvertFromString<int>(s + 1);
-    s = strchr(p+1,':');    /* MOVED 3999[P]127.0.0.1[S]6381 */
+    s = strchr(p + 1, ':');    /* MOVED 3999[P]127.0.0.1[S]6381 */
     *s = '\0';
     connection_.config_.host = common::net::HostAndPort(p + 1, common::ConvertFromString<uint16_t>(s + 1));
     std::string host_str = common::ConvertToString(connection_.config_.host);
-    std::string redir = common::MemSPrintf("-> Redirected to slot [%d] located at %s",
-                                           slot, host_str);
+    std::string redir = common::MemSPrintf("-> Redirected to slot [%d] located at %s", slot, host_str);
     common::StringValue* val = common::Value::createStringValue(redir);
     FastoObject* child = new FastoObject(out, val, connection_.config_.delimiter, connection_.config_.ns_separator);
     out->addChildren(child);
@@ -1720,9 +1719,15 @@ common::Error DBConnection::execute(int argc, char** argv, FastoObject* out) {
     return cliOutputHelp(out, --argc, ++argv);
   }
 
-  if (strcasecmp(command, "monitor") == 0) connection_.config_.monitor_mode = 1;
-  if (strcasecmp(command, "subscribe") == 0 || strcasecmp(command, "psubscribe") == 0) connection_.config_.pubsub_mode = 1;
-  if (strcasecmp(command, "sync") == 0 || strcasecmp(command, "psync") == 0) connection_.config_.slave_mode = 1;
+  if (strcasecmp(command, "monitor") == 0) {
+    connection_.config_.monitor_mode = 1;
+  }
+  if (strcasecmp(command, "subscribe") == 0 || strcasecmp(command, "psubscribe") == 0) {
+    connection_.config_.pubsub_mode = 1;
+  }
+  if (strcasecmp(command, "sync") == 0 || strcasecmp(command, "psync") == 0) {
+    connection_.config_.slave_mode = 1;
+  }
 
   size_t* argvlen = reinterpret_cast<size_t*>(malloc(argc * sizeof(size_t)));
   for (int j = 0; j < argc; j++) {
@@ -1769,25 +1774,25 @@ common::Error DBConnection::execute(int argc, char** argv, FastoObject* out) {
   common::Error er = cliReadReply(out);
   if (er && er->isError()) {
     return er;
-  } else {
-    /* Store database number when SELECT was successfully executed. */
-    if (strcasecmp(command, "select") == 0 && argc == 2) {
-      connection_.config_.dbnum = common::ConvertFromString<int>(argv[1]);
-      size_t sz = 0;
-      common::Error err = dbkcount(&sz);
-      MCHECK(!err);
-      DataBaseInfo* info = new DataBaseInfo(common::ConvertToString(connection_.config_.dbnum), true, sz);
-      if (observer_) {
-        observer_->currentDataBaseChanged(info);
-      }
-    } else if (strcasecmp(command, "auth") == 0) {
-      auto rchildrens = out->childrens();
-      if (rchildrens.size() == 1) {
-        FastoObject* obj = rchildrens[0];
-        isAuth_ = obj && obj->toString() == "OK";
-      } else {
-        isAuth_ = false;
-      }
+  }
+
+  /* Store database number when SELECT was successfully executed. */
+  if (strcasecmp(command, "select") == 0 && argc == 2) {
+    connection_.config_.dbnum = common::ConvertFromString<int>(argv[1]);
+    size_t sz = 0;
+    common::Error err = dbkcount(&sz);
+    MCHECK(!err);
+    DataBaseInfo* info = new DataBaseInfo(common::ConvertToString(connection_.config_.dbnum), true, sz);
+    if (observer_) {
+      observer_->currentDataBaseChanged(info);
+    }
+  } else if (strcasecmp(command, "auth") == 0) {
+    auto rchildrens = out->childrens();
+    if (rchildrens.size() == 1) {
+      FastoObject* obj = rchildrens[0];
+      isAuth_ = obj && obj->toString() == "OK";
+    } else {
+      isAuth_ = false;
     }
   }
 
