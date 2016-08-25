@@ -62,7 +62,7 @@ void CommandsWidget::addCommand(core::connectionTypes type, const Command& comma
   QString mess = common::ConvertFromString<QString>(command.message());
   std::string stype = common::ConvertToString(type);
   QString qstype = common::ConvertFromString<QString>(stype);
-  logTextEdit_->append(time.toString("[%1] h:mm:ss AP: %2").arg(qstype.toUpper(), mess));
+  logTextEdit_->append(time.toString("[%1] hh:mm:ss.zzz: %2").arg(qstype.toUpper(), mess));
   QScrollBar* sb = logTextEdit_->verticalScrollBar();
   sb->setValue(sb->maximum());
 }
