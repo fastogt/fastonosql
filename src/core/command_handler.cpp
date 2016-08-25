@@ -40,8 +40,11 @@ common::Error CommandHandler::execute(int argc, char** argv, FastoObject* out) {
     if (off) {
       int argc_to_call = argc - off;
       char** argv_to_call = argv + off;
-      if (argc_to_call > cmd.maxArgumentsCount() || argc_to_call < cmd.minArgumentsCount()) {
-        std::string buff = common::MemSPrintf("Invalid input argument for command: %s", argv[0]);
+      uint16_t max = cmd.maxArgumentsCount();
+      uint16_t min = cmd.minArgumentsCount();
+      if (argc_to_call > max || argc_to_call < min) {
+        std::string buff = common::MemSPrintf("Invalid input argument for command: '%s', passed %d, must be in range %d - %d.",
+                                              cmd.name, argc_to_call, max, min);
         return common::make_error_value(buff, common::ErrorValue::E_ERROR);
       }
 
@@ -49,11 +52,23 @@ common::Error CommandHandler::execute(int argc, char** argv, FastoObject* out) {
     }
   }
 
-  return notSupported(argv[0]);
+  return unknownSequence(argc, argv);
 }
 
-common::Error CommandHandler::notSupported(const char* cmd) {
-  std::string buff = common::MemSPrintf("Not supported command: %s", cmd);
+common::Error CommandHandler::notSupported(const std::string& cmd) {
+  std::string buff = common::MemSPrintf("Not supported command: %s.", cmd);
+  return common::make_error_value(buff, common::ErrorValue::E_ERROR);
+}
+
+common::Error CommandHandler::unknownSequence(int argc, char** argv) {
+  std::string result;
+  for (int i = 0; i < argc; ++i) {
+    result += argv[i];
+    if (i != argc - 1) {
+      result += " ";
+    }
+  }
+  std::string buff = common::MemSPrintf("Unknown sequence: '%s'.", result);
   return common::make_error_value(buff, common::ErrorValue::E_ERROR);
 }
 

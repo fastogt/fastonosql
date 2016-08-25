@@ -28,18 +28,14 @@ namespace fastonosql {
 namespace shell {
 
 class RedisApi
-  : public BaseQsciApi {
+  : public BaseQsciApiCommandHolder {
   Q_OBJECT
  public:
   explicit RedisApi(QsciLexer* lexer);
-
-  virtual void updateAutoCompletionList(const QStringList& context, QStringList& list);
-  virtual QStringList callTips(const QStringList& context, int commas,
-                               QsciScintilla::CallTipsStyle style, QList<int>& shifts);
 };
 
 class RedisLexer
-  : public BaseQsciLexer {
+  : public BaseQsciLexerCommandHolder {
   Q_OBJECT
  public:
   explicit RedisLexer(QObject* parent = 0);
@@ -47,14 +43,6 @@ class RedisLexer
   virtual const char* language() const;
   virtual const char* version() const;
   virtual const char* basedOn() const;
-
-  virtual std::vector<uint32_t> supportedVersions() const;
-  virtual size_t commandsCount() const;
-
-  virtual void styleText(int start, int end);
-
- private:
-  void paintCommands(const QString& source, int start);
 };
 
 }  // namespace shell

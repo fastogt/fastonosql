@@ -65,7 +65,7 @@ Config parseOptions(int argc, char** argv) {
       cfg.repeat = strtoll(argv[++i], NULL, 10);
     } else if (!strcmp(argv[i], "-i") && !lastarg) {
       double seconds = atof(argv[++i]);
-      cfg.interval = seconds*1000000;
+      cfg.interval = seconds * 1000000;
     } else if (!strcmp(argv[i], "-n") && !lastarg) {
       cfg.dbnum = common::ConvertFromString<int>(argv[++i]);
     } else if (!strcmp(argv[i], "-a") && !lastarg) {

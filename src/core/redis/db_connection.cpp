@@ -1512,24 +1512,24 @@ common::Error DBConnection::select(int num, IDataBaseInfo** info) {
   }
 
   redisReply* reply = reinterpret_cast<redisReply*>(redisCommand(connection_.handle_, "SELECT %d", num));
-  if (reply) {
-    connection_.config_.dbnum = num;
-    size_t sz = 0;
-    common::Error err = dbkcount(&sz);
-    MCHECK(!err);
-    DataBaseInfo* linfo = new DataBaseInfo(common::ConvertToString(num), true, sz);
-    if (observer_) {
-      observer_->currentDataBaseChanged(linfo);
-    }
-
-    if (info) {
-      *info = linfo;
-    }
-    freeReplyObject(reply);
-    return common::Error();
+  if (!reply) {
+    return cliPrintContextError(connection_.handle_);
   }
 
-  return cliPrintContextError(connection_.handle_);
+  connection_.config_.dbnum = num;
+  size_t sz = 0;
+  common::Error err = dbkcount(&sz);
+  MCHECK(!err);
+  DataBaseInfo* linfo = new DataBaseInfo(common::ConvertToString(num), true, sz);
+  if (observer_) {
+    observer_->currentDataBaseChanged(linfo);
+  }
+
+  if (info) {
+    *info = linfo;
+  }
+  freeReplyObject(reply);
+  return common::Error();
 }
 
 common::Error DBConnection::cliFormatReplyRaw(FastoObjectArray* ar, redisReply* r) {
@@ -1825,9 +1825,6 @@ common::Error DBConnection::common_exec(int argc, char** argv, FastoObject* out)
     return err;
   }
 
-  if (connection_.config_.interval) {
-    common::utils::usleep(connection_.config_.interval);
-  }
   return common::Error();
 }
 
@@ -1845,9 +1842,6 @@ common::Error DBConnection::common_exec_off2(int argc, char** argv, FastoObject*
     return err;
   }
 
-  if (connection_.config_.interval) {
-    common::utils::usleep(connection_.config_.interval);
-  }
   return common::Error();
 }
 

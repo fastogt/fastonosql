@@ -35,7 +35,8 @@ class CommandHandler {
   explicit CommandHandler(const std::vector<commands_t>& commands);
   common::Error execute(int argc, char** argv, FastoObject* out) WARN_UNUSED_RESULT;
 
-  static common::Error notSupported(const char *cmd);
+  static common::Error notSupported(const std::string& cmd);
+  static common::Error unknownSequence(int argc, char** argv);
  private:
   const std::vector<commands_t> commands_;
 };
