@@ -30,7 +30,7 @@
 #include "core/command_handler.h"       // for CommandHandler
 #include "core/command_holder.h"        // for CommandHolder, etc
 #include "core/command_info.h"          // for UNDEFINED_EXAMPLE_STR, etc
-#include "core/connection.h"            // for Connection, etc
+#include "core/db_connection.h"            // for Connection, etc
 
 #include "core/rocksdb/connection_settings.h"
 #include "core/rocksdb/config.h"
@@ -51,20 +51,11 @@ common::Error createConnection(ConnectionSettings* settings, NativeConnection** 
 common::Error testConnection(ConnectionSettings* settings);
 
 class DBConnection
-  : public CommandHandler {
+  : public core::DBConnection<NativeConnection, Config>, public CommandHandler {
  public:
-  typedef ConnectionAllocatorTraits<NativeConnection, Config> ConnectionAllocatorTrait;
-  typedef Connection<ConnectionAllocatorTrait> connection_t;
-  typedef connection_t::config_t config_t;
+  typedef core::DBConnection<NativeConnection, Config> base_class;
   DBConnection();
 
-  common::Error connect(const config_t& config) WARN_UNUSED_RESULT;
-  common::Error disconnect() WARN_UNUSED_RESULT;
-  bool isConnected() const;
-
-  std::string delimiter() const;
-  std::string nsSeparator() const;
-  config_t config() const;
   static const char *versionApi();
 
   std::string currentDbName() const;
@@ -82,9 +73,6 @@ class DBConnection
   common::Error dbkcount(size_t* size) WARN_UNUSED_RESULT;
   common::Error help(int argc, char** argv) WARN_UNUSED_RESULT;
   common::Error flushdb() WARN_UNUSED_RESULT;
-
- private:
-  connection_t connection_;
 };
 
 common::Error info(CommandHandler* handler, int argc, char** argv, FastoObject* out);

@@ -136,7 +136,11 @@ std::string Driver::delimiter() const {
 }
 
 bool Driver::isInterrupted() const {
-  return IDriverRemote::isInterrupted();
+  return impl_->isInterrupted();
+}
+
+void Driver::setInterrupted(bool interrupted) {
+  return impl_->setInterrupted(interrupted);
 }
 
 bool Driver::isConnected() const {

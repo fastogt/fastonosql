@@ -29,7 +29,7 @@
 #include "core/command_holder.h"        // for CommandHolder, etc
 #include "core/ssh_info.h"              // for SSHInfo
 #include "core/types.h"                 // for IDataBaseInfo (ptr only), etc
-#include "core/connection.h"
+#include "core/db_connection.h"
 
 #include "core/redis/connection_settings.h"
 #include "core/redis/config.h"
@@ -548,28 +548,20 @@ common::Error discoverySentinelConnection(ConnectionSettings* settings, std::vec
 
 class IDBConnectionOwner {
 public:
-  virtual bool isInterrupted() const = 0;
   virtual void currentDataBaseChanged(IDataBaseInfo* info) = 0;
 };
 
 class DBConnection
-  : public CommandHandler {
+  : public core::DBConnection<NativeConnection, RConfig>, public CommandHandler {
  public:
-  typedef ConnectionAllocatorTraits<NativeConnection, RConfig> ConnectionAllocatorTrait;
-  typedef Connection<ConnectionAllocatorTrait> connection_t;
-  typedef connection_t::config_t config_t;
+  typedef core::DBConnection<NativeConnection, RConfig> base_class;
   explicit DBConnection(IDBConnectionOwner* observer);
 
-  static const char* versionApi();
-  bool isConnected() const;
   bool isAuthenticated() const;
 
-  common::Error disconnect() WARN_UNUSED_RESULT;
-  common::Error connect(const config_t& config) WARN_UNUSED_RESULT;
+  common::Error connect(const config_t& config);
 
-  std::string delimiter() const;
-  std::string nsSeparator() const;
-  config_t config() const;
+  static const char* versionApi();
 
   common::Error latencyMode(FastoObject* out) WARN_UNUSED_RESULT;
   common::Error slaveMode(FastoObject* out) WARN_UNUSED_RESULT;
@@ -598,10 +590,6 @@ class DBConnection
   common::Error cliFormatReplyRaw(FastoObjectArray* ar, redisReply* r) WARN_UNUSED_RESULT;
   common::Error cliFormatReplyRaw(FastoObject* out, redisReply* r) WARN_UNUSED_RESULT;
   common::Error cliReadReply(FastoObject* out) WARN_UNUSED_RESULT;
-
-  bool isInterrupted() const;
-
-  connection_t connection_;
 
   bool isAuth_;
   IDBConnectionOwner* const observer_;

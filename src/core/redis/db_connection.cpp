@@ -758,15 +758,11 @@ common::Error discoverySentinelConnection(ConnectionSettings* settings,
 }
 
 DBConnection::DBConnection(IDBConnectionOwner* observer)
-  : CommandHandler(redisCommands), connection_(), isAuth_(false), observer_(observer) {
+  : base_class(), CommandHandler(redisCommands), isAuth_(false), observer_(observer) {
 }
 
 const char* DBConnection::versionApi() {
   return HIREDIS_VERSION;
-}
-
-bool DBConnection::isConnected() const {
-  return connection_.isConnected();
 }
 
 bool DBConnection::isAuthenticated() const {
@@ -778,7 +774,7 @@ bool DBConnection::isAuthenticated() const {
 }
 
 common::Error DBConnection::connect(const config_t& config) {
-  common::Error err = connection_.connect(config);
+  common::Error err = base_class::connect(config);
   if (err && err->isError()) {
     return err;
   }
@@ -795,30 +791,6 @@ common::Error DBConnection::connect(const config_t& config) {
   }
 
   return common::Error();
-}
-
-std::string DBConnection::delimiter() const {
-  return connection_.config_.delimiter;
-}
-
-std::string DBConnection::nsSeparator() const {
-  return connection_.config_.ns_separator;
-}
-
-DBConnection::config_t DBConnection::config() const {
-  return connection_.config_;
-}
-
-common::Error DBConnection::disconnect() {
-  return connection_.disconnect();
-}
-
-bool DBConnection::isInterrupted() const {
- if (!observer_) {
-   return false;
- }
-
- return observer_->isInterrupted();
 }
 
 /*------------------------------------------------------------------------------
@@ -870,8 +842,12 @@ common::Error DBConnection::latencyMode(FastoObject* out) {
       min = max = tot = latency;
       avg = static_cast<double>(latency);
     } else {
-      if (latency < min) min = latency;
-      if (latency > max) max = latency;
+      if (latency < min) {
+        min = latency;
+      }
+      if (latency > max) {
+        max = latency;
+      }
       tot += latency;
       avg = static_cast<double>(tot / count);
     }
@@ -963,9 +939,9 @@ common::Error DBConnection::slaveMode(FastoObject* out) {
   }
 
   unsigned long long payload = 0;
-  common::Error er = sendSync(&payload);
-  if (er && er->isError()) {
-    return er;
+  common::Error err = sendSync(&payload);
+  if (err && err->isError()) {
+    return err;
   }
 
   FastoObjectCommand* cmd = CreateCommand<Command>(out, SYNC_REQUEST,
@@ -990,18 +966,14 @@ common::Error DBConnection::slaveMode(FastoObject* out) {
   }
 
   /* Now we can use hiredis to read the incoming protocol. */
-  while (1) {
-    er = cliReadReply(cmd);
-    if (er && er->isError()) {
-      break;
-    }
-
-    if (isInterrupted()) {
-      return common::make_error_value("Interrupted.", common::ErrorValue::E_INTERRUPTED);
+  while (!isInterrupted()) {
+    err = cliReadReply(cmd);
+    if (err && err->isError()) {
+      return err;
     }
   }
 
-  return er;
+  return common::make_error_value("Interrupted.", common::ErrorValue::E_INTERRUPTED);
 }
 
 /*------------------------------------------------------------------------------

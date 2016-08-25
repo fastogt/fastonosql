@@ -147,7 +147,7 @@ common::Error IDriver::execute(FastoObjectCommand* cmd) {
 }
 
 IDriver::IDriver(IConnectionSettingsBaseSPtr settings)
-  : settings_(settings), interrupt_(false), thread_(nullptr),
+  : settings_(settings), thread_(nullptr),
     timer_info_id_(0), log_file_(nullptr) {
   thread_ = new QThread(this);
   moveToThread(thread_);
@@ -227,11 +227,7 @@ common::Error IDriver::commandByType(CommandKeySPtr command, std::string* cmdstr
 }
 
 void IDriver::interrupt() {
-  interrupt_ = true;
-}
-
-bool IDriver::isInterrupted() const {
-  return interrupt_;
+  setInterrupted(true);
 }
 
 void IDriver::init() {
@@ -319,7 +315,7 @@ void IDriver::customEvent(QEvent* event) {
     handleDiscoveryInfoRequestEvent(ev);  //
   }
 
-  interrupt_ = false;
+  setInterrupted(false);
   return QObject::customEvent(event);
 }
 

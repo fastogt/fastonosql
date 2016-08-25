@@ -65,7 +65,9 @@ class IDriver
                               std::string* cmdstring) const WARN_UNUSED_RESULT;
 
   void interrupt();
-  bool isInterrupted() const;
+
+  virtual bool isInterrupted() const = 0;
+  virtual void setInterrupted(bool interrupted) = 0;
 
   virtual bool isConnected() const = 0;
   virtual bool isAuthenticated() const = 0;
@@ -168,7 +170,6 @@ class IDriver
                                              std::string* cmdstring) const WARN_UNUSED_RESULT = 0;
 
  private:
-  bool interrupt_;
   IServerInfoSPtr server_info_;
   IDataBaseInfoSPtr current_database_info_;
 

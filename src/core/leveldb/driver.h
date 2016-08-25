@@ -41,6 +41,9 @@ class Driver
   explicit Driver(IConnectionSettingsBaseSPtr settings);
   virtual ~Driver();
 
+  virtual bool isInterrupted() const override;
+  virtual void setInterrupted(bool interrupted) override;
+
   virtual bool isConnected() const;
   virtual bool isAuthenticated() const;
   virtual std::string path() const;

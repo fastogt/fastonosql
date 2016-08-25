@@ -21,7 +21,7 @@
 #include <string>
 
 #include "core/command_handler.h"
-#include "core/connection.h"
+#include "core/db_connection.h"
 
 #include "core/leveldb/connection_settings.h"
 #include "core/leveldb/config.h"
@@ -42,20 +42,11 @@ common::Error createConnection(ConnectionSettings* settings, NativeConnection** 
 common::Error testConnection(ConnectionSettings* settings);
 
 class DBConnection
-  : public CommandHandler {
+  : public core::DBConnection<NativeConnection, Config>, public CommandHandler {
  public:
-  typedef ConnectionAllocatorTraits<NativeConnection, Config> ConnectionAllocatorTrait;
-  typedef Connection<ConnectionAllocatorTrait> connection_t;
-  typedef connection_t::config_t config_t;
+  typedef core::DBConnection<NativeConnection, Config> base_class;
   DBConnection();
 
-  common::Error connect(const config_t& config) WARN_UNUSED_RESULT;
-  common::Error disconnect() WARN_UNUSED_RESULT;
-  bool isConnected() const;
-
-  std::string delimiter() const;
-  std::string nsSeparator() const;
-  config_t config() const;
   static const char* versionApi();
 
   common::Error info(const char* args, ServerInfo::Stats* statsout) WARN_UNUSED_RESULT;
@@ -69,9 +60,6 @@ class DBConnection
   common::Error dbkcount(size_t* size) WARN_UNUSED_RESULT;
   common::Error help(int argc, char** argv) WARN_UNUSED_RESULT;
   common::Error flushdb() WARN_UNUSED_RESULT;
-
- private:
-  connection_t connection_;
 };
 
 common::Error info(CommandHandler* handler, int argc, char** argv, FastoObject* out);

@@ -165,6 +165,7 @@ SET(HEADERS_CORE
   core/command_key.h
   core/db_key.h
   core/connection.h
+  core/db_connection.h
   core/server_property_info.h
   core/ssh_info.h
 )
@@ -192,6 +193,7 @@ SET(SOURCES_CORE
   core/command_key.cpp
   core/db_key.cpp
   core/connection.cpp
+  core/db_connection.cpp
   core/server_property_info.cpp
   core/ssh_info.cpp
 )

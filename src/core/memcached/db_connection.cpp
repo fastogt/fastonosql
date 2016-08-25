@@ -203,31 +203,7 @@ common::Error testConnection(ConnectionSettings* settings) {
 }
 
 DBConnection::DBConnection()
-  : CommandHandler(memcachedCommands), connection_() {
-}
-
-common::Error DBConnection::connect(const config_t& config) {
-  return connection_.connect(config);
-}
-
-common::Error DBConnection::disconnect() {
-  return connection_.disconnect();
-}
-
-bool DBConnection::isConnected() const {
-  return connection_.isConnected();
-}
-
-std::string DBConnection::delimiter() const {
-  return connection_.config_.delimiter;
-}
-
-std::string DBConnection::nsSeparator() const {
-  return connection_.config_.ns_separator;
-}
-
-DBConnection::config_t DBConnection::config() const {
-  return connection_.config_;
+  : base_class(), CommandHandler(memcachedCommands) {
 }
 
 const char* DBConnection::versionApi() {

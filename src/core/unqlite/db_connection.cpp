@@ -180,7 +180,7 @@ common::Error testConnection(ConnectionSettings* settings) {
 }
 
 DBConnection::DBConnection()
-  : CommandHandler(unqliteCommands), connection_() {
+  : base_class(), CommandHandler(unqliteCommands) {
 }
 
 common::Error DBConnection::info(const char* args, ServerInfo::Stats* statsout) {
@@ -234,30 +234,6 @@ common::Error DBConnection::dbkcount(size_t* size) {
 
   *size = sz;
   return common::Error();
-}
-
-common::Error DBConnection::connect(const config_t& config) {
-  return connection_.connect(config);
-}
-
-common::Error DBConnection::disconnect() {
-  return connection_.disconnect();
-}
-
-bool DBConnection::isConnected() const {
-  return connection_.isConnected();
-}
-
-std::string DBConnection::delimiter() const {
-  return connection_.config_.delimiter;
-}
-
-std::string DBConnection::nsSeparator() const {
-  return connection_.config_.ns_separator;
-}
-
-DBConnection::config_t DBConnection::config() const {
-  return connection_.config_;
 }
 
 const char* DBConnection::versionApi() {

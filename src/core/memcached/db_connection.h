@@ -29,7 +29,7 @@
 #include "common/macros.h"              // for WARN_UNUSED_RESULT
 
 #include "core/command_handler.h"
-#include "core/connection.h"
+#include "core/db_connection.h"
 
 #include "core/memcached/connection_settings.h"
 #include "core/memcached/config.h"
@@ -48,20 +48,11 @@ common::Error createConnection(ConnectionSettings* settings, NativeConnection** 
 common::Error testConnection(ConnectionSettings* settings);
 
 class DBConnection
-  : public CommandHandler {
+  : public core::DBConnection<NativeConnection, Config>, public CommandHandler {
  public:
-  typedef ConnectionAllocatorTraits<NativeConnection, Config> ConnectionAllocatorTrait;
-  typedef Connection<ConnectionAllocatorTrait> connection_t;
-  typedef connection_t::config_t config_t;
+  typedef core::DBConnection<NativeConnection, Config> base_class;
   DBConnection();
 
-  common::Error connect(const config_t& config) WARN_UNUSED_RESULT;
-  common::Error disconnect() WARN_UNUSED_RESULT;
-  bool isConnected() const;
-
-  std::string delimiter() const;
-  std::string nsSeparator() const;
-  config_t config() const;
   static const char* versionApi();
 
   common::Error keys(const std::string& key_start, const std::string& key_end, uint64_t limit, std::vector<std::string>* ret) WARN_UNUSED_RESULT;
@@ -86,9 +77,6 @@ class DBConnection
   common::Error version_server() const WARN_UNUSED_RESULT;
   common::Error help(int argc, char** argv) WARN_UNUSED_RESULT;
   common::Error expire(const std::string& key, time_t expiration) WARN_UNUSED_RESULT;
-
- private:
-  connection_t connection_;
 };
 
 common::Error keys(CommandHandler* handler, int argc, char** argv, FastoObject* out);

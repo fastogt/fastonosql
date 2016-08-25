@@ -64,6 +64,14 @@ Driver::~Driver() {
   delete impl_;
 }
 
+bool Driver::isInterrupted() const {
+  return impl_->isInterrupted();
+}
+
+void Driver::setInterrupted(bool interrupted) {
+  impl_->setInterrupted(interrupted);
+}
+
 bool Driver::isConnected() const {
   return impl_->isConnected();
 }
