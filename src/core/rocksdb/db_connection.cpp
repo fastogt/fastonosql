@@ -391,7 +391,7 @@ common::Error info(CommandHandler* handler, int argc, char** argv, FastoObject* 
   common::Error er = rocks->info(argc == 1 ? argv[0] : nullptr, &statsout);
   if (!er) {
     common::StringValue* val = common::Value::createStringValue(ServerInfo(statsout).toString());
-    FastoObject* child = new FastoObject(out, val, rocks->delimiter(), rocks->nsSeparator());
+    FastoObject* child = new FastoObject(out, val, rocks->delimiter());
     out->addChildren(child);
   }
 
@@ -405,7 +405,7 @@ common::Error set(CommandHandler* handler, int argc, char** argv, FastoObject* o
   common::Error er = rocks->set(argv[0], argv[1]);
   if (!er) {
     common::StringValue* val = common::Value::createStringValue("OK");
-    FastoObject* child = new FastoObject(out, val, rocks->delimiter(), rocks->nsSeparator());
+    FastoObject* child = new FastoObject(out, val, rocks->delimiter());
     out->addChildren(child);
   }
 
@@ -420,7 +420,7 @@ common::Error get(CommandHandler* handler, int argc, char** argv, FastoObject* o
   common::Error er = rocks->get(argv[0], &ret);
   if (!er) {
     common::StringValue* val = common::Value::createStringValue(ret);
-    FastoObject* child = new FastoObject(out, val, rocks->delimiter(), rocks->nsSeparator());
+    FastoObject* child = new FastoObject(out, val, rocks->delimiter());
     out->addChildren(child);
   }
 
@@ -442,7 +442,7 @@ common::Error mget(CommandHandler* handler, int argc, char** argv, FastoObject* 
       common::StringValue* val = common::Value::createStringValue(keysout[i]);
       ar->append(val);
     }
-    FastoObjectArray* child = new FastoObjectArray(out, ar, rocks->delimiter(), rocks->nsSeparator());
+    FastoObjectArray* child = new FastoObjectArray(out, ar, rocks->delimiter());
     out->addChildren(child);
   }
 
@@ -456,7 +456,7 @@ common::Error merge(CommandHandler* handler, int argc, char** argv, FastoObject*
   common::Error er = rocks->merge(argv[0], argv[1]);
   if (!er) {
     common::StringValue* val = common::Value::createStringValue("OK");
-    FastoObject* child = new FastoObject(out, val, rocks->delimiter(), rocks->nsSeparator());
+    FastoObject* child = new FastoObject(out, val, rocks->delimiter());
     out->addChildren(child);
   }
 
@@ -470,7 +470,7 @@ common::Error del(CommandHandler* handler, int argc, char** argv, FastoObject* o
   common::Error er = rocks->del(argv[0]);
   if (!er) {
     common::StringValue* val = common::Value::createStringValue("OK");
-    FastoObject* child = new FastoObject(out, val, rocks->delimiter(), rocks->nsSeparator());
+    FastoObject* child = new FastoObject(out, val, rocks->delimiter());
     out->addChildren(child);
   }
 
@@ -489,7 +489,7 @@ common::Error keys(CommandHandler* handler, int argc, char** argv, FastoObject* 
       common::StringValue* val = common::Value::createStringValue(keysout[i]);
       ar->append(val);
     }
-    FastoObjectArray* child = new FastoObjectArray(out, ar, rocks->delimiter(), rocks->nsSeparator());
+    FastoObjectArray* child = new FastoObjectArray(out, ar, rocks->delimiter());
     out->addChildren(child);
   }
 
@@ -505,7 +505,7 @@ common::Error dbkcount(CommandHandler* handler, int argc, char** argv, FastoObje
   common::Error er = rocks->dbkcount(&dbkcount);
   if (!er) {
     common::FundamentalValue* val = common::Value::createUIntegerValue(dbkcount);
-    FastoObject* child = new FastoObject(out, val, rocks->delimiter(), rocks->nsSeparator());
+    FastoObject* child = new FastoObject(out, val, rocks->delimiter());
     out->addChildren(child);
   }
 

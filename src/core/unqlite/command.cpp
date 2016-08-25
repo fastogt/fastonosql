@@ -24,9 +24,8 @@ namespace fastonosql {
 namespace core {
 namespace unqlite {
 
-Command::Command(FastoObject* parent, common::CommandValue* cmd,
-                               const std::string& delimiter, const std::string& ns_separator)
-  : FastoObjectCommand(parent, cmd, delimiter, ns_separator) {
+Command::Command(FastoObject* parent, common::CommandValue* cmd, const std::string& delimiter)
+  : FastoObjectCommand(parent, cmd, delimiter) {
 }
 
 bool Command::isReadOnly() const {

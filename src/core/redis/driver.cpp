@@ -107,7 +107,7 @@ namespace {
 
 Command* createCommandFast(const std::string& input, common::Value::CommandLoggingType ct) {
   common::CommandValue* cmd = common::Value::createCommand(input, ct);
-  Command* fs = new Command(nullptr, cmd, std::string(), std::string());
+  Command* fs = new Command(nullptr, cmd, std::string());
   return fs;
 }
 

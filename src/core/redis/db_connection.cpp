@@ -348,8 +348,8 @@ common::Error cliPrintContextError(redisContext* context) {
   return common::make_error_value(buff, common::ErrorValue::E_ERROR);
 }
 
-common::Error cliOutputCommandHelp(FastoObject* out, struct commandHelp* help, int group,
-                                   const std::string& delimiter, const std::string& ns_separator) {
+common::Error cliOutputCommandHelp(FastoObject* out, struct commandHelp* help,
+                                   int group, const std::string& delimiter) {
   if (!out) {
     DNOTREACHED();
     return common::make_error_value("Invalid input argument(s)", common::ErrorValue::E_ERROR);
@@ -358,19 +358,19 @@ common::Error cliOutputCommandHelp(FastoObject* out, struct commandHelp* help, i
   std::string buff = common::MemSPrintf("name: %s %s\n  summary: %s\n  since: %s",
                                         help->name, help->params, help->summary, help->since);
   common::StringValue* val =common::Value::createStringValue(buff);
-  FastoObject* child = new FastoObject(out, val, delimiter, ns_separator);
+  FastoObject* child = new FastoObject(out, val, delimiter);
   out->addChildren(child);
   if (group) {
     std::string buff2 = common::MemSPrintf("group: %s", commandGroups[help->group]);
     val = common::Value::createStringValue(buff2);
-    FastoObject* gchild = new FastoObject(out, val, delimiter, ns_separator);
+    FastoObject* gchild = new FastoObject(out, val, delimiter);
     out->addChildren(gchild);
   }
 
   return common::Error();
 }
 
-common::Error cliOutputGenericHelp(FastoObject* out, const std::string& delimiter, const std::string& separator) {
+common::Error cliOutputGenericHelp(FastoObject* out, const std::string& delimiter) {
   if (!out) {
     DNOTREACHED();
     return common::make_error_value("Invalid input argument(s)", common::ErrorValue::E_ERROR);
@@ -381,7 +381,7 @@ common::Error cliOutputGenericHelp(FastoObject* out, const std::string& delimite
                                                               "      \"help <command>\" for help on <command>\r\n"
                                                               "      \"help <tab>\" to get a list of possible help topics\r\n"
                                                               "      \"quit\" to exit");
-  FastoObject* child = new FastoObject(out, val, delimiter, separator);
+  FastoObject* child = new FastoObject(out, val, delimiter);
   out->addChildren(child);
 
   return common::Error();
@@ -399,7 +399,7 @@ common::Error cliOutputHelp(int argc, char** argv, FastoObject* out, const std::
   struct commandHelp* help;
 
   if (argc == 0) {
-    return cliOutputGenericHelp(out, delimiter, separator);
+    return cliOutputGenericHelp(out, delimiter);
   } else if (argc > 0 && argv[0][0] == '@') {
     len = sizeof(commandGroups)/sizeof(char*);
     for (i = 0; i < len; i++) {
@@ -423,7 +423,7 @@ common::Error cliOutputHelp(int argc, char** argv, FastoObject* out, const std::
             if (strcasecmp(argv[j],entry->argv[j]) != 0) break;
           }
           if (j == argc) {
-            common::Error er = cliOutputCommandHelp(out, help, 1, delimiter, separator);
+            common::Error er = cliOutputCommandHelp(out, help, 1, delimiter);
             if (er && er->isError()) {
               return er;
             }
@@ -431,7 +431,7 @@ common::Error cliOutputHelp(int argc, char** argv, FastoObject* out, const std::
       }
     } else {
       if (group == help->group) {
-        common::Error er = cliOutputCommandHelp(out, help, 0, delimiter, separator);
+        common::Error er = cliOutputCommandHelp(out, help, 0, delimiter);
         if (er && er->isError()) {
             return er;
         }
@@ -483,7 +483,7 @@ common::Error auth(CommandHandler* handler, int argc, char** argv, FastoObject* 
   }
 
   common::StringValue* val = common::Value::createStringValue("OK");
-  FastoObject* child = new FastoObject(out, val, red->delimiter(), red->nsSeparator());
+  FastoObject* child = new FastoObject(out, val, red->delimiter());
   out->addChildren(child);
   return common::Error();
 }
@@ -497,7 +497,7 @@ common::Error select(CommandHandler* handler, int argc, char** argv, FastoObject
   }
 
   common::StringValue* val = common::Value::createStringValue("OK");
-  FastoObject* child = new FastoObject(out, val, red->delimiter(), red->nsSeparator());
+  FastoObject* child = new FastoObject(out, val, red->delimiter());
   out->addChildren(child);
   return common::Error();
 }
@@ -519,7 +519,7 @@ common::Error connect(CommandHandler* handler, int argc, char** argv, FastoObjec
   }
 
   common::StringValue* val = common::Value::createStringValue("OK");
-  FastoObject* child = new FastoObject(out, val, red->delimiter(), red->nsSeparator());
+  FastoObject* child = new FastoObject(out, val, red->delimiter());
   out->addChildren(child);
   return common::Error();
 }
@@ -881,13 +881,13 @@ common::Error DBConnection::latencyMode(FastoObject* out) {
     common::Value* val = common::Value::createStringValue(buff);
 
     if (!child) {
-      child = new FastoObject(cmd, val, delimiter(), nsSeparator());
+      child = new FastoObject(cmd, val, delimiter());
       cmd->addChildren(child);
       continue;
     }
 
     if (connection_.config_.latency_history && (curTime - history_start > history_interval)) {
-      child = new FastoObject(cmd, val, delimiter(), nsSeparator());
+      child = new FastoObject(cmd, val, delimiter());
       cmd->addChildren(child);
       history_start = curTime;
       min = max = tot = count = 0;
@@ -1039,7 +1039,7 @@ common::Error DBConnection::getRDB(FastoObject* out) {
   /* Write to file. */
   if (connection_.config_.rdb_filename == "-") {
     val = new common::ArrayValue;
-    FastoObject* child = new FastoObject(cmd, val, delimiter(), nsSeparator());
+    FastoObject* child = new FastoObject(cmd, val, delimiter());
     cmd->addChildren(child);
   } else {
     fd = open(connection_.config_.rdb_filename.c_str(), O_CREAT | O_WRONLY, 0644);
@@ -1378,7 +1378,7 @@ common::Error DBConnection::findBigKeys(FastoObject* out) {
       buff = common::MemSPrintf("Biggest %6s found '%s' has %llu %s", typeName[i], maxkeys[i],
                                 biggest[i], typeunit[i]);
       common::StringValue *val = common::Value::createStringValue(buff);
-      FastoObject* obj = new FastoObject(cmd, val, delimiter(), nsSeparator());
+      FastoObject* obj = new FastoObject(cmd, val, delimiter());
       cmd->addChildren(obj);
     }
   }
@@ -1390,7 +1390,7 @@ common::Error DBConnection::findBigKeys(FastoObject* out) {
                               sampled ? 100 * static_cast<double>(counts[i] / sampled) : 0,
                               counts[i] ? static_cast<double>(totalsize[i] / counts[i]) : 0);
     common::StringValue *val = common::Value::createStringValue(buff);
-    FastoObject* obj = new FastoObject(cmd, val, delimiter(), nsSeparator());
+    FastoObject* obj = new FastoObject(cmd, val, delimiter());
     cmd->addChildren(obj);
   }
 
@@ -1510,7 +1510,7 @@ common::Error DBConnection::statMode(FastoObject* out) {
     }
 
     common::StringValue *val = common::Value::createStringValue(result);
-    FastoObject* obj = new FastoObject(cmd, val, delimiter(), nsSeparator());
+    FastoObject* obj = new FastoObject(cmd, val, delimiter());
     cmd->addChildren(obj);
 
     freeReplyObject(reply);
@@ -1563,7 +1563,7 @@ common::Error DBConnection::scanMode(FastoObject* out) {
       cur = strtoull(reply->element[0]->str,NULL,10);
       for (size_t j = 0; j < reply->element[1]->elements; j++) {
         common::StringValue* val = common::Value::createStringValue(reply->element[1]->element[j]->str);
-        FastoObject* obj = new FastoObject(cmd, val, delimiter(), nsSeparator());
+        FastoObject* obj = new FastoObject(cmd, val, delimiter());
         cmd->addChildren(obj);
       }
     }
@@ -1632,7 +1632,7 @@ common::Error DBConnection::cliFormatReplyRaw(FastoObjectArray* ar, redisReply* 
   }
   case REDIS_REPLY_ARRAY: {
     common::ArrayValue* arv = common::Value::createArrayValue();
-    FastoObjectArray* child = new FastoObjectArray(ar, arv, delimiter(), nsSeparator());
+    FastoObjectArray* child = new FastoObjectArray(ar, arv, delimiter());
     ar->addChildren(child);
 
     for (size_t i = 0; i < r->elements; ++i) {
@@ -1664,7 +1664,7 @@ common::Error DBConnection::cliFormatReplyRaw(FastoObject* out, redisReply* r) {
   switch (r->type) {
   case REDIS_REPLY_NIL: {
     common::Value* val = common::Value::createNullValue();
-    obj = new FastoObject(out, val, delimiter(), nsSeparator());
+    obj = new FastoObject(out, val, delimiter());
     out->addChildren(obj);
     break;
   }
@@ -1679,19 +1679,19 @@ common::Error DBConnection::cliFormatReplyRaw(FastoObject* out, redisReply* r) {
   case REDIS_REPLY_STRING: {
     std::string str(r->str, r->len);
     common::StringValue* val = common::Value::createStringValue(str);
-    obj = new FastoObject(out, val, delimiter(), nsSeparator());
+    obj = new FastoObject(out, val, delimiter());
     out->addChildren(obj);
     break;
   }
   case REDIS_REPLY_INTEGER: {
     common::FundamentalValue* val = common::Value::createIntegerValue(r->integer);
-    obj = new FastoObject(out, val, delimiter(), nsSeparator());
+    obj = new FastoObject(out, val, delimiter());
     out->addChildren(obj);
     break;
   }
   case REDIS_REPLY_ARRAY: {
     common::ArrayValue* arv = common::Value::createArrayValue();
-    FastoObjectArray* child = new FastoObjectArray(out, arv, delimiter(), nsSeparator());
+    FastoObjectArray* child = new FastoObjectArray(out, arv, delimiter());
     out->addChildren(child);
 
     for (size_t i = 0; i < r->elements; ++i) {
@@ -1747,7 +1747,7 @@ common::Error DBConnection::cliReadReply(FastoObject* out) {
     std::string host_str = common::ConvertToString(connection_.config_.host);
     std::string redir = common::MemSPrintf("-> Redirected to slot [%d] located at %s", slot, host_str);
     common::StringValue* val = common::Value::createStringValue(redir);
-    FastoObject* child = new FastoObject(out, val, delimiter(), nsSeparator());
+    FastoObject* child = new FastoObject(out, val, delimiter());
     out->addChildren(child);
     connection_.config_.cluster_reissue_command = 1;
 

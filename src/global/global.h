@@ -41,8 +41,7 @@ class FastoObject
     virtual void updated(FastoObject* item, value_t val) = 0;
   };
 
-  FastoObject(FastoObject* parent, common::Value* val,
-              const std::string& delimiter, const std::string& ns_separator);  // val take ownerships
+  FastoObject(FastoObject* parent, common::Value* val, const std::string& delimiter);  // val take ownerships
   virtual ~FastoObject();
 
   common::Value::Type type() const;
@@ -55,7 +54,6 @@ class FastoObject
   FastoObject* parent() const;
   void clear();
   std::string delimiter() const;
-  std::string nsSeparator() const;
 
   value_t value() const;
   void setValue(value_t val);
@@ -70,7 +68,6 @@ class FastoObject
   FastoObject* const parent_;
   childs_t childrens_;
   const std::string delimiter_;
-  const std::string ns_separator_;
 };
 
 class FastoObjectCommand
@@ -89,8 +86,7 @@ class FastoObjectCommand
   common::Value::CommandLoggingType commandLoggingType() const;
 
  protected:
-  FastoObjectCommand(FastoObject* parent, common::CommandValue* cmd,
-                     const std::string& delimiter, const std::string& ns_separator);
+  FastoObjectCommand(FastoObject* parent, common::CommandValue* cmd, const std::string& delimiter);
 };
 
 std::pair<std::string, std::string> GetKeyValueFromLine(const std::string& input);
@@ -99,8 +95,7 @@ std::string GetFirstWordFromLine(const std::string& input);
 class FastoObjectArray
   : public FastoObject {
  public:
-  FastoObjectArray(FastoObject* parent, common::ArrayValue* ar, const std::string& delimiter,
-                   const std::string& ns_separator);
+  FastoObjectArray(FastoObject* parent, common::ArrayValue* ar, const std::string& delimiter);
 
   // Appends a Value to the end of the list.
   void append(common::Value* in_value);
