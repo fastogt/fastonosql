@@ -387,7 +387,7 @@ common::Error cliOutputGenericHelp(FastoObject* out, const std::string& delimite
   return common::Error();
 }
 
-common::Error cliOutputHelp(int argc, char** argv, FastoObject* out, const std::string& delimiter, const std::string& separator) {
+common::Error cliOutputHelp(int argc, char** argv, FastoObject* out, const std::string& delimiter) {
   if (!out) {
     DNOTREACHED();
     return common::make_error_value("Invalid input argument(s)", common::ErrorValue::E_ERROR);
@@ -1186,7 +1186,6 @@ common::Error DBConnection::getKeyTypes(redisReply* keys, int* types) {
 }
 
 common::Error DBConnection::getKeySizes(redisReply* keys, int* types, unsigned long long* sizes) {
-  redisReply* reply;
   const char* sizecmds[] = {"STRLEN", "LLEN", "SCARD", "HLEN", "ZCARD"};
 
   /* Pipeline size commands */
@@ -1207,6 +1206,7 @@ common::Error DBConnection::getKeySizes(redisReply* keys, int* types, unsigned l
       continue;
     }
 
+    redisReply* reply;
     /* Retreive size */
     if (redisGetReply(connection_.handle_, reinterpret_cast<void**>(&reply))!=REDIS_OK) {
       std::string buff = common::MemSPrintf("Error getting size for key '%s' (%d: %s)",
@@ -1220,7 +1220,7 @@ common::Error DBConnection::getKeySizes(redisReply* keys, int* types, unsigned l
       LOG_MSG(buff, common::logging::L_WARNING, true);
       sizes[i] = 0;
     } else {
-        sizes[i] = reply->integer;
+      sizes[i] = reply->integer;
     }
 
     freeReplyObject(reply);
@@ -1855,7 +1855,7 @@ common::Error DBConnection::auth(const std::string& password) {
 }
 
 common::Error DBConnection::help(int argc, char** argv, FastoObject* out) {
-  return cliOutputHelp(argc, argv, out, delimiter(), nsSeparator());
+  return cliOutputHelp(argc, argv, out, delimiter());
 }
 
 common::Error DBConnection::monitor(int argc, char** argv, FastoObject* out) {

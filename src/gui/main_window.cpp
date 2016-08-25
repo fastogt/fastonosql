@@ -716,11 +716,13 @@ void MainWindow::createServer(core::IConnectionSettingsBaseSPtr settings) {
   exp_->addServer(server);
   core::SettingsManager::instance().addRConnection(rcon);
   updateRecentConnectionActions();
-  if (core::SettingsManager::instance().autoOpenConsole()) {
-    MainWidget* mwidg = qobject_cast<MainWidget*>(centralWidget());
-    if (mwidg) {
-      mwidg->openConsole(server, QString());
-    }
+  if (!core::SettingsManager::instance().autoOpenConsole()) {
+    return;
+  }
+
+  MainWidget* mwidg = qobject_cast<MainWidget*>(centralWidget());
+  if (mwidg) {
+    mwidg->openConsole(server, QString());
   }
 }
 
@@ -738,13 +740,15 @@ void MainWindow::createSentinel(core::ISentinelSettingsBaseSPtr settings) {
   }
 
   exp_->addSentinel(sent);
-  if (core::SettingsManager::instance().autoOpenConsole()) {
-    MainWidget* mwidg = qobject_cast<MainWidget*>(centralWidget());
-    if (mwidg) {
-      for (size_t i = 0; i < sentinels.size(); ++i) {
-        core::IServerSPtr serv = sentinels[i].sentinel;
-        mwidg->openConsole(serv, QString());
-      }
+  if (!core::SettingsManager::instance().autoOpenConsole()) {
+    return;
+  }
+
+  MainWidget* mwidg = qobject_cast<MainWidget*>(centralWidget());
+  if (mwidg) {
+    for (size_t i = 0; i < sentinels.size(); ++i) {
+      core::IServerSPtr serv = sentinels[i].sentinel;
+      mwidg->openConsole(serv, QString());
     }
   }
 }
@@ -763,11 +767,13 @@ void MainWindow::createCluster(core::IClusterSettingsBaseSPtr settings) {
   }
 
   exp_->addCluster(cl);
-  if (core::SettingsManager::instance().autoOpenConsole()) {
-    MainWidget* mwidg = qobject_cast<MainWidget*>(centralWidget());
-    if (mwidg) {
-      mwidg->openConsole(root, QString());
-    }
+  if (!core::SettingsManager::instance().autoOpenConsole()) {
+    return;
+  }
+
+  MainWidget* mwidg = qobject_cast<MainWidget*>(centralWidget());
+  if (mwidg) {
+    mwidg->openConsole(root, QString());
   }
 }
 

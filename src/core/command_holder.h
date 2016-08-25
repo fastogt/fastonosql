@@ -42,7 +42,7 @@ class CommandHolder
                 const std::string& summary, uint32_t since,
                 const std::string& example, uint8_t required_arguments_count,
                 uint8_t optional_arguments_count, function_t func);
-  size_t commandOffset(int argc, char** argv);
+  bool isCommand(int argc, char** argv, size_t* offset);
   common::Error execute(CommandHandler* handler, int argc, char** argv, FastoObject* out) WARN_UNUSED_RESULT;
 
  private:

@@ -29,24 +29,23 @@ CommandHolder::CommandHolder(const std::string& name, const std::string& params,
                              const std::string& summary, uint32_t since,
                              const std::string& example, uint8_t required_arguments_count,
                              uint8_t optional_arguments_count, function_t func)
-  : CommandInfo(name, params, summary, since, example,
-                required_arguments_count, optional_arguments_count), func_(func), white_spaces_count_(std::count_if(name.begin(), name.end(),
-                                                                                                                    [](char c){ return std::isspace(c); })) {
+  : CommandInfo(name, params, summary, since, example, required_arguments_count, optional_arguments_count), func_(func),
+    white_spaces_count_(std::count_if(name.begin(), name.end(), [](char c){ return std::isspace(c); })) {
 }
 
-size_t CommandHolder::commandOffset(int argc, char** argv) {
+bool CommandHolder::isCommand(int argc, char** argv, size_t* offset) {
   if (white_spaces_count_ == 0) {
     char* cmd = argv[0];
     if (!common::FullEqualsASCII(cmd, name, false) ){
-      return 0;
+      return false;
     }
   } else {
     if (argc == 1) {
-      return 0;
+      return false;
     }
 
     if (white_spaces_count_ > argc) {
-      return 0;
+      return false;
     }
 
     std::vector<std::string> merged;
@@ -55,11 +54,14 @@ size_t CommandHolder::commandOffset(int argc, char** argv) {
     }
     std::string ws = common::JoinString(merged, ' ');
     if (!common::FullEqualsASCII(ws, name, false)) {
-      return 0;
+      return false;
     }
   }
 
-  return white_spaces_count_ + 1;
+  if (offset) {
+    *offset = white_spaces_count_ + 1;
+  }
+  return true;
 }
 
 common::Error CommandHolder::execute(CommandHandler *handler, int argc, char** argv, FastoObject* out) {

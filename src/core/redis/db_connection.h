@@ -593,8 +593,7 @@ class DBConnection
   common::Error sendSync(unsigned long long* payload) WARN_UNUSED_RESULT;
   common::Error sendScan(unsigned long long* it, redisReply** out) WARN_UNUSED_RESULT;
   common::Error getKeyTypes(redisReply* keys, int* types) WARN_UNUSED_RESULT;
-  common::Error getKeySizes(redisReply* keys, int* types,
-                          unsigned long long* sizes) WARN_UNUSED_RESULT;
+  common::Error getKeySizes(redisReply* keys, int* types, unsigned long long* sizes) WARN_UNUSED_RESULT;
 
   common::Error cliFormatReplyRaw(FastoObjectArray* ar, redisReply* r) WARN_UNUSED_RESULT;
   common::Error cliFormatReplyRaw(FastoObject* out, redisReply* r) WARN_UNUSED_RESULT;

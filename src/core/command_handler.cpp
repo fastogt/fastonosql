@@ -36,8 +36,8 @@ CommandHandler::CommandHandler(const std::vector<commands_t> &commands)
 common::Error CommandHandler::execute(int argc, char** argv, FastoObject* out) {
   for(size_t i = 0; i < commands_.size(); ++i) {
     commands_t cmd = commands_[i];
-    size_t off = cmd.commandOffset(argc, argv);
-    if (off) {
+    size_t off = 0;
+    if (cmd.isCommand(argc, argv, &off)) {
       int argc_to_call = argc - off;
       char** argv_to_call = argv + off;
       uint16_t max = cmd.maxArgumentsCount();
