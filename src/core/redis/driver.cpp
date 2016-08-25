@@ -131,7 +131,7 @@ std::string Driver::nsSeparator() const {
   return impl_->nsSeparator();
 }
 
-std::string Driver::outputDelemitr() const {
+std::string Driver::delimiter() const {
   return impl_->delimiter();
 }
 

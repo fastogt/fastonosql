@@ -42,7 +42,7 @@ class FastoObject
   };
 
   FastoObject(FastoObject* parent, common::Value* val,
-              const std::string& delemitr, const std::string& ns_separator);  // val take ownerships
+              const std::string& delimiter, const std::string& ns_separator);  // val take ownerships
   virtual ~FastoObject();
 
   common::Value::Type type() const;
@@ -54,7 +54,7 @@ class FastoObject
   void addChildren(FastoObject* child);
   FastoObject* parent() const;
   void clear();
-  std::string delemitr() const;
+  std::string delimiter() const;
   std::string nsSeparator() const;
 
   value_t value() const;
@@ -69,7 +69,7 @@ class FastoObject
 
   FastoObject* const parent_;
   childs_t childrens_;
-  const std::string delemitr_;
+  const std::string delimiter_;
   const std::string ns_separator_;
 };
 
@@ -90,7 +90,7 @@ class FastoObjectCommand
 
  protected:
   FastoObjectCommand(FastoObject* parent, common::CommandValue* cmd,
-                     const std::string& delemitr, const std::string& ns_separator);
+                     const std::string& delimiter, const std::string& ns_separator);
 };
 
 std::pair<std::string, std::string> GetKeyValueFromLine(const std::string& input);
@@ -99,7 +99,7 @@ std::string GetFirstWordFromLine(const std::string& input);
 class FastoObjectArray
   : public FastoObject {
  public:
-  FastoObjectArray(FastoObject* parent, common::ArrayValue* ar, const std::string& delemitr,
+  FastoObjectArray(FastoObject* parent, common::ArrayValue* ar, const std::string& delimiter,
                    const std::string& ns_separator);
 
   // Appends a Value to the end of the list.
@@ -118,10 +118,10 @@ namespace common {
 
 std::string ConvertToString(fastonosql::FastoObject* obj);
 
-std::string ConvertToString(common::Value* value, const std::string& delemitr);
-std::string ConvertToString(common::ArrayValue* array, const std::string& delemitr);
-std::string ConvertToString(common::SetValue* set, const std::string& delemitr);
-std::string ConvertToString(common::ZSetValue* zset, const std::string& delemitr);
-std::string ConvertToString(common::HashValue* hash, const std::string& delemitr);
+std::string ConvertToString(common::Value* value, const std::string& delimiter);
+std::string ConvertToString(common::ArrayValue* array, const std::string& delimiter);
+std::string ConvertToString(common::SetValue* set, const std::string& delimiter);
+std::string ConvertToString(common::ZSetValue* zset, const std::string& delimiter);
+std::string ConvertToString(common::HashValue* hash, const std::string& delimiter);
 
 }  // namespace common

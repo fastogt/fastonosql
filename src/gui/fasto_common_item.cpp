@@ -37,9 +37,9 @@
 namespace fastonosql {
 namespace gui {
 
-FastoCommonItem::FastoCommonItem(const core::NDbKValue& key, const std::string& delemitr,
+FastoCommonItem::FastoCommonItem(const core::NDbKValue& key, const std::string& delimiter,
                                  bool isReadOnly, TreeItem* parent, void* internalPointer)
-  : TreeItem(parent, internalPointer), key_(key), delemitr_(delemitr), read_only_(isReadOnly) {
+  : TreeItem(parent, internalPointer), key_(key), delimiter_(delimiter), read_only_(isReadOnly) {
 }
 
 QString FastoCommonItem::key() const {
@@ -49,7 +49,7 @@ QString FastoCommonItem::key() const {
 QString FastoCommonItem::value() const {
   core::NValue nval = key_.value();
   common::Value* val = nval.get();
-  std::string valstr = common::ConvertToString(val, delemitr_);
+  std::string valstr = common::ConvertToString(val, delimiter_);
   return common::ConvertFromString<QString>(valstr);
 }
 
@@ -128,18 +128,18 @@ QString toHex(FastoCommonItem* item) {
   return value;
 }
 
-QString toCsv(FastoCommonItem* item, const QString& delemitr) {
+QString toCsv(FastoCommonItem* item, const QString& delimiter) {
   if (!item) {
     return QString();
   }
 
   if (!item->childrenCount()) {
-    return item->value().replace(delemitr, ",");
+    return item->value().replace(delimiter, ",");
   }
 
   QString value;
   for (size_t i = 0; i < item->childrenCount(); ++i) {
-    value += toCsv(dynamic_cast<FastoCommonItem*>(item->child(i)), delemitr);  // +
+    value += toCsv(dynamic_cast<FastoCommonItem*>(item->child(i)), delimiter);  // +
     if (i != item->childrenCount() - 1) {
       value += ",";
     }

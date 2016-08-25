@@ -60,7 +60,7 @@ FastoCommonItem* createItem(fasto::qt::gui::TreeItem* parent, const std::string&
                             bool readOnly, FastoObject* item) {
   core::NValue val = item->value();
   core::NDbKValue nkey(core::NKey(key), val);
-  return new FastoCommonItem(nkey, item->delemitr(), readOnly, parent, item);
+  return new FastoCommonItem(nkey, item->delimiter(), readOnly, parent, item);
 }
 
 FastoCommonItem* createRootItem(FastoObject* item) {
@@ -70,7 +70,7 @@ FastoCommonItem* createRootItem(FastoObject* item) {
   CHECK(res);
   core::NValue val(common::Value::createStringValue(str));
   core::NDbKValue nkey(core::NKey(std::string()), val);
-  return new FastoCommonItem(nkey, item->delemitr(), true, NULL, item);
+  return new FastoCommonItem(nkey, item->delimiter(), true, NULL, item);
 }
 
 }  // namespace
@@ -103,8 +103,8 @@ OutputWidget::OutputWidget(core::IServerSPtr server, QWidget* parent)
   tableView_ = new FastoTableView;
   tableView_->setModel(commonModel_);
 
-  QString delemitr = common::ConvertFromString<QString>(server_->outputDelemitr());
-  textView_ = new FastoTextView(delemitr);
+  QString delimiter = common::ConvertFromString<QString>(server_->delimiter());
+  textView_ = new FastoTextView(delimiter);
   textView_->setModel(commonModel_);
 
   timeLabel_ = new fasto::qt::gui::IconLabel(GuiFactory::instance().timeIcon(), "0", QSize(32, 32));

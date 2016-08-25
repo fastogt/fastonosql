@@ -32,8 +32,8 @@
 namespace fastonosql {
 namespace gui {
 
-FastoEditorOutput::FastoEditorOutput(const QString& delemitr, QWidget* parent)
-  : QWidget(parent), model_(nullptr), view_method_(JSON), delemitr_(delemitr) {
+FastoEditorOutput::FastoEditorOutput(const QString& delimiter, QWidget* parent)
+  : QWidget(parent), model_(nullptr), view_method_(JSON), delimiter_(delimiter) {
   editor_ = new FastoHexEdit;
   VERIFY(connect(editor_, &FastoHexEdit::textChanged, this, &FastoEditorOutput::textChanged));
   VERIFY(connect(editor_, &FastoHexEdit::readOnlyChanged, this, &FastoEditorOutput::readOnlyChanged));
@@ -254,7 +254,7 @@ void FastoEditorOutput::layoutChanged() {
       QString json = toJson(child);
       result += common::EscapedText(json);
     } else if (view_method_ == CSV) {
-      QString csv = toCsv(child, delemitr_);
+      QString csv = toCsv(child, delimiter_);
       result += common::EscapedText(csv);
     } else if (view_method_ == RAW) {
       QString raw = toRaw(child);

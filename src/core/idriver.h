@@ -70,7 +70,7 @@ class IDriver
   virtual bool isConnected() const = 0;
   virtual bool isAuthenticated() const = 0;
 
-  virtual std::string outputDelemitr() const = 0;
+  virtual std::string delimiter() const = 0;
   virtual std::string nsSeparator() const = 0;
 
  Q_SIGNALS:

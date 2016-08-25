@@ -25,8 +25,8 @@ namespace core {
 namespace rocksdb {
 
 Command::Command(FastoObject* parent, common::CommandValue* cmd,
-                               const std::string& delemitr, const std::string& ns_separator)
-  : FastoObjectCommand(parent, cmd, delemitr, ns_separator) {
+                               const std::string& delimiter, const std::string& ns_separator)
+  : FastoObjectCommand(parent, cmd, delimiter, ns_separator) {
 }
 
 bool Command::isReadOnly() const {

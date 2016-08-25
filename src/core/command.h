@@ -42,7 +42,7 @@ Command* CreateCommand(FastoObject* parent, const std::string& input,
   }
 
   common::CommandValue* cmd = common::Value::createCommand(stable_input, ct);
-  Command* fs = new Command(parent, cmd, parent->delemitr(), parent->nsSeparator());
+  Command* fs = new Command(parent, cmd, parent->delimiter(), parent->nsSeparator());
   parent->addChildren(fs);
   return fs;
 }

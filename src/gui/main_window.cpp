@@ -245,14 +245,14 @@ MainWindow::MainWindow()
   logDock_ = new QDockWidget(this);
   logsAction_ = logDock_->toggleViewAction();
   logsAction_->setShortcut(logsKeySequence);
-  logsAction_->setChecked(false);
+  logsAction_->setChecked(true);
   views->addAction(logsAction_);
 
   logDock_->setAllowedAreas(Qt::LeftDockWidgetArea | Qt::RightDockWidgetArea |
                             Qt::BottomDockWidgetArea | Qt::TopDockWidgetArea);
   logDock_->setWidget(log);
   logDock_->setFeatures(QDockWidget::DockWidgetClosable | QDockWidget::DockWidgetMovable);
-  logDock_->setVisible(false);
+  logDock_->setVisible(true);
   addDockWidget(Qt::BottomDockWidgetArea, logDock_);
 
   setMinimumSize(QSize(min_width, min_height));

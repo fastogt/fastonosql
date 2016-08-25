@@ -598,8 +598,6 @@ class DBConnection
 
   common::Error cliFormatReplyRaw(FastoObjectArray* ar, redisReply* r) WARN_UNUSED_RESULT;
   common::Error cliFormatReplyRaw(FastoObject* out, redisReply* r) WARN_UNUSED_RESULT;
-  common::Error cliOutputGenericHelp(FastoObject* out) WARN_UNUSED_RESULT;
-  common::Error cliOutputHelp(FastoObject* out, int argc, char** argv) WARN_UNUSED_RESULT;
   common::Error cliReadReply(FastoObject* out) WARN_UNUSED_RESULT;
 
   bool isInterrupted() const;

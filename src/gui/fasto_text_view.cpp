@@ -33,11 +33,11 @@
 namespace fastonosql {
 namespace gui {
 
-FastoTextView::FastoTextView(const QString& delemitr, QWidget* parent)
+FastoTextView::FastoTextView(const QString& delimiter, QWidget* parent)
   : QWidget(parent) {
   QVBoxLayout* mainL = new QVBoxLayout;
 
-  editor_ = new FastoEditorOutput(delemitr);
+  editor_ = new FastoEditorOutput(delimiter);
 
   jsonRadioButton_ = new QRadioButton;
   csvRadioButton_ = new QRadioButton;

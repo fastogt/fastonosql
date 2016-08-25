@@ -33,7 +33,7 @@ class FastoTextView
   : public QWidget {
   Q_OBJECT
  public:
-  FastoTextView(const QString& delemitr, QWidget* parent = 0);
+  FastoTextView(const QString& delimiter, QWidget* parent = 0);
 
   void setModel(QAbstractItemModel* model);
 

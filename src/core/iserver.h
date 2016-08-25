@@ -64,7 +64,7 @@ class IServer
   IDataBaseInfoSPtr currentDatabaseInfo() const;
   IServerInfoSPtr serverInfo() const;
 
-  std::string outputDelemitr() const;
+  std::string delimiter() const;
   std::string nsSeparator() const;
   IDatabaseSPtr createDatabaseByInfo(IDataBaseInfoSPtr inf);
   bool containsDatabase(IDataBaseInfoSPtr inf) const;

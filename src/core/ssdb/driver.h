@@ -46,7 +46,7 @@ class Driver
   virtual bool isAuthenticated() const;
   virtual common::net::HostAndPort host() const;
   virtual std::string nsSeparator() const;
-  virtual std::string outputDelemitr() const;
+  virtual std::string delimiter() const;
 
  private:
   virtual void initImpl();

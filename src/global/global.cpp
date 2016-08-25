@@ -27,9 +27,9 @@
 namespace fastonosql {
 
 FastoObject::FastoObject(FastoObject* parent, common::Value *val,
-                         const std::string& delemitr, const std::string& ns_separator)
+                         const std::string& delimiter, const std::string& ns_separator)
   : observer_(nullptr), value_(val), parent_(parent), childrens_(),
-    delemitr_(delemitr), ns_separator_(ns_separator) {
+    delimiter_(delimiter), ns_separator_(ns_separator) {
   DCHECK(value_);
 }
 
@@ -50,7 +50,7 @@ common::Value::Type FastoObject::type() const {
 }
 
 std::string FastoObject::toString() const {
-  return ConvertToString(value_.get(), delemitr());
+  return ConvertToString(value_.get(), delimiter());
 }
 
 FastoObject* FastoObject::createRoot(const std::string& text, IFastoObjectObserver* observer) {
@@ -89,8 +89,8 @@ void FastoObject::clear() {
   childrens_.clear();
 }
 
-std::string FastoObject::delemitr() const {
-  return delemitr_;
+std::string FastoObject::delimiter() const {
+  return delimiter_;
 }
 
 std::string FastoObject::nsSeparator() const {
@@ -109,8 +109,8 @@ void FastoObject::setValue(value_t val) {
 }
 
 FastoObjectCommand::FastoObjectCommand(FastoObject* parent, common::CommandValue* cmd,
-                                       const std::string& delemitr, const std::string& ns_separator)
-  : FastoObject(parent, cmd, delemitr, ns_separator) {
+                                       const std::string& delimiter, const std::string& ns_separator)
+  : FastoObject(parent, cmd, delimiter, ns_separator) {
 }
 
 FastoObjectCommand::~FastoObjectCommand() {
@@ -194,8 +194,8 @@ std::string GetFirstWordFromLine(const std::string& input) {
 }
 
 FastoObjectArray::FastoObjectArray(FastoObject* parent, common::ArrayValue* ar,
-                                   const std::string& delemitr, const std::string& ns_separator)
-  : FastoObject(parent, ar, delemitr, ns_separator) {
+                                   const std::string& delimiter, const std::string& ns_separator)
+  : FastoObject(parent, ar, delimiter, ns_separator) {
 }
 
 void FastoObjectArray::append(common::Value* in_value) {
@@ -205,7 +205,7 @@ void FastoObjectArray::append(common::Value* in_value) {
 
 std::string FastoObjectArray::toString() const {
   common::ArrayValue* ar = array();
-  return ConvertToString(ar, delemitr());
+  return ConvertToString(ar, delimiter());
 }
 
 common::ArrayValue* FastoObjectArray::array() const {
@@ -224,7 +224,7 @@ std::string ConvertToString(fastonosql::FastoObject* obj) {
   std::string result;
   std::string str = obj->toString();
   if (!str.empty()) {
-    result += str + obj->delemitr();
+    result += str + obj->delimiter();
   }
 
   auto childrens = obj->childrens();
@@ -235,26 +235,26 @@ std::string ConvertToString(fastonosql::FastoObject* obj) {
   return result;
 }
 
-std::string ConvertToString(common::Value* value, const std::string& delemitr) {
+std::string ConvertToString(common::Value* value, const std::string& delimiter) {
   if (!value) {
     return std::string();
   }
 
   common::Value::Type t = value->type();
   if (t == common::Value::TYPE_ARRAY) {
-    return ConvertToString(static_cast<ArrayValue*>(value), delemitr);
+    return ConvertToString(static_cast<ArrayValue*>(value), delimiter);
   } else if(t == common::Value::TYPE_SET) {
-    return ConvertToString(static_cast<SetValue*>(value), delemitr);
+    return ConvertToString(static_cast<SetValue*>(value), delimiter);
   } else if(t == common::Value::TYPE_ZSET) {
-    return ConvertToString(static_cast<ZSetValue*>(value), delemitr);
+    return ConvertToString(static_cast<ZSetValue*>(value), delimiter);
   } else if(t == common::Value::TYPE_HASH) {
-    return ConvertToString(static_cast<HashValue*>(value), delemitr);
+    return ConvertToString(static_cast<HashValue*>(value), delimiter);
   } else {
     return value->toString();
   }
 }
 
-std::string ConvertToString(common::ArrayValue* array, const std::string& delemitr) {
+std::string ConvertToString(common::ArrayValue* array, const std::string& delimiter) {
   if (!array) {
     return std::string();
   }
@@ -273,14 +273,14 @@ std::string ConvertToString(common::ArrayValue* array, const std::string& delemi
 
     result += val;
     if(lastIt != it){
-      result += delemitr;
+      result += delimiter;
     }
   }
 
   return result;
 }
 
-std::string ConvertToString(common::SetValue* set, const std::string& delemitr) {
+std::string ConvertToString(common::SetValue* set, const std::string& delimiter) {
   if (!set) {
     return std::string();
   }
@@ -299,14 +299,14 @@ std::string ConvertToString(common::SetValue* set, const std::string& delemitr) 
 
     result += val;
     if (lastIt != it) {
-      result += delemitr;
+      result += delimiter;
     }
   }
 
   return result;
 }
 
-std::string ConvertToString(common::ZSetValue* zset, const std::string& delemitr) {
+std::string ConvertToString(common::ZSetValue* zset, const std::string& delimiter) {
   if (!zset) {
     return std::string();
   }
@@ -327,13 +327,13 @@ std::string ConvertToString(common::ZSetValue* zset, const std::string& delemitr
 
     result += key + " " + val;
     if(lastIt != it){
-      result += delemitr;
+      result += delimiter;
     }
   }
   return result;
 }
 
-std::string ConvertToString(common::HashValue* hash, const std::string& delemitr) {
+std::string ConvertToString(common::HashValue* hash, const std::string& delimiter) {
   if (!hash) {
     return std::string();
   }
@@ -353,7 +353,7 @@ std::string ConvertToString(common::HashValue* hash, const std::string& delemitr
 
     result += key + " " + val;
     if (std::next(it) != hash->end()) {
-      result += delemitr;
+      result += delimiter;
     }
   }
   return result;

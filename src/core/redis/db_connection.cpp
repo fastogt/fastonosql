@@ -338,10 +338,6 @@ common::Error toIntType(char* key, char* type, int* res) {
   }
 }
 
-}  // namespace
-
-namespace {
-
 common::Error cliPrintContextError(redisContext* context) {
   if (!context) {
     DNOTREACHED();
@@ -369,6 +365,78 @@ common::Error cliOutputCommandHelp(FastoObject* out, struct commandHelp* help, i
     val = common::Value::createStringValue(buff2);
     FastoObject* gchild = new FastoObject(out, val, delimiter, ns_separator);
     out->addChildren(gchild);
+  }
+
+  return common::Error();
+}
+
+common::Error cliOutputGenericHelp(FastoObject* out, const std::string& delimiter, const std::string& separator) {
+  if (!out) {
+    DNOTREACHED();
+    return common::make_error_value("Invalid input argument(s)", common::ErrorValue::E_ERROR);
+  }
+
+  common::StringValue* val = common::Value::createStringValue(PROJECT_NAME_TITLE " based on hiredis " HIREDIS_VERSION "\r\n"
+                                                              "Type: \"help @<group>\" to get a list of commands in <group>\r\n"
+                                                              "      \"help <command>\" for help on <command>\r\n"
+                                                              "      \"help <tab>\" to get a list of possible help topics\r\n"
+                                                              "      \"quit\" to exit");
+  FastoObject* child = new FastoObject(out, val, delimiter, separator);
+  out->addChildren(child);
+
+  return common::Error();
+}
+
+common::Error cliOutputHelp(int argc, char** argv, FastoObject* out, const std::string& delimiter, const std::string& separator) {
+  if (!out) {
+    DNOTREACHED();
+    return common::make_error_value("Invalid input argument(s)", common::ErrorValue::E_ERROR);
+  }
+
+  int i, j, len;
+  int group = -1;
+  const helpEntry* entry;
+  struct commandHelp* help;
+
+  if (argc == 0) {
+    return cliOutputGenericHelp(out, delimiter, separator);
+  } else if (argc > 0 && argv[0][0] == '@') {
+    len = sizeof(commandGroups)/sizeof(char*);
+    for (i = 0; i < len; i++) {
+      if (strcasecmp(argv[0]+1,commandGroups[i]) == 0) {
+        group = i;
+        break;
+      }
+    }
+  }
+
+  DCHECK(argc > 0);
+  for (i = 0; i < helpEntriesLen; i++) {
+    entry = &rInit.helpEntries[i];
+    if (entry->type != CLI_HELP_COMMAND) continue;
+
+    help = entry->org;
+    if (group == -1) {
+      /* Compare all arguments */
+      if (argc == entry->argc) {
+          for (j = 0; j < argc; j++) {
+            if (strcasecmp(argv[j],entry->argv[j]) != 0) break;
+          }
+          if (j == argc) {
+            common::Error er = cliOutputCommandHelp(out, help, 1, delimiter, separator);
+            if (er && er->isError()) {
+              return er;
+            }
+          }
+      }
+    } else {
+      if (group == help->group) {
+        common::Error er = cliOutputCommandHelp(out, help, 0, delimiter, separator);
+        if (er && er->isError()) {
+            return er;
+        }
+      }
+    }
   }
 
   return common::Error();
@@ -1642,78 +1710,6 @@ common::Error DBConnection::cliFormatReplyRaw(FastoObject* out, redisReply* r) {
   return common::Error();
 }
 
-common::Error DBConnection::cliOutputGenericHelp(FastoObject* out) {
-  if (!out) {
-    DNOTREACHED();
-    return common::make_error_value("Invalid input argument(s)", common::ErrorValue::E_ERROR);
-  }
-
-  common::StringValue* val = common::Value::createStringValue(PROJECT_NAME_TITLE " based on hiredis " HIREDIS_VERSION "\r\n"
-                                                              "Type: \"help @<group>\" to get a list of commands in <group>\r\n"
-                                                              "      \"help <command>\" for help on <command>\r\n"
-                                                              "      \"help <tab>\" to get a list of possible help topics\r\n"
-                                                              "      \"quit\" to exit");
-  FastoObject* child = new FastoObject(out, val, delimiter(), nsSeparator());
-  out->addChildren(child);
-
-  return common::Error();
-}
-
-common::Error DBConnection::cliOutputHelp(FastoObject* out, int argc, char** argv) {
-  if (!out) {
-    DNOTREACHED();
-    return common::make_error_value("Invalid input argument(s)", common::ErrorValue::E_ERROR);
-  }
-
-  int i, j, len;
-  int group = -1;
-  const helpEntry* entry;
-  struct commandHelp* help;
-
-  if (argc == 0) {
-    return cliOutputGenericHelp(out);
-  } else if (argc > 0 && argv[0][0] == '@') {
-    len = sizeof(commandGroups)/sizeof(char*);
-    for (i = 0; i < len; i++) {
-      if (strcasecmp(argv[0]+1,commandGroups[i]) == 0) {
-        group = i;
-        break;
-      }
-    }
-  }
-
-  DCHECK(argc > 0);
-  for (i = 0; i < helpEntriesLen; i++) {
-    entry = &rInit.helpEntries[i];
-    if (entry->type != CLI_HELP_COMMAND) continue;
-
-    help = entry->org;
-    if (group == -1) {
-      /* Compare all arguments */
-      if (argc == entry->argc) {
-          for (j = 0; j < argc; j++) {
-            if (strcasecmp(argv[j],entry->argv[j]) != 0) break;
-          }
-          if (j == argc) {
-            common::Error er = cliOutputCommandHelp(out, help, 1, delimiter(), nsSeparator());
-            if (er && er->isError()) {
-              return er;
-            }
-          }
-      }
-    } else {
-      if (group == help->group) {
-        common::Error er = cliOutputCommandHelp(out, help, 0, delimiter(), nsSeparator());
-        if (er && er->isError()) {
-            return er;
-        }
-      }
-    }
-  }
-
-  return common::Error();
-}
-
 common::Error DBConnection::cliReadReply(FastoObject* out) {
   if (!out) {
     DNOTREACHED();
@@ -1859,7 +1855,7 @@ common::Error DBConnection::auth(const std::string& password) {
 }
 
 common::Error DBConnection::help(int argc, char** argv, FastoObject* out) {
-  return cliOutputHelp(out, argc, argv);
+  return cliOutputHelp(argc, argv, out, delimiter(), nsSeparator());
 }
 
 common::Error DBConnection::monitor(int argc, char** argv, FastoObject* out) {

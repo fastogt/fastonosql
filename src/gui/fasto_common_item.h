@@ -40,7 +40,7 @@ class FastoCommonItem
     eType = 2,
     eCountColumns = 3
   };
-  FastoCommonItem(const core::NDbKValue& key, const std::string& delemitr, bool isReadOnly,
+  FastoCommonItem(const core::NDbKValue& key, const std::string& delimiter, bool isReadOnly,
                   TreeItem* parent, void* internalPointer);
 
   QString key() const;
@@ -52,14 +52,14 @@ class FastoCommonItem
 
  private:
   core::NDbKValue key_;
-  const std::string delemitr_;
+  const std::string delimiter_;
   const bool read_only_;
 };
 
 QString toJson(FastoCommonItem* item);
 QString toRaw(FastoCommonItem* item);
 QString toHex(FastoCommonItem* item);
-QString toCsv(FastoCommonItem* item, const QString& delemitr);
+QString toCsv(FastoCommonItem* item, const QString& delimiter);
 
 QString fromGzip(FastoCommonItem* item);
 QString fromHexMsgPack(FastoCommonItem* item);

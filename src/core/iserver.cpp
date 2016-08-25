@@ -87,8 +87,8 @@ IDataBaseInfoSPtr IServer::currentDatabaseInfo() const {
   return drv_->currentDatabaseInfo();
 }
 
-std::string IServer::outputDelemitr() const {
-  return drv_->outputDelemitr();
+std::string IServer::delimiter() const {
+  return drv_->delimiter();
 }
 
 std::string IServer::nsSeparator() const {
