@@ -36,7 +36,7 @@ install:
   - if [ "$TRAVIS_OS_NAME" = "osx" ]; then brew ls | grep -wq qt5 || brew install qt5; fi
   - if [ "$TRAVIS_OS_NAME" = "osx" ]; then brew link --force qt5 && chmod -R +rw /usr/local/Cellar/qt5/*; fi
   - if [ "$TRAVIS_OS_NAME" = "osx" ]; then ln -s /usr/local/Cellar/qt5/5.6.1-1/mkspecs /usr/local/mkspecs && ln -s /usr/local/Cellar/qt5/5.6.1-1/plugins /usr/local/plugins; fi
-  - if [ "$TRAVIS_OS_NAME" = "osx" ]; then brew ls | grep -wq openssl || brew install openssl; fi
+  - if [ "$TRAVIS_OS_NAME" = "osx" ]; then brew install openssl; fi
   - if [ "$TRAVIS_OS_NAME" = "osx" ]; then brew link openssl --force; fi
 before_script:
   - if [ "$TRAVIS_OS_NAME" = "linux" ]; then source /opt/qt56/bin/qt56-env.sh; fi
