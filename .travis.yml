@@ -37,7 +37,9 @@ install:
   - if [ "$TRAVIS_OS_NAME" = "osx" ]; then brew link --force qt5 && chmod -R +rw /usr/local/Cellar/qt5/*; fi
   - if [ "$TRAVIS_OS_NAME" = "osx" ]; then ln -s /usr/local/Cellar/qt5/5.6.1-1/mkspecs /usr/local/mkspecs && ln -s /usr/local/Cellar/qt5/5.6.1-1/plugins /usr/local/plugins; fi
   - if [ "$TRAVIS_OS_NAME" = "osx" ]; then brew install openssl; fi
-  - if [ "$TRAVIS_OS_NAME" = "osx" ]; then brew link openssl --force; fi
+  #- if [ "$TRAVIS_OS_NAME" = "osx" ]; then brew link openssl --force; fi
+  - if [ "$TRAVIS_OS_NAME" = "osx" ]; then ln -s /usr/local/opt/openssl/lib/libcrypto.1.0.0.dylib /usr/local/lib/; fi
+  - if [ "$TRAVIS_OS_NAME" = "osx" ]; then ln -s /usr/local/opt/openssl/lib/libssl.1.0.0.dylib /usr/local/lib/; fi
 before_script:
   - if [ "$TRAVIS_OS_NAME" = "linux" ]; then source /opt/qt56/bin/qt56-env.sh; fi
   - if [ "$TRAVIS_OS_NAME" = "linux" ]; then wget http://www.cmake.org/files/v3.3/cmake-3.3.2-Linux-x86_64.tar.gz -O cmake.tar.gz; fi
