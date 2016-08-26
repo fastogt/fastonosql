@@ -58,6 +58,7 @@ namespace unqlite {
 
 Driver::Driver(IConnectionSettingsBaseSPtr settings)
   : IDriverLocal(settings), impl_(new DBConnection) {
+  COMPILE_ASSERT(DBConnection::connection_t == UNQLITE, "DBConnection must be the same type as Driver!");
   CHECK(type() == UNQLITE);
 }
 

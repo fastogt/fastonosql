@@ -57,6 +57,7 @@ namespace memcached {
 
 Driver::Driver(IConnectionSettingsBaseSPtr settings)
   : IDriverRemote(settings), impl_(new DBConnection) {
+  COMPILE_ASSERT(DBConnection::connection_t == MEMCACHED, "DBConnection must be the same type as Driver!");
   CHECK(type() == MEMCACHED);
 }
 

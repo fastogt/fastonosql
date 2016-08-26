@@ -552,9 +552,9 @@ public:
 };
 
 class DBConnection
-  : public core::DBConnection<NativeConnection, RConfig>, public CommandHandler {
+  : public core::DBConnection<NativeConnection, RConfig, REDIS>, public CommandHandler {
  public:
-  typedef core::DBConnection<NativeConnection, RConfig> base_class;
+  typedef core::DBConnection<NativeConnection, RConfig, REDIS> base_class;
   explicit DBConnection(IDBConnectionOwner* observer);
 
   bool isAuthenticated() const;

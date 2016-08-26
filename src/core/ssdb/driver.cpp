@@ -65,6 +65,7 @@ namespace ssdb {
 
 Driver::Driver(IConnectionSettingsBaseSPtr settings)
   : IDriverRemote(settings), impl_(new DBConnection) {
+  COMPILE_ASSERT(DBConnection::connection_t == SSDB, "DBConnection must be the same type as Driver!");
   CHECK(type() == SSDB);
 }
 

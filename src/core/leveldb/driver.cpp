@@ -55,6 +55,7 @@ namespace leveldb {
 
 Driver::Driver(IConnectionSettingsBaseSPtr settings)
   : IDriverLocal(settings), impl_(new DBConnection) {
+  COMPILE_ASSERT(DBConnection::connection_t == LEVELDB, "DBConnection must be the same type as Driver!");
   CHECK(type() == LEVELDB);
 }
 

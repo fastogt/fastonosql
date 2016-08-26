@@ -22,19 +22,25 @@
 #include "common/error.h"
 
 #include "core/connection.h"
+#include "core/connection_types.h"
 
 namespace fastonosql {
 namespace core {
 
-template<typename NConnection, typename Config>
+template<typename NConnection, typename Config, connectionTypes ContType>
 class DBConnection {
  public:
   typedef ConnectionAllocatorTraits<NConnection, Config> ConnectionAllocatorTrait;
-  typedef Connection<ConnectionAllocatorTrait> connection_t;
-  typedef typename connection_t::config_t config_t;
+  typedef Connection<ConnectionAllocatorTrait> dbconnection_t;
+  typedef typename dbconnection_t::config_t config_t;
+  static constexpr connectionTypes connection_t = ContType;
 
   DBConnection()
     : connection_(), interrupted_(false) {
+  }
+
+  connectionTypes connectionType() {
+    return connection_t;
   }
 
   common::Error connect(const config_t& config) {
@@ -70,7 +76,7 @@ class DBConnection {
   }
 
  protected:
-  connection_t connection_;
+  dbconnection_t connection_;
   bool interrupted_;
 };
 

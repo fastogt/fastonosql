@@ -50,9 +50,9 @@ common::Error createConnection(ConnectionSettings* settings, NativeConnection** 
 common::Error testConnection(ConnectionSettings* settings);
 
 class DBConnection
-  : public core::DBConnection<NativeConnection, Config>, public CommandHandler {
+  : public core::DBConnection<NativeConnection, Config, SSDB>, public CommandHandler {
  public:
-  typedef core::DBConnection<NativeConnection, Config> base_class;
+  typedef core::DBConnection<NativeConnection, Config, SSDB> base_class;
   DBConnection();
 
   static const char* versionApi();

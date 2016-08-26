@@ -115,6 +115,7 @@ Command* createCommandFast(const std::string& input, common::Value::CommandLoggi
 
 Driver::Driver(IConnectionSettingsBaseSPtr settings)
   : IDriverRemote(settings), impl_(new DBConnection(this)) {
+  COMPILE_ASSERT(DBConnection::connection_t == REDIS, "DBConnection must be the same type as Driver!");
   CHECK(type() == REDIS);
 }
 
