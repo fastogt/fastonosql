@@ -50,8 +50,8 @@ class ViewKeysDialog
   Q_OBJECT
  public:
   enum {
-    min_height = 200,
     min_width = 320,
+    min_height = 200,    
     min_key_on_page = 1,
     max_key_on_page = 100,
     defaults_key = 10,

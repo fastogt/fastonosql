@@ -50,9 +50,7 @@ namespace gui {
 ConnectionsDialog::ConnectionsDialog(QWidget* parent)
   : QDialog(parent) {
   setWindowIcon(GuiFactory::instance().connectIcon());
-
-  // Remove help button (?)
-  setWindowFlags(windowFlags() & ~Qt::WindowContextHelpButtonHint);
+  setWindowFlags(windowFlags() & ~Qt::WindowContextHelpButtonHint);  // Remove help button (?)
 
   listWidget_ = new QTreeWidget;
   listWidget_->setIndentation(5);

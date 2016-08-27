@@ -34,8 +34,8 @@ class LoadContentDbDialog
   Q_OBJECT
  public:
   enum {
-    min_height = 120,
     min_width = 240,
+    min_height = 120,    
     min_key_on_page = 1,
     max_key_on_page = 1000,
     defaults_key = 100,

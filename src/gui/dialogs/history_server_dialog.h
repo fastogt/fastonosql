@@ -43,8 +43,8 @@ class ServerHistoryDialog
   explicit ServerHistoryDialog(core::IServerSPtr server, QWidget* parent = 0);
 
   enum {
-    min_height = 480,
-    min_width = 640
+    min_width = 640,
+    min_height = 480
   };
 
  private Q_SLOTS:

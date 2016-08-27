@@ -44,8 +44,10 @@ namespace gui {
 LoadContentDbDialog::LoadContentDbDialog(const QString& title,
                                          core::connectionTypes type, QWidget* parent)
   : QDialog(parent), type_(type) {
-  setWindowIcon(GuiFactory::instance().icon(type_));
   setWindowTitle(title);
+  setWindowIcon(GuiFactory::instance().icon(type_));
+  setWindowFlags(windowFlags() & ~Qt::WindowContextHelpButtonHint);  // Remove help button (?)
+
   QDialogButtonBox* buttonBox = new QDialogButtonBox(QDialogButtonBox::Cancel | QDialogButtonBox::Ok);
   buttonBox->setOrientation(Qt::Horizontal);
   VERIFY(connect(buttonBox, &QDialogButtonBox::accepted, this, &LoadContentDbDialog::accept));

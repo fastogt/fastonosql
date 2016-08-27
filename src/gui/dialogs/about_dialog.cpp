@@ -56,8 +56,8 @@ AboutDialog::AboutDialog(QWidget* parent)
   : QDialog(parent) {
   setWindowTitle(tAboutTitle);
   setWindowFlags(windowFlags() & ~Qt::WindowContextHelpButtonHint);
-  QGridLayout* glayout = new QGridLayout;
 
+  QGridLayout* glayout = new QGridLayout;
   QLabel* copyRightLabel = new QLabel(trDescription);
   copyRightLabel->setWordWrap(true);
   copyRightLabel->setOpenExternalLinks(true);

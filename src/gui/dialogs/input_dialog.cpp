@@ -33,9 +33,9 @@ InputDialog::InputDialog(QWidget* parent, const QString& title, InputType type,
                        const QString& firstLabelText, const QString& secondLabelText)
   : QDialog(parent) {
   setWindowTitle(title);
-  setWindowFlags(windowFlags() & ~Qt::WindowContextHelpButtonHint);
-  QGridLayout* glayout = new QGridLayout;
+  setWindowFlags(windowFlags() & ~Qt::WindowContextHelpButtonHint);  // Remove help button (?)
 
+  QGridLayout* glayout = new QGridLayout;
   QDialogButtonBox* buttonBox = new QDialogButtonBox(QDialogButtonBox::Cancel | QDialogButtonBox::Ok);
   buttonBox->setOrientation(Qt::Horizontal);
   VERIFY(connect(buttonBox, &QDialogButtonBox::accepted, this, &InputDialog::accept));

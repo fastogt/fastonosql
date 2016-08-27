@@ -58,8 +58,8 @@ ChangePasswordServerDialog::ChangePasswordServerDialog(const QString& title,
 
   setWindowTitle(title);
   setWindowFlags(windowFlags() & ~Qt::WindowContextHelpButtonHint);
-  QVBoxLayout* mainLayout = new QVBoxLayout;
 
+  QVBoxLayout* mainLayout = new QVBoxLayout;
   QHBoxLayout* passLayout = new QHBoxLayout;
   passLayout->addWidget(new QLabel(trPassword));
   passwordLineEdit_ = new QLineEdit;

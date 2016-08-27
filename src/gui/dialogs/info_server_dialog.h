@@ -22,7 +22,7 @@
 
 #include "core/core_fwd.h"
 
-class QLabel;
+class QTextEdit;
 
 namespace fasto { namespace qt { namespace gui { class GlassWidget; } } }  // lines 59-59
 namespace fastonosql { namespace core { namespace events_info { class ServerInfoResponce; } } }
@@ -45,8 +45,8 @@ class InfoServerDialog
  public:
   explicit InfoServerDialog(core::IServerSPtr server, QWidget* parent = 0);
   enum {
-    min_height = 320,
-    min_width = 240
+    min_width = 420,
+    min_height = 560
   };
 
  private Q_SLOTS:
@@ -80,8 +80,7 @@ class InfoServerDialog
 #ifdef BUILD_WITH_LMDB
   void updateText(const core::lmdb::ServerInfo& serv);
 #endif
-  QLabel* serverTextInfo_;
-  QLabel* hardwareTextInfo_;
+  QTextEdit* serverTextInfo_;
   fasto::qt::gui::GlassWidget* glassWidget_;
   const core::IServerSPtr server_;
 };

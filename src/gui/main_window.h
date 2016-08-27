@@ -44,8 +44,8 @@ class MainWindow
   Q_OBJECT
  public:
   enum {
-    min_height = 480,
     min_width = 640,
+    min_height = 480,
     max_recent_connections = 5
   };
 

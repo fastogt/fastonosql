@@ -43,8 +43,8 @@ class PropertyServerDialog
  public:
   explicit PropertyServerDialog(core::IServerSPtr server, QWidget* parent = 0);
   enum {
-    min_height = 200,
-    min_width = 240
+    min_width = 240,
+    min_height = 200
   };
 
  private Q_SLOTS:

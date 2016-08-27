@@ -23,7 +23,7 @@
 
 #include <memory>                       // for __shared_ptr
 
-#include <QLabel>
+#include <QTextEdit>
 #include <QHBoxLayout>
 
 #include "common/convert2string.h"      // for ConvertFromString
@@ -72,7 +72,7 @@
 
 namespace {
 
-const QString trRedisTextServerTemplate = QObject::tr("<h2>Server:</h2><br/>"
+const QString trRedisTextServerTemplate = QObject::tr("<h3>Server:</h3>"
                                               "Redis version: %1<br/>"
                                               "Redis git_sha1: %2<br/>"
                                               "Redis git_dirty: %3<br/>"
@@ -89,13 +89,13 @@ const QString trRedisTextServerTemplate = QObject::tr("<h2>Server:</h2><br/>"
                                               "Hz: %14<br/>"
                                               "Lru clock: %15");
 
-const QString trRedisTextClientsTemplate = QObject::tr("<h2>Clients:</h2><br/>"
+const QString trRedisTextClientsTemplate = QObject::tr("<h3>Clients:</h3>"
                                                      "Connected clients_: %1<br/>"
                                                      "Client longest output list: %2<br/>"
                                                      "Client biggest input buf: %3<br/>"
                                                      "Blocked clients: %4");
 
-const QString trRedisTextMemoryTemplate = QObject::tr("<h2>Memory:</h2><br/>"
+const QString trRedisTextMemoryTemplate = QObject::tr("<h3>Memory:</h3>"
                                               "Used memory: %1<br/>"
                                               "Used memory human: %2<br/>"
                                               "Used memory rss: %3<br/>"
@@ -105,7 +105,7 @@ const QString trRedisTextMemoryTemplate = QObject::tr("<h2>Memory:</h2><br/>"
                                               "Mem fragmentation ratio: %7<br/>"
                                               "Mem allocator: %8");
 
-const QString trRedisTextPersistenceTemplate = QObject::tr("<h2>Persistence:</h2><br/>"
+const QString trRedisTextPersistenceTemplate = QObject::tr("<h3>Persistence:</h3>"
                                               "Loading: %1<br/>"
                                               "Rdb changes since last save: %2<br/>"
                                               "Rdb bgsave in_progress: %3<br/>"
@@ -121,7 +121,7 @@ const QString trRedisTextPersistenceTemplate = QObject::tr("<h2>Persistence:</h2
                                               "Aof last bgrewrite status: %13<br/>"
                                               "Aof last write status: %14");
 
-const QString trRedisTextStatsTemplate = QObject::tr("<h2>Stats:</h2><br/>"
+const QString trRedisTextStatsTemplate = QObject::tr("<h3>Stats:</h3>"
                                               "Total connections received: %1<br/>"
                                               "Total commands processed: %2<br/>"
                                               "Instantaneous ops per sec: %3<br/>"
@@ -137,7 +137,7 @@ const QString trRedisTextStatsTemplate = QObject::tr("<h2>Stats:</h2><br/>"
                                               "Pubsub patterns: %13<br/>"
                                               "Latest fork usec: %14");
 
-const QString trRedisTextReplicationTemplate = QObject::tr("<h2>Replication:</h2><br/>"
+const QString trRedisTextReplicationTemplate = QObject::tr("<h3>Replication:</h3>"
                                                "Role: %1<br/>"
                                                "Connected slaves: %2<br/>"
                                                "Master reply offset: %3<br/>"
@@ -146,13 +146,13 @@ const QString trRedisTextReplicationTemplate = QObject::tr("<h2>Replication:</h2
                                                "Backlog first byte offset: %6<br/>"
                                                "Backlog histen: %7");
 
-const QString trRedisTextCpuTemplate = QObject::tr("<h2>Cpu:</h2><br/>"
+const QString trRedisTextCpuTemplate = QObject::tr("<h3>Cpu:</h3>"
                                                      "Used cpu sys: %1<br/>"
                                                      "Used cpu user: %2<br/>"
                                                      "Used cpu sys children: %3<br/>"
                                                      "Used cpu user children: %4");
 
-const QString trMemcachedTextServerTemplate = QObject::tr("<h2>Common:</h2><br/>"
+const QString trMemcachedTextServerTemplate = QObject::tr("<b>Common:</b><br/>"
                                                         "Pid: %1<br/>"
                                                         "Update time: %2<br/>"
                                                         "Time: %3<br/>"
@@ -176,31 +176,31 @@ const QString trMemcachedTextServerTemplate = QObject::tr("<h2>Common:</h2><br/>
                                                         "Limit max bytes: %21<br/>"
                                                         "Threads: %22");
 
-const QString trSsdbTextServerTemplate = QObject::tr("<h2>Common:</h2><br/>"
+const QString trSsdbTextServerTemplate = QObject::tr("<b>Common:</b><br/>"
                                                         "Version: %1<br/>"
                                                         "Links: %2<br/>"
                                                         "Total calls: %3<br/>"
                                                         "Dbsize: %4<br/>"
                                                         "Binlogs: %5");
 
-const QString trLeveldbTextServerTemplate = QObject::tr("<h2>Stats:</h2><br/>"
+const QString trLeveldbTextServerTemplate = QObject::tr("<b>Stats:</b><br/>"
                                                         "Compactions level: %1<br/>"
                                                         "File size mb: %2<br/>"
                                                         "Time sec: %3<br/>"
                                                         "Read mb: %4<br/>"
                                                         "Write mb: %5");
 
-const QString trRocksdbTextServerTemplate = QObject::tr("<h2>Stats:</h2><br/>"
+const QString trRocksdbTextServerTemplate = QObject::tr("<b>Stats:</b><br/>"
                                                         "Compactions level: %1<br/>"
                                                         "File size mb: %2<br/>"
                                                         "Time sec: %3<br/>"
                                                         "Read mb: %4<br/>"
                                                         "Write mb: %5");
 
-const QString trUnqliteTextServerTemplate = QObject::tr("<h2>Stats:</h2><br/>"
+const QString trUnqliteTextServerTemplate = QObject::tr("<b>Stats:</b><br/>"
                                                         "File name: %1<br/>");
 
-const QString trLmdbTextServerTemplate = QObject::tr("<h2>Stats:</h2><br/>"
+const QString trLmdbTextServerTemplate = QObject::tr("<b>Stats:</b><br/>"
                                                         "File name: %1<br/>");
 }  // namespace
 
@@ -213,14 +213,15 @@ InfoServerDialog::InfoServerDialog(core::IServerSPtr server, QWidget* parent)
 
   core::connectionTypes type = server->type();
   setWindowIcon(GuiFactory::instance().icon(type));
+  setWindowFlags(windowFlags() & ~Qt::WindowContextHelpButtonHint);  // Remove help button (?)
 
-  serverTextInfo_ = new QLabel;
-  hardwareTextInfo_ = new QLabel;
+  serverTextInfo_ = new QTextEdit;
+  serverTextInfo_->setReadOnly(true);
   QHBoxLayout* mainL = new QHBoxLayout;
+  mainL->setContentsMargins(0, 0, 0, 0);
   mainL->addWidget(serverTextInfo_);
-  mainL->addWidget(hardwareTextInfo_);
 
-  setMinimumSize(QSize(min_height, min_width));
+  setMinimumSize(QSize(min_width, min_height));
   setLayout(mainL);
 
   glassWidget_ = new fasto::qt::gui::GlassWidget(GuiFactory::instance().pathToLoadingGif(),
@@ -326,14 +327,14 @@ void InfoServerDialog::finishServerInfo(const core::events_info::ServerInfoRespo
 #endif
 #ifdef BUILD_WITH_UNQLITE
   if (type == core::UNQLITE) {
-    core::unqlite::ServerInfo* infr = dynamic_cast<core::unqlite::ServerInfo*>(inf.get());  // +
+    core::unqlite::ServerInfo* infr = static_cast<core::unqlite::ServerInfo*>(inf.get());
     CHECK(infr);
     updateText(*infr);
   }
 #endif
 #ifdef BUILD_WITH_LMDB
   if (type == core::LMDB) {
-    core::lmdb::ServerInfo* infr = dynamic_cast<core::lmdb::ServerInfo*>(inf.get());  // +
+    core::lmdb::ServerInfo* infr = static_cast<core::lmdb::ServerInfo*>(inf.get());
     CHECK(infr);
     updateText(*infr);
   }
@@ -441,9 +442,7 @@ void InfoServerDialog::updateText(const core::redis::ServerInfo& serv) {
           .arg(cpu.used_cpu_user_)
           .arg(cpu.used_cpu_sys_children_)
           .arg(cpu.used_cpu_user_children_);
-
-  serverTextInfo_->setText(textServ + textMem + textCpu);
-  hardwareTextInfo_->setText(textCl + textPer + textStat + textRepl);
+  serverTextInfo_->setText(textServ + textMem + textCpu + textCl + textPer + textStat + textRepl);
 }
 #endif
 
@@ -474,9 +473,7 @@ void InfoServerDialog::updateText(const core::memcached::ServerInfo& serv) {
           .arg(com.limit_maxbytes)
           .arg(com.threads);
 
-  // QString textHard = memcachedTextHardwareTemplate;
   serverTextInfo_->setText(textServ);
-  // hardwareTextInfo_->setText(textHard);
 }
 #endif
 

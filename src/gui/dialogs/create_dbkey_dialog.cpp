@@ -61,11 +61,11 @@ namespace gui {
 
 CreateDbKeyDialog::CreateDbKeyDialog(const QString& title, core::connectionTypes type, QWidget* parent)
   : QDialog(parent), type_(type), value_() {
-  setWindowIcon(GuiFactory::instance().icon(type_));
+  setWindowIcon(GuiFactory::instance().icon(type));
   setWindowTitle(title);
+  setWindowFlags(windowFlags() & ~Qt::WindowContextHelpButtonHint);  // Remove help button (?)
 
   QGridLayout* kvLayout = new QGridLayout;
-
   kvLayout->addWidget(new QLabel(trType), 0, 0);
   typesCombo_ = new QComboBox;
   std::vector<common::Value::Type> types = supportedTypesFromType(type);

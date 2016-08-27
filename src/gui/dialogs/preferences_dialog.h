@@ -37,9 +37,9 @@ class PreferencesDialog
   Q_OBJECT
  public:
   explicit PreferencesDialog(QWidget* parent);
-  enum {
-    min_height = 480,
-    min_width = 640
+  enum {    
+    min_width = 640,
+    min_height = 480
   };
 
  public Q_SLOTS:

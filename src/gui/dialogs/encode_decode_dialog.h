@@ -36,8 +36,8 @@ class EncodeDecodeDialog
   explicit EncodeDecodeDialog(QWidget* parent);
 
   enum {
-    min_height = 480,
-    min_width = 640
+    min_width = 640,
+    min_height = 480
   };
 
  protected:

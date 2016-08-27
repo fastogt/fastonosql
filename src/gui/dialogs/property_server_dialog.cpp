@@ -54,6 +54,7 @@ PropertyServerDialog::PropertyServerDialog(core::IServerSPtr server, QWidget* pa
   CHECK(server_);
 
   setWindowIcon(GuiFactory::instance().icon(server->type()));
+  setWindowFlags(windowFlags() & ~Qt::WindowContextHelpButtonHint);  // Remove help button (?)
 
   PropertyTableModel* mod = new PropertyTableModel(this);
   propertyes_table_ = new QTableView;

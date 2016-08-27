@@ -67,7 +67,7 @@ namespace gui {
 
 PreferencesDialog::PreferencesDialog(QWidget* parent)
   : QDialog(parent) {
-  setWindowFlags(windowFlags() & ~Qt::WindowContextHelpButtonHint);
+  setWindowFlags(windowFlags() & ~Qt::WindowContextHelpButtonHint);  // Remove help button (?)
 #ifndef IS_PUBLIC_LOGIN
   profileBox_ = new QGroupBox;
   QHBoxLayout* profileLayout = new QHBoxLayout;

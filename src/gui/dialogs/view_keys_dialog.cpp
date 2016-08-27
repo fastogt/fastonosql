@@ -102,13 +102,14 @@ namespace gui {
 ViewKeysDialog::ViewKeysDialog(const QString& title, core::IDatabaseSPtr db, QWidget* parent)
   : QDialog(parent), cursorStack_(), curPos_(0), db_(db) {
   CHECK(db_);
+  setWindowTitle(title);
+  setWindowFlags(windowFlags() & ~Qt::WindowContextHelpButtonHint);  // Remove help button (?)
+
   core::IServerSPtr serv = db_->server();
   VERIFY(connect(serv.get(), &core::IServer::startedLoadDataBaseContent,
                  this, &ViewKeysDialog::startLoadDatabaseContent));
   VERIFY(connect(serv.get(), &core::IServer::finishedLoadDatabaseContent,
                  this, &ViewKeysDialog::finishLoadDatabaseContent));
-
-  setWindowTitle(title);
 
   // main layout
   QVBoxLayout* mainlayout = new QVBoxLayout;

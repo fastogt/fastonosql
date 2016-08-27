@@ -47,11 +47,9 @@ namespace gui {
 EncodeDecodeDialog::EncodeDecodeDialog(QWidget* parent)
   : QDialog(parent) {
   setWindowIcon(GuiFactory::instance().encodeDecodeIcon());
+  setWindowFlags(windowFlags() & ~Qt::WindowContextHelpButtonHint);  // Remove help button (?)
 
-  setWindowTitle(translations::trEncodeDecode);
-  setWindowFlags(windowFlags() & ~Qt::WindowContextHelpButtonHint);
   QVBoxLayout* layout = new QVBoxLayout;
-
   QDialogButtonBox* buttonBox = new QDialogButtonBox(QDialogButtonBox::Close);
   QPushButton* closeButton = buttonBox->button(QDialogButtonBox::Close);
   buttonBox->addButton(closeButton, QDialogButtonBox::ButtonRole(QDialogButtonBox::RejectRole | QDialogButtonBox::AcceptRole));
@@ -126,6 +124,7 @@ void EncodeDecodeDialog::decodeOrEncode() {
 }
 
 void EncodeDecodeDialog::retranslateUi() {
+  setWindowTitle(translations::trEncodeDecode);
   encodeButton_->setText(translations::trEncode);
   decodeButton_->setText(translations::trDecode);
 }

@@ -47,17 +47,18 @@ QueryWidget::QueryWidget(core::IServerSPtr server, QWidget* parent)
   QVBoxLayout* mainLayout = new QVBoxLayout;
   splitter->addWidget(shellWidget_);
   splitter->addWidget(outputWidget_);
-  splitter->setStretchFactor(0, 0);
-  splitter->setStretchFactor(1, 1);
+  splitter->setStretchFactor(0, 1);
+  splitter->setStretchFactor(1, 0);
+  splitter->setCollapsible(0, false);
+  splitter->setCollapsible(1, false);
   mainLayout->addWidget(splitter);
-  setMinimumSize(QSize(min_width, min_height));
 
   setLayout(mainLayout);
 }
 
 QueryWidget* QueryWidget::clone(const QString& text) {
   QueryWidget* result = new QueryWidget(server_, parentWidget());
-  result->shellWidget_->setText(text);
+  result->setInputText(text);
   return result;
 }
 

@@ -55,8 +55,8 @@ namespace gui {
 ServerHistoryDialog::ServerHistoryDialog(core::IServerSPtr server, QWidget* parent)
   : QDialog(parent, Qt::WindowMinMaxButtonsHint | Qt::WindowCloseButtonHint ), server_(server) {
   CHECK(server_);
-
   setWindowIcon(GuiFactory::instance().icon(server_->type()));
+  setWindowFlags(windowFlags() & ~Qt::WindowContextHelpButtonHint);  // Remove help button (?)
 
   graphWidget_ = new fasto::qt::gui::GraphWidget;
   settingsGraph_ = new QWidget;
