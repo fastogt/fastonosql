@@ -52,6 +52,7 @@ namespace {
 
 const QString invalidDbType = QObject::tr("Invalid database type!");
 const QString trTitle = QObject::tr("Connection Settings");
+const QString trLoggingToolTip = QObject::tr("INFO command timeout in msec for history statistic.");
 const QString trSelectPrivateKey = QObject::tr("Select private key file");
 const QString trPrivateKeyFiles = QObject::tr("Private key files (*.*)");
 const QString trSelectPublicKey = QObject::tr("Select public key file");
@@ -402,6 +403,7 @@ void ConnectionDialog::retranslateUi() {
   sshAddressLabel_->setText(tr("SSH Address:"));
   sshUserNameLabel_->setText(tr("SSH User Name:"));
   sshAuthMethodLabel_->setText(tr("SSH Auth Method:"));
+  loggingMsec_->setToolTip(trLoggingToolTip);
 }
 
 bool ConnectionDialog::validateAndApply() {

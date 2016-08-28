@@ -57,7 +57,6 @@ namespace {
   const QString trLanguage = QObject::tr("Language:");
   const QString trSupportedUiStyles = QObject::tr("Supported UI styles:");
   const QString trSupportedFonts = QObject::tr("Supported fonts:");
-  const QString trServerGlobalSettings = QObject::tr("Servers global settings");
   const QString trDefaultViews = QObject::tr("Default views:");
   const QString trLoggingDirectory = QObject::tr("Logging directory:");
 }  // namespace
@@ -80,7 +79,7 @@ PreferencesDialog::PreferencesDialog(QWidget* parent)
   profileBox_->setLayout(profileLayout);
 #endif
 
-//      ui settings
+  // ui settings
   generalBox_ = new QGroupBox;
 
   QHBoxLayout* styleswLayout = new QHBoxLayout;
@@ -119,9 +118,6 @@ PreferencesDialog::PreferencesDialog(QWidget* parent)
 
   generalBox_->setLayout(generalLayout);
 
-  // servers settings
-  serverSettingsBox_ = new QGroupBox;
-
   QHBoxLayout* defaultViewLayaut = new QHBoxLayout;
   defaultViewLabel_ = new QLabel;
   defaultViewComboBox_ = new QComboBox;
@@ -137,10 +133,8 @@ PreferencesDialog::PreferencesDialog(QWidget* parent)
   logLayout->addWidget(logDirLabel_);
   logLayout->addWidget(logDirPath_);
 
-  QVBoxLayout* serverSettingsLayout = new QVBoxLayout;
-  serverSettingsLayout->addLayout(defaultViewLayaut);
-  serverSettingsLayout->addLayout(logLayout);
-  serverSettingsBox_->setLayout(serverSettingsLayout);
+  generalLayout->addLayout(defaultViewLayaut);
+  generalLayout->addLayout(logLayout);
 
   // main layout
   QVBoxLayout* layout = new QVBoxLayout(this);
@@ -148,7 +142,6 @@ PreferencesDialog::PreferencesDialog(QWidget* parent)
   layout->addWidget(profileBox_);
 #endif
   layout->addWidget(generalBox_);
-  layout->addWidget(serverSettingsBox_);
 
   QDialogButtonBox* buttonBox = new QDialogButtonBox(QDialogButtonBox::Cancel | QDialogButtonBox::Save);
   buttonBox->setOrientation(Qt::Horizontal);
@@ -223,8 +216,6 @@ void PreferencesDialog::retranslateUi() {
   langLabel_->setText(trLanguage);
   stylesLabel_->setText(trSupportedUiStyles);
   fontLabel_->setText(trSupportedFonts);
-
-  serverSettingsBox_->setTitle(trServerGlobalSettings);
   defaultViewLabel_->setText(trDefaultViews);
   logDirLabel_->setText(trLoggingDirectory);
 }

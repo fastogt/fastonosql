@@ -71,8 +71,6 @@ class PreferencesDialog
   QFontComboBox* fontComboBox_;
   QLabel* defaultViewLabel_;
   QComboBox* defaultViewComboBox_;
-
-  QGroupBox* serverSettingsBox_;
   QLabel* logDirLabel_;
   QLineEdit* logDirPath_;
   QCheckBox* autoOpenConsole_;
