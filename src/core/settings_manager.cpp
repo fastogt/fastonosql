@@ -44,12 +44,12 @@
 #define SENTINELS PREFIX"sentinels"
 #define CLUSTERS PREFIX"clusters"
 #define VIEW PREFIX"view"
-#define LOGGINGDIR PREFIX"loggingdir"
-#define CHECKUPDATES PREFIX"checkupdates"
-#define AUTOCOMPLETION PREFIX"autocompletion"
+#define LOGGINGDIR PREFIX"logging_dir"
+#define CHECKUPDATES PREFIX"auto_check_updates"
+#define AUTOCOMPLETION PREFIX"auto_completion"
 #define RCONNECTIONS PREFIX"rconnections"
-#define AUTOOPENCONSOLE PREFIX"autoopenconsole"
-#define FASTVIEWKEYS PREFIX"fastviewkeys"
+#define AUTOOPENCONSOLE PREFIX"auto_open_console"
+#define FASTVIEWKEYS PREFIX"fast_view_keys"
 #define CONFIG_VERSION PREFIX"version"
 
 namespace {
@@ -74,9 +74,9 @@ namespace fastonosql {
 namespace core {
 
 SettingsManager::SettingsManager()
-  : config_version_(), sended_statistic_(), views_(), cur_style_(), cur_font_name_(), cur_language_(), connections_(),
-    logging_dir_(),
-    auto_check_update_(), auto_completion_(), auto_open_console_(), fast_view_keys_() {
+  : config_version_(), sended_statistic_(), views_(), cur_style_(), cur_font_name_(), cur_language_(),
+    connections_(), sentinels_(), clusters_(), recent_connections_(),
+    logging_dir_(), auto_check_update_(), auto_completion_(), auto_open_console_(), fast_view_keys_() {
   load();
 }
 
@@ -293,7 +293,7 @@ void SettingsManager::reloadFromPath(const std::string& path, bool merge) {
   cur_font_name_ = settings.value(FONT, fontName()).toString();
   cur_language_ = settings.value(LANGUAGE, fasto::qt::translations::defLanguage).toString();
 
-  int view = settings.value(VIEW, Text).toInt();
+  int view = settings.value(VIEW, Tree).toInt();
   views_ = static_cast<supportedViews>(view);
 
   QList<QVariant> clusters = settings.value(CLUSTERS).toList();
