@@ -572,10 +572,9 @@ class DBConnection
   common::Error scanMode(FastoObject* out) WARN_UNUSED_RESULT;
   common::Error select(int num, IDataBaseInfo** info) WARN_UNUSED_RESULT;
 
-  common::Error executeAsPipeline(std::vector<FastoObjectCommandIPtr> cmds) WARN_UNUSED_RESULT;
+  common::Error executeAsPipeline(const std::vector<FastoObjectCommandIPtr>& cmds) WARN_UNUSED_RESULT;
 
-  common::Error common_exec(int argc, char** argv, FastoObject* out) WARN_UNUSED_RESULT;
-  common::Error common_exec_off2(int argc, char** argv, FastoObject* out) WARN_UNUSED_RESULT;
+  common::Error commonExec(int argc, char** argv, FastoObject* out) WARN_UNUSED_RESULT;
   common::Error auth(const std::string& password) WARN_UNUSED_RESULT;
   common::Error help(int argc, char** argv, FastoObject* out) WARN_UNUSED_RESULT;
   common::Error monitor(int argc, char** argv, FastoObject* out) WARN_UNUSED_RESULT;  // interrupt

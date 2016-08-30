@@ -256,8 +256,8 @@ void bytesToHuman(char* s, size_t len, int64_t n) {
 
 bool isPipeLineCommand(const char* command) {
   if (!command) {
-      DNOTREACHED();
-      return false;
+    DNOTREACHED();
+    return false;
   }
 
   bool skip = strcasecmp(command, "quit") == 0
@@ -466,12 +466,12 @@ common::Error authContext(const char* auth_str, redisContext* context) {
 
 common::Error common_exec(CommandHandler* handler, int argc, char** argv, FastoObject* out) {
   DBConnection* red = static_cast<DBConnection*>(handler);
-  return red->common_exec(argc + 1, argv - 1, out);
+  return red->commonExec(argc + 1, argv - 1, out);
 }
 
 common::Error common_exec_off2(CommandHandler* handler, int argc, char** argv, FastoObject* out) {
   DBConnection* red = static_cast<DBConnection*>(handler);
-  return red->common_exec(argc + 2, argv - 2, out);
+  return red->commonExec(argc + 2, argv - 2, out);
 }
 
 common::Error auth(CommandHandler* handler, int argc, char** argv, FastoObject* out) {
@@ -849,11 +849,12 @@ common::Error DBConnection::latencyMode(FastoObject* out) {
         max = latency;
       }
       tot += latency;
-      avg = static_cast<double>(tot / count);
+      avg = static_cast<double>(tot) / static_cast<double>(count);
     }
 
-    std::string buff = common::MemSPrintf("min: %lld, max: %lld, avg: %.2f (%lld samples)",
-                                          min, max, avg, count);
+    std::string avg_str = common::ConvertToString(avg, 2);
+    std::string buff = common::MemSPrintf("min: %llu, max: %llu, avg: %s (%llu samples)",
+                                          min, max, avg_str, count);
     common::Value* val = common::Value::createStringValue(buff);
 
     if (!child) {
@@ -1732,7 +1733,7 @@ common::Error DBConnection::cliReadReply(FastoObject* out) {
   return er;
 }
 
-common::Error DBConnection::executeAsPipeline(std::vector<FastoObjectCommandIPtr> cmds) {
+common::Error DBConnection::executeAsPipeline(const std::vector<FastoObjectCommandIPtr>& cmds) {
   if (!isConnected()) {
     DNOTREACHED();
     return common::make_error_value("Not connected", common::Value::E_ERROR);
@@ -1756,7 +1757,7 @@ common::Error DBConnection::executeAsPipeline(std::vector<FastoObjectCommandIPtr
 
     LOG_COMMAND(REDIS, fastonosql::Command(cmdc));
     int argc = 0;
-    sds* argv = sdssplitargs(ccommand, &argc);
+    sds* argv = sdssplitargslong(ccommand, &argc);
 
     if (argv) {
       if (isPipeLineCommand(argv[0])) {
@@ -1779,24 +1780,7 @@ common::Error DBConnection::executeAsPipeline(std::vector<FastoObjectCommandIPtr
   return common::Error();
 }
 
-common::Error DBConnection::common_exec(int argc, char** argv, FastoObject* out) {
-  size_t* argvlen = reinterpret_cast<size_t*>(malloc(argc * sizeof(size_t)));
-  for (int j = 0; j < argc; j++) {
-    size_t len =  sdslen(argv[j]);
-    argvlen[j] = len;
-  }
-
-  redisAppendCommandArgv(connection_.handle_, argc, (const char**)argv, argvlen);
-  free(argvlen);
-  common::Error err = cliReadReply(out);
-  if (err && err->isError()) {
-    return err;
-  }
-
-  return common::Error();
-}
-
-common::Error DBConnection::common_exec_off2(int argc, char** argv, FastoObject* out) {
+common::Error DBConnection::commonExec(int argc, char** argv, FastoObject* out) {
   size_t* argvlen = reinterpret_cast<size_t*>(malloc(argc * sizeof(size_t)));
   for (int j = 0; j < argc; j++) {
     size_t len =  sdslen(argv[j]);

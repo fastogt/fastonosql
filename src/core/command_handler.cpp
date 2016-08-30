@@ -29,13 +29,13 @@
 namespace fastonosql {
 namespace core {
 
-CommandHandler::CommandHandler(const std::vector<commands_t> &commands)
+CommandHandler::CommandHandler(const commands_t& commands)
   : commands_(commands) {
 }
 
 common::Error CommandHandler::execute(int argc, char** argv, FastoObject* out) {
   for(size_t i = 0; i < commands_.size(); ++i) {
-    commands_t cmd = commands_[i];
+    command_t cmd = commands_[i];
     size_t off = 0;
     if (cmd.isCommand(argc, argv, &off)) {
       int argc_to_call = argc - off;

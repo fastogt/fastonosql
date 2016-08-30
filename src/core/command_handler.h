@@ -31,14 +31,17 @@ namespace core {
 
 class CommandHandler {
  public:
-  typedef CommandHolder commands_t;
-  explicit CommandHandler(const std::vector<commands_t>& commands);
+  typedef CommandHolder command_t;
+  typedef std::vector<command_t> commands_t;
+
+  explicit CommandHandler(const commands_t& commands);
   common::Error execute(int argc, char** argv, FastoObject* out) WARN_UNUSED_RESULT;
 
   static common::Error notSupported(const std::string& cmd);
   static common::Error unknownSequence(int argc, char** argv);
+
  private:
-  const std::vector<commands_t> commands_;
+  const commands_t& commands_;
 };
 
 }  // namespace core

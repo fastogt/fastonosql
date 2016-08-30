@@ -245,8 +245,6 @@ void OutputWidget::itemUpdate(FastoObject* item, FastoObject::value_t newValue) 
     return;
   }
 
-  CHECK(item->value() == newValue);
-
   core::NValue nval = newValue;
   it->setValue(nval);
   commonModel_->updateItem(index.parent(), index);
