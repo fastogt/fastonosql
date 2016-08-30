@@ -27,10 +27,11 @@ namespace core {
 namespace redis {
 
 class Command
-      : public FastoObjectCommand {
+  : public FastoObjectCommand {
  public:
   Command(FastoObject* parent, common::CommandValue* cmd, const std::string& delimiter);
-  virtual bool isReadOnly() const;
+  virtual bool isReadOnly() const OVERRIDE;
+  virtual FastoObjectCommand* Clone() const OVERRIDE;
 };
 
 }  // namespace redis

@@ -1755,7 +1755,7 @@ common::Error DBConnection::executeAsPipeline(const std::vector<FastoObjectComma
       continue;
     }
 
-    LOG_COMMAND(REDIS, fastonosql::Command(cmdc));
+    LOG_COMMAND(fastonosql::Command(cmd->Clone()));
     int argc = 0;
     sds* argv = sdssplitargslong(ccommand, &argc);
 

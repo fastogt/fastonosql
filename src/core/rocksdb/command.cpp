@@ -25,7 +25,7 @@ namespace core {
 namespace rocksdb {
 
 Command::Command(FastoObject* parent, common::CommandValue* cmd, const std::string& delimiter)
-  : FastoObjectCommand(parent, cmd, delimiter) {
+  : FastoObjectCommand(parent, cmd, delimiter, ROCKSDB) {
 }
 
 bool Command::isReadOnly() const {
@@ -36,6 +36,11 @@ bool Command::isReadOnly() const {
 
   std::transform(key.begin(), key.end(), key.begin(), ::tolower);
   return key != "get";
+}
+
+FastoObjectCommand* Command::Clone() const {
+  common::CommandValue* cmdv = cmd();
+  return new Command(parent(), cmdv ? cmdv->deepCopy() : nullptr, delimiter());
 }
 
 }  // namespace rocksdb

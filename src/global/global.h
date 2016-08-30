@@ -27,6 +27,8 @@
 #include "common/macros.h"              // for DISALLOW_COPY_AND_ASSIGN
 #include "common/value.h"               // for ArrayValue (ptr only), etc
 
+#include "core/connection_types.h"
+
 namespace fastonosql {
 
 class FastoObject
@@ -71,7 +73,7 @@ class FastoObject
 };
 
 class FastoObjectCommand
-  : public FastoObject {
+  : public FastoObject, public common::ClonableBase<FastoObjectCommand> {
  public:
   virtual ~FastoObjectCommand();
   common::CommandValue* cmd() const;
@@ -82,11 +84,16 @@ class FastoObjectCommand
 
   virtual bool isReadOnly() const = 0;
 
+  core::connectionTypes connectionType() const;
+
   std::string inputCommand() const;
   common::Value::CommandLoggingType commandLoggingType() const;
 
  protected:
-  FastoObjectCommand(FastoObject* parent, common::CommandValue* cmd, const std::string& delimiter);
+  FastoObjectCommand(FastoObject* parent, common::CommandValue* cmd, const std::string& delimiter, core::connectionTypes type);
+
+ private:
+  const core::connectionTypes type_;
 };
 
 std::pair<std::string, std::string> GetKeyValueFromLine(const std::string& input);

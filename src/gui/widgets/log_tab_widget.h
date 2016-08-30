@@ -45,7 +45,7 @@ class LogTabWidget
 
  public Q_SLOTS:
   void addLogMessage(const QString& message, common::logging::LEVEL_LOG level);
-  void addCommand(core::connectionTypes type, const Command& command);
+  void addCommand(const Command& command);
 
  protected:
   virtual void changeEvent(QEvent* ev);

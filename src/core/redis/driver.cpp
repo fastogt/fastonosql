@@ -103,16 +103,6 @@ namespace fastonosql {
 namespace core {
 namespace redis {
 
-namespace {
-
-Command* createCommandFast(const std::string& input, common::Value::CommandLoggingType ct) {
-  common::CommandValue* cmd = common::Value::createCommand(input, ct);
-  Command* fs = new Command(nullptr, cmd, std::string());
-  return fs;
-}
-
-}  // namespace
-
 Driver::Driver(IConnectionSettingsBaseSPtr settings)
   : IDriverRemote(settings), impl_(new DBConnection(this)) {
   COMPILE_ASSERT(DBConnection::connection_t == REDIS, "DBConnection must be the same type as Driver!");
@@ -178,16 +168,11 @@ common::Error Driver::executeImpl(int argc, char** argv, FastoObject* out) {
 }
 
 common::Error Driver::serverInfo(IServerInfo** info) {
-  FastoObjectIPtr root = FastoObject::createRoot(INFO_REQUEST);
-  FastoObjectCommand* cmd = CreateCommand<Command>(root, INFO_REQUEST,
-                                                        common::Value::C_INNER);
+  Command* cmd = CreateCommandFast<Command>(INFO_REQUEST, common::Value::C_INNER);
   common::Error res = execute(cmd);
   if (!res) {
-    auto ch = root->childrens();
-    if (ch.size()) {
-      std::string content = common::ConvertToString(ch[0]);
-      *info = makeRedisServerInfo(content);
-    }
+    std::string content = common::ConvertToString(cmd);
+    *info = makeRedisServerInfo(content);
 
     if (*info == nullptr) {
       res = common::make_error_value("Invalid " INFO_REQUEST " command output",
@@ -195,6 +180,7 @@ common::Error Driver::serverInfo(IServerInfo** info) {
     }
   }
 
+  delete cmd;
   return res;
 }
 
@@ -537,10 +523,9 @@ void Driver::handleLoadDatabaseInfosEvent(events::LoadDatabasesInfoRequestEvent*
   QObject* sender = ev->sender();
   notifyProgress(sender, 0);
   events::LoadDatabasesInfoResponceEvent::value_type res(ev->value());
-  FastoObjectIPtr root = FastoObject::createRoot(REDIS_GET_DATABASES);
+  Command* cmd = CreateCommandFast<Command>(REDIS_GET_DATABASES, common::Value::C_INNER);
   notifyProgress(sender, 50);
-  FastoObjectCommand* cmd = CreateCommand<Command>(root, REDIS_GET_DATABASES,
-                                                        common::Value::C_INNER);
+
   common::Error er = execute(cmd);
   if (er && er->isError()) {
     res.setErrorInfo(er);
@@ -581,6 +566,7 @@ void Driver::handleLoadDatabaseInfosEvent(events::LoadDatabasesInfoRequestEvent*
     }
   }
 done:
+  delete cmd;
   notifyProgress(sender, 75);
   reply(sender, new events::LoadDatabasesInfoResponceEvent(this, res));
   notifyProgress(sender, 100);
@@ -640,8 +626,8 @@ void Driver::handleLoadDatabaseContentEvent(events::LoadDatabaseContentRequestEv
         if (isok) {
           NKey k(key);
           NDbKValue dbv(k, NValue());
-          cmds.push_back(createCommandFast("TYPE " + key, common::Value::C_INNER));
-          cmds.push_back(createCommandFast("TTL " + key, common::Value::C_INNER));
+          cmds.push_back(CreateCommandFast<Command>("TYPE " + key, common::Value::C_INNER));
+          cmds.push_back(CreateCommandFast<Command>("TTL " + key, common::Value::C_INNER));
           res.keys.push_back(dbv);
         }
       }
@@ -652,7 +638,7 @@ void Driver::handleLoadDatabaseContentEvent(events::LoadDatabaseContentRequestEv
       }
 
       for (size_t i = 0; i < res.keys.size(); ++i) {
-        FastoObjectIPtr cmdType = cmds[i*2];
+        FastoObjectIPtr cmdType = cmds[i * 2];
         FastoObject::childs_t tchildrens = cmdType->childrens();
         if (tchildrens.size()) {
           DCHECK_EQ(tchildrens.size(), 1);

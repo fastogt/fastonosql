@@ -33,6 +33,7 @@
 #include "common/value.h"               // for Value, etc
 
 #include "global/types.h"               // for Command
+#include "global/global.h"
 
 #include "translations/global.h"        // for trClearAll
 
@@ -55,12 +56,13 @@ CommandsWidget::CommandsWidget(QWidget* parent)
   retranslateUi();
 }
 
-void CommandsWidget::addCommand(core::connectionTypes type, const Command& command) {
+void CommandsWidget::addCommand(const Command& command) {
   QTime time = QTime::currentTime();
-  logTextEdit_->setTextColor(command.type() == common::Value::C_INNER ?
+  Command::cmd_t cmd = command.cmd();
+  logTextEdit_->setTextColor(cmd->commandLoggingType() == common::Value::C_INNER ?
                                QColor(Qt::gray) : QColor(Qt::black));
-  QString mess = common::ConvertFromString<QString>(command.message());
-  std::string stype = common::ConvertToString(type);
+  QString mess = common::ConvertFromString<QString>(cmd->inputCommand());
+  std::string stype = common::ConvertToString(cmd->connectionType());
   QString qstype = common::ConvertFromString<QString>(stype);
   logTextEdit_->append(time.toString("[%1] hh:mm:ss.zzz: %2").arg(qstype.toUpper(), mess));
   QScrollBar* sb = logTextEdit_->verticalScrollBar();

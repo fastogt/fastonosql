@@ -23,32 +23,20 @@
 #include "common/macros.h"              // for SIZEOFMASS
 #include "common/convert2string.h"
 
+#include "global/global.h"
+
 namespace fastonosql {
 
 Command::Command()
-  : message_(), type_(common::Value::C_INNER) {
+  : cmd_() {
 }
 
-Command::Command(const std::string& mess, common::Value::CommandLoggingType commandT)
-  : message_(mess), type_(commandT) {
+Command::Command(FastoObjectCommand* cmd)
+  : cmd_(cmd) {
 }
 
-Command::Command(common::CommandValue* cmd)
-  : message_(), type_(common::Value::C_INNER) {
-  if (!cmd) {
-    return;
-  }
-
-  message_ = cmd->inputCommand();
-  type_ = cmd->commandLoggingType();
-}
-
-std::string Command::message() const {
-  return message_;
-}
-
-common::Value::CommandLoggingType Command::type() const {
-  return type_;
+Command::cmd_t Command::cmd() const {
+  return cmd_;
 }
 
 }  // namespace fastonosql

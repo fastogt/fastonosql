@@ -202,7 +202,8 @@ common::Error Driver::executeImpl(int argc, char** argv, FastoObject* out) {
 }
 
 common::Error Driver::serverInfo(IServerInfo** info) {
-  LOG_COMMAND(type(), fastonosql::Command(SSDB_INFO_REQUEST, common::Value::C_INNER));
+  Command* cmd = CreateCommandFast<Command>(SSDB_INFO_REQUEST, common::Value::C_INNER);
+  LOG_COMMAND(fastonosql::Command(cmd));
   ServerInfo::Common cm;
   common::Error err = impl_->info(nullptr, &cm);
   if (!err) {

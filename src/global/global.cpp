@@ -102,8 +102,8 @@ void FastoObject::setValue(value_t val) {
 }
 
 FastoObjectCommand::FastoObjectCommand(FastoObject* parent, common::CommandValue* cmd,
-                                       const std::string& delimiter)
-  : FastoObject(parent, cmd, delimiter) {
+                                       const std::string& delimiter, core::connectionTypes type)
+  : FastoObject(parent, cmd, delimiter), type_(type) {
 }
 
 FastoObjectCommand::~FastoObjectCommand() {
@@ -135,6 +135,10 @@ std::string FastoObjectCommand::inputArgs() const {
   }
 
   return std::string();
+}
+
+core::connectionTypes FastoObjectCommand::connectionType() const {
+  return type_;
 }
 
 std::string FastoObjectCommand::inputCommand() const {

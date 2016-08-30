@@ -51,8 +51,8 @@ void LogTabWidget::addLogMessage(const QString& message, common::logging::LEVEL_
   log_->addLogMessage(message, level);
 }
 
-void LogTabWidget::addCommand(core::connectionTypes type, const Command& command) {
-  commands_->addCommand(type, command);
+void LogTabWidget::addCommand(const Command& command) {
+  commands_->addCommand(command);
 }
 
 void LogTabWidget::changeEvent(QEvent* e) {

@@ -134,7 +134,7 @@ common::Error IDriver::execute(FastoObjectCommand* cmd) {
     return common::make_error_value("Invalid input argument(s)", common::ErrorValue::E_ERROR);
   }
 
-  LOG_COMMAND(type(), Command(icmd));
+  LOG_COMMAND(Command(cmd->Clone()));
   int argc;
   sds* argv = sdssplitargslong(ccommand, &argc);
   if (!argv) {

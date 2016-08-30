@@ -27,11 +27,10 @@ namespace core {
 
 CommandLogger::CommandLogger() {
   qRegisterMetaType<fastonosql::Command>("Command");
-  qRegisterMetaType<connectionTypes>("connectionTypes");
 }
 
-void CommandLogger::print(connectionTypes type, const Command& command) {
-  emit printed(type, command);
+void CommandLogger::print(const Command& command) {
+  emit printed(command);
 }
 
 }  // namespace core

@@ -20,7 +20,9 @@
 
 #include <string>
 
-#include "common/value.h"
+#include "common/smart_ptr.h"
+
+namespace fastonosql { class FastoObjectCommand; }
 
 namespace fastonosql {
 
@@ -34,15 +36,14 @@ static const std::string viewsText[] = { "Tree", "Table", "Text" };
 
 class Command {
  public:
+  typedef common::shared_ptr<FastoObjectCommand> cmd_t;
   Command();
-  Command(const std::string& mess, common::Value::CommandLoggingType commandT);
-  explicit Command(common::CommandValue* cmd);
-  std::string message() const;
-  common::Value::CommandLoggingType type() const;
+  explicit Command(FastoObjectCommand* cmd);  // take ownerships
+
+  cmd_t cmd() const;
 
  private:
-  std::string message_;
-  common::Value::CommandLoggingType type_;
+  cmd_t cmd_;
 };
 
 }  // namespace fastonosql

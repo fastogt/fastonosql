@@ -53,5 +53,18 @@ Command* CreateCommand(FastoObjectIPtr parent, const std::string& input,
   return CreateCommand<Command>(parent.get(), input, ct);
 }
 
+template<typename Command>
+Command* CreateCommandFast(const std::string& input, common::Value::CommandLoggingType ct) {
+  std::string stable_input = StableCommand(input);
+  if (stable_input.empty()) {
+    NOTREACHED();
+    return nullptr;
+  }
+
+  common::CommandValue* cmd = common::Value::createCommand(stable_input, ct);
+  Command* fs = new Command(nullptr, cmd, std::string());
+  return fs;
+}
+
 }  // namespace core
 }  // namespace fastonosql
