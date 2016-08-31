@@ -32,11 +32,7 @@ FastoObject::FastoObject(FastoObject* parent, common::Value *val, const std::str
 }
 
 FastoObject::~FastoObject() {
-  for (size_t i = 0; i < childrens_.size(); ++i) {
-    FastoObject* item = childrens_[i];
-    delete item;
-  }
-  childrens_.clear();
+  clear();
 }
 
 common::Value::Type FastoObject::type() const {
@@ -61,7 +57,7 @@ FastoObject::childs_t FastoObject::childrens() const {
   return childrens_;
 }
 
-void FastoObject::addChildren(FastoObject* child) {
+void FastoObject::addChildren(child_t child) {
   if (!child) {
     return;
   }
@@ -69,7 +65,7 @@ void FastoObject::addChildren(FastoObject* child) {
   CHECK(child->parent_ == this);
   childrens_.push_back(child);
   if (observer_) {
-    observer_->addedChildren(child);
+    observer_->addedChildren(child.get());  // remove get
     child->observer_ = observer_;
   }
 }
@@ -79,10 +75,6 @@ FastoObject* FastoObject::parent() const {
 }
 
 void FastoObject::clear() {
-  for (auto it = childrens_.begin(); it != childrens_.end(); ++it) {
-    FastoObject* child = (*it);
-    delete child;
-  }
   childrens_.clear();
 }
 
@@ -226,7 +218,7 @@ std::string ConvertToString(fastonosql::FastoObject* obj) {
 
   auto childrens = obj->childrens();
   for(auto it = childrens.begin(); it != childrens.end(); ++it ){
-    result += ConvertToString(*it);
+    result += ConvertToString((*it).get());
   }
 
   return result;

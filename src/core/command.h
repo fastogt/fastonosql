@@ -28,7 +28,7 @@ namespace core {
 std::string StableCommand(std::string command);
 
 template<typename Command>
-Command* CreateCommand(FastoObject* parent, const std::string& input,
+FastoObjectCommandIPtr CreateCommand(FastoObject* parent, const std::string& input,
                                   common::Value::CommandLoggingType ct) {
   if (!parent) {
     NOTREACHED();
@@ -42,13 +42,13 @@ Command* CreateCommand(FastoObject* parent, const std::string& input,
   }
 
   common::CommandValue* cmd = common::Value::createCommand(stable_input, ct);
-  Command* fs = new Command(parent, cmd, parent->delimiter());
+  FastoObjectCommandIPtr fs = new Command(parent, cmd, parent->delimiter());
   parent->addChildren(fs);
   return fs;
 }
 
 template<typename Command>
-Command* CreateCommand(FastoObjectIPtr parent, const std::string& input,
+FastoObjectCommandIPtr CreateCommand(FastoObjectIPtr parent, const std::string& input,
                                   common::Value::CommandLoggingType ct) {
   return CreateCommand<Command>(parent.get(), input, ct);
 }

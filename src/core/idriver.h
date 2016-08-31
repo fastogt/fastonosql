@@ -136,7 +136,7 @@ class IDriver
 
   void setCurrentDatabaseInfo(IDataBaseInfo* inf);
 
-  common::Error execute(FastoObjectCommand* cmd) WARN_UNUSED_RESULT;
+  common::Error execute(FastoObjectCommandIPtr cmd) WARN_UNUSED_RESULT;
  private:
   virtual common::Error syncConnect() WARN_UNUSED_RESULT = 0;
   virtual common::Error syncDisconnect() WARN_UNUSED_RESULT = 0;

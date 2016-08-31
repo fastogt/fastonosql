@@ -808,7 +808,7 @@ common::Error DBConnection::latencyMode(FastoObject* out) {
     return common::make_error_value("Invalid input argument(s)", common::ErrorValue::E_ERROR);
   }
 
-  FastoObjectCommand* cmd = CreateCommand<Command>(out, "PING", common::Value::C_INNER);
+  FastoObjectCommandIPtr cmd = CreateCommand<Command>(out, "PING", common::Value::C_INNER);
   if (!cmd) {
     DNOTREACHED();
     return common::make_error_value("Invalid createCommand input argument",
@@ -822,7 +822,7 @@ common::Error DBConnection::latencyMode(FastoObject* out) {
                             LATENCY_HISTORY_DEFAULT_INTERVAL;
   common::time64_t history_start = common::time::current_mstime();
 
-  FastoObject* child = nullptr;
+  FastoObjectIPtr child;
   std::string command = cmd->inputCommand();
 
   double avg;
@@ -858,13 +858,13 @@ common::Error DBConnection::latencyMode(FastoObject* out) {
     common::Value* val = common::Value::createStringValue(buff);
 
     if (!child) {
-      child = new FastoObject(cmd, val, delimiter());
+      child = make_fasto_object<FastoObject>(cmd.get(), val, delimiter());
       cmd->addChildren(child);
       continue;
     }
 
     if (connection_.config_.latency_history && (curTime - history_start > history_interval)) {
-      child = new FastoObject(cmd, val, delimiter());
+      child = make_fasto_object<FastoObject>(cmd.get(), val, delimiter());
       cmd->addChildren(child);
       history_start = curTime;
       min = max = tot = count = 0;
@@ -945,8 +945,7 @@ common::Error DBConnection::slaveMode(FastoObject* out) {
     return err;
   }
 
-  FastoObjectCommand* cmd = CreateCommand<Command>(out, SYNC_REQUEST,
-                                                        common::Value::C_INNER);
+  FastoObjectCommandIPtr cmd = CreateCommand<Command>(out, SYNC_REQUEST, common::Value::C_INNER);
   if (!cmd) {
     DNOTREACHED();
     return common::make_error_value("Invalid createCommand input argument",
@@ -968,7 +967,7 @@ common::Error DBConnection::slaveMode(FastoObject* out) {
 
   /* Now we can use hiredis to read the incoming protocol. */
   while (!isInterrupted()) {
-    err = cliReadReply(cmd);
+    err = cliReadReply(cmd.get());
     if (err && err->isError()) {
       return err;
     }
@@ -1001,7 +1000,7 @@ common::Error DBConnection::getRDB(FastoObject* out) {
   }
 
   common::ArrayValue* val = NULL;
-  FastoObjectCommand* cmd = CreateCommand<Command>(out, RDM_REQUEST, common::Value::C_INNER);
+  FastoObjectCommandIPtr cmd = CreateCommand<Command>(out, RDM_REQUEST, common::Value::C_INNER);
   if (!cmd) {
     DNOTREACHED();
     return common::make_error_value("Invalid createCommand input argument",
@@ -1012,7 +1011,7 @@ common::Error DBConnection::getRDB(FastoObject* out) {
   /* Write to file. */
   if (connection_.config_.rdb_filename == "-") {
     val = new common::ArrayValue;
-    FastoObject* child = new FastoObject(cmd, val, delimiter());
+    FastoObjectIPtr child = make_fasto_object<FastoObject>(cmd.get(), val, delimiter());
     cmd->addChildren(child);
   } else {
     fd = open(connection_.config_.rdb_filename.c_str(), O_CREAT | O_WRONLY, 0644);
@@ -1213,8 +1212,7 @@ common::Error DBConnection::findBigKeys(FastoObject* out) {
     return common::make_error_value("Invalid input argument(s)", common::ErrorValue::E_ERROR);
   }
 
-  FastoObjectCommand* cmd = CreateCommand<Command>(out, FIND_BIG_KEYS_REQUEST,
-                                                        common::Value::C_INNER);
+  FastoObjectCommandIPtr cmd = CreateCommand<Command>(out, FIND_BIG_KEYS_REQUEST, common::Value::C_INNER);
   if (!cmd) {
     DNOTREACHED();
     return common::make_error_value("Invalid createCommand input argument",
@@ -1351,7 +1349,7 @@ common::Error DBConnection::findBigKeys(FastoObject* out) {
       buff = common::MemSPrintf("Biggest %6s found '%s' has %llu %s", typeName[i], maxkeys[i],
                                 biggest[i], typeunit[i]);
       common::StringValue *val = common::Value::createStringValue(buff);
-      FastoObject* obj = new FastoObject(cmd, val, delimiter());
+      FastoObjectIPtr obj = make_fasto_object<FastoObject>(cmd.get(), val, delimiter());
       cmd->addChildren(obj);
     }
   }
@@ -1363,7 +1361,7 @@ common::Error DBConnection::findBigKeys(FastoObject* out) {
                               sampled ? 100 * static_cast<double>(counts[i] / sampled) : 0,
                               counts[i] ? static_cast<double>(totalsize[i] / counts[i]) : 0);
     common::StringValue *val = common::Value::createStringValue(buff);
-    FastoObject* obj = new FastoObject(cmd, val, delimiter());
+    FastoObjectIPtr obj = make_fasto_object<FastoObject>(cmd.get(), val, delimiter());
     cmd->addChildren(obj);
   }
 
@@ -1391,8 +1389,7 @@ common::Error DBConnection::statMode(FastoObject* out) {
     return common::make_error_value("Invalid input argument(s)", common::ErrorValue::E_ERROR);
   }
 
-  FastoObjectCommand* cmd = CreateCommand<Command>(out, INFO_REQUEST,
-                                                        common::Value::C_INNER);
+  FastoObjectCommandIPtr cmd = CreateCommand<Command>(out, INFO_REQUEST, common::Value::C_INNER);
   if (!cmd) {
     DNOTREACHED();
     return common::make_error_value("Invalid createCommand input argument",
@@ -1483,7 +1480,7 @@ common::Error DBConnection::statMode(FastoObject* out) {
     }
 
     common::StringValue *val = common::Value::createStringValue(result);
-    FastoObject* obj = new FastoObject(cmd, val, delimiter());
+    FastoObjectIPtr obj = make_fasto_object<FastoObject>(cmd.get(), val, delimiter());
     cmd->addChildren(obj);
 
     freeReplyObject(reply);
@@ -1509,8 +1506,7 @@ common::Error DBConnection::scanMode(FastoObject* out) {
     return common::make_error_value("Invalid input argument(s)", common::ErrorValue::E_ERROR);
   }
 
-  FastoObjectCommand* cmd = CreateCommand<Command>(out, SCAN_MODE_REQUEST,
-                                                        common::Value::C_INNER);
+  FastoObjectCommandIPtr cmd = CreateCommand<Command>(out, SCAN_MODE_REQUEST, common::Value::C_INNER);
   if (!cmd) {
     DNOTREACHED();
     return common::make_error_value("Invalid createCommand input argument",
@@ -1536,7 +1532,7 @@ common::Error DBConnection::scanMode(FastoObject* out) {
       cur = strtoull(reply->element[0]->str,NULL,10);
       for (size_t j = 0; j < reply->element[1]->elements; j++) {
         common::StringValue* val = common::Value::createStringValue(reply->element[1]->element[j]->str);
-        FastoObject* obj = new FastoObject(cmd, val, delimiter());
+        FastoObjectIPtr obj = make_fasto_object<FastoObject>(cmd.get(), val, delimiter());
         cmd->addChildren(obj);
       }
     }

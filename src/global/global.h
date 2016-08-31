@@ -31,10 +31,22 @@
 
 namespace fastonosql {
 
+class FastoObject;
+class FastoObjectCommand;
+
+template<typename T, typename... Args>
+inline common::intrusive_ptr<T> make_fasto_object(Args&&... args) {
+  return common::intrusive_ptr<T>(new T(std::forward<Args>(args)...));
+}
+
+typedef common::intrusive_ptr<FastoObject> FastoObjectIPtr;
+typedef common::intrusive_ptr<FastoObjectCommand> FastoObjectCommandIPtr;
+
 class FastoObject
   : public common::intrusive_ptr_base<FastoObject> {
  public:
-  typedef std::vector<FastoObject*> childs_t;
+  typedef FastoObjectIPtr child_t;
+  typedef std::vector<child_t> childs_t;
   typedef common::shared_ptr<common::Value> value_t;
 
   class IFastoObjectObserver {
@@ -52,7 +64,7 @@ class FastoObject
   static FastoObject* createRoot(const std::string& text, IFastoObjectObserver* observer = nullptr);
 
   childs_t childrens() const;
-  void addChildren(FastoObject* child);
+  void addChildren(child_t child);
   FastoObject* parent() const;
   void clear();
   std::string delimiter() const;
@@ -110,9 +122,6 @@ class FastoObjectArray
 
   common::ArrayValue* array() const;
 };
-
-typedef common::intrusive_ptr<FastoObject> FastoObjectIPtr;
-typedef common::intrusive_ptr<FastoObjectCommand> FastoObjectCommandIPtr;
 
 }  // namespace fastonosql
 
