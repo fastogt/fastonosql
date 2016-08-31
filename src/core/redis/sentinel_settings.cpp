@@ -28,7 +28,7 @@ SentinelSettings::SentinelSettings(const connection_path_t& connectionName)
   : ISentinelSettingsBase(connectionName, REDIS) {
 }
 
-SentinelSettings* SentinelSettings::clone() const {
+SentinelSettings* SentinelSettings::Clone() const {
   SentinelSettings* red = new SentinelSettings(*this);
   return red;
 }

@@ -36,7 +36,7 @@ class IClusterSettingsBase
   static IClusterSettingsBase* fromString(const std::string& val);
 
   virtual std::string toString() const;
-  virtual IClusterSettingsBase* clone() const = 0;
+  virtual IClusterSettingsBase* Clone() const = 0;
 
   virtual IConnectionSettingsBaseSPtr findSettingsByHost(const common::net::HostAndPort& host) const;
 

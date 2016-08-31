@@ -30,8 +30,8 @@ class Command
   : public FastoObjectCommand {
  public:
   Command(FastoObject* parent, common::CommandValue* cmd, const std::string& delimiter);
-  virtual bool isReadOnly() const OVERRIDE;
-  virtual FastoObjectCommand* Clone() const OVERRIDE;
+  virtual bool isReadOnly() const override;
+  virtual FastoObjectCommand* Clone() const override;
 };
 
 }  // namespace redis

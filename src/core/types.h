@@ -122,7 +122,8 @@ struct ServerInfoSnapShoot {
   IServerInfoSPtr info;
 };
 
-class IDataBaseInfo {
+class IDataBaseInfo
+  : public common::ClonableBase<IDataBaseInfo> {
  public:
   typedef std::vector<NDbKValue> keys_container_t;
   connectionTypes type() const;
@@ -134,7 +135,6 @@ class IDataBaseInfo {
   bool isDefault() const;
   void setIsDefault(bool isDef);
 
-  virtual IDataBaseInfo* clone() const = 0;
   virtual ~IDataBaseInfo();
 
   keys_container_t keys() const;

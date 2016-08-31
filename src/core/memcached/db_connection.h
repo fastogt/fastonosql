@@ -56,7 +56,7 @@ class DBConnection
   static const char* versionApi();
 
   common::Error keys(const std::string& key_start, const std::string& key_end, uint64_t limit, std::vector<std::string>* ret) WARN_UNUSED_RESULT;
-  common::Error info(const char* args, ServerInfo::Common* statsout) WARN_UNUSED_RESULT;
+  common::Error info(const char* args, ServerInfo::Stats* statsout) WARN_UNUSED_RESULT;
   common::Error dbkcount(size_t* size) WARN_UNUSED_RESULT;
 
   common::Error get(const std::string& key, std::string* ret_val) WARN_UNUSED_RESULT;

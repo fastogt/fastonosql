@@ -56,7 +56,7 @@ std::string ConnectionSettings::fullAddress() const {
   return info_.dbname;
 }
 
-ConnectionSettings* ConnectionSettings::clone() const {
+ConnectionSettings* ConnectionSettings::Clone() const {
   ConnectionSettings* red = new ConnectionSettings(*this);
   return red;
 }

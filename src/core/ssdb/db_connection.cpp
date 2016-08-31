@@ -110,7 +110,7 @@ const char* DBConnection::versionApi() {
   return "1.9.3";
 }
 
-common::Error DBConnection::info(const char* args, ServerInfo::Common* statsout) {
+common::Error DBConnection::info(const char* args, ServerInfo::Stats* statsout) {
   if (!isConnected()) {
     DNOTREACHED();
     return common::make_error_value("Not connected", common::Value::E_ERROR);
@@ -128,7 +128,7 @@ common::Error DBConnection::info(const char* args, ServerInfo::Common* statsout)
     return common::make_error_value(buff, common::ErrorValue::E_ERROR);
   }
 
-  ServerInfo::Common lstatsout;
+  ServerInfo::Stats lstatsout;
   for (size_t i = 0; i < ret.size(); i += 2) {
     if (ret[i] == SSDB_VERSION_LABEL) {
       lstatsout.version = ret[i + 1];
@@ -859,7 +859,7 @@ common::Error DBConnection::flushdb() {
 
 common::Error info(CommandHandler* handler, int argc, char** argv, FastoObject* out) {
   DBConnection* ssdb = static_cast<DBConnection*>(handler);
-  ServerInfo::Common statsout;
+  ServerInfo::Stats statsout;
   common::Error er = ssdb->info(argc == 1 ? argv[0] : 0, &statsout);
   if (!er) {
     ServerInfo sinf(statsout);

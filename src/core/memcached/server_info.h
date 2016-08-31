@@ -57,10 +57,10 @@ namespace memcached {
 class ServerInfo
   : public IServerInfo {
  public:
-  struct Common
+  struct Stats
     : IStateField {
-    Common();
-    explicit Common(const std::string& common_text);
+    Stats();
+    explicit Stats(const std::string& common_text);
     common::Value* valueByIndex(unsigned char index) const;
 
     uint32_t pid;
@@ -85,10 +85,10 @@ class ServerInfo
     uint32_t bytes_written;
     uint32_t limit_maxbytes;
     uint32_t threads;
-  } common_;
+  } stats_;
 
   ServerInfo();
-  explicit ServerInfo(const Common& common);
+  explicit ServerInfo(const Stats& common);
 
   virtual common::Value* valueByIndexes(unsigned char property, unsigned char field) const;
   virtual std::string toString() const;

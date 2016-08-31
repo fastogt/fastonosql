@@ -143,7 +143,7 @@ bool Driver::isAuthenticated() const {
 }
 
 void Driver::currentDataBaseChanged(IDataBaseInfo* info) {
-  setCurrentDatabaseInfo(info->clone());
+  setCurrentDatabaseInfo(info->Clone());
 }
 
 void Driver::initImpl() {
@@ -168,20 +168,19 @@ common::Error Driver::executeImpl(int argc, char** argv, FastoObject* out) {
 }
 
 common::Error Driver::serverInfo(IServerInfo** info) {
-  Command* cmd = CreateCommandFast<Command>(INFO_REQUEST, common::Value::C_INNER);
-  common::Error res = execute(cmd);
-  if (!res) {
-    std::string content = common::ConvertToString(cmd);
-    *info = makeRedisServerInfo(content);
-
-    if (*info == nullptr) {
-      res = common::make_error_value("Invalid " INFO_REQUEST " command output",
-                                     common::ErrorValue::E_ERROR);
-    }
+  FastoObjectCommandIPtr cmd = CreateCommandFast<Command>(INFO_REQUEST, common::Value::C_INNER);
+  common::Error err = execute(cmd.get());
+  if (err && err->isError()) {
+    return err;
   }
 
-  delete cmd;
-  return res;
+  std::string content = common::ConvertToString(cmd.get());
+  *info = makeRedisServerInfo(content);
+
+  if (!*info) {
+    return common::make_error_value("Invalid " INFO_REQUEST " command output", common::ErrorValue::E_ERROR);
+  }
+  return common::Error();
 }
 
 common::Error Driver::currentDataBaseInfo(IDataBaseInfo** info) {
@@ -523,10 +522,10 @@ void Driver::handleLoadDatabaseInfosEvent(events::LoadDatabasesInfoRequestEvent*
   QObject* sender = ev->sender();
   notifyProgress(sender, 0);
   events::LoadDatabasesInfoResponceEvent::value_type res(ev->value());
-  Command* cmd = CreateCommandFast<Command>(REDIS_GET_DATABASES, common::Value::C_INNER);
+  FastoObjectCommandIPtr cmd = CreateCommandFast<Command>(REDIS_GET_DATABASES, common::Value::C_INNER);
   notifyProgress(sender, 50);
 
-  common::Error er = execute(cmd);
+  common::Error er = execute(cmd.get());
   if (er && er->isError()) {
     res.setErrorInfo(er);
   } else {
@@ -548,17 +547,17 @@ void Driver::handleLoadDatabaseInfosEvent(events::LoadDatabasesInfoRequestEvent*
         std::string scountDb;
         bool isok = ar->getString(1, &scountDb);
         if (isok) {
-            size_t countDb = common::ConvertFromString<size_t>(scountDb);
-            if (countDb > 0) {
-              for (size_t i = 0; i < countDb; ++i) {
-                IDataBaseInfoSPtr dbInf(new DataBaseInfo(common::ConvertToString(i), false, 0));
-                if (dbInf->name() == curdb->name()) {
-                  res.databases.push_back(curdb);
-                } else {
-                  res.databases.push_back(dbInf);
-                }
+          size_t countDb = common::ConvertFromString<size_t>(scountDb);
+          if (countDb > 0) {
+            for (size_t i = 0; i < countDb; ++i) {
+              IDataBaseInfoSPtr dbInf(new DataBaseInfo(common::ConvertToString(i), false, 0));
+              if (dbInf->name() == curdb->name()) {
+                res.databases.push_back(curdb);
+              } else {
+                res.databases.push_back(dbInf);
               }
             }
+          }
         }
       } else {
         res.databases.push_back(curdb);
@@ -566,7 +565,6 @@ void Driver::handleLoadDatabaseInfosEvent(events::LoadDatabasesInfoRequestEvent*
     }
   }
 done:
-  delete cmd;
   notifyProgress(sender, 75);
   reply(sender, new events::LoadDatabasesInfoResponceEvent(this, res));
   notifyProgress(sender, 100);

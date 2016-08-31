@@ -169,15 +169,16 @@ common::Error Driver::executeImpl(int argc, char** argv, FastoObject* out) {
 }
 
 common::Error Driver::serverInfo(IServerInfo** info) {
-  Command* cmd = CreateCommandFast<Command>(ROCKSDB_INFO_REQUEST, common::Value::C_INNER);
-  LOG_COMMAND(fastonosql::Command(cmd));
+  FastoObjectCommandIPtr cmd = CreateCommandFast<Command>(ROCKSDB_INFO_REQUEST, common::Value::C_INNER);
+  LOG_COMMAND(fastonosql::Command(cmd->Clone()));
   ServerInfo::Stats cm;
   common::Error err = impl_->info(nullptr, &cm);
-  if (!err) {
-    *info = new ServerInfo(cm);
+  if (err && err->isError()) {
+    return err;
   }
 
-  return err;
+  *info = new ServerInfo(cm);
+  return common::Error();
 }
 
 common::Error Driver::currentDataBaseInfo(IDataBaseInfo** info) {

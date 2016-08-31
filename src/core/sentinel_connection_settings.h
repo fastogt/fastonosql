@@ -47,7 +47,7 @@ class ISentinelSettingsBase
   static ISentinelSettingsBase* fromString(const std::string& val);
 
   virtual std::string toString() const;
-  virtual ISentinelSettingsBase* clone() const = 0;
+  virtual ISentinelSettingsBase* Clone() const = 0;
 
  protected:
   ISentinelSettingsBase(const connection_path_t& connectionName, connectionTypes type);

@@ -31,7 +31,7 @@ DataBaseInfo::DataBaseInfo(const std::string& name, bool isDefault, size_t size,
   : IDataBaseInfo(name, isDefault, ROCKSDB, size, keys) {
 }
 
-DataBaseInfo* DataBaseInfo::clone() const {
+DataBaseInfo* DataBaseInfo::Clone() const {
   return new DataBaseInfo(*this);
 }
 

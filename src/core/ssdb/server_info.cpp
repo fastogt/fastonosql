@@ -70,10 +70,10 @@ std::vector<info_field_t> DBTraits<SSDB>::infoFields() {
 
 namespace ssdb {
 
-ServerInfo::Common::Common() {
+ServerInfo::Stats::Stats() {
 }
 
-ServerInfo::Common::Common(const std::string& common_text) {
+ServerInfo::Stats::Stats(const std::string& common_text) {
   size_t pos = 0;
   size_t start = 0;
 
@@ -97,7 +97,7 @@ ServerInfo::Common::Common(const std::string& common_text) {
   }
 }
 
-common::Value* ServerInfo::Common::valueByIndex(unsigned char index) const {
+common::Value* ServerInfo::Stats::valueByIndex(unsigned char index) const {
   switch (index) {
   case 0:
     return new common::StringValue(version);
@@ -120,14 +120,14 @@ ServerInfo::ServerInfo()
   : IServerInfo(SSDB) {
 }
 
-ServerInfo::ServerInfo(const Common& common)
-  : IServerInfo(SSDB), common_(common) {
+ServerInfo::ServerInfo(const Stats &common)
+  : IServerInfo(SSDB), stats_(common) {
 }
 
 common::Value* ServerInfo::valueByIndexes(unsigned char property, unsigned char field) const {
   switch (property) {
   case 0:
-    return common_.valueByIndex(field);
+    return stats_.valueByIndex(field);
   default:
     NOTREACHED();
     break;
@@ -136,7 +136,7 @@ common::Value* ServerInfo::valueByIndexes(unsigned char property, unsigned char 
   return nullptr;
 }
 
-std::ostream& operator<<(std::ostream& out, const ServerInfo::Common& value) {
+std::ostream& operator<<(std::ostream& out, const ServerInfo::Stats& value) {
   return out << SSDB_VERSION_LABEL":" << value.version << MARKER
              << SSDB_LINKS_LABEL":" << value.links << MARKER
              << SSDB_TOTAL_CALLS_LABEL":" << value.total_calls << MARKER
@@ -162,7 +162,7 @@ ServerInfo* makeSsdbServerInfo(const std::string& content) {
     word += content[i];
     if (word == fields[0].first) {
       std::string part = content.substr(i + 1);
-      result->common_ = ServerInfo::Common(part);
+      result->stats_ = ServerInfo::Stats(part);
       break;
     }
   }
@@ -173,12 +173,12 @@ ServerInfo* makeSsdbServerInfo(const std::string& content) {
 
 std::string ServerInfo::toString() const {
   std::stringstream str;
-  str << SSDB_COMMON_LABEL MARKER << common_;
+  str << SSDB_COMMON_LABEL MARKER << stats_;
   return str.str();
 }
 
 uint32_t ServerInfo::version() const {
-  return common::ConvertVersionNumberFromString(common_.version);
+  return common::ConvertVersionNumberFromString(stats_.version);
 }
 
 }  // namespace ssdb

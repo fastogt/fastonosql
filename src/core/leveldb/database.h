@@ -33,7 +33,7 @@ class DataBaseInfo
  public:
   DataBaseInfo(const std::string& name, bool isDefault, size_t dbkcount,
                       const keys_container_t& keys = keys_container_t());
-  virtual DataBaseInfo* clone() const;
+  virtual DataBaseInfo* Clone() const;
 };
 
 class Database

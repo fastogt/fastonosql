@@ -43,7 +43,7 @@ class ConnectionSettings
   Config info() const;
   void setInfo(const Config& info);
 
-  virtual ConnectionSettings* clone() const;
+  virtual ConnectionSettings* Clone() const;
 
  private:
   Config info_;

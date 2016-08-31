@@ -55,7 +55,8 @@ inline bool operator == (const ConnectionSettingsPath& r, const ConnectionSettin
   return r.equals(l);
 }
 
-class IConnectionSettings {
+class IConnectionSettings
+  : public common::ClonableBase<IConnectionSettings> {
  public:
   typedef ConnectionSettingsPath connection_path_t;
   virtual ~IConnectionSettings();
@@ -71,7 +72,7 @@ class IConnectionSettings {
   void setLoggingMsTimeInterval(uint32_t mstime);
 
   virtual std::string toString() const;
-  virtual IConnectionSettings* clone() const = 0;
+  virtual IConnectionSettings* Clone() const = 0;
 
  protected:
   IConnectionSettings(const connection_path_t& connectionPath, connectionTypes type);
@@ -104,7 +105,7 @@ class IConnectionSettingsBase
   static IConnectionSettingsBase* fromString(const std::string& val);
 
   virtual std::string toString() const;
-  virtual IConnectionSettingsBase* clone() const = 0;
+  virtual IConnectionSettingsBase* Clone() const = 0;
 
  protected:
   IConnectionSettingsBase(const connection_path_t& connectionPath, connectionTypes type);

@@ -298,7 +298,7 @@ void ConnectionsDialog::editConnection(ConnectionListWidgetItem* connectionItem)
   CHECK(connectionItem);
 
   core::IConnectionSettingsBaseSPtr con = connectionItem->connection();
-  ConnectionDialog dlg(this, con->clone());
+  ConnectionDialog dlg(this, con->Clone());
   int result = dlg.exec();
   core::IConnectionSettingsBaseSPtr newConnection = dlg.connection();
   if (result == QDialog::Accepted && newConnection) {
@@ -314,7 +314,7 @@ void ConnectionsDialog::editCluster(ClusterConnectionListWidgetItemContainer* cl
   CHECK(clusterItem);
 
   core::IClusterSettingsBaseSPtr con = clusterItem->connection();
-  ClusterDialog dlg(this, con->clone());
+  ClusterDialog dlg(this, con->Clone());
   int result = dlg.exec();
   core::IClusterSettingsBaseSPtr newConnection = dlg.connection();
   if (result == QDialog::Accepted && newConnection) {
@@ -330,7 +330,7 @@ void ConnectionsDialog::editSentinel(SentinelConnectionListWidgetItemContainer* 
   CHECK(sentinelItem);
 
   core::ISentinelSettingsBaseSPtr con = sentinelItem->connection();
-  SentinelDialog dlg(this, con->clone());
+  SentinelDialog dlg(this, con->Clone());
   int result = dlg.exec();
   core::ISentinelSettingsBaseSPtr newConnection = dlg.connection();
   if (result == QDialog::Accepted && newConnection) {

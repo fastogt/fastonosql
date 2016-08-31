@@ -31,7 +31,7 @@ DataBaseInfo::DataBaseInfo(const std::string& name, bool isDefault,
   : IDataBaseInfo(name, isDefault, LEVELDB, dbkcount, keys) {
 }
 
-DataBaseInfo* DataBaseInfo::clone() const {
+DataBaseInfo* DataBaseInfo::Clone() const {
   return new DataBaseInfo(*this);
 }
 

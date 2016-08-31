@@ -81,10 +81,10 @@ std::vector<info_field_t> DBTraits<MEMCACHED>::infoFields() {
 
 namespace memcached {
 
-ServerInfo::Common::Common() {
+ServerInfo::Stats::Stats() {
 }
 
-ServerInfo::Common::Common(const std::string& common_text) {
+ServerInfo::Stats::Stats(const std::string& common_text) {
   size_t pos = 0;
   size_t start = 0;
 
@@ -142,7 +142,7 @@ ServerInfo::Common::Common(const std::string& common_text) {
   }
 }
 
-common::Value* ServerInfo::Common::valueByIndex(unsigned char index) const {
+common::Value* ServerInfo::Stats::valueByIndex(unsigned char index) const {
   switch (index) {
   case 0:
     return new common::FundamentalValue(pid);
@@ -199,15 +199,15 @@ ServerInfo::ServerInfo()
   : IServerInfo(MEMCACHED) {
 }
 
-ServerInfo::ServerInfo(const Common& common)
-  : IServerInfo(MEMCACHED), common_(common) {
+ServerInfo::ServerInfo(const Stats& common)
+  : IServerInfo(MEMCACHED), stats_(common) {
 }
 
 common::Value* ServerInfo::valueByIndexes(unsigned char property,
                                                    unsigned char field) const {
   switch (property) {
   case 0:
-    return common_.valueByIndex(field);
+    return stats_.valueByIndex(field);
   default:
     NOTREACHED();
     break;
@@ -215,7 +215,7 @@ common::Value* ServerInfo::valueByIndexes(unsigned char property,
   return nullptr;
 }
 
-std::ostream& operator<<(std::ostream& out, const ServerInfo::Common& value) {
+std::ostream& operator<<(std::ostream& out, const ServerInfo::Stats& value) {
   return out << MEMCACHED_PID_LABEL":" << value.pid << MARKER
               << MEMCACHED_UPTIME_LABEL":" << value.uptime << MARKER
               << MEMCACHED_TIME_LABEL":" << value.time << MARKER
@@ -268,7 +268,7 @@ ServerInfo* makeMemcachedServerInfo(const std::string& content) {
         std::string part = content.substr(i + 1, pos - i - 1);
         switch (j) {
         case 0:
-          result->common_ = ServerInfo::Common(part);
+          result->stats_ = ServerInfo::Stats(part);
           break;
         default:
           break;
@@ -286,12 +286,12 @@ ServerInfo* makeMemcachedServerInfo(const std::string& content) {
 
 std::string ServerInfo::toString() const {
   std::stringstream str;
-  str << MEMCACHED_COMMON_LABEL MARKER << common_;
+  str << MEMCACHED_COMMON_LABEL MARKER << stats_;
   return str.str();
 }
 
 uint32_t ServerInfo::version() const {
-  return common::ConvertVersionNumberFromString(common_.version);
+  return common::ConvertVersionNumberFromString(stats_.version);
 }
 
 }  // namespace memcached

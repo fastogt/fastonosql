@@ -230,7 +230,7 @@ common::Error DBConnection::keys(const std::string& key_start, const std::string
   return common::Error();
 }
 
-common::Error DBConnection::info(const char* args, ServerInfo::Common* statsout) {
+common::Error DBConnection::info(const char* args, ServerInfo::Stats* statsout) {
   if (!isConnected()) {
     DNOTREACHED();
     return common::make_error_value("Not connected", common::Value::E_ERROR);
@@ -248,7 +248,7 @@ common::Error DBConnection::info(const char* args, ServerInfo::Common* statsout)
     return common::make_error_value(buff, common::ErrorValue::E_ERROR);
   }
 
-  ServerInfo::Common lstatsout;
+  ServerInfo::Stats lstatsout;
   lstatsout.pid = st->pid;
   lstatsout.uptime = st->uptime;
   lstatsout.time = st->time;
@@ -556,7 +556,7 @@ common::Error stats(CommandHandler* handler, int argc, char** argv, FastoObject*
     return keys(handler, SIZEOFMASS(argv), largv, out);
   }
 
-  ServerInfo::Common statsout;
+  ServerInfo::Stats statsout;
   common::Error er = mem->info(args, &statsout);
   if (!er) {
     ServerInfo minf(statsout);

@@ -54,7 +54,7 @@ Command* CreateCommand(FastoObjectIPtr parent, const std::string& input,
 }
 
 template<typename Command>
-Command* CreateCommandFast(const std::string& input, common::Value::CommandLoggingType ct) {
+FastoObjectCommandIPtr CreateCommandFast(const std::string& input, common::Value::CommandLoggingType ct) {
   std::string stable_input = StableCommand(input);
   if (stable_input.empty()) {
     NOTREACHED();
@@ -62,8 +62,7 @@ Command* CreateCommandFast(const std::string& input, common::Value::CommandLoggi
   }
 
   common::CommandValue* cmd = common::Value::createCommand(stable_input, ct);
-  Command* fs = new Command(nullptr, cmd, std::string());
-  return fs;
+  return new Command(nullptr, cmd, std::string());
 }
 
 }  // namespace core

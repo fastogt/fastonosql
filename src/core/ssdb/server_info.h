@@ -40,10 +40,10 @@ namespace ssdb {
 class ServerInfo
   : public IServerInfo {
  public:
-  struct Common
+  struct Stats
       : IStateField {
-    Common();
-    explicit Common(const std::string& common_text);
+    Stats();
+    explicit Stats(const std::string& common_text);
     common::Value* valueByIndex(unsigned char index) const;
 
     std::string version;
@@ -51,10 +51,10 @@ class ServerInfo
     uint32_t total_calls;
     uint32_t dbsize;
     std::string binlogs;
-  } common_;
+  } stats_;
 
   ServerInfo();
-  explicit ServerInfo(const Common& common);
+  explicit ServerInfo(const Stats& common);
 
   virtual common::Value* valueByIndexes(unsigned char property, unsigned char field) const;
   virtual std::string toString() const;

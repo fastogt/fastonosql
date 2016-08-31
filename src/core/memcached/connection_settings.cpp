@@ -56,7 +56,7 @@ void ConnectionSettings::setInfo(const Config &info) {
   info_ = info;
 }
 
-ConnectionSettings* ConnectionSettings::clone() const {
+ConnectionSettings* ConnectionSettings::Clone() const {
   ConnectionSettings* red = new ConnectionSettings(*this);
   return red;
 }

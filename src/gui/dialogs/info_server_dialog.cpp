@@ -448,7 +448,7 @@ void InfoServerDialog::updateText(const core::redis::ServerInfo& serv) {
 
 #ifdef BUILD_WITH_MEMCACHED
 void InfoServerDialog::updateText(const core::memcached::ServerInfo& serv) {
-  core::memcached::ServerInfo::Common com = serv.common_;
+  core::memcached::ServerInfo::Stats com = serv.stats_;
 
   QString textServ = trMemcachedTextServerTemplate.arg(com.pid)
           .arg(com.uptime)
@@ -479,7 +479,7 @@ void InfoServerDialog::updateText(const core::memcached::ServerInfo& serv) {
 
 #ifdef BUILD_WITH_SSDB
 void InfoServerDialog::updateText(const core::ssdb::ServerInfo& serv) {
-  core::ssdb::ServerInfo::Common com = serv.common_;
+  core::ssdb::ServerInfo::Stats com = serv.stats_;
   QString textServ = trSsdbTextServerTemplate.arg(common::ConvertFromString<QString>(com.version))
           .arg(com.links)
           .arg(com.total_calls)

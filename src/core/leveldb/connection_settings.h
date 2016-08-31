@@ -43,7 +43,7 @@ class ConnectionSettings
 
   virtual std::string fullAddress() const;
 
-  virtual ConnectionSettings* clone() const;
+  virtual ConnectionSettings* Clone() const;
 
  private:
   Config info_;

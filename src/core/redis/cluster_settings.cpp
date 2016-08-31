@@ -28,7 +28,7 @@ ClusterSettings::ClusterSettings(const connection_path_t& connectionName)
   : IClusterSettingsBase(connectionName, REDIS) {
 }
 
-ClusterSettings* ClusterSettings::clone() const {
+ClusterSettings* ClusterSettings::Clone() const {
   ClusterSettings* red = new ClusterSettings(*this);
   return red;
 }

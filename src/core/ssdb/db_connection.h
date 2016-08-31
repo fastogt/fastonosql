@@ -57,7 +57,7 @@ class DBConnection
 
   static const char* versionApi();
 
-  common::Error info(const char* args, ServerInfo::Common* statsout) WARN_UNUSED_RESULT;
+  common::Error info(const char* args, ServerInfo::Stats* statsout) WARN_UNUSED_RESULT;
   common::Error auth(const std::string& password) WARN_UNUSED_RESULT;
   common::Error get(const std::string& key, std::string* ret_val) WARN_UNUSED_RESULT;
   common::Error set(const std::string& key, const std::string& value) WARN_UNUSED_RESULT;
