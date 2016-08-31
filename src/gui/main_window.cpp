@@ -468,7 +468,7 @@ void MainWindow::exportConnection() {
   QString filepathW = QFileDialog::getSaveFileName(this, tr("Select file to save settings"),
                                                    common::ConvertFromString<QString>(dir_path),
                                                    tr("Settings files (*.cini)"));
-  if (filepathW.isNull()) {
+  if (filepathW.isEmpty()) {
     return;
   }
 

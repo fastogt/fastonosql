@@ -305,6 +305,9 @@ bool BaseShellWidget::loadFromFile(const QString& path) {
 void BaseShellWidget::saveToFileAs() {
   QString filepath = QFileDialog::getSaveFileName(this, translations::trSaveAs, filePath_,
                                                   translations::trfilterForScripts);
+  if (filepath.isEmpty()) {
+    return;
+  }
 
   common::Error err = common::utils_qt::SaveToFileText(filepath, text());
   if (err && err->isError()) {

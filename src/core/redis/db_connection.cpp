@@ -1751,7 +1751,7 @@ common::Error DBConnection::executeAsPipeline(const std::vector<FastoObjectComma
       continue;
     }
 
-    LOG_COMMAND(fastonosql::Command(cmd));
+    LOG_COMMAND(cmd);
     int argc = 0;
     sds* argv = sdssplitargslong(ccommand, &argc);
 
@@ -1777,6 +1777,11 @@ common::Error DBConnection::executeAsPipeline(const std::vector<FastoObjectComma
 }
 
 common::Error DBConnection::commonExec(int argc, char** argv, FastoObject* out) {
+  if (!isConnected()) {
+    DNOTREACHED();
+    return common::make_error_value("Not connected", common::Value::E_ERROR);
+  }
+
   size_t* argvlen = reinterpret_cast<size_t*>(malloc(argc * sizeof(size_t)));
   for (int j = 0; j < argc; j++) {
     size_t len =  sdslen(argv[j]);
@@ -1794,6 +1799,11 @@ common::Error DBConnection::commonExec(int argc, char** argv, FastoObject* out) 
 }
 
 common::Error DBConnection::auth(const std::string& password) {
+  if (!isConnected()) {
+    DNOTREACHED();
+    return common::make_error_value("Not connected", common::Value::E_ERROR);
+  }
+
   const char* auth_str = common::utils::c_strornull(password);
   common::Error err = authContext(auth_str, connection_.handle_);
   if (err && err->isError()) {
@@ -1811,6 +1821,11 @@ common::Error DBConnection::help(int argc, char** argv, FastoObject* out) {
 }
 
 common::Error DBConnection::monitor(int argc, char** argv, FastoObject* out) {
+  if (!isConnected()) {
+    DNOTREACHED();
+    return common::make_error_value("Not connected", common::Value::E_ERROR);
+  }
+
   size_t* argvlen = reinterpret_cast<size_t*>(malloc(argc * sizeof(size_t)));
   for (int j = 0; j < argc; j++) {
     size_t len =  sdslen(argv[j]);
@@ -1839,6 +1854,11 @@ common::Error DBConnection::monitor(int argc, char** argv, FastoObject* out) {
 }
 
 common::Error DBConnection::subscribe(int argc, char** argv, FastoObject* out) {
+  if (!isConnected()) {
+    DNOTREACHED();
+    return common::make_error_value("Not connected", common::Value::E_ERROR);
+  }
+
   size_t* argvlen = reinterpret_cast<size_t*>(malloc(argc * sizeof(size_t)));
   for (int j = 0; j < argc; j++) {
     size_t len =  sdslen(argv[j]);

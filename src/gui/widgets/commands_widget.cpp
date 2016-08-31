@@ -56,13 +56,12 @@ CommandsWidget::CommandsWidget(QWidget* parent)
   retranslateUi();
 }
 
-void CommandsWidget::addCommand(const Command& command) {
+void CommandsWidget::addCommand(FastoObjectCommandIPtr command) {
   QTime time = QTime::currentTime();
-  Command::cmd_t cmd = command.cmd();
-  logTextEdit_->setTextColor(cmd->commandLoggingType() == common::Value::C_INNER ?
+  logTextEdit_->setTextColor(command->commandLoggingType() == common::Value::C_INNER ?
                                QColor(Qt::gray) : QColor(Qt::black));
-  QString mess = common::ConvertFromString<QString>(cmd->inputCommand());
-  std::string stype = common::ConvertToString(cmd->connectionType());
+  QString mess = common::ConvertFromString<QString>(command->inputCommand());
+  std::string stype = common::ConvertToString(command->connectionType());
   QString qstype = common::ConvertFromString<QString>(stype);
   logTextEdit_->append(time.toString("[%1] hh:mm:ss.zzz: %2").arg(qstype.toUpper(), mess));
   QScrollBar* sb = logTextEdit_->verticalScrollBar();

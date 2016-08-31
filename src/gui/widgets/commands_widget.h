@@ -20,14 +20,12 @@
 
 #include <QWidget>
 
-#include "core/connection_types.h"      // for connectionTypes
+#include "global/global.h"
 
 class QAction;  // lines 24-24
 class QEvent;
 class QPoint;
 class QTextEdit;  // lines 23-23
-
-namespace fastonosql { class Command; }  // lines 28-28
 
 namespace fastonosql {
 namespace gui {
@@ -39,7 +37,7 @@ class CommandsWidget
   explicit CommandsWidget(QWidget* parent = 0);
 
  public Q_SLOTS:
-  void addCommand(const Command& command);
+  void addCommand(FastoObjectCommandIPtr command);
 
  private Q_SLOTS:
   void showContextMenu(const QPoint& pt);

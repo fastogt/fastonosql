@@ -25,18 +25,6 @@
 
 namespace fastonosql {
 
-Command::Command()
-  : cmd_() {
-}
-
-Command::Command(cmd_t cmd)
-  : cmd_(cmd) {
-}
-
-Command::cmd_t Command::cmd() const {
-  return cmd_;
-}
-
 }  // namespace fastonosql
 
 namespace common {

@@ -22,12 +22,11 @@
 
 #include "common/log_levels.h"          // for LEVEL_LOG
 
-#include "core/connection_types.h"      // for connectionTypes
+#include "global/global.h"
 
 class QEvent;
 class QWidget;
 
-namespace fastonosql { class Command; }  // lines 27-27
 namespace fastonosql { namespace gui { class CommandsWidget; } }  // lines 33-33
 namespace fastonosql { namespace gui { class LogWidget; } }  // lines 32-32
 
@@ -45,7 +44,7 @@ class LogTabWidget
 
  public Q_SLOTS:
   void addLogMessage(const QString& message, common::logging::LEVEL_LOG level);
-  void addCommand(const Command& command);
+  void addCommand(FastoObjectCommandIPtr command);
 
  protected:
   virtual void changeEvent(QEvent* ev);

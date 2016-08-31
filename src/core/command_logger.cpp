@@ -20,16 +20,14 @@
 
 #include <QMetaType>                    // for qRegisterMetaType
 
-#include "global/types.h"               // for Command
-
 namespace fastonosql {
 namespace core {
 
 CommandLogger::CommandLogger() {
-  qRegisterMetaType<fastonosql::Command>("Command");
+  qRegisterMetaType<fastonosql::FastoObjectCommandIPtr>("FastoObjectCommandIPtr");
 }
 
-void CommandLogger::print(const Command& command) {
+void CommandLogger::print(FastoObjectCommandIPtr command) {
   emit printed(command);
 }
 

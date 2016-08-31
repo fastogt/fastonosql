@@ -20,8 +20,6 @@
 
 #include <string>
 
-#include "global/global.h"
-
 namespace fastonosql {
 
 enum supportedViews {
@@ -32,20 +30,8 @@ enum supportedViews {
 
 static const std::string viewsText[] = { "Tree", "Table", "Text" };
 
-class Command {
- public:
-  typedef FastoObjectCommandIPtr cmd_t;
-  Command();
-  explicit Command(cmd_t cmd);
-
-  cmd_t cmd() const;
-
- private:
-  cmd_t cmd_;
-};
-
 }  // namespace fastonosql
 
 namespace common {
-  std::string ConvertToString(fastonosql::supportedViews v);
+  std::string ConvertToStsring(fastonosql::supportedViews v);
 }  // namespace common

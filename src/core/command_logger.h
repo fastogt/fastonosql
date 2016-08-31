@@ -22,7 +22,7 @@
 
 #include "common/patterns/singleton_pattern.h"  // for LazySingleton
 
-namespace fastonosql { class Command; }
+#include "global/global.h"
 
 namespace fastonosql {
 namespace core {
@@ -32,16 +32,16 @@ class CommandLogger
   friend class common::patterns::LazySingleton<CommandLogger>;
   Q_OBJECT
  public:
-  void print(const Command& command);
+  void print(FastoObjectCommandIPtr command);
 
  Q_SIGNALS:
-  void printed(const Command& mess);
+  void printed(FastoObjectCommandIPtr mess);
 
  private:
   CommandLogger();
 };
 
-inline void LOG_COMMAND(const Command& command) {
+inline void LOG_COMMAND(FastoObjectCommandIPtr command) {
   return CommandLogger::instance().print(command);
 }
 
