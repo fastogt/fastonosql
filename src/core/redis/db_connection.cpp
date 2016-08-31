@@ -1187,7 +1187,7 @@ common::Error DBConnection::getKeySizes(redisReply* keys, int* types, unsigned l
     } else if (reply->type != REDIS_REPLY_INTEGER) {
       /* Theoretically the key could have been removed and
       * added as a different type between TYPE and SIZE */
-      std::string buff = common::MemSPrintf("Warning:  %s on '%s' failed (may have changed type)",
+      std::string buff = common::MemSPrintf("%s on '%s' failed (may have changed type)",
                                             sizecmds[types[i]], keys->element[i]->str);
       LOG_MSG(buff, common::logging::L_WARNING, true);
       sizes[i] = 0;

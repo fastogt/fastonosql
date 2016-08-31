@@ -47,7 +47,6 @@
 #include "core/settings_manager.h"      // for SettingsManager
 
 #include "fasto/qt/gui/icon_label.h"    // for IconLabel
-#include "fasto/qt/logger.h"            // for LOG_ERROR
 #include "fasto/qt/utils_qt.h"          // for SaveToFileText, etc
 #include "fasto/qt/gui/shortcuts.h"           // for FastoQKeySequence
 
@@ -289,7 +288,6 @@ bool BaseShellWidget::loadFromFile(const QString& path) {
     QString out;
     common::Error err = common::utils_qt::LoadFromFileText(filepath, &out);
     if (err && err->isError()) {
-      LOG_ERROR(err, true);
       QMessageBox::critical(this, translations::trError, trCantReadTemplate_2S.arg(filepath, common::ConvertFromString<QString>(err->description())));
       return false;
     }
@@ -311,7 +309,6 @@ void BaseShellWidget::saveToFileAs() {
 
   common::Error err = common::utils_qt::SaveToFileText(filepath, text());
   if (err && err->isError()) {
-    LOG_ERROR(err, true);
     QMessageBox::critical(this, translations::trError, trCantSaveTemplate_2S.arg(filepath, common::ConvertFromString<QString>(err->description())));
     return;
   }
@@ -335,7 +332,6 @@ void BaseShellWidget::saveToFile() {
   } else {
     common::Error err = common::utils_qt::SaveToFileText(filePath_, text());
     if (err && err->isError()) {
-      LOG_ERROR(err, true);
       QMessageBox::critical(this, translations::trError, trCantSaveTemplate_2S.arg(filePath_, common::ConvertFromString<QString>(err->description())));
     }
   }
