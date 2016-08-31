@@ -38,11 +38,6 @@ bool Command::isReadOnly() const {
   return key != "get";
 }
 
-FastoObjectCommand* Command::Clone() const {
-  common::CommandValue* cmdv = cmd();
-  return new Command(parent(), cmdv ? cmdv->deepCopy() : nullptr, delimiter());
-}
-
 }  // namespace lmdb
 }  // namespace core
 }  // namespace fastonosql

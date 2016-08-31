@@ -31,7 +31,6 @@ class Command
  public:
   Command(FastoObject* parent, common::CommandValue* cmd, const std::string& delimiter);
   virtual bool isReadOnly() const override;
-  virtual FastoObjectCommand* Clone() const override;
 };
 
 }  // namespace unqlite

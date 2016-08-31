@@ -85,7 +85,7 @@ class FastoObject
 };
 
 class FastoObjectCommand
-  : public FastoObject, public common::ClonableBase<FastoObjectCommand> {
+  : public FastoObject {
  public:
   virtual ~FastoObjectCommand();
   common::CommandValue* cmd() const;

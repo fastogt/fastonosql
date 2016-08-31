@@ -23,15 +23,13 @@
 #include "common/macros.h"              // for SIZEOFMASS
 #include "common/convert2string.h"
 
-#include "global/global.h"
-
 namespace fastonosql {
 
 Command::Command()
   : cmd_() {
 }
 
-Command::Command(FastoObjectCommand* cmd)
+Command::Command(cmd_t cmd)
   : cmd_(cmd) {
 }
 
