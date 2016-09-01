@@ -136,8 +136,8 @@ class IServer
   void finishedLoadDiscoveryInfo(const events_info::DiscoveryInfoResponce& res);
 
  Q_SIGNALS:
-  void addedChild(FastoObject* child);
-  void itemUpdated(FastoObject* item, FastoObject::value_t val);
+  void addedChild(FastoObjectIPtr child);
+  void itemUpdated(FastoObject* item, common::ValueSPtr val);
   void serverInfoSnapShoot(ServerInfoSnapShoot shot);
 
  public:

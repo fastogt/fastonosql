@@ -172,10 +172,10 @@ void OutputWidget::finishExecuteCommand(const core::events_info::CommandResponce
   }
 }
 
-void OutputWidget::addChild(FastoObject* child) {
+void OutputWidget::addChild(FastoObjectIPtr child) {
   DCHECK(child->parent());
 
-  FastoObjectCommand* command = dynamic_cast<FastoObjectCommand*>(child);  // +
+  FastoObjectCommand* command = dynamic_cast<FastoObjectCommand*>(child.get());  // +
   if (command) {
     return;
   }
@@ -204,7 +204,7 @@ void OutputWidget::addChild(FastoObject* child) {
 
     std::string inputArgs = command->inputArgs();
     fastonosql::gui::FastoCommonItem* comChild = createItem(par, GetFirstWordFromLine(inputArgs),
-                                                       command->isReadOnly(), child);
+                                                       command->isReadOnly(), child.get());
     commonModel_->insertItem(parent, comChild);
   } else {
     FastoObjectArray* arr = dynamic_cast<FastoObjectArray*>(child->parent());  // +
@@ -228,12 +228,12 @@ void OutputWidget::addChild(FastoObject* child) {
       return;
     }
 
-    fastonosql::gui::FastoCommonItem* comChild = createItem(par, std::string(), true, child);
+    fastonosql::gui::FastoCommonItem* comChild = createItem(par, std::string(), true, child.get());
     commonModel_->insertItem(parent, comChild);
   }
 }
 
-void OutputWidget::itemUpdate(FastoObject* item, FastoObject::value_t newValue) {
+void OutputWidget::itemUpdate(FastoObject* item, common::ValueSPtr newValue) {
   QModelIndex index;
   bool isFound = commonModel_->findItem(item, &index);
   if (!isFound) {

@@ -155,7 +155,8 @@ IDriver::IDriver(IConnectionSettingsBaseSPtr settings)
   VERIFY(connect(thread_, &QThread::started, this, &IDriver::init));
   VERIFY(connect(thread_, &QThread::finished, this, &IDriver::clear));
 
-  qRegisterMetaType<FastoObject::value_t>("FastoObject::value_t");
+  qRegisterMetaType<common::ValueSPtr>("common::ValueSPtr");
+  qRegisterMetaType<fastonosql::FastoObjectIPtr>("FastoObjectIPtr");
 }
 
 IDriver::~IDriver() {
@@ -584,7 +585,7 @@ void IDriver::handleDiscoveryInfoRequestEvent(events::DiscoveryInfoRequestEvent*
   notifyProgress(sender, 100);
 }
 
-void IDriver::addedChildren(FastoObject* child) {
+void IDriver::addedChildren(FastoObjectIPtr child) {
   if (!child) {
     DNOTREACHED();
     return;

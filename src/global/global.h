@@ -47,11 +47,11 @@ class FastoObject
  public:
   typedef FastoObjectIPtr child_t;
   typedef std::vector<child_t> childs_t;
-  typedef common::shared_ptr<common::Value> value_t;
+  typedef common::ValueSPtr value_t;
 
   class IFastoObjectObserver {
    public:
-    virtual void addedChildren(FastoObject* child) = 0;
+    virtual void addedChildren(child_t child) = 0;
     virtual void updated(FastoObject* item, value_t val) = 0;
   };
 

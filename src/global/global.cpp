@@ -65,7 +65,7 @@ void FastoObject::addChildren(child_t child) {
   CHECK(child->parent_ == this);
   childrens_.push_back(child);
   if (observer_) {
-    observer_->addedChildren(child.get());  // remove get
+    observer_->addedChildren(child);  // remove get
     child->observer_ = observer_;
   }
 }

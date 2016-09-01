@@ -76,8 +76,8 @@ class IDriver
   virtual std::string nsSeparator() const = 0;
 
  Q_SIGNALS:
-  void addedChild(FastoObject* child);
-  void itemUpdated(FastoObject* item, FastoObject::value_t val);
+  void addedChild(FastoObjectIPtr child);
+  void itemUpdated(FastoObject* item, common::ValueSPtr val);
   void serverInfoSnapShoot(ServerInfoSnapShoot shot);
 
  private Q_SLOTS:
@@ -148,7 +148,7 @@ class IDriver
   virtual common::Error executeImpl(int argc, char** argv, FastoObject* out) = 0;
 
   // notification of execute events
-  virtual void addedChildren(FastoObject* child);
+  virtual void addedChildren(FastoObjectIPtr child);
   virtual void updated(FastoObject* item, FastoObject::value_t val);
 
   // internal methods
