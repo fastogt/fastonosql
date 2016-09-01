@@ -55,14 +55,15 @@ before_script:
   - cmake --version
   - which openssl
   - openssl version
+  - which python
+  - python -v
 script:
   - git submodule update --init --recursive
   - cd build
-  - sh ./rebuild.sh /dev/null /dev/null
-  - sh ./rebuild.sh fastoredis.txt fastoredis_complex.txt
+  - python build.py
+  - python build.py fastoredis.txt
   
 after_success:
-  - sh ./clean.sh
 
 notifications:
   recipients:
