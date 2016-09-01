@@ -1,4 +1,4 @@
-* Wed Oct 16 1996 Alexandr Topilski <atopilski@fastogt.com>
+* Thu Sep 1 2016 Alexandr Topilski <atopilski@fastogt.com>
 0.7.2
 [Alexandr Topilski]
 - [Redis] Set ttl context menu

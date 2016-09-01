@@ -74,8 +74,7 @@ class BuildRequest(object):
         arch_args = '-DOS_ARCH={0}'.format(self.arch.bit)
         log_to_file_args = '-DLOG_TO_FILE=ON'
         openssl_args = '-DOPENSSL_USE_STATIC=ON'
-        translations_args = '-DGENERATE_TRANSLATIONS=ON'
-        cmake_line = ['cmake', cmake_project_root_abs_path, '-GNinja', '-DCMAKE_BUILD_TYPE=RELEASE', arch_args, log_to_file_args, openssl_args, translations_args]
+        cmake_line = ['cmake', cmake_project_root_abs_path, '-GNinja', '-DCMAKE_BUILD_TYPE=RELEASE', arch_args, log_to_file_args, openssl_args]
 
         if branding_options:
             cmake_line.extend(branding_options)
