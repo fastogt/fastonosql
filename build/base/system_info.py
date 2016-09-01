@@ -14,8 +14,8 @@ class Platform(object):
         self.archs = archs
         self.package_types = package_types
 
-SUPPORTED_PLATFORMS = [Platform('linux', [Architecture('i386', 32), Architecture('x86_64', 64)], ['DEB', 'RPM', 'TGZ']),
-                       Platform('windows', [Architecture('i386', 32), Architecture('x86_64', 64)], ['NSIS', 'ZIP']),
+SUPPORTED_PLATFORMS = [Platform('linux', [Architecture('x86_64', 64), Architecture('i386', 32)], ['DEB', 'RPM', 'TGZ']),
+                       Platform('windows', [Architecture('x86_64', 64), Architecture('i386', 32)], ['NSIS', 'ZIP']),
                        Platform('macosx', [Architecture('x86_64', 64)], ['DragNDrop', 'ZIP']),
                        Platform('freebsd', [Architecture('x86_64', 64)], ['TGZ']),
                        Platform('android', [Architecture('armv7', 32)], ['APK'])]
@@ -41,6 +41,8 @@ def get_extension_by_package(package_type):
 def get_os():
     uname_str = platform.system()
     if uname_str == 'MINGW64_NT-6.1':
+        return 'windows'
+    if uname_str == 'Windows':
         return 'windows'
     elif uname_str == 'Linux':
         return 'linux'

@@ -13,9 +13,9 @@ class BuildError(Exception):
 
 def print_usage():
     print("Usage:\n"
-        "[optional] argv[1] platform\n"
-        "[optional] argv[2] architecture\n"
-        "[optional] argv[3] branding_file_path\n")
+        "[optional] argv[1] branding_file_path\n"
+        "[optional] argv[2] platform\n"
+        "[optional] argv[3] architecture\n")
 
 def run_command(cmd):
     return subprocess.check_call(cmd)
@@ -118,19 +118,19 @@ if __name__ == "__main__":
     argc = len(sys.argv)
 
     if argc > 1:
-        platform_str = sys.argv[1]
+        branding_file_path = sys.argv[1]
+    else:
+        branding_file_path = '/dev/null'
+        
+    if argc > 2:
+        platform_str = sys.argv[2]
     else:
         platform_str = system_info.get_os()
 
-    if argc > 2:
-        arch_bit_str = sys.argv[2]
+    if argc > 3:
+        arch_bit_str = sys.argv[3]
     else:
         arch_bit_str = system_info.get_arch_bit()
-
-    if argc > 3:
-        branding_file_path = sys.argv[3]
-    else:
-        branding_file_path = '/dev/null'
         
     request = BuildRequest(platform_str, int(arch_bit_str))
     request.build(branding_file_path, platform_str + '_build', [])
