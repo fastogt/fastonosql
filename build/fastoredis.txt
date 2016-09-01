@@ -1,19 +1,21 @@
--DBUILD_WITH_REDIS=ON 
--DBUILD_WITH_MEMCACHED=OFF 
--DBUILD_WITH_SSDB=OFF 
+-DBUILD_WITH_REDIS=ON
+-DBUILD_WITH_MEMCACHED=OFF
+-DBUILD_WITH_SSDB=OFF
 -DBUILD_WITH_LEVELDB=OFF 
 -DBUILD_WITH_ROCKSDB=OFF 
 -DBUILD_WITH_UNQLITE=OFF 
--DBUILD_WITH_LMDB=OFF 
--DBRANDING_PROJECT_BUILD_TYPE_VERSION:STRING=release 
--DBRANDING_PROJECT_NAME:STRING=FastoRedis 
--DBRANDING_PROJECT_VERSION:STRING=0.9.1.0 
--DBRANDING_PROJECT_DOMAIN:STRING=www.fastoredis.com 
--DBRANDING_PROJECT_COMPANYNAME_DOMAIN:STRING=www.fastogt.com 
--DBRANDING_PROJECT_GITHUB_FORK:STRING=www.github.com/fastogt/fastoredis 
--DBRANDING_PROJECT_GITHUB_ISSUES:STRING=www.github.com/fastogt/fastoredis/issues 
--DBRANDING_PROJECT_HOMEPAGE_LINK:STRING=http://www.fastoredis.com 
--DBRANDING_PROJECT_FACEBOOK_LINK:STRING=https://www.facebook.com/profile.php?id=100004938436506 
--DBRANDING_PROJECT_TWITTER_LINK:STRING=https://www.twitter.com/FastoRedis 
--DBRANDING_PROJECT_GITHUB_LINK:STRING=https://www.github.com/fastogt/fastoredis 
--DBRANDING_PROJECT_CHANGELOG_FILE:STRING=../fastoredis_changelog.txt 
+-DBUILD_WITH_LMDB=OFF
+-DBRANDING_PROJECT_BUILD_TYPE_VERSION:STRING=release
+-DBRANDING_PROJECT_NAME:STRING=FastoRedis
+-DBRANDING_PROJECT_VERSION:STRING=0.9.1.0
+-DBRANDING_PROJECT_DOMAIN:STRING=www.fastoredis.com
+-DBRANDING_PROJECT_COMPANYNAME_DOMAIN:STRING=www.fastogt.com
+-DBRANDING_PROJECT_GITHUB_FORK:STRING=www.github.com/fastogt/fastoredis
+-DBRANDING_PROJECT_GITHUB_ISSUES:STRING=www.github.com/fastogt/fastoredis/issues
+-DBRANDING_PROJECT_HOMEPAGE_LINK:STRING=http://www.fastoredis.com
+-DBRANDING_PROJECT_FACEBOOK_LINK:STRING=https://www.facebook.com/profile.php?id=100004938436506
+-DBRANDING_PROJECT_TWITTER_LINK:STRING=https://www.twitter.com/FastoRedis
+-DBRANDING_PROJECT_GITHUB_LINK:STRING=https://www.github.com/fastogt/fastoredis
+-DBRANDING_PROJECT_CHANGELOG_FILE:STRING=../fastoredis_changelog.txt
+-DBRANDING_PROJECT_SUMMARY:STRING=Cross-platform open source Redis GUI management tool.
+-DBRANDING_PROJECT_DESCRIPTION:STRING=FastoRedis (fork of FastoNoSQL) — is a cross-platform open source Redis management tool (i.e. Admin GUI). It put the same engine that powers Redis's redis-cli shell. Everything you can write in redis-cli shell — you can write in Fastoredis! Our program works on the most amount of Linux systems, also on Windows, Mac OS X, FreeBSD and Android platforms.

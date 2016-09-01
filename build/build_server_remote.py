@@ -7,7 +7,7 @@ import shutil
 import sys
 import shlex
 import re
-import base
+from base import system_info
 import config
 
 class BuildError(Exception):
@@ -42,7 +42,7 @@ class BuildRpcServer(object):
 
     def build_package(self, op_id, platform, arch, branding_variables, package_type, destination, status_channel, routing_key):
 
-        platform_or_none = base.get_supported_platform_by_name(platform)
+        platform_or_none = system_info.get_supported_platform_by_name(platform)
 
         if platform_or_none == None:
             raise BuildError('invalid platform')
@@ -88,7 +88,7 @@ class BuildRpcServer(object):
         for line in in_file.readlines():
             res = re.search(r'SET\(CPACK_SOURCE_PACKAGE_FILE_NAME "(.+)"\)', line)
             if res != None:
-                filename = res.group(1) + '.' + base.get_extension_by_package(package_type)
+                filename = res.group(1) + '.' + system_info.get_extension_by_package(package_type)
         in_file.close()
 
         try:
@@ -143,12 +143,12 @@ if __name__ == "__main__":
     if argc > 1:
         platform_str = sys.argv[1]
     else:
-        platform_str = base.get_os()
+        platform_str = system_info.get_os()
 
     if argc > 2:
         arch_str = sys.argv[2]
     else:
-        arch_str = base.get_arch()
+        arch_str = system_info.get_arch_bit()
         
-    server = BuildRpcServer(base.gen_routing_key(platform_str, arch_str))
+    server = BuildRpcServer(system_info.gen_routing_key(platform_str, arch_str))
     server.start()
