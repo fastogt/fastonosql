@@ -13,12 +13,26 @@ class BuildError(Exception):
 
 def print_usage():
     print("Usage:\n"
-        "[optional] argv[1] branding_file_path\n"
-        "[optional] argv[2] platform\n"
-        "[optional] argv[3] architecture\n")
+        "[required] argv[1] cmake_root_path\n"
+        "[optional] argv[2] branding_file_path\n"
+        "[optional] argv[3] platform\n"
+        "[optional] argv[4] architecture\n"
+        "[optional] argv[5] packages for example('DEB RPM')\n")
 
 def run_command(cmd):
     return subprocess.check_call(cmd)
+
+
+def read_file_line_by_line(file):
+    if not os.path.exists(file):
+        raise BuildError('file path: %s not exists' % file)
+
+    file_array = []
+    with open(file, "r") as ins:
+        for line in ins:
+            file_array.append(line.strip('\n'))
+
+    return file_array
 
 
 class BuildRequest(object):
@@ -28,44 +42,40 @@ class BuildRequest(object):
         if platform_or_none == None:
             raise BuildError('invalid platform')
 
-        arch = None
-        for curr_arch in platform_or_none.archs:
-            if (curr_arch.bit == arch_bit):
-                arch = curr_arch
-                break
-
+        arch = platform_or_none.architecture_by_bit(arch_bit)
         if arch == None:
             raise BuildError('invalid arch')
 
         self.platform = platform_or_none
         self.arch = arch
-        print("Build request for platform {0}, arch {1} created.\n".format(platform, arch.name))
+        print("Build request for platform: {0}, arch: {1} created".format(platform, arch.name))
 
-    def build(self, branding_file, dir_path, package_types):
-        if not os.path.exists(branding_file):
-            raise BuildError('invalid branding_file path')
+    def build(self, cmake_project_root_path, branding_file, dir_path, package_types):
+        cmake_project_root_abs_path = os.path.abspath(cmake_project_root_path)
+        if not os.path.exists(cmake_project_root_abs_path):
+            raise BuildError('invalid cmake_project_root_path: %s' % cmake_project_root_path)
+
+        abs_branding_file = os.path.abspath(branding_file)
+        branding_file_array = read_file_line_by_line(abs_branding_file)
 
         if not package_types:
             package_types = self.platform.package_types
 
-        if os.path.exists(dir_path):
-            shutil.rmtree(dir_path)
+        abs_dir_path = os.path.abspath(dir_path)
+        if os.path.exists(abs_dir_path):
+            shutil.rmtree(abs_dir_path)
 
-        print("Start building branding_file {0}, dir_path {1}.\n".format(branding_file, dir_path))
 
-        branding_file_array = []
-        with open(branding_file, "r") as ins:
-            for line in ins:
-                branding_file_array.append(line.strip('\n'))
+        print("Start building project branding_file: {0}, dir_path: {1}".format(abs_branding_file, abs_dir_path))
 
         pwd = os.getcwd()
-        os.mkdir(dir_path)
-        os.chdir(dir_path)
+        os.mkdir(abs_dir_path)
+        os.chdir(abs_dir_path)
 
         arch_args = '-DOS_ARCH={0}'.format(self.arch.bit)
         log_to_file_args = '-DLOG_TO_FILE=ON'
         openssl_args = '-DOPENSSL_USE_STATIC=ON'
-        cmake_line = ['cmake', '../../', '-GNinja', '-DCMAKE_BUILD_TYPE=RELEASE', arch_args, log_to_file_args, openssl_args]
+        cmake_line = ['cmake', cmake_project_root_abs_path, '-GNinja', '-DCMAKE_BUILD_TYPE=RELEASE', arch_args, log_to_file_args, openssl_args]
 
         if branding_file_array:
             cmake_line.extend(branding_file_array)
@@ -111,26 +121,37 @@ class BuildRequest(object):
                     os.chdir(pwd)
                     raise ex
 
-
-        print("Building finished succsesfull.\n")
+        os.chdir(pwd)
+        print("Building finished successfully")
 
 if __name__ == "__main__":
     argc = len(sys.argv)
 
     if argc > 1:
-        branding_file_path = sys.argv[1]
+        cmake_root = sys.argv[1]
+    else:
+        print_usage()
+        sys.exit(1)
+
+    if argc > 2:
+        branding_file_path = sys.argv[2]
     else:
         branding_file_path = '/dev/null'
         
-    if argc > 2:
-        platform_str = sys.argv[2]
+    if argc > 3:
+        platform_str = sys.argv[3]
     else:
         platform_str = system_info.get_os()
 
-    if argc > 3:
-        arch_bit_str = sys.argv[3]
+    if argc > 4:
+        arch_bit_str = sys.argv[4]
     else:
         arch_bit_str = system_info.get_arch_bit()
+
+    if argc > 5:
+        packages = sys.argv[5].split()
+    else:
+        packages = []
         
     request = BuildRequest(platform_str, int(arch_bit_str))
-    request.build(branding_file_path, platform_str + '_build', [])
+    request.build(cmake_root, branding_file_path, platform_str + '_build', packages)

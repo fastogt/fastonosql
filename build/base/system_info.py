@@ -14,6 +14,20 @@ class Platform(object):
         self.archs = archs
         self.package_types = package_types
 
+    def architecture_by_arch(self, arch):
+        for curr_arch in self.archs:
+            if (curr_arch.name == arch):
+                return curr_arch
+
+        return None
+
+    def architecture_by_bit(self, arch_bit):
+        for curr_arch in self.archs:
+            if (curr_arch.bit == arch_bit):
+                return curr_arch
+
+        return None
+
 SUPPORTED_PLATFORMS = [Platform('linux', [Architecture('x86_64', 64), Architecture('i386', 32)], ['DEB', 'RPM', 'TGZ']),
                        Platform('windows', [Architecture('x86_64', 64), Architecture('i386', 32)], ['NSIS', 'ZIP']),
                        Platform('macosx', [Architecture('x86_64', 64)], ['DragNDrop', 'ZIP']),

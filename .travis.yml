@@ -60,8 +60,8 @@ before_script:
 script:
   - git submodule update --init --recursive
   - cd build
-  - python build.py
-  - python build.py fastoredis.txt
+  - python build.py ..
+  - python build.py .. fastoredis.txt
   
 after_success:
 
