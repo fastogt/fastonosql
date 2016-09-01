@@ -50,13 +50,13 @@ before_script:
   #- if [ "$TRAVIS_OS_NAME" = "osx" ]; then CMAKE_ARGS="-DCMAKE_PREFIX_PATH=/usr/local/opt/qt5"; fi
 
   - which qmake
-  - qmake -v
+  - qmake --version
   - which cmake
   - cmake --version
   - which openssl
   - openssl version
   - which python
-  - python -v
+  - python --version
 script:
   - git submodule update --init --recursive
   - cd build
