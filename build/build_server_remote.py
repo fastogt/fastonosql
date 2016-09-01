@@ -86,7 +86,7 @@ class BuildRpcServer(object):
         
         in_file = open('CPackConfig.cmake', 'r')
         for line in in_file.readlines():
-            res = re.search(r'SET\(CPACK_SOURCE_PACKAGE_FILE_NAME "(.+)"\)', line)
+            res = re.search(r'SET\(CPACK_PACKAGE_FILE_NAME "(.+)"\)', line)
             if res != None:
                 filename = res.group(1) + '.' + system_info.get_extension_by_package(package_type)
         in_file.close()
