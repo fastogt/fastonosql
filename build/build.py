@@ -49,8 +49,7 @@ class ProgressSaverBase(object):
         self.progress_ = 0.0
 
     def process(self, line):
-        #print line
-        return
+        print line
 
     def update_progress(self, progress):
         self.progress_ = progress

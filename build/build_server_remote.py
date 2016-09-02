@@ -24,6 +24,7 @@ class ProgressSaver(build.ProgressSaverBase):
         diff = self.progress_max_ - self.progress_min_
         perc = self.progress_min_ + diff * (self.progress_ / 100.0)
         self.cb_(line, perc)
+        super(ProgressSaver, self).process(line)
 
 class BuildRpcServer(object):
     EXCHANGE = 'direct_logs'
@@ -114,7 +115,6 @@ class BuildRpcServer(object):
 
     def on_line_ready(self, line, progress, routing_key, op_id):
         self.send_status(routing_key, op_id, progress, line)
-        print line
 
     def build_package(self, op_id, branding_options, package_types, destination, routing_key):
         platform = self.buid_.platform()
