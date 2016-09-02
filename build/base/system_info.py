@@ -5,34 +5,64 @@ import re
 
 class Architecture(object):
     def __init__(self, arch_str, bit):
-        self.name = arch_str
-        self.bit = bit
+        self.name_ = arch_str
+        self.bit_ = bit
+
+    def name(self):
+        return self.name_
+
+    def bit(self):
+        return self.bit_
 
 class Platform(object):
+    def __init__(self, name, arch, package_types):
+        self.name_ = name
+        self.arch_ = arch
+        self.package_types_ = package_types
+
+    def name(self):
+        return self.name_
+
+    def arch(self):
+        return self.arch_
+
+    def package_types(self):
+        return self.package_types_
+
+class SupportedPlatform(object):
     def __init__(self, name, archs, package_types):
-        self.name = name
-        self.archs = archs
-        self.package_types = package_types
+        self.name_ = name
+        self.archs_ = archs
+        self.package_types_ = package_types
+
+    def name(self):
+        return self.name_
+
+    def archs(self):
+        return self.archs_
+
+    def package_types(self):
+        return self.package_types_
 
     def architecture_by_arch(self, arch):
-        for curr_arch in self.archs:
+        for curr_arch in self.archs_:
             if (curr_arch.name == arch):
                 return curr_arch
 
         return None
 
     def architecture_by_bit(self, arch_bit):
-        for curr_arch in self.archs:
-            if (curr_arch.bit == arch_bit):
+        for curr_arch in self.archs_:
+            if (curr_arch.bit() == arch_bit):
                 return curr_arch
 
         return None
 
-SUPPORTED_PLATFORMS = [Platform('linux', [Architecture('x86_64', 64), Architecture('i386', 32)], ['DEB', 'RPM', 'TGZ']),
-                       Platform('windows', [Architecture('x86_64', 64), Architecture('i386', 32)], ['NSIS', 'ZIP']),
-                       Platform('macosx', [Architecture('x86_64', 64)], ['DragNDrop', 'ZIP']),
-                       Platform('freebsd', [Architecture('x86_64', 64)], ['TGZ']),
-                       Platform('android', [Architecture('armv7', 32)], ['APK'])]
+SUPPORTED_PLATFORMS = [SupportedPlatform('linux', [Architecture('x86_64', 64), Architecture('i386', 32)], ['DEB', 'RPM', 'TGZ']),
+                       SupportedPlatform('windows', [Architecture('x86_64', 64), Architecture('i386', 32)], ['NSIS', 'ZIP']),
+                       SupportedPlatform('macosx', [Architecture('x86_64', 64)], ['DragNDrop', 'ZIP']),
+                       SupportedPlatform('freebsd', [Architecture('x86_64', 64)], ['TGZ']),
+                       SupportedPlatform('android', [Architecture('armv7', 32)], ['APK'])]
 
 def get_extension_by_package(package_type):
     if package_type == 'DEB':
@@ -74,7 +104,7 @@ def get_arch_bit():
     return re.search(r'\d+', arch[0]).group()
 
 def get_supported_platform_by_name(platform):
-    return next((x for x in SUPPORTED_PLATFORMS if x.name == platform), None)
+    return next((x for x in SUPPORTED_PLATFORMS if x.name_ == platform), None)
     
 def gen_routing_key(platform, arch):
     return platform + '_' + arch

@@ -47,9 +47,11 @@ class BuildRequest(object):
         if arch == None:
             raise BuildError('invalid arch')
 
-        self.platform = platform_or_none
-        self.arch = arch
-        print("Build request for platform: {0}, arch: {1} created".format(platform, arch.name))
+        self.platform_ = system_info.Platform(platform_or_none.name(), arch, platform_or_none.package_types())
+        print("Build request for platform: {0}, arch: {1} created".format(platform, arch.name()))
+
+    def platform(self):
+        return self.platform_
 
     def build(self, cmake_project_root_path, branding_options, dir_path, package_types):
         cmake_project_root_abs_path = os.path.abspath(cmake_project_root_path)
@@ -57,7 +59,7 @@ class BuildRequest(object):
             raise BuildError('invalid cmake_project_root_path: %s' % cmake_project_root_path)
 
         if not package_types:
-            package_types = self.platform.package_types
+            package_types = self.platform_.package_types()
 
         abs_dir_path = os.path.abspath(dir_path)
         if os.path.exists(abs_dir_path):
@@ -71,7 +73,8 @@ class BuildRequest(object):
         os.chdir(abs_dir_path)
 
         # project static options
-        arch_args = '-DOS_ARCH={0}'.format(self.arch.bit)
+        arch = self.platform_.arch()
+        arch_args = '-DOS_ARCH={0}'.format(arch.bit)
         log_to_file_args = '-DLOG_TO_FILE=ON'
         openssl_args = '-DOPENSSL_USE_STATIC=ON'
         cmake_line = ['cmake', cmake_project_root_abs_path, '-GNinja', '-DCMAKE_BUILD_TYPE=RELEASE', arch_args, log_to_file_args, openssl_args]
@@ -101,7 +104,7 @@ class BuildRequest(object):
         in_file.close()
 
         file_names = []
-        if self.platform.name == 'android':
+        if self.platform_.name() == 'android':
             make_apk_release = ['ninja', 'apk_release']
             try:
                 run_command(make_apk_release)
