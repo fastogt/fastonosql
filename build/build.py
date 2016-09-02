@@ -20,9 +20,18 @@ def print_usage():
         "[optional] argv[4] architecture\n"
         "[optional] argv[5] packages for example(\"DEB RPM\")\n")
 
-def run_command(cmd):
-    return subprocess.check_call(cmd)
-
+def run_command_cb(cmd, cb):
+    process = subprocess.Popen(cmd, stdout=subprocess.PIPE)
+    while True:
+        output = process.stdout.readline()
+        if output == '' and process.poll() is not None:
+            break
+        if output:
+            line = output.strip()
+            if cb:
+                cb(line)
+    rc = process.poll()
+    return rc
 
 def read_file_line_by_line(file):
     if not os.path.exists(file):
@@ -35,6 +44,16 @@ def read_file_line_by_line(file):
 
     return file_array
 
+class ProgressSaverBase(object):
+    def __init__(self):
+        self.progress_ = 0.0
+
+    def process(self, line):
+        #print line
+        return
+
+    def update_progress(self, progress):
+        self.progress_ = progress
 
 class BuildRequest(object):
     def __init__(self, platform, arch_bit):
@@ -53,7 +72,7 @@ class BuildRequest(object):
     def platform(self):
         return self.platform_
 
-    def build(self, cmake_project_root_path, branding_options, dir_path, package_types):
+    def build(self, cmake_project_root_path, branding_options, dir_path, package_types, saver):
         cmake_project_root_abs_path = os.path.abspath(cmake_project_root_path)
         if not os.path.exists(cmake_project_root_abs_path):
             raise BuildError('invalid cmake_project_root_path: %s' % cmake_project_root_path)
@@ -65,7 +84,7 @@ class BuildRequest(object):
         if os.path.exists(abs_dir_path):
             shutil.rmtree(abs_dir_path)
 
-        print("Start building project "
+        saver.process("Start building project "
               "branding_options:\n{0}".format("\n".join(branding_options)))
 
         pwd = os.getcwd()
@@ -82,19 +101,22 @@ class BuildRequest(object):
         if branding_options:
             cmake_line.extend(branding_options)
 
+        saver.update_progress(10.0)
         try:
-            run_command(cmake_line)
+            run_command_cb(cmake_line, saver.process)
         except subprocess.CalledProcessError as ex:
             os.chdir(pwd)
             raise ex
 
         make_install = ['ninja', 'install']
+        saver.update_progress(20.0)
         try:
-            run_command(make_install)
+            run_command_cb(make_install, saver.process)
         except subprocess.CalledProcessError as ex:
             os.chdir(pwd)
             raise ex
 
+        saver.update_progress(70.0)
         in_file = open('CPackConfig.cmake', 'r')
         for line in in_file.readlines():
             res = re.search(r'SET\(CPACK_PACKAGE_FILE_NAME "(.+)"\)', line)
@@ -103,23 +125,24 @@ class BuildRequest(object):
                 break
         in_file.close()
 
+        saver.update_progress(80.0)
         file_names = []
         if self.platform_.name() == 'android':
             make_apk_release = ['ninja', 'apk_release']
             try:
-                run_command(make_apk_release)
+                run_command_cb(make_apk_release, saver.process)
             except subprocess.CalledProcessError as ex:
                 os.chdir(pwd)
                 raise ex
             make_apk_signed = ['ninja', 'apk_signed']
             try:
-                run_command(make_apk_signed)
+                run_command_cb(make_apk_signed, saver.process)
             except subprocess.CalledProcessError as ex:
                 os.chdir(pwd)
                 raise ex
             make_apk_signed_aligned = ['ninja', 'apk_signed_aligned']
             try:
-                run_command(make_apk_signed_aligned)
+                run_command_cb(make_apk_signed_aligned, saver.process)
             except subprocess.CalledProcessError as ex:
                 os.chdir(pwd)
                 raise ex
@@ -129,15 +152,16 @@ class BuildRequest(object):
             for generator in package_types:
                 make_cpack = ['cpack', '-G', generator]
                 try:
-                    run_command(make_cpack)
+                    run_command_cb(make_cpack, saver.process)
                     file_names.append(os.path.join(abs_dir_path, filename + '.' + system_info.get_extension_by_package(generator)))
                 except subprocess.CalledProcessError as ex:
                     os.chdir(pwd)
                     raise ex
 
         os.chdir(pwd)
-        print("Building finished successfully file_names: {0}".format(file_names))
+        saver.process("Building finished successfully file_names: {0}".format(file_names))
 
+        saver.update_progress(100.0)
         return file_names
 
 if __name__ == "__main__":
@@ -172,4 +196,5 @@ if __name__ == "__main__":
     request = BuildRequest(platform_str, int(arch_bit_str))
     abs_branding_file = os.path.abspath(branding_file_path)
     branding_options = read_file_line_by_line(abs_branding_file)
-    request.build(cmake_root, branding_options, 'build_' + platform_str, packages)
+    saver = ProgressSaverBase()
+    request.build(cmake_root, branding_options, 'build_' + platform_str, packages, saver)
