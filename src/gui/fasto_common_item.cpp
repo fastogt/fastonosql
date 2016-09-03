@@ -2,45 +2,55 @@
 
     This file is part of FastoNoSQL.
 
-    FastoNoSQL is free software: you can redistribute it and/or modify
-    it under the terms of the GNU General Public License as published by
-    the Free Software Foundation, either version 3 of the License, or
+    FastoNoSQL is free software: you can redistribute it
+   and/or modify
+    it under the terms of the GNU General Public License as
+   published by
+    the Free Software Foundation, either version 3 of the
+   License, or
     (at your option) any later version.
 
-    FastoNoSQL is distributed in the hope that it will be useful,
-    but WITHOUT ANY WARRANTY; without even the implied warranty of
-    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+    FastoNoSQL is distributed in the hope that it will be
+   useful,
+    but WITHOUT ANY WARRANTY; without even the implied
+   warranty of
+    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
+   See the
     GNU General Public License for more details.
 
-    You should have received a copy of the GNU General Public License
-    along with FastoNoSQL.  If not, see <http://www.gnu.org/licenses/>.
+    You should have received a copy of the GNU General
+   Public License
+    along with FastoNoSQL.  If not, see
+   <http://www.gnu.org/licenses/>.
 */
 
 #include "gui/fasto_common_item.h"
 
-#include <stddef.h>                     // for size_t
-#include <memory>                       // for __shared_ptr
-#include <string>                       // for string
+#include <memory>    // for __shared_ptr
+#include <stddef.h>  // for size_t
+#include <string>    // for string
 
-#include "common/convert2string.h"      // for ConvertFromString
-#include "common/error.h"               // for Error
-#include "common/json_utils.h"          // for ParseJson
-#include "common/qt/convert2string.h"   // for ConvertToString
+#include "common/convert2string.h"                  // for ConvertFromString
+#include "common/error.h"                           // for Error
+#include "common/json_utils.h"                      // for ParseJson
+#include "common/qt/convert2string.h"               // for ConvertToString
 #include "common/text_decoders/compress_edcoder.h"  // for CompressEDcoder
-#include "common/text_decoders/hex_edcoder.h"  // for HexEDcoder
-#include "common/text_decoders/msgpack_edcoder.h"  // for MsgPackEDcoder
+#include "common/text_decoders/hex_edcoder.h"       // for HexEDcoder
+#include "common/text_decoders/msgpack_edcoder.h"   // for MsgPackEDcoder
 
-#include "fasto/qt/gui/base/tree_item.h"      // for TreeItem
+#include "fasto/qt/gui/base/tree_item.h"  // for TreeItem
 
-#include "global/global.h"              // for ConvertToString
+#include "global/global.h"  // for ConvertToString
 
 namespace fastonosql {
 namespace gui {
 
-FastoCommonItem::FastoCommonItem(const core::NDbKValue& key, const std::string& delimiter,
-                                 bool isReadOnly, TreeItem* parent, void* internalPointer)
-  : TreeItem(parent, internalPointer), key_(key), delimiter_(delimiter), read_only_(isReadOnly) {
-}
+FastoCommonItem::FastoCommonItem(const core::NDbKValue& key,
+                                 const std::string& delimiter,
+                                 bool isReadOnly,
+                                 TreeItem* parent,
+                                 void* internalPointer)
+    : TreeItem(parent, internalPointer), key_(key), delimiter_(delimiter), read_only_(isReadOnly) {}
 
 QString FastoCommonItem::key() const {
   return common::ConvertFromString<QString>(key_.keyString());

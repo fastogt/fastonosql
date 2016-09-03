@@ -2,36 +2,44 @@
 
     This file is part of FastoNoSQL.
 
-    FastoNoSQL is free software: you can redistribute it and/or modify
-    it under the terms of the GNU General Public License as published by
-    the Free Software Foundation, either version 3 of the License, or
+    FastoNoSQL is free software: you can redistribute it
+   and/or modify
+    it under the terms of the GNU General Public License as
+   published by
+    the Free Software Foundation, either version 3 of the
+   License, or
     (at your option) any later version.
 
-    FastoNoSQL is distributed in the hope that it will be useful,
-    but WITHOUT ANY WARRANTY; without even the implied warranty of
-    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+    FastoNoSQL is distributed in the hope that it will be
+   useful,
+    but WITHOUT ANY WARRANTY; without even the implied
+   warranty of
+    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
+   See the
     GNU General Public License for more details.
 
-    You should have received a copy of the GNU General Public License
-    along with FastoNoSQL.  If not, see <http://www.gnu.org/licenses/>.
+    You should have received a copy of the GNU General
+   Public License
+    along with FastoNoSQL.  If not, see
+   <http://www.gnu.org/licenses/>.
 */
 
 #pragma once
 
 #include <QObject>
 
-#include "common/error.h"               // for Error
-#include "common/macros.h"              // for WARN_UNUSED_RESULT
-#include "common/net/types.h"           // for HostAndPort
-#include "common/types.h"               // for time64_t
-#include "core/command_key.h"           // for CommandChangeTTL (ptr only), etc
-#include "core/connection_types.h"      // for connectionTypes
+#include "common/error.h"      // for Error
+#include "common/macros.h"     // for WARN_UNUSED_RESULT
+#include "common/net/types.h"  // for HostAndPort
+#include "common/types.h"      // for time64_t
+#include "core/command_key.h"  // for CommandChangeTTL (ptr only), etc
 #include "core/connection_settings.h"
-#include "core/types.h"                 // for IDataBaseInfo (ptr only), etc
+#include "core/connection_types.h"  // for connectionTypes
+#include "core/types.h"             // for IDataBaseInfo (ptr only), etc
 
 #include "core/events/events.h"
 
-#include "global/global.h"              // for FastoObject, etc
+#include "global/global.h"  // for FastoObject, etc
 
 class QThread;
 
@@ -44,8 +52,7 @@ class File;
 namespace fastonosql {
 namespace core {
 
-class IDriver
-  : public QObject, private FastoObject::IFastoObjectObserver {
+class IDriver : public QObject, private FastoObject::IFastoObjectObserver {
   Q_OBJECT
  public:
   virtual ~IDriver();
@@ -110,20 +117,21 @@ class IDriver
   virtual void handleExportEvent(events::ExportRequestEvent* ev);
   virtual void handleChangePasswordEvent(events::ChangePasswordRequestEvent* ev);
   virtual void handleChangeMaxConnectionEvent(events::ChangeMaxConnectionRequestEvent* ev);
-  virtual void handleLoadDatabaseInfosEvent(events::LoadDatabasesInfoRequestEvent* ev);  // call currentDatabaseInfo
+  virtual void handleLoadDatabaseInfosEvent(
+      events::LoadDatabasesInfoRequestEvent* ev);  // call currentDatabaseInfo
   virtual void handleClearDatabaseEvent(events::ClearDatabaseRequestEvent* ev);
   virtual void handleSetDefaultDatabaseEvent(events::SetDefaultDatabaseRequestEvent* ev);
 
   const IConnectionSettingsBaseSPtr settings_;
 
   class RootLocker {
-  public:
+   public:
     RootLocker(IDriver* parent, QObject* receiver, const std::string& text);
     ~RootLocker();
 
     FastoObjectIPtr root() const;
 
-  private:
+   private:
     FastoObjectIPtr root_;
     IDriver* parent_;
     QObject* receiver_;
@@ -137,6 +145,7 @@ class IDriver
   void setCurrentDatabaseInfo(IDataBaseInfo* inf);
 
   common::Error execute(FastoObjectCommandIPtr cmd) WARN_UNUSED_RESULT;
+
  private:
   virtual common::Error syncConnect() WARN_UNUSED_RESULT = 0;
   virtual common::Error syncDisconnect() WARN_UNUSED_RESULT = 0;
@@ -178,8 +187,7 @@ class IDriver
   common::file_system::File* log_file_;
 };
 
-class IDriverLocal
-  : public IDriver {
+class IDriverLocal : public IDriver {
   Q_OBJECT
  public:
   virtual std::string path() const = 0;
@@ -188,8 +196,7 @@ class IDriverLocal
   explicit IDriverLocal(IConnectionSettingsBaseSPtr settings);
 };
 
-class IDriverRemote
-  : public IDriver {
+class IDriverRemote : public IDriver {
   Q_OBJECT
  public:
   virtual common::net::HostAndPort host() const = 0;

@@ -2,34 +2,42 @@
 
     This file is part of FastoNoSQL.
 
-    FastoNoSQL is free software: you can redistribute it and/or modify
-    it under the terms of the GNU General Public License as published by
-    the Free Software Foundation, either version 3 of the License, or
+    FastoNoSQL is free software: you can redistribute it
+   and/or modify
+    it under the terms of the GNU General Public License as
+   published by
+    the Free Software Foundation, either version 3 of the
+   License, or
     (at your option) any later version.
 
-    FastoNoSQL is distributed in the hope that it will be useful,
-    but WITHOUT ANY WARRANTY; without even the implied warranty of
-    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+    FastoNoSQL is distributed in the hope that it will be
+   useful,
+    but WITHOUT ANY WARRANTY; without even the implied
+   warranty of
+    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
+   See the
     GNU General Public License for more details.
 
-    You should have received a copy of the GNU General Public License
-    along with FastoNoSQL.  If not, see <http://www.gnu.org/licenses/>.
+    You should have received a copy of the GNU General
+   Public License
+    along with FastoNoSQL.  If not, see
+   <http://www.gnu.org/licenses/>.
 */
 
 #include "core/db_key.h"
 
-#include <memory>                       // for __shared_ptr
-#include <string>                       // for string
-#include <vector>                       // for vector
+#include <memory>  // for __shared_ptr
+#include <string>  // for string
+#include <vector>  // for vector
 
-#include "common/string_util.h"         // for JoinString, Tokenize
+#include "common/string_util.h"  // for JoinString, Tokenize
 
 namespace fastonosql {
 namespace core {
 
-KeyInfo::KeyInfo(const splited_namespaces_t& splited_namespaces_and_key, const std::string& ns_separator)
-  : splited_namespaces_and_key_(splited_namespaces_and_key), ns_separator_(ns_separator) {
-}
+KeyInfo::KeyInfo(const splited_namespaces_t& splited_namespaces_and_key,
+                 const std::string& ns_separator)
+    : splited_namespaces_and_key_(splited_namespaces_and_key), ns_separator_(ns_separator) {}
 
 std::string KeyInfo::key() const {
   return common::JoinString(splited_namespaces_and_key_, ns_separator_);
@@ -65,9 +73,7 @@ std::string KeyInfo::joinNamespace(size_t pos) const {
   return std::string();
 }
 
-NKey::NKey(const std::string& key, ttl_t ttl_sec)
-  : key_(key), ttl_(ttl_sec) {
-}
+NKey::NKey(const std::string& key, ttl_t ttl_sec) : key_(key), ttl_(ttl_sec) {}
 
 KeyInfo NKey::info(const std::string& ns_separator) const {
   KeyInfo::splited_namespaces_t tokens;
@@ -87,9 +93,7 @@ void NKey::setTTL(ttl_t ttl) {
   ttl_ = ttl;
 }
 
-NDbKValue::NDbKValue(const NKey& key, NValue value)
-  : key_(key), value_(value) {
-}
+NDbKValue::NDbKValue(const NKey& key, NValue value) : key_(key), value_(value) {}
 
 NKey NDbKValue::key() const {
   return key_;

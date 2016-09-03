@@ -2,32 +2,40 @@
 
     This file is part of FastoNoSQL.
 
-    FastoNoSQL is free software: you can redistribute it and/or modify
-    it under the terms of the GNU General Public License as published by
-    the Free Software Foundation, either version 3 of the License, or
+    FastoNoSQL is free software: you can redistribute it
+   and/or modify
+    it under the terms of the GNU General Public License as
+   published by
+    the Free Software Foundation, either version 3 of the
+   License, or
     (at your option) any later version.
 
-    FastoNoSQL is distributed in the hope that it will be useful,
-    but WITHOUT ANY WARRANTY; without even the implied warranty of
-    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+    FastoNoSQL is distributed in the hope that it will be
+   useful,
+    but WITHOUT ANY WARRANTY; without even the implied
+   warranty of
+    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
+   See the
     GNU General Public License for more details.
 
-    You should have received a copy of the GNU General Public License
-    along with FastoNoSQL.  If not, see <http://www.gnu.org/licenses/>.
+    You should have received a copy of the GNU General
+   Public License
+    along with FastoNoSQL.  If not, see
+   <http://www.gnu.org/licenses/>.
 */
 
 #include "global/global.h"
 
-#include <stddef.h>                     // for size_t, NULL
-#include <iterator>                     // for prev, next
-#include <map>                          // for _Rb_tree_const_iterator, etc
-#include <unordered_map>                // for _Node_iterator, operator!=, etc
-#include "common/string_util.h"         // for TrimWhitespaceASCII, etc
+#include "common/string_util.h"  // for TrimWhitespaceASCII, etc
+#include <iterator>              // for prev, next
+#include <map>                   // for _Rb_tree_const_iterator, etc
+#include <stddef.h>              // for size_t, NULL
+#include <unordered_map>         // for _Node_iterator, operator!=, etc
 
 namespace fastonosql {
 
-FastoObject::FastoObject(FastoObject* parent, common::Value *val, const std::string& delimiter)
-  : observer_(nullptr), value_(val), parent_(parent), childrens_(), delimiter_(delimiter) {
+FastoObject::FastoObject(FastoObject* parent, common::Value* val, const std::string& delimiter)
+    : observer_(nullptr), value_(val), parent_(parent), childrens_(), delimiter_(delimiter) {
   DCHECK(value_);
 }
 
@@ -48,7 +56,7 @@ std::string FastoObject::toString() const {
 }
 
 FastoObject* FastoObject::createRoot(const std::string& text, IFastoObjectObserver* observer) {
-  FastoObject* root =  new FastoObject(NULL, common::Value::createStringValue(text), std::string());
+  FastoObject* root = new FastoObject(NULL, common::Value::createStringValue(text), std::string());
   root->observer_ = observer;
   return root;
 }
@@ -93,13 +101,13 @@ void FastoObject::setValue(value_t val) {
   }
 }
 
-FastoObjectCommand::FastoObjectCommand(FastoObject* parent, common::CommandValue* cmd,
-                                       const std::string& delimiter, core::connectionTypes type)
-  : FastoObject(parent, cmd, delimiter), type_(type) {
-}
+FastoObjectCommand::FastoObjectCommand(FastoObject* parent,
+                                       common::CommandValue* cmd,
+                                       const std::string& delimiter,
+                                       core::connectionTypes type)
+    : FastoObject(parent, cmd, delimiter), type_(type) {}
 
-FastoObjectCommand::~FastoObjectCommand() {
-}
+FastoObjectCommand::~FastoObjectCommand() {}
 
 common::CommandValue* FastoObjectCommand::cmd() const {
   return static_cast<common::CommandValue*>(value_.get());
@@ -182,10 +190,10 @@ std::string GetFirstWordFromLine(const std::string& input) {
   return input;
 }
 
-FastoObjectArray::FastoObjectArray(FastoObject* parent, common::ArrayValue* ar,
+FastoObjectArray::FastoObjectArray(FastoObject* parent,
+                                   common::ArrayValue* ar,
                                    const std::string& delimiter)
-  : FastoObject(parent, ar, delimiter) {
-}
+    : FastoObject(parent, ar, delimiter) {}
 
 void FastoObjectArray::append(common::Value* in_value) {
   common::ArrayValue* ar = static_cast<common::ArrayValue*>(value_.get());
@@ -217,7 +225,7 @@ std::string ConvertToString(fastonosql::FastoObject* obj) {
   }
 
   auto childrens = obj->childrens();
-  for(auto it = childrens.begin(); it != childrens.end(); ++it ){
+  for (auto it = childrens.begin(); it != childrens.end(); ++it) {
     result += ConvertToString((*it).get());
   }
 
@@ -232,11 +240,11 @@ std::string ConvertToString(common::Value* value, const std::string& delimiter) 
   common::Value::Type t = value->type();
   if (t == common::Value::TYPE_ARRAY) {
     return ConvertToString(static_cast<ArrayValue*>(value), delimiter);
-  } else if(t == common::Value::TYPE_SET) {
+  } else if (t == common::Value::TYPE_SET) {
     return ConvertToString(static_cast<SetValue*>(value), delimiter);
-  } else if(t == common::Value::TYPE_ZSET) {
+  } else if (t == common::Value::TYPE_ZSET) {
     return ConvertToString(static_cast<ZSetValue*>(value), delimiter);
-  } else if(t == common::Value::TYPE_HASH) {
+  } else if (t == common::Value::TYPE_HASH) {
     return ConvertToString(static_cast<HashValue*>(value), delimiter);
   } else {
     return value->toString();
@@ -256,12 +264,12 @@ std::string ConvertToString(common::ArrayValue* array, const std::string& delimi
   auto lastIt = std::prev(array->end());
   for (auto it = array->begin(); it != array->end(); ++it) {
     std::string val = (*it)->toString();
-    if(val.empty()){
+    if (val.empty()) {
       continue;
     }
 
     result += val;
-    if(lastIt != it){
+    if (lastIt != it) {
       result += delimiter;
     }
   }
@@ -282,7 +290,7 @@ std::string ConvertToString(common::SetValue* set, const std::string& delimiter)
   auto lastIt = std::prev(set->end());
   for (auto it = set->begin(); it != set->end(); ++it) {
     std::string val = (*it)->toString();
-    if(val.empty()){
+    if (val.empty()) {
       continue;
     }
 
@@ -310,12 +318,12 @@ std::string ConvertToString(common::ZSetValue* zset, const std::string& delimite
     auto v = *it;
     std::string key = (v.first)->toString();
     std::string val = (v.second)->toString();
-    if(val.empty() || key.empty()){
+    if (val.empty() || key.empty()) {
       continue;
     }
 
     result += key + " " + val;
-    if(lastIt != it){
+    if (lastIt != it) {
       result += delimiter;
     }
   }

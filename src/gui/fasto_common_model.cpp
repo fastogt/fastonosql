@@ -2,50 +2,56 @@
 
     This file is part of FastoNoSQL.
 
-    FastoNoSQL is free software: you can redistribute it and/or modify
-    it under the terms of the GNU General Public License as published by
-    the Free Software Foundation, either version 3 of the License, or
+    FastoNoSQL is free software: you can redistribute it
+   and/or modify
+    it under the terms of the GNU General Public License as
+   published by
+    the Free Software Foundation, either version 3 of the
+   License, or
     (at your option) any later version.
 
-    FastoNoSQL is distributed in the hope that it will be useful,
-    but WITHOUT ANY WARRANTY; without even the implied warranty of
-    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+    FastoNoSQL is distributed in the hope that it will be
+   useful,
+    but WITHOUT ANY WARRANTY; without even the implied
+   warranty of
+    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
+   See the
     GNU General Public License for more details.
 
-    You should have received a copy of the GNU General Public License
-    along with FastoNoSQL.  If not, see <http://www.gnu.org/licenses/>.
+    You should have received a copy of the GNU General
+   Public License
+    along with FastoNoSQL.  If not, see
+   <http://www.gnu.org/licenses/>.
 */
 
 #include "gui/fasto_common_model.h"
 
-#include <stddef.h>                     // for size_t
+#include <stddef.h>  // for size_t
 
-#include <string>                       // for string
+#include <string>  // for string
 
 #include <QIcon>
 
-#include "common/convert2string.h"      // for ConvertFromString
-#include "common/macros.h"              // for UNUSED
-#include "common/qt/convert2string.h"   // for ConvertToString
-#include "common/qt/utils_qt.h"         // for item
-#include "common/value.h"               // for Value, make_value, etc
+#include "common/convert2string.h"     // for ConvertFromString
+#include "common/macros.h"             // for UNUSED
+#include "common/qt/convert2string.h"  // for ConvertToString
+#include "common/qt/utils_qt.h"        // for item
+#include "common/value.h"              // for Value, make_value, etc
 
-#include "fasto/qt/gui/base/tree_item.h"      // for TreeItem
-#include "fasto/qt/gui/base/tree_model.h"     // for TreeModel
+#include "fasto/qt/gui/base/tree_item.h"   // for TreeItem
+#include "fasto/qt/gui/base/tree_model.h"  // for TreeModel
 
-#include "core/db_key.h"                // for NDbKValue, NKey, NValue
+#include "core/db_key.h"  // for NDbKValue, NKey, NValue
 
-#include "gui/fasto_common_item.h"      // for FastoCommonItem, etc
-#include "gui/gui_factory.h"            // for GuiFactory
+#include "gui/fasto_common_item.h"  // for FastoCommonItem, etc
+#include "gui/gui_factory.h"        // for GuiFactory
 
-#include "translations/global.h"        // for trKey, trType, trValue
+#include "translations/global.h"  // for trKey, trType, trValue
 
 namespace fastonosql {
 namespace gui {
 
-FastoCommonModel::FastoCommonModel(QObject* parent)
-  : TreeModel(parent) {
-}
+FastoCommonModel::FastoCommonModel(QObject* parent) : TreeModel(parent) {}
 
 QVariant FastoCommonModel::data(const QModelIndex& index, int role) const {
   QVariant result;
@@ -54,7 +60,8 @@ QVariant FastoCommonModel::data(const QModelIndex& index, int role) const {
     return result;
   }
 
-  FastoCommonItem* node = common::utils_qt::item<fasto::qt::gui::TreeItem*, FastoCommonItem*>(index);
+  FastoCommonItem* node =
+      common::utils_qt::item<fasto::qt::gui::TreeItem*, FastoCommonItem*>(index);
 
   if (!node) {
     return result;
@@ -89,7 +96,8 @@ QVariant FastoCommonModel::data(const QModelIndex& index, int role) const {
 
 bool FastoCommonModel::setData(const QModelIndex& index, const QVariant& value, int role) {
   if (index.isValid() && role == Qt::EditRole) {
-    FastoCommonItem* node = common::utils_qt::item<fasto::qt::gui::TreeItem*, FastoCommonItem*>(index);
+    FastoCommonItem* node =
+        common::utils_qt::item<fasto::qt::gui::TreeItem*, FastoCommonItem*>(index);
 
     if (!node) {
       return false;
@@ -121,10 +129,11 @@ Qt::ItemFlags FastoCommonModel::flags(const QModelIndex& index) const {
   if (index.isValid()) {
     result = Qt::ItemIsSelectable | Qt::ItemIsEnabled;
     int col = index.column();
-      FastoCommonItem* node = common::utils_qt::item<fasto::qt::gui::TreeItem*, FastoCommonItem*>(index);
-      if (node && col == FastoCommonItem::eValue && !node->isReadOnly()) {
-        result |= Qt::ItemIsEditable;
-      }
+    FastoCommonItem* node =
+        common::utils_qt::item<fasto::qt::gui::TreeItem*, FastoCommonItem*>(index);
+    if (node && col == FastoCommonItem::eValue && !node->isReadOnly()) {
+      result |= Qt::ItemIsEditable;
+    }
   }
   return result;
 }
@@ -178,7 +187,8 @@ void FastoCommonModel::changeValue(const core::NDbKValue& value) {
 
     if (child->key() == key) {
       child->setValue(value.value());
-      updateItem(index(i, FastoCommonItem::eValue, QModelIndex()), index(i, FastoCommonItem::eType, QModelIndex()));
+      updateItem(index(i, FastoCommonItem::eValue, QModelIndex()),
+                 index(i, FastoCommonItem::eType, QModelIndex()));
       break;
     }
   }

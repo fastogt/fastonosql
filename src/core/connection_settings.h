@@ -2,33 +2,41 @@
 
     This file is part of FastoNoSQL.
 
-    FastoNoSQL is free software: you can redistribute it and/or modify
-    it under the terms of the GNU General Public License as published by
-    the Free Software Foundation, either version 3 of the License, or
+    FastoNoSQL is free software: you can redistribute it
+   and/or modify
+    it under the terms of the GNU General Public License as
+   published by
+    the Free Software Foundation, either version 3 of the
+   License, or
     (at your option) any later version.
 
-    FastoNoSQL is distributed in the hope that it will be useful,
-    but WITHOUT ANY WARRANTY; without even the implied warranty of
-    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+    FastoNoSQL is distributed in the hope that it will be
+   useful,
+    but WITHOUT ANY WARRANTY; without even the implied
+   warranty of
+    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
+   See the
     GNU General Public License for more details.
 
-    You should have received a copy of the GNU General Public License
-    along with FastoNoSQL.  If not, see <http://www.gnu.org/licenses/>.
+    You should have received a copy of the GNU General
+   Public License
+    along with FastoNoSQL.  If not, see
+   <http://www.gnu.org/licenses/>.
 */
 
 #pragma once
 
-#include <stdint.h>                     // for uint32_t
+#include <stdint.h>  // for uint32_t
 
-#include <memory>                       // for shared_ptr
-#include <string>                       // for string
-#include <vector>                       // for vector
+#include <memory>  // for shared_ptr
+#include <string>  // for string
+#include <vector>  // for vector
 
-#include "common/file_system.h"         // for ascii_string_path, etc
-#include "common/net/types.h"           // for HostAndPort
+#include "common/file_system.h"  // for ascii_string_path, etc
+#include "common/net/types.h"    // for HostAndPort
 
-#include "core/connection_types.h"      // for connectionTypes
-#include "core/ssh_info.h"              // for SSHInfo
+#include "core/connection_types.h"  // for connectionTypes
+#include "core/ssh_info.h"          // for SSHInfo
 
 namespace fastonosql {
 namespace core {
@@ -51,12 +59,11 @@ class ConnectionSettingsPath {
   common::file_system::ascii_string_path path_;
 };
 
-inline bool operator == (const ConnectionSettingsPath& r, const ConnectionSettingsPath& l) {
+inline bool operator==(const ConnectionSettingsPath& r, const ConnectionSettingsPath& l) {
   return r.equals(l);
 }
 
-class IConnectionSettings
-  : public common::ClonableBase<IConnectionSettings> {
+class IConnectionSettings : public common::ClonableBase<IConnectionSettings> {
  public:
   typedef ConnectionSettingsPath connection_path_t;
   virtual ~IConnectionSettings();
@@ -86,8 +93,7 @@ class IConnectionSettings
 bool isRemoteType(connectionTypes type);
 bool isCanSSHConnection(connectionTypes type);
 
-class IConnectionSettingsBase
-  : public IConnectionSettings {
+class IConnectionSettingsBase : public IConnectionSettings {
  public:
   virtual ~IConnectionSettingsBase();
   std::string hash() const;
@@ -101,7 +107,8 @@ class IConnectionSettingsBase
 
   virtual std::string fullAddress() const = 0;
 
-  static IConnectionSettingsBase* createFromType(connectionTypes type, const connection_path_t& conName);
+  static IConnectionSettingsBase* createFromType(connectionTypes type,
+                                                 const connection_path_t& conName);
   static IConnectionSettingsBase* fromString(const std::string& val);
 
   virtual std::string toString() const;
@@ -115,8 +122,7 @@ class IConnectionSettingsBase
   std::string hash_;
 };
 
-class IConnectionSettingsLocal
-  : public IConnectionSettingsBase {
+class IConnectionSettingsLocal : public IConnectionSettingsBase {
  public:
   virtual std::string dbpath() const = 0;
 
@@ -124,8 +130,7 @@ class IConnectionSettingsLocal
   IConnectionSettingsLocal(const connection_path_t& connectionPath, connectionTypes type);
 };
 
-class IConnectionSettingsRemote
-  : public IConnectionSettingsBase {
+class IConnectionSettingsRemote : public IConnectionSettingsBase {
  public:
   virtual ~IConnectionSettingsRemote();
 
@@ -137,23 +142,24 @@ class IConnectionSettingsRemote
 
   virtual std::string fullAddress() const;
 
-  static IConnectionSettingsRemote* createFromType(connectionTypes type, const connection_path_t& conName,
+  static IConnectionSettingsRemote* createFromType(connectionTypes type,
+                                                   const connection_path_t& conName,
                                                    const common::net::HostAndPort& host);
 
  protected:
   IConnectionSettingsRemote(const connection_path_t& connectionPath, connectionTypes type);
 };
 
-class IConnectionSettingsRemoteSSH
-  : public IConnectionSettingsRemote {
+class IConnectionSettingsRemoteSSH : public IConnectionSettingsRemote {
  public:
   SSHInfo sshInfo() const;
   void setSshInfo(const SSHInfo& info);
 
   virtual std::string toString() const;
 
-  static IConnectionSettingsRemoteSSH* createFromType(connectionTypes type, const connection_path_t& conName,
-                                                   const common::net::HostAndPort& host);
+  static IConnectionSettingsRemoteSSH* createFromType(connectionTypes type,
+                                                      const connection_path_t& conName,
+                                                      const common::net::HostAndPort& host);
 
  protected:
   IConnectionSettingsRemoteSSH(const connection_path_t& connectionName, connectionTypes type);

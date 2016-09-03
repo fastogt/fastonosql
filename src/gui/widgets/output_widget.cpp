@@ -2,62 +2,72 @@
 
     This file is part of FastoNoSQL.
 
-    FastoNoSQL is free software: you can redistribute it and/or modify
-    it under the terms of the GNU General Public License as published by
-    the Free Software Foundation, either version 3 of the License, or
+    FastoNoSQL is free software: you can redistribute it
+   and/or modify
+    it under the terms of the GNU General Public License as
+   published by
+    the Free Software Foundation, either version 3 of the
+   License, or
     (at your option) any later version.
 
-    FastoNoSQL is distributed in the hope that it will be useful,
-    but WITHOUT ANY WARRANTY; without even the implied warranty of
-    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+    FastoNoSQL is distributed in the hope that it will be
+   useful,
+    but WITHOUT ANY WARRANTY; without even the implied
+   warranty of
+    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
+   See the
     GNU General Public License for more details.
 
-    You should have received a copy of the GNU General Public License
-    along with FastoNoSQL.  If not, see <http://www.gnu.org/licenses/>.
+    You should have received a copy of the GNU General
+   Public License
+    along with FastoNoSQL.  If not, see
+   <http://www.gnu.org/licenses/>.
 */
 
 #include "gui/widgets/output_widget.h"
 
-#include <stddef.h>                     // for NULL
-#include <memory>                       // for __shared_ptr, operator==, etc
-#include <string>                       // for string
+#include <memory>    // for __shared_ptr, operator==, etc
+#include <stddef.h>  // for NULL
+#include <string>    // for string
 
 #include <QHBoxLayout>
 #include <QHeaderView>
 #include <QPushButton>
 #include <QSplitter>
 
-#include "common/convert2string.h"      // for ConvertFromString
-#include "common/error.h"               // for Error
-#include "common/log_levels.h"          // for LEVEL_LOG::L_DEBUG
-#include "common/logger.h"              // for DEBUG_MSG_FORMAT
-#include "common/macros.h"              // for VERIFY, CHECK, DNOTREACHED, etc
-#include "common/qt/utils_qt.h"         // for item
-#include "common/value.h"               // for StringValue, Value, etc
+#include "common/convert2string.h"  // for ConvertFromString
+#include "common/error.h"           // for Error
+#include "common/log_levels.h"      // for LEVEL_LOG::L_DEBUG
+#include "common/logger.h"          // for DEBUG_MSG_FORMAT
+#include "common/macros.h"          // for VERIFY, CHECK, DNOTREACHED, etc
+#include "common/qt/utils_qt.h"     // for item
+#include "common/value.h"           // for StringValue, Value, etc
 
-#include "core/db_key.h"                // for NKey, NDbKValue, NValue
-#include "core/events/events_info.h"    // for CommandResponce, etc
-#include "core/iserver.h"               // for IServer
-#include "core/settings_manager.h"      // for SettingsManager
+#include "core/db_key.h"              // for NKey, NDbKValue, NValue
+#include "core/events/events_info.h"  // for CommandResponce, etc
+#include "core/iserver.h"             // for IServer
+#include "core/settings_manager.h"    // for SettingsManager
 
-#include "fasto/qt/gui/icon_label.h"    // for IconLabel
-#include "fasto/qt/gui/base/tree_item.h"      // for TreeItem
+#include "fasto/qt/gui/base/tree_item.h"  // for TreeItem
+#include "fasto/qt/gui/icon_label.h"      // for IconLabel
 
-#include "global/types.h"               // for supportedViews, etc
+#include "global/types.h"  // for supportedViews, etc
 
-#include "gui/fasto_common_item.h"      // for FastoCommonItem
-#include "gui/fasto_common_model.h"     // for FastoCommonModel
-#include "gui/fasto_table_view.h"       // for FastoTableView
-#include "gui/fasto_text_view.h"        // for FastoTextView
-#include "gui/fasto_tree_view.h"        // for FastoTreeView
-#include "gui/gui_factory.h"            // for GuiFactory
+#include "gui/fasto_common_item.h"   // for FastoCommonItem
+#include "gui/fasto_common_model.h"  // for FastoCommonModel
+#include "gui/fasto_table_view.h"    // for FastoTableView
+#include "gui/fasto_text_view.h"     // for FastoTextView
+#include "gui/fasto_tree_view.h"     // for FastoTreeView
+#include "gui/gui_factory.h"         // for GuiFactory
 
 namespace fastonosql {
 namespace gui {
 namespace {
 
-FastoCommonItem* createItem(fasto::qt::gui::TreeItem* parent, const std::string& key,
-                            bool readOnly, FastoObject* item) {
+FastoCommonItem* createItem(fasto::qt::gui::TreeItem* parent,
+                            const std::string& key,
+                            bool readOnly,
+                            FastoObject* item) {
   core::NValue val = item->value();
   core::NDbKValue nkey(core::NKey(key), val);
   return new FastoCommonItem(nkey, item->delimiter(), readOnly, parent, item);
@@ -76,26 +86,26 @@ FastoCommonItem* createRootItem(FastoObject* item) {
 }  // namespace
 
 OutputWidget::OutputWidget(core::IServerSPtr server, QWidget* parent)
-  : QWidget(parent), server_(server) {
+    : QWidget(parent), server_(server) {
   CHECK(server_);
 
   commonModel_ = new FastoCommonModel(this);
-  VERIFY(connect(commonModel_, &FastoCommonModel::changedValue, this,
-                 &OutputWidget::executeCommand, Qt::DirectConnection));
+  VERIFY(connect(commonModel_, &FastoCommonModel::changedValue, this, &OutputWidget::executeCommand,
+                 Qt::DirectConnection));
   VERIFY(connect(server_.get(), &core::IServer::startedExecuteCommand, this,
                  &OutputWidget::startExecuteCommand, Qt::DirectConnection));
   VERIFY(connect(server_.get(), &core::IServer::finishedExecuteCommand, this,
                  &OutputWidget::finishExecuteCommand, Qt::DirectConnection));
 
-  VERIFY(connect(server_.get(), &core::IServer::rootCreated,
-                 this, &OutputWidget::rootCreate, Qt::DirectConnection));
-  VERIFY(connect(server_.get(), &core::IServer::rootCompleated,
-                 this, &OutputWidget::rootCompleate, Qt::DirectConnection));
+  VERIFY(connect(server_.get(), &core::IServer::rootCreated, this, &OutputWidget::rootCreate,
+                 Qt::DirectConnection));
+  VERIFY(connect(server_.get(), &core::IServer::rootCompleated, this, &OutputWidget::rootCompleate,
+                 Qt::DirectConnection));
 
-  VERIFY(connect(server_.get(), &core::IServer::addedChild,
-                 this, &OutputWidget::addChild, Qt::DirectConnection));
-  VERIFY(connect(server_.get(), &core::IServer::itemUpdated,
-                 this, &OutputWidget::itemUpdate, Qt::DirectConnection));
+  VERIFY(connect(server_.get(), &core::IServer::addedChild, this, &OutputWidget::addChild,
+                 Qt::DirectConnection));
+  VERIFY(connect(server_.get(), &core::IServer::itemUpdated, this, &OutputWidget::itemUpdate,
+                 Qt::DirectConnection));
 
   treeView_ = new FastoTreeView;
   treeView_->setModel(commonModel_);
@@ -160,8 +170,8 @@ void OutputWidget::finishExecuteCommand(const core::events_info::CommandResponce
   }
 
   if (res.initiator() != this) {
-    DEBUG_MSG_FORMAT<512>(common::logging::L_DEBUG,
-                          "Skipped event in file: %s, function: %s", __FILE__, __FUNCTION__);
+    DEBUG_MSG_FORMAT<512>(common::logging::L_DEBUG, "Skipped event in file: %s, function: %s",
+                          __FILE__, __FUNCTION__);
     return;
   }
 
@@ -194,7 +204,8 @@ void OutputWidget::addChild(FastoObjectIPtr child) {
     if (!parent.isValid()) {
       par = static_cast<fastonosql::gui::FastoCommonItem*>(commonModel_->root());
     } else {
-      par = common::utils_qt::item<fasto::qt::gui::TreeItem*, fastonosql::gui::FastoCommonItem*>(parent);
+      par = common::utils_qt::item<fasto::qt::gui::TreeItem*, fastonosql::gui::FastoCommonItem*>(
+          parent);
     }
 
     if (!par) {
@@ -203,8 +214,8 @@ void OutputWidget::addChild(FastoObjectIPtr child) {
     }
 
     std::string inputArgs = command->inputArgs();
-    fastonosql::gui::FastoCommonItem* comChild = createItem(par, GetFirstWordFromLine(inputArgs),
-                                                       command->isReadOnly(), child.get());
+    fastonosql::gui::FastoCommonItem* comChild =
+        createItem(par, GetFirstWordFromLine(inputArgs), command->isReadOnly(), child.get());
     commonModel_->insertItem(parent, comChild);
   } else {
     FastoObjectArray* arr = dynamic_cast<FastoObjectArray*>(child->parent());  // +
@@ -220,7 +231,8 @@ void OutputWidget::addChild(FastoObjectIPtr child) {
     if (!parent.isValid()) {
       par = static_cast<fastonosql::gui::FastoCommonItem*>(commonModel_->root());
     } else {
-      par = common::utils_qt::item<fasto::qt::gui::TreeItem*, fastonosql::gui::FastoCommonItem*>(parent);
+      par = common::utils_qt::item<fasto::qt::gui::TreeItem*, fastonosql::gui::FastoCommonItem*>(
+          parent);
     }
 
     if (!par) {

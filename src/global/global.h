@@ -2,30 +2,38 @@
 
     This file is part of FastoNoSQL.
 
-    FastoNoSQL is free software: you can redistribute it and/or modify
-    it under the terms of the GNU General Public License as published by
-    the Free Software Foundation, either version 3 of the License, or
+    FastoNoSQL is free software: you can redistribute it
+   and/or modify
+    it under the terms of the GNU General Public License as
+   published by
+    the Free Software Foundation, either version 3 of the
+   License, or
     (at your option) any later version.
 
-    FastoNoSQL is distributed in the hope that it will be useful,
-    but WITHOUT ANY WARRANTY; without even the implied warranty of
-    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+    FastoNoSQL is distributed in the hope that it will be
+   useful,
+    but WITHOUT ANY WARRANTY; without even the implied
+   warranty of
+    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
+   See the
     GNU General Public License for more details.
 
-    You should have received a copy of the GNU General Public License
-    along with FastoNoSQL.  If not, see <http://www.gnu.org/licenses/>.
+    You should have received a copy of the GNU General
+   Public License
+    along with FastoNoSQL.  If not, see
+   <http://www.gnu.org/licenses/>.
 */
 
 #pragma once
 
-#include <memory>                       // for shared_ptr
-#include <string>                       // for string
-#include <utility>                      // for pair
-#include <vector>                       // for vector
+#include <memory>   // for shared_ptr
+#include <string>   // for string
+#include <utility>  // for pair
+#include <vector>   // for vector
 
-#include "common/intrusive_ptr.h"       // for intrusive_ptr, etc
-#include "common/macros.h"              // for DISALLOW_COPY_AND_ASSIGN
-#include "common/value.h"               // for ArrayValue (ptr only), etc
+#include "common/intrusive_ptr.h"  // for intrusive_ptr, etc
+#include "common/macros.h"         // for DISALLOW_COPY_AND_ASSIGN
+#include "common/value.h"          // for ArrayValue (ptr only), etc
 
 #include "core/connection_types.h"
 
@@ -34,7 +42,7 @@ namespace fastonosql {
 class FastoObject;
 class FastoObjectCommand;
 
-template<typename T, typename... Args>
+template <typename T, typename... Args>
 inline common::intrusive_ptr<T> make_fasto_object(Args&&... args) {
   return common::intrusive_ptr<T>(new T(std::forward<Args>(args)...));
 }
@@ -42,8 +50,7 @@ inline common::intrusive_ptr<T> make_fasto_object(Args&&... args) {
 typedef common::intrusive_ptr<FastoObject> FastoObjectIPtr;
 typedef common::intrusive_ptr<FastoObjectCommand> FastoObjectCommandIPtr;
 
-class FastoObject
-  : public common::intrusive_ptr_base<FastoObject> {
+class FastoObject : public common::intrusive_ptr_base<FastoObject> {
  public:
   typedef FastoObjectIPtr child_t;
   typedef std::vector<child_t> childs_t;
@@ -55,7 +62,9 @@ class FastoObject
     virtual void updated(FastoObject* item, value_t val) = 0;
   };
 
-  FastoObject(FastoObject* parent, common::Value* val, const std::string& delimiter);  // val take ownerships
+  FastoObject(FastoObject* parent,
+              common::Value* val,
+              const std::string& delimiter);  // val take ownerships
   virtual ~FastoObject();
 
   common::Value::Type type() const;
@@ -84,8 +93,7 @@ class FastoObject
   const std::string delimiter_;
 };
 
-class FastoObjectCommand
-  : public FastoObject {
+class FastoObjectCommand : public FastoObject {
  public:
   virtual ~FastoObjectCommand();
   common::CommandValue* cmd() const;
@@ -102,7 +110,10 @@ class FastoObjectCommand
   common::Value::CommandLoggingType commandLoggingType() const;
 
  protected:
-  FastoObjectCommand(FastoObject* parent, common::CommandValue* cmd, const std::string& delimiter, core::connectionTypes type);
+  FastoObjectCommand(FastoObject* parent,
+                     common::CommandValue* cmd,
+                     const std::string& delimiter,
+                     core::connectionTypes type);
 
  private:
   const core::connectionTypes type_;
@@ -111,8 +122,7 @@ class FastoObjectCommand
 std::pair<std::string, std::string> GetKeyValueFromLine(const std::string& input);
 std::string GetFirstWordFromLine(const std::string& input);
 
-class FastoObjectArray
-  : public FastoObject {
+class FastoObjectArray : public FastoObject {
  public:
   FastoObjectArray(FastoObject* parent, common::ArrayValue* ar, const std::string& delimiter);
 

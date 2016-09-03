@@ -2,101 +2,107 @@
 
     This file is part of FastoNoSQL.
 
-    FastoNoSQL is free software: you can redistribute it and/or modify
-    it under the terms of the GNU General Public License as published by
-    the Free Software Foundation, either version 3 of the License, or
+    FastoNoSQL is free software: you can redistribute it
+   and/or modify
+    it under the terms of the GNU General Public License as
+   published by
+    the Free Software Foundation, either version 3 of the
+   License, or
     (at your option) any later version.
 
-    FastoNoSQL is distributed in the hope that it will be useful,
-    but WITHOUT ANY WARRANTY; without even the implied warranty of
-    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+    FastoNoSQL is distributed in the hope that it will be
+   useful,
+    but WITHOUT ANY WARRANTY; without even the implied
+   warranty of
+    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
+   See the
     GNU General Public License for more details.
 
-    You should have received a copy of the GNU General Public License
-    along with FastoNoSQL.  If not, see <http://www.gnu.org/licenses/>.
+    You should have received a copy of the GNU General
+   Public License
+    along with FastoNoSQL.  If not, see
+   <http://www.gnu.org/licenses/>.
 */
 
 #include "shell/shell_widget.h"
 
-#include <stddef.h>                     // for size_t
-#include <stdint.h>                     // for uint32_t
+#include <stddef.h>  // for size_t
+#include <stdint.h>  // for uint32_t
 
-#include <memory>                       // for __shared_ptr
-#include <string>                       // for string
-#include <vector>                       // for vector
+#include <memory>  // for __shared_ptr
+#include <string>  // for string
+#include <vector>  // for vector
 
-#include <QProgressBar>
-#include <QSplitter>
 #include <QAction>
-#include <QToolBar>
-#include <QVBoxLayout>
-#include <QFileDialog>
 #include <QComboBox>
+#include <QFileDialog>
 #include <QLabel>
 #include <QMessageBox>
+#include <QProgressBar>
+#include <QSplitter>
+#include <QToolBar>
+#include <QVBoxLayout>
 
-#include "common/convert2string.h"      // for ConvertFromString
-#include "common/error.h"               // for Error
-#include "common/macros.h"              // for VERIFY, UNUSED, CHECK, etc
-#include "common/qt/convert2string.h"   // for ConvertToString
-#include "common/value.h"               // for ErrorValue
+#include "common/convert2string.h"     // for ConvertFromString
+#include "common/error.h"              // for Error
+#include "common/macros.h"             // for VERIFY, UNUSED, CHECK, etc
+#include "common/qt/convert2string.h"  // for ConvertToString
+#include "common/value.h"              // for ErrorValue
 
-#include "core/command_info.h"          // for UNDEFINED_SINCE, etc
-#include "core/events/events_info.h"    // for DiscoveryInfoResponce, etc
-#include "core/iserver.h"               // for IServer
-#include "core/settings_manager.h"      // for SettingsManager
+#include "core/command_info.h"        // for UNDEFINED_SINCE, etc
+#include "core/events/events_info.h"  // for DiscoveryInfoResponce, etc
+#include "core/iserver.h"             // for IServer
+#include "core/settings_manager.h"    // for SettingsManager
 
-#include "fasto/qt/gui/icon_label.h"    // for IconLabel
-#include "fasto/qt/utils_qt.h"          // for SaveToFileText, etc
-#include "fasto/qt/gui/shortcuts.h"           // for FastoQKeySequence
+#include "fasto/qt/gui/icon_label.h"  // for IconLabel
+#include "fasto/qt/gui/shortcuts.h"   // for FastoQKeySequence
+#include "fasto/qt/utils_qt.h"        // for SaveToFileText, etc
 
-#include "gui/gui_factory.h"            // for GuiFactory
-#include "gui/shortcuts.h"              // for executeKey
+#include "gui/gui_factory.h"  // for GuiFactory
+#include "gui/shortcuts.h"    // for executeKey
 
-#include "shell/base_shell.h"           // for BaseShell
+#include "shell/base_shell.h"  // for BaseShell
 
-#include "translations/global.h"        // for trError, trSaveAs, etc
+#include "translations/global.h"  // for trError, trSaveAs, etc
 
 namespace {
-  const QSize iconSize = QSize(24, 24);
-  const QString trSupportedCommandsCountTemplate_1S = QObject::tr("Supported commands count: %1");
-  const QString trCommandsVersion = QObject::tr("Command version:");
-  const QString trCantReadTemplate_2S = QObject::tr(PROJECT_NAME_TITLE" can't read from %1:\n%2.");
-  const QString trCantSaveTemplate_2S = QObject::tr(PROJECT_NAME_TITLE" can't save to %1:\n%2.");
+const QSize iconSize = QSize(24, 24);
+const QString trSupportedCommandsCountTemplate_1S = QObject::tr("Supported commands count: %1");
+const QString trCommandsVersion = QObject::tr("Command version:");
+const QString trCantReadTemplate_2S = QObject::tr(PROJECT_NAME_TITLE " can't read from %1:\n%2.");
+const QString trCantSaveTemplate_2S = QObject::tr(PROJECT_NAME_TITLE " can't save to %1:\n%2.");
 }
 
 namespace fastonosql {
 namespace shell {
 
 BaseShellWidget::BaseShellWidget(core::IServerSPtr server, const QString& filePath, QWidget* parent)
-  : QWidget(parent), server_(server), input_(nullptr), filePath_(filePath) {
+    : QWidget(parent), server_(server), input_(nullptr), filePath_(filePath) {
   CHECK(server_);
 
-  VERIFY(connect(server_.get(), &core::IServer::startedConnect,
-                 this, &BaseShellWidget::startConnect));
-  VERIFY(connect(server_.get(), &core::IServer::finishedConnect,
-                 this, &BaseShellWidget::finishConnect));
-  VERIFY(connect(server_.get(), &core::IServer::startedDisconnect,
-                 this, &BaseShellWidget::startDisconnect));
-  VERIFY(connect(server_.get(), &core::IServer::finishedDisconnect,
-                 this, &BaseShellWidget::finishDisconnect));
-  VERIFY(connect(server_.get(), &core::IServer::progressChanged,
-                 this, &BaseShellWidget::progressChange));
+  VERIFY(
+      connect(server_.get(), &core::IServer::startedConnect, this, &BaseShellWidget::startConnect));
+  VERIFY(connect(server_.get(), &core::IServer::finishedConnect, this,
+                 &BaseShellWidget::finishConnect));
+  VERIFY(connect(server_.get(), &core::IServer::startedDisconnect, this,
+                 &BaseShellWidget::startDisconnect));
+  VERIFY(connect(server_.get(), &core::IServer::finishedDisconnect, this,
+                 &BaseShellWidget::finishDisconnect));
+  VERIFY(connect(server_.get(), &core::IServer::progressChanged, this,
+                 &BaseShellWidget::progressChange));
 
-  VERIFY(connect(server_.get(), &core::IServer::startedSetDefaultDatabase,
-                 this, &BaseShellWidget::startSetDefaultDatabase));
-  VERIFY(connect(server_.get(), &core::IServer::finishedSetDefaultDatabase,
-                 this, &BaseShellWidget::finishSetDefaultDatabase));
+  VERIFY(connect(server_.get(), &core::IServer::startedSetDefaultDatabase, this,
+                 &BaseShellWidget::startSetDefaultDatabase));
+  VERIFY(connect(server_.get(), &core::IServer::finishedSetDefaultDatabase, this,
+                 &BaseShellWidget::finishSetDefaultDatabase));
 
-  VERIFY(connect(server_.get(), &core::IServer::enteredMode,
-                 this, &BaseShellWidget::enterMode));
-  VERIFY(connect(server_.get(), &core::IServer::leavedMode,
-                 this, &BaseShellWidget::leaveMode));
+  VERIFY(connect(server_.get(), &core::IServer::enteredMode, this, &BaseShellWidget::enterMode));
+  VERIFY(connect(server_.get(), &core::IServer::leavedMode, this, &BaseShellWidget::leaveMode));
 
-  VERIFY(connect(server_.get(), &core::IServer::startedLoadDiscoveryInfo,
-                 this, &BaseShellWidget::startLoadDiscoveryInfo));
-  VERIFY(connect(server_.get(), &core::IServer::finishedLoadDiscoveryInfo,
-                 this, &BaseShellWidget::finishLoadDiscoveryInfo));
+  VERIFY(connect(server_.get(), &core::IServer::startedLoadDiscoveryInfo, this,
+                 &BaseShellWidget::startLoadDiscoveryInfo));
+  VERIFY(connect(server_.get(), &core::IServer::finishedLoadDiscoveryInfo, this,
+                 &BaseShellWidget::finishLoadDiscoveryInfo));
 
   QVBoxLayout* mainlayout = new QVBoxLayout;
   QHBoxLayout* hlayout = new QHBoxLayout;
@@ -106,44 +112,45 @@ BaseShellWidget::BaseShellWidget(core::IServerSPtr server, const QString& filePa
 
   loadAction_ = new QAction(gui::GuiFactory::instance().loadIcon(), translations::trLoad, savebar);
   typedef void (BaseShellWidget::*lf)();
-  VERIFY(connect(loadAction_, &QAction::triggered,
-                 this, static_cast<lf>(&BaseShellWidget::loadFromFile)));
+  VERIFY(connect(loadAction_, &QAction::triggered, this,
+                 static_cast<lf>(&BaseShellWidget::loadFromFile)));
   savebar->addAction(loadAction_);
 
   saveAction_ = new QAction(gui::GuiFactory::instance().saveIcon(), translations::trSave, savebar);
-  VERIFY(connect(saveAction_, &QAction::triggered,
-                 this, &BaseShellWidget::saveToFile));
+  VERIFY(connect(saveAction_, &QAction::triggered, this, &BaseShellWidget::saveToFile));
   savebar->addAction(saveAction_);
 
-  saveAsAction_ = new QAction(gui::GuiFactory::instance().saveAsIcon(), translations::trSaveAs, savebar);
+  saveAsAction_ =
+      new QAction(gui::GuiFactory::instance().saveAsIcon(), translations::trSaveAs, savebar);
   VERIFY(connect(saveAsAction_, &QAction::triggered, this, &BaseShellWidget::saveToFileAs));
   savebar->addAction(saveAsAction_);
 
-  connectAction_ = new QAction(gui::GuiFactory::instance().connectIcon(),
-                               translations::trConnect, savebar);
+  connectAction_ =
+      new QAction(gui::GuiFactory::instance().connectIcon(), translations::trConnect, savebar);
   VERIFY(connect(connectAction_, &QAction::triggered, this, &BaseShellWidget::connectToServer));
   savebar->addAction(connectAction_);
 
   disConnectAction_ = new QAction(gui::GuiFactory::instance().disConnectIcon(),
                                   translations::trDisconnect, savebar);
-  VERIFY(connect(disConnectAction_, &QAction::triggered,
-                 this, &BaseShellWidget::disconnectFromServer));
+  VERIFY(connect(disConnectAction_, &QAction::triggered, this,
+                 &BaseShellWidget::disconnectFromServer));
   savebar->addAction(disConnectAction_);
 
-  executeAction_ = new QAction(gui::GuiFactory::instance().executeIcon(),
-                               translations::trExecute, savebar);
+  executeAction_ =
+      new QAction(gui::GuiFactory::instance().executeIcon(), translations::trExecute, savebar);
   executeAction_->setShortcut(gui::executeKey);
   VERIFY(connect(executeAction_, &QAction::triggered, this, &BaseShellWidget::execute));
   savebar->addAction(executeAction_);
 
-  QAction* stopAction = new QAction(gui::GuiFactory::instance().stopIcon(),
-                                    translations::trStop, savebar);
+  QAction* stopAction =
+      new QAction(gui::GuiFactory::instance().stopIcon(), translations::trStop, savebar);
   VERIFY(connect(stopAction, &QAction::triggered, this, &BaseShellWidget::stop));
   savebar->addAction(stopAction);
 
   core::ConnectionMode mode = core::InteractiveMode;
-  connectionMode_ = new fasto::qt::gui::IconLabel(gui::GuiFactory::instance().modeIcon(mode),
-                                                  common::ConvertFromString<QString>(common::ConvertToString(mode)), iconSize);
+  connectionMode_ = new fasto::qt::gui::IconLabel(
+      gui::GuiFactory::instance().modeIcon(mode),
+      common::ConvertFromString<QString>(common::ConvertToString(mode)), iconSize);
 
   dbName_ = new fasto::qt::gui::IconLabel(gui::GuiFactory::instance().databaseIcon(),
                                           "Calculate...", iconSize);
@@ -167,7 +174,8 @@ BaseShellWidget::BaseShellWidget(core::IServerSPtr server, const QString& filePa
   mainlayout->addWidget(input_);
 
   QHBoxLayout* apilayout = new QHBoxLayout;
-  apilayout->addWidget(new QLabel(trSupportedCommandsCountTemplate_1S.arg(input_->commandsCount())));
+  apilayout->addWidget(
+      new QLabel(trSupportedCommandsCountTemplate_1S.arg(input_->commandsCount())));
 
   QSplitter* splitterButtom = new QSplitter;
   splitterButtom->setOrientation(Qt::Horizontal);
@@ -176,8 +184,8 @@ BaseShellWidget::BaseShellWidget(core::IServerSPtr server, const QString& filePa
 
   commandsVersionApi_ = new QComboBox;
   typedef void (QComboBox::*curc)(int);
-  VERIFY(connect(commandsVersionApi_, static_cast<curc>(&QComboBox::currentIndexChanged),
-                 this, &BaseShellWidget::changeVersionApi));
+  VERIFY(connect(commandsVersionApi_, static_cast<curc>(&QComboBox::currentIndexChanged), this,
+                 &BaseShellWidget::changeVersionApi));
 
   std::vector<uint32_t> versions = input_->supportedVersions();
   for (size_t i = 0; i < versions.size(); ++i) {
@@ -237,8 +245,7 @@ void BaseShellWidget::initShellByType(core::connectionTypes type) {
   input_->setContextMenuPolicy(Qt::CustomContextMenu);
 }
 
-BaseShellWidget::~BaseShellWidget() {
-}
+BaseShellWidget::~BaseShellWidget() {}
 
 QString BaseShellWidget::text() const {
   return input_->text();
@@ -282,13 +289,15 @@ void BaseShellWidget::loadFromFile() {
 }
 
 bool BaseShellWidget::loadFromFile(const QString& path) {
-  QString filepath = QFileDialog::getOpenFileName(this, path, QString(),
-                                                  translations::trfilterForScripts);
+  QString filepath =
+      QFileDialog::getOpenFileName(this, path, QString(), translations::trfilterForScripts);
   if (!filepath.isEmpty()) {
     QString out;
     common::Error err = common::utils_qt::LoadFromFileText(filepath, &out);
     if (err && err->isError()) {
-      QMessageBox::critical(this, translations::trError, trCantReadTemplate_2S.arg(filepath, common::ConvertFromString<QString>(err->description())));
+      QMessageBox::critical(this, translations::trError,
+                            trCantReadTemplate_2S.arg(
+                                filepath, common::ConvertFromString<QString>(err->description())));
       return false;
     }
 
@@ -309,7 +318,9 @@ void BaseShellWidget::saveToFileAs() {
 
   common::Error err = common::utils_qt::SaveToFileText(filepath, text());
   if (err && err->isError()) {
-    QMessageBox::critical(this, translations::trError, trCantSaveTemplate_2S.arg(filepath, common::ConvertFromString<QString>(err->description())));
+    QMessageBox::critical(this, translations::trError,
+                          trCantSaveTemplate_2S.arg(
+                              filepath, common::ConvertFromString<QString>(err->description())));
     return;
   }
 
@@ -332,7 +343,9 @@ void BaseShellWidget::saveToFile() {
   } else {
     common::Error err = common::utils_qt::SaveToFileText(filePath_, text());
     if (err && err->isError()) {
-      QMessageBox::critical(this, translations::trError, trCantSaveTemplate_2S.arg(filePath_, common::ConvertFromString<QString>(err->description())));
+      QMessageBox::critical(this, translations::trError,
+                            trCantSaveTemplate_2S.arg(
+                                filePath_, common::ConvertFromString<QString>(err->description())));
     }
   }
 }
@@ -361,11 +374,13 @@ void BaseShellWidget::finishDisconnect(const core::events_info::DisConnectInfoRe
   syncConnectionActions();
 }
 
-void BaseShellWidget::startSetDefaultDatabase(const core::events_info::SetDefaultDatabaseRequest& req) {
+void BaseShellWidget::startSetDefaultDatabase(
+    const core::events_info::SetDefaultDatabaseRequest& req) {
   UNUSED(req);
 }
 
-void BaseShellWidget::finishSetDefaultDatabase(const core::events_info::SetDefaultDatabaseResponce& res) {
+void BaseShellWidget::finishSetDefaultDatabase(
+    const core::events_info::SetDefaultDatabaseResponce& res) {
   common::Error er = res.errorInfo();
   if (er && er->isError()) {
     return;

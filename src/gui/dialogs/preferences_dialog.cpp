@@ -2,25 +2,33 @@
 
     This file is part of FastoNoSQL.
 
-    FastoNoSQL is free software: you can redistribute it and/or modify
-    it under the terms of the GNU General Public License as published by
-    the Free Software Foundation, either version 3 of the License, or
+    FastoNoSQL is free software: you can redistribute it
+   and/or modify
+    it under the terms of the GNU General Public License as
+   published by
+    the Free Software Foundation, either version 3 of the
+   License, or
     (at your option) any later version.
 
-    FastoNoSQL is distributed in the hope that it will be useful,
-    but WITHOUT ANY WARRANTY; without even the implied warranty of
-    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+    FastoNoSQL is distributed in the hope that it will be
+   useful,
+    but WITHOUT ANY WARRANTY; without even the implied
+   warranty of
+    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
+   See the
     GNU General Public License for more details.
 
-    You should have received a copy of the GNU General Public License
-    along with FastoNoSQL.  If not, see <http://www.gnu.org/licenses/>.
+    You should have received a copy of the GNU General
+   Public License
+    along with FastoNoSQL.  If not, see
+   <http://www.gnu.org/licenses/>.
 */
 
 #include "gui/dialogs/preferences_dialog.h"
 
-#include <stddef.h>                     // for size_t
+#include <stddef.h>  // for size_t
 
-#include <string>                       // for string
+#include <string>  // for string
 
 #include <QCheckBox>
 #include <QComboBox>
@@ -28,45 +36,45 @@
 #include <QEvent>
 #include <QFontComboBox>
 #include <QGroupBox>
+#include <QHBoxLayout>
 #include <QLabel>
 #include <QLineEdit>
-#include <QHBoxLayout>
 
-#include "common/convert2string.h"      // for ConvertFromString
-#include "common/macros.h"              // for VERIFY, SIZEOFMASS
-#include "common/qt/convert2string.h"   // for ConvertToString
+#include "common/convert2string.h"     // for ConvertFromString
+#include "common/macros.h"             // for VERIFY, SIZEOFMASS
+#include "common/qt/convert2string.h"  // for ConvertToString
 
-#include "core/settings_manager.h"      // for SettingsManager
+#include "core/settings_manager.h"  // for SettingsManager
 
-#include "fasto/qt/gui/app_style.h"     // for applyFont, applyStyle, etc
+#include "fasto/qt/gui/app_style.h"              // for applyFont, applyStyle, etc
 #include "fasto/qt/translations/translations.h"  // for applyLanguage, etc
 
-#include "global/types.h"               // for viewsText, ConvertToString, etc
+#include "global/types.h"  // for viewsText, ConvertToString, etc
 
-#include "gui/gui_factory.h"            // for GuiFactory
+#include "gui/gui_factory.h"  // for GuiFactory
 
 namespace {
-  const QString trPreferences = QObject::tr("Preferences " PROJECT_NAME_TITLE);
-  const QString trProfileSettings = QObject::tr("Profile settings");
-  const QString trLogin = QObject::tr("Login:");
-  const QString trGeneralSettings = QObject::tr("General settings");
-  const QString trAutoCheckUpd = QObject::tr("Automatically check for updates");
-  const QString trShowAutoCompletion = QObject::tr("Show autocompletion");
-  const QString trAutoOpenConsole = QObject::tr("Automatically open console");
-  const QString trFastViewValues = QObject::tr("Fast view values");
-  const QString trLanguage = QObject::tr("Language:");
-  const QString trSupportedUiStyles = QObject::tr("Supported UI styles:");
-  const QString trSupportedFonts = QObject::tr("Supported fonts:");
-  const QString trDefaultViews = QObject::tr("Default views:");
-  const QString trLoggingDirectory = QObject::tr("Logging directory:");
+const QString trPreferences = QObject::tr("Preferences " PROJECT_NAME_TITLE);
+const QString trProfileSettings = QObject::tr("Profile settings");
+const QString trLogin = QObject::tr("Login:");
+const QString trGeneralSettings = QObject::tr("General settings");
+const QString trAutoCheckUpd = QObject::tr("Automatically check for updates");
+const QString trShowAutoCompletion = QObject::tr("Show autocompletion");
+const QString trAutoOpenConsole = QObject::tr("Automatically open console");
+const QString trFastViewValues = QObject::tr("Fast view values");
+const QString trLanguage = QObject::tr("Language:");
+const QString trSupportedUiStyles = QObject::tr("Supported UI styles:");
+const QString trSupportedFonts = QObject::tr("Supported fonts:");
+const QString trDefaultViews = QObject::tr("Default views:");
+const QString trLoggingDirectory = QObject::tr("Logging directory:");
 }  // namespace
 
 namespace fastonosql {
 namespace gui {
 
-PreferencesDialog::PreferencesDialog(QWidget* parent)
-  : QDialog(parent) {
-  setWindowFlags(windowFlags() & ~Qt::WindowContextHelpButtonHint);  // Remove help button (?)
+PreferencesDialog::PreferencesDialog(QWidget* parent) : QDialog(parent) {
+  setWindowFlags(windowFlags() & ~Qt::WindowContextHelpButtonHint);  // Remove help
+                                                                     // button (?)
 #ifndef IS_PUBLIC_LOGIN
   profileBox_ = new QGroupBox;
   QHBoxLayout* profileLayout = new QHBoxLayout;
@@ -99,7 +107,7 @@ PreferencesDialog::PreferencesDialog(QWidget* parent)
   QHBoxLayout* langLayout = new QHBoxLayout;
   langLabel_ = new QLabel;
   langLayout->addWidget(langLabel_);
-  languagesComboBox_  = new QComboBox;
+  languagesComboBox_ = new QComboBox;
   languagesComboBox_->addItems(fasto::qt::translations::supportedLanguages());
   langLayout->addWidget(languagesComboBox_);
 
@@ -143,7 +151,8 @@ PreferencesDialog::PreferencesDialog(QWidget* parent)
 #endif
   layout->addWidget(generalBox_);
 
-  QDialogButtonBox* buttonBox = new QDialogButtonBox(QDialogButtonBox::Cancel | QDialogButtonBox::Save);
+  QDialogButtonBox* buttonBox =
+      new QDialogButtonBox(QDialogButtonBox::Cancel | QDialogButtonBox::Save);
   buttonBox->setOrientation(Qt::Horizontal);
   VERIFY(connect(buttonBox, &QDialogButtonBox::accepted, this, &PreferencesDialog::accept));
   VERIFY(connect(buttonBox, &QDialogButtonBox::rejected, this, &PreferencesDialog::reject));
@@ -186,7 +195,8 @@ void PreferencesDialog::syncWithSettings() {
   languagesComboBox_->setCurrentText(core::SettingsManager::instance().currentLanguage());
   stylesComboBox_->setCurrentText(core::SettingsManager::instance().currentStyle());
   fontComboBox_->setCurrentText(core::SettingsManager::instance().currentFontName());
-  std::string defaultViewText = common::ConvertToString(core::SettingsManager::instance().defaultView());
+  std::string defaultViewText =
+      common::ConvertToString(core::SettingsManager::instance().defaultView());
   defaultViewComboBox_->setCurrentText(common::ConvertFromString<QString>(defaultViewText));
   logDirPath_->setText(core::SettingsManager::instance().loggingDirectory());
   autoOpenConsole_->setChecked(core::SettingsManager::instance().autoOpenConsole());

@@ -2,68 +2,76 @@
 
     This file is part of FastoNoSQL.
 
-    FastoNoSQL is free software: you can redistribute it and/or modify
-    it under the terms of the GNU General Public License as published by
-    the Free Software Foundation, either version 3 of the License, or
+    FastoNoSQL is free software: you can redistribute it
+   and/or modify
+    it under the terms of the GNU General Public License as
+   published by
+    the Free Software Foundation, either version 3 of the
+   License, or
     (at your option) any later version.
 
-    FastoNoSQL is distributed in the hope that it will be useful,
-    but WITHOUT ANY WARRANTY; without even the implied warranty of
-    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+    FastoNoSQL is distributed in the hope that it will be
+   useful,
+    but WITHOUT ANY WARRANTY; without even the implied
+   warranty of
+    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
+   See the
     GNU General Public License for more details.
 
-    You should have received a copy of the GNU General Public License
-    along with FastoNoSQL.  If not, see <http://www.gnu.org/licenses/>.
+    You should have received a copy of the GNU General
+   Public License
+    along with FastoNoSQL.  If not, see
+   <http://www.gnu.org/licenses/>.
 */
 
 #include "core/connection_settings.h"
 
-#include <inttypes.h>                   // for PRIu32
-#include <stddef.h>                     // for size_t
-#include <sstream>                      // for stringstream, basic_ostream, etc
-#include <string>                       // for string, allocator, etc
+#include <inttypes.h>  // for PRIu32
+#include <sstream>     // for stringstream, basic_ostream, etc
+#include <stddef.h>    // for size_t
+#include <string>      // for string, allocator, etc
 
-#include "common/convert2string.h"      // for ConvertFromString, etc
-#include "common/macros.h"              // for NOTREACHED, CHECK, etc
-#include "common/qt/convert2string.h"   // for ConvertToString
-#include "common/sprintf.h"             // for MemSPrintf
-#include "common/types.h"               // for buffer_t
-#include "common/utils.h"               // for decode64, encode64, crc64
+#include "common/convert2string.h"     // for ConvertFromString, etc
+#include "common/macros.h"             // for NOTREACHED, CHECK, etc
+#include "common/qt/convert2string.h"  // for ConvertToString
+#include "common/sprintf.h"            // for MemSPrintf
+#include "common/types.h"              // for buffer_t
+#include "common/utils.h"              // for decode64, encode64, crc64
 
 #include "core/settings_manager.h"
 
 #ifdef BUILD_WITH_REDIS
-#include "core/redis/config.h"          // for ConvertToString, Config
+#include "core/redis/config.h"               // for ConvertToString, Config
 #include "core/redis/connection_settings.h"  // for ConnectionSettings
 #define LOGGING_REDIS_FILE_EXTENSION ".red"
 #endif
 #ifdef BUILD_WITH_MEMCACHED
-#include "core/memcached/config.h"      // for ConvertToString, Config
+#include "core/memcached/config.h"               // for ConvertToString, Config
 #include "core/memcached/connection_settings.h"  // for ConnectionSettings
 #define LOGGING_MEMCACHED_FILE_EXTENSION ".mem"
 #endif
 #ifdef BUILD_WITH_SSDB
-#include "core/ssdb/config.h"           // for ConvertToString, Config
+#include "core/ssdb/config.h"               // for ConvertToString, Config
 #include "core/ssdb/connection_settings.h"  // for ConnectionSettings
 #define LOGGING_SSDB_FILE_EXTENSION ".ssdb"
 #endif
 #ifdef BUILD_WITH_LEVELDB
-#include "core/leveldb/config.h"        // for Config, ConvertToString
+#include "core/leveldb/config.h"               // for Config, ConvertToString
 #include "core/leveldb/connection_settings.h"  // for ConnectionSettings
 #define LOGGING_LEVELDB_FILE_EXTENSION ".leveldb"
 #endif
 #ifdef BUILD_WITH_ROCKSDB
-#include "core/rocksdb/config.h"        // for Config, ConvertToString
+#include "core/rocksdb/config.h"               // for Config, ConvertToString
 #include "core/rocksdb/connection_settings.h"  // for ConnectionSettings
 #define LOGGING_ROCKSDB_FILE_EXTENSION ".rocksdb"
 #endif
 #ifdef BUILD_WITH_UNQLITE
-#include "core/unqlite/config.h"        // for Config, ConvertToString
+#include "core/unqlite/config.h"               // for Config, ConvertToString
 #include "core/unqlite/connection_settings.h"  // for ConnectionSettings
 #define LOGGING_UNQLITE_FILE_EXTENSION ".unq"
 #endif
 #ifdef BUILD_WITH_LMDB
-#include "core/lmdb/config.h"           // for Config, ConvertToString
+#include "core/lmdb/config.h"               // for Config, ConvertToString
 #include "core/lmdb/connection_settings.h"  // for ConnectionSettings
 #define LOGGING_LMDB_FILE_EXTENSION ".lmdb"
 #endif
@@ -71,17 +79,12 @@
 namespace fastonosql {
 namespace core {
 
-ConnectionSettingsPath::ConnectionSettingsPath()
-  : path_() {
-}
+ConnectionSettingsPath::ConnectionSettingsPath() : path_() {}
 
-ConnectionSettingsPath::ConnectionSettingsPath(const std::string& path)
-  : path_(path) {
-}
+ConnectionSettingsPath::ConnectionSettingsPath(const std::string& path) : path_(path) {}
 
-ConnectionSettingsPath::ConnectionSettingsPath(const common::file_system::ascii_string_path &path)
-  : path_(path) {
-}
+ConnectionSettingsPath::ConnectionSettingsPath(const common::file_system::ascii_string_path& path)
+    : path_(path) {}
 
 bool ConnectionSettingsPath::equals(const ConnectionSettingsPath& path) const {
   return path_.equals(path.path_);
@@ -100,16 +103,16 @@ std::string ConnectionSettingsPath::toString() const {
 }
 
 ConnectionSettingsPath ConnectionSettingsPath::root() {
-  static common::file_system::ascii_string_path root(common::file_system::get_separator_string<char>());
+  static common::file_system::ascii_string_path root(
+      common::file_system::get_separator_string<char>());
   return ConnectionSettingsPath(root);
 }
 
-IConnectionSettings::IConnectionSettings(const connection_path_t& connectionPath, connectionTypes type)
-  : connection_path_(connectionPath), type_(type), msinterval_(0) {
-}
+IConnectionSettings::IConnectionSettings(const connection_path_t& connectionPath,
+                                         connectionTypes type)
+    : connection_path_(connectionPath), type_(type), msinterval_(0) {}
 
-IConnectionSettings::~IConnectionSettings() {
-}
+IConnectionSettings::~IConnectionSettings() {}
 
 void IConnectionSettings::setPath(const connection_path_t& path) {
   connection_path_ = path;
@@ -139,13 +142,13 @@ std::string IConnectionSettings::toString() const {
   return common::MemSPrintf("%d,%s,%" PRIu32, type_, connection_path_.toString(), msinterval_);
 }
 
-IConnectionSettingsBase::IConnectionSettingsBase(const connection_path_t& connectionPath, connectionTypes type)
-  : IConnectionSettings(connectionPath, type), hash_() {
+IConnectionSettingsBase::IConnectionSettingsBase(const connection_path_t& connectionPath,
+                                                 connectionTypes type)
+    : IConnectionSettings(connectionPath, type), hash_() {
   setConnectionPathAndUpdateHash(connectionPath);
 }
 
-IConnectionSettingsBase::~IConnectionSettingsBase() {
-}
+IConnectionSettingsBase::~IConnectionSettingsBase() {}
 
 void IConnectionSettingsBase::setConnectionPathAndUpdateHash(const connection_path_t& name) {
   setPath(name);
@@ -249,7 +252,7 @@ IConnectionSettingsBase* IConnectionSettingsBase::fromString(const std::string& 
   uint8_t commaCount = 0;
   std::string elText;
 
-  for (size_t i = 0; i < len; ++i ) {
+  for (size_t i = 0; i < len; ++i) {
     char ch = val[i];
     if (ch == ',') {
       if (commaCount == 0) {
@@ -265,12 +268,13 @@ IConnectionSettingsBase* IConnectionSettingsBase::fromString(const std::string& 
         uint32_t msTime = common::ConvertFromString<uint32_t>(elText);
         result->setLoggingMsTimeInterval(msTime);
         if (!isRemoteType(result->type())) {
-          result->setCommandLine(val.substr(i+1));
+          result->setCommandLine(val.substr(i + 1));
           break;
         }
       } else if (commaCount == 3) {
         result->setCommandLine(elText);
-        if (IConnectionSettingsRemoteSSH* remote = dynamic_cast<IConnectionSettingsRemoteSSH*>(result)) {
+        if (IConnectionSettingsRemoteSSH* remote =
+                dynamic_cast<IConnectionSettingsRemoteSSH*>(result)) {
           SSHInfo sinf(val.substr(i + 1));
           remote->setSshInfo(sinf);
         }
@@ -302,28 +306,29 @@ std::string IConnectionSettingsBase::toString() const {
 
 IConnectionSettingsLocal::IConnectionSettingsLocal(const connection_path_t& connectionPath,
                                                    connectionTypes type)
-  : IConnectionSettingsBase(connectionPath, type) {
+    : IConnectionSettingsBase(connectionPath, type) {
   CHECK(!isRemoteType(type));
 }
 
-////===================== IConnectionSettingsRemote =====================////
+////===================== IConnectionSettingsRemote
+///=====================////
 
 IConnectionSettingsRemote::IConnectionSettingsRemote(const connection_path_t& connectionPath,
                                                      connectionTypes type)
-  : IConnectionSettingsBase(connectionPath, type) {
+    : IConnectionSettingsBase(connectionPath, type) {
   CHECK(isRemoteType(type));
 }
 
-IConnectionSettingsRemote::~IConnectionSettingsRemote() {
-}
+IConnectionSettingsRemote::~IConnectionSettingsRemote() {}
 
 std::string IConnectionSettingsRemote::fullAddress() const {
   return common::ConvertToString(host());
 }
 
-IConnectionSettingsRemote* IConnectionSettingsRemote::createFromType(connectionTypes type,
-                                                                     const connection_path_t& conName,
-                                                                     const common::net::HostAndPort& host) {
+IConnectionSettingsRemote* IConnectionSettingsRemote::createFromType(
+    connectionTypes type,
+    const connection_path_t& conName,
+    const common::net::HostAndPort& host) {
   IConnectionSettingsRemote* remote = nullptr;
 #ifdef BUILD_WITH_REDIS
   if (type == REDIS) {
@@ -351,12 +356,12 @@ IConnectionSettingsRemote* IConnectionSettingsRemote::createFromType(connectionT
 
 IConnectionSettingsRemoteSSH::IConnectionSettingsRemoteSSH(const connection_path_t& connectionName,
                                                            connectionTypes type)
-  : IConnectionSettingsRemote(connectionName, type), ssh_info_() {
-}
+    : IConnectionSettingsRemote(connectionName, type), ssh_info_() {}
 
-IConnectionSettingsRemoteSSH* IConnectionSettingsRemoteSSH::createFromType(connectionTypes type,
-                                                                     const connection_path_t& conName,
-                                                                     const common::net::HostAndPort& host) {
+IConnectionSettingsRemoteSSH* IConnectionSettingsRemoteSSH::createFromType(
+    connectionTypes type,
+    const connection_path_t& conName,
+    const common::net::HostAndPort& host) {
   IConnectionSettingsRemoteSSH* remote = nullptr;
 #ifdef BUILD_WITH_REDIS
   if (type == REDIS) {
@@ -389,77 +394,186 @@ void IConnectionSettingsRemoteSSH::setSshInfo(const SSHInfo& info) {
 
 const char* commandLineHelpText(connectionTypes type) {
   if (type == REDIS) {
-    return "<b>Usage: [OPTIONS] [cmd [arg [arg ...]]]</b><br/>"
-           "<b>-h &lt;hostname&gt;</b>      Server hostname (default: 127.0.0.1).<br/>"
-           "<b>-p &lt;port&gt;</b>          Server port (default: 6379).<br/>"
-           "<b>-s &lt;socket&gt;</b>        Server socket (overrides hostname and port).<br/>"
-           "<b>-a &lt;password&gt;</b>      Password to use when connecting to the server.<br/>"
-           "<b>-r &lt;repeat&gt;</b>        Execute specified command N times.<br/>"
-           "<b>-i &lt;interval&gt;</b>      When <b>-r</b> is used, waits &lt;interval&gt; seconds per command.<br/>"
-           "                   It is possible to specify sub-second times like <b>-i</b> 0.1.<br/>"
-           "<b>-n &lt;db&gt;</b>            Database number.<br/>"
-           "<b>-d &lt;delimiter&gt;</b>     Multi-bulk delimiter in for raw formatting (default: \\n).<br/>"
-           "<b>-ns &lt;separator&gt;</b>    Namespace separator.<br/>"
-           "<b>-c</b>                 Enable cluster mode (follow -ASK and -MOVED redirections).<br/>"
-           "<b>--latency</b>          Enter a special mode continuously sampling latency.<br/>"
-           "<b>--latency-history</b>  Like <b>--latency</b> but tracking latency changes over time.<br/>"
-           "                   Default time interval is 15 sec. Change it using <b>-i</b>.<br/>"
-           "<b>--slave</b>            Simulate a slave showing commands received from the master.<br/>"
-           "<b>--rdb &lt;filename&gt;</b>   Transfer an RDB dump from remote server to local file.<br/>"
-           /*"<b>--pipe</b>             Transfer raw Redis protocol from stdin to server.<br/>"
-           "<b>--pipe-timeout &lt;n&gt;</b> In <b>--pipe mode</b>, abort with error if after sending all data.<br/>"
-           "                   no reply is received within &lt;n&gt; seconds.<br/>"
-           "                   Default timeout: %d. Use 0 to wait forever.<br/>"*/
-           "<b>--bigkeys</b>          Sample Redis keys looking for big keys.<br/>"
-           "<b>--scan</b>             List all keys using the SCAN command.<br/>"
-           "<b>--pattern &lt;pat&gt;</b>    Useful with <b>--scan</b> to specify a SCAN pattern.<br/>"
-           "<b>--intrinsic-latency &lt;sec&gt;</b> Run a test to measure intrinsic system latency.<br/>"
-           "                   The test will run for the specified amount of seconds.<br/>"
-           "<b>--eval &lt;file&gt;</b>      Send an EVAL command using the Lua script at <b>&lt;file&gt;</b>.";
+    return "<b>Usage: [OPTIONS] [cmd [arg [arg "
+           "...]]]</b><br/>"
+           "<b>-h &lt;hostname&gt;</b>      Server "
+           "hostname (default: "
+           "127.0.0.1).<br/>"
+           "<b>-p &lt;port&gt;</b>          Server port "
+           "(default: 6379).<br/>"
+           "<b>-s &lt;socket&gt;</b>        Server socket "
+           "(overrides hostname "
+           "and port).<br/>"
+           "<b>-a &lt;password&gt;</b>      Password to "
+           "use when connecting to "
+           "the server.<br/>"
+           "<b>-r &lt;repeat&gt;</b>        Execute "
+           "specified command N "
+           "times.<br/>"
+           "<b>-i &lt;interval&gt;</b>      When <b>-r</b> "
+           "is used, waits "
+           "&lt;interval&gt; seconds "
+           "per command.<br/>"
+           "                   It is possible to specify "
+           "sub-second times like "
+           "<b>-i</b> 0.1.<br/>"
+           "<b>-n &lt;db&gt;</b>            Database "
+           "number.<br/>"
+           "<b>-d &lt;delimiter&gt;</b>     Multi-bulk "
+           "delimiter in for raw "
+           "formatting (default: "
+           "\\n).<br/>"
+           "<b>-ns &lt;separator&gt;</b>    Namespace "
+           "separator.<br/>"
+           "<b>-c</b>                 Enable cluster mode "
+           "(follow -ASK and "
+           "-MOVED "
+           "redirections).<br/>"
+           "<b>--latency</b>          Enter a special mode "
+           "continuously "
+           "sampling latency.<br/>"
+           "<b>--latency-history</b>  Like "
+           "<b>--latency</b> but tracking "
+           "latency changes over "
+           "time.<br/>"
+           "                   Default time interval is 15 "
+           "sec. Change it "
+           "using <b>-i</b>.<br/>"
+           "<b>--slave</b>            Simulate a slave "
+           "showing commands "
+           "received from the "
+           "master.<br/>"
+           "<b>--rdb &lt;filename&gt;</b>   Transfer an "
+           "RDB dump from remote "
+           "server to local "
+           "file.<br/>"
+           /*"<b>--pipe</b>             Transfer raw Redis
+           protocol from stdin
+           to server.<br/>"
+           "<b>--pipe-timeout &lt;n&gt;</b> In <b>--pipe
+           mode</b>, abort with
+           error if after sending
+           all data.<br/>"
+           "                   no reply is received within
+           &lt;n&gt;
+           seconds.<br/>"
+           "                   Default timeout: %d. Use 0 to
+           wait
+           forever.<br/>"*/
+           "<b>--bigkeys</b>          Sample Redis keys "
+           "looking for big "
+           "keys.<br/>"
+           "<b>--scan</b>             List all keys using "
+           "the SCAN "
+           "command.<br/>"
+           "<b>--pattern &lt;pat&gt;</b>    Useful with "
+           "<b>--scan</b> to "
+           "specify a SCAN "
+           "pattern.<br/>"
+           "<b>--intrinsic-latency &lt;sec&gt;</b> Run a "
+           "test to measure "
+           "intrinsic system "
+           "latency.<br/>"
+           "                   The test will run for the "
+           "specified amount of "
+           "seconds.<br/>"
+           "<b>--eval &lt;file&gt;</b>      Send an EVAL "
+           "command using the Lua "
+           "script at "
+           "<b>&lt;file&gt;</b>.";
   }
   if (type == MEMCACHED) {
-      return "<b>Usage: [OPTIONS] [cmd [arg [arg ...]]]</b><br/>"
-             "<b>-h &lt;hostname&gt;</b>      Server hostname (default: 127.0.0.1).<br/>"
-             "<b>-p &lt;port&gt;</b>          Server port (default: 11211).<br/>"
-             "<b>-u &lt;username&gt;</b>      Username to use when connecting to the server.<br/>"
-             "<b>-a &lt;password&gt;</b>      Password to use when connecting to the server.<br/>"
-             "<b>-d &lt;delimiter&gt;</b>     Multi-bulk delimiter in for raw formatting (default: \\n).<br/>"
-             "<b>-ns &lt;separator&gt;</b>    Namespace separator.<br/>";
+    return "<b>Usage: [OPTIONS] [cmd [arg [arg "
+           "...]]]</b><br/>"
+           "<b>-h &lt;hostname&gt;</b>      Server "
+           "hostname (default: "
+           "127.0.0.1).<br/>"
+           "<b>-p &lt;port&gt;</b>          Server port "
+           "(default: 11211).<br/>"
+           "<b>-u &lt;username&gt;</b>      Username to "
+           "use when connecting to "
+           "the server.<br/>"
+           "<b>-a &lt;password&gt;</b>      Password to "
+           "use when connecting to "
+           "the server.<br/>"
+           "<b>-d &lt;delimiter&gt;</b>     Multi-bulk "
+           "delimiter in for raw "
+           "formatting (default: "
+           "\\n).<br/>"
+           "<b>-ns &lt;separator&gt;</b>    Namespace "
+           "separator.<br/>";
   }
   if (type == SSDB) {
-      return "<b>Usage: [OPTIONS] [cmd [arg [arg ...]]]</b><br/>"
-             "<b>-u &lt;username&gt;</b>      Username to use when connecting to the server.<br/>"
-             "<b>-a &lt;password&gt;</b>      Password to use when connecting to the server.<br/>"
-             "<b>-d &lt;delimiter&gt;</b>     Multi-bulk delimiter in for raw formatting (default: \\n).<br/>"
-             "<b>-ns &lt;separator&gt;</b>    Namespace separator.<br/>";
+    return "<b>Usage: [OPTIONS] [cmd [arg [arg "
+           "...]]]</b><br/>"
+           "<b>-u &lt;username&gt;</b>      Username to "
+           "use when connecting to "
+           "the server.<br/>"
+           "<b>-a &lt;password&gt;</b>      Password to "
+           "use when connecting to "
+           "the server.<br/>"
+           "<b>-d &lt;delimiter&gt;</b>     Multi-bulk "
+           "delimiter in for raw "
+           "formatting (default: "
+           "\\n).<br/>"
+           "<b>-ns &lt;separator&gt;</b>    Namespace "
+           "separator.<br/>";
   }
   if (type == LEVELDB) {
-      return "<b>Usage: [OPTIONS] [cmd [arg [arg ...]]]</b><br/>"
-             "<b>-f &lt;db&gt;</b>            File path to database.<br/>"
-             "<b>-c </b>            Create database if missing.<br/>"
-             "<b>-d &lt;delimiter&gt;</b>     Multi-bulk delimiter in for raw formatting (default: \\n).<br/>"
-             "<b>-ns &lt;separator&gt;</b>    Namespace separator.<br/>";
+    return "<b>Usage: [OPTIONS] [cmd [arg [arg "
+           "...]]]</b><br/>"
+           "<b>-f &lt;db&gt;</b>            File path to "
+           "database.<br/>"
+           "<b>-c </b>            Create database if "
+           "missing.<br/>"
+           "<b>-d &lt;delimiter&gt;</b>     Multi-bulk "
+           "delimiter in for raw "
+           "formatting (default: "
+           "\\n).<br/>"
+           "<b>-ns &lt;separator&gt;</b>    Namespace "
+           "separator.<br/>";
   }
   if (type == ROCKSDB) {
-      return "<b>Usage: [OPTIONS] [cmd [arg [arg ...]]]</b><br/>"
-             "<b>-f &lt;db&gt;</b>            File path to database.<br/>"
-             "<b>-c </b>            Create database if missing.<br/>"
-             "<b>-d &lt;delimiter&gt;</b>     Multi-bulk delimiter in for raw formatting (default: \\n).<br/>"
-             "<b>-ns &lt;separator&gt;</b>    Namespace separator.<br/>";
+    return "<b>Usage: [OPTIONS] [cmd [arg [arg "
+           "...]]]</b><br/>"
+           "<b>-f &lt;db&gt;</b>            File path to "
+           "database.<br/>"
+           "<b>-c </b>            Create database if "
+           "missing.<br/>"
+           "<b>-d &lt;delimiter&gt;</b>     Multi-bulk "
+           "delimiter in for raw "
+           "formatting (default: "
+           "\\n).<br/>"
+           "<b>-ns &lt;separator&gt;</b>    Namespace "
+           "separator.<br/>";
   }
   if (type == UNQLITE) {
-      return "<b>Usage: [OPTIONS] [cmd [arg [arg ...]]]</b><br/>"
-             "<b>-f &lt;db&gt;</b>            File path to database.<br/>"
-             "<b>-c </b>            Create database if missing.<br/>"
-             "<b>-d &lt;delimiter&gt;</b>     Multi-bulk delimiter in for raw formatting (default: \\n).<br/>"
-             "<b>-ns &lt;separator&gt;</b>    Namespace separator.<br/>";
+    return "<b>Usage: [OPTIONS] [cmd [arg [arg "
+           "...]]]</b><br/>"
+           "<b>-f &lt;db&gt;</b>            File path to "
+           "database.<br/>"
+           "<b>-c </b>            Create database if "
+           "missing.<br/>"
+           "<b>-d &lt;delimiter&gt;</b>     Multi-bulk "
+           "delimiter in for raw "
+           "formatting (default: "
+           "\\n).<br/>"
+           "<b>-ns &lt;separator&gt;</b>    Namespace "
+           "separator.<br/>";
   }
   if (type == LMDB) {
-      return "<b>Usage: [OPTIONS] [cmd [arg [arg ...]]]</b><br/>"
-             "<b>-f &lt;db&gt;</b>            File path to database.<br/>"
-             "<b>-c </b>            Create database if missing.<br/>"
-             "<b>-d &lt;delimiter&gt;</b>     Multi-bulk delimiter in for raw formatting (default: \\n).<br/>"
-             "<b>-ns &lt;separator&gt;</b>    Namespace separator.<br/>";
+    return "<b>Usage: [OPTIONS] [cmd [arg [arg "
+           "...]]]</b><br/>"
+           "<b>-f &lt;db&gt;</b>            File path to "
+           "database.<br/>"
+           "<b>-c </b>            Create database if "
+           "missing.<br/>"
+           "<b>-d &lt;delimiter&gt;</b>     Multi-bulk "
+           "delimiter in for raw "
+           "formatting (default: "
+           "\\n).<br/>"
+           "<b>-ns &lt;separator&gt;</b>    Namespace "
+           "separator.<br/>";
   }
 
   NOTREACHED();

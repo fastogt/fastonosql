@@ -2,77 +2,85 @@
 
     This file is part of FastoNoSQL.
 
-    FastoNoSQL is free software: you can redistribute it and/or modify
-    it under the terms of the GNU General Public License as published by
-    the Free Software Foundation, either version 3 of the License, or
+    FastoNoSQL is free software: you can redistribute it
+   and/or modify
+    it under the terms of the GNU General Public License as
+   published by
+    the Free Software Foundation, either version 3 of the
+   License, or
     (at your option) any later version.
 
-    FastoNoSQL is distributed in the hope that it will be useful,
-    but WITHOUT ANY WARRANTY; without even the implied warranty of
-    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+    FastoNoSQL is distributed in the hope that it will be
+   useful,
+    but WITHOUT ANY WARRANTY; without even the implied
+   warranty of
+    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
+   See the
     GNU General Public License for more details.
 
-    You should have received a copy of the GNU General Public License
-    along with FastoNoSQL.  If not, see <http://www.gnu.org/licenses/>.
+    You should have received a copy of the GNU General
+   Public License
+    along with FastoNoSQL.  If not, see
+   <http://www.gnu.org/licenses/>.
 */
 
 #include "core/servers_manager.h"
 
-#include <stddef.h>                     // for size_t
+#include <stddef.h>  // for size_t
 
-#include <algorithm>                    // for remove
-#include <memory>                       // for __shared_ptr, shared_ptr, etc
-#include <vector>                       // for vector
+#include <algorithm>  // for remove
+#include <memory>     // for __shared_ptr, shared_ptr, etc
+#include <vector>     // for vector
 
-#include "common/smart_ptr.h"           // for make_shared
-#include "common/value.h"               // for ErrorValue, etc
+#include "common/smart_ptr.h"  // for make_shared
+#include "common/value.h"      // for ErrorValue, etc
 
-#include "core/connection_types.h"      // for connectionTypes, etc
-#include "core/icluster.h"              // for ICluster
-#include "core/isentinel.h"             // for Sentinel, ISentinel, etc
+#include "core/connection_types.h"  // for connectionTypes, etc
+#include "core/icluster.h"          // for ICluster
+#include "core/isentinel.h"         // for Sentinel, ISentinel, etc
 
 #ifdef BUILD_WITH_REDIS
-#include "core/redis/cluster.h"         // for Cluster
+#include "core/redis/cluster.h"              // for Cluster
 #include "core/redis/connection_settings.h"  // for ConnectionSettings
-#include "core/redis/db_connection.h"   // for discoveryClusterConnection, etc
-#include "core/redis/sentinel.h"        // for Sentinel
-#include "core/redis/server.h"          // for Server
+#include "core/redis/db_connection.h"        // for discoveryClusterConnection, etc
+#include "core/redis/sentinel.h"             // for Sentinel
+#include "core/redis/server.h"               // for Server
 #endif
 
 #ifdef BUILD_WITH_MEMCACHED
 #include "core/memcached/connection_settings.h"  // for ConnectionSettings
-#include "core/memcached/db_connection.h"  // for testConnection
-#include "core/memcached/server.h"      // for Server
+#include "core/memcached/db_connection.h"        // for testConnection
+#include "core/memcached/server.h"               // for Server
 #endif
 
 #ifdef BUILD_WITH_SSDB
 #include "core/ssdb/connection_settings.h"  // for ConnectionSettings
-#include "core/ssdb/db_connection.h"    // for testConnection
-#include "core/ssdb/server.h"           // for Server
+#include "core/ssdb/db_connection.h"        // for testConnection
+#include "core/ssdb/server.h"               // for Server
 #endif
 
 #ifdef BUILD_WITH_LEVELDB
 #include "core/leveldb/connection_settings.h"  // for ConnectionSettings
-#include "core/leveldb/db_connection.h"  // for testConnection
-#include "core/leveldb/server.h"        // for Server
+#include "core/leveldb/db_connection.h"        // for testConnection
+#include "core/leveldb/server.h"               // for Server
 #endif
 
 #ifdef BUILD_WITH_ROCKSDB
 #include "core/rocksdb/connection_settings.h"  // for ConnectionSettings
-#include "core/rocksdb/db_connection.h"  // for testConnection
-#include "core/rocksdb/server.h"        // for Server
+#include "core/rocksdb/db_connection.h"        // for testConnection
+#include "core/rocksdb/server.h"               // for Server
 #endif
 
 #ifdef BUILD_WITH_LMDB
 #include "core/lmdb/connection_settings.h"  // for ConnectionSettings
-#include "core/lmdb/db_connection.h"    // for testConnection
-#include "core/lmdb/server.h"           // for Server
+#include "core/lmdb/db_connection.h"        // for testConnection
+#include "core/lmdb/server.h"               // for Server
 #endif
 
 #ifdef BUILD_WITH_UNQLITE
 #include "core/unqlite/connection_settings.h"  // for ConnectionSettings
-#include "core/unqlite/db_connection.h"  // for testConnection
-#include "core/unqlite/server.h"        // for Server
+#include "core/unqlite/db_connection.h"        // for testConnection
+#include "core/unqlite/server.h"               // for Server
 #endif
 
 namespace fastonosql {
@@ -198,45 +206,53 @@ common::Error ServersManager::testConnection(IConnectionSettingsBaseSPtr connect
   connectionTypes type = connection->type();
 #ifdef BUILD_WITH_REDIS
   if (type == REDIS) {
-    return fastonosql::core::redis::testConnection(static_cast<redis::ConnectionSettings*>(connection.get()));
+    return fastonosql::core::redis::testConnection(
+        static_cast<redis::ConnectionSettings*>(connection.get()));
   }
 #endif
 #ifdef BUILD_WITH_MEMCACHED
   if (type == MEMCACHED) {
-    return fastonosql::core::memcached::testConnection(static_cast<memcached::ConnectionSettings*>(connection.get()));
+    return fastonosql::core::memcached::testConnection(
+        static_cast<memcached::ConnectionSettings*>(connection.get()));
   }
 #endif
 #ifdef BUILD_WITH_SSDB
   if (type == SSDB) {
-    return fastonosql::core::ssdb::testConnection(static_cast<ssdb::ConnectionSettings*>(connection.get()));
+    return fastonosql::core::ssdb::testConnection(
+        static_cast<ssdb::ConnectionSettings*>(connection.get()));
   }
 #endif
 #ifdef BUILD_WITH_LEVELDB
   if (type == LEVELDB) {
-    return fastonosql::core::leveldb::testConnection(static_cast<leveldb::ConnectionSettings*>(connection.get()));
+    return fastonosql::core::leveldb::testConnection(
+        static_cast<leveldb::ConnectionSettings*>(connection.get()));
   }
 #endif
 #ifdef BUILD_WITH_ROCKSDB
   if (type == ROCKSDB) {
-    return fastonosql::core::rocksdb::testConnection(static_cast<rocksdb::ConnectionSettings*>(connection.get()));
+    return fastonosql::core::rocksdb::testConnection(
+        static_cast<rocksdb::ConnectionSettings*>(connection.get()));
   }
 #endif
 #ifdef BUILD_WITH_UNQLITE
   if (type == UNQLITE) {
-    return fastonosql::core::unqlite::testConnection(static_cast<unqlite::ConnectionSettings*>(connection.get()));
+    return fastonosql::core::unqlite::testConnection(
+        static_cast<unqlite::ConnectionSettings*>(connection.get()));
   }
 #endif
 #ifdef BUILD_WITH_LMDB
   if (type == LMDB) {
-    return fastonosql::core::lmdb::testConnection(static_cast<lmdb::ConnectionSettings*>(connection.get()));
+    return fastonosql::core::lmdb::testConnection(
+        static_cast<lmdb::ConnectionSettings*>(connection.get()));
   }
 #endif
   NOTREACHED();
   return common::make_error_value("Invalid setting type", common::ErrorValue::E_ERROR);
 }
 
-common::Error ServersManager::discoveryClusterConnection(IConnectionSettingsBaseSPtr connection,
-                                                  std::vector<ServerDiscoveryClusterInfoSPtr>* inf) {
+common::Error ServersManager::discoveryClusterConnection(
+    IConnectionSettingsBaseSPtr connection,
+    std::vector<ServerDiscoveryClusterInfoSPtr>* inf) {
   if (!connection || !inf) {
     return common::make_error_value("Invalid input argument(s)", common::ErrorValue::E_ERROR);
   }
@@ -244,7 +260,8 @@ common::Error ServersManager::discoveryClusterConnection(IConnectionSettingsBase
   connectionTypes type = connection->type();
 #ifdef BUILD_WITH_REDIS
   if (type == REDIS) {
-    return redis::discoveryClusterConnection(static_cast<redis::ConnectionSettings*>(connection.get()), inf);
+    return redis::discoveryClusterConnection(
+        static_cast<redis::ConnectionSettings*>(connection.get()), inf);
   }
 #endif
 #ifdef BUILD_WITH_MEMCACHED
@@ -281,8 +298,9 @@ common::Error ServersManager::discoveryClusterConnection(IConnectionSettingsBase
   return common::make_error_value("Invalid setting type", common::ErrorValue::E_ERROR);
 }
 
-common::Error ServersManager::discoverySentinelConnection(IConnectionSettingsBaseSPtr connection,
-                                          std::vector<ServerDiscoverySentinelInfoSPtr>* inf) {
+common::Error ServersManager::discoverySentinelConnection(
+    IConnectionSettingsBaseSPtr connection,
+    std::vector<ServerDiscoverySentinelInfoSPtr>* inf) {
   if (!connection || !inf) {
     return common::make_error_value("Invalid input argument(s)", common::ErrorValue::E_ERROR);
   }
@@ -290,7 +308,8 @@ common::Error ServersManager::discoverySentinelConnection(IConnectionSettingsBas
   connectionTypes type = connection->type();
 #ifdef BUILD_WITH_REDIS
   if (type == REDIS) {
-    return redis::discoverySentinelConnection(static_cast<redis::ConnectionSettings*>(connection.get()), inf);
+    return redis::discoverySentinelConnection(
+        static_cast<redis::ConnectionSettings*>(connection.get()), inf);
   }
 #endif
 #ifdef BUILD_WITH_MEMCACHED

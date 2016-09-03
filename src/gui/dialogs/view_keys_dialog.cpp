@@ -2,52 +2,60 @@
 
     This file is part of FastoNoSQL.
 
-    FastoNoSQL is free software: you can redistribute it and/or modify
-    it under the terms of the GNU General Public License as published by
-    the Free Software Foundation, either version 3 of the License, or
+    FastoNoSQL is free software: you can redistribute it
+   and/or modify
+    it under the terms of the GNU General Public License as
+   published by
+    the Free Software Foundation, either version 3 of the
+   License, or
     (at your option) any later version.
 
-    FastoNoSQL is distributed in the hope that it will be useful,
-    but WITHOUT ANY WARRANTY; without even the implied warranty of
-    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+    FastoNoSQL is distributed in the hope that it will be
+   useful,
+    but WITHOUT ANY WARRANTY; without even the implied
+   warranty of
+    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
+   See the
     GNU General Public License for more details.
 
-    You should have received a copy of the GNU General Public License
-    along with FastoNoSQL.  If not, see <http://www.gnu.org/licenses/>.
+    You should have received a copy of the GNU General
+   Public License
+    along with FastoNoSQL.  If not, see
+   <http://www.gnu.org/licenses/>.
 */
 
 #include "gui/dialogs/view_keys_dialog.h"
 
-#include <memory>                       // for __shared_ptr
+#include <memory>  // for __shared_ptr
 
 #include <QDialogButtonBox>
 #include <QEvent>
-#include <QVBoxLayout>
 #include <QLabel>
 #include <QLineEdit>
 #include <QPushButton>
 #include <QSpinBox>
 #include <QSplitter>
 #include <QStyledItemDelegate>
+#include <QVBoxLayout>
 
-#include "common/error.h"               // for Error
-#include "common/log_levels.h"          // for LEVEL_LOG::L_DEBUG
-#include "common/logger.h"              // for DEBUG_MSG_FORMAT
-#include "common/macros.h"              // for VERIFY, UNUSED, CHECK, etc
-#include "common/qt/convert2string.h"   // for ConvertToString
-#include "common/value.h"               // for ErrorValue
+#include "common/error.h"              // for Error
+#include "common/log_levels.h"         // for LEVEL_LOG::L_DEBUG
+#include "common/logger.h"             // for DEBUG_MSG_FORMAT
+#include "common/macros.h"             // for VERIFY, UNUSED, CHECK, etc
+#include "common/qt/convert2string.h"  // for ConvertToString
+#include "common/value.h"              // for ErrorValue
 
-#include "core/db_key.h"                // for NDbKValue
-#include "core/events/events_info.h"    // for CommandResponce, etc
-#include "core/idatabase.h"             // for IDatabase
-#include "core/iserver.h"               // for IServer
-#include "core/types.h"                 // for IDataBaseInfoSPtr, etc
+#include "core/db_key.h"              // for NDbKValue
+#include "core/events/events_info.h"  // for CommandResponce, etc
+#include "core/idatabase.h"           // for IDatabase
+#include "core/iserver.h"             // for IServer
+#include "core/types.h"               // for IDataBaseInfoSPtr, etc
 
-#include "gui/fasto_table_view.h"       // for FastoTableView
-#include "gui/gui_factory.h"            // for GuiFactory
-#include "gui/keys_table_model.h"       // for KeysTableModel, etc
+#include "gui/fasto_table_view.h"  // for FastoTableView
+#include "gui/gui_factory.h"       // for GuiFactory
+#include "gui/keys_table_model.h"  // for KeysTableModel, etc
 
-#include "translations/global.h"        // for trKeyCountOnThePage, etc
+#include "translations/global.h"  // for trKeyCountOnThePage, etc
 
 namespace {
 
@@ -59,39 +67,37 @@ QPushButton* createButtonWithIcon(const QIcon& icon) {
   return button;
 }
 
-class NumericDelegate
-  : public QStyledItemDelegate {
+class NumericDelegate : public QStyledItemDelegate {
  public:
-  explicit NumericDelegate(QObject* parent = 0)
-  : QStyledItemDelegate(parent) {
-}
+  explicit NumericDelegate(QObject* parent = 0) : QStyledItemDelegate(parent) {}
 
-QWidget* createEditor(QWidget* parent, const QStyleOptionViewItem& , const QModelIndex& ) const {
-  QSpinBox* editor = new QSpinBox(parent);
-  editor->setRange(-1, INT32_MAX);
-  editor->setValue(-1);
-  return editor;
-}
+  QWidget* createEditor(QWidget* parent, const QStyleOptionViewItem&, const QModelIndex&) const {
+    QSpinBox* editor = new QSpinBox(parent);
+    editor->setRange(-1, INT32_MAX);
+    editor->setValue(-1);
+    return editor;
+  }
 
-void setEditorData(QWidget* editor, const QModelIndex &index) const {
-  int value = index.model()->data(index, Qt::EditRole).toInt();
+  void setEditorData(QWidget* editor, const QModelIndex& index) const {
+    int value = index.model()->data(index, Qt::EditRole).toInt();
 
-  QSpinBox* spinBox = static_cast<QSpinBox*>(editor);
-  spinBox->setValue(value);
-}
+    QSpinBox* spinBox = static_cast<QSpinBox*>(editor);
+    spinBox->setValue(value);
+  }
 
-void setModelData(QWidget* editor, QAbstractItemModel* model, const QModelIndex& index) const {
-  QSpinBox* spinBox = static_cast<QSpinBox*>(editor);
-  spinBox->interpretText();
-  int value = spinBox->value();
+  void setModelData(QWidget* editor, QAbstractItemModel* model, const QModelIndex& index) const {
+    QSpinBox* spinBox = static_cast<QSpinBox*>(editor);
+    spinBox->interpretText();
+    int value = spinBox->value();
 
-  model->setData(index, value, Qt::EditRole);
-}
+    model->setData(index, value, Qt::EditRole);
+  }
 
-void updateEditorGeometry(QWidget* editor, const QStyleOptionViewItem& option,
-                          const QModelIndex& ) const {
-  editor->setGeometry(option.rect);
-}
+  void updateEditorGeometry(QWidget* editor,
+                            const QStyleOptionViewItem& option,
+                            const QModelIndex&) const {
+    editor->setGeometry(option.rect);
+  }
 };
 
 }  // namespace
@@ -100,16 +106,17 @@ namespace fastonosql {
 namespace gui {
 
 ViewKeysDialog::ViewKeysDialog(const QString& title, core::IDatabaseSPtr db, QWidget* parent)
-  : QDialog(parent), cursorStack_(), curPos_(0), db_(db) {
+    : QDialog(parent), cursorStack_(), curPos_(0), db_(db) {
   CHECK(db_);
   setWindowTitle(title);
-  setWindowFlags(windowFlags() & ~Qt::WindowContextHelpButtonHint);  // Remove help button (?)
+  setWindowFlags(windowFlags() & ~Qt::WindowContextHelpButtonHint);  // Remove help
+                                                                     // button (?)
 
   core::IServerSPtr serv = db_->server();
-  VERIFY(connect(serv.get(), &core::IServer::startedLoadDataBaseContent,
-                 this, &ViewKeysDialog::startLoadDatabaseContent));
-  VERIFY(connect(serv.get(), &core::IServer::finishedLoadDatabaseContent,
-                 this, &ViewKeysDialog::finishLoadDatabaseContent));
+  VERIFY(connect(serv.get(), &core::IServer::startedLoadDataBaseContent, this,
+                 &ViewKeysDialog::startLoadDatabaseContent));
+  VERIFY(connect(serv.get(), &core::IServer::finishedLoadDatabaseContent, this,
+                 &ViewKeysDialog::finishLoadDatabaseContent));
 
   // main layout
   QVBoxLayout* mainlayout = new QVBoxLayout;
@@ -131,23 +138,23 @@ ViewKeysDialog::ViewKeysDialog(const QString& title, core::IDatabaseSPtr db, QWi
   searchLayout->addWidget(countSpinEdit_);
 
   searchButton_ = new QPushButton;
-  VERIFY(connect(searchButton_, &QPushButton::clicked,
-                 this, &ViewKeysDialog::rightPageClicked));
+  VERIFY(connect(searchButton_, &QPushButton::clicked, this, &ViewKeysDialog::rightPageClicked));
   searchLayout->addWidget(searchButton_);
 
   keysModel_ = new KeysTableModel(this);
-  VERIFY(connect(keysModel_, &KeysTableModel::changedValue,
-                 this, &ViewKeysDialog::executeCommand, Qt::DirectConnection));
+  VERIFY(connect(keysModel_, &KeysTableModel::changedValue, this, &ViewKeysDialog::executeCommand,
+                 Qt::DirectConnection));
 
-  VERIFY(connect(serv.get(), &core::IServer::startedExecuteCommand,
-                 this, &ViewKeysDialog::startExecuteCommand, Qt::DirectConnection));
-  VERIFY(connect(serv.get(), &core::IServer::finishedExecuteCommand,
-                 this, &ViewKeysDialog::finishExecuteCommand, Qt::DirectConnection));
+  VERIFY(connect(serv.get(), &core::IServer::startedExecuteCommand, this,
+                 &ViewKeysDialog::startExecuteCommand, Qt::DirectConnection));
+  VERIFY(connect(serv.get(), &core::IServer::finishedExecuteCommand, this,
+                 &ViewKeysDialog::finishExecuteCommand, Qt::DirectConnection));
   keysTable_ = new FastoTableView;
   keysTable_->setModel(keysModel_);
   keysTable_->setItemDelegateForColumn(KeyTableItem::kTTL, new NumericDelegate(this));
 
-  QDialogButtonBox* buttonBox = new QDialogButtonBox(QDialogButtonBox::Cancel | QDialogButtonBox::Ok);
+  QDialogButtonBox* buttonBox =
+      new QDialogButtonBox(QDialogButtonBox::Cancel | QDialogButtonBox::Ok);
   buttonBox->setOrientation(Qt::Horizontal);
   VERIFY(connect(buttonBox, &QDialogButtonBox::accepted, this, &ViewKeysDialog::accept));
   VERIFY(connect(buttonBox, &QDialogButtonBox::rejected, this, &ViewKeysDialog::reject));
@@ -186,13 +193,15 @@ ViewKeysDialog::ViewKeysDialog(const QString& title, core::IDatabaseSPtr db, QWi
   retranslateUi();
 }
 
-void ViewKeysDialog::startLoadDatabaseContent(const core::events_info::LoadDatabaseContentRequest& req) {
+void ViewKeysDialog::startLoadDatabaseContent(
+    const core::events_info::LoadDatabaseContentRequest& req) {
   UNUSED(req);
 
   keysModel_->clear();
 }
 
-void ViewKeysDialog::finishLoadDatabaseContent(const core::events_info::LoadDatabaseContentResponce& res) {
+void ViewKeysDialog::finishLoadDatabaseContent(
+    const core::events_info::LoadDatabaseContentResponce& res) {
   common::Error er = res.errorInfo();
   if (er && er->isError()) {
     return;
@@ -237,8 +246,8 @@ void ViewKeysDialog::finishExecuteCommand(const core::events_info::CommandRespon
   }
 
   if (res.initiator() != this) {
-    DEBUG_MSG_FORMAT<512>(common::logging::L_DEBUG,
-                          "Skipped event in file: %s, function: %s", __FILE__, __FUNCTION__);
+    DEBUG_MSG_FORMAT<512>(common::logging::L_DEBUG, "Skipped event in file: %s, function: %s",
+                          __FILE__, __FUNCTION__);
     return;
   }
 
@@ -262,16 +271,16 @@ void ViewKeysDialog::search(bool forward) {
 
   DCHECK_EQ(cursorStack_[0], 0);
   if (forward) {
-    core::events_info::LoadDatabaseContentRequest req(this, db_->info(),
-                                               common::ConvertToString(pattern),
-                                               countSpinEdit_->value(), cursorStack_[curPos_]);
+    core::events_info::LoadDatabaseContentRequest req(
+        this, db_->info(), common::ConvertToString(pattern), countSpinEdit_->value(),
+        cursorStack_[curPos_]);
     db_->loadContent(req);
     ++curPos_;
   } else {
     if (curPos_ > 0) {
-      core::events_info::LoadDatabaseContentRequest req(this, db_->info(),
-                                                 common::ConvertToString(pattern),
-                                                 countSpinEdit_->value(), cursorStack_[--curPos_]);
+      core::events_info::LoadDatabaseContentRequest req(
+          this, db_->info(), common::ConvertToString(pattern), countSpinEdit_->value(),
+          cursorStack_[--curPos_]);
       db_->loadContent(req);
     }
   }

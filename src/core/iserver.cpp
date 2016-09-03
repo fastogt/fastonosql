@@ -2,49 +2,56 @@
 
     This file is part of FastoNoSQL.
 
-    FastoNoSQL is free software: you can redistribute it and/or modify
-    it under the terms of the GNU General Public License as published by
-    the Free Software Foundation, either version 3 of the License, or
+    FastoNoSQL is free software: you can redistribute it
+   and/or modify
+    it under the terms of the GNU General Public License as
+   published by
+    the Free Software Foundation, either version 3 of the
+   License, or
     (at your option) any later version.
 
-    FastoNoSQL is distributed in the hope that it will be useful,
-    but WITHOUT ANY WARRANTY; without even the implied warranty of
-    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+    FastoNoSQL is distributed in the hope that it will be
+   useful,
+    but WITHOUT ANY WARRANTY; without even the implied
+   warranty of
+    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
+   See the
     GNU General Public License for more details.
 
-    You should have received a copy of the GNU General Public License
-    along with FastoNoSQL.  If not, see <http://www.gnu.org/licenses/>.
+    You should have received a copy of the GNU General
+   Public License
+    along with FastoNoSQL.  If not, see
+   <http://www.gnu.org/licenses/>.
 */
 
 #include "core/iserver.h"
 
-#include <stddef.h>                     // for size_t
-#include <string>                       // for string, operator==, etc
+#include <stddef.h>  // for size_t
+#include <string>    // for string, operator==, etc
 
 #include <QApplication>
 
-#include "common/error.h"               // for Error
-#include "common/macros.h"              // for VERIFY, CHECK, DNOTREACHED
-#include "common/qt/utils_qt.h"         // for Event<>::value_type
-#include "common/value.h"               // for ErrorValue
+#include "common/error.h"        // for Error
+#include "common/macros.h"       // for VERIFY, CHECK, DNOTREACHED
+#include "common/qt/utils_qt.h"  // for Event<>::value_type
+#include "common/value.h"        // for ErrorValue
 
-#include "core/connection_settings.h"   // for isRemoteType, etc
-#include "core/events/events_info.h"    // for LoadDatabaseContentResponce, etc
-#include "core/idriver.h"               // for IDriver
+#include "core/connection_settings.h"  // for isRemoteType, etc
+#include "core/events/events_info.h"   // for LoadDatabaseContentResponce, etc
+#include "core/idriver.h"              // for IDriver
 
-#include "fasto/qt/logger.h"            // for LOG_ERROR
+#include "fasto/qt/logger.h"  // for LOG_ERROR
 
 namespace fastonosql {
 namespace core {
 
-IServerBase::~IServerBase() {
-}
+IServerBase::~IServerBase() {}
 
-IServer::IServer(IDriver* drv)
-  : drv_(drv) {
+IServer::IServer(IDriver* drv) : drv_(drv) {
   VERIFY(QObject::connect(drv_, &IDriver::addedChild, this, &IServer::addedChild));
   VERIFY(QObject::connect(drv_, &IDriver::itemUpdated, this, &IServer::itemUpdated));
-  VERIFY(QObject::connect(drv_, &IDriver::serverInfoSnapShoot, this, &IServer::serverInfoSnapShoot));
+  VERIFY(
+      QObject::connect(drv_, &IDriver::serverInfoSnapShoot, this, &IServer::serverInfoSnapShoot));
   drv_->start();
 }
 
@@ -217,7 +224,7 @@ void IServer::requestHistoryInfo(const events_info::ServerInfoHistoryRequest& re
   notify(ev);
 }
 
-void IServer::clearHistory(const events_info::ClearServerHistoryRequest &req) {
+void IServer::clearHistory(const events_info::ClearServerHistoryRequest& req) {
   emit startedClearServerHistory(req);
   QEvent* ev = new events::ClearServerHistoryRequestEvent(this, req);
   notify(ev);
@@ -255,29 +262,38 @@ void IServer::customEvent(QEvent* event) {
     events::CommandRootCreatedEvent::value_type v = ev->value();
     emit rootCreated(v);
   } else if (type == static_cast<QEvent::Type>(events::CommandRootCompleatedEvent::EventType)) {
-    events::CommandRootCompleatedEvent* ev = static_cast<events::CommandRootCompleatedEvent*>(event);
+    events::CommandRootCompleatedEvent* ev =
+        static_cast<events::CommandRootCompleatedEvent*>(event);
     events::CommandRootCompleatedEvent::value_type v = ev->value();
     emit rootCompleated(v);
   } else if (type == static_cast<QEvent::Type>(events::DisconnectResponceEvent::EventType)) {
     events::DisconnectResponceEvent* ev = static_cast<events::DisconnectResponceEvent*>(event);
     handleDisconnectEvent(ev);
   } else if (type == static_cast<QEvent::Type>(events::LoadDatabasesInfoResponceEvent::EventType)) {
-    events::LoadDatabasesInfoResponceEvent* ev = static_cast<events::LoadDatabasesInfoResponceEvent*>(event);
+    events::LoadDatabasesInfoResponceEvent* ev =
+        static_cast<events::LoadDatabasesInfoResponceEvent*>(event);
     handleLoadDatabaseInfosEvent(ev);
   } else if (type == static_cast<QEvent::Type>(events::ServerInfoResponceEvent::EventType)) {
     events::ServerInfoResponceEvent* ev = static_cast<events::ServerInfoResponceEvent*>(event);
     handleLoadServerInfoEvent(ev);
   } else if (type == static_cast<QEvent::Type>(events::ServerInfoHistoryResponceEvent::EventType)) {
-    events::ServerInfoHistoryResponceEvent* ev = static_cast<events::ServerInfoHistoryResponceEvent*>(event);
+    events::ServerInfoHistoryResponceEvent* ev =
+        static_cast<events::ServerInfoHistoryResponceEvent*>(event);
     handleLoadServerInfoHistoryEvent(ev);
-  } else if (type == static_cast<QEvent::Type>(events::ClearServerHistoryResponceEvent::EventType)) {
-    events::ClearServerHistoryResponceEvent* ev = static_cast<events::ClearServerHistoryResponceEvent*>(event);
+  } else if (type ==
+             static_cast<QEvent::Type>(events::ClearServerHistoryResponceEvent::EventType)) {
+    events::ClearServerHistoryResponceEvent* ev =
+        static_cast<events::ClearServerHistoryResponceEvent*>(event);
     handleClearServerHistoryResponceEvent(ev);
-  } else if (type == static_cast<QEvent::Type>(events::ServerPropertyInfoResponceEvent::EventType)) {
-    events::ServerPropertyInfoResponceEvent* ev = static_cast<events::ServerPropertyInfoResponceEvent*>(event);
+  } else if (type ==
+             static_cast<QEvent::Type>(events::ServerPropertyInfoResponceEvent::EventType)) {
+    events::ServerPropertyInfoResponceEvent* ev =
+        static_cast<events::ServerPropertyInfoResponceEvent*>(event);
     handleLoadServerPropertyEvent(ev);
-  } else if (type == static_cast<QEvent::Type>(events::ChangeServerPropertyInfoResponceEvent::EventType)) {
-    events::ChangeServerPropertyInfoResponceEvent* ev = static_cast<events::ChangeServerPropertyInfoResponceEvent*>(event);
+  } else if (type ==
+             static_cast<QEvent::Type>(events::ChangeServerPropertyInfoResponceEvent::EventType)) {
+    events::ChangeServerPropertyInfoResponceEvent* ev =
+        static_cast<events::ChangeServerPropertyInfoResponceEvent*>(event);
     handleServerPropertyChangeEvent(ev);
   } else if (type == static_cast<QEvent::Type>(events::BackupResponceEvent::EventType)) {
     events::BackupResponceEvent* ev = static_cast<events::BackupResponceEvent*>(event);
@@ -286,19 +302,27 @@ void IServer::customEvent(QEvent* event) {
     events::ExportResponceEvent* ev = static_cast<events::ExportResponceEvent*>(event);
     handleExportEvent(ev);
   } else if (type == static_cast<QEvent::Type>(events::ChangePasswordResponceEvent::EventType)) {
-    events::ChangePasswordResponceEvent* ev = static_cast<events::ChangePasswordResponceEvent*>(event);
+    events::ChangePasswordResponceEvent* ev =
+        static_cast<events::ChangePasswordResponceEvent*>(event);
     handleChangePasswordEvent(ev);
-  } else if (type == static_cast<QEvent::Type>(events::ChangeMaxConnectionResponceEvent::EventType)) {
-    events::ChangeMaxConnectionResponceEvent* ev = static_cast<events::ChangeMaxConnectionResponceEvent*>(event);
+  } else if (type ==
+             static_cast<QEvent::Type>(events::ChangeMaxConnectionResponceEvent::EventType)) {
+    events::ChangeMaxConnectionResponceEvent* ev =
+        static_cast<events::ChangeMaxConnectionResponceEvent*>(event);
     handleChangeMaxConnection(ev);
-  } else if (type == static_cast<QEvent::Type>(events::LoadDatabaseContentResponceEvent::EventType)) {
-    events::LoadDatabaseContentResponceEvent* ev = static_cast<events::LoadDatabaseContentResponceEvent*>(event);
+  } else if (type ==
+             static_cast<QEvent::Type>(events::LoadDatabaseContentResponceEvent::EventType)) {
+    events::LoadDatabaseContentResponceEvent* ev =
+        static_cast<events::LoadDatabaseContentResponceEvent*>(event);
     handleLoadDatabaseContentEvent(ev);
   } else if (type == static_cast<QEvent::Type>(events::ClearDatabaseResponceEvent::EventType)) {
-    events::ClearDatabaseResponceEvent* ev = static_cast<events::ClearDatabaseResponceEvent*>(event);
+    events::ClearDatabaseResponceEvent* ev =
+        static_cast<events::ClearDatabaseResponceEvent*>(event);
     handleClearDatabaseResponceEvent(ev);
-  } else if (type == static_cast<QEvent::Type>(events::SetDefaultDatabaseResponceEvent::EventType)) {
-    events::SetDefaultDatabaseResponceEvent* ev = static_cast<events::SetDefaultDatabaseResponceEvent*>(event);
+  } else if (type ==
+             static_cast<QEvent::Type>(events::SetDefaultDatabaseResponceEvent::EventType)) {
+    events::SetDefaultDatabaseResponceEvent* ev =
+        static_cast<events::SetDefaultDatabaseResponceEvent*>(event);
     handleSetDefaultDatabaseEvent(ev);
   } else if (type == static_cast<QEvent::Type>(events::ExecuteResponceEvent::EventType)) {
     events::ExecuteResponceEvent* ev = static_cast<events::ExecuteResponceEvent*>(event);
@@ -307,7 +331,8 @@ void IServer::customEvent(QEvent* event) {
     events::CommandResponceEvent* ev = static_cast<events::CommandResponceEvent*>(event);
     handleCommandResponceEvent(ev);
   } else if (type == static_cast<QEvent::Type>(events::DiscoveryInfoResponceEvent::EventType)) {
-    events::DiscoveryInfoResponceEvent* ev = static_cast<events::DiscoveryInfoResponceEvent*>(event);
+    events::DiscoveryInfoResponceEvent* ev =
+        static_cast<events::DiscoveryInfoResponceEvent*>(event);
     handleDiscoveryInfoResponceEvent(ev);
   } else if (type == static_cast<QEvent::Type>(events::ProgressResponceEvent::EventType)) {
     events::ProgressResponceEvent* ev = static_cast<events::ProgressResponceEvent*>(event);
@@ -562,13 +587,11 @@ void IServer::processDiscoveryInfo(const events_info::DiscoveryInfoRequest& req)
   notify(ev);
 }
 
-IServerLocal::IServerLocal(IDriver* drv)
-  : IServer(drv){
+IServerLocal::IServerLocal(IDriver* drv) : IServer(drv) {
   CHECK(!isRemoteType(drv->type()));
 }
 
-IServerRemote::IServerRemote(IDriver* drv)
-  : IServer(drv){
+IServerRemote::IServerRemote(IDriver* drv) : IServer(drv) {
   CHECK(isRemoteType(drv->type()));
 }
 

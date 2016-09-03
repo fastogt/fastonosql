@@ -2,84 +2,102 @@
 
     This file is part of FastoNoSQL.
 
-    FastoNoSQL is free software: you can redistribute it and/or modify
-    it under the terms of the GNU General Public License as published by
-    the Free Software Foundation, either version 3 of the License, or
+    FastoNoSQL is free software: you can redistribute it
+   and/or modify
+    it under the terms of the GNU General Public License as
+   published by
+    the Free Software Foundation, either version 3 of the
+   License, or
     (at your option) any later version.
 
-    FastoNoSQL is distributed in the hope that it will be useful,
-    but WITHOUT ANY WARRANTY; without even the implied warranty of
-    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+    FastoNoSQL is distributed in the hope that it will be
+   useful,
+    but WITHOUT ANY WARRANTY; without even the implied
+   warranty of
+    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
+   See the
     GNU General Public License for more details.
 
-    You should have received a copy of the GNU General Public License
-    along with FastoNoSQL.  If not, see <http://www.gnu.org/licenses/>.
+    You should have received a copy of the GNU General
+   Public License
+    along with FastoNoSQL.  If not, see
+   <http://www.gnu.org/licenses/>.
 */
 
 #include "core/settings_manager.h"
 
-#include <algorithm>                    // for find, remove
-#include <memory>                       // for shared_ptr, operator==, etc
-#include <string>                       // for string, char_traits
+#include <algorithm>  // for find, remove
+#include <memory>     // for shared_ptr, operator==, etc
+#include <string>     // for string, char_traits
 
-#include <QSettings>
 #include <QFont>
+#include <QSettings>
 
-#include "common/convert2string.h"      // for ConvertFromString
-#include "common/file_system.h"         // for prepare_path, get_dir_path
-#include "common/macros.h"              // for DCHECK
-#include "common/qt/convert2string.h"   // for ConvertToString
-#include "common/utils.h"               // for decode64, encode64
+#include "common/convert2string.h"     // for ConvertFromString
+#include "common/file_system.h"        // for prepare_path, get_dir_path
+#include "common/macros.h"             // for DCHECK
+#include "common/qt/convert2string.h"  // for ConvertToString
+#include "common/utils.h"              // for decode64, encode64
 
-#include "fasto/qt/gui/app_style.h"     // for defStyle
+#include "fasto/qt/gui/app_style.h"              // for defStyle
 #include "fasto/qt/translations/translations.h"  // for defLanguage
 
 #define PREFIX "settings/"
 
-#define LANGUAGE PREFIX"language"
-#define SENDED_STATISTIC PREFIX"sended_statistic"
-#define STYLE PREFIX"style"
-#define FONT PREFIX"font"
-#define CONNECTIONS PREFIX"connections"
-#define SENTINELS PREFIX"sentinels"
-#define CLUSTERS PREFIX"clusters"
-#define VIEW PREFIX"view"
-#define LOGGINGDIR PREFIX"logging_dir"
-#define CHECKUPDATES PREFIX"auto_check_updates"
-#define AUTOCOMPLETION PREFIX"auto_completion"
-#define RCONNECTIONS PREFIX"rconnections"
-#define AUTOOPENCONSOLE PREFIX"auto_open_console"
-#define FASTVIEWKEYS PREFIX"fast_view_keys"
-#define CONFIG_VERSION PREFIX"version"
+#define LANGUAGE PREFIX "language"
+#define SENDED_STATISTIC PREFIX "sended_statistic"
+#define STYLE PREFIX "style"
+#define FONT PREFIX "font"
+#define CONNECTIONS PREFIX "connections"
+#define SENTINELS PREFIX "sentinels"
+#define CLUSTERS PREFIX "clusters"
+#define VIEW PREFIX "view"
+#define LOGGINGDIR PREFIX "logging_dir"
+#define CHECKUPDATES PREFIX "auto_check_updates"
+#define AUTOCOMPLETION PREFIX "auto_completion"
+#define RCONNECTIONS PREFIX "rconnections"
+#define AUTOOPENCONSOLE PREFIX "auto_open_console"
+#define FASTVIEWKEYS PREFIX "fast_view_keys"
+#define CONFIG_VERSION PREFIX "version"
 
 namespace {
 
 const std::string iniPath("~/.config/" PROJECT_NAME "/conf.ini");
 
 QString fontName() {
-/*#if defined(OS_MACOSX) || defined(OS_FREEBSD)
-  return "Monaco";
-#elif defined(OS_LINUX) || defined(OS_ANDROID)
-  return "Monospace";
-#elif defined(OS_WIN)
-  return "Courier";
-#endif*/
+  /*#if defined(OS_MACOSX) || defined(OS_FREEBSD)
+    return "Monaco";
+  #elif defined(OS_LINUX) || defined(OS_ANDROID)
+    return "Monospace";
+  #elif defined(OS_WIN)
+    return "Courier";
+  #endif*/
   return QFont().defaultFamily();
 }
 
 }  // namespace
 
-
 namespace fastonosql {
 namespace core {
 
 SettingsManager::SettingsManager()
-  : config_version_(), sended_statistic_(), views_(), cur_style_(), cur_font_name_(), cur_language_(),
-    connections_(), sentinels_(), clusters_(), recent_connections_(),
-    logging_dir_(), auto_check_update_(), auto_completion_(), auto_open_console_(), fast_view_keys_() {
+    : config_version_(),
+      sended_statistic_(),
+      views_(),
+      cur_style_(),
+      cur_font_name_(),
+      cur_language_(),
+      connections_(),
+      sentinels_(),
+      clusters_(),
+      recent_connections_(),
+      logging_dir_(),
+      auto_check_update_(),
+      auto_completion_(),
+      auto_open_console_(),
+      fast_view_keys_() {
   load();
 }
-
 
 SettingsManager::~SettingsManager() {
   save();
@@ -207,8 +225,7 @@ SettingsManager::cluster_settings_t SettingsManager::clusters() const {
 
 void SettingsManager::addRConnection(const QString& connection) {
   if (!connection.isEmpty()) {
-    auto it = std::find(recent_connections_.begin(),
-                                         recent_connections_.end(), connection);
+    auto it = std::find(recent_connections_.begin(), recent_connections_.end(), connection);
     if (it == recent_connections_.end()) {
       recent_connections_.push_front(connection);
     }
@@ -217,8 +234,7 @@ void SettingsManager::addRConnection(const QString& connection) {
 
 void SettingsManager::removeRConnection(const QString& connection) {
   if (!connection.isEmpty()) {
-    auto it = std::find(recent_connections_.begin(),
-                                         recent_connections_.end(), connection);
+    auto it = std::find(recent_connections_.begin(), recent_connections_.end(), connection);
     if (it != recent_connections_.end()) {
       recent_connections_.erase(it);
     }
@@ -297,7 +313,7 @@ void SettingsManager::reloadFromPath(const std::string& path, bool merge) {
   views_ = static_cast<supportedViews>(view);
 
   QList<QVariant> clusters = settings.value(CLUSTERS).toList();
-  for (const auto& cluster: clusters) {
+  for (const auto& cluster : clusters) {
     QString string = cluster.toString();
     std::string encoded = common::ConvertToString(string);
     std::string raw = common::utils::base64::decode64(encoded);
@@ -309,7 +325,7 @@ void SettingsManager::reloadFromPath(const std::string& path, bool merge) {
   }
 
   QList<QVariant> sentinels = settings.value(SENTINELS).toList();
-  for (const auto& sentinel: sentinels) {
+  for (const auto& sentinel : sentinels) {
     QString string = sentinel.toString();
     std::string encoded = common::ConvertToString(string);
     std::string raw = common::utils::base64::decode64(encoded);
@@ -321,7 +337,7 @@ void SettingsManager::reloadFromPath(const std::string& path, bool merge) {
   }
 
   QList<QVariant> connections = settings.value(CONNECTIONS).toList();
-  for (const auto& connection: connections) {
+  for (const auto& connection : connections) {
     QString string = connection.toString();
     std::string encoded = common::ConvertToString(string);
     std::string raw = common::utils::base64::decode64(encoded);
@@ -333,7 +349,7 @@ void SettingsManager::reloadFromPath(const std::string& path, bool merge) {
   }
 
   QStringList rconnections = settings.value(RCONNECTIONS).toStringList();
-  for (const auto& rconnection: rconnections) {
+  for (const auto& rconnection : rconnections) {
     std::string encoded = common::ConvertToString(rconnection);
     std::string raw = common::utils::base64::decode64(encoded);
 
@@ -344,7 +360,8 @@ void SettingsManager::reloadFromPath(const std::string& path, bool merge) {
   }
 
   std::string dir_path = settingsDirPath();
-  logging_dir_ = settings.value(LOGGINGDIR, common::ConvertFromString<QString>(dir_path)).toString();
+  logging_dir_ =
+      settings.value(LOGGINGDIR, common::ConvertFromString<QString>(dir_path)).toString();
   auto_check_update_ = settings.value(CHECKUPDATES, true).toBool();
   auto_completion_ = settings.value(AUTOCOMPLETION, true).toBool();
   auto_open_console_ = settings.value(AUTOOPENCONSOLE, true).toBool();
@@ -367,7 +384,7 @@ void SettingsManager::save() {
   settings.setValue(VIEW, views_);
 
   QList<QVariant> clusters;
-  for (const auto& cluster: clusters_) {
+  for (const auto& cluster : clusters_) {
     if (cluster) {
       std::string raw = cluster->toString();
       std::string enc = common::utils::base64::encode64(raw);
@@ -378,7 +395,7 @@ void SettingsManager::save() {
   settings.setValue(CLUSTERS, clusters);
 
   QList<QVariant> sentinels;
-  for (const auto& sentinel: sentinels_) {
+  for (const auto& sentinel : sentinels_) {
     if (sentinel) {
       std::string raw = sentinel->toString();
       std::string enc = common::utils::base64::encode64(raw);
@@ -389,7 +406,7 @@ void SettingsManager::save() {
   settings.setValue(SENTINELS, sentinels);
 
   QList<QVariant> connections;
-  for (const auto& connection: connections_) {
+  for (const auto& connection : connections_) {
     if (connection) {
       std::string raw = connection->toString();
       std::string enc = common::utils::base64::encode64(raw);
@@ -400,7 +417,7 @@ void SettingsManager::save() {
   settings.setValue(CONNECTIONS, connections);
 
   QStringList rconnections;
-  for (const auto& rconnection: recent_connections_) {
+  for (const auto& rconnection : recent_connections_) {
     if (!rconnection.isEmpty()) {
       std::string raw = common::ConvertToString(rconnection);
       std::string enc = common::utils::base64::encode64(raw);

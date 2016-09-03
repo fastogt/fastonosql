@@ -2,32 +2,40 @@
 
     This file is part of FastoNoSQL.
 
-    FastoNoSQL is free software: you can redistribute it and/or modify
-    it under the terms of the GNU General Public License as published by
-    the Free Software Foundation, either version 3 of the License, or
+    FastoNoSQL is free software: you can redistribute it
+   and/or modify
+    it under the terms of the GNU General Public License as
+   published by
+    the Free Software Foundation, either version 3 of the
+   License, or
     (at your option) any later version.
 
-    FastoNoSQL is distributed in the hope that it will be useful,
-    but WITHOUT ANY WARRANTY; without even the implied warranty of
-    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+    FastoNoSQL is distributed in the hope that it will be
+   useful,
+    but WITHOUT ANY WARRANTY; without even the implied
+   warranty of
+    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
+   See the
     GNU General Public License for more details.
 
-    You should have received a copy of the GNU General Public License
-    along with FastoNoSQL.  If not, see <http://www.gnu.org/licenses/>.
+    You should have received a copy of the GNU General
+   Public License
+    along with FastoNoSQL.  If not, see
+   <http://www.gnu.org/licenses/>.
 */
 
 #include "shell/base_shell.h"
 
-#include <vector>                       // for vector
+#include <vector>  // for vector
 
 #include <QIcon>
 
-#include "common/convert2string.h"      // for ConvertFromString
-#include "common/macros.h"              // for CHECK, VERIFY
+#include "common/convert2string.h"  // for ConvertFromString
+#include "common/macros.h"          // for CHECK, VERIFY
 
-#include "gui/gui_factory.h"            // for GuiFactory
+#include "gui/gui_factory.h"  // for GuiFactory
 
-#include "shell/base_lexer.h"           // for BaseQsciLexer, BaseQsciApi, etc
+#include "shell/base_lexer.h"  // for BaseQsciLexer, BaseQsciApi, etc
 
 #ifdef BUILD_WITH_REDIS
 #include "shell/redis_lexer.h"
@@ -58,14 +66,14 @@
 #endif
 
 namespace {
-  const QSize image_size(64, 64);
+const QSize image_size(64, 64);
 }
 
 namespace fastonosql {
 namespace shell {
 
 BaseShell::BaseShell(core::connectionTypes type, bool showAutoCompl, QWidget* parent)
-  : gui::FastoEditorShell(showAutoCompl, parent) {
+    : gui::FastoEditorShell(showAutoCompl, parent) {
   VERIFY(connect(this, &BaseShell::customContextMenuRequested, this, &BaseShell::showContextMenu));
   BaseQsciLexer* lex = nullptr;
 #ifdef BUILD_WITH_REDIS

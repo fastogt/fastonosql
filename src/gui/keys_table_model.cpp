@@ -2,44 +2,50 @@
 
     This file is part of FastoNoSQL.
 
-    FastoNoSQL is free software: you can redistribute it and/or modify
-    it under the terms of the GNU General Public License as published by
-    the Free Software Foundation, either version 3 of the License, or
+    FastoNoSQL is free software: you can redistribute it
+   and/or modify
+    it under the terms of the GNU General Public License as
+   published by
+    the Free Software Foundation, either version 3 of the
+   License, or
     (at your option) any later version.
 
-    FastoNoSQL is distributed in the hope that it will be useful,
-    but WITHOUT ANY WARRANTY; without even the implied warranty of
-    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+    FastoNoSQL is distributed in the hope that it will be
+   useful,
+    but WITHOUT ANY WARRANTY; without even the implied
+   warranty of
+    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
+   See the
     GNU General Public License for more details.
 
-    You should have received a copy of the GNU General Public License
-    along with FastoNoSQL.  If not, see <http://www.gnu.org/licenses/>.
+    You should have received a copy of the GNU General
+   Public License
+    along with FastoNoSQL.  If not, see
+   <http://www.gnu.org/licenses/>.
 */
 
 #include "gui/keys_table_model.h"
 
-#include <stddef.h>                     // for size_t
-#include <vector>                       // for vector
+#include <stddef.h>  // for size_t
+#include <vector>    // for vector
 
 #include <QIcon>
 
-#include "common/convert2string.h"      // for ConvertFromString
-#include "common/macros.h"              // for CHECK, UNUSED
-#include "common/qt/utils_qt.h"         // for item
+#include "common/convert2string.h"  // for ConvertFromString
+#include "common/macros.h"          // for CHECK, UNUSED
+#include "common/qt/utils_qt.h"     // for item
 
-#include "fasto/qt/gui/base/table_item.h"     // for TableItem
-#include "fasto/qt/gui/base/table_model.h"    // for TableModel
+#include "fasto/qt/gui/base/table_item.h"   // for TableItem
+#include "fasto/qt/gui/base/table_model.h"  // for TableModel
 
-#include "gui/gui_factory.h"            // for GuiFactory
+#include "gui/gui_factory.h"  // for GuiFactory
 
-#include "translations/global.h"        // for trKey, trTTL, trType
+#include "translations/global.h"  // for trKey, trTTL, trType
 
 namespace fastonosql {
 namespace gui {
 
-KeyTableItem::KeyTableItem(const core::NDbKValue& key)
-  : key_(key) {
-}
+KeyTableItem::KeyTableItem(const core::NDbKValue& key) : key_(key) {}
 
 QString KeyTableItem::key() const {
   return common::ConvertFromString<QString>(key_.keyString());
@@ -66,12 +72,9 @@ void KeyTableItem::setDbv(const core::NDbKValue& val) {
   key_ = val;
 }
 
-KeysTableModel::KeysTableModel(QObject* parent)
-  : TableModel(parent) {
-}
+KeysTableModel::KeysTableModel(QObject* parent) : TableModel(parent) {}
 
-KeysTableModel::~KeysTableModel() {
-}
+KeysTableModel::~KeysTableModel() {}
 
 QVariant KeysTableModel::data(const QModelIndex& index, int role) const {
   if (!index.isValid()) {
@@ -155,7 +158,7 @@ QVariant KeysTableModel::headerData(int section, Qt::Orientation orientation, in
       return translations::trKey;
     } else if (section == KeyTableItem::kType) {
       return translations::trType;
-    }  else if (section == KeyTableItem::kTTL) {
+    } else if (section == KeyTableItem::kTTL) {
       return translations::trTTL;
     }
   }
@@ -176,7 +179,8 @@ void KeysTableModel::changeValue(const core::NDbKValue& value) {
     CHECK(it);
     if (it->key() == key) {
       it->setDbv(value);
-      updateItem(index(i, KeyTableItem::kKey, QModelIndex()), index(i, KeyTableItem::kTTL, QModelIndex()));
+      updateItem(index(i, KeyTableItem::kKey, QModelIndex()),
+                 index(i, KeyTableItem::kTTL, QModelIndex()));
       break;
     }
   }

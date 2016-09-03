@@ -2,35 +2,42 @@
 
     This file is part of FastoNoSQL.
 
-    FastoNoSQL is free software: you can redistribute it and/or modify
-    it under the terms of the GNU General Public License as published by
-    the Free Software Foundation, either version 3 of the License, or
+    FastoNoSQL is free software: you can redistribute it
+   and/or modify
+    it under the terms of the GNU General Public License as
+   published by
+    the Free Software Foundation, either version 3 of the
+   License, or
     (at your option) any later version.
 
-    FastoNoSQL is distributed in the hope that it will be useful,
-    but WITHOUT ANY WARRANTY; without even the implied warranty of
-    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+    FastoNoSQL is distributed in the hope that it will be
+   useful,
+    but WITHOUT ANY WARRANTY; without even the implied
+   warranty of
+    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
+   See the
     GNU General Public License for more details.
 
-    You should have received a copy of the GNU General Public License
-    along with FastoNoSQL.  If not, see <http://www.gnu.org/licenses/>.
+    You should have received a copy of the GNU General
+   Public License
+    along with FastoNoSQL.  If not, see
+   <http://www.gnu.org/licenses/>.
 */
 
 #pragma once
 
-#include <string>                       // for string
+#include <string>  // for string
 
-#include "common/net/types.h"           // for HostAndPort
+#include "common/net/types.h"  // for HostAndPort
 
 #include "core/connection_settings.h"
-#include "core/ssdb/config.h"           // for Config
+#include "core/ssdb/config.h"  // for Config
 
 namespace fastonosql {
 namespace core {
 namespace ssdb {
 
-class ConnectionSettings
-  : public IConnectionSettingsRemote {
+class ConnectionSettings : public IConnectionSettingsRemote {
  public:
   explicit ConnectionSettings(const connection_path_t& connectionName);
 
@@ -41,7 +48,7 @@ class ConnectionSettings
   virtual common::net::HostAndPort host() const;
 
   Config info() const;
-  void setInfo(const Config &info);
+  void setInfo(const Config& info);
 
   virtual ConnectionSettings* Clone() const;
 

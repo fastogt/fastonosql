@@ -2,72 +2,80 @@
 
     This file is part of FastoNoSQL.
 
-    FastoNoSQL is free software: you can redistribute it and/or modify
-    it under the terms of the GNU General Public License as published by
-    the Free Software Foundation, either version 3 of the License, or
+    FastoNoSQL is free software: you can redistribute it
+   and/or modify
+    it under the terms of the GNU General Public License as
+   published by
+    the Free Software Foundation, either version 3 of the
+   License, or
     (at your option) any later version.
 
-    FastoNoSQL is distributed in the hope that it will be useful,
-    but WITHOUT ANY WARRANTY; without even the implied warranty of
-    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+    FastoNoSQL is distributed in the hope that it will be
+   useful,
+    but WITHOUT ANY WARRANTY; without even the implied
+   warranty of
+    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
+   See the
     GNU General Public License for more details.
 
-    You should have received a copy of the GNU General Public License
-    along with FastoNoSQL.  If not, see <http://www.gnu.org/licenses/>.
+    You should have received a copy of the GNU General
+   Public License
+    along with FastoNoSQL.  If not, see
+   <http://www.gnu.org/licenses/>.
 */
 
 #include "gui/explorer/explorer_tree_model.h"
 
-#include <memory>                       // for __shared_ptr, operator==, etc
-#include <string>                       // for operator==, string, etc
-#include <vector>                       // for vector
+#include <memory>  // for __shared_ptr, operator==, etc
+#include <string>  // for operator==, string, etc
+#include <vector>  // for vector
 
 #include <QIcon>
 
-#include "common/convert2string.h"      // for ConvertFromString
-#include "common/macros.h"              // for CHECK, NOTREACHED, etc
-#include "common/net/types.h"           // for ConvertToString
-#include "common/qt/utils_qt.h"         // for item
+#include "common/convert2string.h"  // for ConvertFromString
+#include "common/macros.h"          // for CHECK, NOTREACHED, etc
+#include "common/net/types.h"       // for ConvertToString
+#include "common/qt/utils_qt.h"     // for item
 
-#include "core/command_key.h"           // for CommandCreateKey, etc
-#include "core/connection_types.h"      // for ConvertToString
-#include "core/events/events_info.h"    // for CommandRequest, etc
-#include "core/icluster.h"              // for ICluster
-#include "core/idatabase.h"             // for IDatabase
-#include "core/isentinel.h"             // for ISentinel, Sentinel, etc
-#include "core/iserver.h"               // for IServer, IServerRemote, etc
+#include "core/command_key.h"         // for CommandCreateKey, etc
+#include "core/connection_types.h"    // for ConvertToString
+#include "core/events/events_info.h"  // for CommandRequest, etc
+#include "core/icluster.h"            // for ICluster
+#include "core/idatabase.h"           // for IDatabase
+#include "core/isentinel.h"           // for ISentinel, Sentinel, etc
+#include "core/iserver.h"             // for IServer, IServerRemote, etc
 
-#include "gui/gui_factory.h"            // for GuiFactory
+#include "gui/gui_factory.h"  // for GuiFactory
 
-#include "fasto/qt/gui/base/tree_item.h"      // for TreeItem, findItemRecursive, etc
-#include "fasto/qt/gui/base/tree_model.h"     // for TreeModel
+#include "fasto/qt/gui/base/tree_item.h"   // for TreeItem, findItemRecursive, etc
+#include "fasto/qt/gui/base/tree_model.h"  // for TreeModel
 
-#include "translations/global.h"        // for trName
+#include "translations/global.h"  // for trName
 
 namespace {
-  const QString trDiscoveryToolTipTemplate_3S = QObject::tr("<b>Name:</b> %1<br/>"
-                                                            "<b>Type:</b> %2<br/>"
-                                                            "<b>Host:</b> %3<br/>");
-  const QString trRemoteServerToolTipTemplate_4S = QObject::tr("<b>Name:</b> %1<br/>"
-                                                               "<b>Type:</b> %2<br/>"
-                                                               "<b>Mode:</b> %3<br/>"
-                                                               "<b>Host:</b> %4<br/>");
-  const QString trLocalServerToolTipTemplate_2S = QObject::tr("<b>Name:</b> %1<br/>"
-                                                              "<b>Path:</b> %3<br/>");
-  const QString trDbToolTipTemplate_1S = QObject::tr("<b>Db size:</b> %1 keys<br/>");
-  const QString trNamespace_1S = QObject::tr("<b>Group size:</b> %1 keys<br/>");
+const QString trDiscoveryToolTipTemplate_3S = QObject::tr(
+    "<b>Name:</b> %1<br/>"
+    "<b>Type:</b> %2<br/>"
+    "<b>Host:</b> %3<br/>");
+const QString trRemoteServerToolTipTemplate_4S = QObject::tr(
+    "<b>Name:</b> %1<br/>"
+    "<b>Type:</b> %2<br/>"
+    "<b>Mode:</b> %3<br/>"
+    "<b>Host:</b> %4<br/>");
+const QString trLocalServerToolTipTemplate_2S = QObject::tr(
+    "<b>Name:</b> %1<br/>"
+    "<b>Path:</b> %3<br/>");
+const QString trDbToolTipTemplate_1S = QObject::tr("<b>Db size:</b> %1 keys<br/>");
+const QString trNamespace_1S = QObject::tr("<b>Group size:</b> %1 keys<br/>");
 }  // namespace
 
 namespace fastonosql {
 namespace gui {
 
-IExplorerTreeItem::IExplorerTreeItem(TreeItem* parent)
-  : TreeItem(parent) {
-}
+IExplorerTreeItem::IExplorerTreeItem(TreeItem* parent) : TreeItem(parent) {}
 
 ExplorerServerItem::ExplorerServerItem(core::IServerSPtr server, TreeItem* parent)
-  : IExplorerTreeItem(parent), server_(server) {
-}
+    : IExplorerTreeItem(parent), server_(server) {}
 
 QString ExplorerServerItem::name() const {
   return common::ConvertFromString<QString>(server_->name());
@@ -87,7 +95,7 @@ void ExplorerServerItem::loadDatabases() {
 }
 
 ExplorerSentinelItem::ExplorerSentinelItem(core::ISentinelSPtr sentinel, TreeItem* parent)
-  : IExplorerTreeItem(parent), sentinel_(sentinel) {
+    : IExplorerTreeItem(parent), sentinel_(sentinel) {
   core::ISentinel::sentinels_t nodes = sentinel->sentinels();
   for (size_t i = 0; i < nodes.size(); ++i) {
     core::Sentinel sent = nodes[i];
@@ -114,7 +122,7 @@ core::ISentinelSPtr ExplorerSentinelItem::sentinel() const {
 }
 
 ExplorerClusterItem::ExplorerClusterItem(core::IClusterSPtr cluster, TreeItem* parent)
-  : IExplorerTreeItem(parent), cluster_(cluster) {
+    : IExplorerTreeItem(parent), cluster_(cluster) {
   auto nodes = cluster_->nodes();
   for (size_t i = 0; i < nodes.size(); ++i) {
     ExplorerServerItem* ser = new ExplorerServerItem(nodes[i], this);
@@ -135,7 +143,7 @@ core::IClusterSPtr ExplorerClusterItem::cluster() const {
 }
 
 ExplorerDatabaseItem::ExplorerDatabaseItem(core::IDatabaseSPtr db, ExplorerServerItem* parent)
-  : IExplorerTreeItem(parent), db_(db) {
+    : IExplorerTreeItem(parent), db_(db) {
   DCHECK(db_);
 }
 
@@ -214,7 +222,7 @@ void ExplorerDatabaseItem::loadValue(const core::NDbKValue& key) {
   dbs->executeCommand(req);
 }
 
-void ExplorerDatabaseItem::createKey(const core::NDbKValue &key) {
+void ExplorerDatabaseItem::createKey(const core::NDbKValue& key) {
   core::IDatabaseSPtr dbs = db();
   CHECK(dbs);
   core::CommandKeySPtr cmd(new core::CommandCreateKey(key));
@@ -237,13 +245,12 @@ void ExplorerDatabaseItem::removeAllKeys() {
   dbs->removeAllKeys(req);
 }
 
-ExplorerKeyItem::ExplorerKeyItem(const core::NDbKValue& key, IExplorerTreeItem *parent)
-  : IExplorerTreeItem(parent), key_(key) {
-}
+ExplorerKeyItem::ExplorerKeyItem(const core::NDbKValue& key, IExplorerTreeItem* parent)
+    : IExplorerTreeItem(parent), key_(key) {}
 
 ExplorerDatabaseItem* ExplorerKeyItem::db() const {
   TreeItem* par = parent();
-  while(par) {
+  while (par) {
     ExplorerDatabaseItem* db = dynamic_cast<ExplorerDatabaseItem*>(par);  // +
     if (db) {
       return db;
@@ -296,8 +303,7 @@ void ExplorerKeyItem::setTTL(core::ttl_t ttl) {
 }
 
 ExplorerNSItem::ExplorerNSItem(const QString& name, IExplorerTreeItem* parent)
-  : IExplorerTreeItem(parent), name_(name) {
-}
+    : IExplorerTreeItem(parent), name_(name) {}
 
 QString ExplorerNSItem::name() const {
   return name_;
@@ -305,7 +311,7 @@ QString ExplorerNSItem::name() const {
 
 ExplorerDatabaseItem* ExplorerNSItem::db() const {
   TreeItem* par = parent();
-  while(par) {
+  while (par) {
     ExplorerDatabaseItem* db = dynamic_cast<ExplorerDatabaseItem*>(par);  // +
     if (db) {
       return db;
@@ -354,16 +360,15 @@ void ExplorerNSItem::removeBranch() {
   });
 }
 
-ExplorerTreeModel::ExplorerTreeModel(QObject* parent)
-  : TreeModel(parent) {
-}
+ExplorerTreeModel::ExplorerTreeModel(QObject* parent) : TreeModel(parent) {}
 
 QVariant ExplorerTreeModel::data(const QModelIndex& index, int role) const {
   if (!index.isValid()) {
     return QVariant();
   }
 
-  IExplorerTreeItem* node = common::utils_qt::item<fasto::qt::gui::TreeItem*, IExplorerTreeItem*>(index);
+  IExplorerTreeItem* node =
+      common::utils_qt::item<fasto::qt::gui::TreeItem*, IExplorerTreeItem*>(index);
   if (!node) {
     NOTREACHED();
     return QVariant();
@@ -372,7 +377,7 @@ QVariant ExplorerTreeModel::data(const QModelIndex& index, int role) const {
   int col = index.column();
   IExplorerTreeItem::eType type = node->type();
 
-  if (role == Qt::ToolTipRole) {    
+  if (role == Qt::ToolTipRole) {
     if (type == IExplorerTreeItem::eServer) {
       ExplorerServerItem* server_node = static_cast<ExplorerServerItem*>(node);
       core::IServerSPtr server = server_node->server();
@@ -381,9 +386,12 @@ QVariant ExplorerTreeModel::data(const QModelIndex& index, int role) const {
       if (isCanRemote) {
         core::IServerRemote* rserver = dynamic_cast<core::IServerRemote*>(server.get());  // +
         CHECK(rserver);
-        QString stype = common::ConvertFromString<QString>(common::ConvertToString(rserver->role()));
-        QString mtype = common::ConvertFromString<QString>(common::ConvertToString(rserver->mode()));
-        QString shost = common::ConvertFromString<QString>(common::ConvertToString(rserver->host()));
+        QString stype =
+            common::ConvertFromString<QString>(common::ConvertToString(rserver->role()));
+        QString mtype =
+            common::ConvertFromString<QString>(common::ConvertToString(rserver->mode()));
+        QString shost =
+            common::ConvertFromString<QString>(common::ConvertToString(rserver->host()));
         return trRemoteServerToolTipTemplate_4S.arg(sname, stype, mtype, shost);
       } else {
         core::IServerLocal* lserver = dynamic_cast<core::IServerLocal*>(server.get());  // +
@@ -430,8 +438,11 @@ QVariant ExplorerTreeModel::data(const QModelIndex& index, int role) const {
         return node->name();
       } else if (type == IExplorerTreeItem::eDatabase) {
         ExplorerDatabaseItem* db = static_cast<ExplorerDatabaseItem*>(node);
-        return QString("%1 (%2/%3)").arg(node->name()).arg(db->loadedKeysCount()).arg(db->totalKeysCount());  // db
-      } else if(type == IExplorerTreeItem::eNamespace) {
+        return QString("%1 (%2/%3)")
+            .arg(node->name())
+            .arg(db->loadedKeysCount())
+            .arg(db->totalKeysCount());  // db
+      } else if (type == IExplorerTreeItem::eNamespace) {
         ExplorerNSItem* ns = static_cast<ExplorerNSItem*>(node);
         return QString("%1 (%2)").arg(node->name()).arg(ns->keyCount());  // db
       } else {
@@ -573,8 +584,10 @@ void ExplorerTreeModel::setDefaultDb(core::IServer* server, core::IDataBaseInfoS
     return;
   }
 
-  QModelIndex parent_index = createIndex(root_->indexOf(parent), ExplorerDatabaseItem::eName, parent);
-  QModelIndex dbs_last_index = index(parent->childrenCount(), ExplorerDatabaseItem::eCountColumns, parent_index);
+  QModelIndex parent_index =
+      createIndex(root_->indexOf(parent), ExplorerDatabaseItem::eName, parent);
+  QModelIndex dbs_last_index =
+      index(parent->childrenCount(), ExplorerDatabaseItem::eCountColumns, parent_index);
   updateItem(parent_index, dbs_last_index);
 }
 
@@ -591,8 +604,10 @@ void ExplorerTreeModel::updateDb(core::IServer* server, core::IDataBaseInfoSPtr 
   updateItem(dbs_index1, dbs_index2);
 }
 
-void ExplorerTreeModel::addKey(core::IServer* server, core::IDataBaseInfoSPtr db,
-                               const core::NDbKValue &dbv, const std::string& ns_separator) {
+void ExplorerTreeModel::addKey(core::IServer* server,
+                               core::IDataBaseInfoSPtr db,
+                               const core::NDbKValue& dbv,
+                               const std::string& ns_separator) {
   ExplorerServerItem* parent = findServerItem(server);
   CHECK(parent);
 
@@ -618,7 +633,9 @@ void ExplorerTreeModel::addKey(core::IServer* server, core::IDataBaseInfoSPtr db
   }
 }
 
-void ExplorerTreeModel::removeKey(core::IServer* server, core::IDataBaseInfoSPtr db, const core::NDbKValue& key) {
+void ExplorerTreeModel::removeKey(core::IServer* server,
+                                  core::IDataBaseInfoSPtr db,
+                                  const core::NDbKValue& key) {
   ExplorerServerItem* parent = findServerItem(server);
   CHECK(parent);
 
@@ -633,7 +650,9 @@ void ExplorerTreeModel::removeKey(core::IServer* server, core::IDataBaseInfoSPtr
   }
 }
 
-void ExplorerTreeModel::updateKey(core::IServer* server, core::IDataBaseInfoSPtr db, const core::NDbKValue &key) {
+void ExplorerTreeModel::updateKey(core::IServer* server,
+                                  core::IDataBaseInfoSPtr db,
+                                  const core::NDbKValue& key) {
   ExplorerServerItem* parent = findServerItem(server);
   CHECK(parent);
 
@@ -666,7 +685,7 @@ ExplorerClusterItem* ExplorerTreeModel::findClusterItem(core::IClusterSPtr cl) {
   fasto::qt::gui::TreeItem* parent = root_;
   CHECK(parent);
 
-  for (size_t i = 0; i < parent->childrenCount() ; ++i) {
+  for (size_t i = 0; i < parent->childrenCount(); ++i) {
     ExplorerClusterItem* item = dynamic_cast<ExplorerClusterItem*>(parent->child(i));  // +
     if (item && item->cluster() == cl) {
       return item;
@@ -679,7 +698,7 @@ ExplorerSentinelItem* ExplorerTreeModel::findSentinelItem(core::ISentinelSPtr se
   fasto::qt::gui::TreeItem* parent = root_;
   CHECK(parent);
 
-  for (size_t i = 0; i < parent->childrenCount() ; ++i) {
+  for (size_t i = 0; i < parent->childrenCount(); ++i) {
     ExplorerSentinelItem* item = dynamic_cast<ExplorerSentinelItem*>(parent->child(i));  // +
     if (item && item->sentinel() == sentinel) {
       return item;
@@ -688,16 +707,16 @@ ExplorerSentinelItem* ExplorerTreeModel::findSentinelItem(core::ISentinelSPtr se
   return nullptr;
 }
 
-ExplorerServerItem* ExplorerTreeModel::findServerItem(core::IServer* server) const {  
-  return static_cast<ExplorerServerItem*>(fasto::qt::gui::findItemRecursive(root_, [server](fasto::qt::gui::TreeItem* item) -> bool
-  {
-    ExplorerServerItem* server_item = dynamic_cast<ExplorerServerItem*>(item);  // +
-    if (!server_item) {
-      return false;
-    }
+ExplorerServerItem* ExplorerTreeModel::findServerItem(core::IServer* server) const {
+  return static_cast<ExplorerServerItem*>(
+      fasto::qt::gui::findItemRecursive(root_, [server](fasto::qt::gui::TreeItem* item) -> bool {
+        ExplorerServerItem* server_item = dynamic_cast<ExplorerServerItem*>(item);  // +
+        if (!server_item) {
+          return false;
+        }
 
-    return server_item->server().get() == server;
-  }));
+        return server_item->server().get() == server;
+      }));
 }
 
 ExplorerDatabaseItem* ExplorerTreeModel::findDatabaseItem(ExplorerServerItem* server,
@@ -707,7 +726,7 @@ ExplorerDatabaseItem* ExplorerTreeModel::findDatabaseItem(ExplorerServerItem* se
     return nullptr;
   }
 
-  for (size_t i = 0; i < server->childrenCount() ; ++i) {
+  for (size_t i = 0; i < server->childrenCount(); ++i) {
     ExplorerDatabaseItem* item = dynamic_cast<ExplorerDatabaseItem*>(server->child(i));  // +
     CHECK(item);
 
@@ -722,31 +741,33 @@ ExplorerDatabaseItem* ExplorerTreeModel::findDatabaseItem(ExplorerServerItem* se
 
 ExplorerKeyItem* ExplorerTreeModel::findKeyItem(IExplorerTreeItem* db_or_ns,
                                                 const core::NDbKValue& key) const {
-  return static_cast<ExplorerKeyItem*>(fasto::qt::gui::findItemRecursive(db_or_ns, [key](fasto::qt::gui::TreeItem* item) -> bool
-  {
-    ExplorerKeyItem* key_item = dynamic_cast<ExplorerKeyItem*>(item);  // +
-    if (!key_item) {
-      return false;
-    }
+  return static_cast<ExplorerKeyItem*>(
+      fasto::qt::gui::findItemRecursive(db_or_ns, [key](fasto::qt::gui::TreeItem* item) -> bool {
+        ExplorerKeyItem* key_item = dynamic_cast<ExplorerKeyItem*>(item);  // +
+        if (!key_item) {
+          return false;
+        }
 
-    core::NDbKValue ckey = key_item->key();
-    return ckey.keyString() == key.keyString();
-  }));
+        core::NDbKValue ckey = key_item->key();
+        return ckey.keyString() == key.keyString();
+      }));
 }
 
-ExplorerNSItem* ExplorerTreeModel::findNSItem(IExplorerTreeItem* db_or_ns, const QString& name) const {
-  return static_cast<ExplorerNSItem*>(fasto::qt::gui::findItemRecursive(db_or_ns, [name](fasto::qt::gui::TreeItem* item) -> bool
-  {
-    ExplorerNSItem* ns_item = dynamic_cast<ExplorerNSItem*>(item);  // +
-    if (!ns_item) {
-      return false;
-    }
+ExplorerNSItem* ExplorerTreeModel::findNSItem(IExplorerTreeItem* db_or_ns,
+                                              const QString& name) const {
+  return static_cast<ExplorerNSItem*>(
+      fasto::qt::gui::findItemRecursive(db_or_ns, [name](fasto::qt::gui::TreeItem* item) -> bool {
+        ExplorerNSItem* ns_item = dynamic_cast<ExplorerNSItem*>(item);  // +
+        if (!ns_item) {
+          return false;
+        }
 
-    return ns_item->name() == name;
-  }));
+        return ns_item->name() == name;
+      }));
 }
 
-ExplorerNSItem* ExplorerTreeModel::findOrCreateNSItem(IExplorerTreeItem* db_or_ns, const core::KeyInfo& kinf) {
+ExplorerNSItem* ExplorerTreeModel::findOrCreateNSItem(IExplorerTreeItem* db_or_ns,
+                                                      const core::KeyInfo& kinf) {
   std::string nspace = kinf.nspace();
   QString qnspace = common::ConvertFromString<QString>(nspace);
   ExplorerNSItem* founded_item = findNSItem(db_or_ns, qnspace);

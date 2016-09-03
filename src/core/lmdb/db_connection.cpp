@@ -2,40 +2,48 @@
 
     This file is part of FastoNoSQL.
 
-    FastoNoSQL is free software: you can redistribute it and/or modify
-    it under the terms of the GNU General Public License as published by
-    the Free Software Foundation, either version 3 of the License, or
+    FastoNoSQL is free software: you can redistribute it
+   and/or modify
+    it under the terms of the GNU General Public License as
+   published by
+    the Free Software Foundation, either version 3 of the
+   License, or
     (at your option) any later version.
 
-    FastoNoSQL is distributed in the hope that it will be useful,
-    but WITHOUT ANY WARRANTY; without even the implied warranty of
-    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+    FastoNoSQL is distributed in the hope that it will be
+   useful,
+    but WITHOUT ANY WARRANTY; without even the implied
+   warranty of
+    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
+   See the
     GNU General Public License for more details.
 
-    You should have received a copy of the GNU General Public License
-    along with FastoNoSQL.  If not, see <http://www.gnu.org/licenses/>.
+    You should have received a copy of the GNU General
+   Public License
+    along with FastoNoSQL.  If not, see
+   <http://www.gnu.org/licenses/>.
 */
 
 #include "core/lmdb/db_connection.h"
 
-#include <errno.h>                      // for EACCES
-#include <lmdb.h>                       // for MDB_val, mdb_txn_abort, etc
-#include <stdlib.h>                     // for free, atoll, calloc
+#include <errno.h>   // for EACCES
+#include <lmdb.h>    // for MDB_val, mdb_txn_abort, etc
+#include <stdlib.h>  // for free, atoll, calloc
 
-#include <memory>                       // for __shared_ptr
-#include <string>                       // for string, operator<, etc
-#include <vector>                       // for vector
+#include <memory>  // for __shared_ptr
+#include <string>  // for string, operator<, etc
+#include <vector>  // for vector
 
-#include "common/file_system.h"         // for create_directory, etc
-#include "common/sprintf.h"             // for MemSPrintf
-#include "common/types.h"               // for tribool::SUCCESS
-#include "common/utils.h"               // for c_strornull
-#include "common/value.h"               // for Value::ErrorsType::E_ERROR, etc
+#include "common/file_system.h"  // for create_directory, etc
+#include "common/sprintf.h"      // for MemSPrintf
+#include "common/types.h"        // for tribool::SUCCESS
+#include "common/utils.h"        // for c_strornull
+#include "common/value.h"        // for Value::ErrorsType::E_ERROR, etc
 
-#include "core/lmdb/config.h"           // for Config
+#include "core/lmdb/config.h"               // for Config
 #include "core/lmdb/connection_settings.h"  // for ConnectionSettings
 
-#include "global/global.h"              // for FastoObject, etc
+#include "global/global.h"  // for FastoObject, etc
 
 #define LMDB_OK 0
 
@@ -151,12 +159,11 @@ common::Error testConnection(ConnectionSettings* settings) {
   return common::Error();
 }
 
-DBConnection::DBConnection()
-  : base_class(), CommandHandler(lmdbCommands) {
-}
+DBConnection::DBConnection() : base_class(), CommandHandler(lmdbCommands) {}
 
 const char* DBConnection::versionApi() {
-  return STRINGIZE(MDB_VERSION_MAJOR) "." STRINGIZE(MDB_VERSION_MINOR) "." STRINGIZE(MDB_VERSION_PATCH);
+  return STRINGIZE(MDB_VERSION_MAJOR) "." STRINGIZE(MDB_VERSION_MINOR) "." STRINGIZE(
+      MDB_VERSION_PATCH);
 }
 
 unsigned int DBConnection::curDb() const {
@@ -313,8 +320,10 @@ common::Error DBConnection::del(const std::string& key) {
   return common::Error();
 }
 
-common::Error DBConnection::keys(const std::string& key_start, const std::string& key_end,
-                            uint64_t limit, std::vector<std::string>* ret) {
+common::Error DBConnection::keys(const std::string& key_start,
+                                 const std::string& key_end,
+                                 uint64_t limit,
+                                 std::vector<std::string>* ret) {
   if (!isConnected()) {
     DNOTREACHED();
     return common::make_error_value("Not connected", common::Value::E_ERROR);
@@ -509,8 +518,10 @@ common::Error flushdb(CommandHandler* handler, int argc, char** argv, FastoObjec
 }
 
 }  // namespace lmdb
-template<>
-common::Error ConnectionAllocatorTraits<lmdb::NativeConnection, lmdb::Config>::connect(const lmdb::Config& config, lmdb::NativeConnection** hout) {
+template <>
+common::Error ConnectionAllocatorTraits<lmdb::NativeConnection, lmdb::Config>::connect(
+    const lmdb::Config& config,
+    lmdb::NativeConnection** hout) {
   lmdb::NativeConnection* context = nullptr;
   common::Error er = lmdb::createConnection(config, &context);
   if (er && er->isError()) {
@@ -520,14 +531,16 @@ common::Error ConnectionAllocatorTraits<lmdb::NativeConnection, lmdb::Config>::c
   *hout = context;
   return common::Error();
 }
-template<>
-common::Error ConnectionAllocatorTraits<lmdb::NativeConnection, lmdb::Config>::disconnect(lmdb::NativeConnection** handle) {
+template <>
+common::Error ConnectionAllocatorTraits<lmdb::NativeConnection, lmdb::Config>::disconnect(
+    lmdb::NativeConnection** handle) {
   lmdb::lmdb_close(handle);
   *handle = nullptr;
   return common::Error();
 }
-template<>
-bool ConnectionAllocatorTraits<lmdb::NativeConnection, lmdb::Config>::isConnected(lmdb::NativeConnection* handle) {
+template <>
+bool ConnectionAllocatorTraits<lmdb::NativeConnection, lmdb::Config>::isConnected(
+    lmdb::NativeConnection* handle) {
   if (!handle) {
     return false;
   }

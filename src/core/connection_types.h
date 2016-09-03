@@ -2,79 +2,66 @@
 
     This file is part of FastoNoSQL.
 
-    FastoNoSQL is free software: you can redistribute it and/or modify
-    it under the terms of the GNU General Public License as published by
-    the Free Software Foundation, either version 3 of the License, or
+    FastoNoSQL is free software: you can redistribute it
+   and/or modify
+    it under the terms of the GNU General Public License as
+   published by
+    the Free Software Foundation, either version 3 of the
+   License, or
     (at your option) any later version.
 
-    FastoNoSQL is distributed in the hope that it will be useful,
-    but WITHOUT ANY WARRANTY; without even the implied warranty of
-    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+    FastoNoSQL is distributed in the hope that it will be
+   useful,
+    but WITHOUT ANY WARRANTY; without even the implied
+   warranty of
+    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
+   See the
     GNU General Public License for more details.
 
-    You should have received a copy of the GNU General Public License
-    along with FastoNoSQL.  If not, see <http://www.gnu.org/licenses/>.
+    You should have received a copy of the GNU General
+   Public License
+    along with FastoNoSQL.  If not, see
+   <http://www.gnu.org/licenses/>.
 */
 
 #pragma once
 
-#include <string>                       // for string
+#include <string>  // for string
 
 namespace fastonosql {
 namespace core {
 
-enum connectionTypes {
-  REDIS = 0,
-  MEMCACHED,
-  SSDB,
-  LEVELDB,
-  ROCKSDB,
-  UNQLITE,
-  LMDB
-};
+enum connectionTypes { REDIS = 0, MEMCACHED, SSDB, LEVELDB, ROCKSDB, UNQLITE, LMDB };
 
-enum serverTypes {
-  MASTER = 0,
-  SLAVE
-};
+enum serverTypes { MASTER = 0, SLAVE };
 
-enum serverState {
-  SUP,
-  SDOWN
-};
+enum serverState { SUP, SDOWN };
 
-enum serverConnectState {
-  SCONNECTED,
-  SDISCONNECTED
-};
+enum serverConnectState { SCONNECTED, SDISCONNECTED };
 
-enum serverMode {
-  STANDALONE = 0,
-  SENTINEL,
-  CLUSTER
-};
+enum serverMode { STANDALONE = 0, SENTINEL, CLUSTER };
 
 static const std::string connnectionType[] = {
 #ifdef BUILD_WITH_REDIS
-  "Redis",
+    "Redis",
 #endif
 #ifdef BUILD_WITH_MEMCACHED
-  "Memcached",
+    "Memcached",
 #endif
 #ifdef BUILD_WITH_SSDB
-  "SSDB",
+    "SSDB",
 #endif
 #ifdef BUILD_WITH_LEVELDB
-  "LevelDB",
+    "LevelDB",
 #endif
 #ifdef BUILD_WITH_ROCKSDB
-  "RocksDB",
+    "RocksDB",
 #endif
 #ifdef BUILD_WITH_UNQLITE
-  "UnQLite",
+    "UnQLite",
 #endif
 #ifdef BUILD_WITH_LMDB
-  "LMDB"
+    "LMDB"
 #endif
 };
 
@@ -101,9 +88,9 @@ enum ConnectionMode {
 }  // namespace fastonosql
 
 namespace common {
-  std::string ConvertToString(fastonosql::core::connectionTypes t);
-  std::string ConvertToString(fastonosql::core::serverTypes st);
-  std::string ConvertToString(fastonosql::core::serverState st);
-  std::string ConvertToString(fastonosql::core::serverMode md);
-  std::string ConvertToString(fastonosql::core::ConnectionMode t);
+std::string ConvertToString(fastonosql::core::connectionTypes t);
+std::string ConvertToString(fastonosql::core::serverTypes st);
+std::string ConvertToString(fastonosql::core::serverState st);
+std::string ConvertToString(fastonosql::core::serverMode md);
+std::string ConvertToString(fastonosql::core::ConnectionMode t);
 }

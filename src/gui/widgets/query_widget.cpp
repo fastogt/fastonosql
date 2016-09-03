@@ -2,38 +2,46 @@
 
     This file is part of FastoNoSQL.
 
-    FastoNoSQL is free software: you can redistribute it and/or modify
-    it under the terms of the GNU General Public License as published by
-    the Free Software Foundation, either version 3 of the License, or
+    FastoNoSQL is free software: you can redistribute it
+   and/or modify
+    it under the terms of the GNU General Public License as
+   published by
+    the Free Software Foundation, either version 3 of the
+   License, or
     (at your option) any later version.
 
-    FastoNoSQL is distributed in the hope that it will be useful,
-    but WITHOUT ANY WARRANTY; without even the implied warranty of
-    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+    FastoNoSQL is distributed in the hope that it will be
+   useful,
+    but WITHOUT ANY WARRANTY; without even the implied
+   warranty of
+    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
+   See the
     GNU General Public License for more details.
 
-    You should have received a copy of the GNU General Public License
-    along with FastoNoSQL.  If not, see <http://www.gnu.org/licenses/>.
+    You should have received a copy of the GNU General
+   Public License
+    along with FastoNoSQL.  If not, see
+   <http://www.gnu.org/licenses/>.
 */
 
 #include "gui/widgets/query_widget.h"
 
-#include <memory>                       // for __shared_ptr
+#include <memory>  // for __shared_ptr
 
-#include <QVBoxLayout>
 #include <QSplitter>
+#include <QVBoxLayout>
 
-#include "core/iserver.h"               // for IServer
+#include "core/iserver.h"  // for IServer
 
 #include "gui/widgets/output_widget.h"  // for OutputWidget
 
-#include "shell/shell_widget.h"         // for BaseShellWidget
+#include "shell/shell_widget.h"  // for BaseShellWidget
 
 namespace fastonosql {
 namespace gui {
 
 QueryWidget::QueryWidget(core::IServerSPtr server, QWidget* parent)
-  : QWidget(parent), server_(server) {
+    : QWidget(parent), server_(server) {
   shellWidget_ = new shell::BaseShellWidget(server);
   outputWidget_ = new OutputWidget(server);
 
@@ -78,8 +86,7 @@ void QueryWidget::execute(const QString& text) {
   shellWidget_->executeText(text);
 }
 
-void QueryWidget::reload() {
-}
+void QueryWidget::reload() {}
 
 }  // namespace gui
 }  // namespace fastonosql

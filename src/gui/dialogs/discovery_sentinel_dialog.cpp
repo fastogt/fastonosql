@@ -2,62 +2,73 @@
 
     This file is part of FastoNoSQL.
 
-    FastoNoSQL is free software: you can redistribute it and/or modify
-    it under the terms of the GNU General Public License as published by
-    the Free Software Foundation, either version 3 of the License, or
+    FastoNoSQL is free software: you can redistribute it
+   and/or modify
+    it under the terms of the GNU General Public License as
+   published by
+    the Free Software Foundation, either version 3 of the
+   License, or
     (at your option) any later version.
 
-    FastoNoSQL is distributed in the hope that it will be useful,
-    but WITHOUT ANY WARRANTY; without even the implied warranty of
-    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+    FastoNoSQL is distributed in the hope that it will be
+   useful,
+    but WITHOUT ANY WARRANTY; without even the implied
+   warranty of
+    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
+   See the
     GNU General Public License for more details.
 
-    You should have received a copy of the GNU General Public License
-    along with FastoNoSQL.  If not, see <http://www.gnu.org/licenses/>.
+    You should have received a copy of the GNU General
+   Public License
+    along with FastoNoSQL.  If not, see
+   <http://www.gnu.org/licenses/>.
 */
 
 #include "gui/dialogs/discovery_sentinel_dialog.h"
 
-#include <stddef.h>                     // for size_t
-#include <memory>                       // for __shared_ptr
-#include <string>                       // for operator+, basic_string, etc
-#include <vector>                       // for allocator, vector
+#include <memory>    // for __shared_ptr
+#include <stddef.h>  // for size_t
+#include <string>    // for operator+, basic_string, etc
+#include <vector>    // for allocator, vector
 
-#include <QVBoxLayout>
 #include <QDialogButtonBox>
-#include <QThread>
 #include <QLabel>
+#include <QThread>
+#include <QVBoxLayout>
 
-#include "common/convert2string.h"      // for ConvertFromString
-#include "common/error.h"               // for Error
-#include "common/file_system.h"         // for get_separator_string
-#include "common/macros.h"              // for VERIFY
-#include "common/net/types.h"           // for HostAndPort
-#include "common/time.h"                // for current_mstime
-#include "common/value.h"               // for ErrorValue
+#include "common/convert2string.h"  // for ConvertFromString
+#include "common/error.h"           // for Error
+#include "common/file_system.h"     // for get_separator_string
+#include "common/macros.h"          // for VERIFY
+#include "common/net/types.h"       // for HostAndPort
+#include "common/time.h"            // for current_mstime
+#include "common/value.h"           // for ErrorValue
 
-#include "core/servers_manager.h"       // for ServersManager
+#include "core/servers_manager.h"  // for ServersManager
 
 #include "fasto/qt/gui/glass_widget.h"  // for GlassWidget
 
 #include "gui/dialogs/connection_listwidget_items.h"
 #include "gui/dialogs/discovery_sentinel_connection.h"
-#include "gui/gui_factory.h"            // for GuiFactory
+#include "gui/gui_factory.h"  // for GuiFactory
 
 #include "translations/global.h"
 
 namespace {
-  const QSize stateIconSize = QSize(64, 64);
+const QSize stateIconSize = QSize(64, 64);
 }
 
 namespace fastonosql {
 namespace gui {
 
-DiscoverySentinelDiagnosticDialog::DiscoverySentinelDiagnosticDialog(QWidget* parent, core::IConnectionSettingsBaseSPtr connection)
-  : QDialog(parent) {
+DiscoverySentinelDiagnosticDialog::DiscoverySentinelDiagnosticDialog(
+    QWidget* parent,
+    core::IConnectionSettingsBaseSPtr connection)
+    : QDialog(parent) {
   setWindowTitle(translations::trConnectionDiscovery);
   setWindowIcon(GuiFactory::instance().serverIcon());
-  setWindowFlags(windowFlags() & ~Qt::WindowContextHelpButtonHint);  // Remove help button (?)
+  setWindowFlags(windowFlags() & ~Qt::WindowContextHelpButtonHint);  // Remove help
+                                                                     // button (?)
 
   QVBoxLayout* mainLayout = new QVBoxLayout;
 
@@ -78,11 +89,15 @@ DiscoverySentinelDiagnosticDialog::DiscoverySentinelDiagnosticDialog(QWidget* pa
   listWidget_->setIndentation(5);
 
   QStringList colums;
-  colums << translations::trName << translations::trAddress << translations::trType << translations::trState;
+  colums << translations::trName << translations::trAddress << translations::trType
+         << translations::trState;
   listWidget_->setHeaderLabels(colums);
   listWidget_->setContextMenuPolicy(Qt::ActionsContextMenu);
   listWidget_->setIndentation(15);
-  listWidget_->setSelectionMode(QAbstractItemView::MultiSelection);  // single item can be draged or droped
+  listWidget_->setSelectionMode(QAbstractItemView::MultiSelection);  // single item
+                                                                     // can be draged
+                                                                     // or
+                                                                     // droped
   listWidget_->setSelectionBehavior(QAbstractItemView::SelectRows);
 
   mainLayout->addWidget(listWidget_);
@@ -91,7 +106,8 @@ DiscoverySentinelDiagnosticDialog::DiscoverySentinelDiagnosticDialog(QWidget* pa
 
   QDialogButtonBox* buttonBox = new QDialogButtonBox(QDialogButtonBox::Ok);
   buttonBox->setOrientation(Qt::Horizontal);
-  VERIFY(connect(buttonBox, &QDialogButtonBox::accepted, this, &DiscoverySentinelDiagnosticDialog::accept));
+  VERIFY(connect(buttonBox, &QDialogButtonBox::accepted, this,
+                 &DiscoverySentinelDiagnosticDialog::accept));
 
   mainLayout->addWidget(buttonBox);
   setFixedSize(QSize(fix_width, fix_height));
@@ -103,12 +119,14 @@ DiscoverySentinelDiagnosticDialog::DiscoverySentinelDiagnosticDialog(QWidget* pa
   testConnection(connection);
 }
 
-std::vector<ConnectionListWidgetItemDiscovered*> DiscoverySentinelDiagnosticDialog::selectedConnections() const {
+std::vector<ConnectionListWidgetItemDiscovered*>
+DiscoverySentinelDiagnosticDialog::selectedConnections() const {
   std::vector<ConnectionListWidgetItemDiscovered*> res;
   for (int i = 0; i < listWidget_->topLevelItemCount(); ++i) {
-    QTreeWidgetItem *citem = listWidget_->topLevelItem(i);
+    QTreeWidgetItem* citem = listWidget_->topLevelItem(i);
     if (citem->isSelected()) {
-      ConnectionListWidgetItemDiscovered* item = dynamic_cast<ConnectionListWidgetItemDiscovered*>(citem);  // +
+      ConnectionListWidgetItemDiscovered* item =
+          dynamic_cast<ConnectionListWidgetItemDiscovered*>(citem);  // +
       if (item) {
         res.push_back(item);
       }
@@ -117,9 +135,11 @@ std::vector<ConnectionListWidgetItemDiscovered*> DiscoverySentinelDiagnosticDial
   return res;
 }
 
-void DiscoverySentinelDiagnosticDialog::connectionResultReady(bool suc, qint64 mstimeExecute,
-                                                 const QString& resultText,
-                                                 std::vector<core::ServerDiscoverySentinelInfoSPtr> infos) {
+void DiscoverySentinelDiagnosticDialog::connectionResultReady(
+    bool suc,
+    qint64 mstimeExecute,
+    const QString& resultText,
+    std::vector<core::ServerDiscoverySentinelInfoSPtr> infos) {
   glassWidget_->stop();
 
   executeTimeLabel_->setText(translations::trTimeTemplate_1S.arg(mstimeExecute));
@@ -133,10 +153,13 @@ void DiscoverySentinelDiagnosticDialog::connectionResultReady(bool suc, qint64 m
     for (size_t i = 0; i < infos.size(); ++i) {
       core::ServerDiscoverySentinelInfoSPtr inf = infos[i];
       common::net::HostAndPort host = inf->host();
-      core::IConnectionSettingsBase::connection_path_t path(common::file_system::get_separator_string<char>() + inf->name());
-      core::IConnectionSettingsBaseSPtr con(core::IConnectionSettingsRemote::createFromType(inf->connectionType(), path, host));
+      core::IConnectionSettingsBase::connection_path_t path(
+          common::file_system::get_separator_string<char>() + inf->name());
+      core::IConnectionSettingsBaseSPtr con(
+          core::IConnectionSettingsRemote::createFromType(inf->connectionType(), path, host));
 
-      ConnectionListWidgetItemDiscovered* item = new ConnectionListWidgetItemDiscovered(inf->info(), nullptr);
+      ConnectionListWidgetItemDiscovered* item =
+          new ConnectionListWidgetItemDiscovered(inf->info(), nullptr);
       item->setConnection(con);
       listWidget_->addTopLevelItem(item);
     }
@@ -149,7 +172,8 @@ void DiscoverySentinelDiagnosticDialog::showEvent(QShowEvent* e) {
   glassWidget_->start();
 }
 
-void DiscoverySentinelDiagnosticDialog::testConnection(core::IConnectionSettingsBaseSPtr connection) {
+void DiscoverySentinelDiagnosticDialog::testConnection(
+    core::IConnectionSettingsBaseSPtr connection) {
   QThread* th = new QThread;
   DiscoverySentinelConnection* cheker = new DiscoverySentinelConnection(connection);
   cheker->moveToThread(th);

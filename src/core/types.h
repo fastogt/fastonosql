@@ -2,48 +2,61 @@
 
     This file is part of FastoNoSQL.
 
-    FastoNoSQL is free software: you can redistribute it and/or modify
-    it under the terms of the GNU General Public License as published by
-    the Free Software Foundation, either version 3 of the License, or
+    FastoNoSQL is free software: you can redistribute it
+   and/or modify
+    it under the terms of the GNU General Public License as
+   published by
+    the Free Software Foundation, either version 3 of the
+   License, or
     (at your option) any later version.
 
-    FastoNoSQL is distributed in the hope that it will be useful,
-    but WITHOUT ANY WARRANTY; without even the implied warranty of
-    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+    FastoNoSQL is distributed in the hope that it will be
+   useful,
+    but WITHOUT ANY WARRANTY; without even the implied
+   warranty of
+    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
+   See the
     GNU General Public License for more details.
 
-    You should have received a copy of the GNU General Public License
-    along with FastoNoSQL.  If not, see <http://www.gnu.org/licenses/>.
+    You should have received a copy of the GNU General
+   Public License
+    along with FastoNoSQL.  If not, see
+   <http://www.gnu.org/licenses/>.
 */
 
 #pragma once
 
-#include <stddef.h>                     // for size_t
-#include <stdint.h>                     // for uint32_t
+#include <stddef.h>  // for size_t
+#include <stdint.h>  // for uint32_t
 
-#include <memory>                       // for shared_ptr
-#include <string>                       // for string
-#include <vector>                       // for vector
+#include <memory>  // for shared_ptr
+#include <string>  // for string
+#include <vector>  // for vector
 
-#include "common/net/types.h"           // for HostAndPortAndSlot
-#include "common/types.h"               // for time64_t
+#include "common/net/types.h"  // for HostAndPortAndSlot
+#include "common/types.h"      // for time64_t
 
-#include "core/connection_types.h"      // for connectionTypes, etc
-#include "core/db_key.h"                // for NDbKValue
+#include "core/connection_types.h"  // for connectionTypes, etc
+#include "core/db_key.h"            // for NDbKValue
 
-namespace common { class Value; }
+namespace common {
+class Value;
+}
 
 namespace fastonosql {
 namespace core {
 
 struct ServerCommonInfo {
   ServerCommonInfo();
-  ServerCommonInfo(const std::string& name, serverTypes type, serverState state, serverConnectState cstate);
+  ServerCommonInfo(const std::string& name,
+                   serverTypes type,
+                   serverState state,
+                   serverConnectState cstate);
 
-  std::string name;  // name
-  serverTypes type;  // role
-  serverState state;  // state
-  serverConnectState cstate; // conection state
+  std::string name;           // name
+  serverTypes type;           // role
+  serverState state;          // state
+  serverConnectState cstate;  // conection state
   common::net::HostAndPortAndSlot host;
 };
 
@@ -67,8 +80,7 @@ class ServerDiscoveryInfoBase {
   ServerCommonInfo info_;
 };
 
-class ServerDiscoverySentinelInfo
-  : public ServerDiscoveryInfoBase {
+class ServerDiscoverySentinelInfo : public ServerDiscoveryInfoBase {
  public:
   virtual ~ServerDiscoverySentinelInfo();
 
@@ -78,8 +90,7 @@ class ServerDiscoverySentinelInfo
 
 typedef common::shared_ptr<ServerDiscoverySentinelInfo> ServerDiscoverySentinelInfoSPtr;
 
-class ServerDiscoveryClusterInfo
-  : public ServerDiscoveryInfoBase {
+class ServerDiscoveryClusterInfo : public ServerDiscoveryInfoBase {
  public:
   bool self() const;
   virtual ~ServerDiscoveryClusterInfo();
@@ -122,8 +133,7 @@ struct ServerInfoSnapShoot {
   IServerInfoSPtr info;
 };
 
-class IDataBaseInfo
-  : public common::ClonableBase<IDataBaseInfo> {
+class IDataBaseInfo : public common::ClonableBase<IDataBaseInfo> {
  public:
   typedef std::vector<NDbKValue> keys_container_t;
   connectionTypes type() const;
@@ -142,8 +152,11 @@ class IDataBaseInfo
   void clearKeys();
 
  protected:
-  IDataBaseInfo(const std::string& name, bool isDefault, connectionTypes type,
-               size_t dbkcount, const keys_container_t& keys);
+  IDataBaseInfo(const std::string& name,
+                bool isDefault,
+                connectionTypes type,
+                size_t dbkcount,
+                const keys_container_t& keys);
 
  private:
   const std::string name_;

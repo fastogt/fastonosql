@@ -2,45 +2,53 @@
 
     This file is part of FastoNoSQL.
 
-    FastoNoSQL is free software: you can redistribute it and/or modify
-    it under the terms of the GNU General Public License as published by
-    the Free Software Foundation, either version 3 of the License, or
+    FastoNoSQL is free software: you can redistribute it
+   and/or modify
+    it under the terms of the GNU General Public License as
+   published by
+    the Free Software Foundation, either version 3 of the
+   License, or
     (at your option) any later version.
 
-    FastoNoSQL is distributed in the hope that it will be useful,
-    but WITHOUT ANY WARRANTY; without even the implied warranty of
-    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+    FastoNoSQL is distributed in the hope that it will be
+   useful,
+    but WITHOUT ANY WARRANTY; without even the implied
+   warranty of
+    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
+   See the
     GNU General Public License for more details.
 
-    You should have received a copy of the GNU General Public License
-    along with FastoNoSQL.  If not, see <http://www.gnu.org/licenses/>.
+    You should have received a copy of the GNU General
+   Public License
+    along with FastoNoSQL.  If not, see
+   <http://www.gnu.org/licenses/>.
 */
 
 #include "core/leveldb/driver.h"
 
-#include <stddef.h>                     // for size_t
-#include <memory>                       // for __shared_ptr
-#include <string>                       // for string
+#include <memory>    // for __shared_ptr
+#include <stddef.h>  // for size_t
+#include <string>    // for string
 
-#include "common/log_levels.h"          // for LEVEL_LOG::L_WARNING
-#include "common/qt/utils_qt.h"         // for Event<>::value_type
-#include "common/sprintf.h"             // for MemSPrintf
-#include "common/value.h"               // for ErrorValue, etc
+#include "common/log_levels.h"   // for LEVEL_LOG::L_WARNING
+#include "common/qt/utils_qt.h"  // for Event<>::value_type
+#include "common/sprintf.h"      // for MemSPrintf
+#include "common/value.h"        // for ErrorValue, etc
 
 #include "core/command.h"           // for createCommand, etc
-#include "core/command_logger.h"        // for LOG_COMMAND
-#include "core/connection_types.h"      // for ConvertToString, etc
-#include "core/db_key.h"                // for NDbKValue, NValue, NKey
+#include "core/command_logger.h"    // for LOG_COMMAND
+#include "core/connection_types.h"  // for ConvertToString, etc
+#include "core/db_key.h"            // for NDbKValue, NValue, NKey
 #include "core/events/events_info.h"
-#include "core/leveldb/command.h"       // for Command
-#include "core/leveldb/config.h"        // for Config
+#include "core/leveldb/command.h"              // for Command
+#include "core/leveldb/config.h"               // for Config
 #include "core/leveldb/connection_settings.h"  // for ConnectionSettings
-#include "core/leveldb/database.h"      // for DataBaseInfo
-#include "core/leveldb/db_connection.h"  // for DBConnection
-#include "core/leveldb/server_info.h"   // for ServerInfo, etc
+#include "core/leveldb/database.h"             // for DataBaseInfo
+#include "core/leveldb/db_connection.h"        // for DBConnection
+#include "core/leveldb/server_info.h"          // for ServerInfo, etc
 
-#include "global/global.h"              // for FastoObject::childs_t, etc
-#include "global/types.h"               // for Command
+#include "global/global.h"  // for FastoObject::childs_t, etc
+#include "global/types.h"   // for Command
 
 #define LEVELDB_INFO_REQUEST "INFO"
 #define LEVELDB_GET_KEY_PATTERN_1ARGS_S "GET %s"
@@ -54,8 +62,9 @@ namespace core {
 namespace leveldb {
 
 Driver::Driver(IConnectionSettingsBaseSPtr settings)
-  : IDriverLocal(settings), impl_(new DBConnection) {
-  COMPILE_ASSERT(DBConnection::connection_t == LEVELDB, "DBConnection must be the same type as Driver!");
+    : IDriverLocal(settings), impl_(new DBConnection) {
+  COMPILE_ASSERT(DBConnection::connection_t == LEVELDB,
+                 "DBConnection must be the same type as Driver!");
   CHECK(type() == LEVELDB);
 }
 
@@ -80,8 +89,7 @@ bool Driver::isAuthenticated() const {
 }
 
 // ============== commands =============//
-common::Error Driver::commandDeleteImpl(CommandDeleteKey* command,
-                                               std::string* cmdstring) const {
+common::Error Driver::commandDeleteImpl(CommandDeleteKey* command, std::string* cmdstring) const {
   if (!command || !cmdstring) {
     return common::make_error_value("Invalid input argument(s)", common::ErrorValue::E_ERROR);
   }
@@ -92,8 +100,7 @@ common::Error Driver::commandDeleteImpl(CommandDeleteKey* command,
   return common::Error();
 }
 
-common::Error Driver::commandLoadImpl(CommandLoadKey* command,
-                                             std::string* cmdstring) const {
+common::Error Driver::commandLoadImpl(CommandLoadKey* command, std::string* cmdstring) const {
   if (!command || !cmdstring) {
     return common::make_error_value("Invalid input argument(s)", common::ErrorValue::E_ERROR);
   }
@@ -104,8 +111,7 @@ common::Error Driver::commandLoadImpl(CommandLoadKey* command,
   return common::Error();
 }
 
-common::Error Driver::commandCreateImpl(CommandCreateKey* command,
-                                               std::string* cmdstring) const {
+common::Error Driver::commandCreateImpl(CommandCreateKey* command, std::string* cmdstring) const {
   if (!command || !cmdstring) {
     return common::make_error_value("Invalid input argument(s)", common::ErrorValue::E_ERROR);
   }
@@ -120,13 +126,14 @@ common::Error Driver::commandCreateImpl(CommandCreateKey* command,
 }
 
 common::Error Driver::commandChangeTTLImpl(CommandChangeTTL* command,
-                                                  std::string* cmdstring) const {
+                                           std::string* cmdstring) const {
   if (!command || !cmdstring) {
     return common::make_error_value("Invalid input argument(s)", common::ErrorValue::E_ERROR);
   }
 
-  std::string errorMsg = common::MemSPrintf("Sorry, but now " PROJECT_NAME_TITLE " not supported change ttl command for %s.",
-                                          common::ConvertToString(type()));
+  std::string errorMsg = common::MemSPrintf("Sorry, but now " PROJECT_NAME_TITLE
+                                            " not supported change ttl command for %s.",
+                                            common::ConvertToString(type()));
   return common::make_error_value(errorMsg, common::ErrorValue::E_ERROR);
 }
 
@@ -145,11 +152,9 @@ std::string Driver::delimiter() const {
   return impl_->delimiter();
 }
 
-void Driver::initImpl() {
-}
+void Driver::initImpl() {}
 
-void Driver::clearImpl() {
-}
+void Driver::clearImpl() {}
 
 common::Error Driver::syncConnect() {
   ConnectionSettings* set = dynamic_cast<ConnectionSettings*>(settings_.get());  // +
@@ -165,8 +170,9 @@ common::Error Driver::executeImpl(int argc, char** argv, FastoObject* out) {
   return impl_->execute(argc, argv, out);
 }
 
-common::Error Driver::serverInfo(IServerInfo** info) { 
-  FastoObjectCommandIPtr cmd = CreateCommandFast<Command>(LEVELDB_INFO_REQUEST, common::Value::C_INNER);
+common::Error Driver::serverInfo(IServerInfo** info) {
+  FastoObjectCommandIPtr cmd =
+      CreateCommandFast<Command>(LEVELDB_INFO_REQUEST, common::Value::C_INNER);
   LOG_COMMAND(cmd);
   ServerInfo::Stats cm;
   common::Error err = impl_->info(nullptr, &cm);
@@ -208,9 +214,8 @@ void Driver::handleExecuteEvent(events::ExecuteRequestEvent* ev) {
   const double step = 100.0 / length;
   for (size_t i = 0; i < length; ++i) {
     if (isInterrupted()) {
-      res.setErrorInfo(common::make_error_value("Interrupted exec.",
-                                                common::ErrorValue::E_INTERRUPTED,
-                                                common::logging::L_WARNING));
+      res.setErrorInfo(common::make_error_value(
+          "Interrupted exec.", common::ErrorValue::E_INTERRUPTED, common::logging::L_WARNING));
       break;
     }
 
@@ -269,8 +274,7 @@ void Driver::handleLoadDatabaseContentEvent(events::LoadDatabaseContentRequestEv
   std::string patternResult = common::MemSPrintf(LEVELDB_GET_KEYS_PATTERN_1ARGS_I, res.count_keys);
   FastoObjectIPtr root = FastoObject::createRoot(patternResult);
   notifyProgress(sender, 50);
-  FastoObjectCommandIPtr cmd = CreateCommand<Command>(root, patternResult,
-                                                          common::Value::C_INNER);
+  FastoObjectCommandIPtr cmd = CreateCommand<Command>(root, patternResult, common::Value::C_INNER);
   common::Error er = execute(cmd);
   if (er && er->isError()) {
     res.setErrorInfo(er);

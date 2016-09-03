@@ -2,18 +2,26 @@
 
     This file is part of FastoNoSQL.
 
-    FastoNoSQL is free software: you can redistribute it and/or modify
-    it under the terms of the GNU General Public License as published by
-    the Free Software Foundation, either version 3 of the License, or
+    FastoNoSQL is free software: you can redistribute it
+   and/or modify
+    it under the terms of the GNU General Public License as
+   published by
+    the Free Software Foundation, either version 3 of the
+   License, or
     (at your option) any later version.
 
-    FastoNoSQL is distributed in the hope that it will be useful,
-    but WITHOUT ANY WARRANTY; without even the implied warranty of
-    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+    FastoNoSQL is distributed in the hope that it will be
+   useful,
+    but WITHOUT ANY WARRANTY; without even the implied
+   warranty of
+    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
+   See the
     GNU General Public License for more details.
 
-    You should have received a copy of the GNU General Public License
-    along with FastoNoSQL.  If not, see <http://www.gnu.org/licenses/>.
+    You should have received a copy of the GNU General
+   Public License
+    along with FastoNoSQL.  If not, see
+   <http://www.gnu.org/licenses/>.
 */
 
 #include "core/command_key.h"
@@ -21,9 +29,7 @@
 namespace fastonosql {
 namespace core {
 
-CommandKey::CommandKey(const NDbKValue &key, cmdtype type)
-  : type_(type), key_(key) {
-}
+CommandKey::CommandKey(const NDbKValue& key, cmdtype type) : type_(type), key_(key) {}
 
 CommandKey::cmdtype CommandKey::type() const {
   return type_;
@@ -33,24 +39,16 @@ NDbKValue CommandKey::key() const {
   return key_;
 }
 
-CommandKey::~CommandKey() {
-}
+CommandKey::~CommandKey() {}
 
-CommandDeleteKey::CommandDeleteKey(const NDbKValue &key)
-  : CommandKey(key, C_DELETE) {
-}
+CommandDeleteKey::CommandDeleteKey(const NDbKValue& key) : CommandKey(key, C_DELETE) {}
 
-CommandLoadKey::CommandLoadKey(const NDbKValue &key)
-  : CommandKey(key, C_LOAD) {
-}
+CommandLoadKey::CommandLoadKey(const NDbKValue& key) : CommandKey(key, C_LOAD) {}
 
-CommandCreateKey::CommandCreateKey(const NDbKValue& dbv)
-  : CommandKey(dbv, C_CREATE) {
-}
+CommandCreateKey::CommandCreateKey(const NDbKValue& dbv) : CommandKey(dbv, C_CREATE) {}
 
 CommandChangeTTL::CommandChangeTTL(const NDbKValue& dbv, ttl_t newTTL)
-  : CommandKey(dbv, C_CHANGE_TTL), new_ttl_(newTTL) {
-}
+    : CommandKey(dbv, C_CHANGE_TTL), new_ttl_(newTTL) {}
 
 ttl_t CommandChangeTTL::newTTL() const {
   return new_ttl_;

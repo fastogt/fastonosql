@@ -2,52 +2,59 @@
 
     This file is part of FastoNoSQL.
 
-    FastoNoSQL is free software: you can redistribute it and/or modify
-    it under the terms of the GNU General Public License as published by
-    the Free Software Foundation, either version 3 of the License, or
+    FastoNoSQL is free software: you can redistribute it
+   and/or modify
+    it under the terms of the GNU General Public License as
+   published by
+    the Free Software Foundation, either version 3 of the
+   License, or
     (at your option) any later version.
 
-    FastoNoSQL is distributed in the hope that it will be useful,
-    but WITHOUT ANY WARRANTY; without even the implied warranty of
-    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+    FastoNoSQL is distributed in the hope that it will be
+   useful,
+    but WITHOUT ANY WARRANTY; without even the implied
+   warranty of
+    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
+   See the
     GNU General Public License for more details.
 
-    You should have received a copy of the GNU General Public License
-    along with FastoNoSQL.  If not, see <http://www.gnu.org/licenses/>.
+    You should have received a copy of the GNU General
+   Public License
+    along with FastoNoSQL.  If not, see
+   <http://www.gnu.org/licenses/>.
 */
 
 #include "gui/property_table_model.h"
 
-#include <stddef.h>                     // for size_t
+#include <stddef.h>  // for size_t
 
-#include <string>                       // for basic_string, operator==
-#include <vector>                       // for vector
+#include <string>  // for basic_string, operator==
+#include <vector>  // for vector
 
-#include "common/macros.h"              // for CHECK, UNUSED
 #include "common/convert2string.h"
+#include "common/macros.h"  // for CHECK, UNUSED
 #include "common/qt/convert2string.h"
-#include "common/qt/utils_qt.h"         // for item
+#include "common/qt/utils_qt.h"  // for item
 
-#include "fasto/qt/gui/base/table_item.h"     // for TableItem
-#include "fasto/qt/gui/base/table_model.h"    // for TableModel
+#include "fasto/qt/gui/base/table_item.h"   // for TableItem
+#include "fasto/qt/gui/base/table_model.h"  // for TableModel
 
 #include "gui/property_table_item.h"
 
-#include "translations/global.h"        // for trKey, trValue
+#include "translations/global.h"  // for trKey, trValue
 
 namespace fastonosql {
 namespace gui {
 
-PropertyTableModel::PropertyTableModel(QObject* parent)
-  : TableModel(parent) {
-}
+PropertyTableModel::PropertyTableModel(QObject* parent) : TableModel(parent) {}
 
 QVariant PropertyTableModel::data(const QModelIndex& index, int role) const {
   if (!index.isValid()) {
     return QVariant();
   }
 
-  PropertyTableItem* node = common::utils_qt::item<fasto::qt::gui::TableItem*, PropertyTableItem*>(index);
+  PropertyTableItem* node =
+      common::utils_qt::item<fasto::qt::gui::TableItem*, PropertyTableItem*>(index);
   if (!node) {
     return QVariant();
   }
@@ -65,7 +72,8 @@ QVariant PropertyTableModel::data(const QModelIndex& index, int role) const {
 
 bool PropertyTableModel::setData(const QModelIndex& index, const QVariant& value, int role) {
   if (index.isValid() && role == Qt::EditRole) {
-    PropertyTableItem* node = common::utils_qt::item<fasto::qt::gui::TableItem*, PropertyTableItem*>(index);
+    PropertyTableItem* node =
+        common::utils_qt::item<fasto::qt::gui::TableItem*, PropertyTableItem*>(index);
     if (!node) {
       return false;
     }
@@ -85,7 +93,7 @@ bool PropertyTableModel::setData(const QModelIndex& index, const QVariant& value
   return false;
 }
 
-Qt::ItemFlags PropertyTableModel::flags(const QModelIndex &index) const {
+Qt::ItemFlags PropertyTableModel::flags(const QModelIndex& index) const {
   if (!index.isValid()) {
     return 0;
   }
@@ -127,7 +135,8 @@ void PropertyTableModel::changeProperty(const core::property_t& pr) {
     core::property_t prop = it->property();
     if (prop.first == pr.first) {
       it->setProperty(pr);
-      updateItem(index(i, PropertyTableItem::eKey, QModelIndex()), index(i, PropertyTableItem::eValue, QModelIndex()));
+      updateItem(index(i, PropertyTableItem::eKey, QModelIndex()),
+                 index(i, PropertyTableItem::eValue, QModelIndex()));
       return;
     }
   }

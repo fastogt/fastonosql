@@ -2,18 +2,26 @@
 
     This file is part of FastoNoSQL.
 
-    FastoNoSQL is free software: you can redistribute it and/or modify
-    it under the terms of the GNU General Public License as published by
-    the Free Software Foundation, either version 3 of the License, or
+    FastoNoSQL is free software: you can redistribute it
+   and/or modify
+    it under the terms of the GNU General Public License as
+   published by
+    the Free Software Foundation, either version 3 of the
+   License, or
     (at your option) any later version.
 
-    FastoNoSQL is distributed in the hope that it will be useful,
-    but WITHOUT ANY WARRANTY; without even the implied warranty of
-    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+    FastoNoSQL is distributed in the hope that it will be
+   useful,
+    but WITHOUT ANY WARRANTY; without even the implied
+   warranty of
+    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
+   See the
     GNU General Public License for more details.
 
-    You should have received a copy of the GNU General Public License
-    along with FastoNoSQL.  If not, see <http://www.gnu.org/licenses/>.
+    You should have received a copy of the GNU General
+   Public License
+    along with FastoNoSQL.  If not, see
+   <http://www.gnu.org/licenses/>.
 */
 
 #include "gui/widgets/log_tab_widget.h"
@@ -21,18 +29,17 @@
 #include <QEvent>
 #include <QTabBar>
 
-#include "gui/gui_factory.h"            // for GuiFactory
+#include "gui/gui_factory.h"  // for GuiFactory
 
 #include "gui/widgets/commands_widget.h"  // for CommandsWidget
-#include "gui/widgets/log_widget.h"     // for LogWidget
+#include "gui/widgets/log_widget.h"       // for LogWidget
 
-#include "translations/global.h"        // for trCommands, trLogs
+#include "translations/global.h"  // for trCommands, trLogs
 
 namespace fastonosql {
 namespace gui {
 
-LogTabWidget::LogTabWidget(QWidget* parent)
-  : QTabWidget(parent) {
+LogTabWidget::LogTabWidget(QWidget* parent) : QTabWidget(parent) {
   QTabBar* tab = new QTabBar;
   setTabBar(tab);
   setTabsClosable(false);

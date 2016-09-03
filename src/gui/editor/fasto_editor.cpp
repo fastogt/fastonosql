@@ -2,23 +2,31 @@
 
     This file is part of FastoNoSQL.
 
-    FastoNoSQL is free software: you can redistribute it and/or modify
-    it under the terms of the GNU General Public License as published by
-    the Free Software Foundation, either version 3 of the License, or
+    FastoNoSQL is free software: you can redistribute it
+   and/or modify
+    it under the terms of the GNU General Public License as
+   published by
+    the Free Software Foundation, either version 3 of the
+   License, or
     (at your option) any later version.
 
-    FastoNoSQL is distributed in the hope that it will be useful,
-    but WITHOUT ANY WARRANTY; without even the implied warranty of
-    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+    FastoNoSQL is distributed in the hope that it will be
+   useful,
+    but WITHOUT ANY WARRANTY; without even the implied
+   warranty of
+    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
+   See the
     GNU General Public License for more details.
 
-    You should have received a copy of the GNU General Public License
-    along with FastoNoSQL.  If not, see <http://www.gnu.org/licenses/>.
+    You should have received a copy of the GNU General
+   Public License
+    along with FastoNoSQL.  If not, see
+   <http://www.gnu.org/licenses/>.
 */
 
 #include "gui/editor/fasto_editor.h"
 
-#include <stddef.h>                     // for size_t
+#include <stddef.h>  // for size_t
 
 #include <QCheckBox>
 #include <QHBoxLayout>
@@ -29,22 +37,21 @@
 #include <QPushButton>
 #include <QToolButton>
 
-#include <Qsci/qsciscintilla.h>         // for QsciScintilla, etc
+#include <Qsci/qsciscintilla.h>  // for QsciScintilla, etc
 
-#include "common/macros.h"              // for VERIFY, UNUSED, NOTREACHED
-#include "common/qt/convert2string.h"   // for EscapedText
+#include "common/macros.h"             // for VERIFY, UNUSED, NOTREACHED
+#include "common/qt/convert2string.h"  // for EscapedText
 
 #include "fasto/qt/gui/fasto_scintilla.h"  // for FastoScintilla
 
-#include "gui/gui_factory.h"            // for GuiFactory
+#include "gui/gui_factory.h"  // for GuiFactory
 
 #include "translations/global.h"
 
 namespace fastonosql {
 namespace gui {
 
-FastoEditor::FastoEditor(QWidget* parent)
-  : QWidget(parent), scin_(nullptr) {
+FastoEditor::FastoEditor(QWidget* parent) : QWidget(parent), scin_(nullptr) {
   scin_ = new fasto::qt::gui::FastoScintilla;
 
   findPanel_ = new QFrame;
@@ -80,15 +87,14 @@ FastoEditor::FastoEditor(QWidget* parent)
   findPanel_->hide();
 
   VERIFY(connect(close_, &QToolButton::clicked, findPanel_, &QFrame::hide));
-  VERIFY(connect(scin_, &fasto::qt::gui::FastoScintilla::textChanged,
-                 this, &FastoEditor::textChanged));
+  VERIFY(connect(scin_, &fasto::qt::gui::FastoScintilla::textChanged, this,
+                 &FastoEditor::textChanged));
   VERIFY(connect(next_, &QPushButton::clicked, this, &FastoEditor::goToNextElement));
   VERIFY(connect(prev_, &QPushButton::clicked, this, &FastoEditor::goToPrevElement));
   retranslateUi();
 }
 
-FastoEditor::~FastoEditor() {
-}
+FastoEditor::~FastoEditor() {}
 
 void FastoEditor::registerImage(int id, const QPixmap& im) {
   scin_->registerImage(id, im);
@@ -200,7 +206,7 @@ void FastoEditor::retranslateUi() {
 }
 
 void FastoEditor::findElement(bool forward) {
-  const QString&text = findLine_->text();
+  const QString& text = findLine_->text();
   if (!text.isEmpty()) {
     bool re = false;
     bool wo = false;
@@ -214,8 +220,8 @@ void FastoEditor::findElement(bool forward) {
     }
 
     scin_->setCursorPosition(line, 0);
-    bool isFounded = scin_->findFirst(text, re, caseSensitive_->checkState() == Qt::Checked,
-                                      wo, looped, forward, line, index);
+    bool isFounded = scin_->findFirst(text, re, caseSensitive_->checkState() == Qt::Checked, wo,
+                                      looped, forward, line, index);
 
     if (isFounded) {
       scin_->ensureCursorVisible();

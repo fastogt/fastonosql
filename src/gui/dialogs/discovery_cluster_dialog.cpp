@@ -2,64 +2,74 @@
 
     This file is part of FastoNoSQL.
 
-    FastoNoSQL is free software: you can redistribute it and/or modify
-    it under the terms of the GNU General Public License as published by
-    the Free Software Foundation, either version 3 of the License, or
+    FastoNoSQL is free software: you can redistribute it
+   and/or modify
+    it under the terms of the GNU General Public License as
+   published by
+    the Free Software Foundation, either version 3 of the
+   License, or
     (at your option) any later version.
 
-    FastoNoSQL is distributed in the hope that it will be useful,
-    but WITHOUT ANY WARRANTY; without even the implied warranty of
-    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+    FastoNoSQL is distributed in the hope that it will be
+   useful,
+    but WITHOUT ANY WARRANTY; without even the implied
+   warranty of
+    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
+   See the
     GNU General Public License for more details.
 
-    You should have received a copy of the GNU General Public License
-    along with FastoNoSQL.  If not, see <http://www.gnu.org/licenses/>.
+    You should have received a copy of the GNU General
+   Public License
+    along with FastoNoSQL.  If not, see
+   <http://www.gnu.org/licenses/>.
 */
 
 #include "gui/dialogs/discovery_cluster_dialog.h"
 
-#include <stddef.h>                     // for size_t
-#include <memory>                       // for __shared_ptr
-#include <string>                       // for operator+, basic_string, etc
-#include <vector>                       // for allocator, vector
+#include <memory>    // for __shared_ptr
+#include <stddef.h>  // for size_t
+#include <string>    // for operator+, basic_string, etc
+#include <vector>    // for allocator, vector
 
 #include <QDialogButtonBox>
-#include <QVBoxLayout>
 #include <QLabel>
 #include <QThread>
+#include <QVBoxLayout>
 
-#include "common/convert2string.h"      // for ConvertFromString
-#include "common/error.h"               // for Error
-#include "common/file_system.h"         // for get_separator_string
-#include "common/macros.h"              // for VERIFY
-#include "common/net/types.h"           // for HostAndPortAndSlot
-#include "common/time.h"                // for current_mstime
-#include "common/value.h"               // for ErrorValue
+#include "common/convert2string.h"  // for ConvertFromString
+#include "common/error.h"           // for Error
+#include "common/file_system.h"     // for get_separator_string
+#include "common/macros.h"          // for VERIFY
+#include "common/net/types.h"       // for HostAndPortAndSlot
+#include "common/time.h"            // for current_mstime
+#include "common/value.h"           // for ErrorValue
 
-#include "core/servers_manager.h"       // for ServersManager
+#include "core/servers_manager.h"  // for ServersManager
 
 #include "fasto/qt/gui/glass_widget.h"  // for GlassWidget
 
 #include "gui/dialogs/connection_listwidget_items.h"
 #include "gui/dialogs/discovery_connection.h"
-#include "gui/gui_factory.h"            // for GuiFactory
+#include "gui/gui_factory.h"  // for GuiFactory
 
 #include "translations/global.h"
 
 namespace {
-  const QSize stateIconSize = QSize(64, 64);
+const QSize stateIconSize = QSize(64, 64);
 }
 
 namespace fastonosql {
 namespace gui {
 
-DiscoveryClusterDiagnosticDialog::DiscoveryClusterDiagnosticDialog(QWidget* parent,
-                                                     core::IConnectionSettingsBaseSPtr connection,
-                                                     core::IClusterSettingsBaseSPtr cluster)
-  : QDialog(parent), cluster_(cluster) {
+DiscoveryClusterDiagnosticDialog::DiscoveryClusterDiagnosticDialog(
+    QWidget* parent,
+    core::IConnectionSettingsBaseSPtr connection,
+    core::IClusterSettingsBaseSPtr cluster)
+    : QDialog(parent), cluster_(cluster) {
   setWindowTitle(translations::trConnectionDiscovery);
   setWindowIcon(GuiFactory::instance().serverIcon());
-  setWindowFlags(windowFlags() & ~Qt::WindowContextHelpButtonHint);  // Remove help button (?)
+  setWindowFlags(windowFlags() & ~Qt::WindowContextHelpButtonHint);  // Remove help
+                                                                     // button (?)
 
   QVBoxLayout* mainLayout = new QVBoxLayout;
 
@@ -80,11 +90,15 @@ DiscoveryClusterDiagnosticDialog::DiscoveryClusterDiagnosticDialog(QWidget* pare
   listWidget_->setIndentation(5);
 
   QStringList colums;
-  colums << translations::trName << translations::trAddress << translations::trType << translations::trState;
+  colums << translations::trName << translations::trAddress << translations::trType
+         << translations::trState;
   listWidget_->setHeaderLabels(colums);
   listWidget_->setContextMenuPolicy(Qt::ActionsContextMenu);
   listWidget_->setIndentation(15);
-  listWidget_->setSelectionMode(QAbstractItemView::MultiSelection);  // single item can be draged or droped
+  listWidget_->setSelectionMode(QAbstractItemView::MultiSelection);  // single item
+                                                                     // can be draged
+                                                                     // or
+                                                                     // droped
   listWidget_->setSelectionBehavior(QAbstractItemView::SelectRows);
 
   mainLayout->addWidget(listWidget_);
@@ -93,7 +107,8 @@ DiscoveryClusterDiagnosticDialog::DiscoveryClusterDiagnosticDialog(QWidget* pare
 
   QDialogButtonBox* buttonBox = new QDialogButtonBox(QDialogButtonBox::Ok);
   buttonBox->setOrientation(Qt::Horizontal);
-  VERIFY(connect(buttonBox, &QDialogButtonBox::accepted, this, &DiscoveryClusterDiagnosticDialog::accept));
+  VERIFY(connect(buttonBox, &QDialogButtonBox::accepted, this,
+                 &DiscoveryClusterDiagnosticDialog::accept));
 
   mainLayout->addWidget(buttonBox);
   setFixedSize(QSize(fix_width, fix_height));
@@ -105,12 +120,14 @@ DiscoveryClusterDiagnosticDialog::DiscoveryClusterDiagnosticDialog(QWidget* pare
   testConnection(connection);
 }
 
-std::vector<ConnectionListWidgetItemDiscovered*> DiscoveryClusterDiagnosticDialog::selectedConnections() const {
+std::vector<ConnectionListWidgetItemDiscovered*>
+DiscoveryClusterDiagnosticDialog::selectedConnections() const {
   std::vector<ConnectionListWidgetItemDiscovered*> res;
   for (int i = 0; i < listWidget_->topLevelItemCount(); ++i) {
-    QTreeWidgetItem *citem = listWidget_->topLevelItem(i);
+    QTreeWidgetItem* citem = listWidget_->topLevelItem(i);
     if (citem->isSelected()) {
-      ConnectionListWidgetItemDiscovered* item = dynamic_cast<ConnectionListWidgetItemDiscovered*>(citem);  // +
+      ConnectionListWidgetItemDiscovered* item =
+          dynamic_cast<ConnectionListWidgetItemDiscovered*>(citem);  // +
       if (item) {
         res.push_back(item);
       }
@@ -119,9 +136,11 @@ std::vector<ConnectionListWidgetItemDiscovered*> DiscoveryClusterDiagnosticDialo
   return res;
 }
 
-void DiscoveryClusterDiagnosticDialog::connectionResult(bool suc, qint64 mstimeExecute,
-                                                 const QString& resultText,
-                                                 std::vector<core::ServerDiscoveryClusterInfoSPtr> infos) {
+void DiscoveryClusterDiagnosticDialog::connectionResult(
+    bool suc,
+    qint64 mstimeExecute,
+    const QString& resultText,
+    std::vector<core::ServerDiscoveryClusterInfoSPtr> infos) {
   glassWidget_->stop();
 
   executeTimeLabel_->setText(translations::trTimeTemplate_1S.arg(mstimeExecute));
@@ -135,9 +154,12 @@ void DiscoveryClusterDiagnosticDialog::connectionResult(bool suc, qint64 mstimeE
     for (size_t i = 0; i < infos.size(); ++i) {
       core::ServerDiscoveryClusterInfoSPtr inf = infos[i];
       common::net::HostAndPortAndSlot host = inf->host();
-      core::IConnectionSettingsBase::connection_path_t path(common::file_system::get_separator_string<char>() + inf->name());
-      core::IConnectionSettingsBaseSPtr con(core::IConnectionSettingsRemote::createFromType(inf->connectionType(), path, host));
-      ConnectionListWidgetItemDiscovered* item = new ConnectionListWidgetItemDiscovered(inf->info(), nullptr);
+      core::IConnectionSettingsBase::connection_path_t path(
+          common::file_system::get_separator_string<char>() + inf->name());
+      core::IConnectionSettingsBaseSPtr con(
+          core::IConnectionSettingsRemote::createFromType(inf->connectionType(), path, host));
+      ConnectionListWidgetItemDiscovered* item =
+          new ConnectionListWidgetItemDiscovered(inf->info(), nullptr);
       item->setConnection(con);
       item->setDisabled(inf->self() || cluster_->findSettingsByHost(host));
       listWidget_->addTopLevelItem(item);
@@ -151,7 +173,8 @@ void DiscoveryClusterDiagnosticDialog::showEvent(QShowEvent* e) {
   glassWidget_->start();
 }
 
-void DiscoveryClusterDiagnosticDialog::testConnection(core::IConnectionSettingsBaseSPtr connection) {
+void DiscoveryClusterDiagnosticDialog::testConnection(
+    core::IConnectionSettingsBaseSPtr connection) {
   QThread* th = new QThread;
   DiscoveryConnection* cheker = new DiscoveryConnection(connection);
   cheker->moveToThread(th);

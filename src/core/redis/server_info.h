@@ -2,28 +2,36 @@
 
     This file is part of FastoNoSQL.
 
-    FastoNoSQL is free software: you can redistribute it and/or modify
-    it under the terms of the GNU General Public License as published by
-    the Free Software Foundation, either version 3 of the License, or
+    FastoNoSQL is free software: you can redistribute it
+   and/or modify
+    it under the terms of the GNU General Public License as
+   published by
+    the Free Software Foundation, either version 3 of the
+   License, or
     (at your option) any later version.
 
-    FastoNoSQL is distributed in the hope that it will be useful,
-    but WITHOUT ANY WARRANTY; without even the implied warranty of
-    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+    FastoNoSQL is distributed in the hope that it will be
+   useful,
+    but WITHOUT ANY WARRANTY; without even the implied
+   warranty of
+    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
+   See the
     GNU General Public License for more details.
 
-    You should have received a copy of the GNU General Public License
-    along with FastoNoSQL.  If not, see <http://www.gnu.org/licenses/>.
+    You should have received a copy of the GNU General
+   Public License
+    along with FastoNoSQL.  If not, see
+   <http://www.gnu.org/licenses/>.
 */
 
 #pragma once
 
-#include <stdint.h>                     // for uint32_t
+#include <stdint.h>  // for uint32_t
 
-#include <iosfwd>                       // for ostream
-#include <string>                       // for string, basic_string
+#include <iosfwd>  // for ostream
+#include <string>  // for string, basic_string
 
-#include "core/types.h"                 // for IStateField, IServerInfo
+#include "core/types.h"  // for IStateField, IServerInfo
 
 #define REDIS_SERVER_LABEL "# Server"
 #define REDIS_CLIENTS_LABEL "# Clients"
@@ -119,10 +127,8 @@ namespace fastonosql {
 namespace core {
 namespace redis {
 
-struct ServerInfo
-      : public IServerInfo {
-  struct Server
-      : IStateField {
+struct ServerInfo : public IServerInfo {
+  struct Server : IStateField {
     Server();
     explicit Server(const std::string& server_text);
     common::Value* valueByIndex(unsigned char index) const;
@@ -145,8 +151,7 @@ struct ServerInfo
     uint32_t lru_clock_;
   } server_;
 
-  struct Clients
-      : IStateField {
+  struct Clients : IStateField {
     Clients();
     explicit Clients(const std::string& client_text);
     common::Value* valueByIndex(unsigned char index) const;
@@ -157,8 +162,7 @@ struct ServerInfo
     uint32_t blocked_clients_;
   } clients_;
 
-  struct Memory
-      : IStateField {
+  struct Memory : IStateField {
     Memory();
     explicit Memory(const std::string& memory_text);
     common::Value* valueByIndex(unsigned char index) const;
@@ -173,8 +177,7 @@ struct ServerInfo
     std::string mem_allocator_;
   } memory_;
 
-  struct Persistence
-      : IStateField {
+  struct Persistence : IStateField {
     Persistence();
     explicit Persistence(const std::string& persistence_text);
     common::Value* valueByIndex(unsigned char index) const;
@@ -195,8 +198,7 @@ struct ServerInfo
     std::string aof_last_write_status_;
   } persistence_;
 
-  struct Stats
-      : IStateField {
+  struct Stats : IStateField {
     Stats();
     explicit Stats(const std::string& stats_text);
     common::Value* valueByIndex(unsigned char index) const;
@@ -217,8 +219,7 @@ struct ServerInfo
     uint32_t latest_fork_usec_;
   } stats_;
 
-  struct Replication
-      : IStateField {
+  struct Replication : IStateField {
     Replication();
     explicit Replication(const std::string& replication_text);
     common::Value* valueByIndex(unsigned char index) const;
@@ -232,8 +233,7 @@ struct ServerInfo
     uint32_t backlog_histen_;
   } replication_;
 
-  struct Cpu
-      : IStateField {
+  struct Cpu : IStateField {
     Cpu();
     explicit Cpu(const std::string& cpu_text);
     common::Value* valueByIndex(unsigned char index) const;
@@ -244,15 +244,19 @@ struct ServerInfo
     float used_cpu_user_children_;
   } cpu_;
 
-  struct Keyspace
-      : IStateField {
+  struct Keyspace : IStateField {
     common::Value* valueByIndex(unsigned char index) const;
   } keySp_;
 
   ServerInfo();
-  ServerInfo(const Server &serv, const Clients &clients, const Memory &memory,
-                  const Persistence &pers, const Stats &stats, const Replication &repl,
-                  const Cpu &cpu, const Keyspace &key);
+  ServerInfo(const Server& serv,
+             const Clients& clients,
+             const Memory& memory,
+             const Persistence& pers,
+             const Stats& stats,
+             const Replication& repl,
+             const Cpu& cpu,
+             const Keyspace& key);
 
   virtual common::Value* valueByIndexes(unsigned char property, unsigned char field) const;
   virtual std::string toString() const;

@@ -2,18 +2,26 @@
 
     This file is part of FastoNoSQL.
 
-    FastoNoSQL is free software: you can redistribute it and/or modify
-    it under the terms of the GNU General Public License as published by
-    the Free Software Foundation, either version 3 of the License, or
+    FastoNoSQL is free software: you can redistribute it
+   and/or modify
+    it under the terms of the GNU General Public License as
+   published by
+    the Free Software Foundation, either version 3 of the
+   License, or
     (at your option) any later version.
 
-    FastoNoSQL is distributed in the hope that it will be useful,
-    but WITHOUT ANY WARRANTY; without even the implied warranty of
-    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+    FastoNoSQL is distributed in the hope that it will be
+   useful,
+    but WITHOUT ANY WARRANTY; without even the implied
+   warranty of
+    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
+   See the
     GNU General Public License for more details.
 
-    You should have received a copy of the GNU General Public License
-    along with FastoNoSQL.  If not, see <http://www.gnu.org/licenses/>.
+    You should have received a copy of the GNU General
+   Public License
+    along with FastoNoSQL.  If not, see
+   <http://www.gnu.org/licenses/>.
 */
 
 #include "core/redis/db_connection.h"
@@ -26,50 +34,52 @@
 #include <netinet/tcp.h>
 #endif
 
-#include <limits.h>                     // for LONG_MIN
-#include <stdarg.h>                     // for va_end, va_list, va_start
-#include <stdint.h>                     // for uint64_t, uint16_t, int64_t
-#include <stdio.h>                      // for vsnprintf
-#include <stdlib.h>                     // for free, malloc, realloc, etc
-#include <string.h>                     // for strcasecmp, NULL, strcmp, etc
+#include <limits.h>  // for LONG_MIN
+#include <stdarg.h>  // for va_end, va_list, va_start
+#include <stdint.h>  // for uint64_t, uint16_t, int64_t
+#include <stdio.h>   // for vsnprintf
+#include <stdlib.h>  // for free, malloc, realloc, etc
+#include <string.h>  // for strcasecmp, NULL, strcmp, etc
 
-#include <memory>                       // for __shared_ptr
-#include <vector>
+#include <memory>  // for __shared_ptr
 #include <string>
+#include <vector>
 
 extern "C" {
-  #include "sds.h"
+#include "sds.h"
 }
 
 #include <hiredis/hiredis.h>
 
 #include "third-party/redis/src/help.h"
 
-#include "common/macros.h"       // for INVALID_DESCRIPTOR
-#include "common/convert2string.h"      // for ConvertFromString, etc
-#include "common/intrusive_ptr.h"       // for intrusive_ptr
-#include "common/log_levels.h"          // for LEVEL_LOG::L_INFO, etc
-#include "common/net/types.h"           // for HostAndPort, etc
-#include "common/sprintf.h"             // for MemSPrintf, SNPrintf
-#include "common/time.h"                // for current_mstime
-#include "common/types.h"               // for time64_t
-#include "common/utils.h"               // for c_strornull, usleep, etc
-#include "common/value.h"               // for ErrorValue, etc
+#include "common/convert2string.h"  // for ConvertFromString, etc
+#include "common/intrusive_ptr.h"   // for intrusive_ptr
+#include "common/log_levels.h"      // for LEVEL_LOG::L_INFO, etc
+#include "common/macros.h"          // for INVALID_DESCRIPTOR
+#include "common/net/types.h"       // for HostAndPort, etc
+#include "common/sprintf.h"         // for MemSPrintf, SNPrintf
+#include "common/time.h"            // for current_mstime
+#include "common/types.h"           // for time64_t
+#include "common/utils.h"           // for c_strornull, usleep, etc
+#include "common/value.h"           // for ErrorValue, etc
 
-#include "core/command.h"          // for createCommand
-#include "core/command_logger.h"        // for LOG_COMMAND
-#include "core/connection_types.h"      // for connectionTypes::REDIS
-#include "core/redis/cluster_infos.h"   // for makeDiscoveryClusterInfo
-#include "core/redis/command.h"         // for Command
+#include "core/command.h"                    // for createCommand
+#include "core/command_logger.h"             // for LOG_COMMAND
+#include "core/connection_types.h"           // for connectionTypes::REDIS
+#include "core/redis/cluster_infos.h"        // for makeDiscoveryClusterInfo
+#include "core/redis/command.h"              // for Command
 #include "core/redis/connection_settings.h"  // for ConnectionSettings
-#include "core/redis/database.h"        // for DataBaseInfo
-#include "core/redis/sentinel_info.h"   // for DiscoverySentinelInfo, etc
+#include "core/redis/database.h"             // for DataBaseInfo
+#include "core/redis/sentinel_info.h"        // for DiscoverySentinelInfo, etc
 
-#include "fasto/qt/logger.h"            // for LOG_MSG
+#include "fasto/qt/logger.h"  // for LOG_MSG
 
-#include "global/types.h"               // for Command
+#include "global/types.h"  // for Command
 
-#define HIREDIS_VERSION STRINGIZE(HIREDIS_MAJOR) "." STRINGIZE(HIREDIS_MINOR) "." STRINGIZE(HIREDIS_PATCH)
+#define HIREDIS_VERSION    \
+  STRINGIZE(HIREDIS_MAJOR) \
+  "." STRINGIZE(HIREDIS_MINOR) "." STRINGIZE(HIREDIS_PATCH)
 #define REDIS_CLI_KEEPALIVE_INTERVAL 15 /* seconds */
 #define CLI_HELP_COMMAND 1
 #define CLI_HELP_GROUP 2
@@ -78,15 +88,15 @@ extern "C" {
 
 #define GET_PASSWORD "CONFIG get requirepass"
 
-#define LATENCY_SAMPLE_RATE 10 /* milliseconds. */
+#define LATENCY_SAMPLE_RATE 10                 /* milliseconds. */
 #define LATENCY_HISTORY_DEFAULT_INTERVAL 15000 /* milliseconds. */
 
 #define RTYPE_STRING 0
-#define RTYPE_LIST   1
-#define RTYPE_SET    2
-#define RTYPE_HASH   3
-#define RTYPE_ZSET   4
-#define RTYPE_NONE   5
+#define RTYPE_LIST 1
+#define RTYPE_SET 2
+#define RTYPE_HASH 3
+#define RTYPE_ZSET 4
+#define RTYPE_NONE 5
 
 #define ANET_OK 0
 #define ANET_ERR -1
@@ -105,10 +115,12 @@ void anetSetError(char* err, const char* fmt, ...) {
   va_end(ap);
 }
 
-/* Set TCP keep alive option to detect dead peers. The interval option
- * is only used for Linux as we are using Linux-specific APIs to set
+/* Set TCP keep alive option to detect dead peers. The
+ * interval option
+ * is only used for Linux as we are using Linux-specific
+ * APIs to set
  * the probe send time, interval, and count. */
-int anetKeepAlive(char *err, int fd, int interval) {
+int anetKeepAlive(char* err, int fd, int interval) {
   int val = 1;
   const char* cval = reinterpret_cast<const char*>(&val);
   if (setsockopt(fd, SOL_SOCKET, SO_KEEPALIVE, cval, sizeof(val)) == -1) {
@@ -117,8 +129,10 @@ int anetKeepAlive(char *err, int fd, int interval) {
   }
 
 #ifdef __linux__
-  /* Default settings are more or less garbage, with the keepalive time
-   * set to 7200 by default on Linux. Modify settings to make the feature
+  /* Default settings are more or less garbage, with the
+   * keepalive time
+   * set to 7200 by default on Linux. Modify settings to
+   * make the feature
    * actually useful. */
 
   /* Send first probe after interval. */
@@ -128,17 +142,21 @@ int anetKeepAlive(char *err, int fd, int interval) {
     return ANET_ERR;
   }
 
-  /* Send next probes after the specified interval. Note that we set the
-   * delay as interval / 3, as we send three probes before detecting
+  /* Send next probes after the specified interval. Note
+   * that we set the
+   * delay as interval / 3, as we send three probes before
+   * detecting
    * an error (see the next setsockopt call). */
   val = interval / 3;
-  if (val == 0) val = 1;
+  if (val == 0)
+    val = 1;
   if (setsockopt(fd, IPPROTO_TCP, TCP_KEEPINTVL, &val, sizeof(val)) < 0) {
     anetSetError(err, "setsockopt TCP_KEEPINTVL: %s\n", strerror(errno));
     return ANET_ERR;
   }
 
-  /* Consider the socket in error state after three we send three ACK
+  /* Consider the socket in error state after three we send
+   * three ACK
    * probes without getting a reply. */
   val = 3;
   if (setsockopt(fd, IPPROTO_TCP, TCP_KEEPCNT, &val, sizeof(val)) < 0) {
@@ -152,17 +170,18 @@ int anetKeepAlive(char *err, int fd, int interval) {
   return ANET_OK;
 }
 
-typedef struct{
+typedef struct {
   int type;
   int argc;
-  sds *argv;
+  sds* argv;
   sds full;
 
-    /* Only used for help on commands */
-  struct commandHelp *org;
+  /* Only used for help on commands */
+  struct commandHelp* org;
 } helpEntry;
 
-const int helpEntriesLen = sizeof(commandHelp)/sizeof(struct commandHelp) + sizeof(commandGroups)/sizeof(char*);
+const int helpEntriesLen =
+    sizeof(commandHelp) / sizeof(struct commandHelp) + sizeof(commandGroups) / sizeof(char*);
 
 const struct RedisInit {
   helpEntry helpEntries[helpEntriesLen];
@@ -170,7 +189,7 @@ const struct RedisInit {
   RedisInit() {
     int pos = 0;
 
-    for (size_t i = 0; i < sizeof(commandGroups)/sizeof(char*); ++i) {
+    for (size_t i = 0; i < sizeof(commandGroups) / sizeof(char*); ++i) {
       helpEntry tmp;
 
       tmp.argc = 1;
@@ -182,7 +201,7 @@ const struct RedisInit {
       helpEntries[pos++] = tmp;
     }
 
-    for (size_t i = 0; i < sizeof(commandHelp)/sizeof(struct commandHelp); ++i) {
+    for (size_t i = 0; i < sizeof(commandHelp) / sizeof(struct commandHelp); ++i) {
       helpEntry tmp;
 
       tmp.argv = sdssplitargs(commandHelp[i].name, &tmp.argc);
@@ -194,31 +213,35 @@ const struct RedisInit {
   }
 } rInit;
 
-/* Return the specified INFO field from the INFO command output "info".
- * A new buffer is allocated for the result, that needs to be free'd.
+/* Return the specified INFO field from the INFO command
+ * output "info".
+ * A new buffer is allocated for the result, that needs to
+ * be free'd.
  * If the field is not found NULL is returned. */
 char* getInfoField(char* info, const char* field) {
-  char* p = strstr(info,field);
-  char* n1, *n2;
+  char* p = strstr(info, field);
+  char *n1, *n2;
   char* result;
 
-  if (!p) return NULL;
-  p += strlen(field)+1;
-  n1 = strchr(p,'\r');
-  n2 = strchr(p,',');
+  if (!p)
+    return NULL;
+  p += strlen(field) + 1;
+  n1 = strchr(p, '\r');
+  n2 = strchr(p, ',');
   if (n2 && n2 < n1) {
     n1 = n2;
   }
-  result = reinterpret_cast<char*>(malloc(sizeof(char)*(n1 - p) + 1));
-  memcpy(result,p,(n1-p));
-  result[n1-p] = '\0';
+  result = reinterpret_cast<char*>(malloc(sizeof(char) * (n1 - p) + 1));
+  memcpy(result, p, (n1 - p));
+  result[n1 - p] = '\0';
   return result;
 }
 
-/* Like the above function but automatically convert the result into
+/* Like the above function but automatically convert the
+ * result into
  * a long. On error (missing field) LONG_MIN is returned. */
 long getLongInfoField(char* info, const char* field) {
-  char* value = getInfoField(info,field);
+  char* value = getInfoField(info, field);
   if (!value) {
     return LONG_MIN;
   }
@@ -228,7 +251,8 @@ long getLongInfoField(char* info, const char* field) {
   return l;
 }
 
-/* Convert number of bytes into a human readable string of the form:
+/* Convert number of bytes into a human readable string of
+ * the form:
  * 100B, 2G, 100M, 4K, and so forth. */
 void bytesToHuman(char* s, size_t len, int64_t n) {
   double d;
@@ -242,14 +266,14 @@ void bytesToHuman(char* s, size_t len, int64_t n) {
     /* Bytes */
     common::SNPrintf(s, len, "%lluB", n);
     return;
-  } else if (n < (1024*1024)) {
+  } else if (n < (1024 * 1024)) {
     d = static_cast<double>(n / (1024));
     common::SNPrintf(s, len, "%.2fK", d);
-  } else if (n < (1024LL*1024*1024)) {
-    d = static_cast<double>(n / (1024*1024));
+  } else if (n < (1024LL * 1024 * 1024)) {
+    d = static_cast<double>(n / (1024 * 1024));
     common::SNPrintf(s, len, "%.2fM", d);
-  } else if (n < (1024LL*1024*1024*1024)) {
-    d = static_cast<double>(n / (1024LL*1024*1024));
+  } else if (n < (1024LL * 1024 * 1024 * 1024)) {
+    d = static_cast<double>(n / (1024LL * 1024 * 1024));
     common::SNPrintf(s, len, "%.2fG", d);
   }
 }
@@ -260,17 +284,12 @@ bool isPipeLineCommand(const char* command) {
     return false;
   }
 
-  bool skip = strcasecmp(command, "quit") == 0
-              || strcasecmp(command, "exit") == 0
-              || strcasecmp(command, "connect") == 0
-              || strcasecmp(command, "help") == 0
-              || strcasecmp(command, "?") == 0
-              || strcasecmp(command, "shutdown") == 0
-              || strcasecmp(command, "monitor") == 0
-              || strcasecmp(command, "subscribe") == 0
-              || strcasecmp(command, "psubscribe") == 0
-              || strcasecmp(command, "sync") == 0
-              || strcasecmp(command, "psync") == 0;
+  bool skip = strcasecmp(command, "quit") == 0 || strcasecmp(command, "exit") == 0 ||
+              strcasecmp(command, "connect") == 0 || strcasecmp(command, "help") == 0 ||
+              strcasecmp(command, "?") == 0 || strcasecmp(command, "shutdown") == 0 ||
+              strcasecmp(command, "monitor") == 0 || strcasecmp(command, "subscribe") == 0 ||
+              strcasecmp(command, "psubscribe") == 0 || strcasecmp(command, "sync") == 0 ||
+              strcasecmp(command, "psync") == 0;
 
   return !skip;
 }
@@ -280,8 +299,10 @@ bool isPipeLineCommand(const char* command) {
 namespace fastonosql {
 namespace core {
 
-template<>
-common::Error ConnectionAllocatorTraits<redis::NativeConnection, redis::RConfig>::connect(const redis::RConfig& config, redis::NativeConnection** hout) {
+template <>
+common::Error ConnectionAllocatorTraits<redis::NativeConnection, redis::RConfig>::connect(
+    const redis::RConfig& config,
+    redis::NativeConnection** hout) {
   redis::NativeConnection* context = nullptr;
   common::Error er = redis::createConnection(config, &context);
   if (er && er->isError()) {
@@ -292,8 +313,9 @@ common::Error ConnectionAllocatorTraits<redis::NativeConnection, redis::RConfig>
   anetKeepAlive(NULL, context->fd, REDIS_CLI_KEEPALIVE_INTERVAL);
   return common::Error();
 }
-template<>
-common::Error ConnectionAllocatorTraits<redis::NativeConnection, redis::RConfig>::disconnect(redis::NativeConnection** handle) {
+template <>
+common::Error ConnectionAllocatorTraits<redis::NativeConnection, redis::RConfig>::disconnect(
+    redis::NativeConnection** handle) {
   redis::NativeConnection* lhandle = *handle;
   if (lhandle) {
     redisFree(lhandle);
@@ -301,8 +323,9 @@ common::Error ConnectionAllocatorTraits<redis::NativeConnection, redis::RConfig>
   lhandle = nullptr;
   return common::Error();
 }
-template<>
-bool ConnectionAllocatorTraits<redis::NativeConnection, redis::RConfig>::isConnected(redis::NativeConnection* handle) {
+template <>
+bool ConnectionAllocatorTraits<redis::NativeConnection, redis::RConfig>::isConnected(
+    redis::NativeConnection* handle) {
   if (!handle) {
     return false;
   }
@@ -348,16 +371,18 @@ common::Error cliPrintContextError(redisContext* context) {
   return common::make_error_value(buff, common::ErrorValue::E_ERROR);
 }
 
-common::Error cliOutputCommandHelp(FastoObject* out, struct commandHelp* help,
-                                   int group, const std::string& delimiter) {
+common::Error cliOutputCommandHelp(FastoObject* out,
+                                   struct commandHelp* help,
+                                   int group,
+                                   const std::string& delimiter) {
   if (!out) {
     DNOTREACHED();
     return common::make_error_value("Invalid input argument(s)", common::ErrorValue::E_ERROR);
   }
 
-  std::string buff = common::MemSPrintf("name: %s %s\n  summary: %s\n  since: %s",
-                                        help->name, help->params, help->summary, help->since);
-  common::StringValue* val =common::Value::createStringValue(buff);
+  std::string buff = common::MemSPrintf("name: %s %s\n  summary: %s\n  since: %s", help->name,
+                                        help->params, help->summary, help->since);
+  common::StringValue* val = common::Value::createStringValue(buff);
   FastoObject* child = new FastoObject(out, val, delimiter);
   out->addChildren(child);
   if (group) {
@@ -376,11 +401,16 @@ common::Error cliOutputGenericHelp(FastoObject* out, const std::string& delimite
     return common::make_error_value("Invalid input argument(s)", common::ErrorValue::E_ERROR);
   }
 
-  common::StringValue* val = common::Value::createStringValue(PROJECT_NAME_TITLE " based on hiredis " HIREDIS_VERSION "\r\n"
-                                                              "Type: \"help @<group>\" to get a list of commands in <group>\r\n"
-                                                              "      \"help <command>\" for help on <command>\r\n"
-                                                              "      \"help <tab>\" to get a list of possible help topics\r\n"
-                                                              "      \"quit\" to exit");
+  common::StringValue* val = common::Value::createStringValue(
+      PROJECT_NAME_TITLE " based on hiredis " HIREDIS_VERSION
+                         "\r\n"
+                         "Type: \"help @<group>\" to get a list of "
+                         "commands in <group>\r\n"
+                         "      \"help <command>\" for help on "
+                         "<command>\r\n"
+                         "      \"help <tab>\" to get a list of possible "
+                         "help topics\r\n"
+                         "      \"quit\" to exit");
   FastoObject* child = new FastoObject(out, val, delimiter);
   out->addChildren(child);
 
@@ -401,9 +431,9 @@ common::Error cliOutputHelp(int argc, char** argv, FastoObject* out, const std::
   if (argc == 0) {
     return cliOutputGenericHelp(out, delimiter);
   } else if (argc > 0 && argv[0][0] == '@') {
-    len = sizeof(commandGroups)/sizeof(char*);
+    len = sizeof(commandGroups) / sizeof(char*);
     for (i = 0; i < len; i++) {
-      if (strcasecmp(argv[0]+1,commandGroups[i]) == 0) {
+      if (strcasecmp(argv[0] + 1, commandGroups[i]) == 0) {
         group = i;
         break;
       }
@@ -413,27 +443,29 @@ common::Error cliOutputHelp(int argc, char** argv, FastoObject* out, const std::
   DCHECK(argc > 0);
   for (i = 0; i < helpEntriesLen; i++) {
     entry = &rInit.helpEntries[i];
-    if (entry->type != CLI_HELP_COMMAND) continue;
+    if (entry->type != CLI_HELP_COMMAND)
+      continue;
 
     help = entry->org;
     if (group == -1) {
       /* Compare all arguments */
       if (argc == entry->argc) {
-          for (j = 0; j < argc; j++) {
-            if (strcasecmp(argv[j],entry->argv[j]) != 0) break;
+        for (j = 0; j < argc; j++) {
+          if (strcasecmp(argv[j], entry->argv[j]) != 0)
+            break;
+        }
+        if (j == argc) {
+          common::Error er = cliOutputCommandHelp(out, help, 1, delimiter);
+          if (er && er->isError()) {
+            return er;
           }
-          if (j == argc) {
-            common::Error er = cliOutputCommandHelp(out, help, 1, delimiter);
-            if (er && er->isError()) {
-              return er;
-            }
-          }
+        }
       }
     } else {
       if (group == help->group) {
         common::Error er = cliOutputCommandHelp(out, help, 0, delimiter);
         if (er && er->isError()) {
-            return er;
+          return er;
         }
       }
     }
@@ -546,13 +578,9 @@ common::Error sync(CommandHandler* handler, int argc, char** argv, FastoObject* 
   return red->slaveMode(out);
 }
 
-RConfig::RConfig(const Config& config, const SSHInfo& sinfo)
-  : Config(config), ssh_info(sinfo) {
-}
+RConfig::RConfig(const Config& config, const SSHInfo& sinfo) : Config(config), ssh_info(sinfo) {}
 
-RConfig::RConfig()
-  : Config(), ssh_info() {
-}
+RConfig::RConfig() : Config(), ssh_info() {}
 
 common::Error createConnection(const RConfig& config, NativeConnection** context) {
   if (!context) {
@@ -578,8 +606,8 @@ common::Error createConnection(const RConfig& config, NativeConnection** context
     const char* public_key = common::utils::c_strornull(sinfo.public_key);
     const char* private_key = common::utils::c_strornull(sinfo.private_key);
     const char* passphrase = common::utils::c_strornull(sinfo.passphrase);
-    lcontext = redisConnect(host, port, ssh_address, ssh_port, username, password,
-                           public_key, private_key, passphrase, curM);
+    lcontext = redisConnect(host, port, ssh_address, ssh_port, username, password, public_key,
+                            private_key, passphrase, curM);
   }
 
   if (!lcontext) {
@@ -588,7 +616,7 @@ common::Error createConnection(const RConfig& config, NativeConnection** context
       std::string host_str = common::ConvertToString(config.host);
       buff = common::MemSPrintf("Could not connect to Redis at %s : no context", host_str);
     } else {
-      buff = common::MemSPrintf( "Could not connect to Redis at %s : no context", config.hostsocket);
+      buff = common::MemSPrintf("Could not connect to Redis at %s : no context", config.hostsocket);
     }
     return common::make_error_value(buff, common::Value::E_ERROR);
   }
@@ -600,8 +628,8 @@ common::Error createConnection(const RConfig& config, NativeConnection** context
                                 lcontext->errstr);
     } else {
       std::string host_str = common::ConvertToString(config.host);
-      buff = common::MemSPrintf("Could not connect to Redis at %s : %s", host_str,
-                                lcontext->errstr);
+      buff =
+          common::MemSPrintf("Could not connect to Redis at %s : %s", host_str, lcontext->errstr);
     }
     redisFree(lcontext);
     return common::make_error_value(buff, common::Value::E_ERROR);
@@ -644,7 +672,7 @@ common::Error testConnection(ConnectionSettings* settings) {
 }
 
 common::Error discoveryClusterConnection(ConnectionSettings* settings,
-                                  std::vector<ServerDiscoveryClusterInfoSPtr>* infos) {
+                                         std::vector<ServerDiscoveryClusterInfoSPtr>* infos) {
   if (!settings || !infos) {
     return common::make_error_value("Invalid input argument(s)", common::ErrorValue::E_ERROR);
   }
@@ -705,7 +733,8 @@ common::Error discoverySentinelConnection(ConnectionSettings* settings,
   }
 
   /* Send the GET MASTERS command. */
-  redisReply* masters_reply = reinterpret_cast<redisReply*>(redisCommand(context, GET_SENTINEL_MASTERS));
+  redisReply* masters_reply =
+      reinterpret_cast<redisReply*>(redisCommand(context, GET_SENTINEL_MASTERS));
   if (!masters_reply) {
     redisFree(context);
     return common::make_error_value("I/O error", common::Value::E_ERROR);
@@ -723,7 +752,8 @@ common::Error discoverySentinelConnection(ConnectionSettings* settings,
     ServerDiscoverySentinelInfoSPtr sent(new DiscoverySentinelInfo(sinf));
     infos->push_back(sent);
     /* Send the GET SLAVES command. */
-    redisReply* reply = reinterpret_cast<redisReply*>(redisCommand(context, GET_SENTINEL_SLAVES_PATTERN_1ARGS_S, master_name));
+    redisReply* reply = reinterpret_cast<redisReply*>(
+        redisCommand(context, GET_SENTINEL_SLAVES_PATTERN_1ARGS_S, master_name));
     if (!reply) {
       freeReplyObject(masters_reply);
       redisFree(context);
@@ -758,8 +788,7 @@ common::Error discoverySentinelConnection(ConnectionSettings* settings,
 }
 
 DBConnection::DBConnection(IDBConnectionOwner* observer)
-  : base_class(), CommandHandler(redisCommands), isAuth_(false), observer_(observer) {
-}
+    : base_class(), CommandHandler(redisCommands), isAuth_(false), observer_(observer) {}
 
 const char* DBConnection::versionApi() {
   return HIREDIS_VERSION;
@@ -795,7 +824,8 @@ common::Error DBConnection::connect(const config_t& config) {
 
 /*------------------------------------------------------------------------------
  * Latency and latency history modes
- *--------------------------------------------------------------------------- */
+ *---------------------------------------------------------------------------
+ */
 
 common::Error DBConnection::latencyMode(FastoObject* out) {
   if (!isConnected()) {
@@ -817,9 +847,8 @@ common::Error DBConnection::latencyMode(FastoObject* out) {
 
   common::time64_t start;
   uint64_t min = 0, max = 0, tot = 0, count = 0;
-  uint64_t history_interval =
-          connection_.config_.interval ? connection_.config_.interval / 1000 :
-                            LATENCY_HISTORY_DEFAULT_INTERVAL;
+  uint64_t history_interval = connection_.config_.interval ? connection_.config_.interval / 1000
+                                                           : LATENCY_HISTORY_DEFAULT_INTERVAL;
   common::time64_t history_start = common::time::current_mstime();
 
   FastoObjectIPtr child;
@@ -828,7 +857,8 @@ common::Error DBConnection::latencyMode(FastoObject* out) {
   double avg;
   while (!isInterrupted()) {
     start = common::time::current_mstime();
-    redisReply *reply = reinterpret_cast<redisReply*>(redisCommand(connection_.handle_, command.c_str()));
+    redisReply* reply =
+        reinterpret_cast<redisReply*>(redisCommand(connection_.handle_, command.c_str()));
     if (!reply) {
       return common::make_error_value("I/O error", common::Value::E_ERROR);
     }
@@ -853,8 +883,8 @@ common::Error DBConnection::latencyMode(FastoObject* out) {
     }
 
     std::string avg_str = common::ConvertToString(avg, 2);
-    std::string buff = common::MemSPrintf("min: %llu, max: %llu, avg: %s (%llu samples)",
-                                          min, max, avg_str, count);
+    std::string buff = common::MemSPrintf("min: %llu, max: %llu, avg: %s (%llu samples)", min, max,
+                                          avg_str, count);
     common::Value* val = common::Value::createStringValue(buff);
 
     if (!child) {
@@ -880,18 +910,23 @@ common::Error DBConnection::latencyMode(FastoObject* out) {
 
 /*------------------------------------------------------------------------------
  * Slave mode
- *--------------------------------------------------------------------------- */
+ *---------------------------------------------------------------------------
+ */
 
-/* Sends SYNC and reads the number of bytes in the payload. Used both by
+/* Sends SYNC and reads the number of bytes in the payload.
+ * Used both by
  * slaveMode() and getRDB(). */
 common::Error DBConnection::sendSync(unsigned long long* payload) {
   if (!payload) {
     DNOTREACHED();
     return common::make_error_value("Invalid input argument(s)", common::ErrorValue::E_ERROR);
   }
-  /* To start we need to send the SYNC command and return the payload.
-   * The hiredis client lib does not understand this part of the protocol
-   * and we don't want to mess with its buffers, so everything is performed
+  /* To start we need to send the SYNC command and return
+   * the payload.
+   * The hiredis client lib does not understand this part of
+   * the protocol
+   * and we don't want to mess with its buffers, so
+   * everything is performed
    * using direct low-level I/O. */
   char buf[4096], *p;
 
@@ -901,7 +936,8 @@ common::Error DBConnection::sendSync(unsigned long long* payload) {
     return common::make_error_value("Error writing to master", common::ErrorValue::E_ERROR);
   }
 
-  /* Read $<payload>\r\n, making sure to read just up to "\n" */
+  /* Read $<payload>\r\n, making sure to read just up to
+   * "\n" */
   p = buf;
   while (1) {
     ssize_t nread = 0;
@@ -915,8 +951,10 @@ common::Error DBConnection::sendSync(unsigned long long* payload) {
       continue;
     }
 
-    if (*p == '\n' && p != buf) break;
-    if (*p != '\n') p++;
+    if (*p == '\n' && p != buf)
+      break;
+    if (*p != '\n')
+      p++;
   }
   *p = '\0';
   if (buf[0] == '-') {
@@ -956,8 +994,8 @@ common::Error DBConnection::slaveMode(FastoObject* out) {
   /* Discard the payload. */
   while (payload) {
     ssize_t nread = 0;
-    int res = redisReadToBuffer(connection_.handle_, buf, (payload > sizeof(buf)) ? sizeof(buf) :
-                                                                         payload, &nread);
+    int res = redisReadToBuffer(connection_.handle_, buf,
+                                (payload > sizeof(buf)) ? sizeof(buf) : payload, &nread);
     if (res == REDIS_ERR) {
       return common::make_error_value("Error reading RDB payload while SYNCing",
                                       common::ErrorValue::E_ERROR);
@@ -965,7 +1003,8 @@ common::Error DBConnection::slaveMode(FastoObject* out) {
     payload -= nread;
   }
 
-  /* Now we can use hiredis to read the incoming protocol. */
+  /* Now we can use hiredis to read the incoming protocol.
+   */
   while (!isInterrupted()) {
     err = cliReadReply(cmd.get());
     if (err && err->isError()) {
@@ -978,9 +1017,11 @@ common::Error DBConnection::slaveMode(FastoObject* out) {
 
 /*------------------------------------------------------------------------------
  * RDB transfer mode
- *--------------------------------------------------------------------------- */
+ *---------------------------------------------------------------------------
+ */
 
-/* This function implements --rdb, so it uses the replication protocol in order
+/* This function implements --rdb, so it uses the
+ * replication protocol in order
  * to fetch the RDB file from a remote server. */
 common::Error DBConnection::getRDB(FastoObject* out) {
   if (!isConnected()) {
@@ -1016,8 +1057,8 @@ common::Error DBConnection::getRDB(FastoObject* out) {
   } else {
     fd = open(connection_.config_.rdb_filename.c_str(), O_CREAT | O_WRONLY, 0644);
     if (fd == INVALID_DESCRIPTOR) {
-      std::string bufeEr = common::MemSPrintf("Error opening '%s': %s", connection_.config_.rdb_filename,
-                                              strerror(errno));
+      std::string bufeEr = common::MemSPrintf("Error opening '%s': %s",
+                                              connection_.config_.rdb_filename, strerror(errno));
       return common::make_error_value(bufeEr, common::ErrorValue::E_ERROR);
     }
   }
@@ -1027,8 +1068,8 @@ common::Error DBConnection::getRDB(FastoObject* out) {
   while (payload) {
     ssize_t nread = 0, nwritten = 0;
 
-    int res = redisReadToBuffer(connection_.handle_, buf,(payload > sizeof(buf)) ? sizeof(buf) :
-                                                                        payload, &nread);
+    int res = redisReadToBuffer(connection_.handle_, buf,
+                                (payload > sizeof(buf)) ? sizeof(buf) : payload, &nread);
     if (res == REDIS_ERR) {
       return common::make_error_value("Error reading RDB payload while SYNCing",
                                       common::ErrorValue::E_ERROR);
@@ -1053,7 +1094,7 @@ common::Error DBConnection::getRDB(FastoObject* out) {
       return common::make_error_value(bufeEr, common::ErrorValue::E_ERROR);
     }
 
-      payload -= nread;
+    payload -= nread;
   }
 
   if (fd != INVALID_DESCRIPTOR) {
@@ -1066,15 +1107,17 @@ common::Error DBConnection::getRDB(FastoObject* out) {
 
 /*------------------------------------------------------------------------------
  * Find big keys
- *--------------------------------------------------------------------------- */
+ *---------------------------------------------------------------------------
+ */
 
-common::Error DBConnection::sendScan(unsigned long long* it, redisReply** out){
+common::Error DBConnection::sendScan(unsigned long long* it, redisReply** out) {
   if (!out) {
     DNOTREACHED();
     return common::make_error_value("Invalid input argument(s)", common::ErrorValue::E_ERROR);
   }
 
-  redisReply* reply = reinterpret_cast<redisReply*>(redisCommand(connection_.handle_, "SCAN %llu", *it));
+  redisReply* reply =
+      reinterpret_cast<redisReply*>(redisCommand(connection_.handle_, "SCAN %llu", *it));
 
   /* Handle any error conditions */
   if (!reply) {
@@ -1134,9 +1177,10 @@ common::Error DBConnection::getKeyTypes(redisReply* keys, int* types) {
   redisReply* reply = NULL;
   /* Retrieve types */
   for (size_t i = 0; i < keys->elements; i++) {
-    if (redisGetReply(connection_.handle_, reinterpret_cast<void**>(&reply))!=REDIS_OK) {
-      std::string buff = common::MemSPrintf("Error getting type for key '%s' (%d: %s)",
-                                            keys->element[i]->str, connection_.handle_->err, connection_.handle_->errstr);
+    if (redisGetReply(connection_.handle_, reinterpret_cast<void**>(&reply)) != REDIS_OK) {
+      std::string buff =
+          common::MemSPrintf("Error getting type for key '%s' (%d: %s)", keys->element[i]->str,
+                             connection_.handle_->err, connection_.handle_->errstr);
       return common::make_error_value(buff, common::Value::E_ERROR);
     } else if (reply->type != REDIS_REPLY_STATUS) {
       std::string buff = common::MemSPrintf("Invalid reply type (%d) for TYPE on key '%s'!",
@@ -1180,9 +1224,10 @@ common::Error DBConnection::getKeySizes(redisReply* keys, int* types, unsigned l
 
     redisReply* reply;
     /* Retreive size */
-    if (redisGetReply(connection_.handle_, reinterpret_cast<void**>(&reply))!=REDIS_OK) {
-      std::string buff = common::MemSPrintf("Error getting size for key '%s' (%d: %s)",
-                                            keys->element[i]->str, connection_.handle_->err, connection_.handle_->errstr);
+    if (redisGetReply(connection_.handle_, reinterpret_cast<void**>(&reply)) != REDIS_OK) {
+      std::string buff =
+          common::MemSPrintf("Error getting size for key '%s' (%d: %s)", keys->element[i]->str,
+                             connection_.handle_->err, connection_.handle_->errstr);
       return common::make_error_value(buff, common::Value::E_ERROR);
     } else if (reply->type != REDIS_REPLY_INTEGER) {
       /* Theoretically the key could have been removed and
@@ -1212,7 +1257,8 @@ common::Error DBConnection::findBigKeys(FastoObject* out) {
     return common::make_error_value("Invalid input argument(s)", common::ErrorValue::E_ERROR);
   }
 
-  FastoObjectCommandIPtr cmd = CreateCommand<Command>(out, FIND_BIG_KEYS_REQUEST, common::Value::C_INNER);
+  FastoObjectCommandIPtr cmd =
+      CreateCommand<Command>(out, FIND_BIG_KEYS_REQUEST, common::Value::C_INNER);
   if (!cmd) {
     DNOTREACHED();
     return common::make_error_value("Invalid createCommand input argument",
@@ -1220,12 +1266,12 @@ common::Error DBConnection::findBigKeys(FastoObject* out) {
   }
 
   unsigned long long biggest[5] = {0}, counts[5] = {0}, totalsize[5] = {0};
-  unsigned long long sampled = 0, totlen=0, *sizes = NULL, it = 0;
+  unsigned long long sampled = 0, totlen = 0, *sizes = NULL, it = 0;
   size_t total_keys = 0;
   sds maxkeys[5] = {0};
-  const char* typeName[] = {"string","list","set","hash","zset"};
-  const char* typeunit[] = {"bytes","items","members","fields","members"};
-  redisReply* reply, *keys;
+  const char* typeName[] = {"string", "list", "set", "hash", "zset"};
+  const char* typeunit[] = {"bytes", "items", "members", "fields", "members"};
+  redisReply *reply, *keys;
   unsigned int arrsize = 0;
   int type, *types = NULL;
 
@@ -1236,18 +1282,25 @@ common::Error DBConnection::findBigKeys(FastoObject* out) {
   }
 
   /* Status message */
-  LOG_MSG("# Scanning the entire keyspace to find biggest keys as well as",
-          common::logging::L_INFO, true);
-  LOG_MSG("# average sizes per key type.  You can use -i 0.1 to sleep 0.1 sec",
-          common::logging::L_INFO, true);
+  LOG_MSG(
+      "# Scanning the entire keyspace to find biggest keys "
+      "as well as",
+      common::logging::L_INFO, true);
+  LOG_MSG(
+      "# average sizes per key type.  You can use -i 0.1 "
+      "to sleep 0.1 sec",
+      common::logging::L_INFO, true);
   LOG_MSG("# per 100 SCAN commands (not usually needed).", common::logging::L_INFO, true);
 
-  /* New up sds strings to keep track of overall biggest per type */
+  /* New up sds strings to keep track of overall biggest per
+   * type */
   for (int i = 0; i < RTYPE_NONE; i++) {
     maxkeys[i] = sdsempty();
     if (!maxkeys[i]) {
-      return common::make_error_value("Failed to allocate memory for largest key names!",
-                                      common::Value::E_ERROR);
+      return common::make_error_value(
+          "Failed to allocate memory for largest key "
+          "names!",
+          common::Value::E_ERROR);
     }
   }
 
@@ -1266,14 +1319,15 @@ common::Error DBConnection::findBigKeys(FastoObject* out) {
 
     /* Reallocate our type and size array if we need to */
     if (keys->elements > arrsize) {
-      int* ltypes = reinterpret_cast<int*>(realloc(types, sizeof(int)*keys->elements));
+      int* ltypes = reinterpret_cast<int*>(realloc(types, sizeof(int) * keys->elements));
       if (!ltypes) {
         free(types);
         return common::make_error_value("Failed to allocate storage for keys!",
                                         common::Value::E_ERROR);
       }
       types = ltypes;
-      unsigned long long* lsizes = reinterpret_cast<unsigned long long*>(realloc(sizes, sizeof(unsigned long long)*keys->elements));
+      unsigned long long* lsizes = reinterpret_cast<unsigned long long*>(
+          realloc(sizes, sizeof(unsigned long long) * keys->elements));
       if (!lsizes) {
         free(sizes);
         return common::make_error_value("Failed to allocate storage for keys!",
@@ -1305,10 +1359,11 @@ common::Error DBConnection::findBigKeys(FastoObject* out) {
       totlen += keys->element[i]->len;
       sampled++;
 
-      if (biggest[type]<sizes[i]) {
-        std::string buff = common::MemSPrintf("[%05.2f%%] Biggest %-6s found so far '%s' with %llu %s",
-                                              pct, typeName[type], keys->element[i]->str,
-                                              sizes[i], typeunit[type]);
+      if (biggest[type] < sizes[i]) {
+        std::string buff = common::MemSPrintf(
+            "[%05.2f%%] Biggest %-6s found so far '%s' "
+            "with %llu %s",
+            pct, typeName[type], keys->element[i]->str, sizes[i], typeunit[type]);
         LOG_MSG(buff, common::logging::L_INFO, true);
 
         /* Keep track of biggest key name for this type */
@@ -1324,7 +1379,7 @@ common::Error DBConnection::findBigKeys(FastoObject* out) {
     }
 
     /* Sleep if we've been directed to do so */
-    if (sampled && (sampled %100) == 0 && connection_.config_.interval) {
+    if (sampled && (sampled % 100) == 0 && connection_.config_.interval) {
       common::utils::usleep(connection_.config_.interval);
     }
 
@@ -1342,13 +1397,14 @@ common::Error DBConnection::findBigKeys(FastoObject* out) {
                             totlen ? static_cast<double>(totlen / sampled) : 0);
   LOG_MSG(buff, common::logging::L_INFO, true);
 
-  /* Output the biggest keys we found, for types we did find */
+  /* Output the biggest keys we found, for types we did find
+   */
   for (int i = 0; i < RTYPE_NONE; i++) {
-    if (sdslen(maxkeys[i])>0) {
+    if (sdslen(maxkeys[i]) > 0) {
       memset(&buff, 0, sizeof(buff));
       buff = common::MemSPrintf("Biggest %6s found '%s' has %llu %s", typeName[i], maxkeys[i],
                                 biggest[i], typeunit[i]);
-      common::StringValue *val = common::Value::createStringValue(buff);
+      common::StringValue* val = common::Value::createStringValue(buff);
       FastoObjectIPtr obj = make_fasto_object<FastoObject>(cmd.get(), val, delimiter());
       cmd->addChildren(obj);
     }
@@ -1356,11 +1412,13 @@ common::Error DBConnection::findBigKeys(FastoObject* out) {
 
   for (int i = 0; i < RTYPE_NONE; i++) {
     memset(&buff, 0, sizeof(buff));
-    buff = common::MemSPrintf("%llu %ss with %llu %s (%05.2f%% of keys, avg size %.2f)",
-                              counts[i], typeName[i], totalsize[i], typeunit[i],
-                              sampled ? 100 * static_cast<double>(counts[i] / sampled) : 0,
-                              counts[i] ? static_cast<double>(totalsize[i] / counts[i]) : 0);
-    common::StringValue *val = common::Value::createStringValue(buff);
+    buff = common::MemSPrintf(
+        "%llu %ss with %llu %s (%05.2f%% of keys, avg size "
+        "%.2f)",
+        counts[i], typeName[i], totalsize[i], typeunit[i],
+        sampled ? 100 * static_cast<double>(counts[i] / sampled) : 0,
+        counts[i] ? static_cast<double>(totalsize[i] / counts[i]) : 0);
+    common::StringValue* val = common::Value::createStringValue(buff);
     FastoObjectIPtr obj = make_fasto_object<FastoObject>(cmd.get(), val, delimiter());
     cmd->addChildren(obj);
   }
@@ -1376,7 +1434,8 @@ common::Error DBConnection::findBigKeys(FastoObject* out) {
 
 /*------------------------------------------------------------------------------
  * Stats mode
- *--------------------------------------------------------------------------- */
+ *---------------------------------------------------------------------------
+ */
 
 common::Error DBConnection::statMode(FastoObject* out) {
   if (!isConnected()) {
@@ -1407,7 +1466,8 @@ common::Error DBConnection::statMode(FastoObject* out) {
     redisReply* reply = NULL;
     while (!reply) {
       reply = reinterpret_cast<redisReply*>(redisCommand(connection_.handle_, command.c_str()));
-      if (connection_.handle_->err && !(connection_.handle_->err & (REDIS_ERR_IO | REDIS_ERR_EOF))) {
+      if (connection_.handle_->err &&
+          !(connection_.handle_->err & (REDIS_ERR_IO | REDIS_ERR_EOF))) {
         std::string buff = common::MemSPrintf("ERROR: %s", connection_.handle_->errstr);
         return common::make_error_value(buff, common::ErrorValue::E_ERROR);
       }
@@ -1448,38 +1508,39 @@ common::Error DBConnection::statMode(FastoObject* out) {
 
     /* Blocked (BLPOPPING) Clients */
     aux = getLongInfoField(reply->str, "blocked_clients");
-    common::SNPrintf(buf, sizeof(buf), " blocked_clients: %ld",aux);
+    common::SNPrintf(buf, sizeof(buf), " blocked_clients: %ld", aux);
     result += buf;
 
     /* Requets */
     aux = getLongInfoField(reply->str, "total_commands_processed");
     common::SNPrintf(buf, sizeof(buf), " total_commands_processed: %ld (+%ld)", aux,
-                     requests == 0 ? 0 : aux-requests);
+                     requests == 0 ? 0 : aux - requests);
     result += buf;
     requests = aux;
 
     /* Connections */
     aux = getLongInfoField(reply->str, "total_connections_received");
-    common::SNPrintf(buf, sizeof(buf), " total_connections_received: %ld",aux);
+    common::SNPrintf(buf, sizeof(buf), " total_connections_received: %ld", aux);
     result += buf;
 
     /* Children */
     aux = getLongInfoField(reply->str, "bgsave_in_progress");
     aux |= getLongInfoField(reply->str, "aof_rewrite_in_progress") << 1;
-    switch(aux) {
-    case 0: break;
-    case 1:
-      result += " SAVE";
-      break;
-    case 2:
-      result += " AOF";
-      break;
-    case 3:
-      result += " SAVE+AOF";
-      break;
+    switch (aux) {
+      case 0:
+        break;
+      case 1:
+        result += " SAVE";
+        break;
+      case 2:
+        result += " AOF";
+        break;
+      case 3:
+        result += " SAVE+AOF";
+        break;
     }
 
-    common::StringValue *val = common::Value::createStringValue(result);
+    common::StringValue* val = common::Value::createStringValue(result);
     FastoObjectIPtr obj = make_fasto_object<FastoObject>(cmd.get(), val, delimiter());
     cmd->addChildren(obj);
 
@@ -1493,7 +1554,8 @@ common::Error DBConnection::statMode(FastoObject* out) {
 
 /*------------------------------------------------------------------------------
  * Scan mode
- *--------------------------------------------------------------------------- */
+ *---------------------------------------------------------------------------
+ */
 
 common::Error DBConnection::scanMode(FastoObject* out) {
   if (!isConnected()) {
@@ -1506,7 +1568,8 @@ common::Error DBConnection::scanMode(FastoObject* out) {
     return common::make_error_value("Invalid input argument(s)", common::ErrorValue::E_ERROR);
   }
 
-  FastoObjectCommandIPtr cmd = CreateCommand<Command>(out, SCAN_MODE_REQUEST, common::Value::C_INNER);
+  FastoObjectCommandIPtr cmd =
+      CreateCommand<Command>(out, SCAN_MODE_REQUEST, common::Value::C_INNER);
   if (!cmd) {
     DNOTREACHED();
     return common::make_error_value("Invalid createCommand input argument",
@@ -1519,7 +1582,8 @@ common::Error DBConnection::scanMode(FastoObject* out) {
 
   do {
     if (pattern) {
-      reply = reinterpret_cast<redisReply*>(redisCommand(connection_.handle_, "SCAN %llu MATCH %s", cur, pattern));
+      reply = reinterpret_cast<redisReply*>(
+          redisCommand(connection_.handle_, "SCAN %llu MATCH %s", cur, pattern));
     } else {
       reply = reinterpret_cast<redisReply*>(redisCommand(connection_.handle_, "SCAN %llu", cur));
     }
@@ -1529,9 +1593,10 @@ common::Error DBConnection::scanMode(FastoObject* out) {
       std::string buff = common::MemSPrintf("ERROR: %s", reply->str);
       return common::make_error_value(buff, common::ErrorValue::E_ERROR);
     } else {
-      cur = strtoull(reply->element[0]->str,NULL,10);
+      cur = strtoull(reply->element[0]->str, NULL, 10);
       for (size_t j = 0; j < reply->element[1]->elements; j++) {
-        common::StringValue* val = common::Value::createStringValue(reply->element[1]->element[j]->str);
+        common::StringValue* val =
+            common::Value::createStringValue(reply->element[1]->element[j]->str);
         FastoObjectIPtr obj = make_fasto_object<FastoObject>(cmd.get(), val, delimiter());
         cmd->addChildren(obj);
       }
@@ -1548,7 +1613,8 @@ common::Error DBConnection::select(int num, IDataBaseInfo** info) {
     return common::make_error_value("Not connected", common::Value::E_ERROR);
   }
 
-  redisReply* reply = reinterpret_cast<redisReply*>(redisCommand(connection_.handle_, "SELECT %d", num));
+  redisReply* reply =
+      reinterpret_cast<redisReply*>(redisCommand(connection_.handle_, "SELECT %d", num));
   if (!reply) {
     return cliPrintContextError(connection_.handle_);
   }
@@ -1576,48 +1642,48 @@ common::Error DBConnection::cliFormatReplyRaw(FastoObjectArray* ar, redisReply* 
   }
 
   switch (r->type) {
-  case REDIS_REPLY_NIL: {
-    common::Value* val = common::Value::createNullValue();
-    ar->append(val);
-    break;
-  }
-  case REDIS_REPLY_ERROR: {
-    std::string str(r->str, r->len);
-    common::ErrorValue* val = common::Value::createErrorValue(str, common::ErrorValue::E_NONE,
-                                                              common::logging::L_WARNING);
-    ar->append(val);
-    break;
-  }
-  case REDIS_REPLY_STATUS:
-  case REDIS_REPLY_STRING: {
-    common::StringValue* val = common::Value::createStringValue(std::string(r->str, r->len));
-    ar->append(val);
-    break;
-  }
-  case REDIS_REPLY_INTEGER: {
-    common::FundamentalValue* val = common::Value::createIntegerValue(r->integer);
-    ar->append(val);
-    break;
-  }
-  case REDIS_REPLY_ARRAY: {
-    common::ArrayValue* arv = common::Value::createArrayValue();
-    FastoObjectArray* child = new FastoObjectArray(ar, arv, delimiter());
-    ar->addChildren(child);
-
-    for (size_t i = 0; i < r->elements; ++i) {
-      common::Error er = cliFormatReplyRaw(child, r->element[i]);
-      if (er && er->isError()) {
-        return er;
-      }
+    case REDIS_REPLY_NIL: {
+      common::Value* val = common::Value::createNullValue();
+      ar->append(val);
+      break;
     }
-    break;
-  }
-  default: {
-    common::ErrorValue* val = common::Value::createErrorValue(common::MemSPrintf("Unknown reply type: %d", r->type),
-                                                              common::ErrorValue::E_NONE,
-                                                              common::logging::L_WARNING);
-    ar->append(val);
-  }
+    case REDIS_REPLY_ERROR: {
+      std::string str(r->str, r->len);
+      common::ErrorValue* val = common::Value::createErrorValue(str, common::ErrorValue::E_NONE,
+                                                                common::logging::L_WARNING);
+      ar->append(val);
+      break;
+    }
+    case REDIS_REPLY_STATUS:
+    case REDIS_REPLY_STRING: {
+      common::StringValue* val = common::Value::createStringValue(std::string(r->str, r->len));
+      ar->append(val);
+      break;
+    }
+    case REDIS_REPLY_INTEGER: {
+      common::FundamentalValue* val = common::Value::createIntegerValue(r->integer);
+      ar->append(val);
+      break;
+    }
+    case REDIS_REPLY_ARRAY: {
+      common::ArrayValue* arv = common::Value::createArrayValue();
+      FastoObjectArray* child = new FastoObjectArray(ar, arv, delimiter());
+      ar->addChildren(child);
+
+      for (size_t i = 0; i < r->elements; ++i) {
+        common::Error er = cliFormatReplyRaw(child, r->element[i]);
+        if (er && er->isError()) {
+          return er;
+        }
+      }
+      break;
+    }
+    default: {
+      common::ErrorValue* val =
+          common::Value::createErrorValue(common::MemSPrintf("Unknown reply type: %d", r->type),
+                                          common::ErrorValue::E_NONE, common::logging::L_WARNING);
+      ar->append(val);
+    }
   }
 
   return common::Error();
@@ -1631,49 +1697,51 @@ common::Error DBConnection::cliFormatReplyRaw(FastoObject* out, redisReply* r) {
 
   FastoObject* obj = nullptr;
   switch (r->type) {
-  case REDIS_REPLY_NIL: {
-    common::Value* val = common::Value::createNullValue();
-    obj = new FastoObject(out, val, delimiter());
-    out->addChildren(obj);
-    break;
-  }
-  case REDIS_REPLY_ERROR: {
-    if (common::strcasestr(r->str, "NOAUTH")) { //"NOAUTH Authentication required."
-      isAuth_ = false;
+    case REDIS_REPLY_NIL: {
+      common::Value* val = common::Value::createNullValue();
+      obj = new FastoObject(out, val, delimiter());
+      out->addChildren(obj);
+      break;
     }
-    std::string str(r->str, r->len);
-    return common::make_error_value(str, common::ErrorValue::E_ERROR);
-  }
-  case REDIS_REPLY_STATUS:
-  case REDIS_REPLY_STRING: {
-    std::string str(r->str, r->len);
-    common::StringValue* val = common::Value::createStringValue(str);
-    obj = new FastoObject(out, val, delimiter());
-    out->addChildren(obj);
-    break;
-  }
-  case REDIS_REPLY_INTEGER: {
-    common::FundamentalValue* val = common::Value::createIntegerValue(r->integer);
-    obj = new FastoObject(out, val, delimiter());
-    out->addChildren(obj);
-    break;
-  }
-  case REDIS_REPLY_ARRAY: {
-    common::ArrayValue* arv = common::Value::createArrayValue();
-    FastoObjectArray* child = new FastoObjectArray(out, arv, delimiter());
-    out->addChildren(child);
-
-    for (size_t i = 0; i < r->elements; ++i) {
-      common::Error er = cliFormatReplyRaw(child, r->element[i]);
-      if (er && er->isError()) {
-        return er;
+    case REDIS_REPLY_ERROR: {
+      if (common::strcasestr(r->str, "NOAUTH")) {  //"NOAUTH Authentication
+                                                   // required."
+        isAuth_ = false;
       }
+      std::string str(r->str, r->len);
+      return common::make_error_value(str, common::ErrorValue::E_ERROR);
     }
-    break;
-  }
-  default: {
-    return common::make_error_value(common::MemSPrintf("Unknown reply type: %d", r->type), common::ErrorValue::E_ERROR);
-  }
+    case REDIS_REPLY_STATUS:
+    case REDIS_REPLY_STRING: {
+      std::string str(r->str, r->len);
+      common::StringValue* val = common::Value::createStringValue(str);
+      obj = new FastoObject(out, val, delimiter());
+      out->addChildren(obj);
+      break;
+    }
+    case REDIS_REPLY_INTEGER: {
+      common::FundamentalValue* val = common::Value::createIntegerValue(r->integer);
+      obj = new FastoObject(out, val, delimiter());
+      out->addChildren(obj);
+      break;
+    }
+    case REDIS_REPLY_ARRAY: {
+      common::ArrayValue* arv = common::Value::createArrayValue();
+      FastoObjectArray* child = new FastoObjectArray(out, arv, delimiter());
+      out->addChildren(child);
+
+      for (size_t i = 0; i < r->elements; ++i) {
+        common::Error er = cliFormatReplyRaw(child, r->element[i]);
+        if (er && er->isError()) {
+          return er;
+        }
+      }
+      break;
+    }
+    default: {
+      return common::make_error_value(common::MemSPrintf("Unknown reply type: %d", r->type),
+                                      common::ErrorValue::E_ERROR);
+    }
   }
 
   return common::Error();
@@ -1685,7 +1753,7 @@ common::Error DBConnection::cliReadReply(FastoObject* out) {
     return common::make_error_value("Invalid input argument(s)", common::ErrorValue::E_ERROR);
   }
 
-  void*_reply = NULL;
+  void* _reply = NULL;
   if (redisGetReply(connection_.handle_, &_reply) != REDIS_OK) {
     /* Filter cases where we should reconnect */
     if (connection_.handle_->err == REDIS_ERR_IO && errno == ECONNRESET) {
@@ -1702,19 +1770,21 @@ common::Error DBConnection::cliReadReply(FastoObject* out) {
   connection_.config_.last_cmd_type = reply->type;
 
   if (connection_.config_.cluster_mode && reply->type == REDIS_REPLY_ERROR &&
-    (!strncmp(reply->str, "MOVED", 5) || !strcmp(reply->str, "ASK"))) {
-    char* p = reply->str, *s;
+      (!strncmp(reply->str, "MOVED", 5) || !strcmp(reply->str, "ASK"))) {
+    char *p = reply->str, *s;
     int slot;
 
-    s = strchr(p, ' ');      /* MOVED[S]3999 127.0.0.1:6381 */
-    p = strchr(s + 1, ' ');    /* MOVED[S]3999[P]127.0.0.1:6381 */
+    s = strchr(p, ' ');     /* MOVED[S]3999 127.0.0.1:6381 */
+    p = strchr(s + 1, ' '); /* MOVED[S]3999[P]127.0.0.1:6381 */
     *p = '\0';
     slot = common::ConvertFromString<int>(s + 1);
-    s = strchr(p + 1, ':');    /* MOVED 3999[P]127.0.0.1[S]6381 */
+    s = strchr(p + 1, ':'); /* MOVED 3999[P]127.0.0.1[S]6381 */
     *s = '\0';
-    connection_.config_.host = common::net::HostAndPort(p + 1, common::ConvertFromString<uint16_t>(s + 1));
+    connection_.config_.host =
+        common::net::HostAndPort(p + 1, common::ConvertFromString<uint16_t>(s + 1));
     std::string host_str = common::ConvertToString(connection_.config_.host);
-    std::string redir = common::MemSPrintf("-> Redirected to slot [%d] located at %s", slot, host_str);
+    std::string redir =
+        common::MemSPrintf("-> Redirected to slot [%d] located at %s", slot, host_str);
     common::StringValue* val = common::Value::createStringValue(redir);
     FastoObject* child = new FastoObject(out, val, delimiter());
     out->addChildren(child);
@@ -1739,7 +1809,7 @@ common::Error DBConnection::executeAsPipeline(const std::vector<FastoObjectComma
     return common::make_error_value("Invalid input command", common::ErrorValue::E_ERROR);
   }
 
-  //start piplene mode
+  // start piplene mode
   std::vector<FastoObjectCommandIPtr> valid_cmds;
   for (size_t i = 0; i < cmds.size(); ++i) {
     FastoObjectCommandIPtr cmd = cmds[i];
@@ -1771,7 +1841,7 @@ common::Error DBConnection::executeAsPipeline(const std::vector<FastoObjectComma
       return er;
     }
   }
-  //end piplene
+  // end piplene
 
   return common::Error();
 }
@@ -1784,7 +1854,7 @@ common::Error DBConnection::commonExec(int argc, char** argv, FastoObject* out) 
 
   size_t* argvlen = reinterpret_cast<size_t*>(malloc(argc * sizeof(size_t)));
   for (int j = 0; j < argc; j++) {
-    size_t len =  sdslen(argv[j]);
+    size_t len = sdslen(argv[j]);
     argvlen[j] = len;
   }
 
@@ -1828,7 +1898,7 @@ common::Error DBConnection::monitor(int argc, char** argv, FastoObject* out) {
 
   size_t* argvlen = reinterpret_cast<size_t*>(malloc(argc * sizeof(size_t)));
   for (int j = 0; j < argc; j++) {
-    size_t len =  sdslen(argv[j]);
+    size_t len = sdslen(argv[j]);
     argvlen[j] = len;
   }
 
@@ -1861,9 +1931,9 @@ common::Error DBConnection::subscribe(int argc, char** argv, FastoObject* out) {
 
   size_t* argvlen = reinterpret_cast<size_t*>(malloc(argc * sizeof(size_t)));
   for (int j = 0; j < argc; j++) {
-    size_t len =  sdslen(argv[j]);
+    size_t len = sdslen(argv[j]);
     argvlen[j] = len;
-   }
+  }
 
   redisAppendCommandArgv(connection_.handle_, argc, (const char**)argv, argvlen);
   free(argvlen);

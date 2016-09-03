@@ -2,57 +2,141 @@
 
     This file is part of FastoNoSQL.
 
-    FastoNoSQL is free software: you can redistribute it and/or modify
-    it under the terms of the GNU General Public License as published by
-    the Free Software Foundation, either version 3 of the License, or
+    FastoNoSQL is free software: you can redistribute it
+   and/or modify
+    it under the terms of the GNU General Public License as
+   published by
+    the Free Software Foundation, either version 3 of the
+   License, or
     (at your option) any later version.
 
-    FastoNoSQL is distributed in the hope that it will be useful,
-    but WITHOUT ANY WARRANTY; without even the implied warranty of
-    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+    FastoNoSQL is distributed in the hope that it will be
+   useful,
+    but WITHOUT ANY WARRANTY; without even the implied
+   warranty of
+    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
+   See the
     GNU General Public License for more details.
 
-    You should have received a copy of the GNU General Public License
-    along with FastoNoSQL.  If not, see <http://www.gnu.org/licenses/>.
+    You should have received a copy of the GNU General
+   Public License
+    along with FastoNoSQL.  If not, see
+   <http://www.gnu.org/licenses/>.
 */
 
 #pragma once
 
 #include <QWidget>
 
-#include "core/connection_types.h"      // for connectionTypes
+#include "core/connection_types.h"  // for connectionTypes
 
-#include "core/core_fwd.h"              // for IServerSPtr
+#include "core/core_fwd.h"  // for IServerSPtr
 
-#include "core/types.h"                 // for IDataBaseInfoSPtr, etc
+#include "core/types.h"  // for IDataBaseInfoSPtr, etc
 
-class QAction;  // lines 26-26
-class QComboBox;  // lines 29-29
+class QAction;       // lines 26-26
+class QComboBox;     // lines 29-29
 class QProgressBar;  // lines 27-27
 
-namespace fasto { namespace qt { namespace gui { class IconLabel; } } }  // lines 34-34
-namespace fastonosql { namespace core { namespace events_info { struct ConnectInfoRequest; } } }
-namespace fastonosql { namespace core { namespace events_info { struct ConnectInfoResponce; } } }
-namespace fastonosql { namespace core { namespace events_info { struct DisConnectInfoRequest; } } }
-namespace fastonosql { namespace core { namespace events_info { struct DisConnectInfoResponce; } } }
-namespace fastonosql { namespace core { namespace events_info { struct DiscoveryInfoRequest; } } }
-namespace fastonosql { namespace core { namespace events_info { struct DiscoveryInfoResponce; } } }
-namespace fastonosql { namespace core { namespace events_info { struct EnterModeInfo; } } }
-namespace fastonosql { namespace core { namespace events_info { struct LeaveModeInfo; } } }
-namespace fastonosql { namespace core { namespace events_info { struct ProgressInfoResponce; } } }
-namespace fastonosql { namespace core { namespace events_info { struct SetDefaultDatabaseRequest; } } }
-namespace fastonosql { namespace core { namespace events_info { struct SetDefaultDatabaseResponce; } } }
-namespace fastonosql { namespace shell { class BaseShell; } }  // lines 42-42
+namespace fasto {
+namespace qt {
+namespace gui {
+class IconLabel;
+}
+}
+}  // lines 34-34
+namespace fastonosql {
+namespace core {
+namespace events_info {
+struct ConnectInfoRequest;
+}
+}
+}
+namespace fastonosql {
+namespace core {
+namespace events_info {
+struct ConnectInfoResponce;
+}
+}
+}
+namespace fastonosql {
+namespace core {
+namespace events_info {
+struct DisConnectInfoRequest;
+}
+}
+}
+namespace fastonosql {
+namespace core {
+namespace events_info {
+struct DisConnectInfoResponce;
+}
+}
+}
+namespace fastonosql {
+namespace core {
+namespace events_info {
+struct DiscoveryInfoRequest;
+}
+}
+}
+namespace fastonosql {
+namespace core {
+namespace events_info {
+struct DiscoveryInfoResponce;
+}
+}
+}
+namespace fastonosql {
+namespace core {
+namespace events_info {
+struct EnterModeInfo;
+}
+}
+}
+namespace fastonosql {
+namespace core {
+namespace events_info {
+struct LeaveModeInfo;
+}
+}
+}
+namespace fastonosql {
+namespace core {
+namespace events_info {
+struct ProgressInfoResponce;
+}
+}
+}
+namespace fastonosql {
+namespace core {
+namespace events_info {
+struct SetDefaultDatabaseRequest;
+}
+}
+}
+namespace fastonosql {
+namespace core {
+namespace events_info {
+struct SetDefaultDatabaseResponce;
+}
+}
+}
+namespace fastonosql {
+namespace shell {
+class BaseShell;
+}
+}  // lines 42-42
 
 namespace fastonosql {
 namespace shell {
 
-class BaseShellWidget
-  : public QWidget {
+class BaseShellWidget : public QWidget {
   Q_OBJECT
  public:
   explicit BaseShellWidget(core::IServerSPtr server,
-                           const QString& filePath = QString(), QWidget* parent = 0);
+                           const QString& filePath = QString(),
+                           QWidget* parent = 0);
   virtual ~BaseShellWidget();
 
   QString text() const;

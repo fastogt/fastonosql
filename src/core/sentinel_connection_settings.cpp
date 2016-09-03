@@ -2,26 +2,34 @@
 
     This file is part of FastoNoSQL.
 
-    FastoNoSQL is free software: you can redistribute it and/or modify
-    it under the terms of the GNU General Public License as published by
-    the Free Software Foundation, either version 3 of the License, or
+    FastoNoSQL is free software: you can redistribute it
+   and/or modify
+    it under the terms of the GNU General Public License as
+   published by
+    the Free Software Foundation, either version 3 of the
+   License, or
     (at your option) any later version.
 
-    FastoNoSQL is distributed in the hope that it will be useful,
-    but WITHOUT ANY WARRANTY; without even the implied warranty of
-    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+    FastoNoSQL is distributed in the hope that it will be
+   useful,
+    but WITHOUT ANY WARRANTY; without even the implied
+   warranty of
+    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
+   See the
     GNU General Public License for more details.
 
-    You should have received a copy of the GNU General Public License
-    along with FastoNoSQL.  If not, see <http://www.gnu.org/licenses/>.
+    You should have received a copy of the GNU General
+   Public License
+    along with FastoNoSQL.  If not, see
+   <http://www.gnu.org/licenses/>.
 */
 
 #include "core/sentinel_connection_settings.h"
 
 #include <sstream>
 
-#include "common/utils.h"
 #include "common/convert2string.h"
+#include "common/utils.h"
 
 #ifdef BUILD_WITH_REDIS
 #include "core/redis/sentinel_settings.h"  // for SentinelSettings
@@ -30,9 +38,7 @@
 namespace fastonosql {
 namespace core {
 
-SentinelSettings::SentinelSettings()
-  : sentinel(), sentinel_nodes() {
-}
+SentinelSettings::SentinelSettings() : sentinel(), sentinel_nodes() {}
 
 std::string sentinelSettingsToString(const SentinelSettings& sent) {
   std::stringstream str;
@@ -105,9 +111,9 @@ bool sentinelSettingsfromString(const std::string& text, SentinelSettings* sent)
 
 //
 
-ISentinelSettingsBase::ISentinelSettingsBase(const connection_path_t& connectionName, connectionTypes type)
-  : IConnectionSettings(connectionName, type), sentinel_nodes_() {
-}
+ISentinelSettingsBase::ISentinelSettingsBase(const connection_path_t& connectionName,
+                                             connectionTypes type)
+    : IConnectionSettings(connectionName, type), sentinel_nodes_() {}
 
 ISentinelSettingsBase::sentinel_connections_t ISentinelSettingsBase::sentinels() const {
   return sentinel_nodes_;
@@ -118,7 +124,7 @@ void ISentinelSettingsBase::addSentinel(sentinel_connection_t sent) {
 }
 
 ISentinelSettingsBase* ISentinelSettingsBase::createFromType(connectionTypes type,
-                                                           const connection_path_t& conName) {
+                                                             const connection_path_t& conName) {
 #ifdef BUILD_WITH_REDIS
   if (type == REDIS) {
     return new redis::SentinelSettings(conName);
@@ -186,7 +192,7 @@ std::string ISentinelSettingsBase::toString() const {
   std::stringstream str;
   str << IConnectionSettings::toString() << ',';
   for (size_t i = 0; i < sentinel_nodes_.size(); ++i) {
-    sentinel_connection_t sent = sentinel_nodes_[i]; 
+    sentinel_connection_t sent = sentinel_nodes_[i];
     str << magicNumber << sentinelSettingsToString(sent);
   }
 

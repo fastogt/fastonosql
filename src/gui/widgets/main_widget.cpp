@@ -2,38 +2,45 @@
 
     This file is part of FastoNoSQL.
 
-    FastoNoSQL is free software: you can redistribute it and/or modify
-    it under the terms of the GNU General Public License as published by
-    the Free Software Foundation, either version 3 of the License, or
+    FastoNoSQL is free software: you can redistribute it
+   and/or modify
+    it under the terms of the GNU General Public License as
+   published by
+    the Free Software Foundation, either version 3 of the
+   License, or
     (at your option) any later version.
 
-    FastoNoSQL is distributed in the hope that it will be useful,
-    but WITHOUT ANY WARRANTY; without even the implied warranty of
-    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+    FastoNoSQL is distributed in the hope that it will be
+   useful,
+    but WITHOUT ANY WARRANTY; without even the implied
+   warranty of
+    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
+   See the
     GNU General Public License for more details.
 
-    You should have received a copy of the GNU General Public License
-    along with FastoNoSQL.  If not, see <http://www.gnu.org/licenses/>.
+    You should have received a copy of the GNU General
+   Public License
+    along with FastoNoSQL.  If not, see
+   <http://www.gnu.org/licenses/>.
 */
 
 #include "gui/widgets/main_widget.h"
 
 #include "common/convert2string.h"
 
-#include "common/convert2string.h"      // for ConvertFromString
-#include "common/macros.h"              // for VERIFY, DNOTREACHED
+#include "common/convert2string.h"  // for ConvertFromString
+#include "common/macros.h"          // for VERIFY, DNOTREACHED
 
-#include "core/iserver.h"               // for IServer
+#include "core/iserver.h"  // for IServer
 
-#include "gui/gui_factory.h"            // for GuiFactory
-#include "gui/main_tab_bar.h"           // for MainTabBar
-#include "gui/widgets/query_widget.h"   // for QueryWidget
+#include "gui/gui_factory.h"           // for GuiFactory
+#include "gui/main_tab_bar.h"          // for MainTabBar
+#include "gui/widgets/query_widget.h"  // for QueryWidget
 
 namespace fastonosql {
 namespace gui {
 
-MainWidget::MainWidget(QWidget* parent)
-  : QTabWidget(parent) {
+MainWidget::MainWidget(QWidget* parent) : QTabWidget(parent) {
   MainTabBar* tab = new MainTabBar(this);
 
   VERIFY(connect(tab, &MainTabBar::createdNewTab, this, &MainWidget::createNewTab));

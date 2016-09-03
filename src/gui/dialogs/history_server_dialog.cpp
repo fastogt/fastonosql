@@ -2,61 +2,70 @@
 
     This file is part of FastoNoSQL.
 
-    FastoNoSQL is free software: you can redistribute it and/or modify
-    it under the terms of the GNU General Public License as published by
-    the Free Software Foundation, either version 3 of the License, or
+    FastoNoSQL is free software: you can redistribute it
+   and/or modify
+    it under the terms of the GNU General Public License as
+   published by
+    the Free Software Foundation, either version 3 of the
+   License, or
     (at your option) any later version.
 
-    FastoNoSQL is distributed in the hope that it will be useful,
-    but WITHOUT ANY WARRANTY; without even the implied warranty of
-    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+    FastoNoSQL is distributed in the hope that it will be
+   useful,
+    but WITHOUT ANY WARRANTY; without even the implied
+   warranty of
+    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
+   See the
     GNU General Public License for more details.
 
-    You should have received a copy of the GNU General Public License
-    along with FastoNoSQL.  If not, see <http://www.gnu.org/licenses/>.
+    You should have received a copy of the GNU General
+   Public License
+    along with FastoNoSQL.  If not, see
+   <http://www.gnu.org/licenses/>.
 */
 
 #include "gui/dialogs/history_server_dialog.h"
 
-#include <stddef.h>                     // for size_t
-#include <stdint.h>                     // for uint32_t
+#include <stddef.h>  // for size_t
+#include <stdint.h>  // for uint32_t
 
-#include <memory>                       // for __shared_ptr
-#include <utility>                      // for make_pair
-#include <vector>                       // for vector
+#include <memory>   // for __shared_ptr
+#include <utility>  // for make_pair
+#include <vector>   // for vector
 
 #include <QComboBox>
 #include <QHBoxLayout>
 #include <QPushButton>
 #include <QSplitter>
 
-#include "common/convert2string.h"      // for ConvertFromString
-#include "common/error.h"               // for Error
-#include "common/macros.h"              // for VERIFY, UNUSED, CHECK
-#include "common/value.h"               // for ErrorValue, Value
+#include "common/convert2string.h"  // for ConvertFromString
+#include "common/error.h"           // for Error
+#include "common/macros.h"          // for VERIFY, UNUSED, CHECK
+#include "common/value.h"           // for ErrorValue, Value
 
-#include "core/iserver.h"               // for IServer
 #include "core/db_traits.h"
+#include "core/iserver.h"  // for IServer
 
 #include "fasto/qt/gui/base/graph_widget.h"  // for GraphWidget, etc
-#include "fasto/qt/gui/glass_widget.h"  // for GlassWidget
+#include "fasto/qt/gui/glass_widget.h"       // for GlassWidget
 
-#include "gui/gui_factory.h"            // for GuiFactory
+#include "gui/gui_factory.h"  // for GuiFactory
 
-#include "translations/global.h"        // for trClearHistory, trLoading
+#include "translations/global.h"  // for trClearHistory, trLoading
 
 namespace {
-  const QString trHistoryTemplate_1S = QObject::tr("%1 history");
+const QString trHistoryTemplate_1S = QObject::tr("%1 history");
 }
 
 namespace fastonosql {
 namespace gui {
 
 ServerHistoryDialog::ServerHistoryDialog(core::IServerSPtr server, QWidget* parent)
-  : QDialog(parent, Qt::WindowMinMaxButtonsHint | Qt::WindowCloseButtonHint ), server_(server) {
+    : QDialog(parent, Qt::WindowMinMaxButtonsHint | Qt::WindowCloseButtonHint), server_(server) {
   CHECK(server_);
   setWindowIcon(GuiFactory::instance().icon(server_->type()));
-  setWindowFlags(windowFlags() & ~Qt::WindowContextHelpButtonHint);  // Remove help button (?)
+  setWindowFlags(windowFlags() & ~Qt::WindowContextHelpButtonHint);  // Remove help
+                                                                     // button (?)
 
   graphWidget_ = new fasto::qt::gui::GraphWidget;
   settingsGraph_ = new QWidget;
@@ -75,10 +84,10 @@ ServerHistoryDialog::ServerHistoryDialog(core::IServerSPtr server, QWidget* pare
   serverInfoFields_ = new QComboBox;
 
   typedef void (QComboBox::*curc)(int);
-  VERIFY(connect(serverInfoGroupsNames_, static_cast<curc>(&QComboBox::currentIndexChanged),
-                 this, &ServerHistoryDialog::refreshInfoFields));
-  VERIFY(connect(serverInfoFields_, static_cast<curc>(&QComboBox::currentIndexChanged),
-                 this, &ServerHistoryDialog::refreshGraph));
+  VERIFY(connect(serverInfoGroupsNames_, static_cast<curc>(&QComboBox::currentIndexChanged), this,
+                 &ServerHistoryDialog::refreshInfoFields));
+  VERIFY(connect(serverInfoFields_, static_cast<curc>(&QComboBox::currentIndexChanged), this,
+                 &ServerHistoryDialog::refreshGraph));
 
   const auto fields = core::infoFieldsFromType(server_->type());
   for (size_t i = 0; i < fields.size(); ++i) {
@@ -95,29 +104,31 @@ ServerHistoryDialog::ServerHistoryDialog(core::IServerSPtr server, QWidget* pare
   setMinimumSize(QSize(min_width, min_height));
   setLayout(mainL);
 
-  glassWidget_ = new fasto::qt::gui::GlassWidget(GuiFactory::instance().pathToLoadingGif(),
-                                                 translations::trLoading, 0.5,
-                                                 QColor(111, 111, 100), this);
-  VERIFY(connect(server.get(), &core::IServer::startedLoadServerHistoryInfo,
-                 this, &ServerHistoryDialog::startLoadServerHistoryInfo));
-  VERIFY(connect(server.get(), &core::IServer::finishedLoadServerHistoryInfo,
-                 this, &ServerHistoryDialog::finishLoadServerHistoryInfo));
-  VERIFY(connect(server.get(), &core::IServer::startedClearServerHistory,
-                 this, &ServerHistoryDialog::startClearServerHistory));
-  VERIFY(connect(server.get(), &core::IServer::finishedClearServerHistory,
-                 this, &ServerHistoryDialog::finishClearServerHistory));
-  VERIFY(connect(server.get(), &core::IServer::serverInfoSnapShoot,
-                 this, &ServerHistoryDialog::snapShotAdd));
+  glassWidget_ =
+      new fasto::qt::gui::GlassWidget(GuiFactory::instance().pathToLoadingGif(),
+                                      translations::trLoading, 0.5, QColor(111, 111, 100), this);
+  VERIFY(connect(server.get(), &core::IServer::startedLoadServerHistoryInfo, this,
+                 &ServerHistoryDialog::startLoadServerHistoryInfo));
+  VERIFY(connect(server.get(), &core::IServer::finishedLoadServerHistoryInfo, this,
+                 &ServerHistoryDialog::finishLoadServerHistoryInfo));
+  VERIFY(connect(server.get(), &core::IServer::startedClearServerHistory, this,
+                 &ServerHistoryDialog::startClearServerHistory));
+  VERIFY(connect(server.get(), &core::IServer::finishedClearServerHistory, this,
+                 &ServerHistoryDialog::finishClearServerHistory));
+  VERIFY(connect(server.get(), &core::IServer::serverInfoSnapShoot, this,
+                 &ServerHistoryDialog::snapShotAdd));
   retranslateUi();
 }
 
-void ServerHistoryDialog::startLoadServerHistoryInfo(const core::events_info::ServerInfoHistoryRequest& req) {
+void ServerHistoryDialog::startLoadServerHistoryInfo(
+    const core::events_info::ServerInfoHistoryRequest& req) {
   UNUSED(req);
 
   glassWidget_->start();
 }
 
-void ServerHistoryDialog::finishLoadServerHistoryInfo(const core::events_info::ServerInfoHistoryResponce& res) {
+void ServerHistoryDialog::finishLoadServerHistoryInfo(
+    const core::events_info::ServerInfoHistoryResponce& res) {
   glassWidget_->stop();
   common::Error er = res.errorInfo();
   if (er && er->isError()) {
@@ -128,12 +139,13 @@ void ServerHistoryDialog::finishLoadServerHistoryInfo(const core::events_info::S
   reset();
 }
 
-void ServerHistoryDialog::startClearServerHistory(const core::events_info::ClearServerHistoryRequest& req) {
-
+void ServerHistoryDialog::startClearServerHistory(
+    const core::events_info::ClearServerHistoryRequest& req) {
   UNUSED(req);
 }
 
-void ServerHistoryDialog::finishClearServerHistory(const core::events_info::ClearServerHistoryResponce& res) {
+void ServerHistoryDialog::finishClearServerHistory(
+    const core::events_info::ClearServerHistoryResponce& res) {
   common::Error er = res.errorInfo();
   if (er && er->isError()) {
     return;

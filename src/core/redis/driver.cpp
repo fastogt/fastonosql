@@ -2,50 +2,58 @@
 
     This file is part of FastoNoSQL.
 
-    FastoNoSQL is free software: you can redistribute it and/or modify
-    it under the terms of the GNU General Public License as published by
-    the Free Software Foundation, either version 3 of the License, or
+    FastoNoSQL is free software: you can redistribute it
+   and/or modify
+    it under the terms of the GNU General Public License as
+   published by
+    the Free Software Foundation, either version 3 of the
+   License, or
     (at your option) any later version.
 
-    FastoNoSQL is distributed in the hope that it will be useful,
-    but WITHOUT ANY WARRANTY; without even the implied warranty of
-    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+    FastoNoSQL is distributed in the hope that it will be
+   useful,
+    but WITHOUT ANY WARRANTY; without even the implied
+   warranty of
+    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
+   See the
     GNU General Public License for more details.
 
-    You should have received a copy of the GNU General Public License
-    along with FastoNoSQL.  If not, see <http://www.gnu.org/licenses/>.
+    You should have received a copy of the GNU General
+   Public License
+    along with FastoNoSQL.  If not, see
+   <http://www.gnu.org/licenses/>.
 */
 
 #include "core/redis/driver.h"
 
-#include <stddef.h>                     // for size_t
-#include <stdint.h>                     // for uint32_t
+#include <stddef.h>  // for size_t
+#include <stdint.h>  // for uint32_t
 
-#include <memory>                       // for __shared_ptr, shared_ptr
-#include <vector>                       // for vector
+#include <memory>  // for __shared_ptr, shared_ptr
+#include <vector>  // for vector
 
-#include "common/convert2string.h"      // for ConvertFromString, etc
-#include "common/file_system.h"         // for copy_file
-#include "common/intrusive_ptr.h"       // for intrusive_ptr
-#include "common/log_levels.h"          // for LEVEL_LOG::L_WARNING
-#include "common/qt/utils_qt.h"         // for Event<>::value_type
-#include "common/sprintf.h"             // for MemSPrintf
-#include "common/value.h"               // for Value, ErrorValue, etc
+#include "common/convert2string.h"  // for ConvertFromString, etc
+#include "common/file_system.h"     // for copy_file
+#include "common/intrusive_ptr.h"   // for intrusive_ptr
+#include "common/log_levels.h"      // for LEVEL_LOG::L_WARNING
+#include "common/qt/utils_qt.h"     // for Event<>::value_type
+#include "common/sprintf.h"         // for MemSPrintf
+#include "common/value.h"           // for Value, ErrorValue, etc
 
-#include "core/command.h"           // for createCommand, etc
+#include "core/command.h"  // for createCommand, etc
 #include "core/connection_types.h"
-#include "core/db_key.h"                // for NDbKValue, NValue, ttl_t, etc
+#include "core/db_key.h"  // for NDbKValue, NValue, ttl_t, etc
 #include "core/events/events_info.h"
 #include "core/server_property_info.h"  // for makeServerProperty, etc
 #include "core/ssh_info.h"              // for SSHInfo
 
-#include "core/redis/command.h"         // for Command
-#include "core/redis/config.h"          // for Config
+#include "core/redis/command.h"              // for Command
+#include "core/redis/config.h"               // for Config
 #include "core/redis/connection_settings.h"  // for ConnectionSettings
-#include "core/redis/database.h"        // for DataBaseInfo
-#include "core/redis/server_info.h"     // for ServerInfo, etc
+#include "core/redis/database.h"             // for DataBaseInfo
+#include "core/redis/server_info.h"          // for ServerInfo, etc
 
-#include "global/global.h"              // for FastoObjectCommandIPtr, etc
+#include "global/global.h"  // for FastoObjectCommandIPtr, etc
 
 #define REDIS_SHUTDOWN "SHUTDOWN"
 #define REDIS_BACKUP "SAVE"
@@ -79,12 +87,12 @@ namespace {
 
 common::Value::Type convertFromStringRType(const std::string& type) {
   if (type.empty()) {
-     return common::Value::TYPE_NULL;
+    return common::Value::TYPE_NULL;
   }
 
   if (type == "string") {
     return common::Value::TYPE_STRING;
-  }  else if (type == "list") {
+  } else if (type == "list") {
     return common::Value::TYPE_ARRAY;
   } else if (type == "set") {
     return common::Value::TYPE_SET;
@@ -104,8 +112,9 @@ namespace core {
 namespace redis {
 
 Driver::Driver(IConnectionSettingsBaseSPtr settings)
-  : IDriverRemote(settings), impl_(new DBConnection(this)) {
-  COMPILE_ASSERT(DBConnection::connection_t == REDIS, "DBConnection must be the same type as Driver!");
+    : IDriverRemote(settings), impl_(new DBConnection(this)) {
+  COMPILE_ASSERT(DBConnection::connection_t == REDIS,
+                 "DBConnection must be the same type as Driver!");
   CHECK(type() == REDIS);
 }
 
@@ -146,11 +155,9 @@ void Driver::currentDataBaseChanged(IDataBaseInfo* info) {
   setCurrentDatabaseInfo(info->Clone());
 }
 
-void Driver::initImpl() {
-}
+void Driver::initImpl() {}
 
-void Driver::clearImpl() {
-}
+void Driver::clearImpl() {}
 
 common::Error Driver::syncConnect() {
   ConnectionSettings* set = dynamic_cast<ConnectionSettings*>(settings_.get());  // +
@@ -178,7 +185,8 @@ common::Error Driver::serverInfo(IServerInfo** info) {
   *info = makeRedisServerInfo(content);
 
   if (!*info) {
-    return common::make_error_value("Invalid " INFO_REQUEST " command output", common::ErrorValue::E_ERROR);
+    return common::make_error_value("Invalid " INFO_REQUEST " command output",
+                                    common::ErrorValue::E_ERROR);
   }
   return common::Error();
 }
@@ -301,7 +309,8 @@ void Driver::handleChangeMaxConnectionEvent(events::ChangeMaxConnectionRequestEv
   notifyProgress(sender, 0);
   events::ChangeMaxConnectionResponceEvent::value_type res(ev->value());
   notifyProgress(sender, 25);
-  std::string patternResult = common::MemSPrintf(REDIS_SET_MAX_CONNECTIONS_1ARGS_I, res.max_connection);
+  std::string patternResult =
+      common::MemSPrintf(REDIS_SET_MAX_CONNECTIONS_1ARGS_I, res.max_connection);
   FastoObjectIPtr root = FastoObject::createRoot(patternResult);
   FastoObjectCommandIPtr cmd = CreateCommand<Command>(root, patternResult, common::Value::C_INNER);
   common::Error er = execute(cmd);
@@ -464,9 +473,8 @@ void Driver::handleExecuteEvent(events::ExecuteRequestEvent* ev) {
   const double step = 100.0 / length;
   for (size_t i = 0; i < length; ++i) {
     if (isInterrupted()) {
-      res.setErrorInfo(common::make_error_value("Interrupted exec.",
-                                                common::ErrorValue::E_INTERRUPTED,
-                                                common::logging::L_WARNING));
+      res.setErrorInfo(common::make_error_value(
+          "Interrupted exec.", common::ErrorValue::E_INTERRUPTED, common::logging::L_WARNING));
       break;
     }
 
@@ -522,7 +530,8 @@ void Driver::handleLoadDatabaseInfosEvent(events::LoadDatabasesInfoRequestEvent*
   QObject* sender = ev->sender();
   notifyProgress(sender, 0);
   events::LoadDatabasesInfoResponceEvent::value_type res(ev->value());
-  FastoObjectCommandIPtr cmd = CreateCommandFast<Command>(REDIS_GET_DATABASES, common::Value::C_INNER);
+  FastoObjectCommandIPtr cmd =
+      CreateCommandFast<Command>(REDIS_GET_DATABASES, common::Value::C_INNER);
   notifyProgress(sender, 50);
 
   common::Error er = execute(cmd.get());
@@ -657,7 +666,7 @@ void Driver::handleLoadDatabaseContentEvent(events::LoadDatabaseContentRequestEv
             auto vttl = tchildrens[0]->value();
             ttl_t ttl = 0;
             if (vttl->getAsInteger(&ttl)) {
-                res.keys[i].setTTL(ttl);
+              res.keys[i].setTTL(ttl);
             }
           }
         }
@@ -679,8 +688,7 @@ void Driver::handleClearDatabaseEvent(events::ClearDatabaseRequestEvent* ev) {
   events::ClearDatabaseResponceEvent::value_type res(ev->value());
   FastoObjectIPtr root = FastoObject::createRoot(REDIS_FLUSHDB);
   notifyProgress(sender, 50);
-  FastoObjectCommandIPtr cmd = CreateCommand<Command>(root, REDIS_FLUSHDB,
-                                                        common::Value::C_INNER);
+  FastoObjectCommandIPtr cmd = CreateCommand<Command>(root, REDIS_FLUSHDB, common::Value::C_INNER);
   common::Error er = execute(cmd);
   if (er && er->isError()) {
     res.setErrorInfo(er);
@@ -694,12 +702,11 @@ void Driver::handleSetDefaultDatabaseEvent(events::SetDefaultDatabaseRequestEven
   QObject* sender = ev->sender();
   notifyProgress(sender, 0);
   events::SetDefaultDatabaseResponceEvent::value_type res(ev->value());
-  std::string setDefCommand = common::MemSPrintf(REDIS_SET_DEFAULT_DATABASE_PATTERN_1ARGS_S,
-                                                 res.inf->name());
+  std::string setDefCommand =
+      common::MemSPrintf(REDIS_SET_DEFAULT_DATABASE_PATTERN_1ARGS_S, res.inf->name());
   FastoObjectIPtr root = FastoObject::createRoot(setDefCommand);
   notifyProgress(sender, 50);
-  FastoObjectCommandIPtr cmd = CreateCommand<Command>(root, setDefCommand,
-                                                        common::Value::C_INNER);
+  FastoObjectCommandIPtr cmd = CreateCommand<Command>(root, setDefCommand, common::Value::C_INNER);
   common::Error er = execute(cmd);
   if (er && er->isError()) {
     res.setErrorInfo(er);
@@ -715,8 +722,8 @@ void Driver::handleLoadServerPropertyEvent(events::ServerPropertyInfoRequestEven
   events::ServerPropertyInfoResponceEvent::value_type res(ev->value());
   FastoObjectIPtr root = FastoObject::createRoot(REDIS_GET_PROPERTY_SERVER);
   notifyProgress(sender, 50);
-  FastoObjectCommandIPtr cmd = CreateCommand<Command>(root, REDIS_GET_PROPERTY_SERVER,
-                                                        common::Value::C_INNER);
+  FastoObjectCommandIPtr cmd =
+      CreateCommand<Command>(root, REDIS_GET_PROPERTY_SERVER, common::Value::C_INNER);
   common::Error er = execute(cmd);
   if (er && er->isError()) {
     res.setErrorInfo(er);
@@ -743,8 +750,7 @@ void Driver::handleServerPropertyChangeEvent(events::ChangeServerPropertyInfoReq
   notifyProgress(sender, 50);
   std::string changeRequest = "CONFIG SET " + res.new_item.first + " " + res.new_item.second;
   FastoObjectIPtr root = FastoObject::createRoot(changeRequest);
-  FastoObjectCommandIPtr cmd = CreateCommand<Command>(root, changeRequest,
-                                                        common::Value::C_INNER);
+  FastoObjectCommandIPtr cmd = CreateCommand<Command>(root, changeRequest, common::Value::C_INNER);
   common::Error er = execute(cmd);
   if (er && er->isError()) {
     res.setErrorInfo(er);
@@ -752,12 +758,11 @@ void Driver::handleServerPropertyChangeEvent(events::ChangeServerPropertyInfoReq
     res.is_change = true;
   }
   notifyProgress(sender, 75);
-      reply(sender, new events::ChangeServerPropertyInfoResponceEvent(this, res));
+  reply(sender, new events::ChangeServerPropertyInfoResponceEvent(this, res));
   notifyProgress(sender, 100);
 }
 
-common::Error Driver::commandDeleteImpl(CommandDeleteKey* command,
-                                             std::string* cmdstring) const {
+common::Error Driver::commandDeleteImpl(CommandDeleteKey* command, std::string* cmdstring) const {
   if (!command || !cmdstring) {
     return common::make_error_value("Invalid input argument(s)", common::ErrorValue::E_ERROR);
   }
@@ -792,8 +797,7 @@ common::Error Driver::commandLoadImpl(CommandLoadKey* command, std::string* cmds
   return common::Error();
 }
 
-common::Error Driver::commandCreateImpl(CommandCreateKey* command,
-                                             std::string* cmdstring) const {
+common::Error Driver::commandCreateImpl(CommandCreateKey* command, std::string* cmdstring) const {
   if (!command || !cmdstring) {
     return common::make_error_value("Invalid input argument(s)", common::ErrorValue::E_ERROR);
   }
@@ -822,7 +826,7 @@ common::Error Driver::commandCreateImpl(CommandCreateKey* command,
 }
 
 common::Error Driver::commandChangeTTLImpl(CommandChangeTTL* command,
-                                                std::string* cmdstring) const {
+                                           std::string* cmdstring) const {
   if (!command || !cmdstring) {
     return common::make_error_value("Invalid input argument(s)", common::ErrorValue::E_ERROR);
   }

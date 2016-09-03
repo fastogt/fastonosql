@@ -2,28 +2,36 @@
 
     This file is part of FastoNoSQL.
 
-    FastoNoSQL is free software: you can redistribute it and/or modify
-    it under the terms of the GNU General Public License as published by
-    the Free Software Foundation, either version 3 of the License, or
+    FastoNoSQL is free software: you can redistribute it
+   and/or modify
+    it under the terms of the GNU General Public License as
+   published by
+    the Free Software Foundation, either version 3 of the
+   License, or
     (at your option) any later version.
 
-    FastoNoSQL is distributed in the hope that it will be useful,
-    but WITHOUT ANY WARRANTY; without even the implied warranty of
-    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+    FastoNoSQL is distributed in the hope that it will be
+   useful,
+    but WITHOUT ANY WARRANTY; without even the implied
+   warranty of
+    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
+   See the
     GNU General Public License for more details.
 
-    You should have received a copy of the GNU General Public License
-    along with FastoNoSQL.  If not, see <http://www.gnu.org/licenses/>.
+    You should have received a copy of the GNU General
+   Public License
+    along with FastoNoSQL.  If not, see
+   <http://www.gnu.org/licenses/>.
 */
 
 #pragma once
 
-#include <stdint.h>                     // for uint32_t
+#include <stdint.h>  // for uint32_t
 
-#include <iosfwd>                       // for ostream
-#include <string>                       // for string
+#include <iosfwd>  // for ostream
+#include <string>  // for string
 
-#include "core/types.h"                 // for IStateField, IServerInfo
+#include "core/types.h"  // for IStateField, IServerInfo
 
 #define LEVELDB_STATS_LABEL "# Stats"
 
@@ -33,18 +41,19 @@
 #define LEVELDB_READ_MB_LABEL "read_mb"
 #define LEVELDB_WRITE_MB_LABEL "write_mb"
 
-namespace common { class Value; }
+namespace common {
+class Value;
+}
 
 namespace fastonosql {
 namespace core {
 namespace leveldb {
 
-class ServerInfo
-  : public IServerInfo {
+class ServerInfo : public IServerInfo {
  public:
-  // Compactions\nLevel  Files Size(MB) Time(sec) Read(MB) Write(MB)\n
-  struct Stats
-      : IStateField {
+  // Compactions\nLevel  Files Size(MB) Time(sec) Read(MB)
+  // Write(MB)\n
+  struct Stats : IStateField {
     Stats();
     explicit Stats(const std::string& common_text);
     virtual common::Value* valueByIndex(unsigned char index) const override;
@@ -64,7 +73,7 @@ class ServerInfo
   virtual uint32_t version() const override;
 };
 
-std::ostream& operator << (std::ostream& out, const ServerInfo& value);
+std::ostream& operator<<(std::ostream& out, const ServerInfo& value);
 
 ServerInfo* makeLeveldbServerInfo(const std::string& content);
 

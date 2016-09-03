@@ -2,53 +2,67 @@
 
     This file is part of FastoNoSQL.
 
-    FastoNoSQL is free software: you can redistribute it and/or modify
-    it under the terms of the GNU General Public License as published by
-    the Free Software Foundation, either version 3 of the License, or
+    FastoNoSQL is free software: you can redistribute it
+   and/or modify
+    it under the terms of the GNU General Public License as
+   published by
+    the Free Software Foundation, either version 3 of the
+   License, or
     (at your option) any later version.
 
-    FastoNoSQL is distributed in the hope that it will be useful,
-    but WITHOUT ANY WARRANTY; without even the implied warranty of
-    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+    FastoNoSQL is distributed in the hope that it will be
+   useful,
+    but WITHOUT ANY WARRANTY; without even the implied
+   warranty of
+    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
+   See the
     GNU General Public License for more details.
 
-    You should have received a copy of the GNU General Public License
-    along with FastoNoSQL.  If not, see <http://www.gnu.org/licenses/>.
+    You should have received a copy of the GNU General
+   Public License
+    along with FastoNoSQL.  If not, see
+   <http://www.gnu.org/licenses/>.
 */
 
 #include "core/rocksdb/db_connection.h"
 
-#include <stdlib.h>                     // for atoll
-#include <string.h>                     // for strtok
+#include <stdlib.h>  // for atoll
+#include <string.h>  // for strtok
 
-#include <memory>                       // for __shared_ptr
-#include <string>                       // for string, operator<, etc
-#include <vector>                       // for vector
+#include <memory>  // for __shared_ptr
+#include <string>  // for string, operator<, etc
+#include <vector>  // for vector
 
 #include <rocksdb/db.h>
 
-#include "common/convert2string.h"      // for ConvertFromString
-#include "common/sprintf.h"             // for MemSPrintf
-#include "common/value.h"               // for Value::ErrorsType::E_ERROR, etc
+#include "common/convert2string.h"  // for ConvertFromString
+#include "common/sprintf.h"         // for MemSPrintf
+#include "common/value.h"           // for Value::ErrorsType::E_ERROR, etc
 
-#include "core/rocksdb/config.h"        // for Config
+#include "core/rocksdb/config.h"               // for Config
 #include "core/rocksdb/connection_settings.h"  // for ConnectionSettings
 
-#include "global/global.h"              // for FastoObject, etc
+#include "global/global.h"  // for FastoObject, etc
 
-#define ROCKSDB_HEADER_STATS    "\n** Compaction Stats [default] **\n"\
-                                "Level    Files   Size(MB) Score Read(GB)  Rn(GB) Rnp1(GB) "\
-                                "Write(GB) Wnew(GB) Moved(GB) W-Amp Rd(MB/s) Wr(MB/s) "\
-                                "Comp(sec) Comp(cnt) Avg(sec) "\
-                                "Stall(cnt)  KeyIn KeyDrop\n"\
-                                "--------------------------------------------------------------------"\
-                                "-----------------------------------------------------------"\
-                                "--------------------------------------\n"
+#define ROCKSDB_HEADER_STATS                               \
+  "\n** Compaction Stats [default] **\n"                   \
+  "Level    Files   Size(MB) Score Read(GB)  Rn(GB) "      \
+  "Rnp1(GB) "                                              \
+  "Write(GB) Wnew(GB) Moved(GB) W-Amp Rd(MB/s) Wr(MB/s) "  \
+  "Comp(sec) Comp(cnt) Avg(sec) "                          \
+  "Stall(cnt)  KeyIn KeyDrop\n"                            \
+  "------------------------------------------------------" \
+  "--------------"                                         \
+  "------------------------------------------------------" \
+  "-----"                                                  \
+  "--------------------------------------\n"
 
 namespace fastonosql {
 namespace core {
-template<>
-common::Error ConnectionAllocatorTraits<rocksdb::NativeConnection, rocksdb::Config>::connect(const rocksdb::Config& config, rocksdb::NativeConnection** hout) {
+template <>
+common::Error ConnectionAllocatorTraits<rocksdb::NativeConnection, rocksdb::Config>::connect(
+    const rocksdb::Config& config,
+    rocksdb::NativeConnection** hout) {
   rocksdb::NativeConnection* context = nullptr;
   common::Error er = rocksdb::createConnection(config, &context);
   if (er && er->isError()) {
@@ -58,13 +72,15 @@ common::Error ConnectionAllocatorTraits<rocksdb::NativeConnection, rocksdb::Conf
   *hout = context;
   return common::Error();
 }
-template<>
-common::Error ConnectionAllocatorTraits<rocksdb::NativeConnection, rocksdb::Config>::disconnect(rocksdb::NativeConnection** handle) {
+template <>
+common::Error ConnectionAllocatorTraits<rocksdb::NativeConnection, rocksdb::Config>::disconnect(
+    rocksdb::NativeConnection** handle) {
   destroy(handle);
   return common::Error();
 }
-template<>
-bool ConnectionAllocatorTraits<rocksdb::NativeConnection, rocksdb::Config>::isConnected(rocksdb::NativeConnection* handle) {
+template <>
+bool ConnectionAllocatorTraits<rocksdb::NativeConnection, rocksdb::Config>::isConnected(
+    rocksdb::NativeConnection* handle) {
   if (!handle) {
     return false;
   }
@@ -114,9 +130,7 @@ common::Error testConnection(ConnectionSettings* settings) {
   return common::Error();
 }
 
-DBConnection::DBConnection()
-  : base_class(), CommandHandler(rocksdbCommands) {
-}
+DBConnection::DBConnection() : base_class(), CommandHandler(rocksdbCommands) {}
 
 const char* DBConnection::versionApi() {
   return STRINGIZE(ROCKSDB_MAJOR) "." STRINGIZE(ROCKSDB_MINOR) "." STRINGIZE(ROCKSDB_PATCH);
@@ -147,23 +161,23 @@ common::Error DBConnection::info(const char* args, ServerInfo::Stats* statsout) 
     int pos = 0;
     while (p2) {
       switch (pos++) {
-      case 0:
-        lstatsout.compactions_level = common::ConvertFromString<uint32_t>(p2);
-        break;
-      case 1:
-        lstatsout.file_size_mb = common::ConvertFromString<uint32_t>(p2);
-        break;
-      case 2:
-        lstatsout.time_sec = common::ConvertFromString<uint32_t>(p2);
-        break;
-      case 3:
-        lstatsout.read_mb = common::ConvertFromString<uint32_t>(p2);
-        break;
-      case 4:
-        lstatsout.write_mb = common::ConvertFromString<uint32_t>(p2);
-        break;
-      default:
-        break;
+        case 0:
+          lstatsout.compactions_level = common::ConvertFromString<uint32_t>(p2);
+          break;
+        case 1:
+          lstatsout.file_size_mb = common::ConvertFromString<uint32_t>(p2);
+          break;
+        case 2:
+          lstatsout.time_sec = common::ConvertFromString<uint32_t>(p2);
+          break;
+        case 3:
+          lstatsout.read_mb = common::ConvertFromString<uint32_t>(p2);
+          break;
+        case 4:
+          lstatsout.write_mb = common::ConvertFromString<uint32_t>(p2);
+          break;
+        default:
+          break;
       }
       p2 = strtok(0, " ");
     }
@@ -248,7 +262,8 @@ common::Error DBConnection::get(const std::string& key, std::string* ret_val) {
   return common::Error();
 }
 
-common::Error DBConnection::mget(const std::vector< ::rocksdb::Slice>& keys, std::vector<std::string>* ret) {
+common::Error DBConnection::mget(const std::vector<::rocksdb::Slice>& keys,
+                                 std::vector<std::string>* ret) {
   if (!isConnected()) {
     DNOTREACHED();
     return common::make_error_value("Not connected", common::Value::E_ERROR);
@@ -297,15 +312,18 @@ common::Error DBConnection::del(const std::string& key) {
   return common::Error();
 }
 
-common::Error DBConnection::keys(const std::string& key_start, const std::string& key_end,
-                   uint64_t limit, std::vector<std::string>* ret) {
+common::Error DBConnection::keys(const std::string& key_start,
+                                 const std::string& key_end,
+                                 uint64_t limit,
+                                 std::vector<std::string>* ret) {
   if (!isConnected()) {
     DNOTREACHED();
     return common::make_error_value("Not connected", common::Value::E_ERROR);
   }
 
   ::rocksdb::ReadOptions ro;
-  ::rocksdb::Iterator* it = connection_.handle_->NewIterator(ro);  // keys(key_start, key_end, limit, ret);
+  ::rocksdb::Iterator* it =
+      connection_.handle_->NewIterator(ro);  // keys(key_start, key_end, limit, ret);
   for (it->Seek(key_start); it->Valid() && it->key().ToString() < key_end; it->Next()) {
     std::string key = it->key().ToString();
     if (ret->size() < limit) {
@@ -405,7 +423,7 @@ common::Error get(CommandHandler* handler, int argc, char** argv, FastoObject* o
 
 common::Error mget(CommandHandler* handler, int argc, char** argv, FastoObject* out) {
   DBConnection* rocks = static_cast<DBConnection*>(handler);
-  std::vector< ::rocksdb::Slice> keysget;
+  std::vector<::rocksdb::Slice> keysget;
   for (int i = 0; i < argc; ++i) {
     keysget.push_back(argv[i]);
   }

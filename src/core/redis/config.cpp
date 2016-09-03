@@ -2,40 +2,48 @@
 
     This file is part of FastoNoSQL.
 
-    FastoNoSQL is free software: you can redistribute it and/or modify
-    it under the terms of the GNU General Public License as published by
-    the Free Software Foundation, either version 3 of the License, or
+    FastoNoSQL is free software: you can redistribute it
+   and/or modify
+    it under the terms of the GNU General Public License as
+   published by
+    the Free Software Foundation, either version 3 of the
+   License, or
     (at your option) any later version.
 
-    FastoNoSQL is distributed in the hope that it will be useful,
-    but WITHOUT ANY WARRANTY; without even the implied warranty of
-    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+    FastoNoSQL is distributed in the hope that it will be
+   useful,
+    but WITHOUT ANY WARRANTY; without even the implied
+   warranty of
+    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
+   See the
     GNU General Public License for more details.
 
-    You should have received a copy of the GNU General Public License
-    along with FastoNoSQL.  If not, see <http://www.gnu.org/licenses/>.
+    You should have received a copy of the GNU General
+   Public License
+    along with FastoNoSQL.  If not, see
+   <http://www.gnu.org/licenses/>.
 */
 
 #include "core/redis/config.h"
 
-#include <stddef.h>                     // for size_t
-#include <stdint.h>                     // for uint16_t
-#include <stdlib.h>                     // for atof, strtoll
-#include <string.h>                     // for strcmp, NULL
+#include <stddef.h>  // for size_t
+#include <stdint.h>  // for uint16_t
+#include <stdlib.h>  // for atof, strtoll
+#include <string.h>  // for strcmp, NULL
 
-#include <string>                       // for string, basic_string
-#include <vector>                       // for vector
+#include <string>  // for string, basic_string
+#include <vector>  // for vector
 
 extern "C" {
-  #include "sds.h"
+#include "sds.h"
 }
 
-#include "common/convert2string.h"      // for ConvertToString, etc
-#include "common/log_levels.h"          // for LEVEL_LOG::L_WARNING
-#include "common/net/types.h"           // for HostAndPort
-#include "common/sprintf.h"             // for MemSPrintf
+#include "common/convert2string.h"  // for ConvertToString, etc
+#include "common/log_levels.h"      // for LEVEL_LOG::L_WARNING
+#include "common/net/types.h"       // for HostAndPort
+#include "common/sprintf.h"         // for MemSPrintf
 
-#include "fasto/qt/logger.h"            // for LOG_MSG
+#include "fasto/qt/logger.h"  // for LOG_MSG
 
 #define DEFAULT_REDIS_SERVER_PORT 6379
 
@@ -51,7 +59,7 @@ Config parseOptions(int argc, char** argv) {
 
     if (!strcmp(argv[i], "-h") && !lastarg) {
       cfg.host.host = argv[++i];
-    }/* else if (!strcmp(argv[i], "-h") && lastarg) {
+    } /* else if (!strcmp(argv[i], "-h") && lastarg) {
       usage();
     } else if (!strcmp(argv[i], "--help")) {
       usage();
@@ -96,10 +104,12 @@ Config parseOptions(int argc, char** argv) {
     } else if (!strcmp(argv[i], "--rdb") && !lastarg) {
       cfg.getrdb_mode = 1;
       cfg.rdb_filename = argv[++i];
-    /*} else if (!strcmp(argv[i], "--pipe")) {
-      cfg.pipe_mode = 1;
-    } else if (!strcmp(argv[i], "--pipe-timeout") && !lastarg) {
-      cfg.pipe_timeout = common::ConvertFromString<int>(argv[++i]);*/
+      /*} else if (!strcmp(argv[i], "--pipe")) {
+        cfg.pipe_mode = 1;
+      } else if (!strcmp(argv[i], "--pipe-timeout") &&
+      !lastarg) {
+        cfg.pipe_timeout =
+      common::ConvertFromString<int>(argv[++i]);*/
     } else if (!strcmp(argv[i], "--bigkeys")) {
       cfg.bigkeys = 1;
     } else if (!strcmp(argv[i], "--eval") && !lastarg) {
@@ -111,14 +121,18 @@ Config parseOptions(int argc, char** argv) {
     } else if (!strcmp(argv[i], "-ns") && !lastarg) {
       cfg.ns_separator = argv[++i];
     }
-    /*else if (!strcmp(argv[i], "-v") || !strcmp(argv[i], "--version")) {
+    /*else if (!strcmp(argv[i], "-v") || !strcmp(argv[i],
+    "--version")) {
       sds version = cliVersion();
       printf("redis-cli %s\n", version);
       sdsfree(version);
     }*/
     else {
       if (argv[i][0] == '-') {
-        const std::string buff = common::MemSPrintf("Unrecognized option or bad number of args for: '%s'", argv[i]);
+        const std::string buff = common::MemSPrintf(
+            "Unrecognized option or bad number of args "
+            "for: '%s'",
+            argv[i]);
         LOG_MSG(buff, common::logging::L_WARNING, true);
         break;
       } else {
@@ -134,12 +148,11 @@ Config parseOptions(int argc, char** argv) {
 }  // namespace
 
 Config::Config()
-  : RemoteConfig(common::net::HostAndPort::createLocalHost(DEFAULT_REDIS_SERVER_PORT)) {
+    : RemoteConfig(common::net::HostAndPort::createLocalHost(DEFAULT_REDIS_SERVER_PORT)) {
   init();
 }
 
-Config::Config(const Config& other)
-  : RemoteConfig(other.host) {
+Config::Config(const Config& other) : RemoteConfig(other.host) {
   init();
   copy(other);
 }
@@ -223,7 +236,7 @@ std::string ConvertToString(const fastonosql::core::redis::Config& conf) {
   }
   if (conf.interval) {
     argv.push_back("-i");
-    argv.push_back(ConvertToString(conf.interval/1000000));
+    argv.push_back(ConvertToString(conf.interval / 1000000));
   }
   if (conf.dbnum) {
     argv.push_back("-n");
@@ -281,16 +294,16 @@ std::string ConvertToString(const fastonosql::core::redis::Config& conf) {
 
   std::string result;
   for (size_t i = 0; i < argv.size(); ++i) {
-    result+= argv[i];
+    result += argv[i];
     if (i != argv.size() - 1) {
-      result+=" ";
+      result += " ";
     }
   }
 
   return result;
 }
 
-template<>
+template <>
 fastonosql::core::redis::Config ConvertFromString(const std::string& line) {
   int argc = 0;
   sds* argv = sdssplitargslong(line.c_str(), &argc);

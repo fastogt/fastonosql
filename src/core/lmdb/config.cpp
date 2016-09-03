@@ -2,38 +2,46 @@
 
     This file is part of FastoNoSQL.
 
-    FastoNoSQL is free software: you can redistribute it and/or modify
-    it under the terms of the GNU General Public License as published by
-    the Free Software Foundation, either version 3 of the License, or
+    FastoNoSQL is free software: you can redistribute it
+   and/or modify
+    it under the terms of the GNU General Public License as
+   published by
+    the Free Software Foundation, either version 3 of the
+   License, or
     (at your option) any later version.
 
-    FastoNoSQL is distributed in the hope that it will be useful,
-    but WITHOUT ANY WARRANTY; without even the implied warranty of
-    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+    FastoNoSQL is distributed in the hope that it will be
+   useful,
+    but WITHOUT ANY WARRANTY; without even the implied
+   warranty of
+    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
+   See the
     GNU General Public License for more details.
 
-    You should have received a copy of the GNU General Public License
-    along with FastoNoSQL.  If not, see <http://www.gnu.org/licenses/>.
+    You should have received a copy of the GNU General
+   Public License
+    along with FastoNoSQL.  If not, see
+   <http://www.gnu.org/licenses/>.
 */
 
 #include "core/lmdb/config.h"
 
-#include <stddef.h>                     // for size_t
-#include <string.h>                     // for strcmp
+#include <stddef.h>  // for size_t
+#include <string.h>  // for strcmp
 
-#include <string>                       // for string, basic_string
-#include <vector>                       // for vector
+#include <string>  // for string, basic_string
+#include <vector>  // for vector
 
 extern "C" {
-  #include "sds.h"
+#include "sds.h"
 }
 
-#include "common/file_system.h"         // for prepare_path
-#include "common/log_levels.h"          // for LEVEL_LOG::L_WARNING
-#include "common/sprintf.h"             // for MemSPrintf
 #include "common/convert2string.h"
+#include "common/file_system.h"  // for prepare_path
+#include "common/log_levels.h"   // for LEVEL_LOG::L_WARNING
+#include "common/sprintf.h"      // for MemSPrintf
 
-#include "fasto/qt/logger.h"            // for LOG_MSG
+#include "fasto/qt/logger.h"  // for LOG_MSG
 
 namespace fastonosql {
 namespace core {
@@ -56,7 +64,10 @@ Config parseOptions(int argc, char** argv) {
       cfg.create_if_missing = true;
     } else {
       if (argv[i][0] == '-') {
-        const std::string buff = common::MemSPrintf("Unrecognized option or bad number of args for: '%s'", argv[i]);
+        const std::string buff = common::MemSPrintf(
+            "Unrecognized option or bad number of args "
+            "for: '%s'",
+            argv[i]);
         LOG_MSG(buff, common::logging::L_WARNING, true);
         break;
       } else {
@@ -71,8 +82,7 @@ Config parseOptions(int argc, char** argv) {
 }  // namespace
 
 Config::Config()
-  : LocalConfig(common::file_system::prepare_path("~/test.lmdb")), create_if_missing(false) {
-}
+    : LocalConfig(common::file_system::prepare_path("~/test.lmdb")), create_if_missing(false) {}
 
 }  // namespace lmdb
 }  // namespace core
@@ -98,7 +108,7 @@ std::string ConvertToString(const fastonosql::core::lmdb::Config& conf) {
   return result;
 }
 
-template<>
+template <>
 fastonosql::core::lmdb::Config ConvertFromString(const std::string& line) {
   int argc = 0;
   sds* argv = sdssplitargslong(line.c_str(), &argc);

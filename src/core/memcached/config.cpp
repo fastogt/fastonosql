@@ -2,39 +2,47 @@
 
     This file is part of FastoNoSQL.
 
-    FastoNoSQL is free software: you can redistribute it and/or modify
-    it under the terms of the GNU General Public License as published by
-    the Free Software Foundation, either version 3 of the License, or
+    FastoNoSQL is free software: you can redistribute it
+   and/or modify
+    it under the terms of the GNU General Public License as
+   published by
+    the Free Software Foundation, either version 3 of the
+   License, or
     (at your option) any later version.
 
-    FastoNoSQL is distributed in the hope that it will be useful,
-    but WITHOUT ANY WARRANTY; without even the implied warranty of
-    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+    FastoNoSQL is distributed in the hope that it will be
+   useful,
+    but WITHOUT ANY WARRANTY; without even the implied
+   warranty of
+    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
+   See the
     GNU General Public License for more details.
 
-    You should have received a copy of the GNU General Public License
-    along with FastoNoSQL.  If not, see <http://www.gnu.org/licenses/>.
+    You should have received a copy of the GNU General
+   Public License
+    along with FastoNoSQL.  If not, see
+   <http://www.gnu.org/licenses/>.
 */
 
 #include "core/memcached/config.h"
 
-#include <stddef.h>                     // for size_t
-#include <stdint.h>                     // for uint16_t
-#include <string.h>                     // for strcmp
+#include <stddef.h>  // for size_t
+#include <stdint.h>  // for uint16_t
+#include <string.h>  // for strcmp
 
-#include <string>                       // for string, basic_string
-#include <vector>                       // for vector
+#include <string>  // for string, basic_string
+#include <vector>  // for vector
 
 extern "C" {
-  #include "sds.h"
+#include "sds.h"
 }
 
-#include "common/convert2string.h"      // for ConvertFromString
-#include "common/log_levels.h"          // for LEVEL_LOG::L_WARNING
-#include "common/net/types.h"           // for HostAndPort
-#include "common/sprintf.h"             // for MemSPrintf
+#include "common/convert2string.h"  // for ConvertFromString
+#include "common/log_levels.h"      // for LEVEL_LOG::L_WARNING
+#include "common/net/types.h"       // for HostAndPort
+#include "common/sprintf.h"         // for MemSPrintf
 
-#include "fasto/qt/logger.h"            // for LOG_MSG
+#include "fasto/qt/logger.h"  // for LOG_MSG
 
 #define DEFAULT_MEMCACHED_SERVER_PORT 11211
 
@@ -63,7 +71,10 @@ Config parseOptions(int argc, char** argv) {
       cfg.ns_separator = argv[++i];
     } else {
       if (argv[i][0] == '-') {
-        const std::string buff = common::MemSPrintf("Unrecognized option or bad number of args for: '%s'", argv[i]);
+        const std::string buff = common::MemSPrintf(
+            "Unrecognized option or bad number of args "
+            "for: '%s'",
+            argv[i]);
         LOG_MSG(buff, common::logging::L_WARNING, true);
         break;
       } else {
@@ -79,8 +90,9 @@ Config parseOptions(int argc, char** argv) {
 }  // namespace
 
 Config::Config()
-  : RemoteConfig(common::net::HostAndPort::createLocalHost(DEFAULT_MEMCACHED_SERVER_PORT)), user(), password() {
-}
+    : RemoteConfig(common::net::HostAndPort::createLocalHost(DEFAULT_MEMCACHED_SERVER_PORT)),
+      user(),
+      password() {}
 
 }  // namespace memcached
 }  // namespace core
@@ -88,7 +100,7 @@ Config::Config()
 
 namespace common {
 
-std::string ConvertToString(const fastonosql::core::memcached::Config &conf) {
+std::string ConvertToString(const fastonosql::core::memcached::Config& conf) {
   std::vector<std::string> argv = conf.args();
 
   if (!conf.user.empty()) {
@@ -112,7 +124,7 @@ std::string ConvertToString(const fastonosql::core::memcached::Config &conf) {
   return result;
 }
 
-template<>
+template <>
 fastonosql::core::memcached::Config ConvertFromString(const std::string& line) {
   int argc = 0;
   sds* argv = sdssplitargslong(line.c_str(), &argc);

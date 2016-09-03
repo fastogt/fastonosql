@@ -2,18 +2,26 @@
 
     This file is part of FastoNoSQL.
 
-    FastoNoSQL is free software: you can redistribute it and/or modify
-    it under the terms of the GNU General Public License as published by
-    the Free Software Foundation, either version 3 of the License, or
+    FastoNoSQL is free software: you can redistribute it
+   and/or modify
+    it under the terms of the GNU General Public License as
+   published by
+    the Free Software Foundation, either version 3 of the
+   License, or
     (at your option) any later version.
 
-    FastoNoSQL is distributed in the hope that it will be useful,
-    but WITHOUT ANY WARRANTY; without even the implied warranty of
-    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+    FastoNoSQL is distributed in the hope that it will be
+   useful,
+    but WITHOUT ANY WARRANTY; without even the implied
+   warranty of
+    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
+   See the
     GNU General Public License for more details.
 
-    You should have received a copy of the GNU General Public License
-    along with FastoNoSQL.  If not, see <http://www.gnu.org/licenses/>.
+    You should have received a copy of the GNU General
+   Public License
+    along with FastoNoSQL.  If not, see
+   <http://www.gnu.org/licenses/>.
 */
 
 #pragma once
@@ -21,33 +29,32 @@
 #include <QMainWindow>
 
 #include "core/cluster_connection_settings.h"
-#include "core/connection_settings.h"   // for IConnectionSettingsBaseSPtr
+#include "core/connection_settings.h"  // for IConnectionSettingsBaseSPtr
 #include "core/sentinel_connection_settings.h"
 
-class QAction;  // lines 27-27
+class QAction;      // lines 27-27
 class QDockWidget;  // lines 28-28
-class QEvent;  // lines 29-29
-class QShowEvent;  // lines 30-30
+class QEvent;       // lines 29-29
+class QShowEvent;   // lines 30-30
 #ifdef OS_ANDROID
 class QGestureEvent;
 class QSwipeGesture;
 class QTapAndHoldGesture;
 #endif
 
-namespace fastonosql { namespace gui { class ExplorerTreeView; } }  // lines 37-37
+namespace fastonosql {
+namespace gui {
+class ExplorerTreeView;
+}
+}  // lines 37-37
 
 namespace fastonosql {
 namespace gui {
 
-class MainWindow
-  : public QMainWindow {
+class MainWindow : public QMainWindow {
   Q_OBJECT
  public:
-  enum {
-    min_width = 640,
-    min_height = 480,
-    max_recent_connections = 5
-  };
+  enum { min_width = 640, min_height = 480, max_recent_connections = 5 };
 
   MainWindow();
   ~MainWindow();
@@ -78,6 +85,7 @@ class MainWindow
 
   void versionAvailible(bool succesResult, const QString& version);
   void statitsticSent(bool succesResult);
+
  protected:
 #ifdef OS_ANDROID
   virtual bool event(QEvent* event);

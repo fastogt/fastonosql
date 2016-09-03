@@ -2,25 +2,33 @@
 
     This file is part of FastoNoSQL.
 
-    FastoNoSQL is free software: you can redistribute it and/or modify
-    it under the terms of the GNU General Public License as published by
-    the Free Software Foundation, either version 3 of the License, or
+    FastoNoSQL is free software: you can redistribute it
+   and/or modify
+    it under the terms of the GNU General Public License as
+   published by
+    the Free Software Foundation, either version 3 of the
+   License, or
     (at your option) any later version.
 
-    FastoNoSQL is distributed in the hope that it will be useful,
-    but WITHOUT ANY WARRANTY; without even the implied warranty of
-    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+    FastoNoSQL is distributed in the hope that it will be
+   useful,
+    but WITHOUT ANY WARRANTY; without even the implied
+   warranty of
+    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
+   See the
     GNU General Public License for more details.
 
-    You should have received a copy of the GNU General Public License
-    along with FastoNoSQL.  If not, see <http://www.gnu.org/licenses/>.
+    You should have received a copy of the GNU General
+   Public License
+    along with FastoNoSQL.  If not, see
+   <http://www.gnu.org/licenses/>.
 */
 
 #pragma once
 
 #include <QDialog>
 
-#include "core/core_fwd.h"              // for IServerSPtr
+#include "core/core_fwd.h"  // for IServerSPtr
 #include "core/events/events_info.h"
 
 class QComboBox;  // lines 23-23
@@ -29,23 +37,35 @@ class QPushButton;  // lines 24-24
 class QShowEvent;
 class QWidget;
 
-namespace fasto { namespace qt { namespace gui { class GlassWidget; } } }  // lines 32-32
-namespace fasto { namespace qt { namespace gui { class GraphWidget; } } }  // lines 33-33
-namespace fastonosql { namespace core { struct ServerInfoSnapShoot; } }
+namespace fasto {
+namespace qt {
+namespace gui {
+class GlassWidget;
+}
+}
+}  // lines 32-32
+namespace fasto {
+namespace qt {
+namespace gui {
+class GraphWidget;
+}
+}
+}  // lines 33-33
+namespace fastonosql {
+namespace core {
+struct ServerInfoSnapShoot;
+}
+}
 
 namespace fastonosql {
 namespace gui {
 
-class ServerHistoryDialog
-  : public QDialog {
+class ServerHistoryDialog : public QDialog {
   Q_OBJECT
  public:
   explicit ServerHistoryDialog(core::IServerSPtr server, QWidget* parent = 0);
 
-  enum {
-    min_width = 640,
-    min_height = 480
-  };
+  enum { min_width = 640, min_height = 480 };
 
  private Q_SLOTS:
   void startLoadServerHistoryInfo(const core::events_info::ServerInfoHistoryRequest& req);

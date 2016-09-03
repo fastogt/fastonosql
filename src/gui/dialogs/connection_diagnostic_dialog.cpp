@@ -2,40 +2,48 @@
 
     This file is part of FastoNoSQL.
 
-    FastoNoSQL is free software: you can redistribute it and/or modify
-    it under the terms of the GNU General Public License as published by
-    the Free Software Foundation, either version 3 of the License, or
+    FastoNoSQL is free software: you can redistribute it
+   and/or modify
+    it under the terms of the GNU General Public License as
+   published by
+    the Free Software Foundation, either version 3 of the
+   License, or
     (at your option) any later version.
 
-    FastoNoSQL is distributed in the hope that it will be useful,
-    but WITHOUT ANY WARRANTY; without even the implied warranty of
-    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+    FastoNoSQL is distributed in the hope that it will be
+   useful,
+    but WITHOUT ANY WARRANTY; without even the implied
+   warranty of
+    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
+   See the
     GNU General Public License for more details.
 
-    You should have received a copy of the GNU General Public License
-    along with FastoNoSQL.  If not, see <http://www.gnu.org/licenses/>.
+    You should have received a copy of the GNU General
+   Public License
+    along with FastoNoSQL.  If not, see
+   <http://www.gnu.org/licenses/>.
 */
 
 #include "gui/dialogs/connection_diagnostic_dialog.h"
 
-#include <memory>                       // for __shared_ptr
+#include <memory>  // for __shared_ptr
 
-#include <QLabel>
-#include <QVBoxLayout>
 #include <QDialogButtonBox>
 #include <QIcon>
+#include <QLabel>
 #include <QThread>
+#include <QVBoxLayout>
 
-#include "common/macros.h"              // for VERIFY
+#include "common/macros.h"  // for VERIFY
 
-#include "fasto/qt/gui/glass_widget.h"  // for GlassWidget
+#include "fasto/qt/gui/glass_widget.h"    // for GlassWidget
 #include "gui/dialogs/test_connection.h"  // for TestConnection
-#include "gui/gui_factory.h"            // for GuiFactory
+#include "gui/gui_factory.h"              // for GuiFactory
 
 #include "translations/global.h"
 
 namespace {
-  const QSize stateIconSize = QSize(64, 64);
+const QSize stateIconSize = QSize(64, 64);
 }
 
 namespace fastonosql {
@@ -43,10 +51,11 @@ namespace gui {
 
 ConnectionDiagnosticDialog::ConnectionDiagnosticDialog(QWidget* parent,
                                                        core::IConnectionSettingsBaseSPtr connection)
-  : QDialog(parent) {
+    : QDialog(parent) {
   setWindowTitle(translations::trConnectionDiagnostic);
   setWindowIcon(GuiFactory::instance().icon(connection->type()));
-  setWindowFlags(windowFlags() & ~Qt::WindowContextHelpButtonHint);  // Remove help button (?)
+  setWindowFlags(windowFlags() & ~Qt::WindowContextHelpButtonHint);  // Remove help
+                                                                     // button (?)
 
   QVBoxLayout* mainLayout = new QVBoxLayout;
 
@@ -66,8 +75,8 @@ ConnectionDiagnosticDialog::ConnectionDiagnosticDialog(QWidget* parent,
 
   QDialogButtonBox* buttonBox = new QDialogButtonBox(QDialogButtonBox::Ok);
   buttonBox->setOrientation(Qt::Horizontal);
-  VERIFY(connect(buttonBox, &QDialogButtonBox::accepted,
-                 this, &ConnectionDiagnosticDialog::accept));
+  VERIFY(
+      connect(buttonBox, &QDialogButtonBox::accepted, this, &ConnectionDiagnosticDialog::accept));
 
   mainLayout->addWidget(buttonBox);
   mainLayout->setSizeConstraint(QLayout::SetFixedSize);
@@ -80,7 +89,8 @@ ConnectionDiagnosticDialog::ConnectionDiagnosticDialog(QWidget* parent,
 }
 
 void ConnectionDiagnosticDialog::connectionResult(bool suc,
-                                                  qint64 mstimeExecute, const QString& resultText) {
+                                                  qint64 mstimeExecute,
+                                                  const QString& resultText) {
   glassWidget_->stop();
 
   executeTimeLabel_->setText(translations::trTimeTemplate_1S.arg(mstimeExecute));
@@ -102,8 +112,8 @@ void ConnectionDiagnosticDialog::testConnection(core::IConnectionSettingsBaseSPt
   TestConnection* cheker = new TestConnection(connection);
   cheker->moveToThread(th);
   VERIFY(connect(th, &QThread::started, cheker, &TestConnection::routine));
-  VERIFY(connect(cheker, &TestConnection::connectionResult,
-                 this, &ConnectionDiagnosticDialog::connectionResult));
+  VERIFY(connect(cheker, &TestConnection::connectionResult, this,
+                 &ConnectionDiagnosticDialog::connectionResult));
   VERIFY(connect(cheker, &TestConnection::connectionResult, th, &QThread::quit));
   VERIFY(connect(th, &QThread::finished, cheker, &TestConnection::deleteLater));
   VERIFY(connect(th, &QThread::finished, th, &QThread::deleteLater));

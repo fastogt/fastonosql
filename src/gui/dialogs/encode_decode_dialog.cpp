@@ -2,57 +2,66 @@
 
     This file is part of FastoNoSQL.
 
-    FastoNoSQL is free software: you can redistribute it and/or modify
-    it under the terms of the GNU General Public License as published by
-    the Free Software Foundation, either version 3 of the License, or
+    FastoNoSQL is free software: you can redistribute it
+   and/or modify
+    it under the terms of the GNU General Public License as
+   published by
+    the Free Software Foundation, either version 3 of the
+   License, or
     (at your option) any later version.
 
-    FastoNoSQL is distributed in the hope that it will be useful,
-    but WITHOUT ANY WARRANTY; without even the implied warranty of
-    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+    FastoNoSQL is distributed in the hope that it will be
+   useful,
+    but WITHOUT ANY WARRANTY; without even the implied
+   warranty of
+    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
+   See the
     GNU General Public License for more details.
 
-    You should have received a copy of the GNU General Public License
-    along with FastoNoSQL.  If not, see <http://www.gnu.org/licenses/>.
+    You should have received a copy of the GNU General
+   Public License
+    along with FastoNoSQL.  If not, see
+   <http://www.gnu.org/licenses/>.
 */
 
 #include "gui/dialogs/encode_decode_dialog.h"
 
-#include <stddef.h>                     // for size_t
-#include <string>                       // for string
+#include <stddef.h>  // for size_t
+#include <string>    // for string
 
 #include <QComboBox>
-#include <QToolButton>
 #include <QDialogButtonBox>
-#include <QRadioButton>
-#include <QSplitter>
-#include <QVBoxLayout>
 #include <QEvent>
 #include <QPushButton>
+#include <QRadioButton>
+#include <QSplitter>
+#include <QToolButton>
+#include <QVBoxLayout>
 
-#include "common/convert2string.h"      // for ConvertFromString
-#include "common/error.h"               // for Error
-#include "common/macros.h"              // for VERIFY, CHECK, SIZEOFMASS
-#include "common/qt/convert2string.h"   // for ConvertToString
+#include "common/convert2string.h"          // for ConvertFromString
+#include "common/error.h"                   // for Error
+#include "common/macros.h"                  // for VERIFY, CHECK, SIZEOFMASS
+#include "common/qt/convert2string.h"       // for ConvertToString
 #include "common/text_decoders/iedcoder.h"  // for EDTypes, IEDcoder, etc
 
-#include "gui/editor/fasto_editor.h"           // for FastoEditor
-#include "gui/gui_factory.h"            // for GuiFactory
+#include "gui/editor/fasto_editor.h"  // for FastoEditor
+#include "gui/gui_factory.h"          // for GuiFactory
 
-#include "translations/global.h"        // for trDecode, trEncode, etc"
+#include "translations/global.h"  // for trDecode, trEncode, etc"
 
 namespace fastonosql {
 namespace gui {
 
-EncodeDecodeDialog::EncodeDecodeDialog(QWidget* parent)
-  : QDialog(parent) {
+EncodeDecodeDialog::EncodeDecodeDialog(QWidget* parent) : QDialog(parent) {
   setWindowIcon(GuiFactory::instance().encodeDecodeIcon());
-  setWindowFlags(windowFlags() & ~Qt::WindowContextHelpButtonHint);  // Remove help button (?)
+  setWindowFlags(windowFlags() & ~Qt::WindowContextHelpButtonHint);  // Remove help
+                                                                     // button (?)
 
   QVBoxLayout* layout = new QVBoxLayout;
   QDialogButtonBox* buttonBox = new QDialogButtonBox(QDialogButtonBox::Close);
   QPushButton* closeButton = buttonBox->button(QDialogButtonBox::Close);
-  buttonBox->addButton(closeButton, QDialogButtonBox::ButtonRole(QDialogButtonBox::RejectRole | QDialogButtonBox::AcceptRole));
+  buttonBox->addButton(closeButton, QDialogButtonBox::ButtonRole(QDialogButtonBox::RejectRole |
+                                                                 QDialogButtonBox::AcceptRole));
   VERIFY(connect(buttonBox, &QDialogButtonBox::rejected, this, &EncodeDecodeDialog::reject));
 
   QToolButton* decode = new QToolButton;

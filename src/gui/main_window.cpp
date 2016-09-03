@@ -2,28 +2,36 @@
 
     This file is part of FastoNoSQL.
 
-    FastoNoSQL is free software: you can redistribute it and/or modify
-    it under the terms of the GNU General Public License as published by
-    the Free Software Foundation, either version 3 of the License, or
+    FastoNoSQL is free software: you can redistribute it
+   and/or modify
+    it under the terms of the GNU General Public License as
+   published by
+    the Free Software Foundation, either version 3 of the
+   License, or
     (at your option) any later version.
 
-    FastoNoSQL is distributed in the hope that it will be useful,
-    but WITHOUT ANY WARRANTY; without even the implied warranty of
-    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+    FastoNoSQL is distributed in the hope that it will be
+   useful,
+    but WITHOUT ANY WARRANTY; without even the implied
+   warranty of
+    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
+   See the
     GNU General Public License for more details.
 
-    You should have received a copy of the GNU General Public License
-    along with FastoNoSQL.  If not, see <http://www.gnu.org/licenses/>.
+    You should have received a copy of the GNU General
+   Public License
+    along with FastoNoSQL.  If not, see
+   <http://www.gnu.org/licenses/>.
 */
 
 #include "gui/main_window.h"
 
-#include <stddef.h>                     // for size_t
-#include <stdint.h>                     // for uint32_t
+#include <stddef.h>  // for size_t
+#include <stdint.h>  // for uint32_t
 
-#include <memory>                       // for allocator, __shared_ptr
-#include <string>                       // for string, operator+, etc
-#include <vector>                       // for vector
+#include <memory>  // for allocator, __shared_ptr
+#include <string>  // for string, operator+, etc
+#include <vector>  // for vector
 
 #include <QAction>
 #include <QApplication>
@@ -32,46 +40,46 @@
 #include <QFileDialog>
 #include <QMenuBar>
 #include <QMessageBox>
-#include <QToolBar>
 #include <QThread>
+#include <QToolBar>
 
 #ifdef OS_ANDROID
 #include <QGestureEvent>
 #endif
 
-#include "common/convert2string.h"      // for ConvertFromString, etc
-#include "common/error.h"               // for Error, ErrnoErrorValue
-#include "common/file_system.h"         // for File, remove_file, etc
-#include "common/macros.h"              // for VERIFY, DNOTREACHED, CHECK, etc
-#include "common/qt/convert2string.h"   // for ConvertToString
+#include "common/convert2string.h"          // for ConvertFromString, etc
+#include "common/error.h"                   // for Error, ErrnoErrorValue
+#include "common/file_system.h"             // for File, remove_file, etc
+#include "common/macros.h"                  // for VERIFY, DNOTREACHED, CHECK, etc
+#include "common/qt/convert2string.h"       // for ConvertToString
 #include "common/text_decoders/iedcoder.h"  // for IEDcoder, EDTypes::Hex
-#include "common/value.h"               // for ErrorValue
+#include "common/value.h"                   // for ErrorValue
 
-#include "core/command_logger.h"        // for CommandLogger
-#include "core/core_fwd.h"              // for IServerSPtr, IClusterSPtr, etc
-#include "core/icluster.h"              // for ICluster
-#include "core/isentinel.h"             // for ISentinel
-#include "core/servers_manager.h"       // for ServersManager
-#include "core/settings_manager.h"      // for SettingsManager
+#include "core/command_logger.h"    // for CommandLogger
+#include "core/core_fwd.h"          // for IServerSPtr, IClusterSPtr, etc
+#include "core/icluster.h"          // for ICluster
+#include "core/isentinel.h"         // for ISentinel
+#include "core/servers_manager.h"   // for ServersManager
+#include "core/settings_manager.h"  // for SettingsManager
 
-#include "fasto/qt/gui/app_style.h"     // for applyFont, applyStyle
-#include "fasto/qt/gui/shortcuts.h"     // for FastoQKeySequence
-#include "fasto/qt/logger.h"            // for Logger
+#include "fasto/qt/gui/app_style.h"              // for applyFont, applyStyle
+#include "fasto/qt/gui/shortcuts.h"              // for FastoQKeySequence
+#include "fasto/qt/logger.h"                     // for Logger
 #include "fasto/qt/translations/translations.h"  // for applyLanguage
 
-#include "gui/dialogs/about_dialog.h"   // for AboutDialog
-#include "gui/dialogs/connections_dialog.h"  // for ConnectionsDialog
+#include "gui/dialogs/about_dialog.h"          // for AboutDialog
+#include "gui/dialogs/connections_dialog.h"    // for ConnectionsDialog
 #include "gui/dialogs/encode_decode_dialog.h"  // for EncodeDecodeDialog
-#include "gui/dialogs/preferences_dialog.h"  // for PreferencesDialog
-#include "gui/explorer/explorer_tree_view.h"  // for ExplorerTreeView
-#include "gui/gui_factory.h"            // for GuiFactory
-#include "gui/shortcuts.h"              // for fullScreenKey, openKey, etc
-#include "gui/statistic_sender.h"       // for StatisticSender
-#include "gui/update_checker.h"         // for UpdateChecker
-#include "gui/widgets/log_tab_widget.h"  // for LogTabWidget
-#include "gui/widgets/main_widget.h"    // for MainWidget
+#include "gui/dialogs/preferences_dialog.h"    // for PreferencesDialog
+#include "gui/explorer/explorer_tree_view.h"   // for ExplorerTreeView
+#include "gui/gui_factory.h"                   // for GuiFactory
+#include "gui/shortcuts.h"                     // for fullScreenKey, openKey, etc
+#include "gui/statistic_sender.h"              // for StatisticSender
+#include "gui/update_checker.h"                // for UpdateChecker
+#include "gui/widgets/log_tab_widget.h"        // for LogTabWidget
+#include "gui/widgets/main_widget.h"           // for MainWidget
 
-#include "translations/global.h"        // for trError, trCheckVersion, etc
+#include "translations/global.h"  // for trError, trCheckVersion, etc
 
 namespace {
 
@@ -94,8 +102,7 @@ const QKeySequence explorerKeySequence = Qt::CTRL + Qt::Key_T;
 namespace fastonosql {
 namespace gui {
 
-MainWindow::MainWindow()
-  : QMainWindow(), isCheckedInSession_(false) {
+MainWindow::MainWindow() : QMainWindow(), isCheckedInSession_(false) {
 #ifdef OS_ANDROID
   setAttribute(Qt::WA_AcceptTouchEvents);
   // setAttribute(Qt::WA_StaticContents);
@@ -103,9 +110,9 @@ MainWindow::MainWindow()
   // grabGesture(Qt::TapGesture);  // click
   grabGesture(Qt::TapAndHoldGesture);  // long tap
 
-  // grabGesture(Qt::SwipeGesture);  // swipe
-  // grabGesture(Qt::PanGesture);  // drag and drop
-  // grabGesture(Qt::PinchGesture);  // zoom
+// grabGesture(Qt::SwipeGesture);  // swipe
+// grabGesture(Qt::PanGesture);  // drag and drop
+// grabGesture(Qt::PinchGesture);  // zoom
 #endif
   QString lang = core::SettingsManager::instance().currentLanguage();
   QString newLang = fasto::qt::translations::applyLanguage(lang);
@@ -154,8 +161,8 @@ MainWindow::MainWindow()
   recentConnections_ = fileMenu->addMenu(recentMenu);
   for (auto i = 0; i < max_recent_connections; ++i) {
     recentConnectionsActs_[i] = new QAction(this);
-    VERIFY(connect(recentConnectionsActs_[i], &QAction::triggered,
-                   this, &MainWindow::openRecentConnection));
+    VERIFY(connect(recentConnectionsActs_[i], &QAction::triggered, this,
+                   &MainWindow::openRecentConnection));
     recentMenu->addAction(recentConnectionsActs_[i]);
   }
 
@@ -182,8 +189,8 @@ MainWindow::MainWindow()
 
   encodeDecodeDialogAction_ = new QAction(this);
   encodeDecodeDialogAction_->setIcon(GuiFactory::instance().encodeDecodeIcon());
-  VERIFY(connect(encodeDecodeDialogAction_, &QAction::triggered,
-                 this, &MainWindow::openEncodeDecodeDialog));
+  VERIFY(connect(encodeDecodeDialogAction_, &QAction::triggered, this,
+                 &MainWindow::openEncodeDecodeDialog));
   tools->addAction(encodeDecodeDialogAction_);
 
   // window menu
@@ -220,10 +227,10 @@ MainWindow::MainWindow()
 
   exp_ = new ExplorerTreeView(this);
   VERIFY(connect(exp_, &ExplorerTreeView::openedConsole, mainW, &MainWidget::openConsole));
-  VERIFY(connect(exp_, &ExplorerTreeView::closeServer,
-                 &core::ServersManager::instance(), &core::ServersManager::closeServer));
-  VERIFY(connect(exp_, &ExplorerTreeView::closeCluster,
-                 &core::ServersManager::instance(), &core::ServersManager::closeCluster));
+  VERIFY(connect(exp_, &ExplorerTreeView::closeServer, &core::ServersManager::instance(),
+                 &core::ServersManager::closeServer));
+  VERIFY(connect(exp_, &ExplorerTreeView::closeCluster, &core::ServersManager::instance(),
+                 &core::ServersManager::closeCluster));
   expDock_ = new QDockWidget(this);
   explorerAction_ = expDock_->toggleViewAction();
   explorerAction_->setShortcut(explorerKeySequence);
@@ -238,10 +245,10 @@ MainWindow::MainWindow()
   addDockWidget(Qt::LeftDockWidgetArea, expDock_);
 
   LogTabWidget* log = new LogTabWidget(this);
-  VERIFY(connect(&fasto::qt::Logger::instance(), &fasto::qt::Logger::printed,
-                 log, &LogTabWidget::addLogMessage));
-  VERIFY(connect(&core::CommandLogger::instance(), &core::CommandLogger::printed,
-                 log, &LogTabWidget::addCommand));
+  VERIFY(connect(&fasto::qt::Logger::instance(), &fasto::qt::Logger::printed, log,
+                 &LogTabWidget::addLogMessage));
+  VERIFY(connect(&core::CommandLogger::instance(), &core::CommandLogger::printed, log,
+                 &LogTabWidget::addCommand));
   logDock_ = new QDockWidget(this);
   logsAction_ = logDock_->toggleViewAction();
   logsAction_->setShortcut(logsKeySequence);
@@ -378,9 +385,10 @@ void MainWindow::openRecentConnection() {
 }
 
 void MainWindow::loadConnection() {
-  QString standardIni = common::ConvertFromString<QString>(core::SettingsManager::settingsFilePath());
-  QString filepathR = QFileDialog::getOpenFileName(this, tr("Select settings file"),
-                                                   standardIni, tr("Settings files (*.ini)"));
+  QString standardIni =
+      common::ConvertFromString<QString>(core::SettingsManager::settingsFilePath());
+  QString filepathR = QFileDialog::getOpenFileName(this, tr("Select settings file"), standardIni,
+                                                   tr("Settings files (*.ini)"));
   if (filepathR.isNull()) {
     return;
   }
@@ -543,8 +551,12 @@ void MainWindow::versionAvailible(bool succesResult, const QString& version) {
     QMessageBox::information(this, translations::trCheckVersion,
                              QObject::tr("Availible new version: %1").arg(version));
   } else {
-    QMessageBox::information(this, translations::trCheckVersion,
-                             QObject::tr("<h3>You're' up-to-date!</h3>" PROJECT_NAME_TITLE " %1 is currently the newest version available.").arg(version));
+    QMessageBox::information(
+        this, translations::trCheckVersion,
+        QObject::tr("<h3>You're' "
+                    "up-to-date!</h3>" PROJECT_NAME_TITLE " %1 is currently the newest version "
+                    "available.")
+            .arg(version));
   }
 
   checkUpdateAction_->setEnabled(isn);
@@ -572,7 +584,8 @@ bool MainWindow::gestureEvent(QGestureEvent* event) {
     QPanGesture* pan = static_cast<QPanGesture*>(qpan);
   }
   if (QGesture* qpinch = event->gesture(Qt::PinchGesture)){
-    QPinchGesture* pinch = static_cast<QPinchGesture*>(qpinch);
+    QPinchGesture* pinch =
+  static_cast<QPinchGesture*>(qpinch);
   }
   if (QGesture* qtap = event->gesture(Qt::TapGesture)){
     QTapGesture* tap = static_cast<QTapGesture*>(qtap);
@@ -590,8 +603,7 @@ bool MainWindow::gestureEvent(QGestureEvent* event) {
   return true;
 }
 
-void MainWindow::swipeTriggered(QSwipeGesture* swipeEvent) {
-}
+void MainWindow::swipeTriggered(QSwipeGesture* swipeEvent) {}
 
 void MainWindow::tapAndHoldTriggered(QTapAndHoldGesture* tapEvent) {
   QPoint pos = tapEvent->position().toPoint();
@@ -647,8 +659,7 @@ void MainWindow::openGithubLink() {
   QDesktopServices::openUrl(QUrl(PROJECT_GITHUB_LINK));
 }
 
-void MainWindow::createStatusBar() {
-}
+void MainWindow::createStatusBar() {}
 
 void MainWindow::retranslateUi() {
   openAction_->setText(translations::trOpen);
@@ -779,4 +790,3 @@ void MainWindow::createCluster(core::IClusterSettingsBaseSPtr settings) {
 
 }  // namespace gui
 }  // namespace fastonosql
-

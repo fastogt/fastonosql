@@ -2,31 +2,39 @@
 
     This file is part of FastoNoSQL.
 
-    FastoNoSQL is free software: you can redistribute it and/or modify
-    it under the terms of the GNU General Public License as published by
-    the Free Software Foundation, either version 3 of the License, or
+    FastoNoSQL is free software: you can redistribute it
+   and/or modify
+    it under the terms of the GNU General Public License as
+   published by
+    the Free Software Foundation, either version 3 of the
+   License, or
     (at your option) any later version.
 
-    FastoNoSQL is distributed in the hope that it will be useful,
-    but WITHOUT ANY WARRANTY; without even the implied warranty of
-    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+    FastoNoSQL is distributed in the hope that it will be
+   useful,
+    but WITHOUT ANY WARRANTY; without even the implied
+   warranty of
+    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
+   See the
     GNU General Public License for more details.
 
-    You should have received a copy of the GNU General Public License
-    along with FastoNoSQL.  If not, see <http://www.gnu.org/licenses/>.
+    You should have received a copy of the GNU General
+   Public License
+    along with FastoNoSQL.  If not, see
+   <http://www.gnu.org/licenses/>.
 */
 
 #include "gui/statistic_sender.h"
 
-#include <sys/types.h>                  // for ssize_t
+#include <sys/types.h>  // for ssize_t
 
-#include <memory>                       // for __shared_ptr
-#include <string>                       // for string
+#include <memory>  // for __shared_ptr
+#include <string>  // for string
 
-#include "common/error.h"               // for ErrnoError, ErrnoErrorValue
-#include "common/macros.h"              // for MCHECK
-#include "common/net/socket_tcp.h"      // for ClientSocketTcp
-#include "common/net/types.h"           // for HostAndPort
+#include "common/error.h"                    // for ErrnoError, ErrnoErrorValue
+#include "common/macros.h"                   // for MCHECK
+#include "common/net/socket_tcp.h"           // for ClientSocketTcp
+#include "common/net/types.h"                // for HostAndPort
 #include "common/system_info/system_info.h"  // for SystemInfo, etc
 #include "common/third-party/json-c/json-c/json_object.h"
 
@@ -35,9 +43,7 @@
 namespace fastonosql {
 namespace gui {
 
-StatisticSender::StatisticSender(QObject* parent)
-  : QObject(parent) {
-}
+StatisticSender::StatisticSender(QObject* parent) : QObject(parent) {}
 
 void StatisticSender::routine() {
 #if defined(FASTONOSQL)
@@ -45,7 +51,7 @@ void StatisticSender::routine() {
 #elif defined(FASTOREDIS)
   common::net::ClientSocketTcp s(common::net::HostAndPort(FASTOREDIS_URL, SERV_STATISTIC_PORT));
 #else
-  #error please specify url and port to send statistic information
+#error please specify url and port to send statistic information
 #endif
   common::ErrnoError err = s.connect();
   if (err && err->isError()) {
@@ -64,7 +70,8 @@ void StatisticSender::routine() {
 
   json_object* project_json = json_object_new_object();
   json_object_object_add(project_json, FIELD_PROJECT_NAME, json_object_new_string(PROJECT_NAME));
-  json_object_object_add(project_json, FIELD_PROJECT_VERSION, json_object_new_string(PROJECT_VERSION));
+  json_object_object_add(project_json, FIELD_PROJECT_VERSION,
+                         json_object_new_string(PROJECT_VERSION));
   json_object_object_add(project_json, FILED_PROJECT_ARCH, json_object_new_string(PROJECT_ARCH));
   json_object_object_add(stats_json, FIELD_PROJECT, project_json);
 
@@ -86,4 +93,3 @@ void StatisticSender::routine() {
 
 }  // namespace gui
 }  // namespace fastonosql
-

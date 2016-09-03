@@ -2,39 +2,46 @@
 
     This file is part of FastoNoSQL.
 
-    FastoNoSQL is free software: you can redistribute it and/or modify
-    it under the terms of the GNU General Public License as published by
-    the Free Software Foundation, either version 3 of the License, or
+    FastoNoSQL is free software: you can redistribute it
+   and/or modify
+    it under the terms of the GNU General Public License as
+   published by
+    the Free Software Foundation, either version 3 of the
+   License, or
     (at your option) any later version.
 
-    FastoNoSQL is distributed in the hope that it will be useful,
-    but WITHOUT ANY WARRANTY; without even the implied warranty of
-    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+    FastoNoSQL is distributed in the hope that it will be
+   useful,
+    but WITHOUT ANY WARRANTY; without even the implied
+   warranty of
+    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
+   See the
     GNU General Public License for more details.
 
-    You should have received a copy of the GNU General Public License
-    along with FastoNoSQL.  If not, see <http://www.gnu.org/licenses/>.
+    You should have received a copy of the GNU General
+   Public License
+    along with FastoNoSQL.  If not, see
+   <http://www.gnu.org/licenses/>.
 */
 
 #include "gui/fasto_text_view.h"
 
-#include <QVBoxLayout>
 #include <QEvent>
 #include <QPushButton>
 #include <QRadioButton>
+#include <QVBoxLayout>
 
-#include "common/macros.h"              // for VERIFY
+#include "common/macros.h"  // for VERIFY
 
-#include "gui/editor/fasto_editor_output.h"           // for FastoEditorOutput, CSV, etc
-#include "gui/gui_factory.h"            // for GuiFactory
+#include "gui/editor/fasto_editor_output.h"  // for FastoEditorOutput, CSV, etc
+#include "gui/gui_factory.h"                 // for GuiFactory
 
-#include "translations/global.h"        // for trCsv, trGzip, trHex, etc
+#include "translations/global.h"  // for trCsv, trGzip, trHex, etc
 
 namespace fastonosql {
 namespace gui {
 
-FastoTextView::FastoTextView(const QString& delimiter, QWidget* parent)
-  : QWidget(parent) {
+FastoTextView::FastoTextView(const QString& delimiter, QWidget* parent) : QWidget(parent) {
   QVBoxLayout* mainL = new QVBoxLayout;
 
   editor_ = new FastoEditorOutput(delimiter);
@@ -71,7 +78,8 @@ FastoTextView::FastoTextView(const QString& delimiter, QWidget* parent)
   mainL->addLayout(radLaout);
   mainL->addWidget(editor_);
   mainL->setContentsMargins(0, 0, 0, 0);
-  QHBoxLayout* hlayout = new QHBoxLayout;;
+  QHBoxLayout* hlayout = new QHBoxLayout;
+  ;
   hlayout->addWidget(saveChangeButton_, 0, Qt::AlignRight);
 
   mainL->addLayout(hlayout);
@@ -86,57 +94,57 @@ void FastoTextView::setModel(QAbstractItemModel* model) {
 }
 
 void FastoTextView::saveChanges() {
-  QModelIndex index = editor_->selectedItem(1); //eValue
+  QModelIndex index = editor_->selectedItem(1);  // eValue
   editor_->setData(index, editor_->text().simplified());
 }
 
 void FastoTextView::textChange() {
-  QModelIndex index = editor_->selectedItem(1); //eValue
-  bool isEnabled = !editor_->isReadOnly() && index.isValid()
-      && (index.flags() & Qt::ItemIsEditable)
-      && index.data() != editor_->text().simplified();
+  QModelIndex index = editor_->selectedItem(1);  // eValue
+  bool isEnabled = !editor_->isReadOnly() && index.isValid() &&
+                   (index.flags() & Qt::ItemIsEditable) &&
+                   index.data() != editor_->text().simplified();
 
   saveChangeButton_->setEnabled(isEnabled);
 }
 
 void FastoTextView::viewChange(bool checked) {
-  if (!checked){
+  if (!checked) {
     return;
   }
 
-  if(jsonRadioButton_->isChecked()){
+  if (jsonRadioButton_->isChecked()) {
     editor_->viewChange(JSON);
     return;
   }
 
-  if(csvRadioButton_->isChecked()){
+  if (csvRadioButton_->isChecked()) {
     editor_->viewChange(CSV);
     return;
   }
 
-  if(rawRadioButton_->isChecked()){
+  if (rawRadioButton_->isChecked()) {
     editor_->viewChange(RAW);
     return;
   }
 
-  if(hexRadioButton_->isChecked()){
+  if (hexRadioButton_->isChecked()) {
     editor_->viewChange(HEX);
     return;
   }
 
-  if(msgPackRadioButton_->isChecked()){
+  if (msgPackRadioButton_->isChecked()) {
     editor_->viewChange(MSGPACK);
     return;
   }
 
-  if(gzipRadioButton_->isChecked()){
+  if (gzipRadioButton_->isChecked()) {
     editor_->viewChange(GZIP);
     return;
   }
 }
 
 void FastoTextView::changeEvent(QEvent* ev) {
-  if(ev->type() == QEvent::LanguageChange){
+  if (ev->type() == QEvent::LanguageChange) {
     retranslateUi();
   }
 

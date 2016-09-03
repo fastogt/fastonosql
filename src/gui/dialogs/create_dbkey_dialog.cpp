@@ -2,68 +2,79 @@
 
     This file is part of FastoNoSQL.
 
-    FastoNoSQL is free software: you can redistribute it and/or modify
-    it under the terms of the GNU General Public License as published by
-    the Free Software Foundation, either version 3 of the License, or
+    FastoNoSQL is free software: you can redistribute it
+   and/or modify
+    it under the terms of the GNU General Public License as
+   published by
+    the Free Software Foundation, either version 3 of the
+   License, or
     (at your option) any later version.
 
-    FastoNoSQL is distributed in the hope that it will be useful,
-    but WITHOUT ANY WARRANTY; without even the implied warranty of
-    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+    FastoNoSQL is distributed in the hope that it will be
+   useful,
+    but WITHOUT ANY WARRANTY; without even the implied
+   warranty of
+    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
+   See the
     GNU General Public License for more details.
 
-    You should have received a copy of the GNU General Public License
-    along with FastoNoSQL.  If not, see <http://www.gnu.org/licenses/>.
+    You should have received a copy of the GNU General
+   Public License
+    along with FastoNoSQL.  If not, see
+   <http://www.gnu.org/licenses/>.
 */
 
 #include "gui/dialogs/create_dbkey_dialog.h"
 
-#include <stddef.h>                     // for size_t
+#include <stddef.h>  // for size_t
 
-#include <memory>                       // for unique_ptr
-#include <string>                       // for string
-#include <vector>                       // for vector
+#include <memory>  // for unique_ptr
+#include <string>  // for string
+#include <vector>  // for vector
 
+#include <QAction>
 #include <QComboBox>
-#include <QLabel>
+#include <QDialogButtonBox>
+#include <QEvent>
 #include <QGridLayout>
+#include <QGroupBox>
+#include <QHeaderView>
+#include <QLabel>
 #include <QLineEdit>
 #include <QListWidget>
-#include <QTableWidget>
-#include <QAction>
 #include <QPushButton>
-#include <QHeaderView>
-#include <QDialogButtonBox>
-#include <QGroupBox>
-#include <QEvent>
+#include <QTableWidget>
 
-#include "common/convert2string.h"      // for ConvertFromString
-#include "common/macros.h"              // for VERIFY, CHECK, NOTREACHED
-#include "common/qt/convert2string.h"   // for ConvertToString
-#include "common/value.h"               // for Value, Value::Type, etc
+#include "common/convert2string.h"     // for ConvertFromString
+#include "common/macros.h"             // for VERIFY, CHECK, NOTREACHED
+#include "common/qt/convert2string.h"  // for ConvertToString
+#include "common/value.h"              // for Value, Value::Type, etc
 
 #include "core/db_traits.h"
 
-#include "gui/dialogs/input_dialog.h"   // for InputDialog, etc
-#include "gui/gui_factory.h"            // for GuiFactory
+#include "gui/dialogs/input_dialog.h"  // for InputDialog, etc
+#include "gui/gui_factory.h"           // for GuiFactory
 
-#include "translations/global.h"        // for trAddItem, trRemoveItem, etc
+#include "translations/global.h"  // for trAddItem, trRemoveItem, etc
 
 namespace {
-  const QString trType = QObject::tr("Type:");
-  const QString trKey = QObject::tr("Key:");
-  const QString trValue = QObject::tr("Value:");
-  const QString trInput = QObject::tr("Key/Value input");
+const QString trType = QObject::tr("Type:");
+const QString trKey = QObject::tr("Key:");
+const QString trValue = QObject::tr("Value:");
+const QString trInput = QObject::tr("Key/Value input");
 }
 
 namespace fastonosql {
 namespace gui {
 
-CreateDbKeyDialog::CreateDbKeyDialog(const QString& title, core::connectionTypes type, QWidget* parent)
-  : QDialog(parent), type_(type), value_() {
+CreateDbKeyDialog::CreateDbKeyDialog(const QString& title,
+                                     core::connectionTypes type,
+                                     QWidget* parent)
+    : QDialog(parent), type_(type), value_() {
   setWindowIcon(GuiFactory::instance().icon(type));
   setWindowTitle(title);
-  setWindowFlags(windowFlags() & ~Qt::WindowContextHelpButtonHint);  // Remove help button (?)
+  setWindowFlags(windowFlags() & ~Qt::WindowContextHelpButtonHint);  // Remove help
+                                                                     // button (?)
 
   QGridLayout* kvLayout = new QGridLayout;
   kvLayout->addWidget(new QLabel(trType), 0, 0);
@@ -80,8 +91,8 @@ CreateDbKeyDialog::CreateDbKeyDialog(const QString& title, core::connectionTypes
   }
 
   typedef void (QComboBox::*ind)(int);
-  VERIFY(connect(typesCombo_, static_cast<ind>(&QComboBox::currentIndexChanged),
-                 this, &CreateDbKeyDialog::typeChanged));
+  VERIFY(connect(typesCombo_, static_cast<ind>(&QComboBox::currentIndexChanged), this,
+                 &CreateDbKeyDialog::typeChanged));
   kvLayout->addWidget(typesCombo_, 0, 1);
 
   // key layout
@@ -148,7 +159,8 @@ CreateDbKeyDialog::CreateDbKeyDialog(const QString& title, core::connectionTypes
   QVBoxLayout* layout = new QVBoxLayout;
   layout->addWidget(generalBox_);
 
-  QDialogButtonBox* buttonBox = new QDialogButtonBox(QDialogButtonBox::Cancel | QDialogButtonBox::Ok);
+  QDialogButtonBox* buttonBox =
+      new QDialogButtonBox(QDialogButtonBox::Cancel | QDialogButtonBox::Ok);
   buttonBox->setOrientation(Qt::Horizontal);
   VERIFY(connect(buttonBox, &QDialogButtonBox::accepted, this, &CreateDbKeyDialog::accept));
   VERIFY(connect(buttonBox, &QDialogButtonBox::rejected, this, &CreateDbKeyDialog::reject));
@@ -221,7 +233,7 @@ void CreateDbKeyDialog::addItem() {
   QVariant var = typesCombo_->itemData(index);
   common::Value::Type t = static_cast<common::Value::Type>(qvariant_cast<unsigned char>(var));
 
-  if (valueListEdit_->isVisible()) { // array
+  if (valueListEdit_->isVisible()) {  // array
     CHECK(t == common::Value::TYPE_SET || t == common::Value::TYPE_ARRAY);
     InputDialog diag(this, translations::trAddItem, InputDialog::SingleLine, translations::trValue);
     if (t == common::Value::TYPE_SET) {
@@ -244,11 +256,13 @@ void CreateDbKeyDialog::addItem() {
     CHECK(t == common::Value::TYPE_HASH || t == common::Value::TYPE_ZSET);
     common::scoped_ptr<InputDialog> diag;
     if (t == common::Value::TYPE_HASH) {
-      diag.reset(new InputDialog(this, translations::trAddItem, InputDialog::DoubleLine, translations::trField, translations::trValue));
+      diag.reset(new InputDialog(this, translations::trAddItem, InputDialog::DoubleLine,
+                                 translations::trField, translations::trValue));
       diag->setFirstPlaceholderText("[field]");
       diag->setSecondPlaceholderText("[value]");
     } else if (t == common::Value::TYPE_ZSET) {
-      diag.reset(new InputDialog(this, translations::trAddItem, InputDialog::DoubleLine, translations::trScore, translations::trMember));
+      diag.reset(new InputDialog(this, translations::trAddItem, InputDialog::DoubleLine,
+                                 translations::trScore, translations::trMember));
       diag->setFirstPlaceholderText("[score]");
       diag->setSecondPlaceholderText("[member]");
     }
@@ -274,7 +288,7 @@ void CreateDbKeyDialog::addItem() {
     }
   } else if (valueEdit_->isVisible()) {
     CHECK(t == common::Value::TYPE_STRING || t == common::Value::TYPE_DOUBLE ||
-          t == common::Value::TYPE_INTEGER || t == common::Value::TYPE_UINTEGER );
+          t == common::Value::TYPE_INTEGER || t == common::Value::TYPE_UINTEGER);
   } else if (boolValueEdit_->isVisible()) {
     CHECK(t == common::Value::TYPE_BOOLEAN);
   } else {

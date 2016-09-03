@@ -2,24 +2,32 @@
 
     This file is part of FastoNoSQL.
 
-    FastoNoSQL is free software: you can redistribute it and/or modify
-    it under the terms of the GNU General Public License as published by
-    the Free Software Foundation, either version 3 of the License, or
+    FastoNoSQL is free software: you can redistribute it
+   and/or modify
+    it under the terms of the GNU General Public License as
+   published by
+    the Free Software Foundation, either version 3 of the
+   License, or
     (at your option) any later version.
 
-    FastoNoSQL is distributed in the hope that it will be useful,
-    but WITHOUT ANY WARRANTY; without even the implied warranty of
-    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+    FastoNoSQL is distributed in the hope that it will be
+   useful,
+    but WITHOUT ANY WARRANTY; without even the implied
+   warranty of
+    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
+   See the
     GNU General Public License for more details.
 
-    You should have received a copy of the GNU General Public License
-    along with FastoNoSQL.  If not, see <http://www.gnu.org/licenses/>.
+    You should have received a copy of the GNU General
+   Public License
+    along with FastoNoSQL.  If not, see
+   <http://www.gnu.org/licenses/>.
 */
 
 #pragma once
 
-#include <stdint.h>                     // for uint8_t, uint32_t, etc
-#include <string>                       // for string
+#include <stdint.h>  // for uint8_t, uint32_t, etc
+#include <string>    // for string
 
 #define UNDEFINED_SINCE 0x00000000U
 #define UNDEFINED_SINCE_STR "Undefined"
@@ -31,8 +39,10 @@ namespace fastonosql {
 namespace core {
 
 struct CommandInfo {
-  CommandInfo(const std::string& name, const std::string& params,
-              const std::string& summary, uint32_t since,
+  CommandInfo(const std::string& name,
+              const std::string& params,
+              const std::string& summary,
+              uint32_t since,
               const std::string& example,
               uint8_t required_arguments_count,
               uint8_t optional_arguments_count);

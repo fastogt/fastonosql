@@ -2,34 +2,44 @@
 
     This file is part of FastoNoSQL.
 
-    FastoNoSQL is free software: you can redistribute it and/or modify
-    it under the terms of the GNU General Public License as published by
-    the Free Software Foundation, either version 3 of the License, or
+    FastoNoSQL is free software: you can redistribute it
+   and/or modify
+    it under the terms of the GNU General Public License as
+   published by
+    the Free Software Foundation, either version 3 of the
+   License, or
     (at your option) any later version.
 
-    FastoNoSQL is distributed in the hope that it will be useful,
-    but WITHOUT ANY WARRANTY; without even the implied warranty of
-    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+    FastoNoSQL is distributed in the hope that it will be
+   useful,
+    but WITHOUT ANY WARRANTY; without even the implied
+   warranty of
+    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
+   See the
     GNU General Public License for more details.
 
-    You should have received a copy of the GNU General Public License
-    along with FastoNoSQL.  If not, see <http://www.gnu.org/licenses/>.
+    You should have received a copy of the GNU General
+   Public License
+    along with FastoNoSQL.  If not, see
+   <http://www.gnu.org/licenses/>.
 */
 
 #pragma once
 
 #include <QTreeWidgetItem>
 
-#include "core/connection_settings.h"   // for IClusterSettingsBaseSPtr, etc
-#include "core/sentinel_connection_settings.h"
 #include "core/cluster_connection_settings.h"
-#include "core/types.h"                 // for ServerCommonInfo
+#include "core/connection_settings.h"  // for IClusterSettingsBaseSPtr, etc
+#include "core/sentinel_connection_settings.h"
+#include "core/types.h"  // for ServerCommonInfo
 
 namespace fastonosql {
 namespace gui {
 
-class DirectoryListWidgetItem  // directory can hold many (common, cluster or sentinel_container)
-  : public QTreeWidgetItem {
+class DirectoryListWidgetItem  // directory can hold many
+                               // (common, cluster or
+                               // sentinel_container)
+    : public QTreeWidgetItem {
  public:
   DirectoryListWidgetItem(const core::IConnectionSettingsBase::connection_path_t& path);
   core::IConnectionSettingsBase::connection_path_t path() const;
@@ -39,7 +49,7 @@ class DirectoryListWidgetItem  // directory can hold many (common, cluster or se
 };
 
 class IConnectionListWidgetItem  // base class
-  : public QTreeWidgetItem {
+    : public QTreeWidgetItem {
  public:
   enum itemConnectionType { Common, Discovered, Sentinel };
   virtual void setConnection(core::IConnectionSettingsBaseSPtr cons);
@@ -54,15 +64,16 @@ class IConnectionListWidgetItem  // base class
 };
 
 class ConnectionListWidgetItem  // common connection
-  : public IConnectionListWidgetItem {
+    : public IConnectionListWidgetItem {
  public:
   explicit ConnectionListWidgetItem(QTreeWidgetItem* parent);
   virtual void setConnection(core::IConnectionSettingsBaseSPtr cons);
   virtual itemConnectionType type() const;
 };
 
-class ConnectionListWidgetItemDiscovered  // returned after discovered
-  : public ConnectionListWidgetItem {
+class ConnectionListWidgetItemDiscovered  // returned after
+                                          // discovered
+    : public ConnectionListWidgetItem {
  public:
   ConnectionListWidgetItemDiscovered(const core::ServerCommonInfo& info, QTreeWidgetItem* parent);
   virtual itemConnectionType type() const;
@@ -71,8 +82,11 @@ class ConnectionListWidgetItemDiscovered  // returned after discovered
   core::ServerCommonInfo info_;
 };
 
-class SentinelConnectionListWidgetItemContainer  // can hold many sentinel connections
-  : public QTreeWidgetItem {
+class SentinelConnectionListWidgetItemContainer  // can hold
+                                                 // many
+                                                 // sentinel
+    // connections
+    : public QTreeWidgetItem {
  public:
   explicit SentinelConnectionListWidgetItemContainer(core::ISentinelSettingsBaseSPtr connection,
                                                      QTreeWidgetItem* parent);
@@ -84,14 +98,17 @@ class SentinelConnectionListWidgetItemContainer  // can hold many sentinel conne
 };
 
 class SentinelConnectionWidgetItem  // sentinel connection
-  : public ConnectionListWidgetItemDiscovered {
+    : public ConnectionListWidgetItemDiscovered {
  public:
-  SentinelConnectionWidgetItem(const core::ServerCommonInfo& info, SentinelConnectionListWidgetItemContainer* parent);
+  SentinelConnectionWidgetItem(const core::ServerCommonInfo& info,
+                               SentinelConnectionListWidgetItemContainer* parent);
   virtual itemConnectionType type() const;
 };
 
-class ClusterConnectionListWidgetItemContainer  // can hold many connections
-  : public QTreeWidgetItem {
+class ClusterConnectionListWidgetItemContainer  // can hold
+                                                // many
+                                                // connections
+    : public QTreeWidgetItem {
  public:
   explicit ClusterConnectionListWidgetItemContainer(core::IClusterSettingsBaseSPtr connection,
                                                     QTreeWidgetItem* parent);

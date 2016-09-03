@@ -2,42 +2,48 @@
 
     This file is part of FastoNoSQL.
 
-    FastoNoSQL is free software: you can redistribute it and/or modify
-    it under the terms of the GNU General Public License as published by
-    the Free Software Foundation, either version 3 of the License, or
+    FastoNoSQL is free software: you can redistribute it
+   and/or modify
+    it under the terms of the GNU General Public License as
+   published by
+    the Free Software Foundation, either version 3 of the
+   License, or
     (at your option) any later version.
 
-    FastoNoSQL is distributed in the hope that it will be useful,
-    but WITHOUT ANY WARRANTY; without even the implied warranty of
-    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+    FastoNoSQL is distributed in the hope that it will be
+   useful,
+    but WITHOUT ANY WARRANTY; without even the implied
+   warranty of
+    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
+   See the
     GNU General Public License for more details.
 
-    You should have received a copy of the GNU General Public License
-    along with FastoNoSQL.  If not, see <http://www.gnu.org/licenses/>.
+    You should have received a copy of the GNU General
+   Public License
+    along with FastoNoSQL.  If not, see
+   <http://www.gnu.org/licenses/>.
 */
 
 #include "core/idatabase.h"
 
-#include <memory>                       // for __shared_ptr
-#include <string>                       // for string
+#include <memory>  // for __shared_ptr
+#include <string>  // for string
 
-#include "common/macros.h"              // for DCHECK_EQ, CHECK
+#include "common/macros.h"  // for DCHECK_EQ, CHECK
 
-#include "core/events/events_info.h"    // for ClearDatabaseRequest, etc
-#include "core/iserver.h"               // for IServer
+#include "core/events/events_info.h"  // for ClearDatabaseRequest, etc
+#include "core/iserver.h"             // for IServer
 
 namespace fastonosql {
 namespace core {
 
-IDatabase::IDatabase(IServerSPtr server, IDataBaseInfoSPtr info)
-  : info_(info), server_(server) {
+IDatabase::IDatabase(IServerSPtr server, IDataBaseInfoSPtr info) : info_(info), server_(server) {
   CHECK(server);
   CHECK(info);
   CHECK(server->type() == info->type());
 }
 
-IDatabase::~IDatabase() {
-}
+IDatabase::~IDatabase() {}
 
 connectionTypes IDatabase::type() const {
   return info_->type();

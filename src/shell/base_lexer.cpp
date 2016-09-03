@@ -2,34 +2,41 @@
 
     This file is part of FastoNoSQL.
 
-    FastoNoSQL is free software: you can redistribute it and/or modify
-    it under the terms of the GNU General Public License as published by
-    the Free Software Foundation, either version 3 of the License, or
+    FastoNoSQL is free software: you can redistribute it
+   and/or modify
+    it under the terms of the GNU General Public License as
+   published by
+    the Free Software Foundation, either version 3 of the
+   License, or
     (at your option) any later version.
 
-    FastoNoSQL is distributed in the hope that it will be useful,
-    but WITHOUT ANY WARRANTY; without even the implied warranty of
-    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+    FastoNoSQL is distributed in the hope that it will be
+   useful,
+    but WITHOUT ANY WARRANTY; without even the implied
+   warranty of
+    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
+   See the
     GNU General Public License for more details.
 
-    You should have received a copy of the GNU General Public License
-    along with FastoNoSQL.  If not, see <http://www.gnu.org/licenses/>.
+    You should have received a copy of the GNU General
+   Public License
+    along with FastoNoSQL.  If not, see
+   <http://www.gnu.org/licenses/>.
 */
 
 #include "shell/base_lexer.h"
 
-#include "common/convert2string.h"      // for ConvertFromString
-#include "common/macros.h"              // for UNUSED, CHECK
+#include "common/convert2string.h"  // for ConvertFromString
+#include "common/macros.h"          // for UNUSED, CHECK
 
 #include "core/command_holder.h"
-#include "core/command_info.h"          // for CommandInfo, etc
+#include "core/command_info.h"  // for CommandInfo, etc
 
 namespace fastonosql {
 namespace shell {
 
 BaseQsciApi::BaseQsciApi(QsciLexer* lexer)
-  : QsciAbstractAPIs(lexer), filtered_version_(UNDEFINED_SINCE) {
-}
+    : QsciAbstractAPIs(lexer), filtered_version_(UNDEFINED_SINCE) {}
 
 bool BaseQsciApi::canSkipCommand(const core::CommandInfo& info) const {
   if (filtered_version_ == UNDEFINED_SINCE) {
@@ -49,11 +56,10 @@ void BaseQsciApi::setFilteredVersion(uint32_t version) {
 
 BaseQsciApiCommandHolder::BaseQsciApiCommandHolder(const std::vector<core::CommandHolder>& commands,
                                                    QsciLexer* lexer)
-  : BaseQsciApi(lexer), commands_(commands) {
+    : BaseQsciApi(lexer), commands_(commands) {}
 
-}
-
-void BaseQsciApiCommandHolder::updateAutoCompletionList(const QStringList& context, QStringList& list) {
+void BaseQsciApiCommandHolder::updateAutoCompletionList(const QStringList& context,
+                                                        QStringList& list) {
   for (auto it = context.begin(); it != context.end(); ++it) {
     QString val = *it;
     for (size_t i = 0; i < commands_.size(); ++i) {
@@ -70,8 +76,10 @@ void BaseQsciApiCommandHolder::updateAutoCompletionList(const QStringList& conte
   }
 }
 
-QStringList BaseQsciApiCommandHolder::callTips(const QStringList& context, int commas,
-                                 QsciScintilla::CallTipsStyle style, QList<int>& shifts) {
+QStringList BaseQsciApiCommandHolder::callTips(const QStringList& context,
+                                               int commas,
+                                               QsciScintilla::CallTipsStyle style,
+                                               QList<int>& shifts) {
   UNUSED(commas);
   UNUSED(style);
   UNUSED(shifts);
@@ -91,16 +99,14 @@ QStringList BaseQsciApiCommandHolder::callTips(const QStringList& context, int c
   return QStringList();
 }
 
-BaseQsciLexer::BaseQsciLexer(QObject* parent)
-  : QsciLexerCustom(parent) {
-}
+BaseQsciLexer::BaseQsciLexer(QObject* parent) : QsciLexerCustom(parent) {}
 
 QString BaseQsciLexer::description(int style) const {
   switch (style) {
-  case Default:
-    return "Default";
-  case Command:
-    return "Command";
+    case Default:
+      return "Default";
+    case Command:
+      return "Command";
   }
 
   return QString(style);
@@ -108,10 +114,10 @@ QString BaseQsciLexer::description(int style) const {
 
 QColor BaseQsciLexer::defaultColor(int style) const {
   switch (style) {
-  case Default:
-    return Qt::black;
-  case Command:
-    return Qt::red;
+    case Default:
+      return Qt::black;
+    case Command:
+      return Qt::red;
   }
 
   return Qt::black;
@@ -123,10 +129,10 @@ BaseQsciApi* BaseQsciLexer::apis() const {
   return api;
 }
 
-BaseQsciLexerCommandHolder::BaseQsciLexerCommandHolder(const std::vector<core::CommandHolder>& commands,
-                                                       QObject* parent)
-  : BaseQsciLexer(parent), commands_(commands) {
-}
+BaseQsciLexerCommandHolder::BaseQsciLexerCommandHolder(
+    const std::vector<core::CommandHolder>& commands,
+    QObject* parent)
+    : BaseQsciLexer(parent), commands_(commands) {}
 
 std::vector<uint32_t> BaseQsciLexerCommandHolder::supportedVersions() const {
   std::vector<uint32_t> result;
@@ -163,7 +169,7 @@ void BaseQsciLexerCommandHolder::styleText(int start, int end) {
   char* data = new char[end - start + 1];
   editor()->SendScintilla(QsciScintilla::SCI_GETTEXTRANGE, start, end, data);
   QString source(data);
-  delete [] data;
+  delete[] data;
 
   if (source.isEmpty()) {
     return;
@@ -191,10 +197,11 @@ void BaseQsciLexerCommandHolder::paintCommands(const QString& source, int start)
 QString makeCallTip(const core::CommandInfo& info) {
   std::string since_str = core::convertVersionNumberToReadableString(info.since);
   QString qsince_str = common::ConvertFromString<QString>(since_str);
-  return QString("Arguments: %1\nSummary: %2\nSince: %3\nExample: %4")
+  return QString(
+             "Arguments: %1\nSummary: %2\nSince: "
+             "%3\nExample: %4")
       .arg(common::ConvertFromString<QString>(info.params),
-           common::ConvertFromString<QString>(info.summary),
-           qsince_str,
+           common::ConvertFromString<QString>(info.summary), qsince_str,
            common::ConvertFromString<QString>(info.example));
 }
 

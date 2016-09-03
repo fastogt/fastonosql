@@ -2,45 +2,53 @@
 
     This file is part of FastoNoSQL.
 
-    FastoNoSQL is free software: you can redistribute it and/or modify
-    it under the terms of the GNU General Public License as published by
-    the Free Software Foundation, either version 3 of the License, or
+    FastoNoSQL is free software: you can redistribute it
+   and/or modify
+    it under the terms of the GNU General Public License as
+   published by
+    the Free Software Foundation, either version 3 of the
+   License, or
     (at your option) any later version.
 
-    FastoNoSQL is distributed in the hope that it will be useful,
-    but WITHOUT ANY WARRANTY; without even the implied warranty of
-    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+    FastoNoSQL is distributed in the hope that it will be
+   useful,
+    but WITHOUT ANY WARRANTY; without even the implied
+   warranty of
+    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
+   See the
     GNU General Public License for more details.
 
-    You should have received a copy of the GNU General Public License
-    along with FastoNoSQL.  If not, see <http://www.gnu.org/licenses/>.
+    You should have received a copy of the GNU General
+   Public License
+    along with FastoNoSQL.  If not, see
+   <http://www.gnu.org/licenses/>.
 */
 
 #include "gui/editor/fasto_hex_edit.h"
 
 #include <QKeyEvent>
-#include <QPainter>
 #include <QPaintEvent>
+#include <QPainter>
 #include <QScrollBar>
 
-#include "common/macros.h"              // for UNUSED, NOTREACHED
+#include "common/macros.h"  // for UNUSED, NOTREACHED
 
 namespace {
-  const QColor selectedColor = QColor(0x6d, 0x9e, 0xff, 0xff);
+const QColor selectedColor = QColor(0x6d, 0x9e, 0xff, 0xff);
 }
 
 namespace fastonosql {
 namespace gui {
 
 FastoHexEdit::FastoHexEdit(QWidget* parent)
-  : base_class(parent), mode_(TEXT_MODE), in_selection_state_(false) {
+    : base_class(parent), mode_(TEXT_MODE), in_selection_state_(false) {
   setFocusPolicy(Qt::StrongFocus);
 }
 
 QString FastoHexEdit::text() const {
   if (mode_ == HEX_MODE) {
     return data_;
-  } else if(mode_ == TEXT_MODE) {
+  } else if (mode_ == TEXT_MODE) {
     return toPlainText();
   } else if (mode_ == HTML_MODE) {
     return toHtml();
@@ -60,7 +68,7 @@ void FastoHexEdit::setData(const QByteArray& arr) {
     verticalScrollBar()->setValue(0);
     data_ = arr;
     viewport()->update();
-  } else if(mode_ == TEXT_MODE) {
+  } else if (mode_ == TEXT_MODE) {
     setText(arr);
   } else if (mode_ == HTML_MODE) {
     setHtml(arr);
@@ -103,7 +111,7 @@ QSize FastoHexEdit::fullSize() const {
 
   const int wid = xPosEnd - xPosStart;
   const int widchars = wid - TextMarginXY * 2;
-  const int xPosAscii = widchars/4 * 3;  // line pos
+  const int xPosAscii = widchars / 4 * 3;  // line pos
 
   int acharInLine = asciiCharInLine(widchars);
 
@@ -146,7 +154,7 @@ void FastoHexEdit::paintEvent(QPaintEvent* event) {
       return;
     }
 
-    const int xPosAscii = widchars/4 * 3;  // line pos
+    const int xPosAscii = widchars / 4 * 3;  // line pos
     const int xPosAsciiStart = xPosAscii + TextMarginXY;
 
     int indexCount = data_.size() / acharInLine;
@@ -165,8 +173,8 @@ void FastoHexEdit::paintEvent(QPaintEvent* event) {
     painter.setPen(Qt::black);
 
     int size = data_.size();
-    for (int lineIdx = firstLineIdx, yPos = yPosStart;
-         lineIdx < lastLineIdx; lineIdx += 1, yPos += charH) {
+    for (int lineIdx = firstLineIdx, yPos = yPosStart; lineIdx < lastLineIdx;
+         lineIdx += 1, yPos += charH) {
       QByteArray part = data_.begin() + (lineIdx * acharInLine);
       int part_size = size / acharInLine ? acharInLine : size % acharInLine;
       part.resize(part_size);
@@ -250,7 +258,7 @@ int FastoHexEdit::positionAtPoint(const QPoint& point) const {
 
   const int wid = xPosEnd - xPosStart;
   const int widchars = wid - TextMarginXY * 2;
-  const int xPosAscii = widchars/4 * 3;  // line pos
+  const int xPosAscii = widchars / 4 * 3;  // line pos
 
   int acharInLine = asciiCharInLine(widchars);
   if (acharInLine < 0) {

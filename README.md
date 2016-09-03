@@ -111,6 +111,7 @@ Executable will be placed to: target/debug/app/out
 -->
 
 **Style**<br/>
+.clang_format
 cmake -DCHECK_STYLE=ON
 make check_style
 Note: needed clang-tidy

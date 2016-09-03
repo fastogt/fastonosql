@@ -2,53 +2,64 @@
 
     This file is part of FastoNoSQL.
 
-    FastoNoSQL is free software: you can redistribute it and/or modify
-    it under the terms of the GNU General Public License as published by
-    the Free Software Foundation, either version 3 of the License, or
+    FastoNoSQL is free software: you can redistribute it
+   and/or modify
+    it under the terms of the GNU General Public License as
+   published by
+    the Free Software Foundation, either version 3 of the
+   License, or
     (at your option) any later version.
 
-    FastoNoSQL is distributed in the hope that it will be useful,
-    but WITHOUT ANY WARRANTY; without even the implied warranty of
-    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+    FastoNoSQL is distributed in the hope that it will be
+   useful,
+    but WITHOUT ANY WARRANTY; without even the implied
+   warranty of
+    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
+   See the
     GNU General Public License for more details.
 
-    You should have received a copy of the GNU General Public License
-    along with FastoNoSQL.  If not, see <http://www.gnu.org/licenses/>.
+    You should have received a copy of the GNU General
+   Public License
+    along with FastoNoSQL.  If not, see
+   <http://www.gnu.org/licenses/>.
 */
 
 #include "gui/dialogs/load_contentdb_dialog.h"
 
 #include <QDialogButtonBox>
-#include <QVBoxLayout>
 #include <QLabel>
 #include <QLineEdit>
 #include <QMessageBox>
 #include <QSpinBox>
+#include <QVBoxLayout>
 
-#include "common/macros.h"              // for VERIFY
+#include "common/macros.h"  // for VERIFY
 
-#include "gui/gui_factory.h"            // for GuiFactory
+#include "gui/gui_factory.h"  // for GuiFactory
 
-#include "translations/global.h"        // for trError
+#include "translations/global.h"  // for trError
 
 namespace {
-  const QString trInvalidPattern = QObject::tr("Invalid pattern!");
-  const QString trKeysCount = QObject::tr("Keys count:");
-  const QString trPattern = QObject::tr("Pattern:");
-  const QString defaultPattern = "*";
+const QString trInvalidPattern = QObject::tr("Invalid pattern!");
+const QString trKeysCount = QObject::tr("Keys count:");
+const QString trPattern = QObject::tr("Pattern:");
+const QString defaultPattern = "*";
 }
 
 namespace fastonosql {
 namespace gui {
 
 LoadContentDbDialog::LoadContentDbDialog(const QString& title,
-                                         core::connectionTypes type, QWidget* parent)
-  : QDialog(parent), type_(type) {
+                                         core::connectionTypes type,
+                                         QWidget* parent)
+    : QDialog(parent), type_(type) {
   setWindowTitle(title);
   setWindowIcon(GuiFactory::instance().icon(type_));
-  setWindowFlags(windowFlags() & ~Qt::WindowContextHelpButtonHint);  // Remove help button (?)
+  setWindowFlags(windowFlags() & ~Qt::WindowContextHelpButtonHint);  // Remove help
+                                                                     // button (?)
 
-  QDialogButtonBox* buttonBox = new QDialogButtonBox(QDialogButtonBox::Cancel | QDialogButtonBox::Ok);
+  QDialogButtonBox* buttonBox =
+      new QDialogButtonBox(QDialogButtonBox::Cancel | QDialogButtonBox::Ok);
   buttonBox->setOrientation(Qt::Horizontal);
   VERIFY(connect(buttonBox, &QDialogButtonBox::accepted, this, &LoadContentDbDialog::accept));
   VERIFY(connect(buttonBox, &QDialogButtonBox::rejected, this, &LoadContentDbDialog::reject));

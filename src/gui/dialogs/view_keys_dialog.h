@@ -2,56 +2,95 @@
 
     This file is part of FastoNoSQL.
 
-    FastoNoSQL is free software: you can redistribute it and/or modify
-    it under the terms of the GNU General Public License as published by
-    the Free Software Foundation, either version 3 of the License, or
+    FastoNoSQL is free software: you can redistribute it
+   and/or modify
+    it under the terms of the GNU General Public License as
+   published by
+    the Free Software Foundation, either version 3 of the
+   License, or
     (at your option) any later version.
 
-    FastoNoSQL is distributed in the hope that it will be useful,
-    but WITHOUT ANY WARRANTY; without even the implied warranty of
-    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+    FastoNoSQL is distributed in the hope that it will be
+   useful,
+    but WITHOUT ANY WARRANTY; without even the implied
+   warranty of
+    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
+   See the
     GNU General Public License for more details.
 
-    You should have received a copy of the GNU General Public License
-    along with FastoNoSQL.  If not, see <http://www.gnu.org/licenses/>.
+    You should have received a copy of the GNU General
+   Public License
+    along with FastoNoSQL.  If not, see
+   <http://www.gnu.org/licenses/>.
 */
 
 #pragma once
 
-#include <stddef.h>                     // for size_t
-#include <stdint.h>                     // for uint32_t
+#include <stddef.h>  // for size_t
+#include <stdint.h>  // for uint32_t
 
-#include <vector>                       // for vector
+#include <vector>  // for vector
 
 #include <QDialog>
 
-#include "core/command_key.h"           // for CommandKeySPtr
-#include "core/core_fwd.h"              // for IDatabaseSPtr
+#include "core/command_key.h"  // for CommandKeySPtr
+#include "core/core_fwd.h"     // for IDatabaseSPtr
 
 class QEvent;
-class QLabel;  // lines 30-30
+class QLabel;     // lines 30-30
 class QLineEdit;  // lines 28-28
 class QPushButton;
 class QSpinBox;  // lines 29-29
 class QWidget;
 
-namespace fastonosql { namespace core { namespace events_info { struct CommandRequest; } } }
-namespace fastonosql { namespace core { namespace events_info { struct CommandResponce; } } }
-namespace fastonosql { namespace core { namespace events_info { struct LoadDatabaseContentRequest; } } }
-namespace fastonosql { namespace core { namespace events_info { struct LoadDatabaseContentResponce; } } }
-namespace fastonosql { namespace gui { class FastoTableView; } }  // lines 35-35
-namespace fastonosql { namespace gui { class KeysTableModel; } }  // lines 36-36
+namespace fastonosql {
+namespace core {
+namespace events_info {
+struct CommandRequest;
+}
+}
+}
+namespace fastonosql {
+namespace core {
+namespace events_info {
+struct CommandResponce;
+}
+}
+}
+namespace fastonosql {
+namespace core {
+namespace events_info {
+struct LoadDatabaseContentRequest;
+}
+}
+}
+namespace fastonosql {
+namespace core {
+namespace events_info {
+struct LoadDatabaseContentResponce;
+}
+}
+}
+namespace fastonosql {
+namespace gui {
+class FastoTableView;
+}
+}  // lines 35-35
+namespace fastonosql {
+namespace gui {
+class KeysTableModel;
+}
+}  // lines 36-36
 
 namespace fastonosql {
 namespace gui {
 
-class ViewKeysDialog
-  : public QDialog {
+class ViewKeysDialog : public QDialog {
   Q_OBJECT
  public:
   enum {
     min_width = 320,
-    min_height = 200,    
+    min_height = 200,
     min_key_on_page = 1,
     max_key_on_page = 100,
     defaults_key = 10,

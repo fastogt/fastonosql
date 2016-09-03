@@ -2,40 +2,49 @@
 
     This file is part of FastoNoSQL.
 
-    FastoNoSQL is free software: you can redistribute it and/or modify
-    it under the terms of the GNU General Public License as published by
-    the Free Software Foundation, either version 3 of the License, or
+    FastoNoSQL is free software: you can redistribute it
+   and/or modify
+    it under the terms of the GNU General Public License as
+   published by
+    the Free Software Foundation, either version 3 of the
+   License, or
     (at your option) any later version.
 
-    FastoNoSQL is distributed in the hope that it will be useful,
-    but WITHOUT ANY WARRANTY; without even the implied warranty of
-    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+    FastoNoSQL is distributed in the hope that it will be
+   useful,
+    but WITHOUT ANY WARRANTY; without even the implied
+   warranty of
+    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
+   See the
     GNU General Public License for more details.
 
-    You should have received a copy of the GNU General Public License
-    along with FastoNoSQL.  If not, see <http://www.gnu.org/licenses/>.
+    You should have received a copy of the GNU General
+   Public License
+    along with FastoNoSQL.  If not, see
+   <http://www.gnu.org/licenses/>.
 */
 
 #include "gui/dialogs/connection_listwidget_items.h"
 
-#include <stddef.h>                     // for size_t
+#include <stddef.h>  // for size_t
 
-#include <memory>                       // for __shared_ptr
-#include <string>                       // for string
-#include <vector>                       // for vector
+#include <memory>  // for __shared_ptr
+#include <string>  // for string
+#include <vector>  // for vector
 
-#include "common/convert2string.h"      // for ConvertFromString
-#include "common/macros.h"              // for DNOTREACHED
+#include "common/convert2string.h"  // for ConvertFromString
+#include "common/macros.h"          // for DNOTREACHED
 
-#include "core/connection_types.h"      // for ConvertToString, etc
+#include "core/connection_types.h"  // for ConvertToString, etc
 
-#include "gui/gui_factory.h"            // for GuiFactory
+#include "gui/gui_factory.h"  // for GuiFactory
 
 namespace fastonosql {
 namespace gui {
 
-DirectoryListWidgetItem::DirectoryListWidgetItem(const core::IConnectionSettings::connection_path_t& path)
-  : path_(path) {
+DirectoryListWidgetItem::DirectoryListWidgetItem(
+    const core::IConnectionSettings::connection_path_t& path)
+    : path_(path) {
   std::string dir_name = path.name();
   setText(0, common::ConvertFromString<QString>(dir_name));
   setIcon(0, GuiFactory::instance().directoryIcon());
@@ -47,8 +56,7 @@ core::IConnectionSettingsBase::connection_path_t DirectoryListWidgetItem::path()
 }
 
 IConnectionListWidgetItem::IConnectionListWidgetItem(QTreeWidgetItem* parent)
-  : QTreeWidgetItem(parent), connection_() {
-}
+    : QTreeWidgetItem(parent), connection_() {}
 
 void IConnectionListWidgetItem::setConnection(core::IConnectionSettingsBaseSPtr cons) {
   connection_ = cons;
@@ -59,8 +67,7 @@ core::IConnectionSettingsBaseSPtr IConnectionListWidgetItem::connection() const 
 }
 
 ConnectionListWidgetItem::ConnectionListWidgetItem(QTreeWidgetItem* parent)
-  : IConnectionListWidgetItem(parent) {
-}
+    : IConnectionListWidgetItem(parent) {}
 
 void ConnectionListWidgetItem::setConnection(core::IConnectionSettingsBaseSPtr cons) {
   if (!cons) {
@@ -82,16 +89,21 @@ IConnectionListWidgetItem::itemConnectionType ConnectionListWidgetItem::type() c
   return Common;
 }
 
-SentinelConnectionWidgetItem::SentinelConnectionWidgetItem(const core::ServerCommonInfo& info, SentinelConnectionListWidgetItemContainer* parent)
-  : ConnectionListWidgetItemDiscovered(info, parent) {  // core::SENTINEL
+SentinelConnectionWidgetItem::SentinelConnectionWidgetItem(
+    const core::ServerCommonInfo& info,
+    SentinelConnectionListWidgetItemContainer* parent)
+    : ConnectionListWidgetItemDiscovered(info,
+                                         parent) {  // core::SENTINEL
 }
 
 IConnectionListWidgetItem::itemConnectionType SentinelConnectionWidgetItem::type() const {
   return Sentinel;
 }
 
-ConnectionListWidgetItemDiscovered::ConnectionListWidgetItemDiscovered(const core::ServerCommonInfo& info, QTreeWidgetItem* parent)
-  : ConnectionListWidgetItem(parent), info_(info) {
+ConnectionListWidgetItemDiscovered::ConnectionListWidgetItemDiscovered(
+    const core::ServerCommonInfo& info,
+    QTreeWidgetItem* parent)
+    : ConnectionListWidgetItem(parent), info_(info) {
   std::string stype = common::ConvertToString(info_.type);
   setText(2, common::ConvertFromString<QString>(stype));
   std::string sstate = common::ConvertToString(info_.state);
@@ -102,15 +114,17 @@ IConnectionListWidgetItem::itemConnectionType ConnectionListWidgetItemDiscovered
   return Discovered;
 }
 
-SentinelConnectionListWidgetItemContainer::SentinelConnectionListWidgetItemContainer(core::ISentinelSettingsBaseSPtr connection,
-                                                                                     QTreeWidgetItem* parent)
-  : QTreeWidgetItem(parent), connection_() {
+SentinelConnectionListWidgetItemContainer::SentinelConnectionListWidgetItemContainer(
+    core::ISentinelSettingsBaseSPtr connection,
+    QTreeWidgetItem* parent)
+    : QTreeWidgetItem(parent), connection_() {
   setConnection(connection);
 
   core::ISentinelSettingsBase::sentinel_connections_t sentinels = connection_->sentinels();
   for (size_t i = 0; i < sentinels.size(); ++i) {
     core::SentinelSettings sent = sentinels[i];
-    SentinelConnectionWidgetItem* item = new SentinelConnectionWidgetItem(core::ServerCommonInfo(), this);
+    SentinelConnectionWidgetItem* item =
+        new SentinelConnectionWidgetItem(core::ServerCommonInfo(), this);
     item->setConnection(sent.sentinel);
     addChild(item);
     for (size_t j = 0; j < sent.sentinel_nodes.size(); ++j) {
@@ -122,7 +136,8 @@ SentinelConnectionListWidgetItemContainer::SentinelConnectionListWidgetItemConta
   }
 }
 
-void SentinelConnectionListWidgetItemContainer::setConnection(core::ISentinelSettingsBaseSPtr cons) {
+void SentinelConnectionListWidgetItemContainer::setConnection(
+    core::ISentinelSettingsBaseSPtr cons) {
   if (!cons) {
     return;
   }
@@ -137,9 +152,10 @@ core::ISentinelSettingsBaseSPtr SentinelConnectionListWidgetItemContainer::conne
   return connection_;
 }
 
-ClusterConnectionListWidgetItemContainer::ClusterConnectionListWidgetItemContainer(core::IClusterSettingsBaseSPtr connection,
-                                                                                   QTreeWidgetItem* parent)
-  : QTreeWidgetItem(parent), connection_() {
+ClusterConnectionListWidgetItemContainer::ClusterConnectionListWidgetItemContainer(
+    core::IClusterSettingsBaseSPtr connection,
+    QTreeWidgetItem* parent)
+    : QTreeWidgetItem(parent), connection_() {
   setConnection(connection);
 
   auto nodes = connection_->nodes();

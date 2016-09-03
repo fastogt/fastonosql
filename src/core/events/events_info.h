@@ -2,31 +2,39 @@
 
     This file is part of FastoNoSQL.
 
-    FastoNoSQL is free software: you can redistribute it and/or modify
-    it under the terms of the GNU General Public License as published by
-    the Free Software Foundation, either version 3 of the License, or
+    FastoNoSQL is free software: you can redistribute it
+   and/or modify
+    it under the terms of the GNU General Public License as
+   published by
+    the Free Software Foundation, either version 3 of the
+   License, or
     (at your option) any later version.
 
-    FastoNoSQL is distributed in the hope that it will be useful,
-    but WITHOUT ANY WARRANTY; without even the implied warranty of
-    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+    FastoNoSQL is distributed in the hope that it will be
+   useful,
+    but WITHOUT ANY WARRANTY; without even the implied
+   warranty of
+    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
+   See the
     GNU General Public License for more details.
 
-    You should have received a copy of the GNU General Public License
-    along with FastoNoSQL.  If not, see <http://www.gnu.org/licenses/>.
+    You should have received a copy of the GNU General
+   Public License
+    along with FastoNoSQL.  If not, see
+   <http://www.gnu.org/licenses/>.
 */
 
 #pragma once
 
-#include <stddef.h>                     // for size_t
-#include <stdint.h>                     // for uint32_t, uint8_t
+#include <stddef.h>  // for size_t
+#include <stdint.h>  // for uint32_t, uint8_t
 
-#include <string>                       // for string
-#include <vector>                       // for vector
+#include <string>  // for string
+#include <vector>  // for vector
 
-#include "common/error.h"               // for Error
-#include "common/qt/utils_qt.h"         // for EventInfo<>::error_type, etc
-#include "common/types.h"               // for time64_t
+#include "common/error.h"        // for Error
+#include "common/qt/utils_qt.h"  // for EventInfo<>::error_type, etc
+#include "common/types.h"        // for time64_t
 
 #include "core/command_key.h"           // for CommandKeySPtr
 #include "core/connection_types.h"      // for ConnectionMode
@@ -34,124 +42,109 @@
 #include "core/server_property_info.h"  // for property_t, etc
 #include "core/types.h"                 // for ServerInfoSnapShoot, etc
 
-#include "global/global.h"              // for FastoObjectIPtr
+#include "global/global.h"  // for FastoObjectIPtr
 
 namespace fastonosql {
 namespace core {
 namespace events_info {
 
-class EventInfoBase
-  : public common::utils_qt::EventInfo<common::Error> {
+class EventInfoBase : public common::utils_qt::EventInfo<common::Error> {
  public:
-  typedef common::utils_qt::EventInfo<common::Error > base_class;
+  typedef common::utils_qt::EventInfo<common::Error> base_class;
   explicit EventInfoBase(initiator_type sender, error_type er = error_type());
-  EventInfoBase(initiator_type sender, common::time64_t time_start,
-                error_type er = error_type());
+  EventInfoBase(initiator_type sender, common::time64_t time_start, error_type er = error_type());
   common::time64_t elapsedTime() const;
 
  private:
   const common::time64_t time_start_;
 };
 
-struct ConnectInfoRequest
-  : public EventInfoBase {
+struct ConnectInfoRequest : public EventInfoBase {
   typedef EventInfoBase base_class;
   explicit ConnectInfoRequest(initiator_type sender, error_type er = error_type());
 };
 
-struct ConnectInfoResponce
-  : ConnectInfoRequest {
+struct ConnectInfoResponce : ConnectInfoRequest {
   typedef ConnectInfoRequest base_class;
   explicit ConnectInfoResponce(const base_class& request);
 };
 
-struct ShutDownInfoRequest
-  : public EventInfoBase {
+struct ShutDownInfoRequest : public EventInfoBase {
   typedef EventInfoBase base_class;
   explicit ShutDownInfoRequest(initiator_type sender, error_type er = error_type());
 };
 
-struct ShutDownInfoResponce
-  : ShutDownInfoRequest {
+struct ShutDownInfoResponce : ShutDownInfoRequest {
   typedef ShutDownInfoRequest base_class;
   explicit ShutDownInfoResponce(const base_class& request);
 };
 
-struct BackupInfoRequest
-  : public EventInfoBase {
+struct BackupInfoRequest : public EventInfoBase {
   typedef EventInfoBase base_class;
   BackupInfoRequest(initiator_type sender, const std::string& path, error_type er = error_type());
   std::string path;
 };
 
-struct BackupInfoResponce
-  : BackupInfoRequest {
+struct BackupInfoResponce : BackupInfoRequest {
   typedef BackupInfoRequest base_class;
   explicit BackupInfoResponce(const base_class& request);
 };
 
-struct ExportInfoRequest
-  : public EventInfoBase {
+struct ExportInfoRequest : public EventInfoBase {
   typedef EventInfoBase base_class;
   ExportInfoRequest(initiator_type sender, const std::string& path, error_type er = error_type());
   std::string path;
 };
 
-struct ExportInfoResponce
-  : ExportInfoRequest {
+struct ExportInfoResponce : ExportInfoRequest {
   typedef ExportInfoRequest base_class;
   explicit ExportInfoResponce(const base_class& request);
 };
 
-struct ChangePasswordRequest
-  : public EventInfoBase {
+struct ChangePasswordRequest : public EventInfoBase {
   typedef EventInfoBase base_class;
-  ChangePasswordRequest(initiator_type sender, const std::string& oldPassword,
-                        const std::string& newPassword, error_type er = error_type());
+  ChangePasswordRequest(initiator_type sender,
+                        const std::string& oldPassword,
+                        const std::string& newPassword,
+                        error_type er = error_type());
   std::string old_password;
   std::string new_password;
 };
 
-struct ChangePasswordResponce
-  : ChangePasswordRequest {
+struct ChangePasswordResponce : ChangePasswordRequest {
   typedef ChangePasswordRequest base_class;
   explicit ChangePasswordResponce(const base_class& request);
 };
 
-struct ChangeMaxConnectionRequest
-  : public EventInfoBase {
+struct ChangeMaxConnectionRequest : public EventInfoBase {
   typedef EventInfoBase base_class;
-  ChangeMaxConnectionRequest(initiator_type sender, int maxConnection,
+  ChangeMaxConnectionRequest(initiator_type sender,
+                             int maxConnection,
                              error_type er = error_type());
   int max_connection;
 };
 
-struct ChangeMaxConnectionResponce
-  : ChangeMaxConnectionRequest {
+struct ChangeMaxConnectionResponce : ChangeMaxConnectionRequest {
   typedef ChangeMaxConnectionRequest base_class;
   explicit ChangeMaxConnectionResponce(const base_class& request);
 };
 
-struct ProcessConfigArgsInfoRequest
-  : public EventInfoBase {
+struct ProcessConfigArgsInfoRequest : public EventInfoBase {
   typedef EventInfoBase base_class;
   explicit ProcessConfigArgsInfoRequest(initiator_type sender, error_type er = error_type());
 };
 
-struct ProcessConfigArgsInfoResponce
-  : ProcessConfigArgsInfoRequest {
+struct ProcessConfigArgsInfoResponce : ProcessConfigArgsInfoRequest {
   typedef ProcessConfigArgsInfoRequest base_class;
   explicit ProcessConfigArgsInfoResponce(const base_class& request);
 };
 
-struct DiscoveryInfoRequest
-  : public EventInfoBase {
+struct DiscoveryInfoRequest : public EventInfoBase {
   typedef EventInfoBase base_class;
   explicit DiscoveryInfoRequest(initiator_type sender, error_type er = error_type());
 };
 
-struct DiscoveryInfoResponce
-  : DiscoveryInfoRequest {
+struct DiscoveryInfoResponce : DiscoveryInfoRequest {
   typedef DiscoveryInfoRequest base_class;
   explicit DiscoveryInfoResponce(const base_class& request);
 
@@ -159,55 +152,52 @@ struct DiscoveryInfoResponce
   IDataBaseInfoSPtr dbinfo;
 };
 
-struct EnterModeInfo
-  : public EventInfoBase {
+struct EnterModeInfo : public EventInfoBase {
   typedef EventInfoBase base_class;
   EnterModeInfo(initiator_type sender, ConnectionMode mode, error_type er = error_type());
   ConnectionMode mode;
 };
 
-struct LeaveModeInfo
-  : public EventInfoBase {
+struct LeaveModeInfo : public EventInfoBase {
   typedef EventInfoBase base_class;
   LeaveModeInfo(initiator_type sender, ConnectionMode mode, error_type er = error_type());
   ConnectionMode mode;
 };
 
-struct CommandRootCreatedInfo
-  : public EventInfoBase {
+struct CommandRootCreatedInfo : public EventInfoBase {
   typedef EventInfoBase base_class;
   CommandRootCreatedInfo(initiator_type sender, FastoObjectIPtr root, error_type er = error_type());
 
   FastoObjectIPtr root;
 };
 
-struct CommandRootCompleatedInfo
-  : public EventInfoBase {
+struct CommandRootCompleatedInfo : public EventInfoBase {
   typedef EventInfoBase base_class;
   CommandRootCompleatedInfo(initiator_type sender,
-                            FastoObjectIPtr root, error_type er = error_type());
-  CommandRootCompleatedInfo(initiator_type sender, common::time64_t timest,
-                            FastoObjectIPtr root, error_type er = error_type());
+                            FastoObjectIPtr root,
+                            error_type er = error_type());
+  CommandRootCompleatedInfo(initiator_type sender,
+                            common::time64_t timest,
+                            FastoObjectIPtr root,
+                            error_type er = error_type());
 
   FastoObjectIPtr root;
 };
 
-struct DisConnectInfoRequest
-  : public EventInfoBase {
+struct DisConnectInfoRequest : public EventInfoBase {
   typedef EventInfoBase base_class;
   explicit DisConnectInfoRequest(initiator_type sender, error_type er = error_type());
 };
 
-struct DisConnectInfoResponce
-  : DisConnectInfoRequest {
+struct DisConnectInfoResponce : DisConnectInfoRequest {
   typedef DisConnectInfoRequest base_class;
   explicit DisConnectInfoResponce(const base_class& request);
 };
 
-struct ExecuteInfoRequest
-  : public EventInfoBase {
+struct ExecuteInfoRequest : public EventInfoBase {
   typedef EventInfoBase base_class;
-  ExecuteInfoRequest(initiator_type sender, const std::string& text,
+  ExecuteInfoRequest(initiator_type sender,
+                     const std::string& text,
                      const std::vector<std::string>& args = std::vector<std::string>(),
                      error_type er = error_type());
 
@@ -215,20 +205,17 @@ struct ExecuteInfoRequest
   const std::vector<std::string> args;
 };
 
-struct ExecuteInfoResponce
-  : ExecuteInfoRequest {
+struct ExecuteInfoResponce : ExecuteInfoRequest {
   typedef ExecuteInfoRequest base_class;
   explicit ExecuteInfoResponce(const base_class& request);
 };
 
-struct LoadDatabasesInfoRequest
-  : public EventInfoBase {
+struct LoadDatabasesInfoRequest : public EventInfoBase {
   typedef EventInfoBase base_class;
   explicit LoadDatabasesInfoRequest(initiator_type sender, error_type er = error_type());
 };
 
-struct LoadDatabasesInfoResponce
-  : LoadDatabasesInfoRequest {
+struct LoadDatabasesInfoResponce : LoadDatabasesInfoRequest {
   typedef LoadDatabasesInfoRequest base_class;
   typedef std::vector<IDataBaseInfoSPtr> database_info_cont_type;
   explicit LoadDatabasesInfoResponce(const base_class& request);
@@ -236,12 +223,14 @@ struct LoadDatabasesInfoResponce
   database_info_cont_type databases;
 };
 
-struct LoadDatabaseContentRequest
-  : public EventInfoBase {
+struct LoadDatabaseContentRequest : public EventInfoBase {
   typedef EventInfoBase base_class;
-  LoadDatabaseContentRequest(initiator_type sender, IDataBaseInfoSPtr inf,
-                             const std::string& pattern, uint32_t countKeys,
-             uint32_t cursor = 0, error_type er = error_type());
+  LoadDatabaseContentRequest(initiator_type sender,
+                             IDataBaseInfoSPtr inf,
+                             const std::string& pattern,
+                             uint32_t countKeys,
+                             uint32_t cursor = 0,
+                             error_type er = error_type());
 
   IDataBaseInfoSPtr inf;
   std::string pattern;
@@ -249,8 +238,7 @@ struct LoadDatabaseContentRequest
   const uint32_t cursor_in;
 };
 
-struct LoadDatabaseContentResponce
-  : LoadDatabaseContentRequest {
+struct LoadDatabaseContentResponce : LoadDatabaseContentRequest {
   typedef LoadDatabaseContentRequest base_class;
   typedef std::vector<NDbKValue> keys_container_t;
   explicit LoadDatabaseContentResponce(const base_class& request);
@@ -260,43 +248,38 @@ struct LoadDatabaseContentResponce
   size_t db_keys_count;
 };
 
-struct ClearDatabaseRequest
-  : public EventInfoBase {
+struct ClearDatabaseRequest : public EventInfoBase {
   typedef EventInfoBase base_class;
   ClearDatabaseRequest(initiator_type sender, IDataBaseInfoSPtr inf, error_type er = error_type());
 
   IDataBaseInfoSPtr inf;
 };
 
-struct ClearDatabaseResponce
-  : ClearDatabaseRequest {
+struct ClearDatabaseResponce : ClearDatabaseRequest {
   typedef ClearDatabaseRequest base_class;
   explicit ClearDatabaseResponce(const base_class& request);
 };
 
-struct SetDefaultDatabaseRequest
-  : public EventInfoBase {
+struct SetDefaultDatabaseRequest : public EventInfoBase {
   typedef EventInfoBase base_class;
-  SetDefaultDatabaseRequest(initiator_type sender, IDataBaseInfoSPtr inf,
+  SetDefaultDatabaseRequest(initiator_type sender,
+                            IDataBaseInfoSPtr inf,
                             error_type er = error_type());
 
   IDataBaseInfoSPtr inf;
 };
 
-struct SetDefaultDatabaseResponce
-  : SetDefaultDatabaseRequest {
+struct SetDefaultDatabaseResponce : SetDefaultDatabaseRequest {
   typedef SetDefaultDatabaseRequest base_class;
   explicit SetDefaultDatabaseResponce(const base_class& request);
 };
 
-struct ServerInfoRequest
-  : public EventInfoBase {
+struct ServerInfoRequest : public EventInfoBase {
   typedef EventInfoBase base_class;
   explicit ServerInfoRequest(initiator_type sender, error_type er = error_type());
 };
 
-class ServerInfoResponce
-  : public ServerInfoRequest {
+class ServerInfoResponce : public ServerInfoRequest {
  public:
   typedef ServerInfoRequest base_class;
   explicit ServerInfoResponce(const base_class& request);
@@ -309,14 +292,12 @@ class ServerInfoResponce
   IServerInfoSPtr info_;
 };
 
-struct ServerInfoHistoryRequest
-  : public EventInfoBase {
+struct ServerInfoHistoryRequest : public EventInfoBase {
   typedef EventInfoBase base_class;
   explicit ServerInfoHistoryRequest(initiator_type sender, error_type er = error_type());
 };
 
-class ServerInfoHistoryResponce
-  : public ServerInfoHistoryRequest {
+class ServerInfoHistoryResponce : public ServerInfoHistoryRequest {
  public:
   typedef ServerInfoHistoryRequest base_class;
   typedef std::vector<ServerInfoSnapShoot> infos_container_type;
@@ -329,61 +310,56 @@ class ServerInfoHistoryResponce
   infos_container_type infos_;
 };
 
-struct ClearServerHistoryRequest
-  : public EventInfoBase {
+struct ClearServerHistoryRequest : public EventInfoBase {
   typedef EventInfoBase base_class;
   explicit ClearServerHistoryRequest(initiator_type sender, error_type er = error_type());
 };
 
-struct ClearServerHistoryResponce
-  : public ClearServerHistoryRequest {
+struct ClearServerHistoryResponce : public ClearServerHistoryRequest {
   typedef ClearServerHistoryRequest base_class;
   explicit ClearServerHistoryResponce(const base_class& request);
 };
 
-struct ServerPropertyInfoRequest
-  : public EventInfoBase {
+struct ServerPropertyInfoRequest : public EventInfoBase {
   typedef EventInfoBase base_class;
   explicit ServerPropertyInfoRequest(initiator_type sender, error_type er = error_type());
 };
 
-struct ServerPropertyInfoResponce
-  : ServerPropertyInfoRequest {
+struct ServerPropertyInfoResponce : ServerPropertyInfoRequest {
   typedef ServerPropertyInfoRequest base_class;
   explicit ServerPropertyInfoResponce(const base_class& request);
 
   ServerPropertiesInfo info;
 };
 
-struct ChangeServerPropertyInfoRequest
-  : public EventInfoBase {
+struct ChangeServerPropertyInfoRequest : public EventInfoBase {
   typedef EventInfoBase base_class;
-  ChangeServerPropertyInfoRequest(initiator_type sender, const property_t& pt,
+  ChangeServerPropertyInfoRequest(initiator_type sender,
+                                  const property_t& pt,
                                   error_type er = error_type());
 
   property_t new_item;
 };
 
-struct ChangeServerPropertyInfoResponce
-  : ChangeServerPropertyInfoRequest {
+struct ChangeServerPropertyInfoResponce : ChangeServerPropertyInfoRequest {
   typedef ChangeServerPropertyInfoRequest base_class;
   explicit ChangeServerPropertyInfoResponce(const base_class& request);
 
   bool is_change;
 };
 
-struct CommandRequest
-  : public EventInfoBase {
+struct CommandRequest : public EventInfoBase {
   typedef EventInfoBase base_class;
-  CommandRequest(initiator_type sender, IDataBaseInfoSPtr inf, CommandKeySPtr cmd,
+  CommandRequest(initiator_type sender,
+                 IDataBaseInfoSPtr inf,
+                 CommandKeySPtr cmd,
                  error_type er = error_type());
 
   IDataBaseInfoSPtr inf;
   CommandKeySPtr cmd;
 };
 
-struct CommandResponce
-  : CommandRequest {
+struct CommandResponce : CommandRequest {
   typedef CommandRequest base_class;
   explicit CommandResponce(const base_class& request);
 };

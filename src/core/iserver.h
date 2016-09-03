@@ -2,40 +2,47 @@
 
     This file is part of FastoNoSQL.
 
-    FastoNoSQL is free software: you can redistribute it and/or modify
-    it under the terms of the GNU General Public License as published by
-    the Free Software Foundation, either version 3 of the License, or
+    FastoNoSQL is free software: you can redistribute it
+   and/or modify
+    it under the terms of the GNU General Public License as
+   published by
+    the Free Software Foundation, either version 3 of the
+   License, or
     (at your option) any later version.
 
-    FastoNoSQL is distributed in the hope that it will be useful,
-    but WITHOUT ANY WARRANTY; without even the implied warranty of
-    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+    FastoNoSQL is distributed in the hope that it will be
+   useful,
+    but WITHOUT ANY WARRANTY; without even the implied
+   warranty of
+    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
+   See the
     GNU General Public License for more details.
 
-    You should have received a copy of the GNU General Public License
-    along with FastoNoSQL.  If not, see <http://www.gnu.org/licenses/>.
+    You should have received a copy of the GNU General
+   Public License
+    along with FastoNoSQL.  If not, see
+   <http://www.gnu.org/licenses/>.
 */
 
 #pragma once
 
-#include <memory>                       // for enable_shared_from_this
-#include <string>                       // for string
-#include <vector>                       // for vector
+#include <memory>  // for enable_shared_from_this
+#include <string>  // for string
+#include <vector>  // for vector
 
-#include "common/net/types.h"           // for HostAndPort
+#include "common/net/types.h"  // for HostAndPort
 
-#include "core/connection_types.h"      // for connectionTypes, serverMode, etc
-#include "core/core_fwd.h"              // for IDatabaseSPtr
-#include "core/events/events.h"         // for BackupResponceEvent, etc
-#include "core/types.h"                 // for IDataBaseInfoSPtr, etc
+#include "core/connection_types.h"  // for connectionTypes, serverMode, etc
+#include "core/core_fwd.h"          // for IDatabaseSPtr
+#include "core/events/events.h"     // for BackupResponceEvent, etc
+#include "core/types.h"             // for IDataBaseInfoSPtr, etc
 
-#include "global/global.h"              // for FastoObject, etc
+#include "global/global.h"  // for FastoObject, etc
 
 namespace fastonosql {
 namespace core {
 
-class IServerBase
-  : public QObject {
+class IServerBase : public QObject {
   Q_OBJECT
  public:
   virtual std::string name() const = 0;
@@ -44,15 +51,14 @@ class IServerBase
 
 class IDriver;
 
-class IServer
-  : public IServerBase, public std::enable_shared_from_this<IServer> {
+class IServer : public IServerBase, public std::enable_shared_from_this<IServer> {
   Q_OBJECT
  public:
   typedef IDataBaseInfoSPtr database_t;
   typedef std::vector<database_t> databases_t;
   virtual ~IServer();
 
-  //sync methods
+  // sync methods
   void stopCurrentEvent();
   bool isConnected() const;
   bool isAuthenticated() const;
@@ -69,7 +75,7 @@ class IServer
   IDatabaseSPtr createDatabaseByInfo(IDataBaseInfoSPtr inf);
   bool containsDatabase(IDataBaseInfoSPtr inf) const;
 
- Q_SIGNALS: //only direct connections
+ Q_SIGNALS:  // only direct connections
   void startedConnect(const events_info::ConnectInfoRequest& req);
   void finishedConnect(const events_info::ConnectInfoResponce& res);
 
@@ -142,24 +148,52 @@ class IServer
 
  public:
   // async methods
-  void connect(const events_info::ConnectInfoRequest& req);  // signals: startedConnect, finishedConnect
-  void disconnect(const events_info::DisConnectInfoRequest& req);  // signals: startedDisconnect, finishedDisconnect
-  void loadDatabases(const events_info::LoadDatabasesInfoRequest& req);  // signals: startedLoadDatabases, finishedLoadDatabases
-  void loadDatabaseContent(const events_info::LoadDatabaseContentRequest& req);  // signals: startedLoadDataBaseContent, finishedLoadDatabaseContent
-  void setDefaultDB(const events_info::SetDefaultDatabaseRequest& req);  // signals: startedSetDefaultDatabase, finishedSetDefaultDatabase
-  void clearDB(const events_info::ClearDatabaseRequest& req);  // signals: startedClearDatabase, finishedClearDatabase
-  void execute(const events_info::ExecuteInfoRequest& req);  // signals: startedExecute
-  void executeCommand(const events_info::CommandRequest& req);  // signals: startedExecuteCommand, finishedExecuteCommand
-  void shutDown(const events_info::ShutDownInfoRequest& req);  // signals: startedShutdown, finishedShutdown
-  void backupToPath(const events_info::BackupInfoRequest& req);  // signals: startedBackup, finishedBackup
-  void exportFromPath(const events_info::ExportInfoRequest& req);  // signals: startedExport, finishedExport
-  void changePassword(const events_info::ChangePasswordRequest& req);  // signals: startedChangePassword, finishedChangePassword
-  void setMaxConnection(const events_info::ChangeMaxConnectionRequest& req); // signals: startedChangeMaxConnection, finishedChangeMaxConnection
-  void loadServerInfo(const events_info::ServerInfoRequest& req);  // signals: startedLoadServerInfo, finishedLoadServerInfo
-  void serverProperty(const events_info::ServerPropertyInfoRequest& req);  // signals: startedLoadServerProperty, finishedLoadServerProperty
-  void requestHistoryInfo(const events_info::ServerInfoHistoryRequest& req);  // signals: startedLoadServerHistoryInfo, finishedLoadServerHistoryInfo
-  void clearHistory(const events_info::ClearServerHistoryRequest& req);  // signals: startedClearServerHistory, finishedClearServerHistory
-  void changeProperty(const events_info::ChangeServerPropertyInfoRequest& req);  // signals: startedChangeServerProperty, finishedChangeServerProperty
+  void connect(
+      const events_info::ConnectInfoRequest& req);  // signals: startedConnect, finishedConnect
+  void disconnect(const events_info::DisConnectInfoRequest& req);  // signals: startedDisconnect,
+                                                                   // finishedDisconnect
+  void loadDatabases(
+      const events_info::LoadDatabasesInfoRequest& req);  // signals: startedLoadDatabases,
+                                                          // finishedLoadDatabases
+  void loadDatabaseContent(
+      const events_info::LoadDatabaseContentRequest& req);  // signals: startedLoadDataBaseContent,
+                                                            // finishedLoadDatabaseContent
+  void setDefaultDB(
+      const events_info::SetDefaultDatabaseRequest& req);  // signals: startedSetDefaultDatabase,
+                                                           // finishedSetDefaultDatabase
+  void clearDB(const events_info::ClearDatabaseRequest& req);   // signals: startedClearDatabase,
+                                                                // finishedClearDatabase
+  void execute(const events_info::ExecuteInfoRequest& req);     // signals: startedExecute
+  void executeCommand(const events_info::CommandRequest& req);  // signals:
+  // startedExecuteCommand,
+  // finishedExecuteCommand
+  void shutDown(const events_info::ShutDownInfoRequest& req);  // signals: startedShutdown,
+                                                               // finishedShutdown
+  void backupToPath(
+      const events_info::BackupInfoRequest& req);  // signals: startedBackup, finishedBackup
+  void exportFromPath(
+      const events_info::ExportInfoRequest& req);  // signals: startedExport, finishedExport
+  void changePassword(
+      const events_info::ChangePasswordRequest& req);  // signals: startedChangePassword,
+                                                       // finishedChangePassword
+  void setMaxConnection(
+      const events_info::ChangeMaxConnectionRequest& req);  // signals: startedChangeMaxConnection,
+                                                            // finishedChangeMaxConnection
+  void loadServerInfo(const events_info::ServerInfoRequest& req);  // signals:
+  // startedLoadServerInfo,
+  // finishedLoadServerInfo
+  void serverProperty(
+      const events_info::ServerPropertyInfoRequest& req);  // signals: startedLoadServerProperty,
+                                                           // finishedLoadServerProperty
+  void requestHistoryInfo(
+      const events_info::ServerInfoHistoryRequest& req);  // signals: startedLoadServerHistoryInfo,
+                                                          // finishedLoadServerHistoryInfo
+  void clearHistory(
+      const events_info::ClearServerHistoryRequest& req);  // signals: startedClearServerHistory,
+                                                           // finishedClearServerHistory
+  void changeProperty(const events_info::ChangeServerPropertyInfoRequest&
+                          req);  // signals: startedChangeServerProperty,
+                                 // finishedChangeServerProperty
 
  protected:
   explicit IServer(IDriver* drv);  // take ownerships
@@ -207,23 +241,23 @@ class IServer
   void processDiscoveryInfo(const events_info::DiscoveryInfoRequest& req);
 };
 
-class IServerLocal
-  : public IServer {
+class IServerLocal : public IServer {
   Q_OBJECT
  public:
   virtual std::string path() const = 0;
+
  protected:
   explicit IServerLocal(IDriver* drv);
 };
 
-class IServerRemote
-  : public IServer {
+class IServerRemote : public IServer {
   Q_OBJECT
- public:  
+ public:
   virtual common::net::HostAndPort host() const = 0;
   virtual serverMode mode() const = 0;
   virtual serverTypes role() const = 0;
   virtual serverState state() const = 0;
+
  protected:
   explicit IServerRemote(IDriver* drv);
 };

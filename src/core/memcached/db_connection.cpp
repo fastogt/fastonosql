@@ -2,48 +2,59 @@
 
     This file is part of FastoNoSQL.
 
-    FastoNoSQL is free software: you can redistribute it and/or modify
-    it under the terms of the GNU General Public License as published by
-    the Free Software Foundation, either version 3 of the License, or
+    FastoNoSQL is free software: you can redistribute it
+   and/or modify
+    it under the terms of the GNU General Public License as
+   published by
+    the Free Software Foundation, either version 3 of the
+   License, or
     (at your option) any later version.
 
-    FastoNoSQL is distributed in the hope that it will be useful,
-    but WITHOUT ANY WARRANTY; without even the implied warranty of
-    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+    FastoNoSQL is distributed in the hope that it will be
+   useful,
+    but WITHOUT ANY WARRANTY; without even the implied
+   warranty of
+    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
+   See the
     GNU General Public License for more details.
 
-    You should have received a copy of the GNU General Public License
-    along with FastoNoSQL.  If not, see <http://www.gnu.org/licenses/>.
+    You should have received a copy of the GNU General
+   Public License
+    along with FastoNoSQL.  If not, see
+   <http://www.gnu.org/licenses/>.
 */
 
 #include "core/memcached/db_connection.h"
 
-#include <stdlib.h>                     // for atoll, free
-#include <string.h>                     // for strcasecmp
+#include <stdlib.h>  // for atoll, free
+#include <string.h>  // for strcasecmp
 
-#include <memory>                       // for __shared_ptr
-#include <string>                       // for string, operator<, etc
+#include <memory>  // for __shared_ptr
+#include <string>  // for string, operator<, etc
 
 #include <libmemcached/memcached.h>
 #include <libmemcached/util.h>
-#include <libmemcached/instance.hpp>    // for memcached_instance_st
+#include <libmemcached/instance.hpp>  // for memcached_instance_st
 
-#include "common/convert2string.h"      // for ConvertFromString
-#include "common/net/types.h"           // for HostAndPort
-#include "common/sprintf.h"             // for MemSPrintf
-#include "common/utils.h"               // for c_strornull
-#include "common/value.h"               // for Value::ErrorsType::E_ERROR, etc
+#include "common/convert2string.h"  // for ConvertFromString
+#include "common/net/types.h"       // for HostAndPort
+#include "common/sprintf.h"         // for MemSPrintf
+#include "common/utils.h"           // for c_strornull
+#include "common/value.h"           // for Value::ErrorsType::E_ERROR, etc
 
-#include "core/memcached/config.h"      // for Config
+#include "core/memcached/config.h"               // for Config
 #include "core/memcached/connection_settings.h"  // for ConnectionSettings
 
-#include "global/global.h"              // for FastoObject, etc
+#include "global/global.h"  // for FastoObject, etc
 
 namespace {
 
 struct KeysHolder {
-  KeysHolder(const std::string& key_start, const std::string& key_end, uint64_t limit, std::vector<std::string>* r)
-    : key_start(key_start), key_end(key_end), limit(limit), r(r) {}
+  KeysHolder(const std::string& key_start,
+             const std::string& key_end,
+             uint64_t limit,
+             std::vector<std::string>* r)
+      : key_start(key_start), key_end(key_end), limit(limit), r(r) {}
 
   const std::string key_start;
   const std::string key_end;
@@ -66,9 +77,9 @@ struct KeysHolder {
 };
 
 memcached_return_t memcached_dump_callback(const memcached_st* ptr,
-                                                const char* key,
-                                                size_t key_length,
-                                                void* context) {
+                                           const char* key,
+                                           size_t key_length,
+                                           void* context) {
   UNUSED(ptr);
 
   KeysHolder* holder = static_cast<KeysHolder*>(context);
@@ -79,8 +90,10 @@ memcached_return_t memcached_dump_callback(const memcached_st* ptr,
 
 namespace fastonosql {
 namespace core {
-template<>
-common::Error ConnectionAllocatorTraits<memcached::NativeConnection, memcached::Config>::connect(const memcached::Config& config, memcached::NativeConnection** hout) {
+template <>
+common::Error ConnectionAllocatorTraits<memcached::NativeConnection, memcached::Config>::connect(
+    const memcached::Config& config,
+    memcached::NativeConnection** hout) {
   memcached::NativeConnection* context = nullptr;
   common::Error er = memcached::createConnection(config, &context);
   if (er && er->isError()) {
@@ -90,8 +103,9 @@ common::Error ConnectionAllocatorTraits<memcached::NativeConnection, memcached::
   *hout = context;
   return common::Error();
 }
-template<>
-common::Error ConnectionAllocatorTraits<memcached::NativeConnection, memcached::Config>::disconnect(memcached::NativeConnection** handle) {
+template <>
+common::Error ConnectionAllocatorTraits<memcached::NativeConnection, memcached::Config>::disconnect(
+    memcached::NativeConnection** handle) {
   memcached::NativeConnection* lhandle = *handle;
   if (lhandle) {
     memcached_free(lhandle);
@@ -99,8 +113,9 @@ common::Error ConnectionAllocatorTraits<memcached::NativeConnection, memcached::
   lhandle = nullptr;
   return common::Error();
 }
-template<>
-bool ConnectionAllocatorTraits<memcached::NativeConnection, memcached::Config>::isConnected(memcached::NativeConnection* handle) {
+template <>
+bool ConnectionAllocatorTraits<memcached::NativeConnection, memcached::Config>::isConnected(
+    memcached::NativeConnection* handle) {
   if (!handle) {
     return false;
   }
@@ -132,9 +147,9 @@ common::Error createConnection(const Config& config, NativeConnection** context)
     rc = memcached_set_sasl_auth_data(memc, user, passwd);
     if (rc != MEMCACHED_SUCCESS) {
       memcached_free(memc);
-      return common::make_error_value(common::MemSPrintf("Couldn't setup SASL auth: %s",
-                                                         memcached_strerror(memc, rc)),
-                                      common::ErrorValue::E_ERROR);
+      return common::make_error_value(
+          common::MemSPrintf("Couldn't setup SASL auth: %s", memcached_strerror(memc, rc)),
+          common::ErrorValue::E_ERROR);
     }
   }
 
@@ -145,17 +160,17 @@ common::Error createConnection(const Config& config, NativeConnection** context)
 
   if (rc != MEMCACHED_SUCCESS) {
     memcached_free(memc);
-    return common::make_error_value(common::MemSPrintf("Couldn't add server: %s",
-                                                       memcached_strerror(memc, rc)),
-                                    common::ErrorValue::E_ERROR);
+    return common::make_error_value(
+        common::MemSPrintf("Couldn't add server: %s", memcached_strerror(memc, rc)),
+        common::ErrorValue::E_ERROR);
   }
 
   memcached_return_t error = memcached_version(memc);
   if (error != MEMCACHED_SUCCESS) {
     memcached_free(memc);
-    return common::make_error_value(common::MemSPrintf("Connect to server error: %s",
-                                                       memcached_strerror(memc, error)),
-                                    common::ErrorValue::E_ERROR);
+    return common::make_error_value(
+        common::MemSPrintf("Connect to server error: %s", memcached_strerror(memc, error)),
+        common::ErrorValue::E_ERROR);
   }
 
   *context = memc;
@@ -186,32 +201,32 @@ common::Error testConnection(ConnectionSettings* settings) {
   if (user && passwd) {
     libmemcached_util_ping2(host, hostport, user, passwd, &rc);
     if (rc != MEMCACHED_SUCCESS) {
-      return common::make_error_value(common::MemSPrintf("Couldn't ping server: %s",
-                                                         memcached_strerror(NULL, rc)),
-                                      common::ErrorValue::E_ERROR);
+      return common::make_error_value(
+          common::MemSPrintf("Couldn't ping server: %s", memcached_strerror(NULL, rc)),
+          common::ErrorValue::E_ERROR);
     }
   } else {
     libmemcached_util_ping(host, hostport, &rc);
     if (rc != MEMCACHED_SUCCESS) {
-      return common::make_error_value(common::MemSPrintf("Couldn't ping server: %s",
-                                                         memcached_strerror(NULL, rc)),
-                                      common::ErrorValue::E_ERROR);
+      return common::make_error_value(
+          common::MemSPrintf("Couldn't ping server: %s", memcached_strerror(NULL, rc)),
+          common::ErrorValue::E_ERROR);
     }
   }
 
   return common::Error();
 }
 
-DBConnection::DBConnection()
-  : base_class(), CommandHandler(memcachedCommands) {
-}
+DBConnection::DBConnection() : base_class(), CommandHandler(memcachedCommands) {}
 
 const char* DBConnection::versionApi() {
   return memcached_lib_version();
 }
 
-common::Error DBConnection::keys(const std::string& key_start, const std::string& key_end,
-                                 uint64_t limit, std::vector<std::string>* ret) {
+common::Error DBConnection::keys(const std::string& key_start,
+                                 const std::string& key_end,
+                                 uint64_t limit,
+                                 std::vector<std::string>* ret) {
   if (!isConnected()) {
     DNOTREACHED();
     return common::make_error_value("Not connected", common::Value::E_ERROR);
@@ -290,7 +305,8 @@ common::Error DBConnection::dbkcount(size_t* size) {
   std::vector<std::string> ret;
   common::Error err = keys("a", "z", UINT64_MAX, &ret);
   if (err && err->isError()) {
-    std::string buff = common::MemSPrintf("Couldn't determine DBKCOUNT error: %s", err->description());
+    std::string buff =
+        common::MemSPrintf("Couldn't determine DBKCOUNT error: %s", err->description());
     return common::make_error_value(buff, common::ErrorValue::E_ERROR);
   }
 
@@ -312,7 +328,8 @@ common::Error DBConnection::get(const std::string& key, std::string* ret_val) {
   memcached_return error;
   size_t value_length = 0;
 
-  char* value = memcached_get(connection_.handle_, key.c_str(), key.length(), &value_length, &flags, &error);
+  char* value =
+      memcached_get(connection_.handle_, key.c_str(), key.length(), &value_length, &flags, &error);
   if (error != MEMCACHED_SUCCESS) {
     std::string buff = common::MemSPrintf("Get function error: %s",
                                           memcached_strerror(connection_.handle_, error));
@@ -325,8 +342,10 @@ common::Error DBConnection::get(const std::string& key, std::string* ret_val) {
   return common::Error();
 }
 
-common::Error DBConnection::set(const std::string& key, const std::string& value,
-                  time_t expiration, uint32_t flags) {
+common::Error DBConnection::set(const std::string& key,
+                                const std::string& value,
+                                time_t expiration,
+                                uint32_t flags) {
   if (!isConnected()) {
     DNOTREACHED();
     return common::make_error_value("Not connected", common::Value::E_ERROR);
@@ -343,8 +362,10 @@ common::Error DBConnection::set(const std::string& key, const std::string& value
   return common::Error();
 }
 
-common::Error DBConnection::add(const std::string& key, const std::string& value,
-                  time_t expiration, uint32_t flags) {
+common::Error DBConnection::add(const std::string& key,
+                                const std::string& value,
+                                time_t expiration,
+                                uint32_t flags) {
   if (!isConnected()) {
     DNOTREACHED();
     return common::make_error_value("Not connected", common::Value::E_ERROR);
@@ -361,8 +382,10 @@ common::Error DBConnection::add(const std::string& key, const std::string& value
   return common::Error();
 }
 
-common::Error DBConnection::replace(const std::string& key, const std::string& value,
-                      time_t expiration, uint32_t flags) {
+common::Error DBConnection::replace(const std::string& key,
+                                    const std::string& value,
+                                    time_t expiration,
+                                    uint32_t flags) {
   if (!isConnected()) {
     DNOTREACHED();
     return common::make_error_value("Not connected", common::Value::E_ERROR);
@@ -371,22 +394,25 @@ common::Error DBConnection::replace(const std::string& key, const std::string& v
   memcached_return_t error = memcached_replace(connection_.handle_, key.c_str(), key.length(),
                                                value.c_str(), value.length(), expiration, flags);
   if (error != MEMCACHED_SUCCESS) {
-    std::string buff = common::MemSPrintf("Replace function error: %s", memcached_strerror(connection_.handle_, error));
+    std::string buff = common::MemSPrintf("Replace function error: %s",
+                                          memcached_strerror(connection_.handle_, error));
     return common::make_error_value(buff, common::ErrorValue::E_ERROR);
   }
 
   return common::Error();
 }
 
-common::Error DBConnection::append(const std::string& key, const std::string& value,
-                     time_t expiration, uint32_t flags) {
+common::Error DBConnection::append(const std::string& key,
+                                   const std::string& value,
+                                   time_t expiration,
+                                   uint32_t flags) {
   if (!isConnected()) {
     DNOTREACHED();
     return common::make_error_value("Not connected", common::Value::E_ERROR);
   }
 
-  memcached_return_t error = memcached_append(connection_.handle_, key.c_str(), key.length(), value.c_str(),
-                                              value.length(), expiration, flags);
+  memcached_return_t error = memcached_append(connection_.handle_, key.c_str(), key.length(),
+                                              value.c_str(), value.length(), expiration, flags);
   if (error != MEMCACHED_SUCCESS) {
     std::string buff = common::MemSPrintf("Append function error: %s",
                                           memcached_strerror(connection_.handle_, error));
@@ -396,8 +422,10 @@ common::Error DBConnection::append(const std::string& key, const std::string& va
   return common::Error();
 }
 
-common::Error DBConnection::prepend(const std::string& key, const std::string& value,
-                      time_t expiration, uint32_t flags) {
+common::Error DBConnection::prepend(const std::string& key,
+                                    const std::string& value,
+                                    time_t expiration,
+                                    uint32_t flags) {
   if (!isConnected()) {
     DNOTREACHED();
     return common::make_error_value("Not connected", common::Value::E_ERROR);
@@ -420,7 +448,8 @@ common::Error DBConnection::incr(const std::string& key, uint64_t value) {
     return common::make_error_value("Not connected", common::Value::E_ERROR);
   }
 
-  memcached_return_t error = memcached_increment(connection_.handle_, key.c_str(), key.length(), 0, &value);
+  memcached_return_t error =
+      memcached_increment(connection_.handle_, key.c_str(), key.length(), 0, &value);
   if (error != MEMCACHED_SUCCESS) {
     std::string buff = common::MemSPrintf("Incr function error: %s",
                                           memcached_strerror(connection_.handle_, error));
@@ -436,7 +465,8 @@ common::Error DBConnection::decr(const std::string& key, uint64_t value) {
     return common::make_error_value("Not connected", common::Value::E_ERROR);
   }
 
-  memcached_return_t error = memcached_decrement(connection_.handle_, key.c_str(), key.length(), 0, &value);
+  memcached_return_t error =
+      memcached_decrement(connection_.handle_, key.c_str(), key.length(), 0, &value);
   if (error != MEMCACHED_SUCCESS) {
     std::string buff = common::MemSPrintf("Decr function error: %s",
                                           memcached_strerror(connection_.handle_, error));
@@ -452,7 +482,8 @@ common::Error DBConnection::del(const std::string& key, time_t expiration) {
     return common::make_error_value("Not connected", common::Value::E_ERROR);
   }
 
-  memcached_return_t error = memcached_delete(connection_.handle_, key.c_str(), key.length(), expiration);
+  memcached_return_t error =
+      memcached_delete(connection_.handle_, key.c_str(), key.length(), expiration);
   if (error != MEMCACHED_SUCCESS) {
     std::string buff = common::MemSPrintf("Delete function error: %s",
                                           memcached_strerror(connection_.handle_, error));
@@ -511,15 +542,16 @@ common::Error DBConnection::expire(const std::string& key, time_t expiration) {
   memcached_return error;
   size_t value_length = 0;
 
-  char* value = memcached_get(connection_.handle_, key.c_str(), key.length(), &value_length, &flags, &error);
+  char* value =
+      memcached_get(connection_.handle_, key.c_str(), key.length(), &value_length, &flags, &error);
   if (error != MEMCACHED_SUCCESS) {
     std::string buff = common::MemSPrintf("EXPIRE function error: %s",
                                           memcached_strerror(connection_.handle_, error));
     return common::make_error_value(buff, common::ErrorValue::E_ERROR);
   }
 
-  error = memcached_set(connection_.handle_, key.c_str(), key.length(),
-                                           value, value_length, expiration, flags);
+  error = memcached_set(connection_.handle_, key.c_str(), key.length(), value, value_length,
+                        expiration, flags);
   if (error != MEMCACHED_SUCCESS) {
     std::string buff = common::MemSPrintf("EXPIRE function error: %s",
                                           memcached_strerror(connection_.handle_, error));
@@ -587,7 +619,8 @@ common::Error set(CommandHandler* handler, int argc, char** argv, FastoObject* o
   UNUSED(argc);
 
   DBConnection* mem = static_cast<DBConnection*>(handler);
-  common::Error er = mem->set(argv[0], argv[3], common::ConvertFromString<time_t>(argv[2]), common::ConvertFromString<uint32_t>(argv[1]));
+  common::Error er = mem->set(argv[0], argv[3], common::ConvertFromString<time_t>(argv[2]),
+                              common::ConvertFromString<uint32_t>(argv[1]));
   if (!er) {
     common::StringValue* val = common::Value::createStringValue("OK");
     FastoObject* child = new FastoObject(out, val, mem->delimiter());
@@ -601,7 +634,8 @@ common::Error add(CommandHandler* handler, int argc, char** argv, FastoObject* o
   UNUSED(argc);
 
   DBConnection* mem = static_cast<DBConnection*>(handler);
-  common::Error er = mem->add(argv[0], argv[3], common::ConvertFromString<time_t>(argv[2]), common::ConvertFromString<uint32_t>(argv[1]));
+  common::Error er = mem->add(argv[0], argv[3], common::ConvertFromString<time_t>(argv[2]),
+                              common::ConvertFromString<uint32_t>(argv[1]));
   if (!er) {
     common::StringValue* val = common::Value::createStringValue("OK");
     FastoObject* child = new FastoObject(out, val, mem->delimiter());
@@ -615,7 +649,8 @@ common::Error replace(CommandHandler* handler, int argc, char** argv, FastoObjec
   UNUSED(argc);
 
   DBConnection* mem = static_cast<DBConnection*>(handler);
-  common::Error er = mem->replace(argv[0], argv[3], common::ConvertFromString<time_t>(argv[2]), common::ConvertFromString<uint32_t>(argv[1]));
+  common::Error er = mem->replace(argv[0], argv[3], common::ConvertFromString<time_t>(argv[2]),
+                                  common::ConvertFromString<uint32_t>(argv[1]));
   if (!er) {
     common::StringValue* val = common::Value::createStringValue("OK");
     FastoObject* child = new FastoObject(out, val, mem->delimiter());
@@ -629,7 +664,8 @@ common::Error append(CommandHandler* handler, int argc, char** argv, FastoObject
   UNUSED(argc);
 
   DBConnection* mem = static_cast<DBConnection*>(handler);
-  common::Error er = mem->append(argv[0], argv[3], common::ConvertFromString<time_t>(argv[2]), common::ConvertFromString<uint32_t>(argv[1]));
+  common::Error er = mem->append(argv[0], argv[3], common::ConvertFromString<time_t>(argv[2]),
+                                 common::ConvertFromString<uint32_t>(argv[1]));
   if (!er) {
     common::StringValue* val = common::Value::createStringValue("OK");
     FastoObject* child = new FastoObject(out, val, mem->delimiter());
@@ -643,7 +679,8 @@ common::Error prepend(CommandHandler* handler, int argc, char** argv, FastoObjec
   UNUSED(argc);
 
   DBConnection* mem = static_cast<DBConnection*>(handler);
-  common::Error er = mem->prepend(argv[0], argv[3], common::ConvertFromString<time_t>(argv[2]), common::ConvertFromString<uint32_t>(argv[1]));
+  common::Error er = mem->prepend(argv[0], argv[3], common::ConvertFromString<time_t>(argv[2]),
+                                  common::ConvertFromString<uint32_t>(argv[1]));
   if (!er) {
     common::StringValue* val = common::Value::createStringValue("OK");
     FastoObject* child = new FastoObject(out, val, mem->delimiter());

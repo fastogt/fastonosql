@@ -2,39 +2,47 @@
 
     This file is part of FastoNoSQL.
 
-    FastoNoSQL is free software: you can redistribute it and/or modify
-    it under the terms of the GNU General Public License as published by
-    the Free Software Foundation, either version 3 of the License, or
+    FastoNoSQL is free software: you can redistribute it
+   and/or modify
+    it under the terms of the GNU General Public License as
+   published by
+    the Free Software Foundation, either version 3 of the
+   License, or
     (at your option) any later version.
 
-    FastoNoSQL is distributed in the hope that it will be useful,
-    but WITHOUT ANY WARRANTY; without even the implied warranty of
-    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+    FastoNoSQL is distributed in the hope that it will be
+   useful,
+    but WITHOUT ANY WARRANTY; without even the implied
+   warranty of
+    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
+   See the
     GNU General Public License for more details.
 
-    You should have received a copy of the GNU General Public License
-    along with FastoNoSQL.  If not, see <http://www.gnu.org/licenses/>.
+    You should have received a copy of the GNU General
+   Public License
+    along with FastoNoSQL.  If not, see
+   <http://www.gnu.org/licenses/>.
 */
 
 #include "core/unqlite/db_connection.h"
 
-#include <stdlib.h>                     // for atoll
+#include <stdlib.h>  // for atoll
 
-#include <memory>                       // for __shared_ptr
-#include <string>                       // for string, operator<, etc
-#include <vector>                       // for vector
+#include <memory>  // for __shared_ptr
+#include <string>  // for string, operator<, etc
+#include <vector>  // for vector
 
 extern "C" {
-  #include <unqlite.h>
+#include <unqlite.h>
 }
 
-#include "common/sprintf.h"             // for MemSPrintf
-#include "common/utils.h"               // for c_strornull
-#include "common/value.h"               // for Value::ErrorsType::E_ERROR, etc
-#include "core/unqlite/config.h"        // for Config
+#include "common/sprintf.h"                    // for MemSPrintf
+#include "common/utils.h"                      // for c_strornull
+#include "common/value.h"                      // for Value::ErrorsType::E_ERROR, etc
+#include "core/unqlite/config.h"               // for Config
 #include "core/unqlite/connection_settings.h"  // for ConnectionSettings
 
-#include "global/global.h"              // for FastoObject, etc
+#include "global/global.h"  // for FastoObject, etc
 
 namespace {
 
@@ -65,7 +73,8 @@ std::string unqlite_strerror(int unqlite_error) {
   } else if (unqlite_error == UNQLITE_PERM) {
     return "Permission error";
   } else if (unqlite_error == UNQLITE_NOTIMPLEMENTED) {
-    return "Method not implemented by the underlying Key/Value storage engine";
+    return "Method not implemented by the underlying "
+           "Key/Value storage engine";
   } else if (unqlite_error == UNQLITE_NOTFOUND) {
     return "No such record";
   } else if (unqlite_error == UNQLITE_NOOP) {
@@ -109,8 +118,10 @@ int unqlite_data_callback(const void* pData, unsigned int nDatalen, void* str) {
 
 namespace fastonosql {
 namespace core {
-template<>
-common::Error ConnectionAllocatorTraits<unqlite::NativeConnection, unqlite::Config>::connect(const unqlite::Config& config, unqlite::NativeConnection** hout) {
+template <>
+common::Error ConnectionAllocatorTraits<unqlite::NativeConnection, unqlite::Config>::connect(
+    const unqlite::Config& config,
+    unqlite::NativeConnection** hout) {
   unqlite::NativeConnection* context = NULL;
   common::Error er = unqlite::createConnection(config, &context);
   if (er && er->isError()) {
@@ -120,14 +131,16 @@ common::Error ConnectionAllocatorTraits<unqlite::NativeConnection, unqlite::Conf
   *hout = context;
   return common::Error();
 }
-template<>
-common::Error ConnectionAllocatorTraits<unqlite::NativeConnection, unqlite::Config>::disconnect(unqlite::NativeConnection** handle) {
+template <>
+common::Error ConnectionAllocatorTraits<unqlite::NativeConnection, unqlite::Config>::disconnect(
+    unqlite::NativeConnection** handle) {
   unqlite_close(*handle);
   *handle = NULL;
   return common::Error();
 }
-template<>
-bool ConnectionAllocatorTraits<unqlite::NativeConnection, unqlite::Config>::isConnected(unqlite::NativeConnection* handle) {
+template <>
+bool ConnectionAllocatorTraits<unqlite::NativeConnection, unqlite::Config>::isConnected(
+    unqlite::NativeConnection* handle) {
   if (!handle) {
     return false;
   }
@@ -144,8 +157,8 @@ common::Error createConnection(const Config& config, NativeConnection** context)
   DCHECK(*context == NULL);
   struct unqlite* lcontext = NULL;
   const char* dbname = common::utils::c_strornull(config.dbname);
-  int st = unqlite_open(&lcontext, dbname, config.create_if_missing ?
-                          UNQLITE_OPEN_CREATE : UNQLITE_OPEN_READWRITE);
+  int st = unqlite_open(&lcontext, dbname,
+                        config.create_if_missing ? UNQLITE_OPEN_CREATE : UNQLITE_OPEN_READWRITE);
   if (st != UNQLITE_OK) {
     std::string buff = common::MemSPrintf("Fail open database: %s!", unqlite_strerror(st));
     return common::make_error_value(buff, common::ErrorValue::E_ERROR);
@@ -155,7 +168,7 @@ common::Error createConnection(const Config& config, NativeConnection** context)
   return common::Error();
 }
 
-common::Error createConnection(ConnectionSettings* settings, NativeConnection **context) {
+common::Error createConnection(ConnectionSettings* settings, NativeConnection** context) {
   if (!settings) {
     return common::make_error_value("Invalid input argument(s)", common::ErrorValue::E_ERROR);
   }
@@ -179,9 +192,7 @@ common::Error testConnection(ConnectionSettings* settings) {
   return common::Error();
 }
 
-DBConnection::DBConnection()
-  : base_class(), CommandHandler(unqliteCommands) {
-}
+DBConnection::DBConnection() : base_class(), CommandHandler(unqliteCommands) {}
 
 common::Error DBConnection::info(const char* args, ServerInfo::Stats* statsout) {
   UNUSED(args);
@@ -226,7 +237,7 @@ common::Error DBConnection::dbkcount(size_t* size) {
   /* Iterate over the entries */
   while (unqlite_kv_cursor_valid_entry(pCur)) {
     sz++;
-      /* Point to the next entry */
+    /* Point to the next entry */
     unqlite_kv_cursor_next_entry(pCur);
   }
   /* Finally, Release our cursor */
@@ -246,7 +257,8 @@ common::Error DBConnection::set(const std::string& key, const std::string& value
     return common::make_error_value("Not connected", common::Value::E_ERROR);
   }
 
-  int rc = unqlite_kv_store(connection_.handle_, key.c_str(), key.size(), value.c_str(), value.length());
+  int rc =
+      unqlite_kv_store(connection_.handle_, key.c_str(), key.size(), value.c_str(), value.length());
   if (rc != UNQLITE_OK) {
     std::string buff = common::MemSPrintf("set function error: %s", unqlite_strerror(rc));
     return common::make_error_value(buff, common::ErrorValue::E_ERROR);
@@ -261,7 +273,8 @@ common::Error DBConnection::get(const std::string& key, std::string* ret_val) {
     return common::make_error_value("Not connected", common::Value::E_ERROR);
   }
 
-  int rc = unqlite_kv_fetch_callback(connection_.handle_, key.c_str(), key.size(), unqlite_data_callback, ret_val);
+  int rc = unqlite_kv_fetch_callback(connection_.handle_, key.c_str(), key.size(),
+                                     unqlite_data_callback, ret_val);
   if (rc != UNQLITE_OK) {
     std::string buff = common::MemSPrintf("get function error: %s", unqlite_strerror(rc));
     return common::make_error_value(buff, common::ErrorValue::E_ERROR);
@@ -285,8 +298,10 @@ common::Error DBConnection::del(const std::string& key) {
   return common::Error();
 }
 
-common::Error DBConnection::keys(const std::string& key_start, const std::string& key_end,
-                   uint64_t limit, std::vector<std::string> *ret) {
+common::Error DBConnection::keys(const std::string& key_start,
+                                 const std::string& key_end,
+                                 uint64_t limit,
+                                 std::vector<std::string>* ret) {
   if (!isConnected()) {
     DNOTREACHED();
     return common::make_error_value("Not connected", common::Value::E_ERROR);

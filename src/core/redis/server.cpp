@@ -2,39 +2,46 @@
 
     This file is part of FastoNoSQL.
 
-    FastoNoSQL is free software: you can redistribute it and/or modify
-    it under the terms of the GNU General Public License as published by
-    the Free Software Foundation, either version 3 of the License, or
+    FastoNoSQL is free software: you can redistribute it
+   and/or modify
+    it under the terms of the GNU General Public License as
+   published by
+    the Free Software Foundation, either version 3 of the
+   License, or
     (at your option) any later version.
 
-    FastoNoSQL is distributed in the hope that it will be useful,
-    but WITHOUT ANY WARRANTY; without even the implied warranty of
-    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+    FastoNoSQL is distributed in the hope that it will be
+   useful,
+    but WITHOUT ANY WARRANTY; without even the implied
+   warranty of
+    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
+   See the
     GNU General Public License for more details.
 
-    You should have received a copy of the GNU General Public License
-    along with FastoNoSQL.  If not, see <http://www.gnu.org/licenses/>.
+    You should have received a copy of the GNU General
+   Public License
+    along with FastoNoSQL.  If not, see
+   <http://www.gnu.org/licenses/>.
 */
 
 #include "core/redis/server.h"
 
-#include <string>                       // for operator==, basic_string
+#include <string>  // for operator==, basic_string
 
-#include "common/error.h"               // for Error
-#include "common/macros.h"              // for CHECK
+#include "common/error.h"   // for Error
+#include "common/macros.h"  // for CHECK
 
-#include "core/events/events_info.h"    // for DiscoveryInfoResponce
-#include "core/redis/database.h"        // for Database
-#include "core/redis/driver.h"          // for Driver
-#include "core/redis/server_info.h"     // for ServerInfo, etc
+#include "core/events/events_info.h"  // for DiscoveryInfoResponce
+#include "core/redis/database.h"      // for Database
+#include "core/redis/driver.h"        // for Driver
+#include "core/redis/server_info.h"   // for ServerInfo, etc
 
 namespace fastonosql {
 namespace core {
 namespace redis {
 
 Server::Server(IConnectionSettingsBaseSPtr settings)
-  : IServerRemote(new Driver(settings)), role_(MASTER), mode_(STANDALONE) {
-}
+    : IServerRemote(new Driver(settings)), role_(MASTER), mode_(STANDALONE) {}
 
 serverTypes Server::role() const {
   return role_;
@@ -65,7 +72,7 @@ void Server::handleDiscoveryInfoResponceEvent(events::DiscoveryInfoResponceEvent
     CHECK(rinf);
     if (rinf->replication_.role_ == "master") {
       role_ = MASTER;
-    } else if(rinf->replication_.role_ == "slave") {
+    } else if (rinf->replication_.role_ == "slave") {
       role_ = SLAVE;
     }
 

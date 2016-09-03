@@ -2,18 +2,26 @@
 
     This file is part of FastoNoSQL.
 
-    FastoNoSQL is free software: you can redistribute it and/or modify
-    it under the terms of the GNU General Public License as published by
-    the Free Software Foundation, either version 3 of the License, or
+    FastoNoSQL is free software: you can redistribute it
+   and/or modify
+    it under the terms of the GNU General Public License as
+   published by
+    the Free Software Foundation, either version 3 of the
+   License, or
     (at your option) any later version.
 
-    FastoNoSQL is distributed in the hope that it will be useful,
-    but WITHOUT ANY WARRANTY; without even the implied warranty of
-    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+    FastoNoSQL is distributed in the hope that it will be
+   useful,
+    but WITHOUT ANY WARRANTY; without even the implied
+   warranty of
+    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
+   See the
     GNU General Public License for more details.
 
-    You should have received a copy of the GNU General Public License
-    along with FastoNoSQL.  If not, see <http://www.gnu.org/licenses/>.
+    You should have received a copy of the GNU General
+   Public License
+    along with FastoNoSQL.  If not, see
+   <http://www.gnu.org/licenses/>.
 */
 
 #include "gui/fasto_tree_view.h"
@@ -21,21 +29,20 @@
 #include <QHeaderView>
 #include <QMenu>
 
-#include "common/macros.h"              // for VERIFY
+#include "common/macros.h"  // for VERIFY
 
 namespace fastonosql {
 namespace gui {
 
-FastoTreeView::FastoTreeView(QWidget* parent)
-  : QTreeView(parent) {
+FastoTreeView::FastoTreeView(QWidget* parent) : QTreeView(parent) {
   setSelectionMode(QAbstractItemView::ExtendedSelection);
   setSelectionBehavior(QAbstractItemView::SelectRows);
 
   header()->resizeSections(QHeaderView::Stretch);
 
   setContextMenuPolicy(Qt::CustomContextMenu);
-  VERIFY(connect(this, &FastoTreeView::customContextMenuRequested,
-                 this, &FastoTreeView::showContextMenu));
+  VERIFY(connect(this, &FastoTreeView::customContextMenuRequested, this,
+                 &FastoTreeView::showContextMenu));
 }
 
 void FastoTreeView::showContextMenu(const QPoint& point) {

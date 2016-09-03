@@ -2,35 +2,42 @@
 
     This file is part of FastoNoSQL.
 
-    FastoNoSQL is free software: you can redistribute it and/or modify
-    it under the terms of the GNU General Public License as published by
-    the Free Software Foundation, either version 3 of the License, or
+    FastoNoSQL is free software: you can redistribute it
+   and/or modify
+    it under the terms of the GNU General Public License as
+   published by
+    the Free Software Foundation, either version 3 of the
+   License, or
     (at your option) any later version.
 
-    FastoNoSQL is distributed in the hope that it will be useful,
-    but WITHOUT ANY WARRANTY; without even the implied warranty of
-    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+    FastoNoSQL is distributed in the hope that it will be
+   useful,
+    but WITHOUT ANY WARRANTY; without even the implied
+   warranty of
+    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
+   See the
     GNU General Public License for more details.
 
-    You should have received a copy of the GNU General Public License
-    along with FastoNoSQL.  If not, see <http://www.gnu.org/licenses/>.
+    You should have received a copy of the GNU General
+   Public License
+    along with FastoNoSQL.  If not, see
+   <http://www.gnu.org/licenses/>.
 */
 
 #include "core/leveldb/connection_settings.h"
 
-#include <string>                       // for string
+#include <string>  // for string
 
-#include "common/convert2string.h"      // for ConvertFromString
+#include "common/convert2string.h"  // for ConvertFromString
 
-#include "core/connection_types.h"      // for connectionTypes::LEVELDB
+#include "core/connection_types.h"  // for connectionTypes::LEVELDB
 
 namespace fastonosql {
 namespace core {
 namespace leveldb {
 
 ConnectionSettings::ConnectionSettings(const connection_path_t& connectionName)
-  : IConnectionSettingsLocal(connectionName, LEVELDB), info_() {
-}
+    : IConnectionSettingsLocal(connectionName, LEVELDB), info_() {}
 
 std::string ConnectionSettings::dbpath() const {
   return info_.dbname;
@@ -48,7 +55,7 @@ Config ConnectionSettings::info() const {
   return info_;
 }
 
-void ConnectionSettings::setInfo(const Config &info) {
+void ConnectionSettings::setInfo(const Config& info) {
   info_ = info;
 }
 

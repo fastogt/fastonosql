@@ -2,18 +2,26 @@
 
     This file is part of FastoNoSQL.
 
-    FastoNoSQL is free software: you can redistribute it and/or modify
-    it under the terms of the GNU General Public License as published by
-    the Free Software Foundation, either version 3 of the License, or
+    FastoNoSQL is free software: you can redistribute it
+   and/or modify
+    it under the terms of the GNU General Public License as
+   published by
+    the Free Software Foundation, either version 3 of the
+   License, or
     (at your option) any later version.
 
-    FastoNoSQL is distributed in the hope that it will be useful,
-    but WITHOUT ANY WARRANTY; without even the implied warranty of
-    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+    FastoNoSQL is distributed in the hope that it will be
+   useful,
+    but WITHOUT ANY WARRANTY; without even the implied
+   warranty of
+    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
+   See the
     GNU General Public License for more details.
 
-    You should have received a copy of the GNU General Public License
-    along with FastoNoSQL.  If not, see <http://www.gnu.org/licenses/>.
+    You should have received a copy of the GNU General
+   Public License
+    along with FastoNoSQL.  If not, see
+   <http://www.gnu.org/licenses/>.
 */
 
 #include "gui/editor/fasto_editor_output.h"
@@ -21,11 +29,11 @@
 #include <QHBoxLayout>
 
 #include "common/macros.h"
-#include "common/qt/utils_qt.h"         // for item
 #include "common/qt/convert2string.h"
+#include "common/qt/utils_qt.h"  // for item
 
+#include "gui/editor/fasto_hex_edit.h"  // for FastoHexEdit, etc
 #include "gui/fasto_common_item.h"      // for FastoCommonItem, toRaw, etc
-#include "gui/editor/fasto_hex_edit.h"         // for FastoHexEdit, etc
 
 #include "translations/global.h"
 
@@ -33,10 +41,11 @@ namespace fastonosql {
 namespace gui {
 
 FastoEditorOutput::FastoEditorOutput(const QString& delimiter, QWidget* parent)
-  : QWidget(parent), model_(nullptr), view_method_(JSON), delimiter_(delimiter) {
+    : QWidget(parent), model_(nullptr), view_method_(JSON), delimiter_(delimiter) {
   editor_ = new FastoHexEdit;
   VERIFY(connect(editor_, &FastoHexEdit::textChanged, this, &FastoEditorOutput::textChanged));
-  VERIFY(connect(editor_, &FastoHexEdit::readOnlyChanged, this, &FastoEditorOutput::readOnlyChanged));
+  VERIFY(
+      connect(editor_, &FastoHexEdit::readOnlyChanged, this, &FastoEditorOutput::readOnlyChanged));
 
   QVBoxLayout* mainL = new QVBoxLayout;
   mainL->addWidget(editor_);
@@ -50,64 +59,61 @@ void FastoEditorOutput::setModel(QAbstractItemModel* model) {
   }
 
   if (model_) {
-    VERIFY(disconnect(model_, &QAbstractItemModel::destroyed,
-                      this, &FastoEditorOutput::modelDestroyed));
-    VERIFY(disconnect(model_, &QAbstractItemModel::dataChanged,
-                      this, &FastoEditorOutput::dataChanged));
-    VERIFY(disconnect(model_, &QAbstractItemModel::headerDataChanged,
-                      this, &FastoEditorOutput::headerDataChanged));
-    VERIFY(disconnect(model_, &QAbstractItemModel::rowsInserted,
-                      this, &FastoEditorOutput::rowsInserted));
-    VERIFY(disconnect(model_, &QAbstractItemModel::rowsAboutToBeRemoved,
-                      this, &FastoEditorOutput::rowsAboutToBeRemoved));
-    VERIFY(disconnect(model_, &QAbstractItemModel::rowsRemoved,
-                      this, &FastoEditorOutput::rowsRemoved));
-    VERIFY(disconnect(model_, &QAbstractItemModel::columnsAboutToBeRemoved,
-                      this, &FastoEditorOutput::columnsAboutToBeRemoved));
-    VERIFY(disconnect(model_, &QAbstractItemModel::columnsRemoved,
-                      this, &FastoEditorOutput::columnsRemoved));
-    VERIFY(disconnect(model_, &QAbstractItemModel::columnsInserted,
-                      this, &FastoEditorOutput::columnsInserted));
-    VERIFY(disconnect(model_, &QAbstractItemModel::modelReset,
-                      this, &FastoEditorOutput::reset));
-    VERIFY(disconnect(model_, &QAbstractItemModel::layoutChanged,
-                      this, &FastoEditorOutput::layoutChanged));
+    VERIFY(disconnect(model_, &QAbstractItemModel::destroyed, this,
+                      &FastoEditorOutput::modelDestroyed));
+    VERIFY(disconnect(model_, &QAbstractItemModel::dataChanged, this,
+                      &FastoEditorOutput::dataChanged));
+    VERIFY(disconnect(model_, &QAbstractItemModel::headerDataChanged, this,
+                      &FastoEditorOutput::headerDataChanged));
+    VERIFY(disconnect(model_, &QAbstractItemModel::rowsInserted, this,
+                      &FastoEditorOutput::rowsInserted));
+    VERIFY(disconnect(model_, &QAbstractItemModel::rowsAboutToBeRemoved, this,
+                      &FastoEditorOutput::rowsAboutToBeRemoved));
+    VERIFY(disconnect(model_, &QAbstractItemModel::rowsRemoved, this,
+                      &FastoEditorOutput::rowsRemoved));
+    VERIFY(disconnect(model_, &QAbstractItemModel::columnsAboutToBeRemoved, this,
+                      &FastoEditorOutput::columnsAboutToBeRemoved));
+    VERIFY(disconnect(model_, &QAbstractItemModel::columnsRemoved, this,
+                      &FastoEditorOutput::columnsRemoved));
+    VERIFY(disconnect(model_, &QAbstractItemModel::columnsInserted, this,
+                      &FastoEditorOutput::columnsInserted));
+    VERIFY(disconnect(model_, &QAbstractItemModel::modelReset, this, &FastoEditorOutput::reset));
+    VERIFY(disconnect(model_, &QAbstractItemModel::layoutChanged, this,
+                      &FastoEditorOutput::layoutChanged));
   }
 
   model_ = model;
 
   // These asserts do basic sanity checking of the model
-  Q_ASSERT_X(model_->index(0,0) == model_->index(0,0),
-             "QAbstractItemView::setModel",
+  Q_ASSERT_X(model_->index(0, 0) == model_->index(0, 0), "QAbstractItemView::setModel",
              "A model should return the exact same index "
-             "(including its internal id/pointer) when asked for it twice in a row.");
-  Q_ASSERT_X(model_->index(0,0).parent() == QModelIndex(),
-             "QAbstractItemView::setModel",
+             "(including its internal id/pointer) when "
+             "asked for it twice in a row.");
+  Q_ASSERT_X(model_->index(0, 0).parent() == QModelIndex(), "QAbstractItemView::setModel",
              "The parent of a top level index should be invalid");
 
   if (model_) {
-    VERIFY(connect(model_, &QAbstractItemModel::destroyed,
-                   this, &FastoEditorOutput::modelDestroyed));
-    VERIFY(connect(model_, &QAbstractItemModel::dataChanged,
-                   this, &FastoEditorOutput::dataChanged));
-    VERIFY(connect(model_, &QAbstractItemModel::headerDataChanged,
-                   this, &FastoEditorOutput::headerDataChanged));
-    VERIFY(connect(model_, &QAbstractItemModel::rowsInserted,
-                   this, &FastoEditorOutput::rowsInserted));
-    VERIFY(connect(model_, &QAbstractItemModel::rowsAboutToBeRemoved,
-                   this, &FastoEditorOutput::rowsAboutToBeRemoved));
-    VERIFY(connect(model_, &QAbstractItemModel::rowsRemoved,
-                   this, &FastoEditorOutput::rowsRemoved));
-    VERIFY(connect(model_, &QAbstractItemModel::columnsAboutToBeRemoved,
-                   this, &FastoEditorOutput::columnsAboutToBeRemoved));
-    VERIFY(connect(model_, &QAbstractItemModel::columnsRemoved,
-                   this, &FastoEditorOutput::columnsRemoved));
-    VERIFY(connect(model_, &QAbstractItemModel::columnsInserted,
-                   this, &FastoEditorOutput::columnsInserted));
-    VERIFY(connect(model_, &QAbstractItemModel::modelReset,
-                   this, &FastoEditorOutput::reset));
-    VERIFY(connect(model_, &QAbstractItemModel::layoutChanged,
-                   this, &FastoEditorOutput::layoutChanged));
+    VERIFY(
+        connect(model_, &QAbstractItemModel::destroyed, this, &FastoEditorOutput::modelDestroyed));
+    VERIFY(
+        connect(model_, &QAbstractItemModel::dataChanged, this, &FastoEditorOutput::dataChanged));
+    VERIFY(connect(model_, &QAbstractItemModel::headerDataChanged, this,
+                   &FastoEditorOutput::headerDataChanged));
+    VERIFY(
+        connect(model_, &QAbstractItemModel::rowsInserted, this, &FastoEditorOutput::rowsInserted));
+    VERIFY(connect(model_, &QAbstractItemModel::rowsAboutToBeRemoved, this,
+                   &FastoEditorOutput::rowsAboutToBeRemoved));
+    VERIFY(
+        connect(model_, &QAbstractItemModel::rowsRemoved, this, &FastoEditorOutput::rowsRemoved));
+    VERIFY(connect(model_, &QAbstractItemModel::columnsAboutToBeRemoved, this,
+                   &FastoEditorOutput::columnsAboutToBeRemoved));
+    VERIFY(connect(model_, &QAbstractItemModel::columnsRemoved, this,
+                   &FastoEditorOutput::columnsRemoved));
+    VERIFY(connect(model_, &QAbstractItemModel::columnsInserted, this,
+                   &FastoEditorOutput::columnsInserted));
+    VERIFY(connect(model_, &QAbstractItemModel::modelReset, this, &FastoEditorOutput::reset));
+    VERIFY(connect(model_, &QAbstractItemModel::layoutChanged, this,
+                   &FastoEditorOutput::layoutChanged));
   }
 
   reset();
@@ -122,8 +128,7 @@ void FastoEditorOutput::viewChange(int viewMethod) {
   layoutChanged();
 }
 
-void FastoEditorOutput::modelDestroyed() {
-}
+void FastoEditorOutput::modelDestroyed() {}
 
 void FastoEditorOutput::dataChanged(QModelIndex first, QModelIndex last) {
   UNUSED(first);
@@ -132,8 +137,7 @@ void FastoEditorOutput::dataChanged(QModelIndex first, QModelIndex last) {
   layoutChanged();
 }
 
-void FastoEditorOutput::headerDataChanged() {
-}
+void FastoEditorOutput::headerDataChanged() {}
 
 void FastoEditorOutput::rowsInserted(QModelIndex index, int r, int c) {
   UNUSED(index);
@@ -216,7 +220,8 @@ void FastoEditorOutput::layoutChanged() {
     return;
   }
 
-  FastoCommonItem* child = common::utils_qt::item<fasto::qt::gui::TreeItem*, FastoCommonItem*>(index);
+  FastoCommonItem* child =
+      common::utils_qt::item<fasto::qt::gui::TreeItem*, FastoCommonItem*>(index);
   if (!child) {
     return;
   }
