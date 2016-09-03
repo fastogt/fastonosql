@@ -76,15 +76,21 @@ def read_file_line_by_line(file):
 
     return file_array
 
-class ProgressSaverBase(object):
-    def __init__(self):
+def print_message(progress, message):
+    print '{0:.2f}% {1}'.format(progress, message)
+    sys.stdout.flush()
+
+class ProgressSaver(object):
+    def __init__(self, cb):
         self.progress_min_ = 0.0
         self.progress_max_ = 0.0
+        self.cb_ = cb
 
     def update_progress_message_range(self, progress_min, progress_max, message):
         self.progress_min_ = progress_min
         self.progress_max_ = progress_max
-        print '{0:.2f}% {1}'.format(progress_min, message)
+        if self.cb_:
+            self.cb_(progress_min, message)
 
     def on_update_progress_message(self, progress, message):
         if message.type() == run_command.MessageType.STATUS:
@@ -92,7 +98,8 @@ class ProgressSaverBase(object):
 
         diff = self.progress_max_ - self.progress_min_
         perc = self.progress_min_ + diff * (progress / 100.0)
-        print '{0:.2f}% {1}'.format(perc, message.message())
+        if self.cb_:
+            self.cb_(perc, message.message())
 
 class BuildRequest(object):
     def __init__(self, platform, arch_bit):
@@ -252,5 +259,5 @@ if __name__ == "__main__":
         branding_options = []
 
 
-    saver = ProgressSaverBase()
+    saver = ProgressSaver(print_message)
     request.build(cmake_root, branding_options, 'build_' + platform_str, packages, saver)

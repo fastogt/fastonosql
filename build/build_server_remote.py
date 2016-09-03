@@ -12,19 +12,6 @@ def print_usage():
         "[optional] argv[1] platform\n"
         "[optional] argv[2] architecture\n")
 
-class ProgressSaver(build.ProgressSaverBase):
-    def __init__(self, progress_min, progress_max, cb):
-        build.ProgressSaverBase.__init__(self)
-        self.progress_max_ = progress_max
-        self.progress_min_ = progress_min
-        self.cb_ = cb
-        self.progress_ = 0.0
-
-    def process(self, line):
-        diff = self.progress_max_ - self.progress_min_
-        perc = self.progress_min_ + diff * (self.progress_ / 100.0)
-        self.cb_(line, perc)
-        super(ProgressSaver, self).process(line)
 
 class BuildRpcServer(object):
     EXCHANGE = 'direct_logs'
@@ -113,9 +100,6 @@ class BuildRpcServer(object):
         self.connection_ = self.connect()
         self.connection_.ioloop.start()
 
-    def on_line_ready(self, line, progress, routing_key, op_id):
-        self.send_status(routing_key, op_id, progress, line)
-
     def build_package(self, op_id, branding_options, package_types, destination, routing_key):
         platform = self.buid_.platform()
         arch = platform.arch()
@@ -123,20 +107,26 @@ class BuildRpcServer(object):
         platform_and_arch_str = '{0}_{1}'.format(platform.name(), arch.name())
         dir_name = 'build_{0}_for_{1}'.format(platform_and_arch_str, op_id)
 
-        def store(cb, routing_key, op_id):
-            def closure(line, progress):
-                return cb(line, progress, routing_key, op_id)
+        self.send_status(routing_key, op_id, 20, 'Building package')
+
+        def store(progress_min, progress_max, routing_key, op_id):
+            def closure(progress, message):
+                diff = progress_max - progress_min
+                perc = round(progress_min + diff * (progress / 100.0), 2)
+                print('{0}% {1}'.format(perc, message))
+                sys.stdout.flush()
+                self.send_status(routing_key, op_id, perc, message)
+
             return closure
 
-        store = store(self.on_line_ready, routing_key, op_id)
+        store = store(21.0, 79.0, routing_key, op_id)
 
-        self.send_status(routing_key, op_id, 20, 'Building package')
-        saver = ProgressSaver(21, 79, store)
-        filenames = self.buid_.build('..', branding_options, dir_name, package_types, saver)
-        filename = filenames[0]
+        saver = build.ProgressSaver(store)
+        file_paths = self.buid_.build('..', branding_options, dir_name, package_types, saver)
+        file_path = file_paths[0]
         self.send_status(routing_key, op_id, 80, 'Loading package to server')
         try:
-            result = config.post_install_step(filename, destination)
+            result = config.post_install_step(file_path, destination)
         except Exception as ex:
             raise ex
 
