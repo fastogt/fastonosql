@@ -23,8 +23,9 @@ class BuildRpcServer(object):
         self.channel_ = None
         self.closing_ = False
         self.consumer_tag_ = None
+        self.platform_ = platform
+        self.arch_bit_ = arch_bit
         self.routing_key_ = system_info.gen_routing_key(platform, str(arch_bit))
-        self.buid_ = build.BuildRequest(platform, arch_bit)
         print("Build server for %s inited!" % platform)
 
     def connect(self):
@@ -100,19 +101,20 @@ class BuildRpcServer(object):
         self.connection_ = self.connect()
         self.connection_.ioloop.start()
 
-    def build_package(self, op_id, branding_options, package_types, destination, routing_key):
-        platform = self.buid_.platform()
+    def build_package(self, platform, arch_bit, op_id, branding_options, package_types, destination, routing_key):
+        buid_request = build.BuildRequest(platform, arch_bit)
+        platform = buid_request.platform()
         arch = platform.arch()
 
         platform_and_arch_str = '{0}_{1}'.format(platform.name(), arch.name())
         dir_name = 'build_{0}_for_{1}'.format(platform_and_arch_str, op_id)
 
-        self.send_status(routing_key, op_id, 20, 'Building package')
+        self.send_status(routing_key, op_id, 20.0, 'Building package')
 
         def store(progress_min, progress_max, routing_key, op_id):
             def closure(progress, message):
                 diff = progress_max - progress_min
-                perc = round(progress_min + diff * (progress / 100.0), 2)
+                perc = round(progress_min + diff * (progress / 100.0), 1)
                 print('{0}% {1}'.format(perc, message))
                 sys.stdout.flush()
                 self.send_status(routing_key, op_id, perc, message)
@@ -122,9 +124,9 @@ class BuildRpcServer(object):
         store = store(21.0, 79.0, routing_key, op_id)
 
         saver = build.ProgressSaver(store)
-        file_paths = self.buid_.build('..', branding_options, dir_name, package_types, saver)
+        file_paths = buid_request.build('..', branding_options, dir_name, package_types, saver)
         file_path = file_paths[0]
-        self.send_status(routing_key, op_id, 80, 'Loading package to server')
+        self.send_status(routing_key, op_id, 80.0, 'Loading package to server')
         try:
             result = config.post_install_step(file_path, destination)
         except Exception as ex:
@@ -154,33 +156,32 @@ class BuildRpcServer(object):
                          body=body)
 
     def on_request(self, ch, method, props, body):
+        platform_and_arch = '{0}_{1}'.format(self.platform_, self.arch_bit_)
         data = json.loads(body)
         #self.acknowledge_message(method.delivery_tag)
         #return
 
         branding_variables = data.get('branding_variables')
-        platform = data.get('platform')
-        arch = data.get('arch')
         package_type = data.get('package_type')
         destination = data.get('destination')
         op_id = props.correlation_id
         package_types = []
         package_types.append(package_type)
 
-        self.send_status(props.reply_to, op_id, 0, 'Prepare to build package')
-        print('Build started for: {0}, platform: {1}_{2}'.format(op_id, platform, arch))
+        self.send_status(props.reply_to, op_id, 0.0, 'Prepare to build package')
+        print('Build started for: {0}, platform: {1}'.format(op_id, platform_and_arch))
         try:
-            response = self.build_package(op_id, shlex.split(branding_variables), package_types, destination, props.reply_to)
-            print('Build finished for: {0}, platform: {1}_{2}, responce: {3}'.format(op_id, platform, arch, response))
+            response = self.build_package(self.platform_, self.arch_bit_, op_id, shlex.split(branding_variables), package_types, destination, props.reply_to)
+            print('Build finished for: {0}, platform: {1}, responce: {2}'.format(op_id, platform_and_arch, response))
             json_to_send = {'body' : response}
         except build.BuildError as ex:
-            print('Build finished for: {0}, platform: {1}_{2}, exception: {3}'.format(op_id, platform, arch, str(ex)))
+            print('Build finished for: {0}, platform: {1}, exception: {2}'.format(op_id, platform_and_arch, str(ex)))
             json_to_send = {'error': str(ex)}
         except Exception as ex:
-            print('Build finished for: {0}, platform: {1}_{2}, exception: {3}'.format(op_id, platform, arch, str(ex)))
+            print('Build finished for: {0}, platform: {1}, exception: {2}'.format(op_id, platform_and_arch, str(ex)))
             json_to_send = {'error': str(ex)}
         
-        self.send_status(props.reply_to, op_id, 100, 'Completed')
+        self.send_status(props.reply_to, op_id, 100.0, 'Completed')
         self.send_responce(props.reply_to, op_id, json.dumps(json_to_send))
         self.acknowledge_message(method.delivery_tag)
 

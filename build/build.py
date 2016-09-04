@@ -77,7 +77,7 @@ def read_file_line_by_line(file):
     return file_array
 
 def print_message(progress, message):
-    print '{0:.2f}% {1}'.format(progress, message)
+    print '{0:.1f}% {1}'.format(progress, message)
     sys.stdout.flush()
 
 class ProgressSaver(object):
