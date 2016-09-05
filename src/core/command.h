@@ -49,13 +49,6 @@ FastoObjectCommandIPtr CreateCommand(FastoObject* parent,
 }
 
 template <typename Command>
-FastoObjectCommandIPtr CreateCommand(FastoObjectIPtr parent,
-                                     const std::string& input,
-                                     common::Value::CommandLoggingType ct) {
-  return CreateCommand<Command>(parent.get(), input, ct);
-}
-
-template <typename Command>
 FastoObjectCommandIPtr CreateCommandFast(const std::string& input,
                                          common::Value::CommandLoggingType ct) {
   std::string stable_input = StableCommand(input);

@@ -223,7 +223,7 @@ void Driver::handleExecuteEvent(events::ExecuteRequestEvent* ev) {
       }
 
       offset = i + 1;
-      FastoObjectCommandIPtr cmd = CreateCommand<Command>(obj, command, common::Value::C_USER);
+      FastoObjectCommandIPtr cmd = CreateCommand<Command>(obj.get(), command, common::Value::C_USER);
       common::Error er = execute(cmd);
       if (er && er->isError()) {
         res.setErrorInfo(er);
@@ -251,7 +251,7 @@ void Driver::handleCommandRequestEvent(events::CommandRequestEvent* ev) {
 
   RootLocker lock = make_locker(sender, cmdtext);
   FastoObjectIPtr obj = lock.root();
-  FastoObjectCommandIPtr cmd = CreateCommand<Command>(obj, cmdtext, common::Value::C_INNER);
+  FastoObjectCommandIPtr cmd = CreateCommand<Command>(obj.get(), cmdtext, common::Value::C_INNER);
   notifyProgress(sender, 50);
   er = execute(cmd);
   if (er && er->isError()) {
@@ -266,9 +266,8 @@ void Driver::handleLoadDatabaseContentEvent(events::LoadDatabaseContentRequestEv
   notifyProgress(sender, 0);
   events::LoadDatabaseContentResponceEvent::value_type res(ev->value());
   std::string patternResult = common::MemSPrintf(LMDB_GET_KEYS_PATTERN_1ARGS_I, res.count_keys);
-  FastoObjectIPtr root = FastoObject::createRoot(patternResult);
+  FastoObjectCommandIPtr cmd = CreateCommandFast<Command>(patternResult, common::Value::C_INNER);
   notifyProgress(sender, 50);
-  FastoObjectCommandIPtr cmd = CreateCommand<Command>(root, patternResult, common::Value::C_INNER);
   common::Error er = execute(cmd);
   if (er && er->isError()) {
     res.setErrorInfo(er);
