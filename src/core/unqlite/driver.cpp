@@ -161,8 +161,8 @@ common::Error Driver::syncDisconnect() {
   return impl_->disconnect();
 }
 
-common::Error Driver::executeImpl(int argc, char** argv, FastoObject* out, void* user_data) {
-  return impl_->execute(argc, argv, out, user_data);
+common::Error Driver::executeImpl(int argc, char** argv, FastoObject* out) {
+  return impl_->execute(argc, argv, out);
 }
 
 common::Error Driver::serverInfo(IServerInfo** info) {
@@ -225,7 +225,7 @@ void Driver::handleExecuteEvent(events::ExecuteRequestEvent* ev) {
 
       offset = i + 1;
       FastoObjectCommandIPtr cmd = CreateCommand<Command>(obj, command, common::Value::C_USER);
-      common::Error er = execute(cmd, sender);
+      common::Error er = execute(cmd);
       if (er && er->isError()) {
         res.setErrorInfo(er);
         break;
@@ -254,7 +254,7 @@ void Driver::handleCommandRequestEvent(events::CommandRequestEvent* ev) {
   FastoObjectIPtr obj = lock.root();
   FastoObjectCommandIPtr cmd = CreateCommand<Command>(obj, cmdtext, common::Value::C_INNER);
   notifyProgress(sender, 50);
-  er = execute(cmd, sender);
+  er = execute(cmd);
   if (er && er->isError()) {
     res.setErrorInfo(er);
   }
@@ -270,7 +270,7 @@ void Driver::handleLoadDatabaseContentEvent(events::LoadDatabaseContentRequestEv
   FastoObjectIPtr root = FastoObject::createRoot(patternResult);
   notifyProgress(sender, 50);
   FastoObjectCommandIPtr cmd = CreateCommand<Command>(root, patternResult, common::Value::C_INNER);
-  common::Error err = execute(cmd, sender);
+  common::Error err = execute(cmd);
   if (err && err->isError()) {
     res.setErrorInfo(err);
   } else {

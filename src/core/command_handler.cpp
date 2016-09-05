@@ -31,7 +31,7 @@ namespace core {
 
 CommandHandler::CommandHandler(const commands_t& commands) : commands_(commands) {}
 
-common::Error CommandHandler::execute(int argc, char** argv, FastoObject* out, void* user_data) {
+common::Error CommandHandler::execute(int argc, char** argv, FastoObject* out) {
   for (size_t i = 0; i < commands_.size(); ++i) {
     command_t cmd = commands_[i];
     size_t off = 0;

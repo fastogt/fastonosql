@@ -526,28 +526,6 @@ common::Error select(CommandHandler* handler, int argc, char** argv, FastoObject
   return common::Error();
 }
 
-common::Error connect(CommandHandler* handler, int argc, char** argv, FastoObject* out) {
-  UNUSED(argc);
-  DBConnection* red = static_cast<DBConnection*>(handler);
-  common::Error err = red->disconnect();
-  if (err && err->isError()) {
-    return err;
-  }
-
-  auto conf = red->config();
-  conf.host.host = argv[0];
-  conf.host.port = common::ConvertFromString<uint16_t>(argv[1]);
-  err = red->connect(conf);
-  if (err && err->isError()) {
-    return err;
-  }
-
-  common::StringValue* val = common::Value::createStringValue("OK");
-  FastoObject* child = new FastoObject(out, val, red->delimiter());
-  out->addChildren(child);
-  return common::Error();
-}
-
 common::Error help(CommandHandler* handler, int argc, char** argv, FastoObject* out) {
   DBConnection* red = static_cast<DBConnection*>(handler);
   return red->help(argc, argv, out);

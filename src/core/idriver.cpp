@@ -122,7 +122,7 @@ void replyNotImplementedYet(IDriver* sender, event_request_type* ev, const char*
 
 }  // namespace
 
-common::Error IDriver::execute(FastoObjectCommandIPtr cmd, void* user_data) {
+common::Error IDriver::execute(FastoObjectCommandIPtr cmd) {
   if (!cmd) {
     DNOTREACHED();
     return common::make_error_value("Invalid input argument(s)", common::ErrorValue::E_ERROR);
@@ -142,7 +142,7 @@ common::Error IDriver::execute(FastoObjectCommandIPtr cmd, void* user_data) {
     return common::make_error_value("Invalid input argument(s)", common::ErrorValue::E_ERROR);
   }
 
-  common::Error err = executeImpl(argc, argv, cmd.get(), user_data);
+  common::Error err = executeImpl(argc, argv, cmd.get());
   sdsfreesplitres(argv, argc);
   return err;
 }

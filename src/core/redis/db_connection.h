@@ -60,7 +60,6 @@ common::Error common_exec_off2(CommandHandler* handler, int argc, char** argv, F
 
 common::Error auth(CommandHandler* handler, int argc, char** argv, FastoObject* out);
 common::Error select(CommandHandler* handler, int argc, char** argv, FastoObject* out);
-common::Error connect(CommandHandler* handler, int argc, char** argv, FastoObject* out);
 common::Error help(CommandHandler* handler, int argc, char** argv, FastoObject* out);
 common::Error monitor(CommandHandler* handler, int argc, char** argv, FastoObject* out);
 common::Error subscribe(CommandHandler* handler, int argc, char** argv, FastoObject* out);
@@ -424,15 +423,6 @@ static const std::vector<CommandHolder> redisCommands = {
                   2,
                   0,
                   &common_exec_off2),
-
-    CommandHolder("CONNECT",
-                  "<ip> <port>",
-                  "Open connection",
-                  PROJECT_VERSION_GENERATE(1, 0, 0),
-                  UNDEFINED_EXAMPLE_STR,
-                  2,
-                  0,
-                  &connect),
 
     CommandHolder("DBSIZE",
                   "-",

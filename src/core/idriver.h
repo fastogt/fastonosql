@@ -136,7 +136,7 @@ class IDriver : public QObject, private FastoObject::IFastoObjectObserver {
 
   void setCurrentDatabaseInfo(IDataBaseInfo* inf);
 
-  common::Error execute(FastoObjectCommandIPtr cmd, void* user_data) WARN_UNUSED_RESULT;
+  common::Error execute(FastoObjectCommandIPtr cmd) WARN_UNUSED_RESULT;
 
  private:
   virtual common::Error syncConnect() WARN_UNUSED_RESULT = 0;
@@ -146,7 +146,7 @@ class IDriver : public QObject, private FastoObject::IFastoObjectObserver {
   void handleDiscoveryInfoRequestEvent(events::DiscoveryInfoRequestEvent* ev);
   void handleClearServerHistoryRequestEvent(events::ClearServerHistoryRequestEvent* ev);
 
-  virtual common::Error executeImpl(int argc, char** argv, FastoObject* out, void* user_data) = 0;
+  virtual common::Error executeImpl(int argc, char** argv, FastoObject* out) = 0;
 
   // notification of execute events
   virtual void addedChildren(FastoObjectIPtr child);
