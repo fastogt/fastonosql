@@ -140,8 +140,9 @@ int anetKeepAlive(char* err, int fd, int interval) {
    * detecting
    * an error (see the next setsockopt call). */
   val = interval / 3;
-  if (val == 0)
+  if (val == 0) {
     val = 1;
+  }
   if (setsockopt(fd, IPPROTO_TCP, TCP_KEEPINTVL, &val, sizeof(val)) < 0) {
     anetSetError(err, "setsockopt TCP_KEEPINTVL: %s\n", strerror(errno));
     return ANET_ERR;
@@ -215,8 +216,9 @@ char* getInfoField(char* info, const char* field) {
   char *n1, *n2;
   char* result;
 
-  if (!p)
+  if (!p) {
     return NULL;
+  }
   p += strlen(field) + 1;
   n1 = strchr(p, '\r');
   n2 = strchr(p, ',');
@@ -435,16 +437,18 @@ common::Error cliOutputHelp(int argc, char** argv, FastoObject* out, const std::
   DCHECK(argc > 0);
   for (i = 0; i < helpEntriesLen; i++) {
     entry = &rInit.helpEntries[i];
-    if (entry->type != CLI_HELP_COMMAND)
+    if (entry->type != CLI_HELP_COMMAND) {
       continue;
+    }
 
     help = entry->org;
     if (group == -1) {
       /* Compare all arguments */
       if (argc == entry->argc) {
         for (j = 0; j < argc; j++) {
-          if (strcasecmp(argv[j], entry->argv[j]) != 0)
+          if (strcasecmp(argv[j], entry->argv[j]) != 0) {
             break;
+          }
         }
         if (j == argc) {
           common::Error er = cliOutputCommandHelp(out, help, 1, delimiter);
@@ -921,10 +925,12 @@ common::Error DBConnection::sendSync(unsigned long long* payload) {
       continue;
     }
 
-    if (*p == '\n' && p != buf)
+    if (*p == '\n' && p != buf) {
       break;
-    if (*p != '\n')
+    }
+    if (*p != '\n') {
       p++;
+    }
   }
   *p = '\0';
   if (buf[0] == '-') {
@@ -1794,7 +1800,7 @@ common::Error DBConnection::executeAsPipeline(const std::vector<FastoObjectComma
     if (argv) {
       if (isPipeLineCommand(argv[0])) {
         valid_cmds.push_back(cmd);
-        redisAppendCommandArgv(connection_.handle_, argc, (const char**)argv, NULL);
+        redisAppendCommandArgv(connection_.handle_, argc, const_cast<const char**>(argv), NULL);
       }
       sdsfreesplitres(argv, argc);
     }
@@ -1824,7 +1830,7 @@ common::Error DBConnection::commonExec(int argc, char** argv, FastoObject* out) 
     argvlen[j] = len;
   }
 
-  redisAppendCommandArgv(connection_.handle_, argc, (const char**)argv, argvlen);
+  redisAppendCommandArgv(connection_.handle_, argc, const_cast<const char**>(argv), argvlen);
   free(argvlen);
   common::Error err = cliReadReply(out);
   if (err && err->isError()) {
@@ -1868,7 +1874,7 @@ common::Error DBConnection::monitor(int argc, char** argv, FastoObject* out) {
     argvlen[j] = len;
   }
 
-  redisAppendCommandArgv(connection_.handle_, argc, (const char**)argv, argvlen);
+  redisAppendCommandArgv(connection_.handle_, argc, const_cast<const char**>(argv), argvlen);
   free(argvlen);
   common::Error err = cliReadReply(out);
   if (err && err->isError()) {
@@ -1901,7 +1907,7 @@ common::Error DBConnection::subscribe(int argc, char** argv, FastoObject* out) {
     argvlen[j] = len;
   }
 
-  redisAppendCommandArgv(connection_.handle_, argc, (const char**)argv, argvlen);
+  redisAppendCommandArgv(connection_.handle_, argc, const_cast<const char**>(argv), argvlen);
   free(argvlen);
   common::Error err = cliReadReply(out);
   if (err && err->isError()) {
