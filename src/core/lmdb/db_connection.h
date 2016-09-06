@@ -51,7 +51,7 @@ class DBConnection : public core::DBConnection<NativeConnection, Config, LMDB>,
                      public CommandHandler {
  public:
   typedef core::DBConnection<NativeConnection, Config, LMDB> base_class;
-  DBConnection();
+  DBConnection(DBConnectionClient* client);
 
   static const char* versionApi();
 

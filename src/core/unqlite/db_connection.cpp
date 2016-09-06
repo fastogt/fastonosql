@@ -184,7 +184,8 @@ common::Error testConnection(ConnectionSettings* settings) {
   return common::Error();
 }
 
-DBConnection::DBConnection() : base_class(), CommandHandler(unqliteCommands) {}
+DBConnection::DBConnection(DBConnectionClient* client)
+    : base_class(client), CommandHandler(unqliteCommands) {}
 
 common::Error DBConnection::info(const char* args, ServerInfo::Stats* statsout) {
   UNUSED(args);

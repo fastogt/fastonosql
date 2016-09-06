@@ -27,6 +27,7 @@
 #include "core/command_key.h"  // for CommandChangeTTL (ptr only), etc
 #include "core/connection_settings.h"
 #include "core/connection_types.h"  // for connectionTypes
+#include "core/db_connection_client.h"
 #include "core/types.h"             // for IDataBaseInfo (ptr only), etc
 
 #include "core/events/events.h"
@@ -44,7 +45,9 @@ class File;
 namespace fastonosql {
 namespace core {
 
-class IDriver : public QObject, private FastoObject::IFastoObjectObserver {
+class IDriver : public QObject,
+                public DBConnectionClient,
+                private FastoObject::IFastoObjectObserver {
   Q_OBJECT
  public:
   virtual ~IDriver();
@@ -155,8 +158,10 @@ class IDriver : public QObject, private FastoObject::IFastoObjectObserver {
   virtual common::Error executeImpl(int argc, char** argv, FastoObject* out) = 0;
 
   // notification of execute events
-  virtual void addedChildren(FastoObjectIPtr child);
-  virtual void updated(FastoObject* item, FastoObject::value_t val);
+  virtual void addedChildren(FastoObjectIPtr child) override;
+  virtual void updated(FastoObject* item, FastoObject::value_t val) override;
+
+  virtual void currentDataBaseChanged(IDataBaseInfo* info) override;
 
   // internal methods
   virtual IServerInfoSPtr makeServerInfoFromString(const std::string& val) = 0;

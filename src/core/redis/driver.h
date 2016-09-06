@@ -35,7 +35,7 @@ namespace fastonosql {
 namespace core {
 namespace redis {
 
-class Driver : public IDriverRemote, public IDBConnectionOwner {
+class Driver : public IDriverRemote {
   Q_OBJECT
  public:
   explicit Driver(IConnectionSettingsBaseSPtr settings);
@@ -51,8 +51,6 @@ class Driver : public IDriverRemote, public IDBConnectionOwner {
   virtual std::string delimiter() const;
 
  private:
-  virtual void currentDataBaseChanged(IDataBaseInfo* info);
-
   virtual void initImpl();
   virtual void clearImpl();
 

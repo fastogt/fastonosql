@@ -56,7 +56,7 @@ namespace core {
 namespace lmdb {
 
 Driver::Driver(IConnectionSettingsBaseSPtr settings)
-    : IDriverLocal(settings), impl_(new DBConnection) {
+    : IDriverLocal(settings), impl_(new DBConnection(this)) {
   COMPILE_ASSERT(DBConnection::connection_t == LMDB,
                  "DBConnection must be the same type as Driver!");
   CHECK(type() == LMDB);

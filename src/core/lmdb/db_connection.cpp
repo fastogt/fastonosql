@@ -151,7 +151,8 @@ common::Error testConnection(ConnectionSettings* settings) {
   return common::Error();
 }
 
-DBConnection::DBConnection() : base_class(), CommandHandler(lmdbCommands) {}
+DBConnection::DBConnection(DBConnectionClient* client)
+    : base_class(client), CommandHandler(lmdbCommands) {}
 
 const char* DBConnection::versionApi() {
   return STRINGIZE(MDB_VERSION_MAJOR) "." STRINGIZE(MDB_VERSION_MINOR) "." STRINGIZE(

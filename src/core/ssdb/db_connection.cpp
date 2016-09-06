@@ -105,7 +105,8 @@ common::Error testConnection(ConnectionSettings* settings) {
   return common::Error();
 }
 
-DBConnection::DBConnection() : base_class(), CommandHandler(ssdbCommands) {}
+DBConnection::DBConnection(DBConnectionClient* client)
+    : base_class(client), CommandHandler(ssdbCommands) {}
 
 const char* DBConnection::versionApi() {
   return "1.9.3";

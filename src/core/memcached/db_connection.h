@@ -51,7 +51,7 @@ class DBConnection : public core::DBConnection<NativeConnection, Config, MEMCACH
                      public CommandHandler {
  public:
   typedef core::DBConnection<NativeConnection, Config, MEMCACHED> base_class;
-  DBConnection();
+  DBConnection(DBConnectionClient* client);
 
   static const char* versionApi();
 

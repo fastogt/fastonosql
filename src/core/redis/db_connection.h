@@ -1979,16 +1979,11 @@ common::Error discoveryClusterConnection(ConnectionSettings* settings,
 common::Error discoverySentinelConnection(ConnectionSettings* settings,
                                           std::vector<ServerDiscoverySentinelInfoSPtr>* infos);
 
-class IDBConnectionOwner {
- public:
-  virtual void currentDataBaseChanged(IDataBaseInfo* info) = 0;
-};
-
 class DBConnection : public core::DBConnection<NativeConnection, RConfig, REDIS>,
                      public CommandHandler {
  public:
   typedef core::DBConnection<NativeConnection, RConfig, REDIS> base_class;
-  explicit DBConnection(IDBConnectionOwner* observer);
+  explicit DBConnection(DBConnectionClient* client);
 
   bool isAuthenticated() const;
 
@@ -2027,7 +2022,6 @@ class DBConnection : public core::DBConnection<NativeConnection, RConfig, REDIS>
   common::Error cliReadReply(FastoObject* out) WARN_UNUSED_RESULT;
 
   bool isAuth_;
-  IDBConnectionOwner* const observer_;
 };
 
 }  // namespace redis

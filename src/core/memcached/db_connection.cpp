@@ -209,7 +209,8 @@ common::Error testConnection(ConnectionSettings* settings) {
   return common::Error();
 }
 
-DBConnection::DBConnection() : base_class(), CommandHandler(memcachedCommands) {}
+DBConnection::DBConnection(DBConnectionClient* client)
+    : base_class(client), CommandHandler(memcachedCommands) {}
 
 const char* DBConnection::versionApi() {
   return memcached_lib_version();

@@ -23,6 +23,7 @@
 
 #include "core/connection.h"
 #include "core/connection_types.h"
+#include "core/db_connection_client.h"
 
 namespace fastonosql {
 namespace core {
@@ -35,7 +36,7 @@ class DBConnection {
   typedef typename dbconnection_t::config_t config_t;
   static constexpr connectionTypes connection_t = ContType;
 
-  DBConnection() : connection_(), interrupted_(false) {}
+  DBConnection(DBConnectionClient* client) : connection_(), interrupted_(false), client_(client) {}
 
   connectionTypes connectionType() { return connection_t; }
 
@@ -58,6 +59,7 @@ class DBConnection {
  protected:
   dbconnection_t connection_;
   bool interrupted_;
+  DBConnectionClient* client_;
 };
 
 }  // namespace core

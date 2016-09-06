@@ -719,6 +719,10 @@ void IDriver::updated(FastoObject* item, FastoObject::value_t val) {
   emit itemUpdated(item, val);
 }
 
+void IDriver::currentDataBaseChanged(IDataBaseInfo* info) {
+  setCurrentDatabaseInfo(info->Clone());
+}
+
 IDriverLocal::IDriverLocal(IConnectionSettingsBaseSPtr settings) : IDriver(settings) {
   CHECK(!isRemoteType(type()));
 }

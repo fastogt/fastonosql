@@ -757,8 +757,8 @@ common::Error discoverySentinelConnection(ConnectionSettings* settings,
   return common::Error();
 }
 
-DBConnection::DBConnection(IDBConnectionOwner* observer)
-    : base_class(), CommandHandler(redisCommands), isAuth_(false), observer_(observer) {}
+DBConnection::DBConnection(DBConnectionClient* client)
+    : base_class(client), CommandHandler(redisCommands), isAuth_(false) {}
 
 const char* DBConnection::versionApi() {
   return HIREDIS_VERSION;
@@ -1594,8 +1594,8 @@ common::Error DBConnection::select(int num, IDataBaseInfo** info) {
   common::Error err = dbkcount(&sz);
   MCHECK(!err);
   DataBaseInfo* linfo = new DataBaseInfo(common::ConvertToString(num), true, sz);
-  if (observer_) {
-    observer_->currentDataBaseChanged(linfo);
+  if (client_) {
+    client_->currentDataBaseChanged(linfo);
   }
 
   if (info) {

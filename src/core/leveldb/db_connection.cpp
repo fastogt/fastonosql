@@ -114,7 +114,8 @@ common::Error testConnection(ConnectionSettings* settings) {
   return common::Error();
 }
 
-DBConnection::DBConnection() : base_class(), CommandHandler(leveldbCommands) {}
+DBConnection::DBConnection(DBConnectionClient* client)
+    : base_class(client), CommandHandler(leveldbCommands) {}
 
 const char* DBConnection::versionApi() {
   static std::string leveldb_version =

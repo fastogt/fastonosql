@@ -54,7 +54,7 @@ class DBConnection : public core::DBConnection<NativeConnection, Config, ROCKSDB
                      public CommandHandler {
  public:
   typedef core::DBConnection<NativeConnection, Config, ROCKSDB> base_class;
-  DBConnection();
+  DBConnection(DBConnectionClient* client);
 
   static const char* versionApi();
 

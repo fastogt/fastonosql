@@ -57,7 +57,7 @@ namespace core {
 namespace rocksdb {
 
 Driver::Driver(IConnectionSettingsBaseSPtr settings)
-    : IDriverLocal(settings), impl_(new DBConnection) {
+    : IDriverLocal(settings), impl_(new DBConnection(this)) {
   COMPILE_ASSERT(DBConnection::connection_t == ROCKSDB,
                  "DBConnection must be the same type as Driver!");
   CHECK(type() == ROCKSDB);

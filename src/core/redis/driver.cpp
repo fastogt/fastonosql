@@ -143,10 +143,6 @@ bool Driver::isAuthenticated() const {
   return impl_->isAuthenticated();
 }
 
-void Driver::currentDataBaseChanged(IDataBaseInfo* info) {
-  setCurrentDatabaseInfo(info->Clone());
-}
-
 void Driver::initImpl() {}
 
 void Driver::clearImpl() {}

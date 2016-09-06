@@ -50,7 +50,7 @@ class DBConnection : public core::DBConnection<NativeConnection, Config, UNQLITE
                      public CommandHandler {
  public:
   typedef core::DBConnection<NativeConnection, Config, UNQLITE> base_class;
-  DBConnection();
+  DBConnection(DBConnectionClient* client);
 
   static const char* versionApi();
 
