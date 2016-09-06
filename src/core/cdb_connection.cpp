@@ -19,7 +19,5 @@
 #include "core/cdb_connection.h"
 
 namespace fastonosql {
-namespace core {
-
-}  // namespace core
+namespace core {}  // namespace core
 }  // namespace fastonosql

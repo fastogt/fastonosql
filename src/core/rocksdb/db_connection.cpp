@@ -122,8 +122,7 @@ common::Error testConnection(ConnectionSettings* settings) {
   return common::Error();
 }
 
-DBConnection::DBConnection(CDBConnectionClient* client)
-    : base_class(rocksdbCommands, client) {}
+DBConnection::DBConnection(CDBConnectionClient* client) : base_class(rocksdbCommands, client) {}
 
 const char* DBConnection::versionApi() {
   return STRINGIZE(ROCKSDB_MAJOR) "." STRINGIZE(ROCKSDB_MINOR) "." STRINGIZE(ROCKSDB_PATCH);
