@@ -192,7 +192,7 @@ common::Error Driver::serverInfo(IServerInfo** info) {
 
 common::Error Driver::currentDataBaseInfo(IDataBaseInfo** info) {
   Config conf = impl_->config();
-  return impl_->select(conf.dbnum, info);
+  return impl_->select(common::ConvertToString(conf.dbnum), info);
 }
 
 void Driver::handleProcessCommandLineArgs(events::ProcessConfigArgsRequestEvent* ev) {

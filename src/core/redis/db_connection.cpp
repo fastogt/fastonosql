@@ -515,7 +515,7 @@ common::Error auth(CommandHandler* handler, int argc, char** argv, FastoObject* 
 common::Error select(CommandHandler* handler, int argc, char** argv, FastoObject* out) {
   UNUSED(argc);
   DBConnection* red = static_cast<DBConnection*>(handler);
-  common::Error err = red->select(common::ConvertFromString<int>(argv[0]), NULL);
+  common::Error err = red->select(argv[0], NULL);
   if (err && err->isError()) {
     return err;
   }
@@ -757,8 +757,8 @@ common::Error discoverySentinelConnection(ConnectionSettings* settings,
   return common::Error();
 }
 
-DBConnection::DBConnection(DBConnectionClient* client)
-    : base_class(client), CommandHandler(redisCommands), isAuth_(false) {}
+DBConnection::DBConnection(CDBConnectionClient* client)
+    : base_class(redisCommands, client), isAuth_(false) {}
 
 const char* DBConnection::versionApi() {
   return HIREDIS_VERSION;
@@ -784,7 +784,7 @@ common::Error DBConnection::connect(const config_t& config) {
     return err;
   }
 
-  err = select(connection_.config_.dbnum, NULL);
+  err = select(common::ConvertToString(connection_.config_.dbnum), NULL);
   if (err && err->isError()) {
     return err;
   }
@@ -1577,12 +1577,14 @@ common::Error DBConnection::scanMode(FastoObject* out) {
   return common::Error();
 }
 
-common::Error DBConnection::select(int num, IDataBaseInfo** info) {
+common::Error DBConnection::selectImpl(const std::string& name, IDataBaseInfo** info) {
+  CHECK(info);
   if (!isConnected()) {
     DNOTREACHED();
     return common::make_error_value("Not connected", common::Value::E_ERROR);
   }
 
+  int num = common::ConvertFromString<int>(name);
   redisReply* reply =
       reinterpret_cast<redisReply*>(redisCommand(connection_.handle_, "SELECT %d", num));
   if (!reply) {
@@ -1594,13 +1596,7 @@ common::Error DBConnection::select(int num, IDataBaseInfo** info) {
   common::Error err = dbkcount(&sz);
   MCHECK(!err);
   DataBaseInfo* linfo = new DataBaseInfo(common::ConvertToString(num), true, sz);
-  if (client_) {
-    client_->currentDataBaseChanged(linfo);
-  }
-
-  if (info) {
-    *info = linfo;
-  }
+  *info = linfo;
   freeReplyObject(reply);
   return common::Error();
 }

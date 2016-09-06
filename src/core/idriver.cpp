@@ -556,10 +556,6 @@ FastoObjectIPtr IDriver::RootLocker::root() const {
   return root_;
 }
 
-void IDriver::setCurrentDatabaseInfo(IDataBaseInfo* inf) {
-  current_database_info_.reset(inf);
-}
-
 void IDriver::handleLoadServerInfoEvent(events::ServerInfoRequestEvent* ev) {
   QObject* sender = ev->sender();
   notifyProgress(sender, 0);
@@ -720,7 +716,7 @@ void IDriver::updated(FastoObject* item, FastoObject::value_t val) {
 }
 
 void IDriver::currentDataBaseChanged(IDataBaseInfo* info) {
-  setCurrentDatabaseInfo(info->Clone());
+  current_database_info_.reset(info->Clone());
 }
 
 IDriverLocal::IDriverLocal(IConnectionSettingsBaseSPtr settings) : IDriver(settings) {

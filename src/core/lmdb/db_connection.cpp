@@ -34,6 +34,7 @@
 
 #include "core/lmdb/config.h"               // for Config
 #include "core/lmdb/connection_settings.h"  // for ConnectionSettings
+#include "core/lmdb/database.h"
 
 #include "global/global.h"  // for FastoObject, etc
 
@@ -151,8 +152,7 @@ common::Error testConnection(ConnectionSettings* settings) {
   return common::Error();
 }
 
-DBConnection::DBConnection(DBConnectionClient* client)
-    : base_class(client), CommandHandler(lmdbCommands) {}
+DBConnection::DBConnection(CDBConnectionClient* client) : base_class(lmdbCommands, client) {}
 
 const char* DBConnection::versionApi() {
   return STRINGIZE(MDB_VERSION_MAJOR) "." STRINGIZE(MDB_VERSION_MINOR) "." STRINGIZE(
@@ -400,6 +400,14 @@ common::Error DBConnection::flushdb() {
   }
 
   mdb_txn_abort(txn);
+  return common::Error();
+}
+
+common::Error DBConnection::selectImpl(const std::string& name, IDataBaseInfo** info) {
+  size_t kcount = 0;
+  common::Error err = dbkcount(&kcount);
+  MCHECK(!err);
+  *info = new DataBaseInfo(name, true, kcount);
   return common::Error();
 }
 

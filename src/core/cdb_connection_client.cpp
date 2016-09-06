@@ -16,16 +16,8 @@
     along with FastoNoSQL.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-#pragma once
-
-#include "core/idatabase.h"
+#include "core/cdb_connection_client.h"
 
 namespace fastonosql {
-namespace core {
-
-class DBConnectionClient {
- public:
-  virtual void currentDataBaseChanged(IDataBaseInfo* info) = 0;
-};
-}  // namespace core
+namespace core {}  // namespace core
 }  // namespace fastonosql

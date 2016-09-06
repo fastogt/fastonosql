@@ -26,8 +26,7 @@
 #include "common/macros.h"  // for PROJECT_VERSION_GENERATE, etc
 
 #include "core/command_handler.h"  // for CommandHandler
-#include "core/command_holder.h"   // for CommandHolder, etc
-#include "core/db_connection.h"
+#include "core/cdb_connection.h"
 #include "core/ssh_info.h"  // for SSHInfo
 #include "core/types.h"     // for IDataBaseInfo (ptr only), etc
 
@@ -1979,11 +1978,10 @@ common::Error discoveryClusterConnection(ConnectionSettings* settings,
 common::Error discoverySentinelConnection(ConnectionSettings* settings,
                                           std::vector<ServerDiscoverySentinelInfoSPtr>* infos);
 
-class DBConnection : public core::DBConnection<NativeConnection, RConfig, REDIS>,
-                     public CommandHandler {
+class DBConnection : public core::CDBConnection<NativeConnection, RConfig, REDIS> {
  public:
-  typedef core::DBConnection<NativeConnection, RConfig, REDIS> base_class;
-  explicit DBConnection(DBConnectionClient* client);
+  typedef core::CDBConnection<NativeConnection, RConfig, REDIS> base_class;
+  explicit DBConnection(CDBConnectionClient* client);
 
   bool isAuthenticated() const;
 
@@ -1998,7 +1996,6 @@ class DBConnection : public core::DBConnection<NativeConnection, RConfig, REDIS>
   common::Error findBigKeys(FastoObject* out) WARN_UNUSED_RESULT;
   common::Error statMode(FastoObject* out) WARN_UNUSED_RESULT;
   common::Error scanMode(FastoObject* out) WARN_UNUSED_RESULT;
-  common::Error select(int num, IDataBaseInfo** info) WARN_UNUSED_RESULT;
 
   common::Error executeAsPipeline(const std::vector<FastoObjectCommandIPtr>& cmds)
       WARN_UNUSED_RESULT;
@@ -2010,6 +2007,8 @@ class DBConnection : public core::DBConnection<NativeConnection, RConfig, REDIS>
   common::Error subscribe(int argc, char** argv, FastoObject* out) WARN_UNUSED_RESULT;  // interrupt
 
  private:
+  common::Error selectImpl(const std::string& name, IDataBaseInfo** info) WARN_UNUSED_RESULT;
+
   common::Error sendSync(unsigned long long* payload) WARN_UNUSED_RESULT;
   common::Error sendScan(unsigned long long* it, redisReply** out) WARN_UNUSED_RESULT;
   common::Error getKeyTypes(redisReply* keys, int* types) WARN_UNUSED_RESULT;

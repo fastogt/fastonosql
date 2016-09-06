@@ -191,11 +191,7 @@ common::Error Driver::currentDataBaseInfo(IDataBaseInfo** info) {
     return common::make_error_value("Invalid input argument(s)", common::ErrorValue::E_ERROR);
   }
 
-  size_t dbkcount = 0;
-  common::Error err = impl_->dbkcount(&dbkcount);
-  MCHECK(!err);
-  *info = new DataBaseInfo("0", true, dbkcount);
-  return common::Error();
+  return impl_->select("0", info);
 }
 
 void Driver::handleLoadDatabaseContentEvent(events::LoadDatabaseContentRequestEvent* ev) {

@@ -27,8 +27,8 @@
 #include "core/command_key.h"  // for CommandChangeTTL (ptr only), etc
 #include "core/connection_settings.h"
 #include "core/connection_types.h"  // for connectionTypes
-#include "core/db_connection_client.h"
-#include "core/types.h"             // for IDataBaseInfo (ptr only), etc
+#include "core/cdb_connection_client.h"
+#include "core/types.h"  // for IDataBaseInfo (ptr only), etc
 
 #include "core/events/events.h"
 
@@ -46,7 +46,7 @@ namespace fastonosql {
 namespace core {
 
 class IDriver : public QObject,
-                public DBConnectionClient,
+                public CDBConnectionClient,
                 private FastoObject::IFastoObjectObserver {
   Q_OBJECT
  public:
@@ -136,8 +136,6 @@ class IDriver : public QObject,
   RootLocker make_locker(QObject* reciver, const std::string& text) {
     return RootLocker(this, reciver, text);
   }
-
-  void setCurrentDatabaseInfo(IDataBaseInfo* inf);
 
   common::Error execute(FastoObjectCommandIPtr cmd) WARN_UNUSED_RESULT;
   virtual FastoObjectCommandIPtr createCommand(FastoObject* parent,

@@ -26,10 +26,9 @@
 #include "common/error.h"   // for Error
 #include "common/macros.h"  // for WARN_UNUSED_RESULT
 
-#include "core/command_handler.h"  // for CommandHandler
-#include "core/command_holder.h"   // for CommandHolder, etc
-#include "core/command_info.h"     // for UNDEFINED_EXAMPLE_STR, etc
-#include "core/db_connection.h"    // for Connection, etc
+#include "core/command_holder.h"  // for CommandHolder, etc
+#include "core/command_info.h"    // for UNDEFINED_EXAMPLE_STR, etc
+#include "core/cdb_connection.h"  // for Connection, etc
 
 #include "core/lmdb/config.h"
 #include "core/lmdb/connection_settings.h"
@@ -47,11 +46,10 @@ common::Error createConnection(const Config& config, NativeConnection** context)
 common::Error createConnection(ConnectionSettings* settings, NativeConnection** context);
 common::Error testConnection(ConnectionSettings* settings);
 
-class DBConnection : public core::DBConnection<NativeConnection, Config, LMDB>,
-                     public CommandHandler {
+class DBConnection : public core::CDBConnection<NativeConnection, Config, LMDB> {
  public:
-  typedef core::DBConnection<NativeConnection, Config, LMDB> base_class;
-  DBConnection(DBConnectionClient* client);
+  typedef core::CDBConnection<NativeConnection, Config, LMDB> base_class;
+  DBConnection(CDBConnectionClient* client);
 
   static const char* versionApi();
 
@@ -70,6 +68,9 @@ class DBConnection : public core::DBConnection<NativeConnection, Config, LMDB>,
   common::Error dbkcount(size_t* size) WARN_UNUSED_RESULT;
   common::Error help(int argc, char** argv) WARN_UNUSED_RESULT;
   common::Error flushdb() WARN_UNUSED_RESULT;
+
+ private:
+  common::Error selectImpl(const std::string& name, IDataBaseInfo** info) WARN_UNUSED_RESULT;
 };
 
 common::Error info(CommandHandler* handler, int argc, char** argv, FastoObject* out);

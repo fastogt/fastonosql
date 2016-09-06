@@ -31,8 +31,10 @@ extern "C" {
 #include "common/sprintf.h"                    // for MemSPrintf
 #include "common/utils.h"                      // for c_strornull
 #include "common/value.h"                      // for Value::ErrorsType::E_ERROR, etc
+
 #include "core/unqlite/config.h"               // for Config
 #include "core/unqlite/connection_settings.h"  // for ConnectionSettings
+#include "core/unqlite/database.h"
 
 #include "global/global.h"  // for FastoObject, etc
 
@@ -184,8 +186,7 @@ common::Error testConnection(ConnectionSettings* settings) {
   return common::Error();
 }
 
-DBConnection::DBConnection(DBConnectionClient* client)
-    : base_class(client), CommandHandler(unqliteCommands) {}
+DBConnection::DBConnection(CDBConnectionClient* client) : base_class(unqliteCommands, client) {}
 
 common::Error DBConnection::info(const char* args, ServerInfo::Stats* statsout) {
   UNUSED(args);
@@ -363,6 +364,14 @@ common::Error DBConnection::flushdb() {
 
   /* Finally, Release our cursor */
   unqlite_kv_cursor_release(connection_.handle_, pCur);
+  return common::Error();
+}
+
+common::Error DBConnection::selectImpl(const std::string& name, IDataBaseInfo** info) {
+  size_t kcount = 0;
+  common::Error err = dbkcount(&kcount);
+  MCHECK(!err);
+  *info = new DataBaseInfo(name, true, kcount);
   return common::Error();
 }
 

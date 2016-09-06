@@ -122,8 +122,8 @@ common::Error testConnection(ConnectionSettings* settings) {
   return common::Error();
 }
 
-DBConnection::DBConnection(DBConnectionClient* client)
-    : base_class(client), CommandHandler(rocksdbCommands) {}
+DBConnection::DBConnection(CDBConnectionClient* client)
+    : base_class(rocksdbCommands, client) {}
 
 const char* DBConnection::versionApi() {
   return STRINGIZE(ROCKSDB_MAJOR) "." STRINGIZE(ROCKSDB_MINOR) "." STRINGIZE(ROCKSDB_PATCH);
@@ -369,6 +369,10 @@ common::Error DBConnection::flushdb() {
     std::string buff = common::MemSPrintf("Keys function error: %s", st.ToString());
     return common::make_error_value(buff, common::ErrorValue::E_ERROR);
   }
+  return common::Error();
+}
+
+common::Error DBConnection::selectImpl(const std::string& name, IDataBaseInfo** info) {
   return common::Error();
 }
 

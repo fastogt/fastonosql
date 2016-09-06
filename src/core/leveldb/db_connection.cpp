@@ -33,6 +33,7 @@
 
 #include "core/leveldb/config.h"               // for Config
 #include "core/leveldb/connection_settings.h"  // for ConnectionSettings
+#include "core/leveldb/database.h"
 
 #include "global/global.h"  // for FastoObject, etc
 
@@ -114,8 +115,7 @@ common::Error testConnection(ConnectionSettings* settings) {
   return common::Error();
 }
 
-DBConnection::DBConnection(DBConnectionClient* client)
-    : base_class(client), CommandHandler(leveldbCommands) {}
+DBConnection::DBConnection(CDBConnectionClient* client) : base_class(leveldbCommands, client) {}
 
 const char* DBConnection::versionApi() {
   static std::string leveldb_version =
@@ -314,6 +314,14 @@ common::Error DBConnection::flushdb() {
     std::string buff = common::MemSPrintf("Keys function error: %s", st.ToString());
     return common::make_error_value(buff, common::ErrorValue::E_ERROR);
   }
+  return common::Error();
+}
+
+common::Error DBConnection::selectImpl(const std::string& name, IDataBaseInfo** info) {
+  size_t kcount = 0;
+  common::Error err = dbkcount(&kcount);
+  MCHECK(!err);
+  *info = new DataBaseInfo(name, true, kcount);
   return common::Error();
 }
 

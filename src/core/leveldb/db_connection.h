@@ -20,8 +20,7 @@
 
 #include <string>
 
-#include "core/command_handler.h"
-#include "core/db_connection.h"
+#include "core/cdb_connection.h"
 
 #include "core/leveldb/config.h"
 #include "core/leveldb/connection_settings.h"
@@ -41,11 +40,10 @@ common::Error createConnection(const Config& config, NativeConnection** context)
 common::Error createConnection(ConnectionSettings* settings, NativeConnection** context);
 common::Error testConnection(ConnectionSettings* settings);
 
-class DBConnection : public core::DBConnection<NativeConnection, Config, LEVELDB>,
-                     public CommandHandler {
+class DBConnection : public core::CDBConnection<NativeConnection, Config, LEVELDB> {
  public:
-  typedef core::DBConnection<NativeConnection, Config, LEVELDB> base_class;
-  DBConnection(DBConnectionClient* client);
+  typedef core::CDBConnection<NativeConnection, Config, LEVELDB> base_class;
+  DBConnection(CDBConnectionClient* client);
 
   static const char* versionApi();
 
@@ -62,6 +60,9 @@ class DBConnection : public core::DBConnection<NativeConnection, Config, LEVELDB
   common::Error dbkcount(size_t* size) WARN_UNUSED_RESULT;
   common::Error help(int argc, char** argv) WARN_UNUSED_RESULT;
   common::Error flushdb() WARN_UNUSED_RESULT;
+
+ private:
+  common::Error selectImpl(const std::string& name, IDataBaseInfo** info) WARN_UNUSED_RESULT;
 };
 
 common::Error info(CommandHandler* handler, int argc, char** argv, FastoObject* out);
