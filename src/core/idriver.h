@@ -97,8 +97,8 @@ class IDriver : public QObject, private FastoObject::IFastoObjectObserver {
   virtual void handleDisconnectEvent(events::DisconnectRequestEvent* ev);
 
   virtual void handleProcessCommandLineArgs(events::ProcessConfigArgsRequestEvent* ev) = 0;
-  virtual void handleExecuteEvent(events::ExecuteRequestEvent* ev) = 0;
-  virtual void handleCommandRequestEvent(events::CommandRequestEvent* ev) = 0;
+  virtual void handleExecuteEvent(events::ExecuteRequestEvent* ev);
+  virtual void handleCommandRequestEvent(events::CommandRequestEvent* ev);
 
   virtual void handleLoadDatabaseContentEvent(events::LoadDatabaseContentRequestEvent* ev) = 0;
 
@@ -137,6 +137,12 @@ class IDriver : public QObject, private FastoObject::IFastoObjectObserver {
   void setCurrentDatabaseInfo(IDataBaseInfo* inf);
 
   common::Error execute(FastoObjectCommandIPtr cmd) WARN_UNUSED_RESULT;
+  virtual FastoObjectCommandIPtr createCommand(FastoObject* parent,
+                                               const std::string& input,
+                                               common::Value::CommandLoggingType ct) = 0;
+
+  virtual FastoObjectCommandIPtr createCommandFast(const std::string& input,
+                                                   common::Value::CommandLoggingType ct) = 0;
 
  private:
   virtual common::Error syncConnect() WARN_UNUSED_RESULT = 0;

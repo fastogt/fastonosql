@@ -54,6 +54,13 @@ class Driver : public IDriverRemote {
   virtual void initImpl();
   virtual void clearImpl();
 
+  virtual FastoObjectCommandIPtr createCommand(FastoObject* parent,
+                                               const std::string& input,
+                                               common::Value::CommandLoggingType ct) override;
+
+  virtual FastoObjectCommandIPtr createCommandFast(const std::string& input,
+                                                   common::Value::CommandLoggingType ct) override;
+
   virtual common::Error syncConnect() override WARN_UNUSED_RESULT;
   virtual common::Error syncDisconnect() override WARN_UNUSED_RESULT;
 
@@ -61,7 +68,6 @@ class Driver : public IDriverRemote {
   virtual common::Error serverInfo(IServerInfo** info);
   virtual common::Error currentDataBaseInfo(IDataBaseInfo** info);
 
-  virtual void handleExecuteEvent(events::ExecuteRequestEvent* ev);
   virtual void handleProcessCommandLineArgs(events::ProcessConfigArgsRequestEvent* ev);
 
   virtual common::Error commandDeleteImpl(CommandDeleteKey* command,
@@ -76,7 +82,6 @@ class Driver : public IDriverRemote {
   virtual void handleLoadDatabaseContentEvent(events::LoadDatabaseContentRequestEvent* ev);
   virtual void handleClearDatabaseEvent(events::ClearDatabaseRequestEvent* ev);
 
-  virtual void handleCommandRequestEvent(events::CommandRequestEvent* ev);
   IServerInfoSPtr makeServerInfoFromString(const std::string& val);
 
  private:

@@ -185,6 +185,17 @@ void Driver::initImpl() {}
 
 void Driver::clearImpl() {}
 
+FastoObjectCommandIPtr Driver::createCommand(FastoObject* parent,
+                                             const std::string& input,
+                                             common::Value::CommandLoggingType ct) {
+  return CreateCommand<Command>(parent, input, ct);
+}
+
+FastoObjectCommandIPtr Driver::createCommandFast(const std::string& input,
+                                                 common::Value::CommandLoggingType ct) {
+  return CreateCommandFast<Command>(input, ct);
+}
+
 common::Error Driver::syncConnect() {
   ConnectionSettings* set = dynamic_cast<ConnectionSettings*>(settings_.get());  // +
   CHECK(set);
@@ -200,8 +211,7 @@ common::Error Driver::executeImpl(int argc, char** argv, FastoObject* out) {
 }
 
 common::Error Driver::serverInfo(IServerInfo** info) {
-  FastoObjectCommandIPtr cmd =
-      CreateCommandFast<Command>(SSDB_INFO_REQUEST, common::Value::C_INNER);
+  FastoObjectCommandIPtr cmd = createCommandFast(SSDB_INFO_REQUEST, common::Value::C_INNER);
   LOG_COMMAND(cmd);
   ServerInfo::Stats cm;
   common::Error err = impl_->info(nullptr, &cm);
@@ -226,83 +236,12 @@ common::Error Driver::currentDataBaseInfo(IDataBaseInfo** info) {
   return common::Error();
 }
 
-void Driver::handleExecuteEvent(events::ExecuteRequestEvent* ev) {
-  QObject* sender = ev->sender();
-  notifyProgress(sender, 0);
-  events::ExecuteResponceEvent::value_type res(ev->value());
-  const std::string inputLine = res.text;
-  if (inputLine.empty()) {
-    res.setErrorInfo(common::make_error_value("Empty command line.", common::ErrorValue::E_ERROR));
-    reply(sender, new events::ExecuteResponceEvent(this, res));
-    notifyProgress(sender, 100);
-  }
-
-  size_t length = inputLine.length();
-  int offset = 0;
-  RootLocker lock = make_locker(sender, inputLine);
-  FastoObjectIPtr obj = lock.root();
-  const double step = 100.0 / length;
-  for (size_t i = 0; i < length; ++i) {
-    if (isInterrupted()) {
-      res.setErrorInfo(common::make_error_value(
-          "Interrupted exec.", common::ErrorValue::E_INTERRUPTED, common::logging::L_WARNING));
-      break;
-    }
-
-    if (inputLine[i] == '\n' || i == length - 1) {
-      notifyProgress(sender, step * i);
-      std::string command;
-      if (i == length - 1) {
-        command = inputLine.substr(offset);
-      } else {
-        command = inputLine.substr(offset, i - offset);
-      }
-
-      offset = i + 1;
-      FastoObjectCommandIPtr cmd = CreateCommand<Command>(obj.get(), command, common::Value::C_USER);
-      common::Error er = execute(cmd);
-      if (er && er->isError()) {
-        res.setErrorInfo(er);
-        break;
-      }
-    }
-  }
-
-  reply(sender, new events::ExecuteResponceEvent(this, res));
-  notifyProgress(sender, 100);
-}
-
-void Driver::handleCommandRequestEvent(events::CommandRequestEvent* ev) {
-  QObject* sender = ev->sender();
-  notifyProgress(sender, 0);
-  events::CommandResponceEvent::value_type res(ev->value());
-  std::string cmdtext;
-  common::Error er = commandByType(res.cmd, &cmdtext);
-  if (er && er->isError()) {
-    res.setErrorInfo(er);
-    reply(sender, new events::CommandResponceEvent(this, res));
-    notifyProgress(sender, 100);
-    return;
-  }
-
-  RootLocker lock = make_locker(sender, cmdtext);
-  FastoObjectIPtr obj = lock.root();
-  FastoObjectCommandIPtr cmd = CreateCommand<Command>(obj.get(), cmdtext, common::Value::C_INNER);
-  notifyProgress(sender, 50);
-  er = execute(cmd);
-  if (er && er->isError()) {
-    res.setErrorInfo(er);
-  }
-  reply(sender, new events::CommandResponceEvent(this, res));
-  notifyProgress(sender, 100);
-}
-
 void Driver::handleLoadDatabaseContentEvent(events::LoadDatabaseContentRequestEvent* ev) {
   QObject* sender = ev->sender();
   notifyProgress(sender, 0);
   events::LoadDatabaseContentResponceEvent::value_type res(ev->value());
   std::string patternResult = common::MemSPrintf(SSDB_GET_KEYS_PATTERN_1ARGS_I, res.count_keys);
-  FastoObjectCommandIPtr cmd = CreateCommandFast<Command>(patternResult, common::Value::C_INNER);
+  FastoObjectCommandIPtr cmd = createCommandFast(patternResult, common::Value::C_INNER);
   notifyProgress(sender, 50);
   common::Error err = execute(cmd);
   if (err && err->isError()) {

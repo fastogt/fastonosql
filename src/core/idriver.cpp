@@ -406,6 +406,79 @@ void IDriver::handleDisconnectEvent(events::DisconnectRequestEvent* ev) {
   notifyProgress(sender, 100);
 }
 
+void IDriver::handleExecuteEvent(events::ExecuteRequestEvent* ev) {
+  QObject* sender = ev->sender();
+  notifyProgress(sender, 0);
+  events::ExecuteResponceEvent::value_type res(ev->value());
+
+  const std::string inputLine = res.text;
+  if (inputLine.empty()) {
+    res.setErrorInfo(common::make_error_value("Empty command line.", common::ErrorValue::E_ERROR));
+    reply(sender, new events::ExecuteResponceEvent(this, res));
+    notifyProgress(sender, 100);
+    return;
+  }
+
+  size_t length = inputLine.length();
+  int offset = 0;
+  RootLocker lock = make_locker(sender, inputLine);
+  FastoObjectIPtr obj = lock.root();
+  const double step = 100.0 / double(length);
+  for (size_t i = 0; i < length; ++i) {
+    if (isInterrupted()) {
+      res.setErrorInfo(common::make_error_value(
+          "Interrupted exec.", common::ErrorValue::E_INTERRUPTED, common::logging::L_WARNING));
+      break;
+    }
+
+    if (inputLine[i] == '\n' || i == length - 1) {
+      notifyProgress(sender, step * i);
+      std::string command;
+      if (i == length - 1) {
+        command = inputLine.substr(offset);
+      } else {
+        command = inputLine.substr(offset, i - offset);
+      }
+
+      offset = i + 1;
+      FastoObjectCommandIPtr cmd = createCommand(obj.get(), command, common::Value::C_USER);  //
+      common::Error er = execute(cmd);
+      if (er && er->isError()) {
+        res.setErrorInfo(er);
+        break;
+      }
+    }
+  }
+
+  reply(sender, new events::ExecuteResponceEvent(this, res));
+  notifyProgress(sender, 100);
+}
+
+void IDriver::handleCommandRequestEvent(events::CommandRequestEvent* ev) {
+  QObject* sender = ev->sender();
+  notifyProgress(sender, 0);
+  events::CommandResponceEvent::value_type res(ev->value());
+  std::string cmdtext;
+  common::Error er = commandByType(res.cmd, &cmdtext);
+  if (er && er->isError()) {
+    res.setErrorInfo(er);
+    reply(sender, new events::CommandResponceEvent(this, res));
+    notifyProgress(sender, 100);
+    return;
+  }
+
+  RootLocker lock = make_locker(sender, cmdtext);
+  FastoObjectIPtr obj = lock.root();
+  FastoObjectCommandIPtr cmd = createCommand(obj.get(), cmdtext, common::Value::C_INNER);  //
+  notifyProgress(sender, 50);
+  er = execute(cmd);
+  if (er && er->isError()) {
+    res.setErrorInfo(er);
+  }
+  reply(sender, new events::CommandResponceEvent(this, res));
+  notifyProgress(sender, 100);
+}
+
 void IDriver::handleLoadServerPropertyEvent(events::ServerPropertyInfoRequestEvent* ev) {
   replyNotImplementedYet<events::ServerPropertyInfoRequestEvent,
                          events::ServerPropertyInfoResponceEvent>(this, ev, "server property");
