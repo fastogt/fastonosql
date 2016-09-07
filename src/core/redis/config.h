@@ -32,8 +32,8 @@ struct Config : public RemoteConfig {
   Config& operator=(const Config& other);
 
   std::string hostsocket;
-  long repeat;
-  long interval;
+  int repeat;
+  int interval;
   int dbnum;
   int interactive;
   int latency_mode;
