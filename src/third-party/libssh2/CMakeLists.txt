@@ -38,6 +38,6 @@ SET(SOURCES ${SOURCES}
   src/mac.c
   src/userauth.c
 )
-	
+
 SOURCE_GROUP("libssh2 files" FILES ${HEADERS} ${SOURCES})
-ADD_LIBRARY(libssh2 OBJECT ${HEADERS} ${SOURCES})
+ADD_LIBRARY(libssh2 STATIC ${HEADERS} ${SOURCES})

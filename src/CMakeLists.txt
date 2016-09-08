@@ -297,7 +297,7 @@ IF(BUILD_WITH_REDIS)
     core/redis/cluster.cpp
     core/redis/cluster_settings.cpp
   )
-  SET(OBJECT_LIBS ${OBJECT_LIBS} $<TARGET_OBJECTS:hiredis> $<TARGET_OBJECTS:libssh2>)
+  SET(DB_LIBS ${DB_LIBS} hiredis libssh2)
 ENDIF(BUILD_WITH_REDIS)
 
 #memcached
@@ -342,7 +342,7 @@ IF(BUILD_WITH_MEMCACHED)
     core/memcached/server.cpp
     core/memcached/driver.cpp
   )
-  SET(OBJECT_LIBS ${OBJECT_LIBS} $<TARGET_OBJECTS:libmemcached>)
+  SET(DB_LIBS ${DB_LIBS} memcached)
 ENDIF(BUILD_WITH_MEMCACHED)
 
 #ssdb
@@ -381,7 +381,7 @@ IF(BUILD_WITH_SSDB)
     core/ssdb/server.cpp
     core/ssdb/driver.cpp
   )
-  SET(OBJECT_LIBS ${OBJECT_LIBS} $<TARGET_OBJECTS:ssdb>)
+  SET(DB_LIBS ${DB_LIBS} ssdb)
 ENDIF(BUILD_WITH_SSDB)
 
 #leveldb
@@ -420,7 +420,7 @@ IF(BUILD_WITH_LEVELDB)
     core/leveldb/server.cpp
     core/leveldb/driver.cpp
   )
-  SET(OBJECT_LIBS ${OBJECT_LIBS} $<TARGET_OBJECTS:leveldb>)
+  SET(DB_LIBS ${DB_LIBS} leveldb)
 ENDIF(BUILD_WITH_LEVELDB)
 
 #rocksdb
@@ -459,7 +459,7 @@ IF(BUILD_WITH_ROCKSDB)
     core/rocksdb/server.cpp
     core/rocksdb/driver.cpp
   )
-  SET(OBJECT_LIBS ${OBJECT_LIBS} $<TARGET_OBJECTS:rocksdb>)
+  SET(DB_LIBS ${DB_LIBS} rocksdb)
 ENDIF(BUILD_WITH_ROCKSDB)
 
 #unqlite
@@ -498,7 +498,7 @@ IF(BUILD_WITH_UNQLITE)
     core/unqlite/server.cpp
     core/unqlite/driver.cpp
   )
-  SET(OBJECT_LIBS ${OBJECT_LIBS} $<TARGET_OBJECTS:unqlite>)
+  SET(DB_LIBS ${DB_LIBS} unqlite)
 ENDIF(BUILD_WITH_UNQLITE)
 
 #lmdb
@@ -537,7 +537,7 @@ IF(BUILD_WITH_LMDB)
     core/lmdb/server.cpp
     core/lmdb/driver.cpp
   )
-  SET(OBJECT_LIBS ${OBJECT_LIBS} $<TARGET_OBJECTS:lmdb>)
+  SET(DB_LIBS ${DB_LIBS} lmdb)
 ENDIF(BUILD_WITH_LMDB)
 
 SET(SOURCES_SDS
@@ -613,7 +613,7 @@ ELSE(GENERATE_TRANSLATIONS)
 ENDIF(GENERATE_TRANSLATIONS)
 
 SET(ALL_SOURCES ${ALL_SOURCES} ${HEADERS} ${HEADERS_TOMOC} ${SOURCES} ${MOC_FILES} ${PLATFORM_HDRS} ${PLATFORM_SRCS} ${SOURCES_SDS})
-SET(ALL_LIBS ${ALL_LIBS} fasto ${QT_LIBRARIES} ${OPENSSL_LIBRARIES} ${ZLIB_LIBRARY} ${PLATFORM_LIBRARIES})
+SET(ALL_LIBS ${ALL_LIBS} ${DB_LIBS} fasto ${QT_LIBRARIES} ${OPENSSL_LIBRARIES} ${ZLIB_LIBRARY} ${PLATFORM_LIBRARIES})
 
 SET(EXE_SOURCES main.cpp ${RES_SRC} ${ICON_FILE} ${RESOURCE_OS} ${QM_FILES})
 
