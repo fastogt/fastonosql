@@ -1,4 +1,4 @@
-* Thu Sep 1 2016 Alexandr Topilski <atopilski@fastogt.com>
+* @CHANGELOG_TIMESTAMP@ @PROJECT_MAINTAINER_NAME@ <@PROJECT_MAINTAINER_MAIL@>
 0.9.1
 [Alexandr Topilski]
 - Set ttl context menu

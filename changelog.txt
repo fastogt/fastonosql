@@ -1,4 +1,4 @@
-* Thu Sep 1 2016 Alexandr Topilski <atopilski@fastogt.com>
+* @CHANGELOG_TIMESTAMP@ @PROJECT_MAINTAINER_NAME@ <@PROJECT_MAINTAINER_MAIL@>
 0.7.2
 [Alexandr Topilski]
 - [Redis] Set ttl context menu
