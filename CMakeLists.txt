@@ -114,6 +114,7 @@ OPTION(BUILD_WITH_LEVELDB "Build with LevelDB support" ON)
 OPTION(BUILD_WITH_ROCKSDB "Build with RocksDB support" ${BUILD_64X})
 OPTION(BUILD_WITH_UNQLITE "Build with Unqlite support" ON)
 OPTION(BUILD_WITH_LMDB "Build with LMDB support" ON)
+OPTION(USE_PREBUILD_LIBRARIES "Use prebuild libraries in link stage" OFF)
 
 OPTION(LOG_TO_FILE "Logging to file" OFF)
 OPTION(BUILD_WITH_SOCIAL_BUTTONS "Build with social buttons" ON)
