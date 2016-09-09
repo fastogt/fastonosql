@@ -296,10 +296,10 @@ void SettingsManager::reloadFromPath(const std::string& path, bool merge) {
   QSettings settings(inip, QSettings::IniFormat);
   DCHECK(settings.status() == QSettings::NoError);
 
-  cur_style_ = settings.value(STYLE, fasto::qt::gui::defStyle).toString();
+  cur_style_ = settings.value(STYLE, common::qt::gui::defStyle).toString();
   sended_statistic_ = settings.value(SENDED_STATISTIC, false).toBool();
   cur_font_name_ = settings.value(FONT, fontName()).toString();
-  cur_language_ = settings.value(LANGUAGE, fasto::qt::translations::defLanguage).toString();
+  cur_language_ = settings.value(LANGUAGE, common::qt::translations::defLanguage).toString();
 
   int view = settings.value(VIEW, Tree).toInt();
   views_ = static_cast<supportedViews>(view);

@@ -158,7 +158,7 @@ size_t ExplorerDatabaseItem::totalKeysCount() const {
 
 size_t ExplorerDatabaseItem::loadedKeysCount() const {
   size_t sz = 0;
-  fasto::qt::gui::forEachRecursive(this, [&sz](const fasto::qt::gui::TreeItem* item) {
+  common::qt::gui::forEachRecursive(this, [&sz](const common::qt::gui::TreeItem* item) {
     const ExplorerKeyItem* key_item = dynamic_cast<const ExplorerKeyItem*>(item);  // +
     if (!key_item) {
       return;
@@ -327,7 +327,7 @@ ExplorerNSItem::eType ExplorerNSItem::type() const {
 
 size_t ExplorerNSItem::keyCount() const {
   size_t sz = 0;
-  fasto::qt::gui::forEachRecursive(this, [&sz](const fasto::qt::gui::TreeItem* item) {
+  common::qt::gui::forEachRecursive(this, [&sz](const common::qt::gui::TreeItem* item) {
     const ExplorerKeyItem* key_item = dynamic_cast<const ExplorerKeyItem*>(item);  // +
     if (!key_item) {
       return;
@@ -342,7 +342,7 @@ size_t ExplorerNSItem::keyCount() const {
 void ExplorerNSItem::removeBranch() {
   ExplorerDatabaseItem* par = db();
   CHECK(par);
-  fasto::qt::gui::forEachRecursive(this, [par](fasto::qt::gui::TreeItem* item) {
+  common::qt::gui::forEachRecursive(this, [par](common::qt::gui::TreeItem* item) {
     ExplorerKeyItem* key_item = dynamic_cast<ExplorerKeyItem*>(item);  // +
     if (!key_item) {
       return;
@@ -360,7 +360,7 @@ QVariant ExplorerTreeModel::data(const QModelIndex& index, int role) const {
   }
 
   IExplorerTreeItem* node =
-      common::utils_qt::item<fasto::qt::gui::TreeItem*, IExplorerTreeItem*>(index);
+      common::utils_qt::item<common::qt::gui::TreeItem*, IExplorerTreeItem*>(index);
   if (!node) {
     NOTREACHED();
     return QVariant();
@@ -486,7 +486,7 @@ int ExplorerTreeModel::columnCount(const QModelIndex& parent) const {
 void ExplorerTreeModel::addCluster(core::IClusterSPtr cluster) {
   ExplorerClusterItem* cl = findClusterItem(cluster);
   if (!cl) {
-    fasto::qt::gui::TreeItem* parent = root_;
+    common::qt::gui::TreeItem* parent = root_;
     CHECK(parent);
 
     ExplorerClusterItem* item = new ExplorerClusterItem(cluster, parent);
@@ -508,7 +508,7 @@ void ExplorerTreeModel::addServer(core::IServerSPtr server) {
 
   ExplorerServerItem* serv = findServerItem(server.get());
   if (!serv) {
-    fasto::qt::gui::TreeItem* parent = root_;
+    common::qt::gui::TreeItem* parent = root_;
     CHECK(parent);
 
     ExplorerServerItem* item = new ExplorerServerItem(server, parent);
@@ -526,7 +526,7 @@ void ExplorerTreeModel::removeServer(core::IServerSPtr server) {
 void ExplorerTreeModel::addSentinel(core::ISentinelSPtr sentinel) {
   ExplorerSentinelItem* cl = findSentinelItem(sentinel);
   if (!cl) {
-    fasto::qt::gui::TreeItem* parent = root_;
+    common::qt::gui::TreeItem* parent = root_;
     CHECK(parent);
 
     ExplorerSentinelItem* item = new ExplorerSentinelItem(sentinel, parent);
@@ -547,7 +547,7 @@ void ExplorerTreeModel::addDatabase(core::IServer* server, core::IDataBaseInfoSP
 
   ExplorerDatabaseItem* dbs = findDatabaseItem(parent, db);
   if (!dbs) {
-    fasto::qt::gui::TreeItem* parent_server = parent->parent();
+    common::qt::gui::TreeItem* parent_server = parent->parent();
     QModelIndex parent_index = createIndex(parent_server->indexOf(parent), 0, parent);
     ExplorerDatabaseItem* item = new ExplorerDatabaseItem(server->createDatabaseByInfo(db), parent);
     insertItem(parent_index, item);
@@ -560,7 +560,7 @@ void ExplorerTreeModel::removeDatabase(core::IServer* server, core::IDataBaseInf
 
   ExplorerDatabaseItem* dbs = findDatabaseItem(parent, db);
   if (dbs) {
-    fasto::qt::gui::TreeItem* parent_server = parent->parent();
+    common::qt::gui::TreeItem* parent_server = parent->parent();
     QModelIndex index = createIndex(parent_server->indexOf(parent), 0, dbs);
     removeItem(index.parent(), dbs);
   }
@@ -618,7 +618,7 @@ void ExplorerTreeModel::addKey(core::IServer* server,
       CHECK(nitem);
     }
 
-    fasto::qt::gui::TreeItem* parent_nitem = nitem->parent();
+    common::qt::gui::TreeItem* parent_nitem = nitem->parent();
     QModelIndex parent_index = createIndex(parent_nitem->indexOf(nitem), 0, nitem);
     ExplorerKeyItem* item = new ExplorerKeyItem(dbv, nitem);
     insertItem(parent_index, item);
@@ -636,7 +636,7 @@ void ExplorerTreeModel::removeKey(core::IServer* server,
 
   ExplorerKeyItem* keyit = findKeyItem(dbs, key);
   if (keyit) {
-    fasto::qt::gui::TreeItem* par = keyit->parent();
+    common::qt::gui::TreeItem* par = keyit->parent();
     QModelIndex index = createIndex(par->indexOf(keyit), 0, keyit);
     removeItem(index.parent(), keyit);
   }
@@ -653,7 +653,7 @@ void ExplorerTreeModel::updateKey(core::IServer* server,
 
   ExplorerKeyItem* keyit = findKeyItem(dbs, key);
   if (keyit) {
-    fasto::qt::gui::TreeItem* par = keyit->parent();
+    common::qt::gui::TreeItem* par = keyit->parent();
     int index_key = par->indexOf(keyit);
     keyit->setKey(key);
     QModelIndex key_index1 = createIndex(index_key, ExplorerKeyItem::eName, dbs);
@@ -674,7 +674,7 @@ void ExplorerTreeModel::removeAllKeys(core::IServer* server, core::IDataBaseInfo
 }
 
 ExplorerClusterItem* ExplorerTreeModel::findClusterItem(core::IClusterSPtr cl) {
-  fasto::qt::gui::TreeItem* parent = root_;
+  common::qt::gui::TreeItem* parent = root_;
   CHECK(parent);
 
   for (size_t i = 0; i < parent->childrenCount(); ++i) {
@@ -687,7 +687,7 @@ ExplorerClusterItem* ExplorerTreeModel::findClusterItem(core::IClusterSPtr cl) {
 }
 
 ExplorerSentinelItem* ExplorerTreeModel::findSentinelItem(core::ISentinelSPtr sentinel) {
-  fasto::qt::gui::TreeItem* parent = root_;
+  common::qt::gui::TreeItem* parent = root_;
   CHECK(parent);
 
   for (size_t i = 0; i < parent->childrenCount(); ++i) {
@@ -701,7 +701,7 @@ ExplorerSentinelItem* ExplorerTreeModel::findSentinelItem(core::ISentinelSPtr se
 
 ExplorerServerItem* ExplorerTreeModel::findServerItem(core::IServer* server) const {
   return static_cast<ExplorerServerItem*>(
-      fasto::qt::gui::findItemRecursive(root_, [server](fasto::qt::gui::TreeItem* item) -> bool {
+      common::qt::gui::findItemRecursive(root_, [server](common::qt::gui::TreeItem* item) -> bool {
         ExplorerServerItem* server_item = dynamic_cast<ExplorerServerItem*>(item);  // +
         if (!server_item) {
           return false;
@@ -734,7 +734,7 @@ ExplorerDatabaseItem* ExplorerTreeModel::findDatabaseItem(ExplorerServerItem* se
 ExplorerKeyItem* ExplorerTreeModel::findKeyItem(IExplorerTreeItem* db_or_ns,
                                                 const core::NDbKValue& key) const {
   return static_cast<ExplorerKeyItem*>(
-      fasto::qt::gui::findItemRecursive(db_or_ns, [key](fasto::qt::gui::TreeItem* item) -> bool {
+      common::qt::gui::findItemRecursive(db_or_ns, [key](common::qt::gui::TreeItem* item) -> bool {
         ExplorerKeyItem* key_item = dynamic_cast<ExplorerKeyItem*>(item);  // +
         if (!key_item) {
           return false;
@@ -748,7 +748,7 @@ ExplorerKeyItem* ExplorerTreeModel::findKeyItem(IExplorerTreeItem* db_or_ns,
 ExplorerNSItem* ExplorerTreeModel::findNSItem(IExplorerTreeItem* db_or_ns,
                                               const QString& name) const {
   return static_cast<ExplorerNSItem*>(
-      fasto::qt::gui::findItemRecursive(db_or_ns, [name](fasto::qt::gui::TreeItem* item) -> bool {
+      common::qt::gui::findItemRecursive(db_or_ns, [name](common::qt::gui::TreeItem* item) -> bool {
         ExplorerNSItem* ns_item = dynamic_cast<ExplorerNSItem*>(item);  // +
         if (!ns_item) {
           return false;
@@ -785,7 +785,7 @@ ExplorerNSItem* ExplorerTreeModel::findOrCreateNSItem(IExplorerTreeItem* db_or_n
     }
 
     if (!item) {
-      fasto::qt::gui::TreeItem* gpar = par->parent();
+      common::qt::gui::TreeItem* gpar = par->parent();
       QModelIndex parentdb = createIndex(gpar->indexOf(par), 0, par);
       item = new ExplorerNSItem(qnspace, par);
       insertItem(parentdb, item);

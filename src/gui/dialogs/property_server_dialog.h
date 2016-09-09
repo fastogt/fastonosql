@@ -28,7 +28,7 @@ class QShowEvent;
 class QTableView;  // lines 26-26
 class QWidget;
 
-namespace fasto {
+namespace common {
 namespace qt {
 namespace gui {
 class GlassWidget;
@@ -89,7 +89,7 @@ class PropertyServerDialog : public QDialog {
  private:
   void retranslateUi();
 
-  fasto::qt::gui::GlassWidget* glassWidget_;
+  common::qt::gui::GlassWidget* glassWidget_;
   QTableView* propertyes_table_;
   const core::IServerSPtr server_;
 };

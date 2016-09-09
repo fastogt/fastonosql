@@ -41,7 +41,7 @@ class IServer;
 namespace fastonosql {
 namespace gui {
 
-class IExplorerTreeItem : public fasto::qt::gui::TreeItem {
+class IExplorerTreeItem : public common::qt::gui::TreeItem {
  public:
   enum eColumn { eName = 0, eCountColumns };
 
@@ -158,7 +158,7 @@ class ExplorerKeyItem : public IExplorerTreeItem {
   core::NDbKValue key_;
 };
 
-class ExplorerTreeModel : public fasto::qt::gui::TreeModel {
+class ExplorerTreeModel : public common::qt::gui::TreeModel {
   Q_OBJECT
  public:
   explicit ExplorerTreeModel(QObject* parent = 0);

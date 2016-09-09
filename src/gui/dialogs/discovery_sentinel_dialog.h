@@ -32,7 +32,7 @@ class QShowEvent;
 class QTreeWidget;  // lines 30-30
 class QWidget;
 
-namespace fasto {
+namespace common {
 namespace qt {
 namespace gui {
 class GlassWidget;
@@ -68,7 +68,7 @@ class DiscoverySentinelDiagnosticDialog : public QDialog {
  private:
   void testConnection(core::IConnectionSettingsBaseSPtr connection);
 
-  fasto::qt::gui::GlassWidget* glassWidget_;
+  common::qt::gui::GlassWidget* glassWidget_;
   QLabel* executeTimeLabel_;
   QLabel* statusLabel_;
   QTreeWidget* listWidget_;

@@ -70,8 +70,8 @@ PropertyServerDialog::PropertyServerDialog(core::IServerSPtr server, QWidget* pa
   setLayout(mainL);
 
   glassWidget_ =
-      new fasto::qt::gui::GlassWidget(GuiFactory::instance().pathToLoadingGif(),
-                                      translations::trLoading, 0.5, QColor(111, 111, 100), this);
+      new common::qt::gui::GlassWidget(GuiFactory::instance().pathToLoadingGif(),
+                                       translations::trLoading, 0.5, QColor(111, 111, 100), this);
 
   VERIFY(connect(server.get(), &core::IServer::startedLoadServerProperty, this,
                  &PropertyServerDialog::startServerProperty));

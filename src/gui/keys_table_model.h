@@ -29,7 +29,7 @@
 namespace fastonosql {
 namespace gui {
 
-class KeyTableItem : public fasto::qt::gui::TableItem {
+class KeyTableItem : public common::qt::gui::TableItem {
  public:
   enum eColumn { kKey = 0, kType = 1, kTTL = 2, kCountColumns = 3 };
 
@@ -47,7 +47,7 @@ class KeyTableItem : public fasto::qt::gui::TableItem {
   core::NDbKValue key_;
 };
 
-class KeysTableModel : public fasto::qt::gui::TableModel {
+class KeysTableModel : public common::qt::gui::TableModel {
   Q_OBJECT
  public:
   explicit KeysTableModel(QObject* parent = 0);

@@ -25,17 +25,17 @@ namespace fastonosql {
 namespace gui {
 
 //  global variables
-extern const fasto::qt::gui::FastoQKeySequence openKey;
-extern const fasto::qt::gui::FastoQKeySequence saveKey;
-extern const fasto::qt::gui::FastoQKeySequence saveAsKey;
-extern const fasto::qt::gui::FastoQKeySequence quitKey;
-extern const fasto::qt::gui::FastoQKeySequence closeKey;
-extern const fasto::qt::gui::FastoQKeySequence newTabKey;
-extern const fasto::qt::gui::FastoQKeySequence nextTabKey;
-extern const fasto::qt::gui::FastoQKeySequence prevTabKey;
-extern const fasto::qt::gui::FastoQKeySequence refreshKey;
-extern const fasto::qt::gui::FastoQKeySequence fullScreenKey;
-extern const fasto::qt::gui::FastoQKeySequence executeKey;
+extern const common::qt::gui::FastoQKeySequence openKey;
+extern const common::qt::gui::FastoQKeySequence saveKey;
+extern const common::qt::gui::FastoQKeySequence saveAsKey;
+extern const common::qt::gui::FastoQKeySequence quitKey;
+extern const common::qt::gui::FastoQKeySequence closeKey;
+extern const common::qt::gui::FastoQKeySequence newTabKey;
+extern const common::qt::gui::FastoQKeySequence nextTabKey;
+extern const common::qt::gui::FastoQKeySequence prevTabKey;
+extern const common::qt::gui::FastoQKeySequence refreshKey;
+extern const common::qt::gui::FastoQKeySequence fullScreenKey;
+extern const common::qt::gui::FastoQKeySequence executeKey;
 
 bool isOpenShortcut(QKeyEvent* keyEvent);
 bool isSaveShortcut(QKeyEvent* keyEvent);

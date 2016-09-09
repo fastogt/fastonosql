@@ -35,36 +35,36 @@ Qt::ControlModifier) &&
 }*/
 
 // global variables
-const fasto::qt::gui::FastoQKeySequence openKey =
-    fasto::qt::gui::FastoQKeySequence(QKeySequence::Open);
-const fasto::qt::gui::FastoQKeySequence saveKey =
-    fasto::qt::gui::FastoQKeySequence(QKeySequence::Save);
-const fasto::qt::gui::FastoQKeySequence saveAsKey =
-    fasto::qt::gui::FastoQKeySequence(QKeySequence::SaveAs);
+const common::qt::gui::FastoQKeySequence openKey =
+    common::qt::gui::FastoQKeySequence(QKeySequence::Open);
+const common::qt::gui::FastoQKeySequence saveKey =
+    common::qt::gui::FastoQKeySequence(QKeySequence::Save);
+const common::qt::gui::FastoQKeySequence saveAsKey =
+    common::qt::gui::FastoQKeySequence(QKeySequence::SaveAs);
 
-const fasto::qt::gui::FastoQKeySequence closeKey =
-    fasto::qt::gui::FastoQKeySequence(QKeySequence::Close);
-const fasto::qt::gui::FastoQKeySequence newTabKey =
-    fasto::qt::gui::FastoQKeySequence(QKeySequence::AddTab);
-const fasto::qt::gui::FastoQKeySequence nextTabKey =
-    fasto::qt::gui::FastoQKeySequence(QKeySequence::NextChild);
-const fasto::qt::gui::FastoQKeySequence prevTabKey =
-    fasto::qt::gui::FastoQKeySequence(QKeySequence::PreviousChild);
-const fasto::qt::gui::FastoQKeySequence refreshKey =
-    fasto::qt::gui::FastoQKeySequence(QKeySequence::Refresh);
-const fasto::qt::gui::FastoQKeySequence executeKey =
-    fasto::qt::gui::FastoQKeySequence(Qt::ControlModifier, Qt::Key_Return);
+const common::qt::gui::FastoQKeySequence closeKey =
+    common::qt::gui::FastoQKeySequence(QKeySequence::Close);
+const common::qt::gui::FastoQKeySequence newTabKey =
+    common::qt::gui::FastoQKeySequence(QKeySequence::AddTab);
+const common::qt::gui::FastoQKeySequence nextTabKey =
+    common::qt::gui::FastoQKeySequence(QKeySequence::NextChild);
+const common::qt::gui::FastoQKeySequence prevTabKey =
+    common::qt::gui::FastoQKeySequence(QKeySequence::PreviousChild);
+const common::qt::gui::FastoQKeySequence refreshKey =
+    common::qt::gui::FastoQKeySequence(QKeySequence::Refresh);
+const common::qt::gui::FastoQKeySequence executeKey =
+    common::qt::gui::FastoQKeySequence(Qt::ControlModifier, Qt::Key_Return);
 
 #ifdef OS_MAC
-const fasto::qt::gui::FastoQKeySequence fullScreenKey =
-    fasto::qt::gui::FastoQKeySequence(QKeySequence::FullScreen);
-const fasto::qt::gui::FastoQKeySequence quitKey =
-    fasto::qt::gui::FastoQKeySequence(QKeySequence::Quit);
+const common::qt::gui::FastoQKeySequence fullScreenKey =
+    common::qt::gui::FastoQKeySequence(QKeySequence::FullScreen);
+const common::qt::gui::FastoQKeySequence quitKey =
+    common::qt::gui::FastoQKeySequence(QKeySequence::Quit);
 #else
-const fasto::qt::gui::FastoQKeySequence fullScreenKey =
-    fasto::qt::gui::FastoQKeySequence(Qt::ControlModifier | Qt::ShiftModifier, Qt::Key_F11);
-const fasto::qt::gui::FastoQKeySequence quitKey =
-    fasto::qt::gui::FastoQKeySequence(Qt::ControlModifier, Qt::Key_Q);
+const common::qt::gui::FastoQKeySequence fullScreenKey =
+    common::qt::gui::FastoQKeySequence(Qt::ControlModifier | Qt::ShiftModifier, Qt::Key_F11);
+const common::qt::gui::FastoQKeySequence quitKey =
+    common::qt::gui::FastoQKeySequence(Qt::ControlModifier, Qt::Key_Q);
 #endif
 
 bool isOpenShortcut(QKeyEvent* keyEvent) {

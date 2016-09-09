@@ -31,7 +31,7 @@
 namespace fastonosql {
 namespace gui {
 
-class FastoCommonItem : public fasto::qt::gui::TreeItem {
+class FastoCommonItem : public common::qt::gui::TreeItem {
  public:
   enum eColumn { eKey = 0, eValue = 1, eType = 2, eCountColumns = 3 };
   FastoCommonItem(const core::NDbKValue& key,

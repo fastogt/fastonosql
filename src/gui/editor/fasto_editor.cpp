@@ -44,7 +44,7 @@ namespace fastonosql {
 namespace gui {
 
 FastoEditor::FastoEditor(QWidget* parent) : QWidget(parent), scin_(nullptr) {
-  scin_ = new fasto::qt::gui::FastoScintilla;
+  scin_ = new common::qt::gui::FastoScintilla;
 
   findPanel_ = new QFrame;
   findLine_ = new QLineEdit;
@@ -79,7 +79,7 @@ FastoEditor::FastoEditor(QWidget* parent) : QWidget(parent), scin_(nullptr) {
   findPanel_->hide();
 
   VERIFY(connect(close_, &QToolButton::clicked, findPanel_, &QFrame::hide));
-  VERIFY(connect(scin_, &fasto::qt::gui::FastoScintilla::textChanged, this,
+  VERIFY(connect(scin_, &common::qt::gui::FastoScintilla::textChanged, this,
                  &FastoEditor::textChanged));
   VERIFY(connect(next_, &QPushButton::clicked, this, &FastoEditor::goToNextElement));
   VERIFY(connect(prev_, &QPushButton::clicked, this, &FastoEditor::goToPrevElement));

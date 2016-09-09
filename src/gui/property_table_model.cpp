@@ -46,7 +46,7 @@ QVariant PropertyTableModel::data(const QModelIndex& index, int role) const {
   }
 
   PropertyTableItem* node =
-      common::utils_qt::item<fasto::qt::gui::TableItem*, PropertyTableItem*>(index);
+      common::utils_qt::item<common::qt::gui::TableItem*, PropertyTableItem*>(index);
   if (!node) {
     return QVariant();
   }
@@ -65,7 +65,7 @@ QVariant PropertyTableModel::data(const QModelIndex& index, int role) const {
 bool PropertyTableModel::setData(const QModelIndex& index, const QVariant& value, int role) {
   if (index.isValid() && role == Qt::EditRole) {
     PropertyTableItem* node =
-        common::utils_qt::item<fasto::qt::gui::TableItem*, PropertyTableItem*>(index);
+        common::utils_qt::item<common::qt::gui::TableItem*, PropertyTableItem*>(index);
     if (!node) {
       return false;
     }

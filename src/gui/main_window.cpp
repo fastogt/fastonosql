@@ -107,13 +107,13 @@ MainWindow::MainWindow() : QMainWindow(), isCheckedInSession_(false) {
 // grabGesture(Qt::PinchGesture);  // zoom
 #endif
   QString lang = core::SettingsManager::instance().currentLanguage();
-  QString newLang = fasto::qt::translations::applyLanguage(lang);
+  QString newLang = common::qt::translations::applyLanguage(lang);
   core::SettingsManager::instance().setCurrentLanguage(newLang);
 
   QString style = core::SettingsManager::instance().currentStyle();
-  fasto::qt::gui::applyStyle(style);
+  common::qt::gui::applyStyle(style);
 
-  fasto::qt::gui::applyFont(gui::GuiFactory::instance().font());
+  common::qt::gui::applyFont(gui::GuiFactory::instance().font());
 
   setWindowTitle(PROJECT_NAME_TITLE " " PROJECT_VERSION);
 
@@ -237,7 +237,7 @@ MainWindow::MainWindow() : QMainWindow(), isCheckedInSession_(false) {
   addDockWidget(Qt::LeftDockWidgetArea, expDock_);
 
   LogTabWidget* log = new LogTabWidget(this);
-  VERIFY(connect(&fasto::qt::Logger::instance(), &fasto::qt::Logger::printed, log,
+  VERIFY(connect(&common::qt::Logger::instance(), &common::qt::Logger::printed, log,
                  &LogTabWidget::addLogMessage));
   VERIFY(connect(&core::CommandLogger::instance(), &core::CommandLogger::printed, log,
                  &LogTabWidget::addCommand));

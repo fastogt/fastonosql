@@ -59,7 +59,7 @@ ServerHistoryDialog::ServerHistoryDialog(core::IServerSPtr server, QWidget* pare
   setWindowFlags(windowFlags() & ~Qt::WindowContextHelpButtonHint);  // Remove help
                                                                      // button (?)
 
-  graphWidget_ = new fasto::qt::gui::GraphWidget;
+  graphWidget_ = new common::qt::gui::GraphWidget;
   settingsGraph_ = new QWidget;
   QHBoxLayout* mainL = new QHBoxLayout;
 
@@ -97,8 +97,8 @@ ServerHistoryDialog::ServerHistoryDialog(core::IServerSPtr server, QWidget* pare
   setLayout(mainL);
 
   glassWidget_ =
-      new fasto::qt::gui::GlassWidget(GuiFactory::instance().pathToLoadingGif(),
-                                      translations::trLoading, 0.5, QColor(111, 111, 100), this);
+      new common::qt::gui::GlassWidget(GuiFactory::instance().pathToLoadingGif(),
+                                       translations::trLoading, 0.5, QColor(111, 111, 100), this);
   VERIFY(connect(server.get(), &core::IServer::startedLoadServerHistoryInfo, this,
                  &ServerHistoryDialog::startLoadServerHistoryInfo));
   VERIFY(connect(server.get(), &core::IServer::finishedLoadServerHistoryInfo, this,
@@ -181,7 +181,7 @@ void ServerHistoryDialog::refreshGraph(int index) {
   unsigned char serverIndex = serverInfoGroupsNames_->currentIndex();
   QVariant var = serverInfoFields_->itemData(index);
   unsigned char indexIn = qvariant_cast<unsigned char>(var);
-  fasto::qt::gui::GraphWidget::nodes_container_type nodes;
+  common::qt::gui::GraphWidget::nodes_container_type nodes;
   for (auto it = infos_.begin(); it != infos_.end(); ++it) {
     auto val = *it;
     if (!val.isValid()) {

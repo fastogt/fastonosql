@@ -27,7 +27,7 @@
 
 class QPushButton;  // lines 27-27
 
-namespace fasto {
+namespace common {
 namespace qt {
 namespace gui {
 class IconLabel;
@@ -116,7 +116,7 @@ class OutputWidget : public QWidget {
  private:
   void syncWithSettings();
   void updateTimeLabel(const core::events_info::EventInfoBase& evinfo);
-  fasto::qt::gui::IconLabel* timeLabel_;
+  common::qt::gui::IconLabel* timeLabel_;
   QPushButton* treeButton_;
   QPushButton* tableButton_;
   QPushButton* textButton_;

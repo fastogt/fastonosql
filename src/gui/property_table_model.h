@@ -25,7 +25,7 @@
 namespace fastonosql {
 namespace gui {
 
-class PropertyTableModel : public fasto::qt::gui::TableModel {
+class PropertyTableModel : public common::qt::gui::TableModel {
   Q_OBJECT
  public:
   explicit PropertyTableModel(QObject* parent = 0);

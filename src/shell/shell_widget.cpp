@@ -140,12 +140,12 @@ BaseShellWidget::BaseShellWidget(core::IServerSPtr server, const QString& filePa
   savebar->addAction(stopAction);
 
   core::ConnectionMode mode = core::InteractiveMode;
-  connectionMode_ = new fasto::qt::gui::IconLabel(
+  connectionMode_ = new common::qt::gui::IconLabel(
       gui::GuiFactory::instance().modeIcon(mode),
       common::ConvertFromString<QString>(common::ConvertToString(mode)), iconSize);
 
-  dbName_ = new fasto::qt::gui::IconLabel(gui::GuiFactory::instance().databaseIcon(),
-                                          "Calculate...", iconSize);
+  dbName_ = new common::qt::gui::IconLabel(gui::GuiFactory::instance().databaseIcon(),
+                                           "Calculate...", iconSize);
 
   hlayout->addWidget(savebar);
 

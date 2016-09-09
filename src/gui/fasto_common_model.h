@@ -34,7 +34,7 @@ class NDbKValue;
 namespace fastonosql {
 namespace gui {
 
-class FastoCommonModel : public fasto::qt::gui::TreeModel {
+class FastoCommonModel : public common::qt::gui::TreeModel {
   Q_OBJECT
  public:
   explicit FastoCommonModel(QObject* parent = 0);

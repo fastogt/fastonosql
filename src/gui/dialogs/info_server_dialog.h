@@ -24,7 +24,7 @@
 
 class QTextEdit;
 
-namespace fasto {
+namespace common {
 namespace qt {
 namespace gui {
 class GlassWidget;
@@ -137,7 +137,7 @@ class InfoServerDialog : public QDialog {
   void updateText(const core::lmdb::ServerInfo& serv);
 #endif
   QTextEdit* serverTextInfo_;
-  fasto::qt::gui::GlassWidget* glassWidget_;
+  common::qt::gui::GlassWidget* glassWidget_;
   const core::IServerSPtr server_;
 };
 

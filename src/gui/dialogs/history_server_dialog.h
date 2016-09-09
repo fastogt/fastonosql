@@ -29,14 +29,14 @@ class QPushButton;  // lines 24-24
 class QShowEvent;
 class QWidget;
 
-namespace fasto {
+namespace common {
 namespace qt {
 namespace gui {
 class GlassWidget;
 }
 }
 }  // lines 32-32
-namespace fasto {
+namespace common {
 namespace qt {
 namespace gui {
 class GraphWidget;
@@ -84,9 +84,9 @@ class ServerHistoryDialog : public QDialog {
   QComboBox* serverInfoGroupsNames_;
   QComboBox* serverInfoFields_;
 
-  fasto::qt::gui::GraphWidget* graphWidget_;
+  common::qt::gui::GraphWidget* graphWidget_;
 
-  fasto::qt::gui::GlassWidget* glassWidget_;
+  common::qt::gui::GlassWidget* glassWidget_;
   core::events_info::ServerInfoHistoryResponce::infos_container_type infos_;
   const core::IServerSPtr server_;
 };

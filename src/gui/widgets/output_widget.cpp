@@ -56,7 +56,7 @@ namespace fastonosql {
 namespace gui {
 namespace {
 
-FastoCommonItem* createItem(fasto::qt::gui::TreeItem* parent,
+FastoCommonItem* createItem(common::qt::gui::TreeItem* parent,
                             const std::string& key,
                             bool readOnly,
                             FastoObject* item) {
@@ -109,7 +109,8 @@ OutputWidget::OutputWidget(core::IServerSPtr server, QWidget* parent)
   textView_ = new FastoTextView(delimiter);
   textView_->setModel(commonModel_);
 
-  timeLabel_ = new fasto::qt::gui::IconLabel(GuiFactory::instance().timeIcon(), "0", QSize(32, 32));
+  timeLabel_ =
+      new common::qt::gui::IconLabel(GuiFactory::instance().timeIcon(), "0", QSize(32, 32));
 
   QVBoxLayout* mainL = new QVBoxLayout;
   QHBoxLayout* topL = new QHBoxLayout;
@@ -196,7 +197,7 @@ void OutputWidget::addChild(FastoObjectIPtr child) {
     if (!parent.isValid()) {
       par = static_cast<fastonosql::gui::FastoCommonItem*>(commonModel_->root());
     } else {
-      par = common::utils_qt::item<fasto::qt::gui::TreeItem*, fastonosql::gui::FastoCommonItem*>(
+      par = common::utils_qt::item<common::qt::gui::TreeItem*, fastonosql::gui::FastoCommonItem*>(
           parent);
     }
 
@@ -223,7 +224,7 @@ void OutputWidget::addChild(FastoObjectIPtr child) {
     if (!parent.isValid()) {
       par = static_cast<fastonosql::gui::FastoCommonItem*>(commonModel_->root());
     } else {
-      par = common::utils_qt::item<fasto::qt::gui::TreeItem*, fastonosql::gui::FastoCommonItem*>(
+      par = common::utils_qt::item<common::qt::gui::TreeItem*, fastonosql::gui::FastoCommonItem*>(
           parent);
     }
 
@@ -244,7 +245,7 @@ void OutputWidget::itemUpdate(FastoObject* item, common::ValueSPtr newValue) {
     return;
   }
 
-  FastoCommonItem* it = common::utils_qt::item<fasto::qt::gui::TreeItem*, FastoCommonItem*>(index);
+  FastoCommonItem* it = common::utils_qt::item<common::qt::gui::TreeItem*, FastoCommonItem*>(index);
   if (!it) {
     return;
   }

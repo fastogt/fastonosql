@@ -85,7 +85,7 @@ PreferencesDialog::PreferencesDialog(QWidget* parent) : QDialog(parent) {
   QHBoxLayout* styleswLayout = new QHBoxLayout;
   stylesLabel_ = new QLabel;
   stylesComboBox_ = new QComboBox;
-  stylesComboBox_->addItems(fasto::qt::gui::supportedStyles());
+  stylesComboBox_->addItems(common::qt::gui::supportedStyles());
   styleswLayout->addWidget(stylesLabel_);
   styleswLayout->addWidget(stylesComboBox_);
 
@@ -100,7 +100,7 @@ PreferencesDialog::PreferencesDialog(QWidget* parent) : QDialog(parent) {
   langLabel_ = new QLabel;
   langLayout->addWidget(langLabel_);
   languagesComboBox_ = new QComboBox;
-  languagesComboBox_->addItems(fasto::qt::translations::supportedLanguages());
+  languagesComboBox_->addItems(common::qt::translations::supportedLanguages());
   langLayout->addWidget(languagesComboBox_);
 
   QVBoxLayout* generalLayout = new QVBoxLayout;
@@ -161,14 +161,14 @@ void PreferencesDialog::accept() {
   core::SettingsManager::instance().setAutoCheckUpdates(autoCheckUpdates_->isChecked());
   core::SettingsManager::instance().setAutoCompletion(autoComletionEnable_->isChecked());
 
-  QString newLang = fasto::qt::translations::applyLanguage(languagesComboBox_->currentText());
+  QString newLang = common::qt::translations::applyLanguage(languagesComboBox_->currentText());
   core::SettingsManager::instance().setCurrentLanguage(newLang);
 
-  fasto::qt::gui::applyStyle(stylesComboBox_->currentText());
+  common::qt::gui::applyStyle(stylesComboBox_->currentText());
   core::SettingsManager::instance().setCurrentStyle(stylesComboBox_->currentText());
 
   core::SettingsManager::instance().setCurrentFontName(fontComboBox_->currentText());
-  fasto::qt::gui::applyFont(gui::GuiFactory::instance().font());
+  common::qt::gui::applyFont(gui::GuiFactory::instance().font());
 
   std::string defCombo = common::ConvertToString(defaultViewComboBox_->currentText());
   supportedViews v = common::ConvertFromString<supportedViews>(defCombo);

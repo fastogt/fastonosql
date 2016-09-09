@@ -30,7 +30,7 @@ class QAction;       // lines 26-26
 class QComboBox;     // lines 29-29
 class QProgressBar;  // lines 27-27
 
-namespace fasto {
+namespace common {
 namespace qt {
 namespace gui {
 class IconLabel;
@@ -183,8 +183,8 @@ class BaseShellWidget : public QWidget {
   BaseShell* input_;
 
   QProgressBar* workProgressBar_;
-  fasto::qt::gui::IconLabel* connectionMode_;
-  fasto::qt::gui::IconLabel* dbName_;
+  common::qt::gui::IconLabel* connectionMode_;
+  common::qt::gui::IconLabel* dbName_;
   QString filePath_;
 };
 

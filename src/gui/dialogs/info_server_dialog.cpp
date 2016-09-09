@@ -239,8 +239,8 @@ InfoServerDialog::InfoServerDialog(core::IServerSPtr server, QWidget* parent)
   setLayout(mainL);
 
   glassWidget_ =
-      new fasto::qt::gui::GlassWidget(GuiFactory::instance().pathToLoadingGif(),
-                                      translations::trLoading, 0.5, QColor(111, 111, 100), this);
+      new common::qt::gui::GlassWidget(GuiFactory::instance().pathToLoadingGif(),
+                                       translations::trLoading, 0.5, QColor(111, 111, 100), this);
 #ifdef BUILD_WITH_REDIS
   if (type == core::REDIS) {
     updateText(core::redis::ServerInfo());
