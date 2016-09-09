@@ -38,8 +38,8 @@
 
 #include "core/settings_manager.h"  // for SettingsManager
 
-#include "fasto/qt/gui/app_style.h"              // for applyFont, applyStyle, etc
-#include "fasto/qt/translations/translations.h"  // for applyLanguage, etc
+#include "common/qt/gui/app_style.h"              // for applyFont, applyStyle, etc
+#include "common/qt/translations/translations.h"  // for applyLanguage, etc
 
 #include "global/types.h"  // for viewsText, ConvertToString, etc
 

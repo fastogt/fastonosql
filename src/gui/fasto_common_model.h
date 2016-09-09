@@ -20,7 +20,7 @@
 
 #include "core/command_key.h"  // for CommandKeySPtr
 
-#include "fasto/qt/gui/base/tree_model.h"  // for TreeModel
+#include "common/qt/gui/base/tree_model.h"  // for TreeModel
 
 class QModelIndex;
 class QObject;

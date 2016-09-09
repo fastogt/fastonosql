@@ -35,7 +35,7 @@ extern "C" {
 #include "common/net/types.h"       // for HostAndPort
 #include "common/sprintf.h"         // for MemSPrintf
 
-#include "fasto/qt/logger.h"  // for LOG_MSG
+#include "common/qt/logger.h"  // for LOG_MSG
 
 #define DEFAULT_REDIS_SERVER_PORT 6379
 

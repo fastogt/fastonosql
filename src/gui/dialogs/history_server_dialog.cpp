@@ -38,8 +38,8 @@
 #include "core/db_traits.h"
 #include "core/iserver.h"  // for IServer
 
-#include "fasto/qt/gui/base/graph_widget.h"  // for GraphWidget, etc
-#include "fasto/qt/gui/glass_widget.h"       // for GlassWidget
+#include "common/qt/gui/base/graph_widget.h"  // for GraphWidget, etc
+#include "common/qt/gui/glass_widget.h"       // for GlassWidget
 
 #include "gui/gui_factory.h"  // for GuiFactory
 

@@ -34,7 +34,7 @@
 #include "core/events/events_info.h"
 #include "core/iserver.h"  // for IServer
 
-#include "fasto/qt/gui/glass_widget.h"  // for GlassWidget
+#include "common/qt/gui/glass_widget.h"  // for GlassWidget
 
 #include "gui/gui_factory.h"  // for GuiFactory
 #include "gui/property_table_item.h"

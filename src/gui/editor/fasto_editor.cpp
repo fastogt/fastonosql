@@ -34,7 +34,7 @@
 #include "common/macros.h"             // for VERIFY, UNUSED, NOTREACHED
 #include "common/qt/convert2string.h"  // for EscapedText
 
-#include "fasto/qt/gui/fasto_scintilla.h"  // for FastoScintilla
+#include "common/qt/gui/fasto_scintilla.h"  // for FastoScintilla
 
 #include "gui/gui_factory.h"  // for GuiFactory
 

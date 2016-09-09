@@ -26,8 +26,8 @@
 #include "core/db_key.h"    // for NDbKValue, etc
 #include "core/types.h"     // for IDataBaseInfoSPtr
 
-#include "fasto/qt/gui/base/tree_item.h"   // for TreeItem
-#include "fasto/qt/gui/base/tree_model.h"  // for TreeModel
+#include "common/qt/gui/base/tree_item.h"   // for TreeItem
+#include "common/qt/gui/base/tree_model.h"  // for TreeModel
 
 class QModelIndex;
 class QObject;

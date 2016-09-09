@@ -23,8 +23,8 @@
 #include "core/command_key.h"  // for CommandKeySPtr
 #include "core/db_key.h"       // for NDbKValue, ttl_t
 
-#include "fasto/qt/gui/base/table_item.h"   // for TableItem
-#include "fasto/qt/gui/base/table_model.h"  // for TableModel
+#include "common/qt/gui/base/table_item.h"   // for TableItem
+#include "common/qt/gui/base/table_model.h"  // for TableModel
 
 namespace fastonosql {
 namespace gui {

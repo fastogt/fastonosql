@@ -58,7 +58,7 @@
 #include "gui/dialogs/view_keys_dialog.h"      // for ViewKeysDialog
 #include "gui/explorer/explorer_tree_model.h"  // for ExplorerServerItem, etc
 
-#include "fasto/qt/gui/base/tree_item.h"  // for TreeItem
+#include "common/qt/gui/base/tree_item.h"  // for TreeItem
 
 #include "translations/global.h"  // for trClose, trBackup, trImport, etc
 

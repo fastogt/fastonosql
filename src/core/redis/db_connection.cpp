@@ -65,7 +65,7 @@ extern "C" {
 #include "core/redis/database.h"             // for DataBaseInfo
 #include "core/redis/sentinel_info.h"        // for DiscoverySentinelInfo, etc
 
-#include "fasto/qt/logger.h"  // for LOG_MSG
+#include "common/qt/logger.h"  // for LOG_MSG
 
 #include "global/types.h"  // for Command
 

@@ -23,7 +23,7 @@
 
 #include "common/macros.h"  // for VERIFY
 
-#include "fasto/qt/gui/shortcuts.h"  // for FastoQKeySequence
+#include "common/qt/gui/shortcuts.h"  // for FastoQKeySequence
 
 #include "gui/shortcuts.h"  // for closeKey, newTabKey, etc
 

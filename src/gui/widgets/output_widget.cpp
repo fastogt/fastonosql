@@ -40,8 +40,8 @@
 #include "core/iserver.h"             // for IServer
 #include "core/settings_manager.h"    // for SettingsManager
 
-#include "fasto/qt/gui/base/tree_item.h"  // for TreeItem
-#include "fasto/qt/gui/icon_label.h"      // for IconLabel
+#include "common/qt/gui/base/tree_item.h"  // for TreeItem
+#include "common/qt/gui/icon_label.h"      // for IconLabel
 
 #include "global/types.h"  // for supportedViews, etc
 

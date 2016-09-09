@@ -47,17 +47,17 @@
 #include "common/text_decoders/iedcoder.h"  // for IEDcoder, EDTypes::Hex
 #include "common/value.h"                   // for ErrorValue
 
+#include "common/qt/gui/app_style.h"              // for applyFont, applyStyle
+#include "common/qt/gui/shortcuts.h"              // for FastoQKeySequence
+#include "common/qt/logger.h"                     // for Logger
+#include "common/qt/translations/translations.h"  // for applyLanguage
+
 #include "core/command_logger.h"    // for CommandLogger
 #include "core/core_fwd.h"          // for IServerSPtr, IClusterSPtr, etc
 #include "core/icluster.h"          // for ICluster
 #include "core/isentinel.h"         // for ISentinel
 #include "core/servers_manager.h"   // for ServersManager
 #include "core/settings_manager.h"  // for SettingsManager
-
-#include "fasto/qt/gui/app_style.h"              // for applyFont, applyStyle
-#include "fasto/qt/gui/shortcuts.h"              // for FastoQKeySequence
-#include "fasto/qt/logger.h"                     // for Logger
-#include "fasto/qt/translations/translations.h"  // for applyLanguage
 
 #include "gui/dialogs/about_dialog.h"          // for AboutDialog
 #include "gui/dialogs/connections_dialog.h"    // for ConnectionsDialog

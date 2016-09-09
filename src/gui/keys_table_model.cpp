@@ -27,8 +27,8 @@
 #include "common/macros.h"          // for CHECK, UNUSED
 #include "common/qt/utils_qt.h"     // for item
 
-#include "fasto/qt/gui/base/table_item.h"   // for TableItem
-#include "fasto/qt/gui/base/table_model.h"  // for TableModel
+#include "common/qt/gui/base/table_item.h"   // for TableItem
+#include "common/qt/gui/base/table_model.h"  // for TableModel
 
 #include "gui/gui_factory.h"  // for GuiFactory
 

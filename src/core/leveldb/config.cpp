@@ -33,7 +33,7 @@ extern "C" {
 #include "common/log_levels.h"   // for LEVEL_LOG::L_WARNING
 #include "common/sprintf.h"      // for MemSPrintf
 
-#include "fasto/qt/logger.h"  // for LOG_MSG
+#include "common/qt/logger.h"  // for LOG_MSG
 
 #include "leveldb/options.h"  // for Options
 

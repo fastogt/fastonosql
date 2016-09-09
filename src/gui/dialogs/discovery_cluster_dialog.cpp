@@ -38,7 +38,7 @@
 
 #include "core/servers_manager.h"  // for ServersManager
 
-#include "fasto/qt/gui/glass_widget.h"  // for GlassWidget
+#include "common/qt/gui/glass_widget.h"  // for GlassWidget
 
 #include "gui/dialogs/connection_listwidget_items.h"
 #include "gui/dialogs/discovery_connection.h"

@@ -46,9 +46,9 @@
 #include "core/iserver.h"             // for IServer
 #include "core/settings_manager.h"    // for SettingsManager
 
-#include "fasto/qt/gui/icon_label.h"  // for IconLabel
-#include "fasto/qt/gui/shortcuts.h"   // for FastoQKeySequence
-#include "fasto/qt/utils_qt.h"        // for SaveToFileText, etc
+#include "common/qt/gui/icon_label.h"  // for IconLabel
+#include "common/qt/gui/shortcuts.h"   // for FastoQKeySequence
+#include "common/qt/utils_qt.h"        // for SaveToFileText, etc
 
 #include "gui/gui_factory.h"  // for GuiFactory
 #include "gui/shortcuts.h"    // for executeKey

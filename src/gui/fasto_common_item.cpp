@@ -30,7 +30,7 @@
 #include "common/text_decoders/hex_edcoder.h"       // for HexEDcoder
 #include "common/text_decoders/msgpack_edcoder.h"   // for MsgPackEDcoder
 
-#include "fasto/qt/gui/base/tree_item.h"  // for TreeItem
+#include "common/qt/gui/base/tree_item.h"  // for TreeItem
 
 #include "global/global.h"  // for ConvertToString
 

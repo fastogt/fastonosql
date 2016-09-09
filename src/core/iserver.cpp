@@ -32,7 +32,7 @@
 #include "core/events/events_info.h"   // for LoadDatabaseContentResponce, etc
 #include "core/idriver.h"              // for IDriver
 
-#include "fasto/qt/logger.h"  // for LOG_ERROR
+#include "common/qt/logger.h"  // for LOG_ERROR
 
 namespace fastonosql {
 namespace core {

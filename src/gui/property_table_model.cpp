@@ -28,8 +28,8 @@
 #include "common/qt/convert2string.h"
 #include "common/qt/utils_qt.h"  // for item
 
-#include "fasto/qt/gui/base/table_item.h"   // for TableItem
-#include "fasto/qt/gui/base/table_model.h"  // for TableModel
+#include "common/qt/gui/base/table_item.h"   // for TableItem
+#include "common/qt/gui/base/table_model.h"  // for TableModel
 
 #include "gui/property_table_item.h"
 

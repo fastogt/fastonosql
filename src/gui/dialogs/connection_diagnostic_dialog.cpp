@@ -28,7 +28,7 @@
 
 #include "common/macros.h"  // for VERIFY
 
-#include "fasto/qt/gui/glass_widget.h"    // for GlassWidget
+#include "common/qt/gui/glass_widget.h"   // for GlassWidget
 #include "gui/dialogs/test_connection.h"  // for TestConnection
 #include "gui/gui_factory.h"              // for GuiFactory
 

@@ -30,8 +30,8 @@
 #include "common/qt/utils_qt.h"        // for item
 #include "common/value.h"              // for Value, make_value, etc
 
-#include "fasto/qt/gui/base/tree_item.h"   // for TreeItem
-#include "fasto/qt/gui/base/tree_model.h"  // for TreeModel
+#include "common/qt/gui/base/tree_item.h"   // for TreeItem
+#include "common/qt/gui/base/tree_model.h"  // for TreeModel
 
 #include "core/db_key.h"  // for NDbKValue, NKey, NValue
 

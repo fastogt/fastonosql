@@ -31,8 +31,8 @@
 #include "common/qt/convert2string.h"  // for ConvertToString
 #include "common/utils.h"              // for decode64, encode64
 
-#include "fasto/qt/gui/app_style.h"              // for defStyle
-#include "fasto/qt/translations/translations.h"  // for defLanguage
+#include "common/qt/gui/app_style.h"              // for defStyle
+#include "common/qt/translations/translations.h"  // for defLanguage
 
 #define PREFIX "settings/"
 
