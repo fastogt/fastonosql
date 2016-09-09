@@ -7,7 +7,7 @@ using namespace fastonosql;
 TEST(FastoObject, LifeTime) {
   FastoObjectIPtr obj = FastoObject::createRoot("root");
   obj.reset();
-  FastoObject *ptr = obj.get();
+  FastoObject* ptr = obj.get();
   ASSERT_TRUE(ptr == NULL);
 }
 

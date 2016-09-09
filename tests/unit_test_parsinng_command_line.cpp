@@ -36,7 +36,7 @@ TEST(sds, sdssplitargslong) {
                            "number": 123,
                            "string": "Hello World"
                          })";
-  json_object * obj = json_tokener_parse(json.c_str());
+  json_object* obj = json_tokener_parse(json.c_str());
   ASSERT_TRUE(obj);
   json_object_put(obj);
   obj = json_tokener_parse(json2.c_str());
