@@ -33,6 +33,7 @@
 
 #include "core/rocksdb/config.h"               // for Config
 #include "core/rocksdb/connection_settings.h"  // for ConnectionSettings
+#include "core/rocksdb/database.h"
 
 #include "global/global.h"  // for FastoObject, etc
 
@@ -372,6 +373,10 @@ common::Error DBConnection::flushdb() {
 }
 
 common::Error DBConnection::selectImpl(const std::string& name, IDataBaseInfo** info) {
+  size_t kcount = 0;
+  common::Error err = dbkcount(&kcount);
+  MCHECK(!err);
+  *info = new DataBaseInfo(name, true, kcount);
   return common::Error();
 }
 
