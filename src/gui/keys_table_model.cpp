@@ -73,7 +73,7 @@ QVariant KeysTableModel::data(const QModelIndex& index, int role) const {
     return QVariant();
   }
 
-  KeyTableItem* node = common::utils_qt::item<common::qt::gui::TableItem*, KeyTableItem*>(index);
+  KeyTableItem* node = common::qt::item<common::qt::gui::TableItem*, KeyTableItem*>(index);
   if (!node) {
     return QVariant();
   }
@@ -103,7 +103,7 @@ QVariant KeysTableModel::data(const QModelIndex& index, int role) const {
 
 bool KeysTableModel::setData(const QModelIndex& index, const QVariant& value, int role) {
   if (index.isValid() && role == Qt::EditRole) {
-    KeyTableItem* node = common::utils_qt::item<common::qt::gui::TableItem*, KeyTableItem*>(index);
+    KeyTableItem* node = common::qt::item<common::qt::gui::TableItem*, KeyTableItem*>(index);
 
     if (!node) {
       return false;
@@ -132,7 +132,7 @@ Qt::ItemFlags KeysTableModel::flags(const QModelIndex& index) const {
 
   Qt::ItemFlags result = Qt::ItemIsSelectable | Qt::ItemIsEnabled;
   int col = index.column();
-  KeyTableItem* node = common::utils_qt::item<common::qt::gui::TableItem*, KeyTableItem*>(index);
+  KeyTableItem* node = common::qt::item<common::qt::gui::TableItem*, KeyTableItem*>(index);
   if (node && col == KeyTableItem::kTTL) {
     result |= Qt::ItemIsEditable;
   }

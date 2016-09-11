@@ -40,9 +40,9 @@ namespace fastonosql {
 namespace core {
 namespace events_info {
 
-class EventInfoBase : public common::utils_qt::EventInfo<common::Error> {
+class EventInfoBase : public common::qt::EventInfo<common::Error> {
  public:
-  typedef common::utils_qt::EventInfo<common::Error> base_class;
+  typedef common::qt::EventInfo<common::Error> base_class;
   explicit EventInfoBase(initiator_type sender, error_type er = error_type());
   EventInfoBase(initiator_type sender, common::time64_t time_start, error_type er = error_type());
   common::time64_t elapsedTime() const;

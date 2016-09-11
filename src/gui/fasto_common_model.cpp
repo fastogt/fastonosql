@@ -52,8 +52,7 @@ QVariant FastoCommonModel::data(const QModelIndex& index, int role) const {
     return result;
   }
 
-  FastoCommonItem* node =
-      common::utils_qt::item<common::qt::gui::TreeItem*, FastoCommonItem*>(index);
+  FastoCommonItem* node = common::qt::item<common::qt::gui::TreeItem*, FastoCommonItem*>(index);
 
   if (!node) {
     return result;
@@ -88,8 +87,7 @@ QVariant FastoCommonModel::data(const QModelIndex& index, int role) const {
 
 bool FastoCommonModel::setData(const QModelIndex& index, const QVariant& value, int role) {
   if (index.isValid() && role == Qt::EditRole) {
-    FastoCommonItem* node =
-        common::utils_qt::item<common::qt::gui::TreeItem*, FastoCommonItem*>(index);
+    FastoCommonItem* node = common::qt::item<common::qt::gui::TreeItem*, FastoCommonItem*>(index);
 
     if (!node) {
       return false;
@@ -121,8 +119,7 @@ Qt::ItemFlags FastoCommonModel::flags(const QModelIndex& index) const {
   if (index.isValid()) {
     result = Qt::ItemIsSelectable | Qt::ItemIsEnabled;
     int col = index.column();
-    FastoCommonItem* node =
-        common::utils_qt::item<common::qt::gui::TreeItem*, FastoCommonItem*>(index);
+    FastoCommonItem* node = common::qt::item<common::qt::gui::TreeItem*, FastoCommonItem*>(index);
     if (node && col == FastoCommonItem::eValue && !node->isReadOnly()) {
       result |= Qt::ItemIsEditable;
     }
@@ -160,8 +157,7 @@ void FastoCommonModel::changeValue(const core::NDbKValue& value) {
     return;
   }
 
-  FastoCommonItem* child =
-      common::utils_qt::item<common::qt::gui::TreeItem*, FastoCommonItem*>(ind);
+  FastoCommonItem* child = common::qt::item<common::qt::gui::TreeItem*, FastoCommonItem*>(ind);
   if (!child) {
     return;
   }

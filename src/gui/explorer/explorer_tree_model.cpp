@@ -359,8 +359,7 @@ QVariant ExplorerTreeModel::data(const QModelIndex& index, int role) const {
     return QVariant();
   }
 
-  IExplorerTreeItem* node =
-      common::utils_qt::item<common::qt::gui::TreeItem*, IExplorerTreeItem*>(index);
+  IExplorerTreeItem* node = common::qt::item<common::qt::gui::TreeItem*, IExplorerTreeItem*>(index);
   if (!node) {
     NOTREACHED();
     return QVariant();

@@ -212,8 +212,7 @@ void FastoEditorOutput::layoutChanged() {
     return;
   }
 
-  FastoCommonItem* child =
-      common::utils_qt::item<common::qt::gui::TreeItem*, FastoCommonItem*>(index);
+  FastoCommonItem* child = common::qt::item<common::qt::gui::TreeItem*, FastoCommonItem*>(index);
   if (!child) {
     return;
   }

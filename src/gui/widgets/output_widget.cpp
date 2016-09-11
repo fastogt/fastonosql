@@ -197,8 +197,7 @@ void OutputWidget::addChild(FastoObjectIPtr child) {
     if (!parent.isValid()) {
       par = static_cast<fastonosql::gui::FastoCommonItem*>(commonModel_->root());
     } else {
-      par = common::utils_qt::item<common::qt::gui::TreeItem*, fastonosql::gui::FastoCommonItem*>(
-          parent);
+      par = common::qt::item<common::qt::gui::TreeItem*, fastonosql::gui::FastoCommonItem*>(parent);
     }
 
     if (!par) {
@@ -224,8 +223,7 @@ void OutputWidget::addChild(FastoObjectIPtr child) {
     if (!parent.isValid()) {
       par = static_cast<fastonosql::gui::FastoCommonItem*>(commonModel_->root());
     } else {
-      par = common::utils_qt::item<common::qt::gui::TreeItem*, fastonosql::gui::FastoCommonItem*>(
-          parent);
+      par = common::qt::item<common::qt::gui::TreeItem*, fastonosql::gui::FastoCommonItem*>(parent);
     }
 
     if (!par) {
@@ -245,7 +243,7 @@ void OutputWidget::itemUpdate(FastoObject* item, common::ValueSPtr newValue) {
     return;
   }
 
-  FastoCommonItem* it = common::utils_qt::item<common::qt::gui::TreeItem*, FastoCommonItem*>(index);
+  FastoCommonItem* it = common::qt::item<common::qt::gui::TreeItem*, FastoCommonItem*>(index);
   if (!it) {
     return;
   }

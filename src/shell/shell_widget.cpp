@@ -285,7 +285,7 @@ bool BaseShellWidget::loadFromFile(const QString& path) {
       QFileDialog::getOpenFileName(this, path, QString(), translations::trfilterForScripts);
   if (!filepath.isEmpty()) {
     QString out;
-    common::Error err = common::utils_qt::LoadFromFileText(filepath, &out);
+    common::Error err = common::qt::LoadFromFileText(filepath, &out);
     if (err && err->isError()) {
       QMessageBox::critical(this, translations::trError,
                             trCantReadTemplate_2S.arg(
@@ -308,7 +308,7 @@ void BaseShellWidget::saveToFileAs() {
     return;
   }
 
-  common::Error err = common::utils_qt::SaveToFileText(filepath, text());
+  common::Error err = common::qt::SaveToFileText(filepath, text());
   if (err && err->isError()) {
     QMessageBox::critical(this, translations::trError,
                           trCantSaveTemplate_2S.arg(
@@ -333,7 +333,7 @@ void BaseShellWidget::saveToFile() {
   if (filePath_.isEmpty()) {
     saveToFileAs();
   } else {
-    common::Error err = common::utils_qt::SaveToFileText(filePath_, text());
+    common::Error err = common::qt::SaveToFileText(filePath_, text());
     if (err && err->isError()) {
       QMessageBox::critical(this, translations::trError,
                             trCantSaveTemplate_2S.arg(
