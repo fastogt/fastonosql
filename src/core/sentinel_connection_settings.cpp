@@ -18,8 +18,12 @@
 
 #include "core/sentinel_connection_settings.h"
 
+#include <stddef.h>  // for size_t
+#include <stdint.h>  // for uint32_t, uint8_t
+
 #include <sstream>
 
+#include "common/macros.h"  // for NOTREACHED
 #include "common/convert2string.h"
 #include "common/utils.h"
 

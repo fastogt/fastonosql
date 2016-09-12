@@ -18,9 +18,16 @@
 
 #include "core/command_holder.h"
 
-#include <string>  // for string
+#include <algorithm>  // for count_if
+#include <vector>     // for vector
 
 #include "common/string_util.h"  // for FullEqualsASCII
+
+namespace {
+size_t count_space(const std::string& data) {
+  return std::count_if(data.begin(), data.end(), [](char c) { return std::isspace(c); });
+}
+}
 
 namespace fastonosql {
 namespace core {
@@ -41,21 +48,25 @@ CommandHolder::CommandHolder(const std::string& name,
                   required_arguments_count,
                   optional_arguments_count),
       func_(func),
-      white_spaces_count_(
-          std::count_if(name.begin(), name.end(), [](char c) { return std::isspace(c); })) {}
+      white_spaces_count_(count_space(name)) {}
 
 bool CommandHolder::isCommand(int argc, char** argv, size_t* offset) {
+  if (argc < 0) {
+    return false;
+  }
+
+  uint32_t uargc = argc;
   if (white_spaces_count_ == 0) {
     char* cmd = argv[0];
     if (!common::FullEqualsASCII(cmd, name, false)) {
       return false;
     }
   } else {
-    if (argc == 1) {
+    if (uargc == 1) {
       return false;
     }
 
-    if (white_spaces_count_ > argc) {
+    if (white_spaces_count_ > uargc) {
       return false;
     }
 

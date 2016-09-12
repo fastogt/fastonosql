@@ -18,13 +18,15 @@
 
 #pragma once
 
-#include <stdint.h>  // for uint8_t, uint32_t
+#include <stddef.h>             // for size_t
+#include <stdint.h>             // for uint8_t, uint32_t
 
-#include <functional>  // for function
-#include <string>      // for string
+#include <functional>           // for function
+#include <string>               // for string
 
 #include "common/error.h"       // for Error
 #include "common/macros.h"      // for WARN_UNUSED_RESULT
+
 #include "core/command_info.h"  // for CommandInfo
 
 namespace fastonosql {
@@ -57,7 +59,7 @@ class CommandHolder : public CommandInfo {
 
  private:
   const function_t func_;
-  size_t white_spaces_count_;
+  const size_t white_spaces_count_;
 };
 
 }  // namespace core

@@ -19,9 +19,9 @@
 #include "core/command_handler.h"
 
 #include <stddef.h>  // for size_t
+#include <stdint.h>  // for uint16_t
 
 #include <string>  // for string
-#include <vector>  // for vector
 
 #include "common/sprintf.h"  // for MemSPrintf
 #include "common/value.h"    // for ErrorValue, etc
