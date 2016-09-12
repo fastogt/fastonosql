@@ -142,7 +142,8 @@ common::Error IDriver::execute(FastoObjectCommandIPtr cmd) {
     return common::make_error_value("Invalid input argument(s)", common::ErrorValue::E_ERROR);
   }
 
-  common::Error err = executeImpl(argc, argv, cmd.get());
+  const char** exec_argv = const_cast<const char**>(argv);
+  common::Error err = executeImpl(argc, exec_argv, cmd.get());
   sdsfreesplitres(argv, argc);
   return err;
 }

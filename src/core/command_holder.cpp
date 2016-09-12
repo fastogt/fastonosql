@@ -50,34 +50,24 @@ CommandHolder::CommandHolder(const std::string& name,
       func_(func),
       white_spaces_count_(count_space(name)) {}
 
-bool CommandHolder::isCommand(int argc, char** argv, size_t* offset) {
-  if (argc < 0) {
+bool CommandHolder::isCommand(int argc, const char** argv, size_t* offset) {
+  if (argc <= 0) {
     return false;
   }
 
   uint32_t uargc = argc;
-  if (white_spaces_count_ == 0) {
-    char* cmd = argv[0];
-    if (!common::FullEqualsASCII(cmd, name, false)) {
-      return false;
-    }
-  } else {
-    if (uargc == 1) {
-      return false;
-    }
+  if (uargc == white_spaces_count_) {
+    return false;
+  }
 
-    if (white_spaces_count_ > uargc) {
-      return false;
-    }
-
-    std::vector<std::string> merged;
-    for (size_t i = 0; i <= white_spaces_count_; ++i) {
-      merged.push_back(argv[i]);
-    }
-    std::string ws = common::JoinString(merged, ' ');
-    if (!common::FullEqualsASCII(ws, name, false)) {
-      return false;
-    }
+  CHECK(uargc > white_spaces_count_);
+  std::vector<std::string> merged;
+  for (size_t i = 0; i < white_spaces_count_ + 1; ++i) {
+    merged.push_back(argv[i]);
+  }
+  std::string ws = common::JoinString(merged, ' ');
+  if (!common::FullEqualsASCII(ws, name, false)) {
+    return false;
   }
 
   if (offset) {
@@ -88,7 +78,7 @@ bool CommandHolder::isCommand(int argc, char** argv, size_t* offset) {
 
 common::Error CommandHolder::execute(CommandHandler* handler,
                                      int argc,
-                                     char** argv,
+                                     const char** argv,
                                      FastoObject* out) {
   return func_(handler, argc, argv, out);
 }

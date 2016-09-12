@@ -64,7 +64,7 @@ class Driver : public IDriverRemote {
   virtual common::Error syncConnect() override WARN_UNUSED_RESULT;
   virtual common::Error syncDisconnect() override WARN_UNUSED_RESULT;
 
-  virtual common::Error executeImpl(int argc, char** argv, FastoObject* out);
+  virtual common::Error executeImpl(int argc, const char** argv, FastoObject* out);
 
   virtual common::Error serverInfo(IServerInfo** info);
   virtual common::Error currentDataBaseInfo(IDataBaseInfo** info);

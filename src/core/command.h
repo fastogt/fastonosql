@@ -18,9 +18,12 @@
 
 #pragma once
 
-#include "common/value.h"
+#include <string>  // for string
 
-#include "global/global.h"
+#include "common/macros.h"  // for NOTREACHED
+#include "common/value.h"   // for Value, CommandValue (ptr only), Value::Co...
+
+#include "global/global.h"  // for FastoObjectCommandIPtr, FastoObject (ptr ...
 
 namespace fastonosql {
 namespace core {

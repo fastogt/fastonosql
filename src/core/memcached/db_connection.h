@@ -86,29 +86,32 @@ class DBConnection : public core::CDBConnection<NativeConnection, Config, MEMCAC
   common::Error del(const std::string& key, time_t expiration) WARN_UNUSED_RESULT;
   common::Error flush_all(time_t expiration) WARN_UNUSED_RESULT;
   common::Error version_server() const WARN_UNUSED_RESULT;
-  common::Error help(int argc, char** argv) WARN_UNUSED_RESULT;
+  common::Error help(int argc, const char** argv) WARN_UNUSED_RESULT;
   common::Error expire(const std::string& key, time_t expiration) WARN_UNUSED_RESULT;
 
  private:
   common::Error selectImpl(const std::string& name, IDataBaseInfo** info) WARN_UNUSED_RESULT;
 };
 
-common::Error keys(CommandHandler* handler, int argc, char** argv, FastoObject* out);
-common::Error stats(CommandHandler* handler, int argc, char** argv, FastoObject* out);
-common::Error get(CommandHandler* handler, int argc, char** argv, FastoObject* out);
-common::Error set(CommandHandler* handler, int argc, char** argv, FastoObject* out);
-common::Error add(CommandHandler* handler, int argc, char** argv, FastoObject* out);
-common::Error replace(CommandHandler* handler, int argc, char** argv, FastoObject* out);
-common::Error append(CommandHandler* handler, int argc, char** argv, FastoObject* out);
-common::Error prepend(CommandHandler* handler, int argc, char** argv, FastoObject* out);
-common::Error incr(CommandHandler* handler, int argc, char** argv, FastoObject* out);
-common::Error decr(CommandHandler* handler, int argc, char** argv, FastoObject* out);
-common::Error del(CommandHandler* handler, int argc, char** argv, FastoObject* out);
-common::Error flush_all(CommandHandler* handler, int argc, char** argv, FastoObject* out);
-common::Error version_server(CommandHandler* handler, int argc, char** argv, FastoObject* out);
-common::Error dbkcount(CommandHandler* handler, int argc, char** argv, FastoObject* out);
-common::Error help(CommandHandler* handler, int argc, char** argv, FastoObject* out);
-common::Error expire(CommandHandler* handler, int argc, char** argv, FastoObject* out);
+common::Error keys(CommandHandler* handler, int argc, const char** argv, FastoObject* out);
+common::Error stats(CommandHandler* handler, int argc, const char** argv, FastoObject* out);
+common::Error get(CommandHandler* handler, int argc, const char** argv, FastoObject* out);
+common::Error set(CommandHandler* handler, int argc, const char** argv, FastoObject* out);
+common::Error add(CommandHandler* handler, int argc, const char** argv, FastoObject* out);
+common::Error replace(CommandHandler* handler, int argc, const char** argv, FastoObject* out);
+common::Error append(CommandHandler* handler, int argc, const char** argv, FastoObject* out);
+common::Error prepend(CommandHandler* handler, int argc, const char** argv, FastoObject* out);
+common::Error incr(CommandHandler* handler, int argc, const char** argv, FastoObject* out);
+common::Error decr(CommandHandler* handler, int argc, const char** argv, FastoObject* out);
+common::Error del(CommandHandler* handler, int argc, const char** argv, FastoObject* out);
+common::Error flush_all(CommandHandler* handler, int argc, const char** argv, FastoObject* out);
+common::Error version_server(CommandHandler* handler,
+                             int argc,
+                             const char** argv,
+                             FastoObject* out);
+common::Error dbkcount(CommandHandler* handler, int argc, const char** argv, FastoObject* out);
+common::Error help(CommandHandler* handler, int argc, const char** argv, FastoObject* out);
+common::Error expire(CommandHandler* handler, int argc, const char** argv, FastoObject* out);
 
 // TODO: cas command implementation
 static const std::vector<CommandHolder> memcachedCommands = {

@@ -63,22 +63,22 @@ class DBConnection : public core::CDBConnection<NativeConnection, Config, UNQLIT
 
   // extended api
   common::Error dbkcount(size_t* size) WARN_UNUSED_RESULT;
-  common::Error help(int argc, char** argv) WARN_UNUSED_RESULT;
+  common::Error help(int argc, const char** argv) WARN_UNUSED_RESULT;
   common::Error flushdb() WARN_UNUSED_RESULT;
 
  private:
   common::Error selectImpl(const std::string& name, IDataBaseInfo** info) WARN_UNUSED_RESULT;
 };
 
-common::Error info(CommandHandler* handler, int argc, char** argv, FastoObject* out);
-common::Error set(CommandHandler* handler, int argc, char** argv, FastoObject* out);
-common::Error get(CommandHandler* handler, int argc, char** argv, FastoObject* out);
-common::Error del(CommandHandler* handler, int argc, char** argv, FastoObject* out);
-common::Error keys(CommandHandler* handler, int argc, char** argv, FastoObject* out);
+common::Error info(CommandHandler* handler, int argc, const char** argv, FastoObject* out);
+common::Error set(CommandHandler* handler, int argc, const char** argv, FastoObject* out);
+common::Error get(CommandHandler* handler, int argc, const char** argv, FastoObject* out);
+common::Error del(CommandHandler* handler, int argc, const char** argv, FastoObject* out);
+common::Error keys(CommandHandler* handler, int argc, const char** argv, FastoObject* out);
 
-common::Error dbkcount(CommandHandler* handler, int argc, char** argv, FastoObject* out);
-common::Error help(CommandHandler* handler, int argc, char** argv, FastoObject* out);
-common::Error flushdb(CommandHandler* handler, int argc, char** argv, FastoObject* out);
+common::Error dbkcount(CommandHandler* handler, int argc, const char** argv, FastoObject* out);
+common::Error help(CommandHandler* handler, int argc, const char** argv, FastoObject* out);
+common::Error flushdb(CommandHandler* handler, int argc, const char** argv, FastoObject* out);
 
 static const std::vector<CommandHolder> unqliteCommands = {
     CommandHolder("SET",

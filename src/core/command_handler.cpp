@@ -31,13 +31,13 @@ namespace core {
 
 CommandHandler::CommandHandler(const commands_t& commands) : commands_(commands) {}
 
-common::Error CommandHandler::execute(int argc, char** argv, FastoObject* out) {
+common::Error CommandHandler::execute(int argc, const char** argv, FastoObject* out) {
   for (size_t i = 0; i < commands_.size(); ++i) {
     command_t cmd = commands_[i];
     size_t off = 0;
     if (cmd.isCommand(argc, argv, &off)) {
       int argc_to_call = argc - off;
-      char** argv_to_call = argv + off;
+      const char** argv_to_call = argv + off;
       uint16_t max = cmd.maxArgumentsCount();
       uint16_t min = cmd.minArgumentsCount();
       if (argc_to_call > max || argc_to_call < min) {
@@ -61,7 +61,7 @@ common::Error CommandHandler::notSupported(const std::string& cmd) {
   return common::make_error_value(buff, common::ErrorValue::E_ERROR);
 }
 
-common::Error CommandHandler::unknownSequence(int argc, char** argv) {
+common::Error CommandHandler::unknownSequence(int argc, const char** argv) {
   std::string result;
   for (int i = 0; i < argc; ++i) {
     result += argv[i];

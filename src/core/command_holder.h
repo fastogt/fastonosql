@@ -18,14 +18,14 @@
 
 #pragma once
 
-#include <stddef.h>             // for size_t
-#include <stdint.h>             // for uint8_t, uint32_t
+#include <stddef.h>  // for size_t
+#include <stdint.h>  // for uint8_t, uint32_t
 
-#include <functional>           // for function
-#include <string>               // for string
+#include <functional>  // for function
+#include <string>      // for string
 
-#include "common/error.h"       // for Error
-#include "common/macros.h"      // for WARN_UNUSED_RESULT
+#include "common/error.h"   // for Error
+#include "common/macros.h"  // for WARN_UNUSED_RESULT
 
 #include "core/command_info.h"  // for CommandInfo
 
@@ -43,7 +43,7 @@ namespace core {
 
 class CommandHolder : public CommandInfo {
  public:
-  typedef std::function<common::Error(CommandHandler*, int, char**, FastoObject*)> function_t;
+  typedef std::function<common::Error(CommandHandler*, int, const char**, FastoObject*)> function_t;
 
   CommandHolder(const std::string& name,
                 const std::string& params,
@@ -53,8 +53,8 @@ class CommandHolder : public CommandInfo {
                 uint8_t required_arguments_count,
                 uint8_t optional_arguments_count,
                 function_t func);
-  bool isCommand(int argc, char** argv, size_t* offset);
-  common::Error execute(CommandHandler* handler, int argc, char** argv, FastoObject* out)
+  bool isCommand(int argc, const char** argv, size_t* offset);
+  common::Error execute(CommandHandler* handler, int argc, const char** argv, FastoObject* out)
       WARN_UNUSED_RESULT;
 
  private:

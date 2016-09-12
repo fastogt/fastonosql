@@ -120,7 +120,7 @@ common::Error Driver::syncDisconnect() {
   return impl_->disconnect();
 }
 
-common::Error Driver::executeImpl(int argc, char** argv, FastoObject* out) {
+common::Error Driver::executeImpl(int argc, const char** argv, FastoObject* out) {
   return impl_->execute(argc, argv, out);
 }
 

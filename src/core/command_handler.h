@@ -21,8 +21,8 @@
 #include <vector>
 #include <string>  // for string
 
-#include "common/error.h"         // for Error
-#include "common/macros.h"        // for WARN_UNUSED_RESULT
+#include "common/error.h"   // for Error
+#include "common/macros.h"  // for WARN_UNUSED_RESULT
 
 #include "core/command_holder.h"  // for CommandHolder
 
@@ -39,10 +39,10 @@ class CommandHandler {
   typedef std::vector<command_t> commands_t;
 
   explicit CommandHandler(const commands_t& commands);
-  common::Error execute(int argc, char** argv, FastoObject* out) WARN_UNUSED_RESULT;
+  common::Error execute(int argc, const char** argv, FastoObject* out) WARN_UNUSED_RESULT;
 
   static common::Error notSupported(const std::string& cmd);
-  static common::Error unknownSequence(int argc, char** argv);
+  static common::Error unknownSequence(int argc, const char** argv);
 
  private:
   const commands_t& commands_;

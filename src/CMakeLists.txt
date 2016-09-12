@@ -703,11 +703,12 @@ IF(DEVELOPER_ENABLE_TESTS)
     ${CMAKE_SOURCE_DIR}/tests/unit_test_common_net.cpp
     ${CMAKE_SOURCE_DIR}/tests/unit_test_common_strings.cpp
     ${CMAKE_SOURCE_DIR}/tests/unit_test_parsinng_command_line.cpp
+    ${CMAKE_SOURCE_DIR}/tests/unit_test_command_holder.cpp
     global/global.cpp
     ${SOURCES_SDS}
   )
 
-  TARGET_LINK_LIBRARIES(unit_tests gtest gtest_main common)
+  TARGET_LINK_LIBRARIES(unit_tests gtest gtest_main ${PROJECT_CORE_LIBRARY} common)
 
   ADD_TEST(NAME unit_tests COMMAND tests)
   SET_PROPERTY(TARGET unit_tests PROPERTY FOLDER "Unit tests")

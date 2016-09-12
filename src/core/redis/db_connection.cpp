@@ -411,7 +411,10 @@ common::Error cliOutputGenericHelp(FastoObject* out, const std::string& delimite
   return common::Error();
 }
 
-common::Error cliOutputHelp(int argc, char** argv, FastoObject* out, const std::string& delimiter) {
+common::Error cliOutputHelp(int argc,
+                            const char** argv,
+                            FastoObject* out,
+                            const std::string& delimiter) {
   if (!out) {
     DNOTREACHED();
     return common::make_error_value("Invalid input argument(s)", common::ErrorValue::E_ERROR);
@@ -492,17 +495,20 @@ common::Error authContext(const char* auth_str, redisContext* context) {
 
 }  // namespace
 
-common::Error common_exec(CommandHandler* handler, int argc, char** argv, FastoObject* out) {
+common::Error common_exec(CommandHandler* handler, int argc, const char** argv, FastoObject* out) {
   DBConnection* red = static_cast<DBConnection*>(handler);
   return red->commonExec(argc + 1, argv - 1, out);
 }
 
-common::Error common_exec_off2(CommandHandler* handler, int argc, char** argv, FastoObject* out) {
+common::Error common_exec_off2(CommandHandler* handler,
+                               int argc,
+                               const char** argv,
+                               FastoObject* out) {
   DBConnection* red = static_cast<DBConnection*>(handler);
   return red->commonExec(argc + 2, argv - 2, out);
 }
 
-common::Error auth(CommandHandler* handler, int argc, char** argv, FastoObject* out) {
+common::Error auth(CommandHandler* handler, int argc, const char** argv, FastoObject* out) {
   UNUSED(argc);
   DBConnection* red = static_cast<DBConnection*>(handler);
   common::Error err = red->auth(argv[0]);
@@ -516,7 +522,7 @@ common::Error auth(CommandHandler* handler, int argc, char** argv, FastoObject* 
   return common::Error();
 }
 
-common::Error select(CommandHandler* handler, int argc, char** argv, FastoObject* out) {
+common::Error select(CommandHandler* handler, int argc, const char** argv, FastoObject* out) {
   UNUSED(argc);
   DBConnection* red = static_cast<DBConnection*>(handler);
   common::Error err = red->select(argv[0], NULL);
@@ -530,22 +536,22 @@ common::Error select(CommandHandler* handler, int argc, char** argv, FastoObject
   return common::Error();
 }
 
-common::Error help(CommandHandler* handler, int argc, char** argv, FastoObject* out) {
+common::Error help(CommandHandler* handler, int argc, const char** argv, FastoObject* out) {
   DBConnection* red = static_cast<DBConnection*>(handler);
   return red->help(argc, argv, out);
 }
 
-common::Error monitor(CommandHandler* handler, int argc, char** argv, FastoObject* out) {
+common::Error monitor(CommandHandler* handler, int argc, const char** argv, FastoObject* out) {
   DBConnection* red = static_cast<DBConnection*>(handler);
   return red->monitor(argc + 1, argv - 1, out);
 }
 
-common::Error subscribe(CommandHandler* handler, int argc, char** argv, FastoObject* out) {
+common::Error subscribe(CommandHandler* handler, int argc, const char** argv, FastoObject* out) {
   DBConnection* red = static_cast<DBConnection*>(handler);
   return red->subscribe(argc + 1, argv - 1, out);
 }
 
-common::Error sync(CommandHandler* handler, int argc, char** argv, FastoObject* out) {
+common::Error sync(CommandHandler* handler, int argc, const char** argv, FastoObject* out) {
   UNUSED(argc);
   UNUSED(argv);
   DBConnection* red = static_cast<DBConnection*>(handler);
@@ -1818,7 +1824,7 @@ common::Error DBConnection::executeAsPipeline(const std::vector<FastoObjectComma
   return common::Error();
 }
 
-common::Error DBConnection::commonExec(int argc, char** argv, FastoObject* out) {
+common::Error DBConnection::commonExec(int argc, const char** argv, FastoObject* out) {
   if (!isConnected()) {
     DNOTREACHED();
     return common::make_error_value("Not connected", common::Value::E_ERROR);
@@ -1826,7 +1832,8 @@ common::Error DBConnection::commonExec(int argc, char** argv, FastoObject* out) 
 
   size_t* argvlen = reinterpret_cast<size_t*>(malloc(argc * sizeof(size_t)));
   for (int j = 0; j < argc; j++) {
-    size_t len = sdslen(argv[j]);
+    char* carg = const_cast<char*>(argv[j]);
+    size_t len = sdslen(carg);
     argvlen[j] = len;
   }
 
@@ -1858,11 +1865,11 @@ common::Error DBConnection::auth(const std::string& password) {
   return common::Error();
 }
 
-common::Error DBConnection::help(int argc, char** argv, FastoObject* out) {
+common::Error DBConnection::help(int argc, const char** argv, FastoObject* out) {
   return cliOutputHelp(argc, argv, out, delimiter());
 }
 
-common::Error DBConnection::monitor(int argc, char** argv, FastoObject* out) {
+common::Error DBConnection::monitor(int argc, const char** argv, FastoObject* out) {
   if (!isConnected()) {
     DNOTREACHED();
     return common::make_error_value("Not connected", common::Value::E_ERROR);
@@ -1870,7 +1877,8 @@ common::Error DBConnection::monitor(int argc, char** argv, FastoObject* out) {
 
   size_t* argvlen = reinterpret_cast<size_t*>(malloc(argc * sizeof(size_t)));
   for (int j = 0; j < argc; j++) {
-    size_t len = sdslen(argv[j]);
+    char* carg = const_cast<char*>(argv[j]);
+    size_t len = sdslen(carg);
     argvlen[j] = len;
   }
 
@@ -1895,7 +1903,7 @@ common::Error DBConnection::monitor(int argc, char** argv, FastoObject* out) {
   return common::Error();
 }
 
-common::Error DBConnection::subscribe(int argc, char** argv, FastoObject* out) {
+common::Error DBConnection::subscribe(int argc, const char** argv, FastoObject* out) {
   if (!isConnected()) {
     DNOTREACHED();
     return common::make_error_value("Not connected", common::Value::E_ERROR);
@@ -1903,7 +1911,8 @@ common::Error DBConnection::subscribe(int argc, char** argv, FastoObject* out) {
 
   size_t* argvlen = reinterpret_cast<size_t*>(malloc(argc * sizeof(size_t)));
   for (int j = 0; j < argc; j++) {
-    size_t len = sdslen(argv[j]);
+    char* carg = const_cast<char*>(argv[j]);
+    size_t len = sdslen(carg);
     argvlen[j] = len;
   }
 

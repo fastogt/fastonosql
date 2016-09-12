@@ -54,15 +54,18 @@ namespace fastonosql {
 namespace core {
 namespace redis {
 
-common::Error common_exec(CommandHandler* handler, int argc, char** argv, FastoObject* out);
-common::Error common_exec_off2(CommandHandler* handler, int argc, char** argv, FastoObject* out);
+common::Error common_exec(CommandHandler* handler, int argc, const char** argv, FastoObject* out);
+common::Error common_exec_off2(CommandHandler* handler,
+                               int argc,
+                               const char** argv,
+                               FastoObject* out);
 
-common::Error auth(CommandHandler* handler, int argc, char** argv, FastoObject* out);
-common::Error select(CommandHandler* handler, int argc, char** argv, FastoObject* out);
-common::Error help(CommandHandler* handler, int argc, char** argv, FastoObject* out);
-common::Error monitor(CommandHandler* handler, int argc, char** argv, FastoObject* out);
-common::Error subscribe(CommandHandler* handler, int argc, char** argv, FastoObject* out);
-common::Error sync(CommandHandler* handler, int argc, char** argv, FastoObject* out);
+common::Error auth(CommandHandler* handler, int argc, const char** argv, FastoObject* out);
+common::Error select(CommandHandler* handler, int argc, const char** argv, FastoObject* out);
+common::Error help(CommandHandler* handler, int argc, const char** argv, FastoObject* out);
+common::Error monitor(CommandHandler* handler, int argc, const char** argv, FastoObject* out);
+common::Error subscribe(CommandHandler* handler, int argc, const char** argv, FastoObject* out);
+common::Error sync(CommandHandler* handler, int argc, const char** argv, FastoObject* out);
 
 static const std::vector<CommandHolder> redisCommands = {
     CommandHolder("APPEND",
@@ -2000,11 +2003,15 @@ class DBConnection : public core::CDBConnection<NativeConnection, RConfig, REDIS
   common::Error executeAsPipeline(const std::vector<FastoObjectCommandIPtr>& cmds)
       WARN_UNUSED_RESULT;
 
-  common::Error commonExec(int argc, char** argv, FastoObject* out) WARN_UNUSED_RESULT;
+  common::Error commonExec(int argc, const char** argv, FastoObject* out) WARN_UNUSED_RESULT;
   common::Error auth(const std::string& password) WARN_UNUSED_RESULT;
-  common::Error help(int argc, char** argv, FastoObject* out) WARN_UNUSED_RESULT;
-  common::Error monitor(int argc, char** argv, FastoObject* out) WARN_UNUSED_RESULT;    // interrupt
-  common::Error subscribe(int argc, char** argv, FastoObject* out) WARN_UNUSED_RESULT;  // interrupt
+  common::Error help(int argc, const char** argv, FastoObject* out) WARN_UNUSED_RESULT;
+  common::Error monitor(int argc,
+                        const char** argv,
+                        FastoObject* out) WARN_UNUSED_RESULT;  // interrupt
+  common::Error subscribe(int argc,
+                          const char** argv,
+                          FastoObject* out) WARN_UNUSED_RESULT;  // interrupt
 
  private:
   common::Error selectImpl(const std::string& name, IDataBaseInfo** info) WARN_UNUSED_RESULT;

@@ -153,7 +153,7 @@ class IDriver : public QObject,
   void handleDiscoveryInfoRequestEvent(events::DiscoveryInfoRequestEvent* ev);
   void handleClearServerHistoryRequestEvent(events::ClearServerHistoryRequestEvent* ev);
 
-  virtual common::Error executeImpl(int argc, char** argv, FastoObject* out) = 0;
+  virtual common::Error executeImpl(int argc, const char** argv, FastoObject* out) = 0;
 
   // notification of execute events
   virtual void addedChildren(FastoObjectIPtr child) override;
