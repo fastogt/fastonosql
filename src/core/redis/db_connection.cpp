@@ -173,13 +173,14 @@ typedef struct {
   struct commandHelp* org;
 } helpEntry;
 
-const int helpEntriesLen =
+const size_t helpEntriesLen =
     sizeof(commandHelp) / sizeof(struct commandHelp) + sizeof(commandGroups) / sizeof(char*);
 
 const struct RedisInit {
   helpEntry helpEntries[helpEntriesLen];
 
   RedisInit() {
+    libssh2_init(0);
     int pos = 0;
 
     for (size_t i = 0; i < sizeof(commandGroups) / sizeof(char*); ++i) {
@@ -203,6 +204,21 @@ const struct RedisInit {
       tmp.org = &commandHelp[i];
       helpEntries[pos++] = tmp;
     }
+  }
+  ~RedisInit() {
+    for (size_t i = 0; i < sizeof(commandGroups) / sizeof(char*); i++) {
+      helpEntry* entry = &helpEntries[i];
+      sdsfree(entry->full);
+      free(entry->argv);
+    }
+
+    for (size_t i = 0; i < sizeof(commandHelp) / sizeof(struct commandHelp); i++) {
+      helpEntry* entry = &helpEntries[i + sizeof(commandGroups) / sizeof(char*)];
+      sdsfree(entry->full);
+      sdsfreesplitres(entry->argv, entry->argc);
+    }
+
+    libssh2_exit();
   }
 } rInit;
 

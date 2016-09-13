@@ -56,6 +56,8 @@ common::Error CDBConnection<NConnection, Config, ContType>::select(const std::st
 
   if (info) {
     *info = linfo;
+  } else {
+    delete linfo;
   }
 
   return common::Error();
