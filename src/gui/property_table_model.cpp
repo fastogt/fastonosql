@@ -23,7 +23,6 @@
 #include <string>  // for basic_string, operator==
 #include <vector>  // for vector
 
-#include "common/convert2string.h"
 #include "common/macros.h"  // for CHECK, UNUSED
 #include "common/qt/convert2string.h"
 #include "common/qt/utils_qt.h"  // for item

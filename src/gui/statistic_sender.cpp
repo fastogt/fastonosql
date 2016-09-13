@@ -18,10 +18,10 @@
 
 #include "gui/statistic_sender.h"
 
+#include <string.h>     // for strlen
 #include <sys/types.h>  // for ssize_t
-
-#include <memory>  // for __shared_ptr
-#include <string>  // for string
+#include <memory>       // for __shared_ptr
+#include <string>       // for string
 
 #include "common/error.h"                    // for ErrnoError, ErrnoErrorValue
 #include "common/macros.h"                   // for MCHECK
