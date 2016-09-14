@@ -221,9 +221,11 @@ void FastoHexEdit::mouseReleaseEvent(QMouseEvent* event) {
 }
 
 bool FastoHexEdit::event(QEvent* event) {
+#if QT_VERSION >= QT_VERSION_CHECK(5, 4, 0)
   if (event->type() == QEvent::ReadOnlyChange) {
     emit readOnlyChanged();
   }
+#endif
 
   return base_class::event(event);
 }
