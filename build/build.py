@@ -130,6 +130,9 @@ class BuildRequest(object):
         if os.path.exists(abs_dir_path):
             shutil.rmtree(abs_dir_path)
 
+        is_android = self.platform_.name() == 'android'
+
+
         saver.update_progress_message_range(0.0, 9.0, "Start building project branding_options:\n{0}".format("\n".join(branding_options)))
 
         pwd = os.getcwd()
@@ -141,8 +144,13 @@ class BuildRequest(object):
         arch_args = '-DOS_ARCH={0}'.format(arch.bit)
         log_to_file_args = '-DLOG_TO_FILE=ON'
         openssl_args = '-DOPENSSL_USE_STATIC=ON'
+        
         cmake_line = ['cmake', cmake_project_root_abs_path, '-GNinja', '-DCMAKE_BUILD_TYPE=RELEASE', arch_args, log_to_file_args, openssl_args]
 
+        if is_android:
+            toolchain_path = os.path.join(cmake_project_root_abs_path, 'cmake/android.toolchain.cmake')
+            cmake_line.append('-DCMAKE_TOOLCHAIN_FILE={0}'.format(toolchain_path))
+        
         if branding_options:
             cmake_line.extend(branding_options)
 
@@ -182,7 +190,7 @@ class BuildRequest(object):
 
         saver.update_progress_message_range(85.0, 99.0, 'Start build package')
         file_names = []
-        if self.platform_.name() == 'android':
+        if is_android:
             make_apk_release = ['ninja', 'apk_release']
             try:
                 common_policy = CommonPolicy(store)
