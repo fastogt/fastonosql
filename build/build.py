@@ -36,6 +36,36 @@ class CmakePolicy(run_command.Policy):
     def update_progress_message(self, progress, message):
         super(CmakePolicy, self).update_progress_message(progress, message)
 
+class MakePolicy(run_command.Policy):
+    def __init__(self, cb):
+        run_command.Policy.__init__(self, cb)
+
+    def process(self, message):
+        if message.type() != run_command.MessageType.MESSAGE:
+            super(MakePolicy, self).process(message)
+            return
+
+        cur = self.parse_message_to_get_percent(message.message())
+        if not cur:
+            return
+
+        self.progress_ = cur
+        super(MakePolicy, self).process(message)
+
+    def update_progress_message(self, progress, message):
+        super(MakePolicy, self).update_progress_message(progress, message)
+
+    def parse_message_to_get_percent(self, message):
+        if not message:
+            return None
+
+        print(message)
+        res = re.search(r'\A\[(\d+)%\]', message)
+        if res != None:
+            return float(res.group(1))
+
+        return None
+
 class NinjaPolicy(run_command.Policy):
     def __init__(self, cb):
         run_command.Policy.__init__(self, cb)
@@ -131,7 +161,14 @@ class BuildRequest(object):
             shutil.rmtree(abs_dir_path)
 
         is_android = self.platform_.name() == 'android'
-
+        if is_android:
+            generator = '-GUnix Makefiles'
+            build_system = 'make'
+            build_system_policy = MakePolicy
+        else:
+            generator = '-GNinja'
+            build_system = 'ninja'
+            build_system_policy = NinjaPolicy
 
         saver.update_progress_message_range(0.0, 9.0, "Start building project branding_options:\n{0}".format("\n".join(branding_options)))
 
@@ -145,7 +182,7 @@ class BuildRequest(object):
         log_to_file_args = '-DLOG_TO_FILE=ON'
         openssl_args = '-DOPENSSL_USE_STATIC=ON'
         
-        cmake_line = ['cmake', cmake_project_root_abs_path, '-GNinja', '-DCMAKE_BUILD_TYPE=RELEASE', arch_args, log_to_file_args, openssl_args]
+        cmake_line = ['cmake', cmake_project_root_abs_path, generator, '-DCMAKE_BUILD_TYPE=RELEASE', arch_args, log_to_file_args, openssl_args]
 
         if is_android:
             toolchain_path = os.path.join(cmake_project_root_abs_path, 'cmake/android.toolchain.cmake')
@@ -170,11 +207,11 @@ class BuildRequest(object):
             os.chdir(pwd)
             raise ex
 
-        make_install = ['ninja', 'install']
+        make_install = [build_system, 'install']
         saver.update_progress_message_range(20.0, 79.0, 'Build project')
         try:
-            ninja_policy = NinjaPolicy(store)
-            run_command.run_command_cb(make_install, ninja_policy)
+            policy = build_system_policy(store)
+            run_command.run_command_cb(make_install, policy)
         except Exception as ex:
             os.chdir(pwd)
             raise ex
@@ -191,21 +228,21 @@ class BuildRequest(object):
         saver.update_progress_message_range(85.0, 99.0, 'Start build package')
         file_names = []
         if is_android:
-            make_apk_release = ['ninja', 'apk_release']
+            make_apk_release = [build_system, 'apk_release']
             try:
                 common_policy = CommonPolicy(store)
                 run_command.run_command_cb(make_apk_release, common_policy)
             except Exception as ex:
                 os.chdir(pwd)
                 raise ex
-            make_apk_signed = ['ninja', 'apk_signed']
+            make_apk_signed = [build_system, 'apk_signed']
             try:
                 common_policy = CommonPolicy(store)
                 run_command.run_command_cb(make_apk_signed, common_policy)
             except Exception as ex:
                 os.chdir(pwd)
                 raise ex
-            make_apk_signed_aligned = ['ninja', 'apk_signed_aligned']
+            make_apk_signed_aligned = [build_system, 'apk_signed_aligned']
             try:
                 common_policy = CommonPolicy(store)
                 run_command.run_command_cb(make_apk_signed_aligned, common_policy)
