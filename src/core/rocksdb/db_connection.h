@@ -61,7 +61,7 @@ class DBConnection : public core::CDBConnection<NativeConnection, Config, ROCKSD
   common::Error info(const char* args, ServerInfo::Stats* statsout) WARN_UNUSED_RESULT;
   common::Error set(const std::string& key, const std::string& value) WARN_UNUSED_RESULT;
   common::Error get(const std::string& key, std::string* ret_val) WARN_UNUSED_RESULT;
-  common::Error mget(const std::vector<::rocksdb::Slice>& keys, std::vector<std::string>* ret);
+  common::Error mget(const std::vector< ::rocksdb::Slice>& keys, std::vector<std::string>* ret);
   common::Error merge(const std::string& key, const std::string& value) WARN_UNUSED_RESULT;
   common::Error del(const std::string& key) WARN_UNUSED_RESULT;
   common::Error keys(const std::string& key_start,

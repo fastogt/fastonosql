@@ -255,7 +255,7 @@ common::Error DBConnection::get(const std::string& key, std::string* ret_val) {
   return common::Error();
 }
 
-common::Error DBConnection::mget(const std::vector<::rocksdb::Slice>& keys,
+common::Error DBConnection::mget(const std::vector< ::rocksdb::Slice>& keys,
                                  std::vector<std::string>* ret) {
   if (!isConnected()) {
     DNOTREACHED();
@@ -424,7 +424,7 @@ common::Error get(CommandHandler* handler, int argc, const char** argv, FastoObj
 
 common::Error mget(CommandHandler* handler, int argc, const char** argv, FastoObject* out) {
   DBConnection* rocks = static_cast<DBConnection*>(handler);
-  std::vector<::rocksdb::Slice> keysget;
+  std::vector< ::rocksdb::Slice> keysget;
   for (int i = 0; i < argc; ++i) {
     keysget.push_back(argv[i]);
   }
