@@ -104,7 +104,7 @@ def get_arch_bit():
     return re.search(r'\d+', arch[0]).group()
 
 def get_supported_platform_by_name(platform):
-    return next((x for x in SUPPORTED_PLATFORMS if x.name_ == platform), None)
+    return next((x for x in SUPPORTED_PLATFORMS if x.name() == platform), None)
     
 def gen_routing_key(platform, arch):
     return platform + '_' + arch

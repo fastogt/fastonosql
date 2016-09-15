@@ -108,6 +108,7 @@ class BuildRpcServer(object):
 
         platform_and_arch_str = '{0}_{1}'.format(platform.name(), arch.name())
         dir_name = 'build_{0}_for_{1}'.format(platform_and_arch_str, op_id)
+        bs = build.get_supported_build_system_by_name('ninja')
 
         self.send_status(routing_key, op_id, 20.0, 'Building package')
 
@@ -124,7 +125,7 @@ class BuildRpcServer(object):
         store = store(21.0, 79.0, routing_key, op_id)
 
         saver = build.ProgressSaver(store)
-        file_paths = buid_request.build('..', branding_options, dir_name, package_types, saver)
+        file_paths = buid_request.build('..', branding_options, dir_name, bs, package_types, saver)
         file_path = file_paths[0]
         self.send_status(routing_key, op_id, 80.0, 'Loading package to server')
         try:

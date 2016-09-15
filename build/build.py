@@ -18,8 +18,23 @@ def print_usage():
         "[optional] argv[2] branding_file_path\n"
         "[optional] argv[3] platform\n"
         "[optional] argv[4] architecture\n"
-        "[optional] argv[5] packages for example(\"DEB RPM\")\n")
+        "[optional] argv[5] packages for example(\"ninja\", \"make\")\n"
+        "[optional] argv[6] packages for example(\"DEB RPM\")\n")
 
+class BuildSystem:
+    def __init__(self, name, cmd_arg, policy):
+        self.name_ = name
+        self.cmd_arg_ = cmd_arg
+        self.policy_ = policy
+
+    def cmd_arg(self):
+        return self.cmd_arg_
+
+    def name(self):
+        return self.name_
+
+    def policy(self):
+        return self.policy_
 
 class CommonPolicy(run_command.Policy):
     def __init__(self, cb):
@@ -59,8 +74,7 @@ class MakePolicy(run_command.Policy):
         if not message:
             return None
 
-        print(message)
-        res = re.search(r'\A\[(\d+)%\]', message)
+        res = re.search(r'\A\[  (\d+)%\]', message)
         if res != None:
             return float(res.group(1))
 
@@ -94,6 +108,10 @@ class NinjaPolicy(run_command.Policy):
             return float(res.group(1)), float(res.group(2))
 
         return None, None
+
+SUPPORTED_BUILD_SYSTEMS = [BuildSystem('ninja', '-GNinja', NinjaPolicy), BuildSystem('make', '-GUnix Makefiles', MakePolicy)]
+def get_supported_build_system_by_name(name):
+    return next((x for x in SUPPORTED_BUILD_SYSTEMS if x.name() == name), None)
 
 def read_file_line_by_line(file):
     if not os.path.exists(file):
@@ -148,10 +166,13 @@ class BuildRequest(object):
     def platform(self):
         return self.platform_
 
-    def build(self, cmake_project_root_path, branding_options, dir_path, package_types, saver):
+    def build(self, cmake_project_root_path, branding_options, dir_path, bs, package_types, saver):
         cmake_project_root_abs_path = os.path.abspath(cmake_project_root_path)
         if not os.path.exists(cmake_project_root_abs_path):
             raise BuildError('invalid cmake_project_root_path: %s' % cmake_project_root_path)
+
+        if not bs:
+            bs = SUPPORTED_BUILD_SYSTEMS[0]
 
         if not package_types:
             package_types = self.platform_.package_types()
@@ -161,14 +182,10 @@ class BuildRequest(object):
             shutil.rmtree(abs_dir_path)
 
         is_android = self.platform_.name() == 'android'
-        if is_android:
-            generator = '-GUnix Makefiles'
-            build_system = 'make'
-            build_system_policy = MakePolicy
-        else:
-            generator = '-GNinja'
-            build_system = 'ninja'
-            build_system_policy = NinjaPolicy
+
+        generator = bs.cmd_arg()
+        build_system = bs.name()
+        build_system_policy = bs.policy()
 
         saver.update_progress_message_range(0.0, 9.0, "Start building project branding_options:\n{0}".format("\n".join(branding_options)))
 
@@ -292,7 +309,13 @@ if __name__ == "__main__":
         arch_bit_str = system_info.get_arch_bit()
 
     if argc > 5:
-        packages = sys.argv[5].split()
+        bs_str = sys.argv[5]
+        bs = get_supported_build_system_by_name(bs_str)
+    else:
+        bs = []
+
+    if argc > 6:
+        packages = sys.argv[6].split()
     else:
         packages = []
         
@@ -305,4 +328,4 @@ if __name__ == "__main__":
 
 
     saver = ProgressSaver(print_message)
-    request.build(cmake_root, branding_options, 'build_' + platform_str, packages, saver)
+    request.build(cmake_root, branding_options, 'build_' + platform_str, bs, packages, saver)
