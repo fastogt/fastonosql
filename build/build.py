@@ -22,19 +22,23 @@ def print_usage():
         "[optional] argv[6] packages for example(\"DEB RPM\")\n")
 
 class BuildSystem:
-    def __init__(self, name, cmd_arg, policy):
+    def __init__(self, name, cmd_line, cmake_generator_arg, policy):
         self.name_ = name
-        self.cmd_arg_ = cmd_arg
+        self.cmd_line_ = cmd_line
+        self.cmake_generator_arg_ = cmake_generator_arg
         self.policy_ = policy
 
-    def cmd_arg(self):
-        return self.cmd_arg_
+    def cmake_generator_arg(self):
+        return self.cmake_generator_arg_
 
     def name(self):
         return self.name_
 
     def policy(self):
         return self.policy_
+
+    def cmd_line(self): # cmd + args
+        return self.cmd_line_
 
 class CommonPolicy(run_command.Policy):
     def __init__(self, cb):
@@ -109,7 +113,7 @@ class NinjaPolicy(run_command.Policy):
 
         return None, None
 
-SUPPORTED_BUILD_SYSTEMS = [BuildSystem('ninja', '-GNinja', NinjaPolicy), BuildSystem('make', '-GUnix Makefiles', MakePolicy)]
+SUPPORTED_BUILD_SYSTEMS = [BuildSystem('ninja', ['ninja'], '-GNinja', NinjaPolicy), BuildSystem('make', ['make', '-j2'], '-GUnix Makefiles', MakePolicy)]
 def get_supported_build_system_by_name(name):
     return next((x for x in SUPPORTED_BUILD_SYSTEMS if x.name() == name), None)
 
@@ -183,8 +187,8 @@ class BuildRequest(object):
 
         is_android = self.platform_.name() == 'android'
 
-        generator = bs.cmd_arg()
-        build_system = bs.name()
+        generator = bs.cmake_generator_arg()
+        build_system_args = bs.cmd_line()
         build_system_policy = bs.policy()
 
         saver.update_progress_message_range(0.0, 9.0, "Start building project branding_options:\n{0}".format("\n".join(branding_options)))
@@ -198,13 +202,13 @@ class BuildRequest(object):
         arch_args = '-DOS_ARCH={0}'.format(arch.bit)
         log_to_file_args = '-DLOG_TO_FILE=ON'
         openssl_args = '-DOPENSSL_USE_STATIC=ON'
-        
+
         cmake_line = ['cmake', cmake_project_root_abs_path, generator, '-DCMAKE_BUILD_TYPE=RELEASE', arch_args, log_to_file_args, openssl_args]
 
         if is_android:
             toolchain_path = os.path.join(cmake_project_root_abs_path, 'cmake/android.toolchain.cmake')
             cmake_line.append('-DCMAKE_TOOLCHAIN_FILE={0}'.format(toolchain_path))
-        
+
         if branding_options:
             cmake_line.extend(branding_options)
 
@@ -224,7 +228,8 @@ class BuildRequest(object):
             os.chdir(pwd)
             raise ex
 
-        make_install = [build_system, 'install']
+        make_install = build_system_args
+        make_install.append('install')
         saver.update_progress_message_range(20.0, 79.0, 'Build project')
         try:
             policy = build_system_policy(store)
@@ -245,21 +250,24 @@ class BuildRequest(object):
         saver.update_progress_message_range(85.0, 99.0, 'Start build package')
         file_names = []
         if is_android:
-            make_apk_release = [build_system, 'apk_release']
+            make_apk_release = build_system_args
+            make_apk_release.append('apk_release')
             try:
                 common_policy = CommonPolicy(store)
                 run_command.run_command_cb(make_apk_release, common_policy)
             except Exception as ex:
                 os.chdir(pwd)
                 raise ex
-            make_apk_signed = [build_system, 'apk_signed']
+            make_apk_signed = build_system_args
+            make_apk_signed.append('apk_signed')
             try:
                 common_policy = CommonPolicy(store)
                 run_command.run_command_cb(make_apk_signed, common_policy)
             except Exception as ex:
                 os.chdir(pwd)
                 raise ex
-            make_apk_signed_aligned = [build_system, 'apk_signed_aligned']
+            make_apk_signed_aligned = build_system_args
+            make_apk_signed_aligned.append('apk_signed_aligned')
             try:
                 common_policy = CommonPolicy(store)
                 run_command.run_command_cb(make_apk_signed_aligned, common_policy)
@@ -297,7 +305,7 @@ if __name__ == "__main__":
         branding_file_path = sys.argv[2]
     else:
         branding_file_path = '/dev/null'
-        
+
     if argc > 3:
         platform_str = sys.argv[3]
     else:
@@ -318,7 +326,7 @@ if __name__ == "__main__":
         packages = sys.argv[6].split()
     else:
         packages = []
-        
+
     request = BuildRequest(platform_str, int(arch_bit_str))
     if branding_file_path != '/dev/null':
         abs_branding_file = os.path.abspath(branding_file_path)
