@@ -1,4 +1,4 @@
-0.7.2
+0.7.2 / September 17, 2016
 [Alexandr Topilski]
 - [Redis] Set ttl context menu
 - [Memcached] EXPIRE function
