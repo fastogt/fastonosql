@@ -14,9 +14,8 @@ def print_usage():
 
 
 class BuildRpcServer(object):
-    EXCHANGE = 'direct_logs'
+    EXCHANGE = 'build_servers_excange'
     EXCHANGE_TYPE = 'direct'
-    QUEUE ='build'
 
     def __init__(self, platform, arch_bit):
         self.connection_ = None
@@ -62,13 +61,13 @@ class BuildRpcServer(object):
         self.channel_.exchange_declare(self.on_exchange_declareok, exchange_name, self.EXCHANGE_TYPE)
 
     def on_exchange_declareok(self, unused_frame):
-        self.setup_queue(self.QUEUE)
+        self.setup_queue(self.routing_key_)
 
     def setup_queue(self, queue_name):
         self.channel_.queue_declare(self.on_queue_declareok, queue_name)
 
     def on_queue_declareok(self, method_frame):
-        self.channel_.queue_bind(self.on_bindok, self.QUEUE, self.EXCHANGE, self.routing_key_)
+        self.channel_.queue_bind(self.on_bindok, self.routing_key_, self.EXCHANGE, self.routing_key_)
 
     def on_bindok(self, unused_frame):
          self.start_consuming()
