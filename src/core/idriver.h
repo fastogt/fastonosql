@@ -160,6 +160,7 @@ class IDriver : public QObject,
   virtual void updated(FastoObject* item, FastoObject::value_t val) override;
 
   virtual void currentDataBaseChanged(IDataBaseInfo* info) override;
+  virtual void keysRemoved(const std::vector<std::string>& keys) override;
 
   // internal methods
   virtual IServerInfoSPtr makeServerInfoFromString(const std::string& val) = 0;

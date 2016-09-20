@@ -277,7 +277,7 @@ common::Error DBConnection::get(const std::string& key, std::string* ret_val) {
   return common::Error();
 }
 
-common::Error DBConnection::del(const std::string& key) {
+common::Error DBConnection::delInner(const std::string& key) {
   if (!isConnected()) {
     DNOTREACHED();
     return common::make_error_value("Not connected", common::Value::E_ERROR);
@@ -354,7 +354,7 @@ common::Error DBConnection::flushdb() {
   while (unqlite_kv_cursor_valid_entry(pCur)) {
     std::string key;
     unqlite_kv_cursor_key_callback(pCur, unqlite_data_callback, &key);
-    common::Error err = del(key);
+    common::Error err = delInner(key);
     if (err && err->isError()) {
       return err;
     }
@@ -372,6 +372,21 @@ common::Error DBConnection::selectImpl(const std::string& name, IDataBaseInfo** 
   common::Error err = dbkcount(&kcount);
   MCHECK(!err);
   *info = new DataBaseInfo(name, true, kcount);
+  return common::Error();
+}
+
+common::Error DBConnection::delImpl(const std::vector<std::string>& keys,
+                                    std::vector<std::string>* deleted_keys) {
+  for (size_t i = 0; i < keys.size(); ++i) {
+    std::string key = keys[i];
+    common::Error err = delInner(key);
+    if (err && err->isError()) {
+      continue;
+    }
+
+    deleted_keys->push_back(key);
+  }
+
   return common::Error();
 }
 
@@ -405,17 +420,22 @@ common::Error get(CommandHandler* handler, int argc, const char** argv, FastoObj
 }
 
 common::Error del(CommandHandler* handler, int argc, const char** argv, FastoObject* out) {
-  UNUSED(argc);
-
-  DBConnection* unq = static_cast<DBConnection*>(handler);
-  common::Error er = unq->del(argv[0]);
-  if (!er) {
-    common::StringValue* val = common::Value::createStringValue("OK");
-    FastoObject* child = new FastoObject(out, val, unq->delimiter());
-    out->addChildren(child);
+  std::vector<std::string> keysdel;
+  for (int i = 0; i < argc; ++i) {
+    keysdel.push_back(argv[i]);
   }
 
-  return er;
+  DBConnection* unq = static_cast<DBConnection*>(handler);
+  std::vector<std::string> keys_deleted;
+  common::Error err = unq->del(keysdel, &keys_deleted);
+  if (err && err->isError()) {
+    return err;
+  }
+
+  common::FundamentalValue* val = common::Value::createUIntegerValue(keys_deleted.size());
+  FastoObject* child = new FastoObject(out, val, unq->delimiter());
+  out->addChildren(child);
+  return common::Error();
 }
 
 common::Error keys(CommandHandler* handler, int argc, const char** argv, FastoObject* out) {

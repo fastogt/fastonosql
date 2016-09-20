@@ -552,6 +552,26 @@ common::Error select(CommandHandler* handler, int argc, const char** argv, Fasto
   return common::Error();
 }
 
+common::Error del(CommandHandler* handler, int argc, const char** argv, FastoObject* out) {
+  DBConnection* red = static_cast<DBConnection*>(handler);
+
+  std::vector<std::string> keysdel;
+  for (int i = 0; i < argc; ++i) {
+    keysdel.push_back(argv[i]);
+  }
+
+  std::vector<std::string> keysdeleted;
+  common::Error err = red->del(keysdel, &keysdeleted);
+  if (err && err->isError()) {
+    return err;
+  }
+
+  common::FundamentalValue* val = common::Value::createUIntegerValue(keysdeleted.size());
+  FastoObject* child = new FastoObject(out, val, red->delimiter());
+  out->addChildren(child);
+  return common::Error();
+}
+
 common::Error help(CommandHandler* handler, int argc, const char** argv, FastoObject* out) {
   DBConnection* red = static_cast<DBConnection*>(handler);
   return red->help(argc, argv, out);
@@ -1606,12 +1626,6 @@ common::Error DBConnection::scanMode(FastoObject* out) {
 }
 
 common::Error DBConnection::selectImpl(const std::string& name, IDataBaseInfo** info) {
-  CHECK(info);
-  if (!isConnected()) {
-    DNOTREACHED();
-    return common::make_error_value("Not connected", common::Value::E_ERROR);
-  }
-
   int num = common::ConvertFromString<int>(name);
   redisReply* reply =
       reinterpret_cast<redisReply*>(redisCommand(connection_.handle_, "SELECT %d", num));
@@ -1626,6 +1640,25 @@ common::Error DBConnection::selectImpl(const std::string& name, IDataBaseInfo** 
   DataBaseInfo* linfo = new DataBaseInfo(common::ConvertToString(num), true, sz);
   *info = linfo;
   freeReplyObject(reply);
+  return common::Error();
+}
+
+common::Error DBConnection::delImpl(const std::vector<std::string>& keys,
+                                    std::vector<std::string>* deleted_keys) {
+  for (size_t i = 0; i < keys.size(); ++i) {
+    std::string key = keys[i];
+    redisReply* reply =
+        reinterpret_cast<redisReply*>(redisCommand(connection_.handle_, "DEL %s", key.c_str()));
+    if (!reply) {
+      return cliPrintContextError(connection_.handle_);
+    }
+
+    if (reply->type == REDIS_REPLY_INTEGER && reply->integer == 1) {
+      deleted_keys->push_back(key);
+    }
+    freeReplyObject(reply);
+  }
+
   return common::Error();
 }
 

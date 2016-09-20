@@ -63,7 +63,6 @@ class DBConnection : public core::CDBConnection<NativeConnection, Config, ROCKSD
   common::Error get(const std::string& key, std::string* ret_val) WARN_UNUSED_RESULT;
   common::Error mget(const std::vector< ::rocksdb::Slice>& keys, std::vector<std::string>* ret);
   common::Error merge(const std::string& key, const std::string& value) WARN_UNUSED_RESULT;
-  common::Error del(const std::string& key) WARN_UNUSED_RESULT;
   common::Error keys(const std::string& key_start,
                      const std::string& key_end,
                      uint64_t limit,
@@ -75,7 +74,11 @@ class DBConnection : public core::CDBConnection<NativeConnection, Config, ROCKSD
   common::Error flushdb() WARN_UNUSED_RESULT;
 
  private:
-  common::Error selectImpl(const std::string& name, IDataBaseInfo** info) WARN_UNUSED_RESULT;
+  common::Error delInner(const std::string& key) WARN_UNUSED_RESULT;
+
+  virtual common::Error selectImpl(const std::string& name, IDataBaseInfo** info) override;
+  virtual common::Error delImpl(const std::vector<std::string>& keys,
+                                std::vector<std::string>* deleted_keys) override;
 };
 
 common::Error info(CommandHandler* handler, int argc, const char** argv, FastoObject* out);
@@ -125,12 +128,12 @@ static const std::vector<CommandHolder> rocksdbCommands = {
                   0,
                   &merge),
     CommandHolder("DEL",
-                  "<key>",
+                  "<key> [key ...]",
                   "Delete key.",
                   UNDEFINED_SINCE,
                   UNDEFINED_EXAMPLE_STR,
                   1,
-                  0,
+                  INFINITE_COMMAND_ARGS,
                   &del),
     CommandHolder("KEYS",
                   "<key_start> <key_end> <limit>",

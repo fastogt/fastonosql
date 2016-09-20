@@ -720,6 +720,10 @@ void IDriver::currentDataBaseChanged(IDataBaseInfo* info) {
   current_database_info_.reset(info->Clone());
 }
 
+void IDriver::keysRemoved(const std::vector<std::string>& keys) {
+
+}
+
 IDriverLocal::IDriverLocal(IConnectionSettingsBaseSPtr settings) : IDriver(settings) {
   CHECK(!isRemoteType(type()));
 }

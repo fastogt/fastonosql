@@ -83,14 +83,17 @@ class DBConnection : public core::CDBConnection<NativeConnection, Config, MEMCAC
                         uint32_t flags) WARN_UNUSED_RESULT;
   common::Error incr(const std::string& key, uint64_t value) WARN_UNUSED_RESULT;
   common::Error decr(const std::string& key, uint64_t value) WARN_UNUSED_RESULT;
-  common::Error del(const std::string& key, time_t expiration) WARN_UNUSED_RESULT;
   common::Error flush_all(time_t expiration) WARN_UNUSED_RESULT;
   common::Error version_server() const WARN_UNUSED_RESULT;
   common::Error help(int argc, const char** argv) WARN_UNUSED_RESULT;
   common::Error expire(const std::string& key, time_t expiration) WARN_UNUSED_RESULT;
 
  private:
-  common::Error selectImpl(const std::string& name, IDataBaseInfo** info) WARN_UNUSED_RESULT;
+  common::Error delInner(const std::string& key, time_t expiration) WARN_UNUSED_RESULT;
+
+  virtual common::Error selectImpl(const std::string& name, IDataBaseInfo** info);
+  virtual common::Error delImpl(const std::vector<std::string>& keys,
+                                std::vector<std::string>* deleted_keys) override;
 };
 
 common::Error keys(CommandHandler* handler, int argc, const char** argv, FastoObject* out);
@@ -151,13 +154,13 @@ static const std::vector<CommandHolder> memcachedCommands = {
                   0,
                   1,
                   &flush_all),
-    CommandHolder("DELETE",
-                  "<key> [<time>]",
-                  "Delete key/value pair in Memcached",
+    CommandHolder("DEL",
+                  "<key> [key ...]",
+                  "Delete key.",
                   UNDEFINED_SINCE,
                   UNDEFINED_EXAMPLE_STR,
                   1,
-                  1,
+                  INFINITE_COMMAND_ARGS,
                   &del),
     CommandHolder("INCR",
                   "<key> <value>",

@@ -62,6 +62,7 @@ common::Error common_exec_off2(CommandHandler* handler,
 
 common::Error auth(CommandHandler* handler, int argc, const char** argv, FastoObject* out);
 common::Error select(CommandHandler* handler, int argc, const char** argv, FastoObject* out);
+common::Error del(CommandHandler* handler, int argc, const char** argv, FastoObject* out);
 common::Error help(CommandHandler* handler, int argc, const char** argv, FastoObject* out);
 common::Error monitor(CommandHandler* handler, int argc, const char** argv, FastoObject* out);
 common::Error subscribe(CommandHandler* handler, int argc, const char** argv, FastoObject* out);
@@ -476,8 +477,8 @@ static const std::vector<CommandHolder> redisCommands = {
                   PROJECT_VERSION_GENERATE(1, 0, 0),
                   UNDEFINED_EXAMPLE_STR,
                   1,
-                  0,
-                  &common_exec),
+                  INFINITE_COMMAND_ARGS,
+                  &del),
     CommandHolder("DISCARD",
                   "-",
                   "Discard all commands issued after MULTI",
@@ -2014,7 +2015,9 @@ class DBConnection : public core::CDBConnection<NativeConnection, RConfig, REDIS
                           FastoObject* out) WARN_UNUSED_RESULT;  // interrupt
 
  private:
-  common::Error selectImpl(const std::string& name, IDataBaseInfo** info) WARN_UNUSED_RESULT;
+  virtual common::Error selectImpl(const std::string& name, IDataBaseInfo** info) override;
+  virtual common::Error delImpl(const std::vector<std::string>& keys,
+                                std::vector<std::string>* deleted_keys) override;
 
   common::Error sendSync(unsigned long long* payload) WARN_UNUSED_RESULT;
   common::Error sendScan(unsigned long long* it, redisReply** out) WARN_UNUSED_RESULT;

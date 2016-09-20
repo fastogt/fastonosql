@@ -469,7 +469,7 @@ common::Error DBConnection::decr(const std::string& key, uint64_t value) {
   return common::Error();
 }
 
-common::Error DBConnection::del(const std::string& key, time_t expiration) {
+common::Error DBConnection::delInner(const std::string& key, time_t expiration) {
   if (!isConnected()) {
     DNOTREACHED();
     return common::make_error_value("Not connected", common::Value::E_ERROR);
@@ -559,6 +559,21 @@ common::Error DBConnection::selectImpl(const std::string& name, IDataBaseInfo** 
   common::Error err = dbkcount(&kcount);
   MCHECK(!err);
   *info = new DataBaseInfo(name, true, kcount);
+  return common::Error();
+}
+
+common::Error DBConnection::delImpl(const std::vector<std::string>& keys,
+                                    std::vector<std::string>* deleted_keys) {
+  for (size_t i = 0; i < keys.size(); ++i) {
+    std::string key = keys[i];
+    common::Error err = delInner(key, 0);
+    if (err && err->isError()) {
+      continue;
+    }
+
+    deleted_keys->push_back(key);
+  }
+
   return common::Error();
 }
 
@@ -720,15 +735,22 @@ common::Error decr(CommandHandler* handler, int argc, const char** argv, FastoOb
 }
 
 common::Error del(CommandHandler* handler, int argc, const char** argv, FastoObject* out) {
-  DBConnection* mem = static_cast<DBConnection*>(handler);
-  common::Error er = mem->del(argv[0], argc == 2 ? atoll(argv[1]) : 0);
-  if (!er) {
-    common::StringValue* val = common::Value::createStringValue("OK");
-    FastoObject* child = new FastoObject(out, val, mem->delimiter());
-    out->addChildren(child);
+  std::vector<std::string> keysdel;
+  for (int i = 0; i < argc; ++i) {
+    keysdel.push_back(argv[i]);
   }
 
-  return er;
+  DBConnection* mem = static_cast<DBConnection*>(handler);
+  std::vector<std::string> keys_deleted;
+  common::Error err = mem->del(keysdel, &keys_deleted);
+  if (err && err->isError()) {
+    return err;
+  }
+
+  common::FundamentalValue* val = common::Value::createUIntegerValue(keys_deleted.size());
+  FastoObject* child = new FastoObject(out, val, mem->delimiter());
+  out->addChildren(child);
+  return common::Error();
 }
 
 common::Error flush_all(CommandHandler* handler, int argc, const char** argv, FastoObject* out) {
