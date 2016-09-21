@@ -49,7 +49,7 @@ class PreferencesDialog : public QDialog {
 
  private:
   void retranslateUi();
-#ifndef IS_PUBLIC_LOGIN
+#ifndef IS_PUBLIC_BUILD
   QGroupBox* profileBox_;
   QLabel* loginLabel_;
   QLineEdit* loginText_;
