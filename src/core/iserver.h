@@ -137,6 +137,7 @@ class IServer : public IServerBase, public std::enable_shared_from_this<IServer>
   void addedChild(FastoObjectIPtr child);
   void itemUpdated(FastoObject* item, common::ValueSPtr val);
   void serverInfoSnapShoot(ServerInfoSnapShoot shot);
+  void removedKey(core::IDataBaseInfoSPtr db, core::NKey key);
 
  public:
   // async methods

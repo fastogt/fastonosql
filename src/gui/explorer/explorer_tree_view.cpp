@@ -1000,6 +1000,17 @@ void ExplorerTreeView::finishExecuteCommand(const core::events_info::CommandResp
   }
 }
 
+void ExplorerTreeView::removeKey(core::IDataBaseInfoSPtr db, core::NKey key) {
+  core::IServer* serv = qobject_cast<core::IServer*>(sender());
+  CHECK(serv);
+
+  ExplorerTreeModel* mod = qobject_cast<ExplorerTreeModel*>(model());
+  CHECK(mod);
+
+  core::NDbKValue dbv(key, core::NValue());
+  mod->removeKey(serv, db, dbv);
+}
+
 void ExplorerTreeView::changeEvent(QEvent* e) {
   if (e->type() == QEvent::LanguageChange) {
     retranslateUi();
@@ -1041,6 +1052,9 @@ void ExplorerTreeView::syncWithServer(core::IServer* server) {
                  &ExplorerTreeView::startExecuteCommand));
   VERIFY(connect(server, &core::IServer::finishedExecuteCommand, this,
                  &ExplorerTreeView::finishExecuteCommand));
+
+  VERIFY(connect(server, &core::IServer::removedKey, this, &ExplorerTreeView::removeKey,
+                 Qt::DirectConnection));
 }
 
 void ExplorerTreeView::unsyncWithServer(core::IServer* server) {
@@ -1064,6 +1078,8 @@ void ExplorerTreeView::unsyncWithServer(core::IServer* server) {
                     &ExplorerTreeView::startExecuteCommand));
   VERIFY(disconnect(server, &core::IServer::finishedExecuteCommand, this,
                     &ExplorerTreeView::finishExecuteCommand));
+
+  VERIFY(disconnect(server, &core::IServer::removedKey, this, &ExplorerTreeView::removeKey));
 }
 
 void ExplorerTreeView::retranslateUi() {

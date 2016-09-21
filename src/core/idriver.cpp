@@ -158,6 +158,8 @@ IDriver::IDriver(IConnectionSettingsBaseSPtr settings)
 
   qRegisterMetaType<common::ValueSPtr>("common::ValueSPtr");
   qRegisterMetaType<fastonosql::FastoObjectIPtr>("FastoObjectIPtr");
+  qRegisterMetaType<core::NKey>("core::NKey");
+  qRegisterMetaType<core::IDataBaseInfoSPtr>("core::IDataBaseInfoSPtr");
 }
 
 IDriver::~IDriver() {
@@ -721,7 +723,9 @@ void IDriver::currentDataBaseChanged(IDataBaseInfo* info) {
 }
 
 void IDriver::keysRemoved(const std::vector<std::string>& keys) {
-
+  for (size_t i = 0; i < keys.size(); ++i) {
+    emit removedKey(current_database_info_, NKey(keys[i]));
+  }
 }
 
 IDriverLocal::IDriverLocal(IConnectionSettingsBaseSPtr settings) : IDriver(settings) {

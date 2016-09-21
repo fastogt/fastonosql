@@ -81,6 +81,7 @@ class IDriver : public QObject,
   void addedChild(FastoObjectIPtr child);
   void itemUpdated(FastoObject* item, common::ValueSPtr val);
   void serverInfoSnapShoot(ServerInfoSnapShoot shot);
+  void removedKey(core::IDataBaseInfoSPtr db, core::NKey keys);
 
  private Q_SLOTS:
   void init();

@@ -51,6 +51,7 @@ class KeyInfo {
 
 class NKey {
  public:
+  NKey();
   explicit NKey(const std::string& key, ttl_t ttl_sec = NO_TTL);
   KeyInfo info(const std::string& ns_separator) const;
 

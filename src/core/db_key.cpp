@@ -65,6 +65,8 @@ std::string KeyInfo::joinNamespace(size_t pos) const {
   return std::string();
 }
 
+NKey::NKey() : key_(), ttl_(NO_TTL) {}
+
 NKey::NKey(const std::string& key, ttl_t ttl_sec) : key_(key), ttl_(ttl_sec) {}
 
 KeyInfo NKey::info(const std::string& ns_separator) const {

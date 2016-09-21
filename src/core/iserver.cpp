@@ -44,6 +44,7 @@ IServer::IServer(IDriver* drv) : drv_(drv) {
   VERIFY(QObject::connect(drv_, &IDriver::itemUpdated, this, &IServer::itemUpdated));
   VERIFY(
       QObject::connect(drv_, &IDriver::serverInfoSnapShoot, this, &IServer::serverInfoSnapShoot));
+  VERIFY(QObject::connect(drv_, &IDriver::removedKey, this, &IServer::removedKey));
   drv_->start();
 }
 

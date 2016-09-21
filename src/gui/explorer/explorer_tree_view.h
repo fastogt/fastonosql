@@ -98,6 +98,8 @@ class ExplorerTreeView : public QTreeView {
   void startExecuteCommand(const core::events_info::CommandRequest& req);
   void finishExecuteCommand(const core::events_info::CommandResponce& res);
 
+  void removeKey(core::IDataBaseInfoSPtr db, core::NKey key);
+
  protected:
   virtual void changeEvent(QEvent* ev);
   virtual void mouseDoubleClickEvent(QMouseEvent* ev);
