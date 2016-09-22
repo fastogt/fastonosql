@@ -67,7 +67,7 @@ namespace gui {
 PreferencesDialog::PreferencesDialog(QWidget* parent) : QDialog(parent) {
   setWindowFlags(windowFlags() & ~Qt::WindowContextHelpButtonHint);  // Remove help
                                                                      // button (?)
-#ifndef IS_PUBLIC_LOGIN
+#ifndef IS_PUBLIC_BUILD
   profileBox_ = new QGroupBox;
   QHBoxLayout* profileLayout = new QHBoxLayout;
   loginLabel_ = new QLabel;
@@ -138,7 +138,7 @@ PreferencesDialog::PreferencesDialog(QWidget* parent) : QDialog(parent) {
 
   // main layout
   QVBoxLayout* layout = new QVBoxLayout(this);
-#ifndef IS_PUBLIC_LOGIN
+#ifndef IS_PUBLIC_BUILD
   layout->addWidget(profileBox_);
 #endif
   layout->addWidget(generalBox_);
@@ -207,7 +207,7 @@ void PreferencesDialog::retranslateUi() {
   setWindowTitle(trPreferences);
 
   generalBox_->setTitle(trGeneralSettings);
-#ifndef IS_PUBLIC_LOGIN
+#ifndef IS_PUBLIC_BUILD
   profileBox_->setTitle(trProfileSettings);
   loginLabel_->setText(trLogin);
 #endif
