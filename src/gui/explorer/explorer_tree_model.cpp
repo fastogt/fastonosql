@@ -607,10 +607,10 @@ void ExplorerTreeModel::addKey(core::IServer* server,
     return;
   }
 
-  ExplorerKeyItem* keyit = findKeyItem(dbs, dbv);
+  core::NKey key = dbv.key();
+  ExplorerKeyItem* keyit = findKeyItem(dbs, key);
   if (!keyit) {
     IExplorerTreeItem* nitem = dbs;
-    core::NKey key = dbv.key();
     core::KeyInfo kinf = key.info(ns_separator);
     if (kinf.hasNamespace()) {
       nitem = findOrCreateNSItem(dbs, kinf);
@@ -626,7 +626,7 @@ void ExplorerTreeModel::addKey(core::IServer* server,
 
 void ExplorerTreeModel::removeKey(core::IServer* server,
                                   core::IDataBaseInfoSPtr db,
-                                  const core::NDbKValue& key) {
+                                  const core::NKey& key) {
   ExplorerServerItem* parent = findServerItem(server);
   CHECK(parent);
 
@@ -643,18 +643,19 @@ void ExplorerTreeModel::removeKey(core::IServer* server,
 
 void ExplorerTreeModel::updateKey(core::IServer* server,
                                   core::IDataBaseInfoSPtr db,
-                                  const core::NDbKValue& key) {
+                                  const core::NDbKValue& dbv) {
   ExplorerServerItem* parent = findServerItem(server);
   CHECK(parent);
 
   ExplorerDatabaseItem* dbs = findDatabaseItem(parent, db);
   CHECK(dbs);
 
+  core::NKey key = dbv.key();
   ExplorerKeyItem* keyit = findKeyItem(dbs, key);
   if (keyit) {
     common::qt::gui::TreeItem* par = keyit->parent();
     int index_key = par->indexOf(keyit);
-    keyit->setKey(key);
+    keyit->setKey(dbv);
     QModelIndex key_index1 = createIndex(index_key, ExplorerKeyItem::eName, dbs);
     QModelIndex key_index2 = createIndex(index_key, ExplorerKeyItem::eCountColumns, dbs);
     updateItem(key_index1, key_index2);
@@ -731,7 +732,7 @@ ExplorerDatabaseItem* ExplorerTreeModel::findDatabaseItem(ExplorerServerItem* se
 }
 
 ExplorerKeyItem* ExplorerTreeModel::findKeyItem(IExplorerTreeItem* db_or_ns,
-                                                const core::NDbKValue& key) const {
+                                                const core::NKey& key) const {
   return static_cast<ExplorerKeyItem*>(
       common::qt::gui::findItemRecursive(db_or_ns, [key](common::qt::gui::TreeItem* item) -> bool {
         ExplorerKeyItem* key_item = dynamic_cast<ExplorerKeyItem*>(item);  // +
@@ -740,7 +741,7 @@ ExplorerKeyItem* ExplorerTreeModel::findKeyItem(IExplorerTreeItem* db_or_ns,
         }
 
         core::NDbKValue ckey = key_item->key();
-        return ckey.keyString() == key.keyString();
+        return ckey.keyString() == key.key();
       }));
 }
 

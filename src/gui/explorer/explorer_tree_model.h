@@ -186,8 +186,8 @@ class ExplorerTreeModel : public common::qt::gui::TreeModel {
               core::IDataBaseInfoSPtr db,
               const core::NDbKValue& dbv,
               const std::string& ns_separator);
-  void removeKey(core::IServer* server, core::IDataBaseInfoSPtr db, const core::NDbKValue& key);
-  void updateKey(core::IServer* server, core::IDataBaseInfoSPtr db, const core::NDbKValue& key);
+  void removeKey(core::IServer* server, core::IDataBaseInfoSPtr db, const core::NKey& key);
+  void updateKey(core::IServer* server, core::IDataBaseInfoSPtr db, const core::NDbKValue& dbv);
   void removeAllKeys(core::IServer* server, core::IDataBaseInfoSPtr db);
 
  private:
@@ -196,7 +196,7 @@ class ExplorerTreeModel : public common::qt::gui::TreeModel {
   ExplorerServerItem* findServerItem(core::IServer* server) const;
   ExplorerDatabaseItem* findDatabaseItem(ExplorerServerItem* server,
                                          core::IDataBaseInfoSPtr db) const;
-  ExplorerKeyItem* findKeyItem(IExplorerTreeItem* db_or_ns, const core::NDbKValue& key) const;
+  ExplorerKeyItem* findKeyItem(IExplorerTreeItem* db_or_ns, const core::NKey &key) const;
   ExplorerNSItem* findNSItem(IExplorerTreeItem* db_or_ns, const QString& name) const;
   ExplorerNSItem* findOrCreateNSItem(IExplorerTreeItem* db_or_ns, const core::KeyInfo& kinf);
 };

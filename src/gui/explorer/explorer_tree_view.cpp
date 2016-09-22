@@ -984,17 +984,18 @@ void ExplorerTreeView::finishExecuteCommand(const core::events_info::CommandResp
   CHECK(mod);
 
   std::string ns = serv->nsSeparator();
-  core::CommandKeySPtr key = res.cmd;
-  core::NDbKValue dbv = key->key();
-  if (key->type() == core::CommandKey::C_DELETE) {
-    mod->removeKey(serv, res.inf, dbv);
-  } else if (key->type() == core::CommandKey::C_CREATE) {
+  core::CommandKeySPtr ckey = res.cmd;
+  core::NDbKValue dbv = ckey->key();
+  core::NKey key = dbv.key();
+  if (ckey->type() == core::CommandKey::C_DELETE) {
+    mod->removeKey(serv, res.inf, key);
+  } else if (ckey->type() == core::CommandKey::C_CREATE) {
     mod->addKey(serv, res.inf, dbv, ns);
-  } else if (key->type() == core::CommandKey::C_CHANGE_TTL) {
-    core::CommandChangeTTL* cttl = static_cast<core::CommandChangeTTL*>(key.get());
+  } else if (ckey->type() == core::CommandKey::C_CHANGE_TTL) {
+    core::CommandChangeTTL* cttl = static_cast<core::CommandChangeTTL*>(ckey.get());
     core::NDbKValue ndbv = cttl->newKey();
     mod->updateKey(serv, res.inf, ndbv);
-  } else if (key->type() == core::CommandKey::C_LOAD) {
+  } else if (ckey->type() == core::CommandKey::C_LOAD) {
   } else {
     NOTREACHED();
   }
@@ -1007,8 +1008,7 @@ void ExplorerTreeView::removeKey(core::IDataBaseInfoSPtr db, core::NKey key) {
   ExplorerTreeModel* mod = qobject_cast<ExplorerTreeModel*>(model());
   CHECK(mod);
 
-  core::NDbKValue dbv(key, core::NValue());
-  mod->removeKey(serv, db, dbv);
+  mod->removeKey(serv, db, key);
 }
 
 void ExplorerTreeView::changeEvent(QEvent* e) {
