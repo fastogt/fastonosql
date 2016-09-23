@@ -44,6 +44,7 @@
 #include "core/redis/connection_settings.h"  // for ConnectionSettings
 #include "core/redis/database.h"             // for DataBaseInfo
 #include "core/redis/server_info.h"          // for ServerInfo, etc
+#include "core/redis/command_translator.h"
 
 #include "global/global.h"  // for FastoObjectCommandIPtr, etc
 
@@ -54,26 +55,10 @@
 #define REDIS_GET_DATABASES "CONFIG GET databases"
 #define REDIS_GET_PROPERTY_SERVER "CONFIG GET *"
 
-#define REDIS_GET_KEY_PATTERN_1ARGS_S "GET %s"
-#define REDIS_GET_KEY_LIST_PATTERN_1ARGS_S "LRANGE %s 0 -1"
-#define REDIS_GET_KEY_SET_PATTERN_1ARGS_S "SMEMBERS %s"
-#define REDIS_GET_KEY_ZSET_PATTERN_1ARGS_S "ZRANGE %s 0 -1"
-#define REDIS_GET_KEY_HASHM_PATTERN_1ARGS_S "HGETALL %s"
-
-#define REDIS_SET_KEY_PATTERN_2ARGS_SS "SET %s %s"
-#define REDIS_SET_KEY_LIST_PATTERN_2ARGS_SS "LPUSH %s %s"
-#define REDIS_SET_KEY_SET_PATTERN_2ARGS_SS "SADD %s %s"
-#define REDIS_SET_KEY_ZSET_PATTERN_2ARGS_SS "ZADD %s %s"
-#define REDIS_SET_KEY_HASHM_PATTERN_2ARGS_SS "HMSET %s %s"
-
 #define REDIS_GET_KEYS_PATTERN_3ARGS_ISI "SCAN %d MATCH %s COUNT %d"
 
 #define REDIS_SET_DEFAULT_DATABASE_PATTERN_1ARGS_S "SELECT %s"
 #define REDIS_FLUSHDB "FLUSHDB"
-
-#define REDIS_CHANGE_TTL_2ARGS_SI "EXPIRE %s %d"
-#define REDIS_PERSIST_KEY_1ARGS_S "PERSIST %s"
-#define REDIS_DELETE_KEY_PATTERN_1ARGS_S "DEL %s"
 
 namespace {
 
@@ -133,6 +118,10 @@ bool Driver::isInterrupted() const {
 
 void Driver::setInterrupted(bool interrupted) {
   return impl_->setInterrupted(interrupted);
+}
+
+translator_t Driver::translator() const {
+  return impl_->translator();
 }
 
 bool Driver::isConnected() const {
@@ -677,89 +666,6 @@ void Driver::handleServerPropertyChangeEvent(events::ChangeServerPropertyInfoReq
   notifyProgress(sender, 75);
   reply(sender, new events::ChangeServerPropertyInfoResponceEvent(this, res));
   notifyProgress(sender, 100);
-}
-
-common::Error Driver::commandDeleteImpl(CommandDeleteKey* command, std::string* cmdstring) const {
-  if (!command || !cmdstring) {
-    return common::make_error_value("Invalid input argument(s)", common::ErrorValue::E_ERROR);
-  }
-
-  NDbKValue key = command->key();
-  std::string key_str = key.keyString();
-  *cmdstring = common::MemSPrintf(REDIS_DELETE_KEY_PATTERN_1ARGS_S, key_str);
-  return common::Error();
-}
-
-common::Error Driver::commandLoadImpl(CommandLoadKey* command, std::string* cmdstring) const {
-  if (!command || !cmdstring) {
-    return common::make_error_value("Invalid input argument(s)", common::ErrorValue::E_ERROR);
-  }
-
-  std::string patternResult;
-  NDbKValue key = command->key();
-  std::string key_str = key.keyString();
-  if (key.type() == common::Value::TYPE_ARRAY) {
-    patternResult = common::MemSPrintf(REDIS_GET_KEY_LIST_PATTERN_1ARGS_S, key_str);
-  } else if (key.type() == common::Value::TYPE_SET) {
-    patternResult = common::MemSPrintf(REDIS_GET_KEY_SET_PATTERN_1ARGS_S, key_str);
-  } else if (key.type() == common::Value::TYPE_ZSET) {
-    patternResult = common::MemSPrintf(REDIS_GET_KEY_ZSET_PATTERN_1ARGS_S, key_str);
-  } else if (key.type() == common::Value::TYPE_HASH) {
-    patternResult = common::MemSPrintf(REDIS_GET_KEY_HASHM_PATTERN_1ARGS_S, key_str);
-  } else {
-    patternResult = common::MemSPrintf(REDIS_GET_KEY_PATTERN_1ARGS_S, key_str);
-  }
-
-  *cmdstring = patternResult;
-  return common::Error();
-}
-
-common::Error Driver::commandCreateImpl(CommandCreateKey* command, std::string* cmdstring) const {
-  if (!command || !cmdstring) {
-    return common::make_error_value("Invalid input argument(s)", common::ErrorValue::E_ERROR);
-  }
-
-  std::string patternResult;
-  NDbKValue key = command->key();
-  NValue val = command->value();
-  common::Value* rval = val.get();
-  std::string key_str = key.keyString();
-  std::string value_str = common::ConvertToString(rval, " ");
-  common::Value::Type t = key.type();
-  if (t == common::Value::TYPE_ARRAY) {
-    patternResult = common::MemSPrintf(REDIS_SET_KEY_LIST_PATTERN_2ARGS_SS, key_str, value_str);
-  } else if (t == common::Value::TYPE_SET) {
-    patternResult = common::MemSPrintf(REDIS_SET_KEY_SET_PATTERN_2ARGS_SS, key_str, value_str);
-  } else if (t == common::Value::TYPE_ZSET) {
-    patternResult = common::MemSPrintf(REDIS_SET_KEY_ZSET_PATTERN_2ARGS_SS, key_str, value_str);
-  } else if (t == common::Value::TYPE_HASH) {
-    patternResult = common::MemSPrintf(REDIS_SET_KEY_HASHM_PATTERN_2ARGS_SS, key_str, value_str);
-  } else {
-    patternResult = common::MemSPrintf(REDIS_SET_KEY_PATTERN_2ARGS_SS, key_str, value_str);
-  }
-
-  *cmdstring = patternResult;
-  return common::Error();
-}
-
-common::Error Driver::commandChangeTTLImpl(CommandChangeTTL* command,
-                                           std::string* cmdstring) const {
-  if (!command || !cmdstring) {
-    return common::make_error_value("Invalid input argument(s)", common::ErrorValue::E_ERROR);
-  }
-
-  std::string patternResult;
-  NDbKValue key = command->key();
-  ttl_t new_ttl = command->newTTL();
-  std::string key_str = key.keyString();
-  if (new_ttl == -1) {
-    patternResult = common::MemSPrintf(REDIS_PERSIST_KEY_1ARGS_S, key_str);
-  } else {
-    patternResult = common::MemSPrintf(REDIS_CHANGE_TTL_2ARGS_SI, key_str, new_ttl);
-  }
-
-  *cmdstring = patternResult;
-  return common::Error();
 }
 
 IServerInfoSPtr Driver::makeServerInfoFromString(const std::string& val) {

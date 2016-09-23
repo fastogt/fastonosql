@@ -64,6 +64,7 @@ extern "C" {
 #include "core/redis/connection_settings.h"  // for ConnectionSettings
 #include "core/redis/database.h"             // for DataBaseInfo
 #include "core/redis/sentinel_info.h"        // for DiscoverySentinelInfo, etc
+#include "core/redis/command_translator.h"
 
 #include "common/qt/logger.h"  // for LOG_MSG
 
@@ -804,7 +805,7 @@ common::Error discoverySentinelConnection(ConnectionSettings* settings,
 }
 
 DBConnection::DBConnection(CDBConnectionClient* client)
-    : base_class(redisCommands, client), isAuth_(false) {}
+    : base_class(redisCommands, client, new CommandTranslator), isAuth_(false) {}
 
 const char* DBConnection::versionApi() {
   return HIREDIS_VERSION;

@@ -213,17 +213,22 @@ common::Error IDriver::commandByType(CommandKeySPtr command, std::string* cmdstr
   CommandKey::cmdtype t = command->type();
 
   if (t == CommandKey::C_DELETE) {
-    CommandDeleteKey* delc = static_cast<CommandDeleteKey*>(command.get());
-    return commandDeleteImpl(delc, cmdstring);
+    NDbKValue key = command->key();
+    translator_t trans = translator();
+    return trans->deleteKeyCommand(key.key(), cmdstring);
   } else if (t == CommandKey::C_LOAD) {
-    CommandLoadKey* loadc = static_cast<CommandLoadKey*>(command.get());
-    return commandLoadImpl(loadc, cmdstring);
+    NDbKValue key = command->key();
+    translator_t trans = translator();
+    return trans->loadKeyCommand(key.key(), key.type(), cmdstring);
   } else if (t == CommandKey::C_CREATE) {
-    CommandCreateKey* createc = static_cast<CommandCreateKey*>(command.get());
-    return commandCreateImpl(createc, cmdstring);
+    NDbKValue key = command->key();
+    translator_t trans = translator();
+    return trans->createKeyCommand(key, cmdstring);
   } else if (t == CommandKey::C_CHANGE_TTL) {
-    CommandChangeTTL* changettl = static_cast<CommandChangeTTL*>(command.get());
-    return commandChangeTTLImpl(changettl, cmdstring);
+    CommandChangeTTL* cttl = dynamic_cast<CommandChangeTTL*>(command.get());
+    NDbKValue key = command->key();
+    translator_t trans = translator();
+    return trans->changeKeyTTLCommand(key.key(), cttl->newTTL(), cmdstring);
   } else {
     NOTREACHED();
     return common::make_error_value("Unknown command", common::ErrorValue::E_ERROR);

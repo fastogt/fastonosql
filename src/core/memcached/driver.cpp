@@ -46,11 +46,6 @@
 #define MEMCACHED_INFO_REQUEST "STATS"
 #define MEMCACHED_GET_KEYS_PATTERN_1ARGS_I "KEYS a z %d"
 
-#define MEMCACHED_DELETE_KEY_PATTERN_1ARGS_S "DELETE %s"
-#define MEMCACHED_GET_KEY_PATTERN_1ARGS_S "GET %s"
-#define MEMCACHED_SET_KEY_PATTERN_2ARGS_SS "SET %s 0 0 %s"
-#define MEMCACHED_CHANGE_TTL_2ARGS_SI "EXPIRE %s %d"
-
 namespace fastonosql {
 namespace core {
 namespace memcached {
@@ -72,6 +67,10 @@ bool Driver::isInterrupted() const {
 
 void Driver::setInterrupted(bool interrupted) {
   return impl_->setInterrupted(interrupted);
+}
+
+translator_t Driver::translator() const {
+  return impl_->translator();
 }
 
 bool Driver::isConnected() const {
@@ -187,61 +186,6 @@ done:
   reply(sender, new events::LoadDatabaseContentResponceEvent(this, res));
   notifyProgress(sender, 100);
 }
-
-// ============== commands =============//
-common::Error Driver::commandDeleteImpl(CommandDeleteKey* command, std::string* cmdstring) const {
-  if (!command || !cmdstring) {
-    return common::make_error_value("Invalid input argument(s)", common::ErrorValue::E_ERROR);
-  }
-
-  NDbKValue key = command->key();
-  std::string key_str = key.keyString();
-  *cmdstring = common::MemSPrintf(MEMCACHED_DELETE_KEY_PATTERN_1ARGS_S, key_str);
-  return common::Error();
-}
-
-common::Error Driver::commandLoadImpl(CommandLoadKey* command, std::string* cmdstring) const {
-  if (!command || !cmdstring) {
-    return common::make_error_value("Invalid input argument(s)", common::ErrorValue::E_ERROR);
-  }
-
-  NDbKValue key = command->key();
-  std::string key_str = key.keyString();
-  *cmdstring = common::MemSPrintf(MEMCACHED_GET_KEY_PATTERN_1ARGS_S, key_str);
-  return common::Error();
-}
-
-common::Error Driver::commandCreateImpl(CommandCreateKey* command, std::string* cmdstring) const {
-  if (!command || !cmdstring) {
-    return common::make_error_value("Invalid input argument(s)", common::ErrorValue::E_ERROR);
-  }
-
-  NDbKValue key = command->key();
-  NValue val = command->value();
-  common::Value* rval = val.get();
-  std::string key_str = key.keyString();
-  std::string value_str = common::ConvertToString(rval, " ");
-  *cmdstring = common::MemSPrintf(MEMCACHED_SET_KEY_PATTERN_2ARGS_SS, key_str, value_str);
-  return common::Error();
-}
-
-common::Error Driver::commandChangeTTLImpl(CommandChangeTTL* command,
-                                           std::string* cmdstring) const {
-  if (!command || !cmdstring) {
-    return common::make_error_value("Invalid input argument(s)", common::ErrorValue::E_ERROR);
-  }
-
-  std::string patternResult;
-  NDbKValue key = command->key();
-  ttl_t new_ttl = command->newTTL();
-  std::string key_str = key.keyString();
-  patternResult = common::MemSPrintf(MEMCACHED_CHANGE_TTL_2ARGS_SI, key_str, new_ttl);
-
-  *cmdstring = patternResult;
-  return common::Error();
-}
-
-// ============== commands =============//
 
 void Driver::handleProcessCommandLineArgs(events::ProcessConfigArgsRequestEvent* ev) {
   UNUSED(ev);

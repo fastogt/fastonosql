@@ -45,19 +45,6 @@
 
 #define SSDB_INFO_REQUEST "INFO"
 #define SSDB_GET_KEYS_PATTERN_1ARGS_I "KEYS a z %d"
-#define SSDB_DELETE_KEY_PATTERN_1ARGS_S "DEL %s"
-
-#define SSDB_GET_KEY_PATTERN_1ARGS_S "GET %s"
-#define SSDB_GET_KEY_LIST_PATTERN_1ARGS_S "LRANGE %s 0 -1"
-#define SSDB_GET_KEY_SET_PATTERN_1ARGS_S "SMEMBERS %s"
-#define SSDB_GET_KEY_ZSET_PATTERN_1ARGS_S "ZRANGE %s 0 -1"
-#define SSDB_GET_KEY_HASH_PATTERN_1ARGS_S "HGET %s"
-
-#define SSDB_SET_KEY_PATTERN_2ARGS_SS "SET %s %s"
-#define SSDB_SET_KEY_LIST_PATTERN_2ARGS_SS "LPUSH %s %s"
-#define SSDB_SET_KEY_SET_PATTERN_2ARGS_SS "SADD %s %s"
-#define SSDB_SET_KEY_ZSET_PATTERN_2ARGS_SS "ZADD %s %s"
-#define SSDB_SET_KEY_HASH_PATTERN_2ARGS_SS "HMSET %s %s"
 
 namespace fastonosql {
 namespace core {
@@ -82,6 +69,10 @@ void Driver::setInterrupted(bool interrupted) {
   return impl_->setInterrupted(interrupted);
 }
 
+translator_t Driver::translator() const {
+  return impl_->translator();
+}
+
 bool Driver::isConnected() const {
   return impl_->isConnected();
 }
@@ -89,84 +80,6 @@ bool Driver::isConnected() const {
 bool Driver::isAuthenticated() const {
   return impl_->isConnected();
 }
-
-// ============== commands =============//
-common::Error Driver::commandDeleteImpl(CommandDeleteKey* command, std::string* cmdstring) const {
-  if (!command || !cmdstring) {
-    return common::make_error_value("Invalid input argument(s)", common::ErrorValue::E_ERROR);
-  }
-
-  NDbKValue key = command->key();
-  std::string key_str = key.keyString();
-  *cmdstring = common::MemSPrintf(SSDB_DELETE_KEY_PATTERN_1ARGS_S, key_str);
-  return common::Error();
-}
-
-common::Error Driver::commandLoadImpl(CommandLoadKey* command, std::string* cmdstring) const {
-  if (!command || !cmdstring) {
-    return common::make_error_value("Invalid input argument(s)", common::ErrorValue::E_ERROR);
-  }
-
-  std::string patternResult;
-  NDbKValue key = command->key();
-  common::Value::Type t = key.type();
-  std::string key_str = key.keyString();
-  if (t == common::Value::TYPE_ARRAY) {
-    patternResult = common::MemSPrintf(SSDB_GET_KEY_LIST_PATTERN_1ARGS_S, key_str);
-  } else if (t == common::Value::TYPE_SET) {
-    patternResult = common::MemSPrintf(SSDB_GET_KEY_SET_PATTERN_1ARGS_S, key_str);
-  } else if (t == common::Value::TYPE_ZSET) {
-    patternResult = common::MemSPrintf(SSDB_GET_KEY_ZSET_PATTERN_1ARGS_S, key_str);
-  } else if (t == common::Value::TYPE_HASH) {
-    patternResult = common::MemSPrintf(SSDB_GET_KEY_HASH_PATTERN_1ARGS_S, key_str);
-  } else {
-    patternResult = common::MemSPrintf(SSDB_GET_KEY_PATTERN_1ARGS_S, key_str);
-  }
-
-  *cmdstring = patternResult;
-  return common::Error();
-}
-
-common::Error Driver::commandCreateImpl(CommandCreateKey* command, std::string* cmdstring) const {
-  if (!command || !cmdstring) {
-    return common::make_error_value("Invalid input argument(s)", common::ErrorValue::E_ERROR);
-  }
-
-  std::string patternResult;
-  NDbKValue key = command->key();
-  NValue val = command->value();
-  common::Value* rval = val.get();
-  std::string key_str = key.keyString();
-  std::string value_str = common::ConvertToString(rval, " ");
-  common::Value::Type t = key.type();
-  if (t == common::Value::TYPE_ARRAY) {
-    patternResult = common::MemSPrintf(SSDB_SET_KEY_LIST_PATTERN_2ARGS_SS, key_str, value_str);
-  } else if (t == common::Value::TYPE_SET) {
-    patternResult = common::MemSPrintf(SSDB_SET_KEY_SET_PATTERN_2ARGS_SS, key_str, value_str);
-  } else if (t == common::Value::TYPE_ZSET) {
-    patternResult = common::MemSPrintf(SSDB_SET_KEY_ZSET_PATTERN_2ARGS_SS, key_str, value_str);
-  } else if (t == common::Value::TYPE_HASH) {
-    patternResult = common::MemSPrintf(SSDB_SET_KEY_HASH_PATTERN_2ARGS_SS, key_str, value_str);
-  } else {
-    patternResult = common::MemSPrintf(SSDB_SET_KEY_PATTERN_2ARGS_SS, key_str, value_str);
-  }
-
-  *cmdstring = patternResult;
-  return common::Error();
-}
-
-common::Error Driver::commandChangeTTLImpl(CommandChangeTTL* command,
-                                           std::string* cmdstring) const {
-  if (!command || !cmdstring) {
-    return common::make_error_value("Invalid input argument(s)", common::ErrorValue::E_ERROR);
-  }
-
-  std::string errorMsg = common::MemSPrintf("Sorry, but now " PROJECT_NAME_TITLE
-                                            " not supported change ttl command for %s.",
-                                            common::ConvertToString(type()));
-  return common::make_error_value(errorMsg, common::ErrorValue::E_ERROR);
-}
-// ============== commands =============//
 
 common::net::HostAndPort Driver::host() const {
   Config conf = impl_->config();

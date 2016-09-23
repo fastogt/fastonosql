@@ -162,6 +162,7 @@ SET(HEADERS_CORE
   core/command_info.h
   core/command_holder.h
   core/command_handler.h
+  core/icommand_translator.h
   core/command_key.h
   core/db_key.h
   core/connection.h
@@ -193,6 +194,7 @@ SET(SOURCES_CORE
   core/command_holder.cpp
   core/command_handler.cpp
   core/command_key.cpp
+  core/icommand_translator.cpp
   core/db_key.cpp
   core/connection.cpp
   core/db_connection.cpp
@@ -268,6 +270,7 @@ IF(BUILD_WITH_REDIS)
     core/redis/config.h
     core/redis/database.h
     core/redis/command.h
+    core/redis/command_translator.h
     core/redis/server_info.h
     core/redis/connection_settings.h
     core/redis/db_connection.h
@@ -281,6 +284,7 @@ IF(BUILD_WITH_REDIS)
     core/redis/config.cpp
     core/redis/database.cpp
     core/redis/command.cpp
+    core/redis/command_translator.cpp
     core/redis/server_info.cpp
     core/redis/connection_settings.cpp
     core/redis/db_connection.cpp
@@ -318,6 +322,7 @@ IF(BUILD_WITH_MEMCACHED)
     core/memcached/config.h
     core/memcached/database.h
     core/memcached/command.h
+    core/memcached/command_translator.h
     core/memcached/server_info.h
     core/memcached/connection_settings.h
     core/memcached/db_connection.h
@@ -326,6 +331,7 @@ IF(BUILD_WITH_MEMCACHED)
     core/memcached/config.cpp
     core/memcached/database.cpp
     core/memcached/command.cpp
+    core/memcached/command_translator.cpp
     core/memcached/server_info.cpp
     core/memcached/connection_settings.cpp
     core/memcached/db_connection.cpp
@@ -356,6 +362,7 @@ IF(BUILD_WITH_SSDB)
     core/ssdb/config.h
     core/ssdb/database.h
     core/ssdb/command.h
+    core/ssdb/command_translator.h
     core/ssdb/server_info.h
     core/ssdb/connection_settings.h
     core/ssdb/db_connection.h
@@ -364,6 +371,7 @@ IF(BUILD_WITH_SSDB)
     core/ssdb/config.cpp
     core/ssdb/database.cpp
     core/ssdb/command.cpp
+    core/ssdb/command_translator.cpp
     core/ssdb/server_info.cpp
     core/ssdb/connection_settings.cpp
     core/ssdb/db_connection.cpp
@@ -394,6 +402,7 @@ IF(BUILD_WITH_LEVELDB)
     core/leveldb/config.h
     core/leveldb/database.h
     core/leveldb/command.h
+    core/leveldb/command_translator.h
     core/leveldb/server_info.h
     core/leveldb/connection_settings.h
     core/leveldb/db_connection.h
@@ -402,6 +411,7 @@ IF(BUILD_WITH_LEVELDB)
     core/leveldb/config.cpp
     core/leveldb/database.cpp
     core/leveldb/command.cpp
+    core/leveldb/command_translator.cpp
     core/leveldb/server_info.cpp
     core/leveldb/connection_settings.cpp
     core/leveldb/db_connection.cpp
@@ -432,6 +442,7 @@ IF(BUILD_WITH_ROCKSDB)
     core/rocksdb/config.h
     core/rocksdb/database.h
     core/rocksdb/command.h
+    core/rocksdb/command_translator.h
     core/rocksdb/server_info.h
     core/rocksdb/connection_settings.h
     core/rocksdb/db_connection.h
@@ -440,6 +451,7 @@ IF(BUILD_WITH_ROCKSDB)
     core/rocksdb/config.cpp
     core/rocksdb/database.cpp
     core/rocksdb/command.cpp
+    core/rocksdb/command_translator.cpp
     core/rocksdb/server_info.cpp
     core/rocksdb/connection_settings.cpp
     core/rocksdb/db_connection.cpp
@@ -470,6 +482,7 @@ IF(BUILD_WITH_UNQLITE)
     core/unqlite/config.h
     core/unqlite/database.h
     core/unqlite/command.h
+    core/unqlite/command_translator.h
     core/unqlite/server_info.h
     core/unqlite/connection_settings.h
     core/unqlite/db_connection.h
@@ -478,6 +491,7 @@ IF(BUILD_WITH_UNQLITE)
     core/unqlite/config.cpp
     core/unqlite/database.cpp
     core/unqlite/command.cpp
+    core/unqlite/command_translator.cpp
     core/unqlite/server_info.cpp
     core/unqlite/connection_settings.cpp
     core/unqlite/db_connection.cpp
@@ -508,6 +522,7 @@ IF(BUILD_WITH_LMDB)
     core/lmdb/config.h
     core/lmdb/database.h
     core/lmdb/command.h
+    core/lmdb/command_translator.h
     core/lmdb/server_info.h
     core/lmdb/connection_settings.h
     core/lmdb/db_connection.h
@@ -516,6 +531,7 @@ IF(BUILD_WITH_LMDB)
     core/lmdb/config.cpp
     core/lmdb/database.cpp
     core/lmdb/command.cpp
+    core/lmdb/command_translator.cpp
     core/lmdb/server_info.cpp
     core/lmdb/connection_settings.cpp
     core/lmdb/db_connection.cpp

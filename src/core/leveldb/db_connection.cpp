@@ -34,6 +34,7 @@
 #include "core/leveldb/config.h"               // for Config
 #include "core/leveldb/connection_settings.h"  // for ConnectionSettings
 #include "core/leveldb/database.h"
+#include "core/leveldb/command_translator.h"
 
 #include "global/global.h"  // for FastoObject, etc
 
@@ -115,7 +116,8 @@ common::Error testConnection(ConnectionSettings* settings) {
   return common::Error();
 }
 
-DBConnection::DBConnection(CDBConnectionClient* client) : base_class(leveldbCommands, client) {}
+DBConnection::DBConnection(CDBConnectionClient* client)
+    : base_class(leveldbCommands, client, new CommandTranslator) {}
 
 const char* DBConnection::versionApi() {
   static std::string leveldb_version =

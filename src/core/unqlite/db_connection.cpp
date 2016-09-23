@@ -35,6 +35,7 @@ extern "C" {
 #include "core/unqlite/config.h"               // for Config
 #include "core/unqlite/connection_settings.h"  // for ConnectionSettings
 #include "core/unqlite/database.h"
+#include "core/unqlite/command_translator.h"
 
 #include "global/global.h"  // for FastoObject, etc
 
@@ -186,7 +187,7 @@ common::Error testConnection(ConnectionSettings* settings) {
   return common::Error();
 }
 
-DBConnection::DBConnection(CDBConnectionClient* client) : base_class(unqliteCommands, client) {}
+DBConnection::DBConnection(CDBConnectionClient* client) : base_class(unqliteCommands, client, new CommandTranslator) {}
 
 common::Error DBConnection::info(const char* args, ServerInfo::Stats* statsout) {
   UNUSED(args);

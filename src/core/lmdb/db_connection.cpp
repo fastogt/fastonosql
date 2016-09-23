@@ -35,6 +35,7 @@
 #include "core/lmdb/config.h"               // for Config
 #include "core/lmdb/connection_settings.h"  // for ConnectionSettings
 #include "core/lmdb/database.h"
+#include "core/lmdb/command_translator.h"
 
 #include "global/global.h"  // for FastoObject, etc
 
@@ -152,7 +153,7 @@ common::Error testConnection(ConnectionSettings* settings) {
   return common::Error();
 }
 
-DBConnection::DBConnection(CDBConnectionClient* client) : base_class(lmdbCommands, client) {}
+DBConnection::DBConnection(CDBConnectionClient* client) : base_class(lmdbCommands, client, new CommandTranslator) {}
 
 const char* DBConnection::versionApi() {
   return STRINGIZE(MDB_VERSION_MAJOR) "." STRINGIZE(MDB_VERSION_MINOR) "." STRINGIZE(

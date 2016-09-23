@@ -37,6 +37,7 @@
 #include "core/memcached/config.h"               // for Config
 #include "core/memcached/connection_settings.h"  // for ConnectionSettings
 #include "core/memcached/database.h"
+#include "core/memcached/command_translator.h"
 
 #include "global/global.h"  // for FastoObject, etc
 
@@ -210,7 +211,7 @@ common::Error testConnection(ConnectionSettings* settings) {
   return common::Error();
 }
 
-DBConnection::DBConnection(CDBConnectionClient* client) : base_class(memcachedCommands, client) {}
+DBConnection::DBConnection(CDBConnectionClient* client) : base_class(memcachedCommands, client, new CommandTranslator) {}
 
 const char* DBConnection::versionApi() {
   return memcached_lib_version();

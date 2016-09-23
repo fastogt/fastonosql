@@ -29,6 +29,7 @@
 #include "core/connection_types.h"  // for connectionTypes
 #include "core/cdb_connection_client.h"
 #include "core/types.h"  // for IDataBaseInfo (ptr only), etc
+#include "core/icommand_translator.h"
 
 #include "core/events/events.h"
 
@@ -60,6 +61,7 @@ class IDriver : public QObject,
 
   IServerInfoSPtr serverInfo() const;
   IDataBaseInfoSPtr currentDatabaseInfo() const;
+  virtual translator_t translator() const = 0;
 
   void start();
   void stop();
@@ -170,16 +172,6 @@ class IDriver : public QObject,
   virtual common::Error currentDataBaseInfo(IDataBaseInfo** info) = 0;
   virtual void initImpl() = 0;
   virtual void clearImpl() = 0;
-
-  // command impl methods
-  virtual common::Error commandDeleteImpl(CommandDeleteKey* command,
-                                          std::string* cmdstring) const WARN_UNUSED_RESULT = 0;
-  virtual common::Error commandLoadImpl(CommandLoadKey* command,
-                                        std::string* cmdstring) const WARN_UNUSED_RESULT = 0;
-  virtual common::Error commandCreateImpl(CommandCreateKey* command,
-                                          std::string* cmdstring) const WARN_UNUSED_RESULT = 0;
-  virtual common::Error commandChangeTTLImpl(CommandChangeTTL* command,
-                                             std::string* cmdstring) const WARN_UNUSED_RESULT = 0;
 
  private:
   IServerInfoSPtr server_info_;

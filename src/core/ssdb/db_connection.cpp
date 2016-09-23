@@ -31,6 +31,7 @@
 #include "core/ssdb/config.h"               // for Config
 #include "core/ssdb/connection_settings.h"  // for ConnectionSettings
 #include "core/ssdb/database.h"
+#include "core/ssdb/command_translator.h"
 
 #include "global/global.h"  // for FastoObject, etc
 
@@ -106,7 +107,7 @@ common::Error testConnection(ConnectionSettings* settings) {
   return common::Error();
 }
 
-DBConnection::DBConnection(CDBConnectionClient* client) : base_class(ssdbCommands, client) {}
+DBConnection::DBConnection(CDBConnectionClient* client) : base_class(ssdbCommands, client, new CommandTranslator) {}
 
 const char* DBConnection::versionApi() {
   return "1.9.3";

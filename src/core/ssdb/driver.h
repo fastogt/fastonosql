@@ -44,6 +44,8 @@ class Driver : public IDriverRemote {
   virtual bool isInterrupted() const override;
   virtual void setInterrupted(bool interrupted) override;
 
+  virtual translator_t translator() const;
+
   virtual bool isConnected() const;
   virtual bool isAuthenticated() const;
   virtual common::net::HostAndPort host() const;
@@ -69,15 +71,6 @@ class Driver : public IDriverRemote {
   virtual common::Error currentDataBaseInfo(IDataBaseInfo** info);
 
   virtual void handleProcessCommandLineArgs(events::ProcessConfigArgsRequestEvent* ev);
-
-  virtual common::Error commandDeleteImpl(CommandDeleteKey* command,
-                                          std::string* cmdstring) const WARN_UNUSED_RESULT;
-  virtual common::Error commandLoadImpl(CommandLoadKey* command,
-                                        std::string* cmdstring) const WARN_UNUSED_RESULT;
-  virtual common::Error commandCreateImpl(CommandCreateKey* command,
-                                          std::string* cmdstring) const WARN_UNUSED_RESULT;
-  virtual common::Error commandChangeTTLImpl(CommandChangeTTL* command,
-                                             std::string* cmdstring) const WARN_UNUSED_RESULT;
 
   virtual void handleLoadDatabaseContentEvent(events::LoadDatabaseContentRequestEvent* ev);
   virtual void handleClearDatabaseEvent(events::ClearDatabaseRequestEvent* ev);

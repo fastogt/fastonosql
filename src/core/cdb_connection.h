@@ -21,28 +21,34 @@
 #include "core/db_connection.h"
 #include "core/command_handler.h"
 #include "core/cdb_connection_client.h"
+#include "core/icommand_translator.h"
 
 namespace fastonosql {
 namespace core {
+
+class ICommandTranslator;
 
 template <typename NConnection, typename Config, connectionTypes ContType>
 class CDBConnection : public DBConnection<NConnection, Config, ContType>, public CommandHandler {
  public:
   typedef DBConnection<NConnection, Config, ContType> db_base_class;
 
-  CDBConnection(const commands_t& commands, CDBConnectionClient* client)
-      : db_base_class(), CommandHandler(commands), client_(client) {}
+  CDBConnection(const commands_t& commands, CDBConnectionClient* client, ICommandTranslator* translator)
+      : db_base_class(), CommandHandler(commands), client_(client), translator_(translator) {}
   virtual ~CDBConnection() {}
 
   common::Error select(const std::string& name, IDataBaseInfo** info) WARN_UNUSED_RESULT;
   common::Error del(const std::vector<std::string>& keys,
                     std::vector<std::string>* deleted_keys) WARN_UNUSED_RESULT;
 
+  translator_t translator() const { return translator_; }
+
  private:
   virtual common::Error selectImpl(const std::string& name, IDataBaseInfo** info) = 0;
   virtual common::Error delImpl(const std::vector<std::string>& keys,
                                 std::vector<std::string>* deleted_keys) = 0;
   CDBConnectionClient* client_;
+  translator_t translator_;
 };
 
 template <typename NConnection, typename Config, connectionTypes ContType>
