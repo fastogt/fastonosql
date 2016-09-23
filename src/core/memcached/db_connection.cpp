@@ -740,9 +740,9 @@ common::Error decr(CommandHandler* handler, int argc, const char** argv, FastoOb
 
 common::Error set(CommandHandler* handler, int argc, const char** argv, FastoObject* out) {
   keys_value_t keys_add;
-  for (int i = 0; i < argc; ++i) {
+  for (int i = 0; i < argc; i += 4) {
     NKey key(argv[i]);
-    common::StringValue* string_val = common::Value::createStringValue(argv[i + 1]);
+    common::StringValue* string_val = common::Value::createStringValue(argv[i + 3]);
     key_value_t kv(key, common::make_value(string_val));
     keys_add.push_back(kv);
   }
