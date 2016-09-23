@@ -25,9 +25,9 @@ namespace core {
 
 class CDBConnectionClient {
  public:
-  typedef std::vector<std::string> keys_t;
   virtual void currentDataBaseChanged(IDataBaseInfo* info) = 0;
   virtual void keysRemoved(const keys_t& keys) = 0;
+  virtual void keysAdded(const keys_value_t& keys) = 0;
 };
 }  // namespace core
 }  // namespace fastonosql

@@ -82,11 +82,11 @@ OutputWidget::OutputWidget(core::IServerSPtr server, QWidget* parent)
   CHECK(server_);
 
   commonModel_ = new FastoCommonModel(this);
-  VERIFY(connect(commonModel_, &FastoCommonModel::changedValue, this, &OutputWidget::executeCommand,
+  VERIFY(connect(commonModel_, &FastoCommonModel::changedValue, this, &OutputWidget::createKey,
                  Qt::DirectConnection));
-  VERIFY(connect(server_.get(), &core::IServer::startedExecuteCommand, this,
+  VERIFY(connect(server_.get(), &core::IServer::startedExecute, this,
                  &OutputWidget::startExecuteCommand, Qt::DirectConnection));
-  VERIFY(connect(server_.get(), &core::IServer::finishedExecuteCommand, this,
+  VERIFY(connect(server_.get(), &core::IServer::finishedExecute, this,
                  &OutputWidget::finishExecuteCommand, Qt::DirectConnection));
 
   VERIFY(connect(server_.get(), &core::IServer::rootCreated, this, &OutputWidget::rootCreate,
@@ -152,11 +152,11 @@ void OutputWidget::rootCompleate(const core::events_info::CommandRootCompleatedI
   updateTimeLabel(res);
 }
 
-void OutputWidget::startExecuteCommand(const core::events_info::CommandRequest& req) {
+void OutputWidget::startExecuteCommand(const core::events_info::ExecuteInfoRequest &req) {
   UNUSED(req);
 }
 
-void OutputWidget::finishExecuteCommand(const core::events_info::CommandResponce& res) {
+void OutputWidget::finishExecuteCommand(const core::events_info::ExecuteInfoResponce &res) {
   common::Error er = res.errorInfo();
   if (er && er->isError()) {
     return;
@@ -168,11 +168,11 @@ void OutputWidget::finishExecuteCommand(const core::events_info::CommandResponce
     return;
   }
 
-  core::CommandKeySPtr key = res.cmd;
+  /*core::CommandKeySPtr key = res.cmd;
   if (key->type() == core::CommandKey::C_CREATE) {
     core::NDbKValue dbv = key->key();
     commonModel_->changeValue(dbv);
-  }
+  }*/
 }
 
 void OutputWidget::addChild(FastoObjectIPtr child) {
@@ -253,10 +253,17 @@ void OutputWidget::itemUpdate(FastoObject* item, common::ValueSPtr newValue) {
   commonModel_->updateItem(index.parent(), index);
 }
 
-void OutputWidget::executeCommand(core::CommandKeySPtr cmd) {
+void OutputWidget::createKey(const core::NDbKValue& dbv) {
   if (server_) {
-    core::events_info::CommandRequest req(this, server_->currentDatabaseInfo(), cmd);
-    server_->executeCommand(req);
+    core::translator_t tran = server_->translator();
+    std::string cmd_text;
+    common::Error err = tran->createKeyCommand(dbv, &cmd_text);
+    if (err && err->isError()) {
+      return;
+    }
+
+    core::events_info::ExecuteInfoRequest req(this, cmd_text);
+    server_->execute(req);
   }
 }
 

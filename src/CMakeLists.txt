@@ -163,7 +163,6 @@ SET(HEADERS_CORE
   core/command_holder.h
   core/command_handler.h
   core/icommand_translator.h
-  core/command_key.h
   core/db_key.h
   core/connection.h
   core/db_connection.h
@@ -193,7 +192,6 @@ SET(SOURCES_CORE
   core/command_info.cpp
   core/command_holder.cpp
   core/command_handler.cpp
-  core/command_key.cpp
   core/icommand_translator.cpp
   core/db_key.cpp
   core/connection.cpp

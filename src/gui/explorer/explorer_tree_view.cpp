@@ -39,7 +39,6 @@
 #include "common/qt/utils_qt.h"        // for item
 #include "common/value.h"              // for ErrorValue
 
-#include "core/command_key.h"         // for CommandKey, CommandKeySPtr, etc
 #include "core/connection_types.h"    // for connectionTypes::REDIS
 #include "core/db_key.h"              // for NDbKValue
 #include "core/events/events_info.h"  // for CommandResponce, etc
@@ -967,38 +966,12 @@ void ExplorerTreeView::finishClearDatabase(const core::events_info::ClearDatabas
   mod->removeAllKeys(serv, res.inf);
 }
 
-void ExplorerTreeView::startExecuteCommand(const core::events_info::CommandRequest& req) {
+void ExplorerTreeView::startExecuteCommand(const core::events_info::ExecuteInfoRequest& req) {
   UNUSED(req);
 }
 
-void ExplorerTreeView::finishExecuteCommand(const core::events_info::CommandResponce& res) {
-  common::Error er = res.errorInfo();
-  if (er && er->isError()) {
-    return;
-  }
-
-  core::IServer* serv = qobject_cast<core::IServer*>(sender());
-  CHECK(serv);
-
-  ExplorerTreeModel* mod = qobject_cast<ExplorerTreeModel*>(model());
-  CHECK(mod);
-
-  std::string ns = serv->nsSeparator();
-  core::CommandKeySPtr ckey = res.cmd;
-  core::NDbKValue dbv = ckey->key();
-  core::NKey key = dbv.key();
-  if (ckey->type() == core::CommandKey::C_DELETE) {
-    mod->removeKey(serv, res.inf, key);
-  } else if (ckey->type() == core::CommandKey::C_CREATE) {
-    mod->addKey(serv, res.inf, dbv, ns);
-  } else if (ckey->type() == core::CommandKey::C_CHANGE_TTL) {
-    core::CommandChangeTTL* cttl = static_cast<core::CommandChangeTTL*>(ckey.get());
-    core::NDbKValue ndbv = cttl->newKey();
-    mod->updateKey(serv, res.inf, ndbv);
-  } else if (ckey->type() == core::CommandKey::C_LOAD) {
-  } else {
-    NOTREACHED();
-  }
+void ExplorerTreeView::finishExecuteCommand(const core::events_info::ExecuteInfoResponce& res) {
+  UNUSED(res);
 }
 
 void ExplorerTreeView::removeKey(core::IDataBaseInfoSPtr db, core::NKey key) {
@@ -1009,6 +982,17 @@ void ExplorerTreeView::removeKey(core::IDataBaseInfoSPtr db, core::NKey key) {
   CHECK(mod);
 
   mod->removeKey(serv, db, key);
+}
+
+void ExplorerTreeView::addKey(core::IDataBaseInfoSPtr db, core::NDbKValue key) {
+  core::IServer* serv = qobject_cast<core::IServer*>(sender());
+  CHECK(serv);
+
+  ExplorerTreeModel* mod = qobject_cast<ExplorerTreeModel*>(model());
+  CHECK(mod);
+
+  std::string ns = serv->nsSeparator();
+  mod->addKey(serv, db, key, ns);
 }
 
 void ExplorerTreeView::changeEvent(QEvent* e) {
@@ -1048,12 +1032,14 @@ void ExplorerTreeView::syncWithServer(core::IServer* server) {
                  &ExplorerTreeView::startClearDatabase));
   VERIFY(connect(server, &core::IServer::finishedClearDatabase, this,
                  &ExplorerTreeView::finishClearDatabase));
-  VERIFY(connect(server, &core::IServer::startedExecuteCommand, this,
+  VERIFY(connect(server, &core::IServer::startedExecute, this,
                  &ExplorerTreeView::startExecuteCommand));
-  VERIFY(connect(server, &core::IServer::finishedExecuteCommand, this,
+  VERIFY(connect(server, &core::IServer::finishedExecute, this,
                  &ExplorerTreeView::finishExecuteCommand));
 
   VERIFY(connect(server, &core::IServer::removedKey, this, &ExplorerTreeView::removeKey,
+                 Qt::DirectConnection));
+  VERIFY(connect(server, &core::IServer::addedKey, this, &ExplorerTreeView::addKey,
                  Qt::DirectConnection));
 }
 
@@ -1074,12 +1060,13 @@ void ExplorerTreeView::unsyncWithServer(core::IServer* server) {
                     &ExplorerTreeView::startLoadDatabaseContent));
   VERIFY(disconnect(server, &core::IServer::finishedLoadDatabaseContent, this,
                     &ExplorerTreeView::finishLoadDatabaseContent));
-  VERIFY(disconnect(server, &core::IServer::startedExecuteCommand, this,
+  VERIFY(disconnect(server, &core::IServer::startedExecute, this,
                     &ExplorerTreeView::startExecuteCommand));
-  VERIFY(disconnect(server, &core::IServer::finishedExecuteCommand, this,
+  VERIFY(disconnect(server, &core::IServer::finishedExecute, this,
                     &ExplorerTreeView::finishExecuteCommand));
 
   VERIFY(disconnect(server, &core::IServer::removedKey, this, &ExplorerTreeView::removeKey));
+  VERIFY(disconnect(server, &core::IServer::addedKey, this, &ExplorerTreeView::addKey));
 }
 
 void ExplorerTreeView::retranslateUi() {

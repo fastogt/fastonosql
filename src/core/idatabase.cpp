@@ -69,10 +69,12 @@ IDataBaseInfoSPtr IDatabase::info() const {
   return info_;
 }
 
-void IDatabase::executeCommand(const events_info::CommandRequest& req) {
-  DCHECK_EQ(req.inf, info_);
+translator_t IDatabase::translator() const {
+  return server_->translator();
+}
 
-  server_->executeCommand(req);
+void IDatabase::execute(const events_info::ExecuteInfoRequest& req) {
+  server_->execute(req);
 }
 
 void IDatabase::removeAllKeys(const events_info::ClearDatabaseRequest& req) {

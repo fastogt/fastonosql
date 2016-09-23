@@ -25,8 +25,8 @@
 
 #include <QDialog>
 
-#include "core/command_key.h"  // for CommandKeySPtr
 #include "core/core_fwd.h"     // for IDatabaseSPtr
+#include "core/types.h"
 
 class QEvent;
 class QLabel;     // lines 30-30
@@ -38,17 +38,18 @@ class QWidget;
 namespace fastonosql {
 namespace core {
 namespace events_info {
-struct CommandRequest;
+struct ExecuteInfoRequest;
 }
 }
 }
 namespace fastonosql {
 namespace core {
 namespace events_info {
-struct CommandResponce;
+struct ExecuteInfoResponce;
 }
 }
 }
+
 namespace fastonosql {
 namespace core {
 namespace events_info {
@@ -95,10 +96,10 @@ class ViewKeysDialog : public QDialog {
   void startLoadDatabaseContent(const core::events_info::LoadDatabaseContentRequest& req);
   void finishLoadDatabaseContent(const core::events_info::LoadDatabaseContentResponce& res);
 
-  void startExecuteCommand(const core::events_info::CommandRequest& req);
-  void finishExecuteCommand(const core::events_info::CommandResponce& res);
+  void startExecute(const core::events_info::ExecuteInfoRequest& req);
+  void finishExecute(const core::events_info::ExecuteInfoResponce& res);
 
-  void executeCommand(core::CommandKeySPtr cmd);
+  void changeTTL(const core::NDbKValue& value, core::ttl_t ttl);
 
   void searchLineChanged(const QString& text);
   void leftPageClicked();

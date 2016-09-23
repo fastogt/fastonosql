@@ -116,8 +116,7 @@ bool KeysTableModel::setData(const QModelIndex& index, const QVariant& value, in
       int newValue = value.toInt(&isOk);
       if (isOk && newValue != node->ttl()) {
         core::NDbKValue dbv = node->dbv();
-        core::CommandKeySPtr com(new core::CommandChangeTTL(dbv, newValue));
-        emit changedValue(com);
+        emit changedTTL(dbv, newValue);
       }
     }
   }

@@ -45,6 +45,7 @@ IServer::IServer(IDriver* drv) : drv_(drv) {
   VERIFY(
       QObject::connect(drv_, &IDriver::serverInfoSnapShoot, this, &IServer::serverInfoSnapShoot));
   VERIFY(QObject::connect(drv_, &IDriver::removedKey, this, &IServer::removedKey));
+  VERIFY(QObject::connect(drv_, &IDriver::addedKey, this, &IServer::addedKey));
   drv_->start();
 }
 
@@ -68,6 +69,10 @@ bool IServer::isAuthenticated() const {
 
 bool IServer::isCanRemote() const {
   return isRemoteType(type());
+}
+
+translator_t IServer::translator() const {
+  return drv_->translator();
 }
 
 connectionTypes IServer::type() const {
@@ -160,12 +165,6 @@ void IServer::clearDB(const events_info::ClearDatabaseRequest& req) {
 void IServer::execute(const events_info::ExecuteInfoRequest& req) {
   emit startedExecute(req);
   QEvent* ev = new events::ExecuteRequestEvent(this, req);
-  notify(ev);
-}
-
-void IServer::executeCommand(const events_info::CommandRequest& req) {
-  emit startedExecuteCommand(req);
-  QEvent* ev = new events::CommandRequestEvent(this, req);
   notify(ev);
 }
 
@@ -320,9 +319,6 @@ void IServer::customEvent(QEvent* event) {
   } else if (type == static_cast<QEvent::Type>(events::ExecuteResponceEvent::EventType)) {
     events::ExecuteResponceEvent* ev = static_cast<events::ExecuteResponceEvent*>(event);
     handleExecuteResponceEvent(ev);
-  } else if (type == static_cast<QEvent::Type>(events::CommandResponceEvent::EventType)) {
-    events::CommandResponceEvent* ev = static_cast<events::CommandResponceEvent*>(event);
-    handleCommandResponceEvent(ev);
   } else if (type == static_cast<QEvent::Type>(events::DiscoveryInfoResponceEvent::EventType)) {
     events::DiscoveryInfoResponceEvent* ev =
         static_cast<events::DiscoveryInfoResponceEvent*>(event);
@@ -558,15 +554,6 @@ void IServer::handleSetDefaultDatabaseEvent(events::SetDefaultDatabaseResponceEv
   }
 
   emit finishedSetDefaultDatabase(v);
-}
-
-void IServer::handleCommandResponceEvent(events::CommandResponceEvent* ev) {
-  auto v = ev->value();
-  common::Error er(v.errorInfo());
-  if (er && er->isError()) {
-    LOG_ERROR(er, true);
-  }
-  emit finishedExecuteCommand(v);
 }
 
 void IServer::processConfigArgs(const events_info::ProcessConfigArgsInfoRequest& req) {

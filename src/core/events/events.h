@@ -102,9 +102,6 @@ typedef common::qt::Event<events_info::SetDefaultDatabaseRequest, QEvent::User +
 typedef common::qt::Event<events_info::SetDefaultDatabaseResponce, QEvent::User + 36>
     SetDefaultDatabaseResponceEvent;
 
-typedef common::qt::Event<events_info::CommandRequest, QEvent::User + 37> CommandRequestEvent;
-typedef common::qt::Event<events_info::CommandResponce, QEvent::User + 38> CommandResponceEvent;
-
 typedef common::qt::Event<events_info::DiscoveryInfoRequest, QEvent::User + 39>
     DiscoveryInfoRequestEvent;
 typedef common::qt::Event<events_info::DiscoveryInfoResponce, QEvent::User + 40>

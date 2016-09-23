@@ -159,6 +159,7 @@ IDriver::IDriver(IConnectionSettingsBaseSPtr settings)
   qRegisterMetaType<common::ValueSPtr>("common::ValueSPtr");
   qRegisterMetaType<fastonosql::FastoObjectIPtr>("FastoObjectIPtr");
   qRegisterMetaType<core::NKey>("core::NKey");
+  qRegisterMetaType<core::NDbKValue>("core::NDbKValue");
   qRegisterMetaType<core::IDataBaseInfoSPtr>("core::IDataBaseInfoSPtr");
 }
 
@@ -203,36 +204,6 @@ void IDriver::start() {
 void IDriver::stop() {
   thread_->quit();
   thread_->wait();
-}
-
-common::Error IDriver::commandByType(CommandKeySPtr command, std::string* cmdstring) const {
-  if (!command || !cmdstring) {
-    return common::make_error_value("Invalid input argument(s)", common::ErrorValue::E_ERROR);
-  }
-
-  CommandKey::cmdtype t = command->type();
-
-  if (t == CommandKey::C_DELETE) {
-    NDbKValue key = command->key();
-    translator_t trans = translator();
-    return trans->deleteKeyCommand(key.key(), cmdstring);
-  } else if (t == CommandKey::C_LOAD) {
-    NDbKValue key = command->key();
-    translator_t trans = translator();
-    return trans->loadKeyCommand(key.key(), key.type(), cmdstring);
-  } else if (t == CommandKey::C_CREATE) {
-    NDbKValue key = command->key();
-    translator_t trans = translator();
-    return trans->createKeyCommand(key, cmdstring);
-  } else if (t == CommandKey::C_CHANGE_TTL) {
-    CommandChangeTTL* cttl = dynamic_cast<CommandChangeTTL*>(command.get());
-    NDbKValue key = command->key();
-    translator_t trans = translator();
-    return trans->changeKeyTTLCommand(key.key(), cttl->newTTL(), cmdstring);
-  } else {
-    NOTREACHED();
-    return common::make_error_value("Unknown command", common::ErrorValue::E_ERROR);
-  }
 }
 
 void IDriver::interrupt() {
@@ -329,9 +300,6 @@ void IDriver::customEvent(QEvent* event) {
     events::SetDefaultDatabaseRequestEvent* ev =
         static_cast<events::SetDefaultDatabaseRequestEvent*>(event);
     handleSetDefaultDatabaseEvent(ev);  // ni
-  } else if (type == static_cast<QEvent::Type>(events::CommandRequestEvent::EventType)) {
-    events::CommandRequestEvent* ev = static_cast<events::CommandRequestEvent*>(event);
-    handleCommandRequestEvent(ev);
   } else if (type == static_cast<QEvent::Type>(events::DiscoveryInfoRequestEvent::EventType)) {
     events::DiscoveryInfoRequestEvent* ev = static_cast<events::DiscoveryInfoRequestEvent*>(event);
     handleDiscoveryInfoRequestEvent(ev);  //
@@ -459,31 +427,6 @@ void IDriver::handleExecuteEvent(events::ExecuteRequestEvent* ev) {
   }
 
   reply(sender, new events::ExecuteResponceEvent(this, res));
-  notifyProgress(sender, 100);
-}
-
-void IDriver::handleCommandRequestEvent(events::CommandRequestEvent* ev) {
-  QObject* sender = ev->sender();
-  notifyProgress(sender, 0);
-  events::CommandResponceEvent::value_type res(ev->value());
-  std::string cmdtext;
-  common::Error er = commandByType(res.cmd, &cmdtext);
-  if (er && er->isError()) {
-    res.setErrorInfo(er);
-    reply(sender, new events::CommandResponceEvent(this, res));
-    notifyProgress(sender, 100);
-    return;
-  }
-
-  RootLocker lock = make_locker(sender, cmdtext);
-  FastoObjectIPtr obj = lock.root();
-  FastoObjectCommandIPtr cmd = createCommand(obj.get(), cmdtext, common::Value::C_INNER);  //
-  notifyProgress(sender, 50);
-  er = execute(cmd);
-  if (er && er->isError()) {
-    res.setErrorInfo(er);
-  }
-  reply(sender, new events::CommandResponceEvent(this, res));
   notifyProgress(sender, 100);
 }
 
@@ -727,9 +670,15 @@ void IDriver::currentDataBaseChanged(IDataBaseInfo* info) {
   current_database_info_.reset(info->Clone());
 }
 
-void IDriver::keysRemoved(const std::vector<std::string>& keys) {
+void IDriver::keysRemoved(const keys_t& keys) {
   for (size_t i = 0; i < keys.size(); ++i) {
-    emit removedKey(current_database_info_, NKey(keys[i]));
+    emit removedKey(current_database_info_, keys[i]);
+  }
+}
+
+void IDriver::keysAdded(const keys_value_t& keys) {
+  for (size_t i = 0; i < keys.size(); ++i) {
+    emit addedKey(current_database_info_, keys[i]);
   }
 }
 

@@ -20,8 +20,8 @@
 
 #include <QWidget>
 
-#include "core/command_key.h"  // for CommandKeySPtr
 #include "core/core_fwd.h"     // for IServerSPtr
+#include "core/types.h"
 
 #include "global/global.h"  // for FastoObject, etc
 
@@ -44,14 +44,14 @@ class EventInfoBase;
 namespace fastonosql {
 namespace core {
 namespace events_info {
-struct CommandRequest;
+struct ExecuteInfoRequest;
 }
 }
 }
 namespace fastonosql {
 namespace core {
 namespace events_info {
-struct CommandResponce;
+struct ExecuteInfoResponce;
 }
 }
 }
@@ -99,9 +99,10 @@ class OutputWidget : public QWidget {
   explicit OutputWidget(core::IServerSPtr server, QWidget* parent = 0);
 
  private Q_SLOTS:
-  void executeCommand(core::CommandKeySPtr cmd);
-  void startExecuteCommand(const core::events_info::CommandRequest& req);
-  void finishExecuteCommand(const core::events_info::CommandResponce& res);
+  void createKey(const core::NDbKValue& dbv);
+
+  void startExecuteCommand(const core::events_info::ExecuteInfoRequest& req);
+  void finishExecuteCommand(const core::events_info::ExecuteInfoResponce& res);
 
   void rootCreate(const core::events_info::CommandRootCreatedInfo& res);
   void rootCompleate(const core::events_info::CommandRootCompleatedInfo& res);

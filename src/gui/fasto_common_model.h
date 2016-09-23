@@ -18,8 +18,6 @@
 
 #pragma once
 
-#include "core/command_key.h"  // for CommandKeySPtr
-
 #include "common/qt/gui/base/tree_model.h"  // for TreeModel
 
 class QModelIndex;
@@ -49,7 +47,7 @@ class FastoCommonModel : public common::qt::gui::TreeModel {
   void changeValue(const core::NDbKValue& value);
 
  Q_SIGNALS:
-  void changedValue(core::CommandKeySPtr cmd);
+  void changedValue(const core::NDbKValue& value);
 };
 
 }  // namespace gui

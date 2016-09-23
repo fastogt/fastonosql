@@ -203,14 +203,6 @@ ChangeServerPropertyInfoRequest::ChangeServerPropertyInfoRequest(initiator_type 
 ChangeServerPropertyInfoResponce::ChangeServerPropertyInfoResponce(const base_class& request)
     : base_class(request) {}
 
-CommandRequest::CommandRequest(initiator_type sender,
-                               IDataBaseInfoSPtr inf,
-                               CommandKeySPtr cmd,
-                               error_type er)
-    : base_class(sender, er), inf(inf), cmd(cmd) {}
-
-CommandResponce::CommandResponce(const base_class& request) : base_class(request) {}
-
 ProgressInfoResponce::ProgressInfoResponce(uint8_t pr) : progress(pr) {}
 
 }  // namespace events_info

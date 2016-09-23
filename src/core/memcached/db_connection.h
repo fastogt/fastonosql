@@ -61,14 +61,10 @@ class DBConnection : public core::CDBConnection<NativeConnection, Config, MEMCAC
   common::Error dbkcount(size_t* size) WARN_UNUSED_RESULT;
 
   common::Error get(const std::string& key, std::string* ret_val) WARN_UNUSED_RESULT;
-  common::Error set(const std::string& key,
-                    const std::string& value,
-                    time_t expiration,
-                    uint32_t flags) WARN_UNUSED_RESULT;
-  common::Error add(const std::string& key,
-                    const std::string& value,
-                    time_t expiration,
-                    uint32_t flags) WARN_UNUSED_RESULT;
+  common::Error addIfNotExist(const std::string& key,
+                              const std::string& value,
+                              time_t expiration,
+                              uint32_t flags) WARN_UNUSED_RESULT;
   common::Error replace(const std::string& key,
                         const std::string& value,
                         time_t expiration,
@@ -90,10 +86,14 @@ class DBConnection : public core::CDBConnection<NativeConnection, Config, MEMCAC
 
  private:
   common::Error delInner(const std::string& key, time_t expiration) WARN_UNUSED_RESULT;
+  common::Error setInner(const std::string& key,
+                         const std::string& value,
+                         time_t expiration,
+                         uint32_t flags) WARN_UNUSED_RESULT;
 
   virtual common::Error selectImpl(const std::string& name, IDataBaseInfo** info);
-  virtual common::Error delImpl(const std::vector<std::string>& keys,
-                                std::vector<std::string>* deleted_keys) override;
+  virtual common::Error delImpl(const keys_t& keys, keys_t* deleted_keys) override;
+  virtual common::Error addImpl(const keys_value_t& keys, keys_value_t* added_keys) override;
 };
 
 common::Error keys(CommandHandler* handler, int argc, const char** argv, FastoObject* out);
@@ -231,12 +231,12 @@ static const std::vector<CommandHolder> memcachedCommands = {
                   0,
                   &add),
     CommandHolder("SET",
-                  "<key> <flags> <exptime> <value>",
+                  "<key> <flags> <exptime> <value> [<key> <flags> <exptime> <value> ...]",
                   "Set the string value of a key.",
                   UNDEFINED_SINCE,
                   UNDEFINED_EXAMPLE_STR,
                   4,
-                  0,
+                  INFINITE_COMMAND_ARGS,
                   &set),
     CommandHolder("GET",
                   "<key>",

@@ -134,13 +134,13 @@ ViewKeysDialog::ViewKeysDialog(const QString& title, core::IDatabaseSPtr db, QWi
   searchLayout->addWidget(searchButton_);
 
   keysModel_ = new KeysTableModel(this);
-  VERIFY(connect(keysModel_, &KeysTableModel::changedValue, this, &ViewKeysDialog::executeCommand,
+  VERIFY(connect(keysModel_, &KeysTableModel::changedTTL, this, &ViewKeysDialog::changeTTL,
                  Qt::DirectConnection));
 
-  VERIFY(connect(serv.get(), &core::IServer::startedExecuteCommand, this,
-                 &ViewKeysDialog::startExecuteCommand, Qt::DirectConnection));
-  VERIFY(connect(serv.get(), &core::IServer::finishedExecuteCommand, this,
-                 &ViewKeysDialog::finishExecuteCommand, Qt::DirectConnection));
+  VERIFY(connect(serv.get(), &core::IServer::startedExecute, this, &ViewKeysDialog::startExecute,
+                 Qt::DirectConnection));
+  VERIFY(connect(serv.get(), &core::IServer::finishedExecute, this, &ViewKeysDialog::finishExecute,
+                 Qt::DirectConnection));
   keysTable_ = new FastoTableView;
   keysTable_->setModel(keysModel_);
   keysTable_->setItemDelegateForColumn(KeyTableItem::kTTL, new NumericDelegate(this));
@@ -222,33 +222,24 @@ void ViewKeysDialog::finishLoadDatabaseContent(
   updateControls();
 }
 
-void ViewKeysDialog::executeCommand(core::CommandKeySPtr cmd) {
-  core::events_info::CommandRequest req(this, db_->info(), cmd);
-  db_->executeCommand(req);
+void ViewKeysDialog::changeTTL(const core::NDbKValue& value, core::ttl_t ttl) {
+  core::translator_t tran = db_->translator();
+  std::string cmd_str;
+  common::Error err = tran->changeKeyTTLCommand(value.key(), ttl, &cmd_str);
+  if (err && err->isError()) {
+    return;
+  }
+
+  core::events_info::ExecuteInfoRequest req(this, cmd_str);
+  db_->execute(req);
 }
 
-void ViewKeysDialog::startExecuteCommand(const core::events_info::CommandRequest& req) {
+void ViewKeysDialog::startExecute(const core::events_info::ExecuteInfoRequest& req) {
   UNUSED(req);
 }
 
-void ViewKeysDialog::finishExecuteCommand(const core::events_info::CommandResponce& res) {
-  common::Error er = res.errorInfo();
-  if (er && er->isError()) {
-    return;
-  }
-
-  if (res.initiator() != this) {
-    DEBUG_MSG_FORMAT<512>(common::logging::L_DEBUG, "Skipped event in file: %s, function: %s",
-                          __FILE__, __FUNCTION__);
-    return;
-  }
-
-  core::CommandKeySPtr key = res.cmd;
-  if (key->type() == core::CommandKey::C_CHANGE_TTL) {
-    core::CommandChangeTTL* cttl = static_cast<core::CommandChangeTTL*>(key.get());
-    core::NDbKValue dbv = cttl->newKey();
-    keysModel_->changeValue(dbv);
-  }
+void ViewKeysDialog::finishExecute(const core::events_info::ExecuteInfoResponce& res) {
+  UNUSED(res);
 }
 
 void ViewKeysDialog::search(bool forward) {

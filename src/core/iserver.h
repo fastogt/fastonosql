@@ -27,6 +27,7 @@
 #include "core/connection_types.h"  // for connectionTypes, serverMode, etc
 #include "core/core_fwd.h"          // for IDatabaseSPtr
 #include "core/events/events.h"     // for BackupResponceEvent, etc
+#include "core/icommand_translator.h"
 #include "core/types.h"             // for IDataBaseInfoSPtr, etc
 
 #include "global/global.h"  // for FastoObject, etc
@@ -55,6 +56,8 @@ class IServer : public IServerBase, public std::enable_shared_from_this<IServer>
   bool isConnected() const;
   bool isAuthenticated() const;
   bool isCanRemote() const;
+
+  translator_t translator() const;
 
   connectionTypes type() const;
   virtual std::string name() const;
@@ -127,9 +130,6 @@ class IServer : public IServerBase, public std::enable_shared_from_this<IServer>
   void startedClearDatabase(const events_info::ClearDatabaseRequest& req);
   void finishedClearDatabase(const events_info::ClearDatabaseResponce& res);
 
-  void startedExecuteCommand(const events_info::CommandRequest& req);
-  void finishedExecuteCommand(const events_info::CommandResponce& res);
-
   void startedLoadDiscoveryInfo(const events_info::DiscoveryInfoRequest& res);
   void finishedLoadDiscoveryInfo(const events_info::DiscoveryInfoResponce& res);
 
@@ -137,7 +137,9 @@ class IServer : public IServerBase, public std::enable_shared_from_this<IServer>
   void addedChild(FastoObjectIPtr child);
   void itemUpdated(FastoObject* item, common::ValueSPtr val);
   void serverInfoSnapShoot(ServerInfoSnapShoot shot);
+
   void removedKey(core::IDataBaseInfoSPtr db, core::NKey key);
+  void addedKey(core::IDataBaseInfoSPtr db, core::NDbKValue keys);
 
  public:
   // async methods
@@ -157,9 +159,7 @@ class IServer : public IServerBase, public std::enable_shared_from_this<IServer>
   void clearDB(const events_info::ClearDatabaseRequest& req);   // signals: startedClearDatabase,
                                                                 // finishedClearDatabase
   void execute(const events_info::ExecuteInfoRequest& req);     // signals: startedExecute
-  void executeCommand(const events_info::CommandRequest& req);  // signals:
-  // startedExecuteCommand,
-  // finishedExecuteCommand
+
   void shutDown(const events_info::ShutDownInfoRequest& req);  // signals: startedShutdown,
                                                                // finishedShutdown
   void backupToPath(
@@ -216,7 +216,6 @@ class IServer : public IServerBase, public std::enable_shared_from_this<IServer>
   virtual void handleSetDefaultDatabaseEvent(events::SetDefaultDatabaseResponceEvent* ev);
 
   // handle command events
-  virtual void handleCommandResponceEvent(events::CommandResponceEvent* ev);
   virtual void handleDiscoveryInfoResponceEvent(events::DiscoveryInfoResponceEvent* ev);
 
   IDriver* const drv_;

@@ -556,18 +556,40 @@ common::Error select(CommandHandler* handler, int argc, const char** argv, Fasto
 common::Error del(CommandHandler* handler, int argc, const char** argv, FastoObject* out) {
   DBConnection* red = static_cast<DBConnection*>(handler);
 
-  std::vector<std::string> keysdel;
+  keys_t keysdel;
   for (int i = 0; i < argc; ++i) {
-    keysdel.push_back(argv[i]);
+    keysdel.push_back(NKey(argv[i]));
   }
 
-  std::vector<std::string> keysdeleted;
+  keys_t keysdeleted;
   common::Error err = red->del(keysdel, &keysdeleted);
   if (err && err->isError()) {
     return err;
   }
 
   common::FundamentalValue* val = common::Value::createUIntegerValue(keysdeleted.size());
+  FastoObject* child = new FastoObject(out, val, red->delimiter());
+  out->addChildren(child);
+  return common::Error();
+}
+
+common::Error set(CommandHandler* handler, int argc, const char** argv, FastoObject* out) {
+  keys_value_t keys_add;
+  for (int i = 0; i < argc; i += 2) {
+    NKey key(argv[i]);
+    common::StringValue* string_val = common::Value::createStringValue(argv[i + 1]);
+    key_value_t kv(key, common::make_value(string_val));
+    keys_add.push_back(kv);
+  }
+
+  DBConnection* red = static_cast<DBConnection*>(handler);
+  keys_value_t keys_added;
+  common::Error err = red->add(keys_add, &keys_added);
+  if (err && err->isError()) {
+    return err;
+  }
+
+  common::StringValue* val = common::Value::createStringValue("OK");
   FastoObject* child = new FastoObject(out, val, red->delimiter());
   out->addChildren(child);
   return common::Error();
@@ -1644,12 +1666,12 @@ common::Error DBConnection::selectImpl(const std::string& name, IDataBaseInfo** 
   return common::Error();
 }
 
-common::Error DBConnection::delImpl(const std::vector<std::string>& keys,
-                                    std::vector<std::string>* deleted_keys) {
+common::Error DBConnection::delImpl(const keys_t& keys, keys_t* deleted_keys) {
   for (size_t i = 0; i < keys.size(); ++i) {
-    std::string key = keys[i];
+    NKey key = keys[i];
+    std::string key_str = key.key();
     redisReply* reply =
-        reinterpret_cast<redisReply*>(redisCommand(connection_.handle_, "DEL %s", key.c_str()));
+        reinterpret_cast<redisReply*>(redisCommand(connection_.handle_, "DEL %s", key_str.c_str()));
     if (!reply) {
       return cliPrintContextError(connection_.handle_);
     }
@@ -1657,6 +1679,27 @@ common::Error DBConnection::delImpl(const std::vector<std::string>& keys,
     if (reply->type == REDIS_REPLY_INTEGER && reply->integer == 1) {
       deleted_keys->push_back(key);
     }
+    freeReplyObject(reply);
+  }
+
+  return common::Error();
+}
+
+common::Error DBConnection::addImpl(const keys_value_t& keys, keys_value_t* added_keys) {
+  for (size_t i = 0; i < keys.size(); ++i) {
+    key_value_t key = keys[i];
+    std::string key_str = key.keyString();
+    std::string value_str = key.valueString();
+    redisReply* reply = reinterpret_cast<redisReply*>(
+        redisCommand(connection_.handle_, "SET %s %s", key_str.c_str(), value_str.c_str()));
+    if (!reply) {
+      return cliPrintContextError(connection_.handle_);
+    }
+
+    if (reply->type != REDIS_REPLY_ERROR) {
+      added_keys->push_back(key);
+    }
+
     freeReplyObject(reply);
   }
 

@@ -23,6 +23,7 @@
 #include "core/connection_types.h"  // for connectionTypes
 #include "core/core_fwd.h"
 #include "core/types.h"  // for IDataBaseInfoSPtr
+#include "core/icommand_translator.h"
 
 namespace fastonosql {
 namespace core {
@@ -34,7 +35,7 @@ struct ClearDatabaseRequest;
 namespace fastonosql {
 namespace core {
 namespace events_info {
-struct CommandRequest;
+struct ExecuteInfoRequest;
 }
 }
 }
@@ -62,6 +63,7 @@ class IDatabase {
 
   IServerSPtr server() const;
   IDataBaseInfoSPtr info() const;
+  translator_t translator() const;
 
   connectionTypes type() const;
   bool isDefault() const;
@@ -70,7 +72,7 @@ class IDatabase {
   void loadContent(const events_info::LoadDatabaseContentRequest& req);
   void setDefault(const events_info::SetDefaultDatabaseRequest& req);
 
-  void executeCommand(const events_info::CommandRequest& req);
+  void execute(const events_info::ExecuteInfoRequest& req);
   void removeAllKeys(const events_info::ClearDatabaseRequest& req);
 
  protected:

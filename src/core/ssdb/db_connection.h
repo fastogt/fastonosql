@@ -58,7 +58,6 @@ class DBConnection : public core::CDBConnection<NativeConnection, Config, SSDB> 
   common::Error info(const char* args, ServerInfo::Stats* statsout) WARN_UNUSED_RESULT;
   common::Error auth(const std::string& password) WARN_UNUSED_RESULT;
   common::Error get(const std::string& key, std::string* ret_val) WARN_UNUSED_RESULT;
-  common::Error set(const std::string& key, const std::string& value) WARN_UNUSED_RESULT;
   common::Error setx(const std::string& key, const std::string& value, int ttl) WARN_UNUSED_RESULT;
   common::Error incr(const std::string& key, int64_t incrby, int64_t* ret) WARN_UNUSED_RESULT;
   common::Error keys(const std::string& key_start,
@@ -173,10 +172,11 @@ class DBConnection : public core::CDBConnection<NativeConnection, Config, SSDB> 
 
  private:
   common::Error delInner(const std::string& key) WARN_UNUSED_RESULT;
+  common::Error setInner(const std::string& key, const std::string& value) WARN_UNUSED_RESULT;
 
   virtual common::Error selectImpl(const std::string& name, IDataBaseInfo** info) override;
-  virtual common::Error delImpl(const std::vector<std::string>& keys,
-                                std::vector<std::string>* deleted_keys) override;
+  virtual common::Error delImpl(const keys_t& keys, keys_t* deleted_keys) override;
+  virtual common::Error addImpl(const keys_value_t& keys, keys_value_t* added_keys) override;
 };
 
 common::Error info(CommandHandler* handler, int argc, const char** argv, FastoObject* out);
@@ -241,12 +241,12 @@ static const std::vector<CommandHolder> ssdbCommands = {
                   0,
                   &auth),
     CommandHolder("SET",
-                  "<key> <value>",
+                  "<key> <value> [<key> <value> ...]",
                   "Set the value of the key.",
                   UNDEFINED_SINCE,
                   UNDEFINED_EXAMPLE_STR,
                   2,
-                  0,
+                  INFINITE_COMMAND_ARGS,
                   &set),
     CommandHolder("GET",
                   "<key>",

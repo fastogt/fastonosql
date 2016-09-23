@@ -64,11 +64,15 @@ class NKey {
   std::string key_;
   ttl_t ttl_;
 };
+typedef NKey key_t;
+typedef std::vector<key_t> keys_t;
 
 typedef common::ValueSPtr NValue;
+typedef NValue value_t;
 
 class NDbKValue {
  public:
+  NDbKValue();
   NDbKValue(const NKey& key, NValue value);
 
   NKey key() const;
@@ -80,11 +84,15 @@ class NDbKValue {
   void setValue(NValue value);
 
   std::string keyString() const;
+  std::string valueString() const;
 
  private:
   NKey key_;
   NValue value_;
 };
+
+typedef NDbKValue key_value_t;
+typedef std::vector<key_value_t> keys_value_t;
 
 }  // namespace core
 }  // namespace fastonosql

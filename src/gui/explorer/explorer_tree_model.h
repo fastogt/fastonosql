@@ -111,10 +111,10 @@ class ExplorerDatabaseItem : public IExplorerTreeItem {
 
   core::IDataBaseInfoSPtr info() const;
 
-  void removeKey(const core::NDbKValue& key);
+  void removeKey(const core::NKey &key);
   void loadValue(const core::NDbKValue& key);
   void createKey(const core::NDbKValue& key);
-  void setTTL(const core::NDbKValue& key, core::ttl_t ttl);
+  void setTTL(const core::NKey &key, core::ttl_t ttl);
 
   void removeAllKeys();
 

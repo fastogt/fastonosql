@@ -48,7 +48,6 @@ class DBConnection : public core::CDBConnection<NativeConnection, Config, LEVELD
   static const char* versionApi();
 
   common::Error info(const char* args, ServerInfo::Stats* statsout) WARN_UNUSED_RESULT;
-  common::Error set(const std::string& key, const std::string& value) WARN_UNUSED_RESULT;
   common::Error get(const std::string& key, std::string* ret_val) WARN_UNUSED_RESULT;
   common::Error keys(const std::string& key_start,
                      const std::string& key_end,
@@ -62,10 +61,11 @@ class DBConnection : public core::CDBConnection<NativeConnection, Config, LEVELD
 
  private:
   common::Error delInner(const std::string& key) WARN_UNUSED_RESULT;
+  common::Error setInner(const std::string& key, const std::string& value) WARN_UNUSED_RESULT;
 
   virtual common::Error selectImpl(const std::string& name, IDataBaseInfo** info) override;
-  virtual common::Error delImpl(const std::vector<std::string>& keys,
-                                std::vector<std::string>* deleted_keys) override;
+  virtual common::Error delImpl(const keys_t& keys, keys_t* deleted_keys) override;
+  virtual common::Error addImpl(const keys_value_t& keys, keys_value_t* added_keys) override;
 };
 
 common::Error info(CommandHandler* handler, int argc, const char** argv, FastoObject* out);
@@ -80,12 +80,12 @@ common::Error flushdb(CommandHandler* handler, int argc, const char** argv, Fast
 
 static const std::vector<CommandHolder> leveldbCommands = {
     CommandHolder("SET",
-                  "<key> <value>",
+                  "<key> <value> [<key> <value> ...]",
                   "Set the value of a key.",
                   UNDEFINED_SINCE,
                   UNDEFINED_EXAMPLE_STR,
                   2,
-                  0,
+                  INFINITE_COMMAND_ARGS,
                   &set),
     CommandHolder("GET",
                   "<key>",

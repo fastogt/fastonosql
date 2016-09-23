@@ -20,7 +20,6 @@
 
 #include "common/value.h"  // for Value, Value::Type
 
-#include "core/command_key.h"  // for CommandKeySPtr
 #include "core/db_key.h"       // for NDbKValue, ttl_t
 
 #include "common/qt/gui/base/table_item.h"   // for TableItem
@@ -64,7 +63,7 @@ class KeysTableModel : public common::qt::gui::TableModel {
   void changeValue(const core::NDbKValue& value);
 
  Q_SIGNALS:
-  void changedValue(core::CommandKeySPtr cmd);
+  void changedTTL(const core::NDbKValue& value, int ttl);
 };
 
 }  // namespace gui

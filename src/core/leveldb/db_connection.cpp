@@ -205,22 +205,6 @@ common::Error DBConnection::info(const char* args, ServerInfo::Stats* statsout) 
   return common::Error();
 }
 
-common::Error DBConnection::set(const std::string& key, const std::string& value) {
-  if (!isConnected()) {
-    DNOTREACHED();
-    return common::make_error_value("Not connected", common::Value::E_ERROR);
-  }
-
-  ::leveldb::WriteOptions wo;
-  auto st = connection_.handle_->Put(wo, key, value);
-  if (!st.ok()) {
-    std::string buff = common::MemSPrintf("set function error: %s", st.ToString());
-    return common::make_error_value(buff, common::ErrorValue::E_ERROR);
-  }
-
-  return common::Error();
-}
-
 common::Error DBConnection::get(const std::string& key, std::string* ret_val) {
   if (!isConnected()) {
     DNOTREACHED();
@@ -249,6 +233,22 @@ common::Error DBConnection::delInner(const std::string& key) {
     std::string buff = common::MemSPrintf("del function error: %s", st.ToString());
     return common::make_error_value(buff, common::ErrorValue::E_ERROR);
   }
+  return common::Error();
+}
+
+common::Error DBConnection::setInner(const std::string& key, const std::string& value) {
+  if (!isConnected()) {
+    DNOTREACHED();
+    return common::make_error_value("Not connected", common::Value::E_ERROR);
+  }
+
+  ::leveldb::WriteOptions wo;
+  auto st = connection_.handle_->Put(wo, key, value);
+  if (!st.ok()) {
+    std::string buff = common::MemSPrintf("set function error: %s", st.ToString());
+    return common::make_error_value(buff, common::ErrorValue::E_ERROR);
+  }
+
   return common::Error();
 }
 
@@ -327,16 +327,32 @@ common::Error DBConnection::selectImpl(const std::string& name, IDataBaseInfo** 
   return common::Error();
 }
 
-common::Error DBConnection::delImpl(const std::vector<std::string>& keys,
-                                    std::vector<std::string>* deleted_keys) {
+common::Error DBConnection::delImpl(const keys_t& keys, keys_t* deleted_keys) {
   for (size_t i = 0; i < keys.size(); ++i) {
-    std::string key = keys[i];
-    common::Error err = delInner(key);
+    NKey key = keys[i];
+    std::string key_str = key.key();
+    common::Error err = delInner(key_str);
     if (err && err->isError()) {
       continue;
     }
 
     deleted_keys->push_back(key);
+  }
+
+  return common::Error();
+}
+
+common::Error DBConnection::addImpl(const keys_value_t& keys, keys_value_t* added_keys) {
+  for (size_t i = 0; i < keys.size(); ++i) {
+    key_value_t key = keys[i];
+    std::string key_str = key.keyString();
+    std::string value_str = key.valueString();
+    common::Error err = setInner(key_str, value_str);
+    if (err && err->isError()) {
+      continue;
+    }
+
+    added_keys->push_back(key);
   }
 
   return common::Error();
@@ -373,17 +389,25 @@ common::Error info(CommandHandler* handler, int argc, const char** argv, FastoOb
 }
 
 common::Error set(CommandHandler* handler, int argc, const char** argv, FastoObject* out) {
-  UNUSED(argc);
+  keys_value_t keys_add;
+  for (int i = 0; i < argc; i += 2) {
+    NKey key(argv[i]);
+    common::StringValue* string_val = common::Value::createStringValue(argv[i + 1]);
+    key_value_t kv(key, common::make_value(string_val));
+    keys_add.push_back(kv);
+  }
 
   DBConnection* level = static_cast<DBConnection*>(handler);
-
-  common::Error er = level->set(argv[0], argv[1]);
-  if (!er) {
-    common::StringValue* val = common::Value::createStringValue("OK");
-    FastoObject* child = new FastoObject(out, val, level->delimiter());
-    out->addChildren(child);
+  keys_value_t keys_added;
+  common::Error err = level->add(keys_add, &keys_added);
+  if (err && err->isError()) {
+    return err;
   }
-  return er;
+
+  common::StringValue* val = common::Value::createStringValue("OK");
+  FastoObject* child = new FastoObject(out, val, level->delimiter());
+  out->addChildren(child);
+  return common::Error();
 }
 
 common::Error get(CommandHandler* handler, int argc, const char** argv, FastoObject* out) {
@@ -402,13 +426,13 @@ common::Error get(CommandHandler* handler, int argc, const char** argv, FastoObj
 }
 
 common::Error del(CommandHandler* handler, int argc, const char** argv, FastoObject* out) {
-  std::vector<std::string> keysdel;
+  keys_t keysdel;
   for (int i = 0; i < argc; ++i) {
-    keysdel.push_back(argv[i]);
+    keysdel.push_back(NKey(argv[i]));
   }
 
   DBConnection* level = static_cast<DBConnection*>(handler);
-  std::vector<std::string> keys_deleted;
+  keys_t keys_deleted;
   common::Error err = level->del(keysdel, &keys_deleted);
   if (err && err->isError()) {
     return err;

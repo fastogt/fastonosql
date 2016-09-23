@@ -29,7 +29,6 @@
 #include "common/net/types.h"       // for ConvertToString
 #include "common/qt/utils_qt.h"     // for item
 
-#include "core/command_key.h"         // for CommandCreateKey, etc
 #include "core/connection_types.h"    // for ConvertToString
 #include "core/events/events_info.h"  // for CommandRequest, etc
 #include "core/icluster.h"            // for ICluster
@@ -198,36 +197,60 @@ core::IDataBaseInfoSPtr ExplorerDatabaseItem::info() const {
   return db_->info();
 }
 
-void ExplorerDatabaseItem::removeKey(const core::NDbKValue& key) {
+void ExplorerDatabaseItem::removeKey(const core::NKey& key) {
   core::IDatabaseSPtr dbs = db();
   CHECK(dbs);
-  core::CommandKeySPtr cmd(new core::CommandDeleteKey(key));
-  core::events_info::CommandRequest req(this, dbs->info(), cmd);
-  dbs->executeCommand(req);
+  core::translator_t tran = dbs->translator();
+  std::string cmd_str;
+  common::Error err = tran->deleteKeyCommand(key, &cmd_str);
+  if (err && err->isError()) {
+    return;
+  }
+
+  core::events_info::ExecuteInfoRequest req(this, cmd_str);
+  dbs->execute(req);
 }
 
 void ExplorerDatabaseItem::loadValue(const core::NDbKValue& key) {
   core::IDatabaseSPtr dbs = db();
   CHECK(dbs);
-  core::CommandKeySPtr cmd(new core::CommandLoadKey(key));
-  core::events_info::CommandRequest req(this, dbs->info(), cmd);
-  dbs->executeCommand(req);
+  core::translator_t tran = dbs->translator();
+  std::string cmd_str;
+  common::Error err = tran->loadKeyCommand(key.key(), key.type(), &cmd_str);
+  if (err && err->isError()) {
+    return;
+  }
+
+  core::events_info::ExecuteInfoRequest req(this, cmd_str);
+  dbs->execute(req);
 }
 
 void ExplorerDatabaseItem::createKey(const core::NDbKValue& key) {
   core::IDatabaseSPtr dbs = db();
   CHECK(dbs);
-  core::CommandKeySPtr cmd(new core::CommandCreateKey(key));
-  core::events_info::CommandRequest req(this, dbs->info(), cmd);
-  dbs->executeCommand(req);
+  core::translator_t tran = dbs->translator();
+  std::string cmd_str;
+  common::Error err = tran->createKeyCommand(key, &cmd_str);
+  if (err && err->isError()) {
+    return;
+  }
+
+  core::events_info::ExecuteInfoRequest req(this, cmd_str);
+  dbs->execute(req);
 }
 
-void ExplorerDatabaseItem::setTTL(const core::NDbKValue& key, core::ttl_t ttl) {
+void ExplorerDatabaseItem::setTTL(const core::NKey& key, core::ttl_t ttl) {
   core::IDatabaseSPtr dbs = db();
   CHECK(dbs);
-  core::CommandKeySPtr cmd(new core::CommandChangeTTL(key, ttl));
-  core::events_info::CommandRequest req(this, dbs->info(), cmd);
-  dbs->executeCommand(req);
+  core::translator_t tran = dbs->translator();
+  std::string cmd_str;
+  common::Error err = tran->changeKeyTTLCommand(key, ttl, &cmd_str);
+  if (err && err->isError()) {
+    return;
+  }
+
+  core::events_info::ExecuteInfoRequest req(this, cmd_str);
+  dbs->execute(req);
 }
 
 void ExplorerDatabaseItem::removeAllKeys() {
@@ -279,7 +302,7 @@ IExplorerTreeItem::eType ExplorerKeyItem::type() const {
 void ExplorerKeyItem::removeFromDb() {
   ExplorerDatabaseItem* par = db();
   CHECK(par);
-  par->removeKey(key_);
+  par->removeKey(key_.key());
 }
 
 void ExplorerKeyItem::loadValueFromDb() {
@@ -291,7 +314,7 @@ void ExplorerKeyItem::loadValueFromDb() {
 void ExplorerKeyItem::setTTL(core::ttl_t ttl) {
   ExplorerDatabaseItem* par = db();
   CHECK(par);
-  par->setTTL(key_, ttl);
+  par->setTTL(key_.key(), ttl);
 }
 
 ExplorerNSItem::ExplorerNSItem(const QString& name, IExplorerTreeItem* parent)
@@ -348,7 +371,8 @@ void ExplorerNSItem::removeBranch() {
       return;
     }
 
-    par->removeKey(key_item->key());
+    core::NDbKValue dbv = key_item->key();
+    par->removeKey(dbv.key());
   });
 }
 

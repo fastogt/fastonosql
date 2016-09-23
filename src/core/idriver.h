@@ -24,7 +24,6 @@
 #include "common/macros.h"     // for WARN_UNUSED_RESULT
 #include "common/net/types.h"  // for HostAndPort
 #include "common/types.h"      // for time64_t
-#include "core/command_key.h"  // for CommandChangeTTL (ptr only), etc
 #include "core/connection_settings.h"
 #include "core/connection_types.h"  // for connectionTypes
 #include "core/cdb_connection_client.h"
@@ -65,8 +64,6 @@ class IDriver : public QObject,
 
   void start();
   void stop();
-  common::Error commandByType(CommandKeySPtr command,
-                              std::string* cmdstring) const WARN_UNUSED_RESULT;
 
   void interrupt();
 
@@ -83,7 +80,9 @@ class IDriver : public QObject,
   void addedChild(FastoObjectIPtr child);
   void itemUpdated(FastoObject* item, common::ValueSPtr val);
   void serverInfoSnapShoot(ServerInfoSnapShoot shot);
+
   void removedKey(core::IDataBaseInfoSPtr db, core::NKey keys);
+  void addedKey(core::IDataBaseInfoSPtr db, core::NDbKValue keys);
 
  private Q_SLOTS:
   void init();
@@ -104,7 +103,6 @@ class IDriver : public QObject,
 
   virtual void handleProcessCommandLineArgs(events::ProcessConfigArgsRequestEvent* ev) = 0;
   virtual void handleExecuteEvent(events::ExecuteRequestEvent* ev);
-  virtual void handleCommandRequestEvent(events::CommandRequestEvent* ev);
 
   virtual void handleLoadDatabaseContentEvent(events::LoadDatabaseContentRequestEvent* ev) = 0;
 
@@ -163,7 +161,8 @@ class IDriver : public QObject,
   virtual void updated(FastoObject* item, FastoObject::value_t val) override;
 
   virtual void currentDataBaseChanged(IDataBaseInfo* info) override;
-  virtual void keysRemoved(const std::vector<std::string>& keys) override;
+  virtual void keysRemoved(const keys_t& keys) override;
+  virtual void keysAdded(const keys_value_t& keys) override;
 
   // internal methods
   virtual IServerInfoSPtr makeServerInfoFromString(const std::string& val) = 0;

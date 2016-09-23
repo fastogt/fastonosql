@@ -24,6 +24,8 @@
 
 #include "common/string_util.h"  // for JoinString, Tokenize
 
+#include "global/global.h"
+
 namespace fastonosql {
 namespace core {
 
@@ -87,6 +89,8 @@ void NKey::setTTL(ttl_t ttl) {
   ttl_ = ttl;
 }
 
+NDbKValue::NDbKValue() : key_(), value_() {}
+
 NDbKValue::NDbKValue(const NKey& key, NValue value) : key_(key), value_(value) {}
 
 NKey NDbKValue::key() const {
@@ -119,6 +123,10 @@ void NDbKValue::setValue(NValue value) {
 
 std::string NDbKValue::keyString() const {
   return key_.key();
+}
+
+std::string NDbKValue::valueString() const {
+  return common::ConvertToString(value_.get(), " ");
 }
 
 }  // namespace core

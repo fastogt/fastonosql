@@ -28,7 +28,6 @@
 #include "common/qt/utils_qt.h"  // for EventInfo<>::error_type, etc
 #include "common/types.h"        // for time64_t
 
-#include "core/command_key.h"           // for CommandKeySPtr
 #include "core/connection_types.h"      // for ConnectionMode
 #include "core/db_key.h"                // for NDbKValue
 #include "core/server_property_info.h"  // for property_t, etc
@@ -334,22 +333,6 @@ struct ChangeServerPropertyInfoResponce : ChangeServerPropertyInfoRequest {
   explicit ChangeServerPropertyInfoResponce(const base_class& request);
 
   bool is_change;
-};
-
-struct CommandRequest : public EventInfoBase {
-  typedef EventInfoBase base_class;
-  CommandRequest(initiator_type sender,
-                 IDataBaseInfoSPtr inf,
-                 CommandKeySPtr cmd,
-                 error_type er = error_type());
-
-  IDataBaseInfoSPtr inf;
-  CommandKeySPtr cmd;
-};
-
-struct CommandResponce : CommandRequest {
-  typedef CommandRequest base_class;
-  explicit CommandResponce(const base_class& request);
 };
 
 struct ProgressInfoResponce {

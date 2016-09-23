@@ -105,8 +105,7 @@ bool FastoCommonModel::setData(const QModelIndex& index, const QVariant& value, 
         common::ValueSPtr vs = common::make_value(common::Value::createStringValue(value));
         core::NValue val(vs);
         core::NDbKValue dbv(core::NKey(key), val);
-        core::CommandKeySPtr com(new core::CommandCreateKey(dbv));
-        emit changedValue(com);
+        emit changedValue(dbv);
       }
     }
   }

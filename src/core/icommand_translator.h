@@ -28,9 +28,7 @@ namespace fastonosql {
 namespace core {
 
 class ICommandTranslator {
- public:
-  typedef NKey key_t;
-  typedef NDbKValue key_value_t;
+ public:  
   common::Error createKeyCommand(const key_value_t& key,
                                  std::string* cmdstring) const WARN_UNUSED_RESULT;
   common::Error loadKeyCommand(const key_t& key,
