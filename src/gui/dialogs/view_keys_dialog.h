@@ -98,6 +98,7 @@ class ViewKeysDialog : public QDialog {
 
   void startExecute(const core::events_info::ExecuteInfoRequest& req);
   void finishExecute(const core::events_info::ExecuteInfoResponce& res);
+  void keyTTLChange(core::IDataBaseInfoSPtr db, core::NKey key, core::ttl_t ttl);
 
   void changeTTL(const core::NDbKValue& value, core::ttl_t ttl);
 

@@ -41,7 +41,7 @@ class CDBConnection : public DBConnection<NConnection, Config, ContType>, public
 
   common::Error select(const std::string& name, IDataBaseInfo** info) WARN_UNUSED_RESULT;
   common::Error del(const keys_t& keys, keys_t* deleted_keys) WARN_UNUSED_RESULT;
-  common::Error add(const keys_value_t& keys, keys_value_t* added_keys) WARN_UNUSED_RESULT;
+  common::Error add(const key_and_value_array_t& keys, key_and_value_array_t* added_keys) WARN_UNUSED_RESULT;
   common::Error setTTL(const key_t& key, ttl_t ttl) WARN_UNUSED_RESULT;
 
   translator_t translator() const { return translator_; }
@@ -49,7 +49,7 @@ class CDBConnection : public DBConnection<NConnection, Config, ContType>, public
  private:
   virtual common::Error selectImpl(const std::string& name, IDataBaseInfo** info) = 0;
   virtual common::Error delImpl(const keys_t& keys, keys_t* deleted_keys) = 0;
-  virtual common::Error addImpl(const keys_value_t& keys, keys_value_t* added_keys) = 0;
+  virtual common::Error addImpl(const key_and_value_array_t& keys, key_and_value_array_t* added_keys) = 0;
   virtual common::Error setTTLImpl(const key_t& key, ttl_t ttl) = 0;
 
   CDBConnectionClient* client_;
@@ -109,8 +109,8 @@ common::Error CDBConnection<NConnection, Config, ContType>::del(const keys_t& ke
 }
 
 template <typename NConnection, typename Config, connectionTypes ContType>
-common::Error CDBConnection<NConnection, Config, ContType>::add(const keys_value_t& keys,
-                                                                keys_value_t* added_keys) {
+common::Error CDBConnection<NConnection, Config, ContType>::add(const key_and_value_array_t& keys,
+                                                                key_and_value_array_t* added_keys) {
   if (!added_keys) {
     DNOTREACHED();
     return common::make_error_value("Invalid input argument(s)", common::ErrorValue::E_ERROR);

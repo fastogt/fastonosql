@@ -164,7 +164,7 @@ class IDriver : public QObject,
 
   virtual void onCurrentDataBaseChanged(IDataBaseInfo* info) override;
   virtual void onKeysRemoved(const keys_t& keys) override;
-  virtual void onKeysAdded(const keys_value_t& keys) override;
+  virtual void onKeysAdded(const key_and_value_array_t& keys) override;
   virtual void onKeyTTLChanged(const key_t& key, ttl_t ttl) override;
 
   // internal methods

@@ -29,7 +29,7 @@ namespace core {
 
 class ICommandTranslator {
  public:  
-  common::Error createKeyCommand(const key_value_t& key,
+  common::Error createKeyCommand(const key_and_value_t& key,
                                  std::string* cmdstring) const WARN_UNUSED_RESULT;
   common::Error loadKeyCommand(const key_t& key,
                                common::Value::Type type,
@@ -40,7 +40,7 @@ class ICommandTranslator {
                                     std::string* cmdstring) const WARN_UNUSED_RESULT;
 
  private:
-  virtual common::Error createKeyCommandImpl(const key_value_t& key,
+  virtual common::Error createKeyCommandImpl(const key_and_value_t& key,
                                              std::string* cmdstring) const = 0;
   virtual common::Error loadKeyCommandImpl(const key_t& key,
                                            common::Value::Type type,

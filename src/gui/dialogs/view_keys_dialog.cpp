@@ -141,6 +141,9 @@ ViewKeysDialog::ViewKeysDialog(const QString& title, core::IDatabaseSPtr db, QWi
                  Qt::DirectConnection));
   VERIFY(connect(serv.get(), &core::IServer::finishedExecute, this, &ViewKeysDialog::finishExecute,
                  Qt::DirectConnection));
+  VERIFY(connect(serv.get(), &core::IServer::keyTTLChanged, this, &ViewKeysDialog::keyTTLChange,
+                 Qt::DirectConnection));
+
   keysTable_ = new FastoTableView;
   keysTable_->setModel(keysModel_);
   keysTable_->setItemDelegateForColumn(KeyTableItem::kTTL, new NumericDelegate(this));
@@ -240,6 +243,13 @@ void ViewKeysDialog::startExecute(const core::events_info::ExecuteInfoRequest& r
 
 void ViewKeysDialog::finishExecute(const core::events_info::ExecuteInfoResponce& res) {
   UNUSED(res);
+}
+
+void ViewKeysDialog::keyTTLChange(core::IDataBaseInfoSPtr db, core::NKey key, core::ttl_t ttl) {
+  UNUSED(db);
+  core::NKey new_key = key;
+  new_key.setTTL(ttl);
+  keysModel_->updateKey(new_key);
 }
 
 void ViewKeysDialog::search(bool forward) {

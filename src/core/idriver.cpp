@@ -99,6 +99,16 @@ namespace fastonosql {
 namespace core {
 
 namespace {
+struct RegisterTypes {
+  RegisterTypes() {
+    qRegisterMetaType<common::ValueSPtr>("common::ValueSPtr");
+    qRegisterMetaType<fastonosql::FastoObjectIPtr>("FastoObjectIPtr");
+    qRegisterMetaType<core::NKey>("core::NKey");
+    qRegisterMetaType<core::NDbKValue>("core::NDbKValue");
+    qRegisterMetaType<core::IDataBaseInfoSPtr>("core::IDataBaseInfoSPtr");
+    qRegisterMetaType<core::ttl_t>("core::ttl_t");
+  }
+} reg_type;
 
 void notifyProgressImpl(IDriver* sender, QObject* reciver, int value) {
   IDriver::reply(reciver, new events::ProgressResponceEvent(
@@ -155,13 +165,6 @@ IDriver::IDriver(IConnectionSettingsBaseSPtr settings)
 
   VERIFY(connect(thread_, &QThread::started, this, &IDriver::init));
   VERIFY(connect(thread_, &QThread::finished, this, &IDriver::clear));
-
-  qRegisterMetaType<common::ValueSPtr>("common::ValueSPtr");
-  qRegisterMetaType<fastonosql::FastoObjectIPtr>("FastoObjectIPtr");
-  qRegisterMetaType<core::NKey>("core::NKey");
-  qRegisterMetaType<core::NDbKValue>("core::NDbKValue");
-  qRegisterMetaType<core::IDataBaseInfoSPtr>("core::IDataBaseInfoSPtr");
-  qRegisterMetaType<core::ttl_t>("core::ttl_t");
 }
 
 IDriver::~IDriver() {
@@ -688,7 +691,7 @@ void IDriver::onKeysRemoved(const keys_t& keys) {
   }
 }
 
-void IDriver::onKeysAdded(const keys_value_t& keys) {
+void IDriver::onKeysAdded(const key_and_value_array_t& keys) {
   for (size_t i = 0; i < keys.size(); ++i) {
     emit keyAdded(current_database_info_, keys[i]);
   }

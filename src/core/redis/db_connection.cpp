@@ -574,16 +574,16 @@ common::Error del(CommandHandler* handler, int argc, const char** argv, FastoObj
 }
 
 common::Error set(CommandHandler* handler, int argc, const char** argv, FastoObject* out) {
-  keys_value_t keys_add;
+  key_and_value_array_t keys_add;
   for (int i = 0; i < argc; i += 2) {
     NKey key(argv[i]);
     common::StringValue* string_val = common::Value::createStringValue(argv[i + 1]);
-    key_value_t kv(key, common::make_value(string_val));
+    key_and_value_t kv(key, common::make_value(string_val));
     keys_add.push_back(kv);
   }
 
   DBConnection* red = static_cast<DBConnection*>(handler);
-  keys_value_t keys_added;
+  key_and_value_array_t keys_added;
   common::Error err = red->add(keys_add, &keys_added);
   if (err && err->isError()) {
     return err;
@@ -1729,9 +1729,9 @@ common::Error DBConnection::delImpl(const keys_t& keys, keys_t* deleted_keys) {
   return common::Error();
 }
 
-common::Error DBConnection::addImpl(const keys_value_t& keys, keys_value_t* added_keys) {
+common::Error DBConnection::addImpl(const key_and_value_array_t& keys, key_and_value_array_t* added_keys) {
   for (size_t i = 0; i < keys.size(); ++i) {
-    key_value_t key = keys[i];
+    key_and_value_t key = keys[i];
     std::string create_cmd;
     translator_t tran = translator();
     common::Error err = tran->createKeyCommand(key, &create_cmd);

@@ -29,11 +29,11 @@ namespace redis {
 class CommandTranslator : public ICommandTranslator {
  public:
   typedef NKey key_t;
-  typedef NDbKValue key_value_t;
+  typedef NDbKValue key_and_value_t;
   CommandTranslator();
 
  private:
-  virtual common::Error createKeyCommandImpl(const key_value_t& key,
+  virtual common::Error createKeyCommandImpl(const key_and_value_t& key,
                                              std::string* cmdstring) const override;
   virtual common::Error loadKeyCommandImpl(const key_t& key,
                                            common::Value::Type type,

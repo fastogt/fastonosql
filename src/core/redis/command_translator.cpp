@@ -44,7 +44,7 @@ namespace core {
 namespace redis {
 CommandTranslator::CommandTranslator() {}
 
-common::Error CommandTranslator::createKeyCommandImpl(const key_value_t& key,
+common::Error CommandTranslator::createKeyCommandImpl(const key_and_value_t& key,
                                                       std::string* cmdstring) const {
   std::string patternResult;
   NValue val = key.value();

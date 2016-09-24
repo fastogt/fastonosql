@@ -20,7 +20,7 @@
 
 #include "common/value.h"  // for Value, Value::Type
 
-#include "core/db_key.h"       // for NDbKValue, ttl_t
+#include "core/db_key.h"  // for NDbKValue, ttl_t
 
 #include "common/qt/gui/base/table_item.h"   // for TableItem
 #include "common/qt/gui/base/table_model.h"  // for TableModel
@@ -32,9 +32,9 @@ class KeyTableItem : public common::qt::gui::TableItem {
  public:
   enum eColumn { kKey = 0, kType = 1, kTTL = 2, kCountColumns = 3 };
 
-  explicit KeyTableItem(const core::NDbKValue& key);
+  explicit KeyTableItem(const core::NDbKValue& dbv);
 
-  QString key() const;
+  QString keyString() const;
   QString typeText() const;
   core::ttl_t ttl() const;
   common::Value::Type type() const;
@@ -42,8 +42,11 @@ class KeyTableItem : public common::qt::gui::TableItem {
   core::NDbKValue dbv() const;
   void setDbv(const core::NDbKValue& val);
 
+  core::NKey key() const;
+  void setKey(const core::NKey& key);
+
  private:
-  core::NDbKValue key_;
+  core::NDbKValue dbv_;
 };
 
 class KeysTableModel : public common::qt::gui::TableModel {
@@ -60,7 +63,7 @@ class KeysTableModel : public common::qt::gui::TableModel {
   virtual int columnCount(const QModelIndex& parent) const;
   void clear();
 
-  void changeValue(const core::NDbKValue& value);
+  void updateKey(const core::NKey& key);
 
  Q_SIGNALS:
   void changedTTL(const core::NDbKValue& value, int ttl);

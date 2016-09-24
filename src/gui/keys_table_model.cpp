@@ -37,31 +37,38 @@
 namespace fastonosql {
 namespace gui {
 
-KeyTableItem::KeyTableItem(const core::NDbKValue& key) : key_(key) {}
+KeyTableItem::KeyTableItem(const core::NDbKValue& dbv) : dbv_(dbv) {}
 
-QString KeyTableItem::key() const {
-  return common::ConvertFromString<QString>(key_.keyString());
+QString KeyTableItem::keyString() const {
+  return common::ConvertFromString<QString>(dbv_.keyString());
 }
 
 QString KeyTableItem::typeText() const {
-  return common::ConvertFromString<QString>(common::Value::toString(key_.type()));
+  return common::ConvertFromString<QString>(common::Value::toString(dbv_.type()));
 }
 
 core::ttl_t KeyTableItem::ttl() const {
-  core::NKey key = key_.key();
+  core::NKey key = dbv_.key();
   return key.ttl();
 }
 
 common::Value::Type KeyTableItem::type() const {
-  return key_.type();
+  return dbv_.type();
 }
 
 core::NDbKValue KeyTableItem::dbv() const {
-  return key_;
+  return dbv_;
 }
 
 void KeyTableItem::setDbv(const core::NDbKValue& val) {
-  key_ = val;
+  dbv_ = val;
+}
+
+core::NKey KeyTableItem::key() const {
+  return dbv_.key();
+}
+void KeyTableItem::setKey(const core::NKey& key) {
+  dbv_.setKey(key);
 }
 
 KeysTableModel::KeysTableModel(QObject* parent) : TableModel(parent) {}
@@ -90,7 +97,7 @@ QVariant KeysTableModel::data(const QModelIndex& index, int role) const {
   QVariant result;
   if (role == Qt::DisplayRole) {
     if (col == KeyTableItem::kKey) {
-      result = node->key();
+      result = node->keyString();
     } else if (col == KeyTableItem::kType) {
       result = node->typeText();
     } else if (col == KeyTableItem::kTTL) {
@@ -163,13 +170,13 @@ int KeysTableModel::columnCount(const QModelIndex& parent) const {
   return KeyTableItem::kCountColumns;
 }
 
-void KeysTableModel::changeValue(const core::NDbKValue& value) {
-  const QString key = common::ConvertFromString<QString>(value.keyString());
+void KeysTableModel::updateKey(const core::NKey& key) {
   for (size_t i = 0; i < data_.size(); ++i) {
     KeyTableItem* it = dynamic_cast<KeyTableItem*>(data_[i]);  // +
     CHECK(it);
-    if (it->key() == key) {
-      it->setDbv(value);
+    core::key_and_value_t dbv = it->dbv();
+    if (dbv.keyString() == key.key()) {
+      it->setKey(key);
       updateItem(index(i, KeyTableItem::kKey, QModelIndex()),
                  index(i, KeyTableItem::kTTL, QModelIndex()));
       break;

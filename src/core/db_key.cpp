@@ -113,10 +113,6 @@ void NDbKValue::setTTL(ttl_t ttl) {
   key_.setTTL(ttl);
 }
 
-ttl_t NDbKValue::TTL() const {
-  return key_.ttl();
-}
-
 void NDbKValue::setKey(const NKey& key) {
   key_ = key;
 }
