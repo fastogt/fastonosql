@@ -82,7 +82,7 @@ class DBConnection : public core::CDBConnection<NativeConnection, Config, MEMCAC
   common::Error flush_all(time_t expiration) WARN_UNUSED_RESULT;
   common::Error version_server() const WARN_UNUSED_RESULT;
   common::Error help(int argc, const char** argv) WARN_UNUSED_RESULT;
-  common::Error expire(const std::string& key, time_t expiration) WARN_UNUSED_RESULT;
+
 
  private:
   common::Error delInner(const std::string& key, time_t expiration) WARN_UNUSED_RESULT;
@@ -90,10 +90,12 @@ class DBConnection : public core::CDBConnection<NativeConnection, Config, MEMCAC
                          const std::string& value,
                          time_t expiration,
                          uint32_t flags) WARN_UNUSED_RESULT;
+  common::Error expireInner(const std::string& key, time_t expiration) WARN_UNUSED_RESULT;
 
-  virtual common::Error selectImpl(const std::string& name, IDataBaseInfo** info);
+  virtual common::Error selectImpl(const std::string& name, IDataBaseInfo** info) override;
   virtual common::Error delImpl(const keys_t& keys, keys_t* deleted_keys) override;
   virtual common::Error addImpl(const keys_value_t& keys, keys_value_t* added_keys) override;
+  virtual common::Error setTTLImpl(const key_t& key, ttl_t ttl) override;
 };
 
 common::Error keys(CommandHandler* handler, int argc, const char** argv, FastoObject* out);

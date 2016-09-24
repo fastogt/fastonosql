@@ -260,8 +260,8 @@ void ExplorerDatabaseItem::removeAllKeys() {
   dbs->removeAllKeys(req);
 }
 
-ExplorerKeyItem::ExplorerKeyItem(const core::NDbKValue& key, IExplorerTreeItem* parent)
-    : IExplorerTreeItem(parent), key_(key) {}
+ExplorerKeyItem::ExplorerKeyItem(const core::NDbKValue& dbv, IExplorerTreeItem* parent)
+    : IExplorerTreeItem(parent), dbv_(dbv) {}
 
 ExplorerDatabaseItem* ExplorerKeyItem::db() const {
   TreeItem* par = parent();
@@ -277,16 +277,24 @@ ExplorerDatabaseItem* ExplorerKeyItem::db() const {
   return nullptr;
 }
 
-core::NDbKValue ExplorerKeyItem::key() const {
-  return key_;
+core::NDbKValue ExplorerKeyItem::dbv() const {
+  return dbv_;
 }
 
-void ExplorerKeyItem::setKey(const core::NDbKValue& key) {
-  key_ = key;
+void ExplorerKeyItem::setDbv(const core::NDbKValue& key) {
+  dbv_ = key;
+}
+
+core::NKey ExplorerKeyItem::key() const {
+  return dbv_.key();
+}
+
+void ExplorerKeyItem::setKey(const core::NKey& key) {
+  dbv_.setKey(key);
 }
 
 QString ExplorerKeyItem::name() const {
-  return common::ConvertFromString<QString>(key_.keyString());
+  return common::ConvertFromString<QString>(dbv_.keyString());
 }
 
 core::IServerSPtr ExplorerKeyItem::server() const {
@@ -302,19 +310,19 @@ IExplorerTreeItem::eType ExplorerKeyItem::type() const {
 void ExplorerKeyItem::removeFromDb() {
   ExplorerDatabaseItem* par = db();
   CHECK(par);
-  par->removeKey(key_.key());
+  par->removeKey(dbv_.key());
 }
 
 void ExplorerKeyItem::loadValueFromDb() {
   ExplorerDatabaseItem* par = db();
   CHECK(par);
-  par->loadValue(key_);
+  par->loadValue(dbv_);
 }
 
 void ExplorerKeyItem::setTTL(core::ttl_t ttl) {
   ExplorerDatabaseItem* par = db();
   CHECK(par);
-  par->setTTL(key_.key(), ttl);
+  par->setTTL(dbv_.key(), ttl);
 }
 
 ExplorerNSItem::ExplorerNSItem(const QString& name, IExplorerTreeItem* parent)
@@ -371,8 +379,7 @@ void ExplorerNSItem::removeBranch() {
       return;
     }
 
-    core::NDbKValue dbv = key_item->key();
-    par->removeKey(dbv.key());
+    par->removeKey(key_item->key());
   });
 }
 
@@ -667,19 +674,18 @@ void ExplorerTreeModel::removeKey(core::IServer* server,
 
 void ExplorerTreeModel::updateKey(core::IServer* server,
                                   core::IDataBaseInfoSPtr db,
-                                  const core::NDbKValue& dbv) {
+                                  const core::NKey& key) {
   ExplorerServerItem* parent = findServerItem(server);
   CHECK(parent);
 
   ExplorerDatabaseItem* dbs = findDatabaseItem(parent, db);
   CHECK(dbs);
 
-  core::NKey key = dbv.key();
   ExplorerKeyItem* keyit = findKeyItem(dbs, key);
   if (keyit) {
     common::qt::gui::TreeItem* par = keyit->parent();
     int index_key = par->indexOf(keyit);
-    keyit->setKey(dbv);
+    keyit->setKey(key);
     QModelIndex key_index1 = createIndex(index_key, ExplorerKeyItem::eName, dbs);
     QModelIndex key_index2 = createIndex(index_key, ExplorerKeyItem::eCountColumns, dbs);
     updateItem(key_index1, key_index2);
@@ -764,8 +770,8 @@ ExplorerKeyItem* ExplorerTreeModel::findKeyItem(IExplorerTreeItem* db_or_ns,
           return false;
         }
 
-        core::NDbKValue ckey = key_item->key();
-        return ckey.keyString() == key.key();
+        core::NKey ckey = key_item->key();
+        return ckey.key() == key.key();
       }));
 }
 

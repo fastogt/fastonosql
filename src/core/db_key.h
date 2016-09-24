@@ -81,6 +81,7 @@ class NDbKValue {
 
   void setTTL(ttl_t ttl);
   ttl_t TTL() const;
+  void setKey(const NKey& key);
   void setValue(NValue value);
 
   std::string keyString() const;

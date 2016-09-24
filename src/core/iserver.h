@@ -138,8 +138,9 @@ class IServer : public IServerBase, public std::enable_shared_from_this<IServer>
   void itemUpdated(FastoObject* item, common::ValueSPtr val);
   void serverInfoSnapShoot(ServerInfoSnapShoot shot);
 
-  void removedKey(core::IDataBaseInfoSPtr db, core::NKey key);
-  void addedKey(core::IDataBaseInfoSPtr db, core::NDbKValue key);
+  void keyRemoved(core::IDataBaseInfoSPtr db, core::NKey key);
+  void keyAdded(core::IDataBaseInfoSPtr db, core::NDbKValue key);
+  void keyTTLChanged(core::IDataBaseInfoSPtr db, core::NKey key, core::ttl_t ttl);
 
  public:
   // async methods

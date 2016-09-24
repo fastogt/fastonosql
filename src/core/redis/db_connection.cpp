@@ -595,6 +595,45 @@ common::Error set(CommandHandler* handler, int argc, const char** argv, FastoObj
   return common::Error();
 }
 
+common::Error persist(CommandHandler* handler, int argc, const char** argv, FastoObject* out) {
+  UNUSED(argc);
+  NKey key(argv[0]);
+
+  DBConnection* red = static_cast<DBConnection*>(handler);
+  common::Error err = red->setTTL(key, NO_TTL);
+  if (err && err->isError()) {
+    common::FundamentalValue* val = common::Value::createUIntegerValue(0);
+    FastoObject* child = new FastoObject(out, val, red->delimiter());
+    out->addChildren(child);
+    return err;
+  }
+
+  common::FundamentalValue* val = common::Value::createUIntegerValue(1);
+  FastoObject* child = new FastoObject(out, val, red->delimiter());
+  out->addChildren(child);
+  return common::Error();
+}
+
+common::Error expire(CommandHandler* handler, int argc, const char** argv, FastoObject* out) {
+  UNUSED(argc);
+  NKey key(argv[0]);
+  ttl_t ttl = atoi(argv[1]);
+
+  DBConnection* red = static_cast<DBConnection*>(handler);
+  common::Error err = red->setTTL(key, ttl);
+  if (err && err->isError()) {
+    common::FundamentalValue* val = common::Value::createUIntegerValue(0);
+    FastoObject* child = new FastoObject(out, val, red->delimiter());
+    out->addChildren(child);
+    return err;
+  }
+
+  common::FundamentalValue* val = common::Value::createUIntegerValue(1);
+  FastoObject* child = new FastoObject(out, val, red->delimiter());
+  out->addChildren(child);
+  return common::Error();
+}
+
 common::Error help(CommandHandler* handler, int argc, const char** argv, FastoObject* out) {
   DBConnection* red = static_cast<DBConnection*>(handler);
   return red->help(argc, argv, out);
@@ -1669,9 +1708,14 @@ common::Error DBConnection::selectImpl(const std::string& name, IDataBaseInfo** 
 common::Error DBConnection::delImpl(const keys_t& keys, keys_t* deleted_keys) {
   for (size_t i = 0; i < keys.size(); ++i) {
     NKey key = keys[i];
-    std::string key_str = key.key();
+    std::string del_cmd;
+    translator_t tran = translator();
+    common::Error err = tran->deleteKeyCommand(key, &del_cmd);
+    if (err && err->isError()) {
+      return err;
+    }
     redisReply* reply =
-        reinterpret_cast<redisReply*>(redisCommand(connection_.handle_, "DEL %s", key_str.c_str()));
+        reinterpret_cast<redisReply*>(redisCommand(connection_.handle_, del_cmd.c_str()));
     if (!reply) {
       return cliPrintContextError(connection_.handle_);
     }
@@ -1688,10 +1732,14 @@ common::Error DBConnection::delImpl(const keys_t& keys, keys_t* deleted_keys) {
 common::Error DBConnection::addImpl(const keys_value_t& keys, keys_value_t* added_keys) {
   for (size_t i = 0; i < keys.size(); ++i) {
     key_value_t key = keys[i];
-    std::string key_str = key.keyString();
-    std::string value_str = key.valueString();
-    redisReply* reply = reinterpret_cast<redisReply*>(
-        redisCommand(connection_.handle_, "SET %s %s", key_str.c_str(), value_str.c_str()));
+    std::string create_cmd;
+    translator_t tran = translator();
+    common::Error err = tran->createKeyCommand(key, &create_cmd);
+    if (err && err->isError()) {
+      return err;
+    }
+    redisReply* reply =
+        reinterpret_cast<redisReply*>(redisCommand(connection_.handle_, create_cmd.c_str()));
     if (!reply) {
       return cliPrintContextError(connection_.handle_);
     }
@@ -1703,6 +1751,37 @@ common::Error DBConnection::addImpl(const keys_value_t& keys, keys_value_t* adde
     freeReplyObject(reply);
   }
 
+  return common::Error();
+}
+
+common::Error DBConnection::setTTLImpl(const key_t& key, ttl_t ttl) {
+  UNUSED(key);
+  UNUSED(ttl);
+  std::string key_str = key.key();
+  translator_t tran = translator();
+  std::string ttl_cmd;
+  common::Error err = tran->changeKeyTTLCommand(key, ttl, &ttl_cmd);
+  if (err && err->isError()) {
+    return err;
+  }
+  redisReply* reply =
+      reinterpret_cast<redisReply*>(redisCommand(connection_.handle_, ttl_cmd.c_str()));
+  if (!reply) {
+    return cliPrintContextError(connection_.handle_);
+  }
+
+  if (reply->type != REDIS_REPLY_INTEGER) {
+    freeReplyObject(reply);
+    return cliPrintContextError(connection_.handle_);
+  }
+
+  if (reply->integer == 0) {
+    return common::make_error_value(
+        common::MemSPrintf("%s does not exist or the timeout could not be set.", key_str.c_str()),
+        common::ErrorValue::E_ERROR);
+  }
+
+  freeReplyObject(reply);
   return common::Error();
 }
 

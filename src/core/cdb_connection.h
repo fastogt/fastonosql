@@ -42,6 +42,7 @@ class CDBConnection : public DBConnection<NConnection, Config, ContType>, public
   common::Error select(const std::string& name, IDataBaseInfo** info) WARN_UNUSED_RESULT;
   common::Error del(const keys_t& keys, keys_t* deleted_keys) WARN_UNUSED_RESULT;
   common::Error add(const keys_value_t& keys, keys_value_t* added_keys) WARN_UNUSED_RESULT;
+  common::Error setTTL(const key_t& key, ttl_t ttl) WARN_UNUSED_RESULT;
 
   translator_t translator() const { return translator_; }
 
@@ -49,6 +50,7 @@ class CDBConnection : public DBConnection<NConnection, Config, ContType>, public
   virtual common::Error selectImpl(const std::string& name, IDataBaseInfo** info) = 0;
   virtual common::Error delImpl(const keys_t& keys, keys_t* deleted_keys) = 0;
   virtual common::Error addImpl(const keys_value_t& keys, keys_value_t* added_keys) = 0;
+  virtual common::Error setTTLImpl(const key_t& key, ttl_t ttl) = 0;
 
   CDBConnectionClient* client_;
   translator_t translator_;
@@ -69,7 +71,7 @@ common::Error CDBConnection<NConnection, Config, ContType>::select(const std::st
   }
 
   if (client_) {
-    client_->currentDataBaseChanged(linfo);
+    client_->onCurrentDataBaseChanged(linfo);
   }
 
   if (info) {
@@ -100,7 +102,7 @@ common::Error CDBConnection<NConnection, Config, ContType>::del(const keys_t& ke
   }
 
   if (client_) {
-    client_->keysRemoved(*deleted_keys);
+    client_->onKeysRemoved(*deleted_keys);
   }
 
   return common::Error();
@@ -125,7 +127,26 @@ common::Error CDBConnection<NConnection, Config, ContType>::add(const keys_value
   }
 
   if (client_) {
-    client_->keysAdded(*added_keys);
+    client_->onKeysAdded(*added_keys);
+  }
+
+  return common::Error();
+}
+
+template <typename NConnection, typename Config, connectionTypes ContType>
+common::Error CDBConnection<NConnection, Config, ContType>::setTTL(const key_t& key, ttl_t ttl) {
+  if (!CDBConnection<NConnection, Config, ContType>::isConnected()) {
+    DNOTREACHED();
+    return common::make_error_value("Not connected", common::Value::E_ERROR);
+  }
+
+  common::Error err = setTTLImpl(key, ttl);
+  if (err && err->isError()) {
+    return err;
+  }
+
+  if (client_) {
+    client_->onKeyTTLChanged(key, ttl);
   }
 
   return common::Error();

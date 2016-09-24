@@ -60,10 +60,13 @@ common::Error common_exec_off2(CommandHandler* handler,
                                const char** argv,
                                FastoObject* out);
 
-common::Error auth(CommandHandler* handler, int argc, const char** argv, FastoObject* out);
 common::Error select(CommandHandler* handler, int argc, const char** argv, FastoObject* out);
 common::Error del(CommandHandler* handler, int argc, const char** argv, FastoObject* out);
 common::Error set(CommandHandler* handler, int argc, const char** argv, FastoObject* out);
+common::Error persist(CommandHandler* handler, int argc, const char** argv, FastoObject* out);
+common::Error expire(CommandHandler* handler, int argc, const char** argv, FastoObject* out);
+
+common::Error auth(CommandHandler* handler, int argc, const char** argv, FastoObject* out);
 common::Error help(CommandHandler* handler, int argc, const char** argv, FastoObject* out);
 common::Error monitor(CommandHandler* handler, int argc, const char** argv, FastoObject* out);
 common::Error subscribe(CommandHandler* handler, int argc, const char** argv, FastoObject* out);
@@ -544,7 +547,7 @@ static const std::vector<CommandHolder> redisCommands = {
                   UNDEFINED_EXAMPLE_STR,
                   2,
                   0,
-                  &common_exec),
+                  &expire),
     CommandHolder("EXPIREAT",
                   "<key> <timestamp>",
                   "Set the expiration for a key as a UNIX timestamp",
@@ -1002,7 +1005,7 @@ static const std::vector<CommandHolder> redisCommands = {
                   UNDEFINED_EXAMPLE_STR,
                   1,
                   0,
-                  &common_exec),
+                  &persist),
     CommandHolder("PEXPIRE",
                   "<key> <milliseconds>",
                   "Set a key's time to live in milliseconds",
@@ -2018,6 +2021,7 @@ class DBConnection : public core::CDBConnection<NativeConnection, RConfig, REDIS
   virtual common::Error selectImpl(const std::string& name, IDataBaseInfo** info) override;
   virtual common::Error delImpl(const keys_t& keys, keys_t* deleted_keys) override;
   virtual common::Error addImpl(const keys_value_t& keys, keys_value_t* added_keys) override;
+  virtual common::Error setTTLImpl(const key_t& key, ttl_t ttl) override;
 
   common::Error sendSync(unsigned long long* payload) WARN_UNUSED_RESULT;
   common::Error sendScan(unsigned long long* it, redisReply** out) WARN_UNUSED_RESULT;

@@ -25,9 +25,10 @@ namespace core {
 
 class CDBConnectionClient {
  public:
-  virtual void currentDataBaseChanged(IDataBaseInfo* info) = 0;
-  virtual void keysRemoved(const keys_t& keys) = 0;
-  virtual void keysAdded(const keys_value_t& keys) = 0;
+  virtual void onCurrentDataBaseChanged(IDataBaseInfo* info) = 0;
+  virtual void onKeysRemoved(const keys_t& keys) = 0;
+  virtual void onKeysAdded(const keys_value_t& keys) = 0;
+  virtual void onKeyTTLChanged(const key_t& key, ttl_t ttl) = 0;
 };
 }  // namespace core
 }  // namespace fastonosql

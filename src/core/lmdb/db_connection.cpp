@@ -444,6 +444,14 @@ common::Error DBConnection::delImpl(const keys_t& keys, keys_t* deleted_keys) {
   return common::Error();
 }
 
+common::Error DBConnection::setTTLImpl(const key_t& key, ttl_t ttl) {
+  UNUSED(key);
+  UNUSED(ttl);
+  return common::make_error_value("Sorry, but now " PROJECT_NAME_TITLE
+                                  " for LMDB not supported TTL commands.",
+                                  common::ErrorValue::E_ERROR);
+}
+
 common::Error info(CommandHandler* handler, int argc, const char** argv, FastoObject* out) {
   DBConnection* mdb = static_cast<DBConnection*>(handler);
   ServerInfo::Stats statsout;

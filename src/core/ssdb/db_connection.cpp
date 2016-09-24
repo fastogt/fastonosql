@@ -943,6 +943,14 @@ common::Error DBConnection::addImpl(const keys_value_t& keys, keys_value_t* adde
   return common::Error();
 }
 
+common::Error DBConnection::setTTLImpl(const key_t& key, ttl_t ttl) {
+  UNUSED(key);
+  UNUSED(ttl);
+  return common::make_error_value("Sorry, but now " PROJECT_NAME_TITLE
+                                  " for SSDB not supported TTL commands.",
+                                  common::ErrorValue::E_ERROR);
+}
+
 common::Error info(CommandHandler* handler, int argc, const char** argv, FastoObject* out) {
   DBConnection* ssdb = static_cast<DBConnection*>(handler);
   ServerInfo::Stats statsout;

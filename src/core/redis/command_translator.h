@@ -20,6 +20,9 @@
 
 #include "core/icommand_translator.h"
 
+#define REDIS_CHANGE_TTL_2ARGS_SI "EXPIRE %s %d"
+#define REDIS_PERSIST_KEY_1ARGS_S "PERSIST %s"
+
 namespace fastonosql {
 namespace core {
 namespace redis {

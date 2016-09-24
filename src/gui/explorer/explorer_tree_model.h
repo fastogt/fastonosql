@@ -111,10 +111,10 @@ class ExplorerDatabaseItem : public IExplorerTreeItem {
 
   core::IDataBaseInfoSPtr info() const;
 
-  void removeKey(const core::NKey &key);
+  void removeKey(const core::NKey& key);
   void loadValue(const core::NDbKValue& key);
   void createKey(const core::NDbKValue& key);
-  void setTTL(const core::NKey &key, core::ttl_t ttl);
+  void setTTL(const core::NKey& key, core::ttl_t ttl);
 
   void removeAllKeys();
 
@@ -140,11 +140,14 @@ class ExplorerNSItem : public IExplorerTreeItem {
 
 class ExplorerKeyItem : public IExplorerTreeItem {
  public:
-  ExplorerKeyItem(const core::NDbKValue& key, IExplorerTreeItem* parent);
+  ExplorerKeyItem(const core::NDbKValue& dbv, IExplorerTreeItem* parent);
   ExplorerDatabaseItem* db() const;
 
-  core::NDbKValue key() const;
-  void setKey(const core::NDbKValue& key);
+  core::NDbKValue dbv() const;
+  void setDbv(const core::NDbKValue& key);
+
+  core::NKey key() const;
+  void setKey(const core::NKey& key);
 
   virtual QString name() const;
   core::IServerSPtr server() const;
@@ -155,7 +158,7 @@ class ExplorerKeyItem : public IExplorerTreeItem {
   void setTTL(core::ttl_t ttl);
 
  private:
-  core::NDbKValue key_;
+  core::NDbKValue dbv_;
 };
 
 class ExplorerTreeModel : public common::qt::gui::TreeModel {
@@ -187,7 +190,7 @@ class ExplorerTreeModel : public common::qt::gui::TreeModel {
               const core::NDbKValue& dbv,
               const std::string& ns_separator);
   void removeKey(core::IServer* server, core::IDataBaseInfoSPtr db, const core::NKey& key);
-  void updateKey(core::IServer* server, core::IDataBaseInfoSPtr db, const core::NDbKValue& dbv);
+  void updateKey(core::IServer* server, core::IDataBaseInfoSPtr db, const core::NKey& key);
   void removeAllKeys(core::IServer* server, core::IDataBaseInfoSPtr db);
 
  private:
@@ -196,7 +199,7 @@ class ExplorerTreeModel : public common::qt::gui::TreeModel {
   ExplorerServerItem* findServerItem(core::IServer* server) const;
   ExplorerDatabaseItem* findDatabaseItem(ExplorerServerItem* server,
                                          core::IDataBaseInfoSPtr db) const;
-  ExplorerKeyItem* findKeyItem(IExplorerTreeItem* db_or_ns, const core::NKey &key) const;
+  ExplorerKeyItem* findKeyItem(IExplorerTreeItem* db_or_ns, const core::NKey& key) const;
   ExplorerNSItem* findNSItem(IExplorerTreeItem* db_or_ns, const QString& name) const;
   ExplorerNSItem* findOrCreateNSItem(IExplorerTreeItem* db_or_ns, const core::KeyInfo& kinf);
 };

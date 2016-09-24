@@ -100,6 +100,7 @@ class ExplorerTreeView : public QTreeView {
 
   void removeKey(core::IDataBaseInfoSPtr db, core::NKey key);
   void addKey(core::IDataBaseInfoSPtr db, core::NDbKValue key);
+  void changeTTLKey(core::IDataBaseInfoSPtr db, core::NKey key, core::ttl_t ttl);
 
  protected:
   virtual void changeEvent(QEvent* ev);

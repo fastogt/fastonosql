@@ -81,8 +81,9 @@ class IDriver : public QObject,
   void itemUpdated(FastoObject* item, common::ValueSPtr val);
   void serverInfoSnapShoot(ServerInfoSnapShoot shot);
 
-  void removedKey(core::IDataBaseInfoSPtr db, core::NKey keys);
-  void addedKey(core::IDataBaseInfoSPtr db, core::NDbKValue keys);
+  void keyRemoved(core::IDataBaseInfoSPtr db, core::NKey key);
+  void keyAdded(core::IDataBaseInfoSPtr db, core::NDbKValue key);
+  void keyTTLChanged(core::IDataBaseInfoSPtr db, core::NKey key, core::ttl_t ttl);
 
  private Q_SLOTS:
   void init();
@@ -161,9 +162,10 @@ class IDriver : public QObject,
   virtual void addedChildren(FastoObjectIPtr child) override;
   virtual void updated(FastoObject* item, FastoObject::value_t val) override;
 
-  virtual void currentDataBaseChanged(IDataBaseInfo* info) override;
-  virtual void keysRemoved(const keys_t& keys) override;
-  virtual void keysAdded(const keys_value_t& keys) override;
+  virtual void onCurrentDataBaseChanged(IDataBaseInfo* info) override;
+  virtual void onKeysRemoved(const keys_t& keys) override;
+  virtual void onKeysAdded(const keys_value_t& keys) override;
+  virtual void onKeyTTLChanged(const key_t& key, ttl_t ttl) override;
 
   // internal methods
   virtual IServerInfoSPtr makeServerInfoFromString(const std::string& val) = 0;

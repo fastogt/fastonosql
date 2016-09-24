@@ -177,6 +177,7 @@ class DBConnection : public core::CDBConnection<NativeConnection, Config, SSDB> 
   virtual common::Error selectImpl(const std::string& name, IDataBaseInfo** info) override;
   virtual common::Error delImpl(const keys_t& keys, keys_t* deleted_keys) override;
   virtual common::Error addImpl(const keys_value_t& keys, keys_value_t* added_keys) override;
+  virtual common::Error setTTLImpl(const key_t& key, ttl_t ttl) override;
 };
 
 common::Error info(CommandHandler* handler, int argc, const char** argv, FastoObject* out);

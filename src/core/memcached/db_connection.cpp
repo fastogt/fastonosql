@@ -488,6 +488,35 @@ common::Error DBConnection::setInner(const std::string& key,
   return common::Error();
 }
 
+common::Error DBConnection::expireInner(const std::string& key, time_t expiration) {
+  if (!isConnected()) {
+    DNOTREACHED();
+    return common::make_error_value("Not connected", common::Value::E_ERROR);
+  }
+
+  uint32_t flags = 0;
+  memcached_return error;
+  size_t value_length = 0;
+
+  char* value =
+      memcached_get(connection_.handle_, key.c_str(), key.length(), &value_length, &flags, &error);
+  if (error != MEMCACHED_SUCCESS) {
+    std::string buff = common::MemSPrintf("EXPIRE function error: %s",
+                                          memcached_strerror(connection_.handle_, error));
+    return common::make_error_value(buff, common::ErrorValue::E_ERROR);
+  }
+
+  error = memcached_set(connection_.handle_, key.c_str(), key.length(), value, value_length,
+                        expiration, flags);
+  if (error != MEMCACHED_SUCCESS) {
+    std::string buff = common::MemSPrintf("EXPIRE function error: %s",
+                                          memcached_strerror(connection_.handle_, error));
+    return common::make_error_value(buff, common::ErrorValue::E_ERROR);
+  }
+
+  return common::Error();
+}
+
 common::Error DBConnection::flush_all(time_t expiration) {
   if (!isConnected()) {
     DNOTREACHED();
@@ -527,35 +556,6 @@ common::Error DBConnection::help(int argc, const char** argv) {
   return notSupported("HELP");
 }
 
-common::Error DBConnection::expire(const std::string& key, time_t expiration) {
-  if (!isConnected()) {
-    DNOTREACHED();
-    return common::make_error_value("Not connected", common::Value::E_ERROR);
-  }
-
-  uint32_t flags = 0;
-  memcached_return error;
-  size_t value_length = 0;
-
-  char* value =
-      memcached_get(connection_.handle_, key.c_str(), key.length(), &value_length, &flags, &error);
-  if (error != MEMCACHED_SUCCESS) {
-    std::string buff = common::MemSPrintf("EXPIRE function error: %s",
-                                          memcached_strerror(connection_.handle_, error));
-    return common::make_error_value(buff, common::ErrorValue::E_ERROR);
-  }
-
-  error = memcached_set(connection_.handle_, key.c_str(), key.length(), value, value_length,
-                        expiration, flags);
-  if (error != MEMCACHED_SUCCESS) {
-    std::string buff = common::MemSPrintf("EXPIRE function error: %s",
-                                          memcached_strerror(connection_.handle_, error));
-    return common::make_error_value(buff, common::ErrorValue::E_ERROR);
-  }
-
-  return common::Error();
-}
-
 common::Error DBConnection::selectImpl(const std::string& name, IDataBaseInfo** info) {
   size_t kcount = 0;
   common::Error err = dbkcount(&kcount);
@@ -593,6 +593,12 @@ common::Error DBConnection::addImpl(const keys_value_t& keys, keys_value_t* adde
   }
 
   return common::Error();
+}
+
+common::Error DBConnection::setTTLImpl(const key_t& key, ttl_t ttl) {
+  UNUSED(key);
+  UNUSED(ttl);
+  return expireInner(key.key(), ttl);
 }
 
 common::Error keys(CommandHandler* handler, int argc, const char** argv, FastoObject* out) {
@@ -830,7 +836,9 @@ common::Error expire(CommandHandler* handler, int argc, const char** argv, Fasto
   UNUSED(out);
 
   DBConnection* mem = static_cast<DBConnection*>(handler);
-  common::Error er = mem->expire(argv[0], common::ConvertFromString<time_t>(argv[1]));
+  key_t key(argv[0]);
+  ttl_t ttl = common::ConvertFromString<time_t>(argv[1]);
+  common::Error er = mem->setTTL(key, ttl);
   if (!er) {
     common::StringValue* val = common::Value::createStringValue("OK");
     FastoObject* child = new FastoObject(out, val, mem->delimiter());

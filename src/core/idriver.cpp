@@ -161,6 +161,7 @@ IDriver::IDriver(IConnectionSettingsBaseSPtr settings)
   qRegisterMetaType<core::NKey>("core::NKey");
   qRegisterMetaType<core::NDbKValue>("core::NDbKValue");
   qRegisterMetaType<core::IDataBaseInfoSPtr>("core::IDataBaseInfoSPtr");
+  qRegisterMetaType<core::ttl_t>("core::ttl_t");
 }
 
 IDriver::~IDriver() {
@@ -636,10 +637,8 @@ void IDriver::handleDiscoveryInfoRequestEvent(events::DiscoveryInfoRequestEvent*
       res.dbinfo = current_database_info_;
     }
   } else {
-    res.setErrorInfo(
-        common::make_error_value("Not connected to server, impossible to get "
-                                 "discovery info!",
-                                 common::Value::E_ERROR));
+    res.setErrorInfo(common::make_error_value(
+        "Not connected to server, impossible to get discovery info!", common::Value::E_ERROR));
   }
 
   notifyProgress(sender, 75);
@@ -679,20 +678,24 @@ void IDriver::updated(FastoObject* item, FastoObject::value_t val) {
   emit itemUpdated(item, val);
 }
 
-void IDriver::currentDataBaseChanged(IDataBaseInfo* info) {
+void IDriver::onCurrentDataBaseChanged(IDataBaseInfo* info) {
   current_database_info_.reset(info->Clone());
 }
 
-void IDriver::keysRemoved(const keys_t& keys) {
+void IDriver::onKeysRemoved(const keys_t& keys) {
   for (size_t i = 0; i < keys.size(); ++i) {
-    emit removedKey(current_database_info_, keys[i]);
+    emit keyRemoved(current_database_info_, keys[i]);
   }
 }
 
-void IDriver::keysAdded(const keys_value_t& keys) {
+void IDriver::onKeysAdded(const keys_value_t& keys) {
   for (size_t i = 0; i < keys.size(); ++i) {
-    emit addedKey(current_database_info_, keys[i]);
+    emit keyAdded(current_database_info_, keys[i]);
   }
+}
+
+void IDriver::onKeyTTLChanged(const key_t& key, ttl_t ttl) {
+  emit keyTTLChanged(current_database_info_, key, ttl);
 }
 
 IDriverLocal::IDriverLocal(IConnectionSettingsBaseSPtr settings) : IDriver(settings) {
