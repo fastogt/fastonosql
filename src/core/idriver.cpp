@@ -395,9 +395,10 @@ void IDriver::handleExecuteEvent(events::ExecuteRequestEvent* ev) {
     return;
   }
 
+  const bool silence = res.silence;
   size_t length = inputLine.length();
   int offset = 0;
-  RootLocker lock = make_locker(sender, inputLine);
+  RootLocker lock = make_locker(sender, inputLine, silence);
   FastoObjectIPtr obj = lock.root();
   const double step = 100.0 / double(length);
   for (size_t i = 0; i < length; ++i) {
@@ -417,7 +418,9 @@ void IDriver::handleExecuteEvent(events::ExecuteRequestEvent* ev) {
       }
 
       offset = i + 1;
-      FastoObjectCommandIPtr cmd = createCommand(obj.get(), command, common::Value::C_USER);  //
+      FastoObjectCommandIPtr cmd =
+          silence ? createCommandFast(command, common::Value::C_USER)
+                  : createCommand(obj.get(), command, common::Value::C_USER);  //
       common::Error er = execute(cmd);
       if (er && er->isError()) {
         res.setErrorInfo(er);
@@ -489,18 +492,28 @@ void IDriver::handleSetDefaultDatabaseEvent(events::SetDefaultDatabaseRequestEve
                          events::SetDefaultDatabaseResponceEvent>(this, ev, "set default database");
 }
 
-IDriver::RootLocker::RootLocker(IDriver* parent, QObject* receiver, const std::string& text)
-    : parent_(parent), receiver_(receiver), tstart_(common::time::current_mstime()) {
+IDriver::RootLocker::RootLocker(IDriver* parent,
+                                QObject* receiver,
+                                const std::string& text,
+                                bool silence)
+    : parent_(parent),
+      receiver_(receiver),
+      tstart_(common::time::current_mstime()),
+      silence_(silence) {
   DCHECK(parent_);
 
   root_ = FastoObject::createRoot(text, parent_);
-  events::CommandRootCreatedEvent::value_type res(this, root_);
-  reply(receiver_, new events::CommandRootCreatedEvent(parent_, res));
+  if (!silence) {
+    events::CommandRootCreatedEvent::value_type res(this, root_);
+    reply(receiver_, new events::CommandRootCreatedEvent(parent_, res));
+  }
 }
 
 IDriver::RootLocker::~RootLocker() {
-  events::CommandRootCompleatedEvent::value_type res(this, tstart_, root_);
-  reply(receiver_, new events::CommandRootCompleatedEvent(parent_, res));
+  if (!silence_) {
+    events::CommandRootCompleatedEvent::value_type res(this, tstart_, root_);
+    reply(receiver_, new events::CommandRootCompleatedEvent(parent_, res));
+  }
 }
 
 FastoObjectIPtr IDriver::RootLocker::root() const {

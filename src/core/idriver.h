@@ -122,7 +122,7 @@ class IDriver : public QObject,
 
   class RootLocker {
    public:
-    RootLocker(IDriver* parent, QObject* receiver, const std::string& text);
+    RootLocker(IDriver* parent, QObject* receiver, const std::string& text, bool silence);
     ~RootLocker();
 
     FastoObjectIPtr root() const;
@@ -132,10 +132,11 @@ class IDriver : public QObject,
     IDriver* parent_;
     QObject* receiver_;
     const common::time64_t tstart_;
+    const bool silence_;
   };
 
-  RootLocker make_locker(QObject* reciver, const std::string& text) {
-    return RootLocker(this, reciver, text);
+  RootLocker make_locker(QObject* reciver, const std::string& text, bool silence) {
+    return RootLocker(this, reciver, text, silence);
   }
 
   common::Error execute(FastoObjectCommandIPtr cmd) WARN_UNUSED_RESULT;

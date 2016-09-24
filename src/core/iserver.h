@@ -139,7 +139,7 @@ class IServer : public IServerBase, public std::enable_shared_from_this<IServer>
   void serverInfoSnapShoot(ServerInfoSnapShoot shot);
 
   void removedKey(core::IDataBaseInfoSPtr db, core::NKey key);
-  void addedKey(core::IDataBaseInfoSPtr db, core::NDbKValue keys);
+  void addedKey(core::IDataBaseInfoSPtr db, core::NDbKValue key);
 
  public:
   // async methods

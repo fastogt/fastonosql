@@ -113,8 +113,9 @@ DisConnectInfoResponce::DisConnectInfoResponce(const base_class& request) : base
 
 ExecuteInfoRequest::ExecuteInfoRequest(initiator_type sender,
                                        const std::string& text,
+                                       bool silence,
                                        error_type er)
-    : base_class(sender, er), text(text) {}
+    : base_class(sender, er), text(text), silence(silence) {}
 
 ExecuteInfoResponce::ExecuteInfoResponce(const base_class& request) : base_class(request) {}
 

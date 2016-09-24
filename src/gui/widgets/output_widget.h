@@ -107,6 +107,8 @@ class OutputWidget : public QWidget {
   void rootCreate(const core::events_info::CommandRootCreatedInfo& res);
   void rootCompleate(const core::events_info::CommandRootCompleatedInfo& res);
 
+  void addKey(core::IDataBaseInfoSPtr db, core::NDbKValue key);
+
   void addChild(FastoObjectIPtr child);
   void itemUpdate(FastoObject* item, common::ValueSPtr newValue);
 

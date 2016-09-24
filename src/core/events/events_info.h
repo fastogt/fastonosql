@@ -187,9 +187,10 @@ struct DisConnectInfoResponce : DisConnectInfoRequest {
 
 struct ExecuteInfoRequest : public EventInfoBase {
   typedef EventInfoBase base_class;
-  ExecuteInfoRequest(initiator_type sender, const std::string& text, error_type er = error_type());
+  ExecuteInfoRequest(initiator_type sender, const std::string& text, bool silence = false, error_type er = error_type());
 
   const std::string text;
+  const bool silence;
 };
 
 struct ExecuteInfoResponce : ExecuteInfoRequest {

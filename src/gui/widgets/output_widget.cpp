@@ -89,6 +89,9 @@ OutputWidget::OutputWidget(core::IServerSPtr server, QWidget* parent)
   VERIFY(connect(server_.get(), &core::IServer::finishedExecute, this,
                  &OutputWidget::finishExecuteCommand, Qt::DirectConnection));
 
+  VERIFY(connect(server_.get(), &core::IServer::addedKey, this, &OutputWidget::addKey,
+                 Qt::DirectConnection));
+
   VERIFY(connect(server_.get(), &core::IServer::rootCreated, this, &OutputWidget::rootCreate,
                  Qt::DirectConnection));
   VERIFY(connect(server_.get(), &core::IServer::rootCompleated, this, &OutputWidget::rootCompleate,
@@ -152,27 +155,17 @@ void OutputWidget::rootCompleate(const core::events_info::CommandRootCompleatedI
   updateTimeLabel(res);
 }
 
-void OutputWidget::startExecuteCommand(const core::events_info::ExecuteInfoRequest &req) {
+void OutputWidget::addKey(core::IDataBaseInfoSPtr db, core::NDbKValue key) {
+  UNUSED(db);
+  commonModel_->changeValue(key);
+}
+
+void OutputWidget::startExecuteCommand(const core::events_info::ExecuteInfoRequest& req) {
   UNUSED(req);
 }
 
-void OutputWidget::finishExecuteCommand(const core::events_info::ExecuteInfoResponce &res) {
-  common::Error er = res.errorInfo();
-  if (er && er->isError()) {
-    return;
-  }
-
-  if (res.initiator() != this) {
-    DEBUG_MSG_FORMAT<512>(common::logging::L_DEBUG, "Skipped event in file: %s, function: %s",
-                          __FILE__, __FUNCTION__);
-    return;
-  }
-
-  /*core::CommandKeySPtr key = res.cmd;
-  if (key->type() == core::CommandKey::C_CREATE) {
-    core::NDbKValue dbv = key->key();
-    commonModel_->changeValue(dbv);
-  }*/
+void OutputWidget::finishExecuteCommand(const core::events_info::ExecuteInfoResponce& res) {
+  UNUSED(res);
 }
 
 void OutputWidget::addChild(FastoObjectIPtr child) {
@@ -262,7 +255,7 @@ void OutputWidget::createKey(const core::NDbKValue& dbv) {
       return;
     }
 
-    core::events_info::ExecuteInfoRequest req(this, cmd_text);
+    core::events_info::ExecuteInfoRequest req(this, cmd_text, true);
     server_->execute(req);
   }
 }
