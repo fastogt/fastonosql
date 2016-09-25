@@ -697,6 +697,10 @@ void IDriver::onKeysAdded(const key_and_value_array_t& keys) {
   }
 }
 
+void IDriver::onKeyLoaded(const key_and_value_t& key) {
+  emit keyLoaded(current_database_info_, key);
+}
+
 void IDriver::onKeyTTLChanged(const key_t& key, ttl_t ttl) {
   emit keyTTLChanged(current_database_info_, key, ttl);
 }

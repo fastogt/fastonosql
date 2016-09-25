@@ -584,7 +584,7 @@ common::Error set(CommandHandler* handler, int argc, const char** argv, FastoObj
 
   DBConnection* red = static_cast<DBConnection*>(handler);
   key_and_value_array_t keys_added;
-  common::Error err = red->add(keys_add, &keys_added);
+  common::Error err = red->set(keys_add, &keys_added);
   if (err && err->isError()) {
     return err;
   }
@@ -1729,7 +1729,8 @@ common::Error DBConnection::delImpl(const keys_t& keys, keys_t* deleted_keys) {
   return common::Error();
 }
 
-common::Error DBConnection::addImpl(const key_and_value_array_t& keys, key_and_value_array_t* added_keys) {
+common::Error DBConnection::setImpl(const key_and_value_array_t& keys,
+                                    key_and_value_array_t* added_keys) {
   for (size_t i = 0; i < keys.size(); ++i) {
     key_and_value_t key = keys[i];
     std::string create_cmd;
@@ -1751,6 +1752,18 @@ common::Error DBConnection::addImpl(const key_and_value_array_t& keys, key_and_v
     freeReplyObject(reply);
   }
 
+  return common::Error();
+}
+
+common::Error DBConnection::getImpl(const key_t& key, key_and_value_t* loaded_key) {
+  std::string key_str = key.key();
+  redisReply* reply =
+      reinterpret_cast<redisReply*>(redisCommand(connection_.handle_, "GET %s", key_str.c_str()));
+  if (!reply) {
+    return cliPrintContextError(connection_.handle_);
+  }
+
+  freeReplyObject(reply);
   return common::Error();
 }
 

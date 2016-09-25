@@ -309,34 +309,6 @@ common::Error DBConnection::dbkcount(size_t* size) {
   return common::Error();
 }
 
-common::Error DBConnection::get(const std::string& key, std::string* ret_val) {
-  if (!isConnected()) {
-    DNOTREACHED();
-    return common::make_error_value("Not connected", common::Value::E_ERROR);
-  }
-
-  if (!ret_val) {
-    return common::make_error_value("Invalid input argument(s)", common::ErrorValue::E_ERROR);
-  }
-
-  uint32_t flags = 0;
-  memcached_return error;
-  size_t value_length = 0;
-
-  char* value =
-      memcached_get(connection_.handle_, key.c_str(), key.length(), &value_length, &flags, &error);
-  if (error != MEMCACHED_SUCCESS) {
-    std::string buff = common::MemSPrintf("Get function error: %s",
-                                          memcached_strerror(connection_.handle_, error));
-    return common::make_error_value(buff, common::ErrorValue::E_ERROR);
-  }
-
-  CHECK(value);
-  *ret_val = std::string(value, value + value_length);
-  free(value);
-  return common::Error();
-}
-
 common::Error DBConnection::addIfNotExist(const std::string& key,
                                           const std::string& value,
                                           time_t expiration,
@@ -488,6 +460,35 @@ common::Error DBConnection::setInner(const std::string& key,
   return common::Error();
 }
 
+common::Error DBConnection::getInner(const std::string& key, std::string* ret_val) {
+  if (!isConnected()) {
+    DNOTREACHED();
+    return common::make_error_value("Not connected", common::Value::E_ERROR);
+  }
+
+  if (!ret_val) {
+    return common::make_error_value("Invalid input argument(s)", common::ErrorValue::E_ERROR);
+  }
+
+  uint32_t flags = 0;
+  memcached_return error;
+  size_t value_length = 0;
+
+  char* value =
+      memcached_get(connection_.handle_, key.c_str(), key.length(), &value_length, &flags, &error);
+  if (error != MEMCACHED_SUCCESS) {
+    std::string buff = common::MemSPrintf("Get function error: %s",
+                                          memcached_strerror(connection_.handle_, error));
+    return common::make_error_value(buff, common::ErrorValue::E_ERROR);
+  }
+
+  CHECK(value);
+  *ret_val = std::string(value, value + value_length);
+  free(value);
+  return common::Error();
+}
+
+
 common::Error DBConnection::expireInner(const std::string& key, time_t expiration) {
   if (!isConnected()) {
     DNOTREACHED();
@@ -579,7 +580,21 @@ common::Error DBConnection::delImpl(const keys_t& keys, keys_t* deleted_keys) {
   return common::Error();
 }
 
-common::Error DBConnection::addImpl(const key_and_value_array_t& keys,
+common::Error DBConnection::getImpl(const key_t& key,
+                                    key_and_value_t* loaded_key) {
+  std::string key_str = key.key();
+  std::string value_str;
+  common::Error err = getInner(key_str, &value_str);
+  if (err && err->isError()) {
+    return err;
+  }
+
+  common::StringValue* val = common::Value::createStringValue(value_str);
+  *loaded_key = key_and_value_t(key, common::make_value(val));
+  return common::Error();
+}
+
+common::Error DBConnection::setImpl(const key_and_value_array_t& keys,
                                     key_and_value_array_t* added_keys) {
   for (size_t i = 0; i < keys.size(); ++i) {
     key_and_value_t key = keys[i];
@@ -642,18 +657,19 @@ common::Error stats(CommandHandler* handler, int argc, const char** argv, FastoO
 }
 
 common::Error get(CommandHandler* handler, int argc, const char** argv, FastoObject* out) {
-  UNUSED(argc);
-
-  DBConnection* mem = static_cast<DBConnection*>(handler);
-  std::string ret;
-  common::Error er = mem->get(argv[0], &ret);
-  if (!er) {
-    common::StringValue* val = common::Value::createStringValue(ret);
-    FastoObject* child = new FastoObject(out, val, mem->delimiter());
-    out->addChildren(child);
+  NKey key(argv[0]);
+  DBConnection* unqlite = static_cast<DBConnection*>(handler);
+  key_and_value_t key_loaded;
+  common::Error err = unqlite->get(key, &key_loaded);
+  if (err && err->isError()) {
+    return err;
   }
 
-  return er;
+  value_t val = key_loaded.value();
+  common::Value* copy = val->deepCopy();
+  FastoObject* child = new FastoObject(out, copy, unqlite->delimiter());
+  out->addChildren(child);
+  return common::Error();
 }
 
 common::Error add(CommandHandler* handler, int argc, const char** argv, FastoObject* out) {
@@ -771,7 +787,7 @@ common::Error set(CommandHandler* handler, int argc, const char** argv, FastoObj
 
   DBConnection* mem = static_cast<DBConnection*>(handler);
   key_and_value_array_t keys_added;
-  common::Error err = mem->add(keys_add, &keys_added);
+  common::Error err = mem->set(keys_add, &keys_added);
   if (err && err->isError()) {
     return err;
   }

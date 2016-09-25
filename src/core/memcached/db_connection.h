@@ -60,7 +60,6 @@ class DBConnection : public core::CDBConnection<NativeConnection, Config, MEMCAC
   common::Error info(const char* args, ServerInfo::Stats* statsout) WARN_UNUSED_RESULT;
   common::Error dbkcount(size_t* size) WARN_UNUSED_RESULT;
 
-  common::Error get(const std::string& key, std::string* ret_val) WARN_UNUSED_RESULT;
   common::Error addIfNotExist(const std::string& key,
                               const std::string& value,
                               time_t expiration,
@@ -83,9 +82,9 @@ class DBConnection : public core::CDBConnection<NativeConnection, Config, MEMCAC
   common::Error version_server() const WARN_UNUSED_RESULT;
   common::Error help(int argc, const char** argv) WARN_UNUSED_RESULT;
 
-
  private:
   common::Error delInner(const std::string& key, time_t expiration) WARN_UNUSED_RESULT;
+  common::Error getInner(const std::string& key, std::string* ret_val) WARN_UNUSED_RESULT;
   common::Error setInner(const std::string& key,
                          const std::string& value,
                          time_t expiration,
@@ -94,18 +93,20 @@ class DBConnection : public core::CDBConnection<NativeConnection, Config, MEMCAC
 
   virtual common::Error selectImpl(const std::string& name, IDataBaseInfo** info) override;
   virtual common::Error delImpl(const keys_t& keys, keys_t* deleted_keys) override;
-  virtual common::Error addImpl(const key_and_value_array_t& keys, key_and_value_array_t* added_keys) override;
+  virtual common::Error getImpl(const key_t& key, key_and_value_t* loaded_key) override;
+  virtual common::Error setImpl(const key_and_value_array_t& keys,
+                                key_and_value_array_t* added_keys) override;
   virtual common::Error setTTLImpl(const key_t& key, ttl_t ttl) override;
 };
 
 common::Error select(CommandHandler* handler, int argc, const char** argv, FastoObject* out);
 common::Error set(CommandHandler* handler, int argc, const char** argv, FastoObject* out);
+common::Error get(CommandHandler* handler, int argc, const char** argv, FastoObject* out);
 common::Error del(CommandHandler* handler, int argc, const char** argv, FastoObject* out);
 common::Error set_ttl(CommandHandler* handler, int argc, const char** argv, FastoObject* out);
 
 common::Error keys(CommandHandler* handler, int argc, const char** argv, FastoObject* out);
 common::Error stats(CommandHandler* handler, int argc, const char** argv, FastoObject* out);
-common::Error get(CommandHandler* handler, int argc, const char** argv, FastoObject* out);
 common::Error add(CommandHandler* handler, int argc, const char** argv, FastoObject* out);
 common::Error replace(CommandHandler* handler, int argc, const char** argv, FastoObject* out);
 common::Error append(CommandHandler* handler, int argc, const char** argv, FastoObject* out);

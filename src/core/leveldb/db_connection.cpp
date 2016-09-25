@@ -205,22 +205,6 @@ common::Error DBConnection::info(const char* args, ServerInfo::Stats* statsout) 
   return common::Error();
 }
 
-common::Error DBConnection::get(const std::string& key, std::string* ret_val) {
-  if (!isConnected()) {
-    DNOTREACHED();
-    return common::make_error_value("Not connected", common::Value::E_ERROR);
-  }
-
-  ::leveldb::ReadOptions ro;
-  auto st = connection_.handle_->Get(ro, key, ret_val);
-  if (!st.ok()) {
-    std::string buff = common::MemSPrintf("get function error: %s", st.ToString());
-    return common::make_error_value(buff, common::ErrorValue::E_ERROR);
-  }
-
-  return common::Error();
-}
-
 common::Error DBConnection::delInner(const std::string& key) {
   if (!isConnected()) {
     DNOTREACHED();
@@ -246,6 +230,22 @@ common::Error DBConnection::setInner(const std::string& key, const std::string& 
   auto st = connection_.handle_->Put(wo, key, value);
   if (!st.ok()) {
     std::string buff = common::MemSPrintf("set function error: %s", st.ToString());
+    return common::make_error_value(buff, common::ErrorValue::E_ERROR);
+  }
+
+  return common::Error();
+}
+
+common::Error DBConnection::getInner(const std::string& key, std::string* ret_val) {
+  if (!isConnected()) {
+    DNOTREACHED();
+    return common::make_error_value("Not connected", common::Value::E_ERROR);
+  }
+
+  ::leveldb::ReadOptions ro;
+  auto st = connection_.handle_->Get(ro, key, ret_val);
+  if (!st.ok()) {
+    std::string buff = common::MemSPrintf("get function error: %s", st.ToString());
     return common::make_error_value(buff, common::ErrorValue::E_ERROR);
   }
 
@@ -342,7 +342,7 @@ common::Error DBConnection::delImpl(const keys_t& keys, keys_t* deleted_keys) {
   return common::Error();
 }
 
-common::Error DBConnection::addImpl(const key_and_value_array_t& keys,
+common::Error DBConnection::setImpl(const key_and_value_array_t& keys,
                                     key_and_value_array_t* added_keys) {
   for (size_t i = 0; i < keys.size(); ++i) {
     key_and_value_t key = keys[i];
@@ -356,6 +356,19 @@ common::Error DBConnection::addImpl(const key_and_value_array_t& keys,
     added_keys->push_back(key);
   }
 
+  return common::Error();
+}
+
+common::Error DBConnection::getImpl(const key_t& key, key_and_value_t* loaded_key) {
+  std::string key_str = key.key();
+  std::string value_str;
+  common::Error err = getInner(key_str, &value_str);
+  if (err && err->isError()) {
+    return err;
+  }
+
+  common::StringValue* val = common::Value::createStringValue(value_str);
+  *loaded_key = key_and_value_t(key, common::make_value(val));
   return common::Error();
 }
 
@@ -423,7 +436,7 @@ common::Error set(CommandHandler* handler, int argc, const char** argv, FastoObj
 
   DBConnection* level = static_cast<DBConnection*>(handler);
   key_and_value_array_t keys_added;
-  common::Error err = level->add(keys_add, &keys_added);
+  common::Error err = level->set(keys_add, &keys_added);
   if (err && err->isError()) {
     return err;
   }
@@ -435,18 +448,19 @@ common::Error set(CommandHandler* handler, int argc, const char** argv, FastoObj
 }
 
 common::Error get(CommandHandler* handler, int argc, const char** argv, FastoObject* out) {
-  UNUSED(argc);
-
-  DBConnection* level = static_cast<DBConnection*>(handler);
-
-  std::string ret;
-  common::Error er = level->get(argv[0], &ret);
-  if (!er) {
-    common::StringValue* val = common::Value::createStringValue(ret);
-    FastoObject* child = new FastoObject(out, val, level->delimiter());
-    out->addChildren(child);
+  NKey key(argv[0]);
+  DBConnection* unqlite = static_cast<DBConnection*>(handler);
+  key_and_value_t key_loaded;
+  common::Error err = unqlite->get(key, &key_loaded);
+  if (err && err->isError()) {
+    return err;
   }
-  return er;
+
+  value_t val = key_loaded.value();
+  common::Value* copy = val->deepCopy();
+  FastoObject* child = new FastoObject(out, copy, unqlite->delimiter());
+  out->addChildren(child);
+  return common::Error();
 }
 
 common::Error del(CommandHandler* handler, int argc, const char** argv, FastoObject* out) {

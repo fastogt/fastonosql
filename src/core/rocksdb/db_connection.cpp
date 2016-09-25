@@ -225,7 +225,7 @@ std::string DBConnection::currentDbName() const {
   return "default";
 }
 
-common::Error DBConnection::get(const std::string& key, std::string* ret_val) {
+common::Error DBConnection::getInner(const std::string& key, std::string* ret_val) {
   if (!isConnected()) {
     DNOTREACHED();
     return common::make_error_value("Not connected", common::Value::E_ERROR);
@@ -382,7 +382,8 @@ common::Error DBConnection::selectImpl(const std::string& name, IDataBaseInfo** 
   return common::Error();
 }
 
-common::Error DBConnection::addImpl(const key_and_value_array_t& keys, key_and_value_array_t* added_keys) {
+common::Error DBConnection::setImpl(const key_and_value_array_t& keys,
+                                    key_and_value_array_t* added_keys) {
   for (size_t i = 0; i < keys.size(); ++i) {
     key_and_value_t key = keys[i];
     std::string key_str = key.keyString();
@@ -395,6 +396,19 @@ common::Error DBConnection::addImpl(const key_and_value_array_t& keys, key_and_v
     added_keys->push_back(key);
   }
 
+  return common::Error();
+}
+
+common::Error DBConnection::getImpl(const key_t& key, key_and_value_t* loaded_key) {
+  std::string key_str = key.key();
+  std::string value_str;
+  common::Error err = getInner(key_str, &value_str);
+  if (err && err->isError()) {
+    return err;
+  }
+
+  common::StringValue* val = common::Value::createStringValue(value_str);
+  *loaded_key = key_and_value_t(key, common::make_value(val));
   return common::Error();
 }
 
@@ -460,7 +474,7 @@ common::Error set(CommandHandler* handler, int argc, const char** argv, FastoObj
 
   DBConnection* level = static_cast<DBConnection*>(handler);
   key_and_value_array_t keys_added;
-  common::Error err = level->add(keys_add, &keys_added);
+  common::Error err = level->set(keys_add, &keys_added);
   if (err && err->isError()) {
     return err;
   }
@@ -474,16 +488,19 @@ common::Error set(CommandHandler* handler, int argc, const char** argv, FastoObj
 common::Error get(CommandHandler* handler, int argc, const char** argv, FastoObject* out) {
   UNUSED(argc);
 
-  DBConnection* rocks = static_cast<DBConnection*>(handler);
-  std::string ret;
-  common::Error er = rocks->get(argv[0], &ret);
-  if (!er) {
-    common::StringValue* val = common::Value::createStringValue(ret);
-    FastoObject* child = new FastoObject(out, val, rocks->delimiter());
-    out->addChildren(child);
+  NKey key(argv[0]);
+  DBConnection* unqlite = static_cast<DBConnection*>(handler);
+  key_and_value_t key_loaded;
+  common::Error err = unqlite->get(key, &key_loaded);
+  if (err && err->isError()) {
+    return err;
   }
 
-  return er;
+  value_t val = key_loaded.value();
+  common::Value* copy = val->deepCopy();
+  FastoObject* child = new FastoObject(out, copy, unqlite->delimiter());
+  out->addChildren(child);
+  return common::Error();
 }
 
 common::Error mget(CommandHandler* handler, int argc, const char** argv, FastoObject* out) {

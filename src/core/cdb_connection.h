@@ -41,7 +41,9 @@ class CDBConnection : public DBConnection<NConnection, Config, ContType>, public
 
   common::Error select(const std::string& name, IDataBaseInfo** info) WARN_UNUSED_RESULT;
   common::Error del(const keys_t& keys, keys_t* deleted_keys) WARN_UNUSED_RESULT;
-  common::Error add(const key_and_value_array_t& keys, key_and_value_array_t* added_keys) WARN_UNUSED_RESULT;
+  common::Error set(const key_and_value_array_t& keys,
+                    key_and_value_array_t* added_keys) WARN_UNUSED_RESULT;
+  common::Error get(const key_t& key, key_and_value_t* loaded_key) WARN_UNUSED_RESULT;
   common::Error setTTL(const key_t& key, ttl_t ttl) WARN_UNUSED_RESULT;
 
   translator_t translator() const { return translator_; }
@@ -49,7 +51,9 @@ class CDBConnection : public DBConnection<NConnection, Config, ContType>, public
  private:
   virtual common::Error selectImpl(const std::string& name, IDataBaseInfo** info) = 0;
   virtual common::Error delImpl(const keys_t& keys, keys_t* deleted_keys) = 0;
-  virtual common::Error addImpl(const key_and_value_array_t& keys, key_and_value_array_t* added_keys) = 0;
+  virtual common::Error setImpl(const key_and_value_array_t& keys,
+                                key_and_value_array_t* added_keys) = 0;
+  virtual common::Error getImpl(const key_t& key, key_and_value_t* loaded_key) = 0;
   virtual common::Error setTTLImpl(const key_t& key, ttl_t ttl) = 0;
 
   CDBConnectionClient* client_;
@@ -109,7 +113,7 @@ common::Error CDBConnection<NConnection, Config, ContType>::del(const keys_t& ke
 }
 
 template <typename NConnection, typename Config, connectionTypes ContType>
-common::Error CDBConnection<NConnection, Config, ContType>::add(const key_and_value_array_t& keys,
+common::Error CDBConnection<NConnection, Config, ContType>::set(const key_and_value_array_t& keys,
                                                                 key_and_value_array_t* added_keys) {
   if (!added_keys) {
     DNOTREACHED();
@@ -121,13 +125,38 @@ common::Error CDBConnection<NConnection, Config, ContType>::add(const key_and_va
     return common::make_error_value("Not connected", common::Value::E_ERROR);
   }
 
-  common::Error err = addImpl(keys, added_keys);
+  common::Error err = setImpl(keys, added_keys);
   if (err && err->isError()) {
     return err;
   }
 
   if (client_) {
     client_->onKeysAdded(*added_keys);
+  }
+
+  return common::Error();
+}
+
+template <typename NConnection, typename Config, connectionTypes ContType>
+common::Error CDBConnection<NConnection, Config, ContType>::get(const key_t& key,
+                                                                key_and_value_t* loaded_key) {
+  if (!loaded_key) {
+    DNOTREACHED();
+    return common::make_error_value("Invalid input argument(s)", common::ErrorValue::E_ERROR);
+  }
+
+  if (!CDBConnection<NConnection, Config, ContType>::isConnected()) {
+    DNOTREACHED();
+    return common::make_error_value("Not connected", common::Value::E_ERROR);
+  }
+
+  common::Error err = getImpl(key, loaded_key);
+  if (err && err->isError()) {
+    return err;
+  }
+
+  if (client_) {
+    client_->onKeyLoaded(*loaded_key);
   }
 
   return common::Error();

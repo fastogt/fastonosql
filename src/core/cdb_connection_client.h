@@ -28,6 +28,7 @@ class CDBConnectionClient {
   virtual void onCurrentDataBaseChanged(IDataBaseInfo* info) = 0;
   virtual void onKeysRemoved(const keys_t& keys) = 0;
   virtual void onKeysAdded(const key_and_value_array_t& keys) = 0;
+  virtual void onKeyLoaded(const key_and_value_t& key) = 0;
   virtual void onKeyTTLChanged(const key_t& key, ttl_t ttl) = 0;
 };
 }  // namespace core
