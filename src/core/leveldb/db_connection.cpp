@@ -342,7 +342,8 @@ common::Error DBConnection::delImpl(const keys_t& keys, keys_t* deleted_keys) {
   return common::Error();
 }
 
-common::Error DBConnection::addImpl(const key_and_value_array_t& keys, key_and_value_array_t* added_keys) {
+common::Error DBConnection::addImpl(const key_and_value_array_t& keys,
+                                    key_and_value_array_t* added_keys) {
   for (size_t i = 0; i < keys.size(); ++i) {
     key_and_value_t key = keys[i];
     std::string key_str = key.keyString();
@@ -396,6 +397,21 @@ common::Error info(CommandHandler* handler, int argc, const char** argv, FastoOb
   return er;
 }
 
+common::Error select(CommandHandler* handler, int argc, const char** argv, FastoObject* out) {
+  UNUSED(argc);
+
+  DBConnection* level = static_cast<DBConnection*>(handler);
+  common::Error err = level->select(argv[0], NULL);
+  if (err && err->isError()) {
+    return err;
+  }
+
+  common::StringValue* val = common::Value::createStringValue("OK");
+  FastoObject* child = new FastoObject(out, val, level->delimiter());
+  out->addChildren(child);
+  return common::Error();
+}
+
 common::Error set(CommandHandler* handler, int argc, const char** argv, FastoObject* out) {
   key_and_value_array_t keys_add;
   for (int i = 0; i < argc; i += 2) {
@@ -447,6 +463,24 @@ common::Error del(CommandHandler* handler, int argc, const char** argv, FastoObj
   }
 
   common::FundamentalValue* val = common::Value::createUIntegerValue(keys_deleted.size());
+  FastoObject* child = new FastoObject(out, val, level->delimiter());
+  out->addChildren(child);
+  return common::Error();
+}
+
+common::Error set_ttl(CommandHandler* handler, int argc, const char** argv, FastoObject* out) {
+  UNUSED(out);
+  UNUSED(argc);
+
+  DBConnection* level = static_cast<DBConnection*>(handler);
+  key_t key(argv[0]);
+  time_t ttl = common::ConvertFromString<time_t>(argv[1]);
+  common::Error err = level->setTTL(key, ttl);
+  if (err && err->isError()) {
+    return err;
+  }
+
+  common::StringValue* val = common::Value::createStringValue("OK");
   FastoObject* child = new FastoObject(out, val, level->delimiter());
   out->addChildren(child);
   return common::Error();

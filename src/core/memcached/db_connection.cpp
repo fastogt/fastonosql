@@ -579,7 +579,8 @@ common::Error DBConnection::delImpl(const keys_t& keys, keys_t* deleted_keys) {
   return common::Error();
 }
 
-common::Error DBConnection::addImpl(const key_and_value_array_t& keys, key_and_value_array_t* added_keys) {
+common::Error DBConnection::addImpl(const key_and_value_array_t& keys,
+                                    key_and_value_array_t* added_keys) {
   for (size_t i = 0; i < keys.size(); ++i) {
     key_and_value_t key = keys[i];
     std::string key_str = key.keyString();
@@ -744,6 +745,21 @@ common::Error decr(CommandHandler* handler, int argc, const char** argv, FastoOb
   return er;
 }
 
+common::Error select(CommandHandler* handler, int argc, const char** argv, FastoObject* out) {
+  UNUSED(argc);
+
+  DBConnection* mem = static_cast<DBConnection*>(handler);
+  common::Error err = mem->select(argv[0], NULL);
+  if (err && err->isError()) {
+    return err;
+  }
+
+  common::StringValue* val = common::Value::createStringValue("OK");
+  FastoObject* child = new FastoObject(out, val, mem->delimiter());
+  out->addChildren(child);
+  return common::Error();
+}
+
 common::Error set(CommandHandler* handler, int argc, const char** argv, FastoObject* out) {
   key_and_value_array_t keys_add;
   for (int i = 0; i < argc; i += 4) {
@@ -756,6 +772,24 @@ common::Error set(CommandHandler* handler, int argc, const char** argv, FastoObj
   DBConnection* mem = static_cast<DBConnection*>(handler);
   key_and_value_array_t keys_added;
   common::Error err = mem->add(keys_add, &keys_added);
+  if (err && err->isError()) {
+    return err;
+  }
+
+  common::StringValue* val = common::Value::createStringValue("OK");
+  FastoObject* child = new FastoObject(out, val, mem->delimiter());
+  out->addChildren(child);
+  return common::Error();
+}
+
+common::Error set_ttl(CommandHandler* handler, int argc, const char** argv, FastoObject* out) {
+  UNUSED(out);
+  UNUSED(argc);
+
+  DBConnection* mem = static_cast<DBConnection*>(handler);
+  key_t key(argv[0]);
+  time_t ttl = common::ConvertFromString<time_t>(argv[1]);
+  common::Error err = mem->setTTL(key, ttl);
   if (err && err->isError()) {
     return err;
   }
@@ -833,21 +867,8 @@ common::Error help(CommandHandler* handler, int argc, const char** argv, FastoOb
 }
 
 common::Error expire(CommandHandler* handler, int argc, const char** argv, FastoObject* out) {
-  UNUSED(out);
-
-  DBConnection* mem = static_cast<DBConnection*>(handler);
-  key_t key(argv[0]);
-  ttl_t ttl = common::ConvertFromString<time_t>(argv[1]);
-  common::Error er = mem->setTTL(key, ttl);
-  if (!er) {
-    common::StringValue* val = common::Value::createStringValue("OK");
-    FastoObject* child = new FastoObject(out, val, mem->delimiter());
-    out->addChildren(child);
-  }
-
-  return er;
+  return set_ttl(handler, argc, argv, out);
 }
-
 }  // namespace memcached
 }  // namespace core
 }  // namespace fastonosql

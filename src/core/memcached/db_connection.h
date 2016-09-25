@@ -98,17 +98,20 @@ class DBConnection : public core::CDBConnection<NativeConnection, Config, MEMCAC
   virtual common::Error setTTLImpl(const key_t& key, ttl_t ttl) override;
 };
 
+common::Error select(CommandHandler* handler, int argc, const char** argv, FastoObject* out);
+common::Error set(CommandHandler* handler, int argc, const char** argv, FastoObject* out);
+common::Error del(CommandHandler* handler, int argc, const char** argv, FastoObject* out);
+common::Error set_ttl(CommandHandler* handler, int argc, const char** argv, FastoObject* out);
+
 common::Error keys(CommandHandler* handler, int argc, const char** argv, FastoObject* out);
 common::Error stats(CommandHandler* handler, int argc, const char** argv, FastoObject* out);
 common::Error get(CommandHandler* handler, int argc, const char** argv, FastoObject* out);
-common::Error set(CommandHandler* handler, int argc, const char** argv, FastoObject* out);
 common::Error add(CommandHandler* handler, int argc, const char** argv, FastoObject* out);
 common::Error replace(CommandHandler* handler, int argc, const char** argv, FastoObject* out);
 common::Error append(CommandHandler* handler, int argc, const char** argv, FastoObject* out);
 common::Error prepend(CommandHandler* handler, int argc, const char** argv, FastoObject* out);
 common::Error incr(CommandHandler* handler, int argc, const char** argv, FastoObject* out);
 common::Error decr(CommandHandler* handler, int argc, const char** argv, FastoObject* out);
-common::Error del(CommandHandler* handler, int argc, const char** argv, FastoObject* out);
 common::Error flush_all(CommandHandler* handler, int argc, const char** argv, FastoObject* out);
 common::Error version_server(CommandHandler* handler,
                              int argc,

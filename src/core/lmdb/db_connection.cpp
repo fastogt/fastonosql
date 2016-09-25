@@ -31,6 +31,7 @@
 #include "common/types.h"        // for tribool::SUCCESS
 #include "common/utils.h"        // for c_strornull
 #include "common/value.h"        // for Value::ErrorsType::E_ERROR, etc
+#include "common/convert2string.h"
 
 #include "core/lmdb/config.h"               // for Config
 #include "core/lmdb/connection_settings.h"  // for ConnectionSettings
@@ -481,6 +482,21 @@ common::Error dbkcount(CommandHandler* handler, int argc, const char** argv, Fas
   return er;
 }
 
+common::Error select(CommandHandler* handler, int argc, const char** argv, FastoObject* out) {
+  UNUSED(argc);
+
+  DBConnection* mdb = static_cast<DBConnection*>(handler);
+  common::Error err = mdb->select(argv[0], NULL);
+  if (err && err->isError()) {
+    return err;
+  }
+
+  common::StringValue* val = common::Value::createStringValue("OK");
+  FastoObject* child = new FastoObject(out, val, mdb->delimiter());
+  out->addChildren(child);
+  return common::Error();
+}
+
 common::Error set(CommandHandler* handler, int argc, const char** argv, FastoObject* out) {
   key_and_value_array_t keys_add;
   for (int i = 0; i < argc; i += 2) {
@@ -490,15 +506,15 @@ common::Error set(CommandHandler* handler, int argc, const char** argv, FastoObj
     keys_add.push_back(kv);
   }
 
-  DBConnection* level = static_cast<DBConnection*>(handler);
+  DBConnection* mdb = static_cast<DBConnection*>(handler);
   key_and_value_array_t keys_added;
-  common::Error err = level->add(keys_add, &keys_added);
+  common::Error err = mdb->add(keys_add, &keys_added);
   if (err && err->isError()) {
     return err;
   }
 
   common::StringValue* val = common::Value::createStringValue("OK");
-  FastoObject* child = new FastoObject(out, val, level->delimiter());
+  FastoObject* child = new FastoObject(out, val, mdb->delimiter());
   out->addChildren(child);
   return common::Error();
 }
@@ -533,6 +549,24 @@ common::Error del(CommandHandler* handler, int argc, const char** argv, FastoObj
 
   common::FundamentalValue* val = common::Value::createUIntegerValue(keys_deleted.size());
   FastoObject* child = new FastoObject(out, val, level->delimiter());
+  out->addChildren(child);
+  return common::Error();
+}
+
+common::Error set_ttl(CommandHandler* handler, int argc, const char** argv, FastoObject* out) {
+  UNUSED(out);
+  UNUSED(argc);
+
+  DBConnection* mdb = static_cast<DBConnection*>(handler);
+  key_t key(argv[0]);
+  time_t ttl = common::ConvertFromString<time_t>(argv[1]);
+  common::Error err = mdb->setTTL(key, ttl);
+  if (err && err->isError()) {
+    return err;
+  }
+
+  common::StringValue* val = common::Value::createStringValue("OK");
+  FastoObject* child = new FastoObject(out, val, mdb->delimiter());
   out->addChildren(child);
   return common::Error();
 }

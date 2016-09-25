@@ -31,6 +31,7 @@ extern "C" {
 #include "common/sprintf.h"  // for MemSPrintf
 #include "common/utils.h"    // for c_strornull
 #include "common/value.h"    // for Value::ErrorsType::E_ERROR, etc
+#include "common/convert2string.h"
 
 #include "core/unqlite/config.h"               // for Config
 #include "core/unqlite/connection_settings.h"  // for ConnectionSettings
@@ -416,6 +417,21 @@ common::Error DBConnection::delImpl(const keys_t& keys, keys_t* deleted_keys) {
   return common::Error();
 }
 
+common::Error select(CommandHandler* handler, int argc, const char** argv, FastoObject* out) {
+  UNUSED(argc);
+
+  DBConnection* level = static_cast<DBConnection*>(handler);
+  common::Error err = level->select(argv[0], NULL);
+  if (err && err->isError()) {
+    return err;
+  }
+
+  common::StringValue* val = common::Value::createStringValue("OK");
+  FastoObject* child = new FastoObject(out, val, level->delimiter());
+  out->addChildren(child);
+  return common::Error();
+}
+
 common::Error set(CommandHandler* handler, int argc, const char** argv, FastoObject* out) {
   key_and_value_array_t keys_add;
   for (int i = 0; i < argc; i += 2) {
@@ -470,6 +486,23 @@ common::Error del(CommandHandler* handler, int argc, const char** argv, FastoObj
   FastoObject* child = new FastoObject(out, val, unq->delimiter());
   out->addChildren(child);
   return common::Error();
+}
+
+common::Error set_ttl(CommandHandler* handler, int argc, const char** argv, FastoObject* out) {
+  UNUSED(out);
+  UNUSED(argc);
+
+  DBConnection* unq = static_cast<DBConnection*>(handler);
+  key_t key(argv[0]);
+  ttl_t ttl = common::ConvertFromString<ttl_t>(argv[1]);
+  common::Error er = unq->setTTL(key, ttl);
+  if (!er) {
+    common::StringValue* val = common::Value::createStringValue("OK");
+    FastoObject* child = new FastoObject(out, val, unq->delimiter());
+    out->addChildren(child);
+  }
+
+  return er;
 }
 
 common::Error keys(CommandHandler* handler, int argc, const char** argv, FastoObject* out) {

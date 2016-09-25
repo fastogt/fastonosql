@@ -82,12 +82,15 @@ class DBConnection : public core::CDBConnection<NativeConnection, Config, ROCKSD
   virtual common::Error setTTLImpl(const key_t& key, ttl_t ttl) override;
 };
 
-common::Error info(CommandHandler* handler, int argc, const char** argv, FastoObject* out);
+common::Error select(CommandHandler* handler, int argc, const char** argv, FastoObject* out);
 common::Error set(CommandHandler* handler, int argc, const char** argv, FastoObject* out);
+common::Error del(CommandHandler* handler, int argc, const char** argv, FastoObject* out);
+common::Error set_ttl(CommandHandler* handler, int argc, const char** argv, FastoObject* out);
+
+common::Error info(CommandHandler* handler, int argc, const char** argv, FastoObject* out);
 common::Error get(CommandHandler* handler, int argc, const char** argv, FastoObject* out);
 common::Error mget(CommandHandler* handler, int argc, const char** argv, FastoObject* out);
 common::Error merge(CommandHandler* handler, int argc, const char** argv, FastoObject* out);
-common::Error del(CommandHandler* handler, int argc, const char** argv, FastoObject* out);
 common::Error keys(CommandHandler* handler, int argc, const char** argv, FastoObject* out);
 
 common::Error dbkcount(CommandHandler* handler, int argc, const char** argv, FastoObject* out);

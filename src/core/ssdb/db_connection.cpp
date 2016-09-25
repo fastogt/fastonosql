@@ -1010,6 +1010,21 @@ common::Error get(CommandHandler* handler, int argc, const char** argv, FastoObj
   return er;
 }
 
+common::Error select(CommandHandler* handler, int argc, const char** argv, FastoObject* out) {
+  UNUSED(argc);
+
+  DBConnection* ssdb = static_cast<DBConnection*>(handler);
+  common::Error err = ssdb->select(argv[0], NULL);
+  if (err && err->isError()) {
+    return err;
+  }
+
+  common::StringValue* val = common::Value::createStringValue("OK");
+  FastoObject* child = new FastoObject(out, val, ssdb->delimiter());
+  out->addChildren(child);
+  return common::Error();
+}
+
 common::Error set(CommandHandler* handler, int argc, const char** argv, FastoObject* out) {
   key_and_value_array_t keys_add;
   for (int i = 0; i < argc; i += 2) {
@@ -1063,6 +1078,23 @@ common::Error del(CommandHandler* handler, int argc, const char** argv, FastoObj
   FastoObject* child = new FastoObject(out, val, ssdb->delimiter());
   out->addChildren(child);
   return common::Error();
+}
+
+common::Error set_ttl(CommandHandler* handler, int argc, const char** argv, FastoObject* out) {
+  UNUSED(out);
+  UNUSED(argc);
+
+  DBConnection* ssdb = static_cast<DBConnection*>(handler);
+  key_t key(argv[0]);
+  ttl_t ttl = common::ConvertFromString<ttl_t>(argv[1]);
+  common::Error er = ssdb->setTTL(key, ttl);
+  if (!er) {
+    common::StringValue* val = common::Value::createStringValue("OK");
+    FastoObject* child = new FastoObject(out, val, ssdb->delimiter());
+    out->addChildren(child);
+  }
+
+  return er;
 }
 
 common::Error incr(CommandHandler* handler, int argc, const char** argv, FastoObject* out) {
