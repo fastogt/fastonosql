@@ -18,8 +18,6 @@
 
 #include "core/unqlite/db_connection.h"
 
-#include <stdlib.h>  // for atoll
-
 #include <memory>  // for __shared_ptr
 #include <string>  // for string, operator<, etc
 #include <vector>  // for vector
@@ -430,7 +428,7 @@ common::Error select(CommandHandler* handler, int argc, const char** argv, Fasto
   UNUSED(argc);
 
   DBConnection* level = static_cast<DBConnection*>(handler);
-  common::Error err = level->select(argv[0], NULL);
+  common::Error err = level->select(argv[0], nullptr);
   if (err && err->isError()) {
     return err;
   }
@@ -520,7 +518,8 @@ common::Error keys(CommandHandler* handler, int argc, const char** argv, FastoOb
 
   DBConnection* unq = static_cast<DBConnection*>(handler);
   std::vector<std::string> keysout;
-  common::Error er = unq->keys(argv[0], argv[1], atoll(argv[2]), &keysout);
+  common::Error er =
+      unq->keys(argv[0], argv[1], common::ConvertFromString<uint64_t>(argv[2]), &keysout);
   if (!er) {
     common::ArrayValue* ar = common::Value::createArrayValue();
     for (size_t i = 0; i < keysout.size(); ++i) {

@@ -24,7 +24,6 @@
 #include <string>  // for string
 
 #include "common/sprintf.h"  // for MemSPrintf
-#include "common/value.h"    // for ErrorValue, etc
 
 namespace fastonosql {
 namespace core {

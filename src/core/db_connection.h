@@ -18,11 +18,12 @@
 
 #pragma once
 
-#include "common/error.h"
-#include "common/macros.h"
+#include <string>  // for string
 
-#include "core/connection.h"
-#include "core/connection_types.h"
+#include "common/error.h"  // for Error
+
+#include "core/connection.h"        // for Connection, ConnectionAllocatorTr...
+#include "core/connection_types.h"  // for connectionTypes
 
 namespace fastonosql {
 namespace core {

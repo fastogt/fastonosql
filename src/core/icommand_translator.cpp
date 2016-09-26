@@ -28,6 +28,7 @@ common::Error ICommandTranslator::deleteKeyCommand(const key_t& key, std::string
 
   return deleteKeyCommandImpl(key, cmdstring);
 }
+
 common::Error ICommandTranslator::createKeyCommand(const key_and_value_t& key,
                                                    std::string* cmdstring) const {
   if (!cmdstring) {
@@ -36,6 +37,7 @@ common::Error ICommandTranslator::createKeyCommand(const key_and_value_t& key,
 
   return createKeyCommandImpl(key, cmdstring);
 }
+
 common::Error ICommandTranslator::loadKeyCommand(const key_t& key,
                                                  common::Value::Type type,
                                                  std::string* cmdstring) const {

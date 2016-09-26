@@ -18,27 +18,56 @@
 
 #pragma once
 
-#include <stddef.h>  // for size_t
 #include <stdint.h>  // for uint64_t
 #include <string>    // for string
-#include <vector>    // for vector
 
 #include "common/error.h"   // for Error
 #include "common/macros.h"  // for WARN_UNUSED_RESULT
 
-#include "core/command_holder.h"  // for CommandHolder, etc
-#include "core/command_info.h"    // for UNDEFINED_EXAMPLE_STR, etc
-#include "core/cdb_connection.h"  // for Connection, etc
+#include "core/cdb_connection.h"    // for CDBConnection
+#include "core/command_info.h"      // for UNDEFINED_EXAMPLE_STR, UNDEFINED_...
+#include "core/connection_types.h"  // for connectionTypes::LMDB
+#include "core/db_key.h"            // for key_and_value_t, key_t, keys_t
 
+#include "core/lmdb/server_info.h"  // for ServerInfo
 #include "core/lmdb/config.h"
-#include "core/lmdb/connection_settings.h"
-#include "core/lmdb/server_info.h"
+
+namespace fastonosql {
+class FastoObject;
+}
+namespace fastonosql {
+namespace core {
+class CDBConnectionClient;
+}
+}
+namespace fastonosql {
+namespace core {
+class CommandHandler;
+}
+}
+namespace fastonosql {
+namespace core {
+class IDataBaseInfo;
+}
+}
+namespace fastonosql {
+namespace core {
+namespace lmdb {
+class ConnectionSettings;
+}
+}
+}
+namespace fastonosql {
+namespace core {
+namespace lmdb {
+struct lmdb;
+}
+}
+}  // lines 41-41
 
 namespace fastonosql {
 namespace core {
 namespace lmdb {
-
-struct lmdb;
 
 typedef lmdb NativeConnection;
 

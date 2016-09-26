@@ -18,11 +18,16 @@
 
 #pragma once
 
-#include "core/idatabase.h"
+#include "core/db_key.h"  // for key_and_value_t, key_t, keys_t, ttl_t
 
 namespace fastonosql {
 namespace core {
+class IDataBaseInfo;
+}
+}
 
+namespace fastonosql {
+namespace core {
 class CDBConnectionClient {
  public:
   virtual void onCurrentDataBaseChanged(IDataBaseInfo* info) = 0;

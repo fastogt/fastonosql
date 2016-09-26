@@ -28,7 +28,7 @@
 #include "core/core_fwd.h"          // for IDatabaseSPtr
 #include "core/events/events.h"     // for BackupResponceEvent, etc
 #include "core/icommand_translator.h"
-#include "core/types.h"             // for IDataBaseInfoSPtr, etc
+#include "core/types.h"  // for IDataBaseInfoSPtr, etc
 
 #include "global/global.h"  // for FastoObject, etc
 
@@ -157,9 +157,9 @@ class IServer : public IServerBase, public std::enable_shared_from_this<IServer>
   void setDefaultDB(
       const events_info::SetDefaultDatabaseRequest& req);  // signals: startedSetDefaultDatabase,
                                                            // finishedSetDefaultDatabase
-  void clearDB(const events_info::ClearDatabaseRequest& req);   // signals: startedClearDatabase,
-                                                                // finishedClearDatabase
-  void execute(const events_info::ExecuteInfoRequest& req);     // signals: startedExecute
+  void clearDB(const events_info::ClearDatabaseRequest& req);  // signals: startedClearDatabase,
+                                                               // finishedClearDatabase
+  void execute(const events_info::ExecuteInfoRequest& req);    // signals: startedExecute
 
   void shutDown(const events_info::ShutDownInfoRequest& req);  // signals: startedShutdown,
                                                                // finishedShutdown

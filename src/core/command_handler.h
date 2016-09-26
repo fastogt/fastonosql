@@ -18,7 +18,6 @@
 
 #pragma once
 
-#include <vector>
 #include <string>  // for string
 
 #include "common/error.h"   // for Error
@@ -28,7 +27,7 @@
 
 namespace fastonosql {
 class FastoObject;
-}
+}  // lines 30-30
 
 namespace fastonosql {
 namespace core {

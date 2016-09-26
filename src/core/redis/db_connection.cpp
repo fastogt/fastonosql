@@ -1232,7 +1232,7 @@ common::Error DBConnection::sendScan(unsigned long long* it, redisReply** out) {
   DCHECK(reply->element[1]->type == REDIS_REPLY_ARRAY);
 
   /* Update iterator */
-  *it = atoll(reply->element[0]->str);
+  *it = common::ConvertFromString<unsigned long long>(reply->element[0]->str);
   *out = reply;
   return common::Error();
 }

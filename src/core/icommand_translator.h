@@ -20,15 +20,17 @@
 
 #include <string>  // for string
 
-#include "common/error.h"
+#include "common/error.h"   // for Error
+#include "common/macros.h"  // for WARN_UNUSED_RESULT
+#include "common/value.h"   // for Value, Value::Type
 
-#include "core/types.h"
+#include "core/db_key.h"  // for key_t, key_and_value_t, ttl_t
 
 namespace fastonosql {
 namespace core {
 
 class ICommandTranslator {
- public:  
+ public:
   common::Error createKeyCommand(const key_and_value_t& key,
                                  std::string* cmdstring) const WARN_UNUSED_RESULT;
   common::Error loadKeyCommand(const key_t& key,

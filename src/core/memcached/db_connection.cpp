@@ -18,7 +18,6 @@
 
 #include "core/memcached/db_connection.h"
 
-#include <stdlib.h>  // for atoll, free
 #include <string.h>  // for strcasecmp
 
 #include <memory>  // for __shared_ptr
@@ -615,7 +614,8 @@ common::Error keys(CommandHandler* handler, int argc, const char** argv, FastoOb
 
   DBConnection* mem = static_cast<DBConnection*>(handler);
   std::vector<std::string> keysout;
-  common::Error er = mem->keys(argv[0], argv[1], atoll(argv[2]), &keysout);
+  common::Error er =
+      mem->keys(argv[0], argv[1], common::ConvertFromString<uint64_t>(argv[2]), &keysout);
   if (!er) {
     common::ArrayValue* ar = common::Value::createArrayValue();
     for (size_t i = 0; i < keysout.size(); ++i) {
@@ -650,6 +650,8 @@ common::Error stats(CommandHandler* handler, int argc, const char** argv, FastoO
 }
 
 common::Error get(CommandHandler* handler, int argc, const char** argv, FastoObject* out) {
+  UNUSED(argc);
+
   NKey key(argv[0]);
   DBConnection* unqlite = static_cast<DBConnection*>(handler);
   key_and_value_t key_loaded;

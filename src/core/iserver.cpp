@@ -42,7 +42,8 @@ IServerBase::~IServerBase() {}
 IServer::IServer(IDriver* drv) : drv_(drv) {
   VERIFY(QObject::connect(drv_, &IDriver::addedChild, this, &IServer::addedChild));
   VERIFY(QObject::connect(drv_, &IDriver::itemUpdated, this, &IServer::itemUpdated));
-  VERIFY(QObject::connect(drv_, &IDriver::serverInfoSnapShoot, this, &IServer::serverInfoSnapShoot));
+  VERIFY(
+      QObject::connect(drv_, &IDriver::serverInfoSnapShoot, this, &IServer::serverInfoSnapShoot));
 
   VERIFY(QObject::connect(drv_, &IDriver::keyRemoved, this, &IServer::keyRemoved));
   VERIFY(QObject::connect(drv_, &IDriver::keyAdded, this, &IServer::keyAdded));

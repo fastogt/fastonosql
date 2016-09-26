@@ -529,7 +529,7 @@ void IDriver::handleLoadServerInfoEvent(events::ServerInfoRequestEvent* ev) {
   notifyProgress(sender, 0);
   events::ServerInfoResponceEvent::value_type res(ev->value());
   notifyProgress(sender, 50);
-  IServerInfo* info = NULL;
+  IServerInfo* info = nullptr;
   common::Error err = serverInfo(&info);
   if (err && err->isError()) {
     res.setErrorInfo(err);

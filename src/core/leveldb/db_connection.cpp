@@ -18,23 +18,17 @@
 
 #include "core/leveldb/db_connection.h"
 
-#include <stdlib.h>  // for atoll
-#include <string.h>  // for strtok
-
-#include <memory>  // for __shared_ptr
+#include "common/sprintf.h"
 
 #include <leveldb/c.h>  // for leveldb_major_version, etc
 #include <leveldb/db.h>
 #include <leveldb/options.h>  // for ReadOptions, WriteOptions
 
 #include "common/convert2string.h"  // for ConvertFromString
-#include "common/sprintf.h"
-#include "common/value.h"  // for Value, etc
 
-#include "core/leveldb/config.h"               // for Config
 #include "core/leveldb/connection_settings.h"  // for ConnectionSettings
-#include "core/leveldb/database.h"
 #include "core/leveldb/command_translator.h"
+#include "core/leveldb/database.h"
 
 #include "global/global.h"  // for FastoObject, etc
 
@@ -409,7 +403,7 @@ common::Error select(CommandHandler* handler, int argc, const char** argv, Fasto
   UNUSED(argc);
 
   DBConnection* level = static_cast<DBConnection*>(handler);
-  common::Error err = level->select(argv[0], NULL);
+  common::Error err = level->select(argv[0], nullptr);
   if (err && err->isError()) {
     return err;
   }
@@ -441,6 +435,8 @@ common::Error set(CommandHandler* handler, int argc, const char** argv, FastoObj
 }
 
 common::Error get(CommandHandler* handler, int argc, const char** argv, FastoObject* out) {
+  UNUSED(argc);
+
   NKey key(argv[0]);
   DBConnection* unqlite = static_cast<DBConnection*>(handler);
   key_and_value_t key_loaded;
@@ -499,7 +495,8 @@ common::Error keys(CommandHandler* handler, int argc, const char** argv, FastoOb
   DBConnection* level = static_cast<DBConnection*>(handler);
 
   std::vector<std::string> keysout;
-  common::Error er = level->keys(argv[0], argv[1], atoll(argv[2]), &keysout);
+  common::Error er =
+      level->keys(argv[0], argv[1], common::ConvertFromString<uint64_t>(argv[2]), &keysout);
   if (!er) {
     common::ArrayValue* ar = common::Value::createArrayValue();
     for (size_t i = 0; i < keysout.size(); ++i) {

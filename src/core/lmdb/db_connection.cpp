@@ -19,26 +19,25 @@
 #include "core/lmdb/db_connection.h"
 
 #include <errno.h>   // for EACCES
-#include <lmdb.h>    // for MDB_val, mdb_txn_abort, etc
-#include <stdlib.h>  // for free, atoll, calloc
+#include <lmdb.h>    // for mdb_txn_abort, MDB_val
+#include <stdlib.h>  // for NULL, free, calloc
+#include <time.h>    // for time_t
+#include <string>    // for string
 
-#include <memory>  // for __shared_ptr
-#include <string>  // for string, operator<, etc
-#include <vector>  // for vector
-
-#include "common/file_system.h"  // for create_directory, etc
-#include "common/sprintf.h"      // for MemSPrintf
-#include "common/types.h"        // for tribool::SUCCESS
-#include "common/utils.h"        // for c_strornull
-#include "common/value.h"        // for Value::ErrorsType::E_ERROR, etc
+#include "common/value.h"  // for StringValue (ptr only)
+#include "common/utils.h"  // for c_strornull
 #include "common/convert2string.h"
 
 #include "core/lmdb/config.h"               // for Config
 #include "core/lmdb/connection_settings.h"  // for ConnectionSettings
-#include "core/lmdb/database.h"
 #include "core/lmdb/command_translator.h"
+#include "core/lmdb/database.h"
 
 #include "global/global.h"  // for FastoObject, etc
+
+namespace fastonosql {
+class FastoObjectArray;
+}
 
 #define LMDB_OK 0
 
@@ -586,7 +585,8 @@ common::Error keys(CommandHandler* handler, int argc, const char** argv, FastoOb
 
   DBConnection* mdb = static_cast<DBConnection*>(handler);
   std::vector<std::string> keysout;
-  common::Error er = mdb->keys(argv[0], argv[1], atoll(argv[2]), &keysout);
+  common::Error er =
+      mdb->keys(argv[0], argv[1], common::ConvertFromString<uint64_t>(argv[2]), &keysout);
   if (!er) {
     common::ArrayValue* ar = common::Value::createArrayValue();
     for (size_t i = 0; i < keysout.size(); ++i) {

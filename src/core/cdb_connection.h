@@ -18,15 +18,21 @@
 
 #pragma once
 
-#include "core/db_connection.h"
-#include "core/command_handler.h"
-#include "core/cdb_connection_client.h"
-#include "core/icommand_translator.h"
+#include <string>  // for string
+
+#include "common/error.h"   // for Error
+#include "common/macros.h"  // for DNOTREACHED, WARN_UNUSED_RESULT
+
+#include "core/cdb_connection_client.h"  // for CDBConnectionClient
+#include "core/command_handler.h"        // for CommandHandler, CommandHandl...
+#include "core/connection_types.h"       // for connectionTypes
+#include "core/db_connection.h"          // for DBConnection
+#include "core/db_key.h"                 // for key_and_value_t, key_t, keys_t
+#include "core/icommand_translator.h"    // for translator_t, ICommandTransl...
+#include "core/types.h"                  // for IDataBaseInfo
 
 namespace fastonosql {
 namespace core {
-
-class ICommandTranslator;
 
 template <typename NConnection, typename Config, connectionTypes ContType>
 class CDBConnection : public DBConnection<NConnection, Config, ContType>, public CommandHandler {
@@ -66,7 +72,7 @@ common::Error CDBConnection<NConnection, Config, ContType>::select(const std::st
     return common::make_error_value("Not connected", common::Value::E_ERROR);
   }
 
-  IDataBaseInfo* linfo = NULL;
+  IDataBaseInfo* linfo = nullptr;
   common::Error err = selectImpl(name, &linfo);
   if (err && err->isError()) {
     return err;

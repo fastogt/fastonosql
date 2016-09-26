@@ -18,23 +18,47 @@
 
 #pragma once
 
-#include <stddef.h>  // for size_t
 #include <stdint.h>  // for uint32_t, uint64_t
 #include <time.h>    // for time_t
-
-#include <string>  // for string
-#include <vector>  // for vector
+#include <string>    // for string
 
 #include "common/error.h"   // for Error
 #include "common/macros.h"  // for WARN_UNUSED_RESULT
 
-#include "core/cdb_connection.h"
-
-#include "core/memcached/config.h"
+#include "core/cdb_connection.h"    // for CDBConnection
+#include "core/command_info.h"      // for UNDEFINED_EXAMPLE_STR, UNDEF...
+#include "core/connection_types.h"  // for connectionTypes::MEMCACHED
+#include "core/db_key.h"            // for key_and_value_t, key_t, keys_t
 #include "core/memcached/connection_settings.h"
 #include "core/memcached/server_info.h"
 
-struct memcached_st;
+namespace fastonosql {
+class FastoObject;
+}
+namespace fastonosql {
+namespace core {
+class CDBConnectionClient;
+}
+}
+namespace fastonosql {
+namespace core {
+class CommandHandler;
+}
+}
+namespace fastonosql {
+namespace core {
+class IDataBaseInfo;
+}
+}
+namespace fastonosql {
+namespace core {
+namespace memcached {
+class ConnectionSettings;
+}
+}
+}
+
+struct memcached_st;  // lines 37-37
 
 namespace fastonosql {
 namespace core {
