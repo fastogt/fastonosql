@@ -414,20 +414,15 @@ common::Error DBConnection::selectImpl(const std::string& name, IDataBaseInfo** 
   return common::Error();
 }
 
-common::Error DBConnection::setImpl(const key_and_value_array_t& keys,
-                                    key_and_value_array_t* added_keys) {
-  for (size_t i = 0; i < keys.size(); ++i) {
-    key_and_value_t key = keys[i];
-    std::string key_str = key.keyString();
-    std::string value_str = key.valueString();
-    common::Error err = setInner(key_str, value_str);
-    if (err && err->isError()) {
-      continue;
-    }
-
-    added_keys->push_back(key);
+common::Error DBConnection::setImpl(const key_and_value_t& key, key_and_value_t* added_key) {
+  std::string key_str = key.keyString();
+  std::string value_str = key.valueString();
+  common::Error err = setInner(key_str, value_str);
+  if (err && err->isError()) {
+    return err;
   }
 
+  *added_key = key;
   return common::Error();
 }
 
@@ -512,23 +507,21 @@ common::Error select(CommandHandler* handler, int argc, const char** argv, Fasto
 }
 
 common::Error set(CommandHandler* handler, int argc, const char** argv, FastoObject* out) {
-  key_and_value_array_t keys_add;
-  for (int i = 0; i < argc; i += 2) {
-    NKey key(argv[i]);
-    common::StringValue* string_val = common::Value::createStringValue(argv[i + 1]);
-    key_and_value_t kv(key, common::make_value(string_val));
-    keys_add.push_back(kv);
-  }
+  UNUSED(argc);
 
-  DBConnection* mdb = static_cast<DBConnection*>(handler);
-  key_and_value_array_t keys_added;
-  common::Error err = mdb->set(keys_add, &keys_added);
+  NKey key(argv[0]);
+  common::StringValue* string_val = common::Value::createStringValue(argv[1]);
+  key_and_value_t kv(key, common::make_value(string_val));
+
+  DBConnection* red = static_cast<DBConnection*>(handler);
+  key_and_value_t key_added;
+  common::Error err = red->set(kv, &key_added);
   if (err && err->isError()) {
     return err;
   }
 
   common::StringValue* val = common::Value::createStringValue("OK");
-  FastoObject* child = new FastoObject(out, val, mdb->delimiter());
+  FastoObject* child = new FastoObject(out, val, red->delimiter());
   out->addChildren(child);
   return common::Error();
 }

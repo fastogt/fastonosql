@@ -176,8 +176,7 @@ class DBConnection : public core::CDBConnection<NativeConnection, Config, SSDB> 
 
   virtual common::Error selectImpl(const std::string& name, IDataBaseInfo** info) override;
 
-  virtual common::Error setImpl(const key_and_value_array_t& keys,
-                                key_and_value_array_t* added_keys) override;
+  virtual common::Error setImpl(const key_and_value_t& key, key_and_value_t* added_key) override;
   virtual common::Error getImpl(const key_t& key, key_and_value_t* loaded_key) override;
   virtual common::Error delImpl(const keys_t& keys, keys_t* deleted_keys) override;
   virtual common::Error setTTLImpl(const key_t& key, ttl_t ttl) override;
@@ -248,12 +247,12 @@ static const std::vector<CommandHolder> ssdbCommands = {
                   0,
                   &auth),
     CommandHolder("SET",
-                  "<key> <value> [<key> <value> ...]",
+                  "<key> <value>",
                   "Set the value of the key.",
                   UNDEFINED_SINCE,
                   UNDEFINED_EXAMPLE_STR,
                   2,
-                  INFINITE_COMMAND_ARGS,
+                  0,
                   &set),
     CommandHolder("GET",
                   "<key>",

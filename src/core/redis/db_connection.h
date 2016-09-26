@@ -62,6 +62,7 @@ common::Error common_exec_off2(CommandHandler* handler,
 
 common::Error select(CommandHandler* handler, int argc, const char** argv, FastoObject* out);
 common::Error del(CommandHandler* handler, int argc, const char** argv, FastoObject* out);
+common::Error get(CommandHandler* handler, int argc, const char** argv, FastoObject* out);
 common::Error set(CommandHandler* handler, int argc, const char** argv, FastoObject* out);
 common::Error persist(CommandHandler* handler, int argc, const char** argv, FastoObject* out);
 common::Error expire(CommandHandler* handler, int argc, const char** argv, FastoObject* out);
@@ -645,7 +646,7 @@ static const std::vector<CommandHolder> redisCommands = {
                   UNDEFINED_EXAMPLE_STR,
                   1,
                   0,
-                  &common_exec),
+                  &get),
     CommandHolder("GETBIT",
                   "<key> <offset>",
                   "Returns the bit value at offset in the "
@@ -2020,8 +2021,7 @@ class DBConnection : public core::CDBConnection<NativeConnection, RConfig, REDIS
  private:
   virtual common::Error selectImpl(const std::string& name, IDataBaseInfo** info) override;
   virtual common::Error delImpl(const keys_t& keys, keys_t* deleted_keys) override;
-  virtual common::Error setImpl(const key_and_value_array_t& keys,
-                                key_and_value_array_t* added_keys) override;
+  virtual common::Error setImpl(const key_and_value_t& key, key_and_value_t* added_key) override;
   virtual common::Error getImpl(const key_t& key, key_and_value_t* loaded_key) override;
   virtual common::Error setTTLImpl(const key_t& key, ttl_t ttl) override;
 

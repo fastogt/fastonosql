@@ -574,23 +574,39 @@ common::Error del(CommandHandler* handler, int argc, const char** argv, FastoObj
 }
 
 common::Error set(CommandHandler* handler, int argc, const char** argv, FastoObject* out) {
-  key_and_value_array_t keys_add;
-  for (int i = 0; i < argc; i += 2) {
-    NKey key(argv[i]);
-    common::StringValue* string_val = common::Value::createStringValue(argv[i + 1]);
-    key_and_value_t kv(key, common::make_value(string_val));
-    keys_add.push_back(kv);
-  }
+  UNUSED(argc);
+
+  NKey key(argv[0]);
+  common::StringValue* string_val = common::Value::createStringValue(argv[1]);
+  key_and_value_t kv(key, common::make_value(string_val));
 
   DBConnection* red = static_cast<DBConnection*>(handler);
-  key_and_value_array_t keys_added;
-  common::Error err = red->set(keys_add, &keys_added);
+  key_and_value_t key_added;
+  common::Error err = red->set(kv, &key_added);
   if (err && err->isError()) {
     return err;
   }
 
   common::StringValue* val = common::Value::createStringValue("OK");
   FastoObject* child = new FastoObject(out, val, red->delimiter());
+  out->addChildren(child);
+  return common::Error();
+}
+
+common::Error get(CommandHandler* handler, int argc, const char** argv, FastoObject* out) {
+  UNUSED(argc);
+
+  NKey key(argv[0]);
+  DBConnection* redis = static_cast<DBConnection*>(handler);
+  key_and_value_t key_loaded;
+  common::Error err = redis->get(key, &key_loaded);
+  if (err && err->isError()) {
+    return err;
+  }
+
+  value_t val = key_loaded.value();
+  common::Value* copy = val->deepCopy();
+  FastoObject* child = new FastoObject(out, copy, redis->delimiter());
   out->addChildren(child);
   return common::Error();
 }
@@ -1729,29 +1745,20 @@ common::Error DBConnection::delImpl(const keys_t& keys, keys_t* deleted_keys) {
   return common::Error();
 }
 
-common::Error DBConnection::setImpl(const key_and_value_array_t& keys,
-                                    key_and_value_array_t* added_keys) {
-  for (size_t i = 0; i < keys.size(); ++i) {
-    key_and_value_t key = keys[i];
-    std::string create_cmd;
-    translator_t tran = translator();
-    common::Error err = tran->createKeyCommand(key, &create_cmd);
-    if (err && err->isError()) {
-      return err;
-    }
-    redisReply* reply =
-        reinterpret_cast<redisReply*>(redisCommand(connection_.handle_, create_cmd.c_str()));
-    if (!reply) {
-      return cliPrintContextError(connection_.handle_);
-    }
-
-    if (reply->type != REDIS_REPLY_ERROR) {
-      added_keys->push_back(key);
-    }
-
-    freeReplyObject(reply);
+common::Error DBConnection::setImpl(const key_and_value_t& key, key_and_value_t* added_key) {
+  std::string key_str = key.keyString();
+  std::string value_str = key.valueString();
+  redisReply* reply = reinterpret_cast<redisReply*>(
+      redisCommand(connection_.handle_, "SET %s %s", key_str.c_str(), value_str.c_str()));
+  if (!reply) {
+    return cliPrintContextError(connection_.handle_);
   }
 
+  if (reply->type != REDIS_REPLY_ERROR) {
+    *added_key = key;
+  }
+
+  freeReplyObject(reply);
   return common::Error();
 }
 
@@ -1763,6 +1770,15 @@ common::Error DBConnection::getImpl(const key_t& key, key_and_value_t* loaded_ke
     return cliPrintContextError(connection_.handle_);
   }
 
+  common::Value* val = NULL;
+  if (reply->type == REDIS_REPLY_STRING) {
+    val = common::Value::createStringValue(reply->str);
+  } else if (reply->type == REDIS_REPLY_NIL) {
+    val = common::Value::createNullValue();
+  } else {
+    NOTREACHED();
+  }
+  *loaded_key = key_and_value_t(key, common::make_value(val));
   freeReplyObject(reply);
   return common::Error();
 }

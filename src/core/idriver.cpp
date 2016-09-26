@@ -691,10 +691,8 @@ void IDriver::onKeysRemoved(const keys_t& keys) {
   }
 }
 
-void IDriver::onKeysAdded(const key_and_value_array_t& keys) {
-  for (size_t i = 0; i < keys.size(); ++i) {
-    emit keyAdded(current_database_info_, keys[i]);
-  }
+void IDriver::onKeyAdded(const key_and_value_t& key) {
+  emit keyAdded(current_database_info_, key);
 }
 
 void IDriver::onKeyLoaded(const key_and_value_t& key) {
