@@ -76,7 +76,12 @@ common::Error createConnection(const Config& config, NativeConnection** context)
 
   DCHECK(*context == nullptr);
   ::leveldb::DB* lcontext = nullptr;
-  auto st = ::leveldb::DB::Open(config.options, config.dbname, &lcontext);
+  std::string folder = config.dbname;  // start point must be folder
+  common::tribool is_dir = common::file_system::is_directory(folder);
+  if (is_dir != common::SUCCESS) {
+    folder = common::file_system::get_dir_path(folder);
+  }
+  auto st = ::leveldb::DB::Open(config.options, folder, &lcontext);
   if (!st.ok()) {
     std::string buff = common::MemSPrintf("Fail connect to server: %s!", st.ToString());
     return common::make_error_value(buff, common::ErrorValue::E_ERROR);

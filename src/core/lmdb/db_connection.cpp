@@ -118,7 +118,12 @@ common::Error createConnection(const Config& config, NativeConnection** context)
 
   DCHECK(*context == NULL);
   struct lmdb* lcontext = NULL;
-  const char* dbname = common::utils::c_strornull(config.dbname);
+  std::string folder = config.dbname;  // start point must be folder
+  common::tribool is_dir = common::file_system::is_directory(folder);
+  if (is_dir != common::SUCCESS) {
+    folder = common::file_system::get_dir_path(folder);
+  }
+  const char* dbname = common::utils::c_strornull(folder);
   int st = lmdb_open(&lcontext, dbname, config.create_if_missing);
   if (st != LMDB_OK) {
     std::string buff = common::MemSPrintf("Fail open database: %s", mdb_strerror(st));
@@ -185,7 +190,7 @@ common::Error DBConnection::info(const char* args, ServerInfo::Stats* statsout) 
 
   ServerInfo::Stats linfo;
   Config conf = config();
-  linfo.file_name = conf.dbname;
+  linfo.db_path = conf.dbname;
 
   *statsout = linfo;
   return common::Error();

@@ -53,7 +53,7 @@ std::vector<info_field_t> DBTraits<LMDB>::infoFields() {
 }
 namespace lmdb {
 
-ServerInfo::Stats::Stats() : file_name() {}
+ServerInfo::Stats::Stats() : db_path() {}
 
 ServerInfo::Stats::Stats(const std::string& common_text) {
   size_t pos = 0;
@@ -65,7 +65,7 @@ ServerInfo::Stats::Stats(const std::string& common_text) {
     std::string field = line.substr(0, delem);
     std::string value = line.substr(delem + 1);
     if (field == LMDB_FILE_NAME_LABEL) {
-      file_name = value;
+      db_path = value;
     }
     start = pos + 2;
   }
@@ -74,7 +74,7 @@ ServerInfo::Stats::Stats(const std::string& common_text) {
 common::Value* ServerInfo::Stats::valueByIndex(unsigned char index) const {
   switch (index) {
     case 0:
-      return new common::StringValue(file_name);
+      return new common::StringValue(db_path);
     default:
       NOTREACHED();
       break;
@@ -98,7 +98,7 @@ common::Value* ServerInfo::valueByIndexes(unsigned char property, unsigned char 
 }
 
 std::ostream& operator<<(std::ostream& out, const ServerInfo::Stats& value) {
-  return out << LMDB_FILE_NAME_LABEL ":" << value.file_name << MARKER;
+  return out << LMDB_FILE_NAME_LABEL ":" << value.db_path << MARKER;
 }
 
 std::ostream& operator<<(std::ostream& out, const ServerInfo& value) {

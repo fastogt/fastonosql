@@ -514,7 +514,7 @@ const char* commandLineHelpText(connectionTypes type) {
   if (type == LEVELDB) {
     return "<b>Usage: [OPTIONS] [cmd [arg [arg "
            "...]]]</b><br/>"
-           "<b>-f &lt;db&gt;</b>            File path to "
+           "<b>-f &lt;db&gt;</b>            Directory path to "
            "database.<br/>"
            "<b>-c </b>            Create database if "
            "missing.<br/>"
@@ -528,7 +528,7 @@ const char* commandLineHelpText(connectionTypes type) {
   if (type == ROCKSDB) {
     return "<b>Usage: [OPTIONS] [cmd [arg [arg "
            "...]]]</b><br/>"
-           "<b>-f &lt;db&gt;</b>            File path to "
+           "<b>-f &lt;db&gt;</b>            Directory path to "
            "database.<br/>"
            "<b>-c </b>            Create database if "
            "missing.<br/>"
@@ -556,7 +556,7 @@ const char* commandLineHelpText(connectionTypes type) {
   if (type == LMDB) {
     return "<b>Usage: [OPTIONS] [cmd [arg [arg "
            "...]]]</b><br/>"
-           "<b>-f &lt;db&gt;</b>            File path to "
+           "<b>-f &lt;db&gt;</b>            Directory path to "
            "database.<br/>"
            "<b>-c </b>            Create database if "
            "missing.<br/>"

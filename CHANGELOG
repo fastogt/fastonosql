@@ -1,3 +1,10 @@
+0.7.3 /
+- [LevelDB] Use folder as db path
+- [RocksDB] Use folder as db path
+- [LMDB] Use folder as db path
+- [Redis] Select db from console
+- Console key(set/del/ttl) handling
+
 0.7.2 / September 17, 2016
 [Alexandr Topilski]
 - [Redis] Set ttl context menu

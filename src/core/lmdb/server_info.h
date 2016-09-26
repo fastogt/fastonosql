@@ -27,7 +27,7 @@
 
 #define LMDB_STATS_LABEL "# Stats"
 
-#define LMDB_FILE_NAME_LABEL "file_name"
+#define LMDB_FILE_NAME_LABEL "db_path"
 
 namespace fastonosql {
 namespace core {
@@ -42,7 +42,7 @@ class ServerInfo : public IServerInfo {
     explicit Stats(const std::string& common_text);
     common::Value* valueByIndex(unsigned char index) const;
 
-    std::string file_name;
+    std::string db_path;
   } stats_;
 
   ServerInfo();

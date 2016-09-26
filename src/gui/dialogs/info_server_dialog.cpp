@@ -210,11 +210,11 @@ const QString trRocksdbTextServerTemplate = QObject::tr(
 
 const QString trUnqliteTextServerTemplate = QObject::tr(
     "<b>Stats:</b><br/>"
-    "File name: %1<br/>");
+    "File path: %1<br/>");
 
 const QString trLmdbTextServerTemplate = QObject::tr(
     "<b>Stats:</b><br/>"
-    "File name: %1<br/>");
+    "Db path: %1<br/>");
 }  // namespace
 
 namespace fastonosql {
@@ -541,7 +541,7 @@ void InfoServerDialog::updateText(const core::unqlite::ServerInfo& serv) {
 void InfoServerDialog::updateText(const core::lmdb::ServerInfo& serv) {
   core::lmdb::ServerInfo::Stats stats = serv.stats_;
   QString textServ =
-      trLmdbTextServerTemplate.arg(common::ConvertFromString<QString>(stats.file_name));
+      trLmdbTextServerTemplate.arg(common::ConvertFromString<QString>(stats.db_path));
 
   serverTextInfo_->setText(textServ);
 }
