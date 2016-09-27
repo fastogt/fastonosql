@@ -79,7 +79,7 @@ class IDriver : public QObject,
  Q_SIGNALS:
   void addedChild(FastoObjectIPtr child);
   void itemUpdated(FastoObject* item, common::ValueSPtr val);
-  void serverInfoSnapShoot(ServerInfoSnapShoot shot);
+  void serverInfoSnapShoot(core::ServerInfoSnapShoot shot);
 
   void keyRemoved(core::IDataBaseInfoSPtr db, core::NKey key);
   void keyAdded(core::IDataBaseInfoSPtr db, core::NDbKValue key);

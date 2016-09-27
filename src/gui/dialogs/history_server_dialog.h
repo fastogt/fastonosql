@@ -43,11 +43,6 @@ class GraphWidget;
 }
 }
 }  // lines 33-33
-namespace fastonosql {
-namespace core {
-struct ServerInfoSnapShoot;
-}
-}
 
 namespace fastonosql {
 namespace gui {

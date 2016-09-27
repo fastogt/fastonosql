@@ -24,8 +24,6 @@
 #include <memory>     // for __shared_ptr, shared_ptr, etc
 #include <vector>     // for vector
 
-#include <QMetaType>
-
 #include "common/smart_ptr.h"  // for make_shared
 #include "common/value.h"      // for ErrorValue, etc
 
@@ -81,7 +79,6 @@ namespace fastonosql {
 namespace core {
 
 ServersManager::ServersManager() {
-  qRegisterMetaType<ServerInfoSnapShoot>("ServerInfoSnapShoot");
 }
 
 ServersManager::server_t ServersManager::createServer(IConnectionSettingsBaseSPtr settings) {

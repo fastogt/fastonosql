@@ -82,13 +82,16 @@ bool getStamp(common::buffer_t stamp, common::time64_t* timeOut) {
     return false;
   }
 
+  stamp.erase(stamp.begin());  // pop_front
+  if (stamp.empty()) {
+    return false;
+  }
+
   if (stamp[stamp.size() - 1] == '\n') {
     stamp.pop_back();
   }
 
-  const common::byte_t* data = stamp.data() + 1;
-  common::time64_t ltimeOut =
-      common::ConvertFromString<common::time64_t>(reinterpret_cast<const char*>(data));
+  common::time64_t ltimeOut = common::ConvertFromBytes<common::time64_t>(stamp);
   *timeOut = ltimeOut;
   return ltimeOut != 0;
 }
@@ -107,6 +110,7 @@ struct RegisterTypes {
     qRegisterMetaType<core::NDbKValue>("core::NDbKValue");
     qRegisterMetaType<core::IDataBaseInfoSPtr>("core::IDataBaseInfoSPtr");
     qRegisterMetaType<core::ttl_t>("core::ttl_t");
+    qRegisterMetaType<core::ServerInfoSnapShoot>("core::ServerInfoSnapShoot");
   }
 } reg_type;
 
