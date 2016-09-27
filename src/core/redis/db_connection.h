@@ -25,7 +25,6 @@
 #include "common/error.h"   // for Error
 #include "common/macros.h"  // for PROJECT_VERSION_GENERATE, etc
 
-#include "core/command_handler.h"  // for CommandHandler
 #include "core/cdb_connection.h"
 #include "core/ssh_info.h"  // for SSHInfo
 #include "core/types.h"     // for IDataBaseInfo (ptr only), etc

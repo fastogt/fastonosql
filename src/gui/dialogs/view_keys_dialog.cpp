@@ -31,8 +31,6 @@
 #include <QVBoxLayout>
 
 #include "common/error.h"              // for Error
-#include "common/log_levels.h"         // for LEVEL_LOG::L_DEBUG
-#include "common/logger.h"             // for DEBUG_MSG_FORMAT
 #include "common/macros.h"             // for VERIFY, UNUSED, CHECK, etc
 #include "common/qt/convert2string.h"  // for ConvertToString
 #include "common/value.h"              // for ErrorValue

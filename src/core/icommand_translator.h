@@ -19,6 +19,7 @@
 #pragma once
 
 #include <string>  // for string
+#include <memory>  // for shared_ptr
 
 #include "common/error.h"   // for Error
 #include "common/macros.h"  // for WARN_UNUSED_RESULT

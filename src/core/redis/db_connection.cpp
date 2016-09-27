@@ -58,7 +58,6 @@ extern "C" {
 
 #include "core/command.h"                    // for createCommand
 #include "core/command_logger.h"             // for LOG_COMMAND
-#include "core/connection_types.h"           // for connectionTypes::REDIS
 #include "core/redis/cluster_infos.h"        // for makeDiscoveryClusterInfo
 #include "core/redis/command.h"              // for Command
 #include "core/redis/connection_settings.h"  // for ConnectionSettings
@@ -67,8 +66,6 @@ extern "C" {
 #include "core/redis/command_translator.h"
 
 #include "common/qt/logger.h"  // for LOG_MSG
-
-#include "global/types.h"  // for Command
 
 #define HIREDIS_VERSION    \
   STRINGIZE(HIREDIS_MAJOR) \

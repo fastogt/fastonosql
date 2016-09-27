@@ -48,8 +48,6 @@ extern "C" {
 #include "core/command_logger.h"  // for LOG_COMMAND
 #include "core/events/events_info.h"
 
-#include "global/types.h"  // for Command
-
 namespace {
 
 #ifdef OS_WIN

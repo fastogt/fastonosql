@@ -78,8 +78,7 @@
 namespace fastonosql {
 namespace core {
 
-ServersManager::ServersManager() {
-}
+ServersManager::ServersManager() {}
 
 ServersManager::server_t ServersManager::createServer(IConnectionSettingsBaseSPtr settings) {
   if (!settings) {

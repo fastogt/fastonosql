@@ -26,8 +26,6 @@
 
 #include "core/connection_types.h"  // for connectionTypes
 
-#include "global/global.h"  // for FastoObject, etc
-
 namespace fastonosql {
 namespace core {
 
