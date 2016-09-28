@@ -179,7 +179,10 @@ void Driver::handleLoadDatabaseContentEvent(events::LoadDatabaseContentRequestEv
         std::string key;
         if (ar->getString(i, &key)) {
           NKey k(key);
-          NDbKValue ress(k, NValue());
+          common::Value* emptyval =
+              common::Value::createEmptyValueFromType(common::Value::TYPE_STRING);
+          common::ValueSPtr val = make_value(emptyval);
+          NDbKValue ress(k, val);
           res.keys.push_back(ress);
         }
       }
