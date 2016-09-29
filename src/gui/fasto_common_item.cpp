@@ -24,13 +24,14 @@
 
 #include "common/convert2string.h"                  // for ConvertFromString
 #include "common/error.h"                           // for Error
-#include "common/json_utils.h"                      // for ParseJson
 #include "common/qt/convert2string.h"               // for ConvertToString
 #include "common/text_decoders/compress_edcoder.h"  // for CompressEDcoder
 #include "common/text_decoders/hex_edcoder.h"       // for HexEDcoder
 #include "common/text_decoders/msgpack_edcoder.h"   // for MsgPackEDcoder
 
 #include "common/qt/gui/base/tree_item.h"  // for TreeItem
+
+#include "third-party/json-c/json-c/json_tokener.h"
 
 #include "global/global.h"  // for ConvertToString
 
@@ -74,8 +75,15 @@ QString toJson(FastoCommonItem* item) {
 
   if (!item->childrenCount()) {
     std::string json = common::ConvertToString(item->value());
-    std::string res = common::json::ParseJson(json);
-    return common::ConvertFromString<QString>(res);
+    json_object* obj = json_tokener_parse(json.c_str());
+    if (!obj) {
+      return QString();
+    }
+
+    const char* jstring = json_object_get_string(obj);
+    QString result = common::ConvertFromString<QString>(jstring);
+    json_object_put(obj);
+    return result;
   }
 
   QString value;

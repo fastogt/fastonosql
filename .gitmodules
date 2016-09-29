@@ -19,3 +19,6 @@
 [submodule "src/third-party/qscintilla"]
 	path = src/third-party/qscintilla
 	url = https://github.com/fastogt/qscintilla.git
+[submodule "src/third-party/json-c"]
+	path = src/third-party/json-c
+	url = https://github.com/fastogt/json-c.git
