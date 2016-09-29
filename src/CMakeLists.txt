@@ -114,6 +114,7 @@ SET(HEADERS_GUI_TO_MOC
   gui/fasto_tree_view.h
   gui/fasto_common_model.h
   gui/fasto_table_view.h
+  gui/fasto_scintilla.h
 )
 SET(HEADERS_GUI
   gui/gui_factory.h
@@ -135,6 +136,7 @@ SET(SOURCES_GUI
   gui/fasto_table_view.cpp
   gui/fasto_common_item.cpp
   gui/shortcuts.cpp
+  gui/fasto_scintilla.cpp
 )
 
 SET(HEADERS_CORE_TO_MOC
@@ -234,14 +236,14 @@ ELSEIF(OS_MACOSX)
 ELSEIF(OS_LINUX)
   SET(PLATFORM_HDRS)
   SET(PLATFORM_SRCS)
-  SET(PLATFORM_LIBRARIES dl)
+  SET(PLATFORM_LIBRARIES dl pthread)
 ELSEIF(OS_FREEBSD)
   SET(PLATFORM_HDRS)
   SET(PLATFORM_SRCS)
   SET(PLATFORM_LIBRARIES util pthread)
 ENDIF(OS_WINDOWS)
 
-ADD_SUBDIRECTORY(common)
+#ADD_SUBDIRECTORY(common)
 INCLUDE_DIRECTORIES(${CMAKE_CURRENT_LIST_DIR})
 
 #redis
@@ -543,6 +545,9 @@ SET(SOURCES_SDS
   third-party/sds/sds.c
 )
 
+ADD_SUBDIRECTORY(third-party/qscintilla/Qt4Qt5)
+ADD_SUBDIRECTORY(third-party/json-c)
+
 IF (IS_PUBLIC_BUILD)
   ADD_DEFINITIONS(-DIS_PUBLIC_BUILD)
 ELSE()
@@ -584,7 +589,7 @@ CONFIGURE_FILE("resources/gui.qrc.in" "${CMAKE_CURRENT_LIST_DIR}/resources/gui.q
 CONFIGURE_FILE("resources/${PROJECT_NAME_LOWERCASE}.qrc.in" "${CMAKE_CURRENT_LIST_DIR}/resources/branding.qrc" @ONLY IMMEDIATE)
 SET(RESOURCES ${CMAKE_CURRENT_LIST_DIR}/resources/gui.qrc ${CMAKE_CURRENT_LIST_DIR}/resources/branding.qrc)
 QT5_ADD_RESOURCES(RES_SRC ${RESOURCES})
-SET(INCLUDE_DIRS ${INCLUDE_DIRS} common/third-party/qscintilla/Qt4Qt5)
+SET(INCLUDE_DIRS ${INCLUDE_DIRS} third-party/qscintilla/Qt4Qt5)
 INCLUDE_DIRECTORIES(${INCLUDE_DIRS})
 
 SOURCE_GROUP("Header Files" FILES ${HEADERS} ${HEADERS_TOMOC})
@@ -607,7 +612,7 @@ ELSE(GENERATE_TRANSLATIONS)
 ENDIF(GENERATE_TRANSLATIONS)
 
 SET(ALL_SOURCES ${ALL_SOURCES} ${HEADERS} ${HEADERS_TOMOC} ${SOURCES} ${MOC_FILES} ${PLATFORM_HDRS} ${PLATFORM_SRCS} ${SOURCES_SDS})
-SET(ALL_LIBS ${ALL_LIBS} ${DB_LIBS} common ${QT_LIBRARIES} ${ZLIB_LIBRARY} ${PLATFORM_LIBRARIES})
+SET(ALL_LIBS ${ALL_LIBS} ${DB_LIBS} common common_qt json-c qscintilla2 ${QT_LIBRARIES} ${ZLIB_LIBRARY} ${PLATFORM_LIBRARIES})
 
 SET(EXE_SOURCES main.cpp ${RES_SRC} ${ICON_FILE} ${RESOURCE_OS} ${QM_FILES})
 

@@ -28,7 +28,8 @@
 #include "common/net/socket_tcp.h"           // for ClientSocketTcp
 #include "common/net/types.h"                // for HostAndPort
 #include "common/system_info/system_info.h"  // for SystemInfo, etc
-#include "common/third-party/json-c/json-c/json_object.h"
+
+#include "third-party/json-c/json-c/json_object.h"
 
 #include "server_config_daemon/server_config.h"  // for FASTONOSQL_URL, etc
 
