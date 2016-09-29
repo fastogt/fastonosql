@@ -27,9 +27,9 @@ enum connectionTypes { REDIS = 0, MEMCACHED, SSDB, LEVELDB, ROCKSDB, UNQLITE, LM
 
 enum serverTypes { MASTER = 0, SLAVE };
 
-enum serverState { SUP, SDOWN };
+enum serverState { SUP = 0, SDOWN };
 
-enum serverConnectState { SCONNECTED, SDISCONNECTED };
+enum serverConnectState { SCONNECTED = 0, SDISCONNECTED };
 
 enum serverMode { STANDALONE = 0, SENTINEL, CLUSTER };
 

@@ -116,8 +116,7 @@ class IDriver : public QObject,
   virtual void handleExportEvent(events::ExportRequestEvent* ev);
   virtual void handleChangePasswordEvent(events::ChangePasswordRequestEvent* ev);
   virtual void handleChangeMaxConnectionEvent(events::ChangeMaxConnectionRequestEvent* ev);
-  virtual void handleLoadDatabaseInfosEvent(
-      events::LoadDatabasesInfoRequestEvent* ev);  // call currentDatabaseInfo
+  virtual void handleLoadDatabaseInfosEvent(events::LoadDatabasesInfoRequestEvent* ev);
   virtual void handleClearDatabaseEvent(events::ClearDatabaseRequestEvent* ev);
   virtual void handleSetDefaultDatabaseEvent(events::SetDefaultDatabaseRequestEvent* ev);
 

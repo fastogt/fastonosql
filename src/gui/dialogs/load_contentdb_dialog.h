@@ -24,7 +24,6 @@
 
 class QLineEdit;  // lines 25-25
 class QSpinBox;   // lines 26-26
-class QWidget;
 
 namespace fastonosql {
 namespace gui {
