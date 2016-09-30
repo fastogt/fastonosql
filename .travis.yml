@@ -58,6 +58,14 @@ before_script:
   - which python
   - python --version
 script:
+  - git clone https://github.com/fastogt/common.git
+  - cd common
+  - git submodule update --init --recursive
+  - mkdir build
+  - cd build
+  - cmake .. -GNinja -DQT_ENABLED=ON -DCMAKE_BUILD_TYPE=RELEASE -DDEVELOPER_ENABLE_TESTS=ON
+  - sudo ninja install
+  - cd ../../
   - git submodule update --init --recursive
   - cd build
   - python build.py ..
