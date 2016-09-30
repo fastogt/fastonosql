@@ -34,7 +34,7 @@
 #include "common/macros.h"             // for VERIFY, UNUSED, NOTREACHED
 #include "common/qt/convert2string.h"  // for EscapedText
 
-#include "common/qt/gui/fasto_scintilla.h"  // for FastoScintilla
+#include "gui/fasto_scintilla.h"  // for FastoScintilla
 
 #include "gui/gui_factory.h"  // for GuiFactory
 
@@ -44,7 +44,7 @@ namespace fastonosql {
 namespace gui {
 
 FastoEditor::FastoEditor(QWidget* parent) : QWidget(parent), scin_(nullptr) {
-  scin_ = new common::qt::gui::FastoScintilla;
+  scin_ = new FastoScintilla;
 
   findPanel_ = new QFrame;
   findLine_ = new QLineEdit;
@@ -79,8 +79,7 @@ FastoEditor::FastoEditor(QWidget* parent) : QWidget(parent), scin_(nullptr) {
   findPanel_->hide();
 
   VERIFY(connect(close_, &QToolButton::clicked, findPanel_, &QFrame::hide));
-  VERIFY(connect(scin_, &common::qt::gui::FastoScintilla::textChanged, this,
-                 &FastoEditor::textChanged));
+  VERIFY(connect(scin_, &FastoScintilla::textChanged, this, &FastoEditor::textChanged));
   VERIFY(connect(next_, &QPushButton::clicked, this, &FastoEditor::goToNextElement));
   VERIFY(connect(prev_, &QPushButton::clicked, this, &FastoEditor::goToPrevElement));
   retranslateUi();

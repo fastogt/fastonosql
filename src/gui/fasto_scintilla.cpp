@@ -27,7 +27,7 @@
     OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 */
 
-#include "common/qt/gui/fasto_scintilla.h"
+#include "gui/fasto_scintilla.h"
 
 #include <QKeyEvent>
 
@@ -87,8 +87,7 @@ const QColor marginsForegroundColor = QColor(Qt::white);
 
 }  // namespace
 
-namespace common {
-namespace qt {
+namespace fastonosql {
 namespace gui {
 
 FastoScintilla::FastoScintilla(QWidget* parent)
@@ -159,10 +158,10 @@ void FastoScintilla::keyPressEvent(QKeyEvent* keyEvent) {
   }
 
   if (showAutoCompletion_) {
-    if (isAutoCompleteShortcut(keyEvent)) {
+    if (common::qt::gui::isAutoCompleteShortcut(keyEvent)) {
       showAutocompletion();
       return;
-    } else if (isHideAutoCompleteShortcut(keyEvent)) {
+    } else if (common::qt::gui::isHideAutoCompleteShortcut(keyEvent)) {
       hideAutocompletion();
       return;
     }
@@ -203,5 +202,4 @@ void FastoScintilla::hideAutocompletion() {
 }
 
 }  // namespace gui
-}  // namespace qt
-}  // namespace common
+}  // namespace fastonosql

@@ -34,11 +34,9 @@ class QPushButton;  // lines 33-33
 class QToolButton;  // lines 32-32
 class QsciLexer;    // lines 36-36
 
-namespace common {
-namespace qt {
+namespace fastonosql {
 namespace gui {
 class FastoScintilla;
-}
 }
 }  // lines 42-42
 
@@ -88,7 +86,7 @@ class FastoEditor : public QWidget {
   void retranslateUi();
   void findElement(bool forward);
 
-  common::qt::gui::FastoScintilla* scin_;
+  FastoScintilla* scin_;
   QFrame* findPanel_;
   QLineEdit* findLine_;
   QToolButton* close_;

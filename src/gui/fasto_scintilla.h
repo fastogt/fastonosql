@@ -31,8 +31,7 @@
 
 #include <Qsci/qsciscintilla.h>
 
-namespace common {
-namespace qt {
+namespace fastonosql {
 namespace gui {
 
 class FastoScintilla : public QsciScintilla {
@@ -64,5 +63,4 @@ class FastoScintilla : public QsciScintilla {
 };
 
 }  // namespace gui
-}  // namespace qt
-}  // namespace common
+}  // namespace fastonosql
