@@ -63,7 +63,7 @@ script:
   - git submodule update --init --recursive
   - mkdir build
   - cd build
-  - cmake .. -GNinja -DQT_ENABLED=ON -DCMAKE_BUILD_TYPE=RELEASE -DDEVELOPER_ENABLE_TESTS=ON
+  - cmake .. -GNinja -DQT_ENABLED=ON -DCMAKE_BUILD_TYPE=RELEASE
   - sudo ninja install
   - cd ../../
   - git submodule update --init --recursive
