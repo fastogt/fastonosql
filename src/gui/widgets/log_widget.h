@@ -20,7 +20,7 @@
 
 #include <QWidget>
 
-#include "common/log_levels.h"  // for LEVEL_LOG
+#include <common/log_levels.h>  // for LEVEL_LOG
 
 class QAction;  // lines 24-24
 class QEvent;

@@ -20,9 +20,10 @@
 
 #include <QFont>  // for QFont
 
-#include "common/patterns/singleton_pattern.h"  // for LazySingleton
-#include "common/value.h"                       // for Value, Value::Type
-#include "core/connection_types.h"              // for connectionTypes, etc
+#include <common/patterns/singleton_pattern.h>  // for LazySingleton
+#include <common/value.h>                       // for Value, Value::Type
+
+#include "core/connection_types.h"  // for connectionTypes, etc
 
 class QIcon;
 class QString;

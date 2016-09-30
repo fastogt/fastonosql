@@ -20,7 +20,7 @@
 
 #include <QObject>
 
-#include "common/patterns/singleton_pattern.h"  // for LazySingleton
+#include <common/patterns/singleton_pattern.h>  // for LazySingleton
 
 #include "global/global.h"
 

@@ -24,9 +24,9 @@
 #include <time.h>    // for time_t
 #include <string>    // for string
 
-#include "common/value.h"  // for StringValue (ptr only)
-#include "common/utils.h"  // for c_strornull
-#include "common/convert2string.h"
+#include <common/value.h>  // for StringValue (ptr only)
+#include <common/utils.h>  // for c_strornull
+#include <common/convert2string.h>
 
 #include "core/lmdb/config.h"               // for Config
 #include "core/lmdb/connection_settings.h"  // for ConnectionSettings

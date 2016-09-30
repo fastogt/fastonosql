@@ -20,8 +20,8 @@
 
 #include <string>  // for string
 
-#include "common/error.h"   // for Error
-#include "common/macros.h"  // for WARN_UNUSED_RESULT
+#include <common/error.h>   // for Error
+#include <common/macros.h>  // for WARN_UNUSED_RESULT
 
 #include "core/connection_settings.h"  // for IConnectionSettingsBaseSPtr
 #include "core/events/events.h"        // for ClearDatabaseRequestEvent, etc

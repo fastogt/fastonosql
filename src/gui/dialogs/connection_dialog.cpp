@@ -37,11 +37,11 @@
 #include <QPushButton>
 #include <QSpinBox>
 
-#include "common/convert2string.h"     // for ConvertFromString
-#include "common/file_system.h"        // for stable_dir_path
-#include "common/macros.h"             // for VERIFY, CHECK, SIZEOFMASS
-#include "common/net/types.h"          // for HostAndPort
-#include "common/qt/convert2string.h"  // for ConvertToString
+#include <common/convert2string.h>     // for ConvertFromString
+#include <common/file_system.h>        // for stable_dir_path
+#include <common/macros.h>             // for VERIFY, CHECK, SIZEOFMASS
+#include <common/net/types.h>          // for HostAndPort
+#include <common/qt/convert2string.h>  // for ConvertToString
 
 #include "gui/dialogs/connection_diagnostic_dialog.h"
 #include "gui/gui_factory.h"  // for GuiFactory

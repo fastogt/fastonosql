@@ -31,13 +31,15 @@
 #include <QMenu>
 #include <QMessageBox>
 
-#include "common/convert2string.h"     // for ConvertFromString
-#include "common/error.h"              // for Error
-#include "common/macros.h"             // for VERIFY, CHECK, DNOTREACHED, etc
-#include "common/net/types.h"          // for HostAndPort
-#include "common/qt/convert2string.h"  // for ConvertToString
-#include "common/qt/utils_qt.h"        // for item
-#include "common/value.h"              // for ErrorValue
+#include <common/convert2string.h>     // for ConvertFromString
+#include <common/error.h>              // for Error
+#include <common/macros.h>             // for VERIFY, CHECK, DNOTREACHED, etc
+#include <common/net/types.h>          // for HostAndPort
+#include <common/qt/convert2string.h>  // for ConvertToString
+#include <common/qt/utils_qt.h>        // for item
+#include <common/value.h>              // for ErrorValue
+
+#include <common/qt/gui/base/tree_item.h>  // for TreeItem
 
 #include "core/connection_types.h"    // for connectionTypes::REDIS
 #include "core/db_key.h"              // for NDbKValue
@@ -56,8 +58,6 @@
 #include "gui/dialogs/property_server_dialog.h"
 #include "gui/dialogs/view_keys_dialog.h"      // for ViewKeysDialog
 #include "gui/explorer/explorer_tree_model.h"  // for ExplorerServerItem, etc
-
-#include "common/qt/gui/base/tree_item.h"  // for TreeItem
 
 #include "translations/global.h"  // for trClose, trBackup, trImport, etc
 

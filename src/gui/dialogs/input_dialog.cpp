@@ -24,7 +24,7 @@
 #include <QLineEdit>
 #include <QPushButton>
 
-#include "common/macros.h"  // for VERIFY
+#include <common/macros.h>  // for VERIFY
 
 namespace fastonosql {
 namespace gui {

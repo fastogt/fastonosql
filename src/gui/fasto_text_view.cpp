@@ -23,7 +23,7 @@
 #include <QRadioButton>
 #include <QVBoxLayout>
 
-#include "common/macros.h"  // for VERIFY
+#include <common/macros.h>  // for VERIFY
 
 #include "gui/editor/fasto_editor_output.h"  // for FastoEditorOutput, CSV, etc
 #include "gui/gui_factory.h"                 // for GuiFactory

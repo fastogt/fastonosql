@@ -20,7 +20,7 @@
 
 #include <memory>  // for __shared_ptr
 
-#include "common/macros.h"  // for DCHECK
+#include <common/macros.h>  // for DCHECK
 
 #include "core/connection_types.h"  // for connectionTypes::LMDB
 

@@ -20,8 +20,8 @@
 
 #include <string>  // for string
 
-#include "common/error.h"   // for Error
-#include "common/macros.h"  // for DNOTREACHED, WARN_UNUSED_RESULT
+#include <common/error.h>   // for Error
+#include <common/macros.h>  // for DNOTREACHED, WARN_UNUSED_RESULT
 
 #include "core/cdb_connection_client.h"  // for CDBConnectionClient
 #include "core/command_handler.h"        // for CommandHandler, CommandHandl...

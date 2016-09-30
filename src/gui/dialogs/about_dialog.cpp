@@ -23,7 +23,7 @@
 #include <QLabel>
 #include <QPushButton>
 
-#include "common/macros.h"    // for STRINGIZE, VERIFY
+#include <common/macros.h>    // for STRINGIZE, VERIFY
 #include "gui/gui_factory.h"  // for GuiFactory
 
 namespace {

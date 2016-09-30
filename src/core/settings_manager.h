@@ -25,7 +25,7 @@
 
 #include <QStringList>
 
-#include "common/patterns/singleton_pattern.h"  // for LazySingleton
+#include <common/patterns/singleton_pattern.h>  // for LazySingleton
 
 #include "core/cluster_connection_settings.h"
 #include "core/connection_settings.h"  // for IClusterSettingsBaseSPtr, etc

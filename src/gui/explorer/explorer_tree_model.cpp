@@ -24,10 +24,13 @@
 
 #include <QIcon>
 
-#include "common/convert2string.h"  // for ConvertFromString
-#include "common/macros.h"          // for CHECK, NOTREACHED, etc
-#include "common/net/types.h"       // for ConvertToString
-#include "common/qt/utils_qt.h"     // for item
+#include <common/convert2string.h>  // for ConvertFromString
+#include <common/macros.h>          // for CHECK, NOTREACHED, etc
+#include <common/net/types.h>       // for ConvertToString
+
+#include <common/qt/utils_qt.h>             // for item
+#include <common/qt/gui/base/tree_item.h>   // for TreeItem, findItemRecursive, etc
+#include <common/qt/gui/base/tree_model.h>  // for TreeModel
 
 #include "core/connection_types.h"    // for ConvertToString
 #include "core/events/events_info.h"  // for CommandRequest, etc
@@ -37,9 +40,6 @@
 #include "core/iserver.h"             // for IServer, IServerRemote, etc
 
 #include "gui/gui_factory.h"  // for GuiFactory
-
-#include "common/qt/gui/base/tree_item.h"   // for TreeItem, findItemRecursive, etc
-#include "common/qt/gui/base/tree_model.h"  // for TreeModel
 
 #include "translations/global.h"  // for trName
 

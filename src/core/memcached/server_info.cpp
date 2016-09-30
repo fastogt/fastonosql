@@ -24,9 +24,9 @@
 #include <utility>   // for make_pair
 #include <vector>    // for vector
 
-#include "common/convert2string.h"  // for ConvertFromString, etc
-#include "common/macros.h"          // for NOTREACHED
-#include "common/value.h"           // for FundamentalValue, Value, etc
+#include <common/convert2string.h>  // for ConvertFromString, etc
+#include <common/macros.h>          // for NOTREACHED
+#include <common/value.h>           // for FundamentalValue, Value, etc
 
 #include "core/connection_types.h"  // for connectionTypes::MEMCACHED
 #include "core/db_traits.h"

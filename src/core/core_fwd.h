@@ -18,7 +18,7 @@
 
 #pragma once
 
-#include "common/smart_ptr.h"
+#include <common/smart_ptr.h>
 
 namespace fastonosql {
 namespace core {

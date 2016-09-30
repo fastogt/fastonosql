@@ -22,7 +22,7 @@
 #include <string>  // for string
 #include <vector>  // for vector
 
-#include "common/net/types.h"  // for HostAndPort
+#include <common/net/types.h>  // for HostAndPort
 
 #include "core/connection_types.h"  // for connectionTypes, serverMode, etc
 #include "core/core_fwd.h"          // for IDatabaseSPtr

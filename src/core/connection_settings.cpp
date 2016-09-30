@@ -23,12 +23,13 @@
 #include <stddef.h>    // for size_t
 #include <string>      // for string, allocator, etc
 
-#include "common/convert2string.h"     // for ConvertFromString, etc
-#include "common/macros.h"             // for NOTREACHED, CHECK, etc
-#include "common/qt/convert2string.h"  // for ConvertToString
-#include "common/sprintf.h"            // for MemSPrintf
-#include "common/types.h"              // for buffer_t
-#include "common/utils.h"              // for decode64, encode64, crc64
+#include <common/macros.h>          // for NOTREACHED, CHECK, etc
+#include <common/convert2string.h>  // for ConvertFromString, etc
+#include <common/sprintf.h>         // for MemSPrintf
+#include <common/types.h>           // for buffer_t
+#include <common/utils.h>           // for decode64, encode64, crc64
+
+#include <common/qt/convert2string.h>  // for ConvertToString
 
 #include "core/settings_manager.h"
 

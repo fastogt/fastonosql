@@ -22,9 +22,9 @@
 
 #include <QObject>
 
-#include "common/error.h"                       // for Error
-#include "common/macros.h"                      // for WARN_UNUSED_RESULT
-#include "common/patterns/singleton_pattern.h"  // for LazySingleton
+#include <common/error.h>                       // for Error
+#include <common/macros.h>                      // for WARN_UNUSED_RESULT
+#include <common/patterns/singleton_pattern.h>  // for LazySingleton
 
 #include "core/cluster_connection_settings.h"
 #include "core/connection_settings.h"  // for IConnectionSettingsBaseSPtr, etc

@@ -21,11 +21,11 @@
 #include <memory>    // for __shared_ptr
 #include <stddef.h>  // for size_t
 
-#include "common/convert2string.h"  // for ConvertFromString
-#include "common/macros.h"          // for NOTREACHED
-#include "common/net/types.h"       // for HostAndPortAndSlot, etc
-#include "common/string_util.h"     // for Tokenize
-#include "common/value.h"           // for ErrorValue, etc
+#include <common/convert2string.h>  // for ConvertFromString
+#include <common/macros.h>          // for NOTREACHED
+#include <common/net/types.h>       // for HostAndPortAndSlot, etc
+#include <common/string_util.h>     // for Tokenize
+#include <common/value.h>           // for ErrorValue, etc
 
 #include "core/connection_types.h"  // for connectionTypes::REDIS, etc
 

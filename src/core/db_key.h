@@ -24,7 +24,7 @@
 #include <string>  // for string
 #include <vector>  // for vector
 
-#include "common/value.h"  // for Value, Value::Type, etc
+#include <common/value.h>  // for Value, Value::Type, etc
 
 #define NO_TTL -1
 

@@ -30,11 +30,11 @@
 #include <QToolButton>
 #include <QVBoxLayout>
 
-#include "common/convert2string.h"          // for ConvertFromString
-#include "common/error.h"                   // for Error
-#include "common/macros.h"                  // for VERIFY, CHECK, SIZEOFMASS
-#include "common/qt/convert2string.h"       // for ConvertToString
-#include "common/text_decoders/iedcoder.h"  // for EDTypes, IEDcoder, etc
+#include <common/convert2string.h>          // for ConvertFromString
+#include <common/error.h>                   // for Error
+#include <common/macros.h>                  // for VERIFY, CHECK, SIZEOFMASS
+#include <common/qt/convert2string.h>       // for ConvertToString
+#include <common/text_decoders/iedcoder.h>  // for EDTypes, IEDcoder, etc
 
 #include "gui/editor/fasto_editor.h"  // for FastoEditor
 #include "gui/gui_factory.h"          // for GuiFactory

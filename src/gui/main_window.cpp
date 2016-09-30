@@ -39,17 +39,17 @@
 #include <QGestureEvent>
 #endif
 
-#include "common/convert2string.h"                // for ConvertFromString, etc
-#include "common/error.h"                         // for Error, ErrnoErrorValue
-#include "common/file_system.h"                   // for File, remove_file, etc
-#include "common/macros.h"                        // for VERIFY, DNOTREACHED, CHECK, etc
-#include "common/qt/convert2string.h"             // for ConvertToString
-#include "common/qt/gui/app_style.h"              // for applyFont, applyStyle
-#include "common/qt/gui/shortcuts.h"              // for FastoQKeySequence
-#include "common/qt/logger.h"                     // for Logger
-#include "common/qt/translations/translations.h"  // for applyLanguage
-#include "common/text_decoders/iedcoder.h"        // for IEDcoder, EDTypes::Hex
-#include "common/value.h"                         // for ErrorValue
+#include <common/convert2string.h>                // for ConvertFromString, etc
+#include <common/error.h>                         // for Error, ErrnoErrorValue
+#include <common/file_system.h>                   // for File, remove_file, etc
+#include <common/macros.h>                        // for VERIFY, DNOTREACHED, CHECK, etc
+#include <common/qt/convert2string.h>             // for ConvertToString
+#include <common/qt/gui/app_style.h>              // for applyFont, applyStyle
+#include <common/qt/gui/shortcuts.h>              // for FastoQKeySequence
+#include <common/qt/logger.h>                     // for Logger
+#include <common/qt/translations/translations.h>  // for applyLanguage
+#include <common/text_decoders/iedcoder.h>        // for IEDcoder, EDTypes::Hex
+#include <common/value.h>                         // for ErrorValue
 
 #include "core/command_logger.h"    // for CommandLogger
 #include "core/core_fwd.h"          // for IServerSPtr, IClusterSPtr, etc

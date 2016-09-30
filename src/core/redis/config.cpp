@@ -30,12 +30,12 @@ extern "C" {
 #include "sds.h"
 }
 
-#include "common/convert2string.h"  // for ConvertToString, etc
-#include "common/log_levels.h"      // for LEVEL_LOG::L_WARNING
-#include "common/net/types.h"       // for HostAndPort
-#include "common/sprintf.h"         // for MemSPrintf
+#include <common/convert2string.h>  // for ConvertToString, etc
+#include <common/log_levels.h>      // for LEVEL_LOG::L_WARNING
+#include <common/net/types.h>       // for HostAndPort
+#include <common/sprintf.h>         // for MemSPrintf
 
-#include "common/qt/logger.h"  // for LOG_MSG
+#include <common/qt/logger.h>  // for LOG_MSG
 
 #define DEFAULT_REDIS_SERVER_PORT 6379
 
@@ -57,7 +57,8 @@ Config parseOptions(int argc, char** argv) {
       usage();
     } else if (!strcmp(argv[i], "-x")) {
       cfg.stdinarg = 1;
-    }*/ else if (!strcmp(argv[i], "-p") && !lastarg) {
+    }*/ else if (!strcmp(argv[i], "-p") &&
+                                                                !lastarg) {
       cfg.host.port = common::ConvertFromString<uint16_t>(argv[++i]);
     } else if (!strcmp(argv[i], "-s") && !lastarg) {
       cfg.hostsocket = argv[++i];

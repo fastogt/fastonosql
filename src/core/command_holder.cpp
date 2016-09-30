@@ -21,7 +21,7 @@
 #include <algorithm>  // for count_if
 #include <vector>     // for vector
 
-#include "common/string_util.h"  // for FullEqualsASCII
+#include <common/string_util.h>  // for FullEqualsASCII
 
 namespace {
 size_t count_space(const std::string& data) {

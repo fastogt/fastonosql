@@ -26,10 +26,10 @@ extern "C" {
 #include <unqlite.h>
 }
 
-#include "common/sprintf.h"  // for MemSPrintf
-#include "common/utils.h"    // for c_strornull
-#include "common/value.h"    // for Value::ErrorsType::E_ERROR, etc
-#include "common/convert2string.h"
+#include <common/sprintf.h>  // for MemSPrintf
+#include <common/utils.h>    // for c_strornull
+#include <common/value.h>    // for Value::ErrorsType::E_ERROR, etc
+#include <common/convert2string.h>
 
 #include "core/unqlite/config.h"               // for Config
 #include "core/unqlite/connection_settings.h"  // for ConnectionSettings

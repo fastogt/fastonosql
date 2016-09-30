@@ -18,8 +18,9 @@
 
 #include "core/memcached/command_translator.h"
 
+#include <common/sprintf.h>
+
 #include "global/global.h"
-#include "common/sprintf.h"
 
 #define MEMCACHED_SET_KEY_PATTERN_2ARGS_SS "SET %s 0 0 %s"
 #define MEMCACHED_GET_KEY_PATTERN_1ARGS_S "GET %s"

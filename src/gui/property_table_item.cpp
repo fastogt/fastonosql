@@ -18,7 +18,7 @@
 
 #include "gui/property_table_item.h"
 
-#include "common/convert2string.h"
+#include <common/convert2string.h>
 
 namespace fastonosql {
 namespace gui {

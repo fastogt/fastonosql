@@ -20,9 +20,9 @@
 
 #include <string>  // for string
 
-#include "common/error.h"      // for Error
-#include "common/macros.h"     // for WARN_UNUSED_RESULT
-#include "common/net/types.h"  // for HostAndPort
+#include <common/error.h>      // for Error
+#include <common/macros.h>     // for WARN_UNUSED_RESULT
+#include <common/net/types.h>  // for HostAndPort
 
 #include "core/connection_settings.h"  // for IConnectionSettingsBaseSPtr
 #include "core/events/events.h"        // for CommandRequestEvent, etc

@@ -28,12 +28,12 @@ extern "C" {
 #include "sds.h"
 }
 
-#include "common/convert2string.h"
-#include "common/file_system.h"  // for prepare_path
-#include "common/log_levels.h"   // for LEVEL_LOG::L_WARNING
-#include "common/sprintf.h"      // for MemSPrintf
+#include <common/convert2string.h>
+#include <common/file_system.h>  // for prepare_path
+#include <common/log_levels.h>   // for LEVEL_LOG::L_WARNING
+#include <common/sprintf.h>      // for MemSPrintf
 
-#include "common/qt/logger.h"  // for LOG_MSG
+#include <common/qt/logger.h>  // for LOG_MSG
 
 namespace fastonosql {
 namespace core {

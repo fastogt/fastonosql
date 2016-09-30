@@ -27,21 +27,20 @@
 #include <QPushButton>
 #include <QSplitter>
 
-#include "common/convert2string.h"  // for ConvertFromString
-#include "common/error.h"           // for Error
-#include "common/log_levels.h"      // for LEVEL_LOG::L_DEBUG
-#include "common/logger.h"          // for DEBUG_MSG_FORMAT
-#include "common/macros.h"          // for VERIFY, CHECK, DNOTREACHED, etc
-#include "common/qt/utils_qt.h"     // for item
-#include "common/value.h"           // for StringValue, Value, etc
+#include <common/convert2string.h>         // for ConvertFromString
+#include <common/error.h>                  // for Error
+#include <common/log_levels.h>             // for LEVEL_LOG::L_DEBUG
+#include <common/logger.h>                 // for DEBUG_MSG_FORMAT
+#include <common/macros.h>                 // for VERIFY, CHECK, DNOTREACHED, etc
+#include <common/qt/utils_qt.h>            // for item
+#include <common/value.h>                  // for StringValue, Value, etc
+#include <common/qt/gui/base/tree_item.h>  // for TreeItem
+#include <common/qt/gui/icon_label.h>      // for IconLabel
 
 #include "core/db_key.h"              // for NKey, NDbKValue, NValue
 #include "core/events/events_info.h"  // for CommandResponce, etc
 #include "core/iserver.h"             // for IServer
 #include "core/settings_manager.h"    // for SettingsManager
-
-#include "common/qt/gui/base/tree_item.h"  // for TreeItem
-#include "common/qt/gui/icon_label.h"      // for IconLabel
 
 #include "global/types.h"  // for supportedViews, etc
 

@@ -23,7 +23,7 @@
 
 #include <string>  // for string
 
-#include "common/sprintf.h"  // for MemSPrintf
+#include <common/sprintf.h>  // for MemSPrintf
 
 namespace fastonosql {
 namespace core {

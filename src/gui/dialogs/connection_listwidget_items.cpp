@@ -24,8 +24,8 @@
 #include <string>  // for string
 #include <vector>  // for vector
 
-#include "common/convert2string.h"  // for ConvertFromString
-#include "common/macros.h"          // for DNOTREACHED
+#include <common/convert2string.h>  // for ConvertFromString
+#include <common/macros.h>          // for DNOTREACHED
 
 #include "core/connection_types.h"  // for ConvertToString, etc
 

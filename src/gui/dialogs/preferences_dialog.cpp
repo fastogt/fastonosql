@@ -32,14 +32,14 @@
 #include <QLabel>
 #include <QLineEdit>
 
-#include "common/convert2string.h"     // for ConvertFromString
-#include "common/macros.h"             // for VERIFY, SIZEOFMASS
-#include "common/qt/convert2string.h"  // for ConvertToString
+#include <common/convert2string.h>  // for ConvertFromString
+#include <common/macros.h>          // for VERIFY, SIZEOFMASS
+
+#include <common/qt/convert2string.h>             // for ConvertToString
+#include <common/qt/gui/app_style.h>              // for applyFont, applyStyle, etc
+#include <common/qt/translations/translations.h>  // for applyLanguage, etc
 
 #include "core/settings_manager.h"  // for SettingsManager
-
-#include "common/qt/gui/app_style.h"              // for applyFont, applyStyle, etc
-#include "common/qt/translations/translations.h"  // for applyLanguage, etc
 
 #include "global/types.h"  // for viewsText, ConvertToString, etc
 

@@ -25,8 +25,8 @@
 #include <string>  // for string
 #include <vector>  // for vector
 
-#include "common/net/types.h"  // for HostAndPortAndSlot
-#include "common/types.h"      // for time64_t
+#include <common/net/types.h>  // for HostAndPortAndSlot
+#include <common/types.h>      // for time64_t
 
 #include "core/connection_types.h"  // for connectionTypes, etc
 #include "core/db_key.h"            // for NDbKValue

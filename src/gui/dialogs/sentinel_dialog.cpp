@@ -39,10 +39,10 @@
 #include <QToolBar>
 #include <QTreeWidget>
 
-#include "common/convert2string.h"     // for ConvertFromString
-#include "common/file_system.h"        // for stable_dir_path
-#include "common/macros.h"             // for VERIFY, CHECK, SIZEOFMASS
-#include "common/qt/convert2string.h"  // for ConvertToString
+#include <common/convert2string.h>     // for ConvertFromString
+#include <common/file_system.h>        // for stable_dir_path
+#include <common/macros.h>             // for VERIFY, CHECK, SIZEOFMASS
+#include <common/qt/convert2string.h>  // for ConvertToString
 
 #include "core/connection_types.h"  // for connectionTypes, etc
 #include "core/types.h"             // for ServerCommonInfo

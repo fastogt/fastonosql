@@ -26,7 +26,7 @@
 #include <QTextEdit>
 #include <QTime>
 
-#include "common/macros.h"  // for VERIFY
+#include <common/macros.h>  // for VERIFY
 
 #include "translations/global.h"  // for trClearAll
 

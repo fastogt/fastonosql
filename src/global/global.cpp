@@ -18,11 +18,13 @@
 
 #include "global/global.h"
 
-#include "common/string_util.h"  // for TrimWhitespaceASCII, etc
-#include <iterator>              // for prev, next
-#include <map>                   // for _Rb_tree_const_iterator, etc
-#include <stddef.h>              // for size_t, NULL
-#include <unordered_map>         // for _Node_iterator, operator!=, etc
+#include <stddef.h>  // for size_t, NULL
+
+#include <iterator>       // for prev, next
+#include <map>            // for _Rb_tree_const_iterator, etc
+#include <unordered_map>  // for _Node_iterator, operator!=, etc
+
+#include <common/string_util.h>  // for TrimWhitespaceASCII, etc
 
 namespace fastonosql {
 

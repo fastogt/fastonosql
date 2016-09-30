@@ -22,8 +22,8 @@
 
 #include <QIcon>
 
-#include "common/convert2string.h"  // for ConvertFromString
-#include "common/macros.h"          // for CHECK, VERIFY
+#include <common/convert2string.h>  // for ConvertFromString
+#include <common/macros.h>          // for CHECK, VERIFY
 
 #include "gui/gui_factory.h"  // for GuiFactory
 

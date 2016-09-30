@@ -20,8 +20,8 @@
 
 #include <string>  // for string
 
-#include "common/macros.h"  // for NOTREACHED
-#include "common/value.h"   // for Value, CommandValue (ptr only), Value::Co...
+#include <common/macros.h>  // for NOTREACHED
+#include <common/value.h>   // for Value, CommandValue (ptr only), Value::Co...
 
 #include "global/global.h"  // for FastoObjectCommandIPtr, FastoObject (ptr ...
 

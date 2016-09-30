@@ -30,16 +30,16 @@
 #include <QPushButton>
 #include <QSplitter>
 
-#include "common/convert2string.h"  // for ConvertFromString
-#include "common/error.h"           // for Error
-#include "common/macros.h"          // for VERIFY, UNUSED, CHECK
-#include "common/value.h"           // for ErrorValue, Value
+#include <common/convert2string.h>  // for ConvertFromString
+#include <common/error.h>           // for Error
+#include <common/macros.h>          // for VERIFY, UNUSED, CHECK
+#include <common/value.h>           // for ErrorValue, Value
+
+#include <common/qt/gui/base/graph_widget.h>  // for GraphWidget, etc
+#include <common/qt/gui/glass_widget.h>       // for GlassWidget
 
 #include "core/db_traits.h"
 #include "core/iserver.h"  // for IServer
-
-#include "common/qt/gui/base/graph_widget.h"  // for GraphWidget, etc
-#include "common/qt/gui/glass_widget.h"       // for GlassWidget
 
 #include "gui/gui_factory.h"  // for GuiFactory
 

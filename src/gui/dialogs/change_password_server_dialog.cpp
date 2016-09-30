@@ -27,15 +27,14 @@
 #include <QLineEdit>
 #include <QMessageBox>
 
-#include "common/error.h"              // for Error
-#include "common/macros.h"             // for VERIFY, CHECK, UNUSED
-#include "common/qt/convert2string.h"  // for ConvertToString
-#include "common/value.h"              // for ErrorValue
+#include <common/error.h>                // for Error
+#include <common/macros.h>               // for VERIFY, CHECK, UNUSED
+#include <common/qt/convert2string.h>    // for ConvertToString
+#include <common/value.h>                // for ErrorValue
+#include <common/qt/gui/glass_widget.h>  // for GlassWidget
 
 #include "core/events/events_info.h"  // for ChangePasswordResponce, etc
 #include "core/iserver.h"             // for IServer
-
-#include "common/qt/gui/glass_widget.h"  // for GlassWidget
 
 #include "gui/gui_factory.h"  // for GuiFactory
 

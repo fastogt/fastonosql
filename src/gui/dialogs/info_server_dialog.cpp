@@ -26,10 +26,10 @@
 #include <QHBoxLayout>
 #include <QTextEdit>
 
-#include "common/convert2string.h"  // for ConvertFromString
-#include "common/error.h"           // for Error
-#include "common/macros.h"          // for CHECK, VERIFY, UNUSED
-#include "common/value.h"           // for ErrorValue
+#include <common/convert2string.h>  // for ConvertFromString
+#include <common/error.h>           // for Error
+#include <common/macros.h>          // for CHECK, VERIFY, UNUSED
+#include <common/value.h>           // for ErrorValue
 
 #ifdef BUILD_WITH_REDIS
 #include "core/redis/server_info.h"
@@ -64,7 +64,7 @@
 #include "core/iserver.h"             // for IServer
 #include "core/types.h"               // for IServerInfoSPtr, etc
 
-#include "common/qt/gui/glass_widget.h"  // for GlassWidget
+#include <common/qt/gui/glass_widget.h>  // for GlassWidget
 
 #include "gui/gui_factory.h"  // for GuiFactory
 

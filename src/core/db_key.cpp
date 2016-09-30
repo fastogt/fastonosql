@@ -22,7 +22,7 @@
 #include <string>  // for string
 #include <vector>  // for vector
 
-#include "common/string_util.h"  // for JoinString, Tokenize
+#include <common/string_util.h>  // for JoinString, Tokenize
 
 #include "global/global.h"
 

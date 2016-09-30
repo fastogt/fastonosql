@@ -37,7 +37,7 @@ Build documentation: [Build FastoNoSQL](https://github.com/fasto/fastonosql/wiki
 License
 =======
 
-Copyright (C) 2014 FastoGT (http://www.fastonosql.com)
+Copyright (C) 2014-2016 FastoGT (http://www.fastogt.com)
 
 This program is free software: you can redistribute it and/or modify
 it under the terms of the GNU General Public License version 3 as 

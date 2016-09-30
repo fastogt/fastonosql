@@ -25,8 +25,8 @@
 #include <utility>  // for make_pair
 #include <vector>   // for vector
 
-#include "common/macros.h"  // for NOTREACHED, DCHECK_EQ
-#include "common/value.h"   // for Value, Value::Type, etc
+#include <common/macros.h>  // for NOTREACHED, DCHECK_EQ
+#include <common/value.h>   // for Value, Value::Type, etc
 
 #include "core/connection_types.h"  // for connectionTypes::UNQLITE
 #include "core/db_traits.h"

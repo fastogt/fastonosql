@@ -22,14 +22,14 @@
 #include <stddef.h>  // for size_t
 #include <string>    // for string
 
-#include "common/convert2string.h"                  // for ConvertFromString
-#include "common/error.h"                           // for Error
-#include "common/qt/convert2string.h"               // for ConvertToString
-#include "common/text_decoders/compress_edcoder.h"  // for CompressEDcoder
-#include "common/text_decoders/hex_edcoder.h"       // for HexEDcoder
-#include "common/text_decoders/msgpack_edcoder.h"   // for MsgPackEDcoder
+#include <common/convert2string.h>                  // for ConvertFromString
+#include <common/error.h>                           // for Error
+#include <common/qt/convert2string.h>               // for ConvertToString
+#include <common/text_decoders/compress_edcoder.h>  // for CompressEDcoder
+#include <common/text_decoders/hex_edcoder.h>       // for HexEDcoder
+#include <common/text_decoders/msgpack_edcoder.h>   // for MsgPackEDcoder
 
-#include "common/qt/gui/base/tree_item.h"  // for TreeItem
+#include <common/qt/gui/base/tree_item.h>  // for TreeItem
 
 #include "third-party/json-c/json-c/json_tokener.h"
 

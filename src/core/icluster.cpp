@@ -21,7 +21,7 @@
 #include <stddef.h>  // for size_t
 #include <string>    // for string
 
-#include "common/macros.h"  // for CHECK, DNOTREACHED
+#include <common/macros.h>  // for CHECK, DNOTREACHED
 
 #include "core/connection_types.h"  // for serverTypes::MASTER
 

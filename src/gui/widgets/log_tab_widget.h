@@ -20,7 +20,7 @@
 
 #include <QTabWidget>
 
-#include "common/log_levels.h"  // for LEVEL_LOG
+#include <common/log_levels.h>  // for LEVEL_LOG
 
 #include "global/global.h"
 

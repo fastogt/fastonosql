@@ -45,16 +45,18 @@ extern "C" {
 
 #include "third-party/redis/src/help.h"
 
-#include "common/convert2string.h"  // for ConvertFromString, etc
-#include "common/intrusive_ptr.h"   // for intrusive_ptr
-#include "common/log_levels.h"      // for LEVEL_LOG::L_INFO, etc
-#include "common/macros.h"          // for INVALID_DESCRIPTOR
-#include "common/net/types.h"       // for HostAndPort, etc
-#include "common/sprintf.h"         // for MemSPrintf, SNPrintf
-#include "common/time.h"            // for current_mstime
-#include "common/types.h"           // for time64_t
-#include "common/utils.h"           // for c_strornull, usleep, etc
-#include "common/value.h"           // for ErrorValue, etc
+#include <common/convert2string.h>  // for ConvertFromString, etc
+#include <common/intrusive_ptr.h>   // for intrusive_ptr
+#include <common/log_levels.h>      // for LEVEL_LOG::L_INFO, etc
+#include <common/macros.h>          // for INVALID_DESCRIPTOR
+#include <common/net/types.h>       // for HostAndPort, etc
+#include <common/sprintf.h>         // for MemSPrintf, SNPrintf
+#include <common/time.h>            // for current_mstime
+#include <common/types.h>           // for time64_t
+#include <common/utils.h>           // for c_strornull, usleep, etc
+#include <common/value.h>           // for ErrorValue, etc
+
+#include <common/qt/logger.h>  // for LOG_MSG
 
 #include "core/command.h"                    // for createCommand
 #include "core/command_logger.h"             // for LOG_COMMAND
@@ -64,8 +66,6 @@ extern "C" {
 #include "core/redis/database.h"             // for DataBaseInfo
 #include "core/redis/sentinel_info.h"        // for DiscoverySentinelInfo, etc
 #include "core/redis/command_translator.h"
-
-#include "common/qt/logger.h"  // for LOG_MSG
 
 #define HIREDIS_VERSION    \
   STRINGIZE(HIREDIS_MAJOR) \

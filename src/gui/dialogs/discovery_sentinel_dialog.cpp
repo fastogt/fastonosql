@@ -28,17 +28,16 @@
 #include <QThread>
 #include <QVBoxLayout>
 
-#include "common/convert2string.h"  // for ConvertFromString
-#include "common/error.h"           // for Error
-#include "common/file_system.h"     // for get_separator_string
-#include "common/macros.h"          // for VERIFY
-#include "common/net/types.h"       // for HostAndPort
-#include "common/time.h"            // for current_mstime
-#include "common/value.h"           // for ErrorValue
+#include <common/convert2string.h>       // for ConvertFromString
+#include <common/error.h>                // for Error
+#include <common/file_system.h>          // for get_separator_string
+#include <common/macros.h>               // for VERIFY
+#include <common/net/types.h>            // for HostAndPort
+#include <common/time.h>                 // for current_mstime
+#include <common/value.h>                // for ErrorValue
+#include <common/qt/gui/glass_widget.h>  // for GlassWidget
 
 #include "core/servers_manager.h"  // for ServersManager
-
-#include "common/qt/gui/glass_widget.h"  // for GlassWidget
 
 #include "gui/dialogs/connection_listwidget_items.h"
 #include "gui/dialogs/discovery_sentinel_connection.h"

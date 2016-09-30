@@ -39,10 +39,10 @@
 #include <QSpinBox>
 #include <QToolBar>
 
-#include "common/convert2string.h"     // for ConvertFromString
-#include "common/file_system.h"        // for stable_dir_path
-#include "common/macros.h"             // for VERIFY, SIZEOFMASS
-#include "common/qt/convert2string.h"  // for ConvertToString
+#include <common/convert2string.h>     // for ConvertFromString
+#include <common/file_system.h>        // for stable_dir_path
+#include <common/macros.h>             // for VERIFY, SIZEOFMASS
+#include <common/qt/convert2string.h>  // for ConvertToString
 
 #include "core/connection_types.h"  // for connectionTypes, etc
 

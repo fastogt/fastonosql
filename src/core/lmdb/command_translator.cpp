@@ -18,8 +18,9 @@
 
 #include "core/lmdb/command_translator.h"
 
+#include <common/sprintf.h>
+
 #include "global/global.h"
-#include "common/sprintf.h"
 
 #define LMDB_SET_KEY_PATTERN_2ARGS_SS "SET %s %s"
 #define LMDB_GET_KEY_PATTERN_1ARGS_S "GET %s"

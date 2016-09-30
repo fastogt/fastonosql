@@ -31,8 +31,8 @@
 
 #include <Qsci/qsciscintilla.h>  // for QsciScintilla, etc
 
-#include "common/macros.h"             // for VERIFY, UNUSED, NOTREACHED
-#include "common/qt/convert2string.h"  // for EscapedText
+#include <common/macros.h>             // for VERIFY, UNUSED, NOTREACHED
+#include <common/qt/convert2string.h>  // for EscapedText
 
 #include "gui/fasto_scintilla.h"  // for FastoScintilla
 

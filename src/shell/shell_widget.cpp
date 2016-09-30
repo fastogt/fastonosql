@@ -35,20 +35,20 @@
 #include <QToolBar>
 #include <QVBoxLayout>
 
-#include "common/convert2string.h"     // for ConvertFromString
-#include "common/error.h"              // for Error
-#include "common/macros.h"             // for VERIFY, UNUSED, CHECK, etc
-#include "common/qt/convert2string.h"  // for ConvertToString
-#include "common/value.h"              // for ErrorValue
+#include <common/convert2string.h>  // for ConvertFromString
+#include <common/error.h>           // for Error
+#include <common/macros.h>          // for VERIFY, UNUSED, CHECK, etc
+#include <common/value.h>           // for ErrorValue
+
+#include <common/qt/convert2string.h>  // for ConvertToString
+#include <common/qt/gui/icon_label.h>  // for IconLabel
+#include <common/qt/gui/shortcuts.h>   // for FastoQKeySequence
+#include <common/qt/utils_qt.h>        // for SaveToFileText, etc
 
 #include "core/command_info.h"        // for UNDEFINED_SINCE, etc
 #include "core/events/events_info.h"  // for DiscoveryInfoResponce, etc
 #include "core/iserver.h"             // for IServer
 #include "core/settings_manager.h"    // for SettingsManager
-
-#include "common/qt/gui/icon_label.h"  // for IconLabel
-#include "common/qt/gui/shortcuts.h"   // for FastoQKeySequence
-#include "common/qt/utils_qt.h"        // for SaveToFileText, etc
 
 #include "gui/gui_factory.h"  // for GuiFactory
 #include "gui/shortcuts.h"    // for executeKey

@@ -24,9 +24,9 @@
 #include <string>  // for string
 #include <vector>  // for vector
 
-#include "common/error.h"        // for Error
-#include "common/qt/utils_qt.h"  // for EventInfo<>::error_type, etc
-#include "common/types.h"        // for time64_t
+#include <common/error.h>        // for Error
+#include <common/qt/utils_qt.h>  // for EventInfo<>::error_type, etc
+#include <common/types.h>        // for time64_t
 
 #include "core/connection_types.h"      // for ConnectionMode
 #include "core/db_key.h"                // for NDbKValue

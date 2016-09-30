@@ -23,11 +23,11 @@
 #include <memory>  // for __shared_ptr
 #include <string>  // for string
 
-#include "common/convert2string.h"  // for ConvertToString
-#include "common/log_levels.h"      // for LEVEL_LOG::L_WARNING
-#include "common/qt/utils_qt.h"     // for Event<>::value_type
-#include "common/sprintf.h"         // for MemSPrintf
-#include "common/value.h"           // for ErrorValue, etc
+#include <common/convert2string.h>  // for ConvertToString
+#include <common/log_levels.h>      // for LEVEL_LOG::L_WARNING
+#include <common/qt/utils_qt.h>     // for Event<>::value_type
+#include <common/sprintf.h>         // for MemSPrintf
+#include <common/value.h>           // for ErrorValue, etc
 
 #include "core/command.h"           // for createCommand, etc
 #include "core/command_logger.h"    // for LOG_COMMAND

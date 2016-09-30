@@ -21,8 +21,8 @@
 #include <stddef.h>  // for size_t
 #include <string>    // for string, operator==
 
-#include "common/convert2string.h"
-#include "common/macros.h"  // for NOTREACHED, SIZEOFMASS
+#include <common/macros.h>  // for NOTREACHED, SIZEOFMASS
+#include <common/convert2string.h>
 
 namespace {
 const std::string connnectionMode[] = {"Latency mode", "Slave mode",         "Get RDB mode",

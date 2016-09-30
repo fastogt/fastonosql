@@ -20,9 +20,9 @@
 
 #include <QHBoxLayout>
 
-#include "common/macros.h"
-#include "common/qt/convert2string.h"
-#include "common/qt/utils_qt.h"  // for item
+#include <common/macros.h>
+#include <common/qt/convert2string.h>
+#include <common/qt/utils_qt.h>  // for item
 
 #include "gui/editor/fasto_hex_edit.h"  // for FastoHexEdit, etc
 #include "gui/fasto_common_item.h"      // for FastoCommonItem, toRaw, etc

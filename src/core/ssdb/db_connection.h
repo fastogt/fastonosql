@@ -25,8 +25,8 @@
 #include <string>  // for string
 #include <vector>  // for vector
 
-#include "common/error.h"   // for Error
-#include "common/macros.h"  // for WARN_UNUSED_RESULT
+#include <common/error.h>   // for Error
+#include <common/macros.h>  // for WARN_UNUSED_RESULT
 
 #include "core/cdb_connection.h"
 

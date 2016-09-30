@@ -21,9 +21,9 @@
 #include <QEvent>
 #include <QMenu>
 
-#include "common/macros.h"  // for VERIFY
+#include <common/macros.h>  // for VERIFY
 
-#include "common/qt/gui/shortcuts.h"  // for FastoQKeySequence
+#include <common/qt/gui/shortcuts.h>  // for FastoQKeySequence
 
 #include "gui/shortcuts.h"  // for closeKey, newTabKey, etc
 

@@ -25,16 +25,16 @@
 #include <QHBoxLayout>
 #include <QTableView>
 
-#include "common/convert2string.h"  // for ConvertFromString
-#include "common/error.h"           // for Error
-#include "common/macros.h"          // for VERIFY, UNUSED, CHECK
-#include "common/value.h"           // for ErrorValue
+#include <common/convert2string.h>  // for ConvertFromString
+#include <common/error.h>           // for Error
+#include <common/macros.h>          // for VERIFY, UNUSED, CHECK
+#include <common/value.h>           // for ErrorValue
+
+#include <common/qt/gui/glass_widget.h>  // for GlassWidget
 
 #include "core/connection_types.h"  // for connectionTypes::REDIS
 #include "core/events/events_info.h"
 #include "core/iserver.h"  // for IServer
-
-#include "common/qt/gui/glass_widget.h"  // for GlassWidget
 
 #include "gui/gui_factory.h"  // for GuiFactory
 #include "gui/property_table_item.h"

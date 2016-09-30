@@ -22,8 +22,8 @@
 
 #include <vector>  // for vector
 
-#include "common/error.h"   // for Error
-#include "common/macros.h"  // for PROJECT_VERSION_GENERATE, etc
+#include <common/error.h>   // for Error
+#include <common/macros.h>  // for PROJECT_VERSION_GENERATE, etc
 
 #include "core/cdb_connection.h"
 #include "core/ssh_info.h"  // for SSHInfo

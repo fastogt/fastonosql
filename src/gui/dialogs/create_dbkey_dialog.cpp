@@ -37,10 +37,10 @@
 #include <QPushButton>
 #include <QTableWidget>
 
-#include "common/convert2string.h"     // for ConvertFromString
-#include "common/macros.h"             // for VERIFY, CHECK, NOTREACHED
-#include "common/qt/convert2string.h"  // for ConvertToString
-#include "common/value.h"              // for Value, Value::Type, etc
+#include <common/convert2string.h>     // for ConvertFromString
+#include <common/macros.h>             // for VERIFY, CHECK, NOTREACHED
+#include <common/qt/convert2string.h>  // for ConvertToString
+#include <common/value.h>              // for Value, Value::Type, etc
 
 #include "core/db_traits.h"
 

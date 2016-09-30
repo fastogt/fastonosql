@@ -30,10 +30,10 @@
 #include <QStyledItemDelegate>
 #include <QVBoxLayout>
 
-#include "common/error.h"              // for Error
-#include "common/macros.h"             // for VERIFY, UNUSED, CHECK, etc
-#include "common/qt/convert2string.h"  // for ConvertToString
-#include "common/value.h"              // for ErrorValue
+#include <common/error.h>              // for Error
+#include <common/macros.h>             // for VERIFY, UNUSED, CHECK, etc
+#include <common/qt/convert2string.h>  // for ConvertToString
+#include <common/value.h>              // for ErrorValue
 
 #include "core/db_key.h"              // for NDbKValue
 #include "core/events/events_info.h"  // for CommandResponce, etc

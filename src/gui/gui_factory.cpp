@@ -23,7 +23,8 @@
 #include <QString>
 #include <QStyle>
 
-#include "common/macros.h"          // for NOTREACHED
+#include <common/macros.h>  // for NOTREACHED
+
 #include "core/settings_manager.h"  // for SettingsManager
 
 namespace fastonosql {

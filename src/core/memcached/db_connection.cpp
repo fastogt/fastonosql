@@ -27,11 +27,11 @@
 #include <libmemcached/util.h>
 #include <libmemcached/instance.hpp>  // for memcached_instance_st
 
-#include "common/convert2string.h"  // for ConvertFromString
-#include "common/net/types.h"       // for HostAndPort
-#include "common/sprintf.h"         // for MemSPrintf
-#include "common/utils.h"           // for c_strornull
-#include "common/value.h"           // for Value::ErrorsType::E_ERROR, etc
+#include <common/convert2string.h>  // for ConvertFromString
+#include <common/net/types.h>       // for HostAndPort
+#include <common/sprintf.h>         // for MemSPrintf
+#include <common/utils.h>           // for c_strornull
+#include <common/value.h>           // for Value::ErrorsType::E_ERROR, etc
 
 #include "core/memcached/config.h"               // for Config
 #include "core/memcached/connection_settings.h"  // for ConnectionSettings

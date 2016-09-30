@@ -18,13 +18,12 @@
 
 #include "core/leveldb/db_connection.h"
 
-#include "common/sprintf.h"
-
 #include <leveldb/c.h>  // for leveldb_major_version, etc
 #include <leveldb/db.h>
 #include <leveldb/options.h>  // for ReadOptions, WriteOptions
 
-#include "common/convert2string.h"  // for ConvertFromString
+#include <common/sprintf.h>
+#include <common/convert2string.h>  // for ConvertFromString
 
 #include "core/leveldb/connection_settings.h"  // for ConnectionSettings
 #include "core/leveldb/command_translator.h"

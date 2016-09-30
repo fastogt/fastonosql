@@ -18,7 +18,7 @@
 
 #include "core/redis/command_translator.h"
 
-#include "common/sprintf.h"
+#include <common/sprintf.h>
 
 #include "global/global.h"
 

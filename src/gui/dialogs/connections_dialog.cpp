@@ -31,7 +31,7 @@
 #include <QToolBar>
 #include <QVBoxLayout>
 
-#include "common/macros.h"  // for VERIFY, CHECK, NOTREACHED
+#include <common/macros.h>  // for VERIFY, CHECK, NOTREACHED
 
 #include "core/connection_settings.h"  // for IClusterSettingsBaseSPtr, etc
 #include "core/settings_manager.h"     // for SettingsManager

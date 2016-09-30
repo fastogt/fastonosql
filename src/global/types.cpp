@@ -20,8 +20,8 @@
 
 #include <stddef.h>  // for size_t
 
-#include "common/convert2string.h"
-#include "common/macros.h"  // for SIZEOFMASS
+#include <common/convert2string.h>
+#include <common/macros.h>  // for SIZEOFMASS
 
 namespace fastonosql {}  // namespace fastonosql
 

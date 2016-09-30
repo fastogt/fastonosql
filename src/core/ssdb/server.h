@@ -18,7 +18,7 @@
 
 #pragma once
 
-#include "common/net/types.h"  // for HostAndPort
+#include <common/net/types.h>  // for HostAndPort
 
 #include "core/connection_settings.h"  // for IConnectionSettingsBaseSPtr
 #include "core/connection_types.h"     // for serverMode, serverState, etc

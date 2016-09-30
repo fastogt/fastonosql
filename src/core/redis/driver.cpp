@@ -24,13 +24,13 @@
 #include <memory>  // for __shared_ptr, shared_ptr
 #include <vector>  // for vector
 
-#include "common/convert2string.h"  // for ConvertFromString, etc
-#include "common/file_system.h"     // for copy_file
-#include "common/intrusive_ptr.h"   // for intrusive_ptr
-#include "common/log_levels.h"      // for LEVEL_LOG::L_WARNING
-#include "common/qt/utils_qt.h"     // for Event<>::value_type
-#include "common/sprintf.h"         // for MemSPrintf
-#include "common/value.h"           // for Value, ErrorValue, etc
+#include <common/convert2string.h>  // for ConvertFromString, etc
+#include <common/file_system.h>     // for copy_file
+#include <common/intrusive_ptr.h>   // for intrusive_ptr
+#include <common/log_levels.h>      // for LEVEL_LOG::L_WARNING
+#include <common/qt/utils_qt.h>     // for Event<>::value_type
+#include <common/sprintf.h>         // for MemSPrintf
+#include <common/value.h>           // for Value, ErrorValue, etc
 
 #include "core/command.h"  // for createCommand, etc
 #include "core/connection_types.h"

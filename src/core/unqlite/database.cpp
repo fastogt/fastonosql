@@ -18,7 +18,7 @@
 
 #include "core/unqlite/database.h"
 
-#include "common/macros.h"  // for DCHECK
+#include <common/macros.h>  // for DCHECK
 
 #include "core/connection_types.h"  // for connectionTypes::UNQLITE
 

@@ -21,9 +21,9 @@
 #include <string>  // for string
 #include <memory>  // for shared_ptr
 
-#include "common/error.h"   // for Error
-#include "common/macros.h"  // for WARN_UNUSED_RESULT
-#include "common/value.h"   // for Value, Value::Type
+#include <common/error.h>   // for Error
+#include <common/macros.h>  // for WARN_UNUSED_RESULT
+#include <common/value.h>   // for Value, Value::Type
 
 #include "core/db_key.h"  // for key_t, key_and_value_t, ttl_t
 

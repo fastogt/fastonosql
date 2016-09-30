@@ -20,7 +20,7 @@
 
 #include <QMenu>
 
-#include "common/macros.h"
+#include <common/macros.h>
 
 namespace fastonosql {
 namespace gui {

@@ -18,7 +18,7 @@
 
 #pragma once
 
-#include "common/qt/gui/base/table_model.h"  // for TableModel
+#include <common/qt/gui/base/table_model.h>  // for TableModel
 
 #include "core/server_property_info.h"  // for property_t
 

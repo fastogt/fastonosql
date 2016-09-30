@@ -20,7 +20,7 @@
 
 #include <string>  // for string
 
-#include "common/convert2string.h"  // for ConvertFromString
+#include <common/convert2string.h>  // for ConvertFromString
 
 #include "core/connection_types.h"  // for connectionTypes::LMDB
 

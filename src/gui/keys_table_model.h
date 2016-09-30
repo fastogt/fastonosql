@@ -18,12 +18,12 @@
 
 #pragma once
 
-#include "common/value.h"  // for Value, Value::Type
+#include <common/value.h>  // for Value, Value::Type
+
+#include <common/qt/gui/base/table_item.h>   // for TableItem
+#include <common/qt/gui/base/table_model.h>  // for TableModel
 
 #include "core/db_key.h"  // for NDbKValue, ttl_t
-
-#include "common/qt/gui/base/table_item.h"   // for TableItem
-#include "common/qt/gui/base/table_model.h"  // for TableModel
 
 namespace fastonosql {
 namespace gui {

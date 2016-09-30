@@ -23,7 +23,7 @@
 #include <QPainter>
 #include <QScrollBar>
 
-#include "common/macros.h"  // for UNUSED, NOTREACHED
+#include <common/macros.h>  // for UNUSED, NOTREACHED
 
 namespace {
 const QColor selectedColor = QColor(0x6d, 0x9e, 0xff, 0xff);

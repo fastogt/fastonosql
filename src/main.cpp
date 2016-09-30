@@ -22,7 +22,7 @@
 #include "gui/main_window.h"
 #include "gui/gui_factory.h"
 
-#include "common/logger.h"
+#include <common/logger.h>
 
 namespace {
 const QSize preferedSize = QSize(1024, 768);

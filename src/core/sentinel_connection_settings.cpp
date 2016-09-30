@@ -23,9 +23,9 @@
 
 #include <sstream>
 
-#include "common/macros.h"  // for NOTREACHED
-#include "common/convert2string.h"
-#include "common/utils.h"
+#include <common/macros.h>  // for NOTREACHED
+#include <common/convert2string.h>
+#include <common/utils.h>
 
 #ifdef BUILD_WITH_REDIS
 #include "core/redis/sentinel_settings.h"  // for SentinelSettings

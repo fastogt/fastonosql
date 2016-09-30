@@ -24,8 +24,8 @@
 #include <string>  // for string
 #include <vector>  // for vector
 
-#include "common/error.h"   // for Error
-#include "common/macros.h"  // for WARN_UNUSED_RESULT
+#include <common/error.h>   // for Error
+#include <common/macros.h>  // for WARN_UNUSED_RESULT
 
 #include "core/command_holder.h"  // for CommandHolder, etc
 #include "core/command_info.h"    // for UNDEFINED_EXAMPLE_STR, etc

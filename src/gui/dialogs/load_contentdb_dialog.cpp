@@ -25,7 +25,7 @@
 #include <QSpinBox>
 #include <QVBoxLayout>
 
-#include "common/macros.h"  // for VERIFY
+#include <common/macros.h>  // for VERIFY
 
 #include "gui/gui_factory.h"  // for GuiFactory
 

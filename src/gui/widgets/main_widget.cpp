@@ -18,10 +18,10 @@
 
 #include "gui/widgets/main_widget.h"
 
-#include "common/convert2string.h"
+#include <common/convert2string.h>
 
-#include "common/convert2string.h"  // for ConvertFromString
-#include "common/macros.h"          // for VERIFY, DNOTREACHED
+#include <common/convert2string.h>  // for ConvertFromString
+#include <common/macros.h>          // for VERIFY, DNOTREACHED
 
 #include "core/iserver.h"  // for IServer
 

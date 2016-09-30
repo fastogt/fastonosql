@@ -20,7 +20,7 @@
 
 #include <QObject>
 
-#include "common/types.h"  // for time64_t
+#include <common/types.h>  // for time64_t
 
 #include "core/connection_settings.h"  // for IConnectionSettingsBaseSPtr
 

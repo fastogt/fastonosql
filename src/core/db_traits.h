@@ -22,7 +22,7 @@
 #include <utility>  // for pair
 #include <vector>   // for vector
 
-#include "common/value.h"  // for Value, Value::Type
+#include <common/value.h>  // for Value, Value::Type
 
 #include "core/connection_types.h"  // for connectionTypes
 

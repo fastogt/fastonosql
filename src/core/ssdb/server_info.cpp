@@ -25,9 +25,9 @@
 #include <utility>  // for make_pair
 #include <vector>   // for vector
 
-#include "common/convert2string.h"  // for ConvertFromString, etc
-#include "common/macros.h"          // for NOTREACHED, DCHECK_EQ
-#include "common/value.h"           // for Value, FundamentalValue, etc
+#include <common/convert2string.h>  // for ConvertFromString, etc
+#include <common/macros.h>          // for NOTREACHED, DCHECK_EQ
+#include <common/value.h>           // for Value, FundamentalValue, etc
 
 #include "core/connection_types.h"  // for connectionTypes::SSDB
 #include "core/db_traits.h"

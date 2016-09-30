@@ -20,11 +20,12 @@
 
 #include <memory>  // for __shared_ptr
 
-#include "common/convert2string.h"  // for ConvertFromString
-#include "common/error.h"           // for Error
-#include "common/time.h"            // for current_mstime
-#include "common/value.h"           // for ErrorValue
-#include "core/servers_manager.h"   // for ServersManager
+#include <common/convert2string.h>  // for ConvertFromString
+#include <common/error.h>           // for Error
+#include <common/time.h>            // for current_mstime
+#include <common/value.h>           // for ErrorValue
+
+#include "core/servers_manager.h"  // for ServersManager
 
 #include "translations/global.h"  // for trSuccess
 
