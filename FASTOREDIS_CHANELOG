@@ -1,3 +1,8 @@
+0.9.3 / October 1, 2016
+[Alexandr Topilski]
+- Select db from console
+- Console key(set/del/ttl) handling
+
 0.9.2 / September 17, 2016
 [Alexandr Topilski]
 - Set ttl context menu
