@@ -50,9 +50,9 @@ void UpdateChecker::routine() {
 
   ssize_t nwrite = 0;
 #if defined(FASTONOSQL)
-  err = s.write(GET_FASTONOSQL_VERSION, sizeof(GET_FASTONOSQL_VERSION), &nwrite);
+  err = s.write(GET_FASTONOSQL_VERSION, sizeof(GET_FASTONOSQL_VERSION) - 1, &nwrite);
 #elif defined(FASTOREDIS)
-  err = s.write(GET_FASTOREDIS_VERSION, sizeof(GET_FASTOREDIS_VERSION), &nwrite);
+  err = s.write(GET_FASTOREDIS_VERSION, sizeof(GET_FASTOREDIS_VERSION) - 1, &nwrite);
 #else
 #error please specify request to get version information
 #endif
