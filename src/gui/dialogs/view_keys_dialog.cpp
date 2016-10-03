@@ -29,6 +29,7 @@
 #include <QSplitter>
 #include <QStyledItemDelegate>
 #include <QVBoxLayout>
+#include <QSortFilterProxyModel>
 
 #include <common/error.h>              // for Error
 #include <common/macros.h>             // for VERIFY, UNUSED, CHECK, etc
@@ -132,6 +133,9 @@ ViewKeysDialog::ViewKeysDialog(const QString& title, core::IDatabaseSPtr db, QWi
   searchLayout->addWidget(searchButton_);
 
   keysModel_ = new KeysTableModel(this);
+  QSortFilterProxyModel* proxy_model = new QSortFilterProxyModel;
+  proxy_model->setSourceModel(keysModel_);
+  proxy_model->setDynamicSortFilter(true);
   VERIFY(connect(keysModel_, &KeysTableModel::changedTTL, this, &ViewKeysDialog::changeTTL,
                  Qt::DirectConnection));
 
@@ -143,7 +147,10 @@ ViewKeysDialog::ViewKeysDialog(const QString& title, core::IDatabaseSPtr db, QWi
                  Qt::DirectConnection));
 
   keysTable_ = new FastoTableView;
-  keysTable_->setModel(keysModel_);
+  keysTable_->setSortingEnabled(true);
+  keysTable_->sortByColumn(1, Qt::AscendingOrder);
+  keysTable_->setModel(proxy_model);
+  keysTable_->setAlternatingRowColors(true);
   keysTable_->setItemDelegateForColumn(KeyTableItem::kTTL, new NumericDelegate(this));
 
   QDialogButtonBox* buttonBox =
