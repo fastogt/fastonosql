@@ -28,7 +28,8 @@
 #include <common/macros.h>          // for CHECK, NOTREACHED, etc
 #include <common/net/types.h>       // for ConvertToString
 
-#include <common/qt/utils_qt.h>             // for item
+#include <common/qt/utils_qt.h>  // for item
+#include <common/qt/convert2string.h>
 #include <common/qt/gui/base/tree_item.h>   // for TreeItem, findItemRecursive, etc
 #include <common/qt/gui/base/tree_model.h>  // for TreeModel
 
@@ -197,6 +198,20 @@ core::IDataBaseInfoSPtr ExplorerDatabaseItem::info() const {
   return db_->info();
 }
 
+void ExplorerDatabaseItem::renameKey(const core::NKey& key, const QString& newName) {
+  core::IDatabaseSPtr dbs = db();
+  CHECK(dbs);
+  core::translator_t tran = dbs->translator();
+  std::string cmd_str;
+  common::Error err = tran->renameKeyCommand(key, common::ConvertToString(newName), &cmd_str);
+  if (err && err->isError()) {
+    return;
+  }
+
+  core::events_info::ExecuteInfoRequest req(this, cmd_str);
+  dbs->execute(req);
+}
+
 void ExplorerDatabaseItem::removeKey(const core::NKey& key) {
   core::IDatabaseSPtr dbs = db();
   CHECK(dbs);
@@ -305,6 +320,12 @@ core::IServerSPtr ExplorerKeyItem::server() const {
 
 IExplorerTreeItem::eType ExplorerKeyItem::type() const {
   return eKey;
+}
+
+void ExplorerKeyItem::renameKey(const QString& newName) {
+  ExplorerDatabaseItem* par = db();
+  CHECK(par);
+  par->renameKey(dbv_.key(), newName);
 }
 
 void ExplorerKeyItem::removeFromDb() {
@@ -674,18 +695,19 @@ void ExplorerTreeModel::removeKey(core::IServer* server,
 
 void ExplorerTreeModel::updateKey(core::IServer* server,
                                   core::IDataBaseInfoSPtr db,
-                                  const core::NKey& key) {
+                                  const core::NKey& old_key,
+                                  const core::NKey& new_key) {
   ExplorerServerItem* parent = findServerItem(server);
   CHECK(parent);
 
   ExplorerDatabaseItem* dbs = findDatabaseItem(parent, db);
   CHECK(dbs);
 
-  ExplorerKeyItem* keyit = findKeyItem(dbs, key);
+  ExplorerKeyItem* keyit = findKeyItem(dbs, old_key);
   if (keyit) {
     common::qt::gui::TreeItem* par = keyit->parent();
     int index_key = par->indexOf(keyit);
-    keyit->setKey(key);
+    keyit->setKey(new_key);
     QModelIndex key_index1 = createIndex(index_key, ExplorerKeyItem::eName, dbs);
     QModelIndex key_index2 = createIndex(index_key, ExplorerKeyItem::eCountColumns, dbs);
     updateItem(key_index1, key_index2);

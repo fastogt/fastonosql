@@ -78,6 +78,8 @@ const QString trMaximumConnectionTemplate = QObject::tr("Maximum connection:");
 const QString trSetTTLOnKeyTemplate_1S = QObject::tr("Set ttl for %1 key");
 const QString trTTLValue = QObject::tr("New TTL:");
 const QString trSetTTL = QObject::tr("Set TTL");
+const QString trRenameKey = QObject::tr("Rename key");
+const QString trRenameKeyLabel = QObject::tr("New key name:");
 const QString trChangePasswordTemplate_1S = QObject::tr("Change password for %1 server");
 }  // namespace
 
@@ -167,6 +169,9 @@ ExplorerTreeView::ExplorerTreeView(QWidget* parent) : QTreeView(parent) {
 
   getValueAction_ = new QAction(this);
   VERIFY(connect(getValueAction_, &QAction::triggered, this, &ExplorerTreeView::getValue));
+
+  renameKeyAction_ = new QAction(this);
+  VERIFY(connect(renameKeyAction_, &QAction::triggered, this, &ExplorerTreeView::renKey));
 
   deleteKeyAction_ = new QAction(this);
   VERIFY(connect(deleteKeyAction_, &QAction::triggered, this, &ExplorerTreeView::deleteKey));
@@ -399,6 +404,8 @@ void ExplorerTreeView::showContextMenu(const QPoint& point) {
         VERIFY(connect(setTTLKeyAction, &QAction::triggered, this, &ExplorerTreeView::setTTL));
         menu.addAction(setTTLKeyAction);
       }
+      menu.addAction(renameKeyAction_);
+      renameKeyAction_->setEnabled(isCon);
       menu.addAction(deleteKeyAction_);
       deleteKeyAction_->setEnabled(isCon);
       menu.exec(menuPoint);
@@ -839,6 +846,26 @@ void ExplorerTreeView::getValue() {
   node->loadValueFromDb();
 }
 
+void ExplorerTreeView::renKey() {
+  QModelIndex sel = selectedIndex();
+  if (!sel.isValid()) {
+    return;
+  }
+
+  ExplorerKeyItem* node = common::qt::item<common::qt::gui::TreeItem*, ExplorerKeyItem*>(sel);
+  if (!node) {
+    return;
+  }
+
+  bool ok;
+  QString name = node->name();
+  QString new_key_name =
+      QInputDialog::getText(this, trRenameKey, trRenameKeyLabel, QLineEdit::Normal, name, &ok);
+  if (ok) {
+    node->renameKey(new_key_name);
+  }
+}
+
 void ExplorerTreeView::deleteKey() {
   QModelIndex sel = selectedIndex();
   if (!sel.isValid()) {
@@ -995,6 +1022,18 @@ void ExplorerTreeView::addKey(core::IDataBaseInfoSPtr db, core::NDbKValue key) {
   mod->addKey(serv, db, key, ns);
 }
 
+void ExplorerTreeView::renameKey(core::IDataBaseInfoSPtr db, core::NKey key, std::string new_name) {
+  core::IServer* serv = qobject_cast<core::IServer*>(sender());
+  CHECK(serv);
+
+  ExplorerTreeModel* mod = qobject_cast<ExplorerTreeModel*>(model());
+  CHECK(mod);
+
+  core::NKey new_key = key;
+  new_key.setKey(new_name);
+  mod->updateKey(serv, db, key, new_key);
+}
+
 void ExplorerTreeView::changeTTLKey(core::IDataBaseInfoSPtr db, core::NKey key, core::ttl_t ttl) {
   core::IServer* serv = qobject_cast<core::IServer*>(sender());
   CHECK(serv);
@@ -1004,7 +1043,7 @@ void ExplorerTreeView::changeTTLKey(core::IDataBaseInfoSPtr db, core::NKey key, 
 
   core::NKey new_key = key;
   new_key.setTTL(ttl);
-  mod->updateKey(serv, db, new_key);
+  mod->updateKey(serv, db, key, new_key);
 }
 
 void ExplorerTreeView::changeEvent(QEvent* e) {
@@ -1053,6 +1092,8 @@ void ExplorerTreeView::syncWithServer(core::IServer* server) {
                  Qt::DirectConnection));
   VERIFY(connect(server, &core::IServer::keyAdded, this, &ExplorerTreeView::addKey,
                  Qt::DirectConnection));
+  VERIFY(connect(server, &core::IServer::keyRenamed, this, &ExplorerTreeView::renameKey,
+                 Qt::DirectConnection));
   VERIFY(connect(server, &core::IServer::keyTTLChanged, this, &ExplorerTreeView::changeTTLKey,
                  Qt::DirectConnection));
 }
@@ -1081,6 +1122,7 @@ void ExplorerTreeView::unsyncWithServer(core::IServer* server) {
 
   VERIFY(disconnect(server, &core::IServer::keyRemoved, this, &ExplorerTreeView::removeKey));
   VERIFY(disconnect(server, &core::IServer::keyAdded, this, &ExplorerTreeView::addKey));
+  VERIFY(disconnect(server, &core::IServer::keyRenamed, this, &ExplorerTreeView::renameKey));
   VERIFY(disconnect(server, &core::IServer::keyTTLChanged, this, &ExplorerTreeView::changeTTLKey));
 }
 
@@ -1107,7 +1149,8 @@ void ExplorerTreeView::retranslateUi() {
   createKeyAction_->setText(translations::trCreateKey);
   viewKeysAction_->setText(translations::trViewKeysDialog);
   setDefaultDbAction_->setText(translations::trSetDefault);
-  getValueAction_->setText(translations::trValue);
+  getValueAction_->setText(translations::trGetValue);
+  renameKeyAction_->setText(translations::trRename);
   deleteKeyAction_->setText(translations::trDelete);
 }
 

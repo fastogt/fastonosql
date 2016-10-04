@@ -43,6 +43,9 @@ class CommandTranslator : public ICommandTranslator {
                                            std::string* cmdstring) const override;
   virtual common::Error deleteKeyCommandImpl(const key_t& key,
                                              std::string* cmdstring) const override;
+  virtual common::Error renameKeyCommandImpl(const key_t& key,
+                                             const std::string& new_name,
+                                             std::string* cmdstring) const override;
   virtual common::Error changeKeyTTLCommandImpl(const key_t& key,
                                                 ttl_t ttl,
                                                 std::string* cmdstring) const override;

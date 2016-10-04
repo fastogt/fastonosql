@@ -56,6 +56,7 @@ class NKey {
   KeyInfo info(const std::string& ns_separator) const;
 
   std::string key() const;
+  void setKey(const std::string& key);
 
   ttl_t ttl() const;
   void setTTL(ttl_t ttl);

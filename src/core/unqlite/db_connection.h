@@ -72,6 +72,7 @@ class DBConnection : public core::CDBConnection<NativeConnection, Config, UNQLIT
   virtual common::Error delImpl(const keys_t& keys, keys_t* deleted_keys) override;
   virtual common::Error setImpl(const key_and_value_t& key, key_and_value_t* added_key) override;
   virtual common::Error getImpl(const key_t& key, key_and_value_t* loaded_key) override;
+  virtual common::Error renameImpl(const key_t& key, const std::string& new_key) override;
   virtual common::Error setTTLImpl(const key_t& key, ttl_t ttl) override;
 };
 
@@ -79,6 +80,7 @@ common::Error select(CommandHandler* handler, int argc, const char** argv, Fasto
 common::Error set(CommandHandler* handler, int argc, const char** argv, FastoObject* out);
 common::Error get(CommandHandler* handler, int argc, const char** argv, FastoObject* out);
 common::Error del(CommandHandler* handler, int argc, const char** argv, FastoObject* out);
+common::Error rename(CommandHandler* handler, int argc, const char** argv, FastoObject* out);
 common::Error set_ttl(CommandHandler* handler, int argc, const char** argv, FastoObject* out);
 
 common::Error info(CommandHandler* handler, int argc, const char** argv, FastoObject* out);
@@ -112,6 +114,14 @@ static const std::vector<CommandHolder> unqliteCommands = {
                   1,
                   INFINITE_COMMAND_ARGS,
                   &del),
+    CommandHolder("RENAME",
+                  "<key> <newkey>",
+                  "Rename a key",
+                  UNDEFINED_SINCE,
+                  UNDEFINED_EXAMPLE_STR,
+                  2,
+                  0,
+                  &rename),
     CommandHolder("KEYS",
                   "<key_start> <key_end> <limit>",
                   "Find all keys matching the given limits.",

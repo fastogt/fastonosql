@@ -926,6 +926,27 @@ common::Error DBConnection::delImpl(const keys_t& keys, keys_t* deleted_keys) {
   return common::Error();
 }
 
+common::Error DBConnection::renameImpl(const key_t& key, const std::string& new_key) {
+  std::string key_str = key.key();
+  std::string value_str;
+  common::Error err = getInner(key_str, &value_str);
+  if (err && err->isError()) {
+    return err;
+  }
+
+  err = delInner(key_str);
+  if (err && err->isError()) {
+    return err;
+  }
+
+  err = setInner(new_key, value_str);
+  if (err && err->isError()) {
+    return err;
+  }
+
+  return common::Error();
+}
+
 common::Error DBConnection::setImpl(const key_and_value_t& key, key_and_value_t* added_key) {
   std::string key_str = key.keyString();
   std::string value_str = key.valueString();
@@ -1084,6 +1105,22 @@ common::Error del(CommandHandler* handler, int argc, const char** argv, FastoObj
   }
 
   common::FundamentalValue* val = common::Value::createUIntegerValue(keys_deleted.size());
+  FastoObject* child = new FastoObject(out, val, ssdb->delimiter());
+  out->addChildren(child);
+  return common::Error();
+}
+
+common::Error rename(CommandHandler* handler, int argc, const char** argv, FastoObject* out) {
+  UNUSED(argc);
+
+  NKey key(argv[0]);
+  DBConnection* ssdb = static_cast<DBConnection*>(handler);
+  common::Error err = ssdb->rename(key, argv[1]);
+  if (err && err->isError()) {
+    return err;
+  }
+
+  common::StringValue* val = common::Value::createStringValue("OK");
   FastoObject* child = new FastoObject(out, val, ssdb->delimiter());
   out->addChildren(child);
   return common::Error();

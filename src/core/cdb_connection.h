@@ -49,6 +49,7 @@ class CDBConnection : public DBConnection<NConnection, Config, ContType>, public
   common::Error del(const keys_t& keys, keys_t* deleted_keys) WARN_UNUSED_RESULT;
   common::Error set(const key_and_value_t& key, key_and_value_t* added_key) WARN_UNUSED_RESULT;
   common::Error get(const key_t& key, key_and_value_t* loaded_key) WARN_UNUSED_RESULT;
+  common::Error rename(const key_t& key, const std::string& new_key) WARN_UNUSED_RESULT;
   common::Error setTTL(const key_t& key, ttl_t ttl) WARN_UNUSED_RESULT;
 
   translator_t translator() const { return translator_; }
@@ -58,6 +59,7 @@ class CDBConnection : public DBConnection<NConnection, Config, ContType>, public
   virtual common::Error delImpl(const keys_t& keys, keys_t* deleted_keys) = 0;
   virtual common::Error setImpl(const key_and_value_t& key, key_and_value_t* added_key) = 0;
   virtual common::Error getImpl(const key_t& key, key_and_value_t* loaded_key) = 0;
+  virtual common::Error renameImpl(const key_t& key, const std::string& new_key) = 0;
   virtual common::Error setTTLImpl(const key_t& key, ttl_t ttl) = 0;
 
   CDBConnectionClient* client_;
@@ -161,6 +163,25 @@ common::Error CDBConnection<NConnection, Config, ContType>::get(const key_t& key
 
   if (client_) {
     client_->onKeyLoaded(*loaded_key);
+  }
+
+  return common::Error();
+}
+
+template <typename NConnection, typename Config, connectionTypes ContType>
+common::Error CDBConnection<NConnection, Config, ContType>::rename(const key_t& key, const std::string& new_key) {
+  if (!CDBConnection<NConnection, Config, ContType>::isConnected()) {
+    DNOTREACHED();
+    return common::make_error_value("Not connected", common::Value::E_ERROR);
+  }
+
+  common::Error err = renameImpl(key, new_key);
+  if (err && err->isError()) {
+    return err;
+  }
+
+  if (client_) {
+    client_->onKeyRenamed(key, new_key);
   }
 
   return common::Error();

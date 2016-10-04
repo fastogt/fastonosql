@@ -108,6 +108,7 @@ struct RegisterTypes {
     qRegisterMetaType<core::NDbKValue>("core::NDbKValue");
     qRegisterMetaType<core::IDataBaseInfoSPtr>("core::IDataBaseInfoSPtr");
     qRegisterMetaType<core::ttl_t>("core::ttl_t");
+    qRegisterMetaType<std::string>("std::string");
     qRegisterMetaType<core::ServerInfoSnapShoot>("core::ServerInfoSnapShoot");
   }
 } reg_type;
@@ -699,6 +700,10 @@ void IDriver::onKeyAdded(const key_and_value_t& key) {
 
 void IDriver::onKeyLoaded(const key_and_value_t& key) {
   emit keyLoaded(current_database_info_, key);
+}
+
+void IDriver::onKeyRenamed(const key_t& key, const std::string& new_key) {
+  emit keyRenamed(current_database_info_, key, new_key);
 }
 
 void IDriver::onKeyTTLChanged(const key_t& key, ttl_t ttl) {

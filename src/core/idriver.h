@@ -84,8 +84,9 @@ class IDriver : public QObject,
 
   void keyRemoved(core::IDataBaseInfoSPtr db, core::NKey key);
   void keyAdded(core::IDataBaseInfoSPtr db, core::NDbKValue key);
-  void keyTTLChanged(core::IDataBaseInfoSPtr db, core::NKey key, core::ttl_t ttl);
+  void keyRenamed(core::IDataBaseInfoSPtr db, core::NKey key, std::string new_name);
   void keyLoaded(core::IDataBaseInfoSPtr db, core::NDbKValue key);
+  void keyTTLChanged(core::IDataBaseInfoSPtr db, core::NKey key, core::ttl_t ttl);  
 
  private Q_SLOTS:
   void init();
@@ -167,6 +168,7 @@ class IDriver : public QObject,
   virtual void onKeysRemoved(const keys_t& keys) override;
   virtual void onKeyAdded(const key_and_value_t& key) override;
   virtual void onKeyLoaded(const key_and_value_t& key) override;
+  virtual void onKeyRenamed(const key_t& key, const std::string& new_key) override;
   virtual void onKeyTTLChanged(const key_t& key, ttl_t ttl) override;
 
   // internal methods

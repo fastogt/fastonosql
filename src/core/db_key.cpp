@@ -81,6 +81,10 @@ std::string NKey::key() const {
   return key_;
 }
 
+void NKey::setKey(const std::string& key) {
+  key_ = key;
+}
+
 ttl_t NKey::ttl() const {
   return ttl_;
 }

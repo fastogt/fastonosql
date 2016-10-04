@@ -608,6 +608,22 @@ common::Error get(CommandHandler* handler, int argc, const char** argv, FastoObj
   return common::Error();
 }
 
+common::Error rename(CommandHandler* handler, int argc, const char** argv, FastoObject* out) {
+  UNUSED(argc);
+
+  NKey key(argv[0]);
+  DBConnection* red = static_cast<DBConnection*>(handler);
+  common::Error err = red->rename(key, argv[1]);
+  if (err && err->isError()) {
+    return err;
+  }
+
+  common::StringValue* val = common::Value::createStringValue("OK");
+  FastoObject* child = new FastoObject(out, val, red->delimiter());
+  out->addChildren(child);
+  return common::Error();
+}
+
 common::Error persist(CommandHandler* handler, int argc, const char** argv, FastoObject* out) {
   UNUSED(argc);
   NKey key(argv[0]);
@@ -1751,10 +1767,13 @@ common::Error DBConnection::setImpl(const key_and_value_t& key, key_and_value_t*
     return cliPrintContextError(connection_.handle_);
   }
 
-  if (reply->type != REDIS_REPLY_ERROR) {
-    *added_key = key;
+  if (reply->type == REDIS_REPLY_ERROR) {
+    std::string str(reply->str, reply->len);
+    freeReplyObject(reply);
+    return common::make_error_value(str, common::ErrorValue::E_ERROR);
   }
 
+  *added_key = key;
   freeReplyObject(reply);
   return common::Error();
 }
@@ -1780,9 +1799,30 @@ common::Error DBConnection::getImpl(const key_t& key, key_and_value_t* loaded_ke
   return common::Error();
 }
 
+common::Error DBConnection::renameImpl(const key_t& key, const std::string& new_key) {
+  translator_t tran = translator();
+  std::string rename_cmd;
+  common::Error err = tran->renameKeyCommand(key, new_key, &rename_cmd);
+  if (err && err->isError()) {
+    return err;
+  }
+  redisReply* reply =
+      reinterpret_cast<redisReply*>(redisCommand(connection_.handle_, rename_cmd.c_str()));
+  if (!reply) {
+    return cliPrintContextError(connection_.handle_);
+  }
+
+  if (reply->type == REDIS_REPLY_ERROR) {
+    std::string str(reply->str, reply->len);
+    freeReplyObject(reply);
+    return common::make_error_value(str, common::ErrorValue::E_ERROR);
+  }
+
+  freeReplyObject(reply);
+  return common::Error();
+}
+
 common::Error DBConnection::setTTLImpl(const key_t& key, ttl_t ttl) {
-  UNUSED(key);
-  UNUSED(ttl);
   std::string key_str = key.key();
   translator_t tran = translator();
   std::string ttl_cmd;
@@ -1796,9 +1836,10 @@ common::Error DBConnection::setTTLImpl(const key_t& key, ttl_t ttl) {
     return cliPrintContextError(connection_.handle_);
   }
 
-  if (reply->type != REDIS_REPLY_INTEGER) {
+  if (reply->type == REDIS_REPLY_ERROR) {
+    std::string str(reply->str, reply->len);
     freeReplyObject(reply);
-    return cliPrintContextError(connection_.handle_);
+    return common::make_error_value(str, common::ErrorValue::E_ERROR);
   }
 
   if (reply->integer == 0) {

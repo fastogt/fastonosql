@@ -603,6 +603,27 @@ common::Error DBConnection::setImpl(const key_and_value_t& key, key_and_value_t*
   return common::Error();
 }
 
+common::Error DBConnection::renameImpl(const key_t& key, const std::string& new_key) {
+  std::string key_str = key.key();
+  std::string value_str;
+  common::Error err = getInner(key_str, &value_str);
+  if (err && err->isError()) {
+    return err;
+  }
+
+  err = delInner(key_str, 0);
+  if (err && err->isError()) {
+    return err;
+  }
+
+  err = setInner(new_key, value_str, 0, 0);
+  if (err && err->isError()) {
+    return err;
+  }
+
+  return common::Error();
+}
+
 common::Error DBConnection::setTTLImpl(const key_t& key, ttl_t ttl) {
   UNUSED(key);
   UNUSED(ttl);
@@ -781,6 +802,22 @@ common::Error set(CommandHandler* handler, int argc, const char** argv, FastoObj
   DBConnection* red = static_cast<DBConnection*>(handler);
   key_and_value_t key_added;
   common::Error err = red->set(kv, &key_added);
+  if (err && err->isError()) {
+    return err;
+  }
+
+  common::StringValue* val = common::Value::createStringValue("OK");
+  FastoObject* child = new FastoObject(out, val, red->delimiter());
+  out->addChildren(child);
+  return common::Error();
+}
+
+common::Error rename(CommandHandler* handler, int argc, const char** argv, FastoObject* out) {
+  UNUSED(argc);
+
+  NKey key(argv[0]);
+  DBConnection* red = static_cast<DBConnection*>(handler);
+  common::Error err = red->rename(key, argv[1]);
   if (err && err->isError()) {
     return err;
   }

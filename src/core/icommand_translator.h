@@ -38,6 +38,9 @@ class ICommandTranslator {
                                common::Value::Type type,
                                std::string* cmdstring) const WARN_UNUSED_RESULT;
   common::Error deleteKeyCommand(const key_t& key, std::string* cmdstring) const WARN_UNUSED_RESULT;
+  common::Error renameKeyCommand(const key_t& key,
+                                 const std::string& new_name,
+                                 std::string* cmdstring) const WARN_UNUSED_RESULT;
   common::Error changeKeyTTLCommand(const key_t& key,
                                     ttl_t ttl,
                                     std::string* cmdstring) const WARN_UNUSED_RESULT;
@@ -49,6 +52,9 @@ class ICommandTranslator {
                                            common::Value::Type type,
                                            std::string* cmdstring) const = 0;
   virtual common::Error deleteKeyCommandImpl(const key_t& key, std::string* cmdstring) const = 0;
+  virtual common::Error renameKeyCommandImpl(const key_t& key,
+                                             const std::string& new_name,
+                                             std::string* cmdstring) const = 0;
   virtual common::Error changeKeyTTLCommandImpl(const key_t& key,
                                                 ttl_t ttl,
                                                 std::string* cmdstring) const = 0;

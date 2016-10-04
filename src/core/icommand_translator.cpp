@@ -29,6 +29,16 @@ common::Error ICommandTranslator::deleteKeyCommand(const key_t& key, std::string
   return deleteKeyCommandImpl(key, cmdstring);
 }
 
+common::Error ICommandTranslator::renameKeyCommand(const key_t& key,
+                                                   const std::string& new_name,
+                                                   std::string* cmdstring) const {
+  if (!cmdstring) {
+    return common::make_error_value("Invalid input argument(s)", common::ErrorValue::E_ERROR);
+  }
+
+  return renameKeyCommandImpl(key, new_name, cmdstring);
+}
+
 common::Error ICommandTranslator::createKeyCommand(const key_and_value_t& key,
                                                    std::string* cmdstring) const {
   if (!cmdstring) {

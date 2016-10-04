@@ -35,6 +35,7 @@
 #define SSDB_GET_KEY_HASH_PATTERN_1ARGS_S "HGET %s"
 
 #define SSDB_DELETE_KEY_PATTERN_1ARGS_S "DEL %s"
+#define SSDB_RENAME_KEY_PATTERN_2ARGS_SS "RENAME %s %s"
 
 namespace fastonosql {
 namespace core {
@@ -90,6 +91,14 @@ common::Error CommandTranslator::deleteKeyCommandImpl(const key_t& key,
                                                       std::string* cmdstring) const {
   std::string key_str = key.key();
   *cmdstring = common::MemSPrintf(SSDB_DELETE_KEY_PATTERN_1ARGS_S, key_str);
+  return common::Error();
+}
+
+common::Error CommandTranslator::renameKeyCommandImpl(const key_t& key,
+                                                      const std::string& new_name,
+                                                      std::string* cmdstring) const {
+  std::string key_str = key.key();
+  *cmdstring = common::MemSPrintf(SSDB_RENAME_KEY_PATTERN_2ARGS_SS, key_str, new_name);
   return common::Error();
 }
 

@@ -25,6 +25,7 @@
 #define LMDB_SET_KEY_PATTERN_2ARGS_SS "SET %s %s"
 #define LMDB_GET_KEY_PATTERN_1ARGS_S "GET %s"
 #define LMDB_DELETE_KEY_PATTERN_1ARGS_S "DEL %s"
+#define LMDB_RENAME_KEY_PATTERN_2ARGS_SS "RENAME %s %s"
 
 namespace fastonosql {
 namespace core {
@@ -55,6 +56,14 @@ common::Error CommandTranslator::deleteKeyCommandImpl(const key_t& key,
                                                       std::string* cmdstring) const {
   std::string key_str = key.key();
   *cmdstring = common::MemSPrintf(LMDB_DELETE_KEY_PATTERN_1ARGS_S, key_str);
+  return common::Error();
+}
+
+common::Error CommandTranslator::renameKeyCommandImpl(const key_t& key,
+                                                      const std::string& new_name,
+                                                      std::string* cmdstring) const {
+  std::string key_str = key.key();
+  *cmdstring = common::MemSPrintf(LMDB_RENAME_KEY_PATTERN_2ARGS_SS, key_str, new_name);
   return common::Error();
 }
 
