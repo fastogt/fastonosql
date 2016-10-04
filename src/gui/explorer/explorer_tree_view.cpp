@@ -40,6 +40,7 @@
 #include <common/value.h>              // for ErrorValue
 
 #include <common/qt/gui/base/tree_item.h>  // for TreeItem
+#include <common/qt/gui/regexp_input_dialog.h>
 
 #include "core/connection_types.h"    // for connectionTypes::REDIS
 #include "core/db_key.h"              // for NDbKValue
@@ -857,13 +858,28 @@ void ExplorerTreeView::renKey() {
     return;
   }
 
-  bool ok;
   QString name = node->name();
-  QString new_key_name =
-      QInputDialog::getText(this, trRenameKey, trRenameKeyLabel, QLineEdit::Normal, name, &ok);
-  if (ok) {
-    node->renameKey(new_key_name);
+  common::qt::gui::RegExpInputDialog reg_dialog(this);
+  reg_dialog.setWindowTitle(trRenameKey);
+  reg_dialog.setLabelText(trRenameKeyLabel);
+  reg_dialog.setText(name);
+  QRegExp regExp("\\S+");
+  reg_dialog.setRegExp(regExp);
+  int result = reg_dialog.exec();
+  if (result != QDialog::Accepted) {
+    return;
   }
+
+  QString new_key_name = reg_dialog.text();
+  if (new_key_name.isEmpty()) {
+    return;
+  }
+
+  if (new_key_name == name) {
+    return;
+  }
+
+  node->renameKey(new_key_name);
 }
 
 void ExplorerTreeView::deleteKey() {
