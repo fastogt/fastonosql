@@ -16,7 +16,7 @@
     along with FastoNoSQL.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-#include "core/command.h"
+#include "core/command/command.h"
 
 namespace fastonosql {
 namespace core {

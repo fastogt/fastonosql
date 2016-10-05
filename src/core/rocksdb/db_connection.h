@@ -27,9 +27,9 @@
 #include <common/error.h>   // for Error
 #include <common/macros.h>  // for WARN_UNUSED_RESULT
 
-#include "core/command_holder.h"  // for CommandHolder, etc
-#include "core/command_info.h"    // for UNDEFINED_EXAMPLE_STR, etc
-#include "core/cdb_connection.h"
+#include "core/command/command_holder.h"  // for CommandHolder, etc
+#include "core/command/command_info.h"    // for UNDEFINED_EXAMPLE_STR, etc
+#include "core/db_connection/cdb_connection.h"
 
 #include "core/rocksdb/config.h"
 #include "core/rocksdb/connection_settings.h"

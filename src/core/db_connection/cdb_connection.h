@@ -23,12 +23,12 @@
 #include <common/error.h>   // for Error
 #include <common/macros.h>  // for DNOTREACHED, WARN_UNUSED_RESULT
 
-#include "core/cdb_connection_client.h"  // for CDBConnectionClient
-#include "core/command_handler.h"        // for CommandHandler, CommandHandl...
+#include "core/db_connection/cdb_connection_client.h"  // for CDBConnectionClient
+#include "core/command/command_handler.h"        // for CommandHandler, CommandHandl...
 #include "core/connection_types.h"       // for connectionTypes
-#include "core/db_connection.h"          // for DBConnection
+#include "core/db_connection/db_connection.h"          // for DBConnection
 #include "core/db_key.h"                 // for key_and_value_t, key_t, keys_t
-#include "core/icommand_translator.h"    // for translator_t, ICommandTransl...
+#include "core/translator/icommand_translator.h"    // for translator_t, ICommandTransl...
 #include "core/types.h"                  // for IDataBaseInfo
 
 namespace fastonosql {

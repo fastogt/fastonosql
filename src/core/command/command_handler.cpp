@@ -16,7 +16,7 @@
     along with FastoNoSQL.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-#include "core/command_handler.h"
+#include "core/command/command_handler.h"
 
 #include <stddef.h>  // for size_t
 #include <stdint.h>  // for uint16_t

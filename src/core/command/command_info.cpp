@@ -16,7 +16,7 @@
     along with FastoNoSQL.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-#include "core/command_info.h"
+#include "core/command/command_info.h"
 
 #include <string>
 

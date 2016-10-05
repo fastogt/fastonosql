@@ -51,7 +51,7 @@
 #include <common/text_decoders/iedcoder.h>        // for IEDcoder, EDTypes::Hex
 #include <common/value.h>                         // for ErrorValue
 
-#include "core/command_logger.h"      // for CommandLogger
+#include "core/command/command_logger.h"      // for CommandLogger
 #include "core/core_fwd.h"            // for IServerSPtr, IClusterSPtr, etc
 #include "core/cluster/icluster.h"    // for ICluster
 #include "core/sentinel/isentinel.h"  // for ISentinel

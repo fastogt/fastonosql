@@ -16,7 +16,7 @@
     along with FastoNoSQL.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-#include "core/command_holder.h"
+#include "core/command/command_holder.h"
 
 #include <algorithm>  // for count_if
 #include <vector>     // for vector

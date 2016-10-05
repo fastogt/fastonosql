@@ -40,7 +40,7 @@ extern "C" {
 #include <common/time.h>            // for current_mstime
 #include <common/utils.h>           // for c_strornull
 
-#include "core/command_logger.h"  // for LOG_COMMAND
+#include "core/command/command_logger.h"  // for LOG_COMMAND
 
 namespace {
 #ifdef OS_WIN

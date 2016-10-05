@@ -27,7 +27,7 @@
 #include "core/connection_types.h"  // for connectionTypes, serverMode, etc
 #include "core/core_fwd.h"          // for IDatabaseSPtr
 #include "core/events/events.h"     // for BackupResponceEvent, etc
-#include "core/icommand_translator.h"
+#include "core/translator/icommand_translator.h"
 #include "core/types.h"  // for IDataBaseInfoSPtr, etc
 
 #include "global/global.h"  // for FastoObject, etc

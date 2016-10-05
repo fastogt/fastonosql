@@ -32,7 +32,7 @@
 #include <common/sprintf.h>         // for MemSPrintf
 #include <common/value.h>           // for Value, ErrorValue, etc
 
-#include "core/command.h"  // for createCommand, etc
+#include "core/command/command.h"  // for createCommand, etc
 #include "core/connection_types.h"
 #include "core/db_key.h"  // for NDbKValue, NValue, ttl_t, etc
 #include "core/events/events_info.h"

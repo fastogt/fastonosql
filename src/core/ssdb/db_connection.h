@@ -28,7 +28,7 @@
 #include <common/error.h>   // for Error
 #include <common/macros.h>  // for WARN_UNUSED_RESULT
 
-#include "core/cdb_connection.h"
+#include "core/db_connection/cdb_connection.h"
 
 #include "core/ssdb/config.h"
 #include "core/ssdb/connection_settings.h"

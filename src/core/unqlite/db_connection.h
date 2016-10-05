@@ -27,7 +27,7 @@
 #include <common/error.h>   // for Error
 #include <common/macros.h>  // for WARN_UNUSED_RESULT
 
-#include "core/cdb_connection.h"
+#include "core/db_connection/cdb_connection.h"
 
 #include "core/unqlite/config.h"
 #include "core/unqlite/connection_settings.h"

@@ -146,7 +146,8 @@ SET(HEADERS_CORE_TO_MOC
 
   core/server/iserver.h
 
-  core/command_logger.h  
+  core/command/command_logger.h
+
   core/servers_manager.h
 )
 SET(HEADERS_CORE
@@ -162,6 +163,17 @@ SET(HEADERS_CORE
   core/connection_settings/sentinel_connection_settings.h
   core/connection_settings/connection_settings.h
 
+  core/translator/icommand_translator.h
+
+  core/db_connection/db_connection.h
+  core/db_connection/cdb_connection.h
+  core/db_connection/cdb_connection_client.h
+
+  core/command/command.h
+  core/command/command_info.h
+  core/command/command_holder.h
+  core/command/command_handler.h
+
   core/connection_types.h
   core/core_fwd.h
   core/settings_manager.h
@@ -169,16 +181,8 @@ SET(HEADERS_CORE
   core/events/events_info.h
   core/types.h
   core/db_traits.h
-  core/command.h
-  core/command_info.h
-  core/command_holder.h
-  core/command_handler.h
-  core/icommand_translator.h
   core/db_key.h
   core/connection.h
-  core/db_connection.h
-  core/cdb_connection.h
-  core/cdb_connection_client.h
   core/server_property_info.h
   core/ssh_info.h
 )
@@ -201,23 +205,26 @@ SET(SOURCES_CORE
   core/connection_settings/connection_settings.cpp
   core/connection_settings/sentinel_connection_settings.cpp
 
+  core/translator/icommand_translator.cpp
+
+  core/db_connection/db_connection.cpp
+  core/db_connection/cdb_connection.cpp
+  core/db_connection/cdb_connection_client.cpp
+
+  core/command/command.cpp
+  core/command/command_info.cpp
+  core/command/command_holder.cpp
+  core/command/command_handler.cpp
+  core/command/command_logger.cpp
+
   core/events/events_info.cpp
-  core/command_logger.cpp
   core/connection_types.cpp
   core/settings_manager.cpp
   core/servers_manager.cpp
   core/types.cpp
   core/db_traits.cpp
-  core/command.cpp
-  core/command_info.cpp
-  core/command_holder.cpp
-  core/command_handler.cpp
-  core/icommand_translator.cpp
   core/db_key.cpp
   core/connection.cpp
-  core/db_connection.cpp
-  core/cdb_connection.cpp
-  core/cdb_connection_client.cpp
   core/server_property_info.cpp
   core/ssh_info.cpp
 )

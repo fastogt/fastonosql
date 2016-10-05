@@ -16,36 +16,8 @@
     along with FastoNoSQL.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-#pragma once
-
-#include <string>  // for string
-
-#include <common/error.h>   // for Error
-#include <common/macros.h>  // for WARN_UNUSED_RESULT
-
-#include "core/command_holder.h"  // for CommandHolder
+#include "core/db_connection/cdb_connection_client.h"
 
 namespace fastonosql {
-class FastoObject;
-}  // lines 30-30
-
-namespace fastonosql {
-namespace core {
-
-class CommandHandler {
- public:
-  typedef CommandHolder command_t;
-  typedef std::vector<command_t> commands_t;
-
-  explicit CommandHandler(const commands_t& commands);
-  common::Error execute(int argc, const char** argv, FastoObject* out) WARN_UNUSED_RESULT;
-
-  static common::Error notSupported(const std::string& cmd);
-  static common::Error unknownSequence(int argc, const char** argv);
-
- private:
-  const commands_t& commands_;
-};
-
-}  // namespace core
+namespace core {}  // namespace core
 }  // namespace fastonosql

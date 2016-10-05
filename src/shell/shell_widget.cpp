@@ -45,7 +45,7 @@
 #include <common/qt/gui/shortcuts.h>   // for FastoQKeySequence
 #include <common/qt/utils_qt.h>        // for SaveToFileText, etc
 
-#include "core/command_info.h"        // for UNDEFINED_SINCE, etc
+#include "core/command/command_info.h"        // for UNDEFINED_SINCE, etc
 #include "core/events/events_info.h"  // for DiscoveryInfoResponce, etc
 #include "core/server/iserver.h"      // for IServer
 #include "core/settings_manager.h"    // for SettingsManager
