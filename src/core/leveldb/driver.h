@@ -23,10 +23,10 @@
 #include <common/error.h>   // for Error
 #include <common/macros.h>  // for WARN_UNUSED_RESULT
 
-#include "core/connection_settings.h"  // for IConnectionSettingsBaseSPtr
-#include "core/events/events.h"        // for ClearDatabaseRequestEvent, etc
-#include "core/idriver_local.h"              // for IDriverLocal
-#include "core/types.h"                // for IDataBaseInfo (ptr only), etc
+#include "core/connection_settings/connection_settings.h"  // for IConnectionSettingsBaseSPtr
+#include "core/events/events.h"                            // for ClearDatabaseRequestEvent, etc
+#include "core/driver/idriver_local.h"                     // for IDriverLocal
+#include "core/types.h"                                    // for IDataBaseInfo (ptr only), etc
 
 namespace fastonosql {
 namespace core {

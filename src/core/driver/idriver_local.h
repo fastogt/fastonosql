@@ -16,26 +16,24 @@
     along with FastoNoSQL.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-#include "core/isentinel.h"
+#pragma once
 
-#include <string>
+#include <string>  // for string
+
+#include "core/connection_settings/connection_settings.h"  // for IConnectionSettingsBaseSPtr
+#include "core/driver/idriver.h"                           // for IDriver
 
 namespace fastonosql {
 namespace core {
 
-ISentinel::ISentinel(const std::string& name) : name_(name), sentinels_() {}
+class IDriverLocal : public IDriver {
+  Q_OBJECT
+ public:
+  virtual std::string path() const = 0;
 
-std::string ISentinel::name() const {
-  return name_;
-}
-
-void ISentinel::addSentinel(sentinel_t serv) {
-  sentinels_.push_back(serv);
-}
-
-ISentinel::sentinels_t ISentinel::sentinels() const {
-  return sentinels_;
-}
+ protected:
+  explicit IDriverLocal(IConnectionSettingsBaseSPtr settings);
+};
 
 }  // namespace core
 }  // namespace fastonosql

@@ -61,7 +61,7 @@
 
 #include "core/connection_types.h"    // for connectionTypes, etc
 #include "core/events/events_info.h"  // for ServerInfoResponce, etc
-#include "core/iserver.h"             // for IServer
+#include "core/server/iserver.h"      // for IServer
 #include "core/types.h"               // for IServerInfoSPtr, etc
 
 #include <common/qt/gui/glass_widget.h>  // for GlassWidget

@@ -24,7 +24,7 @@
 
 #include <common/types.h>  // for time64_t
 
-#include "core/connection_settings.h"  // for IConnectionSettingsBaseSPtr
+#include "core/connection_settings/connection_settings.h"  // for IConnectionSettingsBaseSPtr
 #include "core/types.h"
 
 namespace fastonosql {

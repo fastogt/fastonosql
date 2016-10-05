@@ -18,30 +18,33 @@
 
 #pragma once
 
+#include <string>  // for string
+
 #include <QObject>
 
-#include <common/error.h>      // for Error
-#include <common/macros.h>     // for WARN_UNUSED_RESULT
-#include <common/net/types.h>  // for HostAndPort
-#include <common/types.h>      // for time64_t
+#include <common/error.h>   // for Error
+#include <common/macros.h>  // for WARN_UNUSED_RESULT
+#include <common/types.h>   // for time64_t
+#include <common/value.h>   // for Value, Value::CommandLogging...
 
-#include "core/connection_settings.h"
-#include "core/connection_types.h"  // for connectionTypes
-#include "core/cdb_connection_client.h"
-#include "core/types.h"  // for IDataBaseInfo (ptr only), etc
-#include "core/icommand_translator.h"
+#include "core/cdb_connection_client.h"                    // for CDBConnectionClient
+#include "core/connection_settings/connection_settings.h"  // for IConnectionSettingsBaseSPtr
+#include "core/connection_types.h"                         // for connectionTypes
+#include "core/db_key.h"                                   // for NKey (ptr only), NDbKValue (...
+#include "core/events/events.h"                            // for BackupRequestEvent, ChangeMa...
+#include "core/icommand_translator.h"                      // for translator_t
+#include "core/types.h"                                    // for IDataBaseInfoSPtr, IDataBase...
 
-#include "core/events/events.h"
+#include "global/global.h"  // for FastoObjectIPtr, FastoObject...
 
-#include "global/global.h"  // for FastoObject, etc
-
-class QThread;
-
+class QEvent;
+class QThread;  // lines 37-37
+class QTimerEvent;
 namespace common {
 namespace file_system {
 class File;
 }
-}
+}  // lines 41-41
 
 namespace fastonosql {
 namespace core {

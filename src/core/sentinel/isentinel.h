@@ -21,29 +21,35 @@
 #include <string>  // for string
 #include <vector>  // for vector
 
-#include "core/core_fwd.h"  // for IServerSPtr
-#include "core/iserver.h"   // for IServerBase
+#include "core/core_fwd.h"        // for IServerSPtr
+#include "core/server/iserver.h"  // for IServerBase
 
 namespace fastonosql {
 namespace core {
 
-class ICluster : public IServerBase {
+struct Sentinel {
+  typedef std::vector<IServerSPtr> nodes_t;
+
+  IServerSPtr sentinel;
+  nodes_t sentinels_nodes;
+};
+
+class ISentinel : public IServerBase {
  public:
-  typedef IServerSPtr node_t;
-  typedef std::vector<node_t> nodes_t;
+  typedef Sentinel sentinel_t;
+  typedef std::vector<sentinel_t> sentinels_t;
 
   std::string name() const;
-  nodes_t nodes() const;
-  void addServer(node_t serv);
 
-  node_t root() const;
+  void addSentinel(sentinel_t root);
+  sentinels_t sentinels() const;
 
  protected:
-  explicit ICluster(const std::string& name);
+  explicit ISentinel(const std::string& name);
 
  private:
   const std::string name_;
-  nodes_t nodes_;
+  sentinels_t sentinels_;
 };
 
 }  // namespace core

@@ -33,8 +33,8 @@
 
 #include <common/macros.h>  // for VERIFY, CHECK, NOTREACHED
 
-#include "core/connection_settings.h"  // for IClusterSettingsBaseSPtr, etc
-#include "core/settings_manager.h"     // for SettingsManager
+#include "core/connection_settings/connection_settings.h"  // for IClusterSettingsBaseSPtr, etc
+#include "core/settings_manager.h"                         // for SettingsManager
 
 #include "gui/dialogs/cluster_dialog.h"     // for ClusterDialog
 #include "gui/dialogs/connection_dialog.h"  // for ConnectionDialog

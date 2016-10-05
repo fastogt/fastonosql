@@ -140,24 +140,31 @@ SET(SOURCES_GUI
 )
 
 SET(HEADERS_CORE_TO_MOC
-  core/command_logger.h
-  core/idriver.h
-  core/idriver_remote.h
-  core/idriver_local.h
-  core/iserver.h
+  core/driver/idriver.h
+  core/driver/idriver_remote.h
+  core/driver/idriver_local.h
+
+  core/server/iserver.h
+
+  core/command_logger.h  
   core/servers_manager.h
 )
 SET(HEADERS_CORE
+  core/cluster/icluster.h
+
+  core/sentinel/isentinel.h
+
+  core/database/idatabase.h
+
+  core/config/config.h
+
+  core/connection_settings/cluster_connection_settings.h
+  core/connection_settings/sentinel_connection_settings.h
+  core/connection_settings/connection_settings.h
+
   core/connection_types.h
-  core/connection_confg.h
   core/core_fwd.h
-  core/icluster.h
-  core/isentinel.h
-  core/idatabase.h
   core/settings_manager.h
-  core/connection_settings.h
-  core/sentinel_connection_settings.h
-  core/cluster_connection_settings.h
   core/events/events.h
   core/events/events_info.h
   core/types.h
@@ -176,21 +183,28 @@ SET(HEADERS_CORE
   core/ssh_info.h
 )
 SET(SOURCES_CORE
-  core/connection_confg.cpp
+  core/cluster/icluster.cpp
+
+  core/sentinel/isentinel.cpp
+
+  core/database/idatabase.cpp
+
+  core/driver/idriver.cpp
+  core/driver/idriver_remote.cpp
+  core/driver/idriver_local.cpp
+
+  core/server/iserver.cpp
+
+  core/config/config.cpp
+
+  core/connection_settings/cluster_connection_settings.cpp
+  core/connection_settings/connection_settings.cpp
+  core/connection_settings/sentinel_connection_settings.cpp
+
   core/events/events_info.cpp
   core/command_logger.cpp
   core/connection_types.cpp
   core/settings_manager.cpp
-  core/connection_settings.cpp
-  core/sentinel_connection_settings.cpp
-  core/cluster_connection_settings.cpp
-  core/idriver.cpp
-  core/idriver_remote.cpp
-  core/idriver_local.cpp
-  core/iserver.cpp
-  core/icluster.cpp
-  core/isentinel.cpp
-  core/idatabase.cpp
   core/servers_manager.cpp
   core/types.cpp
   core/db_traits.cpp

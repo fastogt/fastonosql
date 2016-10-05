@@ -16,7 +16,7 @@
     along with FastoNoSQL.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-#include "core/cluster_connection_settings.h"
+#include "core/connection_settings/cluster_connection_settings.h"
 
 #include <sstream>
 

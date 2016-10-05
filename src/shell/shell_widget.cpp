@@ -47,7 +47,7 @@
 
 #include "core/command_info.h"        // for UNDEFINED_SINCE, etc
 #include "core/events/events_info.h"  // for DiscoveryInfoResponce, etc
-#include "core/iserver.h"             // for IServer
+#include "core/server/iserver.h"      // for IServer
 #include "core/settings_manager.h"    // for SettingsManager
 
 #include "gui/gui_factory.h"  // for GuiFactory

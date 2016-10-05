@@ -20,7 +20,7 @@
 
 #include <string>  // for string
 
-#include "core/isentinel.h"  // for ISentinel
+#include "core/sentinel/isentinel.h"  // for ISentinel
 
 namespace fastonosql {
 namespace core {

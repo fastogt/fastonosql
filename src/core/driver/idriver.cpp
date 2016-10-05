@@ -16,7 +16,7 @@
     along with FastoNoSQL.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-#include "core/idriver.h"
+#include "core/driver/idriver.h"
 
 #ifdef OS_WIN
 #include <winsock2.h>
@@ -26,9 +26,7 @@
 
 #include <stddef.h>  // for NULL
 
-#include <memory>  // for __shared_ptr
 #include <string>  // for allocator, string, etc
-#include <vector>  // for vector
 
 #include <QApplication>
 #include <QThread>
@@ -39,17 +37,12 @@ extern "C" {
 
 #include <common/convert2string.h>  // for ConvertToString, etc
 #include <common/file_system.h>     // for File, ascii_string_path, etc
-#include <common/qt/utils_qt.h>     // for Event<>::value_type
-#include <common/sprintf.h>         // for MemSPrintf
 #include <common/time.h>            // for current_mstime
 #include <common/utils.h>           // for c_strornull
-#include <common/value.h>           // for ErrorValue, etc
 
 #include "core/command_logger.h"  // for LOG_COMMAND
-#include "core/events/events_info.h"
 
 namespace {
-
 #ifdef OS_WIN
 struct WinsockInit {
   WinsockInit() {
@@ -93,12 +86,10 @@ bool getStamp(common::buffer_t stamp, common::time64_t* time_out) {
   *time_out = ltime_out;
   return ltime_out != 0;
 }
-
 }  // namespace
 
 namespace fastonosql {
 namespace core {
-
 namespace {
 struct RegisterTypes {
   RegisterTypes() {
@@ -709,6 +700,5 @@ void IDriver::onKeyRenamed(const key_t& key, const std::string& new_key) {
 void IDriver::onKeyTTLChanged(const key_t& key, ttl_t ttl) {
   emit keyTTLChanged(current_database_info_, key, ttl);
 }
-
 }  // namespace core
 }  // namespace fastonosql

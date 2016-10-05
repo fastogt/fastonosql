@@ -24,10 +24,10 @@
 #include <common/macros.h>     // for WARN_UNUSED_RESULT
 #include <common/net/types.h>  // for HostAndPort
 
-#include "core/connection_settings.h"  // for IConnectionSettingsBaseSPtr
+#include "core/connection_settings/connection_settings.h"  // for IConnectionSettingsBaseSPtr
 #include "core/events/events.h"
-#include "core/idriver_remote.h"  // for IDriverRemote
-#include "core/types.h"    // for IDataBaseInfo (ptr only), etc
+#include "core/driver/idriver_remote.h"  // for IDriverRemote
+#include "core/types.h"                  // for IDataBaseInfo (ptr only), etc
 
 #include "core/redis/db_connection.h"  // for DBConnection (ptr only), etc
 

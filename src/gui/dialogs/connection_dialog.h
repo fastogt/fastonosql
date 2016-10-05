@@ -30,9 +30,9 @@ class QCheckBox;
 class QLabel;
 class QSpinBox;
 
-#include "core/connection_settings.h"  // for IConnectionSettingsBaseSPtr, etc
-#include "core/connection_types.h"     // for connectionTypes
-#include "core/ssh_info.h"             // for SSHInfo, etc
+#include "core/connection_settings/connection_settings.h"  // for IConnectionSettingsBaseSPtr, etc
+#include "core/connection_types.h"                         // for connectionTypes
+#include "core/ssh_info.h"                                 // for SSHInfo, etc
 
 namespace fastonosql {
 namespace gui {

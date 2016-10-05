@@ -20,15 +20,9 @@
 
 #include <stddef.h>  // for size_t
 
-#include <algorithm>  // for remove
-#include <memory>     // for __shared_ptr, shared_ptr, etc
-#include <vector>     // for vector
-
-#include <common/smart_ptr.h>  // for make_shared
-#include <common/value.h>      // for ErrorValue, etc
-
 #include "core/connection_types.h"  // for connectionTypes, etc
-#include "core/icluster.h"
+#include "core/cluster/icluster.h"
+#include "core/sentinel/isentinel.h"  // for Sentinel
 
 #ifdef BUILD_WITH_REDIS
 #include "core/redis/cluster.h"              // for Cluster

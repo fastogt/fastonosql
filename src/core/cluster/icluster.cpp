@@ -16,41 +16,48 @@
     along with FastoNoSQL.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-#pragma once
+#include "core/cluster/icluster.h"
 
-#include <string>  // for string
-#include <vector>  // for vector
+#include <stddef.h>  // for size_t
+#include <string>    // for string
 
-#include "core/core_fwd.h"  // for IServerSPtr
-#include "core/iserver.h"   // for IServerBase
+#include <common/macros.h>  // for CHECK, DNOTREACHED
+
+#include "core/connection_types.h"  // for serverTypes::MASTER
 
 namespace fastonosql {
 namespace core {
 
-struct Sentinel {
-  typedef std::vector<IServerSPtr> nodes_t;
+ICluster::ICluster(const std::string& name) : name_(name) {}
 
-  IServerSPtr sentinel;
-  nodes_t sentinels_nodes;
-};
+std::string ICluster::name() const {
+  return name_;
+}
 
-class ISentinel : public IServerBase {
- public:
-  typedef Sentinel sentinel_t;
-  typedef std::vector<sentinel_t> sentinels_t;
+ICluster::nodes_t ICluster::nodes() const {
+  return nodes_;
+}
 
-  std::string name() const;
+void ICluster::addServer(node_t serv) {
+  if (!serv) {
+    DNOTREACHED();
+    return;
+  }
 
-  void addSentinel(sentinel_t root);
-  sentinels_t sentinels() const;
+  nodes_.push_back(serv);
+}
 
- protected:
-  explicit ISentinel(const std::string& name);
+ICluster::node_t ICluster::root() const {
+  for (size_t i = 0; i < nodes_.size(); ++i) {
+    IServerRemote* rserver = dynamic_cast<IServerRemote*>(nodes_[i].get());  // +
+    CHECK(rserver);
+    if (rserver->role() == MASTER) {
+      return nodes_[i];
+    }
+  }
 
- private:
-  const std::string name_;
-  sentinels_t sentinels_;
-};
+  return node_t();
+}
 
 }  // namespace core
 }  // namespace fastonosql

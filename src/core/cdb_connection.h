@@ -169,7 +169,8 @@ common::Error CDBConnection<NConnection, Config, ContType>::get(const key_t& key
 }
 
 template <typename NConnection, typename Config, connectionTypes ContType>
-common::Error CDBConnection<NConnection, Config, ContType>::rename(const key_t& key, const std::string& new_key) {
+common::Error CDBConnection<NConnection, Config, ContType>::rename(const key_t& key,
+                                                                   const std::string& new_key) {
   if (!CDBConnection<NConnection, Config, ContType>::isConnected()) {
     DNOTREACHED();
     return common::make_error_value("Not connected", common::Value::E_ERROR);

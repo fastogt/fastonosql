@@ -20,7 +20,7 @@
 
 #include <string>  // for string
 
-#include "core/connection_confg.h"  // for LocalConfig
+#include "core/config/config.h"
 
 namespace fastonosql {
 namespace core {

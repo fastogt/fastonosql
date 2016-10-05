@@ -51,12 +51,12 @@
 #include <common/text_decoders/iedcoder.h>        // for IEDcoder, EDTypes::Hex
 #include <common/value.h>                         // for ErrorValue
 
-#include "core/command_logger.h"    // for CommandLogger
-#include "core/core_fwd.h"          // for IServerSPtr, IClusterSPtr, etc
-#include "core/icluster.h"          // for ICluster
-#include "core/isentinel.h"         // for ISentinel
-#include "core/servers_manager.h"   // for ServersManager
-#include "core/settings_manager.h"  // for SettingsManager
+#include "core/command_logger.h"      // for CommandLogger
+#include "core/core_fwd.h"            // for IServerSPtr, IClusterSPtr, etc
+#include "core/cluster/icluster.h"    // for ICluster
+#include "core/sentinel/isentinel.h"  // for ISentinel
+#include "core/servers_manager.h"     // for ServersManager
+#include "core/settings_manager.h"    // for SettingsManager
 
 #include "gui/dialogs/about_dialog.h"          // for AboutDialog
 #include "gui/dialogs/connections_dialog.h"    // for ConnectionsDialog

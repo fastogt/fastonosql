@@ -20,7 +20,7 @@
 
 #include <string>
 
-#include "core/icluster.h"
+#include "core/cluster/icluster.h"
 
 namespace fastonosql {
 namespace core {

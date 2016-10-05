@@ -18,7 +18,7 @@
 
 #pragma once
 
-#include "core/sentinel_connection_settings.h"
+#include "core/connection_settings/sentinel_connection_settings.h"
 
 namespace fastonosql {
 namespace core {

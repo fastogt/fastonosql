@@ -23,7 +23,7 @@
 #include <common/convert2string.h>  // for ConvertFromString
 #include <common/macros.h>          // for VERIFY, DNOTREACHED
 
-#include "core/iserver.h"  // for IServer
+#include "core/server/iserver.h"  // for IServer
 
 #include "gui/gui_factory.h"           // for GuiFactory
 #include "gui/main_tab_bar.h"          // for MainTabBar

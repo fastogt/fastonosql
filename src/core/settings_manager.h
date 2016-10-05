@@ -27,9 +27,9 @@
 
 #include <common/patterns/singleton_pattern.h>  // for LazySingleton
 
-#include "core/connection_settings.h"  // for IClusterSettingsBaseSPtr, etc
-#include "core/cluster_connection_settings.h"
-#include "core/sentinel_connection_settings.h"
+#include "core/connection_settings/connection_settings.h"  // for IClusterSettingsBaseSPtr, etc
+#include "core/connection_settings/cluster_connection_settings.h"
+#include "core/connection_settings/sentinel_connection_settings.h"
 
 #include "global/types.h"  // for supportedViews
 

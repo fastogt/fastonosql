@@ -23,7 +23,7 @@
 #include <QSplitter>
 #include <QVBoxLayout>
 
-#include "core/iserver.h"  // for IServer
+#include "core/server/iserver.h"  // for IServer
 
 #include "gui/widgets/output_widget.h"  // for OutputWidget
 

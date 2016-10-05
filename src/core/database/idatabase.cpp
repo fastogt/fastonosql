@@ -16,7 +16,7 @@
     along with FastoNoSQL.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-#include "core/idatabase.h"
+#include "core/database/idatabase.h"
 
 #include <memory>  // for __shared_ptr
 #include <string>  // for string
@@ -24,7 +24,7 @@
 #include <common/macros.h>  // for DCHECK_EQ, CHECK
 
 #include "core/events/events_info.h"  // for ClearDatabaseRequest, etc
-#include "core/iserver.h"             // for IServer
+#include "core/server/iserver.h"      // for IServer
 
 namespace fastonosql {
 namespace core {

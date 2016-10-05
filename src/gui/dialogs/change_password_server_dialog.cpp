@@ -34,7 +34,7 @@
 #include <common/qt/gui/glass_widget.h>  // for GlassWidget
 
 #include "core/events/events_info.h"  // for ChangePasswordResponce, etc
-#include "core/iserver.h"             // for IServer
+#include "core/server/iserver.h"      // for IServer
 
 #include "gui/gui_factory.h"  // for GuiFactory
 

@@ -16,48 +16,22 @@
     along with FastoNoSQL.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-#include "core/icluster.h"
+#pragma once
 
-#include <stddef.h>  // for size_t
-#include <string>    // for string
+#include <common/net/types.h>  // for HostAndPort
 
-#include <common/macros.h>  // for CHECK, DNOTREACHED
-
-#include "core/connection_types.h"  // for serverTypes::MASTER
+#include "core/connection_settings/connection_settings.h"  // for IConnectionSettingsBaseSPtr
+#include "core/driver/idriver.h"                           // for IDriver
 
 namespace fastonosql {
 namespace core {
+class IDriverRemote : public IDriver {
+  Q_OBJECT
+ public:
+  virtual common::net::HostAndPort host() const = 0;
 
-ICluster::ICluster(const std::string& name) : name_(name) {}
-
-std::string ICluster::name() const {
-  return name_;
-}
-
-ICluster::nodes_t ICluster::nodes() const {
-  return nodes_;
-}
-
-void ICluster::addServer(node_t serv) {
-  if (!serv) {
-    DNOTREACHED();
-    return;
-  }
-
-  nodes_.push_back(serv);
-}
-
-ICluster::node_t ICluster::root() const {
-  for (size_t i = 0; i < nodes_.size(); ++i) {
-    IServerRemote* rserver = dynamic_cast<IServerRemote*>(nodes_[i].get());  // +
-    CHECK(rserver);
-    if (rserver->role() == MASTER) {
-      return nodes_[i];
-    }
-  }
-
-  return node_t();
-}
-
+ protected:
+  explicit IDriverRemote(IConnectionSettingsBaseSPtr settings);
+};
 }  // namespace core
 }  // namespace fastonosql

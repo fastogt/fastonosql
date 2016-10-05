@@ -20,7 +20,7 @@
 
 #include <QDialog>
 
-#include "core/connection_settings.h"  // for IConnectionSettingsBaseSPtr
+#include "core/connection_settings/connection_settings.h"  // for IConnectionSettingsBaseSPtr
 
 class QLabel;  // lines 28-28
 class QShowEvent;

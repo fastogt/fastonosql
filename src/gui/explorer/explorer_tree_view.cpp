@@ -45,9 +45,9 @@
 #include "core/connection_types.h"    // for connectionTypes::REDIS
 #include "core/db_key.h"              // for NDbKValue
 #include "core/events/events_info.h"  // for CommandResponce, etc
-#include "core/icluster.h"            // for ICluster
-#include "core/isentinel.h"           // for Sentinel, etc
-#include "core/iserver.h"             // for IServer, IServerRemote
+#include "core/cluster/icluster.h"    // for ICluster
+#include "core/sentinel/isentinel.h"  // for Sentinel, etc
+#include "core/server/iserver.h"      // for IServer, IServerRemote
 #include "core/settings_manager.h"    // for SettingsManager
 #include "core/types.h"               // for IDataBaseInfoSPtr
 

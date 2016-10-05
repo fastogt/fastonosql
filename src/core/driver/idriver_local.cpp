@@ -16,14 +16,14 @@
     along with FastoNoSQL.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-#include "core/idriver_remote.h"
+#include "core/driver/idriver_local.h"
+
+#include <common/macros.h>  // for CHECK
 
 namespace fastonosql {
 namespace core {
-
-IDriverRemote::IDriverRemote(IConnectionSettingsBaseSPtr settings) : IDriver(settings) {
-  CHECK(isRemoteType(type()));
+IDriverLocal::IDriverLocal(IConnectionSettingsBaseSPtr settings) : IDriver(settings) {
+  CHECK(!isRemoteType(type()));
 }
-
 }  // namespace core
 }  // namespace fastonosql

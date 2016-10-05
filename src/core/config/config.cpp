@@ -16,7 +16,7 @@
     along with FastoNoSQL.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-#include "core/connection_confg.h"
+#include "core/config/config.h"
 
 #include <string>
 #include <vector>

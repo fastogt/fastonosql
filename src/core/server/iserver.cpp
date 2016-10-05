@@ -16,7 +16,7 @@
     along with FastoNoSQL.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-#include "core/iserver.h"
+#include "core/server/iserver.h"
 
 #include <stddef.h>  // for size_t
 #include <string>    // for string, operator==, etc
@@ -29,9 +29,9 @@
 #include <common/value.h>        // for ErrorValue
 #include <common/qt/logger.h>    // for LOG_ERROR
 
-#include "core/connection_settings.h"  // for isRemoteType, etc
-#include "core/events/events_info.h"   // for LoadDatabaseContentResponce, etc
-#include "core/idriver.h"              // for IDriver
+#include "core/connection_settings/connection_settings.h"  // for isRemoteType, etc
+#include "core/events/events_info.h"                       // for LoadDatabaseContentResponce, etc
+#include "core/driver/idriver.h"                           // for IDriver
 
 namespace fastonosql {
 namespace core {

@@ -39,7 +39,7 @@
 
 #include "core/db_key.h"              // for NKey, NDbKValue, NValue
 #include "core/events/events_info.h"  // for CommandResponce, etc
-#include "core/iserver.h"             // for IServer
+#include "core/server/iserver.h"      // for IServer
 #include "core/settings_manager.h"    // for SettingsManager
 
 #include "global/types.h"  // for supportedViews, etc

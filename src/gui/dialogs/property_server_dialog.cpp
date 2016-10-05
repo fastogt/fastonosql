@@ -34,7 +34,7 @@
 
 #include "core/connection_types.h"  // for connectionTypes::REDIS
 #include "core/events/events_info.h"
-#include "core/iserver.h"  // for IServer
+#include "core/server/iserver.h"  // for IServer
 
 #include "gui/gui_factory.h"  // for GuiFactory
 #include "gui/property_table_item.h"

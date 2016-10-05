@@ -20,7 +20,7 @@
 
 #include <string>
 
-#include "core/connection_settings.h"
+#include "core/connection_settings/connection_settings.h"
 
 #include "core/leveldb/config.h"
 

@@ -16,7 +16,7 @@
     along with FastoNoSQL.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-#include "core/connection_settings.h"
+#include "core/connection_settings/connection_settings.h"
 
 #include <inttypes.h>  // for PRIu32
 #include <sstream>     // for stringstream, basic_ostream, etc

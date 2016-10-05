@@ -102,19 +102,19 @@ typedef common::qt::Event<events_info::SetDefaultDatabaseRequest, QEvent::User +
 typedef common::qt::Event<events_info::SetDefaultDatabaseResponce, QEvent::User + 36>
     SetDefaultDatabaseResponceEvent;
 
-typedef common::qt::Event<events_info::DiscoveryInfoRequest, QEvent::User + 39>
+typedef common::qt::Event<events_info::DiscoveryInfoRequest, QEvent::User + 37>
     DiscoveryInfoRequestEvent;
-typedef common::qt::Event<events_info::DiscoveryInfoResponce, QEvent::User + 40>
+typedef common::qt::Event<events_info::DiscoveryInfoResponce, QEvent::User + 38>
     DiscoveryInfoResponceEvent;
 
-typedef common::qt::Event<events_info::ChangePasswordRequest, QEvent::User + 41>
+typedef common::qt::Event<events_info::ChangePasswordRequest, QEvent::User + 39>
     ChangePasswordRequestEvent;
-typedef common::qt::Event<events_info::ChangePasswordResponce, QEvent::User + 42>
+typedef common::qt::Event<events_info::ChangePasswordResponce, QEvent::User + 40>
     ChangePasswordResponceEvent;
 
-typedef common::qt::Event<events_info::ChangeMaxConnectionRequest, QEvent::User + 43>
+typedef common::qt::Event<events_info::ChangeMaxConnectionRequest, QEvent::User + 41>
     ChangeMaxConnectionRequestEvent;
-typedef common::qt::Event<events_info::ChangeMaxConnectionResponce, QEvent::User + 44>
+typedef common::qt::Event<events_info::ChangeMaxConnectionResponce, QEvent::User + 42>
     ChangeMaxConnectionResponceEvent;
 
 typedef common::qt::Event<events_info::ProgressInfoResponce, QEvent::User + 100>

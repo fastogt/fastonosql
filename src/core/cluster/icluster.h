@@ -16,13 +16,35 @@
     along with FastoNoSQL.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-#include "core/idriver_local.h"
+#pragma once
+
+#include <string>  // for string
+#include <vector>  // for vector
+
+#include "core/core_fwd.h"        // for IServerSPtr
+#include "core/server/iserver.h"  // for IServerBase
 
 namespace fastonosql {
 namespace core {
 
-IDriverLocal::IDriverLocal(IConnectionSettingsBaseSPtr settings) : IDriver(settings) {
-  CHECK(!isRemoteType(type()));
-}
+class ICluster : public IServerBase {
+ public:
+  typedef IServerSPtr node_t;
+  typedef std::vector<node_t> nodes_t;
+
+  std::string name() const;
+  nodes_t nodes() const;
+  void addServer(node_t serv);
+
+  node_t root() const;
+
+ protected:
+  explicit ICluster(const std::string& name);
+
+ private:
+  const std::string name_;
+  nodes_t nodes_;
+};
+
 }  // namespace core
 }  // namespace fastonosql
