@@ -71,7 +71,7 @@ std::string createStamp(common::time64_t time) {
   return magicNumber + common::ConvertToString(time) + '\n';
 }
 
-bool getStamp(common::buffer_t stamp, common::time64_t* timeOut) {
+bool getStamp(common::buffer_t stamp, common::time64_t* time_out) {
   if (stamp.empty()) {
     return false;
   }
@@ -89,9 +89,9 @@ bool getStamp(common::buffer_t stamp, common::time64_t* timeOut) {
     stamp.pop_back();
   }
 
-  common::time64_t ltimeOut = common::ConvertFromBytes<common::time64_t>(stamp);
-  *timeOut = ltimeOut;
-  return ltimeOut != 0;
+  common::time64_t ltime_out = common::ConvertFromBytes<common::time64_t>(stamp);
+  *time_out = ltime_out;
+  return ltime_out != 0;
 }
 
 }  // namespace
@@ -708,14 +708,6 @@ void IDriver::onKeyRenamed(const key_t& key, const std::string& new_key) {
 
 void IDriver::onKeyTTLChanged(const key_t& key, ttl_t ttl) {
   emit keyTTLChanged(current_database_info_, key, ttl);
-}
-
-IDriverLocal::IDriverLocal(IConnectionSettingsBaseSPtr settings) : IDriver(settings) {
-  CHECK(!isRemoteType(type()));
-}
-
-IDriverRemote::IDriverRemote(IConnectionSettingsBaseSPtr settings) : IDriver(settings) {
-  CHECK(isRemoteType(type()));
 }
 
 }  // namespace core

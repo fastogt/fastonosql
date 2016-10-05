@@ -126,8 +126,6 @@ ISentinelSettingsBase* ISentinelSettingsBase::createFromType(connectionTypes typ
     return new redis::SentinelSettings(conName);
   }
 #endif
-
-  NOTREACHED();
   return nullptr;
 }
 

@@ -18,42 +18,38 @@
 
 #pragma once
 
+#include <vector>
 #include <string>  // for string
 
 namespace fastonosql {
 namespace core {
-
 enum connectionTypes { REDIS = 0, MEMCACHED, SSDB, LEVELDB, ROCKSDB, UNQLITE, LMDB };
-
 enum serverTypes { MASTER = 0, SLAVE };
-
 enum serverState { SUP = 0, SDOWN };
-
 enum serverConnectState { SCONNECTED = 0, SDISCONNECTED };
-
 enum serverMode { STANDALONE = 0, SENTINEL, CLUSTER };
 
-static const std::string connnectionType[] = {
+static const connectionTypes compiled_types[] = {
 #ifdef BUILD_WITH_REDIS
-    "Redis",
+    REDIS,
 #endif
 #ifdef BUILD_WITH_MEMCACHED
-    "Memcached",
+    MEMCACHED,
 #endif
 #ifdef BUILD_WITH_SSDB
-    "SSDB",
+    SSDB,
 #endif
 #ifdef BUILD_WITH_LEVELDB
-    "LevelDB",
+    LEVELDB,
 #endif
 #ifdef BUILD_WITH_ROCKSDB
-    "RocksDB",
+    ROCKSDB,
 #endif
 #ifdef BUILD_WITH_UNQLITE
-    "UnQLite",
+    UNQLITE,
 #endif
 #ifdef BUILD_WITH_LMDB
-    "LMDB"
+    LMDB
 #endif
 };
 
@@ -76,6 +72,10 @@ enum ConnectionMode {
   InteractiveMode
 };
 
+bool isRemoteType(connectionTypes type);
+bool isCanSSHConnection(connectionTypes type);
+const char* commandLineHelpText(connectionTypes type);
+std::string defaultCommandLine(connectionTypes type);
 }  // namespace core
 }  // namespace fastonosql
 

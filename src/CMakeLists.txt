@@ -142,6 +142,8 @@ SET(SOURCES_GUI
 SET(HEADERS_CORE_TO_MOC
   core/command_logger.h
   core/idriver.h
+  core/idriver_remote.h
+  core/idriver_local.h
   core/iserver.h
   core/servers_manager.h
 )
@@ -183,6 +185,8 @@ SET(SOURCES_CORE
   core/sentinel_connection_settings.cpp
   core/cluster_connection_settings.cpp
   core/idriver.cpp
+  core/idriver_remote.cpp
+  core/idriver_local.cpp
   core/iserver.cpp
   core/icluster.cpp
   core/isentinel.cpp
@@ -258,7 +262,7 @@ IF(BUILD_WITH_REDIS)
   )
   ADD_SUBDIRECTORY(third-party/libssh2)
   ADD_SUBDIRECTORY(third-party/redis)
-  SET(INCLUDE_DIRS ${INCLUDE_DIRS} third-party/redis/src third-party/redis/deps third-party/sds)
+  SET(INCLUDE_DIRS ${INCLUDE_DIRS} third-party/redis/src third-party/redis/deps)
 
   SET(HEADERS_REDIS_TO_MOC
     core/redis/sentinel.h
@@ -589,7 +593,7 @@ CONFIGURE_FILE("resources/gui.qrc.in" "${CMAKE_CURRENT_LIST_DIR}/resources/gui.q
 CONFIGURE_FILE("resources/${PROJECT_NAME_LOWERCASE}.qrc.in" "${CMAKE_CURRENT_LIST_DIR}/resources/branding.qrc" @ONLY IMMEDIATE)
 SET(RESOURCES ${CMAKE_CURRENT_LIST_DIR}/resources/gui.qrc ${CMAKE_CURRENT_LIST_DIR}/resources/branding.qrc)
 QT5_ADD_RESOURCES(RES_SRC ${RESOURCES})
-SET(INCLUDE_DIRS ${INCLUDE_DIRS} third-party/qscintilla/Qt4Qt5)
+SET(INCLUDE_DIRS ${INCLUDE_DIRS} third-party/qscintilla/Qt4Qt5 third-party/sds)
 INCLUDE_DIRECTORIES(${INCLUDE_DIRS})
 
 SOURCE_GROUP("Header Files" FILES ${HEADERS} ${HEADERS_TOMOC})

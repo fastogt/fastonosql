@@ -86,7 +86,7 @@ class IDriver : public QObject,
   void keyAdded(core::IDataBaseInfoSPtr db, core::NDbKValue key);
   void keyRenamed(core::IDataBaseInfoSPtr db, core::NKey key, std::string new_name);
   void keyLoaded(core::IDataBaseInfoSPtr db, core::NDbKValue key);
-  void keyTTLChanged(core::IDataBaseInfoSPtr db, core::NKey key, core::ttl_t ttl);  
+  void keyTTLChanged(core::IDataBaseInfoSPtr db, core::NKey key, core::ttl_t ttl);
 
  private Q_SLOTS:
   void init();
@@ -186,24 +186,6 @@ class IDriver : public QObject,
   QThread* thread_;
   int timer_info_id_;
   common::file_system::File* log_file_;
-};
-
-class IDriverLocal : public IDriver {
-  Q_OBJECT
- public:
-  virtual std::string path() const = 0;
-
- protected:
-  explicit IDriverLocal(IConnectionSettingsBaseSPtr settings);
-};
-
-class IDriverRemote : public IDriver {
-  Q_OBJECT
- public:
-  virtual common::net::HostAndPort host() const = 0;
-
- protected:
-  explicit IDriverRemote(IConnectionSettingsBaseSPtr settings);
 };
 
 }  // namespace core

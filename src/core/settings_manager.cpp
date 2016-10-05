@@ -253,32 +253,32 @@ bool SettingsManager::autoCheckUpdates() const {
   return auto_check_update_;
 }
 
-void SettingsManager::setAutoCheckUpdates(bool isCheck) {
-  auto_check_update_ = isCheck;
+void SettingsManager::setAutoCheckUpdates(bool check) {
+  auto_check_update_ = check;
 }
 
 bool SettingsManager::autoCompletion() const {
   return auto_completion_;
 }
 
-void SettingsManager::setAutoCompletion(bool enableAuto) {
-  auto_completion_ = enableAuto;
+void SettingsManager::setAutoCompletion(bool completion) {
+  auto_completion_ = completion;
 }
 
 bool SettingsManager::autoOpenConsole() const {
   return auto_open_console_;
 }
 
-void SettingsManager::setAutoOpenConsole(bool enableAuto) {
-  auto_open_console_ = enableAuto;
+void SettingsManager::setAutoOpenConsole(bool open_console) {
+  auto_open_console_ = open_console;
 }
 
 bool SettingsManager::fastViewKeys() const {
   return fast_view_keys_;
 }
 
-void SettingsManager::setFastViewKeys(bool fastView) {
-  fast_view_keys_ = fastView;
+void SettingsManager::setFastViewKeys(bool fast_view) {
+  fast_view_keys_ = fast_view;
 }
 
 void SettingsManager::reloadFromPath(const std::string& path, bool merge) {

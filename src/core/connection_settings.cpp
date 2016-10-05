@@ -34,37 +34,30 @@
 #include "core/settings_manager.h"
 
 #ifdef BUILD_WITH_REDIS
-#include "core/redis/config.h"               // for ConvertToString, Config
 #include "core/redis/connection_settings.h"  // for ConnectionSettings
 #define LOGGING_REDIS_FILE_EXTENSION ".red"
 #endif
 #ifdef BUILD_WITH_MEMCACHED
-#include "core/memcached/config.h"               // for ConvertToString, Config
 #include "core/memcached/connection_settings.h"  // for ConnectionSettings
 #define LOGGING_MEMCACHED_FILE_EXTENSION ".mem"
 #endif
 #ifdef BUILD_WITH_SSDB
-#include "core/ssdb/config.h"               // for ConvertToString, Config
 #include "core/ssdb/connection_settings.h"  // for ConnectionSettings
 #define LOGGING_SSDB_FILE_EXTENSION ".ssdb"
 #endif
 #ifdef BUILD_WITH_LEVELDB
-#include "core/leveldb/config.h"               // for Config, ConvertToString
 #include "core/leveldb/connection_settings.h"  // for ConnectionSettings
 #define LOGGING_LEVELDB_FILE_EXTENSION ".leveldb"
 #endif
 #ifdef BUILD_WITH_ROCKSDB
-#include "core/rocksdb/config.h"               // for Config, ConvertToString
 #include "core/rocksdb/connection_settings.h"  // for ConnectionSettings
 #define LOGGING_ROCKSDB_FILE_EXTENSION ".rocksdb"
 #endif
 #ifdef BUILD_WITH_UNQLITE
-#include "core/unqlite/config.h"               // for Config, ConvertToString
 #include "core/unqlite/connection_settings.h"  // for ConnectionSettings
 #define LOGGING_UNQLITE_FILE_EXTENSION ".unq"
 #endif
 #ifdef BUILD_WITH_LMDB
-#include "core/lmdb/config.h"               // for Config, ConvertToString
 #include "core/lmdb/connection_settings.h"  // for ConnectionSettings
 #define LOGGING_LMDB_FILE_EXTENSION ".lmdb"
 #endif
@@ -188,6 +181,11 @@ std::string IConnectionSettingsBase::loggingPath() const {
     return prefix + LOGGING_UNQLITE_FILE_EXTENSION;
   }
 #endif
+#ifdef BUILD_WITH_LMDB
+  if (type_ == LMDB) {
+    return prefix + LOGGING_LMDB_FILE_EXTENSION;
+  }
+#endif
 
   NOTREACHED();
   return std::string();
@@ -230,8 +228,6 @@ IConnectionSettingsBase* IConnectionSettingsBase::createFromType(connectionTypes
     return new lmdb::ConnectionSettings(conName);
   }
 #endif
-
-  DNOTREACHED();
   return nullptr;
 }
 
@@ -280,14 +276,6 @@ IConnectionSettingsBase* IConnectionSettingsBase::fromString(const std::string& 
     }
   }
   return result;
-}
-
-bool isRemoteType(connectionTypes type) {
-  return type == REDIS || type == MEMCACHED || type == SSDB;
-}
-
-bool isCanSSHConnection(connectionTypes type) {
-  return type == REDIS;
 }
 
 std::string IConnectionSettingsBase::toString() const {
@@ -384,246 +372,5 @@ SSHInfo IConnectionSettingsRemoteSSH::sshInfo() const {
 void IConnectionSettingsRemoteSSH::setSshInfo(const SSHInfo& info) {
   ssh_info_ = info;
 }
-
-const char* commandLineHelpText(connectionTypes type) {
-  if (type == REDIS) {
-    return "<b>Usage: [OPTIONS] [cmd [arg [arg "
-           "...]]]</b><br/>"
-           "<b>-h &lt;hostname&gt;</b>      Server "
-           "hostname (default: "
-           "127.0.0.1).<br/>"
-           "<b>-p &lt;port&gt;</b>          Server port "
-           "(default: 6379).<br/>"
-           "<b>-s &lt;socket&gt;</b>        Server socket "
-           "(overrides hostname "
-           "and port).<br/>"
-           "<b>-a &lt;password&gt;</b>      Password to "
-           "use when connecting to "
-           "the server.<br/>"
-           "<b>-r &lt;repeat&gt;</b>        Execute "
-           "specified command N "
-           "times.<br/>"
-           "<b>-i &lt;interval&gt;</b>      When <b>-r</b> "
-           "is used, waits "
-           "&lt;interval&gt; seconds "
-           "per command.<br/>"
-           "                   It is possible to specify "
-           "sub-second times like "
-           "<b>-i</b> 0.1.<br/>"
-           "<b>-n &lt;db&gt;</b>            Database "
-           "number.<br/>"
-           "<b>-d &lt;delimiter&gt;</b>     Multi-bulk "
-           "delimiter in for raw "
-           "formatting (default: "
-           "\\n).<br/>"
-           "<b>-ns &lt;separator&gt;</b>    Namespace "
-           "separator.<br/>"
-           "<b>-c</b>                 Enable cluster mode "
-           "(follow -ASK and "
-           "-MOVED "
-           "redirections).<br/>"
-           "<b>--latency</b>          Enter a special mode "
-           "continuously "
-           "sampling latency.<br/>"
-           "<b>--latency-history</b>  Like "
-           "<b>--latency</b> but tracking "
-           "latency changes over "
-           "time.<br/>"
-           "                   Default time interval is 15 "
-           "sec. Change it "
-           "using <b>-i</b>.<br/>"
-           "<b>--slave</b>            Simulate a slave "
-           "showing commands "
-           "received from the "
-           "master.<br/>"
-           "<b>--rdb &lt;filename&gt;</b>   Transfer an "
-           "RDB dump from remote "
-           "server to local "
-           "file.<br/>"
-           /*"<b>--pipe</b>             Transfer raw Redis
-           protocol from stdin
-           to server.<br/>"
-           "<b>--pipe-timeout &lt;n&gt;</b> In <b>--pipe
-           mode</b>, abort with
-           error if after sending
-           all data.<br/>"
-           "                   no reply is received within
-           &lt;n&gt;
-           seconds.<br/>"
-           "                   Default timeout: %d. Use 0 to
-           wait
-           forever.<br/>"*/
-           "<b>--bigkeys</b>          Sample Redis keys "
-           "looking for big "
-           "keys.<br/>"
-           "<b>--scan</b>             List all keys using "
-           "the SCAN "
-           "command.<br/>"
-           "<b>--pattern &lt;pat&gt;</b>    Useful with "
-           "<b>--scan</b> to "
-           "specify a SCAN "
-           "pattern.<br/>"
-           "<b>--intrinsic-latency &lt;sec&gt;</b> Run a "
-           "test to measure "
-           "intrinsic system "
-           "latency.<br/>"
-           "                   The test will run for the "
-           "specified amount of "
-           "seconds.<br/>"
-           "<b>--eval &lt;file&gt;</b>      Send an EVAL "
-           "command using the Lua "
-           "script at "
-           "<b>&lt;file&gt;</b>.";
-  }
-  if (type == MEMCACHED) {
-    return "<b>Usage: [OPTIONS] [cmd [arg [arg "
-           "...]]]</b><br/>"
-           "<b>-h &lt;hostname&gt;</b>      Server "
-           "hostname (default: "
-           "127.0.0.1).<br/>"
-           "<b>-p &lt;port&gt;</b>          Server port "
-           "(default: 11211).<br/>"
-           "<b>-u &lt;username&gt;</b>      Username to "
-           "use when connecting to "
-           "the server.<br/>"
-           "<b>-a &lt;password&gt;</b>      Password to "
-           "use when connecting to "
-           "the server.<br/>"
-           "<b>-d &lt;delimiter&gt;</b>     Multi-bulk "
-           "delimiter in for raw "
-           "formatting (default: "
-           "\\n).<br/>"
-           "<b>-ns &lt;separator&gt;</b>    Namespace "
-           "separator.<br/>";
-  }
-  if (type == SSDB) {
-    return "<b>Usage: [OPTIONS] [cmd [arg [arg "
-           "...]]]</b><br/>"
-           "<b>-u &lt;username&gt;</b>      Username to "
-           "use when connecting to "
-           "the server.<br/>"
-           "<b>-a &lt;password&gt;</b>      Password to "
-           "use when connecting to "
-           "the server.<br/>"
-           "<b>-d &lt;delimiter&gt;</b>     Multi-bulk "
-           "delimiter in for raw "
-           "formatting (default: "
-           "\\n).<br/>"
-           "<b>-ns &lt;separator&gt;</b>    Namespace "
-           "separator.<br/>";
-  }
-  if (type == LEVELDB) {
-    return "<b>Usage: [OPTIONS] [cmd [arg [arg "
-           "...]]]</b><br/>"
-           "<b>-f &lt;db&gt;</b>            Directory path to "
-           "database.<br/>"
-           "<b>-c </b>            Create database if "
-           "missing.<br/>"
-           "<b>-d &lt;delimiter&gt;</b>     Multi-bulk "
-           "delimiter in for raw "
-           "formatting (default: "
-           "\\n).<br/>"
-           "<b>-ns &lt;separator&gt;</b>    Namespace "
-           "separator.<br/>";
-  }
-  if (type == ROCKSDB) {
-    return "<b>Usage: [OPTIONS] [cmd [arg [arg "
-           "...]]]</b><br/>"
-           "<b>-f &lt;db&gt;</b>            Directory path to "
-           "database.<br/>"
-           "<b>-c </b>            Create database if "
-           "missing.<br/>"
-           "<b>-d &lt;delimiter&gt;</b>     Multi-bulk "
-           "delimiter in for raw "
-           "formatting (default: "
-           "\\n).<br/>"
-           "<b>-ns &lt;separator&gt;</b>    Namespace "
-           "separator.<br/>";
-  }
-  if (type == UNQLITE) {
-    return "<b>Usage: [OPTIONS] [cmd [arg [arg "
-           "...]]]</b><br/>"
-           "<b>-f &lt;db&gt;</b>            File path to "
-           "database.<br/>"
-           "<b>-c </b>            Create database if "
-           "missing.<br/>"
-           "<b>-d &lt;delimiter&gt;</b>     Multi-bulk "
-           "delimiter in for raw "
-           "formatting (default: "
-           "\\n).<br/>"
-           "<b>-ns &lt;separator&gt;</b>    Namespace "
-           "separator.<br/>";
-  }
-  if (type == LMDB) {
-    return "<b>Usage: [OPTIONS] [cmd [arg [arg "
-           "...]]]</b><br/>"
-           "<b>-f &lt;db&gt;</b>            Directory path to "
-           "database.<br/>"
-           "<b>-c </b>            Create database if "
-           "missing.<br/>"
-           "<b>-d &lt;delimiter&gt;</b>     Multi-bulk "
-           "delimiter in for raw "
-           "formatting (default: "
-           "\\n).<br/>"
-           "<b>-ns &lt;separator&gt;</b>    Namespace "
-           "separator.<br/>";
-  }
-
-  NOTREACHED();
-  return nullptr;
-}
-
-std::string defaultCommandLine(connectionTypes type) {
-#ifdef BUILD_WITH_REDIS
-  if (type == REDIS) {
-    redis::Config r;
-    return common::ConvertToString(r);
-  }
-#endif
-#ifdef BUILD_WITH_MEMCACHED
-  if (type == MEMCACHED) {
-    memcached::Config r;
-    return common::ConvertToString(r);
-  }
-#endif
-#ifdef BUILD_WITH_SSDB
-  if (type == SSDB) {
-    ssdb::Config r;
-    return common::ConvertToString(r);
-  }
-#endif
-#ifdef BUILD_WITH_LEVELDB
-  if (type == LEVELDB) {
-    leveldb::Config r;
-    r.options.create_if_missing = true;
-    return common::ConvertToString(r);
-  }
-#endif
-#ifdef BUILD_WITH_ROCKSDB
-  if (type == ROCKSDB) {
-    rocksdb::Config r;
-    r.options.create_if_missing = true;
-    return common::ConvertToString(r);
-  }
-#endif
-#ifdef BUILD_WITH_UNQLITE
-  if (type == UNQLITE) {
-    unqlite::Config r;
-    r.create_if_missing = true;
-    return common::ConvertToString(r);
-  }
-#endif
-#ifdef BUILD_WITH_LMDB
-  if (type == LMDB) {
-    lmdb::Config r;
-    r.create_if_missing = true;
-    return common::ConvertToString(r);
-  }
-#endif
-
-  NOTREACHED();
-  return std::string();
-}
-
 }  // namespace core
 }  // namespace fastonosql

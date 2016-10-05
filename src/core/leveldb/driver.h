@@ -25,7 +25,7 @@
 
 #include "core/connection_settings.h"  // for IConnectionSettingsBaseSPtr
 #include "core/events/events.h"        // for ClearDatabaseRequestEvent, etc
-#include "core/idriver.h"              // for IDriverLocal
+#include "core/idriver_local.h"              // for IDriverLocal
 #include "core/types.h"                // for IDataBaseInfo (ptr only), etc
 
 namespace fastonosql {

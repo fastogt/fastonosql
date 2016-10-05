@@ -28,14 +28,13 @@
 #include <common/value.h>      // for ErrorValue, etc
 
 #include "core/connection_types.h"  // for connectionTypes, etc
-#include "core/icluster.h"          // for ICluster
-#include "core/isentinel.h"         // for Sentinel, ISentinel, etc
+#include "core/icluster.h"
 
 #ifdef BUILD_WITH_REDIS
 #include "core/redis/cluster.h"              // for Cluster
+#include "core/redis/sentinel.h"             // for Sentinel
 #include "core/redis/connection_settings.h"  // for ConnectionSettings
 #include "core/redis/db_connection.h"        // for discoveryClusterConnection, etc
-#include "core/redis/sentinel.h"             // for Sentinel
 #include "core/redis/server.h"               // for Server
 #endif
 

@@ -82,9 +82,6 @@ class IConnectionSettings : public common::ClonableBase<IConnectionSettings> {
   uint32_t msinterval_;
 };
 
-bool isRemoteType(connectionTypes type);
-bool isCanSSHConnection(connectionTypes type);
-
 class IConnectionSettingsBase : public IConnectionSettings {
  public:
   virtual ~IConnectionSettingsBase();
@@ -159,9 +156,6 @@ class IConnectionSettingsRemoteSSH : public IConnectionSettingsRemote {
  private:
   SSHInfo ssh_info_;
 };
-
-const char* commandLineHelpText(connectionTypes type);
-std::string defaultCommandLine(connectionTypes type);
 
 typedef common::shared_ptr<IConnectionSettingsBase> IConnectionSettingsBaseSPtr;
 

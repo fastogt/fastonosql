@@ -53,8 +53,6 @@ IClusterSettingsBase* IClusterSettingsBase::createFromType(connectionTypes type,
     return new redis::ClusterSettings(conName);
   }
 #endif
-
-  NOTREACHED();
   return nullptr;
 }
 

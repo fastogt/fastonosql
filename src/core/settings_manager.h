@@ -27,8 +27,8 @@
 
 #include <common/patterns/singleton_pattern.h>  // for LazySingleton
 
-#include "core/cluster_connection_settings.h"
 #include "core/connection_settings.h"  // for IClusterSettingsBaseSPtr, etc
+#include "core/cluster_connection_settings.h"
 #include "core/sentinel_connection_settings.h"
 
 #include "global/types.h"  // for supportedViews
@@ -90,16 +90,16 @@ class SettingsManager : public common::patterns::LazySingleton<SettingsManager> 
   QString loggingDirectory() const;
 
   bool autoCheckUpdates() const;
-  void setAutoCheckUpdates(bool isCheck);
+  void setAutoCheckUpdates(bool check);
 
   bool autoCompletion() const;
-  void setAutoCompletion(bool enableAuto);
+  void setAutoCompletion(bool completion);
 
   bool autoOpenConsole() const;
-  void setAutoOpenConsole(bool enableAuto);
+  void setAutoOpenConsole(bool open_console);
 
   bool fastViewKeys() const;
-  void setFastViewKeys(bool fastView);
+  void setFastViewKeys(bool fast_view);
 
   void reloadFromPath(const std::string& path, bool merge);
 
