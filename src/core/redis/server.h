@@ -25,7 +25,6 @@
 #include "core/core_fwd.h"                                 // for IDatabaseSPtr
 #include "core/events/events.h"                            // for DiscoveryInfoResponceEvent
 #include "core/server/iserver.h"                           // for IServerRemote
-#include "core/types.h"                                    // for IDataBaseInfoSPtr
 
 namespace fastonosql {
 namespace core {

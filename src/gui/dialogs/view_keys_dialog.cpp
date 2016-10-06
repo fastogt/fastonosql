@@ -40,7 +40,6 @@
 #include "core/events/events_info.h"  // for CommandResponce, etc
 #include "core/database/idatabase.h"  // for IDatabase
 #include "core/server/iserver.h"      // for IServer
-#include "core/types.h"               // for IDataBaseInfoSPtr, etc
 
 #include "gui/fasto_table_view.h"  // for FastoTableView
 #include "gui/gui_factory.h"       // for GuiFactory

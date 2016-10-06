@@ -45,10 +45,10 @@
 #include <common/qt/gui/shortcuts.h>   // for FastoQKeySequence
 #include <common/qt/utils_qt.h>        // for SaveToFileText, etc
 
-#include "core/command/command_info.h"        // for UNDEFINED_SINCE, etc
-#include "core/events/events_info.h"  // for DiscoveryInfoResponce, etc
-#include "core/server/iserver.h"      // for IServer
-#include "core/settings_manager.h"    // for SettingsManager
+#include "core/command/command_info.h"  // for UNDEFINED_SINCE, etc
+#include "core/events/events_info.h"    // for DiscoveryInfoResponce, etc
+#include "core/server/iserver.h"        // for IServer
+#include "core/settings_manager.h"      // for SettingsManager
 
 #include "gui/gui_factory.h"  // for GuiFactory
 #include "gui/shortcuts.h"    // for executeKey

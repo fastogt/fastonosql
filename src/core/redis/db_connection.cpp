@@ -58,8 +58,8 @@ extern "C" {
 
 #include <common/qt/logger.h>  // for LOG_MSG
 
-#include "core/command/command.h"                    // for createCommand
-#include "core/command/command_logger.h"             // for LOG_COMMAND
+#include "core/command/command.h"            // for createCommand
+#include "core/command/command_logger.h"     // for LOG_COMMAND
 #include "core/redis/cluster_infos.h"        // for makeDiscoveryClusterInfo
 #include "core/redis/command.h"              // for Command
 #include "core/redis/connection_settings.h"  // for ConnectionSettings

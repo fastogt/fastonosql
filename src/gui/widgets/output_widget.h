@@ -21,7 +21,6 @@
 #include <QWidget>
 
 #include "core/core_fwd.h"  // for IServerSPtr
-#include "core/types.h"
 #include "core/database/idatabase_info.h"
 
 #include "global/global.h"  // for FastoObject, etc

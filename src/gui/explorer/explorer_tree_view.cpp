@@ -49,7 +49,6 @@
 #include "core/sentinel/isentinel.h"  // for Sentinel, etc
 #include "core/server/iserver.h"      // for IServer, IServerRemote
 #include "core/settings_manager.h"    // for SettingsManager
-#include "core/types.h"               // for IDataBaseInfoSPtr
 
 #include "gui/dialogs/change_password_server_dialog.h"
 #include "gui/dialogs/create_dbkey_dialog.h"    // for CreateDbKeyDialog

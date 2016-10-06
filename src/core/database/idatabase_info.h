@@ -19,13 +19,14 @@
 #pragma once
 
 #include <stddef.h>  // for size_t
-#include <stdint.h>  // for uint32_t
 
 #include <memory>  // for shared_ptr
 #include <string>  // for string
 #include <vector>  // for vector
 
-#include "core/connection_types.h"  // for connectionTypes, etc
+#include <common/types.h>  // for ClonableBase
+
+#include "core/connection_types.h"  // for connectionTypes
 #include "core/db_key.h"            // for NDbKValue
 
 namespace common {

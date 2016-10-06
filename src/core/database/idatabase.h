@@ -22,7 +22,6 @@
 
 #include "core/connection_types.h"  // for connectionTypes
 #include "core/core_fwd.h"
-#include "core/types.h"  // for IDataBaseInfoSPtr
 #include "core/translator/icommand_translator.h"
 #include "core/database/idatabase_info.h"
 

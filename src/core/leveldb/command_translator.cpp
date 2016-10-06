@@ -18,9 +18,10 @@
 
 #include "core/leveldb/command_translator.h"
 
-#include <common/sprintf.h>
+#include <common/macros.h>   // for UNUSED
+#include <common/sprintf.h>  // for MemSPrintf
 
-#include "global/global.h"
+#include "global/global.h"  // for ConvertToString
 
 #define LEVELDB_SET_KEY_PATTERN_2ARGS_SS "SET %s %s"
 #define LEVELDB_GET_KEY_PATTERN_1ARGS_S "GET %s"

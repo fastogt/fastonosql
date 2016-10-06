@@ -23,7 +23,7 @@
 #include <common/error.h>  // for Error
 #include <common/value.h>  // for Value, Value::Type
 
-#include "core/db_key.h"               // for NDbKValue, NKey, ttl_t
+#include "core/db_key.h"                          // for NDbKValue, NKey, ttl_t
 #include "core/translator/icommand_translator.h"  // for ICommandTranslator
 
 namespace fastonosql {

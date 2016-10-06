@@ -27,7 +27,6 @@
 
 #include "core/core_fwd.h"  // for IServerSPtr, IClusterSPtr, etc
 #include "core/db_key.h"    // for NDbKValue, etc
-#include "core/types.h"     // for IDataBaseInfoSPtr
 #include "core/database/idatabase_info.h"
 
 class QModelIndex;

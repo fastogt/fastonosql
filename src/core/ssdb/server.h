@@ -24,7 +24,6 @@
 #include "core/connection_types.h"                         // for serverMode, serverState, etc
 #include "core/core_fwd.h"                                 // for IDatabaseSPtr
 #include "core/server/iserver.h"                           // for IServerRemote
-#include "core/types.h"                                    // for IDataBaseInfoSPtr
 
 namespace fastonosql {
 namespace core {

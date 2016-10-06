@@ -18,7 +18,6 @@
 
 #pragma once
 
-#include <stddef.h>  // for size_t
 #include <stdint.h>  // for uint32_t
 
 #include <memory>  // for shared_ptr
@@ -32,7 +31,7 @@
 
 namespace common {
 class Value;
-}
+}  // lines 34-34
 
 namespace fastonosql {
 namespace core {
