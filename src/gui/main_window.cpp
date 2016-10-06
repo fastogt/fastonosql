@@ -218,10 +218,12 @@ MainWindow::MainWindow() : QMainWindow(), isCheckedInSession_(false) {
 
   exp_ = new ExplorerTreeView(this);
   VERIFY(connect(exp_, &ExplorerTreeView::openedConsole, mainW, &MainWidget::openConsole));
-  VERIFY(connect(exp_, &ExplorerTreeView::closeServer, &core::ServersManager::instance(),
-                 &core::ServersManager::closeServer));
-  VERIFY(connect(exp_, &ExplorerTreeView::closeCluster, &core::ServersManager::instance(),
-                 &core::ServersManager::closeCluster));
+  VERIFY(connect(exp_, &ExplorerTreeView::closeServer, this, &MainWindow::closeServer,
+                 Qt::DirectConnection));
+  VERIFY(connect(exp_, &ExplorerTreeView::closeCluster, this, &MainWindow::closeCluster,
+                 Qt::DirectConnection));
+  VERIFY(connect(exp_, &ExplorerTreeView::closeSentinel, this, &MainWindow::closeSentinel,
+                 Qt::DirectConnection));
   expDock_ = new QDockWidget(this);
   explorerAction_ = expDock_->toggleViewAction();
   explorerAction_->setShortcut(explorerKeySequence);
@@ -557,6 +559,18 @@ void MainWindow::statitsticSent(bool succesResult) {
   if (succesResult) {
     core::SettingsManager::instance().setIsSendedStatistic(true);
   }
+}
+
+void MainWindow::closeServer(core::IServerSPtr server) {
+  core::ServersManager::instance().closeServer(server);
+}
+
+void MainWindow::closeSentinel(core::ISentinelSPtr sentinel) {
+  core::ServersManager::instance().closeSentinel(sentinel);
+}
+
+void MainWindow::closeCluster(core::IClusterSPtr cluster) {
+  core::ServersManager::instance().closeCluster(cluster);
 }
 
 #ifdef OS_ANDROID

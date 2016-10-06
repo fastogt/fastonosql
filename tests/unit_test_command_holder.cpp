@@ -1,9 +1,9 @@
 #include <gtest/gtest.h>
 
-#include "common/sprintf.h"
+#include <common/sprintf.h>
 
-#include "core/command_holder.h"
-#include "core/command_handler.h"
+#include "core/command/command_holder.h"
+#include "core/command/command_handler.h"
 
 #define SET "SET"
 #define GET "GET"

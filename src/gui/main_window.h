@@ -20,6 +20,8 @@
 
 #include <QMainWindow>
 
+#include "core/core_fwd.h"
+
 #include "core/connection_settings/connection_settings.h"  // for IConnectionSettingsBaseSPtr
 #include "core/connection_settings/cluster_connection_settings.h"
 #include "core/connection_settings/sentinel_connection_settings.h"
@@ -77,6 +79,10 @@ class MainWindow : public QMainWindow {
 
   void versionAvailible(bool succesResult, const QString& version);
   void statitsticSent(bool succesResult);
+
+  void closeServer(core::IServerSPtr server);
+  void closeSentinel(core::ISentinelSPtr sentinel);
+  void closeCluster(core::IClusterSPtr cluster);
 
  protected:
 #ifdef OS_ANDROID

@@ -344,5 +344,16 @@ void ServersManager::closeCluster(cluster_t cluster) {
   }
 }
 
+void ServersManager::closeSentinel(sentinel_t sentinel) {
+  auto nodes = sentinel->sentinels();
+  for (size_t i = 0; i < nodes.size(); ++i) {
+    auto sent = nodes[i];
+    auto sent_nodes = sent.sentinels_nodes;
+    for (size_t j = 0; j < sent_nodes.size(); ++j) {
+      closeServer(sent_nodes[j]);
+    }
+  }
+}
+
 }  // namespace core
 }  // namespace fastonosql

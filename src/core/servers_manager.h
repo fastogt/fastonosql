@@ -18,8 +18,6 @@
 
 #pragma once
 
-#include <QObject>
-
 #include <common/error.h>                       // for Error
 #include <common/macros.h>                      // for WARN_UNUSED_RESULT
 #include <common/patterns/singleton_pattern.h>  // for LazySingleton
@@ -34,9 +32,8 @@
 namespace fastonosql {
 namespace core {
 
-class ServersManager : public QObject, public common::patterns::LazySingleton<ServersManager> {
+class ServersManager : public common::patterns::LazySingleton<ServersManager> {
   friend class common::patterns::LazySingleton<ServersManager>;
-  Q_OBJECT
  public:
   typedef IServerSPtr server_t;
   typedef IClusterSPtr cluster_t;
@@ -57,9 +54,9 @@ class ServersManager : public QObject, public common::patterns::LazySingleton<Se
 
   void clear();
 
- public Q_SLOTS:
   void closeServer(server_t server);
   void closeCluster(cluster_t cluster);
+  void closeSentinel(sentinel_t sentinel);
 
  private:
   ServersManager();

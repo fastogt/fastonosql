@@ -4,7 +4,7 @@ extern "C" {
 #include "third-party/sds/sds.h"
 }
 
-#include "common/third-party/json-c/json-c/json.h"
+#include "third-party/json-c/json-c/json.h"
 
 #include <string.h>
 

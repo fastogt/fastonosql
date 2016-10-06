@@ -251,8 +251,6 @@ SET(HEADERS_CORE_TO_MOC
   ${HEADERS_CORE_DRIVER_TO_MOC}
   ${HEADERS_CORE_SERVER_TO_MOC}
   ${HEADERS_CORE_COMMAND_TO_MOC}
-
-  core/servers_manager.h
 )
 SET(HEADERS_CORE
   ${HEADERS_CORE_SERVER}
@@ -266,6 +264,7 @@ SET(HEADERS_CORE
   ${HEADERS_CORE_TRANSLATOR}
   ${HEADERS_CORE_EVENTS}
 
+  core/servers_manager.h
   core/connection_types.h
   core/core_fwd.h
   core/settings_manager.h
@@ -810,8 +809,6 @@ IF(DEVELOPER_ENABLE_TESTS)
 
   ADD_EXECUTABLE(unit_tests
     ${CMAKE_SOURCE_DIR}/tests/unit_test_fasto_objects.cpp
-    ${CMAKE_SOURCE_DIR}/tests/unit_test_common_net.cpp
-    ${CMAKE_SOURCE_DIR}/tests/unit_test_common_strings.cpp
     ${CMAKE_SOURCE_DIR}/tests/unit_test_parsinng_command_line.cpp
     ${CMAKE_SOURCE_DIR}/tests/unit_test_command_holder.cpp
     global/global.cpp
