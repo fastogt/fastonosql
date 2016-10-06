@@ -27,7 +27,8 @@
 
 #include "core/db_connection/cdb_connection.h"
 #include "core/ssh_info.h"  // for SSHInfo
-#include "core/types.h"     // for IDataBaseInfo (ptr only), etc
+#include "core/types.h"
+#include "core/server/iserver_info.h"
 
 #include "core/redis/config.h"
 #include "core/redis/connection_settings.h"

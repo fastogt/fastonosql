@@ -27,6 +27,7 @@
 
 #include "core/core_fwd.h"  // for IDatabaseSPtr
 #include "core/types.h"
+#include "core/database/idatabase_info.h"
 
 class QEvent;
 class QLabel;     // lines 30-30

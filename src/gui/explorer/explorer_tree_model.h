@@ -22,12 +22,13 @@
 #include <stdint.h>  // for uint32_t
 #include <string>    // for string
 
+#include <common/qt/gui/base/tree_item.h>   // for TreeItem
+#include <common/qt/gui/base/tree_model.h>  // for TreeModel
+
 #include "core/core_fwd.h"  // for IServerSPtr, IClusterSPtr, etc
 #include "core/db_key.h"    // for NDbKValue, etc
 #include "core/types.h"     // for IDataBaseInfoSPtr
-
-#include <common/qt/gui/base/tree_item.h>   // for TreeItem
-#include <common/qt/gui/base/tree_model.h>  // for TreeModel
+#include "core/database/idatabase_info.h"
 
 class QModelIndex;
 class QObject;

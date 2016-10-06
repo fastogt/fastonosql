@@ -23,7 +23,7 @@
 
 #include <common/error.h>  // for Error
 
-#include "core/types.h"  // for ServerCommonInfo (ptr only), etc
+#include "core/server/iserver_info.h"  // for ServerCommonInfo (ptr only), etc
 
 namespace fastonosql {
 namespace core {

@@ -23,7 +23,8 @@
 #include <iosfwd>  // for ostream
 #include <string>  // for string
 
-#include "core/types.h"  // for IStateField, IServerInfo
+#include "core/types.h"
+#include "core/server/iserver_info.h"
 
 #define ROCKSDB_STATS_LABEL "# Stats"
 

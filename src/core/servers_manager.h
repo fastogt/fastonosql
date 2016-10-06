@@ -29,7 +29,7 @@
 #include "core/connection_settings/sentinel_connection_settings.h"
 
 #include "core/core_fwd.h"  // for IClusterSPtr, ISentinelSPtr, etc
-#include "core/types.h"
+#include "core/server/iserver_info.h"
 
 namespace fastonosql {
 namespace core {

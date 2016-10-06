@@ -139,46 +139,136 @@ SET(SOURCES_GUI
   gui/fasto_scintilla.cpp
 )
 
-SET(HEADERS_CORE_TO_MOC
+SET(HEADERS_CORE_DATABASE
+  core/database/idatabase_info.h
+  core/database/idatabase.h
+)
+SET(SOURCES_CORE_DATABASE
+  core/database/idatabase_info.cpp
+  core/database/idatabase.cpp
+)
+
+SET(HEADERS_CORE_SERVER_TO_MOC
+  core/server/iserver.h
+)
+SET(HEADERS_CORE_SERVER
+  core/server/iserver_info.h
+)
+SET(SOURCES_CORE_SERVER
+  core/server/iserver_info.cpp
+  core/server/iserver.cpp
+)
+
+SET(HEADERS_CORE_CLUSTER
+  core/cluster/icluster.h
+)
+SET(SOURCES_CORE_CLUSTER
+  core/cluster/icluster.cpp
+)
+
+SET(HEADERS_CORE_SENTINEL
+  core/sentinel/isentinel.h
+)
+SET(SOURCES_CORE_SENTINEL
+  core/sentinel/isentinel.cpp
+)
+
+SET(HEADERS_CORE_DRIVER_TO_MOC
   core/driver/idriver.h
   core/driver/idriver_remote.h
   core/driver/idriver_local.h
-
-  core/server/iserver.h
-
-  core/command/command_logger.h
-
-  core/servers_manager.h
 )
-SET(HEADERS_CORE
-  core/cluster/icluster.h
+SET(HEADERS_CORE_DRIVER
+)
+SET(SOURCES_CORE_DRIVER
+  core/driver/idriver.cpp
+  core/driver/idriver_remote.cpp
+  core/driver/idriver_local.cpp
+)
 
-  core/sentinel/isentinel.h
-
-  core/database/idatabase.h
-
-  core/config/config.h
-
+SET(HEADERS_CORE_CONNECTION_SETTINGS
   core/connection_settings/cluster_connection_settings.h
   core/connection_settings/sentinel_connection_settings.h
   core/connection_settings/connection_settings.h
+)
+SET(SOURCES_CORE_CONNECTION_SETTINGS
+  core/connection_settings/cluster_connection_settings.cpp
+  core/connection_settings/connection_settings.cpp
+  core/connection_settings/sentinel_connection_settings.cpp
+)
 
-  core/translator/icommand_translator.h
-
+SET(HEADERS_CORE_DB_CONNECTION
   core/db_connection/db_connection.h
   core/db_connection/cdb_connection.h
   core/db_connection/cdb_connection_client.h
+)
+SET(SOURCES_CORE_DB_CONNECTION
+  core/db_connection/db_connection.cpp
+  core/db_connection/cdb_connection.cpp
+  core/db_connection/cdb_connection_client.cpp
+)
 
+SET(HEADERS_CORE_COMMAND_TO_MOC
+  core/command/command_logger.h
+)
+SET(HEADERS_CORE_COMMAND
   core/command/command.h
   core/command/command_info.h
   core/command/command_holder.h
   core/command/command_handler.h
+)
+SET(SOURCES_CORE_COMMAND
+  core/command/command.cpp
+  core/command/command_info.cpp
+  core/command/command_holder.cpp
+  core/command/command_handler.cpp
+  core/command/command_logger.cpp
+)
+
+SET(HEADERS_CORE_CONFIG
+  core/config/config.h
+)
+SET(SOURCES_CORE_CONFIG
+  core/config/config.cpp
+)
+
+SET(HEADERS_CORE_TRANSLATOR
+  core/translator/icommand_translator.h
+)
+SET(SOURCES_CORE_TRANSLATOR
+  core/translator/icommand_translator.cpp
+)
+
+SET(HEADERS_CORE_EVENTS
+  core/events/events.h
+  core/events/events_info.h
+)
+SET(SOURCES_CORE_EVENTS
+  core/events/events_info.cpp
+)
+
+SET(HEADERS_CORE_TO_MOC
+  ${HEADERS_CORE_DRIVER_TO_MOC}
+  ${HEADERS_CORE_SERVER_TO_MOC}
+  ${HEADERS_CORE_COMMAND_TO_MOC}
+
+  core/servers_manager.h
+)
+SET(HEADERS_CORE
+  ${HEADERS_CORE_SERVER}
+  ${HEADERS_CORE_CLUSTER}
+  ${HEADERS_CORE_SENTINEL}
+  ${HEADERS_CORE_DATABASE}
+  ${HEADERS_CORE_CONNECTION_SETTINGS}
+  ${HEADERS_CORE_DB_CONNECTION}
+  ${HEADERS_CORE_COMMAND}
+  ${HEADERS_CORE_CONFIG}
+  ${HEADERS_CORE_TRANSLATOR}
+  ${HEADERS_CORE_EVENTS}
 
   core/connection_types.h
   core/core_fwd.h
   core/settings_manager.h
-  core/events/events.h
-  core/events/events_info.h
   core/types.h
   core/db_traits.h
   core/db_key.h
@@ -187,37 +277,18 @@ SET(HEADERS_CORE
   core/ssh_info.h
 )
 SET(SOURCES_CORE
-  core/cluster/icluster.cpp
+  ${SOURCES_CORE_DATABASE}
+  ${SOURCES_CORE_SERVER}
+  ${SOURCES_CORE_SENTINEL}
+  ${SOURCES_CORE_CLUSTER}
+  ${SOURCES_CORE_DRIVER}
+  ${SOURCES_CORE_CONNECTION_SETTINGS}
+  ${SOURCES_CORE_DB_CONNECTION}
+  ${SOURCES_CORE_COMMAND}
+  ${SOURCES_CORE_CONFIG}
+  ${SOURCES_CORE_TRANSLATOR}
+  ${SOURCES_CORE_EVENTS}
 
-  core/sentinel/isentinel.cpp
-
-  core/database/idatabase.cpp
-
-  core/driver/idriver.cpp
-  core/driver/idriver_remote.cpp
-  core/driver/idriver_local.cpp
-
-  core/server/iserver.cpp
-
-  core/config/config.cpp
-
-  core/connection_settings/cluster_connection_settings.cpp
-  core/connection_settings/connection_settings.cpp
-  core/connection_settings/sentinel_connection_settings.cpp
-
-  core/translator/icommand_translator.cpp
-
-  core/db_connection/db_connection.cpp
-  core/db_connection/cdb_connection.cpp
-  core/db_connection/cdb_connection_client.cpp
-
-  core/command/command.cpp
-  core/command/command_info.cpp
-  core/command/command_holder.cpp
-  core/command/command_handler.cpp
-  core/command/command_logger.cpp
-
-  core/events/events_info.cpp
   core/connection_types.cpp
   core/settings_manager.cpp
   core/servers_manager.cpp

@@ -23,8 +23,8 @@
 #include "core/connection_types.h"  // for connectionTypes
 
 #include "core/core_fwd.h"  // for IServerSPtr
-
-#include "core/types.h"  // for IDataBaseInfoSPtr, etc
+#include "core/server/iserver_info.h"
+#include "core/database/idatabase_info.h"
 
 class QAction;       // lines 26-26
 class QComboBox;     // lines 29-29

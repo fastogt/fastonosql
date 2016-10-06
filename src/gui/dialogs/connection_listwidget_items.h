@@ -23,7 +23,7 @@
 #include "core/connection_settings/connection_settings.h"  // for IClusterSettingsBaseSPtr, etc
 #include "core/connection_settings/cluster_connection_settings.h"
 #include "core/connection_settings/sentinel_connection_settings.h"
-#include "core/types.h"  // for ServerCommonInfo
+#include "core/server/iserver_info.h"  // for ServerCommonInfo
 
 namespace fastonosql {
 namespace gui {

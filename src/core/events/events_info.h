@@ -27,7 +27,8 @@
 
 #include "core/connection_types.h"      // for ConnectionMode
 #include "core/server_property_info.h"  // for property_t, ServerPropertiesInfo
-#include "core/types.h"                 // for IDataBaseInfoSPtr, IServerInf...
+#include "core/database/idatabase_info.h"
+#include "core/server/iserver_info.h"  // for IDataBaseInfoSPtr, IServerInf...
 
 #include "global/global.h"  // for FastoObjectIPtr
 

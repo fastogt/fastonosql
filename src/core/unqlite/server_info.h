@@ -23,7 +23,9 @@
 #include <iosfwd>  // for ostream
 #include <string>  // for string, basic_string
 
-#include "core/types.h"  // for IStateField, IServerInfo
+#include "core/types.h"
+#include "core/server/iserver_info.h"
+
 #define UNQLITE_STATS_LABEL "# Stats"
 
 #define UNQLITE_FILE_NAME_LABEL "file_name"

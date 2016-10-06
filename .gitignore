@@ -1,1 +1,3 @@
 build/config.py
+*.pyc
+CMakeLists.txt.user
