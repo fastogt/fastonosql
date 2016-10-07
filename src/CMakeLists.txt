@@ -179,11 +179,13 @@ SET(HEADERS_CORE_DRIVER_TO_MOC
   core/driver/idriver_local.h
 )
 SET(HEADERS_CORE_DRIVER
+  core/driver/root_locker.h
 )
 SET(SOURCES_CORE_DRIVER
   core/driver/idriver.cpp
   core/driver/idriver_remote.cpp
   core/driver/idriver_local.cpp
+  core/driver/root_locker.cpp
 )
 
 SET(HEADERS_CORE_CONNECTION_SETTINGS

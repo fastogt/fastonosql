@@ -126,6 +126,19 @@ void replyNotImplementedYet(IDriver* sender, event_request_type* ev, const char*
 
 }  // namespace
 
+IDriver::IDriver(IConnectionSettingsBaseSPtr settings)
+    : settings_(settings), thread_(nullptr), timer_info_id_(0), log_file_(nullptr) {
+  thread_ = new QThread(this);
+  moveToThread(thread_);
+
+  VERIFY(connect(thread_, &QThread::started, this, &IDriver::init));
+  VERIFY(connect(thread_, &QThread::finished, this, &IDriver::clear));
+}
+
+IDriver::~IDriver() {
+  destroy(&log_file_);
+}
+
 common::Error IDriver::execute(FastoObjectCommandIPtr cmd) {
   if (!cmd) {
     DNOTREACHED();
@@ -150,19 +163,6 @@ common::Error IDriver::execute(FastoObjectCommandIPtr cmd) {
   common::Error err = executeImpl(argc, exec_argv, cmd.get());
   sdsfreesplitres(argv, argc);
   return err;
-}
-
-IDriver::IDriver(IConnectionSettingsBaseSPtr settings)
-    : settings_(settings), thread_(nullptr), timer_info_id_(0), log_file_(nullptr) {
-  thread_ = new QThread(this);
-  moveToThread(thread_);
-
-  VERIFY(connect(thread_, &QThread::started, this, &IDriver::init));
-  VERIFY(connect(thread_, &QThread::finished, this, &IDriver::clear));
-}
-
-IDriver::~IDriver() {
-  destroy(&log_file_);
 }
 
 void IDriver::reply(QObject* reciver, QEvent* ev) {
@@ -490,34 +490,6 @@ void IDriver::handleSetDefaultDatabaseEvent(events::SetDefaultDatabaseRequestEve
                          events::SetDefaultDatabaseResponceEvent>(this, ev, "set default database");
 }
 
-IDriver::RootLocker::RootLocker(IDriver* parent,
-                                QObject* receiver,
-                                const std::string& text,
-                                bool silence)
-    : parent_(parent),
-      receiver_(receiver),
-      tstart_(common::time::current_mstime()),
-      silence_(silence) {
-  DCHECK(parent_);
-
-  root_ = FastoObject::createRoot(text, parent_);
-  if (!silence) {
-    events::CommandRootCreatedEvent::value_type res(this, root_);
-    reply(receiver_, new events::CommandRootCreatedEvent(parent_, res));
-  }
-}
-
-IDriver::RootLocker::~RootLocker() {
-  if (!silence_) {
-    events::CommandRootCompleatedEvent::value_type res(this, tstart_, root_);
-    reply(receiver_, new events::CommandRootCompleatedEvent(parent_, res));
-  }
-}
-
-FastoObjectIPtr IDriver::RootLocker::root() const {
-  return root_;
-}
-
 void IDriver::handleLoadServerInfoEvent(events::ServerInfoRequestEvent* ev) {
   QObject* sender = ev->sender();
   notifyProgress(sender, 0);
@@ -643,15 +615,6 @@ void IDriver::handleDiscoveryInfoRequestEvent(events::DiscoveryInfoRequestEvent*
   notifyProgress(sender, 100);
 }
 
-void IDriver::addedChildren(FastoObjectIPtr child) {
-  if (!child) {
-    DNOTREACHED();
-    return;
-  }
-
-  emit addedChild(child);
-}
-
 common::Error IDriver::serverDiscoveryInfo(IServerInfo** sinfo, IDataBaseInfo** dbinfo) {
   IServerInfo* lsinfo = nullptr;
   common::Error er = serverInfo(&lsinfo);
@@ -669,10 +632,6 @@ common::Error IDriver::serverDiscoveryInfo(IServerInfo** sinfo, IDataBaseInfo** 
   *sinfo = lsinfo;
   *dbinfo = ldbinfo;
   return er;
-}
-
-void IDriver::updated(FastoObject* item, FastoObject::value_t val) {
-  emit itemUpdated(item, val);
 }
 
 void IDriver::onCurrentDataBaseChanged(IDataBaseInfo* info) {

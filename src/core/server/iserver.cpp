@@ -25,11 +25,10 @@
 
 #include <common/error.h>        // for Error
 #include <common/macros.h>       // for VERIFY, CHECK, DNOTREACHED
-#include <common/qt/utils_qt.h>  // for Event<>::value_type
 #include <common/value.h>        // for ErrorValue
+#include <common/qt/utils_qt.h>  // for Event<>::value_type
 #include <common/qt/logger.h>    // for LOG_ERROR
 
-#include "core/connection_settings/connection_settings.h"  // for isRemoteType, etc
 #include "core/events/events_info.h"                       // for LoadDatabaseContentResponce, etc
 #include "core/driver/idriver.h"                           // for IDriver
 

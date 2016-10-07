@@ -33,8 +33,7 @@
 #include "core/db_key.h"                                   // for NKey (ptr only), NDbKValue (...
 #include "core/events/events.h"                            // for BackupRequestEvent, ChangeMa...
 #include "core/translator/icommand_translator.h"           // for translator_t
-
-#include "global/global.h"  // for FastoObjectIPtr, FastoObject...
+#include "core/driver/root_locker.h"
 
 class QEvent;
 class QThread;  // lines 37-37
@@ -48,9 +47,7 @@ class File;
 namespace fastonosql {
 namespace core {
 
-class IDriver : public QObject,
-                public CDBConnectionClient,
-                private FastoObject::IFastoObjectObserver {
+class IDriver : public QObject, public CDBConnectionClient {
   Q_OBJECT
  public:
   virtual ~IDriver();
@@ -125,21 +122,6 @@ class IDriver : public QObject,
 
   const IConnectionSettingsBaseSPtr settings_;
 
-  class RootLocker {
-   public:
-    RootLocker(IDriver* parent, QObject* receiver, const std::string& text, bool silence);
-    ~RootLocker();
-
-    FastoObjectIPtr root() const;
-
-   private:
-    FastoObjectIPtr root_;
-    IDriver* parent_;
-    QObject* receiver_;
-    const common::time64_t tstart_;
-    const bool silence_;
-  };
-
   RootLocker make_locker(QObject* reciver, const std::string& text, bool silence) {
     return RootLocker(this, reciver, text, silence);
   }
@@ -161,10 +143,6 @@ class IDriver : public QObject,
   void handleClearServerHistoryRequestEvent(events::ClearServerHistoryRequestEvent* ev);
 
   virtual common::Error executeImpl(int argc, const char** argv, FastoObject* out) = 0;
-
-  // notification of execute events
-  virtual void addedChildren(FastoObjectIPtr child) override;
-  virtual void updated(FastoObject* item, FastoObject::value_t val) override;
 
   virtual void onCurrentDataBaseChanged(IDataBaseInfo* info) override;
   virtual void onKeysRemoved(const keys_t& keys) override;
