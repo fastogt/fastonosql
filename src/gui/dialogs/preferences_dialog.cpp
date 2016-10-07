@@ -122,7 +122,9 @@ PreferencesDialog::PreferencesDialog(QWidget* parent) : QDialog(parent) {
   defaultViewLabel_ = new QLabel;
   defaultViewComboBox_ = new QComboBox;
   for (size_t i = 0; i < SIZEOFMASS(viewsText); ++i) {
-    defaultViewComboBox_->addItem(common::ConvertFromString<QString>(viewsText[i]));
+    std::string vstr = viewsText[i];
+    supportedViews sv = common::ConvertFromString<supportedViews>(vstr);
+    defaultViewComboBox_->addItem(common::ConvertFromString<QString>(vstr), sv);
   }
   defaultViewLayaut->addWidget(defaultViewLabel_);
   defaultViewLayaut->addWidget(defaultViewComboBox_);
@@ -170,8 +172,8 @@ void PreferencesDialog::accept() {
   core::SettingsManager::instance().setCurrentFontName(fontComboBox_->currentText());
   common::qt::gui::applyFont(gui::GuiFactory::instance().font());
 
-  std::string defCombo = common::ConvertToString(defaultViewComboBox_->currentText());
-  supportedViews v = common::ConvertFromString<supportedViews>(defCombo);
+  QVariant var = defaultViewComboBox_->currentData();
+  supportedViews v = static_cast<supportedViews>(qvariant_cast<unsigned char>(var));
   core::SettingsManager::instance().setDefaultView(v);
 
   core::SettingsManager::instance().setLoggingDirectory(logDirPath_->text());
@@ -187,9 +189,9 @@ void PreferencesDialog::syncWithSettings() {
   languagesComboBox_->setCurrentText(core::SettingsManager::instance().currentLanguage());
   stylesComboBox_->setCurrentText(core::SettingsManager::instance().currentStyle());
   fontComboBox_->setCurrentText(core::SettingsManager::instance().currentFontName());
-  std::string defaultViewText =
-      common::ConvertToString(core::SettingsManager::instance().defaultView());
-  defaultViewComboBox_->setCurrentText(common::ConvertFromString<QString>(defaultViewText));
+  supportedViews v = core::SettingsManager::instance().defaultView();
+  std::string vstr = viewsText[v];
+  defaultViewComboBox_->setCurrentText(common::ConvertFromString<QString>(vstr));
   logDirPath_->setText(core::SettingsManager::instance().loggingDirectory());
   autoOpenConsole_->setChecked(core::SettingsManager::instance().autoOpenConsole());
   fastViewKeys_->setChecked(core::SettingsManager::instance().fastViewKeys());

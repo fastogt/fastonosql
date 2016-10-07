@@ -29,10 +29,6 @@
 #include "core/connection_types.h"  // for connectionTypes
 #include "core/db_key.h"            // for NDbKValue
 
-namespace common {
-class Value;
-}
-
 namespace fastonosql {
 namespace core {
 

@@ -124,11 +124,11 @@ OutputWidget::OutputWidget(core::IServerSPtr server, QWidget* parent)
   tableButton_ = new QPushButton;
   textButton_ = new QPushButton;
   treeButton_->setIcon(GuiFactory::instance().treeIcon());
-  VERIFY(connect(treeButton_, SIGNAL(clicked()), this, SLOT(setTreeView())));
+  VERIFY(connect(treeButton_, &QPushButton::clicked, this, &OutputWidget::setTreeView));
   tableButton_->setIcon(GuiFactory::instance().tableIcon());
-  VERIFY(connect(tableButton_, SIGNAL(clicked()), this, SLOT(setTableView())));
+  VERIFY(connect(tableButton_, &QPushButton::clicked, this, &OutputWidget::setTableView));
   textButton_->setIcon(GuiFactory::instance().textIcon());
-  VERIFY(connect(textButton_, SIGNAL(clicked()), this, SLOT(setTextView())));
+  VERIFY(connect(textButton_, &QPushButton::clicked, this, &OutputWidget::setTextView));
 
   topL->addWidget(treeButton_);
   topL->addWidget(tableButton_);

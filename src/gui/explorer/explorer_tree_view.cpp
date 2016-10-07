@@ -92,8 +92,8 @@ ExplorerTreeView::ExplorerTreeView(QWidget* parent) : QTreeView(parent) {
   setSelectionBehavior(QAbstractItemView::SelectRows);
   setSelectionMode(QAbstractItemView::SingleSelection);
   setContextMenuPolicy(Qt::CustomContextMenu);
-  VERIFY(connect(this, SIGNAL(customContextMenuRequested(const QPoint&)), this,
-                 SLOT(showContextMenu(const QPoint&))));
+  VERIFY(connect(this, &ExplorerTreeView::customContextMenuRequested, this,
+                 &ExplorerTreeView::showContextMenu));
 
   connectAction_ = new QAction(this);
   VERIFY(connect(connectAction_, &QAction::triggered, this,
