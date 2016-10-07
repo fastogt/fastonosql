@@ -18,6 +18,8 @@
 
 #pragma once
 
+#include <string>  // for string
+
 #include "core/db_key.h"  // for key_and_value_t, key_t, keys_t, ttl_t
 
 namespace fastonosql {

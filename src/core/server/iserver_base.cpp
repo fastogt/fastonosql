@@ -16,32 +16,12 @@
     along with FastoNoSQL.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-#pragma once
-
-#include <common/net/types.h>  // for HostAndPort
-
-#include "core/connection_settings/connection_settings.h"  // for IConnectionSettingsBaseSPtr
-#include "core/connection_types.h"                         // for serverMode, serverState, etc
-#include "core/core_fwd.h"                                 // for IDatabaseSPtr
-#include "core/server/iserver_remote.h"                    // for IServerRemote
+#include "core/server/iserver_base.h"
 
 namespace fastonosql {
 namespace core {
-namespace ssdb {
 
-class Server : public IServerRemote {
-  Q_OBJECT
- public:
-  explicit Server(IConnectionSettingsBaseSPtr settings);
-  virtual serverMode mode() const;
-  virtual serverTypes role() const;
-  virtual serverState state() const;
-  virtual common::net::HostAndPort host() const;
+IServerBase::~IServerBase() {}
 
- private:
-  virtual IDatabaseSPtr createDatabase(IDataBaseInfoSPtr info);
-};
-
-}  // namespace ssdb
 }  // namespace core
 }  // namespace fastonosql

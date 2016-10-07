@@ -18,17 +18,20 @@
 
 #pragma once
 
+#include <memory>  // for __shared_ptr
 #include <string>  // for string
 
-#include <common/error.h>   // for Error
-#include <common/macros.h>  // for DNOTREACHED, WARN_UNUSED_RESULT
+#include <common/error.h>   // for Error, make_error_value
+#include <common/macros.h>  // for DNOTREACHED, etc
+#include <common/value.h>   // for ErrorValue, etc
 
-#include "core/db_connection/cdb_connection_client.h"  // for CDBConnectionClient
-#include "core/command/command_handler.h"              // for CommandHandler, CommandHandl...
-#include "core/connection_types.h"                     // for connectionTypes
-#include "core/db_connection/db_connection.h"          // for DBConnection
-#include "core/db_key.h"                               // for key_and_value_t, key_t, keys_t
-#include "core/translator/icommand_translator.h"       // for translator_t, ICommandTransl...
+#include "core/command/command_handler.h"  // for CommandHandler, etc
+#include "core/connection_types.h"         // for connectionTypes
+#include "core/db_connection/cdb_connection_client.h"
+#include "core/db_connection/db_connection.h"     // for DBConnection
+#include "core/db_key.h"                          // for key_and_value_t, key_t, etc
+#include "core/translator/icommand_translator.h"  // for translator_t, etc
+#include "core/database/idatabase_info.h"
 
 namespace fastonosql {
 namespace core {

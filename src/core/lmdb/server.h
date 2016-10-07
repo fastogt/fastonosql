@@ -22,7 +22,7 @@
 
 #include "core/connection_settings/connection_settings.h"  // for IConnectionSettingsBaseSPtr
 #include "core/core_fwd.h"                                 // for IDatabaseSPtr
-#include "core/server/iserver.h"                           // for IServerLocal
+#include "core/server/iserver_local.h"                     // for IServerLocal
 
 namespace fastonosql {
 namespace core {
@@ -37,6 +37,6 @@ class Server : public IServerLocal {
  private:
   virtual IDatabaseSPtr createDatabase(IDataBaseInfoSPtr info);
 };
-}
+}  // namespace lmdb
 }  // namespace core
 }  // namespace fastonosql

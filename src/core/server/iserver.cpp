@@ -29,13 +29,12 @@
 #include <common/qt/utils_qt.h>  // for Event<>::value_type
 #include <common/qt/logger.h>    // for LOG_ERROR
 
-#include "core/events/events_info.h"                       // for LoadDatabaseContentResponce, etc
-#include "core/driver/idriver.h"                           // for IDriver
+#include "core/connection_settings/connection_settings.h"
+#include "core/events/events_info.h"  // for LoadDatabaseContentResponce, etc
+#include "core/driver/idriver.h"      // for IDriver
 
 namespace fastonosql {
 namespace core {
-
-IServerBase::~IServerBase() {}
 
 IServer::IServer(IDriver* drv) : drv_(drv) {
   VERIFY(QObject::connect(drv_, &IDriver::addedChild, this, &IServer::addedChild));
@@ -568,14 +567,6 @@ void IServer::processDiscoveryInfo(const events_info::DiscoveryInfoRequest& req)
   emit startedLoadDiscoveryInfo(req);
   QEvent* ev = new events::DiscoveryInfoRequestEvent(this, req);
   notify(ev);
-}
-
-IServerLocal::IServerLocal(IDriver* drv) : IServer(drv) {
-  CHECK(!isRemoteType(drv->type()));
-}
-
-IServerRemote::IServerRemote(IDriver* drv) : IServer(drv) {
-  CHECK(isRemoteType(drv->type()));
 }
 
 }  // namespace core

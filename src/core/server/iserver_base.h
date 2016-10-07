@@ -18,30 +18,17 @@
 
 #pragma once
 
-#include <common/net/types.h>  // for HostAndPort
-
-#include "core/connection_settings/connection_settings.h"  // for IConnectionSettingsBaseSPtr
-#include "core/connection_types.h"                         // for serverMode, serverState, etc
-#include "core/core_fwd.h"                                 // for IDatabaseSPtr
-#include "core/server/iserver_remote.h"                    // for IServerRemote
+#include <QObject>
 
 namespace fastonosql {
 namespace core {
-namespace ssdb {
 
-class Server : public IServerRemote {
+class IServerBase : public QObject {
   Q_OBJECT
  public:
-  explicit Server(IConnectionSettingsBaseSPtr settings);
-  virtual serverMode mode() const;
-  virtual serverTypes role() const;
-  virtual serverState state() const;
-  virtual common::net::HostAndPort host() const;
-
- private:
-  virtual IDatabaseSPtr createDatabase(IDataBaseInfoSPtr info);
+  virtual std::string name() const = 0;
+  virtual ~IServerBase();
 };
 
-}  // namespace ssdb
 }  // namespace core
 }  // namespace fastonosql

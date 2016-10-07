@@ -33,12 +33,13 @@
 #include <common/qt/gui/base/tree_item.h>   // for TreeItem, findItemRecursive, etc
 #include <common/qt/gui/base/tree_model.h>  // for TreeModel
 
-#include "core/connection_types.h"    // for ConvertToString
-#include "core/events/events_info.h"  // for CommandRequest, etc
-#include "core/database/idatabase.h"  // for IDatabase
-#include "core/server/iserver.h"      // for IServer, IServerRemote, etc
-#include "core/cluster/icluster.h"    // for ICluster
-#include "core/sentinel/isentinel.h"  // for ISentinel, Sentinel, etc
+#include "core/connection_types.h"       // for ConvertToString
+#include "core/events/events_info.h"     // for CommandRequest, etc
+#include "core/database/idatabase.h"     // for IDatabase
+#include "core/server/iserver_local.h"   // for IServer, IServerRemote, etc
+#include "core/server/iserver_remote.h"  // for IServer, IServerRemote, etc
+#include "core/cluster/icluster.h"       // for ICluster
+#include "core/sentinel/isentinel.h"     // for ISentinel, Sentinel, etc
 
 #include "gui/gui_factory.h"  // for GuiFactory
 

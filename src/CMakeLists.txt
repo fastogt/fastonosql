@@ -149,14 +149,20 @@ SET(SOURCES_CORE_DATABASE
 )
 
 SET(HEADERS_CORE_SERVER_TO_MOC
+  core/server/iserver_base.h
   core/server/iserver.h
+  core/server/iserver_local.h
+  core/server/iserver_remote.h
 )
 SET(HEADERS_CORE_SERVER
   core/server/iserver_info.h
 )
 SET(SOURCES_CORE_SERVER
+  core/server/iserver_base.cpp
   core/server/iserver_info.cpp
   core/server/iserver.cpp
+  core/server/iserver_local.cpp
+  core/server/iserver_remote.cpp
 )
 
 SET(HEADERS_CORE_CLUSTER
@@ -175,16 +181,16 @@ SET(SOURCES_CORE_SENTINEL
 
 SET(HEADERS_CORE_DRIVER_TO_MOC
   core/driver/idriver.h
-  core/driver/idriver_remote.h
   core/driver/idriver_local.h
+  core/driver/idriver_remote.h
 )
 SET(HEADERS_CORE_DRIVER
   core/driver/root_locker.h
 )
 SET(SOURCES_CORE_DRIVER
   core/driver/idriver.cpp
-  core/driver/idriver_remote.cpp
   core/driver/idriver_local.cpp
+  core/driver/idriver_remote.cpp
   core/driver/root_locker.cpp
 )
 

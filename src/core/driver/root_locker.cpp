@@ -18,9 +18,12 @@
 
 #include "core/driver/root_locker.h"
 
-#include <common/time.h>
+#include <common/macros.h>  // for DCHECK
+#include <common/time.h>    // for current_mstime
 
-#include "core/driver/idriver.h"
+#include "core/driver/idriver.h"  // for IDriver
+
+#include "core/events/events.h"  // for CommandRootCompleatedEvent, etc
 
 namespace fastonosql {
 namespace core {

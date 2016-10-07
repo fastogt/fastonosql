@@ -22,6 +22,7 @@
 #include <fcntl.h>
 #include <unistd.h>
 #ifdef OS_POSIX
+#include <sys/socket.h>  // for setsockopt, SOL_SOCKET, etc
 #include <netinet/in.h>
 #include <netinet/tcp.h>
 #endif
@@ -44,6 +45,7 @@ extern "C" {
 #include <hiredis/hiredis.h>
 
 #include "third-party/redis/src/help.h"
+#include "third-party/libssh2/include/libssh2.h"  // for libssh2_exit, etc
 
 #include <common/convert2string.h>  // for ConvertFromString, etc
 #include <common/intrusive_ptr.h>   // for intrusive_ptr
@@ -58,13 +60,15 @@ extern "C" {
 
 #include <common/qt/logger.h>  // for LOG_MSG
 
-#include "core/command/command.h"            // for createCommand
-#include "core/command/command_logger.h"     // for LOG_COMMAND
-#include "core/redis/cluster_infos.h"        // for makeDiscoveryClusterInfo
-#include "core/redis/command.h"              // for Command
-#include "core/redis/connection_settings.h"  // for ConnectionSettings
-#include "core/redis/database.h"             // for DataBaseInfo
-#include "core/redis/sentinel_info.h"        // for DiscoverySentinelInfo, etc
+#include "core/connection.h"                      // for Connection<>::config_t, etc
+#include "core/translator/icommand_translator.h"  // for translator_t, etc
+#include "core/command/command.h"                 // for createCommand
+#include "core/command/command_logger.h"          // for LOG_COMMAND
+#include "core/redis/cluster_infos.h"             // for makeDiscoveryClusterInfo
+#include "core/redis/command.h"                   // for Command
+#include "core/redis/connection_settings.h"       // for ConnectionSettings
+#include "core/redis/database.h"                  // for DataBaseInfo
+#include "core/redis/sentinel_info.h"             // for DiscoverySentinelInfo, etc
 #include "core/redis/command_translator.h"
 
 #define HIREDIS_VERSION    \
@@ -434,7 +438,6 @@ common::Error cliOutputHelp(int argc,
     return common::make_error_value("Invalid input argument(s)", common::ErrorValue::E_ERROR);
   }
 
-  int i, j, len;
   int group = -1;
   const helpEntry* entry;
   struct commandHelp* help;
@@ -442,8 +445,8 @@ common::Error cliOutputHelp(int argc,
   if (argc == 0) {
     return cliOutputGenericHelp(out, delimiter);
   } else if (argc > 0 && argv[0][0] == '@') {
-    len = sizeof(commandGroups) / sizeof(char*);
-    for (i = 0; i < len; i++) {
+    size_t len = sizeof(commandGroups) / sizeof(char*);
+    for (size_t i = 0; i < len; i++) {
       if (strcasecmp(argv[0] + 1, commandGroups[i]) == 0) {
         group = i;
         break;
@@ -452,7 +455,7 @@ common::Error cliOutputHelp(int argc,
   }
 
   DCHECK(argc > 0);
-  for (i = 0; i < helpEntriesLen; i++) {
+  for (size_t i = 0; i < helpEntriesLen; i++) {
     entry = &rInit.helpEntries[i];
     if (entry->type != CLI_HELP_COMMAND) {
       continue;
@@ -462,6 +465,7 @@ common::Error cliOutputHelp(int argc,
     if (group == -1) {
       /* Compare all arguments */
       if (argc == entry->argc) {
+        int j;
         for (j = 0; j < argc; j++) {
           if (strcasecmp(argv[j], entry->argv[j]) != 0) {
             break;

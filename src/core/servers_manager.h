@@ -18,6 +18,8 @@
 
 #pragma once
 
+#include <vector>
+
 #include <common/error.h>                       // for Error
 #include <common/macros.h>                      // for WARN_UNUSED_RESULT
 #include <common/patterns/singleton_pattern.h>  // for LazySingleton
@@ -34,6 +36,7 @@ namespace core {
 
 class ServersManager : public common::patterns::LazySingleton<ServersManager> {
   friend class common::patterns::LazySingleton<ServersManager>;
+
  public:
   typedef IServerSPtr server_t;
   typedef IClusterSPtr cluster_t;

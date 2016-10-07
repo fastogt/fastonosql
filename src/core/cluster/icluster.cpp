@@ -24,6 +24,7 @@
 #include <common/macros.h>  // for CHECK, DNOTREACHED
 
 #include "core/connection_types.h"  // for serverTypes::MASTER
+#include "core/server/iserver_remote.h"
 
 namespace fastonosql {
 namespace core {

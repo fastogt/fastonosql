@@ -22,22 +22,21 @@
 #include <string>  // for string
 #include <vector>  // for vector
 
-#include "core/connection_types.h"  // for connectionTypes, serverMode, etc
-#include "core/core_fwd.h"          // for IDatabaseSPtr
-#include "core/events/events.h"     // for BackupResponceEvent, etc
-#include "core/translator/icommand_translator.h"
+#include <common/value.h>  // for ValueSPtr
 
-#include "global/global.h"  // for FastoObject, etc
+#include "core/connection_types.h"                // for connectionTypes
+#include "core/core_fwd.h"                        // for IDatabaseSPtr
+#include "core/database/idatabase_info.h"         // for IDataBaseInfoSPtr
+#include "core/db_key.h"                          // for NKey (ptr only), etc
+#include "core/events/events.h"                   // for BackupResponceEvent, etc
+#include "core/server/iserver_base.h"             // for IServerBase
+#include "core/server/iserver_info.h"             // for IServerInfoSPtr, etc
+#include "core/translator/icommand_translator.h"  // for translator_t
+
+#include "global/global.h"  // for FastoObject (ptr only), etc
 
 namespace fastonosql {
 namespace core {
-
-class IServerBase : public QObject {
-  Q_OBJECT
- public:
-  virtual std::string name() const = 0;
-  virtual ~IServerBase();
-};
 
 class IDriver;
 
@@ -231,27 +230,6 @@ class IServer : public IServerBase, public std::enable_shared_from_this<IServer>
 
   void processConfigArgs(const events_info::ProcessConfigArgsInfoRequest& req);
   void processDiscoveryInfo(const events_info::DiscoveryInfoRequest& req);
-};
-
-class IServerLocal : public IServer {
-  Q_OBJECT
- public:
-  virtual std::string path() const = 0;
-
- protected:
-  explicit IServerLocal(IDriver* drv);
-};
-
-class IServerRemote : public IServer {
-  Q_OBJECT
- public:
-  virtual common::net::HostAndPort host() const = 0;
-  virtual serverMode mode() const = 0;
-  virtual serverTypes role() const = 0;
-  virtual serverState state() const = 0;
-
- protected:
-  explicit IServerRemote(IDriver* drv);
 };
 
 }  // namespace core

@@ -18,18 +18,22 @@
 
 #pragma once
 
-#include <string>  // for string
+#include <string>           // for string
 
-#include <QObject>
+#include <common/types.h>   // for time64_t
 
-#include <common/types.h>  // for time64_t
+#include "global/global.h"  // for FastoObjectIPtr, etc
 
-#include "global/global.h"  // for FastoObjectIPtr, FastoObject...
+class QObject;
+namespace fastonosql {
+namespace core {
+class IDriver;
+}
+}  // lines 32-32
 
 namespace fastonosql {
 namespace core {
 
-class IDriver;
 class RootLocker : FastoObject::IFastoObjectObserver {
  public:
   RootLocker(IDriver* parent, QObject* receiver, const std::string& text, bool silence);

@@ -24,7 +24,6 @@
 
 #include <common/error.h>   // for Error
 #include <common/macros.h>  // for WARN_UNUSED_RESULT
-#include <common/types.h>   // for time64_t
 #include <common/value.h>   // for Value, Value::CommandLogging...
 
 #include "core/db_connection/cdb_connection_client.h"      // for CDBConnectionClient
