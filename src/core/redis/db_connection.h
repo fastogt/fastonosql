@@ -398,7 +398,7 @@ static const std::vector<CommandHolder> redisCommands = {
                   UNDEFINED_EXAMPLE_STR,
                   0,
                   0,
-                  &common_exec_off2),
+                  &common_exec),
     CommandHolder("COMMAND COUNT",
                   "-",
                   "Get total number of Redis commands",

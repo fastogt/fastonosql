@@ -22,6 +22,7 @@
 #include "gui/main_window.h"
 #include "gui/gui_factory.h"
 
+#include <common/qt/translations/translations.h>
 #include <common/logger.h>
 
 namespace {
@@ -47,6 +48,8 @@ int main(int argc, char* argv[]) {
 #else
   SET_LOG_LEVEL(common::logging::L_DEBUG);
 #endif
+
+  INIT_TRANSLATION(PROJECT_NAME_LOWERCASE);
 
   fastonosql::gui::MainWindow win;
   QRect screenGeometry = app.desktop()->availableGeometry();

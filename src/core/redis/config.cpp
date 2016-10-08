@@ -61,8 +61,6 @@ Config parseOptions(int argc, char** argv) {
       cfg.host.port = common::ConvertFromString<uint16_t>(argv[++i]);
     } else if (!strcmp(argv[i], "-s") && !lastarg) {
       cfg.hostsocket = argv[++i];
-    } else if (!strcmp(argv[i], "-r") && !lastarg) {
-      cfg.repeat = strtoll(argv[++i], NULL, 10);
     } else if (!strcmp(argv[i], "-i") && !lastarg) {
       double seconds = atof(argv[++i]);
       cfg.interval = seconds * 1000000;
@@ -157,7 +155,6 @@ Config& Config::operator=(const Config& other) {
 void Config::copy(const Config& other) {
   hostsocket = other.hostsocket;
 
-  repeat = other.repeat;
   interval = other.interval;
   dbnum = other.dbnum;
   interactive = other.interactive;
@@ -187,7 +184,6 @@ void Config::copy(const Config& other) {
 
 void Config::init() {
   hostsocket = std::string();
-  repeat = 1;
   interval = 0;
   dbnum = 0;
   interactive = 0;
@@ -221,10 +217,6 @@ std::string ConvertToString(const fastonosql::core::redis::Config& conf) {
   if (!conf.hostsocket.empty()) {
     argv.push_back("-s");
     argv.push_back(conf.hostsocket);
-  }
-  if (conf.repeat) {
-    argv.push_back("-r");
-    argv.push_back(ConvertToString(conf.repeat));
   }
   if (conf.interval) {
     argv.push_back("-i");
