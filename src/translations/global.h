@@ -28,6 +28,8 @@ extern const QString trfilterForAll;
 extern const QString trfilterForRdb;
 
 extern const QString trLoad;
+extern const QString trRepeat;
+extern const QString trInterval;
 extern const QString trAddConnection;
 extern const QString trAddClusterConnection;
 extern const QString trAddSentinelConnection;

@@ -28,6 +28,8 @@ const QString trfilterForAll = QObject::tr("All Files (*.*)");
 const QString trfilterForRdb = QObject::tr("Redis database files (*.rdb)");
 
 const QString trLoad = QObject::tr("Load");
+const QString trRepeat = QObject::tr("Repeat");
+const QString trInterval = QObject::tr("Interval");
 const QString trAddConnection = QObject::tr("Add connnection");
 const QString trAddClusterConnection = QObject::tr("Add cluster connnection");
 const QString trAddSentinelConnection = QObject::tr("Add sentinel connnection");

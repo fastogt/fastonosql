@@ -230,6 +230,8 @@ void IDriver::clear() {
 }
 
 void IDriver::customEvent(QEvent* event) {
+  setInterrupted(false);
+
   QEvent::Type type = event->type();
   if (type == static_cast<QEvent::Type>(events::ConnectRequestEvent::EventType)) {
     events::ConnectRequestEvent* ev = static_cast<events::ConnectRequestEvent*>(event);
@@ -303,7 +305,6 @@ void IDriver::customEvent(QEvent* event) {
     handleDiscoveryInfoRequestEvent(ev);  //
   }
 
-  setInterrupted(false);
   return QObject::customEvent(event);
 }
 
@@ -394,39 +395,54 @@ void IDriver::handleExecuteEvent(events::ExecuteRequestEvent* ev) {
   }
 
   const bool silence = res.silence;
+  const size_t repeat = res.repeat;
+  const common::time64_t msec_repeat_interval = res.msec_repeat_interval;
   size_t length = inputLine.length();
-  int offset = 0;
   RootLocker lock = make_locker(sender, inputLine, silence);
   FastoObjectIPtr obj = lock.root();
-  const double step = 100.0 / double(length);
-  for (size_t i = 0; i < length; ++i) {
-    if (isInterrupted()) {
-      res.setErrorInfo(common::make_error_value(
-          "Interrupted exec.", common::ErrorValue::E_INTERRUPTED, common::logging::L_WARNING));
-      break;
+  const double step = 100.0 / double(length * (repeat + 1));
+  int cur_progress = 0;
+  for (size_t r = 0; r < repeat + 1; ++r) {
+    common::time64_t start_ts = common::time::current_mstime();
+    int offset = 0;
+    for (size_t i = 0; i < length; ++i) {
+      if (isInterrupted()) {
+        res.setErrorInfo(common::make_error_value(
+            "Interrupted exec.", common::ErrorValue::E_INTERRUPTED, common::logging::L_WARNING));
+        goto done;
+      }
+
+      if (inputLine[i] == '\n' || i == length - 1) {
+        cur_progress += step * i;
+        notifyProgress(sender, cur_progress);
+        std::string command;
+        if (i == length - 1) {
+          command = inputLine.substr(offset);
+        } else {
+          command = inputLine.substr(offset, i - offset);
+        }
+
+        offset = i + 1;
+        FastoObjectCommandIPtr cmd =
+            silence ? createCommandFast(command, common::Value::C_USER)
+                    : createCommand(obj.get(), command, common::Value::C_USER);  //
+        common::Error er = execute(cmd);
+        if (er && er->isError()) {
+          res.setErrorInfo(er);
+          goto done;
+        }
+      }
     }
 
-    if (inputLine[i] == '\n' || i == length - 1) {
-      notifyProgress(sender, step * i);
-      std::string command;
-      if (i == length - 1) {
-        command = inputLine.substr(offset);
-      } else {
-        command = inputLine.substr(offset, i - offset);
-      }
-
-      offset = i + 1;
-      FastoObjectCommandIPtr cmd =
-          silence ? createCommandFast(command, common::Value::C_USER)
-                  : createCommand(obj.get(), command, common::Value::C_USER);  //
-      common::Error er = execute(cmd);
-      if (er && er->isError()) {
-        res.setErrorInfo(er);
-        break;
-      }
+    common::time64_t finished_ts = common::time::current_mstime();
+    auto diff = finished_ts - start_ts;
+    if (msec_repeat_interval > diff) {
+      useconds_t sleep_time = msec_repeat_interval - diff;
+      common::utils::msleep(sleep_time);
     }
   }
 
+done:
   reply(sender, new events::ExecuteResponceEvent(this, res));
   notifyProgress(sender, 100);
 }

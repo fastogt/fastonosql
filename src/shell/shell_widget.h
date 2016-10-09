@@ -29,6 +29,8 @@
 class QAction;       // lines 26-26
 class QComboBox;     // lines 29-29
 class QProgressBar;  // lines 27-27
+class QCheckBox;
+class QSpinBox;
 
 namespace common {
 namespace qt {
@@ -76,6 +78,20 @@ namespace fastonosql {
 namespace core {
 namespace events_info {
 struct DiscoveryInfoResponce;
+}
+}
+}
+namespace fastonosql {
+namespace core {
+namespace events_info {
+struct ExecuteInfoRequest;
+}
+}
+}
+namespace fastonosql {
+namespace core {
+namespace events_info {
+struct ExecuteInfoResponce;
 }
 }
 }
@@ -147,6 +163,7 @@ class BaseShellWidget : public QWidget {
   void saveToFileAs();
   void saveToFile();
 
+  void advancedOptionsChange(int state);
   void changeVersionApi(int index);
 
   void startConnect(const core::events_info::ConnectInfoRequest& req);
@@ -165,14 +182,17 @@ class BaseShellWidget : public QWidget {
   void startLoadDiscoveryInfo(const core::events_info::DiscoveryInfoRequest& res);
   void finishLoadDiscoveryInfo(const core::events_info::DiscoveryInfoResponce& res);
 
+  void startExecute(const core::events_info::ExecuteInfoRequest& req);
+  void finishExecute(const core::events_info::ExecuteInfoResponce& res);
+
  private:
   void syncConnectionActions();
-  void syncServerInfo(core::IServerInfoSPtr inf);
+  void updateServerInfo(core::IServerInfoSPtr inf);
   void updateDefaultDatabase(core::IDataBaseInfoSPtr dbs);
-  void initShellByType(core::connectionTypes type);
 
   const core::IServerSPtr server_;
   QAction* executeAction_;
+  QAction* stopAction_;
   QAction* connectAction_;
   QAction* disConnectAction_;
   QAction* loadAction_;
@@ -184,7 +204,12 @@ class BaseShellWidget : public QWidget {
 
   QProgressBar* workProgressBar_;
   common::qt::gui::IconLabel* connectionMode_;
+  common::qt::gui::IconLabel* serverName_;
   common::qt::gui::IconLabel* dbName_;
+  QCheckBox* advancedOptions_;
+  QWidget* advancedOptionsWidget_;
+  QSpinBox* repeatCount_;
+  QSpinBox* intervalMsec_;
   QString filePath_;
 };
 

@@ -34,6 +34,8 @@
 #include <QSplitter>
 #include <QToolBar>
 #include <QVBoxLayout>
+#include <QCheckBox>
+#include <QSpinBox>
 
 #include <common/convert2string.h>  // for ConvertFromString
 #include <common/error.h>           // for Error
@@ -48,7 +50,9 @@
 #include "core/command/command_info.h"  // for UNDEFINED_SINCE, etc
 #include "core/events/events_info.h"    // for DiscoveryInfoResponce, etc
 #include "core/server/iserver.h"        // for IServer
-#include "core/settings_manager.h"      // for SettingsManager
+#include "core/server/iserver_local.h"
+#include "core/server/iserver_remote.h"
+#include "core/settings_manager.h"  // for SettingsManager
 
 #include "gui/gui_factory.h"  // for GuiFactory
 #include "gui/shortcuts.h"    // for executeKey
@@ -63,11 +67,23 @@ const QString trSupportedCommandsCountTemplate_1S = QObject::tr("Supported comma
 const QString trCommandsVersion = QObject::tr("Command version:");
 const QString trCantReadTemplate_2S = QObject::tr(PROJECT_NAME_TITLE " can't read from %1:\n%2.");
 const QString trCantSaveTemplate_2S = QObject::tr(PROJECT_NAME_TITLE " can't save to %1:\n%2.");
+const QString trAdvancedOptions = QObject::tr("Advanced options");
+const QString trCalculate = QObject::tr("Calculate...");
 }
 
 namespace fastonosql {
 namespace shell {
 
+namespace {
+BaseShell* makeBaseShell(core::connectionTypes type, QWidget* parent) {
+  BaseShell* shell =
+      BaseShell::createFromType(type, core::SettingsManager::instance().autoCompletion());
+  parent->setToolTip(
+      QObject::tr("Based on <b>%1</b> version: <b>%2</b>").arg(shell->basedOn(), shell->version()));
+  shell->setContextMenuPolicy(Qt::CustomContextMenu);
+  return shell;
+}
+}
 BaseShellWidget::BaseShellWidget(core::IServerSPtr server, const QString& filePath, QWidget* parent)
     : QWidget(parent), server_(server), input_(nullptr), filePath_(filePath) {
   CHECK(server_);
@@ -95,6 +111,11 @@ BaseShellWidget::BaseShellWidget(core::IServerSPtr server, const QString& filePa
                  &BaseShellWidget::startLoadDiscoveryInfo));
   VERIFY(connect(server_.get(), &core::IServer::finishedLoadDiscoveryInfo, this,
                  &BaseShellWidget::finishLoadDiscoveryInfo));
+
+  VERIFY(connect(server_.get(), &core::IServer::startedExecute, this,
+                 &BaseShellWidget::startExecute, Qt::DirectConnection));
+  VERIFY(connect(server_.get(), &core::IServer::finishedExecute, this,
+                 &BaseShellWidget::finishExecute, Qt::DirectConnection));
 
   QVBoxLayout* mainlayout = new QVBoxLayout;
   QHBoxLayout* hlayout = new QHBoxLayout;
@@ -134,18 +155,14 @@ BaseShellWidget::BaseShellWidget(core::IServerSPtr server, const QString& filePa
   VERIFY(connect(executeAction_, &QAction::triggered, this, &BaseShellWidget::execute));
   savebar->addAction(executeAction_);
 
-  QAction* stopAction =
-      new QAction(gui::GuiFactory::instance().stopIcon(), translations::trStop, savebar);
-  VERIFY(connect(stopAction, &QAction::triggered, this, &BaseShellWidget::stop));
-  savebar->addAction(stopAction);
+  stopAction_ = new QAction(gui::GuiFactory::instance().stopIcon(), translations::trStop, savebar);
+  VERIFY(connect(stopAction_, &QAction::triggered, this, &BaseShellWidget::stop));
+  savebar->addAction(stopAction_);
 
   core::ConnectionMode mode = core::InteractiveMode;
   connectionMode_ = new common::qt::gui::IconLabel(
       gui::GuiFactory::instance().modeIcon(mode),
       common::ConvertFromString<QString>(common::ConvertToString(mode)), iconSize);
-
-  dbName_ = new common::qt::gui::IconLabel(gui::GuiFactory::instance().databaseIcon(),
-                                           "Calculate...", iconSize);
 
   hlayout->addWidget(savebar);
 
@@ -154,16 +171,62 @@ BaseShellWidget::BaseShellWidget(core::IServerSPtr server, const QString& filePa
   splitter->setHandleWidth(1);
   hlayout->addWidget(splitter);
 
-  hlayout->addWidget(dbName_);
   hlayout->addWidget(connectionMode_);
   workProgressBar_ = new QProgressBar;
   workProgressBar_->setTextVisible(true);
   hlayout->addWidget(workProgressBar_);
-
-  initShellByType(server->type());
-
   mainlayout->addLayout(hlayout);
-  mainlayout->addWidget(input_);
+
+  advancedOptions_ = new QCheckBox;
+  advancedOptions_->setText(trAdvancedOptions);
+  VERIFY(connect(advancedOptions_, &QCheckBox::stateChanged, this,
+                 &BaseShellWidget::advancedOptionsChange));
+
+  input_ = makeBaseShell(server->type(), this);
+
+  advancedOptionsWidget_ = new QWidget;
+  advancedOptionsWidget_->setVisible(false);
+  QVBoxLayout* advOptLayout = new QVBoxLayout;
+
+  QHBoxLayout* repeatLayout = new QHBoxLayout;
+  QLabel* repeatLabel = new QLabel(translations::trRepeat);
+  repeatCount_ = new QSpinBox;
+  repeatCount_->setRange(0, INT32_MAX);
+  repeatCount_->setSingleStep(1);
+  repeatLayout->addWidget(repeatCount_);
+  repeatLayout->addWidget(repeatLabel);
+
+  QHBoxLayout* intervalLayout = new QHBoxLayout;
+  QLabel* intervalLabel = new QLabel(translations::trInterval);
+  intervalMsec_ = new QSpinBox;
+  intervalMsec_->setRange(0, INT32_MAX);
+  intervalMsec_->setSingleStep(1000);
+  intervalLayout->addWidget(intervalMsec_);
+  intervalLayout->addWidget(intervalLabel);
+
+  advOptLayout->addLayout(repeatLayout);
+  advOptLayout->addLayout(intervalLayout);
+  advancedOptionsWidget_->setLayout(advOptLayout);
+
+  QHBoxLayout* hlayout2 = new QHBoxLayout;
+  core::connectionTypes ct = server_->type();
+  serverName_ =
+      new common::qt::gui::IconLabel(gui::GuiFactory::instance().icon(ct), trCalculate, iconSize);
+  hlayout2->addWidget(serverName_);
+  dbName_ = new common::qt::gui::IconLabel(gui::GuiFactory::instance().databaseIcon(), trCalculate,
+                                           iconSize);
+  hlayout2->addWidget(dbName_);
+  QSplitter* splitter2 = new QSplitter;
+  splitter2->setOrientation(Qt::Horizontal);
+  splitter2->setHandleWidth(1);
+  hlayout2->addWidget(splitter2);
+  hlayout2->addWidget(advancedOptions_);
+  mainlayout->addLayout(hlayout2);
+
+  QHBoxLayout* inputLayout = new QHBoxLayout;
+  inputLayout->addWidget(input_);
+  inputLayout->addWidget(advancedOptionsWidget_);
+  mainlayout->addLayout(inputLayout);
 
   QHBoxLayout* apilayout = new QHBoxLayout;
   apilayout->addWidget(
@@ -194,47 +257,12 @@ BaseShellWidget::BaseShellWidget(core::IServerSPtr server, const QString& filePa
   setLayout(mainlayout);
 
   syncConnectionActions();
-  syncServerInfo(server_->serverInfo());
+  updateServerInfo(server_->serverInfo());
   updateDefaultDatabase(server_->currentDatabaseInfo());
 }
 
-void BaseShellWidget::syncServerInfo(core::IServerInfoSPtr inf) {
-  if (!inf) {
-    return;
-  }
-
-  uint32_t servVers = inf->version();
-  if (servVers == UNDEFINED_SINCE) {
-    return;
-  }
-
-  bool updatedComboIndex = false;
-  for (int i = 0; i < commandsVersionApi_->count(); ++i) {
-    QVariant var = commandsVersionApi_->itemData(i);
-    uint32_t version = qvariant_cast<uint32_t>(var);
-    if (version == UNDEFINED_SINCE) {
-      commandsVersionApi_->setItemIcon(i, gui::GuiFactory::instance().unknownIcon());
-      continue;
-    }
-
-    if (version >= servVers) {
-      if (!updatedComboIndex) {
-        updatedComboIndex = true;
-        commandsVersionApi_->setCurrentIndex(i);
-        commandsVersionApi_->setItemIcon(i, gui::GuiFactory::instance().successIcon());
-      } else {
-        commandsVersionApi_->setItemIcon(i, gui::GuiFactory::instance().failIcon());
-      }
-    } else {
-      commandsVersionApi_->setItemIcon(i, gui::GuiFactory::instance().successIcon());
-    }
-  }
-}
-
-void BaseShellWidget::initShellByType(core::connectionTypes type) {
-  input_ = BaseShell::createFromType(type, core::SettingsManager::instance().autoCompletion());
-  setToolTip(tr("Based on <b>%1</b> version: <b>%2</b>").arg(input_->basedOn(), input_->version()));
-  input_->setContextMenuPolicy(Qt::CustomContextMenu);
+void BaseShellWidget::advancedOptionsChange(int state) {
+  advancedOptionsWidget_->setVisible(state);
 }
 
 BaseShellWidget::~BaseShellWidget() {}
@@ -258,7 +286,10 @@ void BaseShellWidget::execute() {
     selected = input_->text();
   }
 
-  core::events_info::ExecuteInfoRequest req(this, common::ConvertToString(selected));
+  size_t repeat = repeatCount_->value();
+  common::time64_t interval = intervalMsec_->value();
+  core::events_info::ExecuteInfoRequest req(this, common::ConvertToString(selected), repeat,
+                                            interval);
   server_->execute(req);
 }
 
@@ -364,6 +395,8 @@ void BaseShellWidget::finishDisconnect(const core::events_info::DisConnectInfoRe
   UNUSED(res);
 
   syncConnectionActions();
+  updateServerInfo(core::IServerInfoSPtr());
+  updateDefaultDatabase(core::IDataBaseInfoSPtr());
 }
 
 void BaseShellWidget::startSetDefaultDatabase(
@@ -413,15 +446,82 @@ void BaseShellWidget::finishLoadDiscoveryInfo(const core::events_info::Discovery
     return;
   }
 
-  syncServerInfo(res.sinfo);
+  updateServerInfo(res.sinfo);
   updateDefaultDatabase(res.dbinfo);
 }
 
-void BaseShellWidget::updateDefaultDatabase(core::IDataBaseInfoSPtr dbs) {
-  if (dbs) {
-    std::string name = dbs->name();
-    dbName_->setText(common::ConvertFromString<QString>(name));
+void BaseShellWidget::startExecute(const core::events_info::ExecuteInfoRequest& req) {
+  UNUSED(req);
+
+  repeatCount_->setEnabled(false);
+  intervalMsec_->setEnabled(false);
+  executeAction_->setEnabled(false);
+  stopAction_->setEnabled(true);
+}
+void BaseShellWidget::finishExecute(const core::events_info::ExecuteInfoResponce& res) {
+  UNUSED(res);
+
+  repeatCount_->setEnabled(true);
+  intervalMsec_->setEnabled(true);
+  executeAction_->setEnabled(true);
+  stopAction_->setEnabled(false);
+}
+
+void BaseShellWidget::updateServerInfo(core::IServerInfoSPtr inf) {
+  if (!inf) {
+    serverName_->setText(trCalculate);
+    for (int i = 0; i < commandsVersionApi_->count(); ++i) {
+      commandsVersionApi_->setItemIcon(i, gui::GuiFactory::instance().unknownIcon());
+    }
+    return;
   }
+
+  std::string server_label;
+  if (server_->isCanRemote()) {
+    core::IServerRemote* rserver = dynamic_cast<core::IServerRemote*>(server_.get());  // +
+    server_label = common::ConvertToString(rserver->host());
+  } else {
+    core::IServerLocal* lserver = dynamic_cast<core::IServerLocal*>(server_.get());  // +
+    server_label = lserver->path();
+  }
+  serverName_->setText(common::ConvertFromString<QString>(server_label));
+
+  uint32_t servVers = inf->version();
+  if (servVers == UNDEFINED_SINCE) {
+    return;
+  }
+
+  bool updatedComboIndex = false;
+  for (int i = 0; i < commandsVersionApi_->count(); ++i) {
+    QVariant var = commandsVersionApi_->itemData(i);
+    uint32_t version = qvariant_cast<uint32_t>(var);
+    if (version == UNDEFINED_SINCE) {
+      commandsVersionApi_->setItemIcon(i, gui::GuiFactory::instance().unknownIcon());
+      continue;
+    }
+
+    if (version >= servVers) {
+      if (!updatedComboIndex) {
+        updatedComboIndex = true;
+        commandsVersionApi_->setCurrentIndex(i);
+        commandsVersionApi_->setItemIcon(i, gui::GuiFactory::instance().successIcon());
+      } else {
+        commandsVersionApi_->setItemIcon(i, gui::GuiFactory::instance().failIcon());
+      }
+    } else {
+      commandsVersionApi_->setItemIcon(i, gui::GuiFactory::instance().successIcon());
+    }
+  }
+}
+
+void BaseShellWidget::updateDefaultDatabase(core::IDataBaseInfoSPtr dbs) {
+  if (!dbs) {
+    dbName_->setText(trCalculate);
+    return;
+  }
+
+  std::string name = dbs->name();
+  dbName_->setText(common::ConvertFromString<QString>(name));
 }
 
 void BaseShellWidget::syncConnectionActions() {
