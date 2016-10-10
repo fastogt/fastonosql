@@ -166,9 +166,7 @@ BaseShellWidget::BaseShellWidget(core::IServerSPtr server, const QString& filePa
 
   hlayout->addWidget(savebar);
 
-  QSplitter* splitter = new QSplitter;
-  splitter->setOrientation(Qt::Horizontal);
-  splitter->setHandleWidth(1);
+  QSplitter* splitter = new QSplitter(Qt::Horizontal);
   hlayout->addWidget(splitter);
 
   hlayout->addWidget(connectionMode_);
@@ -212,13 +210,12 @@ BaseShellWidget::BaseShellWidget(core::IServerSPtr server, const QString& filePa
   core::connectionTypes ct = server_->type();
   serverName_ =
       new common::qt::gui::IconLabel(gui::GuiFactory::instance().icon(ct), trCalculate, iconSize);
+  serverName_->setElideMode(Qt::ElideRight);
   hlayout2->addWidget(serverName_);
   dbName_ = new common::qt::gui::IconLabel(gui::GuiFactory::instance().databaseIcon(), trCalculate,
                                            iconSize);
   hlayout2->addWidget(dbName_);
-  QSplitter* splitter2 = new QSplitter;
-  splitter2->setOrientation(Qt::Horizontal);
-  splitter2->setHandleWidth(1);
+  QSplitter* splitter2 = new QSplitter(Qt::Horizontal);
   hlayout2->addWidget(splitter2);
   hlayout2->addWidget(advancedOptions_);
   mainlayout->addLayout(hlayout2);
@@ -232,9 +229,7 @@ BaseShellWidget::BaseShellWidget(core::IServerSPtr server, const QString& filePa
   apilayout->addWidget(
       new QLabel(trSupportedCommandsCountTemplate_1S.arg(input_->commandsCount())));
 
-  QSplitter* splitterButtom = new QSplitter;
-  splitterButtom->setOrientation(Qt::Horizontal);
-  splitterButtom->setHandleWidth(1);
+  QSplitter* splitterButtom = new QSplitter(Qt::Horizontal);
   apilayout->addWidget(splitterButtom);
 
   commandsVersionApi_ = new QComboBox;
@@ -484,7 +479,8 @@ void BaseShellWidget::updateServerInfo(core::IServerInfoSPtr inf) {
     core::IServerLocal* lserver = dynamic_cast<core::IServerLocal*>(server_.get());  // +
     server_label = lserver->path();
   }
-  serverName_->setText(common::ConvertFromString<QString>(server_label));
+  QString qserver_label = common::ConvertFromString<QString>(server_label);
+  serverName_->setText(qserver_label);
 
   uint32_t servVers = inf->version();
   if (servVers == UNDEFINED_SINCE) {
@@ -528,6 +524,7 @@ void BaseShellWidget::syncConnectionActions() {
   connectAction_->setVisible(!server_->isConnected());
   disConnectAction_->setVisible(server_->isConnected());
   executeAction_->setEnabled(server_->isConnected());
+  stopAction_->setEnabled(server_->isConnected());
 }
 
 }  // namespace shell
