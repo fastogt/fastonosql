@@ -82,6 +82,7 @@ class ExplorerTreeView : public QTreeView {
   void getValue();
   void renKey();
   void deleteKey();
+  void watchKey();
   void setTTL();
 
   void startLoadDatabases(const core::events_info::LoadDatabasesInfoRequest& req);
@@ -127,6 +128,7 @@ class ExplorerTreeView : public QTreeView {
   QAction* getValueAction_;
   QAction* renameKeyAction_;
   QAction* deleteKeyAction_;
+  QAction* watchKeyAction_;
   QAction* infoServerAction_;
   QAction* propertyServerAction_;
   QAction* setServerPassword_;

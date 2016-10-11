@@ -63,6 +63,7 @@ const QString trScore = QObject::tr("Score");
 const QString trField = QObject::tr("Field");
 const QString trRename = QObject::tr("Rename");
 const QString trDelete = QObject::tr("Delete");
+const QString trWatch = QObject::tr("Watch");
 const QString trOptions = QObject::tr("Options");
 const QString trWindow = QObject::tr("Window");
 const QString trHelp = QObject::tr("Help");

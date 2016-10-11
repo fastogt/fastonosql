@@ -52,7 +52,7 @@ IServer::IServer(IDriver* drv) : drv_(drv) {
 }
 
 IServer::~IServer() {
-  drv_->interrupt();
+  stopCurrentEvent();
   drv_->stop();
   delete drv_;
 }
@@ -135,6 +135,7 @@ void IServer::connect(const events_info::ConnectInfoRequest& req) {
 }
 
 void IServer::disconnect(const events_info::DisConnectInfoRequest& req) {
+  stopCurrentEvent();
   emit startedDisconnect(req);
   QEvent* ev = new events::DisconnectRequestEvent(this, req);
   notify(ev);

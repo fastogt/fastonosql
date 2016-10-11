@@ -284,11 +284,15 @@ void BaseShellWidget::execute() {
     selected = input_->text();
   }
 
-  size_t repeat = repeatCount_->value();
-  common::time64_t interval = intervalMsec_->value();
+  int repeat = repeatCount_->value();
+  int interval = intervalMsec_->value();
   bool history = historyCall_->isChecked();
-  core::events_info::ExecuteInfoRequest req(this, common::ConvertToString(selected), repeat,
-                                            interval, history);
+  executeArgs(selected, repeat, interval, history);
+}
+
+void BaseShellWidget::executeArgs(const QString& text, int repeat, int interval, bool history) {
+  core::events_info::ExecuteInfoRequest req(this, common::ConvertToString(text), repeat, interval,
+                                            history);
   server_->execute(req);
 }
 

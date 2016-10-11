@@ -64,6 +64,7 @@ extern const QString trScore;
 extern const QString trField;
 extern const QString trRename;
 extern const QString trDelete;
+extern const QString trWatch;
 extern const QString trOptions;
 extern const QString trWindow;
 extern const QString trHelp;

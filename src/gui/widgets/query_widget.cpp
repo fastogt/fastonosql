@@ -78,6 +78,10 @@ void QueryWidget::execute(const QString& text) {
   shellWidget_->executeText(text);
 }
 
+void QueryWidget::executeArgs(const QString& text, int repeat, int interval, bool history) {
+  shellWidget_->executeArgs(text, repeat, interval, history);
+}
+
 void QueryWidget::reload() {}
 
 }  // namespace gui

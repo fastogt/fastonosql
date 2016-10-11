@@ -241,6 +241,21 @@ void ExplorerDatabaseItem::loadValue(const core::NDbKValue& key) {
   dbs->execute(req);
 }
 
+void ExplorerDatabaseItem::watchKey(const core::NDbKValue& key, int interval) {
+  core::IDatabaseSPtr dbs = db();
+  CHECK(dbs);
+  core::translator_t tran = dbs->translator();
+  std::string cmd_str;
+  common::Error err = tran->loadKeyCommand(key.key(), key.type(), &cmd_str);
+  if (err && err->isError()) {
+    return;
+  }
+
+  core::events_info::ExecuteInfoRequest req(this, cmd_str, std::numeric_limits<size_t>::max() - 1,
+                                            interval, false);
+  dbs->execute(req);
+}
+
 void ExplorerDatabaseItem::createKey(const core::NDbKValue& key) {
   core::IDatabaseSPtr dbs = db();
   CHECK(dbs);
@@ -333,6 +348,12 @@ void ExplorerKeyItem::removeFromDb() {
   ExplorerDatabaseItem* par = db();
   CHECK(par);
   par->removeKey(dbv_.key());
+}
+
+void ExplorerKeyItem::watchKey(int interval) {
+  ExplorerDatabaseItem* par = db();
+  CHECK(par);
+  par->watchKey(dbv_, interval);
 }
 
 void ExplorerKeyItem::loadValueFromDb() {

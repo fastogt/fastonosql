@@ -152,6 +152,7 @@ class BaseShellWidget : public QWidget {
  public Q_SLOTS:
   void setText(const QString& text);
   void executeText(const QString& text);
+  void executeArgs(const QString& text, int repeat, int interval, bool history);
 
  private Q_SLOTS:
   void execute();

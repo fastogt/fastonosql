@@ -77,6 +77,8 @@ const QString trSetMaxConnectionOnServerTemplate_1S =
 const QString trMaximumConnectionTemplate = QObject::tr("Maximum connection:");
 const QString trSetTTLOnKeyTemplate_1S = QObject::tr("Set ttl for %1 key");
 const QString trTTLValue = QObject::tr("New TTL:");
+const QString trSetIntervalOnKeyTemplate_1S = QObject::tr("Set watch interval for %1 key");
+const QString trIntervalValue = QObject::tr("Interval msec:");
 const QString trSetTTL = QObject::tr("Set TTL");
 const QString trRenameKey = QObject::tr("Rename key");
 const QString trRenameKeyLabel = QObject::tr("New key name:");
@@ -175,6 +177,9 @@ ExplorerTreeView::ExplorerTreeView(QWidget* parent) : QTreeView(parent) {
 
   deleteKeyAction_ = new QAction(this);
   VERIFY(connect(deleteKeyAction_, &QAction::triggered, this, &ExplorerTreeView::deleteKey));
+
+  watchKeyAction_ = new QAction(this);
+  VERIFY(connect(watchKeyAction_, &QAction::triggered, this, &ExplorerTreeView::watchKey));
 
   retranslateUi();
 }
@@ -408,6 +413,8 @@ void ExplorerTreeView::showContextMenu(const QPoint& point) {
       renameKeyAction_->setEnabled(isCon);
       menu.addAction(deleteKeyAction_);
       deleteKeyAction_->setEnabled(isCon);
+      menu.addAction(watchKeyAction_);
+      watchKeyAction_->setEnabled(isCon);
       menu.exec(menuPoint);
     }
   }
@@ -895,6 +902,26 @@ void ExplorerTreeView::deleteKey() {
   node->removeFromDb();
 }
 
+void ExplorerTreeView::watchKey() {
+  QModelIndex sel = selectedIndex();
+  if (!sel.isValid()) {
+    return;
+  }
+
+  ExplorerKeyItem* node = common::qt::item<common::qt::gui::TreeItem*, ExplorerKeyItem*>(sel);
+  if (!node) {
+    return;
+  }
+
+  bool ok;
+  QString name = node->name();
+  int interval = QInputDialog::getInt(this, trSetIntervalOnKeyTemplate_1S.arg(name),
+                                      trIntervalValue, 1000, 0, INT32_MAX, 1000, &ok);
+  if (ok) {
+    node->watchKey(interval);
+  }
+}
+
 void ExplorerTreeView::setTTL() {
   QModelIndex sel = selectedIndex();
   if (!sel.isValid()) {
@@ -1167,6 +1194,7 @@ void ExplorerTreeView::retranslateUi() {
   getValueAction_->setText(translations::trGetValue);
   renameKeyAction_->setText(translations::trRename);
   deleteKeyAction_->setText(translations::trDelete);
+  watchKeyAction_->setText(translations::trWatch);
 }
 
 QModelIndex ExplorerTreeView::selectedIndex() const {

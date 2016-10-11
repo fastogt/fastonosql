@@ -45,7 +45,10 @@ class QueryWidget : public QWidget {
   core::connectionTypes connectionType() const;
   QString inputText() const;
   void setInputText(const QString& text);
+
+ public Q_SLOTS:
   void execute(const QString& text);
+  void executeArgs(const QString& text, int repeat, int interval, bool history);
   void reload();
 
  private:
