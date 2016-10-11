@@ -327,7 +327,7 @@ common::Error Driver::latencyMode(events::ProcessConfigArgsRequestEvent* ev) {
   reply(sender, new events::EnterModeEvent(this, resEv));
 
   events::LeaveModeEvent::value_type res(this, LatencyMode);
-  RootLocker lock = make_locker(sender, LATENCY_REQUEST, false);
+  RootLocker lock(this, sender, LATENCY_REQUEST, false);
 
   FastoObjectIPtr obj = lock.root();
   common::Error er = impl_->latencyMode(obj.get());
@@ -347,7 +347,7 @@ common::Error Driver::slaveMode(events::ProcessConfigArgsRequestEvent* ev) {
   reply(sender, new events::EnterModeEvent(this, resEv));
 
   events::LeaveModeEvent::value_type res(this, SlaveMode);
-  RootLocker lock = make_locker(sender, SYNC_REQUEST, false);
+  RootLocker lock(this, sender, SYNC_REQUEST, false);
 
   FastoObjectIPtr obj = lock.root();
   common::Error er = impl_->slaveMode(obj.get());
@@ -367,7 +367,7 @@ common::Error Driver::getRDBMode(events::ProcessConfigArgsRequestEvent* ev) {
   reply(sender, new events::EnterModeEvent(this, resEv));
 
   events::LeaveModeEvent::value_type res(this, GetRDBMode);
-  RootLocker lock = make_locker(sender, RDM_REQUEST, false);
+  RootLocker lock(this, sender, RDM_REQUEST, false);
 
   FastoObjectIPtr obj = lock.root();
   common::Error er = impl_->getRDB(obj.get());
@@ -387,7 +387,7 @@ common::Error Driver::findBigKeysMode(events::ProcessConfigArgsRequestEvent* ev)
   reply(sender, new events::EnterModeEvent(this, resEv));
 
   events::LeaveModeEvent::value_type res(this, FindBigKeysMode);
-  RootLocker lock = make_locker(sender, FIND_BIG_KEYS_REQUEST, false);
+  RootLocker lock(this, sender, FIND_BIG_KEYS_REQUEST, false);
 
   FastoObjectIPtr obj = lock.root();
   common::Error er = impl_->findBigKeys(obj.get());
@@ -407,7 +407,7 @@ common::Error Driver::statMode(events::ProcessConfigArgsRequestEvent* ev) {
   reply(sender, new events::EnterModeEvent(this, resEv));
 
   events::LeaveModeEvent::value_type res(this, StatMode);
-  RootLocker lock = make_locker(sender, STAT_MODE_REQUEST, false);
+  RootLocker lock(this, sender, STAT_MODE_REQUEST, false);
 
   FastoObjectIPtr obj = lock.root();
   common::Error er = impl_->statMode(obj.get());
@@ -427,7 +427,7 @@ common::Error Driver::scanMode(events::ProcessConfigArgsRequestEvent* ev) {
   reply(sender, new events::EnterModeEvent(this, resEv));
 
   events::LeaveModeEvent::value_type res(this, ScanMode);
-  RootLocker lock = make_locker(sender, SCAN_MODE_REQUEST, false);
+  RootLocker lock(this, sender, SCAN_MODE_REQUEST, false);
 
   FastoObjectIPtr obj = lock.root();
   common::Error er = impl_->scanMode(obj.get());

@@ -202,8 +202,11 @@ BaseShellWidget::BaseShellWidget(core::IServerSPtr server, const QString& filePa
   intervalLayout->addWidget(intervalMsec_);
   intervalLayout->addWidget(intervalLabel);
 
+  historyCall_ = new QCheckBox(translations::trHistory);
+  historyCall_->setChecked(true);
   advOptLayout->addLayout(repeatLayout);
   advOptLayout->addLayout(intervalLayout);
+  advOptLayout->addWidget(historyCall_);
   advancedOptionsWidget_->setLayout(advOptLayout);
 
   QHBoxLayout* hlayout2 = new QHBoxLayout;
@@ -283,8 +286,9 @@ void BaseShellWidget::execute() {
 
   size_t repeat = repeatCount_->value();
   common::time64_t interval = intervalMsec_->value();
+  bool history = historyCall_->isChecked();
   core::events_info::ExecuteInfoRequest req(this, common::ConvertToString(selected), repeat,
-                                            interval);
+                                            interval, history);
   server_->execute(req);
 }
 
@@ -450,6 +454,7 @@ void BaseShellWidget::startExecute(const core::events_info::ExecuteInfoRequest& 
 
   repeatCount_->setEnabled(false);
   intervalMsec_->setEnabled(false);
+  historyCall_->setEnabled(false);
   executeAction_->setEnabled(false);
   stopAction_->setEnabled(true);
 }
@@ -458,6 +463,7 @@ void BaseShellWidget::finishExecute(const core::events_info::ExecuteInfoResponce
 
   repeatCount_->setEnabled(true);
   intervalMsec_->setEnabled(true);
+  historyCall_->setEnabled(true);
   executeAction_->setEnabled(true);
   stopAction_->setEnabled(false);
 }

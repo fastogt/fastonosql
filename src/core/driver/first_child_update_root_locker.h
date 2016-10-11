@@ -18,39 +18,23 @@
 
 #pragma once
 
-#include <string>           // for string
-
-#include <common/types.h>   // for time64_t
-
-#include "global/global.h"  // for FastoObjectIPtr, etc
-
-class QObject;
-namespace fastonosql {
-namespace core {
-class IDriver;
-}
-}  // lines 32-32
+#include "core/driver/root_locker.h"
 
 namespace fastonosql {
 namespace core {
 
-class RootLocker : FastoObject::IFastoObjectObserver {
+class FirstChildUpdateRootLocker : public RootLocker {
  public:
-  RootLocker(IDriver* parent, QObject* receiver, const std::string& text, bool silence);
-  virtual ~RootLocker();
-
-  FastoObjectIPtr root() const;
-
-  // notification of execute events
-  virtual void addedChildren(FastoObjectIPtr child) override;
-  virtual void updated(FastoObject* item, FastoObject::value_t val) override;
+  FirstChildUpdateRootLocker(IDriver* parent,
+                             QObject* receiver,
+                             const std::string& text,
+                             bool silence);
 
  private:
-  FastoObjectIPtr root_;
-  IDriver* parent_;
-  QObject* receiver_;
-  const common::time64_t tstart_;
-  const bool silence_;
+  // notification of execute events
+  virtual void addedChildren(FastoObjectIPtr child) override;
+
+  FastoObjectIPtr watched_child_;
 };
 
 }  // namespace core

@@ -188,12 +188,14 @@ struct ExecuteInfoRequest : public EventInfoBase {
                      const std::string& text,
                      size_t repeat = 0,
                      common::time64_t msec_repeat_interval = 0,
+                     bool history = true,
                      bool silence = false,
                      error_type er = error_type());
 
   const std::string text;
   const size_t repeat;
   const common::time64_t msec_repeat_interval;
+  const bool history;
   const bool silence;
 };
 

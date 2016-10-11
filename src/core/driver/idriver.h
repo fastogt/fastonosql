@@ -32,7 +32,6 @@
 #include "core/db_key.h"                                   // for NKey (ptr only), NDbKValue (...
 #include "core/events/events.h"                            // for BackupRequestEvent, ChangeMa...
 #include "core/translator/icommand_translator.h"           // for translator_t
-#include "core/driver/root_locker.h"
 
 class QEvent;
 class QThread;  // lines 37-37
@@ -120,10 +119,6 @@ class IDriver : public QObject, public CDBConnectionClient {
   virtual void handleSetDefaultDatabaseEvent(events::SetDefaultDatabaseRequestEvent* ev);
 
   const IConnectionSettingsBaseSPtr settings_;
-
-  RootLocker make_locker(QObject* reciver, const std::string& text, bool silence) {
-    return RootLocker(this, reciver, text, silence);
-  }
 
   common::Error execute(FastoObjectCommandIPtr cmd) WARN_UNUSED_RESULT;
   virtual FastoObjectCommandIPtr createCommand(FastoObject* parent,

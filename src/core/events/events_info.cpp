@@ -112,12 +112,14 @@ ExecuteInfoRequest::ExecuteInfoRequest(initiator_type sender,
                                        const std::string& text,
                                        size_t repeat,
                                        common::time64_t msec_repeat_interval,
+                                       bool history,
                                        bool silence,
                                        error_type er)
     : base_class(sender, er),
       text(text),
       repeat(repeat),
       msec_repeat_interval(msec_repeat_interval),
+      history(history),
       silence(silence) {}
 
 ExecuteInfoResponce::ExecuteInfoResponce(const base_class& request) : base_class(request) {}

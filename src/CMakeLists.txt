@@ -186,12 +186,14 @@ SET(HEADERS_CORE_DRIVER_TO_MOC
 )
 SET(HEADERS_CORE_DRIVER
   core/driver/root_locker.h
+  core/driver/first_child_update_root_locker.h
 )
 SET(SOURCES_CORE_DRIVER
   core/driver/idriver.cpp
   core/driver/idriver_local.cpp
   core/driver/idriver_remote.cpp
   core/driver/root_locker.cpp
+  core/driver/first_child_update_root_locker.cpp
 )
 
 SET(HEADERS_CORE_CONNECTION_SETTINGS

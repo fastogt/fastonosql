@@ -42,6 +42,9 @@ extern "C" {
 
 #include "core/command/command_logger.h"  // for LOG_COMMAND
 
+#include "core/driver/root_locker.h"
+#include "core/driver/first_child_update_root_locker.h"
+
 namespace {
 #ifdef OS_WIN
 struct WinsockInit {
@@ -396,10 +399,12 @@ void IDriver::handleExecuteEvent(events::ExecuteRequestEvent* ev) {
 
   const bool silence = res.silence;
   const size_t repeat = res.repeat;
+  const bool history = res.history;
   const common::time64_t msec_repeat_interval = res.msec_repeat_interval;
   size_t length = inputLine.length();
-  RootLocker lock = make_locker(sender, inputLine, silence);
-  FastoObjectIPtr obj = lock.root();
+  RootLocker* lock = history ? new RootLocker(this, sender, inputLine, silence)
+                             : new FirstChildUpdateRootLocker(this, sender, inputLine, silence);
+  FastoObjectIPtr obj = lock->root();
   const double step = 100.0 / double(length * (repeat + 1));
   int cur_progress = 0;
   for (size_t r = 0; r < repeat + 1; ++r) {
@@ -445,6 +450,7 @@ void IDriver::handleExecuteEvent(events::ExecuteRequestEvent* ev) {
 done:
   reply(sender, new events::ExecuteResponceEvent(this, res));
   notifyProgress(sender, 100);
+  delete lock;
 }
 
 void IDriver::handleLoadServerPropertyEvent(events::ServerPropertyInfoRequestEvent* ev) {

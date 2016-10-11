@@ -210,6 +210,7 @@ class BaseShellWidget : public QWidget {
   QWidget* advancedOptionsWidget_;
   QSpinBox* repeatCount_;
   QSpinBox* intervalMsec_;
+  QCheckBox* historyCall_;
   QString filePath_;
 };
 

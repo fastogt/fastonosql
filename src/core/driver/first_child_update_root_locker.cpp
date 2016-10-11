@@ -16,42 +16,32 @@
     along with FastoNoSQL.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-#pragma once
+#include "core/driver/first_child_update_root_locker.h"
 
-#include <string>           // for string
-
-#include <common/types.h>   // for time64_t
-
-#include "global/global.h"  // for FastoObjectIPtr, etc
-
-class QObject;
 namespace fastonosql {
 namespace core {
-class IDriver;
+
+FirstChildUpdateRootLocker::FirstChildUpdateRootLocker(IDriver* parent,
+                                                       QObject* receiver,
+                                                       const std::string& text,
+                                                       bool silence)
+    : RootLocker(parent, receiver, text, silence), watched_child_() {}
+
+void FirstChildUpdateRootLocker::addedChildren(FastoObjectIPtr child) {
+  if (child->type() == common::Value::TYPE_COMMAND) {
+    RootLocker::addedChildren(child);
+    return;
+  }
+
+  if (!watched_child_) {
+    watched_child_ = child;
+    RootLocker::addedChildren(child);
+    return;
+  }
+
+  auto val = child->value();
+  watched_child_->setValue(val);
 }
-}  // lines 32-32
-
-namespace fastonosql {
-namespace core {
-
-class RootLocker : FastoObject::IFastoObjectObserver {
- public:
-  RootLocker(IDriver* parent, QObject* receiver, const std::string& text, bool silence);
-  virtual ~RootLocker();
-
-  FastoObjectIPtr root() const;
-
-  // notification of execute events
-  virtual void addedChildren(FastoObjectIPtr child) override;
-  virtual void updated(FastoObject* item, FastoObject::value_t val) override;
-
- private:
-  FastoObjectIPtr root_;
-  IDriver* parent_;
-  QObject* receiver_;
-  const common::time64_t tstart_;
-  const bool silence_;
-};
 
 }  // namespace core
 }  // namespace fastonosql

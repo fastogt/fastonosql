@@ -29,7 +29,8 @@ namespace fastonosql {
 namespace core {
 
 RootLocker::RootLocker(IDriver* parent, QObject* receiver, const std::string& text, bool silence)
-    : parent_(parent),
+    : FastoObject::IFastoObjectObserver(),
+      parent_(parent),
       receiver_(receiver),
       tstart_(common::time::current_mstime()),
       silence_(silence) {

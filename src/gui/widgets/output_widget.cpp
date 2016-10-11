@@ -254,7 +254,7 @@ void OutputWidget::createKey(const core::NDbKValue& dbv) {
       return;
     }
 
-    core::events_info::ExecuteInfoRequest req(this, cmd_text, 0, 0, true);
+    core::events_info::ExecuteInfoRequest req(this, cmd_text, 0, 0, true, true);
     server_->execute(req);
   }
 }
