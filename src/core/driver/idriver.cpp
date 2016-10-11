@@ -384,6 +384,30 @@ void IDriver::handleDisconnectEvent(events::DisconnectRequestEvent* ev) {
   notifyProgress(sender, 100);
 }
 
+namespace {
+std::vector<std::string> parse_commands(const std::string& line) {
+  std::vector<std::string> commands;
+
+  size_t length = line.length();
+  size_t offset = 0;
+  for (size_t i = 0; i < length; ++i) {
+    if (line[i] == '\n' || i == length - 1) {
+      std::string command;
+      if (i == length - 1) {
+        command = line.substr(offset);
+      } else {
+        command = line.substr(offset, i - offset);
+      }
+
+      offset = i + 1;
+      commands.push_back(command);
+    }
+  }
+
+  return commands;
+}
+}
+
 void IDriver::handleExecuteEvent(events::ExecuteRequestEvent* ev) {
   QObject* sender = ev->sender();
   notifyProgress(sender, 0);
@@ -397,45 +421,44 @@ void IDriver::handleExecuteEvent(events::ExecuteRequestEvent* ev) {
     return;
   }
 
+  std::vector<std::string> commands = parse_commands(inputLine);
+  if (commands.empty()) {
+    res.setErrorInfo(common::make_error_value("Invaid command line.", common::ErrorValue::E_ERROR));
+    reply(sender, new events::ExecuteResponceEvent(this, res));
+    notifyProgress(sender, 100);
+    return;
+  }
+
   const bool silence = res.silence;
   const size_t repeat = res.repeat;
   const bool history = res.history;
   const common::time64_t msec_repeat_interval = res.msec_repeat_interval;
-  size_t length = inputLine.length();
-  RootLocker* lock = history ? new RootLocker(this, sender, inputLine, silence)
-                             : new FirstChildUpdateRootLocker(this, sender, inputLine, silence);
+  RootLocker* lock =
+      history ? new RootLocker(this, sender, inputLine, silence)
+              : new FirstChildUpdateRootLocker(this, sender, inputLine, silence, commands);
   FastoObjectIPtr obj = lock->root();
-  const double step = 100.0 / double(length * (repeat + 1));
+  const double step = 99.0 / double(commands.size() * (repeat + 1));
   int cur_progress = 0;
   for (size_t r = 0; r < repeat + 1; ++r) {
     common::time64_t start_ts = common::time::current_mstime();
-    int offset = 0;
-    for (size_t i = 0; i < length; ++i) {
+    for (size_t i = 0; i < commands.size(); ++i) {
       if (isInterrupted()) {
         res.setErrorInfo(common::make_error_value(
             "Interrupted exec.", common::ErrorValue::E_INTERRUPTED, common::logging::L_WARNING));
         goto done;
       }
 
-      if (inputLine[i] == '\n' || i == length - 1) {
-        cur_progress += step * i;
-        notifyProgress(sender, cur_progress);
-        std::string command;
-        if (i == length - 1) {
-          command = inputLine.substr(offset);
-        } else {
-          command = inputLine.substr(offset, i - offset);
-        }
+      cur_progress += step * i;
+      notifyProgress(sender, cur_progress);
+      std::string command = commands[i];
 
-        offset = i + 1;
-        FastoObjectCommandIPtr cmd =
-            silence ? createCommandFast(command, common::Value::C_USER)
-                    : createCommand(obj.get(), command, common::Value::C_USER);  //
-        common::Error er = execute(cmd);
-        if (er && er->isError()) {
-          res.setErrorInfo(er);
-          goto done;
-        }
+      FastoObjectCommandIPtr cmd =
+          silence ? createCommandFast(command, common::Value::C_USER)
+                  : createCommand(obj.get(), command, common::Value::C_USER);  //
+      common::Error err = execute(cmd);
+      if (err && err->isError()) {
+        res.setErrorInfo(err);
+        goto done;
       }
     }
 

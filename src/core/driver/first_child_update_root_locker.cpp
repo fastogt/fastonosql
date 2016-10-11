@@ -24,23 +24,67 @@ namespace core {
 FirstChildUpdateRootLocker::FirstChildUpdateRootLocker(IDriver* parent,
                                                        QObject* receiver,
                                                        const std::string& text,
-                                                       bool silence)
-    : RootLocker(parent, receiver, text, silence), watched_child_() {}
+                                                       bool silence,
+                                                       const std::vector<std::string>& commands)
+    : RootLocker(parent, receiver, text, silence), commands_(commands), watched_cmds_() {}
 
 void FirstChildUpdateRootLocker::addedChildren(FastoObjectIPtr child) {
-  if (child->type() == common::Value::TYPE_COMMAND) {
-    RootLocker::addedChildren(child);
-    return;
-  }
-
-  if (!watched_child_) {
-    watched_child_ = child;
-    RootLocker::addedChildren(child);
-    return;
-  }
-
   auto val = child->value();
-  watched_child_->setValue(val);
+  if (child->type() == common::Value::TYPE_COMMAND) {
+    if (watched_cmds_.size() == commands_.size()) {
+      return;
+    }
+
+    watched_cmds_.push_back(child);
+    RootLocker::addedChildren(child);
+    return;
+  }
+
+  FastoObjectIPtr watched_child = findCmdChildNode(child);
+  if (!watched_child) {
+    return;
+  }
+
+  if (watched_child == child) {
+    RootLocker::addedChildren(child);
+    return;
+  }
+
+  watched_child->setValue(val);
+}
+
+FastoObjectIPtr FirstChildUpdateRootLocker::findCmdChildNode(FastoObjectIPtr child) const {
+  FastoObject* parent = child->parent();
+  if (parent->type() != common::Value::TYPE_COMMAND) {
+    NOTREACHED();
+    return FastoObjectIPtr();
+  }
+
+  FastoObjectCommand* cmd = dynamic_cast<FastoObjectCommand*>(parent);
+  FastoObjectIPtr watched_cmd = findWatchdCmd(cmd);
+  if (!watched_cmd) {
+    NOTREACHED();
+    return FastoObjectIPtr();
+  }
+
+  auto childs = watched_cmd->childrens();
+  if (childs.empty()) {
+    NOTREACHED();
+    return FastoObjectIPtr();
+  }
+
+  return childs[0];
+}
+
+FastoObjectIPtr FirstChildUpdateRootLocker::findWatchdCmd(FastoObjectCommand* cmd) const {
+  for (auto child_cmd : watched_cmds_) {
+    FastoObjectCommand* wcmd = dynamic_cast<FastoObjectCommand*>(child_cmd.get());
+    if (wcmd->inputCommand() == cmd->inputCommand()) {
+      return wcmd;
+    }
+  }
+
+  return FastoObjectIPtr();
 }
 
 }  // namespace core

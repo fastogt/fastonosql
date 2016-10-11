@@ -28,13 +28,18 @@ class FirstChildUpdateRootLocker : public RootLocker {
   FirstChildUpdateRootLocker(IDriver* parent,
                              QObject* receiver,
                              const std::string& text,
-                             bool silence);
+                             bool silence,
+                             const std::vector<std::string>& commands);
 
  private:
   // notification of execute events
   virtual void addedChildren(FastoObjectIPtr child) override;
 
-  FastoObjectIPtr watched_child_;
+  FastoObjectIPtr findCmdChildNode(FastoObjectIPtr child) const;
+  FastoObjectIPtr findWatchdCmd(FastoObjectCommand* cmd) const;
+
+  const std::vector<std::string> commands_;
+  std::vector<FastoObjectIPtr> watched_cmds_;
 };
 
 }  // namespace core

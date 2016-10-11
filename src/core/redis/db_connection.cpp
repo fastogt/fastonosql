@@ -1795,6 +1795,10 @@ common::Error DBConnection::getImpl(const key_t& key, key_and_value_t* loaded_ke
     val = common::Value::createStringValue(reply->str);
   } else if (reply->type == REDIS_REPLY_NIL) {
     val = common::Value::createNullValue();
+  } else if (reply->type == REDIS_REPLY_ERROR) {
+    common::Error err = common::make_error_value(std::string(reply->str, reply->len), common::Value::E_ERROR);
+    freeReplyObject(reply);
+    return err;
   } else {
     NOTREACHED();
   }
