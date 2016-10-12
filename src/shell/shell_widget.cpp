@@ -165,9 +165,7 @@ BaseShellWidget::BaseShellWidget(core::IServerSPtr server, const QString& filePa
       common::ConvertFromString<QString>(common::ConvertToString(mode)), iconSize);
 
   hlayout->addWidget(savebar);
-
-  QSplitter* splitter = new QSplitter(Qt::Horizontal);
-  hlayout->addWidget(splitter);
+  hlayout->addWidget(new QSplitter(Qt::Horizontal));
 
   hlayout->addWidget(connectionMode_);
   workProgressBar_ = new QProgressBar;
@@ -218,8 +216,7 @@ BaseShellWidget::BaseShellWidget(core::IServerSPtr server, const QString& filePa
   dbName_ = new common::qt::gui::IconLabel(gui::GuiFactory::instance().databaseIcon(), trCalculate,
                                            iconSize);
   hlayout2->addWidget(dbName_);
-  QSplitter* splitter2 = new QSplitter(Qt::Horizontal);
-  hlayout2->addWidget(splitter2);
+  hlayout2->addWidget(new QSplitter(Qt::Horizontal));
   hlayout2->addWidget(advancedOptions_);
   mainlayout->addLayout(hlayout2);
 
@@ -231,9 +228,7 @@ BaseShellWidget::BaseShellWidget(core::IServerSPtr server, const QString& filePa
   QHBoxLayout* apilayout = new QHBoxLayout;
   apilayout->addWidget(
       new QLabel(trSupportedCommandsCountTemplate_1S.arg(input_->commandsCount())));
-
-  QSplitter* splitterButtom = new QSplitter(Qt::Horizontal);
-  apilayout->addWidget(splitterButtom);
+  apilayout->addWidget(new QSplitter(Qt::Horizontal));
 
   commandsVersionApi_ = new QComboBox;
   typedef void (QComboBox::*curc)(int);

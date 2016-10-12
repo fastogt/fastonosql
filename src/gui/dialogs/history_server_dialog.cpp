@@ -61,14 +61,6 @@ ServerHistoryDialog::ServerHistoryDialog(core::IServerSPtr server, QWidget* pare
 
   graphWidget_ = new common::qt::gui::GraphWidget;
   settingsGraph_ = new QWidget;
-  QHBoxLayout* mainL = new QHBoxLayout;
-
-  QSplitter* splitter = new QSplitter;
-  splitter->setOrientation(Qt::Horizontal);
-  splitter->setHandleWidth(1);
-
-  mainL->addWidget(splitter);
-  splitter->addWidget(settingsGraph_);
 
   clearHistory_ = new QPushButton;
   VERIFY(connect(clearHistory_, &QPushButton::clicked, this, &ServerHistoryDialog::clearHistory));
@@ -92,8 +84,15 @@ ServerHistoryDialog::ServerHistoryDialog(core::IServerSPtr server, QWidget* pare
   setingsLayout->addWidget(serverInfoFields_);
   settingsGraph_->setLayout(setingsLayout);
 
+  QSplitter* splitter = new QSplitter(Qt::Horizontal);
+  splitter->addWidget(settingsGraph_);
   splitter->addWidget(graphWidget_);
+  splitter->setCollapsible(0, false);
+  splitter->setCollapsible(1, false);
+  splitter->setHandleWidth(1);
   setMinimumSize(QSize(min_width, min_height));
+  QHBoxLayout* mainL = new QHBoxLayout;
+  mainL->addWidget(splitter);
   setLayout(mainL);
 
   glassWidget_ =

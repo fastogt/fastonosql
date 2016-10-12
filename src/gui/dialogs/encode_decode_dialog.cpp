@@ -75,11 +75,7 @@ EncodeDecodeDialog::EncodeDecodeDialog(QWidget* parent) : QDialog(parent) {
   decodeButton_ = new QRadioButton;
   toolBarLayout->addWidget(encodeButton_);
   toolBarLayout->addWidget(decodeButton_);
-
-  QSplitter* splitter = new QSplitter;
-  splitter->setOrientation(Qt::Horizontal);
-  splitter->setHandleWidth(1);
-  toolBarLayout->addWidget(splitter);
+  toolBarLayout->addWidget(new QSplitter(Qt::Horizontal));
 
   input_ = new FastoEditor;
   output_ = new FastoEditor;

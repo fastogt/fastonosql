@@ -116,9 +116,6 @@ OutputWidget::OutputWidget(core::IServerSPtr server, QWidget* parent)
 
   QVBoxLayout* mainL = new QVBoxLayout;
   QHBoxLayout* topL = new QHBoxLayout;
-  QSplitter* splitter = new QSplitter;
-  splitter->setOrientation(Qt::Horizontal);
-  splitter->setHandleWidth(1);
 
   treeButton_ = new QPushButton;
   tableButton_ = new QPushButton;
@@ -133,7 +130,7 @@ OutputWidget::OutputWidget(core::IServerSPtr server, QWidget* parent)
   topL->addWidget(treeButton_);
   topL->addWidget(tableButton_);
   topL->addWidget(textButton_);
-  topL->addWidget(splitter);
+  topL->addWidget(new QSplitter(Qt::Horizontal));
   topL->addWidget(timeLabel_);
 
   mainL->addLayout(topL);

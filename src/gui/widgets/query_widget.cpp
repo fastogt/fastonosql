@@ -37,20 +37,16 @@ QueryWidget::QueryWidget(core::IServerSPtr server, QWidget* parent)
   shellWidget_ = new shell::BaseShellWidget(server);
   outputWidget_ = new OutputWidget(server);
 
-  QSplitter* splitter = new QSplitter;
-#ifdef OS_WIN
-  splitter->setStyleSheet("QSplitter::handle { background-color: gray }");
-#endif
-  splitter->setOrientation(Qt::Vertical);
-  splitter->setHandleWidth(1);
-
   QVBoxLayout* mainLayout = new QVBoxLayout;
+  QSplitter* splitter = new QSplitter(Qt::Vertical);
   splitter->addWidget(shellWidget_);
   splitter->addWidget(outputWidget_);
-  splitter->setStretchFactor(0, 1);
-  splitter->setStretchFactor(1, 0);
   splitter->setCollapsible(0, false);
   splitter->setCollapsible(1, false);
+  splitter->setHandleWidth(1);
+#if !defined(OS_MACOSX)
+  splitter->setStyleSheet("QSplitter::handle { background-color: gray }");
+#endif
   mainLayout->addWidget(splitter);
 
   setLayout(mainLayout);
