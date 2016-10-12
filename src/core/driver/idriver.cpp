@@ -438,7 +438,7 @@ void IDriver::handleExecuteEvent(events::ExecuteRequestEvent* ev) {
               : new FirstChildUpdateRootLocker(this, sender, inputLine, silence, commands);
   FastoObjectIPtr obj = lock->root();
   const double step = 99.0 / double(commands.size() * (repeat + 1));
-  int cur_progress = 0;
+  double cur_progress = 0.0;
   for (size_t r = 0; r < repeat + 1; ++r) {
     common::time64_t start_ts = common::time::current_mstime();
     for (size_t i = 0; i < commands.size(); ++i) {
@@ -448,10 +448,10 @@ void IDriver::handleExecuteEvent(events::ExecuteRequestEvent* ev) {
         goto done;
       }
 
-      cur_progress += step * i;
+      cur_progress += step;
       notifyProgress(sender, cur_progress);
-      std::string command = commands[i];
 
+      std::string command = commands[i];
       FastoObjectCommandIPtr cmd =
           silence ? createCommandFast(command, common::Value::C_USER)
                   : createCommand(obj.get(), command, common::Value::C_USER);  //

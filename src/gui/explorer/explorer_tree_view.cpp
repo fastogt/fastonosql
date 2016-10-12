@@ -406,6 +406,7 @@ void ExplorerTreeView::showContextMenu(const QPoint& point) {
       bool isRedis = server->type() == core::REDIS;
       if (isRedis) {
         QAction* setTTLKeyAction = new QAction(trSetTTL, this);
+        setTTLKeyAction->setEnabled(isCon);
         VERIFY(connect(setTTLKeyAction, &QAction::triggered, this, &ExplorerTreeView::setTTL));
         menu.addAction(setTTLKeyAction);
       }
