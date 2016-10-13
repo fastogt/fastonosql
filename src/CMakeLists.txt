@@ -23,7 +23,7 @@ SET(HEADERS_GUI_DIALOGS_TO_MOC
   gui/dialogs/discovery_sentinel_dialog.h
   gui/dialogs/encode_decode_dialog.h
   gui/dialogs/load_contentdb_dialog.h
-  gui/dialogs/create_dbkey_dialog.h
+  gui/dialogs/dbkey_dialog.h
   gui/dialogs/view_keys_dialog.h
   gui/dialogs/change_password_server_dialog.h
   gui/dialogs/discovery_connection.h
@@ -52,7 +52,7 @@ SET(SOURCES_GUI_DIALOGS
   gui/dialogs/history_server_dialog.cpp
   gui/dialogs/encode_decode_dialog.cpp
   gui/dialogs/load_contentdb_dialog.cpp
-  gui/dialogs/create_dbkey_dialog.cpp
+  gui/dialogs/dbkey_dialog.cpp
   gui/dialogs/view_keys_dialog.cpp
   gui/dialogs/change_password_server_dialog.cpp
   gui/dialogs/discovery_connection.cpp

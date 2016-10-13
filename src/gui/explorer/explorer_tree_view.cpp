@@ -51,7 +51,7 @@
 #include "core/settings_manager.h"       // for SettingsManager
 
 #include "gui/dialogs/change_password_server_dialog.h"
-#include "gui/dialogs/create_dbkey_dialog.h"    // for DbKeyDialog
+#include "gui/dialogs/dbkey_dialog.h"           // for DbKeyDialog
 #include "gui/dialogs/history_server_dialog.h"  // for ServerHistoryDialog
 #include "gui/dialogs/info_server_dialog.h"     // for InfoServerDialog
 #include "gui/dialogs/load_contentdb_dialog.h"  // for LoadContentDbDialog

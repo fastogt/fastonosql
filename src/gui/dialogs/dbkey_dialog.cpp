@@ -16,7 +16,7 @@
     along with FastoNoSQL.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-#include "gui/dialogs/create_dbkey_dialog.h"
+#include "gui/dialogs/dbkey_dialog.h"
 
 #include <stddef.h>  // for size_t
 
@@ -336,6 +336,20 @@ void DbKeyDialog::syncControls(common::Value* item) {
       }
     }
   } else if (t == common::Value::TYPE_SET) {
+    common::SetValue* set = NULL;
+    if (item->getAsSet(&set)) {
+      for (auto it = set->begin(); it != set->end(); ++it) {
+        std::string val = (*it)->toString();
+        if (val.empty()) {
+          continue;
+        }
+
+        QListWidgetItem* nitem =
+            new QListWidgetItem(common::ConvertFromString<QString>(val), valueListEdit_);
+        nitem->setFlags(nitem->flags() | Qt::ItemIsEditable);
+        valueListEdit_->addItem(nitem);
+      }
+    }
   } else if (t == common::Value::TYPE_ZSET) {
   } else if (t == common::Value::TYPE_HASH) {
   } else if (t == common::Value::TYPE_BOOLEAN) {
