@@ -666,10 +666,14 @@ void ExplorerTreeModel::setDefaultDb(core::IServer* server, core::IDataBaseInfoS
 
 void ExplorerTreeModel::updateDb(core::IServer* server, core::IDataBaseInfoSPtr db) {
   ExplorerServerItem* parent = findServerItem(server);
-  CHECK(parent);
+  if (!parent) {
+    return;
+  }
 
   ExplorerDatabaseItem* dbs = findDatabaseItem(parent, db);
-  CHECK(dbs);
+  if (!dbs) {
+    return;
+  }
 
   int index_db = parent->indexOf(dbs);
   QModelIndex dbs_index1 = createIndex(index_db, ExplorerDatabaseItem::eName, dbs);
@@ -682,7 +686,9 @@ void ExplorerTreeModel::addKey(core::IServer* server,
                                const core::NDbKValue& dbv,
                                const std::string& ns_separator) {
   ExplorerServerItem* parent = findServerItem(server);
-  CHECK(parent);
+  if (!parent) {
+    return;
+  }
 
   ExplorerDatabaseItem* dbs = findDatabaseItem(parent, db);
   if (!dbs) {
@@ -710,10 +716,14 @@ void ExplorerTreeModel::removeKey(core::IServer* server,
                                   core::IDataBaseInfoSPtr db,
                                   const core::NKey& key) {
   ExplorerServerItem* parent = findServerItem(server);
-  CHECK(parent);
+  if (!parent) {
+    return;
+  }
 
   ExplorerDatabaseItem* dbs = findDatabaseItem(parent, db);
-  CHECK(dbs);
+  if (!dbs) {
+    return;
+  }
 
   ExplorerKeyItem* keyit = findKeyItem(dbs, key);
   if (keyit) {
@@ -728,10 +738,14 @@ void ExplorerTreeModel::updateKey(core::IServer* server,
                                   const core::NKey& old_key,
                                   const core::NKey& new_key) {
   ExplorerServerItem* parent = findServerItem(server);
-  CHECK(parent);
+  if (!parent) {
+    return;
+  }
 
   ExplorerDatabaseItem* dbs = findDatabaseItem(parent, db);
-  CHECK(dbs);
+  if (!dbs) {
+    return;
+  }
 
   ExplorerKeyItem* keyit = findKeyItem(dbs, old_key);
   if (keyit) {
@@ -748,10 +762,14 @@ void ExplorerTreeModel::updateValue(core::IServer* server,
                                     core::IDataBaseInfoSPtr db,
                                     const core::NDbKValue& dbv) {
   ExplorerServerItem* parent = findServerItem(server);
-  CHECK(parent);
+  if (!parent) {
+    return;
+  }
 
   ExplorerDatabaseItem* dbs = findDatabaseItem(parent, db);
-  CHECK(dbs);
+  if (!dbs) {
+    return;
+  }
 
   ExplorerKeyItem* keyit = findKeyItem(dbs, dbv.key());
   if (keyit) {
@@ -766,10 +784,14 @@ void ExplorerTreeModel::updateValue(core::IServer* server,
 
 void ExplorerTreeModel::removeAllKeys(core::IServer* server, core::IDataBaseInfoSPtr db) {
   ExplorerServerItem* parent = findServerItem(server);
-  CHECK(parent);
+  if (!parent) {
+    return;
+  }
 
   ExplorerDatabaseItem* dbs = findDatabaseItem(parent, db);
-  CHECK(dbs);
+  if (!dbs) {
+    return;
+  };
 
   QModelIndex parentdb = createIndex(parent->indexOf(dbs), 0, dbs);
   removeAllItems(parentdb);

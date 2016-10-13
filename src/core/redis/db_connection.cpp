@@ -701,6 +701,45 @@ common::Error smembers(CommandHandler* handler, int argc, const char** argv, Fas
   return common::Error();
 }
 
+common::Error zrange(CommandHandler* handler, int argc, const char** argv, FastoObject* out) {
+  UNUSED(argc);
+
+  NKey key(argv[0]);
+  int start = atoi(argv[1]);
+  int stop = atoi(argv[2]);
+  bool ws = argc == 4 && strncmp(argv[3], "WITHSCORES", 10) == 0;
+  DBConnection* redis = static_cast<DBConnection*>(handler);
+  key_and_value_t key_loaded;
+  common::Error err = redis->zrange(key, start, stop, ws, &key_loaded);
+  if (err && err->isError()) {
+    return err;
+  }
+
+  value_t val = key_loaded.value();
+  common::Value* copy = val->deepCopy();
+  FastoObject* child = new FastoObject(out, copy, redis->delimiter());
+  out->addChildren(child);
+  return common::Error();
+}
+
+common::Error hgetall(CommandHandler* handler, int argc, const char** argv, FastoObject* out) {
+  UNUSED(argc);
+
+  NKey key(argv[0]);
+  DBConnection* redis = static_cast<DBConnection*>(handler);
+  key_and_value_t key_loaded;
+  common::Error err = redis->hgetall(key, &key_loaded);
+  if (err && err->isError()) {
+    return err;
+  }
+
+  value_t val = key_loaded.value();
+  common::Value* copy = val->deepCopy();
+  FastoObject* child = new FastoObject(out, copy, redis->delimiter());
+  out->addChildren(child);
+  return common::Error();
+}
+
 common::Error rename(CommandHandler* handler, int argc, const char** argv, FastoObject* out) {
   UNUSED(argc);
 
@@ -2355,6 +2394,137 @@ common::Error DBConnection::smembers(const key_t& key, key_and_value_t* loaded_k
 
     delete val;
     *loaded_key = key_and_value_t(key, common::make_value(set));
+    if (client_) {
+      client_->onKeyLoaded(*loaded_key);
+    }
+    freeReplyObject(reply);
+    return common::Error();
+  } else if (reply->type == REDIS_REPLY_ERROR) {
+    common::Error err =
+        common::make_error_value(std::string(reply->str, reply->len), common::Value::E_ERROR);
+    freeReplyObject(reply);
+    return err;
+  } else {
+    NOTREACHED();
+    return common::Error();
+  }
+}
+
+common::Error DBConnection::zrange(const key_t& key,
+                                   int start,
+                                   int stop,
+                                   bool withscores,
+                                   key_and_value_t* loaded_key) {
+  if (!isConnected()) {
+    DNOTREACHED();
+    return common::make_error_value("Not connected", common::Value::E_ERROR);
+  }
+
+  std::string key_str = key.key();
+  std::string line;
+  if (withscores) {
+    line = common::MemSPrintf("ZRANGE %s %d %d WITHSCORES", key_str.c_str(), start, stop);
+  } else {
+    line = common::MemSPrintf("ZRANGE %s %d %d", key_str.c_str(), start, stop);
+  }
+  redisReply* reply =
+      reinterpret_cast<redisReply*>(redisCommand(connection_.handle_, line.c_str()));
+  if (!reply) {
+    return cliPrintContextError(connection_.handle_);
+  }
+
+  if (reply->type == REDIS_REPLY_ARRAY) {
+    common::Value* val = NULL;
+    common::Error err = valueFromReplay(reply, &val);
+    if (err && err->isError()) {
+      delete val;
+      freeReplyObject(reply);
+      return err;
+    }
+
+    if (!withscores) {
+      *loaded_key = key_and_value_t(key, common::make_value(val));
+      if (client_) {
+        client_->onKeyLoaded(*loaded_key);
+      }
+      freeReplyObject(reply);
+      return common::Error();
+    }
+
+    common::ArrayValue* arr = NULL;
+    if (!val->getAsList(&arr)) {
+      delete val;
+      freeReplyObject(reply);
+      return common::make_error_value("Conversion error array to zset", common::Value::E_ERROR);
+    }
+
+    common::ZSetValue* zset = common::Value::createZSetValue();
+    for (size_t i = 0; i < arr->size(); i += 2) {
+      common::Value* lmember = NULL;
+      common::Value* lscore = NULL;
+      if (arr->get(i, &lmember) && arr->get(i + 1, &lscore)) {
+        zset->insert(lscore->deepCopy(), lmember->deepCopy());
+      }
+    }
+
+    delete val;
+    *loaded_key = key_and_value_t(key, common::make_value(zset));
+    if (client_) {
+      client_->onKeyLoaded(*loaded_key);
+    }
+    freeReplyObject(reply);
+    return common::Error();
+  } else if (reply->type == REDIS_REPLY_ERROR) {
+    common::Error err =
+        common::make_error_value(std::string(reply->str, reply->len), common::Value::E_ERROR);
+    freeReplyObject(reply);
+    return err;
+  } else {
+    NOTREACHED();
+    return common::Error();
+  }
+}
+
+common::Error DBConnection::hgetall(const key_t& key, key_and_value_t* loaded_key) {
+  if (!isConnected()) {
+    DNOTREACHED();
+    return common::make_error_value("Not connected", common::Value::E_ERROR);
+  }
+
+  std::string key_str = key.key();
+  redisReply* reply = reinterpret_cast<redisReply*>(
+      redisCommand(connection_.handle_, "HGETALL %s", key_str.c_str()));
+  if (!reply) {
+    return cliPrintContextError(connection_.handle_);
+  }
+
+  if (reply->type == REDIS_REPLY_ARRAY) {
+    common::Value* val = NULL;
+    common::Error err = valueFromReplay(reply, &val);
+    if (err && err->isError()) {
+      delete val;
+      freeReplyObject(reply);
+      return err;
+    }
+
+    common::ArrayValue* arr = NULL;
+    if (!val->getAsList(&arr)) {
+      delete val;
+      freeReplyObject(reply);
+      return common::make_error_value("Conversion error array to hash", common::Value::E_ERROR);
+    }
+
+    common::HashValue* hash = common::Value::createHashValue();
+    for (size_t i = 0; i < arr->size(); i += 2) {
+      common::Value* lkey = NULL;
+      common::Value* lvalue = NULL;
+      if (arr->get(i, &lkey) && arr->get(i + 1, &lvalue)) {
+        hash->insert(lkey->deepCopy(), lvalue->deepCopy());
+      }
+    }
+
+    delete val;
+    *loaded_key = key_and_value_t(key, common::make_value(hash));
     if (client_) {
       client_->onKeyLoaded(*loaded_key);
     }

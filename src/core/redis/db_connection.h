@@ -90,6 +90,8 @@ common::Error del(CommandHandler* handler, int argc, const char** argv, FastoObj
 common::Error get(CommandHandler* handler, int argc, const char** argv, FastoObject* out);
 common::Error lrange(CommandHandler* handler, int argc, const char** argv, FastoObject* out);
 common::Error smembers(CommandHandler* handler, int argc, const char** argv, FastoObject* out);
+common::Error zrange(CommandHandler* handler, int argc, const char** argv, FastoObject* out);
+common::Error hgetall(CommandHandler* handler, int argc, const char** argv, FastoObject* out);
 common::Error set(CommandHandler* handler, int argc, const char** argv, FastoObject* out);
 common::Error rename(CommandHandler* handler, int argc, const char** argv, FastoObject* out);
 common::Error persist(CommandHandler* handler, int argc, const char** argv, FastoObject* out);
@@ -732,7 +734,7 @@ static const std::vector<CommandHolder> redisCommands = {
                   UNDEFINED_EXAMPLE_STR,
                   1,
                   0,
-                  &common_exec),
+                  &hgetall),
     CommandHolder("HINCRBY",
                   "<key> <field> <increment>",
                   "Increment the integer value of a hash "
@@ -1674,7 +1676,7 @@ static const std::vector<CommandHolder> redisCommands = {
                   UNDEFINED_EXAMPLE_STR,
                   3,
                   1,
-                  &common_exec),
+                  &zrange),
     CommandHolder("ZRANGEBYLEX",
                   "<key> <min> <max> [LIMIT offset count]",
                   "Return a range of members in a sorted "
@@ -2048,6 +2050,13 @@ class DBConnection : public core::CDBConnection<NativeConnection, RConfig, REDIS
 
   common::Error lrange(const key_t& key, int start, int stop, key_and_value_t* loaded_key);
   common::Error smembers(const key_t& key, key_and_value_t* loaded_key);
+  common::Error zrange(const key_t& key,
+                       int start,
+                       int stop,
+                       bool withscores,
+                       key_and_value_t* loaded_key);
+  common::Error hgetall(const key_t& key, key_and_value_t* loaded_key);
+
  private:
   virtual common::Error selectImpl(const std::string& name, IDataBaseInfo** info) override;
   virtual common::Error delImpl(const keys_t& keys, keys_t* deleted_keys) override;

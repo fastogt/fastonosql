@@ -351,7 +351,51 @@ void DbKeyDialog::syncControls(common::Value* item) {
       }
     }
   } else if (t == common::Value::TYPE_ZSET) {
+    common::ZSetValue* zset = NULL;
+    if (item->getAsZSet(&zset)) {
+      for (auto it = zset->begin(); it != zset->end(); ++it) {
+        auto element = (*it);
+        common::Value* key = element.first;
+        common::Value* value = element.second;
+        QString ftext = common::ConvertFromString<QString>(key->toString());
+        QString stext = common::ConvertFromString<QString>(value->toString());
+
+        if (!ftext.isEmpty() && !stext.isEmpty()) {
+          QTableWidgetItem* fitem = new QTableWidgetItem(ftext);
+          fitem->setFlags(fitem->flags() | Qt::ItemIsEditable);
+
+          QTableWidgetItem* sitem = new QTableWidgetItem(stext);
+          sitem->setFlags(sitem->flags() | Qt::ItemIsEditable);
+
+          valueTableEdit_->insertRow(0);
+          valueTableEdit_->setItem(0, 0, fitem);
+          valueTableEdit_->setItem(0, 1, sitem);
+        }
+      }
+    }
   } else if (t == common::Value::TYPE_HASH) {
+    common::HashValue* hash = NULL;
+    if (item->getAsHash(&hash)) {
+      for (auto it = hash->begin(); it != hash->end(); ++it) {
+        auto element = (*it);
+        common::Value* key = element.first;
+        common::Value* value = element.second;
+        QString ftext = common::ConvertFromString<QString>(key->toString());
+        QString stext = common::ConvertFromString<QString>(value->toString());
+
+        if (!ftext.isEmpty() && !stext.isEmpty()) {
+          QTableWidgetItem* fitem = new QTableWidgetItem(ftext);
+          fitem->setFlags(fitem->flags() | Qt::ItemIsEditable);
+
+          QTableWidgetItem* sitem = new QTableWidgetItem(stext);
+          sitem->setFlags(sitem->flags() | Qt::ItemIsEditable);
+
+          valueTableEdit_->insertRow(0);
+          valueTableEdit_->setItem(0, 0, fitem);
+          valueTableEdit_->setItem(0, 1, sitem);
+        }
+      }
+    }
   } else if (t == common::Value::TYPE_BOOLEAN) {
     bool val;
     if (item->getAsBoolean(&val)) {
