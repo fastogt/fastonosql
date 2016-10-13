@@ -114,8 +114,9 @@ class ExplorerDatabaseItem : public IExplorerTreeItem {
   void renameKey(const core::NKey& key, const QString& newName);
   void removeKey(const core::NKey& key);
   void loadValue(const core::NDbKValue& key);
-  void watchKey(const core::NDbKValue &key, int interval);
+  void watchKey(const core::NDbKValue& key, int interval);
   void createKey(const core::NDbKValue& key);
+  void editKey(const core::NDbKValue& key, const core::NValue& value);
   void setTTL(const core::NKey& key, core::ttl_t ttl);
 
   void removeAllKeys();
@@ -156,6 +157,7 @@ class ExplorerKeyItem : public IExplorerTreeItem {
   virtual eType type() const;
 
   void renameKey(const QString& newName);
+  void editKey(const core::NValue& value);
   void removeFromDb();
   void watchKey(int interval);
   void loadValueFromDb();
@@ -198,6 +200,9 @@ class ExplorerTreeModel : public common::qt::gui::TreeModel {
                  core::IDataBaseInfoSPtr db,
                  const core::NKey& old_key,
                  const core::NKey& new_key);
+  void updateValue(core::IServer* server,
+                   core::IDataBaseInfoSPtr db,
+                   const core::NDbKValue& dbv);
   void removeAllKeys(core::IServer* server, core::IDataBaseInfoSPtr db);
 
  private:

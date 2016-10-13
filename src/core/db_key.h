@@ -61,6 +61,8 @@ class NKey {
   ttl_t ttl() const;
   void setTTL(ttl_t ttl);
 
+  bool equals(const NKey& other) const;
+
  private:
   std::string key_;
   ttl_t ttl_;
@@ -87,6 +89,8 @@ class NDbKValue {
 
   std::string keyString() const;
   std::string valueString() const;
+
+  bool equals(const NDbKValue& other) const;
 
  private:
   NKey key_;

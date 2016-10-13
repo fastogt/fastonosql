@@ -529,7 +529,7 @@ void BaseShellWidget::syncConnectionActions() {
   connectAction_->setVisible(!server_->isConnected());
   disConnectAction_->setVisible(server_->isConnected());
   executeAction_->setEnabled(server_->isConnected());
-  stopAction_->setEnabled(server_->isConnected());
+  stopAction_->setEnabled(!executeAction_->isEnabled());
 }
 
 }  // namespace shell

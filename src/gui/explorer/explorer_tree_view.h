@@ -77,6 +77,7 @@ class ExplorerTreeView : public QTreeView {
   void removeBranch();
   void setDefaultDb();
   void createKey();
+  void editKey();
   void viewKeys();
 
   void getValue();
@@ -103,6 +104,7 @@ class ExplorerTreeView : public QTreeView {
   void removeKey(core::IDataBaseInfoSPtr db, core::NKey key);
   void addKey(core::IDataBaseInfoSPtr db, core::NDbKValue key);
   void renameKey(core::IDataBaseInfoSPtr db, core::NKey key, std::string new_name);
+  void loadKey(core::IDataBaseInfoSPtr db, core::NDbKValue key);
   void changeTTLKey(core::IDataBaseInfoSPtr db, core::NKey key, core::ttl_t ttl);
 
  protected:
@@ -124,6 +126,7 @@ class ExplorerTreeView : public QTreeView {
   QAction* removeBranchAction_;
   QAction* setDefaultDbAction_;
   QAction* createKeyAction_;
+  QAction* editKeyAction_;
   QAction* viewKeysAction_;
   QAction* getValueAction_;
   QAction* renameKeyAction_;

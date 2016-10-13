@@ -51,7 +51,7 @@
 #include "core/settings_manager.h"       // for SettingsManager
 
 #include "gui/dialogs/change_password_server_dialog.h"
-#include "gui/dialogs/create_dbkey_dialog.h"    // for CreateDbKeyDialog
+#include "gui/dialogs/create_dbkey_dialog.h"    // for DbKeyDialog
 #include "gui/dialogs/history_server_dialog.h"  // for ServerHistoryDialog
 #include "gui/dialogs/info_server_dialog.h"     // for InfoServerDialog
 #include "gui/dialogs/load_contentdb_dialog.h"  // for LoadContentDbDialog
@@ -63,6 +63,7 @@
 
 namespace {
 const QString trCreateKeyForDbTemplate_1S = QObject::tr("Create key for %1 database");
+const QString trEditKey_1S = QObject::tr("Edit key %1");
 const QString trRemoveBranch = QObject::tr("Remove branch");
 const QString trRemoveAllKeysTemplate_1S = QObject::tr("Really remove all keys from branch %1?");
 const QString trViewKeyTemplate_1S = QObject::tr("View key in %1 database");
@@ -165,6 +166,9 @@ ExplorerTreeView::ExplorerTreeView(QWidget* parent) : QTreeView(parent) {
 
   createKeyAction_ = new QAction(this);
   VERIFY(connect(createKeyAction_, &QAction::triggered, this, &ExplorerTreeView::createKey));
+
+  editKeyAction_ = new QAction(this);
+  VERIFY(connect(editKeyAction_, &QAction::triggered, this, &ExplorerTreeView::editKey));
 
   viewKeysAction_ = new QAction(this);
   VERIFY(connect(viewKeysAction_, &QAction::triggered, this, &ExplorerTreeView::viewKeys));
@@ -412,6 +416,8 @@ void ExplorerTreeView::showContextMenu(const QPoint& point) {
       }
       menu.addAction(renameKeyAction_);
       renameKeyAction_->setEnabled(isCon);
+      menu.addAction(editKeyAction_);
+      editKeyAction_->setEnabled(isCon);
       menu.addAction(deleteKeyAction_);
       deleteKeyAction_->setEnabled(isCon);
       menu.addAction(watchKeyAction_);
@@ -815,12 +821,33 @@ void ExplorerTreeView::createKey() {
     return;
   }
 
-  CreateDbKeyDialog loadDb(trCreateKeyForDbTemplate_1S.arg(node->name()), node->server()->type(),
-                           this);
+  core::IServerSPtr server = node->server();
+  DbKeyDialog loadDb(trCreateKeyForDbTemplate_1S.arg(node->name()), server->type(),
+                     core::NDbKValue(), this);
   int result = loadDb.exec();
   if (result == QDialog::Accepted) {
     core::NDbKValue key = loadDb.key();
     node->createKey(key);
+  }
+}
+
+void ExplorerTreeView::editKey() {
+  QModelIndex sel = selectedIndex();
+  if (!sel.isValid()) {
+    return;
+  }
+
+  ExplorerKeyItem* node = common::qt::item<common::qt::gui::TreeItem*, ExplorerKeyItem*>(sel);
+  if (!node) {
+    return;
+  }
+
+  core::IServerSPtr server = node->server();
+  DbKeyDialog loadDb(trEditKey_1S.arg(node->name()), server->type(), node->dbv(), this);
+  int result = loadDb.exec();
+  if (result == QDialog::Accepted) {
+    core::NDbKValue key = loadDb.key();
+    node->editKey(key.value());
   }
 }
 
@@ -1077,6 +1104,16 @@ void ExplorerTreeView::renameKey(core::IDataBaseInfoSPtr db, core::NKey key, std
   mod->updateKey(serv, db, key, new_key);
 }
 
+void ExplorerTreeView::loadKey(core::IDataBaseInfoSPtr db, core::NDbKValue key) {
+  core::IServer* serv = qobject_cast<core::IServer*>(sender());
+  CHECK(serv);
+
+  ExplorerTreeModel* mod = qobject_cast<ExplorerTreeModel*>(model());
+  CHECK(mod);
+
+  mod->updateValue(serv, db, key);
+}
+
 void ExplorerTreeView::changeTTLKey(core::IDataBaseInfoSPtr db, core::NKey key, core::ttl_t ttl) {
   core::IServer* serv = qobject_cast<core::IServer*>(sender());
   CHECK(serv);
@@ -1137,6 +1174,8 @@ void ExplorerTreeView::syncWithServer(core::IServer* server) {
                  Qt::DirectConnection));
   VERIFY(connect(server, &core::IServer::keyRenamed, this, &ExplorerTreeView::renameKey,
                  Qt::DirectConnection));
+  VERIFY(connect(server, &core::IServer::keyLoaded, this, &ExplorerTreeView::loadKey,
+                 Qt::DirectConnection));
   VERIFY(connect(server, &core::IServer::keyTTLChanged, this, &ExplorerTreeView::changeTTLKey,
                  Qt::DirectConnection));
 }
@@ -1166,6 +1205,7 @@ void ExplorerTreeView::unsyncWithServer(core::IServer* server) {
   VERIFY(disconnect(server, &core::IServer::keyRemoved, this, &ExplorerTreeView::removeKey));
   VERIFY(disconnect(server, &core::IServer::keyAdded, this, &ExplorerTreeView::addKey));
   VERIFY(disconnect(server, &core::IServer::keyRenamed, this, &ExplorerTreeView::renameKey));
+  VERIFY(disconnect(server, &core::IServer::keyLoaded, this, &ExplorerTreeView::loadKey));
   VERIFY(disconnect(server, &core::IServer::keyTTLChanged, this, &ExplorerTreeView::changeTTLKey));
 }
 
@@ -1190,10 +1230,11 @@ void ExplorerTreeView::retranslateUi() {
   removeAllKeysAction_->setText(translations::trRemoveAllKeys);
   removeBranchAction_->setText(translations::trRemoveBranch);
   createKeyAction_->setText(translations::trCreateKey);
+  editKeyAction_->setText(translations::trEdit);
   viewKeysAction_->setText(translations::trViewKeysDialog);
   setDefaultDbAction_->setText(translations::trSetDefault);
   getValueAction_->setText(translations::trGetValue);
-  renameKeyAction_->setText(translations::trRename);
+  renameKeyAction_->setText(trRenameKey);
   deleteKeyAction_->setText(translations::trDelete);
   watchKeyAction_->setText(translations::trWatch);
 }

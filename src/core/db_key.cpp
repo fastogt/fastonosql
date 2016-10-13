@@ -93,6 +93,14 @@ void NKey::setTTL(ttl_t ttl) {
   ttl_ = ttl;
 }
 
+bool NKey::equals(const NKey& other) const {
+  if (key_ != other.key_) {
+    return false;
+  }
+
+  return ttl_ == other.ttl_;
+}
+
 NDbKValue::NDbKValue() : key_(), value_() {}
 
 NDbKValue::NDbKValue(const NKey& key, NValue value) : key_(key), value_(value) {}
@@ -131,6 +139,14 @@ std::string NDbKValue::keyString() const {
 
 std::string NDbKValue::valueString() const {
   return common::ConvertToString(value_.get(), " ");
+}
+
+bool NDbKValue::equals(const NDbKValue& other) const {
+  if (!key_.equals(other.key_)) {
+    return false;
+  }
+
+  return value_->equals(other.value_.get());
 }
 
 }  // namespace core

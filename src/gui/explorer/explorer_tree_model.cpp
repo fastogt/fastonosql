@@ -270,6 +270,8 @@ void ExplorerDatabaseItem::createKey(const core::NDbKValue& key) {
   dbs->execute(req);
 }
 
+void ExplorerDatabaseItem::editKey(const core::NDbKValue& key, const core::NValue& value) {}
+
 void ExplorerDatabaseItem::setTTL(const core::NKey& key, core::ttl_t ttl) {
   core::IDatabaseSPtr dbs = db();
   CHECK(dbs);
@@ -342,6 +344,12 @@ void ExplorerKeyItem::renameKey(const QString& newName) {
   ExplorerDatabaseItem* par = db();
   CHECK(par);
   par->renameKey(dbv_.key(), newName);
+}
+
+void ExplorerKeyItem::editKey(const core::NValue& value) {
+  ExplorerDatabaseItem* par = db();
+  CHECK(par);
+  par->editKey(dbv_, value);
 }
 
 void ExplorerKeyItem::removeFromDb() {
@@ -730,6 +738,26 @@ void ExplorerTreeModel::updateKey(core::IServer* server,
     common::qt::gui::TreeItem* par = keyit->parent();
     int index_key = par->indexOf(keyit);
     keyit->setKey(new_key);
+    QModelIndex key_index1 = createIndex(index_key, ExplorerKeyItem::eName, dbs);
+    QModelIndex key_index2 = createIndex(index_key, ExplorerKeyItem::eCountColumns, dbs);
+    updateItem(key_index1, key_index2);
+  }
+}
+
+void ExplorerTreeModel::updateValue(core::IServer* server,
+                                    core::IDataBaseInfoSPtr db,
+                                    const core::NDbKValue& dbv) {
+  ExplorerServerItem* parent = findServerItem(server);
+  CHECK(parent);
+
+  ExplorerDatabaseItem* dbs = findDatabaseItem(parent, db);
+  CHECK(dbs);
+
+  ExplorerKeyItem* keyit = findKeyItem(dbs, dbv.key());
+  if (keyit) {
+    common::qt::gui::TreeItem* par = keyit->parent();
+    int index_key = par->indexOf(keyit);
+    keyit->setDbv(dbv);
     QModelIndex key_index1 = createIndex(index_key, ExplorerKeyItem::eName, dbs);
     QModelIndex key_index2 = createIndex(index_key, ExplorerKeyItem::eCountColumns, dbs);
     updateItem(key_index1, key_index2);
