@@ -56,6 +56,9 @@ class CDBConnection : public DBConnection<NConnection, Config, ContType>, public
 
   translator_t translator() const { return translator_; }
 
+ protected:
+  CDBConnectionClient* client_;
+
  private:
   virtual common::Error selectImpl(const std::string& name, IDataBaseInfo** info) = 0;
   virtual common::Error delImpl(const keys_t& keys, keys_t* deleted_keys) = 0;
@@ -64,7 +67,6 @@ class CDBConnection : public DBConnection<NConnection, Config, ContType>, public
   virtual common::Error renameImpl(const key_t& key, const std::string& new_key) = 0;
   virtual common::Error setTTLImpl(const key_t& key, ttl_t ttl) = 0;
 
-  CDBConnectionClient* client_;
   translator_t translator_;
 };
 
