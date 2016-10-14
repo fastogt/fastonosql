@@ -516,7 +516,7 @@ common::Error DBConnection::expireInner(const std::string& key, time_t expiratio
   return common::Error();
 }
 
-common::Error DBConnection::flush_all(time_t expiration) {
+common::Error DBConnection::flushdb(time_t expiration) {
   if (!isConnected()) {
     DNOTREACHED();
     return common::make_error_value("Not connected", common::Value::E_ERROR);
@@ -524,7 +524,7 @@ common::Error DBConnection::flush_all(time_t expiration) {
 
   memcached_return_t error = memcached_flush(connection_.handle_, expiration);
   if (error != MEMCACHED_SUCCESS) {
-    std::string buff = common::MemSPrintf("Fluss all function error: %s",
+    std::string buff = common::MemSPrintf("Flushdb function error: %s",
                                           memcached_strerror(connection_.handle_, error));
     return common::make_error_value(buff, common::ErrorValue::E_ERROR);
   }
@@ -865,9 +865,9 @@ common::Error del(CommandHandler* handler, int argc, const char** argv, FastoObj
   return common::Error();
 }
 
-common::Error flush_all(CommandHandler* handler, int argc, const char** argv, FastoObject* out) {
+common::Error flushdb(CommandHandler* handler, int argc, const char** argv, FastoObject* out) {
   DBConnection* mem = static_cast<DBConnection*>(handler);
-  common::Error er = mem->flush_all(argc == 1 ? common::ConvertFromString<time_t>(argv[0]) : 0);
+  common::Error er = mem->flushdb(argc == 1 ? common::ConvertFromString<time_t>(argv[0]) : 0);
   if (!er) {
     common::StringValue* val = common::Value::createStringValue("OK");
     FastoObject* child = new FastoObject(out, val, mem->delimiter());

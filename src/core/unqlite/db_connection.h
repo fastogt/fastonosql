@@ -149,7 +149,7 @@ static const std::vector<CommandHolder> unqliteCommands = {
                   0,
                   &dbkcount),
     CommandHolder("HELP",
-                  "<command>",
+                  "[command]",
                   "Return how to use command",
                   UNDEFINED_SINCE,
                   UNDEFINED_EXAMPLE_STR,

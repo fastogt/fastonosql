@@ -102,7 +102,7 @@ class DBConnection : public core::CDBConnection<NativeConnection, Config, MEMCAC
                         uint32_t flags) WARN_UNUSED_RESULT;
   common::Error incr(const std::string& key, uint64_t value) WARN_UNUSED_RESULT;
   common::Error decr(const std::string& key, uint64_t value) WARN_UNUSED_RESULT;
-  common::Error flush_all(time_t expiration) WARN_UNUSED_RESULT;
+  common::Error flushdb(time_t expiration) WARN_UNUSED_RESULT;
   common::Error version_server() const WARN_UNUSED_RESULT;
   common::Error help(int argc, const char** argv) WARN_UNUSED_RESULT;
 
@@ -138,7 +138,7 @@ common::Error append(CommandHandler* handler, int argc, const char** argv, Fasto
 common::Error prepend(CommandHandler* handler, int argc, const char** argv, FastoObject* out);
 common::Error incr(CommandHandler* handler, int argc, const char** argv, FastoObject* out);
 common::Error decr(CommandHandler* handler, int argc, const char** argv, FastoObject* out);
-common::Error flush_all(CommandHandler* handler, int argc, const char** argv, FastoObject* out);
+common::Error flushdb(CommandHandler* handler, int argc, const char** argv, FastoObject* out);
 common::Error version_server(CommandHandler* handler,
                              int argc,
                              const char** argv,
@@ -166,7 +166,7 @@ static const std::vector<CommandHolder> memcachedCommands = {
                   0,
                   &keys),
     CommandHolder("STATS",
-                  "[<args>]",
+                  "[args]",
                   "These command can return various "
                   "stats that we will explain.",
                   UNDEFINED_SINCE,
@@ -174,8 +174,8 @@ static const std::vector<CommandHolder> memcachedCommands = {
                   0,
                   1,
                   &stats),
-    CommandHolder("FLUSH_ALL",
-                  "[<time>]",
+    CommandHolder("FLUSHDB",
+                  "[time]",
                   "Flush the server key/value pair "
                   "(invalidating them) after a "
                   "optional [<time>] period.\n"
@@ -184,7 +184,7 @@ static const std::vector<CommandHolder> memcachedCommands = {
                   UNDEFINED_EXAMPLE_STR,
                   0,
                   1,
-                  &flush_all),
+                  &flushdb),
     CommandHolder("DEL",
                   "<key> [key ...]",
                   "Delete key.",
@@ -295,7 +295,7 @@ static const std::vector<CommandHolder> memcachedCommands = {
                   0,
                   &dbkcount),
     CommandHolder("HELP",
-                  "<command>",
+                  "[command]",
                   "Return how to use command",
                   UNDEFINED_SINCE,
                   UNDEFINED_EXAMPLE_STR,
