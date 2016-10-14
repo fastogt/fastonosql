@@ -74,7 +74,6 @@ template <typename NConnection, typename Config, connectionTypes ContType>
 common::Error CDBConnection<NConnection, Config, ContType>::select(const std::string& name,
                                                                    IDataBaseInfo** info) {
   if (!CDBConnection<NConnection, Config, ContType>::isConnected()) {
-    DNOTREACHED();
     return common::make_error_value("Not connected", common::Value::E_ERROR);
   }
 
@@ -106,7 +105,6 @@ common::Error CDBConnection<NConnection, Config, ContType>::del(const keys_t& ke
   }
 
   if (!CDBConnection<NConnection, Config, ContType>::isConnected()) {
-    DNOTREACHED();
     return common::make_error_value("Not connected", common::Value::E_ERROR);
   }
 
@@ -131,7 +129,6 @@ common::Error CDBConnection<NConnection, Config, ContType>::set(const key_and_va
   }
 
   if (!CDBConnection<NConnection, Config, ContType>::isConnected()) {
-    DNOTREACHED();
     return common::make_error_value("Not connected", common::Value::E_ERROR);
   }
 
@@ -156,7 +153,6 @@ common::Error CDBConnection<NConnection, Config, ContType>::get(const key_t& key
   }
 
   if (!CDBConnection<NConnection, Config, ContType>::isConnected()) {
-    DNOTREACHED();
     return common::make_error_value("Not connected", common::Value::E_ERROR);
   }
 
@@ -176,7 +172,6 @@ template <typename NConnection, typename Config, connectionTypes ContType>
 common::Error CDBConnection<NConnection, Config, ContType>::rename(const key_t& key,
                                                                    const std::string& new_key) {
   if (!CDBConnection<NConnection, Config, ContType>::isConnected()) {
-    DNOTREACHED();
     return common::make_error_value("Not connected", common::Value::E_ERROR);
   }
 
@@ -195,7 +190,6 @@ common::Error CDBConnection<NConnection, Config, ContType>::rename(const key_t& 
 template <typename NConnection, typename Config, connectionTypes ContType>
 common::Error CDBConnection<NConnection, Config, ContType>::setTTL(const key_t& key, ttl_t ttl) {
   if (!CDBConnection<NConnection, Config, ContType>::isConnected()) {
-    DNOTREACHED();
     return common::make_error_value("Not connected", common::Value::E_ERROR);
   }
 

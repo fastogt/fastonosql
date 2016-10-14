@@ -255,9 +255,10 @@ common::Value* ServerInfo::Server::valueByIndex(unsigned char index) const {
     case 15:
       return new common::FundamentalValue(lru_clock_);
     default:
-      NOTREACHED();
       break;
   }
+
+  NOTREACHED();
   return nullptr;
 }
 
@@ -303,9 +304,10 @@ common::Value* ServerInfo::Clients::valueByIndex(unsigned char index) const {
     case 3:
       return new common::FundamentalValue(blocked_clients_);
     default:
-      NOTREACHED();
       break;
   }
+
+  NOTREACHED();
   return nullptr;
 }
 
@@ -375,9 +377,10 @@ common::Value* ServerInfo::Memory::valueByIndex(unsigned char index) const {
     case 7:
       return new common::StringValue(mem_allocator_);
     default:
-      NOTREACHED();
       break;
   }
+
+  NOTREACHED();
   return nullptr;
 }
 
@@ -483,9 +486,10 @@ common::Value* ServerInfo::Persistence::valueByIndex(unsigned char index) const 
     case 13:
       return new common::StringValue(aof_last_write_status_);
     default:
-      NOTREACHED();
       break;
   }
+
+  NOTREACHED();
   return nullptr;
 }
 
@@ -591,9 +595,10 @@ common::Value* ServerInfo::Stats::valueByIndex(unsigned char index) const {
     case 13:
       return new common::FundamentalValue(latest_fork_usec_);
     default:
-      NOTREACHED();
       break;
   }
+
+  NOTREACHED();
   return nullptr;
 }
 
@@ -658,9 +663,10 @@ common::Value* ServerInfo::Replication::valueByIndex(unsigned char index) const 
     case 6:
       return new common::FundamentalValue(backlog_histen_);
     default:
-      NOTREACHED();
       break;
   }
+
+  NOTREACHED();
   return nullptr;
 }
 
@@ -700,9 +706,10 @@ common::Value* ServerInfo::Cpu::valueByIndex(unsigned char index) const {
     case 3:
       return new common::FundamentalValue(used_cpu_user_children_);
     default:
-      NOTREACHED();
       break;
   }
+
+  NOTREACHED();
   return nullptr;
 }
 
@@ -751,9 +758,10 @@ common::Value* ServerInfo::valueByIndexes(unsigned char property, unsigned char 
     case 7:
       return keySp_.valueByIndex(field);
     default:
-      NOTREACHED();
       break;
   }
+
+  NOTREACHED();
   return nullptr;
 }
 

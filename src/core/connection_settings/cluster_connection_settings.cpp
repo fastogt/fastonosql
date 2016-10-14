@@ -39,7 +39,7 @@ IClusterSettingsBase::cluster_nodes_t IClusterSettingsBase::nodes() const {
 
 void IClusterSettingsBase::addNode(IConnectionSettingsBaseSPtr node) {
   if (!node) {
-    NOTREACHED();
+    DNOTREACHED();
     return;
   }
 

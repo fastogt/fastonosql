@@ -44,10 +44,10 @@ QString FastoHexEdit::text() const {
     return toPlainText();
   } else if (mode_ == HTML_MODE) {
     return toHtml();
-  } else {
-    NOTREACHED();
-    return QString();
   }
+
+  NOTREACHED();
+  return QString();
 }
 
 void FastoHexEdit::setMode(DisplayMode mode) {

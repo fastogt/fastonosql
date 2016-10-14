@@ -113,10 +113,7 @@ bool IServer::containsDatabase(IDataBaseInfoSPtr inf) const {
     return false;
   }
 
-  if (type() != inf->type()) {
-    DNOTREACHED();
-    return false;
-  }
+  CHECK(type() == inf->type());
 
   for (size_t i = 0; i < databases_.size(); ++i) {
     database_t db = databases_[i];

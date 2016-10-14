@@ -137,14 +137,13 @@ const char* DBConnection::versionApi() {
 
 common::Error DBConnection::info(const char* args, ServerInfo::Stats* statsout) {
   UNUSED(args);
-
-  if (!isConnected()) {
+  if (!statsout) {
     DNOTREACHED();
-    return common::make_error_value("Not connected", common::Value::E_ERROR);
+    return common::make_error_value("Invalid input argument(s)", common::ErrorValue::E_ERROR);
   }
 
-  if (!statsout) {
-    return common::make_error_value("Invalid input argument(s)", common::ErrorValue::E_ERROR);
+  if (!isConnected()) {
+    return common::make_error_value("Not connected", common::Value::E_ERROR);
   }
 
   std::string rets;
@@ -187,13 +186,13 @@ common::Error DBConnection::info(const char* args, ServerInfo::Stats* statsout) 
 }
 
 common::Error DBConnection::dbkcount(size_t* size) {
-  if (!isConnected()) {
+  if (!size) {
     DNOTREACHED();
-    return common::make_error_value("Not connected", common::Value::E_ERROR);
+    return common::make_error_value("Invalid input argument(s)", common::ErrorValue::E_ERROR);
   }
 
-  if (!size) {
-    return common::make_error_value("Invalid input argument(s)", common::ErrorValue::E_ERROR);
+  if (!isConnected()) {
+    return common::make_error_value("Not connected", common::Value::E_ERROR);
   }
 
   ::rocksdb::ReadOptions ro;
@@ -216,11 +215,6 @@ common::Error DBConnection::dbkcount(size_t* size) {
 }
 
 std::string DBConnection::currentDbName() const {
-  if (!isConnected()) {
-    DNOTREACHED();
-    return "unknown";
-  }
-
   ::rocksdb::ColumnFamilyHandle* fam = connection_.handle_->DefaultColumnFamily();
   if (fam) {
     return fam->GetName();
@@ -231,7 +225,6 @@ std::string DBConnection::currentDbName() const {
 
 common::Error DBConnection::getInner(const std::string& key, std::string* ret_val) {
   if (!isConnected()) {
-    DNOTREACHED();
     return common::make_error_value("Not connected", common::Value::E_ERROR);
   }
 
@@ -248,7 +241,6 @@ common::Error DBConnection::getInner(const std::string& key, std::string* ret_va
 common::Error DBConnection::mget(const std::vector< ::rocksdb::Slice>& keys,
                                  std::vector<std::string>* ret) {
   if (!isConnected()) {
-    DNOTREACHED();
     return common::make_error_value("Not connected", common::Value::E_ERROR);
   }
 
@@ -266,7 +258,6 @@ common::Error DBConnection::mget(const std::vector< ::rocksdb::Slice>& keys,
 
 common::Error DBConnection::merge(const std::string& key, const std::string& value) {
   if (!isConnected()) {
-    DNOTREACHED();
     return common::make_error_value("Not connected", common::Value::E_ERROR);
   }
 
@@ -282,7 +273,6 @@ common::Error DBConnection::merge(const std::string& key, const std::string& val
 
 common::Error DBConnection::setInner(const std::string& key, const std::string& value) {
   if (!isConnected()) {
-    DNOTREACHED();
     return common::make_error_value("Not connected", common::Value::E_ERROR);
   }
 
@@ -298,7 +288,6 @@ common::Error DBConnection::setInner(const std::string& key, const std::string& 
 
 common::Error DBConnection::delInner(const std::string& key) {
   if (!isConnected()) {
-    DNOTREACHED();
     return common::make_error_value("Not connected", common::Value::E_ERROR);
   }
 
@@ -316,7 +305,6 @@ common::Error DBConnection::keys(const std::string& key_start,
                                  uint64_t limit,
                                  std::vector<std::string>* ret) {
   if (!isConnected()) {
-    DNOTREACHED();
     return common::make_error_value("Not connected", common::Value::E_ERROR);
   }
 
@@ -351,7 +339,6 @@ common::Error DBConnection::help(int argc, const char** argv) {
 
 common::Error DBConnection::flushdb() {
   if (!isConnected()) {
-    DNOTREACHED();
     return common::make_error_value("Not connected", common::Value::E_ERROR);
   }
 

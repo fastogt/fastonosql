@@ -181,6 +181,11 @@ common::Error Driver::serverInfo(IServerInfo** info) {
 }
 
 common::Error Driver::currentDataBaseInfo(IDataBaseInfo** info) {
+  if (!info) {
+    DNOTREACHED();
+    return common::make_error_value("Invalid input argument(s)", common::ErrorValue::E_ERROR);
+  }
+
   Config conf = impl_->config();
   return impl_->select(common::ConvertToString(conf.dbnum), info);
 }
@@ -537,6 +542,10 @@ void Driver::handleLoadDatabaseContentEvent(events::LoadDatabaseContentRequestEv
       }
 
       common::ArrayValue* ar = arr->array();
+      if (ar->empty()) {
+        goto done;
+      }
+
       std::vector<FastoObjectCommandIPtr> cmds;
       cmds.reserve(ar->size() * 2);
       for (size_t i = 0; i < ar->size(); ++i) {

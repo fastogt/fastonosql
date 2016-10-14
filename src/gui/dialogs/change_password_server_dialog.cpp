@@ -27,9 +27,9 @@
 #include <QLineEdit>
 #include <QMessageBox>
 
-#include <common/error.h>                // for Error
-#include <common/macros.h>               // for VERIFY, CHECK, UNUSED
-#include <common/qt/convert2string.h>    // for ConvertToString
+#include <common/error.h>              // for Error
+#include <common/macros.h>             // for VERIFY, CHECK, UNUSED
+#include <common/qt/convert2string.h>  // for ConvertToString
 #include <common/qt/logger.h>
 #include <common/value.h>                // for ErrorValue
 #include <common/qt/gui/glass_widget.h>  // for GlassWidget

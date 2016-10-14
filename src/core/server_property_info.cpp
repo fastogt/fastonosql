@@ -36,19 +36,19 @@ ServerPropertiesInfo makeServerProperty(const FastoObjectArray* array) {
     return ServerPropertiesInfo();
   }
 
-  common::ArrayValue* ar = array->array();
-  if (!ar) {
+  common::ArrayValue* arr = array->array();
+  if (!arr) {
     DNOTREACHED();
     return ServerPropertiesInfo();
   }
 
   ServerPropertiesInfo inf;
-  for (size_t i = 0; i < ar->size(); i += 2) {
+  for (size_t i = 0; i < arr->size(); i += 2) {
     std::string c1;
     std::string c2;
-    bool res = ar->getString(i, &c1);
+    bool res = arr->getString(i, &c1);
     DCHECK(res);
-    res = ar->getString(i + 1, &c2);
+    res = arr->getString(i + 1, &c2);
     DCHECK(res);
     inf.properties.push_back(std::make_pair(c1, c2));
   }

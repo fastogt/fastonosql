@@ -176,16 +176,14 @@ unsigned int DBConnection::curDb() const {
 
 common::Error DBConnection::info(const char* args, ServerInfo::Stats* statsout) {
   UNUSED(args);
-
-  if (!isConnected()) {
-    DNOTREACHED();
-    return common::make_error_value("Not connected", common::Value::E_ERROR);
-  }
-
   if (!statsout) {
-    NOTREACHED();
+    DNOTREACHED();
     return common::make_error_value("Invalid input argument for command: INFO",
                                     common::ErrorValue::E_ERROR);
+  }
+
+  if (!isConnected()) {
+    return common::make_error_value("Not connected", common::Value::E_ERROR);
   }
 
   ServerInfo::Stats linfo;
@@ -197,13 +195,13 @@ common::Error DBConnection::info(const char* args, ServerInfo::Stats* statsout) 
 }
 
 common::Error DBConnection::dbkcount(size_t* size) {
-  if (!isConnected()) {
+  if (!size) {
     DNOTREACHED();
-    return common::make_error_value("Not connected", common::Value::E_ERROR);
+    return common::make_error_value("Invalid input argument(s)", common::ErrorValue::E_ERROR);
   }
 
-  if (!size) {
-    return common::make_error_value("Invalid input argument(s)", common::ErrorValue::E_ERROR);
+  if (!isConnected()) {
+    return common::make_error_value("Not connected", common::Value::E_ERROR);
   }
 
   MDB_cursor* cursor = NULL;
@@ -234,7 +232,6 @@ common::Error DBConnection::dbkcount(size_t* size) {
 
 common::Error DBConnection::setInner(const std::string& key, const std::string& value) {
   if (!isConnected()) {
-    DNOTREACHED();
     return common::make_error_value("Not connected", common::Value::E_ERROR);
   }
 
@@ -266,7 +263,6 @@ common::Error DBConnection::setInner(const std::string& key, const std::string& 
 
 common::Error DBConnection::getInner(const std::string& key, std::string* ret_val) {
   if (!isConnected()) {
-    DNOTREACHED();
     return common::make_error_value("Not connected", common::Value::E_ERROR);
   }
 
@@ -293,7 +289,6 @@ common::Error DBConnection::getInner(const std::string& key, std::string* ret_va
 
 common::Error DBConnection::delInner(const std::string& key) {
   if (!isConnected()) {
-    DNOTREACHED();
     return common::make_error_value("Not connected", common::Value::E_ERROR);
   }
 
@@ -325,7 +320,6 @@ common::Error DBConnection::keys(const std::string& key_start,
                                  uint64_t limit,
                                  std::vector<std::string>* ret) {
   if (!isConnected()) {
-    DNOTREACHED();
     return common::make_error_value("Not connected", common::Value::E_ERROR);
   }
 
@@ -365,7 +359,6 @@ common::Error DBConnection::help(int argc, const char** argv) {
 
 common::Error DBConnection::flushdb() {
   if (!isConnected()) {
-    DNOTREACHED();
     return common::make_error_value("Not connected", common::Value::E_ERROR);
   }
 

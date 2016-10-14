@@ -123,11 +123,7 @@ ServersManager::server_t ServersManager::createServer(IConnectionSettingsBaseSPt
   }
 #endif
 
-  if (!server) {
-    NOTREACHED();
-    return server_t();
-  }
-
+  CHECK(server);
   servers_.push_back(server);
   return server;
 }
@@ -235,6 +231,7 @@ common::Error ServersManager::testConnection(IConnectionSettingsBaseSPtr connect
         static_cast<lmdb::ConnectionSettings*>(connection.get()));
   }
 #endif
+
   NOTREACHED();
   return common::make_error_value("Invalid setting type", common::ErrorValue::E_ERROR);
 }
@@ -283,6 +280,7 @@ common::Error ServersManager::discoveryClusterConnection(
     return common::make_error_value("Not supported setting type", common::ErrorValue::E_ERROR);
   }
 #endif
+
   NOTREACHED();
   return common::make_error_value("Invalid setting type", common::ErrorValue::E_ERROR);
 }
@@ -331,6 +329,7 @@ common::Error ServersManager::discoverySentinelConnection(
     return common::make_error_value("Not supported setting type", common::ErrorValue::E_ERROR);
   }
 #endif
+
   NOTREACHED();
   return common::make_error_value("Invalid setting type", common::ErrorValue::E_ERROR);
 }

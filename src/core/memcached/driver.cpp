@@ -138,6 +138,7 @@ common::Error Driver::serverInfo(IServerInfo** info) {
 
 common::Error Driver::currentDataBaseInfo(IDataBaseInfo** info) {
   if (!info) {
+    DNOTREACHED();
     return common::make_error_value("Invalid input argument(s)", common::ErrorValue::E_ERROR);
   }
 

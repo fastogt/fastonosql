@@ -100,9 +100,10 @@ common::Value* ServerInfo::Stats::valueByIndex(unsigned char index) const {
     case 4:
       return new common::FundamentalValue(write_mb);
     default:
-      NOTREACHED();
       break;
   }
+
+  NOTREACHED();
   return nullptr;
 }
 
@@ -115,9 +116,10 @@ common::Value* ServerInfo::valueByIndexes(unsigned char property, unsigned char 
     case 0:
       return stats_.valueByIndex(field);
     default:
-      NOTREACHED();
       break;
   }
+
+  NOTREACHED();
   return nullptr;
 }
 

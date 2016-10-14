@@ -1067,19 +1067,17 @@ common::Error DBConnection::connect(const config_t& config) {
  */
 
 common::Error DBConnection::latencyMode(FastoObject* out) {
-  if (!isConnected()) {
-    DNOTREACHED();
-    return common::make_error_value("Not connected", common::Value::E_ERROR);
-  }
-
   if (!out) {
     DNOTREACHED();
     return common::make_error_value("Invalid input argument(s)", common::ErrorValue::E_ERROR);
   }
 
+  if (!isConnected()) {
+    return common::make_error_value("Not connected", common::Value::E_ERROR);
+  }
+
   FastoObjectCommandIPtr cmd = CreateCommand<Command>(out, "PING", common::Value::C_INNER);
   if (!cmd) {
-    DNOTREACHED();
     return common::make_error_value("Invalid createCommand input argument",
                                     common::ErrorValue::E_ERROR);
   }
@@ -1208,14 +1206,13 @@ common::Error DBConnection::sendSync(unsigned long long* payload) {
 }
 
 common::Error DBConnection::slaveMode(FastoObject* out) {
-  if (!isConnected()) {
-    DNOTREACHED();
-    return common::make_error_value("Not connected", common::Value::E_ERROR);
-  }
-
   if (!out) {
     DNOTREACHED();
     return common::make_error_value("Invalid input argument(s)", common::ErrorValue::E_ERROR);
+  }
+
+  if (!isConnected()) {
+    return common::make_error_value("Not connected", common::Value::E_ERROR);
   }
 
   unsigned long long payload = 0;
@@ -1226,7 +1223,6 @@ common::Error DBConnection::slaveMode(FastoObject* out) {
 
   FastoObjectCommandIPtr cmd = CreateCommand<Command>(out, SYNC_REQUEST, common::Value::C_INNER);
   if (!cmd) {
-    DNOTREACHED();
     return common::make_error_value("Invalid createCommand input argument",
                                     common::ErrorValue::E_ERROR);
   }
@@ -1265,14 +1261,13 @@ common::Error DBConnection::slaveMode(FastoObject* out) {
  * replication protocol in order
  * to fetch the RDB file from a remote server. */
 common::Error DBConnection::getRDB(FastoObject* out) {
-  if (!isConnected()) {
-    DNOTREACHED();
-    return common::make_error_value("Not connected", common::Value::E_ERROR);
-  }
-
   if (!out) {
     DNOTREACHED();
     return common::make_error_value("Invalid input argument(s)", common::ErrorValue::E_ERROR);
+  }
+
+  if (!isConnected()) {
+    return common::make_error_value("Not connected", common::Value::E_ERROR);
   }
 
   unsigned long long payload = 0;
@@ -1284,7 +1279,6 @@ common::Error DBConnection::getRDB(FastoObject* out) {
   common::ArrayValue* val = NULL;
   FastoObjectCommandIPtr cmd = CreateCommand<Command>(out, RDM_REQUEST, common::Value::C_INNER);
   if (!cmd) {
-    DNOTREACHED();
     return common::make_error_value("Invalid createCommand input argument",
                                     common::ErrorValue::E_ERROR);
   }
@@ -1357,6 +1351,10 @@ common::Error DBConnection::sendScan(unsigned long long* it, redisReply** out) {
     return common::make_error_value("Invalid input argument(s)", common::ErrorValue::E_ERROR);
   }
 
+  if (!isConnected()) {
+    return common::make_error_value("Not connected", common::Value::E_ERROR);
+  }
+
   redisReply* reply =
       reinterpret_cast<redisReply*>(redisCommand(connection_.handle_, "SCAN %llu", *it));
 
@@ -1383,13 +1381,13 @@ common::Error DBConnection::sendScan(unsigned long long* it, redisReply** out) {
 }
 
 common::Error DBConnection::dbkcount(size_t* size) {
-  if (!isConnected()) {
+  if (!size) {
     DNOTREACHED();
-    return common::make_error_value("Not connected", common::Value::E_ERROR);
+    return common::make_error_value("Invalid input argument(s)", common::ErrorValue::E_ERROR);
   }
 
-  if (!size) {
-    return common::make_error_value("Invalid input argument(s)", common::ErrorValue::E_ERROR);
+  if (!isConnected()) {
+    return common::make_error_value("Not connected", common::Value::E_ERROR);
   }
 
   redisReply* reply = reinterpret_cast<redisReply*>(redisCommand(connection_.handle_, DBSIZE));
@@ -1408,6 +1406,10 @@ common::Error DBConnection::getKeyTypes(redisReply* keys, int* types) {
   if (!types) {
     DNOTREACHED();
     return common::make_error_value("Invalid input argument(s)", common::ErrorValue::E_ERROR);
+  }
+
+  if (!isConnected()) {
+    return common::make_error_value("Not connected", common::Value::E_ERROR);
   }
 
   /* Pipeline TYPE commands */
@@ -1488,20 +1490,18 @@ common::Error DBConnection::getKeySizes(redisReply* keys, int* types, unsigned l
 }
 
 common::Error DBConnection::findBigKeys(FastoObject* out) {
-  if (!isConnected()) {
-    DNOTREACHED();
-    return common::make_error_value("Not connected", common::Value::E_ERROR);
-  }
-
   if (!out) {
     DNOTREACHED();
     return common::make_error_value("Invalid input argument(s)", common::ErrorValue::E_ERROR);
   }
 
+  if (!isConnected()) {
+    return common::make_error_value("Not connected", common::Value::E_ERROR);
+  }
+
   FastoObjectCommandIPtr cmd =
       CreateCommand<Command>(out, FIND_BIG_KEYS_REQUEST, common::Value::C_INNER);
   if (!cmd) {
-    DNOTREACHED();
     return common::make_error_value("Invalid createCommand input argument",
                                     common::ErrorValue::E_ERROR);
   }
@@ -1679,19 +1679,17 @@ common::Error DBConnection::findBigKeys(FastoObject* out) {
  */
 
 common::Error DBConnection::statMode(FastoObject* out) {
-  if (!isConnected()) {
-    DNOTREACHED();
-    return common::make_error_value("Not connected", common::Value::E_ERROR);
-  }
-
   if (!out) {
     DNOTREACHED();
     return common::make_error_value("Invalid input argument(s)", common::ErrorValue::E_ERROR);
   }
 
+  if (!isConnected()) {
+    return common::make_error_value("Not connected", common::Value::E_ERROR);
+  }
+
   FastoObjectCommandIPtr cmd = CreateCommand<Command>(out, INFO_REQUEST, common::Value::C_INNER);
   if (!cmd) {
-    DNOTREACHED();
     return common::make_error_value("Invalid createCommand input argument",
                                     common::ErrorValue::E_ERROR);
   }
@@ -1799,20 +1797,18 @@ common::Error DBConnection::statMode(FastoObject* out) {
  */
 
 common::Error DBConnection::scanMode(FastoObject* out) {
-  if (!isConnected()) {
-    DNOTREACHED();
-    return common::make_error_value("Not connected", common::Value::E_ERROR);
-  }
-
   if (!out) {
     DNOTREACHED();
     return common::make_error_value("Invalid input argument(s)", common::ErrorValue::E_ERROR);
   }
 
+  if (!isConnected()) {
+    return common::make_error_value("Not connected", common::Value::E_ERROR);
+  }
+
   FastoObjectCommandIPtr cmd =
       CreateCommand<Command>(out, SCAN_MODE_REQUEST, common::Value::C_INNER);
   if (!cmd) {
-    DNOTREACHED();
     return common::make_error_value("Invalid createCommand input argument",
                                     common::ErrorValue::E_ERROR);
   }
@@ -1990,7 +1986,7 @@ common::Error DBConnection::setTTLImpl(const key_t& key, ttl_t ttl) {
 }
 
 common::Error DBConnection::cliFormatReplyRaw(FastoObjectArray* ar, redisReply* r) {
-  if (!ar) {
+  if (!ar || !r) {
     DNOTREACHED();
     return common::make_error_value("Invalid input argument(s)", common::ErrorValue::E_ERROR);
   }
@@ -2107,6 +2103,10 @@ common::Error DBConnection::cliReadReply(FastoObject* out) {
     return common::make_error_value("Invalid input argument(s)", common::ErrorValue::E_ERROR);
   }
 
+  if (!isConnected()) {
+    return common::make_error_value("Not connected", common::Value::E_ERROR);
+  }
+
   void* _reply = NULL;
   if (redisGetReply(connection_.handle_, &_reply) != REDIS_OK) {
     /* Filter cases where we should reconnect */
@@ -2154,13 +2154,13 @@ common::Error DBConnection::cliReadReply(FastoObject* out) {
 }
 
 common::Error DBConnection::executeAsPipeline(const std::vector<FastoObjectCommandIPtr>& cmds) {
-  if (!isConnected()) {
+  if (cmds.empty()) {
     DNOTREACHED();
-    return common::make_error_value("Not connected", common::Value::E_ERROR);
+    return common::make_error_value("Invalid input command", common::ErrorValue::E_ERROR);
   }
 
-  if (cmds.empty()) {
-    return common::make_error_value("Invalid input command", common::ErrorValue::E_ERROR);
+  if (!isConnected()) {
+    return common::make_error_value("Not connected", common::Value::E_ERROR);
   }
 
   // start piplene mode
@@ -2201,8 +2201,12 @@ common::Error DBConnection::executeAsPipeline(const std::vector<FastoObjectComma
 }
 
 common::Error DBConnection::commonExec(int argc, const char** argv, FastoObject* out) {
-  if (!isConnected()) {
+  if (!out) {
     DNOTREACHED();
+    return common::make_error_value("Invalid input argument(s)", common::ErrorValue::E_ERROR);
+  }
+
+  if (!isConnected()) {
     return common::make_error_value("Not connected", common::Value::E_ERROR);
   }
 
@@ -2246,8 +2250,12 @@ common::Error DBConnection::help(int argc, const char** argv, FastoObject* out) 
 }
 
 common::Error DBConnection::monitor(int argc, const char** argv, FastoObject* out) {
-  if (!isConnected()) {
+  if (!out) {
     DNOTREACHED();
+    return common::make_error_value("Invalid input argument(s)", common::ErrorValue::E_ERROR);
+  }
+
+  if (!isConnected()) {
     return common::make_error_value("Not connected", common::Value::E_ERROR);
   }
 
@@ -2280,8 +2288,12 @@ common::Error DBConnection::monitor(int argc, const char** argv, FastoObject* ou
 }
 
 common::Error DBConnection::subscribe(int argc, const char** argv, FastoObject* out) {
-  if (!isConnected()) {
+  if (!out) {
     DNOTREACHED();
+    return common::make_error_value("Invalid input argument(s)", common::ErrorValue::E_ERROR);
+  }
+
+  if (!isConnected()) {
     return common::make_error_value("Not connected", common::Value::E_ERROR);
   }
 
@@ -2349,15 +2361,19 @@ common::Error DBConnection::lrange(const key_t& key,
         common::make_error_value(std::string(reply->str, reply->len), common::Value::E_ERROR);
     freeReplyObject(reply);
     return err;
-  } else {
-    NOTREACHED();
-    return common::Error();
   }
+
+  NOTREACHED();
+  return common::Error();
 }
 
 common::Error DBConnection::smembers(const key_t& key, key_and_value_t* loaded_key) {
-  if (!isConnected()) {
+  if (!loaded_key) {
     DNOTREACHED();
+    return common::make_error_value("Invalid input argument(s)", common::ErrorValue::E_ERROR);
+  }
+
+  if (!isConnected()) {
     return common::make_error_value("Not connected", common::Value::E_ERROR);
   }
 
@@ -2404,10 +2420,10 @@ common::Error DBConnection::smembers(const key_t& key, key_and_value_t* loaded_k
         common::make_error_value(std::string(reply->str, reply->len), common::Value::E_ERROR);
     freeReplyObject(reply);
     return err;
-  } else {
-    NOTREACHED();
-    return common::Error();
   }
+
+  NOTREACHED();
+  return common::Error();
 }
 
 common::Error DBConnection::zrange(const key_t& key,
@@ -2415,8 +2431,12 @@ common::Error DBConnection::zrange(const key_t& key,
                                    int stop,
                                    bool withscores,
                                    key_and_value_t* loaded_key) {
-  if (!isConnected()) {
+  if (!loaded_key) {
     DNOTREACHED();
+    return common::make_error_value("Invalid input argument(s)", common::ErrorValue::E_ERROR);
+  }
+
+  if (!isConnected()) {
     return common::make_error_value("Not connected", common::Value::E_ERROR);
   }
 
@@ -2479,15 +2499,19 @@ common::Error DBConnection::zrange(const key_t& key,
         common::make_error_value(std::string(reply->str, reply->len), common::Value::E_ERROR);
     freeReplyObject(reply);
     return err;
-  } else {
-    NOTREACHED();
-    return common::Error();
   }
+
+  NOTREACHED();
+  return common::Error();
 }
 
 common::Error DBConnection::hgetall(const key_t& key, key_and_value_t* loaded_key) {
-  if (!isConnected()) {
+  if (!loaded_key) {
     DNOTREACHED();
+    return common::make_error_value("Invalid input argument(s)", common::ErrorValue::E_ERROR);
+  }
+
+  if (!isConnected()) {
     return common::make_error_value("Not connected", common::Value::E_ERROR);
   }
 
@@ -2535,10 +2559,10 @@ common::Error DBConnection::hgetall(const key_t& key, key_and_value_t* loaded_ke
         common::make_error_value(std::string(reply->str, reply->len), common::Value::E_ERROR);
     freeReplyObject(reply);
     return err;
-  } else {
-    NOTREACHED();
-    return common::Error();
   }
+
+  NOTREACHED();
+  return common::Error();
 }
 
 }  // namespace redis

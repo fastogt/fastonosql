@@ -183,7 +183,7 @@ const QIcon& GuiFactory::modeIcon(core::ConnectionMode mode) const {
     return i;
   } else {
     static QIcon err(":" PROJECT_NAME_LOWERCASE "/images/64x64/error.png");
-    NOTREACHED();
+    DNOTREACHED();
     return err;
   }
 }
@@ -222,7 +222,7 @@ const QIcon& GuiFactory::icon(common::Value::Type type) const {
       return er;
     default:
       static QIcon err(":" PROJECT_NAME_LOWERCASE "/images/64x64/error.png");
-      NOTREACHED();
+      DNOTREACHED();
       return err;
   }
 }

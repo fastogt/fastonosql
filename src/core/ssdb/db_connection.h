@@ -57,7 +57,9 @@ class DBConnection : public core::CDBConnection<NativeConnection, Config, SSDB> 
 
   common::Error info(const char* args, ServerInfo::Stats* statsout) WARN_UNUSED_RESULT;
   common::Error auth(const std::string& password) WARN_UNUSED_RESULT;
-  common::Error setx(const std::string& key, const std::string& value, int ttl) WARN_UNUSED_RESULT;
+  common::Error setx(const std::string& key,
+                     const std::string& value,
+                     ttl_t ttl) WARN_UNUSED_RESULT;
   common::Error incr(const std::string& key, int64_t incrby, int64_t* ret) WARN_UNUSED_RESULT;
   common::Error keys(const std::string& key_start,
                      const std::string& key_end,

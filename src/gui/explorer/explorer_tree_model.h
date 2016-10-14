@@ -200,9 +200,7 @@ class ExplorerTreeModel : public common::qt::gui::TreeModel {
                  core::IDataBaseInfoSPtr db,
                  const core::NKey& old_key,
                  const core::NKey& new_key);
-  void updateValue(core::IServer* server,
-                   core::IDataBaseInfoSPtr db,
-                   const core::NDbKValue& dbv);
+  void updateValue(core::IServer* server, core::IDataBaseInfoSPtr db, const core::NDbKValue& dbv);
   void removeAllKeys(core::IServer* server, core::IDataBaseInfoSPtr db);
 
  private:

@@ -326,11 +326,8 @@ IConnectionSettingsRemote* IConnectionSettingsRemote::createFromType(
     remote = new ssdb::ConnectionSettings(conName);
   }
 #endif
-  if (!remote) {
-    NOTREACHED();
-    return nullptr;
-  }
 
+  CHECK(remote);
   remote->setHost(host);
   return remote;
 }
@@ -349,11 +346,8 @@ IConnectionSettingsRemoteSSH* IConnectionSettingsRemoteSSH::createFromType(
     remote = new redis::ConnectionSettings(conName);
   }
 #endif
-  if (!remote) {
-    NOTREACHED();
-    return nullptr;
-  }
 
+  CHECK(remote);
   remote->setHost(host);
   return remote;
 }

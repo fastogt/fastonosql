@@ -76,9 +76,10 @@ common::Value* ServerInfo::Stats::valueByIndex(unsigned char index) const {
     case 0:
       return new common::StringValue(db_path);
     default:
-      NOTREACHED();
       break;
   }
+
+  NOTREACHED();
   return nullptr;
 }
 
@@ -91,9 +92,10 @@ common::Value* ServerInfo::valueByIndexes(unsigned char property, unsigned char 
     case 0:
       return stats_.valueByIndex(field);
     default:
-      NOTREACHED();
       break;
   }
+
+  NOTREACHED();
   return nullptr;
 }
 
