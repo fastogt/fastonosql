@@ -270,7 +270,21 @@ void ExplorerDatabaseItem::createKey(const core::NDbKValue& key) {
   dbs->execute(req);
 }
 
-void ExplorerDatabaseItem::editKey(const core::NDbKValue& key, const core::NValue& value) {}
+void ExplorerDatabaseItem::editKey(const core::NDbKValue& key, const core::NValue& value) {
+  core::IDatabaseSPtr dbs = db();
+  CHECK(dbs);
+  core::translator_t tran = dbs->translator();
+  std::string cmd_str;
+  core::NDbKValue copy_key = key;
+  copy_key.setValue(value);
+  common::Error err = tran->createKeyCommand(copy_key, &cmd_str);
+  if (err && err->isError()) {
+    return;
+  }
+
+  core::events_info::ExecuteInfoRequest req(this, cmd_str);
+  dbs->execute(req);
+}
 
 void ExplorerDatabaseItem::setTTL(const core::NKey& key, core::ttl_t ttl) {
   core::IDatabaseSPtr dbs = db();
