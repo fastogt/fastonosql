@@ -51,7 +51,7 @@ common::Error testConnection(ConnectionSettings* settings);
 class DBConnection : public core::CDBConnection<NativeConnection, Config, SSDB> {
  public:
   typedef core::CDBConnection<NativeConnection, Config, SSDB> base_class;
-  DBConnection(CDBConnectionClient* client);
+  explicit DBConnection(CDBConnectionClient* client);
 
   static const char* versionApi();
 

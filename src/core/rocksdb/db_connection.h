@@ -52,7 +52,7 @@ common::Error testConnection(ConnectionSettings* settings);
 class DBConnection : public core::CDBConnection<NativeConnection, Config, ROCKSDB> {
  public:
   typedef core::CDBConnection<NativeConnection, Config, ROCKSDB> base_class;
-  DBConnection(CDBConnectionClient* client);
+  explicit DBConnection(CDBConnectionClient* client);
 
   static const char* versionApi();
 

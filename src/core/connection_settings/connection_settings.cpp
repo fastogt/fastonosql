@@ -327,7 +327,11 @@ IConnectionSettingsRemote* IConnectionSettingsRemote::createFromType(
   }
 #endif
 
-  CHECK(remote);
+  if (!remote) {
+    NOTREACHED();
+    return nullptr;
+  }
+
   remote->setHost(host);
   return remote;
 }
@@ -347,7 +351,11 @@ IConnectionSettingsRemoteSSH* IConnectionSettingsRemoteSSH::createFromType(
   }
 #endif
 
-  CHECK(remote);
+  if (!remote) {
+    NOTREACHED();
+    return nullptr;
+  }
+
   remote->setHost(host);
   return remote;
 }

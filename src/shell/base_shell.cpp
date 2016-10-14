@@ -106,7 +106,11 @@ BaseShell::BaseShell(core::connectionTypes type, bool showAutoCompl, QWidget* pa
   registerImage(BaseQsciLexer::Command,
                 gui::GuiFactory::instance().commandIcon(type).pixmap(image_size));
 
-  CHECK(lex);
+  if (!lex) {
+    NOTREACHED();
+    return;
+  }
+
   setLexer(lex);
   lex->setFont(gui::GuiFactory::instance().font());
 }

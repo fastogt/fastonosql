@@ -69,9 +69,7 @@ class NKey {
 };
 
 typedef std::vector<NKey> NKeys;
-
 typedef common::ValueSPtr NValue;
-typedef NValue value_t;
 
 class NDbKValue {
  public:

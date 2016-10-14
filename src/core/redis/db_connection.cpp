@@ -656,7 +656,7 @@ common::Error get(CommandHandler* handler, int argc, const char** argv, FastoObj
     return err;
   }
 
-  value_t val = key_loaded.value();
+  NValue val = key_loaded.value();
   common::Value* copy = val->deepCopy();
   FastoObject* child = new FastoObject(out, copy, redis->delimiter());
   out->addChildren(child);
@@ -676,7 +676,7 @@ common::Error lrange(CommandHandler* handler, int argc, const char** argv, Fasto
     return err;
   }
 
-  value_t val = key_loaded.value();
+  NValue val = key_loaded.value();
   common::Value* copy = val->deepCopy();
   FastoObject* child = new FastoObject(out, copy, redis->delimiter());
   out->addChildren(child);
@@ -694,7 +694,7 @@ common::Error smembers(CommandHandler* handler, int argc, const char** argv, Fas
     return err;
   }
 
-  value_t val = key_loaded.value();
+  NValue val = key_loaded.value();
   common::Value* copy = val->deepCopy();
   FastoObject* child = new FastoObject(out, copy, redis->delimiter());
   out->addChildren(child);
@@ -715,7 +715,7 @@ common::Error zrange(CommandHandler* handler, int argc, const char** argv, Fasto
     return err;
   }
 
-  value_t val = key_loaded.value();
+  NValue val = key_loaded.value();
   common::Value* copy = val->deepCopy();
   FastoObject* child = new FastoObject(out, copy, redis->delimiter());
   out->addChildren(child);
@@ -733,7 +733,7 @@ common::Error hgetall(CommandHandler* handler, int argc, const char** argv, Fast
     return err;
   }
 
-  value_t val = key_loaded.value();
+  NValue val = key_loaded.value();
   common::Value* copy = val->deepCopy();
   FastoObject* child = new FastoObject(out, copy, redis->delimiter());
   out->addChildren(child);
@@ -2325,10 +2325,7 @@ common::Error DBConnection::subscribe(int argc, const char** argv, FastoObject* 
   return common::Error();
 }
 
-common::Error DBConnection::lrange(const NKey& key,
-                                   int start,
-                                   int stop,
-                                   NDbKValue* loaded_key) {
+common::Error DBConnection::lrange(const NKey& key, int start, int stop, NDbKValue* loaded_key) {
   if (!isConnected()) {
     DNOTREACHED();
     return common::make_error_value("Not connected", common::Value::E_ERROR);

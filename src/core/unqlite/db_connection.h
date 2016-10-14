@@ -48,7 +48,7 @@ common::Error testConnection(ConnectionSettings* settings);
 class DBConnection : public core::CDBConnection<NativeConnection, Config, UNQLITE> {
  public:
   typedef core::CDBConnection<NativeConnection, Config, UNQLITE> base_class;
-  DBConnection(CDBConnectionClient* client);
+  explicit DBConnection(CDBConnectionClient* client);
 
   static const char* versionApi();
 

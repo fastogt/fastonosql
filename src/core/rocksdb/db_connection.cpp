@@ -501,7 +501,7 @@ common::Error get(CommandHandler* handler, int argc, const char** argv, FastoObj
     return err;
   }
 
-  value_t val = key_loaded.value();
+  NValue val = key_loaded.value();
   common::Value* copy = val->deepCopy();
   FastoObject* child = new FastoObject(out, copy, unqlite->delimiter());
   out->addChildren(child);
