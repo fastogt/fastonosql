@@ -68,8 +68,7 @@ class NKey {
   ttl_t ttl_;
 };
 
-typedef NKey key_t;
-typedef std::vector<key_t> keys_t;
+typedef std::vector<NKey> NKeys;
 
 typedef common::ValueSPtr NValue;
 typedef NValue value_t;
@@ -97,8 +96,7 @@ class NDbKValue {
   NValue value_;
 };
 
-typedef NDbKValue key_and_value_t;
-typedef std::vector<key_and_value_t> key_and_value_array_t;
+typedef std::vector<NDbKValue> NDbKValues;
 
 }  // namespace core
 }  // namespace fastonosql

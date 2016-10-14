@@ -683,25 +683,25 @@ void IDriver::onCurrentDataBaseChanged(IDataBaseInfo* info) {
   current_database_info_.reset(info->Clone());
 }
 
-void IDriver::onKeysRemoved(const keys_t& keys) {
+void IDriver::onKeysRemoved(const NKeys& keys) {
   for (size_t i = 0; i < keys.size(); ++i) {
     emit keyRemoved(current_database_info_, keys[i]);
   }
 }
 
-void IDriver::onKeyAdded(const key_and_value_t& key) {
+void IDriver::onKeyAdded(const NDbKValue& key) {
   emit keyAdded(current_database_info_, key);
 }
 
-void IDriver::onKeyLoaded(const key_and_value_t& key) {
+void IDriver::onKeyLoaded(const NDbKValue& key) {
   emit keyLoaded(current_database_info_, key);
 }
 
-void IDriver::onKeyRenamed(const key_t& key, const std::string& new_key) {
+void IDriver::onKeyRenamed(const NKey& key, const std::string& new_key) {
   emit keyRenamed(current_database_info_, key, new_key);
 }
 
-void IDriver::onKeyTTLChanged(const key_t& key, ttl_t ttl) {
+void IDriver::onKeyTTLChanged(const NKey& key, ttl_t ttl) {
   emit keyTTLChanged(current_database_info_, key, ttl);
 }
 }  // namespace core

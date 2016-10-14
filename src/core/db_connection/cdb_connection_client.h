@@ -20,7 +20,7 @@
 
 #include <string>  // for string
 
-#include "core/db_key.h"  // for key_and_value_t, key_t, keys_t, ttl_t
+#include "core/db_key.h"  // for NDbKValue, NKey, NKeys, ttl_t
 
 namespace fastonosql {
 namespace core {
@@ -33,11 +33,11 @@ namespace core {
 class CDBConnectionClient {
  public:
   virtual void onCurrentDataBaseChanged(IDataBaseInfo* info) = 0;
-  virtual void onKeysRemoved(const keys_t& keys) = 0;
-  virtual void onKeyAdded(const key_and_value_t& key) = 0;
-  virtual void onKeyLoaded(const key_and_value_t& key) = 0;
-  virtual void onKeyRenamed(const key_t& key, const std::string& new_key) = 0;
-  virtual void onKeyTTLChanged(const key_t& key, ttl_t ttl) = 0;
+  virtual void onKeysRemoved(const NKeys& keys) = 0;
+  virtual void onKeyAdded(const NDbKValue& key) = 0;
+  virtual void onKeyLoaded(const NDbKValue& key) = 0;
+  virtual void onKeyRenamed(const NKey& key, const std::string& new_key) = 0;
+  virtual void onKeyTTLChanged(const NKey& key, ttl_t ttl) = 0;
 };
 }  // namespace core
 }  // namespace fastonosql

@@ -866,7 +866,7 @@ common::Error DBConnection::selectImpl(const std::string& name, IDataBaseInfo** 
   return common::Error();
 }
 
-common::Error DBConnection::delImpl(const keys_t& keys, keys_t* deleted_keys) {
+common::Error DBConnection::delImpl(const NKeys& keys, NKeys* deleted_keys) {
   for (size_t i = 0; i < keys.size(); ++i) {
     NKey key = keys[i];
     std::string key_str = key.key();
@@ -881,7 +881,7 @@ common::Error DBConnection::delImpl(const keys_t& keys, keys_t* deleted_keys) {
   return common::Error();
 }
 
-common::Error DBConnection::renameImpl(const key_t& key, const std::string& new_key) {
+common::Error DBConnection::renameImpl(const NKey& key, const std::string& new_key) {
   std::string key_str = key.key();
   std::string value_str;
   common::Error err = getInner(key_str, &value_str);
@@ -902,7 +902,7 @@ common::Error DBConnection::renameImpl(const key_t& key, const std::string& new_
   return common::Error();
 }
 
-common::Error DBConnection::setImpl(const key_and_value_t& key, key_and_value_t* added_key) {
+common::Error DBConnection::setImpl(const NDbKValue& key, NDbKValue* added_key) {
   std::string key_str = key.keyString();
   std::string value_str = key.valueString();
   common::Error err = setInner(key_str, value_str);
@@ -914,7 +914,7 @@ common::Error DBConnection::setImpl(const key_and_value_t& key, key_and_value_t*
   return common::Error();
 }
 
-common::Error DBConnection::getImpl(const key_t& key, key_and_value_t* loaded_key) {
+common::Error DBConnection::getImpl(const NKey& key, NDbKValue* loaded_key) {
   std::string key_str = key.key();
   std::string value_str;
   common::Error err = getInner(key_str, &value_str);
@@ -923,11 +923,11 @@ common::Error DBConnection::getImpl(const key_t& key, key_and_value_t* loaded_ke
   }
 
   common::StringValue* val = common::Value::createStringValue(value_str);
-  *loaded_key = key_and_value_t(key, common::make_value(val));
+  *loaded_key = NDbKValue(key, common::make_value(val));
   return common::Error();
 }
 
-common::Error DBConnection::setTTLImpl(const key_t& key, ttl_t ttl) {
+common::Error DBConnection::setTTLImpl(const NKey& key, ttl_t ttl) {
   UNUSED(key);
   UNUSED(ttl);
   return common::make_error_value("Sorry, but now " PROJECT_NAME_TITLE
@@ -984,7 +984,7 @@ common::Error get(CommandHandler* handler, int argc, const char** argv, FastoObj
 
   NKey key(argv[0]);
   DBConnection* unqlite = static_cast<DBConnection*>(handler);
-  key_and_value_t key_loaded;
+  NDbKValue key_loaded;
   common::Error err = unqlite->get(key, &key_loaded);
   if (err && err->isError()) {
     return err;
@@ -1017,10 +1017,10 @@ common::Error set(CommandHandler* handler, int argc, const char** argv, FastoObj
 
   NKey key(argv[0]);
   common::StringValue* string_val = common::Value::createStringValue(argv[1]);
-  key_and_value_t kv(key, common::make_value(string_val));
+  NDbKValue kv(key, common::make_value(string_val));
 
   DBConnection* red = static_cast<DBConnection*>(handler);
-  key_and_value_t key_added;
+  NDbKValue key_added;
   common::Error err = red->set(kv, &key_added);
   if (err && err->isError()) {
     return err;
@@ -1047,13 +1047,13 @@ common::Error setx(CommandHandler* handler, int argc, const char** argv, FastoOb
 }
 
 common::Error del(CommandHandler* handler, int argc, const char** argv, FastoObject* out) {
-  keys_t keysdel;
+  NKeys keysdel;
   for (int i = 0; i < argc; ++i) {
     keysdel.push_back(NKey(argv[i]));
   }
 
   DBConnection* ssdb = static_cast<DBConnection*>(handler);
-  keys_t keys_deleted;
+  NKeys keys_deleted;
   common::Error err = ssdb->del(keysdel, &keys_deleted);
   if (err && err->isError()) {
     return err;
@@ -1086,7 +1086,7 @@ common::Error set_ttl(CommandHandler* handler, int argc, const char** argv, Fast
   UNUSED(argc);
 
   DBConnection* ssdb = static_cast<DBConnection*>(handler);
-  key_t key(argv[0]);
+  NKey key(argv[0]);
   ttl_t ttl = common::ConvertFromString<ttl_t>(argv[1]);
   common::Error er = ssdb->setTTL(key, ttl);
   if (!er) {

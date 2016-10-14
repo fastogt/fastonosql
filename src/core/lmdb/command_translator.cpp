@@ -32,7 +32,7 @@ namespace core {
 namespace lmdb {
 CommandTranslator::CommandTranslator() {}
 
-common::Error CommandTranslator::createKeyCommandImpl(const key_and_value_t& key,
+common::Error CommandTranslator::createKeyCommandImpl(const NDbKValue& key,
                                                       std::string* cmdstring) const {
   NValue val = key.value();
   common::Value* rval = val.get();
@@ -42,7 +42,7 @@ common::Error CommandTranslator::createKeyCommandImpl(const key_and_value_t& key
   return common::Error();
 }
 
-common::Error CommandTranslator::loadKeyCommandImpl(const key_t& key,
+common::Error CommandTranslator::loadKeyCommandImpl(const NKey& key,
                                                     common::Value::Type type,
                                                     std::string* cmdstring) const {
   UNUSED(type);
@@ -52,14 +52,14 @@ common::Error CommandTranslator::loadKeyCommandImpl(const key_t& key,
   return common::Error();
 }
 
-common::Error CommandTranslator::deleteKeyCommandImpl(const key_t& key,
+common::Error CommandTranslator::deleteKeyCommandImpl(const NKey& key,
                                                       std::string* cmdstring) const {
   std::string key_str = key.key();
   *cmdstring = common::MemSPrintf(LMDB_DELETE_KEY_PATTERN_1ARGS_S, key_str);
   return common::Error();
 }
 
-common::Error CommandTranslator::renameKeyCommandImpl(const key_t& key,
+common::Error CommandTranslator::renameKeyCommandImpl(const NKey& key,
                                                       const std::string& new_name,
                                                       std::string* cmdstring) const {
   std::string key_str = key.key();
@@ -67,7 +67,7 @@ common::Error CommandTranslator::renameKeyCommandImpl(const key_t& key,
   return common::Error();
 }
 
-common::Error CommandTranslator::changeKeyTTLCommandImpl(const key_t& key,
+common::Error CommandTranslator::changeKeyTTLCommandImpl(const NKey& key,
                                                          ttl_t ttl,
                                                          std::string* cmdstring) const {
   UNUSED(key);

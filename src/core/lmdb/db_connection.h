@@ -27,7 +27,7 @@
 #include "core/db_connection/cdb_connection.h"  // for CDBConnection
 #include "core/command/command_info.h"          // for UNDEFINED_EXAMPLE_STR, UNDEFINED_...
 #include "core/connection_types.h"              // for connectionTypes::LMDB
-#include "core/db_key.h"                        // for key_and_value_t, key_t, keys_t
+#include "core/db_key.h"                        // for NDbKValue, NKey, NKeys
 
 #include "core/lmdb/server_info.h"  // for ServerInfo
 #include "core/lmdb/config.h"
@@ -101,11 +101,11 @@ class DBConnection : public core::CDBConnection<NativeConnection, Config, LMDB> 
   common::Error delInner(const std::string& key) WARN_UNUSED_RESULT;
 
   virtual common::Error selectImpl(const std::string& name, IDataBaseInfo** info) override;
-  virtual common::Error setImpl(const key_and_value_t& key, key_and_value_t* added_key) override;
-  virtual common::Error getImpl(const key_t& key, key_and_value_t* loaded_key) override;
-  virtual common::Error delImpl(const keys_t& keys, keys_t* deleted_keys) override;
-  virtual common::Error renameImpl(const key_t& key, const std::string& new_key) override;
-  virtual common::Error setTTLImpl(const key_t& key, ttl_t ttl) override;
+  virtual common::Error setImpl(const NDbKValue& key, NDbKValue* added_key) override;
+  virtual common::Error getImpl(const NKey& key, NDbKValue* loaded_key) override;
+  virtual common::Error delImpl(const NKeys& keys, NKeys* deleted_keys) override;
+  virtual common::Error renameImpl(const NKey& key, const std::string& new_key) override;
+  virtual common::Error setTTLImpl(const NKey& key, ttl_t ttl) override;
 };
 
 common::Error select(CommandHandler* handler, int argc, const char** argv, FastoObject* out);

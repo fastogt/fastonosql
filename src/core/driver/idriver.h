@@ -139,11 +139,11 @@ class IDriver : public QObject, public CDBConnectionClient {
   virtual common::Error executeImpl(int argc, const char** argv, FastoObject* out) = 0;
 
   virtual void onCurrentDataBaseChanged(IDataBaseInfo* info) override;
-  virtual void onKeysRemoved(const keys_t& keys) override;
-  virtual void onKeyAdded(const key_and_value_t& key) override;
-  virtual void onKeyLoaded(const key_and_value_t& key) override;
-  virtual void onKeyRenamed(const key_t& key, const std::string& new_key) override;
-  virtual void onKeyTTLChanged(const key_t& key, ttl_t ttl) override;
+  virtual void onKeysRemoved(const NKeys& keys) override;
+  virtual void onKeyAdded(const NDbKValue& key) override;
+  virtual void onKeyLoaded(const NDbKValue& key) override;
+  virtual void onKeyRenamed(const NKey& key, const std::string& new_key) override;
+  virtual void onKeyTTLChanged(const NKey& key, ttl_t ttl) override;
 
   // internal methods
   virtual IServerInfoSPtr makeServerInfoFromString(const std::string& val) = 0;

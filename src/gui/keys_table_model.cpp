@@ -174,7 +174,7 @@ void KeysTableModel::updateKey(const core::NKey& key) {
   for (size_t i = 0; i < data_.size(); ++i) {
     KeyTableItem* it = dynamic_cast<KeyTableItem*>(data_[i]);  // +
     CHECK(it);
-    core::key_and_value_t dbv = it->dbv();
+    core::NDbKValue dbv = it->dbv();
     if (dbv.keyString() == key.key()) {
       it->setKey(key);
       updateItem(index(i, KeyTableItem::kKey, QModelIndex()),

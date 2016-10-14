@@ -31,7 +31,7 @@
 #include "core/connection_types.h"              // for connectionTypes::REDIS
 #include "core/db_connection/cdb_connection.h"  // for CDBConnection
 #include "core/db_connection/db_connection.h"
-#include "core/db_key.h"        // for key_and_value_t, key_t, etc
+#include "core/db_key.h"        // for NDbKValue, NKey, etc
 #include "core/redis/config.h"  // for Config
 #include "core/server/iserver_info.h"
 #include "core/ssh_info.h"  // for SSHInfo
@@ -2048,22 +2048,22 @@ class DBConnection : public core::CDBConnection<NativeConnection, RConfig, REDIS
                           const char** argv,
                           FastoObject* out) WARN_UNUSED_RESULT;  // interrupt
 
-  common::Error lrange(const key_t& key, int start, int stop, key_and_value_t* loaded_key);
-  common::Error smembers(const key_t& key, key_and_value_t* loaded_key);
-  common::Error zrange(const key_t& key,
+  common::Error lrange(const NKey& key, int start, int stop, NDbKValue* loaded_key);
+  common::Error smembers(const NKey& key, NDbKValue* loaded_key);
+  common::Error zrange(const NKey& key,
                        int start,
                        int stop,
                        bool withscores,
-                       key_and_value_t* loaded_key);
-  common::Error hgetall(const key_t& key, key_and_value_t* loaded_key);
+                       NDbKValue* loaded_key);
+  common::Error hgetall(const NKey& key, NDbKValue* loaded_key);
 
  private:
   virtual common::Error selectImpl(const std::string& name, IDataBaseInfo** info) override;
-  virtual common::Error delImpl(const keys_t& keys, keys_t* deleted_keys) override;
-  virtual common::Error setImpl(const key_and_value_t& key, key_and_value_t* added_key) override;
-  virtual common::Error getImpl(const key_t& key, key_and_value_t* loaded_key) override;
-  virtual common::Error renameImpl(const key_t& key, const std::string& new_key) override;
-  virtual common::Error setTTLImpl(const key_t& key, ttl_t ttl) override;
+  virtual common::Error delImpl(const NKeys& keys, NKeys* deleted_keys) override;
+  virtual common::Error setImpl(const NDbKValue& key, NDbKValue* added_key) override;
+  virtual common::Error getImpl(const NKey& key, NDbKValue* loaded_key) override;
+  virtual common::Error renameImpl(const NKey& key, const std::string& new_key) override;
+  virtual common::Error setTTLImpl(const NKey& key, ttl_t ttl) override;
 
   common::Error sendSync(unsigned long long* payload) WARN_UNUSED_RESULT;
   common::Error sendScan(unsigned long long* it, redisReply** out) WARN_UNUSED_RESULT;

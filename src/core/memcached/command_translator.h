@@ -31,22 +31,20 @@ namespace core {
 namespace memcached {
 class CommandTranslator : public ICommandTranslator {
  public:
-  typedef NKey key_t;
-  typedef NDbKValue key_and_value_t;
   CommandTranslator();
 
  private:
-  virtual common::Error createKeyCommandImpl(const key_and_value_t& key,
+  virtual common::Error createKeyCommandImpl(const NDbKValue& key,
                                              std::string* cmdstring) const override;
-  virtual common::Error loadKeyCommandImpl(const key_t& key,
+  virtual common::Error loadKeyCommandImpl(const NKey& key,
                                            common::Value::Type type,
                                            std::string* cmdstring) const override;
-  virtual common::Error deleteKeyCommandImpl(const key_t& key,
+  virtual common::Error deleteKeyCommandImpl(const NKey& key,
                                              std::string* cmdstring) const override;
-  virtual common::Error renameKeyCommandImpl(const key_t& key,
+  virtual common::Error renameKeyCommandImpl(const NKey& key,
                                              const std::string& new_name,
                                              std::string* cmdstring) const override;
-  virtual common::Error changeKeyTTLCommandImpl(const key_t& key,
+  virtual common::Error changeKeyTTLCommandImpl(const NKey& key,
                                                 ttl_t ttl,
                                                 std::string* cmdstring) const override;
 };

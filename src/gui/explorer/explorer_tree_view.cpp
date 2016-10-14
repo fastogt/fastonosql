@@ -963,7 +963,7 @@ void ExplorerTreeView::setTTL() {
 
   bool ok;
   QString name = node->name();
-  core::key_t key = node->key();
+  core::NKey key = node->key();
   int ttl = QInputDialog::getInt(this, trSetTTLOnKeyTemplate_1S.arg(name), trTTLValue, key.ttl(),
                                  -1, INT32_MAX, 100, &ok);
   if (ok) {

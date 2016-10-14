@@ -608,12 +608,12 @@ common::Error select(CommandHandler* handler, int argc, const char** argv, Fasto
 common::Error del(CommandHandler* handler, int argc, const char** argv, FastoObject* out) {
   DBConnection* red = static_cast<DBConnection*>(handler);
 
-  keys_t keysdel;
+  NKeys keysdel;
   for (int i = 0; i < argc; ++i) {
     keysdel.push_back(NKey(argv[i]));
   }
 
-  keys_t keysdeleted;
+  NKeys keysdeleted;
   common::Error err = red->del(keysdel, &keysdeleted);
   if (err && err->isError()) {
     return err;
@@ -630,10 +630,10 @@ common::Error set(CommandHandler* handler, int argc, const char** argv, FastoObj
 
   NKey key(argv[0]);
   common::StringValue* string_val = common::Value::createStringValue(argv[1]);
-  key_and_value_t kv(key, common::make_value(string_val));
+  NDbKValue kv(key, common::make_value(string_val));
 
   DBConnection* red = static_cast<DBConnection*>(handler);
-  key_and_value_t key_added;
+  NDbKValue key_added;
   common::Error err = red->set(kv, &key_added);
   if (err && err->isError()) {
     return err;
@@ -650,7 +650,7 @@ common::Error get(CommandHandler* handler, int argc, const char** argv, FastoObj
 
   NKey key(argv[0]);
   DBConnection* redis = static_cast<DBConnection*>(handler);
-  key_and_value_t key_loaded;
+  NDbKValue key_loaded;
   common::Error err = redis->get(key, &key_loaded);
   if (err && err->isError()) {
     return err;
@@ -670,7 +670,7 @@ common::Error lrange(CommandHandler* handler, int argc, const char** argv, Fasto
   int start = atoi(argv[1]);
   int stop = atoi(argv[2]);
   DBConnection* redis = static_cast<DBConnection*>(handler);
-  key_and_value_t key_loaded;
+  NDbKValue key_loaded;
   common::Error err = redis->lrange(key, start, stop, &key_loaded);
   if (err && err->isError()) {
     return err;
@@ -688,7 +688,7 @@ common::Error smembers(CommandHandler* handler, int argc, const char** argv, Fas
 
   NKey key(argv[0]);
   DBConnection* redis = static_cast<DBConnection*>(handler);
-  key_and_value_t key_loaded;
+  NDbKValue key_loaded;
   common::Error err = redis->smembers(key, &key_loaded);
   if (err && err->isError()) {
     return err;
@@ -709,7 +709,7 @@ common::Error zrange(CommandHandler* handler, int argc, const char** argv, Fasto
   int stop = atoi(argv[2]);
   bool ws = argc == 4 && strncmp(argv[3], "WITHSCORES", 10) == 0;
   DBConnection* redis = static_cast<DBConnection*>(handler);
-  key_and_value_t key_loaded;
+  NDbKValue key_loaded;
   common::Error err = redis->zrange(key, start, stop, ws, &key_loaded);
   if (err && err->isError()) {
     return err;
@@ -727,7 +727,7 @@ common::Error hgetall(CommandHandler* handler, int argc, const char** argv, Fast
 
   NKey key(argv[0]);
   DBConnection* redis = static_cast<DBConnection*>(handler);
-  key_and_value_t key_loaded;
+  NDbKValue key_loaded;
   common::Error err = redis->hgetall(key, &key_loaded);
   if (err && err->isError()) {
     return err;
@@ -1862,7 +1862,7 @@ common::Error DBConnection::selectImpl(const std::string& name, IDataBaseInfo** 
   return common::Error();
 }
 
-common::Error DBConnection::delImpl(const keys_t& keys, keys_t* deleted_keys) {
+common::Error DBConnection::delImpl(const NKeys& keys, NKeys* deleted_keys) {
   for (size_t i = 0; i < keys.size(); ++i) {
     NKey key = keys[i];
     std::string del_cmd;
@@ -1886,7 +1886,7 @@ common::Error DBConnection::delImpl(const keys_t& keys, keys_t* deleted_keys) {
   return common::Error();
 }
 
-common::Error DBConnection::setImpl(const key_and_value_t& key, key_and_value_t* added_key) {
+common::Error DBConnection::setImpl(const NDbKValue& key, NDbKValue* added_key) {
   std::string key_str = key.keyString();
   std::string value_str = key.valueString();
   redisReply* reply = reinterpret_cast<redisReply*>(
@@ -1906,7 +1906,7 @@ common::Error DBConnection::setImpl(const key_and_value_t& key, key_and_value_t*
   return common::Error();
 }
 
-common::Error DBConnection::getImpl(const key_t& key, key_and_value_t* loaded_key) {
+common::Error DBConnection::getImpl(const NKey& key, NDbKValue* loaded_key) {
   std::string key_str = key.key();
   redisReply* reply =
       reinterpret_cast<redisReply*>(redisCommand(connection_.handle_, "GET %s", key_str.c_str()));
@@ -1927,12 +1927,12 @@ common::Error DBConnection::getImpl(const key_t& key, key_and_value_t* loaded_ke
   } else {
     NOTREACHED();
   }
-  *loaded_key = key_and_value_t(key, common::make_value(val));
+  *loaded_key = NDbKValue(key, common::make_value(val));
   freeReplyObject(reply);
   return common::Error();
 }
 
-common::Error DBConnection::renameImpl(const key_t& key, const std::string& new_key) {
+common::Error DBConnection::renameImpl(const NKey& key, const std::string& new_key) {
   translator_t tran = translator();
   std::string rename_cmd;
   common::Error err = tran->renameKeyCommand(key, new_key, &rename_cmd);
@@ -1955,7 +1955,7 @@ common::Error DBConnection::renameImpl(const key_t& key, const std::string& new_
   return common::Error();
 }
 
-common::Error DBConnection::setTTLImpl(const key_t& key, ttl_t ttl) {
+common::Error DBConnection::setTTLImpl(const NKey& key, ttl_t ttl) {
   std::string key_str = key.key();
   translator_t tran = translator();
   std::string ttl_cmd;
@@ -2325,10 +2325,10 @@ common::Error DBConnection::subscribe(int argc, const char** argv, FastoObject* 
   return common::Error();
 }
 
-common::Error DBConnection::lrange(const key_t& key,
+common::Error DBConnection::lrange(const NKey& key,
                                    int start,
                                    int stop,
-                                   key_and_value_t* loaded_key) {
+                                   NDbKValue* loaded_key) {
   if (!isConnected()) {
     DNOTREACHED();
     return common::make_error_value("Not connected", common::Value::E_ERROR);
@@ -2350,7 +2350,7 @@ common::Error DBConnection::lrange(const key_t& key,
       return err;
     }
 
-    *loaded_key = key_and_value_t(key, common::make_value(val));
+    *loaded_key = NDbKValue(key, common::make_value(val));
     if (client_) {
       client_->onKeyLoaded(*loaded_key);
     }
@@ -2367,7 +2367,7 @@ common::Error DBConnection::lrange(const key_t& key,
   return common::Error();
 }
 
-common::Error DBConnection::smembers(const key_t& key, key_and_value_t* loaded_key) {
+common::Error DBConnection::smembers(const NKey& key, NDbKValue* loaded_key) {
   if (!loaded_key) {
     DNOTREACHED();
     return common::make_error_value("Invalid input argument(s)", common::ErrorValue::E_ERROR);
@@ -2409,7 +2409,7 @@ common::Error DBConnection::smembers(const key_t& key, key_and_value_t* loaded_k
     }
 
     delete val;
-    *loaded_key = key_and_value_t(key, common::make_value(set));
+    *loaded_key = NDbKValue(key, common::make_value(set));
     if (client_) {
       client_->onKeyLoaded(*loaded_key);
     }
@@ -2426,11 +2426,11 @@ common::Error DBConnection::smembers(const key_t& key, key_and_value_t* loaded_k
   return common::Error();
 }
 
-common::Error DBConnection::zrange(const key_t& key,
+common::Error DBConnection::zrange(const NKey& key,
                                    int start,
                                    int stop,
                                    bool withscores,
-                                   key_and_value_t* loaded_key) {
+                                   NDbKValue* loaded_key) {
   if (!loaded_key) {
     DNOTREACHED();
     return common::make_error_value("Invalid input argument(s)", common::ErrorValue::E_ERROR);
@@ -2463,7 +2463,7 @@ common::Error DBConnection::zrange(const key_t& key,
     }
 
     if (!withscores) {
-      *loaded_key = key_and_value_t(key, common::make_value(val));
+      *loaded_key = NDbKValue(key, common::make_value(val));
       if (client_) {
         client_->onKeyLoaded(*loaded_key);
       }
@@ -2488,7 +2488,7 @@ common::Error DBConnection::zrange(const key_t& key,
     }
 
     delete val;
-    *loaded_key = key_and_value_t(key, common::make_value(zset));
+    *loaded_key = NDbKValue(key, common::make_value(zset));
     if (client_) {
       client_->onKeyLoaded(*loaded_key);
     }
@@ -2505,7 +2505,7 @@ common::Error DBConnection::zrange(const key_t& key,
   return common::Error();
 }
 
-common::Error DBConnection::hgetall(const key_t& key, key_and_value_t* loaded_key) {
+common::Error DBConnection::hgetall(const NKey& key, NDbKValue* loaded_key) {
   if (!loaded_key) {
     DNOTREACHED();
     return common::make_error_value("Invalid input argument(s)", common::ErrorValue::E_ERROR);
@@ -2548,7 +2548,7 @@ common::Error DBConnection::hgetall(const key_t& key, key_and_value_t* loaded_ke
     }
 
     delete val;
-    *loaded_key = key_and_value_t(key, common::make_value(hash));
+    *loaded_key = NDbKValue(key, common::make_value(hash));
     if (client_) {
       client_->onKeyLoaded(*loaded_key);
     }
