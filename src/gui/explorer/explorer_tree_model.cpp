@@ -32,6 +32,7 @@
 #include <common/qt/convert2string.h>
 #include <common/qt/gui/base/tree_item.h>   // for TreeItem, findItemRecursive, etc
 #include <common/qt/gui/base/tree_model.h>  // for TreeModel
+#include <common/qt/logger.h>
 
 #include "core/connection_types.h"       // for ConvertToString
 #include "core/events/events_info.h"     // for CommandRequest, etc
@@ -206,6 +207,7 @@ void ExplorerDatabaseItem::renameKey(const core::NKey& key, const QString& newNa
   std::string cmd_str;
   common::Error err = tran->renameKeyCommand(key, common::ConvertToString(newName), &cmd_str);
   if (err && err->isError()) {
+    LOG_ERROR(err, true);
     return;
   }
 
@@ -220,6 +222,7 @@ void ExplorerDatabaseItem::removeKey(const core::NKey& key) {
   std::string cmd_str;
   common::Error err = tran->deleteKeyCommand(key, &cmd_str);
   if (err && err->isError()) {
+    LOG_ERROR(err, true);
     return;
   }
 
@@ -234,6 +237,7 @@ void ExplorerDatabaseItem::loadValue(const core::NDbKValue& key) {
   std::string cmd_str;
   common::Error err = tran->loadKeyCommand(key.key(), key.type(), &cmd_str);
   if (err && err->isError()) {
+    LOG_ERROR(err, true);
     return;
   }
 
@@ -248,6 +252,7 @@ void ExplorerDatabaseItem::watchKey(const core::NDbKValue& key, int interval) {
   std::string cmd_str;
   common::Error err = tran->loadKeyCommand(key.key(), key.type(), &cmd_str);
   if (err && err->isError()) {
+    LOG_ERROR(err, true);
     return;
   }
 
@@ -263,6 +268,7 @@ void ExplorerDatabaseItem::createKey(const core::NDbKValue& key) {
   std::string cmd_str;
   common::Error err = tran->createKeyCommand(key, &cmd_str);
   if (err && err->isError()) {
+    LOG_ERROR(err, true);
     return;
   }
 
@@ -279,6 +285,7 @@ void ExplorerDatabaseItem::editKey(const core::NDbKValue& key, const core::NValu
   copy_key.setValue(value);
   common::Error err = tran->createKeyCommand(copy_key, &cmd_str);
   if (err && err->isError()) {
+    LOG_ERROR(err, true);
     return;
   }
 
@@ -293,6 +300,7 @@ void ExplorerDatabaseItem::setTTL(const core::NKey& key, core::ttl_t ttl) {
   std::string cmd_str;
   common::Error err = tran->changeKeyTTLCommand(key, ttl, &cmd_str);
   if (err && err->isError()) {
+    LOG_ERROR(err, true);
     return;
   }
 

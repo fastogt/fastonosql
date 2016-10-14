@@ -146,6 +146,10 @@ bool NDbKValue::equals(const NDbKValue& other) const {
     return false;
   }
 
+  if (!value_) {
+    return !other.value_;
+  }
+
   return value_->equals(other.value_.get());
 }
 

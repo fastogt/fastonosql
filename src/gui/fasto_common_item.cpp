@@ -171,9 +171,9 @@ QString fromGzip(FastoCommonItem* item) {
     common::Error err = enc.decode(sval, &out);
     if (err && err->isError()) {
       return QString();
-    } else {
-      return common::ConvertFromString<QString>(out);
     }
+
+    return common::ConvertFromString<QString>(out);
   }
 
   QString value;

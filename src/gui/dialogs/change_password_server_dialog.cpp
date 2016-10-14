@@ -30,6 +30,7 @@
 #include <common/error.h>                // for Error
 #include <common/macros.h>               // for VERIFY, CHECK, UNUSED
 #include <common/qt/convert2string.h>    // for ConvertToString
+#include <common/qt/logger.h>
 #include <common/value.h>                // for ErrorValue
 #include <common/qt/gui/glass_widget.h>  // for GlassWidget
 
@@ -118,6 +119,7 @@ void ChangePasswordServerDialog::finishChangePassword(
   glassWidget_->stop();
   common::Error err = res.errorInfo();
   if (err && err->isError()) {
+    LOG_ERROR(err, true);
     return;
   }
 
