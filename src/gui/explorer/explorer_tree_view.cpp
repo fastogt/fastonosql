@@ -30,6 +30,7 @@
 #include <QInputDialog>
 #include <QMenu>
 #include <QMessageBox>
+#include <QSortFilterProxyModel>
 
 #include <common/convert2string.h>     // for ConvertFromString
 #include <common/error.h>              // for Error
@@ -58,6 +59,8 @@
 #include "gui/dialogs/property_server_dialog.h"
 #include "gui/dialogs/view_keys_dialog.h"      // for ViewKeysDialog
 #include "gui/explorer/explorer_tree_model.h"  // for ExplorerServerItem, etc
+#include "gui/explorer/explorer_tree_sort_filter_proxy_model.h"
+#include "gui/explorer/explorer_tree_item.h"
 
 #include "translations/global.h"  // for trClose, trBackup, trImport, etc
 
@@ -90,7 +93,14 @@ namespace fastonosql {
 namespace gui {
 
 ExplorerTreeView::ExplorerTreeView(QWidget* parent) : QTreeView(parent) {
-  setModel(new ExplorerTreeModel(this));
+  proxy_model_ = new ExplorerTreeSortFilterProxyModel;
+  source_model_ = new ExplorerTreeModel;
+  proxy_model_->setSourceModel(source_model_);
+  proxy_model_->setDynamicSortFilter(true);
+  setModel(proxy_model_);
+
+  setSortingEnabled(true);
+  sortByColumn(0, Qt::AscendingOrder);
 
   setSelectionBehavior(QAbstractItemView::SelectRows);
   setSelectionMode(QAbstractItemView::SingleSelection);
@@ -194,15 +204,8 @@ void ExplorerTreeView::addServer(core::IServerSPtr server) {
     return;
   }
 
-  ExplorerTreeModel* mod = static_cast<ExplorerTreeModel*>(model());
-  if (!mod) {
-    DNOTREACHED();
-    return;
-  }
-
   syncWithServer(server.get());
-
-  mod->addServer(server);
+  source_model_->addServer(server);
 }
 
 void ExplorerTreeView::removeServer(core::IServerSPtr server) {
@@ -211,15 +214,8 @@ void ExplorerTreeView::removeServer(core::IServerSPtr server) {
     return;
   }
 
-  ExplorerTreeModel* mod = static_cast<ExplorerTreeModel*>(model());
-  if (!mod) {
-    DNOTREACHED();
-    return;
-  }
-
   unsyncWithServer(server.get());
-
-  mod->removeServer(server);
+  source_model_->removeServer(server);
   emit closeServer(server);
 }
 
@@ -229,7 +225,6 @@ void ExplorerTreeView::addSentinel(core::ISentinelSPtr sentinel) {
     return;
   }
 
-  ExplorerTreeModel* mod = static_cast<ExplorerTreeModel*>(model());
   core::ISentinel::sentinels_t nodes = sentinel->sentinels();
   for (size_t i = 0; i < nodes.size(); ++i) {
     core::Sentinel sent = nodes[i];
@@ -239,7 +234,7 @@ void ExplorerTreeView::addSentinel(core::ISentinelSPtr sentinel) {
     }
   }
 
-  mod->addSentinel(sentinel);
+  source_model_->addSentinel(sentinel);
 }
 
 void ExplorerTreeView::removeSentinel(core::ISentinelSPtr sentinel) {
@@ -248,7 +243,6 @@ void ExplorerTreeView::removeSentinel(core::ISentinelSPtr sentinel) {
     return;
   }
 
-  ExplorerTreeModel* mod = static_cast<ExplorerTreeModel*>(model());
   core::ISentinel::sentinels_t nodes = sentinel->sentinels();
   for (size_t i = 0; i < nodes.size(); ++i) {
     core::Sentinel sent = nodes[i];
@@ -258,7 +252,7 @@ void ExplorerTreeView::removeSentinel(core::ISentinelSPtr sentinel) {
     }
   }
 
-  mod->removeSentinel(sentinel);
+  source_model_->removeSentinel(sentinel);
   emit closeSentinel(sentinel);
 }
 
@@ -268,13 +262,12 @@ void ExplorerTreeView::addCluster(core::IClusterSPtr cluster) {
     return;
   }
 
-  ExplorerTreeModel* mod = static_cast<ExplorerTreeModel*>(model());
   auto nodes = cluster->nodes();
   for (size_t i = 0; i < nodes.size(); ++i) {
     syncWithServer(nodes[i].get());
   }
 
-  mod->addCluster(cluster);
+  source_model_->addCluster(cluster);
 }
 
 void ExplorerTreeView::removeCluster(core::IClusterSPtr cluster) {
@@ -283,13 +276,12 @@ void ExplorerTreeView::removeCluster(core::IClusterSPtr cluster) {
     return;
   }
 
-  ExplorerTreeModel* mod = static_cast<ExplorerTreeModel*>(model());
   auto nodes = cluster->nodes();
   for (size_t i = 0; i < nodes.size(); ++i) {
     unsyncWithServer(nodes[i].get());
   }
 
-  mod->removeCluster(cluster);
+  source_model_->removeCluster(cluster);
   emit closeCluster(cluster);
 }
 
@@ -985,13 +977,10 @@ void ExplorerTreeView::finishLoadDatabases(
   core::IServer* serv = qobject_cast<core::IServer*>(sender());
   CHECK(serv);
 
-  ExplorerTreeModel* mod = qobject_cast<ExplorerTreeModel*>(model());
-  CHECK(mod);
-
   core::events_info::LoadDatabasesInfoResponce::database_info_cont_type dbs = res.databases;
   for (size_t i = 0; i < dbs.size(); ++i) {
     core::IDataBaseInfoSPtr db = dbs[i];
-    mod->addDatabase(serv, db);
+    source_model_->addDatabase(serv, db);
   }
 }
 
@@ -1011,9 +1000,7 @@ void ExplorerTreeView::finishSetDefaultDatabase(
   CHECK(serv);
 
   core::IDataBaseInfoSPtr db = res.inf;
-  ExplorerTreeModel* mod = qobject_cast<ExplorerTreeModel*>(model());
-  CHECK(mod);
-  mod->setDefaultDb(serv, db);
+  source_model_->setDefaultDb(serv, db);
 }
 
 void ExplorerTreeView::startLoadDatabaseContent(
@@ -1031,17 +1018,14 @@ void ExplorerTreeView::finishLoadDatabaseContent(
   core::IServer* serv = qobject_cast<core::IServer*>(sender());
   CHECK(serv);
 
-  ExplorerTreeModel* mod = qobject_cast<ExplorerTreeModel*>(model());
-  CHECK(mod);
-
   core::events_info::LoadDatabaseContentResponce::keys_container_t keys = res.keys;
   std::string ns = serv->nsSeparator();
   for (size_t i = 0; i < keys.size(); ++i) {
     core::NDbKValue key = keys[i];
-    mod->addKey(serv, res.inf, key, ns);
+    source_model_->addKey(serv, res.inf, key, ns);
   }
 
-  mod->updateDb(serv, res.inf);
+  source_model_->updateDb(serv, res.inf);
 }
 
 void ExplorerTreeView::startClearDatabase(const core::events_info::ClearDatabaseRequest& req) {
@@ -1057,10 +1041,7 @@ void ExplorerTreeView::finishClearDatabase(const core::events_info::ClearDatabas
   core::IServer* serv = qobject_cast<core::IServer*>(sender());
   CHECK(serv);
 
-  ExplorerTreeModel* mod = qobject_cast<ExplorerTreeModel*>(model());
-  CHECK(mod);
-
-  mod->removeAllKeys(serv, res.inf);
+  source_model_->removeAllKeys(serv, res.inf);
 }
 
 void ExplorerTreeView::startExecuteCommand(const core::events_info::ExecuteInfoRequest& req) {
@@ -1075,55 +1056,40 @@ void ExplorerTreeView::removeKey(core::IDataBaseInfoSPtr db, core::NKey key) {
   core::IServer* serv = qobject_cast<core::IServer*>(sender());
   CHECK(serv);
 
-  ExplorerTreeModel* mod = qobject_cast<ExplorerTreeModel*>(model());
-  CHECK(mod);
-
-  mod->removeKey(serv, db, key);
+  source_model_->removeKey(serv, db, key);
 }
 
 void ExplorerTreeView::addKey(core::IDataBaseInfoSPtr db, core::NDbKValue key) {
   core::IServer* serv = qobject_cast<core::IServer*>(sender());
   CHECK(serv);
 
-  ExplorerTreeModel* mod = qobject_cast<ExplorerTreeModel*>(model());
-  CHECK(mod);
-
   std::string ns = serv->nsSeparator();
-  mod->addKey(serv, db, key, ns);
+  source_model_->addKey(serv, db, key, ns);
 }
 
 void ExplorerTreeView::renameKey(core::IDataBaseInfoSPtr db, core::NKey key, std::string new_name) {
   core::IServer* serv = qobject_cast<core::IServer*>(sender());
   CHECK(serv);
 
-  ExplorerTreeModel* mod = qobject_cast<ExplorerTreeModel*>(model());
-  CHECK(mod);
-
   core::NKey new_key = key;
   new_key.setKey(new_name);
-  mod->updateKey(serv, db, key, new_key);
+  source_model_->updateKey(serv, db, key, new_key);
 }
 
 void ExplorerTreeView::loadKey(core::IDataBaseInfoSPtr db, core::NDbKValue key) {
   core::IServer* serv = qobject_cast<core::IServer*>(sender());
   CHECK(serv);
 
-  ExplorerTreeModel* mod = qobject_cast<ExplorerTreeModel*>(model());
-  CHECK(mod);
-
-  mod->updateValue(serv, db, key);
+  source_model_->updateValue(serv, db, key);
 }
 
 void ExplorerTreeView::changeTTLKey(core::IDataBaseInfoSPtr db, core::NKey key, core::ttl_t ttl) {
   core::IServer* serv = qobject_cast<core::IServer*>(sender());
   CHECK(serv);
 
-  ExplorerTreeModel* mod = qobject_cast<ExplorerTreeModel*>(model());
-  CHECK(mod);
-
   core::NKey new_key = key;
   new_key.setTTL(ttl);
-  mod->updateKey(serv, db, key, new_key);
+  source_model_->updateKey(serv, db, key, new_key);
 }
 
 void ExplorerTreeView::changeEvent(QEvent* e) {
@@ -1246,7 +1212,7 @@ QModelIndex ExplorerTreeView::selectedIndex() const {
     return QModelIndex();
   }
 
-  return indexses[0];
+  return proxy_model_->mapToSource(indexses[0]);
 }
 
 }  // namespace gui

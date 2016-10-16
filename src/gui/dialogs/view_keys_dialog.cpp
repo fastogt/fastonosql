@@ -133,7 +133,7 @@ ViewKeysDialog::ViewKeysDialog(const QString& title, core::IDatabaseSPtr db, QWi
   searchLayout->addWidget(searchButton_);
 
   keysModel_ = new KeysTableModel(this);
-  QSortFilterProxyModel* proxy_model = new QSortFilterProxyModel;
+  QSortFilterProxyModel* proxy_model = new QSortFilterProxyModel(this);
   proxy_model->setSourceModel(keysModel_);
   proxy_model->setDynamicSortFilter(true);
   VERIFY(connect(keysModel_, &KeysTableModel::changedTTL, this, &ViewKeysDialog::changeTTL,

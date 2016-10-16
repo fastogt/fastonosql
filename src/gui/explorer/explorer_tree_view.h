@@ -28,9 +28,12 @@ class QEvent;
 class QMouseEvent;
 class QPoint;
 class QWidget;
+class QSortFilterProxyModel;
 
 namespace fastonosql {
 namespace gui {
+
+class ExplorerTreeModel;
 
 class ExplorerTreeView : public QTreeView {
   Q_OBJECT
@@ -144,6 +147,8 @@ class ExplorerTreeView : public QTreeView {
   QAction* importAction_;
   QAction* backupAction_;
   QAction* shutdownAction_;
+  ExplorerTreeModel* source_model_;
+  QSortFilterProxyModel* proxy_model_;
 };
 
 }  // namespace gui

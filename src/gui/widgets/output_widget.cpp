@@ -198,7 +198,7 @@ void OutputWidget::addChild(FastoObjectIPtr child) {
     std::string inputArgs = command->inputArgs();
     fastonosql::gui::FastoCommonItem* comChild =
         createItem(par, GetFirstWordFromLine(inputArgs), command->isReadOnly(), child.get());
-    commonModel_->pushBackChildren(parent, comChild);
+    commonModel_->insertItem(parent, comChild);
   } else {
     FastoObjectArray* arr = dynamic_cast<FastoObjectArray*>(child->parent());  // +
     CHECK(arr);
@@ -222,7 +222,7 @@ void OutputWidget::addChild(FastoObjectIPtr child) {
     }
 
     fastonosql::gui::FastoCommonItem* comChild = createItem(par, std::string(), true, child.get());
-    commonModel_->pushBackChildren(parent, comChild);
+    commonModel_->insertItem(parent, comChild);
   }
 }
 

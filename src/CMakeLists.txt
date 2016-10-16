@@ -77,11 +77,18 @@ SET(SOURCES_GUI_EDITOR
 SET(HEADERS_GUI_EXPLORER_TO_MOC
   gui/explorer/explorer_tree_view.h
   gui/explorer/explorer_tree_model.h
+  gui/explorer/explorer_tree_sort_filter_proxy_model.h
+)
+
+SET(HEADERS_GUI_EXPLORER
+  gui/explorer/explorer_tree_item.h
 )
 
 SET(SOURCES_GUI_EXPLORER
   gui/explorer/explorer_tree_view.cpp
   gui/explorer/explorer_tree_model.cpp
+  gui/explorer/explorer_tree_sort_filter_proxy_model.cpp
+  gui/explorer/explorer_tree_item.cpp
 )
 
 SET(HEADERS_GUI_WIDGETS_TO_MOC
@@ -668,7 +675,7 @@ ELSE()
 ENDIF(IS_PUBLIC_BUILD)
 
 SET(HEADERS ${HEADERS} ${HEADERS_GLOBAL}
-  ${HEADERS_GUI} ${HEADERS_GUI_DIALOGS}
+  ${HEADERS_GUI} ${HEADERS_GUI_EXPLORER} ${HEADERS_GUI_DIALOGS}
   ${HEADERS_CORE} ${HEADERS_SHELL}
   ${HEADERS_REDIS} ${HEADERS_MEMCACHED} ${HEADERS_SSDB}
   ${HEADERS_LEVELDB} ${HEADERS_ROCKSDB} ${HEADERS_UNQLITE} ${HEADERS_LMDB}
