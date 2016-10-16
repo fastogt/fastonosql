@@ -102,8 +102,7 @@ bool FastoCommonModel::setData(const QModelIndex& index, const QVariant& value, 
         const std::string value = common::ConvertToString(newValue);
 
         //  node->type() TODO: create according type
-        common::ValueSPtr vs = common::make_value(common::Value::createStringValue(value));
-        core::NValue val(vs);
+        core::NValue val(common::Value::createStringValue(value));
         core::NDbKValue dbv(core::NKey(key), val);
         emit changedValue(dbv);
       }

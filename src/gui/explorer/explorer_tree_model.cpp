@@ -94,11 +94,11 @@ ExplorerSentinelItem::ExplorerSentinelItem(core::ISentinelSPtr sentinel, TreeIte
   for (size_t i = 0; i < nodes.size(); ++i) {
     core::Sentinel sent = nodes[i];
     ExplorerServerItem* rser = new ExplorerServerItem(sent.sentinel, this);
-    addChildren(rser);
+    pushBackChildren(rser);
 
     for (size_t j = 0; j < sent.sentinels_nodes.size(); ++j) {
       ExplorerServerItem* ser = new ExplorerServerItem(sent.sentinels_nodes[j], rser);
-      rser->addChildren(ser);
+      rser->pushBackChildren(ser);
     }
   }
 }
@@ -120,7 +120,7 @@ ExplorerClusterItem::ExplorerClusterItem(core::IClusterSPtr cluster, TreeItem* p
   auto nodes = cluster_->nodes();
   for (size_t i = 0; i < nodes.size(); ++i) {
     ExplorerServerItem* ser = new ExplorerServerItem(nodes[i], this);
-    addChildren(ser);
+    pushBackChildren(ser);
   }
 }
 
@@ -593,7 +593,7 @@ void ExplorerTreeModel::addCluster(core::IClusterSPtr cluster) {
     CHECK(parent);
 
     ExplorerClusterItem* item = new ExplorerClusterItem(cluster, parent);
-    insertItem(QModelIndex(), item);
+    pushBackChildren(QModelIndex(), item);
   }
 }
 
@@ -615,7 +615,7 @@ void ExplorerTreeModel::addServer(core::IServerSPtr server) {
     CHECK(parent);
 
     ExplorerServerItem* item = new ExplorerServerItem(server, parent);
-    insertItem(QModelIndex(), item);
+    pushBackChildren(QModelIndex(), item);
   }
 }
 
@@ -633,7 +633,7 @@ void ExplorerTreeModel::addSentinel(core::ISentinelSPtr sentinel) {
     CHECK(parent);
 
     ExplorerSentinelItem* item = new ExplorerSentinelItem(sentinel, parent);
-    insertItem(QModelIndex(), item);
+    pushBackChildren(QModelIndex(), item);
   }
 }
 
@@ -653,7 +653,7 @@ void ExplorerTreeModel::addDatabase(core::IServer* server, core::IDataBaseInfoSP
     common::qt::gui::TreeItem* parent_server = parent->parent();
     QModelIndex parent_index = createIndex(parent_server->indexOf(parent), 0, parent);
     ExplorerDatabaseItem* item = new ExplorerDatabaseItem(server->createDatabaseByInfo(db), parent);
-    insertItem(parent_index, item);
+    pushBackChildren(parent_index, item);
   }
 }
 
@@ -719,19 +719,21 @@ void ExplorerTreeModel::addKey(core::IServer* server,
 
   core::NKey key = dbv.key();
   ExplorerKeyItem* keyit = findKeyItem(dbs, key);
-  if (!keyit) {
-    IExplorerTreeItem* nitem = dbs;
-    core::KeyInfo kinf = key.info(ns_separator);
-    if (kinf.hasNamespace()) {
-      nitem = findOrCreateNSItem(dbs, kinf);
-      CHECK(nitem);
-    }
-
-    common::qt::gui::TreeItem* parent_nitem = nitem->parent();
-    QModelIndex parent_index = createIndex(parent_nitem->indexOf(nitem), 0, nitem);
-    ExplorerKeyItem* item = new ExplorerKeyItem(dbv, nitem);
-    insertItem(parent_index, item);
+  if (keyit) {
+    return;
   }
+
+  IExplorerTreeItem* nitem = dbs;
+  core::KeyInfo kinf = key.info(ns_separator);
+  if (kinf.hasNamespace()) {
+    nitem = findOrCreateNSItem(dbs, kinf);
+    CHECK(nitem);
+  }
+
+  common::qt::gui::TreeItem* parent_nitem = nitem->parent();
+  QModelIndex parent_index = createIndex(parent_nitem->indexOf(nitem), 0, nitem);
+  ExplorerKeyItem* item = new ExplorerKeyItem(dbv, nitem);
+  pushBackChildren(parent_index, item);
 }
 
 void ExplorerTreeModel::removeKey(core::IServer* server,
@@ -934,7 +936,7 @@ ExplorerNSItem* ExplorerTreeModel::findOrCreateNSItem(IExplorerTreeItem* db_or_n
       common::qt::gui::TreeItem* gpar = par->parent();
       QModelIndex parentdb = createIndex(gpar->indexOf(par), 0, par);
       item = new ExplorerNSItem(qnspace, par);
-      insertItem(parentdb, item);
+      pushBackChildren(parentdb, item);
     }
 
     par = item;

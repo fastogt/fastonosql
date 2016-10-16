@@ -393,8 +393,8 @@ common::Error DBConnection::getImpl(const NKey& key, NDbKValue* loaded_key) {
     return err;
   }
 
-  common::StringValue* val = common::Value::createStringValue(value_str);
-  *loaded_key = NDbKValue(key, common::make_value(val));
+  NValue val(common::Value::createStringValue(value_str));
+  *loaded_key = NDbKValue(key, val);
   return common::Error();
 }
 
@@ -474,8 +474,8 @@ common::Error set(CommandHandler* handler, int argc, const char** argv, FastoObj
   UNUSED(argc);
 
   NKey key(argv[0]);
-  common::StringValue* string_val = common::Value::createStringValue(argv[1]);
-  NDbKValue kv(key, common::make_value(string_val));
+  NValue string_val(common::Value::createStringValue(argv[1]));
+  NDbKValue kv(key, string_val);
 
   DBConnection* red = static_cast<DBConnection*>(handler);
   NDbKValue key_added;

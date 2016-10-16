@@ -85,8 +85,8 @@ class ViewKeysDialog : public QDialog {
     min_width = 320,
     min_height = 200,
     min_key_on_page = 1,
-    max_key_on_page = 100,
-    defaults_key = 10,
+    max_key_on_page = 100000,
+    defaults_key = 100,
     step_keys_on_page = defaults_key
   };
 

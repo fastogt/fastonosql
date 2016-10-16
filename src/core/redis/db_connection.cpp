@@ -629,8 +629,8 @@ common::Error set(CommandHandler* handler, int argc, const char** argv, FastoObj
   UNUSED(argc);
 
   NKey key(argv[0]);
-  common::StringValue* string_val = common::Value::createStringValue(argv[1]);
-  NDbKValue kv(key, common::make_value(string_val));
+  NValue string_val(common::Value::createStringValue(argv[1]));
+  NDbKValue kv(key, string_val);
 
   DBConnection* red = static_cast<DBConnection*>(handler);
   NDbKValue key_added;
@@ -1136,7 +1136,7 @@ common::Error DBConnection::latencyMode(FastoObject* out) {
       history_start = curTime;
       min = max = tot = count = 0;
     } else {
-      child->setValue(common::make_value(val));
+      child->setValue(common::ValueSPtr(val));
     }
 
     common::utils::msleep(LATENCY_SAMPLE_RATE);
@@ -1927,7 +1927,7 @@ common::Error DBConnection::getImpl(const NKey& key, NDbKValue* loaded_key) {
   } else {
     NOTREACHED();
   }
-  *loaded_key = NDbKValue(key, common::make_value(val));
+  *loaded_key = NDbKValue(key, NValue(val));
   freeReplyObject(reply);
   return common::Error();
 }
@@ -2347,7 +2347,7 @@ common::Error DBConnection::lrange(const NKey& key, int start, int stop, NDbKVal
       return err;
     }
 
-    *loaded_key = NDbKValue(key, common::make_value(val));
+    *loaded_key = NDbKValue(key, NValue(val));
     if (client_) {
       client_->onKeyLoaded(*loaded_key);
     }
@@ -2406,7 +2406,7 @@ common::Error DBConnection::smembers(const NKey& key, NDbKValue* loaded_key) {
     }
 
     delete val;
-    *loaded_key = NDbKValue(key, common::make_value(set));
+    *loaded_key = NDbKValue(key, NValue(set));
     if (client_) {
       client_->onKeyLoaded(*loaded_key);
     }
@@ -2460,7 +2460,7 @@ common::Error DBConnection::zrange(const NKey& key,
     }
 
     if (!withscores) {
-      *loaded_key = NDbKValue(key, common::make_value(val));
+      *loaded_key = NDbKValue(key, NValue(val));
       if (client_) {
         client_->onKeyLoaded(*loaded_key);
       }
@@ -2485,7 +2485,7 @@ common::Error DBConnection::zrange(const NKey& key,
     }
 
     delete val;
-    *loaded_key = NDbKValue(key, common::make_value(zset));
+    *loaded_key = NDbKValue(key, NValue(zset));
     if (client_) {
       client_->onKeyLoaded(*loaded_key);
     }
@@ -2545,7 +2545,7 @@ common::Error DBConnection::hgetall(const NKey& key, NDbKValue* loaded_key) {
     }
 
     delete val;
-    *loaded_key = NDbKValue(key, common::make_value(hash));
+    *loaded_key = NDbKValue(key, NValue(hash));
     if (client_) {
       client_->onKeyLoaded(*loaded_key);
     }
