@@ -27,10 +27,11 @@ class ExplorerTreeSortFilterProxyModel : public QSortFilterProxyModel {
  public:
   ExplorerTreeSortFilterProxyModel(QObject* parent = 0);
 
- protected:
-  bool lessThan(const QModelIndex& left, const QModelIndex& right) const;
+  void setWord(const QString& word);
 
- private:
+ protected:
+  virtual bool lessThan(const QModelIndex& left, const QModelIndex& right) const;
+  virtual bool filterAcceptsRow(int source_row, const QModelIndex& source_parent) const;
 };
 }  // namespace gui
 }  // namespace fastonosql

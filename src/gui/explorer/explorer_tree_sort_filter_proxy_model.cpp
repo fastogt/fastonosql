@@ -25,16 +25,13 @@
 namespace fastonosql {
 namespace gui {
 ExplorerTreeSortFilterProxyModel::ExplorerTreeSortFilterProxyModel(QObject* parent)
-    : QSortFilterProxyModel(parent) {}
+    : QSortFilterProxyModel(parent) {
+}
 
 bool ExplorerTreeSortFilterProxyModel::lessThan(const QModelIndex& left,
                                                 const QModelIndex& right) const {
   IExplorerTreeItem* lnode = common::qt::item<common::qt::gui::TreeItem*, IExplorerTreeItem*>(left);
   if (!lnode) {
-    return true;
-  }
-
-  if (lnode->type() != IExplorerTreeItem::eKey) {
     return true;
   }
 
@@ -44,14 +41,26 @@ bool ExplorerTreeSortFilterProxyModel::lessThan(const QModelIndex& left,
     return true;
   }
 
-  if (rnode->type() != IExplorerTreeItem::eKey) {
-    return true;
-  }
-
   QString leftString = lnode->name();
   QString rightString = rnode->name();
 
   return QString::localeAwareCompare(leftString, rightString) < 0;
+}
+
+bool ExplorerTreeSortFilterProxyModel::filterAcceptsRow(int source_row,
+                                                        const QModelIndex& source_parent) const {
+  QModelIndex index = sourceModel()->index(source_row, 0, source_parent);
+  IExplorerTreeItem* node = common::qt::item<common::qt::gui::TreeItem*, IExplorerTreeItem*>(index);
+  if (!node) {
+    return true;
+  }
+
+  if (node->type() != IExplorerTreeItem::eKey) {
+    return true;
+  }
+
+  QString name = node->name();
+  return name.contains(filterRegExp());
 }
 }  // namespace gui
 }  // namespace fastonosql

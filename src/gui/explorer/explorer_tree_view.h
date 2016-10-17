@@ -56,6 +56,8 @@ class ExplorerTreeView : public QTreeView {
   void addCluster(core::IClusterSPtr cluster);
   void removeCluster(core::IClusterSPtr cluster);
 
+  void textFilterChanged(const QString& text);
+
  private Q_SLOTS:
   void showContextMenu(const QPoint& point);
   void connectDisconnectToServer();

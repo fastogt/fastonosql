@@ -285,6 +285,11 @@ void ExplorerTreeView::removeCluster(core::IClusterSPtr cluster) {
   emit closeCluster(cluster);
 }
 
+void ExplorerTreeView::textFilterChanged(const QString& text) {
+  QRegExp regExp(text);
+  proxy_model_->setFilterRegExp(regExp);
+}
+
 void ExplorerTreeView::showContextMenu(const QPoint& point) {
   QPoint menuPoint = mapToGlobal(point);
   menuPoint.setY(menuPoint.y() + header()->height());
