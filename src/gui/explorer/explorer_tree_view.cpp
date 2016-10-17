@@ -93,8 +93,8 @@ namespace fastonosql {
 namespace gui {
 
 ExplorerTreeView::ExplorerTreeView(QWidget* parent) : QTreeView(parent) {
-  proxy_model_ = new ExplorerTreeSortFilterProxyModel;
-  source_model_ = new ExplorerTreeModel;
+  source_model_ = new ExplorerTreeModel(this);
+  proxy_model_ = new ExplorerTreeSortFilterProxyModel(this);
   proxy_model_->setSourceModel(source_model_);
   proxy_model_->setDynamicSortFilter(true);
   setModel(proxy_model_);

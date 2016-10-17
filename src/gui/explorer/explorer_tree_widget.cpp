@@ -32,10 +32,10 @@ namespace gui {
 ExplorerTreeWidget::ExplorerTreeWidget(QWidget* parent) : QWidget(parent) {
   QVBoxLayout* main_layout = new QVBoxLayout;
 
-  filter_edit_ = new QLineEdit;
   view_ = new ExplorerTreeView(this);
-  main_layout->addWidget(filter_edit_);
+  filter_edit_ = new QLineEdit;
   main_layout->addWidget(view_);
+  main_layout->addWidget(filter_edit_);
 
   VERIFY(
       connect(filter_edit_, &QLineEdit::textChanged, view_, &ExplorerTreeView::textFilterChanged));
@@ -86,6 +86,5 @@ void ExplorerTreeWidget::changeEvent(QEvent* e) {
 void ExplorerTreeWidget::retranslateUi() {
   filter_edit_->setPlaceholderText(translations::trFilter);
 }
-
 }  // namespace gui
 }  // namespace fastonosql

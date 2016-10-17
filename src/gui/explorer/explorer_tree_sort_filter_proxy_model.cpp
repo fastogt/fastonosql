@@ -55,7 +55,7 @@ bool ExplorerTreeSortFilterProxyModel::filterAcceptsRow(int source_row,
     return true;
   }
 
-  if (node->type() != IExplorerTreeItem::eKey) {
+  if (node->type() < IExplorerTreeItem::eNamespace) {
     return true;
   }
 

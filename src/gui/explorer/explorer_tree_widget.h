@@ -27,6 +27,11 @@ class QLineEdit;
 namespace fastonosql {
 namespace gui {
 class ExplorerTreeView;
+}
+}
+
+namespace fastonosql {
+namespace gui {
 class ExplorerTreeWidget : public QWidget {
   Q_OBJECT
  public:
