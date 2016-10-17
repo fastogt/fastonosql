@@ -23,7 +23,7 @@
 
 #include <common/convert2string.h>  // for ConvertFromString
 #include <common/error.h>           // for ErrnoError, ErrnoErrorValue
-#include <common/macros.h>          // for MCHECK
+#include <common/macros.h>          // for DCHECK
 #include <common/net/socket_tcp.h>  // for ClientSocketTcp
 #include <common/net/types.h>       // for HostAndPort
 
@@ -58,7 +58,7 @@ void UpdateChecker::routine() {
 #endif
   if (err && err->isError()) {
     emit versionAvailibled(false, QString());
-    MCHECK(!s.close());
+    DCHECK(!s.close());
     return;
   }
 
@@ -67,13 +67,13 @@ void UpdateChecker::routine() {
   err = s.read(version, sizeof(version), &nread);
   if (err && err->isError()) {
     emit versionAvailibled(false, QString());
-    MCHECK(!s.close());
+    DCHECK(!s.close());
     return;
   }
 
   QString vers = common::ConvertFromString<QString>(version);
   emit versionAvailibled(true, vers);
-  MCHECK(!s.close());
+  DCHECK(!s.close());
   return;
 }
 

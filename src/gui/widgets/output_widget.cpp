@@ -30,7 +30,6 @@
 #include <common/convert2string.h>  // for ConvertFromString
 #include <common/error.h>           // for Error
 #include <common/log_levels.h>      // for LEVEL_LOG::L_DEBUG
-#include <common/logger.h>          // for DEBUG_MSG_FORMAT
 #include <common/macros.h>          // for VERIFY, CHECK, DNOTREACHED, etc
 #include <common/qt/utils_qt.h>     // for item
 #include <common/value.h>           // for StringValue, Value, etc

@@ -179,7 +179,7 @@ void Driver::handleLoadDatabaseContentEvent(events::LoadDatabaseContentRequestEv
       }
 
       err = impl_->dbkcount(&res.db_keys_count);
-      MCHECK(!err);
+      DCHECK(!err);
     }
   }
 done:

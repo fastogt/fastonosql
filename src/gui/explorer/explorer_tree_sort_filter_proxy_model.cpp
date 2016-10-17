@@ -25,8 +25,7 @@
 namespace fastonosql {
 namespace gui {
 ExplorerTreeSortFilterProxyModel::ExplorerTreeSortFilterProxyModel(QObject* parent)
-    : QSortFilterProxyModel(parent) {
-}
+    : QSortFilterProxyModel(parent) {}
 
 bool ExplorerTreeSortFilterProxyModel::lessThan(const QModelIndex& left,
                                                 const QModelIndex& right) const {
@@ -39,6 +38,21 @@ bool ExplorerTreeSortFilterProxyModel::lessThan(const QModelIndex& left,
       common::qt::item<common::qt::gui::TreeItem*, IExplorerTreeItem*>(right);
   if (!rnode) {
     return true;
+  }
+
+  if (rnode->type() == IExplorerTreeItem::eDatabase &&
+      lnode->type() == IExplorerTreeItem::eDatabase) {
+    QString leftString = lnode->name();
+    QString rightString = rnode->name();
+
+    bool lok, rok;
+    int lint = leftString.toInt(&lok);
+    int rint = rightString.toInt(&rok);
+    if (lok && rok) {
+      return lint < rint;
+    }
+
+    return QString::localeAwareCompare(leftString, rightString) < 0;
   }
 
   QString leftString = lnode->name();

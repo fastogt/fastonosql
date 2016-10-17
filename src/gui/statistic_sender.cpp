@@ -24,7 +24,7 @@
 #include <string>       // for string
 
 #include <common/error.h>                    // for ErrnoError, ErrnoErrorValue
-#include <common/macros.h>                   // for MCHECK
+#include <common/macros.h>                   // for DCHECK
 #include <common/net/socket_tcp.h>           // for ClientSocketTcp
 #include <common/net/types.h>                // for HostAndPort
 #include <common/system_info/system_info.h>  // for SystemInfo, etc
@@ -75,12 +75,12 @@ void StatisticSender::routine() {
   json_object_put(stats_json);
   if (err && err->isError()) {
     emit statisticSended(false);
-    MCHECK(!s.close());
+    DCHECK(!s.close());
     return;
   }
 
   emit statisticSended(true);
-  MCHECK(!s.close());
+  DCHECK(!s.close());
   return;
 }
 

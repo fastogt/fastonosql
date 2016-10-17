@@ -1855,7 +1855,7 @@ common::Error DBConnection::selectImpl(const std::string& name, IDataBaseInfo** 
   connection_.config_.dbnum = num;
   size_t sz = 0;
   common::Error err = dbkcount(&sz);
-  MCHECK(!err);
+  DCHECK(!err);
   DataBaseInfo* linfo = new DataBaseInfo(common::ConvertToString(num), true, sz);
   *info = linfo;
   freeReplyObject(reply);

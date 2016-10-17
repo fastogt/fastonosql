@@ -152,7 +152,7 @@ common::Error Driver::currentDataBaseInfo(IDataBaseInfo** info) {
   std::string name = impl_->currentDbName();
   size_t dbkcount = 0;
   common::Error err = impl_->dbkcount(&dbkcount);
-  MCHECK(!err);
+  DCHECK(!err);
   *info = new DataBaseInfo(name, true, dbkcount);
   return common::Error();
 }
@@ -191,7 +191,7 @@ void Driver::handleLoadDatabaseContentEvent(events::LoadDatabaseContentRequestEv
       }
 
       err = impl_->dbkcount(&res.db_keys_count);
-      MCHECK(!err);
+      DCHECK(!err);
     }
   }
 done:

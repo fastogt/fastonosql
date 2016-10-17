@@ -551,7 +551,7 @@ common::Error DBConnection::help(int argc, const char** argv) {
 common::Error DBConnection::selectImpl(const std::string& name, IDataBaseInfo** info) {
   size_t kcount = 0;
   common::Error err = dbkcount(&kcount);
-  MCHECK(!err);
+  DCHECK(!err);
   *info = new DataBaseInfo(name, true, kcount);
   return common::Error();
 }

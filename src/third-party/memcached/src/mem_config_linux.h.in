@@ -195,8 +195,8 @@
 /* Define to 1 if you have the <math.h> header file. */
 #define HAVE_MATH_H 1
 
-/* Define to 1 if MCHECK is found */
-/* #undef HAVE_MCHECK */
+/* Define to 1 if DCHECK is found */
+/* #undef HAVE_DCHECK */
 
 /* If Memcached binary is available */
 #define HAVE_MEMCACHED_BINARY 0
