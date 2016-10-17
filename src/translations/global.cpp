@@ -40,6 +40,7 @@ const QString trMenu = QObject::tr("Menu");
 const QString trClose = QObject::tr("Close");
 const QString trSave = QObject::tr("Save");
 const QString trExit = QObject::tr("Exit");
+const QString trFilter = QObject::tr("Filter");
 const QString trView = QObject::tr("View");
 const QString trViews = QObject::tr("Views");
 const QString trHistory = QObject::tr("History");

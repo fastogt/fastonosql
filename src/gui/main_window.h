@@ -38,7 +38,7 @@ class QTapAndHoldGesture;
 
 namespace fastonosql {
 namespace gui {
-class ExplorerTreeView;
+class ExplorerTreeWidget;
 }
 }  // lines 37-37
 
@@ -129,7 +129,7 @@ class MainWindow : public QMainWindow {
   QAction* twitterAction_;
   QAction* githubAction_;
 #endif
-  ExplorerTreeView* exp_;
+  ExplorerTreeWidget* exp_;
   QDockWidget* expDock_;
   QDockWidget* logDock_;
   bool isCheckedInSession_;

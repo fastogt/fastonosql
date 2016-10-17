@@ -75,6 +75,7 @@ SET(SOURCES_GUI_EDITOR
 )
 
 SET(HEADERS_GUI_EXPLORER_TO_MOC
+  gui/explorer/explorer_tree_widget.h
   gui/explorer/explorer_tree_view.h
   gui/explorer/explorer_tree_model.h
   gui/explorer/explorer_tree_sort_filter_proxy_model.h
@@ -85,6 +86,7 @@ SET(HEADERS_GUI_EXPLORER
 )
 
 SET(SOURCES_GUI_EXPLORER
+  gui/explorer/explorer_tree_widget.cpp
   gui/explorer/explorer_tree_view.cpp
   gui/explorer/explorer_tree_model.cpp
   gui/explorer/explorer_tree_sort_filter_proxy_model.cpp

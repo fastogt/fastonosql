@@ -58,17 +58,17 @@
 #include "core/servers_manager.h"         // for ServersManager
 #include "core/settings_manager.h"        // for SettingsManager
 
-#include "gui/dialogs/about_dialog.h"          // for AboutDialog
-#include "gui/dialogs/connections_dialog.h"    // for ConnectionsDialog
-#include "gui/dialogs/encode_decode_dialog.h"  // for EncodeDecodeDialog
-#include "gui/dialogs/preferences_dialog.h"    // for PreferencesDialog
-#include "gui/explorer/explorer_tree_view.h"   // for ExplorerTreeView
-#include "gui/gui_factory.h"                   // for GuiFactory
-#include "gui/shortcuts.h"                     // for fullScreenKey, openKey, etc
-#include "gui/statistic_sender.h"              // for StatisticSender
-#include "gui/update_checker.h"                // for UpdateChecker
-#include "gui/widgets/log_tab_widget.h"        // for LogTabWidget
-#include "gui/widgets/main_widget.h"           // for MainWidget
+#include "gui/dialogs/about_dialog.h"           // for AboutDialog
+#include "gui/dialogs/connections_dialog.h"     // for ConnectionsDialog
+#include "gui/dialogs/encode_decode_dialog.h"   // for EncodeDecodeDialog
+#include "gui/dialogs/preferences_dialog.h"     // for PreferencesDialog
+#include "gui/explorer/explorer_tree_widget.h"  // for ExplorerTreeWidget
+#include "gui/gui_factory.h"                    // for GuiFactory
+#include "gui/shortcuts.h"                      // for fullScreenKey, openKey, etc
+#include "gui/statistic_sender.h"               // for StatisticSender
+#include "gui/update_checker.h"                 // for UpdateChecker
+#include "gui/widgets/log_tab_widget.h"         // for LogTabWidget
+#include "gui/widgets/main_widget.h"            // for MainWidget
 
 #include "translations/global.h"  // for trError, trCheckVersion, etc
 
@@ -216,13 +216,13 @@ MainWindow::MainWindow() : QMainWindow(), isCheckedInSession_(false) {
   MainWidget* mainW = new MainWidget;
   setCentralWidget(mainW);
 
-  exp_ = new ExplorerTreeView(this);
-  VERIFY(connect(exp_, &ExplorerTreeView::openedConsole, mainW, &MainWidget::openConsole));
-  VERIFY(connect(exp_, &ExplorerTreeView::closeServer, this, &MainWindow::closeServer,
+  exp_ = new ExplorerTreeWidget(this);
+  VERIFY(connect(exp_, &ExplorerTreeWidget::openedConsole, mainW, &MainWidget::openConsole));
+  VERIFY(connect(exp_, &ExplorerTreeWidget::closeServer, this, &MainWindow::closeServer,
                  Qt::DirectConnection));
-  VERIFY(connect(exp_, &ExplorerTreeView::closeCluster, this, &MainWindow::closeCluster,
+  VERIFY(connect(exp_, &ExplorerTreeWidget::closeCluster, this, &MainWindow::closeCluster,
                  Qt::DirectConnection));
-  VERIFY(connect(exp_, &ExplorerTreeView::closeSentinel, this, &MainWindow::closeSentinel,
+  VERIFY(connect(exp_, &ExplorerTreeWidget::closeSentinel, this, &MainWindow::closeSentinel,
                  Qt::DirectConnection));
   expDock_ = new QDockWidget(this);
   explorerAction_ = expDock_->toggleViewAction();
