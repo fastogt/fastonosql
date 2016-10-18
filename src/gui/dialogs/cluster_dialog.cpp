@@ -61,7 +61,6 @@ const char* defaultNameConnectionFolder = "/";
 
 namespace fastonosql {
 namespace gui {
-
 ClusterDialog::ClusterDialog(QWidget* parent, core::IClusterSettingsBase* connection)
     : QDialog(parent), cluster_connection_(connection) {
   setWindowIcon(GuiFactory::instance().serverIcon());
@@ -435,6 +434,5 @@ void ClusterDialog::addConnection(core::IConnectionSettingsBaseSPtr con) {
   item->setConnection(con);
   listWidget_->addTopLevelItem(item);
 }
-
 }  // namespace gui
 }  // namespace fastonosql

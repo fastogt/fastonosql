@@ -51,7 +51,6 @@ const QSize stateIconSize = QSize(64, 64);
 
 namespace fastonosql {
 namespace gui {
-
 DiscoveryClusterDiagnosticDialog::DiscoveryClusterDiagnosticDialog(
     QWidget* parent,
     core::IConnectionSettingsBaseSPtr connection,
@@ -177,6 +176,5 @@ void DiscoveryClusterDiagnosticDialog::testConnection(
   VERIFY(connect(th, &QThread::finished, th, &QThread::deleteLater));
   th->start();
 }
-
 }  // namespace gui
 }  // namespace fastonosql

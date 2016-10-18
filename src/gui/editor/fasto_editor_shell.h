@@ -22,7 +22,6 @@
 
 namespace fastonosql {
 namespace gui {
-
 class FastoEditorShell : public FastoEditor {
   Q_OBJECT
  protected Q_SLOTS:
@@ -31,6 +30,5 @@ class FastoEditorShell : public FastoEditor {
  protected:
   explicit FastoEditorShell(bool showAutoCompl, QWidget* parent = 0);
 };
-
 }  // namespace gui
 }  // namespace fastonosql

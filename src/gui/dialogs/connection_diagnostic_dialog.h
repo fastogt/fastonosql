@@ -36,7 +36,6 @@ class GlassWidget;
 
 namespace fastonosql {
 namespace gui {
-
 class ConnectionDiagnosticDialog : public QDialog {
   Q_OBJECT
  public:
@@ -56,6 +55,5 @@ class ConnectionDiagnosticDialog : public QDialog {
   QLabel* statusLabel_;
   QLabel* iconLabel_;
 };
-
 }  // namespace gui
 }  // namespace fastonosql

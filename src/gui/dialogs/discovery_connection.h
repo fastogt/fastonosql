@@ -29,7 +29,6 @@
 
 namespace fastonosql {
 namespace gui {
-
 class DiscoveryConnection : public QObject {
   Q_OBJECT
  public:
@@ -48,6 +47,5 @@ class DiscoveryConnection : public QObject {
   core::IConnectionSettingsBaseSPtr connection_;
   common::time64_t start_time_;
 };
-
 }  // namespace gui
 }  // namespace fastonosql

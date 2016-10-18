@@ -70,7 +70,6 @@
 #include "translations/global.h"  // for trLoading
 
 namespace {
-
 const QString trRedisTextServerTemplate = QObject::tr(
     "<h3>Server:</h3>"
     "Redis version: %1<br/>"
@@ -218,7 +217,6 @@ const QString trLmdbTextServerTemplate = QObject::tr(
 
 namespace fastonosql {
 namespace gui {
-
 InfoServerDialog::InfoServerDialog(core::IServerSPtr server, QWidget* parent)
     : QDialog(parent), server_(server) {
   CHECK(server_);
@@ -545,6 +543,5 @@ void InfoServerDialog::updateText(const core::lmdb::ServerInfo& serv) {
   serverTextInfo_->setText(textServ);
 }
 #endif
-
 }  // namespace gui
 }  // namespace fastonosql

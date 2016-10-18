@@ -46,7 +46,6 @@
 
 namespace fastonosql {
 namespace gui {
-
 ConnectionsDialog::ConnectionsDialog(QWidget* parent) : QDialog(parent) {
   setWindowIcon(GuiFactory::instance().connectIcon());
   setWindowFlags(windowFlags() & ~Qt::WindowContextHelpButtonHint);  // Remove help
@@ -519,6 +518,5 @@ DirectoryListWidgetItem* ConnectionsDialog::findFolderByPath(
   }
   return nullptr;
 }
-
 }  // namespace gui
 }  // namespace fastonosql

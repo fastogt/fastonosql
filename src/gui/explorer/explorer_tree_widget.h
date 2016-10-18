@@ -38,10 +38,10 @@ class ExplorerTreeWidget : public QWidget {
   explicit ExplorerTreeWidget(QWidget* parent = 0);
 
  Q_SIGNALS:
-  void openedConsole(core::IServerSPtr server, const QString& text);
-  void closeServer(core::IServerSPtr server);
-  void closeSentinel(core::ISentinelSPtr sentinel);
-  void closeCluster(core::IClusterSPtr cluster);
+  void consoleOpened(core::IServerSPtr server, const QString& text);
+  void serverClosed(core::IServerSPtr server);
+  void sentinelClosed(core::ISentinelSPtr sentinel);
+  void clusterClosed(core::IClusterSPtr cluster);
 
  public Q_SLOTS:
   void addServer(core::IServerSPtr server);

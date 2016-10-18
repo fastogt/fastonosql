@@ -31,7 +31,6 @@ class QueryWidget;
 
 namespace fastonosql {
 namespace gui {
-
 class MainWidget : public QTabWidget {
   Q_OBJECT
  public:
@@ -58,6 +57,5 @@ class MainWidget : public QTabWidget {
   void addWidgetToTab(QueryWidget* wid, const QString& title);
   void openNewTab(QueryWidget* src, const QString& title, const QString& text);
 };
-
 }  // namespace gui
 }  // namespace fastonosql

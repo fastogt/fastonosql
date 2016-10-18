@@ -29,7 +29,6 @@ class QWidget;
 
 namespace fastonosql {
 namespace gui {
-
 class FastoHexEdit : public QTextEdit {
   Q_OBJECT
  public:
@@ -73,6 +72,5 @@ class FastoHexEdit : public QTextEdit {
   int asciiCharInLine(int wid) const;
   int positionAtPoint(const QPoint& point) const;
 };
-
 }  // namespace gui
 }  // namespace fastonosql

@@ -32,19 +32,22 @@ class QSortFilterProxyModel;
 
 namespace fastonosql {
 namespace gui {
-
 class ExplorerTreeModel;
+}
+}
 
+namespace fastonosql {
+namespace gui {
 class ExplorerTreeView : public QTreeView {
   Q_OBJECT
  public:
   explicit ExplorerTreeView(QWidget* parent);
 
  Q_SIGNALS:
-  void openedConsole(core::IServerSPtr server, const QString& text);
-  void closeServer(core::IServerSPtr server);
-  void closeSentinel(core::ISentinelSPtr sentinel);
-  void closeCluster(core::IClusterSPtr cluster);
+  void consoleOpened(core::IServerSPtr server, const QString& text);
+  void serverClosed(core::IServerSPtr server);
+  void sentinelClosed(core::ISentinelSPtr sentinel);
+  void clusterClosed(core::IClusterSPtr cluster);
 
  public Q_SLOTS:
   void addServer(core::IServerSPtr server);
@@ -56,7 +59,7 @@ class ExplorerTreeView : public QTreeView {
   void addCluster(core::IClusterSPtr cluster);
   void removeCluster(core::IClusterSPtr cluster);
 
-  void textFilterChanged(const QString& text);
+  void changeTextFilter(const QString& text);
 
  private Q_SLOTS:
   void showContextMenu(const QPoint& point);
@@ -85,7 +88,7 @@ class ExplorerTreeView : public QTreeView {
   void editKey();
   void viewKeys();
 
-  void getValue();
+  void loadValue();
   void renKey();
   void deleteKey();
   void watchKey();
@@ -113,8 +116,8 @@ class ExplorerTreeView : public QTreeView {
   void changeTTLKey(core::IDataBaseInfoSPtr db, core::NKey key, core::ttl_t ttl);
 
  protected:
-  virtual void changeEvent(QEvent* ev);
-  virtual void mouseDoubleClickEvent(QMouseEvent* ev);
+  virtual void changeEvent(QEvent* ev) override;
+  virtual void mouseDoubleClickEvent(QMouseEvent* ev) override;
 
  private:
   void syncWithServer(core::IServer* server);
@@ -152,6 +155,5 @@ class ExplorerTreeView : public QTreeView {
   ExplorerTreeModel* source_model_;
   QSortFilterProxyModel* proxy_model_;
 };
-
 }  // namespace gui
 }  // namespace fastonosql

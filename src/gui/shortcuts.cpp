@@ -24,7 +24,6 @@
 
 namespace fastonosql {
 namespace gui {
-
 /*bool isDuplicateTabShortcut(QKeyEvent* keyEvent) {
   bool ctrlShiftT = (keyEvent->modifiers() &
 Qt::ControlModifier) &&
@@ -123,6 +122,5 @@ Qt::Key_Slash)) ||
 (keyEvent->modifiers() &
 Qt::ShiftModifier) && (keyEvent->key() == Qt::Key_C));
 }*/
-
 }  // namespace gui
 }  // namespace fastonosql

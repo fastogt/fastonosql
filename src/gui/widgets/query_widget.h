@@ -35,7 +35,6 @@ class BaseShellWidget;
 
 namespace fastonosql {
 namespace gui {
-
 class QueryWidget : public QWidget {
   Q_OBJECT
  public:
@@ -56,6 +55,5 @@ class QueryWidget : public QWidget {
   OutputWidget* outputWidget_;
   const core::IServerSPtr server_;
 };
-
 }  // namespace gui
 }  // namespace fastonosql

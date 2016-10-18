@@ -39,34 +39,15 @@ namespace fastonosql {
 namespace core {
 namespace events_info {
 struct ChangeServerPropertyInfoRequest;
-}
-}
-}
-namespace fastonosql {
-namespace core {
-namespace events_info {
-struct ChangeServerPropertyInfoResponce;
-}
-}
-}
-namespace fastonosql {
-namespace core {
-namespace events_info {
 struct ServerPropertyInfoRequest;
-}
-}
-}
-namespace fastonosql {
-namespace core {
-namespace events_info {
 struct ServerPropertyInfoResponce;
+struct ChangeServerPropertyInfoResponce;
 }
 }
 }
 
 namespace fastonosql {
 namespace gui {
-
 class PropertyServerDialog : public QDialog {
   Q_OBJECT
  public:
@@ -93,6 +74,5 @@ class PropertyServerDialog : public QDialog {
   QTableView* propertyes_table_;
   const core::IServerSPtr server_;
 };
-
 }  // namespace gui
 }  // namespace fastonosql

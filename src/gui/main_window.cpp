@@ -92,7 +92,6 @@ const QKeySequence explorerKeySequence = Qt::CTRL + Qt::Key_T;
 
 namespace fastonosql {
 namespace gui {
-
 MainWindow::MainWindow() : QMainWindow(), isCheckedInSession_(false) {
 #ifdef OS_ANDROID
   setAttribute(Qt::WA_AcceptTouchEvents);
@@ -217,12 +216,12 @@ MainWindow::MainWindow() : QMainWindow(), isCheckedInSession_(false) {
   setCentralWidget(mainW);
 
   exp_ = new ExplorerTreeWidget(this);
-  VERIFY(connect(exp_, &ExplorerTreeWidget::openedConsole, mainW, &MainWidget::openConsole));
-  VERIFY(connect(exp_, &ExplorerTreeWidget::closeServer, this, &MainWindow::closeServer,
+  VERIFY(connect(exp_, &ExplorerTreeWidget::consoleOpened, mainW, &MainWidget::openConsole));
+  VERIFY(connect(exp_, &ExplorerTreeWidget::serverClosed, this, &MainWindow::closeServer,
                  Qt::DirectConnection));
-  VERIFY(connect(exp_, &ExplorerTreeWidget::closeCluster, this, &MainWindow::closeCluster,
+  VERIFY(connect(exp_, &ExplorerTreeWidget::clusterClosed, this, &MainWindow::closeCluster,
                  Qt::DirectConnection));
-  VERIFY(connect(exp_, &ExplorerTreeWidget::closeSentinel, this, &MainWindow::closeSentinel,
+  VERIFY(connect(exp_, &ExplorerTreeWidget::sentinelClosed, this, &MainWindow::closeSentinel,
                  Qt::DirectConnection));
   expDock_ = new QDockWidget(this);
   explorerAction_ = expDock_->toggleViewAction();
@@ -792,6 +791,5 @@ void MainWindow::createCluster(core::IClusterSettingsBaseSPtr settings) {
     mwidg->openConsole(root, QString());
   }
 }
-
 }  // namespace gui
 }  // namespace fastonosql

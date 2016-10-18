@@ -36,7 +36,6 @@
 #include <common/qt/gui/shortcuts.h>  // for isAutoCompleteShortcut, etc
 
 namespace {
-
 int getNumberOfDigits(int x) {
   if (x < 0) {
     return getNumberOfDigits(-x) + 1;
@@ -84,12 +83,10 @@ const QColor matchedBraceBackgroundColor = QColor(30, 36, 38);
 
 const QColor marginsBackgroundColor = QColor(Qt::green);
 const QColor marginsForegroundColor = QColor(Qt::white);
-
 }  // namespace
 
 namespace fastonosql {
 namespace gui {
-
 FastoScintilla::FastoScintilla(QWidget* parent)
     : QsciScintilla(parent), lineNumberMarginWidth_(0), showAutoCompletion_(false) {
   setAutoIndent(true);
@@ -200,6 +197,5 @@ void FastoScintilla::hideAutocompletion() {
     cancelList();
   }
 }
-
 }  // namespace gui
 }  // namespace fastonosql

@@ -31,7 +31,6 @@
 
 namespace fastonosql {
 namespace gui {
-
 QueryWidget::QueryWidget(core::IServerSPtr server, QWidget* parent)
     : QWidget(parent), server_(server) {
   shellWidget_ = new shell::BaseShellWidget(server);
@@ -79,6 +78,5 @@ void QueryWidget::executeArgs(const QString& text, int repeat, int interval, boo
 }
 
 void QueryWidget::reload() {}
-
 }  // namespace gui
 }  // namespace fastonosql

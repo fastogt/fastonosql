@@ -31,7 +31,6 @@
 
 namespace fastonosql {
 namespace gui {
-
 DiscoverySentinelConnection::DiscoverySentinelConnection(core::IConnectionSettingsBaseSPtr conn,
                                                          QObject* parent)
     : QObject(parent), connection_(conn), startTime_(common::time::current_mstime()) {
@@ -59,6 +58,5 @@ void DiscoverySentinelConnection::routine() {
                           translations::trSuccess, inf);
   }
 }
-
 }  // namespace gui
 }  // namespace fastonosql

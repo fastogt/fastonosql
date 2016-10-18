@@ -30,7 +30,6 @@
 
 namespace fastonosql {
 namespace gui {
-
 class FastoCommonItem : public common::qt::gui::TreeItem {
  public:
   enum eColumn { eKey = 0, eValue = 1, eType = 2, eCountColumns = 3 };
@@ -60,6 +59,5 @@ QString toCsv(FastoCommonItem* item, const QString& delimiter);
 
 QString fromGzip(FastoCommonItem* item);
 QString fromHexMsgPack(FastoCommonItem* item);
-
 }  // namespace gui
 }  // namespace fastonosql

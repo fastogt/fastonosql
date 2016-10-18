@@ -37,7 +37,6 @@ class QLabel;
 
 namespace fastonosql {
 namespace gui {
-
 class ClusterDialog : public QDialog {
   Q_OBJECT
  public:
@@ -87,6 +86,5 @@ class ClusterDialog : public QDialog {
   QDialogButtonBox* buttonBox_;
   QAction* setDefault_;
 };
-
 }  // namespace gui
 }  // namespace fastonosql

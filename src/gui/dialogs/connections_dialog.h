@@ -49,7 +49,6 @@ class SentinelConnectionListWidgetItemContainer;
 
 namespace fastonosql {
 namespace gui {
-
 class ConnectionsDialog : public QDialog {
   Q_OBJECT
  public:
@@ -94,6 +93,5 @@ class ConnectionsDialog : public QDialog {
   QTreeWidget* listWidget_;
   QPushButton* acButton_;
 };
-
 }  // namespace gui
 }  // namespace fastonosql

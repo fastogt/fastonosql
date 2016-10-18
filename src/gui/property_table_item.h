@@ -26,7 +26,6 @@
 
 namespace fastonosql {
 namespace gui {
-
 struct PropertyTableItem : public common::qt::gui::TableItem {
   enum eColumn { eKey = 0, eValue = 1, eCountColumns = 2 };
   explicit PropertyTableItem(const core::property_t& prop);
@@ -39,6 +38,5 @@ struct PropertyTableItem : public common::qt::gui::TableItem {
  private:
   core::property_t prop_;
 };
-
 }  // namespace gui
 }  // namespace fastonosql

@@ -31,7 +31,6 @@
 
 namespace fastonosql {
 namespace gui {
-
 UpdateChecker::UpdateChecker(QObject* parent) : QObject(parent) {}
 
 void UpdateChecker::routine() {
@@ -76,6 +75,5 @@ void UpdateChecker::routine() {
   DCHECK(!s.close());
   return;
 }
-
 }  // namespace gui
 }  // namespace fastonosql

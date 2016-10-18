@@ -91,7 +91,6 @@ const QString trChangePasswordTemplate_1S = QObject::tr("Change password for %1 
 
 namespace fastonosql {
 namespace gui {
-
 ExplorerTreeView::ExplorerTreeView(QWidget* parent) : QTreeView(parent) {
   source_model_ = new ExplorerTreeModel(this);
   proxy_model_ = new ExplorerTreeSortFilterProxyModel(this);
@@ -185,7 +184,7 @@ ExplorerTreeView::ExplorerTreeView(QWidget* parent) : QTreeView(parent) {
   VERIFY(connect(viewKeysAction_, &QAction::triggered, this, &ExplorerTreeView::viewKeys));
 
   getValueAction_ = new QAction(this);
-  VERIFY(connect(getValueAction_, &QAction::triggered, this, &ExplorerTreeView::getValue));
+  VERIFY(connect(getValueAction_, &QAction::triggered, this, &ExplorerTreeView::loadValue));
 
   renameKeyAction_ = new QAction(this);
   VERIFY(connect(renameKeyAction_, &QAction::triggered, this, &ExplorerTreeView::renKey));
@@ -217,7 +216,7 @@ void ExplorerTreeView::removeServer(core::IServerSPtr server) {
 
   unsyncWithServer(server.get());
   source_model_->removeServer(server);
-  emit closeServer(server);
+  emit serverClosed(server);
 }
 
 void ExplorerTreeView::addSentinel(core::ISentinelSPtr sentinel) {
@@ -254,7 +253,7 @@ void ExplorerTreeView::removeSentinel(core::ISentinelSPtr sentinel) {
   }
 
   source_model_->removeSentinel(sentinel);
-  emit closeSentinel(sentinel);
+  emit sentinelClosed(sentinel);
 }
 
 void ExplorerTreeView::addCluster(core::IClusterSPtr cluster) {
@@ -283,10 +282,10 @@ void ExplorerTreeView::removeCluster(core::IClusterSPtr cluster) {
   }
 
   source_model_->removeCluster(cluster);
-  emit closeCluster(cluster);
+  emit clusterClosed(cluster);
 }
 
-void ExplorerTreeView::textFilterChanged(const QString& text) {
+void ExplorerTreeView::changeTextFilter(const QString& text) {
   QRegExp regExp(text);
   proxy_model_->setFilterRegExp(regExp);
 }
@@ -458,7 +457,7 @@ void ExplorerTreeView::openConsole() {
 
   ExplorerServerItem* node = common::qt::item<common::qt::gui::TreeItem*, ExplorerServerItem*>(sel);
   if (node) {
-    emit openedConsole(node->server(), QString());
+    emit consoleOpened(node->server(), QString());
   }
 }
 
@@ -865,7 +864,7 @@ void ExplorerTreeView::viewKeys() {
   diag.exec();
 }
 
-void ExplorerTreeView::getValue() {
+void ExplorerTreeView::loadValue() {
   QModelIndex sel = selectedIndex();
   if (!sel.isValid()) {
     return;
@@ -1108,7 +1107,7 @@ void ExplorerTreeView::changeEvent(QEvent* e) {
 
 void ExplorerTreeView::mouseDoubleClickEvent(QMouseEvent* e) {
   if (core::SettingsManager::instance().fastViewKeys()) {
-    getValue();
+    loadValue();
   }
 
   QTreeView::mouseDoubleClickEvent(e);
@@ -1220,6 +1219,5 @@ QModelIndex ExplorerTreeView::selectedIndex() const {
 
   return proxy_model_->mapToSource(indexses[0]);
 }
-
 }  // namespace gui
 }  // namespace fastonosql

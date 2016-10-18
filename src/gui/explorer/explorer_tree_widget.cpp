@@ -24,7 +24,9 @@
 #include <QLabel>
 #include <QEvent>
 
+#include "gui/gui_factory.h"
 #include "gui/explorer/explorer_tree_view.h"
+
 #include "translations/global.h"
 
 namespace fastonosql {
@@ -34,19 +36,21 @@ ExplorerTreeWidget::ExplorerTreeWidget(QWidget* parent) : QWidget(parent) {
 
   view_ = new ExplorerTreeView(this);
   filter_edit_ = new QLineEdit;
+  filter_edit_->setClearButtonEnabled(true);
+  filter_edit_->addAction(GuiFactory::instance().search16Icon(), QLineEdit::LeadingPosition);
   main_layout->addWidget(view_);
   main_layout->addWidget(filter_edit_);
 
   VERIFY(
-      connect(filter_edit_, &QLineEdit::textChanged, view_, &ExplorerTreeView::textFilterChanged));
+      connect(filter_edit_, &QLineEdit::textChanged, view_, &ExplorerTreeView::changeTextFilter));
   VERIFY(
-      connect(view_, &ExplorerTreeView::openedConsole, this, &ExplorerTreeWidget::openedConsole));
-  VERIFY(connect(view_, &ExplorerTreeView::closeServer, this, &ExplorerTreeWidget::closeServer,
+      connect(view_, &ExplorerTreeView::consoleOpened, this, &ExplorerTreeWidget::consoleOpened));
+  VERIFY(connect(view_, &ExplorerTreeView::serverClosed, this, &ExplorerTreeWidget::serverClosed,
                  Qt::DirectConnection));
-  VERIFY(connect(view_, &ExplorerTreeView::closeCluster, this, &ExplorerTreeWidget::closeCluster,
+  VERIFY(connect(view_, &ExplorerTreeView::clusterClosed, this, &ExplorerTreeWidget::clusterClosed,
                  Qt::DirectConnection));
-  VERIFY(connect(view_, &ExplorerTreeView::closeSentinel, this, &ExplorerTreeWidget::closeSentinel,
-                 Qt::DirectConnection));
+  VERIFY(connect(view_, &ExplorerTreeView::sentinelClosed, this,
+                 &ExplorerTreeWidget::sentinelClosed, Qt::DirectConnection));
 
   setLayout(main_layout);
 }
@@ -84,7 +88,7 @@ void ExplorerTreeWidget::changeEvent(QEvent* e) {
 }
 
 void ExplorerTreeWidget::retranslateUi() {
-  filter_edit_->setPlaceholderText(translations::trFilter);
+  filter_edit_->setPlaceholderText(translations::trSearching);
 }
 }  // namespace gui
 }  // namespace fastonosql

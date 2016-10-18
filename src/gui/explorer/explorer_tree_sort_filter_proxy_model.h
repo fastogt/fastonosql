@@ -28,8 +28,8 @@ class ExplorerTreeSortFilterProxyModel : public QSortFilterProxyModel {
   ExplorerTreeSortFilterProxyModel(QObject* parent = 0);
 
  protected:
-  virtual bool lessThan(const QModelIndex& left, const QModelIndex& right) const;
-  virtual bool filterAcceptsRow(int source_row, const QModelIndex& source_parent) const;
+  virtual bool lessThan(const QModelIndex& left, const QModelIndex& right) const override;
+  virtual bool filterAcceptsRow(int source_row, const QModelIndex& source_parent) const override;
 };
 }  // namespace gui
 }  // namespace fastonosql

@@ -42,7 +42,6 @@ class FastoScintilla;
 
 namespace fastonosql {
 namespace gui {
-
 class FastoEditor : public QWidget {
   Q_OBJECT
  public:
@@ -94,6 +93,5 @@ class FastoEditor : public QWidget {
   QPushButton* prev_;
   QCheckBox* caseSensitive_;
 };
-
 }  // namespace gui
 }  // namespace fastonosql

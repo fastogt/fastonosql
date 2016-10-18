@@ -42,7 +42,6 @@ class GlassWidget;
 
 namespace fastonosql {
 namespace gui {
-
 class ConnectionListWidgetItemDiscovered;
 class DiscoveryClusterDiagnosticDialog : public QDialog {
   Q_OBJECT
@@ -73,6 +72,5 @@ class DiscoveryClusterDiagnosticDialog : public QDialog {
   QLabel* iconLabel_;
   core::IClusterSettingsBaseSPtr cluster_;
 };
-
 }  // namespace gui
 }  // namespace fastonosql

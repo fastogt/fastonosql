@@ -32,7 +32,6 @@ class FastoEditor;
 
 namespace fastonosql {
 namespace gui {
-
 class EncodeDecodeDialog : public QDialog {
   Q_OBJECT
  public:
@@ -55,6 +54,5 @@ class EncodeDecodeDialog : public QDialog {
   QRadioButton* encodeButton_;
   QRadioButton* decodeButton_;
 };
-
 }  // namespace gui
 }  // namespace fastonosql

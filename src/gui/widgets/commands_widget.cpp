@@ -39,7 +39,6 @@
 
 namespace fastonosql {
 namespace gui {
-
 CommandsWidget::CommandsWidget(QWidget* parent) : QWidget(parent), logTextEdit_(new QTextEdit) {
   logTextEdit_->setReadOnly(true);
   logTextEdit_->setContextMenuPolicy(Qt::CustomContextMenu);
@@ -87,6 +86,5 @@ void CommandsWidget::changeEvent(QEvent* ev) {
 void CommandsWidget::retranslateUi() {
   clear_->setText(translations::trClearAll);
 }
-
 }  // namespace gui
 }  // namespace fastonosql

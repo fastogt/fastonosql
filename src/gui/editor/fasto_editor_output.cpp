@@ -31,7 +31,6 @@
 
 namespace fastonosql {
 namespace gui {
-
 FastoEditorOutput::FastoEditorOutput(const QString& delimiter, QWidget* parent)
     : QWidget(parent), model_(nullptr), view_method_(JSON), delimiter_(delimiter) {
   editor_ = new FastoHexEdit;
@@ -278,6 +277,5 @@ void FastoEditorOutput::layoutChanged() {
   }
   editor_->setData(result.toUtf8());
 }
-
 }  // namespace gui
 }  // namespace fastonosql

@@ -47,7 +47,6 @@ class ConnectionListWidgetItemDiscovered;
 
 namespace fastonosql {
 namespace gui {
-
 class DiscoverySentinelDiagnosticDialog : public QDialog {
   Q_OBJECT
  public:
@@ -74,6 +73,5 @@ class DiscoverySentinelDiagnosticDialog : public QDialog {
   QTreeWidget* listWidget_;
   QLabel* iconLabel_;
 };
-
 }  // namespace gui
 }  // namespace fastonosql

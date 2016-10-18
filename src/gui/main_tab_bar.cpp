@@ -31,7 +31,6 @@
 
 namespace fastonosql {
 namespace gui {
-
 MainTabBar::MainTabBar(QWidget* parent) : QTabBar(parent) {
   newShellAction_ = new QAction(this);
   newShellAction_->setShortcut(newTabKey);
@@ -97,6 +96,5 @@ void MainTabBar::retranslateUi() {
   closeShellAction_->setText(translations::trCloseTab);
   closeOtherShellsAction_->setText(translations::trCloseOtherTab);
 }
-
 }  // namespace gui
 }  // namespace fastonosql

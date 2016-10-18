@@ -25,7 +25,6 @@
 
 namespace fastonosql {
 namespace gui {
-
 FastoTableView::FastoTableView(QWidget* parent) : QTableView(parent) {
   verticalHeader()->setDefaultAlignment(Qt::AlignLeft);
   horizontalHeader()->setDefaultAlignment(Qt::AlignLeft);
@@ -54,6 +53,5 @@ void FastoTableView::resizeEvent(QResizeEvent* event) {
   verticalHeader()->resizeSections(QHeaderView::Stretch);
   QTableView::resizeEvent(event);
 }
-
 }  // namespace gui
 }  // namespace fastonosql

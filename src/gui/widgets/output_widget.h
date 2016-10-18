@@ -38,61 +38,24 @@ namespace fastonosql {
 namespace core {
 namespace events_info {
 class EventInfoBase;
-}
-}
-}
-namespace fastonosql {
-namespace core {
-namespace events_info {
 struct ExecuteInfoRequest;
-}
-}
-}
-namespace fastonosql {
-namespace core {
-namespace events_info {
 struct ExecuteInfoResponce;
-}
-}
-}
-namespace fastonosql {
-namespace core {
-namespace events_info {
 struct CommandRootCompleatedInfo;
-}
-}
-}
-namespace fastonosql {
-namespace core {
-namespace events_info {
 struct CommandRootCreatedInfo;
 }
 }
 }
 namespace fastonosql {
 namespace gui {
+class FastoTableView;
+class FastoTextView;
+class FastoTreeView;
 class FastoCommonModel;
 }
-}  // lines 43-43
-namespace fastonosql {
-namespace gui {
-class FastoTableView;
 }
-}  // lines 42-42
-namespace fastonosql {
-namespace gui {
-class FastoTextView;
-}
-}  // lines 40-40
-namespace fastonosql {
-namespace gui {
-class FastoTreeView;
-}
-}  // lines 41-41
 
 namespace fastonosql {
 namespace gui {
-
 class OutputWidget : public QWidget {
   Q_OBJECT
  public:
@@ -110,7 +73,7 @@ class OutputWidget : public QWidget {
   void addKey(core::IDataBaseInfoSPtr db, core::NDbKValue key);
 
   void addChild(FastoObjectIPtr child);
-  void itemUpdate(FastoObject* item, common::ValueSPtr newValue);
+  void updateItem(FastoObject* item, common::ValueSPtr newValue);
 
   void setTreeView();
   void setTableView();
@@ -130,6 +93,5 @@ class OutputWidget : public QWidget {
   FastoTextView* textView_;
   const core::IServerSPtr server_;
 };
-
 }  // namespace gui
 }  // namespace fastonosql

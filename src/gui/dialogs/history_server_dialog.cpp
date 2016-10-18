@@ -51,7 +51,6 @@ const QString trHistoryTemplate_1S = QObject::tr("%1 history");
 
 namespace fastonosql {
 namespace gui {
-
 ServerHistoryDialog::ServerHistoryDialog(core::IServerSPtr server, QWidget* parent)
     : QDialog(parent, Qt::WindowMinMaxButtonsHint | Qt::WindowCloseButtonHint), server_(server) {
   CHECK(server_);
@@ -226,6 +225,5 @@ void ServerHistoryDialog::requestHistoryInfo() {
   core::events_info::ServerInfoHistoryRequest req(this);
   server_->requestHistoryInfo(req);
 }
-
 }  // namespace gui
 }  // namespace fastonosql

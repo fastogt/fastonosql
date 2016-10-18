@@ -33,7 +33,6 @@
 
 namespace fastonosql {
 namespace gui {
-
 DirectoryListWidgetItem::DirectoryListWidgetItem(
     const core::IConnectionSettings::connection_path_t& path)
     : path_(path) {
@@ -173,6 +172,5 @@ void ClusterConnectionListWidgetItemContainer::setConnection(core::IClusterSetti
 core::IClusterSettingsBaseSPtr ClusterConnectionListWidgetItemContainer::connection() const {
   return connection_;
 }
-
 }  // namespace gui
 }  // namespace fastonosql

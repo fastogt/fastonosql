@@ -38,7 +38,6 @@ class IServer;
 
 namespace fastonosql {
 namespace gui {
-
 class ExplorerClusterItem;
 class ExplorerSentinelItem;
 class ExplorerServerItem;
@@ -46,7 +45,11 @@ class ExplorerDatabaseItem;
 class ExplorerKeyItem;
 class ExplorerNSItem;
 class IExplorerTreeItem;
+}
+}
 
+namespace fastonosql {
+namespace gui {
 class ExplorerTreeModel : public common::qt::gui::TreeModel {
   Q_OBJECT
  public:
@@ -93,6 +96,5 @@ class ExplorerTreeModel : public common::qt::gui::TreeModel {
   ExplorerNSItem* findNSItem(IExplorerTreeItem* db_or_ns, const QString& name) const;
   ExplorerNSItem* findOrCreateNSItem(IExplorerTreeItem* db_or_ns, const core::KeyInfo& kinf);
 };
-
 }  // namespace gui
 }  // namespace fastonosql

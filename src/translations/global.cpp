@@ -101,6 +101,7 @@ const QString trMsgPack = QObject::tr("MsgPack");
 const QString trGzip = QObject::tr("Gzip");
 const QString trCannotConvertPattern1ArgsS = QObject::tr("Cannot convert to '%1' format!");
 const QString trSearch = QObject::tr("Search");
+const QString trSearching = QObject::tr("Search...");
 const QString trBackup = QObject::tr("Backup");
 const QString trShutdown = QObject::tr("Shutdown");
 const QString trNext = QObject::tr("Next");

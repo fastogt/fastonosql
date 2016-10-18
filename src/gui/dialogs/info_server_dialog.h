@@ -35,12 +35,6 @@ namespace fastonosql {
 namespace core {
 namespace events_info {
 class ServerInfoResponce;
-}
-}
-}
-namespace fastonosql {
-namespace core {
-namespace events_info {
 struct ServerInfoRequest;
 }
 }

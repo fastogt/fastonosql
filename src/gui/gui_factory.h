@@ -30,7 +30,6 @@ class QString;
 
 namespace fastonosql {
 namespace gui {
-
 class GuiFactory : public common::patterns::LazySingleton<GuiFactory> {
  public:
   friend class common::patterns::LazySingleton<GuiFactory>;
@@ -84,6 +83,7 @@ class GuiFactory : public common::patterns::LazySingleton<GuiFactory> {
   const QIcon& rightIcon() const;
 
   const QIcon& close16Icon() const;
+  const QIcon& search16Icon() const;
   const QIcon& commandIcon(core::connectionTypes type) const;
 
   const QIcon& successIcon() const;
@@ -103,6 +103,5 @@ class GuiFactory : public common::patterns::LazySingleton<GuiFactory> {
   const QIcon& unqliteConnectionIcon() const;
   const QIcon& lmdbConnectionIcon() const;
 };
-
 }  // namespace gui
 }  // namespace fastonosql

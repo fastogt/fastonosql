@@ -46,7 +46,6 @@ class GraphWidget;
 
 namespace fastonosql {
 namespace gui {
-
 class ServerHistoryDialog : public QDialog {
   Q_OBJECT
  public:
@@ -85,6 +84,5 @@ class ServerHistoryDialog : public QDialog {
   core::events_info::ServerInfoHistoryResponce::infos_container_type infos_;
   const core::IServerSPtr server_;
 };
-
 }  // namespace gui
 }  // namespace fastonosql

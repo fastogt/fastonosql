@@ -66,7 +66,6 @@ const QString trNamespace_1S = QObject::tr("<b>Group size:</b> %1 keys<br/>");
 
 namespace fastonosql {
 namespace gui {
-
 ExplorerTreeModel::ExplorerTreeModel(QObject* parent) : TreeModel(parent) {}
 
 QVariant ExplorerTreeModel::data(const QModelIndex& index, int role) const {
@@ -553,6 +552,5 @@ ExplorerNSItem* ExplorerTreeModel::findOrCreateNSItem(IExplorerTreeItem* db_or_n
 
   return founded_item;
 }
-
 }  // namespace gui
 }  // namespace fastonosql

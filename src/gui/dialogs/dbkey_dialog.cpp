@@ -58,7 +58,6 @@ const QString trInput = QObject::tr("Key/Value input");
 
 namespace fastonosql {
 namespace gui {
-
 DbKeyDialog::DbKeyDialog(const QString& title,
                          core::connectionTypes type,
                          core::NDbKValue key,
@@ -504,6 +503,5 @@ common::Value* DbKeyDialog::item() const {
     return common::Value::createStringValue(common::ConvertToString(text));
   }
 }
-
 }  // namespace gui
 }  // namespace fastonosql

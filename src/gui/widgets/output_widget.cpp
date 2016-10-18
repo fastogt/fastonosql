@@ -54,7 +54,6 @@
 namespace fastonosql {
 namespace gui {
 namespace {
-
 FastoCommonItem* createItem(common::qt::gui::TreeItem* parent,
                             const std::string& key,
                             bool readOnly,
@@ -73,9 +72,7 @@ FastoCommonItem* createRootItem(FastoObject* item) {
   core::NDbKValue nkey(core::NKey(std::string()), val);
   return new FastoCommonItem(nkey, item->delimiter(), true, NULL, item);
 }
-
 }  // namespace
-
 OutputWidget::OutputWidget(core::IServerSPtr server, QWidget* parent)
     : QWidget(parent), server_(server) {
   CHECK(server_);
@@ -98,7 +95,7 @@ OutputWidget::OutputWidget(core::IServerSPtr server, QWidget* parent)
 
   VERIFY(connect(server_.get(), &core::IServer::addedChild, this, &OutputWidget::addChild,
                  Qt::DirectConnection));
-  VERIFY(connect(server_.get(), &core::IServer::itemUpdated, this, &OutputWidget::itemUpdate,
+  VERIFY(connect(server_.get(), &core::IServer::itemUpdated, this, &OutputWidget::updateItem,
                  Qt::DirectConnection));
 
   treeView_ = new FastoTreeView;
@@ -225,7 +222,7 @@ void OutputWidget::addChild(FastoObjectIPtr child) {
   }
 }
 
-void OutputWidget::itemUpdate(FastoObject* item, common::ValueSPtr newValue) {
+void OutputWidget::updateItem(FastoObject* item, common::ValueSPtr newValue) {
   QModelIndex index;
   bool isFound = commonModel_->findItem(item, &index);
   if (!isFound) {
@@ -289,6 +286,5 @@ void OutputWidget::syncWithSettings() {
 void OutputWidget::updateTimeLabel(const core::events_info::EventInfoBase& evinfo) {
   timeLabel_->setText(QString("%1 msec").arg(evinfo.elapsedTime()));
 }
-
 }  // namespace gui
 }  // namespace fastonosql

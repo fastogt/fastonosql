@@ -41,7 +41,6 @@ const QSize stateIconSize = QSize(64, 64);
 
 namespace fastonosql {
 namespace gui {
-
 ConnectionDiagnosticDialog::ConnectionDiagnosticDialog(QWidget* parent,
                                                        core::IConnectionSettingsBaseSPtr connection)
     : QDialog(parent) {
@@ -112,6 +111,5 @@ void ConnectionDiagnosticDialog::testConnection(core::IConnectionSettingsBaseSPt
   VERIFY(connect(th, &QThread::finished, th, &QThread::deleteLater));
   th->start();
 }
-
 }  // namespace gui
 }  // namespace fastonosql

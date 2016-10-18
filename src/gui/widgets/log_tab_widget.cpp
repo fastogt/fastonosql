@@ -30,7 +30,6 @@
 
 namespace fastonosql {
 namespace gui {
-
 LogTabWidget::LogTabWidget(QWidget* parent) : QTabWidget(parent) {
   QTabBar* tab = new QTabBar;
   setTabBar(tab);
@@ -66,6 +65,5 @@ void LogTabWidget::retranslateUi() {
   setTabText(0, translations::trLogs);
   setTabText(1, translations::trCommands);
 }
-
 }  // namespace gui
 }  // namespace fastonosql

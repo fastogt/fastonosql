@@ -62,7 +62,6 @@ const QString invalidDbType = QObject::tr("Invalid database type!");
 
 namespace fastonosql {
 namespace gui {
-
 SentinelDialog::SentinelDialog(QWidget* parent, core::ISentinelSettingsBase* connection)
     : QDialog(parent), sentinel_connection_(connection) {
   setWindowIcon(GuiFactory::instance().serverIcon());
@@ -412,6 +411,5 @@ void SentinelDialog::addSentinel(core::SentinelSettings sent) {
   }
   listWidget_->addTopLevelItem(sent_item);
 }
-
 }  // namespace gui
 }  // namespace fastonosql

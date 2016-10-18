@@ -31,7 +31,6 @@
 
 namespace fastonosql {
 namespace gui {
-
 MainWidget::MainWidget(QWidget* parent) : QTabWidget(parent) {
   MainTabBar* tab = new MainTabBar(this);
 
@@ -157,6 +156,5 @@ void MainWidget::openNewTab(QueryWidget* src, const QString& title, const QStrin
   QueryWidget* newWid = src->clone(text);
   addWidgetToTab(newWid, title);
 }
-
 }  // namespace gui
 }  // namespace fastonosql

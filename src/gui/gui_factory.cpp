@@ -29,7 +29,6 @@
 
 namespace fastonosql {
 namespace gui {
-
 GuiFactory::GuiFactory() {}
 
 const QIcon& GuiFactory::directoryIcon() const {
@@ -317,6 +316,11 @@ const QIcon& GuiFactory::close16Icon() const {
   return close;
 }
 
+const QIcon& GuiFactory::search16Icon() const {
+  static QIcon search(":" PROJECT_NAME_LOWERCASE "/images/16x16/search.png");
+  return search;
+}
+
 const QIcon& GuiFactory::commandIcon(core::connectionTypes type) const {
   if (type == core::REDIS) {
     return redisConnectionIcon();
@@ -395,6 +399,5 @@ const QIcon& GuiFactory::lmdbConnectionIcon() const {
   static QIcon main(":" PROJECT_NAME_LOWERCASE "/images/64x64/lmdb.png");
   return main;
 }
-
 }  // namespace gui
 }  // namespace fastonosql

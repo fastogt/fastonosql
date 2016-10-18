@@ -50,7 +50,6 @@ const QString trPasswordChS = QObject::tr("Password successfully changed!");
 
 namespace fastonosql {
 namespace gui {
-
 ChangePasswordServerDialog::ChangePasswordServerDialog(const QString& title,
                                                        core::IServerSPtr server,
                                                        QWidget* parent)
@@ -136,6 +135,5 @@ bool ChangePasswordServerDialog::validateInput() {
 
   return pass == cpass;
 }
-
 }  // namespace gui
 }  // namespace fastonosql

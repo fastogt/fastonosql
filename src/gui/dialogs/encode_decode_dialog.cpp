@@ -43,7 +43,6 @@
 
 namespace fastonosql {
 namespace gui {
-
 EncodeDecodeDialog::EncodeDecodeDialog(QWidget* parent) : QDialog(parent) {
   setWindowIcon(GuiFactory::instance().encodeDecodeIcon());
   setWindowFlags(windowFlags() & ~Qt::WindowContextHelpButtonHint);  // Remove help
@@ -125,6 +124,5 @@ void EncodeDecodeDialog::retranslateUi() {
   encodeButton_->setText(translations::trEncode);
   decodeButton_->setText(translations::trDecode);
 }
-
 }  // namespace gui
 }  // namespace fastonosql

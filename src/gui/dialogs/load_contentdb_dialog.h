@@ -27,7 +27,6 @@ class QSpinBox;   // lines 26-26
 
 namespace fastonosql {
 namespace gui {
-
 class LoadContentDbDialog : public QDialog {
   Q_OBJECT
  public:
@@ -55,6 +54,5 @@ class LoadContentDbDialog : public QDialog {
   QLineEdit* patternEdit_;
   QSpinBox* countSpinEdit_;
 };
-
 }  // namespace gui
 }  // namespace fastonosql

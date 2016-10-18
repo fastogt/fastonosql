@@ -68,7 +68,7 @@ const QString trCommandsVersion = QObject::tr("Command version:");
 const QString trCantReadTemplate_2S = QObject::tr(PROJECT_NAME_TITLE " can't read from %1:\n%2.");
 const QString trCantSaveTemplate_2S = QObject::tr(PROJECT_NAME_TITLE " can't save to %1:\n%2.");
 const QString trAdvancedOptions = QObject::tr("Advanced options");
-const QString trCalculate = QObject::tr("Calculate...");
+const QString trCalculating = QObject::tr("Calculate...");
 }
 
 namespace fastonosql {
@@ -210,11 +210,11 @@ BaseShellWidget::BaseShellWidget(core::IServerSPtr server, const QString& filePa
   QHBoxLayout* hlayout2 = new QHBoxLayout;
   core::connectionTypes ct = server_->type();
   serverName_ =
-      new common::qt::gui::IconLabel(gui::GuiFactory::instance().icon(ct), trCalculate, iconSize);
+      new common::qt::gui::IconLabel(gui::GuiFactory::instance().icon(ct), trCalculating, iconSize);
   serverName_->setElideMode(Qt::ElideRight);
   hlayout2->addWidget(serverName_);
-  dbName_ = new common::qt::gui::IconLabel(gui::GuiFactory::instance().databaseIcon(), trCalculate,
-                                           iconSize);
+  dbName_ = new common::qt::gui::IconLabel(gui::GuiFactory::instance().databaseIcon(),
+                                           trCalculating, iconSize);
   hlayout2->addWidget(dbName_);
   hlayout2->addWidget(new QSplitter(Qt::Horizontal));
   hlayout2->addWidget(advancedOptions_);
@@ -469,7 +469,7 @@ void BaseShellWidget::finishExecute(const core::events_info::ExecuteInfoResponce
 
 void BaseShellWidget::updateServerInfo(core::IServerInfoSPtr inf) {
   if (!inf) {
-    serverName_->setText(trCalculate);
+    serverName_->setText(trCalculating);
     for (int i = 0; i < commandsVersionApi_->count(); ++i) {
       commandsVersionApi_->setItemIcon(i, gui::GuiFactory::instance().unknownIcon());
     }
@@ -517,7 +517,7 @@ void BaseShellWidget::updateServerInfo(core::IServerInfoSPtr inf) {
 
 void BaseShellWidget::updateDefaultDatabase(core::IDataBaseInfoSPtr dbs) {
   if (!dbs) {
-    dbName_->setText(trCalculate);
+    dbName_->setText(trCalculating);
     return;
   }
 

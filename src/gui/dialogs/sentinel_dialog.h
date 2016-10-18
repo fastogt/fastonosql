@@ -39,7 +39,6 @@ class QWidget;
 
 namespace fastonosql {
 namespace gui {
-
 class SentinelDialog : public QDialog {
   Q_OBJECT
  public:
@@ -86,6 +85,5 @@ class SentinelDialog : public QDialog {
   QPushButton* discoveryButton_;
   QDialogButtonBox* buttonBox_;
 };
-
 }  // namespace gui
 }  // namespace fastonosql

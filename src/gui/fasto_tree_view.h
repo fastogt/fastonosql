@@ -26,7 +26,6 @@ class QWidget;
 
 namespace fastonosql {
 namespace gui {
-
 class FastoTreeView : public QTreeView {
   Q_OBJECT
  public:
@@ -38,6 +37,5 @@ class FastoTreeView : public QTreeView {
  protected:
   virtual void resizeEvent(QResizeEvent* event);
 };
-
 }  // namespace gui
 }  // namespace fastonosql

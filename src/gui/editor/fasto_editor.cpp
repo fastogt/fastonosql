@@ -42,7 +42,6 @@
 
 namespace fastonosql {
 namespace gui {
-
 FastoEditor::FastoEditor(QWidget* parent) : QWidget(parent), scin_(nullptr) {
   scin_ = new FastoScintilla;
 
@@ -221,6 +220,5 @@ void FastoEditor::findElement(bool forward) {
     }
   }
 }
-
 }  // namespace gui
 }  // namespace fastonosql

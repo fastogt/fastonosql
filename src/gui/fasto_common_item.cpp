@@ -37,7 +37,6 @@
 
 namespace fastonosql {
 namespace gui {
-
 FastoCommonItem::FastoCommonItem(const core::NDbKValue& key,
                                  const std::string& delimiter,
                                  bool isReadOnly,
@@ -215,6 +214,5 @@ QString fromHexMsgPack(FastoCommonItem* item) {
 
   return value;
 }
-
 }  // namespace gui
 }  // namespace fastonosql

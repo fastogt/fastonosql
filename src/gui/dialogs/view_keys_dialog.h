@@ -39,27 +39,8 @@ namespace fastonosql {
 namespace core {
 namespace events_info {
 struct ExecuteInfoRequest;
-}
-}
-}
-namespace fastonosql {
-namespace core {
-namespace events_info {
 struct ExecuteInfoResponce;
-}
-}
-}
-
-namespace fastonosql {
-namespace core {
-namespace events_info {
 struct LoadDatabaseContentRequest;
-}
-}
-}
-namespace fastonosql {
-namespace core {
-namespace events_info {
 struct LoadDatabaseContentResponce;
 }
 }
@@ -67,17 +48,12 @@ struct LoadDatabaseContentResponce;
 namespace fastonosql {
 namespace gui {
 class FastoTableView;
-}
-}  // lines 35-35
-namespace fastonosql {
-namespace gui {
 class KeysTableModel;
 }
-}  // lines 36-36
+}
 
 namespace fastonosql {
 namespace gui {
-
 class ViewKeysDialog : public QDialog {
   Q_OBJECT
  public:
@@ -130,6 +106,5 @@ class ViewKeysDialog : public QDialog {
   KeysTableModel* keysModel_;
   core::IDatabaseSPtr db_;
 };
-
 }  // namespace gui
 }  // namespace fastonosql

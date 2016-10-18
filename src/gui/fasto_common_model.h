@@ -31,7 +31,6 @@ class NDbKValue;
 
 namespace fastonosql {
 namespace gui {
-
 class FastoCommonModel : public common::qt::gui::TreeModel {
   Q_OBJECT
  public:
@@ -49,6 +48,5 @@ class FastoCommonModel : public common::qt::gui::TreeModel {
  Q_SIGNALS:
   void changedValue(const core::NDbKValue& value);
 };
-
 }  // namespace gui
 }  // namespace fastonosql

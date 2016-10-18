@@ -35,7 +35,6 @@ class FastoHexEdit;
 
 namespace fastonosql {
 namespace gui {
-
 class FastoEditorOutput : public QWidget {
   Q_OBJECT
  public:
@@ -76,6 +75,5 @@ class FastoEditorOutput : public QWidget {
   int view_method_;
   const QString delimiter_;
 };
-
 }  // namespace gui
 }  // namespace fastonosql

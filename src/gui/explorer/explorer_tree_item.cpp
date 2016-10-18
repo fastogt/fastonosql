@@ -46,7 +46,6 @@
 
 namespace fastonosql {
 namespace gui {
-
 IExplorerTreeItem::IExplorerTreeItem(TreeItem* parent) : TreeItem(parent, nullptr) {}
 
 ExplorerServerItem::ExplorerServerItem(core::IServerSPtr server, TreeItem* parent)
@@ -436,6 +435,5 @@ void ExplorerNSItem::removeBranch() {
     par->removeKey(key_item->key());
   });
 }
-
 }  // namespace gui
 }  // namespace fastonosql

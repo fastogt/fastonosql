@@ -32,7 +32,6 @@
 
 namespace fastonosql {
 namespace gui {
-
 FastoTextView::FastoTextView(const QString& delimiter, QWidget* parent) : QWidget(parent) {
   QVBoxLayout* mainL = new QVBoxLayout;
 
@@ -152,6 +151,5 @@ void FastoTextView::retranslateUi() {
   gzipRadioButton_->setText(translations::trGzip);
   saveChangeButton_->setText(translations::trSave);
 }
-
 }  // namespace gui
 }  // namespace fastonosql

@@ -49,7 +49,6 @@
 #include "translations/global.h"  // for trKeyCountOnThePage, etc
 
 namespace {
-
 QPushButton* createButtonWithIcon(const QIcon& icon) {
   QPushButton* button = new QPushButton;
   button->setIcon(icon);
@@ -90,12 +89,10 @@ class NumericDelegate : public QStyledItemDelegate {
     editor->setGeometry(option.rect);
   }
 };
-
 }  // namespace
 
 namespace fastonosql {
 namespace gui {
-
 ViewKeysDialog::ViewKeysDialog(const QString& title, core::IDatabaseSPtr db, QWidget* parent)
     : QDialog(parent), cursorStack_(), curPos_(0), db_(db) {
   CHECK(db_);
@@ -326,6 +323,5 @@ void ViewKeysDialog::updateControls() {
 size_t ViewKeysDialog::keysCount() const {
   return countKey_->value();
 }
-
 }  // namespace gui
 }  // namespace fastonosql

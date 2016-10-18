@@ -36,7 +36,6 @@
 
 namespace fastonosql {
 namespace gui {
-
 PropertyTableModel::PropertyTableModel(QObject* parent) : TableModel(parent) {}
 
 QVariant PropertyTableModel::data(const QModelIndex& index, int role) const {
@@ -76,7 +75,7 @@ bool PropertyTableModel::setData(const QModelIndex& index, const QVariant& value
       if (newValue != node->value()) {
         core::property_t pr = node->property();
         pr.second = common::ConvertToString(newValue);
-        emit changedProperty(pr);
+        emit propertyChanged(pr);
       }
     }
   }
@@ -132,6 +131,5 @@ void PropertyTableModel::changeProperty(const core::property_t& pr) {
     }
   }
 }
-
 }  // namespace gui
 }  // namespace fastonosql

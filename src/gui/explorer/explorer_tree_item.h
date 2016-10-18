@@ -24,7 +24,7 @@
 
 #include <QString>
 
-#include <common/qt/gui/base/tree_item.h>   // for TreeItem
+#include <common/qt/gui/base/tree_item.h>  // for TreeItem
 
 #include "core/core_fwd.h"  // for IServerSPtr, IClusterSPtr, etc
 #include "core/db_key.h"    // for NDbKValue, etc
@@ -38,7 +38,6 @@ class IServer;
 
 namespace fastonosql {
 namespace gui {
-
 class IExplorerTreeItem : public common::qt::gui::TreeItem {
  public:
   enum eColumn { eName = 0, eCountColumns };
@@ -55,9 +54,9 @@ class ExplorerServerItem : public IExplorerTreeItem {
  public:
   ExplorerServerItem(core::IServerSPtr server, TreeItem* parent);
 
-  virtual QString name() const;
+  virtual QString name() const override;
   core::IServerSPtr server() const;
-  virtual eType type() const;
+  virtual eType type() const override;
 
   void loadDatabases();
 
@@ -69,8 +68,8 @@ class ExplorerSentinelItem : public IExplorerTreeItem {
  public:
   ExplorerSentinelItem(core::ISentinelSPtr sentinel, TreeItem* parent);
 
-  virtual QString name() const;
-  virtual eType type() const;
+  virtual QString name() const override;
+  virtual eType type() const override;
 
   core::ISentinelSPtr sentinel() const;
 
@@ -82,8 +81,8 @@ class ExplorerClusterItem : public IExplorerTreeItem {
  public:
   ExplorerClusterItem(core::IClusterSPtr cluster, TreeItem* parent);
 
-  virtual QString name() const;
-  virtual eType type() const;
+  virtual QString name() const override;
+  virtual eType type() const override;
 
   core::IClusterSPtr cluster() const;
 
@@ -95,8 +94,8 @@ class ExplorerDatabaseItem : public IExplorerTreeItem {
  public:
   ExplorerDatabaseItem(core::IDatabaseSPtr db, ExplorerServerItem* parent);
 
-  virtual QString name() const;
-  virtual eType type() const;
+  virtual QString name() const override;
+  virtual eType type() const override;
   bool isDefault() const;
   size_t totalKeysCount() const;
   size_t loadedKeysCount() const;
@@ -128,9 +127,9 @@ class ExplorerNSItem : public IExplorerTreeItem {
   ExplorerNSItem(const QString& name, IExplorerTreeItem* parent);
   ExplorerDatabaseItem* db() const;
 
-  virtual QString name() const;
+  virtual QString name() const override;
   core::IServerSPtr server() const;
-  virtual eType type() const;
+  virtual eType type() const override;
   size_t keyCount() const;
 
   void removeBranch();
@@ -150,9 +149,9 @@ class ExplorerKeyItem : public IExplorerTreeItem {
   core::NKey key() const;
   void setKey(const core::NKey& key);
 
-  virtual QString name() const;
+  virtual QString name() const override;
   core::IServerSPtr server() const;
-  virtual eType type() const;
+  virtual eType type() const override;
 
   void renameKey(const QString& newName);
   void editKey(const core::NValue& value);
@@ -164,6 +163,5 @@ class ExplorerKeyItem : public IExplorerTreeItem {
  private:
   core::NDbKValue dbv_;
 };
-
 }  // namespace gui
 }  // namespace fastonosql

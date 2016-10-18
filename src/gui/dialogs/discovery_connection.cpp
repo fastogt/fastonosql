@@ -31,7 +31,6 @@
 
 namespace fastonosql {
 namespace gui {
-
 DiscoveryConnection::DiscoveryConnection(core::IConnectionSettingsBaseSPtr conn, QObject* parent)
     : QObject(parent), connection_(conn), start_time_(common::time::current_mstime()) {
   qRegisterMetaType<std::vector<core::ServerDiscoveryClusterInfoSPtr>>(
@@ -57,6 +56,5 @@ void DiscoveryConnection::routine() {
                           translations::trSuccess, inf);
   }
 }
-
 }  // namespace gui
 }  // namespace fastonosql

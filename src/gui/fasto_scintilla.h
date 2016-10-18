@@ -33,7 +33,6 @@
 
 namespace fastonosql {
 namespace gui {
-
 class FastoScintilla : public QsciScintilla {
   Q_OBJECT
  public:
@@ -61,6 +60,5 @@ class FastoScintilla : public QsciScintilla {
 
   bool showAutoCompletion_;
 };
-
 }  // namespace gui
 }  // namespace fastonosql

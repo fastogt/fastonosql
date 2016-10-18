@@ -36,7 +36,6 @@ class QSpinBox;
 
 namespace fastonosql {
 namespace gui {
-
 class ConnectionDialog : public QDialog {
   Q_OBJECT
  public:
@@ -109,6 +108,5 @@ class ConnectionDialog : public QDialog {
   QPushButton* selectPrivateFileButton_;
   QPushButton* selectPublicFileButton_;
 };
-
 }  // namespace gui
 }  // namespace fastonosql

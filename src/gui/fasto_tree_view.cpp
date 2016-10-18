@@ -25,7 +25,6 @@
 
 namespace fastonosql {
 namespace gui {
-
 FastoTreeView::FastoTreeView(QWidget* parent) : QTreeView(parent) {
   setSelectionMode(QAbstractItemView::ExtendedSelection);
   setSelectionBehavior(QAbstractItemView::SelectRows);
@@ -48,6 +47,5 @@ void FastoTreeView::resizeEvent(QResizeEvent* event) {
   header()->resizeSections(QHeaderView::Stretch);
   QTreeView::resizeEvent(event);
 }
-
 }  // namespace gui
 }  // namespace fastonosql

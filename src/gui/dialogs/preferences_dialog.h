@@ -31,7 +31,6 @@ class QWidget;
 
 namespace fastonosql {
 namespace gui {
-
 class PreferencesDialog : public QDialog {
   Q_OBJECT
  public:
@@ -72,6 +71,5 @@ class PreferencesDialog : public QDialog {
   QCheckBox* autoOpenConsole_;
   QCheckBox* fastViewKeys_;
 };
-
 }  // namespace gui
 }  // namespace fastonosql

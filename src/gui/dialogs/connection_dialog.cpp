@@ -49,7 +49,6 @@
 #include "translations/global.h"  // for trShow, trPrivateKey, etc
 
 namespace {
-
 const QString invalidDbType = QObject::tr("Invalid database type!");
 const QString trTitle = QObject::tr("Connection Settings");
 const QString trLoggingToolTip = QObject::tr("INFO command timeout in msec for history statistic.");
@@ -67,12 +66,10 @@ QString StableCommandLine(QString input) {
 QString toRawCommandLine(QString input) {
   return input.replace("\\n", "\n");
 }
-
 }  // namespace
 
 namespace fastonosql {
 namespace gui {
-
 ConnectionDialog::ConnectionDialog(QWidget* parent,
                                    core::IConnectionSettingsBase* connection,
                                    const std::vector<core::connectionTypes>& availibleTypes,
@@ -494,6 +491,5 @@ void ConnectionDialog::updateSshControls(bool isValidType) {
   passwordBox_->setEnabled(isValidType);
   passwordLabel_->setEnabled(isValidType);
 }
-
 }  // namespace gui
 }  // namespace fastonosql

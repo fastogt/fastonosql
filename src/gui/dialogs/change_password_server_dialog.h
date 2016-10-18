@@ -35,12 +35,6 @@ namespace fastonosql {
 namespace core {
 namespace events_info {
 struct ChangePasswordRequest;
-}
-}
-}
-namespace fastonosql {
-namespace core {
-namespace events_info {
 struct ChangePasswordResponce;
 }
 }
@@ -48,7 +42,6 @@ struct ChangePasswordResponce;
 
 namespace fastonosql {
 namespace gui {
-
 class ChangePasswordServerDialog : public QDialog {
   Q_OBJECT
  public:
@@ -71,6 +64,5 @@ class ChangePasswordServerDialog : public QDialog {
   QLineEdit* confPasswordLineEdit_;
   const core::IServerSPtr server_;
 };
-
 }  // namespace gui
 }  // namespace fastonosql

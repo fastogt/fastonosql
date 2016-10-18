@@ -30,20 +30,12 @@ class QWidget;
 namespace fastonosql {
 namespace gui {
 class CommandsWidget;
-}
-}  // lines 33-33
-namespace fastonosql {
-namespace gui {
 class LogWidget;
 }
-}  // lines 32-32
+}
 
 namespace fastonosql {
 namespace gui {
-
-class LogWidget;
-class CommandsWidget;
-
 class LogTabWidget : public QTabWidget {
   Q_OBJECT
  public:
@@ -61,6 +53,5 @@ class LogTabWidget : public QTabWidget {
   LogWidget* log_;
   CommandsWidget* commands_;
 };
-
 }  // namespace gui
 }  // namespace fastonosql

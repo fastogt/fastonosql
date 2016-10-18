@@ -59,6 +59,7 @@
     <file>@PROJECT_NAME_LOWERCASE@/images/64x64/success.png</file>
     <file>@PROJECT_NAME_LOWERCASE@/images/64x64/unknown.png</file>
     <file>@PROJECT_NAME_LOWERCASE@/images/16x16/close.png</file>
+    <file>@PROJECT_NAME_LOWERCASE@/images/16x16/search.png</file>
     <file>@PROJECT_NAME_LOWERCASE@/images/loading.gif</file>
     </qresource>
 </RCC>

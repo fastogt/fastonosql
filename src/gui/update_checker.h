@@ -22,7 +22,6 @@
 
 namespace fastonosql {
 namespace gui {
-
 class UpdateChecker : public QObject {
   Q_OBJECT
  public:
@@ -34,6 +33,5 @@ class UpdateChecker : public QObject {
  public Q_SLOTS:
   void routine();
 };
-
 }  // namespace gui
 }  // namespace fastonosql

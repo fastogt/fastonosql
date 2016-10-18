@@ -31,7 +31,6 @@ class QGroupBox;
 
 namespace fastonosql {
 namespace gui {
-
 class DbKeyDialog : public QDialog {
   Q_OBJECT
  public:
@@ -72,6 +71,5 @@ class DbKeyDialog : public QDialog {
   QPushButton* removeItemButton_;
   core::NDbKValue key_;
 };
-
 }  // namespace gui
 }  // namespace fastonosql

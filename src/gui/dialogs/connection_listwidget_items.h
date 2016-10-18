@@ -27,7 +27,6 @@
 
 namespace fastonosql {
 namespace gui {
-
 class DirectoryListWidgetItem  // directory can hold many
                                // (common, cluster or
                                // sentinel_container)
@@ -110,6 +109,5 @@ class ClusterConnectionListWidgetItemContainer  // can hold
  private:
   core::IClusterSettingsBaseSPtr connection_;
 };
-
 }  // namespace gui
 }  // namespace fastonosql
