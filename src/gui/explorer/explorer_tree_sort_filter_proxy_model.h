@@ -27,8 +27,6 @@ class ExplorerTreeSortFilterProxyModel : public QSortFilterProxyModel {
  public:
   ExplorerTreeSortFilterProxyModel(QObject* parent = 0);
 
-  void setWord(const QString& word);
-
  protected:
   virtual bool lessThan(const QModelIndex& left, const QModelIndex& right) const;
   virtual bool filterAcceptsRow(int source_row, const QModelIndex& source_parent) const;

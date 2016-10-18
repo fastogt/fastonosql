@@ -31,12 +31,14 @@ bool ExplorerTreeSortFilterProxyModel::lessThan(const QModelIndex& left,
                                                 const QModelIndex& right) const {
   IExplorerTreeItem* lnode = common::qt::item<common::qt::gui::TreeItem*, IExplorerTreeItem*>(left);
   if (!lnode) {
+    DNOTREACHED();
     return true;
   }
 
   IExplorerTreeItem* rnode =
       common::qt::item<common::qt::gui::TreeItem*, IExplorerTreeItem*>(right);
   if (!rnode) {
+    DNOTREACHED();
     return true;
   }
 

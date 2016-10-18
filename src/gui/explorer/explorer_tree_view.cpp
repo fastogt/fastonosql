@@ -97,6 +97,7 @@ ExplorerTreeView::ExplorerTreeView(QWidget* parent) : QTreeView(parent) {
   proxy_model_ = new ExplorerTreeSortFilterProxyModel(this);
   proxy_model_->setSourceModel(source_model_);
   proxy_model_->setDynamicSortFilter(true);
+  proxy_model_->setSortRole(Qt::DisplayRole);
   setModel(proxy_model_);
 
   setSortingEnabled(true);

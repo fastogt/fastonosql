@@ -47,7 +47,7 @@
 namespace fastonosql {
 namespace gui {
 
-IExplorerTreeItem::IExplorerTreeItem(TreeItem* parent) : TreeItem(parent) {}
+IExplorerTreeItem::IExplorerTreeItem(TreeItem* parent) : TreeItem(parent, nullptr) {}
 
 ExplorerServerItem::ExplorerServerItem(core::IServerSPtr server, TreeItem* parent)
     : IExplorerTreeItem(parent), server_(server) {}
