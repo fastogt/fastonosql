@@ -200,6 +200,15 @@ bool FastoEditorOutput::isReadOnly() const {
   return editor_->isReadOnly();
 }
 
+int FastoEditorOutput::childCount() const {
+  if (!model_) {
+    return 0;
+  }
+
+  int rc = model_->rowCount();
+  return rc;
+}
+
 void FastoEditorOutput::layoutChanged() {
   editor_->clear();
   if (!model_) {

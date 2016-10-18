@@ -90,6 +90,11 @@ void FastoTextView::saveChanges() {
 }
 
 void FastoTextView::textChange() {
+  if (editor_->childCount() != 1) {
+    saveChangeButton_->setEnabled(false);
+    return;
+  }
+
   QModelIndex index = editor_->selectedItem(1);  // eValue
   bool isEnabled = !editor_->isReadOnly() && index.isValid() &&
                    (index.flags() & Qt::ItemIsEditable) &&

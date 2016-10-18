@@ -47,6 +47,7 @@ class FastoEditorOutput : public QWidget {
   int viewMethod() const;
   QString text() const;
   bool isReadOnly() const;
+  int childCount() const;
 
  Q_SIGNALS:
   void textChanged();
