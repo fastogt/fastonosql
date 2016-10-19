@@ -43,9 +43,6 @@ QueryWidget::QueryWidget(core::IServerSPtr server, QWidget* parent)
   splitter->setCollapsible(0, false);
   splitter->setCollapsible(1, false);
   splitter->setHandleWidth(1);
-#if !defined(OS_MACOSX)
-  splitter->setStyleSheet("QSplitter::handle { background-color: gray }");
-#endif
   mainLayout->addWidget(splitter);
 
   setLayout(mainLayout);

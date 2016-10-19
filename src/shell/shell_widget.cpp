@@ -121,7 +121,6 @@ BaseShellWidget::BaseShellWidget(core::IServerSPtr server, const QString& filePa
   QHBoxLayout* hlayout = new QHBoxLayout;
 
   QToolBar* savebar = new QToolBar;
-  savebar->setStyleSheet("QToolBar { border: 0px; }");
 
   loadAction_ = new QAction(gui::GuiFactory::instance().loadIcon(), translations::trLoad, savebar);
   typedef void (BaseShellWidget::*lf)();

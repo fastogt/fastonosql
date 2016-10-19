@@ -147,7 +147,6 @@ SentinelDialog::SentinelDialog(QWidget* parent, core::ISentinelSettingsBase* con
 
   QHBoxLayout* toolBarLayout = new QHBoxLayout;
   savebar_ = new QToolBar;
-  savebar_->setStyleSheet("QToolBar { border: 0px; }");
   toolBarLayout->addWidget(savebar_);
 
   QAction* addB =

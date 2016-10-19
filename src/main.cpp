@@ -18,6 +18,7 @@
 
 #include <QApplication>
 #include <QDesktopWidget>
+#include <QFile>
 
 #include "gui/main_window.h"
 #include "gui/gui_factory.h"
@@ -37,6 +38,11 @@ int main(int argc, char* argv[]) {
   app.setApplicationVersion(PROJECT_VERSION);
   app.setAttribute(Qt::AA_UseHighDpiPixmaps);
   app.setWindowIcon(fastonosql::gui::GuiFactory::instance().logoIcon());  // default icon for app
+
+  QFile file(":" PROJECT_NAME_LOWERCASE "/default.qss");
+  file.open(QFile::ReadOnly);
+  QString styleSheet = QLatin1String(file.readAll());
+  app.setStyleSheet(styleSheet);
 #if defined(LOG_TO_FILE)
   std::string log_path = common::file_system::prepare_path("~/" PROJECT_NAME_LOWERCASE ".log");
   INIT_LOGGER(PROJECT_NAME_TITLE, log_path);

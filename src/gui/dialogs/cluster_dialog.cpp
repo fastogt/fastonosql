@@ -153,7 +153,6 @@ ClusterDialog::ClusterDialog(QWidget* parent, core::IClusterSettingsBase* connec
 
   QHBoxLayout* toolBarLayout = new QHBoxLayout;
   savebar_ = new QToolBar;
-  savebar_->setStyleSheet("QToolBar { border: 0px; }");
   toolBarLayout->addWidget(savebar_);
 
   QAction* addB =
