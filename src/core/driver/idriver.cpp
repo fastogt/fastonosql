@@ -384,30 +384,6 @@ void IDriver::handleDisconnectEvent(events::DisconnectRequestEvent* ev) {
   notifyProgress(sender, 100);
 }
 
-namespace {
-std::vector<std::string> parse_commands(const std::string& line) {
-  std::vector<std::string> commands;
-
-  size_t length = line.length();
-  size_t offset = 0;
-  for (size_t i = 0; i < length; ++i) {
-    if (line[i] == '\n' || i == length - 1) {
-      std::string command;
-      if (i == length - 1) {
-        command = line.substr(offset);
-      } else {
-        command = line.substr(offset, i - offset);
-      }
-
-      offset = i + 1;
-      commands.push_back(command);
-    }
-  }
-
-  return commands;
-}
-}
-
 void IDriver::handleExecuteEvent(events::ExecuteRequestEvent* ev) {
   QObject* sender = ev->sender();
   notifyProgress(sender, 0);
@@ -421,8 +397,9 @@ void IDriver::handleExecuteEvent(events::ExecuteRequestEvent* ev) {
     return;
   }
 
-  std::vector<std::string> commands = parse_commands(inputLine);
-  if (commands.empty()) {
+  std::vector<std::string> commands;
+  size_t commands_count = common::Tokenize(inputLine, "\n", &commands);
+  if (!commands_count) {
     res.setErrorInfo(common::make_error_value("Invaid command line.", common::ErrorValue::E_ERROR));
     reply(sender, new events::ExecuteResponceEvent(this, res));
     notifyProgress(sender, 100);

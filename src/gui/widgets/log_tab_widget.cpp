@@ -36,7 +36,7 @@ LogTabWidget::LogTabWidget(QWidget* parent) : QTabWidget(parent) {
   setTabsClosable(false);
   setElideMode(Qt::ElideRight);
   setMovable(true);
-  setDocumentMode(true);
+  // setDocumentMode(true);
 
   log_ = new LogWidget(this);
   addTab(log_, GuiFactory::instance().loggingIcon(), translations::trLogs);

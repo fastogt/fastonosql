@@ -48,7 +48,7 @@ MainWidget::MainWidget(QWidget* parent) : QTabWidget(parent) {
   setTabsClosable(true);
   setElideMode(Qt::ElideRight);
   setMovable(true);
-  setDocumentMode(true);
+  // setDocumentMode(true);
 }
 
 QueryWidget* MainWidget::currentWidget() const {

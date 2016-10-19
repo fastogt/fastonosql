@@ -1,3 +1,4 @@
-QSplitter::handle { background-color: black }
-QMainWindow::separator { border: none; background-color: black; width: 1; height: 1 }
+QSplitter::handle { background-color: #C2C7CB }
+QMainWindow::separator { border: none; background-color: #C2C7CB; width: 1; height: 1 }
 QToolBar { border: none; }
+QTabWidget::pane {border: none;}
