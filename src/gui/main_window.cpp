@@ -643,7 +643,6 @@ void MainWindow::createToolBar() {
   toolBar->addAction(githubAction_);
 
   toolBar->setMovable(false);
-  toolBar->setStyleSheet("QToolBar { border-bottom: 1px solid black; }");
   addToolBar(Qt::TopToolBarArea, toolBar);
 #endif
 }
