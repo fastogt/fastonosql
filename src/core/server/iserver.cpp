@@ -52,28 +52,24 @@ IServer::IServer(IDriver* drv) : drv_(drv) {
 }
 
 IServer::~IServer() {
-  stopCurrentEvent();
+  StopCurrentEvent();
   drv_->stop();
   delete drv_;
 }
 
-void IServer::stopCurrentEvent() {
+void IServer::StopCurrentEvent() {
   drv_->interrupt();
 }
 
-bool IServer::isConnected() const {
-  return drv_->isConnected();
+bool IServer::IsConnected() const {
+  return drv_->isConnected() && drv_->isAuthenticated();
 }
 
-bool IServer::isAuthenticated() const {
-  return drv_->isAuthenticated();
+bool IServer::IsCanRemote() const {
+  return IsRemoteType(type());
 }
 
-bool IServer::isCanRemote() const {
-  return isRemoteType(type());
-}
-
-translator_t IServer::translator() const {
+translator_t IServer::Translator() const {
   return drv_->translator();
 }
 
@@ -81,7 +77,7 @@ connectionTypes IServer::type() const {
   return drv_->type();
 }
 
-std::string IServer::name() const {
+std::string IServer::Name() const {
   IConnectionSettings::connection_path_t path = drv_->connectionPath();
   return path.name();
 }
@@ -132,7 +128,7 @@ void IServer::connect(const events_info::ConnectInfoRequest& req) {
 }
 
 void IServer::disconnect(const events_info::DisConnectInfoRequest& req) {
-  stopCurrentEvent();
+  StopCurrentEvent();
   emit startedDisconnect(req);
   QEvent* ev = new events::DisconnectRequestEvent(this, req);
   notify(ev);

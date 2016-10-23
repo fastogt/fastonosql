@@ -256,7 +256,7 @@ IConnectionSettingsBase* IConnectionSettingsBase::fromString(const std::string& 
       } else if (commaCount == 2) {
         uint32_t msTime = common::ConvertFromString<uint32_t>(elText);
         result->setLoggingMsTimeInterval(msTime);
-        if (!isRemoteType(result->type())) {
+        if (!IsRemoteType(result->type())) {
           result->setCommandLine(val.substr(i + 1));
           break;
         }
@@ -288,16 +288,13 @@ std::string IConnectionSettingsBase::toString() const {
 IConnectionSettingsLocal::IConnectionSettingsLocal(const connection_path_t& connectionPath,
                                                    connectionTypes type)
     : IConnectionSettingsBase(connectionPath, type) {
-  CHECK(!isRemoteType(type));
+  DCHECK(!IsRemoteType(type));
 }
-
-////===================== IConnectionSettingsRemote
-///=====================////
 
 IConnectionSettingsRemote::IConnectionSettingsRemote(const connection_path_t& connectionPath,
                                                      connectionTypes type)
     : IConnectionSettingsBase(connectionPath, type) {
-  CHECK(isRemoteType(type));
+  CHECK(IsRemoteType(type));
 }
 
 IConnectionSettingsRemote::~IConnectionSettingsRemote() {}

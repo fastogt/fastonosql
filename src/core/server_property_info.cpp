@@ -42,16 +42,16 @@ ServerPropertiesInfo makeServerProperty(const FastoObjectArray* array) {
     return ServerPropertiesInfo();
   }
 
-  ServerPropertiesInfo inf;
+  std::vector<property_t> properties;
   for (size_t i = 0; i < arr->size(); i += 2) {
-    std::string c1;
-    std::string c2;
-    bool res = arr->getString(i, &c1);
-    DCHECK(res);
-    res = arr->getString(i + 1, &c2);
-    DCHECK(res);
-    inf.properties.push_back(std::make_pair(c1, c2));
+    std::string key, value;
+    if (arr->getString(i, &key) && arr->getString(i + 1, &value)) {
+      properties.push_back(std::make_pair(key, value));
+    }
   }
+
+  ServerPropertiesInfo inf;
+  inf.properties = properties;
   return inf;
 }
 

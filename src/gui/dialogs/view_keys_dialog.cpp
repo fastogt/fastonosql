@@ -228,7 +228,7 @@ void ViewKeysDialog::finishLoadDatabaseContent(
 }
 
 void ViewKeysDialog::changeTTL(const core::NDbKValue& value, core::ttl_t ttl) {
-  core::translator_t tran = db_->translator();
+  core::translator_t tran = db_->Translator();
   std::string cmd_str;
   common::Error err = tran->changeKeyTTLCommand(value.key(), ttl, &cmd_str);
   if (err && err->isError()) {

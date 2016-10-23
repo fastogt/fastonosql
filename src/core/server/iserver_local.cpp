@@ -24,7 +24,7 @@ namespace fastonosql {
 namespace core {
 
 IServerLocal::IServerLocal(IDriver* drv) : IServer(drv) {
-  CHECK(!isRemoteType(drv->type()));
+  DCHECK(!IsCanRemote());
 }
 
 }  // namespace core

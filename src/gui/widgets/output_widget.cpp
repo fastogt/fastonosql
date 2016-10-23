@@ -240,18 +240,16 @@ void OutputWidget::updateItem(FastoObject* item, common::ValueSPtr newValue) {
 }
 
 void OutputWidget::createKey(const core::NDbKValue& dbv) {
-  if (server_) {
-    core::translator_t tran = server_->translator();
-    std::string cmd_text;
-    common::Error err = tran->createKeyCommand(dbv, &cmd_text);
-    if (err && err->isError()) {
-      LOG_ERROR(err, true);
-      return;
-    }
-
-    core::events_info::ExecuteInfoRequest req(this, cmd_text, 0, 0, true, true);
-    server_->execute(req);
+  core::translator_t tran = server_->Translator();
+  std::string cmd_text;
+  common::Error err = tran->createKeyCommand(dbv, &cmd_text);
+  if (err && err->isError()) {
+    LOG_ERROR(err, true);
+    return;
   }
+
+  core::events_info::ExecuteInfoRequest req(this, cmd_text, 0, 0, true, true);
+  server_->execute(req);
 }
 
 void OutputWidget::setTreeView() {

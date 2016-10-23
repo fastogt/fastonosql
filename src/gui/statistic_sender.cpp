@@ -39,13 +39,13 @@ StatisticSender::StatisticSender(QObject* parent) : QObject(parent) {}
 
 void StatisticSender::routine() {
 #if defined(FASTONOSQL)
-  common::net::ClientSocketTcp s(common::net::HostAndPort(FASTONOSQL_URL, SERV_STATISTIC_PORT));
+  common::net::ClientSocketTcp client(common::net::HostAndPort(FASTONOSQL_URL, SERV_STATISTIC_PORT));
 #elif defined(FASTOREDIS)
-  common::net::ClientSocketTcp s(common::net::HostAndPort(FASTOREDIS_URL, SERV_STATISTIC_PORT));
+  common::net::ClientSocketTcp client(common::net::HostAndPort(FASTOREDIS_URL, SERV_STATISTIC_PORT));
 #else
 #error please specify url and port to send statistic information
 #endif
-  common::ErrnoError err = s.connect();
+  common::ErrnoError err = client.connect();
   if (err && err->isError()) {
     emit statisticSended(false);
     return;
@@ -70,16 +70,16 @@ void StatisticSender::routine() {
   const char* stats_json_string = json_object_get_string(stats_json);
 
   ssize_t nwrite = 0;
-  err = s.write(stats_json_string, strlen(stats_json_string), &nwrite);
+  err = client.write(stats_json_string, strlen(stats_json_string), &nwrite);
   json_object_put(stats_json);
   if (err && err->isError()) {
     emit statisticSended(false);
-    DCHECK(!s.close());
+    DCHECK(!client.close());
     return;
   }
 
   emit statisticSended(true);
-  DCHECK(!s.close());
+  DCHECK(!client.close());
   return;
 }
 }  // namespace gui

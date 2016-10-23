@@ -35,13 +35,13 @@ UpdateChecker::UpdateChecker(QObject* parent) : QObject(parent) {}
 
 void UpdateChecker::routine() {
 #if defined(FASTONOSQL)
-  common::net::ClientSocketTcp s(common::net::HostAndPort(FASTONOSQL_URL, SERV_VERSION_PORT));
+  common::net::ClientSocketTcp client(common::net::HostAndPort(FASTONOSQL_URL, SERV_VERSION_PORT));
 #elif defined(FASTOREDIS)
-  common::net::ClientSocketTcp s(common::net::HostAndPort(FASTOREDIS_URL, SERV_VERSION_PORT));
+  common::net::ClientSocketTcp client(common::net::HostAndPort(FASTOREDIS_URL, SERV_VERSION_PORT));
 #else
 #error please specify url and port of version information
 #endif
-  common::ErrnoError err = s.connect();
+  common::ErrnoError err = client.connect();
   if (err && err->isError()) {
     emit versionAvailibled(false, QString());
     return;
@@ -49,30 +49,30 @@ void UpdateChecker::routine() {
 
   ssize_t nwrite = 0;
 #if defined(FASTONOSQL)
-  err = s.write(GET_FASTONOSQL_VERSION, sizeof(GET_FASTONOSQL_VERSION) - 1, &nwrite);
+  err = client.write(GET_FASTONOSQL_VERSION, sizeof(GET_FASTONOSQL_VERSION) - 1, &nwrite);
 #elif defined(FASTOREDIS)
-  err = s.write(GET_FASTOREDIS_VERSION, sizeof(GET_FASTOREDIS_VERSION) - 1, &nwrite);
+  err = client.write(GET_FASTOREDIS_VERSION, sizeof(GET_FASTOREDIS_VERSION) - 1, &nwrite);
 #else
 #error please specify request to get version information
 #endif
   if (err && err->isError()) {
     emit versionAvailibled(false, QString());
-    DCHECK(!s.close());
+    DCHECK(!client.close());
     return;
   }
 
   char version[128] = {0};
   ssize_t nread = 0;
-  err = s.read(version, sizeof(version), &nread);
+  err = client.read(version, sizeof(version), &nread);
   if (err && err->isError()) {
     emit versionAvailibled(false, QString());
-    DCHECK(!s.close());
+    DCHECK(!client.close());
     return;
   }
 
   QString vers = common::ConvertFromString<QString>(version);
   emit versionAvailibled(true, vers);
-  DCHECK(!s.close());
+  DCHECK(!client.close());
   return;
 }
 }  // namespace gui

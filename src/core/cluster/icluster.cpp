@@ -18,10 +18,9 @@
 
 #include "core/cluster/icluster.h"
 
-#include <stddef.h>  // for size_t
-#include <string>    // for string
+#include <string>  // for string
 
-#include <common/macros.h>  // for CHECK, DNOTREACHED
+#include <common/macros.h>  // for DNOTREACHED
 
 #include "core/connection_types.h"  // for serverTypes::MASTER
 #include "core/server/iserver_remote.h"
@@ -31,32 +30,27 @@ namespace core {
 
 ICluster::ICluster(const std::string& name) : name_(name) {}
 
-std::string ICluster::name() const {
+std::string ICluster::Name() const {
   return name_;
 }
 
-ICluster::nodes_t ICluster::nodes() const {
+ICluster::nodes_t ICluster::Nodes() const {
   return nodes_;
 }
 
-void ICluster::addServer(node_t serv) {
-  if (!serv) {
-    DNOTREACHED();
-    return;
-  }
-
+void ICluster::AddServer(node_t serv) {
   nodes_.push_back(serv);
 }
 
-ICluster::node_t ICluster::root() const {
-  for (size_t i = 0; i < nodes_.size(); ++i) {
-    IServerRemote* rserver = dynamic_cast<IServerRemote*>(nodes_[i].get());  // +
-    CHECK(rserver);
-    if (rserver->role() == MASTER) {
-      return nodes_[i];
+ICluster::node_t ICluster::Root() const {
+  for (auto node : nodes_) {
+    IServerRemote* rserver = dynamic_cast<IServerRemote*>(node.get());  // +
+    if (rserver && rserver->role() == MASTER) {
+      return node;
     }
   }
 
+  DNOTREACHED();
   return node_t();
 }
 

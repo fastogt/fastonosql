@@ -23,6 +23,7 @@
 
 namespace fastonosql {
 namespace core {
+
 enum connectionTypes { REDIS = 0, MEMCACHED, SSDB, LEVELDB, ROCKSDB, UNQLITE, LMDB };
 enum serverTypes { MASTER = 0, SLAVE };
 enum serverState { SUP = 0, SDOWN };
@@ -72,10 +73,11 @@ enum ConnectionMode {
   InteractiveMode
 };
 
-bool isRemoteType(connectionTypes type);
-bool isCanSSHConnection(connectionTypes type);
+bool IsRemoteType(connectionTypes type);
+bool IsCanSSHConnection(connectionTypes type);
 const char* commandLineHelpText(connectionTypes type);
 std::string defaultCommandLine(connectionTypes type);
+
 }  // namespace core
 }  // namespace fastonosql
 

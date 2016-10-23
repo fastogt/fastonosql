@@ -25,15 +25,15 @@ namespace core {
 
 ISentinel::ISentinel(const std::string& name) : name_(name), sentinels_() {}
 
-std::string ISentinel::name() const {
+std::string ISentinel::Name() const {
   return name_;
 }
 
-void ISentinel::addSentinel(sentinel_t serv) {
+void ISentinel::AddSentinel(sentinel_t serv) {
   sentinels_.push_back(serv);
 }
 
-ISentinel::sentinels_t ISentinel::sentinels() const {
+ISentinel::sentinels_t ISentinel::Sentinels() const {
   return sentinels_;
 }
 

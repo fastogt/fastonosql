@@ -52,7 +52,7 @@ ExplorerServerItem::ExplorerServerItem(core::IServerSPtr server, TreeItem* paren
     : IExplorerTreeItem(parent), server_(server) {}
 
 QString ExplorerServerItem::name() const {
-  return common::ConvertFromString<QString>(server_->name());
+  return common::ConvertFromString<QString>(server_->Name());
 }
 
 core::IServerSPtr ExplorerServerItem::server() const {
@@ -70,7 +70,7 @@ void ExplorerServerItem::loadDatabases() {
 
 ExplorerSentinelItem::ExplorerSentinelItem(core::ISentinelSPtr sentinel, TreeItem* parent)
     : IExplorerTreeItem(parent), sentinel_(sentinel) {
-  core::ISentinel::sentinels_t nodes = sentinel->sentinels();
+  core::ISentinel::sentinels_t nodes = sentinel->Sentinels();
   for (size_t i = 0; i < nodes.size(); ++i) {
     core::Sentinel sent = nodes[i];
     ExplorerServerItem* rser = new ExplorerServerItem(sent.sentinel, this);
@@ -84,7 +84,7 @@ ExplorerSentinelItem::ExplorerSentinelItem(core::ISentinelSPtr sentinel, TreeIte
 }
 
 QString ExplorerSentinelItem::name() const {
-  return common::ConvertFromString<QString>(sentinel_->name());
+  return common::ConvertFromString<QString>(sentinel_->Name());
 }
 
 ExplorerSentinelItem::eType ExplorerSentinelItem::type() const {
@@ -97,7 +97,7 @@ core::ISentinelSPtr ExplorerSentinelItem::sentinel() const {
 
 ExplorerClusterItem::ExplorerClusterItem(core::IClusterSPtr cluster, TreeItem* parent)
     : IExplorerTreeItem(parent), cluster_(cluster) {
-  auto nodes = cluster_->nodes();
+  auto nodes = cluster_->Nodes();
   for (size_t i = 0; i < nodes.size(); ++i) {
     ExplorerServerItem* ser = new ExplorerServerItem(nodes[i], this);
     addChildren(ser);
@@ -105,7 +105,7 @@ ExplorerClusterItem::ExplorerClusterItem(core::IClusterSPtr cluster, TreeItem* p
 }
 
 QString ExplorerClusterItem::name() const {
-  return common::ConvertFromString<QString>(cluster_->name());
+  return common::ConvertFromString<QString>(cluster_->Name());
 }
 
 ExplorerClusterItem::eType ExplorerClusterItem::type() const {
@@ -183,7 +183,7 @@ core::IDataBaseInfoSPtr ExplorerDatabaseItem::info() const {
 void ExplorerDatabaseItem::renameKey(const core::NKey& key, const QString& newName) {
   core::IDatabaseSPtr dbs = db();
   CHECK(dbs);
-  core::translator_t tran = dbs->translator();
+  core::translator_t tran = dbs->Translator();
   std::string cmd_str;
   common::Error err = tran->renameKeyCommand(key, common::ConvertToString(newName), &cmd_str);
   if (err && err->isError()) {
@@ -198,7 +198,7 @@ void ExplorerDatabaseItem::renameKey(const core::NKey& key, const QString& newNa
 void ExplorerDatabaseItem::removeKey(const core::NKey& key) {
   core::IDatabaseSPtr dbs = db();
   CHECK(dbs);
-  core::translator_t tran = dbs->translator();
+  core::translator_t tran = dbs->Translator();
   std::string cmd_str;
   common::Error err = tran->deleteKeyCommand(key, &cmd_str);
   if (err && err->isError()) {
@@ -213,7 +213,7 @@ void ExplorerDatabaseItem::removeKey(const core::NKey& key) {
 void ExplorerDatabaseItem::loadValue(const core::NDbKValue& key) {
   core::IDatabaseSPtr dbs = db();
   CHECK(dbs);
-  core::translator_t tran = dbs->translator();
+  core::translator_t tran = dbs->Translator();
   std::string cmd_str;
   common::Error err = tran->loadKeyCommand(key.key(), key.type(), &cmd_str);
   if (err && err->isError()) {
@@ -228,7 +228,7 @@ void ExplorerDatabaseItem::loadValue(const core::NDbKValue& key) {
 void ExplorerDatabaseItem::watchKey(const core::NDbKValue& key, int interval) {
   core::IDatabaseSPtr dbs = db();
   CHECK(dbs);
-  core::translator_t tran = dbs->translator();
+  core::translator_t tran = dbs->Translator();
   std::string cmd_str;
   common::Error err = tran->loadKeyCommand(key.key(), key.type(), &cmd_str);
   if (err && err->isError()) {
@@ -244,7 +244,7 @@ void ExplorerDatabaseItem::watchKey(const core::NDbKValue& key, int interval) {
 void ExplorerDatabaseItem::createKey(const core::NDbKValue& key) {
   core::IDatabaseSPtr dbs = db();
   CHECK(dbs);
-  core::translator_t tran = dbs->translator();
+  core::translator_t tran = dbs->Translator();
   std::string cmd_str;
   common::Error err = tran->createKeyCommand(key, &cmd_str);
   if (err && err->isError()) {
@@ -259,7 +259,7 @@ void ExplorerDatabaseItem::createKey(const core::NDbKValue& key) {
 void ExplorerDatabaseItem::editKey(const core::NDbKValue& key, const core::NValue& value) {
   core::IDatabaseSPtr dbs = db();
   CHECK(dbs);
-  core::translator_t tran = dbs->translator();
+  core::translator_t tran = dbs->Translator();
   std::string cmd_str;
   core::NDbKValue copy_key = key;
   copy_key.setValue(value);
@@ -276,7 +276,7 @@ void ExplorerDatabaseItem::editKey(const core::NDbKValue& key, const core::NValu
 void ExplorerDatabaseItem::setTTL(const core::NKey& key, core::ttl_t ttl) {
   core::IDatabaseSPtr dbs = db();
   CHECK(dbs);
-  core::translator_t tran = dbs->translator();
+  core::translator_t tran = dbs->Translator();
   std::string cmd_str;
   common::Error err = tran->changeKeyTTLCommand(key, ttl, &cmd_str);
   if (err && err->isError()) {

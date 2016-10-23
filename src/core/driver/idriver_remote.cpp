@@ -22,8 +22,10 @@
 
 namespace fastonosql {
 namespace core {
+
 IDriverRemote::IDriverRemote(IConnectionSettingsBaseSPtr settings) : IDriver(settings) {
-  CHECK(isRemoteType(type()));
+  DCHECK(IsRemoteType(type()));
 }
+
 }  // namespace core
 }  // namespace fastonosql

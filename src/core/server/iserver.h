@@ -37,8 +37,12 @@
 
 namespace fastonosql {
 namespace core {
-
 class IDriver;
+}
+}
+
+namespace fastonosql {
+namespace core {
 
 class IServer : public IServerBase, public std::enable_shared_from_this<IServer> {
   Q_OBJECT
@@ -48,15 +52,14 @@ class IServer : public IServerBase, public std::enable_shared_from_this<IServer>
   virtual ~IServer();
 
   // sync methods
-  void stopCurrentEvent();
-  bool isConnected() const;
-  bool isAuthenticated() const;
-  bool isCanRemote() const;
+  void StopCurrentEvent();
+  bool IsConnected() const;
+  bool IsCanRemote() const;
 
-  translator_t translator() const;
+  translator_t Translator() const;
 
   connectionTypes type() const;
-  virtual std::string name() const;
+  virtual std::string Name() const override;
 
   IDataBaseInfoSPtr currentDatabaseInfo() const;
   IServerInfoSPtr serverInfo() const;

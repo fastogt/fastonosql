@@ -749,7 +749,7 @@ void MainWindow::createSentinel(core::ISentinelSettingsBaseSPtr settings) {
     return;
   }
 
-  auto sentinels = sent->sentinels();
+  auto sentinels = sent->Sentinels();
   if (sentinels.empty()) {
     return;
   }
@@ -776,7 +776,7 @@ void MainWindow::createCluster(core::IClusterSettingsBaseSPtr settings) {
     return;
   }
 
-  core::IServerSPtr root = cl->root();
+  core::IServerSPtr root = cl->Root();
   if (!root) {
     return;
   }

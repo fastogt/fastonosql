@@ -225,7 +225,7 @@ void ExplorerTreeView::addSentinel(core::ISentinelSPtr sentinel) {
     return;
   }
 
-  core::ISentinel::sentinels_t nodes = sentinel->sentinels();
+  core::ISentinel::sentinels_t nodes = sentinel->Sentinels();
   for (size_t i = 0; i < nodes.size(); ++i) {
     core::Sentinel sent = nodes[i];
     syncWithServer(sent.sentinel.get());
@@ -243,7 +243,7 @@ void ExplorerTreeView::removeSentinel(core::ISentinelSPtr sentinel) {
     return;
   }
 
-  core::ISentinel::sentinels_t nodes = sentinel->sentinels();
+  core::ISentinel::sentinels_t nodes = sentinel->Sentinels();
   for (size_t i = 0; i < nodes.size(); ++i) {
     core::Sentinel sent = nodes[i];
     unsyncWithServer(sent.sentinel.get());
@@ -262,7 +262,7 @@ void ExplorerTreeView::addCluster(core::IClusterSPtr cluster) {
     return;
   }
 
-  auto nodes = cluster->nodes();
+  auto nodes = cluster->Nodes();
   for (size_t i = 0; i < nodes.size(); ++i) {
     syncWithServer(nodes[i].get());
   }
@@ -276,7 +276,7 @@ void ExplorerTreeView::removeCluster(core::IClusterSPtr cluster) {
     return;
   }
 
-  auto nodes = cluster->nodes();
+  auto nodes = cluster->Nodes();
   for (size_t i = 0; i < nodes.size(); ++i) {
     unsyncWithServer(nodes[i].get());
   }
@@ -319,23 +319,22 @@ void ExplorerTreeView::showContextMenu(const QPoint& point) {
       menu.addAction(connectAction_);
       menu.addAction(openConsoleAction_);
       core::IServerSPtr server = server_node->server();
-      bool isCon = server->isConnected();
-      bool isAuth = server->isAuthenticated();
-      bool isRedis = server->type() == core::REDIS;
+      bool is_connected = server->IsConnected();
+      bool is_redis = server->type() == core::REDIS;
 
       bool isClusterMember = dynamic_cast<ExplorerClusterItem*>(node->parent()) != nullptr;  // +
 
-      loadDatabaseAction_->setEnabled(isAuth);
+      loadDatabaseAction_->setEnabled(is_connected);
       menu.addAction(loadDatabaseAction_);
-      infoServerAction_->setEnabled(isAuth);
+      infoServerAction_->setEnabled(is_connected);
       menu.addAction(infoServerAction_);
-      propertyServerAction_->setEnabled(isAuth && isRedis);
+      propertyServerAction_->setEnabled(is_connected && is_redis);
       menu.addAction(propertyServerAction_);
 
-      setServerPassword_->setEnabled(isAuth && isRedis);
+      setServerPassword_->setEnabled(is_connected && is_redis);
       menu.addAction(setServerPassword_);
 
-      setMaxClientConnection_->setEnabled(isAuth && isRedis);
+      setMaxClientConnection_->setEnabled(is_connected && is_redis);
       menu.addAction(setMaxClientConnection_);
 
       menu.addAction(historyServerAction_);
@@ -343,20 +342,20 @@ void ExplorerTreeView::showContextMenu(const QPoint& point) {
       closeServerAction_->setEnabled(!isClusterMember);
       menu.addAction(closeServerAction_);
 
-      bool isCanRemote = server->isCanRemote();
-      bool isLocal = true;
-      if (isCanRemote) {
+      bool is_can_remote = server->IsCanRemote();
+      bool is_local = true;
+      if (is_can_remote) {
         core::IServerRemote* rserver = dynamic_cast<core::IServerRemote*>(server.get());  // +
         CHECK(rserver);
         common::net::HostAndPort host = rserver->host();
-        isLocal = host.isLocalHost();
+        is_local = host.isLocalHost();
       }
 
-      importAction_->setEnabled(!isCon && isLocal && isRedis);
+      importAction_->setEnabled(!is_connected && is_local && is_redis);
       menu.addAction(importAction_);
-      backupAction_->setEnabled(isCon && isLocal && isRedis);
+      backupAction_->setEnabled(is_connected && is_local && is_redis);
       menu.addAction(backupAction_);
-      shutdownAction_->setEnabled(isAuth && isRedis);
+      shutdownAction_->setEnabled(is_connected && is_redis);
       menu.addAction(shutdownAction_);
 
       menu.exec(menuPoint);
@@ -368,20 +367,20 @@ void ExplorerTreeView::showContextMenu(const QPoint& point) {
       bool isDefault = db->isDefault();
       core::IServerSPtr server = db->server();
 
-      bool isCon = server->isConnected();
-      loadContentAction_->setEnabled(isDefault && isCon);
+      bool is_connected = server->IsConnected();
+      loadContentAction_->setEnabled(isDefault && is_connected);
 
       menu.addAction(createKeyAction_);
-      createKeyAction_->setEnabled(isDefault && isCon);
+      createKeyAction_->setEnabled(isDefault && is_connected);
 
       menu.addAction(viewKeysAction_);
-      viewKeysAction_->setEnabled(isDefault && isCon);
+      viewKeysAction_->setEnabled(isDefault && is_connected);
 
       menu.addAction(removeAllKeysAction_);
-      removeAllKeysAction_->setEnabled(isDefault && isCon);
+      removeAllKeysAction_->setEnabled(isDefault && is_connected);
 
       menu.addAction(setDefaultDbAction_);
-      setDefaultDbAction_->setEnabled(!isDefault && isCon);
+      setDefaultDbAction_->setEnabled(!isDefault && is_connected);
       menu.exec(menuPoint);
     } else if (node->type() == IExplorerTreeItem::eNamespace) {
       ExplorerNSItem* ns = static_cast<ExplorerNSItem*>(node);
@@ -390,10 +389,10 @@ void ExplorerTreeView::showContextMenu(const QPoint& point) {
       core::IServerSPtr server = ns->server();
       ExplorerDatabaseItem* db = ns->db();
       bool isDefault = db && db->isDefault();
-      bool isCon = server->isConnected();
+      bool is_connected = server->IsConnected();
 
       menu.addAction(removeBranchAction_);
-      removeBranchAction_->setEnabled(isDefault && isCon);
+      removeBranchAction_->setEnabled(isDefault && is_connected);
       menu.exec(menuPoint);
     } else if (node->type() == IExplorerTreeItem::eKey) {
       ExplorerKeyItem* key = static_cast<ExplorerKeyItem*>(node);
@@ -401,24 +400,24 @@ void ExplorerTreeView::showContextMenu(const QPoint& point) {
       QMenu menu(this);
       core::IServerSPtr server = key->server();
 
-      bool isCon = server->isConnected();
+      bool is_connected = server->IsConnected();
       menu.addAction(getValueAction_);
-      getValueAction_->setEnabled(isCon);
+      getValueAction_->setEnabled(is_connected);
       bool isRedis = server->type() == core::REDIS;
       if (isRedis) {
         QAction* setTTLKeyAction = new QAction(trSetTTL, this);
-        setTTLKeyAction->setEnabled(isCon);
+        setTTLKeyAction->setEnabled(is_connected);
         VERIFY(connect(setTTLKeyAction, &QAction::triggered, this, &ExplorerTreeView::setTTL));
         menu.addAction(setTTLKeyAction);
       }
       menu.addAction(renameKeyAction_);
-      renameKeyAction_->setEnabled(isCon);
+      renameKeyAction_->setEnabled(is_connected);
       menu.addAction(editKeyAction_);
-      editKeyAction_->setEnabled(isCon);
+      editKeyAction_->setEnabled(is_connected);
       menu.addAction(deleteKeyAction_);
-      deleteKeyAction_->setEnabled(isCon);
+      deleteKeyAction_->setEnabled(is_connected);
       menu.addAction(watchKeyAction_);
-      watchKeyAction_->setEnabled(isCon);
+      watchKeyAction_->setEnabled(is_connected);
       menu.exec(menuPoint);
     }
   }
@@ -440,7 +439,7 @@ void ExplorerTreeView::connectDisconnectToServer() {
     return;
   }
 
-  if (server->isConnected()) {
+  if (server->IsConnected()) {
     core::events_info::DisConnectInfoRequest req(this);
     server->disconnect(req);
   } else {
@@ -550,7 +549,7 @@ void ExplorerTreeView::openMaxClientSetDialog() {
   }
 
   bool ok;
-  QString name = common::ConvertFromString<QString>(server->name());
+  QString name = common::ConvertFromString<QString>(server->Name());
   int maxcl = QInputDialog::getInt(this, trSetMaxConnectionOnServerTemplate_1S.arg(name),
                                    trMaximumConnectionTemplate, 10000, 1, INT32_MAX, 100, &ok);
   if (ok) {
@@ -714,9 +713,9 @@ void ExplorerTreeView::shutdownServer() {
   }
 
   core::IServerSPtr server = node->server();
-  if (server && server->isConnected()) {
+  if (server && server->IsConnected()) {
     // Ask user
-    QString name = common::ConvertFromString<QString>(server->name());
+    QString name = common::ConvertFromString<QString>(server->Name());
     int answer =
         QMessageBox::question(this, translations::trShutdown, trReallyShutdownTemplate_1S.arg(name),
                               QMessageBox::Yes, QMessageBox::No, QMessageBox::NoButton);

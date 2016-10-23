@@ -310,7 +310,7 @@ void ConnectionDialog::typeConnectionChange(int index) {
   QVariant var = typeConnection_->itemData(index);
   core::connectionTypes currentType =
       static_cast<core::connectionTypes>(qvariant_cast<unsigned char>(var));
-  bool isSSHType = isCanSSHConnection(currentType);
+  bool is_ssh_type = IsCanSSHConnection(currentType);
 
   const char* helpText = core::commandLineHelpText(currentType);
   CHECK(helpText);
@@ -325,8 +325,8 @@ void ConnectionDialog::typeConnectionChange(int index) {
   }
   commandLine_->setText(StableCommandLine(common::ConvertFromString<QString>(commandLineText)));
 
-  useSsh_->setEnabled(isSSHType);
-  updateSshControls(isSSHType);
+  useSsh_->setEnabled(is_ssh_type);
+  updateSshControls(is_ssh_type);
 }
 
 void ConnectionDialog::loggingStateChange(int value) {
@@ -420,7 +420,7 @@ bool ConnectionDialog::validateAndApply() {
   core::connectionTypes currentType =
       static_cast<core::connectionTypes>(qvariant_cast<unsigned char>(var));
 
-  bool isSSHType = isCanSSHConnection(currentType);
+  bool is_ssh_type = IsCanSSHConnection(currentType);
   std::string conName = common::ConvertToString(connectionName_->text());
   std::string conFolder = common::ConvertToString(connectionFolder_->text());
   if (conFolder.empty()) {
@@ -428,7 +428,7 @@ bool ConnectionDialog::validateAndApply() {
   }
   core::IConnectionSettingsRemoteSSH::connection_path_t path(
       common::file_system::stable_dir_path(conFolder) + conName);
-  if (isSSHType) {
+  if (is_ssh_type) {
     core::IConnectionSettingsRemoteSSH* newConnection =
         core::IConnectionSettingsRemoteSSH::createFromType(currentType, path,
                                                            common::net::HostAndPort());

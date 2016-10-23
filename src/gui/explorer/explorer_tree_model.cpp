@@ -86,9 +86,9 @@ QVariant ExplorerTreeModel::data(const QModelIndex& index, int role) const {
     if (type == IExplorerTreeItem::eServer) {
       ExplorerServerItem* server_node = static_cast<ExplorerServerItem*>(node);
       core::IServerSPtr server = server_node->server();
-      QString sname = common::ConvertFromString<QString>(server->name());
-      bool isCanRemote = server->isCanRemote();
-      if (isCanRemote) {
+      QString sname = common::ConvertFromString<QString>(server->Name());
+      bool is_can_remote = server->IsCanRemote();
+      if (is_can_remote) {
         core::IServerRemote* rserver = dynamic_cast<core::IServerRemote*>(server.get());  // +
         CHECK(rserver);
         QString stype =

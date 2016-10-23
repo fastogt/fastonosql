@@ -26,7 +26,7 @@ namespace core {
 class IServerBase : public QObject {
   Q_OBJECT
  public:
-  virtual std::string name() const = 0;
+  virtual std::string Name() const = 0;
   virtual ~IServerBase();
 };
 

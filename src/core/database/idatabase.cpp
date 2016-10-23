@@ -69,8 +69,8 @@ IDataBaseInfoSPtr IDatabase::info() const {
   return info_;
 }
 
-translator_t IDatabase::translator() const {
-  return server_->translator();
+translator_t IDatabase::Translator() const {
+  return server_->Translator();
 }
 
 void IDatabase::execute(const events_info::ExecuteInfoRequest& req) {

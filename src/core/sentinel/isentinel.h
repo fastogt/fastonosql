@@ -39,10 +39,10 @@ class ISentinel : public IServerBase {
   typedef Sentinel sentinel_t;
   typedef std::vector<sentinel_t> sentinels_t;
 
-  std::string name() const;
+  virtual std::string Name() const override;
 
-  void addSentinel(sentinel_t root);
-  sentinels_t sentinels() const;
+  void AddSentinel(sentinel_t root);
+  sentinels_t Sentinels() const;
 
  protected:
   explicit ISentinel(const std::string& name);

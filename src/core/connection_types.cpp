@@ -48,13 +48,15 @@
 
 namespace fastonosql {
 namespace core {
-bool isRemoteType(connectionTypes type) {
+
+bool IsRemoteType(connectionTypes type) {
   return type == REDIS || type == MEMCACHED || type == SSDB;
 }
 
-bool isCanSSHConnection(connectionTypes type) {
+bool IsCanSSHConnection(connectionTypes type) {
   return type == REDIS;
 }
+
 const char* commandLineHelpText(connectionTypes type) {
   if (type == REDIS) {
     return "<b>Usage: [OPTIONS] [cmd [arg [arg "
@@ -236,6 +238,7 @@ const char* commandLineHelpText(connectionTypes type) {
   NOTREACHED();
   return nullptr;
 }
+
 std::string defaultCommandLine(connectionTypes type) {
 #ifdef BUILD_WITH_REDIS
   if (type == REDIS) {

@@ -149,7 +149,7 @@ ServersManager::sentinel_t ServersManager::createSentinel(ISentinelSettingsBaseS
         sentt.sentinels_nodes.push_back(serv);
       }
 
-      sent->addSentinel(sentt);
+      sent->AddSentinel(sentt);
     }
     return sent;
   }
@@ -173,7 +173,7 @@ ServersManager::cluster_t ServersManager::createCluster(IClusterSettingsBaseSPtr
     for (size_t i = 0; i < nodes.size(); ++i) {
       IConnectionSettingsBaseSPtr nd = nodes[i];
       IServerSPtr serv = createServer(nd);
-      cl->addServer(serv);
+      cl->AddServer(serv);
     }
     return cl;
   }
@@ -343,19 +343,18 @@ void ServersManager::closeServer(server_t server) {
 }
 
 void ServersManager::closeCluster(cluster_t cluster) {
-  auto nodes = cluster->nodes();
+  auto nodes = cluster->Nodes();
   for (size_t i = 0; i < nodes.size(); ++i) {
     closeServer(nodes[i]);
   }
 }
 
 void ServersManager::closeSentinel(sentinel_t sentinel) {
-  auto nodes = sentinel->sentinels();
-  for (size_t i = 0; i < nodes.size(); ++i) {
-    auto sent = nodes[i];
-    auto sent_nodes = sent.sentinels_nodes;
-    for (size_t j = 0; j < sent_nodes.size(); ++j) {
-      closeServer(sent_nodes[j]);
+  auto nodes = sentinel->Sentinels();
+  for (auto node : nodes) {
+    auto sent_nodes = node.sentinels_nodes;
+    for (auto sent : sent_nodes) {
+      closeServer(sent);
     }
   }
 }

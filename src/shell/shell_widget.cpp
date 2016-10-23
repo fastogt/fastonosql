@@ -291,7 +291,7 @@ void BaseShellWidget::executeArgs(const QString& text, int repeat, int interval,
 }
 
 void BaseShellWidget::stop() {
-  server_->stopCurrentEvent();
+  server_->StopCurrentEvent();
 }
 
 void BaseShellWidget::connectToServer() {
@@ -476,7 +476,7 @@ void BaseShellWidget::updateServerInfo(core::IServerInfoSPtr inf) {
   }
 
   std::string server_label;
-  if (server_->isCanRemote()) {
+  if (server_->IsCanRemote()) {
     core::IServerRemote* rserver = dynamic_cast<core::IServerRemote*>(server_.get());  // +
     server_label = common::ConvertToString(rserver->host());
   } else {
@@ -525,10 +525,12 @@ void BaseShellWidget::updateDefaultDatabase(core::IDataBaseInfoSPtr dbs) {
 }
 
 void BaseShellWidget::syncConnectionActions() {
-  connectAction_->setVisible(!server_->isConnected());
-  disConnectAction_->setVisible(server_->isConnected());
-  executeAction_->setEnabled(server_->isConnected());
-  stopAction_->setEnabled(!executeAction_->isEnabled());
+  bool is_connected = server_->IsConnected();
+
+  connectAction_->setVisible(!is_connected);
+  disConnectAction_->setVisible(is_connected);
+  executeAction_->setEnabled(is_connected);
+  stopAction_->setEnabled(!is_connected);
 }
 
 }  // namespace shell

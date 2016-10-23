@@ -63,7 +63,7 @@ class IDatabase {
 
   IServerSPtr server() const;
   IDataBaseInfoSPtr info() const;
-  translator_t translator() const;
+  translator_t Translator() const;
 
   connectionTypes type() const;
   bool isDefault() const;

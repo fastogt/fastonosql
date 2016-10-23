@@ -366,7 +366,7 @@ void InfoServerDialog::changeEvent(QEvent* e) {
 }
 
 void InfoServerDialog::retranslateUi() {
-  QString name = common::ConvertFromString<QString>(server_->name());
+  QString name = common::ConvertFromString<QString>(server_->Name());
   setWindowTitle(tr("%1 info").arg(name));
 }
 

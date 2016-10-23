@@ -32,11 +32,11 @@ class ICluster : public IServerBase {
   typedef IServerSPtr node_t;
   typedef std::vector<node_t> nodes_t;
 
-  std::string name() const;
-  nodes_t nodes() const;
-  void addServer(node_t serv);
+  virtual std::string Name() const override;
+  nodes_t Nodes() const;
+  void AddServer(node_t serv);
 
-  node_t root() const;
+  node_t Root() const;
 
  protected:
   explicit ICluster(const std::string& name);
