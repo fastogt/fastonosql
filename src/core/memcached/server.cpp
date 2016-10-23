@@ -44,7 +44,7 @@ common::net::HostAndPort Server::host() const {
   return rdrv->host();
 }
 
-IDatabaseSPtr Server::createDatabase(IDataBaseInfoSPtr info) {
+IDatabaseSPtr Server::CreateDatabase(IDataBaseInfoSPtr info) {
   return IDatabaseSPtr(new Database(shared_from_this(), info));
 }
 

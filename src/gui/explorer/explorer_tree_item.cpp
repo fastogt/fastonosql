@@ -65,7 +65,7 @@ ExplorerServerItem::eType ExplorerServerItem::type() const {
 
 void ExplorerServerItem::loadDatabases() {
   core::events_info::LoadDatabasesInfoRequest req(this);
-  return server_->loadDatabases(req);
+  return server_->LoadDatabases(req);
 }
 
 ExplorerSentinelItem::ExplorerSentinelItem(core::ISentinelSPtr sentinel, TreeItem* parent)

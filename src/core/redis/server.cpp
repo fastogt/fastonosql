@@ -23,6 +23,8 @@
 #include <common/error.h>   // for Error
 #include <common/macros.h>  // for CHECK
 
+#include "core/server/iserver_info.h"
+
 #include "core/events/events_info.h"  // for DiscoveryInfoResponce
 #include "core/redis/database.h"      // for Database
 #include "core/redis/driver.h"        // for Driver
@@ -52,15 +54,15 @@ common::net::HostAndPort Server::host() const {
   return rdrv->host();
 }
 
-IDatabaseSPtr Server::createDatabase(IDataBaseInfoSPtr info) {
+IDatabaseSPtr Server::CreateDatabase(IDataBaseInfoSPtr info) {
   return IDatabaseSPtr(new Database(shared_from_this(), info));
 }
 
-void Server::handleDiscoveryInfoResponceEvent(events::DiscoveryInfoResponceEvent* ev) {
+void Server::HandleDiscoveryInfoResponceEvent(events::DiscoveryInfoResponceEvent* ev) {
   auto v = ev->value();
   common::Error er = v.errorInfo();
   if (!er) {
-    ServerInfo* rinf = dynamic_cast<ServerInfo*>(v.sinfo.get());  // +
+    struct ServerInfo* rinf = dynamic_cast<struct ServerInfo*>(v.sinfo.get());  // +
     CHECK(rinf);
     if (rinf->replication_.role_ == "master") {
       role_ = MASTER;
@@ -76,7 +78,7 @@ void Server::handleDiscoveryInfoResponceEvent(events::DiscoveryInfoResponceEvent
       mode_ = CLUSTER;
     }
   }
-  IServer::handleDiscoveryInfoResponceEvent(ev);
+  IServer::HandleDiscoveryInfoResponceEvent(ev);
 }
 
 }  // namespace redis

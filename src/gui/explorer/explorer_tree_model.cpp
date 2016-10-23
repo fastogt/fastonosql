@@ -125,7 +125,7 @@ QVariant ExplorerTreeModel::data(const QModelIndex& index, int role) const {
     } else if (type == IExplorerTreeItem::eServer) {
       ExplorerServerItem* server_node = static_cast<ExplorerServerItem*>(node);
       core::IServerSPtr server = server_node->server();
-      return GuiFactory::instance().icon(server->type());
+      return GuiFactory::instance().icon(server->Type());
     } else if (type == IExplorerTreeItem::eKey) {
       return GuiFactory::instance().keyIcon();
     } else if (type == IExplorerTreeItem::eDatabase) {
@@ -262,7 +262,7 @@ void ExplorerTreeModel::addDatabase(core::IServer* server, core::IDataBaseInfoSP
   if (!dbs) {
     common::qt::gui::TreeItem* parent_server = parent->parent();
     QModelIndex parent_index = createIndex(parent_server->indexOf(parent), 0, parent);
-    ExplorerDatabaseItem* item = new ExplorerDatabaseItem(server->createDatabaseByInfo(db), parent);
+    ExplorerDatabaseItem* item = new ExplorerDatabaseItem(server->CreateDatabaseByInfo(db), parent);
     insertItem(parent_index, item);
   }
 }

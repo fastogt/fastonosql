@@ -52,7 +52,7 @@ PropertyServerDialog::PropertyServerDialog(core::IServerSPtr server, QWidget* pa
     : QDialog(parent), server_(server) {
   CHECK(server_);
 
-  setWindowIcon(GuiFactory::instance().icon(server->type()));
+  setWindowIcon(GuiFactory::instance().icon(server->Type()));
   setWindowFlags(windowFlags() & ~Qt::WindowContextHelpButtonHint);  // Remove help
                                                                      // button (?)
 
@@ -72,13 +72,13 @@ PropertyServerDialog::PropertyServerDialog(core::IServerSPtr server, QWidget* pa
       new common::qt::gui::GlassWidget(GuiFactory::instance().pathToLoadingGif(),
                                        translations::trLoading, 0.5, QColor(111, 111, 100), this);
 
-  VERIFY(connect(server.get(), &core::IServer::startedLoadServerProperty, this,
+  VERIFY(connect(server.get(), &core::IServer::LoadServerPropertyStarted, this,
                  &PropertyServerDialog::startServerProperty));
-  VERIFY(connect(server.get(), &core::IServer::finishedLoadServerProperty, this,
+  VERIFY(connect(server.get(), &core::IServer::LoadServerPropertyFinished, this,
                  &PropertyServerDialog::finishServerProperty));
-  VERIFY(connect(server.get(), &core::IServer::startedChangeServerProperty, this,
+  VERIFY(connect(server.get(), &core::IServer::ChangeServerPropertyStarted, this,
                  &PropertyServerDialog::startServerChangeProperty));
-  VERIFY(connect(server.get(), &core::IServer::finishedChangeServerProperty, this,
+  VERIFY(connect(server.get(), &core::IServer::ChangeServerPropertyFinished, this,
                  &PropertyServerDialog::finishServerChangeProperty));
   retranslateUi();
 }
@@ -98,7 +98,7 @@ void PropertyServerDialog::finishServerProperty(
     return;
   }
 
-  if (server_->type() == core::REDIS) {
+  if (server_->Type() == core::REDIS) {
     core::ServerPropertiesInfo inf = res.info;
     PropertyTableModel* model = qobject_cast<PropertyTableModel*>(propertyes_table_->model());
     for (size_t i = 0; i < inf.properties.size(); ++i) {
@@ -120,7 +120,7 @@ void PropertyServerDialog::finishServerChangeProperty(
     return;
   }
 
-  if (server_->type() == core::REDIS) {
+  if (server_->Type() == core::REDIS) {
     core::property_t pr = res.new_item;
     if (res.is_change) {
       PropertyTableModel* model = qobject_cast<PropertyTableModel*>(propertyes_table_->model());
@@ -131,7 +131,7 @@ void PropertyServerDialog::finishServerChangeProperty(
 
 void PropertyServerDialog::changedProperty(const core::property_t& prop) {
   core::events_info::ChangeServerPropertyInfoRequest req(this, prop);
-  server_->changeProperty(req);
+  server_->ChangeProperty(req);
 }
 
 void PropertyServerDialog::changeEvent(QEvent* e) {
@@ -144,7 +144,7 @@ void PropertyServerDialog::changeEvent(QEvent* e) {
 void PropertyServerDialog::showEvent(QShowEvent* e) {
   QDialog::showEvent(e);
   core::events_info::ServerPropertyInfoRequest req(this);
-  server_->serverProperty(req);
+  server_->ServerProperty(req);
 }
 
 void PropertyServerDialog::retranslateUi() {

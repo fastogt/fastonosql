@@ -40,10 +40,10 @@ class Server : public IServerRemote {
   virtual common::net::HostAndPort host() const;
 
  protected:
-  virtual void handleDiscoveryInfoResponceEvent(events::DiscoveryInfoResponceEvent* ev);
+  virtual void HandleDiscoveryInfoResponceEvent(events::DiscoveryInfoResponceEvent* ev);
 
  private:
-  virtual IDatabaseSPtr createDatabase(IDataBaseInfoSPtr info);
+  virtual IDatabaseSPtr CreateDatabase(IDataBaseInfoSPtr info);
   serverTypes role_;
   serverMode mode_;
 };

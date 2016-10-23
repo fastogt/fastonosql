@@ -80,22 +80,22 @@ OutputWidget::OutputWidget(core::IServerSPtr server, QWidget* parent)
   commonModel_ = new FastoCommonModel(this);
   VERIFY(connect(commonModel_, &FastoCommonModel::changedValue, this, &OutputWidget::createKey,
                  Qt::DirectConnection));
-  VERIFY(connect(server_.get(), &core::IServer::startedExecute, this,
+  VERIFY(connect(server_.get(), &core::IServer::ExecuteStarted, this,
                  &OutputWidget::startExecuteCommand, Qt::DirectConnection));
-  VERIFY(connect(server_.get(), &core::IServer::finishedExecute, this,
+  VERIFY(connect(server_.get(), &core::IServer::ExecuteFinished, this,
                  &OutputWidget::finishExecuteCommand, Qt::DirectConnection));
 
   VERIFY(connect(server_.get(), &core::IServer::keyAdded, this, &OutputWidget::addKey,
                  Qt::DirectConnection));
 
-  VERIFY(connect(server_.get(), &core::IServer::rootCreated, this, &OutputWidget::rootCreate,
+  VERIFY(connect(server_.get(), &core::IServer::RootCreated, this, &OutputWidget::rootCreate,
                  Qt::DirectConnection));
-  VERIFY(connect(server_.get(), &core::IServer::rootCompleated, this, &OutputWidget::rootCompleate,
+  VERIFY(connect(server_.get(), &core::IServer::RootCompleated, this, &OutputWidget::rootCompleate,
                  Qt::DirectConnection));
 
-  VERIFY(connect(server_.get(), &core::IServer::addedChild, this, &OutputWidget::addChild,
+  VERIFY(connect(server_.get(), &core::IServer::ChildAdded, this, &OutputWidget::addChild,
                  Qt::DirectConnection));
-  VERIFY(connect(server_.get(), &core::IServer::itemUpdated, this, &OutputWidget::updateItem,
+  VERIFY(connect(server_.get(), &core::IServer::ItemUpdated, this, &OutputWidget::updateItem,
                  Qt::DirectConnection));
 
   treeView_ = new FastoTreeView;
@@ -104,7 +104,7 @@ OutputWidget::OutputWidget(core::IServerSPtr server, QWidget* parent)
   tableView_ = new FastoTableView;
   tableView_->setModel(commonModel_);
 
-  QString delimiter = common::ConvertFromString<QString>(server_->delimiter());
+  QString delimiter = common::ConvertFromString<QString>(server_->Delimiter());
   textView_ = new FastoTextView(delimiter);
   textView_->setModel(commonModel_);
 
@@ -249,7 +249,7 @@ void OutputWidget::createKey(const core::NDbKValue& dbv) {
   }
 
   core::events_info::ExecuteInfoRequest req(this, cmd_text, 0, 0, true, true);
-  server_->execute(req);
+  server_->Execute(req);
 }
 
 void OutputWidget::setTreeView() {

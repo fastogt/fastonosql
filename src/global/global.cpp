@@ -68,7 +68,7 @@ void FastoObject::addChildren(child_t child) {
   CHECK(child->parent_ == this);
   childrens_.push_back(child);
   if (observer_) {
-    observer_->addedChildren(child);
+    observer_->ChildrenAdded(child);
     child->observer_ = observer_;
   }
 }
@@ -92,7 +92,7 @@ FastoObject::value_t FastoObject::value() const {
 void FastoObject::setValue(value_t val) {
   value_ = val;
   if (observer_) {
-    observer_->updated(this, val);
+    observer_->Updated(this, val);
   }
 }
 

@@ -18,6 +18,10 @@
 
 #include "core/driver/first_child_update_root_locker.h"
 
+#include <common/intrusive_ptr.h>       // for intrusive_ptr, operator==
+#include <common/macros.h>              // for NOTREACHED
+#include <common/value.h>               // for Value, etc
+
 namespace fastonosql {
 namespace core {
 
@@ -28,7 +32,7 @@ FirstChildUpdateRootLocker::FirstChildUpdateRootLocker(IDriver* parent,
                                                        const std::vector<std::string>& commands)
     : RootLocker(parent, receiver, text, silence), commands_(commands), watched_cmds_() {}
 
-void FirstChildUpdateRootLocker::addedChildren(FastoObjectIPtr child) {
+void FirstChildUpdateRootLocker::ChildrenAdded(FastoObjectIPtr child) {
   auto val = child->value();
   if (child->type() == common::Value::TYPE_COMMAND) {
     if (watched_cmds_.size() == commands_.size()) {
@@ -36,7 +40,7 @@ void FirstChildUpdateRootLocker::addedChildren(FastoObjectIPtr child) {
     }
 
     watched_cmds_.push_back(child);
-    RootLocker::addedChildren(child);
+    RootLocker::ChildrenAdded(child);
     return;
   }
 
@@ -46,7 +50,7 @@ void FirstChildUpdateRootLocker::addedChildren(FastoObjectIPtr child) {
   }
 
   if (watched_child == child) {
-    RootLocker::addedChildren(child);
+    RootLocker::ChildrenAdded(child);
     return;
   }
 

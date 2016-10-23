@@ -221,7 +221,7 @@ InfoServerDialog::InfoServerDialog(core::IServerSPtr server, QWidget* parent)
     : QDialog(parent), server_(server) {
   CHECK(server_);
 
-  core::connectionTypes type = server->type();
+  core::connectionTypes type = server->Type();
   setWindowIcon(GuiFactory::instance().icon(type));
   setWindowFlags(windowFlags() & ~Qt::WindowContextHelpButtonHint);  // Remove help
                                                                      // button (?)
@@ -274,9 +274,9 @@ InfoServerDialog::InfoServerDialog(core::IServerSPtr server, QWidget* parent)
   }
 #endif
 
-  VERIFY(connect(server.get(), &core::IServer::startedLoadServerInfo, this,
+  VERIFY(connect(server.get(), &core::IServer::LoadServerInfoStarted, this,
                  &InfoServerDialog::startServerInfo));
-  VERIFY(connect(server.get(), &core::IServer::finishedLoadServerInfo, this,
+  VERIFY(connect(server.get(), &core::IServer::LoadServerInfoFinished, this,
                  &InfoServerDialog::finishServerInfo));
   retranslateUi();
 }
@@ -299,7 +299,7 @@ void InfoServerDialog::finishServerInfo(const core::events_info::ServerInfoRespo
     return;
   }
 
-  core::connectionTypes type = server_->type();
+  core::connectionTypes type = server_->Type();
   CHECK(type == inf->type());
 #ifdef BUILD_WITH_REDIS
   if (type == core::REDIS) {
@@ -355,7 +355,7 @@ void InfoServerDialog::finishServerInfo(const core::events_info::ServerInfoRespo
 void InfoServerDialog::showEvent(QShowEvent* e) {
   QDialog::showEvent(e);
   core::events_info::ServerInfoRequest req(this);
-  server_->loadServerInfo(req);
+  server_->LoadServerInfo(req);
 }
 
 void InfoServerDialog::changeEvent(QEvent* e) {

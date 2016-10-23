@@ -229,7 +229,7 @@ void Driver::handleProcessCommandLineArgs(events::ProcessConfigArgsRequestEvent*
   reply(sender, new events::ProcessConfigArgsResponceEvent(this, res));
 }
 
-void Driver::handleShutdownEvent(events::ShutDownRequestEvent* ev) {
+void Driver::HandleShutdownEvent(events::ShutDownRequestEvent* ev) {
   QObject* sender = ev->sender();
   notifyProgress(sender, 0);
   events::ShutDownResponceEvent::value_type res(ev->value());
@@ -244,7 +244,7 @@ void Driver::handleShutdownEvent(events::ShutDownRequestEvent* ev) {
   notifyProgress(sender, 100);
 }
 
-void Driver::handleBackupEvent(events::BackupRequestEvent* ev) {
+void Driver::HandleBackupEvent(events::BackupRequestEvent* ev) {
   QObject* sender = ev->sender();
   notifyProgress(sender, 0);
   events::BackupResponceEvent::value_type res(ev->value());
@@ -264,7 +264,7 @@ void Driver::handleBackupEvent(events::BackupRequestEvent* ev) {
   notifyProgress(sender, 100);
 }
 
-void Driver::handleExportEvent(events::ExportRequestEvent* ev) {
+void Driver::HandleExportEvent(events::ExportRequestEvent* ev) {
   QObject* sender = ev->sender();
   notifyProgress(sender, 0);
   events::ExportResponceEvent::value_type res(ev->value());
@@ -278,7 +278,7 @@ void Driver::handleExportEvent(events::ExportRequestEvent* ev) {
   notifyProgress(sender, 100);
 }
 
-void Driver::handleChangePasswordEvent(events::ChangePasswordRequestEvent* ev) {
+void Driver::HandleChangePasswordEvent(events::ChangePasswordRequestEvent* ev) {
   QObject* sender = ev->sender();
   notifyProgress(sender, 0);
   events::ChangePasswordResponceEvent::value_type res(ev->value());
@@ -445,7 +445,7 @@ common::Error Driver::scanMode(events::ProcessConfigArgsRequestEvent* ev) {
   return er;
 }
 
-void Driver::handleLoadDatabaseInfosEvent(events::LoadDatabasesInfoRequestEvent* ev) {
+void Driver::HandleLoadDatabaseInfosEvent(events::LoadDatabasesInfoRequestEvent* ev) {
   QObject* sender = ev->sender();
   notifyProgress(sender, 0);
   events::LoadDatabasesInfoResponceEvent::value_type res(ev->value());
@@ -497,7 +497,7 @@ done:
   notifyProgress(sender, 100);
 }
 
-void Driver::handleLoadDatabaseContentEvent(events::LoadDatabaseContentRequestEvent* ev) {
+void Driver::HandleLoadDatabaseContentEvent(events::LoadDatabaseContentRequestEvent* ev) {
   QObject* sender = ev->sender();
   notifyProgress(sender, 0);
   events::LoadDatabaseContentResponceEvent::value_type res(ev->value());
@@ -617,7 +617,7 @@ void Driver::handleClearDatabaseEvent(events::ClearDatabaseRequestEvent* ev) {
   notifyProgress(sender, 100);
 }
 
-void Driver::handleSetDefaultDatabaseEvent(events::SetDefaultDatabaseRequestEvent* ev) {
+void Driver::HandleSetDefaultDatabaseEvent(events::SetDefaultDatabaseRequestEvent* ev) {
   QObject* sender = ev->sender();
   notifyProgress(sender, 0);
   events::SetDefaultDatabaseResponceEvent::value_type res(ev->value());
@@ -634,7 +634,7 @@ void Driver::handleSetDefaultDatabaseEvent(events::SetDefaultDatabaseRequestEven
   notifyProgress(sender, 100);
 }
 
-void Driver::handleLoadServerPropertyEvent(events::ServerPropertyInfoRequestEvent* ev) {
+void Driver::HandleLoadServerPropertyEvent(events::ServerPropertyInfoRequestEvent* ev) {
   QObject* sender = ev->sender();
   notifyProgress(sender, 0);
   events::ServerPropertyInfoResponceEvent::value_type res(ev->value());
@@ -658,7 +658,7 @@ void Driver::handleLoadServerPropertyEvent(events::ServerPropertyInfoRequestEven
   notifyProgress(sender, 100);
 }
 
-void Driver::handleServerPropertyChangeEvent(events::ChangeServerPropertyInfoRequestEvent* ev) {
+void Driver::HandleServerPropertyChangeEvent(events::ChangeServerPropertyInfoRequestEvent* ev) {
   QObject* sender = ev->sender();
   notifyProgress(sender, 0);
   events::ChangeServerPropertyInfoResponceEvent::value_type res(ev->value());

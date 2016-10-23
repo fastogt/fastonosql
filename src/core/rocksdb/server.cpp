@@ -32,7 +32,7 @@ std::string Server::path() const {
   return ldrv->path();
 }
 
-IDatabaseSPtr Server::createDatabase(IDataBaseInfoSPtr info) {
+IDatabaseSPtr Server::CreateDatabase(IDataBaseInfoSPtr info) {
   return IDatabaseSPtr(new Database(shared_from_this(), info));
 }
 

@@ -54,7 +54,7 @@ namespace gui {
 ServerHistoryDialog::ServerHistoryDialog(core::IServerSPtr server, QWidget* parent)
     : QDialog(parent, Qt::WindowMinMaxButtonsHint | Qt::WindowCloseButtonHint), server_(server) {
   CHECK(server_);
-  setWindowIcon(GuiFactory::instance().icon(server_->type()));
+  setWindowIcon(GuiFactory::instance().icon(server_->Type()));
   setWindowFlags(windowFlags() & ~Qt::WindowContextHelpButtonHint);  // Remove help
                                                                      // button (?)
 
@@ -72,7 +72,7 @@ ServerHistoryDialog::ServerHistoryDialog(core::IServerSPtr server, QWidget* pare
   VERIFY(connect(serverInfoFields_, static_cast<curc>(&QComboBox::currentIndexChanged), this,
                  &ServerHistoryDialog::refreshGraph));
 
-  const auto fields = core::infoFieldsFromType(server_->type());
+  const auto fields = core::infoFieldsFromType(server_->Type());
   for (size_t i = 0; i < fields.size(); ++i) {
     core::info_field_t field = fields[i];
     serverInfoGroupsNames_->addItem(common::ConvertFromString<QString>(field.first));
@@ -97,13 +97,13 @@ ServerHistoryDialog::ServerHistoryDialog(core::IServerSPtr server, QWidget* pare
   glassWidget_ =
       new common::qt::gui::GlassWidget(GuiFactory::instance().pathToLoadingGif(),
                                        translations::trLoading, 0.5, QColor(111, 111, 100), this);
-  VERIFY(connect(server.get(), &core::IServer::startedLoadServerHistoryInfo, this,
+  VERIFY(connect(server.get(), &core::IServer::LoadServerHistoryInfoStarted, this,
                  &ServerHistoryDialog::startLoadServerHistoryInfo));
-  VERIFY(connect(server.get(), &core::IServer::finishedLoadServerHistoryInfo, this,
+  VERIFY(connect(server.get(), &core::IServer::LoadServerHistoryInfoFinished, this,
                  &ServerHistoryDialog::finishLoadServerHistoryInfo));
-  VERIFY(connect(server.get(), &core::IServer::startedClearServerHistory, this,
+  VERIFY(connect(server.get(), &core::IServer::ClearServerHistoryStarted, this,
                  &ServerHistoryDialog::startClearServerHistory));
-  VERIFY(connect(server.get(), &core::IServer::finishedClearServerHistory, this,
+  VERIFY(connect(server.get(), &core::IServer::ClearServerHistoryFinished, this,
                  &ServerHistoryDialog::finishClearServerHistory));
   VERIFY(connect(server.get(), &core::IServer::serverInfoSnapShoot, this,
                  &ServerHistoryDialog::snapShotAdd));
@@ -151,7 +151,7 @@ void ServerHistoryDialog::snapShotAdd(core::ServerInfoSnapShoot snapshot) {
 
 void ServerHistoryDialog::clearHistory() {
   core::events_info::ClearServerHistoryRequest req(this);
-  server_->clearHistory(req);
+  server_->ClearHistory(req);
 }
 
 void ServerHistoryDialog::refreshInfoFields(int index) {
@@ -161,7 +161,7 @@ void ServerHistoryDialog::refreshInfoFields(int index) {
 
   serverInfoFields_->clear();
 
-  std::vector<core::info_field_t> fields = infoFieldsFromType(server_->type());
+  std::vector<core::info_field_t> fields = infoFieldsFromType(server_->Type());
   std::vector<core::Field> field = fields[index].second;
   for (uint32_t i = 0; i < field.size(); ++i) {
     core::Field fl = field[i];
@@ -223,7 +223,7 @@ void ServerHistoryDialog::retranslateUi() {
 
 void ServerHistoryDialog::requestHistoryInfo() {
   core::events_info::ServerInfoHistoryRequest req(this);
-  server_->requestHistoryInfo(req);
+  server_->RequestHistoryInfo(req);
 }
 }  // namespace gui
 }  // namespace fastonosql

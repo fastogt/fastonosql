@@ -238,31 +238,31 @@ void IDriver::customEvent(QEvent* event) {
   QEvent::Type type = event->type();
   if (type == static_cast<QEvent::Type>(events::ConnectRequestEvent::EventType)) {
     events::ConnectRequestEvent* ev = static_cast<events::ConnectRequestEvent*>(event);
-    handleConnectEvent(ev);
+    HandleConnectEvent(ev);
   } else if (type == static_cast<QEvent::Type>(events::ShutDownRequestEvent::EventType)) {
     events::ShutDownRequestEvent* ev = static_cast<events::ShutDownRequestEvent*>(event);
-    handleShutdownEvent(ev);  // ni
+    HandleShutdownEvent(ev);  // ni
   } else if (type == static_cast<QEvent::Type>(events::ProcessConfigArgsRequestEvent::EventType)) {
     events::ProcessConfigArgsRequestEvent* ev =
         static_cast<events::ProcessConfigArgsRequestEvent*>(event);
     handleProcessCommandLineArgs(ev);
   } else if (type == static_cast<QEvent::Type>(events::DisconnectRequestEvent::EventType)) {
     events::DisconnectRequestEvent* ev = static_cast<events::DisconnectRequestEvent*>(event);
-    handleDisconnectEvent(ev);
+    HandleDisconnectEvent(ev);
   } else if (type == static_cast<QEvent::Type>(events::ExecuteRequestEvent::EventType)) {
     events::ExecuteRequestEvent* ev = static_cast<events::ExecuteRequestEvent*>(event);
     handleExecuteEvent(ev);
   } else if (type == static_cast<QEvent::Type>(events::LoadDatabasesInfoRequestEvent::EventType)) {
     events::LoadDatabasesInfoRequestEvent* ev =
         static_cast<events::LoadDatabasesInfoRequestEvent*>(event);
-    handleLoadDatabaseInfosEvent(ev);  //
+    HandleLoadDatabaseInfosEvent(ev);  //
   } else if (type == static_cast<QEvent::Type>(events::ServerInfoRequestEvent::EventType)) {
     events::ServerInfoRequestEvent* ev = static_cast<events::ServerInfoRequestEvent*>(event);
-    handleLoadServerInfoEvent(ev);  //
+    HandleLoadServerInfoEvent(ev);  //
   } else if (type == static_cast<QEvent::Type>(events::ServerInfoHistoryRequestEvent::EventType)) {
     events::ServerInfoHistoryRequestEvent* ev =
         static_cast<events::ServerInfoHistoryRequestEvent*>(event);
-    handleLoadServerInfoHistoryEvent(ev);  //
+    HandleLoadServerInfoHistoryEvent(ev);  //
   } else if (type == static_cast<QEvent::Type>(events::ClearServerHistoryRequestEvent::EventType)) {
     events::ClearServerHistoryRequestEvent* ev =
         static_cast<events::ClearServerHistoryRequestEvent*>(event);
@@ -270,22 +270,22 @@ void IDriver::customEvent(QEvent* event) {
   } else if (type == static_cast<QEvent::Type>(events::ServerPropertyInfoRequestEvent::EventType)) {
     events::ServerPropertyInfoRequestEvent* ev =
         static_cast<events::ServerPropertyInfoRequestEvent*>(event);
-    handleLoadServerPropertyEvent(ev);  // ni
+    HandleLoadServerPropertyEvent(ev);  // ni
   } else if (type ==
              static_cast<QEvent::Type>(events::ChangeServerPropertyInfoRequestEvent::EventType)) {
     events::ChangeServerPropertyInfoRequestEvent* ev =
         static_cast<events::ChangeServerPropertyInfoRequestEvent*>(event);
-    handleServerPropertyChangeEvent(ev);  // ni
+    HandleServerPropertyChangeEvent(ev);  // ni
   } else if (type == static_cast<QEvent::Type>(events::BackupRequestEvent::EventType)) {
     events::BackupRequestEvent* ev = static_cast<events::BackupRequestEvent*>(event);
-    handleBackupEvent(ev);  // ni
+    HandleBackupEvent(ev);  // ni
   } else if (type == static_cast<QEvent::Type>(events::ExportRequestEvent::EventType)) {
     events::ExportRequestEvent* ev = static_cast<events::ExportRequestEvent*>(event);
-    handleExportEvent(ev);  // ni
+    HandleExportEvent(ev);  // ni
   } else if (type == static_cast<QEvent::Type>(events::ChangePasswordRequestEvent::EventType)) {
     events::ChangePasswordRequestEvent* ev =
         static_cast<events::ChangePasswordRequestEvent*>(event);
-    handleChangePasswordEvent(ev);  // ni
+    HandleChangePasswordEvent(ev);  // ni
   } else if (type ==
              static_cast<QEvent::Type>(events::ChangeMaxConnectionRequestEvent::EventType)) {
     events::ChangeMaxConnectionRequestEvent* ev =
@@ -295,14 +295,14 @@ void IDriver::customEvent(QEvent* event) {
              static_cast<QEvent::Type>(events::LoadDatabaseContentRequestEvent::EventType)) {
     events::LoadDatabaseContentRequestEvent* ev =
         static_cast<events::LoadDatabaseContentRequestEvent*>(event);
-    handleLoadDatabaseContentEvent(ev);
+    HandleLoadDatabaseContentEvent(ev);
   } else if (type == static_cast<QEvent::Type>(events::ClearDatabaseRequestEvent::EventType)) {
     events::ClearDatabaseRequestEvent* ev = static_cast<events::ClearDatabaseRequestEvent*>(event);
     handleClearDatabaseEvent(ev);  // ni
   } else if (type == static_cast<QEvent::Type>(events::SetDefaultDatabaseRequestEvent::EventType)) {
     events::SetDefaultDatabaseRequestEvent* ev =
         static_cast<events::SetDefaultDatabaseRequestEvent*>(event);
-    handleSetDefaultDatabaseEvent(ev);  // ni
+    HandleSetDefaultDatabaseEvent(ev);  // ni
   } else if (type == static_cast<QEvent::Type>(events::DiscoveryInfoRequestEvent::EventType)) {
     events::DiscoveryInfoRequestEvent* ev = static_cast<events::DiscoveryInfoRequestEvent*>(event);
     handleDiscoveryInfoRequestEvent(ev);  //
@@ -355,7 +355,7 @@ void IDriver::notifyProgress(QObject* reciver, int value) {
   notifyProgressImpl(this, reciver, value);
 }
 
-void IDriver::handleConnectEvent(events::ConnectRequestEvent* ev) {
+void IDriver::HandleConnectEvent(events::ConnectRequestEvent* ev) {
   QObject* sender = ev->sender();
   notifyProgress(sender, 0);
   events::ConnectResponceEvent::value_type res(ev->value());
@@ -369,7 +369,7 @@ void IDriver::handleConnectEvent(events::ConnectRequestEvent* ev) {
   notifyProgress(sender, 100);
 }
 
-void IDriver::handleDisconnectEvent(events::DisconnectRequestEvent* ev) {
+void IDriver::HandleDisconnectEvent(events::DisconnectRequestEvent* ev) {
   QObject* sender = ev->sender();
   notifyProgress(sender, 0);
   events::DisconnectResponceEvent::value_type res(ev->value());
@@ -453,33 +453,33 @@ done:
   delete lock;
 }
 
-void IDriver::handleLoadServerPropertyEvent(events::ServerPropertyInfoRequestEvent* ev) {
+void IDriver::HandleLoadServerPropertyEvent(events::ServerPropertyInfoRequestEvent* ev) {
   replyNotImplementedYet<events::ServerPropertyInfoRequestEvent,
                          events::ServerPropertyInfoResponceEvent>(this, ev, "server property");
 }
 
-void IDriver::handleServerPropertyChangeEvent(events::ChangeServerPropertyInfoRequestEvent* ev) {
+void IDriver::HandleServerPropertyChangeEvent(events::ChangeServerPropertyInfoRequestEvent* ev) {
   replyNotImplementedYet<events::ChangeServerPropertyInfoRequestEvent,
                          events::ChangeServerPropertyInfoResponceEvent>(this, ev,
                                                                         "change server property");
 }
 
-void IDriver::handleShutdownEvent(events::ShutDownRequestEvent* ev) {
+void IDriver::HandleShutdownEvent(events::ShutDownRequestEvent* ev) {
   replyNotImplementedYet<events::ShutDownRequestEvent, events::ShutDownResponceEvent>(this, ev,
                                                                                       "shutdown");
 }
 
-void IDriver::handleBackupEvent(events::BackupRequestEvent* ev) {
+void IDriver::HandleBackupEvent(events::BackupRequestEvent* ev) {
   replyNotImplementedYet<events::BackupRequestEvent, events::BackupResponceEvent>(this, ev,
                                                                                   "backup server");
 }
 
-void IDriver::handleExportEvent(events::ExportRequestEvent* ev) {
+void IDriver::HandleExportEvent(events::ExportRequestEvent* ev) {
   replyNotImplementedYet<events::ExportRequestEvent, events::ExportResponceEvent>(this, ev,
                                                                                   "export server");
 }
 
-void IDriver::handleChangePasswordEvent(events::ChangePasswordRequestEvent* ev) {
+void IDriver::HandleChangePasswordEvent(events::ChangePasswordRequestEvent* ev) {
   replyNotImplementedYet<events::ChangePasswordRequestEvent, events::ChangePasswordResponceEvent>(
       this, ev, "change password");
 }
@@ -490,7 +490,7 @@ void IDriver::handleChangeMaxConnectionEvent(events::ChangeMaxConnectionRequestE
                                                                    "change maximum connection");
 }
 
-void IDriver::handleLoadDatabaseInfosEvent(events::LoadDatabasesInfoRequestEvent* ev) {
+void IDriver::HandleLoadDatabaseInfosEvent(events::LoadDatabasesInfoRequestEvent* ev) {
   QObject* sender = ev->sender();
   notifyProgress(sender, 0);
   events::LoadDatabasesInfoResponceEvent::value_type res(ev->value());
@@ -507,12 +507,12 @@ void IDriver::handleClearDatabaseEvent(events::ClearDatabaseRequestEvent* ev) {
       this, ev, "clear database");
 }
 
-void IDriver::handleSetDefaultDatabaseEvent(events::SetDefaultDatabaseRequestEvent* ev) {
+void IDriver::HandleSetDefaultDatabaseEvent(events::SetDefaultDatabaseRequestEvent* ev) {
   replyNotImplementedYet<events::SetDefaultDatabaseRequestEvent,
                          events::SetDefaultDatabaseResponceEvent>(this, ev, "set default database");
 }
 
-void IDriver::handleLoadServerInfoEvent(events::ServerInfoRequestEvent* ev) {
+void IDriver::HandleLoadServerInfoEvent(events::ServerInfoRequestEvent* ev) {
   QObject* sender = ev->sender();
   notifyProgress(sender, 0);
   events::ServerInfoResponceEvent::value_type res(ev->value());
@@ -530,7 +530,7 @@ void IDriver::handleLoadServerInfoEvent(events::ServerInfoRequestEvent* ev) {
   notifyProgress(sender, 100);
 }
 
-void IDriver::handleLoadServerInfoHistoryEvent(events::ServerInfoHistoryRequestEvent* ev) {
+void IDriver::HandleLoadServerInfoHistoryEvent(events::ServerInfoHistoryRequestEvent* ev) {
   QObject* sender = ev->sender();
   events::ServerInfoHistoryResponceEvent::value_type res(ev->value());
 

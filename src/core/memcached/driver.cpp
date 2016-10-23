@@ -145,7 +145,7 @@ common::Error Driver::currentDataBaseInfo(IDataBaseInfo** info) {
   return impl_->select("0", info);
 }
 
-void Driver::handleLoadDatabaseContentEvent(events::LoadDatabaseContentRequestEvent* ev) {
+void Driver::HandleLoadDatabaseContentEvent(events::LoadDatabaseContentRequestEvent* ev) {
   QObject* sender = ev->sender();
   notifyProgress(sender, 0);
   events::LoadDatabaseContentResponceEvent::value_type res(ev->value());

@@ -71,7 +71,7 @@ class Driver : public IDriverRemote {
 
   virtual void handleProcessCommandLineArgs(events::ProcessConfigArgsRequestEvent* ev);
 
-  virtual void handleLoadDatabaseContentEvent(events::LoadDatabaseContentRequestEvent* ev);
+  virtual void HandleLoadDatabaseContentEvent(events::LoadDatabaseContentRequestEvent* ev);
   IServerInfoSPtr makeServerInfoFromString(const std::string& val);
 
   DBConnection* const impl_;

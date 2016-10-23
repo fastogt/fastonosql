@@ -35,7 +35,7 @@ class Server : public IServerLocal {
   virtual std::string path() const;
 
  private:
-  virtual IDatabaseSPtr createDatabase(IDataBaseInfoSPtr info);
+  virtual IDatabaseSPtr CreateDatabase(IDataBaseInfoSPtr info);
 };
 
 }  // namespace unqlite

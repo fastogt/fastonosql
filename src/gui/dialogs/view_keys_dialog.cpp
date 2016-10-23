@@ -101,9 +101,9 @@ ViewKeysDialog::ViewKeysDialog(const QString& title, core::IDatabaseSPtr db, QWi
                                                                      // button (?)
 
   core::IServerSPtr serv = db_->server();
-  VERIFY(connect(serv.get(), &core::IServer::startedLoadDataBaseContent, this,
+  VERIFY(connect(serv.get(), &core::IServer::LoadDataBaseContentStarted, this,
                  &ViewKeysDialog::startLoadDatabaseContent));
-  VERIFY(connect(serv.get(), &core::IServer::finishedLoadDatabaseContent, this,
+  VERIFY(connect(serv.get(), &core::IServer::LoadDatabaseContentFinished, this,
                  &ViewKeysDialog::finishLoadDatabaseContent));
 
   // main layout
@@ -136,9 +136,9 @@ ViewKeysDialog::ViewKeysDialog(const QString& title, core::IDatabaseSPtr db, QWi
   VERIFY(connect(keysModel_, &KeysTableModel::changedTTL, this, &ViewKeysDialog::changeTTL,
                  Qt::DirectConnection));
 
-  VERIFY(connect(serv.get(), &core::IServer::startedExecute, this, &ViewKeysDialog::startExecute,
+  VERIFY(connect(serv.get(), &core::IServer::ExecuteStarted, this, &ViewKeysDialog::startExecute,
                  Qt::DirectConnection));
-  VERIFY(connect(serv.get(), &core::IServer::finishedExecute, this, &ViewKeysDialog::finishExecute,
+  VERIFY(connect(serv.get(), &core::IServer::ExecuteFinished, this, &ViewKeysDialog::finishExecute,
                  Qt::DirectConnection));
   VERIFY(connect(serv.get(), &core::IServer::keyTTLChanged, this, &ViewKeysDialog::keyTTLChange,
                  Qt::DirectConnection));

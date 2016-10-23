@@ -75,8 +75,8 @@ class IDriver : public QObject, public CDBConnectionClient {
   virtual std::string nsSeparator() const = 0;
 
  Q_SIGNALS:
-  void addedChild(FastoObjectIPtr child);
-  void itemUpdated(FastoObject* item, common::ValueSPtr val);
+  void ChildAdded(FastoObjectIPtr child);
+  void ItemUpdated(FastoObject* item, common::ValueSPtr val);
   void serverInfoSnapShoot(core::ServerInfoSnapShoot shot);
 
   void keyRemoved(core::IDataBaseInfoSPtr db, core::NKey key);
@@ -99,24 +99,24 @@ class IDriver : public QObject, public CDBConnectionClient {
   explicit IDriver(IConnectionSettingsBaseSPtr settings);
 
   // handle server events
-  virtual void handleConnectEvent(events::ConnectRequestEvent* ev);
-  virtual void handleDisconnectEvent(events::DisconnectRequestEvent* ev);
+  virtual void HandleConnectEvent(events::ConnectRequestEvent* ev);
+  virtual void HandleDisconnectEvent(events::DisconnectRequestEvent* ev);
 
   virtual void handleProcessCommandLineArgs(events::ProcessConfigArgsRequestEvent* ev) = 0;
   virtual void handleExecuteEvent(events::ExecuteRequestEvent* ev);
 
-  virtual void handleLoadDatabaseContentEvent(events::LoadDatabaseContentRequestEvent* ev) = 0;
+  virtual void HandleLoadDatabaseContentEvent(events::LoadDatabaseContentRequestEvent* ev) = 0;
 
-  virtual void handleLoadServerPropertyEvent(events::ServerPropertyInfoRequestEvent* ev);
-  virtual void handleServerPropertyChangeEvent(events::ChangeServerPropertyInfoRequestEvent* ev);
-  virtual void handleShutdownEvent(events::ShutDownRequestEvent* ev);
-  virtual void handleBackupEvent(events::BackupRequestEvent* ev);
-  virtual void handleExportEvent(events::ExportRequestEvent* ev);
-  virtual void handleChangePasswordEvent(events::ChangePasswordRequestEvent* ev);
+  virtual void HandleLoadServerPropertyEvent(events::ServerPropertyInfoRequestEvent* ev);
+  virtual void HandleServerPropertyChangeEvent(events::ChangeServerPropertyInfoRequestEvent* ev);
+  virtual void HandleShutdownEvent(events::ShutDownRequestEvent* ev);
+  virtual void HandleBackupEvent(events::BackupRequestEvent* ev);
+  virtual void HandleExportEvent(events::ExportRequestEvent* ev);
+  virtual void HandleChangePasswordEvent(events::ChangePasswordRequestEvent* ev);
   virtual void handleChangeMaxConnectionEvent(events::ChangeMaxConnectionRequestEvent* ev);
-  virtual void handleLoadDatabaseInfosEvent(events::LoadDatabasesInfoRequestEvent* ev);
+  virtual void HandleLoadDatabaseInfosEvent(events::LoadDatabasesInfoRequestEvent* ev);
   virtual void handleClearDatabaseEvent(events::ClearDatabaseRequestEvent* ev);
-  virtual void handleSetDefaultDatabaseEvent(events::SetDefaultDatabaseRequestEvent* ev);
+  virtual void HandleSetDefaultDatabaseEvent(events::SetDefaultDatabaseRequestEvent* ev);
 
   const IConnectionSettingsBaseSPtr settings_;
 
@@ -131,8 +131,8 @@ class IDriver : public QObject, public CDBConnectionClient {
  private:
   virtual common::Error syncConnect() WARN_UNUSED_RESULT = 0;
   virtual common::Error syncDisconnect() WARN_UNUSED_RESULT = 0;
-  void handleLoadServerInfoEvent(events::ServerInfoRequestEvent* ev);  // call serverInfo
-  void handleLoadServerInfoHistoryEvent(events::ServerInfoHistoryRequestEvent* ev);
+  void HandleLoadServerInfoEvent(events::ServerInfoRequestEvent* ev);  // call serverInfo
+  void HandleLoadServerInfoHistoryEvent(events::ServerInfoHistoryRequestEvent* ev);
   void handleDiscoveryInfoRequestEvent(events::DiscoveryInfoRequestEvent* ev);
   void handleClearServerHistoryRequestEvent(events::ClearServerHistoryRequestEvent* ev);
 

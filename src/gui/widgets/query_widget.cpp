@@ -55,7 +55,7 @@ QueryWidget* QueryWidget::clone(const QString& text) {
 }
 
 core::connectionTypes QueryWidget::connectionType() const {
-  return server_->type();
+  return server_->Type();
 }
 
 QString QueryWidget::inputText() const {

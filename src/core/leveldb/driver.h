@@ -68,7 +68,7 @@ class Driver : public IDriverLocal {
   virtual common::Error currentDataBaseInfo(IDataBaseInfo** info);
 
   virtual void handleProcessCommandLineArgs(events::ProcessConfigArgsRequestEvent* ev);
-  virtual void handleLoadDatabaseContentEvent(events::LoadDatabaseContentRequestEvent* ev);
+  virtual void HandleLoadDatabaseContentEvent(events::LoadDatabaseContentRequestEvent* ev);
   virtual void handleClearDatabaseEvent(events::ClearDatabaseRequestEvent* ev);
 
   IServerInfoSPtr makeServerInfoFromString(const std::string& val);

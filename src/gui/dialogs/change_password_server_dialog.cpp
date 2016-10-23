@@ -82,9 +82,9 @@ ChangePasswordServerDialog::ChangePasswordServerDialog(const QString& title,
   VERIFY(
       connect(buttonBox, &QDialogButtonBox::rejected, this, &ChangePasswordServerDialog::reject));
 
-  VERIFY(connect(server_.get(), &core::IServer::startedChangePassword, this,
+  VERIFY(connect(server_.get(), &core::IServer::ChangePasswordStarted, this,
                  &ChangePasswordServerDialog::startChangePassword));
-  VERIFY(connect(server_.get(), &core::IServer::finishedChangePassword, this,
+  VERIFY(connect(server_.get(), &core::IServer::ChangePasswordFinished, this,
                  &ChangePasswordServerDialog::finishChangePassword));
 
   mainLayout->addWidget(buttonBox);
@@ -103,7 +103,7 @@ void ChangePasswordServerDialog::tryToCreatePassword() {
   }
   std::string password = common::ConvertToString(passwordLineEdit_->text());
   core::events_info::ChangePasswordRequest req(this, std::string(), password);
-  server_->changePassword(req);
+  server_->ChangePassword(req);
 }
 
 void ChangePasswordServerDialog::startChangePassword(

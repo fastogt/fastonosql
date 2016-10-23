@@ -89,32 +89,32 @@ BaseShellWidget::BaseShellWidget(core::IServerSPtr server, const QString& filePa
   CHECK(server_);
 
   VERIFY(
-      connect(server_.get(), &core::IServer::startedConnect, this, &BaseShellWidget::startConnect));
-  VERIFY(connect(server_.get(), &core::IServer::finishedConnect, this,
+      connect(server_.get(), &core::IServer::ConnectStarted, this, &BaseShellWidget::startConnect));
+  VERIFY(connect(server_.get(), &core::IServer::ConnectFinished, this,
                  &BaseShellWidget::finishConnect));
-  VERIFY(connect(server_.get(), &core::IServer::startedDisconnect, this,
+  VERIFY(connect(server_.get(), &core::IServer::DisconnectStarted, this,
                  &BaseShellWidget::startDisconnect));
-  VERIFY(connect(server_.get(), &core::IServer::finishedDisconnect, this,
+  VERIFY(connect(server_.get(), &core::IServer::DisconnectFinished, this,
                  &BaseShellWidget::finishDisconnect));
-  VERIFY(connect(server_.get(), &core::IServer::progressChanged, this,
+  VERIFY(connect(server_.get(), &core::IServer::ProgressChanged, this,
                  &BaseShellWidget::progressChange));
 
-  VERIFY(connect(server_.get(), &core::IServer::startedSetDefaultDatabase, this,
+  VERIFY(connect(server_.get(), &core::IServer::SetDefaultDatabaseStarted, this,
                  &BaseShellWidget::startSetDefaultDatabase));
-  VERIFY(connect(server_.get(), &core::IServer::finishedSetDefaultDatabase, this,
+  VERIFY(connect(server_.get(), &core::IServer::SetDefaultDatabaseFinished, this,
                  &BaseShellWidget::finishSetDefaultDatabase));
 
-  VERIFY(connect(server_.get(), &core::IServer::enteredMode, this, &BaseShellWidget::enterMode));
-  VERIFY(connect(server_.get(), &core::IServer::leavedMode, this, &BaseShellWidget::leaveMode));
+  VERIFY(connect(server_.get(), &core::IServer::ModeEntered, this, &BaseShellWidget::enterMode));
+  VERIFY(connect(server_.get(), &core::IServer::ModeLeaved, this, &BaseShellWidget::leaveMode));
 
-  VERIFY(connect(server_.get(), &core::IServer::startedLoadDiscoveryInfo, this,
+  VERIFY(connect(server_.get(), &core::IServer::LoadDiscoveryInfoStarted, this,
                  &BaseShellWidget::startLoadDiscoveryInfo));
-  VERIFY(connect(server_.get(), &core::IServer::finishedLoadDiscoveryInfo, this,
+  VERIFY(connect(server_.get(), &core::IServer::LoadDiscoveryInfoFinished, this,
                  &BaseShellWidget::finishLoadDiscoveryInfo));
 
-  VERIFY(connect(server_.get(), &core::IServer::startedExecute, this,
+  VERIFY(connect(server_.get(), &core::IServer::ExecuteStarted, this,
                  &BaseShellWidget::startExecute, Qt::DirectConnection));
-  VERIFY(connect(server_.get(), &core::IServer::finishedExecute, this,
+  VERIFY(connect(server_.get(), &core::IServer::ExecuteFinished, this,
                  &BaseShellWidget::finishExecute, Qt::DirectConnection));
 
   QVBoxLayout* mainlayout = new QVBoxLayout;
@@ -177,7 +177,7 @@ BaseShellWidget::BaseShellWidget(core::IServerSPtr server, const QString& filePa
   VERIFY(connect(advancedOptions_, &QCheckBox::stateChanged, this,
                  &BaseShellWidget::advancedOptionsChange));
 
-  input_ = makeBaseShell(server->type(), this);
+  input_ = makeBaseShell(server->Type(), this);
 
   advancedOptionsWidget_ = new QWidget;
   advancedOptionsWidget_->setVisible(false);
@@ -207,7 +207,7 @@ BaseShellWidget::BaseShellWidget(core::IServerSPtr server, const QString& filePa
   advancedOptionsWidget_->setLayout(advOptLayout);
 
   QHBoxLayout* hlayout2 = new QHBoxLayout;
-  core::connectionTypes ct = server_->type();
+  core::connectionTypes ct = server_->Type();
   serverName_ =
       new common::qt::gui::IconLabel(gui::GuiFactory::instance().icon(ct), trCalculating, iconSize);
   serverName_->setElideMode(Qt::ElideRight);
@@ -249,8 +249,8 @@ BaseShellWidget::BaseShellWidget(core::IServerSPtr server, const QString& filePa
   setLayout(mainlayout);
 
   syncConnectionActions();
-  updateServerInfo(server_->serverInfo());
-  updateDefaultDatabase(server_->currentDatabaseInfo());
+  updateServerInfo(server_->ServerInfo());
+  updateDefaultDatabase(server_->CurrentDatabaseInfo());
 }
 
 void BaseShellWidget::advancedOptionsChange(int state) {
@@ -287,7 +287,7 @@ void BaseShellWidget::execute() {
 void BaseShellWidget::executeArgs(const QString& text, int repeat, int interval, bool history) {
   core::events_info::ExecuteInfoRequest req(this, common::ConvertToString(text), repeat, interval,
                                             history);
-  server_->execute(req);
+  server_->Execute(req);
 }
 
 void BaseShellWidget::stop() {
@@ -296,12 +296,12 @@ void BaseShellWidget::stop() {
 
 void BaseShellWidget::connectToServer() {
   core::events_info::ConnectInfoRequest req(this);
-  server_->connect(req);
+  server_->Connect(req);
 }
 
 void BaseShellWidget::disconnectFromServer() {
   core::events_info::DisConnectInfoRequest req(this);
-  server_->disconnect(req);
+  server_->Disconnect(req);
 }
 
 void BaseShellWidget::loadFromFile() {

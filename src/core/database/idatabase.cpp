@@ -32,7 +32,7 @@ namespace core {
 IDatabase::IDatabase(IServerSPtr server, IDataBaseInfoSPtr info) : info_(info), server_(server) {
   CHECK(server);
   CHECK(info);
-  CHECK(server->type() == info->type());
+  CHECK(server->Type() == info->type());
 }
 
 IDatabase::~IDatabase() {}
@@ -56,13 +56,13 @@ std::string IDatabase::name() const {
 void IDatabase::loadContent(const events_info::LoadDatabaseContentRequest& req) {
   DCHECK_EQ(req.inf, info_);
 
-  server_->loadDatabaseContent(req);
+  server_->LoadDatabaseContent(req);
 }
 
 void IDatabase::setDefault(const events_info::SetDefaultDatabaseRequest& req) {
   DCHECK_EQ(req.inf, info_);
 
-  server_->setDefaultDB(req);
+  server_->SetDefaultDB(req);
 }
 
 IDataBaseInfoSPtr IDatabase::info() const {
@@ -74,13 +74,13 @@ translator_t IDatabase::Translator() const {
 }
 
 void IDatabase::execute(const events_info::ExecuteInfoRequest& req) {
-  server_->execute(req);
+  server_->Execute(req);
 }
 
 void IDatabase::removeAllKeys(const events_info::ClearDatabaseRequest& req) {
   DCHECK_EQ(req.inf, info_);
 
-  server_->clearDB(req);
+  server_->ClearDB(req);
 }
 
 }  // namespace core

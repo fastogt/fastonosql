@@ -39,7 +39,7 @@ class Server : public IServerRemote {
   virtual common::net::HostAndPort host() const;
 
  private:
-  virtual IDatabaseSPtr createDatabase(IDataBaseInfoSPtr info);
+  virtual IDatabaseSPtr CreateDatabase(IDataBaseInfoSPtr info);
 };
 
 }  // namespace ssdb

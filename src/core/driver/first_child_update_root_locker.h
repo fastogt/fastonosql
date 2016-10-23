@@ -18,7 +18,19 @@
 
 #pragma once
 
-#include "core/driver/root_locker.h"
+#include <string>  // for string
+#include <vector>  // for vector
+
+#include "core/driver/root_locker.h"  // for RootLocker
+
+#include "global/global.h"  // for FastoObjectIPtr, etc
+
+class QObject;
+namespace fastonosql {
+namespace core {
+class IDriver;
+}
+}
 
 namespace fastonosql {
 namespace core {
@@ -33,7 +45,7 @@ class FirstChildUpdateRootLocker : public RootLocker {
 
  private:
   // notification of execute events
-  virtual void addedChildren(FastoObjectIPtr child) override;
+  virtual void ChildrenAdded(FastoObjectIPtr child) override;
 
   FastoObjectIPtr findCmdChildNode(FastoObjectIPtr child) const;
   FastoObjectIPtr findWatchdCmd(FastoObjectCommand* cmd) const;

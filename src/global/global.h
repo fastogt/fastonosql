@@ -50,8 +50,8 @@ class FastoObject : public common::intrusive_ptr_base<FastoObject> {
 
   class IFastoObjectObserver {
    public:
-    virtual void addedChildren(child_t child) = 0;
-    virtual void updated(FastoObject* item, value_t val) = 0;
+    virtual void ChildrenAdded(child_t child) = 0;
+    virtual void Updated(FastoObject* item, value_t val) = 0;
   };
 
   FastoObject(FastoObject* parent,

@@ -18,9 +18,9 @@
 
 #pragma once
 
-#include <string>           // for string
+#include <string>  // for string
 
-#include <common/types.h>   // for time64_t
+#include <common/types.h>  // for time64_t
 
 #include "global/global.h"  // for FastoObjectIPtr, etc
 
@@ -41,9 +41,10 @@ class RootLocker : FastoObject::IFastoObjectObserver {
 
   FastoObjectIPtr root() const;
 
+ protected:
   // notification of execute events
-  virtual void addedChildren(FastoObjectIPtr child) override;
-  virtual void updated(FastoObject* item, FastoObject::value_t val) override;
+  virtual void ChildrenAdded(FastoObjectIPtr child) override;
+  virtual void Updated(FastoObject* item, FastoObject::value_t val) override;
 
  private:
   FastoObjectIPtr root_;

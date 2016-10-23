@@ -21,6 +21,8 @@
 #include <common/macros.h>  // for DCHECK
 #include <common/time.h>    // for current_mstime
 
+#include <QObject>
+
 #include "core/driver/idriver.h"  // for IDriver
 
 #include "core/events/events.h"  // for CommandRootCompleatedEvent, etc
@@ -54,12 +56,12 @@ FastoObjectIPtr RootLocker::root() const {
   return root_;
 }
 
-void RootLocker::addedChildren(FastoObjectIPtr child) {
-  emit parent_->addedChild(child);
+void RootLocker::ChildrenAdded(FastoObjectIPtr child) {
+  emit parent_->ChildAdded(child);
 }
 
-void RootLocker::updated(FastoObject* item, FastoObject::value_t val) {
-  emit parent_->itemUpdated(item, val);
+void RootLocker::Updated(FastoObject* item, FastoObject::value_t val) {
+  emit parent_->ItemUpdated(item, val);
 }
 
 }  // namespace core

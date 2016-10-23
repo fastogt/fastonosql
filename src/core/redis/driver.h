@@ -86,19 +86,19 @@ class Driver : public IDriverRemote {
   virtual common::Error serverInfo(IServerInfo** info);
   virtual common::Error currentDataBaseInfo(IDataBaseInfo** info);
 
-  virtual void handleLoadDatabaseInfosEvent(events::LoadDatabasesInfoRequestEvent* ev);
-  virtual void handleLoadServerPropertyEvent(events::ServerPropertyInfoRequestEvent* ev);
-  virtual void handleServerPropertyChangeEvent(events::ChangeServerPropertyInfoRequestEvent* ev);
+  virtual void HandleLoadDatabaseInfosEvent(events::LoadDatabasesInfoRequestEvent* ev);
+  virtual void HandleLoadServerPropertyEvent(events::ServerPropertyInfoRequestEvent* ev);
+  virtual void HandleServerPropertyChangeEvent(events::ChangeServerPropertyInfoRequestEvent* ev);
   virtual void handleProcessCommandLineArgs(events::ProcessConfigArgsRequestEvent* ev);
-  virtual void handleShutdownEvent(events::ShutDownRequestEvent* ev);
-  virtual void handleBackupEvent(events::BackupRequestEvent* ev);
-  virtual void handleExportEvent(events::ExportRequestEvent* ev);
-  virtual void handleChangePasswordEvent(events::ChangePasswordRequestEvent* ev);
+  virtual void HandleShutdownEvent(events::ShutDownRequestEvent* ev);
+  virtual void HandleBackupEvent(events::BackupRequestEvent* ev);
+  virtual void HandleExportEvent(events::ExportRequestEvent* ev);
+  virtual void HandleChangePasswordEvent(events::ChangePasswordRequestEvent* ev);
   virtual void handleChangeMaxConnectionEvent(events::ChangeMaxConnectionRequestEvent* ev);
 
-  virtual void handleLoadDatabaseContentEvent(events::LoadDatabaseContentRequestEvent* ev);
+  virtual void HandleLoadDatabaseContentEvent(events::LoadDatabaseContentRequestEvent* ev);
   virtual void handleClearDatabaseEvent(events::ClearDatabaseRequestEvent* ev);
-  virtual void handleSetDefaultDatabaseEvent(events::SetDefaultDatabaseRequestEvent* ev);
+  virtual void HandleSetDefaultDatabaseEvent(events::SetDefaultDatabaseRequestEvent* ev);
 
   IServerInfoSPtr makeServerInfoFromString(const std::string& val);
 

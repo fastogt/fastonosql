@@ -320,7 +320,7 @@ void ExplorerTreeView::showContextMenu(const QPoint& point) {
       menu.addAction(openConsoleAction_);
       core::IServerSPtr server = server_node->server();
       bool is_connected = server->IsConnected();
-      bool is_redis = server->type() == core::REDIS;
+      bool is_redis = server->Type() == core::REDIS;
 
       bool isClusterMember = dynamic_cast<ExplorerClusterItem*>(node->parent()) != nullptr;  // +
 
@@ -403,7 +403,7 @@ void ExplorerTreeView::showContextMenu(const QPoint& point) {
       bool is_connected = server->IsConnected();
       menu.addAction(getValueAction_);
       getValueAction_->setEnabled(is_connected);
-      bool isRedis = server->type() == core::REDIS;
+      bool isRedis = server->Type() == core::REDIS;
       if (isRedis) {
         QAction* setTTLKeyAction = new QAction(trSetTTL, this);
         setTTLKeyAction->setEnabled(is_connected);
@@ -441,10 +441,10 @@ void ExplorerTreeView::connectDisconnectToServer() {
 
   if (server->IsConnected()) {
     core::events_info::DisConnectInfoRequest req(this);
-    server->disconnect(req);
+    server->Disconnect(req);
   } else {
     core::events_info::ConnectInfoRequest req(this);
-    server->connect(req);
+    server->Connect(req);
   }
 }
 
@@ -554,7 +554,7 @@ void ExplorerTreeView::openMaxClientSetDialog() {
                                    trMaximumConnectionTemplate, 10000, 1, INT32_MAX, 100, &ok);
   if (ok) {
     core::events_info::ChangeMaxConnectionRequest req(this, maxcl);
-    server->setMaxConnection(req);
+    server->SetMaxConnection(req);
   }
 }
 
@@ -595,7 +595,7 @@ void ExplorerTreeView::clearHistory() {
   }
 
   core::events_info::ClearServerHistoryRequest req(this);
-  server->clearHistory(req);
+  server->ClearHistory(req);
 }
 
 void ExplorerTreeView::closeServerConnection() {
@@ -677,7 +677,7 @@ void ExplorerTreeView::backupServer() {
                                                   translations::trfilterForRdb);
   if (!filepath.isEmpty() && server) {
     core::events_info::BackupInfoRequest req(this, common::ConvertToString(filepath));
-    server->backupToPath(req);
+    server->BackupToPath(req);
   }
 }
 
@@ -697,7 +697,7 @@ void ExplorerTreeView::importServer() {
                                                   translations::trfilterForRdb);
   if (filepath.isEmpty() && server) {
     core::events_info::ExportInfoRequest req(this, common::ConvertToString(filepath));
-    server->exportFromPath(req);
+    server->ExportFromPath(req);
   }
 }
 
@@ -725,7 +725,7 @@ void ExplorerTreeView::shutdownServer() {
     }
 
     core::events_info::ShutDownInfoRequest req(this);
-    server->shutDown(req);
+    server->ShutDown(req);
   }
 }
 
@@ -741,7 +741,7 @@ void ExplorerTreeView::loadContentDb() {
     return;
   }
 
-  LoadContentDbDialog loadDb(trLoadContentTemplate_1S.arg(node->name()), node->server()->type(),
+  LoadContentDbDialog loadDb(trLoadContentTemplate_1S.arg(node->name()), node->server()->Type(),
                              this);
   int result = loadDb.exec();
   if (result == QDialog::Accepted) {
@@ -818,7 +818,7 @@ void ExplorerTreeView::createKey() {
   }
 
   core::IServerSPtr server = node->server();
-  DbKeyDialog loadDb(trCreateKeyForDbTemplate_1S.arg(node->name()), server->type(),
+  DbKeyDialog loadDb(trCreateKeyForDbTemplate_1S.arg(node->name()), server->Type(),
                      core::NDbKValue(), this);
   int result = loadDb.exec();
   if (result == QDialog::Accepted) {
@@ -839,7 +839,7 @@ void ExplorerTreeView::editKey() {
   }
 
   core::IServerSPtr server = node->server();
-  DbKeyDialog loadDb(trEditKey_1S.arg(node->name()), server->type(), node->dbv(), this);
+  DbKeyDialog loadDb(trEditKey_1S.arg(node->name()), server->Type(), node->dbv(), this);
   int result = loadDb.exec();
   if (result == QDialog::Accepted) {
     core::NDbKValue key = loadDb.key();
@@ -1023,7 +1023,7 @@ void ExplorerTreeView::finishLoadDatabaseContent(
   CHECK(serv);
 
   core::events_info::LoadDatabaseContentResponce::keys_container_t keys = res.keys;
-  std::string ns = serv->nsSeparator();
+  std::string ns = serv->NsSeparator();
   for (size_t i = 0; i < keys.size(); ++i) {
     core::NDbKValue key = keys[i];
     source_model_->addKey(serv, res.inf, key, ns);
@@ -1067,7 +1067,7 @@ void ExplorerTreeView::addKey(core::IDataBaseInfoSPtr db, core::NDbKValue key) {
   core::IServer* serv = qobject_cast<core::IServer*>(sender());
   CHECK(serv);
 
-  std::string ns = serv->nsSeparator();
+  std::string ns = serv->NsSeparator();
   source_model_->addKey(serv, db, key, ns);
 }
 
@@ -1117,25 +1117,25 @@ void ExplorerTreeView::syncWithServer(core::IServer* server) {
     return;
   }
 
-  VERIFY(connect(server, &core::IServer::startedLoadDatabases, this,
+  VERIFY(connect(server, &core::IServer::LoadDatabasesStarted, this,
                  &ExplorerTreeView::startLoadDatabases));
-  VERIFY(connect(server, &core::IServer::finishedLoadDatabases, this,
+  VERIFY(connect(server, &core::IServer::LoadDatabasesFinished, this,
                  &ExplorerTreeView::finishLoadDatabases));
-  VERIFY(connect(server, &core::IServer::startedSetDefaultDatabase, this,
+  VERIFY(connect(server, &core::IServer::SetDefaultDatabaseStarted, this,
                  &ExplorerTreeView::startSetDefaultDatabase));
-  VERIFY(connect(server, &core::IServer::finishedSetDefaultDatabase, this,
+  VERIFY(connect(server, &core::IServer::SetDefaultDatabaseFinished, this,
                  &ExplorerTreeView::finishSetDefaultDatabase));
-  VERIFY(connect(server, &core::IServer::startedLoadDataBaseContent, this,
+  VERIFY(connect(server, &core::IServer::LoadDataBaseContentStarted, this,
                  &ExplorerTreeView::startLoadDatabaseContent));
-  VERIFY(connect(server, &core::IServer::finishedLoadDatabaseContent, this,
+  VERIFY(connect(server, &core::IServer::LoadDatabaseContentFinished, this,
                  &ExplorerTreeView::finishLoadDatabaseContent));
-  VERIFY(connect(server, &core::IServer::startedClearDatabase, this,
+  VERIFY(connect(server, &core::IServer::ClearDatabaseStarted, this,
                  &ExplorerTreeView::startClearDatabase));
-  VERIFY(connect(server, &core::IServer::finishedClearDatabase, this,
+  VERIFY(connect(server, &core::IServer::ClearDatabaseFinished, this,
                  &ExplorerTreeView::finishClearDatabase));
-  VERIFY(connect(server, &core::IServer::startedExecute, this,
+  VERIFY(connect(server, &core::IServer::ExecuteStarted, this,
                  &ExplorerTreeView::startExecuteCommand));
-  VERIFY(connect(server, &core::IServer::finishedExecute, this,
+  VERIFY(connect(server, &core::IServer::ExecuteFinished, this,
                  &ExplorerTreeView::finishExecuteCommand));
 
   VERIFY(connect(server, &core::IServer::keyRemoved, this, &ExplorerTreeView::removeKey,
@@ -1155,21 +1155,21 @@ void ExplorerTreeView::unsyncWithServer(core::IServer* server) {
     return;
   }
 
-  VERIFY(disconnect(server, &core::IServer::startedLoadDatabases, this,
+  VERIFY(disconnect(server, &core::IServer::LoadDatabasesStarted, this,
                     &ExplorerTreeView::startLoadDatabases));
-  VERIFY(disconnect(server, &core::IServer::finishedLoadDatabases, this,
+  VERIFY(disconnect(server, &core::IServer::LoadDatabasesFinished, this,
                     &ExplorerTreeView::finishLoadDatabases));
-  VERIFY(disconnect(server, &core::IServer::startedSetDefaultDatabase, this,
+  VERIFY(disconnect(server, &core::IServer::SetDefaultDatabaseStarted, this,
                     &ExplorerTreeView::startSetDefaultDatabase));
-  VERIFY(disconnect(server, &core::IServer::finishedSetDefaultDatabase, this,
+  VERIFY(disconnect(server, &core::IServer::SetDefaultDatabaseFinished, this,
                     &ExplorerTreeView::finishSetDefaultDatabase));
-  VERIFY(disconnect(server, &core::IServer::startedLoadDataBaseContent, this,
+  VERIFY(disconnect(server, &core::IServer::LoadDataBaseContentStarted, this,
                     &ExplorerTreeView::startLoadDatabaseContent));
-  VERIFY(disconnect(server, &core::IServer::finishedLoadDatabaseContent, this,
+  VERIFY(disconnect(server, &core::IServer::LoadDatabaseContentFinished, this,
                     &ExplorerTreeView::finishLoadDatabaseContent));
-  VERIFY(disconnect(server, &core::IServer::startedExecute, this,
+  VERIFY(disconnect(server, &core::IServer::ExecuteStarted, this,
                     &ExplorerTreeView::startExecuteCommand));
-  VERIFY(disconnect(server, &core::IServer::finishedExecute, this,
+  VERIFY(disconnect(server, &core::IServer::ExecuteFinished, this,
                     &ExplorerTreeView::finishExecuteCommand));
 
   VERIFY(disconnect(server, &core::IServer::keyRemoved, this, &ExplorerTreeView::removeKey));
