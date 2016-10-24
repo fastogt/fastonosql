@@ -45,7 +45,7 @@ ConnectionDiagnosticDialog::ConnectionDiagnosticDialog(QWidget* parent,
                                                        core::IConnectionSettingsBaseSPtr connection)
     : QDialog(parent) {
   setWindowTitle(translations::trConnectionDiagnostic);
-  setWindowIcon(GuiFactory::instance().icon(connection->type()));
+  setWindowIcon(GuiFactory::instance().icon(connection->Type()));
   setWindowFlags(windowFlags() & ~Qt::WindowContextHelpButtonHint);  // Remove help
                                                                      // button (?)
 

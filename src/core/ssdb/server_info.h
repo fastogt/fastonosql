@@ -43,7 +43,7 @@ class ServerInfo : public IServerInfo {
   struct Stats : IStateField {
     Stats();
     explicit Stats(const std::string& common_text);
-    common::Value* valueByIndex(unsigned char index) const;
+    virtual common::Value* ValueByIndex(unsigned char index) const override;
 
     std::string version;
     uint32_t links;
@@ -55,9 +55,9 @@ class ServerInfo : public IServerInfo {
   ServerInfo();
   explicit ServerInfo(const Stats& common);
 
-  virtual common::Value* valueByIndexes(unsigned char property, unsigned char field) const;
-  virtual std::string toString() const;
-  virtual uint32_t version() const;
+  virtual common::Value* ValueByIndexes(unsigned char property, unsigned char field) const override;
+  virtual std::string ToString() const override;
+  virtual uint32_t Version() const override;
 };
 
 std::ostream& operator<<(std::ostream& out, const ServerInfo& value);

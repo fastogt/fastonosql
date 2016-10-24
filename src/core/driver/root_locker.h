@@ -39,7 +39,7 @@ class RootLocker : FastoObject::IFastoObjectObserver {
   RootLocker(IDriver* parent, QObject* receiver, const std::string& text, bool silence);
   virtual ~RootLocker();
 
-  FastoObjectIPtr root() const;
+  FastoObjectIPtr Root() const;
 
  protected:
   // notification of execute events

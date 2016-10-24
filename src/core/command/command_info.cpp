@@ -40,15 +40,15 @@ CommandInfo::CommandInfo(const std::string& name,
       required_arguments_count(required_arguments_count),
       optional_arguments_count(optional_arguments_count) {}
 
-uint16_t CommandInfo::maxArgumentsCount() const {
+uint16_t CommandInfo::MaxArgumentsCount() const {
   return required_arguments_count + optional_arguments_count;
 }
 
-uint8_t CommandInfo::minArgumentsCount() const {
+uint8_t CommandInfo::MinArgumentsCount() const {
   return required_arguments_count;
 }
 
-std::string convertVersionNumberToReadableString(uint32_t version) {
+std::string ConvertVersionNumberToReadableString(uint32_t version) {
   if (version != UNDEFINED_SINCE) {
     return common::ConvertVersionNumberToString(version);
   }

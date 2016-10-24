@@ -72,23 +72,23 @@ ConnectionSettingsPath::ConnectionSettingsPath(const std::string& path) : path_(
 ConnectionSettingsPath::ConnectionSettingsPath(const common::file_system::ascii_string_path& path)
     : path_(path) {}
 
-bool ConnectionSettingsPath::equals(const ConnectionSettingsPath& path) const {
+bool ConnectionSettingsPath::Equals(const ConnectionSettingsPath& path) const {
   return path_.equals(path.path_);
 }
 
-std::string ConnectionSettingsPath::name() const {
+std::string ConnectionSettingsPath::Name() const {
   return path_.fileName();
 }
 
-std::string ConnectionSettingsPath::directory() const {
+std::string ConnectionSettingsPath::Directory() const {
   return path_.directory();
 }
 
-std::string ConnectionSettingsPath::toString() const {
+std::string ConnectionSettingsPath::ToString() const {
   return common::ConvertToString(path_);
 }
 
-ConnectionSettingsPath ConnectionSettingsPath::root() {
+ConnectionSettingsPath ConnectionSettingsPath::Root() {
   static common::file_system::ascii_string_path root(
       common::file_system::get_separator_string<char>());
   return ConnectionSettingsPath(root);
@@ -100,57 +100,57 @@ IConnectionSettings::IConnectionSettings(const connection_path_t& connectionPath
 
 IConnectionSettings::~IConnectionSettings() {}
 
-void IConnectionSettings::setPath(const connection_path_t& path) {
+void IConnectionSettings::SetPath(const connection_path_t& path) {
   connection_path_ = path;
 }
 
-IConnectionSettings::connection_path_t IConnectionSettings::path() const {
+IConnectionSettings::connection_path_t IConnectionSettings::Path() const {
   return connection_path_;
 }
 
-connectionTypes IConnectionSettings::type() const {
+connectionTypes IConnectionSettings::Type() const {
   return type_;
 }
 
-bool IConnectionSettings::loggingEnabled() const {
+bool IConnectionSettings::IsLoggingEnabled() const {
   return msinterval_ != 0;
 }
 
-uint32_t IConnectionSettings::loggingMsTimeInterval() const {
+uint32_t IConnectionSettings::LoggingMsTimeInterval() const {
   return msinterval_;
 }
 
-void IConnectionSettings::setLoggingMsTimeInterval(uint32_t mstime) {
+void IConnectionSettings::SetLoggingMsTimeInterval(uint32_t mstime) {
   msinterval_ = mstime;
 }
 
-std::string IConnectionSettings::toString() const {
-  return common::MemSPrintf("%d,%s,%" PRIu32, type_, connection_path_.toString(), msinterval_);
+std::string IConnectionSettings::ToString() const {
+  return common::MemSPrintf("%d,%s,%" PRIu32, type_, connection_path_.ToString(), msinterval_);
 }
 
 IConnectionSettingsBase::IConnectionSettingsBase(const connection_path_t& connectionPath,
                                                  connectionTypes type)
     : IConnectionSettings(connectionPath, type), hash_() {
-  setConnectionPathAndUpdateHash(connectionPath);
+  SetConnectionPathAndUpdateHash(connectionPath);
 }
 
 IConnectionSettingsBase::~IConnectionSettingsBase() {}
 
-void IConnectionSettingsBase::setConnectionPathAndUpdateHash(const connection_path_t& name) {
-  setPath(name);
-  std::string path = connection_path_.toString();
+void IConnectionSettingsBase::SetConnectionPathAndUpdateHash(const connection_path_t& name) {
+  SetPath(name);
+  std::string path = connection_path_.ToString();
   common::buffer_t bcon = common::ConvertFromString<common::buffer_t>(path);
   uint64_t v = common::utils::hash::crc64(0, bcon);
   hash_ = common::ConvertToString(v);
 }
 
-std::string IConnectionSettingsBase::hash() const {
+std::string IConnectionSettingsBase::Hash() const {
   return hash_;
 }
 
-std::string IConnectionSettingsBase::loggingPath() const {
+std::string IConnectionSettingsBase::LoggingPath() const {
   std::string logDir = common::ConvertToString(SettingsManager::instance().loggingDirectory());
-  std::string prefix = logDir + hash();
+  std::string prefix = logDir + Hash();
 #ifdef BUILD_WITH_REDIS
   if (type_ == REDIS) {
     return prefix + LOGGING_REDIS_FILE_EXTENSION;
@@ -191,7 +191,7 @@ std::string IConnectionSettingsBase::loggingPath() const {
   return std::string();
 }
 
-IConnectionSettingsBase* IConnectionSettingsBase::createFromType(connectionTypes type,
+IConnectionSettingsBase* IConnectionSettingsBase::CreateFromType(connectionTypes type,
                                                                  const connection_path_t& conName) {
 #ifdef BUILD_WITH_REDIS
   if (type == REDIS) {
@@ -231,7 +231,7 @@ IConnectionSettingsBase* IConnectionSettingsBase::createFromType(connectionTypes
   return nullptr;
 }
 
-IConnectionSettingsBase* IConnectionSettingsBase::fromString(const std::string& val) {
+IConnectionSettingsBase* IConnectionSettingsBase::FromString(const std::string& val) {
   if (val.empty()) {
     return nullptr;
   }
@@ -246,26 +246,26 @@ IConnectionSettingsBase* IConnectionSettingsBase::fromString(const std::string& 
     if (ch == ',') {
       if (commaCount == 0) {
         connectionTypes crT = static_cast<connectionTypes>(elText[0] - 48);
-        result = createFromType(crT, connection_path_t());
+        result = CreateFromType(crT, connection_path_t());
         if (!result) {
           return nullptr;
         }
       } else if (commaCount == 1) {
         connection_path_t path(elText);
-        result->setConnectionPathAndUpdateHash(path);
+        result->SetConnectionPathAndUpdateHash(path);
       } else if (commaCount == 2) {
         uint32_t msTime = common::ConvertFromString<uint32_t>(elText);
-        result->setLoggingMsTimeInterval(msTime);
-        if (!IsRemoteType(result->type())) {
-          result->setCommandLine(val.substr(i + 1));
+        result->SetLoggingMsTimeInterval(msTime);
+        if (!IsRemoteType(result->Type())) {
+          result->SetCommandLine(val.substr(i + 1));
           break;
         }
       } else if (commaCount == 3) {
-        result->setCommandLine(elText);
+        result->SetCommandLine(elText);
         if (IConnectionSettingsRemoteSSH* remote =
                 dynamic_cast<IConnectionSettingsRemoteSSH*>(result)) {
           SSHInfo sinf(val.substr(i + 1));
-          remote->setSshInfo(sinf);
+          remote->SetSSHInfo(sinf);
         }
         break;
       }
@@ -278,9 +278,9 @@ IConnectionSettingsBase* IConnectionSettingsBase::fromString(const std::string& 
   return result;
 }
 
-std::string IConnectionSettingsBase::toString() const {
+std::string IConnectionSettingsBase::ToString() const {
   std::stringstream str;
-  str << IConnectionSettings::toString() << ',' << commandLine();
+  str << IConnectionSettings::ToString() << ',' << CommandLine();
   std::string res = str.str();
   return res;
 }
@@ -299,11 +299,11 @@ IConnectionSettingsRemote::IConnectionSettingsRemote(const connection_path_t& co
 
 IConnectionSettingsRemote::~IConnectionSettingsRemote() {}
 
-std::string IConnectionSettingsRemote::fullAddress() const {
-  return common::ConvertToString(host());
+std::string IConnectionSettingsRemote::FullAddress() const {
+  return common::ConvertToString(Host());
 }
 
-IConnectionSettingsRemote* IConnectionSettingsRemote::createFromType(
+IConnectionSettingsRemote* IConnectionSettingsRemote::CreateFromType(
     connectionTypes type,
     const connection_path_t& conName,
     const common::net::HostAndPort& host) {
@@ -329,7 +329,7 @@ IConnectionSettingsRemote* IConnectionSettingsRemote::createFromType(
     return nullptr;
   }
 
-  remote->setHost(host);
+  remote->SetHost(host);
   return remote;
 }
 
@@ -353,23 +353,24 @@ IConnectionSettingsRemoteSSH* IConnectionSettingsRemoteSSH::createFromType(
     return nullptr;
   }
 
-  remote->setHost(host);
+  remote->SetHost(host);
   return remote;
 }
 
-std::string IConnectionSettingsRemoteSSH::toString() const {
+std::string IConnectionSettingsRemoteSSH::ToString() const {
   std::stringstream str;
-  str << IConnectionSettingsBase::toString() << ',' << common::ConvertToString(ssh_info_);
+  str << IConnectionSettingsBase::ToString() << ',' << common::ConvertToString(ssh_info_);
   std::string res = str.str();
   return res;
 }
 
-SSHInfo IConnectionSettingsRemoteSSH::sshInfo() const {
+SSHInfo IConnectionSettingsRemoteSSH::SSHInfo() const {
   return ssh_info_;
 }
 
-void IConnectionSettingsRemoteSSH::setSshInfo(const SSHInfo& info) {
+void IConnectionSettingsRemoteSSH::SetSSHInfo(const struct SSHInfo& info) {
   ssh_info_ = info;
 }
+
 }  // namespace core
 }  // namespace fastonosql

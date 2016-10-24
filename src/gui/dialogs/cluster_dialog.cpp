@@ -80,9 +80,9 @@ ClusterDialog::ClusterDialog(QWidget* parent, core::IClusterSettingsBase* connec
   QString conName = defaultNameConnection;
 
   if (cluster_connection_) {
-    core::IConnectionSettings::connection_path_t path = cluster_connection_->path();
-    conName = common::ConvertFromString<QString>(path.name());
-    conFolder = common::ConvertFromString<QString>(path.directory());
+    core::IConnectionSettings::connection_path_t path = cluster_connection_->Path();
+    conName = common::ConvertFromString<QString>(path.Name());
+    conFolder = common::ConvertFromString<QString>(path.Directory());
   }
   connectionName_->setText(conName);
   connectionFolder_->setText(conFolder);
@@ -97,7 +97,7 @@ ClusterDialog::ClusterDialog(QWidget* parent, core::IClusterSettingsBase* connec
   }
 
   if (cluster_connection_) {
-    typeConnection_->setCurrentIndex(cluster_connection_->type());
+    typeConnection_->setCurrentIndex(cluster_connection_->Type());
   }
 
   typedef void (QComboBox::*qind)(int);
@@ -111,8 +111,8 @@ ClusterDialog::ClusterDialog(QWidget* parent, core::IClusterSettingsBase* connec
   loggingMsec_->setSingleStep(1000);
 
   if (cluster_connection_) {
-    logging_->setChecked(cluster_connection_->loggingEnabled());
-    loggingMsec_->setValue(cluster_connection_->loggingMsTimeInterval());
+    logging_->setChecked(cluster_connection_->IsLoggingEnabled());
+    loggingMsec_->setValue(cluster_connection_->LoggingMsTimeInterval());
   } else {
     logging_->setChecked(false);
   }
@@ -142,7 +142,7 @@ ClusterDialog::ClusterDialog(QWidget* parent, core::IClusterSettingsBase* connec
   VERIFY(connect(setDefault_, &QAction::triggered, this, &ClusterDialog::setStartNode));
 
   if (cluster_connection_) {
-    auto nodes = cluster_connection_->nodes();
+    auto nodes = cluster_connection_->Nodes();
     for (const auto& node : nodes) {
       addConnection(node);
     }
@@ -410,18 +410,18 @@ bool ClusterDialog::validateAndApply() {
   core::IClusterSettingsBase::connection_path_t path(
       common::file_system::stable_dir_path(conFolder) + conName);
   core::IClusterSettingsBase* newConnection =
-      core::IClusterSettingsBase::createFromType(currentType, path);
+      core::IClusterSettingsBase::CreateFromType(currentType, path);
   if (newConnection) {
     cluster_connection_.reset(newConnection);
     if (logging_->isChecked()) {
-      cluster_connection_->setLoggingMsTimeInterval(loggingMsec_->value());
+      cluster_connection_->SetLoggingMsTimeInterval(loggingMsec_->value());
     }
     for (int i = 0; i < listWidget_->topLevelItemCount(); ++i) {
       ConnectionListWidgetItem* item =
           dynamic_cast<ConnectionListWidgetItem*>(listWidget_->topLevelItem(i));  // +
       if (item) {
         core::IConnectionSettingsBaseSPtr con = item->connection();
-        cluster_connection_->addNode(con);
+        cluster_connection_->AddNode(con);
       }
     }
   }

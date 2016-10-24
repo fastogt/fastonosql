@@ -36,10 +36,10 @@ namespace gui {
 DirectoryListWidgetItem::DirectoryListWidgetItem(
     const core::IConnectionSettings::connection_path_t& path)
     : path_(path) {
-  std::string dir_name = path.name();
+  std::string dir_name = path.Name();
   setText(0, common::ConvertFromString<QString>(dir_name));
   setIcon(0, GuiFactory::instance().directoryIcon());
-  setText(1, common::ConvertFromString<QString>(path_.directory()));
+  setText(1, common::ConvertFromString<QString>(path_.Directory()));
 }
 
 core::IConnectionSettingsBase::connection_path_t DirectoryListWidgetItem::path() const {
@@ -66,13 +66,13 @@ void ConnectionListWidgetItem::setConnection(core::IConnectionSettingsBaseSPtr c
     return;
   }
 
-  core::IConnectionSettingsBase::connection_path_t path = cons->path();
-  QString conName = common::ConvertFromString<QString>(path.name());
+  core::IConnectionSettingsBase::connection_path_t path = cons->Path();
+  QString conName = common::ConvertFromString<QString>(path.Name());
 
   setText(0, conName);
-  core::connectionTypes conType = cons->type();
+  core::connectionTypes conType = cons->Type();
   setIcon(0, GuiFactory::instance().icon(conType));
-  setText(1, common::ConvertFromString<QString>(cons->fullAddress()));
+  setText(1, common::ConvertFromString<QString>(cons->FullAddress()));
   IConnectionListWidgetItem::setConnection(cons);
 }
 
@@ -111,7 +111,7 @@ SentinelConnectionListWidgetItemContainer::SentinelConnectionListWidgetItemConta
     : QTreeWidgetItem(parent), connection_() {
   setConnection(connection);
 
-  core::ISentinelSettingsBase::sentinel_connections_t sentinels = connection_->sentinels();
+  core::ISentinelSettingsBase::sentinel_connections_t sentinels = connection_->Sentinels();
   for (size_t i = 0; i < sentinels.size(); ++i) {
     core::SentinelSettings sent = sentinels[i];
     SentinelConnectionWidgetItem* item =
@@ -134,7 +134,7 @@ void SentinelConnectionListWidgetItemContainer::setConnection(
   }
 
   connection_ = cons;
-  std::string path = connection_->path().toString();
+  std::string path = connection_->Path().ToString();
   setText(0, common::ConvertFromString<QString>(path));
   setIcon(0, GuiFactory::instance().sentinelIcon());
 }
@@ -149,7 +149,7 @@ ClusterConnectionListWidgetItemContainer::ClusterConnectionListWidgetItemContain
     : QTreeWidgetItem(parent), connection_() {
   setConnection(connection);
 
-  auto nodes = connection_->nodes();
+  auto nodes = connection_->Nodes();
   for (size_t i = 0; i < nodes.size(); ++i) {
     core::IConnectionSettingsBaseSPtr con = nodes[i];
     ConnectionListWidgetItem* item = new ConnectionListWidgetItem(this);
@@ -164,7 +164,7 @@ void ClusterConnectionListWidgetItemContainer::setConnection(core::IClusterSetti
   }
 
   connection_ = cons;
-  std::string path = connection_->path().toString();
+  std::string path = connection_->Path().ToString();
   setText(0, common::ConvertFromString<QString>(path));
   setIcon(0, GuiFactory::instance().clusterIcon());
 }

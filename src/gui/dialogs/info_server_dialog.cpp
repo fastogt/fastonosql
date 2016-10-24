@@ -300,7 +300,7 @@ void InfoServerDialog::finishServerInfo(const core::events_info::ServerInfoRespo
   }
 
   core::connectionTypes type = server_->Type();
-  CHECK(type == inf->type());
+  CHECK(type == inf->Type());
 #ifdef BUILD_WITH_REDIS
   if (type == core::REDIS) {
     core::redis::ServerInfo* infr = static_cast<core::redis::ServerInfo*>(inf.get());

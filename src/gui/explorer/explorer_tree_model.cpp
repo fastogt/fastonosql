@@ -92,16 +92,16 @@ QVariant ExplorerTreeModel::data(const QModelIndex& index, int role) const {
         core::IServerRemote* rserver = dynamic_cast<core::IServerRemote*>(server.get());  // +
         CHECK(rserver);
         QString stype =
-            common::ConvertFromString<QString>(common::ConvertToString(rserver->role()));
+            common::ConvertFromString<QString>(common::ConvertToString(rserver->Role()));
         QString mtype =
-            common::ConvertFromString<QString>(common::ConvertToString(rserver->mode()));
+            common::ConvertFromString<QString>(common::ConvertToString(rserver->Mode()));
         QString shost =
-            common::ConvertFromString<QString>(common::ConvertToString(rserver->host()));
+            common::ConvertFromString<QString>(common::ConvertToString(rserver->Host()));
         return trRemoteServerToolTipTemplate_4S.arg(sname, stype, mtype, shost);
       } else {
         core::IServerLocal* lserver = dynamic_cast<core::IServerLocal*>(server.get());  // +
         CHECK(lserver);
-        QString spath = common::ConvertFromString<QString>(lserver->path());
+        QString spath = common::ConvertFromString<QString>(lserver->Path());
         return trLocalServerToolTipTemplate_2S.arg(sname, spath);
       }
     } else if (type == IExplorerTreeItem::eDatabase) {

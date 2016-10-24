@@ -87,7 +87,7 @@ ServerInfo::Stats::Stats(const std::string& common_text) {
   }
 }
 
-common::Value* ServerInfo::Stats::valueByIndex(unsigned char index) const {
+common::Value* ServerInfo::Stats::ValueByIndex(unsigned char index) const {
   switch (index) {
     case 0:
       return new common::StringValue(version);
@@ -111,10 +111,10 @@ ServerInfo::ServerInfo() : IServerInfo(SSDB) {}
 
 ServerInfo::ServerInfo(const Stats& common) : IServerInfo(SSDB), stats_(common) {}
 
-common::Value* ServerInfo::valueByIndexes(unsigned char property, unsigned char field) const {
+common::Value* ServerInfo::ValueByIndexes(unsigned char property, unsigned char field) const {
   switch (property) {
     case 0:
-      return stats_.valueByIndex(field);
+      return stats_.ValueByIndex(field);
     default:
       break;
   }
@@ -131,7 +131,7 @@ std::ostream& operator<<(std::ostream& out, const ServerInfo::Stats& value) {
 }
 
 std::ostream& operator<<(std::ostream& out, const ServerInfo& value) {
-  return out << value.toString();
+  return out << value.ToString();
 }
 
 ServerInfo* makeSsdbServerInfo(const std::string& content) {
@@ -156,13 +156,13 @@ ServerInfo* makeSsdbServerInfo(const std::string& content) {
   return result;
 }
 
-std::string ServerInfo::toString() const {
+std::string ServerInfo::ToString() const {
   std::stringstream str;
   str << SSDB_COMMON_LABEL MARKER << stats_;
   return str.str();
 }
 
-uint32_t ServerInfo::version() const {
+uint32_t ServerInfo::Version() const {
   return common::ConvertVersionNumberFromString(stats_.version);
 }
 

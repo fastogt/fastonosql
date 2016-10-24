@@ -82,7 +82,7 @@ Config::Config()
 namespace common {
 
 std::string ConvertToString(const fastonosql::core::unqlite::Config& conf) {
-  std::vector<std::string> argv = conf.args();
+  std::vector<std::string> argv = conf.Args();
 
   if (conf.create_if_missing) {
     argv.push_back("-c");

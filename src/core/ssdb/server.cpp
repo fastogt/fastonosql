@@ -27,21 +27,21 @@ namespace ssdb {
 
 Server::Server(IConnectionSettingsBaseSPtr settings) : IServerRemote(new Driver(settings)) {}
 
-serverMode Server::mode() const {
+serverMode Server::Mode() const {
   return STANDALONE;
 }
 
-serverTypes Server::role() const {
+serverTypes Server::Role() const {
   return MASTER;
 }
 
-serverState Server::state() const {
+serverState Server::State() const {
   return SUP;
 }
 
-common::net::HostAndPort Server::host() const {
+common::net::HostAndPort Server::Host() const {
   Driver* const rdrv = static_cast<Driver* const>(drv_);
-  return rdrv->host();
+  return rdrv->Host();
 }
 
 IDatabaseSPtr Server::CreateDatabase(IDataBaseInfoSPtr info) {

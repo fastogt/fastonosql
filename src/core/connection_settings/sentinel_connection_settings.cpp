@@ -38,7 +38,7 @@ SentinelSettings::SentinelSettings() : sentinel(), sentinel_nodes() {}
 
 std::string sentinelSettingsToString(const SentinelSettings& sent) {
   std::stringstream str;
-  std::string sent_raw = sent.sentinel->toString();
+  std::string sent_raw = sent.sentinel->ToString();
   str << common::utils::base64::encode64(sent_raw) << ',';
 
   std::string sents_raw;
@@ -46,7 +46,7 @@ std::string sentinelSettingsToString(const SentinelSettings& sent) {
     IConnectionSettingsBaseSPtr serv = sent.sentinel_nodes[i];
     if (serv) {
       sents_raw += magicNumber;
-      sents_raw += serv->toString();
+      sents_raw += serv->ToString();
     }
   }
 
@@ -70,7 +70,7 @@ bool sentinelSettingsfromString(const std::string& text, SentinelSettings* sent)
     if (ch == ',' || i == len - 1) {
       if (commaCount == 0) {
         std::string sent_raw = common::utils::base64::decode64(elText);
-        IConnectionSettingsBaseSPtr sent(IConnectionSettingsBase::fromString(sent_raw));
+        IConnectionSettingsBaseSPtr sent(IConnectionSettingsBase::FromString(sent_raw));
         if (!sent) {
           return false;
         }
@@ -83,7 +83,7 @@ bool sentinelSettingsfromString(const std::string& text, SentinelSettings* sent)
         for (size_t j = 0; j < len; ++j) {
           ch = raw_sent[j];
           if (ch == magicNumber || j == len - 1) {
-            IConnectionSettingsBaseSPtr ser(IConnectionSettingsBase::fromString(serText));
+            IConnectionSettingsBaseSPtr ser(IConnectionSettingsBase::FromString(serText));
             if (ser) {
               result.sentinel_nodes.push_back(ser);
             }
@@ -111,15 +111,15 @@ ISentinelSettingsBase::ISentinelSettingsBase(const connection_path_t& connection
                                              connectionTypes type)
     : IConnectionSettings(connectionName, type), sentinel_nodes_() {}
 
-ISentinelSettingsBase::sentinel_connections_t ISentinelSettingsBase::sentinels() const {
+ISentinelSettingsBase::sentinel_connections_t ISentinelSettingsBase::Sentinels() const {
   return sentinel_nodes_;
 }
 
-void ISentinelSettingsBase::addSentinel(sentinel_connection_t sent) {
+void ISentinelSettingsBase::AddSentinel(sentinel_connection_t sent) {
   sentinel_nodes_.push_back(sent);
 }
 
-ISentinelSettingsBase* ISentinelSettingsBase::createFromType(connectionTypes type,
+ISentinelSettingsBase* ISentinelSettingsBase::CreateFromType(connectionTypes type,
                                                              const connection_path_t& conName) {
 #ifdef BUILD_WITH_REDIS
   if (type == REDIS) {
@@ -129,7 +129,7 @@ ISentinelSettingsBase* ISentinelSettingsBase::createFromType(connectionTypes typ
   return nullptr;
 }
 
-ISentinelSettingsBase* ISentinelSettingsBase::fromString(const std::string& val) {
+ISentinelSettingsBase* ISentinelSettingsBase::FromString(const std::string& val) {
   if (val.empty()) {
     return nullptr;
   }
@@ -145,16 +145,16 @@ ISentinelSettingsBase* ISentinelSettingsBase::fromString(const std::string& val)
     if (ch == ',') {
       if (commaCount == 0) {
         int crT = elText[0] - 48;
-        result = createFromType(static_cast<connectionTypes>(crT), connection_path_t());
+        result = CreateFromType(static_cast<connectionTypes>(crT), connection_path_t());
         if (!result) {
           return nullptr;
         }
       } else if (commaCount == 1) {
         connection_path_t path(elText);
-        result->setPath(path);
+        result->SetPath(path);
       } else if (commaCount == 2) {
         uint32_t msTime = common::ConvertFromString<uint32_t>(elText);
-        result->setLoggingMsTimeInterval(msTime);
+        result->SetLoggingMsTimeInterval(msTime);
 
         std::string serText;
         for (size_t j = i + 2; j < len; ++j) {
@@ -163,7 +163,7 @@ ISentinelSettingsBase* ISentinelSettingsBase::fromString(const std::string& val)
             SentinelSettings sent;
             bool res = sentinelSettingsfromString(serText, &sent);
             if (res) {
-              result->addSentinel(sent);
+              result->AddSentinel(sent);
             }
             serText.clear();
           } else {
@@ -182,9 +182,9 @@ ISentinelSettingsBase* ISentinelSettingsBase::fromString(const std::string& val)
   return result;
 }
 
-std::string ISentinelSettingsBase::toString() const {
+std::string ISentinelSettingsBase::ToString() const {
   std::stringstream str;
-  str << IConnectionSettings::toString() << ',';
+  str << IConnectionSettings::ToString() << ',';
   for (size_t i = 0; i < sentinel_nodes_.size(); ++i) {
     sentinel_connection_t sent = sentinel_nodes_[i];
     str << magicNumber << sentinelSettingsToString(sent);

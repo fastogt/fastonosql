@@ -147,11 +147,11 @@ void DiscoveryClusterDiagnosticDialog::connectionResult(
       core::IConnectionSettingsBase::connection_path_t path(
           common::file_system::get_separator_string<char>() + inf->name());
       core::IConnectionSettingsBaseSPtr con(
-          core::IConnectionSettingsRemote::createFromType(inf->connectionType(), path, host));
+          core::IConnectionSettingsRemote::CreateFromType(inf->connectionType(), path, host));
       ConnectionListWidgetItemDiscovered* item =
           new ConnectionListWidgetItemDiscovered(inf->info(), nullptr);
       item->setConnection(con);
-      item->setDisabled(inf->self() || cluster_->findSettingsByHost(host));
+      item->setDisabled(inf->self() || cluster_->FindSettingsByHost(host));
       listWidget_->addTopLevelItem(item);
     }
   }

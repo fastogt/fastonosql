@@ -27,8 +27,8 @@ CommandLogger::CommandLogger() {
   qRegisterMetaType<fastonosql::FastoObjectCommandIPtr>("FastoObjectCommandIPtr");
 }
 
-void CommandLogger::print(FastoObjectCommandIPtr command) {
-  emit printed(command);
+void CommandLogger::Print(FastoObjectCommandIPtr command) {
+  emit Printed(command);
 }
 
 }  // namespace core

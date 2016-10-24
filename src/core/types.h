@@ -26,7 +26,7 @@ namespace fastonosql {
 namespace core {
 
 struct IStateField {
-  virtual common::Value* valueByIndex(unsigned char index) const = 0;
+  virtual common::Value* ValueByIndex(unsigned char index) const = 0;
 };
 
 }  // namespace core

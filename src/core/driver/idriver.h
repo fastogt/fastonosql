@@ -125,11 +125,11 @@ class IDriver : public QObject, public CDBConnectionClient {
   const IConnectionSettingsBaseSPtr settings_;
 
   common::Error Execute(FastoObjectCommandIPtr cmd) WARN_UNUSED_RESULT;
-  virtual FastoObjectCommandIPtr createCommand(FastoObject* parent,
+  virtual FastoObjectCommandIPtr CreateCommand(FastoObject* parent,
                                                const std::string& input,
                                                common::Value::CommandLoggingType ct) = 0;
 
-  virtual FastoObjectCommandIPtr createCommandFast(const std::string& input,
+  virtual FastoObjectCommandIPtr CreateCommandFast(const std::string& input,
                                                    common::Value::CommandLoggingType ct) = 0;
 
  private:

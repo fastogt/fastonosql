@@ -310,7 +310,7 @@ void SettingsManager::reloadFromPath(const std::string& path, bool merge) {
     std::string encoded = common::ConvertToString(string);
     std::string raw = common::utils::base64::decode64(encoded);
 
-    IClusterSettingsBaseSPtr sett(IClusterSettingsBase::fromString(raw));
+    IClusterSettingsBaseSPtr sett(IClusterSettingsBase::FromString(raw));
     if (sett) {
       clusters_.push_back(sett);
     }
@@ -322,7 +322,7 @@ void SettingsManager::reloadFromPath(const std::string& path, bool merge) {
     std::string encoded = common::ConvertToString(string);
     std::string raw = common::utils::base64::decode64(encoded);
 
-    ISentinelSettingsBaseSPtr sett(ISentinelSettingsBase::fromString(raw));
+    ISentinelSettingsBaseSPtr sett(ISentinelSettingsBase::FromString(raw));
     if (sett) {
       sentinels_.push_back(sett);
     }
@@ -334,7 +334,7 @@ void SettingsManager::reloadFromPath(const std::string& path, bool merge) {
     std::string encoded = common::ConvertToString(string);
     std::string raw = common::utils::base64::decode64(encoded);
 
-    IConnectionSettingsBaseSPtr sett(IConnectionSettingsBase::fromString(raw));
+    IConnectionSettingsBaseSPtr sett(IConnectionSettingsBase::FromString(raw));
     if (sett) {
       connections_.push_back(sett);
     }
@@ -378,7 +378,7 @@ void SettingsManager::save() {
   QList<QVariant> clusters;
   for (const auto& cluster : clusters_) {
     if (cluster) {
-      std::string raw = cluster->toString();
+      std::string raw = cluster->ToString();
       std::string enc = common::utils::base64::encode64(raw);
       QString qdata = common::ConvertFromString<QString>(enc);
       clusters.push_back(qdata);
@@ -389,7 +389,7 @@ void SettingsManager::save() {
   QList<QVariant> sentinels;
   for (const auto& sentinel : sentinels_) {
     if (sentinel) {
-      std::string raw = sentinel->toString();
+      std::string raw = sentinel->ToString();
       std::string enc = common::utils::base64::encode64(raw);
       QString qdata = common::ConvertFromString<QString>(enc);
       sentinels.push_back(qdata);
@@ -400,7 +400,7 @@ void SettingsManager::save() {
   QList<QVariant> connections;
   for (const auto& connection : connections_) {
     if (connection) {
-      std::string raw = connection->toString();
+      std::string raw = connection->ToString();
       std::string enc = common::utils::base64::encode64(raw);
       QString qdata = common::ConvertFromString<QString>(enc);
       connections.push_back(qdata);

@@ -28,7 +28,7 @@ namespace core {
 
 LocalConfig::LocalConfig(const std::string& dbname) : BaseConfig<LOCAL>(), dbname(dbname) {}
 
-std::vector<std::string> LocalConfig::args() const {
+std::vector<std::string> LocalConfig::Args() const {
   std::vector<std::string> argv;
 
   if (!dbname.empty()) {
@@ -52,7 +52,7 @@ std::vector<std::string> LocalConfig::args() const {
 RemoteConfig::RemoteConfig(const common::net::HostAndPort& host)
     : BaseConfig<REMOTE>(), host(host) {}
 
-std::vector<std::string> RemoteConfig::args() const {
+std::vector<std::string> RemoteConfig::Args() const {
   std::vector<std::string> argv;
 
   if (host.isValid()) {

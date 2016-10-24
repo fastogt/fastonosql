@@ -347,7 +347,7 @@ void ExplorerTreeView::showContextMenu(const QPoint& point) {
       if (is_can_remote) {
         core::IServerRemote* rserver = dynamic_cast<core::IServerRemote*>(server.get());  // +
         CHECK(rserver);
-        common::net::HostAndPort host = rserver->host();
+        common::net::HostAndPort host = rserver->Host();
         is_local = host.isLocalHost();
       }
 

@@ -26,10 +26,10 @@ namespace core {
 class IServerRemote : public IServer {
   Q_OBJECT
  public:
-  virtual common::net::HostAndPort host() const = 0;
-  virtual serverMode mode() const = 0;
-  virtual serverTypes role() const = 0;
-  virtual serverState state() const = 0;
+  virtual common::net::HostAndPort Host() const = 0;
+  virtual serverMode Mode() const = 0;
+  virtual serverTypes Role() const = 0;
+  virtual serverState State() const = 0;
 
  protected:
   explicit IServerRemote(IDriver* drv);

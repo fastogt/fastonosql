@@ -31,35 +31,33 @@ namespace core {
 CommandHandler::CommandHandler(const commands_t& commands) : commands_(commands) {}
 
 common::Error CommandHandler::Execute(int argc, const char** argv, FastoObject* out) {
-  for (auto cmd: commands_) {
+  for (auto cmd : commands_) {
     size_t off = 0;
-    if (cmd.isCommand(argc, argv, &off)) {
+    if (cmd.IsCommand(argc, argv, &off)) {
       int argc_to_call = argc - off;
       const char** argv_to_call = argv + off;
-      uint16_t max = cmd.maxArgumentsCount();
-      uint16_t min = cmd.minArgumentsCount();
+      uint16_t max = cmd.MaxArgumentsCount();
+      uint16_t min = cmd.MinArgumentsCount();
       if (argc_to_call > max || argc_to_call < min) {
         std::string buff = common::MemSPrintf(
-            "Invalid input argument for command: '%s', "
-            "passed %d, must be in "
-            "range %d - %d.",
+            "Invalid input argument for command: '%s', passed %d, must be in range %d - %d.",
             cmd.name, argc_to_call, max, min);
         return common::make_error_value(buff, common::ErrorValue::E_ERROR);
       }
 
-      return cmd.execute(this, argc_to_call, argv_to_call, out);
+      return cmd.Execute(this, argc_to_call, argv_to_call, out);
     }
   }
 
-  return unknownSequence(argc, argv);
+  return UnknownSequence(argc, argv);
 }
 
-common::Error CommandHandler::notSupported(const std::string& cmd) {
+common::Error CommandHandler::NotSupported(const std::string& cmd) {
   std::string buff = common::MemSPrintf("Not supported command: %s.", cmd);
   return common::make_error_value(buff, common::ErrorValue::E_ERROR);
 }
 
-common::Error CommandHandler::unknownSequence(int argc, const char** argv) {
+common::Error CommandHandler::UnknownSequence(int argc, const char** argv) {
   std::string result;
   for (int i = 0; i < argc; ++i) {
     result += argv[i];

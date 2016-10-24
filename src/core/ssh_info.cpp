@@ -138,11 +138,11 @@ SSHInfo::SSHInfo(const std::string& text)
   }
 }
 
-bool SSHInfo::isValid() const {
+bool SSHInfo::IsValid() const {
   return current_method != UNKNOWN;
 }
 
-SSHInfo::SupportedAuthenticationMetods SSHInfo::authMethod() const {
+SSHInfo::SupportedAuthenticationMetods SSHInfo::AuthMethod() const {
   return current_method;
 }
 

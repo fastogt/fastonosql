@@ -29,7 +29,7 @@ namespace core {
 class IDriverLocal : public IDriver {
   Q_OBJECT
  public:
-  virtual std::string path() const = 0;
+  virtual std::string Path() const = 0;
 
  protected:
   explicit IDriverLocal(IConnectionSettingsBaseSPtr settings);

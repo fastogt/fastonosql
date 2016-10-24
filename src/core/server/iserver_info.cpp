@@ -75,7 +75,7 @@ bool ServerDiscoveryClusterInfo::self() const {
 
 IServerInfo::~IServerInfo() {}
 
-connectionTypes IServerInfo::type() const {
+connectionTypes IServerInfo::Type() const {
   return type_;
 }
 

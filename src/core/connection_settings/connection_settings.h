@@ -40,11 +40,11 @@ class ConnectionSettingsPath {
   ConnectionSettingsPath();
   explicit ConnectionSettingsPath(const std::string& path);
 
-  std::string name() const;
-  std::string directory() const;
-  bool equals(const ConnectionSettingsPath& path) const;
-  std::string toString() const;
-  static ConnectionSettingsPath root();
+  std::string Name() const;
+  std::string Directory() const;
+  bool Equals(const ConnectionSettingsPath& path) const;
+  std::string ToString() const;
+  static ConnectionSettingsPath Root();
 
  private:
   explicit ConnectionSettingsPath(const common::file_system::ascii_string_path& path);
@@ -52,7 +52,7 @@ class ConnectionSettingsPath {
 };
 
 inline bool operator==(const ConnectionSettingsPath& r, const ConnectionSettingsPath& l) {
-  return r.equals(l);
+  return r.Equals(l);
 }
 
 class IConnectionSettings : public common::ClonableBase<IConnectionSettings> {
@@ -60,17 +60,17 @@ class IConnectionSettings : public common::ClonableBase<IConnectionSettings> {
   typedef ConnectionSettingsPath connection_path_t;
   virtual ~IConnectionSettings();
 
-  connection_path_t path() const;
-  void setPath(const connection_path_t& path);
+  connection_path_t Path() const;
+  void SetPath(const connection_path_t& path);
 
-  connectionTypes type() const;
+  connectionTypes Type() const;
 
-  bool loggingEnabled() const;
+  bool IsLoggingEnabled() const;
 
-  uint32_t loggingMsTimeInterval() const;
-  void setLoggingMsTimeInterval(uint32_t mstime);
+  uint32_t LoggingMsTimeInterval() const;
+  void SetLoggingMsTimeInterval(uint32_t mstime);
 
-  virtual std::string toString() const;
+  virtual std::string ToString() const;
   virtual IConnectionSettings* Clone() const = 0;
 
  protected:
@@ -85,35 +85,35 @@ class IConnectionSettings : public common::ClonableBase<IConnectionSettings> {
 class IConnectionSettingsBase : public IConnectionSettings {
  public:
   virtual ~IConnectionSettingsBase();
-  std::string hash() const;
+  std::string Hash() const;
 
-  std::string loggingPath() const;
+  std::string LoggingPath() const;
 
-  void setConnectionPathAndUpdateHash(const connection_path_t& name);
+  void SetConnectionPathAndUpdateHash(const connection_path_t& name);
 
-  virtual std::string commandLine() const = 0;
-  virtual void setCommandLine(const std::string& line) = 0;
+  virtual std::string CommandLine() const = 0;
+  virtual void SetCommandLine(const std::string& line) = 0;
 
-  virtual std::string fullAddress() const = 0;
+  virtual std::string FullAddress() const = 0;
 
-  static IConnectionSettingsBase* createFromType(connectionTypes type,
+  static IConnectionSettingsBase* CreateFromType(connectionTypes type,
                                                  const connection_path_t& conName);
-  static IConnectionSettingsBase* fromString(const std::string& val);
+  static IConnectionSettingsBase* FromString(const std::string& val);
 
-  virtual std::string toString() const;
+  virtual std::string ToString() const override;
   virtual IConnectionSettingsBase* Clone() const = 0;
 
  protected:
   IConnectionSettingsBase(const connection_path_t& connectionPath, connectionTypes type);
 
  private:
-  using IConnectionSettings::setPath;
+  using IConnectionSettings::SetPath;
   std::string hash_;
 };
 
 class IConnectionSettingsLocal : public IConnectionSettingsBase {
  public:
-  virtual std::string dbpath() const = 0;
+  virtual std::string DBpath() const = 0;
 
  protected:
   IConnectionSettingsLocal(const connection_path_t& connectionPath, connectionTypes type);
@@ -123,15 +123,15 @@ class IConnectionSettingsRemote : public IConnectionSettingsBase {
  public:
   virtual ~IConnectionSettingsRemote();
 
-  virtual void setHost(const common::net::HostAndPort& host) = 0;
-  virtual common::net::HostAndPort host() const = 0;
+  virtual void SetHost(const common::net::HostAndPort& host) = 0;
+  virtual common::net::HostAndPort Host() const = 0;
 
-  virtual std::string commandLine() const = 0;
-  virtual void setCommandLine(const std::string& line) = 0;
+  virtual std::string CommandLine() const = 0;
+  virtual void SetCommandLine(const std::string& line) = 0;
 
-  virtual std::string fullAddress() const;
+  virtual std::string FullAddress() const;
 
-  static IConnectionSettingsRemote* createFromType(connectionTypes type,
+  static IConnectionSettingsRemote* CreateFromType(connectionTypes type,
                                                    const connection_path_t& conName,
                                                    const common::net::HostAndPort& host);
 
@@ -141,10 +141,10 @@ class IConnectionSettingsRemote : public IConnectionSettingsBase {
 
 class IConnectionSettingsRemoteSSH : public IConnectionSettingsRemote {
  public:
-  SSHInfo sshInfo() const;
-  void setSshInfo(const SSHInfo& info);
+  struct SSHInfo SSHInfo() const;
+  void SetSSHInfo(const struct SSHInfo& info);
 
-  virtual std::string toString() const;
+  virtual std::string ToString() const override;
 
   static IConnectionSettingsRemoteSSH* createFromType(connectionTypes type,
                                                       const connection_path_t& conName,
@@ -154,7 +154,7 @@ class IConnectionSettingsRemoteSSH : public IConnectionSettingsRemote {
   IConnectionSettingsRemoteSSH(const connection_path_t& connectionName, connectionTypes type);
 
  private:
-  SSHInfo ssh_info_;
+  struct SSHInfo ssh_info_;
 };
 
 typedef common::shared_ptr<IConnectionSettingsBase> IConnectionSettingsBaseSPtr;

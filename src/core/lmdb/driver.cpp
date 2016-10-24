@@ -29,7 +29,7 @@
 #include <common/sprintf.h>         // for MemSPrintf
 #include <common/value.h>           // for ErrorValue, etc
 
-#include "core/command/command.h"         // for createCommand, etc
+#include "core/command/command.h"         // for CreateCommand, etc
 #include "core/command/command_logger.h"  // for LOG_COMMAND
 #include "core/connection_types.h"        // for ConvertToString, etc
 #include "core/db_key.h"                  // for NDbKValue, NValue, NKey
@@ -83,7 +83,7 @@ bool Driver::IsAuthenticated() const {
   return impl_->IsConnected();
 }
 
-std::string Driver::path() const {
+std::string Driver::Path() const {
   Config config = impl_->config();
   return config.dbname;
 }
@@ -100,21 +100,21 @@ void Driver::InitImpl() {}
 
 void Driver::ClearImpl() {}
 
-FastoObjectCommandIPtr Driver::createCommand(FastoObject* parent,
+FastoObjectCommandIPtr Driver::CreateCommand(FastoObject* parent,
                                              const std::string& input,
                                              common::Value::CommandLoggingType ct) {
-  return CreateCommand<Command>(parent, input, ct);
+  return fastonosql::core::CreateCommand<Command>(parent, input, ct);
 }
 
-FastoObjectCommandIPtr Driver::createCommandFast(const std::string& input,
+FastoObjectCommandIPtr Driver::CreateCommandFast(const std::string& input,
                                                  common::Value::CommandLoggingType ct) {
-  return CreateCommandFast<Command>(input, ct);
+  return fastonosql::core::CreateCommandFast<Command>(input, ct);
 }
 
 common::Error Driver::SyncConnect() {
   ConnectionSettings* set = dynamic_cast<ConnectionSettings*>(settings_.get());  // +
   CHECK(set);
-  return impl_->connect(set->info());
+  return impl_->connect(set->Info());
 }
 
 common::Error Driver::SyncDisconnect() {
@@ -126,7 +126,7 @@ common::Error Driver::ExecuteImpl(int argc, const char** argv, FastoObject* out)
 }
 
 common::Error Driver::CurrentServerInfo(IServerInfo** info) {
-  FastoObjectCommandIPtr cmd = createCommandFast(LMDB_INFO_REQUEST, common::Value::C_INNER);
+  FastoObjectCommandIPtr cmd = CreateCommandFast(LMDB_INFO_REQUEST, common::Value::C_INNER);
   LOG_COMMAND(cmd);
   ServerInfo::Stats cm;
   common::Error err = impl_->info(nullptr, &cm);
@@ -152,7 +152,7 @@ void Driver::HandleLoadDatabaseContentEvent(events::LoadDatabaseContentRequestEv
   NotifyProgress(sender, 0);
   events::LoadDatabaseContentResponceEvent::value_type res(ev->value());
   std::string patternResult = common::MemSPrintf(LMDB_GET_KEYS_PATTERN_1ARGS_I, res.count_keys);
-  FastoObjectCommandIPtr cmd = createCommandFast(patternResult, common::Value::C_INNER);
+  FastoObjectCommandIPtr cmd = CreateCommandFast(patternResult, common::Value::C_INNER);
   NotifyProgress(sender, 50);
   common::Error er = Execute(cmd);
   if (er && er->isError()) {

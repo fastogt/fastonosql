@@ -26,7 +26,7 @@ namespace core {
 class IServerLocal : public IServer {
   Q_OBJECT
  public:
-  virtual std::string path() const = 0;
+  virtual std::string Path() const = 0;
 
  protected:
   explicit IServerLocal(IDriver* drv);

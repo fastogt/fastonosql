@@ -85,7 +85,7 @@ ServersManager::server_t ServersManager::createServer(IConnectionSettingsBaseSPt
     return server_t();
   }
 
-  connectionTypes conT = settings->type();
+  connectionTypes conT = settings->Type();
   server_t server;
 #ifdef BUILD_WITH_REDIS
   if (conT == REDIS) {
@@ -134,11 +134,11 @@ ServersManager::sentinel_t ServersManager::createSentinel(ISentinelSettingsBaseS
     return sentinel_t();
   }
 
-  connectionTypes conT = settings->type();
+  connectionTypes conT = settings->Type();
 #ifdef BUILD_WITH_REDIS
   if (conT == REDIS) {
-    sentinel_t sent = common::make_shared<redis::Sentinel>(settings->path().toString());
-    auto nodes = settings->sentinels();
+    sentinel_t sent = common::make_shared<redis::Sentinel>(settings->Path().ToString());
+    auto nodes = settings->Sentinels();
     for (size_t i = 0; i < nodes.size(); ++i) {
       SentinelSettings nd = nodes[i];
       Sentinel sentt;
@@ -165,11 +165,11 @@ ServersManager::cluster_t ServersManager::createCluster(IClusterSettingsBaseSPtr
     return cluster_t();
   }
 
-  connectionTypes conT = settings->type();
+  connectionTypes conT = settings->Type();
 #ifdef BUILD_WITH_REDIS
   if (conT == REDIS) {
-    cluster_t cl = common::make_shared<redis::Cluster>(settings->path().toString());
-    auto nodes = settings->nodes();
+    cluster_t cl = common::make_shared<redis::Cluster>(settings->Path().ToString());
+    auto nodes = settings->Nodes();
     for (size_t i = 0; i < nodes.size(); ++i) {
       IConnectionSettingsBaseSPtr nd = nodes[i];
       IServerSPtr serv = createServer(nd);
@@ -188,7 +188,7 @@ common::Error ServersManager::testConnection(IConnectionSettingsBaseSPtr connect
     return common::make_error_value("Invalid input argument(s)", common::ErrorValue::E_ERROR);
   }
 
-  connectionTypes type = connection->type();
+  connectionTypes type = connection->Type();
 #ifdef BUILD_WITH_REDIS
   if (type == REDIS) {
     return fastonosql::core::redis::testConnection(
@@ -243,7 +243,7 @@ common::Error ServersManager::discoveryClusterConnection(
     return common::make_error_value("Invalid input argument(s)", common::ErrorValue::E_ERROR);
   }
 
-  connectionTypes type = connection->type();
+  connectionTypes type = connection->Type();
 #ifdef BUILD_WITH_REDIS
   if (type == REDIS) {
     return redis::discoveryClusterConnection(
@@ -292,7 +292,7 @@ common::Error ServersManager::discoverySentinelConnection(
     return common::make_error_value("Invalid input argument(s)", common::ErrorValue::E_ERROR);
   }
 
-  connectionTypes type = connection->type();
+  connectionTypes type = connection->Type();
 #ifdef BUILD_WITH_REDIS
   if (type == REDIS) {
     return redis::discoverySentinelConnection(

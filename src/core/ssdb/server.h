@@ -33,13 +33,13 @@ class Server : public IServerRemote {
   Q_OBJECT
  public:
   explicit Server(IConnectionSettingsBaseSPtr settings);
-  virtual serverMode mode() const;
-  virtual serverTypes role() const;
-  virtual serverState state() const;
-  virtual common::net::HostAndPort host() const;
+  virtual serverMode Mode() const override;
+  virtual serverTypes Role() const override;
+  virtual serverState State() const override;
+  virtual common::net::HostAndPort Host() const override;
 
  private:
-  virtual IDatabaseSPtr CreateDatabase(IDataBaseInfoSPtr info);
+  virtual IDatabaseSPtr CreateDatabase(IDataBaseInfoSPtr info) override;
 };
 
 }  // namespace ssdb

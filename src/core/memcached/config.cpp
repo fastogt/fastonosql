@@ -93,7 +93,7 @@ Config::Config()
 namespace common {
 
 std::string ConvertToString(const fastonosql::core::memcached::Config& conf) {
-  std::vector<std::string> argv = conf.args();
+  std::vector<std::string> argv = conf.Args();
 
   if (!conf.user.empty()) {
     argv.push_back("-u");

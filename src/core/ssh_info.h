@@ -39,8 +39,8 @@ struct SSHInfo {
 
   explicit SSHInfo(const std::string& text);
 
-  bool isValid() const;
-  SupportedAuthenticationMetods authMethod() const;
+  bool IsValid() const;
+  SupportedAuthenticationMetods AuthMethod() const;
 
   common::net::HostAndPort host;
   std::string user_name;

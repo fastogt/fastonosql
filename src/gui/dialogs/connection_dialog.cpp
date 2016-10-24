@@ -93,9 +93,9 @@ ConnectionDialog::ConnectionDialog(QWidget* parent,
   QString conName = connectionName;
 
   if (connection_) {
-    core::IConnectionSettings::connection_path_t path = connection_->path();
-    conName = common::ConvertFromString<QString>(path.name());
-    conFolder = common::ConvertFromString<QString>(path.directory());
+    core::IConnectionSettings::connection_path_t path = connection_->Path();
+    conName = common::ConvertFromString<QString>(path.Name());
+    conFolder = common::ConvertFromString<QString>(path.Directory());
   }
   connectionName_->setText(conName);
   connectionFolder_->setText(conFolder);
@@ -119,7 +119,7 @@ ConnectionDialog::ConnectionDialog(QWidget* parent,
   }
 
   if (connection_) {
-    typeConnection_->setCurrentIndex(connection_->type());
+    typeConnection_->setCurrentIndex(connection_->Type());
   }
 
   typedef void (QComboBox::*qind)(int);
@@ -134,8 +134,8 @@ ConnectionDialog::ConnectionDialog(QWidget* parent,
   loggingMsec_->setSingleStep(1000);
 
   if (connection_) {
-    logging_->setChecked(connection_->loggingEnabled());
-    loggingMsec_->setValue(connection_->loggingMsTimeInterval());
+    logging_->setChecked(connection_->IsLoggingEnabled());
+    loggingMsec_->setValue(connection_->LoggingMsTimeInterval());
   } else {
     logging_->setChecked(false);
   }
@@ -147,7 +147,7 @@ ConnectionDialog::ConnectionDialog(QWidget* parent,
   commandLine_ = new QLineEdit;
   if (connection_) {
     commandLine_->setText(
-        StableCommandLine(common::ConvertFromString<QString>(connection_->commandLine())));
+        StableCommandLine(common::ConvertFromString<QString>(connection_->CommandLine())));
   }
 
   QVBoxLayout* inputLayout = new QVBoxLayout;
@@ -161,9 +161,9 @@ ConnectionDialog::ConnectionDialog(QWidget* parent,
 
   core::IConnectionSettingsRemoteSSH* remoteSettings =
       dynamic_cast<core::IConnectionSettingsRemoteSSH*>(connection_.get());  // +
-  core::SSHInfo info = remoteSettings ? remoteSettings->sshInfo() : core::SSHInfo();
+  core::SSHInfo info = remoteSettings ? remoteSettings->SSHInfo() : core::SSHInfo();
   useSsh_ = new QCheckBox;
-  useSsh_->setChecked(info.isValid());
+  useSsh_->setChecked(info.IsValid());
 
   sshHostName_ = new QLineEdit;
   common::net::HostAndPort host = info.host;
@@ -189,7 +189,7 @@ ConnectionDialog::ConnectionDialog(QWidget* parent,
   security_ = new QComboBox;
   security_->addItems(QStringList() << translations::trPassword
                                     << translations::trPublicPrivateKey);
-  if (info.authMethod() == core::SSHInfo::PUBLICKEY) {
+  if (info.AuthMethod() == core::SSHInfo::PUBLICKEY) {
     security_->setCurrentText(translations::trPublicPrivateKey);
   } else {
     security_->setCurrentText(translations::trPassword);
@@ -318,8 +318,8 @@ void ConnectionDialog::typeConnectionChange(int index) {
   commandLine_->setToolTip(trHelp);
 
   std::string commandLineText;
-  if (connection_ && currentType == connection_->type()) {
-    commandLineText = connection_->commandLine();
+  if (connection_ && currentType == connection_->Type()) {
+    commandLineText = connection_->CommandLine();
   } else {
     commandLineText = defaultCommandLine(currentType);
   }
@@ -434,7 +434,7 @@ bool ConnectionDialog::validateAndApply() {
                                                            common::net::HostAndPort());
     connection_.reset(newConnection);
 
-    core::SSHInfo info = newConnection->sshInfo();
+    core::SSHInfo info = newConnection->SSHInfo();
     info.host = common::net::HostAndPort(common::ConvertToString(sshHostName_->text()),
                                          sshPort_->text().toInt());
     info.user_name = common::ConvertToString(userName_->text());
@@ -452,15 +452,15 @@ bool ConnectionDialog::validateAndApply() {
     } else {
       info.current_method = core::SSHInfo::UNKNOWN;
     }
-    newConnection->setSshInfo(info);
+    newConnection->SetSSHInfo(info);
   } else {
     core::IConnectionSettingsBase* newConnection =
-        core::IConnectionSettingsBase::createFromType(currentType, path);
+        core::IConnectionSettingsBase::CreateFromType(currentType, path);
     connection_.reset(newConnection);
   }
-  connection_->setCommandLine(common::ConvertToString(toRawCommandLine(commandLine_->text())));
+  connection_->SetCommandLine(common::ConvertToString(toRawCommandLine(commandLine_->text())));
   if (logging_->isChecked()) {
-    connection_->setLoggingMsTimeInterval(loggingMsec_->value());
+    connection_->SetLoggingMsTimeInterval(loggingMsec_->value());
   }
 
   return true;

@@ -27,18 +27,18 @@ class IClusterSettingsBase : public IConnectionSettings {
  public:
   typedef IConnectionSettingsBaseSPtr cluster_node_t;
   typedef std::vector<cluster_node_t> cluster_nodes_t;
-  cluster_nodes_t nodes() const;
+  cluster_nodes_t Nodes() const;
 
-  void addNode(IConnectionSettingsBaseSPtr node);
+  void AddNode(IConnectionSettingsBaseSPtr node);
 
-  static IClusterSettingsBase* createFromType(connectionTypes type,
+  static IClusterSettingsBase* CreateFromType(connectionTypes type,
                                               const connection_path_t& connectionPath);
-  static IClusterSettingsBase* fromString(const std::string& val);
+  static IClusterSettingsBase* FromString(const std::string& val);
 
-  virtual std::string toString() const;
+  virtual std::string ToString() const override;
   virtual IClusterSettingsBase* Clone() const = 0;
 
-  virtual IConnectionSettingsBaseSPtr findSettingsByHost(
+  virtual IConnectionSettingsBaseSPtr FindSettingsByHost(
       const common::net::HostAndPort& host) const;
 
  protected:

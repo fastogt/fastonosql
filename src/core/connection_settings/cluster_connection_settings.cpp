@@ -33,11 +33,11 @@ IClusterSettingsBase::IClusterSettingsBase(const connection_path_t& connectionPa
                                            connectionTypes type)
     : IConnectionSettings(connectionPath, type) {}
 
-IClusterSettingsBase::cluster_nodes_t IClusterSettingsBase::nodes() const {
+IClusterSettingsBase::cluster_nodes_t IClusterSettingsBase::Nodes() const {
   return clusters_nodes_;
 }
 
-void IClusterSettingsBase::addNode(IConnectionSettingsBaseSPtr node) {
+void IClusterSettingsBase::AddNode(IConnectionSettingsBaseSPtr node) {
   if (!node) {
     DNOTREACHED();
     return;
@@ -46,7 +46,7 @@ void IClusterSettingsBase::addNode(IConnectionSettingsBaseSPtr node) {
   clusters_nodes_.push_back(node);
 }
 
-IClusterSettingsBase* IClusterSettingsBase::createFromType(connectionTypes type,
+IClusterSettingsBase* IClusterSettingsBase::CreateFromType(connectionTypes type,
                                                            const connection_path_t& conName) {
 #ifdef BUILD_WITH_REDIS
   if (type == REDIS) {
@@ -56,7 +56,7 @@ IClusterSettingsBase* IClusterSettingsBase::createFromType(connectionTypes type,
   return nullptr;
 }
 
-IClusterSettingsBase* IClusterSettingsBase::fromString(const std::string& val) {
+IClusterSettingsBase* IClusterSettingsBase::FromString(const std::string& val) {
   if (val.empty()) {
     return nullptr;
   }
@@ -72,22 +72,22 @@ IClusterSettingsBase* IClusterSettingsBase::fromString(const std::string& val) {
     if (ch == ',') {
       if (commaCount == 0) {
         int crT = elText[0] - 48;
-        result = createFromType(static_cast<connectionTypes>(crT), connection_path_t());
+        result = CreateFromType(static_cast<connectionTypes>(crT), connection_path_t());
         if (!result) {
           return nullptr;
         }
       } else if (commaCount == 1) {
         connection_path_t path(elText);
-        result->setPath(path);
+        result->SetPath(path);
       } else if (commaCount == 2) {
         uint32_t msTime = common::ConvertFromString<uint32_t>(elText);
-        result->setLoggingMsTimeInterval(msTime);
+        result->SetLoggingMsTimeInterval(msTime);
         std::string serText;
         for (size_t j = i + 2; j < len; ++j) {
           ch = val[j];
           if (ch == magicNumber || j == len - 1) {
-            IConnectionSettingsBaseSPtr ser(IConnectionSettingsBase::fromString(serText));
-            result->addNode(ser);
+            IConnectionSettingsBaseSPtr ser(IConnectionSettingsBase::FromString(serText));
+            result->AddNode(ser);
             serText.clear();
           } else {
             serText += ch;
@@ -105,13 +105,13 @@ IClusterSettingsBase* IClusterSettingsBase::fromString(const std::string& val) {
   return result;
 }
 
-std::string IClusterSettingsBase::toString() const {
+std::string IClusterSettingsBase::ToString() const {
   std::stringstream str;
-  str << IConnectionSettings::toString() << ',';
+  str << IConnectionSettings::ToString() << ',';
   for (size_t i = 0; i < clusters_nodes_.size(); ++i) {
     IConnectionSettingsBaseSPtr serv = clusters_nodes_[i];
     if (serv) {
-      str << magicNumber << serv->toString();
+      str << magicNumber << serv->ToString();
     }
   }
 
@@ -119,13 +119,13 @@ std::string IClusterSettingsBase::toString() const {
   return res;
 }
 
-IConnectionSettingsBaseSPtr IClusterSettingsBase::findSettingsByHost(
+IConnectionSettingsBaseSPtr IClusterSettingsBase::FindSettingsByHost(
     const common::net::HostAndPort& host) const {
   for (size_t i = 0; i < clusters_nodes_.size(); ++i) {
     IConnectionSettingsBaseSPtr cur = clusters_nodes_[i];
     IConnectionSettingsRemote* remote = dynamic_cast<IConnectionSettingsRemote*>(cur.get());  // +
     CHECK(remote);
-    if (remote->host() == host) {
+    if (remote->Host() == host) {
       return cur;
     }
   }

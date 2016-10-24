@@ -31,27 +31,27 @@ namespace redis {
 ConnectionSettings::ConnectionSettings(const connection_path_t& connectionName)
     : IConnectionSettingsRemoteSSH(connectionName, REDIS), info_() {}
 
-void ConnectionSettings::setHost(const common::net::HostAndPort& host) {
+void ConnectionSettings::SetHost(const common::net::HostAndPort& host) {
   info_.host = host;
 }
 
-common::net::HostAndPort ConnectionSettings::host() const {
+common::net::HostAndPort ConnectionSettings::Host() const {
   return info_.host;
 }
 
-void ConnectionSettings::setCommandLine(const std::string& line) {
+void ConnectionSettings::SetCommandLine(const std::string& line) {
   info_ = common::ConvertFromString<Config>(line);
 }
 
-std::string ConnectionSettings::commandLine() const {
+std::string ConnectionSettings::CommandLine() const {
   return common::ConvertToString(info_);
 }
 
-Config ConnectionSettings::info() const {
+Config ConnectionSettings::Info() const {
   return info_;
 }
 
-void ConnectionSettings::setInfo(const Config& info) {
+void ConnectionSettings::SetInfo(const Config& info) {
   info_ = info;
 }
 

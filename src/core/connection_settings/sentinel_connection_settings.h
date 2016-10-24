@@ -44,14 +44,14 @@ class ISentinelSettingsBase : public IConnectionSettings {
   typedef SentinelSettings sentinel_connection_t;
   typedef std::vector<sentinel_connection_t> sentinel_connections_t;
 
-  sentinel_connections_t sentinels() const;
-  void addSentinel(sentinel_connection_t sent);
+  sentinel_connections_t Sentinels() const;
+  void AddSentinel(sentinel_connection_t sent);
 
-  static ISentinelSettingsBase* createFromType(connectionTypes type,
+  static ISentinelSettingsBase* CreateFromType(connectionTypes type,
                                                const connection_path_t& conName);
-  static ISentinelSettingsBase* fromString(const std::string& val);
+  static ISentinelSettingsBase* FromString(const std::string& val);
 
-  virtual std::string toString() const;
+  virtual std::string ToString() const override;
   virtual ISentinelSettingsBase* Clone() const = 0;
 
  protected:

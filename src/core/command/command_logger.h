@@ -31,17 +31,17 @@ class CommandLogger : public QObject, public common::patterns::LazySingleton<Com
   friend class common::patterns::LazySingleton<CommandLogger>;
   Q_OBJECT
  public:
-  void print(FastoObjectCommandIPtr command);
+  void Print(FastoObjectCommandIPtr command);
 
  Q_SIGNALS:
-  void printed(FastoObjectCommandIPtr mess);
+  void Printed(FastoObjectCommandIPtr mess);
 
  private:
   CommandLogger();
 };
 
 inline void LOG_COMMAND(FastoObjectCommandIPtr command) {
-  return CommandLogger::instance().print(command);
+  return CommandLogger::instance().Print(command);
 }
 
 }  // namespace core

@@ -31,27 +31,27 @@ namespace rocksdb {
 ConnectionSettings::ConnectionSettings(const connection_path_t& connectionName)
     : IConnectionSettingsLocal(connectionName, ROCKSDB), info_() {}
 
-std::string ConnectionSettings::dbpath() const {
+std::string ConnectionSettings::DBpath() const {
   return info_.dbname;
 }
 
-std::string ConnectionSettings::commandLine() const {
+std::string ConnectionSettings::CommandLine() const {
   return common::ConvertToString(info_);
 }
 
-void ConnectionSettings::setCommandLine(const std::string& line) {
+void ConnectionSettings::SetCommandLine(const std::string& line) {
   info_ = common::ConvertFromString<Config>(line);
 }
 
-Config ConnectionSettings::info() const {
+Config ConnectionSettings::Info() const {
   return info_;
 }
 
-void ConnectionSettings::setInfo(const Config& info) {
+void ConnectionSettings::SetInfo(const Config& info) {
   info_ = info;
 }
 
-std::string ConnectionSettings::fullAddress() const {
+std::string ConnectionSettings::FullAddress() const {
   return info_.dbname;
 }
 

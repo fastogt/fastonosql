@@ -62,6 +62,7 @@ const QString invalidDbType = QObject::tr("Invalid database type!");
 
 namespace fastonosql {
 namespace gui {
+
 SentinelDialog::SentinelDialog(QWidget* parent, core::ISentinelSettingsBase* connection)
     : QDialog(parent), sentinel_connection_(connection) {
   setWindowIcon(GuiFactory::instance().serverIcon());
@@ -81,9 +82,9 @@ SentinelDialog::SentinelDialog(QWidget* parent, core::ISentinelSettingsBase* con
   QString conName = defaultNameConnection;
 
   if (sentinel_connection_) {
-    core::IConnectionSettings::connection_path_t path = sentinel_connection_->path();
-    conName = common::ConvertFromString<QString>(path.name());
-    conFolder = common::ConvertFromString<QString>(path.directory());
+    core::IConnectionSettings::connection_path_t path = sentinel_connection_->Path();
+    conName = common::ConvertFromString<QString>(path.Name());
+    conFolder = common::ConvertFromString<QString>(path.Directory());
   }
   connectionName_->setText(conName);
   connectionFolder_->setText(conFolder);
@@ -98,7 +99,7 @@ SentinelDialog::SentinelDialog(QWidget* parent, core::ISentinelSettingsBase* con
   }
 
   if (sentinel_connection_) {
-    typeConnection_->setCurrentIndex(sentinel_connection_->type());
+    typeConnection_->setCurrentIndex(sentinel_connection_->Type());
   }
 
   typedef void (QComboBox::*qind)(int);
@@ -112,8 +113,8 @@ SentinelDialog::SentinelDialog(QWidget* parent, core::ISentinelSettingsBase* con
   loggingMsec_->setSingleStep(1000);
 
   if (sentinel_connection_) {
-    logging_->setChecked(sentinel_connection_->loggingEnabled());
-    loggingMsec_->setValue(sentinel_connection_->loggingMsTimeInterval());
+    logging_->setChecked(sentinel_connection_->IsLoggingEnabled());
+    loggingMsec_->setValue(sentinel_connection_->LoggingMsTimeInterval());
   } else {
     logging_->setChecked(false);
   }
@@ -136,7 +137,7 @@ SentinelDialog::SentinelDialog(QWidget* parent, core::ISentinelSettingsBase* con
   listWidget_->setSelectionBehavior(QAbstractItemView::SelectRows);
 
   if (sentinel_connection_) {
-    auto sentinels = sentinel_connection_->sentinels();
+    auto sentinels = sentinel_connection_->Sentinels();
     for (const auto& sentinel : sentinels) {
       addSentinel(sentinel);
     }
@@ -375,9 +376,9 @@ bool SentinelDialog::validateAndApply() {
   core::ISentinelSettingsBase::connection_path_t path(
       common::file_system::stable_dir_path(conFolder) + conName);
   core::ISentinelSettingsBase* newConnection =
-      core::ISentinelSettingsBase::createFromType(currentType, path);
+      core::ISentinelSettingsBase::CreateFromType(currentType, path);
   if (logging_->isChecked()) {
-    newConnection->setLoggingMsTimeInterval(loggingMsec_->value());
+    newConnection->SetLoggingMsTimeInterval(loggingMsec_->value());
   }
 
   for (int i = 0; i < listWidget_->topLevelItemCount(); ++i) {
@@ -391,7 +392,7 @@ bool SentinelDialog::validateAndApply() {
       CHECK(child);
       sent.sentinel_nodes.push_back(child->connection());
     }
-    newConnection->addSentinel(sent);
+    newConnection->AddSentinel(sent);
   }
 
   sentinel_connection_.reset(newConnection);
@@ -410,5 +411,6 @@ void SentinelDialog::addSentinel(core::SentinelSettings sent) {
   }
   listWidget_->addTopLevelItem(sent_item);
 }
+
 }  // namespace gui
 }  // namespace fastonosql

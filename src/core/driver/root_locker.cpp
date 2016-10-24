@@ -52,7 +52,7 @@ RootLocker::~RootLocker() {
   }
 }
 
-FastoObjectIPtr RootLocker::root() const {
+FastoObjectIPtr RootLocker::Root() const {
   return root_;
 }
 

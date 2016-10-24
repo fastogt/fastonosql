@@ -167,7 +167,7 @@ common::Error createConnection(ConnectionSettings* settings, NativeConnection** 
     return common::make_error_value("Invalid input argument(s)", common::ErrorValue::E_ERROR);
   }
 
-  Config config = settings->info();
+  Config config = settings->Info();
   return createConnection(config, context);
 }
 
@@ -328,7 +328,7 @@ common::Error DBConnection::help(int argc, const char** argv) {
   UNUSED(argc);
   UNUSED(argv);
 
-  return notSupported("HELP");
+  return NotSupported("HELP");
 }
 
 common::Error DBConnection::flushdb() {
@@ -570,7 +570,7 @@ common::Error info(CommandHandler* handler, int argc, const char** argv, FastoOb
   common::Error er = unq->info(argc == 1 ? argv[0] : nullptr, &statsout);
   if (!er) {
     ServerInfo uinf(statsout);
-    common::StringValue* val = common::Value::createStringValue(uinf.toString());
+    common::StringValue* val = common::Value::createStringValue(uinf.ToString());
     FastoObject* child = new FastoObject(out, val, unq->delimiter());
     out->addChildren(child);
   }

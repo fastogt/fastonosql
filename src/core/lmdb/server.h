@@ -32,10 +32,10 @@ class Server : public IServerLocal {
   Q_OBJECT
  public:
   explicit Server(IConnectionSettingsBaseSPtr settings);
-  virtual std::string path() const;
+  virtual std::string Path() const override;
 
  private:
-  virtual IDatabaseSPtr CreateDatabase(IDataBaseInfoSPtr info);
+  virtual IDatabaseSPtr CreateDatabase(IDataBaseInfoSPtr info) override;
 };
 }  // namespace lmdb
 }  // namespace core

@@ -62,7 +62,7 @@ extern "C" {
 
 #include "core/connection.h"                      // for Connection<>::config_t, etc
 #include "core/translator/icommand_translator.h"  // for translator_t, etc
-#include "core/command/command.h"                 // for createCommand
+#include "core/command/command.h"                 // for CreateCommand
 #include "core/command/command_logger.h"          // for LOG_COMMAND
 #include "core/redis/cluster_infos.h"             // for makeDiscoveryClusterInfo
 #include "core/redis/command.h"                   // for Command
@@ -883,7 +883,7 @@ common::Error createConnection(ConnectionSettings* settings, NativeConnection** 
     return common::make_error_value("Invalid input argument(s)", common::ErrorValue::E_ERROR);
   }
 
-  RConfig rconfig(settings->info(), settings->sshInfo());
+  RConfig rconfig(settings->Info(), settings->SSHInfo());
   return createConnection(rconfig, context);
 }
 
@@ -898,7 +898,7 @@ common::Error testConnection(ConnectionSettings* settings) {
     return err;
   }
 
-  Config config = settings->info();
+  Config config = settings->Info();
   const char* auth_str = common::utils::c_strornull(config.auth);
   err = authContext(auth_str, context);
   if (err && err->isError()) {
@@ -922,7 +922,7 @@ common::Error discoveryClusterConnection(ConnectionSettings* settings,
     return err;
   }
 
-  Config config = settings->info();
+  Config config = settings->Info();
   const char* auth_str = common::utils::c_strornull(config.auth);
   err = authContext(auth_str, context);
   if (err && err->isError()) {
@@ -939,7 +939,7 @@ common::Error discoveryClusterConnection(ConnectionSettings* settings,
   }
 
   if (reply->type == REDIS_REPLY_STRING) {
-    err = makeDiscoveryClusterInfo(settings->host(), std::string(reply->str, reply->len), infos);
+    err = makeDiscoveryClusterInfo(settings->Host(), std::string(reply->str, reply->len), infos);
   } else if (reply->type == REDIS_REPLY_ERROR) {
     err = common::make_error_value(std::string(reply->str, reply->len), common::Value::E_ERROR);
   } else {
@@ -963,7 +963,7 @@ common::Error discoverySentinelConnection(ConnectionSettings* settings,
     return err;
   }
 
-  Config config = settings->info();
+  Config config = settings->Info();
   const char* auth_str = common::utils::c_strornull(config.auth);
   err = authContext(auth_str, context);
   if (err && err->isError()) {
@@ -1078,7 +1078,7 @@ common::Error DBConnection::latencyMode(FastoObject* out) {
 
   FastoObjectCommandIPtr cmd = CreateCommand<Command>(out, "PING", common::Value::C_INNER);
   if (!cmd) {
-    return common::make_error_value("Invalid createCommand input argument",
+    return common::make_error_value("Invalid CreateCommand input argument",
                                     common::ErrorValue::E_ERROR);
   }
 
@@ -1223,7 +1223,7 @@ common::Error DBConnection::slaveMode(FastoObject* out) {
 
   FastoObjectCommandIPtr cmd = CreateCommand<Command>(out, SYNC_REQUEST, common::Value::C_INNER);
   if (!cmd) {
-    return common::make_error_value("Invalid createCommand input argument",
+    return common::make_error_value("Invalid CreateCommand input argument",
                                     common::ErrorValue::E_ERROR);
   }
 
@@ -1279,7 +1279,7 @@ common::Error DBConnection::getRDB(FastoObject* out) {
   common::ArrayValue* val = NULL;
   FastoObjectCommandIPtr cmd = CreateCommand<Command>(out, RDM_REQUEST, common::Value::C_INNER);
   if (!cmd) {
-    return common::make_error_value("Invalid createCommand input argument",
+    return common::make_error_value("Invalid CreateCommand input argument",
                                     common::ErrorValue::E_ERROR);
   }
 
@@ -1502,7 +1502,7 @@ common::Error DBConnection::findBigKeys(FastoObject* out) {
   FastoObjectCommandIPtr cmd =
       CreateCommand<Command>(out, FIND_BIG_KEYS_REQUEST, common::Value::C_INNER);
   if (!cmd) {
-    return common::make_error_value("Invalid createCommand input argument",
+    return common::make_error_value("Invalid CreateCommand input argument",
                                     common::ErrorValue::E_ERROR);
   }
 
@@ -1690,7 +1690,7 @@ common::Error DBConnection::statMode(FastoObject* out) {
 
   FastoObjectCommandIPtr cmd = CreateCommand<Command>(out, INFO_REQUEST, common::Value::C_INNER);
   if (!cmd) {
-    return common::make_error_value("Invalid createCommand input argument",
+    return common::make_error_value("Invalid CreateCommand input argument",
                                     common::ErrorValue::E_ERROR);
   }
 
@@ -1809,7 +1809,7 @@ common::Error DBConnection::scanMode(FastoObject* out) {
   FastoObjectCommandIPtr cmd =
       CreateCommand<Command>(out, SCAN_MODE_REQUEST, common::Value::C_INNER);
   if (!cmd) {
-    return common::make_error_value("Invalid createCommand input argument",
+    return common::make_error_value("Invalid CreateCommand input argument",
                                     common::ErrorValue::E_ERROR);
   }
 

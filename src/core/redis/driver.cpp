@@ -31,7 +31,7 @@
 #include <common/sprintf.h>         // for MemSPrintf
 #include <common/value.h>           // for Value, ErrorValue, etc
 
-#include "core/command/command.h"  // for createCommand, etc
+#include "core/command/command.h"  // for CreateCommand, etc
 #include "core/connection_types.h"
 #include "core/db_key.h"  // for NDbKValue, NValue, ttl_t, etc
 #include "core/events/events_info.h"
@@ -100,7 +100,7 @@ Driver::~Driver() {
   delete impl_;
 }
 
-common::net::HostAndPort Driver::host() const {
+common::net::HostAndPort Driver::Host() const {
   Config conf = impl_->config();
   return conf.host;
 }
@@ -137,21 +137,21 @@ void Driver::InitImpl() {}
 
 void Driver::ClearImpl() {}
 
-FastoObjectCommandIPtr Driver::createCommand(FastoObject* parent,
+FastoObjectCommandIPtr Driver::CreateCommand(FastoObject* parent,
                                              const std::string& input,
                                              common::Value::CommandLoggingType ct) {
-  return CreateCommand<Command>(parent, input, ct);
+  return fastonosql::core::CreateCommand<Command>(parent, input, ct);
 }
 
-FastoObjectCommandIPtr Driver::createCommandFast(const std::string& input,
+FastoObjectCommandIPtr Driver::CreateCommandFast(const std::string& input,
                                                  common::Value::CommandLoggingType ct) {
-  return CreateCommandFast<Command>(input, ct);
+  return fastonosql::core::CreateCommandFast<Command>(input, ct);
 }
 
 common::Error Driver::SyncConnect() {
   ConnectionSettings* set = dynamic_cast<ConnectionSettings*>(settings_.get());  // +
   CHECK(set);
-  RConfig rconf(set->info(), set->sshInfo());
+  RConfig rconf(set->Info(), set->SSHInfo());
   return impl_->connect(rconf);
 }
 
@@ -164,7 +164,7 @@ common::Error Driver::ExecuteImpl(int argc, const char** argv, FastoObject* out)
 }
 
 common::Error Driver::CurrentServerInfo(IServerInfo** info) {
-  FastoObjectCommandIPtr cmd = createCommandFast(INFO_REQUEST, common::Value::C_INNER);
+  FastoObjectCommandIPtr cmd = CreateCommandFast(INFO_REQUEST, common::Value::C_INNER);
   common::Error err = Execute(cmd.get());
   if (err && err->isError()) {
     return err;
@@ -234,7 +234,7 @@ void Driver::HandleShutdownEvent(events::ShutDownRequestEvent* ev) {
   NotifyProgress(sender, 0);
   events::ShutDownResponceEvent::value_type res(ev->value());
   NotifyProgress(sender, 25);
-  FastoObjectCommandIPtr cmd = createCommandFast(REDIS_SHUTDOWN, common::Value::C_INNER);
+  FastoObjectCommandIPtr cmd = CreateCommandFast(REDIS_SHUTDOWN, common::Value::C_INNER);
   common::Error er = Execute(cmd);
   if (er && er->isError()) {
     res.setErrorInfo(er);
@@ -249,7 +249,7 @@ void Driver::HandleBackupEvent(events::BackupRequestEvent* ev) {
   NotifyProgress(sender, 0);
   events::BackupResponceEvent::value_type res(ev->value());
   NotifyProgress(sender, 25);
-  FastoObjectCommandIPtr cmd = createCommandFast(REDIS_BACKUP, common::Value::C_INNER);
+  FastoObjectCommandIPtr cmd = CreateCommandFast(REDIS_BACKUP, common::Value::C_INNER);
   common::Error er = Execute(cmd);
   if (er && er->isError()) {
     res.setErrorInfo(er);
@@ -284,7 +284,7 @@ void Driver::HandleChangePasswordEvent(events::ChangePasswordRequestEvent* ev) {
   events::ChangePasswordResponceEvent::value_type res(ev->value());
   NotifyProgress(sender, 25);
   std::string patternResult = common::MemSPrintf(REDIS_SET_PASSWORD_1ARGS_S, res.new_password);
-  FastoObjectCommandIPtr cmd = createCommandFast(patternResult, common::Value::C_INNER);
+  FastoObjectCommandIPtr cmd = CreateCommandFast(patternResult, common::Value::C_INNER);
   common::Error er = Execute(cmd);
   if (er && er->isError()) {
     res.setErrorInfo(er);
@@ -302,7 +302,7 @@ void Driver::HandleChangeMaxConnectionEvent(events::ChangeMaxConnectionRequestEv
   NotifyProgress(sender, 25);
   std::string patternResult =
       common::MemSPrintf(REDIS_SET_MAX_CONNECTIONS_1ARGS_I, res.max_connection);
-  FastoObjectCommandIPtr cmd = createCommandFast(patternResult, common::Value::C_INNER);
+  FastoObjectCommandIPtr cmd = CreateCommandFast(patternResult, common::Value::C_INNER);
   common::Error er = Execute(cmd);
   if (er && er->isError()) {
     res.setErrorInfo(er);
@@ -334,7 +334,7 @@ common::Error Driver::latencyMode(events::ProcessConfigArgsRequestEvent* ev) {
   events::LeaveModeEvent::value_type res(this, LatencyMode);
   RootLocker lock(this, sender, LATENCY_REQUEST, false);
 
-  FastoObjectIPtr obj = lock.root();
+  FastoObjectIPtr obj = lock.Root();
   common::Error er = impl_->latencyMode(obj.get());
   if (er && er->isError()) {
     res.setErrorInfo(er);
@@ -354,7 +354,7 @@ common::Error Driver::slaveMode(events::ProcessConfigArgsRequestEvent* ev) {
   events::LeaveModeEvent::value_type res(this, SlaveMode);
   RootLocker lock(this, sender, SYNC_REQUEST, false);
 
-  FastoObjectIPtr obj = lock.root();
+  FastoObjectIPtr obj = lock.Root();
   common::Error er = impl_->slaveMode(obj.get());
   if (er && er->isError()) {
     res.setErrorInfo(er);
@@ -374,7 +374,7 @@ common::Error Driver::getRDBMode(events::ProcessConfigArgsRequestEvent* ev) {
   events::LeaveModeEvent::value_type res(this, GetRDBMode);
   RootLocker lock(this, sender, RDM_REQUEST, false);
 
-  FastoObjectIPtr obj = lock.root();
+  FastoObjectIPtr obj = lock.Root();
   common::Error er = impl_->getRDB(obj.get());
   if (er && er->isError()) {
     res.setErrorInfo(er);
@@ -394,7 +394,7 @@ common::Error Driver::findBigKeysMode(events::ProcessConfigArgsRequestEvent* ev)
   events::LeaveModeEvent::value_type res(this, FindBigKeysMode);
   RootLocker lock(this, sender, FIND_BIG_KEYS_REQUEST, false);
 
-  FastoObjectIPtr obj = lock.root();
+  FastoObjectIPtr obj = lock.Root();
   common::Error er = impl_->findBigKeys(obj.get());
   if (er && er->isError()) {
     res.setErrorInfo(er);
@@ -414,7 +414,7 @@ common::Error Driver::statMode(events::ProcessConfigArgsRequestEvent* ev) {
   events::LeaveModeEvent::value_type res(this, StatMode);
   RootLocker lock(this, sender, STAT_MODE_REQUEST, false);
 
-  FastoObjectIPtr obj = lock.root();
+  FastoObjectIPtr obj = lock.Root();
   common::Error er = impl_->statMode(obj.get());
   if (er && er->isError()) {
     res.setErrorInfo(er);
@@ -434,7 +434,7 @@ common::Error Driver::scanMode(events::ProcessConfigArgsRequestEvent* ev) {
   events::LeaveModeEvent::value_type res(this, ScanMode);
   RootLocker lock(this, sender, SCAN_MODE_REQUEST, false);
 
-  FastoObjectIPtr obj = lock.root();
+  FastoObjectIPtr obj = lock.Root();
   common::Error er = impl_->scanMode(obj.get());
   if (er && er->isError()) {
     res.setErrorInfo(er);
@@ -449,7 +449,7 @@ void Driver::HandleLoadDatabaseInfosEvent(events::LoadDatabasesInfoRequestEvent*
   QObject* sender = ev->sender();
   NotifyProgress(sender, 0);
   events::LoadDatabasesInfoResponceEvent::value_type res(ev->value());
-  FastoObjectCommandIPtr cmd = createCommandFast(REDIS_GET_DATABASES, common::Value::C_INNER);
+  FastoObjectCommandIPtr cmd = CreateCommandFast(REDIS_GET_DATABASES, common::Value::C_INNER);
   NotifyProgress(sender, 50);
 
   common::Error er = Execute(cmd.get());
@@ -503,7 +503,7 @@ void Driver::HandleLoadDatabaseContentEvent(events::LoadDatabaseContentRequestEv
   events::LoadDatabaseContentResponceEvent::value_type res(ev->value());
   std::string patternResult = common::MemSPrintf(REDIS_GET_KEYS_PATTERN_3ARGS_ISI, res.cursor_in,
                                                  res.pattern, res.count_keys);
-  FastoObjectCommandIPtr cmd = createCommandFast(patternResult, common::Value::C_INNER);
+  FastoObjectCommandIPtr cmd = CreateCommandFast(patternResult, common::Value::C_INNER);
   NotifyProgress(sender, 50);
   common::Error err = Execute(cmd);
   if (err && err->isError()) {
@@ -554,8 +554,8 @@ void Driver::HandleLoadDatabaseContentEvent(events::LoadDatabaseContentRequestEv
         if (isok) {
           NKey k(key);
           NDbKValue dbv(k, NValue());
-          cmds.push_back(createCommandFast("TYPE " + key, common::Value::C_INNER));
-          cmds.push_back(createCommandFast("TTL " + key, common::Value::C_INNER));
+          cmds.push_back(CreateCommandFast("TYPE " + key, common::Value::C_INNER));
+          cmds.push_back(CreateCommandFast("TTL " + key, common::Value::C_INNER));
           res.keys.push_back(dbv);
         }
       }
@@ -606,7 +606,7 @@ void Driver::HandleClearDatabaseEvent(events::ClearDatabaseRequestEvent* ev) {
   QObject* sender = ev->sender();
   NotifyProgress(sender, 0);
   events::ClearDatabaseResponceEvent::value_type res(ev->value());
-  FastoObjectCommandIPtr cmd = createCommandFast(REDIS_FLUSHDB, common::Value::C_INNER);
+  FastoObjectCommandIPtr cmd = CreateCommandFast(REDIS_FLUSHDB, common::Value::C_INNER);
   NotifyProgress(sender, 50);
   common::Error er = Execute(cmd);
   if (er && er->isError()) {
@@ -623,7 +623,7 @@ void Driver::HandleSetDefaultDatabaseEvent(events::SetDefaultDatabaseRequestEven
   events::SetDefaultDatabaseResponceEvent::value_type res(ev->value());
   std::string setDefCommand =
       common::MemSPrintf(REDIS_SET_DEFAULT_DATABASE_PATTERN_1ARGS_S, res.inf->name());
-  FastoObjectCommandIPtr cmd = createCommandFast(setDefCommand, common::Value::C_INNER);
+  FastoObjectCommandIPtr cmd = CreateCommandFast(setDefCommand, common::Value::C_INNER);
   NotifyProgress(sender, 50);
   common::Error er = Execute(cmd);
   if (er && er->isError()) {
@@ -638,7 +638,7 @@ void Driver::HandleLoadServerPropertyEvent(events::ServerPropertyInfoRequestEven
   QObject* sender = ev->sender();
   NotifyProgress(sender, 0);
   events::ServerPropertyInfoResponceEvent::value_type res(ev->value());
-  FastoObjectCommandIPtr cmd = createCommandFast(REDIS_GET_PROPERTY_SERVER, common::Value::C_INNER);
+  FastoObjectCommandIPtr cmd = CreateCommandFast(REDIS_GET_PROPERTY_SERVER, common::Value::C_INNER);
   NotifyProgress(sender, 50);
   common::Error er = Execute(cmd);
   if (er && er->isError()) {
@@ -665,7 +665,7 @@ void Driver::HandleServerPropertyChangeEvent(events::ChangeServerPropertyInfoReq
 
   NotifyProgress(sender, 50);
   std::string changeRequest = "CONFIG SET " + res.new_item.first + " " + res.new_item.second;
-  FastoObjectCommandIPtr cmd = createCommandFast(changeRequest, common::Value::C_INNER);
+  FastoObjectCommandIPtr cmd = CreateCommandFast(changeRequest, common::Value::C_INNER);
   common::Error er = Execute(cmd);
   if (er && er->isError()) {
     res.setErrorInfo(er);

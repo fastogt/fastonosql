@@ -71,7 +71,7 @@ ServerInfo::Stats::Stats(const std::string& common_text) {
   }
 }
 
-common::Value* ServerInfo::Stats::valueByIndex(unsigned char index) const {
+common::Value* ServerInfo::Stats::ValueByIndex(unsigned char index) const {
   switch (index) {
     case 0:
       return new common::StringValue(db_path);
@@ -87,10 +87,10 @@ ServerInfo::ServerInfo() : IServerInfo(LMDB) {}
 
 ServerInfo::ServerInfo(const Stats& stats) : IServerInfo(LMDB), stats_(stats) {}
 
-common::Value* ServerInfo::valueByIndexes(unsigned char property, unsigned char field) const {
+common::Value* ServerInfo::ValueByIndexes(unsigned char property, unsigned char field) const {
   switch (property) {
     case 0:
-      return stats_.valueByIndex(field);
+      return stats_.ValueByIndex(field);
     default:
       break;
   }
@@ -104,7 +104,7 @@ std::ostream& operator<<(std::ostream& out, const ServerInfo::Stats& value) {
 }
 
 std::ostream& operator<<(std::ostream& out, const ServerInfo& value) {
-  return out << value.toString();
+  return out << value.ToString();
 }
 
 ServerInfo* makeLmdbServerInfo(const std::string& content) {
@@ -129,13 +129,13 @@ ServerInfo* makeLmdbServerInfo(const std::string& content) {
   return result;
 }
 
-std::string ServerInfo::toString() const {
+std::string ServerInfo::ToString() const {
   std::stringstream str;
   str << LMDB_STATS_LABEL MARKER << stats_;
   return str.str();
 }
 
-uint32_t ServerInfo::version() const {
+uint32_t ServerInfo::Version() const {
   return 0;
 }
 

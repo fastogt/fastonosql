@@ -239,7 +239,7 @@ MainWindow::MainWindow() : QMainWindow(), isCheckedInSession_(false) {
   LogTabWidget* log = new LogTabWidget(this);
   VERIFY(connect(&common::qt::Logger::instance(), &common::qt::Logger::printed, log,
                  &LogTabWidget::addLogMessage));
-  VERIFY(connect(&core::CommandLogger::instance(), &core::CommandLogger::printed, log,
+  VERIFY(connect(&core::CommandLogger::instance(), &core::CommandLogger::Printed, log,
                  &LogTabWidget::addCommand));
   logDock_ = new QDockWidget(this);
   logsAction_ = logDock_->toggleViewAction();
@@ -369,7 +369,7 @@ void MainWindow::openRecentConnection() {
   auto conns = core::SettingsManager::instance().connections();
   for (auto it = conns.begin(); it != conns.end(); ++it) {
     core::IConnectionSettingsBaseSPtr con = *it;
-    if (con && con->path() == path) {
+    if (con && con->Path() == path) {
       createServer(con);
       return;
     }
@@ -724,7 +724,7 @@ void MainWindow::clearRecentConnectionsMenu() {
 void MainWindow::createServer(core::IConnectionSettingsBaseSPtr settings) {
   CHECK(settings);
 
-  std::string path = settings->path().toString();
+  std::string path = settings->Path().ToString();
   QString rcon = common::ConvertFromString<QString>(path);
   core::SettingsManager::instance().removeRConnection(rcon);
   core::IServerSPtr server = core::ServersManager::instance().createServer(settings);

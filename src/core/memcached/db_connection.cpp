@@ -175,7 +175,7 @@ common::Error createConnection(ConnectionSettings* settings, NativeConnection** 
     return common::make_error_value("Invalid input argument(s)", common::ErrorValue::E_ERROR);
   }
 
-  Config config = settings->info();
+  Config config = settings->Info();
   return createConnection(config, context);
 }
 
@@ -184,7 +184,7 @@ common::Error testConnection(ConnectionSettings* settings) {
     return common::make_error_value("Invalid input argument(s)", common::ErrorValue::E_ERROR);
   }
 
-  Config inf = settings->info();
+  Config inf = settings->Info();
   const char* user = common::utils::c_strornull(inf.user);
   const char* passwd = common::utils::c_strornull(inf.password);
   const char* host = common::utils::c_strornull(inf.host.host);
@@ -545,7 +545,7 @@ common::Error DBConnection::help(int argc, const char** argv) {
   UNUSED(argc);
   UNUSED(argv);
 
-  return notSupported("HELP");
+  return NotSupported("HELP");
 }
 
 common::Error DBConnection::selectImpl(const std::string& name, IDataBaseInfo** info) {
@@ -655,7 +655,7 @@ common::Error stats(CommandHandler* handler, int argc, const char** argv, FastoO
   common::Error er = mem->info(args, &statsout);
   if (!er) {
     ServerInfo minf(statsout);
-    common::StringValue* val = common::Value::createStringValue(minf.toString());
+    common::StringValue* val = common::Value::createStringValue(minf.ToString());
     FastoObject* child = new FastoObject(out, val, mem->delimiter());
     out->addChildren(child);
   }

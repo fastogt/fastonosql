@@ -187,7 +187,7 @@ void BaseQsciLexerCommandHolder::paintCommands(const QString& source, int start)
 }
 
 QString makeCallTip(const core::CommandInfo& info) {
-  std::string since_str = core::convertVersionNumberToReadableString(info.since);
+  std::string since_str = core::ConvertVersionNumberToReadableString(info.since);
   QString qsince_str = common::ConvertFromString<QString>(since_str);
   return QString(
              "Arguments: %1\nSummary: %2\nSince: "

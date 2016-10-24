@@ -33,7 +33,7 @@ template <ConfigType ctype>
 struct BaseConfig {
   BaseConfig() : delimiter("\n"), ns_separator(":") {}
 
-  static ConfigType type() { return ctype; }
+  static ConfigType Type() { return ctype; }
 
   std::string delimiter;
   std::string ns_separator;
@@ -43,7 +43,7 @@ struct BaseConfig {
 struct LocalConfig : public BaseConfig<LOCAL> {
   explicit LocalConfig(const std::string& dbname);
 
-  std::vector<std::string> args() const;
+  std::vector<std::string> Args() const;
 
   std::string dbname;
 };
@@ -52,7 +52,7 @@ struct LocalConfig : public BaseConfig<LOCAL> {
 struct RemoteConfig : public BaseConfig<REMOTE> {
   explicit RemoteConfig(const common::net::HostAndPort& host);
 
-  std::vector<std::string> args() const;
+  std::vector<std::string> Args() const;
 
   common::net::HostAndPort host;
 };

@@ -84,7 +84,7 @@ Config::Config() : LocalConfig(common::file_system::prepare_path("~/test.rocksdb
 namespace common {
 
 std::string ConvertToString(const fastonosql::core::rocksdb::Config& conf) {
-  std::vector<std::string> argv = conf.args();
+  std::vector<std::string> argv = conf.Args();
 
   if (conf.options.create_if_missing) {
     argv.push_back("-c");

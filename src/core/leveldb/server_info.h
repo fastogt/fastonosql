@@ -49,7 +49,7 @@ class ServerInfo : public IServerInfo {
   struct Stats : IStateField {
     Stats();
     explicit Stats(const std::string& common_text);
-    virtual common::Value* valueByIndex(unsigned char index) const override;
+    virtual common::Value* ValueByIndex(unsigned char index) const override;
 
     uint32_t compactions_level;
     uint32_t file_size_mb;
@@ -61,9 +61,9 @@ class ServerInfo : public IServerInfo {
   ServerInfo();
   explicit ServerInfo(const Stats& stats);
 
-  virtual common::Value* valueByIndexes(unsigned char property, unsigned char field) const override;
-  virtual std::string toString() const override;
-  virtual uint32_t version() const override;
+  virtual common::Value* ValueByIndexes(unsigned char property, unsigned char field) const override;
+  virtual std::string ToString() const override;
+  virtual uint32_t Version() const override;
 };
 
 std::ostream& operator<<(std::ostream& out, const ServerInfo& value);

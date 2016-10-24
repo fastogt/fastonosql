@@ -181,11 +181,11 @@ void IDriver::Reply(QObject* reciver, QEvent* ev) {
 }
 
 connectionTypes IDriver::Type() const {
-  return settings_->type();
+  return settings_->Type();
 }
 
 IConnectionSettings::connection_path_t IDriver::ConnectionPath() const {
-  return settings_->path();
+  return settings_->Path();
 }
 
 IServerInfoSPtr IDriver::CurrentServerInfo() const {
@@ -220,8 +220,8 @@ void IDriver::Interrupt() {
 }
 
 void IDriver::Init() {
-  if (settings_->loggingEnabled()) {
-    int interval = settings_->loggingMsTimeInterval();
+  if (settings_->IsLoggingEnabled()) {
+    uint32_t interval = settings_->LoggingMsTimeInterval();
     timer_info_id_ = startTimer(interval);
     DCHECK(timer_info_id_ != 0);
   }
@@ -320,9 +320,9 @@ void IDriver::customEvent(QEvent* event) {
 }
 
 void IDriver::timerEvent(QTimerEvent* event) {
-  if (timer_info_id_ == event->timerId() && settings_->loggingEnabled() && IsConnected()) {
+  if (timer_info_id_ == event->timerId() && settings_->IsLoggingEnabled() && IsConnected()) {
     if (!log_file_) {
-      std::string path = settings_->loggingPath();
+      std::string path = settings_->LoggingPath();
       std::string dir = common::file_system::get_dir_path(path);
       common::Error err = common::file_system::create_directory(dir, true);
       if (err && err->isError()) {
@@ -352,7 +352,7 @@ void IDriver::timerEvent(QTimerEvent* event) {
       emit ServerInfoSnapShoot(shot);
 
       log_file_->write(stamp);
-      log_file_->write(info->toString());
+      log_file_->write(info->ToString());
       log_file_->flush();
     }
   }
@@ -421,7 +421,7 @@ void IDriver::HandleExecuteEvent(events::ExecuteRequestEvent* ev) {
   RootLocker* lock =
       history ? new RootLocker(this, sender, inputLine, silence)
               : new FirstChildUpdateRootLocker(this, sender, inputLine, silence, commands);
-  FastoObjectIPtr obj = lock->root();
+  FastoObjectIPtr obj = lock->Root();
   const double step = 99.0 / double(commands.size() * (repeat + 1));
   double cur_progress = 0.0;
   for (size_t r = 0; r < repeat + 1; ++r) {
@@ -438,8 +438,8 @@ void IDriver::HandleExecuteEvent(events::ExecuteRequestEvent* ev) {
 
       std::string command = commands[i];
       FastoObjectCommandIPtr cmd =
-          silence ? createCommandFast(command, common::Value::C_USER)
-                  : createCommand(obj.get(), command, common::Value::C_USER);  //
+          silence ? CreateCommandFast(command, common::Value::C_USER)
+                  : CreateCommand(obj.get(), command, common::Value::C_USER);  //
       common::Error err = Execute(cmd);
       if (err && err->isError()) {
         res.setErrorInfo(err);
@@ -542,7 +542,7 @@ void IDriver::HandleLoadServerInfoHistoryEvent(events::ServerInfoHistoryRequestE
   QObject* sender = ev->sender();
   events::ServerInfoHistoryResponceEvent::value_type res(ev->value());
 
-  std::string path = settings_->loggingPath();
+  std::string path = settings_->LoggingPath();
   common::file_system::ascii_string_path p(path);
   common::file_system::File readFile(p);
   if (readFile.open("rb")) {
@@ -595,7 +595,7 @@ void IDriver::HandleClearServerHistoryEvent(events::ClearServerHistoryRequestEve
   if (log_file_ && log_file_->isOpened()) {
     ret = log_file_->truncate(0);
   } else {
-    std::string path = settings_->loggingPath();
+    std::string path = settings_->LoggingPath();
     if (common::file_system::is_file_exist(path)) {
       common::Error err = common::file_system::remove_file(path);
       if (err && err->isError()) {

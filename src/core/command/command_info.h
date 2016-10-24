@@ -39,8 +39,8 @@ struct CommandInfo {
               uint8_t required_arguments_count,
               uint8_t optional_arguments_count);
 
-  uint16_t maxArgumentsCount() const;
-  uint8_t minArgumentsCount() const;
+  uint16_t MaxArgumentsCount() const;
+  uint8_t MinArgumentsCount() const;
 
   const std::string name;
   const std::string params;
@@ -52,7 +52,7 @@ struct CommandInfo {
   const uint8_t optional_arguments_count;
 };
 
-std::string convertVersionNumberToReadableString(uint32_t version);
+std::string ConvertVersionNumberToReadableString(uint32_t version);
 
 }  // namespace core
 }  // namespace fastonosql

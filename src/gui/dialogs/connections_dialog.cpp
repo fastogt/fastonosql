@@ -447,9 +447,9 @@ void ConnectionsDialog::retranslateUi() {
 }
 
 void ConnectionsDialog::addConnection(core::IConnectionSettingsBaseSPtr con) {
-  core::IConnectionSettingsBase::connection_path_t path = con->path();
-  core::IConnectionSettingsBase::connection_path_t dir(path.directory());
-  if (dir == core::IConnectionSettingsBase::connection_path_t::root()) {
+  core::IConnectionSettingsBase::connection_path_t path = con->Path();
+  core::IConnectionSettingsBase::connection_path_t dir(path.Directory());
+  if (dir == core::IConnectionSettingsBase::connection_path_t::Root()) {
     ConnectionListWidgetItem* item = new ConnectionListWidgetItem(nullptr);
     item->setConnection(con);
     listWidget_->addTopLevelItem(item);
@@ -467,9 +467,9 @@ void ConnectionsDialog::addConnection(core::IConnectionSettingsBaseSPtr con) {
 }
 
 void ConnectionsDialog::addCluster(core::IClusterSettingsBaseSPtr con) {
-  core::IConnectionSettingsBase::connection_path_t path = con->path();
-  core::IConnectionSettingsBase::connection_path_t dir(path.directory());
-  if (dir == core::IConnectionSettingsBase::connection_path_t::root()) {
+  core::IConnectionSettingsBase::connection_path_t path = con->Path();
+  core::IConnectionSettingsBase::connection_path_t dir(path.Directory());
+  if (dir == core::IConnectionSettingsBase::connection_path_t::Root()) {
     ClusterConnectionListWidgetItemContainer* item =
         new ClusterConnectionListWidgetItemContainer(con, nullptr);
     listWidget_->addTopLevelItem(item);
@@ -487,9 +487,9 @@ void ConnectionsDialog::addCluster(core::IClusterSettingsBaseSPtr con) {
 }
 
 void ConnectionsDialog::addSentinel(core::ISentinelSettingsBaseSPtr con) {
-  core::IConnectionSettingsBase::connection_path_t path = con->path();
-  core::IConnectionSettingsBase::connection_path_t dir(path.directory());
-  if (dir == core::IConnectionSettingsBase::connection_path_t::root()) {
+  core::IConnectionSettingsBase::connection_path_t path = con->Path();
+  core::IConnectionSettingsBase::connection_path_t dir(path.Directory());
+  if (dir == core::IConnectionSettingsBase::connection_path_t::Root()) {
     SentinelConnectionListWidgetItemContainer* item =
         new SentinelConnectionListWidgetItemContainer(con, nullptr);
     listWidget_->addTopLevelItem(item);

@@ -220,7 +220,7 @@ ServerInfo::Server::Server(const std::string& server_text)
   }
 }
 
-common::Value* ServerInfo::Server::valueByIndex(unsigned char index) const {
+common::Value* ServerInfo::Server::ValueByIndex(unsigned char index) const {
   switch (index) {
     case 0:
       return new common::StringValue(redis_version_);
@@ -293,7 +293,7 @@ ServerInfo::Clients::Clients(const std::string& client_text)
   }
 }
 
-common::Value* ServerInfo::Clients::valueByIndex(unsigned char index) const {
+common::Value* ServerInfo::Clients::ValueByIndex(unsigned char index) const {
   switch (index) {
     case 0:
       return new common::FundamentalValue(connected_clients_);
@@ -358,7 +358,7 @@ ServerInfo::Memory::Memory(const std::string& memory_text)
   }
 }
 
-common::Value* ServerInfo::Memory::valueByIndex(unsigned char index) const {
+common::Value* ServerInfo::Memory::ValueByIndex(unsigned char index) const {
   switch (index) {
     case 0:
       return new common::FundamentalValue(used_memory_);
@@ -455,7 +455,7 @@ ServerInfo::Persistence::Persistence(const std::string& persistence_text)
   }
 }
 
-common::Value* ServerInfo::Persistence::valueByIndex(unsigned char index) const {
+common::Value* ServerInfo::Persistence::ValueByIndex(unsigned char index) const {
   switch (index) {
     case 0:
       return new common::FundamentalValue(loading_);
@@ -564,7 +564,7 @@ ServerInfo::Stats::Stats(const std::string& stats_text)
   }
 }
 
-common::Value* ServerInfo::Stats::valueByIndex(unsigned char index) const {
+common::Value* ServerInfo::Stats::ValueByIndex(unsigned char index) const {
   switch (index) {
     case 0:
       return new common::FundamentalValue(total_connections_received_);
@@ -646,7 +646,7 @@ ServerInfo::Replication::Replication(const std::string& replication_text)
   }
 }
 
-common::Value* ServerInfo::Replication::valueByIndex(unsigned char index) const {
+common::Value* ServerInfo::Replication::ValueByIndex(unsigned char index) const {
   switch (index) {
     case 0:
       return new common::StringValue(role_);
@@ -695,7 +695,7 @@ ServerInfo::Cpu::Cpu(const std::string& cpu_text)
   }
 }
 
-common::Value* ServerInfo::Cpu::valueByIndex(unsigned char index) const {
+common::Value* ServerInfo::Cpu::ValueByIndex(unsigned char index) const {
   switch (index) {
     case 0:
       return new common::FundamentalValue(used_cpu_sys_);
@@ -713,7 +713,7 @@ common::Value* ServerInfo::Cpu::valueByIndex(unsigned char index) const {
   return nullptr;
 }
 
-common::Value* ServerInfo::Keyspace::valueByIndex(unsigned char index) const {
+common::Value* ServerInfo::Keyspace::ValueByIndex(unsigned char index) const {
   UNUSED(index);
 
   return nullptr;
@@ -739,24 +739,24 @@ ServerInfo::ServerInfo(const Server& serv,
       cpu_(cpu),
       keySp_(key) {}
 
-common::Value* ServerInfo::valueByIndexes(unsigned char property, unsigned char field) const {
+common::Value* ServerInfo::ValueByIndexes(unsigned char property, unsigned char field) const {
   switch (property) {
     case 0:
-      return server_.valueByIndex(field);
+      return server_.ValueByIndex(field);
     case 1:
-      return clients_.valueByIndex(field);
+      return clients_.ValueByIndex(field);
     case 2:
-      return memory_.valueByIndex(field);
+      return memory_.ValueByIndex(field);
     case 3:
-      return persistence_.valueByIndex(field);
+      return persistence_.ValueByIndex(field);
     case 4:
-      return stats_.valueByIndex(field);
+      return stats_.ValueByIndex(field);
     case 5:
-      return replication_.valueByIndex(field);
+      return replication_.ValueByIndex(field);
     case 6:
-      return cpu_.valueByIndex(field);
+      return cpu_.ValueByIndex(field);
     case 7:
-      return keySp_.valueByIndex(field);
+      return keySp_.ValueByIndex(field);
     default:
       break;
   }
@@ -855,7 +855,7 @@ std::ostream& operator<<(std::ostream& out, const ServerInfo::Cpu& value) {
              << REDIS_USED_CPU_USER_CHILDREN_LABEL ":" << value.used_cpu_user_children_ << ("\r\n");
 }
 
-std::string ServerInfo::toString() const {
+std::string ServerInfo::ToString() const {
   std::stringstream str;
   str << REDIS_SERVER_LABEL "\r\n"
       << server_ << REDIS_CLIENTS_LABEL "\r\n"
@@ -868,7 +868,7 @@ std::string ServerInfo::toString() const {
   return str.str();
 }
 
-uint32_t ServerInfo::version() const {
+uint32_t ServerInfo::Version() const {
   return common::ConvertVersionNumberFromString(server_.redis_version_);
 }
 
@@ -877,7 +877,7 @@ std::ostream& operator<<(std::ostream& out, const ServerInfo& value) {
   // "# Stats", "#
   // Replication", "# CPU", "#
   // Keyspace"
-  return out << value.toString();
+  return out << value.ToString();
 }
 
 ServerInfo* makeRedisServerInfo(const std::string& content) {

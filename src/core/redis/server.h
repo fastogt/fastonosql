@@ -34,16 +34,16 @@ class Server : public IServerRemote {
   Q_OBJECT
  public:
   explicit Server(IConnectionSettingsBaseSPtr settings);
-  virtual serverTypes role() const;
-  virtual serverMode mode() const;
-  virtual serverState state() const;
-  virtual common::net::HostAndPort host() const;
+  virtual serverTypes Role() const override;
+  virtual serverMode Mode() const override;
+  virtual serverState State() const override;
+  virtual common::net::HostAndPort Host() const override;
 
  protected:
-  virtual void HandleDiscoveryInfoResponceEvent(events::DiscoveryInfoResponceEvent* ev);
+  virtual void HandleDiscoveryInfoResponceEvent(events::DiscoveryInfoResponceEvent* ev) override;
 
  private:
-  virtual IDatabaseSPtr CreateDatabase(IDataBaseInfoSPtr info);
+  virtual IDatabaseSPtr CreateDatabase(IDataBaseInfoSPtr info) override;
   serverTypes role_;
   serverMode mode_;
 };

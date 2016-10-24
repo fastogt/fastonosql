@@ -237,7 +237,7 @@ BaseShellWidget::BaseShellWidget(core::IServerSPtr server, const QString& filePa
   std::vector<uint32_t> versions = input_->supportedVersions();
   for (size_t i = 0; i < versions.size(); ++i) {
     uint32_t cur = versions[i];
-    std::string curVers = core::convertVersionNumberToReadableString(cur);
+    std::string curVers = core::ConvertVersionNumberToReadableString(cur);
     commandsVersionApi_->addItem(gui::GuiFactory::instance().unknownIcon(),
                                  common::ConvertFromString<QString>(curVers), cur);
     commandsVersionApi_->setCurrentIndex(i);
@@ -478,16 +478,16 @@ void BaseShellWidget::updateServerInfo(core::IServerInfoSPtr inf) {
   std::string server_label;
   if (server_->IsCanRemote()) {
     core::IServerRemote* rserver = dynamic_cast<core::IServerRemote*>(server_.get());  // +
-    server_label = common::ConvertToString(rserver->host());
+    server_label = common::ConvertToString(rserver->Host());
   } else {
     core::IServerLocal* lserver = dynamic_cast<core::IServerLocal*>(server_.get());  // +
-    server_label = lserver->path();
+    server_label = lserver->Path();
   }
   QString qserver_label = common::ConvertFromString<QString>(server_label);
   serverName_->setText(qserver_label);
 
-  uint32_t servVers = inf->version();
-  if (servVers == UNDEFINED_SINCE) {
+  uint32_t serv_vers = inf->Version();
+  if (serv_vers == UNDEFINED_SINCE) {
     return;
   }
 
@@ -500,7 +500,7 @@ void BaseShellWidget::updateServerInfo(core::IServerInfoSPtr inf) {
       continue;
     }
 
-    if (version >= servVers) {
+    if (version >= serv_vers) {
       if (!updatedComboIndex) {
         updatedComboIndex = true;
         commandsVersionApi_->setCurrentIndex(i);

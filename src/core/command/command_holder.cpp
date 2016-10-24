@@ -50,7 +50,7 @@ CommandHolder::CommandHolder(const std::string& name,
       func_(func),
       white_spaces_count_(count_space(name)) {}
 
-bool CommandHolder::isCommand(int argc, const char** argv, size_t* offset) {
+bool CommandHolder::IsCommand(int argc, const char** argv, size_t* offset) {
   if (argc <= 0) {
     return false;
   }
@@ -76,7 +76,7 @@ bool CommandHolder::isCommand(int argc, const char** argv, size_t* offset) {
   return true;
 }
 
-common::Error CommandHolder::execute(CommandHandler* handler,
+common::Error CommandHolder::Execute(CommandHandler* handler,
                                      int argc,
                                      const char** argv,
                                      FastoObject* out) {

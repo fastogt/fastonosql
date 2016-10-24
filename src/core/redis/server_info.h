@@ -124,7 +124,7 @@ struct ServerInfo : public IServerInfo {
   struct Server : IStateField {
     Server();
     explicit Server(const std::string& server_text);
-    common::Value* valueByIndex(unsigned char index) const;
+    common::Value* ValueByIndex(unsigned char index) const override;
 
     std::string redis_version_;
     std::string redis_git_sha1_;
@@ -147,7 +147,7 @@ struct ServerInfo : public IServerInfo {
   struct Clients : IStateField {
     Clients();
     explicit Clients(const std::string& client_text);
-    common::Value* valueByIndex(unsigned char index) const;
+    common::Value* ValueByIndex(unsigned char index) const override;
 
     uint32_t connected_clients_;
     uint32_t client_longest_output_list_;
@@ -158,7 +158,7 @@ struct ServerInfo : public IServerInfo {
   struct Memory : IStateField {
     Memory();
     explicit Memory(const std::string& memory_text);
-    common::Value* valueByIndex(unsigned char index) const;
+    common::Value* ValueByIndex(unsigned char index) const override;
 
     uint32_t used_memory_;
     std::string used_memory_human_;
@@ -173,7 +173,7 @@ struct ServerInfo : public IServerInfo {
   struct Persistence : IStateField {
     Persistence();
     explicit Persistence(const std::string& persistence_text);
-    common::Value* valueByIndex(unsigned char index) const;
+    common::Value* ValueByIndex(unsigned char index) const override;
 
     uint32_t loading_;
     uint32_t rdb_changes_since_last_save_;
@@ -194,7 +194,7 @@ struct ServerInfo : public IServerInfo {
   struct Stats : IStateField {
     Stats();
     explicit Stats(const std::string& stats_text);
-    common::Value* valueByIndex(unsigned char index) const;
+    common::Value* ValueByIndex(unsigned char index) const override;
 
     uint32_t total_connections_received_;
     uint32_t total_commands_processed_;
@@ -215,7 +215,7 @@ struct ServerInfo : public IServerInfo {
   struct Replication : IStateField {
     Replication();
     explicit Replication(const std::string& replication_text);
-    common::Value* valueByIndex(unsigned char index) const;
+    common::Value* ValueByIndex(unsigned char index) const override;
 
     std::string role_;
     uint32_t connected_slaves_;
@@ -229,7 +229,7 @@ struct ServerInfo : public IServerInfo {
   struct Cpu : IStateField {
     Cpu();
     explicit Cpu(const std::string& cpu_text);
-    common::Value* valueByIndex(unsigned char index) const;
+    common::Value* ValueByIndex(unsigned char index) const override;
 
     float used_cpu_sys_;
     float used_cpu_user_;
@@ -238,7 +238,7 @@ struct ServerInfo : public IServerInfo {
   } cpu_;
 
   struct Keyspace : IStateField {
-    common::Value* valueByIndex(unsigned char index) const;
+    common::Value* ValueByIndex(unsigned char index) const override;
   } keySp_;
 
   ServerInfo();
@@ -251,9 +251,9 @@ struct ServerInfo : public IServerInfo {
              const Cpu& cpu,
              const Keyspace& key);
 
-  virtual common::Value* valueByIndexes(unsigned char property, unsigned char field) const;
-  virtual std::string toString() const;
-  virtual uint32_t version() const;
+  virtual common::Value* ValueByIndexes(unsigned char property, unsigned char field) const override;
+  virtual std::string ToString() const override;
+  virtual uint32_t Version() const override;
 };
 
 std::ostream& operator<<(std::ostream& out, const ServerInfo& value);
