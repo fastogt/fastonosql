@@ -109,11 +109,11 @@ bool IServer::ContainsDatabase(IDataBaseInfoSPtr inf) const {
     return false;
   }
 
-  CHECK(Type() == inf->type());
+  CHECK(Type() == inf->Type());
 
   for (size_t i = 0; i < databases_.size(); ++i) {
     database_t db = databases_[i];
-    if (db->name() == inf->name()) {
+    if (db->Name() == inf->Name()) {
       return true;
     }
   }
@@ -465,8 +465,8 @@ void IServer::HandleLoadDatabaseContentEvent(events::LoadDatabaseContentResponce
     LOG_ERROR(er, true);
   } else {
     if (ContainsDatabase(v.inf)) {
-      v.inf->setKeys(v.keys);
-      v.inf->setDBKeysCount(v.db_keys_count);
+      v.inf->SetKeys(v.keys);
+      v.inf->SetDBKeysCount(v.db_keys_count);
     }
   }
 
@@ -480,7 +480,7 @@ void IServer::HandleClearDatabaseEvent(events::ClearDatabaseResponceEvent* ev) {
     LOG_ERROR(er, true);
   } else {
     if (ContainsDatabase(v.inf)) {
-      v.inf->clearKeys();
+      v.inf->ClearKeys();
     }
   }
 
@@ -544,9 +544,9 @@ void IServer::HandleSetDefaultDatabaseEvent(events::SetDefaultDatabaseResponceEv
   } else {
     IDataBaseInfoSPtr inf = v.inf;
     for (size_t i = 0; i < databases_.size(); ++i) {
-      databases_[i]->setIsDefault(false);
+      databases_[i]->SetIsDefault(false);
     }
-    inf->setIsDefault(true);
+    inf->SetIsDefault(true);
   }
 
   emit SetDefaultDatabaseFinished(v);

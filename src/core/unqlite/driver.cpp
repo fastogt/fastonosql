@@ -93,7 +93,7 @@ std::string Driver::NsSeparator() const {
 }
 
 std::string Driver::Delimiter() const {
-  return impl_->delimiter();
+  return impl_->Delimiter();
 }
 
 void Driver::InitImpl() {}
@@ -114,11 +114,11 @@ FastoObjectCommandIPtr Driver::CreateCommandFast(const std::string& input,
 common::Error Driver::SyncConnect() {
   ConnectionSettings* set = dynamic_cast<ConnectionSettings*>(settings_.get());  // +
   CHECK(set);
-  return impl_->connect(set->Info());
+  return impl_->Connect(set->Info());
 }
 
 common::Error Driver::SyncDisconnect() {
-  return impl_->disconnect();
+  return impl_->Disconnect();
 }
 
 common::Error Driver::ExecuteImpl(int argc, const char** argv, FastoObject* out) {
@@ -143,7 +143,7 @@ common::Error Driver::CurrentDataBaseInfo(IDataBaseInfo** info) {
     return common::make_error_value("Invalid input argument(s)", common::ErrorValue::E_ERROR);
   }
 
-  return impl_->select("0", info);
+  return impl_->Select("0", info);
 }
 
 void Driver::HandleLoadDatabaseContentEvent(events::LoadDatabaseContentRequestEvent* ev) {

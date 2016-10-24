@@ -122,7 +122,7 @@ ExplorerDatabaseItem::ExplorerDatabaseItem(core::IDatabaseSPtr db, ExplorerServe
 }
 
 QString ExplorerDatabaseItem::name() const {
-  return common::ConvertFromString<QString>(db_->name());
+  return common::ConvertFromString<QString>(db_->Name());
 }
 
 ExplorerDatabaseItem::eType ExplorerDatabaseItem::type() const {
@@ -130,12 +130,12 @@ ExplorerDatabaseItem::eType ExplorerDatabaseItem::type() const {
 }
 
 bool ExplorerDatabaseItem::isDefault() const {
-  return info()->isDefault();
+  return info()->IsDefault();
 }
 
 size_t ExplorerDatabaseItem::totalKeysCount() const {
   core::IDataBaseInfoSPtr inf = info();
-  return inf->dbKeysCount();
+  return inf->DBKeysCount();
 }
 
 size_t ExplorerDatabaseItem::loadedKeysCount() const {
@@ -154,7 +154,7 @@ size_t ExplorerDatabaseItem::loadedKeysCount() const {
 
 core::IServerSPtr ExplorerDatabaseItem::server() const {
   CHECK(db_);
-  return db_->server();
+  return db_->Server();
 }
 
 core::IDatabaseSPtr ExplorerDatabaseItem::db() const {
@@ -165,19 +165,19 @@ core::IDatabaseSPtr ExplorerDatabaseItem::db() const {
 void ExplorerDatabaseItem::loadContent(const std::string& pattern, uint32_t countKeys) {
   core::IDatabaseSPtr dbs = db();
   CHECK(dbs);
-  core::events_info::LoadDatabaseContentRequest req(this, dbs->info(), pattern, countKeys);
-  dbs->loadContent(req);
+  core::events_info::LoadDatabaseContentRequest req(this, dbs->Info(), pattern, countKeys);
+  dbs->LoadContent(req);
 }
 
 void ExplorerDatabaseItem::setDefault() {
   core::IDatabaseSPtr dbs = db();
   CHECK(dbs);
-  core::events_info::SetDefaultDatabaseRequest req(this, dbs->info());
-  dbs->setDefault(req);
+  core::events_info::SetDefaultDatabaseRequest req(this, dbs->Info());
+  dbs->SetDefault(req);
 }
 
 core::IDataBaseInfoSPtr ExplorerDatabaseItem::info() const {
-  return db_->info();
+  return db_->Info();
 }
 
 void ExplorerDatabaseItem::renameKey(const core::NKey& key, const QString& newName) {
@@ -192,7 +192,7 @@ void ExplorerDatabaseItem::renameKey(const core::NKey& key, const QString& newNa
   }
 
   core::events_info::ExecuteInfoRequest req(this, cmd_str);
-  dbs->execute(req);
+  dbs->Execute(req);
 }
 
 void ExplorerDatabaseItem::removeKey(const core::NKey& key) {
@@ -207,7 +207,7 @@ void ExplorerDatabaseItem::removeKey(const core::NKey& key) {
   }
 
   core::events_info::ExecuteInfoRequest req(this, cmd_str);
-  dbs->execute(req);
+  dbs->Execute(req);
 }
 
 void ExplorerDatabaseItem::loadValue(const core::NDbKValue& key) {
@@ -222,7 +222,7 @@ void ExplorerDatabaseItem::loadValue(const core::NDbKValue& key) {
   }
 
   core::events_info::ExecuteInfoRequest req(this, cmd_str);
-  dbs->execute(req);
+  dbs->Execute(req);
 }
 
 void ExplorerDatabaseItem::watchKey(const core::NDbKValue& key, int interval) {
@@ -238,7 +238,7 @@ void ExplorerDatabaseItem::watchKey(const core::NDbKValue& key, int interval) {
 
   core::events_info::ExecuteInfoRequest req(this, cmd_str, std::numeric_limits<size_t>::max() - 1,
                                             interval, false);
-  dbs->execute(req);
+  dbs->Execute(req);
 }
 
 void ExplorerDatabaseItem::createKey(const core::NDbKValue& key) {
@@ -253,7 +253,7 @@ void ExplorerDatabaseItem::createKey(const core::NDbKValue& key) {
   }
 
   core::events_info::ExecuteInfoRequest req(this, cmd_str);
-  dbs->execute(req);
+  dbs->Execute(req);
 }
 
 void ExplorerDatabaseItem::editKey(const core::NDbKValue& key, const core::NValue& value) {
@@ -270,7 +270,7 @@ void ExplorerDatabaseItem::editKey(const core::NDbKValue& key, const core::NValu
   }
 
   core::events_info::ExecuteInfoRequest req(this, cmd_str);
-  dbs->execute(req);
+  dbs->Execute(req);
 }
 
 void ExplorerDatabaseItem::setTTL(const core::NKey& key, core::ttl_t ttl) {
@@ -285,14 +285,14 @@ void ExplorerDatabaseItem::setTTL(const core::NKey& key, core::ttl_t ttl) {
   }
 
   core::events_info::ExecuteInfoRequest req(this, cmd_str);
-  dbs->execute(req);
+  dbs->Execute(req);
 }
 
 void ExplorerDatabaseItem::removeAllKeys() {
   core::IDatabaseSPtr dbs = db();
   CHECK(dbs);
-  core::events_info::ClearDatabaseRequest req(this, dbs->info());
-  dbs->removeAllKeys(req);
+  core::events_info::ClearDatabaseRequest req(this, dbs->Info());
+  dbs->RemoveAllKeys(req);
 }
 
 ExplorerKeyItem::ExplorerKeyItem(const core::NDbKValue& dbv, IExplorerTreeItem* parent)

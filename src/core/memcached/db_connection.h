@@ -115,12 +115,12 @@ class DBConnection : public core::CDBConnection<NativeConnection, Config, MEMCAC
                          uint32_t flags) WARN_UNUSED_RESULT;
   common::Error expireInner(const std::string& key, time_t expiration) WARN_UNUSED_RESULT;
 
-  virtual common::Error selectImpl(const std::string& name, IDataBaseInfo** info) override;
-  virtual common::Error delImpl(const NKeys& keys, NKeys* deleted_keys) override;
-  virtual common::Error getImpl(const NKey& key, NDbKValue* loaded_key) override;
-  virtual common::Error setImpl(const NDbKValue& key, NDbKValue* added_key) override;
-  virtual common::Error renameImpl(const NKey& key, const std::string& new_key) override;
-  virtual common::Error setTTLImpl(const NKey& key, ttl_t ttl) override;
+  virtual common::Error SelectImpl(const std::string& name, IDataBaseInfo** info) override;
+  virtual common::Error DeleteImpl(const NKeys& keys, NKeys* deleted_keys) override;
+  virtual common::Error GetImpl(const NKey& key, NDbKValue* loaded_key) override;
+  virtual common::Error SetImpl(const NDbKValue& key, NDbKValue* added_key) override;
+  virtual common::Error RenameImpl(const NKey& key, const std::string& new_key) override;
+  virtual common::Error SetTTLImpl(const NKey& key, ttl_t ttl) override;
 };
 
 common::Error select(CommandHandler* handler, int argc, const char** argv, FastoObject* out);

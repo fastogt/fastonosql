@@ -548,7 +548,7 @@ common::Error DBConnection::help(int argc, const char** argv) {
   return NotSupported("HELP");
 }
 
-common::Error DBConnection::selectImpl(const std::string& name, IDataBaseInfo** info) {
+common::Error DBConnection::SelectImpl(const std::string& name, IDataBaseInfo** info) {
   size_t kcount = 0;
   common::Error err = dbkcount(&kcount);
   DCHECK(!err);
@@ -556,7 +556,7 @@ common::Error DBConnection::selectImpl(const std::string& name, IDataBaseInfo** 
   return common::Error();
 }
 
-common::Error DBConnection::delImpl(const NKeys& keys, NKeys* deleted_keys) {
+common::Error DBConnection::DeleteImpl(const NKeys& keys, NKeys* deleted_keys) {
   for (size_t i = 0; i < keys.size(); ++i) {
     NKey key = keys[i];
     std::string key_str = key.key();
@@ -571,7 +571,7 @@ common::Error DBConnection::delImpl(const NKeys& keys, NKeys* deleted_keys) {
   return common::Error();
 }
 
-common::Error DBConnection::getImpl(const NKey& key, NDbKValue* loaded_key) {
+common::Error DBConnection::GetImpl(const NKey& key, NDbKValue* loaded_key) {
   std::string key_str = key.key();
   std::string value_str;
   common::Error err = getInner(key_str, &value_str);
@@ -584,7 +584,7 @@ common::Error DBConnection::getImpl(const NKey& key, NDbKValue* loaded_key) {
   return common::Error();
 }
 
-common::Error DBConnection::setImpl(const NDbKValue& key, NDbKValue* added_key) {
+common::Error DBConnection::SetImpl(const NDbKValue& key, NDbKValue* added_key) {
   std::string key_str = key.keyString();
   std::string value_str = key.valueString();
   common::Error err = setInner(key_str, value_str, 0, 0);
@@ -596,7 +596,7 @@ common::Error DBConnection::setImpl(const NDbKValue& key, NDbKValue* added_key) 
   return common::Error();
 }
 
-common::Error DBConnection::renameImpl(const NKey& key, const std::string& new_key) {
+common::Error DBConnection::RenameImpl(const NKey& key, const std::string& new_key) {
   std::string key_str = key.key();
   std::string value_str;
   common::Error err = getInner(key_str, &value_str);
@@ -617,7 +617,7 @@ common::Error DBConnection::renameImpl(const NKey& key, const std::string& new_k
   return common::Error();
 }
 
-common::Error DBConnection::setTTLImpl(const NKey& key, ttl_t ttl) {
+common::Error DBConnection::SetTTLImpl(const NKey& key, ttl_t ttl) {
   UNUSED(key);
   UNUSED(ttl);
   return expireInner(key.key(), ttl);
@@ -636,7 +636,7 @@ common::Error keys(CommandHandler* handler, int argc, const char** argv, FastoOb
       common::StringValue* val = common::Value::createStringValue(keysout[i]);
       ar->append(val);
     }
-    FastoObjectArray* child = new FastoObjectArray(out, ar, mem->delimiter());
+    FastoObjectArray* child = new FastoObjectArray(out, ar, mem->Delimiter());
     out->addChildren(child);
   }
 
@@ -656,7 +656,7 @@ common::Error stats(CommandHandler* handler, int argc, const char** argv, FastoO
   if (!er) {
     ServerInfo minf(statsout);
     common::StringValue* val = common::Value::createStringValue(minf.ToString());
-    FastoObject* child = new FastoObject(out, val, mem->delimiter());
+    FastoObject* child = new FastoObject(out, val, mem->Delimiter());
     out->addChildren(child);
   }
 
@@ -669,14 +669,14 @@ common::Error get(CommandHandler* handler, int argc, const char** argv, FastoObj
   NKey key(argv[0]);
   DBConnection* unqlite = static_cast<DBConnection*>(handler);
   NDbKValue key_loaded;
-  common::Error err = unqlite->get(key, &key_loaded);
+  common::Error err = unqlite->Get(key, &key_loaded);
   if (err && err->isError()) {
     return err;
   }
 
   NValue val = key_loaded.value();
   common::Value* copy = val->deepCopy();
-  FastoObject* child = new FastoObject(out, copy, unqlite->delimiter());
+  FastoObject* child = new FastoObject(out, copy, unqlite->Delimiter());
   out->addChildren(child);
   return common::Error();
 }
@@ -690,7 +690,7 @@ common::Error add(CommandHandler* handler, int argc, const char** argv, FastoObj
                          common::ConvertFromString<uint32_t>(argv[1]));
   if (!er) {
     common::StringValue* val = common::Value::createStringValue("OK");
-    FastoObject* child = new FastoObject(out, val, mem->delimiter());
+    FastoObject* child = new FastoObject(out, val, mem->Delimiter());
     out->addChildren(child);
   }
 
@@ -705,7 +705,7 @@ common::Error replace(CommandHandler* handler, int argc, const char** argv, Fast
                                   common::ConvertFromString<uint32_t>(argv[1]));
   if (!er) {
     common::StringValue* val = common::Value::createStringValue("OK");
-    FastoObject* child = new FastoObject(out, val, mem->delimiter());
+    FastoObject* child = new FastoObject(out, val, mem->Delimiter());
     out->addChildren(child);
   }
 
@@ -720,7 +720,7 @@ common::Error append(CommandHandler* handler, int argc, const char** argv, Fasto
                                  common::ConvertFromString<uint32_t>(argv[1]));
   if (!er) {
     common::StringValue* val = common::Value::createStringValue("OK");
-    FastoObject* child = new FastoObject(out, val, mem->delimiter());
+    FastoObject* child = new FastoObject(out, val, mem->Delimiter());
     out->addChildren(child);
   }
 
@@ -735,7 +735,7 @@ common::Error prepend(CommandHandler* handler, int argc, const char** argv, Fast
                                   common::ConvertFromString<uint32_t>(argv[1]));
   if (!er) {
     common::StringValue* val = common::Value::createStringValue("OK");
-    FastoObject* child = new FastoObject(out, val, mem->delimiter());
+    FastoObject* child = new FastoObject(out, val, mem->Delimiter());
     out->addChildren(child);
   }
 
@@ -749,7 +749,7 @@ common::Error incr(CommandHandler* handler, int argc, const char** argv, FastoOb
   common::Error er = mem->incr(argv[0], common::ConvertFromString<uint64_t>(argv[1]));
   if (!er) {
     common::StringValue* val = common::Value::createStringValue("OK");
-    FastoObject* child = new FastoObject(out, val, mem->delimiter());
+    FastoObject* child = new FastoObject(out, val, mem->Delimiter());
     out->addChildren(child);
   }
 
@@ -763,7 +763,7 @@ common::Error decr(CommandHandler* handler, int argc, const char** argv, FastoOb
   common::Error er = mem->decr(argv[0], common::ConvertFromString<uint64_t>(argv[1]));
   if (!er) {
     common::StringValue* val = common::Value::createStringValue("OK");
-    FastoObject* child = new FastoObject(out, val, mem->delimiter());
+    FastoObject* child = new FastoObject(out, val, mem->Delimiter());
     out->addChildren(child);
   }
 
@@ -774,13 +774,13 @@ common::Error select(CommandHandler* handler, int argc, const char** argv, Fasto
   UNUSED(argc);
 
   DBConnection* mem = static_cast<DBConnection*>(handler);
-  common::Error err = mem->select(argv[0], NULL);
+  common::Error err = mem->Select(argv[0], NULL);
   if (err && err->isError()) {
     return err;
   }
 
   common::StringValue* val = common::Value::createStringValue("OK");
-  FastoObject* child = new FastoObject(out, val, mem->delimiter());
+  FastoObject* child = new FastoObject(out, val, mem->Delimiter());
   out->addChildren(child);
   return common::Error();
 }
@@ -794,13 +794,13 @@ common::Error set(CommandHandler* handler, int argc, const char** argv, FastoObj
 
   DBConnection* red = static_cast<DBConnection*>(handler);
   NDbKValue key_added;
-  common::Error err = red->set(kv, &key_added);
+  common::Error err = red->Set(kv, &key_added);
   if (err && err->isError()) {
     return err;
   }
 
   common::StringValue* val = common::Value::createStringValue("OK");
-  FastoObject* child = new FastoObject(out, val, red->delimiter());
+  FastoObject* child = new FastoObject(out, val, red->Delimiter());
   out->addChildren(child);
   return common::Error();
 }
@@ -810,13 +810,13 @@ common::Error rename(CommandHandler* handler, int argc, const char** argv, Fasto
 
   NKey key(argv[0]);
   DBConnection* red = static_cast<DBConnection*>(handler);
-  common::Error err = red->rename(key, argv[1]);
+  common::Error err = red->Rename(key, argv[1]);
   if (err && err->isError()) {
     return err;
   }
 
   common::StringValue* val = common::Value::createStringValue("OK");
-  FastoObject* child = new FastoObject(out, val, red->delimiter());
+  FastoObject* child = new FastoObject(out, val, red->Delimiter());
   out->addChildren(child);
   return common::Error();
 }
@@ -828,13 +828,13 @@ common::Error set_ttl(CommandHandler* handler, int argc, const char** argv, Fast
   DBConnection* mem = static_cast<DBConnection*>(handler);
   NKey key(argv[0]);
   time_t ttl = common::ConvertFromString<time_t>(argv[1]);
-  common::Error err = mem->setTTL(key, ttl);
+  common::Error err = mem->SetTTL(key, ttl);
   if (err && err->isError()) {
     return err;
   }
 
   common::StringValue* val = common::Value::createStringValue("OK");
-  FastoObject* child = new FastoObject(out, val, mem->delimiter());
+  FastoObject* child = new FastoObject(out, val, mem->Delimiter());
   out->addChildren(child);
   return common::Error();
 }
@@ -847,13 +847,13 @@ common::Error del(CommandHandler* handler, int argc, const char** argv, FastoObj
 
   DBConnection* mem = static_cast<DBConnection*>(handler);
   NKeys keys_deleted;
-  common::Error err = mem->del(keysdel, &keys_deleted);
+  common::Error err = mem->Delete(keysdel, &keys_deleted);
   if (err && err->isError()) {
     return err;
   }
 
   common::FundamentalValue* val = common::Value::createUIntegerValue(keys_deleted.size());
-  FastoObject* child = new FastoObject(out, val, mem->delimiter());
+  FastoObject* child = new FastoObject(out, val, mem->Delimiter());
   out->addChildren(child);
   return common::Error();
 }
@@ -863,7 +863,7 @@ common::Error flushdb(CommandHandler* handler, int argc, const char** argv, Fast
   common::Error er = mem->flushdb(argc == 1 ? common::ConvertFromString<time_t>(argv[0]) : 0);
   if (!er) {
     common::StringValue* val = common::Value::createStringValue("OK");
-    FastoObject* child = new FastoObject(out, val, mem->delimiter());
+    FastoObject* child = new FastoObject(out, val, mem->Delimiter());
     out->addChildren(child);
   }
 
@@ -891,7 +891,7 @@ common::Error dbkcount(CommandHandler* handler, int argc, const char** argv, Fas
   common::Error er = mem->dbkcount(&dbkcount);
   if (!er) {
     common::FundamentalValue* val = common::Value::createUIntegerValue(dbkcount);
-    FastoObject* child = new FastoObject(out, val, mem->delimiter());
+    FastoObject* child = new FastoObject(out, val, mem->Delimiter());
     out->addChildren(child);
   }
 

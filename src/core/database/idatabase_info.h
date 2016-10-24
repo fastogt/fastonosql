@@ -35,20 +35,20 @@ namespace core {
 class IDataBaseInfo : public common::ClonableBase<IDataBaseInfo> {
  public:
   typedef std::vector<NDbKValue> keys_container_t;
-  connectionTypes type() const;
-  std::string name() const;
-  size_t dbKeysCount() const;
-  void setDBKeysCount(size_t size);
-  size_t loadedKeysCount() const;
+  connectionTypes Type() const;
+  std::string Name() const;
+  size_t DBKeysCount() const;
+  void SetDBKeysCount(size_t size);
+  size_t LoadedKeysCount() const;
 
-  bool isDefault() const;
-  void setIsDefault(bool isDef);
+  bool IsDefault() const;
+  void SetIsDefault(bool isDef);
 
   virtual ~IDataBaseInfo();
 
-  keys_container_t keys() const;
-  void setKeys(const keys_container_t& keys);
-  void clearKeys();
+  keys_container_t Keys() const;
+  void SetKeys(const keys_container_t& keys);
+  void ClearKeys();
 
  protected:
   IDataBaseInfo(const std::string& name,

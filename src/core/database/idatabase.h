@@ -61,19 +61,19 @@ class IDatabase {
  public:
   virtual ~IDatabase();
 
-  IServerSPtr server() const;
-  IDataBaseInfoSPtr info() const;
+  IServerSPtr Server() const;
+  IDataBaseInfoSPtr Info() const;
   translator_t Translator() const;
 
-  connectionTypes type() const;
-  bool isDefault() const;
-  std::string name() const;
+  connectionTypes Type() const;
+  bool IsDefault() const;
+  std::string Name() const;
 
-  void loadContent(const events_info::LoadDatabaseContentRequest& req);
-  void setDefault(const events_info::SetDefaultDatabaseRequest& req);
+  void LoadContent(const events_info::LoadDatabaseContentRequest& req);
+  void SetDefault(const events_info::SetDefaultDatabaseRequest& req);
 
-  void execute(const events_info::ExecuteInfoRequest& req);
-  void removeAllKeys(const events_info::ClearDatabaseRequest& req);
+  void Execute(const events_info::ExecuteInfoRequest& req);
+  void RemoveAllKeys(const events_info::ClearDatabaseRequest& req);
 
  protected:
   IDatabase(IServerSPtr server, IDataBaseInfoSPtr info);

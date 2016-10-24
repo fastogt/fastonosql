@@ -478,7 +478,7 @@ ExplorerDatabaseItem* ExplorerTreeModel::findDatabaseItem(ExplorerServerItem* se
     CHECK(item);
 
     core::IDatabaseSPtr inf = item->db();
-    if (inf && inf->name() == db->name()) {
+    if (inf && inf->Name() == db->Name()) {
       return item;
     }
   }

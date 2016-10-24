@@ -39,7 +39,7 @@ DataBaseInfo* DataBaseInfo::Clone() const {
 Database::Database(IServerSPtr server, IDataBaseInfoSPtr info) : IDatabase(server, info) {
   DCHECK(server);
   DCHECK(info);
-  DCHECK(info->type() == ROCKSDB);
+  DCHECK(info->Type() == ROCKSDB);
 }
 
 }  // namespace rocksdb

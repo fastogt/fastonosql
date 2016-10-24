@@ -32,43 +32,43 @@ IDataBaseInfo::IDataBaseInfo(const std::string& name,
 
 IDataBaseInfo::~IDataBaseInfo() {}
 
-connectionTypes IDataBaseInfo::type() const {
+connectionTypes IDataBaseInfo::Type() const {
   return type_;
 }
 
-std::string IDataBaseInfo::name() const {
+std::string IDataBaseInfo::Name() const {
   return name_;
 }
 
-size_t IDataBaseInfo::dbKeysCount() const {
+size_t IDataBaseInfo::DBKeysCount() const {
   return db_kcount_;
 }
 
-void IDataBaseInfo::setDBKeysCount(size_t size) {
+void IDataBaseInfo::SetDBKeysCount(size_t size) {
   db_kcount_ = size;
 }
 
-size_t IDataBaseInfo::loadedKeysCount() const {
+size_t IDataBaseInfo::LoadedKeysCount() const {
   return keys_.size();
 }
 
-bool IDataBaseInfo::isDefault() const {
+bool IDataBaseInfo::IsDefault() const {
   return is_default_;
 }
 
-void IDataBaseInfo::setIsDefault(bool isDef) {
+void IDataBaseInfo::SetIsDefault(bool isDef) {
   is_default_ = isDef;
 }
 
-void IDataBaseInfo::setKeys(const keys_container_t& keys) {
+void IDataBaseInfo::SetKeys(const keys_container_t& keys) {
   keys_ = keys;
 }
 
-void IDataBaseInfo::clearKeys() {
+void IDataBaseInfo::ClearKeys() {
   keys_.clear();
 }
 
-IDataBaseInfo::keys_container_t IDataBaseInfo::keys() const {
+IDataBaseInfo::keys_container_t IDataBaseInfo::Keys() const {
   return keys_;
 }
 

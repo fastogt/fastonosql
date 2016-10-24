@@ -41,7 +41,7 @@ DataBaseInfo* DataBaseInfo::Clone() const {
 Database::Database(IServerSPtr server, IDataBaseInfoSPtr info) : IDatabase(server, info) {
   DCHECK(server);
   DCHECK(info);
-  DCHECK(info->type() == LMDB);
+  DCHECK(info->Type() == LMDB);
 }
 
 }  // namespace lmdb

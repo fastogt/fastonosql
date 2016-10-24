@@ -110,7 +110,7 @@ std::string Driver::NsSeparator() const {
 }
 
 std::string Driver::Delimiter() const {
-  return impl_->delimiter();
+  return impl_->Delimiter();
 }
 
 bool Driver::IsInterrupted() const {
@@ -152,11 +152,11 @@ common::Error Driver::SyncConnect() {
   ConnectionSettings* set = dynamic_cast<ConnectionSettings*>(settings_.get());  // +
   CHECK(set);
   RConfig rconf(set->Info(), set->SSHInfo());
-  return impl_->connect(rconf);
+  return impl_->Connect(rconf);
 }
 
 common::Error Driver::SyncDisconnect() {
-  return impl_->disconnect();
+  return impl_->Disconnect();
 }
 
 common::Error Driver::ExecuteImpl(int argc, const char** argv, FastoObject* out) {
@@ -187,7 +187,7 @@ common::Error Driver::CurrentDataBaseInfo(IDataBaseInfo** info) {
   }
 
   Config conf = impl_->config();
-  return impl_->select(common::ConvertToString(conf.dbnum), info);
+  return impl_->Select(common::ConvertToString(conf.dbnum), info);
 }
 
 void Driver::HandleProcessCommandLineArgsEvent(events::ProcessConfigArgsRequestEvent* ev) {
@@ -478,7 +478,7 @@ void Driver::HandleLoadDatabaseInfosEvent(events::LoadDatabasesInfoRequestEvent*
           if (countDb > 0) {
             for (size_t i = 0; i < countDb; ++i) {
               IDataBaseInfoSPtr dbInf(new DataBaseInfo(common::ConvertToString(i), false, 0));
-              if (dbInf->name() == curdb->name()) {
+              if (dbInf->Name() == curdb->Name()) {
                 res.databases.push_back(curdb);
               } else {
                 res.databases.push_back(dbInf);
@@ -622,7 +622,7 @@ void Driver::HandleSetDefaultDatabaseEvent(events::SetDefaultDatabaseRequestEven
   NotifyProgress(sender, 0);
   events::SetDefaultDatabaseResponceEvent::value_type res(ev->value());
   std::string setDefCommand =
-      common::MemSPrintf(REDIS_SET_DEFAULT_DATABASE_PATTERN_1ARGS_S, res.inf->name());
+      common::MemSPrintf(REDIS_SET_DEFAULT_DATABASE_PATTERN_1ARGS_S, res.inf->Name());
   FastoObjectCommandIPtr cmd = CreateCommandFast(setDefCommand, common::Value::C_INNER);
   NotifyProgress(sender, 50);
   common::Error er = Execute(cmd);

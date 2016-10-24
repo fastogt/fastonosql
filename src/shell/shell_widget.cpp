@@ -520,7 +520,7 @@ void BaseShellWidget::updateDefaultDatabase(core::IDataBaseInfoSPtr dbs) {
     return;
   }
 
-  std::string name = dbs->name();
+  std::string name = dbs->Name();
   dbName_->setText(common::ConvertFromString<QString>(name));
 }
 
@@ -530,7 +530,7 @@ void BaseShellWidget::syncConnectionActions() {
   connectAction_->setVisible(!is_connected);
   disConnectAction_->setVisible(is_connected);
   executeAction_->setEnabled(is_connected);
-  stopAction_->setEnabled(!is_connected);
+  stopAction_->setEnabled(is_connected);
 }
 
 }  // namespace shell

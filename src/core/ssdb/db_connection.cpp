@@ -858,7 +858,7 @@ common::Error DBConnection::flushdb() {
   return common::Error();
 }
 
-common::Error DBConnection::selectImpl(const std::string& name, IDataBaseInfo** info) {
+common::Error DBConnection::SelectImpl(const std::string& name, IDataBaseInfo** info) {
   size_t kcount = 0;
   common::Error err = dbkcount(&kcount);
   DCHECK(!err);
@@ -866,7 +866,7 @@ common::Error DBConnection::selectImpl(const std::string& name, IDataBaseInfo** 
   return common::Error();
 }
 
-common::Error DBConnection::delImpl(const NKeys& keys, NKeys* deleted_keys) {
+common::Error DBConnection::DeleteImpl(const NKeys& keys, NKeys* deleted_keys) {
   for (size_t i = 0; i < keys.size(); ++i) {
     NKey key = keys[i];
     std::string key_str = key.key();
@@ -881,7 +881,7 @@ common::Error DBConnection::delImpl(const NKeys& keys, NKeys* deleted_keys) {
   return common::Error();
 }
 
-common::Error DBConnection::renameImpl(const NKey& key, const std::string& new_key) {
+common::Error DBConnection::RenameImpl(const NKey& key, const std::string& new_key) {
   std::string key_str = key.key();
   std::string value_str;
   common::Error err = getInner(key_str, &value_str);
@@ -902,7 +902,7 @@ common::Error DBConnection::renameImpl(const NKey& key, const std::string& new_k
   return common::Error();
 }
 
-common::Error DBConnection::setImpl(const NDbKValue& key, NDbKValue* added_key) {
+common::Error DBConnection::SetImpl(const NDbKValue& key, NDbKValue* added_key) {
   std::string key_str = key.keyString();
   std::string value_str = key.valueString();
   common::Error err = setInner(key_str, value_str);
@@ -914,7 +914,7 @@ common::Error DBConnection::setImpl(const NDbKValue& key, NDbKValue* added_key) 
   return common::Error();
 }
 
-common::Error DBConnection::getImpl(const NKey& key, NDbKValue* loaded_key) {
+common::Error DBConnection::GetImpl(const NKey& key, NDbKValue* loaded_key) {
   std::string key_str = key.key();
   std::string value_str;
   common::Error err = getInner(key_str, &value_str);
@@ -927,7 +927,7 @@ common::Error DBConnection::getImpl(const NKey& key, NDbKValue* loaded_key) {
   return common::Error();
 }
 
-common::Error DBConnection::setTTLImpl(const NKey& key, ttl_t ttl) {
+common::Error DBConnection::SetTTLImpl(const NKey& key, ttl_t ttl) {
   UNUSED(key);
   UNUSED(ttl);
   return common::make_error_value("Sorry, but now " PROJECT_NAME_TITLE
@@ -942,7 +942,7 @@ common::Error info(CommandHandler* handler, int argc, const char** argv, FastoOb
   if (!er) {
     ServerInfo sinf(statsout);
     common::StringValue* val = common::Value::createStringValue(sinf.ToString());
-    FastoObject* child = new FastoObject(out, val, ssdb->delimiter());
+    FastoObject* child = new FastoObject(out, val, ssdb->Delimiter());
     out->addChildren(child);
   }
 
@@ -958,7 +958,7 @@ common::Error dbsize(CommandHandler* handler, int argc, const char** argv, Fasto
   common::Error er = ssdb->dbsize(&dbsize);
   if (!er) {
     common::FundamentalValue* val = common::Value::createUIntegerValue(dbsize);
-    FastoObject* child = new FastoObject(out, val, ssdb->delimiter());
+    FastoObject* child = new FastoObject(out, val, ssdb->Delimiter());
     out->addChildren(child);
   }
 
@@ -972,7 +972,7 @@ common::Error auth(CommandHandler* handler, int argc, const char** argv, FastoOb
   common::Error er = ssdb->auth(argv[0]);
   if (!er) {
     common::StringValue* val = common::Value::createStringValue("OK");
-    FastoObject* child = new FastoObject(out, val, ssdb->delimiter());
+    FastoObject* child = new FastoObject(out, val, ssdb->Delimiter());
     out->addChildren(child);
   }
 
@@ -983,16 +983,16 @@ common::Error get(CommandHandler* handler, int argc, const char** argv, FastoObj
   UNUSED(argc);
 
   NKey key(argv[0]);
-  DBConnection* unqlite = static_cast<DBConnection*>(handler);
+  DBConnection* ssdb = static_cast<DBConnection*>(handler);
   NDbKValue key_loaded;
-  common::Error err = unqlite->get(key, &key_loaded);
+  common::Error err = ssdb->Get(key, &key_loaded);
   if (err && err->isError()) {
     return err;
   }
 
   NValue val = key_loaded.value();
   common::Value* copy = val->deepCopy();
-  FastoObject* child = new FastoObject(out, copy, unqlite->delimiter());
+  FastoObject* child = new FastoObject(out, copy, ssdb->Delimiter());
   out->addChildren(child);
   return common::Error();
 }
@@ -1001,13 +1001,13 @@ common::Error select(CommandHandler* handler, int argc, const char** argv, Fasto
   UNUSED(argc);
 
   DBConnection* ssdb = static_cast<DBConnection*>(handler);
-  common::Error err = ssdb->select(argv[0], nullptr);
+  common::Error err = ssdb->Select(argv[0], nullptr);
   if (err && err->isError()) {
     return err;
   }
 
   common::StringValue* val = common::Value::createStringValue("OK");
-  FastoObject* child = new FastoObject(out, val, ssdb->delimiter());
+  FastoObject* child = new FastoObject(out, val, ssdb->Delimiter());
   out->addChildren(child);
   return common::Error();
 }
@@ -1019,15 +1019,15 @@ common::Error set(CommandHandler* handler, int argc, const char** argv, FastoObj
   NValue string_val(common::Value::createStringValue(argv[1]));
   NDbKValue kv(key, string_val);
 
-  DBConnection* red = static_cast<DBConnection*>(handler);
+  DBConnection* ssdb = static_cast<DBConnection*>(handler);
   NDbKValue key_added;
-  common::Error err = red->set(kv, &key_added);
+  common::Error err = ssdb->Set(kv, &key_added);
   if (err && err->isError()) {
     return err;
   }
 
   common::StringValue* val = common::Value::createStringValue("OK");
-  FastoObject* child = new FastoObject(out, val, red->delimiter());
+  FastoObject* child = new FastoObject(out, val, ssdb->Delimiter());
   out->addChildren(child);
   return common::Error();
 }
@@ -1039,7 +1039,7 @@ common::Error setx(CommandHandler* handler, int argc, const char** argv, FastoOb
   common::Error er = ssdb->setx(argv[0], argv[1], common::ConvertFromString<int>(argv[2]));
   if (!er) {
     common::StringValue* val = common::Value::createStringValue("OK");
-    FastoObject* child = new FastoObject(out, val, ssdb->delimiter());
+    FastoObject* child = new FastoObject(out, val, ssdb->Delimiter());
     out->addChildren(child);
   }
 
@@ -1054,13 +1054,13 @@ common::Error del(CommandHandler* handler, int argc, const char** argv, FastoObj
 
   DBConnection* ssdb = static_cast<DBConnection*>(handler);
   NKeys keys_deleted;
-  common::Error err = ssdb->del(keysdel, &keys_deleted);
+  common::Error err = ssdb->Delete(keysdel, &keys_deleted);
   if (err && err->isError()) {
     return err;
   }
 
   common::FundamentalValue* val = common::Value::createUIntegerValue(keys_deleted.size());
-  FastoObject* child = new FastoObject(out, val, ssdb->delimiter());
+  FastoObject* child = new FastoObject(out, val, ssdb->Delimiter());
   out->addChildren(child);
   return common::Error();
 }
@@ -1070,13 +1070,13 @@ common::Error rename(CommandHandler* handler, int argc, const char** argv, Fasto
 
   NKey key(argv[0]);
   DBConnection* ssdb = static_cast<DBConnection*>(handler);
-  common::Error err = ssdb->rename(key, argv[1]);
+  common::Error err = ssdb->Rename(key, argv[1]);
   if (err && err->isError()) {
     return err;
   }
 
   common::StringValue* val = common::Value::createStringValue("OK");
-  FastoObject* child = new FastoObject(out, val, ssdb->delimiter());
+  FastoObject* child = new FastoObject(out, val, ssdb->Delimiter());
   out->addChildren(child);
   return common::Error();
 }
@@ -1088,10 +1088,10 @@ common::Error set_ttl(CommandHandler* handler, int argc, const char** argv, Fast
   DBConnection* ssdb = static_cast<DBConnection*>(handler);
   NKey key(argv[0]);
   ttl_t ttl = common::ConvertFromString<ttl_t>(argv[1]);
-  common::Error er = ssdb->setTTL(key, ttl);
+  common::Error er = ssdb->SetTTL(key, ttl);
   if (!er) {
     common::StringValue* val = common::Value::createStringValue("OK");
-    FastoObject* child = new FastoObject(out, val, ssdb->delimiter());
+    FastoObject* child = new FastoObject(out, val, ssdb->Delimiter());
     out->addChildren(child);
   }
 
@@ -1106,7 +1106,7 @@ common::Error incr(CommandHandler* handler, int argc, const char** argv, FastoOb
   common::Error er = ssdb->incr(argv[0], common::ConvertFromString<int64_t>(argv[1]), &ret);
   if (!er) {
     common::FundamentalValue* val = common::Value::createIntegerValue(ret);
-    FastoObject* child = new FastoObject(out, val, ssdb->delimiter());
+    FastoObject* child = new FastoObject(out, val, ssdb->Delimiter());
     out->addChildren(child);
   }
 
@@ -1126,7 +1126,7 @@ common::Error keys(CommandHandler* handler, int argc, const char** argv, FastoOb
       common::StringValue* val = common::Value::createStringValue(keysout[i]);
       ar->append(val);
     }
-    FastoObjectArray* child = new FastoObjectArray(out, ar, ssdb->delimiter());
+    FastoObjectArray* child = new FastoObjectArray(out, ar, ssdb->Delimiter());
     out->addChildren(child);
   }
 
@@ -1146,7 +1146,7 @@ common::Error scan(CommandHandler* handler, int argc, const char** argv, FastoOb
       common::StringValue* val = common::Value::createStringValue(keysout[i]);
       ar->append(val);
     }
-    FastoObjectArray* child = new FastoObjectArray(out, ar, ssdb->delimiter());
+    FastoObjectArray* child = new FastoObjectArray(out, ar, ssdb->Delimiter());
     out->addChildren(child);
   }
 
@@ -1166,7 +1166,7 @@ common::Error rscan(CommandHandler* handler, int argc, const char** argv, FastoO
       common::StringValue* val = common::Value::createStringValue(keysout[i]);
       ar->append(val);
     }
-    FastoObjectArray* child = new FastoObjectArray(out, ar, ssdb->delimiter());
+    FastoObjectArray* child = new FastoObjectArray(out, ar, ssdb->Delimiter());
     out->addChildren(child);
   }
 
@@ -1188,7 +1188,7 @@ common::Error multi_get(CommandHandler* handler, int argc, const char** argv, Fa
       common::StringValue* val = common::Value::createStringValue(keysout[i]);
       ar->append(val);
     }
-    FastoObjectArray* child = new FastoObjectArray(out, ar, ssdb->delimiter());
+    FastoObjectArray* child = new FastoObjectArray(out, ar, ssdb->Delimiter());
     out->addChildren(child);
   }
 
@@ -1205,7 +1205,7 @@ common::Error multi_set(CommandHandler* handler, int argc, const char** argv, Fa
   common::Error er = ssdb->multi_set(keysset);
   if (!er) {
     common::StringValue* val = common::Value::createStringValue("OK");
-    FastoObject* child = new FastoObject(out, val, ssdb->delimiter());
+    FastoObject* child = new FastoObject(out, val, ssdb->Delimiter());
     out->addChildren(child);
   }
 
@@ -1222,7 +1222,7 @@ common::Error multi_del(CommandHandler* handler, int argc, const char** argv, Fa
   common::Error er = ssdb->multi_del(keysget);
   if (!er) {
     common::StringValue* val = common::Value::createStringValue("OK");
-    FastoObject* child = new FastoObject(out, val, ssdb->delimiter());
+    FastoObject* child = new FastoObject(out, val, ssdb->Delimiter());
     out->addChildren(child);
   }
 
@@ -1237,7 +1237,7 @@ common::Error hget(CommandHandler* handler, int argc, const char** argv, FastoOb
   common::Error er = ssdb->hget(argv[0], argv[1], &ret);
   if (!er) {
     common::StringValue* val = common::Value::createStringValue(ret);
-    FastoObject* child = new FastoObject(out, val, ssdb->delimiter());
+    FastoObject* child = new FastoObject(out, val, ssdb->Delimiter());
     out->addChildren(child);
   }
 
@@ -1256,7 +1256,7 @@ common::Error hgetall(CommandHandler* handler, int argc, const char** argv, Fast
       common::StringValue* val = common::Value::createStringValue(keysout[i]);
       ar->append(val);
     }
-    FastoObjectArray* child = new FastoObjectArray(out, ar, ssdb->delimiter());
+    FastoObjectArray* child = new FastoObjectArray(out, ar, ssdb->Delimiter());
     out->addChildren(child);
   }
 
@@ -1270,7 +1270,7 @@ common::Error hset(CommandHandler* handler, int argc, const char** argv, FastoOb
   common::Error er = ssdb->hset(argv[0], argv[1], argv[2]);
   if (!er) {
     common::StringValue* val = common::Value::createStringValue("OK");
-    FastoObject* child = new FastoObject(out, val, ssdb->delimiter());
+    FastoObject* child = new FastoObject(out, val, ssdb->Delimiter());
     out->addChildren(child);
   }
 
@@ -1284,7 +1284,7 @@ common::Error hdel(CommandHandler* handler, int argc, const char** argv, FastoOb
   common::Error er = ssdb->hdel(argv[0], argv[1]);
   if (!er) {
     common::StringValue* val = common::Value::createStringValue("OK");
-    FastoObject* child = new FastoObject(out, val, ssdb->delimiter());
+    FastoObject* child = new FastoObject(out, val, ssdb->Delimiter());
     out->addChildren(child);
   }
 
@@ -1300,7 +1300,7 @@ common::Error hincr(CommandHandler* handler, int argc, const char** argv, FastoO
       ssdb->hincr(argv[0], argv[1], common::ConvertFromString<int64_t>(argv[2]), &res);
   if (!er) {
     common::FundamentalValue* val = common::Value::createIntegerValue(res);
-    FastoObject* child = new FastoObject(out, val, ssdb->delimiter());
+    FastoObject* child = new FastoObject(out, val, ssdb->Delimiter());
     out->addChildren(child);
   }
 
@@ -1315,7 +1315,7 @@ common::Error hsize(CommandHandler* handler, int argc, const char** argv, FastoO
   common::Error er = ssdb->hsize(argv[0], &res);
   if (!er) {
     common::FundamentalValue* val = common::Value::createIntegerValue(res);
-    FastoObject* child = new FastoObject(out, val, ssdb->delimiter());
+    FastoObject* child = new FastoObject(out, val, ssdb->Delimiter());
     out->addChildren(child);
   }
 
@@ -1330,7 +1330,7 @@ common::Error hclear(CommandHandler* handler, int argc, const char** argv, Fasto
   common::Error er = ssdb->hclear(argv[0], &res);
   if (!er) {
     common::FundamentalValue* val = common::Value::createIntegerValue(res);
-    FastoObject* child = new FastoObject(out, val, ssdb->delimiter());
+    FastoObject* child = new FastoObject(out, val, ssdb->Delimiter());
     out->addChildren(child);
   }
 
@@ -1350,7 +1350,7 @@ common::Error hkeys(CommandHandler* handler, int argc, const char** argv, FastoO
       common::StringValue* val = common::Value::createStringValue(keysout[i]);
       ar->append(val);
     }
-    FastoObjectArray* child = new FastoObjectArray(out, ar, ssdb->delimiter());
+    FastoObjectArray* child = new FastoObjectArray(out, ar, ssdb->Delimiter());
     out->addChildren(child);
   }
 
@@ -1370,7 +1370,7 @@ common::Error hscan(CommandHandler* handler, int argc, const char** argv, FastoO
       common::StringValue* val = common::Value::createStringValue(keysout[i]);
       ar->append(val);
     }
-    FastoObjectArray* child = new FastoObjectArray(out, ar, ssdb->delimiter());
+    FastoObjectArray* child = new FastoObjectArray(out, ar, ssdb->Delimiter());
     out->addChildren(child);
   }
 
@@ -1390,7 +1390,7 @@ common::Error hrscan(CommandHandler* handler, int argc, const char** argv, Fasto
       common::StringValue* val = common::Value::createStringValue(keysout[i]);
       ar->append(val);
     }
-    FastoObjectArray* child = new FastoObjectArray(out, ar, ssdb->delimiter());
+    FastoObjectArray* child = new FastoObjectArray(out, ar, ssdb->Delimiter());
     out->addChildren(child);
   }
 
@@ -1412,7 +1412,7 @@ common::Error multi_hget(CommandHandler* handler, int argc, const char** argv, F
       common::StringValue* val = common::Value::createStringValue(keysout[i]);
       ar->append(val);
     }
-    FastoObjectArray* child = new FastoObjectArray(out, ar, ssdb->delimiter());
+    FastoObjectArray* child = new FastoObjectArray(out, ar, ssdb->Delimiter());
     out->addChildren(child);
   }
 
@@ -1429,7 +1429,7 @@ common::Error multi_hset(CommandHandler* handler, int argc, const char** argv, F
   common::Error er = ssdb->multi_hset(argv[0], keys);
   if (!er) {
     common::StringValue* val = common::Value::createStringValue("OK");
-    FastoObject* child = new FastoObject(out, val, ssdb->delimiter());
+    FastoObject* child = new FastoObject(out, val, ssdb->Delimiter());
     out->addChildren(child);
   }
 
@@ -1444,7 +1444,7 @@ common::Error zget(CommandHandler* handler, int argc, const char** argv, FastoOb
   common::Error er = ssdb->zget(argv[0], argv[1], &ret);
   if (!er) {
     common::FundamentalValue* val = common::Value::createIntegerValue(ret);
-    FastoObject* child = new FastoObject(out, val, ssdb->delimiter());
+    FastoObject* child = new FastoObject(out, val, ssdb->Delimiter());
     out->addChildren(child);
   }
 
@@ -1458,7 +1458,7 @@ common::Error zset(CommandHandler* handler, int argc, const char** argv, FastoOb
   common::Error er = ssdb->zset(argv[0], argv[1], common::ConvertFromString<int64_t>(argv[2]));
   if (!er) {
     common::StringValue* val = common::Value::createStringValue("OK");
-    FastoObject* child = new FastoObject(out, val, ssdb->delimiter());
+    FastoObject* child = new FastoObject(out, val, ssdb->Delimiter());
     out->addChildren(child);
   }
 
@@ -1472,7 +1472,7 @@ common::Error zdel(CommandHandler* handler, int argc, const char** argv, FastoOb
   common::Error er = ssdb->zdel(argv[0], argv[1]);
   if (!er) {
     common::StringValue* val = common::Value::createStringValue("OK");
-    FastoObject* child = new FastoObject(out, val, ssdb->delimiter());
+    FastoObject* child = new FastoObject(out, val, ssdb->Delimiter());
     out->addChildren(child);
   }
   return er;
@@ -1487,7 +1487,7 @@ common::Error zincr(CommandHandler* handler, int argc, const char** argv, FastoO
       ssdb->zincr(argv[0], argv[1], common::ConvertFromString<int64_t>(argv[2]), &ret);
   if (!er) {
     common::FundamentalValue* val = common::Value::createIntegerValue(ret);
-    FastoObject* child = new FastoObject(out, val, ssdb->delimiter());
+    FastoObject* child = new FastoObject(out, val, ssdb->Delimiter());
     out->addChildren(child);
   }
 
@@ -1502,7 +1502,7 @@ common::Error zsize(CommandHandler* handler, int argc, const char** argv, FastoO
   common::Error er = ssdb->zsize(argv[0], &res);
   if (!er) {
     common::FundamentalValue* val = common::Value::createIntegerValue(res);
-    FastoObject* child = new FastoObject(out, val, ssdb->delimiter());
+    FastoObject* child = new FastoObject(out, val, ssdb->Delimiter());
     out->addChildren(child);
   }
 
@@ -1517,7 +1517,7 @@ common::Error zclear(CommandHandler* handler, int argc, const char** argv, Fasto
   common::Error er = ssdb->zclear(argv[0], &res);
   if (!er) {
     common::FundamentalValue* val = common::Value::createIntegerValue(res);
-    FastoObject* child = new FastoObject(out, val, ssdb->delimiter());
+    FastoObject* child = new FastoObject(out, val, ssdb->Delimiter());
     out->addChildren(child);
   }
 
@@ -1532,7 +1532,7 @@ common::Error zrank(CommandHandler* handler, int argc, const char** argv, FastoO
   common::Error er = ssdb->zrank(argv[0], argv[1], &res);
   if (!er) {
     common::FundamentalValue* val = common::Value::createIntegerValue(res);
-    FastoObject* child = new FastoObject(out, val, ssdb->delimiter());
+    FastoObject* child = new FastoObject(out, val, ssdb->Delimiter());
     out->addChildren(child);
   }
 
@@ -1547,7 +1547,7 @@ common::Error zrrank(CommandHandler* handler, int argc, const char** argv, Fasto
   common::Error er = ssdb->zrrank(argv[0], argv[1], &res);
   if (!er) {
     common::FundamentalValue* val = common::Value::createIntegerValue(res);
-    FastoObject* child = new FastoObject(out, val, ssdb->delimiter());
+    FastoObject* child = new FastoObject(out, val, ssdb->Delimiter());
     out->addChildren(child);
   }
 
@@ -1567,7 +1567,7 @@ common::Error zrange(CommandHandler* handler, int argc, const char** argv, Fasto
       common::StringValue* val = common::Value::createStringValue(res[i]);
       ar->append(val);
     }
-    FastoObjectArray* child = new FastoObjectArray(out, ar, ssdb->delimiter());
+    FastoObjectArray* child = new FastoObjectArray(out, ar, ssdb->Delimiter());
     out->addChildren(child);
   }
 
@@ -1587,7 +1587,7 @@ common::Error zrrange(CommandHandler* handler, int argc, const char** argv, Fast
       common::StringValue* val = common::Value::createStringValue(res[i]);
       ar->append(val);
     }
-    FastoObjectArray* child = new FastoObjectArray(out, ar, ssdb->delimiter());
+    FastoObjectArray* child = new FastoObjectArray(out, ar, ssdb->Delimiter());
     out->addChildren(child);
   }
 
@@ -1609,7 +1609,7 @@ common::Error zkeys(CommandHandler* handler, int argc, const char** argv, FastoO
       common::StringValue* val = common::Value::createStringValue(res[i]);
       ar->append(val);
     }
-    FastoObjectArray* child = new FastoObjectArray(out, ar, ssdb->delimiter());
+    FastoObjectArray* child = new FastoObjectArray(out, ar, ssdb->Delimiter());
     out->addChildren(child);
   }
 
@@ -1631,7 +1631,7 @@ common::Error zscan(CommandHandler* handler, int argc, const char** argv, FastoO
       common::StringValue* val = common::Value::createStringValue(res[i]);
       ar->append(val);
     }
-    FastoObjectArray* child = new FastoObjectArray(out, ar, ssdb->delimiter());
+    FastoObjectArray* child = new FastoObjectArray(out, ar, ssdb->Delimiter());
     out->addChildren(child);
   }
 
@@ -1653,7 +1653,7 @@ common::Error zrscan(CommandHandler* handler, int argc, const char** argv, Fasto
       common::StringValue* val = common::Value::createStringValue(res[i]);
       ar->append(val);
     }
-    FastoObjectArray* child = new FastoObjectArray(out, ar, ssdb->delimiter());
+    FastoObjectArray* child = new FastoObjectArray(out, ar, ssdb->Delimiter());
     out->addChildren(child);
   }
 
@@ -1675,7 +1675,7 @@ common::Error multi_zget(CommandHandler* handler, int argc, const char** argv, F
       common::StringValue* val = common::Value::createStringValue(res[i]);
       ar->append(val);
     }
-    FastoObjectArray* child = new FastoObjectArray(out, ar, ssdb->delimiter());
+    FastoObjectArray* child = new FastoObjectArray(out, ar, ssdb->Delimiter());
     out->addChildren(child);
   }
 
@@ -1692,7 +1692,7 @@ common::Error multi_zset(CommandHandler* handler, int argc, const char** argv, F
   common::Error er = ssdb->multi_zset(argv[0], keysget);
   if (!er) {
     common::StringValue* val = common::Value::createStringValue("OK");
-    FastoObject* child = new FastoObject(out, val, ssdb->delimiter());
+    FastoObject* child = new FastoObject(out, val, ssdb->Delimiter());
     out->addChildren(child);
   }
 
@@ -1709,7 +1709,7 @@ common::Error multi_zdel(CommandHandler* handler, int argc, const char** argv, F
   common::Error er = ssdb->multi_zdel(argv[0], keysget);
   if (!er) {
     common::StringValue* val = common::Value::createStringValue("OK");
-    FastoObject* child = new FastoObject(out, val, ssdb->delimiter());
+    FastoObject* child = new FastoObject(out, val, ssdb->Delimiter());
     out->addChildren(child);
   }
 
@@ -1723,7 +1723,7 @@ common::Error qpush(CommandHandler* handler, int argc, const char** argv, FastoO
   common::Error er = ssdb->qpush(argv[0], argv[1]);
   if (!er) {
     common::StringValue* val = common::Value::createStringValue("OK");
-    FastoObject* child = new FastoObject(out, val, ssdb->delimiter());
+    FastoObject* child = new FastoObject(out, val, ssdb->Delimiter());
     out->addChildren(child);
   }
 
@@ -1738,7 +1738,7 @@ common::Error qpop(CommandHandler* handler, int argc, const char** argv, FastoOb
   common::Error er = ssdb->qpop(argv[0], &ret);
   if (!er) {
     common::StringValue* val = common::Value::createStringValue(ret);
-    FastoObject* child = new FastoObject(out, val, ssdb->delimiter());
+    FastoObject* child = new FastoObject(out, val, ssdb->Delimiter());
     out->addChildren(child);
   }
 
@@ -1760,7 +1760,7 @@ common::Error qslice(CommandHandler* handler, int argc, const char** argv, Fasto
       common::StringValue* val = common::Value::createStringValue(keysout[i]);
       ar->append(val);
     }
-    FastoObjectArray* child = new FastoObjectArray(out, ar, ssdb->delimiter());
+    FastoObjectArray* child = new FastoObjectArray(out, ar, ssdb->Delimiter());
     out->addChildren(child);
   }
 
@@ -1775,7 +1775,7 @@ common::Error qclear(CommandHandler* handler, int argc, const char** argv, Fasto
   common::Error er = ssdb->qclear(argv[0], &res);
   if (!er) {
     common::FundamentalValue* val = common::Value::createIntegerValue(res);
-    FastoObject* child = new FastoObject(out, val, ssdb->delimiter());
+    FastoObject* child = new FastoObject(out, val, ssdb->Delimiter());
     out->addChildren(child);
   }
 
@@ -1791,7 +1791,7 @@ common::Error dbkcount(CommandHandler* handler, int argc, const char** argv, Fas
   common::Error er = ssdb->dbkcount(&dbkcount);
   if (!er) {
     common::FundamentalValue* val = common::Value::createUIntegerValue(dbkcount);
-    FastoObject* child = new FastoObject(out, val, ssdb->delimiter());
+    FastoObject* child = new FastoObject(out, val, ssdb->Delimiter());
     out->addChildren(child);
   }
 

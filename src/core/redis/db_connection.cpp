@@ -586,7 +586,7 @@ common::Error auth(CommandHandler* handler, int argc, const char** argv, FastoOb
   }
 
   common::StringValue* val = common::Value::createStringValue("OK");
-  FastoObject* child = new FastoObject(out, val, red->delimiter());
+  FastoObject* child = new FastoObject(out, val, red->Delimiter());
   out->addChildren(child);
   return common::Error();
 }
@@ -594,13 +594,13 @@ common::Error auth(CommandHandler* handler, int argc, const char** argv, FastoOb
 common::Error select(CommandHandler* handler, int argc, const char** argv, FastoObject* out) {
   UNUSED(argc);
   DBConnection* red = static_cast<DBConnection*>(handler);
-  common::Error err = red->select(argv[0], NULL);
+  common::Error err = red->Select(argv[0], NULL);
   if (err && err->isError()) {
     return err;
   }
 
   common::StringValue* val = common::Value::createStringValue("OK");
-  FastoObject* child = new FastoObject(out, val, red->delimiter());
+  FastoObject* child = new FastoObject(out, val, red->Delimiter());
   out->addChildren(child);
   return common::Error();
 }
@@ -614,13 +614,13 @@ common::Error del(CommandHandler* handler, int argc, const char** argv, FastoObj
   }
 
   NKeys keysdeleted;
-  common::Error err = red->del(keysdel, &keysdeleted);
+  common::Error err = red->Delete(keysdel, &keysdeleted);
   if (err && err->isError()) {
     return err;
   }
 
   common::FundamentalValue* val = common::Value::createUIntegerValue(keysdeleted.size());
-  FastoObject* child = new FastoObject(out, val, red->delimiter());
+  FastoObject* child = new FastoObject(out, val, red->Delimiter());
   out->addChildren(child);
   return common::Error();
 }
@@ -634,13 +634,13 @@ common::Error set(CommandHandler* handler, int argc, const char** argv, FastoObj
 
   DBConnection* red = static_cast<DBConnection*>(handler);
   NDbKValue key_added;
-  common::Error err = red->set(kv, &key_added);
+  common::Error err = red->Set(kv, &key_added);
   if (err && err->isError()) {
     return err;
   }
 
   common::StringValue* val = common::Value::createStringValue("OK");
-  FastoObject* child = new FastoObject(out, val, red->delimiter());
+  FastoObject* child = new FastoObject(out, val, red->Delimiter());
   out->addChildren(child);
   return common::Error();
 }
@@ -651,14 +651,14 @@ common::Error get(CommandHandler* handler, int argc, const char** argv, FastoObj
   NKey key(argv[0]);
   DBConnection* redis = static_cast<DBConnection*>(handler);
   NDbKValue key_loaded;
-  common::Error err = redis->get(key, &key_loaded);
+  common::Error err = redis->Get(key, &key_loaded);
   if (err && err->isError()) {
     return err;
   }
 
   NValue val = key_loaded.value();
   common::Value* copy = val->deepCopy();
-  FastoObject* child = new FastoObject(out, copy, redis->delimiter());
+  FastoObject* child = new FastoObject(out, copy, redis->Delimiter());
   out->addChildren(child);
   return common::Error();
 }
@@ -678,7 +678,7 @@ common::Error lrange(CommandHandler* handler, int argc, const char** argv, Fasto
 
   NValue val = key_loaded.value();
   common::Value* copy = val->deepCopy();
-  FastoObject* child = new FastoObject(out, copy, redis->delimiter());
+  FastoObject* child = new FastoObject(out, copy, redis->Delimiter());
   out->addChildren(child);
   return common::Error();
 }
@@ -696,7 +696,7 @@ common::Error smembers(CommandHandler* handler, int argc, const char** argv, Fas
 
   NValue val = key_loaded.value();
   common::Value* copy = val->deepCopy();
-  FastoObject* child = new FastoObject(out, copy, redis->delimiter());
+  FastoObject* child = new FastoObject(out, copy, redis->Delimiter());
   out->addChildren(child);
   return common::Error();
 }
@@ -717,7 +717,7 @@ common::Error zrange(CommandHandler* handler, int argc, const char** argv, Fasto
 
   NValue val = key_loaded.value();
   common::Value* copy = val->deepCopy();
-  FastoObject* child = new FastoObject(out, copy, redis->delimiter());
+  FastoObject* child = new FastoObject(out, copy, redis->Delimiter());
   out->addChildren(child);
   return common::Error();
 }
@@ -735,7 +735,7 @@ common::Error hgetall(CommandHandler* handler, int argc, const char** argv, Fast
 
   NValue val = key_loaded.value();
   common::Value* copy = val->deepCopy();
-  FastoObject* child = new FastoObject(out, copy, redis->delimiter());
+  FastoObject* child = new FastoObject(out, copy, redis->Delimiter());
   out->addChildren(child);
   return common::Error();
 }
@@ -745,13 +745,13 @@ common::Error rename(CommandHandler* handler, int argc, const char** argv, Fasto
 
   NKey key(argv[0]);
   DBConnection* red = static_cast<DBConnection*>(handler);
-  common::Error err = red->rename(key, argv[1]);
+  common::Error err = red->Rename(key, argv[1]);
   if (err && err->isError()) {
     return err;
   }
 
   common::StringValue* val = common::Value::createStringValue("OK");
-  FastoObject* child = new FastoObject(out, val, red->delimiter());
+  FastoObject* child = new FastoObject(out, val, red->Delimiter());
   out->addChildren(child);
   return common::Error();
 }
@@ -761,16 +761,16 @@ common::Error persist(CommandHandler* handler, int argc, const char** argv, Fast
   NKey key(argv[0]);
 
   DBConnection* red = static_cast<DBConnection*>(handler);
-  common::Error err = red->setTTL(key, NO_TTL);
+  common::Error err = red->SetTTL(key, NO_TTL);
   if (err && err->isError()) {
     common::FundamentalValue* val = common::Value::createUIntegerValue(0);
-    FastoObject* child = new FastoObject(out, val, red->delimiter());
+    FastoObject* child = new FastoObject(out, val, red->Delimiter());
     out->addChildren(child);
     return err;
   }
 
   common::FundamentalValue* val = common::Value::createUIntegerValue(1);
-  FastoObject* child = new FastoObject(out, val, red->delimiter());
+  FastoObject* child = new FastoObject(out, val, red->Delimiter());
   out->addChildren(child);
   return common::Error();
 }
@@ -781,16 +781,16 @@ common::Error expire(CommandHandler* handler, int argc, const char** argv, Fasto
   ttl_t ttl = atoi(argv[1]);
 
   DBConnection* red = static_cast<DBConnection*>(handler);
-  common::Error err = red->setTTL(key, ttl);
+  common::Error err = red->SetTTL(key, ttl);
   if (err && err->isError()) {
     common::FundamentalValue* val = common::Value::createUIntegerValue(0);
-    FastoObject* child = new FastoObject(out, val, red->delimiter());
+    FastoObject* child = new FastoObject(out, val, red->Delimiter());
     out->addChildren(child);
     return err;
   }
 
   common::FundamentalValue* val = common::Value::createUIntegerValue(1);
-  FastoObject* child = new FastoObject(out, val, red->delimiter());
+  FastoObject* child = new FastoObject(out, val, red->Delimiter());
   out->addChildren(child);
   return common::Error();
 }
@@ -1041,8 +1041,8 @@ bool DBConnection::IsAuthenticated() const {
   return isAuth_;
 }
 
-common::Error DBConnection::connect(const config_t& config) {
-  common::Error err = base_class::connect(config);
+common::Error DBConnection::Connect(const config_t& config) {
+  common::Error err = base_class::Connect(config);
   if (err && err->isError()) {
     return err;
   }
@@ -1053,7 +1053,7 @@ common::Error DBConnection::connect(const config_t& config) {
     return err;
   }
 
-  err = select(common::ConvertToString(connection_.config_.dbnum), NULL);
+  err = Select(common::ConvertToString(connection_.config_.dbnum), NULL);
   if (err && err->isError()) {
     return err;
   }
@@ -1125,13 +1125,13 @@ common::Error DBConnection::latencyMode(FastoObject* out) {
     common::Value* val = common::Value::createStringValue(buff);
 
     if (!child) {
-      child = make_fasto_object<FastoObject>(cmd.get(), val, delimiter());
+      child = make_fasto_object<FastoObject>(cmd.get(), val, Delimiter());
       cmd->addChildren(child);
       continue;
     }
 
     if (connection_.config_.latency_history && (cur_time - history_start > history_interval)) {
-      child = make_fasto_object<FastoObject>(cmd.get(), val, delimiter());
+      child = make_fasto_object<FastoObject>(cmd.get(), val, Delimiter());
       cmd->addChildren(child);
       history_start = cur_time;
       min = max = tot = count = 0;
@@ -1287,7 +1287,7 @@ common::Error DBConnection::getRDB(FastoObject* out) {
   /* Write to file. */
   if (connection_.config_.rdb_filename == "-") {
     val = new common::ArrayValue;
-    FastoObjectIPtr child = make_fasto_object<FastoObject>(cmd.get(), val, delimiter());
+    FastoObjectIPtr child = make_fasto_object<FastoObject>(cmd.get(), val, Delimiter());
     cmd->addChildren(child);
   } else {
     fd = open(connection_.config_.rdb_filename.c_str(), O_CREAT | O_WRONLY, 0644);
@@ -1646,7 +1646,7 @@ common::Error DBConnection::findBigKeys(FastoObject* out) {
       buff = common::MemSPrintf("Biggest %6s found '%s' has %llu %s", typeName[i], maxkeys[i],
                                 biggest[i], typeunit[i]);
       common::StringValue* val = common::Value::createStringValue(buff);
-      FastoObjectIPtr obj = make_fasto_object<FastoObject>(cmd.get(), val, delimiter());
+      FastoObjectIPtr obj = make_fasto_object<FastoObject>(cmd.get(), val, Delimiter());
       cmd->addChildren(obj);
     }
   }
@@ -1660,7 +1660,7 @@ common::Error DBConnection::findBigKeys(FastoObject* out) {
         sampled ? 100 * static_cast<double>(counts[i] / sampled) : 0,
         counts[i] ? static_cast<double>(totalsize[i] / counts[i]) : 0);
     common::StringValue* val = common::Value::createStringValue(buff);
-    FastoObjectIPtr obj = make_fasto_object<FastoObject>(cmd.get(), val, delimiter());
+    FastoObjectIPtr obj = make_fasto_object<FastoObject>(cmd.get(), val, Delimiter());
     cmd->addChildren(obj);
   }
 
@@ -1780,7 +1780,7 @@ common::Error DBConnection::statMode(FastoObject* out) {
     }
 
     common::StringValue* val = common::Value::createStringValue(result);
-    FastoObjectIPtr obj = make_fasto_object<FastoObject>(cmd.get(), val, delimiter());
+    FastoObjectIPtr obj = make_fasto_object<FastoObject>(cmd.get(), val, Delimiter());
     cmd->addChildren(obj);
 
     freeReplyObject(reply);
@@ -1834,7 +1834,7 @@ common::Error DBConnection::scanMode(FastoObject* out) {
       for (size_t j = 0; j < reply->element[1]->elements; j++) {
         common::StringValue* val =
             common::Value::createStringValue(reply->element[1]->element[j]->str);
-        FastoObjectIPtr obj = make_fasto_object<FastoObject>(cmd.get(), val, delimiter());
+        FastoObjectIPtr obj = make_fasto_object<FastoObject>(cmd.get(), val, Delimiter());
         cmd->addChildren(obj);
       }
     }
@@ -1844,7 +1844,7 @@ common::Error DBConnection::scanMode(FastoObject* out) {
   return common::Error();
 }
 
-common::Error DBConnection::selectImpl(const std::string& name, IDataBaseInfo** info) {
+common::Error DBConnection::SelectImpl(const std::string& name, IDataBaseInfo** info) {
   int num = common::ConvertFromString<int>(name);
   redisReply* reply =
       reinterpret_cast<redisReply*>(redisCommand(connection_.handle_, "SELECT %d", num));
@@ -1862,7 +1862,7 @@ common::Error DBConnection::selectImpl(const std::string& name, IDataBaseInfo** 
   return common::Error();
 }
 
-common::Error DBConnection::delImpl(const NKeys& keys, NKeys* deleted_keys) {
+common::Error DBConnection::DeleteImpl(const NKeys& keys, NKeys* deleted_keys) {
   for (size_t i = 0; i < keys.size(); ++i) {
     NKey key = keys[i];
     std::string del_cmd;
@@ -1886,7 +1886,7 @@ common::Error DBConnection::delImpl(const NKeys& keys, NKeys* deleted_keys) {
   return common::Error();
 }
 
-common::Error DBConnection::setImpl(const NDbKValue& key, NDbKValue* added_key) {
+common::Error DBConnection::SetImpl(const NDbKValue& key, NDbKValue* added_key) {
   std::string key_str = key.keyString();
   std::string value_str = key.valueString();
   redisReply* reply = reinterpret_cast<redisReply*>(
@@ -1906,7 +1906,7 @@ common::Error DBConnection::setImpl(const NDbKValue& key, NDbKValue* added_key) 
   return common::Error();
 }
 
-common::Error DBConnection::getImpl(const NKey& key, NDbKValue* loaded_key) {
+common::Error DBConnection::GetImpl(const NKey& key, NDbKValue* loaded_key) {
   std::string key_str = key.key();
   redisReply* reply =
       reinterpret_cast<redisReply*>(redisCommand(connection_.handle_, "GET %s", key_str.c_str()));
@@ -1932,7 +1932,7 @@ common::Error DBConnection::getImpl(const NKey& key, NDbKValue* loaded_key) {
   return common::Error();
 }
 
-common::Error DBConnection::renameImpl(const NKey& key, const std::string& new_key) {
+common::Error DBConnection::RenameImpl(const NKey& key, const std::string& new_key) {
   translator_t tran = Translator();
   std::string rename_cmd;
   common::Error err = tran->renameKeyCommand(key, new_key, &rename_cmd);
@@ -1955,7 +1955,7 @@ common::Error DBConnection::renameImpl(const NKey& key, const std::string& new_k
   return common::Error();
 }
 
-common::Error DBConnection::setTTLImpl(const NKey& key, ttl_t ttl) {
+common::Error DBConnection::SetTTLImpl(const NKey& key, ttl_t ttl) {
   std::string key_str = key.key();
   translator_t tran = Translator();
   std::string ttl_cmd;
@@ -2017,7 +2017,7 @@ common::Error DBConnection::cliFormatReplyRaw(FastoObjectArray* ar, redisReply* 
     }
     case REDIS_REPLY_ARRAY: {
       common::ArrayValue* arv = common::Value::createArrayValue();
-      FastoObjectArray* child = new FastoObjectArray(ar, arv, delimiter());
+      FastoObjectArray* child = new FastoObjectArray(ar, arv, Delimiter());
       ar->addChildren(child);
 
       for (size_t i = 0; i < r->elements; ++i) {
@@ -2049,7 +2049,7 @@ common::Error DBConnection::cliFormatReplyRaw(FastoObject* out, redisReply* r) {
   switch (r->type) {
     case REDIS_REPLY_NIL: {
       common::Value* val = common::Value::createNullValue();
-      obj = new FastoObject(out, val, delimiter());
+      obj = new FastoObject(out, val, Delimiter());
       out->addChildren(obj);
       break;
     }
@@ -2065,19 +2065,19 @@ common::Error DBConnection::cliFormatReplyRaw(FastoObject* out, redisReply* r) {
     case REDIS_REPLY_STRING: {
       std::string str(r->str, r->len);
       common::StringValue* val = common::Value::createStringValue(str);
-      obj = new FastoObject(out, val, delimiter());
+      obj = new FastoObject(out, val, Delimiter());
       out->addChildren(obj);
       break;
     }
     case REDIS_REPLY_INTEGER: {
       common::FundamentalValue* val = common::Value::createIntegerValue(r->integer);
-      obj = new FastoObject(out, val, delimiter());
+      obj = new FastoObject(out, val, Delimiter());
       out->addChildren(obj);
       break;
     }
     case REDIS_REPLY_ARRAY: {
       common::ArrayValue* arv = common::Value::createArrayValue();
-      FastoObjectArray* child = new FastoObjectArray(out, arv, delimiter());
+      FastoObjectArray* child = new FastoObjectArray(out, arv, Delimiter());
       out->addChildren(child);
 
       for (size_t i = 0; i < r->elements; ++i) {
@@ -2140,7 +2140,7 @@ common::Error DBConnection::cliReadReply(FastoObject* out) {
     std::string redir =
         common::MemSPrintf("-> Redirected to slot [%d] located at %s", slot, host_str);
     common::StringValue* val = common::Value::createStringValue(redir);
-    FastoObject* child = new FastoObject(out, val, delimiter());
+    FastoObject* child = new FastoObject(out, val, Delimiter());
     out->addChildren(child);
     connection_.config_.cluster_reissue_command = 1;
 
@@ -2246,7 +2246,7 @@ common::Error DBConnection::auth(const std::string& password) {
 }
 
 common::Error DBConnection::help(int argc, const char** argv, FastoObject* out) {
-  return cliOutputHelp(argc, argv, out, delimiter());
+  return cliOutputHelp(argc, argv, out, Delimiter());
 }
 
 common::Error DBConnection::monitor(int argc, const char** argv, FastoObject* out) {

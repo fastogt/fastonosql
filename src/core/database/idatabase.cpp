@@ -32,40 +32,40 @@ namespace core {
 IDatabase::IDatabase(IServerSPtr server, IDataBaseInfoSPtr info) : info_(info), server_(server) {
   CHECK(server);
   CHECK(info);
-  CHECK(server->Type() == info->type());
+  CHECK(server->Type() == info->Type());
 }
 
 IDatabase::~IDatabase() {}
 
-connectionTypes IDatabase::type() const {
-  return info_->type();
+connectionTypes IDatabase::Type() const {
+  return info_->Type();
 }
 
-IServerSPtr IDatabase::server() const {
+IServerSPtr IDatabase::Server() const {
   return server_;
 }
 
-bool IDatabase::isDefault() const {
-  return info_->isDefault();
+bool IDatabase::IsDefault() const {
+  return info_->IsDefault();
 }
 
-std::string IDatabase::name() const {
-  return info_->name();
+std::string IDatabase::Name() const {
+  return info_->Name();
 }
 
-void IDatabase::loadContent(const events_info::LoadDatabaseContentRequest& req) {
+void IDatabase::LoadContent(const events_info::LoadDatabaseContentRequest& req) {
   DCHECK_EQ(req.inf, info_);
 
   server_->LoadDatabaseContent(req);
 }
 
-void IDatabase::setDefault(const events_info::SetDefaultDatabaseRequest& req) {
+void IDatabase::SetDefault(const events_info::SetDefaultDatabaseRequest& req) {
   DCHECK_EQ(req.inf, info_);
 
   server_->SetDefaultDB(req);
 }
 
-IDataBaseInfoSPtr IDatabase::info() const {
+IDataBaseInfoSPtr IDatabase::Info() const {
   return info_;
 }
 
@@ -73,11 +73,11 @@ translator_t IDatabase::Translator() const {
   return server_->Translator();
 }
 
-void IDatabase::execute(const events_info::ExecuteInfoRequest& req) {
+void IDatabase::Execute(const events_info::ExecuteInfoRequest& req) {
   server_->Execute(req);
 }
 
-void IDatabase::removeAllKeys(const events_info::ClearDatabaseRequest& req) {
+void IDatabase::RemoveAllKeys(const events_info::ClearDatabaseRequest& req) {
   DCHECK_EQ(req.inf, info_);
 
   server_->ClearDB(req);

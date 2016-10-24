@@ -2023,7 +2023,7 @@ class DBConnection : public core::CDBConnection<NativeConnection, RConfig, REDIS
 
   bool IsAuthenticated() const;
 
-  common::Error connect(const config_t& config);
+  common::Error Connect(const config_t& config);
 
   static const char* versionApi();
 
@@ -2058,12 +2058,12 @@ class DBConnection : public core::CDBConnection<NativeConnection, RConfig, REDIS
   common::Error hgetall(const NKey& key, NDbKValue* loaded_key);
 
  private:
-  virtual common::Error selectImpl(const std::string& name, IDataBaseInfo** info) override;
-  virtual common::Error delImpl(const NKeys& keys, NKeys* deleted_keys) override;
-  virtual common::Error setImpl(const NDbKValue& key, NDbKValue* added_key) override;
-  virtual common::Error getImpl(const NKey& key, NDbKValue* loaded_key) override;
-  virtual common::Error renameImpl(const NKey& key, const std::string& new_key) override;
-  virtual common::Error setTTLImpl(const NKey& key, ttl_t ttl) override;
+  virtual common::Error SelectImpl(const std::string& name, IDataBaseInfo** info) override;
+  virtual common::Error DeleteImpl(const NKeys& keys, NKeys* deleted_keys) override;
+  virtual common::Error SetImpl(const NDbKValue& key, NDbKValue* added_key) override;
+  virtual common::Error GetImpl(const NKey& key, NDbKValue* loaded_key) override;
+  virtual common::Error RenameImpl(const NKey& key, const std::string& new_key) override;
+  virtual common::Error SetTTLImpl(const NKey& key, ttl_t ttl) override;
 
   common::Error sendSync(unsigned long long* payload) WARN_UNUSED_RESULT;
   common::Error sendScan(unsigned long long* it, redisReply** out) WARN_UNUSED_RESULT;

@@ -100,7 +100,7 @@ ViewKeysDialog::ViewKeysDialog(const QString& title, core::IDatabaseSPtr db, QWi
   setWindowFlags(windowFlags() & ~Qt::WindowContextHelpButtonHint);  // Remove help
                                                                      // button (?)
 
-  core::IServerSPtr serv = db_->server();
+  core::IServerSPtr serv = db_->Server();
   VERIFY(connect(serv.get(), &core::IServer::LoadDataBaseContentStarted, this,
                  &ViewKeysDialog::startLoadDatabaseContent));
   VERIFY(connect(serv.get(), &core::IServer::LoadDatabaseContentFinished, this,
@@ -164,8 +164,8 @@ ViewKeysDialog::ViewKeysDialog(const QString& title, core::IDatabaseSPtr db, QWi
   VERIFY(connect(rightButtonList_, &QPushButton::clicked, this, &ViewKeysDialog::rightPageClicked));
   QHBoxLayout* pagingLayout = new QHBoxLayout;
   pagingLayout->addWidget(leftButtonList_);
-  core::IDataBaseInfoSPtr inf = db_->info();
-  size_t keysCount = inf->dbKeysCount();
+  core::IDataBaseInfoSPtr inf = db_->Info();
+  size_t keysCount = inf->DBKeysCount();
   currentKey_ = new QSpinBox;
   currentKey_->setEnabled(false);
   currentKey_->setValue(0);
@@ -237,7 +237,7 @@ void ViewKeysDialog::changeTTL(const core::NDbKValue& value, core::ttl_t ttl) {
   }
 
   core::events_info::ExecuteInfoRequest req(this, cmd_str);
-  db_->execute(req);
+  db_->Execute(req);
 }
 
 void ViewKeysDialog::startExecute(const core::events_info::ExecuteInfoRequest& req) {
@@ -268,16 +268,16 @@ void ViewKeysDialog::search(bool forward) {
   DCHECK_EQ(cursorStack_[0], 0);
   if (forward) {
     core::events_info::LoadDatabaseContentRequest req(
-        this, db_->info(), common::ConvertToString(pattern), countSpinEdit_->value(),
+        this, db_->Info(), common::ConvertToString(pattern), countSpinEdit_->value(),
         cursorStack_[curPos_]);
-    db_->loadContent(req);
+    db_->LoadContent(req);
     ++curPos_;
   } else {
     if (curPos_ > 0) {
       core::events_info::LoadDatabaseContentRequest req(
-          this, db_->info(), common::ConvertToString(pattern), countSpinEdit_->value(),
+          this, db_->Info(), common::ConvertToString(pattern), countSpinEdit_->value(),
           cursorStack_[--curPos_]);
-      db_->loadContent(req);
+      db_->LoadContent(req);
     }
   }
 }
