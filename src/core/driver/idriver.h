@@ -32,6 +32,10 @@
 #include "core/db_key.h"                                   // for NKey (ptr only), NDbKValue (...
 #include "core/events/events.h"                            // for BackupRequestEvent, ChangeMa...
 #include "core/translator/icommand_translator.h"           // for translator_t
+#include "core/database/idatabase_info.h"                  // for IDataBaseInfoSPtr, etc
+#include "core/server/iserver_info.h"                      // for IServerInfoSPtr, etc
+
+#include "global/global.h"  // for FastoObject (ptr only), etc
 
 class QEvent;
 class QThread;  // lines 37-37
@@ -50,50 +54,50 @@ class IDriver : public QObject, public CDBConnectionClient {
  public:
   virtual ~IDriver();
 
-  static void reply(QObject* reciver, QEvent* ev);
+  static void Reply(QObject* reciver, QEvent* ev);
 
   // sync methods
-  connectionTypes type() const;
-  IConnectionSettings::connection_path_t connectionPath() const;
+  connectionTypes Type() const;
+  IConnectionSettings::connection_path_t ConnectionPath() const;
 
-  IServerInfoSPtr serverInfo() const;
-  IDataBaseInfoSPtr currentDatabaseInfo() const;
-  virtual translator_t translator() const = 0;
+  IServerInfoSPtr CurrentServerInfo() const;
+  IDataBaseInfoSPtr CurrentDatabaseInfo() const;
+  virtual translator_t Translator() const = 0;
 
-  void start();
-  void stop();
+  void Start();
+  void Stop();
 
-  void interrupt();
+  void Interrupt();
 
-  virtual bool isInterrupted() const = 0;
-  virtual void setInterrupted(bool interrupted) = 0;
+  virtual bool IsInterrupted() const = 0;
+  virtual void SetInterrupted(bool interrupted) = 0;
 
-  virtual bool isConnected() const = 0;
-  virtual bool isAuthenticated() const = 0;
+  virtual bool IsConnected() const = 0;
+  virtual bool IsAuthenticated() const = 0;
 
-  virtual std::string delimiter() const = 0;
-  virtual std::string nsSeparator() const = 0;
+  virtual std::string Delimiter() const = 0;
+  virtual std::string NsSeparator() const = 0;
 
  Q_SIGNALS:
   void ChildAdded(FastoObjectIPtr child);
   void ItemUpdated(FastoObject* item, common::ValueSPtr val);
-  void serverInfoSnapShoot(core::ServerInfoSnapShoot shot);
+  void ServerInfoSnapShoot(core::ServerInfoSnapShoot shot);
 
-  void keyRemoved(core::IDataBaseInfoSPtr db, core::NKey key);
-  void keyAdded(core::IDataBaseInfoSPtr db, core::NDbKValue key);
-  void keyRenamed(core::IDataBaseInfoSPtr db, core::NKey key, std::string new_name);
-  void keyLoaded(core::IDataBaseInfoSPtr db, core::NDbKValue key);
-  void keyTTLChanged(core::IDataBaseInfoSPtr db, core::NKey key, core::ttl_t ttl);
+  void KeyRemoved(core::IDataBaseInfoSPtr db, core::NKey key);
+  void KeyAdded(core::IDataBaseInfoSPtr db, core::NDbKValue key);
+  void KeyRenamed(core::IDataBaseInfoSPtr db, core::NKey key, std::string new_name);
+  void KeyLoaded(core::IDataBaseInfoSPtr db, core::NDbKValue key);
+  void KeyTTLChanged(core::IDataBaseInfoSPtr db, core::NKey key, core::ttl_t ttl);
 
  private Q_SLOTS:
-  void init();
-  void clear();
+  void Init();
+  void Clear();
 
  protected:
   virtual void customEvent(QEvent* event);
   virtual void timerEvent(QTimerEvent* event);
 
-  void notifyProgress(QObject* reciver, int value);
+  void NotifyProgress(QObject* reciver, int value);
 
  protected:
   explicit IDriver(IConnectionSettingsBaseSPtr settings);
@@ -102,8 +106,8 @@ class IDriver : public QObject, public CDBConnectionClient {
   virtual void HandleConnectEvent(events::ConnectRequestEvent* ev);
   virtual void HandleDisconnectEvent(events::DisconnectRequestEvent* ev);
 
-  virtual void handleProcessCommandLineArgs(events::ProcessConfigArgsRequestEvent* ev) = 0;
-  virtual void handleExecuteEvent(events::ExecuteRequestEvent* ev);
+  virtual void HandleProcessCommandLineArgsEvent(events::ProcessConfigArgsRequestEvent* ev) = 0;
+  virtual void HandleExecuteEvent(events::ExecuteRequestEvent* ev);
 
   virtual void HandleLoadDatabaseContentEvent(events::LoadDatabaseContentRequestEvent* ev) = 0;
 
@@ -113,14 +117,14 @@ class IDriver : public QObject, public CDBConnectionClient {
   virtual void HandleBackupEvent(events::BackupRequestEvent* ev);
   virtual void HandleExportEvent(events::ExportRequestEvent* ev);
   virtual void HandleChangePasswordEvent(events::ChangePasswordRequestEvent* ev);
-  virtual void handleChangeMaxConnectionEvent(events::ChangeMaxConnectionRequestEvent* ev);
+  virtual void HandleChangeMaxConnectionEvent(events::ChangeMaxConnectionRequestEvent* ev);
   virtual void HandleLoadDatabaseInfosEvent(events::LoadDatabasesInfoRequestEvent* ev);
-  virtual void handleClearDatabaseEvent(events::ClearDatabaseRequestEvent* ev);
+  virtual void HandleClearDatabaseEvent(events::ClearDatabaseRequestEvent* ev);
   virtual void HandleSetDefaultDatabaseEvent(events::SetDefaultDatabaseRequestEvent* ev);
 
   const IConnectionSettingsBaseSPtr settings_;
 
-  common::Error execute(FastoObjectCommandIPtr cmd) WARN_UNUSED_RESULT;
+  common::Error Execute(FastoObjectCommandIPtr cmd) WARN_UNUSED_RESULT;
   virtual FastoObjectCommandIPtr createCommand(FastoObject* parent,
                                                const std::string& input,
                                                common::Value::CommandLoggingType ct) = 0;
@@ -129,29 +133,29 @@ class IDriver : public QObject, public CDBConnectionClient {
                                                    common::Value::CommandLoggingType ct) = 0;
 
  private:
-  virtual common::Error syncConnect() WARN_UNUSED_RESULT = 0;
-  virtual common::Error syncDisconnect() WARN_UNUSED_RESULT = 0;
-  void HandleLoadServerInfoEvent(events::ServerInfoRequestEvent* ev);  // call serverInfo
+  virtual common::Error SyncConnect() WARN_UNUSED_RESULT = 0;
+  virtual common::Error SyncDisconnect() WARN_UNUSED_RESULT = 0;
+  void HandleLoadServerInfoEvent(events::ServerInfoRequestEvent* ev);  // call ServerInfo
   void HandleLoadServerInfoHistoryEvent(events::ServerInfoHistoryRequestEvent* ev);
-  void handleDiscoveryInfoRequestEvent(events::DiscoveryInfoRequestEvent* ev);
-  void handleClearServerHistoryRequestEvent(events::ClearServerHistoryRequestEvent* ev);
+  void HandleDiscoveryInfoEvent(events::DiscoveryInfoRequestEvent* ev);
+  void HandleClearServerHistoryEvent(events::ClearServerHistoryRequestEvent* ev);
 
-  virtual common::Error executeImpl(int argc, const char** argv, FastoObject* out) = 0;
+  virtual common::Error ExecuteImpl(int argc, const char** argv, FastoObject* out) = 0;
 
-  virtual void onCurrentDataBaseChanged(IDataBaseInfo* info) override;
-  virtual void onKeysRemoved(const NKeys& keys) override;
-  virtual void onKeyAdded(const NDbKValue& key) override;
-  virtual void onKeyLoaded(const NDbKValue& key) override;
-  virtual void onKeyRenamed(const NKey& key, const std::string& new_key) override;
-  virtual void onKeyTTLChanged(const NKey& key, ttl_t ttl) override;
+  virtual void OnCurrentDataBaseChanged(IDataBaseInfo* info) override;
+  virtual void OnKeysRemoved(const NKeys& keys) override;
+  virtual void OnKeyAdded(const NDbKValue& key) override;
+  virtual void OnKeyLoaded(const NDbKValue& key) override;
+  virtual void OnKeyRenamed(const NKey& key, const std::string& new_key) override;
+  virtual void OnKeyTTLChanged(const NKey& key, ttl_t ttl) override;
 
   // internal methods
-  virtual IServerInfoSPtr makeServerInfoFromString(const std::string& val) = 0;
-  virtual common::Error serverInfo(IServerInfo** info) = 0;
-  virtual common::Error serverDiscoveryInfo(IServerInfo** sinfo, IDataBaseInfo** dbinfo);
-  virtual common::Error currentDataBaseInfo(IDataBaseInfo** info) = 0;
-  virtual void initImpl() = 0;
-  virtual void clearImpl() = 0;
+  virtual IServerInfoSPtr MakeServerInfoFromString(const std::string& val) = 0;
+  virtual common::Error CurrentServerInfo(IServerInfo** info) = 0;
+  virtual common::Error ServerDiscoveryInfo(IServerInfo** sinfo, IDataBaseInfo** dbinfo);
+  virtual common::Error CurrentDataBaseInfo(IDataBaseInfo** info) = 0;
+  virtual void InitImpl() = 0;
+  virtual void ClearImpl() = 0;
 
  private:
   IServerInfoSPtr server_info_;

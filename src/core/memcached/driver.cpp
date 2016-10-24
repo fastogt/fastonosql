@@ -54,31 +54,31 @@ Driver::Driver(IConnectionSettingsBaseSPtr settings)
     : IDriverRemote(settings), impl_(new DBConnection(this)) {
   COMPILE_ASSERT(DBConnection::connection_t == MEMCACHED,
                  "DBConnection must be the same type as Driver!");
-  CHECK(type() == MEMCACHED);
+  CHECK(Type() == MEMCACHED);
 }
 
 Driver::~Driver() {
   delete impl_;
 }
 
-bool Driver::isInterrupted() const {
-  return impl_->isInterrupted();
+bool Driver::IsInterrupted() const {
+  return impl_->IsInterrupted();
 }
 
-void Driver::setInterrupted(bool interrupted) {
-  return impl_->setInterrupted(interrupted);
+void Driver::SetInterrupted(bool interrupted) {
+  return impl_->SetInterrupted(interrupted);
 }
 
-translator_t Driver::translator() const {
-  return impl_->translator();
+translator_t Driver::Translator() const {
+  return impl_->Translator();
 }
 
-bool Driver::isConnected() const {
-  return impl_->isConnected();
+bool Driver::IsConnected() const {
+  return impl_->IsConnected();
 }
 
-bool Driver::isAuthenticated() const {
-  return impl_->isConnected();
+bool Driver::IsAuthenticated() const {
+  return impl_->IsConnected();
 }
 
 common::net::HostAndPort Driver::host() const {
@@ -86,17 +86,17 @@ common::net::HostAndPort Driver::host() const {
   return conf.host;
 }
 
-std::string Driver::nsSeparator() const {
-  return impl_->nsSeparator();
+std::string Driver::NsSeparator() const {
+  return impl_->NsSeparator();
 }
 
-std::string Driver::delimiter() const {
+std::string Driver::Delimiter() const {
   return impl_->delimiter();
 }
 
-void Driver::initImpl() {}
+void Driver::InitImpl() {}
 
-void Driver::clearImpl() {}
+void Driver::ClearImpl() {}
 
 FastoObjectCommandIPtr Driver::createCommand(FastoObject* parent,
                                              const std::string& input,
@@ -109,21 +109,21 @@ FastoObjectCommandIPtr Driver::createCommandFast(const std::string& input,
   return CreateCommandFast<Command>(input, ct);
 }
 
-common::Error Driver::syncConnect() {
+common::Error Driver::SyncConnect() {
   ConnectionSettings* set = dynamic_cast<ConnectionSettings*>(settings_.get());  // +
   CHECK(set);
   return impl_->connect(set->info());
 }
 
-common::Error Driver::syncDisconnect() {
+common::Error Driver::SyncDisconnect() {
   return impl_->disconnect();
 }
 
-common::Error Driver::executeImpl(int argc, const char** argv, FastoObject* out) {
-  return impl_->execute(argc, argv, out);
+common::Error Driver::ExecuteImpl(int argc, const char** argv, FastoObject* out) {
+  return impl_->Execute(argc, argv, out);
 }
 
-common::Error Driver::serverInfo(IServerInfo** info) {
+common::Error Driver::CurrentServerInfo(IServerInfo** info) {
   FastoObjectCommandIPtr cmd = createCommandFast(MEMCACHED_INFO_REQUEST, common::Value::C_INNER);
   LOG_COMMAND(cmd);
   ServerInfo::Stats cm;
@@ -136,7 +136,7 @@ common::Error Driver::serverInfo(IServerInfo** info) {
   return common::Error();
 }
 
-common::Error Driver::currentDataBaseInfo(IDataBaseInfo** info) {
+common::Error Driver::CurrentDataBaseInfo(IDataBaseInfo** info) {
   if (!info) {
     DNOTREACHED();
     return common::make_error_value("Invalid input argument(s)", common::ErrorValue::E_ERROR);
@@ -147,13 +147,13 @@ common::Error Driver::currentDataBaseInfo(IDataBaseInfo** info) {
 
 void Driver::HandleLoadDatabaseContentEvent(events::LoadDatabaseContentRequestEvent* ev) {
   QObject* sender = ev->sender();
-  notifyProgress(sender, 0);
+  NotifyProgress(sender, 0);
   events::LoadDatabaseContentResponceEvent::value_type res(ev->value());
   std::string patternResult =
       common::MemSPrintf(MEMCACHED_GET_KEYS_PATTERN_1ARGS_I, res.count_keys);
   FastoObjectCommandIPtr cmd = createCommandFast(patternResult, common::Value::C_INNER);
-  notifyProgress(sender, 50);
-  common::Error err = execute(cmd);
+  NotifyProgress(sender, 50);
+  common::Error err = Execute(cmd);
   if (err && err->isError()) {
     res.setErrorInfo(err);
   } else {
@@ -185,16 +185,16 @@ void Driver::HandleLoadDatabaseContentEvent(events::LoadDatabaseContentRequestEv
     }
   }
 done:
-  notifyProgress(sender, 75);
-  reply(sender, new events::LoadDatabaseContentResponceEvent(this, res));
-  notifyProgress(sender, 100);
+  NotifyProgress(sender, 75);
+  Reply(sender, new events::LoadDatabaseContentResponceEvent(this, res));
+  NotifyProgress(sender, 100);
 }
 
-void Driver::handleProcessCommandLineArgs(events::ProcessConfigArgsRequestEvent* ev) {
+void Driver::HandleProcessCommandLineArgsEvent(events::ProcessConfigArgsRequestEvent* ev) {
   UNUSED(ev);
 }
 
-IServerInfoSPtr Driver::makeServerInfoFromString(const std::string& val) {
+IServerInfoSPtr Driver::MakeServerInfoFromString(const std::string& val) {
   IServerInfoSPtr res(makeMemcachedServerInfo(val));
   return res;
 }

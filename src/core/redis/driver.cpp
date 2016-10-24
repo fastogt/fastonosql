@@ -93,7 +93,7 @@ Driver::Driver(IConnectionSettingsBaseSPtr settings)
     : IDriverRemote(settings), impl_(new DBConnection(this)) {
   COMPILE_ASSERT(DBConnection::connection_t == REDIS,
                  "DBConnection must be the same type as Driver!");
-  CHECK(type() == REDIS);
+  CHECK(Type() == REDIS);
 }
 
 Driver::~Driver() {
@@ -105,37 +105,37 @@ common::net::HostAndPort Driver::host() const {
   return conf.host;
 }
 
-std::string Driver::nsSeparator() const {
-  return impl_->nsSeparator();
+std::string Driver::NsSeparator() const {
+  return impl_->NsSeparator();
 }
 
-std::string Driver::delimiter() const {
+std::string Driver::Delimiter() const {
   return impl_->delimiter();
 }
 
-bool Driver::isInterrupted() const {
-  return impl_->isInterrupted();
+bool Driver::IsInterrupted() const {
+  return impl_->IsInterrupted();
 }
 
-void Driver::setInterrupted(bool interrupted) {
-  return impl_->setInterrupted(interrupted);
+void Driver::SetInterrupted(bool interrupted) {
+  return impl_->SetInterrupted(interrupted);
 }
 
-translator_t Driver::translator() const {
-  return impl_->translator();
+translator_t Driver::Translator() const {
+  return impl_->Translator();
 }
 
-bool Driver::isConnected() const {
-  return impl_->isConnected();
+bool Driver::IsConnected() const {
+  return impl_->IsConnected();
 }
 
-bool Driver::isAuthenticated() const {
-  return impl_->isAuthenticated();
+bool Driver::IsAuthenticated() const {
+  return impl_->IsAuthenticated();
 }
 
-void Driver::initImpl() {}
+void Driver::InitImpl() {}
 
-void Driver::clearImpl() {}
+void Driver::ClearImpl() {}
 
 FastoObjectCommandIPtr Driver::createCommand(FastoObject* parent,
                                              const std::string& input,
@@ -148,24 +148,24 @@ FastoObjectCommandIPtr Driver::createCommandFast(const std::string& input,
   return CreateCommandFast<Command>(input, ct);
 }
 
-common::Error Driver::syncConnect() {
+common::Error Driver::SyncConnect() {
   ConnectionSettings* set = dynamic_cast<ConnectionSettings*>(settings_.get());  // +
   CHECK(set);
   RConfig rconf(set->info(), set->sshInfo());
   return impl_->connect(rconf);
 }
 
-common::Error Driver::syncDisconnect() {
+common::Error Driver::SyncDisconnect() {
   return impl_->disconnect();
 }
 
-common::Error Driver::executeImpl(int argc, const char** argv, FastoObject* out) {
-  return impl_->execute(argc, argv, out);
+common::Error Driver::ExecuteImpl(int argc, const char** argv, FastoObject* out) {
+  return impl_->Execute(argc, argv, out);
 }
 
-common::Error Driver::serverInfo(IServerInfo** info) {
+common::Error Driver::CurrentServerInfo(IServerInfo** info) {
   FastoObjectCommandIPtr cmd = createCommandFast(INFO_REQUEST, common::Value::C_INNER);
-  common::Error err = execute(cmd.get());
+  common::Error err = Execute(cmd.get());
   if (err && err->isError()) {
     return err;
   }
@@ -180,7 +180,7 @@ common::Error Driver::serverInfo(IServerInfo** info) {
   return common::Error();
 }
 
-common::Error Driver::currentDataBaseInfo(IDataBaseInfo** info) {
+common::Error Driver::CurrentDataBaseInfo(IDataBaseInfo** info) {
   if (!info) {
     DNOTREACHED();
     return common::make_error_value("Invalid input argument(s)", common::ErrorValue::E_ERROR);
@@ -190,7 +190,7 @@ common::Error Driver::currentDataBaseInfo(IDataBaseInfo** info) {
   return impl_->select(common::ConvertToString(conf.dbnum), info);
 }
 
-void Driver::handleProcessCommandLineArgs(events::ProcessConfigArgsRequestEvent* ev) {
+void Driver::HandleProcessCommandLineArgsEvent(events::ProcessConfigArgsRequestEvent* ev) {
   const Config conf = impl_->config();
   /* Latency mode */
   if (conf.latency_mode) {
@@ -226,31 +226,31 @@ void Driver::handleProcessCommandLineArgs(events::ProcessConfigArgsRequestEvent*
 
   QObject* sender = ev->sender();
   events::ProcessConfigArgsResponceEvent::value_type res(ev->value());
-  reply(sender, new events::ProcessConfigArgsResponceEvent(this, res));
+  Reply(sender, new events::ProcessConfigArgsResponceEvent(this, res));
 }
 
 void Driver::HandleShutdownEvent(events::ShutDownRequestEvent* ev) {
   QObject* sender = ev->sender();
-  notifyProgress(sender, 0);
+  NotifyProgress(sender, 0);
   events::ShutDownResponceEvent::value_type res(ev->value());
-  notifyProgress(sender, 25);
+  NotifyProgress(sender, 25);
   FastoObjectCommandIPtr cmd = createCommandFast(REDIS_SHUTDOWN, common::Value::C_INNER);
-  common::Error er = execute(cmd);
+  common::Error er = Execute(cmd);
   if (er && er->isError()) {
     res.setErrorInfo(er);
   }
-  notifyProgress(sender, 75);
-  reply(sender, new events::ShutDownResponceEvent(this, res));
-  notifyProgress(sender, 100);
+  NotifyProgress(sender, 75);
+  Reply(sender, new events::ShutDownResponceEvent(this, res));
+  NotifyProgress(sender, 100);
 }
 
 void Driver::HandleBackupEvent(events::BackupRequestEvent* ev) {
   QObject* sender = ev->sender();
-  notifyProgress(sender, 0);
+  NotifyProgress(sender, 0);
   events::BackupResponceEvent::value_type res(ev->value());
-  notifyProgress(sender, 25);
+  NotifyProgress(sender, 25);
   FastoObjectCommandIPtr cmd = createCommandFast(REDIS_BACKUP, common::Value::C_INNER);
-  common::Error er = execute(cmd);
+  common::Error er = Execute(cmd);
   if (er && er->isError()) {
     res.setErrorInfo(er);
   } else {
@@ -259,77 +259,77 @@ void Driver::HandleBackupEvent(events::BackupRequestEvent* ev) {
       res.setErrorInfo(err);
     }
   }
-  notifyProgress(sender, 75);
-  reply(sender, new events::BackupResponceEvent(this, res));
-  notifyProgress(sender, 100);
+  NotifyProgress(sender, 75);
+  Reply(sender, new events::BackupResponceEvent(this, res));
+  NotifyProgress(sender, 100);
 }
 
 void Driver::HandleExportEvent(events::ExportRequestEvent* ev) {
   QObject* sender = ev->sender();
-  notifyProgress(sender, 0);
+  NotifyProgress(sender, 0);
   events::ExportResponceEvent::value_type res(ev->value());
-  notifyProgress(sender, 25);
+  NotifyProgress(sender, 25);
   common::Error err = common::file_system::copy_file(res.path, "/var/lib/redis/dump.rdb");
   if (err && err->isError()) {
     res.setErrorInfo(err);
   }
-  notifyProgress(sender, 75);
-  reply(sender, new events::ExportResponceEvent(this, res));
-  notifyProgress(sender, 100);
+  NotifyProgress(sender, 75);
+  Reply(sender, new events::ExportResponceEvent(this, res));
+  NotifyProgress(sender, 100);
 }
 
 void Driver::HandleChangePasswordEvent(events::ChangePasswordRequestEvent* ev) {
   QObject* sender = ev->sender();
-  notifyProgress(sender, 0);
+  NotifyProgress(sender, 0);
   events::ChangePasswordResponceEvent::value_type res(ev->value());
-  notifyProgress(sender, 25);
+  NotifyProgress(sender, 25);
   std::string patternResult = common::MemSPrintf(REDIS_SET_PASSWORD_1ARGS_S, res.new_password);
   FastoObjectCommandIPtr cmd = createCommandFast(patternResult, common::Value::C_INNER);
-  common::Error er = execute(cmd);
+  common::Error er = Execute(cmd);
   if (er && er->isError()) {
     res.setErrorInfo(er);
   }
 
-  notifyProgress(sender, 75);
-  reply(sender, new events::ChangePasswordResponceEvent(this, res));
-  notifyProgress(sender, 100);
+  NotifyProgress(sender, 75);
+  Reply(sender, new events::ChangePasswordResponceEvent(this, res));
+  NotifyProgress(sender, 100);
 }
 
-void Driver::handleChangeMaxConnectionEvent(events::ChangeMaxConnectionRequestEvent* ev) {
+void Driver::HandleChangeMaxConnectionEvent(events::ChangeMaxConnectionRequestEvent* ev) {
   QObject* sender = ev->sender();
-  notifyProgress(sender, 0);
+  NotifyProgress(sender, 0);
   events::ChangeMaxConnectionResponceEvent::value_type res(ev->value());
-  notifyProgress(sender, 25);
+  NotifyProgress(sender, 25);
   std::string patternResult =
       common::MemSPrintf(REDIS_SET_MAX_CONNECTIONS_1ARGS_I, res.max_connection);
   FastoObjectCommandIPtr cmd = createCommandFast(patternResult, common::Value::C_INNER);
-  common::Error er = execute(cmd);
+  common::Error er = Execute(cmd);
   if (er && er->isError()) {
     res.setErrorInfo(er);
   }
 
-  notifyProgress(sender, 75);
-  reply(sender, new events::ChangeMaxConnectionResponceEvent(this, res));
-  notifyProgress(sender, 100);
+  NotifyProgress(sender, 75);
+  Reply(sender, new events::ChangeMaxConnectionResponceEvent(this, res));
+  NotifyProgress(sender, 100);
 }
 
 common::Error Driver::interacteveMode(events::ProcessConfigArgsRequestEvent* ev) {
   QObject* sender = ev->sender();
-  notifyProgress(sender, 0);
+  NotifyProgress(sender, 0);
   events::EnterModeEvent::value_type res(this, InteractiveMode);
-  reply(sender, new events::EnterModeEvent(this, res));
+  Reply(sender, new events::EnterModeEvent(this, res));
 
   events::LeaveModeEvent::value_type res2(this, InteractiveMode);
-  reply(sender, new events::LeaveModeEvent(this, res2));
-  notifyProgress(sender, 100);
+  Reply(sender, new events::LeaveModeEvent(this, res2));
+  NotifyProgress(sender, 100);
   return common::Error();
 }
 
 common::Error Driver::latencyMode(events::ProcessConfigArgsRequestEvent* ev) {
   QObject* sender = ev->sender();
-  notifyProgress(sender, 0);
+  NotifyProgress(sender, 0);
   events::EnterModeEvent::value_type resEv(this, LatencyMode);
-  reply(sender, new events::EnterModeEvent(this, resEv));
+  Reply(sender, new events::EnterModeEvent(this, resEv));
 
   events::LeaveModeEvent::value_type res(this, LatencyMode);
   RootLocker lock(this, sender, LATENCY_REQUEST, false);
@@ -340,16 +340,16 @@ common::Error Driver::latencyMode(events::ProcessConfigArgsRequestEvent* ev) {
     res.setErrorInfo(er);
   }
 
-  reply(sender, new events::LeaveModeEvent(this, res));
-  notifyProgress(sender, 100);
+  Reply(sender, new events::LeaveModeEvent(this, res));
+  NotifyProgress(sender, 100);
   return er;
 }
 
 common::Error Driver::slaveMode(events::ProcessConfigArgsRequestEvent* ev) {
   QObject* sender = ev->sender();
-  notifyProgress(sender, 0);
+  NotifyProgress(sender, 0);
   events::EnterModeEvent::value_type resEv(this, SlaveMode);
-  reply(sender, new events::EnterModeEvent(this, resEv));
+  Reply(sender, new events::EnterModeEvent(this, resEv));
 
   events::LeaveModeEvent::value_type res(this, SlaveMode);
   RootLocker lock(this, sender, SYNC_REQUEST, false);
@@ -360,16 +360,16 @@ common::Error Driver::slaveMode(events::ProcessConfigArgsRequestEvent* ev) {
     res.setErrorInfo(er);
   }
 
-  reply(sender, new events::LeaveModeEvent(this, res));
-  notifyProgress(sender, 100);
+  Reply(sender, new events::LeaveModeEvent(this, res));
+  NotifyProgress(sender, 100);
   return er;
 }
 
 common::Error Driver::getRDBMode(events::ProcessConfigArgsRequestEvent* ev) {
   QObject* sender = ev->sender();
-  notifyProgress(sender, 0);
+  NotifyProgress(sender, 0);
   events::EnterModeEvent::value_type resEv(this, GetRDBMode);
-  reply(sender, new events::EnterModeEvent(this, resEv));
+  Reply(sender, new events::EnterModeEvent(this, resEv));
 
   events::LeaveModeEvent::value_type res(this, GetRDBMode);
   RootLocker lock(this, sender, RDM_REQUEST, false);
@@ -380,16 +380,16 @@ common::Error Driver::getRDBMode(events::ProcessConfigArgsRequestEvent* ev) {
     res.setErrorInfo(er);
   }
 
-  reply(sender, new events::LeaveModeEvent(this, res));
-  notifyProgress(sender, 100);
+  Reply(sender, new events::LeaveModeEvent(this, res));
+  NotifyProgress(sender, 100);
   return er;
 }
 
 common::Error Driver::findBigKeysMode(events::ProcessConfigArgsRequestEvent* ev) {
   QObject* sender = ev->sender();
-  notifyProgress(sender, 0);
+  NotifyProgress(sender, 0);
   events::EnterModeEvent::value_type resEv(this, FindBigKeysMode);
-  reply(sender, new events::EnterModeEvent(this, resEv));
+  Reply(sender, new events::EnterModeEvent(this, resEv));
 
   events::LeaveModeEvent::value_type res(this, FindBigKeysMode);
   RootLocker lock(this, sender, FIND_BIG_KEYS_REQUEST, false);
@@ -400,16 +400,16 @@ common::Error Driver::findBigKeysMode(events::ProcessConfigArgsRequestEvent* ev)
     res.setErrorInfo(er);
   }
 
-  reply(sender, new events::LeaveModeEvent(this, res));
-  notifyProgress(sender, 100);
+  Reply(sender, new events::LeaveModeEvent(this, res));
+  NotifyProgress(sender, 100);
   return er;
 }
 
 common::Error Driver::statMode(events::ProcessConfigArgsRequestEvent* ev) {
   QObject* sender = ev->sender();
-  notifyProgress(sender, 0);
+  NotifyProgress(sender, 0);
   events::EnterModeEvent::value_type resEv(this, StatMode);
-  reply(sender, new events::EnterModeEvent(this, resEv));
+  Reply(sender, new events::EnterModeEvent(this, resEv));
 
   events::LeaveModeEvent::value_type res(this, StatMode);
   RootLocker lock(this, sender, STAT_MODE_REQUEST, false);
@@ -420,16 +420,16 @@ common::Error Driver::statMode(events::ProcessConfigArgsRequestEvent* ev) {
     res.setErrorInfo(er);
   }
 
-  reply(sender, new events::LeaveModeEvent(this, res));
-  notifyProgress(sender, 100);
+  Reply(sender, new events::LeaveModeEvent(this, res));
+  NotifyProgress(sender, 100);
   return er;
 }
 
 common::Error Driver::scanMode(events::ProcessConfigArgsRequestEvent* ev) {
   QObject* sender = ev->sender();
-  notifyProgress(sender, 0);
+  NotifyProgress(sender, 0);
   events::EnterModeEvent::value_type resEv(this, ScanMode);
-  reply(sender, new events::EnterModeEvent(this, resEv));
+  Reply(sender, new events::EnterModeEvent(this, resEv));
 
   events::LeaveModeEvent::value_type res(this, ScanMode);
   RootLocker lock(this, sender, SCAN_MODE_REQUEST, false);
@@ -440,19 +440,19 @@ common::Error Driver::scanMode(events::ProcessConfigArgsRequestEvent* ev) {
     res.setErrorInfo(er);
   }
 
-  reply(sender, new events::LeaveModeEvent(this, res));
-  notifyProgress(sender, 100);
+  Reply(sender, new events::LeaveModeEvent(this, res));
+  NotifyProgress(sender, 100);
   return er;
 }
 
 void Driver::HandleLoadDatabaseInfosEvent(events::LoadDatabasesInfoRequestEvent* ev) {
   QObject* sender = ev->sender();
-  notifyProgress(sender, 0);
+  NotifyProgress(sender, 0);
   events::LoadDatabasesInfoResponceEvent::value_type res(ev->value());
   FastoObjectCommandIPtr cmd = createCommandFast(REDIS_GET_DATABASES, common::Value::C_INNER);
-  notifyProgress(sender, 50);
+  NotifyProgress(sender, 50);
 
-  common::Error er = execute(cmd.get());
+  common::Error er = Execute(cmd.get());
   if (er && er->isError()) {
     res.setErrorInfo(er);
   } else {
@@ -468,7 +468,7 @@ void Driver::HandleLoadDatabaseInfosEvent(events::LoadDatabasesInfoRequestEvent*
         goto done;
       }
 
-      IDataBaseInfoSPtr curdb = currentDatabaseInfo();
+      IDataBaseInfoSPtr curdb = CurrentDatabaseInfo();
       CHECK(curdb);
       if (ar->size() == 2) {
         std::string scountDb;
@@ -492,20 +492,20 @@ void Driver::HandleLoadDatabaseInfosEvent(events::LoadDatabasesInfoRequestEvent*
     }
   }
 done:
-  notifyProgress(sender, 75);
-  reply(sender, new events::LoadDatabasesInfoResponceEvent(this, res));
-  notifyProgress(sender, 100);
+  NotifyProgress(sender, 75);
+  Reply(sender, new events::LoadDatabasesInfoResponceEvent(this, res));
+  NotifyProgress(sender, 100);
 }
 
 void Driver::HandleLoadDatabaseContentEvent(events::LoadDatabaseContentRequestEvent* ev) {
   QObject* sender = ev->sender();
-  notifyProgress(sender, 0);
+  NotifyProgress(sender, 0);
   events::LoadDatabaseContentResponceEvent::value_type res(ev->value());
   std::string patternResult = common::MemSPrintf(REDIS_GET_KEYS_PATTERN_3ARGS_ISI, res.cursor_in,
                                                  res.pattern, res.count_keys);
   FastoObjectCommandIPtr cmd = createCommandFast(patternResult, common::Value::C_INNER);
-  notifyProgress(sender, 50);
-  common::Error err = execute(cmd);
+  NotifyProgress(sender, 50);
+  common::Error err = Execute(cmd);
   if (err && err->isError()) {
     res.setErrorInfo(err);
   } else {
@@ -597,50 +597,50 @@ void Driver::HandleLoadDatabaseContentEvent(events::LoadDatabaseContentRequestEv
     }
   }
 done:
-  notifyProgress(sender, 75);
-  reply(sender, new events::LoadDatabaseContentResponceEvent(this, res));
-  notifyProgress(sender, 100);
+  NotifyProgress(sender, 75);
+  Reply(sender, new events::LoadDatabaseContentResponceEvent(this, res));
+  NotifyProgress(sender, 100);
 }
 
-void Driver::handleClearDatabaseEvent(events::ClearDatabaseRequestEvent* ev) {
+void Driver::HandleClearDatabaseEvent(events::ClearDatabaseRequestEvent* ev) {
   QObject* sender = ev->sender();
-  notifyProgress(sender, 0);
+  NotifyProgress(sender, 0);
   events::ClearDatabaseResponceEvent::value_type res(ev->value());
   FastoObjectCommandIPtr cmd = createCommandFast(REDIS_FLUSHDB, common::Value::C_INNER);
-  notifyProgress(sender, 50);
-  common::Error er = execute(cmd);
+  NotifyProgress(sender, 50);
+  common::Error er = Execute(cmd);
   if (er && er->isError()) {
     res.setErrorInfo(er);
   }
-  notifyProgress(sender, 75);
-  reply(sender, new events::ClearDatabaseResponceEvent(this, res));
-  notifyProgress(sender, 100);
+  NotifyProgress(sender, 75);
+  Reply(sender, new events::ClearDatabaseResponceEvent(this, res));
+  NotifyProgress(sender, 100);
 }
 
 void Driver::HandleSetDefaultDatabaseEvent(events::SetDefaultDatabaseRequestEvent* ev) {
   QObject* sender = ev->sender();
-  notifyProgress(sender, 0);
+  NotifyProgress(sender, 0);
   events::SetDefaultDatabaseResponceEvent::value_type res(ev->value());
   std::string setDefCommand =
       common::MemSPrintf(REDIS_SET_DEFAULT_DATABASE_PATTERN_1ARGS_S, res.inf->name());
   FastoObjectCommandIPtr cmd = createCommandFast(setDefCommand, common::Value::C_INNER);
-  notifyProgress(sender, 50);
-  common::Error er = execute(cmd);
+  NotifyProgress(sender, 50);
+  common::Error er = Execute(cmd);
   if (er && er->isError()) {
     res.setErrorInfo(er);
   }
-  notifyProgress(sender, 75);
-  reply(sender, new events::SetDefaultDatabaseResponceEvent(this, res));
-  notifyProgress(sender, 100);
+  NotifyProgress(sender, 75);
+  Reply(sender, new events::SetDefaultDatabaseResponceEvent(this, res));
+  NotifyProgress(sender, 100);
 }
 
 void Driver::HandleLoadServerPropertyEvent(events::ServerPropertyInfoRequestEvent* ev) {
   QObject* sender = ev->sender();
-  notifyProgress(sender, 0);
+  NotifyProgress(sender, 0);
   events::ServerPropertyInfoResponceEvent::value_type res(ev->value());
   FastoObjectCommandIPtr cmd = createCommandFast(REDIS_GET_PROPERTY_SERVER, common::Value::C_INNER);
-  notifyProgress(sender, 50);
-  common::Error er = execute(cmd);
+  NotifyProgress(sender, 50);
+  common::Error er = Execute(cmd);
   if (er && er->isError()) {
     res.setErrorInfo(er);
   } else {
@@ -653,31 +653,31 @@ void Driver::HandleLoadServerPropertyEvent(events::ServerPropertyInfoRequestEven
       }
     }
   }
-  notifyProgress(sender, 75);
-  reply(sender, new events::ServerPropertyInfoResponceEvent(this, res));
-  notifyProgress(sender, 100);
+  NotifyProgress(sender, 75);
+  Reply(sender, new events::ServerPropertyInfoResponceEvent(this, res));
+  NotifyProgress(sender, 100);
 }
 
 void Driver::HandleServerPropertyChangeEvent(events::ChangeServerPropertyInfoRequestEvent* ev) {
   QObject* sender = ev->sender();
-  notifyProgress(sender, 0);
+  NotifyProgress(sender, 0);
   events::ChangeServerPropertyInfoResponceEvent::value_type res(ev->value());
 
-  notifyProgress(sender, 50);
+  NotifyProgress(sender, 50);
   std::string changeRequest = "CONFIG SET " + res.new_item.first + " " + res.new_item.second;
   FastoObjectCommandIPtr cmd = createCommandFast(changeRequest, common::Value::C_INNER);
-  common::Error er = execute(cmd);
+  common::Error er = Execute(cmd);
   if (er && er->isError()) {
     res.setErrorInfo(er);
   } else {
     res.is_change = true;
   }
-  notifyProgress(sender, 75);
-  reply(sender, new events::ChangeServerPropertyInfoResponceEvent(this, res));
-  notifyProgress(sender, 100);
+  NotifyProgress(sender, 75);
+  Reply(sender, new events::ChangeServerPropertyInfoResponceEvent(this, res));
+  NotifyProgress(sender, 100);
 }
 
-IServerInfoSPtr Driver::makeServerInfoFromString(const std::string& val) {
+IServerInfoSPtr Driver::MakeServerInfoFromString(const std::string& val) {
   IServerInfoSPtr res(makeRedisServerInfo(val));
   return res;
 }

@@ -56,20 +56,20 @@ class Driver : public IDriverRemote {
   explicit Driver(IConnectionSettingsBaseSPtr settings);
   virtual ~Driver();
 
-  virtual bool isInterrupted() const override;
-  virtual void setInterrupted(bool interrupted) override;
+  virtual bool IsInterrupted() const override;
+  virtual void SetInterrupted(bool interrupted) override;
 
-  virtual translator_t translator() const;
+  virtual translator_t Translator() const;
 
-  virtual bool isConnected() const;
-  virtual bool isAuthenticated() const;
+  virtual bool IsConnected() const;
+  virtual bool IsAuthenticated() const;
   virtual common::net::HostAndPort host() const;
-  virtual std::string nsSeparator() const;
-  virtual std::string delimiter() const;
+  virtual std::string NsSeparator() const;
+  virtual std::string Delimiter() const;
 
  private:
-  virtual void initImpl();
-  virtual void clearImpl();
+  virtual void InitImpl();
+  virtual void ClearImpl();
 
   virtual FastoObjectCommandIPtr createCommand(FastoObject* parent,
                                                const std::string& input,
@@ -78,29 +78,29 @@ class Driver : public IDriverRemote {
   virtual FastoObjectCommandIPtr createCommandFast(const std::string& input,
                                                    common::Value::CommandLoggingType ct) override;
 
-  virtual common::Error syncConnect() override WARN_UNUSED_RESULT;
-  virtual common::Error syncDisconnect() override WARN_UNUSED_RESULT;
+  virtual common::Error SyncConnect() override WARN_UNUSED_RESULT;
+  virtual common::Error SyncDisconnect() override WARN_UNUSED_RESULT;
 
-  virtual common::Error executeImpl(int argc, const char** argv, FastoObject* out);
+  virtual common::Error ExecuteImpl(int argc, const char** argv, FastoObject* out);
 
-  virtual common::Error serverInfo(IServerInfo** info);
-  virtual common::Error currentDataBaseInfo(IDataBaseInfo** info);
+  virtual common::Error CurrentServerInfo(IServerInfo** info);
+  virtual common::Error CurrentDataBaseInfo(IDataBaseInfo** info);
 
   virtual void HandleLoadDatabaseInfosEvent(events::LoadDatabasesInfoRequestEvent* ev);
   virtual void HandleLoadServerPropertyEvent(events::ServerPropertyInfoRequestEvent* ev);
   virtual void HandleServerPropertyChangeEvent(events::ChangeServerPropertyInfoRequestEvent* ev);
-  virtual void handleProcessCommandLineArgs(events::ProcessConfigArgsRequestEvent* ev);
+  virtual void HandleProcessCommandLineArgsEvent(events::ProcessConfigArgsRequestEvent* ev);
   virtual void HandleShutdownEvent(events::ShutDownRequestEvent* ev);
   virtual void HandleBackupEvent(events::BackupRequestEvent* ev);
   virtual void HandleExportEvent(events::ExportRequestEvent* ev);
   virtual void HandleChangePasswordEvent(events::ChangePasswordRequestEvent* ev);
-  virtual void handleChangeMaxConnectionEvent(events::ChangeMaxConnectionRequestEvent* ev);
+  virtual void HandleChangeMaxConnectionEvent(events::ChangeMaxConnectionRequestEvent* ev);
 
   virtual void HandleLoadDatabaseContentEvent(events::LoadDatabaseContentRequestEvent* ev);
-  virtual void handleClearDatabaseEvent(events::ClearDatabaseRequestEvent* ev);
+  virtual void HandleClearDatabaseEvent(events::ClearDatabaseRequestEvent* ev);
   virtual void HandleSetDefaultDatabaseEvent(events::SetDefaultDatabaseRequestEvent* ev);
 
-  IServerInfoSPtr makeServerInfoFromString(const std::string& val);
+  IServerInfoSPtr MakeServerInfoFromString(const std::string& val);
 
   DBConnection* const impl_;
 

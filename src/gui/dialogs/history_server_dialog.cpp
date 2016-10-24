@@ -105,7 +105,7 @@ ServerHistoryDialog::ServerHistoryDialog(core::IServerSPtr server, QWidget* pare
                  &ServerHistoryDialog::startClearServerHistory));
   VERIFY(connect(server.get(), &core::IServer::ClearServerHistoryFinished, this,
                  &ServerHistoryDialog::finishClearServerHistory));
-  VERIFY(connect(server.get(), &core::IServer::serverInfoSnapShoot, this,
+  VERIFY(connect(server.get(), &core::IServer::ServerInfoSnapShoot, this,
                  &ServerHistoryDialog::snapShotAdd));
   retranslateUi();
 }

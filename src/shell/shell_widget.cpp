@@ -249,7 +249,7 @@ BaseShellWidget::BaseShellWidget(core::IServerSPtr server, const QString& filePa
   setLayout(mainlayout);
 
   syncConnectionActions();
-  updateServerInfo(server_->ServerInfo());
+  updateServerInfo(server_->CurrentServerInfo());
   updateDefaultDatabase(server_->CurrentDatabaseInfo());
 }
 

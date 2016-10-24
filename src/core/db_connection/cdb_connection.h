@@ -54,7 +54,7 @@ class CDBConnection : public DBConnection<NConnection, Config, ContType>, public
   common::Error rename(const NKey& key, const std::string& new_key) WARN_UNUSED_RESULT;
   common::Error setTTL(const NKey& key, ttl_t ttl) WARN_UNUSED_RESULT;
 
-  translator_t translator() const { return translator_; }
+  translator_t Translator() const { return translator_; }
 
  protected:
   CDBConnectionClient* client_;
@@ -73,7 +73,7 @@ class CDBConnection : public DBConnection<NConnection, Config, ContType>, public
 template <typename NConnection, typename Config, connectionTypes ContType>
 common::Error CDBConnection<NConnection, Config, ContType>::select(const std::string& name,
                                                                    IDataBaseInfo** info) {
-  if (!CDBConnection<NConnection, Config, ContType>::isConnected()) {
+  if (!CDBConnection<NConnection, Config, ContType>::IsConnected()) {
     return common::make_error_value("Not connected", common::Value::E_ERROR);
   }
 
@@ -84,7 +84,7 @@ common::Error CDBConnection<NConnection, Config, ContType>::select(const std::st
   }
 
   if (client_) {
-    client_->onCurrentDataBaseChanged(linfo);
+    client_->OnCurrentDataBaseChanged(linfo);
   }
 
   if (info) {
@@ -104,7 +104,7 @@ common::Error CDBConnection<NConnection, Config, ContType>::del(const NKeys& key
     return common::make_error_value("Invalid input argument(s)", common::ErrorValue::E_ERROR);
   }
 
-  if (!CDBConnection<NConnection, Config, ContType>::isConnected()) {
+  if (!CDBConnection<NConnection, Config, ContType>::IsConnected()) {
     return common::make_error_value("Not connected", common::Value::E_ERROR);
   }
 
@@ -114,7 +114,7 @@ common::Error CDBConnection<NConnection, Config, ContType>::del(const NKeys& key
   }
 
   if (client_) {
-    client_->onKeysRemoved(*deleted_keys);
+    client_->OnKeysRemoved(*deleted_keys);
   }
 
   return common::Error();
@@ -128,7 +128,7 @@ common::Error CDBConnection<NConnection, Config, ContType>::set(const NDbKValue&
     return common::make_error_value("Invalid input argument(s)", common::ErrorValue::E_ERROR);
   }
 
-  if (!CDBConnection<NConnection, Config, ContType>::isConnected()) {
+  if (!CDBConnection<NConnection, Config, ContType>::IsConnected()) {
     return common::make_error_value("Not connected", common::Value::E_ERROR);
   }
 
@@ -138,7 +138,7 @@ common::Error CDBConnection<NConnection, Config, ContType>::set(const NDbKValue&
   }
 
   if (client_) {
-    client_->onKeyAdded(*added_key);
+    client_->OnKeyAdded(*added_key);
   }
 
   return common::Error();
@@ -152,7 +152,7 @@ common::Error CDBConnection<NConnection, Config, ContType>::get(const NKey& key,
     return common::make_error_value("Invalid input argument(s)", common::ErrorValue::E_ERROR);
   }
 
-  if (!CDBConnection<NConnection, Config, ContType>::isConnected()) {
+  if (!CDBConnection<NConnection, Config, ContType>::IsConnected()) {
     return common::make_error_value("Not connected", common::Value::E_ERROR);
   }
 
@@ -162,7 +162,7 @@ common::Error CDBConnection<NConnection, Config, ContType>::get(const NKey& key,
   }
 
   if (client_) {
-    client_->onKeyLoaded(*loaded_key);
+    client_->OnKeyLoaded(*loaded_key);
   }
 
   return common::Error();
@@ -171,7 +171,7 @@ common::Error CDBConnection<NConnection, Config, ContType>::get(const NKey& key,
 template <typename NConnection, typename Config, connectionTypes ContType>
 common::Error CDBConnection<NConnection, Config, ContType>::rename(const NKey& key,
                                                                    const std::string& new_key) {
-  if (!CDBConnection<NConnection, Config, ContType>::isConnected()) {
+  if (!CDBConnection<NConnection, Config, ContType>::IsConnected()) {
     return common::make_error_value("Not connected", common::Value::E_ERROR);
   }
 
@@ -181,7 +181,7 @@ common::Error CDBConnection<NConnection, Config, ContType>::rename(const NKey& k
   }
 
   if (client_) {
-    client_->onKeyRenamed(key, new_key);
+    client_->OnKeyRenamed(key, new_key);
   }
 
   return common::Error();
@@ -189,7 +189,7 @@ common::Error CDBConnection<NConnection, Config, ContType>::rename(const NKey& k
 
 template <typename NConnection, typename Config, connectionTypes ContType>
 common::Error CDBConnection<NConnection, Config, ContType>::setTTL(const NKey& key, ttl_t ttl) {
-  if (!CDBConnection<NConnection, Config, ContType>::isConnected()) {
+  if (!CDBConnection<NConnection, Config, ContType>::IsConnected()) {
     return common::make_error_value("Not connected", common::Value::E_ERROR);
   }
 
@@ -199,7 +199,7 @@ common::Error CDBConnection<NConnection, Config, ContType>::setTTL(const NKey& k
   }
 
   if (client_) {
-    client_->onKeyTTLChanged(key, ttl);
+    client_->OnKeyTTLChanged(key, ttl);
   }
 
   return common::Error();

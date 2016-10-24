@@ -56,7 +56,7 @@ common::Error ConnectionAllocatorTraits<ssdb::NativeConnection, ssdb::Config>::d
   return common::Error();
 }
 template <>
-bool ConnectionAllocatorTraits<ssdb::NativeConnection, ssdb::Config>::isConnected(
+bool ConnectionAllocatorTraits<ssdb::NativeConnection, ssdb::Config>::IsConnected(
     ssdb::NativeConnection* handle) {
   if (!handle) {
     return false;
@@ -120,7 +120,7 @@ common::Error DBConnection::info(const char* args, ServerInfo::Stats* statsout) 
                                     common::ErrorValue::E_ERROR);
   }
 
-  if (!isConnected()) {
+  if (!IsConnected()) {
     return common::make_error_value("Not connected", common::Value::E_ERROR);
   }
 
@@ -156,7 +156,7 @@ common::Error DBConnection::dbsize(int64_t* size) {
     return common::make_error_value("Invalid input argument(s)", common::ErrorValue::E_ERROR);
   }
 
-  if (!isConnected()) {
+  if (!IsConnected()) {
     return common::make_error_value("Not connected", common::Value::E_ERROR);
   }
 
@@ -177,7 +177,7 @@ common::Error DBConnection::dbkcount(size_t* size) {
     return common::make_error_value("Invalid input argument(s)", common::ErrorValue::E_ERROR);
   }
 
-  if (!isConnected()) {
+  if (!IsConnected()) {
     return common::make_error_value("Not connected", common::Value::E_ERROR);
   }
 
@@ -193,7 +193,7 @@ common::Error DBConnection::dbkcount(size_t* size) {
 }
 
 common::Error DBConnection::auth(const std::string& password) {
-  if (!isConnected()) {
+  if (!IsConnected()) {
     return common::make_error_value("Not connected", common::Value::E_ERROR);
   }
 
@@ -206,7 +206,7 @@ common::Error DBConnection::auth(const std::string& password) {
 }
 
 common::Error DBConnection::setx(const std::string& key, const std::string& value, ttl_t ttl) {
-  if (!isConnected()) {
+  if (!IsConnected()) {
     return common::make_error_value("Not connected", common::Value::E_ERROR);
   }
 
@@ -219,7 +219,7 @@ common::Error DBConnection::setx(const std::string& key, const std::string& valu
 }
 
 common::Error DBConnection::setInner(const std::string& key, const std::string& value) {
-  if (!isConnected()) {
+  if (!IsConnected()) {
     return common::make_error_value("Not connected", common::Value::E_ERROR);
   }
 
@@ -232,7 +232,7 @@ common::Error DBConnection::setInner(const std::string& key, const std::string& 
 }
 
 common::Error DBConnection::getInner(const std::string& key, std::string* ret_val) {
-  if (!isConnected()) {
+  if (!IsConnected()) {
     return common::make_error_value("Not connected", common::Value::E_ERROR);
   }
 
@@ -245,7 +245,7 @@ common::Error DBConnection::getInner(const std::string& key, std::string* ret_va
 }
 
 common::Error DBConnection::delInner(const std::string& key) {
-  if (!isConnected()) {
+  if (!IsConnected()) {
     return common::make_error_value("Not connected", common::Value::E_ERROR);
   }
 
@@ -258,7 +258,7 @@ common::Error DBConnection::delInner(const std::string& key) {
 }
 
 common::Error DBConnection::incr(const std::string& key, int64_t incrby, int64_t* ret) {
-  if (!isConnected()) {
+  if (!IsConnected()) {
     return common::make_error_value("Not connected", common::Value::E_ERROR);
   }
 
@@ -274,7 +274,7 @@ common::Error DBConnection::keys(const std::string& key_start,
                                  const std::string& key_end,
                                  uint64_t limit,
                                  std::vector<std::string>* ret) {
-  if (!isConnected()) {
+  if (!IsConnected()) {
     return common::make_error_value("Not connected", common::Value::E_ERROR);
   }
 
@@ -290,7 +290,7 @@ common::Error DBConnection::scan(const std::string& key_start,
                                  const std::string& key_end,
                                  uint64_t limit,
                                  std::vector<std::string>* ret) {
-  if (!isConnected()) {
+  if (!IsConnected()) {
     return common::make_error_value("Not connected", common::Value::E_ERROR);
   }
 
@@ -306,7 +306,7 @@ common::Error DBConnection::rscan(const std::string& key_start,
                                   const std::string& key_end,
                                   uint64_t limit,
                                   std::vector<std::string>* ret) {
-  if (!isConnected()) {
+  if (!IsConnected()) {
     return common::make_error_value("Not connected", common::Value::E_ERROR);
   }
 
@@ -320,7 +320,7 @@ common::Error DBConnection::rscan(const std::string& key_start,
 
 common::Error DBConnection::multi_get(const std::vector<std::string>& keys,
                                       std::vector<std::string>* ret) {
-  if (!isConnected()) {
+  if (!IsConnected()) {
     return common::make_error_value("Not connected", common::Value::E_ERROR);
   }
 
@@ -333,7 +333,7 @@ common::Error DBConnection::multi_get(const std::vector<std::string>& keys,
 }
 
 common::Error DBConnection::multi_set(const std::map<std::string, std::string>& kvs) {
-  if (!isConnected()) {
+  if (!IsConnected()) {
     return common::make_error_value("Not connected", common::Value::E_ERROR);
   }
 
@@ -346,7 +346,7 @@ common::Error DBConnection::multi_set(const std::map<std::string, std::string>& 
 }
 
 common::Error DBConnection::multi_del(const std::vector<std::string>& keys) {
-  if (!isConnected()) {
+  if (!IsConnected()) {
     return common::make_error_value("Not connected", common::Value::E_ERROR);
   }
 
@@ -361,7 +361,7 @@ common::Error DBConnection::multi_del(const std::vector<std::string>& keys) {
 common::Error DBConnection::hget(const std::string& name,
                                  const std::string& key,
                                  std::string* val) {
-  if (!isConnected()) {
+  if (!IsConnected()) {
     return common::make_error_value("Not connected", common::Value::E_ERROR);
   }
 
@@ -374,7 +374,7 @@ common::Error DBConnection::hget(const std::string& name,
 }
 
 common::Error DBConnection::hgetall(const std::string& name, std::vector<std::string>* ret) {
-  if (!isConnected()) {
+  if (!IsConnected()) {
     return common::make_error_value("Not connected", common::Value::E_ERROR);
   }
 
@@ -389,7 +389,7 @@ common::Error DBConnection::hgetall(const std::string& name, std::vector<std::st
 common::Error DBConnection::hset(const std::string& name,
                                  const std::string& key,
                                  const std::string& val) {
-  if (!isConnected()) {
+  if (!IsConnected()) {
     return common::make_error_value("Not connected", common::Value::E_ERROR);
   }
 
@@ -403,7 +403,7 @@ common::Error DBConnection::hset(const std::string& name,
 }
 
 common::Error DBConnection::hdel(const std::string& name, const std::string& key) {
-  if (!isConnected()) {
+  if (!IsConnected()) {
     return common::make_error_value("Not connected", common::Value::E_ERROR);
   }
 
@@ -419,7 +419,7 @@ common::Error DBConnection::hincr(const std::string& name,
                                   const std::string& key,
                                   int64_t incrby,
                                   int64_t* ret) {
-  if (!isConnected()) {
+  if (!IsConnected()) {
     return common::make_error_value("Not connected", common::Value::E_ERROR);
   }
 
@@ -432,7 +432,7 @@ common::Error DBConnection::hincr(const std::string& name,
 }
 
 common::Error DBConnection::hsize(const std::string& name, int64_t* ret) {
-  if (!isConnected()) {
+  if (!IsConnected()) {
     return common::make_error_value("Not connected", common::Value::E_ERROR);
   }
 
@@ -445,7 +445,7 @@ common::Error DBConnection::hsize(const std::string& name, int64_t* ret) {
 }
 
 common::Error DBConnection::hclear(const std::string& name, int64_t* ret) {
-  if (!isConnected()) {
+  if (!IsConnected()) {
     return common::make_error_value("Not connected", common::Value::E_ERROR);
   }
 
@@ -462,7 +462,7 @@ common::Error DBConnection::hkeys(const std::string& name,
                                   const std::string& key_end,
                                   uint64_t limit,
                                   std::vector<std::string>* ret) {
-  if (!isConnected()) {
+  if (!IsConnected()) {
     return common::make_error_value("Not connected", common::Value::E_ERROR);
   }
 
@@ -479,7 +479,7 @@ common::Error DBConnection::hscan(const std::string& name,
                                   const std::string& key_end,
                                   uint64_t limit,
                                   std::vector<std::string>* ret) {
-  if (!isConnected()) {
+  if (!IsConnected()) {
     return common::make_error_value("Not connected", common::Value::E_ERROR);
   }
 
@@ -496,7 +496,7 @@ common::Error DBConnection::hrscan(const std::string& name,
                                    const std::string& key_end,
                                    uint64_t limit,
                                    std::vector<std::string>* ret) {
-  if (!isConnected()) {
+  if (!IsConnected()) {
     return common::make_error_value("Not connected", common::Value::E_ERROR);
   }
 
@@ -511,7 +511,7 @@ common::Error DBConnection::hrscan(const std::string& name,
 common::Error DBConnection::multi_hget(const std::string& name,
                                        const std::vector<std::string>& keys,
                                        std::vector<std::string>* ret) {
-  if (!isConnected()) {
+  if (!IsConnected()) {
     return common::make_error_value("Not connected", common::Value::E_ERROR);
   }
 
@@ -525,7 +525,7 @@ common::Error DBConnection::multi_hget(const std::string& name,
 
 common::Error DBConnection::multi_hset(const std::string& name,
                                        const std::map<std::string, std::string>& keys) {
-  if (!isConnected()) {
+  if (!IsConnected()) {
     return common::make_error_value("Not connected", common::Value::E_ERROR);
   }
 
@@ -538,7 +538,7 @@ common::Error DBConnection::multi_hset(const std::string& name,
 }
 
 common::Error DBConnection::zget(const std::string& name, const std::string& key, int64_t* ret) {
-  if (!isConnected()) {
+  if (!IsConnected()) {
     return common::make_error_value("Not connected", common::Value::E_ERROR);
   }
 
@@ -551,7 +551,7 @@ common::Error DBConnection::zget(const std::string& name, const std::string& key
 }
 
 common::Error DBConnection::zset(const std::string& name, const std::string& key, int64_t score) {
-  if (!isConnected()) {
+  if (!IsConnected()) {
     return common::make_error_value("Not connected", common::Value::E_ERROR);
   }
 
@@ -564,7 +564,7 @@ common::Error DBConnection::zset(const std::string& name, const std::string& key
 }
 
 common::Error DBConnection::zdel(const std::string& name, const std::string& key) {
-  if (!isConnected()) {
+  if (!IsConnected()) {
     return common::make_error_value("Not connected", common::Value::E_ERROR);
   }
 
@@ -580,7 +580,7 @@ common::Error DBConnection::zincr(const std::string& name,
                                   const std::string& key,
                                   int64_t incrby,
                                   int64_t* ret) {
-  if (!isConnected()) {
+  if (!IsConnected()) {
     return common::make_error_value("Not connected", common::Value::E_ERROR);
   }
 
@@ -593,7 +593,7 @@ common::Error DBConnection::zincr(const std::string& name,
 }
 
 common::Error DBConnection::zsize(const std::string& name, int64_t* ret) {
-  if (!isConnected()) {
+  if (!IsConnected()) {
     return common::make_error_value("Not connected", common::Value::E_ERROR);
   }
 
@@ -606,7 +606,7 @@ common::Error DBConnection::zsize(const std::string& name, int64_t* ret) {
 }
 
 common::Error DBConnection::zclear(const std::string& name, int64_t* ret) {
-  if (!isConnected()) {
+  if (!IsConnected()) {
     return common::make_error_value("Not connected", common::Value::E_ERROR);
   }
 
@@ -619,7 +619,7 @@ common::Error DBConnection::zclear(const std::string& name, int64_t* ret) {
 }
 
 common::Error DBConnection::zrank(const std::string& name, const std::string& key, int64_t* ret) {
-  if (!isConnected()) {
+  if (!IsConnected()) {
     return common::make_error_value("Not connected", common::Value::E_ERROR);
   }
 
@@ -632,7 +632,7 @@ common::Error DBConnection::zrank(const std::string& name, const std::string& ke
 }
 
 common::Error DBConnection::zrrank(const std::string& name, const std::string& key, int64_t* ret) {
-  if (!isConnected()) {
+  if (!IsConnected()) {
     return common::make_error_value("Not connected", common::Value::E_ERROR);
   }
 
@@ -648,7 +648,7 @@ common::Error DBConnection::zrange(const std::string& name,
                                    uint64_t offset,
                                    uint64_t limit,
                                    std::vector<std::string>* ret) {
-  if (!isConnected()) {
+  if (!IsConnected()) {
     return common::make_error_value("Not connected", common::Value::E_ERROR);
   }
 
@@ -664,7 +664,7 @@ common::Error DBConnection::zrrange(const std::string& name,
                                     uint64_t offset,
                                     uint64_t limit,
                                     std::vector<std::string>* ret) {
-  if (!isConnected()) {
+  if (!IsConnected()) {
     return common::make_error_value("Not connected", common::Value::E_ERROR);
   }
 
@@ -682,7 +682,7 @@ common::Error DBConnection::zkeys(const std::string& name,
                                   int64_t* score_end,
                                   uint64_t limit,
                                   std::vector<std::string>* ret) {
-  if (!isConnected()) {
+  if (!IsConnected()) {
     return common::make_error_value("Not connected", common::Value::E_ERROR);
   }
 
@@ -700,7 +700,7 @@ common::Error DBConnection::zscan(const std::string& name,
                                   int64_t* score_end,
                                   uint64_t limit,
                                   std::vector<std::string>* ret) {
-  if (!isConnected()) {
+  if (!IsConnected()) {
     return common::make_error_value("Not connected", common::Value::E_ERROR);
   }
 
@@ -718,7 +718,7 @@ common::Error DBConnection::zrscan(const std::string& name,
                                    int64_t* score_end,
                                    uint64_t limit,
                                    std::vector<std::string>* ret) {
-  if (!isConnected()) {
+  if (!IsConnected()) {
     return common::make_error_value("Not connected", common::Value::E_ERROR);
   }
 
@@ -733,7 +733,7 @@ common::Error DBConnection::zrscan(const std::string& name,
 common::Error DBConnection::multi_zget(const std::string& name,
                                        const std::vector<std::string>& keys,
                                        std::vector<std::string>* ret) {
-  if (!isConnected()) {
+  if (!IsConnected()) {
     return common::make_error_value("Not connected", common::Value::E_ERROR);
   }
 
@@ -747,7 +747,7 @@ common::Error DBConnection::multi_zget(const std::string& name,
 
 common::Error DBConnection::multi_zset(const std::string& name,
                                        const std::map<std::string, int64_t>& kss) {
-  if (!isConnected()) {
+  if (!IsConnected()) {
     return common::make_error_value("Not connected", common::Value::E_ERROR);
   }
 
@@ -761,7 +761,7 @@ common::Error DBConnection::multi_zset(const std::string& name,
 
 common::Error DBConnection::multi_zdel(const std::string& name,
                                        const std::vector<std::string>& keys) {
-  if (!isConnected()) {
+  if (!IsConnected()) {
     return common::make_error_value("Not connected", common::Value::E_ERROR);
   }
 
@@ -774,7 +774,7 @@ common::Error DBConnection::multi_zdel(const std::string& name,
 }
 
 common::Error DBConnection::qpush(const std::string& name, const std::string& item) {
-  if (!isConnected()) {
+  if (!IsConnected()) {
     return common::make_error_value("Not connected", common::Value::E_ERROR);
   }
 
@@ -787,7 +787,7 @@ common::Error DBConnection::qpush(const std::string& name, const std::string& it
 }
 
 common::Error DBConnection::qpop(const std::string& name, std::string* item) {
-  if (!isConnected()) {
+  if (!IsConnected()) {
     return common::make_error_value("Not connected", common::Value::E_ERROR);
   }
 
@@ -803,7 +803,7 @@ common::Error DBConnection::qslice(const std::string& name,
                                    int64_t begin,
                                    int64_t end,
                                    std::vector<std::string>* ret) {
-  if (!isConnected()) {
+  if (!IsConnected()) {
     return common::make_error_value("Not connected", common::Value::E_ERROR);
   }
 
@@ -816,7 +816,7 @@ common::Error DBConnection::qslice(const std::string& name,
 }
 
 common::Error DBConnection::qclear(const std::string& name, int64_t* ret) {
-  if (!isConnected()) {
+  if (!IsConnected()) {
     return common::make_error_value("Not connected", common::Value::E_ERROR);
   }
 
@@ -836,7 +836,7 @@ common::Error DBConnection::help(int argc, const char** argv) {
 }
 
 common::Error DBConnection::flushdb() {
-  if (!isConnected()) {
+  if (!IsConnected()) {
     return common::make_error_value("Not connected", common::Value::E_ERROR);
   }
 

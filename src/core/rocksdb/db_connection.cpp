@@ -72,7 +72,7 @@ common::Error ConnectionAllocatorTraits<rocksdb::NativeConnection, rocksdb::Conf
   return common::Error();
 }
 template <>
-bool ConnectionAllocatorTraits<rocksdb::NativeConnection, rocksdb::Config>::isConnected(
+bool ConnectionAllocatorTraits<rocksdb::NativeConnection, rocksdb::Config>::IsConnected(
     rocksdb::NativeConnection* handle) {
   if (!handle) {
     return false;
@@ -142,7 +142,7 @@ common::Error DBConnection::info(const char* args, ServerInfo::Stats* statsout) 
     return common::make_error_value("Invalid input argument(s)", common::ErrorValue::E_ERROR);
   }
 
-  if (!isConnected()) {
+  if (!IsConnected()) {
     return common::make_error_value("Not connected", common::Value::E_ERROR);
   }
 
@@ -191,7 +191,7 @@ common::Error DBConnection::dbkcount(size_t* size) {
     return common::make_error_value("Invalid input argument(s)", common::ErrorValue::E_ERROR);
   }
 
-  if (!isConnected()) {
+  if (!IsConnected()) {
     return common::make_error_value("Not connected", common::Value::E_ERROR);
   }
 
@@ -224,7 +224,7 @@ std::string DBConnection::currentDbName() const {
 }
 
 common::Error DBConnection::getInner(const std::string& key, std::string* ret_val) {
-  if (!isConnected()) {
+  if (!IsConnected()) {
     return common::make_error_value("Not connected", common::Value::E_ERROR);
   }
 
@@ -240,7 +240,7 @@ common::Error DBConnection::getInner(const std::string& key, std::string* ret_va
 
 common::Error DBConnection::mget(const std::vector< ::rocksdb::Slice>& keys,
                                  std::vector<std::string>* ret) {
-  if (!isConnected()) {
+  if (!IsConnected()) {
     return common::make_error_value("Not connected", common::Value::E_ERROR);
   }
 
@@ -257,7 +257,7 @@ common::Error DBConnection::mget(const std::vector< ::rocksdb::Slice>& keys,
 }
 
 common::Error DBConnection::merge(const std::string& key, const std::string& value) {
-  if (!isConnected()) {
+  if (!IsConnected()) {
     return common::make_error_value("Not connected", common::Value::E_ERROR);
   }
 
@@ -272,7 +272,7 @@ common::Error DBConnection::merge(const std::string& key, const std::string& val
 }
 
 common::Error DBConnection::setInner(const std::string& key, const std::string& value) {
-  if (!isConnected()) {
+  if (!IsConnected()) {
     return common::make_error_value("Not connected", common::Value::E_ERROR);
   }
 
@@ -287,7 +287,7 @@ common::Error DBConnection::setInner(const std::string& key, const std::string& 
 }
 
 common::Error DBConnection::delInner(const std::string& key) {
-  if (!isConnected()) {
+  if (!IsConnected()) {
     return common::make_error_value("Not connected", common::Value::E_ERROR);
   }
 
@@ -304,7 +304,7 @@ common::Error DBConnection::keys(const std::string& key_start,
                                  const std::string& key_end,
                                  uint64_t limit,
                                  std::vector<std::string>* ret) {
-  if (!isConnected()) {
+  if (!IsConnected()) {
     return common::make_error_value("Not connected", common::Value::E_ERROR);
   }
 
@@ -338,7 +338,7 @@ common::Error DBConnection::help(int argc, const char** argv) {
 }
 
 common::Error DBConnection::flushdb() {
-  if (!isConnected()) {
+  if (!IsConnected()) {
     return common::make_error_value("Not connected", common::Value::E_ERROR);
   }
 

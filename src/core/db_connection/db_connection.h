@@ -44,15 +44,15 @@ class DBConnection {
 
   common::Error disconnect() { return connection_.disconnect(); }
 
-  bool isConnected() const { return connection_.isConnected(); }
+  bool IsConnected() const { return connection_.IsConnected(); }
 
-  void setInterrupted(bool interrupted) { interrupted_ = interrupted; }
+  void SetInterrupted(bool interrupted) { interrupted_ = interrupted; }
 
-  bool isInterrupted() const { return interrupted_; }
+  bool IsInterrupted() const { return interrupted_; }
 
   std::string delimiter() const { return connection_.config_.delimiter; }
 
-  std::string nsSeparator() const { return connection_.config_.ns_separator; }
+  std::string NsSeparator() const { return connection_.config_.ns_separator; }
 
   config_t config() const { return connection_.config_; }
 

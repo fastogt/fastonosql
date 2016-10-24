@@ -26,6 +26,8 @@
 
 #include <stddef.h>  // for NULL
 
+#include <memory>  // for __shared_ptr
+#include <vector>  // for vector
 #include <string>  // for allocator, string, etc
 
 #include <QApplication>
@@ -37,13 +39,19 @@ extern "C" {
 
 #include <common/convert2string.h>  // for ConvertToString, etc
 #include <common/file_system.h>     // for File, ascii_string_path, etc
+#include <common/intrusive_ptr.h>   // for intrusive_ptr
+#include <common/log_levels.h>      // for LEVEL_LOG::L_WARNING
+#include <common/qt/utils_qt.h>     // for Event<>::value_type
+#include <common/sprintf.h>         // for MemSPrintf
+#include <common/string_util.h>     // for Tokenize
 #include <common/time.h>            // for current_mstime
-#include <common/utils.h>           // for c_strornull
+#include <common/types.h>           // for buffer_t, time64_t, etc
+#include <common/utils.h>           // for c_strornull, msleep
 
 #include "core/command/command_logger.h"  // for LOG_COMMAND
-
-#include "core/driver/root_locker.h"
 #include "core/driver/first_child_update_root_locker.h"
+#include "core/driver/root_locker.h"  // for RootLocker
+#include "core/events/events_info.h"
 
 namespace {
 #ifdef OS_WIN
@@ -108,7 +116,7 @@ struct RegisterTypes {
 } reg_type;
 
 void notifyProgressImpl(IDriver* sender, QObject* reciver, int value) {
-  IDriver::reply(reciver, new events::ProgressResponceEvent(
+  IDriver::Reply(reciver, new events::ProgressResponceEvent(
                               sender, events::ProgressResponceEvent::value_type(value)));
 }
 
@@ -123,7 +131,7 @@ void replyNotImplementedYet(IDriver* sender, event_request_type* ev, const char*
   common::Error er = common::make_error_value(patternResult, common::ErrorValue::E_ERROR);
   res.setErrorInfo(er);
   event_responce_type* resp = new event_responce_type(sender, res);
-  IDriver::reply(esender, resp);
+  IDriver::Reply(esender, resp);
   notifyProgressImpl(sender, esender, 100);
 }
 
@@ -134,15 +142,15 @@ IDriver::IDriver(IConnectionSettingsBaseSPtr settings)
   thread_ = new QThread(this);
   moveToThread(thread_);
 
-  VERIFY(connect(thread_, &QThread::started, this, &IDriver::init));
-  VERIFY(connect(thread_, &QThread::finished, this, &IDriver::clear));
+  VERIFY(connect(thread_, &QThread::started, this, &IDriver::Init));
+  VERIFY(connect(thread_, &QThread::finished, this, &IDriver::Clear));
 }
 
 IDriver::~IDriver() {
   destroy(&log_file_);
 }
 
-common::Error IDriver::execute(FastoObjectCommandIPtr cmd) {
+common::Error IDriver::Execute(FastoObjectCommandIPtr cmd) {
   if (!cmd) {
     DNOTREACHED();
     return common::make_error_value("Invalid input argument(s)", common::ErrorValue::E_ERROR);
@@ -163,25 +171,25 @@ common::Error IDriver::execute(FastoObjectCommandIPtr cmd) {
   }
 
   const char** exec_argv = const_cast<const char**>(argv);
-  common::Error err = executeImpl(argc, exec_argv, cmd.get());
+  common::Error err = ExecuteImpl(argc, exec_argv, cmd.get());
   sdsfreesplitres(argv, argc);
   return err;
 }
 
-void IDriver::reply(QObject* reciver, QEvent* ev) {
+void IDriver::Reply(QObject* reciver, QEvent* ev) {
   qApp->postEvent(reciver, ev);
 }
 
-connectionTypes IDriver::type() const {
+connectionTypes IDriver::Type() const {
   return settings_->type();
 }
 
-IConnectionSettings::connection_path_t IDriver::connectionPath() const {
+IConnectionSettings::connection_path_t IDriver::ConnectionPath() const {
   return settings_->path();
 }
 
-IServerInfoSPtr IDriver::serverInfo() const {
-  if (isConnected()) {
+IServerInfoSPtr IDriver::CurrentServerInfo() const {
+  if (IsConnected()) {
     CHECK(server_info_);
     return server_info_;
   }
@@ -189,8 +197,8 @@ IServerInfoSPtr IDriver::serverInfo() const {
   return IServerInfoSPtr();
 }
 
-IDataBaseInfoSPtr IDriver::currentDatabaseInfo() const {
-  if (isConnected()) {
+IDataBaseInfoSPtr IDriver::CurrentDatabaseInfo() const {
+  if (IsConnected()) {
     CHECK(current_database_info_);
     return current_database_info_;
   }
@@ -198,42 +206,42 @@ IDataBaseInfoSPtr IDriver::currentDatabaseInfo() const {
   return IDataBaseInfoSPtr();
 }
 
-void IDriver::start() {
+void IDriver::Start() {
   thread_->start();
 }
 
-void IDriver::stop() {
+void IDriver::Stop() {
   thread_->quit();
   thread_->wait();
 }
 
-void IDriver::interrupt() {
-  setInterrupted(true);
+void IDriver::Interrupt() {
+  SetInterrupted(true);
 }
 
-void IDriver::init() {
+void IDriver::Init() {
   if (settings_->loggingEnabled()) {
     int interval = settings_->loggingMsTimeInterval();
     timer_info_id_ = startTimer(interval);
     DCHECK(timer_info_id_ != 0);
   }
-  initImpl();
+  InitImpl();
 }
 
-void IDriver::clear() {
+void IDriver::Clear() {
   if (timer_info_id_ != 0) {
     killTimer(timer_info_id_);
     timer_info_id_ = 0;
   }
-  common::Error err = syncDisconnect();
+  common::Error err = SyncDisconnect();
   if (err && err->isError()) {
     DNOTREACHED();
   }
-  clearImpl();
+  ClearImpl();
 }
 
 void IDriver::customEvent(QEvent* event) {
-  setInterrupted(false);
+  SetInterrupted(false);
 
   QEvent::Type type = event->type();
   if (type == static_cast<QEvent::Type>(events::ConnectRequestEvent::EventType)) {
@@ -245,13 +253,13 @@ void IDriver::customEvent(QEvent* event) {
   } else if (type == static_cast<QEvent::Type>(events::ProcessConfigArgsRequestEvent::EventType)) {
     events::ProcessConfigArgsRequestEvent* ev =
         static_cast<events::ProcessConfigArgsRequestEvent*>(event);
-    handleProcessCommandLineArgs(ev);
+    HandleProcessCommandLineArgsEvent(ev);
   } else if (type == static_cast<QEvent::Type>(events::DisconnectRequestEvent::EventType)) {
     events::DisconnectRequestEvent* ev = static_cast<events::DisconnectRequestEvent*>(event);
     HandleDisconnectEvent(ev);
   } else if (type == static_cast<QEvent::Type>(events::ExecuteRequestEvent::EventType)) {
     events::ExecuteRequestEvent* ev = static_cast<events::ExecuteRequestEvent*>(event);
-    handleExecuteEvent(ev);
+    HandleExecuteEvent(ev);
   } else if (type == static_cast<QEvent::Type>(events::LoadDatabasesInfoRequestEvent::EventType)) {
     events::LoadDatabasesInfoRequestEvent* ev =
         static_cast<events::LoadDatabasesInfoRequestEvent*>(event);
@@ -266,7 +274,7 @@ void IDriver::customEvent(QEvent* event) {
   } else if (type == static_cast<QEvent::Type>(events::ClearServerHistoryRequestEvent::EventType)) {
     events::ClearServerHistoryRequestEvent* ev =
         static_cast<events::ClearServerHistoryRequestEvent*>(event);
-    handleClearServerHistoryRequestEvent(ev);  //
+    HandleClearServerHistoryEvent(ev);  //
   } else if (type == static_cast<QEvent::Type>(events::ServerPropertyInfoRequestEvent::EventType)) {
     events::ServerPropertyInfoRequestEvent* ev =
         static_cast<events::ServerPropertyInfoRequestEvent*>(event);
@@ -290,7 +298,7 @@ void IDriver::customEvent(QEvent* event) {
              static_cast<QEvent::Type>(events::ChangeMaxConnectionRequestEvent::EventType)) {
     events::ChangeMaxConnectionRequestEvent* ev =
         static_cast<events::ChangeMaxConnectionRequestEvent*>(event);
-    handleChangeMaxConnectionEvent(ev);  // ni
+    HandleChangeMaxConnectionEvent(ev);  // ni
   } else if (type ==
              static_cast<QEvent::Type>(events::LoadDatabaseContentRequestEvent::EventType)) {
     events::LoadDatabaseContentRequestEvent* ev =
@@ -298,21 +306,21 @@ void IDriver::customEvent(QEvent* event) {
     HandleLoadDatabaseContentEvent(ev);
   } else if (type == static_cast<QEvent::Type>(events::ClearDatabaseRequestEvent::EventType)) {
     events::ClearDatabaseRequestEvent* ev = static_cast<events::ClearDatabaseRequestEvent*>(event);
-    handleClearDatabaseEvent(ev);  // ni
+    HandleClearDatabaseEvent(ev);  // ni
   } else if (type == static_cast<QEvent::Type>(events::SetDefaultDatabaseRequestEvent::EventType)) {
     events::SetDefaultDatabaseRequestEvent* ev =
         static_cast<events::SetDefaultDatabaseRequestEvent*>(event);
     HandleSetDefaultDatabaseEvent(ev);  // ni
   } else if (type == static_cast<QEvent::Type>(events::DiscoveryInfoRequestEvent::EventType)) {
     events::DiscoveryInfoRequestEvent* ev = static_cast<events::DiscoveryInfoRequestEvent*>(event);
-    handleDiscoveryInfoRequestEvent(ev);  //
+    HandleDiscoveryInfoEvent(ev);  //
   }
 
   return QObject::customEvent(event);
 }
 
 void IDriver::timerEvent(QTimerEvent* event) {
-  if (timer_info_id_ == event->timerId() && settings_->loggingEnabled() && isConnected()) {
+  if (timer_info_id_ == event->timerId() && settings_->loggingEnabled() && IsConnected()) {
     if (!log_file_) {
       std::string path = settings_->loggingPath();
       std::string dir = common::file_system::get_dir_path(path);
@@ -334,14 +342,14 @@ void IDriver::timerEvent(QTimerEvent* event) {
       common::time64_t time = common::time::current_mstime();
       std::string stamp = createStamp(time);
       IServerInfo* info = nullptr;
-      common::Error er = serverInfo(&info);
+      common::Error er = CurrentServerInfo(&info);
       if (er && er->isError()) {
         QObject::timerEvent(event);
         return;
       }
 
-      ServerInfoSnapShoot shot(time, IServerInfoSPtr(info));
-      emit serverInfoSnapShoot(shot);
+      struct ServerInfoSnapShoot shot(time, IServerInfoSPtr(info));
+      emit ServerInfoSnapShoot(shot);
 
       log_file_->write(stamp);
       log_file_->write(info->toString());
@@ -351,49 +359,49 @@ void IDriver::timerEvent(QTimerEvent* event) {
   QObject::timerEvent(event);
 }
 
-void IDriver::notifyProgress(QObject* reciver, int value) {
+void IDriver::NotifyProgress(QObject* reciver, int value) {
   notifyProgressImpl(this, reciver, value);
 }
 
 void IDriver::HandleConnectEvent(events::ConnectRequestEvent* ev) {
   QObject* sender = ev->sender();
-  notifyProgress(sender, 0);
+  NotifyProgress(sender, 0);
   events::ConnectResponceEvent::value_type res(ev->value());
-  notifyProgress(sender, 25);
-  common::Error er = syncConnect();
+  NotifyProgress(sender, 25);
+  common::Error er = SyncConnect();
   if (er && er->isError()) {
     res.setErrorInfo(er);
   }
-  notifyProgress(sender, 75);
-  reply(sender, new events::ConnectResponceEvent(this, res));
-  notifyProgress(sender, 100);
+  NotifyProgress(sender, 75);
+  Reply(sender, new events::ConnectResponceEvent(this, res));
+  NotifyProgress(sender, 100);
 }
 
 void IDriver::HandleDisconnectEvent(events::DisconnectRequestEvent* ev) {
   QObject* sender = ev->sender();
-  notifyProgress(sender, 0);
+  NotifyProgress(sender, 0);
   events::DisconnectResponceEvent::value_type res(ev->value());
-  notifyProgress(sender, 50);
+  NotifyProgress(sender, 50);
 
-  common::Error er = syncDisconnect();
+  common::Error er = SyncDisconnect();
   if (er && er->isError()) {
     res.setErrorInfo(er);
   }
 
-  reply(sender, new events::DisconnectResponceEvent(this, res));
-  notifyProgress(sender, 100);
+  Reply(sender, new events::DisconnectResponceEvent(this, res));
+  NotifyProgress(sender, 100);
 }
 
-void IDriver::handleExecuteEvent(events::ExecuteRequestEvent* ev) {
+void IDriver::HandleExecuteEvent(events::ExecuteRequestEvent* ev) {
   QObject* sender = ev->sender();
-  notifyProgress(sender, 0);
+  NotifyProgress(sender, 0);
   events::ExecuteResponceEvent::value_type res(ev->value());
 
   const std::string inputLine = res.text;
   if (inputLine.empty()) {
     res.setErrorInfo(common::make_error_value("Empty command line.", common::ErrorValue::E_ERROR));
-    reply(sender, new events::ExecuteResponceEvent(this, res));
-    notifyProgress(sender, 100);
+    Reply(sender, new events::ExecuteResponceEvent(this, res));
+    NotifyProgress(sender, 100);
     return;
   }
 
@@ -401,8 +409,8 @@ void IDriver::handleExecuteEvent(events::ExecuteRequestEvent* ev) {
   size_t commands_count = common::Tokenize(inputLine, "\n", &commands);
   if (!commands_count) {
     res.setErrorInfo(common::make_error_value("Invaid command line.", common::ErrorValue::E_ERROR));
-    reply(sender, new events::ExecuteResponceEvent(this, res));
-    notifyProgress(sender, 100);
+    Reply(sender, new events::ExecuteResponceEvent(this, res));
+    NotifyProgress(sender, 100);
     return;
   }
 
@@ -419,20 +427,20 @@ void IDriver::handleExecuteEvent(events::ExecuteRequestEvent* ev) {
   for (size_t r = 0; r < repeat + 1; ++r) {
     common::time64_t start_ts = common::time::current_mstime();
     for (size_t i = 0; i < commands.size(); ++i) {
-      if (isInterrupted()) {
+      if (IsInterrupted()) {
         res.setErrorInfo(common::make_error_value(
             "Interrupted exec.", common::ErrorValue::E_INTERRUPTED, common::logging::L_WARNING));
         goto done;
       }
 
       cur_progress += step;
-      notifyProgress(sender, cur_progress);
+      NotifyProgress(sender, cur_progress);
 
       std::string command = commands[i];
       FastoObjectCommandIPtr cmd =
           silence ? createCommandFast(command, common::Value::C_USER)
                   : createCommand(obj.get(), command, common::Value::C_USER);  //
-      common::Error err = execute(cmd);
+      common::Error err = Execute(cmd);
       if (err && err->isError()) {
         res.setErrorInfo(err);
         goto done;
@@ -440,16 +448,16 @@ void IDriver::handleExecuteEvent(events::ExecuteRequestEvent* ev) {
     }
 
     common::time64_t finished_ts = common::time::current_mstime();
-    auto diff = finished_ts - start_ts;
+    common::time64_t diff = finished_ts - start_ts;
     if (msec_repeat_interval > diff) {
-      useconds_t sleep_time = msec_repeat_interval - diff;
+      common::time64_t sleep_time = msec_repeat_interval - diff;
       common::utils::msleep(sleep_time);
     }
   }
 
 done:
-  reply(sender, new events::ExecuteResponceEvent(this, res));
-  notifyProgress(sender, 100);
+  Reply(sender, new events::ExecuteResponceEvent(this, res));
+  NotifyProgress(sender, 100);
   delete lock;
 }
 
@@ -484,7 +492,7 @@ void IDriver::HandleChangePasswordEvent(events::ChangePasswordRequestEvent* ev) 
       this, ev, "change password");
 }
 
-void IDriver::handleChangeMaxConnectionEvent(events::ChangeMaxConnectionRequestEvent* ev) {
+void IDriver::HandleChangeMaxConnectionEvent(events::ChangeMaxConnectionRequestEvent* ev) {
   replyNotImplementedYet<events::ChangeMaxConnectionRequestEvent,
                          events::ChangeMaxConnectionResponceEvent>(this, ev,
                                                                    "change maximum connection");
@@ -492,17 +500,17 @@ void IDriver::handleChangeMaxConnectionEvent(events::ChangeMaxConnectionRequestE
 
 void IDriver::HandleLoadDatabaseInfosEvent(events::LoadDatabasesInfoRequestEvent* ev) {
   QObject* sender = ev->sender();
-  notifyProgress(sender, 0);
+  NotifyProgress(sender, 0);
   events::LoadDatabasesInfoResponceEvent::value_type res(ev->value());
-  notifyProgress(sender, 50);
-  IDataBaseInfoSPtr curdb = currentDatabaseInfo();
+  NotifyProgress(sender, 50);
+  IDataBaseInfoSPtr curdb = CurrentDatabaseInfo();
   CHECK(curdb);
   res.databases.push_back(curdb);
-  reply(sender, new events::LoadDatabasesInfoResponceEvent(this, res));
-  notifyProgress(sender, 100);
+  Reply(sender, new events::LoadDatabasesInfoResponceEvent(this, res));
+  NotifyProgress(sender, 100);
 }
 
-void IDriver::handleClearDatabaseEvent(events::ClearDatabaseRequestEvent* ev) {
+void IDriver::HandleClearDatabaseEvent(events::ClearDatabaseRequestEvent* ev) {
   replyNotImplementedYet<events::ClearDatabaseRequestEvent, events::ClearDatabaseResponceEvent>(
       this, ev, "clear database");
 }
@@ -514,20 +522,20 @@ void IDriver::HandleSetDefaultDatabaseEvent(events::SetDefaultDatabaseRequestEve
 
 void IDriver::HandleLoadServerInfoEvent(events::ServerInfoRequestEvent* ev) {
   QObject* sender = ev->sender();
-  notifyProgress(sender, 0);
+  NotifyProgress(sender, 0);
   events::ServerInfoResponceEvent::value_type res(ev->value());
-  notifyProgress(sender, 50);
+  NotifyProgress(sender, 50);
   IServerInfo* info = nullptr;
-  common::Error err = serverInfo(&info);
+  common::Error err = CurrentServerInfo(&info);
   if (err && err->isError()) {
     res.setErrorInfo(err);
   } else {
     IServerInfoSPtr mem(info);
     res.setInfo(mem);
   }
-  notifyProgress(sender, 75);
-  reply(sender, new events::ServerInfoResponceEvent(this, res));
-  notifyProgress(sender, 100);
+  NotifyProgress(sender, 75);
+  Reply(sender, new events::ServerInfoResponceEvent(this, res));
+  NotifyProgress(sender, 100);
 }
 
 void IDriver::HandleLoadServerInfoHistoryEvent(events::ServerInfoHistoryRequestEvent* ev) {
@@ -548,8 +556,9 @@ void IDriver::HandleLoadServerInfoHistoryEvent(events::ServerInfoHistoryRequestE
       bool res = readFile.readLine(&data);
       if (!res || readFile.isEof()) {
         if (curStamp) {
-          tmpInfos.push_back(ServerInfoSnapShoot(
-              curStamp, makeServerInfoFromString(common::ConvertToString(dataInfo))));
+          struct ServerInfoSnapShoot shoot(
+              curStamp, MakeServerInfoFromString(common::ConvertToString(dataInfo)));
+          tmpInfos.push_back(shoot);
         }
         break;
       }
@@ -558,8 +567,9 @@ void IDriver::HandleLoadServerInfoHistoryEvent(events::ServerInfoHistoryRequestE
       bool isSt = getStamp(data, &tmpStamp);
       if (isSt) {
         if (curStamp) {
-          tmpInfos.push_back(ServerInfoSnapShoot(
-              curStamp, makeServerInfoFromString(common::ConvertToString(dataInfo))));
+          struct ServerInfoSnapShoot shoot(
+              curStamp, MakeServerInfoFromString(common::ConvertToString(dataInfo)));
+          tmpInfos.push_back(shoot);
         }
         curStamp = tmpStamp;
         dataInfo.clear();
@@ -573,10 +583,10 @@ void IDriver::HandleLoadServerInfoHistoryEvent(events::ServerInfoHistoryRequestE
         common::make_error_value("History file not found", common::ErrorValue::E_ERROR));
   }
 
-  reply(sender, new events::ServerInfoHistoryResponceEvent(this, res));
+  Reply(sender, new events::ServerInfoHistoryResponceEvent(this, res));
 }
 
-void IDriver::handleClearServerHistoryRequestEvent(events::ClearServerHistoryRequestEvent* ev) {
+void IDriver::HandleClearServerHistoryEvent(events::ClearServerHistoryRequestEvent* ev) {
   QObject* sender = ev->sender();
   events::ClearServerHistoryResponceEvent::value_type res(ev->value());
 
@@ -602,19 +612,19 @@ void IDriver::handleClearServerHistoryRequestEvent(events::ClearServerHistoryReq
     res.setErrorInfo(common::make_error_value("Clear file error!", common::ErrorValue::E_ERROR));
   }
 
-  reply(sender, new events::ClearServerHistoryResponceEvent(this, res));
+  Reply(sender, new events::ClearServerHistoryResponceEvent(this, res));
 }
 
-void IDriver::handleDiscoveryInfoRequestEvent(events::DiscoveryInfoRequestEvent* ev) {
+void IDriver::HandleDiscoveryInfoEvent(events::DiscoveryInfoRequestEvent* ev) {
   QObject* sender = ev->sender();
-  notifyProgress(sender, 0);
+  NotifyProgress(sender, 0);
   events::DiscoveryInfoResponceEvent::value_type res(ev->value());
-  notifyProgress(sender, 50);
+  NotifyProgress(sender, 50);
 
-  if (isConnected()) {
+  if (IsConnected()) {
     IServerInfo* info = nullptr;
     IDataBaseInfo* db = nullptr;
-    common::Error err = serverDiscoveryInfo(&info, &db);
+    common::Error err = ServerDiscoveryInfo(&info, &db);
     if (err && err->isError()) {
       res.setErrorInfo(err);
     } else {
@@ -632,20 +642,20 @@ void IDriver::handleDiscoveryInfoRequestEvent(events::DiscoveryInfoRequestEvent*
         "Not connected to server, impossible to get discovery info!", common::Value::E_ERROR));
   }
 
-  notifyProgress(sender, 75);
-  reply(sender, new events::DiscoveryInfoResponceEvent(this, res));
-  notifyProgress(sender, 100);
+  NotifyProgress(sender, 75);
+  Reply(sender, new events::DiscoveryInfoResponceEvent(this, res));
+  NotifyProgress(sender, 100);
 }
 
-common::Error IDriver::serverDiscoveryInfo(IServerInfo** sinfo, IDataBaseInfo** dbinfo) {
+common::Error IDriver::ServerDiscoveryInfo(IServerInfo** sinfo, IDataBaseInfo** dbinfo) {
   IServerInfo* lsinfo = nullptr;
-  common::Error er = serverInfo(&lsinfo);
+  common::Error er = CurrentServerInfo(&lsinfo);
   if (er && er->isError()) {
     return er;
   }
 
   IDataBaseInfo* ldbinfo = nullptr;
-  er = currentDataBaseInfo(&ldbinfo);
+  er = CurrentDataBaseInfo(&ldbinfo);
   if (er && er->isError()) {
     delete lsinfo;
     return er;
@@ -656,30 +666,30 @@ common::Error IDriver::serverDiscoveryInfo(IServerInfo** sinfo, IDataBaseInfo** 
   return er;
 }
 
-void IDriver::onCurrentDataBaseChanged(IDataBaseInfo* info) {
+void IDriver::OnCurrentDataBaseChanged(IDataBaseInfo* info) {
   current_database_info_.reset(info->Clone());
 }
 
-void IDriver::onKeysRemoved(const NKeys& keys) {
+void IDriver::OnKeysRemoved(const NKeys& keys) {
   for (size_t i = 0; i < keys.size(); ++i) {
-    emit keyRemoved(current_database_info_, keys[i]);
+    emit KeyRemoved(current_database_info_, keys[i]);
   }
 }
 
-void IDriver::onKeyAdded(const NDbKValue& key) {
-  emit keyAdded(current_database_info_, key);
+void IDriver::OnKeyAdded(const NDbKValue& key) {
+  emit KeyAdded(current_database_info_, key);
 }
 
-void IDriver::onKeyLoaded(const NDbKValue& key) {
-  emit keyLoaded(current_database_info_, key);
+void IDriver::OnKeyLoaded(const NDbKValue& key) {
+  emit KeyLoaded(current_database_info_, key);
 }
 
-void IDriver::onKeyRenamed(const NKey& key, const std::string& new_key) {
-  emit keyRenamed(current_database_info_, key, new_key);
+void IDriver::OnKeyRenamed(const NKey& key, const std::string& new_key) {
+  emit KeyRenamed(current_database_info_, key, new_key);
 }
 
-void IDriver::onKeyTTLChanged(const NKey& key, ttl_t ttl) {
-  emit keyTTLChanged(current_database_info_, key, ttl);
+void IDriver::OnKeyTTLChanged(const NKey& key, ttl_t ttl) {
+  emit KeyTTLChanged(current_database_info_, key, ttl);
 }
 }  // namespace core
 }  // namespace fastonosql

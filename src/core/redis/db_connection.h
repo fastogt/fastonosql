@@ -2021,7 +2021,7 @@ class DBConnection : public core::CDBConnection<NativeConnection, RConfig, REDIS
   typedef core::CDBConnection<NativeConnection, RConfig, REDIS> base_class;
   explicit DBConnection(CDBConnectionClient* client);
 
-  bool isAuthenticated() const;
+  bool IsAuthenticated() const;
 
   common::Error connect(const config_t& config);
 

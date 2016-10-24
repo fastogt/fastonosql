@@ -62,7 +62,7 @@ class IServer : public IServerBase, public std::enable_shared_from_this<IServer>
   virtual std::string Name() const override;
 
   IDataBaseInfoSPtr CurrentDatabaseInfo() const;
-  IServerInfoSPtr ServerInfo() const;
+  IServerInfoSPtr CurrentServerInfo() const;
 
   std::string Delimiter() const;
   std::string NsSeparator() const;
@@ -135,13 +135,13 @@ class IServer : public IServerBase, public std::enable_shared_from_this<IServer>
  Q_SIGNALS:
   void ChildAdded(FastoObjectIPtr child);
   void ItemUpdated(FastoObject* item, common::ValueSPtr val);
-  void serverInfoSnapShoot(core::ServerInfoSnapShoot shot);
+  void ServerInfoSnapShoot(core::ServerInfoSnapShoot shot);
 
-  void keyRemoved(core::IDataBaseInfoSPtr db, core::NKey key);
-  void keyAdded(core::IDataBaseInfoSPtr db, core::NDbKValue key);
-  void keyLoaded(core::IDataBaseInfoSPtr db, core::NDbKValue key);
-  void keyRenamed(core::IDataBaseInfoSPtr db, core::NKey key, std::string new_name);
-  void keyTTLChanged(core::IDataBaseInfoSPtr db, core::NKey key, core::ttl_t ttl);
+  void KeyRemoved(core::IDataBaseInfoSPtr db, core::NKey key);
+  void KeyAdded(core::IDataBaseInfoSPtr db, core::NDbKValue key);
+  void KeyLoaded(core::IDataBaseInfoSPtr db, core::NDbKValue key);
+  void KeyRenamed(core::IDataBaseInfoSPtr db, core::NKey key, std::string new_name);
+  void KeyTTLChanged(core::IDataBaseInfoSPtr db, core::NKey key, core::ttl_t ttl);
 
  public:
   // async methods
@@ -208,13 +208,13 @@ class IServer : public IServerBase, public std::enable_shared_from_this<IServer>
   virtual void HandleBackupEvent(events::BackupResponceEvent* ev);
   virtual void HandleExportEvent(events::ExportResponceEvent* ev);
   virtual void HandleChangePasswordEvent(events::ChangePasswordResponceEvent* ev);
-  virtual void HandleChangeMaxConnection(events::ChangeMaxConnectionResponceEvent* ev);
-  virtual void HandleExecuteResponceEvent(events::ExecuteResponceEvent* ev);
+  virtual void HandleChangeMaxConnectionEvent(events::ChangeMaxConnectionResponceEvent* ev);
+  virtual void HandleExecuteEvent(events::ExecuteResponceEvent* ev);
 
   // handle database events
   virtual void HandleLoadDatabaseInfosEvent(events::LoadDatabasesInfoResponceEvent* ev);
   virtual void HandleLoadDatabaseContentEvent(events::LoadDatabaseContentResponceEvent* ev);
-  virtual void HandleClearDatabaseResponceEvent(events::ClearDatabaseResponceEvent* ev);
+  virtual void HandleClearDatabaseEvent(events::ClearDatabaseResponceEvent* ev);
   virtual void HandleSetDefaultDatabaseEvent(events::SetDefaultDatabaseResponceEvent* ev);
 
   // handle command events

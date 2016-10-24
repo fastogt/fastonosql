@@ -1138,15 +1138,15 @@ void ExplorerTreeView::syncWithServer(core::IServer* server) {
   VERIFY(connect(server, &core::IServer::ExecuteFinished, this,
                  &ExplorerTreeView::finishExecuteCommand));
 
-  VERIFY(connect(server, &core::IServer::keyRemoved, this, &ExplorerTreeView::removeKey,
+  VERIFY(connect(server, &core::IServer::KeyRemoved, this, &ExplorerTreeView::removeKey,
                  Qt::DirectConnection));
-  VERIFY(connect(server, &core::IServer::keyAdded, this, &ExplorerTreeView::addKey,
+  VERIFY(connect(server, &core::IServer::KeyAdded, this, &ExplorerTreeView::addKey,
                  Qt::DirectConnection));
-  VERIFY(connect(server, &core::IServer::keyRenamed, this, &ExplorerTreeView::renameKey,
+  VERIFY(connect(server, &core::IServer::KeyRenamed, this, &ExplorerTreeView::renameKey,
                  Qt::DirectConnection));
-  VERIFY(connect(server, &core::IServer::keyLoaded, this, &ExplorerTreeView::loadKey,
+  VERIFY(connect(server, &core::IServer::KeyLoaded, this, &ExplorerTreeView::loadKey,
                  Qt::DirectConnection));
-  VERIFY(connect(server, &core::IServer::keyTTLChanged, this, &ExplorerTreeView::changeTTLKey,
+  VERIFY(connect(server, &core::IServer::KeyTTLChanged, this, &ExplorerTreeView::changeTTLKey,
                  Qt::DirectConnection));
 }
 
@@ -1172,11 +1172,11 @@ void ExplorerTreeView::unsyncWithServer(core::IServer* server) {
   VERIFY(disconnect(server, &core::IServer::ExecuteFinished, this,
                     &ExplorerTreeView::finishExecuteCommand));
 
-  VERIFY(disconnect(server, &core::IServer::keyRemoved, this, &ExplorerTreeView::removeKey));
-  VERIFY(disconnect(server, &core::IServer::keyAdded, this, &ExplorerTreeView::addKey));
-  VERIFY(disconnect(server, &core::IServer::keyRenamed, this, &ExplorerTreeView::renameKey));
-  VERIFY(disconnect(server, &core::IServer::keyLoaded, this, &ExplorerTreeView::loadKey));
-  VERIFY(disconnect(server, &core::IServer::keyTTLChanged, this, &ExplorerTreeView::changeTTLKey));
+  VERIFY(disconnect(server, &core::IServer::KeyRemoved, this, &ExplorerTreeView::removeKey));
+  VERIFY(disconnect(server, &core::IServer::KeyAdded, this, &ExplorerTreeView::addKey));
+  VERIFY(disconnect(server, &core::IServer::KeyRenamed, this, &ExplorerTreeView::renameKey));
+  VERIFY(disconnect(server, &core::IServer::KeyLoaded, this, &ExplorerTreeView::loadKey));
+  VERIFY(disconnect(server, &core::IServer::KeyTTLChanged, this, &ExplorerTreeView::changeTTLKey));
 }
 
 void ExplorerTreeView::retranslateUi() {

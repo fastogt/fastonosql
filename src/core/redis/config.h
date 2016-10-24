@@ -32,7 +32,7 @@ struct Config : public RemoteConfig {
   Config& operator=(const Config& other);
 
   std::string hostsocket;
-  int interval;
+  uint64_t interval;
   int dbnum;
   int interactive;
   int latency_mode;

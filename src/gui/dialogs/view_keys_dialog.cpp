@@ -140,7 +140,7 @@ ViewKeysDialog::ViewKeysDialog(const QString& title, core::IDatabaseSPtr db, QWi
                  Qt::DirectConnection));
   VERIFY(connect(serv.get(), &core::IServer::ExecuteFinished, this, &ViewKeysDialog::finishExecute,
                  Qt::DirectConnection));
-  VERIFY(connect(serv.get(), &core::IServer::keyTTLChanged, this, &ViewKeysDialog::keyTTLChange,
+  VERIFY(connect(serv.get(), &core::IServer::KeyTTLChanged, this, &ViewKeysDialog::keyTTLChange,
                  Qt::DirectConnection));
 
   keysTable_ = new FastoTableView;

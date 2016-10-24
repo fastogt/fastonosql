@@ -34,7 +34,7 @@ struct ConnectionAllocatorTraits {
 
   static common::Error connect(const config_t& config, handle_t** hout);  // allocate handle
   static common::Error disconnect(handle_t** handle);                     // deallocate handle
-  static bool isConnected(handle_t* handle);
+  static bool IsConnected(handle_t* handle);
 };
 
 template <typename ConnectionAllocatorTraits>
@@ -53,10 +53,10 @@ class Connection {
     }
   }
 
-  bool isConnected() const { return traits_t::isConnected(handle_); }
+  bool IsConnected() const { return traits_t::IsConnected(handle_); }
 
   common::Error connect(const config_t& config) WARN_UNUSED_RESULT {
-    if (isConnected()) {
+    if (IsConnected()) {
       return common::Error();
     }
 
@@ -72,7 +72,7 @@ class Connection {
   }
 
   common::Error disconnect() WARN_UNUSED_RESULT {
-    if (!isConnected()) {
+    if (!IsConnected()) {
       return common::Error();
     }
 

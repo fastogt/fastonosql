@@ -30,9 +30,8 @@ namespace core {
 
 CommandHandler::CommandHandler(const commands_t& commands) : commands_(commands) {}
 
-common::Error CommandHandler::execute(int argc, const char** argv, FastoObject* out) {
-  for (size_t i = 0; i < commands_.size(); ++i) {
-    command_t cmd = commands_[i];
+common::Error CommandHandler::Execute(int argc, const char** argv, FastoObject* out) {
+  for (auto cmd: commands_) {
     size_t off = 0;
     if (cmd.isCommand(argc, argv, &off)) {
       int argc_to_call = argc - off;

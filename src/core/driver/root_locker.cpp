@@ -41,14 +41,14 @@ RootLocker::RootLocker(IDriver* parent, QObject* receiver, const std::string& te
   root_ = FastoObject::createRoot(text, this);
   if (!silence_) {
     events::CommandRootCreatedEvent::value_type res(parent_, root_);
-    IDriver::reply(receiver_, new events::CommandRootCreatedEvent(parent_, res));
+    IDriver::Reply(receiver_, new events::CommandRootCreatedEvent(parent_, res));
   }
 }
 
 RootLocker::~RootLocker() {
   if (!silence_) {
     events::CommandRootCompleatedEvent::value_type res(parent_, tstart_, root_);
-    IDriver::reply(receiver_, new events::CommandRootCompleatedEvent(parent_, res));
+    IDriver::Reply(receiver_, new events::CommandRootCompleatedEvent(parent_, res));
   }
 }
 

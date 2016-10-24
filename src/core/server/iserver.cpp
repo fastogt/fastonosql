@@ -40,29 +40,29 @@ IServer::IServer(IDriver* drv) : drv_(drv) {
   VERIFY(QObject::connect(drv_, &IDriver::ChildAdded, this, &IServer::ChildAdded));
   VERIFY(QObject::connect(drv_, &IDriver::ItemUpdated, this, &IServer::ItemUpdated));
   VERIFY(
-      QObject::connect(drv_, &IDriver::serverInfoSnapShoot, this, &IServer::serverInfoSnapShoot));
+      QObject::connect(drv_, &IDriver::ServerInfoSnapShoot, this, &IServer::ServerInfoSnapShoot));
 
-  VERIFY(QObject::connect(drv_, &IDriver::keyRemoved, this, &IServer::keyRemoved));
-  VERIFY(QObject::connect(drv_, &IDriver::keyAdded, this, &IServer::keyAdded));
-  VERIFY(QObject::connect(drv_, &IDriver::keyLoaded, this, &IServer::keyLoaded));
-  VERIFY(QObject::connect(drv_, &IDriver::keyRenamed, this, &IServer::keyRenamed));
-  VERIFY(QObject::connect(drv_, &IDriver::keyTTLChanged, this, &IServer::keyTTLChanged));
+  VERIFY(QObject::connect(drv_, &IDriver::KeyRemoved, this, &IServer::KeyRemoved));
+  VERIFY(QObject::connect(drv_, &IDriver::KeyAdded, this, &IServer::KeyAdded));
+  VERIFY(QObject::connect(drv_, &IDriver::KeyLoaded, this, &IServer::KeyLoaded));
+  VERIFY(QObject::connect(drv_, &IDriver::KeyRenamed, this, &IServer::KeyRenamed));
+  VERIFY(QObject::connect(drv_, &IDriver::KeyTTLChanged, this, &IServer::KeyTTLChanged));
 
-  drv_->start();
+  drv_->Start();
 }
 
 IServer::~IServer() {
   StopCurrentEvent();
-  drv_->stop();
+  drv_->Stop();
   delete drv_;
 }
 
 void IServer::StopCurrentEvent() {
-  drv_->interrupt();
+  drv_->Interrupt();
 }
 
 bool IServer::IsConnected() const {
-  return drv_->isConnected() && drv_->isAuthenticated();
+  return drv_->IsConnected() && drv_->IsAuthenticated();
 }
 
 bool IServer::IsCanRemote() const {
@@ -70,32 +70,32 @@ bool IServer::IsCanRemote() const {
 }
 
 translator_t IServer::Translator() const {
-  return drv_->translator();
+  return drv_->Translator();
 }
 
 connectionTypes IServer::Type() const {
-  return drv_->type();
+  return drv_->Type();
 }
 
 std::string IServer::Name() const {
-  IConnectionSettings::connection_path_t path = drv_->connectionPath();
+  IConnectionSettings::connection_path_t path = drv_->ConnectionPath();
   return path.name();
 }
 
-IServerInfoSPtr IServer::ServerInfo() const {
-  return drv_->serverInfo();
+IServerInfoSPtr IServer::CurrentServerInfo() const {
+  return drv_->CurrentServerInfo();
 }
 
 IDataBaseInfoSPtr IServer::CurrentDatabaseInfo() const {
-  return drv_->currentDatabaseInfo();
+  return drv_->CurrentDatabaseInfo();
 }
 
 std::string IServer::Delimiter() const {
-  return drv_->delimiter();
+  return drv_->Delimiter();
 }
 
 std::string IServer::NsSeparator() const {
-  return drv_->nsSeparator();
+  return drv_->NsSeparator();
 }
 
 IDatabaseSPtr IServer::CreateDatabaseByInfo(IDataBaseInfoSPtr inf) {
@@ -297,7 +297,7 @@ void IServer::customEvent(QEvent* event) {
              static_cast<QEvent::Type>(events::ChangeMaxConnectionResponceEvent::EventType)) {
     events::ChangeMaxConnectionResponceEvent* ev =
         static_cast<events::ChangeMaxConnectionResponceEvent*>(event);
-    HandleChangeMaxConnection(ev);
+    HandleChangeMaxConnectionEvent(ev);
   } else if (type ==
              static_cast<QEvent::Type>(events::LoadDatabaseContentResponceEvent::EventType)) {
     events::LoadDatabaseContentResponceEvent* ev =
@@ -306,7 +306,7 @@ void IServer::customEvent(QEvent* event) {
   } else if (type == static_cast<QEvent::Type>(events::ClearDatabaseResponceEvent::EventType)) {
     events::ClearDatabaseResponceEvent* ev =
         static_cast<events::ClearDatabaseResponceEvent*>(event);
-    HandleClearDatabaseResponceEvent(ev);
+    HandleClearDatabaseEvent(ev);
   } else if (type ==
              static_cast<QEvent::Type>(events::SetDefaultDatabaseResponceEvent::EventType)) {
     events::SetDefaultDatabaseResponceEvent* ev =
@@ -314,7 +314,7 @@ void IServer::customEvent(QEvent* event) {
     HandleSetDefaultDatabaseEvent(ev);
   } else if (type == static_cast<QEvent::Type>(events::ExecuteResponceEvent::EventType)) {
     events::ExecuteResponceEvent* ev = static_cast<events::ExecuteResponceEvent*>(event);
-    HandleExecuteResponceEvent(ev);
+    HandleExecuteEvent(ev);
   } else if (type == static_cast<QEvent::Type>(events::DiscoveryInfoResponceEvent::EventType)) {
     events::DiscoveryInfoResponceEvent* ev =
         static_cast<events::DiscoveryInfoResponceEvent*>(event);
@@ -416,7 +416,7 @@ void IServer::HandleChangePasswordEvent(events::ChangePasswordResponceEvent* ev)
   emit ChangePasswordFinished(v);
 }
 
-void IServer::HandleChangeMaxConnection(events::ChangeMaxConnectionResponceEvent* ev) {
+void IServer::HandleChangeMaxConnectionEvent(events::ChangeMaxConnectionResponceEvent* ev) {
   auto v = ev->value();
   common::Error er(v.errorInfo());
   if (er && er->isError()) {
@@ -426,7 +426,7 @@ void IServer::HandleChangeMaxConnection(events::ChangeMaxConnectionResponceEvent
   emit ChangeMaxConnectionFinished(v);
 }
 
-void IServer::HandleExecuteResponceEvent(events::ExecuteResponceEvent* ev) {
+void IServer::HandleExecuteEvent(events::ExecuteResponceEvent* ev) {
   auto v = ev->value();
   common::Error er(v.errorInfo());
   if (er && er->isError()) {
@@ -473,7 +473,7 @@ void IServer::HandleLoadDatabaseContentEvent(events::LoadDatabaseContentResponce
   emit LoadDatabaseContentFinished(v);
 }
 
-void IServer::HandleClearDatabaseResponceEvent(events::ClearDatabaseResponceEvent* ev) {
+void IServer::HandleClearDatabaseEvent(events::ClearDatabaseResponceEvent* ev) {
   auto v = ev->value();
   common::Error er = v.errorInfo();
   if (er && er->isError()) {

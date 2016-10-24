@@ -107,7 +107,7 @@ common::Error ConnectionAllocatorTraits<memcached::NativeConnection, memcached::
   return common::Error();
 }
 template <>
-bool ConnectionAllocatorTraits<memcached::NativeConnection, memcached::Config>::isConnected(
+bool ConnectionAllocatorTraits<memcached::NativeConnection, memcached::Config>::IsConnected(
     memcached::NativeConnection* handle) {
   if (!handle) {
     return false;
@@ -226,7 +226,7 @@ common::Error DBConnection::keys(const std::string& key_start,
     return common::make_error_value("Invalid input argument(s)", common::ErrorValue::E_ERROR);
   }
 
-  if (!isConnected()) {
+  if (!IsConnected()) {
     return common::make_error_value("Not connected", common::Value::E_ERROR);
   }
 
@@ -249,7 +249,7 @@ common::Error DBConnection::info(const char* args, ServerInfo::Stats* statsout) 
     return common::make_error_value("Invalid input argument(s)", common::ErrorValue::E_ERROR);
   }
 
-  if (!isConnected()) {
+  if (!IsConnected()) {
     return common::make_error_value("Not connected", common::Value::E_ERROR);
   }
 
@@ -296,7 +296,7 @@ common::Error DBConnection::dbkcount(size_t* size) {
     return common::make_error_value("Invalid input argument(s)", common::ErrorValue::E_ERROR);
   }
 
-  if (!isConnected()) {
+  if (!IsConnected()) {
     return common::make_error_value("Not connected", common::Value::E_ERROR);
   }
 
@@ -316,7 +316,7 @@ common::Error DBConnection::addIfNotExist(const std::string& key,
                                           const std::string& value,
                                           time_t expiration,
                                           uint32_t flags) {
-  if (!isConnected()) {
+  if (!IsConnected()) {
     return common::make_error_value("Not connected", common::Value::E_ERROR);
   }
 
@@ -335,7 +335,7 @@ common::Error DBConnection::replace(const std::string& key,
                                     const std::string& value,
                                     time_t expiration,
                                     uint32_t flags) {
-  if (!isConnected()) {
+  if (!IsConnected()) {
     return common::make_error_value("Not connected", common::Value::E_ERROR);
   }
 
@@ -354,7 +354,7 @@ common::Error DBConnection::append(const std::string& key,
                                    const std::string& value,
                                    time_t expiration,
                                    uint32_t flags) {
-  if (!isConnected()) {
+  if (!IsConnected()) {
     return common::make_error_value("Not connected", common::Value::E_ERROR);
   }
 
@@ -373,7 +373,7 @@ common::Error DBConnection::prepend(const std::string& key,
                                     const std::string& value,
                                     time_t expiration,
                                     uint32_t flags) {
-  if (!isConnected()) {
+  if (!IsConnected()) {
     return common::make_error_value("Not connected", common::Value::E_ERROR);
   }
 
@@ -389,7 +389,7 @@ common::Error DBConnection::prepend(const std::string& key,
 }
 
 common::Error DBConnection::incr(const std::string& key, uint64_t value) {
-  if (!isConnected()) {
+  if (!IsConnected()) {
     return common::make_error_value("Not connected", common::Value::E_ERROR);
   }
 
@@ -405,7 +405,7 @@ common::Error DBConnection::incr(const std::string& key, uint64_t value) {
 }
 
 common::Error DBConnection::decr(const std::string& key, uint64_t value) {
-  if (!isConnected()) {
+  if (!IsConnected()) {
     return common::make_error_value("Not connected", common::Value::E_ERROR);
   }
 
@@ -421,7 +421,7 @@ common::Error DBConnection::decr(const std::string& key, uint64_t value) {
 }
 
 common::Error DBConnection::delInner(const std::string& key, time_t expiration) {
-  if (!isConnected()) {
+  if (!IsConnected()) {
     return common::make_error_value("Not connected", common::Value::E_ERROR);
   }
 
@@ -440,7 +440,7 @@ common::Error DBConnection::setInner(const std::string& key,
                                      const std::string& value,
                                      time_t expiration,
                                      uint32_t flags) {
-  if (!isConnected()) {
+  if (!IsConnected()) {
     return common::make_error_value("Not connected", common::Value::E_ERROR);
   }
 
@@ -461,7 +461,7 @@ common::Error DBConnection::getInner(const std::string& key, std::string* ret_va
     return common::make_error_value("Invalid input argument(s)", common::ErrorValue::E_ERROR);
   }
 
-  if (!isConnected()) {
+  if (!IsConnected()) {
     return common::make_error_value("Not connected", common::Value::E_ERROR);
   }
 
@@ -484,7 +484,7 @@ common::Error DBConnection::getInner(const std::string& key, std::string* ret_va
 }
 
 common::Error DBConnection::expireInner(const std::string& key, time_t expiration) {
-  if (!isConnected()) {
+  if (!IsConnected()) {
     return common::make_error_value("Not connected", common::Value::E_ERROR);
   }
 
@@ -512,7 +512,7 @@ common::Error DBConnection::expireInner(const std::string& key, time_t expiratio
 }
 
 common::Error DBConnection::flushdb(time_t expiration) {
-  if (!isConnected()) {
+  if (!IsConnected()) {
     return common::make_error_value("Not connected", common::Value::E_ERROR);
   }
 
@@ -527,7 +527,7 @@ common::Error DBConnection::flushdb(time_t expiration) {
 }
 
 common::Error DBConnection::version_server() const {
-  if (!isConnected()) {
+  if (!IsConnected()) {
     return common::make_error_value("Not connected", common::Value::E_ERROR);
   }
 

@@ -85,7 +85,7 @@ OutputWidget::OutputWidget(core::IServerSPtr server, QWidget* parent)
   VERIFY(connect(server_.get(), &core::IServer::ExecuteFinished, this,
                  &OutputWidget::finishExecuteCommand, Qt::DirectConnection));
 
-  VERIFY(connect(server_.get(), &core::IServer::keyAdded, this, &OutputWidget::addKey,
+  VERIFY(connect(server_.get(), &core::IServer::KeyAdded, this, &OutputWidget::addKey,
                  Qt::DirectConnection));
 
   VERIFY(connect(server_.get(), &core::IServer::RootCreated, this, &OutputWidget::rootCreate,

@@ -32,12 +32,12 @@ namespace fastonosql {
 namespace core {
 class CDBConnectionClient {
  public:
-  virtual void onCurrentDataBaseChanged(IDataBaseInfo* info) = 0;
-  virtual void onKeysRemoved(const NKeys& keys) = 0;
-  virtual void onKeyAdded(const NDbKValue& key) = 0;
-  virtual void onKeyLoaded(const NDbKValue& key) = 0;
-  virtual void onKeyRenamed(const NKey& key, const std::string& new_key) = 0;
-  virtual void onKeyTTLChanged(const NKey& key, ttl_t ttl) = 0;
+  virtual void OnCurrentDataBaseChanged(IDataBaseInfo* info) = 0;
+  virtual void OnKeysRemoved(const NKeys& keys) = 0;
+  virtual void OnKeyAdded(const NDbKValue& key) = 0;
+  virtual void OnKeyLoaded(const NDbKValue& key) = 0;
+  virtual void OnKeyRenamed(const NKey& key, const std::string& new_key) = 0;
+  virtual void OnKeyTTLChanged(const NKey& key, ttl_t ttl) = 0;
 };
 }  // namespace core
 }  // namespace fastonosql
