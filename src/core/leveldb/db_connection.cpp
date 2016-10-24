@@ -39,11 +39,11 @@
 namespace fastonosql {
 namespace core {
 template <>
-common::Error ConnectionAllocatorTraits<leveldb::NativeConnection, leveldb::Config>::connect(
+common::Error ConnectionAllocatorTraits<leveldb::NativeConnection, leveldb::Config>::Connect(
     const leveldb::Config& config,
     leveldb::NativeConnection** hout) {
   leveldb::NativeConnection* context = nullptr;
-  common::Error er = leveldb::createConnection(config, &context);
+  common::Error er = leveldb::CreateConnection(config, &context);
   if (er && er->isError()) {
     return er;
   }
@@ -52,7 +52,7 @@ common::Error ConnectionAllocatorTraits<leveldb::NativeConnection, leveldb::Conf
   return common::Error();
 }
 template <>
-common::Error ConnectionAllocatorTraits<leveldb::NativeConnection, leveldb::Config>::disconnect(
+common::Error ConnectionAllocatorTraits<leveldb::NativeConnection, leveldb::Config>::Disconnect(
     leveldb::NativeConnection** handle) {
   destroy(handle);
   return common::Error();
@@ -68,7 +68,7 @@ bool ConnectionAllocatorTraits<leveldb::NativeConnection, leveldb::Config>::IsCo
 }
 namespace leveldb {
 
-common::Error createConnection(const Config& config, NativeConnection** context) {
+common::Error CreateConnection(const Config& config, NativeConnection** context) {
   if (!context) {
     return common::make_error_value("Invalid input argument(s)", common::ErrorValue::E_ERROR);
   }
@@ -90,22 +90,22 @@ common::Error createConnection(const Config& config, NativeConnection** context)
   return common::Error();
 }
 
-common::Error createConnection(ConnectionSettings* settings, NativeConnection** context) {
+common::Error CreateConnection(ConnectionSettings* settings, NativeConnection** context) {
   if (!settings) {
     return common::make_error_value("Invalid input argument(s)", common::ErrorValue::E_ERROR);
   }
 
   Config config = settings->Info();
-  return createConnection(config, context);
+  return CreateConnection(config, context);
 }
 
-common::Error testConnection(ConnectionSettings* settings) {
+common::Error TestConnection(ConnectionSettings* settings) {
   if (!settings) {
     return common::make_error_value("Invalid input argument(s)", common::ErrorValue::E_ERROR);
   }
 
   leveldb::NativeConnection* ldb = nullptr;
-  common::Error er = createConnection(settings, &ldb);
+  common::Error er = CreateConnection(settings, &ldb);
   if (er && er->isError()) {
     return er;
   }
@@ -117,13 +117,13 @@ common::Error testConnection(ConnectionSettings* settings) {
 DBConnection::DBConnection(CDBConnectionClient* client)
     : base_class(leveldbCommands, client, new CommandTranslator) {}
 
-const char* DBConnection::versionApi() {
+const char* DBConnection::VersionApi() {
   static std::string leveldb_version =
       common::MemSPrintf("%d.%d", leveldb_major_version(), leveldb_minor_version());
   return leveldb_version.c_str();
 }
 
-common::Error DBConnection::dbkcount(size_t* size) {
+common::Error DBConnection::DBkcount(size_t* size) {
   if (!size) {
     DNOTREACHED();
     return common::make_error_value("Invalid input argument(s)", common::ErrorValue::E_ERROR);
@@ -152,7 +152,7 @@ common::Error DBConnection::dbkcount(size_t* size) {
   return common::Error();
 }
 
-common::Error DBConnection::info(const char* args, ServerInfo::Stats* statsout) {
+common::Error DBConnection::Info(const char* args, ServerInfo::Stats* statsout) {
   UNUSED(args);
 
   if (!statsout) {
@@ -203,7 +203,7 @@ common::Error DBConnection::info(const char* args, ServerInfo::Stats* statsout) 
   return common::Error();
 }
 
-common::Error DBConnection::delInner(const std::string& key) {
+common::Error DBConnection::DelInner(const std::string& key) {
   if (!IsConnected()) {
     return common::make_error_value("Not connected", common::Value::E_ERROR);
   }
@@ -217,7 +217,7 @@ common::Error DBConnection::delInner(const std::string& key) {
   return common::Error();
 }
 
-common::Error DBConnection::setInner(const std::string& key, const std::string& value) {
+common::Error DBConnection::SetInner(const std::string& key, const std::string& value) {
   if (!IsConnected()) {
     return common::make_error_value("Not connected", common::Value::E_ERROR);
   }
@@ -232,7 +232,7 @@ common::Error DBConnection::setInner(const std::string& key, const std::string& 
   return common::Error();
 }
 
-common::Error DBConnection::getInner(const std::string& key, std::string* ret_val) {
+common::Error DBConnection::GetInner(const std::string& key, std::string* ret_val) {
   if (!IsConnected()) {
     return common::make_error_value("Not connected", common::Value::E_ERROR);
   }
@@ -247,7 +247,7 @@ common::Error DBConnection::getInner(const std::string& key, std::string* ret_va
   return common::Error();
 }
 
-common::Error DBConnection::keys(const std::string& key_start,
+common::Error DBConnection::Keys(const std::string& key_start,
                                  const std::string& key_end,
                                  uint64_t limit,
                                  std::vector<std::string>* ret) {
@@ -277,14 +277,14 @@ common::Error DBConnection::keys(const std::string& key_start,
   return common::Error();
 }
 
-common::Error DBConnection::help(int argc, const char** argv) {
+common::Error DBConnection::Help(int argc, const char** argv) {
   UNUSED(argc);
   UNUSED(argv);
 
   return NotSupported("HELP");
 }
 
-common::Error DBConnection::flushdb() {
+common::Error DBConnection::Flushdb() {
   if (!IsConnected()) {
     return common::make_error_value("Not connected", common::Value::E_ERROR);
   }
@@ -314,7 +314,7 @@ common::Error DBConnection::flushdb() {
 
 common::Error DBConnection::SelectImpl(const std::string& name, IDataBaseInfo** info) {
   size_t kcount = 0;
-  common::Error err = dbkcount(&kcount);
+  common::Error err = DBkcount(&kcount);
   DCHECK(!err);
   *info = new DataBaseInfo(name, true, kcount);
   return common::Error();
@@ -324,7 +324,7 @@ common::Error DBConnection::DeleteImpl(const NKeys& keys, NKeys* deleted_keys) {
   for (size_t i = 0; i < keys.size(); ++i) {
     NKey key = keys[i];
     std::string key_str = key.key();
-    common::Error err = delInner(key_str);
+    common::Error err = DelInner(key_str);
     if (err && err->isError()) {
       continue;
     }
@@ -338,7 +338,7 @@ common::Error DBConnection::DeleteImpl(const NKeys& keys, NKeys* deleted_keys) {
 common::Error DBConnection::SetImpl(const NDbKValue& key, NDbKValue* added_key) {
   std::string key_str = key.keyString();
   std::string value_str = key.valueString();
-  common::Error err = setInner(key_str, value_str);
+  common::Error err = SetInner(key_str, value_str);
   if (err && err->isError()) {
     return err;
   }
@@ -350,7 +350,7 @@ common::Error DBConnection::SetImpl(const NDbKValue& key, NDbKValue* added_key) 
 common::Error DBConnection::GetImpl(const NKey& key, NDbKValue* loaded_key) {
   std::string key_str = key.key();
   std::string value_str;
-  common::Error err = getInner(key_str, &value_str);
+  common::Error err = GetInner(key_str, &value_str);
   if (err && err->isError()) {
     return err;
   }
@@ -363,17 +363,17 @@ common::Error DBConnection::GetImpl(const NKey& key, NDbKValue* loaded_key) {
 common::Error DBConnection::RenameImpl(const NKey& key, const std::string& new_key) {
   std::string key_str = key.key();
   std::string value_str;
-  common::Error err = getInner(key_str, &value_str);
+  common::Error err = GetInner(key_str, &value_str);
   if (err && err->isError()) {
     return err;
   }
 
-  err = delInner(key_str);
+  err = DelInner(key_str);
   if (err && err->isError()) {
     return err;
   }
 
-  err = setInner(new_key, value_str);
+  err = SetInner(new_key, value_str);
   if (err && err->isError()) {
     return err;
   }
@@ -396,7 +396,7 @@ common::Error dbkcount(CommandHandler* handler, int argc, const char** argv, Fas
   DBConnection* level = static_cast<DBConnection*>(handler);
 
   size_t dbkcount = 0;
-  common::Error er = level->dbkcount(&dbkcount);
+  common::Error er = level->DBkcount(&dbkcount);
   if (!er) {
     common::FundamentalValue* val = common::Value::createUIntegerValue(dbkcount);
     FastoObject* child = new FastoObject(out, val, level->Delimiter());
@@ -409,7 +409,7 @@ common::Error info(CommandHandler* handler, int argc, const char** argv, FastoOb
   DBConnection* level = static_cast<DBConnection*>(handler);
 
   ServerInfo::Stats statsout;
-  common::Error er = level->info(argc == 1 ? argv[0] : nullptr, &statsout);
+  common::Error er = level->Info(argc == 1 ? argv[0] : nullptr, &statsout);
   if (!er) {
     ServerInfo linf(statsout);
     common::StringValue* val = common::Value::createStringValue(linf.ToString());
@@ -532,7 +532,7 @@ common::Error keys(CommandHandler* handler, int argc, const char** argv, FastoOb
 
   std::vector<std::string> keysout;
   common::Error er =
-      level->keys(argv[0], argv[1], common::ConvertFromString<uint64_t>(argv[2]), &keysout);
+      level->Keys(argv[0], argv[1], common::ConvertFromString<uint64_t>(argv[2]), &keysout);
   if (!er) {
     common::ArrayValue* ar = common::Value::createArrayValue();
     for (size_t i = 0; i < keysout.size(); ++i) {
@@ -549,7 +549,7 @@ common::Error help(CommandHandler* handler, int argc, const char** argv, FastoOb
   UNUSED(out);
 
   DBConnection* level = static_cast<DBConnection*>(handler);
-  return level->help(argc - 1, argv + 1);
+  return level->Help(argc - 1, argv + 1);
 }
 
 common::Error flushdb(CommandHandler* handler, int argc, const char** argv, FastoObject* out) {
@@ -558,7 +558,7 @@ common::Error flushdb(CommandHandler* handler, int argc, const char** argv, Fast
   UNUSED(out);
 
   DBConnection* level = static_cast<DBConnection*>(handler);
-  return level->flushdb();
+  return level->Flushdb();
 }
 
 }  // namespace leveldb

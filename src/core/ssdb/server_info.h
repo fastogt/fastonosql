@@ -62,7 +62,7 @@ class ServerInfo : public IServerInfo {
 
 std::ostream& operator<<(std::ostream& out, const ServerInfo& value);
 
-ServerInfo* makeSsdbServerInfo(const std::string& content);
+ServerInfo* MakeSsdbServerInfo(const std::string& content);
 
 }  // namespace ssdb
 }  // namespace core

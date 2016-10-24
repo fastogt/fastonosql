@@ -32,8 +32,8 @@ struct ConnectionAllocatorTraits {
   typedef H handle_t;
   typedef C config_t;
 
-  static common::Error connect(const config_t& config, handle_t** hout);  // allocate handle
-  static common::Error disconnect(handle_t** handle);                     // deallocate handle
+  static common::Error Connect(const config_t& config, handle_t** hout);  // allocate handle
+  static common::Error Disconnect(handle_t** handle);                     // deallocate handle
   static bool IsConnected(handle_t* handle);
 };
 
@@ -47,7 +47,7 @@ class Connection {
   Connection() : config_(), handle_(nullptr) {}
 
   ~Connection() {
-    common::Error err = disconnect();
+    common::Error err = Disconnect();
     if (err && err->isError()) {
       DNOTREACHED();
     }
@@ -55,13 +55,13 @@ class Connection {
 
   bool IsConnected() const { return traits_t::IsConnected(handle_); }
 
-  common::Error connect(const config_t& config) WARN_UNUSED_RESULT {
+  common::Error Connect(const config_t& config) WARN_UNUSED_RESULT {
     if (IsConnected()) {
       return common::Error();
     }
 
     handle_t* handle = nullptr;
-    common::Error err = traits_t::connect(config, &handle);
+    common::Error err = traits_t::Connect(config, &handle);
     if (err && err->isError()) {
       return err;
     }
@@ -71,12 +71,12 @@ class Connection {
     return common::Error();
   }
 
-  common::Error disconnect() WARN_UNUSED_RESULT {
+  common::Error Disconnect() WARN_UNUSED_RESULT {
     if (!IsConnected()) {
       return common::Error();
     }
 
-    common::Error err = traits_t::disconnect(&handle_);
+    common::Error err = traits_t::Disconnect(&handle_);
     if (err && err->isError()) {
       return err;
     }

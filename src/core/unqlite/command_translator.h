@@ -34,17 +34,17 @@ class CommandTranslator : public ICommandTranslator {
   CommandTranslator();
 
  private:
-  virtual common::Error createKeyCommandImpl(const NDbKValue& key,
+  virtual common::Error CreateKeyCommandImpl(const NDbKValue& key,
                                              std::string* cmdstring) const override;
-  virtual common::Error loadKeyCommandImpl(const NKey& key,
+  virtual common::Error LoadKeyCommandImpl(const NKey& key,
                                            common::Value::Type type,
                                            std::string* cmdstring) const override;
-  virtual common::Error deleteKeyCommandImpl(const NKey& key,
+  virtual common::Error DeleteKeyCommandImpl(const NKey& key,
                                              std::string* cmdstring) const override;
-  virtual common::Error renameKeyCommandImpl(const NKey& key,
+  virtual common::Error RenameKeyCommandImpl(const NKey& key,
                                              const std::string& new_name,
                                              std::string* cmdstring) const override;
-  virtual common::Error changeKeyTTLCommandImpl(const NKey& key,
+  virtual common::Error ChangeKeyTTLCommandImpl(const NKey& key,
                                                 ttl_t ttl,
                                                 std::string* cmdstring) const override;
 };

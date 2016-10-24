@@ -41,7 +41,7 @@ void TestConnection::routine() {
     return;
   }
 
-  common::Error er = core::ServersManager::instance().testConnection(connection_);
+  common::Error er = core::ServersManager::instance().TestConnection(connection_);
 
   if (er && er->isError()) {
     emit connectionResult(false, common::time::current_mstime() - start_time_,

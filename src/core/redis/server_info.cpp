@@ -122,7 +122,7 @@ const std::vector<Field> redisKeySpaceFields = {};
 }  // namespace
 
 template <>
-std::vector<common::Value::Type> DBTraits<REDIS>::supportedTypes() {
+std::vector<common::Value::Type> DBTraits<REDIS>::SupportedTypes() {
   return {common::Value::TYPE_BOOLEAN, common::Value::TYPE_INTEGER, common::Value::TYPE_UINTEGER,
           common::Value::TYPE_DOUBLE,  common::Value::TYPE_STRING,
 
@@ -131,7 +131,7 @@ std::vector<common::Value::Type> DBTraits<REDIS>::supportedTypes() {
 }
 
 template <>
-std::vector<info_field_t> DBTraits<REDIS>::infoFields() {
+std::vector<info_field_t> DBTraits<REDIS>::InfoFields() {
   return {std::make_pair(REDIS_SERVER_LABEL, redisServerFields),
           std::make_pair(REDIS_CLIENTS_LABEL, redisClientFields),
           std::make_pair(REDIS_MEMORY_LABEL, redisMemoryFields),
@@ -880,7 +880,7 @@ std::ostream& operator<<(std::ostream& out, const ServerInfo& value) {
   return out << value.ToString();
 }
 
-ServerInfo* makeRedisServerInfo(const std::string& content) {
+ServerInfo* MakeRedisServerInfo(const std::string& content) {
   if (content.empty()) {
     return nullptr;
   }
@@ -889,7 +889,7 @@ ServerInfo* makeRedisServerInfo(const std::string& content) {
   size_t j = 0;
   std::string word;
   size_t pos = 0;
-  static const std::vector<core::info_field_t> fields = DBTraits<REDIS>::infoFields();
+  static const std::vector<core::info_field_t> fields = DBTraits<REDIS>::InfoFields();
   for (size_t i = 0; i < content.size(); ++i) {
     char ch = content[i];
     word += ch;

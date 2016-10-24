@@ -47,7 +47,7 @@ namespace redis {
 DiscoverySentinelInfo::DiscoverySentinelInfo(const ServerCommonInfo& args)
     : ServerDiscoverySentinelInfo(REDIS, args) {}
 
-common::Error makeServerCommonInfo(struct redisReply* repl_info, ServerCommonInfo* info) {
+common::Error MakeServerCommonInfo(struct redisReply* repl_info, ServerCommonInfo* info) {
   if (!repl_info || !info) {
     return common::make_error_value("Invalid input argument(s)", common::ErrorValue::E_ERROR);
   }

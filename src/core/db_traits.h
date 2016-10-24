@@ -40,12 +40,12 @@ struct Field {
 typedef std::pair<std::string, std::vector<Field>> info_field_t;
 template <connectionTypes ct>
 struct DBTraits {
-  static std::vector<common::Value::Type> supportedTypes();
-  static std::vector<info_field_t> infoFields();
+  static std::vector<common::Value::Type> SupportedTypes();
+  static std::vector<info_field_t> InfoFields();
 };
 
-std::vector<common::Value::Type> supportedTypesFromType(connectionTypes type);
-std::vector<info_field_t> infoFieldsFromType(connectionTypes type);
+std::vector<common::Value::Type> SupportedTypesFromType(connectionTypes type);
+std::vector<info_field_t> InfoFieldsFromType(connectionTypes type);
 
 }  // namespace core
 }  // namespace fastonosql

@@ -107,7 +107,7 @@ DiscoveryClusterDiagnosticDialog::DiscoveryClusterDiagnosticDialog(
   glassWidget_ = new common::qt::gui::GlassWidget(GuiFactory::instance().pathToLoadingGif(),
                                                   translations::trTryToConnect, 0.5,
                                                   QColor(111, 111, 100), this);
-  testConnection(connection);
+  TestConnection(connection);
 }
 
 std::vector<ConnectionListWidgetItemDiscovered*>
@@ -163,7 +163,7 @@ void DiscoveryClusterDiagnosticDialog::showEvent(QShowEvent* e) {
   glassWidget_->start();
 }
 
-void DiscoveryClusterDiagnosticDialog::testConnection(
+void DiscoveryClusterDiagnosticDialog::TestConnection(
     core::IConnectionSettingsBaseSPtr connection) {
   QThread* th = new QThread;
   DiscoveryConnection* cheker = new DiscoveryConnection(connection);

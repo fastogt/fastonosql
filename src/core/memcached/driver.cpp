@@ -127,7 +127,7 @@ common::Error Driver::CurrentServerInfo(IServerInfo** info) {
   FastoObjectCommandIPtr cmd = CreateCommandFast(MEMCACHED_INFO_REQUEST, common::Value::C_INNER);
   LOG_COMMAND(cmd);
   ServerInfo::Stats cm;
-  common::Error err = impl_->info(nullptr, &cm);
+  common::Error err = impl_->Info(nullptr, &cm);
   if (err && err->isError()) {
     return err;
   }
@@ -180,7 +180,7 @@ void Driver::HandleLoadDatabaseContentEvent(events::LoadDatabaseContentRequestEv
         }
       }
 
-      err = impl_->dbkcount(&res.db_keys_count);
+      err = impl_->DBkcount(&res.db_keys_count);
       DCHECK(!err);
     }
   }
@@ -195,7 +195,7 @@ void Driver::HandleProcessCommandLineArgsEvent(events::ProcessConfigArgsRequestE
 }
 
 IServerInfoSPtr Driver::MakeServerInfoFromString(const std::string& val) {
-  IServerInfoSPtr res(makeMemcachedServerInfo(val));
+  IServerInfoSPtr res(MakeMemcachedServerInfo(val));
   return res;
 }
 

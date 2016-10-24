@@ -63,13 +63,13 @@ const std::vector<Field> memcachedCommonFields = {
 }  // namespace
 
 template <>
-std::vector<common::Value::Type> DBTraits<MEMCACHED>::supportedTypes() {
+std::vector<common::Value::Type> DBTraits<MEMCACHED>::SupportedTypes() {
   return {common::Value::TYPE_BOOLEAN, common::Value::TYPE_INTEGER, common::Value::TYPE_UINTEGER,
           common::Value::TYPE_DOUBLE, common::Value::TYPE_STRING};
 }
 
 template <>
-std::vector<info_field_t> DBTraits<MEMCACHED>::infoFields() {
+std::vector<info_field_t> DBTraits<MEMCACHED>::InfoFields() {
   return {std::make_pair(MEMCACHED_COMMON_LABEL, memcachedCommonFields)};
 }
 
@@ -233,7 +233,7 @@ std::ostream& operator<<(std::ostream& out, const ServerInfo& value) {
   return out << value.ToString();
 }
 
-ServerInfo* makeMemcachedServerInfo(const std::string& content) {
+ServerInfo* MakeMemcachedServerInfo(const std::string& content) {
   if (content.empty()) {
     return nullptr;
   }
@@ -242,7 +242,7 @@ ServerInfo* makeMemcachedServerInfo(const std::string& content) {
   size_t j = 0;
   std::string word;
   size_t pos = 0;
-  static const std::vector<info_field_t> fields = DBTraits<MEMCACHED>::infoFields();
+  static const std::vector<info_field_t> fields = DBTraits<MEMCACHED>::InfoFields();
   for (size_t i = 0; i < content.size(); ++i) {
     char ch = content[i];
     word += ch;

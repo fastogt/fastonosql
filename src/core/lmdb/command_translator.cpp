@@ -30,9 +30,10 @@
 namespace fastonosql {
 namespace core {
 namespace lmdb {
+
 CommandTranslator::CommandTranslator() {}
 
-common::Error CommandTranslator::createKeyCommandImpl(const NDbKValue& key,
+common::Error CommandTranslator::CreateKeyCommandImpl(const NDbKValue& key,
                                                       std::string* cmdstring) const {
   NValue val = key.value();
   common::Value* rval = val.get();
@@ -42,7 +43,7 @@ common::Error CommandTranslator::createKeyCommandImpl(const NDbKValue& key,
   return common::Error();
 }
 
-common::Error CommandTranslator::loadKeyCommandImpl(const NKey& key,
+common::Error CommandTranslator::LoadKeyCommandImpl(const NKey& key,
                                                     common::Value::Type type,
                                                     std::string* cmdstring) const {
   UNUSED(type);
@@ -52,14 +53,14 @@ common::Error CommandTranslator::loadKeyCommandImpl(const NKey& key,
   return common::Error();
 }
 
-common::Error CommandTranslator::deleteKeyCommandImpl(const NKey& key,
+common::Error CommandTranslator::DeleteKeyCommandImpl(const NKey& key,
                                                       std::string* cmdstring) const {
   std::string key_str = key.key();
   *cmdstring = common::MemSPrintf(LMDB_DELETE_KEY_PATTERN_1ARGS_S, key_str);
   return common::Error();
 }
 
-common::Error CommandTranslator::renameKeyCommandImpl(const NKey& key,
+common::Error CommandTranslator::RenameKeyCommandImpl(const NKey& key,
                                                       const std::string& new_name,
                                                       std::string* cmdstring) const {
   std::string key_str = key.key();
@@ -67,7 +68,7 @@ common::Error CommandTranslator::renameKeyCommandImpl(const NKey& key,
   return common::Error();
 }
 
-common::Error CommandTranslator::changeKeyTTLCommandImpl(const NKey& key,
+common::Error CommandTranslator::ChangeKeyTTLCommandImpl(const NKey& key,
                                                          ttl_t ttl,
                                                          std::string* cmdstring) const {
   UNUSED(key);
@@ -78,6 +79,7 @@ common::Error CommandTranslator::changeKeyTTLCommandImpl(const NKey& key,
                                             " not supported change ttl command for LMDB.");
   return common::make_error_value(errorMsg, common::ErrorValue::E_ERROR);
 }
+
 }
 }  // namespace core
 }  // namespace fastonosql

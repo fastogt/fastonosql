@@ -49,13 +49,13 @@ const std::vector<Field> LeveldbCommonFields = {
 }  // namespace
 
 template <>
-std::vector<common::Value::Type> DBTraits<LEVELDB>::supportedTypes() {
+std::vector<common::Value::Type> DBTraits<LEVELDB>::SupportedTypes() {
   return {common::Value::TYPE_BOOLEAN, common::Value::TYPE_INTEGER, common::Value::TYPE_UINTEGER,
           common::Value::TYPE_DOUBLE, common::Value::TYPE_STRING};
 }
 
 template <>
-std::vector<info_field_t> DBTraits<LEVELDB>::infoFields() {
+std::vector<info_field_t> DBTraits<LEVELDB>::InfoFields() {
   return {std::make_pair(LEVELDB_STATS_LABEL, LeveldbCommonFields)};
 }
 
@@ -135,13 +135,13 @@ std::ostream& operator<<(std::ostream& out, const ServerInfo& value) {
   return out << value.ToString();
 }
 
-ServerInfo* makeLeveldbServerInfo(const std::string& content) {
+ServerInfo* MakeLeveldbServerInfo(const std::string& content) {
   if (content.empty()) {
     return nullptr;
   }
 
   ServerInfo* result = new ServerInfo;
-  static const std::vector<info_field_t> fields = DBTraits<LEVELDB>::infoFields();
+  static const std::vector<info_field_t> fields = DBTraits<LEVELDB>::InfoFields();
   std::string word;
   DCHECK_EQ(fields.size(), 1);
 

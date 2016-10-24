@@ -35,7 +35,7 @@ struct ServerPropertiesInfo {
   std::vector<property_t> properties;
 };
 
-ServerPropertiesInfo makeServerProperty(const FastoObjectArray* array);
+ServerPropertiesInfo MakeServerProperty(const FastoObjectArray* array);
 
 }  // namespace core
 }  // namespace fastonosql

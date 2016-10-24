@@ -55,7 +55,7 @@ class ServerInfo : public IServerInfo {
 
 std::ostream& operator<<(std::ostream& out, const ServerInfo& value);
 
-ServerInfo* makeUnqliteServerInfo(const std::string& content);
+ServerInfo* MakeUnqliteServerInfo(const std::string& content);
 
 }  // namespace unqlite
 }  // namespace core

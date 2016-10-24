@@ -96,7 +96,7 @@ class ServerInfo : public IServerInfo {
 
 std::ostream& operator<<(std::ostream& out, const ServerInfo& value);
 
-ServerInfo* makeMemcachedServerInfo(const std::string& content);
+ServerInfo* MakeMemcachedServerInfo(const std::string& content);
 
 }  // namespace memcached
 }  // namespace core

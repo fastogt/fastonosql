@@ -258,7 +258,7 @@ struct ServerInfo : public IServerInfo {
 
 std::ostream& operator<<(std::ostream& out, const ServerInfo& value);
 
-ServerInfo* makeRedisServerInfo(const std::string& content);
+ServerInfo* MakeRedisServerInfo(const std::string& content);
 
 }  // namespace redis
 }  // namespace core

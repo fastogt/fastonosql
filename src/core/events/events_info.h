@@ -41,7 +41,7 @@ class EventInfoBase : public common::qt::EventInfo<common::Error> {
   typedef common::qt::EventInfo<common::Error> base_class;
   explicit EventInfoBase(initiator_type sender, error_type er = error_type());
   EventInfoBase(initiator_type sender, common::time64_t time_start, error_type er = error_type());
-  common::time64_t elapsedTime() const;
+  common::time64_t ElapsedTime() const;
 
  private:
   const common::time64_t time_start_;

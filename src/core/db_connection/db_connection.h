@@ -40,9 +40,9 @@ class DBConnection {
 
   connectionTypes ConnectionType() { return connection_t; }
 
-  common::Error Connect(const config_t& config) { return connection_.connect(config); }
+  common::Error Connect(const config_t& config) { return connection_.Connect(config); }
 
-  common::Error Disconnect() { return connection_.disconnect(); }
+  common::Error Disconnect() { return connection_.Disconnect(); }
 
   bool IsConnected() const { return connection_.IsConnected(); }
 

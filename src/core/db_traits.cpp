@@ -29,80 +29,80 @@ bool Field::isIntegral() const {
   return common::Value::isIntegral(type);
 }
 
-std::vector<common::Value::Type> supportedTypesFromType(connectionTypes type) {
+std::vector<common::Value::Type> SupportedTypesFromType(connectionTypes type) {
 #ifdef BUILD_WITH_REDIS
   if (type == REDIS) {
-    return DBTraits<REDIS>::supportedTypes();
+    return DBTraits<REDIS>::SupportedTypes();
   }
 #endif
 #ifdef BUILD_WITH_MEMCACHED
   if (type == MEMCACHED) {
-    return DBTraits<MEMCACHED>::supportedTypes();
+    return DBTraits<MEMCACHED>::SupportedTypes();
   }
 #endif
 #ifdef BUILD_WITH_SSDB
   if (type == SSDB) {
-    return DBTraits<SSDB>::supportedTypes();
+    return DBTraits<SSDB>::SupportedTypes();
   }
 #endif
 #ifdef BUILD_WITH_LEVELDB
   if (type == LEVELDB) {
-    return DBTraits<LEVELDB>::supportedTypes();
+    return DBTraits<LEVELDB>::SupportedTypes();
   }
 #endif
 #ifdef BUILD_WITH_ROCKSDB
   if (type == ROCKSDB) {
-    return DBTraits<ROCKSDB>::supportedTypes();
+    return DBTraits<ROCKSDB>::SupportedTypes();
   }
 #endif
 #ifdef BUILD_WITH_UNQLITE
   if (type == UNQLITE) {
-    return DBTraits<UNQLITE>::supportedTypes();
+    return DBTraits<UNQLITE>::SupportedTypes();
   }
 #endif
 #ifdef BUILD_WITH_LMDB
   if (type == LMDB) {
-    return DBTraits<LMDB>::supportedTypes();
+    return DBTraits<LMDB>::SupportedTypes();
   }
 #endif
   NOTREACHED();
   return std::vector<common::Value::Type>();
 }
 
-std::vector<info_field_t> infoFieldsFromType(connectionTypes type) {
+std::vector<info_field_t> InfoFieldsFromType(connectionTypes type) {
 #ifdef BUILD_WITH_REDIS
   if (type == REDIS) {
-    return DBTraits<REDIS>::infoFields();
+    return DBTraits<REDIS>::InfoFields();
   }
 #endif
 #ifdef BUILD_WITH_MEMCACHED
   if (type == MEMCACHED) {
-    return DBTraits<MEMCACHED>::infoFields();
+    return DBTraits<MEMCACHED>::InfoFields();
   }
 #endif
 #ifdef BUILD_WITH_SSDB
   if (type == SSDB) {
-    return DBTraits<SSDB>::infoFields();
+    return DBTraits<SSDB>::InfoFields();
   }
 #endif
 #ifdef BUILD_WITH_LEVELDB
   if (type == LEVELDB) {
-    return DBTraits<LEVELDB>::infoFields();
+    return DBTraits<LEVELDB>::InfoFields();
   }
 #endif
 #ifdef BUILD_WITH_ROCKSDB
   if (type == ROCKSDB) {
-    return DBTraits<ROCKSDB>::infoFields();
+    return DBTraits<ROCKSDB>::InfoFields();
   }
 #endif
 #ifdef BUILD_WITH_UNQLITE
   if (type == UNQLITE) {
-    return DBTraits<UNQLITE>::infoFields();
+    return DBTraits<UNQLITE>::InfoFields();
   }
 #endif
 #ifdef BUILD_WITH_LMDB
   if (type == LMDB) {
-    return DBTraits<LMDB>::infoFields();
+    return DBTraits<LMDB>::InfoFields();
   }
 #endif
   NOTREACHED();

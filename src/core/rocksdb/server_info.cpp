@@ -48,13 +48,13 @@ const std::vector<Field> rockCommonFields = {
 }  // namespace
 
 template <>
-std::vector<common::Value::Type> DBTraits<ROCKSDB>::supportedTypes() {
+std::vector<common::Value::Type> DBTraits<ROCKSDB>::SupportedTypes() {
   return {common::Value::TYPE_BOOLEAN, common::Value::TYPE_INTEGER, common::Value::TYPE_UINTEGER,
           common::Value::TYPE_DOUBLE, common::Value::TYPE_STRING};
 }
 
 template <>
-std::vector<info_field_t> DBTraits<ROCKSDB>::infoFields() {
+std::vector<info_field_t> DBTraits<ROCKSDB>::InfoFields() {
   return {std::make_pair(ROCKSDB_STATS_LABEL, rockCommonFields)};
 }
 
@@ -134,13 +134,13 @@ std::ostream& operator<<(std::ostream& out, const ServerInfo& value) {
   return out << value.ToString();
 }
 
-ServerInfo* makeRocksdbServerInfo(const std::string& content) {
+ServerInfo* MakeRocksdbServerInfo(const std::string& content) {
   if (content.empty()) {
     return nullptr;
   }
 
   ServerInfo* result = new ServerInfo;
-  static const std::vector<info_field_t> fields = DBTraits<ROCKSDB>::infoFields();
+  static const std::vector<info_field_t> fields = DBTraits<ROCKSDB>::InfoFields();
   std::string word;
   DCHECK_EQ(fields.size(), 1);
 

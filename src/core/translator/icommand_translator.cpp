@@ -21,51 +21,51 @@
 namespace fastonosql {
 namespace core {
 
-common::Error ICommandTranslator::deleteKeyCommand(const NKey& key, std::string* cmdstring) const {
+common::Error ICommandTranslator::DeleteKeyCommand(const NKey& key, std::string* cmdstring) const {
   if (!cmdstring) {
     return common::make_error_value("Invalid input argument(s)", common::ErrorValue::E_ERROR);
   }
 
-  return deleteKeyCommandImpl(key, cmdstring);
+  return DeleteKeyCommandImpl(key, cmdstring);
 }
 
-common::Error ICommandTranslator::renameKeyCommand(const NKey& key,
+common::Error ICommandTranslator::RenameKeyCommand(const NKey& key,
                                                    const std::string& new_name,
                                                    std::string* cmdstring) const {
   if (!cmdstring) {
     return common::make_error_value("Invalid input argument(s)", common::ErrorValue::E_ERROR);
   }
 
-  return renameKeyCommandImpl(key, new_name, cmdstring);
+  return RenameKeyCommandImpl(key, new_name, cmdstring);
 }
 
-common::Error ICommandTranslator::createKeyCommand(const NDbKValue& key,
+common::Error ICommandTranslator::CreateKeyCommand(const NDbKValue& key,
                                                    std::string* cmdstring) const {
   if (!cmdstring) {
     return common::make_error_value("Invalid input argument(s)", common::ErrorValue::E_ERROR);
   }
 
-  return createKeyCommandImpl(key, cmdstring);
+  return CreateKeyCommandImpl(key, cmdstring);
 }
 
-common::Error ICommandTranslator::loadKeyCommand(const NKey& key,
+common::Error ICommandTranslator::LoadKeyCommand(const NKey& key,
                                                  common::Value::Type type,
                                                  std::string* cmdstring) const {
   if (!cmdstring) {
     return common::make_error_value("Invalid input argument(s)", common::ErrorValue::E_ERROR);
   }
 
-  return loadKeyCommandImpl(key, type, cmdstring);
+  return LoadKeyCommandImpl(key, type, cmdstring);
 }
 
-common::Error ICommandTranslator::changeKeyTTLCommand(const NKey& key,
+common::Error ICommandTranslator::ChangeKeyTTLCommand(const NKey& key,
                                                       ttl_t ttl,
                                                       std::string* cmdstring) const {
   if (!cmdstring) {
     return common::make_error_value("Invalid input argument(s)", common::ErrorValue::E_ERROR);
   }
 
-  return changeKeyTTLCommandImpl(key, ttl, cmdstring);
+  return ChangeKeyTTLCommandImpl(key, ttl, cmdstring);
 }
 
 }  // namespace core

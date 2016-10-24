@@ -47,11 +47,11 @@ class ServersManager : public common::patterns::LazySingleton<ServersManager> {
   sentinel_t createSentinel(ISentinelSettingsBaseSPtr settings);
   cluster_t createCluster(IClusterSettingsBaseSPtr settings);
 
-  common::Error testConnection(IConnectionSettingsBaseSPtr connection) WARN_UNUSED_RESULT;
-  common::Error discoveryClusterConnection(IConnectionSettingsBaseSPtr connection,
+  common::Error TestConnection(IConnectionSettingsBaseSPtr connection) WARN_UNUSED_RESULT;
+  common::Error DiscoveryClusterConnection(IConnectionSettingsBaseSPtr connection,
                                            std::vector<ServerDiscoveryClusterInfoSPtr>* inf)
       WARN_UNUSED_RESULT;
-  common::Error discoverySentinelConnection(IConnectionSettingsBaseSPtr connection,
+  common::Error DiscoverySentinelConnection(IConnectionSettingsBaseSPtr connection,
                                             std::vector<ServerDiscoverySentinelInfoSPtr>* inf)
       WARN_UNUSED_RESULT;
 

@@ -36,7 +36,7 @@ const char* RedisLexer::language() const {
 }
 
 const char* RedisLexer::version() const {
-  return core::redis::DBConnection::versionApi();
+  return core::redis::DBConnection::VersionApi();
 }
 
 const char* RedisLexer::basedOn() const {

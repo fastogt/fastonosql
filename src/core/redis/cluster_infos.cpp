@@ -40,7 +40,7 @@ DiscoveryClusterInfo::DiscoveryClusterInfo(const ServerCommonInfo& info, bool se
 
 namespace {
 
-common::Error makeServerCommonInfoFromLine(const std::string& line,
+common::Error MakeServerCommonInfoFromLine(const std::string& line,
                                            ServerCommonInfo* info,
                                            bool* self) {
   if (line.empty() || !info || !self) {
@@ -142,7 +142,7 @@ common::Error makeDiscoveryClusterInfo(const common::net::HostAndPort& parentHos
 
     ServerCommonInfo inf;
     bool self = false;
-    common::Error lerr = makeServerCommonInfoFromLine(line, &inf, &self);
+    common::Error lerr = MakeServerCommonInfoFromLine(line, &inf, &self);
     if (lerr && lerr->isError()) {
       continue;
     }

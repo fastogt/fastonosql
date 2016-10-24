@@ -36,7 +36,7 @@ const char* MemcachedLexer::language() const {
 }
 
 const char* MemcachedLexer::version() const {
-  return core::memcached::DBConnection::versionApi();
+  return core::memcached::DBConnection::VersionApi();
 }
 
 const char* MemcachedLexer::basedOn() const {

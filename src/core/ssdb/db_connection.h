@@ -44,137 +44,137 @@ namespace ssdb {
 
 typedef ::ssdb::Client NativeConnection;
 
-common::Error createConnection(const Config& config, NativeConnection** context);
-common::Error createConnection(ConnectionSettings* settings, NativeConnection** context);
-common::Error testConnection(ConnectionSettings* settings);
+common::Error CreateConnection(const Config& config, NativeConnection** context);
+common::Error CreateConnection(ConnectionSettings* settings, NativeConnection** context);
+common::Error TestConnection(ConnectionSettings* settings);
 
 class DBConnection : public core::CDBConnection<NativeConnection, Config, SSDB> {
  public:
   typedef core::CDBConnection<NativeConnection, Config, SSDB> base_class;
   explicit DBConnection(CDBConnectionClient* client);
 
-  static const char* versionApi();
+  static const char* VersionApi();
 
-  common::Error info(const char* args, ServerInfo::Stats* statsout) WARN_UNUSED_RESULT;
-  common::Error auth(const std::string& password) WARN_UNUSED_RESULT;
-  common::Error setx(const std::string& key,
+  common::Error Info(const char* args, ServerInfo::Stats* statsout) WARN_UNUSED_RESULT;
+  common::Error Auth(const std::string& password) WARN_UNUSED_RESULT;
+  common::Error Setx(const std::string& key,
                      const std::string& value,
                      ttl_t ttl) WARN_UNUSED_RESULT;
-  common::Error incr(const std::string& key, int64_t incrby, int64_t* ret) WARN_UNUSED_RESULT;
-  common::Error keys(const std::string& key_start,
+  common::Error Incr(const std::string& key, int64_t incrby, int64_t* ret) WARN_UNUSED_RESULT;
+  common::Error Keys(const std::string& key_start,
                      const std::string& key_end,
                      uint64_t limit,
                      std::vector<std::string>* ret) WARN_UNUSED_RESULT;
-  common::Error scan(const std::string& key_start,
+  common::Error Scan(const std::string& key_start,
                      const std::string& key_end,
                      uint64_t limit,
                      std::vector<std::string>* ret) WARN_UNUSED_RESULT;
-  common::Error rscan(const std::string& key_start,
+  common::Error Rscan(const std::string& key_start,
                       const std::string& key_end,
                       uint64_t limit,
                       std::vector<std::string>* ret) WARN_UNUSED_RESULT;
-  common::Error multi_get(const std::vector<std::string>& keys, std::vector<std::string>* ret);
-  common::Error multi_set(const std::map<std::string, std::string>& kvs) WARN_UNUSED_RESULT;
-  common::Error multi_del(const std::vector<std::string>& keys) WARN_UNUSED_RESULT;
-  common::Error hget(const std::string& name,
+  common::Error MultiGet(const std::vector<std::string>& keys, std::vector<std::string>* ret);
+  common::Error MultiSet(const std::map<std::string, std::string>& kvs) WARN_UNUSED_RESULT;
+  common::Error MultiDel(const std::vector<std::string>& keys) WARN_UNUSED_RESULT;
+  common::Error Hget(const std::string& name,
                      const std::string& key,
                      std::string* val) WARN_UNUSED_RESULT;
-  common::Error hgetall(const std::string& name, std::vector<std::string>* ret) WARN_UNUSED_RESULT;
-  common::Error hset(const std::string& name,
+  common::Error Hgetall(const std::string& name, std::vector<std::string>* ret) WARN_UNUSED_RESULT;
+  common::Error Hset(const std::string& name,
                      const std::string& key,
                      const std::string& val) WARN_UNUSED_RESULT;
-  common::Error hdel(const std::string& name, const std::string& key) WARN_UNUSED_RESULT;
-  common::Error hincr(const std::string& name, const std::string& key, int64_t incrby, int64_t* ret)
+  common::Error Hdel(const std::string& name, const std::string& key) WARN_UNUSED_RESULT;
+  common::Error Hincr(const std::string& name, const std::string& key, int64_t incrby, int64_t* ret)
       WARN_UNUSED_RESULT;
-  common::Error hsize(const std::string& name, int64_t* ret) WARN_UNUSED_RESULT;
-  common::Error hclear(const std::string& name, int64_t* ret) WARN_UNUSED_RESULT;
-  common::Error hkeys(const std::string& name,
+  common::Error Hsize(const std::string& name, int64_t* ret) WARN_UNUSED_RESULT;
+  common::Error Hclear(const std::string& name, int64_t* ret) WARN_UNUSED_RESULT;
+  common::Error Hkeys(const std::string& name,
                       const std::string& key_start,
                       const std::string& key_end,
                       uint64_t limit,
                       std::vector<std::string>* ret) WARN_UNUSED_RESULT;
-  common::Error hscan(const std::string& name,
+  common::Error Hscan(const std::string& name,
                       const std::string& key_start,
                       const std::string& key_end,
                       uint64_t limit,
                       std::vector<std::string>* ret) WARN_UNUSED_RESULT;
-  common::Error hrscan(const std::string& name,
+  common::Error Hrscan(const std::string& name,
                        const std::string& key_start,
                        const std::string& key_end,
                        uint64_t limit,
                        std::vector<std::string>* ret) WARN_UNUSED_RESULT;
-  common::Error multi_hget(const std::string& name,
+  common::Error MultiHget(const std::string& name,
                            const std::vector<std::string>& keys,
                            std::vector<std::string>* ret) WARN_UNUSED_RESULT;
-  common::Error multi_hset(const std::string& name,
+  common::Error MultiHset(const std::string& name,
                            const std::map<std::string, std::string>& keys) WARN_UNUSED_RESULT;
-  common::Error zget(const std::string& name,
+  common::Error Zget(const std::string& name,
                      const std::string& key,
                      int64_t* ret) WARN_UNUSED_RESULT;
-  common::Error zset(const std::string& name,
+  common::Error Zset(const std::string& name,
                      const std::string& key,
                      int64_t score) WARN_UNUSED_RESULT;
-  common::Error zdel(const std::string& name, const std::string& key) WARN_UNUSED_RESULT;
-  common::Error zincr(const std::string& name, const std::string& key, int64_t incrby, int64_t* ret)
+  common::Error Zdel(const std::string& name, const std::string& key) WARN_UNUSED_RESULT;
+  common::Error Zincr(const std::string& name, const std::string& key, int64_t incrby, int64_t* ret)
       WARN_UNUSED_RESULT;
-  common::Error zsize(const std::string& name, int64_t* ret) WARN_UNUSED_RESULT;
-  common::Error zclear(const std::string& name, int64_t* ret) WARN_UNUSED_RESULT;
-  common::Error zrank(const std::string& name,
+  common::Error Zsize(const std::string& name, int64_t* ret) WARN_UNUSED_RESULT;
+  common::Error Zclear(const std::string& name, int64_t* ret) WARN_UNUSED_RESULT;
+  common::Error Zrank(const std::string& name,
                       const std::string& key,
                       int64_t* ret) WARN_UNUSED_RESULT;
-  common::Error zrrank(const std::string& name,
+  common::Error Zrrank(const std::string& name,
                        const std::string& key,
                        int64_t* ret) WARN_UNUSED_RESULT;
-  common::Error zrange(const std::string& name,
+  common::Error Zrange(const std::string& name,
                        uint64_t offset,
                        uint64_t limit,
                        std::vector<std::string>* ret) WARN_UNUSED_RESULT;
-  common::Error zrrange(const std::string& name,
+  common::Error Zrrange(const std::string& name,
                         uint64_t offset,
                         uint64_t limit,
                         std::vector<std::string>* ret) WARN_UNUSED_RESULT;
-  common::Error zkeys(const std::string& name,
+  common::Error Zkeys(const std::string& name,
                       const std::string& key_start,
                       int64_t* score_start,
                       int64_t* score_end,
                       uint64_t limit,
                       std::vector<std::string>* ret) WARN_UNUSED_RESULT;
-  common::Error zscan(const std::string& name,
+  common::Error Zscan(const std::string& name,
                       const std::string& key_start,
                       int64_t* score_start,
                       int64_t* score_end,
                       uint64_t limit,
                       std::vector<std::string>* ret) WARN_UNUSED_RESULT;
-  common::Error zrscan(const std::string& name,
+  common::Error Zrscan(const std::string& name,
                        const std::string& key_start,
                        int64_t* score_start,
                        int64_t* score_end,
                        uint64_t limit,
                        std::vector<std::string>* ret) WARN_UNUSED_RESULT;
-  common::Error multi_zget(const std::string& name,
+  common::Error MultiZget(const std::string& name,
                            const std::vector<std::string>& keys,
                            std::vector<std::string>* ret) WARN_UNUSED_RESULT;
-  common::Error multi_zset(const std::string& name, const std::map<std::string, int64_t>& kss);
-  common::Error multi_zdel(const std::string& name,
+  common::Error MultiZset(const std::string& name, const std::map<std::string, int64_t>& kss);
+  common::Error MultiZdel(const std::string& name,
                            const std::vector<std::string>& keys) WARN_UNUSED_RESULT;
-  common::Error qpush(const std::string& name, const std::string& item) WARN_UNUSED_RESULT;
-  common::Error qpop(const std::string& name, std::string* item) WARN_UNUSED_RESULT;
-  common::Error qslice(const std::string& name,
+  common::Error Qpush(const std::string& name, const std::string& item) WARN_UNUSED_RESULT;
+  common::Error Qpop(const std::string& name, std::string* item) WARN_UNUSED_RESULT;
+  common::Error Qslice(const std::string& name,
                        int64_t begin,
                        int64_t end,
                        std::vector<std::string>* ret) WARN_UNUSED_RESULT;
-  common::Error qclear(const std::string& name, int64_t* ret) WARN_UNUSED_RESULT;
-  common::Error dbsize(int64_t* size) WARN_UNUSED_RESULT;
+  common::Error Qclear(const std::string& name, int64_t* ret) WARN_UNUSED_RESULT;
+  common::Error DBsize(int64_t* size) WARN_UNUSED_RESULT;
 
   // extended api
-  common::Error dbkcount(size_t* size) WARN_UNUSED_RESULT;
-  common::Error help(int argc, const char** argv) WARN_UNUSED_RESULT;
-  common::Error flushdb() WARN_UNUSED_RESULT;
+  common::Error DBkcount(size_t* size) WARN_UNUSED_RESULT;
+  common::Error Help(int argc, const char** argv) WARN_UNUSED_RESULT;
+  common::Error Flushdb() WARN_UNUSED_RESULT;
 
  private:
-  common::Error setInner(const std::string& key, const std::string& value) WARN_UNUSED_RESULT;
-  common::Error getInner(const std::string& key, std::string* ret_val) WARN_UNUSED_RESULT;
-  common::Error delInner(const std::string& key) WARN_UNUSED_RESULT;
+  common::Error SetInner(const std::string& key, const std::string& value) WARN_UNUSED_RESULT;
+  common::Error GetInner(const std::string& key, std::string* ret_val) WARN_UNUSED_RESULT;
+  common::Error DelInner(const std::string& key) WARN_UNUSED_RESULT;
 
   virtual common::Error SelectImpl(const std::string& name, IDataBaseInfo** info) override;
 

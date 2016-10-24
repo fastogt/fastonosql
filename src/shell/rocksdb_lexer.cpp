@@ -36,7 +36,7 @@ const char* RocksDBLexer::language() const {
 }
 
 const char* RocksDBLexer::version() const {
-  return core::rocksdb::DBConnection::versionApi();
+  return core::rocksdb::DBConnection::VersionApi();
 }
 
 const char* RocksDBLexer::basedOn() const {

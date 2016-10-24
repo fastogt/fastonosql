@@ -267,7 +267,7 @@ ConnectionDialog::ConnectionDialog(QWidget* parent,
 
   testButton_ = new QPushButton("&Test");
   testButton_->setIcon(GuiFactory::instance().messageBoxInformationIcon());
-  VERIFY(connect(testButton_, &QPushButton::clicked, this, &ConnectionDialog::testConnection));
+  VERIFY(connect(testButton_, &QPushButton::clicked, this, &ConnectionDialog::TestConnection));
 
   QHBoxLayout* bottomLayout = new QHBoxLayout;
   bottomLayout->addWidget(testButton_, 1, Qt::AlignLeft);
@@ -312,7 +312,7 @@ void ConnectionDialog::typeConnectionChange(int index) {
       static_cast<core::connectionTypes>(qvariant_cast<unsigned char>(var));
   bool is_ssh_type = IsCanSSHConnection(currentType);
 
-  const char* helpText = core::commandLineHelpText(currentType);
+  const char* helpText = core::CommandLineHelpText(currentType);
   CHECK(helpText);
   QString trHelp = tr(helpText);
   commandLine_->setToolTip(trHelp);
@@ -321,7 +321,7 @@ void ConnectionDialog::typeConnectionChange(int index) {
   if (connection_ && currentType == connection_->Type()) {
     commandLineText = connection_->CommandLine();
   } else {
-    commandLineText = defaultCommandLine(currentType);
+    commandLineText = DefaultCommandLine(currentType);
   }
   commandLine_->setText(StableCommandLine(common::ConvertFromString<QString>(commandLineText)));
 
@@ -386,7 +386,7 @@ void ConnectionDialog::setPublicFile() {
   publicKeyBox_->setText(filepath);
 }
 
-void ConnectionDialog::testConnection() {
+void ConnectionDialog::TestConnection() {
   if (validateAndApply()) {
     ConnectionDiagnosticDialog diag(this, connection_);
     diag.exec();

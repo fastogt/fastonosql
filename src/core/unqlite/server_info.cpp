@@ -43,13 +43,13 @@ const std::vector<Field> unqliteCommonFields = {
 }  // namespace
 
 template <>
-std::vector<common::Value::Type> DBTraits<UNQLITE>::supportedTypes() {
+std::vector<common::Value::Type> DBTraits<UNQLITE>::SupportedTypes() {
   return {common::Value::TYPE_BOOLEAN, common::Value::TYPE_INTEGER, common::Value::TYPE_UINTEGER,
           common::Value::TYPE_DOUBLE, common::Value::TYPE_STRING};
 }
 
 template <>
-std::vector<info_field_t> DBTraits<UNQLITE>::infoFields() {
+std::vector<info_field_t> DBTraits<UNQLITE>::InfoFields() {
   return {std::make_pair(UNQLITE_STATS_LABEL, unqliteCommonFields)};
 }
 
@@ -109,14 +109,14 @@ std::ostream& operator<<(std::ostream& out, const ServerInfo& value) {
   return out << value.ToString();
 }
 
-ServerInfo* makeUnqliteServerInfo(const std::string& content) {
+ServerInfo* MakeUnqliteServerInfo(const std::string& content) {
   if (content.empty()) {
     return nullptr;
   }
 
   ServerInfo* result = new ServerInfo;
 
-  static const std::vector<info_field_t> fields = DBTraits<UNQLITE>::infoFields();
+  static const std::vector<info_field_t> fields = DBTraits<UNQLITE>::InfoFields();
   std::string word;
   DCHECK_EQ(fields.size(), 1);
 

@@ -71,7 +71,7 @@ DbKeyDialog::DbKeyDialog(const QString& title,
   QGridLayout* kvLayout = new QGridLayout;
   kvLayout->addWidget(new QLabel(trType), 0, 0);
   typesCombo_ = new QComboBox;
-  std::vector<common::Value::Type> types = supportedTypesFromType(type);
+  std::vector<common::Value::Type> types = SupportedTypesFromType(type);
   common::Value::Type kt = common::Value::TYPE_STRING;
   if (is_edit) {
     kt = key_.type();

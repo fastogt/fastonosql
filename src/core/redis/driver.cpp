@@ -35,7 +35,7 @@
 #include "core/connection_types.h"
 #include "core/db_key.h"  // for NDbKValue, NValue, ttl_t, etc
 #include "core/events/events_info.h"
-#include "core/server_property_info.h"     // for makeServerProperty, etc
+#include "core/server_property_info.h"     // for MakeServerProperty, etc
 #include "core/database/idatabase_info.h"  // for IDataBaseInfoSPtr, etc
 #include "core/db_connection/db_connection.h"
 #include "core/driver/root_locker.h"   // for RootLocker
@@ -171,7 +171,7 @@ common::Error Driver::CurrentServerInfo(IServerInfo** info) {
   }
 
   std::string content = common::ConvertToString(cmd.get());
-  *info = makeRedisServerInfo(content);
+  *info = MakeRedisServerInfo(content);
 
   if (!*info) {
     return common::make_error_value("Invalid " INFO_REQUEST " command output",
@@ -194,35 +194,35 @@ void Driver::HandleProcessCommandLineArgsEvent(events::ProcessConfigArgsRequestE
   const Config conf = impl_->config();
   /* Latency mode */
   if (conf.latency_mode) {
-    latencyMode(ev);
+    LatencyMode(ev);
   }
 
   /* Slave mode */
   if (conf.slave_mode) {
-    slaveMode(ev);
+    SlaveMode(ev);
   }
 
   /* Get RDB mode. */
   if (conf.getrdb_mode) {
-    getRDBMode(ev);
+    GetRDBMode(ev);
   }
 
   /* Find big keys */
   if (conf.bigkeys) {
-    findBigKeysMode(ev);
+    FindBigKeysMode(ev);
   }
 
   /* Stat mode */
   if (conf.stat_mode) {
-    statMode(ev);
+    StatMode(ev);
   }
 
   /* Scan mode */
   if (conf.scan_mode) {
-    scanMode(ev);
+    ScanMode(ev);
   }
 
-  interacteveMode(ev);
+  InteracteveMode(ev);
 
   QObject* sender = ev->sender();
   events::ProcessConfigArgsResponceEvent::value_type res(ev->value());
@@ -313,7 +313,7 @@ void Driver::HandleChangeMaxConnectionEvent(events::ChangeMaxConnectionRequestEv
   NotifyProgress(sender, 100);
 }
 
-common::Error Driver::interacteveMode(events::ProcessConfigArgsRequestEvent* ev) {
+common::Error Driver::InteracteveMode(events::ProcessConfigArgsRequestEvent* ev) {
   QObject* sender = ev->sender();
   NotifyProgress(sender, 0);
   events::EnterModeEvent::value_type res(this, InteractiveMode);
@@ -325,17 +325,17 @@ common::Error Driver::interacteveMode(events::ProcessConfigArgsRequestEvent* ev)
   return common::Error();
 }
 
-common::Error Driver::latencyMode(events::ProcessConfigArgsRequestEvent* ev) {
+common::Error Driver::LatencyMode(events::ProcessConfigArgsRequestEvent* ev) {
   QObject* sender = ev->sender();
   NotifyProgress(sender, 0);
-  events::EnterModeEvent::value_type resEv(this, LatencyMode);
+  events::EnterModeEvent::value_type resEv(this, core::LatencyMode);
   Reply(sender, new events::EnterModeEvent(this, resEv));
 
-  events::LeaveModeEvent::value_type res(this, LatencyMode);
+  events::LeaveModeEvent::value_type res(this, core::LatencyMode);
   RootLocker lock(this, sender, LATENCY_REQUEST, false);
 
   FastoObjectIPtr obj = lock.Root();
-  common::Error er = impl_->latencyMode(obj.get());
+  common::Error er = impl_->LatencyMode(obj.get());
   if (er && er->isError()) {
     res.setErrorInfo(er);
   }
@@ -345,17 +345,17 @@ common::Error Driver::latencyMode(events::ProcessConfigArgsRequestEvent* ev) {
   return er;
 }
 
-common::Error Driver::slaveMode(events::ProcessConfigArgsRequestEvent* ev) {
+common::Error Driver::SlaveMode(events::ProcessConfigArgsRequestEvent* ev) {
   QObject* sender = ev->sender();
   NotifyProgress(sender, 0);
-  events::EnterModeEvent::value_type resEv(this, SlaveMode);
+  events::EnterModeEvent::value_type resEv(this, core::SlaveMode);
   Reply(sender, new events::EnterModeEvent(this, resEv));
 
-  events::LeaveModeEvent::value_type res(this, SlaveMode);
+  events::LeaveModeEvent::value_type res(this, core::SlaveMode);
   RootLocker lock(this, sender, SYNC_REQUEST, false);
 
   FastoObjectIPtr obj = lock.Root();
-  common::Error er = impl_->slaveMode(obj.get());
+  common::Error er = impl_->SlaveMode(obj.get());
   if (er && er->isError()) {
     res.setErrorInfo(er);
   }
@@ -365,17 +365,17 @@ common::Error Driver::slaveMode(events::ProcessConfigArgsRequestEvent* ev) {
   return er;
 }
 
-common::Error Driver::getRDBMode(events::ProcessConfigArgsRequestEvent* ev) {
+common::Error Driver::GetRDBMode(events::ProcessConfigArgsRequestEvent* ev) {
   QObject* sender = ev->sender();
   NotifyProgress(sender, 0);
-  events::EnterModeEvent::value_type resEv(this, GetRDBMode);
+  events::EnterModeEvent::value_type resEv(this, core::GetRDBMode);
   Reply(sender, new events::EnterModeEvent(this, resEv));
 
-  events::LeaveModeEvent::value_type res(this, GetRDBMode);
+  events::LeaveModeEvent::value_type res(this, core::GetRDBMode);
   RootLocker lock(this, sender, RDM_REQUEST, false);
 
   FastoObjectIPtr obj = lock.Root();
-  common::Error er = impl_->getRDB(obj.get());
+  common::Error er = impl_->GetRDB(obj.get());
   if (er && er->isError()) {
     res.setErrorInfo(er);
   }
@@ -385,17 +385,17 @@ common::Error Driver::getRDBMode(events::ProcessConfigArgsRequestEvent* ev) {
   return er;
 }
 
-common::Error Driver::findBigKeysMode(events::ProcessConfigArgsRequestEvent* ev) {
+common::Error Driver::FindBigKeysMode(events::ProcessConfigArgsRequestEvent* ev) {
   QObject* sender = ev->sender();
   NotifyProgress(sender, 0);
-  events::EnterModeEvent::value_type resEv(this, FindBigKeysMode);
+  events::EnterModeEvent::value_type resEv(this, core::FindBigKeysMode);
   Reply(sender, new events::EnterModeEvent(this, resEv));
 
-  events::LeaveModeEvent::value_type res(this, FindBigKeysMode);
+  events::LeaveModeEvent::value_type res(this, core::FindBigKeysMode);
   RootLocker lock(this, sender, FIND_BIG_KEYS_REQUEST, false);
 
   FastoObjectIPtr obj = lock.Root();
-  common::Error er = impl_->findBigKeys(obj.get());
+  common::Error er = impl_->FindBigKeys(obj.get());
   if (er && er->isError()) {
     res.setErrorInfo(er);
   }
@@ -405,17 +405,17 @@ common::Error Driver::findBigKeysMode(events::ProcessConfigArgsRequestEvent* ev)
   return er;
 }
 
-common::Error Driver::statMode(events::ProcessConfigArgsRequestEvent* ev) {
+common::Error Driver::StatMode(events::ProcessConfigArgsRequestEvent* ev) {
   QObject* sender = ev->sender();
   NotifyProgress(sender, 0);
-  events::EnterModeEvent::value_type resEv(this, StatMode);
+  events::EnterModeEvent::value_type resEv(this, core::StatMode);
   Reply(sender, new events::EnterModeEvent(this, resEv));
 
-  events::LeaveModeEvent::value_type res(this, StatMode);
+  events::LeaveModeEvent::value_type res(this, core::StatMode);
   RootLocker lock(this, sender, STAT_MODE_REQUEST, false);
 
   FastoObjectIPtr obj = lock.Root();
-  common::Error er = impl_->statMode(obj.get());
+  common::Error er = impl_->StatMode(obj.get());
   if (er && er->isError()) {
     res.setErrorInfo(er);
   }
@@ -425,17 +425,17 @@ common::Error Driver::statMode(events::ProcessConfigArgsRequestEvent* ev) {
   return er;
 }
 
-common::Error Driver::scanMode(events::ProcessConfigArgsRequestEvent* ev) {
+common::Error Driver::ScanMode(events::ProcessConfigArgsRequestEvent* ev) {
   QObject* sender = ev->sender();
   NotifyProgress(sender, 0);
-  events::EnterModeEvent::value_type resEv(this, ScanMode);
+  events::EnterModeEvent::value_type resEv(this, core::ScanMode);
   Reply(sender, new events::EnterModeEvent(this, resEv));
 
-  events::LeaveModeEvent::value_type res(this, ScanMode);
+  events::LeaveModeEvent::value_type res(this, core::ScanMode);
   RootLocker lock(this, sender, SCAN_MODE_REQUEST, false);
 
   FastoObjectIPtr obj = lock.Root();
-  common::Error er = impl_->scanMode(obj.get());
+  common::Error er = impl_->ScanMode(obj.get());
   if (er && er->isError()) {
     res.setErrorInfo(er);
   }
@@ -560,7 +560,7 @@ void Driver::HandleLoadDatabaseContentEvent(events::LoadDatabaseContentRequestEv
         }
       }
 
-      err = impl_->executeAsPipeline(cmds);
+      err = impl_->ExecuteAsPipeline(cmds);
       if (err && err->isError()) {
         goto done;
       }
@@ -592,7 +592,7 @@ void Driver::HandleLoadDatabaseContentEvent(events::LoadDatabaseContentRequestEv
         }
       }
 
-      err = impl_->dbkcount(&res.db_keys_count);
+      err = impl_->DBkcount(&res.db_keys_count);
       DCHECK(!err);
     }
   }
@@ -649,7 +649,7 @@ void Driver::HandleLoadServerPropertyEvent(events::ServerPropertyInfoRequestEven
       CHECK_EQ(ch.size(), 1);
       FastoObjectArray* array = dynamic_cast<FastoObjectArray*>(ch[0].get());  // +
       if (array) {
-        res.info = makeServerProperty(array);
+        res.info = MakeServerProperty(array);
       }
     }
   }
@@ -678,7 +678,7 @@ void Driver::HandleServerPropertyChangeEvent(events::ChangeServerPropertyInfoReq
 }
 
 IServerInfoSPtr Driver::MakeServerInfoFromString(const std::string& val) {
-  IServerInfoSPtr res(makeRedisServerInfo(val));
+  IServerInfoSPtr res(MakeRedisServerInfo(val));
   return res;
 }
 

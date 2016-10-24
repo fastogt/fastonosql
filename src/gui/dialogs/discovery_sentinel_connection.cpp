@@ -48,7 +48,7 @@ void DiscoverySentinelConnection::routine() {
   }
 
   common::Error er =
-      core::ServersManager::instance().discoverySentinelConnection(connection_, &inf);
+      core::ServersManager::instance().DiscoverySentinelConnection(connection_, &inf);
 
   if (er && er->isError()) {
     emit connectionResult(false, common::time::current_mstime() - startTime_,

@@ -30,7 +30,7 @@
 namespace fastonosql {
 namespace core {
 
-ServerPropertiesInfo makeServerProperty(const FastoObjectArray* array) {
+ServerPropertiesInfo MakeServerProperty(const FastoObjectArray* array) {
   if (!array) {
     DNOTREACHED();
     return ServerPropertiesInfo();

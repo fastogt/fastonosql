@@ -57,7 +57,7 @@ bool IsCanSSHConnection(connectionTypes type) {
   return type == REDIS;
 }
 
-const char* commandLineHelpText(connectionTypes type) {
+const char* CommandLineHelpText(connectionTypes type) {
   if (type == REDIS) {
     return "<b>Usage: [OPTIONS] [cmd [arg [arg "
            "...]]]</b><br/>"
@@ -239,7 +239,7 @@ const char* commandLineHelpText(connectionTypes type) {
   return nullptr;
 }
 
-std::string defaultCommandLine(connectionTypes type) {
+std::string DefaultCommandLine(connectionTypes type) {
 #ifdef BUILD_WITH_REDIS
   if (type == REDIS) {
     redis::Config r;

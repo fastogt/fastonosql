@@ -35,7 +35,7 @@ const char* LmdbLexer::language() const {
 }
 
 const char* LmdbLexer::version() const {
-  return core::lmdb::DBConnection::versionApi();
+  return core::lmdb::DBConnection::VersionApi();
 }
 
 const char* LmdbLexer::basedOn() const {

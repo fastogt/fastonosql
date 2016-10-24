@@ -48,14 +48,14 @@ const std::vector<Field> SsdbCommonFields = {
 }  // namespace
 
 template <>
-std::vector<common::Value::Type> DBTraits<SSDB>::supportedTypes() {
+std::vector<common::Value::Type> DBTraits<SSDB>::SupportedTypes() {
   return {common::Value::TYPE_BOOLEAN, common::Value::TYPE_INTEGER, common::Value::TYPE_UINTEGER,
           common::Value::TYPE_DOUBLE,  common::Value::TYPE_STRING,  common::Value::TYPE_ARRAY,
           common::Value::TYPE_SET,     common::Value::TYPE_ZSET,    common::Value::TYPE_HASH};
 }
 
 template <>
-std::vector<info_field_t> DBTraits<SSDB>::infoFields() {
+std::vector<info_field_t> DBTraits<SSDB>::InfoFields() {
   return {std::make_pair(SSDB_COMMON_LABEL, SsdbCommonFields)};
 }
 
@@ -134,13 +134,13 @@ std::ostream& operator<<(std::ostream& out, const ServerInfo& value) {
   return out << value.ToString();
 }
 
-ServerInfo* makeSsdbServerInfo(const std::string& content) {
+ServerInfo* MakeSsdbServerInfo(const std::string& content) {
   if (content.empty()) {
     return nullptr;
   }
 
   ServerInfo* result = new ServerInfo;
-  static const std::vector<info_field_t> fields = DBTraits<SSDB>::infoFields();
+  static const std::vector<info_field_t> fields = DBTraits<SSDB>::InfoFields();
   std::string word;
   DCHECK_EQ(fields.size(), 1);
 

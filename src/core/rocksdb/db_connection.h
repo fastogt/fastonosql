@@ -45,36 +45,36 @@ namespace rocksdb {
 
 typedef ::rocksdb::DB NativeConnection;
 
-common::Error createConnection(const Config& config, NativeConnection** context);
-common::Error createConnection(ConnectionSettings* settings, NativeConnection** context);
-common::Error testConnection(ConnectionSettings* settings);
+common::Error CreateConnection(const Config& config, NativeConnection** context);
+common::Error CreateConnection(ConnectionSettings* settings, NativeConnection** context);
+common::Error TestConnection(ConnectionSettings* settings);
 
 class DBConnection : public core::CDBConnection<NativeConnection, Config, ROCKSDB> {
  public:
   typedef core::CDBConnection<NativeConnection, Config, ROCKSDB> base_class;
   explicit DBConnection(CDBConnectionClient* client);
 
-  static const char* versionApi();
+  static const char* VersionApi();
 
-  std::string currentDbName() const;
+  std::string CurrentDbName() const;
 
-  common::Error info(const char* args, ServerInfo::Stats* statsout) WARN_UNUSED_RESULT;
-  common::Error mget(const std::vector< ::rocksdb::Slice>& keys, std::vector<std::string>* ret);
-  common::Error merge(const std::string& key, const std::string& value) WARN_UNUSED_RESULT;
-  common::Error keys(const std::string& key_start,
+  common::Error Info(const char* args, ServerInfo::Stats* statsout) WARN_UNUSED_RESULT;
+  common::Error Mget(const std::vector< ::rocksdb::Slice>& keys, std::vector<std::string>* ret);
+  common::Error Merge(const std::string& key, const std::string& value) WARN_UNUSED_RESULT;
+  common::Error Keys(const std::string& key_start,
                      const std::string& key_end,
                      uint64_t limit,
                      std::vector<std::string>* ret) WARN_UNUSED_RESULT;
 
   // extended api
-  common::Error dbkcount(size_t* size) WARN_UNUSED_RESULT;
-  common::Error help(int argc, const char** argv) WARN_UNUSED_RESULT;
-  common::Error flushdb() WARN_UNUSED_RESULT;
+  common::Error DBkcount(size_t* size) WARN_UNUSED_RESULT;
+  common::Error Help(int argc, const char** argv) WARN_UNUSED_RESULT;
+  common::Error Flushdb() WARN_UNUSED_RESULT;
 
  private:
-  common::Error setInner(const std::string& key, const std::string& value) WARN_UNUSED_RESULT;
-  common::Error getInner(const std::string& key, std::string* ret_val) WARN_UNUSED_RESULT;
-  common::Error delInner(const std::string& key) WARN_UNUSED_RESULT;
+  common::Error SetInner(const std::string& key, const std::string& value) WARN_UNUSED_RESULT;
+  common::Error GetInner(const std::string& key, std::string* ret_val) WARN_UNUSED_RESULT;
+  common::Error DelInner(const std::string& key) WARN_UNUSED_RESULT;
 
   virtual common::Error SelectImpl(const std::string& name, IDataBaseInfo** info) override;
   virtual common::Error SetImpl(const NDbKValue& key, NDbKValue* added_key) override;

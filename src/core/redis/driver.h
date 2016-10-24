@@ -106,13 +106,13 @@ class Driver : public IDriverRemote {
 
   DBConnection* const impl_;
 
-  common::Error interacteveMode(events::ProcessConfigArgsRequestEvent* ev);
-  common::Error latencyMode(events::ProcessConfigArgsRequestEvent* ev);
-  common::Error slaveMode(events::ProcessConfigArgsRequestEvent* ev);
-  common::Error getRDBMode(events::ProcessConfigArgsRequestEvent* ev);
-  common::Error findBigKeysMode(events::ProcessConfigArgsRequestEvent* ev);
-  common::Error statMode(events::ProcessConfigArgsRequestEvent* ev);
-  common::Error scanMode(events::ProcessConfigArgsRequestEvent* ev);
+  common::Error InteracteveMode(events::ProcessConfigArgsRequestEvent* ev);
+  common::Error LatencyMode(events::ProcessConfigArgsRequestEvent* ev);
+  common::Error SlaveMode(events::ProcessConfigArgsRequestEvent* ev);
+  common::Error GetRDBMode(events::ProcessConfigArgsRequestEvent* ev);
+  common::Error FindBigKeysMode(events::ProcessConfigArgsRequestEvent* ev);
+  common::Error StatMode(events::ProcessConfigArgsRequestEvent* ev);
+  common::Error ScanMode(events::ProcessConfigArgsRequestEvent* ev);
 };
 
 }  // namespace redis

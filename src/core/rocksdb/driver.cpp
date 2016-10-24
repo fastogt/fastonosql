@@ -130,7 +130,7 @@ common::Error Driver::CurrentServerInfo(IServerInfo** info) {
   FastoObjectCommandIPtr cmd = CreateCommandFast(ROCKSDB_INFO_REQUEST, common::Value::C_INNER);
   LOG_COMMAND(cmd);
   ServerInfo::Stats cm;
-  common::Error err = impl_->info(nullptr, &cm);
+  common::Error err = impl_->Info(nullptr, &cm);
   if (err && err->isError()) {
     return err;
   }
@@ -149,9 +149,9 @@ common::Error Driver::CurrentDataBaseInfo(IDataBaseInfo** info) {
     return common::make_error_value("Not connected", common::Value::E_ERROR);
   }
 
-  std::string name = impl_->currentDbName();
+  std::string name = impl_->CurrentDbName();
   size_t dbkcount = 0;
-  common::Error err = impl_->dbkcount(&dbkcount);
+  common::Error err = impl_->DBkcount(&dbkcount);
   DCHECK(!err);
   *info = new DataBaseInfo(name, true, dbkcount);
   return common::Error();
@@ -190,7 +190,7 @@ void Driver::HandleLoadDatabaseContentEvent(events::LoadDatabaseContentRequestEv
         }
       }
 
-      err = impl_->dbkcount(&res.db_keys_count);
+      err = impl_->DBkcount(&res.db_keys_count);
       DCHECK(!err);
     }
   }
@@ -205,7 +205,7 @@ void Driver::HandleClearDatabaseEvent(events::ClearDatabaseRequestEvent* ev) {
   NotifyProgress(sender, 0);
   events::ClearDatabaseResponceEvent::value_type res(ev->value());
   NotifyProgress(sender, 50);
-  common::Error er = impl_->flushdb();
+  common::Error er = impl_->Flushdb();
   if (er && er->isError()) {
     res.setErrorInfo(er);
   }
@@ -219,7 +219,7 @@ void Driver::HandleProcessCommandLineArgsEvent(events::ProcessConfigArgsRequestE
 }
 
 IServerInfoSPtr Driver::MakeServerInfoFromString(const std::string& val) {
-  IServerInfoSPtr res(makeRocksdbServerInfo(val));
+  IServerInfoSPtr res(MakeRocksdbServerInfo(val));
   return res;
 }
 

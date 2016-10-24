@@ -129,7 +129,7 @@ common::Error Driver::CurrentServerInfo(IServerInfo** info) {
   FastoObjectCommandIPtr cmd = CreateCommandFast(UNQLITE_INFO_REQUEST, common::Value::C_INNER);
   LOG_COMMAND(cmd);
   ServerInfo::Stats cm;
-  common::Error err = impl_->info(nullptr, &cm);
+  common::Error err = impl_->Info(nullptr, &cm);
   if (err && err->isError()) {
     return err;
   }
@@ -179,7 +179,7 @@ void Driver::HandleLoadDatabaseContentEvent(events::LoadDatabaseContentRequestEv
         }
       }
 
-      err = impl_->dbkcount(&res.db_keys_count);
+      err = impl_->DBkcount(&res.db_keys_count);
       DCHECK(!err);
     }
   }
@@ -194,7 +194,7 @@ void Driver::HandleClearDatabaseEvent(events::ClearDatabaseRequestEvent* ev) {
   NotifyProgress(sender, 0);
   events::ClearDatabaseResponceEvent::value_type res(ev->value());
   NotifyProgress(sender, 50);
-  common::Error er = impl_->flushdb();
+  common::Error er = impl_->Flushdb();
   if (er && er->isError()) {
     res.setErrorInfo(er);
   }
@@ -208,7 +208,7 @@ void Driver::HandleProcessCommandLineArgsEvent(events::ProcessConfigArgsRequestE
 }
 
 IServerInfoSPtr Driver::MakeServerInfoFromString(const std::string& val) {
-  IServerInfoSPtr res(makeUnqliteServerInfo(val));
+  IServerInfoSPtr res(MakeUnqliteServerInfo(val));
   return res;
 }
 

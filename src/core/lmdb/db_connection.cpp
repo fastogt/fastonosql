@@ -111,7 +111,7 @@ void lmdb_close(lmdb** context) {
 
 }  // namespace
 
-common::Error createConnection(const Config& config, NativeConnection** context) {
+common::Error CreateConnection(const Config& config, NativeConnection** context) {
   if (!context) {
     return common::make_error_value("Invalid input argument(s)", common::ErrorValue::E_ERROR);
   }
@@ -134,22 +134,22 @@ common::Error createConnection(const Config& config, NativeConnection** context)
   return common::Error();
 }
 
-common::Error createConnection(ConnectionSettings* settings, NativeConnection** context) {
+common::Error CreateConnection(ConnectionSettings* settings, NativeConnection** context) {
   if (!settings) {
     return common::make_error_value("Invalid input argument(s)", common::ErrorValue::E_ERROR);
   }
 
   Config config = settings->Info();
-  return createConnection(config, context);
+  return CreateConnection(config, context);
 }
 
-common::Error testConnection(ConnectionSettings* settings) {
+common::Error TestConnection(ConnectionSettings* settings) {
   if (!settings) {
     return common::make_error_value("Invalid input argument(s)", common::ErrorValue::E_ERROR);
   }
 
   struct lmdb* ldb = NULL;
-  common::Error er = createConnection(settings, &ldb);
+  common::Error er = CreateConnection(settings, &ldb);
   if (er && er->isError()) {
     return er;
   }
@@ -161,12 +161,12 @@ common::Error testConnection(ConnectionSettings* settings) {
 DBConnection::DBConnection(CDBConnectionClient* client)
     : base_class(lmdbCommands, client, new CommandTranslator) {}
 
-const char* DBConnection::versionApi() {
+const char* DBConnection::VersionApi() {
   return STRINGIZE(MDB_VERSION_MAJOR) "." STRINGIZE(MDB_VERSION_MINOR) "." STRINGIZE(
       MDB_VERSION_PATCH);
 }
 
-unsigned int DBConnection::curDb() const {
+unsigned int DBConnection::CurDb() const {
   if (connection_.handle_) {
     return connection_.handle_->dbir;
   }
@@ -174,7 +174,7 @@ unsigned int DBConnection::curDb() const {
   return 0;
 }
 
-common::Error DBConnection::info(const char* args, ServerInfo::Stats* statsout) {
+common::Error DBConnection::Info(const char* args, ServerInfo::Stats* statsout) {
   UNUSED(args);
   if (!statsout) {
     DNOTREACHED();
@@ -194,7 +194,7 @@ common::Error DBConnection::info(const char* args, ServerInfo::Stats* statsout) 
   return common::Error();
 }
 
-common::Error DBConnection::dbkcount(size_t* size) {
+common::Error DBConnection::DBkcount(size_t* size) {
   if (!size) {
     DNOTREACHED();
     return common::make_error_value("Invalid input argument(s)", common::ErrorValue::E_ERROR);
@@ -230,7 +230,7 @@ common::Error DBConnection::dbkcount(size_t* size) {
   return common::Error();
 }
 
-common::Error DBConnection::setInner(const std::string& key, const std::string& value) {
+common::Error DBConnection::SetInner(const std::string& key, const std::string& value) {
   if (!IsConnected()) {
     return common::make_error_value("Not connected", common::Value::E_ERROR);
   }
@@ -261,7 +261,7 @@ common::Error DBConnection::setInner(const std::string& key, const std::string& 
   return common::Error();
 }
 
-common::Error DBConnection::getInner(const std::string& key, std::string* ret_val) {
+common::Error DBConnection::GetInner(const std::string& key, std::string* ret_val) {
   if (!IsConnected()) {
     return common::make_error_value("Not connected", common::Value::E_ERROR);
   }
@@ -287,7 +287,7 @@ common::Error DBConnection::getInner(const std::string& key, std::string* ret_va
   return common::Error();
 }
 
-common::Error DBConnection::delInner(const std::string& key) {
+common::Error DBConnection::DelInner(const std::string& key) {
   if (!IsConnected()) {
     return common::make_error_value("Not connected", common::Value::E_ERROR);
   }
@@ -315,7 +315,7 @@ common::Error DBConnection::delInner(const std::string& key) {
   return common::Error();
 }
 
-common::Error DBConnection::keys(const std::string& key_start,
+common::Error DBConnection::Keys(const std::string& key_start,
                                  const std::string& key_end,
                                  uint64_t limit,
                                  std::vector<std::string>* ret) {
@@ -350,14 +350,14 @@ common::Error DBConnection::keys(const std::string& key_start,
   return common::Error();
 }
 
-common::Error DBConnection::help(int argc, const char** argv) {
+common::Error DBConnection::Help(int argc, const char** argv) {
   UNUSED(argc);
   UNUSED(argv);
 
   return NotSupported("HELP");
 }
 
-common::Error DBConnection::flushdb() {
+common::Error DBConnection::Flushdb() {
   if (!IsConnected()) {
     return common::make_error_value("Not connected", common::Value::E_ERROR);
   }
@@ -405,7 +405,7 @@ common::Error DBConnection::flushdb() {
 
 common::Error DBConnection::SelectImpl(const std::string& name, IDataBaseInfo** info) {
   size_t kcount = 0;
-  common::Error err = dbkcount(&kcount);
+  common::Error err = DBkcount(&kcount);
   DCHECK(!err);
   *info = new DataBaseInfo(name, true, kcount);
   return common::Error();
@@ -414,7 +414,7 @@ common::Error DBConnection::SelectImpl(const std::string& name, IDataBaseInfo** 
 common::Error DBConnection::SetImpl(const NDbKValue& key, NDbKValue* added_key) {
   std::string key_str = key.keyString();
   std::string value_str = key.valueString();
-  common::Error err = setInner(key_str, value_str);
+  common::Error err = SetInner(key_str, value_str);
   if (err && err->isError()) {
     return err;
   }
@@ -426,7 +426,7 @@ common::Error DBConnection::SetImpl(const NDbKValue& key, NDbKValue* added_key) 
 common::Error DBConnection::GetImpl(const NKey& key, NDbKValue* loaded_key) {
   std::string key_str = key.key();
   std::string value_str;
-  common::Error err = getInner(key_str, &value_str);
+  common::Error err = GetInner(key_str, &value_str);
   if (err && err->isError()) {
     return err;
   }
@@ -440,7 +440,7 @@ common::Error DBConnection::DeleteImpl(const NKeys& keys, NKeys* deleted_keys) {
   for (size_t i = 0; i < keys.size(); ++i) {
     NKey key = keys[i];
     std::string key_str = key.key();
-    common::Error err = delInner(key_str);
+    common::Error err = DelInner(key_str);
     if (err && err->isError()) {
       continue;
     }
@@ -454,17 +454,17 @@ common::Error DBConnection::DeleteImpl(const NKeys& keys, NKeys* deleted_keys) {
 common::Error DBConnection::RenameImpl(const NKey& key, const std::string& new_key) {
   std::string key_str = key.key();
   std::string value_str;
-  common::Error err = getInner(key_str, &value_str);
+  common::Error err = GetInner(key_str, &value_str);
   if (err && err->isError()) {
     return err;
   }
 
-  err = delInner(key_str);
+  err = DelInner(key_str);
   if (err && err->isError()) {
     return err;
   }
 
-  err = setInner(new_key, value_str);
+  err = SetInner(new_key, value_str);
   if (err && err->isError()) {
     return err;
   }
@@ -483,7 +483,7 @@ common::Error DBConnection::SetTTLImpl(const NKey& key, ttl_t ttl) {
 common::Error info(CommandHandler* handler, int argc, const char** argv, FastoObject* out) {
   DBConnection* mdb = static_cast<DBConnection*>(handler);
   ServerInfo::Stats statsout;
-  common::Error er = mdb->info(argc == 1 ? argv[0] : nullptr, &statsout);
+  common::Error er = mdb->Info(argc == 1 ? argv[0] : nullptr, &statsout);
   if (!er) {
     common::StringValue* val = common::Value::createStringValue(ServerInfo(statsout).ToString());
     FastoObject* child = new FastoObject(out, val, mdb->Delimiter());
@@ -499,7 +499,7 @@ common::Error dbkcount(CommandHandler* handler, int argc, const char** argv, Fas
 
   DBConnection* mdb = static_cast<DBConnection*>(handler);
   size_t dbkcount = 0;
-  common::Error er = mdb->dbkcount(&dbkcount);
+  common::Error er = mdb->DBkcount(&dbkcount);
   if (!er) {
     common::FundamentalValue* val = common::Value::createUIntegerValue(dbkcount);
     FastoObject* child = new FastoObject(out, val, mdb->Delimiter());
@@ -621,7 +621,7 @@ common::Error keys(CommandHandler* handler, int argc, const char** argv, FastoOb
   DBConnection* mdb = static_cast<DBConnection*>(handler);
   std::vector<std::string> keysout;
   common::Error er =
-      mdb->keys(argv[0], argv[1], common::ConvertFromString<uint64_t>(argv[2]), &keysout);
+      mdb->Keys(argv[0], argv[1], common::ConvertFromString<uint64_t>(argv[2]), &keysout);
   if (!er) {
     common::ArrayValue* ar = common::Value::createArrayValue();
     for (size_t i = 0; i < keysout.size(); ++i) {
@@ -639,7 +639,7 @@ common::Error help(CommandHandler* handler, int argc, const char** argv, FastoOb
   UNUSED(out);
 
   DBConnection* mdb = static_cast<DBConnection*>(handler);
-  return mdb->help(argc - 1, argv + 1);
+  return mdb->Help(argc - 1, argv + 1);
 }
 
 common::Error flushdb(CommandHandler* handler, int argc, const char** argv, FastoObject* out) {
@@ -648,16 +648,16 @@ common::Error flushdb(CommandHandler* handler, int argc, const char** argv, Fast
   UNUSED(out);
 
   DBConnection* mdb = static_cast<DBConnection*>(handler);
-  return mdb->flushdb();
+  return mdb->Flushdb();
 }
 
 }  // namespace lmdb
 template <>
-common::Error ConnectionAllocatorTraits<lmdb::NativeConnection, lmdb::Config>::connect(
+common::Error ConnectionAllocatorTraits<lmdb::NativeConnection, lmdb::Config>::Connect(
     const lmdb::Config& config,
     lmdb::NativeConnection** hout) {
   lmdb::NativeConnection* context = nullptr;
-  common::Error er = lmdb::createConnection(config, &context);
+  common::Error er = lmdb::CreateConnection(config, &context);
   if (er && er->isError()) {
     return er;
   }
@@ -666,7 +666,7 @@ common::Error ConnectionAllocatorTraits<lmdb::NativeConnection, lmdb::Config>::c
   return common::Error();
 }
 template <>
-common::Error ConnectionAllocatorTraits<lmdb::NativeConnection, lmdb::Config>::disconnect(
+common::Error ConnectionAllocatorTraits<lmdb::NativeConnection, lmdb::Config>::Disconnect(
     lmdb::NativeConnection** handle) {
   lmdb::lmdb_close(handle);
   *handle = nullptr;

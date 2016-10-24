@@ -47,8 +47,8 @@ class FirstChildUpdateRootLocker : public RootLocker {
   // notification of execute events
   virtual void ChildrenAdded(FastoObjectIPtr child) override;
 
-  FastoObjectIPtr findCmdChildNode(FastoObjectIPtr child) const;
-  FastoObjectIPtr findWatchdCmd(FastoObjectCommand* cmd) const;
+  FastoObjectIPtr FindCmdChildNode(FastoObjectIPtr child) const;
+  FastoObjectIPtr FindWatchedCmd(FastoObjectCommand* cmd) const;
 
   const std::vector<std::string> commands_;
   std::vector<FastoObjectIPtr> watched_cmds_;

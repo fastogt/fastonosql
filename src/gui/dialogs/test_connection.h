@@ -26,6 +26,7 @@
 
 namespace fastonosql {
 namespace gui {
+
 class TestConnection : public QObject {
   Q_OBJECT
  public:
@@ -41,5 +42,6 @@ class TestConnection : public QObject {
   core::IConnectionSettingsBaseSPtr connection_;
   common::time64_t start_time_;
 };
+
 }  // namespace gui
 }  // namespace fastonosql

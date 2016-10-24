@@ -65,7 +65,7 @@ class DiscoverySentinelDiagnosticDialog : public QDialog {
   virtual void showEvent(QShowEvent* e);
 
  private:
-  void testConnection(core::IConnectionSettingsBaseSPtr connection);
+  void TestConnection(core::IConnectionSettingsBaseSPtr connection);
 
   common::qt::gui::GlassWidget* glassWidget_;
   QLabel* executeTimeLabel_;

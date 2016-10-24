@@ -184,7 +184,7 @@ ClusterDialog::ClusterDialog(QWidget* parent, core::IClusterSettingsBase* connec
 
   testButton_ = new QPushButton("&Test");
   testButton_->setIcon(GuiFactory::instance().messageBoxInformationIcon());
-  VERIFY(connect(testButton_, &QPushButton::clicked, this, &ClusterDialog::testConnection));
+  VERIFY(connect(testButton_, &QPushButton::clicked, this, &ClusterDialog::TestConnection));
   testButton_->setEnabled(false);
 
   discoveryButton_ = new QPushButton("&Discovery");
@@ -241,7 +241,7 @@ void ClusterDialog::loggingStateChange(int value) {
   loggingMsec_->setEnabled(value);
 }
 
-void ClusterDialog::testConnection() {
+void ClusterDialog::TestConnection() {
   ConnectionListWidgetItem* currentItem =
       dynamic_cast<ConnectionListWidgetItem*>(listWidget_->currentItem());  // +
 

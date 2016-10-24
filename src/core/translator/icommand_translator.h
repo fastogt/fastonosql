@@ -32,30 +32,30 @@ namespace core {
 
 class ICommandTranslator {
  public:
-  common::Error createKeyCommand(const NDbKValue& key,
+  common::Error CreateKeyCommand(const NDbKValue& key,
                                  std::string* cmdstring) const WARN_UNUSED_RESULT;
-  common::Error loadKeyCommand(const NKey& key,
+  common::Error LoadKeyCommand(const NKey& key,
                                common::Value::Type type,
                                std::string* cmdstring) const WARN_UNUSED_RESULT;
-  common::Error deleteKeyCommand(const NKey& key, std::string* cmdstring) const WARN_UNUSED_RESULT;
-  common::Error renameKeyCommand(const NKey& key,
+  common::Error DeleteKeyCommand(const NKey& key, std::string* cmdstring) const WARN_UNUSED_RESULT;
+  common::Error RenameKeyCommand(const NKey& key,
                                  const std::string& new_name,
                                  std::string* cmdstring) const WARN_UNUSED_RESULT;
-  common::Error changeKeyTTLCommand(const NKey& key,
+  common::Error ChangeKeyTTLCommand(const NKey& key,
                                     ttl_t ttl,
                                     std::string* cmdstring) const WARN_UNUSED_RESULT;
 
  private:
-  virtual common::Error createKeyCommandImpl(const NDbKValue& key,
+  virtual common::Error CreateKeyCommandImpl(const NDbKValue& key,
                                              std::string* cmdstring) const = 0;
-  virtual common::Error loadKeyCommandImpl(const NKey& key,
+  virtual common::Error LoadKeyCommandImpl(const NKey& key,
                                            common::Value::Type type,
                                            std::string* cmdstring) const = 0;
-  virtual common::Error deleteKeyCommandImpl(const NKey& key, std::string* cmdstring) const = 0;
-  virtual common::Error renameKeyCommandImpl(const NKey& key,
+  virtual common::Error DeleteKeyCommandImpl(const NKey& key, std::string* cmdstring) const = 0;
+  virtual common::Error RenameKeyCommandImpl(const NKey& key,
                                              const std::string& new_name,
                                              std::string* cmdstring) const = 0;
-  virtual common::Error changeKeyTTLCommandImpl(const NKey& key,
+  virtual common::Error ChangeKeyTTLCommandImpl(const NKey& key,
                                                 ttl_t ttl,
                                                 std::string* cmdstring) const = 0;
 };

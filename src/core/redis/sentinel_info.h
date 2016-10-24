@@ -33,7 +33,7 @@ class DiscoverySentinelInfo : public ServerDiscoverySentinelInfo {
   explicit DiscoverySentinelInfo(const ServerCommonInfo& args);
 };
 
-common::Error makeServerCommonInfo(struct redisReply* repl_info, ServerCommonInfo* info);
+common::Error MakeServerCommonInfo(struct redisReply* repl_info, ServerCommonInfo* info);
 
 }  // namespace redis
 }  // namespace core

@@ -106,7 +106,7 @@ DiscoverySentinelDiagnosticDialog::DiscoverySentinelDiagnosticDialog(
   glassWidget_ = new common::qt::gui::GlassWidget(GuiFactory::instance().pathToLoadingGif(),
                                                   translations::trTryToConnect, 0.5,
                                                   QColor(111, 111, 100), this);
-  testConnection(connection);
+  TestConnection(connection);
 }
 
 std::vector<ConnectionListWidgetItemDiscovered*>
@@ -162,7 +162,7 @@ void DiscoverySentinelDiagnosticDialog::showEvent(QShowEvent* e) {
   glassWidget_->start();
 }
 
-void DiscoverySentinelDiagnosticDialog::testConnection(
+void DiscoverySentinelDiagnosticDialog::TestConnection(
     core::IConnectionSettingsBaseSPtr connection) {
   QThread* th = new QThread;
   DiscoverySentinelConnection* cheker = new DiscoverySentinelConnection(connection);

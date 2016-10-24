@@ -180,7 +180,7 @@ SentinelDialog::SentinelDialog(QWidget* parent, core::ISentinelSettingsBase* con
 
   testButton_ = new QPushButton("&Test");
   testButton_->setIcon(GuiFactory::instance().messageBoxInformationIcon());
-  VERIFY(connect(testButton_, &QPushButton::clicked, this, &SentinelDialog::testConnection));
+  VERIFY(connect(testButton_, &QPushButton::clicked, this, &SentinelDialog::TestConnection));
   testButton_->setEnabled(false);
 
   discoveryButton_ = new QPushButton("&Discovery");
@@ -237,7 +237,7 @@ void SentinelDialog::loggingStateChange(int value) {
   loggingMsec_->setEnabled(value);
 }
 
-void SentinelDialog::testConnection() {
+void SentinelDialog::TestConnection() {
   ConnectionListWidgetItem* currentItem =
       dynamic_cast<ConnectionListWidgetItem*>(listWidget_->currentItem());  // +
 

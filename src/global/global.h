@@ -94,7 +94,7 @@ class FastoObjectCommand : public FastoObject {
   virtual std::string inputCmd() const;
   virtual std::string inputArgs() const;
 
-  virtual bool isReadOnly() const = 0;
+  virtual bool IsReadOnly() const = 0;
 
   core::connectionTypes connectionType() const;
 

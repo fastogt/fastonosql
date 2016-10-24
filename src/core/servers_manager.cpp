@@ -34,43 +34,43 @@
 #include "core/redis/cluster.h"              // for Cluster
 #include "core/redis/sentinel.h"             // for Sentinel
 #include "core/redis/connection_settings.h"  // for ConnectionSettings
-#include "core/redis/db_connection.h"        // for discoveryClusterConnection, etc
+#include "core/redis/db_connection.h"        // for DiscoveryClusterConnection, etc
 #include "core/redis/server.h"               // for Server
 #endif
 
 #ifdef BUILD_WITH_MEMCACHED
 #include "core/memcached/connection_settings.h"  // for ConnectionSettings
-#include "core/memcached/db_connection.h"        // for testConnection
+#include "core/memcached/db_connection.h"        // for TestConnection
 #include "core/memcached/server.h"               // for Server
 #endif
 
 #ifdef BUILD_WITH_SSDB
 #include "core/ssdb/connection_settings.h"  // for ConnectionSettings
-#include "core/ssdb/db_connection.h"        // for testConnection
+#include "core/ssdb/db_connection.h"        // for TestConnection
 #include "core/ssdb/server.h"               // for Server
 #endif
 
 #ifdef BUILD_WITH_LEVELDB
 #include "core/leveldb/connection_settings.h"  // for ConnectionSettings
-#include "core/leveldb/db_connection.h"        // for testConnection
+#include "core/leveldb/db_connection.h"        // for TestConnection
 #include "core/leveldb/server.h"               // for Server
 #endif
 
 #ifdef BUILD_WITH_ROCKSDB
 #include "core/rocksdb/connection_settings.h"  // for ConnectionSettings
-#include "core/rocksdb/db_connection.h"        // for testConnection
+#include "core/rocksdb/db_connection.h"        // for TestConnection
 #include "core/rocksdb/server.h"               // for Server
 #endif
 
 #ifdef BUILD_WITH_LMDB
 #include "core/lmdb/connection_settings.h"  // for ConnectionSettings
-#include "core/lmdb/db_connection.h"        // for testConnection
+#include "core/lmdb/db_connection.h"        // for TestConnection
 #include "core/lmdb/server.h"               // for Server
 #endif
 
 #ifdef BUILD_WITH_UNQLITE
 #include "core/unqlite/connection_settings.h"  // for ConnectionSettings
-#include "core/unqlite/db_connection.h"        // for testConnection
+#include "core/unqlite/db_connection.h"        // for TestConnection
 #include "core/unqlite/server.h"               // for Server
 #endif
 
@@ -183,7 +183,7 @@ ServersManager::cluster_t ServersManager::createCluster(IClusterSettingsBaseSPtr
   return cluster_t();
 }
 
-common::Error ServersManager::testConnection(IConnectionSettingsBaseSPtr connection) {
+common::Error ServersManager::TestConnection(IConnectionSettingsBaseSPtr connection) {
   if (!connection) {
     return common::make_error_value("Invalid input argument(s)", common::ErrorValue::E_ERROR);
   }
@@ -191,43 +191,43 @@ common::Error ServersManager::testConnection(IConnectionSettingsBaseSPtr connect
   connectionTypes type = connection->Type();
 #ifdef BUILD_WITH_REDIS
   if (type == REDIS) {
-    return fastonosql::core::redis::testConnection(
+    return fastonosql::core::redis::TestConnection(
         static_cast<redis::ConnectionSettings*>(connection.get()));
   }
 #endif
 #ifdef BUILD_WITH_MEMCACHED
   if (type == MEMCACHED) {
-    return fastonosql::core::memcached::testConnection(
+    return fastonosql::core::memcached::TestConnection(
         static_cast<memcached::ConnectionSettings*>(connection.get()));
   }
 #endif
 #ifdef BUILD_WITH_SSDB
   if (type == SSDB) {
-    return fastonosql::core::ssdb::testConnection(
+    return fastonosql::core::ssdb::TestConnection(
         static_cast<ssdb::ConnectionSettings*>(connection.get()));
   }
 #endif
 #ifdef BUILD_WITH_LEVELDB
   if (type == LEVELDB) {
-    return fastonosql::core::leveldb::testConnection(
+    return fastonosql::core::leveldb::TestConnection(
         static_cast<leveldb::ConnectionSettings*>(connection.get()));
   }
 #endif
 #ifdef BUILD_WITH_ROCKSDB
   if (type == ROCKSDB) {
-    return fastonosql::core::rocksdb::testConnection(
+    return fastonosql::core::rocksdb::TestConnection(
         static_cast<rocksdb::ConnectionSettings*>(connection.get()));
   }
 #endif
 #ifdef BUILD_WITH_UNQLITE
   if (type == UNQLITE) {
-    return fastonosql::core::unqlite::testConnection(
+    return fastonosql::core::unqlite::TestConnection(
         static_cast<unqlite::ConnectionSettings*>(connection.get()));
   }
 #endif
 #ifdef BUILD_WITH_LMDB
   if (type == LMDB) {
-    return fastonosql::core::lmdb::testConnection(
+    return fastonosql::core::lmdb::TestConnection(
         static_cast<lmdb::ConnectionSettings*>(connection.get()));
   }
 #endif
@@ -236,7 +236,7 @@ common::Error ServersManager::testConnection(IConnectionSettingsBaseSPtr connect
   return common::make_error_value("Invalid setting type", common::ErrorValue::E_ERROR);
 }
 
-common::Error ServersManager::discoveryClusterConnection(
+common::Error ServersManager::DiscoveryClusterConnection(
     IConnectionSettingsBaseSPtr connection,
     std::vector<ServerDiscoveryClusterInfoSPtr>* inf) {
   if (!connection || !inf) {
@@ -246,7 +246,7 @@ common::Error ServersManager::discoveryClusterConnection(
   connectionTypes type = connection->Type();
 #ifdef BUILD_WITH_REDIS
   if (type == REDIS) {
-    return redis::discoveryClusterConnection(
+    return redis::DiscoveryClusterConnection(
         static_cast<redis::ConnectionSettings*>(connection.get()), inf);
   }
 #endif
@@ -285,7 +285,7 @@ common::Error ServersManager::discoveryClusterConnection(
   return common::make_error_value("Invalid setting type", common::ErrorValue::E_ERROR);
 }
 
-common::Error ServersManager::discoverySentinelConnection(
+common::Error ServersManager::DiscoverySentinelConnection(
     IConnectionSettingsBaseSPtr connection,
     std::vector<ServerDiscoverySentinelInfoSPtr>* inf) {
   if (!connection || !inf) {
@@ -295,7 +295,7 @@ common::Error ServersManager::discoverySentinelConnection(
   connectionTypes type = connection->Type();
 #ifdef BUILD_WITH_REDIS
   if (type == REDIS) {
-    return redis::discoverySentinelConnection(
+    return redis::DiscoverySentinelConnection(
         static_cast<redis::ConnectionSettings*>(connection.get()), inf);
   }
 #endif

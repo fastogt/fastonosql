@@ -312,11 +312,11 @@ namespace fastonosql {
 namespace core {
 
 template <>
-common::Error ConnectionAllocatorTraits<redis::NativeConnection, redis::RConfig>::connect(
+common::Error ConnectionAllocatorTraits<redis::NativeConnection, redis::RConfig>::Connect(
     const redis::RConfig& config,
     redis::NativeConnection** hout) {
   redis::NativeConnection* context = nullptr;
-  common::Error er = redis::createConnection(config, &context);
+  common::Error er = redis::CreateConnection(config, &context);
   if (er && er->isError()) {
     return er;
   }
@@ -326,7 +326,7 @@ common::Error ConnectionAllocatorTraits<redis::NativeConnection, redis::RConfig>
   return common::Error();
 }
 template <>
-common::Error ConnectionAllocatorTraits<redis::NativeConnection, redis::RConfig>::disconnect(
+common::Error ConnectionAllocatorTraits<redis::NativeConnection, redis::RConfig>::Disconnect(
     redis::NativeConnection** handle) {
   redis::NativeConnection* lhandle = *handle;
   if (lhandle) {
@@ -566,7 +566,7 @@ common::Error authContext(const char* auth_str, redisContext* context) {
 
 common::Error common_exec(CommandHandler* handler, int argc, const char** argv, FastoObject* out) {
   DBConnection* red = static_cast<DBConnection*>(handler);
-  return red->commonExec(argc + 1, argv - 1, out);
+  return red->CommonExec(argc + 1, argv - 1, out);
 }
 
 common::Error common_exec_off2(CommandHandler* handler,
@@ -574,13 +574,13 @@ common::Error common_exec_off2(CommandHandler* handler,
                                const char** argv,
                                FastoObject* out) {
   DBConnection* red = static_cast<DBConnection*>(handler);
-  return red->commonExec(argc + 2, argv - 2, out);
+  return red->CommonExec(argc + 2, argv - 2, out);
 }
 
 common::Error auth(CommandHandler* handler, int argc, const char** argv, FastoObject* out) {
   UNUSED(argc);
   DBConnection* red = static_cast<DBConnection*>(handler);
-  common::Error err = red->auth(argv[0]);
+  common::Error err = red->Auth(argv[0]);
   if (err && err->isError()) {
     return err;
   }
@@ -671,7 +671,7 @@ common::Error lrange(CommandHandler* handler, int argc, const char** argv, Fasto
   int stop = atoi(argv[2]);
   DBConnection* redis = static_cast<DBConnection*>(handler);
   NDbKValue key_loaded;
-  common::Error err = redis->lrange(key, start, stop, &key_loaded);
+  common::Error err = redis->Lrange(key, start, stop, &key_loaded);
   if (err && err->isError()) {
     return err;
   }
@@ -689,7 +689,7 @@ common::Error smembers(CommandHandler* handler, int argc, const char** argv, Fas
   NKey key(argv[0]);
   DBConnection* redis = static_cast<DBConnection*>(handler);
   NDbKValue key_loaded;
-  common::Error err = redis->smembers(key, &key_loaded);
+  common::Error err = redis->Smembers(key, &key_loaded);
   if (err && err->isError()) {
     return err;
   }
@@ -710,7 +710,7 @@ common::Error zrange(CommandHandler* handler, int argc, const char** argv, Fasto
   bool ws = argc == 4 && strncmp(argv[3], "WITHSCORES", 10) == 0;
   DBConnection* redis = static_cast<DBConnection*>(handler);
   NDbKValue key_loaded;
-  common::Error err = redis->zrange(key, start, stop, ws, &key_loaded);
+  common::Error err = redis->Zrange(key, start, stop, ws, &key_loaded);
   if (err && err->isError()) {
     return err;
   }
@@ -728,7 +728,7 @@ common::Error hgetall(CommandHandler* handler, int argc, const char** argv, Fast
   NKey key(argv[0]);
   DBConnection* redis = static_cast<DBConnection*>(handler);
   NDbKValue key_loaded;
-  common::Error err = redis->hgetall(key, &key_loaded);
+  common::Error err = redis->Hgetall(key, &key_loaded);
   if (err && err->isError()) {
     return err;
   }
@@ -797,31 +797,31 @@ common::Error expire(CommandHandler* handler, int argc, const char** argv, Fasto
 
 common::Error help(CommandHandler* handler, int argc, const char** argv, FastoObject* out) {
   DBConnection* red = static_cast<DBConnection*>(handler);
-  return red->help(argc, argv, out);
+  return red->Help(argc, argv, out);
 }
 
 common::Error monitor(CommandHandler* handler, int argc, const char** argv, FastoObject* out) {
   DBConnection* red = static_cast<DBConnection*>(handler);
-  return red->monitor(argc + 1, argv - 1, out);
+  return red->Monitor(argc + 1, argv - 1, out);
 }
 
 common::Error subscribe(CommandHandler* handler, int argc, const char** argv, FastoObject* out) {
   DBConnection* red = static_cast<DBConnection*>(handler);
-  return red->subscribe(argc + 1, argv - 1, out);
+  return red->Subscribe(argc + 1, argv - 1, out);
 }
 
 common::Error sync(CommandHandler* handler, int argc, const char** argv, FastoObject* out) {
   UNUSED(argc);
   UNUSED(argv);
   DBConnection* red = static_cast<DBConnection*>(handler);
-  return red->slaveMode(out);
+  return red->SlaveMode(out);
 }
 
 RConfig::RConfig(const Config& config, const SSHInfo& sinfo) : Config(config), ssh_info(sinfo) {}
 
 RConfig::RConfig() : Config(), ssh_info() {}
 
-common::Error createConnection(const RConfig& config, NativeConnection** context) {
+common::Error CreateConnection(const RConfig& config, NativeConnection** context) {
   if (!context) {
     return common::make_error_value("Invalid input argument(s)", common::ErrorValue::E_ERROR);
   }
@@ -878,22 +878,22 @@ common::Error createConnection(const RConfig& config, NativeConnection** context
   return common::Error();
 }
 
-common::Error createConnection(ConnectionSettings* settings, NativeConnection** context) {
+common::Error CreateConnection(ConnectionSettings* settings, NativeConnection** context) {
   if (!settings) {
     return common::make_error_value("Invalid input argument(s)", common::ErrorValue::E_ERROR);
   }
 
   RConfig rconfig(settings->Info(), settings->SSHInfo());
-  return createConnection(rconfig, context);
+  return CreateConnection(rconfig, context);
 }
 
-common::Error testConnection(ConnectionSettings* settings) {
+common::Error TestConnection(ConnectionSettings* settings) {
   if (!settings) {
     return common::make_error_value("Invalid input argument(s)", common::ErrorValue::E_ERROR);
   }
 
   redisContext* context = NULL;
-  common::Error err = createConnection(settings, &context);
+  common::Error err = CreateConnection(settings, &context);
   if (err && err->isError()) {
     return err;
   }
@@ -910,14 +910,14 @@ common::Error testConnection(ConnectionSettings* settings) {
   return common::Error();
 }
 
-common::Error discoveryClusterConnection(ConnectionSettings* settings,
+common::Error DiscoveryClusterConnection(ConnectionSettings* settings,
                                          std::vector<ServerDiscoveryClusterInfoSPtr>* infos) {
   if (!settings || !infos) {
     return common::make_error_value("Invalid input argument(s)", common::ErrorValue::E_ERROR);
   }
 
   redisContext* context = NULL;
-  common::Error err = createConnection(settings, &context);
+  common::Error err = CreateConnection(settings, &context);
   if (err && err->isError()) {
     return err;
   }
@@ -951,14 +951,14 @@ common::Error discoveryClusterConnection(ConnectionSettings* settings,
   return err;
 }
 
-common::Error discoverySentinelConnection(ConnectionSettings* settings,
+common::Error DiscoverySentinelConnection(ConnectionSettings* settings,
                                           std::vector<ServerDiscoverySentinelInfoSPtr>* infos) {
   if (!settings || !infos) {
     return common::make_error_value("Invalid input argument(s)", common::ErrorValue::E_ERROR);
   }
 
   redisContext* context = NULL;
-  common::Error err = createConnection(settings, &context);
+  common::Error err = CreateConnection(settings, &context);
   if (err && err->isError()) {
     return err;
   }
@@ -982,7 +982,7 @@ common::Error discoverySentinelConnection(ConnectionSettings* settings,
   for (size_t i = 0; i < masters_reply->elements; ++i) {
     redisReply* master_info = masters_reply->element[i];
     ServerCommonInfo sinf;
-    common::Error lerr = makeServerCommonInfo(master_info, &sinf);
+    common::Error lerr = MakeServerCommonInfo(master_info, &sinf);
     if (lerr && lerr->isError()) {
       continue;
     }
@@ -1003,7 +1003,7 @@ common::Error discoverySentinelConnection(ConnectionSettings* settings,
       for (size_t j = 0; j < reply->elements; ++j) {
         redisReply* server_info = reply->element[j];
         ServerCommonInfo slsinf;
-        lerr = makeServerCommonInfo(server_info, &slsinf);
+        lerr = MakeServerCommonInfo(server_info, &slsinf);
         if (lerr && lerr->isError()) {
           continue;
         }
@@ -1029,7 +1029,7 @@ common::Error discoverySentinelConnection(ConnectionSettings* settings,
 DBConnection::DBConnection(CDBConnectionClient* client)
     : base_class(redisCommands, client, new CommandTranslator), isAuth_(false) {}
 
-const char* DBConnection::versionApi() {
+const char* DBConnection::VersionApi() {
   return HIREDIS_VERSION;
 }
 
@@ -1048,7 +1048,7 @@ common::Error DBConnection::Connect(const config_t& config) {
   }
 
   /* Do AUTH and select the right DB. */
-  err = auth(connection_.config_.auth);
+  err = Auth(connection_.config_.auth);
   if (err && err->isError()) {
     return err;
   }
@@ -1061,12 +1061,7 @@ common::Error DBConnection::Connect(const config_t& config) {
   return common::Error();
 }
 
-/*------------------------------------------------------------------------------
- * Latency and latency history modes
- *---------------------------------------------------------------------------
- */
-
-common::Error DBConnection::latencyMode(FastoObject* out) {
+common::Error DBConnection::LatencyMode(FastoObject* out) {
   if (!out) {
     DNOTREACHED();
     return common::make_error_value("Invalid input argument(s)", common::ErrorValue::E_ERROR);
@@ -1145,15 +1140,10 @@ common::Error DBConnection::latencyMode(FastoObject* out) {
   return common::make_error_value("Interrupted.", common::ErrorValue::E_INTERRUPTED);
 }
 
-/*------------------------------------------------------------------------------
- * Slave mode
- *---------------------------------------------------------------------------
- */
-
 /* Sends SYNC and reads the number of bytes in the payload.
  * Used both by
  * slaveMode() and getRDB(). */
-common::Error DBConnection::sendSync(unsigned long long* payload) {
+common::Error DBConnection::SendSync(unsigned long long* payload) {
   if (!payload) {
     DNOTREACHED();
     return common::make_error_value("Invalid input argument(s)", common::ErrorValue::E_ERROR);
@@ -1205,7 +1195,7 @@ common::Error DBConnection::sendSync(unsigned long long* payload) {
   return common::Error();
 }
 
-common::Error DBConnection::slaveMode(FastoObject* out) {
+common::Error DBConnection::SlaveMode(FastoObject* out) {
   if (!out) {
     DNOTREACHED();
     return common::make_error_value("Invalid input argument(s)", common::ErrorValue::E_ERROR);
@@ -1216,7 +1206,7 @@ common::Error DBConnection::slaveMode(FastoObject* out) {
   }
 
   unsigned long long payload = 0;
-  common::Error err = sendSync(&payload);
+  common::Error err = SendSync(&payload);
   if (err && err->isError()) {
     return err;
   }
@@ -1243,7 +1233,7 @@ common::Error DBConnection::slaveMode(FastoObject* out) {
   /* Now we can use hiredis to read the incoming protocol.
    */
   while (!IsInterrupted()) {
-    err = cliReadReply(cmd.get());
+    err = CliReadReply(cmd.get());
     if (err && err->isError()) {
       return err;
     }
@@ -1252,15 +1242,10 @@ common::Error DBConnection::slaveMode(FastoObject* out) {
   return common::make_error_value("Interrupted.", common::ErrorValue::E_INTERRUPTED);
 }
 
-/*------------------------------------------------------------------------------
- * RDB transfer mode
- *---------------------------------------------------------------------------
- */
-
 /* This function implements --rdb, so it uses the
  * replication protocol in order
  * to fetch the RDB file from a remote server. */
-common::Error DBConnection::getRDB(FastoObject* out) {
+common::Error DBConnection::GetRDB(FastoObject* out) {
   if (!out) {
     DNOTREACHED();
     return common::make_error_value("Invalid input argument(s)", common::ErrorValue::E_ERROR);
@@ -1271,7 +1256,7 @@ common::Error DBConnection::getRDB(FastoObject* out) {
   }
 
   unsigned long long payload = 0;
-  common::Error er = sendSync(&payload);
+  common::Error er = SendSync(&payload);
   if (er && er->isError()) {
     return er;
   }
@@ -1340,12 +1325,7 @@ common::Error DBConnection::getRDB(FastoObject* out) {
   return common::Error();
 }
 
-/*------------------------------------------------------------------------------
- * Find big keys
- *---------------------------------------------------------------------------
- */
-
-common::Error DBConnection::sendScan(unsigned long long* it, redisReply** out) {
+common::Error DBConnection::SendScan(unsigned long long* it, redisReply** out) {
   if (!out) {
     DNOTREACHED();
     return common::make_error_value("Invalid input argument(s)", common::ErrorValue::E_ERROR);
@@ -1380,7 +1360,7 @@ common::Error DBConnection::sendScan(unsigned long long* it, redisReply** out) {
   return common::Error();
 }
 
-common::Error DBConnection::dbkcount(size_t* size) {
+common::Error DBConnection::DBkcount(size_t* size) {
   if (!size) {
     DNOTREACHED();
     return common::make_error_value("Invalid input argument(s)", common::ErrorValue::E_ERROR);
@@ -1402,7 +1382,7 @@ common::Error DBConnection::dbkcount(size_t* size) {
   return common::Error();
 }
 
-common::Error DBConnection::getKeyTypes(redisReply* keys, int* types) {
+common::Error DBConnection::GetKeyTypes(redisReply* keys, int* types) {
   if (!types) {
     DNOTREACHED();
     return common::make_error_value("Invalid input argument(s)", common::ErrorValue::E_ERROR);
@@ -1444,7 +1424,7 @@ common::Error DBConnection::getKeyTypes(redisReply* keys, int* types) {
   return common::Error();
 }
 
-common::Error DBConnection::getKeySizes(redisReply* keys, int* types, unsigned long long* sizes) {
+common::Error DBConnection::GetKeySizes(redisReply* keys, int* types, unsigned long long* sizes) {
   const char* sizecmds[] = {"STRLEN", "LLEN", "SCARD", "HLEN", "ZCARD"};
 
   /* Pipeline size commands */
@@ -1489,7 +1469,7 @@ common::Error DBConnection::getKeySizes(redisReply* keys, int* types, unsigned l
   return common::Error();
 }
 
-common::Error DBConnection::findBigKeys(FastoObject* out) {
+common::Error DBConnection::FindBigKeys(FastoObject* out) {
   if (!out) {
     DNOTREACHED();
     return common::make_error_value("Invalid input argument(s)", common::ErrorValue::E_ERROR);
@@ -1517,7 +1497,7 @@ common::Error DBConnection::findBigKeys(FastoObject* out) {
   int type, *types = NULL;
 
   /* Total keys pre scanning */
-  common::Error er = dbkcount(&total_keys);
+  common::Error er = DBkcount(&total_keys);
   if (er && er->isError()) {
     return er;
   }
@@ -1551,7 +1531,7 @@ common::Error DBConnection::findBigKeys(FastoObject* out) {
     double pct = 100 * static_cast<double>(sampled / total_keys);
 
     /* Grab some keys and point to the keys array */
-    er = sendScan(&it, &reply);
+    er = SendScan(&it, &reply);
     if (er && er->isError()) {
       return er;
     }
@@ -1579,12 +1559,12 @@ common::Error DBConnection::findBigKeys(FastoObject* out) {
     }
 
     /* Retreive types and then sizes */
-    er = getKeyTypes(keys, types);
+    er = GetKeyTypes(keys, types);
     if (er && er->isError()) {
       return er;
     }
 
-    er = getKeySizes(keys, types, sizes);
+    er = GetKeySizes(keys, types, sizes);
     if (er && er->isError()) {
       return er;
     }
@@ -1673,12 +1653,7 @@ common::Error DBConnection::findBigKeys(FastoObject* out) {
   return common::Error();
 }
 
-/*------------------------------------------------------------------------------
- * Stats mode
- *---------------------------------------------------------------------------
- */
-
-common::Error DBConnection::statMode(FastoObject* out) {
+common::Error DBConnection::StatMode(FastoObject* out) {
   if (!out) {
     DNOTREACHED();
     return common::make_error_value("Invalid input argument(s)", common::ErrorValue::E_ERROR);
@@ -1791,12 +1766,7 @@ common::Error DBConnection::statMode(FastoObject* out) {
   return common::make_error_value("Interrupted.", common::ErrorValue::E_INTERRUPTED);
 }
 
-/*------------------------------------------------------------------------------
- * Scan mode
- *---------------------------------------------------------------------------
- */
-
-common::Error DBConnection::scanMode(FastoObject* out) {
+common::Error DBConnection::ScanMode(FastoObject* out) {
   if (!out) {
     DNOTREACHED();
     return common::make_error_value("Invalid input argument(s)", common::ErrorValue::E_ERROR);
@@ -1854,7 +1824,7 @@ common::Error DBConnection::SelectImpl(const std::string& name, IDataBaseInfo** 
 
   connection_.config_.dbnum = num;
   size_t sz = 0;
-  common::Error err = dbkcount(&sz);
+  common::Error err = DBkcount(&sz);
   DCHECK(!err);
   DataBaseInfo* linfo = new DataBaseInfo(common::ConvertToString(num), true, sz);
   *info = linfo;
@@ -1867,7 +1837,7 @@ common::Error DBConnection::DeleteImpl(const NKeys& keys, NKeys* deleted_keys) {
     NKey key = keys[i];
     std::string del_cmd;
     translator_t tran = Translator();
-    common::Error err = tran->deleteKeyCommand(key, &del_cmd);
+    common::Error err = tran->DeleteKeyCommand(key, &del_cmd);
     if (err && err->isError()) {
       return err;
     }
@@ -1935,7 +1905,7 @@ common::Error DBConnection::GetImpl(const NKey& key, NDbKValue* loaded_key) {
 common::Error DBConnection::RenameImpl(const NKey& key, const std::string& new_key) {
   translator_t tran = Translator();
   std::string rename_cmd;
-  common::Error err = tran->renameKeyCommand(key, new_key, &rename_cmd);
+  common::Error err = tran->RenameKeyCommand(key, new_key, &rename_cmd);
   if (err && err->isError()) {
     return err;
   }
@@ -1959,7 +1929,7 @@ common::Error DBConnection::SetTTLImpl(const NKey& key, ttl_t ttl) {
   std::string key_str = key.key();
   translator_t tran = Translator();
   std::string ttl_cmd;
-  common::Error err = tran->changeKeyTTLCommand(key, ttl, &ttl_cmd);
+  common::Error err = tran->ChangeKeyTTLCommand(key, ttl, &ttl_cmd);
   if (err && err->isError()) {
     return err;
   }
@@ -1985,7 +1955,7 @@ common::Error DBConnection::SetTTLImpl(const NKey& key, ttl_t ttl) {
   return common::Error();
 }
 
-common::Error DBConnection::cliFormatReplyRaw(FastoObjectArray* ar, redisReply* r) {
+common::Error DBConnection::CliFormatReplyRaw(FastoObjectArray* ar, redisReply* r) {
   if (!ar || !r) {
     DNOTREACHED();
     return common::make_error_value("Invalid input argument(s)", common::ErrorValue::E_ERROR);
@@ -2021,7 +1991,7 @@ common::Error DBConnection::cliFormatReplyRaw(FastoObjectArray* ar, redisReply* 
       ar->addChildren(child);
 
       for (size_t i = 0; i < r->elements; ++i) {
-        common::Error er = cliFormatReplyRaw(child, r->element[i]);
+        common::Error er = CliFormatReplyRaw(child, r->element[i]);
         if (er && er->isError()) {
           return er;
         }
@@ -2039,7 +2009,7 @@ common::Error DBConnection::cliFormatReplyRaw(FastoObjectArray* ar, redisReply* 
   return common::Error();
 }
 
-common::Error DBConnection::cliFormatReplyRaw(FastoObject* out, redisReply* r) {
+common::Error DBConnection::CliFormatReplyRaw(FastoObject* out, redisReply* r) {
   if (!out) {
     DNOTREACHED();
     return common::make_error_value("Invalid input argument(s)", common::ErrorValue::E_ERROR);
@@ -2081,7 +2051,7 @@ common::Error DBConnection::cliFormatReplyRaw(FastoObject* out, redisReply* r) {
       out->addChildren(child);
 
       for (size_t i = 0; i < r->elements; ++i) {
-        common::Error er = cliFormatReplyRaw(child, r->element[i]);
+        common::Error er = CliFormatReplyRaw(child, r->element[i]);
         if (er && er->isError()) {
           return er;
         }
@@ -2097,7 +2067,7 @@ common::Error DBConnection::cliFormatReplyRaw(FastoObject* out, redisReply* r) {
   return common::Error();
 }
 
-common::Error DBConnection::cliReadReply(FastoObject* out) {
+common::Error DBConnection::CliReadReply(FastoObject* out) {
   if (!out) {
     DNOTREACHED();
     return common::make_error_value("Invalid input argument(s)", common::ErrorValue::E_ERROR);
@@ -2148,12 +2118,12 @@ common::Error DBConnection::cliReadReply(FastoObject* out) {
     return common::Error();
   }
 
-  common::Error er = cliFormatReplyRaw(out, reply);
+  common::Error er = CliFormatReplyRaw(out, reply);
   freeReplyObject(reply);
   return er;
 }
 
-common::Error DBConnection::executeAsPipeline(const std::vector<FastoObjectCommandIPtr>& cmds) {
+common::Error DBConnection::ExecuteAsPipeline(const std::vector<FastoObjectCommandIPtr>& cmds) {
   if (cmds.empty()) {
     DNOTREACHED();
     return common::make_error_value("Invalid input command", common::ErrorValue::E_ERROR);
@@ -2190,7 +2160,7 @@ common::Error DBConnection::executeAsPipeline(const std::vector<FastoObjectComma
 
   for (size_t i = 0; i < valid_cmds.size(); ++i) {
     FastoObjectCommandIPtr cmd = cmds[i];
-    common::Error er = cliReadReply(cmd.get());
+    common::Error er = CliReadReply(cmd.get());
     if (er && er->isError()) {
       return er;
     }
@@ -2200,7 +2170,7 @@ common::Error DBConnection::executeAsPipeline(const std::vector<FastoObjectComma
   return common::Error();
 }
 
-common::Error DBConnection::commonExec(int argc, const char** argv, FastoObject* out) {
+common::Error DBConnection::CommonExec(int argc, const char** argv, FastoObject* out) {
   if (!out) {
     DNOTREACHED();
     return common::make_error_value("Invalid input argument(s)", common::ErrorValue::E_ERROR);
@@ -2219,7 +2189,7 @@ common::Error DBConnection::commonExec(int argc, const char** argv, FastoObject*
 
   redisAppendCommandArgv(connection_.handle_, argc, const_cast<const char**>(argv), argvlen);
   free(argvlen);
-  common::Error err = cliReadReply(out);
+  common::Error err = CliReadReply(out);
   if (err && err->isError()) {
     return err;
   }
@@ -2227,7 +2197,7 @@ common::Error DBConnection::commonExec(int argc, const char** argv, FastoObject*
   return common::Error();
 }
 
-common::Error DBConnection::auth(const std::string& password) {
+common::Error DBConnection::Auth(const std::string& password) {
   if (!IsConnected()) {
     DNOTREACHED();
     return common::make_error_value("Not connected", common::Value::E_ERROR);
@@ -2245,11 +2215,11 @@ common::Error DBConnection::auth(const std::string& password) {
   return common::Error();
 }
 
-common::Error DBConnection::help(int argc, const char** argv, FastoObject* out) {
+common::Error DBConnection::Help(int argc, const char** argv, FastoObject* out) {
   return cliOutputHelp(argc, argv, out, Delimiter());
 }
 
-common::Error DBConnection::monitor(int argc, const char** argv, FastoObject* out) {
+common::Error DBConnection::Monitor(int argc, const char** argv, FastoObject* out) {
   if (!out) {
     DNOTREACHED();
     return common::make_error_value("Invalid input argument(s)", common::ErrorValue::E_ERROR);
@@ -2268,13 +2238,13 @@ common::Error DBConnection::monitor(int argc, const char** argv, FastoObject* ou
 
   redisAppendCommandArgv(connection_.handle_, argc, const_cast<const char**>(argv), argvlen);
   free(argvlen);
-  common::Error err = cliReadReply(out);
+  common::Error err = CliReadReply(out);
   if (err && err->isError()) {
     return err;
   }
 
   while (true) {
-    common::Error er = cliReadReply(out);
+    common::Error er = CliReadReply(out);
     if (er && er->isError()) {
       return er;
     }
@@ -2287,7 +2257,7 @@ common::Error DBConnection::monitor(int argc, const char** argv, FastoObject* ou
   return common::Error();
 }
 
-common::Error DBConnection::subscribe(int argc, const char** argv, FastoObject* out) {
+common::Error DBConnection::Subscribe(int argc, const char** argv, FastoObject* out) {
   if (!out) {
     DNOTREACHED();
     return common::make_error_value("Invalid input argument(s)", common::ErrorValue::E_ERROR);
@@ -2306,13 +2276,13 @@ common::Error DBConnection::subscribe(int argc, const char** argv, FastoObject* 
 
   redisAppendCommandArgv(connection_.handle_, argc, const_cast<const char**>(argv), argvlen);
   free(argvlen);
-  common::Error err = cliReadReply(out);
+  common::Error err = CliReadReply(out);
   if (err && err->isError()) {
     return err;
   }
 
   while (true) {
-    common::Error er = cliReadReply(out);
+    common::Error er = CliReadReply(out);
     if (er && er->isError()) {
       return er;
     }
@@ -2325,7 +2295,7 @@ common::Error DBConnection::subscribe(int argc, const char** argv, FastoObject* 
   return common::Error();
 }
 
-common::Error DBConnection::lrange(const NKey& key, int start, int stop, NDbKValue* loaded_key) {
+common::Error DBConnection::Lrange(const NKey& key, int start, int stop, NDbKValue* loaded_key) {
   if (!IsConnected()) {
     DNOTREACHED();
     return common::make_error_value("Not connected", common::Value::E_ERROR);
@@ -2364,7 +2334,7 @@ common::Error DBConnection::lrange(const NKey& key, int start, int stop, NDbKVal
   return common::Error();
 }
 
-common::Error DBConnection::smembers(const NKey& key, NDbKValue* loaded_key) {
+common::Error DBConnection::Smembers(const NKey& key, NDbKValue* loaded_key) {
   if (!loaded_key) {
     DNOTREACHED();
     return common::make_error_value("Invalid input argument(s)", common::ErrorValue::E_ERROR);
@@ -2423,7 +2393,7 @@ common::Error DBConnection::smembers(const NKey& key, NDbKValue* loaded_key) {
   return common::Error();
 }
 
-common::Error DBConnection::zrange(const NKey& key,
+common::Error DBConnection::Zrange(const NKey& key,
                                    int start,
                                    int stop,
                                    bool withscores,
@@ -2502,7 +2472,7 @@ common::Error DBConnection::zrange(const NKey& key,
   return common::Error();
 }
 
-common::Error DBConnection::hgetall(const NKey& key, NDbKValue* loaded_key) {
+common::Error DBConnection::Hgetall(const NKey& key, NDbKValue* loaded_key) {
   if (!loaded_key) {
     DNOTREACHED();
     return common::make_error_value("Invalid input argument(s)", common::ErrorValue::E_ERROR);

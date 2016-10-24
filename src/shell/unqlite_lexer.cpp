@@ -36,7 +36,7 @@ const char* UnqliteLexer::language() const {
 }
 
 const char* UnqliteLexer::version() const {
-  return core::unqlite::DBConnection::versionApi();
+  return core::unqlite::DBConnection::VersionApi();
 }
 
 const char* UnqliteLexer::basedOn() const {

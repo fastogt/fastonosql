@@ -2007,13 +2007,13 @@ struct RConfig : public Config {
   SSHInfo ssh_info;
 };
 
-common::Error createConnection(const RConfig& config, NativeConnection** context);
-common::Error createConnection(ConnectionSettings* settings, NativeConnection** context);
-common::Error testConnection(ConnectionSettings* settings);
+common::Error CreateConnection(const RConfig& config, NativeConnection** context);
+common::Error CreateConnection(ConnectionSettings* settings, NativeConnection** context);
+common::Error TestConnection(ConnectionSettings* settings);
 
-common::Error discoveryClusterConnection(ConnectionSettings* settings,
+common::Error DiscoveryClusterConnection(ConnectionSettings* settings,
                                          std::vector<ServerDiscoveryClusterInfoSPtr>* infos);
-common::Error discoverySentinelConnection(ConnectionSettings* settings,
+common::Error DiscoverySentinelConnection(ConnectionSettings* settings,
                                           std::vector<ServerDiscoverySentinelInfoSPtr>* infos);
 
 class DBConnection : public core::CDBConnection<NativeConnection, RConfig, REDIS> {
@@ -2025,37 +2025,37 @@ class DBConnection : public core::CDBConnection<NativeConnection, RConfig, REDIS
 
   common::Error Connect(const config_t& config);
 
-  static const char* versionApi();
+  static const char* VersionApi();
 
-  common::Error latencyMode(FastoObject* out) WARN_UNUSED_RESULT;
-  common::Error slaveMode(FastoObject* out) WARN_UNUSED_RESULT;
-  common::Error getRDB(FastoObject* out) WARN_UNUSED_RESULT;
-  common::Error dbkcount(size_t* size) WARN_UNUSED_RESULT;
-  common::Error findBigKeys(FastoObject* out) WARN_UNUSED_RESULT;
-  common::Error statMode(FastoObject* out) WARN_UNUSED_RESULT;
-  common::Error scanMode(FastoObject* out) WARN_UNUSED_RESULT;
+  common::Error LatencyMode(FastoObject* out) WARN_UNUSED_RESULT;
+  common::Error SlaveMode(FastoObject* out) WARN_UNUSED_RESULT;
+  common::Error GetRDB(FastoObject* out) WARN_UNUSED_RESULT;
+  common::Error DBkcount(size_t* size) WARN_UNUSED_RESULT;
+  common::Error FindBigKeys(FastoObject* out) WARN_UNUSED_RESULT;
+  common::Error StatMode(FastoObject* out) WARN_UNUSED_RESULT;
+  common::Error ScanMode(FastoObject* out) WARN_UNUSED_RESULT;
 
-  common::Error executeAsPipeline(const std::vector<FastoObjectCommandIPtr>& cmds)
+  common::Error ExecuteAsPipeline(const std::vector<FastoObjectCommandIPtr>& cmds)
       WARN_UNUSED_RESULT;
 
-  common::Error commonExec(int argc, const char** argv, FastoObject* out) WARN_UNUSED_RESULT;
-  common::Error auth(const std::string& password) WARN_UNUSED_RESULT;
-  common::Error help(int argc, const char** argv, FastoObject* out) WARN_UNUSED_RESULT;
-  common::Error monitor(int argc,
+  common::Error CommonExec(int argc, const char** argv, FastoObject* out) WARN_UNUSED_RESULT;
+  common::Error Auth(const std::string& password) WARN_UNUSED_RESULT;
+  common::Error Help(int argc, const char** argv, FastoObject* out) WARN_UNUSED_RESULT;
+  common::Error Monitor(int argc,
                         const char** argv,
                         FastoObject* out) WARN_UNUSED_RESULT;  // interrupt
-  common::Error subscribe(int argc,
+  common::Error Subscribe(int argc,
                           const char** argv,
                           FastoObject* out) WARN_UNUSED_RESULT;  // interrupt
 
-  common::Error lrange(const NKey& key, int start, int stop, NDbKValue* loaded_key);
-  common::Error smembers(const NKey& key, NDbKValue* loaded_key);
-  common::Error zrange(const NKey& key,
+  common::Error Lrange(const NKey& key, int start, int stop, NDbKValue* loaded_key);
+  common::Error Smembers(const NKey& key, NDbKValue* loaded_key);
+  common::Error Zrange(const NKey& key,
                        int start,
                        int stop,
                        bool withscores,
                        NDbKValue* loaded_key);
-  common::Error hgetall(const NKey& key, NDbKValue* loaded_key);
+  common::Error Hgetall(const NKey& key, NDbKValue* loaded_key);
 
  private:
   virtual common::Error SelectImpl(const std::string& name, IDataBaseInfo** info) override;
@@ -2065,16 +2065,16 @@ class DBConnection : public core::CDBConnection<NativeConnection, RConfig, REDIS
   virtual common::Error RenameImpl(const NKey& key, const std::string& new_key) override;
   virtual common::Error SetTTLImpl(const NKey& key, ttl_t ttl) override;
 
-  common::Error sendSync(unsigned long long* payload) WARN_UNUSED_RESULT;
-  common::Error sendScan(unsigned long long* it, redisReply** out) WARN_UNUSED_RESULT;
-  common::Error getKeyTypes(redisReply* keys, int* types) WARN_UNUSED_RESULT;
-  common::Error getKeySizes(redisReply* keys,
+  common::Error SendSync(unsigned long long* payload) WARN_UNUSED_RESULT;
+  common::Error SendScan(unsigned long long* it, redisReply** out) WARN_UNUSED_RESULT;
+  common::Error GetKeyTypes(redisReply* keys, int* types) WARN_UNUSED_RESULT;
+  common::Error GetKeySizes(redisReply* keys,
                             int* types,
                             unsigned long long* sizes) WARN_UNUSED_RESULT;
 
-  common::Error cliFormatReplyRaw(FastoObjectArray* ar, redisReply* r) WARN_UNUSED_RESULT;
-  common::Error cliFormatReplyRaw(FastoObject* out, redisReply* r) WARN_UNUSED_RESULT;
-  common::Error cliReadReply(FastoObject* out) WARN_UNUSED_RESULT;
+  common::Error CliFormatReplyRaw(FastoObjectArray* ar, redisReply* r) WARN_UNUSED_RESULT;
+  common::Error CliFormatReplyRaw(FastoObject* out, redisReply* r) WARN_UNUSED_RESULT;
+  common::Error CliReadReply(FastoObject* out) WARN_UNUSED_RESULT;
 
   bool isAuth_;
 };

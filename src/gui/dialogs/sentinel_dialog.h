@@ -54,7 +54,7 @@ class SentinelDialog : public QDialog {
  private Q_SLOTS:
   void typeConnectionChange(int index);
   void loggingStateChange(int value);
-  void testConnection();
+  void TestConnection();
   void discoverySentinel();
   void addConnectionSettings();
   void remove();

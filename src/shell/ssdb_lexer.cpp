@@ -35,7 +35,7 @@ const char* SsdbLexer::language() const {
 }
 
 const char* SsdbLexer::version() const {
-  return core::ssdb::DBConnection::versionApi();
+  return core::ssdb::DBConnection::VersionApi();
 }
 
 const char* SsdbLexer::basedOn() const {

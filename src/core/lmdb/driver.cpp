@@ -129,7 +129,7 @@ common::Error Driver::CurrentServerInfo(IServerInfo** info) {
   FastoObjectCommandIPtr cmd = CreateCommandFast(LMDB_INFO_REQUEST, common::Value::C_INNER);
   LOG_COMMAND(cmd);
   ServerInfo::Stats cm;
-  common::Error err = impl_->info(nullptr, &cm);
+  common::Error err = impl_->Info(nullptr, &cm);
   if (err && err->isError()) {
     return err;
   }
@@ -144,7 +144,7 @@ common::Error Driver::CurrentDataBaseInfo(IDataBaseInfo** info) {
     return common::make_error_value("Invalid input argument(s)", common::ErrorValue::E_ERROR);
   }
 
-  return impl_->Select(common::ConvertToString(impl_->curDb()), info);
+  return impl_->Select(common::ConvertToString(impl_->CurDb()), info);
 }
 
 void Driver::HandleLoadDatabaseContentEvent(events::LoadDatabaseContentRequestEvent* ev) {
@@ -180,7 +180,7 @@ void Driver::HandleLoadDatabaseContentEvent(events::LoadDatabaseContentRequestEv
         }
       }
 
-      common::Error err = impl_->dbkcount(&res.db_keys_count);
+      common::Error err = impl_->DBkcount(&res.db_keys_count);
       DCHECK(!err);
     }
   }
@@ -195,7 +195,7 @@ void Driver::HandleClearDatabaseEvent(events::ClearDatabaseRequestEvent* ev) {
   NotifyProgress(sender, 0);
   events::ClearDatabaseResponceEvent::value_type res(ev->value());
   NotifyProgress(sender, 50);
-  common::Error er = impl_->flushdb();
+  common::Error er = impl_->Flushdb();
   if (er && er->isError()) {
     res.setErrorInfo(er);
   }
@@ -209,7 +209,7 @@ void Driver::HandleProcessCommandLineArgsEvent(events::ProcessConfigArgsRequestE
 }
 
 IServerInfoSPtr Driver::MakeServerInfoFromString(const std::string& val) {
-  IServerInfoSPtr res(makeLmdbServerInfo(val));
+  IServerInfoSPtr res(MakeLmdbServerInfo(val));
   return res;
 }
 

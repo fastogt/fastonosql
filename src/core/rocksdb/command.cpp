@@ -27,7 +27,7 @@ namespace rocksdb {
 Command::Command(FastoObject* parent, common::CommandValue* cmd, const std::string& delimiter)
     : FastoObjectCommand(parent, cmd, delimiter, ROCKSDB) {}
 
-bool Command::isReadOnly() const {
+bool Command::IsReadOnly() const {
   std::string key = inputCmd();
   if (key.empty()) {
     return true;

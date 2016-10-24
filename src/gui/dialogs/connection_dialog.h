@@ -60,7 +60,7 @@ class ConnectionDialog : public QDialog {
   void togglePassphraseEchoMode();
   void setPrivateFile();
   void setPublicFile();
-  void testConnection();
+  void TestConnection();
 
  protected:
   virtual void changeEvent(QEvent* ev);

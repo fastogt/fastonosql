@@ -42,13 +42,13 @@ const std::vector<Field> lmdbCommonFields = {
 }  // namespace
 
 template <>
-std::vector<common::Value::Type> DBTraits<LMDB>::supportedTypes() {
+std::vector<common::Value::Type> DBTraits<LMDB>::SupportedTypes() {
   return {common::Value::TYPE_BOOLEAN, common::Value::TYPE_INTEGER, common::Value::TYPE_UINTEGER,
           common::Value::TYPE_DOUBLE, common::Value::TYPE_STRING};
 }
 
 template <>
-std::vector<info_field_t> DBTraits<LMDB>::infoFields() {
+std::vector<info_field_t> DBTraits<LMDB>::InfoFields() {
   return {std::make_pair(LMDB_STATS_LABEL, lmdbCommonFields)};
 }
 namespace lmdb {
@@ -107,13 +107,13 @@ std::ostream& operator<<(std::ostream& out, const ServerInfo& value) {
   return out << value.ToString();
 }
 
-ServerInfo* makeLmdbServerInfo(const std::string& content) {
+ServerInfo* MakeLmdbServerInfo(const std::string& content) {
   if (content.empty()) {
     return nullptr;
   }
 
   ServerInfo* result = new ServerInfo;
-  static const std::vector<info_field_t> fields = DBTraits<LMDB>::infoFields();
+  static const std::vector<info_field_t> fields = DBTraits<LMDB>::InfoFields();
   std::string word;
   DCHECK_EQ(fields.size(), 1);
 

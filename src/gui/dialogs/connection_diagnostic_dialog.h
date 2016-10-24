@@ -48,7 +48,7 @@ class ConnectionDiagnosticDialog : public QDialog {
   virtual void showEvent(QShowEvent* e);
 
  private:
-  void testConnection(core::IConnectionSettingsBaseSPtr connection);
+  void StartTestConnection(core::IConnectionSettingsBaseSPtr connection);
 
   common::qt::gui::GlassWidget* glassWidget_;
   QLabel* executeTimeLabel_;

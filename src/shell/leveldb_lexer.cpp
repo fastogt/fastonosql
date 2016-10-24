@@ -36,7 +36,7 @@ const char* LeveldbLexer::language() const {
 }
 
 const char* LeveldbLexer::version() const {
-  return core::leveldb::DBConnection::versionApi();
+  return core::leveldb::DBConnection::VersionApi();
 }
 
 const char* LeveldbLexer::basedOn() const {

@@ -30,7 +30,7 @@ EventInfoBase::EventInfoBase(initiator_type sender, error_type er)
 EventInfoBase::EventInfoBase(initiator_type sender, common::time64_t time_start, error_type er)
     : base_class(sender, er), time_start_(time_start) {}
 
-common::time64_t EventInfoBase::elapsedTime() const {
+common::time64_t EventInfoBase::ElapsedTime() const {
   return common::time::current_mstime() - time_start_;
 }
 

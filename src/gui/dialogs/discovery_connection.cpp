@@ -46,7 +46,7 @@ void DiscoveryConnection::routine() {
     return;
   }
 
-  common::Error er = core::ServersManager::instance().discoveryClusterConnection(connection_, &inf);
+  common::Error er = core::ServersManager::instance().DiscoveryClusterConnection(connection_, &inf);
 
   if (er && er->isError()) {
     emit connectionResult(false, common::time::current_mstime() - start_time_,
