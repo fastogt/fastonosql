@@ -843,7 +843,7 @@ void ExplorerTreeView::editKey() {
   int result = loadDb.exec();
   if (result == QDialog::Accepted) {
     core::NDbKValue key = loadDb.key();
-    node->editKey(key.value());
+    node->editKey(key.Value());
   }
 }
 
@@ -960,7 +960,7 @@ void ExplorerTreeView::setTTL() {
   bool ok;
   QString name = node->name();
   core::NKey key = node->key();
-  int ttl = QInputDialog::getInt(this, trSetTTLOnKeyTemplate_1S.arg(name), trTTLValue, key.ttl(),
+  int ttl = QInputDialog::getInt(this, trSetTTLOnKeyTemplate_1S.arg(name), trTTLValue, key.TTL(),
                                  -1, INT32_MAX, 100, &ok);
   if (ok) {
     node->setTTL(ttl);
@@ -1076,7 +1076,7 @@ void ExplorerTreeView::renameKey(core::IDataBaseInfoSPtr db, core::NKey key, std
   CHECK(serv);
 
   core::NKey new_key = key;
-  new_key.setKey(new_name);
+  new_key.SetKey(new_name);
   source_model_->updateKey(serv, db, key, new_key);
 }
 
@@ -1092,7 +1092,7 @@ void ExplorerTreeView::changeTTLKey(core::IDataBaseInfoSPtr db, core::NKey key, 
   CHECK(serv);
 
   core::NKey new_key = key;
-  new_key.setTTL(ttl);
+  new_key.SetTTL(ttl);
   source_model_->updateKey(serv, db, key, new_key);
 }
 
@@ -1105,7 +1105,7 @@ void ExplorerTreeView::changeEvent(QEvent* e) {
 }
 
 void ExplorerTreeView::mouseDoubleClickEvent(QMouseEvent* e) {
-  if (core::SettingsManager::instance().fastViewKeys()) {
+  if (core::SettingsManager::instance().FastViewKeys()) {
     loadValue();
   }
 

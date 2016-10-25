@@ -49,11 +49,9 @@ CommandTranslator::CommandTranslator() {}
 common::Error CommandTranslator::CreateKeyCommandImpl(const NDbKValue& key,
                                                       std::string* cmdstring) const {
   std::string patternResult;
-  NValue val = key.value();
-  common::Value* rval = val.get();
-  std::string key_str = key.keyString();
-  std::string value_str = common::ConvertToString(rval, " ");
-  common::Value::Type type = key.type();
+  std::string key_str = key.KeyString();
+  std::string value_str = key.ValueString();
+  common::Value::Type type = key.Type();
   if (type == common::Value::TYPE_ARRAY) {
     patternResult = common::MemSPrintf(REDIS_SET_KEY_LIST_PATTERN_2ARGS_SS, key_str, value_str);
   } else if (type == common::Value::TYPE_SET) {
@@ -74,7 +72,7 @@ common::Error CommandTranslator::LoadKeyCommandImpl(const NKey& key,
                                                     common::Value::Type type,
                                                     std::string* cmdstring) const {
   std::string patternResult;
-  std::string key_str = key.key();
+  std::string key_str = key.Key();
   if (type == common::Value::TYPE_ARRAY) {
     patternResult = common::MemSPrintf(REDIS_GET_KEY_LIST_PATTERN_1ARGS_S, key_str);
   } else if (type == common::Value::TYPE_SET) {
@@ -93,7 +91,7 @@ common::Error CommandTranslator::LoadKeyCommandImpl(const NKey& key,
 
 common::Error CommandTranslator::DeleteKeyCommandImpl(const NKey& key,
                                                       std::string* cmdstring) const {
-  std::string key_str = key.key();
+  std::string key_str = key.Key();
   *cmdstring = common::MemSPrintf(REDIS_DELETE_KEY_PATTERN_1ARGS_S, key_str);
   return common::Error();
 }
@@ -101,7 +99,7 @@ common::Error CommandTranslator::DeleteKeyCommandImpl(const NKey& key,
 common::Error CommandTranslator::RenameKeyCommandImpl(const NKey& key,
                                                       const std::string& new_name,
                                                       std::string* cmdstring) const {
-  std::string key_str = key.key();
+  std::string key_str = key.Key();
   *cmdstring = common::MemSPrintf(REDIS_RENAME_KEY_PATTERN_2ARGS_SS, key_str, new_name);
   return common::Error();
 }
@@ -110,7 +108,7 @@ common::Error CommandTranslator::ChangeKeyTTLCommandImpl(const NKey& key,
                                                          ttl_t ttl,
                                                          std::string* cmdstring) const {
   std::string patternResult;
-  std::string key_str = key.key();
+  std::string key_str = key.Key();
   if (ttl == -1) {
     patternResult = common::MemSPrintf(REDIS_PERSIST_KEY_1ARGS_S, key_str);
   } else {

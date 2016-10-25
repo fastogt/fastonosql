@@ -215,7 +215,7 @@ void ExplorerDatabaseItem::loadValue(const core::NDbKValue& key) {
   CHECK(dbs);
   core::translator_t tran = dbs->Translator();
   std::string cmd_str;
-  common::Error err = tran->LoadKeyCommand(key.key(), key.type(), &cmd_str);
+  common::Error err = tran->LoadKeyCommand(key.Key(), key.Type(), &cmd_str);
   if (err && err->isError()) {
     LOG_ERROR(err, true);
     return;
@@ -230,7 +230,7 @@ void ExplorerDatabaseItem::watchKey(const core::NDbKValue& key, int interval) {
   CHECK(dbs);
   core::translator_t tran = dbs->Translator();
   std::string cmd_str;
-  common::Error err = tran->LoadKeyCommand(key.key(), key.type(), &cmd_str);
+  common::Error err = tran->LoadKeyCommand(key.Key(), key.Type(), &cmd_str);
   if (err && err->isError()) {
     LOG_ERROR(err, true);
     return;
@@ -262,7 +262,7 @@ void ExplorerDatabaseItem::editKey(const core::NDbKValue& key, const core::NValu
   core::translator_t tran = dbs->Translator();
   std::string cmd_str;
   core::NDbKValue copy_key = key;
-  copy_key.setValue(value);
+  copy_key.SetValue(value);
   common::Error err = tran->CreateKeyCommand(copy_key, &cmd_str);
   if (err && err->isError()) {
     LOG_ERROR(err, true);
@@ -321,15 +321,15 @@ void ExplorerKeyItem::setDbv(const core::NDbKValue& key) {
 }
 
 core::NKey ExplorerKeyItem::key() const {
-  return dbv_.key();
+  return dbv_.Key();
 }
 
 void ExplorerKeyItem::setKey(const core::NKey& key) {
-  dbv_.setKey(key);
+  dbv_.SetKey(key);
 }
 
 QString ExplorerKeyItem::name() const {
-  return common::ConvertFromString<QString>(dbv_.keyString());
+  return common::ConvertFromString<QString>(dbv_.KeyString());
 }
 
 core::IServerSPtr ExplorerKeyItem::server() const {
@@ -345,7 +345,7 @@ IExplorerTreeItem::eType ExplorerKeyItem::type() const {
 void ExplorerKeyItem::renameKey(const QString& newName) {
   ExplorerDatabaseItem* par = db();
   CHECK(par);
-  par->renameKey(dbv_.key(), newName);
+  par->renameKey(dbv_.Key(), newName);
 }
 
 void ExplorerKeyItem::editKey(const core::NValue& value) {
@@ -357,7 +357,7 @@ void ExplorerKeyItem::editKey(const core::NValue& value) {
 void ExplorerKeyItem::removeFromDb() {
   ExplorerDatabaseItem* par = db();
   CHECK(par);
-  par->removeKey(dbv_.key());
+  par->removeKey(dbv_.Key());
 }
 
 void ExplorerKeyItem::watchKey(int interval) {
@@ -375,7 +375,7 @@ void ExplorerKeyItem::loadValueFromDb() {
 void ExplorerKeyItem::setTTL(core::ttl_t ttl) {
   ExplorerDatabaseItem* par = db();
   CHECK(par);
-  par->setTTL(dbv_.key(), ttl);
+  par->setTTL(dbv_.Key(), ttl);
 }
 
 ExplorerNSItem::ExplorerNSItem(const QString& name, IExplorerTreeItem* parent)

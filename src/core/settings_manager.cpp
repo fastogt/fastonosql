@@ -88,65 +88,65 @@ SettingsManager::SettingsManager()
       auto_completion_(),
       auto_open_console_(),
       fast_view_keys_() {
-  load();
+  Load();
 }
 
 SettingsManager::~SettingsManager() {
-  save();
+  Save();
 }
 
-std::string SettingsManager::settingsDirPath() {
+std::string SettingsManager::SettingsDirPath() {
   return common::file_system::get_dir_path(iniPath);
 }
 
-std::string SettingsManager::settingsFilePath() {
+std::string SettingsManager::SettingsFilePath() {
   return common::file_system::prepare_path(iniPath);
 }
 
-uint32_t SettingsManager::configVersion() const {
+uint32_t SettingsManager::ConfigVersion() const {
   return config_version_;
 }
 
-bool SettingsManager::isSendedStatistic() const {
+bool SettingsManager::IsSendedStatistic() const {
   return sended_statistic_;
 }
-void SettingsManager::setIsSendedStatistic(bool val) {
+void SettingsManager::SetIsSendedStatistic(bool val) {
   sended_statistic_ = val;
 }
 
-supportedViews SettingsManager::defaultView() const {
+supportedViews SettingsManager::DefaultView() const {
   return views_;
 }
 
-void SettingsManager::setDefaultView(supportedViews view) {
+void SettingsManager::SetDefaultView(supportedViews view) {
   views_ = view;
 }
 
-QString SettingsManager::currentStyle() const {
+QString SettingsManager::CurrentStyle() const {
   return cur_style_;
 }
 
-void SettingsManager::setCurrentStyle(const QString& st) {
+void SettingsManager::SetCurrentStyle(const QString& st) {
   cur_style_ = st;
 }
 
-QString SettingsManager::currentFontName() const {
+QString SettingsManager::CurrentFontName() const {
   return cur_font_name_;
 }
 
-void SettingsManager::setCurrentFontName(const QString& font) {
+void SettingsManager::SetCurrentFontName(const QString& font) {
   cur_font_name_ = font;
 }
 
-QString SettingsManager::currentLanguage() const {
+QString SettingsManager::CurrentLanguage() const {
   return cur_language_;
 }
 
-void SettingsManager::setCurrentLanguage(const QString& lang) {
+void SettingsManager::SetCurrentLanguage(const QString& lang) {
   cur_language_ = lang;
 }
 
-void SettingsManager::addConnection(IConnectionSettingsBaseSPtr connection) {
+void SettingsManager::AddConnection(IConnectionSettingsBaseSPtr connection) {
   if (!connection) {
     return;
   }
@@ -157,7 +157,7 @@ void SettingsManager::addConnection(IConnectionSettingsBaseSPtr connection) {
   }
 }
 
-void SettingsManager::removeConnection(IConnectionSettingsBaseSPtr connection) {
+void SettingsManager::RemoveConnection(IConnectionSettingsBaseSPtr connection) {
   if (!connection) {
     return;
   }
@@ -165,11 +165,11 @@ void SettingsManager::removeConnection(IConnectionSettingsBaseSPtr connection) {
   connections_.erase(std::remove(connections_.begin(), connections_.end(), connection));
 }
 
-SettingsManager::connection_settings_t SettingsManager::connections() const {
+SettingsManager::connection_settings_t SettingsManager::Connections() const {
   return connections_;
 }
 
-void SettingsManager::addSentinel(ISentinelSettingsBaseSPtr sentinel) {
+void SettingsManager::AddSentinel(ISentinelSettingsBaseSPtr sentinel) {
   if (!sentinel) {
     return;
   }
@@ -180,7 +180,7 @@ void SettingsManager::addSentinel(ISentinelSettingsBaseSPtr sentinel) {
   }
 }
 
-void SettingsManager::removeSentinel(ISentinelSettingsBaseSPtr sentinel) {
+void SettingsManager::RemoveSentinel(ISentinelSettingsBaseSPtr sentinel) {
   if (!sentinel) {
     return;
   }
@@ -188,11 +188,11 @@ void SettingsManager::removeSentinel(ISentinelSettingsBaseSPtr sentinel) {
   sentinels_.erase(std::remove(sentinels_.begin(), sentinels_.end(), sentinel));
 }
 
-SettingsManager::sentinel_settings_t SettingsManager::sentinels() const {
+SettingsManager::sentinel_settings_t SettingsManager::Sentinels() const {
   return sentinels_;
 }
 
-void SettingsManager::addCluster(IClusterSettingsBaseSPtr cluster) {
+void SettingsManager::AddCluster(IClusterSettingsBaseSPtr cluster) {
   if (!cluster) {
     return;
   }
@@ -203,7 +203,7 @@ void SettingsManager::addCluster(IClusterSettingsBaseSPtr cluster) {
   }
 }
 
-void SettingsManager::removeCluster(IClusterSettingsBaseSPtr cluster) {
+void SettingsManager::RemoveCluster(IClusterSettingsBaseSPtr cluster) {
   if (!cluster) {
     return;
   }
@@ -211,11 +211,11 @@ void SettingsManager::removeCluster(IClusterSettingsBaseSPtr cluster) {
   clusters_.erase(std::remove(clusters_.begin(), clusters_.end(), cluster));
 }
 
-SettingsManager::cluster_settings_t SettingsManager::clusters() const {
+SettingsManager::cluster_settings_t SettingsManager::Clusters() const {
   return clusters_;
 }
 
-void SettingsManager::addRConnection(const QString& connection) {
+void SettingsManager::AddRConnection(const QString& connection) {
   if (!connection.isEmpty()) {
     auto it = std::find(recent_connections_.begin(), recent_connections_.end(), connection);
     if (it == recent_connections_.end()) {
@@ -224,7 +224,7 @@ void SettingsManager::addRConnection(const QString& connection) {
   }
 }
 
-void SettingsManager::removeRConnection(const QString& connection) {
+void SettingsManager::RemoveRConnection(const QString& connection) {
   if (!connection.isEmpty()) {
     auto it = std::find(recent_connections_.begin(), recent_connections_.end(), connection);
     if (it != recent_connections_.end()) {
@@ -233,55 +233,55 @@ void SettingsManager::removeRConnection(const QString& connection) {
   }
 }
 
-QStringList SettingsManager::recentConnections() const {
+QStringList SettingsManager::RecentConnections() const {
   return recent_connections_;
 }
 
-void SettingsManager::clearRConnections() {
+void SettingsManager::ClearRConnections() {
   recent_connections_.clear();
 }
 
-QString SettingsManager::loggingDirectory() const {
+QString SettingsManager::LoggingDirectory() const {
   return logging_dir_;
 }
 
-void SettingsManager::setLoggingDirectory(const QString& dir) {
+void SettingsManager::SetLoggingDirectory(const QString& dir) {
   logging_dir_ = dir;
 }
 
-bool SettingsManager::autoCheckUpdates() const {
+bool SettingsManager::AutoCheckUpdates() const {
   return auto_check_update_;
 }
 
-void SettingsManager::setAutoCheckUpdates(bool check) {
+void SettingsManager::SetAutoCheckUpdates(bool check) {
   auto_check_update_ = check;
 }
 
-bool SettingsManager::autoCompletion() const {
+bool SettingsManager::AutoCompletion() const {
   return auto_completion_;
 }
 
-void SettingsManager::setAutoCompletion(bool completion) {
+void SettingsManager::SetAutoCompletion(bool completion) {
   auto_completion_ = completion;
 }
 
-bool SettingsManager::autoOpenConsole() const {
+bool SettingsManager::AutoOpenConsole() const {
   return auto_open_console_;
 }
 
-void SettingsManager::setAutoOpenConsole(bool open_console) {
+void SettingsManager::SetAutoOpenConsole(bool open_console) {
   auto_open_console_ = open_console;
 }
 
-bool SettingsManager::fastViewKeys() const {
+bool SettingsManager::FastViewKeys() const {
   return fast_view_keys_;
 }
 
-void SettingsManager::setFastViewKeys(bool fast_view) {
+void SettingsManager::SetFastViewKeys(bool fast_view) {
   fast_view_keys_ = fast_view;
 }
 
-void SettingsManager::reloadFromPath(const std::string& path, bool merge) {
+void SettingsManager::ReloadFromPath(const std::string& path, bool merge) {
   if (path.empty()) {
     return;
   }
@@ -351,7 +351,7 @@ void SettingsManager::reloadFromPath(const std::string& path, bool merge) {
     }
   }
 
-  std::string dir_path = settingsDirPath();
+  std::string dir_path = SettingsDirPath();
   logging_dir_ =
       settings.value(LOGGINGDIR, common::ConvertFromString<QString>(dir_path)).toString();
   auto_check_update_ = settings.value(CHECKUPDATES, true).toBool();
@@ -361,12 +361,12 @@ void SettingsManager::reloadFromPath(const std::string& path, bool merge) {
   config_version_ = settings.value(CONFIG_VERSION, PROJECT_VERSION_NUMBER).toUInt();
 }
 
-void SettingsManager::load() {
-  reloadFromPath(iniPath, false);
+void SettingsManager::Load() {
+  ReloadFromPath(iniPath, false);
 }
 
-void SettingsManager::save() {
-  QSettings settings(common::ConvertFromString<QString>(settingsFilePath()), QSettings::IniFormat);
+void SettingsManager::Save() {
+  QSettings settings(common::ConvertFromString<QString>(SettingsFilePath()), QSettings::IniFormat);
   DCHECK(settings.status() == QSettings::NoError);
 
   settings.setValue(STYLE, cur_style_);

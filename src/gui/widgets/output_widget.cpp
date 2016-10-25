@@ -271,7 +271,7 @@ void OutputWidget::setTextView() {
 }
 
 void OutputWidget::syncWithSettings() {
-  supportedViews curV = core::SettingsManager::instance().defaultView();
+  supportedViews curV = core::SettingsManager::instance().DefaultView();
   if (curV == Tree) {
     setTreeView();
   } else if (curV == Table) {

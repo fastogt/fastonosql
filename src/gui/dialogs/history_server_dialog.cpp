@@ -165,7 +165,7 @@ void ServerHistoryDialog::refreshInfoFields(int index) {
   std::vector<core::Field> field = fields[index].second;
   for (uint32_t i = 0; i < field.size(); ++i) {
     core::Field fl = field[i];
-    if (fl.isIntegral()) {
+    if (fl.IsIntegral()) {
       serverInfoFields_->addItem(common::ConvertFromString<QString>(fl.name), i);
     }
   }

@@ -104,11 +104,11 @@ MainWindow::MainWindow() : QMainWindow(), isCheckedInSession_(false) {
 // grabGesture(Qt::PanGesture);  // drag and drop
 // grabGesture(Qt::PinchGesture);  // zoom
 #endif
-  QString lang = core::SettingsManager::instance().currentLanguage();
+  QString lang = core::SettingsManager::instance().CurrentLanguage();
   QString newLang = common::qt::translations::applyLanguage(lang);
-  core::SettingsManager::instance().setCurrentLanguage(newLang);
+  core::SettingsManager::instance().SetCurrentLanguage(newLang);
 
-  QString style = core::SettingsManager::instance().currentStyle();
+  QString style = core::SettingsManager::instance().CurrentStyle();
   common::qt::gui::applyStyle(style);
 
   common::qt::gui::applyFont(gui::GuiFactory::instance().font());
@@ -261,7 +261,7 @@ MainWindow::MainWindow() : QMainWindow(), isCheckedInSession_(false) {
 }
 
 MainWindow::~MainWindow() {
-  core::ServersManager::instance().clear();
+  core::ServersManager::instance().Clear();
 }
 
 void MainWindow::changeEvent(QEvent* ev) {
@@ -274,13 +274,13 @@ void MainWindow::changeEvent(QEvent* ev) {
 
 void MainWindow::showEvent(QShowEvent* ev) {
   QMainWindow::showEvent(ev);
-  bool isA = core::SettingsManager::instance().autoCheckUpdates();
+  bool isA = core::SettingsManager::instance().AutoCheckUpdates();
   if (isA && !isCheckedInSession_) {
     isCheckedInSession_ = true;
     checkUpdate();
   }
 
-  bool isSendedStatitic = core::SettingsManager::instance().isSendedStatistic();
+  bool isSendedStatitic = core::SettingsManager::instance().IsSendedStatistic();
   if (!isSendedStatitic) {
     sendStatistic();
   }
@@ -366,7 +366,7 @@ void MainWindow::openRecentConnection() {
   QString rcon = action->text();
   std::string srcon = common::ConvertToString(rcon);
   core::ConnectionSettingsPath path(srcon);
-  auto conns = core::SettingsManager::instance().connections();
+  auto conns = core::SettingsManager::instance().Connections();
   for (auto it = conns.begin(); it != conns.end(); ++it) {
     core::IConnectionSettingsBaseSPtr con = *it;
     if (con && con->Path() == path) {
@@ -378,19 +378,19 @@ void MainWindow::openRecentConnection() {
 
 void MainWindow::loadConnection() {
   QString standardIni =
-      common::ConvertFromString<QString>(core::SettingsManager::settingsFilePath());
+      common::ConvertFromString<QString>(core::SettingsManager::SettingsFilePath());
   QString filepathR = QFileDialog::getOpenFileName(this, tr("Select settings file"), standardIni,
                                                    tr("Settings files (*.ini)"));
   if (filepathR.isNull()) {
     return;
   }
 
-  core::SettingsManager::instance().reloadFromPath(common::ConvertToString(filepathR), false);
+  core::SettingsManager::instance().ReloadFromPath(common::ConvertToString(filepathR), false);
   QMessageBox::information(this, translations::trInfo, trSettingsLoadedS);
 }
 
 void MainWindow::importConnection() {
-  std::string dir_path = core::SettingsManager::settingsDirPath();
+  std::string dir_path = core::SettingsManager::SettingsDirPath();
   QString filepathR = QFileDialog::getOpenFileName(this, tr("Select encrypted settings file"),
                                                    common::ConvertFromString<QString>(dir_path),
                                                    tr("Encrypted settings files (*.cini)"));
@@ -398,7 +398,7 @@ void MainWindow::importConnection() {
     return;
   }
 
-  std::string tmp = core::SettingsManager::settingsFilePath() + ".tmp";
+  std::string tmp = core::SettingsManager::SettingsFilePath() + ".tmp";
 
   common::file_system::ascii_string_path wp(tmp);
   common::file_system::File writeFile(wp);
@@ -455,7 +455,7 @@ void MainWindow::importConnection() {
   }
 
   writeFile.close();
-  core::SettingsManager::instance().reloadFromPath(tmp, false);
+  core::SettingsManager::instance().ReloadFromPath(tmp, false);
   common::Error err = common::file_system::remove_file(tmp);
   if (err && err->isError()) {
     DNOTREACHED();
@@ -464,7 +464,7 @@ void MainWindow::importConnection() {
 }
 
 void MainWindow::exportConnection() {
-  std::string dir_path = core::SettingsManager::settingsDirPath();
+  std::string dir_path = core::SettingsManager::SettingsDirPath();
   QString filepathW = QFileDialog::getSaveFileName(this, tr("Select file to save settings"),
                                                    common::ConvertFromString<QString>(dir_path),
                                                    tr("Settings files (*.cini)"));
@@ -480,7 +480,7 @@ void MainWindow::exportConnection() {
     return;
   }
 
-  common::file_system::ascii_string_path rp(core::SettingsManager::settingsFilePath());
+  common::file_system::ascii_string_path rp(core::SettingsManager::SettingsFilePath());
   common::file_system::File readFile(rp);
   bool openedr = readFile.open("rb");
   if (!openedr) {
@@ -556,20 +556,20 @@ void MainWindow::versionAvailible(bool succesResult, const QString& version) {
 
 void MainWindow::statitsticSent(bool succesResult) {
   if (succesResult) {
-    core::SettingsManager::instance().setIsSendedStatistic(true);
+    core::SettingsManager::instance().SetIsSendedStatistic(true);
   }
 }
 
 void MainWindow::closeServer(core::IServerSPtr server) {
-  core::ServersManager::instance().closeServer(server);
+  core::ServersManager::instance().CloseServer(server);
 }
 
 void MainWindow::closeSentinel(core::ISentinelSPtr sentinel) {
-  core::ServersManager::instance().closeSentinel(sentinel);
+  core::ServersManager::instance().CloseSentinel(sentinel);
 }
 
 void MainWindow::closeCluster(core::IClusterSPtr cluster) {
-  core::ServersManager::instance().closeCluster(cluster);
+  core::ServersManager::instance().CloseCluster(cluster);
 }
 
 #ifdef OS_ANDROID
@@ -697,7 +697,7 @@ void MainWindow::retranslateUi() {
 }
 
 void MainWindow::updateRecentConnectionActions() {
-  QStringList connections = core::SettingsManager::instance().recentConnections();
+  QStringList connections = core::SettingsManager::instance().RecentConnections();
 
   int numRecentFiles = qMin(connections.size(), static_cast<int>(max_recent_connections));
 
@@ -717,7 +717,7 @@ void MainWindow::updateRecentConnectionActions() {
 }
 
 void MainWindow::clearRecentConnectionsMenu() {
-  core::SettingsManager::instance().clearRConnections();
+  core::SettingsManager::instance().ClearRConnections();
   updateRecentConnectionActions();
 }
 
@@ -726,12 +726,12 @@ void MainWindow::createServer(core::IConnectionSettingsBaseSPtr settings) {
 
   std::string path = settings->Path().ToString();
   QString rcon = common::ConvertFromString<QString>(path);
-  core::SettingsManager::instance().removeRConnection(rcon);
-  core::IServerSPtr server = core::ServersManager::instance().createServer(settings);
+  core::SettingsManager::instance().RemoveRConnection(rcon);
+  core::IServerSPtr server = core::ServersManager::instance().CreateServer(settings);
   exp_->addServer(server);
-  core::SettingsManager::instance().addRConnection(rcon);
+  core::SettingsManager::instance().AddRConnection(rcon);
   updateRecentConnectionActions();
-  if (!core::SettingsManager::instance().autoOpenConsole()) {
+  if (!core::SettingsManager::instance().AutoOpenConsole()) {
     return;
   }
 
@@ -744,7 +744,7 @@ void MainWindow::createServer(core::IConnectionSettingsBaseSPtr settings) {
 void MainWindow::createSentinel(core::ISentinelSettingsBaseSPtr settings) {
   CHECK(settings);
 
-  core::ISentinelSPtr sent = core::ServersManager::instance().createSentinel(settings);
+  core::ISentinelSPtr sent = core::ServersManager::instance().CreateSentinel(settings);
   if (!sent) {
     return;
   }
@@ -755,7 +755,7 @@ void MainWindow::createSentinel(core::ISentinelSettingsBaseSPtr settings) {
   }
 
   exp_->addSentinel(sent);
-  if (!core::SettingsManager::instance().autoOpenConsole()) {
+  if (!core::SettingsManager::instance().AutoOpenConsole()) {
     return;
   }
 
@@ -771,7 +771,7 @@ void MainWindow::createSentinel(core::ISentinelSettingsBaseSPtr settings) {
 void MainWindow::createCluster(core::IClusterSettingsBaseSPtr settings) {
   CHECK(settings);
 
-  core::IClusterSPtr cl = core::ServersManager::instance().createCluster(settings);
+  core::IClusterSPtr cl = core::ServersManager::instance().CreateCluster(settings);
   if (!cl) {
     return;
   }
@@ -782,7 +782,7 @@ void MainWindow::createCluster(core::IClusterSettingsBaseSPtr settings) {
   }
 
   exp_->addCluster(cl);
-  if (!core::SettingsManager::instance().autoOpenConsole()) {
+  if (!core::SettingsManager::instance().AutoOpenConsole()) {
     return;
   }
 

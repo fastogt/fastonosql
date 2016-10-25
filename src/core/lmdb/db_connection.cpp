@@ -412,8 +412,8 @@ common::Error DBConnection::SelectImpl(const std::string& name, IDataBaseInfo** 
 }
 
 common::Error DBConnection::SetImpl(const NDbKValue& key, NDbKValue* added_key) {
-  std::string key_str = key.keyString();
-  std::string value_str = key.valueString();
+  std::string key_str = key.KeyString();
+  std::string value_str = key.ValueString();
   common::Error err = SetInner(key_str, value_str);
   if (err && err->isError()) {
     return err;
@@ -424,7 +424,7 @@ common::Error DBConnection::SetImpl(const NDbKValue& key, NDbKValue* added_key) 
 }
 
 common::Error DBConnection::GetImpl(const NKey& key, NDbKValue* loaded_key) {
-  std::string key_str = key.key();
+  std::string key_str = key.Key();
   std::string value_str;
   common::Error err = GetInner(key_str, &value_str);
   if (err && err->isError()) {
@@ -439,7 +439,7 @@ common::Error DBConnection::GetImpl(const NKey& key, NDbKValue* loaded_key) {
 common::Error DBConnection::DeleteImpl(const NKeys& keys, NKeys* deleted_keys) {
   for (size_t i = 0; i < keys.size(); ++i) {
     NKey key = keys[i];
-    std::string key_str = key.key();
+    std::string key_str = key.Key();
     common::Error err = DelInner(key_str);
     if (err && err->isError()) {
       continue;
@@ -452,7 +452,7 @@ common::Error DBConnection::DeleteImpl(const NKeys& keys, NKeys* deleted_keys) {
 }
 
 common::Error DBConnection::RenameImpl(const NKey& key, const std::string& new_key) {
-  std::string key_str = key.key();
+  std::string key_str = key.Key();
   std::string value_str;
   common::Error err = GetInner(key_str, &value_str);
   if (err && err->isError()) {
@@ -555,7 +555,7 @@ common::Error get(CommandHandler* handler, int argc, const char** argv, FastoObj
     return err;
   }
 
-  NValue val = key_loaded.value();
+  NValue val = key_loaded.Value();
   common::Value* copy = val->deepCopy();
   FastoObject* child = new FastoObject(out, copy, unqlite->Delimiter());
   out->addChildren(child);

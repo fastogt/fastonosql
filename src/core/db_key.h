@@ -38,11 +38,11 @@ class KeyInfo {
   typedef std::vector<std::string> splited_namespaces_t;
   KeyInfo(const splited_namespaces_t& splited_namespaces_and_key, const std::string& ns_separator);
 
-  std::string key() const;
-  bool hasNamespace() const;
-  std::string nspace() const;
-  std::string joinNamespace(size_t pos) const;
-  size_t nspaceSize() const;
+  std::string Key() const;
+  bool HasNamespace() const;
+  std::string Nspace() const;
+  std::string JoinNamespace(size_t pos) const;
+  size_t NspaceSize() const;
 
  private:
   splited_namespaces_t splited_namespaces_and_key_;
@@ -53,15 +53,15 @@ class NKey {
  public:
   NKey();
   explicit NKey(const std::string& key, ttl_t ttl_sec = NO_TTL);
-  KeyInfo info(const std::string& ns_separator) const;
+  KeyInfo Info(const std::string& ns_separator) const;
 
-  std::string key() const;
-  void setKey(const std::string& key);
+  std::string Key() const;
+  void SetKey(const std::string& key);
 
-  ttl_t ttl() const;
-  void setTTL(ttl_t ttl);
+  ttl_t TTL() const;
+  void SetTTL(ttl_t ttl);
 
-  bool equals(const NKey& other) const;
+  bool Equals(const NKey& other) const;
 
  private:
   std::string key_;
@@ -76,18 +76,18 @@ class NDbKValue {
   NDbKValue();
   NDbKValue(const NKey& key, NValue value);
 
-  NKey key() const;
-  NValue value() const;
-  common::Value::Type type() const;
+  NKey Key() const;
+  NValue Value() const;
+  common::Value::Type Type() const;
 
-  void setTTL(ttl_t ttl);
-  void setKey(const NKey& key);
-  void setValue(NValue value);
+  void SetTTL(ttl_t ttl);
+  void SetKey(const NKey& key);
+  void SetValue(NValue value);
 
-  std::string keyString() const;
-  std::string valueString() const;
+  std::string KeyString() const;
+  std::string ValueString() const;
 
-  bool equals(const NDbKValue& other) const;
+  bool Equals(const NDbKValue& other) const;
 
  private:
   NKey key_;

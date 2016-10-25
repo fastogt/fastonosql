@@ -164,7 +164,7 @@ void FastoCommonModel::changeValue(const core::NDbKValue& value) {
     return;
   }
 
-  const QString key = common::ConvertFromString<QString>(value.keyString());
+  const QString key = common::ConvertFromString<QString>(value.KeyString());
   for (size_t i = 0; i < root->childrenCount(); ++i) {
     FastoCommonItem* child = dynamic_cast<FastoCommonItem*>(root->child(i));  // +
     if (!child) {
@@ -172,7 +172,7 @@ void FastoCommonModel::changeValue(const core::NDbKValue& value) {
     }
 
     if (child->key() == key) {
-      child->setValue(value.value());
+      child->setValue(value.Value());
       updateItem(index(i, FastoCommonItem::eValue, QModelIndex()),
                  index(i, FastoCommonItem::eType, QModelIndex()));
       break;

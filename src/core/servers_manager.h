@@ -43,9 +43,9 @@ class ServersManager : public common::patterns::LazySingleton<ServersManager> {
   typedef ISentinelSPtr sentinel_t;
   typedef std::vector<server_t> servers_t;
 
-  server_t createServer(IConnectionSettingsBaseSPtr settings);
-  sentinel_t createSentinel(ISentinelSettingsBaseSPtr settings);
-  cluster_t createCluster(IClusterSettingsBaseSPtr settings);
+  server_t CreateServer(IConnectionSettingsBaseSPtr settings);
+  sentinel_t CreateSentinel(ISentinelSettingsBaseSPtr settings);
+  cluster_t CreateCluster(IClusterSettingsBaseSPtr settings);
 
   common::Error TestConnection(IConnectionSettingsBaseSPtr connection) WARN_UNUSED_RESULT;
   common::Error DiscoveryClusterConnection(IConnectionSettingsBaseSPtr connection,
@@ -55,11 +55,11 @@ class ServersManager : public common::patterns::LazySingleton<ServersManager> {
                                             std::vector<ServerDiscoverySentinelInfoSPtr>* inf)
       WARN_UNUSED_RESULT;
 
-  void clear();
+  void Clear();
 
-  void closeServer(server_t server);
-  void closeCluster(cluster_t cluster);
-  void closeSentinel(sentinel_t sentinel);
+  void CloseServer(server_t server);
+  void CloseCluster(cluster_t cluster);
+  void CloseSentinel(sentinel_t sentinel);
 
  private:
   ServersManager();

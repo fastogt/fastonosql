@@ -45,22 +45,22 @@ FastoCommonItem::FastoCommonItem(const core::NDbKValue& key,
     : TreeItem(parent, internalPointer), key_(key), delimiter_(delimiter), read_only_(isReadOnly) {}
 
 QString FastoCommonItem::key() const {
-  return common::ConvertFromString<QString>(key_.keyString());
+  return common::ConvertFromString<QString>(key_.KeyString());
 }
 
 QString FastoCommonItem::value() const {
-  core::NValue nval = key_.value();
+  core::NValue nval = key_.Value();
   common::Value* val = nval.get();
   std::string valstr = common::ConvertToString(val, delimiter_);
   return common::ConvertFromString<QString>(valstr);
 }
 
 void FastoCommonItem::setValue(core::NValue val) {
-  key_.setValue(val);
+  key_.SetValue(val);
 }
 
 common::Value::Type FastoCommonItem::type() const {
-  return key_.type();
+  return key_.Type();
 }
 
 bool FastoCommonItem::isReadOnly() const {

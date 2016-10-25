@@ -656,7 +656,7 @@ common::Error get(CommandHandler* handler, int argc, const char** argv, FastoObj
     return err;
   }
 
-  NValue val = key_loaded.value();
+  NValue val = key_loaded.Value();
   common::Value* copy = val->deepCopy();
   FastoObject* child = new FastoObject(out, copy, redis->Delimiter());
   out->addChildren(child);
@@ -676,7 +676,7 @@ common::Error lrange(CommandHandler* handler, int argc, const char** argv, Fasto
     return err;
   }
 
-  NValue val = key_loaded.value();
+  NValue val = key_loaded.Value();
   common::Value* copy = val->deepCopy();
   FastoObject* child = new FastoObject(out, copy, redis->Delimiter());
   out->addChildren(child);
@@ -694,7 +694,7 @@ common::Error smembers(CommandHandler* handler, int argc, const char** argv, Fas
     return err;
   }
 
-  NValue val = key_loaded.value();
+  NValue val = key_loaded.Value();
   common::Value* copy = val->deepCopy();
   FastoObject* child = new FastoObject(out, copy, redis->Delimiter());
   out->addChildren(child);
@@ -715,7 +715,7 @@ common::Error zrange(CommandHandler* handler, int argc, const char** argv, Fasto
     return err;
   }
 
-  NValue val = key_loaded.value();
+  NValue val = key_loaded.Value();
   common::Value* copy = val->deepCopy();
   FastoObject* child = new FastoObject(out, copy, redis->Delimiter());
   out->addChildren(child);
@@ -733,7 +733,7 @@ common::Error hgetall(CommandHandler* handler, int argc, const char** argv, Fast
     return err;
   }
 
-  NValue val = key_loaded.value();
+  NValue val = key_loaded.Value();
   common::Value* copy = val->deepCopy();
   FastoObject* child = new FastoObject(out, copy, redis->Delimiter());
   out->addChildren(child);
@@ -1857,8 +1857,8 @@ common::Error DBConnection::DeleteImpl(const NKeys& keys, NKeys* deleted_keys) {
 }
 
 common::Error DBConnection::SetImpl(const NDbKValue& key, NDbKValue* added_key) {
-  std::string key_str = key.keyString();
-  std::string value_str = key.valueString();
+  std::string key_str = key.KeyString();
+  std::string value_str = key.ValueString();
   redisReply* reply = reinterpret_cast<redisReply*>(
       redisCommand(connection_.handle_, "SET %s %s", key_str.c_str(), value_str.c_str()));
   if (!reply) {
@@ -1877,7 +1877,7 @@ common::Error DBConnection::SetImpl(const NDbKValue& key, NDbKValue* added_key) 
 }
 
 common::Error DBConnection::GetImpl(const NKey& key, NDbKValue* loaded_key) {
-  std::string key_str = key.key();
+  std::string key_str = key.Key();
   redisReply* reply =
       reinterpret_cast<redisReply*>(redisCommand(connection_.handle_, "GET %s", key_str.c_str()));
   if (!reply) {
@@ -1926,7 +1926,7 @@ common::Error DBConnection::RenameImpl(const NKey& key, const std::string& new_k
 }
 
 common::Error DBConnection::SetTTLImpl(const NKey& key, ttl_t ttl) {
-  std::string key_str = key.key();
+  std::string key_str = key.Key();
   translator_t tran = Translator();
   std::string ttl_cmd;
   common::Error err = tran->ChangeKeyTTLCommand(key, ttl, &ttl_cmd);
@@ -2301,7 +2301,7 @@ common::Error DBConnection::Lrange(const NKey& key, int start, int stop, NDbKVal
     return common::make_error_value("Not connected", common::Value::E_ERROR);
   }
 
-  std::string key_str = key.key();
+  std::string key_str = key.Key();
   redisReply* reply = reinterpret_cast<redisReply*>(
       redisCommand(connection_.handle_, "LRANGE %s %d %d", key_str.c_str(), start, stop));
   if (!reply) {
@@ -2344,7 +2344,7 @@ common::Error DBConnection::Smembers(const NKey& key, NDbKValue* loaded_key) {
     return common::make_error_value("Not connected", common::Value::E_ERROR);
   }
 
-  std::string key_str = key.key();
+  std::string key_str = key.Key();
   redisReply* reply = reinterpret_cast<redisReply*>(
       redisCommand(connection_.handle_, "SMEMBERS %s", key_str.c_str()));
   if (!reply) {
@@ -2407,7 +2407,7 @@ common::Error DBConnection::Zrange(const NKey& key,
     return common::make_error_value("Not connected", common::Value::E_ERROR);
   }
 
-  std::string key_str = key.key();
+  std::string key_str = key.Key();
   std::string line;
   if (withscores) {
     line = common::MemSPrintf("ZRANGE %s %d %d WITHSCORES", key_str.c_str(), start, stop);
@@ -2482,7 +2482,7 @@ common::Error DBConnection::Hgetall(const NKey& key, NDbKValue* loaded_key) {
     return common::make_error_value("Not connected", common::Value::E_ERROR);
   }
 
-  std::string key_str = key.key();
+  std::string key_str = key.Key();
   redisReply* reply = reinterpret_cast<redisReply*>(
       redisCommand(connection_.handle_, "HGETALL %s", key_str.c_str()));
   if (!reply) {

@@ -79,7 +79,7 @@ namespace core {
 
 ServersManager::ServersManager() {}
 
-ServersManager::server_t ServersManager::createServer(IConnectionSettingsBaseSPtr settings) {
+ServersManager::server_t ServersManager::CreateServer(IConnectionSettingsBaseSPtr settings) {
   if (!settings) {
     NOTREACHED();
     return server_t();
@@ -128,7 +128,7 @@ ServersManager::server_t ServersManager::createServer(IConnectionSettingsBaseSPt
   return server;
 }
 
-ServersManager::sentinel_t ServersManager::createSentinel(ISentinelSettingsBaseSPtr settings) {
+ServersManager::sentinel_t ServersManager::CreateSentinel(ISentinelSettingsBaseSPtr settings) {
   if (!settings) {
     NOTREACHED();
     return sentinel_t();
@@ -142,10 +142,10 @@ ServersManager::sentinel_t ServersManager::createSentinel(ISentinelSettingsBaseS
     for (size_t i = 0; i < nodes.size(); ++i) {
       SentinelSettings nd = nodes[i];
       Sentinel sentt;
-      IServerSPtr sent_serv = createServer(nd.sentinel);
+      IServerSPtr sent_serv = CreateServer(nd.sentinel);
       sentt.sentinel = sent_serv;
       for (size_t j = 0; j < nd.sentinel_nodes.size(); ++j) {
-        IServerSPtr serv = createServer(nd.sentinel_nodes[j]);
+        IServerSPtr serv = CreateServer(nd.sentinel_nodes[j]);
         sentt.sentinels_nodes.push_back(serv);
       }
 
@@ -159,7 +159,7 @@ ServersManager::sentinel_t ServersManager::createSentinel(ISentinelSettingsBaseS
   return sentinel_t();
 }
 
-ServersManager::cluster_t ServersManager::createCluster(IClusterSettingsBaseSPtr settings) {
+ServersManager::cluster_t ServersManager::CreateCluster(IClusterSettingsBaseSPtr settings) {
   if (!settings) {
     NOTREACHED();
     return cluster_t();
@@ -172,7 +172,7 @@ ServersManager::cluster_t ServersManager::createCluster(IClusterSettingsBaseSPtr
     auto nodes = settings->Nodes();
     for (size_t i = 0; i < nodes.size(); ++i) {
       IConnectionSettingsBaseSPtr nd = nodes[i];
-      IServerSPtr serv = createServer(nd);
+      IServerSPtr serv = CreateServer(nd);
       cl->AddServer(serv);
     }
     return cl;
@@ -334,27 +334,27 @@ common::Error ServersManager::DiscoverySentinelConnection(
   return common::make_error_value("Invalid setting type", common::ErrorValue::E_ERROR);
 }
 
-void ServersManager::clear() {
+void ServersManager::Clear() {
   servers_.clear();
 }
 
-void ServersManager::closeServer(server_t server) {
+void ServersManager::CloseServer(server_t server) {
   servers_.erase(std::remove(servers_.begin(), servers_.end(), server));
 }
 
-void ServersManager::closeCluster(cluster_t cluster) {
+void ServersManager::CloseCluster(cluster_t cluster) {
   auto nodes = cluster->Nodes();
   for (size_t i = 0; i < nodes.size(); ++i) {
-    closeServer(nodes[i]);
+    CloseServer(nodes[i]);
   }
 }
 
-void ServersManager::closeSentinel(sentinel_t sentinel) {
+void ServersManager::CloseSentinel(sentinel_t sentinel) {
   auto nodes = sentinel->Sentinels();
   for (auto node : nodes) {
     auto sent_nodes = node.sentinels_nodes;
     for (auto sent : sent_nodes) {
-      closeServer(sent);
+      CloseServer(sent);
     }
   }
 }

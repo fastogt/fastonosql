@@ -77,7 +77,7 @@ namespace shell {
 namespace {
 BaseShell* makeBaseShell(core::connectionTypes type, QWidget* parent) {
   BaseShell* shell =
-      BaseShell::createFromType(type, core::SettingsManager::instance().autoCompletion());
+      BaseShell::createFromType(type, core::SettingsManager::instance().AutoCompletion());
   parent->setToolTip(
       QObject::tr("Based on <b>%1</b> version: <b>%2</b>").arg(shell->basedOn(), shell->version()));
   shell->setContextMenuPolicy(Qt::CustomContextMenu);

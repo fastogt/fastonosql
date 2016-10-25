@@ -25,7 +25,7 @@ namespace core {
 
 Field::Field(const std::string& name, common::Value::Type type) : name(name), type(type) {}
 
-bool Field::isIntegral() const {
+bool Field::IsIntegral() const {
   return common::Value::isIntegral(type);
 }
 

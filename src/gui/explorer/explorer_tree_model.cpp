@@ -327,12 +327,12 @@ void ExplorerTreeModel::addKey(core::IServer* server,
     return;
   }
 
-  core::NKey key = dbv.key();
+  core::NKey key = dbv.Key();
   ExplorerKeyItem* keyit = findKeyItem(dbs, key);
   if (!keyit) {
     IExplorerTreeItem* nitem = dbs;
-    core::KeyInfo kinf = key.info(ns_separator);
-    if (kinf.hasNamespace()) {
+    core::KeyInfo kinf = key.Info(ns_separator);
+    if (kinf.HasNamespace()) {
       nitem = findOrCreateNSItem(dbs, kinf);
     }
 
@@ -402,7 +402,7 @@ void ExplorerTreeModel::updateValue(core::IServer* server,
     return;
   }
 
-  ExplorerKeyItem* keyit = findKeyItem(dbs, dbv.key());
+  ExplorerKeyItem* keyit = findKeyItem(dbs, dbv.Key());
   if (keyit) {
     common::qt::gui::TreeItem* par = keyit->parent();
     int index_key = par->indexOf(keyit);
@@ -496,7 +496,7 @@ ExplorerKeyItem* ExplorerTreeModel::findKeyItem(IExplorerTreeItem* db_or_ns,
         }
 
         core::NKey ckey = key_item->key();
-        return ckey.key() == key.key();
+        return ckey.Key() == key.Key();
       }));
 }
 
@@ -515,18 +515,18 @@ ExplorerNSItem* ExplorerTreeModel::findNSItem(IExplorerTreeItem* db_or_ns,
 
 ExplorerNSItem* ExplorerTreeModel::findOrCreateNSItem(IExplorerTreeItem* db_or_ns,
                                                       const core::KeyInfo& kinf) {
-  std::string nspace = kinf.nspace();
+  std::string nspace = kinf.Nspace();
   QString qnspace = common::ConvertFromString<QString>(nspace);
   ExplorerNSItem* founded_item = findNSItem(db_or_ns, qnspace);
   if (founded_item) {
     return founded_item;
   }
 
-  size_t sz = kinf.nspaceSize();
+  size_t sz = kinf.NspaceSize();
   IExplorerTreeItem* par = db_or_ns;
   for (size_t i = 0; i < sz; ++i) {
     ExplorerNSItem* item = nullptr;
-    nspace = kinf.joinNamespace(i);
+    nspace = kinf.JoinNamespace(i);
     qnspace = common::ConvertFromString<QString>(nspace);
     for (size_t j = 0; j < par->childrenCount(); ++j) {
       ExplorerNSItem* ns_item = dynamic_cast<ExplorerNSItem*>(par->child(j));  // +

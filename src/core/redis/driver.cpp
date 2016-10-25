@@ -574,7 +574,7 @@ void Driver::HandleLoadDatabaseContentEvent(events::LoadDatabaseContentRequestEv
             std::string typeRedis = tchildrens[0]->toString();
             common::Value::Type ctype = convertFromStringRType(typeRedis);
             common::ValueSPtr empty_val(common::Value::createEmptyValueFromType(ctype));
-            res.keys[i].setValue(empty_val);
+            res.keys[i].SetValue(empty_val);
           }
         }
 
@@ -586,7 +586,7 @@ void Driver::HandleLoadDatabaseContentEvent(events::LoadDatabaseContentRequestEv
             auto vttl = tchildrens[0]->value();
             ttl_t ttl = 0;
             if (vttl->getAsInteger(&ttl)) {
-              res.keys[i].setTTL(ttl);
+              res.keys[i].SetTTL(ttl);
             }
           }
         }

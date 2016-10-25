@@ -43,69 +43,69 @@ class SettingsManager : public common::patterns::LazySingleton<SettingsManager> 
   typedef std::vector<ISentinelSettingsBaseSPtr> sentinel_settings_t;
   friend class common::patterns::LazySingleton<SettingsManager>;
 
-  static std::string settingsDirPath();
-  static std::string settingsFilePath();
+  static std::string SettingsDirPath();
+  static std::string SettingsFilePath();
 
-  uint32_t configVersion() const;
+  uint32_t ConfigVersion() const;
 
-  bool isSendedStatistic() const;
-  void setIsSendedStatistic(bool val);
+  bool IsSendedStatistic() const;
+  void SetIsSendedStatistic(bool val);
 
-  void setDefaultView(supportedViews view);
-  supportedViews defaultView() const;
+  void SetDefaultView(supportedViews view);
+  supportedViews DefaultView() const;
 
-  QString currentStyle() const;
-  void setCurrentStyle(const QString& style);
+  QString CurrentStyle() const;
+  void SetCurrentStyle(const QString& style);
 
-  QString currentFontName() const;
-  void setCurrentFontName(const QString& font);
+  QString CurrentFontName() const;
+  void SetCurrentFontName(const QString& font);
 
-  QString currentLanguage() const;
-  void setCurrentLanguage(const QString& lang);
+  QString CurrentLanguage() const;
+  void SetCurrentLanguage(const QString& lang);
 
   // connections
-  void addConnection(IConnectionSettingsBaseSPtr connection);
-  void removeConnection(IConnectionSettingsBaseSPtr connection);
+  void AddConnection(IConnectionSettingsBaseSPtr connection);
+  void RemoveConnection(IConnectionSettingsBaseSPtr connection);
 
-  connection_settings_t connections() const;
+  connection_settings_t Connections() const;
 
   // sentinels
-  void addSentinel(ISentinelSettingsBaseSPtr sentinel);
-  void removeSentinel(ISentinelSettingsBaseSPtr sentinel);
+  void AddSentinel(ISentinelSettingsBaseSPtr sentinel);
+  void RemoveSentinel(ISentinelSettingsBaseSPtr sentinel);
 
-  sentinel_settings_t sentinels() const;
+  sentinel_settings_t Sentinels() const;
 
   // clusters
-  void addCluster(IClusterSettingsBaseSPtr cluster);
-  void removeCluster(IClusterSettingsBaseSPtr cluster);
+  void AddCluster(IClusterSettingsBaseSPtr cluster);
+  void RemoveCluster(IClusterSettingsBaseSPtr cluster);
 
-  cluster_settings_t clusters() const;
+  cluster_settings_t Clusters() const;
 
-  void addRConnection(const QString& connection);
-  void removeRConnection(const QString& connection);
-  QStringList recentConnections() const;
-  void clearRConnections();
+  void AddRConnection(const QString& connection);
+  void RemoveRConnection(const QString& connection);
+  QStringList RecentConnections() const;
+  void ClearRConnections();
 
-  void setLoggingDirectory(const QString& dir);
-  QString loggingDirectory() const;
+  void SetLoggingDirectory(const QString& dir);
+  QString LoggingDirectory() const;
 
-  bool autoCheckUpdates() const;
-  void setAutoCheckUpdates(bool check);
+  bool AutoCheckUpdates() const;
+  void SetAutoCheckUpdates(bool check);
 
-  bool autoCompletion() const;
-  void setAutoCompletion(bool completion);
+  bool AutoCompletion() const;
+  void SetAutoCompletion(bool completion);
 
-  bool autoOpenConsole() const;
-  void setAutoOpenConsole(bool open_console);
+  bool AutoOpenConsole() const;
+  void SetAutoOpenConsole(bool open_console);
 
-  bool fastViewKeys() const;
-  void setFastViewKeys(bool fast_view);
+  bool FastViewKeys() const;
+  void SetFastViewKeys(bool fast_view);
 
-  void reloadFromPath(const std::string& path, bool merge);
+  void ReloadFromPath(const std::string& path, bool merge);
 
  private:
-  void load();
-  void save();
+  void Load();
+  void Save();
 
   SettingsManager();
   ~SettingsManager();

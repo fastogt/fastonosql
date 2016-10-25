@@ -125,19 +125,19 @@ ConnectionsDialog::ConnectionsDialog(QWidget* parent) : QDialog(parent) {
   mainLayout->addLayout(firstColumnLayout, 1);
 
   // Populate list with connections
-  auto connections = core::SettingsManager::instance().connections();
+  auto connections = core::SettingsManager::instance().Connections();
   for (auto it = connections.begin(); it != connections.end(); ++it) {
     core::IConnectionSettingsBaseSPtr connectionModel = (*it);
     addConnection(connectionModel);
   }
 
-  auto sentinels = core::SettingsManager::instance().sentinels();
+  auto sentinels = core::SettingsManager::instance().Sentinels();
   for (auto it = sentinels.begin(); it != sentinels.end(); ++it) {
     core::ISentinelSettingsBaseSPtr connectionModel = (*it);
     addSentinel(connectionModel);
   }
 
-  auto clusters = core::SettingsManager::instance().clusters();
+  auto clusters = core::SettingsManager::instance().Clusters();
   for (auto it = clusters.begin(); it != clusters.end(); ++it) {
     core::IClusterSettingsBaseSPtr connectionModel = (*it);
     addCluster(connectionModel);
@@ -187,7 +187,7 @@ void ConnectionsDialog::add() {
   int result = dlg.exec();
   core::IConnectionSettingsBaseSPtr p = dlg.connection();
   if (result == QDialog::Accepted && p) {
-    core::SettingsManager::instance().addConnection(p);
+    core::SettingsManager::instance().AddConnection(p);
     addConnection(p);
   }
 }
@@ -197,7 +197,7 @@ void ConnectionsDialog::addCls() {
   int result = dlg.exec();
   core::IClusterSettingsBaseSPtr p = dlg.connection();
   if (result == QDialog::Accepted && p) {
-    core::SettingsManager::instance().addCluster(p);
+    core::SettingsManager::instance().AddCluster(p);
     addCluster(p);
   }
 }
@@ -207,7 +207,7 @@ void ConnectionsDialog::addSent() {
   int result = dlg.exec();
   core::ISentinelSettingsBaseSPtr p = dlg.connection();
   if (result == QDialog::Accepted && p) {
-    core::SettingsManager::instance().addSentinel(p);
+    core::SettingsManager::instance().AddSentinel(p);
     addSentinel(p);
   }
 }
@@ -322,8 +322,8 @@ void ConnectionsDialog::editConnection(ConnectionListWidgetItem* connectionItem)
   int result = dlg.exec();
   core::IConnectionSettingsBaseSPtr newConnection = dlg.connection();
   if (result == QDialog::Accepted && newConnection) {
-    core::SettingsManager::instance().removeConnection(con);
-    core::SettingsManager::instance().addConnection(newConnection);
+    core::SettingsManager::instance().RemoveConnection(con);
+    core::SettingsManager::instance().AddConnection(newConnection);
 
     delete connectionItem;
     addConnection(newConnection);
@@ -338,8 +338,8 @@ void ConnectionsDialog::editCluster(ClusterConnectionListWidgetItemContainer* cl
   int result = dlg.exec();
   core::IClusterSettingsBaseSPtr newConnection = dlg.connection();
   if (result == QDialog::Accepted && newConnection) {
-    core::SettingsManager::instance().removeCluster(con);
-    core::SettingsManager::instance().addCluster(newConnection);
+    core::SettingsManager::instance().RemoveCluster(con);
+    core::SettingsManager::instance().AddCluster(newConnection);
 
     delete clusterItem;
     addCluster(newConnection);
@@ -354,8 +354,8 @@ void ConnectionsDialog::editSentinel(SentinelConnectionListWidgetItemContainer* 
   int result = dlg.exec();
   core::ISentinelSettingsBaseSPtr newConnection = dlg.connection();
   if (result == QDialog::Accepted && newConnection) {
-    core::SettingsManager::instance().removeSentinel(con);
-    core::SettingsManager::instance().addSentinel(newConnection);
+    core::SettingsManager::instance().RemoveSentinel(con);
+    core::SettingsManager::instance().AddSentinel(newConnection);
 
     delete sentinelItem;
     addSentinel(newConnection);
@@ -377,7 +377,7 @@ void ConnectionsDialog::removeConnection(ConnectionListWidgetItem* connectionIte
 
   core::IConnectionSettingsBaseSPtr connection = connectionItem->connection();
   delete connectionItem;
-  core::SettingsManager::instance().removeConnection(connection);
+  core::SettingsManager::instance().RemoveConnection(connection);
 }
 
 void ConnectionsDialog::removeCluster(ClusterConnectionListWidgetItemContainer* clusterItem) {
@@ -395,7 +395,7 @@ void ConnectionsDialog::removeCluster(ClusterConnectionListWidgetItemContainer* 
 
   core::IClusterSettingsBaseSPtr connection = clusterItem->connection();
   delete clusterItem;
-  core::SettingsManager::instance().removeCluster(connection);
+  core::SettingsManager::instance().RemoveCluster(connection);
 }
 
 void ConnectionsDialog::removeSentinel(SentinelConnectionListWidgetItemContainer* sentinelItem) {
@@ -413,7 +413,7 @@ void ConnectionsDialog::removeSentinel(SentinelConnectionListWidgetItemContainer
 
   core::ISentinelSettingsBaseSPtr connection = sentinelItem->connection();
   delete sentinelItem;
-  core::SettingsManager::instance().removeSentinel(connection);
+  core::SettingsManager::instance().RemoveSentinel(connection);
 }
 
 /**

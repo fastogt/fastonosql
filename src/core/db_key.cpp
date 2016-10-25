@@ -33,20 +33,20 @@ KeyInfo::KeyInfo(const splited_namespaces_t& splited_namespaces_and_key,
                  const std::string& ns_separator)
     : splited_namespaces_and_key_(splited_namespaces_and_key), ns_separator_(ns_separator) {}
 
-std::string KeyInfo::key() const {
+std::string KeyInfo::Key() const {
   return common::JoinString(splited_namespaces_and_key_, ns_separator_);
 }
 
-bool KeyInfo::hasNamespace() const {
-  size_t ns_size = nspaceSize();
+bool KeyInfo::HasNamespace() const {
+  size_t ns_size = NspaceSize();
   return ns_size > 0;
 }
 
-std::string KeyInfo::nspace() const {
-  return joinNamespace(splited_namespaces_and_key_.size() - 1);
+std::string KeyInfo::Nspace() const {
+  return JoinNamespace(splited_namespaces_and_key_.size() - 1);
 }
 
-size_t KeyInfo::nspaceSize() const {
+size_t KeyInfo::NspaceSize() const {
   if (splited_namespaces_and_key_.empty()) {
     return 0;
   }
@@ -54,8 +54,8 @@ size_t KeyInfo::nspaceSize() const {
   return splited_namespaces_and_key_.size() - 1;
 }
 
-std::string KeyInfo::joinNamespace(size_t pos) const {
-  size_t ns_size = nspaceSize();
+std::string KeyInfo::JoinNamespace(size_t pos) const {
+  size_t ns_size = NspaceSize();
   if (ns_size > pos) {
     std::vector<std::string> copy;
     for (size_t i = 0; i <= pos; ++i) {
@@ -71,29 +71,29 @@ NKey::NKey() : key_(), ttl_(NO_TTL) {}
 
 NKey::NKey(const std::string& key, ttl_t ttl_sec) : key_(key), ttl_(ttl_sec) {}
 
-KeyInfo NKey::info(const std::string& ns_separator) const {
+KeyInfo NKey::Info(const std::string& ns_separator) const {
   KeyInfo::splited_namespaces_t tokens;
   common::Tokenize(key_, ns_separator, &tokens);
   return KeyInfo(tokens, ns_separator);
 }
 
-std::string NKey::key() const {
+std::string NKey::Key() const {
   return key_;
 }
 
-void NKey::setKey(const std::string& key) {
+void NKey::SetKey(const std::string& key) {
   key_ = key;
 }
 
-ttl_t NKey::ttl() const {
+ttl_t NKey::TTL() const {
   return ttl_;
 }
 
-void NKey::setTTL(ttl_t ttl) {
+void NKey::SetTTL(ttl_t ttl) {
   ttl_ = ttl;
 }
 
-bool NKey::equals(const NKey& other) const {
+bool NKey::Equals(const NKey& other) const {
   if (key_ != other.key_) {
     return false;
   }
@@ -105,15 +105,15 @@ NDbKValue::NDbKValue() : key_(), value_() {}
 
 NDbKValue::NDbKValue(const NKey& key, NValue value) : key_(key), value_(value) {}
 
-NKey NDbKValue::key() const {
+NKey NDbKValue::Key() const {
   return key_;
 }
 
-NValue NDbKValue::value() const {
+NValue NDbKValue::Value() const {
   return value_;
 }
 
-common::Value::Type NDbKValue::type() const {
+common::Value::Type NDbKValue::Type() const {
   if (!value_) {
     return common::Value::TYPE_NULL;
   }
@@ -121,28 +121,28 @@ common::Value::Type NDbKValue::type() const {
   return value_->type();
 }
 
-void NDbKValue::setTTL(ttl_t ttl) {
-  key_.setTTL(ttl);
+void NDbKValue::SetTTL(ttl_t ttl) {
+  key_.SetTTL(ttl);
 }
 
-void NDbKValue::setKey(const NKey& key) {
+void NDbKValue::SetKey(const NKey& key) {
   key_ = key;
 }
 
-void NDbKValue::setValue(NValue value) {
+void NDbKValue::SetValue(NValue value) {
   value_ = value;
 }
 
-std::string NDbKValue::keyString() const {
-  return key_.key();
+std::string NDbKValue::KeyString() const {
+  return key_.Key();
 }
 
-std::string NDbKValue::valueString() const {
+std::string NDbKValue::ValueString() const {
   return common::ConvertToString(value_.get(), " ");
 }
 
-bool NDbKValue::equals(const NDbKValue& other) const {
-  if (!key_.equals(other.key_)) {
+bool NDbKValue::Equals(const NDbKValue& other) const {
+  if (!key_.Equals(other.key_)) {
     return false;
   }
 

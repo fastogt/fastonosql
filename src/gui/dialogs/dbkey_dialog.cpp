@@ -63,7 +63,7 @@ DbKeyDialog::DbKeyDialog(const QString& title,
                          core::NDbKValue key,
                          QWidget* parent)
     : QDialog(parent), type_(type), key_(key) {
-  bool is_edit = !key.equals(core::NDbKValue());
+  bool is_edit = !key.Equals(core::NDbKValue());
   setWindowIcon(GuiFactory::instance().icon(type));
   setWindowTitle(title);
   setWindowFlags(windowFlags() & ~Qt::WindowContextHelpButtonHint);  // Remove help
@@ -74,7 +74,7 @@ DbKeyDialog::DbKeyDialog(const QString& title,
   std::vector<common::Value::Type> types = SupportedTypesFromType(type);
   common::Value::Type kt = common::Value::TYPE_STRING;
   if (is_edit) {
-    kt = key_.type();
+    kt = key_.Type();
   }
   int current_index = 0;
   for (size_t i = 0; i < types.size(); ++i) {
@@ -163,11 +163,11 @@ DbKeyDialog::DbKeyDialog(const QString& title,
   layout->addWidget(buttonBox);
 
   if (is_edit) {
-    keyEdit_->setText(common::ConvertFromString<QString>(key_.keyString()));
+    keyEdit_->setText(common::ConvertFromString<QString>(key_.KeyString()));
     keyEdit_->setEnabled(false);
   }
   typesCombo_->setCurrentIndex(current_index);
-  core::NValue val = key_.value();
+  core::NValue val = key_.Value();
   syncControls(val.get());
 
   setMinimumSize(QSize(min_width, min_height));

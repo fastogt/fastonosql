@@ -230,7 +230,7 @@ void ViewKeysDialog::finishLoadDatabaseContent(
 void ViewKeysDialog::changeTTL(const core::NDbKValue& value, core::ttl_t ttl) {
   core::translator_t tran = db_->Translator();
   std::string cmd_str;
-  common::Error err = tran->ChangeKeyTTLCommand(value.key(), ttl, &cmd_str);
+  common::Error err = tran->ChangeKeyTTLCommand(value.Key(), ttl, &cmd_str);
   if (err && err->isError()) {
     LOG_ERROR(err, true);
     return;
@@ -251,7 +251,7 @@ void ViewKeysDialog::finishExecute(const core::events_info::ExecuteInfoResponce&
 void ViewKeysDialog::keyTTLChange(core::IDataBaseInfoSPtr db, core::NKey key, core::ttl_t ttl) {
   UNUSED(db);
   core::NKey new_key = key;
-  new_key.setTTL(ttl);
+  new_key.SetTTL(ttl);
   keysModel_->updateKey(new_key);
 }
 

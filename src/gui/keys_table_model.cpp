@@ -39,20 +39,20 @@ namespace gui {
 KeyTableItem::KeyTableItem(const core::NDbKValue& dbv) : dbv_(dbv) {}
 
 QString KeyTableItem::keyString() const {
-  return common::ConvertFromString<QString>(dbv_.keyString());
+  return common::ConvertFromString<QString>(dbv_.KeyString());
 }
 
 QString KeyTableItem::typeText() const {
-  return common::ConvertFromString<QString>(common::Value::toString(dbv_.type()));
+  return common::ConvertFromString<QString>(common::Value::toString(dbv_.Type()));
 }
 
 core::ttl_t KeyTableItem::ttl() const {
-  core::NKey key = dbv_.key();
-  return key.ttl();
+  core::NKey key = dbv_.Key();
+  return key.TTL();
 }
 
 common::Value::Type KeyTableItem::type() const {
-  return dbv_.type();
+  return dbv_.Type();
 }
 
 core::NDbKValue KeyTableItem::dbv() const {
@@ -64,10 +64,10 @@ void KeyTableItem::setDbv(const core::NDbKValue& val) {
 }
 
 core::NKey KeyTableItem::key() const {
-  return dbv_.key();
+  return dbv_.Key();
 }
 void KeyTableItem::setKey(const core::NKey& key) {
-  dbv_.setKey(key);
+  dbv_.SetKey(key);
 }
 
 KeysTableModel::KeysTableModel(QObject* parent) : TableModel(parent) {}
@@ -174,7 +174,7 @@ void KeysTableModel::updateKey(const core::NKey& key) {
     KeyTableItem* it = dynamic_cast<KeyTableItem*>(data_[i]);  // +
     CHECK(it);
     core::NDbKValue dbv = it->dbv();
-    if (dbv.keyString() == key.key()) {
+    if (dbv.KeyString() == key.Key()) {
       it->setKey(key);
       updateItem(index(i, KeyTableItem::kKey, QModelIndex()),
                  index(i, KeyTableItem::kTTL, QModelIndex()));

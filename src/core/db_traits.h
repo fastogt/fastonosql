@@ -32,7 +32,7 @@ namespace core {
 struct Field {
   Field(const std::string& name, common::Value::Type type);
 
-  bool isIntegral() const;
+  bool IsIntegral() const;
   std::string name;
   common::Value::Type type;
 };
