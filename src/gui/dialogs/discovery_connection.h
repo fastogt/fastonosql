@@ -36,13 +36,13 @@ class DiscoveryConnection : public QObject {
   explicit DiscoveryConnection(core::IConnectionSettingsBaseSPtr conn, QObject* parent = 0);
 
  Q_SIGNALS:
-  void ConnectionResult(bool suc,
+  void connectionResult(bool suc,
                         qint64 msTimeExecute,
                         const QString& resultText,
                         std::vector<core::ServerDiscoveryClusterInfoSPtr> infos);
 
  public Q_SLOTS:
-  void Routine();
+  void routine();
 
  private:
   core::IConnectionSettingsBaseSPtr connection_;

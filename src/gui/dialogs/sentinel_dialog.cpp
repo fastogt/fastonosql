@@ -180,7 +180,7 @@ SentinelDialog::SentinelDialog(QWidget* parent, core::ISentinelSettingsBase* con
 
   testButton_ = new QPushButton("&Test");
   testButton_->setIcon(GuiFactory::instance().messageBoxInformationIcon());
-  VERIFY(connect(testButton_, &QPushButton::clicked, this, &SentinelDialog::TestConnection));
+  VERIFY(connect(testButton_, &QPushButton::clicked, this, &SentinelDialog::testConnection));
   testButton_->setEnabled(false);
 
   discoveryButton_ = new QPushButton("&Discovery");
@@ -237,7 +237,7 @@ void SentinelDialog::loggingStateChange(int value) {
   loggingMsec_->setEnabled(value);
 }
 
-void SentinelDialog::TestConnection() {
+void SentinelDialog::testConnection() {
   ConnectionListWidgetItem* currentItem =
       dynamic_cast<ConnectionListWidgetItem*>(listWidget_->currentItem());  // +
 
@@ -246,7 +246,7 @@ void SentinelDialog::TestConnection() {
     return;
   }
 
-  ConnectionDiagnosticDialog diag(this, currentItem->Connection());
+  ConnectionDiagnosticDialog diag(this, currentItem->connection());
   diag.exec();
 }
 
@@ -263,7 +263,7 @@ void SentinelDialog::discoverySentinel() {
     return;
   }
 
-  DiscoverySentinelDiagnosticDialog diag(this, sentItem->Connection());
+  DiscoverySentinelDiagnosticDialog diag(this, sentItem->connection());
   int result = diag.exec();
   if (result != QDialog::Accepted) {
     return;
@@ -274,7 +274,7 @@ void SentinelDialog::discoverySentinel() {
     ConnectionListWidgetItemDiscovered* it = conns[i];
 
     ConnectionListWidgetItem* item = new ConnectionListWidgetItem(sentItem);
-    item->SetConnection(it->Connection());
+    item->setConnection(it->connection());
     sentItem->addChild(item);
   }
 }
@@ -283,10 +283,10 @@ void SentinelDialog::addConnectionSettings() {
 #ifdef BUILD_WITH_REDIS
   static const std::vector<core::connectionTypes> avail = {core::REDIS};
   ConnectionDialog dlg(this, nullptr, avail);
-  dlg.SetFolderEnabled(false);
+  dlg.setFolderEnabled(false);
   int result = dlg.exec();
   core::SentinelSettings sent;
-  sent.sentinel = dlg.Connection();
+  sent.sentinel = dlg.connection();
   if (result == QDialog::Accepted && sent.sentinel) {
     addSentinel(sent);
   }
@@ -325,14 +325,14 @@ void SentinelDialog::edit() {
   }
 
 #ifdef BUILD_WITH_REDIS
-  core::IConnectionSettingsBaseSPtr oldConnection = currentItem->Connection();
+  core::IConnectionSettingsBaseSPtr oldConnection = currentItem->connection();
   static const std::vector<core::connectionTypes> avail = {core::REDIS};
   ConnectionDialog dlg(this, oldConnection->Clone(), avail);
-  dlg.SetFolderEnabled(false);
+  dlg.setFolderEnabled(false);
   int result = dlg.exec();
-  core::IConnectionSettingsBaseSPtr newConnection = dlg.Connection();
+  core::IConnectionSettingsBaseSPtr newConnection = dlg.connection();
   if (result == QDialog::Accepted && newConnection) {
-    currentItem->SetConnection(newConnection);
+    currentItem->setConnection(newConnection);
   }
 #endif
 }
@@ -386,11 +386,11 @@ bool SentinelDialog::validateAndApply() {
         dynamic_cast<SentinelConnectionWidgetItem*>(listWidget_->topLevelItem(i));  // +
     CHECK(item);
     core::SentinelSettings sent;
-    sent.sentinel = item->Connection();
+    sent.sentinel = item->connection();
     for (int i = 0; i < item->childCount(); ++i) {
       ConnectionListWidgetItem* child = dynamic_cast<ConnectionListWidgetItem*>(item->child(i));
       CHECK(child);
-      sent.sentinel_nodes.push_back(child->Connection());
+      sent.sentinel_nodes.push_back(child->connection());
     }
     newConnection->AddSentinel(sent);
   }
@@ -402,11 +402,11 @@ bool SentinelDialog::validateAndApply() {
 void SentinelDialog::addSentinel(core::SentinelSettings sent) {
   SentinelConnectionWidgetItem* sent_item =
       new SentinelConnectionWidgetItem(core::ServerCommonInfo(), nullptr);
-  sent_item->SetConnection(sent.sentinel);
+  sent_item->setConnection(sent.sentinel);
   auto nodes = sent.sentinel_nodes;
   for (const auto& node : nodes) {
     ConnectionListWidgetItem* item = new ConnectionListWidgetItem(sent_item);
-    item->SetConnection(node);
+    item->setConnection(node);
     sent_item->addChild(item);
   }
   listWidget_->addTopLevelItem(sent_item);

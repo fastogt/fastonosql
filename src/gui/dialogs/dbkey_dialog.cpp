@@ -89,7 +89,7 @@ DbKeyDialog::DbKeyDialog(const QString& title,
 
   typedef void (QComboBox::*ind)(int);
   VERIFY(connect(typesCombo_, static_cast<ind>(&QComboBox::currentIndexChanged), this,
-                 &DbKeyDialog::TypeChanged));
+                 &DbKeyDialog::typeChanged));
   kvLayout->addWidget(typesCombo_, 0, 1);
 
   // key layout
@@ -117,11 +117,11 @@ DbKeyDialog::DbKeyDialog(const QString& title,
   valueListEdit_->setSelectionBehavior(QAbstractItemView::SelectRows);
 
   QAction* addItem = new QAction(translations::trAddItem, this);
-  VERIFY(connect(addItem, &QAction::triggered, this, &DbKeyDialog::AddItem));
+  VERIFY(connect(addItem, &QAction::triggered, this, &DbKeyDialog::addItem));
   valueListEdit_->addAction(addItem);
 
   QAction* removeItem = new QAction(translations::trRemoveItem, this);
-  VERIFY(connect(removeItem, &QAction::triggered, this, &DbKeyDialog::RemoveItem));
+  VERIFY(connect(removeItem, &QAction::triggered, this, &DbKeyDialog::removeItem));
   valueListEdit_->addAction(removeItem);
 
   kvLayout->addWidget(valueListEdit_, 2, 1);
@@ -140,12 +140,12 @@ DbKeyDialog::DbKeyDialog(const QString& title,
   valueTableEdit_->setVisible(false);
 
   addItemButton_ = new QPushButton(translations::trAddItem);
-  VERIFY(connect(addItemButton_, &QPushButton::clicked, this, &DbKeyDialog::AddItem));
+  VERIFY(connect(addItemButton_, &QPushButton::clicked, this, &DbKeyDialog::addItem));
   kvLayout->addWidget(addItemButton_, 3, 0);
   addItemButton_->setVisible(false);
 
   removeItemButton_ = new QPushButton(translations::trRemoveItem);
-  VERIFY(connect(removeItemButton_, &QPushButton::clicked, this, &DbKeyDialog::RemoveItem));
+  VERIFY(connect(removeItemButton_, &QPushButton::clicked, this, &DbKeyDialog::removeItem));
   kvLayout->addWidget(removeItemButton_, 3, 1);
   removeItemButton_->setVisible(false);
 
@@ -169,24 +169,24 @@ DbKeyDialog::DbKeyDialog(const QString& title,
   }
   typesCombo_->setCurrentIndex(current_index);
   core::NValue val = key_.Value();
-  SyncControls(val.get());
+  syncControls(val.get());
 
   setMinimumSize(QSize(min_width, min_height));
   setLayout(layout);
-  RetranslateUi();
+  retranslateUi();
 }
 
-core::NDbKValue DbKeyDialog::Key() const {
+core::NDbKValue DbKeyDialog::key() const {
   return key_;
 }
 
 void DbKeyDialog::accept() {
-  if (ValidateAndApply()) {
+  if (validateAndApply()) {
     QDialog::accept();
   }
 }
 
-void DbKeyDialog::TypeChanged(int index) {
+void DbKeyDialog::typeChanged(int index) {
   QVariant var = typesCombo_->itemData(index);
   common::Value::Type type = static_cast<common::Value::Type>(qvariant_cast<unsigned char>(var));
 
@@ -229,7 +229,7 @@ void DbKeyDialog::TypeChanged(int index) {
   }
 }
 
-void DbKeyDialog::AddItem() {
+void DbKeyDialog::addItem() {
   int index = typesCombo_->currentIndex();
   QVariant var = typesCombo_->itemData(index);
   common::Value::Type t = static_cast<common::Value::Type>(qvariant_cast<unsigned char>(var));
@@ -297,7 +297,7 @@ void DbKeyDialog::AddItem() {
   }
 }
 
-void DbKeyDialog::RemoveItem() {
+void DbKeyDialog::removeItem() {
   if (valueListEdit_->isVisible()) {
     QListWidgetItem* ritem = valueListEdit_->currentItem();
     delete ritem;
@@ -309,12 +309,12 @@ void DbKeyDialog::RemoveItem() {
 
 void DbKeyDialog::changeEvent(QEvent* e) {
   if (e->type() == QEvent::LanguageChange) {
-    RetranslateUi();
+    retranslateUi();
   }
   QDialog::changeEvent(e);
 }
 
-void DbKeyDialog::SyncControls(common::Value* item) {
+void DbKeyDialog::syncControls(common::Value* item) {
   if (!item) {
     return;
   }
@@ -409,12 +409,12 @@ void DbKeyDialog::SyncControls(common::Value* item) {
   }
 }
 
-bool DbKeyDialog::ValidateAndApply() {
+bool DbKeyDialog::validateAndApply() {
   if (keyEdit_->text().isEmpty()) {
     return false;
   }
 
-  common::Value* obj = Item();
+  common::Value* obj = item();
   if (!obj) {
     return false;
   }
@@ -424,11 +424,11 @@ bool DbKeyDialog::ValidateAndApply() {
   return true;
 }
 
-void DbKeyDialog::RetranslateUi() {
+void DbKeyDialog::retranslateUi() {
   generalBox_->setTitle(trInput);
 }
 
-common::Value* DbKeyDialog::Item() const {
+common::Value* DbKeyDialog::item() const {
   int index = typesCombo_->currentIndex();
   QVariant var = typesCombo_->itemData(index);
   common::Value::Type t = static_cast<common::Value::Type>(qvariant_cast<unsigned char>(var));

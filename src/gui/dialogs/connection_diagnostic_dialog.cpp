@@ -78,10 +78,10 @@ ConnectionDiagnosticDialog::ConnectionDiagnosticDialog(QWidget* parent,
   glassWidget_ = new common::qt::gui::GlassWidget(GuiFactory::instance().pathToLoadingGif(),
                                                   translations::trTryToConnect, 0.5,
                                                   QColor(111, 111, 100), this);
-  StartTestConnection(connection);
+  startTestConnection(connection);
 }
 
-void ConnectionDiagnosticDialog::ConnectionResult(bool suc,
+void ConnectionDiagnosticDialog::connectionResult(bool suc,
                                                   qint64 mstimeExecute,
                                                   const QString& resultText) {
   glassWidget_->stop();
@@ -100,14 +100,14 @@ void ConnectionDiagnosticDialog::showEvent(QShowEvent* e) {
   glassWidget_->start();
 }
 
-void ConnectionDiagnosticDialog::StartTestConnection(core::IConnectionSettingsBaseSPtr connection) {
+void ConnectionDiagnosticDialog::startTestConnection(core::IConnectionSettingsBaseSPtr connection) {
   QThread* th = new QThread;
   TestConnection* cheker = new TestConnection(connection);
   cheker->moveToThread(th);
-  VERIFY(connect(th, &QThread::started, cheker, &TestConnection::Routine));
-  VERIFY(connect(cheker, &TestConnection::ConnectionResult, this,
-                 &ConnectionDiagnosticDialog::ConnectionResult));
-  VERIFY(connect(cheker, &TestConnection::ConnectionResult, th, &QThread::quit));
+  VERIFY(connect(th, &QThread::started, cheker, &TestConnection::routine));
+  VERIFY(connect(cheker, &TestConnection::connectionResult, this,
+                 &ConnectionDiagnosticDialog::connectionResult));
+  VERIFY(connect(cheker, &TestConnection::connectionResult, th, &QThread::quit));
   VERIFY(connect(th, &QThread::finished, cheker, &TestConnection::deleteLater));
   VERIFY(connect(th, &QThread::finished, th, &QThread::deleteLater));
   th->start();

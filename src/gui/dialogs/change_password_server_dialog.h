@@ -42,6 +42,7 @@ struct ChangePasswordResponce;
 
 namespace fastonosql {
 namespace gui {
+
 class ChangePasswordServerDialog : public QDialog {
   Q_OBJECT
  public:
@@ -52,17 +53,18 @@ class ChangePasswordServerDialog : public QDialog {
                                       QWidget* parent = 0);
 
  private Q_SLOTS:
-  void TryToCreatePassword();
-  void StartChangePassword(const core::events_info::ChangePasswordRequest& req);
-  void FinishChangePassword(const core::events_info::ChangePasswordResponce& res);
+  void tryToCreatePassword();
+  void startChangePassword(const core::events_info::ChangePasswordRequest& req);
+  void finishChangePassword(const core::events_info::ChangePasswordResponce& res);
 
  private:
-  bool ValidateInput();
+  bool validateInput();
 
   common::qt::gui::GlassWidget* glassWidget_;
   QLineEdit* passwordLineEdit_;
   QLineEdit* confPasswordLineEdit_;
   const core::IServerSPtr server_;
 };
+
 }  // namespace gui
 }  // namespace fastonosql

@@ -28,6 +28,7 @@
 
 namespace fastonosql {
 namespace gui {
+
 InputDialog::InputDialog(QWidget* parent,
                          const QString& title,
                          InputType type,
@@ -77,5 +78,6 @@ void InputDialog::setFirstPlaceholderText(const QString& placeh) {
 void InputDialog::setSecondPlaceholderText(const QString& placeh) {
   secondLine_->setPlaceholderText(placeh);
 }
+
 }  // namespace gui
 }  // namespace fastonosql

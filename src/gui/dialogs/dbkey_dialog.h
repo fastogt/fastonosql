@@ -40,25 +40,25 @@ class DbKeyDialog : public QDialog {
                        core::connectionTypes type,
                        core::NDbKValue key = core::NDbKValue(),
                        QWidget* parent = 0);
-  core::NDbKValue Key() const;
+  core::NDbKValue key() const;
 
  public Q_SLOTS:
   virtual void accept() override;
 
  private Q_SLOTS:
-  void TypeChanged(int index);
-  void AddItem();
-  void RemoveItem();
+  void typeChanged(int index);
+  void addItem();
+  void removeItem();
 
  protected:
   virtual void changeEvent(QEvent* ev) override;
 
  private:
-  void SyncControls(common::Value* item);
-  bool ValidateAndApply();
-  void RetranslateUi();
+  void syncControls(common::Value* item);
+  bool validateAndApply();
+  void retranslateUi();
 
-  common::Value* Item() const;
+  common::Value* item() const;
   const core::connectionTypes type_;
   QGroupBox* generalBox_;
   QLineEdit* keyEdit_;

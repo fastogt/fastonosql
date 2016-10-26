@@ -63,6 +63,7 @@ const QString trLoggingDirectory = QObject::tr("Logging directory:");
 
 namespace fastonosql {
 namespace gui {
+
 PreferencesDialog::PreferencesDialog(QWidget* parent) : QDialog(parent) {
   setWindowFlags(windowFlags() & ~Qt::WindowContextHelpButtonHint);  // Remove help
                                                                      // button (?)
@@ -222,5 +223,6 @@ void PreferencesDialog::retranslateUi() {
   defaultViewLabel_->setText(trDefaultViews);
   logDirLabel_->setText(trLoggingDirectory);
 }
+
 }  // namespace gui
 }  // namespace fastonosql

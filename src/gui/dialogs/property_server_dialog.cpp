@@ -48,6 +48,7 @@ const QString trPropertiesTemplate_1S = QObject::tr("%1 properties");
 
 namespace fastonosql {
 namespace gui {
+
 PropertyServerDialog::PropertyServerDialog(core::IServerSPtr server, QWidget* parent)
     : QDialog(parent), server_(server) {
   CHECK(server_);
@@ -151,5 +152,6 @@ void PropertyServerDialog::retranslateUi() {
   QString name = common::ConvertFromString<QString>(server_->Name());
   setWindowTitle(trPropertiesTemplate_1S.arg(name));
 }
+
 }  // namespace gui
 }  // namespace fastonosql

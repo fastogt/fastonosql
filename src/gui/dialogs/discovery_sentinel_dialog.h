@@ -47,6 +47,7 @@ class ConnectionListWidgetItemDiscovered;
 
 namespace fastonosql {
 namespace gui {
+
 class DiscoverySentinelDiagnosticDialog : public QDialog {
   Q_OBJECT
  public:
@@ -62,10 +63,10 @@ class DiscoverySentinelDiagnosticDialog : public QDialog {
                              std::vector<core::ServerDiscoverySentinelInfoSPtr> infos);
 
  protected:
-  virtual void showEvent(QShowEvent* e);
+  virtual void showEvent(QShowEvent* e) override;
 
  private:
-  void TestConnection(core::IConnectionSettingsBaseSPtr connection);
+  void testConnection(core::IConnectionSettingsBaseSPtr connection);
 
   common::qt::gui::GlassWidget* glassWidget_;
   QLabel* executeTimeLabel_;
@@ -73,5 +74,6 @@ class DiscoverySentinelDiagnosticDialog : public QDialog {
   QTreeWidget* listWidget_;
   QLabel* iconLabel_;
 };
+
 }  // namespace gui
 }  // namespace fastonosql

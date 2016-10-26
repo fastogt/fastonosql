@@ -36,24 +36,26 @@ class GlassWidget;
 
 namespace fastonosql {
 namespace gui {
+
 class ConnectionDiagnosticDialog : public QDialog {
   Q_OBJECT
  public:
   ConnectionDiagnosticDialog(QWidget* parent, core::IConnectionSettingsBaseSPtr connection);
 
  private Q_SLOTS:
-  void ConnectionResult(bool suc, qint64 mstimeExecute, const QString& resultText);
+  void connectionResult(bool suc, qint64 mstimeExecute, const QString& resultText);
 
  protected:
   virtual void showEvent(QShowEvent* e) override;
 
  private:
-  void StartTestConnection(core::IConnectionSettingsBaseSPtr connection);
+  void startTestConnection(core::IConnectionSettingsBaseSPtr connection);
 
   common::qt::gui::GlassWidget* glassWidget_;
   QLabel* executeTimeLabel_;
   QLabel* statusLabel_;
   QLabel* iconLabel_;
 };
+
 }  // namespace gui
 }  // namespace fastonosql

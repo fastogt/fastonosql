@@ -293,11 +293,11 @@ void MainWindow::open() {
     return;
   }
 
-  if (core::IConnectionSettingsBaseSPtr con = dlg.SelectedConnection()) {
+  if (core::IConnectionSettingsBaseSPtr con = dlg.selectedConnection()) {
     createServer(con);
-  } else if (core::IClusterSettingsBaseSPtr clus = dlg.SelectedCluster()) {
+  } else if (core::IClusterSettingsBaseSPtr clus = dlg.selectedCluster()) {
     createCluster(clus);
-  } else if (core::ISentinelSettingsBaseSPtr sent = dlg.SelectedSentinel()) {
+  } else if (core::ISentinelSettingsBaseSPtr sent = dlg.selectedSentinel()) {
     createSentinel(sent);
   } else {
     NOTREACHED();

@@ -18,9 +18,9 @@
 
 #include "core/driver/first_child_update_root_locker.h"
 
-#include <common/intrusive_ptr.h>       // for intrusive_ptr, operator==
-#include <common/macros.h>              // for NOTREACHED
-#include <common/value.h>               // for Value, etc
+#include <common/intrusive_ptr.h>  // for intrusive_ptr, operator==
+#include <common/macros.h>         // for NOTREACHED
+#include <common/value.h>          // for Value, etc
 
 namespace fastonosql {
 namespace core {

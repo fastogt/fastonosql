@@ -65,8 +65,8 @@ class ServerHistoryDialog : public QDialog {
   void refreshGraph(int index);
 
  protected:
-  virtual void changeEvent(QEvent* e);
-  virtual void showEvent(QShowEvent* e);
+  virtual void changeEvent(QEvent* e) override;
+  virtual void showEvent(QShowEvent* e) override;
 
  private:
   void reset();

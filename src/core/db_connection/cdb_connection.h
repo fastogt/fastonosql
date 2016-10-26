@@ -98,7 +98,7 @@ common::Error CDBConnection<NConnection, Config, ContType>::Select(const std::st
 
 template <typename NConnection, typename Config, connectionTypes ContType>
 common::Error CDBConnection<NConnection, Config, ContType>::Delete(const NKeys& keys,
-                                                                NKeys* deleted_keys) {
+                                                                   NKeys* deleted_keys) {
   if (!deleted_keys) {
     DNOTREACHED();
     return common::make_error_value("Invalid input argument(s)", common::ErrorValue::E_ERROR);

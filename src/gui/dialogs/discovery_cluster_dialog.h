@@ -55,7 +55,7 @@ class DiscoveryClusterDiagnosticDialog : public QDialog {
   std::vector<fastonosql::gui::ConnectionListWidgetItemDiscovered*> selectedConnections() const;
 
  private Q_SLOTS:
-  void ConnectionResult(bool suc,
+  void connectionResult(bool suc,
                         qint64 mstimeExecute,
                         const QString& resultText,
                         std::vector<core::ServerDiscoveryClusterInfoSPtr> infos);
@@ -64,7 +64,7 @@ class DiscoveryClusterDiagnosticDialog : public QDialog {
   virtual void showEvent(QShowEvent* e) override;
 
  private:
-  void TestConnection(core::IConnectionSettingsBaseSPtr connection);
+  void testConnection(core::IConnectionSettingsBaseSPtr connection);
 
   common::qt::gui::GlassWidget* glassWidget_;
   QLabel* executeTimeLabel_;

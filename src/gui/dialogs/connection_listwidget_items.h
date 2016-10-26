@@ -33,7 +33,7 @@ class DirectoryListWidgetItem  // directory can hold many
     : public QTreeWidgetItem {
  public:
   explicit DirectoryListWidgetItem(const core::IConnectionSettingsBase::connection_path_t& path);
-  core::IConnectionSettingsBase::connection_path_t Path() const;
+  core::IConnectionSettingsBase::connection_path_t path() const;
 
  private:
   core::IConnectionSettingsBase::connection_path_t path_;
@@ -43,9 +43,9 @@ class IConnectionListWidgetItem  // base class
     : public QTreeWidgetItem {
  public:
   enum itemConnectionType { Common, Discovered, Sentinel };
-  virtual void SetConnection(core::IConnectionSettingsBaseSPtr cons);
-  core::IConnectionSettingsBaseSPtr Connection() const;
-  virtual itemConnectionType Type() const = 0;
+  virtual void setConnection(core::IConnectionSettingsBaseSPtr cons);
+  core::IConnectionSettingsBaseSPtr connection() const;
+  virtual itemConnectionType type() const = 0;
 
  protected:
   explicit IConnectionListWidgetItem(QTreeWidgetItem* parent);
@@ -58,8 +58,8 @@ class ConnectionListWidgetItem  // common connection
     : public IConnectionListWidgetItem {
  public:
   explicit ConnectionListWidgetItem(QTreeWidgetItem* parent);
-  virtual void SetConnection(core::IConnectionSettingsBaseSPtr cons) override;
-  virtual itemConnectionType Type() const override;
+  virtual void setConnection(core::IConnectionSettingsBaseSPtr cons) override;
+  virtual itemConnectionType type() const override;
 };
 
 class ConnectionListWidgetItemDiscovered  // returned after
@@ -67,7 +67,7 @@ class ConnectionListWidgetItemDiscovered  // returned after
     : public ConnectionListWidgetItem {
  public:
   ConnectionListWidgetItemDiscovered(const core::ServerCommonInfo& info, QTreeWidgetItem* parent);
-  virtual itemConnectionType Type() const;
+  virtual itemConnectionType type() const;
 
  private:
   core::ServerCommonInfo info_;
@@ -81,8 +81,8 @@ class SentinelConnectionListWidgetItemContainer  // can hold
  public:
   explicit SentinelConnectionListWidgetItemContainer(core::ISentinelSettingsBaseSPtr connection,
                                                      QTreeWidgetItem* parent);
-  void SetConnection(core::ISentinelSettingsBaseSPtr cons);
-  core::ISentinelSettingsBaseSPtr Connection() const;
+  void setConnection(core::ISentinelSettingsBaseSPtr cons);
+  core::ISentinelSettingsBaseSPtr connection() const;
 
  private:
   core::ISentinelSettingsBaseSPtr connection_;
@@ -93,7 +93,7 @@ class SentinelConnectionWidgetItem  // sentinel connection
  public:
   SentinelConnectionWidgetItem(const core::ServerCommonInfo& info,
                                SentinelConnectionListWidgetItemContainer* parent);
-  virtual itemConnectionType Type() const override;
+  virtual itemConnectionType type() const override;
 };
 
 class ClusterConnectionListWidgetItemContainer  // can hold
@@ -103,8 +103,8 @@ class ClusterConnectionListWidgetItemContainer  // can hold
  public:
   explicit ClusterConnectionListWidgetItemContainer(core::IClusterSettingsBaseSPtr connection,
                                                     QTreeWidgetItem* parent);
-  void SetConnection(core::IClusterSettingsBaseSPtr cons);
-  core::IClusterSettingsBaseSPtr Connection() const;
+  void setConnection(core::IClusterSettingsBaseSPtr cons);
+  core::IClusterSettingsBaseSPtr connection() const;
 
  private:
   core::IClusterSettingsBaseSPtr connection_;

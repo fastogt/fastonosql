@@ -51,6 +51,7 @@ const QSize stateIconSize = QSize(64, 64);
 
 namespace fastonosql {
 namespace gui {
+
 DiscoverySentinelDiagnosticDialog::DiscoverySentinelDiagnosticDialog(
     QWidget* parent,
     core::IConnectionSettingsBaseSPtr connection)
@@ -106,7 +107,7 @@ DiscoverySentinelDiagnosticDialog::DiscoverySentinelDiagnosticDialog(
   glassWidget_ = new common::qt::gui::GlassWidget(GuiFactory::instance().pathToLoadingGif(),
                                                   translations::trTryToConnect, 0.5,
                                                   QColor(111, 111, 100), this);
-  TestConnection(connection);
+  testConnection(connection);
 }
 
 std::vector<ConnectionListWidgetItemDiscovered*>
@@ -150,7 +151,7 @@ void DiscoverySentinelDiagnosticDialog::connectionResultReady(
 
       ConnectionListWidgetItemDiscovered* item =
           new ConnectionListWidgetItemDiscovered(inf->info(), nullptr);
-      item->SetConnection(con);
+      item->setConnection(con);
       listWidget_->addTopLevelItem(item);
     }
   }
@@ -162,7 +163,7 @@ void DiscoverySentinelDiagnosticDialog::showEvent(QShowEvent* e) {
   glassWidget_->start();
 }
 
-void DiscoverySentinelDiagnosticDialog::TestConnection(
+void DiscoverySentinelDiagnosticDialog::testConnection(
     core::IConnectionSettingsBaseSPtr connection) {
   QThread* th = new QThread;
   DiscoverySentinelConnection* cheker = new DiscoverySentinelConnection(connection);
@@ -175,5 +176,6 @@ void DiscoverySentinelDiagnosticDialog::TestConnection(
   VERIFY(connect(th, &QThread::finished, th, &QThread::deleteLater));
   th->start();
 }
+
 }  // namespace gui
 }  // namespace fastonosql

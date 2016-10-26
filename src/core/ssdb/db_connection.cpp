@@ -319,7 +319,7 @@ common::Error DBConnection::Rscan(const std::string& key_start,
 }
 
 common::Error DBConnection::MultiGet(const std::vector<std::string>& keys,
-                                      std::vector<std::string>* ret) {
+                                     std::vector<std::string>* ret) {
   if (!IsConnected()) {
     return common::make_error_value("Not connected", common::Value::E_ERROR);
   }
@@ -509,8 +509,8 @@ common::Error DBConnection::Hrscan(const std::string& name,
 }
 
 common::Error DBConnection::MultiHget(const std::string& name,
-                                       const std::vector<std::string>& keys,
-                                       std::vector<std::string>* ret) {
+                                      const std::vector<std::string>& keys,
+                                      std::vector<std::string>* ret) {
   if (!IsConnected()) {
     return common::make_error_value("Not connected", common::Value::E_ERROR);
   }
@@ -524,7 +524,7 @@ common::Error DBConnection::MultiHget(const std::string& name,
 }
 
 common::Error DBConnection::MultiHset(const std::string& name,
-                                       const std::map<std::string, std::string>& keys) {
+                                      const std::map<std::string, std::string>& keys) {
   if (!IsConnected()) {
     return common::make_error_value("Not connected", common::Value::E_ERROR);
   }
@@ -731,8 +731,8 @@ common::Error DBConnection::Zrscan(const std::string& name,
 }
 
 common::Error DBConnection::MultiZget(const std::string& name,
-                                       const std::vector<std::string>& keys,
-                                       std::vector<std::string>* ret) {
+                                      const std::vector<std::string>& keys,
+                                      std::vector<std::string>* ret) {
   if (!IsConnected()) {
     return common::make_error_value("Not connected", common::Value::E_ERROR);
   }
@@ -746,7 +746,7 @@ common::Error DBConnection::MultiZget(const std::string& name,
 }
 
 common::Error DBConnection::MultiZset(const std::string& name,
-                                       const std::map<std::string, int64_t>& kss) {
+                                      const std::map<std::string, int64_t>& kss) {
   if (!IsConnected()) {
     return common::make_error_value("Not connected", common::Value::E_ERROR);
   }
@@ -760,7 +760,7 @@ common::Error DBConnection::MultiZset(const std::string& name,
 }
 
 common::Error DBConnection::MultiZdel(const std::string& name,
-                                       const std::vector<std::string>& keys) {
+                                      const std::vector<std::string>& keys) {
   if (!IsConnected()) {
     return common::make_error_value("Not connected", common::Value::E_ERROR);
   }

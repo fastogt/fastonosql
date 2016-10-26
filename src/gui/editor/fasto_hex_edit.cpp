@@ -31,6 +31,7 @@ const QColor selectedColor = QColor(0x6d, 0x9e, 0xff, 0xff);
 
 namespace fastonosql {
 namespace gui {
+
 FastoHexEdit::FastoHexEdit(QWidget* parent)
     : base_class(parent), mode_(TEXT_MODE), in_selection_state_(false) {
   setFocusPolicy(Qt::StrongFocus);
@@ -278,5 +279,6 @@ int FastoHexEdit::positionAtPoint(const QPoint& point) const {
 
   return -1;
 }
+
 }  // namespace gui
 }  // namespace fastonosql

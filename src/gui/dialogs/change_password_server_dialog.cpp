@@ -50,6 +50,7 @@ const QString trPasswordChS = QObject::tr("Password successfully changed!");
 
 namespace fastonosql {
 namespace gui {
+
 ChangePasswordServerDialog::ChangePasswordServerDialog(const QString& title,
                                                        core::IServerSPtr server,
                                                        QWidget* parent)
@@ -78,14 +79,14 @@ ChangePasswordServerDialog::ChangePasswordServerDialog(const QString& title,
       new QDialogButtonBox(QDialogButtonBox::Cancel | QDialogButtonBox::Ok);
   buttonBox->setOrientation(Qt::Horizontal);
   VERIFY(connect(buttonBox, &QDialogButtonBox::accepted, this,
-                 &ChangePasswordServerDialog::TryToCreatePassword));
+                 &ChangePasswordServerDialog::tryToCreatePassword));
   VERIFY(
       connect(buttonBox, &QDialogButtonBox::rejected, this, &ChangePasswordServerDialog::reject));
 
   VERIFY(connect(server_.get(), &core::IServer::ChangePasswordStarted, this,
-                 &ChangePasswordServerDialog::StartChangePassword));
+                 &ChangePasswordServerDialog::startChangePassword));
   VERIFY(connect(server_.get(), &core::IServer::ChangePasswordFinished, this,
-                 &ChangePasswordServerDialog::FinishChangePassword));
+                 &ChangePasswordServerDialog::finishChangePassword));
 
   mainLayout->addWidget(buttonBox);
   setMinimumSize(QSize(min_width, min_height));
@@ -96,8 +97,8 @@ ChangePasswordServerDialog::ChangePasswordServerDialog(const QString& title,
                                                   QColor(111, 111, 100), this);
 }
 
-void ChangePasswordServerDialog::TryToCreatePassword() {
-  if (!ValidateInput()) {
+void ChangePasswordServerDialog::tryToCreatePassword() {
+  if (!validateInput()) {
     QMessageBox::critical(this, translations::trError, trInvalidInput);
     return;
   }
@@ -106,14 +107,14 @@ void ChangePasswordServerDialog::TryToCreatePassword() {
   server_->ChangePassword(req);
 }
 
-void ChangePasswordServerDialog::StartChangePassword(
+void ChangePasswordServerDialog::startChangePassword(
     const core::events_info::ChangePasswordRequest& req) {
   UNUSED(req);
 
   glassWidget_->start();
 }
 
-void ChangePasswordServerDialog::FinishChangePassword(
+void ChangePasswordServerDialog::finishChangePassword(
     const core::events_info::ChangePasswordResponce& res) {
   glassWidget_->stop();
   common::Error err = res.errorInfo();
@@ -126,7 +127,7 @@ void ChangePasswordServerDialog::FinishChangePassword(
   ChangePasswordServerDialog::accept();
 }
 
-bool ChangePasswordServerDialog::ValidateInput() {
+bool ChangePasswordServerDialog::validateInput() {
   QString pass = passwordLineEdit_->text();
   QString cpass = confPasswordLineEdit_->text();
   if (pass.isEmpty() || cpass.isEmpty()) {
@@ -135,5 +136,6 @@ bool ChangePasswordServerDialog::ValidateInput() {
 
   return pass == cpass;
 }
+
 }  // namespace gui
 }  // namespace fastonosql

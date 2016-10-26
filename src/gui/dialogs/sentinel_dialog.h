@@ -39,6 +39,7 @@ class QWidget;
 
 namespace fastonosql {
 namespace gui {
+
 class SentinelDialog : public QDialog {
   Q_OBJECT
  public:
@@ -49,12 +50,12 @@ class SentinelDialog : public QDialog {
   core::ISentinelSettingsBaseSPtr connection() const;
 
  public Q_SLOTS:
-  virtual void accept();
+  virtual void accept() override;
 
  private Q_SLOTS:
   void typeConnectionChange(int index);
   void loggingStateChange(int value);
-  void TestConnection();
+  void testConnection();
   void discoverySentinel();
   void addConnectionSettings();
   void remove();
@@ -62,7 +63,7 @@ class SentinelDialog : public QDialog {
   void itemSelectionChanged();
 
  protected:
-  virtual void changeEvent(QEvent* ev);
+  virtual void changeEvent(QEvent* ev) override;
 
  private:
   void retranslateUi();
@@ -85,5 +86,6 @@ class SentinelDialog : public QDialog {
   QPushButton* discoveryButton_;
   QDialogButtonBox* buttonBox_;
 };
+
 }  // namespace gui
 }  // namespace fastonosql

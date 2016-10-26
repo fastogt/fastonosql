@@ -46,7 +46,7 @@ class LoadContentDbDialog : public QDialog {
   QString pattern() const;
 
  public Q_SLOTS:
-  virtual void accept();
+  virtual void accept() override;
 
  private:
   const core::connectionTypes type_;

@@ -18,13 +18,13 @@
 
 #include "core/cluster/icluster.h"
 
-#include <common/macros.h>              // for DNOTREACHED
+#include <common/macros.h>  // for DNOTREACHED
 
-#include <memory>                       // for shared_ptr
-#include <string>                       // for string
+#include <memory>  // for shared_ptr
+#include <string>  // for string
 
-#include "core/connection_types.h"      // for serverTypes::MASTER
-#include "core/server/iserver.h"        // for IServer
+#include "core/connection_types.h"       // for serverTypes::MASTER
+#include "core/server/iserver.h"         // for IServer
 #include "core/server/iserver_remote.h"  // for IServerRemote
 
 namespace fastonosql {

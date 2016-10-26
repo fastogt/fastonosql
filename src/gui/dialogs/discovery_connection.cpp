@@ -31,17 +31,18 @@
 
 namespace fastonosql {
 namespace gui {
+
 DiscoveryConnection::DiscoveryConnection(core::IConnectionSettingsBaseSPtr conn, QObject* parent)
     : QObject(parent), connection_(conn), start_time_(common::time::current_mstime()) {
   qRegisterMetaType<std::vector<core::ServerDiscoveryClusterInfoSPtr>>(
       "std::vector<core::ServerDiscoveryClusterInfoSPtr>");
 }
 
-void DiscoveryConnection::Routine() {
+void DiscoveryConnection::routine() {
   std::vector<core::ServerDiscoveryClusterInfoSPtr> inf;
 
   if (!connection_) {
-    emit ConnectionResult(false, common::time::current_mstime() - start_time_,
+    emit connectionResult(false, common::time::current_mstime() - start_time_,
                           "Invalid connection settings", inf);
     return;
   }
@@ -49,12 +50,13 @@ void DiscoveryConnection::Routine() {
   common::Error er = core::ServersManager::instance().DiscoveryClusterConnection(connection_, &inf);
 
   if (er && er->isError()) {
-    emit ConnectionResult(false, common::time::current_mstime() - start_time_,
+    emit connectionResult(false, common::time::current_mstime() - start_time_,
                           common::ConvertFromString<QString>(er->description()), inf);
   } else {
-    emit ConnectionResult(true, common::time::current_mstime() - start_time_,
+    emit connectionResult(true, common::time::current_mstime() - start_time_,
                           translations::trSuccess, inf);
   }
 }
+
 }  // namespace gui
 }  // namespace fastonosql

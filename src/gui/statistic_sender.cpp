@@ -39,9 +39,11 @@ StatisticSender::StatisticSender(QObject* parent) : QObject(parent) {}
 
 void StatisticSender::routine() {
 #if defined(FASTONOSQL)
-  common::net::ClientSocketTcp client(common::net::HostAndPort(FASTONOSQL_URL, SERV_STATISTIC_PORT));
+  common::net::ClientSocketTcp client(
+      common::net::HostAndPort(FASTONOSQL_URL, SERV_STATISTIC_PORT));
 #elif defined(FASTOREDIS)
-  common::net::ClientSocketTcp client(common::net::HostAndPort(FASTOREDIS_URL, SERV_STATISTIC_PORT));
+  common::net::ClientSocketTcp client(
+      common::net::HostAndPort(FASTOREDIS_URL, SERV_STATISTIC_PORT));
 #else
 #error please specify url and port to send statistic information
 #endif

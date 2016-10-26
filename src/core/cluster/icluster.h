@@ -21,7 +21,7 @@
 #include <string>  // for string
 #include <vector>  // for vector
 
-#include "core/core_fwd.h"        // for IServerSPtr
+#include "core/core_fwd.h"  // for IServerSPtr
 #include "core/server/iserver_base.h"
 
 namespace fastonosql {

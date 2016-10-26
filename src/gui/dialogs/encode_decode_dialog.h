@@ -32,6 +32,7 @@ class FastoEditor;
 
 namespace fastonosql {
 namespace gui {
+
 class EncodeDecodeDialog : public QDialog {
   Q_OBJECT
  public:
@@ -40,7 +41,7 @@ class EncodeDecodeDialog : public QDialog {
   enum { min_width = 640, min_height = 480 };
 
  protected:
-  virtual void changeEvent(QEvent* ev);
+  virtual void changeEvent(QEvent* ev) override;
 
  private Q_SLOTS:
   void decodeOrEncode();
@@ -54,5 +55,6 @@ class EncodeDecodeDialog : public QDialog {
   QRadioButton* encodeButton_;
   QRadioButton* decodeButton_;
 };
+
 }  // namespace gui
 }  // namespace fastonosql

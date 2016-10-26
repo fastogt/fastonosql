@@ -104,8 +104,8 @@ class InfoServerDialog : public QDialog {
   void finishServerInfo(const core::events_info::ServerInfoResponce& res);
 
  protected:
-  virtual void changeEvent(QEvent* e);
-  virtual void showEvent(QShowEvent* e);
+  virtual void changeEvent(QEvent* e) override;
+  virtual void showEvent(QShowEvent* e) override;
 
  private:
   void retranslateUi();

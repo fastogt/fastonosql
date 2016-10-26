@@ -102,7 +102,7 @@ ClusterDialog::ClusterDialog(QWidget* parent, core::IClusterSettingsBase* connec
 
   typedef void (QComboBox::*qind)(int);
   VERIFY(connect(typeConnection_, static_cast<qind>(&QComboBox::currentIndexChanged), this,
-                 &ClusterDialog::TypeConnectionChange));
+                 &ClusterDialog::typeConnectionChange));
 
   QHBoxLayout* loggingLayout = new QHBoxLayout;
   logging_ = new QCheckBox;
@@ -116,7 +116,7 @@ ClusterDialog::ClusterDialog(QWidget* parent, core::IClusterSettingsBase* connec
   } else {
     logging_->setChecked(false);
   }
-  VERIFY(connect(logging_, &QCheckBox::stateChanged, this, &ClusterDialog::LoggingStateChange));
+  VERIFY(connect(logging_, &QCheckBox::stateChanged, this, &ClusterDialog::loggingStateChange));
 
   loggingLayout->addWidget(logging_);
   loggingLayout->addWidget(loggingMsec_);
@@ -136,20 +136,20 @@ ClusterDialog::ClusterDialog(QWidget* parent, core::IClusterSettingsBase* connec
 
   listWidget_->setContextMenuPolicy(Qt::CustomContextMenu);
   VERIFY(connect(listWidget_, &QTreeWidget::customContextMenuRequested, this,
-                 &ClusterDialog::ShowContextMenu));
+                 &ClusterDialog::showContextMenu));
 
   setDefault_ = new QAction(this);
-  VERIFY(connect(setDefault_, &QAction::triggered, this, &ClusterDialog::SetStartNode));
+  VERIFY(connect(setDefault_, &QAction::triggered, this, &ClusterDialog::setStartNode));
 
   if (cluster_connection_) {
     auto nodes = cluster_connection_->Nodes();
     for (const auto& node : nodes) {
-      AddConnection(node);
+      addConnection(node);
     }
   }
 
   VERIFY(connect(listWidget_, &QTreeWidget::itemSelectionChanged, this,
-                 &ClusterDialog::ItemSelectionChanged));
+                 &ClusterDialog::itemSelectionChanged));
 
   QHBoxLayout* toolBarLayout = new QHBoxLayout;
   savebar_ = new QToolBar;
@@ -158,17 +158,17 @@ ClusterDialog::ClusterDialog(QWidget* parent, core::IClusterSettingsBase* connec
   QAction* addB =
       new QAction(GuiFactory::instance().loadIcon(), translations::trAddConnection, savebar_);
   typedef void (QAction::*trig)(bool);
-  VERIFY(connect(addB, static_cast<trig>(&QAction::triggered), this, &ClusterDialog::Add));
+  VERIFY(connect(addB, static_cast<trig>(&QAction::triggered), this, &ClusterDialog::add));
   savebar_->addAction(addB);
 
   QAction* rmB =
       new QAction(GuiFactory::instance().removeIcon(), translations::trRemoveConnection, savebar_);
-  VERIFY(connect(rmB, static_cast<trig>(&QAction::triggered), this, &ClusterDialog::Remove));
+  VERIFY(connect(rmB, static_cast<trig>(&QAction::triggered), this, &ClusterDialog::remove));
   savebar_->addAction(rmB);
 
   QAction* editB =
       new QAction(GuiFactory::instance().editIcon(), translations::trEditConnection, savebar_);
-  VERIFY(connect(editB, static_cast<trig>(&QAction::triggered), this, &ClusterDialog::Edit));
+  VERIFY(connect(editB, static_cast<trig>(&QAction::triggered), this, &ClusterDialog::edit));
   savebar_->addAction(editB);
 
   QSpacerItem* hSpacer = new QSpacerItem(300, 0, QSizePolicy::Expanding);
@@ -184,12 +184,12 @@ ClusterDialog::ClusterDialog(QWidget* parent, core::IClusterSettingsBase* connec
 
   testButton_ = new QPushButton("&Test");
   testButton_->setIcon(GuiFactory::instance().messageBoxInformationIcon());
-  VERIFY(connect(testButton_, &QPushButton::clicked, this, &ClusterDialog::TestConnection));
+  VERIFY(connect(testButton_, &QPushButton::clicked, this, &ClusterDialog::testConnection));
   testButton_->setEnabled(false);
 
   discoveryButton_ = new QPushButton("&Discovery");
   discoveryButton_->setIcon(GuiFactory::instance().discoveryIcon());
-  VERIFY(connect(discoveryButton_, &QPushButton::clicked, this, &ClusterDialog::DiscoveryCluster));
+  VERIFY(connect(discoveryButton_, &QPushButton::clicked, this, &ClusterDialog::discoveryCluster));
   discoveryButton_->setEnabled(false);
 
   QHBoxLayout* bottomLayout = new QHBoxLayout;
@@ -208,22 +208,22 @@ ClusterDialog::ClusterDialog(QWidget* parent, core::IClusterSettingsBase* connec
   setLayout(mainLayout);
 
   // update controls
-  TypeConnectionChange(typeConnection_->currentIndex());
-  LoggingStateChange(logging_->checkState());
-  RetranslateUi();
+  typeConnectionChange(typeConnection_->currentIndex());
+  loggingStateChange(logging_->checkState());
+  retranslateUi();
 }
 
-core::IClusterSettingsBaseSPtr ClusterDialog::Connection() const {
+core::IClusterSettingsBaseSPtr ClusterDialog::connection() const {
   return cluster_connection_;
 }
 
 void ClusterDialog::accept() {
-  if (ValidateAndApply()) {
+  if (validateAndApply()) {
     QDialog::accept();
   }
 }
 
-void ClusterDialog::TypeConnectionChange(int index) {
+void ClusterDialog::typeConnectionChange(int index) {
   QVariant var = typeConnection_->itemData(index);
   core::connectionTypes currentType =
       static_cast<core::connectionTypes>(qvariant_cast<unsigned char>(var));
@@ -234,14 +234,14 @@ void ClusterDialog::TypeConnectionChange(int index) {
   listWidget_->selectionModel()->clear();
   listWidget_->setEnabled(isValidType);
   logging_->setEnabled(isValidType);
-  ItemSelectionChanged();
+  itemSelectionChanged();
 }
 
-void ClusterDialog::LoggingStateChange(int value) {
+void ClusterDialog::loggingStateChange(int value) {
   loggingMsec_->setEnabled(value);
 }
 
-void ClusterDialog::TestConnection() {
+void ClusterDialog::testConnection() {
   ConnectionListWidgetItem* currentItem =
       dynamic_cast<ConnectionListWidgetItem*>(listWidget_->currentItem());  // +
 
@@ -250,11 +250,11 @@ void ClusterDialog::TestConnection() {
     return;
   }
 
-  ConnectionDiagnosticDialog diag(this, currentItem->Connection());
+  ConnectionDiagnosticDialog diag(this, currentItem->connection());
   diag.exec();
 }
 
-void ClusterDialog::DiscoveryCluster() {
+void ClusterDialog::discoveryCluster() {
   ConnectionListWidgetItem* currentItem =
       dynamic_cast<ConnectionListWidgetItem*>(listWidget_->currentItem());  // +
 
@@ -263,22 +263,22 @@ void ClusterDialog::DiscoveryCluster() {
     return;
   }
 
-  if (!ValidateAndApply()) {
+  if (!validateAndApply()) {
     return;
   }
 
-  DiscoveryClusterDiagnosticDialog diag(this, currentItem->Connection(), cluster_connection_);
+  DiscoveryClusterDiagnosticDialog diag(this, currentItem->connection(), cluster_connection_);
   int result = diag.exec();
   if (result == QDialog::Accepted) {
     std::vector<ConnectionListWidgetItemDiscovered*> conns = diag.selectedConnections();
     for (size_t i = 0; i < conns.size(); ++i) {
-      core::IConnectionSettingsBaseSPtr it = conns[i]->Connection();
-      AddConnection(it);
+      core::IConnectionSettingsBaseSPtr it = conns[i]->connection();
+      addConnection(it);
     }
   }
 }
 
-void ClusterDialog::ShowContextMenu(const QPoint& point) {
+void ClusterDialog::showContextMenu(const QPoint& point) {
   ConnectionListWidgetItem* currentItem =
       dynamic_cast<ConnectionListWidgetItem*>(listWidget_->currentItem());  // +
 
@@ -296,7 +296,7 @@ void ClusterDialog::ShowContextMenu(const QPoint& point) {
   menu.exec(menuPoint);
 }
 
-void ClusterDialog::SetStartNode() {
+void ClusterDialog::setStartNode() {
   ConnectionListWidgetItem* currentItem =
       dynamic_cast<ConnectionListWidgetItem*>(listWidget_->currentItem());  // +
 
@@ -311,26 +311,26 @@ void ClusterDialog::SetStartNode() {
     return;
   }
 
-  core::IConnectionSettingsBaseSPtr tc = top->Connection();
-  core::IConnectionSettingsBaseSPtr cc = currentItem->Connection();
-  currentItem->SetConnection(tc);
-  top->SetConnection(cc);
+  core::IConnectionSettingsBaseSPtr tc = top->connection();
+  core::IConnectionSettingsBaseSPtr cc = currentItem->connection();
+  currentItem->setConnection(tc);
+  top->setConnection(cc);
 }
 
-void ClusterDialog::Add() {
+void ClusterDialog::add() {
 #ifdef BUILD_WITH_REDIS
   static const std::vector<core::connectionTypes> avail = {core::REDIS};
   ConnectionDialog dlg(this, nullptr, avail);
-  dlg.SetFolderEnabled(false);
+  dlg.setFolderEnabled(false);
   int result = dlg.exec();
-  core::IConnectionSettingsBaseSPtr p = dlg.Connection();
+  core::IConnectionSettingsBaseSPtr p = dlg.connection();
   if (result == QDialog::Accepted && p) {
-    AddConnection(p);
+    addConnection(p);
   }
 #endif
 }
 
-void ClusterDialog::Remove() {
+void ClusterDialog::remove() {
   ConnectionListWidgetItem* currentItem =
       dynamic_cast<ConnectionListWidgetItem*>(listWidget_->currentItem());  // +
 
@@ -352,7 +352,7 @@ void ClusterDialog::Remove() {
   delete currentItem;
 }
 
-void ClusterDialog::Edit() {
+void ClusterDialog::edit() {
   ConnectionListWidgetItem* currentItem =
       dynamic_cast<ConnectionListWidgetItem*>(listWidget_->currentItem());  // +
 
@@ -362,19 +362,19 @@ void ClusterDialog::Edit() {
   }
 
 #ifdef BUILD_WITH_REDIS
-  core::IConnectionSettingsBaseSPtr oldConnection = currentItem->Connection();
+  core::IConnectionSettingsBaseSPtr oldConnection = currentItem->connection();
   static const std::vector<core::connectionTypes> avail = {core::REDIS};
   ConnectionDialog dlg(this, oldConnection->Clone(), avail);
-  dlg.SetFolderEnabled(false);
+  dlg.setFolderEnabled(false);
   int result = dlg.exec();
-  core::IConnectionSettingsBaseSPtr newConnection = dlg.Connection();
+  core::IConnectionSettingsBaseSPtr newConnection = dlg.connection();
   if (result == QDialog::Accepted && newConnection) {
-    currentItem->SetConnection(newConnection);
+    currentItem->setConnection(newConnection);
   }
 #endif
 }
 
-void ClusterDialog::ItemSelectionChanged() {
+void ClusterDialog::itemSelectionChanged() {
   ConnectionListWidgetItem* currentItem =
       dynamic_cast<ConnectionListWidgetItem*>(listWidget_->currentItem());  // +
   bool isValidConnection = currentItem != nullptr;
@@ -385,19 +385,19 @@ void ClusterDialog::ItemSelectionChanged() {
 
 void ClusterDialog::changeEvent(QEvent* e) {
   if (e->type() == QEvent::LanguageChange) {
-    RetranslateUi();
+    retranslateUi();
   }
 
   QDialog::changeEvent(e);
 }
 
-void ClusterDialog::RetranslateUi() {
+void ClusterDialog::retranslateUi() {
   logging_->setText(translations::trLoggingEnabled);
   folderLabel_->setText(translations::trFolder);
   setDefault_->setText(translations::trSetAsStartNode);
 }
 
-bool ClusterDialog::ValidateAndApply() {
+bool ClusterDialog::validateAndApply() {
   QVariant var = typeConnection_->currentData();
   core::connectionTypes currentType =
       static_cast<core::connectionTypes>(qvariant_cast<unsigned char>(var));
@@ -420,7 +420,7 @@ bool ClusterDialog::ValidateAndApply() {
       ConnectionListWidgetItem* item =
           dynamic_cast<ConnectionListWidgetItem*>(listWidget_->topLevelItem(i));  // +
       if (item) {
-        core::IConnectionSettingsBaseSPtr con = item->Connection();
+        core::IConnectionSettingsBaseSPtr con = item->connection();
         cluster_connection_->AddNode(con);
       }
     }
@@ -428,9 +428,9 @@ bool ClusterDialog::ValidateAndApply() {
   return true;
 }
 
-void ClusterDialog::AddConnection(core::IConnectionSettingsBaseSPtr con) {
+void ClusterDialog::addConnection(core::IConnectionSettingsBaseSPtr con) {
   ConnectionListWidgetItem* item = new ConnectionListWidgetItem(nullptr);
-  item->SetConnection(con);
+  item->setConnection(con);
   listWidget_->addTopLevelItem(item);
 }
 

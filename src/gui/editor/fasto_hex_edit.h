@@ -29,6 +29,7 @@ class QWidget;
 
 namespace fastonosql {
 namespace gui {
+
 class FastoHexEdit : public QTextEdit {
   Q_OBJECT
  public:
@@ -50,12 +51,12 @@ class FastoHexEdit : public QTextEdit {
   void clear();
 
  protected:
-  virtual void paintEvent(QPaintEvent* event);
+  virtual void paintEvent(QPaintEvent* event) override;
 
-  virtual void mousePressEvent(QMouseEvent* event);
-  virtual void mouseMoveEvent(QMouseEvent* event);
-  virtual void mouseReleaseEvent(QMouseEvent* event);
-  virtual bool event(QEvent* event);
+  virtual void mousePressEvent(QMouseEvent* event) override;
+  virtual void mouseMoveEvent(QMouseEvent* event) override;
+  virtual void mouseReleaseEvent(QMouseEvent* event) override;
+  virtual bool event(QEvent* event) override;
 
  private:
   static QRect stableRect(const QRect& rect);
@@ -72,5 +73,6 @@ class FastoHexEdit : public QTextEdit {
   int asciiCharInLine(int wid) const;
   int positionAtPoint(const QPoint& point) const;
 };
+
 }  // namespace gui
 }  // namespace fastonosql

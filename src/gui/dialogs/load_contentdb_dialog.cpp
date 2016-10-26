@@ -40,6 +40,7 @@ const QString defaultPattern = "*";
 
 namespace fastonosql {
 namespace gui {
+
 LoadContentDbDialog::LoadContentDbDialog(const QString& title,
                                          core::connectionTypes type,
                                          QWidget* parent)
@@ -98,5 +99,6 @@ void LoadContentDbDialog::accept() {
 
   QDialog::accept();
 }
+
 }  // namespace gui
 }  // namespace fastonosql

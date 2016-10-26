@@ -45,31 +45,31 @@ class ConnectionDialog : public QDialog {
                        std::vector<core::connectionTypes>(),
                    const QString& connectionName = "New Connection");  // get ownerships connection
 
-  void SetFolderEnabled(bool val);
-  core::IConnectionSettingsBaseSPtr Connection() const;
+  void setFolderEnabled(bool val);
+  core::IConnectionSettingsBaseSPtr connection() const;
 
  public Q_SLOTS:
   virtual void accept() override;
 
  private Q_SLOTS:
-  void TypeConnectionChange(int index);
-  void LoggingStateChange(int value);
-  void SecurityChange(const QString& val);
-  void SshSupportStateChange(int value);
-  void TogglePasswordEchoMode();
-  void TogglePassphraseEchoMode();
-  void SetPrivateFile();
-  void SetPublicFile();
-  void TestConnection();
+  void typeConnectionChange(int index);
+  void loggingStateChange(int value);
+  void securityChange(const QString& val);
+  void sshSupportStateChange(int value);
+  void togglePasswordEchoMode();
+  void togglePassphraseEchoMode();
+  void setPrivateFile();
+  void setPublicFile();
+  void testConnection();
 
  protected:
   virtual void changeEvent(QEvent* ev) override;
 
  private:
-  void RetranslateUi();
-  bool ValidateAndApply();
-  core::SSHInfo::SupportedAuthenticationMetods SelectedAuthMethod() const;
-  void UpdateSshControls(bool isValidType);
+  void retranslateUi();
+  bool validateAndApply();
+  core::SSHInfo::SupportedAuthenticationMetods selectedAuthMethod() const;
+  void updateSshControls(bool isValidType);
 
   core::IConnectionSettingsBaseSPtr connection_;
   QLineEdit* connectionName_;

@@ -54,6 +54,7 @@ class KeysTableModel;
 
 namespace fastonosql {
 namespace gui {
+
 class ViewKeysDialog : public QDialog {
   Q_OBJECT
  public:
@@ -83,7 +84,7 @@ class ViewKeysDialog : public QDialog {
   void rightPageClicked();
 
  protected:
-  virtual void changeEvent(QEvent* ev);
+  virtual void changeEvent(QEvent* ev) override;
 
  private:
   void search(bool forward);
@@ -106,5 +107,6 @@ class ViewKeysDialog : public QDialog {
   KeysTableModel* keysModel_;
   core::IDatabaseSPtr db_;
 };
+
 }  // namespace gui
 }  // namespace fastonosql

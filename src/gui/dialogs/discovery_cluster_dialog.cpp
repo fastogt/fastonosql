@@ -108,7 +108,7 @@ DiscoveryClusterDiagnosticDialog::DiscoveryClusterDiagnosticDialog(
   glassWidget_ = new common::qt::gui::GlassWidget(GuiFactory::instance().pathToLoadingGif(),
                                                   translations::trTryToConnect, 0.5,
                                                   QColor(111, 111, 100), this);
-  TestConnection(connection);
+  testConnection(connection);
 }
 
 std::vector<ConnectionListWidgetItemDiscovered*>
@@ -127,7 +127,7 @@ DiscoveryClusterDiagnosticDialog::selectedConnections() const {
   return res;
 }
 
-void DiscoveryClusterDiagnosticDialog::ConnectionResult(
+void DiscoveryClusterDiagnosticDialog::connectionResult(
     bool suc,
     qint64 mstimeExecute,
     const QString& resultText,
@@ -151,7 +151,7 @@ void DiscoveryClusterDiagnosticDialog::ConnectionResult(
           core::IConnectionSettingsRemote::CreateFromType(inf->connectionType(), path, host));
       ConnectionListWidgetItemDiscovered* item =
           new ConnectionListWidgetItemDiscovered(inf->info(), nullptr);
-      item->SetConnection(con);
+      item->setConnection(con);
       item->setDisabled(inf->self() || cluster_->FindSettingsByHost(host));
       listWidget_->addTopLevelItem(item);
     }
@@ -164,15 +164,15 @@ void DiscoveryClusterDiagnosticDialog::showEvent(QShowEvent* e) {
   glassWidget_->start();
 }
 
-void DiscoveryClusterDiagnosticDialog::TestConnection(
+void DiscoveryClusterDiagnosticDialog::testConnection(
     core::IConnectionSettingsBaseSPtr connection) {
   QThread* th = new QThread;
   DiscoveryConnection* cheker = new DiscoveryConnection(connection);
   cheker->moveToThread(th);
-  VERIFY(connect(th, &QThread::started, cheker, &DiscoveryConnection::Routine));
-  VERIFY(connect(cheker, &DiscoveryConnection::ConnectionResult, this,
-                 &DiscoveryClusterDiagnosticDialog::ConnectionResult));
-  VERIFY(connect(cheker, &DiscoveryConnection::ConnectionResult, th, &QThread::quit));
+  VERIFY(connect(th, &QThread::started, cheker, &DiscoveryConnection::routine));
+  VERIFY(connect(cheker, &DiscoveryConnection::connectionResult, this,
+                 &DiscoveryClusterDiagnosticDialog::connectionResult));
+  VERIFY(connect(cheker, &DiscoveryConnection::connectionResult, th, &QThread::quit));
   VERIFY(connect(th, &QThread::finished, cheker, &DiscoveryConnection::deleteLater));
   VERIFY(connect(th, &QThread::finished, th, &QThread::deleteLater));
   th->start();

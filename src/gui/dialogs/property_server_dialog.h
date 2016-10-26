@@ -48,6 +48,7 @@ struct ChangeServerPropertyInfoResponce;
 
 namespace fastonosql {
 namespace gui {
+
 class PropertyServerDialog : public QDialog {
   Q_OBJECT
  public:
@@ -64,8 +65,8 @@ class PropertyServerDialog : public QDialog {
   void changedProperty(const core::property_t& prop);
 
  protected:
-  virtual void changeEvent(QEvent* e);
-  virtual void showEvent(QShowEvent* e);
+  virtual void changeEvent(QEvent* e) override;
+  virtual void showEvent(QShowEvent* e) override;
 
  private:
   void retranslateUi();
@@ -74,5 +75,6 @@ class PropertyServerDialog : public QDialog {
   QTableView* propertyes_table_;
   const core::IServerSPtr server_;
 };
+
 }  // namespace gui
 }  // namespace fastonosql

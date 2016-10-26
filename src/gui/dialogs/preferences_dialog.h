@@ -38,13 +38,13 @@ class PreferencesDialog : public QDialog {
   enum { min_width = 640, min_height = 480 };
 
  public Q_SLOTS:
-  virtual void accept();
+  virtual void accept() override;
 
  private:
   void syncWithSettings();
 
  protected:
-  virtual void changeEvent(QEvent* ev);
+  virtual void changeEvent(QEvent* ev) override;
 
  private:
   void retranslateUi();

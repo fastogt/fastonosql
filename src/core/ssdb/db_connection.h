@@ -104,10 +104,10 @@ class DBConnection : public core::CDBConnection<NativeConnection, Config, SSDB> 
                        uint64_t limit,
                        std::vector<std::string>* ret) WARN_UNUSED_RESULT;
   common::Error MultiHget(const std::string& name,
-                           const std::vector<std::string>& keys,
-                           std::vector<std::string>* ret) WARN_UNUSED_RESULT;
+                          const std::vector<std::string>& keys,
+                          std::vector<std::string>* ret) WARN_UNUSED_RESULT;
   common::Error MultiHset(const std::string& name,
-                           const std::map<std::string, std::string>& keys) WARN_UNUSED_RESULT;
+                          const std::map<std::string, std::string>& keys) WARN_UNUSED_RESULT;
   common::Error Zget(const std::string& name,
                      const std::string& key,
                      int64_t* ret) WARN_UNUSED_RESULT;
@@ -152,11 +152,11 @@ class DBConnection : public core::CDBConnection<NativeConnection, Config, SSDB> 
                        uint64_t limit,
                        std::vector<std::string>* ret) WARN_UNUSED_RESULT;
   common::Error MultiZget(const std::string& name,
-                           const std::vector<std::string>& keys,
-                           std::vector<std::string>* ret) WARN_UNUSED_RESULT;
+                          const std::vector<std::string>& keys,
+                          std::vector<std::string>* ret) WARN_UNUSED_RESULT;
   common::Error MultiZset(const std::string& name, const std::map<std::string, int64_t>& kss);
   common::Error MultiZdel(const std::string& name,
-                           const std::vector<std::string>& keys) WARN_UNUSED_RESULT;
+                          const std::vector<std::string>& keys) WARN_UNUSED_RESULT;
   common::Error Qpush(const std::string& name, const std::string& item) WARN_UNUSED_RESULT;
   common::Error Qpop(const std::string& name, std::string* item) WARN_UNUSED_RESULT;
   common::Error Qslice(const std::string& name,

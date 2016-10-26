@@ -44,31 +44,31 @@ class ClusterDialog : public QDialog {
   explicit ClusterDialog(
       QWidget* parent,
       core::IClusterSettingsBase* connection = nullptr);  // get ownerships connection
-  core::IClusterSettingsBaseSPtr Connection() const;
+  core::IClusterSettingsBaseSPtr connection() const;
 
  public Q_SLOTS:
   virtual void accept() override;
 
  private Q_SLOTS:
-  void TypeConnectionChange(int index);
-  void LoggingStateChange(int value);
-  void TestConnection();
-  void DiscoveryCluster();
-  void ShowContextMenu(const QPoint& point);
-  void SetStartNode();
-  void Add();
-  void Remove();
-  void Edit();
-  void ItemSelectionChanged();
+  void typeConnectionChange(int index);
+  void loggingStateChange(int value);
+  void testConnection();
+  void discoveryCluster();
+  void showContextMenu(const QPoint& point);
+  void setStartNode();
+  void add();
+  void remove();
+  void edit();
+  void itemSelectionChanged();
 
  protected:
   virtual void changeEvent(QEvent* ev) override;
 
  private:
-  void RetranslateUi();
-  bool ValidateAndApply();  // always return true and init
+  void retranslateUi();
+  bool validateAndApply();  // always return true and init
                             // cluster_connection_
-  void AddConnection(core::IConnectionSettingsBaseSPtr con);
+  void addConnection(core::IConnectionSettingsBaseSPtr con);
 
   core::IClusterSettingsBaseSPtr cluster_connection_;
   QLineEdit* connectionName_;
