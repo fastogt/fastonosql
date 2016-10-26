@@ -70,6 +70,7 @@ QString toRawCommandLine(QString input) {
 
 namespace fastonosql {
 namespace gui {
+
 ConnectionDialog::ConnectionDialog(QWidget* parent,
                                    core::IConnectionSettingsBase* connection,
                                    const std::vector<core::connectionTypes>& availibleTypes,
@@ -124,7 +125,7 @@ ConnectionDialog::ConnectionDialog(QWidget* parent,
 
   typedef void (QComboBox::*qind)(int);
   VERIFY(connect(typeConnection_, static_cast<qind>(&QComboBox::currentIndexChanged), this,
-                 &ConnectionDialog::typeConnectionChange));
+                 &ConnectionDialog::TypeConnectionChange));
 
   QHBoxLayout* loggingLayout = new QHBoxLayout;
   logging_ = new QCheckBox;
@@ -139,7 +140,7 @@ ConnectionDialog::ConnectionDialog(QWidget* parent,
   } else {
     logging_->setChecked(false);
   }
-  VERIFY(connect(logging_, &QCheckBox::stateChanged, this, &ConnectionDialog::loggingStateChange));
+  VERIFY(connect(logging_, &QCheckBox::stateChanged, this, &ConnectionDialog::LoggingStateChange));
 
   loggingLayout->addWidget(logging_);
   loggingLayout->addWidget(loggingMsec_);
@@ -197,14 +198,14 @@ ConnectionDialog::ConnectionDialog(QWidget* parent,
 
   typedef void (QComboBox::*ind)(const QString&);
   VERIFY(connect(security_, static_cast<ind>(&QComboBox::currentIndexChanged), this,
-                 &ConnectionDialog::securityChange));
+                 &ConnectionDialog::SecurityChange));
 
   passwordBox_ = new QLineEdit;
   passwordBox_->setText(common::ConvertFromString<QString>(info.password));
   passwordBox_->setEchoMode(QLineEdit::Password);
   passwordEchoModeButton_ = new QPushButton(translations::trShow);
   VERIFY(connect(passwordEchoModeButton_, &QPushButton::clicked, this,
-                 &ConnectionDialog::togglePasswordEchoMode));
+                 &ConnectionDialog::TogglePasswordEchoMode));
 
   privateKeyBox_ = new QLineEdit;
   privateKeyBox_->setText(common::ConvertFromString<QString>(info.private_key));
@@ -217,7 +218,7 @@ ConnectionDialog::ConnectionDialog(QWidget* parent,
   passphraseBox_->setEchoMode(QLineEdit::Password);
   passphraseEchoModeButton_ = new QPushButton(translations::trShow);
   VERIFY(connect(passphraseEchoModeButton_, &QPushButton::clicked, this,
-                 &ConnectionDialog::togglePassphraseEchoMode));
+                 &ConnectionDialog::TogglePassphraseEchoMode));
 
   useSshWidget_ = new QWidget;
 
@@ -259,11 +260,11 @@ ConnectionDialog::ConnectionDialog(QWidget* parent,
   inputLayout->addWidget(useSsh_);
 
   VERIFY(connect(selectPrivateFileButton_, &QPushButton::clicked, this,
-                 &ConnectionDialog::setPrivateFile));
+                 &ConnectionDialog::SetPrivateFile));
   VERIFY(connect(selectPublicFileButton_, &QPushButton::clicked, this,
-                 &ConnectionDialog::setPublicFile));
+                 &ConnectionDialog::SetPublicFile));
   VERIFY(
-      connect(useSsh_, &QCheckBox::stateChanged, this, &ConnectionDialog::sshSupportStateChange));
+      connect(useSsh_, &QCheckBox::stateChanged, this, &ConnectionDialog::SshSupportStateChange));
 
   testButton_ = new QPushButton("&Test");
   testButton_->setIcon(GuiFactory::instance().messageBoxInformationIcon());
@@ -285,28 +286,28 @@ ConnectionDialog::ConnectionDialog(QWidget* parent,
   setLayout(mainLayout);
 
   // update controls
-  sshSupportStateChange(useSsh_->checkState());
-  securityChange(security_->currentText());
-  typeConnectionChange(typeConnection_->currentIndex());
-  loggingStateChange(logging_->checkState());
-  retranslateUi();
+  SshSupportStateChange(useSsh_->checkState());
+  SecurityChange(security_->currentText());
+  TypeConnectionChange(typeConnection_->currentIndex());
+  LoggingStateChange(logging_->checkState());
+  RetranslateUi();
 }
 
-void ConnectionDialog::setFolderEnabled(bool val) {
+void ConnectionDialog::SetFolderEnabled(bool val) {
   connectionFolder_->setEnabled(val);
 }
 
-core::IConnectionSettingsBaseSPtr ConnectionDialog::connection() const {
+core::IConnectionSettingsBaseSPtr ConnectionDialog::Connection() const {
   return connection_;
 }
 
 void ConnectionDialog::accept() {
-  if (validateAndApply()) {
+  if (ValidateAndApply()) {
     QDialog::accept();
   }
 }
 
-void ConnectionDialog::typeConnectionChange(int index) {
+void ConnectionDialog::TypeConnectionChange(int index) {
   QVariant var = typeConnection_->itemData(index);
   core::connectionTypes currentType =
       static_cast<core::connectionTypes>(qvariant_cast<unsigned char>(var));
@@ -326,15 +327,15 @@ void ConnectionDialog::typeConnectionChange(int index) {
   commandLine_->setText(StableCommandLine(common::ConvertFromString<QString>(commandLineText)));
 
   useSsh_->setEnabled(is_ssh_type);
-  updateSshControls(is_ssh_type);
+  UpdateSshControls(is_ssh_type);
 }
 
-void ConnectionDialog::loggingStateChange(int value) {
+void ConnectionDialog::LoggingStateChange(int value) {
   loggingMsec_->setEnabled(value);
 }
 
-void ConnectionDialog::securityChange(const QString&) {
-  bool isKey = selectedAuthMethod() == core::SSHInfo::PUBLICKEY;
+void ConnectionDialog::SecurityChange(const QString&) {
+  bool isKey = SelectedAuthMethod() == core::SSHInfo::PUBLICKEY;
   sshPrivateKeyLabel_->setVisible(isKey);
   privateKeyBox_->setVisible(isKey);
   selectPrivateFileButton_->setVisible(isKey);
@@ -349,24 +350,24 @@ void ConnectionDialog::securityChange(const QString&) {
   passwordEchoModeButton_->setVisible(!isKey);
 }
 
-void ConnectionDialog::sshSupportStateChange(int value) {
+void ConnectionDialog::SshSupportStateChange(int value) {
   useSshWidget_->setVisible(value);
-  updateSshControls(value);
+  UpdateSshControls(value);
 }
 
-void ConnectionDialog::togglePasswordEchoMode() {
+void ConnectionDialog::TogglePasswordEchoMode() {
   bool isPassword = passwordBox_->echoMode() == QLineEdit::Password;
   passwordBox_->setEchoMode(isPassword ? QLineEdit::Normal : QLineEdit::Password);
   passwordEchoModeButton_->setText(isPassword ? translations::trHide : translations::trShow);
 }
 
-void ConnectionDialog::togglePassphraseEchoMode() {
+void ConnectionDialog::TogglePassphraseEchoMode() {
   bool isPassword = passphraseBox_->echoMode() == QLineEdit::Password;
   passphraseBox_->setEchoMode(isPassword ? QLineEdit::Normal : QLineEdit::Password);
   passphraseEchoModeButton_->setText(isPassword ? translations::trHide : translations::trShow);
 }
 
-void ConnectionDialog::setPrivateFile() {
+void ConnectionDialog::SetPrivateFile() {
   QString filepath = QFileDialog::getOpenFileName(this, trSelectPrivateKey, privateKeyBox_->text(),
                                                   trPrivateKeyFiles);
   if (filepath.isNull()) {
@@ -376,7 +377,7 @@ void ConnectionDialog::setPrivateFile() {
   privateKeyBox_->setText(filepath);
 }
 
-void ConnectionDialog::setPublicFile() {
+void ConnectionDialog::SetPublicFile() {
   QString filepath = QFileDialog::getOpenFileName(this, trSelectPublicKey, publicKeyBox_->text(),
                                                   trPublicKeyFiles);
   if (filepath.isNull()) {
@@ -387,7 +388,7 @@ void ConnectionDialog::setPublicFile() {
 }
 
 void ConnectionDialog::TestConnection() {
-  if (validateAndApply()) {
+  if (ValidateAndApply()) {
     ConnectionDiagnosticDialog diag(this, connection_);
     diag.exec();
   }
@@ -395,12 +396,12 @@ void ConnectionDialog::TestConnection() {
 
 void ConnectionDialog::changeEvent(QEvent* e) {
   if (e->type() == QEvent::LanguageChange) {
-    retranslateUi();
+    RetranslateUi();
   }
   QDialog::changeEvent(e);
 }
 
-void ConnectionDialog::retranslateUi() {
+void ConnectionDialog::RetranslateUi() {
   setWindowTitle(trTitle);
   folderLabel_->setText(translations::trFolder);
   logging_->setText(translations::trLoggingEnabled);
@@ -415,7 +416,7 @@ void ConnectionDialog::retranslateUi() {
   loggingMsec_->setToolTip(trLoggingToolTip);
 }
 
-bool ConnectionDialog::validateAndApply() {
+bool ConnectionDialog::ValidateAndApply() {
   QVariant var = typeConnection_->currentData();
   core::connectionTypes currentType =
       static_cast<core::connectionTypes>(qvariant_cast<unsigned char>(var));
@@ -443,7 +444,7 @@ bool ConnectionDialog::validateAndApply() {
     info.private_key = common::ConvertToString(privateKeyBox_->text());
     info.passphrase = common::ConvertToString(passphraseBox_->text());
     if (useSsh_->isChecked()) {
-      info.current_method = selectedAuthMethod();
+      info.current_method = SelectedAuthMethod();
       if (info.current_method == core::SSHInfo::PUBLICKEY && info.private_key.empty()) {
         QMessageBox::critical(this, translations::trError, trPrivateKeyInvalidInput);
         privateKeyBox_->setFocus();
@@ -466,7 +467,7 @@ bool ConnectionDialog::validateAndApply() {
   return true;
 }
 
-core::SSHInfo::SupportedAuthenticationMetods ConnectionDialog::selectedAuthMethod() const {
+core::SSHInfo::SupportedAuthenticationMetods ConnectionDialog::SelectedAuthMethod() const {
   if (security_->currentText() == translations::trPublicPrivateKey) {
     return core::SSHInfo::PUBLICKEY;
   }
@@ -474,7 +475,7 @@ core::SSHInfo::SupportedAuthenticationMetods ConnectionDialog::selectedAuthMetho
   return core::SSHInfo::PASSWORD;
 }
 
-void ConnectionDialog::updateSshControls(bool isValidType) {
+void ConnectionDialog::UpdateSshControls(bool isValidType) {
   sshHostName_->setEnabled(isValidType);
   userName_->setEnabled(isValidType);
   sshPort_->setEnabled(isValidType);
@@ -491,5 +492,6 @@ void ConnectionDialog::updateSshControls(bool isValidType) {
   passwordBox_->setEnabled(isValidType);
   passwordLabel_->setEnabled(isValidType);
 }
+
 }  // namespace gui
 }  // namespace fastonosql

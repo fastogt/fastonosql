@@ -46,8 +46,8 @@ FastoObjectCommandIPtr CreateCommand(FastoObject* parent,
   }
 
   common::CommandValue* cmd = common::Value::createCommand(stable_input, ct);
-  FastoObjectCommandIPtr fs = new Command(parent, cmd, parent->delimiter());
-  parent->addChildren(fs);
+  FastoObjectCommandIPtr fs = new Command(parent, cmd, parent->Delimiter());
+  parent->AddChildren(fs);
   return fs;
 }
 

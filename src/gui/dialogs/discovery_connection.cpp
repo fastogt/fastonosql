@@ -37,11 +37,11 @@ DiscoveryConnection::DiscoveryConnection(core::IConnectionSettingsBaseSPtr conn,
       "std::vector<core::ServerDiscoveryClusterInfoSPtr>");
 }
 
-void DiscoveryConnection::routine() {
+void DiscoveryConnection::Routine() {
   std::vector<core::ServerDiscoveryClusterInfoSPtr> inf;
 
   if (!connection_) {
-    emit connectionResult(false, common::time::current_mstime() - start_time_,
+    emit ConnectionResult(false, common::time::current_mstime() - start_time_,
                           "Invalid connection settings", inf);
     return;
   }
@@ -49,10 +49,10 @@ void DiscoveryConnection::routine() {
   common::Error er = core::ServersManager::instance().DiscoveryClusterConnection(connection_, &inf);
 
   if (er && er->isError()) {
-    emit connectionResult(false, common::time::current_mstime() - start_time_,
+    emit ConnectionResult(false, common::time::current_mstime() - start_time_,
                           common::ConvertFromString<QString>(er->description()), inf);
   } else {
-    emit connectionResult(true, common::time::current_mstime() - start_time_,
+    emit ConnectionResult(true, common::time::current_mstime() - start_time_,
                           translations::trSuccess, inf);
   }
 }

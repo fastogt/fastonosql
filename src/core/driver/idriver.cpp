@@ -156,7 +156,7 @@ common::Error IDriver::Execute(FastoObjectCommandIPtr cmd) {
     return common::make_error_value("Invalid input argument(s)", common::ErrorValue::E_ERROR);
   }
 
-  common::CommandValue* icmd = cmd->cmd();
+  common::CommandValue* icmd = cmd->Cmd();
   const std::string command = icmd->inputCommand();
   const char* ccommand = common::utils::c_strornull(command);
   if (!ccommand) {

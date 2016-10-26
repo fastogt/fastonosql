@@ -42,10 +42,10 @@ class ConnectionDiagnosticDialog : public QDialog {
   ConnectionDiagnosticDialog(QWidget* parent, core::IConnectionSettingsBaseSPtr connection);
 
  private Q_SLOTS:
-  void connectionResult(bool suc, qint64 mstimeExecute, const QString& resultText);
+  void ConnectionResult(bool suc, qint64 mstimeExecute, const QString& resultText);
 
  protected:
-  virtual void showEvent(QShowEvent* e);
+  virtual void showEvent(QShowEvent* e) override;
 
  private:
   void StartTestConnection(core::IConnectionSettingsBaseSPtr connection);

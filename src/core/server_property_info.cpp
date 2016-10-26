@@ -36,7 +36,7 @@ ServerPropertiesInfo MakeServerProperty(const FastoObjectArray* array) {
     return ServerPropertiesInfo();
   }
 
-  common::ArrayValue* arr = array->array();
+  common::ArrayValue* arr = array->Array();
   if (!arr) {
     DNOTREACHED();
     return ServerPropertiesInfo();

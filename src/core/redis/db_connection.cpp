@@ -447,12 +447,12 @@ common::Error cliOutputCommandHelp(FastoObject* out,
                                         help->params, help->summary, help->since);
   common::StringValue* val = common::Value::createStringValue(buff);
   FastoObject* child = new FastoObject(out, val, delimiter);
-  out->addChildren(child);
+  out->AddChildren(child);
   if (group) {
     std::string buff2 = common::MemSPrintf("group: %s", commandGroups[help->group]);
     val = common::Value::createStringValue(buff2);
     FastoObject* gchild = new FastoObject(out, val, delimiter);
-    out->addChildren(gchild);
+    out->AddChildren(gchild);
   }
 
   return common::Error();
@@ -475,7 +475,7 @@ common::Error cliOutputGenericHelp(FastoObject* out, const std::string& delimite
                          "help topics\r\n"
                          "      \"quit\" to exit");
   FastoObject* child = new FastoObject(out, val, delimiter);
-  out->addChildren(child);
+  out->AddChildren(child);
 
   return common::Error();
 }
@@ -587,7 +587,7 @@ common::Error auth(CommandHandler* handler, int argc, const char** argv, FastoOb
 
   common::StringValue* val = common::Value::createStringValue("OK");
   FastoObject* child = new FastoObject(out, val, red->Delimiter());
-  out->addChildren(child);
+  out->AddChildren(child);
   return common::Error();
 }
 
@@ -601,7 +601,7 @@ common::Error select(CommandHandler* handler, int argc, const char** argv, Fasto
 
   common::StringValue* val = common::Value::createStringValue("OK");
   FastoObject* child = new FastoObject(out, val, red->Delimiter());
-  out->addChildren(child);
+  out->AddChildren(child);
   return common::Error();
 }
 
@@ -621,7 +621,7 @@ common::Error del(CommandHandler* handler, int argc, const char** argv, FastoObj
 
   common::FundamentalValue* val = common::Value::createUIntegerValue(keysdeleted.size());
   FastoObject* child = new FastoObject(out, val, red->Delimiter());
-  out->addChildren(child);
+  out->AddChildren(child);
   return common::Error();
 }
 
@@ -641,7 +641,7 @@ common::Error set(CommandHandler* handler, int argc, const char** argv, FastoObj
 
   common::StringValue* val = common::Value::createStringValue("OK");
   FastoObject* child = new FastoObject(out, val, red->Delimiter());
-  out->addChildren(child);
+  out->AddChildren(child);
   return common::Error();
 }
 
@@ -659,7 +659,7 @@ common::Error get(CommandHandler* handler, int argc, const char** argv, FastoObj
   NValue val = key_loaded.Value();
   common::Value* copy = val->deepCopy();
   FastoObject* child = new FastoObject(out, copy, redis->Delimiter());
-  out->addChildren(child);
+  out->AddChildren(child);
   return common::Error();
 }
 
@@ -679,7 +679,7 @@ common::Error lrange(CommandHandler* handler, int argc, const char** argv, Fasto
   NValue val = key_loaded.Value();
   common::Value* copy = val->deepCopy();
   FastoObject* child = new FastoObject(out, copy, redis->Delimiter());
-  out->addChildren(child);
+  out->AddChildren(child);
   return common::Error();
 }
 
@@ -697,7 +697,7 @@ common::Error smembers(CommandHandler* handler, int argc, const char** argv, Fas
   NValue val = key_loaded.Value();
   common::Value* copy = val->deepCopy();
   FastoObject* child = new FastoObject(out, copy, redis->Delimiter());
-  out->addChildren(child);
+  out->AddChildren(child);
   return common::Error();
 }
 
@@ -718,7 +718,7 @@ common::Error zrange(CommandHandler* handler, int argc, const char** argv, Fasto
   NValue val = key_loaded.Value();
   common::Value* copy = val->deepCopy();
   FastoObject* child = new FastoObject(out, copy, redis->Delimiter());
-  out->addChildren(child);
+  out->AddChildren(child);
   return common::Error();
 }
 
@@ -736,7 +736,7 @@ common::Error hgetall(CommandHandler* handler, int argc, const char** argv, Fast
   NValue val = key_loaded.Value();
   common::Value* copy = val->deepCopy();
   FastoObject* child = new FastoObject(out, copy, redis->Delimiter());
-  out->addChildren(child);
+  out->AddChildren(child);
   return common::Error();
 }
 
@@ -752,7 +752,7 @@ common::Error rename(CommandHandler* handler, int argc, const char** argv, Fasto
 
   common::StringValue* val = common::Value::createStringValue("OK");
   FastoObject* child = new FastoObject(out, val, red->Delimiter());
-  out->addChildren(child);
+  out->AddChildren(child);
   return common::Error();
 }
 
@@ -765,13 +765,13 @@ common::Error persist(CommandHandler* handler, int argc, const char** argv, Fast
   if (err && err->isError()) {
     common::FundamentalValue* val = common::Value::createUIntegerValue(0);
     FastoObject* child = new FastoObject(out, val, red->Delimiter());
-    out->addChildren(child);
+    out->AddChildren(child);
     return err;
   }
 
   common::FundamentalValue* val = common::Value::createUIntegerValue(1);
   FastoObject* child = new FastoObject(out, val, red->Delimiter());
-  out->addChildren(child);
+  out->AddChildren(child);
   return common::Error();
 }
 
@@ -785,13 +785,13 @@ common::Error expire(CommandHandler* handler, int argc, const char** argv, Fasto
   if (err && err->isError()) {
     common::FundamentalValue* val = common::Value::createUIntegerValue(0);
     FastoObject* child = new FastoObject(out, val, red->Delimiter());
-    out->addChildren(child);
+    out->AddChildren(child);
     return err;
   }
 
   common::FundamentalValue* val = common::Value::createUIntegerValue(1);
   FastoObject* child = new FastoObject(out, val, red->Delimiter());
-  out->addChildren(child);
+  out->AddChildren(child);
   return common::Error();
 }
 
@@ -1084,7 +1084,7 @@ common::Error DBConnection::LatencyMode(FastoObject* out) {
   common::time64_t history_start = common::time::current_mstime();
 
   FastoObjectIPtr child;
-  std::string command = cmd->inputCommand();
+  std::string command = cmd->InputCommand();
 
   double avg;
   while (!IsInterrupted()) {
@@ -1121,17 +1121,17 @@ common::Error DBConnection::LatencyMode(FastoObject* out) {
 
     if (!child) {
       child = make_fasto_object<FastoObject>(cmd.get(), val, Delimiter());
-      cmd->addChildren(child);
+      cmd->AddChildren(child);
       continue;
     }
 
     if (connection_.config_.latency_history && (cur_time - history_start > history_interval)) {
       child = make_fasto_object<FastoObject>(cmd.get(), val, Delimiter());
-      cmd->addChildren(child);
+      cmd->AddChildren(child);
       history_start = cur_time;
       min = max = tot = count = 0;
     } else {
-      child->setValue(common::ValueSPtr(val));
+      child->SetValue(common::ValueSPtr(val));
     }
 
     common::utils::msleep(LATENCY_SAMPLE_RATE);
@@ -1273,7 +1273,7 @@ common::Error DBConnection::GetRDB(FastoObject* out) {
   if (connection_.config_.rdb_filename == "-") {
     val = new common::ArrayValue;
     FastoObjectIPtr child = make_fasto_object<FastoObject>(cmd.get(), val, Delimiter());
-    cmd->addChildren(child);
+    cmd->AddChildren(child);
   } else {
     fd = open(connection_.config_.rdb_filename.c_str(), O_CREAT | O_WRONLY, 0644);
     if (fd == INVALID_DESCRIPTOR) {
@@ -1627,7 +1627,7 @@ common::Error DBConnection::FindBigKeys(FastoObject* out) {
                                 biggest[i], typeunit[i]);
       common::StringValue* val = common::Value::createStringValue(buff);
       FastoObjectIPtr obj = make_fasto_object<FastoObject>(cmd.get(), val, Delimiter());
-      cmd->addChildren(obj);
+      cmd->AddChildren(obj);
     }
   }
 
@@ -1641,7 +1641,7 @@ common::Error DBConnection::FindBigKeys(FastoObject* out) {
         counts[i] ? static_cast<double>(totalsize[i] / counts[i]) : 0);
     common::StringValue* val = common::Value::createStringValue(buff);
     FastoObjectIPtr obj = make_fasto_object<FastoObject>(cmd.get(), val, Delimiter());
-    cmd->addChildren(obj);
+    cmd->AddChildren(obj);
   }
 
   /* Free sds strings containing max keys */
@@ -1673,7 +1673,7 @@ common::Error DBConnection::StatMode(FastoObject* out) {
     connection_.config_.interval = 1000000;
   }
 
-  std::string command = cmd->inputCommand();
+  std::string command = cmd->InputCommand();
   long requests = 0;
 
   while (!IsInterrupted()) {
@@ -1756,7 +1756,7 @@ common::Error DBConnection::StatMode(FastoObject* out) {
 
     common::StringValue* val = common::Value::createStringValue(result);
     FastoObjectIPtr obj = make_fasto_object<FastoObject>(cmd.get(), val, Delimiter());
-    cmd->addChildren(obj);
+    cmd->AddChildren(obj);
 
     freeReplyObject(reply);
 
@@ -1805,7 +1805,7 @@ common::Error DBConnection::ScanMode(FastoObject* out) {
         common::StringValue* val =
             common::Value::createStringValue(reply->element[1]->element[j]->str);
         FastoObjectIPtr obj = make_fasto_object<FastoObject>(cmd.get(), val, Delimiter());
-        cmd->addChildren(obj);
+        cmd->AddChildren(obj);
       }
     }
     freeReplyObject(reply);
@@ -1964,31 +1964,31 @@ common::Error DBConnection::CliFormatReplyRaw(FastoObjectArray* ar, redisReply* 
   switch (r->type) {
     case REDIS_REPLY_NIL: {
       common::Value* val = common::Value::createNullValue();
-      ar->append(val);
+      ar->Append(val);
       break;
     }
     case REDIS_REPLY_ERROR: {
       std::string str(r->str, r->len);
       common::ErrorValue* val = common::Value::createErrorValue(str, common::ErrorValue::E_NONE,
                                                                 common::logging::L_WARNING);
-      ar->append(val);
+      ar->Append(val);
       break;
     }
     case REDIS_REPLY_STATUS:
     case REDIS_REPLY_STRING: {
       common::StringValue* val = common::Value::createStringValue(std::string(r->str, r->len));
-      ar->append(val);
+      ar->Append(val);
       break;
     }
     case REDIS_REPLY_INTEGER: {
       common::FundamentalValue* val = common::Value::createIntegerValue(r->integer);
-      ar->append(val);
+      ar->Append(val);
       break;
     }
     case REDIS_REPLY_ARRAY: {
       common::ArrayValue* arv = common::Value::createArrayValue();
       FastoObjectArray* child = new FastoObjectArray(ar, arv, Delimiter());
-      ar->addChildren(child);
+      ar->AddChildren(child);
 
       for (size_t i = 0; i < r->elements; ++i) {
         common::Error er = CliFormatReplyRaw(child, r->element[i]);
@@ -2002,7 +2002,7 @@ common::Error DBConnection::CliFormatReplyRaw(FastoObjectArray* ar, redisReply* 
       common::ErrorValue* val =
           common::Value::createErrorValue(common::MemSPrintf("Unknown reply type: %d", r->type),
                                           common::ErrorValue::E_NONE, common::logging::L_WARNING);
-      ar->append(val);
+      ar->Append(val);
     }
   }
 
@@ -2020,7 +2020,7 @@ common::Error DBConnection::CliFormatReplyRaw(FastoObject* out, redisReply* r) {
     case REDIS_REPLY_NIL: {
       common::Value* val = common::Value::createNullValue();
       obj = new FastoObject(out, val, Delimiter());
-      out->addChildren(obj);
+      out->AddChildren(obj);
       break;
     }
     case REDIS_REPLY_ERROR: {
@@ -2036,19 +2036,19 @@ common::Error DBConnection::CliFormatReplyRaw(FastoObject* out, redisReply* r) {
       std::string str(r->str, r->len);
       common::StringValue* val = common::Value::createStringValue(str);
       obj = new FastoObject(out, val, Delimiter());
-      out->addChildren(obj);
+      out->AddChildren(obj);
       break;
     }
     case REDIS_REPLY_INTEGER: {
       common::FundamentalValue* val = common::Value::createIntegerValue(r->integer);
       obj = new FastoObject(out, val, Delimiter());
-      out->addChildren(obj);
+      out->AddChildren(obj);
       break;
     }
     case REDIS_REPLY_ARRAY: {
       common::ArrayValue* arv = common::Value::createArrayValue();
       FastoObjectArray* child = new FastoObjectArray(out, arv, Delimiter());
-      out->addChildren(child);
+      out->AddChildren(child);
 
       for (size_t i = 0; i < r->elements; ++i) {
         common::Error er = CliFormatReplyRaw(child, r->element[i]);
@@ -2111,7 +2111,7 @@ common::Error DBConnection::CliReadReply(FastoObject* out) {
         common::MemSPrintf("-> Redirected to slot [%d] located at %s", slot, host_str);
     common::StringValue* val = common::Value::createStringValue(redir);
     FastoObject* child = new FastoObject(out, val, Delimiter());
-    out->addChildren(child);
+    out->AddChildren(child);
     connection_.config_.cluster_reissue_command = 1;
 
     freeReplyObject(reply);
@@ -2137,7 +2137,7 @@ common::Error DBConnection::ExecuteAsPipeline(const std::vector<FastoObjectComma
   std::vector<FastoObjectCommandIPtr> valid_cmds;
   for (size_t i = 0; i < cmds.size(); ++i) {
     FastoObjectCommandIPtr cmd = cmds[i];
-    common::CommandValue* cmdc = cmd->cmd();
+    common::CommandValue* cmdc = cmd->Cmd();
 
     std::string command = cmdc->inputCommand();
     const char* ccommand = common::utils::c_strornull(command);

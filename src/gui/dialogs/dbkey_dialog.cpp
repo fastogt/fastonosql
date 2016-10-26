@@ -58,6 +58,7 @@ const QString trInput = QObject::tr("Key/Value input");
 
 namespace fastonosql {
 namespace gui {
+
 DbKeyDialog::DbKeyDialog(const QString& title,
                          core::connectionTypes type,
                          core::NDbKValue key,
@@ -88,7 +89,7 @@ DbKeyDialog::DbKeyDialog(const QString& title,
 
   typedef void (QComboBox::*ind)(int);
   VERIFY(connect(typesCombo_, static_cast<ind>(&QComboBox::currentIndexChanged), this,
-                 &DbKeyDialog::typeChanged));
+                 &DbKeyDialog::TypeChanged));
   kvLayout->addWidget(typesCombo_, 0, 1);
 
   // key layout
@@ -116,11 +117,11 @@ DbKeyDialog::DbKeyDialog(const QString& title,
   valueListEdit_->setSelectionBehavior(QAbstractItemView::SelectRows);
 
   QAction* addItem = new QAction(translations::trAddItem, this);
-  VERIFY(connect(addItem, &QAction::triggered, this, &DbKeyDialog::addItem));
+  VERIFY(connect(addItem, &QAction::triggered, this, &DbKeyDialog::AddItem));
   valueListEdit_->addAction(addItem);
 
   QAction* removeItem = new QAction(translations::trRemoveItem, this);
-  VERIFY(connect(removeItem, &QAction::triggered, this, &DbKeyDialog::removeItem));
+  VERIFY(connect(removeItem, &QAction::triggered, this, &DbKeyDialog::RemoveItem));
   valueListEdit_->addAction(removeItem);
 
   kvLayout->addWidget(valueListEdit_, 2, 1);
@@ -139,12 +140,12 @@ DbKeyDialog::DbKeyDialog(const QString& title,
   valueTableEdit_->setVisible(false);
 
   addItemButton_ = new QPushButton(translations::trAddItem);
-  VERIFY(connect(addItemButton_, &QPushButton::clicked, this, &DbKeyDialog::addItem));
+  VERIFY(connect(addItemButton_, &QPushButton::clicked, this, &DbKeyDialog::AddItem));
   kvLayout->addWidget(addItemButton_, 3, 0);
   addItemButton_->setVisible(false);
 
   removeItemButton_ = new QPushButton(translations::trRemoveItem);
-  VERIFY(connect(removeItemButton_, &QPushButton::clicked, this, &DbKeyDialog::removeItem));
+  VERIFY(connect(removeItemButton_, &QPushButton::clicked, this, &DbKeyDialog::RemoveItem));
   kvLayout->addWidget(removeItemButton_, 3, 1);
   removeItemButton_->setVisible(false);
 
@@ -168,24 +169,24 @@ DbKeyDialog::DbKeyDialog(const QString& title,
   }
   typesCombo_->setCurrentIndex(current_index);
   core::NValue val = key_.Value();
-  syncControls(val.get());
+  SyncControls(val.get());
 
   setMinimumSize(QSize(min_width, min_height));
   setLayout(layout);
-  retranslateUi();
+  RetranslateUi();
 }
 
-core::NDbKValue DbKeyDialog::key() const {
+core::NDbKValue DbKeyDialog::Key() const {
   return key_;
 }
 
 void DbKeyDialog::accept() {
-  if (validateAndApply()) {
+  if (ValidateAndApply()) {
     QDialog::accept();
   }
 }
 
-void DbKeyDialog::typeChanged(int index) {
+void DbKeyDialog::TypeChanged(int index) {
   QVariant var = typesCombo_->itemData(index);
   common::Value::Type type = static_cast<common::Value::Type>(qvariant_cast<unsigned char>(var));
 
@@ -228,7 +229,7 @@ void DbKeyDialog::typeChanged(int index) {
   }
 }
 
-void DbKeyDialog::addItem() {
+void DbKeyDialog::AddItem() {
   int index = typesCombo_->currentIndex();
   QVariant var = typesCombo_->itemData(index);
   common::Value::Type t = static_cast<common::Value::Type>(qvariant_cast<unsigned char>(var));
@@ -296,7 +297,7 @@ void DbKeyDialog::addItem() {
   }
 }
 
-void DbKeyDialog::removeItem() {
+void DbKeyDialog::RemoveItem() {
   if (valueListEdit_->isVisible()) {
     QListWidgetItem* ritem = valueListEdit_->currentItem();
     delete ritem;
@@ -308,12 +309,12 @@ void DbKeyDialog::removeItem() {
 
 void DbKeyDialog::changeEvent(QEvent* e) {
   if (e->type() == QEvent::LanguageChange) {
-    retranslateUi();
+    RetranslateUi();
   }
   QDialog::changeEvent(e);
 }
 
-void DbKeyDialog::syncControls(common::Value* item) {
+void DbKeyDialog::SyncControls(common::Value* item) {
   if (!item) {
     return;
   }
@@ -408,12 +409,12 @@ void DbKeyDialog::syncControls(common::Value* item) {
   }
 }
 
-bool DbKeyDialog::validateAndApply() {
+bool DbKeyDialog::ValidateAndApply() {
   if (keyEdit_->text().isEmpty()) {
     return false;
   }
 
-  common::Value* obj = item();
+  common::Value* obj = Item();
   if (!obj) {
     return false;
   }
@@ -423,11 +424,11 @@ bool DbKeyDialog::validateAndApply() {
   return true;
 }
 
-void DbKeyDialog::retranslateUi() {
+void DbKeyDialog::RetranslateUi() {
   generalBox_->setTitle(trInput);
 }
 
-common::Value* DbKeyDialog::item() const {
+common::Value* DbKeyDialog::Item() const {
   int index = typesCombo_->currentIndex();
   QVariant var = typesCombo_->itemData(index);
   common::Value::Type t = static_cast<common::Value::Type>(qvariant_cast<unsigned char>(var));
@@ -503,5 +504,6 @@ common::Value* DbKeyDialog::item() const {
     return common::Value::createStringValue(common::ConvertToString(text));
   }
 }
+
 }  // namespace gui
 }  // namespace fastonosql

@@ -33,6 +33,7 @@
 
 namespace fastonosql {
 namespace gui {
+
 DirectoryListWidgetItem::DirectoryListWidgetItem(
     const core::IConnectionSettings::connection_path_t& path)
     : path_(path) {
@@ -42,25 +43,25 @@ DirectoryListWidgetItem::DirectoryListWidgetItem(
   setText(1, common::ConvertFromString<QString>(path_.Directory()));
 }
 
-core::IConnectionSettingsBase::connection_path_t DirectoryListWidgetItem::path() const {
+core::IConnectionSettingsBase::connection_path_t DirectoryListWidgetItem::Path() const {
   return path_;
 }
 
 IConnectionListWidgetItem::IConnectionListWidgetItem(QTreeWidgetItem* parent)
     : QTreeWidgetItem(parent), connection_() {}
 
-void IConnectionListWidgetItem::setConnection(core::IConnectionSettingsBaseSPtr cons) {
+void IConnectionListWidgetItem::SetConnection(core::IConnectionSettingsBaseSPtr cons) {
   connection_ = cons;
 }
 
-core::IConnectionSettingsBaseSPtr IConnectionListWidgetItem::connection() const {
+core::IConnectionSettingsBaseSPtr IConnectionListWidgetItem::Connection() const {
   return connection_;
 }
 
 ConnectionListWidgetItem::ConnectionListWidgetItem(QTreeWidgetItem* parent)
     : IConnectionListWidgetItem(parent) {}
 
-void ConnectionListWidgetItem::setConnection(core::IConnectionSettingsBaseSPtr cons) {
+void ConnectionListWidgetItem::SetConnection(core::IConnectionSettingsBaseSPtr cons) {
   if (!cons) {
     DNOTREACHED();
     return;
@@ -73,10 +74,10 @@ void ConnectionListWidgetItem::setConnection(core::IConnectionSettingsBaseSPtr c
   core::connectionTypes conType = cons->Type();
   setIcon(0, GuiFactory::instance().icon(conType));
   setText(1, common::ConvertFromString<QString>(cons->FullAddress()));
-  IConnectionListWidgetItem::setConnection(cons);
+  IConnectionListWidgetItem::SetConnection(cons);
 }
 
-IConnectionListWidgetItem::itemConnectionType ConnectionListWidgetItem::type() const {
+IConnectionListWidgetItem::itemConnectionType ConnectionListWidgetItem::Type() const {
   return Common;
 }
 
@@ -87,7 +88,7 @@ SentinelConnectionWidgetItem::SentinelConnectionWidgetItem(
                                          parent) {  // core::SENTINEL
 }
 
-IConnectionListWidgetItem::itemConnectionType SentinelConnectionWidgetItem::type() const {
+IConnectionListWidgetItem::itemConnectionType SentinelConnectionWidgetItem::Type() const {
   return Sentinel;
 }
 
@@ -101,7 +102,7 @@ ConnectionListWidgetItemDiscovered::ConnectionListWidgetItemDiscovered(
   setText(3, common::ConvertFromString<QString>(sstate));
 }
 
-IConnectionListWidgetItem::itemConnectionType ConnectionListWidgetItemDiscovered::type() const {
+IConnectionListWidgetItem::itemConnectionType ConnectionListWidgetItemDiscovered::Type() const {
   return Discovered;
 }
 
@@ -109,25 +110,25 @@ SentinelConnectionListWidgetItemContainer::SentinelConnectionListWidgetItemConta
     core::ISentinelSettingsBaseSPtr connection,
     QTreeWidgetItem* parent)
     : QTreeWidgetItem(parent), connection_() {
-  setConnection(connection);
+  SetConnection(connection);
 
   core::ISentinelSettingsBase::sentinel_connections_t sentinels = connection_->Sentinels();
   for (size_t i = 0; i < sentinels.size(); ++i) {
     core::SentinelSettings sent = sentinels[i];
     SentinelConnectionWidgetItem* item =
         new SentinelConnectionWidgetItem(core::ServerCommonInfo(), this);
-    item->setConnection(sent.sentinel);
+    item->SetConnection(sent.sentinel);
     addChild(item);
     for (size_t j = 0; j < sent.sentinel_nodes.size(); ++j) {
       core::IConnectionSettingsBaseSPtr con = sent.sentinel_nodes[j];
       ConnectionListWidgetItem* child = new ConnectionListWidgetItem(item);
-      child->setConnection(con);
+      child->SetConnection(con);
       item->addChild(child);
     }
   }
 }
 
-void SentinelConnectionListWidgetItemContainer::setConnection(
+void SentinelConnectionListWidgetItemContainer::SetConnection(
     core::ISentinelSettingsBaseSPtr cons) {
   if (!cons) {
     return;
@@ -139,7 +140,7 @@ void SentinelConnectionListWidgetItemContainer::setConnection(
   setIcon(0, GuiFactory::instance().sentinelIcon());
 }
 
-core::ISentinelSettingsBaseSPtr SentinelConnectionListWidgetItemContainer::connection() const {
+core::ISentinelSettingsBaseSPtr SentinelConnectionListWidgetItemContainer::Connection() const {
   return connection_;
 }
 
@@ -147,18 +148,18 @@ ClusterConnectionListWidgetItemContainer::ClusterConnectionListWidgetItemContain
     core::IClusterSettingsBaseSPtr connection,
     QTreeWidgetItem* parent)
     : QTreeWidgetItem(parent), connection_() {
-  setConnection(connection);
+  SetConnection(connection);
 
   auto nodes = connection_->Nodes();
   for (size_t i = 0; i < nodes.size(); ++i) {
     core::IConnectionSettingsBaseSPtr con = nodes[i];
     ConnectionListWidgetItem* item = new ConnectionListWidgetItem(this);
-    item->setConnection(con);
+    item->SetConnection(con);
     addChild(item);
   }
 }
 
-void ClusterConnectionListWidgetItemContainer::setConnection(core::IClusterSettingsBaseSPtr cons) {
+void ClusterConnectionListWidgetItemContainer::SetConnection(core::IClusterSettingsBaseSPtr cons) {
   if (!cons) {
     return;
   }
@@ -169,7 +170,7 @@ void ClusterConnectionListWidgetItemContainer::setConnection(core::IClusterSetti
   setIcon(0, GuiFactory::instance().clusterIcon());
 }
 
-core::IClusterSettingsBaseSPtr ClusterConnectionListWidgetItemContainer::connection() const {
+core::IClusterSettingsBaseSPtr ClusterConnectionListWidgetItemContainer::Connection() const {
   return connection_;
 }
 }  // namespace gui

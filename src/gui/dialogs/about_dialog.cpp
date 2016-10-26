@@ -61,6 +61,7 @@ const QString tAboutTitle = QObject::tr("About " PROJECT_NAME_TITLE);
 
 namespace fastonosql {
 namespace gui {
+
 AboutDialog::AboutDialog(QWidget* parent) : QDialog(parent) {
   setWindowTitle(tAboutTitle);
   setWindowFlags(windowFlags() & ~Qt::WindowContextHelpButtonHint);
@@ -88,5 +89,6 @@ AboutDialog::AboutDialog(QWidget* parent) : QDialog(parent) {
   glayout->setSizeConstraint(QLayout::SetFixedSize);
   setLayout(glayout);
 }
+
 }  // namespace gui
 }  // namespace fastonosql

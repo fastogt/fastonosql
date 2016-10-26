@@ -38,7 +38,7 @@ RootLocker::RootLocker(IDriver* parent, QObject* receiver, const std::string& te
       silence_(silence) {
   DCHECK(parent_);
 
-  root_ = FastoObject::createRoot(text, this);
+  root_ = FastoObject::CreateRoot(text, this);
   if (!silence_) {
     events::CommandRootCreatedEvent::value_type res(parent_, root_);
     IDriver::Reply(receiver_, new events::CommandRootCreatedEvent(parent_, res));

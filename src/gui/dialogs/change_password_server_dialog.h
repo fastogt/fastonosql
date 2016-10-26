@@ -52,12 +52,12 @@ class ChangePasswordServerDialog : public QDialog {
                                       QWidget* parent = 0);
 
  private Q_SLOTS:
-  void tryToCreatePassword();
-  void startChangePassword(const core::events_info::ChangePasswordRequest& req);
-  void finishChangePassword(const core::events_info::ChangePasswordResponce& res);
+  void TryToCreatePassword();
+  void StartChangePassword(const core::events_info::ChangePasswordRequest& req);
+  void FinishChangePassword(const core::events_info::ChangePasswordResponce& res);
 
  private:
-  bool validateInput();
+  bool ValidateInput();
 
   common::qt::gui::GlassWidget* glassWidget_;
   QLineEdit* passwordLineEdit_;

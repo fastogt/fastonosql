@@ -59,19 +59,19 @@ class FastoObject : public common::intrusive_ptr_base<FastoObject> {
               const std::string& delimiter);  // val take ownerships
   virtual ~FastoObject();
 
-  common::Value::Type type() const;
-  virtual std::string toString() const;
+  common::Value::Type Type() const;
+  virtual std::string ToString() const;
 
-  static FastoObject* createRoot(const std::string& text, IFastoObjectObserver* observer = nullptr);
+  static FastoObject* CreateRoot(const std::string& text, IFastoObjectObserver* observer = nullptr);
 
-  childs_t childrens() const;
-  void addChildren(child_t child);
-  FastoObject* parent() const;
-  void clear();
-  std::string delimiter() const;
+  childs_t Childrens() const;
+  void AddChildren(child_t child);
+  FastoObject* Parent() const;
+  void Clear();
+  std::string Delimiter() const;
 
-  value_t value() const;
-  void setValue(value_t val);
+  value_t Value() const;
+  void SetValue(value_t val);
 
  protected:
   IFastoObjectObserver* observer_;
@@ -88,18 +88,18 @@ class FastoObject : public common::intrusive_ptr_base<FastoObject> {
 class FastoObjectCommand : public FastoObject {
  public:
   virtual ~FastoObjectCommand();
-  common::CommandValue* cmd() const;
-  virtual std::string toString() const;
+  common::CommandValue* Cmd() const;
+  virtual std::string ToString() const;
 
-  virtual std::string inputCmd() const;
-  virtual std::string inputArgs() const;
+  virtual std::string InputCmd() const;
+  virtual std::string InputArgs() const;
 
   virtual bool IsReadOnly() const = 0;
 
-  core::connectionTypes connectionType() const;
+  core::connectionTypes ConnectionType() const;
 
-  std::string inputCommand() const;
-  common::Value::CommandLoggingType commandLoggingType() const;
+  std::string InputCommand() const;
+  common::Value::CommandLoggingType CommandLoggingType() const;
 
  protected:
   FastoObjectCommand(FastoObject* parent,
@@ -119,10 +119,10 @@ class FastoObjectArray : public FastoObject {
   FastoObjectArray(FastoObject* parent, common::ArrayValue* ar, const std::string& delimiter);
 
   // Appends a Value to the end of the list.
-  void append(common::Value* in_value);
-  virtual std::string toString() const;
+  void Append(common::Value* in_value);
+  virtual std::string ToString() const;
 
-  common::ArrayValue* array() const;
+  common::ArrayValue* Array() const;
 };
 
 }  // namespace fastonosql

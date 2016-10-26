@@ -42,6 +42,7 @@ class GlassWidget;
 
 namespace fastonosql {
 namespace gui {
+
 class ConnectionListWidgetItemDiscovered;
 class DiscoveryClusterDiagnosticDialog : public QDialog {
   Q_OBJECT
@@ -54,13 +55,13 @@ class DiscoveryClusterDiagnosticDialog : public QDialog {
   std::vector<fastonosql::gui::ConnectionListWidgetItemDiscovered*> selectedConnections() const;
 
  private Q_SLOTS:
-  void connectionResult(bool suc,
+  void ConnectionResult(bool suc,
                         qint64 mstimeExecute,
                         const QString& resultText,
                         std::vector<core::ServerDiscoveryClusterInfoSPtr> infos);
 
  protected:
-  virtual void showEvent(QShowEvent* e);
+  virtual void showEvent(QShowEvent* e) override;
 
  private:
   void TestConnection(core::IConnectionSettingsBaseSPtr connection);
@@ -72,5 +73,6 @@ class DiscoveryClusterDiagnosticDialog : public QDialog {
   QLabel* iconLabel_;
   core::IClusterSettingsBaseSPtr cluster_;
 };
+
 }  // namespace gui
 }  // namespace fastonosql

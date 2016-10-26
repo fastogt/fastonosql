@@ -456,14 +456,14 @@ void Driver::HandleLoadDatabaseInfosEvent(events::LoadDatabasesInfoRequestEvent*
   if (er && er->isError()) {
     res.setErrorInfo(er);
   } else {
-    FastoObject::childs_t rchildrens = cmd->childrens();
+    FastoObject::childs_t rchildrens = cmd->Childrens();
     if (rchildrens.size()) {
       CHECK_EQ(rchildrens.size(), 1);
       FastoObjectArray* array = dynamic_cast<FastoObjectArray*>(rchildrens[0].get());  // +
       if (!array) {
         goto done;
       }
-      common::ArrayValue* ar = array->array();
+      common::ArrayValue* ar = array->Array();
       if (!ar) {
         goto done;
       }
@@ -509,7 +509,7 @@ void Driver::HandleLoadDatabaseContentEvent(events::LoadDatabaseContentRequestEv
   if (err && err->isError()) {
     res.setErrorInfo(err);
   } else {
-    FastoObject::childs_t rchildrens = cmd->childrens();
+    FastoObject::childs_t rchildrens = cmd->Childrens();
     if (rchildrens.size()) {
       CHECK_EQ(rchildrens.size(), 1);
       FastoObjectArray* array = dynamic_cast<FastoObjectArray*>(rchildrens[0].get());  // +
@@ -517,7 +517,7 @@ void Driver::HandleLoadDatabaseContentEvent(events::LoadDatabaseContentRequestEv
         goto done;
       }
 
-      common::ArrayValue* arm = array->array();
+      common::ArrayValue* arm = array->Array();
       if (!arm->size()) {
         goto done;
       }
@@ -530,7 +530,7 @@ void Driver::HandleLoadDatabaseContentEvent(events::LoadDatabaseContentRequestEv
 
       res.cursor_out = common::ConvertFromString<uint32_t>(cursor);
 
-      rchildrens = array->childrens();
+      rchildrens = array->Childrens();
       if (!rchildrens.size()) {
         goto done;
       }
@@ -541,7 +541,7 @@ void Driver::HandleLoadDatabaseContentEvent(events::LoadDatabaseContentRequestEv
         goto done;
       }
 
-      common::ArrayValue* ar = arr->array();
+      common::ArrayValue* ar = arr->Array();
       if (ar->empty()) {
         goto done;
       }
@@ -567,11 +567,11 @@ void Driver::HandleLoadDatabaseContentEvent(events::LoadDatabaseContentRequestEv
 
       for (size_t i = 0; i < res.keys.size(); ++i) {
         FastoObjectIPtr cmdType = cmds[i * 2];
-        FastoObject::childs_t tchildrens = cmdType->childrens();
+        FastoObject::childs_t tchildrens = cmdType->Childrens();
         if (tchildrens.size()) {
           DCHECK_EQ(tchildrens.size(), 1);
           if (tchildrens.size() == 1) {
-            std::string typeRedis = tchildrens[0]->toString();
+            std::string typeRedis = tchildrens[0]->ToString();
             common::Value::Type ctype = convertFromStringRType(typeRedis);
             common::ValueSPtr empty_val(common::Value::createEmptyValueFromType(ctype));
             res.keys[i].SetValue(empty_val);
@@ -579,11 +579,11 @@ void Driver::HandleLoadDatabaseContentEvent(events::LoadDatabaseContentRequestEv
         }
 
         FastoObjectIPtr cmdType2 = cmds[i * 2 + 1];
-        tchildrens = cmdType2->childrens();
+        tchildrens = cmdType2->Childrens();
         if (tchildrens.size()) {
           DCHECK_EQ(tchildrens.size(), 1);
           if (tchildrens.size() == 1) {
-            auto vttl = tchildrens[0]->value();
+            auto vttl = tchildrens[0]->Value();
             ttl_t ttl = 0;
             if (vttl->getAsInteger(&ttl)) {
               res.keys[i].SetTTL(ttl);
@@ -644,7 +644,7 @@ void Driver::HandleLoadServerPropertyEvent(events::ServerPropertyInfoRequestEven
   if (er && er->isError()) {
     res.setErrorInfo(er);
   } else {
-    FastoObject::childs_t ch = cmd->childrens();
+    FastoObject::childs_t ch = cmd->Childrens();
     if (ch.size()) {
       CHECK_EQ(ch.size(), 1);
       FastoObjectArray* array = dynamic_cast<FastoObjectArray*>(ch[0].get());  // +

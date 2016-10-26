@@ -28,7 +28,7 @@ Command::Command(FastoObject* parent, common::CommandValue* cmd, const std::stri
     : FastoObjectCommand(parent, cmd, delimiter, SSDB) {}
 
 bool Command::IsReadOnly() const {
-  std::string key = inputCmd();
+  std::string key = InputCmd();
   if (key.empty()) {
     return true;
   }

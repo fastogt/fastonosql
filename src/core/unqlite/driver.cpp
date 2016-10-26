@@ -157,14 +157,14 @@ void Driver::HandleLoadDatabaseContentEvent(events::LoadDatabaseContentRequestEv
   if (err && err->isError()) {
     res.setErrorInfo(err);
   } else {
-    FastoObject::childs_t rchildrens = cmd->childrens();
+    FastoObject::childs_t rchildrens = cmd->Childrens();
     if (rchildrens.size()) {
       DCHECK_EQ(rchildrens.size(), 1);
       FastoObjectArray* array = dynamic_cast<FastoObjectArray*>(rchildrens[0].get());  // +
       if (!array) {
         goto done;
       }
-      common::ArrayValue* ar = array->array();
+      common::ArrayValue* ar = array->Array();
       if (!ar) {
         goto done;
       }

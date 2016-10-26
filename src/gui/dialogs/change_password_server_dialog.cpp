@@ -78,14 +78,14 @@ ChangePasswordServerDialog::ChangePasswordServerDialog(const QString& title,
       new QDialogButtonBox(QDialogButtonBox::Cancel | QDialogButtonBox::Ok);
   buttonBox->setOrientation(Qt::Horizontal);
   VERIFY(connect(buttonBox, &QDialogButtonBox::accepted, this,
-                 &ChangePasswordServerDialog::tryToCreatePassword));
+                 &ChangePasswordServerDialog::TryToCreatePassword));
   VERIFY(
       connect(buttonBox, &QDialogButtonBox::rejected, this, &ChangePasswordServerDialog::reject));
 
   VERIFY(connect(server_.get(), &core::IServer::ChangePasswordStarted, this,
-                 &ChangePasswordServerDialog::startChangePassword));
+                 &ChangePasswordServerDialog::StartChangePassword));
   VERIFY(connect(server_.get(), &core::IServer::ChangePasswordFinished, this,
-                 &ChangePasswordServerDialog::finishChangePassword));
+                 &ChangePasswordServerDialog::FinishChangePassword));
 
   mainLayout->addWidget(buttonBox);
   setMinimumSize(QSize(min_width, min_height));
@@ -96,8 +96,8 @@ ChangePasswordServerDialog::ChangePasswordServerDialog(const QString& title,
                                                   QColor(111, 111, 100), this);
 }
 
-void ChangePasswordServerDialog::tryToCreatePassword() {
-  if (!validateInput()) {
+void ChangePasswordServerDialog::TryToCreatePassword() {
+  if (!ValidateInput()) {
     QMessageBox::critical(this, translations::trError, trInvalidInput);
     return;
   }
@@ -106,14 +106,14 @@ void ChangePasswordServerDialog::tryToCreatePassword() {
   server_->ChangePassword(req);
 }
 
-void ChangePasswordServerDialog::startChangePassword(
+void ChangePasswordServerDialog::StartChangePassword(
     const core::events_info::ChangePasswordRequest& req) {
   UNUSED(req);
 
   glassWidget_->start();
 }
 
-void ChangePasswordServerDialog::finishChangePassword(
+void ChangePasswordServerDialog::FinishChangePassword(
     const core::events_info::ChangePasswordResponce& res) {
   glassWidget_->stop();
   common::Error err = res.errorInfo();
@@ -126,7 +126,7 @@ void ChangePasswordServerDialog::finishChangePassword(
   ChangePasswordServerDialog::accept();
 }
 
-bool ChangePasswordServerDialog::validateInput() {
+bool ChangePasswordServerDialog::ValidateInput() {
   QString pass = passwordLineEdit_->text();
   QString cpass = confPasswordLineEdit_->text();
   if (pass.isEmpty() || cpass.isEmpty()) {

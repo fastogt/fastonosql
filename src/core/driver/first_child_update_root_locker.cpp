@@ -33,8 +33,8 @@ FirstChildUpdateRootLocker::FirstChildUpdateRootLocker(IDriver* parent,
     : RootLocker(parent, receiver, text, silence), commands_(commands), watched_cmds_() {}
 
 void FirstChildUpdateRootLocker::ChildrenAdded(FastoObjectIPtr child) {
-  auto val = child->value();
-  if (child->type() == common::Value::TYPE_COMMAND) {
+  auto val = child->Value();
+  if (child->Type() == common::Value::TYPE_COMMAND) {
     if (watched_cmds_.size() == commands_.size()) {
       return;
     }
@@ -54,12 +54,12 @@ void FirstChildUpdateRootLocker::ChildrenAdded(FastoObjectIPtr child) {
     return;
   }
 
-  watched_child->setValue(val);
+  watched_child->SetValue(val);
 }
 
 FastoObjectIPtr FirstChildUpdateRootLocker::FindCmdChildNode(FastoObjectIPtr child) const {
-  FastoObject* parent = child->parent();
-  if (parent->type() != common::Value::TYPE_COMMAND) {
+  FastoObject* parent = child->Parent();
+  if (parent->Type() != common::Value::TYPE_COMMAND) {
     NOTREACHED();
     return FastoObjectIPtr();
   }
@@ -71,7 +71,7 @@ FastoObjectIPtr FirstChildUpdateRootLocker::FindCmdChildNode(FastoObjectIPtr chi
     return FastoObjectIPtr();
   }
 
-  auto childs = watched_cmd->childrens();
+  auto childs = watched_cmd->Childrens();
   if (childs.empty()) {
     NOTREACHED();
     return FastoObjectIPtr();
@@ -83,7 +83,7 @@ FastoObjectIPtr FirstChildUpdateRootLocker::FindCmdChildNode(FastoObjectIPtr chi
 FastoObjectIPtr FirstChildUpdateRootLocker::FindWatchedCmd(FastoObjectCommand* cmd) const {
   for (auto child_cmd : watched_cmds_) {
     FastoObjectCommand* wcmd = dynamic_cast<FastoObjectCommand*>(child_cmd.get());
-    if (wcmd->inputCommand() == cmd->inputCommand()) {
+    if (wcmd->InputCommand() == cmd->InputCommand()) {
       return wcmd;
     }
   }

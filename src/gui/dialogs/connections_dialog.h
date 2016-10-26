@@ -56,38 +56,37 @@ class ConnectionsDialog : public QDialog {
 
   explicit ConnectionsDialog(QWidget* parent = 0);
 
-  core::IConnectionSettingsBaseSPtr selectedConnection() const;
-  core::ISentinelSettingsBaseSPtr selectedSentinel() const;
-  core::IClusterSettingsBaseSPtr selectedCluster() const;
-
-  virtual void accept();
+  core::IConnectionSettingsBaseSPtr SelectedConnection() const;
+  core::ISentinelSettingsBaseSPtr SelectedSentinel() const;
+  core::IClusterSettingsBaseSPtr SelectedCluster() const;
 
  private Q_SLOTS:
-  void add();
-  void addCls();
-  void addSent();
-  void remove();
-  void edit();
-  void itemSelectionChange();
+  virtual void accept() override;
+  void Add();
+  void AddCls();
+  void AddSent();
+  void Remove();
+  void Edit();
+  void ItemSelectionChange();
 
  protected:
-  virtual void changeEvent(QEvent* ev);
+  virtual void changeEvent(QEvent* ev) override;
 
  private:
-  void editConnection(ConnectionListWidgetItem* connectionItem);
-  void editCluster(ClusterConnectionListWidgetItemContainer* clusterItem);
-  void editSentinel(SentinelConnectionListWidgetItemContainer* sentinelItem);
+  void EditConnection(ConnectionListWidgetItem* connectionItem);
+  void EditCluster(ClusterConnectionListWidgetItemContainer* clusterItem);
+  void EditSentinel(SentinelConnectionListWidgetItemContainer* sentinelItem);
 
-  void removeConnection(ConnectionListWidgetItem* connectionItem);
-  void removeCluster(ClusterConnectionListWidgetItemContainer* clusterItem);
-  void removeSentinel(SentinelConnectionListWidgetItemContainer* sentinelItem);
+  void RemoveConnection(ConnectionListWidgetItem* connectionItem);
+  void RemoveCluster(ClusterConnectionListWidgetItemContainer* clusterItem);
+  void RemoveSentinel(SentinelConnectionListWidgetItemContainer* sentinelItem);
 
-  void retranslateUi();
+  void RetranslateUi();
 
-  void addConnection(core::IConnectionSettingsBaseSPtr con);
-  void addCluster(core::IClusterSettingsBaseSPtr con);
-  void addSentinel(core::ISentinelSettingsBaseSPtr con);
-  DirectoryListWidgetItem* findFolderByPath(
+  void AddConnection(core::IConnectionSettingsBaseSPtr con);
+  void AddCluster(core::IClusterSettingsBaseSPtr con);
+  void AddSentinel(core::ISentinelSettingsBaseSPtr con);
+  DirectoryListWidgetItem* FindFolderByPath(
       const core::IConnectionSettings::connection_path_t& path) const;
 
   QTreeWidget* listWidget_;

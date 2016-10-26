@@ -31,12 +31,13 @@
 
 namespace fastonosql {
 namespace gui {
+
 TestConnection::TestConnection(core::IConnectionSettingsBaseSPtr conn, QObject* parent)
     : QObject(parent), connection_(conn), start_time_(common::time::current_mstime()) {}
 
-void TestConnection::routine() {
+void TestConnection::Routine() {
   if (!connection_) {
-    emit connectionResult(false, common::time::current_mstime() - start_time_,
+    emit ConnectionResult(false, common::time::current_mstime() - start_time_,
                           "Invalid connection settings");
     return;
   }
@@ -44,12 +45,13 @@ void TestConnection::routine() {
   common::Error er = core::ServersManager::instance().TestConnection(connection_);
 
   if (er && er->isError()) {
-    emit connectionResult(false, common::time::current_mstime() - start_time_,
+    emit ConnectionResult(false, common::time::current_mstime() - start_time_,
                           common::ConvertFromString<QString>(er->description()));
   } else {
-    emit connectionResult(true, common::time::current_mstime() - start_time_,
+    emit ConnectionResult(true, common::time::current_mstime() - start_time_,
                           translations::trSuccess);
   }
 }
+
 }  // namespace gui
 }  // namespace fastonosql

@@ -34,10 +34,10 @@ FastoObject::FastoObject(FastoObject* parent, common::Value* val, const std::str
 }
 
 FastoObject::~FastoObject() {
-  clear();
+  Clear();
 }
 
-common::Value::Type FastoObject::type() const {
+common::Value::Type FastoObject::Type() const {
   if (!value_) {
     return common::Value::TYPE_NULL;
   }
@@ -45,22 +45,22 @@ common::Value::Type FastoObject::type() const {
   return value_->type();
 }
 
-std::string FastoObject::toString() const {
-  return ConvertToString(value_.get(), delimiter());
+std::string FastoObject::ToString() const {
+  return ConvertToString(value_.get(), Delimiter());
 }
 
-FastoObject* FastoObject::createRoot(const std::string& text, IFastoObjectObserver* observer) {
+FastoObject* FastoObject::CreateRoot(const std::string& text, IFastoObjectObserver* observer) {
   FastoObject* root =
       new FastoObject(nullptr, common::Value::createStringValue(text), std::string());
   root->observer_ = observer;
   return root;
 }
 
-FastoObject::childs_t FastoObject::childrens() const {
+FastoObject::childs_t FastoObject::Childrens() const {
   return childrens_;
 }
 
-void FastoObject::addChildren(child_t child) {
+void FastoObject::AddChildren(child_t child) {
   if (!child) {
     return;
   }
@@ -73,23 +73,23 @@ void FastoObject::addChildren(child_t child) {
   }
 }
 
-FastoObject* FastoObject::parent() const {
+FastoObject* FastoObject::Parent() const {
   return parent_;
 }
 
-void FastoObject::clear() {
+void FastoObject::Clear() {
   childrens_.clear();
 }
 
-std::string FastoObject::delimiter() const {
+std::string FastoObject::Delimiter() const {
   return delimiter_;
 }
 
-FastoObject::value_t FastoObject::value() const {
+FastoObject::value_t FastoObject::Value() const {
   return value_;
 }
 
-void FastoObject::setValue(value_t val) {
+void FastoObject::SetValue(value_t val) {
   value_ = val;
   if (observer_) {
     observer_->Updated(this, val);
@@ -104,16 +104,16 @@ FastoObjectCommand::FastoObjectCommand(FastoObject* parent,
 
 FastoObjectCommand::~FastoObjectCommand() {}
 
-common::CommandValue* FastoObjectCommand::cmd() const {
+common::CommandValue* FastoObjectCommand::Cmd() const {
   return static_cast<common::CommandValue*>(value_.get());
 }
 
-std::string FastoObjectCommand::toString() const {
+std::string FastoObjectCommand::ToString() const {
   return std::string();
 }
 
-std::string FastoObjectCommand::inputCmd() const {
-  common::CommandValue* command = cmd();
+std::string FastoObjectCommand::InputCmd() const {
+  common::CommandValue* command = Cmd();
   if (command) {
     std::pair<std::string, std::string> kv = GetKeyValueFromLine(command->inputCommand());
     return kv.first;
@@ -122,8 +122,8 @@ std::string FastoObjectCommand::inputCmd() const {
   return std::string();
 }
 
-std::string FastoObjectCommand::inputArgs() const {
-  common::CommandValue* command = cmd();
+std::string FastoObjectCommand::InputArgs() const {
+  common::CommandValue* command = Cmd();
   if (command) {
     std::pair<std::string, std::string> kv = GetKeyValueFromLine(command->inputCommand());
     return kv.second;
@@ -132,12 +132,12 @@ std::string FastoObjectCommand::inputArgs() const {
   return std::string();
 }
 
-core::connectionTypes FastoObjectCommand::connectionType() const {
+core::connectionTypes FastoObjectCommand::ConnectionType() const {
   return type_;
 }
 
-std::string FastoObjectCommand::inputCommand() const {
-  common::CommandValue* command = cmd();
+std::string FastoObjectCommand::InputCommand() const {
+  common::CommandValue* command = Cmd();
   if (command) {
     return command->inputCommand();
   }
@@ -145,8 +145,8 @@ std::string FastoObjectCommand::inputCommand() const {
   return std::string();
 }
 
-common::Value::CommandLoggingType FastoObjectCommand::commandLoggingType() const {
-  common::CommandValue* command = cmd();
+common::Value::CommandLoggingType FastoObjectCommand::CommandLoggingType() const {
+  common::CommandValue* command = Cmd();
   if (command) {
     return command->commandLoggingType();
   }
@@ -190,17 +190,17 @@ FastoObjectArray::FastoObjectArray(FastoObject* parent,
                                    const std::string& delimiter)
     : FastoObject(parent, ar, delimiter) {}
 
-void FastoObjectArray::append(common::Value* in_value) {
+void FastoObjectArray::Append(common::Value* in_value) {
   common::ArrayValue* ar = static_cast<common::ArrayValue*>(value_.get());
   ar->append(in_value);
 }
 
-std::string FastoObjectArray::toString() const {
-  common::ArrayValue* ar = array();
-  return ConvertToString(ar, delimiter());
+std::string FastoObjectArray::ToString() const {
+  common::ArrayValue* ar = Array();
+  return ConvertToString(ar, Delimiter());
 }
 
-common::ArrayValue* FastoObjectArray::array() const {
+common::ArrayValue* FastoObjectArray::Array() const {
   return static_cast<common::ArrayValue*>(value_.get());
 }
 
@@ -214,12 +214,12 @@ std::string ConvertToString(fastonosql::FastoObject* obj) {
   }
 
   std::string result;
-  std::string str = obj->toString();
+  std::string str = obj->ToString();
   if (!str.empty()) {
-    result += str + obj->delimiter();
+    result += str + obj->Delimiter();
   }
 
-  auto childrens = obj->childrens();
+  auto childrens = obj->Childrens();
   for (auto it = childrens.begin(); it != childrens.end(); ++it) {
     result += ConvertToString((*it).get());
   }

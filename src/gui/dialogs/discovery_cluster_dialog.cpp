@@ -51,6 +51,7 @@ const QSize stateIconSize = QSize(64, 64);
 
 namespace fastonosql {
 namespace gui {
+
 DiscoveryClusterDiagnosticDialog::DiscoveryClusterDiagnosticDialog(
     QWidget* parent,
     core::IConnectionSettingsBaseSPtr connection,
@@ -126,7 +127,7 @@ DiscoveryClusterDiagnosticDialog::selectedConnections() const {
   return res;
 }
 
-void DiscoveryClusterDiagnosticDialog::connectionResult(
+void DiscoveryClusterDiagnosticDialog::ConnectionResult(
     bool suc,
     qint64 mstimeExecute,
     const QString& resultText,
@@ -150,7 +151,7 @@ void DiscoveryClusterDiagnosticDialog::connectionResult(
           core::IConnectionSettingsRemote::CreateFromType(inf->connectionType(), path, host));
       ConnectionListWidgetItemDiscovered* item =
           new ConnectionListWidgetItemDiscovered(inf->info(), nullptr);
-      item->setConnection(con);
+      item->SetConnection(con);
       item->setDisabled(inf->self() || cluster_->FindSettingsByHost(host));
       listWidget_->addTopLevelItem(item);
     }
@@ -168,13 +169,14 @@ void DiscoveryClusterDiagnosticDialog::TestConnection(
   QThread* th = new QThread;
   DiscoveryConnection* cheker = new DiscoveryConnection(connection);
   cheker->moveToThread(th);
-  VERIFY(connect(th, &QThread::started, cheker, &DiscoveryConnection::routine));
-  VERIFY(connect(cheker, &DiscoveryConnection::connectionResult, this,
-                 &DiscoveryClusterDiagnosticDialog::connectionResult));
-  VERIFY(connect(cheker, &DiscoveryConnection::connectionResult, th, &QThread::quit));
+  VERIFY(connect(th, &QThread::started, cheker, &DiscoveryConnection::Routine));
+  VERIFY(connect(cheker, &DiscoveryConnection::ConnectionResult, this,
+                 &DiscoveryClusterDiagnosticDialog::ConnectionResult));
+  VERIFY(connect(cheker, &DiscoveryConnection::ConnectionResult, th, &QThread::quit));
   VERIFY(connect(th, &QThread::finished, cheker, &DiscoveryConnection::deleteLater));
   VERIFY(connect(th, &QThread::finished, th, &QThread::deleteLater));
   th->start();
 }
+
 }  // namespace gui
 }  // namespace fastonosql

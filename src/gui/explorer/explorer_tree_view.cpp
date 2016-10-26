@@ -822,7 +822,7 @@ void ExplorerTreeView::createKey() {
                      core::NDbKValue(), this);
   int result = loadDb.exec();
   if (result == QDialog::Accepted) {
-    core::NDbKValue key = loadDb.key();
+    core::NDbKValue key = loadDb.Key();
     node->createKey(key);
   }
 }
@@ -842,7 +842,7 @@ void ExplorerTreeView::editKey() {
   DbKeyDialog loadDb(trEditKey_1S.arg(node->name()), server->Type(), node->dbv(), this);
   int result = loadDb.exec();
   if (result == QDialog::Accepted) {
-    core::NDbKValue key = loadDb.key();
+    core::NDbKValue key = loadDb.Key();
     node->editKey(key.Value());
   }
 }

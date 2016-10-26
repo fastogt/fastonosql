@@ -150,7 +150,7 @@ void DiscoverySentinelDiagnosticDialog::connectionResultReady(
 
       ConnectionListWidgetItemDiscovered* item =
           new ConnectionListWidgetItemDiscovered(inf->info(), nullptr);
-      item->setConnection(con);
+      item->SetConnection(con);
       listWidget_->addTopLevelItem(item);
     }
   }

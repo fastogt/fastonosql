@@ -33,10 +33,10 @@ class TestConnection : public QObject {
   explicit TestConnection(core::IConnectionSettingsBaseSPtr conn, QObject* parent = 0);
 
  Q_SIGNALS:
-  void connectionResult(bool suc, qint64 msTimeExecute, const QString& resultText);
+  void ConnectionResult(bool suc, qint64 msTimeExecute, const QString& resultText);
 
  public Q_SLOTS:
-  void routine();
+  void Routine();
 
  private:
   core::IConnectionSettingsBaseSPtr connection_;

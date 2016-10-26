@@ -81,7 +81,7 @@ ConnectionDiagnosticDialog::ConnectionDiagnosticDialog(QWidget* parent,
   StartTestConnection(connection);
 }
 
-void ConnectionDiagnosticDialog::connectionResult(bool suc,
+void ConnectionDiagnosticDialog::ConnectionResult(bool suc,
                                                   qint64 mstimeExecute,
                                                   const QString& resultText) {
   glassWidget_->stop();
@@ -104,10 +104,10 @@ void ConnectionDiagnosticDialog::StartTestConnection(core::IConnectionSettingsBa
   QThread* th = new QThread;
   TestConnection* cheker = new TestConnection(connection);
   cheker->moveToThread(th);
-  VERIFY(connect(th, &QThread::started, cheker, &TestConnection::routine));
-  VERIFY(connect(cheker, &TestConnection::connectionResult, this,
-                 &ConnectionDiagnosticDialog::connectionResult));
-  VERIFY(connect(cheker, &TestConnection::connectionResult, th, &QThread::quit));
+  VERIFY(connect(th, &QThread::started, cheker, &TestConnection::Routine));
+  VERIFY(connect(cheker, &TestConnection::ConnectionResult, this,
+                 &ConnectionDiagnosticDialog::ConnectionResult));
+  VERIFY(connect(cheker, &TestConnection::ConnectionResult, th, &QThread::quit));
   VERIFY(connect(th, &QThread::finished, cheker, &TestConnection::deleteLater));
   VERIFY(connect(th, &QThread::finished, th, &QThread::deleteLater));
   th->start();

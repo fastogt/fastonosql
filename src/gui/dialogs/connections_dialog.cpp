@@ -46,6 +46,7 @@
 
 namespace fastonosql {
 namespace gui {
+
 ConnectionsDialog::ConnectionsDialog(QWidget* parent) : QDialog(parent) {
   setWindowIcon(GuiFactory::instance().connectIcon());
   setWindowFlags(windowFlags() & ~Qt::WindowContextHelpButtonHint);  // Remove help
@@ -93,27 +94,27 @@ ConnectionsDialog::ConnectionsDialog(QWidget* parent) : QDialog(parent) {
 
   QAction* addB =
       new QAction(GuiFactory::instance().loadIcon(), translations::trAddConnection, savebar);
-  VERIFY(connect(addB, &QAction::triggered, this, &ConnectionsDialog::add));
+  VERIFY(connect(addB, &QAction::triggered, this, &ConnectionsDialog::Add));
   savebar->addAction(addB);
 
   QAction* addc = new QAction(GuiFactory::instance().clusterIcon(),
                               translations::trAddClusterConnection, savebar);
-  VERIFY(connect(addc, &QAction::triggered, this, &ConnectionsDialog::addCls));
+  VERIFY(connect(addc, &QAction::triggered, this, &ConnectionsDialog::AddCls));
   savebar->addAction(addc);
 
   QAction* adds = new QAction(GuiFactory::instance().sentinelIcon(),
                               translations::trAddSentinelConnection, savebar);
-  VERIFY(connect(adds, &QAction::triggered, this, &ConnectionsDialog::addSent));
+  VERIFY(connect(adds, &QAction::triggered, this, &ConnectionsDialog::AddSent));
   savebar->addAction(adds);
 
   QAction* rmB =
       new QAction(GuiFactory::instance().removeIcon(), translations::trRemoveConnection, savebar);
-  VERIFY(connect(rmB, &QAction::triggered, this, &ConnectionsDialog::remove));
+  VERIFY(connect(rmB, &QAction::triggered, this, &ConnectionsDialog::Remove));
   savebar->addAction(rmB);
 
   QAction* editB =
       new QAction(GuiFactory::instance().editIcon(), translations::trEditConnection, savebar);
-  VERIFY(connect(editB, &QAction::triggered, this, &ConnectionsDialog::edit));
+  VERIFY(connect(editB, &QAction::triggered, this, &ConnectionsDialog::Edit));
   savebar->addAction(editB);
 
   QVBoxLayout* firstColumnLayout = new QVBoxLayout;
@@ -128,91 +129,91 @@ ConnectionsDialog::ConnectionsDialog(QWidget* parent) : QDialog(parent) {
   auto connections = core::SettingsManager::instance().Connections();
   for (auto it = connections.begin(); it != connections.end(); ++it) {
     core::IConnectionSettingsBaseSPtr connectionModel = (*it);
-    addConnection(connectionModel);
+    AddConnection(connectionModel);
   }
 
   auto sentinels = core::SettingsManager::instance().Sentinels();
   for (auto it = sentinels.begin(); it != sentinels.end(); ++it) {
     core::ISentinelSettingsBaseSPtr connectionModel = (*it);
-    addSentinel(connectionModel);
+    AddSentinel(connectionModel);
   }
 
   auto clusters = core::SettingsManager::instance().Clusters();
   for (auto it = clusters.begin(); it != clusters.end(); ++it) {
     core::IClusterSettingsBaseSPtr connectionModel = (*it);
-    addCluster(connectionModel);
+    AddCluster(connectionModel);
   }
 
   VERIFY(connect(listWidget_, &QTreeWidget::itemSelectionChanged, this,
-                 &ConnectionsDialog::itemSelectionChange));
+                 &ConnectionsDialog::ItemSelectionChange));
   // Highlight first item
   if (listWidget_->topLevelItemCount() > 0) {
     listWidget_->setCurrentItem(listWidget_->topLevelItem(0));
   }
-  retranslateUi();
+  RetranslateUi();
 }
 
-core::IConnectionSettingsBaseSPtr ConnectionsDialog::selectedConnection() const {
+core::IConnectionSettingsBaseSPtr ConnectionsDialog::SelectedConnection() const {
   ConnectionListWidgetItem* currentItem =
       dynamic_cast<ConnectionListWidgetItem*>(listWidget_->currentItem());  // +
   if (currentItem) {
-    return currentItem->connection();
+    return currentItem->Connection();
   }
 
   return core::IConnectionSettingsBaseSPtr();
 }
 
-core::ISentinelSettingsBaseSPtr ConnectionsDialog::selectedSentinel() const {
+core::ISentinelSettingsBaseSPtr ConnectionsDialog::SelectedSentinel() const {
   SentinelConnectionListWidgetItemContainer* currentItem =
       dynamic_cast<SentinelConnectionListWidgetItemContainer*>(listWidget_->currentItem());  // +
   if (currentItem) {
-    return currentItem->connection();
+    return currentItem->Connection();
   }
 
   return core::ISentinelSettingsBaseSPtr();
 }
 
-core::IClusterSettingsBaseSPtr ConnectionsDialog::selectedCluster() const {
+core::IClusterSettingsBaseSPtr ConnectionsDialog::SelectedCluster() const {
   ClusterConnectionListWidgetItemContainer* currentItem =
       dynamic_cast<ClusterConnectionListWidgetItemContainer*>(listWidget_->currentItem());  // +
   if (currentItem) {
-    return currentItem->connection();
+    return currentItem->Connection();
   }
 
   return core::IClusterSettingsBaseSPtr();
 }
 
-void ConnectionsDialog::add() {
+void ConnectionsDialog::Add() {
   ConnectionDialog dlg(this);
   int result = dlg.exec();
-  core::IConnectionSettingsBaseSPtr p = dlg.connection();
+  core::IConnectionSettingsBaseSPtr p = dlg.Connection();
   if (result == QDialog::Accepted && p) {
     core::SettingsManager::instance().AddConnection(p);
-    addConnection(p);
+    AddConnection(p);
   }
 }
 
-void ConnectionsDialog::addCls() {
+void ConnectionsDialog::AddCls() {
   ClusterDialog dlg(this);
   int result = dlg.exec();
-  core::IClusterSettingsBaseSPtr p = dlg.connection();
+  core::IClusterSettingsBaseSPtr p = dlg.Connection();
   if (result == QDialog::Accepted && p) {
     core::SettingsManager::instance().AddCluster(p);
-    addCluster(p);
+    AddCluster(p);
   }
 }
 
-void ConnectionsDialog::addSent() {
+void ConnectionsDialog::AddSent() {
   SentinelDialog dlg(this);
   int result = dlg.exec();
   core::ISentinelSettingsBaseSPtr p = dlg.connection();
   if (result == QDialog::Accepted && p) {
     core::SettingsManager::instance().AddSentinel(p);
-    addSentinel(p);
+    AddSentinel(p);
   }
 }
 
-void ConnectionsDialog::itemSelectionChange() {
+void ConnectionsDialog::ItemSelectionChange() {
   QTreeWidgetItem* qitem = listWidget_->currentItem();
   if (!qitem) {
     return;
@@ -222,30 +223,30 @@ void ConnectionsDialog::itemSelectionChange() {
   acButton_->setEnabled(!currentItem);
 }
 
-void ConnectionsDialog::edit() {
+void ConnectionsDialog::Edit() {
   QTreeWidgetItem* qitem = listWidget_->currentItem();
   if (!qitem) {
     return;
   }
 
   if (ConnectionListWidgetItem* currentItem = dynamic_cast<ConnectionListWidgetItem*>(qitem)) {
-    IConnectionListWidgetItem::itemConnectionType type = currentItem->type();
+    IConnectionListWidgetItem::itemConnectionType type = currentItem->Type();
     if (type == IConnectionListWidgetItem::Common ||
         type == IConnectionListWidgetItem::Discovered) {
       QTreeWidgetItem* qpitem = qitem->parent();
       if (ClusterConnectionListWidgetItemContainer* clitem =
               dynamic_cast<ClusterConnectionListWidgetItemContainer*>(qpitem)) {
-        editCluster(clitem);
+        EditCluster(clitem);
         return;
       } else if (SentinelConnectionListWidgetItemContainer* slitem =
                      dynamic_cast<SentinelConnectionListWidgetItemContainer*>(qpitem)) {
-        editSentinel(slitem);
+        EditSentinel(slitem);
         return;
       } else if (SentinelConnectionWidgetItem* sslitem =
                      dynamic_cast<SentinelConnectionWidgetItem*>(qpitem)) {
         qitem = sslitem->parent();
       } else {
-        editConnection(currentItem);
+        EditConnection(currentItem);
         return;
       }
     } else if (type == IConnectionListWidgetItem::Sentinel) {
@@ -257,41 +258,41 @@ void ConnectionsDialog::edit() {
 
   if (ClusterConnectionListWidgetItemContainer* clCurrentItem =
           dynamic_cast<ClusterConnectionListWidgetItemContainer*>(qitem)) {
-    editCluster(clCurrentItem);
+    EditCluster(clCurrentItem);
     return;
   }
 
   if (SentinelConnectionListWidgetItemContainer* sentCurrentItem =
           dynamic_cast<SentinelConnectionListWidgetItemContainer*>(qitem)) {
-    editSentinel(sentCurrentItem);
+    EditSentinel(sentCurrentItem);
     return;
   }
 }
 
-void ConnectionsDialog::remove() {
+void ConnectionsDialog::Remove() {
   QTreeWidgetItem* qitem = listWidget_->currentItem();
   if (!qitem) {
     return;
   }
 
   if (ConnectionListWidgetItem* currentItem = dynamic_cast<ConnectionListWidgetItem*>(qitem)) {
-    IConnectionListWidgetItem::itemConnectionType type = currentItem->type();
+    IConnectionListWidgetItem::itemConnectionType type = currentItem->Type();
     if (type == IConnectionListWidgetItem::Common ||
         type == IConnectionListWidgetItem::Discovered) {
       QTreeWidgetItem* qpitem = qitem->parent();
       if (ClusterConnectionListWidgetItemContainer* clitem =
               dynamic_cast<ClusterConnectionListWidgetItemContainer*>(qpitem)) {
-        removeCluster(clitem);
+        RemoveCluster(clitem);
         return;
       } else if (SentinelConnectionListWidgetItemContainer* slitem =
                      dynamic_cast<SentinelConnectionListWidgetItemContainer*>(qpitem)) {
-        removeSentinel(slitem);
+        RemoveSentinel(slitem);
         return;
       } else if (SentinelConnectionWidgetItem* sslitem =
                      dynamic_cast<SentinelConnectionWidgetItem*>(qpitem)) {
         qitem = sslitem->parent();
       } else {
-        removeConnection(currentItem);
+        RemoveConnection(currentItem);
         return;
       }
     } else if (type == IConnectionListWidgetItem::Sentinel) {
@@ -303,53 +304,53 @@ void ConnectionsDialog::remove() {
 
   if (ClusterConnectionListWidgetItemContainer* clCurrentItem =
           dynamic_cast<ClusterConnectionListWidgetItemContainer*>(qitem)) {
-    removeCluster(clCurrentItem);
+    RemoveCluster(clCurrentItem);
     return;
   }
 
   if (SentinelConnectionListWidgetItemContainer* sentCurrentItem =
           dynamic_cast<SentinelConnectionListWidgetItemContainer*>(qitem)) {
-    removeSentinel(sentCurrentItem);
+    RemoveSentinel(sentCurrentItem);
     return;
   }
 }
 
-void ConnectionsDialog::editConnection(ConnectionListWidgetItem* connectionItem) {
+void ConnectionsDialog::EditConnection(ConnectionListWidgetItem* connectionItem) {
   CHECK(connectionItem);
 
-  core::IConnectionSettingsBaseSPtr con = connectionItem->connection();
+  core::IConnectionSettingsBaseSPtr con = connectionItem->Connection();
   ConnectionDialog dlg(this, con->Clone());
   int result = dlg.exec();
-  core::IConnectionSettingsBaseSPtr newConnection = dlg.connection();
+  core::IConnectionSettingsBaseSPtr newConnection = dlg.Connection();
   if (result == QDialog::Accepted && newConnection) {
     core::SettingsManager::instance().RemoveConnection(con);
     core::SettingsManager::instance().AddConnection(newConnection);
 
     delete connectionItem;
-    addConnection(newConnection);
+    AddConnection(newConnection);
   }
 }
 
-void ConnectionsDialog::editCluster(ClusterConnectionListWidgetItemContainer* clusterItem) {
+void ConnectionsDialog::EditCluster(ClusterConnectionListWidgetItemContainer* clusterItem) {
   CHECK(clusterItem);
 
-  core::IClusterSettingsBaseSPtr con = clusterItem->connection();
+  core::IClusterSettingsBaseSPtr con = clusterItem->Connection();
   ClusterDialog dlg(this, con->Clone());
   int result = dlg.exec();
-  core::IClusterSettingsBaseSPtr newConnection = dlg.connection();
+  core::IClusterSettingsBaseSPtr newConnection = dlg.Connection();
   if (result == QDialog::Accepted && newConnection) {
     core::SettingsManager::instance().RemoveCluster(con);
     core::SettingsManager::instance().AddCluster(newConnection);
 
     delete clusterItem;
-    addCluster(newConnection);
+    AddCluster(newConnection);
   }
 }
 
-void ConnectionsDialog::editSentinel(SentinelConnectionListWidgetItemContainer* sentinelItem) {
+void ConnectionsDialog::EditSentinel(SentinelConnectionListWidgetItemContainer* sentinelItem) {
   CHECK(sentinelItem);
 
-  core::ISentinelSettingsBaseSPtr con = sentinelItem->connection();
+  core::ISentinelSettingsBaseSPtr con = sentinelItem->Connection();
   SentinelDialog dlg(this, con->Clone());
   int result = dlg.exec();
   core::ISentinelSettingsBaseSPtr newConnection = dlg.connection();
@@ -358,11 +359,11 @@ void ConnectionsDialog::editSentinel(SentinelConnectionListWidgetItemContainer* 
     core::SettingsManager::instance().AddSentinel(newConnection);
 
     delete sentinelItem;
-    addSentinel(newConnection);
+    AddSentinel(newConnection);
   }
 }
 
-void ConnectionsDialog::removeConnection(ConnectionListWidgetItem* connectionItem) {
+void ConnectionsDialog::RemoveConnection(ConnectionListWidgetItem* connectionItem) {
   CHECK(connectionItem);
 
   // Ask user
@@ -375,12 +376,12 @@ void ConnectionsDialog::removeConnection(ConnectionListWidgetItem* connectionIte
     return;
   }
 
-  core::IConnectionSettingsBaseSPtr connection = connectionItem->connection();
+  core::IConnectionSettingsBaseSPtr connection = connectionItem->Connection();
   delete connectionItem;
   core::SettingsManager::instance().RemoveConnection(connection);
 }
 
-void ConnectionsDialog::removeCluster(ClusterConnectionListWidgetItemContainer* clusterItem) {
+void ConnectionsDialog::RemoveCluster(ClusterConnectionListWidgetItemContainer* clusterItem) {
   CHECK(clusterItem);
 
   // Ask user
@@ -393,12 +394,12 @@ void ConnectionsDialog::removeCluster(ClusterConnectionListWidgetItemContainer* 
     return;
   }
 
-  core::IClusterSettingsBaseSPtr connection = clusterItem->connection();
+  core::IClusterSettingsBaseSPtr connection = clusterItem->Connection();
   delete clusterItem;
   core::SettingsManager::instance().RemoveCluster(connection);
 }
 
-void ConnectionsDialog::removeSentinel(SentinelConnectionListWidgetItemContainer* sentinelItem) {
+void ConnectionsDialog::RemoveSentinel(SentinelConnectionListWidgetItemContainer* sentinelItem) {
   CHECK(sentinelItem);
 
   // Ask user
@@ -411,7 +412,7 @@ void ConnectionsDialog::removeSentinel(SentinelConnectionListWidgetItemContainer
     return;
   }
 
-  core::ISentinelSettingsBaseSPtr connection = sentinelItem->connection();
+  core::ISentinelSettingsBaseSPtr connection = sentinelItem->Connection();
   delete sentinelItem;
   core::SettingsManager::instance().RemoveSentinel(connection);
 }
@@ -436,37 +437,37 @@ void ConnectionsDialog::accept() {
 
 void ConnectionsDialog::changeEvent(QEvent* e) {
   if (e->type() == QEvent::LanguageChange) {
-    retranslateUi();
+    RetranslateUi();
   }
   QDialog::changeEvent(e);
 }
 
-void ConnectionsDialog::retranslateUi() {
+void ConnectionsDialog::RetranslateUi() {
   setWindowTitle(translations::trConnections);
   acButton_->setText(translations::trOpen);
 }
 
-void ConnectionsDialog::addConnection(core::IConnectionSettingsBaseSPtr con) {
+void ConnectionsDialog::AddConnection(core::IConnectionSettingsBaseSPtr con) {
   core::IConnectionSettingsBase::connection_path_t path = con->Path();
   core::IConnectionSettingsBase::connection_path_t dir(path.Directory());
   if (dir == core::IConnectionSettingsBase::connection_path_t::Root()) {
     ConnectionListWidgetItem* item = new ConnectionListWidgetItem(nullptr);
-    item->setConnection(con);
+    item->SetConnection(con);
     listWidget_->addTopLevelItem(item);
   } else {
-    DirectoryListWidgetItem* dirItem = findFolderByPath(dir);
+    DirectoryListWidgetItem* dirItem = FindFolderByPath(dir);
     if (!dirItem) {
       dirItem = new DirectoryListWidgetItem(dir);
     }
 
     ConnectionListWidgetItem* item = new ConnectionListWidgetItem(dirItem);
-    item->setConnection(con);
+    item->SetConnection(con);
     dirItem->addChild(item);
     listWidget_->addTopLevelItem(dirItem);
   }
 }
 
-void ConnectionsDialog::addCluster(core::IClusterSettingsBaseSPtr con) {
+void ConnectionsDialog::AddCluster(core::IClusterSettingsBaseSPtr con) {
   core::IConnectionSettingsBase::connection_path_t path = con->Path();
   core::IConnectionSettingsBase::connection_path_t dir(path.Directory());
   if (dir == core::IConnectionSettingsBase::connection_path_t::Root()) {
@@ -474,7 +475,7 @@ void ConnectionsDialog::addCluster(core::IClusterSettingsBaseSPtr con) {
         new ClusterConnectionListWidgetItemContainer(con, nullptr);
     listWidget_->addTopLevelItem(item);
   } else {
-    DirectoryListWidgetItem* dirItem = findFolderByPath(dir);
+    DirectoryListWidgetItem* dirItem = FindFolderByPath(dir);
     if (!dirItem) {
       dirItem = new DirectoryListWidgetItem(dir);
     }
@@ -486,7 +487,7 @@ void ConnectionsDialog::addCluster(core::IClusterSettingsBaseSPtr con) {
   }
 }
 
-void ConnectionsDialog::addSentinel(core::ISentinelSettingsBaseSPtr con) {
+void ConnectionsDialog::AddSentinel(core::ISentinelSettingsBaseSPtr con) {
   core::IConnectionSettingsBase::connection_path_t path = con->Path();
   core::IConnectionSettingsBase::connection_path_t dir(path.Directory());
   if (dir == core::IConnectionSettingsBase::connection_path_t::Root()) {
@@ -494,7 +495,7 @@ void ConnectionsDialog::addSentinel(core::ISentinelSettingsBaseSPtr con) {
         new SentinelConnectionListWidgetItemContainer(con, nullptr);
     listWidget_->addTopLevelItem(item);
   } else {
-    DirectoryListWidgetItem* dirItem = findFolderByPath(dir);
+    DirectoryListWidgetItem* dirItem = FindFolderByPath(dir);
     if (!dirItem) {
       dirItem = new DirectoryListWidgetItem(dir);
     }
@@ -506,17 +507,18 @@ void ConnectionsDialog::addSentinel(core::ISentinelSettingsBaseSPtr con) {
   }
 }
 
-DirectoryListWidgetItem* ConnectionsDialog::findFolderByPath(
+DirectoryListWidgetItem* ConnectionsDialog::FindFolderByPath(
     const core::IConnectionSettingsBase::connection_path_t& path) const {
   int count = listWidget_->topLevelItemCount();
   for (int i = 0; i < count; ++i) {
     QTreeWidgetItem* item = listWidget_->topLevelItem(i);
     DirectoryListWidgetItem* dirItem = dynamic_cast<DirectoryListWidgetItem*>(item);  // +
-    if (dirItem && dirItem->path() == path) {
+    if (dirItem && dirItem->Path() == path) {
       return dirItem;
     }
   }
   return nullptr;
 }
+
 }  // namespace gui
 }  // namespace fastonosql

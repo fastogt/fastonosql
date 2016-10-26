@@ -58,19 +58,19 @@ FastoCommonItem* createItem(common::qt::gui::TreeItem* parent,
                             const std::string& key,
                             bool readOnly,
                             FastoObject* item) {
-  core::NValue val = item->value();
+  core::NValue val = item->Value();
   core::NDbKValue nkey(core::NKey(key), val);
-  return new FastoCommonItem(nkey, item->delimiter(), readOnly, parent, item);
+  return new FastoCommonItem(nkey, item->Delimiter(), readOnly, parent, item);
 }
 
 FastoCommonItem* createRootItem(FastoObject* item) {
-  auto value = item->value();
+  auto value = item->Value();
   std::string str;
   bool res = value->getAsString(&str);
   CHECK(res);
   core::NValue val(common::Value::createStringValue(str));
   core::NDbKValue nkey(core::NKey(std::string()), val);
-  return new FastoCommonItem(nkey, item->delimiter(), true, NULL, item);
+  return new FastoCommonItem(nkey, item->Delimiter(), true, NULL, item);
 }
 }  // namespace
 OutputWidget::OutputWidget(core::IServerSPtr server, QWidget* parent)
@@ -162,16 +162,16 @@ void OutputWidget::finishExecuteCommand(const core::events_info::ExecuteInfoResp
 }
 
 void OutputWidget::addChild(FastoObjectIPtr child) {
-  DCHECK(child->parent());
+  DCHECK(child->Parent());
 
   FastoObjectCommand* command = dynamic_cast<FastoObjectCommand*>(child.get());  // +
   if (command) {
     return;
   }
 
-  command = dynamic_cast<FastoObjectCommand*>(child->parent());  // +
+  command = dynamic_cast<FastoObjectCommand*>(child->Parent());  // +
   if (command) {
-    void* parentinner = command->parent();
+    void* parentinner = command->Parent();
 
     QModelIndex parent;
     bool isFound = commonModel_->findItem(parentinner, &parent);
@@ -191,12 +191,12 @@ void OutputWidget::addChild(FastoObjectIPtr child) {
       return;
     }
 
-    std::string inputArgs = command->inputArgs();
+    std::string inputArgs = command->InputArgs();
     fastonosql::gui::FastoCommonItem* comChild =
         createItem(par, GetFirstWordFromLine(inputArgs), command->IsReadOnly(), child.get());
     commonModel_->insertItem(parent, comChild);
   } else {
-    FastoObjectArray* arr = dynamic_cast<FastoObjectArray*>(child->parent());  // +
+    FastoObjectArray* arr = dynamic_cast<FastoObjectArray*>(child->Parent());  // +
     CHECK(arr);
 
     QModelIndex parent;
