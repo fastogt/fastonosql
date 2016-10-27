@@ -441,7 +441,10 @@ common::Error DBConnection::DeleteImpl(const NKeys& keys, NKeys* deleted_keys) {
   return common::Error();
 }
 
-common::Error select(internal::CommandHandler* handler, int argc, const char** argv, FastoObject* out) {
+common::Error select(internal::CommandHandler* handler,
+                     int argc,
+                     const char** argv,
+                     FastoObject* out) {
   UNUSED(argc);
 
   DBConnection* unqlite = static_cast<DBConnection*>(handler);
@@ -456,7 +459,10 @@ common::Error select(internal::CommandHandler* handler, int argc, const char** a
   return common::Error();
 }
 
-common::Error set(internal::CommandHandler* handler, int argc, const char** argv, FastoObject* out) {
+common::Error set(internal::CommandHandler* handler,
+                  int argc,
+                  const char** argv,
+                  FastoObject* out) {
   UNUSED(argc);
 
   NKey key(argv[0]);
@@ -476,7 +482,10 @@ common::Error set(internal::CommandHandler* handler, int argc, const char** argv
   return common::Error();
 }
 
-common::Error get(internal::CommandHandler* handler, int argc, const char** argv, FastoObject* out) {
+common::Error get(internal::CommandHandler* handler,
+                  int argc,
+                  const char** argv,
+                  FastoObject* out) {
   UNUSED(argc);
 
   NKey key(argv[0]);
@@ -494,7 +503,10 @@ common::Error get(internal::CommandHandler* handler, int argc, const char** argv
   return common::Error();
 }
 
-common::Error del(internal::CommandHandler* handler, int argc, const char** argv, FastoObject* out) {
+common::Error del(internal::CommandHandler* handler,
+                  int argc,
+                  const char** argv,
+                  FastoObject* out) {
   NKeys keysdel;
   for (int i = 0; i < argc; ++i) {
     keysdel.push_back(NKey(argv[i]));
@@ -513,7 +525,10 @@ common::Error del(internal::CommandHandler* handler, int argc, const char** argv
   return common::Error();
 }
 
-common::Error rename(internal::CommandHandler* handler, int argc, const char** argv, FastoObject* out) {
+common::Error rename(internal::CommandHandler* handler,
+                     int argc,
+                     const char** argv,
+                     FastoObject* out) {
   UNUSED(argc);
 
   NKey key(argv[0]);
@@ -529,7 +544,10 @@ common::Error rename(internal::CommandHandler* handler, int argc, const char** a
   return common::Error();
 }
 
-common::Error set_ttl(internal::CommandHandler* handler, int argc, const char** argv, FastoObject* out) {
+common::Error set_ttl(internal::CommandHandler* handler,
+                      int argc,
+                      const char** argv,
+                      FastoObject* out) {
   UNUSED(out);
   UNUSED(argc);
 
@@ -546,7 +564,10 @@ common::Error set_ttl(internal::CommandHandler* handler, int argc, const char** 
   return er;
 }
 
-common::Error keys(internal::CommandHandler* handler, int argc, const char** argv, FastoObject* out) {
+common::Error keys(internal::CommandHandler* handler,
+                   int argc,
+                   const char** argv,
+                   FastoObject* out) {
   UNUSED(argc);
 
   DBConnection* unq = static_cast<DBConnection*>(handler);
@@ -566,7 +587,10 @@ common::Error keys(internal::CommandHandler* handler, int argc, const char** arg
   return er;
 }
 
-common::Error info(internal::CommandHandler* handler, int argc, const char** argv, FastoObject* out) {
+common::Error info(internal::CommandHandler* handler,
+                   int argc,
+                   const char** argv,
+                   FastoObject* out) {
   DBConnection* unq = static_cast<DBConnection*>(handler);
   ServerInfo::Stats statsout;
   common::Error er = unq->Info(argc == 1 ? argv[0] : nullptr, &statsout);
@@ -580,7 +604,10 @@ common::Error info(internal::CommandHandler* handler, int argc, const char** arg
   return er;
 }
 
-common::Error dbkcount(internal::CommandHandler* handler, int argc, const char** argv, FastoObject* out) {
+common::Error dbkcount(internal::CommandHandler* handler,
+                       int argc,
+                       const char** argv,
+                       FastoObject* out) {
   UNUSED(argc);
   UNUSED(argv);
 
@@ -596,14 +623,20 @@ common::Error dbkcount(internal::CommandHandler* handler, int argc, const char**
   return er;
 }
 
-common::Error help(internal::CommandHandler* handler, int argc, const char** argv, FastoObject* out) {
+common::Error help(internal::CommandHandler* handler,
+                   int argc,
+                   const char** argv,
+                   FastoObject* out) {
   UNUSED(out);
 
   DBConnection* unq = static_cast<DBConnection*>(handler);
   return unq->Help(argc - 1, argv + 1);
 }
 
-common::Error flushdb(internal::CommandHandler* handler, int argc, const char** argv, FastoObject* out) {
+common::Error flushdb(internal::CommandHandler* handler,
+                      int argc,
+                      const char** argv,
+                      FastoObject* out) {
   UNUSED(argc);
   UNUSED(argv);
   UNUSED(out);

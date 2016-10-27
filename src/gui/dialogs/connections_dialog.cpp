@@ -33,8 +33,8 @@
 
 #include <common/macros.h>  // for VERIFY, CHECK, NOTREACHED
 
-#include "core/connection_settings/connection_settings.h"  // for IClusterSettingsBaseSPtr, etc
-#include "core/settings_manager.h"                         // for SettingsManager
+#include "core/connection_settings/iconnection_settings.h"  // for IClusterSettingsBaseSPtr, etc
+#include "core/settings_manager.h"                          // for SettingsManager
 
 #include "gui/dialogs/cluster_dialog.h"     // for ClusterDialog
 #include "gui/dialogs/connection_dialog.h"  // for ConnectionDialog
@@ -490,7 +490,7 @@ void ConnectionsDialog::addCluster(core::IClusterSettingsBaseSPtr con) {
 void ConnectionsDialog::addSentinel(core::ISentinelSettingsBaseSPtr con) {
   core::connection_path_t path = con->Path();
   core::connection_path_t dir(path.Directory());
-  if (dir == core::IConnectionSettingsBase::connection_path_t::Root()) {
+  if (dir == core::connection_path_t::Root()) {
     SentinelConnectionListWidgetItemContainer* item =
         new SentinelConnectionListWidgetItemContainer(con, nullptr);
     listWidget_->addTopLevelItem(item);

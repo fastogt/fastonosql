@@ -90,7 +90,6 @@ class Connection {
   config_t config_;
   handle_t* handle_;
 };
-
 }
 }  // namespace core
 }  // namespace fastonosql

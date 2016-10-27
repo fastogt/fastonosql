@@ -25,8 +25,8 @@
 #include <common/macros.h>  // for DNOTREACHED, etc
 #include <common/value.h>   // for ErrorValue, etc
 
-#include "core/connection_types.h"  // for connectionTypes
-#include "core/db_key.h"            // for NDbKValue, NKey, etc
+#include "core/connection_types.h"     // for connectionTypes
+#include "core/db_key.h"               // for NDbKValue, NKey, etc
 #include "core/icommand_translator.h"  // for translator_t, etc
 
 #include "core/internal/command_handler.h"  // for CommandHandler, etc

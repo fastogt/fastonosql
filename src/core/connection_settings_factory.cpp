@@ -16,7 +16,7 @@
     along with FastoNoSQL.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-#include "core/connection_settings/connection_settings_factory.h"
+#include "core/connection_settings_factory.h"
 
 #include <common/convert2string.h>
 
@@ -170,7 +170,7 @@ IConnectionSettingsRemote* ConnectionSettingsFactory::CreateFromType(
   return remote;
 }
 
-IConnectionSettingsRemoteSSH* ConnectionSettingsFactory::createFromType(
+IConnectionSettingsRemoteSSH* ConnectionSettingsFactory::CreateSSHFromType(
     connectionTypes type,
     const connection_path_t& conName,
     const common::net::HostAndPort& host) {

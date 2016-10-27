@@ -18,26 +18,30 @@
 
 #pragma once
 
-#include "core/connection_settings/connection_settings.h"
+#include <common/patterns/singleton_pattern.h>  // for LazySingleton
+
+#include "core/connection_settings/iconnection_settings.h"
 #include "core/connection_settings/iconnection_settings_remote.h"
 #include "core/connection_settings/iconnection_settings_ssh.h"
 
 namespace fastonosql {
 namespace core {
 
-class ConnectionSettingsFactory {
+class ConnectionSettingsFactory
+    : public common::patterns::LazySingleton<ConnectionSettingsFactory> {
  public:
-  static IConnectionSettingsBase* CreateFromType(connectionTypes type,
-                                                 const connection_path_t& conName);
-  static IConnectionSettingsBase* FromString(const std::string& val);
+  friend class common::patterns::LazySingleton<ConnectionSettingsFactory>;
 
-  static IConnectionSettingsRemote* CreateFromType(connectionTypes type,
-                                                   const connection_path_t& conName,
-                                                   const common::net::HostAndPort& host);
+  IConnectionSettingsBase* CreateFromType(connectionTypes type, const connection_path_t& conName);
+  IConnectionSettingsBase* FromString(const std::string& val);
 
-  static IConnectionSettingsRemoteSSH* createFromType(connectionTypes type,
-                                                      const connection_path_t& conName,
-                                                      const common::net::HostAndPort& host);
+  IConnectionSettingsRemote* CreateFromType(connectionTypes type,
+                                            const connection_path_t& conName,
+                                            const common::net::HostAndPort& host);
+
+  IConnectionSettingsRemoteSSH* CreateSSHFromType(connectionTypes type,
+                                                  const connection_path_t& conName,
+                                                  const common::net::HostAndPort& host);
 };
 
 }  // namespace core

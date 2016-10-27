@@ -24,7 +24,7 @@
 #include <common/error.h>   // for Error
 #include <common/macros.h>  // for WARN_UNUSED_RESULT
 
-#include "core/command_info.h"     // for UNDEFINED_EXAMPLE_STR, UNDEFIN...
+#include "core/command_info.h"             // for UNDEFINED_EXAMPLE_STR, UNDEFIN...
 #include "core/connection_types.h"         // for connectionTypes::LEVELDB
 #include "core/db_key.h"                   // for NDbKValue, NKey, NKeys
 #include "core/internal/cdb_connection.h"  // for CDBConnection
@@ -102,19 +102,43 @@ class DBConnection : public core::internal::CDBConnection<NativeConnection, Conf
   virtual common::Error SetTTLImpl(const NKey& key, ttl_t ttl) override;
 };
 
-common::Error select(internal::CommandHandler* handler, int argc, const char** argv, FastoObject* out);
+common::Error select(internal::CommandHandler* handler,
+                     int argc,
+                     const char** argv,
+                     FastoObject* out);
 common::Error set(internal::CommandHandler* handler, int argc, const char** argv, FastoObject* out);
 common::Error get(internal::CommandHandler* handler, int argc, const char** argv, FastoObject* out);
 common::Error del(internal::CommandHandler* handler, int argc, const char** argv, FastoObject* out);
-common::Error rename(internal::CommandHandler* handler, int argc, const char** argv, FastoObject* out);
-common::Error set_ttl(internal::CommandHandler* handler, int argc, const char** argv, FastoObject* out);
+common::Error rename(internal::CommandHandler* handler,
+                     int argc,
+                     const char** argv,
+                     FastoObject* out);
+common::Error set_ttl(internal::CommandHandler* handler,
+                      int argc,
+                      const char** argv,
+                      FastoObject* out);
 
-common::Error info(internal::CommandHandler* handler, int argc, const char** argv, FastoObject* out);
-common::Error keys(internal::CommandHandler* handler, int argc, const char** argv, FastoObject* out);
+common::Error info(internal::CommandHandler* handler,
+                   int argc,
+                   const char** argv,
+                   FastoObject* out);
+common::Error keys(internal::CommandHandler* handler,
+                   int argc,
+                   const char** argv,
+                   FastoObject* out);
 
-common::Error dbkcount(internal::CommandHandler* handler, int argc, const char** argv, FastoObject* out);
-common::Error help(internal::CommandHandler* handler, int argc, const char** argv, FastoObject* out);
-common::Error flushdb(internal::CommandHandler* handler, int argc, const char** argv, FastoObject* out);
+common::Error dbkcount(internal::CommandHandler* handler,
+                       int argc,
+                       const char** argv,
+                       FastoObject* out);
+common::Error help(internal::CommandHandler* handler,
+                   int argc,
+                   const char** argv,
+                   FastoObject* out);
+common::Error flushdb(internal::CommandHandler* handler,
+                      int argc,
+                      const char** argv,
+                      FastoObject* out);
 
 static const std::vector<CommandHolder> leveldbCommands = {
     CommandHolder("SET",

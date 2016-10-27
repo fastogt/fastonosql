@@ -625,7 +625,10 @@ common::Error DBConnection::SetTTLImpl(const NKey& key, ttl_t ttl) {
   return ExpireInner(key.Key(), ttl);
 }
 
-common::Error keys(internal::CommandHandler* handler, int argc, const char** argv, FastoObject* out) {
+common::Error keys(internal::CommandHandler* handler,
+                   int argc,
+                   const char** argv,
+                   FastoObject* out) {
   UNUSED(argc);
 
   DBConnection* mem = static_cast<DBConnection*>(handler);
@@ -645,7 +648,10 @@ common::Error keys(internal::CommandHandler* handler, int argc, const char** arg
   return er;
 }
 
-common::Error stats(internal::CommandHandler* handler, int argc, const char** argv, FastoObject* out) {
+common::Error stats(internal::CommandHandler* handler,
+                    int argc,
+                    const char** argv,
+                    FastoObject* out) {
   DBConnection* mem = static_cast<DBConnection*>(handler);
   const char* args = argc == 1 ? argv[0] : nullptr;
   if (args && strcasecmp(args, "items") == 0) {
@@ -665,7 +671,10 @@ common::Error stats(internal::CommandHandler* handler, int argc, const char** ar
   return er;
 }
 
-common::Error get(internal::CommandHandler* handler, int argc, const char** argv, FastoObject* out) {
+common::Error get(internal::CommandHandler* handler,
+                  int argc,
+                  const char** argv,
+                  FastoObject* out) {
   UNUSED(argc);
 
   NKey key(argv[0]);
@@ -683,7 +692,10 @@ common::Error get(internal::CommandHandler* handler, int argc, const char** argv
   return common::Error();
 }
 
-common::Error add(internal::CommandHandler* handler, int argc, const char** argv, FastoObject* out) {
+common::Error add(internal::CommandHandler* handler,
+                  int argc,
+                  const char** argv,
+                  FastoObject* out) {
   UNUSED(argc);
 
   DBConnection* mem = static_cast<DBConnection*>(handler);
@@ -699,7 +711,10 @@ common::Error add(internal::CommandHandler* handler, int argc, const char** argv
   return er;
 }
 
-common::Error replace(internal::CommandHandler* handler, int argc, const char** argv, FastoObject* out) {
+common::Error replace(internal::CommandHandler* handler,
+                      int argc,
+                      const char** argv,
+                      FastoObject* out) {
   UNUSED(argc);
 
   DBConnection* mem = static_cast<DBConnection*>(handler);
@@ -714,7 +729,10 @@ common::Error replace(internal::CommandHandler* handler, int argc, const char** 
   return er;
 }
 
-common::Error append(internal::CommandHandler* handler, int argc, const char** argv, FastoObject* out) {
+common::Error append(internal::CommandHandler* handler,
+                     int argc,
+                     const char** argv,
+                     FastoObject* out) {
   UNUSED(argc);
 
   DBConnection* mem = static_cast<DBConnection*>(handler);
@@ -729,7 +747,10 @@ common::Error append(internal::CommandHandler* handler, int argc, const char** a
   return er;
 }
 
-common::Error prepend(internal::CommandHandler* handler, int argc, const char** argv, FastoObject* out) {
+common::Error prepend(internal::CommandHandler* handler,
+                      int argc,
+                      const char** argv,
+                      FastoObject* out) {
   UNUSED(argc);
 
   DBConnection* mem = static_cast<DBConnection*>(handler);
@@ -744,7 +765,10 @@ common::Error prepend(internal::CommandHandler* handler, int argc, const char** 
   return er;
 }
 
-common::Error incr(internal::CommandHandler* handler, int argc, const char** argv, FastoObject* out) {
+common::Error incr(internal::CommandHandler* handler,
+                   int argc,
+                   const char** argv,
+                   FastoObject* out) {
   UNUSED(argc);
 
   DBConnection* mem = static_cast<DBConnection*>(handler);
@@ -758,7 +782,10 @@ common::Error incr(internal::CommandHandler* handler, int argc, const char** arg
   return er;
 }
 
-common::Error decr(internal::CommandHandler* handler, int argc, const char** argv, FastoObject* out) {
+common::Error decr(internal::CommandHandler* handler,
+                   int argc,
+                   const char** argv,
+                   FastoObject* out) {
   UNUSED(argc);
 
   DBConnection* mem = static_cast<DBConnection*>(handler);
@@ -772,7 +799,10 @@ common::Error decr(internal::CommandHandler* handler, int argc, const char** arg
   return er;
 }
 
-common::Error select(internal::CommandHandler* handler, int argc, const char** argv, FastoObject* out) {
+common::Error select(internal::CommandHandler* handler,
+                     int argc,
+                     const char** argv,
+                     FastoObject* out) {
   UNUSED(argc);
 
   DBConnection* mem = static_cast<DBConnection*>(handler);
@@ -787,7 +817,10 @@ common::Error select(internal::CommandHandler* handler, int argc, const char** a
   return common::Error();
 }
 
-common::Error set(internal::CommandHandler* handler, int argc, const char** argv, FastoObject* out) {
+common::Error set(internal::CommandHandler* handler,
+                  int argc,
+                  const char** argv,
+                  FastoObject* out) {
   UNUSED(argc);
 
   NKey key(argv[0]);
@@ -807,7 +840,10 @@ common::Error set(internal::CommandHandler* handler, int argc, const char** argv
   return common::Error();
 }
 
-common::Error rename(internal::CommandHandler* handler, int argc, const char** argv, FastoObject* out) {
+common::Error rename(internal::CommandHandler* handler,
+                     int argc,
+                     const char** argv,
+                     FastoObject* out) {
   UNUSED(argc);
 
   NKey key(argv[0]);
@@ -823,7 +859,10 @@ common::Error rename(internal::CommandHandler* handler, int argc, const char** a
   return common::Error();
 }
 
-common::Error set_ttl(internal::CommandHandler* handler, int argc, const char** argv, FastoObject* out) {
+common::Error set_ttl(internal::CommandHandler* handler,
+                      int argc,
+                      const char** argv,
+                      FastoObject* out) {
   UNUSED(out);
   UNUSED(argc);
 
@@ -841,7 +880,10 @@ common::Error set_ttl(internal::CommandHandler* handler, int argc, const char** 
   return common::Error();
 }
 
-common::Error del(internal::CommandHandler* handler, int argc, const char** argv, FastoObject* out) {
+common::Error del(internal::CommandHandler* handler,
+                  int argc,
+                  const char** argv,
+                  FastoObject* out) {
   NKeys keysdel;
   for (int i = 0; i < argc; ++i) {
     keysdel.push_back(NKey(argv[i]));
@@ -860,7 +902,10 @@ common::Error del(internal::CommandHandler* handler, int argc, const char** argv
   return common::Error();
 }
 
-common::Error flushdb(internal::CommandHandler* handler, int argc, const char** argv, FastoObject* out) {
+common::Error flushdb(internal::CommandHandler* handler,
+                      int argc,
+                      const char** argv,
+                      FastoObject* out) {
   DBConnection* mem = static_cast<DBConnection*>(handler);
   common::Error er = mem->Flushdb(argc == 1 ? common::ConvertFromString<time_t>(argv[0]) : 0);
   if (!er) {
@@ -884,7 +929,10 @@ common::Error version_server(internal::CommandHandler* handler,
   return mem->VersionServer();
 }
 
-common::Error dbkcount(internal::CommandHandler* handler, int argc, const char** argv, FastoObject* out) {
+common::Error dbkcount(internal::CommandHandler* handler,
+                       int argc,
+                       const char** argv,
+                       FastoObject* out) {
   UNUSED(argc);
   UNUSED(argv);
 
@@ -900,14 +948,20 @@ common::Error dbkcount(internal::CommandHandler* handler, int argc, const char**
   return er;
 }
 
-common::Error help(internal::CommandHandler* handler, int argc, const char** argv, FastoObject* out) {
+common::Error help(internal::CommandHandler* handler,
+                   int argc,
+                   const char** argv,
+                   FastoObject* out) {
   UNUSED(out);
 
   DBConnection* mem = static_cast<DBConnection*>(handler);
   return mem->Help(argc - 1, argv + 1);
 }
 
-common::Error expire(internal::CommandHandler* handler, int argc, const char** argv, FastoObject* out) {
+common::Error expire(internal::CommandHandler* handler,
+                     int argc,
+                     const char** argv,
+                     FastoObject* out) {
   return set_ttl(handler, argc, argv, out);
 }
 }  // namespace memcached

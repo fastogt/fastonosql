@@ -45,6 +45,7 @@
 #include <common/qt/convert2string.h>  // for ConvertToString
 
 #include "core/connection_types.h"  // for connectionTypes, etc
+#include "core/cluster_connection_settings_factory.h"
 
 #include "gui/dialogs/connection_diagnostic_dialog.h"
 #include "gui/dialogs/connection_dialog.h"  // for ConnectionDialog
@@ -408,7 +409,8 @@ bool ClusterDialog::validateAndApply() {
     conFolder = defaultNameConnectionFolder;
   }
   core::connection_path_t path(common::file_system::stable_dir_path(conFolder) + conName);
-  core::IClusterSettingsBase* newConnection = core::CreateFromType(currentType, path);
+  core::IClusterSettingsBase* newConnection =
+      core::ClusterConnectionSettingsFactory::instance().CreateFromType(currentType, path);
   if (newConnection) {
     cluster_connection_.reset(newConnection);
     if (logging_->isChecked()) {

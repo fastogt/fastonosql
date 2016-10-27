@@ -24,10 +24,10 @@
 
 #include <common/value.h>  // for ValueSPtr
 
-#include "core/connection_types.h"         // for connectionTypes
-#include "core/core_fwd.h"                 // for IDatabaseSPtr
-#include "core/db_key.h"                   // for NKey (ptr only), etc
-#include "core/icommand_translator.h"      // for translator_t
+#include "core/connection_types.h"     // for connectionTypes
+#include "core/core_fwd.h"             // for IDatabaseSPtr
+#include "core/db_key.h"               // for NKey (ptr only), etc
+#include "core/icommand_translator.h"  // for translator_t
 
 #include "core/database/idatabase_info.h"  // for IDataBaseInfoSPtr
 #include "core/events/events.h"            // for BackupResponceEvent, etc

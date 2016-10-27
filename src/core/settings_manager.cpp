@@ -34,7 +34,9 @@
 #include <common/qt/gui/app_style.h>              // for defStyle
 #include <common/qt/translations/translations.h>  // for defLanguage
 
-#include "core/connection_settings/connection_settings_factory.h"
+#include "core/connection_settings_factory.h"
+#include "core/cluster_connection_settings_factory.h"
+#include "core/sentinel_connection_settings_factory.h"
 
 #define PREFIX "settings/"
 
@@ -312,7 +314,7 @@ void SettingsManager::ReloadFromPath(const std::string& path, bool merge) {
     std::string encoded = common::ConvertToString(string);
     std::string raw = common::utils::base64::decode64(encoded);
 
-    IClusterSettingsBaseSPtr sett(IClusterSettingsBase::FromString(raw));
+    IClusterSettingsBaseSPtr sett(ClusterConnectionSettingsFactory::instance().FromString(raw));
     if (sett) {
       clusters_.push_back(sett);
     }
@@ -324,7 +326,7 @@ void SettingsManager::ReloadFromPath(const std::string& path, bool merge) {
     std::string encoded = common::ConvertToString(string);
     std::string raw = common::utils::base64::decode64(encoded);
 
-    ISentinelSettingsBaseSPtr sett(ISentinelSettingsBase::FromString(raw));
+    ISentinelSettingsBaseSPtr sett(SentinelConnectionSettingsFactory::instance().FromString(raw));
     if (sett) {
       sentinels_.push_back(sett);
     }
@@ -336,7 +338,7 @@ void SettingsManager::ReloadFromPath(const std::string& path, bool merge) {
     std::string encoded = common::ConvertToString(string);
     std::string raw = common::utils::base64::decode64(encoded);
 
-    IConnectionSettingsBaseSPtr sett(ConnectionSettingsFactory::FromString(raw));
+    IConnectionSettingsBaseSPtr sett(ConnectionSettingsFactory::instance().FromString(raw));
     if (sett) {
       connections_.push_back(sett);
     }

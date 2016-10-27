@@ -22,8 +22,8 @@
 
 #include <QDialog>
 
-#include "core/connection_settings/connection_settings.h"  // for IConnectionSettingsBaseSPtr, etc
-#include "core/connection_settings/sentinel_connection_settings.h"
+#include "core/connection_settings/iconnection_settings.h"  // for IConnectionSettingsBaseSPtr, etc
+#include "core/connection_settings/isentinel_connection_settings.h"
 
 class QCheckBox;         // lines 29-29
 class QComboBox;         // lines 25-25

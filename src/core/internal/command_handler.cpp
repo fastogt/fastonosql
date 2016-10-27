@@ -69,7 +69,6 @@ common::Error CommandHandler::UnknownSequence(int argc, const char** argv) {
   std::string buff = common::MemSPrintf("Unknown sequence: '%s'.", result);
   return common::make_error_value(buff, common::ErrorValue::E_ERROR);
 }
-
 }
 }  // namespace core
 }  // namespace fastonosql

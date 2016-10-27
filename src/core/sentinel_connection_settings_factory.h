@@ -18,17 +18,20 @@
 
 #pragma once
 
-#include "core/connection_settings/iconnection_settings.h"
+#include <common/patterns/singleton_pattern.h>  // for LazySingleton
+
+#include "core/connection_settings/isentinel_connection_settings.h"
 
 namespace fastonosql {
 namespace core {
 
-class IConnectionSettingsLocal : public IConnectionSettingsBase {
+class SentinelConnectionSettingsFactory
+    : public common::patterns::LazySingleton<SentinelConnectionSettingsFactory> {
  public:
-  virtual std::string DBpath() const = 0;
+  friend class common::patterns::LazySingleton<SentinelConnectionSettingsFactory>;
 
- protected:
-  IConnectionSettingsLocal(const connection_path_t& connectionPath, connectionTypes type);
+  ISentinelSettingsBase* CreateFromType(connectionTypes type, const connection_path_t& conName);
+  ISentinelSettingsBase* FromString(const std::string& val);
 };
 
 }  // namespace core

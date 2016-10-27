@@ -38,7 +38,7 @@
 #include <common/qt/gui/glass_widget.h>  // for GlassWidget
 
 #include "core/servers_manager.h"  // for ServersManager
-#include "core/connection_settings/connection_settings_factory.h"
+#include "core/connection_settings_factory.h"
 
 #include "gui/dialogs/connection_listwidget_items.h"
 #include "gui/dialogs/discovery_sentinel_connection.h"
@@ -147,7 +147,8 @@ void DiscoverySentinelDiagnosticDialog::connectionResultReady(
       common::net::HostAndPort host = inf->host();
       core::connection_path_t path(common::file_system::get_separator_string<char>() + inf->name());
       core::IConnectionSettingsBaseSPtr con(
-          core::ConnectionSettingsFactory::CreateFromType(inf->connectionType(), path, host));
+          core::ConnectionSettingsFactory::instance().CreateFromType(inf->connectionType(), path,
+                                                                     host));
 
       ConnectionListWidgetItemDiscovered* item =
           new ConnectionListWidgetItemDiscovered(inf->info(), nullptr);

@@ -20,8 +20,8 @@
 
 #include <common/net/types.h>  // for HostAndPort
 
-#include "core/connection_settings/connection_settings.h"  // for IConnectionSettingsBaseSPtr
-#include "core/driver/idriver.h"                           // for IDriver
+#include "core/connection_settings/iconnection_settings.h"  // for IConnectionSettingsBaseSPtr
+#include "core/driver/idriver.h"                            // for IDriver
 
 namespace fastonosql {
 namespace core {

@@ -22,8 +22,8 @@
 #include <string>  // for string
 #include <vector>  // for vector
 
-#include "core/connection_settings/connection_settings.h"  // for IConnectionSettingsBaseSPtr, etc
-#include "core/connection_types.h"                         // for connectionTypes
+#include "core/connection_settings/iconnection_settings.h"  // for IConnectionSettingsBaseSPtr, etc
+#include "core/connection_types.h"                          // for connectionTypes
 
 namespace fastonosql {
 namespace core {
@@ -36,8 +36,8 @@ struct SentinelSettings {
   sentinel_nodes_t sentinel_nodes;
 };
 
-std::string sentinelSettingsToString(const SentinelSettings& sent);
-bool sentinelSettingsfromString(const std::string& text, SentinelSettings* sent);
+std::string SentinelSettingsToString(const SentinelSettings& sent);
+bool SentinelSettingsfromString(const std::string& text, SentinelSettings* sent);
 
 class ISentinelSettingsBase : public IConnectionSettings {
  public:
@@ -46,10 +46,6 @@ class ISentinelSettingsBase : public IConnectionSettings {
 
   sentinel_connections_t Sentinels() const;
   void AddSentinel(sentinel_connection_t sent);
-
-  static ISentinelSettingsBase* CreateFromType(connectionTypes type,
-                                               const connection_path_t& conName);
-  static ISentinelSettingsBase* FromString(const std::string& val);
 
   virtual std::string ToString() const override;
   virtual ISentinelSettingsBase* Clone() const = 0;
@@ -60,6 +56,7 @@ class ISentinelSettingsBase : public IConnectionSettings {
  private:
   sentinel_connections_t sentinel_nodes_;
 };
+
 typedef common::shared_ptr<ISentinelSettingsBase> ISentinelSettingsBaseSPtr;
 
 }  // namespace core

@@ -80,29 +80,71 @@ namespace fastonosql {
 namespace core {
 namespace redis {
 
-common::Error common_exec(internal::CommandHandler* handler, int argc, const char** argv, FastoObject* out);
+common::Error common_exec(internal::CommandHandler* handler,
+                          int argc,
+                          const char** argv,
+                          FastoObject* out);
 common::Error common_exec_off2(internal::CommandHandler* handler,
                                int argc,
                                const char** argv,
                                FastoObject* out);
 
-common::Error select(internal::CommandHandler* handler, int argc, const char** argv, FastoObject* out);
+common::Error select(internal::CommandHandler* handler,
+                     int argc,
+                     const char** argv,
+                     FastoObject* out);
 common::Error del(internal::CommandHandler* handler, int argc, const char** argv, FastoObject* out);
 common::Error get(internal::CommandHandler* handler, int argc, const char** argv, FastoObject* out);
-common::Error lrange(internal::CommandHandler* handler, int argc, const char** argv, FastoObject* out);
-common::Error smembers(internal::CommandHandler* handler, int argc, const char** argv, FastoObject* out);
-common::Error zrange(internal::CommandHandler* handler, int argc, const char** argv, FastoObject* out);
-common::Error hgetall(internal::CommandHandler* handler, int argc, const char** argv, FastoObject* out);
+common::Error lrange(internal::CommandHandler* handler,
+                     int argc,
+                     const char** argv,
+                     FastoObject* out);
+common::Error smembers(internal::CommandHandler* handler,
+                       int argc,
+                       const char** argv,
+                       FastoObject* out);
+common::Error zrange(internal::CommandHandler* handler,
+                     int argc,
+                     const char** argv,
+                     FastoObject* out);
+common::Error hgetall(internal::CommandHandler* handler,
+                      int argc,
+                      const char** argv,
+                      FastoObject* out);
 common::Error set(internal::CommandHandler* handler, int argc, const char** argv, FastoObject* out);
-common::Error rename(internal::CommandHandler* handler, int argc, const char** argv, FastoObject* out);
-common::Error persist(internal::CommandHandler* handler, int argc, const char** argv, FastoObject* out);
-common::Error expire(internal::CommandHandler* handler, int argc, const char** argv, FastoObject* out);
+common::Error rename(internal::CommandHandler* handler,
+                     int argc,
+                     const char** argv,
+                     FastoObject* out);
+common::Error persist(internal::CommandHandler* handler,
+                      int argc,
+                      const char** argv,
+                      FastoObject* out);
+common::Error expire(internal::CommandHandler* handler,
+                     int argc,
+                     const char** argv,
+                     FastoObject* out);
 
-common::Error auth(internal::CommandHandler* handler, int argc, const char** argv, FastoObject* out);
-common::Error help(internal::CommandHandler* handler, int argc, const char** argv, FastoObject* out);
-common::Error monitor(internal::CommandHandler* handler, int argc, const char** argv, FastoObject* out);
-common::Error subscribe(internal::CommandHandler* handler, int argc, const char** argv, FastoObject* out);
-common::Error sync(internal::CommandHandler* handler, int argc, const char** argv, FastoObject* out);
+common::Error auth(internal::CommandHandler* handler,
+                   int argc,
+                   const char** argv,
+                   FastoObject* out);
+common::Error help(internal::CommandHandler* handler,
+                   int argc,
+                   const char** argv,
+                   FastoObject* out);
+common::Error monitor(internal::CommandHandler* handler,
+                      int argc,
+                      const char** argv,
+                      FastoObject* out);
+common::Error subscribe(internal::CommandHandler* handler,
+                        int argc,
+                        const char** argv,
+                        FastoObject* out);
+common::Error sync(internal::CommandHandler* handler,
+                   int argc,
+                   const char** argv,
+                   FastoObject* out);
 
 static const std::vector<CommandHolder> redisCommands = {
     CommandHolder("APPEND",

@@ -16,54 +16,34 @@
     along with FastoNoSQL.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-#include "core/connection_settings/cluster_connection_settings.h"
-
-#include <sstream>
+#include "core/sentinel_connection_settings_factory.h"
 
 #include <common/convert2string.h>
 
 #ifdef BUILD_WITH_REDIS
-#include "core/redis/cluster_settings.h"  // for ClusterSettings
+#include "core/redis/sentinel_settings.h"  // for SentinelSettings
 #endif
-
-#include "core/connection_settings/connection_settings_factory.h"
 
 namespace fastonosql {
 namespace core {
 
-IClusterSettingsBase::IClusterSettingsBase(const connection_path_t& connectionPath,
-                                           connectionTypes type)
-    : IConnectionSettings(connectionPath, type) {}
-
-IClusterSettingsBase::cluster_nodes_t IClusterSettingsBase::Nodes() const {
-  return clusters_nodes_;
-}
-
-void IClusterSettingsBase::AddNode(IConnectionSettingsBaseSPtr node) {
-  if (!node) {
-    DNOTREACHED();
-    return;
-  }
-
-  clusters_nodes_.push_back(node);
-}
-
-IClusterSettingsBase* IClusterSettingsBase::CreateFromType(connectionTypes type,
-                                                           const connection_path_t& conName) {
+ISentinelSettingsBase* SentinelConnectionSettingsFactory::CreateFromType(
+    connectionTypes type,
+    const connection_path_t& conName) {
 #ifdef BUILD_WITH_REDIS
   if (type == REDIS) {
-    return new redis::ClusterSettings(conName);
+    return new redis::SentinelSettings(conName);
   }
 #endif
   return nullptr;
 }
 
-IClusterSettingsBase* IClusterSettingsBase::FromString(const std::string& val) {
+ISentinelSettingsBase* SentinelConnectionSettingsFactory::FromString(const std::string& val) {
   if (val.empty()) {
     return nullptr;
   }
 
-  IClusterSettingsBase* result = nullptr;
+  ISentinelSettingsBase* result = nullptr;
   size_t len = val.size();
 
   uint8_t commaCount = 0;
@@ -84,12 +64,16 @@ IClusterSettingsBase* IClusterSettingsBase::FromString(const std::string& val) {
       } else if (commaCount == 2) {
         uint32_t msTime = common::ConvertFromString<uint32_t>(elText);
         result->SetLoggingMsTimeInterval(msTime);
+
         std::string serText;
         for (size_t j = i + 2; j < len; ++j) {
           ch = val[j];
           if (ch == magicNumber || j == len - 1) {
-            IConnectionSettingsBaseSPtr ser(ConnectionSettingsFactory::FromString(serText));
-            result->AddNode(ser);
+            SentinelSettings sent;
+            bool res = SentinelSettingsfromString(serText, &sent);
+            if (res) {
+              result->AddSentinel(sent);
+            }
             serText.clear();
           } else {
             serText += ch;
@@ -105,34 +89,6 @@ IClusterSettingsBase* IClusterSettingsBase::FromString(const std::string& val) {
   }
 
   return result;
-}
-
-std::string IClusterSettingsBase::ToString() const {
-  std::stringstream str;
-  str << IConnectionSettings::ToString() << ',';
-  for (size_t i = 0; i < clusters_nodes_.size(); ++i) {
-    IConnectionSettingsBaseSPtr serv = clusters_nodes_[i];
-    if (serv) {
-      str << magicNumber << serv->ToString();
-    }
-  }
-
-  std::string res = str.str();
-  return res;
-}
-
-IConnectionSettingsBaseSPtr IClusterSettingsBase::FindSettingsByHost(
-    const common::net::HostAndPort& host) const {
-  for (size_t i = 0; i < clusters_nodes_.size(); ++i) {
-    IConnectionSettingsBaseSPtr cur = clusters_nodes_[i];
-    IConnectionSettingsRemote* remote = dynamic_cast<IConnectionSettingsRemote*>(cur.get());  // +
-    CHECK(remote);
-    if (remote->Host() == host) {
-      return cur;
-    }
-  }
-
-  return IConnectionSettingsBaseSPtr();
 }
 
 }  // namespace core

@@ -221,19 +221,17 @@ SET(SOURCES_CORE_DRIVER
 )
 
 SET(HEADERS_CORE_CONNECTION_SETTINGS
-  core/connection_settings/cluster_connection_settings.h
-  core/connection_settings/sentinel_connection_settings.h
-  core/connection_settings/connection_settings.h
-  core/connection_settings/connection_settings_factory.h
+  core/connection_settings/icluster_connection_settings.h
+  core/connection_settings/isentinel_connection_settings.h
+  core/connection_settings/iconnection_settings.h
   core/connection_settings/iconnection_settings_local.h
   core/connection_settings/iconnection_settings_remote.h
   core/connection_settings/iconnection_settings_ssh.h
 )
 SET(SOURCES_CORE_CONNECTION_SETTINGS
-  core/connection_settings/cluster_connection_settings.cpp
-  core/connection_settings/connection_settings.cpp
-  core/connection_settings/connection_settings_factory.cpp
-  core/connection_settings/sentinel_connection_settings.cpp
+  core/connection_settings/icluster_connection_settings.cpp
+  core/connection_settings/isentinel_connection_settings.cpp
+  core/connection_settings/iconnection_settings.cpp
   core/connection_settings/iconnection_settings_local.cpp
   core/connection_settings/iconnection_settings_remote.cpp
   core/connection_settings/iconnection_settings_ssh.cpp
@@ -294,6 +292,10 @@ SET(HEADERS_CORE
   core/command_holder.h
   core/server_property_info.h
   core/ssh_info.h
+
+  core/cluster_connection_settings_factory.h
+  core/sentinel_connection_settings_factory.h
+  core/sentinel_connection_settings_factory.h
 )
 
 SET(SOURCES_CORE
@@ -320,6 +322,10 @@ SET(SOURCES_CORE
   core/command_holder.cpp
   core/server_property_info.cpp
   core/ssh_info.cpp
+
+  core/cluster_connection_settings_factory.cpp
+  core/sentinel_connection_settings_factory.cpp
+  core/connection_settings_factory.cpp
 )
 
 SET(HEADERS_SHELL_TO_MOC

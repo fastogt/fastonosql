@@ -22,7 +22,7 @@
 
 #include <common/net/types.h>  // for HostAndPort
 
-#include "core/connection_settings/connection_settings.h"
+#include "core/connection_settings/iconnection_settings_remote.h"
 #include "core/memcached/config.h"  // for Config
 
 namespace fastonosql {

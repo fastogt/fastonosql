@@ -45,6 +45,7 @@
 #include <common/qt/convert2string.h>  // for ConvertToString
 
 #include "core/connection_types.h"  // for connectionTypes, etc
+#include "core/sentinel_connection_settings_factory.h"
 
 #include "gui/dialogs/connection_diagnostic_dialog.h"
 #include "gui/dialogs/connection_dialog.h"  // for ConnectionDialog
@@ -375,7 +376,7 @@ bool SentinelDialog::validateAndApply() {
 
   core::connection_path_t path(common::file_system::stable_dir_path(conFolder) + conName);
   core::ISentinelSettingsBase* newConnection =
-      core::ISentinelSettingsBase::CreateFromType(currentType, path);
+      core::SentinelConnectionSettingsFactory::instance().CreateFromType(currentType, path);
   if (logging_->isChecked()) {
     newConnection->SetLoggingMsTimeInterval(loggingMsec_->value());
   }

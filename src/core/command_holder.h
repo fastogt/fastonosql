@@ -46,7 +46,8 @@ namespace core {
 class CommandHolder : public CommandInfo {
  public:
   typedef internal::CommandHandler command_handler_t;
-  typedef std::function<common::Error(command_handler_t*, int, const char**, FastoObject*)> function_t;
+  typedef std::function<common::Error(command_handler_t*, int, const char**, FastoObject*)>
+      function_t;
 
   CommandHolder(const std::string& name,
                 const std::string& params,

@@ -18,7 +18,7 @@
 
 #pragma once
 
-#include "core/connection_settings/connection_settings.h"
+#include "core/connection_settings/iconnection_settings.h"
 
 namespace fastonosql {
 namespace core {
@@ -30,10 +30,6 @@ class IClusterSettingsBase : public IConnectionSettings {
   cluster_nodes_t Nodes() const;
 
   void AddNode(IConnectionSettingsBaseSPtr node);
-
-  static IClusterSettingsBase* CreateFromType(connectionTypes type,
-                                              const connection_path_t& connectionPath);
-  static IClusterSettingsBase* FromString(const std::string& val);
 
   virtual std::string ToString() const override;
   virtual IClusterSettingsBase* Clone() const = 0;

@@ -34,8 +34,7 @@
 namespace fastonosql {
 namespace gui {
 
-DirectoryListWidgetItem::DirectoryListWidgetItem(
-    const core::connection_path_t& path)
+DirectoryListWidgetItem::DirectoryListWidgetItem(const core::connection_path_t& path)
     : path_(path) {
   std::string dir_name = path.Name();
   setText(0, common::ConvertFromString<QString>(dir_name));

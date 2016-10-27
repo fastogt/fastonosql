@@ -43,7 +43,7 @@
 #include <common/net/types.h>          // for HostAndPort
 #include <common/qt/convert2string.h>  // for ConvertToString
 
-#include "core/connection_settings/connection_settings_factory.h"
+#include "core/connection_settings_factory.h"
 
 #include "gui/dialogs/connection_diagnostic_dialog.h"
 #include "gui/gui_factory.h"  // for GuiFactory
@@ -432,8 +432,8 @@ bool ConnectionDialog::validateAndApply() {
   core::connection_path_t path(common::file_system::stable_dir_path(conFolder) + conName);
   if (is_ssh_type) {
     core::IConnectionSettingsRemoteSSH* newConnection =
-        core::ConnectionSettingsFactory::createFromType(currentType, path,
-                                                        common::net::HostAndPort());
+        core::ConnectionSettingsFactory::instance().CreateSSHFromType(currentType, path,
+                                                                      common::net::HostAndPort());
     connection_.reset(newConnection);
 
     core::SSHInfo info = newConnection->SSHInfo();
@@ -457,7 +457,7 @@ bool ConnectionDialog::validateAndApply() {
     newConnection->SetSSHInfo(info);
   } else {
     core::IConnectionSettingsBase* newConnection =
-        core::ConnectionSettingsFactory::CreateFromType(currentType, path);
+        core::ConnectionSettingsFactory::instance().CreateFromType(currentType, path);
     connection_.reset(newConnection);
   }
   connection_->SetCommandLine(common::ConvertToString(toRawCommandLine(commandLine_->text())));
