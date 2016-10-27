@@ -82,7 +82,7 @@ SentinelDialog::SentinelDialog(QWidget* parent, core::ISentinelSettingsBase* con
   QString conName = defaultNameConnection;
 
   if (sentinel_connection_) {
-    core::IConnectionSettings::connection_path_t path = sentinel_connection_->Path();
+    core::connection_path_t path = sentinel_connection_->Path();
     conName = common::ConvertFromString<QString>(path.Name());
     conFolder = common::ConvertFromString<QString>(path.Directory());
   }
@@ -373,8 +373,7 @@ bool SentinelDialog::validateAndApply() {
     conFolder = defaultNameConnectionFolder;
   }
 
-  core::ISentinelSettingsBase::connection_path_t path(
-      common::file_system::stable_dir_path(conFolder) + conName);
+  core::connection_path_t path(common::file_system::stable_dir_path(conFolder) + conName);
   core::ISentinelSettingsBase* newConnection =
       core::ISentinelSettingsBase::CreateFromType(currentType, path);
   if (logging_->isChecked()) {

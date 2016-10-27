@@ -28,7 +28,6 @@
 #include <common/net/types.h>    // for HostAndPort
 
 #include "core/connection_types.h"  // for connectionTypes
-#include "core/ssh_info.h"          // for SSHInfo
 
 namespace fastonosql {
 namespace core {
@@ -55,9 +54,10 @@ inline bool operator==(const ConnectionSettingsPath& r, const ConnectionSettings
   return r.Equals(l);
 }
 
+typedef ConnectionSettingsPath connection_path_t;
+
 class IConnectionSettings : public common::ClonableBase<IConnectionSettings> {
  public:
-  typedef ConnectionSettingsPath connection_path_t;
   virtual ~IConnectionSettings();
 
   connection_path_t Path() const;
@@ -96,10 +96,6 @@ class IConnectionSettingsBase : public IConnectionSettings {
 
   virtual std::string FullAddress() const = 0;
 
-  static IConnectionSettingsBase* CreateFromType(connectionTypes type,
-                                                 const connection_path_t& conName);
-  static IConnectionSettingsBase* FromString(const std::string& val);
-
   virtual std::string ToString() const override;
   virtual IConnectionSettingsBase* Clone() const = 0;
 
@@ -109,52 +105,6 @@ class IConnectionSettingsBase : public IConnectionSettings {
  private:
   using IConnectionSettings::SetPath;
   std::string hash_;
-};
-
-class IConnectionSettingsLocal : public IConnectionSettingsBase {
- public:
-  virtual std::string DBpath() const = 0;
-
- protected:
-  IConnectionSettingsLocal(const connection_path_t& connectionPath, connectionTypes type);
-};
-
-class IConnectionSettingsRemote : public IConnectionSettingsBase {
- public:
-  virtual ~IConnectionSettingsRemote();
-
-  virtual void SetHost(const common::net::HostAndPort& host) = 0;
-  virtual common::net::HostAndPort Host() const = 0;
-
-  virtual std::string CommandLine() const = 0;
-  virtual void SetCommandLine(const std::string& line) = 0;
-
-  virtual std::string FullAddress() const;
-
-  static IConnectionSettingsRemote* CreateFromType(connectionTypes type,
-                                                   const connection_path_t& conName,
-                                                   const common::net::HostAndPort& host);
-
- protected:
-  IConnectionSettingsRemote(const connection_path_t& connectionPath, connectionTypes type);
-};
-
-class IConnectionSettingsRemoteSSH : public IConnectionSettingsRemote {
- public:
-  struct SSHInfo SSHInfo() const;
-  void SetSSHInfo(const struct SSHInfo& info);
-
-  virtual std::string ToString() const override;
-
-  static IConnectionSettingsRemoteSSH* createFromType(connectionTypes type,
-                                                      const connection_path_t& conName,
-                                                      const common::net::HostAndPort& host);
-
- protected:
-  IConnectionSettingsRemoteSSH(const connection_path_t& connectionName, connectionTypes type);
-
- private:
-  struct SSHInfo ssh_info_;
 };
 
 typedef common::shared_ptr<IConnectionSettingsBase> IConnectionSettingsBaseSPtr;

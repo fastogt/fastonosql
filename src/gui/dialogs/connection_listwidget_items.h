@@ -32,11 +32,11 @@ class DirectoryListWidgetItem  // directory can hold many
                                // sentinel_container)
     : public QTreeWidgetItem {
  public:
-  explicit DirectoryListWidgetItem(const core::IConnectionSettingsBase::connection_path_t& path);
-  core::IConnectionSettingsBase::connection_path_t path() const;
+  explicit DirectoryListWidgetItem(const core::connection_path_t& path);
+  core::connection_path_t path() const;
 
  private:
-  core::IConnectionSettingsBase::connection_path_t path_;
+  core::connection_path_t path_;
 };
 
 class IConnectionListWidgetItem  // base class

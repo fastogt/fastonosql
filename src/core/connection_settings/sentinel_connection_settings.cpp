@@ -31,6 +31,8 @@
 #include "core/redis/sentinel_settings.h"  // for SentinelSettings
 #endif
 
+#include "core/connection_settings/connection_settings_factory.h"
+
 namespace fastonosql {
 namespace core {
 
@@ -70,7 +72,7 @@ bool sentinelSettingsfromString(const std::string& text, SentinelSettings* sent)
     if (ch == ',' || i == len - 1) {
       if (commaCount == 0) {
         std::string sent_raw = common::utils::base64::decode64(elText);
-        IConnectionSettingsBaseSPtr sent(IConnectionSettingsBase::FromString(sent_raw));
+        IConnectionSettingsBaseSPtr sent(ConnectionSettingsFactory::FromString(sent_raw));
         if (!sent) {
           return false;
         }
@@ -83,7 +85,7 @@ bool sentinelSettingsfromString(const std::string& text, SentinelSettings* sent)
         for (size_t j = 0; j < len; ++j) {
           ch = raw_sent[j];
           if (ch == magicNumber || j == len - 1) {
-            IConnectionSettingsBaseSPtr ser(IConnectionSettingsBase::FromString(serText));
+            IConnectionSettingsBaseSPtr ser(ConnectionSettingsFactory::FromString(serText));
             if (ser) {
               result.sentinel_nodes.push_back(ser);
             }

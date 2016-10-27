@@ -26,6 +26,8 @@
 #include "core/redis/cluster_settings.h"  // for ClusterSettings
 #endif
 
+#include "core/connection_settings/connection_settings_factory.h"
+
 namespace fastonosql {
 namespace core {
 
@@ -86,7 +88,7 @@ IClusterSettingsBase* IClusterSettingsBase::FromString(const std::string& val) {
         for (size_t j = i + 2; j < len; ++j) {
           ch = val[j];
           if (ch == magicNumber || j == len - 1) {
-            IConnectionSettingsBaseSPtr ser(IConnectionSettingsBase::FromString(serText));
+            IConnectionSettingsBaseSPtr ser(ConnectionSettingsFactory::FromString(serText));
             result->AddNode(ser);
             serText.clear();
           } else {

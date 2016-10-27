@@ -43,6 +43,8 @@
 #include <common/net/types.h>          // for HostAndPort
 #include <common/qt/convert2string.h>  // for ConvertToString
 
+#include "core/connection_settings/connection_settings_factory.h"
+
 #include "gui/dialogs/connection_diagnostic_dialog.h"
 #include "gui/gui_factory.h"  // for GuiFactory
 
@@ -94,7 +96,7 @@ ConnectionDialog::ConnectionDialog(QWidget* parent,
   QString conName = connectionName;
 
   if (connection_) {
-    core::IConnectionSettings::connection_path_t path = connection_->Path();
+    core::connection_path_t path = connection_->Path();
     conName = common::ConvertFromString<QString>(path.Name());
     conFolder = common::ConvertFromString<QString>(path.Directory());
   }
@@ -427,12 +429,11 @@ bool ConnectionDialog::validateAndApply() {
   if (conFolder.empty()) {
     conFolder = defaultNameConnectionFolder;
   }
-  core::IConnectionSettingsRemoteSSH::connection_path_t path(
-      common::file_system::stable_dir_path(conFolder) + conName);
+  core::connection_path_t path(common::file_system::stable_dir_path(conFolder) + conName);
   if (is_ssh_type) {
     core::IConnectionSettingsRemoteSSH* newConnection =
-        core::IConnectionSettingsRemoteSSH::createFromType(currentType, path,
-                                                           common::net::HostAndPort());
+        core::ConnectionSettingsFactory::createFromType(currentType, path,
+                                                        common::net::HostAndPort());
     connection_.reset(newConnection);
 
     core::SSHInfo info = newConnection->SSHInfo();
@@ -456,7 +457,7 @@ bool ConnectionDialog::validateAndApply() {
     newConnection->SetSSHInfo(info);
   } else {
     core::IConnectionSettingsBase* newConnection =
-        core::IConnectionSettingsBase::CreateFromType(currentType, path);
+        core::ConnectionSettingsFactory::CreateFromType(currentType, path);
     connection_.reset(newConnection);
   }
   connection_->SetCommandLine(common::ConvertToString(toRawCommandLine(commandLine_->text())));

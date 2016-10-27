@@ -80,7 +80,7 @@ ClusterDialog::ClusterDialog(QWidget* parent, core::IClusterSettingsBase* connec
   QString conName = defaultNameConnection;
 
   if (cluster_connection_) {
-    core::IConnectionSettings::connection_path_t path = cluster_connection_->Path();
+    core::connection_path_t path = cluster_connection_->Path();
     conName = common::ConvertFromString<QString>(path.Name());
     conFolder = common::ConvertFromString<QString>(path.Directory());
   }
@@ -407,10 +407,8 @@ bool ClusterDialog::validateAndApply() {
   if (conFolder.empty()) {
     conFolder = defaultNameConnectionFolder;
   }
-  core::IClusterSettingsBase::connection_path_t path(
-      common::file_system::stable_dir_path(conFolder) + conName);
-  core::IClusterSettingsBase* newConnection =
-      core::IClusterSettingsBase::CreateFromType(currentType, path);
+  core::connection_path_t path(common::file_system::stable_dir_path(conFolder) + conName);
+  core::IClusterSettingsBase* newConnection = core::CreateFromType(currentType, path);
   if (newConnection) {
     cluster_connection_.reset(newConnection);
     if (logging_->isChecked()) {

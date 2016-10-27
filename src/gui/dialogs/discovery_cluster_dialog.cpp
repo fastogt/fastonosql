@@ -38,6 +38,7 @@
 #include <common/qt/gui/glass_widget.h>  // for GlassWidget
 
 #include "core/servers_manager.h"  // for ServersManager
+#include "core/connection_settings/connection_settings_factory.h"
 
 #include "gui/dialogs/connection_listwidget_items.h"
 #include "gui/dialogs/discovery_connection.h"
@@ -145,10 +146,9 @@ void DiscoveryClusterDiagnosticDialog::connectionResult(
     for (size_t i = 0; i < infos.size(); ++i) {
       core::ServerDiscoveryClusterInfoSPtr inf = infos[i];
       common::net::HostAndPortAndSlot host = inf->host();
-      core::IConnectionSettingsBase::connection_path_t path(
-          common::file_system::get_separator_string<char>() + inf->name());
+      core::connection_path_t path(common::file_system::get_separator_string<char>() + inf->name());
       core::IConnectionSettingsBaseSPtr con(
-          core::IConnectionSettingsRemote::CreateFromType(inf->connectionType(), path, host));
+          core::ConnectionSettingsFactory::CreateFromType(inf->connectionType(), path, host));
       ConnectionListWidgetItemDiscovered* item =
           new ConnectionListWidgetItemDiscovered(inf->info(), nullptr);
       item->setConnection(con);

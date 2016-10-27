@@ -59,7 +59,7 @@ class IDriver : public QObject, public CDBConnectionClient {
 
   // sync methods
   connectionTypes Type() const;
-  IConnectionSettings::connection_path_t ConnectionPath() const;
+  connection_path_t ConnectionPath() const;
 
   IServerInfoSPtr CurrentServerInfo() const;
   IDataBaseInfoSPtr CurrentDatabaseInfo() const;

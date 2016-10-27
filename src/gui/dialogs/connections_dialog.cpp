@@ -448,9 +448,9 @@ void ConnectionsDialog::retranslateUi() {
 }
 
 void ConnectionsDialog::addConnection(core::IConnectionSettingsBaseSPtr con) {
-  core::IConnectionSettingsBase::connection_path_t path = con->Path();
-  core::IConnectionSettingsBase::connection_path_t dir(path.Directory());
-  if (dir == core::IConnectionSettingsBase::connection_path_t::Root()) {
+  core::connection_path_t path = con->Path();
+  core::connection_path_t dir(path.Directory());
+  if (dir == core::connection_path_t::Root()) {
     ConnectionListWidgetItem* item = new ConnectionListWidgetItem(nullptr);
     item->setConnection(con);
     listWidget_->addTopLevelItem(item);
@@ -468,9 +468,9 @@ void ConnectionsDialog::addConnection(core::IConnectionSettingsBaseSPtr con) {
 }
 
 void ConnectionsDialog::addCluster(core::IClusterSettingsBaseSPtr con) {
-  core::IConnectionSettingsBase::connection_path_t path = con->Path();
-  core::IConnectionSettingsBase::connection_path_t dir(path.Directory());
-  if (dir == core::IConnectionSettingsBase::connection_path_t::Root()) {
+  core::connection_path_t path = con->Path();
+  core::connection_path_t dir(path.Directory());
+  if (dir == core::connection_path_t::Root()) {
     ClusterConnectionListWidgetItemContainer* item =
         new ClusterConnectionListWidgetItemContainer(con, nullptr);
     listWidget_->addTopLevelItem(item);
@@ -488,8 +488,8 @@ void ConnectionsDialog::addCluster(core::IClusterSettingsBaseSPtr con) {
 }
 
 void ConnectionsDialog::addSentinel(core::ISentinelSettingsBaseSPtr con) {
-  core::IConnectionSettingsBase::connection_path_t path = con->Path();
-  core::IConnectionSettingsBase::connection_path_t dir(path.Directory());
+  core::connection_path_t path = con->Path();
+  core::connection_path_t dir(path.Directory());
   if (dir == core::IConnectionSettingsBase::connection_path_t::Root()) {
     SentinelConnectionListWidgetItemContainer* item =
         new SentinelConnectionListWidgetItemContainer(con, nullptr);
@@ -508,7 +508,7 @@ void ConnectionsDialog::addSentinel(core::ISentinelSettingsBaseSPtr con) {
 }
 
 DirectoryListWidgetItem* ConnectionsDialog::findFolderByPath(
-    const core::IConnectionSettingsBase::connection_path_t& path) const {
+    const core::connection_path_t& path) const {
   int count = listWidget_->topLevelItemCount();
   for (int i = 0; i < count; ++i) {
     QTreeWidgetItem* item = listWidget_->topLevelItem(i);

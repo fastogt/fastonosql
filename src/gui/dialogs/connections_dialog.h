@@ -86,8 +86,7 @@ class ConnectionsDialog : public QDialog {
   void addConnection(core::IConnectionSettingsBaseSPtr con);
   void addCluster(core::IClusterSettingsBaseSPtr con);
   void addSentinel(core::ISentinelSettingsBaseSPtr con);
-  DirectoryListWidgetItem* findFolderByPath(
-      const core::IConnectionSettings::connection_path_t& path) const;
+  DirectoryListWidgetItem* findFolderByPath(const core::connection_path_t& path) const;
 
   QTreeWidget* listWidget_;
   QPushButton* acButton_;

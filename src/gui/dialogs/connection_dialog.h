@@ -30,12 +30,14 @@ class QCheckBox;
 class QLabel;
 class QSpinBox;
 
-#include "core/connection_settings/connection_settings.h"  // for IConnectionSettingsBaseSPtr, etc
 #include "core/connection_types.h"                         // for connectionTypes
 #include "core/ssh_info.h"                                 // for SSHInfo, etc
 
+#include "core/connection_settings/connection_settings.h"  // for IConnectionSettingsBaseSPtr, etc
+
 namespace fastonosql {
 namespace gui {
+
 class ConnectionDialog : public QDialog {
   Q_OBJECT
  public:
@@ -108,5 +110,6 @@ class ConnectionDialog : public QDialog {
   QPushButton* selectPrivateFileButton_;
   QPushButton* selectPublicFileButton_;
 };
+
 }  // namespace gui
 }  // namespace fastonosql

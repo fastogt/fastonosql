@@ -22,8 +22,9 @@
 
 #include <common/error.h>  // for Error
 
-#include "core/internal/connection.h"  // for Connection, ConnectionAllocatorTr...
 #include "core/connection_types.h"     // for connectionTypes
+
+#include "core/internal/connection.h"  // for Connection, ConnectionAllocatorTr...
 
 namespace fastonosql {
 namespace core {

@@ -34,6 +34,8 @@
 #include <common/qt/gui/app_style.h>              // for defStyle
 #include <common/qt/translations/translations.h>  // for defLanguage
 
+#include "core/connection_settings/connection_settings_factory.h"
+
 #define PREFIX "settings/"
 
 #define LANGUAGE PREFIX "language"
@@ -334,7 +336,7 @@ void SettingsManager::ReloadFromPath(const std::string& path, bool merge) {
     std::string encoded = common::ConvertToString(string);
     std::string raw = common::utils::base64::decode64(encoded);
 
-    IConnectionSettingsBaseSPtr sett(IConnectionSettingsBase::FromString(raw));
+    IConnectionSettingsBaseSPtr sett(ConnectionSettingsFactory::FromString(raw));
     if (sett) {
       connections_.push_back(sett);
     }

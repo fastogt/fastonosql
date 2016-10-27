@@ -184,7 +184,7 @@ connectionTypes IDriver::Type() const {
   return settings_->Type();
 }
 
-IConnectionSettings::connection_path_t IDriver::ConnectionPath() const {
+connection_path_t IDriver::ConnectionPath() const {
   return settings_->Path();
 }
 
@@ -691,5 +691,6 @@ void IDriver::OnKeyRenamed(const NKey& key, const std::string& new_key) {
 void IDriver::OnKeyTTLChanged(const NKey& key, ttl_t ttl) {
   emit KeyTTLChanged(current_database_info_, key, ttl);
 }
+
 }  // namespace core
 }  // namespace fastonosql

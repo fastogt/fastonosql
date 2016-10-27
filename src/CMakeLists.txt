@@ -224,11 +224,19 @@ SET(HEADERS_CORE_CONNECTION_SETTINGS
   core/connection_settings/cluster_connection_settings.h
   core/connection_settings/sentinel_connection_settings.h
   core/connection_settings/connection_settings.h
+  core/connection_settings/connection_settings_factory.h
+  core/connection_settings/iconnection_settings_local.h
+  core/connection_settings/iconnection_settings_remote.h
+  core/connection_settings/iconnection_settings_ssh.h
 )
 SET(SOURCES_CORE_CONNECTION_SETTINGS
   core/connection_settings/cluster_connection_settings.cpp
   core/connection_settings/connection_settings.cpp
+  core/connection_settings/connection_settings_factory.cpp
   core/connection_settings/sentinel_connection_settings.cpp
+  core/connection_settings/iconnection_settings_local.cpp
+  core/connection_settings/iconnection_settings_remote.cpp
+  core/connection_settings/iconnection_settings_ssh.cpp
 )
 
 SET(HEADERS_CORE_COMMAND_TO_MOC
