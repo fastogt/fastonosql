@@ -38,6 +38,7 @@
 
 namespace fastonosql {
 namespace core {
+namespace internal {
 template <>
 common::Error ConnectionAllocatorTraits<leveldb::NativeConnection, leveldb::Config>::Connect(
     const leveldb::Config& config,
@@ -65,6 +66,7 @@ bool ConnectionAllocatorTraits<leveldb::NativeConnection, leveldb::Config>::IsCo
   }
 
   return true;
+}
 }
 namespace leveldb {
 
@@ -389,7 +391,7 @@ common::Error DBConnection::SetTTLImpl(const NKey& key, ttl_t ttl) {
                                   common::ErrorValue::E_ERROR);
 }
 
-common::Error dbkcount(CommandHandler* handler, int argc, const char** argv, FastoObject* out) {
+common::Error dbkcount(internal::CommandHandler* handler, int argc, const char** argv, FastoObject* out) {
   UNUSED(argc);
   UNUSED(argv);
 
@@ -405,7 +407,7 @@ common::Error dbkcount(CommandHandler* handler, int argc, const char** argv, Fas
   return er;
 }
 
-common::Error info(CommandHandler* handler, int argc, const char** argv, FastoObject* out) {
+common::Error info(internal::CommandHandler* handler, int argc, const char** argv, FastoObject* out) {
   DBConnection* level = static_cast<DBConnection*>(handler);
 
   ServerInfo::Stats statsout;
@@ -419,7 +421,7 @@ common::Error info(CommandHandler* handler, int argc, const char** argv, FastoOb
   return er;
 }
 
-common::Error select(CommandHandler* handler, int argc, const char** argv, FastoObject* out) {
+common::Error select(internal::CommandHandler* handler, int argc, const char** argv, FastoObject* out) {
   UNUSED(argc);
 
   DBConnection* level = static_cast<DBConnection*>(handler);
@@ -434,7 +436,7 @@ common::Error select(CommandHandler* handler, int argc, const char** argv, Fasto
   return common::Error();
 }
 
-common::Error set(CommandHandler* handler, int argc, const char** argv, FastoObject* out) {
+common::Error set(internal::CommandHandler* handler, int argc, const char** argv, FastoObject* out) {
   UNUSED(argc);
 
   NKey key(argv[0]);
@@ -454,7 +456,7 @@ common::Error set(CommandHandler* handler, int argc, const char** argv, FastoObj
   return common::Error();
 }
 
-common::Error get(CommandHandler* handler, int argc, const char** argv, FastoObject* out) {
+common::Error get(internal::CommandHandler* handler, int argc, const char** argv, FastoObject* out) {
   UNUSED(argc);
 
   NKey key(argv[0]);
@@ -472,7 +474,7 @@ common::Error get(CommandHandler* handler, int argc, const char** argv, FastoObj
   return common::Error();
 }
 
-common::Error del(CommandHandler* handler, int argc, const char** argv, FastoObject* out) {
+common::Error del(internal::CommandHandler* handler, int argc, const char** argv, FastoObject* out) {
   NKeys keysdel;
   for (int i = 0; i < argc; ++i) {
     keysdel.push_back(NKey(argv[i]));
@@ -491,7 +493,7 @@ common::Error del(CommandHandler* handler, int argc, const char** argv, FastoObj
   return common::Error();
 }
 
-common::Error rename(CommandHandler* handler, int argc, const char** argv, FastoObject* out) {
+common::Error rename(internal::CommandHandler* handler, int argc, const char** argv, FastoObject* out) {
   UNUSED(argc);
 
   NKey key(argv[0]);
@@ -507,7 +509,7 @@ common::Error rename(CommandHandler* handler, int argc, const char** argv, Fasto
   return common::Error();
 }
 
-common::Error set_ttl(CommandHandler* handler, int argc, const char** argv, FastoObject* out) {
+common::Error set_ttl(internal::CommandHandler* handler, int argc, const char** argv, FastoObject* out) {
   UNUSED(out);
   UNUSED(argc);
 
@@ -525,7 +527,7 @@ common::Error set_ttl(CommandHandler* handler, int argc, const char** argv, Fast
   return common::Error();
 }
 
-common::Error keys(CommandHandler* handler, int argc, const char** argv, FastoObject* out) {
+common::Error keys(internal::CommandHandler* handler, int argc, const char** argv, FastoObject* out) {
   UNUSED(argc);
 
   DBConnection* level = static_cast<DBConnection*>(handler);
@@ -545,14 +547,14 @@ common::Error keys(CommandHandler* handler, int argc, const char** argv, FastoOb
   return er;
 }
 
-common::Error help(CommandHandler* handler, int argc, const char** argv, FastoObject* out) {
+common::Error help(internal::CommandHandler* handler, int argc, const char** argv, FastoObject* out) {
   UNUSED(out);
 
   DBConnection* level = static_cast<DBConnection*>(handler);
   return level->Help(argc - 1, argv + 1);
 }
 
-common::Error flushdb(CommandHandler* handler, int argc, const char** argv, FastoObject* out) {
+common::Error flushdb(internal::CommandHandler* handler, int argc, const char** argv, FastoObject* out) {
   UNUSED(argc);
   UNUSED(argv);
   UNUSED(out);

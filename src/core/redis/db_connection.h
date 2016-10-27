@@ -26,15 +26,16 @@
 #include <common/error.h>   // for Error
 #include <common/macros.h>  // for PROJECT_VERSION_GENERATE, etc
 
-#include "core/command/command_holder.h"        // for CommandHolder, etc
-#include "core/command/command_info.h"          // for UNDEFINED_EXAMPLE_STR, etc
-#include "core/connection_types.h"              // for connectionTypes::REDIS
-#include "core/db_connection/cdb_connection.h"  // for CDBConnection
-#include "core/db_connection/db_connection.h"
-#include "core/db_key.h"        // for NDbKValue, NKey, etc
+#include "core/command_info.h"      // for UNDEFINED_EXAMPLE_STR, etc
+#include "core/command_holder.h"    // for CommandHolder, etc
+#include "core/connection_types.h"  // for connectionTypes::REDIS
+#include "core/db_key.h"            // for NDbKValue, NKey, etc
+#include "core/ssh_info.h"          // for SSHInfo
+
+#include "core/internal/cdb_connection.h"  // for CDBConnection
+
 #include "core/redis/config.h"  // for Config
 #include "core/server/iserver_info.h"
-#include "core/ssh_info.h"  // for SSHInfo
 
 #include "global/global.h"  // for FastoObject (ptr only), etc
 
@@ -79,29 +80,29 @@ namespace fastonosql {
 namespace core {
 namespace redis {
 
-common::Error common_exec(CommandHandler* handler, int argc, const char** argv, FastoObject* out);
-common::Error common_exec_off2(CommandHandler* handler,
+common::Error common_exec(internal::CommandHandler* handler, int argc, const char** argv, FastoObject* out);
+common::Error common_exec_off2(internal::CommandHandler* handler,
                                int argc,
                                const char** argv,
                                FastoObject* out);
 
-common::Error select(CommandHandler* handler, int argc, const char** argv, FastoObject* out);
-common::Error del(CommandHandler* handler, int argc, const char** argv, FastoObject* out);
-common::Error get(CommandHandler* handler, int argc, const char** argv, FastoObject* out);
-common::Error lrange(CommandHandler* handler, int argc, const char** argv, FastoObject* out);
-common::Error smembers(CommandHandler* handler, int argc, const char** argv, FastoObject* out);
-common::Error zrange(CommandHandler* handler, int argc, const char** argv, FastoObject* out);
-common::Error hgetall(CommandHandler* handler, int argc, const char** argv, FastoObject* out);
-common::Error set(CommandHandler* handler, int argc, const char** argv, FastoObject* out);
-common::Error rename(CommandHandler* handler, int argc, const char** argv, FastoObject* out);
-common::Error persist(CommandHandler* handler, int argc, const char** argv, FastoObject* out);
-common::Error expire(CommandHandler* handler, int argc, const char** argv, FastoObject* out);
+common::Error select(internal::CommandHandler* handler, int argc, const char** argv, FastoObject* out);
+common::Error del(internal::CommandHandler* handler, int argc, const char** argv, FastoObject* out);
+common::Error get(internal::CommandHandler* handler, int argc, const char** argv, FastoObject* out);
+common::Error lrange(internal::CommandHandler* handler, int argc, const char** argv, FastoObject* out);
+common::Error smembers(internal::CommandHandler* handler, int argc, const char** argv, FastoObject* out);
+common::Error zrange(internal::CommandHandler* handler, int argc, const char** argv, FastoObject* out);
+common::Error hgetall(internal::CommandHandler* handler, int argc, const char** argv, FastoObject* out);
+common::Error set(internal::CommandHandler* handler, int argc, const char** argv, FastoObject* out);
+common::Error rename(internal::CommandHandler* handler, int argc, const char** argv, FastoObject* out);
+common::Error persist(internal::CommandHandler* handler, int argc, const char** argv, FastoObject* out);
+common::Error expire(internal::CommandHandler* handler, int argc, const char** argv, FastoObject* out);
 
-common::Error auth(CommandHandler* handler, int argc, const char** argv, FastoObject* out);
-common::Error help(CommandHandler* handler, int argc, const char** argv, FastoObject* out);
-common::Error monitor(CommandHandler* handler, int argc, const char** argv, FastoObject* out);
-common::Error subscribe(CommandHandler* handler, int argc, const char** argv, FastoObject* out);
-common::Error sync(CommandHandler* handler, int argc, const char** argv, FastoObject* out);
+common::Error auth(internal::CommandHandler* handler, int argc, const char** argv, FastoObject* out);
+common::Error help(internal::CommandHandler* handler, int argc, const char** argv, FastoObject* out);
+common::Error monitor(internal::CommandHandler* handler, int argc, const char** argv, FastoObject* out);
+common::Error subscribe(internal::CommandHandler* handler, int argc, const char** argv, FastoObject* out);
+common::Error sync(internal::CommandHandler* handler, int argc, const char** argv, FastoObject* out);
 
 static const std::vector<CommandHolder> redisCommands = {
     CommandHolder("APPEND",
@@ -2016,9 +2017,9 @@ common::Error DiscoveryClusterConnection(ConnectionSettings* settings,
 common::Error DiscoverySentinelConnection(ConnectionSettings* settings,
                                           std::vector<ServerDiscoverySentinelInfoSPtr>* infos);
 
-class DBConnection : public core::CDBConnection<NativeConnection, RConfig, REDIS> {
+class DBConnection : public core::internal::CDBConnection<NativeConnection, RConfig, REDIS> {
  public:
-  typedef core::CDBConnection<NativeConnection, RConfig, REDIS> base_class;
+  typedef core::internal::CDBConnection<NativeConnection, RConfig, REDIS> base_class;
   explicit DBConnection(CDBConnectionClient* client);
 
   bool IsAuthenticated() const;

@@ -37,7 +37,6 @@
 #include "core/events/events_info.h"
 #include "core/server_property_info.h"     // for MakeServerProperty, etc
 #include "core/database/idatabase_info.h"  // for IDataBaseInfoSPtr, etc
-#include "core/db_connection/db_connection.h"
 #include "core/driver/root_locker.h"   // for RootLocker
 #include "core/redis/db_connection.h"  // for DBConnection, INFO_REQUEST, etc
 

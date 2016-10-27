@@ -26,12 +26,13 @@
 #include <common/macros.h>  // for WARN_UNUSED_RESULT
 #include <common/value.h>   // for Value, Value::CommandLogging...
 
-#include "core/db_connection/cdb_connection_client.h"      // for CDBConnectionClient
+#include "core/connection_types.h"     // for connectionTypes
+#include "core/db_key.h"               // for NKey (ptr only), NDbKValue (...
+#include "core/icommand_translator.h"  // for translator_t
+
+#include "core/internal/cdb_connection_client.h"           // for CDBConnectionClient
 #include "core/connection_settings/connection_settings.h"  // for IConnectionSettingsBaseSPtr
-#include "core/connection_types.h"                         // for connectionTypes
-#include "core/db_key.h"                                   // for NKey (ptr only), NDbKValue (...
 #include "core/events/events.h"                            // for BackupRequestEvent, ChangeMa...
-#include "core/translator/icommand_translator.h"           // for translator_t
 #include "core/database/idatabase_info.h"                  // for IDataBaseInfoSPtr, etc
 #include "core/server/iserver_info.h"                      // for IServerInfoSPtr, etc
 

@@ -148,6 +148,21 @@ SET(SOURCES_GUI
   gui/fasto_scintilla.cpp
 )
 
+SET(HEADERS_CORE_INTERNAL
+  core/internal/connection.h
+  core/internal/db_connection.h
+  core/internal/cdb_connection.h
+  core/internal/cdb_connection_client.h
+  core/internal/command_handler.h
+)
+SET(SOURCES_CORE_INTERNAL
+  core/internal/connection.cpp
+  core/internal/db_connection.cpp
+  core/internal/cdb_connection.cpp
+  core/internal/cdb_connection_client.cpp
+  core/internal/command_handler.cpp
+)
+
 SET(HEADERS_CORE_DATABASE
   core/database/idatabase_info.h
   core/database/idatabase.h
@@ -216,31 +231,14 @@ SET(SOURCES_CORE_CONNECTION_SETTINGS
   core/connection_settings/sentinel_connection_settings.cpp
 )
 
-SET(HEADERS_CORE_DB_CONNECTION
-  core/db_connection/db_connection.h
-  core/db_connection/cdb_connection.h
-  core/db_connection/cdb_connection_client.h
-)
-SET(SOURCES_CORE_DB_CONNECTION
-  core/db_connection/db_connection.cpp
-  core/db_connection/cdb_connection.cpp
-  core/db_connection/cdb_connection_client.cpp
-)
-
 SET(HEADERS_CORE_COMMAND_TO_MOC
   core/command/command_logger.h
 )
 SET(HEADERS_CORE_COMMAND
   core/command/command.h
-  core/command/command_info.h
-  core/command/command_holder.h
-  core/command/command_handler.h
 )
 SET(SOURCES_CORE_COMMAND
   core/command/command.cpp
-  core/command/command_info.cpp
-  core/command/command_holder.cpp
-  core/command/command_handler.cpp
   core/command/command_logger.cpp
 )
 
@@ -249,13 +247,6 @@ SET(HEADERS_CORE_CONFIG
 )
 SET(SOURCES_CORE_CONFIG
   core/config/config.cpp
-)
-
-SET(HEADERS_CORE_TRANSLATOR
-  core/translator/icommand_translator.h
-)
-SET(SOURCES_CORE_TRANSLATOR
-  core/translator/icommand_translator.cpp
 )
 
 SET(HEADERS_CORE_EVENTS
@@ -277,11 +268,11 @@ SET(HEADERS_CORE
   ${HEADERS_CORE_SENTINEL}
   ${HEADERS_CORE_DATABASE}
   ${HEADERS_CORE_CONNECTION_SETTINGS}
-  ${HEADERS_CORE_DB_CONNECTION}
   ${HEADERS_CORE_COMMAND}
   ${HEADERS_CORE_CONFIG}
   ${HEADERS_CORE_TRANSLATOR}
   ${HEADERS_CORE_EVENTS}
+  ${HEADERS_CORE_INTERNAL}
 
   core/servers_manager.h
   core/connection_types.h
@@ -290,10 +281,13 @@ SET(HEADERS_CORE
   core/types.h
   core/db_traits.h
   core/db_key.h
-  core/connection.h
+  core/icommand_translator.h
+  core/command_info.h
+  core/command_holder.h
   core/server_property_info.h
   core/ssh_info.h
 )
+
 SET(SOURCES_CORE
   ${SOURCES_CORE_DATABASE}
   ${SOURCES_CORE_SERVER}
@@ -301,11 +295,11 @@ SET(SOURCES_CORE
   ${SOURCES_CORE_CLUSTER}
   ${SOURCES_CORE_DRIVER}
   ${SOURCES_CORE_CONNECTION_SETTINGS}
-  ${SOURCES_CORE_DB_CONNECTION}
   ${SOURCES_CORE_COMMAND}
   ${SOURCES_CORE_CONFIG}
   ${SOURCES_CORE_TRANSLATOR}
   ${SOURCES_CORE_EVENTS}
+  ${SOURCES_CORE_INTERNAL}
 
   core/connection_types.cpp
   core/settings_manager.cpp
@@ -313,7 +307,9 @@ SET(SOURCES_CORE
   core/types.cpp
   core/db_traits.cpp
   core/db_key.cpp
-  core/connection.cpp
+  core/icommand_translator.cpp
+  core/command_info.cpp
+  core/command_holder.cpp
   core/server_property_info.cpp
   core/ssh_info.cpp
 )

@@ -27,14 +27,16 @@
 #include <common/error.h>   // for Error
 #include <common/macros.h>  // for WARN_UNUSED_RESULT
 
-#include "core/command/command_info.h"  // for CommandInfo
+#include "core/command_info.h"  // for CommandInfo
 
 namespace fastonosql {
 class FastoObject;
 }
 namespace fastonosql {
 namespace core {
+namespace internal {
 class CommandHandler;
+}
 }
 }
 
@@ -43,7 +45,8 @@ namespace core {
 
 class CommandHolder : public CommandInfo {
  public:
-  typedef std::function<common::Error(CommandHandler*, int, const char**, FastoObject*)> function_t;
+  typedef internal::CommandHandler command_handler_t;
+  typedef std::function<common::Error(command_handler_t*, int, const char**, FastoObject*)> function_t;
 
   CommandHolder(const std::string& name,
                 const std::string& params,
@@ -54,7 +57,7 @@ class CommandHolder : public CommandInfo {
                 uint8_t optional_arguments_count,
                 function_t func);
   bool IsCommand(int argc, const char** argv, size_t* offset);
-  common::Error Execute(CommandHandler* handler, int argc, const char** argv, FastoObject* out)
+  common::Error Execute(command_handler_t* handler, int argc, const char** argv, FastoObject* out)
       WARN_UNUSED_RESULT;
 
  private:

@@ -16,7 +16,7 @@
     along with FastoNoSQL.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-#include "core/translator/icommand_translator.h"
+#include "core/icommand_translator.h"
 
 namespace fastonosql {
 namespace core {

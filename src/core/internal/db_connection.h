@@ -22,11 +22,12 @@
 
 #include <common/error.h>  // for Error
 
-#include "core/connection.h"        // for Connection, ConnectionAllocatorTr...
-#include "core/connection_types.h"  // for connectionTypes
+#include "core/internal/connection.h"  // for Connection, ConnectionAllocatorTr...
+#include "core/connection_types.h"     // for connectionTypes
 
 namespace fastonosql {
 namespace core {
+namespace internal {
 
 template <typename NConnection, typename Config, connectionTypes ContType>
 class DBConnection {
@@ -60,6 +61,6 @@ class DBConnection {
   dbconnection_t connection_;
   bool interrupted_;
 };
-
+}
 }  // namespace core
 }  // namespace fastonosql

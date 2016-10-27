@@ -23,8 +23,8 @@
 #include <common/error.h>  // for Error
 #include <common/value.h>  // for Value, Value::Type
 
-#include "core/db_key.h"                          // for NDbKValue, NKey, ttl_t
-#include "core/translator/icommand_translator.h"  // for ICommandTranslator
+#include "core/db_key.h"               // for NDbKValue, NKey, ttl_t
+#include "core/icommand_translator.h"  // for ICommandTranslator
 
 #define REDIS_CHANGE_TTL_2ARGS_SI "EXPIRE %s %d"
 #define REDIS_PERSIST_KEY_1ARGS_S "PERSIST %s"

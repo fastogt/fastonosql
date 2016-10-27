@@ -26,6 +26,7 @@
 
 namespace fastonosql {
 namespace core {
+namespace internal {
 
 template <typename H, typename C>
 struct ConnectionAllocatorTraits {
@@ -90,5 +91,6 @@ class Connection {
   handle_t* handle_;
 };
 
+}
 }  // namespace core
 }  // namespace fastonosql

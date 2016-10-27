@@ -16,7 +16,7 @@
     along with FastoNoSQL.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-#include "core/command/command_handler.h"
+#include "core/internal/command_handler.h"
 
 #include <stddef.h>  // for size_t
 #include <stdint.h>  // for uint16_t
@@ -27,6 +27,7 @@
 
 namespace fastonosql {
 namespace core {
+namespace internal {
 
 CommandHandler::CommandHandler(const commands_t& commands) : commands_(commands) {}
 
@@ -69,5 +70,6 @@ common::Error CommandHandler::UnknownSequence(int argc, const char** argv) {
   return common::make_error_value(buff, common::ErrorValue::E_ERROR);
 }
 
+}
 }  // namespace core
 }  // namespace fastonosql

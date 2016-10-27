@@ -16,7 +16,7 @@
     along with FastoNoSQL.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-#include "core/command/command_holder.h"
+#include "core/command_holder.h"
 
 #include <algorithm>  // for count_if
 #include <vector>     // for vector
@@ -76,7 +76,7 @@ bool CommandHolder::IsCommand(int argc, const char** argv, size_t* offset) {
   return true;
 }
 
-common::Error CommandHolder::Execute(CommandHandler* handler,
+common::Error CommandHolder::Execute(command_handler_t* handler,
                                      int argc,
                                      const char** argv,
                                      FastoObject* out) {

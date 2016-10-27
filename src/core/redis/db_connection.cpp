@@ -60,15 +60,16 @@ extern "C" {
 
 #include <common/qt/logger.h>  // for LOG_MSG
 
-#include "core/connection.h"                      // for Connection<>::config_t, etc
-#include "core/translator/icommand_translator.h"  // for translator_t, etc
-#include "core/command/command.h"                 // for CreateCommand
-#include "core/command/command_logger.h"          // for LOG_COMMAND
-#include "core/redis/cluster_infos.h"             // for makeDiscoveryClusterInfo
-#include "core/redis/command.h"                   // for Command
-#include "core/redis/connection_settings.h"       // for ConnectionSettings
-#include "core/redis/database.h"                  // for DataBaseInfo
-#include "core/redis/sentinel_info.h"             // for DiscoverySentinelInfo, etc
+#include "core/icommand_translator.h"  // for translator_t, etc
+
+#include "core/internal/connection.h"        // for Connection<>::config_t, etc
+#include "core/command/command.h"            // for CreateCommand
+#include "core/command/command_logger.h"     // for LOG_COMMAND
+#include "core/redis/cluster_infos.h"        // for makeDiscoveryClusterInfo
+#include "core/redis/command.h"              // for Command
+#include "core/redis/connection_settings.h"  // for ConnectionSettings
+#include "core/redis/database.h"             // for DataBaseInfo
+#include "core/redis/sentinel_info.h"        // for DiscoverySentinelInfo, etc
 #include "core/redis/command_translator.h"
 
 #define HIREDIS_VERSION    \
@@ -310,7 +311,7 @@ bool isPipeLineCommand(const char* command) {
 
 namespace fastonosql {
 namespace core {
-
+namespace internal {
 template <>
 common::Error ConnectionAllocatorTraits<redis::NativeConnection, redis::RConfig>::Connect(
     const redis::RConfig& config,
@@ -344,7 +345,7 @@ bool ConnectionAllocatorTraits<redis::NativeConnection, redis::RConfig>::IsConne
 
   return true;
 }
-
+}
 namespace redis {
 namespace {
 
@@ -564,12 +565,15 @@ common::Error authContext(const char* auth_str, redisContext* context) {
 
 }  // namespace
 
-common::Error common_exec(CommandHandler* handler, int argc, const char** argv, FastoObject* out) {
+common::Error common_exec(internal::CommandHandler* handler,
+                          int argc,
+                          const char** argv,
+                          FastoObject* out) {
   DBConnection* red = static_cast<DBConnection*>(handler);
   return red->CommonExec(argc + 1, argv - 1, out);
 }
 
-common::Error common_exec_off2(CommandHandler* handler,
+common::Error common_exec_off2(internal::CommandHandler* handler,
                                int argc,
                                const char** argv,
                                FastoObject* out) {
@@ -577,7 +581,10 @@ common::Error common_exec_off2(CommandHandler* handler,
   return red->CommonExec(argc + 2, argv - 2, out);
 }
 
-common::Error auth(CommandHandler* handler, int argc, const char** argv, FastoObject* out) {
+common::Error auth(internal::CommandHandler* handler,
+                   int argc,
+                   const char** argv,
+                   FastoObject* out) {
   UNUSED(argc);
   DBConnection* red = static_cast<DBConnection*>(handler);
   common::Error err = red->Auth(argv[0]);
@@ -591,7 +598,10 @@ common::Error auth(CommandHandler* handler, int argc, const char** argv, FastoOb
   return common::Error();
 }
 
-common::Error select(CommandHandler* handler, int argc, const char** argv, FastoObject* out) {
+common::Error select(internal::CommandHandler* handler,
+                     int argc,
+                     const char** argv,
+                     FastoObject* out) {
   UNUSED(argc);
   DBConnection* red = static_cast<DBConnection*>(handler);
   common::Error err = red->Select(argv[0], NULL);
@@ -605,7 +615,10 @@ common::Error select(CommandHandler* handler, int argc, const char** argv, Fasto
   return common::Error();
 }
 
-common::Error del(CommandHandler* handler, int argc, const char** argv, FastoObject* out) {
+common::Error del(internal::CommandHandler* handler,
+                  int argc,
+                  const char** argv,
+                  FastoObject* out) {
   DBConnection* red = static_cast<DBConnection*>(handler);
 
   NKeys keysdel;
@@ -625,7 +638,10 @@ common::Error del(CommandHandler* handler, int argc, const char** argv, FastoObj
   return common::Error();
 }
 
-common::Error set(CommandHandler* handler, int argc, const char** argv, FastoObject* out) {
+common::Error set(internal::CommandHandler* handler,
+                  int argc,
+                  const char** argv,
+                  FastoObject* out) {
   UNUSED(argc);
 
   NKey key(argv[0]);
@@ -645,7 +661,10 @@ common::Error set(CommandHandler* handler, int argc, const char** argv, FastoObj
   return common::Error();
 }
 
-common::Error get(CommandHandler* handler, int argc, const char** argv, FastoObject* out) {
+common::Error get(internal::CommandHandler* handler,
+                  int argc,
+                  const char** argv,
+                  FastoObject* out) {
   UNUSED(argc);
 
   NKey key(argv[0]);
@@ -663,7 +682,10 @@ common::Error get(CommandHandler* handler, int argc, const char** argv, FastoObj
   return common::Error();
 }
 
-common::Error lrange(CommandHandler* handler, int argc, const char** argv, FastoObject* out) {
+common::Error lrange(internal::CommandHandler* handler,
+                     int argc,
+                     const char** argv,
+                     FastoObject* out) {
   UNUSED(argc);
 
   NKey key(argv[0]);
@@ -683,7 +705,10 @@ common::Error lrange(CommandHandler* handler, int argc, const char** argv, Fasto
   return common::Error();
 }
 
-common::Error smembers(CommandHandler* handler, int argc, const char** argv, FastoObject* out) {
+common::Error smembers(internal::CommandHandler* handler,
+                       int argc,
+                       const char** argv,
+                       FastoObject* out) {
   UNUSED(argc);
 
   NKey key(argv[0]);
@@ -701,7 +726,10 @@ common::Error smembers(CommandHandler* handler, int argc, const char** argv, Fas
   return common::Error();
 }
 
-common::Error zrange(CommandHandler* handler, int argc, const char** argv, FastoObject* out) {
+common::Error zrange(internal::CommandHandler* handler,
+                     int argc,
+                     const char** argv,
+                     FastoObject* out) {
   UNUSED(argc);
 
   NKey key(argv[0]);
@@ -722,7 +750,10 @@ common::Error zrange(CommandHandler* handler, int argc, const char** argv, Fasto
   return common::Error();
 }
 
-common::Error hgetall(CommandHandler* handler, int argc, const char** argv, FastoObject* out) {
+common::Error hgetall(internal::CommandHandler* handler,
+                      int argc,
+                      const char** argv,
+                      FastoObject* out) {
   UNUSED(argc);
 
   NKey key(argv[0]);
@@ -740,7 +771,10 @@ common::Error hgetall(CommandHandler* handler, int argc, const char** argv, Fast
   return common::Error();
 }
 
-common::Error rename(CommandHandler* handler, int argc, const char** argv, FastoObject* out) {
+common::Error rename(internal::CommandHandler* handler,
+                     int argc,
+                     const char** argv,
+                     FastoObject* out) {
   UNUSED(argc);
 
   NKey key(argv[0]);
@@ -756,7 +790,10 @@ common::Error rename(CommandHandler* handler, int argc, const char** argv, Fasto
   return common::Error();
 }
 
-common::Error persist(CommandHandler* handler, int argc, const char** argv, FastoObject* out) {
+common::Error persist(internal::CommandHandler* handler,
+                      int argc,
+                      const char** argv,
+                      FastoObject* out) {
   UNUSED(argc);
   NKey key(argv[0]);
 
@@ -775,7 +812,10 @@ common::Error persist(CommandHandler* handler, int argc, const char** argv, Fast
   return common::Error();
 }
 
-common::Error expire(CommandHandler* handler, int argc, const char** argv, FastoObject* out) {
+common::Error expire(internal::CommandHandler* handler,
+                     int argc,
+                     const char** argv,
+                     FastoObject* out) {
   UNUSED(argc);
   NKey key(argv[0]);
   ttl_t ttl = atoi(argv[1]);
@@ -795,22 +835,34 @@ common::Error expire(CommandHandler* handler, int argc, const char** argv, Fasto
   return common::Error();
 }
 
-common::Error help(CommandHandler* handler, int argc, const char** argv, FastoObject* out) {
+common::Error help(internal::CommandHandler* handler,
+                   int argc,
+                   const char** argv,
+                   FastoObject* out) {
   DBConnection* red = static_cast<DBConnection*>(handler);
   return red->Help(argc, argv, out);
 }
 
-common::Error monitor(CommandHandler* handler, int argc, const char** argv, FastoObject* out) {
+common::Error monitor(internal::CommandHandler* handler,
+                      int argc,
+                      const char** argv,
+                      FastoObject* out) {
   DBConnection* red = static_cast<DBConnection*>(handler);
   return red->Monitor(argc + 1, argv - 1, out);
 }
 
-common::Error subscribe(CommandHandler* handler, int argc, const char** argv, FastoObject* out) {
+common::Error subscribe(internal::CommandHandler* handler,
+                        int argc,
+                        const char** argv,
+                        FastoObject* out) {
   DBConnection* red = static_cast<DBConnection*>(handler);
   return red->Subscribe(argc + 1, argv - 1, out);
 }
 
-common::Error sync(CommandHandler* handler, int argc, const char** argv, FastoObject* out) {
+common::Error sync(internal::CommandHandler* handler,
+                   int argc,
+                   const char** argv,
+                   FastoObject* out) {
   UNUSED(argc);
   UNUSED(argv);
   DBConnection* red = static_cast<DBConnection*>(handler);

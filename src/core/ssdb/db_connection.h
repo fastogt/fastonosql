@@ -28,7 +28,7 @@
 #include <common/error.h>   // for Error
 #include <common/macros.h>  // for WARN_UNUSED_RESULT
 
-#include "core/db_connection/cdb_connection.h"
+#include "core/internal/cdb_connection.h"
 
 #include "core/ssdb/config.h"
 #include "core/ssdb/connection_settings.h"
@@ -48,9 +48,9 @@ common::Error CreateConnection(const Config& config, NativeConnection** context)
 common::Error CreateConnection(ConnectionSettings* settings, NativeConnection** context);
 common::Error TestConnection(ConnectionSettings* settings);
 
-class DBConnection : public core::CDBConnection<NativeConnection, Config, SSDB> {
+class DBConnection : public core::internal::CDBConnection<NativeConnection, Config, SSDB> {
  public:
-  typedef core::CDBConnection<NativeConnection, Config, SSDB> base_class;
+  typedef core::internal::CDBConnection<NativeConnection, Config, SSDB> base_class;
   explicit DBConnection(CDBConnectionClient* client);
 
   static const char* VersionApi();
@@ -185,60 +185,207 @@ class DBConnection : public core::CDBConnection<NativeConnection, Config, SSDB> 
   virtual common::Error SetTTLImpl(const NKey& key, ttl_t ttl) override;
 };
 
-common::Error select(CommandHandler* handler, int argc, const char** argv, FastoObject* out);
-common::Error set(CommandHandler* handler, int argc, const char** argv, FastoObject* out);
-common::Error get(CommandHandler* handler, int argc, const char** argv, FastoObject* out);
-common::Error del(CommandHandler* handler, int argc, const char** argv, FastoObject* out);
-common::Error rename(CommandHandler* handler, int argc, const char** argv, FastoObject* out);
-common::Error set_ttl(CommandHandler* handler, int argc, const char** argv, FastoObject* out);
+common::Error select(internal::CommandHandler* handler,
+                     int argc,
+                     const char** argv,
+                     FastoObject* out);
+common::Error set(internal::CommandHandler* handler, int argc, const char** argv, FastoObject* out);
+common::Error get(internal::CommandHandler* handler, int argc, const char** argv, FastoObject* out);
+common::Error del(internal::CommandHandler* handler, int argc, const char** argv, FastoObject* out);
+common::Error rename(internal::CommandHandler* handler,
+                     int argc,
+                     const char** argv,
+                     FastoObject* out);
+common::Error set_ttl(internal::CommandHandler* handler,
+                      int argc,
+                      const char** argv,
+                      FastoObject* out);
 
-common::Error info(CommandHandler* handler, int argc, const char** argv, FastoObject* out);
-common::Error auth(CommandHandler* handler, int argc, const char** argv, FastoObject* out);
-common::Error setx(CommandHandler* handler, int argc, const char** argv, FastoObject* out);
-common::Error incr(CommandHandler* handler, int argc, const char** argv, FastoObject* out);
-common::Error keys(CommandHandler* handler, int argc, const char** argv, FastoObject* out);
-common::Error scan(CommandHandler* handler, int argc, const char** argv, FastoObject* out);
-common::Error rscan(CommandHandler* handler, int argc, const char** argv, FastoObject* out);
-common::Error multi_get(CommandHandler* handler, int argc, const char** argv, FastoObject* out);
-common::Error multi_set(CommandHandler* handler, int argc, const char** argv, FastoObject* out);
-common::Error multi_del(CommandHandler* handler, int argc, const char** argv, FastoObject* out);
-common::Error hget(CommandHandler* handler, int argc, const char** argv, FastoObject* out);
-common::Error hgetall(CommandHandler* handler, int argc, const char** argv, FastoObject* out);
-common::Error hset(CommandHandler* handler, int argc, const char** argv, FastoObject* out);
-common::Error hdel(CommandHandler* handler, int argc, const char** argv, FastoObject* out);
-common::Error hincr(CommandHandler* handler, int argc, const char** argv, FastoObject* out);
-common::Error hsize(CommandHandler* handler, int argc, const char** argv, FastoObject* out);
-common::Error hclear(CommandHandler* handler, int argc, const char** argv, FastoObject* out);
-common::Error hkeys(CommandHandler* handler, int argc, const char** argv, FastoObject* out);
-common::Error hscan(CommandHandler* handler, int argc, const char** argv, FastoObject* out);
-common::Error hrscan(CommandHandler* handler, int argc, const char** argv, FastoObject* out);
-common::Error multi_hget(CommandHandler* handler, int argc, const char** argv, FastoObject* out);
-common::Error multi_hset(CommandHandler* handler, int argc, const char** argv, FastoObject* out);
-common::Error zget(CommandHandler* handler, int argc, const char** argv, FastoObject* out);
-common::Error zset(CommandHandler* handler, int argc, const char** argv, FastoObject* out);
-common::Error zdel(CommandHandler* handler, int argc, const char** argv, FastoObject* out);
-common::Error zincr(CommandHandler* handler, int argc, const char** argv, FastoObject* out);
-common::Error zsize(CommandHandler* handler, int argc, const char** argv, FastoObject* out);
-common::Error zclear(CommandHandler* handler, int argc, const char** argv, FastoObject* out);
-common::Error zrank(CommandHandler* handler, int argc, const char** argv, FastoObject* out);
-common::Error zrrank(CommandHandler* handler, int argc, const char** argv, FastoObject* out);
-common::Error zrange(CommandHandler* handler, int argc, const char** argv, FastoObject* out);
-common::Error zrrange(CommandHandler* handler, int argc, const char** argv, FastoObject* out);
-common::Error zkeys(CommandHandler* handler, int argc, const char** argv, FastoObject* out);
-common::Error zscan(CommandHandler* handler, int argc, const char** argv, FastoObject* out);
-common::Error zrscan(CommandHandler* handler, int argc, const char** argv, FastoObject* out);
-common::Error multi_zget(CommandHandler* handler, int argc, const char** argv, FastoObject* out);
-common::Error multi_zset(CommandHandler* handler, int argc, const char** argv, FastoObject* out);
-common::Error multi_zdel(CommandHandler* handler, int argc, const char** argv, FastoObject* out);
-common::Error qpush(CommandHandler* handler, int argc, const char** argv, FastoObject* out);
-common::Error qpop(CommandHandler* handler, int argc, const char** argv, FastoObject* out);
-common::Error qslice(CommandHandler* handler, int argc, const char** argv, FastoObject* out);
-common::Error qclear(CommandHandler* handler, int argc, const char** argv, FastoObject* out);
-common::Error dbsize(CommandHandler* handler, int argc, const char** argv, FastoObject* out);
+common::Error info(internal::CommandHandler* handler,
+                   int argc,
+                   const char** argv,
+                   FastoObject* out);
+common::Error auth(internal::CommandHandler* handler,
+                   int argc,
+                   const char** argv,
+                   FastoObject* out);
+common::Error setx(internal::CommandHandler* handler,
+                   int argc,
+                   const char** argv,
+                   FastoObject* out);
+common::Error incr(internal::CommandHandler* handler,
+                   int argc,
+                   const char** argv,
+                   FastoObject* out);
+common::Error keys(internal::CommandHandler* handler,
+                   int argc,
+                   const char** argv,
+                   FastoObject* out);
+common::Error scan(internal::CommandHandler* handler,
+                   int argc,
+                   const char** argv,
+                   FastoObject* out);
+common::Error rscan(internal::CommandHandler* handler,
+                    int argc,
+                    const char** argv,
+                    FastoObject* out);
+common::Error multi_get(internal::CommandHandler* handler,
+                        int argc,
+                        const char** argv,
+                        FastoObject* out);
+common::Error multi_set(internal::CommandHandler* handler,
+                        int argc,
+                        const char** argv,
+                        FastoObject* out);
+common::Error multi_del(internal::CommandHandler* handler,
+                        int argc,
+                        const char** argv,
+                        FastoObject* out);
+common::Error hget(internal::CommandHandler* handler,
+                   int argc,
+                   const char** argv,
+                   FastoObject* out);
+common::Error hgetall(internal::CommandHandler* handler,
+                      int argc,
+                      const char** argv,
+                      FastoObject* out);
+common::Error hset(internal::CommandHandler* handler,
+                   int argc,
+                   const char** argv,
+                   FastoObject* out);
+common::Error hdel(internal::CommandHandler* handler,
+                   int argc,
+                   const char** argv,
+                   FastoObject* out);
+common::Error hincr(internal::CommandHandler* handler,
+                    int argc,
+                    const char** argv,
+                    FastoObject* out);
+common::Error hsize(internal::CommandHandler* handler,
+                    int argc,
+                    const char** argv,
+                    FastoObject* out);
+common::Error hclear(internal::CommandHandler* handler,
+                     int argc,
+                     const char** argv,
+                     FastoObject* out);
+common::Error hkeys(internal::CommandHandler* handler,
+                    int argc,
+                    const char** argv,
+                    FastoObject* out);
+common::Error hscan(internal::CommandHandler* handler,
+                    int argc,
+                    const char** argv,
+                    FastoObject* out);
+common::Error hrscan(internal::CommandHandler* handler,
+                     int argc,
+                     const char** argv,
+                     FastoObject* out);
+common::Error multi_hget(internal::CommandHandler* handler,
+                         int argc,
+                         const char** argv,
+                         FastoObject* out);
+common::Error multi_hset(internal::CommandHandler* handler,
+                         int argc,
+                         const char** argv,
+                         FastoObject* out);
+common::Error zget(internal::CommandHandler* handler,
+                   int argc,
+                   const char** argv,
+                   FastoObject* out);
+common::Error zset(internal::CommandHandler* handler,
+                   int argc,
+                   const char** argv,
+                   FastoObject* out);
+common::Error zdel(internal::CommandHandler* handler,
+                   int argc,
+                   const char** argv,
+                   FastoObject* out);
+common::Error zincr(internal::CommandHandler* handler,
+                    int argc,
+                    const char** argv,
+                    FastoObject* out);
+common::Error zsize(internal::CommandHandler* handler,
+                    int argc,
+                    const char** argv,
+                    FastoObject* out);
+common::Error zclear(internal::CommandHandler* handler,
+                     int argc,
+                     const char** argv,
+                     FastoObject* out);
+common::Error zrank(internal::CommandHandler* handler,
+                    int argc,
+                    const char** argv,
+                    FastoObject* out);
+common::Error zrrank(internal::CommandHandler* handler,
+                     int argc,
+                     const char** argv,
+                     FastoObject* out);
+common::Error zrange(internal::CommandHandler* handler,
+                     int argc,
+                     const char** argv,
+                     FastoObject* out);
+common::Error zrrange(internal::CommandHandler* handler,
+                      int argc,
+                      const char** argv,
+                      FastoObject* out);
+common::Error zkeys(internal::CommandHandler* handler,
+                    int argc,
+                    const char** argv,
+                    FastoObject* out);
+common::Error zscan(internal::CommandHandler* handler,
+                    int argc,
+                    const char** argv,
+                    FastoObject* out);
+common::Error zrscan(internal::CommandHandler* handler,
+                     int argc,
+                     const char** argv,
+                     FastoObject* out);
+common::Error multi_zget(internal::CommandHandler* handler,
+                         int argc,
+                         const char** argv,
+                         FastoObject* out);
+common::Error multi_zset(internal::CommandHandler* handler,
+                         int argc,
+                         const char** argv,
+                         FastoObject* out);
+common::Error multi_zdel(internal::CommandHandler* handler,
+                         int argc,
+                         const char** argv,
+                         FastoObject* out);
+common::Error qpush(internal::CommandHandler* handler,
+                    int argc,
+                    const char** argv,
+                    FastoObject* out);
+common::Error qpop(internal::CommandHandler* handler,
+                   int argc,
+                   const char** argv,
+                   FastoObject* out);
+common::Error qslice(internal::CommandHandler* handler,
+                     int argc,
+                     const char** argv,
+                     FastoObject* out);
+common::Error qclear(internal::CommandHandler* handler,
+                     int argc,
+                     const char** argv,
+                     FastoObject* out);
+common::Error dbsize(internal::CommandHandler* handler,
+                     int argc,
+                     const char** argv,
+                     FastoObject* out);
 
-common::Error dbkcount(CommandHandler* handler, int argc, const char** argv, FastoObject* out);
-common::Error help(CommandHandler* handler, int argc, const char** argv, FastoObject* out);
-common::Error flushdb(CommandHandler* handler, int argc, const char** argv, FastoObject* out);
+common::Error dbkcount(internal::CommandHandler* handler,
+                       int argc,
+                       const char** argv,
+                       FastoObject* out);
+common::Error help(internal::CommandHandler* handler,
+                   int argc,
+                   const char** argv,
+                   FastoObject* out);
+common::Error flushdb(internal::CommandHandler* handler,
+                      int argc,
+                      const char** argv,
+                      FastoObject* out);
 
 // TODO: SETNX command imlementation
 static const std::vector<CommandHolder> ssdbCommands = {

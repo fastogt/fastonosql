@@ -27,7 +27,7 @@
 #include <common/error.h>   // for Error
 #include <common/macros.h>  // for WARN_UNUSED_RESULT
 
-#include "core/db_connection/cdb_connection.h"
+#include "core/internal/cdb_connection.h"
 
 #include "core/unqlite/config.h"
 #include "core/unqlite/connection_settings.h"
@@ -45,9 +45,9 @@ common::Error CreateConnection(const Config& config, NativeConnection** context)
 common::Error CreateConnection(ConnectionSettings* settings, NativeConnection** context);
 common::Error TestConnection(ConnectionSettings* settings);
 
-class DBConnection : public core::CDBConnection<NativeConnection, Config, UNQLITE> {
+class DBConnection : public core::internal::CDBConnection<NativeConnection, Config, UNQLITE> {
  public:
-  typedef core::CDBConnection<NativeConnection, Config, UNQLITE> base_class;
+  typedef core::internal::CDBConnection<NativeConnection, Config, UNQLITE> base_class;
   explicit DBConnection(CDBConnectionClient* client);
 
   static const char* VersionApi();
@@ -76,18 +76,18 @@ class DBConnection : public core::CDBConnection<NativeConnection, Config, UNQLIT
   virtual common::Error SetTTLImpl(const NKey& key, ttl_t ttl) override;
 };
 
-common::Error select(CommandHandler* handler, int argc, const char** argv, FastoObject* out);
-common::Error set(CommandHandler* handler, int argc, const char** argv, FastoObject* out);
-common::Error get(CommandHandler* handler, int argc, const char** argv, FastoObject* out);
-common::Error del(CommandHandler* handler, int argc, const char** argv, FastoObject* out);
-common::Error rename(CommandHandler* handler, int argc, const char** argv, FastoObject* out);
-common::Error set_ttl(CommandHandler* handler, int argc, const char** argv, FastoObject* out);
+common::Error select(internal::CommandHandler* handler, int argc, const char** argv, FastoObject* out);
+common::Error set(internal::CommandHandler* handler, int argc, const char** argv, FastoObject* out);
+common::Error get(internal::CommandHandler* handler, int argc, const char** argv, FastoObject* out);
+common::Error del(internal::CommandHandler* handler, int argc, const char** argv, FastoObject* out);
+common::Error rename(internal::CommandHandler* handler, int argc, const char** argv, FastoObject* out);
+common::Error set_ttl(internal::CommandHandler* handler, int argc, const char** argv, FastoObject* out);
 
-common::Error info(CommandHandler* handler, int argc, const char** argv, FastoObject* out);
-common::Error keys(CommandHandler* handler, int argc, const char** argv, FastoObject* out);
-common::Error dbkcount(CommandHandler* handler, int argc, const char** argv, FastoObject* out);
-common::Error help(CommandHandler* handler, int argc, const char** argv, FastoObject* out);
-common::Error flushdb(CommandHandler* handler, int argc, const char** argv, FastoObject* out);
+common::Error info(internal::CommandHandler* handler, int argc, const char** argv, FastoObject* out);
+common::Error keys(internal::CommandHandler* handler, int argc, const char** argv, FastoObject* out);
+common::Error dbkcount(internal::CommandHandler* handler, int argc, const char** argv, FastoObject* out);
+common::Error help(internal::CommandHandler* handler, int argc, const char** argv, FastoObject* out);
+common::Error flushdb(internal::CommandHandler* handler, int argc, const char** argv, FastoObject* out);
 
 static const std::vector<CommandHolder> unqliteCommands = {
     CommandHolder("SET",

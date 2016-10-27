@@ -25,16 +25,17 @@
 #include <common/macros.h>  // for DNOTREACHED, etc
 #include <common/value.h>   // for ErrorValue, etc
 
-#include "core/command/command_handler.h"  // for CommandHandler, etc
-#include "core/connection_types.h"         // for connectionTypes
-#include "core/db_connection/cdb_connection_client.h"
-#include "core/db_connection/db_connection.h"     // for DBConnection
-#include "core/db_key.h"                          // for NDbKValue, NKey, etc
-#include "core/translator/icommand_translator.h"  // for translator_t, etc
-#include "core/database/idatabase_info.h"
+#include "core/connection_types.h"  // for connectionTypes
+#include "core/db_key.h"            // for NDbKValue, NKey, etc
+#include "core/icommand_translator.h"  // for translator_t, etc
+
+#include "core/internal/command_handler.h"  // for CommandHandler, etc
+#include "core/internal/cdb_connection_client.h"
+#include "core/internal/db_connection.h"  // for DBConnection
 
 namespace fastonosql {
 namespace core {
+namespace internal {
 
 template <typename NConnection, typename Config, connectionTypes ContType>
 class CDBConnection : public DBConnection<NConnection, Config, ContType>, public CommandHandler {
@@ -204,6 +205,6 @@ common::Error CDBConnection<NConnection, Config, ContType>::SetTTL(const NKey& k
 
   return common::Error();
 }
-
+}
 }  // namespace core
 }  // namespace fastonosql

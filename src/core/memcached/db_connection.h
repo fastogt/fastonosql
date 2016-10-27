@@ -25,10 +25,10 @@
 #include <common/error.h>   // for Error
 #include <common/macros.h>  // for WARN_UNUSED_RESULT
 
-#include "core/db_connection/cdb_connection.h"  // for CDBConnection
-#include "core/command/command_info.h"          // for UNDEFINED_EXAMPLE_STR, UNDEF...
-#include "core/connection_types.h"              // for connectionTypes::MEMCACHED
-#include "core/db_key.h"                        // for NDbKValue, NKey, NKeys
+#include "core/command_info.h"     // for UNDEFINED_EXAMPLE_STR, UNDEF...
+#include "core/connection_types.h"         // for connectionTypes::MEMCACHED
+#include "core/db_key.h"                   // for NDbKValue, NKey, NKeys
+#include "core/internal/cdb_connection.h"  // for CDBConnection
 #include "core/memcached/connection_settings.h"
 #include "core/memcached/server_info.h"
 
@@ -70,9 +70,9 @@ common::Error CreateConnection(const Config& config, NativeConnection** context)
 common::Error CreateConnection(ConnectionSettings* settings, NativeConnection** context);
 common::Error TestConnection(ConnectionSettings* settings);
 
-class DBConnection : public core::CDBConnection<NativeConnection, Config, MEMCACHED> {
+class DBConnection : public core::internal::CDBConnection<NativeConnection, Config, MEMCACHED> {
  public:
-  typedef core::CDBConnection<NativeConnection, Config, MEMCACHED> base_class;
+  typedef core::internal::CDBConnection<NativeConnection, Config, MEMCACHED> base_class;
   DBConnection(CDBConnectionClient* client);
 
   static const char* VersionApi();
@@ -123,29 +123,29 @@ class DBConnection : public core::CDBConnection<NativeConnection, Config, MEMCAC
   virtual common::Error SetTTLImpl(const NKey& key, ttl_t ttl) override;
 };
 
-common::Error select(CommandHandler* handler, int argc, const char** argv, FastoObject* out);
-common::Error set(CommandHandler* handler, int argc, const char** argv, FastoObject* out);
-common::Error get(CommandHandler* handler, int argc, const char** argv, FastoObject* out);
-common::Error del(CommandHandler* handler, int argc, const char** argv, FastoObject* out);
-common::Error rename(CommandHandler* handler, int argc, const char** argv, FastoObject* out);
-common::Error set_ttl(CommandHandler* handler, int argc, const char** argv, FastoObject* out);
+common::Error select(internal::CommandHandler* handler, int argc, const char** argv, FastoObject* out);
+common::Error set(internal::CommandHandler* handler, int argc, const char** argv, FastoObject* out);
+common::Error get(internal::CommandHandler* handler, int argc, const char** argv, FastoObject* out);
+common::Error del(internal::CommandHandler* handler, int argc, const char** argv, FastoObject* out);
+common::Error rename(internal::CommandHandler* handler, int argc, const char** argv, FastoObject* out);
+common::Error set_ttl(internal::CommandHandler* handler, int argc, const char** argv, FastoObject* out);
 
-common::Error keys(CommandHandler* handler, int argc, const char** argv, FastoObject* out);
-common::Error stats(CommandHandler* handler, int argc, const char** argv, FastoObject* out);
-common::Error add(CommandHandler* handler, int argc, const char** argv, FastoObject* out);
-common::Error replace(CommandHandler* handler, int argc, const char** argv, FastoObject* out);
-common::Error append(CommandHandler* handler, int argc, const char** argv, FastoObject* out);
-common::Error prepend(CommandHandler* handler, int argc, const char** argv, FastoObject* out);
-common::Error incr(CommandHandler* handler, int argc, const char** argv, FastoObject* out);
-common::Error decr(CommandHandler* handler, int argc, const char** argv, FastoObject* out);
-common::Error flushdb(CommandHandler* handler, int argc, const char** argv, FastoObject* out);
-common::Error version_server(CommandHandler* handler,
+common::Error keys(internal::CommandHandler* handler, int argc, const char** argv, FastoObject* out);
+common::Error stats(internal::CommandHandler* handler, int argc, const char** argv, FastoObject* out);
+common::Error add(internal::CommandHandler* handler, int argc, const char** argv, FastoObject* out);
+common::Error replace(internal::CommandHandler* handler, int argc, const char** argv, FastoObject* out);
+common::Error append(internal::CommandHandler* handler, int argc, const char** argv, FastoObject* out);
+common::Error prepend(internal::CommandHandler* handler, int argc, const char** argv, FastoObject* out);
+common::Error incr(internal::CommandHandler* handler, int argc, const char** argv, FastoObject* out);
+common::Error decr(internal::CommandHandler* handler, int argc, const char** argv, FastoObject* out);
+common::Error flushdb(internal::CommandHandler* handler, int argc, const char** argv, FastoObject* out);
+common::Error version_server(internal::CommandHandler* handler,
                              int argc,
                              const char** argv,
                              FastoObject* out);
-common::Error dbkcount(CommandHandler* handler, int argc, const char** argv, FastoObject* out);
-common::Error help(CommandHandler* handler, int argc, const char** argv, FastoObject* out);
-common::Error expire(CommandHandler* handler, int argc, const char** argv, FastoObject* out);
+common::Error dbkcount(internal::CommandHandler* handler, int argc, const char** argv, FastoObject* out);
+common::Error help(internal::CommandHandler* handler, int argc, const char** argv, FastoObject* out);
+common::Error expire(internal::CommandHandler* handler, int argc, const char** argv, FastoObject* out);
 
 // TODO: cas command implementation
 static const std::vector<CommandHolder> memcachedCommands = {

@@ -16,7 +16,7 @@
     along with FastoNoSQL.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-#include "core/db_connection/db_connection.h"
+#include "core/internal/cdb_connection_client.h"
 
 namespace fastonosql {
 namespace core {}  // namespace core

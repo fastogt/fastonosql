@@ -25,11 +25,12 @@
 #include <common/net/types.h>  // for HostAndPort
 #include <common/value.h>      // for Value, etc
 
+#include "core/icommand_translator.h"  // for translator_t
+
 #include "core/connection_settings/connection_settings.h"
 #include "core/driver/idriver_remote.h"  // for IDriverRemote
 #include "core/events/events.h"
-#include "core/server/iserver_info.h"             // for IServerInfo (ptr only), etc
-#include "core/translator/icommand_translator.h"  // for translator_t
+#include "core/server/iserver_info.h"  // for IServerInfo (ptr only), etc
 
 #include "global/global.h"  // for FastoObject (ptr only), etc
 
