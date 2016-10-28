@@ -33,13 +33,27 @@
 
 #include "core/settings_manager.h"
 
+#ifdef BUILD_WITH_REDIS
 #define LOGGING_REDIS_FILE_EXTENSION ".red"
+#endif
+#ifdef BUILD_WITH_MEMCACHED
 #define LOGGING_MEMCACHED_FILE_EXTENSION ".mem"
+#endif
+#ifdef BUILD_WITH_SSDB
 #define LOGGING_SSDB_FILE_EXTENSION ".ssdb"
+#endif
+#ifdef BUILD_WITH_LEVELDB
 #define LOGGING_LEVELDB_FILE_EXTENSION ".leveldb"
+#endif
+#ifdef BUILD_WITH_ROCKSDB
 #define LOGGING_ROCKSDB_FILE_EXTENSION ".rocksdb"
+#endif
+#ifdef BUILD_WITH_UNQLITE
 #define LOGGING_UNQLITE_FILE_EXTENSION ".unq"
+#endif
+#ifdef BUILD_WITH_LMDB
 #define LOGGING_LMDB_FILE_EXTENSION ".lmdb"
+#endif
 
 namespace fastonosql {
 namespace core {

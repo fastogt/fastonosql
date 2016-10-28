@@ -5,7 +5,7 @@
 using namespace fastonosql;
 
 TEST(FastoObject, LifeTime) {
-  FastoObjectIPtr obj = FastoObject::createRoot("root");
+  FastoObjectIPtr obj = FastoObject::CreateRoot("root");
   obj.reset();
   FastoObject* ptr = obj.get();
   ASSERT_TRUE(ptr == NULL);
@@ -14,8 +14,8 @@ TEST(FastoObject, LifeTime) {
 TEST(FastoObject, LifeTimeScope) {
   common::StringValue* obj = common::Value::createStringValue("Sasha");
   {
-    FastoObjectIPtr root = FastoObject::createRoot("root");
+    FastoObjectIPtr root = FastoObject::CreateRoot("root");
     FastoObject* ptr = new FastoObject(root.get(), obj, "/n");
-    root->addChildren(ptr);
+    root->AddChildren(ptr);
   }
 }
