@@ -93,7 +93,7 @@ IConnectionSettingsBase* ConnectionSettingsFactory::CreateFromType(
   return nullptr;
 }
 
-IConnectionSettingsBase* ConnectionSettingsFactory::FromString(const std::string& val) {
+IConnectionSettingsBase* ConnectionSettingsFactory::CreateFromString(const std::string& val) {
   if (val.empty()) {
     return nullptr;
   }

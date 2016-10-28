@@ -42,7 +42,7 @@ IClusterSettingsBase* ClusterConnectionSettingsFactory::CreateFromType(
   return nullptr;
 }
 
-IClusterSettingsBase* ClusterConnectionSettingsFactory::FromString(const std::string& val) {
+IClusterSettingsBase* ClusterConnectionSettingsFactory::CreateFromString(const std::string& val) {
   if (val.empty()) {
     return nullptr;
   }
@@ -73,7 +73,7 @@ IClusterSettingsBase* ClusterConnectionSettingsFactory::FromString(const std::st
           ch = val[j];
           if (ch == magicNumber || j == len - 1) {
             IConnectionSettingsBaseSPtr ser(
-                ConnectionSettingsFactory::instance().FromString(serText));
+                ConnectionSettingsFactory::instance().CreateFromString(serText));
             result->AddNode(ser);
             serText.clear();
           } else {

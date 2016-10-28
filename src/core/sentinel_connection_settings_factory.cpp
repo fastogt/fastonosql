@@ -38,7 +38,7 @@ ISentinelSettingsBase* SentinelConnectionSettingsFactory::CreateFromType(
   return nullptr;
 }
 
-ISentinelSettingsBase* SentinelConnectionSettingsFactory::FromString(const std::string& val) {
+ISentinelSettingsBase* SentinelConnectionSettingsFactory::CreateFromString(const std::string& val) {
   if (val.empty()) {
     return nullptr;
   }

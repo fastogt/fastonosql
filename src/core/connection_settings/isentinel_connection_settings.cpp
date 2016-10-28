@@ -69,7 +69,7 @@ bool SentinelSettingsfromString(const std::string& text, SentinelSettings* sent)
       if (commaCount == 0) {
         std::string sent_raw = common::utils::base64::decode64(elText);
         IConnectionSettingsBaseSPtr sent(
-            ConnectionSettingsFactory::instance().FromString(sent_raw));
+            ConnectionSettingsFactory::instance().CreateFromString(sent_raw));
         if (!sent) {
           return false;
         }
@@ -83,7 +83,7 @@ bool SentinelSettingsfromString(const std::string& text, SentinelSettings* sent)
           ch = raw_sent[j];
           if (ch == magicNumber || j == len - 1) {
             IConnectionSettingsBaseSPtr ser(
-                ConnectionSettingsFactory::instance().FromString(serText));
+                ConnectionSettingsFactory::instance().CreateFromString(serText));
             if (ser) {
               result.sentinel_nodes.push_back(ser);
             }

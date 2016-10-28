@@ -32,7 +32,7 @@ class ClusterConnectionSettingsFactory
 
   IClusterSettingsBase* CreateFromType(connectionTypes type,
                                        const connection_path_t& connectionPath);
-  IClusterSettingsBase* FromString(const std::string& val);
+  IClusterSettingsBase* CreateFromString(const std::string& val);
 };
 
 }  // namespace core
