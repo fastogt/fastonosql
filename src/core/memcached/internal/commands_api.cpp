@@ -16,7 +16,7 @@
     along with FastoNoSQL.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-#include "core/memcached/commands_api.h"
+#include "core/memcached/internal/commands_api.h"
 
 #include <common/convert2string.h>
 

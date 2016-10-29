@@ -25,16 +25,7 @@
 #include <Qsci/qsciabstractapis.h>
 #include <Qsci/qscilexercustom.h>
 
-namespace fastonosql {
-namespace core {
-class CommandHolder;
-}
-}
-namespace fastonosql {
-namespace core {
-struct CommandInfo;
-}
-}
+#include "core/command_holder.h"
 
 namespace fastonosql {
 namespace shell {
@@ -65,7 +56,7 @@ class BaseQsciApiCommandHolder : public BaseQsciApi {
   BaseQsciApiCommandHolder(const std::vector<core::CommandHolder>& commands, QsciLexer* lexer);
 
  private:
-  const std::vector<core::CommandHolder>& commands_;
+  const std::vector<core::CommandHolder> commands_;
 };
 
 class BaseQsciLexer : public QsciLexerCustom {
@@ -102,7 +93,7 @@ class BaseQsciLexerCommandHolder : public BaseQsciLexer {
   virtual void styleText(int start, int end);
   void paintCommands(const QString& source, int start);
 
-  const std::vector<core::CommandHolder>& commands_;
+  const std::vector<core::CommandHolder> commands_;
 };
 
 QString makeCallTip(const core::CommandInfo& info);

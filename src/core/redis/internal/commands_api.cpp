@@ -16,7 +16,7 @@
     along with FastoNoSQL.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-#include "core/redis/commands_api.h"
+#include "core/redis/internal/commands_api.h"
 
 #include <string.h>
 

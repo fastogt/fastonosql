@@ -37,7 +37,7 @@
 #include "core/memcached/connection_settings.h"  // for ConnectionSettings
 #include "core/memcached/database.h"
 #include "core/memcached/command_translator.h"
-#include "core/memcached/commands_api.h"
+#include "core/memcached/internal/commands_api.h"
 
 #include "global/global.h"  // for FastoObject, etc
 

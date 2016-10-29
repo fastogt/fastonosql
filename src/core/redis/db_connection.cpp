@@ -71,7 +71,7 @@ extern "C" {
 #include "core/redis/database.h"             // for DataBaseInfo
 #include "core/redis/sentinel_info.h"        // for DiscoverySentinelInfo, etc
 #include "core/redis/command_translator.h"
-#include "core/redis/commands_api.h"
+#include "core/redis/internal/commands_api.h"
 
 #define HIREDIS_VERSION    \
   STRINGIZE(HIREDIS_MAJOR) \

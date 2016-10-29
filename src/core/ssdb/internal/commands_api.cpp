@@ -16,7 +16,7 @@
     along with FastoNoSQL.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-#include "core/ssdb/commands_api.h"
+#include "core/ssdb/internal/commands_api.h"
 
 #include <common/convert2string.h>
 

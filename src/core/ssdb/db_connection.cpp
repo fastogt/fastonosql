@@ -31,7 +31,7 @@
 #include "core/ssdb/connection_settings.h"  // for ConnectionSettings
 #include "core/ssdb/database.h"
 #include "core/ssdb/command_translator.h"
-#include "core/ssdb/commands_api.h"
+#include "core/ssdb/internal/commands_api.h"
 
 #include "global/global.h"  // for FastoObject, etc
 

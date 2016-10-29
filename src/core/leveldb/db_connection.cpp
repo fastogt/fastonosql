@@ -28,7 +28,7 @@
 #include "core/leveldb/connection_settings.h"  // for ConnectionSettings
 #include "core/leveldb/command_translator.h"
 #include "core/leveldb/database.h"
-#include "core/leveldb/commands_api.h"
+#include "core/leveldb/internal/commands_api.h"
 
 #include "global/global.h"  // for FastoObject, etc
 

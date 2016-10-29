@@ -34,7 +34,7 @@
 #include "core/rocksdb/connection_settings.h"  // for ConnectionSettings
 #include "core/rocksdb/database.h"
 #include "core/rocksdb/command_translator.h"
-#include "core/rocksdb/commands_api.h"
+#include "core/rocksdb/internal/commands_api.h"
 
 #include "global/global.h"  // for FastoObject, etc
 

@@ -35,7 +35,7 @@ extern "C" {
 #include "core/unqlite/connection_settings.h"  // for ConnectionSettings
 #include "core/unqlite/database.h"
 #include "core/unqlite/command_translator.h"
-#include "core/unqlite/commands_api.h"
+#include "core/unqlite/internal/commands_api.h"
 
 #include "global/global.h"  // for FastoObject, etc
 

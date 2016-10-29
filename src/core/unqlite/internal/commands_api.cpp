@@ -16,7 +16,7 @@
     along with FastoNoSQL.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-#include "core/unqlite/commands_api.h"
+#include "core/unqlite/internal/commands_api.h"
 
 #include <common/convert2string.h>
 

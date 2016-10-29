@@ -45,7 +45,7 @@ class CommandHandler {
   static common::Error UnknownSequence(int argc, const char** argv);
 
  private:
-  const commands_t& commands_;
+  const commands_t commands_;
 };
 }
 }  // namespace core

@@ -32,7 +32,7 @@
 #include "core/lmdb/connection_settings.h"  // for ConnectionSettings
 #include "core/lmdb/command_translator.h"
 #include "core/lmdb/database.h"
-#include "core/lmdb/commands_api.h"
+#include "core/lmdb/internal/commands_api.h"
 
 #include "global/global.h"  // for FastoObject, etc
 
