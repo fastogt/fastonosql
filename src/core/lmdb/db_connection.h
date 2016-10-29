@@ -80,8 +80,6 @@ class DBConnection : public core::internal::CDBConnection<NativeConnection, Conf
   typedef core::internal::CDBConnection<NativeConnection, Config, LMDB> base_class;
   DBConnection(CDBConnectionClient* client);
 
-  static const char* VersionApi();
-
   unsigned int CurDb() const;
 
   common::Error Info(const char* args, ServerInfo::Stats* statsout) WARN_UNUSED_RESULT;
@@ -107,120 +105,6 @@ class DBConnection : public core::internal::CDBConnection<NativeConnection, Conf
   virtual common::Error RenameImpl(const NKey& key, const std::string& new_key) override;
   virtual common::Error SetTTLImpl(const NKey& key, ttl_t ttl) override;
 };
-
-common::Error select(internal::CommandHandler* handler,
-                     int argc,
-                     const char** argv,
-                     FastoObject* out);
-common::Error set(internal::CommandHandler* handler, int argc, const char** argv, FastoObject* out);
-common::Error get(internal::CommandHandler* handler, int argc, const char** argv, FastoObject* out);
-common::Error del(internal::CommandHandler* handler, int argc, const char** argv, FastoObject* out);
-common::Error rename(internal::CommandHandler* handler,
-                     int argc,
-                     const char** argv,
-                     FastoObject* out);
-common::Error set_ttl(internal::CommandHandler* handler,
-                      int argc,
-                      const char** argv,
-                      FastoObject* out);
-
-common::Error info(internal::CommandHandler* handler,
-                   int argc,
-                   const char** argv,
-                   FastoObject* out);
-common::Error keys(internal::CommandHandler* handler,
-                   int argc,
-                   const char** argv,
-                   FastoObject* out);
-common::Error dbkcount(internal::CommandHandler* handler,
-                       int argc,
-                       const char** argv,
-                       FastoObject* out);
-common::Error help(internal::CommandHandler* handler,
-                   int argc,
-                   const char** argv,
-                   FastoObject* out);
-common::Error flushdb(internal::CommandHandler* handler,
-                      int argc,
-                      const char** argv,
-                      FastoObject* out);
-
-static const std::vector<CommandHolder> lmdbCommands = {
-    CommandHolder("SET",
-                  "<key> <value>",
-                  "Set the value of a key.",
-                  UNDEFINED_SINCE,
-                  UNDEFINED_EXAMPLE_STR,
-                  2,
-                  0,
-                  &set),
-    CommandHolder("GET",
-                  "<key>",
-                  "Get the value of a key.",
-                  UNDEFINED_SINCE,
-                  UNDEFINED_EXAMPLE_STR,
-                  1,
-                  0,
-                  &get),
-    CommandHolder("DEL",
-                  "<key> [key ...]",
-                  "Delete key.",
-                  UNDEFINED_SINCE,
-                  UNDEFINED_EXAMPLE_STR,
-                  1,
-                  INFINITE_COMMAND_ARGS,
-                  &del),
-    CommandHolder("RENAME",
-                  "<key> <newkey>",
-                  "Rename a key",
-                  UNDEFINED_SINCE,
-                  UNDEFINED_EXAMPLE_STR,
-                  2,
-                  0,
-                  &rename),
-    CommandHolder("KEYS",
-                  "<key_start> <key_end> <limit>",
-                  "Find all keys matching the given limits.",
-                  UNDEFINED_SINCE,
-                  UNDEFINED_EXAMPLE_STR,
-                  3,
-                  0,
-                  &keys),
-    CommandHolder("INFO",
-                  "<args>",
-                  "These command return database information.",
-                  UNDEFINED_SINCE,
-                  UNDEFINED_EXAMPLE_STR,
-                  1,
-                  0,
-                  &info),
-
-    // extended commands
-    CommandHolder("DBKCOUNT",
-                  "-",
-                  "Return the number of keys in the "
-                  "selected database",
-                  UNDEFINED_SINCE,
-                  UNDEFINED_EXAMPLE_STR,
-                  0,
-                  0,
-                  &dbkcount),
-    CommandHolder("HELP",
-                  "[command]",
-                  "Return how to use command",
-                  UNDEFINED_SINCE,
-                  UNDEFINED_EXAMPLE_STR,
-                  0,
-                  1,
-                  &help),
-    CommandHolder("FLUSHDB",
-                  "-",
-                  "Remove all keys from the current database",
-                  UNDEFINED_SINCE,
-                  UNDEFINED_EXAMPLE_STR,
-                  0,
-                  1,
-                  &flushdb)};
 
 }  // namespace lmdb
 }  // namespace core

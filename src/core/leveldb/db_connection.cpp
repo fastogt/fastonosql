@@ -28,6 +28,7 @@
 #include "core/leveldb/connection_settings.h"  // for ConnectionSettings
 #include "core/leveldb/command_translator.h"
 #include "core/leveldb/database.h"
+#include "core/leveldb/commands_api.h"
 
 #include "global/global.h"  // for FastoObject, etc
 
@@ -52,12 +53,14 @@ common::Error ConnectionAllocatorTraits<leveldb::NativeConnection, leveldb::Conf
   *hout = context;
   return common::Error();
 }
+
 template <>
 common::Error ConnectionAllocatorTraits<leveldb::NativeConnection, leveldb::Config>::Disconnect(
     leveldb::NativeConnection** handle) {
   destroy(handle);
   return common::Error();
 }
+
 template <>
 bool ConnectionAllocatorTraits<leveldb::NativeConnection, leveldb::Config>::IsConnected(
     leveldb::NativeConnection* handle) {
@@ -66,6 +69,18 @@ bool ConnectionAllocatorTraits<leveldb::NativeConnection, leveldb::Config>::IsCo
   }
 
   return true;
+}
+
+template <>
+const char* CDBConnection<leveldb::NativeConnection, leveldb::Config, LEVELDB>::VersionApi() {
+    static std::string leveldb_version =
+        common::MemSPrintf("%d.%d", leveldb_major_version(), leveldb_minor_version());
+    return leveldb_version.c_str();
+}
+
+template <>
+std::vector<CommandHolder> CDBConnection<leveldb::NativeConnection, leveldb::Config, LEVELDB>::Commands() {
+  return leveldb::leveldbCommands;
 }
 }
 namespace leveldb {
@@ -117,13 +132,7 @@ common::Error TestConnection(ConnectionSettings* settings) {
 }
 
 DBConnection::DBConnection(CDBConnectionClient* client)
-    : base_class(leveldbCommands, client, new CommandTranslator) {}
-
-const char* DBConnection::VersionApi() {
-  static std::string leveldb_version =
-      common::MemSPrintf("%d.%d", leveldb_major_version(), leveldb_minor_version());
-  return leveldb_version.c_str();
-}
+    : base_class(client, new CommandTranslator) {}
 
 common::Error DBConnection::DBkcount(size_t* size) {
   if (!size) {
@@ -389,211 +398,6 @@ common::Error DBConnection::SetTTLImpl(const NKey& key, ttl_t ttl) {
   return common::make_error_value("Sorry, but now " PROJECT_NAME_TITLE
                                   " for LevelDB not supported TTL commands.",
                                   common::ErrorValue::E_ERROR);
-}
-
-common::Error dbkcount(internal::CommandHandler* handler,
-                       int argc,
-                       const char** argv,
-                       FastoObject* out) {
-  UNUSED(argc);
-  UNUSED(argv);
-
-  DBConnection* level = static_cast<DBConnection*>(handler);
-
-  size_t dbkcount = 0;
-  common::Error er = level->DBkcount(&dbkcount);
-  if (!er) {
-    common::FundamentalValue* val = common::Value::createUIntegerValue(dbkcount);
-    FastoObject* child = new FastoObject(out, val, level->Delimiter());
-    out->AddChildren(child);
-  }
-  return er;
-}
-
-common::Error info(internal::CommandHandler* handler,
-                   int argc,
-                   const char** argv,
-                   FastoObject* out) {
-  DBConnection* level = static_cast<DBConnection*>(handler);
-
-  ServerInfo::Stats statsout;
-  common::Error er = level->Info(argc == 1 ? argv[0] : nullptr, &statsout);
-  if (!er) {
-    ServerInfo linf(statsout);
-    common::StringValue* val = common::Value::createStringValue(linf.ToString());
-    FastoObject* child = new FastoObject(out, val, level->Delimiter());
-    out->AddChildren(child);
-  }
-  return er;
-}
-
-common::Error select(internal::CommandHandler* handler,
-                     int argc,
-                     const char** argv,
-                     FastoObject* out) {
-  UNUSED(argc);
-
-  DBConnection* level = static_cast<DBConnection*>(handler);
-  common::Error err = level->Select(argv[0], nullptr);
-  if (err && err->isError()) {
-    return err;
-  }
-
-  common::StringValue* val = common::Value::createStringValue("OK");
-  FastoObject* child = new FastoObject(out, val, level->Delimiter());
-  out->AddChildren(child);
-  return common::Error();
-}
-
-common::Error set(internal::CommandHandler* handler,
-                  int argc,
-                  const char** argv,
-                  FastoObject* out) {
-  UNUSED(argc);
-
-  NKey key(argv[0]);
-  NValue string_val(common::Value::createStringValue(argv[1]));
-  NDbKValue kv(key, string_val);
-
-  DBConnection* level = static_cast<DBConnection*>(handler);
-  NDbKValue key_added;
-  common::Error err = level->Set(kv, &key_added);
-  if (err && err->isError()) {
-    return err;
-  }
-
-  common::StringValue* val = common::Value::createStringValue("OK");
-  FastoObject* child = new FastoObject(out, val, level->Delimiter());
-  out->AddChildren(child);
-  return common::Error();
-}
-
-common::Error get(internal::CommandHandler* handler,
-                  int argc,
-                  const char** argv,
-                  FastoObject* out) {
-  UNUSED(argc);
-
-  NKey key(argv[0]);
-  DBConnection* level = static_cast<DBConnection*>(handler);
-  NDbKValue key_loaded;
-  common::Error err = level->Get(key, &key_loaded);
-  if (err && err->isError()) {
-    return err;
-  }
-
-  NValue val = key_loaded.Value();
-  common::Value* copy = val->deepCopy();
-  FastoObject* child = new FastoObject(out, copy, level->Delimiter());
-  out->AddChildren(child);
-  return common::Error();
-}
-
-common::Error del(internal::CommandHandler* handler,
-                  int argc,
-                  const char** argv,
-                  FastoObject* out) {
-  NKeys keysdel;
-  for (int i = 0; i < argc; ++i) {
-    keysdel.push_back(NKey(argv[i]));
-  }
-
-  DBConnection* level = static_cast<DBConnection*>(handler);
-  NKeys keys_deleted;
-  common::Error err = level->Delete(keysdel, &keys_deleted);
-  if (err && err->isError()) {
-    return err;
-  }
-
-  common::FundamentalValue* val = common::Value::createUIntegerValue(keys_deleted.size());
-  FastoObject* child = new FastoObject(out, val, level->Delimiter());
-  out->AddChildren(child);
-  return common::Error();
-}
-
-common::Error rename(internal::CommandHandler* handler,
-                     int argc,
-                     const char** argv,
-                     FastoObject* out) {
-  UNUSED(argc);
-
-  NKey key(argv[0]);
-  DBConnection* level = static_cast<DBConnection*>(handler);
-  common::Error err = level->Rename(key, argv[1]);
-  if (err && err->isError()) {
-    return err;
-  }
-
-  common::StringValue* val = common::Value::createStringValue("OK");
-  FastoObject* child = new FastoObject(out, val, level->Delimiter());
-  out->AddChildren(child);
-  return common::Error();
-}
-
-common::Error set_ttl(internal::CommandHandler* handler,
-                      int argc,
-                      const char** argv,
-                      FastoObject* out) {
-  UNUSED(out);
-  UNUSED(argc);
-
-  DBConnection* level = static_cast<DBConnection*>(handler);
-  NKey key(argv[0]);
-  time_t ttl = common::ConvertFromString<time_t>(argv[1]);
-  common::Error err = level->SetTTL(key, ttl);
-  if (err && err->isError()) {
-    return err;
-  }
-
-  common::StringValue* val = common::Value::createStringValue("OK");
-  FastoObject* child = new FastoObject(out, val, level->Delimiter());
-  out->AddChildren(child);
-  return common::Error();
-}
-
-common::Error keys(internal::CommandHandler* handler,
-                   int argc,
-                   const char** argv,
-                   FastoObject* out) {
-  UNUSED(argc);
-
-  DBConnection* level = static_cast<DBConnection*>(handler);
-
-  std::vector<std::string> keysout;
-  common::Error er =
-      level->Keys(argv[0], argv[1], common::ConvertFromString<uint64_t>(argv[2]), &keysout);
-  if (!er) {
-    common::ArrayValue* ar = common::Value::createArrayValue();
-    for (size_t i = 0; i < keysout.size(); ++i) {
-      common::StringValue* val = common::Value::createStringValue(keysout[i]);
-      ar->append(val);
-    }
-    FastoObjectArray* child = new FastoObjectArray(out, ar, level->Delimiter());
-    out->AddChildren(child);
-  }
-  return er;
-}
-
-common::Error help(internal::CommandHandler* handler,
-                   int argc,
-                   const char** argv,
-                   FastoObject* out) {
-  UNUSED(out);
-
-  DBConnection* level = static_cast<DBConnection*>(handler);
-  return level->Help(argc - 1, argv + 1);
-}
-
-common::Error flushdb(internal::CommandHandler* handler,
-                      int argc,
-                      const char** argv,
-                      FastoObject* out) {
-  UNUSED(argc);
-  UNUSED(argv);
-  UNUSED(out);
-
-  DBConnection* level = static_cast<DBConnection*>(handler);
-  return level->Flushdb();
 }
 
 }  // namespace leveldb

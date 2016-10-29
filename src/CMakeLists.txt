@@ -398,6 +398,7 @@ IF(BUILD_WITH_REDIS)
     core/redis/server_info.h
     core/redis/connection_settings.h
     core/redis/db_connection.h
+    core/redis/commands_api.h
 
     core/redis/sentinel_info.h
     core/redis/sentinel_settings.h
@@ -412,6 +413,7 @@ IF(BUILD_WITH_REDIS)
     core/redis/server_info.cpp
     core/redis/connection_settings.cpp
     core/redis/db_connection.cpp
+    core/redis/commands_api.cpp
     core/redis/server.cpp
     core/redis/driver.cpp
 
@@ -452,6 +454,7 @@ IF(BUILD_WITH_MEMCACHED)
     core/memcached/server_info.h
     core/memcached/connection_settings.h
     core/memcached/db_connection.h
+    core/memcached/commands_api.h
   )
   SET(SOURCES_MEMCACHED
     core/memcached/config.cpp
@@ -461,6 +464,7 @@ IF(BUILD_WITH_MEMCACHED)
     core/memcached/server_info.cpp
     core/memcached/connection_settings.cpp
     core/memcached/db_connection.cpp
+    core/memcached/commands_api.cpp
     core/memcached/server.cpp
     core/memcached/driver.cpp
   )
@@ -492,6 +496,7 @@ IF(BUILD_WITH_SSDB)
     core/ssdb/server_info.h
     core/ssdb/connection_settings.h
     core/ssdb/db_connection.h
+    core/ssdb/commands_api.h
   )
   SET(SOURCES_SSDB
     core/ssdb/config.cpp
@@ -501,6 +506,7 @@ IF(BUILD_WITH_SSDB)
     core/ssdb/server_info.cpp
     core/ssdb/connection_settings.cpp
     core/ssdb/db_connection.cpp
+    core/ssdb/commands_api.cpp
     core/ssdb/server.cpp
     core/ssdb/driver.cpp
   )
@@ -532,6 +538,7 @@ IF(BUILD_WITH_LEVELDB)
     core/leveldb/server_info.h
     core/leveldb/connection_settings.h
     core/leveldb/db_connection.h
+    core/leveldb/commands_api.h
   )
   SET(SOURCES_LEVELDB
     core/leveldb/config.cpp
@@ -541,6 +548,7 @@ IF(BUILD_WITH_LEVELDB)
     core/leveldb/server_info.cpp
     core/leveldb/connection_settings.cpp
     core/leveldb/db_connection.cpp
+    core/leveldb/commands_api.cpp
     core/leveldb/server.cpp
     core/leveldb/driver.cpp
   )
@@ -572,6 +580,7 @@ IF(BUILD_WITH_ROCKSDB)
     core/rocksdb/server_info.h
     core/rocksdb/connection_settings.h
     core/rocksdb/db_connection.h
+    core/rocksdb/commands_api.h
   )
   SET(SOURCES_ROCKSDB
     core/rocksdb/config.cpp
@@ -581,6 +590,7 @@ IF(BUILD_WITH_ROCKSDB)
     core/rocksdb/server_info.cpp
     core/rocksdb/connection_settings.cpp
     core/rocksdb/db_connection.cpp
+    core/rocksdb/commands_api.cpp
     core/rocksdb/server.cpp
     core/rocksdb/driver.cpp
   )
@@ -612,6 +622,7 @@ IF(BUILD_WITH_UNQLITE)
     core/unqlite/server_info.h
     core/unqlite/connection_settings.h
     core/unqlite/db_connection.h
+    core/unqlite/commands_api.h
   )
   SET(SOURCES_UNQLITE
     core/unqlite/config.cpp
@@ -623,6 +634,7 @@ IF(BUILD_WITH_UNQLITE)
     core/unqlite/db_connection.cpp
     core/unqlite/server.cpp
     core/unqlite/driver.cpp
+    core/unqlite/commands_api.cpp
   )
   SET(DB_LIBS ${DB_LIBS} unqlite)
 ENDIF(BUILD_WITH_UNQLITE)
@@ -652,6 +664,7 @@ IF(BUILD_WITH_LMDB)
     core/lmdb/server_info.h
     core/lmdb/connection_settings.h
     core/lmdb/db_connection.h
+    core/lmdb/commands_api.h
   )
   SET(SOURCES_LMDB
     core/lmdb/config.cpp
@@ -661,6 +674,7 @@ IF(BUILD_WITH_LMDB)
     core/lmdb/server_info.cpp
     core/lmdb/connection_settings.cpp
     core/lmdb/db_connection.cpp
+    core/lmdb/commands_api.cpp
     core/lmdb/server.cpp
     core/lmdb/driver.cpp
   )

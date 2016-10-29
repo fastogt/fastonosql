@@ -23,10 +23,11 @@
 namespace fastonosql {
 namespace shell {
 
-LmdbApi::LmdbApi(QsciLexer* lexer) : BaseQsciApiCommandHolder(core::lmdb::lmdbCommands, lexer) {}
+LmdbApi::LmdbApi(QsciLexer* lexer)
+    : BaseQsciApiCommandHolder(core::lmdb::DBConnection::Commands(), lexer) {}
 
 LmdbLexer::LmdbLexer(QObject* parent)
-    : BaseQsciLexerCommandHolder(core::lmdb::lmdbCommands, parent) {
+    : BaseQsciLexerCommandHolder(core::lmdb::DBConnection::Commands(), parent) {
   setAPIs(new LmdbApi(this));
 }
 

@@ -35,6 +35,7 @@ extern "C" {
 #include "core/unqlite/connection_settings.h"  // for ConnectionSettings
 #include "core/unqlite/database.h"
 #include "core/unqlite/command_translator.h"
+#include "core/unqlite/commands_api.h"
 
 #include "global/global.h"  // for FastoObject, etc
 
@@ -142,6 +143,17 @@ bool ConnectionAllocatorTraits<unqlite::NativeConnection, unqlite::Config>::IsCo
 
   return true;
 }
+
+template <>
+const char* CDBConnection<unqlite::NativeConnection, unqlite::Config, UNQLITE>::VersionApi() {
+  return UNQLITE_VERSION;
+}
+
+template <>
+std::vector<CommandHolder>
+CDBConnection<unqlite::NativeConnection, unqlite::Config, UNQLITE>::Commands() {
+  return unqlite::unqliteCommands;
+}
 }
 namespace unqlite {
 
@@ -189,7 +201,7 @@ common::Error TestConnection(ConnectionSettings* settings) {
 }
 
 DBConnection::DBConnection(CDBConnectionClient* client)
-    : base_class(unqliteCommands, client, new CommandTranslator) {}
+    : base_class(client, new CommandTranslator) {}
 
 common::Error DBConnection::Info(const char* args, ServerInfo::Stats* statsout) {
   UNUSED(args);
@@ -241,10 +253,6 @@ common::Error DBConnection::DBkcount(size_t* size) {
 
   *size = sz;
   return common::Error();
-}
-
-const char* DBConnection::VersionApi() {
-  return UNQLITE_VERSION;
 }
 
 common::Error DBConnection::SetInner(const std::string& key, const std::string& value) {
@@ -439,210 +447,6 @@ common::Error DBConnection::DeleteImpl(const NKeys& keys, NKeys* deleted_keys) {
   }
 
   return common::Error();
-}
-
-common::Error select(internal::CommandHandler* handler,
-                     int argc,
-                     const char** argv,
-                     FastoObject* out) {
-  UNUSED(argc);
-
-  DBConnection* unqlite = static_cast<DBConnection*>(handler);
-  common::Error err = unqlite->Select(argv[0], nullptr);
-  if (err && err->isError()) {
-    return err;
-  }
-
-  common::StringValue* val = common::Value::createStringValue("OK");
-  FastoObject* child = new FastoObject(out, val, unqlite->Delimiter());
-  out->AddChildren(child);
-  return common::Error();
-}
-
-common::Error set(internal::CommandHandler* handler,
-                  int argc,
-                  const char** argv,
-                  FastoObject* out) {
-  UNUSED(argc);
-
-  NKey key(argv[0]);
-  NValue string_val(common::Value::createStringValue(argv[1]));
-  NDbKValue kv(key, string_val);
-
-  DBConnection* unqlite = static_cast<DBConnection*>(handler);
-  NDbKValue key_added;
-  common::Error err = unqlite->Set(kv, &key_added);
-  if (err && err->isError()) {
-    return err;
-  }
-
-  common::StringValue* val = common::Value::createStringValue("OK");
-  FastoObject* child = new FastoObject(out, val, unqlite->Delimiter());
-  out->AddChildren(child);
-  return common::Error();
-}
-
-common::Error get(internal::CommandHandler* handler,
-                  int argc,
-                  const char** argv,
-                  FastoObject* out) {
-  UNUSED(argc);
-
-  NKey key(argv[0]);
-  DBConnection* unqlite = static_cast<DBConnection*>(handler);
-  NDbKValue key_loaded;
-  common::Error err = unqlite->Get(key, &key_loaded);
-  if (err && err->isError()) {
-    return err;
-  }
-
-  NValue val = key_loaded.Value();
-  common::Value* copy = val->deepCopy();
-  FastoObject* child = new FastoObject(out, copy, unqlite->Delimiter());
-  out->AddChildren(child);
-  return common::Error();
-}
-
-common::Error del(internal::CommandHandler* handler,
-                  int argc,
-                  const char** argv,
-                  FastoObject* out) {
-  NKeys keysdel;
-  for (int i = 0; i < argc; ++i) {
-    keysdel.push_back(NKey(argv[i]));
-  }
-
-  DBConnection* unq = static_cast<DBConnection*>(handler);
-  NKeys keys_deleted;
-  common::Error err = unq->Delete(keysdel, &keys_deleted);
-  if (err && err->isError()) {
-    return err;
-  }
-
-  common::FundamentalValue* val = common::Value::createUIntegerValue(keys_deleted.size());
-  FastoObject* child = new FastoObject(out, val, unq->Delimiter());
-  out->AddChildren(child);
-  return common::Error();
-}
-
-common::Error rename(internal::CommandHandler* handler,
-                     int argc,
-                     const char** argv,
-                     FastoObject* out) {
-  UNUSED(argc);
-
-  NKey key(argv[0]);
-  DBConnection* red = static_cast<DBConnection*>(handler);
-  common::Error err = red->Rename(key, argv[1]);
-  if (err && err->isError()) {
-    return err;
-  }
-
-  common::StringValue* val = common::Value::createStringValue("OK");
-  FastoObject* child = new FastoObject(out, val, red->Delimiter());
-  out->AddChildren(child);
-  return common::Error();
-}
-
-common::Error set_ttl(internal::CommandHandler* handler,
-                      int argc,
-                      const char** argv,
-                      FastoObject* out) {
-  UNUSED(out);
-  UNUSED(argc);
-
-  DBConnection* unq = static_cast<DBConnection*>(handler);
-  NKey key(argv[0]);
-  ttl_t ttl = common::ConvertFromString<ttl_t>(argv[1]);
-  common::Error er = unq->SetTTL(key, ttl);
-  if (!er) {
-    common::StringValue* val = common::Value::createStringValue("OK");
-    FastoObject* child = new FastoObject(out, val, unq->Delimiter());
-    out->AddChildren(child);
-  }
-
-  return er;
-}
-
-common::Error keys(internal::CommandHandler* handler,
-                   int argc,
-                   const char** argv,
-                   FastoObject* out) {
-  UNUSED(argc);
-
-  DBConnection* unq = static_cast<DBConnection*>(handler);
-  std::vector<std::string> keysout;
-  common::Error er =
-      unq->Keys(argv[0], argv[1], common::ConvertFromString<uint64_t>(argv[2]), &keysout);
-  if (!er) {
-    common::ArrayValue* ar = common::Value::createArrayValue();
-    for (size_t i = 0; i < keysout.size(); ++i) {
-      common::StringValue* val = common::Value::createStringValue(keysout[i]);
-      ar->append(val);
-    }
-    FastoObjectArray* child = new FastoObjectArray(out, ar, unq->Delimiter());
-    out->AddChildren(child);
-  }
-
-  return er;
-}
-
-common::Error info(internal::CommandHandler* handler,
-                   int argc,
-                   const char** argv,
-                   FastoObject* out) {
-  DBConnection* unq = static_cast<DBConnection*>(handler);
-  ServerInfo::Stats statsout;
-  common::Error er = unq->Info(argc == 1 ? argv[0] : nullptr, &statsout);
-  if (!er) {
-    ServerInfo uinf(statsout);
-    common::StringValue* val = common::Value::createStringValue(uinf.ToString());
-    FastoObject* child = new FastoObject(out, val, unq->Delimiter());
-    out->AddChildren(child);
-  }
-
-  return er;
-}
-
-common::Error dbkcount(internal::CommandHandler* handler,
-                       int argc,
-                       const char** argv,
-                       FastoObject* out) {
-  UNUSED(argc);
-  UNUSED(argv);
-
-  DBConnection* unq = static_cast<DBConnection*>(handler);
-  size_t dbkcount = 0;
-  common::Error er = unq->DBkcount(&dbkcount);
-  if (!er) {
-    common::FundamentalValue* val = common::Value::createUIntegerValue(dbkcount);
-    FastoObject* child = new FastoObject(out, val, unq->Delimiter());
-    out->AddChildren(child);
-  }
-
-  return er;
-}
-
-common::Error help(internal::CommandHandler* handler,
-                   int argc,
-                   const char** argv,
-                   FastoObject* out) {
-  UNUSED(out);
-
-  DBConnection* unq = static_cast<DBConnection*>(handler);
-  return unq->Help(argc - 1, argv + 1);
-}
-
-common::Error flushdb(internal::CommandHandler* handler,
-                      int argc,
-                      const char** argv,
-                      FastoObject* out) {
-  UNUSED(argc);
-  UNUSED(argv);
-  UNUSED(out);
-
-  DBConnection* unq = static_cast<DBConnection*>(handler);
-  return unq->Flushdb();
 }
 
 }  // namespace unqlite

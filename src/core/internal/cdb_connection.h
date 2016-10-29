@@ -29,6 +29,8 @@
 #include "core/db_key.h"               // for NDbKValue, NKey, etc
 #include "core/icommand_translator.h"  // for translator_t, etc
 
+#include "core/database/idatabase.h"
+
 #include "core/internal/command_handler.h"  // for CommandHandler, etc
 #include "core/internal/cdb_connection_client.h"
 #include "core/internal/db_connection.h"  // for DBConnection
@@ -42,11 +44,12 @@ class CDBConnection : public DBConnection<NConnection, Config, ContType>, public
  public:
   typedef DBConnection<NConnection, Config, ContType> db_base_class;
 
-  CDBConnection(const commands_t& commands,
-                CDBConnectionClient* client,
-                ICommandTranslator* translator)
-      : db_base_class(), CommandHandler(commands), client_(client), translator_(translator) {}
+  CDBConnection(CDBConnectionClient* client, ICommandTranslator* translator)
+      : db_base_class(), CommandHandler(Commands()), client_(client), translator_(translator) {}
   virtual ~CDBConnection() {}
+
+  static std::vector<CommandHolder> Commands();
+  static const char* VersionApi();
 
   common::Error Select(const std::string& name, IDataBaseInfo** info) WARN_UNUSED_RESULT;
   common::Error Delete(const NKeys& keys, NKeys* deleted_keys) WARN_UNUSED_RESULT;

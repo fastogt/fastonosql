@@ -34,6 +34,7 @@
 #include "core/rocksdb/connection_settings.h"  // for ConnectionSettings
 #include "core/rocksdb/database.h"
 #include "core/rocksdb/command_translator.h"
+#include "core/rocksdb/commands_api.h"
 
 #include "global/global.h"  // for FastoObject, etc
 
@@ -66,12 +67,14 @@ common::Error ConnectionAllocatorTraits<rocksdb::NativeConnection, rocksdb::Conf
   *hout = context;
   return common::Error();
 }
+
 template <>
 common::Error ConnectionAllocatorTraits<rocksdb::NativeConnection, rocksdb::Config>::Disconnect(
     rocksdb::NativeConnection** handle) {
   destroy(handle);
   return common::Error();
 }
+
 template <>
 bool ConnectionAllocatorTraits<rocksdb::NativeConnection, rocksdb::Config>::IsConnected(
     rocksdb::NativeConnection* handle) {
@@ -80,6 +83,17 @@ bool ConnectionAllocatorTraits<rocksdb::NativeConnection, rocksdb::Config>::IsCo
   }
 
   return true;
+}
+
+template <>
+const char* CDBConnection<rocksdb::NativeConnection, rocksdb::Config, ROCKSDB>::VersionApi() {
+  return STRINGIZE(ROCKSDB_MAJOR) "." STRINGIZE(ROCKSDB_MINOR) "." STRINGIZE(ROCKSDB_PATCH);
+}
+
+template <>
+std::vector<CommandHolder>
+CDBConnection<rocksdb::NativeConnection, rocksdb::Config, ROCKSDB>::Commands() {
+  return rocksdb::rocksdbCommands;
 }
 }
 namespace rocksdb {
@@ -131,11 +145,7 @@ common::Error TestConnection(ConnectionSettings* settings) {
 }
 
 DBConnection::DBConnection(CDBConnectionClient* client)
-    : base_class(rocksdbCommands, client, new CommandTranslator) {}
-
-const char* DBConnection::VersionApi() {
-  return STRINGIZE(ROCKSDB_MAJOR) "." STRINGIZE(ROCKSDB_MINOR) "." STRINGIZE(ROCKSDB_PATCH);
-}
+    : base_class(client, new CommandTranslator) {}
 
 common::Error DBConnection::Info(const char* args, ServerInfo::Stats* statsout) {
   UNUSED(args);
@@ -442,252 +452,6 @@ common::Error DBConnection::SetTTLImpl(const NKey& key, ttl_t ttl) {
   return common::make_error_value("Sorry, but now " PROJECT_NAME_TITLE
                                   " for SSDB not supported TTL commands.",
                                   common::ErrorValue::E_ERROR);
-}
-
-common::Error info(internal::CommandHandler* handler,
-                   int argc,
-                   const char** argv,
-                   FastoObject* out) {
-  DBConnection* rocks = static_cast<DBConnection*>(handler);
-  ServerInfo::Stats statsout;
-  common::Error er = rocks->Info(argc == 1 ? argv[0] : nullptr, &statsout);
-  if (!er) {
-    common::StringValue* val = common::Value::createStringValue(ServerInfo(statsout).ToString());
-    FastoObject* child = new FastoObject(out, val, rocks->Delimiter());
-    out->AddChildren(child);
-  }
-
-  return er;
-}
-
-common::Error select(internal::CommandHandler* handler,
-                     int argc,
-                     const char** argv,
-                     FastoObject* out) {
-  UNUSED(argc);
-
-  DBConnection* rocks = static_cast<DBConnection*>(handler);
-  common::Error err = rocks->Select(argv[0], nullptr);
-  if (err && err->isError()) {
-    return err;
-  }
-
-  common::StringValue* val = common::Value::createStringValue("OK");
-  FastoObject* child = new FastoObject(out, val, rocks->Delimiter());
-  out->AddChildren(child);
-  return common::Error();
-}
-
-common::Error set(internal::CommandHandler* handler,
-                  int argc,
-                  const char** argv,
-                  FastoObject* out) {
-  UNUSED(argc);
-
-  NKey key(argv[0]);
-  NValue string_val(common::Value::createStringValue(argv[1]));
-  NDbKValue kv(key, string_val);
-
-  DBConnection* rocks = static_cast<DBConnection*>(handler);
-  NDbKValue key_added;
-  common::Error err = rocks->Set(kv, &key_added);
-  if (err && err->isError()) {
-    return err;
-  }
-
-  common::StringValue* val = common::Value::createStringValue("OK");
-  FastoObject* child = new FastoObject(out, val, rocks->Delimiter());
-  out->AddChildren(child);
-  return common::Error();
-}
-
-common::Error get(internal::CommandHandler* handler,
-                  int argc,
-                  const char** argv,
-                  FastoObject* out) {
-  UNUSED(argc);
-
-  NKey key(argv[0]);
-  DBConnection* rocks = static_cast<DBConnection*>(handler);
-  NDbKValue key_loaded;
-  common::Error err = rocks->Get(key, &key_loaded);
-  if (err && err->isError()) {
-    return err;
-  }
-
-  NValue val = key_loaded.Value();
-  common::Value* copy = val->deepCopy();
-  FastoObject* child = new FastoObject(out, copy, rocks->Delimiter());
-  out->AddChildren(child);
-  return common::Error();
-}
-
-common::Error mget(internal::CommandHandler* handler,
-                   int argc,
-                   const char** argv,
-                   FastoObject* out) {
-  DBConnection* rocks = static_cast<DBConnection*>(handler);
-  std::vector< ::rocksdb::Slice> keysget;
-  for (int i = 0; i < argc; ++i) {
-    keysget.push_back(argv[i]);
-  }
-
-  std::vector<std::string> keysout;
-  common::Error er = rocks->Mget(keysget, &keysout);
-  if (!er) {
-    common::ArrayValue* ar = common::Value::createArrayValue();
-    for (size_t i = 0; i < keysout.size(); ++i) {
-      common::StringValue* val = common::Value::createStringValue(keysout[i]);
-      ar->append(val);
-    }
-    FastoObjectArray* child = new FastoObjectArray(out, ar, rocks->Delimiter());
-    out->AddChildren(child);
-  }
-
-  return er;
-}
-
-common::Error merge(internal::CommandHandler* handler,
-                    int argc,
-                    const char** argv,
-                    FastoObject* out) {
-  UNUSED(argc);
-
-  DBConnection* rocks = static_cast<DBConnection*>(handler);
-  common::Error er = rocks->Merge(argv[0], argv[1]);
-  if (!er) {
-    common::StringValue* val = common::Value::createStringValue("OK");
-    FastoObject* child = new FastoObject(out, val, rocks->Delimiter());
-    out->AddChildren(child);
-  }
-
-  return er;
-}
-
-common::Error del(internal::CommandHandler* handler,
-                  int argc,
-                  const char** argv,
-                  FastoObject* out) {
-  NKeys keysdel;
-  for (int i = 0; i < argc; ++i) {
-    keysdel.push_back(NKey(argv[i]));
-  }
-
-  DBConnection* rocks = static_cast<DBConnection*>(handler);
-  NKeys keys_deleted;
-  common::Error err = rocks->Delete(keysdel, &keys_deleted);
-  if (err && err->isError()) {
-    return err;
-  }
-
-  common::FundamentalValue* val = common::Value::createUIntegerValue(keys_deleted.size());
-  FastoObject* child = new FastoObject(out, val, rocks->Delimiter());
-  out->AddChildren(child);
-  return common::Error();
-}
-
-common::Error rename(internal::CommandHandler* handler,
-                     int argc,
-                     const char** argv,
-                     FastoObject* out) {
-  UNUSED(argc);
-
-  NKey key(argv[0]);
-  DBConnection* rocks = static_cast<DBConnection*>(handler);
-  common::Error err = rocks->Rename(key, argv[1]);
-  if (err && err->isError()) {
-    return err;
-  }
-
-  common::StringValue* val = common::Value::createStringValue("OK");
-  FastoObject* child = new FastoObject(out, val, rocks->Delimiter());
-  out->AddChildren(child);
-  return common::Error();
-}
-
-common::Error set_ttl(internal::CommandHandler* handler,
-                      int argc,
-                      const char** argv,
-                      FastoObject* out) {
-  UNUSED(out);
-  UNUSED(argc);
-
-  DBConnection* rocks = static_cast<DBConnection*>(handler);
-  NKey key(argv[0]);
-  ttl_t ttl = common::ConvertFromString<ttl_t>(argv[1]);
-  common::Error err = rocks->SetTTL(key, ttl);
-  if (err && err->isError()) {
-    return err;
-  }
-
-  common::StringValue* val = common::Value::createStringValue("OK");
-  FastoObject* child = new FastoObject(out, val, rocks->Delimiter());
-  out->AddChildren(child);
-  return common::Error();
-}
-
-common::Error keys(internal::CommandHandler* handler,
-                   int argc,
-                   const char** argv,
-                   FastoObject* out) {
-  UNUSED(argc);
-
-  DBConnection* rocks = static_cast<DBConnection*>(handler);
-  std::vector<std::string> keysout;
-  common::Error er =
-      rocks->Keys(argv[0], argv[1], common::ConvertFromString<uint64_t>(argv[2]), &keysout);
-  if (!er) {
-    common::ArrayValue* ar = common::Value::createArrayValue();
-    for (size_t i = 0; i < keysout.size(); ++i) {
-      common::StringValue* val = common::Value::createStringValue(keysout[i]);
-      ar->append(val);
-    }
-    FastoObjectArray* child = new FastoObjectArray(out, ar, rocks->Delimiter());
-    out->AddChildren(child);
-  }
-
-  return er;
-}
-
-common::Error dbkcount(internal::CommandHandler* handler,
-                       int argc,
-                       const char** argv,
-                       FastoObject* out) {
-  UNUSED(argc);
-  UNUSED(argv);
-
-  DBConnection* rocks = static_cast<DBConnection*>(handler);
-  size_t dbkcount = 0;
-  common::Error er = rocks->DBkcount(&dbkcount);
-  if (!er) {
-    common::FundamentalValue* val = common::Value::createUIntegerValue(dbkcount);
-    FastoObject* child = new FastoObject(out, val, rocks->Delimiter());
-    out->AddChildren(child);
-  }
-
-  return er;
-}
-
-common::Error help(internal::CommandHandler* handler,
-                   int argc,
-                   const char** argv,
-                   FastoObject* out) {
-  UNUSED(out);
-
-  DBConnection* rocks = static_cast<DBConnection*>(handler);
-  return rocks->Help(argc - 1, argv + 1);
-}
-
-common::Error flushdb(internal::CommandHandler* handler,
-                      int argc,
-                      const char** argv,
-                      FastoObject* out) {
-  UNUSED(argc);
-  UNUSED(argv);
-  UNUSED(out);
-
-  DBConnection* rocks = static_cast<DBConnection*>(handler);
-  return rocks->Flushdb();
 }
 
 }  // namespace rocksdb
