@@ -604,7 +604,7 @@ common::Error select(internal::CommandHandler* handler,
                      FastoObject* out) {
   UNUSED(argc);
   DBConnection* red = static_cast<DBConnection*>(handler);
-  common::Error err = red->Select(argv[0], NULL);
+  common::Error err = red->Select(argv[0], nullptr);
   if (err && err->isError()) {
     return err;
   }
@@ -1936,7 +1936,7 @@ common::Error DBConnection::GetImpl(const NKey& key, NDbKValue* loaded_key) {
     return cliPrintContextError(connection_.handle_);
   }
 
-  common::Value* val = NULL;
+  common::Value* val = nullptr;
   if (reply->type == REDIS_REPLY_STRING) {
     val = common::Value::createStringValue(reply->str);
   } else if (reply->type == REDIS_REPLY_NIL) {
@@ -2361,7 +2361,7 @@ common::Error DBConnection::Lrange(const NKey& key, int start, int stop, NDbKVal
   }
 
   if (reply->type == REDIS_REPLY_ARRAY) {
-    common::Value* val = NULL;
+    common::Value* val = nullptr;
     common::Error err = valueFromReplay(reply, &val);
     if (err && err->isError()) {
       delete val;
@@ -2404,7 +2404,7 @@ common::Error DBConnection::Smembers(const NKey& key, NDbKValue* loaded_key) {
   }
 
   if (reply->type == REDIS_REPLY_ARRAY) {
-    common::Value* val = NULL;
+    common::Value* val = nullptr;
     common::Error err = valueFromReplay(reply, &val);
     if (err && err->isError()) {
       delete val;
@@ -2412,7 +2412,7 @@ common::Error DBConnection::Smembers(const NKey& key, NDbKValue* loaded_key) {
       return err;
     }
 
-    common::ArrayValue* arr = NULL;
+    common::ArrayValue* arr = nullptr;
     if (!val->getAsList(&arr)) {
       delete val;
       freeReplyObject(reply);
@@ -2421,7 +2421,7 @@ common::Error DBConnection::Smembers(const NKey& key, NDbKValue* loaded_key) {
 
     common::SetValue* set = common::Value::createSetValue();
     for (size_t i = 0; i < arr->size(); ++i) {
-      common::Value* lval = NULL;
+      common::Value* lval = nullptr;
       if (arr->get(i, &lval)) {
         set->insert(lval->deepCopy());
       }
@@ -2473,7 +2473,7 @@ common::Error DBConnection::Zrange(const NKey& key,
   }
 
   if (reply->type == REDIS_REPLY_ARRAY) {
-    common::Value* val = NULL;
+    common::Value* val = nullptr;
     common::Error err = valueFromReplay(reply, &val);
     if (err && err->isError()) {
       delete val;
@@ -2490,7 +2490,7 @@ common::Error DBConnection::Zrange(const NKey& key,
       return common::Error();
     }
 
-    common::ArrayValue* arr = NULL;
+    common::ArrayValue* arr = nullptr;
     if (!val->getAsList(&arr)) {
       delete val;
       freeReplyObject(reply);
@@ -2499,8 +2499,8 @@ common::Error DBConnection::Zrange(const NKey& key,
 
     common::ZSetValue* zset = common::Value::createZSetValue();
     for (size_t i = 0; i < arr->size(); i += 2) {
-      common::Value* lmember = NULL;
-      common::Value* lscore = NULL;
+      common::Value* lmember = nullptr;
+      common::Value* lscore = nullptr;
       if (arr->get(i, &lmember) && arr->get(i + 1, &lscore)) {
         zset->insert(lscore->deepCopy(), lmember->deepCopy());
       }
@@ -2542,7 +2542,7 @@ common::Error DBConnection::Hgetall(const NKey& key, NDbKValue* loaded_key) {
   }
 
   if (reply->type == REDIS_REPLY_ARRAY) {
-    common::Value* val = NULL;
+    common::Value* val = nullptr;
     common::Error err = valueFromReplay(reply, &val);
     if (err && err->isError()) {
       delete val;
@@ -2550,7 +2550,7 @@ common::Error DBConnection::Hgetall(const NKey& key, NDbKValue* loaded_key) {
       return err;
     }
 
-    common::ArrayValue* arr = NULL;
+    common::ArrayValue* arr = nullptr;
     if (!val->getAsList(&arr)) {
       delete val;
       freeReplyObject(reply);
@@ -2559,8 +2559,8 @@ common::Error DBConnection::Hgetall(const NKey& key, NDbKValue* loaded_key) {
 
     common::HashValue* hash = common::Value::createHashValue();
     for (size_t i = 0; i < arr->size(); i += 2) {
-      common::Value* lkey = NULL;
-      common::Value* lvalue = NULL;
+      common::Value* lkey = nullptr;
+      common::Value* lvalue = nullptr;
       if (arr->get(i, &lkey) && arr->get(i + 1, &lvalue)) {
         hash->insert(lkey->deepCopy(), lvalue->deepCopy());
       }

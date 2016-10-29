@@ -321,7 +321,7 @@ void DbKeyDialog::syncControls(common::Value* item) {
 
   common::Value::Type t = item->type();
   if (t == common::Value::TYPE_ARRAY) {
-    common::ArrayValue* arr = NULL;
+    common::ArrayValue* arr = nullptr;
     if (item->getAsList(&arr)) {
       for (auto it = arr->begin(); it != arr->end(); ++it) {
         std::string val = (*it)->toString();
@@ -336,7 +336,7 @@ void DbKeyDialog::syncControls(common::Value* item) {
       }
     }
   } else if (t == common::Value::TYPE_SET) {
-    common::SetValue* set = NULL;
+    common::SetValue* set = nullptr;
     if (item->getAsSet(&set)) {
       for (auto it = set->begin(); it != set->end(); ++it) {
         std::string val = (*it)->toString();
@@ -351,7 +351,7 @@ void DbKeyDialog::syncControls(common::Value* item) {
       }
     }
   } else if (t == common::Value::TYPE_ZSET) {
-    common::ZSetValue* zset = NULL;
+    common::ZSetValue* zset = nullptr;
     if (item->getAsZSet(&zset)) {
       for (auto it = zset->begin(); it != zset->end(); ++it) {
         auto element = (*it);
@@ -374,7 +374,7 @@ void DbKeyDialog::syncControls(common::Value* item) {
       }
     }
   } else if (t == common::Value::TYPE_HASH) {
-    common::HashValue* hash = NULL;
+    common::HashValue* hash = nullptr;
     if (item->getAsHash(&hash)) {
       for (auto it = hash->begin(); it != hash->end(); ++it) {
         auto element = (*it);

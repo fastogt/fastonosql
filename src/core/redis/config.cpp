@@ -21,7 +21,7 @@
 #include <stddef.h>  // for size_t
 #include <stdint.h>  // for uint16_t
 #include <stdlib.h>  // for atof, strtoll
-#include <string.h>  // for strcmp, NULL
+#include <string.h>  // for strcmp
 
 #include <string>  // for string, basic_string
 #include <vector>  // for vector

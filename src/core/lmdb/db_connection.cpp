@@ -522,7 +522,7 @@ common::Error select(internal::CommandHandler* handler,
   UNUSED(argc);
 
   DBConnection* mdb = static_cast<DBConnection*>(handler);
-  common::Error err = mdb->Select(argv[0], NULL);
+  common::Error err = mdb->Select(argv[0], nullptr);
   if (err && err->isError()) {
     return err;
   }

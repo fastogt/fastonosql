@@ -24,8 +24,6 @@
 #include <signal.h>
 #endif
 
-#include <stddef.h>  // for NULL
-
 #include <memory>  // for __shared_ptr
 #include <vector>  // for vector
 #include <string>  // for allocator, string, etc

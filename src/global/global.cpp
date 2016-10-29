@@ -18,7 +18,7 @@
 
 #include "global/global.h"
 
-#include <stddef.h>  // for size_t, NULL
+#include <stddef.h>  // for size_t
 
 #include <iterator>       // for prev, next
 #include <map>            // for _Rb_tree_const_iterator, etc

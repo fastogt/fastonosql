@@ -108,6 +108,8 @@ class FastoObjectCommand : public FastoObject {
                      core::connectionTypes type);
 
  private:
+  DISALLOW_COPY_AND_ASSIGN(FastoObjectCommand);
+
   const core::connectionTypes type_;
 };
 
@@ -123,6 +125,9 @@ class FastoObjectArray : public FastoObject {
   virtual std::string ToString() const;
 
   common::ArrayValue* Array() const;
+
+ private:
+  DISALLOW_COPY_AND_ASSIGN(FastoObjectArray);
 };
 
 }  // namespace fastonosql

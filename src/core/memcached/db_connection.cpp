@@ -806,7 +806,7 @@ common::Error select(internal::CommandHandler* handler,
   UNUSED(argc);
 
   DBConnection* mem = static_cast<DBConnection*>(handler);
-  common::Error err = mem->Select(argv[0], NULL);
+  common::Error err = mem->Select(argv[0], nullptr);
   if (err && err->isError()) {
     return err;
   }

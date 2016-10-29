@@ -19,7 +19,6 @@
 #include "gui/widgets/output_widget.h"
 
 #include <memory>    // for __shared_ptr, operator==, etc
-#include <stddef.h>  // for NULL
 #include <string>    // for string
 
 #include <QHBoxLayout>
@@ -70,7 +69,7 @@ FastoCommonItem* createRootItem(FastoObject* item) {
   CHECK(res);
   core::NValue val(common::Value::createStringValue(str));
   core::NDbKValue nkey(core::NKey(std::string()), val);
-  return new FastoCommonItem(nkey, item->Delimiter(), true, NULL, item);
+  return new FastoCommonItem(nkey, item->Delimiter(), true, nullptr, item);
 }
 }  // namespace
 OutputWidget::OutputWidget(core::IServerSPtr server, QWidget* parent)
