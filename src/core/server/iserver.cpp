@@ -47,6 +47,7 @@ IServer::IServer(IDriver* drv) : drv_(drv) {
   VERIFY(QObject::connect(drv_, &IDriver::KeyLoaded, this, &IServer::KeyLoaded));
   VERIFY(QObject::connect(drv_, &IDriver::KeyRenamed, this, &IServer::KeyRenamed));
   VERIFY(QObject::connect(drv_, &IDriver::KeyTTLChanged, this, &IServer::KeyTTLChanged));
+  VERIFY(QObject::connect(drv_, &IDriver::Disconnected, this, &IServer::Disconnected));
 
   drv_->Start();
 }

@@ -1713,6 +1713,17 @@ common::Error DBConnection::SetTTLImpl(const NKey& key, ttl_t ttl) {
   return common::Error();
 }
 
+common::Error DBConnection::QuitImpl() {
+  redisReply* reply = reinterpret_cast<redisReply*>(redisCommand(connection_.handle_, "QUIT"));
+  if (!reply) {
+    return cliPrintContextError(connection_.handle_);
+  }
+
+  freeReplyObject(reply);
+  base_class::Disconnect();
+  return common::Error();
+}
+
 common::Error DBConnection::CliFormatReplyRaw(FastoObjectArray* ar, redisReply* r) {
   if (!ar || !r) {
     DNOTREACHED();

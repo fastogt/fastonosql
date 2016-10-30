@@ -71,7 +71,10 @@ common::Error expire(internal::CommandHandler* handler,
                      int argc,
                      const char** argv,
                      FastoObject* out);
-
+common::Error quit(internal::CommandHandler* handler,
+                   int argc,
+                   const char** argv,
+                   FastoObject* out);
 common::Error auth(internal::CommandHandler* handler,
                    int argc,
                    const char** argv,
@@ -1139,7 +1142,7 @@ static const std::vector<CommandHolder> redisCommands = {
                   UNDEFINED_EXAMPLE_STR,
                   0,
                   0,
-                  &common_exec),
+                  &quit),
     CommandHolder("RANDOMKEY",
                   "-",
                   "Return a random key from the keyspace",

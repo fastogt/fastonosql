@@ -228,6 +228,10 @@ common::Error flushdb(internal::CommandHandler* handler,
                       int argc,
                       const char** argv,
                       FastoObject* out);
+common::Error quit(internal::CommandHandler* handler,
+                   int argc,
+                   const char** argv,
+                   FastoObject* out);
 
 // TODO: SETNX command imlementation
 static const std::vector<CommandHolder> ssdbCommands = {
@@ -679,7 +683,14 @@ static const std::vector<CommandHolder> ssdbCommands = {
                   0,
                   0,
                   &dbsize),
-
+    CommandHolder("QUIT",
+                  "-",
+                  "Close the connection",
+                  UNDEFINED_SINCE,
+                  UNDEFINED_EXAMPLE_STR,
+                  0,
+                  0,
+                  &quit),
     CommandHolder("DBKCOUNT",
                   "-",
                   "Return the number of keys in the "

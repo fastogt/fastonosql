@@ -276,6 +276,25 @@ common::Error flushdb(internal::CommandHandler* handler,
   return rocks->Flushdb();
 }
 
+common::Error quit(internal::CommandHandler* handler,
+                   int argc,
+                   const char** argv,
+                   FastoObject* out) {
+  UNUSED(argc);
+  UNUSED(argv);
+
+  DBConnection* rocks = static_cast<DBConnection*>(handler);
+  common::Error err = rocks->Quit();
+  if (err && err->isError()) {
+    return err;
+  }
+
+  common::StringValue* val = common::Value::createStringValue("OK");
+  FastoObject* child = new FastoObject(out, val, rocks->Delimiter());
+  out->AddChildren(child);
+  return common::Error();
+}
+
 }  // namespace rocksdb
 }  // namespace core
 }  // namespace fastonosql

@@ -117,6 +117,9 @@ BaseShellWidget::BaseShellWidget(core::IServerSPtr server, const QString& filePa
   VERIFY(connect(server_.get(), &core::IServer::ExecuteFinished, this,
                  &BaseShellWidget::finishExecute, Qt::DirectConnection));
 
+  VERIFY(connect(server_.get(), &core::IServer::Disconnected, this,
+                 &BaseShellWidget::serverDisconnect));
+
   QVBoxLayout* mainlayout = new QVBoxLayout;
   QHBoxLayout* hlayout = new QHBoxLayout;
 
@@ -379,7 +382,7 @@ void BaseShellWidget::startConnect(const core::events_info::ConnectInfoRequest& 
 void BaseShellWidget::finishConnect(const core::events_info::ConnectInfoResponce& res) {
   UNUSED(res);
 
-  syncConnectionActions();
+  serverConnect();
 }
 
 void BaseShellWidget::startDisconnect(const core::events_info::DisConnectInfoRequest& req) {
@@ -391,9 +394,7 @@ void BaseShellWidget::startDisconnect(const core::events_info::DisConnectInfoReq
 void BaseShellWidget::finishDisconnect(const core::events_info::DisConnectInfoResponce& res) {
   UNUSED(res);
 
-  syncConnectionActions();
-  updateServerInfo(core::IServerInfoSPtr());
-  updateDefaultDatabase(core::IDataBaseInfoSPtr());
+  serverDisconnect();
 }
 
 void BaseShellWidget::startSetDefaultDatabase(
@@ -458,12 +459,23 @@ void BaseShellWidget::startExecute(const core::events_info::ExecuteInfoRequest& 
 }
 void BaseShellWidget::finishExecute(const core::events_info::ExecuteInfoResponce& res) {
   UNUSED(res);
+  bool is_connected = server_->IsConnected();
 
   repeatCount_->setEnabled(true);
   intervalMsec_->setEnabled(true);
   historyCall_->setEnabled(true);
-  executeAction_->setEnabled(true);
+  executeAction_->setEnabled(is_connected);
   stopAction_->setEnabled(false);
+}
+
+void BaseShellWidget::serverConnect() {
+  syncConnectionActions();
+}
+
+void BaseShellWidget::serverDisconnect() {
+  syncConnectionActions();
+  updateServerInfo(core::IServerInfoSPtr());
+  updateDefaultDatabase(core::IDataBaseInfoSPtr());
 }
 
 void BaseShellWidget::updateServerInfo(core::IServerInfoSPtr inf) {

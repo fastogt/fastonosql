@@ -635,6 +635,15 @@ common::Error DBConnection::SetTTLImpl(const NKey& key, ttl_t ttl) {
   return ExpireInner(key.Key(), ttl);
 }
 
+common::Error DBConnection::QuitImpl() {
+  common::Error err = Disconnect();
+  if (err && err->isError()) {
+    return err;
+  }
+
+  return common::Error();
+}
+
 }  // namespace memcached
 }  // namespace core
 }  // namespace fastonosql

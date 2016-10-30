@@ -89,6 +89,7 @@ class IDriver : public QObject, public CDBConnectionClient {
   void KeyRenamed(core::IDataBaseInfoSPtr db, core::NKey key, std::string new_name);
   void KeyLoaded(core::IDataBaseInfoSPtr db, core::NDbKValue key);
   void KeyTTLChanged(core::IDataBaseInfoSPtr db, core::NKey key, core::ttl_t ttl);
+  void Disconnected();
 
  private Q_SLOTS:
   void Init();
@@ -149,6 +150,7 @@ class IDriver : public QObject, public CDBConnectionClient {
   virtual void OnKeyLoaded(const NDbKValue& key) override;
   virtual void OnKeyRenamed(const NKey& key, const std::string& new_key) override;
   virtual void OnKeyTTLChanged(const NKey& key, ttl_t ttl) override;
+  virtual void OnQuited() override;
 
   // internal methods
   virtual IServerInfoSPtr MakeServerInfoFromString(const std::string& val) = 0;

@@ -38,6 +38,7 @@ class CDBConnectionClient {
   virtual void OnKeyLoaded(const NDbKValue& key) = 0;
   virtual void OnKeyRenamed(const NKey& key, const std::string& new_key) = 0;
   virtual void OnKeyTTLChanged(const NKey& key, ttl_t ttl) = 0;
+  virtual void OnQuited() = 0;
 };
 }  // namespace core
 }  // namespace fastonosql

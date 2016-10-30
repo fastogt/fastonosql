@@ -64,6 +64,10 @@ common::Error flushdb(internal::CommandHandler* handler,
                       int argc,
                       const char** argv,
                       FastoObject* out);
+common::Error quit(internal::CommandHandler* handler,
+                   int argc,
+                   const char** argv,
+                   FastoObject* out);
 
 static const std::vector<CommandHolder> leveldbCommands = {
     CommandHolder("SET",
@@ -114,8 +118,14 @@ static const std::vector<CommandHolder> leveldbCommands = {
                   1,
                   0,
                   &info),
-
-    // extended commands
+    CommandHolder("QUIT",
+                  "-",
+                  "Close the connection",
+                  UNDEFINED_SINCE,
+                  UNDEFINED_EXAMPLE_STR,
+                  0,
+                  0,
+                  &quit),
     CommandHolder("DBKCOUNT",
                   "-",
                   "Return the number of keys in the "

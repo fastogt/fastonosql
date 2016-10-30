@@ -449,6 +449,15 @@ common::Error DBConnection::DeleteImpl(const NKeys& keys, NKeys* deleted_keys) {
   return common::Error();
 }
 
+common::Error DBConnection::QuitImpl() {
+  common::Error err = Disconnect();
+  if (err && err->isError()) {
+    return err;
+  }
+
+  return common::Error();
+}
+
 }  // namespace unqlite
 }  // namespace core
 }  // namespace fastonosql

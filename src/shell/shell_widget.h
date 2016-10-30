@@ -186,6 +186,9 @@ class BaseShellWidget : public QWidget {
   void startExecute(const core::events_info::ExecuteInfoRequest& req);
   void finishExecute(const core::events_info::ExecuteInfoResponce& res);
 
+  void serverConnect();
+  void serverDisconnect();
+
  private:
   void syncConnectionActions();
   void updateServerInfo(core::IServerInfoSPtr inf);

@@ -92,6 +92,10 @@ common::Error expire(internal::CommandHandler* handler,
                      int argc,
                      const char** argv,
                      FastoObject* out);
+common::Error quit(internal::CommandHandler* handler,
+                   int argc,
+                   const char** argv,
+                   FastoObject* out);
 
 // TODO: cas command implementation
 static const std::vector<CommandHolder> memcachedCommands = {
@@ -231,6 +235,14 @@ static const std::vector<CommandHolder> memcachedCommands = {
                   2,
                   0,
                   &rename),
+    CommandHolder("QUIT",
+                  "-",
+                  "Close the connection",
+                  UNDEFINED_SINCE,
+                  UNDEFINED_EXAMPLE_STR,
+                  0,
+                  0,
+                  &quit),
     CommandHolder("DBKCOUNT",
                   "-",
                   "Return the number of keys in the "

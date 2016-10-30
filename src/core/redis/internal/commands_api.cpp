@@ -65,6 +65,25 @@ common::Error auth(internal::CommandHandler* handler,
   return common::Error();
 }
 
+common::Error quit(internal::CommandHandler* handler,
+                   int argc,
+                   const char** argv,
+                   FastoObject* out) {
+  UNUSED(argc);
+  UNUSED(argv);
+
+  DBConnection* red = static_cast<DBConnection*>(handler);
+  common::Error err = red->Quit();
+  if (err && err->isError()) {
+    return err;
+  }
+
+  common::StringValue* val = common::Value::createStringValue("OK");
+  FastoObject* child = new FastoObject(out, val, red->Delimiter());
+  out->AddChildren(child);
+  return common::Error();
+}
+
 common::Error select(internal::CommandHandler* handler,
                      int argc,
                      const char** argv,

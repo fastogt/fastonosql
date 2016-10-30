@@ -143,6 +143,7 @@ class IServer : public IServerBase, public std::enable_shared_from_this<IServer>
   void KeyLoaded(core::IDataBaseInfoSPtr db, core::NDbKValue key);
   void KeyRenamed(core::IDataBaseInfoSPtr db, core::NKey key, std::string new_name);
   void KeyTTLChanged(core::IDataBaseInfoSPtr db, core::NKey key, core::ttl_t ttl);
+  void Disconnected();
 
  public:
   // async methods

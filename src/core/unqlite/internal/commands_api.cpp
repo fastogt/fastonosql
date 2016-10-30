@@ -234,6 +234,25 @@ common::Error flushdb(internal::CommandHandler* handler,
   return unq->Flushdb();
 }
 
+common::Error quit(internal::CommandHandler* handler,
+                   int argc,
+                   const char** argv,
+                   FastoObject* out) {
+  UNUSED(argc);
+  UNUSED(argv);
+
+  DBConnection* unqlite = static_cast<DBConnection*>(handler);
+  common::Error err = unqlite->Quit();
+  if (err && err->isError()) {
+    return err;
+  }
+
+  common::StringValue* val = common::Value::createStringValue("OK");
+  FastoObject* child = new FastoObject(out, val, unqlite->Delimiter());
+  out->AddChildren(child);
+  return common::Error();
+}
+
 }  // namespace unqlite
 }  // namespace core
 }  // namespace fastonosql

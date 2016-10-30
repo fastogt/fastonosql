@@ -369,6 +369,26 @@ common::Error expire(internal::CommandHandler* handler,
                      FastoObject* out) {
   return set_ttl(handler, argc, argv, out);
 }
+
+common::Error quit(internal::CommandHandler* handler,
+                   int argc,
+                   const char** argv,
+                   FastoObject* out) {
+  UNUSED(argc);
+  UNUSED(argv);
+
+  DBConnection* mem = static_cast<DBConnection*>(handler);
+  common::Error err = mem->Quit();
+  if (err && err->isError()) {
+    return err;
+  }
+
+  common::StringValue* val = common::Value::createStringValue("OK");
+  FastoObject* child = new FastoObject(out, val, mem->Delimiter());
+  out->AddChildren(child);
+  return common::Error();
+}
+
 }  // namespace memcached
 }  // namespace core
 }  // namespace fastonosql

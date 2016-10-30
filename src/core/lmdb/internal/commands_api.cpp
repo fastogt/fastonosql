@@ -234,6 +234,25 @@ common::Error flushdb(internal::CommandHandler* handler,
   return mdb->Flushdb();
 }
 
+common::Error quit(internal::CommandHandler* handler,
+                   int argc,
+                   const char** argv,
+                   FastoObject* out) {
+  UNUSED(argc);
+  UNUSED(argv);
+
+  DBConnection* mdb = static_cast<DBConnection*>(handler);
+  common::Error err = mdb->Quit();
+  if (err && err->isError()) {
+    return err;
+  }
+
+  common::StringValue* val = common::Value::createStringValue("OK");
+  FastoObject* child = new FastoObject(out, val, mdb->Delimiter());
+  out->AddChildren(child);
+  return common::Error();
+}
+
 }  // namespace lmdb
 }  // namespace core
 }  // namespace fastonosql

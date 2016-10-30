@@ -400,6 +400,15 @@ common::Error DBConnection::SetTTLImpl(const NKey& key, ttl_t ttl) {
                                   common::ErrorValue::E_ERROR);
 }
 
+common::Error DBConnection::QuitImpl() {
+  common::Error err = Disconnect();
+  if (err && err->isError()) {
+    return err;
+  }
+
+  return common::Error();
+}
+
 }  // namespace leveldb
 }  // namespace core
 }  // namespace fastonosql

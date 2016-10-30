@@ -690,5 +690,9 @@ void IDriver::OnKeyTTLChanged(const NKey& key, ttl_t ttl) {
   emit KeyTTLChanged(current_database_info_, key, ttl);
 }
 
+void IDriver::OnQuited() {
+  emit Disconnected();
+}
+
 }  // namespace core
 }  // namespace fastonosql
