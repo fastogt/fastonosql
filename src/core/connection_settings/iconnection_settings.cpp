@@ -54,6 +54,9 @@
 #ifdef BUILD_WITH_LMDB
 #define LOGGING_LMDB_FILE_EXTENSION ".lmdb"
 #endif
+#ifdef BUILD_WITH_UPSCALEDB
+#define LOGGING_UPSCALEDB_FILE_EXTENSION ".upscaledb"
+#endif
 
 namespace fastonosql {
 namespace core {
@@ -177,6 +180,11 @@ std::string IConnectionSettingsBase::LoggingPath() const {
 #ifdef BUILD_WITH_LMDB
   if (type_ == LMDB) {
     return prefix + LOGGING_LMDB_FILE_EXTENSION;
+  }
+#endif
+#ifdef BUILD_WITH_UPSCALEDB
+  if (type_ == LMDB) {
+    return prefix + LOGGING_UPSCALEDB_FILE_EXTENSION;
   }
 #endif
 

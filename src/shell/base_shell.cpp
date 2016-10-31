@@ -57,6 +57,10 @@
 #include "shell/lmdb_lexer.h"
 #endif
 
+#ifdef BUILD_WITH_UPSCALEDB
+#include "shell/upscaledb_lexer.h"
+#endif
+
 namespace {
 const QSize image_size(64, 64);
 }
@@ -101,6 +105,11 @@ BaseShell::BaseShell(core::connectionTypes type, bool showAutoCompl, QWidget* pa
 #ifdef BUILD_WITH_LMDB
   if (type == core::LMDB) {
     lex = new LmdbLexer(this);
+  }
+#endif
+#ifdef BUILD_WITH_UPSCALEDB
+  if (type == core::UPSCALEDB) {
+    lex = new UpscaleDBLexer(this);
   }
 #endif
   registerImage(BaseQsciLexer::Command,

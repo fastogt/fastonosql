@@ -336,6 +336,8 @@ const QIcon& GuiFactory::commandIcon(core::connectionTypes type) const {
     return unqliteConnectionIcon();
   } else if (type == core::LMDB) {
     return lmdbConnectionIcon();
+  } else if (type == core::LMDB) {
+    return upscaledbConnectionIcon();
   } else {
     return serverIcon();
   }
@@ -396,6 +398,11 @@ const QIcon& GuiFactory::unqliteConnectionIcon() const {
 }
 
 const QIcon& GuiFactory::lmdbConnectionIcon() const {
+  static QIcon main(":" PROJECT_NAME_LOWERCASE "/images/64x64/lmdb.png");
+  return main;
+}
+
+const QIcon& GuiFactory::upscaledbConnectionIcon() const {
   static QIcon main(":" PROJECT_NAME_LOWERCASE "/images/64x64/lmdb.png");
   return main;
 }

@@ -102,6 +102,7 @@ class GuiFactory : public common::patterns::LazySingleton<GuiFactory> {
   const QIcon& rocksdbConnectionIcon() const;
   const QIcon& unqliteConnectionIcon() const;
   const QIcon& lmdbConnectionIcon() const;
+  const QIcon& upscaledbConnectionIcon() const;
 };
 }  // namespace gui
 }  // namespace fastonosql

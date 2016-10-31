@@ -89,6 +89,13 @@ class ServerInfo;
 }
 }
 }
+namespace fastonosql {
+namespace core {
+namespace upscaledb {
+class ServerInfo;
+}
+}
+}
 
 namespace fastonosql {
 namespace gui {
@@ -129,6 +136,9 @@ class InfoServerDialog : public QDialog {
 #endif
 #ifdef BUILD_WITH_LMDB
   void updateText(const core::lmdb::ServerInfo& serv);
+#endif
+#ifdef BUILD_WITH_UPSCALEDB
+  void updateText(const core::upscaledb::ServerInfo& serv);
 #endif
   QTextEdit* serverTextInfo_;
   common::qt::gui::GlassWidget* glassWidget_;

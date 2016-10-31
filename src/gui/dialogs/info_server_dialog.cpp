@@ -59,6 +59,10 @@
 #include "core/lmdb/server_info.h"
 #endif
 
+#ifdef BUILD_WITH_UPSCALEDB
+#include "core/upscaledb/server_info.h"
+#endif
+
 #include "core/connection_types.h"    // for connectionTypes, etc
 #include "core/events/events_info.h"  // for ServerInfoResponce, etc
 #include "core/server/iserver.h"      // for IServer
@@ -213,6 +217,10 @@ const QString trUnqliteTextServerTemplate = QObject::tr(
 const QString trLmdbTextServerTemplate = QObject::tr(
     "<b>Stats:</b><br/>"
     "Db path: %1<br/>");
+
+const QString trUpscaledbTextServerTemplate = QObject::tr(
+    "<b>Stats:</b><br/>"
+    "Db path: %1<br/>");
 }  // namespace
 
 namespace fastonosql {
@@ -272,6 +280,11 @@ InfoServerDialog::InfoServerDialog(core::IServerSPtr server, QWidget* parent)
 #ifdef BUILD_WITH_LMDB
   if (type == core::LMDB) {
     updateText(core::lmdb::ServerInfo());
+  }
+#endif
+#ifdef BUILD_WITH_LMDB
+  if (type == core::UPSCALEDB) {
+    updateText(core::upscaledb::ServerInfo());
   }
 #endif
 
@@ -347,6 +360,13 @@ void InfoServerDialog::finishServerInfo(const core::events_info::ServerInfoRespo
 #ifdef BUILD_WITH_LMDB
   if (type == core::LMDB) {
     core::lmdb::ServerInfo* infr = static_cast<core::lmdb::ServerInfo*>(inf.get());
+    CHECK(infr);
+    updateText(*infr);
+  }
+#endif
+#ifdef BUILD_WITH_UPSCALEDB
+  if (type == core::UPSCALEDB) {
+    core::upscaledb::ServerInfo* infr = static_cast<core::upscaledb::ServerInfo*>(inf.get());
     CHECK(infr);
     updateText(*infr);
   }
@@ -540,6 +560,15 @@ void InfoServerDialog::updateText(const core::lmdb::ServerInfo& serv) {
   core::lmdb::ServerInfo::Stats stats = serv.stats_;
   QString textServ =
       trLmdbTextServerTemplate.arg(common::ConvertFromString<QString>(stats.db_path));
+
+  serverTextInfo_->setText(textServ);
+}
+#endif
+#ifdef BUILD_WITH_UPSCALEDB
+void InfoServerDialog::updateText(const core::upscaledb::ServerInfo& serv) {
+  core::upscaledb::ServerInfo::Stats stats = serv.stats_;
+  QString textServ =
+      trUpscaledbTextServerTemplate.arg(common::ConvertFromString<QString>(stats.db_path));
 
   serverTextInfo_->setText(textServ);
 }

@@ -65,6 +65,11 @@ std::vector<common::Value::Type> SupportedTypesFromType(connectionTypes type) {
     return DBTraits<LMDB>::SupportedTypes();
   }
 #endif
+#ifdef BUILD_WITH_UPSCALEDB
+  if (type == UPSCALEDB) {
+    return DBTraits<UPSCALEDB>::SupportedTypes();
+  }
+#endif
   NOTREACHED();
   return std::vector<common::Value::Type>();
 }
@@ -103,6 +108,11 @@ std::vector<info_field_t> InfoFieldsFromType(connectionTypes type) {
 #ifdef BUILD_WITH_LMDB
   if (type == LMDB) {
     return DBTraits<LMDB>::InfoFields();
+  }
+#endif
+#ifdef BUILD_WITH_UPSCALEDB
+  if (type == UPSCALEDB) {
+    return DBTraits<UPSCALEDB>::InfoFields();
   }
 #endif
   NOTREACHED();

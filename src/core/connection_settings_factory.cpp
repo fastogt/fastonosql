@@ -48,6 +48,10 @@
 #include "core/lmdb/connection_settings.h"  // for ConnectionSettings
 #define LOGGING_LMDB_FILE_EXTENSION ".lmdb"
 #endif
+#ifdef BUILD_WITH_UPSCALEDB
+#include "core/upscaledb/connection_settings.h"  // for ConnectionSettings
+#define LOGGING_UPSCALEDB_FILE_EXTENSION ".upscaledb"
+#endif
 
 namespace fastonosql {
 namespace core {
@@ -88,6 +92,11 @@ IConnectionSettingsBase* ConnectionSettingsFactory::CreateFromType(
 #ifdef BUILD_WITH_LMDB
   if (type == LMDB) {
     return new lmdb::ConnectionSettings(conName);
+  }
+#endif
+#ifdef BUILD_WITH_UPSCALEDB
+  if (type == UPSCALEDB) {
+    return new upscaledb::ConnectionSettings(conName);
   }
 #endif
   return nullptr;

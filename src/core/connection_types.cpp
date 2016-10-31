@@ -45,6 +45,9 @@
 #ifdef BUILD_WITH_LMDB
 #include "core/lmdb/config.h"  // for Config, ConvertToString
 #endif
+#ifdef BUILD_WITH_UPSCALEDB
+#include "core/upscaledb/config.h"  // for Config, ConvertToString
+#endif
 
 namespace fastonosql {
 namespace core {
@@ -234,6 +237,20 @@ const char* CommandLineHelpText(connectionTypes type) {
            "<b>-ns &lt;separator&gt;</b>    Namespace "
            "separator.<br/>";
   }
+  if (type == UPSCALEDB) {
+    return "<b>Usage: [OPTIONS] [cmd [arg [arg "
+           "...]]]</b><br/>"
+           "<b>-f &lt;db&gt;</b>            Directory path to "
+           "database.<br/>"
+           "<b>-c </b>            Create database if "
+           "missing.<br/>"
+           "<b>-d &lt;delimiter&gt;</b>     Multi-bulk "
+           "delimiter in for raw "
+           "formatting (default: "
+           "\\n).<br/>"
+           "<b>-ns &lt;separator&gt;</b>    Namespace "
+           "separator.<br/>";
+  }
 
   NOTREACHED();
   return nullptr;
@@ -286,7 +303,13 @@ std::string DefaultCommandLine(connectionTypes type) {
     return common::ConvertToString(r);
   }
 #endif
-
+#ifdef BUILD_WITH_UPSCALEDB
+  if (type == UPSCALEDB) {
+    upscaledb::Config r;
+    r.create_if_missing = true;
+    return common::ConvertToString(r);
+  }
+#endif
   NOTREACHED();
   return std::string();
 }
@@ -295,7 +318,7 @@ std::string DefaultCommandLine(connectionTypes type) {
 
 namespace {
 static const std::string connnectionType[] = {"Redis",   "Memcached", "SSDB", "LevelDB",
-                                              "RocksDB", "UnQLite",   "LMDB"};
+                                              "RocksDB", "UnQLite",   "LMDB", "UpscaleDB"};
 const std::string connnectionMode[] = {"Latency mode", "Slave mode",         "Get RDB mode",
                                        "Pipe mode",    "Find big keys mode", "Stat mode",
                                        "Scan mode",    "Interactive mode"};

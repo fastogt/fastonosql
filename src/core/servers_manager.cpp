@@ -62,16 +62,22 @@
 #include "core/rocksdb/server.h"               // for Server
 #endif
 
+#ifdef BUILD_WITH_UNQLITE
+#include "core/unqlite/connection_settings.h"  // for ConnectionSettings
+#include "core/unqlite/db_connection.h"        // for TestConnection
+#include "core/unqlite/server.h"               // for Server
+#endif
+
 #ifdef BUILD_WITH_LMDB
 #include "core/lmdb/connection_settings.h"  // for ConnectionSettings
 #include "core/lmdb/db_connection.h"        // for TestConnection
 #include "core/lmdb/server.h"               // for Server
 #endif
 
-#ifdef BUILD_WITH_UNQLITE
-#include "core/unqlite/connection_settings.h"  // for ConnectionSettings
-#include "core/unqlite/db_connection.h"        // for TestConnection
-#include "core/unqlite/server.h"               // for Server
+#ifdef BUILD_WITH_UPSCALEDB
+#include "core/upscaledb/connection_settings.h"  // for ConnectionSettings
+#include "core/upscaledb/db_connection.h"        // for TestConnection
+#include "core/upscaledb/server.h"               // for Server
 #endif
 
 namespace fastonosql {
@@ -120,6 +126,11 @@ ServersManager::server_t ServersManager::CreateServer(IConnectionSettingsBaseSPt
 #ifdef BUILD_WITH_LMDB
   if (conT == LMDB) {
     server = common::make_shared<lmdb::Server>(settings);
+  }
+#endif
+#ifdef BUILD_WITH_UPSCALEDB
+  if (conT == UPSCALEDB) {
+    server = common::make_shared<upscaledb::Server>(settings);
   }
 #endif
 
@@ -231,6 +242,12 @@ common::Error ServersManager::TestConnection(IConnectionSettingsBaseSPtr connect
         static_cast<lmdb::ConnectionSettings*>(connection.get()));
   }
 #endif
+#ifdef BUILD_WITH_UPSCALEDB
+  if (type == UPSCALEDB) {
+    return fastonosql::core::upscaledb::TestConnection(
+        static_cast<upscaledb::ConnectionSettings*>(connection.get()));
+  }
+#endif
 
   NOTREACHED();
   return common::make_error_value("Invalid setting type", common::ErrorValue::E_ERROR);
@@ -280,6 +297,11 @@ common::Error ServersManager::DiscoveryClusterConnection(
     return common::make_error_value("Not supported setting type", common::ErrorValue::E_ERROR);
   }
 #endif
+#ifdef BUILD_WITH_UPSCALEDB
+  if (type == UPSCALEDB) {
+    return common::make_error_value("Not supported setting type", common::ErrorValue::E_ERROR);
+  }
+#endif
 
   NOTREACHED();
   return common::make_error_value("Invalid setting type", common::ErrorValue::E_ERROR);
@@ -326,6 +348,11 @@ common::Error ServersManager::DiscoverySentinelConnection(
 #endif
 #ifdef BUILD_WITH_LMDB
   if (type == LMDB) {
+    return common::make_error_value("Not supported setting type", common::ErrorValue::E_ERROR);
+  }
+#endif
+#ifdef BUILD_WITH_UPSCALEDB
+  if (type == UPSCALEDB) {
     return common::make_error_value("Not supported setting type", common::ErrorValue::E_ERROR);
   }
 #endif

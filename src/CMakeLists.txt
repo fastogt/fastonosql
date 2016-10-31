@@ -681,6 +681,49 @@ IF(BUILD_WITH_LMDB)
   SET(DB_LIBS ${DB_LIBS} lmdb)
 ENDIF(BUILD_WITH_LMDB)
 
+#upscaledb
+IF(BUILD_WITH_UPSCALEDB)
+  FIND_PACKAGE(Boost COMPONENTS thread system REQUIRED)
+  SET(HEADERS_SHELL_TO_MOC ${HEADERS_SHELL_TO_MOC}
+    shell/upscaledb_lexer.h
+  )
+  SET(HEADERS_SHELL ${HEADERS_SHELL}
+  )
+  SET(SOURCES_SHELL ${SOURCES_SHELL}
+    shell/upscaledb_lexer.cpp
+  )
+  #ADD_SUBDIRECTORY(third-party/lmdb)
+  #SET(INCLUDE_DIRS ${INCLUDE_DIRS} third-party/lmdb/src/libraries/liblmdb)
+
+  SET(HEADERS_UPSCALEDB_TO_MOC
+    core/upscaledb/server.h
+    core/upscaledb/driver.h
+  )
+  SET(HEADERS_UPSCALEDB
+    core/upscaledb/config.h
+    core/upscaledb/database.h
+    core/upscaledb/command.h
+    core/upscaledb/command_translator.h
+    core/upscaledb/server_info.h
+    core/upscaledb/connection_settings.h
+    core/upscaledb/db_connection.h
+    core/upscaledb/internal/commands_api.h
+  )
+  SET(SOURCES_UPSCALEDB
+    core/upscaledb/config.cpp
+    core/upscaledb/database.cpp
+    core/upscaledb/command.cpp
+    core/upscaledb/command_translator.cpp
+    core/upscaledb/server_info.cpp
+    core/upscaledb/connection_settings.cpp
+    core/upscaledb/db_connection.cpp
+    core/upscaledb/internal/commands_api.cpp
+    core/upscaledb/server.cpp
+    core/upscaledb/driver.cpp
+  )
+  SET(DB_LIBS ${DB_LIBS} libupscaledb.a ${Boost_LIBRARIES})
+ENDIF(BUILD_WITH_UPSCALEDB)
+
 SET(SOURCES_SDS
   third-party/sds/sds.c
 )
@@ -707,6 +750,7 @@ SET(HEADERS ${HEADERS} ${HEADERS_GLOBAL}
   ${HEADERS_CORE} ${HEADERS_SHELL}
   ${HEADERS_REDIS} ${HEADERS_MEMCACHED} ${HEADERS_SSDB}
   ${HEADERS_LEVELDB} ${HEADERS_ROCKSDB} ${HEADERS_UNQLITE} ${HEADERS_LMDB}
+  ${HEADERS_UPSCALEDB}
   ${HEADERS_TRANSLATIONS}
 )
 SET(SOURCES ${SOURCES} ${SOURCES_GLOBAL}
@@ -715,6 +759,7 @@ SET(SOURCES ${SOURCES} ${SOURCES_GLOBAL}
   ${SOURCES_CORE} ${SOURCES_SHELL}
   ${SOURCES_REDIS} ${SOURCES_MEMCACHED} ${SOURCES_SSDB}
   ${SOURCES_LEVELDB} ${SOURCES_ROCKSDB} ${SOURCES_UNQLITE} ${SOURCES_LMDB}
+  ${SOURCES_UPSCALEDB}
   ${SOURCES_TRANSLATIONS}
 )
 SET(HEADERS_TOMOC ${HEADERS_GUI_TO_MOC} ${HEADERS_GUI_DIALOGS_TO_MOC} ${HEADERS_GUI_EDITOR_TO_MOC}
@@ -722,6 +767,7 @@ SET(HEADERS_TOMOC ${HEADERS_GUI_TO_MOC} ${HEADERS_GUI_DIALOGS_TO_MOC} ${HEADERS_
   ${HEADERS_CORE_TO_MOC} ${HEADERS_SHELL_TO_MOC}
   ${HEADERS_REDIS_TO_MOC} ${HEADERS_MEMCACHED_TO_MOC} ${HEADERS_SSDB_TO_MOC}
   ${HEADERS_LEVELDB_TO_MOC} ${HEADERS_ROCKSDB_TO_MOC} ${HEADERS_UNQLITE_TO_MOC} ${HEADERS_LMDB_TO_MOC}
+  ${HEADERS_UPSCALEDB_TO_MOC}
 )
 
 QT5_WRAP_CPP(MOC_FILES ${HEADERS_TOMOC})
