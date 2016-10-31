@@ -18,7 +18,7 @@
 
 #include "core/upscaledb/db_connection.h"
 
-#include <ups/upscaledb.hpp>
+#include <ups/upscaledb.h>
 #include <stdlib.h>  // for NULL, free, calloc
 #include <time.h>    // for time_t
 #include <string>    // for string
