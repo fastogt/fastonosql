@@ -26,8 +26,6 @@
 #include <common/qt/translations/translations.h>
 #include <common/logger.h>
 
-#include <ups/upscaledb.h>
-
 namespace {
 const QSize preferedSize = QSize(1024, 768);
 }

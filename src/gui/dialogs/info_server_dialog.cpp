@@ -282,7 +282,7 @@ InfoServerDialog::InfoServerDialog(core::IServerSPtr server, QWidget* parent)
     updateText(core::lmdb::ServerInfo());
   }
 #endif
-#ifdef BUILD_WITH_LMDB
+#ifdef BUILD_WITH_UPSCALEDB
   if (type == core::UPSCALEDB) {
     updateText(core::upscaledb::ServerInfo());
   }
