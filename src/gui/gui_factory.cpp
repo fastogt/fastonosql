@@ -150,6 +150,8 @@ const QIcon& GuiFactory::icon(core::connectionTypes type) const {
     return unqliteConnectionIcon();
   } else if (type == core::LMDB) {
     return lmdbConnectionIcon();
+  } else if (type == core::UPSCALEDB) {
+    return upscaledbConnectionIcon();
   } else {
     return serverIcon();
   }
@@ -336,7 +338,7 @@ const QIcon& GuiFactory::commandIcon(core::connectionTypes type) const {
     return unqliteConnectionIcon();
   } else if (type == core::LMDB) {
     return lmdbConnectionIcon();
-  } else if (type == core::LMDB) {
+  } else if (type == core::UPSCALEDB) {
     return upscaledbConnectionIcon();
   } else {
     return serverIcon();
@@ -403,7 +405,7 @@ const QIcon& GuiFactory::lmdbConnectionIcon() const {
 }
 
 const QIcon& GuiFactory::upscaledbConnectionIcon() const {
-  static QIcon main(":" PROJECT_NAME_LOWERCASE "/images/64x64/lmdb.png");
+  static QIcon main(":" PROJECT_NAME_LOWERCASE "/images/64x64/upscaledb.png");
   return main;
 }
 }  // namespace gui

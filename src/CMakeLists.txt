@@ -684,6 +684,7 @@ ENDIF(BUILD_WITH_LMDB)
 #upscaledb
 IF(BUILD_WITH_UPSCALEDB)
   FIND_PACKAGE(Boost COMPONENTS thread system REQUIRED)
+  FIND_LIBRARY(UPSCALEDB_LIBRARY upscaledb)
   SET(HEADERS_SHELL_TO_MOC ${HEADERS_SHELL_TO_MOC}
     shell/upscaledb_lexer.h
   )
@@ -692,8 +693,8 @@ IF(BUILD_WITH_UPSCALEDB)
   SET(SOURCES_SHELL ${SOURCES_SHELL}
     shell/upscaledb_lexer.cpp
   )
-  ADD_SUBDIRECTORY(third-party/upscaledb)
-  SET(INCLUDE_DIRS ${INCLUDE_DIRS} third-party/upscaledb/src/include)
+  #ADD_SUBDIRECTORY(third-party/upscaledb)
+  #SET(INCLUDE_DIRS ${INCLUDE_DIRS} third-party/upscaledb/src/include)
 
   SET(HEADERS_UPSCALEDB_TO_MOC
     core/upscaledb/server.h
@@ -721,7 +722,7 @@ IF(BUILD_WITH_UPSCALEDB)
     core/upscaledb/server.cpp
     core/upscaledb/driver.cpp
   )
-  SET(DB_LIBS ${DB_LIBS} upscaledb ${Boost_LIBRARIES})
+  SET(DB_LIBS ${DB_LIBS} ${UPSCALEDB_LIBRARY} ${Boost_LIBRARIES})
 ENDIF(BUILD_WITH_UPSCALEDB)
 
 SET(SOURCES_SDS
