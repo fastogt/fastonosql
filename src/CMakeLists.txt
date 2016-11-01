@@ -557,6 +557,7 @@ ENDIF(BUILD_WITH_LEVELDB)
 
 #rocksdb
 IF(BUILD_WITH_ROCKSDB)
+  FIND_LIBRARY(ROCKSDB_LIBRARY rocksdb)
   SET(HEADERS_SHELL_TO_MOC ${HEADERS_SHELL_TO_MOC}
     shell/rocksdb_lexer.h
   )
@@ -565,8 +566,8 @@ IF(BUILD_WITH_ROCKSDB)
   SET(SOURCES_SHELL ${SOURCES_SHELL}
     shell/rocksdb_lexer.cpp
   )
-  ADD_SUBDIRECTORY(third-party/rocksdb)
-  SET(INCLUDE_DIRS ${INCLUDE_DIRS} third-party/rocksdb/src/include)
+  #ADD_SUBDIRECTORY(third-party/rocksdb)
+  #SET(INCLUDE_DIRS ${INCLUDE_DIRS} third-party/rocksdb/src/include)
 
   SET(HEADERS_ROCKSDB_TO_MOC
     core/rocksdb/server.h
@@ -594,7 +595,8 @@ IF(BUILD_WITH_ROCKSDB)
     core/rocksdb/server.cpp
     core/rocksdb/driver.cpp
   )
-  SET(DB_LIBS ${DB_LIBS} rocksdb)
+
+  SET(DB_LIBS ${DB_LIBS} ${ROCKSDB_LIBRARY} ${BZIP2_LIBRARIES})
 ENDIF(BUILD_WITH_ROCKSDB)
 
 #unqlite
