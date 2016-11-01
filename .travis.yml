@@ -6,7 +6,8 @@
 #        - os: osx
 #          compiler: clang
 #          env:
- language: cpp
+language: cpp
+sudo: required
 os:
   - linux
   - osx
