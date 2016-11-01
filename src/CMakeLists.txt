@@ -729,7 +729,7 @@ SET(SOURCES_SDS
   third-party/sds/sds.c
 )
 
-ADD_SUBDIRECTORY(third-party/qscintilla/Qt4Qt5)
+#ADD_SUBDIRECTORY(third-party/qscintilla/Qt4Qt5)
 ADD_SUBDIRECTORY(third-party/json-c)
 
 IF (IS_PUBLIC_BUILD)
@@ -776,7 +776,7 @@ CONFIGURE_FILE("resources/gui.qrc.in" "${CMAKE_CURRENT_LIST_DIR}/resources/gui.q
 CONFIGURE_FILE("resources/${PROJECT_NAME_LOWERCASE}.qrc.in" "${CMAKE_CURRENT_LIST_DIR}/resources/branding.qrc" @ONLY IMMEDIATE)
 SET(RESOURCES ${CMAKE_CURRENT_LIST_DIR}/resources/gui.qrc ${CMAKE_CURRENT_LIST_DIR}/resources/branding.qrc)
 QT5_ADD_RESOURCES(RES_SRC ${RESOURCES})
-SET(INCLUDE_DIRS ${INCLUDE_DIRS} third-party/qscintilla/Qt4Qt5 third-party/sds)
+SET(INCLUDE_DIRS ${INCLUDE_DIRS} third-party/sds)
 INCLUDE_DIRECTORIES(${INCLUDE_DIRS})
 
 SOURCE_GROUP("Header Files" FILES ${HEADERS} ${HEADERS_TOMOC})
