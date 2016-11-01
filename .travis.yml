@@ -1,12 +1,5 @@
-#matrix:
-#    include:
-#        - os: linux
-#          compiler: gcc
-#          env:
-#        - os: osx
-#          compiler: clang
-#          env:
- language: cpp
+language: cpp
+dist: trusty
 sudo: required
 os:
   - linux
