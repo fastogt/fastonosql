@@ -4,15 +4,19 @@ import platform
 import re
 
 class Architecture(object):
-    def __init__(self, arch_str, bit):
+    def __init__(self, arch_str, bit, default_install_prefix_path):
         self.name_ = arch_str
         self.bit_ = bit
+        self.default_install_prefix_path_ = default_install_prefix_path
 
     def name(self):
         return self.name_
 
     def bit(self):
         return self.bit_
+
+    def default_install_prefix_path(self):
+        return self.default_install_prefix_path_
 
 class Platform(object):
     def __init__(self, name, arch, package_types):
@@ -58,11 +62,11 @@ class SupportedPlatform(object):
 
         return None
 
-SUPPORTED_PLATFORMS = [SupportedPlatform('linux', [Architecture('x86_64', 64), Architecture('i386', 32)], ['DEB', 'RPM', 'TGZ']),
-                       SupportedPlatform('windows', [Architecture('x86_64', 64), Architecture('i386', 32)], ['NSIS', 'ZIP']),
-                       SupportedPlatform('macosx', [Architecture('x86_64', 64)], ['DragNDrop', 'ZIP']),
-                       SupportedPlatform('freebsd', [Architecture('x86_64', 64)], ['TGZ']),
-                       SupportedPlatform('android', [Architecture('armv7', 32)], ['APK'])]
+SUPPORTED_PLATFORMS = [SupportedPlatform('linux', [Architecture('x86_64', 64, '/usr/local'), Architecture('i386', 32, '/usr/local')], ['DEB', 'RPM', 'TGZ']),
+                       SupportedPlatform('windows', [Architecture('x86_64', 64, '/mingw64'), Architecture('i386', 32, '/mingw32')], ['NSIS', 'ZIP']),
+                       SupportedPlatform('macosx', [Architecture('x86_64', 64, '/usr/local')], ['DragNDrop', 'ZIP']),
+                       SupportedPlatform('freebsd', [Architecture('x86_64', 64, '/usr/local')], ['TGZ']),
+                       SupportedPlatform('android', [Architecture('armv7', 32, '/opt/android-ndk/platforms/android-9/arch-arm/usr/')], ['APK'])]
 
 def get_extension_by_package(package_type):
     if package_type == 'DEB':

@@ -18,7 +18,7 @@ def print_usage():
         "[optional] argv[2] branding_file_path\n"
         "[optional] argv[3] platform\n"
         "[optional] argv[4] architecture\n"
-        "[optional] argv[5] packages for example(\"ninja\", \"make\")\n"
+        "[optional] argv[5] build system(\"ninja\", \"make\")\n"
         "[optional] argv[6] packages for example(\"DEB RPM\")\n")
 
 class BuildSystem:
@@ -199,7 +199,7 @@ class BuildRequest(object):
 
         # project static options
         arch = self.platform_.arch()
-        arch_args = '-DOS_ARCH={0}'.format(arch.bit)
+        arch_args = '-DOS_ARCH={0}'.format(arch.bit())
         log_to_file_args = '-DLOG_TO_FILE=ON'
         openssl_args = '-DOPENSSL_USE_STATIC=ON'
 
