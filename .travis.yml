@@ -60,24 +60,7 @@ before_script:
   - which python
   - python --version
 script:
-  - git clone https://github.com/fastogt/common.git
-  - cd common
-  - git submodule update --init --recursive
-  - mkdir build
-  - cd build
-  - cmake .. -GNinja -DQT_ENABLED=ON -DCMAKE_BUILD_TYPE=RELEASE -DCMAKE_INSTALL_PREFIX=/usr/local
-  - sudo ninja install
-  - cd ../../
-  - git clone https://github.com/fastogt/qscintilla.git
-  - cd qscintilla
-  - git submodule update --init --recursive
-  - mkdir build
-  - cd build
-  - cmake .. -GNinja -DCMAKE_BUILD_TYPE=RELEASE -DCMAKE_INSTALL_PREFIX=/usr/local
-  - sudo ninja install
-- cd ../../
-  - git submodule update --init --recursive
-  - cd build
+  - python build_external.py
   - python build.py ..
   - python build.py .. fastoredis.txt
   

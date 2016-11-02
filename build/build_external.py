@@ -129,6 +129,9 @@ class BuildRequest(object):
             os.chdir(pwd)
             raise ex
 
+        if is_android:
+          return
+
         try:
             policy = run_command.Policy(print_message)
             cloned_dir = self.git_clone('https://github.com/fastogt/rocksdb.git', policy)
@@ -136,7 +139,26 @@ class BuildRequest(object):
 
             make_install_rocksdb = ['make', 'install-static']
             make_install_rocksdb.insert(0, 'INSTALL_PATH={0}'.format(prefix_path))
+            make_install_rocksdb.insert(0, 'env')
             run_command.run_command_cb(make_install_rocksdb, policy)
+            os.chdir(abs_dir_path)
+        except Exception as ex:
+            os.chdir(pwd)
+            raise ex
+
+        try:
+            policy = run_command.Policy(print_message)
+            cloned_dir = self.git_clone('https://github.com/fastogt/upscaledb.git', policy)
+            os.chdir(cloned_dir)
+
+            bootstrap_upscaledb = ['sh', 'bootstrap.sh']
+            run_command.run_command_cb(bootstrap_upscaledb, policy)
+
+            configure_upscaledb = ['./configure', '--prefix={0}'.format(prefix_path), '--disable-remote']
+            run_command.run_command_cb(configure_upscaledb, policy)
+
+            make_install_upscaledb = ['make', 'install']
+            run_command.run_command_cb(make_install_upscaledb, policy)
             os.chdir(abs_dir_path)
         except Exception as ex:
             os.chdir(pwd)
