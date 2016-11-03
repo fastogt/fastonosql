@@ -2,7 +2,6 @@
 import sys
 import os
 import shutil
-import urlparse
 from base import system_info
 from base import run_command
 
@@ -12,6 +11,9 @@ def print_usage():
         "[optional] argv[2] architecture\n"
         "[optional] argv[3] build system(\"ninja\", \"make\")\n"
         "[optional] argv[4] prefix path\n")
+
+def stable_path(path):
+    return path.replace("\\", "/")
 
 def print_message(progress, message):
     print message.message()
@@ -69,6 +71,7 @@ class BuildRequest(object):
         if prefix_path == None:
             prefix_path = self.platform_.arch().default_install_prefix_path()
 
+        prefix_path = stable_path(os.path.abspath(prefix_path))
         abs_dir_path = os.path.abspath(dir_path)
         if os.path.exists(abs_dir_path):
             shutil.rmtree(abs_dir_path)

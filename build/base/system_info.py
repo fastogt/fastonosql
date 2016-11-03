@@ -63,7 +63,7 @@ class SupportedPlatform(object):
         return None
 
 SUPPORTED_PLATFORMS = [SupportedPlatform('linux', [Architecture('x86_64', 64, '/usr/local'), Architecture('i386', 32, '/usr/local')], ['DEB', 'RPM', 'TGZ']),
-                       SupportedPlatform('windows', [Architecture('x86_64', 64, '/mingw64'), Architecture('i386', 32, '/mingw32')], ['NSIS', 'ZIP']),
+                       SupportedPlatform('windows', [Architecture('x86_64', 64, '/msys64/mingw64'), Architecture('i386', 32, '/msys64/mingw32')], ['NSIS', 'ZIP']),
                        SupportedPlatform('macosx', [Architecture('x86_64', 64, '/usr/local')], ['DragNDrop', 'ZIP']),
                        SupportedPlatform('freebsd', [Architecture('x86_64', 64, '/usr/local')], ['TGZ']),
                        SupportedPlatform('android', [Architecture('armv7', 32, '/opt/android-ndk/platforms/android-9/arch-arm/usr/')], ['APK'])]
