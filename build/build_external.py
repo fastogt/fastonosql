@@ -71,7 +71,7 @@ class BuildRequest(object):
         if prefix_path == None:
             prefix_path = self.platform_.arch().default_install_prefix_path()
 
-        prefix_path = stable_path(os.path.abspath(prefix_path))
+        #prefix_path = stable_path(os.path.abspath(prefix_path))
         abs_dir_path = os.path.abspath(dir_path)
         if os.path.exists(abs_dir_path):
             shutil.rmtree(abs_dir_path)
