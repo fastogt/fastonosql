@@ -116,7 +116,7 @@ SET(HEADERS_GUI_TO_MOC
   gui/statistic_sender.h
   gui/update_checker.h
   gui/property_table_item.h
-  gui/property_table_model.h 
+  gui/property_table_model.h
   gui/main_tab_bar.h
   gui/fasto_text_view.h
   gui/keys_table_model.h
@@ -801,7 +801,7 @@ ELSE(GENERATE_TRANSLATIONS)
 ENDIF(GENERATE_TRANSLATIONS)
 
 SET(ALL_SOURCES ${ALL_SOURCES} ${HEADERS} ${HEADERS_TOMOC} ${SOURCES} ${MOC_FILES} ${PLATFORM_HDRS} ${PLATFORM_SRCS} ${SOURCES_SDS})
-SET(ALL_LIBS ${ALL_LIBS} ${DB_LIBS} common common_qt json-c ${QT_LIBRARIES} qscintilla2 ${ZLIB_LIBRARY} ${PLATFORM_LIBRARIES})
+SET(ALL_LIBS ${ALL_LIBS} ${DB_LIBS} common common_qt json-c qscintilla2 ${QT_LIBRARIES} ${ZLIB_LIBRARY} ${PLATFORM_LIBRARIES})
 
 SET(EXE_SOURCES main.cpp ${RES_SRC} ${ICON_FILE} ${RESOURCE_OS} ${QM_FILES})
 
