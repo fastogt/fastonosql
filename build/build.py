@@ -202,8 +202,10 @@ class BuildRequest(object):
         arch_args = '-DOS_ARCH={0}'.format(arch.bit())
         log_to_file_args = '-DLOG_TO_FILE=ON'
         openssl_args = '-DOPENSSL_USE_STATIC=ON'
+	zlib_args = '-DZLIB_USE_STATIC=ON'
+	bzip2_args = '-DBZIP2_USE_STATIC=ON'
 
-        cmake_line = ['cmake', cmake_project_root_abs_path, generator, '-DCMAKE_BUILD_TYPE=RELEASE', arch_args, log_to_file_args, openssl_args]
+        cmake_line = ['cmake', cmake_project_root_abs_path, generator, '-DCMAKE_BUILD_TYPE=RELEASE', arch_args, log_to_file_args, openssl_args, zlib_args, bzip2_args]
 
         if is_android:
             toolchain_path = os.path.join(cmake_project_root_abs_path, 'cmake/android.toolchain.cmake')
