@@ -9,11 +9,9 @@ def print_usage():
     print("Usage:\n"
         "[optional] argv[1] platform\n"
         "[optional] argv[2] architecture\n"
-        "[optional] argv[3] build system(\"ninja\", \"make\")\n"
-        "[optional] argv[4] prefix path\n")
-
-def stable_path(path):
-    return path.replace("\\", "/")
+        "[optional] argv[3] build system for common/qscintilla (\"ninja\", \"make\", \"gmake\")\n"
+        "[optional] argv[4] build system for rocksdb/upscaledb (\"make\", \"gmake\")\n"
+        "[optional] argv[5] prefix path\n")
 
 def print_message(progress, message):
     print message.message()
@@ -41,7 +39,8 @@ class BuildSystem:
         return self.cmd_line_
 
 SUPPORTED_BUILD_SYSTEMS = [BuildSystem('ninja', ['ninja'], '-GNinja'),
-                               BuildSystem('make', ['make', '-j2'], '-GUnix Makefiles')]
+                           BuildSystem('make', ['make', '-j2'], '-GUnix Makefiles'),
+                           BuildSystem('make', ['gmake', '-j2'], '-GUnix Makefiles')]
 
 def get_supported_build_system_by_name(name):
     return next((x for x in SUPPORTED_BUILD_SYSTEMS if x.name() == name), None)
@@ -60,7 +59,7 @@ class BuildRequest(object):
         self.platform_ = system_info.Platform(platform_or_none.name(), arch, platform_or_none.package_types())
         print("Build request for platform: {0}, arch: {1} created".format(platform, arch.name()))
 
-    def build(self, dir_path, bs, prefix_path):
+    def build(self, dir_path, bs, bs_external, prefix_path):
         cmake_project_root_abs_path = '..'
         if not os.path.exists(cmake_project_root_abs_path):
             raise BuildError('invalid cmake_project_root_path: %s' % cmake_project_root_abs_path)
@@ -68,10 +67,12 @@ class BuildRequest(object):
         if not bs:
             bs = SUPPORTED_BUILD_SYSTEMS[0]
 
+        if not bs_external:
+            bs_external = SUPPORTED_BUILD_SYSTEMS[1]
+
         if prefix_path == None:
             prefix_path = self.platform_.arch().default_install_prefix_path()
 
-        #prefix_path = stable_path(os.path.abspath(prefix_path))
         abs_dir_path = os.path.abspath(dir_path)
         if os.path.exists(abs_dir_path):
             shutil.rmtree(abs_dir_path)
@@ -80,6 +81,7 @@ class BuildRequest(object):
 
         generator = bs.cmake_generator_arg()
         build_system_args = bs.cmd_line()
+        #bs_name = bs.name()
 
         pwd = os.getcwd()
         os.mkdir(abs_dir_path)
@@ -135,12 +137,15 @@ class BuildRequest(object):
         if is_android:
           return
 
+        build_external_system_args = bs_external.cmd_line()
+
         try:
             policy = run_command.Policy(print_message)
             cloned_dir = self.git_clone('https://github.com/fastogt/rocksdb.git', policy)
             os.chdir(cloned_dir)
 
-            make_install_rocksdb = ['make', 'install-static']
+            make_install_rocksdb = build_external_system_args
+            make_install_rocksdb.append('install-static')
             make_install_rocksdb.insert(0, 'INSTALL_PATH={0}'.format(prefix_path))
             make_install_rocksdb.insert(0, 'env')
             run_command.run_command_cb(make_install_rocksdb, policy)
@@ -160,7 +165,8 @@ class BuildRequest(object):
             configure_upscaledb = ['./configure', '--prefix={0}'.format(prefix_path), '--disable-remote']
             run_command.run_command_cb(configure_upscaledb, policy)
 
-            make_install_upscaledb = ['make', 'install']
+            make_install_upscaledb = build_external_system_args
+            make_install_upscaledb.append('install')
             run_command.run_command_cb(make_install_upscaledb, policy)
             os.chdir(abs_dir_path)
         except Exception as ex:
@@ -201,9 +207,15 @@ if __name__ == "__main__":
         bs = []
 
     if argc > 4:
-        prefix_path = sys.argv[4]
+        bs_external_str = sys.argv[4]
+        bs_external = get_supported_build_system_by_name(bs_external_str)
+    else:
+        bs_external = []
+
+    if argc > 5:
+        prefix_path = sys.argv[5]
     else:
         prefix_path = None
 
     request = BuildRequest(platform_str, int(arch_bit_str))
-    request.build('build_' + platform_str, bs, prefix_path)
+    request.build('build_' + platform_str, bs, bs_external, prefix_path)
