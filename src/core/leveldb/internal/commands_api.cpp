@@ -18,6 +18,8 @@
 
 #include "core/leveldb/internal/commands_api.h"
 
+#include <time.h>
+
 #include <common/convert2string.h>
 
 #include "core/db_key.h"

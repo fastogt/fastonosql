@@ -18,6 +18,7 @@
 
 #include "core/redis/internal/commands_api.h"
 
+#include <stdlib.h>
 #include <string.h>
 
 #include <common/convert2string.h>

@@ -40,7 +40,7 @@ class BuildSystem:
 
 SUPPORTED_BUILD_SYSTEMS = [BuildSystem('ninja', ['ninja'], '-GNinja'),
                            BuildSystem('make', ['make', '-j2'], '-GUnix Makefiles'),
-                           BuildSystem('make', ['gmake', '-j2'], '-GUnix Makefiles')]
+                           BuildSystem('gmake', ['gmake', '-j2'], '-GUnix Makefiles')]
 
 def get_supported_build_system_by_name(name):
     return next((x for x in SUPPORTED_BUILD_SYSTEMS if x.name() == name), None)
