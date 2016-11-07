@@ -2,7 +2,7 @@ About FastoNoSQL
 ===============
 [![Travis Build Status](https://travis-ci.org/fastogt/fastonosql.svg?branch=master)](https://travis-ci.org/fastogt/fastonosql)
 
-FastoNoSQL &mdash; is a crossplatform Redis, Memcached, SSDB management tool, also FastoNoSQL is platform for NoSQL databases, you can add your own implementation for diffrent databases. <br />
+FastoNoSQL &mdash; is a crossplatform Redis, Memcached, SSDB, LevelDB, RocksDB, UnQLite, LMDB, UpscaleDB management tool, also FastoNoSQL is platform for NoSQL databases, you can add your own implementation for diffrent databases. <br />
 
 <h3>Windows:</h3>
 ![](http://fastonosql.com/images/common/windows/main_window_windows_more.png)
