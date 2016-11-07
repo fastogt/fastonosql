@@ -18,7 +18,6 @@
 
 #include "core/redis/internal/commands_api.h"
 
-#include <stdlib.h>
 #include <string.h>
 
 #include <common/convert2string.h>
@@ -176,8 +175,8 @@ common::Error lrange(internal::CommandHandler* handler,
   UNUSED(argc);
 
   NKey key(argv[0]);
-  int start = atoi(argv[1]);
-  int stop = atoi(argv[2]);
+  int start = common::ConvertFromString<int>(argv[1]);
+  int stop = common::ConvertFromString<int>(argv[2]);
   DBConnection* redis = static_cast<DBConnection*>(handler);
   NDbKValue key_loaded;
   common::Error err = redis->Lrange(key, start, stop, &key_loaded);
@@ -220,8 +219,8 @@ common::Error zrange(internal::CommandHandler* handler,
   UNUSED(argc);
 
   NKey key(argv[0]);
-  int start = atoi(argv[1]);
-  int stop = atoi(argv[2]);
+  int start = common::ConvertFromString<int>(argv[1]);
+  int stop = common::ConvertFromString<int>(argv[2]);
   bool ws = argc == 4 && strncmp(argv[3], "WITHSCORES", 10) == 0;
   DBConnection* redis = static_cast<DBConnection*>(handler);
   NDbKValue key_loaded;
@@ -305,7 +304,7 @@ common::Error expire(internal::CommandHandler* handler,
                      FastoObject* out) {
   UNUSED(argc);
   NKey key(argv[0]);
-  ttl_t ttl = atoi(argv[1]);
+  ttl_t ttl = common::ConvertFromString<ttl_t>(argv[1]);
 
   DBConnection* red = static_cast<DBConnection*>(handler);
   common::Error err = red->SetTTL(key, ttl);
