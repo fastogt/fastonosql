@@ -29,6 +29,7 @@
 
 namespace fastonosql {
 namespace gui {
+
 GuiFactory::GuiFactory() {}
 
 const QIcon& GuiFactory::directoryIcon() const {
@@ -408,5 +409,6 @@ const QIcon& GuiFactory::upscaledbConnectionIcon() const {
   static QIcon main(":" PROJECT_NAME_LOWERCASE "/images/64x64/upscaledb.png");
   return main;
 }
+
 }  // namespace gui
 }  // namespace fastonosql

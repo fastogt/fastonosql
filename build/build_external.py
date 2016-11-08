@@ -109,7 +109,7 @@ class BuildRequest(object):
 
             os.mkdir('build_cmake_release')
             os.chdir('build_cmake_release')
-            common_cmake_line = cmake_line
+            common_cmake_line = list(cmake_line)
             common_cmake_line.append('-DQT_ENABLED=ON')
             run_command.run_command_cb(common_cmake_line, policy)
             run_command.run_command_cb(make_install, policy)
@@ -126,7 +126,7 @@ class BuildRequest(object):
 
             os.mkdir('build_cmake_release')
             os.chdir('build_cmake_release')
-            qscintilla_cmake_line = cmake_line
+            qscintilla_cmake_line = list(cmake_line)
             run_command.run_command_cb(qscintilla_cmake_line, policy)
             run_command.run_command_cb(make_install, policy)
             os.chdir(abs_dir_path)
@@ -144,7 +144,7 @@ class BuildRequest(object):
             cloned_dir = self.git_clone('https://github.com/fastogt/rocksdb.git', policy)
             os.chdir(cloned_dir)
 
-            make_install_rocksdb = build_external_system_args
+            make_install_rocksdb = list(build_external_system_args)
             make_install_rocksdb.append('install-static')
             make_install_rocksdb.insert(0, 'INSTALL_PATH={0}'.format(prefix_path))
             make_install_rocksdb.insert(0, 'env')
@@ -165,7 +165,7 @@ class BuildRequest(object):
             configure_upscaledb = ['./configure', '--prefix={0}'.format(prefix_path), '--disable-remote']
             run_command.run_command_cb(configure_upscaledb, policy)
 
-            make_install_upscaledb = build_external_system_args
+            make_install_upscaledb = list(build_external_system_args)
             make_install_upscaledb.append('install')
             run_command.run_command_cb(make_install_upscaledb, policy)
             os.chdir(abs_dir_path)
