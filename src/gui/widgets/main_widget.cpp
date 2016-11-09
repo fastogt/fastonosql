@@ -31,6 +31,7 @@
 
 namespace fastonosql {
 namespace gui {
+
 MainWidget::MainWidget(QWidget* parent) : QTabWidget(parent) {
   MainTabBar* tab = new MainTabBar(this);
 

@@ -74,19 +74,26 @@ class ConnectionDialog : public QDialog {
   void updateSshControls(bool isValidType);
 
   core::IConnectionSettingsBaseSPtr connection_;
+
+  QLabel* connectionNameLabel_;
   QLineEdit* connectionName_;
+
   QLabel* folderLabel_;
   QLineEdit* connectionFolder_;
+
+  QLabel* typeConnectionLabel_;
   QComboBox* typeConnection_;
+
   QCheckBox* logging_;
   QSpinBox* loggingMsec_;
+
+  QLabel* commandLineLabel_;
   QLineEdit* commandLine_;
 
   QPushButton* testButton_;
   QDialogButtonBox* buttonBox_;
 
   QCheckBox* useSsh_;
-
   QWidget* useSshWidget_;
   QLineEdit* sshHostName_;
   QLineEdit* sshPort_;

@@ -82,6 +82,14 @@ ConnectionDialog::ConnectionDialog(QWidget* parent,
   setWindowFlags(windowFlags() & ~Qt::WindowContextHelpButtonHint);  // Remove help
                                                                      // button (?)
 
+  QTabWidget* tabs = new QTabWidget;
+  QWidget* basic = new QWidget;
+  tabs->addTab(basic, translations::trBasic);
+  QWidget* ssh = new QWidget;
+  tabs->addTab(ssh, "SSH");
+  QWidget* advanced = new QWidget;
+  tabs->addTab(advanced, translations::trAdvanced);
+
   connectionName_ = new QLineEdit;
   connectionFolder_ = new QLineEdit;
   QRegExp rxf("^/[A-z0-9]+/$");
@@ -131,7 +139,7 @@ ConnectionDialog::ConnectionDialog(QWidget* parent,
 
   QHBoxLayout* loggingLayout = new QHBoxLayout;
   logging_ = new QCheckBox;
-  ;
+
   loggingMsec_ = new QSpinBox;
   loggingMsec_->setRange(0, INT32_MAX);
   loggingMsec_->setSingleStep(1000);
@@ -152,13 +160,6 @@ ConnectionDialog::ConnectionDialog(QWidget* parent,
     commandLine_->setText(
         StableCommandLine(common::ConvertFromString<QString>(connection_->CommandLine())));
   }
-
-  QVBoxLayout* inputLayout = new QVBoxLayout;
-  inputLayout->addWidget(connectionName_);
-  inputLayout->addLayout(folderLayout);
-  inputLayout->addWidget(typeConnection_);
-  inputLayout->addLayout(loggingLayout);
-  inputLayout->addWidget(commandLine_);
 
   // ssh
 
@@ -259,8 +260,6 @@ ConnectionDialog::ConnectionDialog(QWidget* parent,
   sshWidgetLayout->addWidget(passphraseEchoModeButton_, 9, 2);
   useSshWidget_->setLayout(sshWidgetLayout);
 
-  inputLayout->addWidget(useSsh_);
-
   VERIFY(connect(selectPrivateFileButton_, &QPushButton::clicked, this,
                  &ConnectionDialog::setPrivateFile));
   VERIFY(connect(selectPublicFileButton_, &QPushButton::clicked, this,
@@ -280,9 +279,38 @@ ConnectionDialog::ConnectionDialog(QWidget* parent,
   VERIFY(connect(buttonBox_, &QDialogButtonBox::rejected, this, &ConnectionDialog::reject));
   bottomLayout->addWidget(buttonBox_);
 
+  QVBoxLayout* basicLayout = new QVBoxLayout;
+  QHBoxLayout* connectionNameLayout = new QHBoxLayout;
+  connectionNameLabel_ = new QLabel;
+  connectionNameLayout->addWidget(connectionNameLabel_);
+  connectionNameLayout->addWidget(connectionName_);
+  basicLayout->addLayout(connectionNameLayout);
+
+  QHBoxLayout* typeLayout = new QHBoxLayout;
+  typeConnectionLabel_ = new QLabel;
+  typeLayout->addWidget(typeConnectionLabel_);
+  typeLayout->addWidget(typeConnection_);
+  basicLayout->addLayout(typeLayout);
+
+  QHBoxLayout* commandLineLayout = new QHBoxLayout;
+  commandLineLabel_ = new QLabel;
+  commandLineLayout->addWidget(commandLineLabel_);
+  commandLineLayout->addWidget(commandLine_);
+  basicLayout->addLayout(commandLineLayout);
+  basic->setLayout(basicLayout);
+
+  QVBoxLayout* sshLayout = new QVBoxLayout;
+  sshLayout->addWidget(useSsh_);
+  sshLayout->addWidget(useSshWidget_);
+  ssh->setLayout(sshLayout);
+
+  QVBoxLayout* advancedLayout = new QVBoxLayout;
+  advancedLayout->addLayout(folderLayout);
+  advancedLayout->addLayout(loggingLayout);
+  advanced->setLayout(advancedLayout);
+
   QVBoxLayout* mainLayout = new QVBoxLayout;
-  mainLayout->addLayout(inputLayout);
-  mainLayout->addWidget(useSshWidget_);
+  mainLayout->addWidget(tabs);
   mainLayout->addLayout(bottomLayout);
   mainLayout->setSizeConstraint(QLayout::SetFixedSize);
   setLayout(mainLayout);
@@ -353,7 +381,7 @@ void ConnectionDialog::securityChange(const QString&) {
 }
 
 void ConnectionDialog::sshSupportStateChange(int value) {
-  useSshWidget_->setVisible(value);
+  useSshWidget_->setEnabled(value);
   updateSshControls(value);
 }
 
@@ -405,7 +433,10 @@ void ConnectionDialog::changeEvent(QEvent* e) {
 
 void ConnectionDialog::retranslateUi() {
   setWindowTitle(trTitle);
-  folderLabel_->setText(translations::trFolder);
+  connectionNameLabel_->setText(tr("Name:"));
+  typeConnectionLabel_->setText(tr("Database:"));
+  commandLineLabel_->setText(tr("Connection line:"));
+  folderLabel_->setText(tr("UI Folder:"));
   logging_->setText(translations::trLoggingEnabled);
   useSsh_->setText(tr("Use SSH tunnel"));
   passwordLabel_->setText(tr("User Password:"));

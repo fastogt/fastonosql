@@ -27,6 +27,8 @@ const QString trfilterForScripts = QObject::tr("Text Files (*.txt); All Files (*
 const QString trfilterForAll = QObject::tr("All Files (*.*)");
 const QString trfilterForRdb = QObject::tr("Redis database files (*.rdb)");
 
+const QString trBasic = QObject::tr("Basic");
+const QString trAdvanced = QObject::tr("Advanced");
 const QString trLoad = QObject::tr("Load");
 const QString trRepeat = QObject::tr("Repeat");
 const QString trInterval = QObject::tr("Interval");

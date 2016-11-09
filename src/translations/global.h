@@ -27,6 +27,8 @@ extern const QString trfilterForScripts;
 extern const QString trfilterForAll;
 extern const QString trfilterForRdb;
 
+extern const QString trBasic;
+extern const QString trAdvanced;
 extern const QString trLoad;
 extern const QString trRepeat;
 extern const QString trInterval;
