@@ -22,13 +22,7 @@
 
 #include <QDialog>
 
-class QComboBox;
-class QLineEdit;
 class QDialogButtonBox;
-class QPushButton;
-class QCheckBox;
-class QLabel;
-class QSpinBox;
 
 #include "core/connection_types.h"  // for connectionTypes
 #include "core/ssh_info.h"          // for SSHInfo, etc
@@ -37,6 +31,10 @@ class QSpinBox;
 
 namespace fastonosql {
 namespace gui {
+
+class ConnectionAdvancedWidget;
+class ConnectionBasicWidget;
+class ConnectionSSHWidget;
 
 class ConnectionDialog : public QDialog {
   Q_OBJECT
@@ -54,14 +52,7 @@ class ConnectionDialog : public QDialog {
   virtual void accept() override;
 
  private Q_SLOTS:
-  void typeConnectionChange(int index);
-  void loggingStateChange(int value);
-  void securityChange(const QString& val);
-  void sshSupportStateChange(int value);
-  void togglePasswordEchoMode();
-  void togglePassphraseEchoMode();
-  void setPrivateFile();
-  void setPublicFile();
+  void typeConnectionChange(core::connectionTypes type);
   void testConnection();
 
  protected:
@@ -70,52 +61,15 @@ class ConnectionDialog : public QDialog {
  private:
   void retranslateUi();
   bool validateAndApply();
-  core::SSHInfo::SupportedAuthenticationMetods selectedAuthMethod() const;
-  void updateSshControls(bool isValidType);
 
   core::IConnectionSettingsBaseSPtr connection_;
 
-  QLabel* connectionNameLabel_;
-  QLineEdit* connectionName_;
-
-  QLabel* folderLabel_;
-  QLineEdit* connectionFolder_;
-
-  QLabel* typeConnectionLabel_;
-  QComboBox* typeConnection_;
-
-  QCheckBox* logging_;
-  QSpinBox* loggingMsec_;
-
-  QLabel* commandLineLabel_;
-  QLineEdit* commandLine_;
+  ConnectionAdvancedWidget* advanced_widget_;
+  ConnectionBasicWidget* basic_widget_;
+  ConnectionSSHWidget* ssh_widget_;
 
   QPushButton* testButton_;
   QDialogButtonBox* buttonBox_;
-
-  QCheckBox* useSsh_;
-  QWidget* useSshWidget_;
-  QLineEdit* sshHostName_;
-  QLineEdit* sshPort_;
-
-  QLabel* sshAddressLabel_;
-  QLabel* sshPassphraseLabel_;
-  QLabel* sshUserNameLabel_;
-  QLineEdit* userName_;
-  QLabel* sshAuthMethodLabel_;
-  QLabel* passwordLabel_;
-  QLabel* sshPrivateKeyLabel_;
-  QLabel* sshPublicKeyLabel_;
-
-  QComboBox* security_;
-  QLineEdit* passwordBox_;
-  QPushButton* passwordEchoModeButton_;
-  QLineEdit* privateKeyBox_;
-  QLineEdit* publicKeyBox_;
-  QLineEdit* passphraseBox_;
-  QPushButton* passphraseEchoModeButton_;
-  QPushButton* selectPrivateFileButton_;
-  QPushButton* selectPublicFileButton_;
 };
 
 }  // namespace gui

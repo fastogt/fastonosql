@@ -100,6 +100,9 @@ SET(HEADERS_GUI_WIDGETS_TO_MOC
   gui/widgets/query_widget.h
   gui/widgets/output_widget.h
   gui/widgets/main_widget.h
+  gui/widgets/connection_advanced_widget.h
+  gui/widgets/connection_basic_widget.h
+  gui/widgets/connection_ssh_widget.h
 )
 
 SET(SOURCES_GUI_WIDGETS
@@ -109,6 +112,9 @@ SET(SOURCES_GUI_WIDGETS
   gui/widgets/main_widget.cpp
   gui/widgets/query_widget.cpp
   gui/widgets/output_widget.cpp
+  gui/widgets/connection_advanced_widget.cpp
+  gui/widgets/connection_basic_widget.cpp
+  gui/widgets/connection_ssh_widget.cpp
 )
 
 SET(HEADERS_GUI_TO_MOC
