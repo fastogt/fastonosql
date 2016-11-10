@@ -105,15 +105,7 @@ std::string ConvertToString(const fastonosql::core::memcached::Config& conf) {
     argv.push_back(conf.password);
   }
 
-  std::string result;
-  for (size_t i = 0; i < argv.size(); ++i) {
-    result += argv[i];
-    if (i != argv.size() - 1) {
-      result += " ";
-    }
-  }
-
-  return result;
+  return fastonosql::core::ConvertToStringConfigArgs(argv);
 }
 
 template <>

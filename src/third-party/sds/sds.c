@@ -923,8 +923,50 @@ err:
 }
 
 #ifdef FASTO
+static int is_quote(int c){
+  return c == '{' || c == '\'' || c == '"';
+}
+
 static int isspace_ex(int c) {
   return (c == ' ' ? 1 : 0);
+}
+
+static int is_quote_sds(sds line){
+    size_t i, l = sdslen(line);
+    for (i = 0; i < l; ++i) {
+      if (is_quote(line[i])) {
+        return 1;
+      }
+    }
+    return 0;
+}
+
+static int isspace_sds(sds line){
+    size_t i, l = sdslen(line);
+    for (i = 0; i < l; ++i) {
+      if (isspace_ex(line[i])) {
+        return 1;
+      }
+    }
+    return 0;
+}
+
+int is_need_escape(const char* line, size_t len){
+    size_t i;
+    for (i = 0; i < len; ++i) {
+      if (is_quote(line[i])) {
+        return 0;
+      }
+
+      if (isspace_ex(line[i])) {
+        return 1;
+      }
+    }
+    return 0;
+}
+
+static int isneed_escape_sds(sds line){
+    return is_need_escape(line, sdslen(line));
 }
 
 sds *sdssplitargslong(const char *line, int *argc) {
@@ -1048,6 +1090,26 @@ err:
     if (current) sdsfree(current);
     *argc = 0;
     return NULL;
+}
+
+sds sdsjoinsdsstable(sds *argv, int argc) {
+    sds join = sdsempty();
+    int j;
+
+    for (j = 0; j < argc; j++) {
+        sds curr = argv[j];
+        int isneed_escape = isneed_escape_sds(curr);
+
+        if (isneed_escape) {
+          join = sdscatfmt(join, "\'%s\'", curr);
+        } else {
+          join = sdscatsds(join, curr);
+        }
+        if (j != argc - 1) {
+            join = sdscatlen(join, " ", 1);
+        }
+    }
+    return join;
 }
 #endif
 

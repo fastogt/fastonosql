@@ -93,7 +93,9 @@ sds sdsfromlonglong(long long value);
 sds sdscatrepr(sds s, const char *p, size_t len);
 sds *sdssplitargs(const char *line, int *argc);
 #ifdef FASTO
+int is_need_escape(const char* line, size_t len);
 sds *sdssplitargslong(const char *line, int *argc);
+sds sdsjoinsdsstable(sds *argv, int argc);
 #endif
 sds sdsmapchars(sds s, const char *from, const char *to, size_t setlen);
 sds sdsjoin(char **argv, int argc, char *sep, size_t seplen);

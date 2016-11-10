@@ -28,6 +28,8 @@ namespace core {
 
 enum ConfigType { LOCAL, REMOTE };
 
+typedef std::vector<std::string> config_args_t;
+
 // -d -ns
 template <ConfigType ctype>
 struct BaseConfig {
@@ -43,7 +45,7 @@ struct BaseConfig {
 struct LocalConfig : public BaseConfig<LOCAL> {
   explicit LocalConfig(const std::string& dbname);
 
-  std::vector<std::string> Args() const;
+  config_args_t Args() const;
 
   std::string dbname;
 };
@@ -52,10 +54,12 @@ struct LocalConfig : public BaseConfig<LOCAL> {
 struct RemoteConfig : public BaseConfig<REMOTE> {
   explicit RemoteConfig(const common::net::HostAndPort& host);
 
-  std::vector<std::string> Args() const;
+  config_args_t Args() const;
 
   common::net::HostAndPort host;
 };
+
+std::string ConvertToStringConfigArgs(const config_args_t& args);
 
 }  // namespace core
 }  // namespace fastonosql

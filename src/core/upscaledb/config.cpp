@@ -83,21 +83,13 @@ Config::Config()
 namespace common {
 
 std::string ConvertToString(const fastonosql::core::upscaledb::Config& conf) {
-  std::vector<std::string> argv = conf.Args();
+  auto argv = conf.Args();
 
   if (conf.create_if_missing) {
     argv.push_back("-c");
   }
 
-  std::string result;
-  for (size_t i = 0; i < argv.size(); ++i) {
-    result += argv[i];
-    if (i != argv.size() - 1) {
-      result += " ";
-    }
-  }
-
-  return result;
+  return fastonosql::core::ConvertToStringConfigArgs(argv);
 }
 
 template <>
