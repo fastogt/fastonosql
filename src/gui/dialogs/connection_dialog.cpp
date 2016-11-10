@@ -194,13 +194,14 @@ bool ConnectionDialog::validateAndApply() {
                                                                       common::net::HostAndPort());
     connection_.reset(newConnection);
 
-    core::SSHInfo info = newConnection->SSHInfo();
-    if (ssh_widget_->isSSHChecked() && ssh_widget_->isSSHEnabled()) {
-      info = ssh_widget_->info();
+    core::SSHInfo info = ssh_widget_->info();
+    if (ssh_widget_->isSSHChecked()) {
       if (info.current_method == core::SSHInfo::PUBLICKEY && info.private_key.empty()) {
         QMessageBox::critical(this, translations::trError, trPrivateKeyInvalidInput);
         return false;
       }
+    } else {
+      info.current_method = core::SSHInfo::UNKNOWN;
     }
     newConnection->SetSSHInfo(info);
   } else {

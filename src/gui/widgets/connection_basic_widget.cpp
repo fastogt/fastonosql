@@ -82,6 +82,8 @@ ConnectionBasicWidget::ConnectionBasicWidget(
   basicLayout->addLayout(commandLineLayout);
   setLayout(basicLayout);
 
+  // sync controls
+  typeConnectionChange(typeConnection_->currentIndex());
   retranslateUi();
 }
 

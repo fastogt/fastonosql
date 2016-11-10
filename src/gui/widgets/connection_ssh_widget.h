@@ -49,7 +49,7 @@ class ConnectionSSHWidget : public QWidget {
   core::SSHInfo::SupportedAuthenticationMetods selectedAuthMethod() const;
 
  private Q_SLOTS:
-  void securityChange(const QString& val);
+  void securityChange(const QString& text);
   void sshSupportStateChange(int value);
   void togglePasswordEchoMode();
   void togglePassphraseEchoMode();

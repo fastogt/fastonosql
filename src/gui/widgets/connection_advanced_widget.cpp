@@ -64,6 +64,8 @@ ConnectionAdvancedWidget::ConnectionAdvancedWidget(QWidget* parent) : QWidget(pa
   advancedLayout->addLayout(loggingLayout);
   setLayout(advancedLayout);
 
+  // sync controls
+  loggingStateChange(logging_->checkState());
   retranslateUi();
 }
 

@@ -131,6 +131,10 @@ ConnectionSSHWidget::ConnectionSSHWidget(QWidget* parent) : QWidget(parent) {
   sshLayout->addWidget(useSsh_);
   sshLayout->addWidget(useSshWidget_);
   setLayout(sshLayout);
+
+  // sync controls
+  sshSupportStateChange(useSsh_->checkState());
+  securityChange(security_->currentText());
   retranslateUi();
 }
 
@@ -165,7 +169,8 @@ core::SSHInfo ConnectionSSHWidget::info() const {
 }
 
 void ConnectionSSHWidget::setInfo(const core::SSHInfo& info) {
-  useSsh_->setChecked(info.IsValid());
+  bool checked = info.IsValid();
+  useSsh_->setChecked(checked);
   common::net::HostAndPort host = info.host;
   sshHostName_->setText(common::ConvertFromString<QString>(host.host));
   userName_->setText(common::ConvertFromString<QString>(info.user_name));
@@ -179,7 +184,6 @@ void ConnectionSSHWidget::setInfo(const core::SSHInfo& info) {
   privateKeyBox_->setText(common::ConvertFromString<QString>(info.private_key));
   publicKeyBox_->setText(common::ConvertFromString<QString>(info.public_key));
   passphraseBox_->setText(common::ConvertFromString<QString>(info.passphrase));
-  securityChange(QString());
 }
 
 core::SSHInfo::SupportedAuthenticationMetods ConnectionSSHWidget::selectedAuthMethod() const {
@@ -190,8 +194,8 @@ core::SSHInfo::SupportedAuthenticationMetods ConnectionSSHWidget::selectedAuthMe
   return core::SSHInfo::PASSWORD;
 }
 
-void ConnectionSSHWidget::securityChange(const QString&) {
-  bool isKey = selectedAuthMethod() == core::SSHInfo::PUBLICKEY;
+void ConnectionSSHWidget::securityChange(const QString& text) {
+  bool isKey = text == translations::trPublicPrivateKey;
   sshPrivateKeyLabel_->setVisible(isKey);
   privateKeyBox_->setVisible(isKey);
   selectPrivateFileButton_->setVisible(isKey);
