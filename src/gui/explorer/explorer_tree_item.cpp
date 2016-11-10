@@ -334,8 +334,11 @@ QString ExplorerKeyItem::name() const {
 
 core::IServerSPtr ExplorerKeyItem::server() const {
   ExplorerDatabaseItem* par = db();
-  CHECK(par);
-  return par->server();
+  if (par) {
+    return par->server();
+  }
+
+  return core::IServerSPtr();
 }
 
 IExplorerTreeItem::eType ExplorerKeyItem::type() const {
@@ -344,38 +347,44 @@ IExplorerTreeItem::eType ExplorerKeyItem::type() const {
 
 void ExplorerKeyItem::renameKey(const QString& newName) {
   ExplorerDatabaseItem* par = db();
-  CHECK(par);
-  par->renameKey(dbv_.Key(), newName);
+  if (par) {
+    par->renameKey(dbv_.Key(), newName);
+  }
 }
 
 void ExplorerKeyItem::editKey(const core::NValue& value) {
   ExplorerDatabaseItem* par = db();
-  CHECK(par);
-  par->editKey(dbv_, value);
+  if (par) {
+    par->editKey(dbv_, value);
+  }
 }
 
 void ExplorerKeyItem::removeFromDb() {
   ExplorerDatabaseItem* par = db();
-  CHECK(par);
-  par->removeKey(dbv_.Key());
+  if (par) {
+    par->removeKey(dbv_.Key());
+  }
 }
 
 void ExplorerKeyItem::watchKey(int interval) {
   ExplorerDatabaseItem* par = db();
-  CHECK(par);
-  par->watchKey(dbv_, interval);
+  if (par) {
+    par->watchKey(dbv_, interval);
+  }
 }
 
 void ExplorerKeyItem::loadValueFromDb() {
   ExplorerDatabaseItem* par = db();
-  CHECK(par);
-  par->loadValue(dbv_);
+  if (par) {
+    par->loadValue(dbv_);
+  }
 }
 
 void ExplorerKeyItem::setTTL(core::ttl_t ttl) {
   ExplorerDatabaseItem* par = db();
-  CHECK(par);
-  par->setTTL(dbv_.Key(), ttl);
+  if (par) {
+    par->setTTL(dbv_.Key(), ttl);
+  }
 }
 
 ExplorerNSItem::ExplorerNSItem(const QString& name, IExplorerTreeItem* parent)
@@ -401,8 +410,11 @@ ExplorerDatabaseItem* ExplorerNSItem::db() const {
 
 core::IServerSPtr ExplorerNSItem::server() const {
   ExplorerDatabaseItem* par = db();
-  CHECK(par);
-  return par->server();
+  if (par) {
+    return par->server();
+  }
+
+  return core::IServerSPtr();
 }
 
 ExplorerNSItem::eType ExplorerNSItem::type() const {

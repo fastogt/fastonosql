@@ -109,7 +109,9 @@ void EncodeDecodeDialog::decodeOrEncode() {
   QVariant var = decoders_->currentData();
   common::EDTypes currentType = static_cast<common::EDTypes>(qvariant_cast<unsigned char>(var));
   common::IEDcoder* dec = common::IEDcoder::createEDCoder(currentType);
-  CHECK(dec);
+  if (!dec) {
+    return;
+  }
 
   std::string sin = common::ConvertToString(in);
   std::string out;

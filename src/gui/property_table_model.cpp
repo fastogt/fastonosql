@@ -121,7 +121,10 @@ int PropertyTableModel::columnCount(const QModelIndex& parent) const {
 void PropertyTableModel::changeProperty(const core::property_t& pr) {
   for (size_t i = 0; i < data_.size(); ++i) {
     PropertyTableItem* it = dynamic_cast<PropertyTableItem*>(data_[i]);  // +
-    CHECK(it);
+    if (!it) {
+      continue;
+    }
+
     core::property_t prop = it->property();
     if (prop.first == pr.first) {
       it->setProperty(pr);

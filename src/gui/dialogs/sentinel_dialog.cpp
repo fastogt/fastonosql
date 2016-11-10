@@ -384,13 +384,17 @@ bool SentinelDialog::validateAndApply() {
   for (int i = 0; i < listWidget_->topLevelItemCount(); ++i) {
     SentinelConnectionWidgetItem* item =
         dynamic_cast<SentinelConnectionWidgetItem*>(listWidget_->topLevelItem(i));  // +
-    CHECK(item);
+    if (!item) {
+      continue;
+    }
+
     core::SentinelSettings sent;
     sent.sentinel = item->connection();
     for (int i = 0; i < item->childCount(); ++i) {
       ConnectionListWidgetItem* child = dynamic_cast<ConnectionListWidgetItem*>(item->child(i));
-      CHECK(child);
-      sent.sentinel_nodes.push_back(child->connection());
+      if (child) {
+        sent.sentinel_nodes.push_back(child->connection());
+      }
     }
     newConnection->AddSentinel(sent);
   }

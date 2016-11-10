@@ -256,7 +256,9 @@ void ExplorerTreeModel::removeSentinel(core::ISentinelSPtr sentinel) {
 
 void ExplorerTreeModel::addDatabase(core::IServer* server, core::IDataBaseInfoSPtr db) {
   ExplorerServerItem* parent = findServerItem(server);
-  CHECK(parent);
+  if (!parent) {
+    return;
+  }
 
   ExplorerDatabaseItem* dbs = findDatabaseItem(parent, db);
   if (!dbs) {
@@ -269,7 +271,9 @@ void ExplorerTreeModel::addDatabase(core::IServer* server, core::IDataBaseInfoSP
 
 void ExplorerTreeModel::removeDatabase(core::IServer* server, core::IDataBaseInfoSPtr db) {
   ExplorerServerItem* parent = findServerItem(server);
-  CHECK(parent);
+  if (!parent) {
+    return;
+  }
 
   ExplorerDatabaseItem* dbs = findDatabaseItem(parent, db);
   if (dbs) {
@@ -281,7 +285,10 @@ void ExplorerTreeModel::removeDatabase(core::IServer* server, core::IDataBaseInf
 
 void ExplorerTreeModel::setDefaultDb(core::IServer* server, core::IDataBaseInfoSPtr db) {
   ExplorerServerItem* parent = findServerItem(server);
-  CHECK(parent);
+  if (!parent) {
+    return;
+  }
+
 
   ExplorerDatabaseItem* dbs = findDatabaseItem(parent, db);
   if (!dbs) {
@@ -430,7 +437,10 @@ void ExplorerTreeModel::removeAllKeys(core::IServer* server, core::IDataBaseInfo
 
 ExplorerClusterItem* ExplorerTreeModel::findClusterItem(core::IClusterSPtr cl) {
   common::qt::gui::TreeItem* parent = root_;
-  CHECK(parent);
+  if (!parent) {
+    return nullptr;
+  }
+
 
   for (size_t i = 0; i < parent->childrenCount(); ++i) {
     ExplorerClusterItem* item = dynamic_cast<ExplorerClusterItem*>(parent->child(i));  // +
@@ -443,7 +453,10 @@ ExplorerClusterItem* ExplorerTreeModel::findClusterItem(core::IClusterSPtr cl) {
 
 ExplorerSentinelItem* ExplorerTreeModel::findSentinelItem(core::ISentinelSPtr sentinel) {
   common::qt::gui::TreeItem* parent = root_;
-  CHECK(parent);
+  if (!parent) {
+    return nullptr;
+  }
+
 
   for (size_t i = 0; i < parent->childrenCount(); ++i) {
     ExplorerSentinelItem* item = dynamic_cast<ExplorerSentinelItem*>(parent->child(i));  // +
@@ -475,7 +488,9 @@ ExplorerDatabaseItem* ExplorerTreeModel::findDatabaseItem(ExplorerServerItem* se
 
   for (size_t i = 0; i < server->childrenCount(); ++i) {
     ExplorerDatabaseItem* item = dynamic_cast<ExplorerDatabaseItem*>(server->child(i));  // +
-    CHECK(item);
+    if (!item) {
+      continue;
+    }
 
     core::IDatabaseSPtr inf = item->db();
     if (inf && inf->Name() == db->Name()) {

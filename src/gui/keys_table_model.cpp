@@ -172,7 +172,10 @@ int KeysTableModel::columnCount(const QModelIndex& parent) const {
 void KeysTableModel::updateKey(const core::NKey& key) {
   for (size_t i = 0; i < data_.size(); ++i) {
     KeyTableItem* it = dynamic_cast<KeyTableItem*>(data_[i]);  // +
-    CHECK(it);
+    if (!it) {
+      continue;
+    }
+
     core::NDbKValue dbv = it->dbv();
     if (dbv.KeyString() == key.Key()) {
       it->setKey(key);
