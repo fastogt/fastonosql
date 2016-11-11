@@ -112,15 +112,15 @@ ConnectionDialog::ConnectionDialog(QWidget* parent,
     if (remoteSettings) {
       info = remoteSettings->SSHInfo();
     }
-    core::connection_path_t path = connection_->Path();
+    core::connection_path_t path = connection->Path();
     conName = common::ConvertFromString<QString>(path.Name());
     conFolder = common::ConvertFromString<QString>(path.Directory());
-    advanced_widget_->setLogging(connection_->IsLoggingEnabled());
-    advanced_widget_->setLoggingInterval(connection_->LoggingMsTimeInterval());
+    advanced_widget_->setLogging(connection->IsLoggingEnabled());
+    advanced_widget_->setLoggingInterval(connection->LoggingMsTimeInterval());
     QString stabled =
-        StableCommandLine(common::ConvertFromString<QString>(connection_->CommandLine()));
+        StableCommandLine(common::ConvertFromString<QString>(connection->CommandLine()));
     basic_widget_->setCommandLine(stabled);
-    basic_widget_->setConnectionType(connection_->Type());
+    basic_widget_->setConnectionType(connection->Type());
   } else {
     advanced_widget_->setLogging(false);
     typeConnectionChange(basic_widget_->connectionType());

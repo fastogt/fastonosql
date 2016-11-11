@@ -103,6 +103,9 @@ SET(HEADERS_GUI_WIDGETS_TO_MOC
   gui/widgets/connection_advanced_widget.h
   gui/widgets/connection_basic_widget.h
   gui/widgets/connection_ssh_widget.h
+  gui/widgets/connection_base_widget.h
+  gui/widgets/connection_local_widget.h
+  gui/widgets/connection_remote_widget.h
 )
 
 SET(SOURCES_GUI_WIDGETS
@@ -115,6 +118,9 @@ SET(SOURCES_GUI_WIDGETS
   gui/widgets/connection_advanced_widget.cpp
   gui/widgets/connection_basic_widget.cpp
   gui/widgets/connection_ssh_widget.cpp
+  gui/widgets/connection_base_widget.cpp
+  gui/widgets/connection_local_widget.cpp
+  gui/widgets/connection_remote_widget.cpp
 )
 
 SET(HEADERS_GUI_TO_MOC
@@ -135,6 +141,7 @@ SET(HEADERS_GUI
   gui/gui_factory.h
   gui/fasto_common_item.h
   gui/shortcuts.h
+  gui/connection_widgets_factory.h
 )
 SET(SOURCES_GUI
   gui/main_window.cpp
@@ -152,6 +159,7 @@ SET(SOURCES_GUI
   gui/fasto_common_item.cpp
   gui/shortcuts.cpp
   gui/fasto_scintilla.cpp
+  gui/connection_widgets_factory.cpp
 )
 
 SET(HEADERS_CORE_INTERNAL
@@ -390,6 +398,10 @@ IF(BUILD_WITH_REDIS)
   ADD_SUBDIRECTORY(third-party/redis)
   SET(INCLUDE_DIRS ${INCLUDE_DIRS} third-party/redis/src third-party/redis/deps)
 
+  SET(HEADERS_REDIS_GUI_TO_MOC gui/redis/connection_widget.h)
+  SET(HEADERS_REDIS_GUI)
+  SET(SOURCES_REDIS_GUI gui/redis/connection_widget.cpp)
+
   SET(HEADERS_REDIS_TO_MOC
     core/redis/sentinel.h
     core/redis/cluster.h
@@ -448,6 +460,10 @@ IF(BUILD_WITH_MEMCACHED)
   ADD_SUBDIRECTORY(third-party/memcached)
   SET(INCLUDE_DIRS ${INCLUDE_DIRS} third-party/memcached/src)
 
+  SET(HEADERS_MEMCACHED_GUI_TO_MOC gui/memcached/connection_widget.h)
+  SET(HEADERS_MEMCACHED_GUI)
+  SET(SOURCES_MEMCACHED_GUI gui/memcached/connection_widget.cpp)
+
   SET(HEADERS_MEMCACHED_TO_MOC
     core/memcached/server.h
     core/memcached/driver.h
@@ -490,6 +506,10 @@ IF(BUILD_WITH_SSDB)
   ADD_SUBDIRECTORY(third-party/ssdb)
   SET(INCLUDE_DIRS ${INCLUDE_DIRS} third-party/ssdb/src)
 
+  SET(HEADERS_SSDB_GUI_TO_MOC gui/ssdb/connection_widget.h)
+  SET(HEADERS_SSDB_GUI)
+  SET(SOURCES_SSDB_GUI gui/ssdb/connection_widget.cpp)
+
   SET(HEADERS_SSDB_TO_MOC
     core/ssdb/server.h
     core/ssdb/driver.h
@@ -531,6 +551,10 @@ IF(BUILD_WITH_LEVELDB)
   )
   ADD_SUBDIRECTORY(third-party/leveldb)
   SET(INCLUDE_DIRS ${INCLUDE_DIRS} third-party/leveldb/src/include)
+
+  SET(HEADERS_LEVELDB_GUI_TO_MOC gui/leveldb/connection_widget.h)
+  SET(HEADERS_LEVELDB_GUI)
+  SET(SOURCES_LEVELDB_GUI gui/leveldb/connection_widget.cpp)
 
   SET(HEADERS_LEVELDB_TO_MOC
     core/leveldb/server.h
@@ -575,6 +599,10 @@ IF(BUILD_WITH_ROCKSDB)
   #ADD_SUBDIRECTORY(third-party/rocksdb)
   #SET(INCLUDE_DIRS ${INCLUDE_DIRS} third-party/rocksdb/src/include)
 
+  SET(HEADERS_ROCKSDB_GUI_TO_MOC gui/rocksdb/connection_widget.h)
+  SET(HEADERS_ROCKSDB_GUI)
+  SET(SOURCES_ROCKSDB_GUI gui/rocksdb/connection_widget.cpp)
+
   SET(HEADERS_ROCKSDB_TO_MOC
     core/rocksdb/server.h
     core/rocksdb/driver.h
@@ -618,6 +646,10 @@ IF(BUILD_WITH_UNQLITE)
   ADD_SUBDIRECTORY(third-party/unqlite)
   SET(INCLUDE_DIRS ${INCLUDE_DIRS} third-party/unqlite/src)
 
+  SET(HEADERS_UNQLITE_GUI_TO_MOC gui/unqlite/connection_widget.h)
+  SET(HEADERS_UNQLITE_GUI)
+  SET(SOURCES_UNQLITE_GUI gui/unqlite/connection_widget.cpp)
+
   SET(HEADERS_UNQLITE_TO_MOC
     core/unqlite/server.h
     core/unqlite/driver.h
@@ -659,6 +691,10 @@ IF(BUILD_WITH_LMDB)
   )
   ADD_SUBDIRECTORY(third-party/lmdb)
   SET(INCLUDE_DIRS ${INCLUDE_DIRS} third-party/lmdb/src/libraries/liblmdb)
+
+  SET(HEADERS_LMDB_GUI_TO_MOC gui/lmdb/connection_widget.h)
+  SET(HEADERS_LMDB_GUI)
+  SET(SOURCES_LMDB_GUI gui/lmdb/connection_widget.cpp)
 
   SET(HEADERS_LMDB_TO_MOC
     core/lmdb/server.h
@@ -703,6 +739,10 @@ IF(BUILD_WITH_UPSCALEDB)
   )
   #ADD_SUBDIRECTORY(third-party/upscaledb)
   #SET(INCLUDE_DIRS ${INCLUDE_DIRS} third-party/upscaledb/src/include)
+
+  SET(HEADERS_UPSCALEDB_GUI_TO_MOC gui/upscaledb/connection_widget.h)
+  SET(HEADERS_UPSCALEDB_GUI)
+  SET(SOURCES_UPSCALEDB_GUI gui/upscaledb/connection_widget.cpp)
 
   SET(HEADERS_UPSCALEDB_TO_MOC
     core/upscaledb/server.h
@@ -757,26 +797,49 @@ ENDIF(IS_PUBLIC_BUILD)
 SET(HEADERS ${HEADERS} ${HEADERS_GLOBAL}
   ${HEADERS_GUI} ${HEADERS_GUI_EXPLORER} ${HEADERS_GUI_DIALOGS}
   ${HEADERS_CORE} ${HEADERS_SHELL}
-  ${HEADERS_REDIS} ${HEADERS_MEMCACHED} ${HEADERS_SSDB}
-  ${HEADERS_LEVELDB} ${HEADERS_ROCKSDB} ${HEADERS_UNQLITE} ${HEADERS_LMDB}
-  ${HEADERS_UPSCALEDB}
+
+  ${HEADERS_REDIS} ${HEADERS_MEMCACHED}
+  ${HEADERS_SSDB} ${HEADERS_LEVELDB}
+  ${HEADERS_ROCKSDB} ${HEADERS_UNQLITE}
+  ${HEADERS_LMDB} ${HEADERS_UPSCALEDB}
+
+  ${HEADERS_REDIS_GUI} ${HEADERS_MEMCACHED_GUI}
+  ${HEADERS_SSDB_GUI} ${HEADERS_LEVELDB_GUI}
+  ${HEADERS_ROCKSDB_GUI} ${HEADERS_UNQLITE_GUI}
+  ${HEADERS_LMDB_GUI} ${HEADERS_UPSCALEDB_GUI}
+
   ${HEADERS_TRANSLATIONS}
 )
 SET(SOURCES ${SOURCES} ${SOURCES_GLOBAL}
   ${SOURCES_GUI} ${SOURCES_GUI_DIALOGS} ${SOURCES_GUI_EDITOR}
   ${SOURCES_GUI_WIDGETS} ${SOURCES_GUI_EXPLORER}
   ${SOURCES_CORE} ${SOURCES_SHELL}
-  ${SOURCES_REDIS} ${SOURCES_MEMCACHED} ${SOURCES_SSDB}
-  ${SOURCES_LEVELDB} ${SOURCES_ROCKSDB} ${SOURCES_UNQLITE} ${SOURCES_LMDB}
-  ${SOURCES_UPSCALEDB}
+
+  ${SOURCES_REDIS} ${SOURCES_MEMCACHED}
+  ${SOURCES_SSDB} ${SOURCES_LEVELDB}
+  ${SOURCES_ROCKSDB} ${SOURCES_UNQLITE}
+  ${SOURCES_LMDB} ${SOURCES_UPSCALEDB}
+
+  ${SOURCES_REDIS_GUI} ${SOURCES_MEMCACHED_GUI}
+  ${SOURCES_SSDB_GUI} ${SOURCES_LEVELDB_GUI}
+  ${SOURCES_ROCKSDB_GUI} ${SOURCES_UNQLITE_GUI}
+  ${SOURCES_LMDB_GUI} ${SOURCES_UPSCALEDB_GUI}
+
   ${SOURCES_TRANSLATIONS}
 )
 SET(HEADERS_TOMOC ${HEADERS_GUI_TO_MOC} ${HEADERS_GUI_DIALOGS_TO_MOC} ${HEADERS_GUI_EDITOR_TO_MOC}
   ${HEADERS_GUI_WIDGETS_TO_MOC} ${HEADERS_GUI_EXPLORER_TO_MOC}
   ${HEADERS_CORE_TO_MOC} ${HEADERS_SHELL_TO_MOC}
-  ${HEADERS_REDIS_TO_MOC} ${HEADERS_MEMCACHED_TO_MOC} ${HEADERS_SSDB_TO_MOC}
-  ${HEADERS_LEVELDB_TO_MOC} ${HEADERS_ROCKSDB_TO_MOC} ${HEADERS_UNQLITE_TO_MOC} ${HEADERS_LMDB_TO_MOC}
-  ${HEADERS_UPSCALEDB_TO_MOC}
+
+  ${HEADERS_REDIS_TO_MOC} ${HEADERS_MEMCACHED_TO_MOC}
+  ${HEADERS_SSDB_TO_MOC} ${HEADERS_LEVELDB_TO_MOC}
+  ${HEADERS_ROCKSDB_TO_MOC} ${HEADERS_UNQLITE_TO_MOC}
+  ${HEADERS_LMDB_TO_MOC} ${HEADERS_UPSCALEDB_TO_MOC}
+
+  ${HEADERS_REDIS_GUI_TO_MOC} ${HEADERS_MEMCACHED_GUI_TO_MOC}
+  ${HEADERS_SSDB_GUI_TO_MOC} ${HEADERS_LEVELDB_GUI_TO_MOC}
+  ${HEADERS_ROCKSDB_GUI_TO_MOC} ${HEADERS_UNQLITE_GUI_TO_MOC}
+  ${HEADERS_LMDB_GUI_TO_MOC} ${HEADERS_UPSCALEDB_GUI_TO_MOC}
 )
 
 QT5_WRAP_CPP(MOC_FILES ${HEADERS_TOMOC})
