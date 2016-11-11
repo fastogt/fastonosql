@@ -18,6 +18,8 @@
 
 #include "gui/upscaledb/connection_widget.h"
 
+#include "core/upscaledb/connection_settings.h"
+
 #include "core/connection_settings/iconnection_settings_local.h"
 
 namespace fastonosql {
@@ -33,6 +35,12 @@ void ConnectionWidget::syncControls(core::IConnectionSettingsBase* connection) {
 
 void ConnectionWidget::retranslateUi() {
   ConnectionLocalWidget::retranslateUi();
+}
+
+core::IConnectionSettingsBase* ConnectionWidget::createConnectionImpl(
+    const core::connection_path_t& path) const {
+  core::upscaledb::ConnectionSettings* conn = new core::upscaledb::ConnectionSettings(path);
+  return conn;
 }
 }
 }  // namespace gui

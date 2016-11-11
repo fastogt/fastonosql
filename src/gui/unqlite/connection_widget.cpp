@@ -18,6 +18,8 @@
 
 #include "gui/unqlite/connection_widget.h"
 
+#include "core/unqlite/connection_settings.h"
+
 #include "core/connection_settings/iconnection_settings_local.h"
 
 namespace fastonosql {
@@ -33,6 +35,12 @@ void ConnectionWidget::syncControls(core::IConnectionSettingsBase* connection) {
 
 void ConnectionWidget::retranslateUi() {
   ConnectionLocalWidget::retranslateUi();
+}
+
+core::IConnectionSettingsBase* ConnectionWidget::createConnectionImpl(
+    const core::connection_path_t& path) const {
+  core::unqlite::ConnectionSettings* conn = new core::unqlite::ConnectionSettings(path);
+  return conn;
 }
 }
 }  // namespace gui

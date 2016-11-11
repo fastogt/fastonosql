@@ -320,8 +320,7 @@ void ClusterDialog::setStartNode() {
 
 void ClusterDialog::add() {
 #ifdef BUILD_WITH_REDIS
-  static const std::vector<core::connectionTypes> avail = {core::REDIS};
-  ConnectionDialog dlg(this, nullptr, avail);
+  ConnectionDialog dlg(core::REDIS, "New Connection", this);
   dlg.setFolderEnabled(false);
   int result = dlg.exec();
   core::IConnectionSettingsBaseSPtr p = dlg.connection();
@@ -364,8 +363,7 @@ void ClusterDialog::edit() {
 
 #ifdef BUILD_WITH_REDIS
   core::IConnectionSettingsBaseSPtr oldConnection = currentItem->connection();
-  static const std::vector<core::connectionTypes> avail = {core::REDIS};
-  ConnectionDialog dlg(this, oldConnection->Clone(), avail);
+  ConnectionDialog dlg(oldConnection->Clone(), this);
   dlg.setFolderEnabled(false);
   int result = dlg.exec();
   core::IConnectionSettingsBaseSPtr newConnection = dlg.connection();

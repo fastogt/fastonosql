@@ -26,6 +26,7 @@
 #include <QHBoxLayout>
 #include <QPushButton>
 #include <QFileDialog>
+#include <QEvent>
 
 #include <common/convert2string.h>
 #include <common/qt/convert2string.h>
@@ -133,7 +134,7 @@ ConnectionSSHWidget::ConnectionSSHWidget(QWidget* parent) : QWidget(parent) {
   setLayout(sshLayout);
 
   // sync controls
-  sshSupportStateChange(useSsh_->checkState());
+  useSshWidget_->setEnabled(false);
   securityChange(security_->currentText());
   retranslateUi();
 }
@@ -245,6 +246,14 @@ void ConnectionSSHWidget::setPublicFile() {
   }
 
   publicKeyBox_->setText(filepath);
+}
+
+void ConnectionSSHWidget::changeEvent(QEvent* ev) {
+  if (ev->type() == QEvent::LanguageChange) {
+    retranslateUi();
+  }
+
+  QWidget::changeEvent(ev);
 }
 
 void ConnectionSSHWidget::retranslateUi() {

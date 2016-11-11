@@ -18,43 +18,33 @@
 
 #pragma once
 
-#include <QWidget>
+#include <QDialog>
 
+#include "core/connection_types.h"
+
+class QComboBox;
 class QLabel;
-class QLineEdit;
-class QCheckBox;
-class QSpinBox;
+class QDialogButtonBox;
 
 namespace fastonosql {
 namespace gui {
 
-class ConnectionAdvancedWidget : public QWidget {
+class ConnectionSelectTypeDialog : public QDialog {
   Q_OBJECT
  public:
-  explicit ConnectionAdvancedWidget(QWidget* parent = 0);
+  explicit ConnectionSelectTypeDialog(QWidget* parent = 0);
 
-  QString connectionFolderText() const;
-  void setConnectionFolderText(const QString& text);
+  core::connectionTypes connectionType() const;
 
-  void setFolderEnabled(bool val);
-
-  bool isLogging() const;
-  void setLogging(bool logging);
-
-  int loggingInterval() const;
-  void setLoggingInterval(int val);
-
- private Q_SLOTS:
-  void loggingStateChange(int value);
+ protected:
+  virtual void changeEvent(QEvent* ev) override;
 
  private:
   void retranslateUi();
 
-  QLabel* folderLabel_;
-  QLineEdit* connectionFolder_;
-
-  QCheckBox* logging_;
-  QSpinBox* loggingMsec_;
+  QLabel* typeConnectionLabel_;
+  QComboBox* typeConnection_;
+  QDialogButtonBox* buttonBox_;
 };
 
 }  // namespace gui

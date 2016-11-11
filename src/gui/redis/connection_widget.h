@@ -24,6 +24,7 @@
 
 namespace fastonosql {
 namespace gui {
+class ConnectionSSHWidget;
 namespace redis {
 
 class ConnectionWidget : public ConnectionRemoteWidget {
@@ -33,8 +34,13 @@ class ConnectionWidget : public ConnectionRemoteWidget {
 
   virtual void syncControls(core::IConnectionSettingsBase* connection) override;
   virtual void retranslateUi() override;
-};
+  virtual bool validated() const override;
 
+ private:
+  virtual core::IConnectionSettingsBase* createConnectionImpl(
+      const core::connection_path_t& path) const override;
+  ConnectionSSHWidget* ssh_widget_;
+};
 }
 }  // namespace gui
 }  // namespace fastonosql

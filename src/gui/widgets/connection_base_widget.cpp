@@ -29,12 +29,14 @@
 
 #include <common/macros.h>
 #include <common/convert2string.h>
+#include <common/qt/convert2string.h>
 
 #include "gui/gui_factory.h"
 
 #include "translations/global.h"
 
 namespace {
+const char* defaultNameConnectionFolder = "/";
 const QString trLoggingToolTip = QObject::tr("INFO command timeout in msec for history statistic.");
 QString StableCommandLine(QString input) {
   return input.replace('\n', "\\n");
@@ -91,8 +93,6 @@ ConnectionBaseWidget::ConnectionBaseWidget(QWidget* parent) : QWidget(parent) {
   basicLayout->addLayout(folderLayout);
   basicLayout->addLayout(loggingLayout);
   setLayout(basicLayout);
-
-  commandLine_->setEnabled(false);
 }
 
 void ConnectionBaseWidget::changeEvent(QEvent* ev) {
@@ -105,6 +105,23 @@ void ConnectionBaseWidget::changeEvent(QEvent* ev) {
 
 QString ConnectionBaseWidget::connectionName() const {
   return connectionName_->text();
+}
+
+core::IConnectionSettingsBase* ConnectionBaseWidget::createConnection() const {
+  std::string conName = common::ConvertToString(connectionName());
+  std::string conFolder = common::ConvertToString(connectionFolderText());
+  if (conFolder.empty()) {
+    conFolder = defaultNameConnectionFolder;
+  }
+
+  core::connection_path_t path(common::file_system::stable_dir_path(conFolder) + conName);
+  core::IConnectionSettingsBase* conn = createConnectionImpl(path);
+  conn->SetCommandLine(common::ConvertToString(toRawCommandLine(commandLine())));
+  if (isLogging()) {
+    conn->SetLoggingMsTimeInterval(loggingInterval());
+  }
+
+  return conn;
 }
 
 void ConnectionBaseWidget::setConnectionName(const QString& name) {
@@ -138,6 +155,10 @@ void ConnectionBaseWidget::retranslateUi() {
   folderLabel_->setText(tr("UI Folder:"));
   logging_->setText(translations::trLoggingEnabled);
   loggingMsec_->setToolTip(trLoggingToolTip);
+}
+
+bool ConnectionBaseWidget::validated() const {
+  return true;
 }
 
 QString ConnectionBaseWidget::connectionFolderText() const {

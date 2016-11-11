@@ -18,6 +18,8 @@
 
 #include "gui/rocksdb/connection_widget.h"
 
+#include "core/rocksdb/connection_settings.h"
+
 #include "core/connection_settings/iconnection_settings_local.h"
 
 namespace fastonosql {
@@ -34,7 +36,12 @@ void ConnectionWidget::syncControls(core::IConnectionSettingsBase* connection) {
 void ConnectionWidget::retranslateUi() {
   ConnectionLocalWidget::retranslateUi();
 }
-}
 
+core::IConnectionSettingsBase* ConnectionWidget::createConnectionImpl(
+    const core::connection_path_t& path) const {
+  core::rocksdb::ConnectionSettings* conn = new core::rocksdb::ConnectionSettings(path);
+  return conn;
+}
+}
 }  // namespace gui
 }  // namespace fastonosql

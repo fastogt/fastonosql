@@ -36,6 +36,7 @@
 #include "core/connection_settings/iconnection_settings.h"  // for IClusterSettingsBaseSPtr, etc
 #include "core/settings_manager.h"                          // for SettingsManager
 
+#include "gui/dialogs/connection_select_type_dialog.h"
 #include "gui/dialogs/cluster_dialog.h"     // for ClusterDialog
 #include "gui/dialogs/connection_dialog.h"  // for ConnectionDialog
 #include "gui/dialogs/connection_listwidget_items.h"
@@ -184,8 +185,15 @@ core::IClusterSettingsBaseSPtr ConnectionsDialog::selectedCluster() const {
 }
 
 void ConnectionsDialog::add() {
-  ConnectionDialog dlg(this);
-  int result = dlg.exec();
+  ConnectionSelectTypeDialog sel(this);
+  int result = sel.exec();
+  if (result != QDialog::Accepted) {
+    return;
+  }
+
+  core::connectionTypes t = sel.connectionType();
+  ConnectionDialog dlg(t, "New Connection", this);
+  result = dlg.exec();
   core::IConnectionSettingsBaseSPtr p = dlg.connection();
   if (result == QDialog::Accepted && p) {
     core::SettingsManager::instance().AddConnection(p);
@@ -319,7 +327,7 @@ void ConnectionsDialog::editConnection(ConnectionListWidgetItem* connectionItem)
   CHECK(connectionItem);
 
   core::IConnectionSettingsBaseSPtr con = connectionItem->connection();
-  ConnectionDialog dlg(this, con->Clone());
+  ConnectionDialog dlg(con->Clone(), this);
   int result = dlg.exec();
   core::IConnectionSettingsBaseSPtr newConnection = dlg.connection();
   if (result == QDialog::Accepted && newConnection) {

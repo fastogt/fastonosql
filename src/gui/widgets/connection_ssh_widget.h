@@ -56,6 +56,9 @@ class ConnectionSSHWidget : public QWidget {
   void setPrivateFile();
   void setPublicFile();
 
+ protected:
+  virtual void changeEvent(QEvent* ev);
+
  private:
   void retranslateUi();
 

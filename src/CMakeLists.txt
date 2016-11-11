@@ -16,6 +16,7 @@ SET(HEADERS_GUI_DIALOGS_TO_MOC
   gui/dialogs/preferences_dialog.h
   gui/dialogs/connections_dialog.h
   gui/dialogs/connection_dialog.h
+  gui/dialogs/connection_select_type_dialog.h
   gui/dialogs/cluster_dialog.h
   gui/dialogs/sentinel_dialog.h
   gui/dialogs/connection_diagnostic_dialog.h
@@ -41,6 +42,7 @@ SET(SOURCES_GUI_DIALOGS
   gui/dialogs/preferences_dialog.cpp
   gui/dialogs/connections_dialog.cpp
   gui/dialogs/connection_dialog.cpp
+  gui/dialogs/connection_select_type_dialog.cpp
   gui/dialogs/cluster_dialog.cpp
   gui/dialogs/sentinel_dialog.cpp
   gui/dialogs/connection_diagnostic_dialog.cpp
@@ -100,8 +102,6 @@ SET(HEADERS_GUI_WIDGETS_TO_MOC
   gui/widgets/query_widget.h
   gui/widgets/output_widget.h
   gui/widgets/main_widget.h
-  gui/widgets/connection_advanced_widget.h
-  gui/widgets/connection_basic_widget.h
   gui/widgets/connection_ssh_widget.h
   gui/widgets/connection_base_widget.h
   gui/widgets/connection_local_widget.h
@@ -115,8 +115,6 @@ SET(SOURCES_GUI_WIDGETS
   gui/widgets/main_widget.cpp
   gui/widgets/query_widget.cpp
   gui/widgets/output_widget.cpp
-  gui/widgets/connection_advanced_widget.cpp
-  gui/widgets/connection_basic_widget.cpp
   gui/widgets/connection_ssh_widget.cpp
   gui/widgets/connection_base_widget.cpp
   gui/widgets/connection_local_widget.cpp

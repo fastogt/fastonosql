@@ -33,6 +33,10 @@ class ConnectionWidget : public ConnectionLocalWidget {
 
   virtual void syncControls(core::IConnectionSettingsBase* connection) override;
   virtual void retranslateUi() override;
+
+ private:
+  virtual core::IConnectionSettingsBase* createConnectionImpl(
+      const core::connection_path_t& path) const override;
 };
 }
 }  // namespace gui

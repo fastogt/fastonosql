@@ -25,25 +25,19 @@
 class QDialogButtonBox;
 
 #include "core/connection_types.h"  // for connectionTypes
-#include "core/ssh_info.h"          // for SSHInfo, etc
 
 #include "core/connection_settings/iconnection_settings.h"  // for IConnectionSettingsBaseSPtr, etc
 
 namespace fastonosql {
 namespace gui {
 
-class ConnectionAdvancedWidget;
-class ConnectionBasicWidget;
-class ConnectionSSHWidget;
+class ConnectionBaseWidget;
 
 class ConnectionDialog : public QDialog {
   Q_OBJECT
  public:
-  ConnectionDialog(QWidget* parent,
-                   core::IConnectionSettingsBase* connection = nullptr,
-                   const std::vector<core::connectionTypes>& availibleTypes =
-                       std::vector<core::connectionTypes>(),
-                   const QString& connectionName = "New Connection");  // get ownerships connection
+  ConnectionDialog(core::connectionTypes type, const QString& connectionName, QWidget* parent = 0);
+  ConnectionDialog(core::IConnectionSettingsBase* connection, QWidget* parent = 0);
 
   void setFolderEnabled(bool val);
   core::IConnectionSettingsBaseSPtr connection() const;
@@ -52,21 +46,19 @@ class ConnectionDialog : public QDialog {
   virtual void accept() override;
 
  private Q_SLOTS:
-  void typeConnectionChange(core::connectionTypes type);
   void testConnection();
 
  protected:
   virtual void changeEvent(QEvent* ev) override;
 
  private:
+  void init(core::IConnectionSettingsBase* connection);
+
   void retranslateUi();
   bool validateAndApply();
 
   core::IConnectionSettingsBaseSPtr connection_;
-
-  ConnectionAdvancedWidget* advanced_widget_;
-  ConnectionBasicWidget* basic_widget_;
-  ConnectionSSHWidget* ssh_widget_;
+  ConnectionBaseWidget* connection_widget_;
 
   QPushButton* testButton_;
   QDialogButtonBox* buttonBox_;

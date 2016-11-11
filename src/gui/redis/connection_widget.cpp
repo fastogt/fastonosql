@@ -18,22 +18,51 @@
 
 #include "gui/redis/connection_widget.h"
 
-#include "core/connection_settings/iconnection_settings_remote.h"
+#include <QLayout>
+
+#include "core/redis/connection_settings.h"
+
+#include "gui/widgets/connection_ssh_widget.h"
 
 namespace fastonosql {
 namespace gui {
 namespace redis {
 
-ConnectionWidget::ConnectionWidget(QWidget* parent) : ConnectionRemoteWidget(parent) {}
+ConnectionWidget::ConnectionWidget(QWidget* parent) : ConnectionRemoteWidget(parent) {
+  QLayout* main = layout();
+  ssh_widget_ = new ConnectionSSHWidget;
+  main->addWidget(ssh_widget_);
+}
 
 void ConnectionWidget::syncControls(core::IConnectionSettingsBase* connection) {
-  core::IConnectionSettingsRemote* remote =
-      static_cast<core::IConnectionSettingsRemote*>(connection);
-  ConnectionRemoteWidget::syncControls(remote);
+  core::redis::ConnectionSettings* redis =
+      static_cast<core::redis::ConnectionSettings*>(connection);
+  core::SSHInfo ssh_info = redis->SSHInfo();
+  ssh_widget_->setInfo(ssh_info);
+  ConnectionRemoteWidget::syncControls(redis);
 }
 
 void ConnectionWidget::retranslateUi() {
   ConnectionRemoteWidget::retranslateUi();
+}
+
+bool ConnectionWidget::validated() const {
+  core::SSHInfo info = ssh_widget_->info();
+  if (ssh_widget_->isSSHChecked()) {
+    if (info.current_method == core::SSHInfo::PUBLICKEY && info.private_key.empty()) {
+      return false;
+    }
+  }
+
+  return ConnectionRemoteWidget::validated();
+}
+
+core::IConnectionSettingsBase* ConnectionWidget::createConnectionImpl(
+    const core::connection_path_t& path) const {
+  core::redis::ConnectionSettings* conn = new core::redis::ConnectionSettings(path);
+  core::SSHInfo info = ssh_widget_->info();
+  conn->SetSSHInfo(info);
+  return conn;
 }
 }
 }  // namespace gui
