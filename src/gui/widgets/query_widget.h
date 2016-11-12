@@ -28,7 +28,7 @@ class OutputWidget;
 }
 }  // lines 33-33
 namespace fastonosql {
-namespace shell {
+namespace gui {
 class BaseShellWidget;
 }
 }  // lines 28-28
@@ -51,7 +51,7 @@ class QueryWidget : public QWidget {
   void reload();
 
  private:
-  shell::BaseShellWidget* shellWidget_;
+  BaseShellWidget* shellWidget_;
   OutputWidget* outputWidget_;
   const core::IServerSPtr server_;
 };

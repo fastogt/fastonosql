@@ -16,32 +16,34 @@
     along with FastoNoSQL.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-#include "shell/ssdb_lexer.h"
+#include "gui/leveldb/lexer.h"
 
-#include "core/ssdb/db_connection.h"
+#include "core/leveldb/db_connection.h"  // for leveldbCommands, etc
 
 namespace fastonosql {
-namespace shell {
+namespace gui {
+namespace leveldb {
 
-SsdbApi::SsdbApi(QsciLexer* lexer)
-    : BaseQsciApiCommandHolder(core::ssdb::DBConnection::Commands(), lexer) {}
+LeveldbApi::LeveldbApi(QsciLexer* lexer)
+    : BaseQsciApiCommandHolder(core::leveldb::DBConnection::Commands(), lexer) {}
 
-SsdbLexer::SsdbLexer(QObject* parent)
-    : BaseQsciLexerCommandHolder(core::ssdb::DBConnection::Commands(), parent) {
-  setAPIs(new SsdbApi(this));
+Lexer::Lexer(QObject* parent)
+    : BaseQsciLexerCommandHolder(core::leveldb::DBConnection::Commands(), parent) {
+  setAPIs(new LeveldbApi(this));
 }
 
-const char* SsdbLexer::language() const {
-  return "SSDB";
+const char* Lexer::language() const {
+  return "LevelDB";
 }
 
-const char* SsdbLexer::version() const {
-  return core::ssdb::DBConnection::VersionApi();
+const char* Lexer::version() const {
+  return core::leveldb::DBConnection::VersionApi();
 }
 
-const char* SsdbLexer::basedOn() const {
-  return "ssdb-cli";
+const char* Lexer::basedOn() const {
+  return "leveldb";
 }
 
-}  // namespace shell
+}
+}  // namespace gui
 }  // namespace fastonosql

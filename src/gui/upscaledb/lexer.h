@@ -15,41 +15,30 @@
     You should have received a copy of the GNU General Public License
     along with FastoNoSQL.  If not, see <http://www.gnu.org/licenses/>.
 */
-
 #pragma once
 
-#include <stddef.h>  // for size_t
-#include <stdint.h>  // for uint32_t
-#include <vector>    // for vector
-
-#include "core/connection_types.h"  // for connectionTypes
-
-#include "gui/editor/fasto_editor_shell.h"  // for FastoEditorShell
+#include "gui/base_lexer.h"
 
 namespace fastonosql {
-namespace shell {
-class BaseQsciLexer;
-}
-}  // lines 30-30
+namespace gui {
+namespace upscaledb {
 
-namespace fastonosql {
-namespace shell {
-
-class BaseShell : public gui::FastoEditorShell {
+class UpscaleDBApi : public BaseQsciApiCommandHolder {
   Q_OBJECT
  public:
-  std::vector<uint32_t> supportedVersions() const;
-  size_t commandsCount() const;
-  QString version() const;
-  QString basedOn() const;
-  void setFilteredVersion(uint32_t version);
-
-  static BaseShell* createFromType(core::connectionTypes type, bool showAutoCompl);
-
- protected:
-  BaseShell(core::connectionTypes type, bool showAutoCompl, QWidget* parent = 0);
-  BaseQsciLexer* lexer() const;
+  explicit UpscaleDBApi(QsciLexer* lexer);
 };
 
-}  // namespace shell
+class Lexer : public BaseQsciLexerCommandHolder {
+  Q_OBJECT
+ public:
+  explicit Lexer(QObject* parent = 0);
+
+  virtual const char* language() const;
+  virtual const char* version() const;
+  virtual const char* basedOn() const;
+};
+
+}
+}  // namespace gui
 }  // namespace fastonosql

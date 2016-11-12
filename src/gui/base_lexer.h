@@ -28,7 +28,7 @@
 #include "core/command_holder.h"
 
 namespace fastonosql {
-namespace shell {
+namespace gui {
 
 class BaseQsciApi : public QsciAbstractAPIs {
   Q_OBJECT
@@ -98,5 +98,5 @@ class BaseQsciLexerCommandHolder : public BaseQsciLexer {
 
 QString makeCallTip(const core::CommandInfo& info);
 
-}  // namespace shell
+}  // namespace gui
 }  // namespace fastonosql

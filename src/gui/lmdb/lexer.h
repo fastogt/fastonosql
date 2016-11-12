@@ -15,33 +15,30 @@
     You should have received a copy of the GNU General Public License
     along with FastoNoSQL.  If not, see <http://www.gnu.org/licenses/>.
 */
+#pragma once
 
-#include "shell/lmdb_lexer.h"
-
-#include "core/lmdb/db_connection.h"
+#include "gui/base_lexer.h"
 
 namespace fastonosql {
-namespace shell {
+namespace gui {
+namespace lmdb {
 
-LmdbApi::LmdbApi(QsciLexer* lexer)
-    : BaseQsciApiCommandHolder(core::lmdb::DBConnection::Commands(), lexer) {}
+class LmdbApi : public BaseQsciApiCommandHolder {
+  Q_OBJECT
+ public:
+  explicit LmdbApi(QsciLexer* lexer);
+};
 
-LmdbLexer::LmdbLexer(QObject* parent)
-    : BaseQsciLexerCommandHolder(core::lmdb::DBConnection::Commands(), parent) {
-  setAPIs(new LmdbApi(this));
-}
+class Lexer : public BaseQsciLexerCommandHolder {
+  Q_OBJECT
+ public:
+  explicit Lexer(QObject* parent = 0);
 
-const char* LmdbLexer::language() const {
-  return "LMDB";
-}
+  virtual const char* language() const;
+  virtual const char* version() const;
+  virtual const char* basedOn() const;
+};
 
-const char* LmdbLexer::version() const {
-  return core::lmdb::DBConnection::VersionApi();
-}
-
-const char* LmdbLexer::basedOn() const {
-  return "liblmdb";
-}
-
-}  // namespace shell
+}  // namespace lmdb
+}  // namespace gui
 }  // namespace fastonosql

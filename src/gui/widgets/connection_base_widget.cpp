@@ -145,6 +145,8 @@ void ConnectionBaseWidget::syncControls(core::IConnectionSettingsBase* connectio
         StableCommandLine(common::ConvertFromString<QString>(connection->CommandLine())));
     setLogging(connection->IsLoggingEnabled());
     setLoggingInterval(connection->LoggingMsTimeInterval());
+
+    commandLine_->setToolTip(core::CommandLineHelpText(connection->Type()));
   }
 }
 

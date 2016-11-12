@@ -16,32 +16,34 @@
     along with FastoNoSQL.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-#include "shell/rocksdb_lexer.h"
+#include "gui/unqlite/lexer.h"
 
-#include "core/rocksdb/db_connection.h"
+#include "core/unqlite/db_connection.h"
 
 namespace fastonosql {
-namespace shell {
+namespace gui {
+namespace unqlite {
 
-RocksDBApi::RocksDBApi(QsciLexer* lexer)
-    : BaseQsciApiCommandHolder(core::rocksdb::DBConnection::Commands(), lexer) {}
+UnqliteApi::UnqliteApi(QsciLexer* lexer)
+    : BaseQsciApiCommandHolder(core::unqlite::DBConnection::Commands(), lexer) {}
 
-RocksDBLexer::RocksDBLexer(QObject* parent)
-    : BaseQsciLexerCommandHolder(core::rocksdb::DBConnection::Commands(), parent) {
-  setAPIs(new RocksDBApi(this));
+Lexer::Lexer(QObject* parent)
+    : BaseQsciLexerCommandHolder(core::unqlite::DBConnection::Commands(), parent) {
+  setAPIs(new UnqliteApi(this));
 }
 
-const char* RocksDBLexer::language() const {
-  return "RocksDB";
+const char* Lexer::language() const {
+  return "UnQLite";
 }
 
-const char* RocksDBLexer::version() const {
-  return core::rocksdb::DBConnection::VersionApi();
+const char* Lexer::version() const {
+  return core::unqlite::DBConnection::VersionApi();
 }
 
-const char* RocksDBLexer::basedOn() const {
-  return "rocksdb";
+const char* Lexer::basedOn() const {
+  return "unqlite";
 }
 
-}  // namespace shell
+}
+}  // namespace gui
 }  // namespace fastonosql

@@ -16,32 +16,30 @@
     along with FastoNoSQL.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-#include "shell/unqlite_lexer.h"
+#pragma once
 
-#include "core/unqlite/db_connection.h"
+#include "gui/base_lexer.h"
 
 namespace fastonosql {
-namespace shell {
+namespace gui {
+namespace ssdb {
 
-UnqliteApi::UnqliteApi(QsciLexer* lexer)
-    : BaseQsciApiCommandHolder(core::unqlite::DBConnection::Commands(), lexer) {}
+class SsdbApi : public BaseQsciApiCommandHolder {
+  Q_OBJECT
+ public:
+  explicit SsdbApi(QsciLexer* lexer);
+};
 
-UnqliteLexer::UnqliteLexer(QObject* parent)
-    : BaseQsciLexerCommandHolder(core::unqlite::DBConnection::Commands(), parent) {
-  setAPIs(new UnqliteApi(this));
+class Lexer : public BaseQsciLexerCommandHolder {
+  Q_OBJECT
+ public:
+  explicit Lexer(QObject* parent = 0);
+
+  virtual const char* language() const;
+  virtual const char* version() const;
+  virtual const char* basedOn() const;
+};
+
 }
-
-const char* UnqliteLexer::language() const {
-  return "UnQLite";
-}
-
-const char* UnqliteLexer::version() const {
-  return core::unqlite::DBConnection::VersionApi();
-}
-
-const char* UnqliteLexer::basedOn() const {
-  return "unqlite";
-}
-
-}  // namespace shell
+}  // namespace gui
 }  // namespace fastonosql

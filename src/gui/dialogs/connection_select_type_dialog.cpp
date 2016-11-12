@@ -88,6 +88,7 @@ void ConnectionSelectTypeDialog::changeEvent(QEvent* e) {
 
 void ConnectionSelectTypeDialog::retranslateUi() {
   setWindowTitle(trSectTypeTitle);
+  typeConnectionLabel_->setText(tr("Database:"));
 }
 
 }  // namespace gui

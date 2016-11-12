@@ -15,28 +15,35 @@
     You should have received a copy of the GNU General Public License
     along with FastoNoSQL.  If not, see <http://www.gnu.org/licenses/>.
 */
-#pragma once
 
-#include "shell/base_lexer.h"
+#include "gui/rocksdb/lexer.h"
+
+#include "core/rocksdb/db_connection.h"
 
 namespace fastonosql {
-namespace shell {
+namespace gui {
+namespace rocksdb {
 
-class UpscaleDBApi : public BaseQsciApiCommandHolder {
-  Q_OBJECT
- public:
-  explicit UpscaleDBApi(QsciLexer* lexer);
-};
+RocksDBApi::RocksDBApi(QsciLexer* lexer)
+    : BaseQsciApiCommandHolder(core::rocksdb::DBConnection::Commands(), lexer) {}
 
-class UpscaleDBLexer : public BaseQsciLexerCommandHolder {
-  Q_OBJECT
- public:
-  explicit UpscaleDBLexer(QObject* parent = 0);
+Lexer::Lexer(QObject* parent)
+    : BaseQsciLexerCommandHolder(core::rocksdb::DBConnection::Commands(), parent) {
+  setAPIs(new RocksDBApi(this));
+}
 
-  virtual const char* language() const;
-  virtual const char* version() const;
-  virtual const char* basedOn() const;
-};
+const char* Lexer::language() const {
+  return "RocksDB";
+}
 
-}  // namespace shell
+const char* Lexer::version() const {
+  return core::rocksdb::DBConnection::VersionApi();
+}
+
+const char* Lexer::basedOn() const {
+  return "rocksdb";
+}
+
+}
+}  // namespace gui
 }  // namespace fastonosql

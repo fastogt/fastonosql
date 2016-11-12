@@ -24,31 +24,6 @@
 #include <common/macros.h>  // for NOTREACHED, SIZEOFMASS
 #include <common/convert2string.h>
 
-#ifdef BUILD_WITH_REDIS
-#include "core/redis/config.h"  // for ConvertToString, Config
-#endif
-#ifdef BUILD_WITH_MEMCACHED
-#include "core/memcached/config.h"  // for ConvertToString, Config
-#endif
-#ifdef BUILD_WITH_SSDB
-#include "core/ssdb/config.h"  // for ConvertToString, Config
-#endif
-#ifdef BUILD_WITH_LEVELDB
-#include "core/leveldb/config.h"  // for Config, ConvertToString
-#endif
-#ifdef BUILD_WITH_ROCKSDB
-#include "core/rocksdb/config.h"  // for Config, ConvertToString
-#endif
-#ifdef BUILD_WITH_UNQLITE
-#include "core/unqlite/config.h"  // for Config, ConvertToString
-#endif
-#ifdef BUILD_WITH_LMDB
-#include "core/lmdb/config.h"  // for Config, ConvertToString
-#endif
-#ifdef BUILD_WITH_UPSCALEDB
-#include "core/upscaledb/config.h"  // for Config, ConvertToString
-#endif
-
 namespace fastonosql {
 namespace core {
 
@@ -254,64 +229,6 @@ const char* CommandLineHelpText(connectionTypes type) {
 
   NOTREACHED();
   return nullptr;
-}
-
-std::string DefaultCommandLine(connectionTypes type) {
-#ifdef BUILD_WITH_REDIS
-  if (type == REDIS) {
-    redis::Config r;
-    return common::ConvertToString(r);
-  }
-#endif
-#ifdef BUILD_WITH_MEMCACHED
-  if (type == MEMCACHED) {
-    memcached::Config r;
-    return common::ConvertToString(r);
-  }
-#endif
-#ifdef BUILD_WITH_SSDB
-  if (type == SSDB) {
-    ssdb::Config r;
-    return common::ConvertToString(r);
-  }
-#endif
-#ifdef BUILD_WITH_LEVELDB
-  if (type == LEVELDB) {
-    leveldb::Config r;
-    r.options.create_if_missing = true;
-    return common::ConvertToString(r);
-  }
-#endif
-#ifdef BUILD_WITH_ROCKSDB
-  if (type == ROCKSDB) {
-    rocksdb::Config r;
-    r.options.create_if_missing = true;
-    return common::ConvertToString(r);
-  }
-#endif
-#ifdef BUILD_WITH_UNQLITE
-  if (type == UNQLITE) {
-    unqlite::Config r;
-    r.create_if_missing = true;
-    return common::ConvertToString(r);
-  }
-#endif
-#ifdef BUILD_WITH_LMDB
-  if (type == LMDB) {
-    lmdb::Config r;
-    r.create_if_missing = true;
-    return common::ConvertToString(r);
-  }
-#endif
-#ifdef BUILD_WITH_UPSCALEDB
-  if (type == UPSCALEDB) {
-    upscaledb::Config r;
-    r.create_if_missing = true;
-    return common::ConvertToString(r);
-  }
-#endif
-  NOTREACHED();
-  return std::string();
 }
 }
 }

@@ -16,28 +16,34 @@
     along with FastoNoSQL.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-#pragma once
+#include "gui/lmdb/lexer.h"
 
-#include "shell/base_lexer.h"
+#include "core/lmdb/db_connection.h"
 
 namespace fastonosql {
-namespace shell {
+namespace gui {
+namespace lmdb {
 
-class MemcachedApi : public BaseQsciApiCommandHolder {
-  Q_OBJECT
- public:
-  explicit MemcachedApi(QsciLexer* lexer);
-};
+LmdbApi::LmdbApi(QsciLexer* lexer)
+    : BaseQsciApiCommandHolder(core::lmdb::DBConnection::Commands(), lexer) {}
 
-class MemcachedLexer : public BaseQsciLexerCommandHolder {
-  Q_OBJECT
- public:
-  explicit MemcachedLexer(QObject* parent = 0);
+Lexer::Lexer(QObject* parent)
+    : BaseQsciLexerCommandHolder(core::lmdb::DBConnection::Commands(), parent) {
+  setAPIs(new LmdbApi(this));
+}
 
-  virtual const char* language() const;
-  virtual const char* version() const;
-  virtual const char* basedOn() const;
-};
+const char* Lexer::language() const {
+  return "LMDB";
+}
 
-}  // namespace shell
+const char* Lexer::version() const {
+  return core::lmdb::DBConnection::VersionApi();
+}
+
+const char* Lexer::basedOn() const {
+  return "liblmdb";
+}
+
+}  // namespace lmdb
+}  // namespace gui
 }  // namespace fastonosql

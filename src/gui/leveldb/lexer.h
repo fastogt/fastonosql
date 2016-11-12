@@ -16,32 +16,30 @@
     along with FastoNoSQL.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-#include "shell/leveldb_lexer.h"
+#pragma once
 
-#include "core/leveldb/db_connection.h"  // for leveldbCommands, etc
+#include "gui/base_lexer.h"
 
 namespace fastonosql {
-namespace shell {
+namespace gui {
+namespace leveldb {
 
-LeveldbApi::LeveldbApi(QsciLexer* lexer)
-    : BaseQsciApiCommandHolder(core::leveldb::DBConnection::Commands(), lexer) {}
+class LeveldbApi : public BaseQsciApiCommandHolder {
+  Q_OBJECT
+ public:
+  explicit LeveldbApi(QsciLexer* lexer);
+};
 
-LeveldbLexer::LeveldbLexer(QObject* parent)
-    : BaseQsciLexerCommandHolder(core::leveldb::DBConnection::Commands(), parent) {
-  setAPIs(new LeveldbApi(this));
-}
+class Lexer : public BaseQsciLexerCommandHolder {
+  Q_OBJECT
+ public:
+  explicit Lexer(QObject* parent = 0);
 
-const char* LeveldbLexer::language() const {
-  return "LevelDB";
-}
+  virtual const char* language() const;
+  virtual const char* version() const;
+  virtual const char* basedOn() const;
+};
 
-const char* LeveldbLexer::version() const {
-  return core::leveldb::DBConnection::VersionApi();
-}
-
-const char* LeveldbLexer::basedOn() const {
-  return "leveldb";
-}
-
-}  // namespace shell
+}  // namespace leveldb
+}  // namespace gui
 }  // namespace fastonosql

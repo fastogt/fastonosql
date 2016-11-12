@@ -16,7 +16,7 @@
     along with FastoNoSQL.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-#include "shell/base_lexer.h"
+#include "gui/base_lexer.h"
 
 #include <common/convert2string.h>  // for ConvertFromString
 #include <common/macros.h>          // for UNUSED, CHECK
@@ -25,7 +25,7 @@
 #include "core/command_holder.h"
 
 namespace fastonosql {
-namespace shell {
+namespace gui {
 
 BaseQsciApi::BaseQsciApi(QsciLexer* lexer)
     : QsciAbstractAPIs(lexer), filtered_version_(UNDEFINED_SINCE) {}
@@ -197,5 +197,5 @@ QString makeCallTip(const core::CommandInfo& info) {
            common::ConvertFromString<QString>(info.example));
 }
 
-}  // namespace shell
+}  // namespace gui
 }  // namespace fastonosql

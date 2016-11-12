@@ -79,7 +79,6 @@ enum ConnectionMode {
 bool IsRemoteType(connectionTypes type);
 bool IsCanSSHConnection(connectionTypes type);
 const char* CommandLineHelpText(connectionTypes type);
-std::string DefaultCommandLine(connectionTypes type);
 
 }  // namespace core
 }  // namespace fastonosql

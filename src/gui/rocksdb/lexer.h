@@ -16,32 +16,30 @@
     along with FastoNoSQL.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-#include "shell/upscaledb_lexer.h"
+#pragma once
 
-#include "core/upscaledb/db_connection.h"
+#include "gui/base_lexer.h"
 
 namespace fastonosql {
-namespace shell {
+namespace gui {
+namespace rocksdb {
 
-UpscaleDBApi::UpscaleDBApi(QsciLexer* lexer)
-    : BaseQsciApiCommandHolder(core::upscaledb::DBConnection::Commands(), lexer) {}
+class RocksDBApi : public BaseQsciApiCommandHolder {
+  Q_OBJECT
+ public:
+  explicit RocksDBApi(QsciLexer* lexer);
+};
 
-UpscaleDBLexer::UpscaleDBLexer(QObject* parent)
-    : BaseQsciLexerCommandHolder(core::upscaledb::DBConnection::Commands(), parent) {
-  setAPIs(new UpscaleDBApi(this));
+class Lexer : public BaseQsciLexerCommandHolder {
+  Q_OBJECT
+ public:
+  explicit Lexer(QObject* parent = 0);
+
+  virtual const char* language() const;
+  virtual const char* version() const;
+  virtual const char* basedOn() const;
+};
+
 }
-
-const char* UpscaleDBLexer::language() const {
-  return "UpscaleDB";
-}
-
-const char* UpscaleDBLexer::version() const {
-  return core::upscaledb::DBConnection::VersionApi();
-}
-
-const char* UpscaleDBLexer::basedOn() const {
-  return "libupscaledb";
-}
-
-}  // namespace shell
+}  // namespace gui
 }  // namespace fastonosql

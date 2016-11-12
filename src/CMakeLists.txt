@@ -134,6 +134,9 @@ SET(HEADERS_GUI_TO_MOC
   gui/fasto_common_model.h
   gui/fasto_table_view.h
   gui/fasto_scintilla.h
+  gui/shell_widget.h
+  gui/base_lexer.h
+  gui/base_shell.h
 )
 SET(HEADERS_GUI
   gui/gui_factory.h
@@ -158,6 +161,9 @@ SET(SOURCES_GUI
   gui/shortcuts.cpp
   gui/fasto_scintilla.cpp
   gui/connection_widgets_factory.cpp
+  gui/shell_widget.cpp
+  gui/base_lexer.cpp
+  gui/base_shell.cpp
 )
 
 SET(HEADERS_CORE_INTERNAL
@@ -340,19 +346,6 @@ SET(SOURCES_CORE
   core/connection_settings_factory.cpp
 )
 
-SET(HEADERS_SHELL_TO_MOC
-  shell/shell_widget.h
-  shell/base_lexer.h
-  shell/base_shell.h
-)
-SET(HEADERS_SHELL
-)
-SET(SOURCES_SHELL
-  shell/shell_widget.cpp
-  shell/base_lexer.cpp
-  shell/base_shell.cpp
-)
-
 SET(HEADERS_TRANSLATIONS
   translations/global.h
 )
@@ -384,21 +377,13 @@ INCLUDE_DIRECTORIES(${CMAKE_CURRENT_LIST_DIR})
 
 #redis
 IF(BUILD_WITH_REDIS)
-  SET(HEADERS_SHELL_TO_MOC ${HEADERS_SHELL_TO_MOC}
-    shell/redis_lexer.h
-  )
-  SET(HEADERS_SHELL ${HEADERS_SHELL}
-  )
-  SET(SOURCES_SHELL ${SOURCES_SHELL}
-    shell/redis_lexer.cpp
-  )
   ADD_SUBDIRECTORY(third-party/libssh2)
   ADD_SUBDIRECTORY(third-party/redis)
   SET(INCLUDE_DIRS ${INCLUDE_DIRS} third-party/redis/src third-party/redis/deps)
 
-  SET(HEADERS_REDIS_GUI_TO_MOC gui/redis/connection_widget.h)
+  SET(HEADERS_REDIS_GUI_TO_MOC gui/redis/connection_widget.h gui/redis/lexer.h)
   SET(HEADERS_REDIS_GUI)
-  SET(SOURCES_REDIS_GUI gui/redis/connection_widget.cpp)
+  SET(SOURCES_REDIS_GUI gui/redis/connection_widget.cpp gui/redis/lexer.cpp)
 
   SET(HEADERS_REDIS_TO_MOC
     core/redis/sentinel.h
@@ -447,20 +432,12 @@ ENDIF(BUILD_WITH_REDIS)
 IF(BUILD_WITH_MEMCACHED)
   FIND_PACKAGE(Sasl2 QUIET)
   SET(USE_SASL2 ${SASL2_FOUND})
-  SET(HEADERS_SHELL_TO_MOC ${HEADERS_SHELL_TO_MOC}
-    shell/memcached_lexer.h
-  )
-  SET(HEADERS_SHELL ${HEADERS_SHELL}
-  )
-  SET(SOURCES_SHELL ${SOURCES_SHELL}
-    shell/memcached_lexer.cpp
-  )
   ADD_SUBDIRECTORY(third-party/memcached)
   SET(INCLUDE_DIRS ${INCLUDE_DIRS} third-party/memcached/src)
 
-  SET(HEADERS_MEMCACHED_GUI_TO_MOC gui/memcached/connection_widget.h)
+  SET(HEADERS_MEMCACHED_GUI_TO_MOC gui/memcached/connection_widget.h gui/memcached/lexer.h)
   SET(HEADERS_MEMCACHED_GUI)
-  SET(SOURCES_MEMCACHED_GUI gui/memcached/connection_widget.cpp)
+  SET(SOURCES_MEMCACHED_GUI gui/memcached/connection_widget.cpp gui/memcached/lexer.cpp)
 
   SET(HEADERS_MEMCACHED_TO_MOC
     core/memcached/server.h
@@ -493,20 +470,12 @@ ENDIF(BUILD_WITH_MEMCACHED)
 
 #ssdb
 IF(BUILD_WITH_SSDB)
-  SET(HEADERS_SHELL_TO_MOC ${HEADERS_SHELL_TO_MOC}
-    shell/ssdb_lexer.h
-  )
-  SET(HEADERS_SHELL ${HEADERS_SHELL}
-  )
-  SET(SOURCES_SHELL ${SOURCES_SHELL}
-    shell/ssdb_lexer.cpp
-  )
   ADD_SUBDIRECTORY(third-party/ssdb)
   SET(INCLUDE_DIRS ${INCLUDE_DIRS} third-party/ssdb/src)
 
-  SET(HEADERS_SSDB_GUI_TO_MOC gui/ssdb/connection_widget.h)
+  SET(HEADERS_SSDB_GUI_TO_MOC gui/ssdb/connection_widget.h gui/ssdb/lexer.h)
   SET(HEADERS_SSDB_GUI)
-  SET(SOURCES_SSDB_GUI gui/ssdb/connection_widget.cpp)
+  SET(SOURCES_SSDB_GUI gui/ssdb/connection_widget.cpp gui/ssdb/lexer.cpp)
 
   SET(HEADERS_SSDB_TO_MOC
     core/ssdb/server.h
@@ -539,20 +508,12 @@ ENDIF(BUILD_WITH_SSDB)
 
 #leveldb
 IF(BUILD_WITH_LEVELDB)
-  SET(HEADERS_SHELL_TO_MOC ${HEADERS_SHELL_TO_MOC}
-    shell/leveldb_lexer.h
-  )
-  SET(HEADERS_SHELL ${HEADERS_SHELL}
-  )
-  SET(SOURCES_SHELL ${SOURCES_SHELL}
-    shell/leveldb_lexer.cpp
-  )
   ADD_SUBDIRECTORY(third-party/leveldb)
   SET(INCLUDE_DIRS ${INCLUDE_DIRS} third-party/leveldb/src/include)
 
-  SET(HEADERS_LEVELDB_GUI_TO_MOC gui/leveldb/connection_widget.h)
+  SET(HEADERS_LEVELDB_GUI_TO_MOC gui/leveldb/connection_widget.h gui/leveldb/lexer.h)
   SET(HEADERS_LEVELDB_GUI)
-  SET(SOURCES_LEVELDB_GUI gui/leveldb/connection_widget.cpp)
+  SET(SOURCES_LEVELDB_GUI gui/leveldb/connection_widget.cpp gui/leveldb/lexer.cpp)
 
   SET(HEADERS_LEVELDB_TO_MOC
     core/leveldb/server.h
@@ -586,20 +547,12 @@ ENDIF(BUILD_WITH_LEVELDB)
 #rocksdb
 IF(BUILD_WITH_ROCKSDB)
   FIND_LIBRARY(ROCKSDB_LIBRARY rocksdb)
-  SET(HEADERS_SHELL_TO_MOC ${HEADERS_SHELL_TO_MOC}
-    shell/rocksdb_lexer.h
-  )
-  SET(HEADERS_SHELL ${HEADERS_SHELL}
-  )
-  SET(SOURCES_SHELL ${SOURCES_SHELL}
-    shell/rocksdb_lexer.cpp
-  )
   #ADD_SUBDIRECTORY(third-party/rocksdb)
   #SET(INCLUDE_DIRS ${INCLUDE_DIRS} third-party/rocksdb/src/include)
 
-  SET(HEADERS_ROCKSDB_GUI_TO_MOC gui/rocksdb/connection_widget.h)
+  SET(HEADERS_ROCKSDB_GUI_TO_MOC gui/rocksdb/connection_widget.h gui/rocksdb/lexer.h)
   SET(HEADERS_ROCKSDB_GUI)
-  SET(SOURCES_ROCKSDB_GUI gui/rocksdb/connection_widget.cpp)
+  SET(SOURCES_ROCKSDB_GUI gui/rocksdb/connection_widget.cpp gui/rocksdb/lexer.cpp)
 
   SET(HEADERS_ROCKSDB_TO_MOC
     core/rocksdb/server.h
@@ -633,20 +586,12 @@ ENDIF(BUILD_WITH_ROCKSDB)
 
 #unqlite
 IF(BUILD_WITH_UNQLITE)
-  SET(HEADERS_SHELL_TO_MOC ${HEADERS_SHELL_TO_MOC}
-    shell/unqlite_lexer.h
-  )
-  SET(HEADERS_SHELL ${HEADERS_SHELL}
-  )
-  SET(SOURCES_SHELL ${SOURCES_SHELL}
-    shell/unqlite_lexer.cpp
-  )
   ADD_SUBDIRECTORY(third-party/unqlite)
   SET(INCLUDE_DIRS ${INCLUDE_DIRS} third-party/unqlite/src)
 
-  SET(HEADERS_UNQLITE_GUI_TO_MOC gui/unqlite/connection_widget.h)
+  SET(HEADERS_UNQLITE_GUI_TO_MOC gui/unqlite/connection_widget.h gui/unqlite/lexer.h)
   SET(HEADERS_UNQLITE_GUI)
-  SET(SOURCES_UNQLITE_GUI gui/unqlite/connection_widget.cpp)
+  SET(SOURCES_UNQLITE_GUI gui/unqlite/connection_widget.cpp gui/unqlite/lexer.cpp)
 
   SET(HEADERS_UNQLITE_TO_MOC
     core/unqlite/server.h
@@ -679,20 +624,12 @@ ENDIF(BUILD_WITH_UNQLITE)
 
 #lmdb
 IF(BUILD_WITH_LMDB)
-  SET(HEADERS_SHELL_TO_MOC ${HEADERS_SHELL_TO_MOC}
-    shell/lmdb_lexer.h
-  )
-  SET(HEADERS_SHELL ${HEADERS_SHELL}
-  )
-  SET(SOURCES_SHELL ${SOURCES_SHELL}
-    shell/lmdb_lexer.cpp
-  )
   ADD_SUBDIRECTORY(third-party/lmdb)
   SET(INCLUDE_DIRS ${INCLUDE_DIRS} third-party/lmdb/src/libraries/liblmdb)
 
-  SET(HEADERS_LMDB_GUI_TO_MOC gui/lmdb/connection_widget.h)
+  SET(HEADERS_LMDB_GUI_TO_MOC gui/lmdb/connection_widget.h gui/lmdb/lexer.h)
   SET(HEADERS_LMDB_GUI)
-  SET(SOURCES_LMDB_GUI gui/lmdb/connection_widget.cpp)
+  SET(SOURCES_LMDB_GUI gui/lmdb/connection_widget.cpp gui/lmdb/lexer.cpp)
 
   SET(HEADERS_LMDB_TO_MOC
     core/lmdb/server.h
@@ -727,20 +664,12 @@ ENDIF(BUILD_WITH_LMDB)
 IF(BUILD_WITH_UPSCALEDB)
   FIND_PACKAGE(Boost COMPONENTS thread system REQUIRED)
   FIND_LIBRARY(UPSCALEDB_LIBRARY upscaledb)
-  SET(HEADERS_SHELL_TO_MOC ${HEADERS_SHELL_TO_MOC}
-    shell/upscaledb_lexer.h
-  )
-  SET(HEADERS_SHELL ${HEADERS_SHELL}
-  )
-  SET(SOURCES_SHELL ${SOURCES_SHELL}
-    shell/upscaledb_lexer.cpp
-  )
   #ADD_SUBDIRECTORY(third-party/upscaledb)
   #SET(INCLUDE_DIRS ${INCLUDE_DIRS} third-party/upscaledb/src/include)
 
-  SET(HEADERS_UPSCALEDB_GUI_TO_MOC gui/upscaledb/connection_widget.h)
+  SET(HEADERS_UPSCALEDB_GUI_TO_MOC gui/upscaledb/connection_widget.h gui/upscaledb/lexer.h)
   SET(HEADERS_UPSCALEDB_GUI)
-  SET(SOURCES_UPSCALEDB_GUI gui/upscaledb/connection_widget.cpp)
+  SET(SOURCES_UPSCALEDB_GUI gui/upscaledb/connection_widget.cpp gui/upscaledb/lexer.cpp)
 
   SET(HEADERS_UPSCALEDB_TO_MOC
     core/upscaledb/server.h

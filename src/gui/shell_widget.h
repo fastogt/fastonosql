@@ -131,13 +131,13 @@ struct SetDefaultDatabaseResponce;
 }
 }
 namespace fastonosql {
-namespace shell {
+namespace gui {
 class BaseShell;
 }
 }  // lines 42-42
 
 namespace fastonosql {
-namespace shell {
+namespace gui {
 
 class BaseShellWidget : public QWidget {
   Q_OBJECT
@@ -218,5 +218,5 @@ class BaseShellWidget : public QWidget {
   QString filePath_;
 };
 
-}  // namespace shell
+}  // namespace gui
 }  // namespace fastonosql

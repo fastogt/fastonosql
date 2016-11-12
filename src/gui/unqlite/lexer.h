@@ -18,26 +18,28 @@
 
 #pragma once
 
-#include "shell/base_lexer.h"
+#include "gui/base_lexer.h"
 
 namespace fastonosql {
-namespace shell {
+namespace gui {
+namespace unqlite {
 
-class SsdbApi : public BaseQsciApiCommandHolder {
+class UnqliteApi : public BaseQsciApiCommandHolder {
   Q_OBJECT
  public:
-  explicit SsdbApi(QsciLexer* lexer);
+  explicit UnqliteApi(QsciLexer* lexer);
 };
 
-class SsdbLexer : public BaseQsciLexerCommandHolder {
+class Lexer : public BaseQsciLexerCommandHolder {
   Q_OBJECT
  public:
-  explicit SsdbLexer(QObject* parent = 0);
+  explicit Lexer(QObject* parent = 0);
 
   virtual const char* language() const;
   virtual const char* version() const;
   virtual const char* basedOn() const;
 };
 
-}  // namespace shell
+}
+}  // namespace gui
 }  // namespace fastonosql

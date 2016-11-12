@@ -15,28 +15,35 @@
     You should have received a copy of the GNU General Public License
     along with FastoNoSQL.  If not, see <http://www.gnu.org/licenses/>.
 */
-#pragma once
 
-#include "shell/base_lexer.h"
+#include "gui/memcached/lexer.h"
+
+#include "core/memcached/db_connection.h"
 
 namespace fastonosql {
-namespace shell {
+namespace gui {
+namespace memcached {
 
-class LmdbApi : public BaseQsciApiCommandHolder {
-  Q_OBJECT
- public:
-  explicit LmdbApi(QsciLexer* lexer);
-};
+MemcachedApi::MemcachedApi(QsciLexer* lexer)
+    : BaseQsciApiCommandHolder(core::memcached::DBConnection::Commands(), lexer) {}
 
-class LmdbLexer : public BaseQsciLexerCommandHolder {
-  Q_OBJECT
- public:
-  explicit LmdbLexer(QObject* parent = 0);
+Lexer::Lexer(QObject* parent)
+    : BaseQsciLexerCommandHolder(core::memcached::DBConnection::Commands(), parent) {
+  setAPIs(new MemcachedApi(this));
+}
 
-  virtual const char* language() const;
-  virtual const char* version() const;
-  virtual const char* basedOn() const;
-};
+const char* Lexer::language() const {
+  return "Memcached";
+}
 
-}  // namespace shell
+const char* Lexer::version() const {
+  return core::memcached::DBConnection::VersionApi();
+}
+
+const char* Lexer::basedOn() const {
+  return "libmemcached";
+}
+
+}
+}  // namespace gui
 }  // namespace fastonosql

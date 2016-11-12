@@ -16,28 +16,34 @@
     along with FastoNoSQL.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-#pragma once
+#include "gui/redis/lexer.h"
 
-#include "shell/base_lexer.h"
+#include "core/redis/db_connection.h"  // for redisCommands, DBConnection
 
 namespace fastonosql {
-namespace shell {
+namespace gui {
+namespace redis {
 
-class RedisApi : public BaseQsciApiCommandHolder {
-  Q_OBJECT
- public:
-  explicit RedisApi(QsciLexer* lexer);
-};
+RedisApi::RedisApi(QsciLexer* lexer)
+    : BaseQsciApiCommandHolder(core::redis::DBConnection::Commands(), lexer) {}
 
-class RedisLexer : public BaseQsciLexerCommandHolder {
-  Q_OBJECT
- public:
-  explicit RedisLexer(QObject* parent = 0);
+Lexer::Lexer(QObject* parent)
+    : BaseQsciLexerCommandHolder(core::redis::DBConnection::Commands(), parent) {
+  setAPIs(new RedisApi(this));
+}
 
-  virtual const char* language() const;
-  virtual const char* version() const;
-  virtual const char* basedOn() const;
-};
+const char* Lexer::language() const {
+  return "Redis";
+}
 
-}  // namespace shell
+const char* Lexer::version() const {
+  return core::redis::DBConnection::VersionApi();
+}
+
+const char* Lexer::basedOn() const {
+  return "hiredis";
+}
+
+}
+}  // namespace gui
 }  // namespace fastonosql

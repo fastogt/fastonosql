@@ -16,7 +16,7 @@
     along with FastoNoSQL.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-#include "shell/base_shell.h"
+#include "gui/base_shell.h"
 
 #include <vector>  // for vector
 
@@ -27,38 +27,38 @@
 
 #include "gui/gui_factory.h"  // for GuiFactory
 
-#include "shell/base_lexer.h"  // for BaseQsciLexer, BaseQsciApi, etc
+#include "gui/base_lexer.h"  // for BaseQsciLexer, BaseQsciApi, etc
 
 #ifdef BUILD_WITH_REDIS
-#include "shell/redis_lexer.h"
+#include "gui/redis/lexer.h"
 #endif
 
 #ifdef BUILD_WITH_MEMCACHED
-#include "shell/memcached_lexer.h"
+#include "gui/memcached/lexer.h"
 #endif
 
 #ifdef BUILD_WITH_SSDB
-#include "shell/ssdb_lexer.h"
+#include "gui/ssdb/lexer.h"
 #endif
 
 #ifdef BUILD_WITH_LEVELDB
-#include "shell/leveldb_lexer.h"
+#include "gui/leveldb/lexer.h"
 #endif
 
 #ifdef BUILD_WITH_ROCKSDB
-#include "shell/rocksdb_lexer.h"
+#include "gui/rocksdb/lexer.h"
 #endif
 
 #ifdef BUILD_WITH_UNQLITE
-#include "shell/unqlite_lexer.h"
+#include "gui/unqlite/lexer.h"
 #endif
 
 #ifdef BUILD_WITH_LMDB
-#include "shell/lmdb_lexer.h"
+#include "gui/lmdb/lexer.h"
 #endif
 
 #ifdef BUILD_WITH_UPSCALEDB
-#include "shell/upscaledb_lexer.h"
+#include "gui/upscaledb/lexer.h"
 #endif
 
 namespace {
@@ -66,7 +66,7 @@ const QSize image_size(64, 64);
 }
 
 namespace fastonosql {
-namespace shell {
+namespace gui {
 
 BaseShell::BaseShell(core::connectionTypes type, bool showAutoCompl, QWidget* parent)
     : gui::FastoEditorShell(showAutoCompl, parent) {
@@ -74,42 +74,42 @@ BaseShell::BaseShell(core::connectionTypes type, bool showAutoCompl, QWidget* pa
   BaseQsciLexer* lex = nullptr;
 #ifdef BUILD_WITH_REDIS
   if (type == core::REDIS) {
-    lex = new RedisLexer(this);
+    lex = new redis::Lexer(this);
   }
 #endif
 #ifdef BUILD_WITH_MEMCACHED
   if (type == core::MEMCACHED) {
-    lex = new MemcachedLexer(this);
+    lex = new memcached::Lexer(this);
   }
 #endif
 #ifdef BUILD_WITH_SSDB
   if (type == core::SSDB) {
-    lex = new SsdbLexer(this);
+    lex = new ssdb::Lexer(this);
   }
 #endif
 #ifdef BUILD_WITH_LEVELDB
   if (type == core::LEVELDB) {
-    lex = new LeveldbLexer(this);
+    lex = new leveldb::Lexer(this);
   }
 #endif
 #ifdef BUILD_WITH_ROCKSDB
   if (type == core::ROCKSDB) {
-    lex = new RocksDBLexer(this);
+    lex = new rocksdb::Lexer(this);
   }
 #endif
 #ifdef BUILD_WITH_UNQLITE
   if (type == core::UNQLITE) {
-    lex = new UnqliteLexer(this);
+    lex = new unqlite::Lexer(this);
   }
 #endif
 #ifdef BUILD_WITH_LMDB
   if (type == core::LMDB) {
-    lex = new LmdbLexer(this);
+    lex = new lmdb::Lexer(this);
   }
 #endif
 #ifdef BUILD_WITH_UPSCALEDB
   if (type == core::UPSCALEDB) {
-    lex = new UpscaleDBLexer(this);
+    lex = new upscaledb::Lexer(this);
   }
 #endif
   registerImage(BaseQsciLexer::Command,
@@ -160,5 +160,5 @@ BaseShell* BaseShell::createFromType(core::connectionTypes type, bool showAutoCo
   return new BaseShell(type, showAutoCompl);
 }
 
-}  // namespace shell
+}  // namespace gui
 }  // namespace fastonosql

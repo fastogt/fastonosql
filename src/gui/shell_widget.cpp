@@ -16,7 +16,7 @@
     along with FastoNoSQL.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-#include "shell/shell_widget.h"
+#include "gui/shell_widget.h"
 
 #include <stddef.h>  // for size_t
 #include <stdint.h>  // for uint32_t
@@ -57,7 +57,7 @@
 #include "gui/gui_factory.h"  // for GuiFactory
 #include "gui/shortcuts.h"    // for executeKey
 
-#include "shell/base_shell.h"  // for BaseShell
+#include "gui/base_shell.h"  // for BaseShell
 
 #include "translations/global.h"  // for trError, trSaveAs, etc
 
@@ -72,7 +72,7 @@ const QString trCalculating = QObject::tr("Calculate...");
 }
 
 namespace fastonosql {
-namespace shell {
+namespace gui {
 
 namespace {
 BaseShell* makeBaseShell(core::connectionTypes type, QWidget* parent) {
@@ -545,5 +545,5 @@ void BaseShellWidget::syncConnectionActions() {
   stopAction_->setEnabled(is_connected);
 }
 
-}  // namespace shell
+}  // namespace gui
 }  // namespace fastonosql
