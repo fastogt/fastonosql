@@ -30,7 +30,9 @@ extern "C" {
 namespace fastonosql {
 namespace core {
 
-LocalConfig::LocalConfig(const std::string& dbname) : BaseConfig<LOCAL>(), dbname(dbname) {}
+LocalConfig::LocalConfig(const std::string& dbname) : BaseConfig(), dbname(dbname) {}
+
+LocalConfig::LocalConfig(const BaseConfig& cfg) : BaseConfig(cfg), dbname() {}
 
 config_args_t LocalConfig::Args() const {
   config_args_t argv;
@@ -53,8 +55,9 @@ config_args_t LocalConfig::Args() const {
   return argv;
 }
 
-RemoteConfig::RemoteConfig(const common::net::HostAndPort& host)
-    : BaseConfig<REMOTE>(), host(host) {}
+RemoteConfig::RemoteConfig(const common::net::HostAndPort& host) : BaseConfig(), host(host) {}
+
+RemoteConfig::RemoteConfig(const BaseConfig& cfg) : BaseConfig(cfg), host() {}
 
 config_args_t RemoteConfig::Args() const {
   config_args_t argv;

@@ -28,6 +28,7 @@
 #include <common/net/types.h>    // for HostAndPort
 
 #include "core/connection_types.h"  // for connectionTypes
+#include "core/config/config.h"
 
 namespace fastonosql {
 namespace core {
@@ -90,6 +91,8 @@ class IConnectionSettingsBase : public IConnectionSettings {
   std::string LoggingPath() const;
 
   void SetConnectionPathAndUpdateHash(const connection_path_t& name);
+
+  virtual BaseConfig Conf() const = 0;
 
   virtual std::string CommandLine() const = 0;
   virtual void SetCommandLine(const std::string& line) = 0;

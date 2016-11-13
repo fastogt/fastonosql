@@ -27,5 +27,10 @@ IConnectionSettingsLocal::IConnectionSettingsLocal(const connection_path_t& conn
   DCHECK(!IsRemoteType(type));
 }
 
+std::string IConnectionSettingsLocal::DBpath() const {
+  LocalConfig lc = LocalConf();
+  return lc.dbname;
+}
+
 }  // namespace core
 }  // namespace fastonosql

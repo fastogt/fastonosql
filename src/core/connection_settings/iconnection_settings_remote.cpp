@@ -27,10 +27,9 @@ IConnectionSettingsRemote::IConnectionSettingsRemote(const connection_path_t& co
   CHECK(IsRemoteType(type));
 }
 
-IConnectionSettingsRemote::~IConnectionSettingsRemote() {}
-
 std::string IConnectionSettingsRemote::FullAddress() const {
-  return common::ConvertToString(Host());
+  RemoteConfig rconf = RemoteConf();
+  return common::ConvertToString(rconf.host);
 }
 
 }  // namespace core

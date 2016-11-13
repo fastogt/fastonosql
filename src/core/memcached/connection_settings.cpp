@@ -31,6 +31,14 @@ namespace memcached {
 ConnectionSettings::ConnectionSettings(const connection_path_t& connectionName)
     : IConnectionSettingsRemote(connectionName, MEMCACHED), info_() {}
 
+BaseConfig ConnectionSettings::Conf() const {
+  return info_;
+}
+
+RemoteConfig ConnectionSettings::RemoteConf() const {
+  return info_;
+}
+
 std::string ConnectionSettings::CommandLine() const {
   return common::ConvertToString(info_);
 }

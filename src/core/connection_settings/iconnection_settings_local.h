@@ -25,7 +25,10 @@ namespace core {
 
 class IConnectionSettingsLocal : public IConnectionSettingsBase {
  public:
-  virtual std::string DBpath() const = 0;
+  std::string DBpath() const;
+
+  virtual BaseConfig Conf() const = 0;
+  virtual LocalConfig LocalConf() const = 0;
 
  protected:
   IConnectionSettingsLocal(const connection_path_t& connectionPath, connectionTypes type);

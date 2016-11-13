@@ -33,11 +33,11 @@ class ConnectionSettings : public IConnectionSettingsRemoteSSH {
  public:
   explicit ConnectionSettings(const connection_path_t& connectionName);
 
+  virtual BaseConfig Conf() const override;
+  virtual RemoteConfig RemoteConf() const override;
+
   virtual std::string CommandLine() const override;
   virtual void SetCommandLine(const std::string& line) override;
-
-  virtual void SetHost(const common::net::HostAndPort& host) override;
-  virtual common::net::HostAndPort Host() const override;
 
   Config Info() const;
   void SetInfo(const Config& info);

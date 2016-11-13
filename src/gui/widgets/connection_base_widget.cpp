@@ -39,12 +39,15 @@ namespace {
 const char* defaultNameConnectionFolder = "/";
 const QString trLoggingToolTip = QObject::tr("INFO command timeout in msec for history statistic.");
 QString StableCommandLine(QString input) {
-  return input.replace('\n', "\\n");
+  return input.replace('\n', "\\n").replace("\\r", "\r");
 }
 
 QString toRawCommandLine(QString input) {
-  return input.replace("\\n", "\n");
+  return input.replace("\\n", "\n").replace("\\r", "\r");
 }
+
+const QStringList separators = {":", ";", ","};
+const QStringList delimiters = {"\\n", "\\r\\n"};
 }
 
 namespace fastonosql {
@@ -52,7 +55,6 @@ namespace gui {
 
 ConnectionBaseWidget::ConnectionBaseWidget(QWidget* parent) : QWidget(parent) {
   connectionName_ = new QLineEdit;
-  commandLine_ = new QLineEdit;
 
   QVBoxLayout* basicLayout = new QVBoxLayout;
   QHBoxLayout* connectionNameLayout = new QHBoxLayout;
@@ -61,11 +63,24 @@ ConnectionBaseWidget::ConnectionBaseWidget(QWidget* parent) : QWidget(parent) {
   connectionNameLayout->addWidget(connectionName_);
   basicLayout->addLayout(connectionNameLayout);
 
-  QHBoxLayout* commandLineLayout = new QHBoxLayout;
-  commandLineLabel_ = new QLabel;
-  commandLineLayout->addWidget(commandLineLabel_);
-  commandLineLayout->addWidget(commandLine_);
-  basicLayout->addLayout(commandLineLayout);
+  QHBoxLayout* namespaceDelimiterLayout = new QHBoxLayout;
+  QHBoxLayout* namespaceSeparatorLayout = new QHBoxLayout;
+  namespaceSeparatorLabel_ = new QLabel;
+  namespaceSeparator_ = new QComboBox;
+  namespaceSeparator_->addItems(separators);
+  namespaceSeparatorLayout->addWidget(namespaceSeparatorLabel_);
+  namespaceSeparatorLayout->addWidget(namespaceSeparator_);
+  namespaceDelimiterLayout->addLayout(namespaceSeparatorLayout);
+
+  QHBoxLayout* delimiterLayout = new QHBoxLayout;
+  delimiterLabel_ = new QLabel;
+  delimiter_ = new QComboBox;
+  delimiter_->addItems(delimiters);
+  delimiterLayout->addWidget(delimiterLabel_);
+  delimiterLayout->addWidget(delimiter_);
+  namespaceDelimiterLayout->addLayout(delimiterLayout);
+
+  basicLayout->addLayout(namespaceDelimiterLayout);
 
   connectionFolder_ = new QLineEdit;
   QRegExp rxf("^/[A-z0-9]+/$");
@@ -95,6 +110,16 @@ ConnectionBaseWidget::ConnectionBaseWidget(QWidget* parent) : QWidget(parent) {
   setLayout(basicLayout);
 }
 
+void ConnectionBaseWidget::addWidget(QWidget* widget) {
+  QVBoxLayout* mainLayout = static_cast<QVBoxLayout*>(layout());
+  mainLayout->addWidget(widget);
+}
+
+void ConnectionBaseWidget::addLayout(QLayout* l) {
+  QVBoxLayout* mainLayout = static_cast<QVBoxLayout*>(layout());
+  mainLayout->addLayout(l);
+}
+
 void ConnectionBaseWidget::changeEvent(QEvent* ev) {
   if (ev->type() == QEvent::LanguageChange) {
     retranslateUi();
@@ -107,16 +132,22 @@ QString ConnectionBaseWidget::connectionName() const {
   return connectionName_->text();
 }
 
+core::BaseConfig ConnectionBaseWidget::config() const {
+  core::BaseConfig conf;
+  conf.ns_separator = common::ConvertToString(toRawCommandLine(namespaceSeparator_->currentText()));
+  conf.delimiter = common::ConvertToString(toRawCommandLine(delimiter_->currentText()));
+  return conf;
+}
+
 core::IConnectionSettingsBase* ConnectionBaseWidget::createConnection() const {
   std::string conName = common::ConvertToString(connectionName());
-  std::string conFolder = common::ConvertToString(connectionFolderText());
+  std::string conFolder = common::ConvertToString(UIFolderText());
   if (conFolder.empty()) {
     conFolder = defaultNameConnectionFolder;
   }
 
   core::connection_path_t path(common::file_system::stable_dir_path(conFolder) + conName);
   core::IConnectionSettingsBase* conn = createConnectionImpl(path);
-  conn->SetCommandLine(common::ConvertToString(toRawCommandLine(commandLine())));
   if (isLogging()) {
     conn->SetLoggingMsTimeInterval(loggingInterval());
   }
@@ -128,32 +159,27 @@ void ConnectionBaseWidget::setConnectionName(const QString& name) {
   connectionName_->setText(name);
 }
 
-QString ConnectionBaseWidget::commandLine() const {
-  return commandLine_->text();
-}
-
-void ConnectionBaseWidget::setCommandLine(const QString& line) {
-  commandLine_->setText(line);
-}
-
 void ConnectionBaseWidget::syncControls(core::IConnectionSettingsBase* connection) {
   if (connection) {
     core::connection_path_t path = connection->Path();
     setConnectionName(common::ConvertFromString<QString>(path.Name()));
-    setConnectionFolderText(common::ConvertFromString<QString>(path.Directory()));
-    setCommandLine(
-        StableCommandLine(common::ConvertFromString<QString>(connection->CommandLine())));
+
+    core::BaseConfig bconf = connection->Conf();
+    namespaceSeparator_->setCurrentText(
+        StableCommandLine(common::ConvertFromString<QString>(bconf.ns_separator)));
+    delimiter_->setCurrentText(
+        StableCommandLine(common::ConvertFromString<QString>(bconf.delimiter)));
+
+    setUIFolderText(common::ConvertFromString<QString>(path.Directory()));
     setLogging(connection->IsLoggingEnabled());
     setLoggingInterval(connection->LoggingMsTimeInterval());
-
-    commandLine_->setToolTip(core::CommandLineHelpText(connection->Type()));
   }
 }
 
 void ConnectionBaseWidget::retranslateUi() {
   connectionNameLabel_->setText(tr("Name:"));
-  commandLineLabel_->setText(tr("Connection line:"));
-
+  namespaceSeparatorLabel_->setText(tr("Ns separator:"));
+  delimiterLabel_->setText(tr("Delimiter:"));
   folderLabel_->setText(tr("UI Folder:"));
   logging_->setText(translations::trLoggingEnabled);
   loggingMsec_->setToolTip(trLoggingToolTip);
@@ -163,15 +189,15 @@ bool ConnectionBaseWidget::validated() const {
   return true;
 }
 
-QString ConnectionBaseWidget::connectionFolderText() const {
+QString ConnectionBaseWidget::UIFolderText() const {
   return connectionFolder_->text();
 }
 
-void ConnectionBaseWidget::setConnectionFolderText(const QString& text) {
+void ConnectionBaseWidget::setUIFolderText(const QString& text) {
   connectionFolder_->setText(text);
 }
 
-void ConnectionBaseWidget::setFolderEnabled(bool val) {
+void ConnectionBaseWidget::setUIFolderEnabled(bool val) {
   connectionFolder_->setEnabled(val);
 }
 

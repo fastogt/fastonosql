@@ -31,8 +31,12 @@ namespace unqlite {
 ConnectionSettings::ConnectionSettings(const connection_path_t& connectionName)
     : IConnectionSettingsLocal(connectionName, UNQLITE), info_() {}
 
-std::string ConnectionSettings::DBpath() const {
-  return info_.dbname;
+BaseConfig ConnectionSettings::Conf() const {
+  return info_;
+}
+
+LocalConfig ConnectionSettings::LocalConf() const {
+  return info_;
 }
 
 std::string ConnectionSettings::CommandLine() const {

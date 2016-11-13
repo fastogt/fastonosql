@@ -75,7 +75,7 @@ core::IConnectionSettingsBaseSPtr ConnectionDialog::connection() const {
 }
 
 void ConnectionDialog::setFolderEnabled(bool val) {
-  connection_widget_->setFolderEnabled(val);
+  connection_widget_->setUIFolderEnabled(val);
 }
 
 void ConnectionDialog::accept() {
@@ -99,12 +99,13 @@ void ConnectionDialog::changeEvent(QEvent* e) {
 }
 
 void ConnectionDialog::init(core::IConnectionSettingsBase* connection) {
-  setWindowIcon(GuiFactory::instance().serverIcon());
+  setWindowIcon(GuiFactory::instance().icon(connection->Type()));
   setWindowFlags(windowFlags() & ~Qt::WindowContextHelpButtonHint);  // Remove help
                                                                      // button (?)
 
   connection_.reset(connection);
   connection_widget_ = ConnectionWidgetsFactory::instance().createWidget(connection);
+  connection_widget_->layout()->setContentsMargins(0, 0, 0, 0);
 
   testButton_ = new QPushButton("&Test");
   testButton_->setIcon(GuiFactory::instance().messageBoxInformationIcon());

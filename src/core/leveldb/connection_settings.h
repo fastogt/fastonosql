@@ -32,7 +32,8 @@ class ConnectionSettings : public IConnectionSettingsLocal {
  public:
   explicit ConnectionSettings(const connection_path_t& connectionName);
 
-  virtual std::string DBpath() const override;
+  virtual BaseConfig Conf() const override;
+  virtual LocalConfig LocalConf() const override;
 
   virtual std::string CommandLine() const override;
   virtual void SetCommandLine(const std::string& line) override;

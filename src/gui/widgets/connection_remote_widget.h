@@ -33,9 +33,15 @@ class ConnectionRemoteWidget : public ConnectionBaseWidget {
   virtual void syncControls(core::IConnectionSettingsBase* connection) override;
   virtual void retranslateUi() override;
 
+ protected:
+  core::RemoteConfig config() const;
+
  private:
   virtual core::IConnectionSettingsBase* createConnectionImpl(
       const core::connection_path_t& path) const = 0;
+
+  QLineEdit* hostName_;
+  QLineEdit* hostPort_;
 };
 
 }  // namespace gui

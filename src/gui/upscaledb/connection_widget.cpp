@@ -26,7 +26,7 @@ namespace fastonosql {
 namespace gui {
 namespace upscaledb {
 
-ConnectionWidget::ConnectionWidget(QWidget* parent) : ConnectionLocalWidget(parent) {}
+ConnectionWidget::ConnectionWidget(QWidget* parent) : ConnectionLocalWidget(false, parent) {}
 
 void ConnectionWidget::syncControls(core::IConnectionSettingsBase* connection) {
   core::IConnectionSettingsLocal* local = static_cast<core::IConnectionSettingsLocal*>(connection);

@@ -29,9 +29,10 @@ namespace gui {
 namespace redis {
 
 ConnectionWidget::ConnectionWidget(QWidget* parent) : ConnectionRemoteWidget(parent) {
-  QLayout* main = layout();
   ssh_widget_ = new ConnectionSSHWidget;
-  main->addWidget(ssh_widget_);
+  QLayout* ssh_layout = ssh_widget_->layout();
+  ssh_layout->setContentsMargins(0, 0, 0, 0);
+  addWidget(ssh_widget_);
 }
 
 void ConnectionWidget::syncControls(core::IConnectionSettingsBase* connection) {

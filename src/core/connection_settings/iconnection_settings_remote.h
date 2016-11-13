@@ -25,10 +25,8 @@ namespace core {
 
 class IConnectionSettingsRemote : public IConnectionSettingsBase {
  public:
-  virtual ~IConnectionSettingsRemote();
-
-  virtual void SetHost(const common::net::HostAndPort& host) = 0;
-  virtual common::net::HostAndPort Host() const = 0;
+  virtual BaseConfig Conf() const = 0;
+  virtual RemoteConfig RemoteConf() const = 0;
 
   virtual std::string CommandLine() const = 0;
   virtual void SetCommandLine(const std::string& line) = 0;

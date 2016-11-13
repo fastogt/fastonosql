@@ -175,27 +175,8 @@ IConnectionSettingsRemote* ConnectionSettingsFactory::CreateFromType(
     return nullptr;
   }
 
-  remote->SetHost(host);
-  return remote;
-}
-
-IConnectionSettingsRemoteSSH* ConnectionSettingsFactory::CreateSSHFromType(
-    connectionTypes type,
-    const connection_path_t& conName,
-    const common::net::HostAndPort& host) {
-  IConnectionSettingsRemoteSSH* remote = nullptr;
-#ifdef BUILD_WITH_REDIS
-  if (type == REDIS) {
-    remote = new redis::ConnectionSettings(conName);
-  }
-#endif
-
-  if (!remote) {
-    NOTREACHED();
-    return nullptr;
-  }
-
-  remote->SetHost(host);
+#pragma message "REMARK"
+  // remote->SetHost(host);
   return remote;
 }
 

@@ -20,6 +20,7 @@
 
 #include <QWidget>
 
+#include "core/config/config.h"
 #include "core/connection_settings/iconnection_settings.h"
 
 class QLabel;
@@ -45,13 +46,10 @@ class ConnectionBaseWidget : public QWidget {
   QString connectionName() const;
   void setConnectionName(const QString& name);
 
-  QString commandLine() const;
-  void setCommandLine(const QString& line);
+  QString UIFolderText() const;
+  void setUIFolderText(const QString& text);
 
-  QString connectionFolderText() const;
-  void setConnectionFolderText(const QString& text);
-
-  void setFolderEnabled(bool val);
+  void setUIFolderEnabled(bool val);
 
   bool isLogging() const;
   void setLogging(bool logging);
@@ -63,6 +61,11 @@ class ConnectionBaseWidget : public QWidget {
   void loggingStateChange(int value);
 
  protected:
+  core::BaseConfig config() const;
+
+  void addWidget(QWidget* widget);
+  void addLayout(QLayout* layout);
+
   virtual void changeEvent(QEvent* ev);
 
   virtual core::IConnectionSettingsBase* createConnectionImpl(
@@ -71,8 +74,11 @@ class ConnectionBaseWidget : public QWidget {
   QLabel* connectionNameLabel_;
   QLineEdit* connectionName_;
 
-  QLabel* commandLineLabel_;
-  QLineEdit* commandLine_;
+  QLabel* namespaceSeparatorLabel_;
+  QComboBox* namespaceSeparator_;
+
+  QLabel* delimiterLabel_;
+  QComboBox* delimiter_;
 
   QLabel* folderLabel_;
   QLineEdit* connectionFolder_;

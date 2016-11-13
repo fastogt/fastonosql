@@ -21,29 +21,26 @@
 #include <string>
 #include <vector>
 
+#include <common/smart_ptr.h>
 #include <common/net/types.h>
 
 namespace fastonosql {
 namespace core {
 
-enum ConfigType { LOCAL, REMOTE };
-
 typedef std::vector<std::string> config_args_t;
 
 // -d -ns
-template <ConfigType ctype>
 struct BaseConfig {
   BaseConfig() : delimiter("\n"), ns_separator(":") {}
-
-  static ConfigType Type() { return ctype; }
 
   std::string delimiter;
   std::string ns_separator;
 };
 
 // -f -d -ns
-struct LocalConfig : public BaseConfig<LOCAL> {
+struct LocalConfig : public BaseConfig {
   explicit LocalConfig(const std::string& dbname);
+  explicit LocalConfig(const BaseConfig& cfg);
 
   config_args_t Args() const;
 
@@ -51,8 +48,9 @@ struct LocalConfig : public BaseConfig<LOCAL> {
 };
 
 // -h -p -d -ns
-struct RemoteConfig : public BaseConfig<REMOTE> {
+struct RemoteConfig : public BaseConfig {
   explicit RemoteConfig(const common::net::HostAndPort& host);
+  explicit RemoteConfig(const BaseConfig& cfg);
 
   config_args_t Args() const;
 

@@ -701,7 +701,7 @@ common::Error DiscoveryClusterConnection(ConnectionSettings* settings,
   }
 
   if (reply->type == REDIS_REPLY_STRING) {
-    err = makeDiscoveryClusterInfo(settings->Host(), std::string(reply->str, reply->len), infos);
+    err = makeDiscoveryClusterInfo(config.host, std::string(reply->str, reply->len), infos);
   } else if (reply->type == REDIS_REPLY_ERROR) {
     err = common::make_error_value(std::string(reply->str, reply->len), common::Value::E_ERROR);
   } else {

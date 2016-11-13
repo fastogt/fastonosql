@@ -20,17 +20,16 @@
 
 #include "core/leveldb/connection_settings.h"
 
-#include "core/connection_settings/iconnection_settings_local.h"
-
 namespace fastonosql {
 namespace gui {
 namespace leveldb {
 
-ConnectionWidget::ConnectionWidget(QWidget* parent) : ConnectionLocalWidget(parent) {}
+ConnectionWidget::ConnectionWidget(QWidget* parent) : ConnectionLocalWidget(true, parent) {}
 
 void ConnectionWidget::syncControls(core::IConnectionSettingsBase* connection) {
-  core::IConnectionSettingsLocal* local = static_cast<core::IConnectionSettingsLocal*>(connection);
-  ConnectionLocalWidget::syncControls(local);
+  core::leveldb::ConnectionSettings* leveldb =
+      static_cast<core::leveldb::ConnectionSettings*>(connection);
+  ConnectionLocalWidget::syncControls(leveldb);
 }
 
 void ConnectionWidget::retranslateUi() {

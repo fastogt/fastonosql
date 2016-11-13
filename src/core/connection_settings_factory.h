@@ -38,10 +38,6 @@ class ConnectionSettingsFactory
   IConnectionSettingsRemote* CreateFromType(connectionTypes type,
                                             const connection_path_t& conName,
                                             const common::net::HostAndPort& host);
-
-  IConnectionSettingsRemoteSSH* CreateSSHFromType(connectionTypes type,
-                                                  const connection_path_t& conName,
-                                                  const common::net::HostAndPort& host);
 };
 
 }  // namespace core

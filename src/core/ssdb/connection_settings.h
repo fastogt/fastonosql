@@ -33,6 +33,9 @@ class ConnectionSettings : public IConnectionSettingsRemote {
  public:
   explicit ConnectionSettings(const connection_path_t& connectionName);
 
+  virtual BaseConfig Conf() const override;
+  virtual RemoteConfig RemoteConf() const override;
+
   virtual std::string CommandLine() const;
   virtual void SetCommandLine(const std::string& line);
 
