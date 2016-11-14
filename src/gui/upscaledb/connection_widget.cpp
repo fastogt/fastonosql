@@ -18,28 +18,46 @@
 
 #include "gui/upscaledb/connection_widget.h"
 
+#include <QCheckBox>
+
 #include "core/upscaledb/connection_settings.h"
 
 #include "core/connection_settings/iconnection_settings_local.h"
+
+namespace {
+  const QString trCreateDBIfMissing = QObject::tr("Create database");
+}
 
 namespace fastonosql {
 namespace gui {
 namespace upscaledb {
 
-ConnectionWidget::ConnectionWidget(QWidget* parent) : ConnectionLocalWidget(false, parent) {}
+ConnectionWidget::ConnectionWidget(QWidget* parent) : ConnectionLocalWidget(false, parent) {
+  createDBIfMissing_ = new QCheckBox;
+  addWidget(createDBIfMissing_);
+}
 
 void ConnectionWidget::syncControls(core::IConnectionSettingsBase* connection) {
-  core::IConnectionSettingsLocal* local = static_cast<core::IConnectionSettingsLocal*>(connection);
-  ConnectionLocalWidget::syncControls(local);
+  core::upscaledb::ConnectionSettings* ups =
+      static_cast<core::upscaledb::ConnectionSettings*>(connection);
+  if (ups) {
+    core::upscaledb::Config config = ups->Info();
+    createDBIfMissing_->setChecked(config.create_if_missing);
+  }
+  ConnectionLocalWidget::syncControls(ups);
 }
 
 void ConnectionWidget::retranslateUi() {
+  createDBIfMissing_->setText(trCreateDBIfMissing);
   ConnectionLocalWidget::retranslateUi();
 }
 
 core::IConnectionSettingsBase* ConnectionWidget::createConnectionImpl(
     const core::connection_path_t& path) const {
   core::upscaledb::ConnectionSettings* conn = new core::upscaledb::ConnectionSettings(path);
+  core::upscaledb::Config config(ConnectionLocalWidget::config());
+  config.create_if_missing = createDBIfMissing_->isChecked();
+  conn->SetInfo(config);
   return conn;
 }
 }

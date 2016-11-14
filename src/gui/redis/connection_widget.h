@@ -22,6 +22,8 @@
 
 #include "gui/widgets/connection_remote_widget.h"
 
+class QPushButton;
+
 namespace fastonosql {
 namespace gui {
 class ConnectionSSHWidget;
@@ -35,10 +37,20 @@ class ConnectionWidget : public ConnectionRemoteWidget {
   virtual void syncControls(core::IConnectionSettingsBase* connection) override;
   virtual void retranslateUi() override;
   virtual bool validated() const override;
+  bool isValidCredential() const;
+
+ private Q_SLOTS:
+  void togglePasswordEchoMode();
+  void authStateChange(int state);
 
  private:
   virtual core::IConnectionSettingsBase* createConnectionImpl(
       const core::connection_path_t& path) const override;
+
+  QCheckBox* useAuth_;
+  QLineEdit* passwordBox_;
+  QPushButton* passwordEchoModeButton_;
+
   ConnectionSSHWidget* ssh_widget_;
 };
 }

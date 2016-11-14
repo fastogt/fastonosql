@@ -18,9 +18,9 @@
 
 #pragma once
 
-#include <QWidget>
-
 #include "gui/widgets/connection_remote_widget.h"
+
+class QPushButton;
 
 namespace fastonosql {
 namespace gui {
@@ -33,10 +33,24 @@ class ConnectionWidget : public ConnectionRemoteWidget {
 
   virtual void syncControls(core::IConnectionSettingsBase* connection) override;
   virtual void retranslateUi() override;
+  virtual bool validated() const override;
+  bool isValidCredential() const;
+
+ private Q_SLOTS:
+  void togglePasswordEchoMode();
+  void saslStateChange(int state);
 
  private:
   virtual core::IConnectionSettingsBase* createConnectionImpl(
       const core::connection_path_t& path) const override;
+
+  QCheckBox* useSasl_;
+  QLabel* userNameLabel_;
+  QLineEdit* userName_;
+
+  QLabel* passwordLabel_;
+  QLineEdit* passwordBox_;
+  QPushButton* passwordEchoModeButton_;
 };
 }
 }  // namespace gui

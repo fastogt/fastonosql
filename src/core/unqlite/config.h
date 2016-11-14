@@ -28,6 +28,7 @@ namespace unqlite {
 
 struct Config : public LocalConfig {
   Config();
+  explicit Config(const LocalConfig& conf);
 
   bool create_if_missing;
 };

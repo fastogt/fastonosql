@@ -61,8 +61,8 @@ void ConnectionLocalWidget::syncControls(core::IConnectionSettingsBase* connecti
   if (local) {
     core::LocalConfig config = local->LocalConf();
     dbPath_->setText(common::ConvertFromString<QString>(config.dbname));
-    ConnectionBaseWidget::syncControls(local);
   }
+  ConnectionBaseWidget::syncControls(local);
 }
 
 void ConnectionLocalWidget::retranslateUi() {

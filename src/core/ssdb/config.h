@@ -28,9 +28,6 @@ namespace ssdb {
 
 struct Config : public RemoteConfig {
   Config();
-
-  std::string user;
-  std::string password;
 };
 }
 }  // namespace core

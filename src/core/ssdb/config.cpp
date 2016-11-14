@@ -52,10 +52,6 @@ Config parseOptions(int argc, char** argv) {
       cfg.host.host = argv[++i];
     } else if (!strcmp(argv[i], "-p") && !lastarg) {
       cfg.host.port = common::ConvertFromString<uint16_t>(argv[++i]);
-    } else if (!strcmp(argv[i], "-u") && !lastarg) {
-      cfg.user = argv[++i];
-    } else if (!strcmp(argv[i], "-a") && !lastarg) {
-      cfg.password = argv[++i];
     } else if (!strcmp(argv[i], "-d") && !lastarg) {
       cfg.delimiter = argv[++i];
     } else if (!strcmp(argv[i], "-ns") && !lastarg) {
@@ -81,9 +77,7 @@ Config parseOptions(int argc, char** argv) {
 }  // namespace
 
 Config::Config()
-    : RemoteConfig(common::net::HostAndPort::createLocalHost(DEFAULT_SSDB_SERVER_PORT)),
-      user(),
-      password() {}
+    : RemoteConfig(common::net::HostAndPort::createLocalHost(DEFAULT_SSDB_SERVER_PORT)) {}
 
 }  // namespace ssdb
 }  // namespace core
@@ -93,16 +87,6 @@ namespace common {
 
 std::string ConvertToString(const fastonosql::core::ssdb::Config& conf) {
   std::vector<std::string> argv = conf.Args();
-
-  if (!conf.user.empty()) {
-    argv.push_back("-u");
-    argv.push_back(conf.user);
-  }
-
-  if (!conf.password.empty()) {
-    argv.push_back("-a");
-    argv.push_back(conf.password);
-  }
 
   return fastonosql::core::ConvertToStringConfigArgs(argv);
 }

@@ -37,6 +37,8 @@ class ConnectionWidget : public ConnectionLocalWidget {
  private:
   virtual core::IConnectionSettingsBase* createConnectionImpl(
       const core::connection_path_t& path) const override;
+
+  QCheckBox* createDBIfMissing_;
 };
 }
 }  // namespace gui

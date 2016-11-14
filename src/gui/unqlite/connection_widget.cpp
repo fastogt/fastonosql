@@ -18,28 +18,46 @@
 
 #include "gui/unqlite/connection_widget.h"
 
+#include <QCheckBox>
+
 #include "core/unqlite/connection_settings.h"
 
 #include "core/connection_settings/iconnection_settings_local.h"
+
+namespace {
+  const QString trCreateDBIfMissing = QObject::tr("Create database");
+}
 
 namespace fastonosql {
 namespace gui {
 namespace unqlite {
 
-ConnectionWidget::ConnectionWidget(QWidget* parent) : ConnectionLocalWidget(false, parent) {}
+ConnectionWidget::ConnectionWidget(QWidget* parent) : ConnectionLocalWidget(false, parent) {
+  createDBIfMissing_ = new QCheckBox;
+  addWidget(createDBIfMissing_);
+}
 
 void ConnectionWidget::syncControls(core::IConnectionSettingsBase* connection) {
-  core::IConnectionSettingsLocal* local = static_cast<core::IConnectionSettingsLocal*>(connection);
-  ConnectionLocalWidget::syncControls(local);
+  core::unqlite::ConnectionSettings* unq =
+      static_cast<core::unqlite::ConnectionSettings*>(connection);
+  if (unq) {
+    core::unqlite::Config config = unq->Info();
+    createDBIfMissing_->setChecked(config.create_if_missing);
+  }
+  ConnectionLocalWidget::syncControls(unq);
 }
 
 void ConnectionWidget::retranslateUi() {
+  createDBIfMissing_->setText(trCreateDBIfMissing);
   ConnectionLocalWidget::retranslateUi();
 }
 
 core::IConnectionSettingsBase* ConnectionWidget::createConnectionImpl(
     const core::connection_path_t& path) const {
   core::unqlite::ConnectionSettings* conn = new core::unqlite::ConnectionSettings(path);
+  core::unqlite::Config config(ConnectionLocalWidget::config());
+  config.create_if_missing = createDBIfMissing_->isChecked();
+  conn->SetInfo(config);
   return conn;
 }
 }

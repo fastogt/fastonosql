@@ -30,6 +30,7 @@ namespace leveldb {
 
 struct Config : public LocalConfig {
   Config();
+  explicit Config(const LocalConfig& conf);
 
   ::leveldb::Options options;
 };

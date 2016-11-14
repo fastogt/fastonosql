@@ -86,6 +86,8 @@ Config::Config()
       user(),
       password() {}
 
+Config::Config(const RemoteConfig& conf) : RemoteConfig(conf), user(), password() {}
+
 }  // namespace memcached
 }  // namespace core
 }  // namespace fastonosql

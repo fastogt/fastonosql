@@ -35,11 +35,11 @@ class ConnectionSettings : public IConnectionSettingsLocal {
   virtual BaseConfig Conf() const override;
   virtual LocalConfig LocalConf() const override;
 
+  void SetInfo(const Config& conf);
+  Config Info() const;
+
   virtual std::string CommandLine() const;
   virtual void SetCommandLine(const std::string& line);
-
-  Config Info() const;
-  void SetInfo(const Config& info);
 
   virtual std::string FullAddress() const;
 

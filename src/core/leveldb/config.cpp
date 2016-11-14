@@ -79,6 +79,10 @@ Config::Config() : LocalConfig(common::file_system::prepare_path("~/test.leveldb
   options.create_if_missing = false;
 }
 
+Config::Config(const LocalConfig& conf) : LocalConfig(conf) {
+  options.create_if_missing = false;
+}
+
 }  // namespace leveldb
 }  // namespace core
 }  // namespace fastonosql

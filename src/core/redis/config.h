@@ -28,6 +28,7 @@ namespace redis {
 
 struct Config : public RemoteConfig {
   Config();
+  explicit Config(const RemoteConfig& conf);
   Config(const Config& other);
   Config& operator=(const Config& other);
 

@@ -57,8 +57,7 @@ Config parseOptions(int argc, char** argv) {
       usage();
     } else if (!strcmp(argv[i], "-x")) {
       cfg.stdinarg = 1;
-    }*/ else if (!strcmp(argv[i], "-p") &&
-                                                                !lastarg) {
+    }*/ else if (!strcmp(argv[i], "-p") && !lastarg) {
       cfg.host.port = common::ConvertFromString<uint16_t>(argv[++i]);
     } else if (!strcmp(argv[i], "-s") && !lastarg) {
       cfg.hostsocket = argv[++i];
@@ -140,6 +139,10 @@ Config parseOptions(int argc, char** argv) {
 
 Config::Config()
     : RemoteConfig(common::net::HostAndPort::createLocalHost(DEFAULT_REDIS_SERVER_PORT)) {
+  init();
+}
+
+Config::Config(const RemoteConfig& conf) : RemoteConfig(conf) {
   init();
 }
 

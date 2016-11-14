@@ -18,28 +18,44 @@
 
 #include "gui/rocksdb/connection_widget.h"
 
+#include <QCheckBox>
+
 #include "core/rocksdb/connection_settings.h"
 
-#include "core/connection_settings/iconnection_settings_local.h"
+namespace {
+const QString trCreateDBIfMissing = QObject::tr("Create database");
+}
 
 namespace fastonosql {
 namespace gui {
 namespace rocksdb {
 
-ConnectionWidget::ConnectionWidget(QWidget* parent) : ConnectionLocalWidget(true, parent) {}
+ConnectionWidget::ConnectionWidget(QWidget* parent) : ConnectionLocalWidget(true, parent) {
+  createDBIfMissing_ = new QCheckBox;
+  addWidget(createDBIfMissing_);
+}
 
 void ConnectionWidget::syncControls(core::IConnectionSettingsBase* connection) {
-  core::IConnectionSettingsLocal* local = static_cast<core::IConnectionSettingsLocal*>(connection);
-  ConnectionLocalWidget::syncControls(local);
+  core::rocksdb::ConnectionSettings* rock =
+      static_cast<core::rocksdb::ConnectionSettings*>(connection);
+  if (rock) {
+    core::rocksdb::Config config = rock->Info();
+    createDBIfMissing_->setChecked(config.options.create_if_missing);
+  }
+  ConnectionLocalWidget::syncControls(rock);
 }
 
 void ConnectionWidget::retranslateUi() {
+  createDBIfMissing_->setText(trCreateDBIfMissing);
   ConnectionLocalWidget::retranslateUi();
 }
 
 core::IConnectionSettingsBase* ConnectionWidget::createConnectionImpl(
     const core::connection_path_t& path) const {
   core::rocksdb::ConnectionSettings* conn = new core::rocksdb::ConnectionSettings(path);
+  core::rocksdb::Config config(ConnectionLocalWidget::config());
+  config.options.create_if_missing = createDBIfMissing_->isChecked();
+  conn->SetInfo(config);
   return conn;
 }
 }

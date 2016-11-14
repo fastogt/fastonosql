@@ -18,27 +18,44 @@
 
 #include "gui/leveldb/connection_widget.h"
 
+#include <QCheckBox>
+
 #include "core/leveldb/connection_settings.h"
+
+namespace {
+const QString trCreateDBIfMissing = QObject::tr("Create database");
+}
 
 namespace fastonosql {
 namespace gui {
 namespace leveldb {
 
-ConnectionWidget::ConnectionWidget(QWidget* parent) : ConnectionLocalWidget(true, parent) {}
+ConnectionWidget::ConnectionWidget(QWidget* parent) : ConnectionLocalWidget(true, parent) {
+  createDBIfMissing_ = new QCheckBox;
+  addWidget(createDBIfMissing_);
+}
 
 void ConnectionWidget::syncControls(core::IConnectionSettingsBase* connection) {
-  core::leveldb::ConnectionSettings* leveldb =
+  core::leveldb::ConnectionSettings* lev =
       static_cast<core::leveldb::ConnectionSettings*>(connection);
-  ConnectionLocalWidget::syncControls(leveldb);
+  if (lev) {
+    core::leveldb::Config config = lev->Info();
+    createDBIfMissing_->setChecked(config.options.create_if_missing);
+  }
+  ConnectionLocalWidget::syncControls(lev);
 }
 
 void ConnectionWidget::retranslateUi() {
+  createDBIfMissing_->setText(trCreateDBIfMissing);
   ConnectionLocalWidget::retranslateUi();
 }
 
 core::IConnectionSettingsBase* ConnectionWidget::createConnectionImpl(
     const core::connection_path_t& path) const {
   core::leveldb::ConnectionSettings* conn = new core::leveldb::ConnectionSettings(path);
+  core::leveldb::Config config(ConnectionLocalWidget::config());
+  config.options.create_if_missing = createDBIfMissing_->isChecked();
+  conn->SetInfo(config);
   return conn;
 }
 }
