@@ -107,13 +107,13 @@ ConnectionSSHWidget::ConnectionSSHWidget(QWidget* parent) : QWidget(parent) {
   sshWidgetLayout->addWidget(sshPrivateKeyLabel_, 7, 0);
   sshWidgetLayout->addWidget(privateKeyBox_, 7, 1);
   selectPrivateFileButton_ = new QPushButton("...");
-  selectPrivateFileButton_->setFixedSize(20, 20);
+  selectPrivateFileButton_->setFixedSize(26, 26);
   sshWidgetLayout->addWidget(selectPrivateFileButton_, 7, 2);
 
   sshWidgetLayout->addWidget(sshPublicKeyLabel_, 8, 0);
   sshWidgetLayout->addWidget(publicKeyBox_, 8, 1);
   selectPublicFileButton_ = new QPushButton("...");
-  selectPublicFileButton_->setFixedSize(20, 20);
+  selectPublicFileButton_->setFixedSize(26, 26);
   sshWidgetLayout->addWidget(selectPublicFileButton_, 8, 2);
 
   sshWidgetLayout->addWidget(sshPassphraseLabel_, 9, 0);

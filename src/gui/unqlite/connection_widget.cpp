@@ -25,14 +25,15 @@
 #include "core/connection_settings/iconnection_settings_local.h"
 
 namespace {
-  const QString trCreateDBIfMissing = QObject::tr("Create database");
+const QString trCreateDBIfMissing = QObject::tr("Create database");
 }
 
 namespace fastonosql {
 namespace gui {
 namespace unqlite {
 
-ConnectionWidget::ConnectionWidget(QWidget* parent) : ConnectionLocalWidget(false, parent) {
+ConnectionWidget::ConnectionWidget(QWidget* parent)
+    : ConnectionLocalWidget(false, trDBPath, trCaption, trFilter, parent) {
   createDBIfMissing_ = new QCheckBox;
   addWidget(createDBIfMissing_);
 }

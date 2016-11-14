@@ -22,25 +22,28 @@
 
 #include "gui/widgets/connection_base_widget.h"
 
+namespace {
+const QString trDBPath = QObject::tr("Database path:");
+const QString trCaption = QObject::tr("Select Database path");
+const QString trFilter = QObject::tr("Database files (*.*)");
+}
+
 namespace fastonosql {
 namespace gui {
+
+class PathWidget;
 
 class ConnectionLocalWidget : public ConnectionBaseWidget {
   Q_OBJECT
  public:
-  explicit ConnectionLocalWidget(bool isFolderSelectOnly = false, QWidget* parent = 0);
+  explicit ConnectionLocalWidget(bool isFolderSelectOnly,
+                                 const QString& pathTitle,
+                                 const QString& filter,
+                                 const QString& caption,
+                                 QWidget* parent = 0);
 
   virtual void syncControls(core::IConnectionSettingsBase* connection) override;
   virtual void retranslateUi() override;
-
-  void setCaption(const QString& caption);
-  void setFilter(const QString& filter);
-
-  QString DBPath() const;
-  void setDBPath(const QString& path);
-
- private Q_SLOTS:
-  void selectDBPathDialog();
 
  protected:
   core::LocalConfig config() const;
@@ -49,11 +52,7 @@ class ConnectionLocalWidget : public ConnectionBaseWidget {
   virtual core::IConnectionSettingsBase* createConnectionImpl(
       const core::connection_path_t& path) const = 0;
 
-  QLabel* dbPathLabel_;
-  QLineEdit* dbPath_;
-  QString caption_;
-  QString filter_;
-  bool isFolderSelectOnly_;
+  PathWidget* pathWidget_;
 };
 
 }  // namespace gui

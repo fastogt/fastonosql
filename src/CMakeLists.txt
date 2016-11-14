@@ -106,6 +106,8 @@ SET(HEADERS_GUI_WIDGETS_TO_MOC
   gui/widgets/connection_base_widget.h
   gui/widgets/connection_local_widget.h
   gui/widgets/connection_remote_widget.h
+  gui/widgets/host_port_widget.h
+  gui/widgets/path_widget.h
 )
 
 SET(SOURCES_GUI_WIDGETS
@@ -119,6 +121,8 @@ SET(SOURCES_GUI_WIDGETS
   gui/widgets/connection_base_widget.cpp
   gui/widgets/connection_local_widget.cpp
   gui/widgets/connection_remote_widget.cpp
+  gui/widgets/host_port_widget.cpp
+  gui/widgets/path_widget.cpp
 )
 
 SET(HEADERS_GUI_TO_MOC

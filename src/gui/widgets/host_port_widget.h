@@ -20,28 +20,29 @@
 
 #include <QWidget>
 
-#include "gui/widgets/connection_base_widget.h"
+#include <common/net/net.h>
+
+class QLineEdit;
 
 namespace fastonosql {
 namespace gui {
-class HostPortWidget;
 
-class ConnectionRemoteWidget : public ConnectionBaseWidget {
+class HostPortWidget : public QWidget {
   Q_OBJECT
  public:
-  explicit ConnectionRemoteWidget(QWidget* parent = 0);
+  HostPortWidget(QWidget* parent = 0);
 
-  virtual void syncControls(core::IConnectionSettingsBase* connection) override;
-  virtual void retranslateUi() override;
+  common::net::HostAndPort host() const;
+  void setHost(const common::net::HostAndPort& host);
 
  protected:
-  core::RemoteConfig config() const;
+  virtual void changeEvent(QEvent* ev);
 
  private:
-  virtual core::IConnectionSettingsBase* createConnectionImpl(
-      const core::connection_path_t& path) const = 0;
+  void retranslateUi();
 
-  HostPortWidget* hostWidget_;
+  QLineEdit* hostName_;
+  QLineEdit* hostPort_;
 };
 
 }  // namespace gui

@@ -29,78 +29,39 @@
 
 #include "core/connection_settings/iconnection_settings_local.h"
 
-namespace {
-const QString trDBPath = QObject::tr("Database path:");
-const QString trCaption = QObject::tr("Select Database path");
-const QString trFilter = QObject::tr("Database files (*.*)");
-}
+#include "gui/widgets/path_widget.h"
 
 namespace fastonosql {
 namespace gui {
 
-ConnectionLocalWidget::ConnectionLocalWidget(bool isFolderSelectOnly, QWidget* parent)
-    : ConnectionBaseWidget(parent),
-      caption_(trCaption),
-      filter_(trFilter),
-      isFolderSelectOnly_(isFolderSelectOnly) {
-  QHBoxLayout* dbNameLayout = new QHBoxLayout;
-  dbPathLabel_ = new QLabel;
-  dbPath_ = new QLineEdit;
-  QPushButton* selectDBPathButton = new QPushButton("...");
-  selectDBPathButton->setFixedSize(20, 20);
-  VERIFY(connect(selectDBPathButton, &QPushButton::clicked, this,
-                 &ConnectionLocalWidget::selectDBPathDialog));
-  dbNameLayout->addWidget(dbPathLabel_);
-  dbNameLayout->addWidget(dbPath_);
-  dbNameLayout->addWidget(selectDBPathButton);
-  addLayout(dbNameLayout);
+ConnectionLocalWidget::ConnectionLocalWidget(bool isFolderSelectOnly,
+                                             const QString& pathTitle,
+                                             const QString& filter,
+                                             const QString& caption,
+                                             QWidget* parent)
+    : ConnectionBaseWidget(parent) {
+  pathWidget_ = new PathWidget(isFolderSelectOnly, pathTitle, filter, caption);
+  QLayout* path_layout = pathWidget_->layout();
+  path_layout->setContentsMargins(0, 0, 0, 0);
+  addWidget(pathWidget_);
 }
 
 void ConnectionLocalWidget::syncControls(core::IConnectionSettingsBase* connection) {
   core::IConnectionSettingsLocal* local = static_cast<core::IConnectionSettingsLocal*>(connection);
   if (local) {
     core::LocalConfig config = local->LocalConf();
-    dbPath_->setText(common::ConvertFromString<QString>(config.dbname));
+    pathWidget_->setPath(common::ConvertFromString<QString>(config.dbname));
   }
   ConnectionBaseWidget::syncControls(local);
 }
 
 void ConnectionLocalWidget::retranslateUi() {
-  dbPathLabel_->setText(trDBPath);
   ConnectionBaseWidget::retranslateUi();
-}
-
-void ConnectionLocalWidget::setCaption(const QString& caption) {
-  caption_ = caption;
-}
-
-void ConnectionLocalWidget::setFilter(const QString& filter) {
-  filter_ = filter;
-}
-
-QString ConnectionLocalWidget::DBPath() const {
-  return dbPath_->text();
-}
-
-void ConnectionLocalWidget::setDBPath(const QString& path) {
-  dbPath_->setText(path);
-}
-
-void ConnectionLocalWidget::selectDBPathDialog() {
-  QFileDialog dialog(this, caption_, dbPath_->text(), filter_);
-  dialog.setFileMode(isFolderSelectOnly_ ? QFileDialog::DirectoryOnly : QFileDialog::ExistingFile);
-  int res = dialog.exec();
-  if (res != QFileDialog::ExistingFile) {
-    return;
-  }
-
-  QStringList files = dialog.selectedFiles();
-  setDBPath(files[0]);
 }
 
 core::LocalConfig ConnectionLocalWidget::config() const {
   core::LocalConfig conf(ConnectionBaseWidget::config());
-  QString db_path = dbPath_->text();
+  QString db_path = pathWidget_->path();
   conf.dbname = common::ConvertToString(db_path);
   return conf;
 }

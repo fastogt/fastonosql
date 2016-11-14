@@ -30,7 +30,8 @@ namespace fastonosql {
 namespace gui {
 namespace leveldb {
 
-ConnectionWidget::ConnectionWidget(QWidget* parent) : ConnectionLocalWidget(true, parent) {
+ConnectionWidget::ConnectionWidget(QWidget* parent)
+    : ConnectionLocalWidget(true, trDBPath, trCaption, trFilter, parent) {
   createDBIfMissing_ = new QCheckBox;
   addWidget(createDBIfMissing_);
 }

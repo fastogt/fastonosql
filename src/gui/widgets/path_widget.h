@@ -20,28 +20,40 @@
 
 #include <QWidget>
 
-#include "gui/widgets/connection_base_widget.h"
+class QLineEdit;
+class QLabel;
 
 namespace fastonosql {
 namespace gui {
-class HostPortWidget;
 
-class ConnectionRemoteWidget : public ConnectionBaseWidget {
+class PathWidget : public QWidget {
   Q_OBJECT
  public:
-  explicit ConnectionRemoteWidget(QWidget* parent = 0);
+  PathWidget(bool isFolderSelectOnly,
+             const QString& pathTitle,
+             const QString& filter,
+             const QString& caption,
+             QWidget* parent = 0);
 
-  virtual void syncControls(core::IConnectionSettingsBase* connection) override;
-  virtual void retranslateUi() override;
+  QString path() const;
+  void setPath(const QString& path);
+
+ private Q_SLOTS:
+  void selectPathDialog();
 
  protected:
-  core::RemoteConfig config() const;
+  virtual void changeEvent(QEvent* ev);
 
  private:
-  virtual core::IConnectionSettingsBase* createConnectionImpl(
-      const core::connection_path_t& path) const = 0;
+  void retranslateUi();
 
-  HostPortWidget* hostWidget_;
+  QLabel* pathLabel_;
+  QLineEdit* pathEdit_;
+
+  QString pathTitle_;
+  QString filter_;
+  QString caption_;
+  bool isFolderSelectOnly_;
 };
 
 }  // namespace gui

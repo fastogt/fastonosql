@@ -20,16 +20,21 @@
 
 #include <QWidget>
 
-#include "gui/widgets/connection_remote_widget.h"
+#include "gui/widgets/connection_base_widget.h"
 
 class QPushButton;
+class QRadioButton;
+class QGroupBox;
 
 namespace fastonosql {
 namespace gui {
 class ConnectionSSHWidget;
+class HostPortWidget;
+class PathWidget;
+
 namespace redis {
 
-class ConnectionWidget : public ConnectionRemoteWidget {
+class ConnectionWidget : public ConnectionBaseWidget {
   Q_OBJECT
  public:
   explicit ConnectionWidget(QWidget* parent = 0);
@@ -42,16 +47,24 @@ class ConnectionWidget : public ConnectionRemoteWidget {
  private Q_SLOTS:
   void togglePasswordEchoMode();
   void authStateChange(int state);
+  void selectRemoteDBPath(bool checked);
+  void selectLocalDBPath(bool checked);
 
  private:
   virtual core::IConnectionSettingsBase* createConnectionImpl(
       const core::connection_path_t& path) const override;
+  QGroupBox* groupBox_;
+  QRadioButton* remote_;
+  QRadioButton* local_;
+
+  HostPortWidget* hostWidget_;
+  PathWidget* pathWidget_;
 
   QCheckBox* useAuth_;
   QLineEdit* passwordBox_;
   QPushButton* passwordEchoModeButton_;
 
-  ConnectionSSHWidget* ssh_widget_;
+  ConnectionSSHWidget* sshWidget_;
 };
 }
 }  // namespace gui

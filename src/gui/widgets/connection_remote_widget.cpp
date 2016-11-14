@@ -28,22 +28,17 @@
 
 #include "core/connection_settings/iconnection_settings_remote.h"
 
+#include "gui/widgets/host_port_widget.h"
+
 namespace fastonosql {
 namespace gui {
 
-ConnectionRemoteWidget::ConnectionRemoteWidget(QWidget* parent) : ConnectionBaseWidget(parent) {
-  hostName_ = new QLineEdit;
-  hostPort_ = new QLineEdit;
-  hostPort_->setFixedWidth(80);
-  QRegExp rx("\\d+");  // (0-65554)
-  hostPort_->setValidator(new QRegExpValidator(rx, this));
-
-  QHBoxLayout* hostAndPasswordLayout = new QHBoxLayout;
-  hostAndPasswordLayout->addWidget(hostName_);
-  hostAndPasswordLayout->addWidget(new QLabel(":"));
-  hostAndPasswordLayout->addWidget(hostPort_);
-
-  addLayout(hostAndPasswordLayout);
+ConnectionRemoteWidget::ConnectionRemoteWidget(QWidget* parent)
+    : ConnectionBaseWidget(parent), hostWidget_(nullptr) {
+  hostWidget_ = new HostPortWidget;
+  QLayout* host_layout = hostWidget_->layout();
+  host_layout->setContentsMargins(0, 0, 0, 0);
+  addWidget(hostWidget_);
 }
 
 void ConnectionRemoteWidget::syncControls(core::IConnectionSettingsBase* connection) {
@@ -53,10 +48,9 @@ void ConnectionRemoteWidget::syncControls(core::IConnectionSettingsBase* connect
   if (remote) {
     core::RemoteConfig config = remote->RemoteConf();
     common::net::HostAndPort host = config.host;
-    hostName_->setText(common::ConvertFromString<QString>(host.host));
-    hostPort_->setText(QString::number(host.port));
-    ConnectionBaseWidget::syncControls(remote);
+    hostWidget_->setHost(host);
   }
+  ConnectionBaseWidget::syncControls(remote);
 }
 
 void ConnectionRemoteWidget::retranslateUi() {
@@ -65,8 +59,7 @@ void ConnectionRemoteWidget::retranslateUi() {
 
 core::RemoteConfig ConnectionRemoteWidget::config() const {
   core::RemoteConfig conf(ConnectionBaseWidget::config());
-  conf.host = common::net::HostAndPort(common::ConvertToString(hostName_->text()),
-                                       hostPort_->text().toInt());
+  conf.host = hostWidget_->host();
   return conf;
 }
 

@@ -22,21 +22,60 @@
 #include <QLineEdit>
 #include <QCheckBox>
 #include <QPushButton>
+#include <QRegExpValidator>
+#include <QLabel>
+#include <QFileDialog>
+#include <QGroupBox>
+#include <QRadioButton>
+#include <QEvent>
 
 #include <common/convert2string.h>
 #include <common/qt/convert2string.h>
 
 #include "core/redis/connection_settings.h"
 
+#include "gui/widgets/host_port_widget.h"
+#include "gui/widgets/path_widget.h"
 #include "gui/widgets/connection_ssh_widget.h"
 
 #include "translations/global.h"
+
+namespace {
+const QString trUnixPath = QObject::tr("Unix socket path:");
+const QString trCaption = QObject::tr("Select Database path");
+const QString trFilter = QObject::tr("Database files (*.*)");
+const QString trDBPath = QObject::tr("DB path");
+const QString trRemote = QObject::tr("Remote");
+const QString trLocal = QObject::tr("Local");
+}
 
 namespace fastonosql {
 namespace gui {
 namespace redis {
 
-ConnectionWidget::ConnectionWidget(QWidget* parent) : ConnectionRemoteWidget(parent) {
+ConnectionWidget::ConnectionWidget(QWidget* parent) : ConnectionBaseWidget(parent) {
+  QVBoxLayout* vbox = new QVBoxLayout;
+  groupBox_ = new QGroupBox;
+  remote_ = new QRadioButton;
+  local_ = new QRadioButton;
+  VERIFY(connect(remote_, &QRadioButton::toggled, this, &ConnectionWidget::selectRemoteDBPath));
+  VERIFY(connect(local_, &QRadioButton::toggled, this, &ConnectionWidget::selectLocalDBPath));
+
+  hostWidget_ = new HostPortWidget;
+  QLayout* host_layout = hostWidget_->layout();
+  host_layout->setContentsMargins(0, 0, 0, 0);
+  vbox->addWidget(remote_);
+  vbox->addWidget(hostWidget_);
+
+  pathWidget_ = new PathWidget(false, trUnixPath, trFilter, trCaption);
+  QLayout* path_layout = pathWidget_->layout();
+  path_layout->setContentsMargins(0, 0, 0, 0);
+  vbox->addWidget(local_);
+  vbox->addWidget(pathWidget_);
+
+  groupBox_->setLayout(vbox);
+  addWidget(groupBox_);
+
   useAuth_ = new QCheckBox;
   VERIFY(connect(useAuth_, &QCheckBox::stateChanged, this, &ConnectionWidget::authStateChange));
   addWidget(useAuth_);
@@ -51,11 +90,13 @@ ConnectionWidget::ConnectionWidget(QWidget* parent) : ConnectionRemoteWidget(par
   passwordLayout->addWidget(passwordEchoModeButton_);
   addLayout(passwordLayout);
 
-  ssh_widget_ = new ConnectionSSHWidget;
-  QLayout* ssh_layout = ssh_widget_->layout();
+  sshWidget_ = new ConnectionSSHWidget;
+  QLayout* ssh_layout = sshWidget_->layout();
   ssh_layout->setContentsMargins(0, 0, 0, 0);
-  addWidget(ssh_widget_);
+  addWidget(sshWidget_);
 
+  remote_->setChecked(true);
+  selectRemoteDBPath(true);
   useAuth_->setChecked(false);
   passwordBox_->setEnabled(false);
   passwordEchoModeButton_->setEnabled(false);
@@ -66,6 +107,15 @@ void ConnectionWidget::syncControls(core::IConnectionSettingsBase* connection) {
       static_cast<core::redis::ConnectionSettings*>(connection);
   if (redis) {
     core::redis::Config config = redis->Info();
+    bool is_remote = config.hostsocket.empty();
+    if (is_remote) {
+      hostWidget_->setHost(config.host);
+      selectRemoteDBPath(true);
+    } else {
+      pathWidget_->setPath(common::ConvertFromString<QString>(config.hostsocket));
+      selectLocalDBPath(true);
+    }
+
     std::string auth = config.auth;
     if (!auth.empty()) {
       useAuth_->setChecked(true);
@@ -75,14 +125,17 @@ void ConnectionWidget::syncControls(core::IConnectionSettingsBase* connection) {
       passwordBox_->clear();
     }
     core::SSHInfo ssh_info = redis->SSHInfo();
-    ssh_widget_->setInfo(ssh_info);
+    sshWidget_->setInfo(ssh_info);
   }
-  ConnectionRemoteWidget::syncControls(redis);
+  ConnectionBaseWidget::syncControls(redis);
 }
 
 void ConnectionWidget::retranslateUi() {
+  groupBox_->setTitle(trDBPath);
+  remote_->setText(trRemote);
+  local_->setText(trLocal);
   useAuth_->setText(tr("Use AUTH"));
-  ConnectionRemoteWidget::retranslateUi();
+  ConnectionBaseWidget::retranslateUi();
 }
 
 void ConnectionWidget::togglePasswordEchoMode() {
@@ -96,9 +149,19 @@ void ConnectionWidget::authStateChange(int state) {
   passwordEchoModeButton_->setEnabled(state);
 }
 
+void ConnectionWidget::selectRemoteDBPath(bool checked) {
+  hostWidget_->setEnabled(checked);
+  pathWidget_->setEnabled(!checked);
+}
+
+void ConnectionWidget::selectLocalDBPath(bool checked) {
+  hostWidget_->setEnabled(!checked);
+  pathWidget_->setEnabled(checked);
+}
+
 bool ConnectionWidget::validated() const {
-  core::SSHInfo info = ssh_widget_->info();
-  if (ssh_widget_->isSSHChecked()) {
+  core::SSHInfo info = sshWidget_->info();
+  if (sshWidget_->isSSHChecked()) {
     if (info.current_method == core::SSHInfo::PUBLICKEY && info.private_key.empty()) {
       return false;
     }
@@ -108,7 +171,7 @@ bool ConnectionWidget::validated() const {
     return false;
   }
 
-  return ConnectionRemoteWidget::validated();
+  return ConnectionBaseWidget::validated();
 }
 
 bool ConnectionWidget::isValidCredential() const {
@@ -123,13 +186,21 @@ bool ConnectionWidget::isValidCredential() const {
 core::IConnectionSettingsBase* ConnectionWidget::createConnectionImpl(
     const core::connection_path_t& path) const {
   core::redis::ConnectionSettings* conn = new core::redis::ConnectionSettings(path);
-  core::redis::Config config(ConnectionRemoteWidget::config());
+  core::RemoteConfig rconf(ConnectionBaseWidget::config());
+  core::redis::Config config(rconf);
+  bool is_remote = remote_->isChecked();
+  if (is_remote) {
+    config.host = hostWidget_->host();
+  } else {
+    config.hostsocket = common::ConvertToString(pathWidget_->path());
+  }
+
   if (useAuth_->isChecked() && isValidCredential()) {
     config.auth = common::ConvertToString(passwordBox_->text());
   }
   conn->SetInfo(config);
 
-  core::SSHInfo info = ssh_widget_->info();
+  core::SSHInfo info = sshWidget_->info();
   conn->SetSSHInfo(info);
   return conn;
 }
