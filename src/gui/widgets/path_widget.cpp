@@ -28,6 +28,7 @@
 
 #include <common/convert2string.h>
 #include <common/qt/convert2string.h>
+#include <common/file_system.h>
 
 namespace fastonosql {
 namespace gui {
@@ -74,6 +75,11 @@ QString PathWidget::path() const {
 
 void PathWidget::setPath(const QString& path) {
   pathEdit_->setText(path);
+}
+
+bool PathWidget::isValidPath() const {
+  std::string path_str = common::ConvertToString(path());
+  return common::file_system::is_valid_path(path_str);
 }
 
 void PathWidget::retranslateUi() {

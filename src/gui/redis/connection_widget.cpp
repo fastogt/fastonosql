@@ -110,10 +110,10 @@ void ConnectionWidget::syncControls(core::IConnectionSettingsBase* connection) {
     bool is_remote = config.hostsocket.empty();
     if (is_remote) {
       hostWidget_->setHost(config.host);
-      selectRemoteDBPath(true);
+      remote_->setChecked(true);
     } else {
       pathWidget_->setPath(common::ConvertFromString<QString>(config.hostsocket));
-      selectLocalDBPath(true);
+      local_->setChecked(true);
     }
 
     std::string auth = config.auth;
@@ -161,11 +161,24 @@ void ConnectionWidget::selectLocalDBPath(bool checked) {
 
 bool ConnectionWidget::validated() const {
   if (sshWidget_->isSSHChecked()) {
-    return sshWidget_->isValidSSHInfo();
+    if (!sshWidget_->isValidSSHInfo()) {
+      return false;
+    }
   }
 
   if (!isValidCredential()) {
     return false;
+  }
+
+  bool is_remote = remote_->isChecked();
+  if (is_remote) {
+    if (!hostWidget_->isValidHost()) {
+      return false;
+    }
+  } else {
+    if (!pathWidget_->isValidPath()) {
+      return false;
+    }
   }
 
   return ConnectionBaseWidget::validated();

@@ -55,6 +55,11 @@ void HostPortWidget::setHost(const common::net::HostAndPort& host) {
   hostPort_->setText(QString::number(host.port));
 }
 
+bool HostPortWidget::isValidHost() const {
+  common::net::HostAndPort hs = host();
+  return hs.isValid();
+}
+
 void HostPortWidget::retranslateUi() {}
 
 void HostPortWidget::changeEvent(QEvent* ev) {

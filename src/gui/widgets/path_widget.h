@@ -38,6 +38,8 @@ class PathWidget : public QWidget {
   QString path() const;
   void setPath(const QString& path);
 
+  bool isValidPath() const;
+
  private Q_SLOTS:
   void selectPathDialog();
 

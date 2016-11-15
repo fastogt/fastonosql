@@ -33,6 +33,7 @@ class ConnectionRemoteWidget : public ConnectionBaseWidget {
 
   virtual void syncControls(core::IConnectionSettingsBase* connection) override;
   virtual void retranslateUi() override;
+  virtual bool validated() const override;
 
  protected:
   core::RemoteConfig config() const;

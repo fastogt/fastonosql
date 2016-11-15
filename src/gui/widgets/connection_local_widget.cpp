@@ -59,6 +59,14 @@ void ConnectionLocalWidget::retranslateUi() {
   ConnectionBaseWidget::retranslateUi();
 }
 
+bool ConnectionLocalWidget::validated() const {
+  if (!pathWidget_->isValidPath()) {
+    return false;
+  }
+
+  return ConnectionBaseWidget::validated();
+}
+
 core::LocalConfig ConnectionLocalWidget::config() const {
   core::LocalConfig conf(ConnectionBaseWidget::config());
   QString db_path = pathWidget_->path();

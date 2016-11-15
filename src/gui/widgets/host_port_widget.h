@@ -35,6 +35,8 @@ class HostPortWidget : public QWidget {
   common::net::HostAndPort host() const;
   void setHost(const common::net::HostAndPort& host);
 
+  bool isValidHost() const;
+
  protected:
   virtual void changeEvent(QEvent* ev);
 

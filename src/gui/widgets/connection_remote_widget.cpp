@@ -57,6 +57,14 @@ void ConnectionRemoteWidget::retranslateUi() {
   ConnectionBaseWidget::retranslateUi();
 }
 
+bool ConnectionRemoteWidget::validated() const {
+  if (!hostWidget_->isValidHost()) {
+    return false;
+  }
+
+  return ConnectionBaseWidget::validated();
+}
+
 core::RemoteConfig ConnectionRemoteWidget::config() const {
   core::RemoteConfig conf(ConnectionBaseWidget::config());
   conf.host = hostWidget_->host();
