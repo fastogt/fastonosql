@@ -108,8 +108,10 @@ common::Error CreateConnection(const Config& config, NativeConnection** context)
   std::string folder = config.dbname;  // start point must be folder
   common::tribool is_dir = common::file_system::is_directory(folder);
   if (is_dir != common::SUCCESS) {
-    folder = common::file_system::get_dir_path(folder);
+    return common::make_error_value(common::MemSPrintf("Invalid input path(%s)", folder),
+                                    common::ErrorValue::E_ERROR);
   }
+
   auto st = ::rocksdb::DB::Open(config.options, folder, &lcontext);
   if (!st.ok()) {
     std::string buff = common::MemSPrintf("Fail open database: %s!", st.ToString());

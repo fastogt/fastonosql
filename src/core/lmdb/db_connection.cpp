@@ -53,23 +53,14 @@ struct lmdb {
 
 namespace {
 
-int lmdb_open(lmdb** context, const char* dbname, bool create_if_missing) {
-  if (create_if_missing) {
-    common::Error err = common::file_system::create_directory(dbname, true);
-    if (err && err->isError()) {
-      return EACCES;
-    }
-    if (common::file_system::is_directory(dbname) != common::SUCCESS) {
-      return EACCES;
-    }
-  }
-
+int lmdb_open(lmdb** context, const char* dbname) {
   lmdb* lcontext = reinterpret_cast<lmdb*>(calloc(1, sizeof(lmdb)));
   int rc = mdb_env_create(&lcontext->env);
   if (rc != LMDB_OK) {
     free(lcontext);
     return rc;
   }
+
   rc = mdb_env_open(lcontext->env, dbname, 0, 0664);
   if (rc != LMDB_OK) {
     free(lcontext);
@@ -122,10 +113,12 @@ common::Error CreateConnection(const Config& config, NativeConnection** context)
   std::string folder = config.dbname;  // start point must be folder
   common::tribool is_dir = common::file_system::is_directory(folder);
   if (is_dir != common::SUCCESS) {
-    folder = common::file_system::get_dir_path(folder);
+    return common::make_error_value(common::MemSPrintf("Invalid input path(%s)", folder),
+                                    common::ErrorValue::E_ERROR);
   }
+
   const char* dbname = common::utils::c_strornull(folder);
-  int st = lmdb_open(&lcontext, dbname, config.create_if_missing);
+  int st = lmdb_open(&lcontext, dbname);
   if (st != LMDB_OK) {
     std::string buff = common::MemSPrintf("Fail open database: %s", mdb_strerror(st));
     return common::make_error_value(buff, common::ErrorValue::E_ERROR);

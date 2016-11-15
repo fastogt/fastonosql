@@ -38,8 +38,8 @@ class ConnectionLocalWidget : public ConnectionBaseWidget {
  public:
   explicit ConnectionLocalWidget(bool isFolderSelectOnly,
                                  const QString& pathTitle,
-                                 const QString& filter,
                                  const QString& caption,
+                                 const QString& filter,
                                  QWidget* parent = 0);
 
   virtual void syncControls(core::IConnectionSettingsBase* connection) override;

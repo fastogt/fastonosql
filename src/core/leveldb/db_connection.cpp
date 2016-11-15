@@ -73,13 +73,14 @@ bool ConnectionAllocatorTraits<leveldb::NativeConnection, leveldb::Config>::IsCo
 
 template <>
 const char* CDBConnection<leveldb::NativeConnection, leveldb::Config, LEVELDB>::VersionApi() {
-    static std::string leveldb_version =
-        common::MemSPrintf("%d.%d", leveldb_major_version(), leveldb_minor_version());
-    return leveldb_version.c_str();
+  static std::string leveldb_version =
+      common::MemSPrintf("%d.%d", leveldb_major_version(), leveldb_minor_version());
+  return leveldb_version.c_str();
 }
 
 template <>
-std::vector<CommandHolder> CDBConnection<leveldb::NativeConnection, leveldb::Config, LEVELDB>::Commands() {
+std::vector<CommandHolder>
+CDBConnection<leveldb::NativeConnection, leveldb::Config, LEVELDB>::Commands() {
   return leveldb::leveldbCommands;
 }
 }
@@ -95,8 +96,10 @@ common::Error CreateConnection(const Config& config, NativeConnection** context)
   std::string folder = config.dbname;  // start point must be folder
   common::tribool is_dir = common::file_system::is_directory(folder);
   if (is_dir != common::SUCCESS) {
-    folder = common::file_system::get_dir_path(folder);
+    return common::make_error_value(common::MemSPrintf("Invalid input path(%s)", folder),
+                                    common::ErrorValue::E_ERROR);
   }
+
   auto st = ::leveldb::DB::Open(config.options, folder, &lcontext);
   if (!st.ok()) {
     std::string buff = common::MemSPrintf("Fail connect to server: %s!", st.ToString());

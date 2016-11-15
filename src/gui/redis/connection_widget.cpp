@@ -200,7 +200,10 @@ core::IConnectionSettingsBase* ConnectionWidget::createConnectionImpl(
   }
   conn->SetInfo(config);
 
-  core::SSHInfo info = sshWidget_->info();
+  core::SSHInfo info;
+  if (sshWidget_->isSSHChecked()) {
+    info = sshWidget_->info();
+  }
   conn->SetSSHInfo(info);
   return conn;
 }

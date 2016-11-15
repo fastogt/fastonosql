@@ -52,8 +52,6 @@ Config parseOptions(int argc, char** argv) {
       cfg.ns_separator = argv[++i];
     } else if (!strcmp(argv[i], "-f") && !lastarg) {
       cfg.dbname = argv[++i];
-    } else if (!strcmp(argv[i], "-c")) {
-      cfg.create_if_missing = true;
     } else {
       if (argv[i][0] == '-') {
         const std::string buff = common::MemSPrintf(
@@ -73,10 +71,9 @@ Config parseOptions(int argc, char** argv) {
 
 }  // namespace
 
-Config::Config()
-    : LocalConfig(common::file_system::prepare_path("~/test.lmdb")), create_if_missing(false) {}
+Config::Config() : LocalConfig(common::file_system::prepare_path("~/test.lmdb")) {}
 
-Config::Config(const LocalConfig& conf) : LocalConfig(conf), create_if_missing(false) {}
+Config::Config(const LocalConfig& conf) : LocalConfig(conf) {}
 
 }  // namespace lmdb
 }  // namespace core
@@ -86,10 +83,6 @@ namespace common {
 
 std::string ConvertToString(const fastonosql::core::lmdb::Config& conf) {
   std::vector<std::string> argv = conf.Args();
-
-  if (conf.create_if_missing) {
-    argv.push_back("-c");
-  }
 
   return fastonosql::core::ConvertToStringConfigArgs(argv);
 }

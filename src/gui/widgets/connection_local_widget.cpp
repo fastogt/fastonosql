@@ -36,8 +36,8 @@ namespace gui {
 
 ConnectionLocalWidget::ConnectionLocalWidget(bool isFolderSelectOnly,
                                              const QString& pathTitle,
-                                             const QString& filter,
                                              const QString& caption,
+                                             const QString& filter,
                                              QWidget* parent)
     : ConnectionBaseWidget(parent) {
   pathWidget_ = new PathWidget(isFolderSelectOnly, pathTitle, filter, caption);

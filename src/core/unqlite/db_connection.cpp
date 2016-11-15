@@ -164,7 +164,15 @@ common::Error CreateConnection(const Config& config, NativeConnection** context)
 
   DCHECK(*context == NULL);
   struct unqlite* lcontext = NULL;
-  const char* dbname = common::utils::c_strornull(config.dbname);
+  std::string db_path = config.dbname;  // start point must be folder
+  std::string folder = common::file_system::get_dir_path(db_path);
+  common::tribool is_dir = common::file_system::is_directory(folder);
+  if (is_dir != common::SUCCESS) {
+    return common::make_error_value(common::MemSPrintf("Invalid input path(%s)", db_path),
+                                    common::ErrorValue::E_ERROR);
+  }
+
+  const char* dbname = common::utils::c_strornull(db_path);
   int st = unqlite_open(&lcontext, dbname,
                         config.create_if_missing ? UNQLITE_OPEN_CREATE : UNQLITE_OPEN_READWRITE);
   if (st != UNQLITE_OK) {
