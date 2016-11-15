@@ -28,7 +28,7 @@ class QGroupBox;
 
 namespace fastonosql {
 namespace gui {
-class ConnectionSSHWidget;
+class SSHWidget;
 class HostPortWidget;
 class PathWidget;
 
@@ -64,7 +64,7 @@ class ConnectionWidget : public ConnectionBaseWidget {
   QLineEdit* passwordBox_;
   QPushButton* passwordEchoModeButton_;
 
-  ConnectionSSHWidget* sshWidget_;
+  SSHWidget* sshWidget_;
 };
 }
 }  // namespace gui

@@ -16,7 +16,7 @@
     along with FastoNoSQL.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-#include "gui/widgets/connection_ssh_widget.h"
+#include "gui/widgets/ssh_widget.h"
 
 #include <QCheckBox>
 #include <QLineEdit>
@@ -31,6 +31,8 @@
 #include <common/convert2string.h>
 #include <common/qt/convert2string.h>
 
+#include "gui/widgets/host_port_widget.h"
+
 #include "translations/global.h"
 
 namespace {
@@ -43,15 +45,13 @@ const QString trPublicKeyFiles = QObject::tr("Public key files (*.*)");
 namespace fastonosql {
 namespace gui {
 
-ConnectionSSHWidget::ConnectionSSHWidget(QWidget* parent) : QWidget(parent) {
+SSHWidget::SSHWidget(QWidget* parent) : QWidget(parent) {
   useSsh_ = new QCheckBox;
-  sshHostName_ = new QLineEdit;
   userName_ = new QLineEdit;
 
-  sshPort_ = new QLineEdit;
-  sshPort_->setFixedWidth(80);
-  QRegExp rx("\\d+");  // (0-65554)
-  sshPort_->setValidator(new QRegExpValidator(rx, this));
+  sshHostWidget_ = new HostPortWidget;
+  QLayout* host_layout = sshHostWidget_->layout();
+  host_layout->setContentsMargins(0, 0, 0, 0);
 
   passwordLabel_ = new QLabel;
   sshPrivateKeyLabel_ = new QLabel;
@@ -67,13 +67,13 @@ ConnectionSSHWidget::ConnectionSSHWidget(QWidget* parent) : QWidget(parent) {
 
   typedef void (QComboBox::*ind)(const QString&);
   VERIFY(connect(security_, static_cast<ind>(&QComboBox::currentIndexChanged), this,
-                 &ConnectionSSHWidget::securityChange));
+                 &SSHWidget::securityChange));
 
   passwordBox_ = new QLineEdit;
   passwordBox_->setEchoMode(QLineEdit::Password);
   passwordEchoModeButton_ = new QPushButton(translations::trShow);
   VERIFY(connect(passwordEchoModeButton_, &QPushButton::clicked, this,
-                 &ConnectionSSHWidget::togglePasswordEchoMode));
+                 &SSHWidget::togglePasswordEchoMode));
 
   privateKeyBox_ = new QLineEdit;
   publicKeyBox_ = new QLineEdit;
@@ -82,20 +82,15 @@ ConnectionSSHWidget::ConnectionSSHWidget(QWidget* parent) : QWidget(parent) {
   passphraseBox_->setEchoMode(QLineEdit::Password);
   passphraseEchoModeButton_ = new QPushButton(translations::trShow);
   VERIFY(connect(passphraseEchoModeButton_, &QPushButton::clicked, this,
-                 &ConnectionSSHWidget::togglePassphraseEchoMode));
+                 &SSHWidget::togglePassphraseEchoMode));
 
   useSshWidget_ = new QWidget;
-
-  QHBoxLayout* hostAndPasswordLayout = new QHBoxLayout;
-  hostAndPasswordLayout->addWidget(sshHostName_);
-  hostAndPasswordLayout->addWidget(new QLabel(":"));
-  hostAndPasswordLayout->addWidget(sshPort_);
 
   QGridLayout* sshWidgetLayout = new QGridLayout;
   sshWidgetLayout->setAlignment(Qt::AlignTop);
   sshWidgetLayout->setColumnStretch(1, 1);
   sshWidgetLayout->addWidget(sshAddressLabel_, 1, 0);
-  sshWidgetLayout->addLayout(hostAndPasswordLayout, 1, 1, 1, 2);
+  sshWidgetLayout->addWidget(sshHostWidget_, 1, 1, 1, 2);
   sshWidgetLayout->addWidget(sshUserNameLabel_, 2, 0);
   sshWidgetLayout->addWidget(userName_, 2, 1, 1, 2);
   sshWidgetLayout->addWidget(sshAuthMethodLabel_, 4, 0);
@@ -121,12 +116,10 @@ ConnectionSSHWidget::ConnectionSSHWidget(QWidget* parent) : QWidget(parent) {
   sshWidgetLayout->addWidget(passphraseEchoModeButton_, 9, 2);
   useSshWidget_->setLayout(sshWidgetLayout);
 
-  VERIFY(connect(selectPrivateFileButton_, &QPushButton::clicked, this,
-                 &ConnectionSSHWidget::setPrivateFile));
-  VERIFY(connect(selectPublicFileButton_, &QPushButton::clicked, this,
-                 &ConnectionSSHWidget::setPublicFile));
-  VERIFY(connect(useSsh_, &QCheckBox::stateChanged, this,
-                 &ConnectionSSHWidget::sshSupportStateChange));
+  VERIFY(
+      connect(selectPrivateFileButton_, &QPushButton::clicked, this, &SSHWidget::setPrivateFile));
+  VERIFY(connect(selectPublicFileButton_, &QPushButton::clicked, this, &SSHWidget::setPublicFile));
+  VERIFY(connect(useSsh_, &QCheckBox::stateChanged, this, &SSHWidget::sshSupportStateChange));
 
   QVBoxLayout* sshLayout = new QVBoxLayout;
   sshLayout->addWidget(useSsh_);
@@ -139,26 +132,25 @@ ConnectionSSHWidget::ConnectionSSHWidget(QWidget* parent) : QWidget(parent) {
   retranslateUi();
 }
 
-bool ConnectionSSHWidget::isSSHChecked() const {
+bool SSHWidget::isSSHChecked() const {
   return useSsh_->isChecked();
 }
 
-void ConnectionSSHWidget::setSSHChecked(bool checked) {
+void SSHWidget::setSSHChecked(bool checked) {
   useSsh_->setChecked(checked);
 }
 
-bool ConnectionSSHWidget::isSSHEnabled() const {
+bool SSHWidget::isSSHEnabled() const {
   return useSsh_->isEnabled();
 }
 
-void ConnectionSSHWidget::setSSHEnabled(bool enabled) {
+void SSHWidget::setSSHEnabled(bool enabled) {
   useSsh_->setEnabled(enabled);
 }
 
-core::SSHInfo ConnectionSSHWidget::info() const {
+core::SSHInfo SSHWidget::info() const {
   core::SSHInfo info;
-  info.host = common::net::HostAndPort(common::ConvertToString(sshHostName_->text()),
-                                       sshPort_->text().toInt());
+  info.host = sshHostWidget_->host();
   info.user_name = common::ConvertToString(userName_->text());
   info.password = common::ConvertToString(passwordBox_->text());
   info.public_key = common::ConvertToString(publicKeyBox_->text());
@@ -169,13 +161,12 @@ core::SSHInfo ConnectionSSHWidget::info() const {
   return info;
 }
 
-void ConnectionSSHWidget::setInfo(const core::SSHInfo& info) {
+void SSHWidget::setInfo(const core::SSHInfo& info) {
   bool checked = info.IsValid();
   useSsh_->setChecked(checked);
   common::net::HostAndPort host = info.host;
-  sshHostName_->setText(common::ConvertFromString<QString>(host.host));
+  sshHostWidget_->setHost(host);
   userName_->setText(common::ConvertFromString<QString>(info.user_name));
-  sshPort_->setText(QString::number(host.port));
   if (info.AuthMethod() == core::SSHInfo::PUBLICKEY) {
     security_->setCurrentText(translations::trPublicPrivateKey);
   } else {
@@ -187,7 +178,7 @@ void ConnectionSSHWidget::setInfo(const core::SSHInfo& info) {
   passphraseBox_->setText(common::ConvertFromString<QString>(info.passphrase));
 }
 
-core::SSHInfo::SupportedAuthenticationMetods ConnectionSSHWidget::selectedAuthMethod() const {
+core::SSHInfo::SupportedAuthenticationMetods SSHWidget::selectedAuthMethod() const {
   if (security_->currentText() == translations::trPublicPrivateKey) {
     return core::SSHInfo::PUBLICKEY;
   }
@@ -195,7 +186,7 @@ core::SSHInfo::SupportedAuthenticationMetods ConnectionSSHWidget::selectedAuthMe
   return core::SSHInfo::PASSWORD;
 }
 
-void ConnectionSSHWidget::securityChange(const QString& text) {
+void SSHWidget::securityChange(const QString& text) {
   bool isKey = text == translations::trPublicPrivateKey;
   sshPrivateKeyLabel_->setVisible(isKey);
   privateKeyBox_->setVisible(isKey);
@@ -212,23 +203,23 @@ void ConnectionSSHWidget::securityChange(const QString& text) {
   passwordEchoModeButton_->setVisible(!isKey);
 }
 
-void ConnectionSSHWidget::sshSupportStateChange(int value) {
+void SSHWidget::sshSupportStateChange(int value) {
   useSshWidget_->setEnabled(value);
 }
 
-void ConnectionSSHWidget::togglePasswordEchoMode() {
+void SSHWidget::togglePasswordEchoMode() {
   bool isPassword = passwordBox_->echoMode() == QLineEdit::Password;
   passwordBox_->setEchoMode(isPassword ? QLineEdit::Normal : QLineEdit::Password);
   passwordEchoModeButton_->setText(isPassword ? translations::trHide : translations::trShow);
 }
 
-void ConnectionSSHWidget::togglePassphraseEchoMode() {
+void SSHWidget::togglePassphraseEchoMode() {
   bool isPassword = passphraseBox_->echoMode() == QLineEdit::Password;
   passphraseBox_->setEchoMode(isPassword ? QLineEdit::Normal : QLineEdit::Password);
   passphraseEchoModeButton_->setText(isPassword ? translations::trHide : translations::trShow);
 }
 
-void ConnectionSSHWidget::setPrivateFile() {
+void SSHWidget::setPrivateFile() {
   QString filepath = QFileDialog::getOpenFileName(this, trSelectPrivateKey, privateKeyBox_->text(),
                                                   trPrivateKeyFiles);
   if (filepath.isNull()) {
@@ -238,7 +229,7 @@ void ConnectionSSHWidget::setPrivateFile() {
   privateKeyBox_->setText(filepath);
 }
 
-void ConnectionSSHWidget::setPublicFile() {
+void SSHWidget::setPublicFile() {
   QString filepath = QFileDialog::getOpenFileName(this, trSelectPublicKey, publicKeyBox_->text(),
                                                   trPublicKeyFiles);
   if (filepath.isNull()) {
@@ -248,7 +239,7 @@ void ConnectionSSHWidget::setPublicFile() {
   publicKeyBox_->setText(filepath);
 }
 
-void ConnectionSSHWidget::changeEvent(QEvent* ev) {
+void SSHWidget::changeEvent(QEvent* ev) {
   if (ev->type() == QEvent::LanguageChange) {
     retranslateUi();
   }
@@ -256,7 +247,7 @@ void ConnectionSSHWidget::changeEvent(QEvent* ev) {
   QWidget::changeEvent(ev);
 }
 
-void ConnectionSSHWidget::retranslateUi() {
+void SSHWidget::retranslateUi() {
   useSsh_->setText(tr("Use SSH tunnel"));
   passwordLabel_->setText(tr("User Password:"));
   sshPrivateKeyLabel_->setText(tr("Private key:"));

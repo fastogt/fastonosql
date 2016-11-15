@@ -32,10 +32,12 @@ class QPushButton;
 namespace fastonosql {
 namespace gui {
 
-class ConnectionSSHWidget : public QWidget {
+class HostPortWidget;
+
+class SSHWidget : public QWidget {
   Q_OBJECT
  public:
-  explicit ConnectionSSHWidget(QWidget* parent = 0);
+  explicit SSHWidget(QWidget* parent = 0);
 
   bool isSSHChecked() const;
   void setSSHChecked(bool checked);
@@ -64,8 +66,7 @@ class ConnectionSSHWidget : public QWidget {
 
   QCheckBox* useSsh_;
   QWidget* useSshWidget_;
-  QLineEdit* sshHostName_;
-  QLineEdit* sshPort_;
+  HostPortWidget* sshHostWidget_;
 
   QLabel* sshAddressLabel_;
   QLabel* sshPassphraseLabel_;

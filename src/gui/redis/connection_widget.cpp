@@ -36,7 +36,7 @@
 
 #include "gui/widgets/host_port_widget.h"
 #include "gui/widgets/path_widget.h"
-#include "gui/widgets/connection_ssh_widget.h"
+#include "gui/widgets/ssh_widget.h"
 
 #include "translations/global.h"
 
@@ -90,7 +90,7 @@ ConnectionWidget::ConnectionWidget(QWidget* parent) : ConnectionBaseWidget(paren
   passwordLayout->addWidget(passwordEchoModeButton_);
   addLayout(passwordLayout);
 
-  sshWidget_ = new ConnectionSSHWidget;
+  sshWidget_ = new SSHWidget;
   QLayout* ssh_layout = sshWidget_->layout();
   ssh_layout->setContentsMargins(0, 0, 0, 0);
   addWidget(sshWidget_);
