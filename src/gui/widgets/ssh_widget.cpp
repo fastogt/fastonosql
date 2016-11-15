@@ -206,6 +206,15 @@ void SSHWidget::togglePassphraseEchoMode() {
   passphraseEchoModeButton_->setText(isPassword ? translations::trHide : translations::trShow);
 }
 
+bool SSHWidget::isValidSSHInfo() const {
+  if (useSsh_->isChecked()) {
+    core::SSHInfo inf = info();
+    return inf.IsValid();
+  }
+
+  return true;
+}
+
 void SSHWidget::changeEvent(QEvent* ev) {
   if (ev->type() == QEvent::LanguageChange) {
     retranslateUi();

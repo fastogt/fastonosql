@@ -160,11 +160,8 @@ void ConnectionWidget::selectLocalDBPath(bool checked) {
 }
 
 bool ConnectionWidget::validated() const {
-  core::SSHInfo info = sshWidget_->info();
   if (sshWidget_->isSSHChecked()) {
-    if (info.current_method == core::SSHInfo::PUBLICKEY && info.private_key.empty()) {
-      return false;
-    }
+    return sshWidget_->isValidSSHInfo();
   }
 
   if (!isValidCredential()) {

@@ -30,13 +30,13 @@
 #define DEFAULT_PUB_KEY_PATH "~/.ssh/id_rsa.pub"
 #define DEFAULT_PRIVATE_KEY_PATH "~/.ssh/id_rsa"
 
-#define HOST "host"
-#define USER "user"
-#define PASSWORD "password"
-#define PUBKEY "publicKey"
-#define PRIVKEY "privateKey"
-#define PASSPHRASE "passphrase"
-#define CURMETHOD "currentMethod"
+#define HOST_FIELD "host"
+#define USER_FIELD "user"
+#define PASSWORD_FIELD "password"
+#define PUBKEY_FIELD "publicKey"
+#define PRIVKEY_FIELD "privateKey"
+#define PASSPHRASE_FIELD "passphrase"
+#define CURMETHOD_FIELD "currentMethod"
 #define MARKER "\r\n"
 
 namespace {
@@ -46,10 +46,11 @@ const std::string sshMethods[] = {"0", "1", "2"};
 namespace common {
 
 std::string ConvertToString(const fastonosql::core::SSHInfo& ssh_info) {
-  return HOST ":" + common::ConvertToString(ssh_info.host) + MARKER USER ":" + ssh_info.user_name +
-         MARKER PASSWORD ":" + ssh_info.password + MARKER PUBKEY ":" + ssh_info.public_key +
-         MARKER PRIVKEY ":" + ssh_info.private_key + MARKER PASSPHRASE ":" + ssh_info.passphrase +
-         MARKER CURMETHOD ":" + common::ConvertToString(ssh_info.current_method) + MARKER;
+  return HOST_FIELD ":" + common::ConvertToString(ssh_info.host) + MARKER USER_FIELD ":" +
+         ssh_info.user_name + MARKER PASSWORD_FIELD ":" + ssh_info.password +
+         MARKER PUBKEY_FIELD ":" + ssh_info.public_key + MARKER PRIVKEY_FIELD ":" +
+         ssh_info.private_key + MARKER PASSPHRASE_FIELD ":" + ssh_info.passphrase +
+         MARKER CURMETHOD_FIELD ":" + common::ConvertToString(ssh_info.current_method) + MARKER;
 }
 
 template <>
@@ -118,19 +119,19 @@ SSHInfo::SSHInfo(const std::string& text)
     if (delem != std::string::npos) {
       std::string field = line.substr(0, delem);
       std::string value = line.substr(delem + 1);
-      if (field == HOST) {
+      if (field == HOST_FIELD) {
         host = common::ConvertFromString<common::net::HostAndPort>(value);
-      } else if (field == USER) {
+      } else if (field == USER_FIELD) {
         user_name = value;
-      } else if (field == PASSWORD) {
+      } else if (field == PASSWORD_FIELD) {
         password = value;
-      } else if (field == PUBKEY) {
+      } else if (field == PUBKEY_FIELD) {
         public_key = value;
-      } else if (field == PRIVKEY) {
+      } else if (field == PRIVKEY_FIELD) {
         private_key = value;
-      } else if (field == PASSPHRASE) {
+      } else if (field == PASSPHRASE_FIELD) {
         passphrase = value;
-      } else if (field == CURMETHOD) {
+      } else if (field == CURMETHOD_FIELD) {
         current_method = common::ConvertFromString<SupportedAuthenticationMetods>(value);
       }
     }
@@ -139,7 +140,13 @@ SSHInfo::SSHInfo(const std::string& text)
 }
 
 bool SSHInfo::IsValid() const {
-  return current_method != UNKNOWN;
+  if (current_method == PASSWORD) {
+    return host.isValid() && !user_name.empty() && !password.empty();
+  } else if (current_method == PUBLICKEY) {
+    return host.isValid() && !user_name.empty() && !private_key.empty();
+  } else {
+    return false;
+  }
 }
 
 SSHInfo::SupportedAuthenticationMetods SSHInfo::AuthMethod() const {

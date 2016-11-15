@@ -40,6 +40,8 @@ class SSHWidget : public QWidget {
  public:
   explicit SSHWidget(QWidget* parent = 0);
 
+  bool isValidSSHInfo() const;
+
   bool isSSHChecked() const;
   void setSSHChecked(bool checked);
 
