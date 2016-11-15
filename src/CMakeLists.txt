@@ -108,6 +108,7 @@ SET(HEADERS_GUI_WIDGETS_TO_MOC
   gui/widgets/host_port_widget.h
   gui/widgets/path_widget.h
   gui/widgets/ssh_widget.h
+  gui/widgets/user_password_widget.h
 )
 
 SET(SOURCES_GUI_WIDGETS
@@ -123,6 +124,7 @@ SET(SOURCES_GUI_WIDGETS
   gui/widgets/host_port_widget.cpp
   gui/widgets/path_widget.cpp
   gui/widgets/ssh_widget.cpp
+  gui/widgets/user_password_widget.cpp
 )
 
 SET(HEADERS_GUI_TO_MOC

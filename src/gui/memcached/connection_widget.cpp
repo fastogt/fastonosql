@@ -30,7 +30,13 @@
 
 #include "core/memcached/connection_settings.h"
 
-#include "translations/global.h"
+#include "gui/widgets/user_password_widget.h"
+
+namespace {
+const QString trUserPassword = QObject::tr("User Password:");
+const QString trUserName = QObject::tr("User Name:");
+const QString trUseSasl = QObject::tr("Use SASL");
+}
 
 namespace fastonosql {
 namespace gui {
@@ -41,30 +47,14 @@ ConnectionWidget::ConnectionWidget(QWidget* parent) : ConnectionRemoteWidget(par
   VERIFY(connect(useSasl_, &QCheckBox::stateChanged, this, &ConnectionWidget::saslStateChange));
   addWidget(useSasl_);
 
-  QHBoxLayout* userLayout = new QHBoxLayout;
-  userNameLabel_ = new QLabel;
-  userName_ = new QLineEdit;
-  userLayout->addWidget(userNameLabel_);
-  userLayout->addWidget(userName_);
-  addLayout(userLayout);
-
-  QHBoxLayout* passwordLayout = new QHBoxLayout;
-  passwordLabel_ = new QLabel;
-  passwordBox_ = new QLineEdit;
-  passwordBox_->setEchoMode(QLineEdit::Password);
-  passwordEchoModeButton_ = new QPushButton(translations::trShow);
-  VERIFY(connect(passwordEchoModeButton_, &QPushButton::clicked, this,
-                 &ConnectionWidget::togglePasswordEchoMode));
-  passwordLayout->addWidget(passwordLabel_);
-  passwordLayout->addWidget(passwordBox_);
-  passwordLayout->addWidget(passwordEchoModeButton_);
-  addLayout(passwordLayout);
+  userPasswordWidget_ = new UserPasswordWidget(trUserName, trUserPassword);
+  QLayout* user_layout = userPasswordWidget_->layout();
+  user_layout->setContentsMargins(0, 0, 0, 0);
+  addWidget(userPasswordWidget_);
 
   // sync
   useSasl_->setChecked(false);
-  userName_->setEnabled(false);
-  passwordBox_->setEnabled(false);
-  passwordEchoModeButton_->setEnabled(false);
+  userPasswordWidget_->setEnabled(false);
 }
 
 void ConnectionWidget::syncControls(core::IConnectionSettingsBase* connection) {
@@ -74,36 +64,21 @@ void ConnectionWidget::syncControls(core::IConnectionSettingsBase* connection) {
     core::memcached::Config config = memc->Info();
     std::string uname = config.user;
     std::string pass = config.password;
-    if (!uname.empty() && !pass.empty()) {
-      useSasl_->setChecked(true);
-      userName_->setText(common::ConvertFromString<QString>(uname));
-      passwordBox_->setText(common::ConvertFromString<QString>(pass));
-    } else {
-      useSasl_->setChecked(false);
-      userName_->clear();
-      passwordBox_->clear();
-    }
+    bool is_valid_cred = !uname.empty() && !pass.empty();
+    useSasl_->setChecked(is_valid_cred);
+    userPasswordWidget_->setUserName(common::ConvertFromString<QString>(uname));
+    userPasswordWidget_->setPassword(common::ConvertFromString<QString>(pass));
   }
   ConnectionRemoteWidget::syncControls(memc);
 }
 
 void ConnectionWidget::retranslateUi() {
-  useSasl_->setText(tr("Use SASL"));
-  passwordLabel_->setText(tr("User Password:"));
-  userNameLabel_->setText(tr("User Name:"));
+  useSasl_->setText(trUseSasl);
   ConnectionRemoteWidget::retranslateUi();
 }
 
-void ConnectionWidget::togglePasswordEchoMode() {
-  bool isPassword = passwordBox_->echoMode() == QLineEdit::Password;
-  passwordBox_->setEchoMode(isPassword ? QLineEdit::Normal : QLineEdit::Password);
-  passwordEchoModeButton_->setText(isPassword ? translations::trHide : translations::trShow);
-}
-
 void ConnectionWidget::saslStateChange(int state) {
-  userName_->setEnabled(state);
-  passwordBox_->setEnabled(state);
-  passwordEchoModeButton_->setEnabled(state);
+  userPasswordWidget_->setEnabled(state);
 }
 
 bool ConnectionWidget::validated() const {
@@ -116,9 +91,7 @@ bool ConnectionWidget::validated() const {
 
 bool ConnectionWidget::isValidCredential() const {
   if (useSasl_->isChecked()) {
-    QString uname = userName_->text();
-    QString pass = passwordBox_->text();
-    return !uname.isEmpty() && !pass.isEmpty();
+    return userPasswordWidget_->isValidCredential();
   }
 
   return true;
@@ -129,8 +102,8 @@ core::IConnectionSettingsBase* ConnectionWidget::createConnectionImpl(
   core::memcached::ConnectionSettings* conn = new core::memcached::ConnectionSettings(path);
   core::memcached::Config config(ConnectionRemoteWidget::config());
   if (useSasl_->isChecked() && isValidCredential()) {
-    config.user = common::ConvertToString(userName_->text());
-    config.password = common::ConvertToString(passwordBox_->text());
+    config.user = common::ConvertToString(userPasswordWidget_->userName());
+    config.password = common::ConvertToString(userPasswordWidget_->password());
   }
   conn->SetInfo(config);
   return conn;

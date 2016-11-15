@@ -33,6 +33,7 @@ namespace fastonosql {
 namespace gui {
 
 class HostPortWidget;
+class PathWidget;
 
 class SSHWidget : public QWidget {
   Q_OBJECT
@@ -55,8 +56,6 @@ class SSHWidget : public QWidget {
   void sshSupportStateChange(int value);
   void togglePasswordEchoMode();
   void togglePassphraseEchoMode();
-  void setPrivateFile();
-  void setPublicFile();
 
  protected:
   virtual void changeEvent(QEvent* ev);
@@ -66,7 +65,10 @@ class SSHWidget : public QWidget {
 
   QCheckBox* useSsh_;
   QWidget* useSshWidget_;
+
   HostPortWidget* sshHostWidget_;
+  PathWidget* publicKeyWidget_;
+  PathWidget* privateKeyWidget_;
 
   QLabel* sshAddressLabel_;
   QLabel* sshPassphraseLabel_;
@@ -74,18 +76,12 @@ class SSHWidget : public QWidget {
   QLineEdit* userName_;
   QLabel* sshAuthMethodLabel_;
   QLabel* passwordLabel_;
-  QLabel* sshPrivateKeyLabel_;
-  QLabel* sshPublicKeyLabel_;
 
   QComboBox* security_;
   QLineEdit* passwordBox_;
   QPushButton* passwordEchoModeButton_;
-  QLineEdit* privateKeyBox_;
-  QLineEdit* publicKeyBox_;
   QLineEdit* passphraseBox_;
   QPushButton* passphraseEchoModeButton_;
-  QPushButton* selectPrivateFileButton_;
-  QPushButton* selectPublicFileButton_;
 };
 
 }  // namespace gui

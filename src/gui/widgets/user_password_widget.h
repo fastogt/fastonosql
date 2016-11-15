@@ -18,35 +18,47 @@
 
 #pragma once
 
-#include "gui/widgets/connection_remote_widget.h"
+#include <QWidget>
 
+class QLineEdit;
+class QLabel;
 class QPushButton;
 
 namespace fastonosql {
 namespace gui {
-class UserPasswordWidget;
-namespace memcached {
 
-class ConnectionWidget : public ConnectionRemoteWidget {
+class UserPasswordWidget : public QWidget {
   Q_OBJECT
  public:
-  explicit ConnectionWidget(QWidget* parent = 0);
+  UserPasswordWidget(const QString& userTitle, const QString& passwordTitle, QWidget* parent = 0);
 
-  virtual void syncControls(core::IConnectionSettingsBase* connection) override;
-  virtual void retranslateUi() override;
-  virtual bool validated() const override;
+  QString userName() const;
+  void setUserName(const QString& user) const;
+
+  QString password() const;
+  void setPassword(const QString& pass);
+
   bool isValidCredential() const;
 
  private Q_SLOTS:
-  void saslStateChange(int state);
+  void togglePasswordEchoMode();
+
+ protected:
+  virtual void changeEvent(QEvent* ev);
 
  private:
-  virtual core::IConnectionSettingsBase* createConnectionImpl(
-      const core::connection_path_t& path) const override;
+  void retranslateUi();
 
-  QCheckBox* useSasl_;
-  UserPasswordWidget* userPasswordWidget_;
+  QLabel* userNameLabel_;
+  QLineEdit* userNameBox_;
+
+  QLabel* passwordLabel_;
+  QLineEdit* passwordBox_;
+  QPushButton* passwordEchoModeButton_;
+
+  QString userTitle_;
+  QString passwordTitle_;
 };
-}
+
 }  // namespace gui
 }  // namespace fastonosql
