@@ -40,6 +40,7 @@ class ConnectionWidget : public ConnectionLocalWidget {
 
   QCheckBox* createDBIfMissing_;
 };
-}
+
+}  // namespace rocksdb
 }  // namespace gui
 }  // namespace fastonosql

@@ -522,6 +522,7 @@ template <>
 std::vector<CommandHolder> CDBConnection<lmdb::NativeConnection, lmdb::Config, LMDB>::Commands() {
   return lmdb::lmdbCommands;
 }
-}
+
+}  // namespace internal
 }  // namespace core
 }  // namespace fastonosql

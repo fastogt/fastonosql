@@ -77,7 +77,7 @@ Config::Config()
     : LocalConfig(common::file_system::prepare_path("~/test.upscaledb")),
       create_if_missing(false) {}
 
-}  // namespace lmdb
+}  // namespace upscaledb
 }  // namespace core
 }  // namespace fastonosql
 

@@ -43,6 +43,7 @@ core::IConnectionSettingsRemote* ConnectionWidget::createConnectionRemoteImpl(
   core::ssdb::ConnectionSettings* conn = new core::ssdb::ConnectionSettings(path);
   return conn;
 }
-}
+
+}  // namespace ssdb
 }  // namespace gui
 }  // namespace fastonosql

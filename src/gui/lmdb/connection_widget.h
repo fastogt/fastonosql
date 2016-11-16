@@ -38,6 +38,7 @@ class ConnectionWidget : public ConnectionLocalWidget {
   virtual core::IConnectionSettingsLocal* createConnectionLocalImpl(
       const core::connection_path_t& path) const override;
 };
-}
+
+}  // namespace lmdb
 }  // namespace gui
 }  // namespace fastonosql

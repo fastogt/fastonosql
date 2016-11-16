@@ -36,7 +36,7 @@ namespace {
 const QString trUserPassword = QObject::tr("User Password:");
 const QString trUserName = QObject::tr("User Name:");
 const QString trUseSasl = QObject::tr("Use SASL");
-}
+}  // namespace
 
 namespace fastonosql {
 namespace gui {
@@ -108,6 +108,7 @@ core::IConnectionSettingsRemote* ConnectionWidget::createConnectionRemoteImpl(
   conn->SetInfo(config);
   return conn;
 }
-}
+
+}  // namespace memcached
 }  // namespace gui
 }  // namespace fastonosql

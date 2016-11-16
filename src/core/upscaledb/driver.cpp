@@ -151,7 +151,8 @@ void Driver::HandleLoadDatabaseContentEvent(events::LoadDatabaseContentRequestEv
   QObject* sender = ev->sender();
   NotifyProgress(sender, 0);
   events::LoadDatabaseContentResponceEvent::value_type res(ev->value());
-  std::string patternResult = common::MemSPrintf(UPSCALEDB_GET_KEYS_PATTERN_1ARGS_I, res.count_keys);
+  std::string patternResult =
+      common::MemSPrintf(UPSCALEDB_GET_KEYS_PATTERN_1ARGS_I, res.count_keys);
   FastoObjectCommandIPtr cmd = CreateCommandFast(patternResult, common::Value::C_INNER);
   NotifyProgress(sender, 50);
   common::Error er = Execute(cmd);

@@ -29,6 +29,7 @@
 namespace fastonosql {
 namespace core {
 namespace rocksdb {
+
 class CommandTranslator : public ICommandTranslator {
  public:
   CommandTranslator();
@@ -48,6 +49,7 @@ class CommandTranslator : public ICommandTranslator {
                                                 ttl_t ttl,
                                                 std::string* cmdstring) const override;
 };
-}
+
+}  // namespace rocksdb
 }  // namespace core
 }  // namespace fastonosql

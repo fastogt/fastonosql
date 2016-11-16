@@ -55,7 +55,6 @@ ups_status_t upscaledb_open(upscaledb** context,
                             const char* dbpath,
                             uint16_t db,
                             bool create_if_missing) {
-
   upscaledb* lcontext = reinterpret_cast<upscaledb*>(calloc(1, sizeof(upscaledb)));
   ups_status_t st = create_if_missing ? ups_env_create(&lcontext->env, dbpath, 0, 0664, 0)
                                       : ups_env_open(&lcontext->env, dbpath, 0, 0);
@@ -488,6 +487,6 @@ std::vector<CommandHolder>
 CDBConnection<upscaledb::NativeConnection, upscaledb::Config, UPSCALEDB>::Commands() {
   return upscaledb::upscaledbCommands;
 }
-}
+}  // namespace internal
 }  // namespace core
 }  // namespace fastonosql

@@ -90,4 +90,4 @@ std::string ConvertToString(fastonosql::core::serverTypes st);
 std::string ConvertToString(fastonosql::core::serverState st);
 std::string ConvertToString(fastonosql::core::serverMode md);
 std::string ConvertToString(fastonosql::core::ConnectionMode t);
-}
+}  // namespace common

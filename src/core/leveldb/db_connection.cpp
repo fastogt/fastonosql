@@ -83,7 +83,7 @@ std::vector<CommandHolder>
 CDBConnection<leveldb::NativeConnection, leveldb::Config, LEVELDB>::Commands() {
   return leveldb::leveldbCommands;
 }
-}
+}  // namespace internal
 namespace leveldb {
 
 common::Error CreateConnection(const Config& config, NativeConnection** context) {

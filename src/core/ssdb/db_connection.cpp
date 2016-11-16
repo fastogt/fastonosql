@@ -78,7 +78,7 @@ template <>
 std::vector<CommandHolder> CDBConnection<ssdb::NativeConnection, ssdb::Config, SSDB>::Commands() {
   return ssdb::ssdbCommands;
 }
-}
+}  // namespace internal
 namespace ssdb {
 
 common::Error CreateConnection(const Config& config, NativeConnection** context) {

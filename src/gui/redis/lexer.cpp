@@ -44,6 +44,6 @@ const char* Lexer::basedOn() const {
   return "hiredis";
 }
 
-}
+}  // namespace redis
 }  // namespace gui
 }  // namespace fastonosql

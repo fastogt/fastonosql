@@ -154,7 +154,7 @@ std::vector<CommandHolder>
 CDBConnection<unqlite::NativeConnection, unqlite::Config, UNQLITE>::Commands() {
   return unqlite::unqliteCommands;
 }
-}
+}  // namespace internal
 namespace unqlite {
 
 common::Error CreateConnection(const Config& config, NativeConnection** context) {

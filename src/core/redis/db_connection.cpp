@@ -359,7 +359,8 @@ std::vector<CommandHolder>
 CDBConnection<redis::NativeConnection, redis::RConfig, REDIS>::Commands() {
   return redis::redisCommands;
 }
-}
+}  // namespace internal
+
 namespace redis {
 namespace {
 

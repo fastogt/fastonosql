@@ -44,6 +44,6 @@ const char* Lexer::basedOn() const {
   return "unqlite";
 }
 
-}
+}  // namespace unqlite
 }  // namespace gui
 }  // namespace fastonosql

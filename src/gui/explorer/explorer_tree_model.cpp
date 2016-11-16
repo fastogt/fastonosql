@@ -289,7 +289,6 @@ void ExplorerTreeModel::setDefaultDb(core::IServer* server, core::IDataBaseInfoS
     return;
   }
 
-
   ExplorerDatabaseItem* dbs = findDatabaseItem(parent, db);
   if (!dbs) {
     DNOTREACHED();
@@ -441,7 +440,6 @@ ExplorerClusterItem* ExplorerTreeModel::findClusterItem(core::IClusterSPtr cl) {
     return nullptr;
   }
 
-
   for (size_t i = 0; i < parent->childrenCount(); ++i) {
     ExplorerClusterItem* item = dynamic_cast<ExplorerClusterItem*>(parent->child(i));  // +
     if (item && item->cluster() == cl) {
@@ -456,7 +454,6 @@ ExplorerSentinelItem* ExplorerTreeModel::findSentinelItem(core::ISentinelSPtr se
   if (!parent) {
     return nullptr;
   }
-
 
   for (size_t i = 0; i < parent->childrenCount(); ++i) {
     ExplorerSentinelItem* item = dynamic_cast<ExplorerSentinelItem*>(parent->child(i));  // +

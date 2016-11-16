@@ -32,6 +32,7 @@
 namespace fastonosql {
 namespace core {
 namespace redis {
+
 class CommandTranslator : public ICommandTranslator {
  public:
   CommandTranslator();
@@ -51,6 +52,7 @@ class CommandTranslator : public ICommandTranslator {
                                                 ttl_t ttl,
                                                 std::string* cmdstring) const override;
 };
-}
+
+}  // namespace redis
 }  // namespace core
 }  // namespace fastonosql

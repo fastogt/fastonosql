@@ -44,6 +44,6 @@ const char* Lexer::basedOn() const {
   return "libmemcached";
 }
 
-}
+}  // namespace memcached
 }  // namespace gui
 }  // namespace fastonosql

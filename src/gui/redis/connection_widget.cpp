@@ -47,7 +47,7 @@ const QString trFilter = QObject::tr("Database files (*.*)");
 const QString trDBPath = QObject::tr("DB path");
 const QString trRemote = QObject::tr("Remote");
 const QString trLocal = QObject::tr("Local");
-}
+}  // namespace
 
 namespace fastonosql {
 namespace gui {
@@ -216,6 +216,7 @@ core::IConnectionSettingsBase* ConnectionWidget::createConnectionImpl(
   conn->SetSSHInfo(info);
   return conn;
 }
-}
+
+}  // namespace redis
 }  // namespace gui
 }  // namespace fastonosql

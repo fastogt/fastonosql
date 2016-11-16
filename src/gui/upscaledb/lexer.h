@@ -39,6 +39,6 @@ class Lexer : public BaseQsciLexerCommandHolder {
   virtual const char* basedOn() const;
 };
 
-}
+}  // namespace upscaledb
 }  // namespace gui
 }  // namespace fastonosql

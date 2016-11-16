@@ -230,8 +230,8 @@ const char* CommandLineHelpText(connectionTypes type) {
   NOTREACHED();
   return nullptr;
 }
-}
-}
+}  // namespace core
+}  // namespace fastonosql
 
 namespace {
 static const std::string connnectionType[] = {"Redis",   "Memcached", "SSDB", "LevelDB",

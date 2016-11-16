@@ -38,6 +38,7 @@ class ConnectionWidget : public ConnectionRemoteWidget {
   virtual core::IConnectionSettingsRemote* createConnectionRemoteImpl(
       const core::connection_path_t& path) const override;
 };
-}
+
+}  // namespace ssdb
 }  // namespace gui
 }  // namespace fastonosql

@@ -44,6 +44,6 @@ const char* Lexer::basedOn() const {
   return "ssdb-cli";
 }
 
-}
+}  // namespace ssdb
 }  // namespace gui
 }  // namespace fastonosql

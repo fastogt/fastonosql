@@ -31,6 +31,7 @@
 namespace fastonosql {
 namespace core {
 namespace memcached {
+
 CommandTranslator::CommandTranslator() {}
 
 common::Error CommandTranslator::CreateKeyCommandImpl(const NDbKValue& key,
@@ -73,6 +74,7 @@ common::Error CommandTranslator::ChangeKeyTTLCommandImpl(const NKey& key,
   *cmdstring = common::MemSPrintf(MEMCACHED_CHANGE_TTL_2ARGS_SI, key_str, ttl);
   return common::Error();
 }
-}
+
+}  // namespace memcached
 }  // namespace core
 }  // namespace fastonosql

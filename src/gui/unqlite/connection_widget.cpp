@@ -61,6 +61,7 @@ core::IConnectionSettingsLocal* ConnectionWidget::createConnectionLocalImpl(
   conn->SetInfo(config);
   return conn;
 }
-}
+
+}  // namespace unqlite
 }  // namespace gui
 }  // namespace fastonosql

@@ -51,6 +51,7 @@ core::IConnectionSettingsLocal* ConnectionWidget::createConnectionLocalImpl(
   conn->SetInfo(config);
   return conn;
 }
-}
+
+}  // namespace lmdb
 }  // namespace gui
 }  // namespace fastonosql

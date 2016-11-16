@@ -44,6 +44,6 @@ const char* Lexer::basedOn() const {
   return "libupscaledb";
 }
 
-}
+}  // namespace upscaledb
 }  // namespace gui
 }  // namespace fastonosql

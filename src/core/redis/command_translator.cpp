@@ -44,6 +44,7 @@
 namespace fastonosql {
 namespace core {
 namespace redis {
+
 CommandTranslator::CommandTranslator() {}
 
 common::Error CommandTranslator::CreateKeyCommandImpl(const NDbKValue& key,
@@ -118,6 +119,7 @@ common::Error CommandTranslator::ChangeKeyTTLCommandImpl(const NKey& key,
   *cmdstring = patternResult;
   return common::Error();
 }
-}
+
+}  // namespace redis
 }  // namespace core
 }  // namespace fastonosql

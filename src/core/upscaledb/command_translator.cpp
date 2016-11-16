@@ -77,6 +77,7 @@ common::Error CommandTranslator::ChangeKeyTTLCommandImpl(const NKey& key,
                                             " not supported change ttl command for UPSCALEDB.");
   return common::make_error_value(errorMsg, common::ErrorValue::E_ERROR);
 }
-}
+
+}  // namespace upscaledb
 }  // namespace core
 }  // namespace fastonosql

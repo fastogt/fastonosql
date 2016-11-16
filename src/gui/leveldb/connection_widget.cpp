@@ -59,6 +59,7 @@ core::IConnectionSettingsLocal* ConnectionWidget::createConnectionLocalImpl(
   conn->SetInfo(config);
   return conn;
 }
-}
+
+}  // namespace leveldb
 }  // namespace gui
 }  // namespace fastonosql

@@ -25,13 +25,13 @@
 namespace fastonosql {
 namespace gui {
 
-class ConnectionWidgetsFactory
-    : public common::patterns::LazySingleton<ConnectionWidgetsFactory> {
+class ConnectionWidgetsFactory : public common::patterns::LazySingleton<ConnectionWidgetsFactory> {
  public:
   friend class common::patterns::LazySingleton<ConnectionWidgetsFactory>;
 
-  ConnectionBaseWidget* createWidget(core::IConnectionSettingsBase* connection, QWidget* parent = 0);
+  ConnectionBaseWidget* createWidget(core::IConnectionSettingsBase* connection,
+                                     QWidget* parent = 0);
 };
 
-}  // namespace core
+}  // namespace gui
 }  // namespace fastonosql

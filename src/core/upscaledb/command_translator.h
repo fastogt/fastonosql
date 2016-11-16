@@ -49,6 +49,7 @@ class CommandTranslator : public ICommandTranslator {
                                                 ttl_t ttl,
                                                 std::string* cmdstring) const override;
 };
-}
+
+}  // namespace upscaledb
 }  // namespace core
 }  // namespace fastonosql

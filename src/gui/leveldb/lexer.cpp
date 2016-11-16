@@ -44,6 +44,6 @@ const char* Lexer::basedOn() const {
   return "leveldb";
 }
 
-}
+}  // namespace leveldb
 }  // namespace gui
 }  // namespace fastonosql

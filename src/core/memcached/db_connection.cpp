@@ -135,7 +135,7 @@ std::vector<CommandHolder>
 CDBConnection<memcached::NativeConnection, memcached::Config, MEMCACHED>::Commands() {
   return memcached::memcachedCommands;
 }
-}
+}  // namespace internal
 namespace memcached {
 
 common::Error CreateConnection(const Config& config, NativeConnection** context) {

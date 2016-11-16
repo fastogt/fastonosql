@@ -24,7 +24,7 @@
 
 namespace {
 const QString trCreateDBIfMissing = QObject::tr("Create database");
-}
+}  // namespace
 
 namespace fastonosql {
 namespace gui {
@@ -59,6 +59,7 @@ core::IConnectionSettingsLocal* ConnectionWidget::createConnectionLocalImpl(
   conn->SetInfo(config);
   return conn;
 }
-}
+
+}  // namespace rocksdb
 }  // namespace gui
 }  // namespace fastonosql

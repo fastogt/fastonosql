@@ -44,6 +44,6 @@ const char* Lexer::basedOn() const {
   return "rocksdb";
 }
 
-}
+}  // namespace rocksdb
 }  // namespace gui
 }  // namespace fastonosql

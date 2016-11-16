@@ -40,6 +40,6 @@ class Lexer : public BaseQsciLexerCommandHolder {
   virtual const char* basedOn() const;
 };
 
-}
+}  // namespace rocksdb
 }  // namespace gui
 }  // namespace fastonosql

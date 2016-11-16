@@ -18,8 +18,8 @@
 
 #include "gui/widgets/output_widget.h"
 
-#include <memory>    // for __shared_ptr, operator==, etc
-#include <string>    // for string
+#include <memory>  // for __shared_ptr, operator==, etc
+#include <string>  // for string
 
 #include <QHBoxLayout>
 #include <QHeaderView>

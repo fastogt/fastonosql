@@ -40,6 +40,7 @@ class ConnectionWidget : public ConnectionLocalWidget {
 
   QCheckBox* createDBIfMissing_;
 };
-}
+
+}  // namespace unqlite
 }  // namespace gui
 }  // namespace fastonosql

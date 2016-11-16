@@ -47,6 +47,7 @@ class ConnectionWidget : public ConnectionRemoteWidget {
   QCheckBox* useSasl_;
   UserPasswordWidget* userPasswordWidget_;
 };
-}
+
+}  // namespace memcached
 }  // namespace gui
 }  // namespace fastonosql

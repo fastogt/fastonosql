@@ -48,7 +48,7 @@ QString toRawCommandLine(QString input) {
 
 const QStringList separators = {":", ";", ","};
 const QStringList delimiters = {"\\n", "\\r\\n"};
-}
+}  // namespace
 
 namespace fastonosql {
 namespace gui {

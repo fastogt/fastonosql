@@ -90,7 +90,7 @@ ConnectionBaseWidget* createWidgetImpl(core::connectionTypes type, QWidget* pare
   NOTREACHED();
   return nullptr;
 }
-}
+}  // namespace
 
 ConnectionBaseWidget* ConnectionWidgetsFactory::createWidget(
     core::IConnectionSettingsBase* connection,
@@ -107,5 +107,5 @@ ConnectionBaseWidget* ConnectionWidgetsFactory::createWidget(
   return widget;
 }
 
-}  // namespace core
+}  // namespace gui
 }  // namespace fastonosql

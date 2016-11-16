@@ -30,6 +30,7 @@
 namespace fastonosql {
 namespace core {
 namespace rocksdb {
+
 CommandTranslator::CommandTranslator() {}
 
 common::Error CommandTranslator::CreateKeyCommandImpl(const NDbKValue& key,
@@ -76,6 +77,7 @@ common::Error CommandTranslator::ChangeKeyTTLCommandImpl(const NKey& key,
                                             " not supported change ttl command for RocksDB.");
   return common::make_error_value(errorMsg, common::ErrorValue::E_ERROR);
 }
-}
+
+}  // namespace rocksdb
 }  // namespace core
 }  // namespace fastonosql

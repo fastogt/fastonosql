@@ -95,7 +95,7 @@ std::vector<CommandHolder>
 CDBConnection<rocksdb::NativeConnection, rocksdb::Config, ROCKSDB>::Commands() {
   return rocksdb::rocksdbCommands;
 }
-}
+}  // namespace internal
 namespace rocksdb {
 
 common::Error CreateConnection(const Config& config, NativeConnection** context) {

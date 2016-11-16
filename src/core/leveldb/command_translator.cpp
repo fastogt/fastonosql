@@ -31,6 +31,7 @@
 namespace fastonosql {
 namespace core {
 namespace leveldb {
+
 CommandTranslator::CommandTranslator() {}
 
 common::Error CommandTranslator::CreateKeyCommandImpl(const NDbKValue& key,
@@ -77,6 +78,7 @@ common::Error CommandTranslator::ChangeKeyTTLCommandImpl(const NKey& key,
                                             " not supported change ttl command for LevelDB.");
   return common::make_error_value(errorMsg, common::ErrorValue::E_ERROR);
 }
-}
+
+}  // namespace leveldb
 }  // namespace core
 }  // namespace fastonosql

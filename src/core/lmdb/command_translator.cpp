@@ -77,6 +77,7 @@ common::Error CommandTranslator::ChangeKeyTTLCommandImpl(const NKey& key,
                                             " not supported change ttl command for LMDB.");
   return common::make_error_value(errorMsg, common::ErrorValue::E_ERROR);
 }
-}
+
+}  // namespace lmdb
 }  // namespace core
 }  // namespace fastonosql

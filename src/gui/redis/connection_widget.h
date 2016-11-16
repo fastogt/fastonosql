@@ -66,6 +66,7 @@ class ConnectionWidget : public ConnectionBaseWidget {
 
   SSHWidget* sshWidget_;
 };
-}
+
+}  // namespace redis
 }  // namespace gui
 }  // namespace fastonosql
