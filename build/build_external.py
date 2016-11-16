@@ -162,7 +162,7 @@ class BuildRequest(object):
             bootstrap_upscaledb = ['sh', 'bootstrap.sh']
             run_command.run_command_cb(bootstrap_upscaledb, policy)
 
-            configure_upscaledb = ['./configure', '--prefix={0}'.format(prefix_path), '--disable-remote']
+            configure_upscaledb = ['./configure', '--prefix={0}'.format(prefix_path), '--disable-remote', '--enable-static-boost', '--disable-shared', '--disable-java']
             run_command.run_command_cb(configure_upscaledb, policy)
 
             make_install_upscaledb = list(build_external_system_args)

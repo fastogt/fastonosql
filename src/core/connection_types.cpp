@@ -31,6 +31,10 @@ bool IsRemoteType(connectionTypes type) {
   return type == REDIS || type == MEMCACHED || type == SSDB;
 }
 
+bool IsLocalType(connectionTypes type) {
+  return type == ROCKSDB || type == LEVELDB || type == LMDB || type == UPSCALEDB || type == UNQLITE;
+}
+
 bool IsCanSSHConnection(connectionTypes type) {
   return type == REDIS;
 }
@@ -113,11 +117,7 @@ const char* CommandLineHelpText(connectionTypes type) {
            "latency.<br/>"
            "                   The test will run for the "
            "specified amount of "
-           "seconds.<br/>"
-           "<b>--eval &lt;file&gt;</b>      Send an EVAL "
-           "command using the Lua "
-           "script at "
-           "<b>&lt;file&gt;</b>.";
+           "seconds.<br/>";
   }
   if (type == MEMCACHED) {
     return "<b>Usage: [OPTIONS] [cmd [arg [arg "

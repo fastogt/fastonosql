@@ -22,6 +22,8 @@
 
 #include "gui/widgets/connection_base_widget.h"
 
+#include "core/connection_settings/iconnection_settings_local.h"
+
 namespace {
 const QString trDBPath = QObject::tr("Database path:");
 const QString trCaption = QObject::tr("Select Database path");
@@ -47,12 +49,13 @@ class ConnectionLocalWidget : public ConnectionBaseWidget {
   virtual bool validated() const override;
 
  protected:
-  core::LocalConfig config() const;
-
- private:
   virtual core::IConnectionSettingsBase* createConnectionImpl(
+      const core::connection_path_t& path) const final;
+
+  virtual core::IConnectionSettingsLocal* createConnectionLocalImpl(
       const core::connection_path_t& path) const = 0;
 
+ private:
   PathWidget* pathWidget_;
 };
 

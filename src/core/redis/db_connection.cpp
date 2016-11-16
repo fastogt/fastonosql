@@ -1860,8 +1860,6 @@ common::Error DBConnection::CliReadReply(FastoObject* out) {
   }
 
   redisReply* reply = static_cast<redisReply*>(_reply);
-  connection_.config_.last_cmd_type = reply->type;
-
   if (connection_.config_.cluster_mode && reply->type == REDIS_REPLY_ERROR &&
       (!strncmp(reply->str, "MOVED", 5) || !strcmp(reply->str, "ASK"))) {
     char *p = reply->str, *s;

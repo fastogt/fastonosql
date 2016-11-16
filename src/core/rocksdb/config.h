@@ -30,7 +30,6 @@ namespace rocksdb {
 
 struct Config : public LocalConfig {
   Config();
-  explicit Config(const LocalConfig& conf);
 
   ::rocksdb::Options options;
 };

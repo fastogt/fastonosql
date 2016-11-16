@@ -35,7 +35,7 @@ class ConnectionWidget : public ConnectionLocalWidget {
   virtual void retranslateUi() override;
 
  private:
-  virtual core::IConnectionSettingsBase* createConnectionImpl(
+  virtual core::IConnectionSettingsLocal* createConnectionLocalImpl(
       const core::connection_path_t& path) const override;
 };
 }

@@ -21,7 +21,6 @@
 #include <string>
 #include <vector>
 
-#include <common/smart_ptr.h>
 #include <common/net/types.h>
 
 namespace fastonosql {
@@ -40,7 +39,6 @@ struct BaseConfig {
 // -f -d -ns
 struct LocalConfig : public BaseConfig {
   explicit LocalConfig(const std::string& dbname);
-  explicit LocalConfig(const BaseConfig& cfg);
 
   config_args_t Args() const;
 
@@ -50,7 +48,6 @@ struct LocalConfig : public BaseConfig {
 // -h -p -d -ns
 struct RemoteConfig : public BaseConfig {
   explicit RemoteConfig(const common::net::HostAndPort& host);
-  explicit RemoteConfig(const BaseConfig& cfg);
 
   config_args_t Args() const;
 

@@ -26,8 +26,6 @@
 #include <common/convert2string.h>
 #include <common/qt/convert2string.h>
 
-#include "core/connection_settings/iconnection_settings_remote.h"
-
 #include "gui/widgets/host_port_widget.h"
 
 namespace fastonosql {
@@ -46,8 +44,7 @@ void ConnectionRemoteWidget::syncControls(core::IConnectionSettingsBase* connect
       static_cast<core::IConnectionSettingsRemote*>(connection);
 
   if (remote) {
-    core::RemoteConfig config = remote->RemoteConf();
-    common::net::HostAndPort host = config.host;
+    common::net::HostAndPort host = remote->Host();
     hostWidget_->setHost(host);
   }
   ConnectionBaseWidget::syncControls(remote);
@@ -65,10 +62,11 @@ bool ConnectionRemoteWidget::validated() const {
   return ConnectionBaseWidget::validated();
 }
 
-core::RemoteConfig ConnectionRemoteWidget::config() const {
-  core::RemoteConfig conf(ConnectionBaseWidget::config());
-  conf.host = hostWidget_->host();
-  return conf;
+core::IConnectionSettingsBase* ConnectionRemoteWidget::createConnectionImpl(
+    const core::connection_path_t& path) const {
+  core::IConnectionSettingsRemote* remote = createConnectionRemoteImpl(path);
+  remote->SetHost(hostWidget_->host());
+  return remote;
 }
 
 }  // namespace gui

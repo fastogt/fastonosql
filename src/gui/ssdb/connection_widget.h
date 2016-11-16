@@ -35,7 +35,7 @@ class ConnectionWidget : public ConnectionRemoteWidget {
   virtual void retranslateUi() override;
 
  private:
-  virtual core::IConnectionSettingsBase* createConnectionImpl(
+  virtual core::IConnectionSettingsRemote* createConnectionRemoteImpl(
       const core::connection_path_t& path) const override;
 };
 }

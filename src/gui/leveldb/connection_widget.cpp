@@ -51,10 +51,10 @@ void ConnectionWidget::retranslateUi() {
   ConnectionLocalWidget::retranslateUi();
 }
 
-core::IConnectionSettingsBase* ConnectionWidget::createConnectionImpl(
+core::IConnectionSettingsLocal* ConnectionWidget::createConnectionLocalImpl(
     const core::connection_path_t& path) const {
   core::leveldb::ConnectionSettings* conn = new core::leveldb::ConnectionSettings(path);
-  core::leveldb::Config config(ConnectionLocalWidget::config());
+  core::leveldb::Config config = conn->Info();
   config.options.create_if_missing = createDBIfMissing_->isChecked();
   conn->SetInfo(config);
   return conn;

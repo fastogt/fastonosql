@@ -24,12 +24,11 @@ namespace core {
 IConnectionSettingsLocal::IConnectionSettingsLocal(const connection_path_t& connectionPath,
                                                    connectionTypes type)
     : IConnectionSettingsBase(connectionPath, type) {
-  DCHECK(!IsRemoteType(type));
+  DCHECK(IsLocalType(type));
 }
 
-std::string IConnectionSettingsLocal::DBpath() const {
-  LocalConfig lc = LocalConf();
-  return lc.dbname;
+std::string IConnectionSettingsLocal::FullAddress() const {
+  return DBPath();
 }
 
 }  // namespace core

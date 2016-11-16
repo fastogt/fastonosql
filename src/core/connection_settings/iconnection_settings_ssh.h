@@ -27,8 +27,14 @@ namespace core {
 
 class IConnectionSettingsRemoteSSH : public IConnectionSettingsRemote {
  public:
-  virtual BaseConfig Conf() const = 0;
-  virtual RemoteConfig RemoteConf() const = 0;
+  virtual std::string Delimiter() const = 0;
+  virtual void SetDelimiter(const std::string& delimiter) = 0;
+
+  virtual std::string NsSeparator() const = 0;
+  virtual void SetNsSeparator(const std::string& ns) = 0;
+
+  virtual common::net::HostAndPort Host() const = 0;
+  virtual void SetHost(const common::net::HostAndPort& host) = 0;
 
   virtual std::string CommandLine() const = 0;
   virtual void SetCommandLine(const std::string& line) = 0;

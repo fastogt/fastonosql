@@ -31,12 +31,28 @@ namespace redis {
 ConnectionSettings::ConnectionSettings(const connection_path_t& connectionName)
     : IConnectionSettingsRemoteSSH(connectionName, REDIS), info_() {}
 
-BaseConfig ConnectionSettings::Conf() const {
-  return info_;
+std::string ConnectionSettings::Delimiter() const {
+  return info_.delimiter;
 }
 
-RemoteConfig ConnectionSettings::RemoteConf() const {
-  return info_;
+void ConnectionSettings::SetDelimiter(const std::string& delimiter) {
+  info_.delimiter = delimiter;
+}
+
+std::string ConnectionSettings::NsSeparator() const {
+  return info_.ns_separator;
+}
+
+void ConnectionSettings::SetNsSeparator(const std::string& ns) {
+  info_.ns_separator = ns;
+}
+
+common::net::HostAndPort ConnectionSettings::Host() const {
+  return info_.host;
+}
+
+void ConnectionSettings::SetHost(const common::net::HostAndPort& host) {
+  info_.host = host;
 }
 
 void ConnectionSettings::SetCommandLine(const std::string& line) {

@@ -33,8 +33,7 @@ namespace gui {
 namespace lmdb {
 
 ConnectionWidget::ConnectionWidget(QWidget* parent)
-    : ConnectionLocalWidget(true, trDBPath, trCaption, trFilter, parent) {
-}
+    : ConnectionLocalWidget(true, trDBPath, trCaption, trFilter, parent) {}
 
 void ConnectionWidget::syncControls(core::IConnectionSettingsBase* connection) {
   core::lmdb::ConnectionSettings* lmdb = static_cast<core::lmdb::ConnectionSettings*>(connection);
@@ -45,10 +44,10 @@ void ConnectionWidget::retranslateUi() {
   ConnectionLocalWidget::retranslateUi();
 }
 
-core::IConnectionSettingsBase* ConnectionWidget::createConnectionImpl(
+core::IConnectionSettingsLocal* ConnectionWidget::createConnectionLocalImpl(
     const core::connection_path_t& path) const {
   core::lmdb::ConnectionSettings* conn = new core::lmdb::ConnectionSettings(path);
-  core::lmdb::Config config(ConnectionLocalWidget::config());
+  core::lmdb::Config config = conn->Info();
   conn->SetInfo(config);
   return conn;
 }

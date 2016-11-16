@@ -25,10 +25,21 @@ namespace core {
 
 class IConnectionSettingsLocal : public IConnectionSettingsBase {
  public:
-  std::string DBpath() const;
+  virtual std::string FullAddress() const;
 
-  virtual BaseConfig Conf() const = 0;
-  virtual LocalConfig LocalConf() const = 0;
+  virtual std::string Delimiter() const = 0;
+  virtual void SetDelimiter(const std::string& delimiter) = 0;
+
+  virtual std::string NsSeparator() const = 0;
+  virtual void SetNsSeparator(const std::string& ns) = 0;
+
+  virtual std::string DBPath() const = 0;
+  virtual void SetDBPath(const std::string& db_path) = 0;
+
+  virtual std::string CommandLine() const = 0;
+  virtual void SetCommandLine(const std::string& line) = 0;
+
+  virtual IConnectionSettingsBase* Clone() const = 0;
 
  protected:
   IConnectionSettingsLocal(const connection_path_t& connectionPath, connectionTypes type);

@@ -132,13 +132,6 @@ QString ConnectionBaseWidget::connectionName() const {
   return connectionName_->text();
 }
 
-core::BaseConfig ConnectionBaseWidget::config() const {
-  core::BaseConfig conf;
-  conf.ns_separator = common::ConvertToString(toRawCommandLine(namespaceSeparator_->currentText()));
-  conf.delimiter = common::ConvertToString(toRawCommandLine(delimiter_->currentText()));
-  return conf;
-}
-
 core::IConnectionSettingsBase* ConnectionBaseWidget::createConnection() const {
   std::string conName = common::ConvertToString(connectionName());
   std::string conFolder = common::ConvertToString(UIFolderText());
@@ -148,6 +141,8 @@ core::IConnectionSettingsBase* ConnectionBaseWidget::createConnection() const {
 
   core::connection_path_t path(common::file_system::stable_dir_path(conFolder) + conName);
   core::IConnectionSettingsBase* conn = createConnectionImpl(path);
+  conn->SetNsSeparator(common::ConvertToString(namespaceSeparator_->currentText()));
+  conn->SetDelimiter(common::ConvertToString(delimiter_->currentText()));
   if (isLogging()) {
     conn->SetLoggingMsTimeInterval(loggingInterval());
   }
@@ -164,11 +159,11 @@ void ConnectionBaseWidget::syncControls(core::IConnectionSettingsBase* connectio
     core::connection_path_t path = connection->Path();
     setConnectionName(common::ConvertFromString<QString>(path.Name()));
 
-    core::BaseConfig bconf = connection->Conf();
+    std::string ns_separator = connection->NsSeparator();
+    std::string delemitr = connection->Delimiter();
     namespaceSeparator_->setCurrentText(
-        StableCommandLine(common::ConvertFromString<QString>(bconf.ns_separator)));
-    delimiter_->setCurrentText(
-        StableCommandLine(common::ConvertFromString<QString>(bconf.delimiter)));
+        StableCommandLine(common::ConvertFromString<QString>(ns_separator)));
+    delimiter_->setCurrentText(StableCommandLine(common::ConvertFromString<QString>(delemitr)));
 
     setUIFolderText(common::ConvertFromString<QString>(path.Directory()));
     setLogging(connection->IsLoggingEnabled());

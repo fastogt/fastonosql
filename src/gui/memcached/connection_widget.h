@@ -41,7 +41,7 @@ class ConnectionWidget : public ConnectionRemoteWidget {
   void saslStateChange(int state);
 
  private:
-  virtual core::IConnectionSettingsBase* createConnectionImpl(
+  virtual core::IConnectionSettingsRemote* createConnectionRemoteImpl(
       const core::connection_path_t& path) const override;
 
   QCheckBox* useSasl_;

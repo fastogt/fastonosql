@@ -32,16 +32,20 @@ class ConnectionSettings : public IConnectionSettingsLocal {
  public:
   explicit ConnectionSettings(const connection_path_t& connectionName);
 
-  virtual BaseConfig Conf() const override;
-  virtual LocalConfig LocalConf() const override;
-
-  virtual std::string CommandLine() const override;
-  virtual void SetCommandLine(const std::string& line) override;
-
   Config Info() const;
   void SetInfo(const Config& info);
 
-  virtual std::string FullAddress() const override;
+  virtual std::string Delimiter() const override;
+  virtual void SetDelimiter(const std::string& delimiter) override;
+
+  virtual std::string NsSeparator() const override;
+  virtual void SetNsSeparator(const std::string& ns) override;
+
+  virtual std::string DBPath() const override;
+  virtual void SetDBPath(const std::string& db_path) override;
+
+  virtual std::string CommandLine() const override;
+  virtual void SetCommandLine(const std::string& line) override;
 
   virtual ConnectionSettings* Clone() const override;
 

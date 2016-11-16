@@ -53,10 +53,10 @@ void ConnectionWidget::retranslateUi() {
   ConnectionLocalWidget::retranslateUi();
 }
 
-core::IConnectionSettingsBase* ConnectionWidget::createConnectionImpl(
+core::IConnectionSettingsLocal* ConnectionWidget::createConnectionLocalImpl(
     const core::connection_path_t& path) const {
   core::unqlite::ConnectionSettings* conn = new core::unqlite::ConnectionSettings(path);
-  core::unqlite::Config config(ConnectionLocalWidget::config());
+  core::unqlite::Config config = conn->Info();
   config.create_if_missing = createDBIfMissing_->isChecked();
   conn->SetInfo(config);
   return conn;

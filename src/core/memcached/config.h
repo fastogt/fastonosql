@@ -28,7 +28,6 @@ namespace memcached {
 
 struct Config : public RemoteConfig {
   Config();
-  explicit Config(const RemoteConfig& conf);
 
   std::string user;
   std::string password;

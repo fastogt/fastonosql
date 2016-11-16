@@ -196,8 +196,7 @@ bool ConnectionWidget::isValidCredential() const {
 core::IConnectionSettingsBase* ConnectionWidget::createConnectionImpl(
     const core::connection_path_t& path) const {
   core::redis::ConnectionSettings* conn = new core::redis::ConnectionSettings(path);
-  core::RemoteConfig rconf(ConnectionBaseWidget::config());
-  core::redis::Config config(rconf);
+  core::redis::Config config = conn->Info();
   bool is_remote = remote_->isChecked();
   if (is_remote) {
     config.host = hostWidget_->host();

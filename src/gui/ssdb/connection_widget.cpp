@@ -38,7 +38,7 @@ void ConnectionWidget::retranslateUi() {
   ConnectionRemoteWidget::retranslateUi();
 }
 
-core::IConnectionSettingsBase* ConnectionWidget::createConnectionImpl(
+core::IConnectionSettingsRemote* ConnectionWidget::createConnectionRemoteImpl(
     const core::connection_path_t& path) const {
   core::ssdb::ConnectionSettings* conn = new core::ssdb::ConnectionSettings(path);
   return conn;

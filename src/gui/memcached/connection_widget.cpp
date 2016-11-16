@@ -97,10 +97,10 @@ bool ConnectionWidget::isValidCredential() const {
   return true;
 }
 
-core::IConnectionSettingsBase* ConnectionWidget::createConnectionImpl(
+core::IConnectionSettingsRemote* ConnectionWidget::createConnectionRemoteImpl(
     const core::connection_path_t& path) const {
   core::memcached::ConnectionSettings* conn = new core::memcached::ConnectionSettings(path);
-  core::memcached::Config config(ConnectionRemoteWidget::config());
+  core::memcached::Config config = conn->Info();
   if (useSasl_->isChecked() && isValidCredential()) {
     config.user = common::ConvertToString(userPasswordWidget_->userName());
     config.password = common::ConvertToString(userPasswordWidget_->password());

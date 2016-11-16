@@ -31,12 +31,36 @@ namespace memcached {
 ConnectionSettings::ConnectionSettings(const connection_path_t& connectionName)
     : IConnectionSettingsRemote(connectionName, MEMCACHED), info_() {}
 
-BaseConfig ConnectionSettings::Conf() const {
+Config ConnectionSettings::Info() const {
   return info_;
 }
 
-RemoteConfig ConnectionSettings::RemoteConf() const {
-  return info_;
+void ConnectionSettings::SetInfo(const Config& info) {
+  info_ = info;
+}
+
+std::string ConnectionSettings::Delimiter() const {
+  return info_.delimiter;
+}
+
+void ConnectionSettings::SetDelimiter(const std::string& delimiter) {
+  info_.delimiter = delimiter;
+}
+
+std::string ConnectionSettings::NsSeparator() const {
+  return info_.ns_separator;
+}
+
+void ConnectionSettings::SetNsSeparator(const std::string& ns) {
+  info_.ns_separator = ns;
+}
+
+common::net::HostAndPort ConnectionSettings::Host() const {
+  return info_.host;
+}
+
+void ConnectionSettings::SetHost(const common::net::HostAndPort& host) {
+  info_.host = host;
 }
 
 std::string ConnectionSettings::CommandLine() const {
@@ -45,22 +69,6 @@ std::string ConnectionSettings::CommandLine() const {
 
 void ConnectionSettings::SetCommandLine(const std::string& line) {
   info_ = common::ConvertFromString<Config>(line);
-}
-
-void ConnectionSettings::SetHost(const common::net::HostAndPort& host) {
-  info_.host = host;
-}
-
-common::net::HostAndPort ConnectionSettings::Host() const {
-  return info_.host;
-}
-
-Config ConnectionSettings::Info() const {
-  return info_;
-}
-
-void ConnectionSettings::SetInfo(const Config& info) {
-  info_ = info;
 }
 
 ConnectionSettings* ConnectionSettings::Clone() const {

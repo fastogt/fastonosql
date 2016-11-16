@@ -28,7 +28,6 @@ namespace redis {
 
 struct Config : public RemoteConfig {
   Config();
-  explicit Config(const RemoteConfig& conf);
   Config(const Config& other);
   Config& operator=(const Config& other);
 
@@ -44,14 +43,10 @@ struct Config : public RemoteConfig {
   int getrdb_mode;
   int stat_mode;
   int scan_mode;
-  int intrinsic_latency_mode;
-  int intrinsic_latency_duration;
   std::string pattern;
   std::string rdb_filename;
   int bigkeys;
   std::string auth;
-  std::string eval;
-  int last_cmd_type;
 
  protected:
   void copy(const Config& other);

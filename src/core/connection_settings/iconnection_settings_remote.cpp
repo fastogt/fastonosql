@@ -28,8 +28,8 @@ IConnectionSettingsRemote::IConnectionSettingsRemote(const connection_path_t& co
 }
 
 std::string IConnectionSettingsRemote::FullAddress() const {
-  RemoteConfig rconf = RemoteConf();
-  return common::ConvertToString(rconf.host);
+  common::net::HostAndPort host = Host();
+  return common::ConvertToString(host);
 }
 
 }  // namespace core

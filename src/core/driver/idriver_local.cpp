@@ -24,7 +24,7 @@ namespace fastonosql {
 namespace core {
 
 IDriverLocal::IDriverLocal(IConnectionSettingsBaseSPtr settings) : IDriver(settings) {
-  DCHECK(!IsRemoteType(Type()));
+  DCHECK(IsLocalType(Type()));
 }
 
 }  // namespace core

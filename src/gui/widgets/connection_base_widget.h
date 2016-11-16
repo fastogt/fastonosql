@@ -20,7 +20,6 @@
 
 #include <QWidget>
 
-#include "core/config/config.h"
 #include "core/connection_settings/iconnection_settings.h"
 
 class QLabel;
@@ -61,8 +60,6 @@ class ConnectionBaseWidget : public QWidget {
   void loggingStateChange(int value);
 
  protected:
-  core::BaseConfig config() const;
-
   void addWidget(QWidget* widget);
   void addLayout(QLayout* layout);
 

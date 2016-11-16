@@ -73,8 +73,6 @@ Config parseOptions(int argc, char** argv) {
 
 Config::Config() : LocalConfig(common::file_system::prepare_path("~/test.lmdb")) {}
 
-Config::Config(const LocalConfig& conf) : LocalConfig(conf) {}
-
 }  // namespace lmdb
 }  // namespace core
 }  // namespace fastonosql

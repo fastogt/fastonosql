@@ -51,10 +51,10 @@ void ConnectionWidget::retranslateUi() {
   ConnectionLocalWidget::retranslateUi();
 }
 
-core::IConnectionSettingsBase* ConnectionWidget::createConnectionImpl(
+core::IConnectionSettingsLocal* ConnectionWidget::createConnectionLocalImpl(
     const core::connection_path_t& path) const {
   core::rocksdb::ConnectionSettings* conn = new core::rocksdb::ConnectionSettings(path);
-  core::rocksdb::Config config(ConnectionLocalWidget::config());
+  core::rocksdb::Config config = conn->Info();
   config.options.create_if_missing = createDBIfMissing_->isChecked();
   conn->SetInfo(config);
   return conn;

@@ -75,8 +75,6 @@ Config parseOptions(int argc, char** argv) {
 Config::Config()
     : LocalConfig(common::file_system::prepare_path("~/test.unqlite")), create_if_missing(false) {}
 
-Config::Config(const LocalConfig& conf) : LocalConfig(conf), create_if_missing(false) {}
-
 }  // namespace unqlite
 }  // namespace core
 }  // namespace fastonosql

@@ -63,8 +63,8 @@ IConnectionSettingsBaseSPtr IClusterSettingsBase::FindSettingsByHost(
   for (size_t i = 0; i < clusters_nodes_.size(); ++i) {
     IConnectionSettingsBaseSPtr cur = clusters_nodes_[i];
     IConnectionSettingsRemote* remote = dynamic_cast<IConnectionSettingsRemote*>(cur.get());  // +
-    RemoteConfig rconfig = remote->RemoteConf();
-    if (rconfig.host == host) {
+    common::net::HostAndPort hs = remote->Host();
+    if (hs == host) {
       return cur;
     }
   }

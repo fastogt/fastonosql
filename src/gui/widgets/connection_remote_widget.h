@@ -22,6 +22,8 @@
 
 #include "gui/widgets/connection_base_widget.h"
 
+#include "core/connection_settings/iconnection_settings_remote.h"
+
 namespace fastonosql {
 namespace gui {
 class HostPortWidget;
@@ -36,12 +38,12 @@ class ConnectionRemoteWidget : public ConnectionBaseWidget {
   virtual bool validated() const override;
 
  protected:
-  core::RemoteConfig config() const;
-
- private:
   virtual core::IConnectionSettingsBase* createConnectionImpl(
+      const core::connection_path_t& path) const final;
+  virtual core::IConnectionSettingsRemote* createConnectionRemoteImpl(
       const core::connection_path_t& path) const = 0;
 
+ private:
   HostPortWidget* hostWidget_;
 };
 

@@ -127,7 +127,7 @@ IConnectionSettingsBase* ConnectionSettingsFactory::CreateFromString(const std::
       } else if (commaCount == 2) {
         uint32_t msTime = common::ConvertFromString<uint32_t>(elText);
         result->SetLoggingMsTimeInterval(msTime);
-        if (!IsRemoteType(result->Type())) {
+        if (IsLocalType(result->Type())) {
           result->SetCommandLine(val.substr(i + 1));
           break;
         }
@@ -175,8 +175,7 @@ IConnectionSettingsRemote* ConnectionSettingsFactory::CreateFromType(
     return nullptr;
   }
 
-#pragma message "REMARK"
-  // remote->SetHost(host);
+  remote->SetHost(host);
   return remote;
 }
 

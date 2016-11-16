@@ -88,9 +88,6 @@ Config parseOptions(int argc, char** argv) {
       cfg.scan_mode = 1;
     } else if (!strcmp(argv[i], "--pattern") && !lastarg) {
       cfg.pattern = argv[++i];
-    } else if (!strcmp(argv[i], "--intrinsic-latency") && !lastarg) {
-      cfg.intrinsic_latency_mode = 1;
-      cfg.intrinsic_latency_duration = common::ConvertFromString<int>(argv[++i]);
     } else if (!strcmp(argv[i], "--rdb") && !lastarg) {
       cfg.getrdb_mode = 1;
       cfg.rdb_filename = argv[++i];
@@ -102,8 +99,6 @@ Config parseOptions(int argc, char** argv) {
       common::ConvertFromString<int>(argv[++i]);*/
     } else if (!strcmp(argv[i], "--bigkeys")) {
       cfg.bigkeys = 1;
-    } else if (!strcmp(argv[i], "--eval") && !lastarg) {
-      cfg.eval = argv[++i];
     } else if (!strcmp(argv[i], "-c")) {
       cfg.cluster_mode = 1;
     } else if (!strcmp(argv[i], "-d") && !lastarg) {
@@ -142,10 +137,6 @@ Config::Config()
   init();
 }
 
-Config::Config(const RemoteConfig& conf) : RemoteConfig(conf) {
-  init();
-}
-
 Config::Config(const Config& other) : RemoteConfig(other.host) {
   init();
   copy(other);
@@ -170,8 +161,6 @@ void Config::copy(const Config& other) {
   getrdb_mode = other.getrdb_mode;
   stat_mode = other.stat_mode;
   scan_mode = other.scan_mode;
-  intrinsic_latency_mode = other.intrinsic_latency_mode;
-  intrinsic_latency_duration = other.intrinsic_latency_duration;
 
   pattern = other.pattern;
   rdb_filename = other.rdb_filename;
@@ -179,9 +168,6 @@ void Config::copy(const Config& other) {
   bigkeys = other.bigkeys;
 
   auth = other.auth;
-  eval = other.eval;
-
-  last_cmd_type = other.last_cmd_type;
 
   RemoteConfig::operator=(other);
 }
@@ -198,15 +184,11 @@ void Config::init() {
   getrdb_mode = 0;
   stat_mode = 0;
   scan_mode = 0;
-  intrinsic_latency_mode = 0;
-  intrinsic_latency_duration = 0;
   cluster_reissue_command = 0;
   pattern = std::string();
   rdb_filename = std::string();
   bigkeys = 0;
   auth = std::string();
-  eval = std::string();
-  last_cmd_type = -1;
 }
 
 }  // namespace redis
@@ -257,11 +239,6 @@ std::string ConvertToString(const fastonosql::core::redis::Config& conf) {
     argv.push_back("--pattern");
     argv.push_back(conf.pattern);
   }
-  if (conf.intrinsic_latency_mode) {
-    argv.push_back("--intrinsic-latency");
-    argv.push_back(ConvertToString(conf.intrinsic_latency_mode));
-    argv.push_back(ConvertToString(conf.intrinsic_latency_duration));
-  }
 
   if (conf.getrdb_mode) {
     argv.push_back("--rdb");
@@ -269,11 +246,6 @@ std::string ConvertToString(const fastonosql::core::redis::Config& conf) {
   }
   if (conf.bigkeys) {
     argv.push_back("--bigkeys");
-  }
-
-  if (!conf.eval.empty()) {
-    argv.push_back("--eval");
-    argv.push_back(conf.eval);
   }
 
   if (conf.cluster_mode) {

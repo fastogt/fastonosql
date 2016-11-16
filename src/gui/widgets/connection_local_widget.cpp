@@ -27,8 +27,6 @@
 #include <common/convert2string.h>
 #include <common/qt/convert2string.h>
 
-#include "core/connection_settings/iconnection_settings_local.h"
-
 #include "gui/widgets/path_widget.h"
 
 namespace fastonosql {
@@ -49,8 +47,8 @@ ConnectionLocalWidget::ConnectionLocalWidget(bool isFolderSelectOnly,
 void ConnectionLocalWidget::syncControls(core::IConnectionSettingsBase* connection) {
   core::IConnectionSettingsLocal* local = static_cast<core::IConnectionSettingsLocal*>(connection);
   if (local) {
-    core::LocalConfig config = local->LocalConf();
-    pathWidget_->setPath(common::ConvertFromString<QString>(config.dbname));
+    QString db_path = common::ConvertFromString<QString>(local->DBPath());
+    pathWidget_->setPath(db_path);
   }
   ConnectionBaseWidget::syncControls(local);
 }
@@ -67,11 +65,11 @@ bool ConnectionLocalWidget::validated() const {
   return ConnectionBaseWidget::validated();
 }
 
-core::LocalConfig ConnectionLocalWidget::config() const {
-  core::LocalConfig conf(ConnectionBaseWidget::config());
-  QString db_path = pathWidget_->path();
-  conf.dbname = common::ConvertToString(db_path);
-  return conf;
+core::IConnectionSettingsBase* ConnectionLocalWidget::createConnectionImpl(
+    const core::connection_path_t& path) const {
+  core::IConnectionSettingsLocal* local = createConnectionLocalImpl(path);
+  local->SetDBPath(common::ConvertToString(pathWidget_->path()));
+  return local;
 }
 
 }  // namespace gui
