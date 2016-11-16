@@ -88,12 +88,9 @@ class BuildRequest(object):
         os.chdir(abs_dir_path)
 
         # project static options
-        arch = self.platform_.arch()
-        arch_args = '-DOS_ARCH={0}'.format(arch.bit())
         prefix_args = '-DCMAKE_INSTALL_PREFIX={0}'.format(prefix_path)
 
-        cmake_line = ['cmake', cmake_project_root_abs_path, generator, '-DCMAKE_BUILD_TYPE=RELEASE', arch_args,
-                      prefix_args]
+        cmake_line = ['cmake', cmake_project_root_abs_path, generator, '-DCMAKE_BUILD_TYPE=RELEASE', prefix_args]
 
         if is_android:
             toolchain_path = os.path.join(cmake_project_root_abs_path, 'cmake/android.toolchain.cmake')
