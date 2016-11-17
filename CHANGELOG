@@ -1,6 +1,8 @@
 1.1.0 /
-- UpscaleDB support
+- UpscaleDB support (Local DB)
 - Quit function
+- New Connection setting dialog
+- Fix spaces in db path
 
 1.0.0 / October 21, 2016
 - Sort filter keys
