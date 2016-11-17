@@ -27,6 +27,7 @@
 
 namespace fastonosql {
 namespace gui {
+
 class KeyTableItem : public common::qt::gui::TableItem {
  public:
   enum eColumn { kKey = 0, kType = 1, kTTL = 2, kCountColumns = 3 };
@@ -67,5 +68,6 @@ class KeysTableModel : public common::qt::gui::TableModel {
  Q_SIGNALS:
   void changedTTL(const core::NDbKValue& value, int ttl);
 };
+
 }  // namespace gui
 }  // namespace fastonosql

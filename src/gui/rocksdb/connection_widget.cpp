@@ -22,10 +22,6 @@
 
 #include "core/rocksdb/connection_settings.h"
 
-namespace {
-const QString trCreateDBIfMissing = QObject::tr("Create database");
-}  // namespace
-
 namespace fastonosql {
 namespace gui {
 namespace rocksdb {

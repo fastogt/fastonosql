@@ -53,6 +53,8 @@ class DBConnection : public core::internal::CDBConnection<NativeConnection, Conf
   typedef core::internal::CDBConnection<NativeConnection, Config, SSDB> base_class;
   explicit DBConnection(CDBConnectionClient* client);
 
+  std::string CurDB() const;
+
   common::Error Info(const char* args, ServerInfo::Stats* statsout) WARN_UNUSED_RESULT;
   common::Error Auth(const std::string& password) WARN_UNUSED_RESULT;
   common::Error Setx(const std::string& key,
@@ -175,7 +177,6 @@ class DBConnection : public core::internal::CDBConnection<NativeConnection, Conf
   common::Error DelInner(const std::string& key) WARN_UNUSED_RESULT;
 
   virtual common::Error SelectImpl(const std::string& name, IDataBaseInfo** info) override;
-
   virtual common::Error SetImpl(const NDbKValue& key, NDbKValue* added_key) override;
   virtual common::Error GetImpl(const NKey& key, NDbKValue* loaded_key) override;
   virtual common::Error DeleteImpl(const NKeys& keys, NKeys* deleted_keys) override;

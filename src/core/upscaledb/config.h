@@ -30,6 +30,7 @@ struct Config : public LocalConfig {
   Config();
 
   bool create_if_missing;
+  uint16_t dbnum;
 };
 
 }  // namespace upscaledb

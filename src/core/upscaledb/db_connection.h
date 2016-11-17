@@ -81,7 +81,9 @@ class DBConnection : public core::internal::CDBConnection<NativeConnection, Conf
   typedef core::internal::CDBConnection<NativeConnection, Config, UPSCALEDB> base_class;
   DBConnection(CDBConnectionClient* client);
 
-  uint16_t CurDb() const;
+  common::Error Connect(const config_t& config);
+
+  std::string CurDB() const;
 
   common::Error Info(const char* args, ServerInfo::Stats* statsout) WARN_UNUSED_RESULT;
   common::Error Keys(const std::string& key_start,

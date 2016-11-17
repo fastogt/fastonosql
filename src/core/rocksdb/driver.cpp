@@ -145,16 +145,7 @@ common::Error Driver::CurrentDataBaseInfo(IDataBaseInfo** info) {
     return common::make_error_value("Invalid input argument(s)", common::ErrorValue::E_ERROR);
   }
 
-  if (!IsConnected()) {
-    return common::make_error_value("Not connected", common::Value::E_ERROR);
-  }
-
-  std::string name = impl_->CurrentDbName();
-  size_t dbkcount = 0;
-  common::Error err = impl_->DBkcount(&dbkcount);
-  DCHECK(!err);
-  *info = new DataBaseInfo(name, true, dbkcount);
-  return common::Error();
+  return impl_->Select(impl_->CurDB(), info);
 }
 
 void Driver::HandleLoadDatabaseContentEvent(events::LoadDatabaseContentRequestEvent* ev) {

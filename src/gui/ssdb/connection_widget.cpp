@@ -20,8 +20,6 @@
 
 #include "core/ssdb/connection_settings.h"
 
-#include "core/connection_settings/iconnection_settings_remote.h"
-
 namespace fastonosql {
 namespace gui {
 namespace ssdb {

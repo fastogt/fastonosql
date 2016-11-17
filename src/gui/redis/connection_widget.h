@@ -64,6 +64,9 @@ class ConnectionWidget : public ConnectionBaseWidget {
   QLineEdit* passwordBox_;
   QPushButton* passwordEchoModeButton_;
 
+  QLabel* defaultDBLabel_;
+  QSpinBox* defaultDBNum_;
+
   SSHWidget* sshWidget_;
 };
 

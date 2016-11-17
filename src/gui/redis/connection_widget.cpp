@@ -28,6 +28,7 @@
 #include <QGroupBox>
 #include <QRadioButton>
 #include <QEvent>
+#include <QSpinBox>
 
 #include <common/convert2string.h>
 #include <common/qt/convert2string.h>
@@ -47,6 +48,7 @@ const QString trFilter = QObject::tr("Database files (*.*)");
 const QString trDBPath = QObject::tr("DB path");
 const QString trRemote = QObject::tr("Remote");
 const QString trLocal = QObject::tr("Local");
+const QString trDefaultDb = QObject::tr("Default database:");
 }  // namespace
 
 namespace fastonosql {
@@ -90,6 +92,17 @@ ConnectionWidget::ConnectionWidget(QWidget* parent) : ConnectionBaseWidget(paren
   passwordLayout->addWidget(passwordEchoModeButton_);
   addLayout(passwordLayout);
 
+  QHBoxLayout* def_layout = new QHBoxLayout;
+  defaultDBLabel_ = new QLabel;
+
+  defaultDBNum_ = new QSpinBox;
+  defaultDBNum_->setRange(0, INT32_MAX);
+  def_layout->addWidget(defaultDBLabel_);
+  def_layout->addWidget(defaultDBNum_);
+  addLayout(def_layout);
+
+  // ssh
+
   sshWidget_ = new SSHWidget;
   QLayout* ssh_layout = sshWidget_->layout();
   ssh_layout->setContentsMargins(0, 0, 0, 0);
@@ -124,6 +137,7 @@ void ConnectionWidget::syncControls(core::IConnectionSettingsBase* connection) {
       useAuth_->setChecked(false);
       passwordBox_->clear();
     }
+    defaultDBNum_->setValue(config.dbnum);
     core::SSHInfo ssh_info = redis->SSHInfo();
     sshWidget_->setInfo(ssh_info);
   }
@@ -135,6 +149,7 @@ void ConnectionWidget::retranslateUi() {
   remote_->setText(trRemote);
   local_->setText(trLocal);
   useAuth_->setText(tr("Use AUTH"));
+  defaultDBLabel_->setText(trDefaultDb);
   ConnectionBaseWidget::retranslateUi();
 }
 
@@ -207,6 +222,7 @@ core::IConnectionSettingsBase* ConnectionWidget::createConnectionImpl(
   if (useAuth_->isChecked() && isValidCredential()) {
     config.auth = common::ConvertToString(passwordBox_->text());
   }
+  config.dbnum = defaultDBNum_->value();
   conn->SetInfo(config);
 
   core::SSHInfo info;

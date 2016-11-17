@@ -106,6 +106,8 @@ class DBConnection : public core::internal::CDBConnection<NativeConnection, RCon
 
   common::Error Connect(const config_t& config);
 
+  std::string CurDB() const;
+
   common::Error LatencyMode(FastoObject* out) WARN_UNUSED_RESULT;
   common::Error SlaveMode(FastoObject* out) WARN_UNUSED_RESULT;
   common::Error GetRDB(FastoObject* out) WARN_UNUSED_RESULT;
@@ -157,6 +159,7 @@ class DBConnection : public core::internal::CDBConnection<NativeConnection, RCon
   common::Error CliReadReply(FastoObject* out) WARN_UNUSED_RESULT;
 
   bool isAuth_;
+  int cur_db_;
 };
 
 }  // namespace redis

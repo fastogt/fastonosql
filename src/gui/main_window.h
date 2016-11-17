@@ -44,6 +44,7 @@ class ExplorerTreeWidget;
 
 namespace fastonosql {
 namespace gui {
+
 class MainWindow : public QMainWindow {
   Q_OBJECT
  public:
@@ -133,5 +134,6 @@ class MainWindow : public QMainWindow {
   QDockWidget* logDock_;
   bool isCheckedInSession_;
 };
+
 }  // namespace gui
 }  // namespace fastonosql

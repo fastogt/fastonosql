@@ -27,6 +27,7 @@ class QWidget;
 
 namespace fastonosql {
 namespace gui {
+
 class MainTabBar : public QTabBar {
   Q_OBJECT
  public:
@@ -58,5 +59,6 @@ class MainTabBar : public QTabBar {
   QAction* closeShellAction_;
   QAction* closeOtherShellsAction_;
 };
+
 }  // namespace gui
 }  // namespace fastonosql

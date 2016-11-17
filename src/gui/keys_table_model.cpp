@@ -36,6 +36,7 @@
 
 namespace fastonosql {
 namespace gui {
+
 KeyTableItem::KeyTableItem(const core::NDbKValue& dbv) : dbv_(dbv) {}
 
 QString KeyTableItem::keyString() const {
@@ -194,5 +195,6 @@ void KeysTableModel::clear() {
   data_.clear();
   endResetModel();
 }
+
 }  // namespace gui
 }  // namespace fastonosql

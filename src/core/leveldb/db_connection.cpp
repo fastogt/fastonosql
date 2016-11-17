@@ -137,6 +137,10 @@ common::Error TestConnection(ConnectionSettings* settings) {
 DBConnection::DBConnection(CDBConnectionClient* client)
     : base_class(client, new CommandTranslator) {}
 
+std::string DBConnection::CurDB() const {
+  return "default";
+}
+
 common::Error DBConnection::DBkcount(size_t* size) {
   if (!size) {
     DNOTREACHED();
@@ -327,6 +331,10 @@ common::Error DBConnection::Flushdb() {
 }
 
 common::Error DBConnection::SelectImpl(const std::string& name, IDataBaseInfo** info) {
+  if (name != CurDB()) {
+    return NotSupported("SELECT");
+  }
+
   size_t kcount = 0;
   common::Error err = DBkcount(&kcount);
   DCHECK(!err);

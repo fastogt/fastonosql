@@ -144,7 +144,7 @@ common::Error Driver::CurrentDataBaseInfo(IDataBaseInfo** info) {
     return common::make_error_value("Invalid input argument(s)", common::ErrorValue::E_ERROR);
   }
 
-  return impl_->Select(common::ConvertToString(impl_->CurDb()), info);
+  return impl_->Select(impl_->CurDB(), info);
 }
 
 void Driver::HandleLoadDatabaseContentEvent(events::LoadDatabaseContentRequestEvent* ev) {

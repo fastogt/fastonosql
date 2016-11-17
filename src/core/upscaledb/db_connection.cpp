@@ -110,9 +110,16 @@ common::Error CreateConnection(const Config& config, NativeConnection** context)
 
   DCHECK(*context == NULL);
   struct upscaledb* lcontext = NULL;
-  std::string path = config.dbname;  // start point must be folder
-  const char* dbname = common::utils::c_strornull(path);
-  int st = upscaledb_open(&lcontext, dbname, 1, config.create_if_missing);
+  std::string db_path = config.dbname;  // start point must be folder
+  std::string folder = common::file_system::get_dir_path(db_path);
+  common::tribool is_dir = common::file_system::is_directory(folder);
+  if (is_dir != common::SUCCESS) {
+    return common::make_error_value(common::MemSPrintf("Invalid input path(%s)", db_path),
+                                    common::ErrorValue::E_ERROR);
+  }
+
+  const char* dbname = common::utils::c_strornull(db_path);
+  int st = upscaledb_open(&lcontext, dbname, config.dbnum, config.create_if_missing);
   if (st != UPS_SUCCESS) {
     std::string buff = common::MemSPrintf("Fail open database: %s", ups_strerror(st));
     return common::make_error_value(buff, common::ErrorValue::E_ERROR);
@@ -149,12 +156,27 @@ common::Error TestConnection(ConnectionSettings* settings) {
 DBConnection::DBConnection(CDBConnectionClient* client)
     : base_class(client, new CommandTranslator) {}
 
-uint16_t DBConnection::CurDb() const {
+std::string DBConnection::CurDB() const {
   if (connection_.handle_) {
-    return connection_.handle_->cur_db;
+    return common::ConvertToString(connection_.handle_->cur_db);
   }
 
-  return 0;
+  DNOTREACHED();
+  return std::string();
+}
+
+common::Error DBConnection::Connect(const config_t& config) {
+  common::Error err = base_class::Connect(config);
+  if (err && err->isError()) {
+    return err;
+  }
+
+  err = Select(common::ConvertToString(connection_.config_.dbnum), NULL);
+  if (err && err->isError()) {
+    return err;
+  }
+
+  return common::Error();
 }
 
 common::Error DBConnection::Info(const char* args, ServerInfo::Stats* statsout) {
@@ -369,6 +391,22 @@ common::Error DBConnection::Flushdb() {
 }
 
 common::Error DBConnection::SelectImpl(const std::string& name, IDataBaseInfo** info) {
+  uint16_t num = common::ConvertFromString<uint16_t>(name);
+  ups_db_t* db = NULL;
+  ups_status_t st = ups_env_open_db(connection_.handle_->env, &db, num, 0, NULL);
+  if (st != UPS_SUCCESS && st != UPS_DATABASE_ALREADY_OPEN) {
+    std::string buff = common::MemSPrintf("SELECT function error: %s", ups_strerror(st));
+    return common::make_error_value(buff, common::ErrorValue::E_ERROR);
+  }
+
+  if (st == UPS_SUCCESS) {  // if ready to change
+    st = ups_db_close(connection_.handle_->db, 0);
+    DCHECK(st == UPS_SUCCESS);
+    connection_.handle_->db = db;
+    connection_.config_.dbnum = num;
+    connection_.handle_->cur_db = num;
+  }
+
   size_t kcount = 0;
   common::Error err = DBkcount(&kcount);
   DCHECK(!err);

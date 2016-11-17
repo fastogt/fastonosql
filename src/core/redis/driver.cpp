@@ -185,8 +185,7 @@ common::Error Driver::CurrentDataBaseInfo(IDataBaseInfo** info) {
     return common::make_error_value("Invalid input argument(s)", common::ErrorValue::E_ERROR);
   }
 
-  Config conf = impl_->config();
-  return impl_->Select(common::ConvertToString(conf.dbnum), info);
+  return impl_->Select(impl_->CurDB(), info);
 }
 
 void Driver::HandleProcessCommandLineArgsEvent(events::ProcessConfigArgsRequestEvent* ev) {

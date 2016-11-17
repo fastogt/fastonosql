@@ -35,6 +35,7 @@
 
 namespace fastonosql {
 namespace gui {
+
 StatisticSender::StatisticSender(QObject* parent) : QObject(parent) {}
 
 void StatisticSender::routine() {
@@ -84,5 +85,6 @@ void StatisticSender::routine() {
   DCHECK(!client.close());
   return;
 }
+
 }  // namespace gui
 }  // namespace fastonosql

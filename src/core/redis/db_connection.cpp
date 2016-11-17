@@ -790,7 +790,7 @@ common::Error DiscoverySentinelConnection(ConnectionSettings* settings,
 }
 
 DBConnection::DBConnection(CDBConnectionClient* client)
-    : base_class(client, new CommandTranslator), isAuth_(false) {}
+    : base_class(client, new CommandTranslator), isAuth_(false), cur_db_(-1) {}
 
 bool DBConnection::IsAuthenticated() const {
   if (!IsConnected()) {
@@ -818,6 +818,15 @@ common::Error DBConnection::Connect(const config_t& config) {
   }
 
   return common::Error();
+}
+
+std::string DBConnection::CurDB() const {
+  if (cur_db_ != -1) {
+    return common::ConvertToString(cur_db_);
+  }
+
+  DNOTREACHED();
+  return std::string();
 }
 
 common::Error DBConnection::LatencyMode(FastoObject* out) {
@@ -1582,6 +1591,7 @@ common::Error DBConnection::SelectImpl(const std::string& name, IDataBaseInfo** 
   }
 
   connection_.config_.dbnum = num;
+  cur_db_ = num;
   size_t sz = 0;
   common::Error err = DBkcount(&sz);
   DCHECK(!err);

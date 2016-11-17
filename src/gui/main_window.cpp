@@ -92,6 +92,7 @@ const QKeySequence explorerKeySequence = Qt::CTRL + Qt::Key_T;
 
 namespace fastonosql {
 namespace gui {
+
 MainWindow::MainWindow() : QMainWindow(), isCheckedInSession_(false) {
 #ifdef OS_ANDROID
   setAttribute(Qt::WA_AcceptTouchEvents);
@@ -791,5 +792,6 @@ void MainWindow::createCluster(core::IClusterSettingsBaseSPtr settings) {
     mwidg->openConsole(root, QString());
   }
 }
+
 }  // namespace gui
 }  // namespace fastonosql

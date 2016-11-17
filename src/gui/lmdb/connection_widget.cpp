@@ -22,12 +22,6 @@
 
 #include "core/lmdb/connection_settings.h"
 
-#include "core/connection_settings/iconnection_settings_local.h"
-
-namespace {
-const QString trCreateDBIfMissing = QObject::tr("Create database");
-}
-
 namespace fastonosql {
 namespace gui {
 namespace lmdb {

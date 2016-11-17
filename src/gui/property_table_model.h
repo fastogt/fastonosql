@@ -24,6 +24,7 @@
 
 namespace fastonosql {
 namespace gui {
+
 class PropertyTableModel : public common::qt::gui::TableModel {
   Q_OBJECT
  public:
@@ -41,5 +42,6 @@ class PropertyTableModel : public common::qt::gui::TableModel {
  Q_SIGNALS:
   void propertyChanged(const core::property_t& pr);
 };
+
 }  // namespace gui
 }  // namespace fastonosql

@@ -19,13 +19,16 @@
 #include "gui/upscaledb/connection_widget.h"
 
 #include <QCheckBox>
+#include <QSpinBox>
+#include <QHBoxLayout>
+#include <QLabel>
 
 #include "core/upscaledb/connection_settings.h"
 
 #include "core/connection_settings/iconnection_settings_local.h"
 
 namespace {
-const QString trCreateDBIfMissing = QObject::tr("Create database");
+  const QString trDefaultDb = QObject::tr("Default database:");
 }
 
 namespace fastonosql {
@@ -36,6 +39,15 @@ ConnectionWidget::ConnectionWidget(QWidget* parent)
     : ConnectionLocalWidget(false, trDBPath, trCaption, trFilter, parent) {
   createDBIfMissing_ = new QCheckBox;
   addWidget(createDBIfMissing_);
+
+  QHBoxLayout* def_layout = new QHBoxLayout;
+  defaultDBLabel_ = new QLabel;
+
+  defaultDBNum_ = new QSpinBox;
+  defaultDBNum_->setRange(1, INT16_MAX);
+  def_layout->addWidget(defaultDBLabel_);
+  def_layout->addWidget(defaultDBNum_);
+  addLayout(def_layout);
 }
 
 void ConnectionWidget::syncControls(core::IConnectionSettingsBase* connection) {
@@ -44,12 +56,14 @@ void ConnectionWidget::syncControls(core::IConnectionSettingsBase* connection) {
   if (ups) {
     core::upscaledb::Config config = ups->Info();
     createDBIfMissing_->setChecked(config.create_if_missing);
+    defaultDBNum_->setValue(config.dbnum);
   }
   ConnectionLocalWidget::syncControls(ups);
 }
 
 void ConnectionWidget::retranslateUi() {
   createDBIfMissing_->setText(trCreateDBIfMissing);
+  defaultDBLabel_->setText(trDefaultDb);
   ConnectionLocalWidget::retranslateUi();
 }
 
@@ -58,6 +72,7 @@ core::IConnectionSettingsLocal* ConnectionWidget::createConnectionLocalImpl(
   core::upscaledb::ConnectionSettings* conn = new core::upscaledb::ConnectionSettings(path);
   core::upscaledb::Config config = conn->Info();
   config.create_if_missing = createDBIfMissing_->isChecked();
+  config.dbnum = defaultDBNum_->value();
   conn->SetInfo(config);
   return conn;
 }

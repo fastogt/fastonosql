@@ -22,6 +22,7 @@
 
 namespace fastonosql {
 namespace gui {
+
 PropertyTableItem::PropertyTableItem(const core::property_t& prop) : prop_(prop) {}
 
 QString PropertyTableItem::key() const {
@@ -39,5 +40,6 @@ core::property_t PropertyTableItem::property() const {
 void PropertyTableItem::setProperty(const core::property_t& prop) {
   prop_ = prop;
 }
+
 }  // namespace gui
 }  // namespace fastonosql

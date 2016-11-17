@@ -24,10 +24,6 @@
 
 #include "core/connection_settings/iconnection_settings_local.h"
 
-namespace {
-const QString trCreateDBIfMissing = QObject::tr("Create database");
-}
-
 namespace fastonosql {
 namespace gui {
 namespace unqlite {

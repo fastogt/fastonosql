@@ -22,10 +22,6 @@
 
 #include "core/leveldb/connection_settings.h"
 
-namespace {
-const QString trCreateDBIfMissing = QObject::tr("Create database");
-}
-
 namespace fastonosql {
 namespace gui {
 namespace leveldb {

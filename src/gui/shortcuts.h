@@ -23,6 +23,7 @@ class QKeyEvent;
 
 namespace fastonosql {
 namespace gui {
+
 extern const common::qt::gui::FastoQKeySequence openKey;
 extern const common::qt::gui::FastoQKeySequence saveKey;
 extern const common::qt::gui::FastoQKeySequence saveAsKey;
@@ -46,5 +47,6 @@ bool isPreviousTabShortcut(QKeyEvent* keyEvent);
 bool isRefreshShortcut(QKeyEvent* keyEvent);
 bool isFullScreenShortcut(QKeyEvent* keyEvent);
 bool isExecuteScriptShortcut(QKeyEvent* keyEvent);
+
 }  // namespace gui
 }  // namespace fastonosql

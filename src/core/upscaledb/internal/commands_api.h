@@ -149,7 +149,16 @@ static const std::vector<CommandHolder> upscaledbCommands = {
                   UNDEFINED_EXAMPLE_STR,
                   0,
                   1,
-                  &flushdb)};
+                  &flushdb),
+    CommandHolder("SELECT",
+                  "<index>",
+                  "Change the selected database for the "
+                  "current connection",
+                  UNDEFINED_SINCE,
+                  UNDEFINED_EXAMPLE_STR,
+                  1,
+                  0,
+                  &select)};
 
 }  // namespace upscaledb
 }  // namespace core

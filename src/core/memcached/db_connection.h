@@ -75,6 +75,8 @@ class DBConnection : public core::internal::CDBConnection<NativeConnection, Conf
   typedef core::internal::CDBConnection<NativeConnection, Config, MEMCACHED> base_class;
   DBConnection(CDBConnectionClient* client);
 
+  std::string CurDB() const;
+
   common::Error Keys(const std::string& key_start,
                      const std::string& key_end,
                      uint64_t limit,

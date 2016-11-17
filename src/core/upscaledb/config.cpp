@@ -54,6 +54,8 @@ Config parseOptions(int argc, char** argv) {
       cfg.dbname = argv[++i];
     } else if (!strcmp(argv[i], "-c")) {
       cfg.create_if_missing = true;
+    } else if (!strcmp(argv[i], "-n")) {
+      cfg.dbnum = common::ConvertFromString<uint16_t>(argv[++i]);;
     } else {
       if (argv[i][0] == '-') {
         const std::string buff = common::MemSPrintf(
@@ -75,7 +77,7 @@ Config parseOptions(int argc, char** argv) {
 
 Config::Config()
     : LocalConfig(common::file_system::prepare_path("~/test.upscaledb")),
-      create_if_missing(false) {}
+      create_if_missing(false), dbnum(1) {}
 
 }  // namespace upscaledb
 }  // namespace core
@@ -88,6 +90,11 @@ std::string ConvertToString(const fastonosql::core::upscaledb::Config& conf) {
 
   if (conf.create_if_missing) {
     argv.push_back("-c");
+  }
+
+  if (conf.dbnum) {
+    argv.push_back("-n");
+    argv.push_back(ConvertToString(conf.dbnum));
   }
 
   return fastonosql::core::ConvertToStringConfigArgs(argv);
