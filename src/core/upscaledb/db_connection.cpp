@@ -56,14 +56,23 @@ ups_status_t upscaledb_open(upscaledb** context,
                             uint16_t db,
                             bool create_if_missing) {
   upscaledb* lcontext = reinterpret_cast<upscaledb*>(calloc(1, sizeof(upscaledb)));
-  ups_status_t st = create_if_missing ? ups_env_create(&lcontext->env, dbpath, 0, 0664, 0)
-                                      : ups_env_open(&lcontext->env, dbpath, 0, 0);
+  bool need_to_create = false;
+  if (create_if_missing) {
+    bool exist = common::file_system::is_file_exist(std::string(dbpath));
+    if (!exist) {
+      need_to_create = true;
+    }
+  }
+
+  ups_status_t st = need_to_create ? ups_env_create(&lcontext->env, dbpath, 0, 0664, 0)
+                                   : ups_env_open(&lcontext->env, dbpath, 0, 0);
   if (st != UPS_SUCCESS) {
     free(lcontext);
     return st;
   }
 
-  st = ups_env_create_db(lcontext->env, &lcontext->db, db, 0, NULL);
+  st = need_to_create ? ups_env_create_db(lcontext->env, &lcontext->db, db, 0, NULL)
+                      : ups_env_open_db(lcontext->env, &lcontext->db, db, 0, NULL);
   if (st != UPS_SUCCESS) {
     free(lcontext);
     return st;
@@ -84,8 +93,10 @@ void upscaledb_close(upscaledb** context) {
     return;
   }
 
-  ups_db_close(lcontext->db, 0);
-  ups_env_close(lcontext->env, 0);
+  ups_status_t st = ups_db_close(lcontext->db, 0);
+  DCHECK(st == UPS_SUCCESS);
+  st = ups_env_close(lcontext->env, 0);
+  DCHECK(st == UPS_SUCCESS);
   free(lcontext);
   *context = NULL;
 }
@@ -150,8 +161,7 @@ common::Error DBConnection::Info(const char* args, ServerInfo::Stats* statsout) 
   UNUSED(args);
   if (!statsout) {
     DNOTREACHED();
-    return common::make_error_value("Invalid input argument for command: INFO",
-                                    common::ErrorValue::E_ERROR);
+    return common::make_error_value("Invalid input argument(s)", common::ErrorValue::E_ERROR);
   }
 
   if (!IsConnected()) {
@@ -179,7 +189,7 @@ common::Error DBConnection::DBkcount(size_t* size) {
   size_t sz = 0;
   ups_status_t st = ups_db_count(connection_.handle_->db, NULL, 0, &sz);
   if (st != UPS_SUCCESS) {
-    std::string buff = common::MemSPrintf("dbkcount function error: %s", ups_strerror(st));
+    std::string buff = common::MemSPrintf("DBKCOUNT function error: %s", ups_strerror(st));
     return common::make_error_value(buff, common::ErrorValue::E_ERROR);
   }
 
@@ -204,7 +214,7 @@ common::Error DBConnection::SetInner(const std::string& key, const std::string& 
 
   ups_status_t st = ups_db_insert(connection_.handle_->db, 0, &dkey, &rec, UPS_OVERWRITE);
   if (st != UPS_SUCCESS) {
-    std::string buff = common::MemSPrintf("set function error: %s", ups_strerror(st));
+    std::string buff = common::MemSPrintf("SET function error: %s", ups_strerror(st));
     return common::make_error_value(buff, common::ErrorValue::E_ERROR);
   }
   return common::Error();
@@ -221,14 +231,15 @@ common::Error DBConnection::GetInner(const std::string& key, std::string* ret_va
   dkey.data = const_cast<char*>(key.c_str());
 
   ups_record_t rec;
+  memset(&rec, 0, sizeof(rec));
 
   ups_status_t st = ups_db_find(connection_.handle_->db, NULL, &dkey, &rec, 0);
   if (st != UPS_SUCCESS) {
-    std::string buff = common::MemSPrintf("get function error: %s", ups_strerror(st));
+    std::string buff = common::MemSPrintf("GET function error: %s", ups_strerror(st));
     return common::make_error_value(buff, common::ErrorValue::E_ERROR);
   }
 
-  ret_val->assign(reinterpret_cast<const char*>(rec.data), rec.size);
+  *ret_val = std::string(reinterpret_cast<const char*>(rec.data), rec.size);
   return common::Error();
 }
 
@@ -245,7 +256,7 @@ common::Error DBConnection::DelInner(const std::string& key) {
 
   ups_status_t st = ups_db_erase(connection_.handle_->db, 0, &dkey, 0);
   if (st != UPS_SUCCESS) {
-    std::string buff = common::MemSPrintf("delete function error: %s", ups_strerror(st));
+    std::string buff = common::MemSPrintf("DEL function error: %s", ups_strerror(st));
     return common::make_error_value(buff, common::ErrorValue::E_ERROR);
   }
 
@@ -270,7 +281,7 @@ common::Error DBConnection::Keys(const std::string& key_start,
   /* create a new cursor */
   ups_status_t st = ups_cursor_create(&cursor, connection_.handle_->db, 0, 0);
   if (st) {
-    std::string buff = common::MemSPrintf("Keys function error: %s", ups_strerror(st));
+    std::string buff = common::MemSPrintf("KEYS function error: %s", ups_strerror(st));
     return common::make_error_value(buff, common::ErrorValue::E_ERROR);
   }
 
@@ -290,7 +301,7 @@ common::Error DBConnection::Keys(const std::string& key_start,
     st = ups_cursor_move(cursor, &key, &rec, UPS_CURSOR_NEXT);
     if (st && st != UPS_KEY_NOT_FOUND) {
       ups_cursor_close(cursor);
-      std::string buff = common::MemSPrintf("Keys function error: %s", ups_strerror(st));
+      std::string buff = common::MemSPrintf("KEYS function error: %s", ups_strerror(st));
       return common::make_error_value(buff, common::ErrorValue::E_ERROR);
     }
 
@@ -326,7 +337,7 @@ common::Error DBConnection::Flushdb() {
   /* create a new cursor */
   ups_status_t st = ups_cursor_create(&cursor, connection_.handle_->db, 0, 0);
   if (st) {
-    std::string buff = common::MemSPrintf("Keys function error: %s", ups_strerror(st));
+    std::string buff = common::MemSPrintf("FLUSHDB function error: %s", ups_strerror(st));
     return common::make_error_value(buff, common::ErrorValue::E_ERROR);
   }
 
@@ -336,7 +347,7 @@ common::Error DBConnection::Flushdb() {
     ups_cursor_close(cursor);
     return common::Error();
   } else if (st) {
-    std::string buff = common::MemSPrintf("flushdb function error: %s", ups_strerror(st));
+    std::string buff = common::MemSPrintf("FLUSHDB function error: %s", ups_strerror(st));
     return common::make_error_value(buff, common::ErrorValue::E_ERROR);
   }
 
@@ -346,7 +357,7 @@ common::Error DBConnection::Flushdb() {
     st = ups_cursor_move(cursor, &key, &rec, UPS_CURSOR_NEXT);
     if (st && st != UPS_KEY_NOT_FOUND) {
       ups_cursor_close(cursor);
-      std::string buff = common::MemSPrintf("flushdb function error: %s", ups_strerror(st));
+      std::string buff = common::MemSPrintf("FLUSHDB function error: %s", ups_strerror(st));
       return common::make_error_value(buff, common::ErrorValue::E_ERROR);
     }
 

@@ -127,8 +127,7 @@ DBConnection::DBConnection(CDBConnectionClient* client)
 common::Error DBConnection::Info(const char* args, ServerInfo::Stats* statsout) {
   if (!statsout) {
     DNOTREACHED();
-    return common::make_error_value("Invalid input argument for command: INFO",
-                                    common::ErrorValue::E_ERROR);
+    return common::make_error_value("Invalid input argument(s)", common::ErrorValue::E_ERROR);
   }
 
   if (!IsConnected()) {
