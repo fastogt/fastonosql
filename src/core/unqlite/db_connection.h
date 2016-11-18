@@ -50,8 +50,6 @@ class DBConnection : public core::internal::CDBConnection<NativeConnection, Conf
   typedef core::internal::CDBConnection<NativeConnection, Config, UNQLITE> base_class;
   explicit DBConnection(CDBConnectionClient* client);
 
-  std::string CurDB() const;
-
   common::Error Info(const char* args, ServerInfo::Stats* statsout) WARN_UNUSED_RESULT;
   common::Error Keys(const std::string& key_start,
                      const std::string& key_end,

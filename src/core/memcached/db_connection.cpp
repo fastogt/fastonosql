@@ -229,10 +229,6 @@ common::Error TestConnection(ConnectionSettings* settings) {
 DBConnection::DBConnection(CDBConnectionClient* client)
     : base_class(client, new CommandTranslator) {}
 
-std::string DBConnection::CurDB() const {
-  return "default";
-}
-
 common::Error DBConnection::Keys(const std::string& key_start,
                                  const std::string& key_end,
                                  uint64_t limit,
@@ -565,7 +561,7 @@ common::Error DBConnection::Help(int argc, const char** argv) {
 }
 
 common::Error DBConnection::SelectImpl(const std::string& name, IDataBaseInfo** info) {
-  if (name != CurDB()) {
+  if (name != CurrentDBName()) {
     return NotSupported("SELECT");
   }
 

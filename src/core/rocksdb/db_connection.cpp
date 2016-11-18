@@ -228,13 +228,13 @@ common::Error DBConnection::DBkcount(size_t* size) {
   return common::Error();
 }
 
-std::string DBConnection::CurDB() const {
+std::string DBConnection::CurrentDBName() const {
   ::rocksdb::ColumnFamilyHandle* fam = connection_.handle_->DefaultColumnFamily();
   if (fam) {
     return fam->GetName();
   }
 
-  return "default";
+  return base_class::CurrentDBName();
 }
 
 common::Error DBConnection::GetInner(const std::string& key, std::string* ret_val) {
@@ -380,7 +380,7 @@ common::Error DBConnection::Flushdb() {
 }
 
 common::Error DBConnection::SelectImpl(const std::string& name, IDataBaseInfo** info) {
-  if (name != CurDB()) {
+  if (name != CurrentDBName()) {
     return NotSupported("SELECT");
   }
 

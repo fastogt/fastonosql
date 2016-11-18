@@ -820,13 +820,13 @@ common::Error DBConnection::Connect(const config_t& config) {
   return common::Error();
 }
 
-std::string DBConnection::CurDB() const {
+std::string DBConnection::CurrentDBName() const {
   if (cur_db_ != -1) {
     return common::ConvertToString(cur_db_);
   }
 
   DNOTREACHED();
-  return std::string();
+  return base_class::CurrentDBName();
 }
 
 common::Error DBConnection::LatencyMode(FastoObject* out) {

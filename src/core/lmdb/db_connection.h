@@ -80,7 +80,7 @@ class DBConnection : public core::internal::CDBConnection<NativeConnection, Conf
   typedef core::internal::CDBConnection<NativeConnection, Config, LMDB> base_class;
   DBConnection(CDBConnectionClient* client);
 
-  std::string CurDB() const;
+  std::string CurrentDBName() const;
 
   common::Error Info(const char* args, ServerInfo::Stats* statsout) WARN_UNUSED_RESULT;
   common::Error Keys(const std::string& key_start,

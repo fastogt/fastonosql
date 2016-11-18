@@ -106,7 +106,7 @@ class DBConnection : public core::internal::CDBConnection<NativeConnection, RCon
 
   common::Error Connect(const config_t& config);
 
-  std::string CurDB() const;
+  std::string CurrentDBName() const;
 
   common::Error LatencyMode(FastoObject* out) WARN_UNUSED_RESULT;
   common::Error SlaveMode(FastoObject* out) WARN_UNUSED_RESULT;

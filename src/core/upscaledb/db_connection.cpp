@@ -156,13 +156,13 @@ common::Error TestConnection(ConnectionSettings* settings) {
 DBConnection::DBConnection(CDBConnectionClient* client)
     : base_class(client, new CommandTranslator) {}
 
-std::string DBConnection::CurDB() const {
+std::string DBConnection::CurrentDBName() const {
   if (connection_.handle_) {
     return common::ConvertToString(connection_.handle_->cur_db);
   }
 
   DNOTREACHED();
-  return std::string();
+  return base_class::CurrentDBName();
 }
 
 common::Error DBConnection::Connect(const config_t& config) {

@@ -131,7 +131,6 @@ SET(HEADERS_GUI_TO_MOC
   gui/main_window.h
   gui/statistic_sender.h
   gui/update_checker.h
-  gui/property_table_item.h
   gui/property_table_model.h
   gui/main_tab_bar.h
   gui/fasto_text_view.h
@@ -147,6 +146,7 @@ SET(HEADERS_GUI_TO_MOC
 SET(HEADERS_GUI
   gui/gui_factory.h
   gui/fasto_common_item.h
+  gui/property_table_item.h
   gui/shortcuts.h
   gui/connection_widgets_factory.h
 )

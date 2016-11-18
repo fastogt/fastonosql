@@ -51,6 +51,8 @@ class CDBConnection : public DBConnection<NConnection, Config, ContType>, public
   static std::vector<CommandHolder> Commands();
   static const char* VersionApi();
 
+  std::string CurrentDBName() const;
+
   common::Error Select(const std::string& name, IDataBaseInfo** info) WARN_UNUSED_RESULT;
   common::Error Delete(const NKeys& keys, NKeys* deleted_keys) WARN_UNUSED_RESULT;
   common::Error Set(const NDbKValue& key, NDbKValue* added_key) WARN_UNUSED_RESULT;
@@ -75,6 +77,11 @@ class CDBConnection : public DBConnection<NConnection, Config, ContType>, public
 
   translator_t translator_;
 };
+
+template <typename NConnection, typename Config, connectionTypes ContType>
+std::string CDBConnection<NConnection, Config, ContType>::CurrentDBName() const {
+  return "default";
+}
 
 template <typename NConnection, typename Config, connectionTypes ContType>
 common::Error CDBConnection<NConnection, Config, ContType>::Select(const std::string& name,
