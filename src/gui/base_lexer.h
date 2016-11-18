@@ -64,14 +64,15 @@ class BaseQsciLexer : public QsciLexerCustom {
  public:
   enum { Default = 0, Command = 1 };
 
+  virtual const char* language() const = 0;
   virtual const char* version() const = 0;
   virtual const char* basedOn() const = 0;
 
   virtual std::vector<uint32_t> supportedVersions() const = 0;
   virtual size_t commandsCount() const = 0;
 
-  virtual QString description(int style) const;
-  virtual QColor defaultColor(int style) const;
+  virtual QString description(int style) const override;
+  virtual QColor defaultColor(int style) const override;
 
   BaseQsciApi* apis() const;
 
@@ -82,15 +83,18 @@ class BaseQsciLexer : public QsciLexerCustom {
 class BaseQsciLexerCommandHolder : public BaseQsciLexer {
   Q_OBJECT
  public:
-  virtual std::vector<uint32_t> supportedVersions() const;
-  virtual size_t commandsCount() const;
+  virtual const char* version() const = 0;
+  virtual const char* basedOn() const = 0;
+
+  virtual std::vector<uint32_t> supportedVersions() const override;
+  virtual size_t commandsCount() const override;
 
  protected:
   explicit BaseQsciLexerCommandHolder(const std::vector<core::CommandHolder>& commands,
                                       QObject* parent = 0);
 
  private:
-  virtual void styleText(int start, int end);
+  virtual void styleText(int start, int end) override;
   void paintCommands(const QString& source, int start);
 
   const std::vector<core::CommandHolder> commands_;

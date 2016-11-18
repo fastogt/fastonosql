@@ -35,9 +35,9 @@ class Lexer : public BaseQsciLexerCommandHolder {
  public:
   explicit Lexer(QObject* parent = 0);
 
-  virtual const char* language() const;
-  virtual const char* version() const;
-  virtual const char* basedOn() const;
+  virtual const char* language() const override;
+  virtual const char* version() const override;
+  virtual const char* basedOn() const override;
 };
 
 }  // namespace unqlite

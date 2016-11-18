@@ -83,7 +83,7 @@ class DBConnection : public core::internal::CDBConnection<NativeConnection, Conf
 
   common::Error Connect(const config_t& config);
 
-  virtual std::string CurrentDBName() const;
+  std::string CurrentDBName() const;
 
   common::Error Info(const char* args, ServerInfo::Stats* statsout) WARN_UNUSED_RESULT;
   common::Error Keys(const std::string& key_start,
