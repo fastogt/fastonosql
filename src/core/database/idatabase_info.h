@@ -50,7 +50,7 @@ class IDataBaseInfo : public common::ClonableBase<IDataBaseInfo> {
   void SetKeys(const keys_container_t& keys);
   void ClearKeys();
 
-  virtual IDataBaseInfo* Clone() const = 0;
+  virtual IDataBaseInfo* Clone() const override = 0;
 
  protected:
   IDataBaseInfo(const std::string& name,

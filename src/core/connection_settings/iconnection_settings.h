@@ -71,7 +71,7 @@ class IConnectionSettings : public common::ClonableBase<IConnectionSettings> {
   void SetLoggingMsTimeInterval(uint32_t mstime);
 
   virtual std::string ToString() const;
-  virtual IConnectionSettings* Clone() const = 0;
+  virtual IConnectionSettings* Clone() const override = 0;
 
  protected:
   IConnectionSettings(const connection_path_t& connectionPath, connectionTypes type);
@@ -103,7 +103,7 @@ class IConnectionSettingsBase : public IConnectionSettings {
   virtual std::string FullAddress() const = 0;
 
   virtual std::string ToString() const override;
-  virtual IConnectionSettingsBase* Clone() const = 0;
+  virtual IConnectionSettingsBase* Clone() const override = 0;
 
  protected:
   IConnectionSettingsBase(const connection_path_t& connectionPath, connectionTypes type);

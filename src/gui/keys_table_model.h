@@ -55,12 +55,12 @@ class KeysTableModel : public common::qt::gui::TableModel {
   explicit KeysTableModel(QObject* parent = 0);
   virtual ~KeysTableModel();
 
-  virtual QVariant data(const QModelIndex& index, int role) const;
-  virtual bool setData(const QModelIndex& index, const QVariant& value, int role);
-  virtual Qt::ItemFlags flags(const QModelIndex& index) const;
-  virtual QVariant headerData(int section, Qt::Orientation orientation, int role) const;
+  virtual QVariant data(const QModelIndex& index, int role) const override;
+  virtual bool setData(const QModelIndex& index, const QVariant& value, int role) override;
+  virtual Qt::ItemFlags flags(const QModelIndex& index) const override;
+  virtual QVariant headerData(int section, Qt::Orientation orientation, int role) const override;
 
-  virtual int columnCount(const QModelIndex& parent) const;
+  virtual int columnCount(const QModelIndex& parent) const override;
   void clear();
 
   void updateKey(const core::NKey& key);

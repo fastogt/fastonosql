@@ -27,7 +27,7 @@ namespace redis {
 class SentinelSettings : public ISentinelSettingsBase {
  public:
   explicit SentinelSettings(const connection_path_t& connectionName);
-  virtual SentinelSettings* Clone() const;
+  virtual SentinelSettings* Clone() const override;
 };
 
 }  // namespace redis

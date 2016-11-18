@@ -77,9 +77,9 @@ class FastoEditor : public QWidget {
   void setCallTipsStyle(int style);
   void sendScintilla(unsigned int msg, unsigned long wParam = 0, long lParam = 0);
 
-  virtual void keyPressEvent(QKeyEvent* e);
-  virtual bool eventFilter(QObject* object, QEvent* event);
-  virtual void changeEvent(QEvent* ev);
+  virtual void keyPressEvent(QKeyEvent* e) override;
+  virtual bool eventFilter(QObject* object, QEvent* event) override;
+  virtual void changeEvent(QEvent* ev) override;
 
  private:
   void retranslateUi();

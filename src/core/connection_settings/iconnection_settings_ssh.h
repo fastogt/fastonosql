@@ -27,17 +27,17 @@ namespace core {
 
 class IConnectionSettingsRemoteSSH : public IConnectionSettingsRemote {
  public:
-  virtual std::string Delimiter() const = 0;
-  virtual void SetDelimiter(const std::string& delimiter) = 0;
+  virtual std::string Delimiter() const override = 0;
+  virtual void SetDelimiter(const std::string& delimiter) override = 0;
 
-  virtual std::string NsSeparator() const = 0;
-  virtual void SetNsSeparator(const std::string& ns) = 0;
+  virtual std::string NsSeparator() const override = 0;
+  virtual void SetNsSeparator(const std::string& ns) override = 0;
 
-  virtual common::net::HostAndPort Host() const = 0;
-  virtual void SetHost(const common::net::HostAndPort& host) = 0;
+  virtual common::net::HostAndPort Host() const override = 0;
+  virtual void SetHost(const common::net::HostAndPort& host) override = 0;
 
-  virtual std::string CommandLine() const = 0;
-  virtual void SetCommandLine(const std::string& line) = 0;
+  virtual std::string CommandLine() const override = 0;
+  virtual void SetCommandLine(const std::string& line) override = 0;
 
   struct SSHInfo SSHInfo() const;
   void SetSSHInfo(const struct SSHInfo& info);

@@ -55,7 +55,8 @@ Config parseOptions(int argc, char** argv) {
     } else if (!strcmp(argv[i], "-c")) {
       cfg.create_if_missing = true;
     } else if (!strcmp(argv[i], "-n")) {
-      cfg.dbnum = common::ConvertFromString<uint16_t>(argv[++i]);;
+      cfg.dbnum = common::ConvertFromString<uint16_t>(argv[++i]);
+      ;
     } else {
       if (argv[i][0] == '-') {
         const std::string buff = common::MemSPrintf(
@@ -77,7 +78,8 @@ Config parseOptions(int argc, char** argv) {
 
 Config::Config()
     : LocalConfig(common::file_system::prepare_path("~/test.upscaledb")),
-      create_if_missing(false), dbnum(1) {}
+      create_if_missing(false),
+      dbnum(1) {}
 
 }  // namespace upscaledb
 }  // namespace core

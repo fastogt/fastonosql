@@ -48,7 +48,7 @@ class ISentinelSettingsBase : public IConnectionSettings {
   void AddSentinel(sentinel_connection_t sent);
 
   virtual std::string ToString() const override;
-  virtual ISentinelSettingsBase* Clone() const = 0;
+  virtual ISentinelSettingsBase* Clone() const override = 0;
 
  protected:
   ISentinelSettingsBase(const connection_path_t& connectionName, connectionTypes type);

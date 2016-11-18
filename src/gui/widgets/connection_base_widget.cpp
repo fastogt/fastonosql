@@ -141,8 +141,9 @@ core::IConnectionSettingsBase* ConnectionBaseWidget::createConnection() const {
 
   core::connection_path_t path(common::file_system::stable_dir_path(conFolder) + conName);
   core::IConnectionSettingsBase* conn = createConnectionImpl(path);
-  conn->SetNsSeparator(common::ConvertToString(namespaceSeparator_->currentText()));
-  conn->SetDelimiter(common::ConvertToString(delimiter_->currentText()));
+  conn->SetNsSeparator(
+      common::ConvertToString(toRawCommandLine(namespaceSeparator_->currentText())));
+  conn->SetDelimiter(common::ConvertToString(toRawCommandLine(delimiter_->currentText())));
   if (isLogging()) {
     conn->SetLoggingMsTimeInterval(loggingInterval());
   }

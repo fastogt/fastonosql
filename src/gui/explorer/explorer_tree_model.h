@@ -55,10 +55,10 @@ class ExplorerTreeModel : public common::qt::gui::TreeModel {
  public:
   explicit ExplorerTreeModel(QObject* parent = 0);
 
-  virtual QVariant data(const QModelIndex& index, int role) const;
-  virtual Qt::ItemFlags flags(const QModelIndex& index) const;
-  virtual QVariant headerData(int section, Qt::Orientation orientation, int role) const;
-  virtual int columnCount(const QModelIndex& parent) const;
+  virtual QVariant data(const QModelIndex& index, int role) const override;
+  virtual Qt::ItemFlags flags(const QModelIndex& index) const override;
+  virtual QVariant headerData(int section, Qt::Orientation orientation, int role) const override;
+  virtual int columnCount(const QModelIndex& parent) const override;
 
   void addCluster(core::IClusterSPtr cluster);
   void removeCluster(core::IClusterSPtr cluster);

@@ -60,7 +60,7 @@ class SSHWidget : public QWidget {
   void togglePassphraseEchoMode();
 
  protected:
-  virtual void changeEvent(QEvent* ev);
+  virtual void changeEvent(QEvent* ev) override;
 
  private:
   void retranslateUi();

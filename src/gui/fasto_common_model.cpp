@@ -42,6 +42,7 @@
 
 namespace fastonosql {
 namespace gui {
+
 FastoCommonModel::FastoCommonModel(QObject* parent) : TreeModel(parent) {}
 
 QVariant FastoCommonModel::data(const QModelIndex& index, int role) const {
@@ -179,5 +180,6 @@ void FastoCommonModel::changeValue(const core::NDbKValue& value) {
     }
   }
 }
+
 }  // namespace gui
 }  // namespace fastonosql

@@ -44,7 +44,7 @@ class PathWidget : public QWidget {
   void selectPathDialog();
 
  protected:
-  virtual void changeEvent(QEvent* ev);
+  virtual void changeEvent(QEvent* ev) override;
 
  private:
   void retranslateUi();

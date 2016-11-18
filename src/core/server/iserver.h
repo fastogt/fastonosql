@@ -195,7 +195,7 @@ class IServer : public IServerBase, public std::enable_shared_from_this<IServer>
  protected:
   explicit IServer(IDriver* drv);  // take ownerships
 
-  virtual void customEvent(QEvent* event);
+  virtual void customEvent(QEvent* event) override;
 
   virtual IDatabaseSPtr CreateDatabase(IDataBaseInfoSPtr info) = 0;
   void notify(QEvent* ev);

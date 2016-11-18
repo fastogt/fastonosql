@@ -35,7 +35,7 @@ class FastoTableView : public QTableView {
   void showContextMenu(const QPoint& point);
 
  protected:
-  virtual void resizeEvent(QResizeEvent* event);
+  virtual void resizeEvent(QResizeEvent* event) override;
 };
 }  // namespace gui
 }  // namespace fastonosql

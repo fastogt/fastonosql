@@ -32,7 +32,7 @@ class IClusterSettingsBase : public IConnectionSettings {
   void AddNode(IConnectionSettingsBaseSPtr node);
 
   virtual std::string ToString() const override;
-  virtual IClusterSettingsBase* Clone() const = 0;
+  virtual IClusterSettingsBase* Clone() const override = 0;
 
   virtual IConnectionSettingsBaseSPtr FindSettingsByHost(
       const common::net::HostAndPort& host) const;

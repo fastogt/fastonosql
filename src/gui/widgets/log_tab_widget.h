@@ -46,7 +46,7 @@ class LogTabWidget : public QTabWidget {
   void addCommand(FastoObjectCommandIPtr command);
 
  protected:
-  virtual void changeEvent(QEvent* ev);
+  virtual void changeEvent(QEvent* ev) override;
 
  private:
   void retranslateUi();

@@ -54,8 +54,8 @@ class MainWindow : public QMainWindow {
   ~MainWindow();
 
  protected:
-  virtual void changeEvent(QEvent* ev);
-  virtual void showEvent(QShowEvent* ev);
+  virtual void changeEvent(QEvent* ev) override;
+  virtual void showEvent(QShowEvent* ev) override;
 
  private Q_SLOTS:
   void open();

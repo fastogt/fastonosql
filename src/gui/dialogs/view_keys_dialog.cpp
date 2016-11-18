@@ -61,21 +61,25 @@ class NumericDelegate : public QStyledItemDelegate {
  public:
   explicit NumericDelegate(QObject* parent = 0) : QStyledItemDelegate(parent) {}
 
-  QWidget* createEditor(QWidget* parent, const QStyleOptionViewItem&, const QModelIndex&) const {
+  QWidget* createEditor(QWidget* parent,
+                        const QStyleOptionViewItem&,
+                        const QModelIndex&) const override {
     QSpinBox* editor = new QSpinBox(parent);
     editor->setRange(-1, INT32_MAX);
     editor->setValue(-1);
     return editor;
   }
 
-  void setEditorData(QWidget* editor, const QModelIndex& index) const {
+  void setEditorData(QWidget* editor, const QModelIndex& index) const override {
     int value = index.model()->data(index, Qt::EditRole).toInt();
 
     QSpinBox* spinBox = static_cast<QSpinBox*>(editor);
     spinBox->setValue(value);
   }
 
-  void setModelData(QWidget* editor, QAbstractItemModel* model, const QModelIndex& index) const {
+  void setModelData(QWidget* editor,
+                    QAbstractItemModel* model,
+                    const QModelIndex& index) const override {
     QSpinBox* spinBox = static_cast<QSpinBox*>(editor);
     spinBox->interpretText();
     int value = spinBox->value();
@@ -85,7 +89,7 @@ class NumericDelegate : public QStyledItemDelegate {
 
   void updateEditorGeometry(QWidget* editor,
                             const QStyleOptionViewItem& option,
-                            const QModelIndex&) const {
+                            const QModelIndex&) const override {
     editor->setGeometry(option.rect);
   }
 };

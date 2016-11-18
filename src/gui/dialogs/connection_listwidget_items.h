@@ -67,7 +67,7 @@ class ConnectionListWidgetItemDiscovered  // returned after
     : public ConnectionListWidgetItem {
  public:
   ConnectionListWidgetItemDiscovered(const core::ServerCommonInfo& info, QTreeWidgetItem* parent);
-  virtual itemConnectionType type() const;
+  virtual itemConnectionType type() const override;
 
  private:
   core::ServerCommonInfo info_;

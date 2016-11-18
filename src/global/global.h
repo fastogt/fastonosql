@@ -89,7 +89,7 @@ class FastoObjectCommand : public FastoObject {
  public:
   virtual ~FastoObjectCommand();
   common::CommandValue* Cmd() const;
-  virtual std::string ToString() const;
+  virtual std::string ToString() const override;
 
   virtual std::string InputCmd() const;
   virtual std::string InputArgs() const;
@@ -122,7 +122,7 @@ class FastoObjectArray : public FastoObject {
 
   // Appends a Value to the end of the list.
   void Append(common::Value* in_value);
-  virtual std::string ToString() const;
+  virtual std::string ToString() const override;
 
   common::ArrayValue* Array() const;
 

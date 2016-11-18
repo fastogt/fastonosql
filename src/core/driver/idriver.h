@@ -96,8 +96,8 @@ class IDriver : public QObject, public CDBConnectionClient {
   void Clear();
 
  protected:
-  virtual void customEvent(QEvent* event);
-  virtual void timerEvent(QTimerEvent* event);
+  virtual void customEvent(QEvent* event) override;
+  virtual void timerEvent(QTimerEvent* event) override;
 
   void NotifyProgress(QObject* reciver, int value);
 

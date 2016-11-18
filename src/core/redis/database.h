@@ -35,7 +35,7 @@ class DataBaseInfo : public IDataBaseInfo {
                size_t size,
                const keys_container_t& keys = keys_container_t());
 
-  virtual DataBaseInfo* Clone() const;
+  virtual DataBaseInfo* Clone() const override;
 };
 
 class Database : public IDatabase {

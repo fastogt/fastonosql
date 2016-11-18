@@ -51,7 +51,7 @@ class ConnectionLocalWidget : public ConnectionBaseWidget {
 
  protected:
   virtual core::IConnectionSettingsBase* createConnectionImpl(
-      const core::connection_path_t& path) const final;
+      const core::connection_path_t& path) const override final;
 
   virtual core::IConnectionSettingsLocal* createConnectionLocalImpl(
       const core::connection_path_t& path) const = 0;

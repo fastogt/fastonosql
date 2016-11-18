@@ -28,7 +28,7 @@
 #include "core/connection_settings/iconnection_settings_local.h"
 
 namespace {
-  const QString trDefaultDb = QObject::tr("Default database:");
+const QString trDefaultDb = QObject::tr("Default database:");
 }
 
 namespace fastonosql {

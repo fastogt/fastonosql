@@ -46,11 +46,11 @@ class BaseQsciApi : public QsciAbstractAPIs {
 class BaseQsciApiCommandHolder : public BaseQsciApi {
   Q_OBJECT
  public:
-  virtual void updateAutoCompletionList(const QStringList& context, QStringList& list);
+  virtual void updateAutoCompletionList(const QStringList& context, QStringList& list) override;
   virtual QStringList callTips(const QStringList& context,
                                int commas,
                                QsciScintilla::CallTipsStyle style,
-                               QList<int>& shifts);
+                               QList<int>& shifts) override;
 
  protected:
   BaseQsciApiCommandHolder(const std::vector<core::CommandHolder>& commands, QsciLexer* lexer);
@@ -64,7 +64,7 @@ class BaseQsciLexer : public QsciLexerCustom {
  public:
   enum { Default = 0, Command = 1 };
 
-  virtual const char* language() const = 0;
+  virtual const char* language() const override = 0;
   virtual const char* version() const = 0;
   virtual const char* basedOn() const = 0;
 
@@ -83,8 +83,9 @@ class BaseQsciLexer : public QsciLexerCustom {
 class BaseQsciLexerCommandHolder : public BaseQsciLexer {
   Q_OBJECT
  public:
-  virtual const char* version() const = 0;
-  virtual const char* basedOn() const = 0;
+  virtual const char* language() const override = 0;
+  virtual const char* version() const override = 0;
+  virtual const char* basedOn() const override = 0;
 
   virtual std::vector<uint32_t> supportedVersions() const override;
   virtual size_t commandsCount() const override;
