@@ -6,14 +6,14 @@ SET(BRANDING_PROJECT_VERSION "1.1.0.0" CACHE STRING "Branding version for ${BRAN
 SET(BRANDING_PROJECT_BUILD_TYPE_VERSION "rc" CACHE STRING "Build version type for ${BRANDING_PROJECT_NAME}") #default
   #possible variables: alfa, beta, rc, release
 
-SET(BRANDING_PROJECT_DOMAIN "www.fastonosql.com" CACHE STRING "Branding domain url for ${BRANDING_PROJECT_NAME}") #default
+SET(BRANDING_PROJECT_DOMAIN "http://www.fastonosql.com" CACHE STRING "Branding domain url for ${BRANDING_PROJECT_NAME}") #default
 SET(BRANDING_PROJECT_COMPANYNAME "FastoGT" CACHE STRING "Company name for ${BRANDING_PROJECT_NAME}") #default
-SET(BRANDING_PROJECT_COMPANYNAME_DOMAIN "www.fastogt.com" CACHE STRING "Internet domain name company for ${BRANDING_PROJECT_NAME}") #default
+SET(BRANDING_PROJECT_COMPANYNAME_DOMAIN "http://www.fastogt.com" CACHE STRING "Internet domain name company for ${BRANDING_PROJECT_NAME}") #default
 SET(BRANDING_PROJECT_MAINTAINER_MAIL "atopilski@fastogt.com" CACHE STRING "Internet mail address mainteiner of ${BRANDING_PROJECT_NAME}") #default
 SET(BRANDING_PROJECT_MAINTAINER_NAME "Alexandr Topilski" CACHE STRING "Name of mainteiner for ${BRANDING_PROJECT_NAME}") #default
 
-SET(BRANDING_PROJECT_GITHUB_FORK "www.github.com/fastogt/fastonosql" CACHE STRING "Branding fork url for ${BRANDING_PROJECT_NAME}") #default
-SET(BRANDING_PROJECT_GITHUB_ISSUES "www.github.com/fastogt/fastonosql/issues" CACHE STRING "Branding issues url for ${BRANDING_PROJECT_NAME}") #default
+SET(BRANDING_PROJECT_GITHUB_FORK "https://www.github.com/fastogt/fastonosql" CACHE STRING "Branding fork url for ${BRANDING_PROJECT_NAME}") #default
+SET(BRANDING_PROJECT_GITHUB_ISSUES "https://www.github.com/fastogt/fastonosql/issues" CACHE STRING "Branding issues url for ${BRANDING_PROJECT_NAME}") #default
 
 SET(BRANDING_PROJECT_HOMEPAGE_LINK "http://www.fastonosql.com" CACHE STRING "Home page link for ${BRANDING_PROJECT_NAME}") #default
 SET(BRANDING_PROJECT_FACEBOOK_LINK "https://www.facebook.com/profile.php?id=100010049712549" CACHE STRING "Facebook link for ${BRANDING_PROJECT_NAME}") #default
@@ -334,8 +334,8 @@ IF(CPACK_SUPPORT)
     SET(CPACK_NSIS_CREATE_ICONS_EXTRA "CreateShortCut  \\\"$DESKTOP\\\\${PROJECT_NAME}.lnk\\\" \\\"$INSTDIR\\\\${PROJECT_NAME}.exe\\\"")
     SET(CPACK_NSIS_DELETE_ICONS_EXTRA "Delete           \\\"$DESKTOP\\\\${PROJECT_NAME}.lnk\\\"")
     SET(CPACK_NSIS_DISPLAY_NAME "${CPACK_PACKAGE_INSTALL_DIRECTORY}")
-    SET(CPACK_NSIS_HELP_LINK "http:\\\\\\\\${PROJECT_COMPANYNAME_DOMAIN}")
-    SET(CPACK_NSIS_URL_INFO_ABOUT "http:\\\\\\\\${PROJECT_DOMAIN}")
+    SET(CPACK_NSIS_HELP_LINK "${PROJECT_COMPANYNAME_DOMAIN}")
+    SET(CPACK_NSIS_URL_INFO_ABOUT "${PROJECT_DOMAIN}")
     SET(SIDEBAR_IMAGE ${CMAKE_SOURCE_DIR}/install/${PROJECT_NAME_LOWERCASE}/windows\\\\database.bmp)
     SET(CPACK_NSIS_INSTALLER_MUI_ICON_CODE "!define MUI_WELCOMEFINISHPAGE_BITMAP \\\"${SIDEBAR_IMAGE}\\\"")
     SET(CPACK_NSIS_CONTACT "me@my-personal-home-page.com")

@@ -38,16 +38,16 @@ const QString trDescription = QObject::tr(
     PROJECT_SUMMARY
     "<br/>"
     "<br/>"
-    "Visit " PROJECT_NAME_TITLE " website: <a href=\"http://" PROJECT_DOMAIN "\">" PROJECT_DOMAIN
+    "Visit our website: <a href=\"" PROJECT_DOMAIN "\">" PROJECT_NAME_TITLE
     "</a> <br/>"
     "<br/>"
-    "<a href=\"https://" PROJECT_GITHUB_FORK
+    "<a href=\"" PROJECT_GITHUB_FORK
     "\">Fork</a> project or <a "
-    "href=\"https://" PROJECT_GITHUB_ISSUES
-    "\">submit</a> issues/proposals on GitHub.  <br/>"
+    "href=" PROJECT_GITHUB_ISSUES
+    ">submit</a> issues/proposals on GitHub.  <br/>"
     "<br/>"
     "Copyright 2014-2016 <a "
-    "href=\"http://" PROJECT_COMPANYNAME_DOMAIN "\">" PROJECT_COMPANYNAME
+    "href=\"" PROJECT_COMPANYNAME_DOMAIN "\">" PROJECT_COMPANYNAME
     "</a>. All rights reserved.<br/>"
     "<br/>"
     "The program is provided AS IS with NO WARRANTY OF ANY "

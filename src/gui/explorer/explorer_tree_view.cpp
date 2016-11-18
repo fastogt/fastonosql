@@ -777,7 +777,7 @@ void ExplorerTreeView::removeBranch() {
   }
 
   ExplorerNSItem* node = common::qt::item<common::qt::gui::TreeItem*, ExplorerNSItem*>(sel);
-  if (node) {
+  if (!node) {
     return;
   }
 
