@@ -208,7 +208,7 @@ common::Error DBConnection::DBkcount(size_t* size) {
     return common::make_error_value("Not connected", common::Value::E_ERROR);
   }
 
-  size_t sz = 0;
+  uint64_t sz = 0;
   ups_status_t st = ups_db_count(connection_.handle_->db, NULL, 0, &sz);
   if (st != UPS_SUCCESS) {
     std::string buff = common::MemSPrintf("DBKCOUNT function error: %s", ups_strerror(st));
