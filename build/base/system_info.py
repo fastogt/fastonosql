@@ -88,9 +88,9 @@ def get_extension_by_package(package_type):
 
 def get_os():
     uname_str = platform.system()
-    if uname_str == 'MINGW64_NT-6.1':
+    if 'MINGW' in uname_str:
         return 'windows'
-    if uname_str == 'Windows':
+    elif uname_str == 'Windows':
         return 'windows'
     elif uname_str == 'Linux':
         return 'linux'
