@@ -19,11 +19,13 @@
   #define _XOPEN_SOURCE
   #endif
 #else
-  #if defined(__sun__)
-  #define _POSIX_C_SOURCE 200112L
-  #else
-  #define _XOPEN_SOURCE 600
-  #endif
+#if defined(__sun__)
+#define _POSIX_C_SOURCE 200112L
+#else
+#if !(defined(__APPLE__) && defined(__MACH__))
+#define _XOPEN_SOURCE 600
+#endif
+#endif
 #endif
 
 #if defined(__APPLE__) && defined(__MACH__)
