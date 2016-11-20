@@ -32,35 +32,35 @@
 #include <common/value.h>           // for ErrorValue
 
 #ifdef BUILD_WITH_REDIS
-#include "core/redis/server_info.h"
+#include "core/db/redis/server_info.h"
 #endif
 
 #ifdef BUILD_WITH_MEMCACHED
-#include "core/memcached/server_info.h"
+#include "core/db/memcached/server_info.h"
 #endif
 
 #ifdef BUILD_WITH_SSDB
-#include "core/ssdb/server_info.h"
+#include "core/db/ssdb/server_info.h"
 #endif
 
 #ifdef BUILD_WITH_LEVELDB
-#include "core/leveldb/server_info.h"
+#include "core/db/leveldb/server_info.h"
 #endif
 
 #ifdef BUILD_WITH_ROCKSDB
-#include "core/rocksdb/server_info.h"
+#include "core/db/rocksdb/server_info.h"
 #endif
 
 #ifdef BUILD_WITH_UNQLITE
-#include "core/unqlite/server_info.h"
+#include "core/db/unqlite/server_info.h"
 #endif
 
 #ifdef BUILD_WITH_LMDB
-#include "core/lmdb/server_info.h"
+#include "core/db/lmdb/server_info.h"
 #endif
 
 #ifdef BUILD_WITH_UPSCALEDB
-#include "core/upscaledb/server_info.h"
+#include "core/db/upscaledb/server_info.h"
 #endif
 
 #include "core/connection_types.h"    // for connectionTypes, etc

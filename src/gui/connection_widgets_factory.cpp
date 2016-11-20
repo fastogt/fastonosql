@@ -19,28 +19,28 @@
 #include "gui/connection_widgets_factory.h"
 
 #ifdef BUILD_WITH_REDIS
-#include "gui/redis/connection_widget.h"
+#include "gui/db/redis/connection_widget.h"
 #endif
 #ifdef BUILD_WITH_MEMCACHED
-#include "gui/memcached/connection_widget.h"
+#include "gui/db/memcached/connection_widget.h"
 #endif
 #ifdef BUILD_WITH_SSDB
-#include "gui/ssdb/connection_widget.h"
+#include "gui/db/ssdb/connection_widget.h"
 #endif
 #ifdef BUILD_WITH_LEVELDB
-#include "gui/leveldb/connection_widget.h"
+#include "gui/db/leveldb/connection_widget.h"
 #endif
 #ifdef BUILD_WITH_ROCKSDB
-#include "gui/rocksdb/connection_widget.h"
+#include "gui/db/rocksdb/connection_widget.h"
 #endif
 #ifdef BUILD_WITH_UNQLITE
-#include "gui/unqlite/connection_widget.h"
+#include "gui/db/unqlite/connection_widget.h"
 #endif
 #ifdef BUILD_WITH_LMDB
-#include "gui/lmdb/connection_widget.h"
+#include "gui/db/lmdb/connection_widget.h"
 #endif
 #ifdef BUILD_WITH_UPSCALEDB
-#include "gui/upscaledb/connection_widget.h"
+#include "gui/db/upscaledb/connection_widget.h"
 #endif
 
 namespace fastonosql {

@@ -30,35 +30,35 @@
 #include "gui/base_lexer.h"  // for BaseQsciLexer, BaseQsciApi, etc
 
 #ifdef BUILD_WITH_REDIS
-#include "gui/redis/lexer.h"
+#include "gui/db/redis/lexer.h"
 #endif
 
 #ifdef BUILD_WITH_MEMCACHED
-#include "gui/memcached/lexer.h"
+#include "gui/db/memcached/lexer.h"
 #endif
 
 #ifdef BUILD_WITH_SSDB
-#include "gui/ssdb/lexer.h"
+#include "gui/db/ssdb/lexer.h"
 #endif
 
 #ifdef BUILD_WITH_LEVELDB
-#include "gui/leveldb/lexer.h"
+#include "gui/db/leveldb/lexer.h"
 #endif
 
 #ifdef BUILD_WITH_ROCKSDB
-#include "gui/rocksdb/lexer.h"
+#include "gui/db/rocksdb/lexer.h"
 #endif
 
 #ifdef BUILD_WITH_UNQLITE
-#include "gui/unqlite/lexer.h"
+#include "gui/db/unqlite/lexer.h"
 #endif
 
 #ifdef BUILD_WITH_LMDB
-#include "gui/lmdb/lexer.h"
+#include "gui/db/lmdb/lexer.h"
 #endif
 
 #ifdef BUILD_WITH_UPSCALEDB
-#include "gui/upscaledb/lexer.h"
+#include "gui/db/upscaledb/lexer.h"
 #endif
 
 namespace {

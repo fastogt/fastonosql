@@ -387,49 +387,49 @@ IF(BUILD_WITH_REDIS)
   ADD_SUBDIRECTORY(third-party/redis)
   SET(INCLUDE_DIRS ${INCLUDE_DIRS} third-party/redis/src third-party/redis/deps)
 
-  SET(HEADERS_REDIS_GUI_TO_MOC gui/redis/connection_widget.h gui/redis/lexer.h)
+  SET(HEADERS_REDIS_GUI_TO_MOC gui/db/redis/connection_widget.h gui/db/redis/lexer.h)
   SET(HEADERS_REDIS_GUI)
-  SET(SOURCES_REDIS_GUI gui/redis/connection_widget.cpp gui/redis/lexer.cpp)
+  SET(SOURCES_REDIS_GUI gui/db/redis/connection_widget.cpp gui/db/redis/lexer.cpp)
 
   SET(HEADERS_REDIS_TO_MOC
-    core/redis/sentinel.h
-    core/redis/cluster.h
-    core/redis/server.h
-    core/redis/driver.h
+    core/db/redis/sentinel.h
+    core/db/redis/cluster.h
+    core/db/redis/server.h
+    core/db/redis/driver.h
   )
   SET(HEADERS_REDIS
-    core/redis/config.h
-    core/redis/database.h
-    core/redis/command.h
-    core/redis/command_translator.h
-    core/redis/server_info.h
-    core/redis/connection_settings.h
-    core/redis/db_connection.h
-    core/redis/internal/commands_api.h
+    core/db/redis/config.h
+    core/db/redis/database.h
+    core/db/redis/command.h
+    core/db/redis/command_translator.h
+    core/db/redis/server_info.h
+    core/db/redis/connection_settings.h
+    core/db/redis/db_connection.h
+    core/db/redis/internal/commands_api.h
 
-    core/redis/sentinel_info.h
-    core/redis/sentinel_settings.h
-    core/redis/cluster_infos.h
-    core/redis/cluster_settings.h
+    core/db/redis/sentinel_info.h
+    core/db/redis/sentinel_settings.h
+    core/db/redis/cluster_infos.h
+    core/db/redis/cluster_settings.h
   )
   SET(SOURCES_REDIS
-    core/redis/config.cpp
-    core/redis/database.cpp
-    core/redis/command.cpp
-    core/redis/command_translator.cpp
-    core/redis/server_info.cpp
-    core/redis/connection_settings.cpp
-    core/redis/db_connection.cpp
-    core/redis/internal/commands_api.cpp
-    core/redis/server.cpp
-    core/redis/driver.cpp
+    core/db/redis/config.cpp
+    core/db/redis/database.cpp
+    core/db/redis/command.cpp
+    core/db/redis/command_translator.cpp
+    core/db/redis/server_info.cpp
+    core/db/redis/connection_settings.cpp
+    core/db/redis/db_connection.cpp
+    core/db/redis/internal/commands_api.cpp
+    core/db/redis/server.cpp
+    core/db/redis/driver.cpp
 
-    core/redis/sentinel_info.cpp
-    core/redis/sentinel.cpp
-    core/redis/sentinel_settings.cpp
-    core/redis/cluster_infos.cpp
-    core/redis/cluster.cpp
-    core/redis/cluster_settings.cpp
+    core/db/redis/sentinel_info.cpp
+    core/db/redis/sentinel.cpp
+    core/db/redis/sentinel_settings.cpp
+    core/db/redis/cluster_infos.cpp
+    core/db/redis/cluster.cpp
+    core/db/redis/cluster_settings.cpp
   )
   SET(DB_LIBS ${DB_LIBS} hiredis libssh2)
 ENDIF(BUILD_WITH_REDIS)
@@ -441,35 +441,35 @@ IF(BUILD_WITH_MEMCACHED)
   ADD_SUBDIRECTORY(third-party/memcached)
   SET(INCLUDE_DIRS ${INCLUDE_DIRS} third-party/memcached/src)
 
-  SET(HEADERS_MEMCACHED_GUI_TO_MOC gui/memcached/connection_widget.h gui/memcached/lexer.h)
+  SET(HEADERS_MEMCACHED_GUI_TO_MOC gui/db/memcached/connection_widget.h gui/db/memcached/lexer.h)
   SET(HEADERS_MEMCACHED_GUI)
-  SET(SOURCES_MEMCACHED_GUI gui/memcached/connection_widget.cpp gui/memcached/lexer.cpp)
+  SET(SOURCES_MEMCACHED_GUI gui/db/memcached/connection_widget.cpp gui/db/memcached/lexer.cpp)
 
   SET(HEADERS_MEMCACHED_TO_MOC
-    core/memcached/server.h
-    core/memcached/driver.h
+    core/db/memcached/server.h
+    core/db/memcached/driver.h
   )
   SET(HEADERS_MEMCACHED
-    core/memcached/config.h
-    core/memcached/database.h
-    core/memcached/command.h
-    core/memcached/command_translator.h
-    core/memcached/server_info.h
-    core/memcached/connection_settings.h
-    core/memcached/db_connection.h
-    core/memcached/internal/commands_api.h
+    core/db/memcached/config.h
+    core/db/memcached/database.h
+    core/db/memcached/command.h
+    core/db/memcached/command_translator.h
+    core/db/memcached/server_info.h
+    core/db/memcached/connection_settings.h
+    core/db/memcached/db_connection.h
+    core/db/memcached/internal/commands_api.h
   )
   SET(SOURCES_MEMCACHED
-    core/memcached/config.cpp
-    core/memcached/database.cpp
-    core/memcached/command.cpp
-    core/memcached/command_translator.cpp
-    core/memcached/server_info.cpp
-    core/memcached/connection_settings.cpp
-    core/memcached/db_connection.cpp
-    core/memcached/internal/commands_api.cpp
-    core/memcached/server.cpp
-    core/memcached/driver.cpp
+    core/db/memcached/config.cpp
+    core/db/memcached/database.cpp
+    core/db/memcached/command.cpp
+    core/db/memcached/command_translator.cpp
+    core/db/memcached/server_info.cpp
+    core/db/memcached/connection_settings.cpp
+    core/db/memcached/db_connection.cpp
+    core/db/memcached/internal/commands_api.cpp
+    core/db/memcached/server.cpp
+    core/db/memcached/driver.cpp
   )
   SET(DB_LIBS ${DB_LIBS} memcached)
 ENDIF(BUILD_WITH_MEMCACHED)
@@ -479,35 +479,35 @@ IF(BUILD_WITH_SSDB)
   ADD_SUBDIRECTORY(third-party/ssdb)
   SET(INCLUDE_DIRS ${INCLUDE_DIRS} third-party/ssdb/src)
 
-  SET(HEADERS_SSDB_GUI_TO_MOC gui/ssdb/connection_widget.h gui/ssdb/lexer.h)
+  SET(HEADERS_SSDB_GUI_TO_MOC gui/db/ssdb/connection_widget.h gui/db/ssdb/lexer.h)
   SET(HEADERS_SSDB_GUI)
-  SET(SOURCES_SSDB_GUI gui/ssdb/connection_widget.cpp gui/ssdb/lexer.cpp)
+  SET(SOURCES_SSDB_GUI gui/db/ssdb/connection_widget.cpp gui/db/ssdb/lexer.cpp)
 
   SET(HEADERS_SSDB_TO_MOC
-    core/ssdb/server.h
-    core/ssdb/driver.h
+    core/db/ssdb/server.h
+    core/db/ssdb/driver.h
   )
   SET(HEADERS_SSDB
-    core/ssdb/config.h
-    core/ssdb/database.h
-    core/ssdb/command.h
-    core/ssdb/command_translator.h
-    core/ssdb/server_info.h
-    core/ssdb/connection_settings.h
-    core/ssdb/db_connection.h
-    core/ssdb/internal/commands_api.h
+    core/db/ssdb/config.h
+    core/db/ssdb/database.h
+    core/db/ssdb/command.h
+    core/db/ssdb/command_translator.h
+    core/db/ssdb/server_info.h
+    core/db/ssdb/connection_settings.h
+    core/db/ssdb/db_connection.h
+    core/db/ssdb/internal/commands_api.h
   )
   SET(SOURCES_SSDB
-    core/ssdb/config.cpp
-    core/ssdb/database.cpp
-    core/ssdb/command.cpp
-    core/ssdb/command_translator.cpp
-    core/ssdb/server_info.cpp
-    core/ssdb/connection_settings.cpp
-    core/ssdb/db_connection.cpp
-    core/ssdb/internal/commands_api.cpp
-    core/ssdb/server.cpp
-    core/ssdb/driver.cpp
+    core/db/ssdb/config.cpp
+    core/db/ssdb/database.cpp
+    core/db/ssdb/command.cpp
+    core/db/ssdb/command_translator.cpp
+    core/db/ssdb/server_info.cpp
+    core/db/ssdb/connection_settings.cpp
+    core/db/ssdb/db_connection.cpp
+    core/db/ssdb/internal/commands_api.cpp
+    core/db/ssdb/server.cpp
+    core/db/ssdb/driver.cpp
   )
   SET(DB_LIBS ${DB_LIBS} ssdb)
 ENDIF(BUILD_WITH_SSDB)
@@ -517,35 +517,35 @@ IF(BUILD_WITH_LEVELDB)
   ADD_SUBDIRECTORY(third-party/leveldb)
   SET(INCLUDE_DIRS ${INCLUDE_DIRS} third-party/leveldb/src/include)
 
-  SET(HEADERS_LEVELDB_GUI_TO_MOC gui/leveldb/connection_widget.h gui/leveldb/lexer.h)
+  SET(HEADERS_LEVELDB_GUI_TO_MOC gui/db/leveldb/connection_widget.h gui/db/leveldb/lexer.h)
   SET(HEADERS_LEVELDB_GUI)
-  SET(SOURCES_LEVELDB_GUI gui/leveldb/connection_widget.cpp gui/leveldb/lexer.cpp)
+  SET(SOURCES_LEVELDB_GUI gui/db/leveldb/connection_widget.cpp gui/db/leveldb/lexer.cpp)
 
   SET(HEADERS_LEVELDB_TO_MOC
-    core/leveldb/server.h
-    core/leveldb/driver.h
+    core/db/leveldb/server.h
+    core/db/leveldb/driver.h
   )
   SET(HEADERS_LEVELDB
-    core/leveldb/config.h
-    core/leveldb/database.h
-    core/leveldb/command.h
-    core/leveldb/command_translator.h
-    core/leveldb/server_info.h
-    core/leveldb/connection_settings.h
-    core/leveldb/db_connection.h
-    core/leveldb/internal/commands_api.h
+    core/db/leveldb/config.h
+    core/db/leveldb/database.h
+    core/db/leveldb/command.h
+    core/db/leveldb/command_translator.h
+    core/db/leveldb/server_info.h
+    core/db/leveldb/connection_settings.h
+    core/db/leveldb/db_connection.h
+    core/db/leveldb/internal/commands_api.h
   )
   SET(SOURCES_LEVELDB
-    core/leveldb/config.cpp
-    core/leveldb/database.cpp
-    core/leveldb/command.cpp
-    core/leveldb/command_translator.cpp
-    core/leveldb/server_info.cpp
-    core/leveldb/connection_settings.cpp
-    core/leveldb/db_connection.cpp
-    core/leveldb/internal/commands_api.cpp
-    core/leveldb/server.cpp
-    core/leveldb/driver.cpp
+    core/db/leveldb/config.cpp
+    core/db/leveldb/database.cpp
+    core/db/leveldb/command.cpp
+    core/db/leveldb/command_translator.cpp
+    core/db/leveldb/server_info.cpp
+    core/db/leveldb/connection_settings.cpp
+    core/db/leveldb/db_connection.cpp
+    core/db/leveldb/internal/commands_api.cpp
+    core/db/leveldb/server.cpp
+    core/db/leveldb/driver.cpp
   )
   SET(DB_LIBS ${DB_LIBS} leveldb)
 ENDIF(BUILD_WITH_LEVELDB)
@@ -556,35 +556,35 @@ IF(BUILD_WITH_ROCKSDB)
   #ADD_SUBDIRECTORY(third-party/rocksdb)
   #SET(INCLUDE_DIRS ${INCLUDE_DIRS} third-party/rocksdb/src/include)
 
-  SET(HEADERS_ROCKSDB_GUI_TO_MOC gui/rocksdb/connection_widget.h gui/rocksdb/lexer.h)
+  SET(HEADERS_ROCKSDB_GUI_TO_MOC gui/db/rocksdb/connection_widget.h gui/db/rocksdb/lexer.h)
   SET(HEADERS_ROCKSDB_GUI)
-  SET(SOURCES_ROCKSDB_GUI gui/rocksdb/connection_widget.cpp gui/rocksdb/lexer.cpp)
+  SET(SOURCES_ROCKSDB_GUI gui/db/rocksdb/connection_widget.cpp gui/db/rocksdb/lexer.cpp)
 
   SET(HEADERS_ROCKSDB_TO_MOC
-    core/rocksdb/server.h
-    core/rocksdb/driver.h
+    core/db/rocksdb/server.h
+    core/db/rocksdb/driver.h
   )
   SET(HEADERS_ROCKSDB
-    core/rocksdb/config.h
-    core/rocksdb/database.h
-    core/rocksdb/command.h
-    core/rocksdb/command_translator.h
-    core/rocksdb/server_info.h
-    core/rocksdb/connection_settings.h
-    core/rocksdb/db_connection.h
-    core/rocksdb/internal/commands_api.h
+    core/db/rocksdb/config.h
+    core/db/rocksdb/database.h
+    core/db/rocksdb/command.h
+    core/db/rocksdb/command_translator.h
+    core/db/rocksdb/server_info.h
+    core/db/rocksdb/connection_settings.h
+    core/db/rocksdb/db_connection.h
+    core/db/rocksdb/internal/commands_api.h
   )
   SET(SOURCES_ROCKSDB
-    core/rocksdb/config.cpp
-    core/rocksdb/database.cpp
-    core/rocksdb/command.cpp
-    core/rocksdb/command_translator.cpp
-    core/rocksdb/server_info.cpp
-    core/rocksdb/connection_settings.cpp
-    core/rocksdb/db_connection.cpp
-    core/rocksdb/internal/commands_api.cpp
-    core/rocksdb/server.cpp
-    core/rocksdb/driver.cpp
+    core/db/rocksdb/config.cpp
+    core/db/rocksdb/database.cpp
+    core/db/rocksdb/command.cpp
+    core/db/rocksdb/command_translator.cpp
+    core/db/rocksdb/server_info.cpp
+    core/db/rocksdb/connection_settings.cpp
+    core/db/rocksdb/db_connection.cpp
+    core/db/rocksdb/internal/commands_api.cpp
+    core/db/rocksdb/server.cpp
+    core/db/rocksdb/driver.cpp
   )
 
   SET(DB_LIBS ${DB_LIBS} ${ROCKSDB_LIBRARY} ${BZIP2_LIBRARIES})
@@ -595,35 +595,35 @@ IF(BUILD_WITH_UNQLITE)
   ADD_SUBDIRECTORY(third-party/unqlite)
   SET(INCLUDE_DIRS ${INCLUDE_DIRS} third-party/unqlite/src)
 
-  SET(HEADERS_UNQLITE_GUI_TO_MOC gui/unqlite/connection_widget.h gui/unqlite/lexer.h)
+  SET(HEADERS_UNQLITE_GUI_TO_MOC gui/db/unqlite/connection_widget.h gui/db/unqlite/lexer.h)
   SET(HEADERS_UNQLITE_GUI)
-  SET(SOURCES_UNQLITE_GUI gui/unqlite/connection_widget.cpp gui/unqlite/lexer.cpp)
+  SET(SOURCES_UNQLITE_GUI gui/db/unqlite/connection_widget.cpp gui/db/unqlite/lexer.cpp)
 
   SET(HEADERS_UNQLITE_TO_MOC
-    core/unqlite/server.h
-    core/unqlite/driver.h
+    core/db/unqlite/server.h
+    core/db/unqlite/driver.h
   )
   SET(HEADERS_UNQLITE
-    core/unqlite/config.h
-    core/unqlite/database.h
-    core/unqlite/command.h
-    core/unqlite/command_translator.h
-    core/unqlite/server_info.h
-    core/unqlite/connection_settings.h
-    core/unqlite/db_connection.h
-    core/unqlite/internal/commands_api.h
+    core/db/unqlite/config.h
+    core/db/unqlite/database.h
+    core/db/unqlite/command.h
+    core/db/unqlite/command_translator.h
+    core/db/unqlite/server_info.h
+    core/db/unqlite/connection_settings.h
+    core/db/unqlite/db_connection.h
+    core/db/unqlite/internal/commands_api.h
   )
   SET(SOURCES_UNQLITE
-    core/unqlite/config.cpp
-    core/unqlite/database.cpp
-    core/unqlite/command.cpp
-    core/unqlite/command_translator.cpp
-    core/unqlite/server_info.cpp
-    core/unqlite/connection_settings.cpp
-    core/unqlite/db_connection.cpp
-    core/unqlite/server.cpp
-    core/unqlite/driver.cpp
-    core/unqlite/internal/commands_api.cpp
+    core/db/unqlite/config.cpp
+    core/db/unqlite/database.cpp
+    core/db/unqlite/command.cpp
+    core/db/unqlite/command_translator.cpp
+    core/db/unqlite/server_info.cpp
+    core/db/unqlite/connection_settings.cpp
+    core/db/unqlite/db_connection.cpp
+    core/db/unqlite/server.cpp
+    core/db/unqlite/driver.cpp
+    core/db/unqlite/internal/commands_api.cpp
   )
   SET(DB_LIBS ${DB_LIBS} unqlite)
 ENDIF(BUILD_WITH_UNQLITE)
@@ -633,35 +633,35 @@ IF(BUILD_WITH_LMDB)
   ADD_SUBDIRECTORY(third-party/lmdb)
   SET(INCLUDE_DIRS ${INCLUDE_DIRS} third-party/lmdb/src/libraries/liblmdb)
 
-  SET(HEADERS_LMDB_GUI_TO_MOC gui/lmdb/connection_widget.h gui/lmdb/lexer.h)
+  SET(HEADERS_LMDB_GUI_TO_MOC gui/db/lmdb/connection_widget.h gui/db/lmdb/lexer.h)
   SET(HEADERS_LMDB_GUI)
-  SET(SOURCES_LMDB_GUI gui/lmdb/connection_widget.cpp gui/lmdb/lexer.cpp)
+  SET(SOURCES_LMDB_GUI gui/db/lmdb/connection_widget.cpp gui/db/lmdb/lexer.cpp)
 
   SET(HEADERS_LMDB_TO_MOC
-    core/lmdb/server.h
-    core/lmdb/driver.h
+    core/db/lmdb/server.h
+    core/db/lmdb/driver.h
   )
   SET(HEADERS_LMDB
-    core/lmdb/config.h
-    core/lmdb/database.h
-    core/lmdb/command.h
-    core/lmdb/command_translator.h
-    core/lmdb/server_info.h
-    core/lmdb/connection_settings.h
-    core/lmdb/db_connection.h
-    core/lmdb/internal/commands_api.h
+    core/db/lmdb/config.h
+    core/db/lmdb/database.h
+    core/db/lmdb/command.h
+    core/db/lmdb/command_translator.h
+    core/db/lmdb/server_info.h
+    core/db/lmdb/connection_settings.h
+    core/db/lmdb/db_connection.h
+    core/db/lmdb/internal/commands_api.h
   )
   SET(SOURCES_LMDB
-    core/lmdb/config.cpp
-    core/lmdb/database.cpp
-    core/lmdb/command.cpp
-    core/lmdb/command_translator.cpp
-    core/lmdb/server_info.cpp
-    core/lmdb/connection_settings.cpp
-    core/lmdb/db_connection.cpp
-    core/lmdb/internal/commands_api.cpp
-    core/lmdb/server.cpp
-    core/lmdb/driver.cpp
+    core/db/lmdb/config.cpp
+    core/db/lmdb/database.cpp
+    core/db/lmdb/command.cpp
+    core/db/lmdb/command_translator.cpp
+    core/db/lmdb/server_info.cpp
+    core/db/lmdb/connection_settings.cpp
+    core/db/lmdb/db_connection.cpp
+    core/db/lmdb/internal/commands_api.cpp
+    core/db/lmdb/server.cpp
+    core/db/lmdb/driver.cpp
   )
   SET(DB_LIBS ${DB_LIBS} lmdb)
 ENDIF(BUILD_WITH_LMDB)
@@ -675,35 +675,35 @@ IF(BUILD_WITH_UPSCALEDB)
   #ADD_SUBDIRECTORY(third-party/upscaledb)
   #SET(INCLUDE_DIRS ${INCLUDE_DIRS} third-party/upscaledb/src/include)
 
-  SET(HEADERS_UPSCALEDB_GUI_TO_MOC gui/upscaledb/connection_widget.h gui/upscaledb/lexer.h)
+  SET(HEADERS_UPSCALEDB_GUI_TO_MOC gui/db/upscaledb/connection_widget.h gui/db/upscaledb/lexer.h)
   SET(HEADERS_UPSCALEDB_GUI)
-  SET(SOURCES_UPSCALEDB_GUI gui/upscaledb/connection_widget.cpp gui/upscaledb/lexer.cpp)
+  SET(SOURCES_UPSCALEDB_GUI gui/db/upscaledb/connection_widget.cpp gui/db/upscaledb/lexer.cpp)
 
   SET(HEADERS_UPSCALEDB_TO_MOC
-    core/upscaledb/server.h
-    core/upscaledb/driver.h
+    core/db/upscaledb/server.h
+    core/db/upscaledb/driver.h
   )
   SET(HEADERS_UPSCALEDB
-    core/upscaledb/config.h
-    core/upscaledb/database.h
-    core/upscaledb/command.h
-    core/upscaledb/command_translator.h
-    core/upscaledb/server_info.h
-    core/upscaledb/connection_settings.h
-    core/upscaledb/db_connection.h
-    core/upscaledb/internal/commands_api.h
+    core/db/upscaledb/config.h
+    core/db/upscaledb/database.h
+    core/db/upscaledb/command.h
+    core/db/upscaledb/command_translator.h
+    core/db/upscaledb/server_info.h
+    core/db/upscaledb/connection_settings.h
+    core/db/upscaledb/db_connection.h
+    core/db/upscaledb/internal/commands_api.h
   )
   SET(SOURCES_UPSCALEDB
-    core/upscaledb/config.cpp
-    core/upscaledb/database.cpp
-    core/upscaledb/command.cpp
-    core/upscaledb/command_translator.cpp
-    core/upscaledb/server_info.cpp
-    core/upscaledb/connection_settings.cpp
-    core/upscaledb/db_connection.cpp
-    core/upscaledb/internal/commands_api.cpp
-    core/upscaledb/server.cpp
-    core/upscaledb/driver.cpp
+    core/db/upscaledb/config.cpp
+    core/db/upscaledb/database.cpp
+    core/db/upscaledb/command.cpp
+    core/db/upscaledb/command_translator.cpp
+    core/db/upscaledb/server_info.cpp
+    core/db/upscaledb/connection_settings.cpp
+    core/db/upscaledb/db_connection.cpp
+    core/db/upscaledb/internal/commands_api.cpp
+    core/db/upscaledb/server.cpp
+    core/db/upscaledb/driver.cpp
   )
   SET(DB_LIBS ${DB_LIBS} ${UPSCALEDB_LIBRARY} ${Boost_LIBRARIES})
 ENDIF(BUILD_WITH_UPSCALEDB)

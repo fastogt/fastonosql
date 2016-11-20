@@ -21,35 +21,35 @@
 #include <common/convert2string.h>
 
 #ifdef BUILD_WITH_REDIS
-#include "core/redis/connection_settings.h"  // for ConnectionSettings
+#include "core/db/redis/connection_settings.h"  // for ConnectionSettings
 #define LOGGING_REDIS_FILE_EXTENSION ".red"
 #endif
 #ifdef BUILD_WITH_MEMCACHED
-#include "core/memcached/connection_settings.h"  // for ConnectionSettings
+#include "core/db/memcached/connection_settings.h"  // for ConnectionSettings
 #define LOGGING_MEMCACHED_FILE_EXTENSION ".mem"
 #endif
 #ifdef BUILD_WITH_SSDB
-#include "core/ssdb/connection_settings.h"  // for ConnectionSettings
+#include "core/db/ssdb/connection_settings.h"  // for ConnectionSettings
 #define LOGGING_SSDB_FILE_EXTENSION ".ssdb"
 #endif
 #ifdef BUILD_WITH_LEVELDB
-#include "core/leveldb/connection_settings.h"  // for ConnectionSettings
+#include "core/db/leveldb/connection_settings.h"  // for ConnectionSettings
 #define LOGGING_LEVELDB_FILE_EXTENSION ".leveldb"
 #endif
 #ifdef BUILD_WITH_ROCKSDB
-#include "core/rocksdb/connection_settings.h"  // for ConnectionSettings
+#include "core/db/rocksdb/connection_settings.h"  // for ConnectionSettings
 #define LOGGING_ROCKSDB_FILE_EXTENSION ".rocksdb"
 #endif
 #ifdef BUILD_WITH_UNQLITE
-#include "core/unqlite/connection_settings.h"  // for ConnectionSettings
+#include "core/db/unqlite/connection_settings.h"  // for ConnectionSettings
 #define LOGGING_UNQLITE_FILE_EXTENSION ".unq"
 #endif
 #ifdef BUILD_WITH_LMDB
-#include "core/lmdb/connection_settings.h"  // for ConnectionSettings
+#include "core/db/lmdb/connection_settings.h"  // for ConnectionSettings
 #define LOGGING_LMDB_FILE_EXTENSION ".lmdb"
 #endif
 #ifdef BUILD_WITH_UPSCALEDB
-#include "core/upscaledb/connection_settings.h"  // for ConnectionSettings
+#include "core/db/upscaledb/connection_settings.h"  // for ConnectionSettings
 #define LOGGING_UPSCALEDB_FILE_EXTENSION ".upscaledb"
 #endif
 

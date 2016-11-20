@@ -21,7 +21,7 @@
 #include <common/convert2string.h>
 
 #ifdef BUILD_WITH_REDIS
-#include "core/redis/sentinel_settings.h"  // for SentinelSettings
+#include "core/db/redis/sentinel_settings.h"  // for SentinelSettings
 #endif
 
 namespace fastonosql {
