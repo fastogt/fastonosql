@@ -37,6 +37,8 @@ class ConnectionWidget : public ConnectionLocalWidget {
  private:
   virtual core::IConnectionSettingsLocal* createConnectionLocalImpl(
       const core::connection_path_t& path) const override;
+
+  QCheckBox* readOnlyDB_;
 };
 
 }  // namespace lmdb

@@ -27,14 +27,22 @@ namespace gui {
 namespace lmdb {
 
 ConnectionWidget::ConnectionWidget(QWidget* parent)
-    : ConnectionLocalWidget(true, trDBPath, trCaption, trFilter, parent) {}
+    : ConnectionLocalWidget(true, trDBPath, trCaption, trFilter, parent) {
+  readOnlyDB_ = new QCheckBox;
+  addWidget(readOnlyDB_);
+}
 
 void ConnectionWidget::syncControls(core::IConnectionSettingsBase* connection) {
   core::lmdb::ConnectionSettings* lmdb = static_cast<core::lmdb::ConnectionSettings*>(connection);
+  if (lmdb) {
+    core::lmdb::Config config = lmdb->Info();
+    readOnlyDB_->setChecked(config.ReadOnlyDB());
+  }
   ConnectionLocalWidget::syncControls(lmdb);
 }
 
 void ConnectionWidget::retranslateUi() {
+  readOnlyDB_->setText(trReadOnlyDB);
   ConnectionLocalWidget::retranslateUi();
 }
 
@@ -42,6 +50,7 @@ core::IConnectionSettingsLocal* ConnectionWidget::createConnectionLocalImpl(
     const core::connection_path_t& path) const {
   core::lmdb::ConnectionSettings* conn = new core::lmdb::ConnectionSettings(path);
   core::lmdb::Config config = conn->Info();
+  config.SetReadOnlyDB(readOnlyDB_->isChecked());
   conn->SetInfo(config);
   return conn;
 }

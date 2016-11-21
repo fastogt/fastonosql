@@ -53,7 +53,15 @@ struct lmdb {
 
 namespace {
 
-int lmdb_open(lmdb** context, const char* dbname) {
+unsigned int lmdb_db_flag_from_env_flags(int env_flags) {
+  return env_flags & MDB_RDONLY ? MDB_RDONLY : 0;
+}
+
+int lmdb_open(lmdb** context,
+              const char* db_path,
+              const char* db_name,
+              int env_flags,
+              unsigned int db_env_flags) {
   lmdb* lcontext = reinterpret_cast<lmdb*>(calloc(1, sizeof(lmdb)));
   int rc = mdb_env_create(&lcontext->env);
   if (rc != LMDB_OK) {
@@ -61,20 +69,20 @@ int lmdb_open(lmdb** context, const char* dbname) {
     return rc;
   }
 
-  rc = mdb_env_open(lcontext->env, dbname, 0, 0664);
+  rc = mdb_env_open(lcontext->env, db_path, env_flags, 0664);
   if (rc != LMDB_OK) {
     free(lcontext);
     return rc;
   }
 
   MDB_txn* txn = NULL;
-  rc = mdb_txn_begin(lcontext->env, NULL, 0, &txn);
+  rc = mdb_txn_begin(lcontext->env, NULL, db_env_flags, &txn);
   if (rc != LMDB_OK) {
     free(lcontext);
     return rc;
   }
 
-  rc = mdb_dbi_open(txn, NULL, 0, &lcontext->dbir);
+  rc = mdb_dbi_open(txn, db_name, 0, &lcontext->dbir);
   mdb_txn_abort(txn);
   if (rc != LMDB_OK) {
     free(lcontext);
@@ -117,8 +125,9 @@ common::Error CreateConnection(const Config& config, NativeConnection** context)
                                     common::ErrorValue::E_ERROR);
   }
 
-  const char* dbname = common::utils::c_strornull(folder);
-  int st = lmdb_open(&lcontext, dbname);
+  const char* db_path = common::utils::c_strornull(folder);
+  int env_flags = config.env_flags;
+  int st = lmdb_open(&lcontext, db_path, NULL, env_flags, lmdb_db_flag_from_env_flags(env_flags));
   if (st != LMDB_OK) {
     std::string buff = common::MemSPrintf("Fail open database: %s", mdb_strerror(st));
     return common::make_error_value(buff, common::ErrorValue::E_ERROR);
@@ -232,7 +241,9 @@ common::Error DBConnection::SetInner(const std::string& key, const std::string& 
   mval.mv_data = const_cast<char*>(value.c_str());
 
   MDB_txn* txn = NULL;
-  int rc = mdb_txn_begin(connection_.handle_->env, NULL, 0, &txn);
+  int env_flags = connection_.config_.env_flags;
+  int rc =
+      mdb_txn_begin(connection_.handle_->env, NULL, lmdb_db_flag_from_env_flags(env_flags), &txn);
   if (rc == LMDB_OK) {
     rc = mdb_put(txn, connection_.handle_->dbir, &mkey, &mval, 0);
     if (rc == LMDB_OK) {
@@ -286,7 +297,9 @@ common::Error DBConnection::DelInner(const std::string& key) {
   mkey.mv_data = const_cast<char*>(key.c_str());
 
   MDB_txn* txn = NULL;
-  int rc = mdb_txn_begin(connection_.handle_->env, NULL, 0, &txn);
+  int env_flags = connection_.config_.env_flags;
+  int rc =
+      mdb_txn_begin(connection_.handle_->env, NULL, lmdb_db_flag_from_env_flags(env_flags), &txn);
   if (rc == LMDB_OK) {
     rc = mdb_del(txn, connection_.handle_->dbir, &mkey, NULL);
     if (rc == LMDB_OK) {
@@ -353,7 +366,9 @@ common::Error DBConnection::Flushdb() {
 
   MDB_cursor* cursor = NULL;
   MDB_txn* txn = NULL;
-  int rc = mdb_txn_begin(connection_.handle_->env, NULL, 0, &txn);
+  int env_flags = connection_.config_.env_flags;
+  int rc =
+      mdb_txn_begin(connection_.handle_->env, NULL, lmdb_db_flag_from_env_flags(env_flags), &txn);
   if (rc == LMDB_OK) {
     rc = mdb_cursor_open(txn, connection_.handle_->dbir, &cursor);
   }

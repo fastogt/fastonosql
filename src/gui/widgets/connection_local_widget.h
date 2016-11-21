@@ -29,6 +29,7 @@ const QString trDBPath = QObject::tr("Database path:");
 const QString trCaption = QObject::tr("Select Database path");
 const QString trFilter = QObject::tr("Database files (*.*)");
 const QString trCreateDBIfMissing = QObject::tr("Create database");
+const QString trReadOnlyDB = QObject::tr("Read only database");
 }
 
 namespace fastonosql {
