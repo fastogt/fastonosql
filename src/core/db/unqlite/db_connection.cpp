@@ -173,8 +173,8 @@ common::Error CreateConnection(const Config& config, NativeConnection** context)
   }
 
   const char* dbname = common::utils::c_strornull(db_path);
-  int st = unqlite_open(&lcontext, dbname,
-                        config.create_if_missing ? UNQLITE_OPEN_CREATE : UNQLITE_OPEN_READWRITE);
+  int env_flags = config.env_flags;
+  int st = unqlite_open(&lcontext, dbname, env_flags);
   if (st != UNQLITE_OK) {
     std::string buff = common::MemSPrintf("Fail open database: %s!", unqlite_strerror(st));
     return common::make_error_value(buff, common::ErrorValue::E_ERROR);

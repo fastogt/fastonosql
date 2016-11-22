@@ -22,14 +22,25 @@
 
 #include "core/config/config.h"
 
+#define UNQLITE_DEFAULT_ENV_FLAGS 0x00000002  // unqlite Environment Flags
+                                              // UNQLITE_OPEN_READWRITE        0x00000002
+
 namespace fastonosql {
 namespace core {
 namespace unqlite {
 
 struct Config : public LocalConfig {
   Config();
+  bool ReadOnlyDB() const;
+  void SetReadOnlyDB(bool ro);
 
-  bool create_if_missing;
+  bool ReadWriteDB() const;
+  void SetReadWriteDB(bool ro);
+
+  bool CreateIfMissingDB() const;
+  void SetCreateIfMissingDB(bool ro);
+
+  int env_flags;
 };
 
 }  // namespace unqlite

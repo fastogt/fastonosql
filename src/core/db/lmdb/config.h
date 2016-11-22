@@ -22,8 +22,8 @@
 
 #include "core/config/config.h"
 
-#define LMDB_DEFAULT_ENV_FLAGS 0  // mdb_env Environment Flags
-                                  // MDB_RDONLY  0x20000
+#define LMDB_DEFAULT_ENV_FLAGS 0x20000  // mdb_env Environment Flags
+                                        // MDB_RDONLY  0x20000
 
 namespace fastonosql {
 namespace core {

@@ -25,6 +25,7 @@
 #include <vector>  // for vector
 
 extern "C" {
+#include <unqlite.h>
 #include "sds.h"
 }
 
@@ -51,8 +52,8 @@ Config parseOptions(int argc, char** argv) {
       cfg.ns_separator = argv[++i];
     } else if (!strcmp(argv[i], "-f") && !lastarg) {
       cfg.dbname = argv[++i];
-    } else if (!strcmp(argv[i], "-c")) {
-      cfg.create_if_missing = true;
+    } else if (!strcmp(argv[i], "-e") && !lastarg) {
+      cfg.env_flags = common::ConvertFromString<int>(argv[++i]);
     } else {
       if (argv[i][0] == '-') {
         const std::string buff = common::MemSPrintf(
@@ -73,7 +74,48 @@ Config parseOptions(int argc, char** argv) {
 }  // namespace
 
 Config::Config()
-    : LocalConfig(common::file_system::prepare_path("~/test.unqlite")), create_if_missing(false) {}
+    : LocalConfig(common::file_system::prepare_path("~/test.unqlite")),
+      env_flags(UNQLITE_DEFAULT_ENV_FLAGS) {}
+
+bool Config::ReadOnlyDB() const {
+  return env_flags & UNQLITE_OPEN_READONLY;
+}
+
+void Config::SetReadOnlyDB(bool ro) {
+  if (ro) {
+    env_flags |= UNQLITE_OPEN_READONLY;
+    env_flags &= ~UNQLITE_OPEN_READWRITE;
+  } else {
+    env_flags &= ~UNQLITE_OPEN_READONLY;
+    env_flags |= UNQLITE_OPEN_READWRITE;
+  }
+}
+
+bool Config::ReadWriteDB() const {
+  return env_flags & UNQLITE_OPEN_READWRITE || env_flags & UNQLITE_OPEN_CREATE;
+}
+
+void Config::SetReadWriteDB(bool ro) {
+  if (ro) {
+    env_flags |= UNQLITE_OPEN_READWRITE;
+    env_flags &= ~UNQLITE_OPEN_READONLY;
+  } else {
+    env_flags &= ~UNQLITE_OPEN_READWRITE;
+    env_flags |= UNQLITE_OPEN_READONLY;
+  }
+}
+
+bool Config::CreateIfMissingDB() const {
+  return env_flags & UNQLITE_OPEN_CREATE;
+}
+
+void Config::SetCreateIfMissingDB(bool ro) {
+  if (ro) {
+    env_flags |= UNQLITE_OPEN_CREATE;
+  } else {
+    env_flags &= ~UNQLITE_OPEN_CREATE;
+  }
+}
 
 }  // namespace unqlite
 }  // namespace core
@@ -84,8 +126,9 @@ namespace common {
 std::string ConvertToString(const fastonosql::core::unqlite::Config& conf) {
   std::vector<std::string> argv = conf.Args();
 
-  if (conf.create_if_missing) {
-    argv.push_back("-c");
+  if (conf.env_flags != UNQLITE_DEFAULT_ENV_FLAGS) {
+    argv.push_back("-e");
+    argv.push_back(common::ConvertToString(conf.env_flags));
   }
 
   return fastonosql::core::ConvertToStringConfigArgs(argv);

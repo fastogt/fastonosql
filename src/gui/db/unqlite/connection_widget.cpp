@@ -31,7 +31,13 @@ namespace unqlite {
 ConnectionWidget::ConnectionWidget(QWidget* parent)
     : ConnectionLocalWidget(false, trDBPath, trCaption, trFilter, parent) {
   createDBIfMissing_ = new QCheckBox;
+  VERIFY(connect(createDBIfMissing_, &QCheckBox::stateChanged, this,
+                 &ConnectionWidget::createDBStateChange));
   addWidget(createDBIfMissing_);
+  readOnlyDB_ = new QCheckBox;
+  VERIFY(connect(readOnlyDB_, &QCheckBox::stateChanged, this,
+                 &ConnectionWidget::readOnlyDBStateChange));
+  addWidget(readOnlyDB_);
 }
 
 void ConnectionWidget::syncControls(core::IConnectionSettingsBase* connection) {
@@ -39,21 +45,32 @@ void ConnectionWidget::syncControls(core::IConnectionSettingsBase* connection) {
       static_cast<core::unqlite::ConnectionSettings*>(connection);
   if (unq) {
     core::unqlite::Config config = unq->Info();
-    createDBIfMissing_->setChecked(config.create_if_missing);
+    createDBIfMissing_->setChecked(config.CreateIfMissingDB());
+    readOnlyDB_->setChecked(config.ReadOnlyDB());
   }
   ConnectionLocalWidget::syncControls(unq);
 }
 
 void ConnectionWidget::retranslateUi() {
   createDBIfMissing_->setText(trCreateDBIfMissing);
+  readOnlyDB_->setText(trReadOnlyDB);
   ConnectionLocalWidget::retranslateUi();
+}
+
+void ConnectionWidget::createDBStateChange(int state) {
+  readOnlyDB_->setEnabled(!state);
+}
+
+void ConnectionWidget::readOnlyDBStateChange(int state) {
+  createDBIfMissing_->setEnabled(!state);
 }
 
 core::IConnectionSettingsLocal* ConnectionWidget::createConnectionLocalImpl(
     const core::connection_path_t& path) const {
   core::unqlite::ConnectionSettings* conn = new core::unqlite::ConnectionSettings(path);
   core::unqlite::Config config = conn->Info();
-  config.create_if_missing = createDBIfMissing_->isChecked();
+  config.SetCreateIfMissingDB(createDBIfMissing_->isChecked());
+  config.SetReadOnlyDB(readOnlyDB_->isChecked());
   conn->SetInfo(config);
   return conn;
 }

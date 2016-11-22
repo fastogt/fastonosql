@@ -2,6 +2,7 @@
 - [RocksDB] Up sources to version 4.13.0
 - [LevelDB] Up sources to version 1.19
 - [LMDB] Read only db flag
+- [UnQLite] Read only db flag
 
 1.1.0 / November 19, 2016
 [Alexandr Topilski]
