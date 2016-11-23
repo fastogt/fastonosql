@@ -349,11 +349,7 @@ common::Error DBConnection::Help(int argc, const char** argv) {
   return NotSupported("HELP");
 }
 
-common::Error DBConnection::Flushdb() {
-  if (!IsConnected()) {
-    return common::make_error_value("Not connected", common::Value::E_ERROR);
-  }
-
+common::Error DBConnection::FlushDBImpl() {
   unqlite_kv_cursor* pCur; /* Cursor handle */
   int rc = unqlite_kv_cursor_init(connection_.handle_, &pCur);
   if (rc != UNQLITE_OK) {

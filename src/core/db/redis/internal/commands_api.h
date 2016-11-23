@@ -36,6 +36,10 @@ common::Error common_exec_off2(internal::CommandHandler* handler,
                                const char** argv,
                                FastoObject* out);
 
+common::Error flushdb(internal::CommandHandler* handler,
+                      int argc,
+                      const char** argv,
+                      FastoObject* out);
 common::Error select(internal::CommandHandler* handler,
                      int argc,
                      const char** argv,
@@ -595,7 +599,7 @@ static const std::vector<CommandHolder> redisCommands = {
                   UNDEFINED_EXAMPLE_STR,
                   0,
                   0,
-                  &common_exec),
+                  &flushdb),
     CommandHolder("GEOADD",
                   "key longitude latitude member "
                   "[longitude latitude member ...",

@@ -53,6 +53,7 @@ class CDBConnection : public DBConnection<NConnection, Config, ContType>, public
 
   std::string CurrentDBName() const;
 
+  common::Error FlushDB() WARN_UNUSED_RESULT;
   common::Error Select(const std::string& name, IDataBaseInfo** info) WARN_UNUSED_RESULT;
   common::Error Delete(const NKeys& keys, NKeys* deleted_keys) WARN_UNUSED_RESULT;
   common::Error Set(const NDbKValue& key, NDbKValue* added_key) WARN_UNUSED_RESULT;
@@ -67,6 +68,7 @@ class CDBConnection : public DBConnection<NConnection, Config, ContType>, public
   CDBConnectionClient* client_;
 
  private:
+  virtual common::Error FlushDBImpl() = 0;
   virtual common::Error SelectImpl(const std::string& name, IDataBaseInfo** info) = 0;
   virtual common::Error DeleteImpl(const NKeys& keys, NKeys* deleted_keys) = 0;
   virtual common::Error SetImpl(const NDbKValue& key, NDbKValue* added_key) = 0;
@@ -81,6 +83,20 @@ class CDBConnection : public DBConnection<NConnection, Config, ContType>, public
 template <typename NConnection, typename Config, connectionTypes ContType>
 std::string CDBConnection<NConnection, Config, ContType>::CurrentDBName() const {
   return "default";
+}
+
+template <typename NConnection, typename Config, connectionTypes ContType>
+common::Error CDBConnection<NConnection, Config, ContType>::FlushDB() {
+  if (!CDBConnection<NConnection, Config, ContType>::IsConnected()) {
+    return common::make_error_value("Not connected", common::Value::E_ERROR);
+  }
+
+  common::Error err = FlushDBImpl();
+  if (err && err->isError()) {
+    return err;
+  }
+
+  return common::Error();
 }
 
 template <typename NConnection, typename Config, connectionTypes ContType>

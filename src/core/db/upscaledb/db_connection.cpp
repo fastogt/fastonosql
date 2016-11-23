@@ -344,11 +344,7 @@ common::Error DBConnection::Help(int argc, const char** argv) {
   return NotSupported("HELP");
 }
 
-common::Error DBConnection::Flushdb() {
-  if (!IsConnected()) {
-    return common::make_error_value("Not connected", common::Value::E_ERROR);
-  }
-
+common::Error DBConnection::FlushDBImpl() {
   ups_cursor_t* cursor; /* upscaledb cursor object */
   ups_key_t key;
   ups_record_t rec;

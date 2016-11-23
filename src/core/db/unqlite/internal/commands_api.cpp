@@ -228,10 +228,17 @@ common::Error flushdb(internal::CommandHandler* handler,
                       FastoObject* out) {
   UNUSED(argc);
   UNUSED(argv);
-  UNUSED(out);
 
-  DBConnection* unq = static_cast<DBConnection*>(handler);
-  return unq->Flushdb();
+  DBConnection* unqlite = static_cast<DBConnection*>(handler);
+  common::Error err = unqlite->FlushDB();
+  if (err && err->isError()) {
+    return err;
+  }
+
+  common::StringValue* val = common::Value::createStringValue("OK");
+  FastoObject* child = new FastoObject(out, val, unqlite->Delimiter());
+  out->AddChildren(child);
+  return common::Error();
 }
 
 common::Error quit(internal::CommandHandler* handler,

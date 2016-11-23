@@ -231,10 +231,17 @@ common::Error flushdb(internal::CommandHandler* handler,
                       FastoObject* out) {
   UNUSED(argc);
   UNUSED(argv);
-  UNUSED(out);
 
   DBConnection* level = static_cast<DBConnection*>(handler);
-  return level->Flushdb();
+  common::Error err = level->FlushDB();
+  if (err && err->isError()) {
+    return err;
+  }
+
+  common::StringValue* val = common::Value::createStringValue("OK");
+  FastoObject* child = new FastoObject(out, val, level->Delimiter());
+  out->AddChildren(child);
+  return common::Error();
 }
 
 common::Error quit(internal::CommandHandler* handler,
@@ -244,14 +251,14 @@ common::Error quit(internal::CommandHandler* handler,
   UNUSED(argc);
   UNUSED(argv);
 
-  DBConnection* mdb = static_cast<DBConnection*>(handler);
-  common::Error err = mdb->Quit();
+  DBConnection* level = static_cast<DBConnection*>(handler);
+  common::Error err = level->Quit();
   if (err && err->isError()) {
     return err;
   }
 
   common::StringValue* val = common::Value::createStringValue("OK");
-  FastoObject* child = new FastoObject(out, val, mdb->Delimiter());
+  FastoObject* child = new FastoObject(out, val, level->Delimiter());
   out->AddChildren(child);
   return common::Error();
 }

@@ -193,7 +193,7 @@ void Driver::HandleClearDatabaseEvent(events::ClearDatabaseRequestEvent* ev) {
   NotifyProgress(sender, 0);
   events::ClearDatabaseResponceEvent::value_type res(ev->value());
   NotifyProgress(sender, 50);
-  common::Error er = impl_->Flushdb();
+  common::Error er = impl_->FlushDB();
   if (er && er->isError()) {
     res.setErrorInfo(er);
   }

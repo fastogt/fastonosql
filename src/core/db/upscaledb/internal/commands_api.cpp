@@ -230,10 +230,17 @@ common::Error flushdb(internal::CommandHandler* handler,
                       FastoObject* out) {
   UNUSED(argc);
   UNUSED(argv);
-  UNUSED(out);
 
-  DBConnection* mdb = static_cast<DBConnection*>(handler);
-  return mdb->Flushdb();
+  DBConnection* red = static_cast<DBConnection*>(handler);
+  common::Error err = red->FlushDB();
+  if (err && err->isError()) {
+    return err;
+  }
+
+  common::StringValue* val = common::Value::createStringValue("OK");
+  FastoObject* child = new FastoObject(out, val, red->Delimiter());
+  out->AddChildren(child);
+  return common::Error();
 }
 
 common::Error quit(internal::CommandHandler* handler,

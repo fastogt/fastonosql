@@ -85,13 +85,13 @@ class DBConnection : public core::internal::CDBConnection<NativeConnection, Conf
   // extended api
   common::Error DBkcount(size_t* size) WARN_UNUSED_RESULT;
   common::Error Help(int argc, const char** argv) WARN_UNUSED_RESULT;
-  common::Error Flushdb() WARN_UNUSED_RESULT;
 
  private:
   common::Error DelInner(const std::string& key) WARN_UNUSED_RESULT;
   common::Error SetInner(const std::string& key, const std::string& value) WARN_UNUSED_RESULT;
   common::Error GetInner(const std::string& key, std::string* ret_val) WARN_UNUSED_RESULT;
 
+  virtual common::Error FlushDBImpl() override;
   virtual common::Error SelectImpl(const std::string& name, IDataBaseInfo** info) override;
   virtual common::Error DeleteImpl(const NKeys& keys, NKeys* deleted_keys) override;
   virtual common::Error SetImpl(const NDbKValue& key, NDbKValue* added_key) override;

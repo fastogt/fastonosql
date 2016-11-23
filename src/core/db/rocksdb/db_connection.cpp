@@ -351,11 +351,7 @@ common::Error DBConnection::Help(int argc, const char** argv) {
   return NotSupported("HELP");
 }
 
-common::Error DBConnection::Flushdb() {
-  if (!IsConnected()) {
-    return common::make_error_value("Not connected", common::Value::E_ERROR);
-  }
-
+common::Error DBConnection::FlushDBImpl() {
   ::rocksdb::ReadOptions ro;
   ::rocksdb::WriteOptions wo;
   ::rocksdb::Iterator* it = connection_.handle_->NewIterator(ro);

@@ -523,21 +523,6 @@ common::Error DBConnection::ExpireInner(const std::string& key, time_t expiratio
   return common::Error();
 }
 
-common::Error DBConnection::Flushdb(time_t expiration) {
-  if (!IsConnected()) {
-    return common::make_error_value("Not connected", common::Value::E_ERROR);
-  }
-
-  memcached_return_t error = memcached_flush(connection_.handle_, expiration);
-  if (error != MEMCACHED_SUCCESS) {
-    std::string buff = common::MemSPrintf("Flushdb function error: %s",
-                                          memcached_strerror(connection_.handle_, error));
-    return common::make_error_value(buff, common::ErrorValue::E_ERROR);
-  }
-
-  return common::Error();
-}
-
 common::Error DBConnection::VersionServer() const {
   if (!IsConnected()) {
     return common::make_error_value("Not connected", common::Value::E_ERROR);
@@ -558,6 +543,17 @@ common::Error DBConnection::Help(int argc, const char** argv) {
   UNUSED(argv);
 
   return NotSupported("HELP");
+}
+
+common::Error DBConnection::FlushDBImpl() {
+  memcached_return_t error = memcached_flush(connection_.handle_, 0);
+  if (error != MEMCACHED_SUCCESS) {
+    std::string buff = common::MemSPrintf("Flushdb function error: %s",
+                                          memcached_strerror(connection_.handle_, error));
+    return common::make_error_value(buff, common::ErrorValue::E_ERROR);
+  }
+
+  return common::Error();
 }
 
 common::Error DBConnection::SelectImpl(const std::string& name, IDataBaseInfo** info) {

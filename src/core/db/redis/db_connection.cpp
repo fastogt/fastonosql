@@ -62,9 +62,9 @@ extern "C" {
 
 #include "core/icommand_translator.h"  // for translator_t, etc
 
-#include "core/internal/connection.h"        // for Connection<>::config_t, etc
-#include "core/command/command.h"            // for CreateCommand
-#include "core/command/command_logger.h"     // for LOG_COMMAND
+#include "core/internal/connection.h"     // for Connection<>::config_t, etc
+#include "core/command/command.h"         // for CreateCommand
+#include "core/command/command_logger.h"  // for LOG_COMMAND
 
 #include "core/db/redis/cluster_infos.h"        // for makeDiscoveryClusterInfo
 #include "core/db/redis/command.h"              // for Command
@@ -1580,6 +1580,17 @@ common::Error DBConnection::ScanMode(FastoObject* out) {
     freeReplyObject(reply);
   } while (cur != 0);
 
+  return common::Error();
+}
+
+common::Error DBConnection::FlushDBImpl() {
+  redisReply* reply =
+      reinterpret_cast<redisReply*>(redisCommand(connection_.handle_, "FLUSHDB"));
+  if (!reply) {
+    return cliPrintContextError(connection_.handle_);
+  }
+
+  freeReplyObject(reply);
   return common::Error();
 }
 

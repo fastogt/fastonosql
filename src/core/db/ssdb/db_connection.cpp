@@ -845,11 +845,7 @@ common::Error DBConnection::Help(int argc, const char** argv) {
   return NotSupported("HELP");
 }
 
-common::Error DBConnection::Flushdb() {
-  if (!IsConnected()) {
-    return common::make_error_value("Not connected", common::Value::E_ERROR);
-  }
-
+common::Error DBConnection::FlushDBImpl() {
   std::vector<std::string> ret;
   auto st = connection_.handle_->keys(std::string(), std::string(), 0, &ret);
   if (st.error()) {

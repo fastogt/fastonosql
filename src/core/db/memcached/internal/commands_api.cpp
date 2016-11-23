@@ -311,15 +311,19 @@ common::Error flushdb(internal::CommandHandler* handler,
                       int argc,
                       const char** argv,
                       FastoObject* out) {
+  UNUSED(argc);
+  UNUSED(argv);
+
   DBConnection* mem = static_cast<DBConnection*>(handler);
-  common::Error er = mem->Flushdb(argc == 1 ? common::ConvertFromString<time_t>(argv[0]) : 0);
-  if (!er) {
-    common::StringValue* val = common::Value::createStringValue("OK");
-    FastoObject* child = new FastoObject(out, val, mem->Delimiter());
-    out->AddChildren(child);
+  common::Error err = mem->FlushDB();
+  if (err && err->isError()) {
+    return err;
   }
 
-  return er;
+  common::StringValue* val = common::Value::createStringValue("OK");
+  FastoObject* child = new FastoObject(out, val, mem->Delimiter());
+  out->AddChildren(child);
+  return common::Error();
 }
 
 common::Error version_server(internal::CommandHandler* handler,

@@ -101,7 +101,6 @@ class DBConnection : public core::internal::CDBConnection<NativeConnection, Conf
                         uint32_t flags) WARN_UNUSED_RESULT;
   common::Error Incr(const std::string& key, uint64_t value) WARN_UNUSED_RESULT;
   common::Error Decr(const std::string& key, uint64_t value) WARN_UNUSED_RESULT;
-  common::Error Flushdb(time_t expiration) WARN_UNUSED_RESULT;
   common::Error VersionServer() const WARN_UNUSED_RESULT;
   common::Error Help(int argc, const char** argv) WARN_UNUSED_RESULT;
 
@@ -114,6 +113,7 @@ class DBConnection : public core::internal::CDBConnection<NativeConnection, Conf
                          uint32_t flags) WARN_UNUSED_RESULT;
   common::Error ExpireInner(const std::string& key, time_t expiration) WARN_UNUSED_RESULT;
 
+  virtual common::Error FlushDBImpl() override;
   virtual common::Error SelectImpl(const std::string& name, IDataBaseInfo** info) override;
   virtual common::Error DeleteImpl(const NKeys& keys, NKeys* deleted_keys) override;
   virtual common::Error GetImpl(const NKey& key, NDbKValue* loaded_key) override;

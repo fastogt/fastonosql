@@ -359,11 +359,7 @@ common::Error DBConnection::Help(int argc, const char** argv) {
   return NotSupported("HELP");
 }
 
-common::Error DBConnection::Flushdb() {
-  if (!IsConnected()) {
-    return common::make_error_value("Not connected", common::Value::E_ERROR);
-  }
-
+common::Error DBConnection::FlushDBImpl() {
   MDB_cursor* cursor = NULL;
   MDB_txn* txn = NULL;
   int env_flags = connection_.config_.env_flags;

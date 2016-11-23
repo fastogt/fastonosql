@@ -139,6 +139,7 @@ class DBConnection : public core::internal::CDBConnection<NativeConnection, RCon
   common::Error Hgetall(const NKey& key, NDbKValue* loaded_key);
 
  private:
+  virtual common::Error FlushDBImpl() override;
   virtual common::Error SelectImpl(const std::string& name, IDataBaseInfo** info) override;
   virtual common::Error DeleteImpl(const NKeys& keys, NKeys* deleted_keys) override;
   virtual common::Error SetImpl(const NDbKValue& key, NDbKValue* added_key) override;

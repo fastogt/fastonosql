@@ -1059,10 +1059,17 @@ common::Error flushdb(internal::CommandHandler* handler,
                       FastoObject* out) {
   UNUSED(argc);
   UNUSED(argv);
-  UNUSED(out);
 
   DBConnection* ssdb = static_cast<DBConnection*>(handler);
-  return ssdb->Flushdb();
+  common::Error err = ssdb->FlushDB();
+  if (err && err->isError()) {
+    return err;
+  }
+
+  common::StringValue* val = common::Value::createStringValue("OK");
+  FastoObject* child = new FastoObject(out, val, ssdb->Delimiter());
+  out->AddChildren(child);
+  return common::Error();
 }
 
 common::Error quit(internal::CommandHandler* handler,
