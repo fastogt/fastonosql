@@ -60,6 +60,7 @@ PathWidget::PathWidget(bool isFolderSelectOnly,
 void PathWidget::selectPathDialog() {
   QFileDialog dialog(this, caption_, pathEdit_->text(), filter_);
   dialog.setFileMode(isFolderSelectOnly_ ? QFileDialog::DirectoryOnly : QFileDialog::ExistingFile);
+  dialog.setFilter(QDir::AllDirs | QDir::AllEntries | QDir::Hidden | QDir::System);
   int res = dialog.exec();
   if (res != QFileDialog::ExistingFile) {
     return;
