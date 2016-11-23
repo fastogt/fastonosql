@@ -77,11 +77,5 @@ void IDatabase::Execute(const events_info::ExecuteInfoRequest& req) {
   server_->Execute(req);
 }
 
-void IDatabase::RemoveAllKeys(const events_info::ClearDatabaseRequest& req) {
-  DCHECK_EQ(req.inf, info_);
-
-  server_->ClearDB(req);
-}
-
 }  // namespace core
 }  // namespace fastonosql

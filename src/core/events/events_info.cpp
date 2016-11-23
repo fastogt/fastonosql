@@ -145,13 +145,6 @@ LoadDatabaseContentRequest::LoadDatabaseContentRequest(initiator_type sender,
 LoadDatabaseContentResponce::LoadDatabaseContentResponce(const base_class& request)
     : base_class(request), keys(), cursor_out(0), db_keys_count(0) {}
 
-ClearDatabaseRequest::ClearDatabaseRequest(initiator_type sender,
-                                           IDataBaseInfoSPtr inf,
-                                           error_type er)
-    : base_class(sender, er), inf(inf) {}
-
-ClearDatabaseResponce::ClearDatabaseResponce(const base_class& request) : base_class(request) {}
-
 SetDefaultDatabaseRequest::SetDefaultDatabaseRequest(initiator_type sender,
                                                      IDataBaseInfoSPtr inf,
                                                      error_type er)

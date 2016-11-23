@@ -21,6 +21,15 @@
 namespace fastonosql {
 namespace core {
 
+common::Error ICommandTranslator::FlushDBCommand(std::string* cmdstring) const {
+  if (!cmdstring) {
+    return common::make_error_value("Invalid input argument(s)", common::ErrorValue::E_ERROR);
+  }
+
+  *cmdstring = FLUSHDB_COMMAND;
+  return common::Error();
+}
+
 common::Error ICommandTranslator::DeleteKeyCommand(const NKey& key, std::string* cmdstring) const {
   if (!cmdstring) {
     return common::make_error_value("Invalid input argument(s)", common::ErrorValue::E_ERROR);

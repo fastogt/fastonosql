@@ -74,7 +74,6 @@ class IDatabase {
   void SetDefault(const events_info::SetDefaultDatabaseRequest& req);
 
   void Execute(const events_info::ExecuteInfoRequest& req);
-  void RemoveAllKeys(const events_info::ClearDatabaseRequest& req);
 
  protected:
   IDatabase(IServerSPtr server, IDataBaseInfoSPtr info);

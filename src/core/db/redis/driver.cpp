@@ -600,21 +600,6 @@ done:
   NotifyProgress(sender, 100);
 }
 
-void Driver::HandleClearDatabaseEvent(events::ClearDatabaseRequestEvent* ev) {
-  QObject* sender = ev->sender();
-  NotifyProgress(sender, 0);
-  events::ClearDatabaseResponceEvent::value_type res(ev->value());
-  FastoObjectCommandIPtr cmd = CreateCommandFast(REDIS_FLUSHDB, common::Value::C_INNER);
-  NotifyProgress(sender, 50);
-  common::Error er = Execute(cmd);
-  if (er && er->isError()) {
-    res.setErrorInfo(er);
-  }
-  NotifyProgress(sender, 75);
-  Reply(sender, new events::ClearDatabaseResponceEvent(this, res));
-  NotifyProgress(sender, 100);
-}
-
 void Driver::HandleSetDefaultDatabaseEvent(events::SetDefaultDatabaseRequestEvent* ev) {
   QObject* sender = ev->sender();
   NotifyProgress(sender, 0);

@@ -188,20 +188,6 @@ done:
   NotifyProgress(sender, 100);
 }
 
-void Driver::HandleClearDatabaseEvent(events::ClearDatabaseRequestEvent* ev) {
-  QObject* sender = ev->sender();
-  NotifyProgress(sender, 0);
-  events::ClearDatabaseResponceEvent::value_type res(ev->value());
-  NotifyProgress(sender, 50);
-  common::Error er = impl_->FlushDB();
-  if (er && er->isError()) {
-    res.setErrorInfo(er);
-  }
-  NotifyProgress(sender, 75);
-  Reply(sender, new events::ClearDatabaseResponceEvent(this, res));
-  NotifyProgress(sender, 100);
-}
-
 void Driver::HandleProcessCommandLineArgsEvent(events::ProcessConfigArgsRequestEvent* ev) {
   UNUSED(ev);
 }

@@ -96,6 +96,10 @@ common::Error CDBConnection<NConnection, Config, ContType>::FlushDB() {
     return err;
   }
 
+  if (client_) {
+    client_->OnFlushedCurrentDB();
+  }
+
   return common::Error();
 }
 

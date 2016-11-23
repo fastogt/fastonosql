@@ -42,6 +42,7 @@ IServer::IServer(IDriver* drv) : drv_(drv) {
   VERIFY(
       QObject::connect(drv_, &IDriver::ServerInfoSnapShoot, this, &IServer::ServerInfoSnapShoot));
 
+  VERIFY(QObject::connect(drv_, &IDriver::FlushedDB, this, &IServer::FlushDB));
   VERIFY(QObject::connect(drv_, &IDriver::KeyRemoved, this, &IServer::KeyRemoved));
   VERIFY(QObject::connect(drv_, &IDriver::KeyAdded, this, &IServer::KeyAdded));
   VERIFY(QObject::connect(drv_, &IDriver::KeyLoaded, this, &IServer::KeyLoaded));
@@ -150,12 +151,6 @@ void IServer::LoadDatabaseContent(const events_info::LoadDatabaseContentRequest&
 void IServer::SetDefaultDB(const events_info::SetDefaultDatabaseRequest& req) {
   emit SetDefaultDatabaseStarted(req);
   QEvent* ev = new events::SetDefaultDatabaseRequestEvent(this, req);
-  notify(ev);
-}
-
-void IServer::ClearDB(const events_info::ClearDatabaseRequest& req) {
-  emit ClearDatabaseStarted(req);
-  QEvent* ev = new events::ClearDatabaseRequestEvent(this, req);
   notify(ev);
 }
 
@@ -304,10 +299,6 @@ void IServer::customEvent(QEvent* event) {
     events::LoadDatabaseContentResponceEvent* ev =
         static_cast<events::LoadDatabaseContentResponceEvent*>(event);
     HandleLoadDatabaseContentEvent(ev);
-  } else if (type == static_cast<QEvent::Type>(events::ClearDatabaseResponceEvent::EventType)) {
-    events::ClearDatabaseResponceEvent* ev =
-        static_cast<events::ClearDatabaseResponceEvent*>(event);
-    HandleClearDatabaseEvent(ev);
   } else if (type ==
              static_cast<QEvent::Type>(events::SetDefaultDatabaseResponceEvent::EventType)) {
     events::SetDefaultDatabaseResponceEvent* ev =
@@ -474,18 +465,13 @@ void IServer::HandleLoadDatabaseContentEvent(events::LoadDatabaseContentResponce
   emit LoadDatabaseContentFinished(v);
 }
 
-void IServer::HandleClearDatabaseEvent(events::ClearDatabaseResponceEvent* ev) {
-  auto v = ev->value();
-  common::Error er = v.errorInfo();
-  if (er && er->isError()) {
-    LOG_ERROR(er, true);
-  } else {
-    if (ContainsDatabase(v.inf)) {
-      v.inf->ClearKeys();
-    }
+void IServer::FlushDB(core::IDataBaseInfoSPtr db) {
+  if (ContainsDatabase(db)) {
+    db->ClearKeys();
+    db->SetDBKeysCount(0);
   }
 
-  emit ClearDatabaseFinished(v);
+  emit FlushedDB(db);
 }
 
 void IServer::HandleEnterModeEvent(events::EnterModeEvent* ev) {

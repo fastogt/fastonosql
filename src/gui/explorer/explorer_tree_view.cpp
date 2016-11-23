@@ -1032,28 +1032,19 @@ void ExplorerTreeView::finishLoadDatabaseContent(
   source_model_->updateDb(serv, res.inf);
 }
 
-void ExplorerTreeView::startClearDatabase(const core::events_info::ClearDatabaseRequest& req) {
-  UNUSED(req);
-}
-
-void ExplorerTreeView::finishClearDatabase(const core::events_info::ClearDatabaseResponce& res) {
-  common::Error er = res.errorInfo();
-  if (er && er->isError()) {
-    return;
-  }
-
-  core::IServer* serv = qobject_cast<core::IServer*>(sender());
-  CHECK(serv);
-
-  source_model_->removeAllKeys(serv, res.inf);
-}
-
 void ExplorerTreeView::startExecuteCommand(const core::events_info::ExecuteInfoRequest& req) {
   UNUSED(req);
 }
 
 void ExplorerTreeView::finishExecuteCommand(const core::events_info::ExecuteInfoResponce& res) {
   UNUSED(res);
+}
+
+void ExplorerTreeView::flushDB(core::IDataBaseInfoSPtr db) {
+  core::IServer* serv = qobject_cast<core::IServer*>(sender());
+  CHECK(serv);
+
+  source_model_->removeAllKeys(serv, db);
 }
 
 void ExplorerTreeView::removeKey(core::IDataBaseInfoSPtr db, core::NKey key) {
@@ -1129,15 +1120,12 @@ void ExplorerTreeView::syncWithServer(core::IServer* server) {
                  &ExplorerTreeView::startLoadDatabaseContent));
   VERIFY(connect(server, &core::IServer::LoadDatabaseContentFinished, this,
                  &ExplorerTreeView::finishLoadDatabaseContent));
-  VERIFY(connect(server, &core::IServer::ClearDatabaseStarted, this,
-                 &ExplorerTreeView::startClearDatabase));
-  VERIFY(connect(server, &core::IServer::ClearDatabaseFinished, this,
-                 &ExplorerTreeView::finishClearDatabase));
   VERIFY(connect(server, &core::IServer::ExecuteStarted, this,
                  &ExplorerTreeView::startExecuteCommand));
   VERIFY(connect(server, &core::IServer::ExecuteFinished, this,
                  &ExplorerTreeView::finishExecuteCommand));
 
+  VERIFY(connect(server, &core::IServer::FlushedDB, this, &ExplorerTreeView::flushDB));
   VERIFY(connect(server, &core::IServer::KeyRemoved, this, &ExplorerTreeView::removeKey,
                  Qt::DirectConnection));
   VERIFY(connect(server, &core::IServer::KeyAdded, this, &ExplorerTreeView::addKey,

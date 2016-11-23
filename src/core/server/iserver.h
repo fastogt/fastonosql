@@ -127,9 +127,6 @@ class IServer : public IServerBase, public std::enable_shared_from_this<IServer>
   void SetDefaultDatabaseStarted(const events_info::SetDefaultDatabaseRequest& req);
   void SetDefaultDatabaseFinished(const events_info::SetDefaultDatabaseResponce& res);
 
-  void ClearDatabaseStarted(const events_info::ClearDatabaseRequest& req);
-  void ClearDatabaseFinished(const events_info::ClearDatabaseResponce& res);
-
   void LoadDiscoveryInfoStarted(const events_info::DiscoveryInfoRequest& res);
   void LoadDiscoveryInfoFinished(const events_info::DiscoveryInfoResponce& res);
 
@@ -138,6 +135,7 @@ class IServer : public IServerBase, public std::enable_shared_from_this<IServer>
   void ItemUpdated(FastoObject* item, common::ValueSPtr val);
   void ServerInfoSnapShoot(core::ServerInfoSnapShoot shot);
 
+  void FlushedDB(core::IDataBaseInfoSPtr db);
   void KeyRemoved(core::IDataBaseInfoSPtr db, core::NKey key);
   void KeyAdded(core::IDataBaseInfoSPtr db, core::NDbKValue key);
   void KeyLoaded(core::IDataBaseInfoSPtr db, core::NDbKValue key);
@@ -160,8 +158,6 @@ class IServer : public IServerBase, public std::enable_shared_from_this<IServer>
   void SetDefaultDB(
       const events_info::SetDefaultDatabaseRequest& req);  // signals: SetDefaultDatabaseStarted,
                                                            // SetDefaultDatabaseFinished
-  void ClearDB(const events_info::ClearDatabaseRequest& req);  // signals: ClearDatabaseStarted,
-                                                               // ClearDatabaseFinished
   void Execute(const events_info::ExecuteInfoRequest& req);    // signals: ExecuteStarted
 
   void ShutDown(const events_info::ShutDownInfoRequest& req);  // signals: ShutdownStarted,
@@ -216,7 +212,6 @@ class IServer : public IServerBase, public std::enable_shared_from_this<IServer>
   // handle database events
   virtual void HandleLoadDatabaseInfosEvent(events::LoadDatabasesInfoResponceEvent* ev);
   virtual void HandleLoadDatabaseContentEvent(events::LoadDatabaseContentResponceEvent* ev);
-  virtual void HandleClearDatabaseEvent(events::ClearDatabaseResponceEvent* ev);
   virtual void HandleSetDefaultDatabaseEvent(events::SetDefaultDatabaseResponceEvent* ev);
 
   // handle command events
@@ -224,6 +219,9 @@ class IServer : public IServerBase, public std::enable_shared_from_this<IServer>
 
   IDriver* const drv_;
   databases_t databases_;
+
+ private Q_SLOTS:
+  void FlushDB(core::IDataBaseInfoSPtr db);
 
  private:
   void HandleEnterModeEvent(events::EnterModeEvent* ev);

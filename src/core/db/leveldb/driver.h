@@ -70,7 +70,6 @@ class Driver : public IDriverLocal {
   virtual void HandleProcessCommandLineArgsEvent(
       events::ProcessConfigArgsRequestEvent* ev) override;
   virtual void HandleLoadDatabaseContentEvent(events::LoadDatabaseContentRequestEvent* ev) override;
-  virtual void HandleClearDatabaseEvent(events::ClearDatabaseRequestEvent* ev) override;
 
   virtual IServerInfoSPtr MakeServerInfoFromString(const std::string& val) override;
 

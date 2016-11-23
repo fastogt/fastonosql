@@ -291,8 +291,16 @@ void ExplorerDatabaseItem::setTTL(const core::NKey& key, core::ttl_t ttl) {
 void ExplorerDatabaseItem::removeAllKeys() {
   core::IDatabaseSPtr dbs = db();
   CHECK(dbs);
-  core::events_info::ClearDatabaseRequest req(this, dbs->Info());
-  dbs->RemoveAllKeys(req);
+  core::translator_t tran = dbs->Translator();
+  std::string cmd_str;
+  common::Error err = tran->FlushDBCommand(&cmd_str);
+  if (err && err->isError()) {
+    LOG_ERROR(err, true);
+    return;
+  }
+
+  core::events_info::ExecuteInfoRequest req(this, cmd_str);
+  dbs->Execute(req);
 }
 
 ExplorerKeyItem::ExplorerKeyItem(const core::NDbKValue& dbv, IExplorerTreeItem* parent)

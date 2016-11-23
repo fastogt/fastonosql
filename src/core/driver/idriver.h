@@ -84,6 +84,7 @@ class IDriver : public QObject, public CDBConnectionClient {
   void ItemUpdated(FastoObject* item, common::ValueSPtr val);
   void ServerInfoSnapShoot(core::ServerInfoSnapShoot shot);
 
+  void FlushedDB(core::IDataBaseInfoSPtr db);
   void KeyRemoved(core::IDataBaseInfoSPtr db, core::NKey key);
   void KeyAdded(core::IDataBaseInfoSPtr db, core::NDbKValue key);
   void KeyRenamed(core::IDataBaseInfoSPtr db, core::NKey key, std::string new_name);
@@ -121,7 +122,6 @@ class IDriver : public QObject, public CDBConnectionClient {
   virtual void HandleChangePasswordEvent(events::ChangePasswordRequestEvent* ev);
   virtual void HandleChangeMaxConnectionEvent(events::ChangeMaxConnectionRequestEvent* ev);
   virtual void HandleLoadDatabaseInfosEvent(events::LoadDatabasesInfoRequestEvent* ev);
-  virtual void HandleClearDatabaseEvent(events::ClearDatabaseRequestEvent* ev);
   virtual void HandleSetDefaultDatabaseEvent(events::SetDefaultDatabaseRequestEvent* ev);
 
   const IConnectionSettingsBaseSPtr settings_;
@@ -144,6 +144,7 @@ class IDriver : public QObject, public CDBConnectionClient {
 
   virtual common::Error ExecuteImpl(int argc, const char** argv, FastoObject* out) = 0;
 
+  virtual void OnFlushedCurrentDB() override;
   virtual void OnCurrentDataBaseChanged(IDataBaseInfo* info) override;
   virtual void OnKeysRemoved(const NKeys& keys) override;
   virtual void OnKeyAdded(const NDbKValue& key) override;

@@ -32,6 +32,7 @@ namespace fastonosql {
 namespace core {
 class CDBConnectionClient {
  public:
+  virtual void OnFlushedCurrentDB() = 0;
   virtual void OnCurrentDataBaseChanged(IDataBaseInfo* info) = 0;
   virtual void OnKeysRemoved(const NKeys& keys) = 0;
   virtual void OnKeyAdded(const NDbKValue& key) = 0;

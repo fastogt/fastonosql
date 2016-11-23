@@ -302,9 +302,6 @@ void IDriver::customEvent(QEvent* event) {
     events::LoadDatabaseContentRequestEvent* ev =
         static_cast<events::LoadDatabaseContentRequestEvent*>(event);
     HandleLoadDatabaseContentEvent(ev);
-  } else if (type == static_cast<QEvent::Type>(events::ClearDatabaseRequestEvent::EventType)) {
-    events::ClearDatabaseRequestEvent* ev = static_cast<events::ClearDatabaseRequestEvent*>(event);
-    HandleClearDatabaseEvent(ev);  // ni
   } else if (type == static_cast<QEvent::Type>(events::SetDefaultDatabaseRequestEvent::EventType)) {
     events::SetDefaultDatabaseRequestEvent* ev =
         static_cast<events::SetDefaultDatabaseRequestEvent*>(event);
@@ -508,11 +505,6 @@ void IDriver::HandleLoadDatabaseInfosEvent(events::LoadDatabasesInfoRequestEvent
   NotifyProgress(sender, 100);
 }
 
-void IDriver::HandleClearDatabaseEvent(events::ClearDatabaseRequestEvent* ev) {
-  replyNotImplementedYet<events::ClearDatabaseRequestEvent, events::ClearDatabaseResponceEvent>(
-      this, ev, "clear database");
-}
-
 void IDriver::HandleSetDefaultDatabaseEvent(events::SetDefaultDatabaseRequestEvent* ev) {
   replyNotImplementedYet<events::SetDefaultDatabaseRequestEvent,
                          events::SetDefaultDatabaseResponceEvent>(this, ev, "set default database");
@@ -662,6 +654,10 @@ common::Error IDriver::ServerDiscoveryInfo(IServerInfo** sinfo, IDataBaseInfo** 
   *sinfo = lsinfo;
   *dbinfo = ldbinfo;
   return er;
+}
+
+void IDriver::OnFlushedCurrentDB() {
+  FlushedDB(current_database_info_);
 }
 
 void IDriver::OnCurrentDataBaseChanged(IDataBaseInfo* info) {
