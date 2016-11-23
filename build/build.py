@@ -5,12 +5,7 @@ import shutil
 import re
 from base import system_info
 from base import run_command
-
-class BuildError(Exception):
-    def __init__(self, value):
-        self.value_ = value
-    def __str__(self):
-        return self.value_
+from base import utils
 
 def print_usage():
     print("Usage:\n"
@@ -117,17 +112,6 @@ SUPPORTED_BUILD_SYSTEMS = [BuildSystem('ninja', ['ninja'], '-GNinja', NinjaPolic
 def get_supported_build_system_by_name(name):
     return next((x for x in SUPPORTED_BUILD_SYSTEMS if x.name() == name), None)
 
-def read_file_line_by_line(file):
-    if not os.path.exists(file):
-        raise BuildError('file path: %s not exists' % file)
-
-    file_array = []
-    with open(file, "r") as ins:
-        for line in ins:
-            file_array.append(line.strip())
-
-    return file_array
-
 def print_message(progress, message):
     print '{0:.1f}% {1}'.format(progress, message)
     sys.stdout.flush()
@@ -158,11 +142,11 @@ class BuildRequest(object):
         platform_or_none = system_info.get_supported_platform_by_name(platform)
 
         if platform_or_none == None:
-            raise BuildError('invalid platform')
+            raise utils.BuildError('invalid platform')
 
         arch = platform_or_none.architecture_by_bit(arch_bit)
         if arch == None:
-            raise BuildError('invalid arch')
+            raise utils.BuildError('invalid arch')
 
         self.platform_ = system_info.Platform(platform_or_none.name(), arch, platform_or_none.package_types())
         print("Build request for platform: {0}, arch: {1} created".format(platform, arch.name()))
@@ -173,7 +157,7 @@ class BuildRequest(object):
     def build(self, cmake_project_root_path, branding_options, dir_path, bs, package_types, saver):
         cmake_project_root_abs_path = os.path.abspath(cmake_project_root_path)
         if not os.path.exists(cmake_project_root_abs_path):
-            raise BuildError('invalid cmake_project_root_path: %s' % cmake_project_root_path)
+            raise utils.BuildError('invalid cmake_project_root_path: %s' % cmake_project_root_path)
 
         if not bs:
             bs = SUPPORTED_BUILD_SYSTEMS[0]

@@ -4,6 +4,7 @@ import json
 import sys
 import shlex
 from base import system_info
+from base import utils
 import config
 import build
 
@@ -174,7 +175,7 @@ class BuildRpcServer(object):
             response = self.build_package(self.platform_, self.arch_bit_, op_id, shlex.split(branding_variables), package_types, destination, props.reply_to)
             print('Build finished for: {0}, platform: {1}, responce: {2}'.format(op_id, platform_and_arch, response))
             json_to_send = {'body' : response}
-        except build.BuildError as ex:
+        except utils.BuildError as ex:
             print('Build finished for: {0}, platform: {1}, exception: {2}'.format(op_id, platform_and_arch, str(ex)))
             json_to_send = {'error': str(ex)}
         except Exception as ex:
