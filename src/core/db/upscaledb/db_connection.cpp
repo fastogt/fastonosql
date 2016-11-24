@@ -198,27 +198,6 @@ common::Error DBConnection::Info(const char* args, ServerInfo::Stats* statsout) 
   return common::Error();
 }
 
-common::Error DBConnection::DBkcount(size_t* size) {
-  if (!size) {
-    DNOTREACHED();
-    return common::make_error_value("Invalid input argument(s)", common::ErrorValue::E_ERROR);
-  }
-
-  if (!IsConnected()) {
-    return common::make_error_value("Not connected", common::Value::E_ERROR);
-  }
-
-  uint64_t sz = 0;
-  ups_status_t st = ups_db_count(connection_.handle_->db, NULL, 0, &sz);
-  if (st != UPS_SUCCESS) {
-    std::string buff = common::MemSPrintf("DBKCOUNT function error: %s", ups_strerror(st));
-    return common::make_error_value(buff, common::ErrorValue::E_ERROR);
-  }
-
-  *size = sz;
-  return common::Error();
-}
-
 common::Error DBConnection::SetInner(const std::string& key, const std::string& value) {
   if (!IsConnected()) {
     return common::make_error_value("Not connected", common::Value::E_ERROR);
@@ -285,14 +264,61 @@ common::Error DBConnection::DelInner(const std::string& key) {
   return common::Error();
 }
 
-common::Error DBConnection::Keys(const std::string& key_start,
-                                 const std::string& key_end,
-                                 uint64_t limit,
-                                 std::vector<std::string>* ret) {
-  if (!IsConnected()) {
-    return common::make_error_value("Not connected", common::Value::E_ERROR);
+common::Error DBConnection::ScanImpl(uint64_t cursor_in,
+                                     std::string pattern,
+                                     uint64_t count_keys,
+                                     std::vector<std::string>* keys_out,
+                                     uint64_t* cursor_out) {
+  ups_cursor_t* cursor; /* upscaledb cursor object */
+  ups_key_t key;
+  ups_record_t rec;
+
+  memset(&key, 0, sizeof(key));
+  memset(&rec, 0, sizeof(rec));
+
+  /* create a new cursor */
+  ups_status_t st = ups_cursor_create(&cursor, connection_.handle_->db, 0, 0);
+  if (st) {
+    std::string buff = common::MemSPrintf("KEYS function error: %s", ups_strerror(st));
+    return common::make_error_value(buff, common::ErrorValue::E_ERROR);
   }
 
+  /* get a cursor to the source database */
+  st = ups_cursor_move(cursor, &key, &rec, UPS_CURSOR_FIRST);
+  if (st == UPS_KEY_NOT_FOUND) {
+    ups_cursor_close(cursor);
+    *cursor_out = 0;
+    return common::Error();
+  } else if (st) {
+    std::string buff = common::MemSPrintf("Keys function error: %s", ups_strerror(st));
+    return common::make_error_value(buff, common::ErrorValue::E_ERROR);
+  }
+
+  do {
+    /* fetch the next item, and repeat till we've reached the end
+     * of the database */
+    st = ups_cursor_move(cursor, &key, &rec, UPS_CURSOR_NEXT);
+    if (st && st != UPS_KEY_NOT_FOUND) {
+      ups_cursor_close(cursor);
+      std::string buff = common::MemSPrintf("KEYS function error: %s", ups_strerror(st));
+      return common::make_error_value(buff, common::ErrorValue::E_ERROR);
+    }
+
+    std::string skey(reinterpret_cast<const char*>(key.data), key.size);
+    if (common::MatchPattern(skey, pattern)) {
+      keys_out->push_back(skey);
+    }
+  } while (st == UPS_SUCCESS && count_keys > keys_out->size());
+
+  ups_cursor_close(cursor);
+  *cursor_out = 0;
+  return common::Error();
+}
+
+common::Error DBConnection::KeysImpl(const std::string& key_start,
+                                     const std::string& key_end,
+                                     uint64_t limit,
+                                     std::vector<std::string>* ret) {
   ups_cursor_t* cursor; /* upscaledb cursor object */
   ups_key_t key;
   ups_record_t rec;
@@ -334,6 +360,18 @@ common::Error DBConnection::Keys(const std::string& key_start,
   } while (st == UPS_SUCCESS && limit > ret->size());
 
   ups_cursor_close(cursor);
+  return common::Error();
+}
+
+common::Error DBConnection::DBkcountImpl(size_t* size) {
+  uint64_t sz = 0;
+  ups_status_t st = ups_db_count(connection_.handle_->db, NULL, 0, &sz);
+  if (st != UPS_SUCCESS) {
+    std::string buff = common::MemSPrintf("DBKCOUNT function error: %s", ups_strerror(st));
+    return common::make_error_value(buff, common::ErrorValue::E_ERROR);
+  }
+
+  *size = sz;
   return common::Error();
 }
 

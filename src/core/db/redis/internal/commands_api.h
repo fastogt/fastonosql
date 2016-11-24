@@ -36,6 +36,10 @@ common::Error common_exec_off2(internal::CommandHandler* handler,
                                const char** argv,
                                FastoObject* out);
 
+common::Error scan(internal::CommandHandler* handler,
+                   int argc,
+                   const char** argv,
+                   FastoObject* out);
 common::Error flushdb(internal::CommandHandler* handler,
                       int argc,
                       const char** argv,
@@ -1264,7 +1268,7 @@ static const std::vector<CommandHolder> redisCommands = {
                   UNDEFINED_EXAMPLE_STR,
                   1,
                   4,
-                  &common_exec),
+                  &scan),
     CommandHolder("SCARD",
                   "<key>",
                   "Get the number of members in a set",

@@ -234,40 +234,6 @@ common::Error DBConnection::Info(const char* args, ServerInfo::Stats* statsout) 
   return common::Error();
 }
 
-common::Error DBConnection::DBkcount(size_t* size) {
-  if (!size) {
-    DNOTREACHED();
-    return common::make_error_value("Invalid input argument(s)", common::ErrorValue::E_ERROR);
-  }
-
-  if (!IsConnected()) {
-    return common::make_error_value("Not connected", common::Value::E_ERROR);
-  }
-
-  /* Allocate a new cursor instance */
-  unqlite_kv_cursor* pCur; /* Cursor handle */
-  int rc = unqlite_kv_cursor_init(connection_.handle_, &pCur);
-  if (rc != UNQLITE_OK) {
-    std::string buff = common::MemSPrintf("DBKCOUNT function error: %s", unqlite_strerror(rc));
-    return common::make_error_value(buff, common::ErrorValue::E_ERROR);
-  }
-  /* Point to the first record */
-  unqlite_kv_cursor_first_entry(pCur);
-
-  size_t sz = 0;
-  /* Iterate over the entries */
-  while (unqlite_kv_cursor_valid_entry(pCur)) {
-    sz++;
-    /* Point to the next entry */
-    unqlite_kv_cursor_next_entry(pCur);
-  }
-  /* Finally, Release our cursor */
-  unqlite_kv_cursor_release(connection_.handle_, pCur);
-
-  *size = sz;
-  return common::Error();
-}
-
 common::Error DBConnection::SetInner(const std::string& key, const std::string& value) {
   if (!IsConnected()) {
     return common::make_error_value("Not connected", common::Value::E_ERROR);
@@ -312,16 +278,44 @@ common::Error DBConnection::GetInner(const std::string& key, std::string* ret_va
   return common::Error();
 }
 
-common::Error DBConnection::Keys(const std::string& key_start,
-                                 const std::string& key_end,
-                                 uint64_t limit,
-                                 std::vector<std::string>* ret) {
-  if (!IsConnected()) {
-    return common::make_error_value("Not connected", common::Value::E_ERROR);
-  }
-
-  /* Allocate a new cursor instance */
+common::Error DBConnection::ScanImpl(uint64_t cursor_in,
+                                     std::string pattern,
+                                     uint64_t count_keys,
+                                     std::vector<std::string>* keys_out,
+                                     uint64_t* cursor_out) {
   unqlite_kv_cursor* pCur; /* Cursor handle */
+  int rc = unqlite_kv_cursor_init(connection_.handle_, &pCur);
+  if (rc != UNQLITE_OK) {
+    std::string buff = common::MemSPrintf("Keys function error: %s", unqlite_strerror(rc));
+    return common::make_error_value(buff, common::ErrorValue::E_ERROR);
+  }
+  /* Point to the first record */
+  unqlite_kv_cursor_first_entry(pCur);
+
+  /* Iterate over the entries */
+  while (unqlite_kv_cursor_valid_entry(pCur) && count_keys > keys_out->size()) {
+    std::string key;
+    unqlite_kv_cursor_key_callback(pCur, unqlite_data_callback, &key);
+    if (common::MatchPattern(key, pattern)) {
+      keys_out->push_back(key);
+    }
+
+    /* Point to the next entry */
+    unqlite_kv_cursor_next_entry(pCur);
+  }
+  /* Finally, Release our cursor */
+  unqlite_kv_cursor_release(connection_.handle_, pCur);
+
+  *cursor_out = 0;
+  return common::Error();
+}
+
+common::Error DBConnection::KeysImpl(
+    const std::string& key_start,
+    const std::string& key_end,
+    uint64_t limit,
+    std::vector<std::string>* ret) { /* Allocate a new cursor instance */
+  unqlite_kv_cursor* pCur;           /* Cursor handle */
   int rc = unqlite_kv_cursor_init(connection_.handle_, &pCur);
   if (rc != UNQLITE_OK) {
     std::string buff = common::MemSPrintf("Keys function error: %s", unqlite_strerror(rc));
@@ -344,6 +338,31 @@ common::Error DBConnection::Keys(const std::string& key_start,
   /* Finally, Release our cursor */
   unqlite_kv_cursor_release(connection_.handle_, pCur);
 
+  return common::Error();
+}
+
+common::Error DBConnection::DBkcountImpl(size_t* size) {
+  /* Allocate a new cursor instance */
+  unqlite_kv_cursor* pCur; /* Cursor handle */
+  int rc = unqlite_kv_cursor_init(connection_.handle_, &pCur);
+  if (rc != UNQLITE_OK) {
+    std::string buff = common::MemSPrintf("DBKCOUNT function error: %s", unqlite_strerror(rc));
+    return common::make_error_value(buff, common::ErrorValue::E_ERROR);
+  }
+  /* Point to the first record */
+  unqlite_kv_cursor_first_entry(pCur);
+
+  size_t sz = 0;
+  /* Iterate over the entries */
+  while (unqlite_kv_cursor_valid_entry(pCur)) {
+    sz++;
+    /* Point to the next entry */
+    unqlite_kv_cursor_next_entry(pCur);
+  }
+  /* Finally, Release our cursor */
+  unqlite_kv_cursor_release(connection_.handle_, pCur);
+
+  *size = sz;
   return common::Error();
 }
 

@@ -192,42 +192,6 @@ common::Error DBConnection::Info(const char* args, ServerInfo::Stats* statsout) 
   return common::Error();
 }
 
-common::Error DBConnection::DBkcount(size_t* size) {
-  if (!size) {
-    DNOTREACHED();
-    return common::make_error_value("Invalid input argument(s)", common::ErrorValue::E_ERROR);
-  }
-
-  if (!IsConnected()) {
-    return common::make_error_value("Not connected", common::Value::E_ERROR);
-  }
-
-  MDB_cursor* cursor = NULL;
-  MDB_txn* txn = NULL;
-  int rc = mdb_txn_begin(connection_.handle_->env, NULL, MDB_RDONLY, &txn);
-  if (rc == LMDB_OK) {
-    rc = mdb_cursor_open(txn, connection_.handle_->dbir, &cursor);
-  }
-
-  if (rc != LMDB_OK) {
-    mdb_txn_abort(txn);
-    std::string buff = common::MemSPrintf("DBKCOUNT function error: %s", mdb_strerror(rc));
-    return common::make_error_value(buff, common::ErrorValue::E_ERROR);
-  }
-
-  MDB_val key;
-  MDB_val data;
-  size_t sz = 0;
-  while (mdb_cursor_get(cursor, &key, &data, MDB_NEXT) == LMDB_OK) {
-    sz++;
-  }
-  mdb_cursor_close(cursor);
-  mdb_txn_abort(txn);
-
-  *size = sz;
-  return common::Error();
-}
-
 common::Error DBConnection::SetInner(const std::string& key, const std::string& value) {
   if (!IsConnected()) {
     return common::make_error_value("Not connected", common::Value::E_ERROR);
@@ -317,14 +281,44 @@ common::Error DBConnection::DelInner(const std::string& key) {
   return common::Error();
 }
 
-common::Error DBConnection::Keys(const std::string& key_start,
-                                 const std::string& key_end,
-                                 uint64_t limit,
-                                 std::vector<std::string>* ret) {
-  if (!IsConnected()) {
-    return common::make_error_value("Not connected", common::Value::E_ERROR);
+common::Error DBConnection::ScanImpl(uint64_t cursor_in,
+                                     std::string pattern,
+                                     uint64_t count_keys,
+                                     std::vector<std::string>* keys_out,
+                                     uint64_t* cursor_out) {
+  MDB_cursor* cursor = NULL;
+  MDB_txn* txn = NULL;
+  int rc = mdb_txn_begin(connection_.handle_->env, NULL, MDB_RDONLY, &txn);
+  if (rc == LMDB_OK) {
+    rc = mdb_cursor_open(txn, connection_.handle_->dbir, &cursor);
   }
 
+  if (rc != LMDB_OK) {
+    mdb_txn_abort(txn);
+    std::string buff = common::MemSPrintf("Keys function error: %s", mdb_strerror(rc));
+    return common::make_error_value(buff, common::ErrorValue::E_ERROR);
+  }
+
+  MDB_val key;
+  MDB_val data;
+  while ((mdb_cursor_get(cursor, &key, &data, MDB_NEXT) == LMDB_OK) &&
+         count_keys > keys_out->size()) {
+    std::string skey(reinterpret_cast<const char*>(key.mv_data), key.mv_size);
+    if (common::MatchPattern(skey, pattern)) {
+      keys_out->push_back(skey);
+    }
+  }
+
+  *cursor_out = 0;
+  mdb_cursor_close(cursor);
+  mdb_txn_abort(txn);
+  return common::Error();
+}
+
+common::Error DBConnection::KeysImpl(const std::string& key_start,
+                                     const std::string& key_end,
+                                     uint64_t limit,
+                                     std::vector<std::string>* ret) {
   MDB_cursor* cursor = NULL;
   MDB_txn* txn = NULL;
   int rc = mdb_txn_begin(connection_.handle_->env, NULL, MDB_RDONLY, &txn);
@@ -349,6 +343,33 @@ common::Error DBConnection::Keys(const std::string& key_start,
 
   mdb_cursor_close(cursor);
   mdb_txn_abort(txn);
+  return common::Error();
+}
+
+common::Error DBConnection::DBkcountImpl(size_t* size) {
+  MDB_cursor* cursor = NULL;
+  MDB_txn* txn = NULL;
+  int rc = mdb_txn_begin(connection_.handle_->env, NULL, MDB_RDONLY, &txn);
+  if (rc == LMDB_OK) {
+    rc = mdb_cursor_open(txn, connection_.handle_->dbir, &cursor);
+  }
+
+  if (rc != LMDB_OK) {
+    mdb_txn_abort(txn);
+    std::string buff = common::MemSPrintf("DBKCOUNT function error: %s", mdb_strerror(rc));
+    return common::make_error_value(buff, common::ErrorValue::E_ERROR);
+  }
+
+  MDB_val key;
+  MDB_val data;
+  size_t sz = 0;
+  while (mdb_cursor_get(cursor, &key, &data, MDB_NEXT) == LMDB_OK) {
+    sz++;
+  }
+  mdb_cursor_close(cursor);
+  mdb_txn_abort(txn);
+
+  *size = sz;
   return common::Error();
 }
 

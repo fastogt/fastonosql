@@ -153,7 +153,7 @@ void Driver::HandleLoadDatabaseContentEvent(events::LoadDatabaseContentRequestEv
   NotifyProgress(sender, 0);
   events::LoadDatabaseContentResponceEvent::value_type res(ev->value());
   std::string patternResult =
-      common::MemSPrintf(UPSCALEDB_GET_KEYS_PATTERN_1ARGS_I, res.count_keys);
+      common::MemSPrintf(GET_KEYS_PATTERN_3ARGS_ISI, res.cursor_in, res.pattern, res.count_keys);
   FastoObjectCommandIPtr cmd = CreateCommandFast(patternResult, common::Value::C_INNER);
   NotifyProgress(sender, 50);
   common::Error er = Execute(cmd);
@@ -167,8 +167,33 @@ void Driver::HandleLoadDatabaseContentEvent(events::LoadDatabaseContentRequestEv
       if (!array) {
         goto done;
       }
-      common::ArrayValue* ar = array->Array();
-      if (!ar) {
+
+      common::ArrayValue* arm = array->Array();
+      if (!arm->size()) {
+        goto done;
+      }
+
+      std::string cursor;
+      bool isok = arm->getString(0, &cursor);
+      if (!isok) {
+        goto done;
+      }
+
+      res.cursor_out = common::ConvertFromString<uint64_t>(cursor);
+
+      rchildrens = array->Childrens();
+      if (!rchildrens.size()) {
+        goto done;
+      }
+
+      FastoObject* obj = rchildrens[0].get();
+      FastoObjectArray* arr = dynamic_cast<FastoObjectArray*>(obj);  // +
+      if (!arr) {
+        goto done;
+      }
+
+      common::ArrayValue* ar = arr->Array();
+      if (ar->empty()) {
         goto done;
       }
 

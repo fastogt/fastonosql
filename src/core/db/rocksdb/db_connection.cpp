@@ -204,35 +204,6 @@ common::Error DBConnection::Info(const char* args, ServerInfo::Stats* statsout) 
   return common::Error();
 }
 
-common::Error DBConnection::DBkcount(size_t* size) {
-  if (!size) {
-    DNOTREACHED();
-    return common::make_error_value("Invalid input argument(s)", common::ErrorValue::E_ERROR);
-  }
-
-  if (!IsConnected()) {
-    return common::make_error_value("Not connected", common::Value::E_ERROR);
-  }
-
-  ::rocksdb::ReadOptions ro;
-  ::rocksdb::Iterator* it = connection_.handle_->NewIterator(ro);
-  size_t sz = 0;
-  for (it->SeekToFirst(); it->Valid(); it->Next()) {
-    sz++;
-  }
-
-  auto st = it->status();
-  delete it;
-
-  if (!st.ok()) {
-    std::string buff = common::MemSPrintf("Couldn't determine DBKCOUNT error: %s", st.ToString());
-    return common::make_error_value(buff, common::ErrorValue::E_ERROR);
-  }
-
-  *size = sz;
-  return common::Error();
-}
-
 std::string DBConnection::CurrentDBName() const {
   ::rocksdb::ColumnFamilyHandle* fam = connection_.handle_->DefaultColumnFamily();
   if (fam) {
@@ -319,21 +290,20 @@ common::Error DBConnection::DelInner(const std::string& key) {
   return common::Error();
 }
 
-common::Error DBConnection::Keys(const std::string& key_start,
-                                 const std::string& key_end,
-                                 uint64_t limit,
-                                 std::vector<std::string>* ret) {
-  if (!IsConnected()) {
-    return common::make_error_value("Not connected", common::Value::E_ERROR);
-  }
-
+common::Error DBConnection::ScanImpl(uint64_t cursor_in,
+                                     std::string pattern,
+                                     uint64_t count_keys,
+                                     std::vector<std::string>* keys_out,
+                                     uint64_t* cursor_out) {
   ::rocksdb::ReadOptions ro;
   ::rocksdb::Iterator* it =
       connection_.handle_->NewIterator(ro);  // keys(key_start, key_end, limit, ret);
-  for (it->Seek(key_start); it->Valid() && it->key().ToString() < key_end; it->Next()) {
+  for (it->SeekToFirst(); it->Valid(); it->Next()) {
     std::string key = it->key().ToString();
-    if (ret->size() < limit) {
-      ret->push_back(key);
+    if (keys_out->size() < count_keys) {
+      if (common::MatchPattern(key, pattern)) {
+        keys_out->push_back(key);
+      }
     } else {
       break;
     }
@@ -346,6 +316,56 @@ common::Error DBConnection::Keys(const std::string& key_start,
     std::string buff = common::MemSPrintf("Keys function error: %s", st.ToString());
     return common::make_error_value(buff, common::ErrorValue::E_ERROR);
   }
+
+  *cursor_out = 0;
+  return common::Error();
+}
+
+common::Error DBConnection::KeysImpl(const std::string& key_start,
+                                     const std::string& key_end,
+                                     uint64_t limit,
+                                     std::vector<std::string>* ret) {
+  ::rocksdb::ReadOptions ro;
+  ::rocksdb::Iterator* it =
+      connection_.handle_->NewIterator(ro);  // keys(key_start, key_end, limit, ret);
+  for (it->Seek(key_start); it->Valid(); it->Next()) {
+    std::string key = it->key().ToString();
+    if (ret->size() < limit) {
+      if (key < key_end) {
+        ret->push_back(key);
+      }
+    } else {
+      break;
+    }
+  }
+
+  auto st = it->status();
+  delete it;
+
+  if (!st.ok()) {
+    std::string buff = common::MemSPrintf("Keys function error: %s", st.ToString());
+    return common::make_error_value(buff, common::ErrorValue::E_ERROR);
+  }
+  return common::Error();
+}
+
+common::Error DBConnection::DBkcountImpl(size_t* size) {
+  ::rocksdb::ReadOptions ro;
+  ::rocksdb::Iterator* it = connection_.handle_->NewIterator(ro);
+  size_t sz = 0;
+  for (it->SeekToFirst(); it->Valid(); it->Next()) {
+    sz++;
+  }
+
+  auto st = it->status();
+  delete it;
+
+  if (!st.ok()) {
+    std::string buff = common::MemSPrintf("Couldn't determine DBKCOUNT error: %s", st.ToString());
+    return common::make_error_value(buff, common::ErrorValue::E_ERROR);
+  }
+
+  *size = sz;
   return common::Error();
 }
 

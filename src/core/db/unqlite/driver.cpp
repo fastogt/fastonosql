@@ -27,6 +27,7 @@
 #include <common/qt/utils_qt.h>  // for Event<>::value_type
 #include <common/sprintf.h>      // for MemSPrintf
 #include <common/value.h>        // for ErrorValue, etc
+#include <common/convert2string.h>
 
 #include "core/command/command.h"         // for CreateCommand, etc
 #include "core/command/command_logger.h"  // for LOG_COMMAND
@@ -150,22 +151,48 @@ void Driver::HandleLoadDatabaseContentEvent(events::LoadDatabaseContentRequestEv
   QObject* sender = ev->sender();
   NotifyProgress(sender, 0);
   events::LoadDatabaseContentResponceEvent::value_type res(ev->value());
-  std::string patternResult = common::MemSPrintf(UNQLITE_GET_KEYS_PATTERN_1ARGS_I, res.count_keys);
+  std::string patternResult =
+      common::MemSPrintf(GET_KEYS_PATTERN_3ARGS_ISI, res.cursor_in, res.pattern, res.count_keys);
   FastoObjectCommandIPtr cmd = CreateCommandFast(patternResult, common::Value::C_INNER);
   NotifyProgress(sender, 50);
-  common::Error err = Execute(cmd);
-  if (err && err->isError()) {
-    res.setErrorInfo(err);
+  common::Error er = Execute(cmd);
+  if (er && er->isError()) {
+    res.setErrorInfo(er);
   } else {
     FastoObject::childs_t rchildrens = cmd->Childrens();
     if (rchildrens.size()) {
-      DCHECK_EQ(rchildrens.size(), 1);
+      CHECK_EQ(rchildrens.size(), 1);
       FastoObjectArray* array = dynamic_cast<FastoObjectArray*>(rchildrens[0].get());  // +
       if (!array) {
         goto done;
       }
-      common::ArrayValue* ar = array->Array();
-      if (!ar) {
+
+      common::ArrayValue* arm = array->Array();
+      if (!arm->size()) {
+        goto done;
+      }
+
+      std::string cursor;
+      bool isok = arm->getString(0, &cursor);
+      if (!isok) {
+        goto done;
+      }
+
+      res.cursor_out = common::ConvertFromString<uint64_t>(cursor);
+
+      rchildrens = array->Childrens();
+      if (!rchildrens.size()) {
+        goto done;
+      }
+
+      FastoObject* obj = rchildrens[0].get();
+      FastoObjectArray* arr = dynamic_cast<FastoObjectArray*>(obj);  // +
+      if (!arr) {
+        goto done;
+      }
+
+      common::ArrayValue* ar = arr->Array();
+      if (ar->empty()) {
         goto done;
       }
 
@@ -179,7 +206,7 @@ void Driver::HandleLoadDatabaseContentEvent(events::LoadDatabaseContentRequestEv
         }
       }
 
-      err = impl_->DBkcount(&res.db_keys_count);
+      common::Error err = impl_->DBkcount(&res.db_keys_count);
       DCHECK(!err);
     }
   }

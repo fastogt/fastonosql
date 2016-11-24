@@ -229,7 +229,7 @@ struct LoadDatabaseContentRequest : public EventInfoBase {
   IDataBaseInfoSPtr inf;
   std::string pattern;
   uint32_t count_keys;
-  const uint32_t cursor_in;
+  const uint64_t cursor_in;
 };
 
 struct LoadDatabaseContentResponce : LoadDatabaseContentRequest {
@@ -238,7 +238,7 @@ struct LoadDatabaseContentResponce : LoadDatabaseContentRequest {
   explicit LoadDatabaseContentResponce(const base_class& request);
 
   keys_container_t keys;
-  uint32_t cursor_out;
+  uint64_t cursor_out;
   size_t db_keys_count;
 };
 

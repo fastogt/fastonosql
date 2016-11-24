@@ -186,27 +186,6 @@ common::Error DBConnection::DBsize(int64_t* size) {
   return common::Error();
 }
 
-common::Error DBConnection::DBkcount(size_t* size) {
-  if (!size) {
-    DNOTREACHED();
-    return common::make_error_value("Invalid input argument(s)", common::ErrorValue::E_ERROR);
-  }
-
-  if (!IsConnected()) {
-    return common::make_error_value("Not connected", common::Value::E_ERROR);
-  }
-
-  std::vector<std::string> ret;
-  auto st = connection_.handle_->keys("", "", UINT64_MAX, &ret);
-  if (st.error()) {
-    std::string buff = common::MemSPrintf("Couldn't determine DBKCOUNT error: %s", st.code());
-    return common::make_error_value(buff, common::ErrorValue::E_ERROR);
-  }
-
-  *size = ret.size();
-  return common::Error();
-}
-
 common::Error DBConnection::Auth(const std::string& password) {
   if (!IsConnected()) {
     return common::make_error_value("Not connected", common::Value::E_ERROR);
@@ -280,22 +259,6 @@ common::Error DBConnection::Incr(const std::string& key, int64_t incrby, int64_t
   auto st = connection_.handle_->incr(key, incrby, ret);
   if (st.error()) {
     std::string buff = common::MemSPrintf("Incr function error: %s", st.code());
-    return common::make_error_value(buff, common::ErrorValue::E_ERROR);
-  }
-  return common::Error();
-}
-
-common::Error DBConnection::Keys(const std::string& key_start,
-                                 const std::string& key_end,
-                                 uint64_t limit,
-                                 std::vector<std::string>* ret) {
-  if (!IsConnected()) {
-    return common::make_error_value("Not connected", common::Value::E_ERROR);
-  }
-
-  auto st = connection_.handle_->keys(key_start, key_end, limit, ret);
-  if (st.error()) {
-    std::string buff = common::MemSPrintf("Keys function error: %s", st.code());
     return common::make_error_value(buff, common::ErrorValue::E_ERROR);
   }
   return common::Error();
@@ -840,6 +803,43 @@ common::Error DBConnection::Qclear(const std::string& name, int64_t* ret) {
     std::string buff = common::MemSPrintf("qclear function error: %s", st.code());
     return common::make_error_value(buff, common::ErrorValue::E_ERROR);
   }
+  return common::Error();
+}
+
+common::Error DBConnection::ScanImpl(uint64_t cursor_in,
+                                     std::string pattern,
+                                     uint64_t count_keys,
+                                     std::vector<std::string>* keys_out,
+                                     uint64_t* cursor_out) {
+  UNUSED(cursor_in);
+  UNUSED(pattern);
+  UNUSED(count_keys);
+  UNUSED(keys_out);
+  UNUSED(cursor_out);
+  return NotSupported("SCAN");
+}
+
+common::Error DBConnection::KeysImpl(const std::string& key_start,
+                                     const std::string& key_end,
+                                     uint64_t limit,
+                                     std::vector<std::string>* ret) {
+  auto st = connection_.handle_->keys(key_start, key_end, limit, ret);
+  if (st.error()) {
+    std::string buff = common::MemSPrintf("Keys function error: %s", st.code());
+    return common::make_error_value(buff, common::ErrorValue::E_ERROR);
+  }
+  return common::Error();
+}
+
+common::Error DBConnection::DBkcountImpl(size_t* size) {
+  std::vector<std::string> ret;
+  auto st = connection_.handle_->keys("", "", UINT64_MAX, &ret);
+  if (st.error()) {
+    std::string buff = common::MemSPrintf("Couldn't determine DBKCOUNT error: %s", st.code());
+    return common::make_error_value(buff, common::ErrorValue::E_ERROR);
+  }
+
+  *size = ret.size();
   return common::Error();
 }
 

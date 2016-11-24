@@ -20,6 +20,7 @@
 
 #include <memory>  // for __shared_ptr
 #include <string>  // for string
+#include <inttypes.h>
 
 #include <common/error.h>   // for Error, make_error_value
 #include <common/macros.h>  // for DNOTREACHED, etc
@@ -35,6 +36,11 @@
 #include "core/internal/command_handler.h"  // for CommandHandler, etc
 #include "core/internal/cdb_connection_client.h"
 #include "core/internal/db_connection.h"  // for DBConnection
+
+#define ALL_KEYS_PATTERNS "*"
+#define NO_KEYS_LIMIT UINT64_MAX
+
+#define GET_KEYS_PATTERN_3ARGS_ISI "SCAN %" PRIu64 " MATCH %s COUNT %" PRIu64
 
 namespace fastonosql {
 namespace core {
@@ -53,18 +59,27 @@ class CDBConnection : public DBConnection<NConnection, Config, ContType>, public
   static const char* BasedOn();
   static const char* VersionApi();
 
-  std::string CurrentDBName() const;
+  std::string CurrentDBName() const;                                                        //
+  common::Error Help(int argc, const char** argv, std::string* answer) WARN_UNUSED_RESULT;  //
 
-  common::Error Help(int argc, const char** argv, std::string* answer) WARN_UNUSED_RESULT;
-
-  common::Error FlushDB() WARN_UNUSED_RESULT;
-  common::Error Select(const std::string& name, IDataBaseInfo** info) WARN_UNUSED_RESULT;
-  common::Error Delete(const NKeys& keys, NKeys* deleted_keys) WARN_UNUSED_RESULT;
-  common::Error Set(const NDbKValue& key, NDbKValue* added_key) WARN_UNUSED_RESULT;
-  common::Error Get(const NKey& key, NDbKValue* loaded_key) WARN_UNUSED_RESULT;
-  common::Error Rename(const NKey& key, const std::string& new_key) WARN_UNUSED_RESULT;
+  common::Error Scan(uint64_t cursor_in,
+                     std::string pattern,
+                     uint64_t count_keys,
+                     std::vector<std::string>* keys_out,
+                     uint64_t* cursor_out) WARN_UNUSED_RESULT;  // nvi
+  common::Error Keys(const std::string& key_start,
+                     const std::string& key_end,
+                     uint64_t limit,
+                     std::vector<std::string>* ret) WARN_UNUSED_RESULT;                    // nvi
+  common::Error DBkcount(size_t* size) WARN_UNUSED_RESULT;                                 // nvi
+  common::Error FlushDB() WARN_UNUSED_RESULT;                                              // nvi
+  common::Error Select(const std::string& name, IDataBaseInfo** info) WARN_UNUSED_RESULT;  // nvi
+  common::Error Delete(const NKeys& keys, NKeys* deleted_keys) WARN_UNUSED_RESULT;         // nvi
+  common::Error Set(const NDbKValue& key, NDbKValue* added_key) WARN_UNUSED_RESULT;        // nvi
+  common::Error Get(const NKey& key, NDbKValue* loaded_key) WARN_UNUSED_RESULT;            // nvi
+  common::Error Rename(const NKey& key, const std::string& new_key) WARN_UNUSED_RESULT;    // nvi
   common::Error SetTTL(const NKey& key, ttl_t ttl) WARN_UNUSED_RESULT;
-  common::Error Quit() WARN_UNUSED_RESULT;
+  common::Error Quit() WARN_UNUSED_RESULT;  // nvi
 
   translator_t Translator() const { return translator_; }
 
@@ -72,6 +87,16 @@ class CDBConnection : public DBConnection<NConnection, Config, ContType>, public
   CDBConnectionClient* client_;
 
  private:
+  virtual common::Error ScanImpl(uint64_t cursor_in,
+                                 std::string pattern,
+                                 uint64_t count_keys,
+                                 std::vector<std::string>* keys_out,
+                                 uint64_t* cursor_out) = 0;
+  virtual common::Error KeysImpl(const std::string& key_start,
+                                 const std::string& key_end,
+                                 uint64_t limit,
+                                 std::vector<std::string>* ret) = 0;
+  virtual common::Error DBkcountImpl(size_t* size) = 0;
   virtual common::Error FlushDBImpl() = 0;
   virtual common::Error SelectImpl(const std::string& name, IDataBaseInfo** info) = 0;
   virtual common::Error DeleteImpl(const NKeys& keys, NKeys* deleted_keys) = 0;
@@ -121,6 +146,70 @@ common::Error CDBConnection<NConnection, Config, ContType>::Help(int argc,
       "example: %s\r\n",
       cmd->name, cmd->summary, cmd->params, ConvertVersionNumberToReadableString(cmd->since),
       cmd->example);
+  return common::Error();
+}
+
+template <typename NConnection, typename Config, connectionTypes ContType>
+common::Error CDBConnection<NConnection, Config, ContType>::Scan(uint64_t cursor_in,
+                                                                 std::string pattern,
+                                                                 uint64_t count_keys,
+                                                                 std::vector<std::string>* keys_out,
+                                                                 uint64_t* cursor_out) {
+  if (!keys_out || !cursor_out) {
+    DNOTREACHED();
+    return common::make_error_value("Invalid input argument(s)", common::ErrorValue::E_ERROR);
+  }
+
+  if (!CDBConnection<NConnection, Config, ContType>::IsConnected()) {
+    return common::make_error_value("Not connected", common::Value::E_ERROR);
+  }
+
+  common::Error err = ScanImpl(cursor_in, pattern, count_keys, keys_out, cursor_out);
+  if (err && err->isError()) {
+    return err;
+  }
+
+  return common::Error();
+}
+
+template <typename NConnection, typename Config, connectionTypes ContType>
+common::Error CDBConnection<NConnection, Config, ContType>::Keys(const std::string& key_start,
+                                                                 const std::string& key_end,
+                                                                 uint64_t limit,
+                                                                 std::vector<std::string>* ret) {
+  if (!ret) {
+    DNOTREACHED();
+    return common::make_error_value("Invalid input argument(s)", common::ErrorValue::E_ERROR);
+  }
+
+  if (!CDBConnection<NConnection, Config, ContType>::IsConnected()) {
+    return common::make_error_value("Not connected", common::Value::E_ERROR);
+  }
+
+  common::Error err = KeysImpl(key_start, key_end, limit, ret);
+  if (err && err->isError()) {
+    return err;
+  }
+
+  return common::Error();
+}
+
+template <typename NConnection, typename Config, connectionTypes ContType>
+common::Error CDBConnection<NConnection, Config, ContType>::DBkcount(size_t* size) {
+  if (!size) {
+    DNOTREACHED();
+    return common::make_error_value("Invalid input argument(s)", common::ErrorValue::E_ERROR);
+  }
+
+  if (!CDBConnection<NConnection, Config, ContType>::IsConnected()) {
+    return common::make_error_value("Not connected", common::Value::E_ERROR);
+  }
+
+  common::Error err = DBkcountImpl(size);
+  if (err && err->isError()) {
+    return err;
+  }
+
   return common::Error();
 }
 

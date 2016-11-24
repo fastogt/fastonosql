@@ -55,8 +55,6 @@
 #define REDIS_GET_DATABASES "CONFIG GET databases"
 #define REDIS_GET_PROPERTY_SERVER "CONFIG GET *"
 
-#define REDIS_GET_KEYS_PATTERN_3ARGS_ISI "SCAN %d MATCH %s COUNT %d"
-
 #define REDIS_SET_DEFAULT_DATABASE_PATTERN_1ARGS_S "SELECT %s"
 #define REDIS_FLUSHDB "FLUSHDB"
 
@@ -499,7 +497,7 @@ void Driver::HandleLoadDatabaseContentEvent(events::LoadDatabaseContentRequestEv
   QObject* sender = ev->sender();
   NotifyProgress(sender, 0);
   events::LoadDatabaseContentResponceEvent::value_type res(ev->value());
-  std::string patternResult = common::MemSPrintf(REDIS_GET_KEYS_PATTERN_3ARGS_ISI, res.cursor_in,
+  std::string patternResult = common::MemSPrintf(GET_KEYS_PATTERN_3ARGS_ISI, res.cursor_in,
                                                  res.pattern, res.count_keys);
   FastoObjectCommandIPtr cmd = CreateCommandFast(patternResult, common::Value::C_INNER);
   NotifyProgress(sender, 50);

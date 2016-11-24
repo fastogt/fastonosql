@@ -84,21 +84,24 @@ class DBConnection : public core::internal::CDBConnection<NativeConnection, Conf
   common::Error Connect(const config_t& config);
 
   std::string CurrentDBName() const;
-
   common::Error Info(const char* args, ServerInfo::Stats* statsout) WARN_UNUSED_RESULT;
-  common::Error Keys(const std::string& key_start,
-                     const std::string& key_end,
-                     uint64_t limit,
-                     std::vector<std::string>* ret) WARN_UNUSED_RESULT;
 
-  // extended api
-  common::Error DBkcount(size_t* size) WARN_UNUSED_RESULT;
 
  private:
   common::Error SetInner(const std::string& key, const std::string& value) WARN_UNUSED_RESULT;
   common::Error GetInner(const std::string& key, std::string* ret_val) WARN_UNUSED_RESULT;
   common::Error DelInner(const std::string& key) WARN_UNUSED_RESULT;
 
+  virtual common::Error ScanImpl(uint64_t cursor_in,
+                                 std::string pattern,
+                                 uint64_t count_keys,
+                                 std::vector<std::string>* keys_out,
+                                 uint64_t* cursor_out) override;
+  virtual common::Error KeysImpl(const std::string& key_start,
+                                 const std::string& key_end,
+                                 uint64_t limit,
+                                 std::vector<std::string>* ret) override;
+  virtual common::Error DBkcountImpl(size_t* size) override;
   virtual common::Error FlushDBImpl() override;
   virtual common::Error SelectImpl(const std::string& name, IDataBaseInfo** info) override;
   virtual common::Error SetImpl(const NDbKValue& key, NDbKValue* added_key) override;

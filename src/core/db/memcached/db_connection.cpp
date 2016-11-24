@@ -70,13 +70,44 @@ struct KeysHolder {
   }
 };
 
-memcached_return_t memcached_dump_callback(const memcached_st* ptr,
-                                           const char* key,
-                                           size_t key_length,
-                                           void* context) {
+memcached_return_t memcached_dump_keys_callback(const memcached_st* ptr,
+                                                const char* key,
+                                                size_t key_length,
+                                                void* context) {
   UNUSED(ptr);
 
   KeysHolder* holder = static_cast<KeysHolder*>(context);
+  return holder->addKey(key, key_length);
+}
+
+struct ScanHolder {
+  ScanHolder(const std::string& pattern, uint64_t limit, std::vector<std::string>* r)
+      : pattern(pattern), limit(limit), r(r) {}
+
+  const std::string pattern;
+  const uint64_t limit;
+  std::vector<std::string>* r;
+
+  memcached_return_t addKey(const char* key, size_t key_length) {
+    if (r->size() < limit) {
+      std::string received_key(key, key_length);
+      if (common::MatchPattern(received_key, pattern)) {
+        r->push_back(received_key);
+      }
+      return MEMCACHED_SUCCESS;
+    }
+
+    return MEMCACHED_END;
+  }
+};
+
+memcached_return_t memcached_dump_scan_callback(const memcached_st* ptr,
+                                                const char* key,
+                                                size_t key_length,
+                                                void* context) {
+  UNUSED(ptr);
+
+  ScanHolder* holder = static_cast<ScanHolder*>(context);
   return holder->addKey(key, key_length);
 }
 
@@ -234,32 +265,6 @@ common::Error TestConnection(ConnectionSettings* settings) {
 DBConnection::DBConnection(CDBConnectionClient* client)
     : base_class(client, new CommandTranslator) {}
 
-common::Error DBConnection::Keys(const std::string& key_start,
-                                 const std::string& key_end,
-                                 uint64_t limit,
-                                 std::vector<std::string>* ret) {
-  if (!ret) {
-    DNOTREACHED();
-    return common::make_error_value("Invalid input argument(s)", common::ErrorValue::E_ERROR);
-  }
-
-  if (!IsConnected()) {
-    return common::make_error_value("Not connected", common::Value::E_ERROR);
-  }
-
-  KeysHolder hld(key_start, key_end, limit, ret);
-  memcached_dump_fn func[1] = {0};
-  func[0] = memcached_dump_callback;
-  memcached_return_t result = memcached_dump(connection_.handle_, func, &hld, SIZEOFMASS(func));
-  if (result == MEMCACHED_ERROR) {
-    std::string buff = common::MemSPrintf("Keys function error: %s",
-                                          memcached_strerror(connection_.handle_, result));
-    return common::make_error_value(buff, common::ErrorValue::E_ERROR);
-  }
-
-  return common::Error();
-}
-
 common::Error DBConnection::Info(const char* args, ServerInfo::Stats* statsout) {
   if (!statsout) {
     DNOTREACHED();
@@ -304,28 +309,6 @@ common::Error DBConnection::Info(const char* args, ServerInfo::Stats* statsout) 
 
   *statsout = lstatsout;
   memcached_stat_free(NULL, st);
-  return common::Error();
-}
-
-common::Error DBConnection::DBkcount(size_t* size) {
-  if (!size) {
-    DNOTREACHED();
-    return common::make_error_value("Invalid input argument(s)", common::ErrorValue::E_ERROR);
-  }
-
-  if (!IsConnected()) {
-    return common::make_error_value("Not connected", common::Value::E_ERROR);
-  }
-
-  std::vector<std::string> ret;
-  common::Error err = Keys("a", "z", UINT64_MAX, &ret);
-  if (err && err->isError()) {
-    std::string buff =
-        common::MemSPrintf("Couldn't determine DBKCOUNT error: %s", err->description());
-    return common::make_error_value(buff, common::ErrorValue::E_ERROR);
-  }
-
-  *size = ret.size();
   return common::Error();
 }
 
@@ -540,6 +523,55 @@ common::Error DBConnection::VersionServer() const {
     return common::make_error_value(buff, common::ErrorValue::E_ERROR);
   }
 
+  return common::Error();
+}
+
+common::Error DBConnection::ScanImpl(uint64_t cursor_in,
+                                     std::string pattern,
+                                     uint64_t count_keys,
+                                     std::vector<std::string>* keys_out,
+                                     uint64_t* cursor_out) {
+  ScanHolder hld(pattern, count_keys, keys_out);
+  memcached_dump_fn func[1] = {0};
+  func[0] = memcached_dump_scan_callback;
+  memcached_return_t result = memcached_dump(connection_.handle_, func, &hld, SIZEOFMASS(func));
+  if (result == MEMCACHED_ERROR) {
+    std::string buff = common::MemSPrintf("SCAN function error: %s",
+                                          memcached_strerror(connection_.handle_, result));
+    return common::make_error_value(buff, common::ErrorValue::E_ERROR);
+  }
+
+  *cursor_out = 0;
+  return common::Error();
+}
+
+common::Error DBConnection::KeysImpl(const std::string& key_start,
+                                     const std::string& key_end,
+                                     uint64_t limit,
+                                     std::vector<std::string>* ret) {
+  KeysHolder hld(key_start, key_end, limit, ret);
+  memcached_dump_fn func[1] = {0};
+  func[0] = memcached_dump_keys_callback;
+  memcached_return_t result = memcached_dump(connection_.handle_, func, &hld, SIZEOFMASS(func));
+  if (result == MEMCACHED_ERROR) {
+    std::string buff = common::MemSPrintf("Keys function error: %s",
+                                          memcached_strerror(connection_.handle_, result));
+    return common::make_error_value(buff, common::ErrorValue::E_ERROR);
+  }
+
+  return common::Error();
+}
+
+common::Error DBConnection::DBkcountImpl(size_t* size) {
+  std::vector<std::string> ret;
+  common::Error err = Keys("a", "z", UINT64_MAX, &ret);
+  if (err && err->isError()) {
+    std::string buff =
+        common::MemSPrintf("Couldn't determine DBKCOUNT error: %s", err->description());
+    return common::make_error_value(buff, common::ErrorValue::E_ERROR);
+  }
+
+  *size = ret.size();
   return common::Error();
 }
 

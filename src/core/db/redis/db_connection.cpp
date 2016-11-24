@@ -168,12 +168,8 @@ int anetKeepAlive(char* err, int fd, int interval) {
 }
 
 const struct RedisInit {
-  RedisInit() {
-    libssh2_init(0);
-  }
-  ~RedisInit() {
-    libssh2_exit();
-  }
+  RedisInit() { libssh2_init(0); }
+  ~RedisInit() { libssh2_exit(); }
 } rInit;
 
 /* Return the specified INFO field from the INFO command
@@ -975,28 +971,6 @@ common::Error DBConnection::SendScan(unsigned long long* it, redisReply** out) {
   return common::Error();
 }
 
-common::Error DBConnection::DBkcount(size_t* size) {
-  if (!size) {
-    DNOTREACHED();
-    return common::make_error_value("Invalid input argument(s)", common::ErrorValue::E_ERROR);
-  }
-
-  if (!IsConnected()) {
-    return common::make_error_value("Not connected", common::Value::E_ERROR);
-  }
-
-  redisReply* reply = reinterpret_cast<redisReply*>(redisCommand(connection_.handle_, DBSIZE));
-
-  if (!reply || reply->type != REDIS_REPLY_INTEGER) {
-    return common::make_error_value("Couldn't determine DBSIZE!", common::Value::E_ERROR);
-  }
-
-  /* Grab the number of keys and free our reply */
-  *size = reply->integer;
-  freeReplyObject(reply);
-  return common::Error();
-}
-
 common::Error DBConnection::GetKeyTypes(redisReply* keys, int* types) {
   if (!types) {
     DNOTREACHED();
@@ -1426,6 +1400,78 @@ common::Error DBConnection::ScanMode(FastoObject* out) {
     freeReplyObject(reply);
   } while (cur != 0);
 
+  return common::Error();
+}
+
+common::Error DBConnection::ScanImpl(uint64_t cursor_in,
+                                     std::string pattern,
+                                     uint64_t count_keys,
+                                     std::vector<std::string>* keys_out,
+                                     uint64_t* cursor_out) {
+  std::string mem = common::MemSPrintf(GET_KEYS_PATTERN_3ARGS_ISI, cursor_in, pattern, count_keys);
+  redisReply* reply = reinterpret_cast<redisReply*>(redisCommand(connection_.handle_, mem.c_str()));
+  if (!reply || reply->type != REDIS_REPLY_ARRAY) {
+    return common::make_error_value("I/O error", common::ErrorValue::E_ERROR);
+  }
+
+  common::Value* val = nullptr;
+  common::Error err = valueFromReplay(reply, &val);
+  if (err && err->isError()) {
+    delete val;
+    freeReplyObject(reply);
+    return err;
+  }
+
+  common::ArrayValue* arr = static_cast<common::ArrayValue*>(val);
+  CHECK_EQ(2, arr->size());
+  std::string cursor_out_str;
+  if (!arr->getString(0, &cursor_out_str)) {
+    delete val;
+    freeReplyObject(reply);
+    return common::make_error_value("I/O error", common::ErrorValue::E_ERROR);
+  }
+
+  common::ArrayValue* arr_keys = nullptr;
+  if (!arr->getList(1, &arr_keys)) {
+    delete val;
+    freeReplyObject(reply);
+    return common::make_error_value("I/O error", common::ErrorValue::E_ERROR);
+  }
+
+  for (size_t i = 0; i < arr_keys->size(); ++i) {
+    std::string key;
+    if (arr_keys->getString(i, &key)) {
+      keys_out->push_back(key);
+    }
+  }
+
+  *cursor_out = common::ConvertFromString<uint64_t>(cursor_out_str);
+  delete val;
+  freeReplyObject(reply);
+  return common::Error();
+}
+
+common::Error DBConnection::KeysImpl(const std::string& key_start,
+                                     const std::string& key_end,
+                                     uint64_t limit,
+                                     std::vector<std::string>* ret) {
+  UNUSED(key_start);
+  UNUSED(key_end);
+  UNUSED(limit);
+  UNUSED(ret);
+  return NotSupported("KEYS");
+}
+
+common::Error DBConnection::DBkcountImpl(size_t* size) {
+  redisReply* reply = reinterpret_cast<redisReply*>(redisCommand(connection_.handle_, DBSIZE));
+
+  if (!reply || reply->type != REDIS_REPLY_INTEGER) {
+    return common::make_error_value("Couldn't determine DBSIZE!", common::Value::E_ERROR);
+  }
+
+  /* Grab the number of keys and free our reply */
+  *size = reply->integer;
+  freeReplyObject(reply);
   return common::Error();
 }
 

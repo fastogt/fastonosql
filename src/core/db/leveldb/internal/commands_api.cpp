@@ -51,6 +51,39 @@ common::Error dbkcount(internal::CommandHandler* handler,
   return er;
 }
 
+common::Error scan(internal::CommandHandler* handler,
+                   int argc,
+                   const char** argv,
+                   FastoObject* out) {
+  uint32_t cursor_in = common::ConvertFromString<uint32_t>(argv[0]);
+  std::string pattern = argc >= 3 ? argv[2] : ALL_KEYS_PATTERNS;
+  uint32_t count_keys = argc >= 5 ? common::ConvertFromString<uint32_t>(argv[4]) : NO_KEYS_LIMIT;
+  uint64_t cursor_out = 0;
+  std::vector<std::string> keys_out;
+  DBConnection* level = static_cast<DBConnection*>(handler);
+
+  common::Error err = level->Scan(cursor_in, pattern, count_keys, &keys_out, &cursor_out);
+  if (err && err->isError()) {
+    return err;
+  }
+
+  common::ArrayValue* ar = common::Value::createArrayValue();
+  for (size_t i = 0; i < keys_out.size(); ++i) {
+    common::StringValue* val = common::Value::createStringValue(keys_out[i]);
+    ar->append(val);
+  }
+
+  common::ArrayValue* mar = common::Value::createArrayValue();
+  std::string rep_out = common::ConvertToString(cursor_out);  // string representing
+  common::StringValue* val = common::Value::createStringValue(rep_out);
+  mar->append(val);
+  FastoObjectArray* child = new FastoObjectArray(out, mar, level->Delimiter());
+  FastoObjectArray* keys_arr = new FastoObjectArray(child, ar, level->Delimiter());
+  child->AddChildren(keys_arr);
+  out->AddChildren(child);
+  return common::Error();
+}
+
 common::Error info(internal::CommandHandler* handler,
                    int argc,
                    const char** argv,
