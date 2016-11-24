@@ -50,7 +50,7 @@ CommandHolder::CommandHolder(const std::string& name,
       func_(func),
       white_spaces_count_(count_space(name)) {}
 
-bool CommandHolder::IsCommand(int argc, const char** argv, size_t* offset) {
+bool CommandHolder::IsCommand(int argc, const char** argv, size_t* offset) const {
   if (argc <= 0) {
     return false;
   }

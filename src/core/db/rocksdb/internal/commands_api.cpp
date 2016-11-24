@@ -258,10 +258,17 @@ common::Error help(internal::CommandHandler* handler,
                    int argc,
                    const char** argv,
                    FastoObject* out) {
-  UNUSED(out);
-
   DBConnection* rocks = static_cast<DBConnection*>(handler);
-  return rocks->Help(argc - 1, argv + 1);
+  std::string answer;
+  common::Error err = rocks->Help(argc, argv, &answer);
+  if (err && err->isError()) {
+    return err;
+  }
+
+  common::StringValue* val = common::Value::createStringValue(answer);
+  FastoObject* child = new FastoObject(out, val, rocks->Delimiter());
+  out->AddChildren(child);
+  return common::Error();
 }
 
 common::Error flushdb(internal::CommandHandler* handler,

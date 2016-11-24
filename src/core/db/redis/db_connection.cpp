@@ -44,7 +44,6 @@ extern "C" {
 
 #include <hiredis/hiredis.h>
 
-#include "third-party/redis/src/help.h"
 #include "third-party/libssh2/include/libssh2.h"  // for libssh2_exit, etc
 
 #include <common/convert2string.h>  // for ConvertFromString, etc
@@ -168,61 +167,11 @@ int anetKeepAlive(char* err, int fd, int interval) {
   return ANET_OK;
 }
 
-typedef struct {
-  int type;
-  int argc;
-  sds* argv;
-  sds full;
-
-  /* Only used for help on commands */
-  struct commandHelp* org;
-} helpEntry;
-
-const size_t helpEntriesLen =
-    sizeof(commandHelp) / sizeof(struct commandHelp) + sizeof(commandGroups) / sizeof(char*);
-
 const struct RedisInit {
-  helpEntry helpEntries[helpEntriesLen];
-
   RedisInit() {
     libssh2_init(0);
-    int pos = 0;
-
-    for (size_t i = 0; i < sizeof(commandGroups) / sizeof(char*); ++i) {
-      helpEntry tmp;
-
-      tmp.argc = 1;
-      tmp.argv = reinterpret_cast<sds*>(malloc(sizeof(sds)));
-      tmp.argv[0] = sdscatprintf(sdsempty(), "@%s", commandGroups[i]);
-      tmp.full = tmp.argv[0];
-      tmp.type = CLI_HELP_GROUP;
-      tmp.org = NULL;
-      helpEntries[pos++] = tmp;
-    }
-
-    for (size_t i = 0; i < sizeof(commandHelp) / sizeof(struct commandHelp); ++i) {
-      helpEntry tmp;
-
-      tmp.argv = sdssplitargs(commandHelp[i].name, &tmp.argc);
-      tmp.full = sdsnew(commandHelp[i].name);
-      tmp.type = CLI_HELP_COMMAND;
-      tmp.org = &commandHelp[i];
-      helpEntries[pos++] = tmp;
-    }
   }
   ~RedisInit() {
-    for (size_t i = 0; i < sizeof(commandGroups) / sizeof(char*); i++) {
-      helpEntry* entry = &helpEntries[i];
-      sdsfree(entry->full);
-      free(entry->argv);
-    }
-
-    for (size_t i = 0; i < sizeof(commandHelp) / sizeof(struct commandHelp); i++) {
-      helpEntry* entry = &helpEntries[i + sizeof(commandGroups) / sizeof(char*)];
-      sdsfree(entry->full);
-      sdsfreesplitres(entry->argv, entry->argc);
-    }
-
     libssh2_exit();
   }
 } rInit;
@@ -351,6 +300,11 @@ bool ConnectionAllocatorTraits<redis::NativeConnection, redis::RConfig>::IsConne
 }
 
 template <>
+const char* CDBConnection<redis::NativeConnection, redis::RConfig, REDIS>::BasedOn() {
+  return "hiredis";
+}
+
+template <>
 const char* CDBConnection<redis::NativeConnection, redis::RConfig, REDIS>::VersionApi() {
   return HIREDIS_VERSION;
 }
@@ -449,114 +403,6 @@ common::Error cliPrintContextError(redisContext* context) {
 
   std::string buff = common::MemSPrintf("Error: %s", context->errstr);
   return common::make_error_value(buff, common::ErrorValue::E_ERROR);
-}
-
-common::Error cliOutputCommandHelp(FastoObject* out,
-                                   struct commandHelp* help,
-                                   int group,
-                                   const std::string& delimiter) {
-  if (!out) {
-    DNOTREACHED();
-    return common::make_error_value("Invalid input argument(s)", common::ErrorValue::E_ERROR);
-  }
-
-  std::string buff = common::MemSPrintf("name: %s %s\n  summary: %s\n  since: %s", help->name,
-                                        help->params, help->summary, help->since);
-  common::StringValue* val = common::Value::createStringValue(buff);
-  FastoObject* child = new FastoObject(out, val, delimiter);
-  out->AddChildren(child);
-  if (group) {
-    std::string buff2 = common::MemSPrintf("group: %s", commandGroups[help->group]);
-    val = common::Value::createStringValue(buff2);
-    FastoObject* gchild = new FastoObject(out, val, delimiter);
-    out->AddChildren(gchild);
-  }
-
-  return common::Error();
-}
-
-common::Error cliOutputGenericHelp(FastoObject* out, const std::string& delimiter) {
-  if (!out) {
-    DNOTREACHED();
-    return common::make_error_value("Invalid input argument(s)", common::ErrorValue::E_ERROR);
-  }
-
-  common::StringValue* val = common::Value::createStringValue(
-      PROJECT_NAME_TITLE " based on hiredis " HIREDIS_VERSION
-                         "\r\n"
-                         "Type: \"help @<group>\" to get a list of "
-                         "commands in <group>\r\n"
-                         "      \"help <command>\" for help on "
-                         "<command>\r\n"
-                         "      \"help <tab>\" to get a list of possible "
-                         "help topics\r\n"
-                         "      \"quit\" to exit");
-  FastoObject* child = new FastoObject(out, val, delimiter);
-  out->AddChildren(child);
-
-  return common::Error();
-}
-
-common::Error cliOutputHelp(int argc,
-                            const char** argv,
-                            FastoObject* out,
-                            const std::string& delimiter) {
-  if (!out) {
-    DNOTREACHED();
-    return common::make_error_value("Invalid input argument(s)", common::ErrorValue::E_ERROR);
-  }
-
-  int group = -1;
-  const helpEntry* entry;
-  struct commandHelp* help;
-
-  if (argc == 0) {
-    return cliOutputGenericHelp(out, delimiter);
-  } else if (argc > 0 && argv[0][0] == '@') {
-    size_t len = sizeof(commandGroups) / sizeof(char*);
-    for (size_t i = 0; i < len; i++) {
-      if (strcasecmp(argv[0] + 1, commandGroups[i]) == 0) {
-        group = i;
-        break;
-      }
-    }
-  }
-
-  DCHECK(argc > 0);
-  for (size_t i = 0; i < helpEntriesLen; i++) {
-    entry = &rInit.helpEntries[i];
-    if (entry->type != CLI_HELP_COMMAND) {
-      continue;
-    }
-
-    help = entry->org;
-    if (group == -1) {
-      /* Compare all arguments */
-      if (argc == entry->argc) {
-        int j;
-        for (j = 0; j < argc; j++) {
-          if (strcasecmp(argv[j], entry->argv[j]) != 0) {
-            break;
-          }
-        }
-        if (j == argc) {
-          common::Error er = cliOutputCommandHelp(out, help, 1, delimiter);
-          if (er && er->isError()) {
-            return er;
-          }
-        }
-      }
-    } else {
-      if (group == help->group) {
-        common::Error er = cliOutputCommandHelp(out, help, 0, delimiter);
-        if (er && er->isError()) {
-          return er;
-        }
-      }
-    }
-  }
-
-  return common::Error();
 }
 
 common::Error authContext(const char* auth_str, redisContext* context) {
@@ -1584,8 +1430,7 @@ common::Error DBConnection::ScanMode(FastoObject* out) {
 }
 
 common::Error DBConnection::FlushDBImpl() {
-  redisReply* reply =
-      reinterpret_cast<redisReply*>(redisCommand(connection_.handle_, "FLUSHDB"));
+  redisReply* reply = reinterpret_cast<redisReply*>(redisCommand(connection_.handle_, "FLUSHDB"));
   if (!reply) {
     return cliPrintContextError(connection_.handle_);
   }
@@ -2003,10 +1848,6 @@ common::Error DBConnection::Auth(const std::string& password) {
   connection_.config_.auth = password;
   isAuth_ = true;
   return common::Error();
-}
-
-common::Error DBConnection::Help(int argc, const char** argv, FastoObject* out) {
-  return cliOutputHelp(argc, argv, out, Delimiter());
 }
 
 common::Error DBConnection::Monitor(int argc, const char** argv, FastoObject* out) {

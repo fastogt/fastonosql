@@ -41,7 +41,7 @@ const char* Lexer::version() const {
 }
 
 const char* Lexer::basedOn() const {
-  return "liblmdb";
+  return core::lmdb::DBConnection::BasedOn();
 }
 
 }  // namespace lmdb

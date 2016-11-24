@@ -48,6 +48,10 @@ uint8_t CommandInfo::MinArgumentsCount() const {
   return required_arguments_count;
 }
 
+std::string CommandInfo::ConvertToReadableString() const {
+  return std::string();
+}
+
 std::string ConvertVersionNumberToReadableString(uint32_t version) {
   if (version != UNDEFINED_SINCE) {
     return common::ConvertVersionNumberToString(version);

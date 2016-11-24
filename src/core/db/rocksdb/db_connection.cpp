@@ -86,6 +86,11 @@ bool ConnectionAllocatorTraits<rocksdb::NativeConnection, rocksdb::Config>::IsCo
 }
 
 template <>
+const char* CDBConnection<rocksdb::NativeConnection, rocksdb::Config, ROCKSDB>::BasedOn() {
+  return "rocksdb";
+}
+
+template <>
 const char* CDBConnection<rocksdb::NativeConnection, rocksdb::Config, ROCKSDB>::VersionApi() {
   return STRINGIZE(ROCKSDB_MAJOR) "." STRINGIZE(ROCKSDB_MINOR) "." STRINGIZE(ROCKSDB_PATCH);
 }
@@ -342,13 +347,6 @@ common::Error DBConnection::Keys(const std::string& key_start,
     return common::make_error_value(buff, common::ErrorValue::E_ERROR);
   }
   return common::Error();
-}
-
-common::Error DBConnection::Help(int argc, const char** argv) {
-  UNUSED(argc);
-  UNUSED(argv);
-
-  return NotSupported("HELP");
 }
 
 common::Error DBConnection::FlushDBImpl() {

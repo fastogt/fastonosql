@@ -337,13 +337,6 @@ common::Error DBConnection::Keys(const std::string& key_start,
   return common::Error();
 }
 
-common::Error DBConnection::Help(int argc, const char** argv) {
-  UNUSED(argc);
-  UNUSED(argv);
-
-  return NotSupported("HELP");
-}
-
 common::Error DBConnection::FlushDBImpl() {
   ups_cursor_t* cursor; /* upscaledb cursor object */
   ups_key_t key;
@@ -520,6 +513,11 @@ bool ConnectionAllocatorTraits<upscaledb::NativeConnection, upscaledb::Config>::
   }
 
   return true;
+}
+
+template <>
+const char* CDBConnection<upscaledb::NativeConnection, upscaledb::Config, UPSCALEDB>::BasedOn() {
+  return "libupscaledb";
 }
 
 template <>

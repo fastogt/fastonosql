@@ -41,7 +41,7 @@ const char* Lexer::version() const {
 }
 
 const char* Lexer::basedOn() const {
-  return "libupscaledb";
+  return core::upscaledb::DBConnection::BasedOn();
 }
 
 }  // namespace upscaledb

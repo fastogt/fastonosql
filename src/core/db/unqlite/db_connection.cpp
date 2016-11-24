@@ -145,6 +145,11 @@ bool ConnectionAllocatorTraits<unqlite::NativeConnection, unqlite::Config>::IsCo
 }
 
 template <>
+const char* CDBConnection<unqlite::NativeConnection, unqlite::Config, UNQLITE>::BasedOn() {
+  return "unqlite";
+}
+
+template <>
 const char* CDBConnection<unqlite::NativeConnection, unqlite::Config, UNQLITE>::VersionApi() {
   return UNQLITE_VERSION;
 }
@@ -340,13 +345,6 @@ common::Error DBConnection::Keys(const std::string& key_start,
   unqlite_kv_cursor_release(connection_.handle_, pCur);
 
   return common::Error();
-}
-
-common::Error DBConnection::Help(int argc, const char** argv) {
-  UNUSED(argc);
-  UNUSED(argv);
-
-  return NotSupported("HELP");
 }
 
 common::Error DBConnection::FlushDBImpl() {

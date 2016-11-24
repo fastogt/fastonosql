@@ -57,7 +57,7 @@ class CommandHolder : public CommandInfo {
                 uint8_t required_arguments_count,
                 uint8_t optional_arguments_count,
                 function_t func);
-  bool IsCommand(int argc, const char** argv, size_t* offset);
+  bool IsCommand(int argc, const char** argv, size_t* offset) const;
   common::Error Execute(command_handler_t* handler, int argc, const char** argv, FastoObject* out)
       WARN_UNUSED_RESULT;
 

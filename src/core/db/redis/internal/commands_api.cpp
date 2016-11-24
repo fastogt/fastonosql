@@ -345,7 +345,16 @@ common::Error help(internal::CommandHandler* handler,
                    const char** argv,
                    FastoObject* out) {
   DBConnection* red = static_cast<DBConnection*>(handler);
-  return red->Help(argc, argv, out);
+  std::string answer;
+  common::Error err = red->Help(argc, argv, &answer);
+  if (err && err->isError()) {
+    return err;
+  }
+
+  common::StringValue* val = common::Value::createStringValue(answer);
+  FastoObject* child = new FastoObject(out, val, red->Delimiter());
+  out->AddChildren(child);
+  return common::Error();
 }
 
 common::Error monitor(internal::CommandHandler* handler,

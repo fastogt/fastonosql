@@ -24,6 +24,7 @@
 #include <common/error.h>   // for Error, make_error_value
 #include <common/macros.h>  // for DNOTREACHED, etc
 #include <common/value.h>   // for ErrorValue, etc
+#include <common/sprintf.h>
 
 #include "core/connection_types.h"     // for connectionTypes
 #include "core/db_key.h"               // for NDbKValue, NKey, etc
@@ -49,9 +50,12 @@ class CDBConnection : public DBConnection<NConnection, Config, ContType>, public
   virtual ~CDBConnection() {}
 
   static std::vector<CommandHolder> Commands();
+  static const char* BasedOn();
   static const char* VersionApi();
 
   std::string CurrentDBName() const;
+
+  common::Error Help(int argc, const char** argv, std::string* answer) WARN_UNUSED_RESULT;
 
   common::Error FlushDB() WARN_UNUSED_RESULT;
   common::Error Select(const std::string& name, IDataBaseInfo** info) WARN_UNUSED_RESULT;
@@ -83,6 +87,41 @@ class CDBConnection : public DBConnection<NConnection, Config, ContType>, public
 template <typename NConnection, typename Config, connectionTypes ContType>
 std::string CDBConnection<NConnection, Config, ContType>::CurrentDBName() const {
   return "default";
+}
+
+template <typename NConnection, typename Config, connectionTypes ContType>
+common::Error CDBConnection<NConnection, Config, ContType>::Help(int argc,
+                                                                 const char** argv,
+                                                                 std::string* answer) {
+  if (!answer || argc < 0) {
+    DNOTREACHED();
+    return common::make_error_value("Invalid input argument(s)", common::ErrorValue::E_ERROR);
+  }
+
+  if (argc == 0) {
+    *answer = common::MemSPrintf(PROJECT_NAME_TITLE
+                                 " based on %s %s \r\n"
+                                 "Type: \"help <command>\" for help on <command>\r\n",
+                                 BasedOn(), VersionApi());
+
+    return common::Error();
+  }
+
+  const command_t* cmd = nullptr;
+  common::Error err = FindCommand(argc, argv, &cmd);
+  if (err && err->isError()) {
+    return err;
+  }
+
+  *answer = common::MemSPrintf(
+      "name: %s\n"
+      "summary: %s\n"
+      "params: %s\n"
+      "since: %s\n"
+      "example: %s\r\n",
+      cmd->name, cmd->summary, cmd->params, ConvertVersionNumberToReadableString(cmd->since),
+      cmd->example);
+  return common::Error();
 }
 
 template <typename NConnection, typename Config, connectionTypes ContType>

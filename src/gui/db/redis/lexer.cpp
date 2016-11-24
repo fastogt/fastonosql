@@ -41,7 +41,7 @@ const char* Lexer::version() const {
 }
 
 const char* Lexer::basedOn() const {
-  return "hiredis";
+  return core::redis::DBConnection::BasedOn();
 }
 
 }  // namespace redis

@@ -41,7 +41,7 @@ const char* Lexer::version() const {
 }
 
 const char* Lexer::basedOn() const {
-  return "rocksdb";
+  return core::rocksdb::DBConnection::BasedOn();
 }
 
 }  // namespace rocksdb

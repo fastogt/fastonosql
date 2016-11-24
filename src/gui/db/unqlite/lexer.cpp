@@ -41,7 +41,7 @@ const char* Lexer::version() const {
 }
 
 const char* Lexer::basedOn() const {
-  return "unqlite";
+  return core::unqlite::DBConnection::BasedOn();
 }
 
 }  // namespace unqlite

@@ -41,7 +41,7 @@ const char* Lexer::version() const {
 }
 
 const char* Lexer::basedOn() const {
-  return "ssdb-cli";
+  return core::ssdb::DBConnection::BasedOn();
 }
 
 }  // namespace ssdb

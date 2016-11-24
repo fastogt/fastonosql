@@ -166,7 +166,6 @@ class DBConnection : public core::internal::CDBConnection<NativeConnection, Conf
 
   // extended api
   common::Error DBkcount(size_t* size) WARN_UNUSED_RESULT;
-  common::Error Help(int argc, const char** argv) WARN_UNUSED_RESULT;
 
  private:
   common::Error SetInner(const std::string& key, const std::string& value) WARN_UNUSED_RESULT;

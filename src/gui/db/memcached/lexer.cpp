@@ -41,7 +41,7 @@ const char* Lexer::version() const {
 }
 
 const char* Lexer::basedOn() const {
-  return "libmemcached";
+  return core::memcached::DBConnection::BasedOn();
 }
 
 }  // namespace memcached

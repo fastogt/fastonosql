@@ -44,6 +44,11 @@ class CommandHandler {
   static common::Error NotSupported(const std::string& cmd);
   static common::Error UnknownSequence(int argc, const char** argv);
 
+ protected:
+  common::Error FindCommand(int argc,
+                            const char** argv,
+                            const command_t** cmdout) const WARN_UNUSED_RESULT;
+
  private:
   const commands_t commands_;
 };

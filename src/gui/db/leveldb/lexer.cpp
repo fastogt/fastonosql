@@ -41,7 +41,7 @@ const char* Lexer::version() const {
 }
 
 const char* Lexer::basedOn() const {
-  return "leveldb";
+  return core::leveldb::DBConnection::BasedOn();
 }
 
 }  // namespace leveldb

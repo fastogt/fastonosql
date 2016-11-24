@@ -70,6 +70,11 @@ bool ConnectionAllocatorTraits<ssdb::NativeConnection, ssdb::Config>::IsConnecte
 }
 
 template <>
+const char* CDBConnection<ssdb::NativeConnection, ssdb::Config, SSDB>::BasedOn() {
+  return "ssdb";
+}
+
+template <>
 const char* CDBConnection<ssdb::NativeConnection, ssdb::Config, SSDB>::VersionApi() {
   return "1.9.3";
 }
@@ -836,13 +841,6 @@ common::Error DBConnection::Qclear(const std::string& name, int64_t* ret) {
     return common::make_error_value(buff, common::ErrorValue::E_ERROR);
   }
   return common::Error();
-}
-
-common::Error DBConnection::Help(int argc, const char** argv) {
-  UNUSED(argc);
-  UNUSED(argv);
-
-  return NotSupported("HELP");
 }
 
 common::Error DBConnection::FlushDBImpl() {

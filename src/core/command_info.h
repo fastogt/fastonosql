@@ -42,6 +42,8 @@ struct CommandInfo {
   uint16_t MaxArgumentsCount() const;
   uint8_t MinArgumentsCount() const;
 
+  std::string ConvertToReadableString() const;
+
   const std::string name;
   const std::string params;
   const std::string summary;

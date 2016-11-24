@@ -102,7 +102,6 @@ class DBConnection : public core::internal::CDBConnection<NativeConnection, Conf
   common::Error Incr(const std::string& key, uint64_t value) WARN_UNUSED_RESULT;
   common::Error Decr(const std::string& key, uint64_t value) WARN_UNUSED_RESULT;
   common::Error VersionServer() const WARN_UNUSED_RESULT;
-  common::Error Help(int argc, const char** argv) WARN_UNUSED_RESULT;
 
  private:
   common::Error DelInner(const std::string& key, time_t expiration) WARN_UNUSED_RESULT;

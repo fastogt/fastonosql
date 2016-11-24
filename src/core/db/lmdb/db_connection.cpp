@@ -352,13 +352,6 @@ common::Error DBConnection::Keys(const std::string& key_start,
   return common::Error();
 }
 
-common::Error DBConnection::Help(int argc, const char** argv) {
-  UNUSED(argc);
-  UNUSED(argv);
-
-  return NotSupported("HELP");
-}
-
 common::Error DBConnection::FlushDBImpl() {
   MDB_cursor* cursor = NULL;
   MDB_txn* txn = NULL;
@@ -525,6 +518,11 @@ bool ConnectionAllocatorTraits<lmdb::NativeConnection, lmdb::Config>::IsConnecte
   }
 
   return true;
+}
+
+template <>
+const char* CDBConnection<lmdb::NativeConnection, lmdb::Config, LMDB>::BasedOn() {
+  return "liblmdb";
 }
 
 template <>

@@ -53,6 +53,23 @@ common::Error CommandHandler::Execute(int argc, const char** argv, FastoObject* 
   return UnknownSequence(argc, argv);
 }
 
+common::Error CommandHandler::FindCommand(int argc, const char** argv, const command_t** cmdout) const {
+  if (!cmdout) {
+    return common::make_error_value("Invalid input argument(s)", common::ErrorValue::E_ERROR);
+  }
+
+  DCHECK(*cmdout == NULL);
+  for (size_t i = 0; i < commands_.size(); ++i) {
+    size_t off = 0;
+    if (commands_[i].IsCommand(argc, argv, &off)) {
+      *cmdout = &commands_[i];
+      return common::Error();
+    }
+  }
+
+  return UnknownSequence(argc, argv);
+}
+
 common::Error CommandHandler::NotSupported(const std::string& cmd) {
   std::string buff = common::MemSPrintf("Not supported command: %s.", cmd);
   return common::make_error_value(buff, common::ErrorValue::E_ERROR);

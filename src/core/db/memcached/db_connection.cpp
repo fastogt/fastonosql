@@ -126,6 +126,11 @@ bool ConnectionAllocatorTraits<memcached::NativeConnection, memcached::Config>::
 }
 
 template <>
+const char* CDBConnection<memcached::NativeConnection, memcached::Config, MEMCACHED>::BasedOn() {
+  return "libmemcached";
+}
+
+template <>
 const char* CDBConnection<memcached::NativeConnection, memcached::Config, MEMCACHED>::VersionApi() {
   return memcached_lib_version();
 }
@@ -536,13 +541,6 @@ common::Error DBConnection::VersionServer() const {
   }
 
   return common::Error();
-}
-
-common::Error DBConnection::Help(int argc, const char** argv) {
-  UNUSED(argc);
-  UNUSED(argv);
-
-  return NotSupported("HELP");
 }
 
 common::Error DBConnection::FlushDBImpl() {

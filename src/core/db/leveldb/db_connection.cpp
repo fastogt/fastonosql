@@ -72,6 +72,11 @@ bool ConnectionAllocatorTraits<leveldb::NativeConnection, leveldb::Config>::IsCo
 }
 
 template <>
+const char* CDBConnection<leveldb::NativeConnection, leveldb::Config, LEVELDB>::BasedOn() {
+  return "leveldb";
+}
+
+template <>
 const char* CDBConnection<leveldb::NativeConnection, leveldb::Config, LEVELDB>::VersionApi() {
   static std::string leveldb_version =
       common::MemSPrintf("%d.%d", leveldb_major_version(), leveldb_minor_version());
@@ -289,13 +294,6 @@ common::Error DBConnection::Keys(const std::string& key_start,
     return common::make_error_value(buff, common::ErrorValue::E_ERROR);
   }
   return common::Error();
-}
-
-common::Error DBConnection::Help(int argc, const char** argv) {
-  UNUSED(argc);
-  UNUSED(argv);
-
-  return NotSupported("HELP");
 }
 
 common::Error DBConnection::FlushDBImpl() {
