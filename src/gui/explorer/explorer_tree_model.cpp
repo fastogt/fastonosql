@@ -127,7 +127,13 @@ QVariant ExplorerTreeModel::data(const QModelIndex& index, int role) const {
       core::IServerSPtr server = server_node->server();
       return GuiFactory::instance().icon(server->Type());
     } else if (type == IExplorerTreeItem::eKey) {
-      return GuiFactory::instance().keyIcon();
+      ExplorerKeyItem* key = static_cast<ExplorerKeyItem*>(node);
+      core::NKey nkey = key->key();
+      if (nkey.TTL() == NO_TTL) {
+        return GuiFactory::instance().keyIcon();
+      } else {
+        return GuiFactory::instance().keyTTLIcon();
+      }
     } else if (type == IExplorerTreeItem::eDatabase) {
       return GuiFactory::instance().databaseIcon();
     } else if (type == IExplorerTreeItem::eNamespace) {

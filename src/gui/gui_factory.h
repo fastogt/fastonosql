@@ -58,6 +58,7 @@ class GuiFactory : public common::patterns::LazySingleton<GuiFactory> {
   const QIcon& stopIcon() const;
   const QIcon& databaseIcon() const;
   const QIcon& keyIcon() const;
+  const QIcon& keyTTLIcon() const;
 
   const QIcon& icon(core::connectionTypes type) const;
   const QIcon& modeIcon(core::ConnectionMode mode) const;

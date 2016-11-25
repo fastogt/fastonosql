@@ -136,6 +136,11 @@ const QIcon& GuiFactory::keyIcon() const {
   return db;
 }
 
+const QIcon& GuiFactory::keyTTLIcon() const {
+  static QIcon db(":" PROJECT_NAME_LOWERCASE "/images/64x64/key_ttl.png");
+  return db;
+}
+
 const QIcon& GuiFactory::icon(core::connectionTypes type) const {
   if (type == core::REDIS) {
     return redisConnectionIcon();
