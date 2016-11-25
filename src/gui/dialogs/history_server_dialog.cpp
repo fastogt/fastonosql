@@ -177,9 +177,9 @@ void ServerHistoryDialog::refreshGraph(int index) {
     return;
   }
 
-  unsigned char serverIndex = serverInfoGroupsNames_->currentIndex();
+  int serverIndex = serverInfoGroupsNames_->currentIndex();
   QVariant var = serverInfoFields_->itemData(index);
-  unsigned char indexIn = qvariant_cast<unsigned char>(var);
+  uint32_t indexIn = qvariant_cast<uint32_t>(var);
   common::qt::gui::GraphWidget::nodes_container_type nodes;
   for (auto it = infos_.begin(); it != infos_.end(); ++it) {
     auto val = *it;
