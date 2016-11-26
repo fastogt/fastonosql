@@ -1028,7 +1028,7 @@ void ExplorerTreeView::flushDB(core::IDataBaseInfoSPtr db) {
   source_model_->removeAllKeys(serv, db);
 }
 
-void ExplorerTreeView::CurrentDataBaseChange(core::IDataBaseInfoSPtr db) {
+void ExplorerTreeView::currentDataBaseChange(core::IDataBaseInfoSPtr db) {
   core::IServer* serv = qobject_cast<core::IServer*>(sender());
   CHECK(serv);
 
@@ -1112,7 +1112,7 @@ void ExplorerTreeView::syncWithServer(core::IServer* server) {
 
   VERIFY(connect(server, &core::IServer::FlushedDB, this, &ExplorerTreeView::flushDB));
   VERIFY(connect(server, &core::IServer::CurrentDataBaseChanged, this,
-                 &ExplorerTreeView::CurrentDataBaseChange));
+                 &ExplorerTreeView::currentDataBaseChange));
   VERIFY(connect(server, &core::IServer::KeyRemoved, this, &ExplorerTreeView::removeKey,
                  Qt::DirectConnection));
   VERIFY(connect(server, &core::IServer::KeyAdded, this, &ExplorerTreeView::addKey,
@@ -1145,7 +1145,7 @@ void ExplorerTreeView::unsyncWithServer(core::IServer* server) {
 
   VERIFY(disconnect(server, &core::IServer::FlushedDB, this, &ExplorerTreeView::flushDB));
   VERIFY(disconnect(server, &core::IServer::CurrentDataBaseChanged, this,
-                    &ExplorerTreeView::CurrentDataBaseChange));
+                    &ExplorerTreeView::currentDataBaseChange));
   VERIFY(disconnect(server, &core::IServer::KeyRemoved, this, &ExplorerTreeView::removeKey));
   VERIFY(disconnect(server, &core::IServer::KeyAdded, this, &ExplorerTreeView::addKey));
   VERIFY(disconnect(server, &core::IServer::KeyRenamed, this, &ExplorerTreeView::renameKey));

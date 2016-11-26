@@ -652,6 +652,12 @@ void IDriver::OnFlushedCurrentDB() {
 }
 
 void IDriver::OnCurrentDataBaseChanged(IDataBaseInfo* info) {
+  if (current_database_info_) {
+    if (info->Name() == current_database_info_->Name()) {
+      return;
+    }
+  }
+
   current_database_info_.reset(info->Clone());
   emit CurrentDataBaseChanged(current_database_info_);
 }

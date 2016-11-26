@@ -465,15 +465,21 @@ void IServer::FlushDB(core::IDataBaseInfoSPtr db) {
 }
 
 void IServer::CurrentDataBaseChange(core::IDataBaseInfoSPtr db) {
-  if (!ContainsDatabase(db)) {
-    databases_.push_back(db);
-  }
-
+  core::IDataBaseInfoSPtr founded;
   for (size_t i = 0; i < databases_.size(); ++i) {
-    databases_[i]->SetIsDefault(false);
+    database_t cached_db = databases_[i];
+    if (db->Name() == cached_db->Name()) {
+      founded = databases_[i];
+      founded->SetIsDefault(true);
+    } else {
+      databases_[i]->SetIsDefault(false);
+    }
   }
-  db->SetIsDefault(true);
-  emit CurrentDataBaseChanged(db);
+  if (!founded) {
+    databases_.push_back(db);
+    founded = db;
+  }
+  emit CurrentDataBaseChanged(founded);
 }
 
 void IServer::HandleEnterModeEvent(events::EnterModeEvent* ev) {

@@ -104,7 +104,7 @@ class ExplorerTreeView : public QTreeView {
   void finishExecuteCommand(const core::events_info::ExecuteInfoResponce& res);
 
   void flushDB(core::IDataBaseInfoSPtr db);
-  void CurrentDataBaseChange(core::IDataBaseInfoSPtr db);
+  void currentDataBaseChange(core::IDataBaseInfoSPtr db);
   void removeKey(core::IDataBaseInfoSPtr db, core::NKey key);
   void addKey(core::IDataBaseInfoSPtr db, core::NDbKValue key);
   void renameKey(core::IDataBaseInfoSPtr db, core::NKey key, std::string new_name);
