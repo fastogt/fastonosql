@@ -242,20 +242,6 @@ struct LoadDatabaseContentResponce : LoadDatabaseContentRequest {
   size_t db_keys_count;
 };
 
-struct SetDefaultDatabaseRequest : public EventInfoBase {
-  typedef EventInfoBase base_class;
-  SetDefaultDatabaseRequest(initiator_type sender,
-                            IDataBaseInfoSPtr inf,
-                            error_type er = error_type());
-
-  IDataBaseInfoSPtr inf;
-};
-
-struct SetDefaultDatabaseResponce : SetDefaultDatabaseRequest {
-  typedef SetDefaultDatabaseRequest base_class;
-  explicit SetDefaultDatabaseResponce(const base_class& request);
-};
-
 struct ServerInfoRequest : public EventInfoBase {
   typedef EventInfoBase base_class;
   explicit ServerInfoRequest(initiator_type sender, error_type er = error_type());

@@ -172,8 +172,17 @@ void ExplorerDatabaseItem::loadContent(const std::string& pattern, uint32_t coun
 void ExplorerDatabaseItem::setDefault() {
   core::IDatabaseSPtr dbs = db();
   CHECK(dbs);
-  core::events_info::SetDefaultDatabaseRequest req(this, dbs->Info());
-  dbs->SetDefault(req);
+
+  core::translator_t tran = dbs->Translator();
+  std::string cmd_str;
+  common::Error err = tran->SelectDBCommand(dbs->Name(), &cmd_str);
+  if (err && err->isError()) {
+    LOG_ERROR(err, true);
+    return;
+  }
+
+  core::events_info::ExecuteInfoRequest req(this, cmd_str);
+  dbs->Execute(req);
 }
 
 core::IDataBaseInfoSPtr ExplorerDatabaseItem::info() const {

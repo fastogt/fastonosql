@@ -188,7 +188,7 @@ connection_path_t IDriver::ConnectionPath() const {
 
 IServerInfoSPtr IDriver::CurrentServerInfo() const {
   if (IsConnected()) {
-    CHECK(server_info_);
+    DCHECK(server_info_);
     return server_info_;
   }
 
@@ -197,7 +197,7 @@ IServerInfoSPtr IDriver::CurrentServerInfo() const {
 
 IDataBaseInfoSPtr IDriver::CurrentDatabaseInfo() const {
   if (IsConnected()) {
-    CHECK(current_database_info_);
+    DCHECK(current_database_info_);
     return current_database_info_;
   }
 
@@ -302,10 +302,6 @@ void IDriver::customEvent(QEvent* event) {
     events::LoadDatabaseContentRequestEvent* ev =
         static_cast<events::LoadDatabaseContentRequestEvent*>(event);
     HandleLoadDatabaseContentEvent(ev);
-  } else if (type == static_cast<QEvent::Type>(events::SetDefaultDatabaseRequestEvent::EventType)) {
-    events::SetDefaultDatabaseRequestEvent* ev =
-        static_cast<events::SetDefaultDatabaseRequestEvent*>(event);
-    HandleSetDefaultDatabaseEvent(ev);  // ni
   } else if (type == static_cast<QEvent::Type>(events::DiscoveryInfoRequestEvent::EventType)) {
     events::DiscoveryInfoRequestEvent* ev = static_cast<events::DiscoveryInfoRequestEvent*>(event);
     HandleDiscoveryInfoEvent(ev);  //
@@ -505,11 +501,6 @@ void IDriver::HandleLoadDatabaseInfosEvent(events::LoadDatabasesInfoRequestEvent
   NotifyProgress(sender, 100);
 }
 
-void IDriver::HandleSetDefaultDatabaseEvent(events::SetDefaultDatabaseRequestEvent* ev) {
-  replyNotImplementedYet<events::SetDefaultDatabaseRequestEvent,
-                         events::SetDefaultDatabaseResponceEvent>(this, ev, "set default database");
-}
-
 void IDriver::HandleLoadServerInfoEvent(events::ServerInfoRequestEvent* ev) {
   QObject* sender = ev->sender();
   NotifyProgress(sender, 0);
@@ -657,11 +648,12 @@ common::Error IDriver::ServerDiscoveryInfo(IServerInfo** sinfo, IDataBaseInfo** 
 }
 
 void IDriver::OnFlushedCurrentDB() {
-  FlushedDB(current_database_info_);
+  emit FlushedDB(current_database_info_);
 }
 
 void IDriver::OnCurrentDataBaseChanged(IDataBaseInfo* info) {
   current_database_info_.reset(info->Clone());
+  emit CurrentDataBaseChanged(current_database_info_);
 }
 
 void IDriver::OnKeysRemoved(const NKeys& keys) {

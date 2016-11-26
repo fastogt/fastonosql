@@ -47,13 +47,6 @@ struct LoadDatabaseContentRequest;
 }
 }
 }
-namespace fastonosql {
-namespace core {
-namespace events_info {
-struct SetDefaultDatabaseRequest;
-}
-}
-}
 
 namespace fastonosql {
 namespace core {
@@ -71,7 +64,6 @@ class IDatabase {
   std::string Name() const;
 
   void LoadContent(const events_info::LoadDatabaseContentRequest& req);
-  void SetDefault(const events_info::SetDefaultDatabaseRequest& req);
 
   void Execute(const events_info::ExecuteInfoRequest& req);
 

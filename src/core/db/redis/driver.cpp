@@ -39,7 +39,7 @@
 #include "core/database/idatabase_info.h"  // for IDataBaseInfoSPtr, etc
 #include "core/driver/root_locker.h"       // for RootLocker
 
-#include "core/db/redis/db_connection.h"      // for DBConnection, INFO_REQUEST, etc
+#include "core/db/redis/db_connection.h"        // for DBConnection, INFO_REQUEST, etc
 #include "core/db/redis/command.h"              // for Command
 #include "core/db/redis/config.h"               // for Config
 #include "core/db/redis/connection_settings.h"  // for ConnectionSettings
@@ -465,7 +465,6 @@ void Driver::HandleLoadDatabaseInfosEvent(events::LoadDatabasesInfoRequestEvent*
       }
 
       IDataBaseInfoSPtr curdb = CurrentDatabaseInfo();
-      CHECK(curdb);
       if (ar->size() == 2) {
         std::string scountDb;
         bool isok = ar->getString(1, &scountDb);
@@ -474,7 +473,7 @@ void Driver::HandleLoadDatabaseInfosEvent(events::LoadDatabasesInfoRequestEvent*
           if (countDb > 0) {
             for (size_t i = 0; i < countDb; ++i) {
               IDataBaseInfoSPtr dbInf(new DataBaseInfo(common::ConvertToString(i), false, 0));
-              if (dbInf->Name() == curdb->Name()) {
+              if (curdb && dbInf->Name() == curdb->Name()) {
                 res.databases.push_back(curdb);
               } else {
                 res.databases.push_back(dbInf);
@@ -483,7 +482,9 @@ void Driver::HandleLoadDatabaseInfosEvent(events::LoadDatabasesInfoRequestEvent*
           }
         }
       } else {
-        res.databases.push_back(curdb);
+        if (curdb) {
+          res.databases.push_back(curdb);
+        }
       }
     }
   }
@@ -497,8 +498,8 @@ void Driver::HandleLoadDatabaseContentEvent(events::LoadDatabaseContentRequestEv
   QObject* sender = ev->sender();
   NotifyProgress(sender, 0);
   events::LoadDatabaseContentResponceEvent::value_type res(ev->value());
-  std::string patternResult = common::MemSPrintf(GET_KEYS_PATTERN_3ARGS_ISI, res.cursor_in,
-                                                 res.pattern, res.count_keys);
+  std::string patternResult =
+      common::MemSPrintf(GET_KEYS_PATTERN_3ARGS_ISI, res.cursor_in, res.pattern, res.count_keys);
   FastoObjectCommandIPtr cmd = CreateCommandFast(patternResult, common::Value::C_INNER);
   NotifyProgress(sender, 50);
   common::Error err = Execute(cmd);
@@ -595,23 +596,6 @@ void Driver::HandleLoadDatabaseContentEvent(events::LoadDatabaseContentRequestEv
 done:
   NotifyProgress(sender, 75);
   Reply(sender, new events::LoadDatabaseContentResponceEvent(this, res));
-  NotifyProgress(sender, 100);
-}
-
-void Driver::HandleSetDefaultDatabaseEvent(events::SetDefaultDatabaseRequestEvent* ev) {
-  QObject* sender = ev->sender();
-  NotifyProgress(sender, 0);
-  events::SetDefaultDatabaseResponceEvent::value_type res(ev->value());
-  std::string setDefCommand =
-      common::MemSPrintf(REDIS_SET_DEFAULT_DATABASE_PATTERN_1ARGS_S, res.inf->Name());
-  FastoObjectCommandIPtr cmd = CreateCommandFast(setDefCommand, common::Value::C_INNER);
-  NotifyProgress(sender, 50);
-  common::Error er = Execute(cmd);
-  if (er && er->isError()) {
-    res.setErrorInfo(er);
-  }
-  NotifyProgress(sender, 75);
-  Reply(sender, new events::SetDefaultDatabaseResponceEvent(this, res));
   NotifyProgress(sender, 100);
 }
 

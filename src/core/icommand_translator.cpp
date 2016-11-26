@@ -18,8 +18,20 @@
 
 #include "core/icommand_translator.h"
 
+#include <common/sprintf.h>
+
 namespace fastonosql {
 namespace core {
+
+common::Error ICommandTranslator::SelectDBCommand(const std::string& name,
+                                                  std::string* cmdstring) const {
+  if (!cmdstring) {
+    return common::make_error_value("Invalid input argument(s)", common::ErrorValue::E_ERROR);
+  }
+
+  *cmdstring = common::MemSPrintf(SELECTDB_COMMAND_1S, name);
+  return common::Error();
+}
 
 common::Error ICommandTranslator::FlushDBCommand(std::string* cmdstring) const {
   if (!cmdstring) {

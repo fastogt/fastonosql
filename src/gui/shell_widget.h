@@ -124,13 +124,6 @@ struct SetDefaultDatabaseRequest;
 }
 }
 namespace fastonosql {
-namespace core {
-namespace events_info {
-struct SetDefaultDatabaseResponce;
-}
-}
-}
-namespace fastonosql {
 namespace gui {
 class BaseShell;
 }
@@ -171,9 +164,6 @@ class BaseShellWidget : public QWidget {
   void finishConnect(const core::events_info::ConnectInfoResponce& res);
   void startDisconnect(const core::events_info::DisConnectInfoRequest& req);
   void finishDisconnect(const core::events_info::DisConnectInfoResponce& res);
-
-  void startSetDefaultDatabase(const core::events_info::SetDefaultDatabaseRequest& req);
-  void finishSetDefaultDatabase(const core::events_info::SetDefaultDatabaseResponce& res);
 
   void progressChange(const core::events_info::ProgressInfoResponce& res);
 

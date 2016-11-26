@@ -43,6 +43,8 @@ IServer::IServer(IDriver* drv) : drv_(drv) {
       QObject::connect(drv_, &IDriver::ServerInfoSnapShoot, this, &IServer::ServerInfoSnapShoot));
 
   VERIFY(QObject::connect(drv_, &IDriver::FlushedDB, this, &IServer::FlushDB));
+  VERIFY(QObject::connect(drv_, &IDriver::CurrentDataBaseChanged, this,
+                          &IServer::CurrentDataBaseChange));
   VERIFY(QObject::connect(drv_, &IDriver::KeyRemoved, this, &IServer::KeyRemoved));
   VERIFY(QObject::connect(drv_, &IDriver::KeyAdded, this, &IServer::KeyAdded));
   VERIFY(QObject::connect(drv_, &IDriver::KeyLoaded, this, &IServer::KeyLoaded));
@@ -145,12 +147,6 @@ void IServer::LoadDatabases(const events_info::LoadDatabasesInfoRequest& req) {
 void IServer::LoadDatabaseContent(const events_info::LoadDatabaseContentRequest& req) {
   emit LoadDataBaseContentStarted(req);
   QEvent* ev = new events::LoadDatabaseContentRequestEvent(this, req);
-  notify(ev);
-}
-
-void IServer::SetDefaultDB(const events_info::SetDefaultDatabaseRequest& req) {
-  emit SetDefaultDatabaseStarted(req);
-  QEvent* ev = new events::SetDefaultDatabaseRequestEvent(this, req);
   notify(ev);
 }
 
@@ -299,11 +295,6 @@ void IServer::customEvent(QEvent* event) {
     events::LoadDatabaseContentResponceEvent* ev =
         static_cast<events::LoadDatabaseContentResponceEvent*>(event);
     HandleLoadDatabaseContentEvent(ev);
-  } else if (type ==
-             static_cast<QEvent::Type>(events::SetDefaultDatabaseResponceEvent::EventType)) {
-    events::SetDefaultDatabaseResponceEvent* ev =
-        static_cast<events::SetDefaultDatabaseResponceEvent*>(event);
-    HandleSetDefaultDatabaseEvent(ev);
   } else if (type == static_cast<QEvent::Type>(events::ExecuteResponceEvent::EventType)) {
     events::ExecuteResponceEvent* ev = static_cast<events::ExecuteResponceEvent*>(event);
     HandleExecuteEvent(ev);
@@ -433,7 +424,6 @@ void IServer::HandleLoadDatabaseInfosEvent(events::LoadDatabasesInfoResponceEven
   common::Error er(v.errorInfo());
   if (er && er->isError()) {
     LOG_ERROR(er, true);
-    databases_.clear();
   } else {
     events_info::LoadDatabasesInfoResponce::database_info_cont_type dbs = v.databases;
     events_info::LoadDatabasesInfoResponce::database_info_cont_type tmp;
@@ -472,6 +462,18 @@ void IServer::FlushDB(core::IDataBaseInfoSPtr db) {
   }
 
   emit FlushedDB(db);
+}
+
+void IServer::CurrentDataBaseChange(core::IDataBaseInfoSPtr db) {
+  if (!ContainsDatabase(db)) {
+    databases_.push_back(db);
+  }
+
+  for (size_t i = 0; i < databases_.size(); ++i) {
+    databases_[i]->SetIsDefault(false);
+  }
+  db->SetIsDefault(true);
+  emit CurrentDataBaseChanged(db);
 }
 
 void IServer::HandleEnterModeEvent(events::EnterModeEvent* ev) {
@@ -521,22 +523,6 @@ void IServer::HandleClearServerHistoryResponceEvent(events::ClearServerHistoryRe
   }
 
   emit ClearServerHistoryFinished(v);
-}
-
-void IServer::HandleSetDefaultDatabaseEvent(events::SetDefaultDatabaseResponceEvent* ev) {
-  auto v = ev->value();
-  common::Error er(v.errorInfo());
-  if (er && er->isError()) {
-    LOG_ERROR(er, true);
-  } else {
-    IDataBaseInfoSPtr inf = v.inf;
-    for (size_t i = 0; i < databases_.size(); ++i) {
-      databases_[i]->SetIsDefault(false);
-    }
-    inf->SetIsDefault(true);
-  }
-
-  emit SetDefaultDatabaseFinished(v);
 }
 
 void IServer::ProcessConfigArgs(const events_info::ProcessConfigArgsInfoRequest& req) {

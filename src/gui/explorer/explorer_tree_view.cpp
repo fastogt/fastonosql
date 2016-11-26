@@ -988,25 +988,6 @@ void ExplorerTreeView::finishLoadDatabases(
   }
 }
 
-void ExplorerTreeView::startSetDefaultDatabase(
-    const core::events_info::SetDefaultDatabaseRequest& req) {
-  UNUSED(req);
-}
-
-void ExplorerTreeView::finishSetDefaultDatabase(
-    const core::events_info::SetDefaultDatabaseResponce& res) {
-  common::Error er = res.errorInfo();
-  if (er && er->isError()) {
-    return;
-  }
-
-  core::IServer* serv = qobject_cast<core::IServer*>(sender());
-  CHECK(serv);
-
-  core::IDataBaseInfoSPtr db = res.inf;
-  source_model_->setDefaultDb(serv, db);
-}
-
 void ExplorerTreeView::startLoadDatabaseContent(
     const core::events_info::LoadDatabaseContentRequest& req) {
   UNUSED(req);
@@ -1045,6 +1026,14 @@ void ExplorerTreeView::flushDB(core::IDataBaseInfoSPtr db) {
   CHECK(serv);
 
   source_model_->removeAllKeys(serv, db);
+}
+
+void ExplorerTreeView::CurrentDataBaseChange(core::IDataBaseInfoSPtr db) {
+  core::IServer* serv = qobject_cast<core::IServer*>(sender());
+  CHECK(serv);
+
+  source_model_->addDatabase(serv, db);
+  source_model_->setDefaultDb(serv, db);
 }
 
 void ExplorerTreeView::removeKey(core::IDataBaseInfoSPtr db, core::NKey key) {
@@ -1112,10 +1101,6 @@ void ExplorerTreeView::syncWithServer(core::IServer* server) {
                  &ExplorerTreeView::startLoadDatabases));
   VERIFY(connect(server, &core::IServer::LoadDatabasesFinished, this,
                  &ExplorerTreeView::finishLoadDatabases));
-  VERIFY(connect(server, &core::IServer::SetDefaultDatabaseStarted, this,
-                 &ExplorerTreeView::startSetDefaultDatabase));
-  VERIFY(connect(server, &core::IServer::SetDefaultDatabaseFinished, this,
-                 &ExplorerTreeView::finishSetDefaultDatabase));
   VERIFY(connect(server, &core::IServer::LoadDataBaseContentStarted, this,
                  &ExplorerTreeView::startLoadDatabaseContent));
   VERIFY(connect(server, &core::IServer::LoadDatabaseContentFinished, this,
@@ -1126,6 +1111,8 @@ void ExplorerTreeView::syncWithServer(core::IServer* server) {
                  &ExplorerTreeView::finishExecuteCommand));
 
   VERIFY(connect(server, &core::IServer::FlushedDB, this, &ExplorerTreeView::flushDB));
+  VERIFY(connect(server, &core::IServer::CurrentDataBaseChanged, this,
+                 &ExplorerTreeView::CurrentDataBaseChange));
   VERIFY(connect(server, &core::IServer::KeyRemoved, this, &ExplorerTreeView::removeKey,
                  Qt::DirectConnection));
   VERIFY(connect(server, &core::IServer::KeyAdded, this, &ExplorerTreeView::addKey,
@@ -1147,10 +1134,6 @@ void ExplorerTreeView::unsyncWithServer(core::IServer* server) {
                     &ExplorerTreeView::startLoadDatabases));
   VERIFY(disconnect(server, &core::IServer::LoadDatabasesFinished, this,
                     &ExplorerTreeView::finishLoadDatabases));
-  VERIFY(disconnect(server, &core::IServer::SetDefaultDatabaseStarted, this,
-                    &ExplorerTreeView::startSetDefaultDatabase));
-  VERIFY(disconnect(server, &core::IServer::SetDefaultDatabaseFinished, this,
-                    &ExplorerTreeView::finishSetDefaultDatabase));
   VERIFY(disconnect(server, &core::IServer::LoadDataBaseContentStarted, this,
                     &ExplorerTreeView::startLoadDatabaseContent));
   VERIFY(disconnect(server, &core::IServer::LoadDatabaseContentFinished, this,
@@ -1160,6 +1143,9 @@ void ExplorerTreeView::unsyncWithServer(core::IServer* server) {
   VERIFY(disconnect(server, &core::IServer::ExecuteFinished, this,
                     &ExplorerTreeView::finishExecuteCommand));
 
+  VERIFY(disconnect(server, &core::IServer::FlushedDB, this, &ExplorerTreeView::flushDB));
+  VERIFY(disconnect(server, &core::IServer::CurrentDataBaseChanged, this,
+                    &ExplorerTreeView::CurrentDataBaseChange));
   VERIFY(disconnect(server, &core::IServer::KeyRemoved, this, &ExplorerTreeView::removeKey));
   VERIFY(disconnect(server, &core::IServer::KeyAdded, this, &ExplorerTreeView::addKey));
   VERIFY(disconnect(server, &core::IServer::KeyRenamed, this, &ExplorerTreeView::renameKey));

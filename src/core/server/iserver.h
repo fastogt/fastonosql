@@ -124,9 +124,6 @@ class IServer : public IServerBase, public std::enable_shared_from_this<IServer>
   void LoadDataBaseContentStarted(const events_info::LoadDatabaseContentRequest& req);
   void LoadDatabaseContentFinished(const events_info::LoadDatabaseContentResponce& res);
 
-  void SetDefaultDatabaseStarted(const events_info::SetDefaultDatabaseRequest& req);
-  void SetDefaultDatabaseFinished(const events_info::SetDefaultDatabaseResponce& res);
-
   void LoadDiscoveryInfoStarted(const events_info::DiscoveryInfoRequest& res);
   void LoadDiscoveryInfoFinished(const events_info::DiscoveryInfoResponce& res);
 
@@ -136,6 +133,7 @@ class IServer : public IServerBase, public std::enable_shared_from_this<IServer>
   void ServerInfoSnapShoot(core::ServerInfoSnapShoot shot);
 
   void FlushedDB(core::IDataBaseInfoSPtr db);
+  void CurrentDataBaseChanged(core::IDataBaseInfoSPtr db);
   void KeyRemoved(core::IDataBaseInfoSPtr db, core::NKey key);
   void KeyAdded(core::IDataBaseInfoSPtr db, core::NDbKValue key);
   void KeyLoaded(core::IDataBaseInfoSPtr db, core::NDbKValue key);
@@ -155,9 +153,6 @@ class IServer : public IServerBase, public std::enable_shared_from_this<IServer>
   void LoadDatabaseContent(
       const events_info::LoadDatabaseContentRequest& req);  // signals: LoadDataBaseContentStarted,
                                                             // LoadDatabaseContentFinished
-  void SetDefaultDB(
-      const events_info::SetDefaultDatabaseRequest& req);  // signals: SetDefaultDatabaseStarted,
-                                                           // SetDefaultDatabaseFinished
   void Execute(const events_info::ExecuteInfoRequest& req);    // signals: ExecuteStarted
 
   void ShutDown(const events_info::ShutDownInfoRequest& req);  // signals: ShutdownStarted,
@@ -212,7 +207,6 @@ class IServer : public IServerBase, public std::enable_shared_from_this<IServer>
   // handle database events
   virtual void HandleLoadDatabaseInfosEvent(events::LoadDatabasesInfoResponceEvent* ev);
   virtual void HandleLoadDatabaseContentEvent(events::LoadDatabaseContentResponceEvent* ev);
-  virtual void HandleSetDefaultDatabaseEvent(events::SetDefaultDatabaseResponceEvent* ev);
 
   // handle command events
   virtual void HandleDiscoveryInfoResponceEvent(events::DiscoveryInfoResponceEvent* ev);
@@ -222,6 +216,7 @@ class IServer : public IServerBase, public std::enable_shared_from_this<IServer>
 
  private Q_SLOTS:
   void FlushDB(core::IDataBaseInfoSPtr db);
+  void CurrentDataBaseChange(core::IDataBaseInfoSPtr db);
 
  private:
   void HandleEnterModeEvent(events::EnterModeEvent* ev);

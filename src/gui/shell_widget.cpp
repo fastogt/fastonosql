@@ -99,11 +99,6 @@ BaseShellWidget::BaseShellWidget(core::IServerSPtr server, const QString& filePa
   VERIFY(connect(server_.get(), &core::IServer::ProgressChanged, this,
                  &BaseShellWidget::progressChange));
 
-  VERIFY(connect(server_.get(), &core::IServer::SetDefaultDatabaseStarted, this,
-                 &BaseShellWidget::startSetDefaultDatabase));
-  VERIFY(connect(server_.get(), &core::IServer::SetDefaultDatabaseFinished, this,
-                 &BaseShellWidget::finishSetDefaultDatabase));
-
   VERIFY(connect(server_.get(), &core::IServer::ModeEntered, this, &BaseShellWidget::enterMode));
   VERIFY(connect(server_.get(), &core::IServer::ModeLeaved, this, &BaseShellWidget::leaveMode));
 
@@ -117,6 +112,8 @@ BaseShellWidget::BaseShellWidget(core::IServerSPtr server, const QString& filePa
   VERIFY(connect(server_.get(), &core::IServer::ExecuteFinished, this,
                  &BaseShellWidget::finishExecute, Qt::DirectConnection));
 
+  VERIFY(connect(server_.get(), &core::IServer::CurrentDataBaseChanged, this,
+                 &BaseShellWidget::updateDefaultDatabase));
   VERIFY(connect(server_.get(), &core::IServer::Disconnected, this,
                  &BaseShellWidget::serverDisconnect));
 
@@ -395,28 +392,6 @@ void BaseShellWidget::finishDisconnect(const core::events_info::DisConnectInfoRe
   UNUSED(res);
 
   serverDisconnect();
-}
-
-void BaseShellWidget::startSetDefaultDatabase(
-    const core::events_info::SetDefaultDatabaseRequest& req) {
-  UNUSED(req);
-}
-
-void BaseShellWidget::finishSetDefaultDatabase(
-    const core::events_info::SetDefaultDatabaseResponce& res) {
-  common::Error er = res.errorInfo();
-  if (er && er->isError()) {
-    return;
-  }
-
-  core::IServer* serv = qobject_cast<core::IServer*>(sender());
-  if (!serv) {
-    DNOTREACHED();
-    return;
-  }
-
-  core::IDataBaseInfoSPtr db = res.inf;
-  updateDefaultDatabase(db);
 }
 
 void BaseShellWidget::progressChange(const core::events_info::ProgressInfoResponce& res) {

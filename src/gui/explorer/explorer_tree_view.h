@@ -97,9 +97,6 @@ class ExplorerTreeView : public QTreeView {
   void startLoadDatabases(const core::events_info::LoadDatabasesInfoRequest& req);
   void finishLoadDatabases(const core::events_info::LoadDatabasesInfoResponce& res);
 
-  void startSetDefaultDatabase(const core::events_info::SetDefaultDatabaseRequest& req);
-  void finishSetDefaultDatabase(const core::events_info::SetDefaultDatabaseResponce& res);
-
   void startLoadDatabaseContent(const core::events_info::LoadDatabaseContentRequest& req);
   void finishLoadDatabaseContent(const core::events_info::LoadDatabaseContentResponce& res);
 
@@ -107,6 +104,7 @@ class ExplorerTreeView : public QTreeView {
   void finishExecuteCommand(const core::events_info::ExecuteInfoResponce& res);
 
   void flushDB(core::IDataBaseInfoSPtr db);
+  void CurrentDataBaseChange(core::IDataBaseInfoSPtr db);
   void removeKey(core::IDataBaseInfoSPtr db, core::NKey key);
   void addKey(core::IDataBaseInfoSPtr db, core::NDbKValue key);
   void renameKey(core::IDataBaseInfoSPtr db, core::NKey key, std::string new_name);

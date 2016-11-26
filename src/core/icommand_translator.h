@@ -28,12 +28,15 @@
 #include "core/db_key.h"  // for NKey, NDbKValue, ttl_t
 
 #define FLUSHDB_COMMAND "FLUSHDB"
+#define SELECTDB_COMMAND_1S "SELECT %s"
 
 namespace fastonosql {
 namespace core {
 
 class ICommandTranslator {
  public:
+  common::Error SelectDBCommand(const std::string& name,
+                                std::string* cmdstring) const WARN_UNUSED_RESULT;
   common::Error FlushDBCommand(std::string* cmdstring) const WARN_UNUSED_RESULT;
   common::Error CreateKeyCommand(const NDbKValue& key,
                                  std::string* cmdstring) const WARN_UNUSED_RESULT;

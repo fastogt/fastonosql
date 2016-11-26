@@ -1493,6 +1493,12 @@ common::Error DBConnection::SelectImpl(const std::string& name, IDataBaseInfo** 
     return cliPrintContextError(connection_.handle_);
   }
 
+  if (reply->type == REDIS_REPLY_ERROR) {
+    std::string str(reply->str, reply->len);
+    freeReplyObject(reply);
+    return common::make_error_value(str, common::ErrorValue::E_ERROR);
+  }
+
   connection_.config_.dbnum = num;
   cur_db_ = num;
   size_t sz = 0;

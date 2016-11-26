@@ -100,7 +100,6 @@ class Driver : public IDriverRemote {
   virtual void HandleChangeMaxConnectionEvent(events::ChangeMaxConnectionRequestEvent* ev) override;
 
   virtual void HandleLoadDatabaseContentEvent(events::LoadDatabaseContentRequestEvent* ev) override;
-  virtual void HandleSetDefaultDatabaseEvent(events::SetDefaultDatabaseRequestEvent* ev) override;
 
   virtual IServerInfoSPtr MakeServerInfoFromString(const std::string& val) override;
 

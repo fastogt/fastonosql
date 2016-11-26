@@ -59,12 +59,6 @@ void IDatabase::LoadContent(const events_info::LoadDatabaseContentRequest& req) 
   server_->LoadDatabaseContent(req);
 }
 
-void IDatabase::SetDefault(const events_info::SetDefaultDatabaseRequest& req) {
-  DCHECK_EQ(req.inf, info_);
-
-  server_->SetDefaultDB(req);
-}
-
 IDataBaseInfoSPtr IDatabase::Info() const {
   return info_;
 }

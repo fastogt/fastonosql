@@ -85,6 +85,7 @@ class IDriver : public QObject, public CDBConnectionClient {
   void ServerInfoSnapShoot(core::ServerInfoSnapShoot shot);
 
   void FlushedDB(core::IDataBaseInfoSPtr db);
+  void CurrentDataBaseChanged(core::IDataBaseInfoSPtr db);
   void KeyRemoved(core::IDataBaseInfoSPtr db, core::NKey key);
   void KeyAdded(core::IDataBaseInfoSPtr db, core::NDbKValue key);
   void KeyRenamed(core::IDataBaseInfoSPtr db, core::NKey key, std::string new_name);
@@ -122,7 +123,6 @@ class IDriver : public QObject, public CDBConnectionClient {
   virtual void HandleChangePasswordEvent(events::ChangePasswordRequestEvent* ev);
   virtual void HandleChangeMaxConnectionEvent(events::ChangeMaxConnectionRequestEvent* ev);
   virtual void HandleLoadDatabaseInfosEvent(events::LoadDatabasesInfoRequestEvent* ev);
-  virtual void HandleSetDefaultDatabaseEvent(events::SetDefaultDatabaseRequestEvent* ev);
 
   const IConnectionSettingsBaseSPtr settings_;
 
