@@ -20,89 +20,68 @@
 
 #include <common/error.h>
 
-#include "core/command_info.h"
-#include "core/internal/command_handler.h"
+#include "core/internal/commands_api.h"
+#include "core/db/memcached/db_connection.h"
 
 namespace fastonosql {
 namespace core {
 namespace memcached {
 
-common::Error select(internal::CommandHandler* handler,
-                     int argc,
-                     const char** argv,
-                     FastoObject* out);
-common::Error set(internal::CommandHandler* handler, int argc, const char** argv, FastoObject* out);
-common::Error get(internal::CommandHandler* handler, int argc, const char** argv, FastoObject* out);
-common::Error del(internal::CommandHandler* handler, int argc, const char** argv, FastoObject* out);
-common::Error rename(internal::CommandHandler* handler,
-                     int argc,
-                     const char** argv,
-                     FastoObject* out);
-common::Error set_ttl(internal::CommandHandler* handler,
-                      int argc,
-                      const char** argv,
-                      FastoObject* out);
+struct CommandsApi : public internal::ApiTraits<DBConnection> {
+  static common::Error Info(internal::CommandHandler* handler,
+                            int argc,
+                            const char** argv,
+                            FastoObject* out);
+  static common::Error Version(internal::CommandHandler* handler,
+                               int argc,
+                               const char** argv,
+                               FastoObject* out);
 
-common::Error keys(internal::CommandHandler* handler,
-                   int argc,
-                   const char** argv,
-                   FastoObject* out);
-common::Error scan(internal::CommandHandler* handler,
-                   int argc,
-                   const char** argv,
-                   FastoObject* out);
-common::Error stats(internal::CommandHandler* handler,
-                    int argc,
-                    const char** argv,
-                    FastoObject* out);
-common::Error add(internal::CommandHandler* handler, int argc, const char** argv, FastoObject* out);
-common::Error replace(internal::CommandHandler* handler,
-                      int argc,
-                      const char** argv,
-                      FastoObject* out);
-common::Error append(internal::CommandHandler* handler,
-                     int argc,
-                     const char** argv,
-                     FastoObject* out);
-common::Error prepend(internal::CommandHandler* handler,
-                      int argc,
-                      const char** argv,
-                      FastoObject* out);
-common::Error incr(internal::CommandHandler* handler,
-                   int argc,
-                   const char** argv,
-                   FastoObject* out);
-common::Error decr(internal::CommandHandler* handler,
-                   int argc,
-                   const char** argv,
-                   FastoObject* out);
-common::Error flushdb(internal::CommandHandler* handler,
-                      int argc,
-                      const char** argv,
-                      FastoObject* out);
-common::Error version_server(internal::CommandHandler* handler,
-                             int argc,
-                             const char** argv,
-                             FastoObject* out);
-common::Error dbkcount(internal::CommandHandler* handler,
-                       int argc,
-                       const char** argv,
-                       FastoObject* out);
-common::Error help(internal::CommandHandler* handler,
-                   int argc,
-                   const char** argv,
-                   FastoObject* out);
-common::Error expire(internal::CommandHandler* handler,
-                     int argc,
-                     const char** argv,
-                     FastoObject* out);
-common::Error quit(internal::CommandHandler* handler,
-                   int argc,
-                   const char** argv,
-                   FastoObject* out);
+  static common::Error Add(internal::CommandHandler* handler,
+                           int argc,
+                           const char** argv,
+                           FastoObject* out);
+  static common::Error Replace(internal::CommandHandler* handler,
+                               int argc,
+                               const char** argv,
+                               FastoObject* out);
+  static common::Error Append(internal::CommandHandler* handler,
+                              int argc,
+                              const char** argv,
+                              FastoObject* out);
+  static common::Error Prepend(internal::CommandHandler* handler,
+                               int argc,
+                               const char** argv,
+                               FastoObject* out);
+  static common::Error Incr(internal::CommandHandler* handler,
+                            int argc,
+                            const char** argv,
+                            FastoObject* out);
+  static common::Error Decr(internal::CommandHandler* handler,
+                            int argc,
+                            const char** argv,
+                            FastoObject* out);
+};
 
 // TODO: cas command implementation
 static const std::vector<CommandHolder> memcachedCommands = {
+
+    CommandHolder("HELP",
+                  "[command]",
+                  "Return how to use command",
+                  UNDEFINED_SINCE,
+                  UNDEFINED_EXAMPLE_STR,
+                  0,
+                  1,
+                  &CommandsApi::Help),
+    CommandHolder("INFO",
+                  "<args>",
+                  "These command return database information.",
+                  UNDEFINED_SINCE,
+                  UNDEFINED_EXAMPLE_STR,
+                  1,
+                  0,
+                  &CommandsApi::Info),
     CommandHolder("VERSION",
                   "-",
                   "Return the Memcached server version.",
@@ -110,51 +89,7 @@ static const std::vector<CommandHolder> memcachedCommands = {
                   UNDEFINED_EXAMPLE_STR,
                   0,
                   0,
-                  &version_server),
-    CommandHolder("KEYS",
-                  "<key_start> <key_end> <limit>",
-                  "Find all keys matching the given limits.",
-                  UNDEFINED_SINCE,
-                  UNDEFINED_EXAMPLE_STR,
-                  3,
-                  0,
-                  &keys),
-    CommandHolder("SCAN",
-                  "<cursor> [MATCH pattern] [COUNT count]",
-                  "Incrementally iterate the keys space",
-                  PROJECT_VERSION_GENERATE(2, 8, 0),
-                  UNDEFINED_EXAMPLE_STR,
-                  1,
-                  4,
-                  &scan),
-    CommandHolder("STATS",
-                  "[args]",
-                  "These command can return various "
-                  "stats that we will explain.",
-                  UNDEFINED_SINCE,
-                  UNDEFINED_EXAMPLE_STR,
-                  0,
-                  1,
-                  &stats),
-    CommandHolder("FLUSHDB",
-                  "[time]",
-                  "Flush the server key/value pair "
-                  "(invalidating them) after a "
-                  "optional [<time>] period.\n"
-                  "It always return OK",
-                  UNDEFINED_SINCE,
-                  UNDEFINED_EXAMPLE_STR,
-                  0,
-                  1,
-                  &flushdb),
-    CommandHolder("DEL",
-                  "<key> [key ...]",
-                  "Delete key.",
-                  UNDEFINED_SINCE,
-                  UNDEFINED_EXAMPLE_STR,
-                  1,
-                  INFINITE_COMMAND_ARGS,
-                  &del),
+                  &CommandsApi::Version),
     CommandHolder("INCR",
                   "<key> <value>",
                   "Increment value associated with key in "
@@ -166,7 +101,7 @@ static const std::vector<CommandHolder> memcachedCommands = {
                   UNDEFINED_EXAMPLE_STR,
                   2,
                   0,
-                  &incr),
+                  &CommandsApi::Incr),
     CommandHolder("DECR",
                   "<key> <value>",
                   "Decrement value associated with key "
@@ -177,7 +112,7 @@ static const std::vector<CommandHolder> memcachedCommands = {
                   UNDEFINED_EXAMPLE_STR,
                   2,
                   0,
-                  &decr),
+                  &CommandsApi::Decr),
     CommandHolder("PREPEND",
                   "<key> <flags> <exptime> <bytes>",
                   "Add value to an existing key before "
@@ -189,7 +124,7 @@ static const std::vector<CommandHolder> memcachedCommands = {
                   UNDEFINED_EXAMPLE_STR,
                   4,
                   0,
-                  &prepend),
+                  &CommandsApi::Prepend),
     CommandHolder("APPEND",
                   "<key> <flags> <exptime> <value>",
                   "Add value to an existing key after "
@@ -201,7 +136,7 @@ static const std::vector<CommandHolder> memcachedCommands = {
                   UNDEFINED_EXAMPLE_STR,
                   4,
                   0,
-                  &append),
+                  &CommandsApi::Append),
     CommandHolder("REPLACE",
                   "<key> <flags> <exptime> <value>",
                   "Store key/value pair in Memcached, "
@@ -211,7 +146,7 @@ static const std::vector<CommandHolder> memcachedCommands = {
                   UNDEFINED_EXAMPLE_STR,
                   4,
                   0,
-                  &replace),
+                  &CommandsApi::Replace),
     CommandHolder("ADD",
                   "<key> <flags> <exptime> <value>",
                   "Store key/value pair in Memcached, "
@@ -222,39 +157,23 @@ static const std::vector<CommandHolder> memcachedCommands = {
                   UNDEFINED_EXAMPLE_STR,
                   4,
                   0,
-                  &add),
-    CommandHolder("SET",
-                  "<key> <flags> <exptime> <value>",
-                  "Set the string value of a key.",
-                  UNDEFINED_SINCE,
-                  UNDEFINED_EXAMPLE_STR,
-                  4,
-                  0,
-                  &set),
-    CommandHolder("GET",
-                  "<key>",
-                  "Get the value of a key.",
+                  &CommandsApi::Add),
+    CommandHolder("SCAN",
+                  "<cursor> [MATCH pattern] [COUNT count]",
+                  "Incrementally iterate the keys space",
                   UNDEFINED_SINCE,
                   UNDEFINED_EXAMPLE_STR,
                   1,
-                  0,
-                  &get),
-    CommandHolder("RENAME",
-                  "<key> <newkey>",
-                  "Rename a key",
+                  4,
+                  &CommandsApi::Scan),
+    CommandHolder("KEYS",
+                  "<key_start> <key_end> <limit>",
+                  "Find all keys matching the given limits.",
                   UNDEFINED_SINCE,
                   UNDEFINED_EXAMPLE_STR,
-                  2,
+                  3,
                   0,
-                  &rename),
-    CommandHolder("QUIT",
-                  "-",
-                  "Close the connection",
-                  UNDEFINED_SINCE,
-                  UNDEFINED_EXAMPLE_STR,
-                  0,
-                  0,
-                  &quit),
+                  &CommandsApi::Keys),
     CommandHolder("DBKCOUNT",
                   "-",
                   "Return the number of keys in the "
@@ -263,15 +182,56 @@ static const std::vector<CommandHolder> memcachedCommands = {
                   UNDEFINED_EXAMPLE_STR,
                   0,
                   0,
-                  &dbkcount),
-    CommandHolder("HELP",
-                  "[command]",
-                  "Return how to use command",
+                  &CommandsApi::DBkcount),
+    CommandHolder("FLUSHDB",
+                  "-",
+                  "Remove all keys from the current database",
                   UNDEFINED_SINCE,
                   UNDEFINED_EXAMPLE_STR,
                   0,
                   1,
-                  &help),
+                  &CommandsApi::FlushDB),
+    CommandHolder("SELECT",
+                  "<name>",
+                  "Change the selected database for the "
+                  "current connection",
+                  UNDEFINED_SINCE,
+                  UNDEFINED_EXAMPLE_STR,
+                  1,
+                  0,
+                  &CommandsApi::Select),
+    CommandHolder("SET",
+                  "<key> <value>",
+                  "Set the value of a key.",
+                  UNDEFINED_SINCE,
+                  UNDEFINED_EXAMPLE_STR,
+                  2,
+                  0,
+                  &CommandsApi::Set),
+    CommandHolder("GET",
+                  "<key>",
+                  "Get the value of a key.",
+                  UNDEFINED_SINCE,
+                  UNDEFINED_EXAMPLE_STR,
+                  1,
+                  0,
+                  &CommandsApi::Get),
+    CommandHolder("RENAME",
+                  "<key> <newkey>",
+                  "Rename a key",
+                  UNDEFINED_SINCE,
+                  UNDEFINED_EXAMPLE_STR,
+                  2,
+                  0,
+                  &CommandsApi::Rename),
+    CommandHolder("DEL",
+                  "<key> [key ...]",
+                  "Delete key.",
+                  UNDEFINED_SINCE,
+                  UNDEFINED_EXAMPLE_STR,
+                  1,
+                  INFINITE_COMMAND_ARGS,
+                  &CommandsApi::Delete),
     CommandHolder("EXPIRE",
                   "<key> <exptime>",
                   "Set a key's time to live in seconds",
@@ -279,8 +239,15 @@ static const std::vector<CommandHolder> memcachedCommands = {
                   UNDEFINED_EXAMPLE_STR,
                   2,
                   0,
-                  &expire)
-};
+                  &CommandsApi::SetTTL),
+    CommandHolder("QUIT",
+                  "-",
+                  "Close the connection",
+                  UNDEFINED_SINCE,
+                  UNDEFINED_EXAMPLE_STR,
+                  0,
+                  0,
+                  &CommandsApi::Quit)};
 }  // namespace memcached
 }  // namespace core
 }  // namespace fastonosql

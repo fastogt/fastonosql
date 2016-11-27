@@ -111,9 +111,9 @@ common::Error scan(internal::CommandHandler* handler,
   common::StringValue* val = common::Value::createStringValue(rep_out);
   mar->append(val);
   FastoObjectArray* child = new FastoObjectArray(out, mar, red->Delimiter());
-  FastoObjectArray* keys_arr = new FastoObjectArray(child, ar, red->Delimiter());
-  child->AddChildren(keys_arr);
   out->AddChildren(child);
+  FastoObjectArray* keys_arr = new FastoObjectArray(child, ar, red->Delimiter());
+  child->AddChildren(keys_arr);  
   return common::Error();
 }
 

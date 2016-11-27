@@ -111,9 +111,9 @@ common::Error ApiTraits<CDBConnection>::Scan(internal::CommandHandler* handler,
   common::StringValue* val = common::Value::createStringValue(rep_out);
   mar->append(val);
   FastoObjectArray* child = new FastoObjectArray(out, mar, cdb->Delimiter());
+  out->AddChildren(child);
   FastoObjectArray* keys_arr = new FastoObjectArray(child, ar, cdb->Delimiter());
   child->AddChildren(keys_arr);
-  out->AddChildren(child);
   return common::Error();
 }
 

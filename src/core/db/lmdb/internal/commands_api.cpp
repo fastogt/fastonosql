@@ -28,14 +28,15 @@ common::Error CommandsApi::Info(internal::CommandHandler* handler,
                                 FastoObject* out) {
   DBConnection* mdb = static_cast<DBConnection*>(handler);
   ServerInfo::Stats statsout;
-  common::Error er = mdb->Info(argc == 1 ? argv[0] : nullptr, &statsout);
-  if (!er) {
-    common::StringValue* val = common::Value::createStringValue(ServerInfo(statsout).ToString());
-    FastoObject* child = new FastoObject(out, val, mdb->Delimiter());
-    out->AddChildren(child);
+  common::Error err = mdb->Info(argc == 1 ? argv[0] : nullptr, &statsout);
+  if (err && err->isError()) {
+    return err;
   }
 
-  return er;
+  common::StringValue* val = common::Value::createStringValue(ServerInfo(statsout).ToString());
+  FastoObject* child = new FastoObject(out, val, mdb->Delimiter());
+  out->AddChildren(child);
+  return common::Error();
 }
 
 }  // namespace lmdb

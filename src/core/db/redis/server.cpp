@@ -27,9 +27,9 @@
 
 #include "core/events/events_info.h"  // for DiscoveryInfoResponce
 
-#include "core/db/redis/database.h"      // for Database
-#include "core/db/redis/driver.h"        // for Driver
-#include "core/db/redis/server_info.h"   // for ServerInfo, etc
+#include "core/db/redis/database.h"     // for Database
+#include "core/db/redis/driver.h"       // for Driver
+#include "core/db/redis/server_info.h"  // for ServerInfo, etc
 
 namespace fastonosql {
 namespace core {
@@ -61,23 +61,26 @@ IDatabaseSPtr Server::CreateDatabase(IDataBaseInfoSPtr info) {
 
 void Server::HandleDiscoveryInfoResponceEvent(events::DiscoveryInfoResponceEvent* ev) {
   auto v = ev->value();
-  common::Error er = v.errorInfo();
-  if (!er) {
-    struct ServerInfo* rinf = dynamic_cast<struct ServerInfo*>(v.sinfo.get());  // +
-    CHECK(rinf);
-    if (rinf->replication_.role_ == "master") {
-      role_ = MASTER;
-    } else if (rinf->replication_.role_ == "slave") {
-      role_ = SLAVE;
-    }
+  common::Error err = v.errorInfo();
+  if (err && err->isError()) {
+    IServer::HandleDiscoveryInfoResponceEvent(ev);
+    return;
+  }
 
-    if (rinf->server_.redis_mode_ == "standalone") {
-      mode_ = STANDALONE;
-    } else if (rinf->server_.redis_mode_ == "sentinel") {
-      mode_ = SENTINEL;
-    } else if (rinf->server_.redis_mode_ == "cluster") {
-      mode_ = CLUSTER;
-    }
+  struct ServerInfo* rinf = dynamic_cast<struct ServerInfo*>(v.sinfo.get());  // +
+  CHECK(rinf);
+  if (rinf->replication_.role_ == "master") {
+    role_ = MASTER;
+  } else if (rinf->replication_.role_ == "slave") {
+    role_ = SLAVE;
+  }
+
+  if (rinf->server_.redis_mode_ == "standalone") {
+    mode_ = STANDALONE;
+  } else if (rinf->server_.redis_mode_ == "sentinel") {
+    mode_ = SENTINEL;
+  } else if (rinf->server_.redis_mode_ == "cluster") {
+    mode_ = CLUSTER;
   }
   IServer::HandleDiscoveryInfoResponceEvent(ev);
 }
