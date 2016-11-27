@@ -279,7 +279,7 @@ static const std::vector<CommandHolder> memcachedCommands = {
                   UNDEFINED_EXAMPLE_STR,
                   2,
                   0,
-                  &expire),
+                  &expire)
 };
 }  // namespace memcached
 }  // namespace core

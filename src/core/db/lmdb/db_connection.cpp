@@ -554,7 +554,7 @@ const char* CDBConnection<lmdb::NativeConnection, lmdb::Config, LMDB>::VersionAp
 
 template <>
 std::vector<CommandHolder> CDBConnection<lmdb::NativeConnection, lmdb::Config, LMDB>::Commands() {
-  return lmdb::lmdbCommands;
+  return lmdb::g_commands;
 }
 
 }  // namespace internal

@@ -86,7 +86,7 @@ const char* CDBConnection<leveldb::NativeConnection, leveldb::Config, LEVELDB>::
 template <>
 std::vector<CommandHolder>
 CDBConnection<leveldb::NativeConnection, leveldb::Config, LEVELDB>::Commands() {
-  return leveldb::leveldbCommands;
+  return leveldb::g_commands;
 }
 }  // namespace internal
 namespace leveldb {

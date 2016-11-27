@@ -533,7 +533,7 @@ const char* CDBConnection<upscaledb::NativeConnection, upscaledb::Config, UPSCAL
 template <>
 std::vector<CommandHolder>
 CDBConnection<upscaledb::NativeConnection, upscaledb::Config, UPSCALEDB>::Commands() {
-  return upscaledb::upscaledbCommands;
+  return upscaledb::g_commands;
 }
 }  // namespace internal
 }  // namespace core

@@ -178,6 +178,7 @@ SET(HEADERS_CORE_INTERNAL
   core/internal/cdb_connection.h
   core/internal/cdb_connection_client.h
   core/internal/command_handler.h
+  core/internal/commands_api.h
 )
 SET(SOURCES_CORE_INTERNAL
   core/internal/connection.cpp
@@ -185,6 +186,7 @@ SET(SOURCES_CORE_INTERNAL
   core/internal/cdb_connection.cpp
   core/internal/cdb_connection_client.cpp
   core/internal/command_handler.cpp
+  core/internal/commands_api.cpp
 )
 
 SET(HEADERS_CORE_DATABASE

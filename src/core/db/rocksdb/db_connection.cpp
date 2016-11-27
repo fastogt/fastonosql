@@ -98,7 +98,7 @@ const char* CDBConnection<rocksdb::NativeConnection, rocksdb::Config, ROCKSDB>::
 template <>
 std::vector<CommandHolder>
 CDBConnection<rocksdb::NativeConnection, rocksdb::Config, ROCKSDB>::Commands() {
-  return rocksdb::rocksdbCommands;
+  return rocksdb::g_commands;
 }
 }  // namespace internal
 namespace rocksdb {

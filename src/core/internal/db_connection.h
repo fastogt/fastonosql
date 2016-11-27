@@ -36,6 +36,7 @@ class DBConnection {
   typedef ConnectionAllocatorTraits<NConnection, Config> ConnectionAllocatorTrait;
   typedef Connection<ConnectionAllocatorTrait> dbconnection_t;
   typedef typename dbconnection_t::config_t config_t;
+  typedef typename dbconnection_t::handle_t nconnection_t;
   static constexpr connectionTypes connection_t = ContType;
 
   DBConnection() : connection_(), interrupted_(false) {}

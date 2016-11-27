@@ -18,7 +18,7 @@
 
 #include "gui/db/leveldb/lexer.h"
 
-#include "core/db/leveldb/db_connection.h"  // for leveldbCommands, etc
+#include "core/db/leveldb/db_connection.h"
 
 namespace fastonosql {
 namespace gui {

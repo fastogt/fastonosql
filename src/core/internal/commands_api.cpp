@@ -16,30 +16,12 @@
     along with FastoNoSQL.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-#include "core/db/leveldb/internal/commands_api.h"
+#include "core/internal/commands_api.h"
 
 namespace fastonosql {
 namespace core {
-namespace leveldb {
+namespace internal {
 
-common::Error CommandsApi::Info(internal::CommandHandler* handler,
-                               int argc,
-                               const char** argv,
-                               FastoObject* out) {
-  DBConnection* level = static_cast<DBConnection*>(handler);
-
-  ServerInfo::Stats statsout;
-  common::Error err = level->Info(argc == 1 ? argv[0] : nullptr, &statsout);
-  if (err && err->isError()) {
-    return err;
-  }
-
-  ServerInfo linf(statsout);
-  common::StringValue* val = common::Value::createStringValue(linf.ToString());
-  FastoObject* child = new FastoObject(out, val, level->Delimiter());
-  out->AddChildren(child);
-  return common::Error();
-}
 
 }  // namespace leveldb
 }  // namespace core

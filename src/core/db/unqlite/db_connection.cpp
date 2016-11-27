@@ -157,7 +157,7 @@ const char* CDBConnection<unqlite::NativeConnection, unqlite::Config, UNQLITE>::
 template <>
 std::vector<CommandHolder>
 CDBConnection<unqlite::NativeConnection, unqlite::Config, UNQLITE>::Commands() {
-  return unqlite::unqliteCommands;
+  return unqlite::g_commands;
 }
 }  // namespace internal
 namespace unqlite {
