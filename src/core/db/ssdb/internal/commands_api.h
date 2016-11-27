@@ -20,245 +20,260 @@
 
 #include <common/error.h>
 
-#include "core/command_info.h"
-#include "core/internal/command_handler.h"
+#include "core/internal/commands_api.h"
+#include "core/db/ssdb/db_connection.h"
 
 namespace fastonosql {
 namespace core {
 namespace ssdb {
 
-common::Error select(internal::CommandHandler* handler,
-                     int argc,
-                     const char** argv,
-                     FastoObject* out);
-common::Error set(internal::CommandHandler* handler, int argc, const char** argv, FastoObject* out);
-common::Error get(internal::CommandHandler* handler, int argc, const char** argv, FastoObject* out);
-common::Error del(internal::CommandHandler* handler, int argc, const char** argv, FastoObject* out);
-common::Error rename(internal::CommandHandler* handler,
-                     int argc,
-                     const char** argv,
-                     FastoObject* out);
-common::Error set_ttl(internal::CommandHandler* handler,
-                      int argc,
-                      const char** argv,
-                      FastoObject* out);
+struct CommandsApi : public internal::ApiTraits<DBConnection> {
+  static common::Error Info(internal::CommandHandler* handler,
+                            int argc,
+                            const char** argv,
+                            FastoObject* out);
+  static common::Error ScanSSDB(internal::CommandHandler* handler,
+                                int argc,
+                                const char** argv,
+                                FastoObject* out);
 
-common::Error info(internal::CommandHandler* handler,
-                   int argc,
-                   const char** argv,
-                   FastoObject* out);
-common::Error auth(internal::CommandHandler* handler,
-                   int argc,
-                   const char** argv,
-                   FastoObject* out);
-common::Error setx(internal::CommandHandler* handler,
-                   int argc,
-                   const char** argv,
-                   FastoObject* out);
-common::Error incr(internal::CommandHandler* handler,
-                   int argc,
-                   const char** argv,
-                   FastoObject* out);
-common::Error keys(internal::CommandHandler* handler,
-                   int argc,
-                   const char** argv,
-                   FastoObject* out);
-common::Error scan(internal::CommandHandler* handler,
-                   int argc,
-                   const char** argv,
-                   FastoObject* out);
-common::Error rscan(internal::CommandHandler* handler,
-                    int argc,
-                    const char** argv,
-                    FastoObject* out);
-common::Error multi_get(internal::CommandHandler* handler,
-                        int argc,
-                        const char** argv,
-                        FastoObject* out);
-common::Error multi_set(internal::CommandHandler* handler,
-                        int argc,
-                        const char** argv,
-                        FastoObject* out);
-common::Error multi_del(internal::CommandHandler* handler,
-                        int argc,
-                        const char** argv,
-                        FastoObject* out);
-common::Error hget(internal::CommandHandler* handler,
-                   int argc,
-                   const char** argv,
-                   FastoObject* out);
-common::Error hgetall(internal::CommandHandler* handler,
-                      int argc,
-                      const char** argv,
-                      FastoObject* out);
-common::Error hset(internal::CommandHandler* handler,
-                   int argc,
-                   const char** argv,
-                   FastoObject* out);
-common::Error hdel(internal::CommandHandler* handler,
-                   int argc,
-                   const char** argv,
-                   FastoObject* out);
-common::Error hincr(internal::CommandHandler* handler,
-                    int argc,
-                    const char** argv,
-                    FastoObject* out);
-common::Error hsize(internal::CommandHandler* handler,
-                    int argc,
-                    const char** argv,
-                    FastoObject* out);
-common::Error hclear(internal::CommandHandler* handler,
-                     int argc,
-                     const char** argv,
-                     FastoObject* out);
-common::Error hkeys(internal::CommandHandler* handler,
-                    int argc,
-                    const char** argv,
-                    FastoObject* out);
-common::Error hscan(internal::CommandHandler* handler,
-                    int argc,
-                    const char** argv,
-                    FastoObject* out);
-common::Error hrscan(internal::CommandHandler* handler,
-                     int argc,
-                     const char** argv,
-                     FastoObject* out);
-common::Error multi_hget(internal::CommandHandler* handler,
-                         int argc,
-                         const char** argv,
-                         FastoObject* out);
-common::Error multi_hset(internal::CommandHandler* handler,
-                         int argc,
-                         const char** argv,
-                         FastoObject* out);
-common::Error zget(internal::CommandHandler* handler,
-                   int argc,
-                   const char** argv,
-                   FastoObject* out);
-common::Error zset(internal::CommandHandler* handler,
-                   int argc,
-                   const char** argv,
-                   FastoObject* out);
-common::Error zdel(internal::CommandHandler* handler,
-                   int argc,
-                   const char** argv,
-                   FastoObject* out);
-common::Error zincr(internal::CommandHandler* handler,
-                    int argc,
-                    const char** argv,
-                    FastoObject* out);
-common::Error zsize(internal::CommandHandler* handler,
-                    int argc,
-                    const char** argv,
-                    FastoObject* out);
-common::Error zclear(internal::CommandHandler* handler,
-                     int argc,
-                     const char** argv,
-                     FastoObject* out);
-common::Error zrank(internal::CommandHandler* handler,
-                    int argc,
-                    const char** argv,
-                    FastoObject* out);
-common::Error zrrank(internal::CommandHandler* handler,
-                     int argc,
-                     const char** argv,
-                     FastoObject* out);
-common::Error zrange(internal::CommandHandler* handler,
-                     int argc,
-                     const char** argv,
-                     FastoObject* out);
-common::Error zrrange(internal::CommandHandler* handler,
-                      int argc,
-                      const char** argv,
-                      FastoObject* out);
-common::Error zkeys(internal::CommandHandler* handler,
-                    int argc,
-                    const char** argv,
-                    FastoObject* out);
-common::Error zscan(internal::CommandHandler* handler,
-                    int argc,
-                    const char** argv,
-                    FastoObject* out);
-common::Error zrscan(internal::CommandHandler* handler,
-                     int argc,
-                     const char** argv,
-                     FastoObject* out);
-common::Error multi_zget(internal::CommandHandler* handler,
-                         int argc,
-                         const char** argv,
-                         FastoObject* out);
-common::Error multi_zset(internal::CommandHandler* handler,
-                         int argc,
-                         const char** argv,
-                         FastoObject* out);
-common::Error multi_zdel(internal::CommandHandler* handler,
-                         int argc,
-                         const char** argv,
-                         FastoObject* out);
-common::Error qpush(internal::CommandHandler* handler,
-                    int argc,
-                    const char** argv,
-                    FastoObject* out);
-common::Error qpop(internal::CommandHandler* handler,
-                   int argc,
-                   const char** argv,
-                   FastoObject* out);
-common::Error qslice(internal::CommandHandler* handler,
-                     int argc,
-                     const char** argv,
-                     FastoObject* out);
-common::Error qclear(internal::CommandHandler* handler,
-                     int argc,
-                     const char** argv,
-                     FastoObject* out);
-common::Error dbsize(internal::CommandHandler* handler,
-                     int argc,
-                     const char** argv,
-                     FastoObject* out);
+  static common::Error Auth(internal::CommandHandler* handler,
+                            int argc,
+                            const char** argv,
+                            FastoObject* out);
+  static common::Error Setx(internal::CommandHandler* handler,
+                            int argc,
+                            const char** argv,
+                            FastoObject* out);
+  static common::Error Incr(internal::CommandHandler* handler,
+                            int argc,
+                            const char** argv,
+                            FastoObject* out);
+  static common::Error Rscan(internal::CommandHandler* handler,
+                             int argc,
+                             const char** argv,
+                             FastoObject* out);
+  static common::Error MultiGet(internal::CommandHandler* handler,
+                                int argc,
+                                const char** argv,
+                                FastoObject* out);
+  static common::Error MultiSet(internal::CommandHandler* handler,
+                                int argc,
+                                const char** argv,
+                                FastoObject* out);
+  static common::Error MultiDel(internal::CommandHandler* handler,
+                                int argc,
+                                const char** argv,
+                                FastoObject* out);
+  static common::Error Hget(internal::CommandHandler* handler,
+                            int argc,
+                            const char** argv,
+                            FastoObject* out);
+  static common::Error Hgetall(internal::CommandHandler* handler,
+                               int argc,
+                               const char** argv,
+                               FastoObject* out);
+  static common::Error Hset(internal::CommandHandler* handler,
+                            int argc,
+                            const char** argv,
+                            FastoObject* out);
+  static common::Error Hdel(internal::CommandHandler* handler,
+                            int argc,
+                            const char** argv,
+                            FastoObject* out);
+  static common::Error Hincr(internal::CommandHandler* handler,
+                             int argc,
+                             const char** argv,
+                             FastoObject* out);
+  static common::Error Hsize(internal::CommandHandler* handler,
+                             int argc,
+                             const char** argv,
+                             FastoObject* out);
+  static common::Error Hclear(internal::CommandHandler* handler,
+                              int argc,
+                              const char** argv,
+                              FastoObject* out);
+  static common::Error Hkeys(internal::CommandHandler* handler,
+                             int argc,
+                             const char** argv,
+                             FastoObject* out);
+  static common::Error Hscan(internal::CommandHandler* handler,
+                             int argc,
+                             const char** argv,
+                             FastoObject* out);
+  static common::Error Hrscan(internal::CommandHandler* handler,
+                              int argc,
+                              const char** argv,
+                              FastoObject* out);
+  static common::Error MultiHget(internal::CommandHandler* handler,
+                                 int argc,
+                                 const char** argv,
+                                 FastoObject* out);
+  static common::Error MultiHset(internal::CommandHandler* handler,
+                                 int argc,
+                                 const char** argv,
+                                 FastoObject* out);
+  static common::Error Zget(internal::CommandHandler* handler,
+                            int argc,
+                            const char** argv,
+                            FastoObject* out);
+  static common::Error Zset(internal::CommandHandler* handler,
+                            int argc,
+                            const char** argv,
+                            FastoObject* out);
+  static common::Error Zdel(internal::CommandHandler* handler,
+                            int argc,
+                            const char** argv,
+                            FastoObject* out);
+  static common::Error Zincr(internal::CommandHandler* handler,
+                             int argc,
+                             const char** argv,
+                             FastoObject* out);
+  static common::Error Zsize(internal::CommandHandler* handler,
+                             int argc,
+                             const char** argv,
+                             FastoObject* out);
+  static common::Error Zclear(internal::CommandHandler* handler,
+                              int argc,
+                              const char** argv,
+                              FastoObject* out);
+  static common::Error Zrank(internal::CommandHandler* handler,
+                             int argc,
+                             const char** argv,
+                             FastoObject* out);
+  static common::Error Zrrank(internal::CommandHandler* handler,
+                              int argc,
+                              const char** argv,
+                              FastoObject* out);
+  static common::Error Zrange(internal::CommandHandler* handler,
+                              int argc,
+                              const char** argv,
+                              FastoObject* out);
+  static common::Error Zrrange(internal::CommandHandler* handler,
+                               int argc,
+                               const char** argv,
+                               FastoObject* out);
+  static common::Error Zkeys(internal::CommandHandler* handler,
+                             int argc,
+                             const char** argv,
+                             FastoObject* out);
+  static common::Error Zscan(internal::CommandHandler* handler,
+                             int argc,
+                             const char** argv,
+                             FastoObject* out);
+  static common::Error Zrscan(internal::CommandHandler* handler,
+                              int argc,
+                              const char** argv,
+                              FastoObject* out);
+  static common::Error MultiZget(internal::CommandHandler* handler,
+                                  int argc,
+                                  const char** argv,
+                                  FastoObject* out);
+  static common::Error MultiZset(internal::CommandHandler* handler,
+                                  int argc,
+                                  const char** argv,
+                                  FastoObject* out);
+  static common::Error MultiZdel(internal::CommandHandler* handler,
+                                  int argc,
+                                  const char** argv,
+                                  FastoObject* out);
+  static common::Error Qpush(internal::CommandHandler* handler,
+                             int argc,
+                             const char** argv,
+                             FastoObject* out);
+  static common::Error Qpop(internal::CommandHandler* handler,
+                            int argc,
+                            const char** argv,
+                            FastoObject* out);
+  static common::Error Qslice(internal::CommandHandler* handler,
+                              int argc,
+                              const char** argv,
+                              FastoObject* out);
+  static common::Error Qclear(internal::CommandHandler* handler,
+                              int argc,
+                              const char** argv,
+                              FastoObject* out);
+  static common::Error DBsize(internal::CommandHandler* handler,
+                              int argc,
+                              const char** argv,
+                              FastoObject* out);
+};
 
-common::Error dbkcount(internal::CommandHandler* handler,
-                       int argc,
-                       const char** argv,
-                       FastoObject* out);
-common::Error help(internal::CommandHandler* handler,
-                   int argc,
-                   const char** argv,
-                   FastoObject* out);
-common::Error flushdb(internal::CommandHandler* handler,
-                      int argc,
-                      const char** argv,
-                      FastoObject* out);
-common::Error quit(internal::CommandHandler* handler,
-                   int argc,
-                   const char** argv,
-                   FastoObject* out);
-
-// TODO: SETNX command imlementation
-static const std::vector<CommandHolder> ssdbCommands = {
-    CommandHolder("AUTH",
-                  "<password>",
-                  "Authenticate to the server",
+static const std::vector<CommandHolder> g_commands = {
+    CommandHolder("HELP",
+                  "[command]",
+                  "Return how to use command",
+                  UNDEFINED_SINCE,
+                  UNDEFINED_EXAMPLE_STR,
+                  0,
+                  1,
+                  &CommandsApi::Help),
+    CommandHolder("INFO",
+                  "<args>",
+                  "These command return database information.",
                   UNDEFINED_SINCE,
                   UNDEFINED_EXAMPLE_STR,
                   1,
                   0,
-                  &auth),
+                  &CommandsApi::Info),
+    CommandHolder("SCAN",
+                  "<key_start> <key_end> <limit>",
+                  "List keys in range (key_start, key_end].",
+                  UNDEFINED_SINCE,
+                  UNDEFINED_EXAMPLE_STR,
+                  3,
+                  0,
+                  &CommandsApi::ScanSSDB),
+    CommandHolder("KEYS",
+                  "<key_start> <key_end> <limit>",
+                  "Find all keys matching the given limits.",
+                  UNDEFINED_SINCE,
+                  UNDEFINED_EXAMPLE_STR,
+                  3,
+                  0,
+                  &CommandsApi::Keys),
+    CommandHolder("DBKCOUNT",
+                  "-",
+                  "Return the number of keys in the "
+                  "selected database",
+                  UNDEFINED_SINCE,
+                  UNDEFINED_EXAMPLE_STR,
+                  0,
+                  0,
+                  &CommandsApi::DBkcount),
+    CommandHolder("FLUSHDB",
+                  "-",
+                  "Remove all keys from the current database",
+                  UNDEFINED_SINCE,
+                  UNDEFINED_EXAMPLE_STR,
+                  0,
+                  1,
+                  &CommandsApi::FlushDB),
+    CommandHolder("SELECT",
+                  "<name>",
+                  "Change the selected database for the "
+                  "current connection",
+                  UNDEFINED_SINCE,
+                  UNDEFINED_EXAMPLE_STR,
+                  1,
+                  0,
+                  &CommandsApi::Select),
     CommandHolder("SET",
                   "<key> <value>",
-                  "Set the value of the key.",
+                  "Set the value of a key.",
                   UNDEFINED_SINCE,
                   UNDEFINED_EXAMPLE_STR,
                   2,
                   0,
-                  &set),
+                  &CommandsApi::Set),
     CommandHolder("GET",
                   "<key>",
-                  "Get the value related to the specified key.",
+                  "Get the value of a key.",
                   UNDEFINED_SINCE,
                   UNDEFINED_EXAMPLE_STR,
                   1,
                   0,
-                  &get),
+                  &CommandsApi::Get),
     CommandHolder("RENAME",
                   "<key> <newkey>",
                   "Rename a key",
@@ -266,15 +281,7 @@ static const std::vector<CommandHolder> ssdbCommands = {
                   UNDEFINED_EXAMPLE_STR,
                   2,
                   0,
-                  &rename),
-    CommandHolder("SETX",
-                  "<key> <value> <ttl>",
-                  "Set the value of the key, with a time to live.",
-                  UNDEFINED_SINCE,
-                  UNDEFINED_EXAMPLE_STR,
-                  3,
-                  0,
-                  &setx),
+                  &CommandsApi::Rename),
     CommandHolder("DEL",
                   "<key> [key ...]",
                   "Delete key.",
@@ -282,7 +289,39 @@ static const std::vector<CommandHolder> ssdbCommands = {
                   UNDEFINED_EXAMPLE_STR,
                   1,
                   INFINITE_COMMAND_ARGS,
-                  &del),
+                  &CommandsApi::Delete),
+    CommandHolder("EXPIRE",
+                  "<key> <exptime>",
+                  "Set a key's time to live in seconds",
+                  UNDEFINED_SINCE,
+                  UNDEFINED_EXAMPLE_STR,
+                  2,
+                  0,
+                  &CommandsApi::SetTTL),
+    CommandHolder("QUIT",
+                  "-",
+                  "Close the connection",
+                  UNDEFINED_SINCE,
+                  UNDEFINED_EXAMPLE_STR,
+                  0,
+                  0,
+                  &CommandsApi::Quit),
+    CommandHolder("AUTH",
+                  "<password>",
+                  "Authenticate to the server",
+                  UNDEFINED_SINCE,
+                  UNDEFINED_EXAMPLE_STR,
+                  1,
+                  0,
+                  &CommandsApi::Auth),
+    CommandHolder("SETX",
+                  "<key> <value> <ttl>",
+                  "Set the value of the key, with a time to live.",
+                  UNDEFINED_SINCE,
+                  UNDEFINED_EXAMPLE_STR,
+                  3,
+                  0,
+                  &CommandsApi::Setx),
     CommandHolder("INCR",
                   "<key> [num]",
                   "Increment the number stored at key by num.\n"
@@ -295,23 +334,7 @@ static const std::vector<CommandHolder> ssdbCommands = {
                   UNDEFINED_EXAMPLE_STR,
                   1,
                   1,
-                  &incr),
-    CommandHolder("KEYS",
-                  "<key_start> <key_end> <limit>",
-                  "List keys in range (key_start, key_end].",
-                  UNDEFINED_SINCE,
-                  UNDEFINED_EXAMPLE_STR,
-                  3,
-                  0,
-                  &keys),
-    CommandHolder("SCAN",
-                  "<key_start> <key_end> <limit>",
-                  "List keys in range (key_start, key_end].",
-                  UNDEFINED_SINCE,
-                  UNDEFINED_EXAMPLE_STR,
-                  3,
-                  0,
-                  &scan),
+                  &CommandsApi::Incr),
     CommandHolder("RSCAN",
                   "<key_start> <key_end> <limit>",
                   "List keys in range (key_start, key_end].",
@@ -319,7 +342,7 @@ static const std::vector<CommandHolder> ssdbCommands = {
                   UNDEFINED_EXAMPLE_STR,
                   3,
                   0,
-                  &rscan),
+                  &CommandsApi::Rscan),
     CommandHolder("MULTI_GET",
                   "<keys> [keys ...]",
                   "Get the values related to the specified "
@@ -328,7 +351,7 @@ static const std::vector<CommandHolder> ssdbCommands = {
                   UNDEFINED_EXAMPLE_STR,
                   1,
                   0,
-                  &multi_get),
+                  &CommandsApi::MultiGet),
     CommandHolder("MULTI_SET",
                   "<key> <value> [key value ...]",
                   "Set multiple key-value pairs(kvs) in "
@@ -337,7 +360,7 @@ static const std::vector<CommandHolder> ssdbCommands = {
                   UNDEFINED_EXAMPLE_STR,
                   2,
                   INFINITE_COMMAND_ARGS,
-                  &multi_set),
+                  &CommandsApi::MultiSet),
     CommandHolder("MULTI_DEL",
                   "<keys> [keys ...]",
                   "Delete specified multiple keys.",
@@ -345,7 +368,7 @@ static const std::vector<CommandHolder> ssdbCommands = {
                   UNDEFINED_EXAMPLE_STR,
                   1,
                   INFINITE_COMMAND_ARGS,
-                  &multi_del),
+                  &CommandsApi::MultiDel),
     CommandHolder("HSET",
                   "<name> <key> <value>",
                   "Set the string value in argument as "
@@ -354,7 +377,7 @@ static const std::vector<CommandHolder> ssdbCommands = {
                   UNDEFINED_EXAMPLE_STR,
                   3,
                   0,
-                  &hset),
+                  &CommandsApi::Hset),
     CommandHolder("HGET",
                   "<name> <key>",
                   "Get the value related to the specified "
@@ -363,7 +386,7 @@ static const std::vector<CommandHolder> ssdbCommands = {
                   UNDEFINED_EXAMPLE_STR,
                   2,
                   0,
-                  &hget),
+                  &CommandsApi::Hget),
     CommandHolder("HDEL",
                   "<name> <key>",
                   "Delete specified key of a hashmap.",
@@ -371,7 +394,7 @@ static const std::vector<CommandHolder> ssdbCommands = {
                   UNDEFINED_EXAMPLE_STR,
                   2,
                   0,
-                  &hdel),
+                  &CommandsApi::Hdel),
     CommandHolder("HINCR",
                   "<name> <key> <num>",
                   "Increment the number stored at key in a hashmap "
@@ -385,7 +408,7 @@ static const std::vector<CommandHolder> ssdbCommands = {
                   UNDEFINED_EXAMPLE_STR,
                   3,
                   0,
-                  &hincr),
+                  &CommandsApi::Hincr),
     CommandHolder("HSIZE",
                   "<name>",
                   "Return the number of pairs of a hashmap.",
@@ -393,7 +416,7 @@ static const std::vector<CommandHolder> ssdbCommands = {
                   UNDEFINED_EXAMPLE_STR,
                   1,
                   0,
-                  &hsize),
+                  &CommandsApi::Hsize),
     CommandHolder("HCLEAR",
                   "<name>",
                   "Delete all keys in a hashmap.",
@@ -401,7 +424,7 @@ static const std::vector<CommandHolder> ssdbCommands = {
                   UNDEFINED_EXAMPLE_STR,
                   1,
                   0,
-                  &hclear),
+                  &CommandsApi::Hclear),
     CommandHolder("HKEYS",
                   "<name> <key_start> <key_end> <limit>",
                   "List keys of a hashmap in range "
@@ -410,7 +433,7 @@ static const std::vector<CommandHolder> ssdbCommands = {
                   UNDEFINED_EXAMPLE_STR,
                   4,
                   0,
-                  &hkeys),
+                  &CommandsApi::Hkeys),
     CommandHolder("HGETALL",
                   "<name>",
                   "Returns the whole hash, as an array of "
@@ -419,7 +442,7 @@ static const std::vector<CommandHolder> ssdbCommands = {
                   UNDEFINED_EXAMPLE_STR,
                   1,
                   0,
-                  &hgetall),
+                  &CommandsApi::Hgetall),
     CommandHolder("HSCAN",
                   "<name> <key_start> <key_end> <limit>",
                   "List key-value pairs of a hashmap with "
@@ -429,7 +452,7 @@ static const std::vector<CommandHolder> ssdbCommands = {
                   UNDEFINED_EXAMPLE_STR,
                   4,
                   0,
-                  &hscan),
+                  &CommandsApi::Hscan),
     CommandHolder("HRSCAN",
                   "<name> <key_start> <key_end> <limit>",
                   "List key-value pairs of a hashmap with "
@@ -440,7 +463,7 @@ static const std::vector<CommandHolder> ssdbCommands = {
                   UNDEFINED_EXAMPLE_STR,
                   4,
                   0,
-                  &hrscan),
+                  &CommandsApi::Hrscan),
     CommandHolder("MULTI_HGET",
                   "<name> <keys>",
                   "Get the values related to the specified "
@@ -449,7 +472,7 @@ static const std::vector<CommandHolder> ssdbCommands = {
                   UNDEFINED_EXAMPLE_STR,
                   2,
                   0,
-                  &multi_hget),
+                  &CommandsApi::MultiHget),
     CommandHolder("MULTI_HSET",
                   "<name> <key> <value> [key value ...]",
                   "Set multiple key-value pairs(kvs) of a "
@@ -458,7 +481,7 @@ static const std::vector<CommandHolder> ssdbCommands = {
                   UNDEFINED_EXAMPLE_STR,
                   3,
                   INFINITE_COMMAND_ARGS,
-                  &multi_hset),
+                  &CommandsApi::MultiHset),
     CommandHolder("ZSET",
                   "<name> <key> <score>",
                   "Set the score of the key of a zset.",
@@ -466,7 +489,7 @@ static const std::vector<CommandHolder> ssdbCommands = {
                   UNDEFINED_EXAMPLE_STR,
                   4,
                   0,
-                  &zset),
+                  &CommandsApi::Zset),
     CommandHolder("ZGET",
                   "<name> <key>",
                   "Get the score related to the specified "
@@ -475,7 +498,7 @@ static const std::vector<CommandHolder> ssdbCommands = {
                   UNDEFINED_EXAMPLE_STR,
                   2,
                   0,
-                  &zget),
+                  &CommandsApi::Zget),
     CommandHolder("ZDEL",
                   "<name> <key>",
                   "Delete specified key of a zset.",
@@ -483,7 +506,7 @@ static const std::vector<CommandHolder> ssdbCommands = {
                   UNDEFINED_EXAMPLE_STR,
                   2,
                   0,
-                  &zdel),
+                  &CommandsApi::Zdel),
     CommandHolder("ZINCR",
                   "<name> <key> <num>",
                   "Increment the number stored at key in a zset by "
@@ -497,7 +520,7 @@ static const std::vector<CommandHolder> ssdbCommands = {
                   UNDEFINED_EXAMPLE_STR,
                   3,
                   0,
-                  &zincr),
+                  &CommandsApi::Zincr),
     CommandHolder("ZSIZE",
                   "<name>",
                   "Return the number of pairs of a zset.",
@@ -505,7 +528,7 @@ static const std::vector<CommandHolder> ssdbCommands = {
                   UNDEFINED_EXAMPLE_STR,
                   1,
                   0,
-                  &zsize),
+                  &CommandsApi::Zsize),
     CommandHolder("ZCLEAR",
                   "<name>",
                   "Delete all keys in a zset.",
@@ -513,7 +536,7 @@ static const std::vector<CommandHolder> ssdbCommands = {
                   UNDEFINED_EXAMPLE_STR,
                   1,
                   0,
-                  &zclear),
+                  &CommandsApi::Zclear),
     CommandHolder("ZRANK",
                   "<name> <key>",
                   "Returns the rank(index) of a given key in the "
@@ -526,7 +549,7 @@ static const std::vector<CommandHolder> ssdbCommands = {
                   UNDEFINED_EXAMPLE_STR,
                   2,
                   0,
-                  &zrank),
+                  &CommandsApi::Zrank),
     CommandHolder("ZRRANK",
                   "<name> <key>",
                   "Returns the rank(index) of a given key in the "
@@ -539,7 +562,7 @@ static const std::vector<CommandHolder> ssdbCommands = {
                   UNDEFINED_EXAMPLE_STR,
                   2,
                   0,
-                  &zrrank),
+                  &CommandsApi::Zrrank),
     CommandHolder("ZRANGE",
                   "<name> <offset> <limit>",
                   "Returns a range of key-score pairs by "
@@ -550,7 +573,7 @@ static const std::vector<CommandHolder> ssdbCommands = {
                   UNDEFINED_EXAMPLE_STR,
                   3,
                   0,
-                  &zrange),
+                  &CommandsApi::Zrange),
     CommandHolder("ZRRANGE",
                   "<name> <offset> <limit>",
                   "Returns a range of key-score pairs by "
@@ -561,7 +584,7 @@ static const std::vector<CommandHolder> ssdbCommands = {
                   UNDEFINED_EXAMPLE_STR,
                   3,
                   0,
-                  &zrrange),
+                  &CommandsApi::Zrrange),
     CommandHolder("ZKEYS",
                   "<name> <key_start> <score_start> "
                   "<score_end> <limit>",
@@ -570,7 +593,7 @@ static const std::vector<CommandHolder> ssdbCommands = {
                   UNDEFINED_EXAMPLE_STR,
                   4,
                   0,
-                  &zkeys),
+                  &CommandsApi::Zkeys),
     CommandHolder("ZSCAN",
                   "<name> <key_start> <score_start> "
                   "<score_end> <limit>",
@@ -591,7 +614,7 @@ static const std::vector<CommandHolder> ssdbCommands = {
                   UNDEFINED_EXAMPLE_STR,
                   5,
                   0,
-                  &zscan),
+                  &CommandsApi::Zscan),
     CommandHolder("ZRSCAN",
                   "<name> <key_start> <score_start> <score_end> "
                   "<limit>",
@@ -600,7 +623,7 @@ static const std::vector<CommandHolder> ssdbCommands = {
                   UNDEFINED_EXAMPLE_STR,
                   5,
                   0,
-                  &zrscan),
+                  &CommandsApi::Zrscan),
     CommandHolder("MULTI_ZGET",
                   "<name> <keys>",
                   "Get the values related to the specified "
@@ -609,7 +632,7 @@ static const std::vector<CommandHolder> ssdbCommands = {
                   UNDEFINED_EXAMPLE_STR,
                   2,
                   0,
-                  &multi_zget),
+                  &CommandsApi::MultiZget),
     CommandHolder("MULTI_ZSET",
                   "<name> <key> <score> [key score ...]",
                   "Set multiple key-score pairs(kvs) of a "
@@ -618,7 +641,7 @@ static const std::vector<CommandHolder> ssdbCommands = {
                   UNDEFINED_EXAMPLE_STR,
                   3,
                   INFINITE_COMMAND_ARGS,
-                  &multi_zset),
+                  &CommandsApi::MultiZset),
     CommandHolder("MULTI_ZDEL",
                   "<name> <keys>",
                   "Delete specified multiple keys of a zset.",
@@ -626,7 +649,7 @@ static const std::vector<CommandHolder> ssdbCommands = {
                   UNDEFINED_EXAMPLE_STR,
                   2,
                   0,
-                  &multi_zdel),
+                  &CommandsApi::MultiZdel),
     CommandHolder("INFO",
                   "[opt]",
                   "Return information about the server.",
@@ -634,7 +657,7 @@ static const std::vector<CommandHolder> ssdbCommands = {
                   UNDEFINED_EXAMPLE_STR,
                   0,
                   1,
-                  &info),
+                  &CommandsApi::Info),
     CommandHolder("QPUSH",
                   "<name> <item>",
                   "Adds an or more than one element to the "
@@ -643,7 +666,7 @@ static const std::vector<CommandHolder> ssdbCommands = {
                   UNDEFINED_EXAMPLE_STR,
                   2,
                   0,
-                  &qpush),
+                  &CommandsApi::Qpush),
     CommandHolder("QPOP",
                   "<name> <size>",
                   "Pop out one or more elements from the "
@@ -652,7 +675,7 @@ static const std::vector<CommandHolder> ssdbCommands = {
                   UNDEFINED_EXAMPLE_STR,
                   2,
                   0,
-                  &qpop),
+                  &CommandsApi::Qpop),
     CommandHolder("QSLICE",
                   "<name> <begin> <end>",
                   "Returns a portion of elements from the "
@@ -663,7 +686,7 @@ static const std::vector<CommandHolder> ssdbCommands = {
                   UNDEFINED_EXAMPLE_STR,
                   3,
                   0,
-                  &qslice),
+                  &CommandsApi::Qslice),
     CommandHolder("QCLEAR",
                   "<name>",
                   "Clear the queue.",
@@ -671,7 +694,7 @@ static const std::vector<CommandHolder> ssdbCommands = {
                   UNDEFINED_EXAMPLE_STR,
                   1,
                   0,
-                  &qclear),
+                  &CommandsApi::Qclear),
     CommandHolder("DBSIZE",
                   "-",
                   "Return the approximate size of the database, in "
@@ -682,40 +705,7 @@ static const std::vector<CommandHolder> ssdbCommands = {
                   UNDEFINED_EXAMPLE_STR,
                   0,
                   0,
-                  &dbsize),
-    CommandHolder("QUIT",
-                  "-",
-                  "Close the connection",
-                  UNDEFINED_SINCE,
-                  UNDEFINED_EXAMPLE_STR,
-                  0,
-                  0,
-                  &quit),
-    CommandHolder("DBKCOUNT",
-                  "-",
-                  "Return the number of keys in the "
-                  "selected database",
-                  UNDEFINED_SINCE,
-                  UNDEFINED_EXAMPLE_STR,
-                  0,
-                  0,
-                  &dbkcount),
-    CommandHolder("HELP",
-                  "[command]",
-                  "Return how to use command",
-                  UNDEFINED_SINCE,
-                  UNDEFINED_EXAMPLE_STR,
-                  0,
-                  1,
-                  &help),
-    CommandHolder("FLUSHDB",
-                  "-",
-                  "Remove all keys from the current database",
-                  UNDEFINED_SINCE,
-                  UNDEFINED_EXAMPLE_STR,
-                  0,
-                  1,
-                  &flushdb)};
+                  &CommandsApi::DBsize)};
 
 }  // namespace ssdb
 }  // namespace core

@@ -81,7 +81,7 @@ const char* CDBConnection<ssdb::NativeConnection, ssdb::Config, SSDB>::VersionAp
 
 template <>
 std::vector<CommandHolder> CDBConnection<ssdb::NativeConnection, ssdb::Config, SSDB>::Commands() {
-  return ssdb::ssdbCommands;
+  return ssdb::g_commands;
 }
 }  // namespace internal
 namespace ssdb {
