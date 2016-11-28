@@ -20,8 +20,6 @@
 
 #include "gui/widgets/connection_remote_widget.h"
 
-class QPushButton;
-
 namespace fastonosql {
 namespace gui {
 class UserPasswordWidget;

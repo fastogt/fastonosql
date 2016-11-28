@@ -116,6 +116,11 @@ const QIcon& GuiFactory::executeIcon() const {
   return start;
 }
 
+const QIcon& GuiFactory::helpIcon() const {
+  static QIcon start(":" PROJECT_NAME_LOWERCASE "/images/64x64/help.png");
+  return start;
+}
+
 const QIcon& GuiFactory::timeIcon() const {
   static QIcon time(":" PROJECT_NAME_LOWERCASE "/images/64x64/time.png");
   return time;

@@ -31,6 +31,7 @@
     <file>@PROJECT_NAME_LOWERCASE@/images/64x64/import.png</file>
     <file>@PROJECT_NAME_LOWERCASE@/images/64x64/export.png</file>
 
+    <file>@PROJECT_NAME_LOWERCASE@/images/64x64/help.png</file>
     <file>@PROJECT_NAME_LOWERCASE@/images/64x64/time.png</file>
     <file>@PROJECT_NAME_LOWERCASE@/images/64x64/server.png</file>
     <file>@PROJECT_NAME_LOWERCASE@/images/64x64/load.png</file>

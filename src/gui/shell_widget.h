@@ -156,6 +156,7 @@ class BaseShellWidget : public QWidget {
   bool loadFromFile(const QString& path);
   void saveToFileAs();
   void saveToFile();
+  void helpClick();
 
   void advancedOptionsChange(int state);
   void changeVersionApi(int index);

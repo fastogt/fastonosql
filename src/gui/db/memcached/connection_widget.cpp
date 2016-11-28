@@ -18,7 +18,6 @@
 
 #include "gui/db/memcached/connection_widget.h"
 
-#include <QPushButton>
 #include <QLineEdit>
 #include <QLabel>
 #include <QHBoxLayout>

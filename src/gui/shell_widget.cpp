@@ -36,6 +36,7 @@
 #include <QVBoxLayout>
 #include <QCheckBox>
 #include <QSpinBox>
+#include <QPushButton>
 
 #include <common/convert2string.h>  // for ConvertFromString
 #include <common/error.h>           // for Error
@@ -170,6 +171,12 @@ BaseShellWidget::BaseShellWidget(core::IServerSPtr server, const QString& filePa
   workProgressBar_ = new QProgressBar;
   workProgressBar_->setTextVisible(true);
   hlayout->addWidget(workProgressBar_);
+  QToolBar* helpbar = new QToolBar;
+  QAction* helpAction =
+      new QAction(gui::GuiFactory::instance().helpIcon(), translations::trHelp, helpbar);
+  VERIFY(connect(helpAction, &QAction::triggered, this, &BaseShellWidget::helpClick));
+  helpbar->addAction(helpAction);
+  hlayout->addWidget(helpbar);
   mainlayout->addLayout(hlayout);
 
   advancedOptions_ = new QCheckBox;
@@ -370,6 +377,10 @@ void BaseShellWidget::saveToFile() {
   }
 }
 
+void BaseShellWidget::helpClick() {
+  executeArgs("HELP", 0, 0, false);
+}
+
 void BaseShellWidget::startConnect(const core::events_info::ConnectInfoRequest& req) {
   UNUSED(req);
 
@@ -434,12 +445,11 @@ void BaseShellWidget::startExecute(const core::events_info::ExecuteInfoRequest& 
 }
 void BaseShellWidget::finishExecute(const core::events_info::ExecuteInfoResponce& res) {
   UNUSED(res);
-  bool is_connected = server_->IsConnected();
 
   repeatCount_->setEnabled(true);
   intervalMsec_->setEnabled(true);
   historyCall_->setEnabled(true);
-  executeAction_->setEnabled(is_connected);
+  executeAction_->setEnabled(true);
   stopAction_->setEnabled(false);
 }
 
@@ -516,8 +526,8 @@ void BaseShellWidget::syncConnectionActions() {
 
   connectAction_->setVisible(!is_connected);
   disConnectAction_->setVisible(is_connected);
-  executeAction_->setEnabled(is_connected);
-  stopAction_->setEnabled(is_connected);
+  executeAction_->setEnabled(true);
+  stopAction_->setEnabled(false);
 }
 
 }  // namespace gui
