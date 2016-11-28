@@ -32,26 +32,26 @@ namespace fastonosql {
 namespace core {
 namespace redis {
 
-common::Error common_exec(internal::CommandHandler* handler,
-                          int argc,
-                          const char** argv,
-                          FastoObject* out) {
+common::Error CommandsApi::CommonExec(internal::CommandHandler* handler,
+                                      int argc,
+                                      const char** argv,
+                                      FastoObject* out) {
   DBConnection* red = static_cast<DBConnection*>(handler);
   return red->CommonExec(argc + 1, argv - 1, out);
 }
 
-common::Error common_exec_off2(internal::CommandHandler* handler,
-                               int argc,
-                               const char** argv,
-                               FastoObject* out) {
+common::Error CommandsApi::CommonExecOff2(internal::CommandHandler* handler,
+                                          int argc,
+                                          const char** argv,
+                                          FastoObject* out) {
   DBConnection* red = static_cast<DBConnection*>(handler);
   return red->CommonExec(argc + 2, argv - 2, out);
 }
 
-common::Error auth(internal::CommandHandler* handler,
-                   int argc,
-                   const char** argv,
-                   FastoObject* out) {
+common::Error CommandsApi::Auth(internal::CommandHandler* handler,
+                                int argc,
+                                const char** argv,
+                                FastoObject* out) {
   UNUSED(argc);
   DBConnection* red = static_cast<DBConnection*>(handler);
   common::Error err = red->Auth(argv[0]);
@@ -65,165 +65,10 @@ common::Error auth(internal::CommandHandler* handler,
   return common::Error();
 }
 
-common::Error quit(internal::CommandHandler* handler,
-                   int argc,
-                   const char** argv,
-                   FastoObject* out) {
-  UNUSED(argc);
-  UNUSED(argv);
-
-  DBConnection* red = static_cast<DBConnection*>(handler);
-  common::Error err = red->Quit();
-  if (err && err->isError()) {
-    return err;
-  }
-
-  common::StringValue* val = common::Value::createStringValue("OK");
-  FastoObject* child = new FastoObject(out, val, red->Delimiter());
-  out->AddChildren(child);
-  return common::Error();
-}
-
-common::Error scan(internal::CommandHandler* handler,
-                   int argc,
-                   const char** argv,
-                   FastoObject* out) {
-  uint32_t cursor_in = common::ConvertFromString<uint32_t>(argv[0]);
-  std::string pattern = argc >= 3 ? argv[2] : ALL_KEYS_PATTERNS;
-  uint32_t count_keys = argc >= 5 ? common::ConvertFromString<uint32_t>(argv[4]) : NO_KEYS_LIMIT;
-  uint64_t cursor_out = 0;
-  std::vector<std::string> keys_out;
-  DBConnection* red = static_cast<DBConnection*>(handler);
-
-  common::Error err = red->Scan(cursor_in, pattern, count_keys, &keys_out, &cursor_out);
-  if (err && err->isError()) {
-    return err;
-  }
-
-  common::ArrayValue* ar = common::Value::createArrayValue();
-  for (size_t i = 0; i < keys_out.size(); ++i) {
-    common::StringValue* val = common::Value::createStringValue(keys_out[i]);
-    ar->append(val);
-  }
-
-  common::ArrayValue* mar = common::Value::createArrayValue();
-  std::string rep_out = common::ConvertToString(cursor_out);  // string representing
-  common::StringValue* val = common::Value::createStringValue(rep_out);
-  mar->append(val);
-  FastoObjectArray* child = new FastoObjectArray(out, mar, red->Delimiter());
-  out->AddChildren(child);
-  FastoObjectArray* keys_arr = new FastoObjectArray(child, ar, red->Delimiter());
-  child->AddChildren(keys_arr);  
-  return common::Error();
-}
-
-common::Error flushdb(internal::CommandHandler* handler,
-                      int argc,
-                      const char** argv,
-                      FastoObject* out) {
-  UNUSED(argc);
-  UNUSED(argv);
-
-  DBConnection* red = static_cast<DBConnection*>(handler);
-  common::Error err = red->FlushDB();
-  if (err && err->isError()) {
-    return err;
-  }
-
-  common::StringValue* val = common::Value::createStringValue("OK");
-  FastoObject* child = new FastoObject(out, val, red->Delimiter());
-  out->AddChildren(child);
-  return common::Error();
-}
-
-common::Error select(internal::CommandHandler* handler,
-                     int argc,
-                     const char** argv,
-                     FastoObject* out) {
-  UNUSED(argc);
-  DBConnection* red = static_cast<DBConnection*>(handler);
-  common::Error err = red->Select(argv[0], nullptr);
-  if (err && err->isError()) {
-    return err;
-  }
-
-  common::StringValue* val = common::Value::createStringValue("OK");
-  FastoObject* child = new FastoObject(out, val, red->Delimiter());
-  out->AddChildren(child);
-  return common::Error();
-}
-
-common::Error del(internal::CommandHandler* handler,
-                  int argc,
-                  const char** argv,
-                  FastoObject* out) {
-  DBConnection* red = static_cast<DBConnection*>(handler);
-
-  NKeys keysdel;
-  for (int i = 0; i < argc; ++i) {
-    keysdel.push_back(NKey(argv[i]));
-  }
-
-  NKeys keysdeleted;
-  common::Error err = red->Delete(keysdel, &keysdeleted);
-  if (err && err->isError()) {
-    return err;
-  }
-
-  common::FundamentalValue* val = common::Value::createUIntegerValue(keysdeleted.size());
-  FastoObject* child = new FastoObject(out, val, red->Delimiter());
-  out->AddChildren(child);
-  return common::Error();
-}
-
-common::Error set(internal::CommandHandler* handler,
-                  int argc,
-                  const char** argv,
-                  FastoObject* out) {
-  UNUSED(argc);
-
-  NKey key(argv[0]);
-  NValue string_val(common::Value::createStringValue(argv[1]));
-  NDbKValue kv(key, string_val);
-
-  DBConnection* red = static_cast<DBConnection*>(handler);
-  NDbKValue key_added;
-  common::Error err = red->Set(kv, &key_added);
-  if (err && err->isError()) {
-    return err;
-  }
-
-  common::StringValue* val = common::Value::createStringValue("OK");
-  FastoObject* child = new FastoObject(out, val, red->Delimiter());
-  out->AddChildren(child);
-  return common::Error();
-}
-
-common::Error get(internal::CommandHandler* handler,
-                  int argc,
-                  const char** argv,
-                  FastoObject* out) {
-  UNUSED(argc);
-
-  NKey key(argv[0]);
-  DBConnection* redis = static_cast<DBConnection*>(handler);
-  NDbKValue key_loaded;
-  common::Error err = redis->Get(key, &key_loaded);
-  if (err && err->isError()) {
-    return err;
-  }
-
-  NValue val = key_loaded.Value();
-  common::Value* copy = val->deepCopy();
-  FastoObject* child = new FastoObject(out, copy, redis->Delimiter());
-  out->AddChildren(child);
-  return common::Error();
-}
-
-common::Error lrange(internal::CommandHandler* handler,
-                     int argc,
-                     const char** argv,
-                     FastoObject* out) {
+common::Error CommandsApi::Lrange(internal::CommandHandler* handler,
+                                  int argc,
+                                  const char** argv,
+                                  FastoObject* out) {
   UNUSED(argc);
 
   NKey key(argv[0]);
@@ -243,10 +88,10 @@ common::Error lrange(internal::CommandHandler* handler,
   return common::Error();
 }
 
-common::Error smembers(internal::CommandHandler* handler,
-                       int argc,
-                       const char** argv,
-                       FastoObject* out) {
+common::Error CommandsApi::Smembers(internal::CommandHandler* handler,
+                                    int argc,
+                                    const char** argv,
+                                    FastoObject* out) {
   UNUSED(argc);
 
   NKey key(argv[0]);
@@ -264,10 +109,10 @@ common::Error smembers(internal::CommandHandler* handler,
   return common::Error();
 }
 
-common::Error zrange(internal::CommandHandler* handler,
-                     int argc,
-                     const char** argv,
-                     FastoObject* out) {
+common::Error CommandsApi::Zrange(internal::CommandHandler* handler,
+                                  int argc,
+                                  const char** argv,
+                                  FastoObject* out) {
   UNUSED(argc);
 
   NKey key(argv[0]);
@@ -288,10 +133,10 @@ common::Error zrange(internal::CommandHandler* handler,
   return common::Error();
 }
 
-common::Error hgetall(internal::CommandHandler* handler,
-                      int argc,
-                      const char** argv,
-                      FastoObject* out) {
+common::Error CommandsApi::Hgetall(internal::CommandHandler* handler,
+                                   int argc,
+                                   const char** argv,
+                                   FastoObject* out) {
   UNUSED(argc);
 
   NKey key(argv[0]);
@@ -309,29 +154,10 @@ common::Error hgetall(internal::CommandHandler* handler,
   return common::Error();
 }
 
-common::Error rename(internal::CommandHandler* handler,
-                     int argc,
-                     const char** argv,
-                     FastoObject* out) {
-  UNUSED(argc);
-
-  NKey key(argv[0]);
-  DBConnection* red = static_cast<DBConnection*>(handler);
-  common::Error err = red->Rename(key, argv[1]);
-  if (err && err->isError()) {
-    return err;
-  }
-
-  common::StringValue* val = common::Value::createStringValue("OK");
-  FastoObject* child = new FastoObject(out, val, red->Delimiter());
-  out->AddChildren(child);
-  return common::Error();
-}
-
-common::Error persist(internal::CommandHandler* handler,
-                      int argc,
-                      const char** argv,
-                      FastoObject* out) {
+common::Error CommandsApi::Persist(internal::CommandHandler* handler,
+                                   int argc,
+                                   const char** argv,
+                                   FastoObject* out) {
   UNUSED(argc);
   NKey key(argv[0]);
 
@@ -350,10 +176,10 @@ common::Error persist(internal::CommandHandler* handler,
   return common::Error();
 }
 
-common::Error expire(internal::CommandHandler* handler,
-                     int argc,
-                     const char** argv,
-                     FastoObject* out) {
+common::Error CommandsApi::ExpireRedis(internal::CommandHandler* handler,
+                                       int argc,
+                                       const char** argv,
+                                       FastoObject* out) {
   UNUSED(argc);
   NKey key(argv[0]);
   ttl_t ttl = common::ConvertFromString<ttl_t>(argv[1]);
@@ -373,43 +199,26 @@ common::Error expire(internal::CommandHandler* handler,
   return common::Error();
 }
 
-common::Error help(internal::CommandHandler* handler,
-                   int argc,
-                   const char** argv,
-                   FastoObject* out) {
-  DBConnection* red = static_cast<DBConnection*>(handler);
-  std::string answer;
-  common::Error err = red->Help(argc, argv, &answer);
-  if (err && err->isError()) {
-    return err;
-  }
-
-  common::StringValue* val = common::Value::createStringValue(answer);
-  FastoObject* child = new FastoObject(out, val, red->Delimiter());
-  out->AddChildren(child);
-  return common::Error();
-}
-
-common::Error monitor(internal::CommandHandler* handler,
-                      int argc,
-                      const char** argv,
-                      FastoObject* out) {
+common::Error CommandsApi::Monitor(internal::CommandHandler* handler,
+                                   int argc,
+                                   const char** argv,
+                                   FastoObject* out) {
   DBConnection* red = static_cast<DBConnection*>(handler);
   return red->Monitor(argc + 1, argv - 1, out);
 }
 
-common::Error subscribe(internal::CommandHandler* handler,
-                        int argc,
-                        const char** argv,
-                        FastoObject* out) {
+common::Error CommandsApi::Subscribe(internal::CommandHandler* handler,
+                                     int argc,
+                                     const char** argv,
+                                     FastoObject* out) {
   DBConnection* red = static_cast<DBConnection*>(handler);
   return red->Subscribe(argc + 1, argv - 1, out);
 }
 
-common::Error sync(internal::CommandHandler* handler,
-                   int argc,
-                   const char** argv,
-                   FastoObject* out) {
+common::Error CommandsApi::Sync(internal::CommandHandler* handler,
+                                int argc,
+                                const char** argv,
+                                FastoObject* out) {
   UNUSED(argc);
   UNUSED(argv);
   DBConnection* red = static_cast<DBConnection*>(handler);
