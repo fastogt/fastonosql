@@ -80,7 +80,6 @@ class NDbKValue {
   NValue Value() const;
   common::Value::Type Type() const;
 
-  void SetTTL(ttl_t ttl);
   void SetKey(const NKey& key);
   void SetValue(NValue value);
 

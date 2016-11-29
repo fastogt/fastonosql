@@ -584,7 +584,9 @@ void Driver::HandleLoadDatabaseContentEvent(events::LoadDatabaseContentRequestEv
             auto vttl = tchildrens[0]->Value();
             ttl_t ttl = 0;
             if (vttl->getAsInteger(&ttl)) {
-              res.keys[i].SetTTL(ttl);
+              NKey key = res.keys[i].Key();
+              key.SetTTL(ttl);
+              res.keys[i].SetKey(key);
             }
           }
         }

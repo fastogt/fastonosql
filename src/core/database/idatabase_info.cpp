@@ -96,7 +96,9 @@ void IDataBaseInfo::UpdateKey(const NDbKValue& key) {
 void IDataBaseInfo::UpdateKeyTTL(const NKey& key, ttl_t ttl) {
   for (auto& kv : keys_) {
     if (kv.KeyString() == key.Key()) {
-      kv.SetTTL(ttl);
+      NKey okv = kv.Key();
+      okv.SetTTL(ttl);
+      kv.SetKey(okv);
       break;
     }
   }

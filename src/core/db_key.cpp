@@ -121,10 +121,6 @@ common::Value::Type NDbKValue::Type() const {
   return value_->type();
 }
 
-void NDbKValue::SetTTL(ttl_t ttl) {
-  key_.SetTTL(ttl);
-}
-
 void NDbKValue::SetKey(const NKey& key) {
   key_ = key;
 }
