@@ -448,48 +448,49 @@ void Driver::HandleLoadDatabaseInfosEvent(events::LoadDatabasesInfoRequestEvent*
   FastoObjectCommandIPtr cmd = CreateCommandFast(REDIS_GET_DATABASES, common::Value::C_INNER);
   NotifyProgress(sender, 50);
 
-  common::Error er = Execute(cmd.get());
-  if (er && er->isError()) {
-    res.setErrorInfo(er);
-  } else {
-    FastoObject::childs_t rchildrens = cmd->Childrens();
-    if (rchildrens.size()) {
-      CHECK_EQ(rchildrens.size(), 1);
-      FastoObjectArray* array = dynamic_cast<FastoObjectArray*>(rchildrens[0].get());  // +
-      if (!array) {
-        goto done;
-      }
-      common::ArrayValue* ar = array->Array();
-      if (!ar) {
-        goto done;
-      }
+  IDataBaseInfo* info = nullptr;
+  common::Error err = CurrentDataBaseInfo(&info);
+  if (err && err->isError()) {
+    res.setErrorInfo(err);
+    NotifyProgress(sender, 75);
+    Reply(sender, new events::LoadDatabasesInfoResponceEvent(this, res));
+    NotifyProgress(sender, 100);
+    return;
+  }
 
-      IDataBaseInfoSPtr curdb = CurrentDatabaseInfo();
-      CHECK(curdb);
-      if (ar->size() == 2) {
-        std::string scountDb;
-        bool isok = ar->getString(1, &scountDb);
-        if (isok) {
-          size_t countDb = common::ConvertFromString<size_t>(scountDb);
-          if (countDb > 0) {
-            for (size_t i = 0; i < countDb; ++i) {
-              IDataBaseInfoSPtr dbInf(new DataBaseInfo(common::ConvertToString(i), false, 0));
-              if (curdb && dbInf->Name() == curdb->Name()) {
-                res.databases.push_back(curdb);
-              } else {
-                res.databases.push_back(dbInf);
-              }
-            }
-          }
-        }
-      } else {
-        if (curdb) {
+  err = Execute(cmd.get());
+  if (err && err->isError()) {
+    res.setErrorInfo(err);
+    NotifyProgress(sender, 75);
+    Reply(sender, new events::LoadDatabasesInfoResponceEvent(this, res));
+    NotifyProgress(sender, 100);
+    return;
+  }
+
+  FastoObject::childs_t rchildrens = cmd->Childrens();
+  CHECK_EQ(rchildrens.size(), 1);
+  FastoObjectArray* array = dynamic_cast<FastoObjectArray*>(rchildrens[0].get());  // +
+  CHECK(array);
+  common::ArrayValue* ar = array->Array();
+  CHECK(ar);
+
+  IDataBaseInfoSPtr curdb(info);
+  std::string scountDb;
+  if (ar->getString(1, &scountDb)) {
+    size_t countDb = common::ConvertFromString<size_t>(scountDb);
+    if (countDb > 0) {
+      for (size_t i = 0; i < countDb; ++i) {
+        IDataBaseInfoSPtr dbInf(new DataBaseInfo(common::ConvertToString(i), false, 0));
+        if (dbInf->Name() == curdb->Name()) {
           res.databases.push_back(curdb);
+        } else {
+          res.databases.push_back(dbInf);
         }
       }
     }
+  } else {
+    res.databases.push_back(curdb);
   }
-done:
   NotifyProgress(sender, 75);
   Reply(sender, new events::LoadDatabasesInfoResponceEvent(this, res));
   NotifyProgress(sender, 100);

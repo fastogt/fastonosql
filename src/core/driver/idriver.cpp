@@ -186,24 +186,6 @@ connection_path_t IDriver::ConnectionPath() const {
   return settings_->Path();
 }
 
-IServerInfoSPtr IDriver::CurrentServerInfo() const {
-  if (IsConnected()) {
-    DCHECK(server_info_);
-    return server_info_;
-  }
-
-  return IServerInfoSPtr();
-}
-
-IDataBaseInfoSPtr IDriver::CurrentDatabaseInfo() const {
-  if (IsConnected()) {
-    DCHECK(current_database_info_);
-    return current_database_info_;
-  }
-
-  return IDataBaseInfoSPtr();
-}
-
 void IDriver::Start() {
   thread_->start();
 }
@@ -494,9 +476,13 @@ void IDriver::HandleLoadDatabaseInfosEvent(events::LoadDatabasesInfoRequestEvent
   NotifyProgress(sender, 0);
   events::LoadDatabasesInfoResponceEvent::value_type res(ev->value());
   NotifyProgress(sender, 50);
-  IDataBaseInfoSPtr curdb = CurrentDatabaseInfo();
-  CHECK(curdb);
-  res.databases.push_back(curdb);
+  IDataBaseInfo* info = nullptr;
+  common::Error err = CurrentDataBaseInfo(&info);
+  if (err && err->isError()) {
+    res.setErrorInfo(err);
+  } else {
+    res.databases.push_back(IDataBaseInfoSPtr(info));
+  }
   Reply(sender, new events::LoadDatabasesInfoResponceEvent(this, res));
   NotifyProgress(sender, 100);
 }
@@ -612,11 +598,11 @@ void IDriver::HandleDiscoveryInfoEvent(events::DiscoveryInfoRequestEvent* ev) {
       DCHECK(info);
       DCHECK(db);
 
-      server_info_.reset(info);
-      current_database_info_.reset(db);
+      IServerInfoSPtr server_info(info);
+      IDataBaseInfoSPtr current_database_info(db);
 
-      res.sinfo = server_info_;
-      res.dbinfo = current_database_info_;
+      res.sinfo = server_info;
+      res.dbinfo = current_database_info;
     }
   } else {
     res.setErrorInfo(common::make_error_value(
@@ -648,40 +634,34 @@ common::Error IDriver::ServerDiscoveryInfo(IServerInfo** sinfo, IDataBaseInfo** 
 }
 
 void IDriver::OnFlushedCurrentDB() {
-  emit FlushedDB(current_database_info_);
+  emit FlushedDB();
 }
 
 void IDriver::OnCurrentDataBaseChanged(IDataBaseInfo* info) {
-  if (current_database_info_) {
-    if (info->Name() == current_database_info_->Name()) {
-      return;
-    }
-  }
-
-  current_database_info_.reset(info->Clone());
-  emit CurrentDataBaseChanged(current_database_info_);
+  core::IDataBaseInfoSPtr curdb(info->Clone());
+  emit CurrentDataBaseChanged(curdb);
 }
 
 void IDriver::OnKeysRemoved(const NKeys& keys) {
   for (size_t i = 0; i < keys.size(); ++i) {
-    emit KeyRemoved(current_database_info_, keys[i]);
+    emit KeyRemoved(keys[i]);
   }
 }
 
 void IDriver::OnKeyAdded(const NDbKValue& key) {
-  emit KeyAdded(current_database_info_, key);
+  emit KeyAdded(key);
 }
 
 void IDriver::OnKeyLoaded(const NDbKValue& key) {
-  emit KeyLoaded(current_database_info_, key);
+  emit KeyLoaded(key);
 }
 
 void IDriver::OnKeyRenamed(const NKey& key, const std::string& new_key) {
-  emit KeyRenamed(current_database_info_, key, new_key);
+  emit KeyRenamed(key, new_key);
 }
 
 void IDriver::OnKeyTTLChanged(const NKey& key, ttl_t ttl) {
-  emit KeyTTLChanged(current_database_info_, key, ttl);
+  emit KeyTTLChanged(key, ttl);
 }
 
 void IDriver::OnQuited() {

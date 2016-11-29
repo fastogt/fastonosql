@@ -215,16 +215,19 @@ class IServer : public IServerBase, public std::enable_shared_from_this<IServer>
   databases_t databases_;
 
  private Q_SLOTS:
-  void FlushDB(core::IDataBaseInfoSPtr db);
+  void FlushDB();
   void CurrentDataBaseChange(core::IDataBaseInfoSPtr db);
 
-  void KeyRemove(core::IDataBaseInfoSPtr db, core::NKey key);
-  void KeyAdd(core::IDataBaseInfoSPtr db, core::NDbKValue key);
-  void KeyLoad(core::IDataBaseInfoSPtr db, core::NDbKValue key);
-  void KeyRename(core::IDataBaseInfoSPtr db, core::NKey key, std::string new_name);
-  void KeyTTLChange(core::IDataBaseInfoSPtr db, core::NKey key, core::ttl_t ttl);
+  void KeyRemove(core::NKey key);
+  void KeyAdd(core::NDbKValue key);
+  void KeyLoad(core::NDbKValue key);
+  void KeyRename(core::NKey key, std::string new_name);
+  void KeyTTLChange(core::NKey key, core::ttl_t ttl);
 
  private:
+  IServerInfoSPtr server_info_;
+  IDataBaseInfoSPtr current_database_info_;
+
   void HandleEnterModeEvent(events::EnterModeEvent* ev);
   void HandleLeaveModeEvent(events::LeaveModeEvent* ev);
 

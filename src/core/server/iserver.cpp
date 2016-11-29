@@ -36,7 +36,7 @@
 namespace fastonosql {
 namespace core {
 
-IServer::IServer(IDriver* drv) : drv_(drv) {
+IServer::IServer(IDriver* drv) : drv_(drv), server_info_(), current_database_info_() {
   VERIFY(QObject::connect(drv_, &IDriver::ChildAdded, this, &IServer::ChildAdded));
   VERIFY(QObject::connect(drv_, &IDriver::ItemUpdated, this, &IServer::ItemUpdated));
   VERIFY(
@@ -49,7 +49,7 @@ IServer::IServer(IDriver* drv) : drv_(drv) {
   VERIFY(QObject::connect(drv_, &IDriver::KeyAdded, this, &IServer::KeyAdd));
   VERIFY(QObject::connect(drv_, &IDriver::KeyLoaded, this, &IServer::KeyLoad));
   VERIFY(QObject::connect(drv_, &IDriver::KeyRenamed, this, &IServer::KeyRename));
-  VERIFY(QObject::connect(drv_, &IDriver::KeyTTLChanged, this, &IServer::KeyTTLChanged));
+  VERIFY(QObject::connect(drv_, &IDriver::KeyTTLChanged, this, &IServer::KeyTTLChange));
   VERIFY(QObject::connect(drv_, &IDriver::Disconnected, this, &IServer::Disconnected));
 
   drv_->Start();
@@ -87,11 +87,21 @@ std::string IServer::Name() const {
 }
 
 IServerInfoSPtr IServer::CurrentServerInfo() const {
-  return drv_->CurrentServerInfo();
+  if (IsConnected()) {
+    DCHECK(server_info_);
+    return server_info_;
+  }
+
+  return IServerInfoSPtr();
 }
 
 IDataBaseInfoSPtr IServer::CurrentDatabaseInfo() const {
-  return drv_->CurrentDatabaseInfo();
+  if (IsConnected()) {
+    DCHECK(current_database_info_);
+    return current_database_info_;
+  }
+
+  return IDataBaseInfoSPtr();
 }
 
 std::string IServer::Delimiter() const {
@@ -457,17 +467,21 @@ void IServer::HandleLoadDatabaseContentEvent(events::LoadDatabaseContentResponce
   emit LoadDatabaseContentFinished(v);
 }
 
-void IServer::FlushDB(core::IDataBaseInfoSPtr db) {
-  database_t dbs = FindDatabase(db);
-  if (dbs) {
-    dbs->ClearKeys();
-    dbs->SetDBKeysCount(0);
+void IServer::FlushDB() {
+  if (current_database_info_) {
+    current_database_info_->ClearKeys();
+    current_database_info_->SetDBKeysCount(0);
+    emit FlushedDB(current_database_info_);
   }
-
-  emit FlushedDB(dbs);
 }
 
 void IServer::CurrentDataBaseChange(core::IDataBaseInfoSPtr db) {
+  if (current_database_info_) {
+    if (db->Name() == current_database_info_->Name()) {
+      return;
+    }
+  }
+
   database_t founded;
   for (size_t i = 0; i < databases_.size(); ++i) {
     database_t cached_db = databases_[i];
@@ -481,48 +495,43 @@ void IServer::CurrentDataBaseChange(core::IDataBaseInfoSPtr db) {
 
   if (!founded) {
     databases_.push_back(db);
-    founded = db;
+    current_database_info_ = db;
   }
-  emit CurrentDataBaseChanged(founded);
+  emit CurrentDataBaseChanged(current_database_info_);
 }
 
-void IServer::KeyRemove(core::IDataBaseInfoSPtr db, core::NKey key) {
-  database_t dbs = FindDatabase(db);
-  if (dbs) {
-    dbs->RemoveKey(key);
-    emit KeyRemoved(dbs, key);
-  }
-}
-
-void IServer::KeyAdd(core::IDataBaseInfoSPtr db, core::NDbKValue key) {
-  database_t dbs = FindDatabase(db);
-  if (dbs) {
-    dbs->AddKey(key);
-    emit KeyAdded(dbs, key);
+void IServer::KeyRemove(core::NKey key) {
+  if (current_database_info_) {
+    current_database_info_->RemoveKey(key);
+    emit KeyRemoved(current_database_info_, key);
   }
 }
 
-void IServer::KeyLoad(core::IDataBaseInfoSPtr db, core::NDbKValue key) {
-  database_t dbs = FindDatabase(db);
-  if (dbs) {
-    dbs->UpdateKey(key);
-    emit KeyLoaded(dbs, key);
+void IServer::KeyAdd(core::NDbKValue key) {
+  if (current_database_info_) {
+    current_database_info_->AddKey(key);
+    emit KeyAdded(current_database_info_, key);
   }
 }
 
-void IServer::KeyRename(core::IDataBaseInfoSPtr db, core::NKey key, std::string new_name) {
-  database_t dbs = FindDatabase(db);
-  if (dbs) {
-    dbs->RenameKey(key, new_name);
-    emit KeyRenamed(dbs, key, new_name);
+void IServer::KeyLoad(core::NDbKValue key) {
+  if (current_database_info_) {
+    current_database_info_->UpdateKey(key);
+    emit KeyLoaded(current_database_info_, key);
   }
 }
 
-void IServer::KeyTTLChange(core::IDataBaseInfoSPtr db, core::NKey key, core::ttl_t ttl) {
-  database_t dbs = FindDatabase(db);
-  if (dbs) {
-    dbs->UpdateKeyTTL(key, ttl);
-    emit KeyTTLChanged(dbs, key, ttl);
+void IServer::KeyRename(core::NKey key, std::string new_name) {
+  if (current_database_info_) {
+    current_database_info_->RenameKey(key, new_name);
+    emit KeyRenamed(current_database_info_, key, new_name);
+  }
+}
+
+void IServer::KeyTTLChange(core::NKey key, core::ttl_t ttl) {
+  if (current_database_info_) {
+    current_database_info_->UpdateKeyTTL(key, ttl);
+    emit KeyTTLChanged(current_database_info_, key, ttl);
   }
 }
 
@@ -561,6 +570,9 @@ void IServer::HandleDiscoveryInfoResponceEvent(events::DiscoveryInfoResponceEven
   common::Error er = v.errorInfo();
   if (er && er->isError()) {
     LOG_ERROR(er, true);
+  } else {
+    server_info_ = v.sinfo;
+    current_database_info_ = v.dbinfo;
   }
   emit LoadDiscoveryInfoFinished(v);
 }

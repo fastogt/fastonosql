@@ -61,8 +61,6 @@ class IDriver : public QObject, public CDBConnectionClient {
   connectionTypes Type() const;
   connection_path_t ConnectionPath() const;
 
-  IServerInfoSPtr CurrentServerInfo() const;
-  IDataBaseInfoSPtr CurrentDatabaseInfo() const;
   virtual translator_t Translator() const = 0;
 
   void Start();
@@ -84,13 +82,13 @@ class IDriver : public QObject, public CDBConnectionClient {
   void ItemUpdated(FastoObject* item, common::ValueSPtr val);
   void ServerInfoSnapShoot(core::ServerInfoSnapShoot shot);
 
-  void FlushedDB(core::IDataBaseInfoSPtr db);
+  void FlushedDB();
   void CurrentDataBaseChanged(core::IDataBaseInfoSPtr db);
-  void KeyRemoved(core::IDataBaseInfoSPtr db, core::NKey key);
-  void KeyAdded(core::IDataBaseInfoSPtr db, core::NDbKValue key);
-  void KeyRenamed(core::IDataBaseInfoSPtr db, core::NKey key, std::string new_name);
-  void KeyLoaded(core::IDataBaseInfoSPtr db, core::NDbKValue key);
-  void KeyTTLChanged(core::IDataBaseInfoSPtr db, core::NKey key, core::ttl_t ttl);
+  void KeyRemoved(core::NKey key);
+  void KeyAdded(core::NDbKValue key);
+  void KeyRenamed(core::NKey key, std::string new_name);
+  void KeyLoaded(core::NDbKValue key);
+  void KeyTTLChanged(core::NKey key, core::ttl_t ttl);
   void Disconnected();
 
  private Q_SLOTS:
@@ -162,9 +160,6 @@ class IDriver : public QObject, public CDBConnectionClient {
   virtual void ClearImpl() = 0;
 
  private:
-  IServerInfoSPtr server_info_;
-  IDataBaseInfoSPtr current_database_info_;
-
   QThread* thread_;
   int timer_info_id_;
   common::file_system::File* log_file_;
