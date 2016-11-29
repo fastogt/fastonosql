@@ -95,13 +95,12 @@ IServerInfoSPtr IServer::CurrentServerInfo() const {
   return IServerInfoSPtr();
 }
 
-IDataBaseInfoSPtr IServer::CurrentDatabaseInfo() const {
+IServer::database_t IServer::CurrentDatabaseInfo() const {
   if (IsConnected()) {
-    DCHECK(current_database_info_);
     return current_database_info_;
   }
 
-  return IDataBaseInfoSPtr();
+  return database_t();
 }
 
 std::string IServer::Delimiter() const {
@@ -124,8 +123,7 @@ IServer::database_t IServer::FindDatabase(IDataBaseInfoSPtr inf) const {
   }
 
   CHECK(Type() == inf->Type());
-  for (size_t i = 0; i < databases_.size(); ++i) {
-    database_t db = databases_[i];
+  for (database_t db : databases_) {
     if (db->Name() == inf->Name()) {
       return db;
     }
@@ -440,6 +438,7 @@ void IServer::HandleLoadDatabaseInfosEvent(events::LoadDatabasesInfoResponceEven
       IDataBaseInfoSPtr db = dbs[j];
       database_t dbs = FindDatabase(db);
       if (!dbs) {
+        DCHECK(!db->IsDefault());
         databases_.push_back(db);
       }
       tmp.push_back(db);
@@ -468,71 +467,94 @@ void IServer::HandleLoadDatabaseContentEvent(events::LoadDatabaseContentResponce
 }
 
 void IServer::FlushDB() {
-  if (current_database_info_) {
-    current_database_info_->ClearKeys();
-    current_database_info_->SetDBKeysCount(0);
-    emit FlushedDB(current_database_info_);
+  database_t cdb = CurrentDatabaseInfo();
+  if (!cdb) {
+    return;
   }
+
+  cdb->ClearKeys();
+  cdb->SetDBKeysCount(0);
+  emit FlushedDB(cdb);
 }
 
 void IServer::CurrentDataBaseChange(core::IDataBaseInfoSPtr db) {
-  if (current_database_info_) {
-    if (db->Name() == current_database_info_->Name()) {
+  database_t cdb = CurrentDatabaseInfo();
+  if (cdb) {
+    if (db->Name() == cdb->Name()) {
       return;
     }
   }
 
   database_t founded;
-  for (size_t i = 0; i < databases_.size(); ++i) {
-    database_t cached_db = databases_[i];
+  for (database_t cached_db : databases_) {
     if (db->Name() == cached_db->Name()) {
-      founded = databases_[i];
+      founded = cached_db;
       founded->SetIsDefault(true);
     } else {
-      databases_[i]->SetIsDefault(false);
+      cached_db->SetIsDefault(false);
     }
   }
 
   if (!founded) {
-    databases_.push_back(db);
-    current_database_info_ = db;
+    founded = db;
+    databases_.push_back(founded);
+    current_database_info_ = founded;
+  } else {
+    current_database_info_ = founded;
   }
-  emit CurrentDataBaseChanged(current_database_info_);
+
+  DCHECK(founded->IsDefault());
+  emit CurrentDataBaseChanged(founded);
 }
 
 void IServer::KeyRemove(core::NKey key) {
-  if (current_database_info_) {
-    current_database_info_->RemoveKey(key);
-    emit KeyRemoved(current_database_info_, key);
+  database_t cdb = CurrentDatabaseInfo();
+  if (!cdb) {
+    return;
   }
+
+  cdb->RemoveKey(key);
+  emit KeyRemoved(cdb, key);
 }
 
 void IServer::KeyAdd(core::NDbKValue key) {
-  if (current_database_info_) {
-    current_database_info_->AddKey(key);
-    emit KeyAdded(current_database_info_, key);
+  database_t cdb = CurrentDatabaseInfo();
+  if (!cdb) {
+    return;
   }
+
+  cdb->AddKey(key);
+  emit KeyAdded(cdb, key);
 }
 
 void IServer::KeyLoad(core::NDbKValue key) {
-  if (current_database_info_) {
-    current_database_info_->UpdateKey(key);
-    emit KeyLoaded(current_database_info_, key);
+  database_t cdb = CurrentDatabaseInfo();
+  if (!cdb) {
+    return;
   }
+
+  cdb->UpdateKey(key);
+  emit KeyLoaded(cdb, key);
 }
 
 void IServer::KeyRename(core::NKey key, std::string new_name) {
-  if (current_database_info_) {
-    current_database_info_->RenameKey(key, new_name);
-    emit KeyRenamed(current_database_info_, key, new_name);
+  database_t cdb = CurrentDatabaseInfo();
+  if (!cdb) {
+    return;
   }
+
+  cdb->RenameKey(key, new_name);
+  emit KeyRenamed(cdb, key, new_name);
 }
 
 void IServer::KeyTTLChange(core::NKey key, core::ttl_t ttl) {
-  if (current_database_info_) {
-    current_database_info_->UpdateKeyTTL(key, ttl);
-    emit KeyTTLChanged(current_database_info_, key, ttl);
+  database_t cdb = CurrentDatabaseInfo();
+  if (!cdb) {
+    return;
   }
+
+  cdb->UpdateKeyTTL(key, ttl);
+  emit KeyTTLChanged(cdb, key, ttl);
 }
 
 void IServer::HandleEnterModeEvent(events::EnterModeEvent* ev) {
@@ -572,7 +594,11 @@ void IServer::HandleDiscoveryInfoResponceEvent(events::DiscoveryInfoResponceEven
     LOG_ERROR(er, true);
   } else {
     server_info_ = v.sinfo;
-    current_database_info_ = v.dbinfo;
+    database_t dbs = FindDatabase(v.dbinfo);
+    if (!dbs) {
+      current_database_info_ = v.dbinfo;
+      databases_.push_back(current_database_info_);
+    }
   }
   emit LoadDiscoveryInfoFinished(v);
 }

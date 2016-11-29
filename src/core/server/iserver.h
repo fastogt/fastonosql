@@ -62,7 +62,7 @@ class IServer : public IServerBase, public std::enable_shared_from_this<IServer>
   connectionTypes Type() const;
   virtual std::string Name() const override;
 
-  IDataBaseInfoSPtr CurrentDatabaseInfo() const;
+  database_t CurrentDatabaseInfo() const;
   IServerInfoSPtr CurrentServerInfo() const;
 
   std::string Delimiter() const;
@@ -226,7 +226,7 @@ class IServer : public IServerBase, public std::enable_shared_from_this<IServer>
 
  private:
   IServerInfoSPtr server_info_;
-  IDataBaseInfoSPtr current_database_info_;
+  database_t current_database_info_;
 
   void HandleEnterModeEvent(events::EnterModeEvent* ev);
   void HandleLeaveModeEvent(events::LeaveModeEvent* ev);
