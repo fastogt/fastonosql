@@ -465,6 +465,7 @@ void Driver::HandleLoadDatabaseInfosEvent(events::LoadDatabasesInfoRequestEvent*
       }
 
       IDataBaseInfoSPtr curdb = CurrentDatabaseInfo();
+      CHECK(curdb);
       if (ar->size() == 2) {
         std::string scountDb;
         bool isok = ar->getString(1, &scountDb);

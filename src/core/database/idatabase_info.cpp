@@ -68,6 +68,49 @@ void IDataBaseInfo::ClearKeys() {
   keys_.clear();
 }
 
+void IDataBaseInfo::RenameKey(const NKey& okey, const std::string& new_name) {
+  for (auto& kv : keys_) {
+    if (kv.KeyString() == okey.Key()) {
+      NKey okv = kv.Key();
+      okv.SetKey(new_name);
+      kv.SetKey(okv);
+      break;
+    }
+  }
+}
+
+void IDataBaseInfo::AddKey(const NDbKValue& key) {
+  keys_.push_back(key);
+  db_kcount_++;
+}
+
+void IDataBaseInfo::UpdateKey(const NDbKValue& key) {
+  for (auto& kv : keys_) {
+    if (kv.KeyString() == key.KeyString()) {
+      kv = key;
+      break;
+    }
+  }
+}
+
+void IDataBaseInfo::UpdateKeyTTL(const NKey& key, ttl_t ttl) {
+  for (auto& kv : keys_) {
+    if (kv.KeyString() == key.Key()) {
+      kv.SetTTL(ttl);
+      break;
+    }
+  }
+}
+
+void IDataBaseInfo::RemoveKey(const core::NKey& key) {
+  auto it = std::remove_if(keys_.begin(), keys_.end(),
+                           [key](NDbKValue kv) { return kv.KeyString() == key.Key(); });
+  if (it != keys_.end()) {
+    keys_.erase(it);
+    db_kcount_--;
+  }
+}
+
 IDataBaseInfo::keys_container_t IDataBaseInfo::Keys() const {
   return keys_;
 }

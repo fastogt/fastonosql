@@ -45,10 +45,10 @@ IServer::IServer(IDriver* drv) : drv_(drv) {
   VERIFY(QObject::connect(drv_, &IDriver::FlushedDB, this, &IServer::FlushDB));
   VERIFY(QObject::connect(drv_, &IDriver::CurrentDataBaseChanged, this,
                           &IServer::CurrentDataBaseChange));
-  VERIFY(QObject::connect(drv_, &IDriver::KeyRemoved, this, &IServer::KeyRemoved));
-  VERIFY(QObject::connect(drv_, &IDriver::KeyAdded, this, &IServer::KeyAdded));
-  VERIFY(QObject::connect(drv_, &IDriver::KeyLoaded, this, &IServer::KeyLoaded));
-  VERIFY(QObject::connect(drv_, &IDriver::KeyRenamed, this, &IServer::KeyRenamed));
+  VERIFY(QObject::connect(drv_, &IDriver::KeyRemoved, this, &IServer::KeyRemove));
+  VERIFY(QObject::connect(drv_, &IDriver::KeyAdded, this, &IServer::KeyAdd));
+  VERIFY(QObject::connect(drv_, &IDriver::KeyLoaded, this, &IServer::KeyLoad));
+  VERIFY(QObject::connect(drv_, &IDriver::KeyRenamed, this, &IServer::KeyRename));
   VERIFY(QObject::connect(drv_, &IDriver::KeyTTLChanged, this, &IServer::KeyTTLChanged));
   VERIFY(QObject::connect(drv_, &IDriver::Disconnected, this, &IServer::Disconnected));
 
@@ -103,26 +103,25 @@ std::string IServer::NsSeparator() const {
 }
 
 IDatabaseSPtr IServer::CreateDatabaseByInfo(IDataBaseInfoSPtr inf) {
-  bool isContains = ContainsDatabase(inf);
-  return isContains ? CreateDatabase(inf) : IDatabaseSPtr();
+  database_t db = FindDatabase(inf);
+  return db ? CreateDatabase(inf) : IDatabaseSPtr();
 }
 
-bool IServer::ContainsDatabase(IDataBaseInfoSPtr inf) const {
+IServer::database_t IServer::FindDatabase(IDataBaseInfoSPtr inf) const {
   if (!inf) {
     DNOTREACHED();
-    return false;
+    return database_t();
   }
 
   CHECK(Type() == inf->Type());
-
   for (size_t i = 0; i < databases_.size(); ++i) {
     database_t db = databases_[i];
     if (db->Name() == inf->Name()) {
-      return true;
+      return db;
     }
   }
 
-  return false;
+  return database_t();
 }
 
 void IServer::Connect(const events_info::ConnectInfoRequest& req) {
@@ -429,7 +428,8 @@ void IServer::HandleLoadDatabaseInfosEvent(events::LoadDatabasesInfoResponceEven
     events_info::LoadDatabasesInfoResponce::database_info_cont_type tmp;
     for (size_t j = 0; j < dbs.size(); ++j) {
       IDataBaseInfoSPtr db = dbs[j];
-      if (!ContainsDatabase(db)) {
+      database_t dbs = FindDatabase(db);
+      if (!dbs) {
         databases_.push_back(db);
       }
       tmp.push_back(db);
@@ -446,9 +446,11 @@ void IServer::HandleLoadDatabaseContentEvent(events::LoadDatabaseContentResponce
   if (er && er->isError()) {
     LOG_ERROR(er, true);
   } else {
-    if (ContainsDatabase(v.inf)) {
-      v.inf->SetKeys(v.keys);
-      v.inf->SetDBKeysCount(v.db_keys_count);
+    database_t dbs = FindDatabase(v.inf);
+    if (dbs) {
+      dbs->SetKeys(v.keys);
+      dbs->SetDBKeysCount(v.db_keys_count);
+      v.inf = dbs;
     }
   }
 
@@ -456,16 +458,17 @@ void IServer::HandleLoadDatabaseContentEvent(events::LoadDatabaseContentResponce
 }
 
 void IServer::FlushDB(core::IDataBaseInfoSPtr db) {
-  if (ContainsDatabase(db)) {
-    db->ClearKeys();
-    db->SetDBKeysCount(0);
+  database_t dbs = FindDatabase(db);
+  if (dbs) {
+    dbs->ClearKeys();
+    dbs->SetDBKeysCount(0);
   }
 
-  emit FlushedDB(db);
+  emit FlushedDB(dbs);
 }
 
 void IServer::CurrentDataBaseChange(core::IDataBaseInfoSPtr db) {
-  core::IDataBaseInfoSPtr founded;
+  database_t founded;
   for (size_t i = 0; i < databases_.size(); ++i) {
     database_t cached_db = databases_[i];
     if (db->Name() == cached_db->Name()) {
@@ -475,11 +478,52 @@ void IServer::CurrentDataBaseChange(core::IDataBaseInfoSPtr db) {
       databases_[i]->SetIsDefault(false);
     }
   }
+
   if (!founded) {
     databases_.push_back(db);
     founded = db;
   }
   emit CurrentDataBaseChanged(founded);
+}
+
+void IServer::KeyRemove(core::IDataBaseInfoSPtr db, core::NKey key) {
+  database_t dbs = FindDatabase(db);
+  if (dbs) {
+    dbs->RemoveKey(key);
+    emit KeyRemoved(dbs, key);
+  }
+}
+
+void IServer::KeyAdd(core::IDataBaseInfoSPtr db, core::NDbKValue key) {
+  database_t dbs = FindDatabase(db);
+  if (dbs) {
+    dbs->AddKey(key);
+    emit KeyAdded(dbs, key);
+  }
+}
+
+void IServer::KeyLoad(core::IDataBaseInfoSPtr db, core::NDbKValue key) {
+  database_t dbs = FindDatabase(db);
+  if (dbs) {
+    dbs->UpdateKey(key);
+    emit KeyLoaded(dbs, key);
+  }
+}
+
+void IServer::KeyRename(core::IDataBaseInfoSPtr db, core::NKey key, std::string new_name) {
+  database_t dbs = FindDatabase(db);
+  if (dbs) {
+    dbs->RenameKey(key, new_name);
+    emit KeyRenamed(dbs, key, new_name);
+  }
+}
+
+void IServer::KeyTTLChange(core::IDataBaseInfoSPtr db, core::NKey key, core::ttl_t ttl) {
+  database_t dbs = FindDatabase(db);
+  if (dbs) {
+    dbs->UpdateKeyTTL(key, ttl);
+    emit KeyTTLChanged(dbs, key, ttl);
+  }
 }
 
 void IServer::HandleEnterModeEvent(events::EnterModeEvent* ev) {
