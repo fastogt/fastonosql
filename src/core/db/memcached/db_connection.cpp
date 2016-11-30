@@ -483,7 +483,7 @@ common::Error DBConnection::GetInner(const std::string& key, std::string* ret_va
   return common::Error();
 }
 
-common::Error DBConnection::ExpireInner(const std::string& key, time_t expiration) {
+common::Error DBConnection::ExpireInner(const std::string& key, ttl_t expiration) {
   if (!IsConnected()) {
     return common::make_error_value("Not connected", common::Value::E_ERROR);
   }
@@ -510,6 +510,8 @@ common::Error DBConnection::ExpireInner(const std::string& key, time_t expiratio
 
   return common::Error();
 }
+
+common::Error DBConnection::TTLInner(const std::string& key, ttl_t* expiration) {}
 
 common::Error DBConnection::VersionServer() const {
   if (!IsConnected()) {
@@ -660,9 +662,11 @@ common::Error DBConnection::RenameImpl(const NKey& key, const std::string& new_k
 }
 
 common::Error DBConnection::SetTTLImpl(const NKey& key, ttl_t ttl) {
-  UNUSED(key);
-  UNUSED(ttl);
   return ExpireInner(key.Key(), ttl);
+}
+
+common::Error DBConnection::GetTTLImpl(const NKey& key, ttl_t* ttl) {
+  return TTLInner(key.Key(), ttl);
 }
 
 common::Error DBConnection::QuitImpl() {

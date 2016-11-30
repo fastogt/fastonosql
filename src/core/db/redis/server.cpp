@@ -36,7 +36,13 @@ namespace core {
 namespace redis {
 
 Server::Server(IConnectionSettingsBaseSPtr settings)
-    : IServerRemote(new Driver(settings)), role_(MASTER), mode_(STANDALONE) {}
+    : IServerRemote(new Driver(settings)), role_(MASTER), mode_(STANDALONE) {
+  startCheckKeyExistTimer();
+}
+
+Server::~Server() {
+  stopCheckKeyExistTimer();
+}
 
 serverTypes Server::Role() const {
   return role_;

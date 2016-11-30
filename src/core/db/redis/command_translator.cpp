@@ -41,6 +41,8 @@
 #define REDIS_CHANGE_TTL_2ARGS_SI "EXPIRE %s %d"
 #define REDIS_PERSIST_KEY_1ARGS_S "PERSIST %s"
 
+#define REDIS_GET_TTL_1ARGS_S "TTL %s"
+
 namespace fastonosql {
 namespace core {
 namespace redis {
@@ -110,13 +112,20 @@ common::Error CommandTranslator::ChangeKeyTTLCommandImpl(const NKey& key,
                                                          std::string* cmdstring) const {
   std::string patternResult;
   std::string key_str = key.Key();
-  if (ttl == -1) {
+  if (ttl == NO_TTL) {
     patternResult = common::MemSPrintf(REDIS_PERSIST_KEY_1ARGS_S, key_str);
   } else {
     patternResult = common::MemSPrintf(REDIS_CHANGE_TTL_2ARGS_SI, key_str, ttl);
   }
 
   *cmdstring = patternResult;
+  return common::Error();
+}
+
+common::Error CommandTranslator::LoadKeyTTLCommandImpl(const NKey& key,
+                                                       std::string* cmdstring) const {
+  std::string key_str = key.Key();
+  *cmdstring = common::MemSPrintf(REDIS_GET_TTL_1ARGS_S, key_str);
   return common::Error();
 }
 

@@ -27,6 +27,7 @@
 #include <common/value.h>  // for Value, Value::Type, etc
 
 #define NO_TTL -1
+#define EXPIRED_TTL -2
 
 namespace fastonosql {
 namespace core {

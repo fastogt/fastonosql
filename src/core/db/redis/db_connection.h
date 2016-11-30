@@ -154,6 +154,7 @@ class DBConnection : public core::internal::CDBConnection<NativeConnection, RCon
   virtual common::Error GetImpl(const NKey& key, NDbKValue* loaded_key) override;
   virtual common::Error RenameImpl(const NKey& key, const std::string& new_key) override;
   virtual common::Error SetTTLImpl(const NKey& key, ttl_t ttl) override;
+  virtual common::Error GetTTLImpl(const NKey& key, ttl_t* ttl) override;
   virtual common::Error QuitImpl() override;
 
   common::Error SendSync(unsigned long long* payload) WARN_UNUSED_RESULT;

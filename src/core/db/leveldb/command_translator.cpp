@@ -79,6 +79,16 @@ common::Error CommandTranslator::ChangeKeyTTLCommandImpl(const NKey& key,
   return common::make_error_value(errorMsg, common::ErrorValue::E_ERROR);
 }
 
+common::Error CommandTranslator::LoadKeyTTLCommandImpl(const NKey& key,
+                                                       std::string* cmdstring) const {
+  UNUSED(key);
+  UNUSED(cmdstring);
+
+  std::string errorMsg = common::MemSPrintf("Sorry, but now " PROJECT_NAME_TITLE
+                                            " not supported get ttl command for LevelDB.");
+  return common::make_error_value(errorMsg, common::ErrorValue::E_ERROR);
+}
+
 }  // namespace leveldb
 }  // namespace core
 }  // namespace fastonosql

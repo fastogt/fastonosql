@@ -1548,7 +1548,7 @@ static const std::vector<CommandHolder> g_commands = {
                   UNDEFINED_EXAMPLE_STR,
                   1,
                   0,
-                  &CommandsApi::CommonExec),
+                  &CommandsApi::GetTTL),
     CommandHolder("TYPE",
                   "<key>",
                   "Determine the type stored at key",

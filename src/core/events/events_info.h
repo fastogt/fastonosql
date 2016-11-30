@@ -190,6 +190,7 @@ struct ExecuteInfoRequest : public EventInfoBase {
                      common::time64_t msec_repeat_interval = 0,
                      bool history = true,
                      bool silence = false,
+                     common::Value::CommandLoggingType logtype = common::Value::C_USER,
                      error_type er = error_type());
 
   const std::string text;
@@ -197,6 +198,7 @@ struct ExecuteInfoRequest : public EventInfoBase {
   const common::time64_t msec_repeat_interval;
   const bool history;
   const bool silence;
+  common::Value::CommandLoggingType logtype;
 };
 
 struct ExecuteInfoResponce : ExecuteInfoRequest {

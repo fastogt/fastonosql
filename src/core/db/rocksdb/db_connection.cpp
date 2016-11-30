@@ -470,7 +470,15 @@ common::Error DBConnection::SetTTLImpl(const NKey& key, ttl_t ttl) {
   UNUSED(key);
   UNUSED(ttl);
   return common::make_error_value("Sorry, but now " PROJECT_NAME_TITLE
-                                  " for SSDB not supported TTL commands.",
+                                  " for RocksDB not supported TTL commands.",
+                                  common::ErrorValue::E_ERROR);
+}
+
+common::Error DBConnection::GetTTLImpl(const NKey& key, ttl_t* ttl) {
+  UNUSED(key);
+  UNUSED(ttl);
+  return common::make_error_value("Sorry, but now " PROJECT_NAME_TITLE
+                                  " for RocksDB not supported TTL commands.",
                                   common::ErrorValue::E_ERROR);
 }
 

@@ -48,6 +48,8 @@ class CommandTranslator : public ICommandTranslator {
   virtual common::Error ChangeKeyTTLCommandImpl(const NKey& key,
                                                 ttl_t ttl,
                                                 std::string* cmdstring) const override;
+  virtual common::Error LoadKeyTTLCommandImpl(const NKey& key,
+                                              std::string* cmdstring) const override;
 };
 
 }  // namespace memcached

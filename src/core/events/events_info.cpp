@@ -114,13 +114,15 @@ ExecuteInfoRequest::ExecuteInfoRequest(initiator_type sender,
                                        common::time64_t msec_repeat_interval,
                                        bool history,
                                        bool silence,
+                                       common::Value::CommandLoggingType logtype,
                                        error_type er)
     : base_class(sender, er),
       text(text),
       repeat(repeat),
       msec_repeat_interval(msec_repeat_interval),
       history(history),
-      silence(silence) {}
+      silence(silence),
+      logtype(logtype) {}
 
 ExecuteInfoResponce::ExecuteInfoResponce(const base_class& request) : base_class(request) {}
 

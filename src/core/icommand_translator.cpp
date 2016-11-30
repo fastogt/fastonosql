@@ -89,5 +89,13 @@ common::Error ICommandTranslator::ChangeKeyTTLCommand(const NKey& key,
   return ChangeKeyTTLCommandImpl(key, ttl, cmdstring);
 }
 
+common::Error ICommandTranslator::LoadKeyTTLCommand(const NKey& key, std::string* cmdstring) const {
+  if (!cmdstring) {
+    return common::make_error_value("Invalid input argument(s)", common::ErrorValue::E_ERROR);
+  }
+
+  return LoadKeyTTLCommandImpl(key, cmdstring);
+}
+
 }  // namespace core
 }  // namespace fastonosql

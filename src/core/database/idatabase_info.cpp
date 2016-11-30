@@ -93,15 +93,21 @@ void IDataBaseInfo::UpdateKey(const NDbKValue& key) {
   }
 }
 
-void IDataBaseInfo::UpdateKeyTTL(const NKey& key, ttl_t ttl) {
+bool IDataBaseInfo::UpdateKeyTTL(const NKey& key, ttl_t ttl) {
   for (auto& kv : keys_) {
     if (kv.KeyString() == key.Key()) {
       NKey okv = kv.Key();
+      if (okv.TTL() == ttl) {
+        return false;
+      }
+
       okv.SetTTL(ttl);
       kv.SetKey(okv);
-      break;
+      return true;
     }
   }
+
+  return false;
 }
 
 void IDataBaseInfo::RemoveKey(const core::NKey& key) {

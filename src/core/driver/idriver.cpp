@@ -391,6 +391,7 @@ void IDriver::HandleExecuteEvent(events::ExecuteRequestEvent* ev) {
   const size_t repeat = res.repeat;
   const bool history = res.history;
   const common::time64_t msec_repeat_interval = res.msec_repeat_interval;
+  const common::Value::CommandLoggingType log_type = res.logtype;
   RootLocker* lock =
       history ? new RootLocker(this, sender, inputLine, silence)
               : new FirstChildUpdateRootLocker(this, sender, inputLine, silence, commands);
@@ -410,9 +411,8 @@ void IDriver::HandleExecuteEvent(events::ExecuteRequestEvent* ev) {
       NotifyProgress(sender, cur_progress);
 
       std::string command = commands[i];
-      FastoObjectCommandIPtr cmd =
-          silence ? CreateCommandFast(command, common::Value::C_USER)
-                  : CreateCommand(obj.get(), command, common::Value::C_USER);  //
+      FastoObjectCommandIPtr cmd = silence ? CreateCommandFast(command, log_type)
+                                           : CreateCommand(obj.get(), command, log_type);  //
       common::Error err = Execute(cmd);
       if (err && err->isError()) {
         res.setErrorInfo(err);
@@ -662,6 +662,10 @@ void IDriver::OnKeyRenamed(const NKey& key, const std::string& new_key) {
 
 void IDriver::OnKeyTTLChanged(const NKey& key, ttl_t ttl) {
   emit KeyTTLChanged(key, ttl);
+}
+
+void IDriver::OnKeyTTLLoaded(const NKey& key, ttl_t ttl) {
+  emit KeyTTLLoaded(key, ttl);
 }
 
 void IDriver::OnQuited() {

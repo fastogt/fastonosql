@@ -26,9 +26,6 @@
 #include "core/db_key.h"               // for NDbKValue, NKey, ttl_t
 #include "core/icommand_translator.h"  // for ICommandTranslator
 
-#define REDIS_CHANGE_TTL_2ARGS_SI "EXPIRE %s %d"
-#define REDIS_PERSIST_KEY_1ARGS_S "PERSIST %s"
-
 namespace fastonosql {
 namespace core {
 namespace redis {
@@ -51,6 +48,8 @@ class CommandTranslator : public ICommandTranslator {
   virtual common::Error ChangeKeyTTLCommandImpl(const NKey& key,
                                                 ttl_t ttl,
                                                 std::string* cmdstring) const override;
+  virtual common::Error LoadKeyTTLCommandImpl(const NKey& key,
+                                              std::string* cmdstring) const override;
 };
 
 }  // namespace redis

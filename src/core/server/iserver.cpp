@@ -36,7 +36,8 @@
 namespace fastonosql {
 namespace core {
 
-IServer::IServer(IDriver* drv) : drv_(drv), server_info_(), current_database_info_() {
+IServer::IServer(IDriver* drv)
+    : drv_(drv), server_info_(), current_database_info_(), timer_check_key_exists_id_(0) {
   VERIFY(QObject::connect(drv_, &IDriver::ChildAdded, this, &IServer::ChildAdded));
   VERIFY(QObject::connect(drv_, &IDriver::ItemUpdated, this, &IServer::ItemUpdated));
   VERIFY(
@@ -50,6 +51,7 @@ IServer::IServer(IDriver* drv) : drv_(drv), server_info_(), current_database_inf
   VERIFY(QObject::connect(drv_, &IDriver::KeyLoaded, this, &IServer::KeyLoad));
   VERIFY(QObject::connect(drv_, &IDriver::KeyRenamed, this, &IServer::KeyRename));
   VERIFY(QObject::connect(drv_, &IDriver::KeyTTLChanged, this, &IServer::KeyTTLChange));
+  VERIFY(QObject::connect(drv_, &IDriver::KeyTTLLoaded, this, &IServer::KeyTTLLoad));
   VERIFY(QObject::connect(drv_, &IDriver::Disconnected, this, &IServer::Disconnected));
 
   drv_->Start();
@@ -59,6 +61,18 @@ IServer::~IServer() {
   StopCurrentEvent();
   drv_->Stop();
   delete drv_;
+}
+
+void IServer::startCheckKeyExistTimer() {
+  timer_check_key_exists_id_ = startTimer(1000);
+  DCHECK(timer_check_key_exists_id_ != 0);
+}
+
+void IServer::stopCheckKeyExistTimer() {
+  if (timer_check_key_exists_id_ != 0) {
+    killTimer(timer_check_key_exists_id_);
+    timer_check_key_exists_id_ = 0;
+  }
 }
 
 void IServer::StopCurrentEvent() {
@@ -318,6 +332,14 @@ void IServer::customEvent(QEvent* event) {
   return QObject::customEvent(event);
 }
 
+void IServer::timerEvent(QTimerEvent* event) {
+  if (timer_check_key_exists_id_ == event->timerId() && IsConnected()) {
+    database_t cdb = CurrentDatabaseInfo();
+    HandleCheckDBKeys(cdb, 1);
+  }
+  QObject::timerEvent(event);
+}
+
 void IServer::notify(QEvent* ev) {
   events_info::ProgressInfoResponce resp(0);
   emit ProgressChanged(resp);
@@ -553,8 +575,60 @@ void IServer::KeyTTLChange(core::NKey key, core::ttl_t ttl) {
     return;
   }
 
-  cdb->UpdateKeyTTL(key, ttl);
-  emit KeyTTLChanged(cdb, key, ttl);
+  if (cdb->UpdateKeyTTL(key, ttl)) {
+    emit KeyTTLChanged(cdb, key, ttl);
+  }
+}
+
+void IServer::KeyTTLLoad(core::NKey key, core::ttl_t ttl) {
+  database_t cdb = CurrentDatabaseInfo();
+  if (!cdb) {
+    return;
+  }
+
+  if (ttl == EXPIRED_TTL) {
+    cdb->RemoveKey(key);
+    emit KeyRemoved(cdb, key);
+    return;
+  }
+
+  if (cdb->UpdateKeyTTL(key, ttl)) {
+    emit KeyTTLChanged(cdb, key, ttl);
+  }
+}
+
+void IServer::HandleCheckDBKeys(core::IDataBaseInfoSPtr db, ttl_t expired_time) {
+  if (!db) {
+    return;
+  }
+
+  auto keys = db->Keys();
+  for (NDbKValue key : keys) {
+    NKey nkey = key.Key();
+    ttl_t key_ttl = nkey.TTL();
+    if (key_ttl == NO_TTL) {
+    } else if (key_ttl == EXPIRED_TTL) {
+      db->RemoveKey(nkey);
+      emit KeyRemoved(db, nkey);
+    } else {  // live
+      const ttl_t new_ttl = key_ttl - expired_time;
+      if (new_ttl == NO_TTL) {
+        translator_t trans = Translator();
+        std::string load_ttl_cmd;
+        common::Error err = trans->LoadKeyTTLCommand(nkey, &load_ttl_cmd);
+        if (err && err->isError()) {
+          return;
+        }
+        core::events_info::ExecuteInfoRequest req(this, load_ttl_cmd, 0, 0, true, true,
+                                                  common::Value::C_INNER);
+        Execute(req);
+      } else {
+        if (db->UpdateKeyTTL(nkey, new_ttl)) {
+          emit KeyTTLChanged(db, nkey, new_ttl);
+        }
+      }
+    }
+  }
 }
 
 void IServer::HandleEnterModeEvent(events::EnterModeEvent* ev) {

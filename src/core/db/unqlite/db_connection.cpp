@@ -459,6 +459,14 @@ common::Error DBConnection::SetTTLImpl(const NKey& key, ttl_t ttl) {
                                   common::ErrorValue::E_ERROR);
 }
 
+common::Error DBConnection::GetTTLImpl(const NKey& key, ttl_t* ttl) {
+  UNUSED(key);
+  UNUSED(ttl);
+  return common::make_error_value("Sorry, but now " PROJECT_NAME_TITLE
+                                  " for Unqlite not supported TTL commands.",
+                                  common::ErrorValue::E_ERROR);
+}
+
 common::Error DBConnection::DeleteImpl(const NKeys& keys, NKeys* deleted_keys) {
   for (size_t i = 0; i < keys.size(); ++i) {
     NKey key = keys[i];

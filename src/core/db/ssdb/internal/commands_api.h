@@ -166,17 +166,17 @@ struct CommandsApi : public internal::ApiTraits<DBConnection> {
                               const char** argv,
                               FastoObject* out);
   static common::Error MultiZget(internal::CommandHandler* handler,
-                                  int argc,
-                                  const char** argv,
-                                  FastoObject* out);
+                                 int argc,
+                                 const char** argv,
+                                 FastoObject* out);
   static common::Error MultiZset(internal::CommandHandler* handler,
-                                  int argc,
-                                  const char** argv,
-                                  FastoObject* out);
+                                 int argc,
+                                 const char** argv,
+                                 FastoObject* out);
   static common::Error MultiZdel(internal::CommandHandler* handler,
-                                  int argc,
-                                  const char** argv,
-                                  FastoObject* out);
+                                 int argc,
+                                 const char** argv,
+                                 FastoObject* out);
   static common::Error Qpush(internal::CommandHandler* handler,
                              int argc,
                              const char** argv,
@@ -298,6 +298,14 @@ static const std::vector<CommandHolder> g_commands = {
                   2,
                   0,
                   &CommandsApi::SetTTL),
+    CommandHolder("TTL",
+                  "<key>",
+                  "Get the time to live for a key",
+                  UNDEFINED_SINCE,
+                  UNDEFINED_EXAMPLE_STR,
+                  1,
+                  0,
+                  &CommandsApi::GetTTL),
     CommandHolder("QUIT",
                   "-",
                   "Close the connection",

@@ -1625,10 +1625,39 @@ common::Error DBConnection::SetTTLImpl(const NKey& key, ttl_t ttl) {
 
   if (reply->integer == 0) {
     return common::make_error_value(
-        common::MemSPrintf("%s does not exist or the timeout could not be set.", key_str.c_str()),
+        common::MemSPrintf("%s does not exist or the timeout could not be set.", key_str),
         common::ErrorValue::E_ERROR);
   }
 
+  freeReplyObject(reply);
+  return common::Error();
+}
+
+common::Error DBConnection::GetTTLImpl(const NKey& key, ttl_t* ttl) {
+  translator_t tran = Translator();
+  std::string ttl_cmd;
+  common::Error err = tran->LoadKeyTTLCommand(key, &ttl_cmd);
+  if (err && err->isError()) {
+    return err;
+  }
+  redisReply* reply =
+      reinterpret_cast<redisReply*>(redisCommand(connection_.handle_, ttl_cmd.c_str()));
+  if (!reply) {
+    return cliPrintContextError(connection_.handle_);
+  }
+
+  if (reply->type == REDIS_REPLY_ERROR) {
+    std::string str(reply->str, reply->len);
+    freeReplyObject(reply);
+    return common::make_error_value(str, common::ErrorValue::E_ERROR);
+  }
+
+  if (reply->type != REDIS_REPLY_INTEGER) {
+    freeReplyObject(reply);
+    return common::make_error_value("TTL command internal error", common::ErrorValue::E_ERROR);
+  }
+
+  *ttl = reply->integer;
   freeReplyObject(reply);
   return common::Error();
 }

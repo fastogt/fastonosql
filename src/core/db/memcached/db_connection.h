@@ -105,7 +105,8 @@ class DBConnection : public core::internal::CDBConnection<NativeConnection, Conf
                          const std::string& value,
                          time_t expiration,
                          uint32_t flags) WARN_UNUSED_RESULT;
-  common::Error ExpireInner(const std::string& key, time_t expiration) WARN_UNUSED_RESULT;
+  common::Error ExpireInner(const std::string& key, ttl_t expiration) WARN_UNUSED_RESULT;
+  common::Error TTLInner(const std::string& key, ttl_t* expiration) WARN_UNUSED_RESULT;
 
   virtual common::Error ScanImpl(uint64_t cursor_in,
                                  std::string pattern,
@@ -124,6 +125,7 @@ class DBConnection : public core::internal::CDBConnection<NativeConnection, Conf
   virtual common::Error SetImpl(const NDbKValue& key, NDbKValue* added_key) override;
   virtual common::Error RenameImpl(const NKey& key, const std::string& new_key) override;
   virtual common::Error SetTTLImpl(const NKey& key, ttl_t ttl) override;
+  virtual common::Error GetTTLImpl(const NKey& key, ttl_t* ttl) override;
   virtual common::Error QuitImpl() override;
 };
 

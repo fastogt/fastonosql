@@ -186,7 +186,11 @@ class IServer : public IServerBase, public std::enable_shared_from_this<IServer>
  protected:
   explicit IServer(IDriver* drv);  // take ownerships
 
+  void startCheckKeyExistTimer();
+  void stopCheckKeyExistTimer();
+
   virtual void customEvent(QEvent* event) override;
+  virtual void timerEvent(QTimerEvent* event) override;
 
   virtual IDatabaseSPtr CreateDatabase(IDataBaseInfoSPtr info) = 0;
   void notify(QEvent* ev);
@@ -223,10 +227,13 @@ class IServer : public IServerBase, public std::enable_shared_from_this<IServer>
   void KeyLoad(core::NDbKValue key);
   void KeyRename(core::NKey key, std::string new_name);
   void KeyTTLChange(core::NKey key, core::ttl_t ttl);
+  void KeyTTLLoad(core::NKey key, core::ttl_t ttl);
 
  private:
   IServerInfoSPtr server_info_;
   database_t current_database_info_;
+
+  void HandleCheckDBKeys(core::IDataBaseInfoSPtr db, ttl_t expired_time);
 
   void HandleEnterModeEvent(events::EnterModeEvent* ev);
   void HandleLeaveModeEvent(events::LeaveModeEvent* ev);
@@ -237,6 +244,7 @@ class IServer : public IServerBase, public std::enable_shared_from_this<IServer>
 
   void ProcessConfigArgs(const events_info::ProcessConfigArgsInfoRequest& req);
   void ProcessDiscoveryInfo(const events_info::DiscoveryInfoRequest& req);
+  int timer_check_key_exists_id_;
 };
 
 }  // namespace core

@@ -62,6 +62,10 @@ struct ApiTraits {
                               int argc,
                               const char** argv,
                               FastoObject* out);
+  static common::Error GetTTL(CommandHandler* handler,
+                              int argc,
+                              const char** argv,
+                              FastoObject* out);
   static common::Error Quit(CommandHandler* handler, int argc, const char** argv, FastoObject* out);
 };
 
@@ -301,16 +305,38 @@ common::Error ApiTraits<CDBConnection>::SetTTL(internal::CommandHandler* handler
   UNUSED(out);
   UNUSED(argc);
 
-  CDBConnection* level = static_cast<CDBConnection*>(handler);
+  CDBConnection* cdb = static_cast<CDBConnection*>(handler);
   NKey key(argv[0]);
-  time_t ttl = common::ConvertFromString<time_t>(argv[1]);
-  common::Error err = level->SetTTL(key, ttl);
+  ttl_t ttl = common::ConvertFromString<ttl_t>(argv[1]);
+  common::Error err = cdb->SetTTL(key, ttl);
   if (err && err->isError()) {
     return err;
   }
 
   common::StringValue* val = common::Value::createStringValue("OK");
-  FastoObject* child = new FastoObject(out, val, level->Delimiter());
+  FastoObject* child = new FastoObject(out, val, cdb->Delimiter());
+  out->AddChildren(child);
+  return common::Error();
+}
+
+template <class CDBConnection>
+common::Error ApiTraits<CDBConnection>::GetTTL(internal::CommandHandler* handler,
+                                               int argc,
+                                               const char** argv,
+                                               FastoObject* out) {
+  UNUSED(out);
+  UNUSED(argc);
+
+  CDBConnection* cdb = static_cast<CDBConnection*>(handler);
+  NKey key(argv[0]);
+  ttl_t ttl;
+  common::Error err = cdb->GetTTL(key, &ttl);
+  if (err && err->isError()) {
+    return err;
+  }
+
+  common::FundamentalValue* val = common::Value::createIntegerValue(ttl);
+  FastoObject* child = new FastoObject(out, val, cdb->Delimiter());
   out->AddChildren(child);
   return common::Error();
 }

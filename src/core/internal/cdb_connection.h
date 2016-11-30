@@ -78,8 +78,9 @@ class CDBConnection : public DBConnection<NConnection, Config, ContType>, public
   common::Error Set(const NDbKValue& key, NDbKValue* added_key) WARN_UNUSED_RESULT;        // nvi
   common::Error Get(const NKey& key, NDbKValue* loaded_key) WARN_UNUSED_RESULT;            // nvi
   common::Error Rename(const NKey& key, const std::string& new_key) WARN_UNUSED_RESULT;    // nvi
-  common::Error SetTTL(const NKey& key, ttl_t ttl) WARN_UNUSED_RESULT;
-  common::Error Quit() WARN_UNUSED_RESULT;  // nvi
+  common::Error SetTTL(const NKey& key, ttl_t ttl) WARN_UNUSED_RESULT;                     // nvi
+  common::Error GetTTL(const NKey& key, ttl_t* ttl) WARN_UNUSED_RESULT;                    // nvi
+  common::Error Quit() WARN_UNUSED_RESULT;                                                 // nvi
 
   translator_t Translator() const { return translator_; }
 
@@ -104,6 +105,7 @@ class CDBConnection : public DBConnection<NConnection, Config, ContType>, public
   virtual common::Error GetImpl(const NKey& key, NDbKValue* loaded_key) = 0;
   virtual common::Error RenameImpl(const NKey& key, const std::string& new_key) = 0;
   virtual common::Error SetTTLImpl(const NKey& key, ttl_t ttl) = 0;
+  virtual common::Error GetTTLImpl(const NKey& key, ttl_t* ttl) = 0;
   virtual common::Error QuitImpl() = 0;
 
   translator_t translator_;
@@ -361,6 +363,28 @@ common::Error CDBConnection<NConnection, Config, ContType>::SetTTL(const NKey& k
 
   if (client_) {
     client_->OnKeyTTLChanged(key, ttl);
+  }
+
+  return common::Error();
+}
+template <typename NConnection, typename Config, connectionTypes ContType>
+common::Error CDBConnection<NConnection, Config, ContType>::GetTTL(const NKey& key, ttl_t* ttl) {
+  if (!ttl) {
+    DNOTREACHED();
+    return common::make_error_value("Invalid input argument(s)", common::ErrorValue::E_ERROR);
+  }
+
+  if (!CDBConnection<NConnection, Config, ContType>::IsConnected()) {
+    return common::make_error_value("Not connected", common::Value::E_ERROR);
+  }
+
+  common::Error err = GetTTLImpl(key, ttl);
+  if (err && err->isError()) {
+    return err;
+  }
+
+  if (client_) {
+    client_->OnKeyTTLLoaded(key, *ttl);
   }
 
   return common::Error();

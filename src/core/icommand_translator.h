@@ -50,6 +50,7 @@ class ICommandTranslator {
   common::Error ChangeKeyTTLCommand(const NKey& key,
                                     ttl_t ttl,
                                     std::string* cmdstring) const WARN_UNUSED_RESULT;
+  common::Error LoadKeyTTLCommand(const NKey& key, std::string* cmdstring) const WARN_UNUSED_RESULT;
 
  private:
   virtual common::Error CreateKeyCommandImpl(const NDbKValue& key,
@@ -64,6 +65,7 @@ class ICommandTranslator {
   virtual common::Error ChangeKeyTTLCommandImpl(const NKey& key,
                                                 ttl_t ttl,
                                                 std::string* cmdstring) const = 0;
+  virtual common::Error LoadKeyTTLCommandImpl(const NKey& key, std::string* cmdstring) const = 0;
 };
 
 typedef common::shared_ptr<ICommandTranslator> translator_t;

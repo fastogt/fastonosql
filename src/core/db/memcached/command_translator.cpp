@@ -27,6 +27,7 @@
 #define MEMCACHED_DELETE_KEY_PATTERN_1ARGS_S "DEL %s"
 #define MEMCACHED_RENAME_KEY_PATTERN_2ARGS_SS "RENAME %s %s"
 #define MEMCACHED_CHANGE_TTL_2ARGS_SI "EXPIRE %s %d"
+#define MEMCACHED_GET_TTL_1ARGS_S "TTL %s"
 
 namespace fastonosql {
 namespace core {
@@ -72,6 +73,13 @@ common::Error CommandTranslator::ChangeKeyTTLCommandImpl(const NKey& key,
                                                          std::string* cmdstring) const {
   std::string key_str = key.Key();
   *cmdstring = common::MemSPrintf(MEMCACHED_CHANGE_TTL_2ARGS_SI, key_str, ttl);
+  return common::Error();
+}
+
+common::Error CommandTranslator::LoadKeyTTLCommandImpl(const NKey& key,
+                                                       std::string* cmdstring) const {
+  std::string key_str = key.Key();
+  *cmdstring = common::MemSPrintf(MEMCACHED_GET_TTL_1ARGS_S, key_str);
   return common::Error();
 }
 

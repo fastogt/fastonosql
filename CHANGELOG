@@ -3,6 +3,7 @@
 - Help command
 - Common api for databases
 - [Redis] Load Databases - Amazon Elastic Cache - Redis #65
+- [Redis] TTL loop
 
 1.1.1 / November 23, 2016
 [Alexandr Topilski]
