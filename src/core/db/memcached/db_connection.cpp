@@ -543,7 +543,7 @@ common::Error DBConnection::ExpireInner(const std::string& key, ttl_t expiration
   return common::Error();
 }
 
-common::Error DBConnection::TTLInner(const std::string& key, ttl_t* expiration) {
+common::Error DBConnection::TTL(const std::string& key, ttl_t* expiration) {
   if (!IsConnected()) {
     return common::make_error_value("Not connected", common::Value::E_ERROR);
   }
@@ -726,7 +726,7 @@ common::Error DBConnection::SetTTLImpl(const NKey& key, ttl_t ttl) {
 }
 
 common::Error DBConnection::GetTTLImpl(const NKey& key, ttl_t* ttl) {
-  return TTLInner(key.Key(), ttl);
+  return TTL(key.Key(), ttl);
 }
 
 common::Error DBConnection::QuitImpl() {

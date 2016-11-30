@@ -86,7 +86,6 @@ class DBConnection : public core::internal::CDBConnection<NativeConnection, Conf
   std::string CurrentDBName() const;
   common::Error Info(const char* args, ServerInfo::Stats* statsout) WARN_UNUSED_RESULT;
 
-
  private:
   common::Error SetInner(const std::string& key, const std::string& value) WARN_UNUSED_RESULT;
   common::Error GetInner(const std::string& key, std::string* ret_val) WARN_UNUSED_RESULT;

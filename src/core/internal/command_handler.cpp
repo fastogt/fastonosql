@@ -53,7 +53,9 @@ common::Error CommandHandler::Execute(int argc, const char** argv, FastoObject* 
   return UnknownSequence(argc, argv);
 }
 
-common::Error CommandHandler::FindCommand(int argc, const char** argv, const command_t** cmdout) const {
+common::Error CommandHandler::FindCommand(int argc,
+                                          const char** argv,
+                                          const command_t** cmdout) const {
   if (!cmdout) {
     return common::make_error_value("Invalid input argument(s)", common::ErrorValue::E_ERROR);
   }

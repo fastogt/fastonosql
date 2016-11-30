@@ -23,9 +23,9 @@ namespace core {
 namespace leveldb {
 
 common::Error CommandsApi::Info(internal::CommandHandler* handler,
-                               int argc,
-                               const char** argv,
-                               FastoObject* out) {
+                                int argc,
+                                const char** argv,
+                                FastoObject* out) {
   DBConnection* level = static_cast<DBConnection*>(handler);
 
   ServerInfo::Stats statsout;

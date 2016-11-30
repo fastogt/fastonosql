@@ -113,7 +113,7 @@ common::Error CommandsApi::Append(internal::CommandHandler* handler,
 
   DBConnection* mem = static_cast<DBConnection*>(handler);
   common::Error err = mem->Append(argv[0], argv[3], common::ConvertFromString<time_t>(argv[2]),
-                                 common::ConvertFromString<uint32_t>(argv[1]));
+                                  common::ConvertFromString<uint32_t>(argv[1]));
   if (err && err->isError()) {
     return err;
   }
@@ -132,7 +132,7 @@ common::Error CommandsApi::Prepend(internal::CommandHandler* handler,
 
   DBConnection* mem = static_cast<DBConnection*>(handler);
   common::Error err = mem->Prepend(argv[0], argv[3], common::ConvertFromString<time_t>(argv[2]),
-                                  common::ConvertFromString<uint32_t>(argv[1]));
+                                   common::ConvertFromString<uint32_t>(argv[1]));
   if (err && err->isError()) {
     return err;
   }
