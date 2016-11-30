@@ -1,4 +1,5 @@
 CMAKE_MINIMUM_REQUIRED(VERSION 3.3.0) # deb package fix in 3.3.0
+SET(CMAKE_CXX_STANDARD 11)
 ###################### Branding ##########################
 
 SET(BRANDING_PROJECT_NAME "FastoNoSQL" CACHE STRING "Branding for ${BRANDING_PROJECT_NAME}") #default
