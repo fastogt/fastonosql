@@ -127,6 +127,8 @@ class DBConnection : public core::internal::CDBConnection<NativeConnection, Conf
   virtual common::Error SetTTLImpl(const NKey& key, ttl_t ttl) override;
   virtual common::Error GetTTLImpl(const NKey& key, ttl_t* ttl) override;
   virtual common::Error QuitImpl() override;
+
+  ServerInfo::Stats current_info_;
 };
 
 }  // namespace memcached

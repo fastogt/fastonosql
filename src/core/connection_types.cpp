@@ -31,6 +31,10 @@ bool IsRemoteType(connectionTypes type) {
   return type == REDIS || type == MEMCACHED || type == SSDB;
 }
 
+bool IsSupportTTLKeys(connectionTypes type) {
+  return type == REDIS || type == MEMCACHED;
+}
+
 bool IsLocalType(connectionTypes type) {
   return type == ROCKSDB || type == LEVELDB || type == LMDB || type == UPSCALEDB || type == UNQLITE;
 }

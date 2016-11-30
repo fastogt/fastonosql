@@ -403,8 +403,8 @@ void ExplorerTreeView::showContextMenu(const QPoint& point) {
       bool is_connected = server->IsConnected();
       menu.addAction(getValueAction_);
       getValueAction_->setEnabled(is_connected);
-      bool isRedis = server->Type() == core::REDIS;
-      if (isRedis) {
+      bool isTTLSupported = server->IsSupportTTLKeys();
+      if (isTTLSupported) {
         QAction* setTTLKeyAction = new QAction(trSetTTL, this);
         setTTLKeyAction->setEnabled(is_connected);
         VERIFY(connect(setTTLKeyAction, &QAction::triggered, this, &ExplorerTreeView::setTTL));

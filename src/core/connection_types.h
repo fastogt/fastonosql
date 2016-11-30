@@ -77,6 +77,7 @@ enum ConnectionMode {
 };
 
 bool IsRemoteType(connectionTypes type);
+bool IsSupportTTLKeys(connectionTypes type);
 bool IsLocalType(connectionTypes type);
 bool IsCanSSHConnection(connectionTypes type);
 const char* CommandLineHelpText(connectionTypes type);

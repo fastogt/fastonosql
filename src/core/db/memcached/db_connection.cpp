@@ -55,7 +55,8 @@ struct KeysHolder {
   const uint64_t limit;
   std::vector<std::string>* r;
 
-  memcached_return_t addKey(const char* key, size_t key_length) {
+  memcached_return_t addKey(const char* key, size_t key_length, time_t exp) {
+    UNUSED(exp);
     if (r->size() < limit) {
       std::string received_key(key, key_length);
       if (key_start < received_key && key_end > received_key) {
@@ -73,11 +74,12 @@ struct KeysHolder {
 memcached_return_t memcached_dump_keys_callback(const memcached_st* ptr,
                                                 const char* key,
                                                 size_t key_length,
+                                                time_t exp,
                                                 void* context) {
   UNUSED(ptr);
 
   KeysHolder* holder = static_cast<KeysHolder*>(context);
-  return holder->addKey(key, key_length);
+  return holder->addKey(key, key_length, exp);
 }
 
 struct ScanHolder {
@@ -88,7 +90,8 @@ struct ScanHolder {
   const uint64_t limit;
   std::vector<std::string>* r;
 
-  memcached_return_t addKey(const char* key, size_t key_length) {
+  memcached_return_t addKey(const char* key, size_t key_length, time_t exp) {
+    UNUSED(exp);
     if (r->size() < limit) {
       std::string received_key(key, key_length);
       if (common::MatchPattern(received_key, pattern)) {
@@ -104,11 +107,39 @@ struct ScanHolder {
 memcached_return_t memcached_dump_scan_callback(const memcached_st* ptr,
                                                 const char* key,
                                                 size_t key_length,
+                                                time_t exp,
                                                 void* context) {
   UNUSED(ptr);
 
   ScanHolder* holder = static_cast<ScanHolder*>(context);
-  return holder->addKey(key, key_length);
+  return holder->addKey(key, key_length, exp);
+}
+
+struct TTLHolder {
+  TTLHolder(const std::string& key, time_t* exp) : looked_key(key), exp_out(exp) {}
+  memcached_return_t CheckKey(const char* key, size_t key_length, time_t exp) {
+    std::string received_key(key, key_length);
+    if (received_key == looked_key) {
+      *exp_out = exp;
+      return MEMCACHED_END;
+    }
+
+    return MEMCACHED_SUCCESS;
+  }
+
+  const std::string looked_key;
+  time_t* exp_out;
+};
+
+memcached_return_t memcached_dump_ttl_callback(const memcached_st* ptr,
+                                               const char* key,
+                                               size_t key_length,
+                                               time_t exp,
+                                               void* context) {
+  UNUSED(ptr);
+
+  TTLHolder* holder = static_cast<TTLHolder*>(context);
+  return holder->CheckKey(key, key_length, exp);
 }
 
 }  // namespace
@@ -263,7 +294,7 @@ common::Error TestConnection(ConnectionSettings* settings) {
 }
 
 DBConnection::DBConnection(CDBConnectionClient* client)
-    : base_class(client, new CommandTranslator) {}
+    : base_class(client, new CommandTranslator), current_info_() {}
 
 common::Error DBConnection::Info(const char* args, ServerInfo::Stats* statsout) {
   if (!statsout) {
@@ -308,6 +339,7 @@ common::Error DBConnection::Info(const char* args, ServerInfo::Stats* statsout) 
   lstatsout.threads = st->threads;
 
   *statsout = lstatsout;
+  current_info_ = lstatsout;
   memcached_stat_free(NULL, st);
   return common::Error();
 }
@@ -511,7 +543,35 @@ common::Error DBConnection::ExpireInner(const std::string& key, ttl_t expiration
   return common::Error();
 }
 
-common::Error DBConnection::TTLInner(const std::string& key, ttl_t* expiration) {}
+common::Error DBConnection::TTLInner(const std::string& key, ttl_t* expiration) {
+  if (!IsConnected()) {
+    return common::make_error_value("Not connected", common::Value::E_ERROR);
+  }
+
+  time_t exp;
+  TTLHolder hld(key, &exp);
+  memcached_dump_fn func[1] = {0};
+  func[0] = memcached_dump_ttl_callback;
+  memcached_return_t result = memcached_dump(connection_.handle_, func, &hld, SIZEOFMASS(func));
+  if (result != MEMCACHED_SUCCESS) {
+    std::string buff = common::MemSPrintf("TTL function error: %s",
+                                          memcached_strerror(connection_.handle_, result));
+    return common::make_error_value(buff, common::ErrorValue::E_ERROR);
+  }
+
+  time_t cur_t = time(NULL);
+  time_t server_t = current_info_.time;
+  if (cur_t > exp) {
+    if (server_t > exp) {
+      *expiration = NO_TTL;
+    } else {
+      *expiration = EXPIRED_TTL;
+    }
+  } else {
+    *expiration = exp - cur_t;
+  }
+  return common::Error();
+}
 
 common::Error DBConnection::VersionServer() const {
   if (!IsConnected()) {
@@ -537,7 +597,7 @@ common::Error DBConnection::ScanImpl(uint64_t cursor_in,
   memcached_dump_fn func[1] = {0};
   func[0] = memcached_dump_scan_callback;
   memcached_return_t result = memcached_dump(connection_.handle_, func, &hld, SIZEOFMASS(func));
-  if (result == MEMCACHED_ERROR) {
+  if (result != MEMCACHED_SUCCESS) {
     std::string buff = common::MemSPrintf("SCAN function error: %s",
                                           memcached_strerror(connection_.handle_, result));
     return common::make_error_value(buff, common::ErrorValue::E_ERROR);
@@ -555,8 +615,8 @@ common::Error DBConnection::KeysImpl(const std::string& key_start,
   memcached_dump_fn func[1] = {0};
   func[0] = memcached_dump_keys_callback;
   memcached_return_t result = memcached_dump(connection_.handle_, func, &hld, SIZEOFMASS(func));
-  if (result == MEMCACHED_ERROR) {
-    std::string buff = common::MemSPrintf("Keys function error: %s",
+  if (result != MEMCACHED_SUCCESS) {
+    std::string buff = common::MemSPrintf("KEYS function error: %s",
                                           memcached_strerror(connection_.handle_, result));
     return common::make_error_value(buff, common::ErrorValue::E_ERROR);
   }

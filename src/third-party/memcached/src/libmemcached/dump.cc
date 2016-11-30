@@ -98,7 +98,24 @@ static memcached_return_t ascii_dump(Memcached *memc, memcached_dump_fn *callbac
 
         char *key= string_ptr;
         key[(size_t)(end_ptr-string_ptr)]= 0;
-
+#ifdef FASTO
+        int bytes = 0;
+        unsigned long long expire_time = 0;
+        sscanf(end_ptr + 1, "[%d b; %llu s;]", &bytes, &expire_time);
+        for (uint32_t callback_counter= 0; callback_counter < number_of_callbacks; callback_counter++)
+        {
+          memcached_return_t callback_rc= (*callback[callback_counter])(memc, key, (size_t)(end_ptr-string_ptr), expire_time, context);
+          if (callback_rc != MEMCACHED_SUCCESS)
+          {
+            if (callback_rc == MEMCACHED_END) {
+              return MEMCACHED_SUCCESS;
+            }
+            // @todo build up a message for the error from the value
+            memcached_set_error(*instance, callback_rc, MEMCACHED_AT);
+            break;
+          }
+        }
+#else
         for (uint32_t callback_counter= 0; callback_counter < number_of_callbacks; callback_counter++)
         {
           memcached_return_t callback_rc= (*callback[callback_counter])(memc, key, (size_t)(end_ptr-string_ptr), context);
@@ -109,6 +126,7 @@ static memcached_return_t ascii_dump(Memcached *memc, memcached_dump_fn *callbac
             break;
           }
         }
+#endif
       }
       else if (response_rc == MEMCACHED_END)
       { 
@@ -116,6 +134,11 @@ static memcached_return_t ascii_dump(Memcached *memc, memcached_dump_fn *callbac
       }
       else if (response_rc == MEMCACHED_SERVER_ERROR or response_rc == MEMCACHED_CLIENT_ERROR or response_rc == MEMCACHED_ERROR)
       {
+#ifdef FASTO
+          if (response_rc == MEMCACHED_CLIENT_ERROR) {
+              return MEMCACHED_SUCCESS;
+          }
+#endif
         /* If we try to request stats cachedump for a slab class that is too big
          * the server will return an incorrect error message:
          * "MEMCACHED_SERVER_ERROR failed to allocate memory"

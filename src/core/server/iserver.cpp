@@ -87,6 +87,10 @@ bool IServer::IsCanRemote() const {
   return IsRemoteType(Type());
 }
 
+bool IServer::IsSupportTTLKeys() const {
+  return fastonosql::core::IsSupportTTLKeys(Type());
+}
+
 translator_t IServer::Translator() const {
   return drv_->Translator();
 }

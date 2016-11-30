@@ -25,7 +25,13 @@ namespace fastonosql {
 namespace core {
 namespace memcached {
 
-Server::Server(IConnectionSettingsBaseSPtr settings) : IServerRemote(new Driver(settings)) {}
+Server::Server(IConnectionSettingsBaseSPtr settings) : IServerRemote(new Driver(settings)) {
+  startCheckKeyExistTimer();
+}
+
+Server::~Server() {
+  stopCheckKeyExistTimer();
+}
 
 serverTypes Server::Role() const {
   return MASTER;

@@ -56,6 +56,7 @@ class IServer : public IServerBase, public std::enable_shared_from_this<IServer>
   void StopCurrentEvent();
   bool IsConnected() const;
   bool IsCanRemote() const;
+  bool IsSupportTTLKeys() const;
 
   translator_t Translator() const;
 
