@@ -541,14 +541,17 @@ void MainWindow::versionAvailible(bool succesResult, const QString& version) {
   std::string sver = common::ConvertToString(version);
   bool isn = isNeededUpdate(sver);
   if (isn) {
-    QMessageBox::information(this, translations::trCheckVersion,
-                             QObject::tr("Availible new version: %1").arg(version));
+    QMessageBox::information(
+        this, translations::trCheckVersion,
+        QObject::tr("<h4>A new version(%1) of " PROJECT_NAME_TITLE " is Availible!</h4>"
+                    "You can download it  <a href=\"" PROJECT_DOWNLOAD_LINK "\">here</a>")
+            .arg(version));
   } else {
     QMessageBox::information(
         this, translations::trCheckVersion,
-        QObject::tr("<h3>You're' "
-                    "up-to-date!</h3>" PROJECT_NAME_TITLE " %1 is currently the newest version "
-                    "available.")
+        QObject::tr("<h4>You're' "
+                    "up-to-date!</h4>You are using the latest version(%1) of " PROJECT_NAME_TITLE
+                    ".")
             .arg(version));
   }
 
