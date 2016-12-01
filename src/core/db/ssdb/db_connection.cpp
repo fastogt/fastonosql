@@ -219,7 +219,7 @@ common::Error DBConnection::SetInner(const std::string& key, const std::string& 
 
   auto st = connection_.handle_->set(key, value);
   if (st.error()) {
-    std::string buff = common::MemSPrintf("set function error: %s", st.code());
+    std::string buff = common::MemSPrintf("SET function error: %s", st.code());
     return common::make_error_value(buff, common::ErrorValue::E_ERROR);
   }
   return common::Error();
@@ -232,7 +232,7 @@ common::Error DBConnection::GetInner(const std::string& key, std::string* ret_va
 
   auto st = connection_.handle_->get(key, ret_val);
   if (st.error()) {
-    std::string buff = common::MemSPrintf("get function error: %s", st.code());
+    std::string buff = common::MemSPrintf("GET function error: %s", st.code());
     return common::make_error_value(buff, common::ErrorValue::E_ERROR);
   }
   return common::Error();
@@ -806,6 +806,32 @@ common::Error DBConnection::Qclear(const std::string& name, int64_t* ret) {
   return common::Error();
 }
 
+common::Error DBConnection::Expire(const std::string& key, ttl_t ttl) {
+  if (!IsConnected()) {
+    return common::make_error_value("Not connected", common::Value::E_ERROR);
+  }
+
+  auto st = connection_.handle_->expire(key, ttl);
+  if (st.error()) {
+    std::string buff = common::MemSPrintf("EXPIRE function error: %s", st.code());
+    return common::make_error_value(buff, common::ErrorValue::E_ERROR);
+  }
+  return common::Error();
+}
+
+common::Error DBConnection::TTL(const std::string& key, ttl_t* ttl) {
+  if (!IsConnected()) {
+    return common::make_error_value("Not connected", common::Value::E_ERROR);
+  }
+
+  auto st = connection_.handle_->ttl(key, ttl);
+  if (st.error()) {
+    std::string buff = common::MemSPrintf("TTL function error: %s", st.code());
+    return common::make_error_value(buff, common::ErrorValue::E_ERROR);
+  }
+  return common::Error();
+}
+
 common::Error DBConnection::ScanImpl(uint64_t cursor_in,
                                      std::string pattern,
                                      uint64_t count_keys,
@@ -936,19 +962,23 @@ common::Error DBConnection::GetImpl(const NKey& key, NDbKValue* loaded_key) {
 }
 
 common::Error DBConnection::SetTTLImpl(const NKey& key, ttl_t ttl) {
-  UNUSED(key);
-  UNUSED(ttl);
-  return common::make_error_value("Sorry, but now " PROJECT_NAME_TITLE
-                                  " for SSDB not supported TTL commands.",
-                                  common::ErrorValue::E_ERROR);
+  std::string key_str = key.Key();
+  common::Error err = Expire(key_str, ttl);
+  if (err && err->isError()) {
+    return err;
+  }
+
+  return common::Error();
 }
 
 common::Error DBConnection::GetTTLImpl(const NKey& key, ttl_t* ttl) {
-  UNUSED(key);
-  UNUSED(ttl);
-  return common::make_error_value("Sorry, but now " PROJECT_NAME_TITLE
-                                  " for SSDB not supported TTL commands.",
-                                  common::ErrorValue::E_ERROR);
+  std::string key_str = key.Key();
+  common::Error err = TTL(key_str, ttl);
+  if (err && err->isError()) {
+    return err;
+  }
+
+  return common::Error();
 }
 
 common::Error DBConnection::QuitImpl() {

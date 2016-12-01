@@ -26,11 +26,11 @@ namespace core {
 namespace memcached {
 
 Server::Server(IConnectionSettingsBaseSPtr settings) : IServerRemote(new Driver(settings)) {
-  startCheckKeyExistTimer();
+  StartCheckKeyExistTimer();
 }
 
 Server::~Server() {
-  stopCheckKeyExistTimer();
+  StopCheckKeyExistTimer();
 }
 
 serverTypes Server::Role() const {

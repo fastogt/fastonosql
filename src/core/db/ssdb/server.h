@@ -33,6 +33,8 @@ class Server : public IServerRemote {
   Q_OBJECT
  public:
   explicit Server(IConnectionSettingsBaseSPtr settings);
+  virtual ~Server();
+
   virtual serverMode Mode() const override;
   virtual serverTypes Role() const override;
   virtual serverState State() const override;

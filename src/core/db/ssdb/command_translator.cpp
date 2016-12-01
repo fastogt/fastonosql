@@ -33,9 +33,11 @@
 #define SSDB_GET_KEY_SET_PATTERN_1ARGS_S "SMEMBERS %s"
 #define SSDB_GET_KEY_ZSET_PATTERN_1ARGS_S "ZRANGE %s 0 -1"
 #define SSDB_GET_KEY_HASH_PATTERN_1ARGS_S "HGET %s"
-
 #define SSDB_DELETE_KEY_PATTERN_1ARGS_S "DEL %s"
 #define SSDB_RENAME_KEY_PATTERN_2ARGS_SS "RENAME %s %s"
+
+#define SSDB_CHANGE_TTL_2ARGS_SI "EXPIRE %s %d"
+#define SSDB_GET_TTL_1ARGS_S "TTL %s"
 
 namespace fastonosql {
 namespace core {
@@ -104,23 +106,16 @@ common::Error CommandTranslator::RenameKeyCommandImpl(const NKey& key,
 common::Error CommandTranslator::ChangeKeyTTLCommandImpl(const NKey& key,
                                                          ttl_t ttl,
                                                          std::string* cmdstring) const {
-  UNUSED(key);
-  UNUSED(ttl);
-  UNUSED(cmdstring);
-
-  std::string errorMsg = common::MemSPrintf("Sorry, but now " PROJECT_NAME_TITLE
-                                            " not supported change ttl command for SSDB.");
-  return common::make_error_value(errorMsg, common::ErrorValue::E_ERROR);
+  std::string key_str = key.Key();
+  *cmdstring = common::MemSPrintf(SSDB_CHANGE_TTL_2ARGS_SI, key_str, ttl);
+  return common::Error();
 }
 
 common::Error CommandTranslator::LoadKeyTTLCommandImpl(const NKey& key,
                                                        std::string* cmdstring) const {
-  UNUSED(key);
-  UNUSED(cmdstring);
-
-  std::string errorMsg = common::MemSPrintf("Sorry, but now " PROJECT_NAME_TITLE
-                                            " not supported get ttl command for SSDB.");
-  return common::make_error_value(errorMsg, common::ErrorValue::E_ERROR);
+  std::string key_str = key.Key();
+  *cmdstring = common::MemSPrintf(SSDB_GET_TTL_1ARGS_S, key_str);
+  return common::Error();
 }
 
 }  // namespace ssdb

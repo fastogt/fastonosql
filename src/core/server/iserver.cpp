@@ -63,12 +63,12 @@ IServer::~IServer() {
   delete drv_;
 }
 
-void IServer::startCheckKeyExistTimer() {
+void IServer::StartCheckKeyExistTimer() {
   timer_check_key_exists_id_ = startTimer(1000);
   DCHECK(timer_check_key_exists_id_ != 0);
 }
 
-void IServer::stopCheckKeyExistTimer() {
+void IServer::StopCheckKeyExistTimer() {
   if (timer_check_key_exists_id_ != 0) {
     killTimer(timer_check_key_exists_id_);
     timer_check_key_exists_id_ = 0;
@@ -153,92 +153,92 @@ IServer::database_t IServer::FindDatabase(IDataBaseInfoSPtr inf) const {
 void IServer::Connect(const events_info::ConnectInfoRequest& req) {
   emit ConnectStarted(req);
   QEvent* ev = new events::ConnectRequestEvent(this, req);
-  notify(ev);
+  Notify(ev);
 }
 
 void IServer::Disconnect(const events_info::DisConnectInfoRequest& req) {
   StopCurrentEvent();
   emit DisconnectStarted(req);
   QEvent* ev = new events::DisconnectRequestEvent(this, req);
-  notify(ev);
+  Notify(ev);
 }
 
 void IServer::LoadDatabases(const events_info::LoadDatabasesInfoRequest& req) {
   emit LoadDatabasesStarted(req);
   QEvent* ev = new events::LoadDatabasesInfoRequestEvent(this, req);
-  notify(ev);
+  Notify(ev);
 }
 
 void IServer::LoadDatabaseContent(const events_info::LoadDatabaseContentRequest& req) {
   emit LoadDataBaseContentStarted(req);
   QEvent* ev = new events::LoadDatabaseContentRequestEvent(this, req);
-  notify(ev);
+  Notify(ev);
 }
 
 void IServer::Execute(const events_info::ExecuteInfoRequest& req) {
   emit ExecuteStarted(req);
   QEvent* ev = new events::ExecuteRequestEvent(this, req);
-  notify(ev);
+  Notify(ev);
 }
 
 void IServer::ShutDown(const events_info::ShutDownInfoRequest& req) {
   emit ShutdownStarted(req);
   QEvent* ev = new events::ShutDownRequestEvent(this, req);
-  notify(ev);
+  Notify(ev);
 }
 
 void IServer::BackupToPath(const events_info::BackupInfoRequest& req) {
   emit BackupStarted(req);
   QEvent* ev = new events::BackupRequestEvent(this, req);
-  notify(ev);
+  Notify(ev);
 }
 
 void IServer::ExportFromPath(const events_info::ExportInfoRequest& req) {
   emit ExportStarted(req);
   QEvent* ev = new events::ExportRequestEvent(this, req);
-  notify(ev);
+  Notify(ev);
 }
 
 void IServer::ChangePassword(const events_info::ChangePasswordRequest& req) {
   emit ChangePasswordStarted(req);
   QEvent* ev = new events::ChangePasswordRequestEvent(this, req);
-  notify(ev);
+  Notify(ev);
 }
 
 void IServer::SetMaxConnection(const events_info::ChangeMaxConnectionRequest& req) {
   emit ChangeMaxConnectionStarted(req);
   QEvent* ev = new events::ChangeMaxConnectionRequestEvent(this, req);
-  notify(ev);
+  Notify(ev);
 }
 
 void IServer::LoadServerInfo(const events_info::ServerInfoRequest& req) {
   emit LoadServerInfoStarted(req);
   QEvent* ev = new events::ServerInfoRequestEvent(this, req);
-  notify(ev);
+  Notify(ev);
 }
 
 void IServer::ServerProperty(const events_info::ServerPropertyInfoRequest& req) {
   emit LoadServerPropertyStarted(req);
   QEvent* ev = new events::ServerPropertyInfoRequestEvent(this, req);
-  notify(ev);
+  Notify(ev);
 }
 
 void IServer::RequestHistoryInfo(const events_info::ServerInfoHistoryRequest& req) {
   emit LoadServerHistoryInfoStarted(req);
   QEvent* ev = new events::ServerInfoHistoryRequestEvent(this, req);
-  notify(ev);
+  Notify(ev);
 }
 
 void IServer::ClearHistory(const events_info::ClearServerHistoryRequest& req) {
   emit ClearServerHistoryStarted(req);
   QEvent* ev = new events::ClearServerHistoryRequestEvent(this, req);
-  notify(ev);
+  Notify(ev);
 }
 
 void IServer::ChangeProperty(const events_info::ChangeServerPropertyInfoRequest& req) {
   emit ChangeServerPropertyStarted(req);
   QEvent* ev = new events::ChangeServerPropertyInfoRequestEvent(this, req);
-  notify(ev);
+  Notify(ev);
 }
 
 void IServer::customEvent(QEvent* event) {
@@ -344,7 +344,7 @@ void IServer::timerEvent(QTimerEvent* event) {
   QObject::timerEvent(event);
 }
 
-void IServer::notify(QEvent* ev) {
+void IServer::Notify(QEvent* ev) {
   events_info::ProgressInfoResponce resp(0);
   emit ProgressChanged(resp);
   qApp->postEvent(drv_, ev);
@@ -703,13 +703,13 @@ void IServer::HandleClearServerHistoryResponceEvent(events::ClearServerHistoryRe
 
 void IServer::ProcessConfigArgs(const events_info::ProcessConfigArgsInfoRequest& req) {
   QEvent* ev = new events::ProcessConfigArgsRequestEvent(this, req);
-  notify(ev);
+  Notify(ev);
 }
 
 void IServer::ProcessDiscoveryInfo(const events_info::DiscoveryInfoRequest& req) {
   emit LoadDiscoveryInfoStarted(req);
   QEvent* ev = new events::DiscoveryInfoRequestEvent(this, req);
-  notify(ev);
+  Notify(ev);
 }
 
 }  // namespace core

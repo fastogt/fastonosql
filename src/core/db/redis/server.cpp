@@ -37,11 +37,11 @@ namespace redis {
 
 Server::Server(IConnectionSettingsBaseSPtr settings)
     : IServerRemote(new Driver(settings)), role_(MASTER), mode_(STANDALONE) {
-  startCheckKeyExistTimer();
+  StartCheckKeyExistTimer();
 }
 
 Server::~Server() {
-  stopCheckKeyExistTimer();
+  StopCheckKeyExistTimer();
 }
 
 serverTypes Server::Role() const {

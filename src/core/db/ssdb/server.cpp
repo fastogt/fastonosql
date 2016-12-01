@@ -25,7 +25,13 @@ namespace fastonosql {
 namespace core {
 namespace ssdb {
 
-Server::Server(IConnectionSettingsBaseSPtr settings) : IServerRemote(new Driver(settings)) {}
+Server::Server(IConnectionSettingsBaseSPtr settings) : IServerRemote(new Driver(settings)) {
+  StartCheckKeyExistTimer();
+}
+
+Server::~Server() {
+  StopCheckKeyExistTimer();
+}
 
 serverMode Server::Mode() const {
   return STANDALONE;

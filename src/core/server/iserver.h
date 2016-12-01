@@ -187,14 +187,14 @@ class IServer : public IServerBase, public std::enable_shared_from_this<IServer>
  protected:
   explicit IServer(IDriver* drv);  // take ownerships
 
-  void startCheckKeyExistTimer();
-  void stopCheckKeyExistTimer();
+  void StartCheckKeyExistTimer();
+  void StopCheckKeyExistTimer();
 
   virtual void customEvent(QEvent* event) override;
   virtual void timerEvent(QTimerEvent* event) override;
 
   virtual IDatabaseSPtr CreateDatabase(IDataBaseInfoSPtr info) = 0;
-  void notify(QEvent* ev);
+  void Notify(QEvent* ev);
 
   // handle server events
   virtual void HandleConnectEvent(events::ConnectResponceEvent* ev);

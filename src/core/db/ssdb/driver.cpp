@@ -173,8 +173,18 @@ void Driver::HandleLoadDatabaseContentEvent(events::LoadDatabaseContentRequestEv
         std::string key;
         if (ar->getString(i, &key)) {
           NKey k(key);
+          FastoObjectCommandIPtr cmd_ttl =
+              CreateCommandFast(common::MemSPrintf("TTL %s", key), common::Value::C_INNER);
+          LOG_COMMAND(cmd_ttl);
+          ttl_t ttl = NO_TTL;
+          common::Error err = impl_->TTL(key, &ttl);
+          if (err && err->isError()) {
+            k.SetTTL(NO_TTL);
+          } else {
+            k.SetTTL(ttl);
+          }
+
           NValue empty_val(common::Value::createEmptyValueFromType(common::Value::TYPE_STRING));
-          ;
           NDbKValue ress(k, empty_val);
           res.keys.push_back(ress);
         }

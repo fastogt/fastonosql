@@ -28,6 +28,8 @@ public:
 
 #ifdef FASTO
     virtual Status auth(const std::string &password);
+    virtual Status expire(const std::string& key, int ttl);
+    virtual Status ttl(const std::string& key, int* ttl);
 #endif
 	virtual Status dbsize(int64_t *ret);
 	virtual Status get_kv_range(std::string *start, std::string *end);

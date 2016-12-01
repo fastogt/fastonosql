@@ -32,7 +32,7 @@ bool IsRemoteType(connectionTypes type) {
 }
 
 bool IsSupportTTLKeys(connectionTypes type) {
-  return type == REDIS || type == MEMCACHED;
+  return type == REDIS || type == MEMCACHED || type == SSDB;
 }
 
 bool IsLocalType(connectionTypes type) {

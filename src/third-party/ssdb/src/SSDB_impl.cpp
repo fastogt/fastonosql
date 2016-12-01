@@ -178,6 +178,41 @@ Status ClientImpl::auth(const std::string &password)
     Status s(resp);
     return s;
 }
+
+Status ClientImpl::expire(const std::string& key, int ttl) {
+    const std::vector<std::string> *resp;
+    resp = this->request("expire", key, str(ttl));
+    Status s(resp);
+    return s;
+}
+
+Status ClientImpl::ttl(const std::string& key, int* ttl) {
+    const std::vector<std::string> *resp;
+    resp = this->request("ttl", key);
+    int64_t res = 0;
+    Status st = _read_int64(resp, &res);
+    if(st.ok()){
+       if (res == -1) {
+           const std::vector<std::string> *resp2;
+           resp2 = this->request("exists", key);
+           Status s2(resp2);
+           if(s2.ok()){
+               int64_t res2 = 0;
+               _read_int64(resp2, &res2);
+               if (res2 == 0) {
+                   *ttl = -2;
+               } else {
+                   *ttl = res;
+               }
+           } else {
+               return s2;
+           }
+       } else {
+         *ttl = res;
+       }
+    }
+    return st;
+}
 #endif
 
 Status ClientImpl::dbsize(int64_t *ret){
