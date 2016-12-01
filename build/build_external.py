@@ -4,6 +4,7 @@ import os
 import shutil
 from base import system_info
 from base import run_command
+from base import utils
 
 def print_usage():
     print("Usage:\n"
@@ -17,44 +18,16 @@ def print_message(progress, message):
     print message.message()
     sys.stdout.flush()
 
-class BuildError(Exception):
-    def __init__(self, value):
-        self.value_ = value
-    def __str__(self):
-        return self.value_
-
-class BuildSystem:
-    def __init__(self, name, cmd_line, cmake_generator_arg):
-        self.name_ = name
-        self.cmd_line_ = cmd_line
-        self.cmake_generator_arg_ = cmake_generator_arg
-
-    def cmake_generator_arg(self):
-        return self.cmake_generator_arg_
-
-    def name(self):
-        return self.name_
-
-    def cmd_line(self):  # cmd + args
-        return self.cmd_line_
-
-SUPPORTED_BUILD_SYSTEMS = [BuildSystem('ninja', ['ninja'], '-GNinja'),
-                           BuildSystem('make', ['make', '-j2'], '-GUnix Makefiles'),
-                           BuildSystem('gmake', ['gmake', '-j2'], '-GUnix Makefiles')]
-
-def get_supported_build_system_by_name(name):
-    return next((x for x in SUPPORTED_BUILD_SYSTEMS if x.name() == name), None)
-
 class BuildRequest(object):
     def __init__(self, platform, arch_bit):
         platform_or_none = system_info.get_supported_platform_by_name(platform)
 
         if platform_or_none == None:
-            raise BuildError('invalid platform')
+            raise utils.BuildError('invalid platform')
 
         arch = platform_or_none.architecture_by_bit(arch_bit)
         if arch == None:
-            raise BuildError('invalid arch')
+            raise utils.BuildError('invalid arch')
 
         self.platform_ = system_info.Platform(platform_or_none.name(), arch, platform_or_none.package_types())
         print("Build request for platform: {0}, arch: {1} created".format(platform, arch.name()))
@@ -62,13 +35,13 @@ class BuildRequest(object):
     def build(self, dir_path, bs, bs_external, prefix_path):
         cmake_project_root_abs_path = '..'
         if not os.path.exists(cmake_project_root_abs_path):
-            raise BuildError('invalid cmake_project_root_path: %s' % cmake_project_root_abs_path)
+            raise utils.BuildError('invalid cmake_project_root_path: %s' % cmake_project_root_abs_path)
 
         if not bs:
-            bs = SUPPORTED_BUILD_SYSTEMS[0]
+            bs = system_info.SUPPORTED_BUILD_SYSTEMS[0]
 
         if not bs_external:
-            bs_external = SUPPORTED_BUILD_SYSTEMS[1]
+            bs_external = system_info.SUPPORTED_BUILD_SYSTEMS[1]
 
         if prefix_path == None:
             prefix_path = self.platform_.arch().default_install_prefix_path()
@@ -100,32 +73,34 @@ class BuildRequest(object):
         make_install.append('install')
 
         try:
-            policy = run_command.Policy(print_message)
-            cloned_dir = self.git_clone('https://github.com/fastogt/common.git', policy)
+            cloned_dir = self.git_clone('https://github.com/fastogt/common.git')
             os.chdir(cloned_dir)
 
             os.mkdir('build_cmake_release')
             os.chdir('build_cmake_release')
             common_cmake_line = list(cmake_line)
             common_cmake_line.append('-DQT_ENABLED=ON')
-            run_command.run_command_cb(common_cmake_line, policy)
-            run_command.run_command_cb(make_install, policy)
+            cmake_policy = run_command.CmakePolicy(print_message)
+            make_policy = run_command.CommonPolicy(print_message)
+            run_command.run_command_cb(common_cmake_line, cmake_policy)
+            run_command.run_command_cb(make_install, make_policy)
             os.chdir(abs_dir_path)
         except Exception as ex:
             os.chdir(pwd)
             raise ex
 
         try:
-            policy = run_command.Policy(print_message)
-            cloned_dir = self.git_clone('https://github.com/fastogt/qscintilla.git', policy)
+            cloned_dir = self.git_clone('https://github.com/fastogt/qscintilla.git')
             qsci_src_path = os.path.join(cloned_dir, 'Qt4Qt5')
             os.chdir(qsci_src_path)
 
             os.mkdir('build_cmake_release')
             os.chdir('build_cmake_release')
             qscintilla_cmake_line = list(cmake_line)
-            run_command.run_command_cb(qscintilla_cmake_line, policy)
-            run_command.run_command_cb(make_install, policy)
+            cmake_policy = run_command.CmakePolicy(print_message)
+            make_policy = run_command.CommonPolicy(print_message)
+            run_command.run_command_cb(qscintilla_cmake_line, cmake_policy)
+            run_command.run_command_cb(make_install, make_policy)
             os.chdir(abs_dir_path)
         except Exception as ex:
             os.chdir(pwd)
@@ -137,50 +112,52 @@ class BuildRequest(object):
         build_external_system_args = bs_external.cmd_line()
 
         try:
-            policy = run_command.Policy(print_message)
-            cloned_dir = self.git_clone('https://github.com/fastogt/rocksdb.git', policy)
+            cloned_dir = self.git_clone('https://github.com/fastogt/rocksdb.git')
             os.chdir(cloned_dir)
 
             make_install_rocksdb = list(build_external_system_args)
             make_install_rocksdb.append('install-static')
             make_install_rocksdb.insert(0, 'INSTALL_PATH={0}'.format(prefix_path))
             make_install_rocksdb.insert(0, 'env')
-            run_command.run_command_cb(make_install_rocksdb, policy)
+            make_policy = run_command.CommonPolicy(print_message)
+            run_command.run_command_cb(make_install_rocksdb, make_policy)
             os.chdir(abs_dir_path)
         except Exception as ex:
             os.chdir(pwd)
             raise ex
 
         try:
-            policy = run_command.Policy(print_message)
-            cloned_dir = self.git_clone('https://github.com/fastogt/upscaledb.git', policy)
+            cloned_dir = self.git_clone('https://github.com/fastogt/upscaledb.git')
             os.chdir(cloned_dir)
-
+            bootstrap_policy = run_command.CommonPolicy(print_message)
             bootstrap_upscaledb = ['sh', 'bootstrap.sh']
-            run_command.run_command_cb(bootstrap_upscaledb, policy)
+            run_command.run_command_cb(bootstrap_upscaledb, bootstrap_policy)
 
             configure_upscaledb = ['./configure', '--prefix={0}'.format(prefix_path), '--disable-remote', '--enable-static-boost', '--disable-shared', '--disable-java']
-            run_command.run_command_cb(configure_upscaledb, policy)
+            configure_policy = run_command.CommonPolicy(print_message)
+            run_command.run_command_cb(configure_upscaledb, configure_policy)
 
             make_install_upscaledb = list(build_external_system_args)
             make_install_upscaledb.append('install')
-            run_command.run_command_cb(make_install_upscaledb, policy)
+            make_policy = run_command.CommonPolicy(print_message)
+            run_command.run_command_cb(make_install_upscaledb, make_policy)
             os.chdir(abs_dir_path)
         except Exception as ex:
             os.chdir(pwd)
             raise ex
 
-    def git_clone(self, url, policy):
+    def git_clone(self, url):
+        git_policy = run_command.CommonPolicy(print_message)
         pwd = os.getcwd()
         common_git_clone_line = ['git', 'clone']
         common_git_clone_line.append(url)
         cloned_dir = os.path.splitext(url.rsplit('/', 1)[-1])[0]
         common_git_clone_line.append(cloned_dir)
-        run_command.run_command_cb(common_git_clone_line, policy)
+        run_command.run_command_cb(common_git_clone_line, git_policy)
         os.chdir(cloned_dir)
 
         common_git_clone_init_line = ['git', 'submodule', 'update', '--init', '--recursive']
-        run_command.run_command_cb(common_git_clone_init_line, policy)
+        run_command.run_command_cb(common_git_clone_init_line, git_policy)
         os.chdir(pwd)
         return os.path.join(pwd, cloned_dir)
 
@@ -199,15 +176,15 @@ if __name__ == "__main__":
 
     if argc > 3:
         bs_str = sys.argv[3]
-        bs = get_supported_build_system_by_name(bs_str)
+        bs = system_info.get_supported_build_system_by_name(bs_str)
     else:
-        bs = []
+        bs = None
 
     if argc > 4:
         bs_external_str = sys.argv[4]
-        bs_external = get_supported_build_system_by_name(bs_external_str)
+        bs_external = system_info.get_supported_build_system_by_name(bs_external_str)
     else:
-        bs_external = []
+        bs_external = None
 
     if argc > 5:
         prefix_path = sys.argv[5]

@@ -112,3 +112,25 @@ def get_supported_platform_by_name(platform):
     
 def gen_routing_key(platform, arch):
     return platform + '_' + arch
+
+class BuildSystem:
+    def __init__(self, name, cmd_line, cmake_generator_arg):
+        self.name_ = name
+        self.cmd_line_ = cmd_line
+        self.cmake_generator_arg_ = cmake_generator_arg
+
+    def cmake_generator_arg(self):
+        return self.cmake_generator_arg_
+
+    def name(self):
+        return self.name_
+
+    def cmd_line(self):  # cmd + args
+        return self.cmd_line_
+
+SUPPORTED_BUILD_SYSTEMS = [BuildSystem('ninja', ['ninja'], '-GNinja'),
+                           BuildSystem('make', ['make', '-j2'], '-GUnix Makefiles'),
+                           BuildSystem('gmake', ['gmake', '-j2'], '-GUnix Makefiles')]
+
+def get_supported_build_system_by_name(name):
+    return next((x for x in SUPPORTED_BUILD_SYSTEMS if x.name() == name), None)

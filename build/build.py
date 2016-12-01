@@ -35,80 +35,7 @@ class BuildSystem:
     def cmd_line(self): # cmd + args
         return self.cmd_line_
 
-class CommonPolicy(run_command.Policy):
-    def __init__(self, cb):
-        run_command.Policy.__init__(self, cb)
-
-class CmakePolicy(run_command.Policy):
-    def __init__(self, cb):
-        run_command.Policy.__init__(self, cb)
-
-    def process(self, message):
-        self.progress_ += 1.0
-        super(CmakePolicy, self).process(message)
-
-    def update_progress_message(self, progress, message):
-        super(CmakePolicy, self).update_progress_message(progress, message)
-
-class MakePolicy(run_command.Policy):
-    def __init__(self, cb):
-        run_command.Policy.__init__(self, cb)
-
-    def process(self, message):
-        if message.type() != run_command.MessageType.MESSAGE:
-            super(MakePolicy, self).process(message)
-            return
-
-        cur = self.parse_message_to_get_percent(message.message())
-        if not cur:
-            return
-
-        self.progress_ = cur
-        super(MakePolicy, self).process(message)
-
-    def update_progress_message(self, progress, message):
-        super(MakePolicy, self).update_progress_message(progress, message)
-
-    def parse_message_to_get_percent(self, message):
-        if not message:
-            return None
-
-        res = re.search(r'\A\[  (\d+)%\]', message)
-        if res != None:
-            return float(res.group(1))
-
-        return None
-
-class NinjaPolicy(run_command.Policy):
-    def __init__(self, cb):
-        run_command.Policy.__init__(self, cb)
-
-    def process(self, message):
-        if message.type() != run_command.MessageType.MESSAGE:
-            super(NinjaPolicy, self).process(message)
-            return
-
-        cur,total = self.parse_message_to_get_range(message.message())
-        if not cur and not total:
-            return
-
-        self.progress_ = cur / total * 100.0
-        super(NinjaPolicy, self).process(message)
-
-    def update_progress_message(self, progress, message):
-        super(NinjaPolicy, self).update_progress_message(progress, message)
-
-    def parse_message_to_get_range(self, message):
-        if not message:
-            return None, None
-
-        res = re.search(r'\A\[(\d+)/(\d+)\]', message)
-        if res != None:
-            return float(res.group(1)), float(res.group(2))
-
-        return None, None
-
-SUPPORTED_BUILD_SYSTEMS = [BuildSystem('ninja', ['ninja'], '-GNinja', NinjaPolicy), BuildSystem('make', ['make', '-j2'], '-GUnix Makefiles', MakePolicy)]
+SUPPORTED_BUILD_SYSTEMS = [BuildSystem('ninja', ['ninja'], '-GNinja', run_command.NinjaPolicy), BuildSystem('make', ['make', '-j2'], '-GUnix Makefiles', run_command.MakePolicy)]
 def get_supported_build_system_by_name(name):
     return next((x for x in SUPPORTED_BUILD_SYSTEMS if x.name() == name), None)
 
@@ -206,7 +133,7 @@ class BuildRequest(object):
         store = store(saver.on_update_progress_message)
 
         try:
-            cmake_policy = CmakePolicy(store)
+            cmake_policy = run_command.CmakePolicy(store)
             run_command.run_command_cb(cmake_line, cmake_policy)
         except Exception as ex:
             os.chdir(pwd)
@@ -237,7 +164,7 @@ class BuildRequest(object):
             make_apk_release = build_system_args
             make_apk_release.append('apk_release')
             try:
-                common_policy = CommonPolicy(store)
+                common_policy = run_command.CommonPolicy(store)
                 run_command.run_command_cb(make_apk_release, common_policy)
             except Exception as ex:
                 os.chdir(pwd)
@@ -245,7 +172,7 @@ class BuildRequest(object):
             make_apk_signed = build_system_args
             make_apk_signed.append('apk_signed')
             try:
-                common_policy = CommonPolicy(store)
+                common_policy = run_command.CommonPolicy(store)
                 run_command.run_command_cb(make_apk_signed, common_policy)
             except Exception as ex:
                 os.chdir(pwd)
@@ -253,7 +180,7 @@ class BuildRequest(object):
             make_apk_signed_aligned = build_system_args
             make_apk_signed_aligned.append('apk_signed_aligned')
             try:
-                common_policy = CommonPolicy(store)
+                common_policy = run_command.CommonPolicy(store)
                 run_command.run_command_cb(make_apk_signed_aligned, common_policy)
             except Exception as ex:
                 os.chdir(pwd)
@@ -264,7 +191,7 @@ class BuildRequest(object):
             for generator in package_types:
                 make_cpack = ['cpack', '-G', generator]
                 try:
-                    common_policy = CommonPolicy(store)
+                    common_policy = run_command.CommonPolicy(store)
                     run_command.run_command_cb(make_cpack, common_policy)
                     file_names.append(os.path.join(abs_dir_path, filename + '.' + system_info.get_extension_by_package(generator)))
                 except Exception as ex:
