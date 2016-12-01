@@ -1,10 +1,9 @@
 CMAKE_MINIMUM_REQUIRED(VERSION 3.3.0) # deb package fix in 3.3.0
-SET(CMAKE_CXX_STANDARD 11)
 ###################### Branding ##########################
 
 SET(BRANDING_PROJECT_NAME "FastoNoSQL" CACHE STRING "Branding for ${BRANDING_PROJECT_NAME}") #default
 SET(BRANDING_PROJECT_VERSION "1.2.0.0" CACHE STRING "Branding version for ${BRANDING_PROJECT_NAME}") #default
-SET(BRANDING_PROJECT_BUILD_TYPE_VERSION "beta" CACHE STRING "Build version type for ${BRANDING_PROJECT_NAME}") #default
+SET(BRANDING_PROJECT_BUILD_TYPE_VERSION "rc" CACHE STRING "Build version type for ${BRANDING_PROJECT_NAME}") #default
   #possible variables: alfa, beta, rc, release
 
 SET(BRANDING_PROJECT_DOMAIN "http://www.fastonosql.com" CACHE STRING "Branding domain url for ${BRANDING_PROJECT_NAME}") #default
@@ -42,6 +41,7 @@ SET(BRANDING_PROJECT_CHANGELOG_FILE CHANGELOG
   (File name given as relative paths are interpreted with respect to the src source directory)") #default
 
 PROJECT(${BRANDING_PROJECT_NAME} VERSION ${BRANDING_PROJECT_VERSION} LANGUAGES CXX C)
+SET(CMAKE_CXX_STANDARD 11)
 #################### Project Settings ####################
 SET(PROJECT_NAME_TITLE ${PROJECT_NAME}) #PROJECT_NAME in cache
 SET(PROJECT_DOMAIN ${BRANDING_PROJECT_DOMAIN})

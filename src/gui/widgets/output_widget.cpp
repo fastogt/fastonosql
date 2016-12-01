@@ -86,6 +86,8 @@ OutputWidget::OutputWidget(core::IServerSPtr server, QWidget* parent)
 
   VERIFY(connect(server_.get(), &core::IServer::KeyAdded, this, &OutputWidget::addKey,
                  Qt::DirectConnection));
+  VERIFY(connect(server_.get(), &core::IServer::KeyLoaded, this, &OutputWidget::updateKey,
+                 Qt::DirectConnection));
 
   VERIFY(connect(server_.get(), &core::IServer::RootCreated, this, &OutputWidget::rootCreate,
                  Qt::DirectConnection));
@@ -148,6 +150,11 @@ void OutputWidget::rootCompleate(const core::events_info::CommandRootCompleatedI
 }
 
 void OutputWidget::addKey(core::IDataBaseInfoSPtr db, core::NDbKValue key) {
+  UNUSED(db);
+  commonModel_->changeValue(key);
+}
+
+void OutputWidget::updateKey(core::IDataBaseInfoSPtr db, core::NDbKValue key) {
   UNUSED(db);
   commonModel_->changeValue(key);
 }

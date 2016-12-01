@@ -539,8 +539,9 @@ void IServer::KeyRemove(core::NKey key) {
     return;
   }
 
-  cdb->RemoveKey(key);
-  emit KeyRemoved(cdb, key);
+  if (cdb->RemoveKey(key)) {
+    emit KeyRemoved(cdb, key);
+  }
 }
 
 void IServer::KeyAdd(core::NDbKValue key) {
@@ -549,8 +550,11 @@ void IServer::KeyAdd(core::NDbKValue key) {
     return;
   }
 
-  cdb->AddKey(key);
-  emit KeyAdded(cdb, key);
+  if (cdb->InsertKey(key)) {
+    emit KeyAdded(cdb, key);
+  } else {
+    emit KeyLoaded(cdb, key);
+  }
 }
 
 void IServer::KeyLoad(core::NDbKValue key) {
@@ -559,8 +563,11 @@ void IServer::KeyLoad(core::NDbKValue key) {
     return;
   }
 
-  cdb->UpdateKey(key);
-  emit KeyLoaded(cdb, key);
+  if (cdb->InsertKey(key)) {
+    emit KeyAdded(cdb, key);
+  } else {
+    emit KeyLoaded(cdb, key);
+  }
 }
 
 void IServer::KeyRename(core::NKey key, std::string new_name) {
@@ -569,8 +576,9 @@ void IServer::KeyRename(core::NKey key, std::string new_name) {
     return;
   }
 
-  cdb->RenameKey(key, new_name);
-  emit KeyRenamed(cdb, key, new_name);
+  if (cdb->RenameKey(key, new_name)) {
+    emit KeyRenamed(cdb, key, new_name);
+  }
 }
 
 void IServer::KeyTTLChange(core::NKey key, core::ttl_t ttl) {
@@ -591,8 +599,9 @@ void IServer::KeyTTLLoad(core::NKey key, core::ttl_t ttl) {
   }
 
   if (ttl == EXPIRED_TTL) {
-    cdb->RemoveKey(key);
-    emit KeyRemoved(cdb, key);
+    if (cdb->RemoveKey(key)) {
+      emit KeyRemoved(cdb, key);
+    }
     return;
   }
 
@@ -612,8 +621,9 @@ void IServer::HandleCheckDBKeys(core::IDataBaseInfoSPtr db, ttl_t expired_time) 
     ttl_t key_ttl = nkey.TTL();
     if (key_ttl == NO_TTL) {
     } else if (key_ttl == EXPIRED_TTL) {
-      db->RemoveKey(nkey);
-      emit KeyRemoved(db, nkey);
+      if (db->RemoveKey(nkey)) {
+        emit KeyRemoved(db, nkey);
+      }
     } else {  // live
       const ttl_t new_ttl = key_ttl - expired_time;
       if (new_ttl == NO_TTL) {

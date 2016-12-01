@@ -68,29 +68,30 @@ void IDataBaseInfo::ClearKeys() {
   keys_.clear();
 }
 
-void IDataBaseInfo::RenameKey(const NKey& okey, const std::string& new_name) {
+bool IDataBaseInfo::RenameKey(const NKey& okey, const std::string& new_name) {
   for (auto& kv : keys_) {
     if (kv.KeyString() == okey.Key()) {
       NKey okv = kv.Key();
       okv.SetKey(new_name);
       kv.SetKey(okv);
-      break;
+      return true;
     }
   }
+
+  return false;
 }
 
-void IDataBaseInfo::AddKey(const NDbKValue& key) {
-  keys_.push_back(key);
-  db_kcount_++;
-}
-
-void IDataBaseInfo::UpdateKey(const NDbKValue& key) {
+bool IDataBaseInfo::InsertKey(const NDbKValue& key) {
   for (auto& kv : keys_) {
     if (kv.KeyString() == key.KeyString()) {
-      kv = key;
-      break;
+      kv.SetValue(key.Value());
+      return false;
     }
   }
+
+  keys_.push_back(key);
+  db_kcount_++;
+  return true;
 }
 
 bool IDataBaseInfo::UpdateKeyTTL(const NKey& key, ttl_t ttl) {
@@ -110,13 +111,16 @@ bool IDataBaseInfo::UpdateKeyTTL(const NKey& key, ttl_t ttl) {
   return false;
 }
 
-void IDataBaseInfo::RemoveKey(const core::NKey& key) {
+bool IDataBaseInfo::RemoveKey(const core::NKey& key) {
   auto it = std::remove_if(keys_.begin(), keys_.end(),
                            [key](NDbKValue kv) { return kv.KeyString() == key.Key(); });
-  if (it != keys_.end()) {
-    keys_.erase(it);
-    db_kcount_--;
+  if (it == keys_.end()) {
+    return false;
   }
+
+  keys_.erase(it);
+  db_kcount_--;
+  return true;
 }
 
 IDataBaseInfo::keys_container_t IDataBaseInfo::Keys() const {
