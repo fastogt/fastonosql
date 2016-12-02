@@ -192,4 +192,4 @@ if __name__ == "__main__":
         prefix_path = None
 
     request = BuildRequest(platform_str, int(arch_bit_str))
-    request.build('build_' + platform_str, bs, bs_external, prefix_path)
+    request.build('build_' + platform_str + '_env', bs, bs_external, prefix_path)

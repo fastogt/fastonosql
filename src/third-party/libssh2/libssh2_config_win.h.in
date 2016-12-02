@@ -65,6 +65,9 @@
 /* Define if you have the gcrypt library. */
 /* #undef HAVE_LIBGCRYPT */
 
+/* Define if you have the mbedtls library. */
+/* #undef HAVE_LIBMBEDTLS */
+
 /* Define if you have the ssl library. */
 #define HAVE_LIBSSL 1
 
@@ -173,14 +176,16 @@
 /* Enable "none" MAC -- NOT RECOMMENDED */
 /* #undef LIBSSH2_MAC_NONE */
 
+/* Use mbedtls */
+/* #undef LIBSSH2_MBEDTLS */
+
 /* Use OpenSSL */
 #define LIBSSH2_OPENSSL 1
 
 /* Use Windows CNG */
 /* #undef LIBSSH2_WINCNG */
 
-/* Define to the sub-directory in which libtool stores uninstalled libraries.
-   */
+/* Define to the sub-directory where libtool stores uninstalled libraries. */
 #define LT_OBJDIR ".libs/"
 
 /* Define to 1 if _REENTRANT preprocessor symbol must be defined. */
