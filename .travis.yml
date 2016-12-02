@@ -8,7 +8,6 @@
 #          env:
  language: cpp
 dist: trusty
-sudo: required
 os:
   - linux
   - osx
@@ -18,19 +17,19 @@ compiler:
 env:
 
 before_install:
-  - if [ "$TRAVIS_OS_NAME" = "linux" ]; then sudo add-apt-repository -y ppa:beineri/opt-qt561; fi
-  - if [ "$TRAVIS_OS_NAME" = "linux" ] && [ "$CXX" == "g++" ]; then sudo add-apt-repository -y ppa:ubuntu-toolchain-r/test; fi
+  - if [ "$TRAVIS_OS_NAME" = "linux" ]; then add-apt-repository -y ppa:beineri/opt-qt561; fi
+  - if [ "$TRAVIS_OS_NAME" = "linux" ] && [ "$CXX" == "g++" ]; then add-apt-repository -y ppa:ubuntu-toolchain-r/test; fi
 
 install:
-  - if [ "$TRAVIS_OS_NAME" = "linux" ]; then sudo apt-get -qq update; fi
-  - if [ "$TRAVIS_OS_NAME" = "linux" ]; then sudo apt-get install ninja-build; fi
-  - if [ "$TRAVIS_OS_NAME" = "linux" ] && [ "$CC" == "gcc" ]; then sudo apt-get -qq install gcc-4.7; fi
+  - if [ "$TRAVIS_OS_NAME" = "linux" ]; then apt-get -qq update; fi
+  - if [ "$TRAVIS_OS_NAME" = "linux" ]; then apt-get install ninja-build; fi
+  - if [ "$TRAVIS_OS_NAME" = "linux" ] && [ "$CC" == "gcc" ]; then apt-get -qq install gcc-4.7; fi
   - if [ "$TRAVIS_OS_NAME" = "linux" ] && [ "$CC" == "gcc" ]; then export CC="gcc-4.7"; fi
-  - if [ "$TRAVIS_OS_NAME" = "linux" ] && [ "$CXX" == "g++" ]; then sudo apt-get -qq install g++-4.7; fi
+  - if [ "$TRAVIS_OS_NAME" = "linux" ] && [ "$CXX" == "g++" ]; then apt-get -qq install g++-4.7; fi
   - if [ "$TRAVIS_OS_NAME" = "linux" ] && [ "$CXX" == "g++" ]; then export CXX="g++-4.7"; fi
-  - if [ "$TRAVIS_OS_NAME" = "linux" ]; then sudo apt-get install qt56base qt56x11extras qt56tools; fi
-  - if [ "$TRAVIS_OS_NAME" = "linux" ]; then sudo apt-get install libssl-dev; fi
-  - if [ "$TRAVIS_OS_NAME" = "linux" ]; then sudo apt-get install rpm; fi
+  - if [ "$TRAVIS_OS_NAME" = "linux" ]; then apt-get install qt56base qt56x11extras qt56tools; fi
+  - if [ "$TRAVIS_OS_NAME" = "linux" ]; then apt-get install libssl-dev; fi
+  - if [ "$TRAVIS_OS_NAME" = "linux" ]; then apt-get install rpm; fi
   
   - if [ "$TRAVIS_OS_NAME" = "osx" ]; then brew update; fi
   - if [ "$TRAVIS_OS_NAME" = "osx" ]; then brew install ninja; fi
@@ -60,7 +59,7 @@ before_script:
   - which python
   - python --version
 script:
-  - python build_external.py
+  - python build_env.py
   - python build.py ..
   - python build.py .. fastoredis.txt
   
