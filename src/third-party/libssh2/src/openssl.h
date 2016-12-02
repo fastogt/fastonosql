@@ -226,17 +226,12 @@ int _libssh2_md5_init(libssh2_md5_ctx *ctx);
 #define libssh2_hmac_cleanup(ctx) HMAC_cleanup(ctx)
 #endif
 
-#ifdef FASTO
-#define libssh2_crypto_init() OpenSSL_add_all_algorithms();
-#define libssh2_crypto_exit() EVP_cleanup();
-#else
 #define libssh2_crypto_init() \
   OpenSSL_add_all_algorithms(); \
   ENGINE_load_builtin_engines(); \
   ENGINE_register_all_complete()
 
 #define libssh2_crypto_exit()
-#endif
 
 #define libssh2_rsa_ctx RSA
 
