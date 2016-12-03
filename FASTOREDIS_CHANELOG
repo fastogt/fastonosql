@@ -1,9 +1,10 @@
-1.2.0 /
+1.2.0 / December 3, 2016
 [Alexandr Topilski]
 - Help command
 - Common api for databases
 - Load Databases - Amazon Elastic Cache - Redis #65
 - TTL loop
+- Update libssh2 sources to version 1.8.0
 
 1.1.1 / November 23, 2016
 [Alexandr Topilski]

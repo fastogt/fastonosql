@@ -241,7 +241,7 @@ if __name__ == "__main__":
     request = BuildRequest(platform_str, int(arch_bit_str))
     if branding_file_path != '/dev/null':
         abs_branding_file = os.path.abspath(branding_file_path)
-        branding_options = read_file_line_by_line(abs_branding_file)
+        branding_options = utils.read_file_line_by_line(abs_branding_file)
     else:
         branding_options = []
 

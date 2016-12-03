@@ -1,18 +1,19 @@
-1.2.0 /
+1.2.0 / December 3, 2016
 [Alexandr Topilski]
 - Help command
 - Common api for databases
+- Update libssh2 sources to version 1.8.0
 - [Redis] Load Databases - Amazon Elastic Cache - Redis #65
 - [Redis] TTL loop
 - [Memcached] TTL loop
 - [SSDB] expire, ttl commands
 - [SSDB] TTL loop
-- [UnQLite] Up sources to version 1.1.7
+- [UnQLite] Update sources to version 1.1.7
 
 1.1.1 / November 23, 2016
 [Alexandr Topilski]
-- [RocksDB] Up sources to version 4.13.0
-- [LevelDB] Up sources to version 1.19
+- [RocksDB] Update sources to version 4.13.0
+- [LevelDB] Update sources to version 1.19
 - [LMDB] Read only db flag
 - [UnQLite] Read only db flag
 - Fix rpm package
