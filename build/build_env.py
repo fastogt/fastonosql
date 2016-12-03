@@ -133,7 +133,7 @@ class BuildRequest(object):
             bootstrap_upscaledb = ['sh', 'bootstrap.sh']
             run_command.run_command_cb(bootstrap_upscaledb, bootstrap_policy)
 
-            configure_upscaledb = ['./configure', '--prefix={0}'.format(prefix_path), '--disable-remote', '--enable-static-boost', '--disable-shared', '--disable-java']
+            configure_upscaledb = ['./configure', '--prefix={0}'.format(prefix_path), '--disable-remote', '--enable-static-boost', '--disable-shared', '--disable-java', '--disable-encryption']
             configure_policy = run_command.CommonPolicy(print_message)
             run_command.run_command_cb(configure_upscaledb, configure_policy)
 

@@ -38,7 +38,7 @@ if __name__ == "__main__":
 
     if argc > 4:
         bs_str = sys.argv[4]
-        bs = get_supported_build_system_by_name(bs_str)
+        bs = system_info.get_supported_build_system_by_name(bs_str)
     else:
         bs = None
 
