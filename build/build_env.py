@@ -106,6 +106,27 @@ class BuildRequest(object):
             os.chdir(pwd)
             raise ex
 
+        try:
+            cloned_dir = self.git_clone('https://github.com/fastogt/libssh2.git')
+            os.chdir(cloned_dir)
+
+            os.mkdir('build_cmake_release')
+            os.chdir('build_cmake_release')
+            libssh2_cmake_line = list(cmake_line)
+            libssh2_cmake_line.append('-DBUILD_SHARED_LIBS=OFF')
+            libssh2_cmake_line.append('-DCRYPTO_BACKEND=OpenSSL')
+            libssh2_cmake_line.append('-DENABLE_ZLIB_COMPRESSION=ON')
+            libssh2_cmake_line.append('-DZLIB_USE_STATIC=ON')
+            libssh2_cmake_line.append('-DOPENSSL_USE_STATIC=ON')
+            cmake_policy = run_command.CmakePolicy(print_message)
+            make_policy = run_command.CommonPolicy(print_message)
+            run_command.run_command_cb(libssh2_cmake_line, cmake_policy)
+            run_command.run_command_cb(make_install, make_policy)
+            os.chdir(abs_dir_path)
+        except Exception as ex:
+            os.chdir(pwd)
+            raise ex
+
         if is_android:
           return
 

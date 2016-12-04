@@ -43,8 +43,7 @@ extern "C" {
 }
 
 #include <hiredis/hiredis.h>
-
-#include "third-party/libssh2/include/libssh2.h"  // for libssh2_exit, etc
+#include <libssh2.h>  // for libssh2_exit, etc
 
 #include <common/convert2string.h>  // for ConvertFromString, etc
 #include <common/intrusive_ptr.h>   // for intrusive_ptr

@@ -385,7 +385,8 @@ INCLUDE_DIRECTORIES(${CMAKE_CURRENT_LIST_DIR})
 
 #redis
 IF(BUILD_WITH_REDIS)
-  ADD_SUBDIRECTORY(third-party/libssh2)
+  FIND_PACKAGE(OpenSSL REQUIRED)
+  FIND_PACKAGE(Libssh2 REQUIRED CONFIG)
   ADD_SUBDIRECTORY(third-party/redis)
   SET(INCLUDE_DIRS ${INCLUDE_DIRS} third-party/redis/src third-party/redis/deps)
 
@@ -433,7 +434,7 @@ IF(BUILD_WITH_REDIS)
     core/db/redis/cluster.cpp
     core/db/redis/cluster_settings.cpp
   )
-  SET(DB_LIBS ${DB_LIBS} hiredis libssh2)
+  SET(DB_LIBS ${DB_LIBS} hiredis libssh2.a ${OPENSSL_LIBRARIES})
 ENDIF(BUILD_WITH_REDIS)
 
 #memcached

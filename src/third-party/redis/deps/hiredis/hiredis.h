@@ -40,7 +40,7 @@
 #include "sds.h" /* for sds */
 
 #ifdef FASTO
-#include "third-party/libssh2/include/libssh2.h"
+#include <libssh2.h>
 #endif
 
 #define HIREDIS_MAJOR 0
