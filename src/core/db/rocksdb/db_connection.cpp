@@ -298,13 +298,21 @@ common::Error DBConnection::ScanImpl(uint64_t cursor_in,
   ::rocksdb::ReadOptions ro;
   ::rocksdb::Iterator* it =
       connection_.handle_->NewIterator(ro);  // keys(key_start, key_end, limit, ret);
+  uint64_t offset_pos = cursor_in;
+  uint64_t lcursor_out = 0;
+  std::vector<std::string> lkeys_out;
   for (it->SeekToFirst(); it->Valid(); it->Next()) {
     std::string key = it->key().ToString();
-    if (keys_out->size() < count_keys) {
+    if (lkeys_out.size() < count_keys) {
       if (common::MatchPattern(key, pattern)) {
-        keys_out->push_back(key);
+        if (offset_pos == 0) {
+          lkeys_out.push_back(key);
+        } else {
+          offset_pos--;
+        }
       }
     } else {
+      lcursor_out = cursor_in + count_keys;
       break;
     }
   }
@@ -317,7 +325,8 @@ common::Error DBConnection::ScanImpl(uint64_t cursor_in,
     return common::make_error_value(buff, common::ErrorValue::E_ERROR);
   }
 
-  *cursor_out = 0;
+  *keys_out = lkeys_out;
+  *cursor_out = lcursor_out;
   return common::Error();
 }
 

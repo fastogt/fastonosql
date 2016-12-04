@@ -83,21 +83,35 @@ memcached_return_t memcached_dump_keys_callback(const memcached_st* ptr,
 }
 
 struct ScanHolder {
-  ScanHolder(const std::string& pattern, uint64_t limit, std::vector<std::string>* r)
-      : pattern(pattern), limit(limit), r(r) {}
+  ScanHolder(uint64_t cursor_in, const std::string& pattern, uint64_t limit)
+      : cursor_in(cursor_in),
+        pattern(pattern),
+        limit(limit),
+        r(),
+        cursor_out(0),
+        offset_pos(cursor_in) {}
 
+  const uint64_t cursor_in;
   const std::string pattern;
   const uint64_t limit;
-  std::vector<std::string>* r;
+  std::vector<std::string> r;
+  uint64_t cursor_out;
+  uint64_t offset_pos;
 
   memcached_return_t addKey(const char* key, size_t key_length, time_t exp) {
     UNUSED(exp);
-    if (r->size() < limit) {
+    if (r.size() < limit) {
       std::string received_key(key, key_length);
       if (common::MatchPattern(received_key, pattern)) {
-        r->push_back(received_key);
+        if (offset_pos == 0) {
+          r.push_back(received_key);
+        } else {
+          offset_pos--;
+        }
       }
       return MEMCACHED_SUCCESS;
+    } else {
+      cursor_out = cursor_in + limit;
     }
 
     return MEMCACHED_END;
@@ -593,7 +607,7 @@ common::Error DBConnection::ScanImpl(uint64_t cursor_in,
                                      uint64_t count_keys,
                                      std::vector<std::string>* keys_out,
                                      uint64_t* cursor_out) {
-  ScanHolder hld(pattern, count_keys, keys_out);
+  ScanHolder hld(cursor_in, pattern, count_keys);
   memcached_dump_fn func[1] = {0};
   func[0] = memcached_dump_scan_callback;
   memcached_return_t result = memcached_dump(connection_.handle_, func, &hld, SIZEOFMASS(func));
@@ -603,7 +617,8 @@ common::Error DBConnection::ScanImpl(uint64_t cursor_in,
     return common::make_error_value(buff, common::ErrorValue::E_ERROR);
   }
 
-  *cursor_out = 0;
+  *keys_out = hld.r;
+  *cursor_out = hld.cursor_out;
   return common::Error();
 }
 

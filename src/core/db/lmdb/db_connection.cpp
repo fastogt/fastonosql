@@ -301,15 +301,27 @@ common::Error DBConnection::ScanImpl(uint64_t cursor_in,
 
   MDB_val key;
   MDB_val data;
-  while ((mdb_cursor_get(cursor, &key, &data, MDB_NEXT) == LMDB_OK) &&
-         count_keys > keys_out->size()) {
-    std::string skey(reinterpret_cast<const char*>(key.mv_data), key.mv_size);
-    if (common::MatchPattern(skey, pattern)) {
-      keys_out->push_back(skey);
+  uint64_t offset_pos = cursor_in;
+  uint64_t lcursor_out = 0;
+  std::vector<std::string> lkeys_out;
+  while ((mdb_cursor_get(cursor, &key, &data, MDB_NEXT) == LMDB_OK)) {
+    if (lkeys_out.size() < count_keys) {
+      std::string skey(reinterpret_cast<const char*>(key.mv_data), key.mv_size);
+      if (common::MatchPattern(skey, pattern)) {
+        if (offset_pos == 0) {
+          lkeys_out.push_back(skey);
+        } else {
+          offset_pos--;
+        }
+      }
+    } else {
+      lcursor_out = cursor_in + count_keys;
+      break;
     }
   }
 
-  *cursor_out = 0;
+  *keys_out = lkeys_out;
+  *cursor_out = lcursor_out;
   mdb_cursor_close(cursor);
   mdb_txn_abort(txn);
   return common::Error();

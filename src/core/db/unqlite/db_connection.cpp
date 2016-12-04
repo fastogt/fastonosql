@@ -293,11 +293,23 @@ common::Error DBConnection::ScanImpl(uint64_t cursor_in,
   unqlite_kv_cursor_first_entry(pCur);
 
   /* Iterate over the entries */
-  while (unqlite_kv_cursor_valid_entry(pCur) && count_keys > keys_out->size()) {
-    std::string key;
-    unqlite_kv_cursor_key_callback(pCur, unqlite_data_callback, &key);
-    if (common::MatchPattern(key, pattern)) {
-      keys_out->push_back(key);
+  uint64_t offset_pos = cursor_in;
+  uint64_t lcursor_out = 0;
+  std::vector<std::string> lkeys_out;
+  while (unqlite_kv_cursor_valid_entry(pCur)) {
+    if (lkeys_out.size() < count_keys) {
+      std::string skey;
+      unqlite_kv_cursor_key_callback(pCur, unqlite_data_callback, &skey);
+      if (common::MatchPattern(skey, pattern)) {
+        if (offset_pos == 0) {
+          lkeys_out.push_back(skey);
+        } else {
+          offset_pos--;
+        }
+      }
+    } else {
+      lcursor_out = cursor_in + count_keys;
+      break;
     }
 
     /* Point to the next entry */
@@ -306,7 +318,8 @@ common::Error DBConnection::ScanImpl(uint64_t cursor_in,
   /* Finally, Release our cursor */
   unqlite_kv_cursor_release(connection_.handle_, pCur);
 
-  *cursor_out = 0;
+  *keys_out = lkeys_out;
+  *cursor_out = lcursor_out;
   return common::Error();
 }
 

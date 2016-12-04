@@ -283,24 +283,37 @@ common::Error DBConnection::ScanImpl(uint64_t cursor_in,
     return common::make_error_value(buff, common::ErrorValue::E_ERROR);
   }
 
-  do {
-    /* fetch the next item, and repeat till we've reached the end
-     * of the database */
-    st = ups_cursor_move(cursor, &key, &rec, UPS_CURSOR_NEXT | UPS_SKIP_DUPLICATES);
-    if (st == UPS_SUCCESS) {
-      std::string skey(reinterpret_cast<const char*>(key.data), key.size);
-      if (common::MatchPattern(skey, pattern)) {
-        keys_out->push_back(skey);
+  uint64_t offset_pos = cursor_in;
+  uint64_t lcursor_out = 0;
+  std::vector<std::string> lkeys_out;
+  while (st == UPS_SUCCESS) {
+    if (lkeys_out.size() < count_keys) {
+      /* fetch the next item, and repeat till we've reached the end
+       * of the database */
+      st = ups_cursor_move(cursor, &key, &rec, UPS_CURSOR_NEXT | UPS_SKIP_DUPLICATES);
+      if (st == UPS_SUCCESS) {
+        std::string skey(reinterpret_cast<const char*>(key.data), key.size);
+        if (common::MatchPattern(skey, pattern)) {
+          if (offset_pos == 0) {
+            lkeys_out.push_back(skey);
+          } else {
+            offset_pos--;
+          }
+        }
+      } else if (st && st != UPS_KEY_NOT_FOUND) {
+        ups_cursor_close(cursor);
+        std::string buff = common::MemSPrintf("SCAN function error: %s", ups_strerror(st));
+        return common::make_error_value(buff, common::ErrorValue::E_ERROR);
       }
-    } else if (st && st != UPS_KEY_NOT_FOUND) {
-      ups_cursor_close(cursor);
-      std::string buff = common::MemSPrintf("SCAN function error: %s", ups_strerror(st));
-      return common::make_error_value(buff, common::ErrorValue::E_ERROR);
+    } else {
+      lcursor_out = cursor_in + count_keys;
+      break;
     }
-  } while (st == UPS_SUCCESS && count_keys > keys_out->size());
+  }
 
   ups_cursor_close(cursor);
-  *cursor_out = 0;
+  *keys_out = lkeys_out;
+  *cursor_out = lcursor_out;
   return common::Error();
 }
 
