@@ -22,6 +22,12 @@
 
 namespace fastonosql {
 namespace core {
+class IDriver;
+}
+}
+
+namespace fastonosql {
+namespace core {
 
 class IServerRemote : public IServer {
   Q_OBJECT

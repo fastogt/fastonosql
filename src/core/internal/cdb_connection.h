@@ -18,15 +18,17 @@
 
 #pragma once
 
-#include <memory>  // for __shared_ptr
-#include <string>  // for string
+#include <stddef.h>  // for size_t
 #include <inttypes.h>
+#include <stdint.h>  // for uint64_t, UINT64_MAX
+#include <vector>    // for vector
 
 #include <common/error.h>   // for Error, make_error_value
 #include <common/macros.h>  // for DNOTREACHED, etc
 #include <common/value.h>   // for ErrorValue, etc
 #include <common/sprintf.h>
 
+#include "core/command_info.h"
 #include "core/connection_types.h"     // for connectionTypes
 #include "core/db_key.h"               // for NDbKValue, NKey, etc
 #include "core/icommand_translator.h"  // for translator_t, etc
@@ -41,6 +43,8 @@
 #define NO_KEYS_LIMIT UINT64_MAX
 
 #define GET_KEYS_PATTERN_3ARGS_ISI "SCAN %" PRIu64 " MATCH %s COUNT %" PRIu64
+
+namespace fastonosql { namespace core { class CommandHolder; } }
 
 namespace fastonosql {
 namespace core {

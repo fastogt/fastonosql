@@ -23,6 +23,7 @@
 
 #include <string>  // for string
 
+#include <common/value.h>    // for ErrorValue, etc
 #include <common/sprintf.h>  // for MemSPrintf
 
 namespace fastonosql {

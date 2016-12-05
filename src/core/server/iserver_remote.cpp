@@ -18,7 +18,7 @@
 
 #include "core/server/iserver_remote.h"
 
-#include "core/driver/idriver.h"
+#include <common/macros.h>  // for DCHECK
 
 namespace fastonosql {
 namespace core {

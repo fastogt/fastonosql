@@ -57,8 +57,7 @@ Config parseOptions(int argc, char** argv) {
       usage();
     } else if (!strcmp(argv[i], "-x")) {
       cfg.stdinarg = 1;
-    }*/ else if (!strcmp(argv[i], "-p") &&
-                                                                !lastarg) {
+    }*/ else if (!strcmp(argv[i], "-p") && !lastarg) {
       cfg.host.port = common::ConvertFromString<uint16_t>(argv[++i]);
     } else if (!strcmp(argv[i], "-s") && !lastarg) {
       cfg.hostsocket = argv[++i];

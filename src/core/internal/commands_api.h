@@ -18,12 +18,30 @@
 
 #pragma once
 
+#include <stddef.h>  // for size_t
+#include <stdint.h>  // for uint32_t, uint64_t
+#include <memory>    // for __shared_ptr
+#include <string>    // for string
+#include <vector>    // for vector
+
+#include <common/macros.h>  // for UNUSED
+#include <common/value.h>   // for Value, ErrorValue, etc
 #include <common/error.h>
 #include <common/convert2string.h>
+
+#include "core/db_key.h"  // for NKey, NDbKValue, NKeys, etc
 
 #include "core/internal/cdb_connection.h"
 
 #include "global/global.h"
+
+namespace fastonosql {
+namespace core {
+namespace internal {
+class CommandHandler;
+}
+}
+}
 
 namespace fastonosql {
 namespace core {
@@ -94,7 +112,7 @@ common::Error ApiTraits<CDBConnection>::Scan(internal::CommandHandler* handler,
                                              FastoObject* out) {
   uint32_t cursor_in = common::ConvertFromString<uint32_t>(argv[0]);
   std::string pattern = argc >= 3 ? argv[2] : ALL_KEYS_PATTERNS;
-  uint32_t count_keys = argc >= 5 ? common::ConvertFromString<uint32_t>(argv[4]) : NO_KEYS_LIMIT;
+  uint64_t count_keys = argc >= 5 ? common::ConvertFromString<uint32_t>(argv[4]) : NO_KEYS_LIMIT;
   uint64_t cursor_out = 0;
   std::vector<std::string> keys_out;
   CDBConnection* cdb = static_cast<CDBConnection*>(handler);

@@ -18,7 +18,15 @@
 
 #pragma once
 
-#include "core/server/iserver.h"
+#include <string>  // for string
+
+#include "core/server/iserver.h"  // for IServer
+
+namespace fastonosql {
+namespace core {
+class IDriver;
+}
+}
 
 namespace fastonosql {
 namespace core {

@@ -18,6 +18,8 @@
 
 #pragma once
 
+#include <string>  // for string
+
 #include <QObject>
 
 namespace fastonosql {

@@ -18,14 +18,15 @@
 
 #pragma once
 
-#include <stdint.h>  // for uint32_t
+#include <stdbool.h>  // for bool
+#include <stdint.h>   // for uint32_t
 
 #include <memory>  // for shared_ptr
 #include <string>  // for string
 
-#include <common/smart_ptr.h>
 #include <common/net/types.h>  // for HostAndPortAndSlot
 #include <common/types.h>      // for time64_t
+#include <common/smart_ptr.h>
 
 #include "core/connection_types.h"  // for connectionTypes, etc
 

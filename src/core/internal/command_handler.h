@@ -18,6 +18,7 @@
 
 #pragma once
 
+#include <vector>  // for vector
 #include <string>  // for string
 
 #include <common/error.h>   // for Error
