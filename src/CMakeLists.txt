@@ -434,7 +434,7 @@ IF(BUILD_WITH_REDIS)
     core/db/redis/cluster.cpp
     core/db/redis/cluster_settings.cpp
   )
-  SET(DB_LIBS ${DB_LIBS} hiredis libssh2.a ${OPENSSL_LIBRARIES})
+  SET(DB_LIBS ${DB_LIBS} hiredis Libssh2::libssh2 ${OPENSSL_LIBRARIES})
 ENDIF(BUILD_WITH_REDIS)
 
 #memcached
