@@ -101,9 +101,13 @@ OutputWidget::OutputWidget(core::IServerSPtr server, QWidget* parent)
 
   treeView_ = new FastoTreeView;
   treeView_->setModel(commonModel_);
+  treeView_->header()->setSectionResizeMode(0, QHeaderView::ResizeToContents);
+  treeView_->header()->setSectionResizeMode(1, QHeaderView::ResizeToContents);
 
   tableView_ = new FastoTableView;
   tableView_->setModel(commonModel_);
+  tableView_->horizontalHeader()->setSectionResizeMode(0, QHeaderView::ResizeToContents);
+  tableView_->horizontalHeader()->setSectionResizeMode(1, QHeaderView::ResizeToContents);
 
   QString delimiter = common::ConvertFromString<QString>(server_->Delimiter());
   textView_ = new FastoTextView(delimiter);

@@ -21,11 +21,11 @@
 #include <QTreeView>
 
 class QPoint;
-class QResizeEvent;
 class QWidget;
 
 namespace fastonosql {
 namespace gui {
+
 class FastoTreeView : public QTreeView {
   Q_OBJECT
  public:
@@ -33,9 +33,7 @@ class FastoTreeView : public QTreeView {
 
  private Q_SLOTS:
   void showContextMenu(const QPoint& point);
-
- protected:
-  virtual void resizeEvent(QResizeEvent* event) override;
 };
+
 }  // namespace gui
 }  // namespace fastonosql

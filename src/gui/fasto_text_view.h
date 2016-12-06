@@ -32,6 +32,7 @@ class FastoEditorOutput;
 
 namespace fastonosql {
 namespace gui {
+
 class FastoTextView : public QWidget {
   Q_OBJECT
  public:
@@ -59,5 +60,6 @@ class FastoTextView : public QWidget {
   QRadioButton* gzipRadioButton_;
   QPushButton* saveChangeButton_;
 };
+
 }  // namespace gui
 }  // namespace fastonosql

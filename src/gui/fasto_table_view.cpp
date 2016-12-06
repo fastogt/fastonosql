@@ -25,12 +25,12 @@
 
 namespace fastonosql {
 namespace gui {
+
 FastoTableView::FastoTableView(QWidget* parent) : QTableView(parent) {
   verticalHeader()->setDefaultAlignment(Qt::AlignLeft);
   horizontalHeader()->setDefaultAlignment(Qt::AlignLeft);
 
-  horizontalHeader()->resizeSections(QHeaderView::Stretch);
-  verticalHeader()->resizeSections(QHeaderView::Stretch);
+  horizontalHeader()->setStretchLastSection(true);
 
   setSelectionMode(QAbstractItemView::ExtendedSelection);
   setSelectionBehavior(QAbstractItemView::SelectItems);
@@ -48,10 +48,5 @@ void FastoTableView::showContextMenu(const QPoint& point) {
   menu.exec(menuPoint);
 }
 
-void FastoTableView::resizeEvent(QResizeEvent* event) {
-  horizontalHeader()->resizeSections(QHeaderView::Stretch);
-  verticalHeader()->resizeSections(QHeaderView::Stretch);
-  QTableView::resizeEvent(event);
-}
 }  // namespace gui
 }  // namespace fastonosql
