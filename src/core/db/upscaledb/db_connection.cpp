@@ -18,26 +18,28 @@
 
 #include "core/db/upscaledb/db_connection.h"
 
-#include <ups/upscaledb.h>
 #include <stdlib.h>  // for NULL, free, calloc
-#include <time.h>    // for time_t
+#include <string.h>  // for memset
 #include <string>    // for string
+#include <memory>    // for __shared_ptr
+
+#include <ups/upscaledb.h>
 
 #include <common/value.h>  // for StringValue (ptr only)
 #include <common/utils.h>  // for c_strornull
 #include <common/convert2string.h>
+#include <common/file_system.h>  // for get_dir_path, is_directory, etc
+#include <common/sprintf.h>      // for MemSPrintf
+#include <common/string_util.h>  // for MatchPattern
+#include <common/types.h>        // for tribool, tribool::SUCCESS
 
+#include "core/command_holder.h"                    // for CommandHolder
+#include "core/internal/connection.h"               // for Connection<>::handle_t, etc
 #include "core/db/upscaledb/config.h"               // for Config
 #include "core/db/upscaledb/connection_settings.h"  // for ConnectionSettings
 #include "core/db/upscaledb/command_translator.h"
 #include "core/db/upscaledb/database.h"
 #include "core/db/upscaledb/internal/commands_api.h"
-
-#include "global/global.h"  // for FastoObject, etc
-
-namespace fastonosql {
-class FastoObjectArray;
-}
 
 namespace fastonosql {
 namespace core {

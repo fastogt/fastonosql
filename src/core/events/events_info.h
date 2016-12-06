@@ -19,12 +19,16 @@
 #pragma once
 
 #include <stdint.h>  // for uint32_t, uint8_t
+#include <stddef.h>  // for size_t
 #include <string>    // for string
+#include <vector>    // for vector
 
 #include <common/error.h>        // for Error
 #include <common/qt/utils_qt.h>  // for EventInfo
 #include <common/types.h>        // for time64_t
+#include <common/value.h>        // for Value, etc
 
+#include "core/db_key.h"                // for NDbKValue
 #include "core/connection_types.h"      // for ConnectionMode
 #include "core/server_property_info.h"  // for property_t, ServerPropertiesInfo
 #include "core/database/idatabase_info.h"

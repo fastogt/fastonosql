@@ -22,10 +22,21 @@
 
 #include <common/error.h>   // for Error
 #include <common/macros.h>  // for WARN_UNUSED_RESULT
+#include <common/value.h>   // for Value, etc
 
 #include "core/connection_settings/iconnection_settings.h"  // for IConnectionSettingsBaseSPtr
 #include "core/events/events.h"                             // for ClearDatabaseRequestEvent, etc
 #include "core/driver/idriver_local.h"                      // for IDriverLocal
+#include "core/icommand_translator.h"                       // for translator_t
+#include "core/server/iserver_info.h"                       // for IServerInfo (ptr only), etc
+
+#include "global/global.h"  // for FastoObject (ptr only), etc
+
+namespace fastonosql {
+namespace core {
+class IDataBaseInfo;
+}
+}
 
 namespace fastonosql {
 namespace core {

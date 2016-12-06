@@ -18,6 +18,15 @@
 
 #include "core/db/upscaledb/internal/commands_api.h"
 
+#include <memory>  // for __shared_ptr
+
+#include <common/value.h>  // for ErrorValue, StringValue, etc
+
+#include "core/db/upscaledb/server_info.h"  // for ServerInfo, etc
+#include "core/db/upscaledb/db_connection.h"
+
+#include "global/global.h"  // for FastoObject
+
 namespace fastonosql {
 namespace core {
 namespace upscaledb {

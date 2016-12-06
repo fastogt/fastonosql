@@ -22,6 +22,10 @@
 
 #include "global/global.h"
 
+namespace common {
+class CommandValue;
+}
+
 namespace fastonosql {
 namespace core {
 namespace upscaledb {

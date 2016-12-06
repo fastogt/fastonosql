@@ -20,9 +20,10 @@
 
 #include <string>  // for string
 
-#include "core/connection_settings/iconnection_settings.h"  // for IConnectionSettingsBaseSPtr
 #include "core/core_fwd.h"                                  // for IDatabaseSPtr
+#include "core/connection_settings/iconnection_settings.h"  // for IConnectionSettingsBaseSPtr
 #include "core/server/iserver_local.h"                      // for IServerLocal
+#include "core/database/idatabase_info.h"                   // for IDataBaseInfoSPtr
 
 namespace fastonosql {
 namespace core {

@@ -19,16 +19,19 @@
 #include "core/db/upscaledb/driver.h"
 
 #include <stddef.h>  // for size_t
+#include <stdint.h>  // for uint64_t
 
 #include <memory>  // for __shared_ptr
 #include <string>  // for string
 
+#include <common/intrusive_ptr.h>   // for intrusive_ptr
 #include <common/convert2string.h>  // for ConvertToString
-#include <common/log_levels.h>      // for LEVEL_LOG::L_WARNING
 #include <common/qt/utils_qt.h>     // for Event<>::value_type
 #include <common/sprintf.h>         // for MemSPrintf
 #include <common/value.h>           // for ErrorValue, etc
 
+#include "core/internal/cdb_connection.h"
+#include "core/internal/db_connection.h"
 #include "core/command/command.h"         // for CreateCommand, etc
 #include "core/command/command_logger.h"  // for LOG_COMMAND
 #include "core/connection_types.h"        // for ConvertToString, etc
@@ -38,12 +41,10 @@
 #include "core/db/upscaledb/command.h"              // for Command
 #include "core/db/upscaledb/config.h"               // for Config
 #include "core/db/upscaledb/connection_settings.h"  // for ConnectionSettings
-#include "core/db/upscaledb/database.h"             // for DataBaseInfo
 #include "core/db/upscaledb/db_connection.h"        // for DBConnection
 #include "core/db/upscaledb/server_info.h"          // for ServerInfo, etc
 
 #include "global/global.h"  // for FastoObject::childs_t, etc
-#include "global/types.h"   // for Command
 
 #define UPSCALEDB_INFO_REQUEST "INFO"
 

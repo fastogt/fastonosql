@@ -44,7 +44,11 @@
 
 #define GET_KEYS_PATTERN_3ARGS_ISI "SCAN %" PRIu64 " MATCH %s COUNT %" PRIu64
 
-namespace fastonosql { namespace core { class CommandHolder; } }
+namespace fastonosql {
+namespace core {
+class CommandHolder;
+}
+}
 
 namespace fastonosql {
 namespace core {

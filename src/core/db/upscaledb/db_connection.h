@@ -18,14 +18,15 @@
 
 #pragma once
 
-#include <ups/upscaledb.h>
 #include <stdint.h>  // for uint64_t
-#include <string>    // for string
+#include <stddef.h>  // for size_t
+
+#include <vector>  // for vector
+#include <string>  // for string
 
 #include <common/error.h>   // for Error
 #include <common/macros.h>  // for WARN_UNUSED_RESULT
 
-#include "core/command_info.h"             // for UNDEFINED_EXAMPLE_STR, UNDEFINED_...
 #include "core/connection_types.h"         // for connectionTypes::UPSCALEDB
 #include "core/db_key.h"                   // for NDbKValue, NKey, NKeys
 #include "core/internal/cdb_connection.h"  // for CDBConnection
@@ -34,16 +35,8 @@
 #include "core/db/upscaledb/config.h"
 
 namespace fastonosql {
-class FastoObject;
-}
-namespace fastonosql {
 namespace core {
 class CDBConnectionClient;
-}
-}
-namespace fastonosql {
-namespace core {
-class CommandHandler;
 }
 }
 namespace fastonosql {

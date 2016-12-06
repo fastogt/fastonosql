@@ -18,6 +18,15 @@
 
 #include "core/db/unqlite/internal/commands_api.h"
 
+#include <memory>  // for __shared_ptr
+
+#include <common/value.h>  // for ErrorValue, StringValue, etc
+
+#include "core/db/unqlite/db_connection.h"  // for DBConnection
+#include "core/db/unqlite/server_info.h"    // for ServerInfo, etc
+
+#include "global/global.h"  // for FastoObject
+
 namespace fastonosql {
 namespace core {
 namespace unqlite {

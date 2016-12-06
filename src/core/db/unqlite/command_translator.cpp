@@ -18,9 +18,8 @@
 
 #include "core/db/unqlite/command_translator.h"
 
+#include <common/macros.h>  // for UNUSED
 #include <common/sprintf.h>
-
-#include "global/global.h"
 
 #define UNQLITE_SET_KEY_PATTERN_2ARGS_SS "SET %s %s"
 #define UNQLITE_GET_KEY_PATTERN_1ARGS_S "GET %s"

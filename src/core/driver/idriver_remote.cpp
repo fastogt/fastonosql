@@ -20,6 +20,8 @@
 
 #include <common/macros.h>  // for CHECK
 
+#include "core/connection_types.h"  // for IsRemoteType
+
 namespace fastonosql {
 namespace core {
 
