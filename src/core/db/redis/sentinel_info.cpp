@@ -32,8 +32,10 @@
 #include <common/net/types.h>       // for HostAndPortAndSlot
 #include <common/string_util.h>     // for Tokenize
 #include <common/value.h>           // for ErrorValue, etc
+#include <common/error.h>           // for Error
 
-#include "core/connection_types.h"  // for connectionTypes::REDIS, etc
+#include "core/server/iserver_info.h"  // for ServerCommonInfo (ptr only), etc
+#include "core/connection_types.h"     // for connectionTypes::REDIS, etc
 
 #define NAME_FIELD "name"
 #define TYPE_FIELD "flags"

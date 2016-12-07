@@ -18,6 +18,8 @@
 
 #include "core/db/rocksdb/database.h"
 
+#include <memory>  // for __shared_ptr
+
 #include <common/macros.h>  // for DCHECK
 
 #include "core/connection_types.h"  // for connectionTypes::ROCKSDB

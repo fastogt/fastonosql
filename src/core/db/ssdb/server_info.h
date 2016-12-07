@@ -23,6 +23,8 @@
 #include <iosfwd>  // for ostream
 #include <string>  // for string, basic_string
 
+#include <common/value.h>  // for Value
+
 #include "core/types.h"
 #include "core/server/iserver_info.h"
 

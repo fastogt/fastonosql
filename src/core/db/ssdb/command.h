@@ -22,6 +22,10 @@
 
 #include "global/global.h"  // for FastoObject (ptr only), etc
 
+namespace common {
+class CommandValue;
+}
+
 namespace fastonosql {
 namespace core {
 namespace ssdb {

@@ -20,9 +20,12 @@
 
 #include <string>  // for string
 
-#include <common/convert2string.h>  // for ConvertFromString
+#include <common/convert2string.h>
 
-#include "core/connection_types.h"  // for connectionTypes::ROCKSDB
+#include "core/connection_settings/iconnection_settings.h"
+#include "core/connection_settings/iconnection_settings_local.h"
+
+#include "core/db/rocksdb/config.h"  // for Config
 
 namespace fastonosql {
 namespace core {

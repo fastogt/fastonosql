@@ -20,6 +20,8 @@
 
 #include <algorithm>  // for transform
 
+#include "core/connection_types.h"  // for connectionTypes::SSDB
+
 namespace fastonosql {
 namespace core {
 namespace ssdb {

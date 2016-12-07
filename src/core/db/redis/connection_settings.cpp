@@ -20,9 +20,12 @@
 
 #include <string>  // for string
 
-#include <common/convert2string.h>  // for ConvertFromString
+#include <common/net/types.h>  // for HostAndPort
+#include <common/convert2string.h>
 
-#include "core/connection_types.h"  // for connectionTypes::REDIS
+#include "core/connection_settings/iconnection_settings_ssh.h"
+
+#include "core/db/redis/config.h"  // for Config
 
 namespace fastonosql {
 namespace core {

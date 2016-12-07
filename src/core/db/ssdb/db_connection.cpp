@@ -33,8 +33,6 @@
 #include "core/db/ssdb/command_translator.h"
 #include "core/db/ssdb/internal/commands_api.h"
 
-#include "global/global.h"  // for FastoObject, etc
-
 namespace fastonosql {
 namespace core {
 namespace internal {

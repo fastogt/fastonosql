@@ -19,12 +19,14 @@
 #include "core/db/redis/server.h"
 
 #include <string>  // for operator==, basic_string
+#include <memory>  // for __shared_ptr
 
 #include <common/error.h>   // for Error
 #include <common/macros.h>  // for CHECK
+#include <common/value.h>   // for ErrorValue
 
+#include "core/server/iserver.h"  // for IServer
 #include "core/server/iserver_info.h"
-
 #include "core/events/events_info.h"  // for DiscoveryInfoResponce
 
 #include "core/db/redis/database.h"     // for Database

@@ -18,9 +18,8 @@
 
 #include "core/db/rocksdb/command_translator.h"
 
+#include <common/macros.h>  // for UNUSE
 #include <common/sprintf.h>
-
-#include "global/global.h"
 
 #define ROCKSDB_SET_KEY_PATTERN_2ARGS_SS "SET %s %s"
 #define ROCKSDB_GET_KEY_PATTERN_1ARGS_S "GET %s"

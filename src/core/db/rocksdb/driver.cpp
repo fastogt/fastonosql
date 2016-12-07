@@ -23,27 +23,26 @@
 #include <memory>  // for __shared_ptr
 #include <string>  // for string
 
-#include <common/log_levels.h>   // for LEVEL_LOG::L_WARNING
-#include <common/qt/utils_qt.h>  // for Event<>::value_type
-#include <common/sprintf.h>      // for MemSPrintf
-#include <common/value.h>        // for ErrorValue, etc
+#include <common/qt/utils_qt.h>    // for Event<>::value_type
+#include <common/sprintf.h>        // for MemSPrintf
+#include <common/value.h>          // for ErrorValue, etc
+#include <common/intrusive_ptr.h>  // for intrusive_ptr
 
 #include "core/command/command.h"         // for CreateCommand, etc
 #include "core/command/command_logger.h"  // for LOG_COMMAND
 #include "core/connection_types.h"        // for ConvertToString, etc
 #include "core/db_key.h"                  // for NDbKValue, NValue, NKey
 
+#include "core/internal/db_connection.h"
 #include "core/events/events_info.h"
 
 #include "core/db/rocksdb/command.h"              // for Command
 #include "core/db/rocksdb/config.h"               // for Config
 #include "core/db/rocksdb/connection_settings.h"  // for ConnectionSettings
-#include "core/db/rocksdb/database.h"             // for DataBaseInfo
 #include "core/db/rocksdb/db_connection.h"        // for DBConnection
 #include "core/db/rocksdb/server_info.h"          // for ServerInfo, etc
 
 #include "global/global.h"  // for FastoObject::childs_t, etc
-#include "global/types.h"   // for Command
 
 #define ROCKSDB_INFO_REQUEST "INFO"
 

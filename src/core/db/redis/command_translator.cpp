@@ -20,8 +20,6 @@
 
 #include <common/sprintf.h>
 
-#include "global/global.h"
-
 #define REDIS_SET_KEY_PATTERN_2ARGS_SS "SET %s %s"
 #define REDIS_SET_KEY_LIST_PATTERN_2ARGS_SS "LPUSH %s %s"
 #define REDIS_SET_KEY_SET_PATTERN_2ARGS_SS "SADD %s %s"

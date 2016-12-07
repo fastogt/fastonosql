@@ -18,13 +18,21 @@
 
 #include "core/db/ssdb/internal/commands_api.h"
 
-#include <common/convert2string.h>
+#include <stddef.h>  // for size_t
+#include <stdint.h>  // for int64_t, uint64_t
 
-#include "core/db_key.h"
+#include <map>     // for map, map<>::mapped_type
+#include <memory>  // for __shared_ptr
+#include <string>  // for string
 
-#include "core/db/ssdb/db_connection.h"
+#include <common/convert2string.h>  // for ConvertFromString
+#include <common/macros.h>          // for UNUSED
+#include <common/value.h>           // for Value, ErrorValue, etc
 
-#include "global/global.h"
+#include "core/db/ssdb/db_connection.h"  // for DBConnection
+#include "core/db/ssdb/server_info.h"    // for ServerInfo, etc
+
+#include "global/global.h"  // for FastoObject, etc
 
 namespace fastonosql {
 namespace core {

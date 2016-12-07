@@ -18,9 +18,11 @@
 
 #pragma once
 
-#include <string>
+#include <stdint.h>  // for uint64_t
 
-#include "core/config/config.h"
+#include <string>  // for string
+
+#include "core/config/config.h"  // for RemoteConfig
 
 namespace fastonosql {
 namespace core {

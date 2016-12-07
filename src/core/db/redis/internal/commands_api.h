@@ -18,10 +18,32 @@
 
 #pragma once
 
-#include <common/error.h>
+#include <vector>  // for vector
 
-#include "core/internal/commands_api.h"
-#include "core/db/redis/db_connection.h"
+#include <common/error.h>   // for Error
+#include <common/macros.h>  // for PROJECT_VERSION_GENERATE
+
+#include "core/command_holder.h"         // for CommandHolder, etc
+#include "core/command_info.h"           // for UNDEFINED_EXAMPLE_STR, etc
+#include "core/internal/commands_api.h"  // for ApiTraits
+
+namespace fastonosql {
+class FastoObject;
+}
+namespace fastonosql {
+namespace core {
+namespace internal {
+class CommandHandler;
+}
+}
+}
+namespace fastonosql {
+namespace core {
+namespace redis {
+class DBConnection;
+}
+}
+}
 
 namespace fastonosql {
 namespace core {

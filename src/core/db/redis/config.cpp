@@ -18,7 +18,6 @@
 
 #include "core/db/redis/config.h"
 
-#include <stddef.h>  // for size_t
 #include <stdint.h>  // for uint16_t
 #include <stdlib.h>  // for atof, strtoll
 #include <string.h>  // for strcmp

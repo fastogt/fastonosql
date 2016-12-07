@@ -23,26 +23,25 @@
 #include <memory>  // for __shared_ptr
 #include <string>  // for string
 
-#include <common/log_levels.h>   // for LEVEL_LOG::L_WARNING
-#include <common/qt/utils_qt.h>  // for Event<>::value_type
-#include <common/sprintf.h>      // for MemSPrintf
-#include <common/value.h>        // for ErrorValue, Value, etc
+#include <common/intrusive_ptr.h>  // for intrusive_ptr
+#include <common/qt/utils_qt.h>    // for Event<>::value_type
+#include <common/sprintf.h>        // for MemSPrintf
+#include <common/value.h>          // for ErrorValue, Value, etc
 
+#include "core/db_key.h"                  // for NDbKValue, NValue, NKey
+#include "core/connection_types.h"        // for ConvertToString, etc
 #include "core/command/command.h"         // for CreateCommand, etc
 #include "core/command/command_logger.h"  // for LOG_COMMAND
-#include "core/connection_types.h"        // for ConvertToString, etc
-#include "core/db_key.h"                  // for NDbKValue, NValue, NKey
 #include "core/events/events_info.h"
+#include "core/internal/db_connection.h"
 
 #include "core/db/ssdb/command.h"              // for Command
 #include "core/db/ssdb/config.h"               // for Config
 #include "core/db/ssdb/connection_settings.h"  // for ConnectionSettings
-#include "core/db/ssdb/database.h"             // for DataBaseInfo
 #include "core/db/ssdb/db_connection.h"        // for DBConnection
 #include "core/db/ssdb/server_info.h"          // for ServerInfo, etc
 
 #include "global/global.h"  // for FastoObject::childs_t, etc
-#include "global/types.h"   // for Command
 
 #define SSDB_INFO_REQUEST "INFO"
 #define SSDB_GET_KEYS_PATTERN_1ARGS_I "KEYS a z %d"

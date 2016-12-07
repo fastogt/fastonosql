@@ -18,6 +18,18 @@
 
 #include "core/db/rocksdb/internal/commands_api.h"
 
+#include <stddef.h>  // for size_t
+#include <memory>    // for __shared_ptr
+#include <string>    // for string
+
+#include <common/macros.h>  // for UNUSED
+#include <common/value.h>   // for Value, ErrorValue, etc
+
+#include "core/db/rocksdb/db_connection.h"
+#include "core/db/rocksdb/server_info.h"  // for ServerInfo, etc
+
+#include "global/global.h"  // for FastoObject, etc
+
 namespace fastonosql {
 namespace core {
 namespace rocksdb {
@@ -44,7 +56,7 @@ common::Error CommandsApi::Mget(internal::CommandHandler* handler,
                                 const char** argv,
                                 FastoObject* out) {
   DBConnection* rocks = static_cast<DBConnection*>(handler);
-  std::vector< ::rocksdb::Slice> keysget;
+  std::vector<std::string> keysget;
   for (int i = 0; i < argc; ++i) {
     keysget.push_back(argv[i]);
   }

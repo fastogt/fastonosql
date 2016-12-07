@@ -39,6 +39,9 @@
 #include "core/database/idatabase_info.h"  // for IDataBaseInfoSPtr, etc
 #include "core/driver/root_locker.h"       // for RootLocker
 
+#include "core/internal/cdb_connection.h"
+#include "core/internal/db_connection.h"
+
 #include "core/db/redis/db_connection.h"        // for DBConnection, INFO_REQUEST, etc
 #include "core/db/redis/command.h"              // for Command
 #include "core/db/redis/config.h"               // for Config

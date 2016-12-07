@@ -60,9 +60,12 @@ extern "C" {
 
 #include "core/icommand_translator.h"  // for translator_t, etc
 
-#include "core/internal/connection.h"     // for Connection<>::config_t, etc
 #include "core/command/command.h"         // for CreateCommand
 #include "core/command/command_logger.h"  // for LOG_COMMAND
+#include "core/command_holder.h"          // for CommandHolder
+
+#include "core/internal/connection.h"  // for Connection<>::config_t, etc
+#include "core/internal/cdb_connection_client.h"
 
 #include "core/db/redis/cluster_infos.h"        // for makeDiscoveryClusterInfo
 #include "core/db/redis/command.h"              // for Command

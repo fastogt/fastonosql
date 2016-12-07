@@ -26,17 +26,22 @@
 
 #include <rocksdb/db.h>
 
+#include <common/file_system.h>     // for is_directory
+#include <common/string_util.h>     // for MatchPattern
+#include <common/types.h>           // for tribool, tribool::SUCCESS
 #include <common/convert2string.h>  // for ConvertFromString
 #include <common/sprintf.h>         // for MemSPrintf
 #include <common/value.h>           // for Value::ErrorsType::E_ERROR, etc
+
+#include "core/command_holder.h"       // for CommandHolder
+#include "core/internal/connection.h"  // for Connection<>::handle_t, etc
+#include "core/internal/db_connection.h"
 
 #include "core/db/rocksdb/config.h"               // for Config
 #include "core/db/rocksdb/connection_settings.h"  // for ConnectionSettings
 #include "core/db/rocksdb/database.h"
 #include "core/db/rocksdb/command_translator.h"
 #include "core/db/rocksdb/internal/commands_api.h"
-
-#include "global/global.h"  // for FastoObject, etc
 
 #define ROCKSDB_HEADER_STATS                               \
   "\n** Compaction Stats [default] **\n"                   \
@@ -228,14 +233,18 @@ common::Error DBConnection::GetInner(const std::string& key, std::string* ret_va
   return common::Error();
 }
 
-common::Error DBConnection::Mget(const std::vector< ::rocksdb::Slice>& keys,
+common::Error DBConnection::Mget(const std::vector<std::string>& keys,
                                  std::vector<std::string>* ret) {
   if (!IsConnected()) {
     return common::make_error_value("Not connected", common::Value::E_ERROR);
   }
 
+  std::vector< ::rocksdb::Slice> rslice;
+  for (auto key : keys) {
+    rslice.push_back(key);
+  }
   ::rocksdb::ReadOptions ro;
-  auto sts = connection_.handle_->MultiGet(ro, keys, ret);
+  auto sts = connection_.handle_->MultiGet(ro, rslice, ret);
   for (size_t i = 0; i < sts.size(); ++i) {
     auto st = sts[i];
     if (st.ok()) {

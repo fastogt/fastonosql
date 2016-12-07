@@ -19,6 +19,7 @@
 #pragma once
 
 #include <stddef.h>  // for size_t
+#include <stdint.h>  // for uint64_t
 
 #include <string>  // for string
 #include <vector>  // for vector
@@ -26,13 +27,12 @@
 #include <common/error.h>   // for Error
 #include <common/macros.h>  // for PROJECT_VERSION_GENERATE, etc
 
-#include "core/command_info.h"      // for UNDEFINED_EXAMPLE_STR, etc
-#include "core/command_holder.h"    // for CommandHolder, etc
 #include "core/connection_types.h"  // for connectionTypes::REDIS
 #include "core/db_key.h"            // for NDbKValue, NKey, etc
 #include "core/ssh_info.h"          // for SSHInfo
 #include "core/server/iserver_info.h"
 
+#include "core/internal/db_connection.h"   // for DBConnection<>::config_t
 #include "core/internal/cdb_connection.h"  // for CDBConnection
 
 #include "core/db/redis/config.h"  // for Config
@@ -42,11 +42,6 @@
 namespace fastonosql {
 namespace core {
 class CDBConnectionClient;
-}
-}
-namespace fastonosql {
-namespace core {
-class CommandHandler;
 }
 }
 namespace fastonosql {

@@ -25,6 +25,12 @@
 
 #include "core/server/iserver_info.h"  // for ServerCommonInfo (ptr only), etc
 
+namespace common {
+namespace net {
+struct HostAndPort;
+}
+}
+
 namespace fastonosql {
 namespace core {
 namespace redis {

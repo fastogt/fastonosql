@@ -27,10 +27,10 @@
 #include <common/error.h>   // for Error
 #include <common/macros.h>  // for WARN_UNUSED_RESULT
 
-#include "core/command_info.h"    // for UNDEFINED_EXAMPLE_STR, etc
-#include "core/command_holder.h"  // for CommandHolder, etc
-
 #include "core/internal/cdb_connection.h"
+
+#include "core/connection_types.h"  // for connectionTypes::ROCKSDB
+#include "core/db_key.h"            // for NKey (ptr only), etc
 
 #include "core/db/rocksdb/config.h"
 #include "core/db/rocksdb/connection_settings.h"
@@ -58,7 +58,7 @@ class DBConnection : public core::internal::CDBConnection<NativeConnection, Conf
   std::string CurrentDBName() const;
 
   common::Error Info(const char* args, ServerInfo::Stats* statsout) WARN_UNUSED_RESULT;
-  common::Error Mget(const std::vector< ::rocksdb::Slice>& keys, std::vector<std::string>* ret);
+  common::Error Mget(const std::vector<std::string>& keys, std::vector<std::string>* ret);
   common::Error Merge(const std::string& key, const std::string& value) WARN_UNUSED_RESULT;
 
  private:
