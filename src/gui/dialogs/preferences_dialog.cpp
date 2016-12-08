@@ -58,7 +58,7 @@ const QString trLanguage = QObject::tr("Language:");
 const QString trSupportedUiStyles = QObject::tr("Supported UI styles:");
 const QString trSupportedFonts = QObject::tr("Supported fonts:");
 const QString trDefaultViews = QObject::tr("Default views:");
-const QString trLoggingDirectory = QObject::tr("Logging directory:");
+const QString trHistoryDirectory = QObject::tr("History directory:");
 }  // namespace
 
 namespace fastonosql {
@@ -221,7 +221,7 @@ void PreferencesDialog::retranslateUi() {
   stylesLabel_->setText(trSupportedUiStyles);
   fontLabel_->setText(trSupportedFonts);
   defaultViewLabel_->setText(trDefaultViews);
-  logDirLabel_->setText(trLoggingDirectory);
+  logDirLabel_->setText(trHistoryDirectory);
 }
 
 }  // namespace gui

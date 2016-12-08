@@ -59,6 +59,10 @@ struct CommandsApi : public internal::ApiTraits<DBConnection> {
                                       const char** argv,
                                       FastoObject* out);
 
+  static common::Error Lpush(internal::CommandHandler* handler,
+                             int argc,
+                             const char** argv,
+                             FastoObject* out);
   static common::Error Lrange(internal::CommandHandler* handler,
                               int argc,
                               const char** argv,
@@ -924,7 +928,7 @@ static const std::vector<CommandHolder> g_commands = {
                   UNDEFINED_EXAMPLE_STR,
                   2,
                   INFINITE_COMMAND_ARGS,
-                  &CommandsApi::CommonExec),
+                  &CommandsApi::Lpush),
     CommandHolder("LPUSHX",
                   "<key> <value>",
                   "Prepend a value to a list, only if the "

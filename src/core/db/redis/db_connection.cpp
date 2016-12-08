@@ -2009,6 +2009,48 @@ common::Error DBConnection::Subscribe(int argc, const char** argv, FastoObject* 
   return common::Error();
 }
 
+common::Error DBConnection::Lpush(const NKey& key,
+                                  const std::vector<std::string>& values,
+                                  int* list_len) {
+  if (!IsConnected()) {
+    DNOTREACHED();
+    return common::make_error_value("Not connected", common::Value::E_ERROR);
+  }
+
+  common::ArrayValue* arr = common::Value::createArrayValue();
+  arr->appendStrings(values);
+  NDbKValue list(key, NValue(arr));
+  translator_t tran = Translator();
+  std::string lpush_cmd;
+  common::Error err = tran->CreateKeyCommand(list, &lpush_cmd);
+  if (err && err->isError()) {
+    return err;
+  }
+
+  redisReply* reply =
+      reinterpret_cast<redisReply*>(redisCommand(connection_.handle_, lpush_cmd.c_str()));
+  if (!reply) {
+    return cliPrintContextError(connection_.handle_);
+  }
+
+  if (reply->type == REDIS_REPLY_INTEGER) {
+    if (client_) {
+      client_->OnKeyAdded(list);
+    }
+    *list_len = reply->integer;
+    freeReplyObject(reply);
+    return common::Error();
+  } else if (reply->type == REDIS_REPLY_ERROR) {
+    common::Error err =
+        common::make_error_value(std::string(reply->str, reply->len), common::Value::E_ERROR);
+    freeReplyObject(reply);
+    return err;
+  }
+
+  NOTREACHED();
+  return common::Error();
+}
+
 common::Error DBConnection::Lrange(const NKey& key, int start, int stop, NDbKValue* loaded_key) {
   if (!IsConnected()) {
     DNOTREACHED();

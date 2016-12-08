@@ -50,7 +50,7 @@ Config parseOptions(int argc, char** argv) {
 
     if (!strcmp(argv[i], "-h") && !lastarg) {
       cfg.host.host = argv[++i];
-    } else if (!strcmp(argv[i], "-p") && lastarg) {
+    } else if (!strcmp(argv[i], "-p") && !lastarg) {
       cfg.host.port = common::ConvertFromString<uint16_t>(argv[++i]);
     } else if (!strcmp(argv[i], "-s") && !lastarg) {
       cfg.hostsocket = argv[++i];
@@ -61,14 +61,7 @@ Config parseOptions(int argc, char** argv) {
       cfg.dbnum = common::ConvertFromString<int>(argv[++i]);
     } else if (!strcmp(argv[i], "-a") && !lastarg) {
       cfg.auth = argv[++i];
-    }
-    /*else if (!strcmp(argv[i], "--raw")) {
-      cfg.output = OUTPUT_RAW;
-    } else if (!strcmp(argv[i], "--no-raw")) {
-      cfg.output = OUTPUT_STANDARD;
-    } else if (!strcmp(argv[i], "--csv")) {
-      cfg.output = OUTPUT_CSV;
-    }*/ else if (!strcmp(argv[i], "--latency")) {
+    } else if (!strcmp(argv[i], "--latency")) {
       cfg.latency_mode = 1;
     } else if (!strcmp(argv[i], "--latency-history")) {
       cfg.latency_mode = 1;
@@ -84,12 +77,6 @@ Config parseOptions(int argc, char** argv) {
     } else if (!strcmp(argv[i], "--rdb") && !lastarg) {
       cfg.getrdb_mode = 1;
       cfg.rdb_filename = argv[++i];
-      /*} else if (!strcmp(argv[i], "--pipe")) {
-        cfg.pipe_mode = 1;
-      } else if (!strcmp(argv[i], "--pipe-timeout") &&
-      !lastarg) {
-        cfg.pipe_timeout =
-      common::ConvertFromString<int>(argv[++i]);*/
     } else if (!strcmp(argv[i], "--bigkeys")) {
       cfg.bigkeys = 1;
     } else if (!strcmp(argv[i], "-c")) {
@@ -98,14 +85,7 @@ Config parseOptions(int argc, char** argv) {
       cfg.delimiter = argv[++i];
     } else if (!strcmp(argv[i], "-ns") && !lastarg) {
       cfg.ns_separator = argv[++i];
-    }
-    /*else if (!strcmp(argv[i], "-v") || !strcmp(argv[i],
-    "--version")) {
-      sds version = cliVersion();
-      printf("redis-cli %s\n", version);
-      sdsfree(version);
-    }*/
-    else {
+    } else {
       if (argv[i][0] == '-') {
         const std::string buff = common::MemSPrintf(
             "Unrecognized option or bad number of args "

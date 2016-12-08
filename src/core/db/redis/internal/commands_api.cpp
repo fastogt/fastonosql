@@ -67,6 +67,31 @@ common::Error CommandsApi::Auth(internal::CommandHandler* handler,
   return common::Error();
 }
 
+common::Error CommandsApi::Lpush(internal::CommandHandler* handler,
+                                 int argc,
+                                 const char** argv,
+                                 FastoObject* out) {
+  NKey key(argv[0]);
+  std::vector<std::string> values_add;
+  for (int i = 1; i < argc; ++i) {
+    values_add.push_back(argv[i]);
+  }
+
+  DBConnection* redis = static_cast<DBConnection*>(handler);
+  int list_len = 0;
+  common::Error err = redis->Lpush(key, values_add, &list_len);
+  if (err && err->isError()) {
+    return err;
+  }
+
+  common::FundamentalValue* val = common::Value::createUIntegerValue(list_len);
+  FastoObject* child = new FastoObject(out, val, redis->Delimiter());
+  out->AddChildren(child);
+  return common::Error();
+
+  return common::Error();
+}
+
 common::Error CommandsApi::Lrange(internal::CommandHandler* handler,
                                   int argc,
                                   const char** argv,
