@@ -23,7 +23,7 @@
 namespace fastonosql {
 namespace translations {
 
-const QString trfilterForScripts = QObject::tr("Text Files (*.txt); All Files (*.*)");
+const QString trfilterForScripts = QObject::tr("Text Files (*.txt);; All Files (*.*)");
 const QString trfilterForAll = QObject::tr("All Files (*.*)");
 const QString trfilterForRdb = QObject::tr("Redis database files (*.rdb)");
 
