@@ -7,8 +7,9 @@
 #          compiler: clang
 #          env:
 language: cpp
-dist: trusty
 sudo: required
+services:
+- docker
 os:
   - linux
   - osx
