@@ -2009,20 +2009,21 @@ common::Error DBConnection::Subscribe(int argc, const char** argv, FastoObject* 
   return common::Error();
 }
 
-common::Error DBConnection::Lpush(const NKey& key,
-                                  const std::vector<std::string>& values,
-                                  int* list_len) {
+common::Error DBConnection::Lpush(const NKey& key, NValue arr, int* list_len) {
+  if (!arr || arr->type() != common::Value::TYPE_ARRAY || !list_len) {
+    DNOTREACHED();
+    return common::make_error_value("Invalid input argument(s)", common::ErrorValue::E_ERROR);
+  }
+
   if (!IsConnected()) {
     DNOTREACHED();
     return common::make_error_value("Not connected", common::Value::E_ERROR);
   }
 
-  common::ArrayValue* arr = common::Value::createArrayValue();
-  arr->appendStrings(values);
-  NDbKValue list(key, NValue(arr));
+  NDbKValue rarr(key, arr);
   translator_t tran = Translator();
   std::string lpush_cmd;
-  common::Error err = tran->CreateKeyCommand(list, &lpush_cmd);
+  common::Error err = tran->CreateKeyCommand(rarr, &lpush_cmd);
   if (err && err->isError()) {
     return err;
   }
@@ -2035,7 +2036,7 @@ common::Error DBConnection::Lpush(const NKey& key,
 
   if (reply->type == REDIS_REPLY_INTEGER) {
     if (client_) {
-      client_->OnKeyAdded(list);
+      client_->OnKeyAdded(rarr);
     }
     *list_len = reply->integer;
     freeReplyObject(reply);
@@ -2077,6 +2078,49 @@ common::Error DBConnection::Lrange(const NKey& key, int start, int stop, NDbKVal
     if (client_) {
       client_->OnKeyLoaded(*loaded_key);
     }
+    freeReplyObject(reply);
+    return common::Error();
+  } else if (reply->type == REDIS_REPLY_ERROR) {
+    common::Error err =
+        common::make_error_value(std::string(reply->str, reply->len), common::Value::E_ERROR);
+    freeReplyObject(reply);
+    return err;
+  }
+
+  NOTREACHED();
+  return common::Error();
+}
+
+common::Error DBConnection::Sadd(const NKey& key, NValue set, int* added) {
+  if (!set || set->type() != common::Value::TYPE_SET || !added) {
+    DNOTREACHED();
+    return common::make_error_value("Invalid input argument(s)", common::ErrorValue::E_ERROR);
+  }
+
+  if (!IsConnected()) {
+    DNOTREACHED();
+    return common::make_error_value("Not connected", common::Value::E_ERROR);
+  }
+
+  NDbKValue rset(key, set);
+  translator_t tran = Translator();
+  std::string sadd_cmd;
+  common::Error err = tran->CreateKeyCommand(rset, &sadd_cmd);
+  if (err && err->isError()) {
+    return err;
+  }
+
+  redisReply* reply =
+      reinterpret_cast<redisReply*>(redisCommand(connection_.handle_, sadd_cmd.c_str()));
+  if (!reply) {
+    return cliPrintContextError(connection_.handle_);
+  }
+
+  if (reply->type == REDIS_REPLY_INTEGER) {
+    if (client_) {
+      client_->OnKeyAdded(rset);
+    }
+    *added = reply->integer;
     freeReplyObject(reply);
     return common::Error();
   } else if (reply->type == REDIS_REPLY_ERROR) {
@@ -2136,6 +2180,49 @@ common::Error DBConnection::Smembers(const NKey& key, NDbKValue* loaded_key) {
     if (client_) {
       client_->OnKeyLoaded(*loaded_key);
     }
+    freeReplyObject(reply);
+    return common::Error();
+  } else if (reply->type == REDIS_REPLY_ERROR) {
+    common::Error err =
+        common::make_error_value(std::string(reply->str, reply->len), common::Value::E_ERROR);
+    freeReplyObject(reply);
+    return err;
+  }
+
+  NOTREACHED();
+  return common::Error();
+}
+
+common::Error DBConnection::Zadd(const NKey& key, NValue scores, int* added) {
+  if (!scores || scores->type() != common::Value::TYPE_ZSET || !added) {
+    DNOTREACHED();
+    return common::make_error_value("Invalid input argument(s)", common::ErrorValue::E_ERROR);
+  }
+
+  if (!IsConnected()) {
+    DNOTREACHED();
+    return common::make_error_value("Not connected", common::Value::E_ERROR);
+  }
+
+  NDbKValue rzset(key, scores);
+  translator_t tran = Translator();
+  std::string zadd_cmd;
+  common::Error err = tran->CreateKeyCommand(rzset, &zadd_cmd);
+  if (err && err->isError()) {
+    return err;
+  }
+
+  redisReply* reply =
+      reinterpret_cast<redisReply*>(redisCommand(connection_.handle_, zadd_cmd.c_str()));
+  if (!reply) {
+    return cliPrintContextError(connection_.handle_);
+  }
+
+  if (reply->type == REDIS_REPLY_INTEGER) {
+    if (client_) {
+      client_->OnKeyAdded(rzset);
+    }
+    *added = reply->integer;
     freeReplyObject(reply);
     return common::Error();
   } else if (reply->type == REDIS_REPLY_ERROR) {
@@ -2214,6 +2301,48 @@ common::Error DBConnection::Zrange(const NKey& key,
     *loaded_key = NDbKValue(key, NValue(zset));
     if (client_) {
       client_->OnKeyLoaded(*loaded_key);
+    }
+    freeReplyObject(reply);
+    return common::Error();
+  } else if (reply->type == REDIS_REPLY_ERROR) {
+    common::Error err =
+        common::make_error_value(std::string(reply->str, reply->len), common::Value::E_ERROR);
+    freeReplyObject(reply);
+    return err;
+  }
+
+  NOTREACHED();
+  return common::Error();
+}
+
+common::Error DBConnection::Hmset(const NKey& key, NValue hash) {
+  if (!hash || hash->type() != common::Value::TYPE_HASH) {
+    DNOTREACHED();
+    return common::make_error_value("Invalid input argument(s)", common::ErrorValue::E_ERROR);
+  }
+
+  if (!IsConnected()) {
+    DNOTREACHED();
+    return common::make_error_value("Not connected", common::Value::E_ERROR);
+  }
+
+  NDbKValue rhash(key, hash);
+  translator_t tran = Translator();
+  std::string hmset_cmd;
+  common::Error err = tran->CreateKeyCommand(rhash, &hmset_cmd);
+  if (err && err->isError()) {
+    return err;
+  }
+
+  redisReply* reply =
+      reinterpret_cast<redisReply*>(redisCommand(connection_.handle_, hmset_cmd.c_str()));
+  if (!reply) {
+    return cliPrintContextError(connection_.handle_);
+  }
+
+  if (reply->type == REDIS_REPLY_STRING) {
+    if (client_) {
+      client_->OnKeyAdded(rhash);
     }
     freeReplyObject(reply);
     return common::Error();

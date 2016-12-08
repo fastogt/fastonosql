@@ -67,18 +67,34 @@ struct CommandsApi : public internal::ApiTraits<DBConnection> {
                               int argc,
                               const char** argv,
                               FastoObject* out);
+
+  static common::Error Sadd(internal::CommandHandler* handler,
+                            int argc,
+                            const char** argv,
+                            FastoObject* out);
   static common::Error Smembers(internal::CommandHandler* handler,
                                 int argc,
                                 const char** argv,
                                 FastoObject* out);
+
+  static common::Error Zadd(internal::CommandHandler* handler,
+                            int argc,
+                            const char** argv,
+                            FastoObject* out);
   static common::Error Zrange(internal::CommandHandler* handler,
                               int argc,
                               const char** argv,
                               FastoObject* out);
+
+  static common::Error Hmset(internal::CommandHandler* handler,
+                             int argc,
+                             const char** argv,
+                             FastoObject* out);
   static common::Error Hgetall(internal::CommandHandler* handler,
                                int argc,
                                const char** argv,
                                FastoObject* out);
+
   static common::Error Persist(internal::CommandHandler* handler,
                                int argc,
                                const char** argv,
@@ -794,7 +810,7 @@ static const std::vector<CommandHolder> g_commands = {
                   UNDEFINED_EXAMPLE_STR,
                   3,
                   INFINITE_COMMAND_ARGS,
-                  &CommandsApi::CommonExec),
+                  &CommandsApi::Hmset),
     CommandHolder("HSCAN",
                   "<key> <cursor> [MATCH pattern] [COUNT count]",
                   "Incrementally iterate hash fields and associated "
@@ -1261,7 +1277,7 @@ static const std::vector<CommandHolder> g_commands = {
                   UNDEFINED_EXAMPLE_STR,
                   2,
                   INFINITE_COMMAND_ARGS,
-                  &CommandsApi::CommonExec),
+                  &CommandsApi::Sadd),
     CommandHolder("SAVE",
                   "-",
                   "Synchronously save the dataset to disk",
@@ -1630,7 +1646,7 @@ static const std::vector<CommandHolder> g_commands = {
                   UNDEFINED_EXAMPLE_STR,
                   3,
                   INFINITE_COMMAND_ARGS,
-                  &CommandsApi::CommonExec),
+                  &CommandsApi::Zadd),
     CommandHolder("ZCARD",
                   "<key>",
                   "Get the number of members in a sorted set",

@@ -72,23 +72,21 @@ common::Error CommandsApi::Lpush(internal::CommandHandler* handler,
                                  const char** argv,
                                  FastoObject* out) {
   NKey key(argv[0]);
-  std::vector<std::string> values_add;
+  common::ArrayValue* arr = common::Value::createArrayValue();
   for (int i = 1; i < argc; ++i) {
-    values_add.push_back(argv[i]);
+    arr->appendString(argv[i]);
   }
 
   DBConnection* redis = static_cast<DBConnection*>(handler);
   int list_len = 0;
-  common::Error err = redis->Lpush(key, values_add, &list_len);
+  common::Error err = redis->Lpush(key, NValue(arr), &list_len);
   if (err && err->isError()) {
     return err;
   }
 
-  common::FundamentalValue* val = common::Value::createUIntegerValue(list_len);
+  common::FundamentalValue* val = common::Value::createIntegerValue(list_len);
   FastoObject* child = new FastoObject(out, val, redis->Delimiter());
   out->AddChildren(child);
-  return common::Error();
-
   return common::Error();
 }
 
@@ -115,6 +113,29 @@ common::Error CommandsApi::Lrange(internal::CommandHandler* handler,
   return common::Error();
 }
 
+common::Error CommandsApi::Sadd(internal::CommandHandler* handler,
+                                int argc,
+                                const char** argv,
+                                FastoObject* out) {
+  NKey key(argv[0]);
+  common::SetValue* set = common::Value::createSetValue();
+  for (int i = 1; i < argc; ++i) {
+    set->insert(argv[i]);
+  }
+
+  DBConnection* redis = static_cast<DBConnection*>(handler);
+  int added_items = 0;
+  common::Error err = redis->Sadd(key, NValue(set), &added_items);
+  if (err && err->isError()) {
+    return err;
+  }
+
+  common::FundamentalValue* val = common::Value::createIntegerValue(added_items);
+  FastoObject* child = new FastoObject(out, val, redis->Delimiter());
+  out->AddChildren(child);
+  return common::Error();
+}
+
 common::Error CommandsApi::Smembers(internal::CommandHandler* handler,
                                     int argc,
                                     const char** argv,
@@ -132,6 +153,31 @@ common::Error CommandsApi::Smembers(internal::CommandHandler* handler,
   NValue val = key_loaded.Value();
   common::Value* copy = val->deepCopy();
   FastoObject* child = new FastoObject(out, copy, redis->Delimiter());
+  out->AddChildren(child);
+  return common::Error();
+}
+
+common::Error CommandsApi::Zadd(internal::CommandHandler* handler,
+                                int argc,
+                                const char** argv,
+                                FastoObject* out) {
+  NKey key(argv[0]);
+  common::ZSetValue* zset = common::Value::createZSetValue();
+  for (int i = 1; i < argc; i += 2) {
+    std::string key = argv[i];
+    std::string val = argv[i + 1];
+    zset->insert(key, val);
+  }
+
+  DBConnection* redis = static_cast<DBConnection*>(handler);
+  int added_items = 0;
+  common::Error err = redis->Zadd(key, NValue(zset), &added_items);
+  if (err && err->isError()) {
+    return err;
+  }
+
+  common::FundamentalValue* val = common::Value::createIntegerValue(added_items);
+  FastoObject* child = new FastoObject(out, val, redis->Delimiter());
   out->AddChildren(child);
   return common::Error();
 }
@@ -156,6 +202,30 @@ common::Error CommandsApi::Zrange(internal::CommandHandler* handler,
   NValue val = key_loaded.Value();
   common::Value* copy = val->deepCopy();
   FastoObject* child = new FastoObject(out, copy, redis->Delimiter());
+  out->AddChildren(child);
+  return common::Error();
+}
+
+common::Error CommandsApi::Hmset(internal::CommandHandler* handler,
+                                 int argc,
+                                 const char** argv,
+                                 FastoObject* out) {
+  NKey key(argv[0]);
+  common::HashValue* hmset = common::Value::createHashValue();
+  for (int i = 1; i < argc; i += 2) {
+    std::string key = argv[i];
+    std::string val = argv[i + 1];
+    hmset->insert(key, val);
+  }
+
+  DBConnection* redis = static_cast<DBConnection*>(handler);
+  common::Error err = redis->Hmset(key, NValue(hmset));
+  if (err && err->isError()) {
+    return err;
+  }
+
+  common::StringValue* val = common::Value::createStringValue("OK");
+  FastoObject* child = new FastoObject(out, val, redis->Delimiter());
   out->AddChildren(child);
   return common::Error();
 }

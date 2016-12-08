@@ -122,14 +122,20 @@ class DBConnection : public core::internal::CDBConnection<NativeConnection, RCon
                           const char** argv,
                           FastoObject* out) WARN_UNUSED_RESULT;  // interrupt
 
-  common::Error Lpush(const NKey& key, const std::vector<std::string>& values, int* list_len);
+  common::Error Lpush(const NKey& key, NValue arr, int* list_len);
   common::Error Lrange(const NKey& key, int start, int stop, NDbKValue* loaded_key);
+
+  common::Error Sadd(const NKey& key, NValue set, int* added);
   common::Error Smembers(const NKey& key, NDbKValue* loaded_key);
+
+  common::Error Zadd(const NKey& key, NValue scores, int* added);
   common::Error Zrange(const NKey& key,
                        int start,
                        int stop,
                        bool withscores,
                        NDbKValue* loaded_key);
+
+  common::Error Hmset(const NKey& key, NValue hash);
   common::Error Hgetall(const NKey& key, NDbKValue* loaded_key);
 
  private:
