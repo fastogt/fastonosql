@@ -42,8 +42,8 @@ common::Error CommandHandler::Execute(int argc, const char** argv, FastoObject* 
       uint16_t min = cmd.MinArgumentsCount();
       if (argc_to_call > max || argc_to_call < min) {
         std::string buff = common::MemSPrintf(
-            "Invalid input argument for command: '%s', passed %d, must be in range %d - %d.",
-            cmd.name, argc_to_call, max, min);
+            "Invalid input argument for command: '%s', passed %d arguments, must be in range %u - %u.",
+            cmd.name, argc_to_call, min, max);
         return common::make_error_value(buff, common::ErrorValue::E_ERROR);
       }
 

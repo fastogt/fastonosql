@@ -136,7 +136,11 @@ common::Error CommandTranslator::LoadKeyTTLCommandImpl(const NKey& key,
 }
 
 bool CommandTranslator::IsLoadKeyCommandImpl(const CommandInfo& cmd) const {
-  return cmd.IsEqualName(REDIS_COMMONTYPE_GET_KEY_COMMAND);
+  return cmd.IsEqualName(REDIS_COMMONTYPE_GET_KEY_COMMAND) ||
+         cmd.IsEqualName(REDIS_LISTTYPE_GET_KEY_COMMAND) ||
+         cmd.IsEqualName(REDIS_SETTYPE_GET_KEY_COMMAND) ||
+         cmd.IsEqualName(REDIS_ZSETTYPE_GET_KEY_COMMAND) ||
+         cmd.IsEqualName(REDIS_HASHTYPE_GET_KEY_COMMAND);
 }
 
 }  // namespace redis
