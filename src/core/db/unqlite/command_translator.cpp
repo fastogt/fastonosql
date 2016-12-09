@@ -21,8 +21,10 @@
 #include <common/macros.h>  // for UNUSED
 #include <common/sprintf.h>
 
+#define UNQLITE_COMMONTYPE_GET_KEY_COMMAND COMMONTYPE_GET_KEY_COMMAND
+
 #define UNQLITE_SET_KEY_PATTERN_2ARGS_SS "SET %s %s"
-#define UNQLITE_GET_KEY_PATTERN_1ARGS_S "GET %s"
+#define UNQLITE_GET_KEY_PATTERN_1ARGS_S UNQLITE_COMMONTYPE_GET_KEY_COMMAND " %s"
 #define UNQLITE_DELETE_KEY_PATTERN_1ARGS_S "DEL %s"
 #define UNQLITE_RENAME_KEY_PATTERN_2ARGS_SS "RENAME %s %s"
 
@@ -30,7 +32,8 @@ namespace fastonosql {
 namespace core {
 namespace unqlite {
 
-CommandTranslator::CommandTranslator() {}
+CommandTranslator::CommandTranslator(const std::vector<CommandHolder>& commands)
+    : ICommandTranslator(commands) {}
 
 common::Error CommandTranslator::CreateKeyCommandImpl(const NDbKValue& key,
                                                       std::string* cmdstring) const {
@@ -85,6 +88,10 @@ common::Error CommandTranslator::LoadKeyTTLCommandImpl(const NKey& key,
   std::string errorMsg = common::MemSPrintf("Sorry, but now " PROJECT_NAME_TITLE
                                             " not supported get ttl command for UnqLite.");
   return common::make_error_value(errorMsg, common::ErrorValue::E_ERROR);
+}
+
+bool CommandTranslator::IsLoadKeyCommandImpl(const CommandInfo& cmd) const {
+  return cmd.IsEqualName(UNQLITE_COMMONTYPE_GET_KEY_COMMAND);
 }
 
 }  // namespace unqlite

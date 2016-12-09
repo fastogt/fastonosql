@@ -26,15 +26,22 @@
 #include <common/value.h>   // for Value, Value::Type
 
 #include "core/db_key.h"  // for NKey, NDbKValue, ttl_t
+#include "core/command_holder.h"
 
 #define FLUSHDB_COMMAND "FLUSHDB"
 #define SELECTDB_COMMAND_1S "SELECT %s"
+
+#define COMMONTYPE_GET_KEY_COMMAND "GET"
+#define COMMONTYPE_SET_KEY_COMMAND "SET"
 
 namespace fastonosql {
 namespace core {
 
 class ICommandTranslator {
  public:
+  ICommandTranslator(const std::vector<CommandHolder>& commands);
+  virtual ~ICommandTranslator();
+
   common::Error SelectDBCommand(const std::string& name,
                                 std::string* cmdstring) const WARN_UNUSED_RESULT;
   common::Error FlushDBCommand(std::string* cmdstring) const WARN_UNUSED_RESULT;
@@ -52,6 +59,8 @@ class ICommandTranslator {
                                     std::string* cmdstring) const WARN_UNUSED_RESULT;
   common::Error LoadKeyTTLCommand(const NKey& key, std::string* cmdstring) const WARN_UNUSED_RESULT;
 
+  bool IsLoadKeyCommand(const std::string& cmd, std::string* key) const WARN_UNUSED_RESULT;
+
  private:
   virtual common::Error CreateKeyCommandImpl(const NDbKValue& key,
                                              std::string* cmdstring) const = 0;
@@ -66,6 +75,10 @@ class ICommandTranslator {
                                                 ttl_t ttl,
                                                 std::string* cmdstring) const = 0;
   virtual common::Error LoadKeyTTLCommandImpl(const NKey& key, std::string* cmdstring) const = 0;
+
+  virtual bool IsLoadKeyCommandImpl(const CommandInfo& cmd) const = 0;
+
+  const std::vector<CommandHolder> commands_;
 };
 
 typedef common::shared_ptr<ICommandTranslator> translator_t;

@@ -18,10 +18,19 @@
 
 #include "core/icommand_translator.h"
 
+extern "C" {
+#include "sds.h"
+}
+
 #include <common/sprintf.h>
 
 namespace fastonosql {
 namespace core {
+
+ICommandTranslator::ICommandTranslator(const std::vector<CommandHolder>& commands)
+    : commands_(commands) {}
+
+ICommandTranslator::~ICommandTranslator() {}
 
 common::Error ICommandTranslator::SelectDBCommand(const std::string& name,
                                                   std::string* cmdstring) const {
@@ -95,6 +104,36 @@ common::Error ICommandTranslator::LoadKeyTTLCommand(const NKey& key, std::string
   }
 
   return LoadKeyTTLCommandImpl(key, cmdstring);
+}
+
+bool ICommandTranslator::IsLoadKeyCommand(const std::string& cmd, std::string* key) const {
+  if (cmd.empty() || !key) {
+    return false;
+  }
+
+  int argc;
+  sds* argv = sdssplitargslong(cmd.c_str(), &argc);
+  if (!argv) {
+    return false;
+  }
+
+  const char** standart_argv = const_cast<const char**>(argv);
+  for (size_t i = 0; i < commands_.size(); ++i) {
+    size_t off = 0;
+    if (commands_[i].IsCommand(argc, standart_argv, &off)) {
+      CommandHolder cmd = commands_[i];
+      if (IsLoadKeyCommandImpl(cmd)) {
+        *key = argv[off];
+        sdsfreesplitres(argv, argc);
+        return true;
+      }
+      sdsfreesplitres(argv, argc);
+      return false;
+    }
+  }
+
+  sdsfreesplitres(argv, argc);
+  return false;
 }
 
 }  // namespace core

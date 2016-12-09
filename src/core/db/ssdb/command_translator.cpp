@@ -26,7 +26,8 @@
 #define SSDB_SET_KEY_ZSET_PATTERN_2ARGS_SS "ZADD %s %s"
 #define SSDB_SET_KEY_HASH_PATTERN_2ARGS_SS "HMSET %s %s"
 
-#define SSDB_GET_KEY_PATTERN_1ARGS_S "GET %s"
+#define SSDB_COMMONTYPE_GET_KEY_COMMAND COMMONTYPE_GET_KEY_COMMAND
+#define SSDB_GET_KEY_PATTERN_1ARGS_S SSDB_COMMONTYPE_GET_KEY_COMMAND " %s"
 #define SSDB_GET_KEY_LIST_PATTERN_1ARGS_S "LRANGE %s 0 -1"
 #define SSDB_GET_KEY_SET_PATTERN_1ARGS_S "SMEMBERS %s"
 #define SSDB_GET_KEY_ZSET_PATTERN_1ARGS_S "ZRANGE %s 0 -1"
@@ -41,7 +42,8 @@ namespace fastonosql {
 namespace core {
 namespace ssdb {
 
-CommandTranslator::CommandTranslator() {}
+CommandTranslator::CommandTranslator(const std::vector<CommandHolder>& commands)
+    : ICommandTranslator(commands) {}
 
 common::Error CommandTranslator::CreateKeyCommandImpl(const NDbKValue& key,
                                                       std::string* cmdstring) const {
@@ -114,6 +116,10 @@ common::Error CommandTranslator::LoadKeyTTLCommandImpl(const NKey& key,
   std::string key_str = key.Key();
   *cmdstring = common::MemSPrintf(SSDB_GET_TTL_1ARGS_S, key_str);
   return common::Error();
+}
+
+bool CommandTranslator::IsLoadKeyCommandImpl(const CommandInfo& cmd) const {
+  return cmd.IsEqualName(SSDB_COMMONTYPE_GET_KEY_COMMAND);
 }
 
 }  // namespace ssdb

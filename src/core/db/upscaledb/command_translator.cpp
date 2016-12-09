@@ -22,7 +22,8 @@
 #include <common/sprintf.h>
 
 #define UPSCALEDB_SET_KEY_PATTERN_2ARGS_SS "SET %s %s"
-#define UPSCALEDB_GET_KEY_PATTERN_1ARGS_S "GET %s"
+#define UPSCALEDB_GET_COMMAND "GET"
+#define UPSCALEDB_GET_KEY_PATTERN_1ARGS_S UPSCALEDB_GET_COMMAND " %s"
 #define UPSCALEDB_DELETE_KEY_PATTERN_1ARGS_S "DEL %s"
 #define UPSCALEDB_RENAME_KEY_PATTERN_2ARGS_SS "RENAME %s %s"
 
@@ -30,7 +31,8 @@ namespace fastonosql {
 namespace core {
 namespace upscaledb {
 
-CommandTranslator::CommandTranslator() {}
+CommandTranslator::CommandTranslator(const std::vector<CommandHolder>& commands)
+    : ICommandTranslator(commands) {}
 
 common::Error CommandTranslator::CreateKeyCommandImpl(const NDbKValue& key,
                                                       std::string* cmdstring) const {
@@ -85,6 +87,10 @@ common::Error CommandTranslator::LoadKeyTTLCommandImpl(const NKey& key,
   std::string errorMsg = common::MemSPrintf("Sorry, but now " PROJECT_NAME_TITLE
                                             " not supported get ttl command for UPSCALEDB.");
   return common::make_error_value(errorMsg, common::ErrorValue::E_ERROR);
+}
+
+bool CommandTranslator::IsLoadKeyCommandImpl(const CommandInfo& cmd) const {
+  return cmd.IsEqualName(UPSCALEDB_GET_COMMAND);
 }
 
 }  // namespace upscaledb

@@ -20,6 +20,7 @@
 
 #include <string>
 
+#include <common/string_util.h>  // for FullEqualsASCII
 #include <common/convert2string.h>
 
 namespace fastonosql {
@@ -50,6 +51,10 @@ uint8_t CommandInfo::MinArgumentsCount() const {
 
 std::string CommandInfo::ConvertToReadableString() const {
   return std::string();
+}
+
+bool CommandInfo::IsEqualName(const std::string& cmd) const {
+  return common::FullEqualsASCII(cmd, name, false);
 }
 
 std::string ConvertVersionNumberToReadableString(uint32_t version) {

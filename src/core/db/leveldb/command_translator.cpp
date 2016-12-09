@@ -21,10 +21,10 @@
 #include <common/macros.h>   // for UNUSED
 #include <common/sprintf.h>  // for MemSPrintf
 
-#include "global/global.h"  // for ConvertToString
+#define LEVELDB_COMMONTYPE_GET_KEY_COMMAND COMMONTYPE_GET_KEY_COMMAND
 
 #define LEVELDB_SET_KEY_PATTERN_2ARGS_SS "SET %s %s"
-#define LEVELDB_GET_KEY_PATTERN_1ARGS_S "GET %s"
+#define LEVELDB_GET_KEY_PATTERN_1ARGS_S LEVELDB_COMMONTYPE_GET_KEY_COMMAND " %s"
 #define LEVELDB_RENAME_KEY_PATTERN_2ARGS_SS "RENAME %s %s"
 #define LEVELDB_DELETE_KEY_PATTERN_1ARGS_S "DEL %s"
 
@@ -32,7 +32,8 @@ namespace fastonosql {
 namespace core {
 namespace leveldb {
 
-CommandTranslator::CommandTranslator() {}
+CommandTranslator::CommandTranslator(const std::vector<CommandHolder>& commands)
+    : ICommandTranslator(commands) {}
 
 common::Error CommandTranslator::CreateKeyCommandImpl(const NDbKValue& key,
                                                       std::string* cmdstring) const {
@@ -87,6 +88,10 @@ common::Error CommandTranslator::LoadKeyTTLCommandImpl(const NKey& key,
   std::string errorMsg = common::MemSPrintf("Sorry, but now " PROJECT_NAME_TITLE
                                             " not supported get ttl command for LevelDB.");
   return common::make_error_value(errorMsg, common::ErrorValue::E_ERROR);
+}
+
+bool CommandTranslator::IsLoadKeyCommandImpl(const CommandInfo& cmd) const {
+  return cmd.IsEqualName(LEVELDB_COMMONTYPE_GET_KEY_COMMAND);
 }
 
 }  // namespace leveldb

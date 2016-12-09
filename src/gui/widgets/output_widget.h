@@ -56,6 +56,7 @@ class FastoCommonModel;
 
 namespace fastonosql {
 namespace gui {
+
 class OutputWidget : public QWidget {
   Q_OBJECT
  public:
@@ -94,5 +95,6 @@ class OutputWidget : public QWidget {
   FastoTextView* textView_;
   const core::IServerSPtr server_;
 };
+
 }  // namespace gui
 }  // namespace fastonosql

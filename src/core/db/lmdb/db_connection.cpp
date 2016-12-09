@@ -45,7 +45,6 @@ class FastoObjectArray;
 namespace fastonosql {
 namespace core {
 namespace lmdb {
-
 struct lmdb {
   MDB_env* env;
   MDB_dbi dbir;
@@ -110,6 +109,59 @@ void lmdb_close(lmdb** context) {
 }
 
 }  // namespace
+}
+namespace internal {
+template <>
+common::Error ConnectionAllocatorTraits<lmdb::NativeConnection, lmdb::Config>::Connect(
+    const lmdb::Config& config,
+    lmdb::NativeConnection** hout) {
+  lmdb::NativeConnection* context = nullptr;
+  common::Error er = lmdb::CreateConnection(config, &context);
+  if (er && er->isError()) {
+    return er;
+  }
+
+  *hout = context;
+  return common::Error();
+}
+
+template <>
+common::Error ConnectionAllocatorTraits<lmdb::NativeConnection, lmdb::Config>::Disconnect(
+    lmdb::NativeConnection** handle) {
+  lmdb::lmdb_close(handle);
+  *handle = nullptr;
+  return common::Error();
+}
+
+template <>
+bool ConnectionAllocatorTraits<lmdb::NativeConnection, lmdb::Config>::IsConnected(
+    lmdb::NativeConnection* handle) {
+  if (!handle) {
+    return false;
+  }
+
+  return true;
+}
+
+template <>
+const char* CDBConnection<lmdb::NativeConnection, lmdb::Config, LMDB>::BasedOn() {
+  return "liblmdb";
+}
+
+template <>
+const char* CDBConnection<lmdb::NativeConnection, lmdb::Config, LMDB>::VersionApi() {
+  return STRINGIZE(MDB_VERSION_MAJOR) "." STRINGIZE(MDB_VERSION_MINOR) "." STRINGIZE(
+      MDB_VERSION_PATCH);
+}
+
+template <>
+std::vector<CommandHolder> CDBConnection<lmdb::NativeConnection, lmdb::Config, LMDB>::Commands() {
+  return lmdb::g_commands;
+}
+
+}  // namespace internal
+
+namespace lmdb {
 
 common::Error CreateConnection(const Config& config, NativeConnection** context) {
   if (!context) {
@@ -162,7 +214,7 @@ common::Error TestConnection(ConnectionSettings* settings) {
 }
 
 DBConnection::DBConnection(CDBConnectionClient* client)
-    : base_class(client, new CommandTranslator) {}
+    : base_class(client, new CommandTranslator(base_class::Commands())) {}
 
 std::string DBConnection::CurrentDBName() const {
   if (connection_.handle_) {
@@ -528,55 +580,5 @@ common::Error DBConnection::QuitImpl() {
 }
 
 }  // namespace lmdb
-namespace internal {
-template <>
-common::Error ConnectionAllocatorTraits<lmdb::NativeConnection, lmdb::Config>::Connect(
-    const lmdb::Config& config,
-    lmdb::NativeConnection** hout) {
-  lmdb::NativeConnection* context = nullptr;
-  common::Error er = lmdb::CreateConnection(config, &context);
-  if (er && er->isError()) {
-    return er;
-  }
-
-  *hout = context;
-  return common::Error();
-}
-
-template <>
-common::Error ConnectionAllocatorTraits<lmdb::NativeConnection, lmdb::Config>::Disconnect(
-    lmdb::NativeConnection** handle) {
-  lmdb::lmdb_close(handle);
-  *handle = nullptr;
-  return common::Error();
-}
-
-template <>
-bool ConnectionAllocatorTraits<lmdb::NativeConnection, lmdb::Config>::IsConnected(
-    lmdb::NativeConnection* handle) {
-  if (!handle) {
-    return false;
-  }
-
-  return true;
-}
-
-template <>
-const char* CDBConnection<lmdb::NativeConnection, lmdb::Config, LMDB>::BasedOn() {
-  return "liblmdb";
-}
-
-template <>
-const char* CDBConnection<lmdb::NativeConnection, lmdb::Config, LMDB>::VersionApi() {
-  return STRINGIZE(MDB_VERSION_MAJOR) "." STRINGIZE(MDB_VERSION_MINOR) "." STRINGIZE(
-      MDB_VERSION_PATCH);
-}
-
-template <>
-std::vector<CommandHolder> CDBConnection<lmdb::NativeConnection, lmdb::Config, LMDB>::Commands() {
-  return lmdb::g_commands;
-}
-
-}  // namespace internal
 }  // namespace core
 }  // namespace fastonosql

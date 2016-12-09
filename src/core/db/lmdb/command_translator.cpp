@@ -20,10 +20,10 @@
 
 #include <common/sprintf.h>
 
-#include "global/global.h"
+#define LMDB_COMMONTYPE_GET_KEY_COMMAND COMMONTYPE_GET_KEY_COMMAND
 
 #define LMDB_SET_KEY_PATTERN_2ARGS_SS "SET %s %s"
-#define LMDB_GET_KEY_PATTERN_1ARGS_S "GET %s"
+#define LMDB_GET_KEY_PATTERN_1ARGS_S LMDB_COMMONTYPE_GET_KEY_COMMAND " %s"
 #define LMDB_DELETE_KEY_PATTERN_1ARGS_S "DEL %s"
 #define LMDB_RENAME_KEY_PATTERN_2ARGS_SS "RENAME %s %s"
 
@@ -31,7 +31,8 @@ namespace fastonosql {
 namespace core {
 namespace lmdb {
 
-CommandTranslator::CommandTranslator() {}
+CommandTranslator::CommandTranslator(const std::vector<CommandHolder>& commands)
+    : ICommandTranslator(commands) {}
 
 common::Error CommandTranslator::CreateKeyCommandImpl(const NDbKValue& key,
                                                       std::string* cmdstring) const {
@@ -86,6 +87,10 @@ common::Error CommandTranslator::LoadKeyTTLCommandImpl(const NKey& key,
   std::string errorMsg = common::MemSPrintf("Sorry, but now " PROJECT_NAME_TITLE
                                             " not supported get ttl command for LMDB.");
   return common::make_error_value(errorMsg, common::ErrorValue::E_ERROR);
+}
+
+bool CommandTranslator::IsLoadKeyCommandImpl(const CommandInfo& cmd) const {
+  return cmd.IsEqualName(LMDB_COMMONTYPE_GET_KEY_COMMAND);
 }
 
 }  // namespace lmdb

@@ -53,6 +53,7 @@
 namespace fastonosql {
 namespace gui {
 namespace {
+
 FastoCommonItem* createItem(common::qt::gui::TreeItem* parent,
                             const std::string& key,
                             bool readOnly,
@@ -71,7 +72,9 @@ FastoCommonItem* createRootItem(FastoObject* item) {
   core::NDbKValue nkey(core::NKey(std::string()), val);
   return new FastoCommonItem(nkey, item->Delimiter(), true, nullptr, item);
 }
+
 }  // namespace
+
 OutputWidget::OutputWidget(core::IServerSPtr server, QWidget* parent)
     : QWidget(parent), server_(server) {
   CHECK(server_);
@@ -201,9 +204,15 @@ void OutputWidget::addChild(FastoObjectIPtr child) {
       return;
     }
 
-    std::string inputArgs = command->InputArgs();
-    fastonosql::gui::FastoCommonItem* comChild =
-        createItem(par, GetFirstWordFromLine(inputArgs), command->IsReadOnly(), child.get());
+    fastonosql::gui::FastoCommonItem* comChild = nullptr;
+    core::translator_t tr = server_->Translator();
+    std::string inputCmd = command->InputCommand();
+    std::string key;
+    if (tr->IsLoadKeyCommand(inputCmd, &key)) {
+      comChild = createItem(par, key, command->IsReadOnly(), child.get());
+    } else {
+      comChild = createItem(par, inputCmd, command->IsReadOnly(), child.get());
+    }
     commonModel_->insertItem(parent, comChild);
   } else {
     FastoObjectArray* arr = dynamic_cast<FastoObjectArray*>(child->Parent());  // +
@@ -294,5 +303,6 @@ void OutputWidget::syncWithSettings() {
 void OutputWidget::updateTimeLabel(const core::events_info::EventInfoBase& evinfo) {
   timeLabel_->setText(QString("%1 msec").arg(evinfo.ElapsedTime()));
 }
+
 }  // namespace gui
 }  // namespace fastonosql

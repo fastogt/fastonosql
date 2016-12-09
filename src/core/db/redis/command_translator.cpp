@@ -26,11 +26,18 @@
 #define REDIS_SET_KEY_ZSET_PATTERN_2ARGS_SS "ZADD %s %s"
 #define REDIS_SET_KEY_HASHM_PATTERN_2ARGS_SS "HMSET %s %s"
 
-#define REDIS_GET_KEY_PATTERN_1ARGS_S "GET %s"
-#define REDIS_GET_KEY_LIST_PATTERN_1ARGS_S "LRANGE %s 0 -1"
-#define REDIS_GET_KEY_SET_PATTERN_1ARGS_S "SMEMBERS %s"
-#define REDIS_GET_KEY_ZSET_PATTERN_1ARGS_S "ZRANGE %s 0 -1 WITHSCORES"
-#define REDIS_GET_KEY_HASHM_PATTERN_1ARGS_S "HGETALL %s"
+#define REDIS_COMMONTYPE_GET_KEY_COMMAND COMMONTYPE_GET_KEY_COMMAND
+#define REDIS_LISTTYPE_GET_KEY_COMMAND "LRANGE"
+#define REDIS_SETTYPE_GET_KEY_COMMAND "SMEMBERS"
+#define REDIS_ZSETTYPE_GET_KEY_COMMAND "ZRANGE"
+#define REDIS_HASHTYPE_GET_KEY_COMMAND "HGETALL"
+
+#define REDIS_COMMONTYPE_GET_KEY_COMMAND_PATTERN_1ARGS_S REDIS_COMMONTYPE_GET_KEY_COMMAND " %s"
+#define REDIS_LISTTYPE_GET_KEY_COMMAND_PATTERN_1ARGS_S REDIS_LISTTYPE_GET_KEY_COMMAND " %s 0 -1"
+#define REDIS_SETTYPE_GET_KEY_COMMAND_PATTERN_1ARGS_S REDIS_SETTYPE_GET_KEY_COMMAND " %s"
+#define REDIS_ZSETTYPE_GET_KEY_COMMAND_PATTERN_1ARGS_S \
+  REDIS_ZSETTYPE_GET_KEY_COMMAND " %s 0 -1 WITHSCORES"
+#define REDIS_HASHTYPE_GET_KEY_COMMAND_PATTERN_1ARGS_S REDIS_HASHTYPE_GET_KEY_COMMAND " %s"
 
 #define REDIS_DELETE_KEY_PATTERN_1ARGS_S "DEL %s"
 
@@ -45,7 +52,8 @@ namespace fastonosql {
 namespace core {
 namespace redis {
 
-CommandTranslator::CommandTranslator() {}
+CommandTranslator::CommandTranslator(const std::vector<CommandHolder>& commands)
+    : ICommandTranslator(commands) {}
 
 common::Error CommandTranslator::CreateKeyCommandImpl(const NDbKValue& key,
                                                       std::string* cmdstring) const {
@@ -75,15 +83,15 @@ common::Error CommandTranslator::LoadKeyCommandImpl(const NKey& key,
   std::string patternResult;
   std::string key_str = key.Key();
   if (type == common::Value::TYPE_ARRAY) {
-    patternResult = common::MemSPrintf(REDIS_GET_KEY_LIST_PATTERN_1ARGS_S, key_str);
+    patternResult = common::MemSPrintf(REDIS_LISTTYPE_GET_KEY_COMMAND_PATTERN_1ARGS_S, key_str);
   } else if (type == common::Value::TYPE_SET) {
-    patternResult = common::MemSPrintf(REDIS_GET_KEY_SET_PATTERN_1ARGS_S, key_str);
+    patternResult = common::MemSPrintf(REDIS_SETTYPE_GET_KEY_COMMAND_PATTERN_1ARGS_S, key_str);
   } else if (type == common::Value::TYPE_ZSET) {
-    patternResult = common::MemSPrintf(REDIS_GET_KEY_ZSET_PATTERN_1ARGS_S, key_str);
+    patternResult = common::MemSPrintf(REDIS_ZSETTYPE_GET_KEY_COMMAND_PATTERN_1ARGS_S, key_str);
   } else if (type == common::Value::TYPE_HASH) {
-    patternResult = common::MemSPrintf(REDIS_GET_KEY_HASHM_PATTERN_1ARGS_S, key_str);
+    patternResult = common::MemSPrintf(REDIS_HASHTYPE_GET_KEY_COMMAND_PATTERN_1ARGS_S, key_str);
   } else {
-    patternResult = common::MemSPrintf(REDIS_GET_KEY_PATTERN_1ARGS_S, key_str);
+    patternResult = common::MemSPrintf(REDIS_COMMONTYPE_GET_KEY_COMMAND_PATTERN_1ARGS_S, key_str);
   }
 
   *cmdstring = patternResult;
@@ -125,6 +133,10 @@ common::Error CommandTranslator::LoadKeyTTLCommandImpl(const NKey& key,
   std::string key_str = key.Key();
   *cmdstring = common::MemSPrintf(REDIS_GET_TTL_1ARGS_S, key_str);
   return common::Error();
+}
+
+bool CommandTranslator::IsLoadKeyCommandImpl(const CommandInfo& cmd) const {
+  return cmd.IsEqualName(REDIS_COMMONTYPE_GET_KEY_COMMAND);
 }
 
 }  // namespace redis

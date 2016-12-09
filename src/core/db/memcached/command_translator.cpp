@@ -22,8 +22,10 @@
 
 #include "global/global.h"
 
+#define MEMCACHED_COMMONTYPE_GET_KEY_COMMAND COMMONTYPE_GET_KEY_COMMAND
+
 #define MEMCACHED_SET_KEY_PATTERN_2ARGS_SS "SET %s %s"
-#define MEMCACHED_GET_KEY_PATTERN_1ARGS_S "GET %s"
+#define MEMCACHED_GET_KEY_PATTERN_1ARGS_S MEMCACHED_COMMONTYPE_GET_KEY_COMMAND " %s"
 #define MEMCACHED_DELETE_KEY_PATTERN_1ARGS_S "DEL %s"
 #define MEMCACHED_RENAME_KEY_PATTERN_2ARGS_SS "RENAME %s %s"
 #define MEMCACHED_CHANGE_TTL_2ARGS_SI "EXPIRE %s %d"
@@ -33,7 +35,8 @@ namespace fastonosql {
 namespace core {
 namespace memcached {
 
-CommandTranslator::CommandTranslator() {}
+CommandTranslator::CommandTranslator(const std::vector<CommandHolder>& commands)
+    : ICommandTranslator(commands) {}
 
 common::Error CommandTranslator::CreateKeyCommandImpl(const NDbKValue& key,
                                                       std::string* cmdstring) const {
@@ -81,6 +84,10 @@ common::Error CommandTranslator::LoadKeyTTLCommandImpl(const NKey& key,
   std::string key_str = key.Key();
   *cmdstring = common::MemSPrintf(MEMCACHED_GET_TTL_1ARGS_S, key_str);
   return common::Error();
+}
+
+bool CommandTranslator::IsLoadKeyCommandImpl(const CommandInfo& cmd) const {
+  return cmd.IsEqualName(MEMCACHED_COMMONTYPE_GET_KEY_COMMAND);
 }
 
 }  // namespace memcached

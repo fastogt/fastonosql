@@ -44,6 +44,8 @@ struct CommandInfo {
 
   std::string ConvertToReadableString() const;
 
+  bool IsEqualName(const std::string& cmd) const;
+
   const std::string name;
   const std::string params;
   const std::string summary;

@@ -32,7 +32,7 @@ namespace memcached {
 
 class CommandTranslator : public ICommandTranslator {
  public:
-  CommandTranslator();
+  CommandTranslator(const std::vector<CommandHolder>& commands);
 
  private:
   virtual common::Error CreateKeyCommandImpl(const NDbKValue& key,
@@ -50,6 +50,8 @@ class CommandTranslator : public ICommandTranslator {
                                                 std::string* cmdstring) const override;
   virtual common::Error LoadKeyTTLCommandImpl(const NKey& key,
                                               std::string* cmdstring) const override;
+
+  virtual bool IsLoadKeyCommandImpl(const CommandInfo& cmd) const override;
 };
 
 }  // namespace memcached

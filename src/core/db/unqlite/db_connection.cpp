@@ -214,7 +214,7 @@ common::Error TestConnection(ConnectionSettings* settings) {
 }
 
 DBConnection::DBConnection(CDBConnectionClient* client)
-    : base_class(client, new CommandTranslator) {}
+    : base_class(client, new CommandTranslator(base_class::Commands())) {}
 
 common::Error DBConnection::Info(const char* args, ServerInfo::Stats* statsout) {
   UNUSED(args);

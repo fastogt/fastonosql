@@ -635,7 +635,7 @@ common::Error DiscoverySentinelConnection(ConnectionSettings* settings,
 }
 
 DBConnection::DBConnection(CDBConnectionClient* client)
-    : base_class(client, new CommandTranslator), isAuth_(false), cur_db_(-1) {}
+    : base_class(client, new CommandTranslator(base_class::Commands())), isAuth_(false), cur_db_(-1) {}
 
 bool DBConnection::IsAuthenticated() const {
   if (!IsConnected()) {

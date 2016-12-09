@@ -102,9 +102,58 @@ void upscaledb_close(upscaledb** context) {
   free(lcontext);
   *context = NULL;
 }
+}
+}
+namespace internal {
+template <>
+common::Error ConnectionAllocatorTraits<upscaledb::NativeConnection, upscaledb::Config>::Connect(
+    const upscaledb::Config& config,
+    upscaledb::NativeConnection** hout) {
+  upscaledb::NativeConnection* context = nullptr;
+  common::Error er = upscaledb::CreateConnection(config, &context);
+  if (er && er->isError()) {
+    return er;
+  }
 
-}  // namespace
+  *hout = context;
+  return common::Error();
+}
 
+template <>
+common::Error ConnectionAllocatorTraits<upscaledb::NativeConnection, upscaledb::Config>::Disconnect(
+    upscaledb::NativeConnection** handle) {
+  upscaledb::upscaledb_close(handle);
+  *handle = nullptr;
+  return common::Error();
+}
+
+template <>
+bool ConnectionAllocatorTraits<upscaledb::NativeConnection, upscaledb::Config>::IsConnected(
+    upscaledb::NativeConnection* handle) {
+  if (!handle) {
+    return false;
+  }
+
+  return true;
+}
+
+template <>
+const char* CDBConnection<upscaledb::NativeConnection, upscaledb::Config, UPSCALEDB>::BasedOn() {
+  return "libupscaledb";
+}
+
+template <>
+const char* CDBConnection<upscaledb::NativeConnection, upscaledb::Config, UPSCALEDB>::VersionApi() {
+  return STRINGIZE(UPS_VERSION_MAJ) "." STRINGIZE(UPS_VERSION_MIN) "." STRINGIZE(UPS_VERSION_REV);
+}
+
+template <>
+std::vector<CommandHolder>
+CDBConnection<upscaledb::NativeConnection, upscaledb::Config, UPSCALEDB>::Commands() {
+  return upscaledb::g_commands;
+}
+}  // namespace internal
+namespace upscaledb {
 common::Error CreateConnection(const Config& config, NativeConnection** context) {
   if (!context) {
     return common::make_error_value("Invalid input argument(s)", common::ErrorValue::E_ERROR);
@@ -156,7 +205,7 @@ common::Error TestConnection(ConnectionSettings* settings) {
 }
 
 DBConnection::DBConnection(CDBConnectionClient* client)
-    : base_class(client, new CommandTranslator) {}
+    : base_class(client, new CommandTranslator(base_class::Commands())) {}
 
 std::string DBConnection::CurrentDBName() const {
   if (connection_.handle_) {
@@ -510,54 +559,5 @@ common::Error DBConnection::QuitImpl() {
 }
 
 }  // namespace upscaledb
-namespace internal {
-template <>
-common::Error ConnectionAllocatorTraits<upscaledb::NativeConnection, upscaledb::Config>::Connect(
-    const upscaledb::Config& config,
-    upscaledb::NativeConnection** hout) {
-  upscaledb::NativeConnection* context = nullptr;
-  common::Error er = upscaledb::CreateConnection(config, &context);
-  if (er && er->isError()) {
-    return er;
-  }
-
-  *hout = context;
-  return common::Error();
-}
-
-template <>
-common::Error ConnectionAllocatorTraits<upscaledb::NativeConnection, upscaledb::Config>::Disconnect(
-    upscaledb::NativeConnection** handle) {
-  upscaledb::upscaledb_close(handle);
-  *handle = nullptr;
-  return common::Error();
-}
-
-template <>
-bool ConnectionAllocatorTraits<upscaledb::NativeConnection, upscaledb::Config>::IsConnected(
-    upscaledb::NativeConnection* handle) {
-  if (!handle) {
-    return false;
-  }
-
-  return true;
-}
-
-template <>
-const char* CDBConnection<upscaledb::NativeConnection, upscaledb::Config, UPSCALEDB>::BasedOn() {
-  return "libupscaledb";
-}
-
-template <>
-const char* CDBConnection<upscaledb::NativeConnection, upscaledb::Config, UPSCALEDB>::VersionApi() {
-  return STRINGIZE(UPS_VERSION_MAJ) "." STRINGIZE(UPS_VERSION_MIN) "." STRINGIZE(UPS_VERSION_REV);
-}
-
-template <>
-std::vector<CommandHolder>
-CDBConnection<upscaledb::NativeConnection, upscaledb::Config, UPSCALEDB>::Commands() {
-  return upscaledb::g_commands;
-}
-}  // namespace internal
 }  // namespace core
 }  // namespace fastonosql

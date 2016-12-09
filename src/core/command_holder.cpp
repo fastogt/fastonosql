@@ -21,7 +21,7 @@
 #include <algorithm>  // for count_if
 #include <vector>     // for vector
 
-#include <common/string_util.h>  // for FullEqualsASCII
+#include <common/string_util.h>
 
 namespace {
 size_t count_space(const std::string& data) {
@@ -66,7 +66,7 @@ bool CommandHolder::IsCommand(int argc, const char** argv, size_t* offset) const
     merged.push_back(argv[i]);
   }
   std::string ws = common::JoinString(merged, ' ');
-  if (!common::FullEqualsASCII(ws, name, false)) {
+  if (!IsEqualName(ws)) {
     return false;
   }
 
