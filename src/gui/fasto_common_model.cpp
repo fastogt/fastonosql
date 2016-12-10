@@ -40,6 +40,8 @@
 
 #include "translations/global.h"  // for trKey, trType, trValue
 
+Q_DECLARE_METATYPE(fastonosql::core::NValue)
+
 namespace fastonosql {
 namespace gui {
 
@@ -96,15 +98,16 @@ bool FastoCommonModel::setData(const QModelIndex& index, const QVariant& value, 
     int column = index.column();
     if (column == FastoCommonItem::eKey) {
     } else if (column == FastoCommonItem::eValue) {
-      QString newValue = value.toString();
-      if (newValue != node->value()) {
-        const std::string key = common::ConvertToString(node->key());
-        const std::string value = common::ConvertToString(newValue);
-
-        //  node->type() TODO: create according type
-        core::NValue val(common::Value::createStringValue(value));
-        core::NDbKValue dbv(core::NKey(key), val);
-        emit changedValue(dbv);
+      if (value.canConvert<core::NValue>()) {
+        core::NValue nvalue = value.value<core::NValue>();
+        core::NValue nv = node->nvalue();
+        if (!nvalue->equals(nv.get())) {
+          core::NDbKValue dbv = node->dbv();
+          dbv.SetValue(nvalue);
+          emit changedValue(dbv);
+        }
+      } else {
+        DNOTREACHED();
       }
     }
   }
@@ -132,9 +135,9 @@ QVariant FastoCommonModel::headerData(int section, Qt::Orientation orientation, 
 
   if (orientation == Qt::Horizontal && role == Qt::DisplayRole) {
     if (section == FastoCommonItem::eKey) {
-      return translations::trKey;
+      return translations::trKey + "/" + translations::trCommands;
     } else if (section == FastoCommonItem::eValue) {
-      return translations::trValue;
+      return translations::trValue + "/" + translations::trResult;
     } else {
       return translations::trType;
     }

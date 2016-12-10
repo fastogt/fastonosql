@@ -63,7 +63,9 @@ class NumericDelegate : public QStyledItemDelegate {
 
   QWidget* createEditor(QWidget* parent,
                         const QStyleOptionViewItem&,
-                        const QModelIndex&) const override {
+                        const QModelIndex& index) const override {
+    UNUSED(index);
+
     QSpinBox* editor = new QSpinBox(parent);
     editor->setRange(-1, INT32_MAX);
     editor->setValue(-1);
