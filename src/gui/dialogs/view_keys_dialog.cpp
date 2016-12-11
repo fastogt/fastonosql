@@ -83,7 +83,6 @@ class NumericDelegate : public QStyledItemDelegate {
                     QAbstractItemModel* model,
                     const QModelIndex& index) const override {
     QSpinBox* spinBox = static_cast<QSpinBox*>(editor);
-    spinBox->interpretText();
     int value = spinBox->value();
 
     model->setData(index, value, Qt::EditRole);

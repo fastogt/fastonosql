@@ -27,7 +27,6 @@
 #include <QSplitter>
 #include <QStyledItemDelegate>
 #include <QSpinBox>
-#include <QListWidget>
 
 #include <common/convert2string.h>  // for ConvertFromString
 #include <common/error.h>           // for Error
@@ -47,6 +46,7 @@
 
 #include "global/types.h"  // for supportedViews, etc
 
+#include "gui/widgets/list_type_widget.h"
 #include "gui/fasto_common_item.h"   // for FastoCommonItem
 #include "gui/fasto_common_model.h"  // for FastoCommonModel
 #include "gui/fasto_table_view.h"    // for FastoTableView
@@ -78,7 +78,7 @@ class TypeDelegate : public QStyledItemDelegate {
       editor->setRange(INT32_MIN, INT32_MAX);
       return editor;
     } else if (t == common::Value::TYPE_ARRAY) {
-      QListWidget* editor = new QListWidget(parent);
+      ListTypeWidget* editor = new ListTypeWidget(parent);
       return editor;
     } else {
       return QStyledItemDelegate::createEditor(parent, option, index);
@@ -103,7 +103,7 @@ class TypeDelegate : public QStyledItemDelegate {
     } else if (t == common::Value::TYPE_ARRAY) {
       common::ArrayValue* arr = nullptr;
       if (val->getAsList(&arr)) {
-        QListWidget* listwidget = static_cast<QListWidget*>(editor);
+        ListTypeWidget* listwidget = static_cast<ListTypeWidget*>(editor);
         for (auto it = arr->begin(); it != arr->end(); ++it) {
           std::string val = (*it)->toString();
           if (val.empty()) {

@@ -33,7 +33,6 @@
 #include <QHeaderView>
 #include <QLabel>
 #include <QLineEdit>
-#include <QListWidget>
 #include <QPushButton>
 #include <QTableWidget>
 
@@ -44,6 +43,7 @@
 
 #include "core/db_traits.h"
 
+#include "gui/widgets/list_type_widget.h"
 #include "gui/dialogs/input_dialog.h"  // for InputDialog, etc
 #include "gui/gui_factory.h"           // for GuiFactory
 
@@ -111,7 +111,7 @@ DbKeyDialog::DbKeyDialog(const QString& title,
   kvLayout->addWidget(boolValueEdit_, 2, 1);
   boolValueEdit_->setVisible(false);
 
-  valueListEdit_ = new QListWidget;
+  valueListEdit_ = new ListTypeWidget;
   valueListEdit_->setContextMenuPolicy(Qt::ActionsContextMenu);
   valueListEdit_->setSelectionMode(QAbstractItemView::SingleSelection);
   valueListEdit_->setSelectionBehavior(QAbstractItemView::SelectRows);
