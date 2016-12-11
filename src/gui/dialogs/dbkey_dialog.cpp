@@ -437,25 +437,14 @@ common::Value* DbKeyDialog::item() const {
       return nullptr;
     }
 
-    common::ArrayValue* ar = common::Value::createArrayValue();
-    for (int i = 0; i < valueListEdit_->count(); ++i) {
-      std::string val = common::ConvertToString(valueListEdit_->item(i)->text());
-      ar->appendString(val);
-    }
-
+    common::ArrayValue* ar = valueListEdit_->arrayValue();
     return ar;
   } else if (t == common::Value::TYPE_SET) {
     if (valueListEdit_->count() == 0) {
       return nullptr;
     }
 
-    common::SetValue* ar = common::Value::createSetValue();
-    for (int i = 0; i < valueListEdit_->count(); ++i) {
-      std::string val = common::ConvertToString(valueListEdit_->item(i)->text());
-      ar->insert(val);
-    }
-
-    return ar;
+    return valueListEdit_->setValue();
   } else if (t == common::Value::TYPE_ZSET) {
     if (valueTableEdit_->rowCount() == 0) {
       return nullptr;

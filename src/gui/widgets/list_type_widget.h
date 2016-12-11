@@ -20,6 +20,8 @@
 
 #include <QListWidget>
 
+#include <common/value.h>
+
 namespace fastonosql {
 namespace gui {
 
@@ -27,6 +29,9 @@ class ListTypeWidget : public QListWidget {
   Q_OBJECT
  public:
   ListTypeWidget(QWidget* parent = Q_NULLPTR);
+
+  common::ArrayValue* arrayValue() const;  // alocate memory
+  common::SetValue* setValue() const;      // alocate memory
 
  private Q_SLOTS:
   void removeItem(int row);

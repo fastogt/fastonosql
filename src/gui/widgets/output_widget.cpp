@@ -77,7 +77,7 @@ class TypeDelegate : public QStyledItemDelegate {
       QSpinBox* editor = new QSpinBox(parent);
       editor->setRange(INT32_MIN, INT32_MAX);
       return editor;
-    } else if (t == common::Value::TYPE_ARRAY) {
+    } else if (t == common::Value::TYPE_ARRAY || t == common::Value::TYPE_SET) {
       ListTypeWidget* editor = new ListTypeWidget(parent);
       return editor;
     } else {
@@ -100,6 +100,12 @@ class TypeDelegate : public QStyledItemDelegate {
         QSpinBox* spinBox = static_cast<QSpinBox*>(editor);
         spinBox->setValue(value);
       }
+    } else if (t == common::Value::TYPE_UINTEGER) {
+      unsigned int value = 0;
+      if (val->getAsUInteger(&value)) {
+        QSpinBox* spinBox = static_cast<QSpinBox*>(editor);
+        spinBox->setValue(value);
+      }
     } else if (t == common::Value::TYPE_ARRAY) {
       common::ArrayValue* arr = nullptr;
       if (val->getAsList(&arr)) {
@@ -116,11 +122,21 @@ class TypeDelegate : public QStyledItemDelegate {
           listwidget->addItem(nitem);
         }
       }
-    } else if (t == common::Value::TYPE_UINTEGER) {
-      unsigned int value = 0;
-      if (val->getAsUInteger(&value)) {
-        QSpinBox* spinBox = static_cast<QSpinBox*>(editor);
-        spinBox->setValue(value);
+    } else if (t == common::Value::TYPE_SET) {
+      common::SetValue* set = nullptr;
+      if (val->getAsSet(&set)) {
+        ListTypeWidget* listwidget = static_cast<ListTypeWidget*>(editor);
+        for (auto it = set->begin(); it != set->end(); ++it) {
+          std::string val = (*it)->toString();
+          if (val.empty()) {
+            continue;
+          }
+
+          QListWidgetItem* nitem =
+              new QListWidgetItem(common::ConvertFromString<QString>(val), listwidget);
+          nitem->setFlags(nitem->flags() | Qt::ItemIsEditable);
+          listwidget->addItem(nitem);
+        }
       }
     } else {
       QStyledItemDelegate::setEditorData(editor, index);
@@ -149,13 +165,14 @@ class TypeDelegate : public QStyledItemDelegate {
       QVariant var = QVariant::fromValue(val);
       model->setData(index, var, Qt::EditRole);
     } else if (t == common::Value::TYPE_ARRAY) {
-      QListWidget* listwidget = static_cast<QListWidget*>(editor);
-      common::ArrayValue* ar = common::Value::createArrayValue();
-      for (int i = 0; i < listwidget->count(); ++i) {
-        std::string val = common::ConvertToString(listwidget->item(i)->text());
-        ar->appendString(val);
-      }
-      QVariant var = QVariant::fromValue(core::NValue(ar));
+      ListTypeWidget* listwidget = static_cast<ListTypeWidget*>(editor);
+      common::ArrayValue* arr = listwidget->arrayValue();
+      QVariant var = QVariant::fromValue(core::NValue(arr));
+      model->setData(index, var, Qt::EditRole);
+    } else if (t == common::Value::TYPE_SET) {
+      ListTypeWidget* listwidget = static_cast<ListTypeWidget*>(editor);
+      common::SetValue* set = listwidget->setValue();
+      QVariant var = QVariant::fromValue(core::NValue(set));
       model->setData(index, var, Qt::EditRole);
     } else {
       QStyledItemDelegate::setModelData(editor, model, index);

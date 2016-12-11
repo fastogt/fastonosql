@@ -19,6 +19,7 @@
 #include "gui/widgets/list_type_widget.h"
 
 #include <common/macros.h>
+#include <common/qt/convert2string.h>
 
 #include "gui/widgets/item_cell_delegate.h"
 
@@ -30,6 +31,28 @@ ListTypeWidget::ListTypeWidget(QWidget* parent) : QListWidget(parent) {
   setItemDelegate(del);
 
   VERIFY(connect(del, &ItemCellDelegate::removeClicked, this, &ListTypeWidget::removeItem));
+}
+
+common::ArrayValue* ListTypeWidget::arrayValue() const {
+  common::ArrayValue* ar = common::Value::createArrayValue();
+  for (int i = 0; i < count(); ++i) {
+    QListWidgetItem* it = item(i);
+    std::string val = common::ConvertToString(it->text());
+    ar->appendString(val);
+  }
+
+  return ar;
+}
+
+common::SetValue* ListTypeWidget::setValue() const {
+  common::SetValue* set = common::Value::createSetValue();
+  for (int i = 0; i < count(); ++i) {
+    QListWidgetItem* it = item(i);
+    std::string val = common::ConvertToString(it->text());
+    set->insert(val);
+  }
+
+  return set;
 }
 
 void ListTypeWidget::removeItem(int row) {
