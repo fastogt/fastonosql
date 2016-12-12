@@ -111,6 +111,8 @@ SET(HEADERS_GUI_WIDGETS_TO_MOC
   gui/widgets/user_password_widget.h
   gui/widgets/list_type_widget.h
   gui/widgets/item_cell_delegate.h
+  gui/widgets/hash_type_widget.h
+  gui/widgets/type_delegate.h
 )
 
 SET(SOURCES_GUI_WIDGETS
@@ -129,6 +131,8 @@ SET(SOURCES_GUI_WIDGETS
   gui/widgets/user_password_widget.cpp
   gui/widgets/list_type_widget.cpp
   gui/widgets/item_cell_delegate.cpp
+  gui/widgets/hash_type_widget.cpp
+  gui/widgets/type_delegate.cpp
 )
 
 SET(HEADERS_GUI_TO_MOC

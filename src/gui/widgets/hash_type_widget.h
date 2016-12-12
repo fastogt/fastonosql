@@ -16,33 +16,30 @@
     along with FastoNoSQL.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-#include "gui/fasto_tree_view.h"
+#pragma once
 
-#include <QHeaderView>
-#include <QMenu>
+#include <QTableWidget>
 
-#include <common/macros.h>  // for VERIFY
+#include <common/value.h>
+
+class QSignalMapper;
 
 namespace fastonosql {
 namespace gui {
 
-FastoTreeView::FastoTreeView(QWidget* parent) : QTreeView(parent) {
-  header()->setStretchLastSection(false);
+class HashTypeWidget : public QTableWidget {
+  Q_OBJECT
+ public:
+  HashTypeWidget(QWidget* parent = Q_NULLPTR);
 
-  setSelectionMode(QAbstractItemView::ExtendedSelection);
-  setSelectionBehavior(QAbstractItemView::SelectRows);
+  void insertRow(QTableWidgetItem* key, QTableWidgetItem* value);
 
-  setContextMenuPolicy(Qt::CustomContextMenu);
-  VERIFY(connect(this, &FastoTreeView::customContextMenuRequested, this,
-                 &FastoTreeView::showContextMenu));
-}
+  common::ZSetValue* zsetValue() const;  // alocate memory
+  common::HashValue* hashValue() const;  // alocate memory
 
-void FastoTreeView::showContextMenu(const QPoint& point) {
-  QPoint menuPoint = mapToGlobal(point);
-  menuPoint.setY(menuPoint.y() + header()->height());
-  QMenu menu(this);
-  menu.exec(menuPoint);
-}
+ private Q_SLOTS:
+  void removeRowInner();
+};
 
 }  // namespace gui
 }  // namespace fastonosql

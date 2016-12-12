@@ -34,7 +34,6 @@
 #include <QLabel>
 #include <QLineEdit>
 #include <QPushButton>
-#include <QTableWidget>
 
 #include <common/convert2string.h>     // for ConvertFromString
 #include <common/macros.h>             // for VERIFY, CHECK, NOTREACHED
@@ -44,6 +43,7 @@
 #include "core/db_traits.h"
 
 #include "gui/widgets/list_type_widget.h"
+#include "gui/widgets/hash_type_widget.h"
 #include "gui/dialogs/input_dialog.h"  // for InputDialog, etc
 #include "gui/gui_factory.h"           // for GuiFactory
 
@@ -127,7 +127,7 @@ DbKeyDialog::DbKeyDialog(const QString& title,
   kvLayout->addWidget(valueListEdit_, 2, 1);
   valueListEdit_->setVisible(false);
 
-  valueTableEdit_ = new QTableWidget(0, 2);
+  valueTableEdit_ = new HashTypeWidget;
   valueTableEdit_->setContextMenuPolicy(Qt::ActionsContextMenu);
   valueTableEdit_->setSelectionBehavior(QAbstractItemView::SelectRows);
   valueTableEdit_->verticalHeader()->hide();
@@ -283,9 +283,7 @@ void DbKeyDialog::addItem() {
       QTableWidgetItem* sitem = new QTableWidgetItem(stext);
       sitem->setFlags(sitem->flags() | Qt::ItemIsEditable);
 
-      valueTableEdit_->insertRow(0);
-      valueTableEdit_->setItem(0, 0, fitem);
-      valueTableEdit_->setItem(0, 1, sitem);
+      valueTableEdit_->insertRow(fitem, sitem);
     }
   } else if (valueEdit_->isVisible()) {
     CHECK(t == common::Value::TYPE_STRING || t == common::Value::TYPE_DOUBLE ||
@@ -367,9 +365,7 @@ void DbKeyDialog::syncControls(common::Value* item) {
           QTableWidgetItem* sitem = new QTableWidgetItem(stext);
           sitem->setFlags(sitem->flags() | Qt::ItemIsEditable);
 
-          valueTableEdit_->insertRow(0);
-          valueTableEdit_->setItem(0, 0, fitem);
-          valueTableEdit_->setItem(0, 1, sitem);
+          valueTableEdit_->insertRow(fitem, sitem);
         }
       }
     }
@@ -390,9 +386,7 @@ void DbKeyDialog::syncControls(common::Value* item) {
           QTableWidgetItem* sitem = new QTableWidgetItem(stext);
           sitem->setFlags(sitem->flags() | Qt::ItemIsEditable);
 
-          valueTableEdit_->insertRow(0);
-          valueTableEdit_->setItem(0, 0, fitem);
-          valueTableEdit_->setItem(0, 1, sitem);
+          valueTableEdit_->insertRow(fitem, sitem);
         }
       }
     }
@@ -450,33 +444,13 @@ common::Value* DbKeyDialog::item() const {
       return nullptr;
     }
 
-    common::ZSetValue* ar = common::Value::createZSetValue();
-    for (int i = 0; i < valueTableEdit_->rowCount(); ++i) {
-      QTableWidgetItem* kitem = valueTableEdit_->item(i, 0);
-      QTableWidgetItem* vitem = valueTableEdit_->item(i, 1);
-
-      std::string key = common::ConvertToString(kitem->text());
-      std::string val = common::ConvertToString(vitem->text());
-      ar->insert(key, val);
-    }
-
-    return ar;
+    return valueTableEdit_->zsetValue();
   } else if (t == common::Value::TYPE_HASH) {
     if (valueTableEdit_->rowCount() == 0) {
       return nullptr;
     }
 
-    common::HashValue* ar = common::Value::createHashValue();
-    for (int i = 0; i < valueTableEdit_->rowCount(); ++i) {
-      QTableWidgetItem* kitem = valueTableEdit_->item(i, 0);
-      QTableWidgetItem* vitem = valueTableEdit_->item(i, 1);
-
-      std::string key = common::ConvertToString(kitem->text());
-      std::string val = common::ConvertToString(vitem->text());
-      ar->insert(key, val);
-    }
-
-    return ar;
+    return valueTableEdit_->hashValue();
   } else if (t == common::Value::TYPE_BOOLEAN) {
     int index = boolValueEdit_->currentIndex();
     if (index == -1) {

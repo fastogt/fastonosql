@@ -25,8 +25,6 @@
 #include <QHeaderView>
 #include <QPushButton>
 #include <QSplitter>
-#include <QStyledItemDelegate>
-#include <QSpinBox>
 
 #include <common/convert2string.h>  // for ConvertFromString
 #include <common/error.h>           // for Error
@@ -46,7 +44,8 @@
 
 #include "global/types.h"  // for supportedViews, etc
 
-#include "gui/widgets/list_type_widget.h"
+#include "gui/widgets/type_delegate.h"
+
 #include "gui/fasto_common_item.h"   // for FastoCommonItem
 #include "gui/fasto_common_model.h"  // for FastoCommonModel
 #include "gui/fasto_table_view.h"    // for FastoTableView
@@ -54,137 +53,9 @@
 #include "gui/fasto_tree_view.h"     // for FastoTreeView
 #include "gui/gui_factory.h"         // for GuiFactory
 
-Q_DECLARE_METATYPE(fastonosql::core::NValue)
-
 namespace fastonosql {
 namespace gui {
 namespace {
-
-class TypeDelegate : public QStyledItemDelegate {
- public:
-  explicit TypeDelegate(QObject* parent = 0) : QStyledItemDelegate(parent) {}
-
-  QWidget* createEditor(QWidget* parent,
-                        const QStyleOptionViewItem& option,
-                        const QModelIndex& index) const override {
-    FastoCommonItem* node = common::qt::item<common::qt::gui::TreeItem*, FastoCommonItem*>(index);
-    if (!node) {
-      return QStyledItemDelegate::createEditor(parent, option, index);
-    }
-
-    common::Value::Type t = node->type();
-    if (t == common::Value::TYPE_INTEGER || t == common::Value::TYPE_UINTEGER) {
-      QSpinBox* editor = new QSpinBox(parent);
-      editor->setRange(INT32_MIN, INT32_MAX);
-      return editor;
-    } else if (t == common::Value::TYPE_ARRAY || t == common::Value::TYPE_SET) {
-      ListTypeWidget* editor = new ListTypeWidget(parent);
-      return editor;
-    } else {
-      return QStyledItemDelegate::createEditor(parent, option, index);
-    }
-  }
-
-  void setEditorData(QWidget* editor, const QModelIndex& index) const override {
-    FastoCommonItem* node = common::qt::item<common::qt::gui::TreeItem*, FastoCommonItem*>(index);
-    if (!node) {
-      return;
-    }
-
-    core::NDbKValue dbv = node->dbv();
-    core::NValue val = dbv.Value();
-    common::Value::Type t = node->type();
-    if (t == common::Value::TYPE_INTEGER) {
-      int value = 0;
-      if (val->getAsInteger(&value)) {
-        QSpinBox* spinBox = static_cast<QSpinBox*>(editor);
-        spinBox->setValue(value);
-      }
-    } else if (t == common::Value::TYPE_UINTEGER) {
-      unsigned int value = 0;
-      if (val->getAsUInteger(&value)) {
-        QSpinBox* spinBox = static_cast<QSpinBox*>(editor);
-        spinBox->setValue(value);
-      }
-    } else if (t == common::Value::TYPE_ARRAY) {
-      common::ArrayValue* arr = nullptr;
-      if (val->getAsList(&arr)) {
-        ListTypeWidget* listwidget = static_cast<ListTypeWidget*>(editor);
-        for (auto it = arr->begin(); it != arr->end(); ++it) {
-          std::string val = (*it)->toString();
-          if (val.empty()) {
-            continue;
-          }
-
-          QListWidgetItem* nitem =
-              new QListWidgetItem(common::ConvertFromString<QString>(val), listwidget);
-          nitem->setFlags(nitem->flags() | Qt::ItemIsEditable);
-          listwidget->addItem(nitem);
-        }
-      }
-    } else if (t == common::Value::TYPE_SET) {
-      common::SetValue* set = nullptr;
-      if (val->getAsSet(&set)) {
-        ListTypeWidget* listwidget = static_cast<ListTypeWidget*>(editor);
-        for (auto it = set->begin(); it != set->end(); ++it) {
-          std::string val = (*it)->toString();
-          if (val.empty()) {
-            continue;
-          }
-
-          QListWidgetItem* nitem =
-              new QListWidgetItem(common::ConvertFromString<QString>(val), listwidget);
-          nitem->setFlags(nitem->flags() | Qt::ItemIsEditable);
-          listwidget->addItem(nitem);
-        }
-      }
-    } else {
-      QStyledItemDelegate::setEditorData(editor, index);
-    }
-  }
-
-  void setModelData(QWidget* editor,
-                    QAbstractItemModel* model,
-                    const QModelIndex& index) const override {
-    FastoCommonItem* node = common::qt::item<common::qt::gui::TreeItem*, FastoCommonItem*>(index);
-    if (!node) {
-      return;
-    }
-
-    common::Value::Type t = node->type();
-    if (t == common::Value::TYPE_INTEGER) {
-      QSpinBox* spinBox = static_cast<QSpinBox*>(editor);
-      int value = spinBox->value();
-      core::NValue val(common::Value::createIntegerValue(value));
-      QVariant var = QVariant::fromValue(val);
-      model->setData(index, var, Qt::EditRole);
-    } else if (t == common::Value::TYPE_UINTEGER) {
-      QSpinBox* spinBox = static_cast<QSpinBox*>(editor);
-      int value = spinBox->value();
-      core::NValue val(common::Value::createUIntegerValue(value));
-      QVariant var = QVariant::fromValue(val);
-      model->setData(index, var, Qt::EditRole);
-    } else if (t == common::Value::TYPE_ARRAY) {
-      ListTypeWidget* listwidget = static_cast<ListTypeWidget*>(editor);
-      common::ArrayValue* arr = listwidget->arrayValue();
-      QVariant var = QVariant::fromValue(core::NValue(arr));
-      model->setData(index, var, Qt::EditRole);
-    } else if (t == common::Value::TYPE_SET) {
-      ListTypeWidget* listwidget = static_cast<ListTypeWidget*>(editor);
-      common::SetValue* set = listwidget->setValue();
-      QVariant var = QVariant::fromValue(core::NValue(set));
-      model->setData(index, var, Qt::EditRole);
-    } else {
-      QStyledItemDelegate::setModelData(editor, model, index);
-    }
-  }
-
-  void updateEditorGeometry(QWidget* editor,
-                            const QStyleOptionViewItem& option,
-                            const QModelIndex&) const override {
-    editor->setGeometry(option.rect);
-  }
-};
 
 FastoCommonItem* createItem(common::qt::gui::TreeItem* parent,
                             const std::string& key,
@@ -236,14 +107,14 @@ OutputWidget::OutputWidget(core::IServerSPtr server, QWidget* parent)
 
   treeView_ = new FastoTreeView;
   treeView_->setModel(commonModel_);
-  treeView_->header()->setSectionResizeMode(0, QHeaderView::ResizeToContents);
-  treeView_->header()->setSectionResizeMode(1, QHeaderView::ResizeToContents);
+  treeView_->header()->setSectionResizeMode(0, QHeaderView::Stretch);
+  treeView_->header()->setSectionResizeMode(1, QHeaderView::Stretch);
   treeView_->setItemDelegateForColumn(FastoCommonItem::eValue, new TypeDelegate(this));
 
   tableView_ = new FastoTableView;
   tableView_->setModel(commonModel_);
-  tableView_->horizontalHeader()->setSectionResizeMode(0, QHeaderView::ResizeToContents);
-  tableView_->horizontalHeader()->setSectionResizeMode(1, QHeaderView::ResizeToContents);
+  tableView_->horizontalHeader()->setSectionResizeMode(0, QHeaderView::Stretch);
+  tableView_->horizontalHeader()->setSectionResizeMode(1, QHeaderView::Stretch);
   tableView_->setItemDelegateForColumn(FastoCommonItem::eValue, new TypeDelegate(this));
 
   QString delimiter = common::ConvertFromString<QString>(server_->Delimiter());

@@ -16,33 +16,31 @@
     along with FastoNoSQL.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-#include "gui/fasto_tree_view.h"
+#pragma once
 
-#include <QHeaderView>
-#include <QMenu>
-
-#include <common/macros.h>  // for VERIFY
+#include <QStyledItemDelegate>
 
 namespace fastonosql {
 namespace gui {
 
-FastoTreeView::FastoTreeView(QWidget* parent) : QTreeView(parent) {
-  header()->setStretchLastSection(false);
+class TypeDelegate : public QStyledItemDelegate {
+ public:
+  explicit TypeDelegate(QObject* parent = Q_NULLPTR);
 
-  setSelectionMode(QAbstractItemView::ExtendedSelection);
-  setSelectionBehavior(QAbstractItemView::SelectRows);
+  virtual QWidget* createEditor(QWidget* parent,
+                                const QStyleOptionViewItem& option,
+                                const QModelIndex& index) const override;
 
-  setContextMenuPolicy(Qt::CustomContextMenu);
-  VERIFY(connect(this, &FastoTreeView::customContextMenuRequested, this,
-                 &FastoTreeView::showContextMenu));
-}
+  virtual void setEditorData(QWidget* editor, const QModelIndex& index) const override;
 
-void FastoTreeView::showContextMenu(const QPoint& point) {
-  QPoint menuPoint = mapToGlobal(point);
-  menuPoint.setY(menuPoint.y() + header()->height());
-  QMenu menu(this);
-  menu.exec(menuPoint);
-}
+  virtual void setModelData(QWidget* editor,
+                            QAbstractItemModel* model,
+                            const QModelIndex& index) const override;
+
+  virtual void updateEditorGeometry(QWidget* editor,
+                                    const QStyleOptionViewItem& option,
+                                    const QModelIndex&) const override;
+};
 
 }  // namespace gui
 }  // namespace fastonosql

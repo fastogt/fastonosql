@@ -30,7 +30,7 @@ FastoTableView::FastoTableView(QWidget* parent) : QTableView(parent) {
   verticalHeader()->setDefaultAlignment(Qt::AlignLeft);
   horizontalHeader()->setDefaultAlignment(Qt::AlignLeft);
 
-  horizontalHeader()->setStretchLastSection(true);
+  horizontalHeader()->setStretchLastSection(false);
 
   setSelectionMode(QAbstractItemView::ExtendedSelection);
   setSelectionBehavior(QAbstractItemView::SelectItems);
