@@ -60,6 +60,7 @@ const QString trError = QObject::tr("Error");
 const QString trLogs = QObject::tr("Logs");
 const QString trKey = QObject::tr("Key");
 const QString trValue = QObject::tr("Value");
+const QString trAction = QObject::tr("Action");
 const QString trGetValue = QObject::tr("Get value");
 const QString trMember = QObject::tr("Member");
 const QString trScore = QObject::tr("Score");

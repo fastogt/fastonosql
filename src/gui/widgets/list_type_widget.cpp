@@ -55,6 +55,15 @@ common::SetValue* ListTypeWidget::setValue() const {
   return set;
 }
 
+void ListTypeWidget::addEmptyItem() {
+  insertItem(0, QString());
+}
+
+void ListTypeWidget::removeCurrentItem() {
+  QListWidgetItem* cur = currentItem();
+  removeItemWidget(cur);
+}
+
 void ListTypeWidget::removeItem(int row) {
   QListWidgetItem* item = takeItem(row);
   delete item;

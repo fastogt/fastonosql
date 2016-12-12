@@ -20,13 +20,15 @@
 
 #include <QSpinBox>
 #include <QLineEdit>
+#include <QComboBox>
+#include <QTableView>
 
 #include <common/convert2string.h>
 #include <common/qt/convert2string.h>
 #include <common/qt/utils_qt.h>
 
 #include "gui/widgets/list_type_widget.h"
-#include "gui/widgets/hash_type_widget.h"
+#include "gui/hash_table_model.h"
 
 #include "gui/fasto_common_item.h"  // for FastoCommonItem
 
@@ -50,6 +52,11 @@ QWidget* TypeDelegate::createEditor(QWidget* parent,
     QSpinBox* editor = new QSpinBox(parent);
     editor->setRange(INT32_MIN, INT32_MAX);
     return editor;
+  } else if (t == common::Value::TYPE_BOOLEAN) {
+    QComboBox* editor = new QComboBox(parent);
+    editor->addItem("true");
+    editor->addItem("false");
+    return editor;
   } else if (t == common::Value::TYPE_STRING) {
     QLineEdit* editor = new QLineEdit(parent);
     return editor;
@@ -57,7 +64,8 @@ QWidget* TypeDelegate::createEditor(QWidget* parent,
     ListTypeWidget* editor = new ListTypeWidget(parent);
     return editor;
   } else if (t == common::Value::TYPE_ZSET || t == common::Value::TYPE_HASH) {
-    HashTypeWidget* editor = new HashTypeWidget(parent);
+    QTableView* editor = new QTableView(parent);
+    editor->setModel(new HashTableModel(editor));
     return editor;
   } else {
     return QStyledItemDelegate::createEditor(parent, option, index);
@@ -84,6 +92,12 @@ void TypeDelegate::setEditorData(QWidget* editor, const QModelIndex& index) cons
     if (val->getAsUInteger(&value)) {
       QSpinBox* spinBox = static_cast<QSpinBox*>(editor);
       spinBox->setValue(value);
+    }
+  } else if (t == common::Value::TYPE_BOOLEAN) {
+    bool value;
+    if (val->getAsBoolean(&value)) {
+      QComboBox* combobox = static_cast<QComboBox*>(editor);
+      combobox->setCurrentIndex(value ? 0 : 1);
     }
   } else if (t == common::Value::TYPE_STRING) {
     std::string value;
@@ -126,7 +140,8 @@ void TypeDelegate::setEditorData(QWidget* editor, const QModelIndex& index) cons
   } else if (t == common::Value::TYPE_ZSET) {
     common::ZSetValue* zset = nullptr;
     if (val->getAsZSet(&zset)) {
-      HashTypeWidget* hashwidget = static_cast<HashTypeWidget*>(editor);
+      QTableView* hashwidget = static_cast<QTableView*>(editor);
+      HashTableModel* model = static_cast<HashTableModel*>(hashwidget->model());
       for (auto it = zset->begin(); it != zset->end(); ++it) {
         auto element = (*it);
         common::Value* key = element.first;
@@ -134,21 +149,14 @@ void TypeDelegate::setEditorData(QWidget* editor, const QModelIndex& index) cons
         QString ftext = common::ConvertFromString<QString>(key->toString());
         QString stext = common::ConvertFromString<QString>(value->toString());
 
-        if (!ftext.isEmpty() && !stext.isEmpty()) {
-          QTableWidgetItem* fitem = new QTableWidgetItem(ftext);
-          fitem->setFlags(fitem->flags() | Qt::ItemIsEditable);
-
-          QTableWidgetItem* sitem = new QTableWidgetItem(stext);
-          sitem->setFlags(sitem->flags() | Qt::ItemIsEditable);
-
-          hashwidget->insertRow(fitem, sitem);
-        }
+        model->insertRow(ftext, stext);
       }
     }
   } else if (t == common::Value::TYPE_HASH) {
     common::HashValue* hash = nullptr;
     if (val->getAsHash(&hash)) {
-      HashTypeWidget* hashwidget = static_cast<HashTypeWidget*>(editor);
+      QTableView* hashwidget = static_cast<QTableView*>(editor);
+      HashTableModel* model = static_cast<HashTableModel*>(hashwidget->model());
       for (auto it = hash->begin(); it != hash->end(); ++it) {
         auto element = (*it);
         common::Value* key = element.first;
@@ -156,15 +164,7 @@ void TypeDelegate::setEditorData(QWidget* editor, const QModelIndex& index) cons
         QString ftext = common::ConvertFromString<QString>(key->toString());
         QString stext = common::ConvertFromString<QString>(value->toString());
 
-        if (!ftext.isEmpty() && !stext.isEmpty()) {
-          QTableWidgetItem* fitem = new QTableWidgetItem(ftext);
-          fitem->setFlags(fitem->flags() | Qt::ItemIsEditable);
-
-          QTableWidgetItem* sitem = new QTableWidgetItem(stext);
-          sitem->setFlags(sitem->flags() | Qt::ItemIsEditable);
-
-          hashwidget->insertRow(fitem, sitem);
-        }
+        model->insertRow(ftext, stext);
       }
     }
   } else {
@@ -193,6 +193,12 @@ void TypeDelegate::setModelData(QWidget* editor,
     core::NValue val(common::Value::createUIntegerValue(value));
     QVariant var = QVariant::fromValue(val);
     model->setData(index, var, Qt::EditRole);
+  } else if (t == common::Value::TYPE_BOOLEAN) {
+    QComboBox* combobox = static_cast<QComboBox*>(editor);
+    int cindex = combobox->currentIndex();
+    core::NValue val(common::Value::createBooleanValue(cindex == 0));
+    QVariant var = QVariant::fromValue(val);
+    model->setData(index, var, Qt::EditRole);
   } else if (t == common::Value::TYPE_STRING) {
     QLineEdit* lineedit = static_cast<QLineEdit*>(editor);
     QString text = lineedit->text();
@@ -210,13 +216,15 @@ void TypeDelegate::setModelData(QWidget* editor,
     QVariant var = QVariant::fromValue(core::NValue(set));
     model->setData(index, var, Qt::EditRole);
   } else if (t == common::Value::TYPE_ZSET) {
-    HashTypeWidget* hashwidget = static_cast<HashTypeWidget*>(editor);
-    common::ZSetValue* zset = hashwidget->zsetValue();
+    QTableView* hashwidget = static_cast<QTableView*>(editor);
+    HashTableModel* model = static_cast<HashTableModel*>(hashwidget->model());
+    common::ZSetValue* zset = model->zsetValue();
     QVariant var = QVariant::fromValue(core::NValue(zset));
     model->setData(index, var, Qt::EditRole);
   } else if (t == common::Value::TYPE_HASH) {
-    HashTypeWidget* hashwidget = static_cast<HashTypeWidget*>(editor);
-    common::HashValue* hash = hashwidget->hashValue();
+    QTableView* hashwidget = static_cast<QTableView*>(editor);
+    HashTableModel* model = static_cast<HashTableModel*>(hashwidget->model());
+    common::HashValue* hash = model->hashValue();
     QVariant var = QVariant::fromValue(core::NValue(hash));
     model->setData(index, var, Qt::EditRole);
   } else {

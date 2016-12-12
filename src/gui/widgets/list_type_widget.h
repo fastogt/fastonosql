@@ -33,6 +33,10 @@ class ListTypeWidget : public QListWidget {
   common::ArrayValue* arrayValue() const;  // alocate memory
   common::SetValue* setValue() const;      // alocate memory
 
+ public Q_SLOTS:
+  void addEmptyItem();
+  void removeCurrentItem();
+
  private Q_SLOTS:
   void removeItem(int row);
 };

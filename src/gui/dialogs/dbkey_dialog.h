@@ -26,12 +26,13 @@
 class QLineEdit;
 class QComboBox;
 class QGroupBox;
+class QTableView;
 
 namespace fastonosql {
 namespace gui {
 
+class HashTableModel;
 class ListTypeWidget;
-class HashTypeWidget;
 
 class DbKeyDialog : public QDialog {
   Q_OBJECT
@@ -68,7 +69,9 @@ class DbKeyDialog : public QDialog {
   QLineEdit* valueEdit_;
   QComboBox* boolValueEdit_;
   ListTypeWidget* valueListEdit_;
-  HashTypeWidget* valueTableEdit_;
+  QTableView* valueTableEdit_;
+  HashTableModel* model_;
+
   QPushButton* addItemButton_;
   QPushButton* removeItemButton_;
   core::NDbKValue key_;

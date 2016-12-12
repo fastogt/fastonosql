@@ -43,7 +43,7 @@
 #include "core/db_traits.h"
 
 #include "gui/widgets/list_type_widget.h"
-#include "gui/widgets/hash_type_widget.h"
+#include "gui/hash_table_model.h"
 #include "gui/dialogs/input_dialog.h"  // for InputDialog, etc
 #include "gui/gui_factory.h"           // for GuiFactory
 
@@ -127,7 +127,9 @@ DbKeyDialog::DbKeyDialog(const QString& title,
   kvLayout->addWidget(valueListEdit_, 2, 1);
   valueListEdit_->setVisible(false);
 
-  valueTableEdit_ = new HashTypeWidget;
+  valueTableEdit_ = new QTableView;
+  model_ = new HashTableModel(this);
+  valueTableEdit_->setModel(model_);
   valueTableEdit_->setContextMenuPolicy(Qt::ActionsContextMenu);
   valueTableEdit_->setSelectionBehavior(QAbstractItemView::SelectRows);
   valueTableEdit_->verticalHeader()->hide();
@@ -191,7 +193,7 @@ void DbKeyDialog::typeChanged(int index) {
   common::Value::Type type = static_cast<common::Value::Type>(qvariant_cast<unsigned char>(var));
 
   valueEdit_->clear();
-  valueTableEdit_->clear();
+  model_->clear();
   valueListEdit_->clear();
 
   if (type == common::Value::TYPE_ARRAY || type == common::Value::TYPE_SET) {
@@ -275,16 +277,7 @@ void DbKeyDialog::addItem() {
 
     QString ftext = diag->firstText();
     QString stext = diag->secondText();
-
-    if (!ftext.isEmpty() && !stext.isEmpty()) {
-      QTableWidgetItem* fitem = new QTableWidgetItem(ftext);
-      fitem->setFlags(fitem->flags() | Qt::ItemIsEditable);
-
-      QTableWidgetItem* sitem = new QTableWidgetItem(stext);
-      sitem->setFlags(sitem->flags() | Qt::ItemIsEditable);
-
-      valueTableEdit_->insertRow(fitem, sitem);
-    }
+    model_->insertRow(ftext, stext);
   } else if (valueEdit_->isVisible()) {
     CHECK(t == common::Value::TYPE_STRING || t == common::Value::TYPE_DOUBLE ||
           t == common::Value::TYPE_INTEGER || t == common::Value::TYPE_UINTEGER);
@@ -300,8 +293,8 @@ void DbKeyDialog::removeItem() {
     QListWidgetItem* ritem = valueListEdit_->currentItem();
     delete ritem;
   } else if (valueTableEdit_->isVisible()) {
-    int row = valueTableEdit_->currentRow();
-    valueTableEdit_->removeRow(row);
+    // int row = valueTableEdit_->currentRow();
+    // model_->removeRow(row);
   }
 }
 
@@ -358,15 +351,7 @@ void DbKeyDialog::syncControls(common::Value* item) {
         QString ftext = common::ConvertFromString<QString>(key->toString());
         QString stext = common::ConvertFromString<QString>(value->toString());
 
-        if (!ftext.isEmpty() && !stext.isEmpty()) {
-          QTableWidgetItem* fitem = new QTableWidgetItem(ftext);
-          fitem->setFlags(fitem->flags() | Qt::ItemIsEditable);
-
-          QTableWidgetItem* sitem = new QTableWidgetItem(stext);
-          sitem->setFlags(sitem->flags() | Qt::ItemIsEditable);
-
-          valueTableEdit_->insertRow(fitem, sitem);
-        }
+        model_->insertRow(ftext, stext);
       }
     }
   } else if (t == common::Value::TYPE_HASH) {
@@ -379,15 +364,7 @@ void DbKeyDialog::syncControls(common::Value* item) {
         QString ftext = common::ConvertFromString<QString>(key->toString());
         QString stext = common::ConvertFromString<QString>(value->toString());
 
-        if (!ftext.isEmpty() && !stext.isEmpty()) {
-          QTableWidgetItem* fitem = new QTableWidgetItem(ftext);
-          fitem->setFlags(fitem->flags() | Qt::ItemIsEditable);
-
-          QTableWidgetItem* sitem = new QTableWidgetItem(stext);
-          sitem->setFlags(sitem->flags() | Qt::ItemIsEditable);
-
-          valueTableEdit_->insertRow(fitem, sitem);
-        }
+        model_->insertRow(ftext, stext);
       }
     }
   } else if (t == common::Value::TYPE_BOOLEAN) {
@@ -440,24 +417,16 @@ common::Value* DbKeyDialog::item() const {
 
     return valueListEdit_->setValue();
   } else if (t == common::Value::TYPE_ZSET) {
-    if (valueTableEdit_->rowCount() == 0) {
-      return nullptr;
-    }
-
-    return valueTableEdit_->zsetValue();
+    return model_->zsetValue();
   } else if (t == common::Value::TYPE_HASH) {
-    if (valueTableEdit_->rowCount() == 0) {
-      return nullptr;
-    }
-
-    return valueTableEdit_->hashValue();
+    return model_->hashValue();
   } else if (t == common::Value::TYPE_BOOLEAN) {
     int index = boolValueEdit_->currentIndex();
     if (index == -1) {
       return nullptr;
     }
 
-    return common::Value::createBooleanValue(index == 0 ? true : false);
+    return common::Value::createBooleanValue(index == 0);
   } else {
     QString text = valueEdit_->text();
     if (text.isEmpty()) {

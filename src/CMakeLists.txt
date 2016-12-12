@@ -111,7 +111,6 @@ SET(HEADERS_GUI_WIDGETS_TO_MOC
   gui/widgets/user_password_widget.h
   gui/widgets/list_type_widget.h
   gui/widgets/item_cell_delegate.h
-  gui/widgets/hash_type_widget.h
   gui/widgets/type_delegate.h
 )
 
@@ -131,7 +130,6 @@ SET(SOURCES_GUI_WIDGETS
   gui/widgets/user_password_widget.cpp
   gui/widgets/list_type_widget.cpp
   gui/widgets/item_cell_delegate.cpp
-  gui/widgets/hash_type_widget.cpp
   gui/widgets/type_delegate.cpp
 )
 
@@ -150,6 +148,7 @@ SET(HEADERS_GUI_TO_MOC
   gui/shell_widget.h
   gui/base_lexer.h
   gui/base_shell.h
+  gui/hash_table_model.h
 )
 SET(HEADERS_GUI
   gui/gui_factory.h
@@ -178,6 +177,7 @@ SET(SOURCES_GUI
   gui/shell_widget.cpp
   gui/base_lexer.cpp
   gui/base_shell.cpp
+  gui/hash_table_model.cpp
 )
 
 SET(HEADERS_CORE_INTERNAL
