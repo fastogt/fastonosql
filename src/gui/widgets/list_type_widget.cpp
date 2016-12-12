@@ -23,14 +23,17 @@
 
 #include "gui/widgets/item_cell_delegate.h"
 
+#include "gui/gui_factory.h"
+
 namespace fastonosql {
 namespace gui {
 
 ListTypeWidget::ListTypeWidget(QWidget* parent) : QListWidget(parent) {
   ItemCellDelegate* del = new ItemCellDelegate(this);
+  del->setButtonIcon(GuiFactory::instance().removeIcon());
   setItemDelegate(del);
 
-  VERIFY(connect(del, &ItemCellDelegate::removeClicked, this, &ListTypeWidget::removeItem));
+  VERIFY(connect(del, &ItemCellDelegate::buttonClicked, this, &ListTypeWidget::removeItem));
 }
 
 common::ArrayValue* ListTypeWidget::arrayValue() const {

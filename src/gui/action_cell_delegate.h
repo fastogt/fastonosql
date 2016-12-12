@@ -23,18 +23,20 @@
 namespace fastonosql {
 namespace gui {
 
-class ItemCellDelegate : public QStyledItemDelegate {
+class ActionDelegate : public QStyledItemDelegate {
   Q_OBJECT
  public:
-  ItemCellDelegate(QObject* parent = Q_NULLPTR);
+  ActionDelegate(QObject* parent = Q_NULLPTR);
 
-  void setButtonIcon(const QIcon& icon);
+  virtual QSize sizeHint(const QStyleOptionViewItem& option,
+                         const QModelIndex& index) const override;
   virtual void paint(QPainter* painter,
                      const QStyleOptionViewItem& option,
                      const QModelIndex& index) const override;
 
  Q_SIGNALS:
-  void buttonClicked(int row);
+  void addClicked(const QModelIndex& index);
+  void removeClicked(const QModelIndex& index);
 
  protected:
   virtual bool editorEvent(QEvent* event,
@@ -43,8 +45,7 @@ class ItemCellDelegate : public QStyledItemDelegate {
                            const QModelIndex& index) override;
 
  private:
-  int current_row_;
-  QIcon button_icon_;
+  QModelIndex current_index_;
 };
 
 }  // namespace gui

@@ -28,9 +28,9 @@
 #include <common/qt/utils_qt.h>
 
 #include "gui/widgets/list_type_widget.h"
-#include "gui/hash_table_model.h"
+#include "gui/widgets/hash_table_widget.h"
 
-#include "gui/fasto_common_item.h"  // for FastoCommonItem
+#include "gui/fasto_common_item.h"
 
 Q_DECLARE_METATYPE(fastonosql::core::NValue)
 
@@ -64,8 +64,7 @@ QWidget* TypeDelegate::createEditor(QWidget* parent,
     ListTypeWidget* editor = new ListTypeWidget(parent);
     return editor;
   } else if (t == common::Value::TYPE_ZSET || t == common::Value::TYPE_HASH) {
-    QTableView* editor = new QTableView(parent);
-    editor->setModel(new HashTableModel(editor));
+    HashTableWidget* editor = new HashTableWidget(parent);
     return editor;
   } else {
     return QStyledItemDelegate::createEditor(parent, option, index);
@@ -140,8 +139,7 @@ void TypeDelegate::setEditorData(QWidget* editor, const QModelIndex& index) cons
   } else if (t == common::Value::TYPE_ZSET) {
     common::ZSetValue* zset = nullptr;
     if (val->getAsZSet(&zset)) {
-      QTableView* hashwidget = static_cast<QTableView*>(editor);
-      HashTableModel* model = static_cast<HashTableModel*>(hashwidget->model());
+      HashTableWidget* hashwidget = static_cast<HashTableWidget*>(editor);
       for (auto it = zset->begin(); it != zset->end(); ++it) {
         auto element = (*it);
         common::Value* key = element.first;
@@ -149,14 +147,13 @@ void TypeDelegate::setEditorData(QWidget* editor, const QModelIndex& index) cons
         QString ftext = common::ConvertFromString<QString>(key->toString());
         QString stext = common::ConvertFromString<QString>(value->toString());
 
-        model->insertRow(ftext, stext);
+        hashwidget->insertRow(ftext, stext);
       }
     }
   } else if (t == common::Value::TYPE_HASH) {
     common::HashValue* hash = nullptr;
     if (val->getAsHash(&hash)) {
-      QTableView* hashwidget = static_cast<QTableView*>(editor);
-      HashTableModel* model = static_cast<HashTableModel*>(hashwidget->model());
+      HashTableWidget* hashwidget = static_cast<HashTableWidget*>(editor);
       for (auto it = hash->begin(); it != hash->end(); ++it) {
         auto element = (*it);
         common::Value* key = element.first;
@@ -164,7 +161,7 @@ void TypeDelegate::setEditorData(QWidget* editor, const QModelIndex& index) cons
         QString ftext = common::ConvertFromString<QString>(key->toString());
         QString stext = common::ConvertFromString<QString>(value->toString());
 
-        model->insertRow(ftext, stext);
+        hashwidget->insertRow(ftext, stext);
       }
     }
   } else {
@@ -216,15 +213,21 @@ void TypeDelegate::setModelData(QWidget* editor,
     QVariant var = QVariant::fromValue(core::NValue(set));
     model->setData(index, var, Qt::EditRole);
   } else if (t == common::Value::TYPE_ZSET) {
-    QTableView* hashwidget = static_cast<QTableView*>(editor);
-    HashTableModel* model = static_cast<HashTableModel*>(hashwidget->model());
-    common::ZSetValue* zset = model->zsetValue();
+    HashTableWidget* hashwidget = static_cast<HashTableWidget*>(editor);
+    common::ZSetValue* zset = hashwidget->zsetValue();
+    if (!zset) {
+      return;
+    }
+
     QVariant var = QVariant::fromValue(core::NValue(zset));
     model->setData(index, var, Qt::EditRole);
   } else if (t == common::Value::TYPE_HASH) {
-    QTableView* hashwidget = static_cast<QTableView*>(editor);
-    HashTableModel* model = static_cast<HashTableModel*>(hashwidget->model());
-    common::HashValue* hash = model->hashValue();
+    HashTableWidget* hashwidget = static_cast<HashTableWidget*>(editor);
+    common::HashValue* hash = hashwidget->hashValue();
+    if (!hash) {
+      return;
+    }
+
     QVariant var = QVariant::fromValue(core::NValue(hash));
     model->setData(index, var, Qt::EditRole);
   } else {

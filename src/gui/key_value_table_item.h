@@ -18,33 +18,32 @@
 
 #pragma once
 
-#include <QStyledItemDelegate>
+#include <QString>
+
+#include <common/qt/gui/base/table_item.h>
 
 namespace fastonosql {
 namespace gui {
 
-class ItemCellDelegate : public QStyledItemDelegate {
-  Q_OBJECT
+class KeyValueTableItem : public common::qt::gui::TableItem {
  public:
-  ItemCellDelegate(QObject* parent = Q_NULLPTR);
+  enum Mode { AddAction = 0, RemoveAction };
+  enum eColumn { kKey = 0, kValue = 1, kAction = 2, kCountColumns = 3 };
 
-  void setButtonIcon(const QIcon& icon);
-  virtual void paint(QPainter* painter,
-                     const QStyleOptionViewItem& option,
-                     const QModelIndex& index) const override;
+  KeyValueTableItem(const QString& key, const QString& value, Mode state);
 
- Q_SIGNALS:
-  void buttonClicked(int row);
+  QString key() const;
+  void setKey(const QString& key);
 
- protected:
-  virtual bool editorEvent(QEvent* event,
-                           QAbstractItemModel* model,
-                           const QStyleOptionViewItem& option,
-                           const QModelIndex& index) override;
+  QString value() const;
+  void setValue(const QString& val);
+
+  Mode actionState() const;
 
  private:
-  int current_row_;
-  QIcon button_icon_;
+  QString key_;
+  QString value_;
+  const Mode state_;
 };
 
 }  // namespace gui

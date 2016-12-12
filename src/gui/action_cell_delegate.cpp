@@ -16,54 +16,56 @@
     along with FastoNoSQL.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-#include "gui/widgets/item_cell_delegate.h"
+#include "gui/action_cell_delegate.h"
 
 #include <QApplication>
 #include <QPainter>
 #include <QMouseEvent>
 
 #include <common/macros.h>
+#include <common/qt/utils_qt.h>
+
+#include "gui/key_value_table_item.h"
+
+#include "gui/gui_factory.h"
 
 namespace fastonosql {
 namespace gui {
 
-ItemCellDelegate::ItemCellDelegate(QObject* parent)
-    : QStyledItemDelegate(parent), current_row_(-1), button_icon_() {}
+ActionDelegate::ActionDelegate(QObject* parent) : QStyledItemDelegate(parent), current_index_() {}
 
-void ItemCellDelegate::setButtonIcon(const QIcon& icon) {
-  button_icon_ = icon;
+QSize ActionDelegate::sizeHint(const QStyleOptionViewItem& option, const QModelIndex& index) const {
+  UNUSED(option);
+  UNUSED(index);
+
+  return QSize(16, 16);
 }
 
-void ItemCellDelegate::paint(QPainter* painter,
-                             const QStyleOptionViewItem& option,
-                             const QModelIndex& index) const {
+void ActionDelegate::paint(QPainter* painter,
+                           const QStyleOptionViewItem& option,
+                           const QModelIndex& index) const {
   if (!index.isValid()) {
     return;
   }
 
+  KeyValueTableItem* node =
+      common::qt::item<common::qt::gui::TableItem*, KeyValueTableItem*>(index);
   QStyleOptionViewItem opt = option;
   initStyleOption(&opt, index);
 
-  const QRect rect = option.rect;
-  const int rect_height = rect.height();
-
-  QRect rect_text = rect;
-  rect_text.setWidth(rect.width() - rect_height);
-  opt.rect = rect_text;
-
   QWidget* widget = qobject_cast<QWidget*>(parent());
   QStyle* style = widget ? widget->style() : QApplication::style();
-  style->drawControl(QStyle::CE_ItemViewItem, &opt, painter, widget);
 
-  QRect rect_button(rect_text.topRight(), QSize(rect_height, rect_height));
   QStyleOptionButton pb_Style;
   pb_Style.state |= QStyle::State_Enabled | option.state;
-  pb_Style.rect = rect_button;
+  pb_Style.rect = option.rect;
   pb_Style.features |= QStyleOptionButton::Flat;
   pb_Style.text = QString();
   pb_Style.iconSize = QSize(16, 16);
-  pb_Style.icon = button_icon_;
-  if (current_row_ == index.row()) {
+  pb_Style.icon = node->actionState() == KeyValueTableItem::AddAction
+                      ? GuiFactory::instance().addIcon()
+                      : GuiFactory::instance().removeIcon();
+  if (current_index_.row() == index.row()) {
     pb_Style.state |= QStyle::State_Sunken;
   } else {
     pb_Style.state |= QStyle::State_Raised;
@@ -71,32 +73,30 @@ void ItemCellDelegate::paint(QPainter* painter,
   style->drawControl(QStyle::CE_PushButton, &pb_Style, painter, widget);
 }
 
-bool ItemCellDelegate::editorEvent(QEvent* event,
-                                   QAbstractItemModel* model,
-                                   const QStyleOptionViewItem& option,
-                                   const QModelIndex& index) {
+bool ActionDelegate::editorEvent(QEvent* event,
+                                 QAbstractItemModel* model,
+                                 const QStyleOptionViewItem& option,
+                                 const QModelIndex& index) {
   UNUSED(model);
+  if (!index.isValid()) {
+    return QStyledItemDelegate::editorEvent(event, model, option, index);
+  }
 
   if (event->type() != QEvent::MouseButtonPress && event->type() != QEvent::MouseButtonRelease) {
     return QStyledItemDelegate::editorEvent(event, model, option, index);
   }
 
-  const QRect rect = option.rect;
-  const int rect_height = rect.height();
-  QRect rect_text = rect;
-  rect_text.setWidth(rect.width() - rect_height);
-  QRect rect_button(rect_text.topRight(), QSize(rect_height, rect_height));
-  QMouseEvent* mouseEvent = static_cast<QMouseEvent*>(event);
-  QPoint pos = mouseEvent->pos();
-  if (!rect_button.contains(pos)) {
-    return QStyledItemDelegate::editorEvent(event, model, option, index);
-  }
-
   if (event->type() == QEvent::MouseButtonPress) {
-    current_row_ = index.row();
+    current_index_ = index;
   } else if (event->type() == QEvent::MouseButtonRelease) {
-    emit buttonClicked(current_row_);
-    current_row_ = -1;
+    KeyValueTableItem* node =
+        common::qt::item<common::qt::gui::TableItem*, KeyValueTableItem*>(index);
+    if (node->actionState() == KeyValueTableItem::AddAction) {
+      emit addClicked(index);
+    } else {
+      emit removeClicked(index);
+    }
+    current_index_ = QModelIndex();
   }
 
   return QStyledItemDelegate::editorEvent(event, model, option, index);

@@ -24,33 +24,16 @@
 #include <common/qt/convert2string.h>
 #include <common/qt/utils_qt.h>
 
-#include <gui/gui_factory.h>
+#include "gui/key_value_table_item.h"
 
 #include "translations/global.h"
 
 namespace fastonosql {
 namespace gui {
 
-KeyValueTableItem::KeyValueTableItem(const QString& key, const QString& value)
-    : TableItem(), key_(key), value_(value) {}
-
-QString KeyValueTableItem::key() const {
-  return key_;
+HashTableModel::HashTableModel(QObject* parent) : common::qt::gui::TableModel(parent) {
+  data_.push_back(createEmptyRow());
 }
-
-void KeyValueTableItem::setKey(const QString& key) {
-  key_ = key;
-}
-
-QString KeyValueTableItem::value() const {
-  return value_;
-}
-
-void KeyValueTableItem::setValue(const QString& val) {
-  value_ = val;
-}
-
-HashTableModel::HashTableModel(QObject* parent) : common::qt::gui::TableModel(parent) {}
 
 HashTableModel::~HashTableModel() {}
 
@@ -61,22 +44,16 @@ QVariant HashTableModel::data(const QModelIndex& index, int role) const {
 
   int row = index.row();
   int col = index.column();
+  KeyValueTableItem* node =
+      common::qt::item<common::qt::gui::TableItem*, KeyValueTableItem*>(index);
   QVariant result;
   if (role == Qt::DisplayRole) {
     if (col == KeyValueTableItem::kKey) {
-      KeyValueTableItem* node =
-          common::qt::item<common::qt::gui::TableItem*, KeyValueTableItem*>(index);
       result = node->key();
     } else if (col == KeyValueTableItem::kValue) {
-      KeyValueTableItem* node =
-          common::qt::item<common::qt::gui::TableItem*, KeyValueTableItem*>(index);
       result = node->value();
     } else if (col == KeyValueTableItem::kAction) {
-      if (row == data_.size()) {
-        result = GuiFactory::instance().addIcon();
-      } else {
-        result = GuiFactory::instance().removeIcon();
-      }
+      result = node->actionState();
     }
   }
 
@@ -113,13 +90,9 @@ Qt::ItemFlags HashTableModel::flags(const QModelIndex& index) const {
   }
 
   Qt::ItemFlags result = Qt::ItemIsSelectable | Qt::ItemIsEnabled;
-  int row = index.row();
   int col = index.column();
 
-  KeyValueTableItem* node =
-      common::qt::item<common::qt::gui::TableItem*, KeyValueTableItem*>(index);
-
-  if (node && (col == KeyValueTableItem::kKey || col == KeyValueTableItem::kValue)) {
+  if (col == KeyValueTableItem::kKey || col == KeyValueTableItem::kValue) {
     result |= Qt::ItemIsEditable;
   }
 
@@ -160,8 +133,11 @@ void HashTableModel::clear() {
 }
 
 common::ZSetValue* HashTableModel::zsetValue() const {
+  if (data_.size() < 2) {
+    return nullptr;
+  }
+
   common::ZSetValue* ar = common::Value::createZSetValue();
-  DCHECK(data_.size() >= 1);
   for (size_t i = 0; i < data_.size() - 1; ++i) {
     KeyValueTableItem* node = static_cast<KeyValueTableItem*>(data_[i]);
     std::string key = common::ConvertToString(node->key());
@@ -173,8 +149,11 @@ common::ZSetValue* HashTableModel::zsetValue() const {
 }
 
 common::HashValue* HashTableModel::hashValue() const {
+  if (data_.size() < 2) {
+    return nullptr;
+  }
+
   common::HashValue* ar = common::Value::createHashValue();
-  DCHECK(data_.size() >= 1);
   for (size_t i = 0; i < data_.size() - 1; ++i) {
     KeyValueTableItem* node = static_cast<KeyValueTableItem*>(data_[i]);
     std::string key = common::ConvertToString(node->key());
@@ -186,13 +165,30 @@ common::HashValue* HashTableModel::hashValue() const {
 }
 
 void HashTableModel::insertRow(const QString& key, const QString& value) {
-  beginInsertRows(QModelIndex(), data_.size(), data_.size());
-  data_.insert(data_.begin(), new KeyValueTableItem(key, value));
+  size_t size = data_.size();
+  beginInsertRows(QModelIndex(), size, size);
+  data_.insert(data_.begin() + size - 1,
+               new KeyValueTableItem(key, value, KeyValueTableItem::RemoveAction));
+  KeyValueTableItem* last = static_cast<KeyValueTableItem*>(data_.back());
+  last->setKey(QString());
+  last->setValue(QString());
   endInsertRows();
 }
 
-KeyValueTableItem* HashTableModel::createEmptyRow() const {
-  return new KeyValueTableItem(QString(), QString());
+void HashTableModel::removeRow(int row) {
+  if (row == -1) {
+    return;
+  }
+
+  beginRemoveRows(QModelIndex(), row, row);
+  common::qt::gui::TableItem* child = data_[row];
+  data_.erase(data_.begin() + row);
+  delete child;
+  endRemoveRows();
+}
+
+common::qt::gui::TableItem* HashTableModel::createEmptyRow() const {
+  return new KeyValueTableItem(QString(), QString(), KeyValueTableItem::AddAction);
 }
 
 }  // namespace gui

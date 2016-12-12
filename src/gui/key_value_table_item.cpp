@@ -16,36 +16,33 @@
     along with FastoNoSQL.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-#pragma once
-
-#include <QStyledItemDelegate>
+#include "gui/key_value_table_item.h"
 
 namespace fastonosql {
 namespace gui {
 
-class ItemCellDelegate : public QStyledItemDelegate {
-  Q_OBJECT
- public:
-  ItemCellDelegate(QObject* parent = Q_NULLPTR);
+KeyValueTableItem::KeyValueTableItem(const QString& key, const QString& value, Mode state)
+    : TableItem(), key_(key), value_(value), state_(state) {}
 
-  void setButtonIcon(const QIcon& icon);
-  virtual void paint(QPainter* painter,
-                     const QStyleOptionViewItem& option,
-                     const QModelIndex& index) const override;
+QString KeyValueTableItem::key() const {
+  return key_;
+}
 
- Q_SIGNALS:
-  void buttonClicked(int row);
+void KeyValueTableItem::setKey(const QString& key) {
+  key_ = key;
+}
 
- protected:
-  virtual bool editorEvent(QEvent* event,
-                           QAbstractItemModel* model,
-                           const QStyleOptionViewItem& option,
-                           const QModelIndex& index) override;
+QString KeyValueTableItem::value() const {
+  return value_;
+}
 
- private:
-  int current_row_;
-  QIcon button_icon_;
-};
+void KeyValueTableItem::setValue(const QString& val) {
+  value_ = val;
+}
+
+KeyValueTableItem::Mode KeyValueTableItem::actionState() const {
+  return state_;
+}
 
 }  // namespace gui
 }  // namespace fastonosql

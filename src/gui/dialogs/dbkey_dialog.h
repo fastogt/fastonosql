@@ -31,7 +31,7 @@ class QTableView;
 namespace fastonosql {
 namespace gui {
 
-class HashTableModel;
+class HashTableWidget;
 class ListTypeWidget;
 
 class DbKeyDialog : public QDialog {
@@ -50,8 +50,6 @@ class DbKeyDialog : public QDialog {
 
  private Q_SLOTS:
   void typeChanged(int index);
-  void addItem();
-  void removeItem();
 
  protected:
   virtual void changeEvent(QEvent* ev) override;
@@ -69,11 +67,8 @@ class DbKeyDialog : public QDialog {
   QLineEdit* valueEdit_;
   QComboBox* boolValueEdit_;
   ListTypeWidget* valueListEdit_;
-  QTableView* valueTableEdit_;
-  HashTableModel* model_;
+  HashTableWidget* valueTableEdit_;
 
-  QPushButton* addItemButton_;
-  QPushButton* removeItemButton_;
   core::NDbKValue key_;
 };
 

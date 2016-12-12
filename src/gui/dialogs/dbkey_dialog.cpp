@@ -39,10 +39,13 @@
 #include <common/macros.h>             // for VERIFY, CHECK, NOTREACHED
 #include <common/qt/convert2string.h>  // for ConvertToString
 #include <common/value.h>              // for Value, Value::Type, etc
+#include <common/qt/utils_qt.h>
 
 #include "core/db_traits.h"
 
 #include "gui/widgets/list_type_widget.h"
+#include "gui/widgets/hash_table_widget.h"
+
 #include "gui/hash_table_model.h"
 #include "gui/dialogs/input_dialog.h"  // for InputDialog, etc
 #include "gui/gui_factory.h"           // for GuiFactory
@@ -116,40 +119,12 @@ DbKeyDialog::DbKeyDialog(const QString& title,
   valueListEdit_->setSelectionMode(QAbstractItemView::SingleSelection);
   valueListEdit_->setSelectionBehavior(QAbstractItemView::SelectRows);
 
-  QAction* addItem = new QAction(translations::trAddItem, this);
-  VERIFY(connect(addItem, &QAction::triggered, this, &DbKeyDialog::addItem));
-  valueListEdit_->addAction(addItem);
-
-  QAction* removeItem = new QAction(translations::trRemoveItem, this);
-  VERIFY(connect(removeItem, &QAction::triggered, this, &DbKeyDialog::removeItem));
-  valueListEdit_->addAction(removeItem);
-
   kvLayout->addWidget(valueListEdit_, 2, 1);
   valueListEdit_->setVisible(false);
 
-  valueTableEdit_ = new QTableView;
-  model_ = new HashTableModel(this);
-  valueTableEdit_->setModel(model_);
-  valueTableEdit_->setContextMenuPolicy(Qt::ActionsContextMenu);
-  valueTableEdit_->setSelectionBehavior(QAbstractItemView::SelectRows);
-  valueTableEdit_->verticalHeader()->hide();
-  valueTableEdit_->horizontalHeader()->hide();
-
-  valueTableEdit_->addAction(addItem);
-  valueTableEdit_->addAction(removeItem);
-
+  valueTableEdit_ = new HashTableWidget;
   kvLayout->addWidget(valueTableEdit_, 2, 1);
   valueTableEdit_->setVisible(false);
-
-  addItemButton_ = new QPushButton(translations::trAddItem);
-  VERIFY(connect(addItemButton_, &QPushButton::clicked, this, &DbKeyDialog::addItem));
-  kvLayout->addWidget(addItemButton_, 3, 0);
-  addItemButton_->setVisible(false);
-
-  removeItemButton_ = new QPushButton(translations::trRemoveItem);
-  VERIFY(connect(removeItemButton_, &QPushButton::clicked, this, &DbKeyDialog::removeItem));
-  kvLayout->addWidget(removeItemButton_, 3, 1);
-  removeItemButton_->setVisible(false);
 
   generalBox_ = new QGroupBox(this);
   generalBox_->setLayout(kvLayout);
@@ -193,7 +168,7 @@ void DbKeyDialog::typeChanged(int index) {
   common::Value::Type type = static_cast<common::Value::Type>(qvariant_cast<unsigned char>(var));
 
   valueEdit_->clear();
-  model_->clear();
+  valueTableEdit_->clear();
   valueListEdit_->clear();
 
   if (type == common::Value::TYPE_ARRAY || type == common::Value::TYPE_SET) {
@@ -201,22 +176,16 @@ void DbKeyDialog::typeChanged(int index) {
     valueEdit_->setVisible(false);
     boolValueEdit_->setVisible(false);
     valueTableEdit_->setVisible(false);
-    addItemButton_->setVisible(true);
-    removeItemButton_->setVisible(true);
   } else if (type == common::Value::TYPE_ZSET || type == common::Value::TYPE_HASH) {
     valueTableEdit_->setVisible(true);
     valueEdit_->setVisible(false);
     boolValueEdit_->setVisible(false);
     valueListEdit_->setVisible(false);
-    addItemButton_->setVisible(true);
-    removeItemButton_->setVisible(true);
   } else {
     valueEdit_->setVisible(true);
     boolValueEdit_->setVisible(false);
     valueListEdit_->setVisible(false);
     valueTableEdit_->setVisible(false);
-    addItemButton_->setVisible(false);
-    removeItemButton_->setVisible(false);
     if (type == common::Value::TYPE_INTEGER || type == common::Value::TYPE_UINTEGER) {
       valueEdit_->setValidator(new QIntValidator(this));
     } else if (type == common::Value::TYPE_BOOLEAN) {
@@ -228,73 +197,6 @@ void DbKeyDialog::typeChanged(int index) {
       QRegExp rx(".*");
       valueEdit_->setValidator(new QRegExpValidator(rx, this));
     }
-  }
-}
-
-void DbKeyDialog::addItem() {
-  int index = typesCombo_->currentIndex();
-  QVariant var = typesCombo_->itemData(index);
-  common::Value::Type t = static_cast<common::Value::Type>(qvariant_cast<unsigned char>(var));
-
-  if (valueListEdit_->isVisible()) {  // array
-    CHECK(t == common::Value::TYPE_SET || t == common::Value::TYPE_ARRAY);
-    InputDialog diag(this, translations::trAddItem, InputDialog::SingleLine, translations::trValue);
-    if (t == common::Value::TYPE_SET) {
-      diag.setFirstPlaceholderText("[member]");
-    } else if (t == common::Value::TYPE_ARRAY) {
-      diag.setFirstPlaceholderText("[value]");
-    }
-    int result = diag.exec();
-    if (result != QDialog::Accepted) {
-      return;
-    }
-
-    QString text = diag.firstText();
-    if (!text.isEmpty()) {
-      QListWidgetItem* nitem = new QListWidgetItem(text, valueListEdit_);
-      nitem->setFlags(nitem->flags() | Qt::ItemIsEditable);
-      valueListEdit_->addItem(nitem);
-    }
-  } else if (valueTableEdit_->isVisible()) {
-    CHECK(t == common::Value::TYPE_HASH || t == common::Value::TYPE_ZSET);
-    common::scoped_ptr<InputDialog> diag;
-    if (t == common::Value::TYPE_HASH) {
-      diag.reset(new InputDialog(this, translations::trAddItem, InputDialog::DoubleLine,
-                                 translations::trField, translations::trValue));
-      diag->setFirstPlaceholderText("[field]");
-      diag->setSecondPlaceholderText("[value]");
-    } else if (t == common::Value::TYPE_ZSET) {
-      diag.reset(new InputDialog(this, translations::trAddItem, InputDialog::DoubleLine,
-                                 translations::trScore, translations::trMember));
-      diag->setFirstPlaceholderText("[score]");
-      diag->setSecondPlaceholderText("[member]");
-    }
-
-    int result = diag->exec();
-    if (result != QDialog::Accepted) {
-      return;
-    }
-
-    QString ftext = diag->firstText();
-    QString stext = diag->secondText();
-    model_->insertRow(ftext, stext);
-  } else if (valueEdit_->isVisible()) {
-    CHECK(t == common::Value::TYPE_STRING || t == common::Value::TYPE_DOUBLE ||
-          t == common::Value::TYPE_INTEGER || t == common::Value::TYPE_UINTEGER);
-  } else if (boolValueEdit_->isVisible()) {
-    CHECK(t == common::Value::TYPE_BOOLEAN);
-  } else {
-    NOTREACHED();
-  }
-}
-
-void DbKeyDialog::removeItem() {
-  if (valueListEdit_->isVisible()) {
-    QListWidgetItem* ritem = valueListEdit_->currentItem();
-    delete ritem;
-  } else if (valueTableEdit_->isVisible()) {
-    // int row = valueTableEdit_->currentRow();
-    // model_->removeRow(row);
   }
 }
 
@@ -351,7 +253,7 @@ void DbKeyDialog::syncControls(common::Value* item) {
         QString ftext = common::ConvertFromString<QString>(key->toString());
         QString stext = common::ConvertFromString<QString>(value->toString());
 
-        model_->insertRow(ftext, stext);
+        valueTableEdit_->insertRow(ftext, stext);
       }
     }
   } else if (t == common::Value::TYPE_HASH) {
@@ -364,7 +266,7 @@ void DbKeyDialog::syncControls(common::Value* item) {
         QString ftext = common::ConvertFromString<QString>(key->toString());
         QString stext = common::ConvertFromString<QString>(value->toString());
 
-        model_->insertRow(ftext, stext);
+        valueTableEdit_->insertRow(ftext, stext);
       }
     }
   } else if (t == common::Value::TYPE_BOOLEAN) {
@@ -417,9 +319,9 @@ common::Value* DbKeyDialog::item() const {
 
     return valueListEdit_->setValue();
   } else if (t == common::Value::TYPE_ZSET) {
-    return model_->zsetValue();
+    return valueTableEdit_->zsetValue();
   } else if (t == common::Value::TYPE_HASH) {
-    return model_->hashValue();
+    return valueTableEdit_->hashValue();
   } else if (t == common::Value::TYPE_BOOLEAN) {
     int index = boolValueEdit_->currentIndex();
     if (index == -1) {
