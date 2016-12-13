@@ -61,18 +61,14 @@ FastoCommonItem* createItem(common::qt::gui::TreeItem* parent,
                             const std::string& key,
                             bool readOnly,
                             FastoObject* item) {
-  core::NValue val = item->Value();
-  core::NDbKValue nkey(core::NKey(key), val);
+  core::NValue value = item->Value();
+  core::NDbKValue nkey(core::NKey(key), value);
   return new FastoCommonItem(nkey, item->Delimiter(), readOnly, parent, item);
 }
 
 FastoCommonItem* createRootItem(FastoObject* item) {
-  auto value = item->Value();
-  std::string str;
-  bool res = value->getAsString(&str);
-  CHECK(res);
-  core::NValue val(common::Value::createStringValue(str));
-  core::NDbKValue nkey(core::NKey(std::string()), val);
+  core::NValue value = item->Value();
+  core::NDbKValue nkey(core::NKey(std::string()), value);
   return new FastoCommonItem(nkey, item->Delimiter(), true, nullptr, item);
 }
 
@@ -109,12 +105,14 @@ OutputWidget::OutputWidget(core::IServerSPtr server, QWidget* parent)
   treeView_->setModel(commonModel_);
   treeView_->header()->setSectionResizeMode(0, QHeaderView::Stretch);
   treeView_->header()->setSectionResizeMode(1, QHeaderView::Stretch);
+  treeView_->header()->setStretchLastSection(false);
   treeView_->setItemDelegateForColumn(FastoCommonItem::eValue, new TypeDelegate(this));
 
   tableView_ = new FastoTableView;
   tableView_->setModel(commonModel_);
   tableView_->horizontalHeader()->setSectionResizeMode(0, QHeaderView::Stretch);
   tableView_->horizontalHeader()->setSectionResizeMode(1, QHeaderView::Stretch);
+  tableView_->horizontalHeader()->setStretchLastSection(false);
   tableView_->setItemDelegateForColumn(FastoCommonItem::eValue, new TypeDelegate(this));
 
   QString delimiter = common::ConvertFromString<QString>(server_->Delimiter());

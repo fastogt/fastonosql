@@ -25,6 +25,7 @@ namespace gui {
 
 class TypeDelegate : public QStyledItemDelegate {
  public:
+  enum { row_height = 32 };
   explicit TypeDelegate(QObject* parent = Q_NULLPTR);
 
   virtual QSize sizeHint(const QStyleOptionViewItem& option,

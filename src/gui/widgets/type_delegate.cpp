@@ -43,7 +43,7 @@ TypeDelegate::TypeDelegate(QObject* parent) : QStyledItemDelegate(parent) {}
 QSize TypeDelegate::sizeHint(const QStyleOptionViewItem& option, const QModelIndex& index) const {
   UNUSED(option);
   UNUSED(index);
-  return QSize(32, 32);
+  return QSize(row_height, row_height);
 }
 
 QWidget* TypeDelegate::createEditor(QWidget* parent,
