@@ -43,11 +43,15 @@ class CommandHandler;
 namespace fastonosql {
 namespace core {
 
+common::Error TestArgsInRange(const CommandInfo& cmd, int argc, const char** argv);
+
 class CommandHolder : public CommandInfo {
  public:
   typedef internal::CommandHandler command_handler_t;
   typedef std::function<common::Error(command_handler_t*, int, const char**, FastoObject*)>
       function_t;
+  typedef std::function<common::Error(const CommandInfo&, int, const char**)> test_function_t;
+  typedef std::vector<test_function_t> test_functions_t;
 
   CommandHolder(const std::string& name,
                 const std::string& params,
@@ -56,14 +60,21 @@ class CommandHolder : public CommandInfo {
                 const std::string& example,
                 uint8_t required_arguments_count,
                 uint8_t optional_arguments_count,
-                function_t func);
+                function_t func,
+                test_functions_t tests = {&TestArgsInRange});
+
   bool IsCommand(int argc, const char** argv, size_t* offset) const;
-  common::Error Execute(command_handler_t* handler, int argc, const char** argv, FastoObject* out)
-      WARN_UNUSED_RESULT;
+
+  common::Error TestArgs(int argc, const char** argv) const WARN_UNUSED_RESULT;
+  common::Error Execute(command_handler_t* handler,
+                        int argc,
+                        const char** argv,
+                        FastoObject* out) const WARN_UNUSED_RESULT;
 
  private:
   const function_t func_;
   const size_t white_spaces_count_;
+  const std::vector<test_function_t> test_funcs_;
 };
 
 }  // namespace core

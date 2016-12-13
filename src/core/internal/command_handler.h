@@ -53,6 +53,7 @@ class CommandHandler {
  private:
   const commands_t commands_;
 };
+
 }  // namespace internal
 }  // namespace core
 }  // namespace fastonosql

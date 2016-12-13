@@ -38,13 +38,9 @@ common::Error CommandHandler::Execute(int argc, const char** argv, FastoObject* 
     if (cmd.IsCommand(argc, argv, &off)) {
       int argc_to_call = argc - off;
       const char** argv_to_call = argv + off;
-      uint16_t max = cmd.MaxArgumentsCount();
-      uint16_t min = cmd.MinArgumentsCount();
-      if (argc_to_call > max || argc_to_call < min) {
-        std::string buff = common::MemSPrintf(
-            "Invalid input argument for command: '%s', passed %d arguments, must be in range %u - %u.",
-            cmd.name, argc_to_call, min, max);
-        return common::make_error_value(buff, common::ErrorValue::E_ERROR);
+      common::Error err = cmd.TestArgs(argc_to_call, argv_to_call);
+      if (err && err->isError()) {
+        return err;
       }
 
       return cmd.Execute(this, argc_to_call, argv_to_call, out);
@@ -89,6 +85,7 @@ common::Error CommandHandler::UnknownSequence(int argc, const char** argv) {
   std::string buff = common::MemSPrintf("Unknown sequence: '%s'.", result);
   return common::make_error_value(buff, common::ErrorValue::E_ERROR);
 }
+
 }  // namespace internal
 }  // namespace core
 }  // namespace fastonosql

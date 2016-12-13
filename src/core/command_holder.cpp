@@ -22,6 +22,7 @@
 #include <vector>     // for vector
 
 #include <common/string_util.h>
+#include <common/sprintf.h>
 
 namespace {
 size_t count_space(const std::string& data) {
@@ -32,6 +33,21 @@ size_t count_space(const std::string& data) {
 namespace fastonosql {
 namespace core {
 
+common::Error TestArgsInRange(const CommandInfo& cmd, int argc, const char** argv) {
+  UNUSED(argv);
+
+  const uint16_t max = cmd.MaxArgumentsCount();
+  const uint16_t min = cmd.MinArgumentsCount();
+  if (argc > max || argc < min) {
+    std::string buff = common::MemSPrintf(
+        "Invalid input argument for command: '%s', passed %d arguments, must be in range %u - %u.",
+        cmd.name, argc, min, max);
+    return common::make_error_value(buff, common::ErrorValue::E_ERROR);
+  }
+
+  return common::Error();
+}
+
 CommandHolder::CommandHolder(const std::string& name,
                              const std::string& params,
                              const std::string& summary,
@@ -39,7 +55,8 @@ CommandHolder::CommandHolder(const std::string& name,
                              const std::string& example,
                              uint8_t required_arguments_count,
                              uint8_t optional_arguments_count,
-                             function_t func)
+                             function_t func,
+                             test_functions_t tests)
     : CommandInfo(name,
                   params,
                   summary,
@@ -48,7 +65,8 @@ CommandHolder::CommandHolder(const std::string& name,
                   required_arguments_count,
                   optional_arguments_count),
       func_(func),
-      white_spaces_count_(count_space(name)) {}
+      white_spaces_count_(count_space(name)),
+      test_funcs_(tests) {}
 
 bool CommandHolder::IsCommand(int argc, const char** argv, size_t* offset) const {
   if (argc <= 0) {
@@ -76,10 +94,22 @@ bool CommandHolder::IsCommand(int argc, const char** argv, size_t* offset) const
   return true;
 }
 
+common::Error CommandHolder::TestArgs(int argc, const char** argv) const {
+  const CommandInfo inf = *this;
+  for (test_function_t func : test_funcs_) {
+    common::Error err = func(inf, argc, argv);
+    if (err && err->isError()) {
+      return err;
+    }
+  }
+
+  return common::Error();
+}
+
 common::Error CommandHolder::Execute(command_handler_t* handler,
                                      int argc,
                                      const char** argv,
-                                     FastoObject* out) {
+                                     FastoObject* out) const {
   return func_(handler, argc, argv, out);
 }
 

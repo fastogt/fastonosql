@@ -61,6 +61,14 @@ class ICommandTranslator {
 
   bool IsLoadKeyCommand(const std::string& cmd, std::string* key) const WARN_UNUSED_RESULT;
 
+  common::Error TestCommandLine(int argc,
+                                const char** argv,
+                                const CommandInfo** info,
+                                size_t* off) const WARN_UNUSED_RESULT;
+
+  static common::Error NotSupported(const std::string& cmd);
+  static common::Error UnknownSequence(int argc, const char** argv);
+
  private:
   virtual common::Error CreateKeyCommandImpl(const NDbKValue& key,
                                              std::string* cmdstring) const = 0;

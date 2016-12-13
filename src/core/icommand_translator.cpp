@@ -118,22 +118,67 @@ bool ICommandTranslator::IsLoadKeyCommand(const std::string& cmd, std::string* k
   }
 
   const char** standart_argv = const_cast<const char**>(argv);
-  for (size_t i = 0; i < commands_.size(); ++i) {
-    size_t off = 0;
-    if (commands_[i].IsCommand(argc, standart_argv, &off)) {
-      CommandHolder cmd = commands_[i];
-      if (IsLoadKeyCommandImpl(cmd)) {
-        *key = argv[off];
-        sdsfreesplitres(argv, argc);
-        return true;
-      }
-      sdsfreesplitres(argv, argc);
-      return false;
-    }
+  const CommandInfo* cmdh = NULL;
+  size_t off = 0;
+  common::Error err = TestCommandLine(argc, standart_argv, &cmdh, &off);
+  if (err && err->isError()) {
+    sdsfreesplitres(argv, argc);
+    return false;
+  }
+
+  if (IsLoadKeyCommandImpl(*cmdh)) {
+    *key = argv[off];
+    sdsfreesplitres(argv, argc);
+    return true;
   }
 
   sdsfreesplitres(argv, argc);
   return false;
+}
+
+common::Error ICommandTranslator::NotSupported(const std::string& cmd) {
+  std::string buff = common::MemSPrintf("Not supported command: %s.", cmd);
+  return common::make_error_value(buff, common::ErrorValue::E_ERROR);
+}
+
+common::Error ICommandTranslator::UnknownSequence(int argc, const char** argv) {
+  std::string result;
+  for (int i = 0; i < argc; ++i) {
+    result += argv[i];
+    if (i != argc - 1) {
+      result += " ";
+    }
+  }
+  std::string buff = common::MemSPrintf("Unknown sequence: '%s'.", result);
+  return common::make_error_value(buff, common::ErrorValue::E_ERROR);
+}
+
+common::Error ICommandTranslator::TestCommandLine(int argc,
+                                                  const char** argv,
+                                                  const CommandInfo** info,
+                                                  size_t* off) const {
+  if (!off || !info) {
+    return common::make_error_value("Invalid input argument(s)", common::ErrorValue::E_ERROR);
+  }
+
+  for (size_t i = 0; i < commands_.size(); ++i) {
+    const CommandHolder* cmd = &commands_[i];
+    size_t loff = 0;
+    if (cmd->IsCommand(argc, argv, &loff)) {
+      int argc_to_call = argc - loff;
+      const char** argv_to_call = argv + loff;
+      common::Error err = cmd->TestArgs(argc_to_call, argv_to_call);
+      if (err && err->isError()) {
+        return err;
+      }
+
+      *info = cmd;
+      *off = loff;
+      return common::Error();
+    }
+  }
+
+  return UnknownSequence(argc, argv);
 }
 
 }  // namespace core
