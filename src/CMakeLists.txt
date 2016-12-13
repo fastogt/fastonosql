@@ -110,9 +110,8 @@ SET(HEADERS_GUI_WIDGETS_TO_MOC
   gui/widgets/ssh_widget.h
   gui/widgets/user_password_widget.h
   gui/widgets/list_type_widget.h
-  gui/widgets/item_cell_delegate.h
   gui/widgets/type_delegate.h
-  gui/widgets/hash_table_widget.h
+  gui/widgets/hash_type_widget.h
 )
 
 SET(SOURCES_GUI_WIDGETS
@@ -130,9 +129,8 @@ SET(SOURCES_GUI_WIDGETS
   gui/widgets/ssh_widget.cpp
   gui/widgets/user_password_widget.cpp
   gui/widgets/list_type_widget.cpp
-  gui/widgets/item_cell_delegate.cpp
   gui/widgets/type_delegate.cpp
-  gui/widgets/hash_table_widget.cpp
+  gui/widgets/hash_type_widget.cpp
 )
 
 SET(HEADERS_GUI_TO_MOC

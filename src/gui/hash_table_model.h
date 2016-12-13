@@ -40,8 +40,10 @@ class HashTableModel : public common::qt::gui::TableModel {
   virtual int columnCount(const QModelIndex& parent) const override;
   void clear();
 
-  common::ZSetValue* zsetValue() const;  // alocate memory
-  common::HashValue* hashValue() const;  // alocate memory
+  common::ArrayValue* arrayValue() const;  // alocate memory
+  common::SetValue* setValue() const;      // alocate memory
+  common::ZSetValue* zsetValue() const;    // alocate memory
+  common::HashValue* hashValue() const;    // alocate memory
 
   void insertRow(const QString& key, const QString& value);
   void removeRow(int row);

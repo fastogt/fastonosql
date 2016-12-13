@@ -27,11 +27,11 @@ namespace gui {
 
 class HashTableModel;
 
-class HashTableWidget : public QTableView {
+class HashTypeWidget : public QTableView {
   Q_OBJECT
  public:
-  explicit HashTableWidget(QWidget* parent = Q_NULLPTR);
-  virtual ~HashTableWidget();
+  explicit HashTypeWidget(QWidget* parent = Q_NULLPTR);
+  virtual ~HashTypeWidget();
 
   void insertRow(const QString& first, const QString& second);
   void clear();

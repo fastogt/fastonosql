@@ -19,57 +19,54 @@
 #include "gui/widgets/list_type_widget.h"
 
 #include <common/macros.h>
-#include <common/qt/convert2string.h>
+#include <common/qt/utils_qt.h>
 
-#include "gui/widgets/item_cell_delegate.h"
-
-#include "gui/gui_factory.h"
+#include "gui/hash_table_model.h"
+#include "gui/key_value_table_item.h"
+#include "gui/action_cell_delegate.h"
 
 namespace fastonosql {
 namespace gui {
 
-ListTypeWidget::ListTypeWidget(QWidget* parent) : QListWidget(parent) {
-  ItemCellDelegate* del = new ItemCellDelegate(this);
-  del->setButtonIcon(GuiFactory::instance().removeIcon());
-  setItemDelegate(del);
+ListTypeWidget::ListTypeWidget(QWidget* parent) : QTableView(parent) {
+  model_ = new HashTableModel(this);
+  setModel(model_);
 
-  VERIFY(connect(del, &ItemCellDelegate::buttonClicked, this, &ListTypeWidget::removeItem));
+  setColumnHidden(KeyValueTableItem::kValue, true);
+
+  ActionDelegate* del = new ActionDelegate(this);
+  VERIFY(connect(del, &ActionDelegate::addClicked, this, &ListTypeWidget::addRow));
+  VERIFY(connect(del, &ActionDelegate::removeClicked, this, &ListTypeWidget::removeRow));
+
+  setItemDelegateForColumn(KeyValueTableItem::kAction, del);
+  setContextMenuPolicy(Qt::ActionsContextMenu);
+  setSelectionBehavior(QAbstractItemView::SelectRows);
 }
 
 common::ArrayValue* ListTypeWidget::arrayValue() const {
-  common::ArrayValue* ar = common::Value::createArrayValue();
-  for (int i = 0; i < count(); ++i) {
-    QListWidgetItem* it = item(i);
-    std::string val = common::ConvertToString(it->text());
-    ar->appendString(val);
-  }
-
-  return ar;
+  return model_->arrayValue();
 }
 
 common::SetValue* ListTypeWidget::setValue() const {
-  common::SetValue* set = common::Value::createSetValue();
-  for (int i = 0; i < count(); ++i) {
-    QListWidgetItem* it = item(i);
-    std::string val = common::ConvertToString(it->text());
-    set->insert(val);
-  }
-
-  return set;
+  return model_->setValue();
 }
 
-void ListTypeWidget::addEmptyItem() {
-  insertItem(0, QString());
+void ListTypeWidget::insertRow(const QString& first) {
+  model_->insertRow(first, QString());
 }
 
-void ListTypeWidget::removeCurrentItem() {
-  QListWidgetItem* cur = currentItem();
-  removeItemWidget(cur);
+void ListTypeWidget::clear() {
+  model_->clear();
 }
 
-void ListTypeWidget::removeItem(int row) {
-  QListWidgetItem* item = takeItem(row);
-  delete item;
+void ListTypeWidget::addRow(const QModelIndex& index) {
+  KeyValueTableItem* node =
+      common::qt::item<common::qt::gui::TableItem*, KeyValueTableItem*>(index);
+  model_->insertRow(node->key(), node->value());
+}
+
+void ListTypeWidget::removeRow(const QModelIndex& index) {
+  model_->removeRow(index.row());
 }
 
 }  // namespace gui

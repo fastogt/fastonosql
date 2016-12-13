@@ -18,14 +18,16 @@
 
 #pragma once
 
-#include <QListWidget>
+#include <QTableView>
 
 #include <common/value.h>
 
 namespace fastonosql {
 namespace gui {
 
-class ListTypeWidget : public QListWidget {
+class HashTableModel;
+
+class ListTypeWidget : public QTableView {
   Q_OBJECT
  public:
   ListTypeWidget(QWidget* parent = Q_NULLPTR);
@@ -33,12 +35,15 @@ class ListTypeWidget : public QListWidget {
   common::ArrayValue* arrayValue() const;  // alocate memory
   common::SetValue* setValue() const;      // alocate memory
 
- public Q_SLOTS:
-  void addEmptyItem();
-  void removeCurrentItem();
+  void insertRow(const QString& first);
+  void clear();
 
  private Q_SLOTS:
-  void removeItem(int row);
+  void addRow(const QModelIndex& index);
+  void removeRow(const QModelIndex& index);
+
+ private:
+  HashTableModel* model_;
 };
 
 }  // namespace gui

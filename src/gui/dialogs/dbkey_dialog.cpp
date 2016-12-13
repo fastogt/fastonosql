@@ -44,7 +44,7 @@
 #include "core/db_traits.h"
 
 #include "gui/widgets/list_type_widget.h"
-#include "gui/widgets/hash_table_widget.h"
+#include "gui/widgets/hash_type_widget.h"
 
 #include "gui/hash_table_model.h"
 #include "gui/dialogs/input_dialog.h"  // for InputDialog, etc
@@ -115,14 +115,14 @@ DbKeyDialog::DbKeyDialog(const QString& title,
   boolValueEdit_->setVisible(false);
 
   valueListEdit_ = new ListTypeWidget;
-  valueListEdit_->setContextMenuPolicy(Qt::ActionsContextMenu);
-  valueListEdit_->setSelectionMode(QAbstractItemView::SingleSelection);
-  valueListEdit_->setSelectionBehavior(QAbstractItemView::SelectRows);
-
+  valueListEdit_->horizontalHeader()->hide();
+  valueListEdit_->verticalHeader()->hide();
   kvLayout->addWidget(valueListEdit_, 2, 1);
   valueListEdit_->setVisible(false);
 
-  valueTableEdit_ = new HashTableWidget;
+  valueTableEdit_ = new HashTypeWidget;
+  valueTableEdit_->horizontalHeader()->hide();
+  valueTableEdit_->verticalHeader()->hide();
   kvLayout->addWidget(valueTableEdit_, 2, 1);
   valueTableEdit_->setVisible(false);
 
@@ -222,10 +222,7 @@ void DbKeyDialog::syncControls(common::Value* item) {
           continue;
         }
 
-        QListWidgetItem* nitem =
-            new QListWidgetItem(common::ConvertFromString<QString>(val), valueListEdit_);
-        nitem->setFlags(nitem->flags() | Qt::ItemIsEditable);
-        valueListEdit_->addItem(nitem);
+        valueListEdit_->insertRow(common::ConvertFromString<QString>(val));
       }
     }
   } else if (t == common::Value::TYPE_SET) {
@@ -237,10 +234,7 @@ void DbKeyDialog::syncControls(common::Value* item) {
           continue;
         }
 
-        QListWidgetItem* nitem =
-            new QListWidgetItem(common::ConvertFromString<QString>(val), valueListEdit_);
-        nitem->setFlags(nitem->flags() | Qt::ItemIsEditable);
-        valueListEdit_->addItem(nitem);
+        valueListEdit_->insertRow(common::ConvertFromString<QString>(val));
       }
     }
   } else if (t == common::Value::TYPE_ZSET) {
@@ -306,17 +300,8 @@ common::Value* DbKeyDialog::item() const {
   QVariant var = typesCombo_->itemData(index);
   common::Value::Type t = static_cast<common::Value::Type>(qvariant_cast<unsigned char>(var));
   if (t == common::Value::TYPE_ARRAY) {
-    if (valueListEdit_->count() == 0) {
-      return nullptr;
-    }
-
-    common::ArrayValue* ar = valueListEdit_->arrayValue();
-    return ar;
+    return valueListEdit_->arrayValue();
   } else if (t == common::Value::TYPE_SET) {
-    if (valueListEdit_->count() == 0) {
-      return nullptr;
-    }
-
     return valueListEdit_->setValue();
   } else if (t == common::Value::TYPE_ZSET) {
     return valueTableEdit_->zsetValue();

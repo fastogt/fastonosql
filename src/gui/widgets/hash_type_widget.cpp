@@ -16,7 +16,7 @@
     along with FastoNoSQL.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-#include "gui/widgets/hash_table_widget.h"
+#include "gui/widgets/hash_type_widget.h"
 
 #include <common/macros.h>
 #include <common/qt/utils_qt.h>
@@ -28,43 +28,44 @@
 namespace fastonosql {
 namespace gui {
 
-HashTableWidget::HashTableWidget(QWidget* parent) : QTableView(parent), model_(nullptr) {
+HashTypeWidget::HashTypeWidget(QWidget* parent) : QTableView(parent), model_(nullptr) {
   model_ = new HashTableModel(this);
   setModel(model_);
+
   ActionDelegate* del = new ActionDelegate(this);
-  VERIFY(connect(del, &ActionDelegate::addClicked, this, &HashTableWidget::addRow));
-  VERIFY(connect(del, &ActionDelegate::removeClicked, this, &HashTableWidget::removeRow));
+  VERIFY(connect(del, &ActionDelegate::addClicked, this, &HashTypeWidget::addRow));
+  VERIFY(connect(del, &ActionDelegate::removeClicked, this, &HashTypeWidget::removeRow));
 
   setItemDelegateForColumn(KeyValueTableItem::kAction, del);
   setContextMenuPolicy(Qt::ActionsContextMenu);
   setSelectionBehavior(QAbstractItemView::SelectRows);
 }
 
-HashTableWidget::~HashTableWidget() {}
+HashTypeWidget::~HashTypeWidget() {}
 
-void HashTableWidget::insertRow(const QString& first, const QString& second) {
+void HashTypeWidget::insertRow(const QString& first, const QString& second) {
   model_->insertRow(first, second);
 }
 
-void HashTableWidget::clear() {
+void HashTypeWidget::clear() {
   model_->clear();
 }
 
-common::ZSetValue* HashTableWidget::zsetValue() const {
+common::ZSetValue* HashTypeWidget::zsetValue() const {
   return model_->zsetValue();
 }
 
-common::HashValue* HashTableWidget::hashValue() const {
+common::HashValue* HashTypeWidget::hashValue() const {
   return model_->hashValue();
 }
 
-void HashTableWidget::addRow(const QModelIndex& index) {
+void HashTypeWidget::addRow(const QModelIndex& index) {
   KeyValueTableItem* node =
       common::qt::item<common::qt::gui::TableItem*, KeyValueTableItem*>(index);
   model_->insertRow(node->key(), node->value());
 }
 
-void HashTableWidget::removeRow(const QModelIndex& index) {
+void HashTypeWidget::removeRow(const QModelIndex& index) {
   model_->removeRow(index.row());
 }
 

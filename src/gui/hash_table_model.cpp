@@ -132,6 +132,36 @@ void HashTableModel::clear() {
   endResetModel();
 }
 
+common::ArrayValue* HashTableModel::arrayValue() const {
+  if (data_.size() < 2) {
+    return nullptr;
+  }
+
+  common::ArrayValue* ar = common::Value::createArrayValue();
+  for (size_t i = 0; i < data_.size() - 1; ++i) {
+    KeyValueTableItem* node = static_cast<KeyValueTableItem*>(data_[i]);
+    std::string key = common::ConvertToString(node->key());
+    ar->appendString(key);
+  }
+
+  return ar;
+}
+
+common::SetValue* HashTableModel::setValue() const {
+  if (data_.size() < 2) {
+    return nullptr;
+  }
+
+  common::SetValue* ar = common::Value::createSetValue();
+  for (size_t i = 0; i < data_.size() - 1; ++i) {
+    KeyValueTableItem* node = static_cast<KeyValueTableItem*>(data_[i]);
+    std::string key = common::ConvertToString(node->key());
+    ar->insert(key);
+  }
+
+  return ar;
+}
+
 common::ZSetValue* HashTableModel::zsetValue() const {
   if (data_.size() < 2) {
     return nullptr;
