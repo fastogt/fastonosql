@@ -635,7 +635,9 @@ common::Error DiscoverySentinelConnection(ConnectionSettings* settings,
 }
 
 DBConnection::DBConnection(CDBConnectionClient* client)
-    : base_class(client, new CommandTranslator(base_class::Commands())), isAuth_(false), cur_db_(-1) {}
+    : base_class(client, new CommandTranslator(base_class::Commands())),
+      isAuth_(false),
+      cur_db_(-1) {}
 
 bool DBConnection::IsAuthenticated() const {
   if (!IsConnected()) {
@@ -2340,7 +2342,7 @@ common::Error DBConnection::Hmset(const NKey& key, NValue hash) {
     return cliPrintContextError(connection_.handle_);
   }
 
-  if (reply->type == REDIS_REPLY_STRING) {
+  if (reply->type == REDIS_REPLY_STATUS) {
     if (client_) {
       client_->OnKeyAdded(rhash);
     }
