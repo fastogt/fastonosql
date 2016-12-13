@@ -40,6 +40,12 @@ namespace gui {
 
 TypeDelegate::TypeDelegate(QObject* parent) : QStyledItemDelegate(parent) {}
 
+QSize TypeDelegate::sizeHint(const QStyleOptionViewItem& option, const QModelIndex& index) const {
+  UNUSED(option);
+  UNUSED(index);
+  return QSize(32, 32);
+}
+
 QWidget* TypeDelegate::createEditor(QWidget* parent,
                                     const QStyleOptionViewItem& option,
                                     const QModelIndex& index) const {
