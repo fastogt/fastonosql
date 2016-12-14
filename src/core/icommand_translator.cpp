@@ -136,6 +136,11 @@ bool ICommandTranslator::IsLoadKeyCommand(const std::string& cmd, std::string* k
   return false;
 }
 
+common::Error ICommandTranslator::InvalidInputArguments(const std::string& cmd) {
+  std::string buff = common::MemSPrintf("Invalid input argument(s) for command: %s.", cmd);
+  return common::make_error_value(buff, common::ErrorValue::E_ERROR);
+}
+
 common::Error ICommandTranslator::NotSupported(const std::string& cmd) {
   std::string buff = common::MemSPrintf("Not supported command: %s.", cmd);
   return common::make_error_value(buff, common::ErrorValue::E_ERROR);
@@ -153,11 +158,18 @@ common::Error ICommandTranslator::UnknownSequence(int argc, const char** argv) {
   return common::make_error_value(buff, common::ErrorValue::E_ERROR);
 }
 
+common::Error ICommandTranslator::FindCommand(int argc,
+                                              const char** argv,
+                                              const CommandInfo** info) const {
+  size_t off = 0;
+  return TestCommandLine(argc, argv, info, &off);
+}
+
 common::Error ICommandTranslator::TestCommandLine(int argc,
                                                   const char** argv,
                                                   const CommandInfo** info,
                                                   size_t* off) const {
-  if (!off || !info) {
+  if (!off) {
     return common::make_error_value("Invalid input argument(s)", common::ErrorValue::E_ERROR);
   }
 

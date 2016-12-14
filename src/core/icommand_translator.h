@@ -61,11 +61,15 @@ class ICommandTranslator {
 
   bool IsLoadKeyCommand(const std::string& cmd, std::string* key) const WARN_UNUSED_RESULT;
 
+  common::Error FindCommand(int argc,
+                            const char** argv,
+                            const CommandInfo** info) const WARN_UNUSED_RESULT;
   common::Error TestCommandLine(int argc,
                                 const char** argv,
                                 const CommandInfo** info,
                                 size_t* off) const WARN_UNUSED_RESULT;
 
+  static common::Error InvalidInputArguments(const std::string& cmd);
   static common::Error NotSupported(const std::string& cmd);
   static common::Error UnknownSequence(int argc, const char** argv);
 

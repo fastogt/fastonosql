@@ -810,7 +810,8 @@ static const std::vector<CommandHolder> g_commands = {
                   UNDEFINED_EXAMPLE_STR,
                   3,
                   INFINITE_COMMAND_ARGS,
-                  &CommandsApi::Hmset),
+                  &CommandsApi::Hmset,
+                  {&TestArgsInRange, &TestArgsModule2Equal1}),
     CommandHolder("HSCAN",
                   "<key> <cursor> [MATCH pattern] [COUNT count]",
                   "Incrementally iterate hash fields and associated "

@@ -665,7 +665,7 @@ common::Error DBConnection::FlushDBImpl() {
 
 common::Error DBConnection::SelectImpl(const std::string& name, IDataBaseInfo** info) {
   if (name != CurrentDBName()) {
-    return NotSupported("SELECT");
+    return ICommandTranslator::InvalidInputArguments("SELECT");
   }
 
   size_t kcount = 0;

@@ -48,6 +48,19 @@ common::Error TestArgsInRange(const CommandInfo& cmd, int argc, const char** arg
   return common::Error();
 }
 
+common::Error TestArgsModule2Equal1(const CommandInfo& cmd, int argc, const char** argv) {
+  UNUSED(argv);
+
+  if (argc % 2 != 1) {
+    std::string buff = common::MemSPrintf(
+        "Invalid input argument for command: '%s', passed %d arguments, must be 1 by module 2.",
+        cmd.name, argc);
+    return common::make_error_value(buff, common::ErrorValue::E_ERROR);
+  }
+
+  return common::Error();
+}
+
 CommandHolder::CommandHolder(const std::string& name,
                              const std::string& params,
                              const std::string& summary,

@@ -44,6 +44,7 @@ namespace fastonosql {
 namespace core {
 
 common::Error TestArgsInRange(const CommandInfo& cmd, int argc, const char** argv);
+common::Error TestArgsModule2Equal1(const CommandInfo& cmd, int argc, const char** argv);
 
 class CommandHolder : public CommandInfo {
  public:

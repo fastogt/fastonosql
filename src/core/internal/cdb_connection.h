@@ -60,7 +60,7 @@ class CDBConnection : public DBConnection<NConnection, Config, ContType>, public
   typedef DBConnection<NConnection, Config, ContType> db_base_class;
 
   CDBConnection(CDBConnectionClient* client, ICommandTranslator* translator)
-      : db_base_class(), CommandHandler(Commands()), client_(client), translator_(translator) {}
+      : db_base_class(), CommandHandler(translator), client_(client) {}
   virtual ~CDBConnection() {}
 
   static std::vector<CommandHolder> Commands();
@@ -90,8 +90,6 @@ class CDBConnection : public DBConnection<NConnection, Config, ContType>, public
   common::Error GetTTL(const NKey& key, ttl_t* ttl) WARN_UNUSED_RESULT;                    // nvi
   common::Error Quit() WARN_UNUSED_RESULT;                                                 // nvi
 
-  translator_t Translator() const { return translator_; }
-
  protected:
   CDBConnectionClient* client_;
 
@@ -115,8 +113,6 @@ class CDBConnection : public DBConnection<NConnection, Config, ContType>, public
   virtual common::Error SetTTLImpl(const NKey& key, ttl_t ttl) = 0;
   virtual common::Error GetTTLImpl(const NKey& key, ttl_t* ttl) = 0;
   virtual common::Error QuitImpl() = 0;
-
-  translator_t translator_;
 };
 
 template <typename NConnection, typename Config, connectionTypes ContType>
@@ -142,8 +138,9 @@ common::Error CDBConnection<NConnection, Config, ContType>::Help(int argc,
     return common::Error();
   }
 
-  const command_t* cmd = nullptr;
-  common::Error err = FindCommand(argc, argv, &cmd);
+  const CommandInfo* cmd = nullptr;
+  translator_t tran = Translator();
+  common::Error err = tran->FindCommand(argc, argv, &cmd);
   if (err && err->isError()) {
     return err;
   }

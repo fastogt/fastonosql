@@ -840,7 +840,7 @@ common::Error DBConnection::ScanImpl(uint64_t cursor_in,
   UNUSED(count_keys);
   UNUSED(keys_out);
   UNUSED(cursor_out);
-  return NotSupported("SCAN");
+  return ICommandTranslator::NotSupported("SCAN");
 }
 
 common::Error DBConnection::KeysImpl(const std::string& key_start,
@@ -888,7 +888,7 @@ common::Error DBConnection::FlushDBImpl() {
 
 common::Error DBConnection::SelectImpl(const std::string& name, IDataBaseInfo** info) {
   if (name != CurrentDBName()) {
-    return NotSupported("SELECT");
+    return ICommandTranslator::InvalidInputArguments("SELECT");
   }
 
   size_t kcount = 0;

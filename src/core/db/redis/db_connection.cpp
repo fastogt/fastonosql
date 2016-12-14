@@ -1463,7 +1463,7 @@ common::Error DBConnection::KeysImpl(const std::string& key_start,
   UNUSED(key_end);
   UNUSED(limit);
   UNUSED(ret);
-  return NotSupported("KEYS");
+  return ICommandTranslator::NotSupported("KEYS");
 }
 
 common::Error DBConnection::DBkcountImpl(size_t* size) {

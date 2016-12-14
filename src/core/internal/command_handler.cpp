@@ -30,60 +30,20 @@ namespace fastonosql {
 namespace core {
 namespace internal {
 
-CommandHandler::CommandHandler(const commands_t& commands) : commands_(commands) {}
+CommandHandler::CommandHandler(ICommandTranslator* translator) : translator_(translator) {}
 
 common::Error CommandHandler::Execute(int argc, const char** argv, FastoObject* out) {
-  for (auto cmd : commands_) {
-    size_t off = 0;
-    if (cmd.IsCommand(argc, argv, &off)) {
-      int argc_to_call = argc - off;
-      const char** argv_to_call = argv + off;
-      common::Error err = cmd.TestArgs(argc_to_call, argv_to_call);
-      if (err && err->isError()) {
-        return err;
-      }
-
-      return cmd.Execute(this, argc_to_call, argv_to_call, out);
-    }
+  const CommandInfo* info = nullptr;
+  size_t off = 0;
+  common::Error err = translator_->TestCommandLine(argc, argv, &info, &off);
+  if (err && err->isError()) {
+    return err;
   }
 
-  return UnknownSequence(argc, argv);
-}
-
-common::Error CommandHandler::FindCommand(int argc,
-                                          const char** argv,
-                                          const command_t** cmdout) const {
-  if (!cmdout) {
-    return common::make_error_value("Invalid input argument(s)", common::ErrorValue::E_ERROR);
-  }
-
-  DCHECK(*cmdout == NULL);
-  for (size_t i = 0; i < commands_.size(); ++i) {
-    size_t off = 0;
-    if (commands_[i].IsCommand(argc, argv, &off)) {
-      *cmdout = &commands_[i];
-      return common::Error();
-    }
-  }
-
-  return UnknownSequence(argc, argv);
-}
-
-common::Error CommandHandler::NotSupported(const std::string& cmd) {
-  std::string buff = common::MemSPrintf("Not supported command: %s.", cmd);
-  return common::make_error_value(buff, common::ErrorValue::E_ERROR);
-}
-
-common::Error CommandHandler::UnknownSequence(int argc, const char** argv) {
-  std::string result;
-  for (int i = 0; i < argc; ++i) {
-    result += argv[i];
-    if (i != argc - 1) {
-      result += " ";
-    }
-  }
-  std::string buff = common::MemSPrintf("Unknown sequence: '%s'.", result);
-  return common::make_error_value(buff, common::ErrorValue::E_ERROR);
+  int argc_to_call = argc - off;
+  const char** argv_to_call = argv + off;
+  const command_t* cmd = static_cast<const command_t*>(info);
+  return cmd->Execute(this, argc_to_call, argv_to_call, out);
 }
 
 }  // namespace internal

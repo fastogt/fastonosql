@@ -25,6 +25,7 @@
 #include <common/macros.h>  // for WARN_UNUSED_RESULT
 
 #include "core/command_holder.h"  // for CommandHolder
+#include "core/icommand_translator.h"
 
 namespace fastonosql {
 class FastoObject;
@@ -39,19 +40,13 @@ class CommandHandler {
   typedef fastonosql::core::CommandHolder command_t;
   typedef std::vector<command_t> commands_t;
 
-  explicit CommandHandler(const commands_t& commands);
+  explicit CommandHandler(ICommandTranslator* translator);
   common::Error Execute(int argc, const char** argv, FastoObject* out) WARN_UNUSED_RESULT;
 
-  static common::Error NotSupported(const std::string& cmd);
-  static common::Error UnknownSequence(int argc, const char** argv);
-
- protected:
-  common::Error FindCommand(int argc,
-                            const char** argv,
-                            const command_t** cmdout) const WARN_UNUSED_RESULT;
+  translator_t Translator() const { return translator_; }
 
  private:
-  const commands_t commands_;
+  translator_t translator_;
 };
 
 }  // namespace internal
