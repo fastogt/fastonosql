@@ -23,9 +23,36 @@ extern "C" {
 }
 
 #include <common/sprintf.h>
+#include <common/string_util.h>
+
+#include "core/command/command.h"
 
 namespace fastonosql {
 namespace core {
+
+common::Error ParseCommands(const std::string& cmd, std::vector<std::string>* cmds) {
+  if (cmd.empty()) {
+    return common::make_error_value("Empty command line.", common::ErrorValue::E_ERROR);
+  }
+
+  std::vector<std::string> commands;
+  size_t commands_count = common::Tokenize(cmd, "\n", &commands);
+  if (!commands_count) {
+    return common::make_error_value("Invaid command line.", common::ErrorValue::E_ERROR);
+  }
+
+  std::vector<std::string> stable_commands;
+  for (std::string input : commands) {
+    std::string stable_input = StableCommand(input);
+    if (stable_input.empty()) {
+      continue;
+    }
+    stable_commands.push_back(stable_input);
+  }
+
+  *cmds = stable_commands;
+  return common::Error();
+}
 
 ICommandTranslator::ICommandTranslator(const std::vector<CommandHolder>& commands)
     : commands_(commands) {}
@@ -118,9 +145,9 @@ bool ICommandTranslator::IsLoadKeyCommand(const std::string& cmd, std::string* k
   }
 
   const char** standart_argv = const_cast<const char**>(argv);
-  const CommandInfo* cmdh = NULL;
+  const CommandHolder* cmdh = nullptr;
   size_t off = 0;
-  common::Error err = TestCommandLine(argc, standart_argv, &cmdh, &off);
+  common::Error err = TestCommandLineArgs(argc, standart_argv, &cmdh, &off);
   if (err && err->isError()) {
     sdsfreesplitres(argv, argc);
     return false;
@@ -160,16 +187,9 @@ common::Error ICommandTranslator::UnknownSequence(int argc, const char** argv) {
 
 common::Error ICommandTranslator::FindCommand(int argc,
                                               const char** argv,
-                                              const CommandInfo** info) const {
-  size_t off = 0;
-  return TestCommandLine(argc, argv, info, &off);
-}
-
-common::Error ICommandTranslator::TestCommandLine(int argc,
-                                                  const char** argv,
-                                                  const CommandInfo** info,
-                                                  size_t* off) const {
-  if (!off) {
+                                              const CommandHolder** info,
+                                              size_t* off) const {
+  if (!info || !off) {
     return common::make_error_value("Invalid input argument(s)", common::ErrorValue::E_ERROR);
   }
 
@@ -177,13 +197,6 @@ common::Error ICommandTranslator::TestCommandLine(int argc,
     const CommandHolder* cmd = &commands_[i];
     size_t loff = 0;
     if (cmd->IsCommand(argc, argv, &loff)) {
-      int argc_to_call = argc - loff;
-      const char** argv_to_call = argv + loff;
-      common::Error err = cmd->TestArgs(argc_to_call, argv_to_call);
-      if (err && err->isError()) {
-        return err;
-      }
-
       *info = cmd;
       *off = loff;
       return common::Error();
@@ -191,6 +204,62 @@ common::Error ICommandTranslator::TestCommandLine(int argc,
   }
 
   return UnknownSequence(argc, argv);
+}
+
+common::Error ICommandTranslator::TestCommandArgs(const CommandHolder* cmd,
+                                                  int argc_to_call,
+                                                  const char** argv_to_call) const {
+  if (!cmd) {
+    return common::make_error_value("Invalid input argument(s)", common::ErrorValue::E_ERROR);
+  }
+
+  return cmd->TestArgs(argc_to_call, argv_to_call);
+}
+
+common::Error ICommandTranslator::TestCommandLine(const std::string& cmd) const {
+  if (cmd.empty()) {
+    return common::make_error_value("Invalid input argument(s)", common::ErrorValue::E_ERROR);
+  }
+
+  int argc;
+  sds* argv = sdssplitargslong(cmd.c_str(), &argc);
+  if (!argv) {
+    return common::make_error_value("Invalid input argument(s)", common::ErrorValue::E_ERROR);
+  }
+
+  const char** standart_argv = const_cast<const char**>(argv);
+  const CommandHolder* cmdh = nullptr;
+  size_t loff = 0;
+  common::Error err = TestCommandLineArgs(argc, standart_argv, &cmdh, &loff);
+  if (err && err->isError()) {
+    sdsfreesplitres(argv, argc);
+    return err;
+  }
+
+  return common::Error();
+}
+
+common::Error ICommandTranslator::TestCommandLineArgs(int argc,
+                                                      const char** argv,
+                                                      const CommandHolder** info,
+                                                      size_t* off) const {
+  const CommandHolder* cmd = nullptr;
+  size_t loff = 0;
+  common::Error err = FindCommand(argc, argv, &cmd, &loff);
+  if (err && err->isError()) {
+    return err;
+  }
+
+  int argc_to_call = argc - loff;
+  const char** argv_to_call = argv + loff;
+  err = TestCommandArgs(cmd, argc_to_call, argv_to_call);
+  if (err && err->isError()) {
+    return err;
+  }
+
+  *info = cmd;
+  *off = loff;
+  return common::Error();
 }
 
 }  // namespace core

@@ -138,9 +138,10 @@ common::Error CDBConnection<NConnection, Config, ContType>::Help(int argc,
     return common::Error();
   }
 
-  const CommandInfo* cmd = nullptr;
+  const CommandHolder* cmd = nullptr;
+  size_t off = 0;
   translator_t tran = Translator();
-  common::Error err = tran->FindCommand(argc, argv, &cmd);
+  common::Error err = tran->FindCommand(argc, argv, &cmd, &off);
   if (err && err->isError()) {
     return err;
   }

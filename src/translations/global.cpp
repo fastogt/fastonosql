@@ -73,6 +73,7 @@ const QString trWindow = QObject::tr("Window");
 const QString trHelp = QObject::tr("Help");
 const QString trConnect = QObject::tr("Connect");
 const QString trDisconnect = QObject::tr("Disconnect");
+const QString trValidate = QObject::tr("Validate");
 const QString trExecute = QObject::tr("Execute");
 const QString trPreferences = QObject::tr("Preferences");
 const QString trConnections = QObject::tr("Connections");

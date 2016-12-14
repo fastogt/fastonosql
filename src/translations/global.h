@@ -75,6 +75,7 @@ extern const QString trWindow;
 extern const QString trHelp;
 extern const QString trConnect;
 extern const QString trDisconnect;
+extern const QString trValidate;
 extern const QString trExecute;
 extern const QString trPreferences;
 extern const QString trConnections;

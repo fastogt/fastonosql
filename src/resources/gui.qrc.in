@@ -11,7 +11,6 @@
     <file>@PROJECT_NAME_LOWERCASE@/images/64x64/remove.png</file>
     <file>@PROJECT_NAME_LOWERCASE@/images/64x64/edit.png</file>
 
-    <file>@PROJECT_NAME_LOWERCASE@/images/64x64/redistype.png</file>
     <file>@PROJECT_NAME_LOWERCASE@/images/64x64/execute.png</file>
     <file>@PROJECT_NAME_LOWERCASE@/images/64x64/stop.png</file>
     <file>@PROJECT_NAME_LOWERCASE@/images/64x64/connect.png</file>

@@ -111,6 +111,11 @@ const QIcon& GuiFactory::messageBoxQuestionIcon() const {
   return open;
 }
 
+const QIcon& GuiFactory::validateIcon() const {
+  static QIcon start(":" PROJECT_NAME_LOWERCASE "/images/64x64/validate.png");
+  return start;
+}
+
 const QIcon& GuiFactory::executeIcon() const {
   static QIcon start(":" PROJECT_NAME_LOWERCASE "/images/64x64/execute.png");
   return start;

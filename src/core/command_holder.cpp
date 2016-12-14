@@ -119,12 +119,5 @@ common::Error CommandHolder::TestArgs(int argc, const char** argv) const {
   return common::Error();
 }
 
-common::Error CommandHolder::Execute(command_handler_t* handler,
-                                     int argc,
-                                     const char** argv,
-                                     FastoObject* out) const {
-  return func_(handler, argc, argv, out);
-}
-
 }  // namespace core
 }  // namespace fastonosql

@@ -43,6 +43,7 @@
 #include <common/macros.h>          // for VERIFY, UNUSED, CHECK, etc
 #include <common/value.h>           // for ErrorValue
 
+#include <common/qt/logger.h>          // for LOG_ERROR
 #include <common/qt/convert2string.h>  // for ConvertToString
 #include <common/qt/gui/icon_label.h>  // for IconLabel
 #include <common/qt/gui/shortcuts.h>   // for FastoQKeySequence
@@ -172,6 +173,11 @@ BaseShellWidget::BaseShellWidget(core::IServerSPtr server, const QString& filePa
   workProgressBar_->setTextVisible(true);
   hlayout->addWidget(workProgressBar_);
   QToolBar* helpbar = new QToolBar;
+  validateAction_ =
+      new QAction(gui::GuiFactory::instance().failIcon(), translations::trValidate, helpbar);
+  VERIFY(connect(validateAction_, &QAction::triggered, this, &BaseShellWidget::validateClick));
+  helpbar->addAction(validateAction_);
+
   QAction* helpAction =
       new QAction(gui::GuiFactory::instance().helpIcon(), translations::trHelp, helpbar);
   VERIFY(connect(helpAction, &QAction::triggered, this, &BaseShellWidget::helpClick));
@@ -185,6 +191,7 @@ BaseShellWidget::BaseShellWidget(core::IServerSPtr server, const QString& filePa
                  &BaseShellWidget::advancedOptionsChange));
 
   input_ = makeBaseShell(server->Type(), this);
+  VERIFY(connect(input_, &BaseShell::textChanged, this, &BaseShellWidget::inputTextChanged));
 
   advancedOptionsWidget_ = new QWidget;
   advancedOptionsWidget_->setVisible(false);
@@ -277,6 +284,24 @@ void BaseShellWidget::setText(const QString& text) {
 void BaseShellWidget::executeText(const QString& text) {
   input_->setText(text);
   execute();
+}
+
+common::Error BaseShellWidget::validate(const QString& text) {
+  core::translator_t tran = server_->Translator();
+  std::vector<std::string> cmds;
+  common::Error err = core::ParseCommands(common::ConvertToString(text), &cmds);
+  if (err && err->isError()) {
+    return err;
+  }
+
+  for (auto cmd : cmds) {
+    err = tran->TestCommandLine(cmd);
+    if (err && err->isError()) {
+      return err;
+    }
+  }
+
+  return common::Error();
 }
 
 void BaseShellWidget::execute() {
@@ -377,8 +402,26 @@ void BaseShellWidget::saveToFile() {
   }
 }
 
+void BaseShellWidget::validateClick() {
+  QString text = input_->text();
+  common::Error err = validate(text);
+  if (err && err->isError()) {
+    LOG_ERROR(err, true);
+  }
+}
+
 void BaseShellWidget::helpClick() {
   executeArgs("HELP", 0, 0, false);
+}
+
+void BaseShellWidget::inputTextChanged() {
+  QString text = input_->text();
+  common::Error err = validate(text);
+  if (err && err->isError()) {
+    validateAction_->setIcon(gui::GuiFactory::instance().failIcon());
+  } else {
+    validateAction_->setIcon(gui::GuiFactory::instance().successIcon());
+  }
 }
 
 void BaseShellWidget::startConnect(const core::events_info::ConnectInfoRequest& req) {

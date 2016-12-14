@@ -33,17 +33,16 @@ namespace internal {
 CommandHandler::CommandHandler(ICommandTranslator* translator) : translator_(translator) {}
 
 common::Error CommandHandler::Execute(int argc, const char** argv, FastoObject* out) {
-  const CommandInfo* info = nullptr;
+  const command_t* cmd = nullptr;
   size_t off = 0;
-  common::Error err = translator_->TestCommandLine(argc, argv, &info, &off);
+  common::Error err = translator_->TestCommandLineArgs(argc, argv, &cmd, &off);
   if (err && err->isError()) {
     return err;
   }
 
   int argc_to_call = argc - off;
   const char** argv_to_call = argv + off;
-  const command_t* cmd = static_cast<const command_t*>(info);
-  return cmd->Execute(this, argc_to_call, argv_to_call, out);
+  return cmd->func_(this, argc_to_call, argv_to_call, out);
 }
 
 }  // namespace internal

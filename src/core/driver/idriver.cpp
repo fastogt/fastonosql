@@ -371,17 +371,10 @@ void IDriver::HandleExecuteEvent(events::ExecuteRequestEvent* ev) {
   events::ExecuteResponceEvent::value_type res(ev->value());
 
   const std::string inputLine = res.text;
-  if (inputLine.empty()) {
-    res.setErrorInfo(common::make_error_value("Empty command line.", common::ErrorValue::E_ERROR));
-    Reply(sender, new events::ExecuteResponceEvent(this, res));
-    NotifyProgress(sender, 100);
-    return;
-  }
-
   std::vector<std::string> commands;
-  size_t commands_count = common::Tokenize(inputLine, "\n", &commands);
-  if (!commands_count) {
-    res.setErrorInfo(common::make_error_value("Invaid command line.", common::ErrorValue::E_ERROR));
+  common::Error err = ParseCommands(inputLine, &commands);
+  if (err && err->isError()) {
+    res.setErrorInfo(err);
     Reply(sender, new events::ExecuteResponceEvent(this, res));
     NotifyProgress(sender, 100);
     return;

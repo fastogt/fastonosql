@@ -48,6 +48,8 @@ common::Error TestArgsModule2Equal1(const CommandInfo& cmd, int argc, const char
 
 class CommandHolder : public CommandInfo {
  public:
+  friend class internal::CommandHandler;
+
   typedef internal::CommandHandler command_handler_t;
   typedef std::function<common::Error(command_handler_t*, int, const char**, FastoObject*)>
       function_t;
@@ -67,10 +69,6 @@ class CommandHolder : public CommandInfo {
   bool IsCommand(int argc, const char** argv, size_t* offset) const;
 
   common::Error TestArgs(int argc, const char** argv) const WARN_UNUSED_RESULT;
-  common::Error Execute(command_handler_t* handler,
-                        int argc,
-                        const char** argv,
-                        FastoObject* out) const WARN_UNUSED_RESULT;
 
  private:
   const function_t func_;

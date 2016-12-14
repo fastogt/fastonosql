@@ -20,6 +20,8 @@
 
 #include <QWidget>
 
+#include <common/error.h>
+
 #include "core/connection_types.h"  // for connectionTypes
 
 #include "core/core_fwd.h"  // for IServerSPtr
@@ -156,7 +158,9 @@ class BaseShellWidget : public QWidget {
   bool loadFromFile(const QString& path);
   void saveToFileAs();
   void saveToFile();
+  void validateClick();
   void helpClick();
+  void inputTextChanged();
 
   void advancedOptionsChange(int state);
   void changeVersionApi(int index);
@@ -181,6 +185,8 @@ class BaseShellWidget : public QWidget {
   void serverDisconnect();
 
  private:
+  common::Error validate(const QString& text);
+
   void syncConnectionActions();
   void updateServerInfo(core::IServerInfoSPtr inf);
   void updateDefaultDatabase(core::IDataBaseInfoSPtr dbs);
@@ -193,6 +199,7 @@ class BaseShellWidget : public QWidget {
   QAction* loadAction_;
   QAction* saveAction_;
   QAction* saveAsAction_;
+  QAction* validateAction_;
   QComboBox* commandsVersionApi_;
 
   BaseShell* input_;

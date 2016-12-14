@@ -5,6 +5,7 @@
 - SADD UI handling
 - ZADD UI handling
 - HMSET UI handling
+- Validate input
 
 1.2.0 / December 3, 2016
 [Alexandr Topilski]
