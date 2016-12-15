@@ -95,6 +95,15 @@ struct CommandsApi : public internal::ApiTraits<DBConnection> {
                                const char** argv,
                                FastoObject* out);
 
+  static common::Error Incr(internal::CommandHandler* handler,
+                            int argc,
+                            const char** argv,
+                            FastoObject* out);
+  static common::Error IncrBy(internal::CommandHandler* handler,
+                              int argc,
+                              const char** argv,
+                              FastoObject* out);
+
   static common::Error Persist(internal::CommandHandler* handler,
                                int argc,
                                const char** argv,
@@ -861,7 +870,7 @@ static const std::vector<CommandHolder> g_commands = {
                   UNDEFINED_EXAMPLE_STR,
                   1,
                   0,
-                  &CommandsApi::CommonExec),
+                  &CommandsApi::Incr),
     CommandHolder("INCRBY",
                   "<key> <increment>",
                   "Increment the integer value of a key by "
@@ -870,7 +879,7 @@ static const std::vector<CommandHolder> g_commands = {
                   UNDEFINED_EXAMPLE_STR,
                   2,
                   0,
-                  &CommandsApi::CommonExec),
+                  &CommandsApi::IncrBy),
     CommandHolder("INCRBYFLOAT",
                   "<key> <increment>",
                   "Increment the float value of a key by "

@@ -1,11 +1,13 @@
 1.3.0 /
 [Alexandr Topilski]
 - Ui bug fixes
+- Validate input
 - LPUSH UI handling
 - SADD UI handling
 - ZADD UI handling
 - HMSET UI handling
-- Validate input
+- INCR UI handling
+- INCRBY UI handling
 
 1.2.0 / December 3, 2016
 [Alexandr Topilski]

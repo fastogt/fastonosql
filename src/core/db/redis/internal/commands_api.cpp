@@ -251,6 +251,47 @@ common::Error CommandsApi::Hgetall(internal::CommandHandler* handler,
   return common::Error();
 }
 
+common::Error CommandsApi::Incr(internal::CommandHandler* handler,
+                                int argc,
+                                const char** argv,
+                                FastoObject* out) {
+  UNUSED(argc);
+
+  NKey key(argv[0]);
+  DBConnection* redis = static_cast<DBConnection*>(handler);
+  int result = 0;
+  common::Error err = redis->Incr(key, &result);
+  if (err && err->isError()) {
+    return err;
+  }
+
+  common::FundamentalValue* val = common::Value::createIntegerValue(result);
+  FastoObject* child = new FastoObject(out, val, redis->Delimiter());
+  out->AddChildren(child);
+  return common::Error();
+}
+
+common::Error CommandsApi::IncrBy(internal::CommandHandler* handler,
+                                  int argc,
+                                  const char** argv,
+                                  FastoObject* out) {
+  UNUSED(argc);
+
+  NKey key(argv[0]);
+  int incr = common::ConvertFromString<int>(argv[1]);
+  DBConnection* redis = static_cast<DBConnection*>(handler);
+  int result = 0;
+  common::Error err = redis->IncrBy(key, incr, &result);
+  if (err && err->isError()) {
+    return err;
+  }
+
+  common::FundamentalValue* val = common::Value::createIntegerValue(result);
+  FastoObject* child = new FastoObject(out, val, redis->Delimiter());
+  out->AddChildren(child);
+  return common::Error();
+}
+
 common::Error CommandsApi::Persist(internal::CommandHandler* handler,
                                    int argc,
                                    const char** argv,

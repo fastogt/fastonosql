@@ -6,6 +6,8 @@
 - [Redis] SADD UI handling
 - [Redis] ZADD UI handling
 - [Redis] HMSET UI handling
+- [Redis] INCR UI handling
+- [Redis] INCRBY UI handling
 
 1.2.0 / December 3, 2016
 [Alexandr Topilski]

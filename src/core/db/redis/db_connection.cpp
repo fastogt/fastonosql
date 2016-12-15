@@ -2419,6 +2419,76 @@ common::Error DBConnection::Hgetall(const NKey& key, NDbKValue* loaded_key) {
   return common::Error();
 }
 
+common::Error DBConnection::Incr(const NKey& key, int* incr) {
+  if (!incr) {
+    DNOTREACHED();
+    return common::make_error_value("Invalid input argument(s)", common::ErrorValue::E_ERROR);
+  }
+
+  if (!IsConnected()) {
+    return common::make_error_value("Not connected", common::Value::E_ERROR);
+  }
+
+  std::string key_str = key.Key();
+  redisReply* reply =
+      reinterpret_cast<redisReply*>(redisCommand(connection_.handle_, "INCR %s", key_str.c_str()));
+  if (!reply) {
+    return cliPrintContextError(connection_.handle_);
+  }
+
+  if (reply->type == REDIS_REPLY_INTEGER) {
+    if (client_) {
+      NValue val(common::Value::createIntegerValue(reply->integer));
+      client_->OnKeyAdded(NDbKValue(key, val));
+    }
+    *incr = reply->integer;
+    freeReplyObject(reply);
+    return common::Error();
+  } else if (reply->type == REDIS_REPLY_ERROR) {
+    std::string str(reply->str, reply->len);
+    freeReplyObject(reply);
+    return common::make_error_value(str, common::ErrorValue::E_ERROR);
+  }
+
+  NOTREACHED();
+  return common::Error();
+}
+
+common::Error DBConnection::IncrBy(const NKey& key, int inc, int* incr) {
+  if (!incr) {
+    DNOTREACHED();
+    return common::make_error_value("Invalid input argument(s)", common::ErrorValue::E_ERROR);
+  }
+
+  if (!IsConnected()) {
+    return common::make_error_value("Not connected", common::Value::E_ERROR);
+  }
+
+  std::string key_str = key.Key();
+  redisReply* reply = reinterpret_cast<redisReply*>(
+      redisCommand(connection_.handle_, "INCRBY %s %d", key_str.c_str(), inc));
+  if (!reply) {
+    return cliPrintContextError(connection_.handle_);
+  }
+
+  if (reply->type == REDIS_REPLY_INTEGER) {
+    if (client_) {
+      NValue val(common::Value::createIntegerValue(reply->integer));
+      client_->OnKeyAdded(NDbKValue(key, val));
+    }
+    *incr = reply->integer;
+    freeReplyObject(reply);
+    return common::Error();
+  } else if (reply->type == REDIS_REPLY_ERROR) {
+    std::string str(reply->str, reply->len);
+    freeReplyObject(reply);
+    return common::make_error_value(str, common::ErrorValue::E_ERROR);
+  }
+
+  NOTREACHED();
+  return common::Error();
+}
+
 }  // namespace redis
 }  // namespace core
 }  // namespace fastonosql

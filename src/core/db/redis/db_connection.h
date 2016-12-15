@@ -138,6 +138,9 @@ class DBConnection : public core::internal::CDBConnection<NativeConnection, RCon
   common::Error Hmset(const NKey& key, NValue hash);
   common::Error Hgetall(const NKey& key, NDbKValue* loaded_key);
 
+  common::Error Incr(const NKey& key, int* incr);
+  common::Error IncrBy(const NKey& key, int inc, int* incr);
+
  private:
   virtual common::Error ScanImpl(uint64_t cursor_in,
                                  std::string pattern,
