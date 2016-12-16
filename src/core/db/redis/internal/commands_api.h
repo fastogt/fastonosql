@@ -59,6 +59,15 @@ struct CommandsApi : public internal::ApiTraits<DBConnection> {
                                       const char** argv,
                                       FastoObject* out);
 
+  static common::Error SetEx(internal::CommandHandler* handler,
+                             int argc,
+                             const char** argv,
+                             FastoObject* out);
+  static common::Error SetNX(internal::CommandHandler* handler,
+                             int argc,
+                             const char** argv,
+                             FastoObject* out);
+
   static common::Error Lpush(internal::CommandHandler* handler,
                              int argc,
                              const char** argv,
@@ -103,6 +112,10 @@ struct CommandsApi : public internal::ApiTraits<DBConnection> {
                               int argc,
                               const char** argv,
                               FastoObject* out);
+  static common::Error IncrByFloat(internal::CommandHandler* handler,
+                                   int argc,
+                                   const char** argv,
+                                   FastoObject* out);
 
   static common::Error Persist(internal::CommandHandler* handler,
                                int argc,
@@ -888,7 +901,7 @@ static const std::vector<CommandHolder> g_commands = {
                   UNDEFINED_EXAMPLE_STR,
                   2,
                   0,
-                  &CommandsApi::CommonExec),
+                  &CommandsApi::IncrByFloat),
     CommandHolder("INFO",
                   "[section]",
                   "Get information and statistics about the server",
@@ -1405,7 +1418,7 @@ static const std::vector<CommandHolder> g_commands = {
                   UNDEFINED_EXAMPLE_STR,
                   3,
                   0,
-                  &CommandsApi::CommonExec),
+                  &CommandsApi::SetEx),
     CommandHolder("SETNX",
                   "<key> <value>",
                   "Set the value of a key, only if the key "
@@ -1414,7 +1427,7 @@ static const std::vector<CommandHolder> g_commands = {
                   UNDEFINED_EXAMPLE_STR,
                   2,
                   0,
-                  &CommandsApi::CommonExec),
+                  &CommandsApi::SetNX),
     CommandHolder("SETRANGE",
                   "<key> <offset> <value>",
                   "Overwrite part of a string at key "

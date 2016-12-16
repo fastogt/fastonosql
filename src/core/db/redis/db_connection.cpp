@@ -2011,6 +2011,59 @@ common::Error DBConnection::Subscribe(int argc, const char** argv, FastoObject* 
   return common::Error();
 }
 
+common::Error DBConnection::SetEx(const NDbKValue& key, ttl_t ttl) {
+  std::string key_str = key.KeyString();
+  std::string value_str = key.ValueString();
+  redisReply* reply = reinterpret_cast<redisReply*>(
+      redisCommand(connection_.handle_, "SETEX %s %d %s", key_str.c_str(), ttl, value_str.c_str()));
+  if (!reply) {
+    return cliPrintContextError(connection_.handle_);
+  }
+
+  if (reply->type == REDIS_REPLY_ERROR) {
+    std::string str(reply->str, reply->len);
+    freeReplyObject(reply);
+    return common::make_error_value(str, common::ErrorValue::E_ERROR);
+  }
+
+  if (client_) {
+    client_->OnKeyAdded(key);
+  }
+  if (client_) {
+    client_->OnKeyTTLChanged(key.Key(), ttl);
+  }
+  freeReplyObject(reply);
+  return common::Error();
+}
+
+common::Error DBConnection::SetNX(const NDbKValue& key, int* result) {
+  std::string key_str = key.KeyString();
+  std::string value_str = key.ValueString();
+  redisReply* reply = reinterpret_cast<redisReply*>(
+      redisCommand(connection_.handle_, "SETNX %s %s", key_str.c_str(), value_str.c_str()));
+  if (!reply) {
+    return cliPrintContextError(connection_.handle_);
+  }
+
+  if (reply->type == REDIS_REPLY_INTEGER) {
+    if (client_ && reply->integer) {
+      client_->OnKeyAdded(key);
+    }
+
+    *result = reply->integer;
+    freeReplyObject(reply);
+    return common::Error();
+  } else if (reply->type == REDIS_REPLY_ERROR) {
+    common::Error err =
+        common::make_error_value(std::string(reply->str, reply->len), common::Value::E_ERROR);
+    freeReplyObject(reply);
+    return err;
+  }
+
+  NOTREACHED();
+  return common::Error();
+}
+
 common::Error DBConnection::Lpush(const NKey& key, NValue arr, int* list_len) {
   if (!arr || arr->type() != common::Value::TYPE_ARRAY || !list_len) {
     DNOTREACHED();
@@ -2477,6 +2530,43 @@ common::Error DBConnection::IncrBy(const NKey& key, int inc, int* incr) {
       client_->OnKeyAdded(NDbKValue(key, val));
     }
     *incr = reply->integer;
+    freeReplyObject(reply);
+    return common::Error();
+  } else if (reply->type == REDIS_REPLY_ERROR) {
+    std::string str(reply->str, reply->len);
+    freeReplyObject(reply);
+    return common::make_error_value(str, common::ErrorValue::E_ERROR);
+  }
+
+  NOTREACHED();
+  return common::Error();
+}
+
+common::Error DBConnection::IncrByFloat(const NKey& key, double inc, std::string* str_incr) {
+  if (!str_incr) {
+    DNOTREACHED();
+    return common::make_error_value("Invalid input argument(s)", common::ErrorValue::E_ERROR);
+  }
+
+  if (!IsConnected()) {
+    return common::make_error_value("Not connected", common::Value::E_ERROR);
+  }
+
+  std::string key_str = key.Key();
+  std::string value_str = common::ConvertToString(inc);
+  redisReply* reply = reinterpret_cast<redisReply*>(
+      redisCommand(connection_.handle_, "INCRBYFLOAT %s %s", key_str.c_str(), value_str.c_str()));
+  if (!reply) {
+    return cliPrintContextError(connection_.handle_);
+  }
+
+  if (reply->type == REDIS_REPLY_STRING) {
+    std::string str(reply->str, reply->len);
+    if (client_) {
+      NValue val(common::Value::createStringValue(str));
+      client_->OnKeyAdded(NDbKValue(key, val));
+    }
+    *str_incr = str;
     freeReplyObject(reply);
     return common::Error();
   } else if (reply->type == REDIS_REPLY_ERROR) {

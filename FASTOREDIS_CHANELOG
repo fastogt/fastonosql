@@ -8,6 +8,9 @@
 - HMSET UI handling
 - INCR UI handling
 - INCRBY UI handling
+- INCRBYFLOAT UI handling
+- ZETEX UI handling
+- ZETNX UI handling
 
 1.2.0 / December 3, 2016
 [Alexandr Topilski]

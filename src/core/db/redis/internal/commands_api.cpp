@@ -113,6 +113,52 @@ common::Error CommandsApi::Lrange(internal::CommandHandler* handler,
   return common::Error();
 }
 
+common::Error CommandsApi::SetEx(internal::CommandHandler* handler,
+                                 int argc,
+                                 const char** argv,
+                                 FastoObject* out) {
+  UNUSED(argc);
+
+  NKey key(argv[0]);
+  ttl_t ttl = common::ConvertFromString<ttl_t>(argv[1]);
+  NValue string_val(common::Value::createStringValue(argv[2]));
+  NDbKValue kv(key, string_val);
+
+  DBConnection* redis = static_cast<DBConnection*>(handler);
+  common::Error err = redis->SetEx(kv, ttl);
+  if (err && err->isError()) {
+    return err;
+  }
+
+  common::StringValue* val = common::Value::createStringValue("OK");
+  FastoObject* child = new FastoObject(out, val, redis->Delimiter());
+  out->AddChildren(child);
+  return common::Error();
+}
+
+common::Error CommandsApi::SetNX(internal::CommandHandler* handler,
+                                 int argc,
+                                 const char** argv,
+                                 FastoObject* out) {
+  UNUSED(argc);
+
+  NKey key(argv[0]);
+  NValue string_val(common::Value::createStringValue(argv[1]));
+  NDbKValue kv(key, string_val);
+
+  DBConnection* redis = static_cast<DBConnection*>(handler);
+  int result = 0;
+  common::Error err = redis->SetNX(kv, &result);
+  if (err && err->isError()) {
+    return err;
+  }
+
+  common::FundamentalValue* val = common::Value::createIntegerValue(result);
+  FastoObject* child = new FastoObject(out, val, redis->Delimiter());
+  out->AddChildren(child);
+  return common::Error();
+}
+
 common::Error CommandsApi::Sadd(internal::CommandHandler* handler,
                                 int argc,
                                 const char** argv,
@@ -287,6 +333,27 @@ common::Error CommandsApi::IncrBy(internal::CommandHandler* handler,
   }
 
   common::FundamentalValue* val = common::Value::createIntegerValue(result);
+  FastoObject* child = new FastoObject(out, val, redis->Delimiter());
+  out->AddChildren(child);
+  return common::Error();
+}
+
+common::Error CommandsApi::IncrByFloat(internal::CommandHandler* handler,
+                                       int argc,
+                                       const char** argv,
+                                       FastoObject* out) {
+  UNUSED(argc);
+
+  NKey key(argv[0]);
+  double incr = common::ConvertFromString<double>(argv[1]);
+  DBConnection* redis = static_cast<DBConnection*>(handler);
+  std::string result;
+  common::Error err = redis->IncrByFloat(key, incr, &result);
+  if (err && err->isError()) {
+    return err;
+  }
+
+  common::StringValue* val = common::Value::createStringValue(result);
   FastoObject* child = new FastoObject(out, val, redis->Delimiter());
   out->AddChildren(child);
   return common::Error();

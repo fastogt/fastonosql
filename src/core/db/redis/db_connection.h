@@ -122,6 +122,9 @@ class DBConnection : public core::internal::CDBConnection<NativeConnection, RCon
                           const char** argv,
                           FastoObject* out) WARN_UNUSED_RESULT;  // interrupt
 
+  common::Error SetEx(const NDbKValue& key, ttl_t ttl);
+  common::Error SetNX(const NDbKValue& key, int* result);
+
   common::Error Lpush(const NKey& key, NValue arr, int* list_len);
   common::Error Lrange(const NKey& key, int start, int stop, NDbKValue* loaded_key);
 
@@ -140,6 +143,7 @@ class DBConnection : public core::internal::CDBConnection<NativeConnection, RCon
 
   common::Error Incr(const NKey& key, int* incr);
   common::Error IncrBy(const NKey& key, int inc, int* incr);
+  common::Error IncrByFloat(const NKey& key, double inc, std::__cxx11::string* str_incr);
 
  private:
   virtual common::Error ScanImpl(uint64_t cursor_in,

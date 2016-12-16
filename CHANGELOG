@@ -8,6 +8,10 @@
 - [Redis] HMSET UI handling
 - [Redis] INCR UI handling
 - [Redis] INCRBY UI handling
+- [Redis] INCRBYFLOAT UI handling
+- [Redis] INCRBYFLOAT UI handling
+- [Redis] ZETEX UI handling
+- [Redis] ZETNX UI handling
 
 1.2.0 / December 3, 2016
 [Alexandr Topilski]
