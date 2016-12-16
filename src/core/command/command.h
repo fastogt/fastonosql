@@ -35,13 +35,13 @@ FastoObjectCommandIPtr CreateCommand(FastoObject* parent,
                                      const std::string& input,
                                      common::Value::CommandLoggingType ct) {
   if (!parent) {
-    NOTREACHED();
+    DNOTREACHED();
     return nullptr;
   }
 
   std::string stable_input = StableCommand(input);
   if (stable_input.empty()) {
-    NOTREACHED();
+    DNOTREACHED();
     return nullptr;
   }
 
@@ -56,7 +56,7 @@ FastoObjectCommandIPtr CreateCommandFast(const std::string& input,
                                          common::Value::CommandLoggingType ct) {
   std::string stable_input = StableCommand(input);
   if (stable_input.empty()) {
-    NOTREACHED();
+    DNOTREACHED();
     return nullptr;
   }
 

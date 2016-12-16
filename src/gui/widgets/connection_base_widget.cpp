@@ -26,6 +26,7 @@
 #include <QCheckBox>
 #include <QSpinBox>
 #include <QEvent>
+#include <QSplitter>
 
 #include <common/macros.h>
 #include <common/convert2string.h>
@@ -103,7 +104,12 @@ ConnectionBaseWidget::ConnectionBaseWidget(QWidget* parent) : QWidget(parent) {
   loggingMsec_->setEnabled(false);
 
   loggingLayout->addWidget(logging_);
-  loggingLayout->addWidget(loggingMsec_);
+
+  QHBoxLayout* loggingVLayout = new QHBoxLayout;
+  loggingVLayout->addWidget(new QLabel(QObject::tr("msec:")));
+  loggingVLayout->addWidget(loggingMsec_);
+  loggingLayout->addWidget(new QSplitter(Qt::Horizontal));
+  loggingLayout->addLayout(loggingVLayout);
 
   basicLayout->addLayout(folderLayout);
   basicLayout->addLayout(loggingLayout);
