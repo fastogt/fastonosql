@@ -170,6 +170,7 @@ MainWindow::MainWindow() : QMainWindow(), isCheckedInSession_(false) {
   preferencesAction_->setIcon(GuiFactory::instance().preferencesIcon());
   VERIFY(connect(preferencesAction_, &QAction::triggered, this, &MainWindow::openPreferences));
 
+  // edit menu
   QMenu* editMenu = new QMenu(this);
   editAction_ = menuBar()->addMenu(editMenu);
   editMenu->addAction(preferencesAction_);

@@ -1,6 +1,8 @@
 About FastoNoSQL
 ===============
 [![Travis Build Status](https://travis-ci.org/fastogt/fastonosql.svg?branch=master)](https://travis-ci.org/fastogt/fastonosql)
+[![GitHub license](https://img.shields.io/badge/license-GPLv3-blue.svg)](https://raw.githubusercontent.com/fastogt/fastonosql/master/COPYRIGHT)
+[![Join the chat at https://gitter.im/fastogt/fastonosql](https://badges.gitter.im/Join%20Chat.svg)](https://gitter.im/fastogt/fastonosql?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge&utm_content=badge)
 
 FastoNoSQL &mdash; is a crossplatform Redis, Memcached, SSDB, LevelDB, RocksDB, UnQLite, LMDB, UpscaleDB management tool, also FastoNoSQL is platform for NoSQL databases, you can add your own implementation for diffrent databases. <br />
 
@@ -22,8 +24,6 @@ Download
 
 You can download compiled version (for Mac OS X, Windows, FreeBSD and Linux) from our site:<br />
 [www.fastonosql.com](http://www.fastonosql.com)
-
-<!-- https://www.dropbox.com/sh/u0s0i8e4m0a8i9f/oxtqKHPUZ8 -->
 
 Contribute
 ==========

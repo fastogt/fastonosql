@@ -42,7 +42,7 @@ QVariant HashTableModel::data(const QModelIndex& index, int role) const {
     return QVariant();
   }
 
-  int row = index.row();
+  // int row = index.row();
   int col = index.column();
   KeyValueTableItem* node =
       common::qt::item<common::qt::gui::TableItem*, KeyValueTableItem*>(index);
@@ -62,10 +62,8 @@ QVariant HashTableModel::data(const QModelIndex& index, int role) const {
 
 bool HashTableModel::setData(const QModelIndex& index, const QVariant& value, int role) {
   if (index.isValid() && role == Qt::EditRole) {
-    int row = index.row();
+    // int row = index.row();
     int col = index.column();
-
-    // handle last row
 
     KeyValueTableItem* node =
         common::qt::item<common::qt::gui::TableItem*, KeyValueTableItem*>(index);

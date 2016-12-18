@@ -24,6 +24,7 @@ namespace fastonosql {
 namespace gui {
 
 class TypeDelegate : public QStyledItemDelegate {
+  Q_OBJECT
  public:
   enum { row_height = 32 };
   explicit TypeDelegate(QObject* parent = Q_NULLPTR);
