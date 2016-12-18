@@ -18,7 +18,8 @@
 
 #include "core/database/idatabase_info.h"
 
-#include <string>  // for string
+#include <algorithm>  // for remove_if
+#include <string>     // for string
 
 namespace fastonosql {
 namespace core {

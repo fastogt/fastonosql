@@ -18,6 +18,11 @@
 
 #pragma once
 
+#include <string>  // for string
+
+#include <common/net/types.h>  // for HostAndPort
+
+#include "core/connection_types.h"  // for connectionTypes
 #include "core/connection_settings/iconnection_settings.h"
 
 namespace fastonosql {

@@ -49,7 +49,7 @@ int main(int argc, char* argv[]) {
 #else
   INIT_LOGGER(PROJECT_NAME_TITLE);
 #endif
-#ifdef NDEBUG
+#if defined(NDEBUG)
   SET_LOG_LEVEL(common::logging::L_INFO);
 #else
   SET_LOG_LEVEL(common::logging::L_DEBUG);

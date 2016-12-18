@@ -22,10 +22,9 @@
 
 #include <memory>  // for shared_ptr
 #include <string>  // for string
-#include <vector>  // for vector
 
 #include <common/file_system.h>  // for ascii_string_path, etc
-#include <common/net/types.h>    // for HostAndPort
+#include <common/types.h>        // for ClonableBase
 
 #include "core/connection_types.h"  // for connectionTypes
 

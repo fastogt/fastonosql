@@ -18,6 +18,8 @@
 
 #include "core/connection_settings/iconnection_settings_local.h"
 
+#include <common/macros.h>  // for DCHECK
+
 namespace fastonosql {
 namespace core {
 

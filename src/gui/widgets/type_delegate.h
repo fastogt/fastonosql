@@ -44,7 +44,7 @@ class TypeDelegate : public QStyledItemDelegate {
 
   virtual void updateEditorGeometry(QWidget* editor,
                                     const QStyleOptionViewItem& option,
-                                    const QModelIndex&) const override;
+                                    const QModelIndex& index) const override;
 };
 
 }  // namespace gui

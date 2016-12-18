@@ -24,7 +24,8 @@
 #include <string>  // for string
 #include <vector>  // for vector
 
-#include <common/types.h>  // for ClonableBase
+#include <common/macros.h>  // for WARN_UNUSED_RESULT
+#include <common/types.h>   // for ClonableBase
 
 #include "core/connection_types.h"  // for connectionTypes
 #include "core/db_key.h"            // for NDbKValue

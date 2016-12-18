@@ -18,7 +18,18 @@
 
 #pragma once
 
+#include <memory>  // for shared_ptr
+#include <string>  // for string
+#include <vector>  // for vector
+
+#include "core/connection_types.h"  // for connectionTypes
 #include "core/connection_settings/iconnection_settings.h"
+
+namespace common {
+namespace net {
+struct HostAndPort;
+}
+}
 
 namespace fastonosql {
 namespace core {

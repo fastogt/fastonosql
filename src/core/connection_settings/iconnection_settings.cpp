@@ -20,7 +20,6 @@
 
 #include <inttypes.h>  // for PRIu32
 #include <sstream>     // for stringstream, basic_ostream, etc
-#include <stddef.h>    // for size_t
 #include <string>      // for string, allocator, etc
 
 #include <common/macros.h>          // for NOTREACHED, CHECK, etc

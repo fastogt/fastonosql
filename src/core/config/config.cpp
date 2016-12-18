@@ -18,8 +18,8 @@
 
 #include "core/config/config.h"
 
+#include <stddef.h>  // for size_t
 #include <string>
-#include <vector>
 
 extern "C" {
 #include "sds.h"

@@ -36,6 +36,7 @@ class LogWidget;
 
 namespace fastonosql {
 namespace gui {
+
 class LogTabWidget : public QTabWidget {
   Q_OBJECT
  public:
@@ -53,5 +54,6 @@ class LogTabWidget : public QTabWidget {
   LogWidget* log_;
   CommandsWidget* commands_;
 };
+
 }  // namespace gui
 }  // namespace fastonosql

@@ -62,8 +62,9 @@ class NumericDelegate : public QStyledItemDelegate {
   explicit NumericDelegate(QObject* parent = 0) : QStyledItemDelegate(parent) {}
 
   QWidget* createEditor(QWidget* parent,
-                        const QStyleOptionViewItem&,
+                        const QStyleOptionViewItem& option,
                         const QModelIndex& index) const override {
+    UNUSED(option);
     UNUSED(index);
 
     QSpinBox* editor = new QSpinBox(parent);
@@ -90,7 +91,9 @@ class NumericDelegate : public QStyledItemDelegate {
 
   void updateEditorGeometry(QWidget* editor,
                             const QStyleOptionViewItem& option,
-                            const QModelIndex&) const override {
+                            const QModelIndex& index) const override {
+    UNUSED(index);
+
     editor->setGeometry(option.rect);
   }
 };

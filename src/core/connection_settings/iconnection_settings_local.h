@@ -18,7 +18,10 @@
 
 #pragma once
 
+#include <string>  // for string
+
 #include "core/connection_settings/iconnection_settings.h"
+#include "core/connection_types.h"  // for connectionTypes
 
 namespace fastonosql {
 namespace core {

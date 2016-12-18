@@ -254,7 +254,9 @@ void TypeDelegate::setModelData(QWidget* editor,
 
 void TypeDelegate::updateEditorGeometry(QWidget* editor,
                                         const QStyleOptionViewItem& option,
-                                        const QModelIndex&) const {
+                                        const QModelIndex& index) const {
+  UNUSED(index);
+
   editor->setGeometry(option.rect);
 }
 

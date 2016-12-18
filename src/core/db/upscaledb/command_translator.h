@@ -51,7 +51,7 @@ class CommandTranslator : public ICommandTranslator {
   virtual common::Error LoadKeyTTLCommandImpl(const NKey& key,
                                               std::string* cmdstring) const override;
 
-  virtual bool IsLoadKeyCommandImpl(const CommandInfo &cmd) const override;
+  virtual bool IsLoadKeyCommandImpl(const CommandInfo& cmd) const override;
 };
 
 }  // namespace upscaledb

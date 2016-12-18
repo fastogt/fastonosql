@@ -18,11 +18,13 @@
 
 #include "core/connection_settings/icluster_connection_settings.h"
 
-#include <sstream>
+#include <stddef.h>  // for size_t
+#include <sstream>   // for basic_ostream, operator<<, etc
 
-#include <common/convert2string.h>
+#include <common/macros.h>     // for DNOTREACHED
+#include <common/net/types.h>  // for HostAndPort, operator==
 
-#include "core/connection_settings_factory.h"
+#include "core/connection_settings/iconnection_settings_remote.h"
 
 namespace fastonosql {
 namespace core {

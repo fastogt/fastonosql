@@ -38,6 +38,7 @@ class ExplorerTreeModel;
 
 namespace fastonosql {
 namespace gui {
+
 class ExplorerTreeView : public QTreeView {
   Q_OBJECT
  public:
@@ -151,5 +152,6 @@ class ExplorerTreeView : public QTreeView {
   ExplorerTreeModel* source_model_;
   QSortFilterProxyModel* proxy_model_;
 };
+
 }  // namespace gui
 }  // namespace fastonosql

@@ -18,8 +18,12 @@
 
 #pragma once
 
-#include "core/ssh_info.h"  // for SSHInfo
+#include <string>  // for string
 
+#include <common/net/types.h>  // for HostAndPort
+
+#include "core/ssh_info.h"
+#include "core/connection_types.h"  // for connectionTypes
 #include "core/connection_settings/iconnection_settings_remote.h"
 
 namespace fastonosql {

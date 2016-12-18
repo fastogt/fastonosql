@@ -29,13 +29,6 @@
 namespace fastonosql {
 namespace core {
 namespace events_info {
-struct ClearDatabaseRequest;
-}
-}
-}
-namespace fastonosql {
-namespace core {
-namespace events_info {
 struct ExecuteInfoRequest;
 }
 }

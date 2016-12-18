@@ -91,6 +91,7 @@ const QString trChangePasswordTemplate_1S = QObject::tr("Change password for %1 
 
 namespace fastonosql {
 namespace gui {
+
 ExplorerTreeView::ExplorerTreeView(QWidget* parent) : QTreeView(parent) {
   source_model_ = new ExplorerTreeModel(this);
   proxy_model_ = new ExplorerTreeSortFilterProxyModel(this);
@@ -1192,5 +1193,6 @@ QModelIndex ExplorerTreeView::selectedIndex() const {
 
   return proxy_model_->mapToSource(indexses[0]);
 }
+
 }  // namespace gui
 }  // namespace fastonosql
