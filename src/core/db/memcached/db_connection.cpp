@@ -34,8 +34,8 @@
 #include <common/value.h>           // for Value::ErrorsType::E_ERROR, etc
 
 #include "core/db/memcached/config.h"               // for Config
-#include "core/db/memcached/connection_settings.h"  // for ConnectionSettings
-#include "core/db/memcached/database.h"
+#include "proxy/db/memcached/connection_settings.h"  // for ConnectionSettings
+#include "core/db/memcached/database_info.h"
 #include "core/db/memcached/command_translator.h"
 #include "core/db/memcached/internal/commands_api.h"
 

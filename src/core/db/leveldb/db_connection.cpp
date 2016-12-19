@@ -25,9 +25,9 @@
 #include <common/sprintf.h>
 #include <common/convert2string.h>  // for ConvertFromString
 
-#include "core/db/leveldb/connection_settings.h"  // for ConnectionSettings
+#include "proxy/db/leveldb/connection_settings.h"  // for ConnectionSettings
 #include "core/db/leveldb/command_translator.h"
-#include "core/db/leveldb/database.h"
+#include "core/db/leveldb/database_info.h"
 #include "core/db/leveldb/internal/commands_api.h"
 
 #include "global/global.h"  // for FastoObject, etc

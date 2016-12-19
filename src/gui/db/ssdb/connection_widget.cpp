@@ -18,7 +18,7 @@
 
 #include "gui/db/ssdb/connection_widget.h"
 
-#include "core/db/ssdb/connection_settings.h"
+#include "proxy/db/ssdb/connection_settings.h"
 
 namespace fastonosql {
 namespace gui {

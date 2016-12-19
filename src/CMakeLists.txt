@@ -1,3 +1,220 @@
+# core
+SET(HEADERS_CORE_INTERNAL
+  core/internal/connection.h
+  core/internal/db_connection.h
+  core/internal/cdb_connection.h
+  core/internal/cdb_connection_client.h
+  core/internal/command_handler.h
+  core/internal/commands_api.h
+)
+SET(SOURCES_CORE_INTERNAL
+  core/internal/connection.cpp
+  core/internal/db_connection.cpp
+  core/internal/cdb_connection.cpp
+  core/internal/cdb_connection_client.cpp
+  core/internal/command_handler.cpp
+  core/internal/commands_api.cpp
+)
+
+SET(HEADERS_CORE_DATABASE
+  core/database/idatabase_info.h
+)
+SET(SOURCES_CORE_DATABASE
+  core/database/idatabase_info.cpp
+)
+
+SET(HEADERS_CORE_SERVER
+  core/server/iserver_info.h
+)
+SET(SOURCES_CORE_SERVER
+  core/server/iserver_info.cpp
+)
+
+SET(HEADERS_CORE_COMMAND_TO_MOC
+  core/command/command_logger.h
+)
+SET(HEADERS_CORE_COMMAND
+  core/command/command.h
+)
+SET(SOURCES_CORE_COMMAND
+  core/command/command.cpp
+  core/command/command_logger.cpp
+)
+
+SET(HEADERS_CORE_CONFIG
+  core/config/config.h
+)
+SET(SOURCES_CORE_CONFIG
+  core/config/config.cpp
+)
+
+SET(HEADERS_CORE_TO_MOC
+  ${HEADERS_CORE_COMMAND_TO_MOC}
+)
+SET(HEADERS_CORE
+  ${HEADERS_CORE_SERVER}
+  ${HEADERS_CORE_DATABASE}
+  ${HEADERS_CORE_COMMAND}
+  ${HEADERS_CORE_CONFIG}
+  ${HEADERS_CORE_TRANSLATOR}
+  ${HEADERS_CORE_INTERNAL}
+
+  core/connection_types.h
+  core/types.h
+  core/db_traits.h
+  core/db_key.h
+  core/icommand_translator.h
+  core/command_info.h
+  core/command_holder.h
+  core/server_property_info.h
+  core/ssh_info.h
+)
+
+SET(SOURCES_CORE
+  ${SOURCES_CORE_DATABASE}
+  ${SOURCES_CORE_SERVER}
+  ${SOURCES_CORE_COMMAND}
+  ${SOURCES_CORE_CONFIG}
+  ${SOURCES_CORE_TRANSLATOR}
+  ${SOURCES_CORE_INTERNAL}
+
+  core/connection_types.cpp
+  core/types.cpp
+  core/db_traits.cpp
+  core/db_key.cpp
+  core/icommand_translator.cpp
+  core/command_info.cpp
+  core/command_holder.cpp
+  core/server_property_info.cpp
+  core/ssh_info.cpp
+)
+
+# proxy
+SET(HEADERS_PROXY_CONNECTION_SETTINGS
+  proxy/connection_settings/icluster_connection_settings.h
+  proxy/connection_settings/isentinel_connection_settings.h
+  proxy/connection_settings/iconnection_settings.h
+  proxy/connection_settings/iconnection_settings_local.h
+  proxy/connection_settings/iconnection_settings_remote.h
+  proxy/connection_settings/iconnection_settings_ssh.h
+)
+SET(SOURCES_PROXY_CONNECTION_SETTINGS
+  proxy/connection_settings/icluster_connection_settings.cpp
+  proxy/connection_settings/isentinel_connection_settings.cpp
+  proxy/connection_settings/iconnection_settings.cpp
+  proxy/connection_settings/iconnection_settings_local.cpp
+  proxy/connection_settings/iconnection_settings_remote.cpp
+  proxy/connection_settings/iconnection_settings_ssh.cpp
+)
+
+SET(HEADERS_PROXY_DRIVER_TO_MOC
+  proxy/driver/idriver.h
+  proxy/driver/idriver_local.h
+  proxy/driver/idriver_remote.h
+)
+SET(HEADERS_PROXY_DRIVER
+  proxy/driver/root_locker.h
+  proxy/driver/first_child_update_root_locker.h
+)
+SET(SOURCES_PROXY_DRIVER
+  proxy/driver/idriver.cpp
+  proxy/driver/idriver_local.cpp
+  proxy/driver/idriver_remote.cpp
+  proxy/driver/root_locker.cpp
+  proxy/driver/first_child_update_root_locker.cpp
+)
+
+SET(HEADERS_PROXY_SERVER_TO_MOC
+  proxy/server/iserver_base.h
+  proxy/server/iserver.h
+  proxy/server/iserver_local.h
+  proxy/server/iserver_remote.h
+)
+SET(HEADERS_PROXY_SERVER
+)
+SET(SOURCES_PROXY_SERVER
+  proxy/server/iserver_base.cpp
+  proxy/server/iserver.cpp
+  proxy/server/iserver_local.cpp
+  proxy/server/iserver_remote.cpp
+)
+
+SET(HEADERS_PROXY_EVENTS
+  proxy/events/events.h
+  proxy/events/events_info.h
+)
+SET(SOURCES_PROXY_EVENTS
+  proxy/events/events_info.cpp
+)
+
+SET(HEADERS_PROXY_CLUSTER
+  proxy/cluster/icluster.h
+)
+SET(SOURCES_PROXY_CLUSTER
+  proxy/cluster/icluster.cpp
+)
+
+SET(HEADERS_PROXY_SENTINEL
+  proxy/sentinel/isentinel.h
+)
+SET(SOURCES_PROXY_SENTINEL
+  proxy/sentinel/isentinel.cpp
+)
+
+SET(HEADERS_PROXY_DATABASE
+  proxy/database/idatabase.h
+)
+SET(SOURCES_PROXY_DATABASE
+  proxy/database/idatabase.cpp
+)
+
+#
+SET(HEADERS_PROXY_TO_MOC
+  ${HEADERS_PROXY_DRIVER_TO_MOC}
+  ${HEADERS_PROXY_SERVER_TO_MOC}
+)
+
+SET(HEADERS_PROXY
+  ${HEADERS_PROXY_DRIVER}
+  ${HEADERS_PROXY_SERVER}
+  ${HEADERS_PROXY_CLUSTER}
+  ${HEADERS_PROXY_SENTINEL}
+  ${HEADERS_PROXY_EVENTS}
+  ${HEADERS_PROXY_DATABASE}
+  ${HEADERS_PROXY_CONNECTION_SETTINGS}
+
+  proxy/servers_manager.h
+  proxy/core_fwd.h
+  proxy/settings_manager.h
+  proxy/cluster_connection_settings_factory.h
+  proxy/sentinel_connection_settings_factory.h
+  proxy/sentinel_connection_settings_factory.h
+)
+
+SET(SOURCES_PROXY
+  ${SOURCES_PROXY_DRIVER}
+  ${SOURCES_PROXY_SERVER}
+  ${SOURCES_PROXY_CLUSTER}
+  ${SOURCES_PROXY_SENTINEL}
+  ${SOURCES_PROXY_EVENTS}
+  ${SOURCES_PROXY_DATABASE}
+  ${SOURCES_PROXY_CONNECTION_SETTINGS}
+
+  proxy/servers_manager.cpp
+  proxy/settings_manager.cpp
+  proxy/cluster_connection_settings_factory.cpp
+  proxy/sentinel_connection_settings_factory.cpp
+  proxy/connection_settings_factory.cpp
+)
+
+# gui, translation, global
+SET(HEADERS_TRANSLATIONS
+  translations/global.h
+)
+SET(SOURCES_TRANSLATIONS
+  translations/global.cpp
+)
+
 SET(HEADERS_GLOBAL
   global/global.h
   global/types.h
@@ -167,8 +384,8 @@ SET(SOURCES_GUI
   gui/property_table_item.cpp
   gui/property_table_model.cpp
   gui/main_tab_bar.cpp
-  gui/fasto_text_view.cpp  
-  gui/keys_table_model.cpp  
+  gui/fasto_text_view.cpp
+  gui/keys_table_model.cpp
   gui/fasto_tree_view.cpp
   gui/fasto_common_model.cpp
   gui/fasto_table_view.cpp
@@ -182,195 +399,6 @@ SET(SOURCES_GUI
   gui/hash_table_model.cpp
   gui/action_cell_delegate.cpp
   gui/key_value_table_item.cpp
-)
-
-SET(HEADERS_CORE_INTERNAL
-  core/internal/connection.h
-  core/internal/db_connection.h
-  core/internal/cdb_connection.h
-  core/internal/cdb_connection_client.h
-  core/internal/command_handler.h
-  core/internal/commands_api.h
-)
-SET(SOURCES_CORE_INTERNAL
-  core/internal/connection.cpp
-  core/internal/db_connection.cpp
-  core/internal/cdb_connection.cpp
-  core/internal/cdb_connection_client.cpp
-  core/internal/command_handler.cpp
-  core/internal/commands_api.cpp
-)
-
-SET(HEADERS_CORE_DATABASE
-  core/database/idatabase_info.h
-  core/database/idatabase.h
-)
-SET(SOURCES_CORE_DATABASE
-  core/database/idatabase_info.cpp
-  core/database/idatabase.cpp
-)
-
-SET(HEADERS_CORE_SERVER_TO_MOC
-  core/server/iserver_base.h
-  core/server/iserver.h
-  core/server/iserver_local.h
-  core/server/iserver_remote.h
-)
-SET(HEADERS_CORE_SERVER
-  core/server/iserver_info.h
-)
-SET(SOURCES_CORE_SERVER
-  core/server/iserver_base.cpp
-  core/server/iserver_info.cpp
-  core/server/iserver.cpp
-  core/server/iserver_local.cpp
-  core/server/iserver_remote.cpp
-)
-
-SET(HEADERS_CORE_CLUSTER
-  core/cluster/icluster.h
-)
-SET(SOURCES_CORE_CLUSTER
-  core/cluster/icluster.cpp
-)
-
-SET(HEADERS_CORE_SENTINEL
-  core/sentinel/isentinel.h
-)
-SET(SOURCES_CORE_SENTINEL
-  core/sentinel/isentinel.cpp
-)
-
-SET(HEADERS_CORE_DRIVER_TO_MOC
-  core/driver/idriver.h
-  core/driver/idriver_local.h
-  core/driver/idriver_remote.h
-)
-SET(HEADERS_CORE_DRIVER
-  core/driver/root_locker.h
-  core/driver/first_child_update_root_locker.h
-)
-SET(SOURCES_CORE_DRIVER
-  core/driver/idriver.cpp
-  core/driver/idriver_local.cpp
-  core/driver/idriver_remote.cpp
-  core/driver/root_locker.cpp
-  core/driver/first_child_update_root_locker.cpp
-)
-
-SET(HEADERS_CORE_CONNECTION_SETTINGS
-  core/connection_settings/icluster_connection_settings.h
-  core/connection_settings/isentinel_connection_settings.h
-  core/connection_settings/iconnection_settings.h
-  core/connection_settings/iconnection_settings_local.h
-  core/connection_settings/iconnection_settings_remote.h
-  core/connection_settings/iconnection_settings_ssh.h
-)
-SET(SOURCES_CORE_CONNECTION_SETTINGS
-  core/connection_settings/icluster_connection_settings.cpp
-  core/connection_settings/isentinel_connection_settings.cpp
-  core/connection_settings/iconnection_settings.cpp
-  core/connection_settings/iconnection_settings_local.cpp
-  core/connection_settings/iconnection_settings_remote.cpp
-  core/connection_settings/iconnection_settings_ssh.cpp
-)
-
-SET(HEADERS_CORE_COMMAND_TO_MOC
-  core/command/command_logger.h
-)
-SET(HEADERS_CORE_COMMAND
-  core/command/command.h
-)
-SET(SOURCES_CORE_COMMAND
-  core/command/command.cpp
-  core/command/command_logger.cpp
-)
-
-SET(HEADERS_CORE_CONFIG
-  core/config/config.h
-)
-SET(SOURCES_CORE_CONFIG
-  core/config/config.cpp
-)
-
-SET(HEADERS_CORE_EVENTS
-  core/events/events.h
-  core/events/events_info.h
-)
-SET(SOURCES_CORE_EVENTS
-  core/events/events_info.cpp
-)
-
-SET(HEADERS_CORE_TO_MOC
-  ${HEADERS_CORE_DRIVER_TO_MOC}
-  ${HEADERS_CORE_SERVER_TO_MOC}
-  ${HEADERS_CORE_COMMAND_TO_MOC}
-)
-SET(HEADERS_CORE
-  ${HEADERS_CORE_SERVER}
-  ${HEADERS_CORE_CLUSTER}
-  ${HEADERS_CORE_SENTINEL}
-  ${HEADERS_CORE_DATABASE}
-  ${HEADERS_CORE_CONNECTION_SETTINGS}
-  ${HEADERS_CORE_COMMAND}
-  ${HEADERS_CORE_CONFIG}
-  ${HEADERS_CORE_TRANSLATOR}
-  ${HEADERS_CORE_EVENTS}
-  ${HEADERS_CORE_INTERNAL}
-
-  core/servers_manager.h
-  core/connection_types.h
-  core/core_fwd.h
-  core/settings_manager.h
-  core/types.h
-  core/db_traits.h
-  core/db_key.h
-  core/icommand_translator.h
-  core/command_info.h
-  core/command_holder.h
-  core/server_property_info.h
-  core/ssh_info.h
-
-  core/cluster_connection_settings_factory.h
-  core/sentinel_connection_settings_factory.h
-  core/sentinel_connection_settings_factory.h
-)
-
-SET(SOURCES_CORE
-  ${SOURCES_CORE_DATABASE}
-  ${SOURCES_CORE_SERVER}
-  ${SOURCES_CORE_SENTINEL}
-  ${SOURCES_CORE_CLUSTER}
-  ${SOURCES_CORE_DRIVER}
-  ${SOURCES_CORE_CONNECTION_SETTINGS}
-  ${SOURCES_CORE_COMMAND}
-  ${SOURCES_CORE_CONFIG}
-  ${SOURCES_CORE_TRANSLATOR}
-  ${SOURCES_CORE_EVENTS}
-  ${SOURCES_CORE_INTERNAL}
-
-  core/connection_types.cpp
-  core/settings_manager.cpp
-  core/servers_manager.cpp
-  core/types.cpp
-  core/db_traits.cpp
-  core/db_key.cpp
-  core/icommand_translator.cpp
-  core/command_info.cpp
-  core/command_holder.cpp
-  core/server_property_info.cpp
-  core/ssh_info.cpp
-
-  core/cluster_connection_settings_factory.cpp
-  core/sentinel_connection_settings_factory.cpp
-  core/connection_settings_factory.cpp
-)
-
-SET(HEADERS_TRANSLATIONS
-  translations/global.h
-)
-SET(SOURCES_TRANSLATIONS
-  translations/global.cpp
 )
 
 SET_DESKTOP_TARGET()
@@ -407,44 +435,47 @@ IF(BUILD_WITH_REDIS)
   SET(SOURCES_REDIS_GUI gui/db/redis/connection_widget.cpp gui/db/redis/lexer.cpp)
 
   SET(HEADERS_REDIS_TO_MOC
-    core/db/redis/sentinel.h
-    core/db/redis/cluster.h
-    core/db/redis/server.h
-    core/db/redis/driver.h
+    proxy/db/redis/sentinel.h
+    proxy/db/redis/cluster.h
+    proxy/db/redis/server.h
+    proxy/db/redis/driver.h
   )
   SET(HEADERS_REDIS
     core/db/redis/config.h
-    core/db/redis/database.h
     core/db/redis/command.h
     core/db/redis/command_translator.h
     core/db/redis/server_info.h
-    core/db/redis/connection_settings.h
+    proxy/db/redis/connection_settings.h
     core/db/redis/db_connection.h
     core/db/redis/internal/commands_api.h
+    core/db/redis/database_info.h
 
     core/db/redis/sentinel_info.h
     core/db/redis/sentinel_settings.h
     core/db/redis/cluster_infos.h
     core/db/redis/cluster_settings.h
+
+    proxy/db/redis/database.h
   )
   SET(SOURCES_REDIS
-    core/db/redis/config.cpp
-    core/db/redis/database.cpp
+    core/db/redis/config.cpp    
     core/db/redis/command.cpp
     core/db/redis/command_translator.cpp
     core/db/redis/server_info.cpp
-    core/db/redis/connection_settings.cpp
+    proxy/db/redis/connection_settings.cpp
     core/db/redis/db_connection.cpp
     core/db/redis/internal/commands_api.cpp
-    core/db/redis/server.cpp
-    core/db/redis/driver.cpp
-
     core/db/redis/sentinel_info.cpp
-    core/db/redis/sentinel.cpp
     core/db/redis/sentinel_settings.cpp
     core/db/redis/cluster_infos.cpp
-    core/db/redis/cluster.cpp
     core/db/redis/cluster_settings.cpp
+    core/db/redis/database_info.cpp
+
+    proxy/db/redis/server.cpp
+    proxy/db/redis/driver.cpp
+    proxy/db/redis/sentinel.cpp
+    proxy/db/redis/cluster.cpp
+    proxy/db/redis/database.cpp
   )
   SET(DB_LIBS ${DB_LIBS} hiredis Libssh2::libssh2 ${OPENSSL_LIBRARIES})
 ENDIF(BUILD_WITH_REDIS)
@@ -461,30 +492,34 @@ IF(BUILD_WITH_MEMCACHED)
   SET(SOURCES_MEMCACHED_GUI gui/db/memcached/connection_widget.cpp gui/db/memcached/lexer.cpp)
 
   SET(HEADERS_MEMCACHED_TO_MOC
-    core/db/memcached/server.h
-    core/db/memcached/driver.h
+    proxy/db/memcached/server.h
+    proxy/db/memcached/driver.h
   )
   SET(HEADERS_MEMCACHED
     core/db/memcached/config.h
-    core/db/memcached/database.h
     core/db/memcached/command.h
     core/db/memcached/command_translator.h
     core/db/memcached/server_info.h
-    core/db/memcached/connection_settings.h
+    proxy/db/memcached/connection_settings.h
     core/db/memcached/db_connection.h
     core/db/memcached/internal/commands_api.h
+    core/db/memcached/database_info.h
+
+    proxy/db/memcached/database.h
   )
   SET(SOURCES_MEMCACHED
-    core/db/memcached/config.cpp
-    core/db/memcached/database.cpp
+    core/db/memcached/config.cpp    
     core/db/memcached/command.cpp
     core/db/memcached/command_translator.cpp
     core/db/memcached/server_info.cpp
-    core/db/memcached/connection_settings.cpp
+    proxy/db/memcached/connection_settings.cpp
     core/db/memcached/db_connection.cpp
     core/db/memcached/internal/commands_api.cpp
-    core/db/memcached/server.cpp
-    core/db/memcached/driver.cpp
+    core/db/memcached/database_info.cpp
+
+    proxy/db/memcached/database.cpp
+    proxy/db/memcached/server.cpp
+    proxy/db/memcached/driver.cpp
   )
   SET(DB_LIBS ${DB_LIBS} memcached)
 ENDIF(BUILD_WITH_MEMCACHED)
@@ -499,30 +534,35 @@ IF(BUILD_WITH_SSDB)
   SET(SOURCES_SSDB_GUI gui/db/ssdb/connection_widget.cpp gui/db/ssdb/lexer.cpp)
 
   SET(HEADERS_SSDB_TO_MOC
-    core/db/ssdb/server.h
-    core/db/ssdb/driver.h
+    proxy/db/ssdb/server.h
+    proxy/db/ssdb/driver.h
   )
   SET(HEADERS_SSDB
     core/db/ssdb/config.h
-    core/db/ssdb/database.h
     core/db/ssdb/command.h
     core/db/ssdb/command_translator.h
     core/db/ssdb/server_info.h
-    core/db/ssdb/connection_settings.h
+    proxy/db/ssdb/connection_settings.h
     core/db/ssdb/db_connection.h
     core/db/ssdb/internal/commands_api.h
+    core/db/ssdb/database_info.h
+
+    proxy/db/ssdb/database.h
   )
   SET(SOURCES_SSDB
     core/db/ssdb/config.cpp
-    core/db/ssdb/database.cpp
+
     core/db/ssdb/command.cpp
     core/db/ssdb/command_translator.cpp
     core/db/ssdb/server_info.cpp
-    core/db/ssdb/connection_settings.cpp
+    proxy/db/ssdb/connection_settings.cpp
     core/db/ssdb/db_connection.cpp
     core/db/ssdb/internal/commands_api.cpp
-    core/db/ssdb/server.cpp
-    core/db/ssdb/driver.cpp
+    core/db/ssdb/database_info.cpp
+
+    proxy/db/ssdb/database.cpp
+    proxy/db/ssdb/server.cpp
+    proxy/db/ssdb/driver.cpp
   )
   SET(DB_LIBS ${DB_LIBS} ssdb)
 ENDIF(BUILD_WITH_SSDB)
@@ -537,30 +577,34 @@ IF(BUILD_WITH_LEVELDB)
   SET(SOURCES_LEVELDB_GUI gui/db/leveldb/connection_widget.cpp gui/db/leveldb/lexer.cpp)
 
   SET(HEADERS_LEVELDB_TO_MOC
-    core/db/leveldb/server.h
-    core/db/leveldb/driver.h
+    proxy/db/leveldb/server.h
+    proxy/db/leveldb/driver.h
   )
   SET(HEADERS_LEVELDB
     core/db/leveldb/config.h
-    core/db/leveldb/database.h
     core/db/leveldb/command.h
     core/db/leveldb/command_translator.h
     core/db/leveldb/server_info.h
-    core/db/leveldb/connection_settings.h
+    proxy/db/leveldb/connection_settings.h
     core/db/leveldb/db_connection.h
     core/db/leveldb/internal/commands_api.h
+    core/db/leveldb/database_info.h
+
+    proxy/db/leveldb/database.h
   )
   SET(SOURCES_LEVELDB
     core/db/leveldb/config.cpp
-    core/db/leveldb/database.cpp
     core/db/leveldb/command.cpp
     core/db/leveldb/command_translator.cpp
     core/db/leveldb/server_info.cpp
-    core/db/leveldb/connection_settings.cpp
+    proxy/db/leveldb/connection_settings.cpp
     core/db/leveldb/db_connection.cpp
     core/db/leveldb/internal/commands_api.cpp
-    core/db/leveldb/server.cpp
-    core/db/leveldb/driver.cpp
+    core/db/leveldb/database_info.cpp
+
+    proxy/db/leveldb/database.cpp
+    proxy/db/leveldb/server.cpp
+    proxy/db/leveldb/driver.cpp
   )
   SET(DB_LIBS ${DB_LIBS} leveldb)
 ENDIF(BUILD_WITH_LEVELDB)
@@ -576,30 +620,34 @@ IF(BUILD_WITH_ROCKSDB)
   SET(SOURCES_ROCKSDB_GUI gui/db/rocksdb/connection_widget.cpp gui/db/rocksdb/lexer.cpp)
 
   SET(HEADERS_ROCKSDB_TO_MOC
-    core/db/rocksdb/server.h
-    core/db/rocksdb/driver.h
+    proxy/db/rocksdb/server.h
+    proxy/db/rocksdb/driver.h
   )
   SET(HEADERS_ROCKSDB
     core/db/rocksdb/config.h
-    core/db/rocksdb/database.h
     core/db/rocksdb/command.h
     core/db/rocksdb/command_translator.h
     core/db/rocksdb/server_info.h
-    core/db/rocksdb/connection_settings.h
+    proxy/db/rocksdb/connection_settings.h
     core/db/rocksdb/db_connection.h
     core/db/rocksdb/internal/commands_api.h
+    core/db/rocksdb/database_info.h
+
+    proxy/db/rocksdb/database.h
   )
   SET(SOURCES_ROCKSDB
     core/db/rocksdb/config.cpp
-    core/db/rocksdb/database.cpp
     core/db/rocksdb/command.cpp
     core/db/rocksdb/command_translator.cpp
     core/db/rocksdb/server_info.cpp
-    core/db/rocksdb/connection_settings.cpp
+    proxy/db/rocksdb/connection_settings.cpp
     core/db/rocksdb/db_connection.cpp
     core/db/rocksdb/internal/commands_api.cpp
-    core/db/rocksdb/server.cpp
-    core/db/rocksdb/driver.cpp
+    core/db/rocksdb/database_info.cpp
+
+    proxy/db/rocksdb/database.cpp
+    proxy/db/rocksdb/server.cpp
+    proxy/db/rocksdb/driver.cpp
   )
 
   SET(DB_LIBS ${DB_LIBS} ${ROCKSDB_LIBRARY} ${BZIP2_LIBRARIES})
@@ -615,30 +663,34 @@ IF(BUILD_WITH_UNQLITE)
   SET(SOURCES_UNQLITE_GUI gui/db/unqlite/connection_widget.cpp gui/db/unqlite/lexer.cpp)
 
   SET(HEADERS_UNQLITE_TO_MOC
-    core/db/unqlite/server.h
-    core/db/unqlite/driver.h
+    proxy/db/unqlite/server.h
+    proxy/db/unqlite/driver.h
   )
   SET(HEADERS_UNQLITE
     core/db/unqlite/config.h
-    core/db/unqlite/database.h
     core/db/unqlite/command.h
     core/db/unqlite/command_translator.h
     core/db/unqlite/server_info.h
-    core/db/unqlite/connection_settings.h
+    proxy/db/unqlite/connection_settings.h
     core/db/unqlite/db_connection.h
     core/db/unqlite/internal/commands_api.h
+    core/db/unqlite/database_info.h
+
+    proxy/db/unqlite/database.h
   )
   SET(SOURCES_UNQLITE
     core/db/unqlite/config.cpp
-    core/db/unqlite/database.cpp
     core/db/unqlite/command.cpp
     core/db/unqlite/command_translator.cpp
     core/db/unqlite/server_info.cpp
-    core/db/unqlite/connection_settings.cpp
+    proxy/db/unqlite/connection_settings.cpp
     core/db/unqlite/db_connection.cpp
-    core/db/unqlite/server.cpp
-    core/db/unqlite/driver.cpp
     core/db/unqlite/internal/commands_api.cpp
+    core/db/unqlite/database_info.cpp
+
+    proxy/db/unqlite/database.cpp
+    proxy/db/unqlite/server.cpp
+    proxy/db/unqlite/driver.cpp
   )
   SET(DB_LIBS ${DB_LIBS} unqlite)
 ENDIF(BUILD_WITH_UNQLITE)
@@ -653,30 +705,34 @@ IF(BUILD_WITH_LMDB)
   SET(SOURCES_LMDB_GUI gui/db/lmdb/connection_widget.cpp gui/db/lmdb/lexer.cpp)
 
   SET(HEADERS_LMDB_TO_MOC
-    core/db/lmdb/server.h
-    core/db/lmdb/driver.h
+    proxy/db/lmdb/server.h
+    proxy/db/lmdb/driver.h
   )
   SET(HEADERS_LMDB
     core/db/lmdb/config.h
-    core/db/lmdb/database.h
     core/db/lmdb/command.h
     core/db/lmdb/command_translator.h
     core/db/lmdb/server_info.h
-    core/db/lmdb/connection_settings.h
+    proxy/db/lmdb/connection_settings.h
     core/db/lmdb/db_connection.h
     core/db/lmdb/internal/commands_api.h
+    core/db/lmdb/database_info.h
+
+    proxy/db/lmdb/database.h
   )
   SET(SOURCES_LMDB
     core/db/lmdb/config.cpp
-    core/db/lmdb/database.cpp
     core/db/lmdb/command.cpp
     core/db/lmdb/command_translator.cpp
     core/db/lmdb/server_info.cpp
-    core/db/lmdb/connection_settings.cpp
+    proxy/db/lmdb/connection_settings.cpp
     core/db/lmdb/db_connection.cpp
     core/db/lmdb/internal/commands_api.cpp
-    core/db/lmdb/server.cpp
-    core/db/lmdb/driver.cpp
+    core/db/lmdb/database_info.cpp
+
+    proxy/db/lmdb/database.cpp
+    proxy/db/lmdb/server.cpp
+    proxy/db/lmdb/driver.cpp
   )
   SET(DB_LIBS ${DB_LIBS} lmdb)
 ENDIF(BUILD_WITH_LMDB)
@@ -695,30 +751,34 @@ IF(BUILD_WITH_UPSCALEDB)
   SET(SOURCES_UPSCALEDB_GUI gui/db/upscaledb/connection_widget.cpp gui/db/upscaledb/lexer.cpp)
 
   SET(HEADERS_UPSCALEDB_TO_MOC
-    core/db/upscaledb/server.h
-    core/db/upscaledb/driver.h
+    proxy/db/upscaledb/server.h
+    proxy/db/upscaledb/driver.h
   )
   SET(HEADERS_UPSCALEDB
     core/db/upscaledb/config.h
-    core/db/upscaledb/database.h
     core/db/upscaledb/command.h
     core/db/upscaledb/command_translator.h
     core/db/upscaledb/server_info.h
-    core/db/upscaledb/connection_settings.h
+    proxy/db/upscaledb/connection_settings.h
     core/db/upscaledb/db_connection.h
     core/db/upscaledb/internal/commands_api.h
+    core/db/upscaledb/database_info.h
+
+    proxy/db/upscaledb/database.h
   )
   SET(SOURCES_UPSCALEDB
     core/db/upscaledb/config.cpp
-    core/db/upscaledb/database.cpp
     core/db/upscaledb/command.cpp
     core/db/upscaledb/command_translator.cpp
     core/db/upscaledb/server_info.cpp
-    core/db/upscaledb/connection_settings.cpp
+    proxy/db/upscaledb/connection_settings.cpp
     core/db/upscaledb/db_connection.cpp
     core/db/upscaledb/internal/commands_api.cpp
-    core/db/upscaledb/server.cpp
-    core/db/upscaledb/driver.cpp
+    core/db/upscaledb/database_info.cpp
+
+    proxy/db/upscaledb/database.cpp
+    proxy/db/upscaledb/server.cpp
+    proxy/db/upscaledb/driver.cpp
   )
   SET(DB_LIBS ${DB_LIBS} ${UPSCALEDB_LIBRARY} ${Boost_LIBRARIES})
 ENDIF(BUILD_WITH_UPSCALEDB)
@@ -746,7 +806,7 @@ ENDIF(IS_PUBLIC_BUILD)
 
 SET(HEADERS ${HEADERS} ${HEADERS_GLOBAL}
   ${HEADERS_GUI} ${HEADERS_GUI_EXPLORER} ${HEADERS_GUI_DIALOGS}
-  ${HEADERS_CORE} ${HEADERS_SHELL}
+  ${HEADERS_PROXY} ${HEADERS_CORE} ${HEADERS_SHELL}
 
   ${HEADERS_REDIS} ${HEADERS_MEMCACHED}
   ${HEADERS_SSDB} ${HEADERS_LEVELDB}
@@ -763,7 +823,7 @@ SET(HEADERS ${HEADERS} ${HEADERS_GLOBAL}
 SET(SOURCES ${SOURCES} ${SOURCES_GLOBAL}
   ${SOURCES_GUI} ${SOURCES_GUI_DIALOGS} ${SOURCES_GUI_EDITOR}
   ${SOURCES_GUI_WIDGETS} ${SOURCES_GUI_EXPLORER}
-  ${SOURCES_CORE} ${SOURCES_SHELL}
+  ${SOURCES_PROXY} ${SOURCES_CORE} ${SOURCES_SHELL}
 
   ${SOURCES_REDIS} ${SOURCES_MEMCACHED}
   ${SOURCES_SSDB} ${SOURCES_LEVELDB}
@@ -779,7 +839,7 @@ SET(SOURCES ${SOURCES} ${SOURCES_GLOBAL}
 )
 SET(HEADERS_TOMOC ${HEADERS_GUI_TO_MOC} ${HEADERS_GUI_DIALOGS_TO_MOC} ${HEADERS_GUI_EDITOR_TO_MOC}
   ${HEADERS_GUI_WIDGETS_TO_MOC} ${HEADERS_GUI_EXPLORER_TO_MOC}
-  ${HEADERS_CORE_TO_MOC} ${HEADERS_SHELL_TO_MOC}
+  ${HEADERS_PROXY_TO_MOC} ${HEADERS_CORE_TO_MOC} ${HEADERS_SHELL_TO_MOC}
 
   ${HEADERS_REDIS_TO_MOC} ${HEADERS_MEMCACHED_TO_MOC}
   ${HEADERS_SSDB_TO_MOC} ${HEADERS_LEVELDB_TO_MOC}

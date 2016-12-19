@@ -32,11 +32,12 @@ class QTreeWidget;
 class QToolBar;
 class QLabel;
 
-#include "core/connection_settings/iconnection_settings.h"  // for IConnectionSettingsBaseSPtr, etc
-#include "core/connection_settings/icluster_connection_settings.h"
+#include "proxy/connection_settings/iconnection_settings.h"  // for IConnectionSettingsBaseSPtr, etc
+#include "proxy/connection_settings/icluster_connection_settings.h"
 
 namespace fastonosql {
 namespace gui {
+
 class ClusterDialog : public QDialog {
   Q_OBJECT
  public:
@@ -86,5 +87,6 @@ class ClusterDialog : public QDialog {
   QDialogButtonBox* buttonBox_;
   QAction* setDefault_;
 };
+
 }  // namespace gui
 }  // namespace fastonosql

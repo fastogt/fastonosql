@@ -37,8 +37,8 @@
 #include <common/value.h>                // for ErrorValue
 #include <common/qt/gui/glass_widget.h>  // for GlassWidget
 
-#include "core/servers_manager.h"  // for ServersManager
-#include "core/connection_settings_factory.h"
+#include "proxy/servers_manager.h"  // for ServersManager
+#include "proxy/connection_settings_factory.h"
 
 #include "gui/dialogs/connection_listwidget_items.h"
 #include "gui/dialogs/discovery_sentinel_connection.h"

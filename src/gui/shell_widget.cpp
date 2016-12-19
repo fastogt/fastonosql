@@ -50,11 +50,11 @@
 #include <common/qt/utils_qt.h>        // for SaveToFileText, etc
 
 #include "core/command_info.h"        // for UNDEFINED_SINCE, etc
-#include "core/events/events_info.h"  // for DiscoveryInfoResponce, etc
-#include "core/server/iserver.h"      // for IServer
-#include "core/server/iserver_local.h"
-#include "core/server/iserver_remote.h"
-#include "core/settings_manager.h"  // for SettingsManager
+#include "proxy/events/events_info.h"  // for DiscoveryInfoResponce, etc
+#include "proxy/server/iserver.h"      // for IServer
+#include "proxy/server/iserver_local.h"
+#include "proxy/server/iserver_remote.h"
+#include "proxy/settings_manager.h"  // for SettingsManager
 
 #include "gui/gui_factory.h"  // for GuiFactory
 #include "gui/shortcuts.h"    // for executeKey

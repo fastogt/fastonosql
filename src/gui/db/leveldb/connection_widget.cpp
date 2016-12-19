@@ -20,7 +20,7 @@
 
 #include <QCheckBox>
 
-#include "core/db/leveldb/connection_settings.h"
+#include "proxy/db/leveldb/connection_settings.h"
 
 namespace fastonosql {
 namespace gui {

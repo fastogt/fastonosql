@@ -20,11 +20,11 @@
 
 #include <QMainWindow>
 
-#include "core/core_fwd.h"
+#include "proxy/core_fwd.h"
 
-#include "core/connection_settings/iconnection_settings.h"  // for IConnectionSettingsBaseSPtr
-#include "core/connection_settings/icluster_connection_settings.h"
-#include "core/connection_settings/isentinel_connection_settings.h"
+#include "proxy/connection_settings/iconnection_settings.h"  // for IConnectionSettingsBaseSPtr
+#include "proxy/connection_settings/icluster_connection_settings.h"
+#include "proxy/connection_settings/isentinel_connection_settings.h"
 
 class QAction;      // lines 27-27
 class QDockWidget;  // lines 28-28

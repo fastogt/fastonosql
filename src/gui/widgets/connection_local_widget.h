@@ -22,7 +22,7 @@
 
 #include "gui/widgets/connection_base_widget.h"
 
-#include "core/connection_settings/iconnection_settings_local.h"
+#include "proxy/connection_settings/iconnection_settings_local.h"
 
 namespace {
 const QString trDBPath = QObject::tr("Database path:");

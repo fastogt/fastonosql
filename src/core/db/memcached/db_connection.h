@@ -30,7 +30,7 @@
 #include "core/db_key.h"                   // for NDbKValue, NKey, NKeys
 #include "core/internal/cdb_connection.h"  // for CDBConnection
 
-#include "core/db/memcached/connection_settings.h"
+#include "proxy/db/memcached/connection_settings.h"
 #include "core/db/memcached/server_info.h"
 
 namespace fastonosql {

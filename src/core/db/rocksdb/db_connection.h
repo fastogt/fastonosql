@@ -33,7 +33,7 @@
 #include "core/db_key.h"            // for NKey (ptr only), etc
 
 #include "core/db/rocksdb/config.h"
-#include "core/db/rocksdb/connection_settings.h"
+#include "proxy/db/rocksdb/connection_settings.h"
 #include "core/db/rocksdb/server_info.h"
 
 namespace rocksdb {

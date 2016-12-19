@@ -35,12 +35,12 @@
 #include <common/qt/logger.h>
 
 #include "core/connection_types.h"       // for ConvertToString
-#include "core/events/events_info.h"     // for CommandRequest, etc
-#include "core/database/idatabase.h"     // for IDatabase
-#include "core/server/iserver_local.h"   // for IServer, IServerRemote, etc
-#include "core/server/iserver_remote.h"  // for IServer, IServerRemote, etc
-#include "core/cluster/icluster.h"       // for ICluster
-#include "core/sentinel/isentinel.h"     // for ISentinel, Sentinel, etc
+#include "proxy/events/events_info.h"     // for CommandRequest, etc
+#include "proxy/database/idatabase.h"     // for IDatabase
+#include "proxy/server/iserver_local.h"   // for IServer, IServerRemote, etc
+#include "proxy/server/iserver_remote.h"  // for IServer, IServerRemote, etc
+#include "proxy/cluster/icluster.h"       // for ICluster
+#include "proxy/sentinel/isentinel.h"     // for ISentinel, Sentinel, etc
 
 #include "gui/gui_factory.h"  // for GuiFactory
 #include "gui/explorer/explorer_tree_item.h"

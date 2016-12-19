@@ -20,7 +20,7 @@
 
 #include <QCheckBox>
 
-#include "core/db/rocksdb/connection_settings.h"
+#include "proxy/db/rocksdb/connection_settings.h"
 
 namespace fastonosql {
 namespace gui {

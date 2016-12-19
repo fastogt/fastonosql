@@ -23,9 +23,9 @@
 #include <QHBoxLayout>
 #include <QLabel>
 
-#include "core/db/upscaledb/connection_settings.h"
+#include "proxy/db/upscaledb/connection_settings.h"
 
-#include "core/connection_settings/iconnection_settings_local.h"
+#include "proxy/connection_settings/iconnection_settings_local.h"
 
 namespace {
 const QString trDefaultDb = QObject::tr("Default database:");

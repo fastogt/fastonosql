@@ -38,9 +38,9 @@
 #include <common/qt/convert2string.h>
 
 #include "core/db_key.h"              // for NKey, NDbKValue, NValue
-#include "core/events/events_info.h"  // for CommandResponce, etc
-#include "core/server/iserver.h"      // for IServer
-#include "core/settings_manager.h"    // for SettingsManager
+#include "proxy/events/events_info.h"  // for CommandResponce, etc
+#include "proxy/server/iserver.h"      // for IServer
+#include "proxy/settings_manager.h"    // for SettingsManager
 
 #include "global/types.h"  // for supportedViews, etc
 

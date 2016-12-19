@@ -69,8 +69,8 @@ extern "C" {
 
 #include "core/db/redis/cluster_infos.h"        // for makeDiscoveryClusterInfo
 #include "core/db/redis/command.h"              // for Command
-#include "core/db/redis/connection_settings.h"  // for ConnectionSettings
-#include "core/db/redis/database.h"             // for DataBaseInfo
+#include "proxy/db/redis/connection_settings.h"  // for ConnectionSettings
+#include "core/db/redis/database_info.h"        // for DataBaseInfo
 #include "core/db/redis/sentinel_info.h"        // for DiscoverySentinelInfo, etc
 #include "core/db/redis/command_translator.h"
 #include "core/db/redis/internal/commands_api.h"

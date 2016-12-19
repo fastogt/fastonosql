@@ -25,7 +25,7 @@
 #include <common/time.h>            // for current_mstime
 #include <common/value.h>           // for ErrorValue
 
-#include "core/servers_manager.h"  // for ServersManager
+#include "proxy/servers_manager.h"  // for ServersManager
 
 #include "translations/global.h"  // for trSuccess
 

@@ -52,11 +52,11 @@
 #include <common/value.h>                         // for ErrorValue
 
 #include "core/command/command_logger.h"  // for CommandLogger
-#include "core/core_fwd.h"                // for IServerSPtr, IClusterSPtr, etc
-#include "core/cluster/icluster.h"        // for ICluster
-#include "core/sentinel/isentinel.h"      // for ISentinel
-#include "core/servers_manager.h"         // for ServersManager
-#include "core/settings_manager.h"        // for SettingsManager
+#include "proxy/core_fwd.h"                // for IServerSPtr, IClusterSPtr, etc
+#include "proxy/cluster/icluster.h"       // for ICluster
+#include "proxy/sentinel/isentinel.h"     // for ISentinel
+#include "proxy/servers_manager.h"         // for ServersManager
+#include "proxy/settings_manager.h"        // for SettingsManager
 
 #include "gui/dialogs/about_dialog.h"           // for AboutDialog
 #include "gui/dialogs/connections_dialog.h"     // for ConnectionsDialog

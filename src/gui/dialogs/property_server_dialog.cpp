@@ -33,8 +33,8 @@
 #include <common/qt/gui/glass_widget.h>  // for GlassWidget
 
 #include "core/connection_types.h"  // for connectionTypes::REDIS
-#include "core/events/events_info.h"
-#include "core/server/iserver.h"  // for IServer
+#include "proxy/events/events_info.h"
+#include "proxy/server/iserver.h"  // for IServer
 
 #include "gui/gui_factory.h"  // for GuiFactory
 #include "gui/property_table_item.h"

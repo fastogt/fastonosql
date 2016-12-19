@@ -34,7 +34,7 @@
 #include <common/convert2string.h>     // for ConvertFromString
 #include <common/qt/convert2string.h>  // for ConvertToString
 
-#include "core/connection_settings_factory.h"
+#include "proxy/connection_settings_factory.h"
 
 #include "gui/connection_widgets_factory.h"
 #include "gui/dialogs/connection_diagnostic_dialog.h"

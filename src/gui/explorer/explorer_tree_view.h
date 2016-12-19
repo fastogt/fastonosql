@@ -20,8 +20,8 @@
 
 #include <QTreeView>
 
-#include "core/core_fwd.h"  // for IServerSPtr, IClusterSPtr, etc
-#include "core/events/events_info.h"
+#include "proxy/core_fwd.h"  // for IServerSPtr, IClusterSPtr, etc
+#include "proxy/events/events_info.h"
 
 class QAction;  // lines 23-23
 class QEvent;

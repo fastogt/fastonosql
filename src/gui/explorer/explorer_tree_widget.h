@@ -20,7 +20,7 @@
 
 #include <QWidget>
 
-#include "core/core_fwd.h"
+#include "proxy/core_fwd.h"
 
 class QLineEdit;
 

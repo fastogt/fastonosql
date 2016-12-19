@@ -20,8 +20,8 @@
 
 #include <QDialog>
 
-#include "core/core_fwd.h"  // for IServerSPtr
-#include "core/events/events_info.h"
+#include "proxy/core_fwd.h"  // for IServerSPtr
+#include "proxy/events/events_info.h"
 
 class QComboBox;  // lines 23-23
 class QEvent;

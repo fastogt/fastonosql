@@ -39,7 +39,7 @@
 #include <common/qt/gui/glass_widget.h>       // for GlassWidget
 
 #include "core/db_traits.h"
-#include "core/server/iserver.h"  // for IServer
+#include "proxy/server/iserver.h"  // for IServer
 
 #include "gui/gui_factory.h"  // for GuiFactory
 

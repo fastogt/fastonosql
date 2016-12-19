@@ -22,7 +22,7 @@
 
 #include <common/types.h>  // for time64_t
 
-#include "core/connection_settings/iconnection_settings.h"  // for IConnectionSettingsBaseSPtr
+#include "proxy/connection_settings/iconnection_settings.h"  // for IConnectionSettingsBaseSPtr
 
 namespace fastonosql {
 namespace gui {

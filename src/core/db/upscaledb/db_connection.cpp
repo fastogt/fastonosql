@@ -36,9 +36,9 @@
 #include "core/command_holder.h"                    // for CommandHolder
 #include "core/internal/connection.h"               // for Connection<>::handle_t, etc
 #include "core/db/upscaledb/config.h"               // for Config
-#include "core/db/upscaledb/connection_settings.h"  // for ConnectionSettings
+#include "proxy/db/upscaledb/connection_settings.h"  // for ConnectionSettings
 #include "core/db/upscaledb/command_translator.h"
-#include "core/db/upscaledb/database.h"
+#include "core/db/upscaledb/database_info.h"
 #include "core/db/upscaledb/internal/commands_api.h"
 
 namespace fastonosql {

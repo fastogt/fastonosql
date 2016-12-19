@@ -29,9 +29,9 @@
 #include <common/convert2string.h>
 
 #include "core/db/lmdb/config.h"               // for Config
-#include "core/db/lmdb/connection_settings.h"  // for ConnectionSettings
+#include "proxy/db/lmdb/connection_settings.h"  // for ConnectionSettings
 #include "core/db/lmdb/command_translator.h"
-#include "core/db/lmdb/database.h"
+#include "core/db/lmdb/database_info.h"
 #include "core/db/lmdb/internal/commands_api.h"
 
 #include "global/global.h"  // for FastoObject, etc

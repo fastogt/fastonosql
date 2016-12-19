@@ -45,7 +45,7 @@
 #include <common/qt/convert2string.h>  // for ConvertToString
 
 #include "core/connection_types.h"  // for connectionTypes, etc
-#include "core/cluster_connection_settings_factory.h"
+#include "proxy/cluster_connection_settings_factory.h"
 
 #include "gui/dialogs/connection_diagnostic_dialog.h"
 #include "gui/dialogs/connection_dialog.h"  // for ConnectionDialog
@@ -62,6 +62,7 @@ const char* defaultNameConnectionFolder = "/";
 
 namespace fastonosql {
 namespace gui {
+
 ClusterDialog::ClusterDialog(QWidget* parent, core::IClusterSettingsBase* connection)
     : QDialog(parent), cluster_connection_(connection) {
   setWindowIcon(GuiFactory::instance().serverIcon());
@@ -112,7 +113,7 @@ ClusterDialog::ClusterDialog(QWidget* parent, core::IClusterSettingsBase* connec
   loggingMsec_->setSingleStep(1000);
 
   if (cluster_connection_) {
-    logging_->setChecked(cluster_connection_->IsLoggingEnabled());
+    logging_->setChecked(cluster_connection_->IsHistoryEnabled());
     loggingMsec_->setValue(cluster_connection_->LoggingMsTimeInterval());
   } else {
     logging_->setChecked(false);

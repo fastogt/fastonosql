@@ -34,8 +34,8 @@
 #include <common/value.h>                // for ErrorValue
 #include <common/qt/gui/glass_widget.h>  // for GlassWidget
 
-#include "core/events/events_info.h"  // for ChangePasswordResponce, etc
-#include "core/server/iserver.h"      // for IServer
+#include "proxy/events/events_info.h"  // for ChangePasswordResponce, etc
+#include "proxy/server/iserver.h"     // for IServer
 
 #include "gui/gui_factory.h"  // for GuiFactory
 

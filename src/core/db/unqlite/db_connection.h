@@ -30,7 +30,7 @@
 #include "core/internal/cdb_connection.h"
 
 #include "core/db/unqlite/config.h"
-#include "core/db/unqlite/connection_settings.h"
+#include "proxy/db/unqlite/connection_settings.h"
 #include "core/db/unqlite/server_info.h"
 
 struct unqlite;

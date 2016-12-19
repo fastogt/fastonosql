@@ -28,8 +28,8 @@
 #include <common/value.h>           // for Value, etc
 
 #include "core/db/ssdb/config.h"               // for Config
-#include "core/db/ssdb/connection_settings.h"  // for ConnectionSettings
-#include "core/db/ssdb/database.h"
+#include "proxy/db/ssdb/connection_settings.h"  // for ConnectionSettings
+#include "core/db/ssdb/database_info.h"
 #include "core/db/ssdb/command_translator.h"
 #include "core/db/ssdb/internal/commands_api.h"
 

@@ -20,7 +20,7 @@
 
 #include <QWidget>
 
-#include "core/connection_settings/iconnection_settings.h"
+#include "proxy/connection_settings/iconnection_settings.h"
 
 class QLabel;
 class QLineEdit;

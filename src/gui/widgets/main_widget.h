@@ -20,7 +20,7 @@
 
 #include <QTabWidget>
 
-#include "core/core_fwd.h"  // for IServerSPtr
+#include "proxy/core_fwd.h"  // for IServerSPtr
 
 class QWidget;
 namespace fastonosql {

@@ -24,8 +24,8 @@
 
 #include <common/qt/gui/base/tree_model.h>  // for TreeModel
 
-#include "core/core_fwd.h"
-#include "core/database/idatabase.h"
+#include "proxy/core_fwd.h"
+#include "proxy/database/idatabase.h"
 
 class QModelIndex;
 class QObject;

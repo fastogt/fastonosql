@@ -18,7 +18,7 @@
 
 #pragma once
 
-#include "core/connection_settings/icluster_connection_settings.h"
+#include "proxy/connection_settings/icluster_connection_settings.h"
 
 namespace fastonosql {
 namespace core {

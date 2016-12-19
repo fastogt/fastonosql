@@ -43,13 +43,13 @@
 #include <common/qt/gui/base/tree_item.h>  // for TreeItem
 #include <common/qt/gui/regexp_input_dialog.h>
 
-#include "core/connection_types.h"       // for connectionTypes::REDIS
-#include "core/db_key.h"                 // for NDbKValue
-#include "core/events/events_info.h"     // for CommandResponce, etc
-#include "core/cluster/icluster.h"       // for ICluster
-#include "core/sentinel/isentinel.h"     // for Sentinel, etc
-#include "core/server/iserver_remote.h"  // for IServer, IServerRemote
-#include "core/settings_manager.h"       // for SettingsManager
+#include "core/connection_types.h"        // for connectionTypes::REDIS
+#include "core/db_key.h"                  // for NDbKValue
+#include "proxy/events/events_info.h"     // for CommandResponce, etc
+#include "proxy/cluster/icluster.h"       // for ICluster
+#include "proxy/sentinel/isentinel.h"     // for Sentinel, etc
+#include "proxy/server/iserver_remote.h"  // for IServer, IServerRemote
+#include "proxy/settings_manager.h"        // for SettingsManager
 
 #include "gui/dialogs/change_password_server_dialog.h"
 #include "gui/dialogs/dbkey_dialog.h"           // for DbKeyDialog

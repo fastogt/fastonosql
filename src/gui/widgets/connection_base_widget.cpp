@@ -173,7 +173,7 @@ void ConnectionBaseWidget::syncControls(core::IConnectionSettingsBase* connectio
     delimiter_->setCurrentText(StableCommandLine(common::ConvertFromString<QString>(delemitr)));
 
     setUIFolderText(common::ConvertFromString<QString>(path.Directory()));
-    setLogging(connection->IsLoggingEnabled());
+    setLogging(connection->IsHistoryEnabled());
     setLoggingInterval(connection->LoggingMsTimeInterval());
   }
 }

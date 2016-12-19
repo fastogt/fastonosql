@@ -64,8 +64,8 @@
 #endif
 
 #include "core/connection_types.h"    // for connectionTypes, etc
-#include "core/events/events_info.h"  // for ServerInfoResponce, etc
-#include "core/server/iserver.h"      // for IServer
+#include "proxy/events/events_info.h"  // for ServerInfoResponce, etc
+#include "proxy/server/iserver.h"      // for IServer
 
 #include <common/qt/gui/glass_widget.h>  // for GlassWidget
 

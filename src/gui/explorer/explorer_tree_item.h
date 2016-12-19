@@ -26,7 +26,7 @@
 
 #include <common/qt/gui/base/tree_item.h>  // for TreeItem
 
-#include "core/core_fwd.h"  // for IServerSPtr, IClusterSPtr, etc
+#include "proxy/core_fwd.h"  // for IServerSPtr, IClusterSPtr, etc
 #include "core/db_key.h"    // for NDbKValue, etc
 #include "core/database/idatabase_info.h"
 

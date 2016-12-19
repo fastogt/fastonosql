@@ -39,7 +39,7 @@
 #include <common/qt/gui/app_style.h>              // for applyFont, applyStyle, etc
 #include <common/qt/translations/translations.h>  // for applyLanguage, etc
 
-#include "core/settings_manager.h"  // for SettingsManager
+#include "proxy/settings_manager.h"  // for SettingsManager
 
 #include "global/types.h"  // for viewsText, ConvertToString, etc
 

@@ -33,7 +33,7 @@
 
 #include "core/db_key.h"  // for ttl_t, NKey (ptr only), etc
 #include "core/db/ssdb/config.h"
-#include "core/db/ssdb/connection_settings.h"
+#include "proxy/db/ssdb/connection_settings.h"
 #include "core/db/ssdb/server_info.h"
 
 namespace ssdb {

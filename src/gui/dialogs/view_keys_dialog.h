@@ -25,7 +25,7 @@
 
 #include <QDialog>
 
-#include "core/core_fwd.h"  // for IDatabaseSPtr
+#include "proxy/core_fwd.h"  // for IDatabaseSPtr
 #include "core/database/idatabase_info.h"
 
 class QEvent;

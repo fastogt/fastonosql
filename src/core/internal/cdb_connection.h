@@ -33,7 +33,7 @@
 #include "core/db_key.h"               // for NDbKValue, NKey, etc
 #include "core/icommand_translator.h"  // for translator_t, etc
 
-#include "core/database/idatabase.h"
+#include "core/database/idatabase_info.h"
 
 #include "core/internal/command_handler.h"  // for CommandHandler, etc
 #include "core/internal/cdb_connection_client.h"

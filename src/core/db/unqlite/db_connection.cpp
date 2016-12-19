@@ -32,8 +32,8 @@ extern "C" {
 #include <common/convert2string.h>
 
 #include "core/db/unqlite/config.h"               // for Config
-#include "core/db/unqlite/connection_settings.h"  // for ConnectionSettings
-#include "core/db/unqlite/database.h"
+#include "proxy/db/unqlite/connection_settings.h"  // for ConnectionSettings
+#include "core/db/unqlite/database_info.h"
 #include "core/db/unqlite/command_translator.h"
 #include "core/db/unqlite/internal/commands_api.h"
 

@@ -33,7 +33,7 @@
 #include <common/convert2string.h>
 #include <common/qt/convert2string.h>
 
-#include "core/db/redis/connection_settings.h"
+#include "proxy/db/redis/connection_settings.h"
 
 #include "gui/widgets/host_port_widget.h"
 #include "gui/widgets/path_widget.h"

@@ -45,7 +45,7 @@
 #include <common/qt/convert2string.h>  // for ConvertToString
 
 #include "core/connection_types.h"  // for connectionTypes, etc
-#include "core/sentinel_connection_settings_factory.h"
+#include "proxy/sentinel_connection_settings_factory.h"
 
 #include "gui/dialogs/connection_diagnostic_dialog.h"
 #include "gui/dialogs/connection_dialog.h"  // for ConnectionDialog
@@ -114,7 +114,7 @@ SentinelDialog::SentinelDialog(QWidget* parent, core::ISentinelSettingsBase* con
   loggingMsec_->setSingleStep(1000);
 
   if (sentinel_connection_) {
-    logging_->setChecked(sentinel_connection_->IsLoggingEnabled());
+    logging_->setChecked(sentinel_connection_->IsHistoryEnabled());
     loggingMsec_->setValue(sentinel_connection_->LoggingMsTimeInterval());
   } else {
     logging_->setChecked(false);

@@ -24,7 +24,7 @@
 
 #include "core/connection_types.h"  // for connectionTypes
 
-#include "core/core_fwd.h"  // for IServerSPtr
+#include "proxy/core_fwd.h"  // for IServerSPtr
 #include "core/server/iserver_info.h"
 #include "core/database/idatabase_info.h"
 

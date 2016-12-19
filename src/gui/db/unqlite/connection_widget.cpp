@@ -20,9 +20,9 @@
 
 #include <QCheckBox>
 
-#include "core/db/unqlite/connection_settings.h"
+#include "proxy/db/unqlite/connection_settings.h"
 
-#include "core/connection_settings/iconnection_settings_local.h"
+#include "proxy/connection_settings/iconnection_settings_local.h"
 
 namespace fastonosql {
 namespace gui {

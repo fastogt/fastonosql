@@ -20,7 +20,7 @@
 
 #include <QCheckBox>
 
-#include "core/db/lmdb/connection_settings.h"
+#include "proxy/db/lmdb/connection_settings.h"
 
 namespace fastonosql {
 namespace gui {

@@ -38,8 +38,8 @@
 #include "core/internal/db_connection.h"
 
 #include "core/db/rocksdb/config.h"               // for Config
-#include "core/db/rocksdb/connection_settings.h"  // for ConnectionSettings
-#include "core/db/rocksdb/database.h"
+#include "proxy/db/rocksdb/connection_settings.h"  // for ConnectionSettings
+#include "core/db/rocksdb/database_info.h"
 #include "core/db/rocksdb/command_translator.h"
 #include "core/db/rocksdb/internal/commands_api.h"
 
