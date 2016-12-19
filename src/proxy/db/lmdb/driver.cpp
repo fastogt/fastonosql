@@ -30,7 +30,7 @@
 #include <common/value.h>           // for ErrorValue, etc
 
 #include "core/command/command.h"         // for CreateCommand, etc
-#include "core/command/command_logger.h"  // for LOG_COMMAND
+#include "proxy/command/command_logger.h"  // for LOG_COMMAND
 #include "core/connection_types.h"        // for ConvertToString, etc
 #include "core/db_key.h"                  // for NDbKValue, NValue, NKey
 #include "proxy/events/events_info.h"

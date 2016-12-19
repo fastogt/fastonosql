@@ -23,7 +23,7 @@
 #include <common/convert2string.h>
 
 #ifdef BUILD_WITH_REDIS
-#include "core/db/redis/cluster_settings.h"  // for ClusterSettings
+#include "proxy/db/redis/cluster_settings.h"  // for ClusterSettings
 #endif
 
 #include "proxy/connection_settings_factory.h"

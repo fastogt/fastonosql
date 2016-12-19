@@ -38,6 +38,7 @@
 #include "core/server_property_info.h"     // for MakeServerProperty, etc
 #include "core/database/idatabase_info.h"  // for IDataBaseInfoSPtr, etc
 #include "proxy/driver/root_locker.h"      // for RootLocker
+#include "proxy/command/command_logger.h"
 
 #include "core/internal/cdb_connection.h"
 #include "core/internal/db_connection.h"
@@ -562,7 +563,7 @@ void Driver::HandleLoadDatabaseContentEvent(events::LoadDatabaseContentRequestEv
         }
       }
 
-      err = impl_->ExecuteAsPipeline(cmds);
+      err = impl_->ExecuteAsPipeline(cmds, &LOG_COMMAND);
       if (err && err->isError()) {
         goto done;
       }

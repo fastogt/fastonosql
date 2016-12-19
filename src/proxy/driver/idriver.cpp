@@ -46,7 +46,7 @@ extern "C" {
 #include <common/types.h>           // for buffer_t, time64_t, etc
 #include <common/utils.h>           // for c_strornull, msleep
 
-#include "core/command/command_logger.h"  // for LOG_COMMAND
+#include "proxy/command/command_logger.h"  // for LOG_COMMAND
 #include "proxy/driver/first_child_update_root_locker.h"
 #include "proxy/driver/root_locker.h"  // for RootLocker
 #include "proxy/events/events_info.h"

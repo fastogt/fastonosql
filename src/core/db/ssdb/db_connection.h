@@ -33,7 +33,6 @@
 
 #include "core/db_key.h"  // for ttl_t, NKey (ptr only), etc
 #include "core/db/ssdb/config.h"
-#include "proxy/db/ssdb/connection_settings.h"
 #include "core/db/ssdb/server_info.h"
 
 namespace ssdb {
@@ -47,8 +46,7 @@ namespace ssdb {
 typedef ::ssdb::Client NativeConnection;
 
 common::Error CreateConnection(const Config& config, NativeConnection** context);
-common::Error CreateConnection(ConnectionSettings* settings, NativeConnection** context);
-common::Error TestConnection(ConnectionSettings* settings);
+common::Error TestConnection(const Config& config);
 
 class DBConnection : public core::internal::CDBConnection<NativeConnection, Config, SSDB> {
  public:

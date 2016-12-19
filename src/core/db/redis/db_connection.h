@@ -49,13 +49,6 @@ namespace core {
 class IDataBaseInfo;
 }
 }
-namespace fastonosql {
-namespace core {
-namespace redis {
-class ConnectionSettings;
-}
-}
-}
 struct redisContext;  // lines 49-49
 struct redisReply;    // lines 50-50
 
@@ -84,12 +77,11 @@ struct RConfig : public Config {
 };
 
 common::Error CreateConnection(const RConfig& config, NativeConnection** context);
-common::Error CreateConnection(ConnectionSettings* settings, NativeConnection** context);
-common::Error TestConnection(ConnectionSettings* settings);
+common::Error TestConnection(const RConfig& rconfig);
 
-common::Error DiscoveryClusterConnection(ConnectionSettings* settings,
+common::Error DiscoveryClusterConnection(const RConfig& rconfig,
                                          std::vector<ServerDiscoveryClusterInfoSPtr>* infos);
-common::Error DiscoverySentinelConnection(ConnectionSettings* settings,
+common::Error DiscoverySentinelConnection(const RConfig& rconfig,
                                           std::vector<ServerDiscoverySentinelInfoSPtr>* infos);
 
 class DBConnection : public core::internal::CDBConnection<NativeConnection, RConfig, REDIS> {
@@ -110,7 +102,8 @@ class DBConnection : public core::internal::CDBConnection<NativeConnection, RCon
   common::Error StatMode(FastoObject* out) WARN_UNUSED_RESULT;
   common::Error ScanMode(FastoObject* out) WARN_UNUSED_RESULT;
 
-  common::Error ExecuteAsPipeline(const std::vector<FastoObjectCommandIPtr>& cmds)
+  common::Error ExecuteAsPipeline(const std::vector<FastoObjectCommandIPtr>& cmds,
+                                  void (*log_command_cb)(FastoObjectCommandIPtr))
       WARN_UNUSED_RESULT;
 
   common::Error CommonExec(int argc, const char** argv, FastoObject* out) WARN_UNUSED_RESULT;

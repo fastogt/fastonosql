@@ -29,9 +29,8 @@
 #include "core/connection_types.h"         // for connectionTypes::MEMCACHED
 #include "core/db_key.h"                   // for NDbKValue, NKey, NKeys
 #include "core/internal/cdb_connection.h"  // for CDBConnection
-
-#include "proxy/db/memcached/connection_settings.h"
 #include "core/db/memcached/server_info.h"
+#include "core/db/memcached/config.h"
 
 namespace fastonosql {
 class FastoObject;
@@ -51,13 +50,6 @@ namespace core {
 class IDataBaseInfo;
 }
 }
-namespace fastonosql {
-namespace core {
-namespace memcached {
-class ConnectionSettings;
-}
-}
-}
 
 struct memcached_st;  // lines 37-37
 
@@ -68,8 +60,7 @@ namespace memcached {
 typedef memcached_st NativeConnection;
 
 common::Error CreateConnection(const Config& config, NativeConnection** context);
-common::Error CreateConnection(ConnectionSettings* settings, NativeConnection** context);
-common::Error TestConnection(ConnectionSettings* settings);
+common::Error TestConnection(const Config& config);
 
 class DBConnection : public core::internal::CDBConnection<NativeConnection, Config, MEMCACHED> {
  public:

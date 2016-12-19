@@ -47,13 +47,6 @@ class IDataBaseInfo;
 namespace fastonosql {
 namespace core {
 namespace upscaledb {
-class ConnectionSettings;
-}
-}
-}
-namespace fastonosql {
-namespace core {
-namespace upscaledb {
 struct upscaledb;
 }
 }
@@ -66,8 +59,7 @@ namespace upscaledb {
 typedef upscaledb NativeConnection;
 
 common::Error CreateConnection(const Config& config, NativeConnection** context);
-common::Error CreateConnection(ConnectionSettings* settings, NativeConnection** context);
-common::Error TestConnection(ConnectionSettings* settings);
+common::Error TestConnection(const Config& config);
 
 class DBConnection : public core::internal::CDBConnection<NativeConnection, Config, UPSCALEDB> {
  public:

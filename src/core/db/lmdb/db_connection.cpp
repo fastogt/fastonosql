@@ -27,9 +27,9 @@
 #include <common/value.h>  // for StringValue (ptr only)
 #include <common/utils.h>  // for c_strornull
 #include <common/convert2string.h>
+#include <common/file_system.h>
 
-#include "core/db/lmdb/config.h"               // for Config
-#include "proxy/db/lmdb/connection_settings.h"  // for ConnectionSettings
+#include "core/db/lmdb/config.h"                // for Config
 #include "core/db/lmdb/command_translator.h"
 #include "core/db/lmdb/database_info.h"
 #include "core/db/lmdb/internal/commands_api.h"
@@ -189,22 +189,9 @@ common::Error CreateConnection(const Config& config, NativeConnection** context)
   return common::Error();
 }
 
-common::Error CreateConnection(ConnectionSettings* settings, NativeConnection** context) {
-  if (!settings) {
-    return common::make_error_value("Invalid input argument(s)", common::ErrorValue::E_ERROR);
-  }
-
-  Config config = settings->Info();
-  return CreateConnection(config, context);
-}
-
-common::Error TestConnection(ConnectionSettings* settings) {
-  if (!settings) {
-    return common::make_error_value("Invalid input argument(s)", common::ErrorValue::E_ERROR);
-  }
-
-  struct lmdb* ldb = NULL;
-  common::Error er = CreateConnection(settings, &ldb);
+common::Error TestConnection(const Config &config) {
+  NativeConnection* ldb = nullptr;
+  common::Error er = CreateConnection(config, &ldb);
   if (er && er->isError()) {
     return er;
   }

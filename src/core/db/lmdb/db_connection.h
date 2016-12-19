@@ -53,13 +53,6 @@ class IDataBaseInfo;
 namespace fastonosql {
 namespace core {
 namespace lmdb {
-class ConnectionSettings;
-}
-}
-}
-namespace fastonosql {
-namespace core {
-namespace lmdb {
 struct lmdb;
 }
 }
@@ -72,8 +65,7 @@ namespace lmdb {
 typedef lmdb NativeConnection;
 
 common::Error CreateConnection(const Config& config, NativeConnection** context);
-common::Error CreateConnection(ConnectionSettings* settings, NativeConnection** context);
-common::Error TestConnection(ConnectionSettings* settings);
+common::Error TestConnection(const Config& config);
 
 class DBConnection : public core::internal::CDBConnection<NativeConnection, Config, LMDB> {
  public:

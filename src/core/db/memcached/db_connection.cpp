@@ -33,8 +33,7 @@
 #include <common/utils.h>           // for c_strornull
 #include <common/value.h>           // for Value::ErrorsType::E_ERROR, etc
 
-#include "core/db/memcached/config.h"               // for Config
-#include "proxy/db/memcached/connection_settings.h"  // for ConnectionSettings
+#include "core/db/memcached/config.h"                // for Config
 #include "core/db/memcached/database_info.h"
 #include "core/db/memcached/command_translator.h"
 #include "core/db/memcached/internal/commands_api.h"
@@ -267,25 +266,11 @@ common::Error CreateConnection(const Config& config, NativeConnection** context)
   return common::Error();
 }
 
-common::Error CreateConnection(ConnectionSettings* settings, NativeConnection** context) {
-  if (!settings) {
-    return common::make_error_value("Invalid input argument(s)", common::ErrorValue::E_ERROR);
-  }
-
-  Config config = settings->Info();
-  return CreateConnection(config, context);
-}
-
-common::Error TestConnection(ConnectionSettings* settings) {
-  if (!settings) {
-    return common::make_error_value("Invalid input argument(s)", common::ErrorValue::E_ERROR);
-  }
-
-  Config inf = settings->Info();
-  const char* user = common::utils::c_strornull(inf.user);
-  const char* passwd = common::utils::c_strornull(inf.password);
-  const char* host = common::utils::c_strornull(inf.host.host);
-  uint16_t hostport = inf.host.port;
+common::Error TestConnection(const Config& config) {
+  const char* user = common::utils::c_strornull(config.user);
+  const char* passwd = common::utils::c_strornull(config.password);
+  const char* host = common::utils::c_strornull(config.host.host);
+  uint16_t hostport = config.host.port;
 
   memcached_return rc;
   if (user && passwd) {

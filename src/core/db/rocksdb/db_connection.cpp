@@ -37,8 +37,7 @@
 #include "core/internal/connection.h"  // for Connection<>::handle_t, etc
 #include "core/internal/db_connection.h"
 
-#include "core/db/rocksdb/config.h"               // for Config
-#include "proxy/db/rocksdb/connection_settings.h"  // for ConnectionSettings
+#include "core/db/rocksdb/config.h"                // for Config
 #include "core/db/rocksdb/database_info.h"
 #include "core/db/rocksdb/command_translator.h"
 #include "core/db/rocksdb/internal/commands_api.h"
@@ -132,22 +131,9 @@ common::Error CreateConnection(const Config& config, NativeConnection** context)
   return common::Error();
 }
 
-common::Error CreateConnection(ConnectionSettings* settings, NativeConnection** context) {
-  if (!settings) {
-    return common::make_error_value("Invalid input argument(s)", common::ErrorValue::E_ERROR);
-  }
-
-  Config config = settings->Info();
-  return CreateConnection(config, context);
-}
-
-common::Error TestConnection(ConnectionSettings* settings) {
-  if (!settings) {
-    return common::make_error_value("Invalid input argument(s)", common::ErrorValue::E_ERROR);
-  }
-
+common::Error TestConnection(const Config& config) {
   ::rocksdb::DB* ldb = nullptr;
-  common::Error er = CreateConnection(settings, &ldb);
+  common::Error er = CreateConnection(config, &ldb);
   if (er && er->isError()) {
     return er;
   }

@@ -34,49 +34,49 @@
 #include "proxy/db/redis/cluster.h"              // for Cluster
 #include "proxy/db/redis/sentinel.h"             // for Sentinel
 #include "proxy/db/redis/connection_settings.h"  // for ConnectionSettings
-#include "core/db/redis/db_connection.h"        // for DiscoveryClusterConnection, etc
+#include "core/db/redis/db_connection.h"         // for DiscoveryClusterConnection, etc
 #include "proxy/db/redis/server.h"               // for Server
 #endif
 
 #ifdef BUILD_WITH_MEMCACHED
 #include "proxy/db/memcached/connection_settings.h"  // for ConnectionSettings
-#include "core/db/memcached/db_connection.h"        // for TestConnection
+#include "core/db/memcached/db_connection.h"         // for TestConnection
 #include "proxy/db/memcached/server.h"               // for Server
 #endif
 
 #ifdef BUILD_WITH_SSDB
 #include "proxy/db/ssdb/connection_settings.h"  // for ConnectionSettings
-#include "core/db/ssdb/db_connection.h"        // for TestConnection
+#include "core/db/ssdb/db_connection.h"         // for TestConnection
 #include "proxy/db/ssdb/server.h"               // for Server
 #endif
 
 #ifdef BUILD_WITH_LEVELDB
 #include "proxy/db/leveldb/connection_settings.h"  // for ConnectionSettings
-#include "core/db/leveldb/db_connection.h"        // for TestConnection
+#include "core/db/leveldb/db_connection.h"         // for TestConnection
 #include "proxy/db/leveldb/server.h"               // for Server
 #endif
 
 #ifdef BUILD_WITH_ROCKSDB
 #include "proxy/db/rocksdb/connection_settings.h"  // for ConnectionSettings
-#include "core/db/rocksdb/db_connection.h"        // for TestConnection
+#include "core/db/rocksdb/db_connection.h"         // for TestConnection
 #include "proxy/db/rocksdb/server.h"               // for Server
 #endif
 
 #ifdef BUILD_WITH_UNQLITE
 #include "proxy/db/unqlite/connection_settings.h"  // for ConnectionSettings
-#include "core/db/unqlite/db_connection.h"        // for TestConnection
+#include "core/db/unqlite/db_connection.h"         // for TestConnection
 #include "proxy/db/unqlite/server.h"               // for Server
 #endif
 
 #ifdef BUILD_WITH_LMDB
 #include "proxy/db/lmdb/connection_settings.h"  // for ConnectionSettings
-#include "core/db/lmdb/db_connection.h"        // for TestConnection
+#include "core/db/lmdb/db_connection.h"         // for TestConnection
 #include "proxy/db/lmdb/server.h"               // for Server
 #endif
 
 #ifdef BUILD_WITH_UPSCALEDB
 #include "proxy/db/upscaledb/connection_settings.h"  // for ConnectionSettings
-#include "core/db/upscaledb/db_connection.h"        // for TestConnection
+#include "core/db/upscaledb/db_connection.h"         // for TestConnection
 #include "proxy/db/upscaledb/server.h"               // for Server
 #endif
 
@@ -202,50 +202,56 @@ common::Error ServersManager::TestConnection(IConnectionSettingsBaseSPtr connect
   connectionTypes type = connection->Type();
 #ifdef BUILD_WITH_REDIS
   if (type == REDIS) {
-    return fastonosql::core::redis::TestConnection(
-        static_cast<redis::ConnectionSettings*>(connection.get()));
+    redis::ConnectionSettings* settings = static_cast<redis::ConnectionSettings*>(connection.get());
+    redis::RConfig rconfig(settings->Info(), settings->SSHInfo());
+    return redis::TestConnection(rconfig);
   }
 #endif
 #ifdef BUILD_WITH_MEMCACHED
   if (type == MEMCACHED) {
-    return fastonosql::core::memcached::TestConnection(
-        static_cast<memcached::ConnectionSettings*>(connection.get()));
+    memcached::ConnectionSettings* settings =
+        static_cast<memcached::ConnectionSettings*>(connection.get());
+    return fastonosql::core::memcached::TestConnection(settings->Info());
   }
 #endif
 #ifdef BUILD_WITH_SSDB
   if (type == SSDB) {
-    return fastonosql::core::ssdb::TestConnection(
-        static_cast<ssdb::ConnectionSettings*>(connection.get()));
+    ssdb::ConnectionSettings* settings = static_cast<ssdb::ConnectionSettings*>(connection.get());
+    return fastonosql::core::ssdb::TestConnection(settings->Info());
   }
 #endif
 #ifdef BUILD_WITH_LEVELDB
   if (type == LEVELDB) {
-    return fastonosql::core::leveldb::TestConnection(
-        static_cast<leveldb::ConnectionSettings*>(connection.get()));
+    leveldb::ConnectionSettings* settings =
+        static_cast<leveldb::ConnectionSettings*>(connection.get());
+    return fastonosql::core::leveldb::TestConnection(settings->Info());
   }
 #endif
 #ifdef BUILD_WITH_ROCKSDB
   if (type == ROCKSDB) {
-    return fastonosql::core::rocksdb::TestConnection(
-        static_cast<rocksdb::ConnectionSettings*>(connection.get()));
+    rocksdb::ConnectionSettings* settings =
+        static_cast<rocksdb::ConnectionSettings*>(connection.get());
+    return fastonosql::core::rocksdb::TestConnection(settings->Info());
   }
 #endif
 #ifdef BUILD_WITH_UNQLITE
   if (type == UNQLITE) {
-    return fastonosql::core::unqlite::TestConnection(
-        static_cast<unqlite::ConnectionSettings*>(connection.get()));
+    unqlite::ConnectionSettings* settings =
+        static_cast<unqlite::ConnectionSettings*>(connection.get());
+    return fastonosql::core::unqlite::TestConnection(settings->Info());
   }
 #endif
 #ifdef BUILD_WITH_LMDB
   if (type == LMDB) {
-    return fastonosql::core::lmdb::TestConnection(
-        static_cast<lmdb::ConnectionSettings*>(connection.get()));
+    lmdb::ConnectionSettings* settings = static_cast<lmdb::ConnectionSettings*>(connection.get());
+    return fastonosql::core::lmdb::TestConnection(settings->Info());
   }
 #endif
 #ifdef BUILD_WITH_UPSCALEDB
   if (type == UPSCALEDB) {
-    return fastonosql::core::upscaledb::TestConnection(
-        static_cast<upscaledb::ConnectionSettings*>(connection.get()));
+    upscaledb::ConnectionSettings* settings =
+        static_cast<upscaledb::ConnectionSettings*>(connection.get());
+    return fastonosql::core::upscaledb::TestConnection(settings->Info());
   }
 #endif
 
@@ -263,8 +269,9 @@ common::Error ServersManager::DiscoveryClusterConnection(
   connectionTypes type = connection->Type();
 #ifdef BUILD_WITH_REDIS
   if (type == REDIS) {
-    return redis::DiscoveryClusterConnection(
-        static_cast<redis::ConnectionSettings*>(connection.get()), inf);
+    redis::ConnectionSettings* settings = static_cast<redis::ConnectionSettings*>(connection.get());
+    redis::RConfig rconfig(settings->Info(), settings->SSHInfo());
+    return redis::DiscoveryClusterConnection(rconfig, inf);
   }
 #endif
 #ifdef BUILD_WITH_MEMCACHED
@@ -317,8 +324,9 @@ common::Error ServersManager::DiscoverySentinelConnection(
   connectionTypes type = connection->Type();
 #ifdef BUILD_WITH_REDIS
   if (type == REDIS) {
-    return redis::DiscoverySentinelConnection(
-        static_cast<redis::ConnectionSettings*>(connection.get()), inf);
+    redis::ConnectionSettings* settings = static_cast<redis::ConnectionSettings*>(connection.get());
+    redis::RConfig rconfig(settings->Info(), settings->SSHInfo());
+    return redis::DiscoverySentinelConnection(rconfig, inf);
   }
 #endif
 #ifdef BUILD_WITH_MEMCACHED

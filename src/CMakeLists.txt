@@ -30,15 +30,11 @@ SET(SOURCES_CORE_SERVER
   core/server/iserver_info.cpp
 )
 
-SET(HEADERS_CORE_COMMAND_TO_MOC
-  core/command/command_logger.h
-)
 SET(HEADERS_CORE_COMMAND
-  core/command/command.h
+
 )
 SET(SOURCES_CORE_COMMAND
   core/command/command.cpp
-  core/command/command_logger.cpp
 )
 
 SET(HEADERS_CORE_CONFIG
@@ -48,9 +44,6 @@ SET(SOURCES_CORE_CONFIG
   core/config/config.cpp
 )
 
-SET(HEADERS_CORE_TO_MOC
-  ${HEADERS_CORE_COMMAND_TO_MOC}
-)
 SET(HEADERS_CORE
   ${HEADERS_CORE_SERVER}
   ${HEADERS_CORE_DATABASE}
@@ -168,10 +161,20 @@ SET(SOURCES_PROXY_DATABASE
   proxy/database/idatabase.cpp
 )
 
+SET(HEADERS_PROXY_COMMAND_TO_MOC
+  proxy/command/command_logger.h
+)
+SET(HEADERS_PROXY_COMMAND
+)
+SET(SOURCES_PROXY_COMMAND
+  proxy/command/command_logger.cpp
+)
+
 #
 SET(HEADERS_PROXY_TO_MOC
   ${HEADERS_PROXY_DRIVER_TO_MOC}
   ${HEADERS_PROXY_SERVER_TO_MOC}
+  ${HEADERS_PROXY_COMMAND_TO_MOC}
 )
 
 SET(HEADERS_PROXY
@@ -182,6 +185,7 @@ SET(HEADERS_PROXY
   ${HEADERS_PROXY_EVENTS}
   ${HEADERS_PROXY_DATABASE}
   ${HEADERS_PROXY_CONNECTION_SETTINGS}
+  ${HEADERS_PROXY_COMMAND}
 
   proxy/servers_manager.h
   proxy/core_fwd.h
@@ -199,6 +203,7 @@ SET(SOURCES_PROXY
   ${SOURCES_PROXY_EVENTS}
   ${SOURCES_PROXY_DATABASE}
   ${SOURCES_PROXY_CONNECTION_SETTINGS}
+  ${SOURCES_PROXY_COMMAND}
 
   proxy/servers_manager.cpp
   proxy/settings_manager.cpp
@@ -445,32 +450,31 @@ IF(BUILD_WITH_REDIS)
     core/db/redis/command.h
     core/db/redis/command_translator.h
     core/db/redis/server_info.h
-    proxy/db/redis/connection_settings.h
     core/db/redis/db_connection.h
     core/db/redis/internal/commands_api.h
     core/db/redis/database_info.h
-
     core/db/redis/sentinel_info.h
-    core/db/redis/sentinel_settings.h
     core/db/redis/cluster_infos.h
-    core/db/redis/cluster_settings.h
 
+    proxy/db/redis/connection_settings.h
+    proxy/db/redis/sentinel_settings.h
+    proxy/db/redis/cluster_settings.h
     proxy/db/redis/database.h
   )
   SET(SOURCES_REDIS
-    core/db/redis/config.cpp    
+    core/db/redis/config.cpp
     core/db/redis/command.cpp
     core/db/redis/command_translator.cpp
     core/db/redis/server_info.cpp
-    proxy/db/redis/connection_settings.cpp
     core/db/redis/db_connection.cpp
     core/db/redis/internal/commands_api.cpp
     core/db/redis/sentinel_info.cpp
-    core/db/redis/sentinel_settings.cpp
     core/db/redis/cluster_infos.cpp
-    core/db/redis/cluster_settings.cpp
     core/db/redis/database_info.cpp
 
+    proxy/db/redis/connection_settings.cpp
+    proxy/db/redis/sentinel_settings.cpp
+    proxy/db/redis/cluster_settings.cpp
     proxy/db/redis/server.cpp
     proxy/db/redis/driver.cpp
     proxy/db/redis/sentinel.cpp
@@ -500,11 +504,11 @@ IF(BUILD_WITH_MEMCACHED)
     core/db/memcached/command.h
     core/db/memcached/command_translator.h
     core/db/memcached/server_info.h
-    proxy/db/memcached/connection_settings.h
     core/db/memcached/db_connection.h
     core/db/memcached/internal/commands_api.h
     core/db/memcached/database_info.h
 
+    proxy/db/memcached/connection_settings.h
     proxy/db/memcached/database.h
   )
   SET(SOURCES_MEMCACHED
@@ -512,11 +516,11 @@ IF(BUILD_WITH_MEMCACHED)
     core/db/memcached/command.cpp
     core/db/memcached/command_translator.cpp
     core/db/memcached/server_info.cpp
-    proxy/db/memcached/connection_settings.cpp
     core/db/memcached/db_connection.cpp
     core/db/memcached/internal/commands_api.cpp
     core/db/memcached/database_info.cpp
 
+    proxy/db/memcached/connection_settings.cpp
     proxy/db/memcached/database.cpp
     proxy/db/memcached/server.cpp
     proxy/db/memcached/driver.cpp
@@ -542,11 +546,11 @@ IF(BUILD_WITH_SSDB)
     core/db/ssdb/command.h
     core/db/ssdb/command_translator.h
     core/db/ssdb/server_info.h
-    proxy/db/ssdb/connection_settings.h
     core/db/ssdb/db_connection.h
     core/db/ssdb/internal/commands_api.h
     core/db/ssdb/database_info.h
 
+    proxy/db/ssdb/connection_settings.h
     proxy/db/ssdb/database.h
   )
   SET(SOURCES_SSDB
@@ -555,11 +559,11 @@ IF(BUILD_WITH_SSDB)
     core/db/ssdb/command.cpp
     core/db/ssdb/command_translator.cpp
     core/db/ssdb/server_info.cpp
-    proxy/db/ssdb/connection_settings.cpp
     core/db/ssdb/db_connection.cpp
     core/db/ssdb/internal/commands_api.cpp
     core/db/ssdb/database_info.cpp
 
+    proxy/db/ssdb/connection_settings.cpp
     proxy/db/ssdb/database.cpp
     proxy/db/ssdb/server.cpp
     proxy/db/ssdb/driver.cpp
@@ -585,11 +589,11 @@ IF(BUILD_WITH_LEVELDB)
     core/db/leveldb/command.h
     core/db/leveldb/command_translator.h
     core/db/leveldb/server_info.h
-    proxy/db/leveldb/connection_settings.h
     core/db/leveldb/db_connection.h
     core/db/leveldb/internal/commands_api.h
     core/db/leveldb/database_info.h
 
+    proxy/db/leveldb/connection_settings.h
     proxy/db/leveldb/database.h
   )
   SET(SOURCES_LEVELDB
@@ -597,11 +601,11 @@ IF(BUILD_WITH_LEVELDB)
     core/db/leveldb/command.cpp
     core/db/leveldb/command_translator.cpp
     core/db/leveldb/server_info.cpp
-    proxy/db/leveldb/connection_settings.cpp
     core/db/leveldb/db_connection.cpp
     core/db/leveldb/internal/commands_api.cpp
     core/db/leveldb/database_info.cpp
 
+    proxy/db/leveldb/connection_settings.cpp
     proxy/db/leveldb/database.cpp
     proxy/db/leveldb/server.cpp
     proxy/db/leveldb/driver.cpp
@@ -628,11 +632,11 @@ IF(BUILD_WITH_ROCKSDB)
     core/db/rocksdb/command.h
     core/db/rocksdb/command_translator.h
     core/db/rocksdb/server_info.h
-    proxy/db/rocksdb/connection_settings.h
     core/db/rocksdb/db_connection.h
     core/db/rocksdb/internal/commands_api.h
     core/db/rocksdb/database_info.h
 
+    proxy/db/rocksdb/connection_settings.h
     proxy/db/rocksdb/database.h
   )
   SET(SOURCES_ROCKSDB
@@ -640,11 +644,12 @@ IF(BUILD_WITH_ROCKSDB)
     core/db/rocksdb/command.cpp
     core/db/rocksdb/command_translator.cpp
     core/db/rocksdb/server_info.cpp
-    proxy/db/rocksdb/connection_settings.cpp
+
     core/db/rocksdb/db_connection.cpp
     core/db/rocksdb/internal/commands_api.cpp
     core/db/rocksdb/database_info.cpp
 
+    proxy/db/rocksdb/connection_settings.cpp
     proxy/db/rocksdb/database.cpp
     proxy/db/rocksdb/server.cpp
     proxy/db/rocksdb/driver.cpp
@@ -671,11 +676,11 @@ IF(BUILD_WITH_UNQLITE)
     core/db/unqlite/command.h
     core/db/unqlite/command_translator.h
     core/db/unqlite/server_info.h
-    proxy/db/unqlite/connection_settings.h
     core/db/unqlite/db_connection.h
     core/db/unqlite/internal/commands_api.h
     core/db/unqlite/database_info.h
 
+    proxy/db/unqlite/connection_settings.h
     proxy/db/unqlite/database.h
   )
   SET(SOURCES_UNQLITE
@@ -683,11 +688,12 @@ IF(BUILD_WITH_UNQLITE)
     core/db/unqlite/command.cpp
     core/db/unqlite/command_translator.cpp
     core/db/unqlite/server_info.cpp
-    proxy/db/unqlite/connection_settings.cpp
+
     core/db/unqlite/db_connection.cpp
     core/db/unqlite/internal/commands_api.cpp
     core/db/unqlite/database_info.cpp
 
+    proxy/db/unqlite/connection_settings.cpp
     proxy/db/unqlite/database.cpp
     proxy/db/unqlite/server.cpp
     proxy/db/unqlite/driver.cpp
@@ -713,11 +719,11 @@ IF(BUILD_WITH_LMDB)
     core/db/lmdb/command.h
     core/db/lmdb/command_translator.h
     core/db/lmdb/server_info.h
-    proxy/db/lmdb/connection_settings.h
     core/db/lmdb/db_connection.h
     core/db/lmdb/internal/commands_api.h
     core/db/lmdb/database_info.h
 
+    proxy/db/lmdb/connection_settings.h
     proxy/db/lmdb/database.h
   )
   SET(SOURCES_LMDB
@@ -725,11 +731,11 @@ IF(BUILD_WITH_LMDB)
     core/db/lmdb/command.cpp
     core/db/lmdb/command_translator.cpp
     core/db/lmdb/server_info.cpp
-    proxy/db/lmdb/connection_settings.cpp
     core/db/lmdb/db_connection.cpp
     core/db/lmdb/internal/commands_api.cpp
     core/db/lmdb/database_info.cpp
 
+    proxy/db/lmdb/connection_settings.cpp
     proxy/db/lmdb/database.cpp
     proxy/db/lmdb/server.cpp
     proxy/db/lmdb/driver.cpp
@@ -759,11 +765,11 @@ IF(BUILD_WITH_UPSCALEDB)
     core/db/upscaledb/command.h
     core/db/upscaledb/command_translator.h
     core/db/upscaledb/server_info.h
-    proxy/db/upscaledb/connection_settings.h
     core/db/upscaledb/db_connection.h
     core/db/upscaledb/internal/commands_api.h
     core/db/upscaledb/database_info.h
 
+    proxy/db/upscaledb/connection_settings.h
     proxy/db/upscaledb/database.h
   )
   SET(SOURCES_UPSCALEDB
@@ -771,11 +777,11 @@ IF(BUILD_WITH_UPSCALEDB)
     core/db/upscaledb/command.cpp
     core/db/upscaledb/command_translator.cpp
     core/db/upscaledb/server_info.cpp
-    proxy/db/upscaledb/connection_settings.cpp
     core/db/upscaledb/db_connection.cpp
     core/db/upscaledb/internal/commands_api.cpp
     core/db/upscaledb/database_info.cpp
 
+    proxy/db/upscaledb/connection_settings.cpp
     proxy/db/upscaledb/database.cpp
     proxy/db/upscaledb/server.cpp
     proxy/db/upscaledb/driver.cpp
@@ -839,7 +845,7 @@ SET(SOURCES ${SOURCES} ${SOURCES_GLOBAL}
 )
 SET(HEADERS_TOMOC ${HEADERS_GUI_TO_MOC} ${HEADERS_GUI_DIALOGS_TO_MOC} ${HEADERS_GUI_EDITOR_TO_MOC}
   ${HEADERS_GUI_WIDGETS_TO_MOC} ${HEADERS_GUI_EXPLORER_TO_MOC}
-  ${HEADERS_PROXY_TO_MOC} ${HEADERS_CORE_TO_MOC} ${HEADERS_SHELL_TO_MOC}
+  ${HEADERS_PROXY_TO_MOC} ${HEADERS_SHELL_TO_MOC}
 
   ${HEADERS_REDIS_TO_MOC} ${HEADERS_MEMCACHED_TO_MOC}
   ${HEADERS_SSDB_TO_MOC} ${HEADERS_LEVELDB_TO_MOC}

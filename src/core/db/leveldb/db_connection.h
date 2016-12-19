@@ -50,13 +50,6 @@ namespace core {
 class IDataBaseInfo;
 }
 }
-namespace fastonosql {
-namespace core {
-namespace leveldb {
-class ConnectionSettings;
-}
-}
-}
 namespace leveldb {
 class DB;
 }  // lines 30-30
@@ -68,8 +61,7 @@ namespace leveldb {
 typedef ::leveldb::DB NativeConnection;
 
 common::Error CreateConnection(const Config& config, NativeConnection** context);
-common::Error CreateConnection(ConnectionSettings* settings, NativeConnection** context);
-common::Error TestConnection(ConnectionSettings* settings);
+common::Error TestConnection(const Config& config);
 
 class DBConnection : public core::internal::CDBConnection<NativeConnection, Config, LEVELDB> {
  public:

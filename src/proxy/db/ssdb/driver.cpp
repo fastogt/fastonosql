@@ -31,7 +31,7 @@
 #include "core/db_key.h"                  // for NDbKValue, NValue, NKey
 #include "core/connection_types.h"        // for ConvertToString, etc
 #include "core/command/command.h"         // for CreateCommand, etc
-#include "core/command/command_logger.h"  // for LOG_COMMAND
+#include "proxy/command/command_logger.h"  // for LOG_COMMAND
 #include "proxy/events/events_info.h"
 #include "core/internal/db_connection.h"
 

@@ -16,7 +16,7 @@
     along with FastoNoSQL.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-#include "core/command/command_logger.h"
+#include "proxy/command/command_logger.h"
 
 #include <QMetaType>  // for qRegisterMetaType
 

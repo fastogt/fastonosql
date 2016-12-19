@@ -33,7 +33,6 @@
 #include "core/db_key.h"            // for NKey (ptr only), etc
 
 #include "core/db/rocksdb/config.h"
-#include "proxy/db/rocksdb/connection_settings.h"
 #include "core/db/rocksdb/server_info.h"
 
 namespace rocksdb {
@@ -47,8 +46,7 @@ namespace rocksdb {
 typedef ::rocksdb::DB NativeConnection;
 
 common::Error CreateConnection(const Config& config, NativeConnection** context);
-common::Error CreateConnection(ConnectionSettings* settings, NativeConnection** context);
-common::Error TestConnection(ConnectionSettings* settings);
+common::Error TestConnection(const Config& config);
 
 class DBConnection : public core::internal::CDBConnection<NativeConnection, Config, ROCKSDB> {
  public:

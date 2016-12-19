@@ -33,10 +33,9 @@
 #include <common/string_util.h>  // for MatchPattern
 #include <common/types.h>        // for tribool, tribool::SUCCESS
 
-#include "core/command_holder.h"                    // for CommandHolder
-#include "core/internal/connection.h"               // for Connection<>::handle_t, etc
-#include "core/db/upscaledb/config.h"               // for Config
-#include "proxy/db/upscaledb/connection_settings.h"  // for ConnectionSettings
+#include "core/command_holder.h"                     // for CommandHolder
+#include "core/internal/connection.h"                // for Connection<>::handle_t, etc
+#include "core/db/upscaledb/config.h"                // for Config
 #include "core/db/upscaledb/command_translator.h"
 #include "core/db/upscaledb/database_info.h"
 #include "core/db/upscaledb/internal/commands_api.h"
@@ -180,22 +179,9 @@ common::Error CreateConnection(const Config& config, NativeConnection** context)
   return common::Error();
 }
 
-common::Error CreateConnection(ConnectionSettings* settings, NativeConnection** context) {
-  if (!settings) {
-    return common::make_error_value("Invalid input argument(s)", common::ErrorValue::E_ERROR);
-  }
-
-  Config config = settings->Info();
-  return CreateConnection(config, context);
-}
-
-common::Error TestConnection(ConnectionSettings* settings) {
-  if (!settings) {
-    return common::make_error_value("Invalid input argument(s)", common::ErrorValue::E_ERROR);
-  }
-
+common::Error TestConnection(const Config& config) {
   struct upscaledb* scaledb = NULL;
-  common::Error er = CreateConnection(settings, &scaledb);
+  common::Error er = CreateConnection(config, &scaledb);
   if (er && er->isError()) {
     return er;
   }

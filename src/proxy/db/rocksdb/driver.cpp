@@ -29,7 +29,7 @@
 #include <common/intrusive_ptr.h>  // for intrusive_ptr
 
 #include "core/command/command.h"         // for CreateCommand, etc
-#include "core/command/command_logger.h"  // for LOG_COMMAND
+#include "proxy/command/command_logger.h"  // for LOG_COMMAND
 #include "core/connection_types.h"        // for ConvertToString, etc
 #include "core/db_key.h"                  // for NDbKValue, NValue, NKey
 

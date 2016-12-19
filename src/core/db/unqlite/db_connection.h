@@ -30,7 +30,6 @@
 #include "core/internal/cdb_connection.h"
 
 #include "core/db/unqlite/config.h"
-#include "proxy/db/unqlite/connection_settings.h"
 #include "core/db/unqlite/server_info.h"
 
 struct unqlite;
@@ -42,8 +41,7 @@ namespace unqlite {
 typedef struct unqlite NativeConnection;
 
 common::Error CreateConnection(const Config& config, NativeConnection** context);
-common::Error CreateConnection(ConnectionSettings* settings, NativeConnection** context);
-common::Error TestConnection(ConnectionSettings* settings);
+common::Error TestConnection(const Config& config);
 
 class DBConnection : public core::internal::CDBConnection<NativeConnection, Config, UNQLITE> {
  public:

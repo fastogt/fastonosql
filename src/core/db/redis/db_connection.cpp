@@ -60,18 +60,16 @@ extern "C" {
 
 #include "core/icommand_translator.h"  // for translator_t, etc
 
-#include "core/command/command.h"         // for CreateCommand
-#include "core/command/command_logger.h"  // for LOG_COMMAND
-#include "core/command_holder.h"          // for CommandHolder
+#include "core/command/command.h"  // for CreateCommand
+#include "core/command_holder.h"   // for CommandHolder
 
 #include "core/internal/connection.h"  // for Connection<>::config_t, etc
 #include "core/internal/cdb_connection_client.h"
 
-#include "core/db/redis/cluster_infos.h"        // for makeDiscoveryClusterInfo
-#include "core/db/redis/command.h"              // for Command
-#include "proxy/db/redis/connection_settings.h"  // for ConnectionSettings
-#include "core/db/redis/database_info.h"        // for DataBaseInfo
-#include "core/db/redis/sentinel_info.h"        // for DiscoverySentinelInfo, etc
+#include "core/db/redis/cluster_infos.h"  // for makeDiscoveryClusterInfo
+#include "core/db/redis/command.h"        // for Command
+#include "core/db/redis/database_info.h"  // for DataBaseInfo
+#include "core/db/redis/sentinel_info.h"  // for DiscoverySentinelInfo, etc
 #include "core/db/redis/command_translator.h"
 #include "core/db/redis/internal/commands_api.h"
 
@@ -486,28 +484,14 @@ common::Error CreateConnection(const RConfig& config, NativeConnection** context
   return common::Error();
 }
 
-common::Error CreateConnection(ConnectionSettings* settings, NativeConnection** context) {
-  if (!settings) {
-    return common::make_error_value("Invalid input argument(s)", common::ErrorValue::E_ERROR);
-  }
-
-  RConfig rconfig(settings->Info(), settings->SSHInfo());
-  return CreateConnection(rconfig, context);
-}
-
-common::Error TestConnection(ConnectionSettings* settings) {
-  if (!settings) {
-    return common::make_error_value("Invalid input argument(s)", common::ErrorValue::E_ERROR);
-  }
-
+common::Error TestConnection(const RConfig& rconfig) {
   redisContext* context = NULL;
-  common::Error err = CreateConnection(settings, &context);
+  common::Error err = CreateConnection(rconfig, &context);
   if (err && err->isError()) {
     return err;
   }
 
-  Config config = settings->Info();
-  const char* auth_str = common::utils::c_strornull(config.auth);
+  const char* auth_str = common::utils::c_strornull(rconfig.auth);
   err = authContext(auth_str, context);
   if (err && err->isError()) {
     redisFree(context);
@@ -518,20 +502,19 @@ common::Error TestConnection(ConnectionSettings* settings) {
   return common::Error();
 }
 
-common::Error DiscoveryClusterConnection(ConnectionSettings* settings,
+common::Error DiscoveryClusterConnection(const RConfig& rconfig,
                                          std::vector<ServerDiscoveryClusterInfoSPtr>* infos) {
-  if (!settings || !infos) {
+  if (!infos) {
     return common::make_error_value("Invalid input argument(s)", common::ErrorValue::E_ERROR);
   }
 
   redisContext* context = NULL;
-  common::Error err = CreateConnection(settings, &context);
+  common::Error err = CreateConnection(rconfig, &context);
   if (err && err->isError()) {
     return err;
   }
 
-  Config config = settings->Info();
-  const char* auth_str = common::utils::c_strornull(config.auth);
+  const char* auth_str = common::utils::c_strornull(rconfig.auth);
   err = authContext(auth_str, context);
   if (err && err->isError()) {
     redisFree(context);
@@ -547,7 +530,7 @@ common::Error DiscoveryClusterConnection(ConnectionSettings* settings,
   }
 
   if (reply->type == REDIS_REPLY_STRING) {
-    err = makeDiscoveryClusterInfo(config.host, std::string(reply->str, reply->len), infos);
+    err = makeDiscoveryClusterInfo(rconfig.host, std::string(reply->str, reply->len), infos);
   } else if (reply->type == REDIS_REPLY_ERROR) {
     err = common::make_error_value(std::string(reply->str, reply->len), common::Value::E_ERROR);
   } else {
@@ -559,20 +542,19 @@ common::Error DiscoveryClusterConnection(ConnectionSettings* settings,
   return err;
 }
 
-common::Error DiscoverySentinelConnection(ConnectionSettings* settings,
+common::Error DiscoverySentinelConnection(const RConfig& rconfig,
                                           std::vector<ServerDiscoverySentinelInfoSPtr>* infos) {
-  if (!settings || !infos) {
+  if (!infos) {
     return common::make_error_value("Invalid input argument(s)", common::ErrorValue::E_ERROR);
   }
 
   redisContext* context = NULL;
-  common::Error err = CreateConnection(settings, &context);
+  common::Error err = CreateConnection(rconfig, &context);
   if (err && err->isError()) {
     return err;
   }
 
-  Config config = settings->Info();
-  const char* auth_str = common::utils::c_strornull(config.auth);
+  const char* auth_str = common::utils::c_strornull(rconfig.auth);
   err = authContext(auth_str, context);
   if (err && err->isError()) {
     redisFree(context);
@@ -1843,7 +1825,8 @@ common::Error DBConnection::CliReadReply(FastoObject* out) {
   return er;
 }
 
-common::Error DBConnection::ExecuteAsPipeline(const std::vector<FastoObjectCommandIPtr>& cmds) {
+common::Error DBConnection::ExecuteAsPipeline(const std::vector<FastoObjectCommandIPtr>& cmds,
+                                              void (*log_command_cb)(FastoObjectCommandIPtr command)) {
   if (cmds.empty()) {
     DNOTREACHED();
     return common::make_error_value("Invalid input command", common::ErrorValue::E_ERROR);
@@ -1865,7 +1848,9 @@ common::Error DBConnection::ExecuteAsPipeline(const std::vector<FastoObjectComma
       continue;
     }
 
-    LOG_COMMAND(cmd);
+    if (log_command_cb) {
+      log_command_cb(cmd);
+    }
     int argc = 0;
     sds* argv = sdssplitargslong(ccommand, &argc);
 
