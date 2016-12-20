@@ -30,6 +30,8 @@
 #include <QGroupBox>
 #include <QHBoxLayout>
 #include <QLabel>
+#include <QSpinBox>
+#include <QSplitter>
 #include <QLineEdit>
 
 #include <common/convert2string.h>  // for ConvertFromString
@@ -93,8 +95,11 @@ PreferencesDialog::PreferencesDialog(QWidget* parent) : QDialog(parent) {
   fontLabel_ = new QLabel;
   fontComboBox_ = new QFontComboBox;
   fontComboBox_->setEditable(false);
+  fontSizeSpinBox_= new QSpinBox;
   fontLayout->addWidget(fontLabel_);
+  fontLayout->addWidget(new QSplitter(Qt::Horizontal));
   fontLayout->addWidget(fontComboBox_);
+  fontLayout->addWidget(fontSizeSpinBox_);
 
   QHBoxLayout* langLayout = new QHBoxLayout;
   langLabel_ = new QLabel;
@@ -169,7 +174,8 @@ void PreferencesDialog::accept() {
   common::qt::gui::applyStyle(stylesComboBox_->currentText());
   core::SettingsManager::instance().SetCurrentStyle(stylesComboBox_->currentText());
 
-  core::SettingsManager::instance().SetCurrentFontName(fontComboBox_->currentText());
+  QFont cf(fontComboBox_->currentText(), fontSizeSpinBox_->value());
+  core::SettingsManager::instance().SetCurrentFont(cf);
   common::qt::gui::applyFont(gui::GuiFactory::instance().font());
 
   QVariant var = defaultViewComboBox_->currentData();
@@ -188,7 +194,9 @@ void PreferencesDialog::syncWithSettings() {
   autoComletionEnable_->setChecked(core::SettingsManager::instance().AutoCompletion());
   languagesComboBox_->setCurrentText(core::SettingsManager::instance().CurrentLanguage());
   stylesComboBox_->setCurrentText(core::SettingsManager::instance().CurrentStyle());
-  fontComboBox_->setCurrentText(core::SettingsManager::instance().CurrentFontName());
+  QFont cf = core::SettingsManager::instance().CurrentFont();
+  fontComboBox_->setCurrentFont(cf);
+  fontSizeSpinBox_->setValue(cf.pointSize());
   supportedViews v = core::SettingsManager::instance().DefaultView();
   std::string vstr = viewsText[v];
   defaultViewComboBox_->setCurrentText(common::ConvertFromString<QString>(vstr));

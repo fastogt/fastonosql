@@ -23,6 +23,7 @@
 #include <string>  // for string
 #include <vector>  // for vector
 
+#include <QFont>
 #include <QStringList>
 
 #include <common/patterns/singleton_pattern.h>  // for LazySingleton
@@ -58,8 +59,8 @@ class SettingsManager : public common::patterns::LazySingleton<SettingsManager> 
   QString CurrentStyle() const;
   void SetCurrentStyle(const QString& style);
 
-  QString CurrentFontName() const;
-  void SetCurrentFontName(const QString& font);
+  QFont CurrentFont() const;
+  void SetCurrentFont(const QFont& font);
 
   QString CurrentLanguage() const;
   void SetCurrentLanguage(const QString& lang);
@@ -115,7 +116,7 @@ class SettingsManager : public common::patterns::LazySingleton<SettingsManager> 
   bool sended_statistic_;
   supportedViews views_;
   QString cur_style_;
-  QString cur_font_name_;
+  QFont cur_font_;
   QString cur_language_;
   connection_settings_t connections_;
   sentinel_settings_t sentinels_;

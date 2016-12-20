@@ -60,7 +60,7 @@ namespace {
 
 const std::string iniPath("~/.config/" PROJECT_NAME "/conf.ini");
 
-QString fontName() {
+QFont default_font() {
   /*#if defined(OS_MACOSX) || defined(OS_FREEBSD)
     return "Monaco";
   #elif defined(OS_LINUX) || defined(OS_ANDROID)
@@ -68,7 +68,7 @@ QString fontName() {
   #elif defined(OS_WIN)
     return "Courier";
   #endif*/
-  return QFont().defaultFamily();
+  return QFont();
 }
 
 }  // namespace
@@ -81,7 +81,7 @@ SettingsManager::SettingsManager()
       sended_statistic_(),
       views_(),
       cur_style_(),
-      cur_font_name_(),
+      cur_font_(),
       cur_language_(),
       connections_(),
       sentinels_(),
@@ -134,12 +134,12 @@ void SettingsManager::SetCurrentStyle(const QString& st) {
   cur_style_ = st;
 }
 
-QString SettingsManager::CurrentFontName() const {
-  return cur_font_name_;
+QFont SettingsManager::CurrentFont() const {
+  return cur_font_;
 }
 
-void SettingsManager::SetCurrentFontName(const QString& font) {
-  cur_font_name_ = font;
+void SettingsManager::SetCurrentFont(const QFont& font) {
+  cur_font_ = font;
 }
 
 QString SettingsManager::CurrentLanguage() const {
@@ -302,7 +302,8 @@ void SettingsManager::ReloadFromPath(const std::string& path, bool merge) {
 
   cur_style_ = settings.value(STYLE, common::qt::gui::defStyle).toString();
   sended_statistic_ = settings.value(SENDED_STATISTIC, false).toBool();
-  cur_font_name_ = settings.value(FONT, fontName()).toString();
+  QFont font = default_font();
+  cur_font_ = settings.value(FONT, font).value<QFont>();
   cur_language_ = settings.value(LANGUAGE, common::qt::translations::defLanguage).toString();
 
   int view = settings.value(VIEW, Text).toInt();
@@ -376,7 +377,7 @@ void SettingsManager::Save() {
   DCHECK(settings.status() == QSettings::NoError);
 
   settings.setValue(STYLE, cur_style_);
-  settings.setValue(FONT, cur_font_name_);
+  settings.setValue(FONT, cur_font_);
   settings.setValue(SENDED_STATISTIC, sended_statistic_);
   settings.setValue(LANGUAGE, cur_language_);
   settings.setValue(VIEW, views_);
