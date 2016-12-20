@@ -138,15 +138,15 @@ QString ConnectionBaseWidget::connectionName() const {
   return connectionName_->text();
 }
 
-core::IConnectionSettingsBase* ConnectionBaseWidget::createConnection() const {
+proxy::IConnectionSettingsBase* ConnectionBaseWidget::createConnection() const {
   std::string conName = common::ConvertToString(connectionName());
   std::string conFolder = common::ConvertToString(UIFolderText());
   if (conFolder.empty()) {
     conFolder = defaultNameConnectionFolder;
   }
 
-  core::connection_path_t path(common::file_system::stable_dir_path(conFolder) + conName);
-  core::IConnectionSettingsBase* conn = createConnectionImpl(path);
+  proxy::connection_path_t path(common::file_system::stable_dir_path(conFolder) + conName);
+  proxy::IConnectionSettingsBase* conn = createConnectionImpl(path);
   conn->SetNsSeparator(
       common::ConvertToString(toRawCommandLine(namespaceSeparator_->currentText())));
   conn->SetDelimiter(common::ConvertToString(toRawCommandLine(delimiter_->currentText())));
@@ -161,9 +161,9 @@ void ConnectionBaseWidget::setConnectionName(const QString& name) {
   connectionName_->setText(name);
 }
 
-void ConnectionBaseWidget::syncControls(core::IConnectionSettingsBase* connection) {
+void ConnectionBaseWidget::syncControls(proxy::IConnectionSettingsBase* connection) {
   if (connection) {
-    core::connection_path_t path = connection->Path();
+    proxy::connection_path_t path = connection->Path();
     setConnectionName(common::ConvertFromString<QString>(path.Name()));
 
     std::string ns_separator = connection->NsSeparator();

@@ -21,10 +21,10 @@
 #include <common/macros.h>  // for DCHECK
 
 namespace fastonosql {
-namespace core {
+namespace proxy {
 
 IConnectionSettingsLocal::IConnectionSettingsLocal(const connection_path_t& connectionPath,
-                                                   connectionTypes type)
+                                                   core::connectionTypes type)
     : IConnectionSettingsBase(connectionPath, type) {
   DCHECK(IsLocalType(type));
 }
@@ -33,5 +33,5 @@ std::string IConnectionSettingsLocal::FullAddress() const {
   return DBPath();
 }
 
-}  // namespace core
+}  // namespace proxy
 }  // namespace fastonosql

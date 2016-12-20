@@ -20,7 +20,7 @@
 
 #include <QWidget>
 
-#include "proxy/core_fwd.h"  // for IServerSPtr
+#include "proxy/proxy_fwd.h"  // for IServerSPtr
 #include "core/database/idatabase_info.h"
 
 #include "global/global.h"  // for FastoObject, etc
@@ -60,7 +60,7 @@ namespace gui {
 class OutputWidget : public QWidget {
   Q_OBJECT
  public:
-  explicit OutputWidget(core::IServerSPtr server, QWidget* parent = 0);
+  explicit OutputWidget(proxy::IServerSPtr server, QWidget* parent = 0);
 
  private Q_SLOTS:
   void createKey(const core::NDbKValue& dbv);
@@ -93,7 +93,7 @@ class OutputWidget : public QWidget {
   FastoTreeView* treeView_;
   FastoTableView* tableView_;
   FastoTextView* textView_;
-  const core::IServerSPtr server_;
+  const proxy::IServerSPtr server_;
 };
 
 }  // namespace gui

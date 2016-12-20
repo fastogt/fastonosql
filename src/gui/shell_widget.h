@@ -24,7 +24,7 @@
 
 #include "core/connection_types.h"  // for connectionTypes
 
-#include "proxy/core_fwd.h"  // for IServerSPtr
+#include "proxy/proxy_fwd.h"  // for IServerSPtr
 #include "core/server/iserver_info.h"
 #include "core/database/idatabase_info.h"
 
@@ -42,84 +42,84 @@ class IconLabel;
 }
 }  // lines 34-34
 namespace fastonosql {
-namespace core {
+namespace proxy {
 namespace events_info {
 struct ConnectInfoRequest;
 }
 }
 }
 namespace fastonosql {
-namespace core {
+namespace proxy {
 namespace events_info {
 struct ConnectInfoResponce;
 }
 }
 }
 namespace fastonosql {
-namespace core {
+namespace proxy {
 namespace events_info {
 struct DisConnectInfoRequest;
 }
 }
 }
 namespace fastonosql {
-namespace core {
+namespace proxy {
 namespace events_info {
 struct DisConnectInfoResponce;
 }
 }
 }
 namespace fastonosql {
-namespace core {
+namespace proxy {
 namespace events_info {
 struct DiscoveryInfoRequest;
 }
 }
 }
 namespace fastonosql {
-namespace core {
+namespace proxy {
 namespace events_info {
 struct DiscoveryInfoResponce;
 }
 }
 }
 namespace fastonosql {
-namespace core {
+namespace proxy {
 namespace events_info {
 struct ExecuteInfoRequest;
 }
 }
 }
 namespace fastonosql {
-namespace core {
+namespace proxy {
 namespace events_info {
 struct ExecuteInfoResponce;
 }
 }
 }
 namespace fastonosql {
-namespace core {
+namespace proxy {
 namespace events_info {
 struct EnterModeInfo;
 }
 }
 }
 namespace fastonosql {
-namespace core {
+namespace proxy {
 namespace events_info {
 struct LeaveModeInfo;
 }
 }
 }
 namespace fastonosql {
-namespace core {
+namespace proxy {
 namespace events_info {
 struct ProgressInfoResponce;
 }
 }
 }
 namespace fastonosql {
-namespace core {
+namespace proxy {
 namespace events_info {
 struct SetDefaultDatabaseRequest;
 }
@@ -137,7 +137,7 @@ namespace gui {
 class BaseShellWidget : public QWidget {
   Q_OBJECT
  public:
-  explicit BaseShellWidget(core::IServerSPtr server,
+  explicit BaseShellWidget(proxy::IServerSPtr server,
                            const QString& filePath = QString(),
                            QWidget* parent = 0);
   virtual ~BaseShellWidget();
@@ -165,21 +165,21 @@ class BaseShellWidget : public QWidget {
   void advancedOptionsChange(int state);
   void changeVersionApi(int index);
 
-  void startConnect(const core::events_info::ConnectInfoRequest& req);
-  void finishConnect(const core::events_info::ConnectInfoResponce& res);
-  void startDisconnect(const core::events_info::DisConnectInfoRequest& req);
-  void finishDisconnect(const core::events_info::DisConnectInfoResponce& res);
+  void startConnect(const proxy::events_info::ConnectInfoRequest& req);
+  void finishConnect(const proxy::events_info::ConnectInfoResponce& res);
+  void startDisconnect(const proxy::events_info::DisConnectInfoRequest& req);
+  void finishDisconnect(const proxy::events_info::DisConnectInfoResponce& res);
 
-  void progressChange(const core::events_info::ProgressInfoResponce& res);
+  void progressChange(const proxy::events_info::ProgressInfoResponce& res);
 
-  void enterMode(const core::events_info::EnterModeInfo& res);
-  void leaveMode(const core::events_info::LeaveModeInfo& res);
+  void enterMode(const proxy::events_info::EnterModeInfo& res);
+  void leaveMode(const proxy::events_info::LeaveModeInfo& res);
 
-  void startLoadDiscoveryInfo(const core::events_info::DiscoveryInfoRequest& res);
-  void finishLoadDiscoveryInfo(const core::events_info::DiscoveryInfoResponce& res);
+  void startLoadDiscoveryInfo(const proxy::events_info::DiscoveryInfoRequest& res);
+  void finishLoadDiscoveryInfo(const proxy::events_info::DiscoveryInfoResponce& res);
 
-  void startExecute(const core::events_info::ExecuteInfoRequest& req);
-  void finishExecute(const core::events_info::ExecuteInfoResponce& res);
+  void startExecute(const proxy::events_info::ExecuteInfoRequest& req);
+  void finishExecute(const proxy::events_info::ExecuteInfoResponce& res);
 
   void serverConnect();
   void serverDisconnect();
@@ -191,7 +191,7 @@ class BaseShellWidget : public QWidget {
   void updateServerInfo(core::IServerInfoSPtr inf);
   void updateDefaultDatabase(core::IDataBaseInfoSPtr dbs);
 
-  const core::IServerSPtr server_;
+  const proxy::IServerSPtr server_;
   QAction* executeAction_;
   QAction* stopAction_;
   QAction* connectAction_;

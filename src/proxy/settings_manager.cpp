@@ -74,7 +74,7 @@ QFont default_font() {
 }  // namespace
 
 namespace fastonosql {
-namespace core {
+namespace proxy {
 
 SettingsManager::SettingsManager()
     : config_version_(),
@@ -434,5 +434,5 @@ void SettingsManager::Save() {
   settings.setValue(CONFIG_VERSION, config_version_);
 }
 
-}  // namespace core
+}  // namespace proxy
 }  // namespace fastonosql

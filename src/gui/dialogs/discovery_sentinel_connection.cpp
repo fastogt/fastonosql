@@ -32,7 +32,7 @@
 namespace fastonosql {
 namespace gui {
 
-DiscoverySentinelConnection::DiscoverySentinelConnection(core::IConnectionSettingsBaseSPtr conn,
+DiscoverySentinelConnection::DiscoverySentinelConnection(proxy::IConnectionSettingsBaseSPtr conn,
                                                          QObject* parent)
     : QObject(parent), connection_(conn), startTime_(common::time::current_mstime()) {
   qRegisterMetaType<std::vector<core::ServerDiscoverySentinelInfoSPtr>>(
@@ -49,7 +49,7 @@ void DiscoverySentinelConnection::routine() {
   }
 
   common::Error er =
-      core::ServersManager::instance().DiscoverySentinelConnection(connection_, &inf);
+      proxy::ServersManager::instance().DiscoverySentinelConnection(connection_, &inf);
 
   if (er && er->isError()) {
     emit connectionResult(false, common::time::current_mstime() - startTime_,

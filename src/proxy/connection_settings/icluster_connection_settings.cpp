@@ -27,10 +27,10 @@
 #include "proxy/connection_settings/iconnection_settings_remote.h"
 
 namespace fastonosql {
-namespace core {
+namespace proxy {
 
 IClusterSettingsBase::IClusterSettingsBase(const connection_path_t& connectionPath,
-                                           connectionTypes type)
+                                           core::connectionTypes type)
     : IConnectionSettings(connectionPath, type) {}
 
 IClusterSettingsBase::cluster_nodes_t IClusterSettingsBase::Nodes() const {
@@ -74,5 +74,5 @@ IConnectionSettingsBaseSPtr IClusterSettingsBase::FindSettingsByHost(
   return IConnectionSettingsBaseSPtr();
 }
 
-}  // namespace core
+}  // namespace proxy
 }  // namespace fastonosql

@@ -22,7 +22,7 @@
 #include <string>  // for string
 #include <vector>  // for vector
 
-#include "core/connection_types.h"  // for connectionTypes
+#include "core/connection_types.h"  // for core::connectionTypes
 #include "proxy/connection_settings/iconnection_settings.h"
 
 namespace common {
@@ -32,7 +32,7 @@ struct HostAndPort;
 }
 
 namespace fastonosql {
-namespace core {
+namespace proxy {
 
 class IClusterSettingsBase : public IConnectionSettings {
  public:
@@ -49,7 +49,7 @@ class IClusterSettingsBase : public IConnectionSettings {
       const common::net::HostAndPort& host) const;
 
  protected:
-  IClusterSettingsBase(const connection_path_t& connectionName, connectionTypes type);
+  IClusterSettingsBase(const connection_path_t& connectionName, core::connectionTypes type);
 
  private:
   cluster_nodes_t clusters_nodes_;
@@ -57,5 +57,5 @@ class IClusterSettingsBase : public IConnectionSettings {
 
 typedef common::shared_ptr<IClusterSettingsBase> IClusterSettingsBaseSPtr;
 
-}  // namespace core
+}  // namespace proxy
 }  // namespace fastonosql

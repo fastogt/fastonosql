@@ -21,7 +21,7 @@
 #include <QWidget>
 
 #include "core/connection_types.h"  // for connectionTypes
-#include "proxy/core_fwd.h"          // for IServerSPtr
+#include "proxy/proxy_fwd.h"          // for IServerSPtr
 
 namespace fastonosql {
 namespace gui {
@@ -39,7 +39,7 @@ namespace gui {
 class QueryWidget : public QWidget {
   Q_OBJECT
  public:
-  explicit QueryWidget(core::IServerSPtr server, QWidget* parent = 0);
+  explicit QueryWidget(proxy::IServerSPtr server, QWidget* parent = 0);
 
   QueryWidget* clone(const QString& text);
   core::connectionTypes connectionType() const;
@@ -54,7 +54,7 @@ class QueryWidget : public QWidget {
  private:
   BaseShellWidget* shellWidget_;
   OutputWidget* outputWidget_;
-  const core::IServerSPtr server_;
+  const proxy::IServerSPtr server_;
 };
 }  // namespace gui
 }  // namespace fastonosql

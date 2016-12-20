@@ -34,7 +34,7 @@
 namespace fastonosql {
 namespace gui {
 
-DirectoryListWidgetItem::DirectoryListWidgetItem(const core::connection_path_t& path)
+DirectoryListWidgetItem::DirectoryListWidgetItem(const proxy::connection_path_t& path)
     : path_(path) {
   std::string dir_name = path.Name();
   setText(0, common::ConvertFromString<QString>(dir_name));
@@ -42,31 +42,31 @@ DirectoryListWidgetItem::DirectoryListWidgetItem(const core::connection_path_t& 
   setText(1, common::ConvertFromString<QString>(path_.Directory()));
 }
 
-core::connection_path_t DirectoryListWidgetItem::path() const {
+proxy::connection_path_t DirectoryListWidgetItem::path() const {
   return path_;
 }
 
 IConnectionListWidgetItem::IConnectionListWidgetItem(QTreeWidgetItem* parent)
     : QTreeWidgetItem(parent), connection_() {}
 
-void IConnectionListWidgetItem::setConnection(core::IConnectionSettingsBaseSPtr cons) {
+void IConnectionListWidgetItem::setConnection(proxy::IConnectionSettingsBaseSPtr cons) {
   connection_ = cons;
 }
 
-core::IConnectionSettingsBaseSPtr IConnectionListWidgetItem::connection() const {
+proxy::IConnectionSettingsBaseSPtr IConnectionListWidgetItem::connection() const {
   return connection_;
 }
 
 ConnectionListWidgetItem::ConnectionListWidgetItem(QTreeWidgetItem* parent)
     : IConnectionListWidgetItem(parent) {}
 
-void ConnectionListWidgetItem::setConnection(core::IConnectionSettingsBaseSPtr cons) {
+void ConnectionListWidgetItem::setConnection(proxy::IConnectionSettingsBaseSPtr cons) {
   if (!cons) {
     DNOTREACHED();
     return;
   }
 
-  core::connection_path_t path = cons->Path();
+  proxy::connection_path_t path = cons->Path();
   QString conName = common::ConvertFromString<QString>(path.Name());
 
   setText(0, conName);
@@ -106,20 +106,20 @@ IConnectionListWidgetItem::itemConnectionType ConnectionListWidgetItemDiscovered
 }
 
 SentinelConnectionListWidgetItemContainer::SentinelConnectionListWidgetItemContainer(
-    core::ISentinelSettingsBaseSPtr connection,
+    proxy::ISentinelSettingsBaseSPtr connection,
     QTreeWidgetItem* parent)
     : QTreeWidgetItem(parent), connection_() {
   setConnection(connection);
 
-  core::ISentinelSettingsBase::sentinel_connections_t sentinels = connection_->Sentinels();
+  proxy::ISentinelSettingsBase::sentinel_connections_t sentinels = connection_->Sentinels();
   for (size_t i = 0; i < sentinels.size(); ++i) {
-    core::SentinelSettings sent = sentinels[i];
+    proxy::SentinelSettings sent = sentinels[i];
     SentinelConnectionWidgetItem* item =
         new SentinelConnectionWidgetItem(core::ServerCommonInfo(), this);
     item->setConnection(sent.sentinel);
     addChild(item);
     for (size_t j = 0; j < sent.sentinel_nodes.size(); ++j) {
-      core::IConnectionSettingsBaseSPtr con = sent.sentinel_nodes[j];
+      proxy::IConnectionSettingsBaseSPtr con = sent.sentinel_nodes[j];
       ConnectionListWidgetItem* child = new ConnectionListWidgetItem(item);
       child->setConnection(con);
       item->addChild(child);
@@ -128,7 +128,7 @@ SentinelConnectionListWidgetItemContainer::SentinelConnectionListWidgetItemConta
 }
 
 void SentinelConnectionListWidgetItemContainer::setConnection(
-    core::ISentinelSettingsBaseSPtr cons) {
+    proxy::ISentinelSettingsBaseSPtr cons) {
   if (!cons) {
     return;
   }
@@ -139,26 +139,26 @@ void SentinelConnectionListWidgetItemContainer::setConnection(
   setIcon(0, GuiFactory::instance().sentinelIcon());
 }
 
-core::ISentinelSettingsBaseSPtr SentinelConnectionListWidgetItemContainer::connection() const {
+proxy::ISentinelSettingsBaseSPtr SentinelConnectionListWidgetItemContainer::connection() const {
   return connection_;
 }
 
 ClusterConnectionListWidgetItemContainer::ClusterConnectionListWidgetItemContainer(
-    core::IClusterSettingsBaseSPtr connection,
+    proxy::IClusterSettingsBaseSPtr connection,
     QTreeWidgetItem* parent)
     : QTreeWidgetItem(parent), connection_() {
   setConnection(connection);
 
   auto nodes = connection_->Nodes();
   for (size_t i = 0; i < nodes.size(); ++i) {
-    core::IConnectionSettingsBaseSPtr con = nodes[i];
+    proxy::IConnectionSettingsBaseSPtr con = nodes[i];
     ConnectionListWidgetItem* item = new ConnectionListWidgetItem(this);
     item->setConnection(con);
     addChild(item);
   }
 }
 
-void ClusterConnectionListWidgetItemContainer::setConnection(core::IClusterSettingsBaseSPtr cons) {
+void ClusterConnectionListWidgetItemContainer::setConnection(proxy::IClusterSettingsBaseSPtr cons) {
   if (!cons) {
     return;
   }
@@ -169,7 +169,7 @@ void ClusterConnectionListWidgetItemContainer::setConnection(core::IClusterSetti
   setIcon(0, GuiFactory::instance().clusterIcon());
 }
 
-core::IClusterSettingsBaseSPtr ClusterConnectionListWidgetItemContainer::connection() const {
+proxy::IClusterSettingsBaseSPtr ClusterConnectionListWidgetItemContainer::connection() const {
   return connection_;
 }
 

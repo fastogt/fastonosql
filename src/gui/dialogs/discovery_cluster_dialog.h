@@ -50,8 +50,8 @@ class DiscoveryClusterDiagnosticDialog : public QDialog {
   enum { fix_height = 320, fix_width = 480 };
 
   DiscoveryClusterDiagnosticDialog(QWidget* parent,
-                                   core::IConnectionSettingsBaseSPtr connection,
-                                   core::IClusterSettingsBaseSPtr cluster);
+                                   proxy::IConnectionSettingsBaseSPtr connection,
+                                   proxy::IClusterSettingsBaseSPtr cluster);
   std::vector<fastonosql::gui::ConnectionListWidgetItemDiscovered*> selectedConnections() const;
 
  private Q_SLOTS:
@@ -64,14 +64,14 @@ class DiscoveryClusterDiagnosticDialog : public QDialog {
   virtual void showEvent(QShowEvent* e) override;
 
  private:
-  void testConnection(core::IConnectionSettingsBaseSPtr connection);
+  void testConnection(proxy::IConnectionSettingsBaseSPtr connection);
 
   common::qt::gui::GlassWidget* glassWidget_;
   QLabel* executeTimeLabel_;
   QLabel* statusLabel_;
   QTreeWidget* listWidget_;
   QLabel* iconLabel_;
-  core::IClusterSettingsBaseSPtr cluster_;
+  proxy::IClusterSettingsBaseSPtr cluster_;
 };
 
 }  // namespace gui

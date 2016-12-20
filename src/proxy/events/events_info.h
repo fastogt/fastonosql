@@ -37,7 +37,7 @@
 #include "global/global.h"  // for FastoObjectIPtr
 
 namespace fastonosql {
-namespace core {
+namespace proxy {
 namespace events_info {
 
 class EventInfoBase : public common::qt::EventInfo<common::Error> {
@@ -140,20 +140,20 @@ struct DiscoveryInfoResponce : DiscoveryInfoRequest {
   typedef DiscoveryInfoRequest base_class;
   explicit DiscoveryInfoResponce(const base_class& request);
 
-  IServerInfoSPtr sinfo;
-  IDataBaseInfoSPtr dbinfo;
+  core::IServerInfoSPtr sinfo;
+  core::IDataBaseInfoSPtr dbinfo;
 };
 
 struct EnterModeInfo : public EventInfoBase {
   typedef EventInfoBase base_class;
-  EnterModeInfo(initiator_type sender, ConnectionMode mode, error_type er = error_type());
-  ConnectionMode mode;
+  EnterModeInfo(initiator_type sender, core::ConnectionMode mode, error_type er = error_type());
+  core::ConnectionMode mode;
 };
 
 struct LeaveModeInfo : public EventInfoBase {
   typedef EventInfoBase base_class;
-  LeaveModeInfo(initiator_type sender, ConnectionMode mode, error_type er = error_type());
-  ConnectionMode mode;
+  LeaveModeInfo(initiator_type sender, core::ConnectionMode mode, error_type er = error_type());
+  core::ConnectionMode mode;
 };
 
 struct CommandRootCreatedInfo : public EventInfoBase {
@@ -217,7 +217,7 @@ struct LoadDatabasesInfoRequest : public EventInfoBase {
 
 struct LoadDatabasesInfoResponce : LoadDatabasesInfoRequest {
   typedef LoadDatabasesInfoRequest base_class;
-  typedef std::vector<IDataBaseInfoSPtr> database_info_cont_type;
+  typedef std::vector<core::IDataBaseInfoSPtr> database_info_cont_type;
   explicit LoadDatabasesInfoResponce(const base_class& request);
 
   database_info_cont_type databases;
@@ -226,13 +226,13 @@ struct LoadDatabasesInfoResponce : LoadDatabasesInfoRequest {
 struct LoadDatabaseContentRequest : public EventInfoBase {
   typedef EventInfoBase base_class;
   LoadDatabaseContentRequest(initiator_type sender,
-                             IDataBaseInfoSPtr inf,
+                             core::IDataBaseInfoSPtr inf,
                              const std::string& pattern,
                              uint32_t countKeys,
                              uint32_t cursor = 0,
                              error_type er = error_type());
 
-  IDataBaseInfoSPtr inf;
+  core::IDataBaseInfoSPtr inf;
   std::string pattern;
   uint32_t count_keys;
   const uint64_t cursor_in;
@@ -240,7 +240,7 @@ struct LoadDatabaseContentRequest : public EventInfoBase {
 
 struct LoadDatabaseContentResponce : LoadDatabaseContentRequest {
   typedef LoadDatabaseContentRequest base_class;
-  typedef std::vector<NDbKValue> keys_container_t;
+  typedef std::vector<core::NDbKValue> keys_container_t;
   explicit LoadDatabaseContentResponce(const base_class& request);
 
   keys_container_t keys;
@@ -259,11 +259,11 @@ class ServerInfoResponce : public ServerInfoRequest {
   explicit ServerInfoResponce(const base_class& request);
   ~ServerInfoResponce();
 
-  IServerInfoSPtr info() const;
-  void setInfo(IServerInfoSPtr inf);
+  core::IServerInfoSPtr info() const;
+  void setInfo(core::IServerInfoSPtr inf);
 
  private:
-  IServerInfoSPtr info_;
+  core::IServerInfoSPtr info_;
 };
 
 struct ServerInfoHistoryRequest : public EventInfoBase {
@@ -274,7 +274,7 @@ struct ServerInfoHistoryRequest : public EventInfoBase {
 class ServerInfoHistoryResponce : public ServerInfoHistoryRequest {
  public:
   typedef ServerInfoHistoryRequest base_class;
-  typedef std::vector<ServerInfoSnapShoot> infos_container_type;
+  typedef std::vector<core::ServerInfoSnapShoot> infos_container_type;
   explicit ServerInfoHistoryResponce(const base_class& request);
 
   infos_container_type infos() const;
@@ -303,16 +303,16 @@ struct ServerPropertyInfoResponce : ServerPropertyInfoRequest {
   typedef ServerPropertyInfoRequest base_class;
   explicit ServerPropertyInfoResponce(const base_class& request);
 
-  ServerPropertiesInfo info;
+  core::ServerPropertiesInfo info;
 };
 
 struct ChangeServerPropertyInfoRequest : public EventInfoBase {
   typedef EventInfoBase base_class;
   ChangeServerPropertyInfoRequest(initiator_type sender,
-                                  const property_t& pt,
+                                  const core::property_t& pt,
                                   error_type er = error_type());
 
-  property_t new_item;
+  core::property_t new_item;
 };
 
 struct ChangeServerPropertyInfoResponce : ChangeServerPropertyInfoRequest {
@@ -329,5 +329,5 @@ struct ProgressInfoResponce {
 };
 
 }  // namespace events_info
-}  // namespace core
+}  // namespace proxy
 }  // namespace fastonosql

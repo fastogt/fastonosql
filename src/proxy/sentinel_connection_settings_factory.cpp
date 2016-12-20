@@ -25,10 +25,10 @@
 #endif
 
 namespace fastonosql {
-namespace core {
+namespace proxy {
 
 ISentinelSettingsBase* SentinelConnectionSettingsFactory::CreateFromType(
-    connectionTypes type,
+    core::connectionTypes type,
     const connection_path_t& conName) {
 #ifdef BUILD_WITH_REDIS
   if (type == REDIS) {
@@ -54,7 +54,7 @@ ISentinelSettingsBase* SentinelConnectionSettingsFactory::CreateFromString(const
     if (ch == ',') {
       if (commaCount == 0) {
         int crT = elText[0] - 48;
-        result = CreateFromType(static_cast<connectionTypes>(crT), connection_path_t());
+        result = CreateFromType(static_cast<core::connectionTypes>(crT), connection_path_t());
         if (!result) {
           return nullptr;
         }
@@ -91,5 +91,5 @@ ISentinelSettingsBase* SentinelConnectionSettingsFactory::CreateFromString(const
   return result;
 }
 
-}  // namespace core
+}  // namespace proxy
 }  // namespace fastonosql

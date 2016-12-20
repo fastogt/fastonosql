@@ -26,15 +26,15 @@
 #include <common/macros.h>  // for WARN_UNUSED_RESULT
 #include <common/value.h>   // for Value, Value::CommandLogging...
 
-#include "core/connection_types.h"     // for connectionTypes
+#include "core/connection_types.h"     // for core::connectionTypes
 #include "core/db_key.h"               // for NKey (ptr only), NDbKValue (...
 #include "core/icommand_translator.h"  // for translator_t
 
-#include "core/internal/cdb_connection_client.h"            // for CDBConnectionClient
+#include "core/internal/cdb_connection_client.h"             // for CDBConnectionClient
 #include "proxy/connection_settings/iconnection_settings.h"  // for IConnectionSettingsBaseSPtr
-#include "proxy/events/events.h"                            // for BackupRequestEvent, ChangeMa...
-#include "core/database/idatabase_info.h"                   // for IDataBaseInfoSPtr, etc
-#include "core/server/iserver_info.h"                       // for IServerInfoSPtr, etc
+#include "proxy/events/events.h"                             // for BackupRequestEvent, ChangeMa...
+#include "core/database/idatabase_info.h"                    // for IDataBaseInfoSPtr, etc
+#include "core/server/iserver_info.h"                        // for IServerInfoSPtr, etc
 
 #include "global/global.h"  // for FastoObject (ptr only), etc
 
@@ -48,9 +48,9 @@ class File;
 }  // lines 41-41
 
 namespace fastonosql {
-namespace core {
+namespace proxy {
 
-class IDriver : public QObject, public CDBConnectionClient {
+class IDriver : public QObject, public core::CDBConnectionClient {
   Q_OBJECT
  public:
   virtual ~IDriver();
@@ -58,10 +58,10 @@ class IDriver : public QObject, public CDBConnectionClient {
   static void Reply(QObject* reciver, QEvent* ev);
 
   // sync methods
-  connectionTypes Type() const;
+  core::connectionTypes Type() const;
   connection_path_t ConnectionPath() const;
 
-  virtual translator_t Translator() const = 0;
+  virtual core::translator_t Translator() const = 0;
 
   void Start();
   void Stop();
@@ -144,20 +144,21 @@ class IDriver : public QObject, public CDBConnectionClient {
   virtual common::Error ExecuteImpl(int argc, const char** argv, FastoObject* out) = 0;
 
   virtual void OnFlushedCurrentDB() override;
-  virtual void OnCurrentDataBaseChanged(IDataBaseInfo* info) override;
-  virtual void OnKeysRemoved(const NKeys& keys) override;
-  virtual void OnKeyAdded(const NDbKValue& key) override;
-  virtual void OnKeyLoaded(const NDbKValue& key) override;
-  virtual void OnKeyRenamed(const NKey& key, const std::string& new_key) override;
-  virtual void OnKeyTTLChanged(const NKey& key, ttl_t ttl) override;
-  virtual void OnKeyTTLLoaded(const NKey& key, ttl_t ttl) override;
+  virtual void OnCurrentDataBaseChanged(core::IDataBaseInfo* info) override;
+  virtual void OnKeysRemoved(const core::NKeys& keys) override;
+  virtual void OnKeyAdded(const core::NDbKValue& key) override;
+  virtual void OnKeyLoaded(const core::NDbKValue& key) override;
+  virtual void OnKeyRenamed(const core::NKey& key, const std::string& new_key) override;
+  virtual void OnKeyTTLChanged(const core::NKey& key, core::ttl_t ttl) override;
+  virtual void OnKeyTTLLoaded(const core::NKey& key, core::ttl_t ttl) override;
   virtual void OnQuited() override;
 
   // internal methods
-  virtual IServerInfoSPtr MakeServerInfoFromString(const std::string& val) = 0;
-  virtual common::Error CurrentServerInfo(IServerInfo** info) = 0;
-  virtual common::Error ServerDiscoveryInfo(IServerInfo** sinfo, IDataBaseInfo** dbinfo);
-  virtual common::Error CurrentDataBaseInfo(IDataBaseInfo** info) = 0;
+  virtual core::IServerInfoSPtr MakeServerInfoFromString(const std::string& val) = 0;
+  virtual common::Error CurrentServerInfo(core::IServerInfo** info) = 0;
+  virtual common::Error ServerDiscoveryInfo(core::IServerInfo** sinfo,
+                                            core::IDataBaseInfo** dbinfo);
+  virtual common::Error CurrentDataBaseInfo(core::IDataBaseInfo** info) = 0;
   virtual void InitImpl() = 0;
   virtual void ClearImpl() = 0;
 
@@ -167,5 +168,5 @@ class IDriver : public QObject, public CDBConnectionClient {
   common::file_system::File* log_file_;
 };
 
-}  // namespace core
+}  // namespace proxy
 }  // namespace fastonosql

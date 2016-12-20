@@ -20,21 +20,21 @@
 
 #include <string>
 
-#include "core/connection_types.h"  // for connectionTypes
-#include "proxy/core_fwd.h"
+#include "core/connection_types.h"  // for core::connectionTypes
+#include "proxy/proxy_fwd.h"
 #include "core/icommand_translator.h"
 
 #include "core/database/idatabase_info.h"
 
 namespace fastonosql {
-namespace core {
+namespace proxy {
 namespace events_info {
 struct ExecuteInfoRequest;
 }
 }
 }
 namespace fastonosql {
-namespace core {
+namespace proxy {
 namespace events_info {
 struct LoadDatabaseContentRequest;
 }
@@ -42,17 +42,17 @@ struct LoadDatabaseContentRequest;
 }
 
 namespace fastonosql {
-namespace core {
+namespace proxy {
 
 class IDatabase {
  public:
   virtual ~IDatabase();
 
   IServerSPtr Server() const;
-  IDataBaseInfoSPtr Info() const;
-  translator_t Translator() const;
+  core::IDataBaseInfoSPtr Info() const;
+  core::translator_t Translator() const;
 
-  connectionTypes Type() const;
+  core::connectionTypes Type() const;
   bool IsDefault() const;
   std::string Name() const;
 
@@ -61,12 +61,12 @@ class IDatabase {
   void Execute(const events_info::ExecuteInfoRequest& req);
 
  protected:
-  IDatabase(IServerSPtr server, IDataBaseInfoSPtr info);
+  IDatabase(IServerSPtr server, core::IDataBaseInfoSPtr info);
 
  private:
-  const IDataBaseInfoSPtr info_;
+  const core::IDataBaseInfoSPtr info_;
   const IServerSPtr server_;
 };
 
-}  // namespace core
+}  // namespace proxy
 }  // namespace fastonosql

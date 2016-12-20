@@ -127,21 +127,21 @@ ConnectionsDialog::ConnectionsDialog(QWidget* parent) : QDialog(parent) {
   mainLayout->addLayout(firstColumnLayout, 1);
 
   // Populate list with connections
-  auto connections = core::SettingsManager::instance().Connections();
+  auto connections = proxy::SettingsManager::instance().Connections();
   for (auto it = connections.begin(); it != connections.end(); ++it) {
-    core::IConnectionSettingsBaseSPtr connectionModel = (*it);
+    proxy::IConnectionSettingsBaseSPtr connectionModel = (*it);
     addConnection(connectionModel);
   }
 
-  auto sentinels = core::SettingsManager::instance().Sentinels();
+  auto sentinels = proxy::SettingsManager::instance().Sentinels();
   for (auto it = sentinels.begin(); it != sentinels.end(); ++it) {
-    core::ISentinelSettingsBaseSPtr connectionModel = (*it);
+    proxy::ISentinelSettingsBaseSPtr connectionModel = (*it);
     addSentinel(connectionModel);
   }
 
-  auto clusters = core::SettingsManager::instance().Clusters();
+  auto clusters = proxy::SettingsManager::instance().Clusters();
   for (auto it = clusters.begin(); it != clusters.end(); ++it) {
-    core::IClusterSettingsBaseSPtr connectionModel = (*it);
+    proxy::IClusterSettingsBaseSPtr connectionModel = (*it);
     addCluster(connectionModel);
   }
 
@@ -154,34 +154,34 @@ ConnectionsDialog::ConnectionsDialog(QWidget* parent) : QDialog(parent) {
   retranslateUi();
 }
 
-core::IConnectionSettingsBaseSPtr ConnectionsDialog::selectedConnection() const {
+proxy::IConnectionSettingsBaseSPtr ConnectionsDialog::selectedConnection() const {
   ConnectionListWidgetItem* currentItem =
       dynamic_cast<ConnectionListWidgetItem*>(listWidget_->currentItem());  // +
   if (currentItem) {
     return currentItem->connection();
   }
 
-  return core::IConnectionSettingsBaseSPtr();
+  return proxy::IConnectionSettingsBaseSPtr();
 }
 
-core::ISentinelSettingsBaseSPtr ConnectionsDialog::selectedSentinel() const {
+proxy::ISentinelSettingsBaseSPtr ConnectionsDialog::selectedSentinel() const {
   SentinelConnectionListWidgetItemContainer* currentItem =
       dynamic_cast<SentinelConnectionListWidgetItemContainer*>(listWidget_->currentItem());  // +
   if (currentItem) {
     return currentItem->connection();
   }
 
-  return core::ISentinelSettingsBaseSPtr();
+  return proxy::ISentinelSettingsBaseSPtr();
 }
 
-core::IClusterSettingsBaseSPtr ConnectionsDialog::selectedCluster() const {
+proxy::IClusterSettingsBaseSPtr ConnectionsDialog::selectedCluster() const {
   ClusterConnectionListWidgetItemContainer* currentItem =
       dynamic_cast<ClusterConnectionListWidgetItemContainer*>(listWidget_->currentItem());  // +
   if (currentItem) {
     return currentItem->connection();
   }
 
-  return core::IClusterSettingsBaseSPtr();
+  return proxy::IClusterSettingsBaseSPtr();
 }
 
 void ConnectionsDialog::add() {
@@ -194,9 +194,9 @@ void ConnectionsDialog::add() {
   core::connectionTypes t = sel.connectionType();
   ConnectionDialog dlg(t, "New Connection", this);
   result = dlg.exec();
-  core::IConnectionSettingsBaseSPtr p = dlg.connection();
+  proxy::IConnectionSettingsBaseSPtr p = dlg.connection();
   if (result == QDialog::Accepted && p) {
-    core::SettingsManager::instance().AddConnection(p);
+    proxy::SettingsManager::instance().AddConnection(p);
     addConnection(p);
   }
 }
@@ -204,9 +204,9 @@ void ConnectionsDialog::add() {
 void ConnectionsDialog::addCls() {
   ClusterDialog dlg(this);
   int result = dlg.exec();
-  core::IClusterSettingsBaseSPtr p = dlg.connection();
+  proxy::IClusterSettingsBaseSPtr p = dlg.connection();
   if (result == QDialog::Accepted && p) {
-    core::SettingsManager::instance().AddCluster(p);
+    proxy::SettingsManager::instance().AddCluster(p);
     addCluster(p);
   }
 }
@@ -214,9 +214,9 @@ void ConnectionsDialog::addCls() {
 void ConnectionsDialog::addSent() {
   SentinelDialog dlg(this);
   int result = dlg.exec();
-  core::ISentinelSettingsBaseSPtr p = dlg.connection();
+  proxy::ISentinelSettingsBaseSPtr p = dlg.connection();
   if (result == QDialog::Accepted && p) {
-    core::SettingsManager::instance().AddSentinel(p);
+    proxy::SettingsManager::instance().AddSentinel(p);
     addSentinel(p);
   }
 }
@@ -326,13 +326,13 @@ void ConnectionsDialog::remove() {
 void ConnectionsDialog::editConnection(ConnectionListWidgetItem* connectionItem) {
   CHECK(connectionItem);
 
-  core::IConnectionSettingsBaseSPtr con = connectionItem->connection();
+  proxy::IConnectionSettingsBaseSPtr con = connectionItem->connection();
   ConnectionDialog dlg(con->Clone(), this);
   int result = dlg.exec();
-  core::IConnectionSettingsBaseSPtr newConnection = dlg.connection();
+  proxy::IConnectionSettingsBaseSPtr newConnection = dlg.connection();
   if (result == QDialog::Accepted && newConnection) {
-    core::SettingsManager::instance().RemoveConnection(con);
-    core::SettingsManager::instance().AddConnection(newConnection);
+    proxy::SettingsManager::instance().RemoveConnection(con);
+    proxy::SettingsManager::instance().AddConnection(newConnection);
 
     delete connectionItem;
     addConnection(newConnection);
@@ -342,13 +342,13 @@ void ConnectionsDialog::editConnection(ConnectionListWidgetItem* connectionItem)
 void ConnectionsDialog::editCluster(ClusterConnectionListWidgetItemContainer* clusterItem) {
   CHECK(clusterItem);
 
-  core::IClusterSettingsBaseSPtr con = clusterItem->connection();
+  proxy::IClusterSettingsBaseSPtr con = clusterItem->connection();
   ClusterDialog dlg(this, con->Clone());
   int result = dlg.exec();
-  core::IClusterSettingsBaseSPtr newConnection = dlg.connection();
+  proxy::IClusterSettingsBaseSPtr newConnection = dlg.connection();
   if (result == QDialog::Accepted && newConnection) {
-    core::SettingsManager::instance().RemoveCluster(con);
-    core::SettingsManager::instance().AddCluster(newConnection);
+    proxy::SettingsManager::instance().RemoveCluster(con);
+    proxy::SettingsManager::instance().AddCluster(newConnection);
 
     delete clusterItem;
     addCluster(newConnection);
@@ -358,13 +358,13 @@ void ConnectionsDialog::editCluster(ClusterConnectionListWidgetItemContainer* cl
 void ConnectionsDialog::editSentinel(SentinelConnectionListWidgetItemContainer* sentinelItem) {
   CHECK(sentinelItem);
 
-  core::ISentinelSettingsBaseSPtr con = sentinelItem->connection();
+  proxy::ISentinelSettingsBaseSPtr con = sentinelItem->connection();
   SentinelDialog dlg(this, con->Clone());
   int result = dlg.exec();
-  core::ISentinelSettingsBaseSPtr newConnection = dlg.connection();
+  proxy::ISentinelSettingsBaseSPtr newConnection = dlg.connection();
   if (result == QDialog::Accepted && newConnection) {
-    core::SettingsManager::instance().RemoveSentinel(con);
-    core::SettingsManager::instance().AddSentinel(newConnection);
+    proxy::SettingsManager::instance().RemoveSentinel(con);
+    proxy::SettingsManager::instance().AddSentinel(newConnection);
 
     delete sentinelItem;
     addSentinel(newConnection);
@@ -384,9 +384,9 @@ void ConnectionsDialog::removeConnection(ConnectionListWidgetItem* connectionIte
     return;
   }
 
-  core::IConnectionSettingsBaseSPtr connection = connectionItem->connection();
+  proxy::IConnectionSettingsBaseSPtr connection = connectionItem->connection();
   delete connectionItem;
-  core::SettingsManager::instance().RemoveConnection(connection);
+  proxy::SettingsManager::instance().RemoveConnection(connection);
 }
 
 void ConnectionsDialog::removeCluster(ClusterConnectionListWidgetItemContainer* clusterItem) {
@@ -402,9 +402,9 @@ void ConnectionsDialog::removeCluster(ClusterConnectionListWidgetItemContainer* 
     return;
   }
 
-  core::IClusterSettingsBaseSPtr connection = clusterItem->connection();
+  proxy::IClusterSettingsBaseSPtr connection = clusterItem->connection();
   delete clusterItem;
-  core::SettingsManager::instance().RemoveCluster(connection);
+  proxy::SettingsManager::instance().RemoveCluster(connection);
 }
 
 void ConnectionsDialog::removeSentinel(SentinelConnectionListWidgetItemContainer* sentinelItem) {
@@ -420,9 +420,9 @@ void ConnectionsDialog::removeSentinel(SentinelConnectionListWidgetItemContainer
     return;
   }
 
-  core::ISentinelSettingsBaseSPtr connection = sentinelItem->connection();
+  proxy::ISentinelSettingsBaseSPtr connection = sentinelItem->connection();
   delete sentinelItem;
-  core::SettingsManager::instance().RemoveSentinel(connection);
+  proxy::SettingsManager::instance().RemoveSentinel(connection);
 }
 
 /**
@@ -455,10 +455,10 @@ void ConnectionsDialog::retranslateUi() {
   acButton_->setText(translations::trOpen);
 }
 
-void ConnectionsDialog::addConnection(core::IConnectionSettingsBaseSPtr con) {
-  core::connection_path_t path = con->Path();
-  core::connection_path_t dir(path.Directory());
-  if (dir == core::connection_path_t::Root()) {
+void ConnectionsDialog::addConnection(proxy::IConnectionSettingsBaseSPtr con) {
+  proxy::connection_path_t path = con->Path();
+  proxy::connection_path_t dir(path.Directory());
+  if (dir == proxy::connection_path_t::Root()) {
     ConnectionListWidgetItem* item = new ConnectionListWidgetItem(nullptr);
     item->setConnection(con);
     listWidget_->addTopLevelItem(item);
@@ -475,10 +475,10 @@ void ConnectionsDialog::addConnection(core::IConnectionSettingsBaseSPtr con) {
   }
 }
 
-void ConnectionsDialog::addCluster(core::IClusterSettingsBaseSPtr con) {
-  core::connection_path_t path = con->Path();
-  core::connection_path_t dir(path.Directory());
-  if (dir == core::connection_path_t::Root()) {
+void ConnectionsDialog::addCluster(proxy::IClusterSettingsBaseSPtr con) {
+  proxy::connection_path_t path = con->Path();
+  proxy::connection_path_t dir(path.Directory());
+  if (dir == proxy::connection_path_t::Root()) {
     ClusterConnectionListWidgetItemContainer* item =
         new ClusterConnectionListWidgetItemContainer(con, nullptr);
     listWidget_->addTopLevelItem(item);
@@ -495,10 +495,10 @@ void ConnectionsDialog::addCluster(core::IClusterSettingsBaseSPtr con) {
   }
 }
 
-void ConnectionsDialog::addSentinel(core::ISentinelSettingsBaseSPtr con) {
-  core::connection_path_t path = con->Path();
-  core::connection_path_t dir(path.Directory());
-  if (dir == core::connection_path_t::Root()) {
+void ConnectionsDialog::addSentinel(proxy::ISentinelSettingsBaseSPtr con) {
+  proxy::connection_path_t path = con->Path();
+  proxy::connection_path_t dir(path.Directory());
+  if (dir == proxy::connection_path_t::Root()) {
     SentinelConnectionListWidgetItemContainer* item =
         new SentinelConnectionListWidgetItemContainer(con, nullptr);
     listWidget_->addTopLevelItem(item);
@@ -516,7 +516,7 @@ void ConnectionsDialog::addSentinel(core::ISentinelSettingsBaseSPtr con) {
 }
 
 DirectoryListWidgetItem* ConnectionsDialog::findFolderByPath(
-    const core::connection_path_t& path) const {
+    const proxy::connection_path_t& path) const {
   int count = listWidget_->topLevelItemCount();
   for (int i = 0; i < count; ++i) {
     QTreeWidgetItem* item = listWidget_->topLevelItem(i);

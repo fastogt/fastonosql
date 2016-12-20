@@ -23,13 +23,13 @@
 #include "proxy/server/iserver.h"  // for IServer
 
 namespace fastonosql {
-namespace core {
+namespace proxy {
 class IDriver;
 }
 }
 
 namespace fastonosql {
-namespace core {
+namespace proxy {
 
 class IServerLocal : public IServer {
   Q_OBJECT
@@ -40,5 +40,5 @@ class IServerLocal : public IServer {
   explicit IServerLocal(IDriver* drv);
 };
 
-}  // namespace core
+}  // namespace proxy
 }  // namespace fastonosql

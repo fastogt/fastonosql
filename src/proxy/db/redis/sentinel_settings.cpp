@@ -18,10 +18,10 @@
 
 #include "proxy/db/redis/sentinel_settings.h"
 
-#include "core/connection_types.h"  // for connectionTypes::REDIS
+#include "core/connection_types.h"  // for core::connectionTypes::REDIS
 
 namespace fastonosql {
-namespace core {
+namespace proxy {
 namespace redis {
 
 SentinelSettings::SentinelSettings(const connection_path_t& connectionName)
@@ -33,5 +33,5 @@ SentinelSettings* SentinelSettings::Clone() const {
 }
 
 }  // namespace redis
-}  // namespace core
+}  // namespace proxy
 }  // namespace fastonosql

@@ -48,7 +48,7 @@
 #define MEMCACHED_GET_KEYS_PATTERN_1ARGS_I "KEYS a z %d"
 
 namespace fastonosql {
-namespace core {
+namespace proxy {
 namespace memcached {
 
 Driver::Driver(IConnectionSettingsBaseSPtr settings)
@@ -235,5 +235,5 @@ IServerInfoSPtr Driver::MakeServerInfoFromString(const std::string& val) {
 }
 
 }  // namespace memcached
-}  // namespace core
+}  // namespace proxy
 }  // namespace fastonosql

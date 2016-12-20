@@ -57,20 +57,20 @@ ConnectionDialog::ConnectionDialog(core::connectionTypes type,
                                    const QString& connectionName,
                                    QWidget* parent)
     : QDialog(parent), connection_() {
-  core::connection_path_t path(common::file_system::stable_dir_path(defaultNameConnectionFolder) +
+  proxy::connection_path_t path(common::file_system::stable_dir_path(defaultNameConnectionFolder) +
                                common::ConvertToString(connectionName));
-  core::IConnectionSettingsBase* connection =
-      core::ConnectionSettingsFactory().instance().CreateFromType(type, path);
+  proxy::IConnectionSettingsBase* connection =
+      proxy::ConnectionSettingsFactory().instance().CreateFromType(type, path);
   init(connection);
 }
 
-ConnectionDialog::ConnectionDialog(core::IConnectionSettingsBase* connection, QWidget* parent)
+ConnectionDialog::ConnectionDialog(proxy::IConnectionSettingsBase* connection, QWidget* parent)
     : QDialog(parent), connection_() {
   CHECK(connection);
   init(connection);
 }
 
-core::IConnectionSettingsBaseSPtr ConnectionDialog::connection() const {
+proxy::IConnectionSettingsBaseSPtr ConnectionDialog::connection() const {
   return connection_;
 }
 
@@ -98,7 +98,7 @@ void ConnectionDialog::changeEvent(QEvent* e) {
   QDialog::changeEvent(e);
 }
 
-void ConnectionDialog::init(core::IConnectionSettingsBase* connection) {
+void ConnectionDialog::init(proxy::IConnectionSettingsBase* connection) {
   setWindowIcon(GuiFactory::instance().icon(connection->Type()));
   setWindowFlags(windowFlags() & ~Qt::WindowContextHelpButtonHint);  // Remove help
                                                                      // button (?)

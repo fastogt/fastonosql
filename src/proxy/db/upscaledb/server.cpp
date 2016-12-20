@@ -22,7 +22,7 @@
 #include "proxy/db/upscaledb/driver.h"
 
 namespace fastonosql {
-namespace core {
+namespace proxy {
 namespace upscaledb {
 
 Server::Server(IConnectionSettingsBaseSPtr settings) : IServerLocal(new Driver(settings)) {}
@@ -32,10 +32,10 @@ std::string Server::Path() const {
   return ldrv->Path();
 }
 
-IDatabaseSPtr Server::CreateDatabase(IDataBaseInfoSPtr info) {
+IDatabaseSPtr Server::CreateDatabase(core::IDataBaseInfoSPtr info) {
   return IDatabaseSPtr(new Database(shared_from_this(), info));
 }
 
 }  // namespace upscaledb
-}  // namespace core
+}  // namespace proxy
 }  // namespace fastonosql

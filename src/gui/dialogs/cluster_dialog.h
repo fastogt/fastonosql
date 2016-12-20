@@ -41,11 +41,11 @@ namespace gui {
 class ClusterDialog : public QDialog {
   Q_OBJECT
  public:
-  typedef std::vector<core::IConnectionSettingsBaseSPtr> cluster_connection_t;
+  typedef std::vector<proxy::IConnectionSettingsBaseSPtr> cluster_connection_t;
   explicit ClusterDialog(
       QWidget* parent,
-      core::IClusterSettingsBase* connection = nullptr);  // get ownerships connection
-  core::IClusterSettingsBaseSPtr connection() const;
+      proxy::IClusterSettingsBase* connection = nullptr);  // get ownerships connection
+  proxy::IClusterSettingsBaseSPtr connection() const;
 
  public Q_SLOTS:
   virtual void accept() override;
@@ -69,9 +69,9 @@ class ClusterDialog : public QDialog {
   void retranslateUi();
   bool validateAndApply();  // always return true and init
                             // cluster_connection_
-  void addConnection(core::IConnectionSettingsBaseSPtr con);
+  void addConnection(proxy::IConnectionSettingsBaseSPtr con);
 
-  core::IClusterSettingsBaseSPtr cluster_connection_;
+  proxy::IClusterSettingsBaseSPtr cluster_connection_;
   QLineEdit* connectionName_;
   QLabel* folderLabel_;
   QLineEdit* connectionFolder_;

@@ -165,44 +165,44 @@ PreferencesDialog::PreferencesDialog(QWidget* parent) : QDialog(parent) {
 }
 
 void PreferencesDialog::accept() {
-  core::SettingsManager::instance().SetAutoCheckUpdates(autoCheckUpdates_->isChecked());
-  core::SettingsManager::instance().SetAutoCompletion(autoComletionEnable_->isChecked());
+  proxy::SettingsManager::instance().SetAutoCheckUpdates(autoCheckUpdates_->isChecked());
+  proxy::SettingsManager::instance().SetAutoCompletion(autoComletionEnable_->isChecked());
 
   QString newLang = common::qt::translations::applyLanguage(languagesComboBox_->currentText());
-  core::SettingsManager::instance().SetCurrentLanguage(newLang);
+  proxy::SettingsManager::instance().SetCurrentLanguage(newLang);
 
   common::qt::gui::applyStyle(stylesComboBox_->currentText());
-  core::SettingsManager::instance().SetCurrentStyle(stylesComboBox_->currentText());
+  proxy::SettingsManager::instance().SetCurrentStyle(stylesComboBox_->currentText());
 
   QFont cf(fontComboBox_->currentText(), fontSizeSpinBox_->value());
-  core::SettingsManager::instance().SetCurrentFont(cf);
+  proxy::SettingsManager::instance().SetCurrentFont(cf);
   common::qt::gui::applyFont(gui::GuiFactory::instance().font());
 
   QVariant var = defaultViewComboBox_->currentData();
   supportedViews v = static_cast<supportedViews>(qvariant_cast<unsigned char>(var));
-  core::SettingsManager::instance().SetDefaultView(v);
+  proxy::SettingsManager::instance().SetDefaultView(v);
 
-  core::SettingsManager::instance().SetLoggingDirectory(logDirPath_->text());
-  core::SettingsManager::instance().SetAutoOpenConsole(autoOpenConsole_->isChecked());
-  core::SettingsManager::instance().SetFastViewKeys(fastViewKeys_->isChecked());
+  proxy::SettingsManager::instance().SetLoggingDirectory(logDirPath_->text());
+  proxy::SettingsManager::instance().SetAutoOpenConsole(autoOpenConsole_->isChecked());
+  proxy::SettingsManager::instance().SetFastViewKeys(fastViewKeys_->isChecked());
 
   return QDialog::accept();
 }
 
 void PreferencesDialog::syncWithSettings() {
-  autoCheckUpdates_->setChecked(core::SettingsManager::instance().AutoCheckUpdates());
-  autoComletionEnable_->setChecked(core::SettingsManager::instance().AutoCompletion());
-  languagesComboBox_->setCurrentText(core::SettingsManager::instance().CurrentLanguage());
-  stylesComboBox_->setCurrentText(core::SettingsManager::instance().CurrentStyle());
-  QFont cf = core::SettingsManager::instance().CurrentFont();
+  autoCheckUpdates_->setChecked(proxy::SettingsManager::instance().AutoCheckUpdates());
+  autoComletionEnable_->setChecked(proxy::SettingsManager::instance().AutoCompletion());
+  languagesComboBox_->setCurrentText(proxy::SettingsManager::instance().CurrentLanguage());
+  stylesComboBox_->setCurrentText(proxy::SettingsManager::instance().CurrentStyle());
+  QFont cf = proxy::SettingsManager::instance().CurrentFont();
   fontComboBox_->setCurrentFont(cf);
   fontSizeSpinBox_->setValue(cf.pointSize());
-  supportedViews v = core::SettingsManager::instance().DefaultView();
+  supportedViews v = proxy::SettingsManager::instance().DefaultView();
   std::string vstr = viewsText[v];
   defaultViewComboBox_->setCurrentText(common::ConvertFromString<QString>(vstr));
-  logDirPath_->setText(core::SettingsManager::instance().LoggingDirectory());
-  autoOpenConsole_->setChecked(core::SettingsManager::instance().AutoOpenConsole());
-  fastViewKeys_->setChecked(core::SettingsManager::instance().FastViewKeys());
+  logDirPath_->setText(proxy::SettingsManager::instance().LoggingDirectory());
+  autoOpenConsole_->setChecked(proxy::SettingsManager::instance().AutoOpenConsole());
+  fastViewKeys_->setChecked(proxy::SettingsManager::instance().FastViewKeys());
 }
 
 void PreferencesDialog::changeEvent(QEvent* e) {

@@ -23,17 +23,17 @@
 #include "proxy/connection_settings/icluster_connection_settings.h"
 
 namespace fastonosql {
-namespace core {
+namespace proxy {
 
 class ClusterConnectionSettingsFactory
     : public common::patterns::LazySingleton<ClusterConnectionSettingsFactory> {
  public:
   friend class common::patterns::LazySingleton<ClusterConnectionSettingsFactory>;
 
-  IClusterSettingsBase* CreateFromType(connectionTypes type,
+  IClusterSettingsBase* CreateFromType(core::connectionTypes type,
                                        const connection_path_t& connectionPath);
   IClusterSettingsBase* CreateFromString(const std::string& val);
 };
 
-}  // namespace core
+}  // namespace proxy
 }  // namespace fastonosql

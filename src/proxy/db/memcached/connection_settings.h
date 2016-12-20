@@ -27,7 +27,7 @@
 #include "core/db/memcached/config.h"  // for Config
 
 namespace fastonosql {
-namespace core {
+namespace proxy {
 namespace memcached {
 
 class ConnectionSettings : public IConnectionSettingsRemote {
@@ -56,5 +56,5 @@ class ConnectionSettings : public IConnectionSettingsRemote {
 };
 
 }  // namespace memcached
-}  // namespace core
+}  // namespace proxy
 }  // namespace fastonosql

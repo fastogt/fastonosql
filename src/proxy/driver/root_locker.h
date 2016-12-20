@@ -26,13 +26,13 @@
 
 class QObject;
 namespace fastonosql {
-namespace core {
+namespace proxy {
 class IDriver;
 }
 }  // lines 32-32
 
 namespace fastonosql {
-namespace core {
+namespace proxy {
 
 class RootLocker : FastoObject::IFastoObjectObserver {
  public:
@@ -54,5 +54,5 @@ class RootLocker : FastoObject::IFastoObjectObserver {
   const bool silence_;
 };
 
-}  // namespace core
+}  // namespace proxy
 }  // namespace fastonosql

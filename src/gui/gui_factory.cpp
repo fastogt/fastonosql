@@ -377,7 +377,7 @@ const QIcon& GuiFactory::unknownIcon() const {
 }
 
 QFont GuiFactory::font() const {
-  return core::SettingsManager::instance().CurrentFont();
+  return proxy::SettingsManager::instance().CurrentFont();
 }
 
 const QString& GuiFactory::pathToLoadingGif() const {

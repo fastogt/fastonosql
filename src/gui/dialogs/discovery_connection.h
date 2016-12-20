@@ -33,7 +33,7 @@ namespace gui {
 class DiscoveryConnection : public QObject {
   Q_OBJECT
  public:
-  explicit DiscoveryConnection(core::IConnectionSettingsBaseSPtr conn, QObject* parent = 0);
+  explicit DiscoveryConnection(proxy::IConnectionSettingsBaseSPtr conn, QObject* parent = 0);
 
  Q_SIGNALS:
   void connectionResult(bool suc,
@@ -45,7 +45,7 @@ class DiscoveryConnection : public QObject {
   void routine();
 
  private:
-  core::IConnectionSettingsBaseSPtr connection_;
+  proxy::IConnectionSettingsBaseSPtr connection_;
   common::time64_t start_time_;
 };
 

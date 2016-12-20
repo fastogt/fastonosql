@@ -25,7 +25,7 @@
 #include "global/global.h"
 
 namespace fastonosql {
-namespace core {
+namespace proxy {
 
 class CommandLogger : public QObject, public common::patterns::LazySingleton<CommandLogger> {
   friend class common::patterns::LazySingleton<CommandLogger>;
@@ -44,5 +44,5 @@ inline void LOG_COMMAND(FastoObjectCommandIPtr command) {
   return CommandLogger::instance().Print(command);
 }
 
-}  // namespace core
+}  // namespace proxy
 }  // namespace fastonosql

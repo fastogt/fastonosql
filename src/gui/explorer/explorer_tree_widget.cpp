@@ -55,27 +55,27 @@ ExplorerTreeWidget::ExplorerTreeWidget(QWidget* parent) : QWidget(parent) {
   setLayout(main_layout);
 }
 
-void ExplorerTreeWidget::addServer(core::IServerSPtr server) {
+void ExplorerTreeWidget::addServer(proxy::IServerSPtr server) {
   view_->addServer(server);
 }
 
-void ExplorerTreeWidget::removeServer(core::IServerSPtr server) {
+void ExplorerTreeWidget::removeServer(proxy::IServerSPtr server) {
   view_->removeServer(server);
 }
 
-void ExplorerTreeWidget::addSentinel(core::ISentinelSPtr sentinel) {
+void ExplorerTreeWidget::addSentinel(proxy::ISentinelSPtr sentinel) {
   view_->addSentinel(sentinel);
 }
 
-void ExplorerTreeWidget::removeSentinel(core::ISentinelSPtr sentinel) {
+void ExplorerTreeWidget::removeSentinel(proxy::ISentinelSPtr sentinel) {
   view_->removeSentinel(sentinel);
 }
 
-void ExplorerTreeWidget::addCluster(core::IClusterSPtr cluster) {
+void ExplorerTreeWidget::addCluster(proxy::IClusterSPtr cluster) {
   view_->addCluster(cluster);
 }
 
-void ExplorerTreeWidget::removeCluster(core::IClusterSPtr cluster) {
+void ExplorerTreeWidget::removeCluster(proxy::IClusterSPtr cluster) {
   view_->removeCluster(cluster);
 }
 

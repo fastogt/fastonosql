@@ -20,7 +20,7 @@
 
 #include <QTreeView>
 
-#include "proxy/core_fwd.h"  // for IServerSPtr, IClusterSPtr, etc
+#include "proxy/proxy_fwd.h"  // for IServerSPtr, IClusterSPtr, etc
 #include "proxy/events/events_info.h"
 
 class QAction;  // lines 23-23
@@ -45,20 +45,20 @@ class ExplorerTreeView : public QTreeView {
   explicit ExplorerTreeView(QWidget* parent);
 
  Q_SIGNALS:
-  void consoleOpened(core::IServerSPtr server, const QString& text);
-  void serverClosed(core::IServerSPtr server);
-  void sentinelClosed(core::ISentinelSPtr sentinel);
-  void clusterClosed(core::IClusterSPtr cluster);
+  void consoleOpened(proxy::IServerSPtr server, const QString& text);
+  void serverClosed(proxy::IServerSPtr server);
+  void sentinelClosed(proxy::ISentinelSPtr sentinel);
+  void clusterClosed(proxy::IClusterSPtr cluster);
 
  public Q_SLOTS:
-  void addServer(core::IServerSPtr server);
-  void removeServer(core::IServerSPtr server);
+  void addServer(proxy::IServerSPtr server);
+  void removeServer(proxy::IServerSPtr server);
 
-  void addSentinel(core::ISentinelSPtr sentinel);
-  void removeSentinel(core::ISentinelSPtr sentinel);
+  void addSentinel(proxy::ISentinelSPtr sentinel);
+  void removeSentinel(proxy::ISentinelSPtr sentinel);
 
-  void addCluster(core::IClusterSPtr cluster);
-  void removeCluster(core::IClusterSPtr cluster);
+  void addCluster(proxy::IClusterSPtr cluster);
+  void removeCluster(proxy::IClusterSPtr cluster);
 
   void changeTextFilter(const QString& text);
 
@@ -95,14 +95,14 @@ class ExplorerTreeView : public QTreeView {
   void watchKey();
   void setTTL();
 
-  void startLoadDatabases(const core::events_info::LoadDatabasesInfoRequest& req);
-  void finishLoadDatabases(const core::events_info::LoadDatabasesInfoResponce& res);
+  void startLoadDatabases(const proxy::events_info::LoadDatabasesInfoRequest& req);
+  void finishLoadDatabases(const proxy::events_info::LoadDatabasesInfoResponce& res);
 
-  void startLoadDatabaseContent(const core::events_info::LoadDatabaseContentRequest& req);
-  void finishLoadDatabaseContent(const core::events_info::LoadDatabaseContentResponce& res);
+  void startLoadDatabaseContent(const proxy::events_info::LoadDatabaseContentRequest& req);
+  void finishLoadDatabaseContent(const proxy::events_info::LoadDatabaseContentResponce& res);
 
-  void startExecuteCommand(const core::events_info::ExecuteInfoRequest& req);
-  void finishExecuteCommand(const core::events_info::ExecuteInfoResponce& res);
+  void startExecuteCommand(const proxy::events_info::ExecuteInfoRequest& req);
+  void finishExecuteCommand(const proxy::events_info::ExecuteInfoResponce& res);
 
   void flushDB(core::IDataBaseInfoSPtr db);
   void currentDataBaseChange(core::IDataBaseInfoSPtr db);
@@ -117,8 +117,8 @@ class ExplorerTreeView : public QTreeView {
   virtual void mouseDoubleClickEvent(QMouseEvent* ev) override;
 
  private:
-  void syncWithServer(core::IServer* server);
-  void unsyncWithServer(core::IServer* server);
+  void syncWithServer(proxy::IServer* server);
+  void unsyncWithServer(proxy::IServer* server);
 
   void retranslateUi();
   QModelIndex selectedIndex() const;

@@ -98,7 +98,7 @@ bool getStamp(common::buffer_t stamp, common::time64_t* time_out) {
 }  // namespace
 
 namespace fastonosql {
-namespace core {
+namespace proxy {
 namespace {
 struct RegisterTypes {
   RegisterTypes() {
@@ -178,7 +178,7 @@ void IDriver::Reply(QObject* reciver, QEvent* ev) {
   qApp->postEvent(reciver, ev);
 }
 
-connectionTypes IDriver::Type() const {
+core::connectionTypes IDriver::Type() const {
   return settings_->Type();
 }
 
@@ -314,14 +314,14 @@ void IDriver::timerEvent(QTimerEvent* event) {
     if (log_file_ && log_file_->isOpened()) {
       common::time64_t time = common::time::current_mstime();
       std::string stamp = createStamp(time);
-      IServerInfo* info = nullptr;
+      core::IServerInfo* info = nullptr;
       common::Error er = CurrentServerInfo(&info);
       if (er && er->isError()) {
         QObject::timerEvent(event);
         return;
       }
 
-      struct ServerInfoSnapShoot shot(time, IServerInfoSPtr(info));
+      struct core::ServerInfoSnapShoot shot(time, core::IServerInfoSPtr(info));
       emit ServerInfoSnapShoot(shot);
 
       log_file_->write(stamp);
@@ -372,7 +372,7 @@ void IDriver::HandleExecuteEvent(events::ExecuteRequestEvent* ev) {
 
   const std::string inputLine = res.text;
   std::vector<std::string> commands;
-  common::Error err = ParseCommands(inputLine, &commands);
+  common::Error err = core::ParseCommands(inputLine, &commands);
   if (err && err->isError()) {
     res.setErrorInfo(err);
     Reply(sender, new events::ExecuteResponceEvent(this, res));
@@ -469,12 +469,12 @@ void IDriver::HandleLoadDatabaseInfosEvent(events::LoadDatabasesInfoRequestEvent
   NotifyProgress(sender, 0);
   events::LoadDatabasesInfoResponceEvent::value_type res(ev->value());
   NotifyProgress(sender, 50);
-  IDataBaseInfo* info = nullptr;
+  core::IDataBaseInfo* info = nullptr;
   common::Error err = CurrentDataBaseInfo(&info);
   if (err && err->isError()) {
     res.setErrorInfo(err);
   } else {
-    res.databases.push_back(IDataBaseInfoSPtr(info));
+    res.databases.push_back(core::IDataBaseInfoSPtr(info));
   }
   Reply(sender, new events::LoadDatabasesInfoResponceEvent(this, res));
   NotifyProgress(sender, 100);
@@ -485,12 +485,12 @@ void IDriver::HandleLoadServerInfoEvent(events::ServerInfoRequestEvent* ev) {
   NotifyProgress(sender, 0);
   events::ServerInfoResponceEvent::value_type res(ev->value());
   NotifyProgress(sender, 50);
-  IServerInfo* info = nullptr;
+  core::IServerInfo* info = nullptr;
   common::Error err = CurrentServerInfo(&info);
   if (err && err->isError()) {
     res.setErrorInfo(err);
   } else {
-    IServerInfoSPtr mem(info);
+    core::IServerInfoSPtr mem(info);
     res.setInfo(mem);
   }
   NotifyProgress(sender, 75);
@@ -516,7 +516,7 @@ void IDriver::HandleLoadServerInfoHistoryEvent(events::ServerInfoHistoryRequestE
       bool res = readFile.readLine(&data);
       if (!res || readFile.isEof()) {
         if (curStamp) {
-          struct ServerInfoSnapShoot shoot(
+          struct core::ServerInfoSnapShoot shoot(
               curStamp, MakeServerInfoFromString(common::ConvertToString(dataInfo)));
           tmpInfos.push_back(shoot);
         }
@@ -527,7 +527,7 @@ void IDriver::HandleLoadServerInfoHistoryEvent(events::ServerInfoHistoryRequestE
       bool isSt = getStamp(data, &tmpStamp);
       if (isSt) {
         if (curStamp) {
-          struct ServerInfoSnapShoot shoot(
+          struct core::ServerInfoSnapShoot shoot(
               curStamp, MakeServerInfoFromString(common::ConvertToString(dataInfo)));
           tmpInfos.push_back(shoot);
         }
@@ -582,8 +582,8 @@ void IDriver::HandleDiscoveryInfoEvent(events::DiscoveryInfoRequestEvent* ev) {
   NotifyProgress(sender, 50);
 
   if (IsConnected()) {
-    IServerInfo* info = nullptr;
-    IDataBaseInfo* db = nullptr;
+    core::IServerInfo* info = nullptr;
+    core::IDataBaseInfo* db = nullptr;
     common::Error err = ServerDiscoveryInfo(&info, &db);
     if (err && err->isError()) {
       res.setErrorInfo(err);
@@ -591,8 +591,8 @@ void IDriver::HandleDiscoveryInfoEvent(events::DiscoveryInfoRequestEvent* ev) {
       DCHECK(info);
       DCHECK(db);
 
-      IServerInfoSPtr server_info(info);
-      IDataBaseInfoSPtr current_database_info(db);
+      core::IServerInfoSPtr server_info(info);
+      core::IDataBaseInfoSPtr current_database_info(db);
 
       res.sinfo = server_info;
       res.dbinfo = current_database_info;
@@ -607,14 +607,14 @@ void IDriver::HandleDiscoveryInfoEvent(events::DiscoveryInfoRequestEvent* ev) {
   NotifyProgress(sender, 100);
 }
 
-common::Error IDriver::ServerDiscoveryInfo(IServerInfo** sinfo, IDataBaseInfo** dbinfo) {
-  IServerInfo* lsinfo = nullptr;
+common::Error IDriver::ServerDiscoveryInfo(core::IServerInfo** sinfo, core::IDataBaseInfo** dbinfo) {
+  core::IServerInfo* lsinfo = nullptr;
   common::Error er = CurrentServerInfo(&lsinfo);
   if (er && er->isError()) {
     return er;
   }
 
-  IDataBaseInfo* ldbinfo = nullptr;
+  core::IDataBaseInfo* ldbinfo = nullptr;
   er = CurrentDataBaseInfo(&ldbinfo);
   if (er && er->isError()) {
     delete lsinfo;
@@ -630,34 +630,34 @@ void IDriver::OnFlushedCurrentDB() {
   emit FlushedDB();
 }
 
-void IDriver::OnCurrentDataBaseChanged(IDataBaseInfo* info) {
+void IDriver::OnCurrentDataBaseChanged(core::IDataBaseInfo* info) {
   core::IDataBaseInfoSPtr curdb(info->Clone());
   emit CurrentDataBaseChanged(curdb);
 }
 
-void IDriver::OnKeysRemoved(const NKeys& keys) {
+void IDriver::OnKeysRemoved(const core::NKeys& keys) {
   for (size_t i = 0; i < keys.size(); ++i) {
     emit KeyRemoved(keys[i]);
   }
 }
 
-void IDriver::OnKeyAdded(const NDbKValue& key) {
+void IDriver::OnKeyAdded(const core::NDbKValue& key) {
   emit KeyAdded(key);
 }
 
-void IDriver::OnKeyLoaded(const NDbKValue& key) {
+void IDriver::OnKeyLoaded(const core::NDbKValue& key) {
   emit KeyLoaded(key);
 }
 
-void IDriver::OnKeyRenamed(const NKey& key, const std::string& new_key) {
+void IDriver::OnKeyRenamed(const core::NKey& key, const std::string& new_key) {
   emit KeyRenamed(key, new_key);
 }
 
-void IDriver::OnKeyTTLChanged(const NKey& key, ttl_t ttl) {
+void IDriver::OnKeyTTLChanged(const core::NKey& key, core::ttl_t ttl) {
   emit KeyTTLChanged(key, ttl);
 }
 
-void IDriver::OnKeyTTLLoaded(const NKey& key, ttl_t ttl) {
+void IDriver::OnKeyTTLLoaded(const core::NKey& key, core::ttl_t ttl) {
   emit KeyTTLLoaded(key, ttl);
 }
 
@@ -665,5 +665,5 @@ void IDriver::OnQuited() {
   emit Disconnected();
 }
 
-}  // namespace core
+}  // namespace proxy
 }  // namespace fastonosql

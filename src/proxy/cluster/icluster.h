@@ -21,11 +21,11 @@
 #include <string>  // for string
 #include <vector>  // for vector
 
-#include "proxy/core_fwd.h"  // for IServerSPtr
+#include "proxy/proxy_fwd.h"  // for IServerSPtr
 #include "proxy/server/iserver_base.h"
 
 namespace fastonosql {
-namespace core {
+namespace proxy {
 
 class ICluster : public IServerBase {
  public:
@@ -46,5 +46,5 @@ class ICluster : public IServerBase {
   nodes_t nodes_;
 };
 
-}  // namespace core
+}  // namespace proxy
 }  // namespace fastonosql

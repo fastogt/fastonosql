@@ -23,11 +23,11 @@
 #include "core/connection_types.h"  // for IsLocalType
 
 namespace fastonosql {
-namespace core {
+namespace proxy {
 
 IDriverLocal::IDriverLocal(IConnectionSettingsBaseSPtr settings) : IDriver(settings) {
   DCHECK(IsLocalType(Type()));
 }
 
-}  // namespace core
+}  // namespace proxy
 }  // namespace fastonosql

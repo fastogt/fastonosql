@@ -21,7 +21,7 @@
 #include <common/time.h>  // for current_mstime
 
 namespace fastonosql {
-namespace core {
+namespace proxy {
 namespace events_info {
 
 EventInfoBase::EventInfoBase(initiator_type sender, error_type er)
@@ -199,5 +199,5 @@ ChangeServerPropertyInfoResponce::ChangeServerPropertyInfoResponce(const base_cl
 ProgressInfoResponce::ProgressInfoResponce(uint8_t pr) : progress(pr) {}
 
 }  // namespace events_info
-}  // namespace core
+}  // namespace proxy
 }  // namespace fastonosql

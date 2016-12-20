@@ -22,7 +22,7 @@
 #include "proxy/db/leveldb/driver.h"
 
 namespace fastonosql {
-namespace core {
+namespace proxy {
 namespace leveldb {
 
 Server::Server(IConnectionSettingsBaseSPtr settings) : IServerLocal(new Driver(settings)) {}
@@ -37,5 +37,5 @@ IDatabaseSPtr Server::CreateDatabase(IDataBaseInfoSPtr info) {
 }
 
 }  // namespace leveldb
-}  // namespace core
+}  // namespace proxy
 }  // namespace fastonosql

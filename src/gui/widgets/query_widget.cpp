@@ -31,7 +31,7 @@
 
 namespace fastonosql {
 namespace gui {
-QueryWidget::QueryWidget(core::IServerSPtr server, QWidget* parent)
+QueryWidget::QueryWidget(proxy::IServerSPtr server, QWidget* parent)
     : QWidget(parent), server_(server) {
   shellWidget_ = new BaseShellWidget(server);
   outputWidget_ = new OutputWidget(server);

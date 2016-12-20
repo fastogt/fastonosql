@@ -56,9 +56,9 @@ class ConnectionsDialog : public QDialog {
 
   explicit ConnectionsDialog(QWidget* parent = 0);
 
-  core::IConnectionSettingsBaseSPtr selectedConnection() const;
-  core::ISentinelSettingsBaseSPtr selectedSentinel() const;
-  core::IClusterSettingsBaseSPtr selectedCluster() const;
+  proxy::IConnectionSettingsBaseSPtr selectedConnection() const;
+  proxy::ISentinelSettingsBaseSPtr selectedSentinel() const;
+  proxy::IClusterSettingsBaseSPtr selectedCluster() const;
 
  private Q_SLOTS:
   virtual void accept() override;
@@ -83,10 +83,10 @@ class ConnectionsDialog : public QDialog {
 
   void retranslateUi();
 
-  void addConnection(core::IConnectionSettingsBaseSPtr con);
-  void addCluster(core::IClusterSettingsBaseSPtr con);
-  void addSentinel(core::ISentinelSettingsBaseSPtr con);
-  DirectoryListWidgetItem* findFolderByPath(const core::connection_path_t& path) const;
+  void addConnection(proxy::IConnectionSettingsBaseSPtr con);
+  void addCluster(proxy::IClusterSettingsBaseSPtr con);
+  void addSentinel(proxy::ISentinelSettingsBaseSPtr con);
+  DirectoryListWidgetItem* findFolderByPath(const proxy::connection_path_t& path) const;
 
   QTreeWidget* listWidget_;
   QPushButton* acButton_;

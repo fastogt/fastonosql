@@ -21,18 +21,18 @@
 #include <stddef.h>  // for size_t
 #include <string>    // for string
 
-#include "proxy/core_fwd.h"            // for IServerSPtr
+#include "proxy/proxy_fwd.h"            // for IServerSPtr
 #include "proxy/database/idatabase.h"  // for IDatabase
 
 namespace fastonosql {
-namespace core {
+namespace proxy {
 namespace lmdb {
 
 class Database : public IDatabase {
  public:
-  Database(IServerSPtr server, IDataBaseInfoSPtr info);
+  Database(IServerSPtr server, core::IDataBaseInfoSPtr info);
 };
 
 }  // namespace lmdb
-}  // namespace core
+}  // namespace proxy
 }  // namespace fastonosql

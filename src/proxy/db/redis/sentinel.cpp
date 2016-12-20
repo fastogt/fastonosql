@@ -21,11 +21,11 @@
 #include <string>
 
 namespace fastonosql {
-namespace core {
+namespace proxy {
 namespace redis {
 
 Sentinel::Sentinel(const std::string& name) : ISentinel(name) {}
 
 }  // namespace redis
-}  // namespace core
+}  // namespace proxy
 }  // namespace fastonosql

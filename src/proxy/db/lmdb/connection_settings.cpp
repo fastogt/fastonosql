@@ -22,20 +22,20 @@
 
 #include <common/convert2string.h>  // for ConvertFromString
 
-#include "core/connection_types.h"  // for connectionTypes::LMDB
+#include "core/connection_types.h"  // for core::connectionTypes::LMDB
 
 namespace fastonosql {
-namespace core {
+namespace proxy {
 namespace lmdb {
 
 ConnectionSettings::ConnectionSettings(const connection_path_t& connectionName)
-    : IConnectionSettingsLocal(connectionName, LMDB), info_() {}
+    : IConnectionSettingsLocal(connectionName, core::LMDB), info_() {}
 
-Config ConnectionSettings::Info() const {
+core::lmdb::Config ConnectionSettings::Info() const {
   return info_;
 }
 
-void ConnectionSettings::SetInfo(const Config& info) {
+void ConnectionSettings::SetInfo(const core::lmdb::Config& info) {
   info_ = info;
 }
 
@@ -68,7 +68,7 @@ std::string ConnectionSettings::CommandLine() const {
 }
 
 void ConnectionSettings::SetCommandLine(const std::string& line) {
-  info_ = common::ConvertFromString<Config>(line);
+  info_ = common::ConvertFromString<core::lmdb::Config>(line);
 }
 
 ConnectionSettings* ConnectionSettings::Clone() const {
@@ -77,5 +77,5 @@ ConnectionSettings* ConnectionSettings::Clone() const {
 }
 
 }  // namespace lmdb
-}  // namespace core
+}  // namespace proxy
 }  // namespace fastonosql

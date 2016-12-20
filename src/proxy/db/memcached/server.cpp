@@ -22,7 +22,7 @@
 #include "proxy/db/memcached/driver.h"
 
 namespace fastonosql {
-namespace core {
+namespace proxy {
 namespace memcached {
 
 Server::Server(IConnectionSettingsBaseSPtr settings) : IServerRemote(new Driver(settings)) {
@@ -55,5 +55,5 @@ IDatabaseSPtr Server::CreateDatabase(IDataBaseInfoSPtr info) {
 }
 
 }  // namespace memcached
-}  // namespace core
+}  // namespace proxy
 }  // namespace fastonosql

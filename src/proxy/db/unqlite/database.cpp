@@ -22,10 +22,10 @@
 
 #include <common/macros.h>  // for DCHECK
 
-#include "core/connection_types.h"  // for connectionTypes::UNQLITE
+#include "core/connection_types.h"  // for core::connectionTypes::UNQLITE
 
 namespace fastonosql {
-namespace core {
+namespace proxy {
 namespace unqlite {
 
 Database::Database(IServerSPtr server, IDataBaseInfoSPtr info) : IDatabase(server, info) {
@@ -35,5 +35,5 @@ Database::Database(IServerSPtr server, IDataBaseInfoSPtr info) : IDatabase(serve
 }
 
 }  // namespace unqlite
-}  // namespace core
+}  // namespace proxy
 }  // namespace fastonosql

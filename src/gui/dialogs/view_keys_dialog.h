@@ -25,7 +25,7 @@
 
 #include <QDialog>
 
-#include "proxy/core_fwd.h"  // for IDatabaseSPtr
+#include "proxy/proxy_fwd.h"  // for IDatabaseSPtr
 #include "core/database/idatabase_info.h"
 
 class QEvent;
@@ -36,7 +36,7 @@ class QSpinBox;  // lines 29-29
 class QWidget;
 
 namespace fastonosql {
-namespace core {
+namespace proxy {
 namespace events_info {
 struct ExecuteInfoRequest;
 struct ExecuteInfoResponce;
@@ -67,14 +67,14 @@ class ViewKeysDialog : public QDialog {
     step_keys_on_page = defaults_key
   };
 
-  explicit ViewKeysDialog(const QString& title, core::IDatabaseSPtr db, QWidget* parent = 0);
+  explicit ViewKeysDialog(const QString& title, proxy::IDatabaseSPtr db, QWidget* parent = 0);
 
  private Q_SLOTS:
-  void startLoadDatabaseContent(const core::events_info::LoadDatabaseContentRequest& req);
-  void finishLoadDatabaseContent(const core::events_info::LoadDatabaseContentResponce& res);
+  void startLoadDatabaseContent(const proxy::events_info::LoadDatabaseContentRequest& req);
+  void finishLoadDatabaseContent(const proxy::events_info::LoadDatabaseContentResponce& res);
 
-  void startExecute(const core::events_info::ExecuteInfoRequest& req);
-  void finishExecute(const core::events_info::ExecuteInfoResponce& res);
+  void startExecute(const proxy::events_info::ExecuteInfoRequest& req);
+  void finishExecute(const proxy::events_info::ExecuteInfoResponce& res);
   void keyTTLChange(core::IDataBaseInfoSPtr db, core::NKey key, core::ttl_t ttl);
 
   void changeTTL(const core::NDbKValue& value, core::ttl_t ttl);
@@ -105,7 +105,7 @@ class ViewKeysDialog : public QDialog {
   QPushButton* rightButtonList_;
   FastoTableView* keysTable_;
   KeysTableModel* keysModel_;
-  core::IDatabaseSPtr db_;
+  proxy::IDatabaseSPtr db_;
 };
 
 }  // namespace gui

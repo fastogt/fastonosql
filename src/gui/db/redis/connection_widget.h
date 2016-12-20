@@ -39,7 +39,7 @@ class ConnectionWidget : public ConnectionBaseWidget {
  public:
   explicit ConnectionWidget(QWidget* parent = 0);
 
-  virtual void syncControls(core::IConnectionSettingsBase* connection) override;
+  virtual void syncControls(proxy::IConnectionSettingsBase* connection) override;
   virtual void retranslateUi() override;
   virtual bool validated() const override;
   bool isValidCredential() const;
@@ -51,8 +51,8 @@ class ConnectionWidget : public ConnectionBaseWidget {
   void selectLocalDBPath(bool checked);
 
  private:
-  virtual core::IConnectionSettingsBase* createConnectionImpl(
-      const core::connection_path_t& path) const override;
+  virtual proxy::IConnectionSettingsBase* createConnectionImpl(
+      const proxy::connection_path_t& path) const override;
   QGroupBox* groupBox_;
   QRadioButton* remote_;
   QRadioButton* local_;

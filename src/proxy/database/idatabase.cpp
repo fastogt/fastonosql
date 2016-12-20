@@ -27,7 +27,7 @@
 #include "proxy/server/iserver.h"      // for IServer
 
 namespace fastonosql {
-namespace core {
+namespace proxy {
 
 IDatabase::IDatabase(IServerSPtr server, IDataBaseInfoSPtr info) : info_(info), server_(server) {
   CHECK(server);
@@ -37,7 +37,7 @@ IDatabase::IDatabase(IServerSPtr server, IDataBaseInfoSPtr info) : info_(info), 
 
 IDatabase::~IDatabase() {}
 
-connectionTypes IDatabase::Type() const {
+core::connectionTypes IDatabase::Type() const {
   return info_->Type();
 }
 
@@ -71,5 +71,5 @@ void IDatabase::Execute(const events_info::ExecuteInfoRequest& req) {
   server_->Execute(req);
 }
 
-}  // namespace core
+}  // namespace proxy
 }  // namespace fastonosql

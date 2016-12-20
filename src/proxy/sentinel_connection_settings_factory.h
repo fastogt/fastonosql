@@ -23,16 +23,16 @@
 #include "proxy/connection_settings/isentinel_connection_settings.h"
 
 namespace fastonosql {
-namespace core {
+namespace proxy {
 
 class SentinelConnectionSettingsFactory
     : public common::patterns::LazySingleton<SentinelConnectionSettingsFactory> {
  public:
   friend class common::patterns::LazySingleton<SentinelConnectionSettingsFactory>;
 
-  ISentinelSettingsBase* CreateFromType(connectionTypes type, const connection_path_t& conName);
+  ISentinelSettingsBase* CreateFromType(core::connectionTypes type, const connection_path_t& conName);
   ISentinelSettingsBase* CreateFromString(const std::string& val);
 };
 
-}  // namespace core
+}  // namespace proxy
 }  // namespace fastonosql

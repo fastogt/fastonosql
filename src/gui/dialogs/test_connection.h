@@ -30,7 +30,7 @@ namespace gui {
 class TestConnection : public QObject {
   Q_OBJECT
  public:
-  explicit TestConnection(core::IConnectionSettingsBaseSPtr conn, QObject* parent = 0);
+  explicit TestConnection(proxy::IConnectionSettingsBaseSPtr conn, QObject* parent = 0);
 
  Q_SIGNALS:
   void connectionResult(bool suc, qint64 msTimeExecute, const QString& resultText);
@@ -39,7 +39,7 @@ class TestConnection : public QObject {
   void routine();
 
  private:
-  core::IConnectionSettingsBaseSPtr connection_;
+  proxy::IConnectionSettingsBaseSPtr connection_;
   common::time64_t start_time_;
 };
 

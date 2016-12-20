@@ -28,7 +28,7 @@
 #include "core/db/redis/config.h"  // for Config
 
 namespace fastonosql {
-namespace core {
+namespace proxy {
 namespace redis {
 
 ConnectionSettings::ConnectionSettings(const connection_path_t& connectionName)
@@ -80,5 +80,5 @@ ConnectionSettings* ConnectionSettings::Clone() const {
 }
 
 }  // namespace redis
-}  // namespace core
+}  // namespace proxy
 }  // namespace fastonosql

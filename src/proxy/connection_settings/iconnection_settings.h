@@ -26,10 +26,10 @@
 #include <common/file_system.h>  // for ascii_string_path, etc
 #include <common/types.h>        // for ClonableBase
 
-#include "core/connection_types.h"  // for connectionTypes
+#include "core/connection_types.h"  // for core::connectionTypes
 
 namespace fastonosql {
-namespace core {
+namespace proxy {
 
 static const char magicNumber = 0x1E;
 
@@ -62,7 +62,7 @@ class IConnectionSettings : public common::ClonableBase<IConnectionSettings> {
   connection_path_t Path() const;
   void SetPath(const connection_path_t& path);
 
-  connectionTypes Type() const;
+  core::connectionTypes Type() const;
 
   bool IsHistoryEnabled() const;
 
@@ -73,9 +73,9 @@ class IConnectionSettings : public common::ClonableBase<IConnectionSettings> {
   virtual IConnectionSettings* Clone() const override = 0;
 
  protected:
-  IConnectionSettings(const connection_path_t& connectionPath, connectionTypes type);
+  IConnectionSettings(const connection_path_t& connectionPath, core::connectionTypes type);
   connection_path_t connection_path_;
-  const connectionTypes type_;
+  const core::connectionTypes type_;
 
  private:
   uint32_t msinterval_;
@@ -105,7 +105,7 @@ class IConnectionSettingsBase : public IConnectionSettings {
   virtual IConnectionSettingsBase* Clone() const override = 0;
 
  protected:
-  IConnectionSettingsBase(const connection_path_t& connectionPath, connectionTypes type);
+  IConnectionSettingsBase(const connection_path_t& connectionPath, core::connectionTypes type);
 
  private:
   using IConnectionSettings::SetPath;
@@ -114,5 +114,5 @@ class IConnectionSettingsBase : public IConnectionSettings {
 
 typedef common::shared_ptr<IConnectionSettingsBase> IConnectionSettingsBaseSPtr;
 
-}  // namespace core
+}  // namespace proxy
 }  // namespace fastonosql

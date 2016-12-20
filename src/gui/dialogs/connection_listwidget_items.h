@@ -32,33 +32,33 @@ class DirectoryListWidgetItem  // directory can hold many
                                // sentinel_container)
     : public QTreeWidgetItem {
  public:
-  explicit DirectoryListWidgetItem(const core::connection_path_t& path);
-  core::connection_path_t path() const;
+  explicit DirectoryListWidgetItem(const proxy::connection_path_t& path);
+  proxy::connection_path_t path() const;
 
  private:
-  core::connection_path_t path_;
+  proxy::connection_path_t path_;
 };
 
 class IConnectionListWidgetItem  // base class
     : public QTreeWidgetItem {
  public:
   enum itemConnectionType { Common, Discovered, Sentinel };
-  virtual void setConnection(core::IConnectionSettingsBaseSPtr cons);
-  core::IConnectionSettingsBaseSPtr connection() const;
+  virtual void setConnection(proxy::IConnectionSettingsBaseSPtr cons);
+  proxy::IConnectionSettingsBaseSPtr connection() const;
   virtual itemConnectionType type() const = 0;
 
  protected:
   explicit IConnectionListWidgetItem(QTreeWidgetItem* parent);
 
  private:
-  core::IConnectionSettingsBaseSPtr connection_;
+  proxy::IConnectionSettingsBaseSPtr connection_;
 };
 
 class ConnectionListWidgetItem  // common connection
     : public IConnectionListWidgetItem {
  public:
   explicit ConnectionListWidgetItem(QTreeWidgetItem* parent);
-  virtual void setConnection(core::IConnectionSettingsBaseSPtr cons) override;
+  virtual void setConnection(proxy::IConnectionSettingsBaseSPtr cons) override;
   virtual itemConnectionType type() const override;
 };
 
@@ -79,13 +79,13 @@ class SentinelConnectionListWidgetItemContainer  // can hold
     // connections
     : public QTreeWidgetItem {
  public:
-  explicit SentinelConnectionListWidgetItemContainer(core::ISentinelSettingsBaseSPtr connection,
+  explicit SentinelConnectionListWidgetItemContainer(proxy::ISentinelSettingsBaseSPtr connection,
                                                      QTreeWidgetItem* parent);
-  void setConnection(core::ISentinelSettingsBaseSPtr cons);
-  core::ISentinelSettingsBaseSPtr connection() const;
+  void setConnection(proxy::ISentinelSettingsBaseSPtr cons);
+  proxy::ISentinelSettingsBaseSPtr connection() const;
 
  private:
-  core::ISentinelSettingsBaseSPtr connection_;
+  proxy::ISentinelSettingsBaseSPtr connection_;
 };
 
 class SentinelConnectionWidgetItem  // sentinel connection
@@ -101,13 +101,13 @@ class ClusterConnectionListWidgetItemContainer  // can hold
                                                 // connections
     : public QTreeWidgetItem {
  public:
-  explicit ClusterConnectionListWidgetItemContainer(core::IClusterSettingsBaseSPtr connection,
+  explicit ClusterConnectionListWidgetItemContainer(proxy::IClusterSettingsBaseSPtr connection,
                                                     QTreeWidgetItem* parent);
-  void setConnection(core::IClusterSettingsBaseSPtr cons);
-  core::IClusterSettingsBaseSPtr connection() const;
+  void setConnection(proxy::IClusterSettingsBaseSPtr cons);
+  proxy::IClusterSettingsBaseSPtr connection() const;
 
  private:
-  core::IClusterSettingsBaseSPtr connection_;
+  proxy::IClusterSettingsBaseSPtr connection_;
 };
 }  // namespace gui
 }  // namespace fastonosql

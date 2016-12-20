@@ -20,10 +20,10 @@
 
 #include <common/macros.h>  // for DCHECK
 
-#include "core/connection_types.h"  // for connectionTypes::LEVELDB
+#include "core/connection_types.h"  // for core::connectionTypes::LEVELDB
 
 namespace fastonosql {
-namespace core {
+namespace proxy {
 namespace leveldb {
 
 Database::Database(IServerSPtr server, IDataBaseInfoSPtr info) : IDatabase(server, info) {
@@ -33,5 +33,5 @@ Database::Database(IServerSPtr server, IDataBaseInfoSPtr info) : IDatabase(serve
 }
 
 }  // namespace leveldb
-}  // namespace core
+}  // namespace proxy
 }  // namespace fastonosql

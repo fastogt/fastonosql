@@ -23,11 +23,11 @@
 #include "core/connection_types.h"  // for IsRemoteType
 
 namespace fastonosql {
-namespace core {
+namespace proxy {
 
 IDriverRemote::IDriverRemote(IConnectionSettingsBaseSPtr settings) : IDriver(settings) {
   DCHECK(IsRemoteType(Type()));
 }
 
-}  // namespace core
+}  // namespace proxy
 }  // namespace fastonosql

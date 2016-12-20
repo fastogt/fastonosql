@@ -22,11 +22,11 @@
 
 #include "proxy/connection_settings/iconnection_settings.h"  // for IConnectionSettingsBaseSPtr
 #include "core/connection_types.h"                          // for serverMode, serverState, etc
-#include "proxy/core_fwd.h"                                  // for IDatabaseSPtr
+#include "proxy/proxy_fwd.h"                                  // for IDatabaseSPtr
 #include "proxy/server/iserver_remote.h"                     // for IServerRemote
 
 namespace fastonosql {
-namespace core {
+namespace proxy {
 namespace memcached {
 
 class Server : public IServerRemote {
@@ -45,5 +45,5 @@ class Server : public IServerRemote {
 };
 
 }  // namespace memcached
-}  // namespace core
+}  // namespace proxy
 }  // namespace fastonosql

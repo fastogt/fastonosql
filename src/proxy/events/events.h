@@ -21,7 +21,7 @@
 #include "proxy/events/events_info.h"
 
 namespace fastonosql {
-namespace core {
+namespace proxy {
 namespace events {
 
 typedef common::qt::Event<events_info::ConnectInfoRequest, QEvent::User + 1> ConnectRequestEvent;
@@ -111,5 +111,5 @@ typedef common::qt::Event<events_info::ProgressInfoResponce, QEvent::User + 100>
     ProgressResponceEvent;
 
 }  // namespace events
-}  // namespace core
+}  // namespace proxy
 }  // namespace fastonosql

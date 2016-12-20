@@ -199,7 +199,7 @@ ExplorerTreeView::ExplorerTreeView(QWidget* parent) : QTreeView(parent) {
   retranslateUi();
 }
 
-void ExplorerTreeView::addServer(core::IServerSPtr server) {
+void ExplorerTreeView::addServer(proxy::IServerSPtr server) {
   if (!server) {
     DNOTREACHED();
     return;

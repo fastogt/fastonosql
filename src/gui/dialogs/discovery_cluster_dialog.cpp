@@ -55,8 +55,8 @@ namespace gui {
 
 DiscoveryClusterDiagnosticDialog::DiscoveryClusterDiagnosticDialog(
     QWidget* parent,
-    core::IConnectionSettingsBaseSPtr connection,
-    core::IClusterSettingsBaseSPtr cluster)
+    proxy::IConnectionSettingsBaseSPtr connection,
+    proxy::IClusterSettingsBaseSPtr cluster)
     : QDialog(parent), cluster_(cluster) {
   setWindowTitle(translations::trConnectionDiscovery);
   setWindowIcon(GuiFactory::instance().serverIcon());
@@ -146,9 +146,9 @@ void DiscoveryClusterDiagnosticDialog::connectionResult(
     for (size_t i = 0; i < infos.size(); ++i) {
       core::ServerDiscoveryClusterInfoSPtr inf = infos[i];
       common::net::HostAndPortAndSlot host = inf->host();
-      core::connection_path_t path(common::file_system::get_separator_string<char>() + inf->name());
-      core::IConnectionSettingsBaseSPtr con(
-          core::ConnectionSettingsFactory::instance().CreateFromType(inf->connectionType(), path,
+      proxy::connection_path_t path(common::file_system::get_separator_string<char>() + inf->name());
+      proxy::IConnectionSettingsBaseSPtr con(
+          proxy::ConnectionSettingsFactory::instance().CreateFromType(inf->connectionType(), path,
                                                                      host));
       ConnectionListWidgetItemDiscovered* item =
           new ConnectionListWidgetItemDiscovered(inf->info(), nullptr);
@@ -166,7 +166,7 @@ void DiscoveryClusterDiagnosticDialog::showEvent(QShowEvent* e) {
 }
 
 void DiscoveryClusterDiagnosticDialog::testConnection(
-    core::IConnectionSettingsBaseSPtr connection) {
+    proxy::IConnectionSettingsBaseSPtr connection) {
   QThread* th = new QThread;
   DiscoveryConnection* cheker = new DiscoveryConnection(connection);
   cheker->moveToThread(th);

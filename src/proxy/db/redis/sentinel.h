@@ -23,7 +23,7 @@
 #include "proxy/sentinel/isentinel.h"  // for ISentinel
 
 namespace fastonosql {
-namespace core {
+namespace proxy {
 namespace redis {
 
 class Sentinel : public ISentinel {
@@ -33,5 +33,5 @@ class Sentinel : public ISentinel {
 };
 
 }  // namespace redis
-}  // namespace core
+}  // namespace proxy
 }  // namespace fastonosql

@@ -29,7 +29,7 @@
 #include "proxy/driver/idriver_remote.h"                     // for IDriverRemote
 
 namespace fastonosql {
-namespace core {
+namespace proxy {
 namespace memcached {
 
 class DBConnection;
@@ -79,5 +79,5 @@ class Driver : public IDriverRemote {
 };
 
 }  // namespace memcached
-}  // namespace core
+}  // namespace proxy
 }  // namespace fastonosql

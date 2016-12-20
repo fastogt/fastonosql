@@ -26,7 +26,7 @@
 
 #include <common/qt/gui/base/tree_item.h>  // for TreeItem
 
-#include "proxy/core_fwd.h"  // for IServerSPtr, IClusterSPtr, etc
+#include "proxy/proxy_fwd.h"  // for IServerSPtr, IClusterSPtr, etc
 #include "core/db_key.h"    // for NDbKValue, etc
 #include "core/database/idatabase_info.h"
 
@@ -52,47 +52,47 @@ class IExplorerTreeItem : public common::qt::gui::TreeItem {
 
 class ExplorerServerItem : public IExplorerTreeItem {
  public:
-  ExplorerServerItem(core::IServerSPtr server, TreeItem* parent);
+  ExplorerServerItem(proxy::IServerSPtr server, TreeItem* parent);
 
   virtual QString name() const override;
-  core::IServerSPtr server() const;
+  proxy::IServerSPtr server() const;
   virtual eType type() const override;
 
   void loadDatabases();
 
  private:
-  const core::IServerSPtr server_;
+  const proxy::IServerSPtr server_;
 };
 
 class ExplorerSentinelItem : public IExplorerTreeItem {
  public:
-  ExplorerSentinelItem(core::ISentinelSPtr sentinel, TreeItem* parent);
+  ExplorerSentinelItem(proxy::ISentinelSPtr sentinel, TreeItem* parent);
 
   virtual QString name() const override;
   virtual eType type() const override;
 
-  core::ISentinelSPtr sentinel() const;
+  proxy::ISentinelSPtr sentinel() const;
 
  private:
-  const core::ISentinelSPtr sentinel_;
+  const proxy::ISentinelSPtr sentinel_;
 };
 
 class ExplorerClusterItem : public IExplorerTreeItem {
  public:
-  ExplorerClusterItem(core::IClusterSPtr cluster, TreeItem* parent);
+  ExplorerClusterItem(proxy::IClusterSPtr cluster, TreeItem* parent);
 
   virtual QString name() const override;
   virtual eType type() const override;
 
-  core::IClusterSPtr cluster() const;
+  proxy::IClusterSPtr cluster() const;
 
  private:
-  const core::IClusterSPtr cluster_;
+  const proxy::IClusterSPtr cluster_;
 };
 
 class ExplorerDatabaseItem : public IExplorerTreeItem {
  public:
-  ExplorerDatabaseItem(core::IDatabaseSPtr db, ExplorerServerItem* parent);
+  ExplorerDatabaseItem(proxy::IDatabaseSPtr db, ExplorerServerItem* parent);
 
   virtual QString name() const override;
   virtual eType type() const override;
@@ -100,8 +100,8 @@ class ExplorerDatabaseItem : public IExplorerTreeItem {
   size_t totalKeysCount() const;
   size_t loadedKeysCount() const;
 
-  core::IServerSPtr server() const;
-  core::IDatabaseSPtr db() const;
+  proxy::IServerSPtr server() const;
+  proxy::IDatabaseSPtr db() const;
 
   void loadContent(const std::string& pattern, uint32_t countKeys);
   void setDefault();
@@ -119,7 +119,7 @@ class ExplorerDatabaseItem : public IExplorerTreeItem {
   void removeAllKeys();
 
  private:
-  const core::IDatabaseSPtr db_;
+  const proxy::IDatabaseSPtr db_;
 };
 
 class ExplorerNSItem : public IExplorerTreeItem {
@@ -128,7 +128,7 @@ class ExplorerNSItem : public IExplorerTreeItem {
   ExplorerDatabaseItem* db() const;
 
   virtual QString name() const override;
-  core::IServerSPtr server() const;
+  proxy::IServerSPtr server() const;
   virtual eType type() const override;
   size_t keyCount() const;
 
@@ -150,7 +150,7 @@ class ExplorerKeyItem : public IExplorerTreeItem {
   void setKey(const core::NKey& key);
 
   virtual QString name() const override;
-  core::IServerSPtr server() const;
+  proxy::IServerSPtr server() const;
   virtual eType type() const override;
 
   void renameKey(const QString& newName);

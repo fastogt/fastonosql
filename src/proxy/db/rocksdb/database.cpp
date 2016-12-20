@@ -22,10 +22,10 @@
 
 #include <common/macros.h>  // for DCHECK
 
-#include "core/connection_types.h"  // for connectionTypes::ROCKSDB
+#include "core/connection_types.h"  // for core::connectionTypes::ROCKSDB
 
 namespace fastonosql {
-namespace core {
+namespace proxy {
 namespace rocksdb {
 
 Database::Database(IServerSPtr server, IDataBaseInfoSPtr info) : IDatabase(server, info) {
@@ -35,5 +35,5 @@ Database::Database(IServerSPtr server, IDataBaseInfoSPtr info) : IDatabase(serve
 }
 
 }  // namespace rocksdb
-}  // namespace core
+}  // namespace proxy
 }  // namespace fastonosql

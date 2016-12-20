@@ -21,10 +21,10 @@
 #include <sstream>
 
 namespace fastonosql {
-namespace core {
+namespace proxy {
 
 IConnectionSettingsRemoteSSH::IConnectionSettingsRemoteSSH(const connection_path_t& connectionName,
-                                                           connectionTypes type)
+                                                           core::connectionTypes type)
     : IConnectionSettingsRemote(connectionName, type), ssh_info_() {}
 
 std::string IConnectionSettingsRemoteSSH::ToString() const {
@@ -34,13 +34,13 @@ std::string IConnectionSettingsRemoteSSH::ToString() const {
   return res;
 }
 
-SSHInfo IConnectionSettingsRemoteSSH::SSHInfo() const {
+core::SSHInfo IConnectionSettingsRemoteSSH::SSHInfo() const {
   return ssh_info_;
 }
 
-void IConnectionSettingsRemoteSSH::SetSSHInfo(const struct SSHInfo& info) {
+void IConnectionSettingsRemoteSSH::SetSSHInfo(const struct core::SSHInfo& info) {
   ssh_info_ = info;
 }
 
-}  // namespace core
+}  // namespace proxy
 }  // namespace fastonosql

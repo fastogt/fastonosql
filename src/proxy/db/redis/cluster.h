@@ -23,7 +23,7 @@
 #include "proxy/cluster/icluster.h"
 
 namespace fastonosql {
-namespace core {
+namespace proxy {
 namespace redis {
 
 class Cluster : public ICluster {
@@ -33,5 +33,5 @@ class Cluster : public ICluster {
 };
 
 }  // namespace redis
-}  // namespace core
+}  // namespace proxy
 }  // namespace fastonosql

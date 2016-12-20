@@ -63,7 +63,7 @@ const char* defaultNameConnectionFolder = "/";
 namespace fastonosql {
 namespace gui {
 
-ClusterDialog::ClusterDialog(QWidget* parent, core::IClusterSettingsBase* connection)
+ClusterDialog::ClusterDialog(QWidget* parent, proxy::IClusterSettingsBase* connection)
     : QDialog(parent), cluster_connection_(connection) {
   setWindowIcon(GuiFactory::instance().serverIcon());
   setWindowFlags(windowFlags() & ~Qt::WindowContextHelpButtonHint);  // Remove help
@@ -82,7 +82,7 @@ ClusterDialog::ClusterDialog(QWidget* parent, core::IClusterSettingsBase* connec
   QString conName = defaultNameConnection;
 
   if (cluster_connection_) {
-    core::connection_path_t path = cluster_connection_->Path();
+    proxy::connection_path_t path = cluster_connection_->Path();
     conName = common::ConvertFromString<QString>(path.Name());
     conFolder = common::ConvertFromString<QString>(path.Directory());
   }
@@ -215,7 +215,7 @@ ClusterDialog::ClusterDialog(QWidget* parent, core::IClusterSettingsBase* connec
   retranslateUi();
 }
 
-core::IClusterSettingsBaseSPtr ClusterDialog::connection() const {
+proxy::IClusterSettingsBaseSPtr ClusterDialog::connection() const {
   return cluster_connection_;
 }
 
@@ -274,7 +274,7 @@ void ClusterDialog::discoveryCluster() {
   if (result == QDialog::Accepted) {
     std::vector<ConnectionListWidgetItemDiscovered*> conns = diag.selectedConnections();
     for (size_t i = 0; i < conns.size(); ++i) {
-      core::IConnectionSettingsBaseSPtr it = conns[i]->connection();
+      proxy::IConnectionSettingsBaseSPtr it = conns[i]->connection();
       addConnection(it);
     }
   }
@@ -313,8 +313,8 @@ void ClusterDialog::setStartNode() {
     return;
   }
 
-  core::IConnectionSettingsBaseSPtr tc = top->connection();
-  core::IConnectionSettingsBaseSPtr cc = currentItem->connection();
+  proxy::IConnectionSettingsBaseSPtr tc = top->connection();
+  proxy::IConnectionSettingsBaseSPtr cc = currentItem->connection();
   currentItem->setConnection(tc);
   top->setConnection(cc);
 }
@@ -324,7 +324,7 @@ void ClusterDialog::add() {
   ConnectionDialog dlg(core::REDIS, "New Connection", this);
   dlg.setFolderEnabled(false);
   int result = dlg.exec();
-  core::IConnectionSettingsBaseSPtr p = dlg.connection();
+  proxy::IConnectionSettingsBaseSPtr p = dlg.connection();
   if (result == QDialog::Accepted && p) {
     addConnection(p);
   }
@@ -363,11 +363,11 @@ void ClusterDialog::edit() {
   }
 
 #ifdef BUILD_WITH_REDIS
-  core::IConnectionSettingsBaseSPtr oldConnection = currentItem->connection();
+  proxy::IConnectionSettingsBaseSPtr oldConnection = currentItem->connection();
   ConnectionDialog dlg(oldConnection->Clone(), this);
   dlg.setFolderEnabled(false);
   int result = dlg.exec();
-  core::IConnectionSettingsBaseSPtr newConnection = dlg.connection();
+  proxy::IConnectionSettingsBaseSPtr newConnection = dlg.connection();
   if (result == QDialog::Accepted && newConnection) {
     currentItem->setConnection(newConnection);
   }
@@ -407,9 +407,9 @@ bool ClusterDialog::validateAndApply() {
   if (conFolder.empty()) {
     conFolder = defaultNameConnectionFolder;
   }
-  core::connection_path_t path(common::file_system::stable_dir_path(conFolder) + conName);
-  core::IClusterSettingsBase* newConnection =
-      core::ClusterConnectionSettingsFactory::instance().CreateFromType(currentType, path);
+  proxy::connection_path_t path(common::file_system::stable_dir_path(conFolder) + conName);
+  proxy::IClusterSettingsBase* newConnection =
+      proxy::ClusterConnectionSettingsFactory::instance().CreateFromType(currentType, path);
   if (newConnection) {
     cluster_connection_.reset(newConnection);
     if (logging_->isChecked()) {
@@ -419,7 +419,7 @@ bool ClusterDialog::validateAndApply() {
       ConnectionListWidgetItem* item =
           dynamic_cast<ConnectionListWidgetItem*>(listWidget_->topLevelItem(i));  // +
       if (item) {
-        core::IConnectionSettingsBaseSPtr con = item->connection();
+        proxy::IConnectionSettingsBaseSPtr con = item->connection();
         cluster_connection_->AddNode(con);
       }
     }
@@ -427,7 +427,7 @@ bool ClusterDialog::validateAndApply() {
   return true;
 }
 
-void ClusterDialog::addConnection(core::IConnectionSettingsBaseSPtr con) {
+void ClusterDialog::addConnection(proxy::IConnectionSettingsBaseSPtr con) {
   ConnectionListWidgetItem* item = new ConnectionListWidgetItem(nullptr);
   item->setConnection(con);
   listWidget_->addTopLevelItem(item);

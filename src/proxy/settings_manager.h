@@ -36,7 +36,7 @@
 #include "global/types.h"  // for supportedViews
 
 namespace fastonosql {
-namespace core {
+namespace proxy {
 
 class SettingsManager : public common::patterns::LazySingleton<SettingsManager> {
  public:
@@ -129,5 +129,5 @@ class SettingsManager : public common::patterns::LazySingleton<SettingsManager> 
   bool fast_view_keys_;
 };
 
-}  // namespace core
+}  // namespace proxy
 }  // namespace fastonosql

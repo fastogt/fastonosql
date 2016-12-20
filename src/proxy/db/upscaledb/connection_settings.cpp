@@ -22,20 +22,20 @@
 
 #include <common/convert2string.h>  // for ConvertFromString
 
-#include "core/connection_types.h"  // for connectionTypes::UPSCALEDB
+#include "core/connection_types.h"  // for core::connectionTypes::UPSCALEDB
 
 namespace fastonosql {
-namespace core {
+namespace proxy {
 namespace upscaledb {
 
 ConnectionSettings::ConnectionSettings(const connection_path_t& connectionName)
-    : IConnectionSettingsLocal(connectionName, UPSCALEDB), info_() {}
+    : IConnectionSettingsLocal(connectionName, core::UPSCALEDB), info_() {}
 
-Config ConnectionSettings::Info() const {
+core::upscaledb::Config ConnectionSettings::Info() const {
   return info_;
 }
 
-void ConnectionSettings::SetInfo(const Config& info) {
+void ConnectionSettings::SetInfo(const core::upscaledb::Config& info) {
   info_ = info;
 }
 
@@ -68,7 +68,7 @@ std::string ConnectionSettings::CommandLine() const {
 }
 
 void ConnectionSettings::SetCommandLine(const std::string& line) {
-  info_ = common::ConvertFromString<Config>(line);
+  info_ = common::ConvertFromString<core::upscaledb::Config>(line);
 }
 
 ConnectionSettings* ConnectionSettings::Clone() const {
@@ -77,5 +77,5 @@ ConnectionSettings* ConnectionSettings::Clone() const {
 }
 
 }  // namespace upscaledb
-}  // namespace core
+}  // namespace proxy
 }  // namespace fastonosql

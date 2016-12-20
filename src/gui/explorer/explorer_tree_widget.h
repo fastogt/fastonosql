@@ -20,7 +20,7 @@
 
 #include <QWidget>
 
-#include "proxy/core_fwd.h"
+#include "proxy/proxy_fwd.h"
 
 class QLineEdit;
 
@@ -38,20 +38,20 @@ class ExplorerTreeWidget : public QWidget {
   explicit ExplorerTreeWidget(QWidget* parent = 0);
 
  Q_SIGNALS:
-  void consoleOpened(core::IServerSPtr server, const QString& text);
-  void serverClosed(core::IServerSPtr server);
-  void sentinelClosed(core::ISentinelSPtr sentinel);
-  void clusterClosed(core::IClusterSPtr cluster);
+  void consoleOpened(proxy::IServerSPtr server, const QString& text);
+  void serverClosed(proxy::IServerSPtr server);
+  void sentinelClosed(proxy::ISentinelSPtr sentinel);
+  void clusterClosed(proxy::IClusterSPtr cluster);
 
  public Q_SLOTS:
-  void addServer(core::IServerSPtr server);
-  void removeServer(core::IServerSPtr server);
+  void addServer(proxy::IServerSPtr server);
+  void removeServer(proxy::IServerSPtr server);
 
-  void addSentinel(core::ISentinelSPtr sentinel);
-  void removeSentinel(core::ISentinelSPtr sentinel);
+  void addSentinel(proxy::ISentinelSPtr sentinel);
+  void removeSentinel(proxy::ISentinelSPtr sentinel);
 
-  void addCluster(core::IClusterSPtr cluster);
-  void removeCluster(core::IClusterSPtr cluster);
+  void addCluster(proxy::IClusterSPtr cluster);
+  void removeCluster(proxy::IClusterSPtr cluster);
 
  protected:
   virtual void changeEvent(QEvent* e) override;

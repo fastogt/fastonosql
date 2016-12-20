@@ -46,16 +46,16 @@ class ConnectionLocalWidget : public ConnectionBaseWidget {
                                  const QString& filter,
                                  QWidget* parent = 0);
 
-  virtual void syncControls(core::IConnectionSettingsBase* connection) override;
+  virtual void syncControls(proxy::IConnectionSettingsBase* connection) override;
   virtual void retranslateUi() override;
   virtual bool validated() const override;
 
  protected:
-  virtual core::IConnectionSettingsBase* createConnectionImpl(
-      const core::connection_path_t& path) const override final;
+  virtual proxy::IConnectionSettingsBase* createConnectionImpl(
+      const proxy::connection_path_t& path) const override final;
 
-  virtual core::IConnectionSettingsLocal* createConnectionLocalImpl(
-      const core::connection_path_t& path) const = 0;
+  virtual proxy::IConnectionSettingsLocal* createConnectionLocalImpl(
+      const proxy::connection_path_t& path) const = 0;
 
  private:
   PathWidget* pathWidget_;

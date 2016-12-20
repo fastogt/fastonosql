@@ -21,7 +21,7 @@
 #include <string>
 
 namespace fastonosql {
-namespace core {
+namespace proxy {
 
 ISentinel::ISentinel(const std::string& name) : name_(name), sentinels_() {}
 
@@ -37,5 +37,5 @@ ISentinel::sentinels_t ISentinel::Sentinels() const {
   return sentinels_;
 }
 
-}  // namespace core
+}  // namespace proxy
 }  // namespace fastonosql

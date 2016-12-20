@@ -32,17 +32,17 @@
 
 #include "core/internal/cdb_connection.h"
 #include "core/internal/db_connection.h"
-#include "core/command/command.h"         // for CreateCommand, etc
+#include "core/command/command.h"          // for CreateCommand, etc
 #include "proxy/command/command_logger.h"  // for LOG_COMMAND
-#include "core/connection_types.h"        // for ConvertToString, etc
-#include "core/db_key.h"                  // for NDbKValue, NValue, NKey
+#include "core/connection_types.h"         // for ConvertToString, etc
+#include "core/db_key.h"                   // for NDbKValue, NValue, NKey
 #include "proxy/events/events_info.h"
 
-#include "core/db/upscaledb/command.h"              // for Command
-#include "core/db/upscaledb/config.h"               // for Config
+#include "core/db/upscaledb/command.h"               // for Command
+#include "core/db/upscaledb/config.h"                // for Config
 #include "proxy/db/upscaledb/connection_settings.h"  // for ConnectionSettings
-#include "core/db/upscaledb/db_connection.h"        // for DBConnection
-#include "core/db/upscaledb/server_info.h"          // for ServerInfo, etc
+#include "core/db/upscaledb/db_connection.h"         // for DBConnection
+#include "core/db/upscaledb/server_info.h"           // for ServerInfo, etc
 
 #include "global/global.h"  // for FastoObject::childs_t, etc
 
@@ -51,14 +51,14 @@
 #define UPSCALEDB_GET_KEYS_PATTERN_1ARGS_I "KEYS a z %d"
 
 namespace fastonosql {
-namespace core {
+namespace proxy {
 namespace upscaledb {
 
 Driver::Driver(IConnectionSettingsBaseSPtr settings)
-    : IDriverLocal(settings), impl_(new DBConnection(this)) {
-  COMPILE_ASSERT(DBConnection::connection_t == UPSCALEDB,
+    : IDriverLocal(settings), impl_(new core::upscaledb::DBConnection(this)) {
+  COMPILE_ASSERT(core::upscaledb::DBConnection::connection_t == core::UPSCALEDB,
                  "DBConnection must be the same type as Driver!");
-  CHECK(Type() == UPSCALEDB);
+  CHECK(Type() == core::UPSCALEDB);
 }
 
 Driver::~Driver() {
@@ -73,7 +73,7 @@ void Driver::SetInterrupted(bool interrupted) {
   impl_->SetInterrupted(interrupted);
 }
 
-translator_t Driver::Translator() const {
+core::translator_t Driver::Translator() const {
   return impl_->Translator();
 }
 
@@ -86,7 +86,7 @@ bool Driver::IsAuthenticated() const {
 }
 
 std::string Driver::Path() const {
-  Config config = impl_->config();
+  core::upscaledb::Config config = impl_->config();
   return config.dbname;
 }
 
@@ -105,12 +105,12 @@ void Driver::ClearImpl() {}
 FastoObjectCommandIPtr Driver::CreateCommand(FastoObject* parent,
                                              const std::string& input,
                                              common::Value::CommandLoggingType ct) {
-  return fastonosql::core::CreateCommand<Command>(parent, input, ct);
+  return fastonosql::core::CreateCommand<core::upscaledb::Command>(parent, input, ct);
 }
 
 FastoObjectCommandIPtr Driver::CreateCommandFast(const std::string& input,
                                                  common::Value::CommandLoggingType ct) {
-  return fastonosql::core::CreateCommandFast<Command>(input, ct);
+  return fastonosql::core::CreateCommandFast<core::upscaledb::Command>(input, ct);
 }
 
 common::Error Driver::SyncConnect() {
@@ -127,20 +127,20 @@ common::Error Driver::ExecuteImpl(int argc, const char** argv, FastoObject* out)
   return impl_->Execute(argc, argv, out);
 }
 
-common::Error Driver::CurrentServerInfo(IServerInfo** info) {
+common::Error Driver::CurrentServerInfo(core::IServerInfo** info) {
   FastoObjectCommandIPtr cmd = CreateCommandFast(UPSCALEDB_INFO_REQUEST, common::Value::C_INNER);
   LOG_COMMAND(cmd);
-  ServerInfo::Stats cm;
+  core::upscaledb::ServerInfo::Stats cm;
   common::Error err = impl_->Info(nullptr, &cm);
   if (err && err->isError()) {
     return err;
   }
 
-  *info = new ServerInfo(cm);
+  *info = new core::upscaledb::ServerInfo(cm);
   return common::Error();
 }
 
-common::Error Driver::CurrentDataBaseInfo(IDataBaseInfo** info) {
+common::Error Driver::CurrentDataBaseInfo(core::IDataBaseInfo** info) {
   if (!info) {
     DNOTREACHED();
     return common::make_error_value("Invalid input argument(s)", common::ErrorValue::E_ERROR);
@@ -201,9 +201,9 @@ void Driver::HandleLoadDatabaseContentEvent(events::LoadDatabaseContentRequestEv
       for (size_t i = 0; i < ar->size(); ++i) {
         std::string key;
         if (ar->getString(i, &key)) {
-          NKey k(key);
-          NValue empty_val(common::Value::createEmptyValueFromType(common::Value::TYPE_STRING));
-          NDbKValue ress(k, empty_val);
+          core::NKey k(key);
+          core::NValue empty_val(common::Value::createEmptyValueFromType(common::Value::TYPE_STRING));
+          core::NDbKValue ress(k, empty_val);
           res.keys.push_back(ress);
         }
       }
@@ -222,11 +222,11 @@ void Driver::HandleProcessCommandLineArgsEvent(events::ProcessConfigArgsRequestE
   UNUSED(ev);
 }
 
-IServerInfoSPtr Driver::MakeServerInfoFromString(const std::string& val) {
-  IServerInfoSPtr res(MakeUpscaleDBServerInfo(val));
+core::IServerInfoSPtr Driver::MakeServerInfoFromString(const std::string& val) {
+  core::IServerInfoSPtr res(core::upscaledb::MakeUpscaleDBServerInfo(val));
   return res;
 }
 
 }  // namespace upscaledb
-}  // namespace core
+}  // namespace proxy
 }  // namespace fastonosql

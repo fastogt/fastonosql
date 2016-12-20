@@ -40,7 +40,7 @@ namespace gui {
 class ConnectionDiagnosticDialog : public QDialog {
   Q_OBJECT
  public:
-  ConnectionDiagnosticDialog(QWidget* parent, core::IConnectionSettingsBaseSPtr connection);
+  ConnectionDiagnosticDialog(QWidget* parent, proxy::IConnectionSettingsBaseSPtr connection);
 
  private Q_SLOTS:
   void connectionResult(bool suc, qint64 mstimeExecute, const QString& resultText);
@@ -49,7 +49,7 @@ class ConnectionDiagnosticDialog : public QDialog {
   virtual void showEvent(QShowEvent* e) override;
 
  private:
-  void startTestConnection(core::IConnectionSettingsBaseSPtr connection);
+  void startTestConnection(proxy::IConnectionSettingsBaseSPtr connection);
 
   common::qt::gui::GlassWidget* glassWidget_;
   QLabel* executeTimeLabel_;

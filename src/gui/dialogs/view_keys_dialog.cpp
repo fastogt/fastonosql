@@ -102,17 +102,17 @@ class NumericDelegate : public QStyledItemDelegate {
 namespace fastonosql {
 namespace gui {
 
-ViewKeysDialog::ViewKeysDialog(const QString& title, core::IDatabaseSPtr db, QWidget* parent)
+ViewKeysDialog::ViewKeysDialog(const QString& title, proxy::IDatabaseSPtr db, QWidget* parent)
     : QDialog(parent), cursorStack_(), curPos_(0), db_(db) {
   CHECK(db_);
   setWindowTitle(title);
   setWindowFlags(windowFlags() & ~Qt::WindowContextHelpButtonHint);  // Remove help
                                                                      // button (?)
 
-  core::IServerSPtr serv = db_->Server();
-  VERIFY(connect(serv.get(), &core::IServer::LoadDataBaseContentStarted, this,
+  proxy::IServerSPtr serv = db_->Server();
+  VERIFY(connect(serv.get(), &proxy::IServer::LoadDataBaseContentStarted, this,
                  &ViewKeysDialog::startLoadDatabaseContent));
-  VERIFY(connect(serv.get(), &core::IServer::LoadDatabaseContentFinished, this,
+  VERIFY(connect(serv.get(), &proxy::IServer::LoadDatabaseContentFinished, this,
                  &ViewKeysDialog::finishLoadDatabaseContent));
 
   // main layout
@@ -145,11 +145,11 @@ ViewKeysDialog::ViewKeysDialog(const QString& title, core::IDatabaseSPtr db, QWi
   VERIFY(connect(keysModel_, &KeysTableModel::changedTTL, this, &ViewKeysDialog::changeTTL,
                  Qt::DirectConnection));
 
-  VERIFY(connect(serv.get(), &core::IServer::ExecuteStarted, this, &ViewKeysDialog::startExecute,
+  VERIFY(connect(serv.get(), &proxy::IServer::ExecuteStarted, this, &ViewKeysDialog::startExecute,
                  Qt::DirectConnection));
-  VERIFY(connect(serv.get(), &core::IServer::ExecuteFinished, this, &ViewKeysDialog::finishExecute,
+  VERIFY(connect(serv.get(), &proxy::IServer::ExecuteFinished, this, &ViewKeysDialog::finishExecute,
                  Qt::DirectConnection));
-  VERIFY(connect(serv.get(), &core::IServer::KeyTTLChanged, this, &ViewKeysDialog::keyTTLChange,
+  VERIFY(connect(serv.get(), &proxy::IServer::KeyTTLChanged, this, &ViewKeysDialog::keyTTLChange,
                  Qt::DirectConnection));
 
   keysTable_ = new FastoTableView;
@@ -200,14 +200,14 @@ ViewKeysDialog::ViewKeysDialog(const QString& title, core::IDatabaseSPtr db, QWi
 }
 
 void ViewKeysDialog::startLoadDatabaseContent(
-    const core::events_info::LoadDatabaseContentRequest& req) {
+    const proxy::events_info::LoadDatabaseContentRequest& req) {
   UNUSED(req);
 
   keysModel_->clear();
 }
 
 void ViewKeysDialog::finishLoadDatabaseContent(
-    const core::events_info::LoadDatabaseContentResponce& res) {
+    const proxy::events_info::LoadDatabaseContentResponce& res) {
   common::Error er = res.errorInfo();
   if (er && er->isError()) {
     return;
@@ -217,7 +217,7 @@ void ViewKeysDialog::finishLoadDatabaseContent(
     return;
   }
 
-  core::events_info::LoadDatabaseContentResponce::keys_container_t keys = res.keys;
+  proxy::events_info::LoadDatabaseContentResponce::keys_container_t keys = res.keys;
 
   size_t size = keys.size();
   for (size_t i = 0; i < size; ++i) {
@@ -245,15 +245,15 @@ void ViewKeysDialog::changeTTL(const core::NDbKValue& value, core::ttl_t ttl) {
     return;
   }
 
-  core::events_info::ExecuteInfoRequest req(this, cmd_str);
+  proxy::events_info::ExecuteInfoRequest req(this, cmd_str);
   db_->Execute(req);
 }
 
-void ViewKeysDialog::startExecute(const core::events_info::ExecuteInfoRequest& req) {
+void ViewKeysDialog::startExecute(const proxy::events_info::ExecuteInfoRequest& req) {
   UNUSED(req);
 }
 
-void ViewKeysDialog::finishExecute(const core::events_info::ExecuteInfoResponce& res) {
+void ViewKeysDialog::finishExecute(const proxy::events_info::ExecuteInfoResponce& res) {
   UNUSED(res);
 }
 
@@ -276,14 +276,14 @@ void ViewKeysDialog::search(bool forward) {
 
   DCHECK_EQ(cursorStack_[0], 0);
   if (forward) {
-    core::events_info::LoadDatabaseContentRequest req(
+    proxy::events_info::LoadDatabaseContentRequest req(
         this, db_->Info(), common::ConvertToString(pattern), countSpinEdit_->value(),
         cursorStack_[curPos_]);
     db_->LoadContent(req);
     ++curPos_;
   } else {
     if (curPos_ > 0) {
-      core::events_info::LoadDatabaseContentRequest req(
+      proxy::events_info::LoadDatabaseContentRequest req(
           this, db_->Info(), common::ConvertToString(pattern), countSpinEdit_->value(),
           cursorStack_[--curPos_]);
       db_->LoadContent(req);

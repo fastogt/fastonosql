@@ -22,11 +22,11 @@
 
 #include <common/net/types.h>  // for HostAndPort
 
-#include "core/connection_types.h"  // for connectionTypes
+#include "core/connection_types.h"  // for core::connectionTypes
 #include "proxy/connection_settings/iconnection_settings.h"
 
 namespace fastonosql {
-namespace core {
+namespace proxy {
 
 class IConnectionSettingsRemote : public IConnectionSettingsBase {
  public:
@@ -47,8 +47,8 @@ class IConnectionSettingsRemote : public IConnectionSettingsBase {
   virtual IConnectionSettingsBase* Clone() const override = 0;
 
  protected:
-  IConnectionSettingsRemote(const connection_path_t& connectionPath, connectionTypes type);
+  IConnectionSettingsRemote(const connection_path_t& connectionPath, core::connectionTypes type);
 };
 
-}  // namespace core
+}  // namespace proxy
 }  // namespace fastonosql

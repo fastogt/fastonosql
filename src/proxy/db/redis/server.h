@@ -20,7 +20,7 @@
 
 #include <common/net/types.h>  // for HostAndPort
 
-#include "proxy/core_fwd.h"  // for IDatabaseSPtr
+#include "proxy/proxy_fwd.h"  // for IDatabaseSPtr
 
 #include "proxy/connection_settings/iconnection_settings.h"  // for IConnectionSettingsBaseSPtr
 #include "core/connection_types.h"                          // for serverMode, serverTypes, etc
@@ -29,7 +29,7 @@
 #include "core/database/idatabase_info.h"                   // for IDataBaseInfoSPtr
 
 namespace fastonosql {
-namespace core {
+namespace proxy {
 namespace redis {
 
 class Server : public IServerRemote {
@@ -53,5 +53,5 @@ class Server : public IServerRemote {
 };
 
 }  // namespace redis
-}  // namespace core
+}  // namespace proxy
 }  // namespace fastonosql

@@ -21,7 +21,7 @@
 #include "proxy/connection_settings/icluster_connection_settings.h"
 
 namespace fastonosql {
-namespace core {
+namespace proxy {
 namespace redis {
 
 class ClusterSettings : public IClusterSettingsBase {
@@ -31,5 +31,5 @@ class ClusterSettings : public IClusterSettingsBase {
 };
 
 }  // namespace redis
-}  // namespace core
+}  // namespace proxy
 }  // namespace fastonosql

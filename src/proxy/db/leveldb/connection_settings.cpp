@@ -22,10 +22,10 @@
 
 #include <common/convert2string.h>  // for ConvertFromString
 
-#include "core/connection_types.h"  // for connectionTypes::LEVELDB
+#include "core/connection_types.h"  // for core::connectionTypes::LEVELDB
 
 namespace fastonosql {
-namespace core {
+namespace proxy {
 namespace leveldb {
 
 ConnectionSettings::ConnectionSettings(const connection_path_t& connectionName)
@@ -77,5 +77,5 @@ ConnectionSettings* ConnectionSettings::Clone() const {
 }
 
 }  // namespace leveldb
-}  // namespace core
+}  // namespace proxy
 }  // namespace fastonosql

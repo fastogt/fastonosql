@@ -21,7 +21,7 @@
 #include "proxy/connection_settings/isentinel_connection_settings.h"
 
 namespace fastonosql {
-namespace core {
+namespace proxy {
 namespace redis {
 
 class SentinelSettings : public ISentinelSettingsBase {
@@ -31,5 +31,5 @@ class SentinelSettings : public ISentinelSettingsBase {
 };
 
 }  // namespace redis
-}  // namespace core
+}  // namespace proxy
 }  // namespace fastonosql

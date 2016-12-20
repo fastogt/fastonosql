@@ -115,9 +115,9 @@ ConnectionWidget::ConnectionWidget(QWidget* parent) : ConnectionBaseWidget(paren
   passwordEchoModeButton_->setEnabled(false);
 }
 
-void ConnectionWidget::syncControls(core::IConnectionSettingsBase* connection) {
-  core::redis::ConnectionSettings* redis =
-      static_cast<core::redis::ConnectionSettings*>(connection);
+void ConnectionWidget::syncControls(proxy::IConnectionSettingsBase* connection) {
+  proxy::redis::ConnectionSettings* redis =
+      static_cast<proxy::redis::ConnectionSettings*>(connection);
   if (redis) {
     core::redis::Config config = redis->Info();
     bool is_remote = config.hostsocket.empty();
@@ -208,9 +208,9 @@ bool ConnectionWidget::isValidCredential() const {
   return true;
 }
 
-core::IConnectionSettingsBase* ConnectionWidget::createConnectionImpl(
-    const core::connection_path_t& path) const {
-  core::redis::ConnectionSettings* conn = new core::redis::ConnectionSettings(path);
+proxy::IConnectionSettingsBase* ConnectionWidget::createConnectionImpl(
+    const proxy::connection_path_t& path) const {
+  proxy::redis::ConnectionSettings* conn = new proxy::redis::ConnectionSettings(path);
   core::redis::Config config = conn->Info();
   bool is_remote = remote_->isChecked();
   if (is_remote) {

@@ -22,18 +22,18 @@
 
 #include <common/macros.h>  // for DCHECK
 
-#include "core/connection_types.h"  // for connectionTypes::UPSCALEDB
+#include "core/connection_types.h"  // for core::connectionTypes::UPSCALEDB
 
 namespace fastonosql {
-namespace core {
+namespace proxy {
 namespace upscaledb {
 
-Database::Database(IServerSPtr server, IDataBaseInfoSPtr info) : IDatabase(server, info) {
+Database::Database(IServerSPtr server, core::IDataBaseInfoSPtr info) : IDatabase(server, info) {
   DCHECK(server);
   DCHECK(info);
-  DCHECK(info->Type() == UPSCALEDB);
+  DCHECK(info->Type() == core::UPSCALEDB);
 }
 
 }  // namespace upscaledb
-}  // namespace core
+}  // namespace proxy
 }  // namespace fastonosql

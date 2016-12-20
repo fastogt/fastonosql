@@ -44,8 +44,8 @@ ConnectionLocalWidget::ConnectionLocalWidget(bool isFolderSelectOnly,
   addWidget(pathWidget_);
 }
 
-void ConnectionLocalWidget::syncControls(core::IConnectionSettingsBase* connection) {
-  core::IConnectionSettingsLocal* local = static_cast<core::IConnectionSettingsLocal*>(connection);
+void ConnectionLocalWidget::syncControls(proxy::IConnectionSettingsBase* connection) {
+  proxy::IConnectionSettingsLocal* local = static_cast<proxy::IConnectionSettingsLocal*>(connection);
   if (local) {
     QString db_path = common::ConvertFromString<QString>(local->DBPath());
     pathWidget_->setPath(db_path);
@@ -65,9 +65,9 @@ bool ConnectionLocalWidget::validated() const {
   return ConnectionBaseWidget::validated();
 }
 
-core::IConnectionSettingsBase* ConnectionLocalWidget::createConnectionImpl(
-    const core::connection_path_t& path) const {
-  core::IConnectionSettingsLocal* local = createConnectionLocalImpl(path);
+proxy::IConnectionSettingsBase* ConnectionLocalWidget::createConnectionImpl(
+    const proxy::connection_path_t& path) const {
+  proxy::IConnectionSettingsLocal* local = createConnectionLocalImpl(path);
   local->SetDBPath(common::ConvertToString(pathWidget_->path()));
   return local;
 }

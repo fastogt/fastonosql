@@ -23,7 +23,7 @@
 #include <QObject>
 
 namespace fastonosql {
-namespace core {
+namespace proxy {
 
 class IServerBase : public QObject {
   Q_OBJECT
@@ -32,5 +32,5 @@ class IServerBase : public QObject {
   virtual ~IServerBase();
 };
 
-}  // namespace core
+}  // namespace proxy
 }  // namespace fastonosql

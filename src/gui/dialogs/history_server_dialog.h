@@ -20,7 +20,7 @@
 
 #include <QDialog>
 
-#include "proxy/core_fwd.h"  // for IServerSPtr
+#include "proxy/proxy_fwd.h"  // for IServerSPtr
 #include "proxy/events/events_info.h"
 
 class QComboBox;  // lines 23-23
@@ -49,15 +49,15 @@ namespace gui {
 class ServerHistoryDialog : public QDialog {
   Q_OBJECT
  public:
-  explicit ServerHistoryDialog(core::IServerSPtr server, QWidget* parent = 0);
+  explicit ServerHistoryDialog(proxy::IServerSPtr server, QWidget* parent = 0);
 
   enum { min_width = 640, min_height = 480 };
 
  private Q_SLOTS:
-  void startLoadServerHistoryInfo(const core::events_info::ServerInfoHistoryRequest& req);
-  void finishLoadServerHistoryInfo(const core::events_info::ServerInfoHistoryResponce& res);
-  void startClearServerHistory(const core::events_info::ClearServerHistoryRequest& req);
-  void finishClearServerHistory(const core::events_info::ClearServerHistoryResponce& res);
+  void startLoadServerHistoryInfo(const proxy::events_info::ServerInfoHistoryRequest& req);
+  void finishLoadServerHistoryInfo(const proxy::events_info::ServerInfoHistoryResponce& res);
+  void startClearServerHistory(const proxy::events_info::ClearServerHistoryRequest& req);
+  void finishClearServerHistory(const proxy::events_info::ClearServerHistoryResponce& res);
   void snapShotAdd(core::ServerInfoSnapShoot snapshot);
   void clearHistory();
 
@@ -81,8 +81,8 @@ class ServerHistoryDialog : public QDialog {
   common::qt::gui::GraphWidget* graphWidget_;
 
   common::qt::gui::GlassWidget* glassWidget_;
-  core::events_info::ServerInfoHistoryResponce::infos_container_type infos_;
-  const core::IServerSPtr server_;
+  proxy::events_info::ServerInfoHistoryResponce::infos_container_type infos_;
+  const proxy::IServerSPtr server_;
 };
 }  // namespace gui
 }  // namespace fastonosql

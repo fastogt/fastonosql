@@ -21,11 +21,11 @@
 #include <string>  // for string
 
 #include "proxy/connection_settings/iconnection_settings.h"  // for IConnectionSettingsBaseSPtr
-#include "proxy/core_fwd.h"                                  // for IDatabaseSPtr
+#include "proxy/proxy_fwd.h"                                  // for IDatabaseSPtr
 #include "proxy/server/iserver_local.h"                      // for IServerLocal
 
 namespace fastonosql {
-namespace core {
+namespace proxy {
 namespace lmdb {
 
 class Server : public IServerLocal {
@@ -35,8 +35,8 @@ class Server : public IServerLocal {
   virtual std::string Path() const override;
 
  private:
-  virtual IDatabaseSPtr CreateDatabase(IDataBaseInfoSPtr info) override;
+  virtual IDatabaseSPtr CreateDatabase(core::IDataBaseInfoSPtr info) override;
 };
 }  // namespace lmdb
-}  // namespace core
+}  // namespace proxy
 }  // namespace fastonosql

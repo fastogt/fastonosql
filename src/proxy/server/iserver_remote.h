@@ -21,25 +21,25 @@
 #include "proxy/server/iserver.h"
 
 namespace fastonosql {
-namespace core {
+namespace proxy {
 class IDriver;
 }
 }
 
 namespace fastonosql {
-namespace core {
+namespace proxy {
 
 class IServerRemote : public IServer {
   Q_OBJECT
  public:
   virtual common::net::HostAndPort Host() const = 0;
-  virtual serverMode Mode() const = 0;
-  virtual serverTypes Role() const = 0;
-  virtual serverState State() const = 0;
+  virtual core::serverMode Mode() const = 0;
+  virtual core::serverTypes Role() const = 0;
+  virtual core::serverState State() const = 0;
 
  protected:
   explicit IServerRemote(IDriver* drv);
 };
 
-}  // namespace core
+}  // namespace proxy
 }  // namespace fastonosql

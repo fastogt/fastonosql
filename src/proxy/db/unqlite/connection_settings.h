@@ -25,7 +25,7 @@
 #include "core/db/unqlite/config.h"
 
 namespace fastonosql {
-namespace core {
+namespace proxy {
 namespace unqlite {
 
 class ConnectionSettings : public IConnectionSettingsLocal {
@@ -54,5 +54,5 @@ class ConnectionSettings : public IConnectionSettingsLocal {
 };
 
 }  // namespace unqlite
-}  // namespace core
+}  // namespace proxy
 }  // namespace fastonosql

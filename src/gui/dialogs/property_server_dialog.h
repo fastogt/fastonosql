@@ -20,7 +20,7 @@
 
 #include <QDialog>
 
-#include "proxy/core_fwd.h"              // for IServerSPtr
+#include "proxy/proxy_fwd.h"              // for IServerSPtr
 #include "core/server_property_info.h"  // for property_t
 
 class QEvent;
@@ -36,7 +36,7 @@ class GlassWidget;
 }
 }  // lines 31-31
 namespace fastonosql {
-namespace core {
+namespace proxy {
 namespace events_info {
 struct ChangeServerPropertyInfoRequest;
 struct ServerPropertyInfoRequest;
@@ -52,15 +52,15 @@ namespace gui {
 class PropertyServerDialog : public QDialog {
   Q_OBJECT
  public:
-  explicit PropertyServerDialog(core::IServerSPtr server, QWidget* parent = 0);
+  explicit PropertyServerDialog(proxy::IServerSPtr server, QWidget* parent = 0);
   enum { min_width = 240, min_height = 200 };
 
  private Q_SLOTS:
-  void startServerProperty(const core::events_info::ServerPropertyInfoRequest& req);
-  void finishServerProperty(const core::events_info::ServerPropertyInfoResponce& res);
+  void startServerProperty(const proxy::events_info::ServerPropertyInfoRequest& req);
+  void finishServerProperty(const proxy::events_info::ServerPropertyInfoResponce& res);
 
-  void startServerChangeProperty(const core::events_info::ChangeServerPropertyInfoRequest& req);
-  void finishServerChangeProperty(const core::events_info::ChangeServerPropertyInfoResponce& res);
+  void startServerChangeProperty(const proxy::events_info::ChangeServerPropertyInfoRequest& req);
+  void finishServerChangeProperty(const proxy::events_info::ChangeServerPropertyInfoResponce& res);
 
   void changedProperty(const core::property_t& prop);
 
@@ -73,7 +73,7 @@ class PropertyServerDialog : public QDialog {
 
   common::qt::gui::GlassWidget* glassWidget_;
   QTableView* propertyes_table_;
-  const core::IServerSPtr server_;
+  const proxy::IServerSPtr server_;
 };
 
 }  // namespace gui

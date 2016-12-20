@@ -27,7 +27,7 @@
 #include "core/db/ssdb/config.h"  // for Config
 
 namespace fastonosql {
-namespace core {
+namespace proxy {
 namespace ssdb {
 
 class ConnectionSettings : public IConnectionSettingsRemote {
@@ -56,5 +56,5 @@ class ConnectionSettings : public IConnectionSettingsRemote {
 };
 
 }  // namespace ssdb
-}  // namespace core
+}  // namespace proxy
 }  // namespace fastonosql

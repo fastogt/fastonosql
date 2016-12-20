@@ -49,14 +49,14 @@ namespace fastonosql {
 namespace gui {
 IExplorerTreeItem::IExplorerTreeItem(TreeItem* parent) : TreeItem(parent, nullptr) {}
 
-ExplorerServerItem::ExplorerServerItem(core::IServerSPtr server, TreeItem* parent)
+ExplorerServerItem::ExplorerServerItem(proxy::IServerSPtr server, TreeItem* parent)
     : IExplorerTreeItem(parent), server_(server) {}
 
 QString ExplorerServerItem::name() const {
   return common::ConvertFromString<QString>(server_->Name());
 }
 
-core::IServerSPtr ExplorerServerItem::server() const {
+proxy::IServerSPtr ExplorerServerItem::server() const {
   return server_;
 }
 
@@ -65,15 +65,15 @@ ExplorerServerItem::eType ExplorerServerItem::type() const {
 }
 
 void ExplorerServerItem::loadDatabases() {
-  core::events_info::LoadDatabasesInfoRequest req(this);
+  proxy::events_info::LoadDatabasesInfoRequest req(this);
   return server_->LoadDatabases(req);
 }
 
-ExplorerSentinelItem::ExplorerSentinelItem(core::ISentinelSPtr sentinel, TreeItem* parent)
+ExplorerSentinelItem::ExplorerSentinelItem(proxy::ISentinelSPtr sentinel, TreeItem* parent)
     : IExplorerTreeItem(parent), sentinel_(sentinel) {
-  core::ISentinel::sentinels_t nodes = sentinel->Sentinels();
+  proxy::ISentinel::sentinels_t nodes = sentinel->Sentinels();
   for (size_t i = 0; i < nodes.size(); ++i) {
-    core::Sentinel sent = nodes[i];
+    proxy::Sentinel sent = nodes[i];
     ExplorerServerItem* rser = new ExplorerServerItem(sent.sentinel, this);
     addChildren(rser);
 
@@ -92,11 +92,11 @@ ExplorerSentinelItem::eType ExplorerSentinelItem::type() const {
   return eSentinel;
 }
 
-core::ISentinelSPtr ExplorerSentinelItem::sentinel() const {
+proxy::ISentinelSPtr ExplorerSentinelItem::sentinel() const {
   return sentinel_;
 }
 
-ExplorerClusterItem::ExplorerClusterItem(core::IClusterSPtr cluster, TreeItem* parent)
+ExplorerClusterItem::ExplorerClusterItem(proxy::IClusterSPtr cluster, TreeItem* parent)
     : IExplorerTreeItem(parent), cluster_(cluster) {
   auto nodes = cluster_->Nodes();
   for (size_t i = 0; i < nodes.size(); ++i) {

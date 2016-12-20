@@ -79,44 +79,44 @@ namespace gui {
 namespace {
 BaseShell* makeBaseShell(core::connectionTypes type, QWidget* parent) {
   BaseShell* shell =
-      BaseShell::createFromType(type, core::SettingsManager::instance().AutoCompletion());
+      BaseShell::createFromType(type, proxy::SettingsManager::instance().AutoCompletion());
   parent->setToolTip(
       QObject::tr("Based on <b>%1</b> version: <b>%2</b>").arg(shell->basedOn(), shell->version()));
   shell->setContextMenuPolicy(Qt::CustomContextMenu);
   return shell;
 }
 }
-BaseShellWidget::BaseShellWidget(core::IServerSPtr server, const QString& filePath, QWidget* parent)
+BaseShellWidget::BaseShellWidget(proxy::IServerSPtr server, const QString& filePath, QWidget* parent)
     : QWidget(parent), server_(server), input_(nullptr), filePath_(filePath) {
   CHECK(server_);
 
   VERIFY(
-      connect(server_.get(), &core::IServer::ConnectStarted, this, &BaseShellWidget::startConnect));
-  VERIFY(connect(server_.get(), &core::IServer::ConnectFinished, this,
+      connect(server_.get(), &proxy::IServer::ConnectStarted, this, &BaseShellWidget::startConnect));
+  VERIFY(connect(server_.get(), &proxy::IServer::ConnectFinished, this,
                  &BaseShellWidget::finishConnect));
-  VERIFY(connect(server_.get(), &core::IServer::DisconnectStarted, this,
+  VERIFY(connect(server_.get(), &proxy::IServer::DisconnectStarted, this,
                  &BaseShellWidget::startDisconnect));
-  VERIFY(connect(server_.get(), &core::IServer::DisconnectFinished, this,
+  VERIFY(connect(server_.get(), &proxy::IServer::DisconnectFinished, this,
                  &BaseShellWidget::finishDisconnect));
-  VERIFY(connect(server_.get(), &core::IServer::ProgressChanged, this,
+  VERIFY(connect(server_.get(), &proxy::IServer::ProgressChanged, this,
                  &BaseShellWidget::progressChange));
 
-  VERIFY(connect(server_.get(), &core::IServer::ModeEntered, this, &BaseShellWidget::enterMode));
-  VERIFY(connect(server_.get(), &core::IServer::ModeLeaved, this, &BaseShellWidget::leaveMode));
+  VERIFY(connect(server_.get(), &proxy::IServer::ModeEntered, this, &BaseShellWidget::enterMode));
+  VERIFY(connect(server_.get(), &proxy::IServer::ModeLeaved, this, &BaseShellWidget::leaveMode));
 
-  VERIFY(connect(server_.get(), &core::IServer::LoadDiscoveryInfoStarted, this,
+  VERIFY(connect(server_.get(), &proxy::IServer::LoadDiscoveryInfoStarted, this,
                  &BaseShellWidget::startLoadDiscoveryInfo));
-  VERIFY(connect(server_.get(), &core::IServer::LoadDiscoveryInfoFinished, this,
+  VERIFY(connect(server_.get(), &proxy::IServer::LoadDiscoveryInfoFinished, this,
                  &BaseShellWidget::finishLoadDiscoveryInfo));
 
-  VERIFY(connect(server_.get(), &core::IServer::ExecuteStarted, this,
+  VERIFY(connect(server_.get(), &proxy::IServer::ExecuteStarted, this,
                  &BaseShellWidget::startExecute, Qt::DirectConnection));
-  VERIFY(connect(server_.get(), &core::IServer::ExecuteFinished, this,
+  VERIFY(connect(server_.get(), &proxy::IServer::ExecuteFinished, this,
                  &BaseShellWidget::finishExecute, Qt::DirectConnection));
 
-  VERIFY(connect(server_.get(), &core::IServer::CurrentDataBaseChanged, this,
+  VERIFY(connect(server_.get(), &proxy::IServer::CurrentDataBaseChanged, this,
                  &BaseShellWidget::updateDefaultDatabase));
-  VERIFY(connect(server_.get(), &core::IServer::Disconnected, this,
+  VERIFY(connect(server_.get(), &proxy::IServer::Disconnected, this,
                  &BaseShellWidget::serverDisconnect));
 
   QVBoxLayout* mainlayout = new QVBoxLayout;
@@ -317,7 +317,7 @@ void BaseShellWidget::execute() {
 }
 
 void BaseShellWidget::executeArgs(const QString& text, int repeat, int interval, bool history) {
-  core::events_info::ExecuteInfoRequest req(this, common::ConvertToString(text), repeat, interval,
+  proxy::events_info::ExecuteInfoRequest req(this, common::ConvertToString(text), repeat, interval,
                                             history);
   server_->Execute(req);
 }
@@ -327,12 +327,12 @@ void BaseShellWidget::stop() {
 }
 
 void BaseShellWidget::connectToServer() {
-  core::events_info::ConnectInfoRequest req(this);
+  proxy::events_info::ConnectInfoRequest req(this);
   server_->Connect(req);
 }
 
 void BaseShellWidget::disconnectFromServer() {
-  core::events_info::DisConnectInfoRequest req(this);
+  proxy::events_info::DisConnectInfoRequest req(this);
   server_->Disconnect(req);
 }
 
@@ -424,50 +424,50 @@ void BaseShellWidget::inputTextChanged() {
   }
 }
 
-void BaseShellWidget::startConnect(const core::events_info::ConnectInfoRequest& req) {
+void BaseShellWidget::startConnect(const proxy::events_info::ConnectInfoRequest& req) {
   UNUSED(req);
 
   syncConnectionActions();
 }
 
-void BaseShellWidget::finishConnect(const core::events_info::ConnectInfoResponce& res) {
+void BaseShellWidget::finishConnect(const proxy::events_info::ConnectInfoResponce& res) {
   UNUSED(res);
 
   serverConnect();
 }
 
-void BaseShellWidget::startDisconnect(const core::events_info::DisConnectInfoRequest& req) {
+void BaseShellWidget::startDisconnect(const proxy::events_info::DisConnectInfoRequest& req) {
   UNUSED(req);
 
   syncConnectionActions();
 }
 
-void BaseShellWidget::finishDisconnect(const core::events_info::DisConnectInfoResponce& res) {
+void BaseShellWidget::finishDisconnect(const proxy::events_info::DisConnectInfoResponce& res) {
   UNUSED(res);
 
   serverDisconnect();
 }
 
-void BaseShellWidget::progressChange(const core::events_info::ProgressInfoResponce& res) {
+void BaseShellWidget::progressChange(const proxy::events_info::ProgressInfoResponce& res) {
   workProgressBar_->setValue(res.progress);
 }
 
-void BaseShellWidget::enterMode(const core::events_info::EnterModeInfo& res) {
+void BaseShellWidget::enterMode(const proxy::events_info::EnterModeInfo& res) {
   core::ConnectionMode mode = res.mode;
   connectionMode_->setIcon(gui::GuiFactory::instance().modeIcon(mode), iconSize);
   std::string modeText = common::ConvertToString(mode);
   connectionMode_->setText(common::ConvertFromString<QString>(modeText));
 }
 
-void BaseShellWidget::leaveMode(const core::events_info::LeaveModeInfo& res) {
+void BaseShellWidget::leaveMode(const proxy::events_info::LeaveModeInfo& res) {
   UNUSED(res);
 }
 
-void BaseShellWidget::startLoadDiscoveryInfo(const core::events_info::DiscoveryInfoRequest& res) {
+void BaseShellWidget::startLoadDiscoveryInfo(const proxy::events_info::DiscoveryInfoRequest& res) {
   UNUSED(res);
 }
 
-void BaseShellWidget::finishLoadDiscoveryInfo(const core::events_info::DiscoveryInfoResponce& res) {
+void BaseShellWidget::finishLoadDiscoveryInfo(const proxy::events_info::DiscoveryInfoResponce& res) {
   common::Error err = res.errorInfo();
   if (err && err->isError()) {
     return;
@@ -477,7 +477,7 @@ void BaseShellWidget::finishLoadDiscoveryInfo(const core::events_info::Discovery
   updateDefaultDatabase(res.dbinfo);
 }
 
-void BaseShellWidget::startExecute(const core::events_info::ExecuteInfoRequest& req) {
+void BaseShellWidget::startExecute(const proxy::events_info::ExecuteInfoRequest& req) {
   UNUSED(req);
 
   repeatCount_->setEnabled(false);
@@ -486,7 +486,7 @@ void BaseShellWidget::startExecute(const core::events_info::ExecuteInfoRequest& 
   executeAction_->setEnabled(false);
   stopAction_->setEnabled(true);
 }
-void BaseShellWidget::finishExecute(const core::events_info::ExecuteInfoResponce& res) {
+void BaseShellWidget::finishExecute(const proxy::events_info::ExecuteInfoResponce& res) {
   UNUSED(res);
 
   repeatCount_->setEnabled(true);
@@ -517,10 +517,10 @@ void BaseShellWidget::updateServerInfo(core::IServerInfoSPtr inf) {
 
   std::string server_label;
   if (server_->IsCanRemote()) {
-    core::IServerRemote* rserver = dynamic_cast<core::IServerRemote*>(server_.get());  // +
+    proxy::IServerRemote* rserver = dynamic_cast<proxy::IServerRemote*>(server_.get());  // +
     server_label = common::ConvertToString(rserver->Host());
   } else {
-    core::IServerLocal* lserver = dynamic_cast<core::IServerLocal*>(server_.get());  // +
+    proxy::IServerLocal* lserver = dynamic_cast<proxy::IServerLocal*>(server_.get());  // +
     server_label = lserver->Path();
   }
   QString qserver_label = common::ConvertFromString<QString>(server_label);

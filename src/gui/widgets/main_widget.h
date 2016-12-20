@@ -20,7 +20,7 @@
 
 #include <QTabWidget>
 
-#include "proxy/core_fwd.h"  // for IServerSPtr
+#include "proxy/proxy_fwd.h"  // for IServerSPtr
 
 class QWidget;
 namespace fastonosql {
@@ -31,6 +31,7 @@ class QueryWidget;
 
 namespace fastonosql {
 namespace gui {
+
 class MainWidget : public QTabWidget {
   Q_OBJECT
  public:
@@ -40,7 +41,7 @@ class MainWidget : public QTabWidget {
   QueryWidget* widget(int index) const;
 
  public Q_SLOTS:
-  void openConsole(core::IServerSPtr server, const QString& text);
+  void openConsole(proxy::IServerSPtr server, const QString& text);
 
  private Q_SLOTS:
   void createNewTab();
@@ -57,5 +58,6 @@ class MainWidget : public QTabWidget {
   void addWidgetToTab(QueryWidget* wid, const QString& title);
   void openNewTab(QueryWidget* src, const QString& title, const QString& text);
 };
+
 }  // namespace gui
 }  // namespace fastonosql

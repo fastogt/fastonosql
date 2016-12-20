@@ -34,7 +34,7 @@
 #include "proxy/driver/idriver.h"      // for IDriver
 
 namespace fastonosql {
-namespace core {
+namespace proxy {
 
 IServer::IServer(IDriver* drv)
     : drv_(drv), server_info_(), current_database_info_(), timer_check_key_exists_id_(0) {
@@ -95,7 +95,7 @@ translator_t IServer::Translator() const {
   return drv_->Translator();
 }
 
-connectionTypes IServer::Type() const {
+core::connectionTypes IServer::Type() const {
   return drv_->Type();
 }
 
@@ -712,5 +712,5 @@ void IServer::ProcessDiscoveryInfo(const events_info::DiscoveryInfoRequest& req)
   Notify(ev);
 }
 
-}  // namespace core
+}  // namespace proxy
 }  // namespace fastonosql

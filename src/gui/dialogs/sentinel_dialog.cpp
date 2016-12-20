@@ -64,7 +64,7 @@ const QString invalidDbType = QObject::tr("Invalid database type!");
 namespace fastonosql {
 namespace gui {
 
-SentinelDialog::SentinelDialog(QWidget* parent, core::ISentinelSettingsBase* connection)
+SentinelDialog::SentinelDialog(QWidget* parent, proxy::ISentinelSettingsBase* connection)
     : QDialog(parent), sentinel_connection_(connection) {
   setWindowIcon(GuiFactory::instance().serverIcon());
   setWindowFlags(windowFlags() & ~Qt::WindowContextHelpButtonHint);  // Remove help
@@ -83,7 +83,7 @@ SentinelDialog::SentinelDialog(QWidget* parent, core::ISentinelSettingsBase* con
   QString conName = defaultNameConnection;
 
   if (sentinel_connection_) {
-    core::connection_path_t path = sentinel_connection_->Path();
+    proxy::connection_path_t path = sentinel_connection_->Path();
     conName = common::ConvertFromString<QString>(path.Name());
     conFolder = common::ConvertFromString<QString>(path.Directory());
   }
@@ -210,7 +210,7 @@ SentinelDialog::SentinelDialog(QWidget* parent, core::ISentinelSettingsBase* con
   retranslateUi();
 }
 
-core::ISentinelSettingsBaseSPtr SentinelDialog::connection() const {
+proxy::ISentinelSettingsBaseSPtr SentinelDialog::connection() const {
   return sentinel_connection_;
 }
 
@@ -285,7 +285,7 @@ void SentinelDialog::addConnectionSettings() {
   ConnectionDialog dlg(core::REDIS, "New Connection", this);
   dlg.setFolderEnabled(false);
   int result = dlg.exec();
-  core::SentinelSettings sent;
+  proxy::SentinelSettings sent;
   sent.sentinel = dlg.connection();
   if (result == QDialog::Accepted && sent.sentinel) {
     addSentinel(sent);
@@ -325,11 +325,11 @@ void SentinelDialog::edit() {
   }
 
 #ifdef BUILD_WITH_REDIS
-  core::IConnectionSettingsBaseSPtr oldConnection = currentItem->connection();
+  proxy::IConnectionSettingsBaseSPtr oldConnection = currentItem->connection();
   ConnectionDialog dlg(oldConnection->Clone(), this);
   dlg.setFolderEnabled(false);
   int result = dlg.exec();
-  core::IConnectionSettingsBaseSPtr newConnection = dlg.connection();
+  proxy::IConnectionSettingsBaseSPtr newConnection = dlg.connection();
   if (result == QDialog::Accepted && newConnection) {
     currentItem->setConnection(newConnection);
   }
@@ -372,9 +372,9 @@ bool SentinelDialog::validateAndApply() {
     conFolder = defaultNameConnectionFolder;
   }
 
-  core::connection_path_t path(common::file_system::stable_dir_path(conFolder) + conName);
-  core::ISentinelSettingsBase* newConnection =
-      core::SentinelConnectionSettingsFactory::instance().CreateFromType(currentType, path);
+  proxy::connection_path_t path(common::file_system::stable_dir_path(conFolder) + conName);
+  proxy::ISentinelSettingsBase* newConnection =
+      proxy::SentinelConnectionSettingsFactory::instance().CreateFromType(currentType, path);
   if (logging_->isChecked()) {
     newConnection->SetLoggingMsTimeInterval(loggingMsec_->value());
   }
@@ -386,7 +386,7 @@ bool SentinelDialog::validateAndApply() {
       continue;
     }
 
-    core::SentinelSettings sent;
+    proxy::SentinelSettings sent;
     sent.sentinel = item->connection();
     for (int i = 0; i < item->childCount(); ++i) {
       ConnectionListWidgetItem* child = dynamic_cast<ConnectionListWidgetItem*>(item->child(i));
@@ -401,7 +401,7 @@ bool SentinelDialog::validateAndApply() {
   return true;
 }
 
-void SentinelDialog::addSentinel(core::SentinelSettings sent) {
+void SentinelDialog::addSentinel(proxy::SentinelSettings sent) {
   SentinelConnectionWidgetItem* sent_item =
       new SentinelConnectionWidgetItem(core::ServerCommonInfo(), nullptr);
   sent_item->setConnection(sent.sentinel);

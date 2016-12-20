@@ -27,13 +27,13 @@
 
 class QObject;
 namespace fastonosql {
-namespace core {
+namespace proxy {
 class IDriver;
 }
 }
 
 namespace fastonosql {
-namespace core {
+namespace proxy {
 
 class FirstChildUpdateRootLocker : public RootLocker {
  public:
@@ -54,5 +54,5 @@ class FirstChildUpdateRootLocker : public RootLocker {
   std::vector<FastoObjectIPtr> watched_cmds_;
 };
 
-}  // namespace core
+}  // namespace proxy
 }  // namespace fastonosql

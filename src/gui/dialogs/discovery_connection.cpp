@@ -32,7 +32,7 @@
 namespace fastonosql {
 namespace gui {
 
-DiscoveryConnection::DiscoveryConnection(core::IConnectionSettingsBaseSPtr conn, QObject* parent)
+DiscoveryConnection::DiscoveryConnection(proxy::IConnectionSettingsBaseSPtr conn, QObject* parent)
     : QObject(parent), connection_(conn), start_time_(common::time::current_mstime()) {
   qRegisterMetaType<std::vector<core::ServerDiscoveryClusterInfoSPtr>>(
       "std::vector<core::ServerDiscoveryClusterInfoSPtr>");
@@ -47,7 +47,7 @@ void DiscoveryConnection::routine() {
     return;
   }
 
-  common::Error er = core::ServersManager::instance().DiscoveryClusterConnection(connection_, &inf);
+  common::Error er = proxy::ServersManager::instance().DiscoveryClusterConnection(connection_, &inf);
 
   if (er && er->isError()) {
     emit connectionResult(false, common::time::current_mstime() - start_time_,

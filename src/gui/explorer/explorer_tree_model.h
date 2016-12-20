@@ -24,7 +24,7 @@
 
 #include <common/qt/gui/base/tree_model.h>  // for TreeModel
 
-#include "proxy/core_fwd.h"
+#include "proxy/proxy_fwd.h"
 #include "proxy/database/idatabase.h"
 
 class QModelIndex;
@@ -60,14 +60,14 @@ class ExplorerTreeModel : public common::qt::gui::TreeModel {
   virtual QVariant headerData(int section, Qt::Orientation orientation, int role) const override;
   virtual int columnCount(const QModelIndex& parent) const override;
 
-  void addCluster(core::IClusterSPtr cluster);
-  void removeCluster(core::IClusterSPtr cluster);
+  void addCluster(proxy::IClusterSPtr cluster);
+  void removeCluster(proxy::IClusterSPtr cluster);
 
-  void addServer(core::IServerSPtr server);
-  void removeServer(core::IServerSPtr server);
+  void addServer(proxy::IServerSPtr server);
+  void removeServer(proxy::IServerSPtr server);
 
-  void addSentinel(core::ISentinelSPtr sentinel);
-  void removeSentinel(core::ISentinelSPtr sentinel);
+  void addSentinel(proxy::ISentinelSPtr sentinel);
+  void removeSentinel(proxy::ISentinelSPtr sentinel);
 
   void addDatabase(core::IServer* server, core::IDataBaseInfoSPtr db);
   void removeDatabase(core::IServer* server, core::IDataBaseInfoSPtr db);
@@ -87,9 +87,9 @@ class ExplorerTreeModel : public common::qt::gui::TreeModel {
   void removeAllKeys(core::IServer* server, core::IDataBaseInfoSPtr db);
 
  private:
-  ExplorerClusterItem* findClusterItem(core::IClusterSPtr cl);
-  ExplorerSentinelItem* findSentinelItem(core::ISentinelSPtr sentinel);
-  ExplorerServerItem* findServerItem(core::IServer* server) const;
+  ExplorerClusterItem* findClusterItem(proxy::IClusterSPtr cl);
+  ExplorerSentinelItem* findSentinelItem(proxy::ISentinelSPtr sentinel);
+  ExplorerServerItem* findServerItem(proxy::IServer* server) const;
   ExplorerDatabaseItem* findDatabaseItem(ExplorerServerItem* server,
                                          core::IDataBaseInfoSPtr db) const;
   ExplorerKeyItem* findKeyItem(IExplorerTreeItem* db_or_ns, const core::NKey& key) const;

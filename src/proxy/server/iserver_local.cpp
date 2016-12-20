@@ -21,11 +21,11 @@
 #include <common/macros.h>  // for DCHECK
 
 namespace fastonosql {
-namespace core {
+namespace proxy {
 
 IServerLocal::IServerLocal(IDriver* drv) : IServer(drv) {
   DCHECK(!IsCanRemote());
 }
 
-}  // namespace core
+}  // namespace proxy
 }  // namespace fastonosql

@@ -19,9 +19,9 @@
 #include "proxy/server/iserver_base.h"
 
 namespace fastonosql {
-namespace core {
+namespace proxy {
 
 IServerBase::~IServerBase() {}
 
-}  // namespace core
+}  // namespace proxy
 }  // namespace fastonosql

@@ -20,7 +20,7 @@
 
 #include <common/net/types.h>  // for HostAndPort
 
-#include "proxy/core_fwd.h"  // for IDatabaseSPtr
+#include "proxy/proxy_fwd.h"  // for IDatabaseSPtr
 
 #include "proxy/connection_settings/iconnection_settings.h"  // for IConnectionSettingsBaseSPtr
 #include "core/connection_types.h"                          // for serverMode, serverState, etc
@@ -28,7 +28,7 @@
 #include "core/database/idatabase_info.h"                   // for IDataBaseInfoSPtr
 
 namespace fastonosql {
-namespace core {
+namespace proxy {
 namespace ssdb {
 
 class Server : public IServerRemote {
@@ -47,5 +47,5 @@ class Server : public IServerRemote {
 };
 
 }  // namespace ssdb
-}  // namespace core
+}  // namespace proxy
 }  // namespace fastonosql

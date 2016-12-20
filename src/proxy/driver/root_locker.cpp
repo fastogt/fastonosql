@@ -27,7 +27,7 @@
 #include "proxy/events/events.h"   // for CommandRootCompleatedEvent, etc
 
 namespace fastonosql {
-namespace core {
+namespace proxy {
 
 RootLocker::RootLocker(IDriver* parent, QObject* receiver, const std::string& text, bool silence)
     : FastoObject::IFastoObjectObserver(),
@@ -63,5 +63,5 @@ void RootLocker::Updated(FastoObject* item, FastoObject::value_t val) {
   emit parent_->ItemUpdated(item, val);
 }
 
-}  // namespace core
+}  // namespace proxy
 }  // namespace fastonosql

@@ -226,7 +226,7 @@ const QString trUpscaledbTextServerTemplate = QObject::tr(
 namespace fastonosql {
 namespace gui {
 
-InfoServerDialog::InfoServerDialog(core::IServerSPtr server, QWidget* parent)
+InfoServerDialog::InfoServerDialog(proxy::IServerSPtr server, QWidget* parent)
     : QDialog(parent), server_(server) {
   CHECK(server_);
 
@@ -288,20 +288,20 @@ InfoServerDialog::InfoServerDialog(core::IServerSPtr server, QWidget* parent)
   }
 #endif
 
-  VERIFY(connect(server.get(), &core::IServer::LoadServerInfoStarted, this,
+  VERIFY(connect(server.get(), &proxy::IServer::LoadServerInfoStarted, this,
                  &InfoServerDialog::startServerInfo));
-  VERIFY(connect(server.get(), &core::IServer::LoadServerInfoFinished, this,
+  VERIFY(connect(server.get(), &proxy::IServer::LoadServerInfoFinished, this,
                  &InfoServerDialog::finishServerInfo));
   retranslateUi();
 }
 
-void InfoServerDialog::startServerInfo(const core::events_info::ServerInfoRequest& req) {
+void InfoServerDialog::startServerInfo(const proxy::events_info::ServerInfoRequest& req) {
   UNUSED(req);
 
   glassWidget_->start();
 }
 
-void InfoServerDialog::finishServerInfo(const core::events_info::ServerInfoResponce& res) {
+void InfoServerDialog::finishServerInfo(const proxy::events_info::ServerInfoResponce& res) {
   glassWidget_->stop();
   common::Error er = res.errorInfo();
   if (er && er->isError()) {
@@ -375,7 +375,7 @@ void InfoServerDialog::finishServerInfo(const core::events_info::ServerInfoRespo
 
 void InfoServerDialog::showEvent(QShowEvent* e) {
   QDialog::showEvent(e);
-  core::events_info::ServerInfoRequest req(this);
+  proxy::events_info::ServerInfoRequest req(this);
   server_->LoadServerInfo(req);
 }
 

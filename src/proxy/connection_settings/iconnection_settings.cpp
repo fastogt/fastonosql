@@ -58,7 +58,7 @@
 #endif
 
 namespace fastonosql {
-namespace core {
+namespace proxy {
 
 ConnectionSettingsPath::ConnectionSettingsPath() : path_() {}
 
@@ -90,7 +90,7 @@ ConnectionSettingsPath ConnectionSettingsPath::Root() {
 }
 
 IConnectionSettings::IConnectionSettings(const connection_path_t& connectionPath,
-                                         connectionTypes type)
+                                         core::core::connectionTypes type)
     : connection_path_(connectionPath), type_(type), msinterval_(0) {}
 
 IConnectionSettings::~IConnectionSettings() {}
@@ -103,7 +103,7 @@ connection_path_t IConnectionSettings::Path() const {
   return connection_path_;
 }
 
-connectionTypes IConnectionSettings::Type() const {
+core::core::connectionTypes IConnectionSettings::Type() const {
   return type_;
 }
 
@@ -124,7 +124,7 @@ std::string IConnectionSettings::ToString() const {
 }
 
 IConnectionSettingsBase::IConnectionSettingsBase(const connection_path_t& connectionPath,
-                                                 connectionTypes type)
+                                                 core::connectionTypes type)
     : IConnectionSettings(connectionPath, type), hash_() {
   SetConnectionPathAndUpdateHash(connectionPath);
 }
@@ -198,5 +198,5 @@ std::string IConnectionSettingsBase::ToString() const {
   return res;
 }
 
-}  // namespace core
+}  // namespace proxy
 }  // namespace fastonosql

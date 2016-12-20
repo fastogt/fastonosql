@@ -20,7 +20,7 @@
 
 #include <QDialog>
 
-#include "proxy/core_fwd.h"
+#include "proxy/proxy_fwd.h"
 
 class QLineEdit;
 
@@ -32,7 +32,7 @@ class GlassWidget;
 }
 }  // lines 31-31
 namespace fastonosql {
-namespace core {
+namespace proxy {
 namespace events_info {
 struct ChangePasswordRequest;
 struct ChangePasswordResponce;
@@ -49,13 +49,13 @@ class ChangePasswordServerDialog : public QDialog {
   enum { min_width = 240, min_height = 120 };
 
   explicit ChangePasswordServerDialog(const QString& title,
-                                      core::IServerSPtr server,
+                                      proxy::IServerSPtr server,
                                       QWidget* parent = 0);
 
  private Q_SLOTS:
   void tryToCreatePassword();
-  void startChangePassword(const core::events_info::ChangePasswordRequest& req);
-  void finishChangePassword(const core::events_info::ChangePasswordResponce& res);
+  void startChangePassword(const proxy::events_info::ChangePasswordRequest& req);
+  void finishChangePassword(const proxy::events_info::ChangePasswordResponce& res);
 
  private:
   bool validateInput();
@@ -63,7 +63,7 @@ class ChangePasswordServerDialog : public QDialog {
   common::qt::gui::GlassWidget* glassWidget_;
   QLineEdit* passwordLineEdit_;
   QLineEdit* confPasswordLineEdit_;
-  const core::IServerSPtr server_;
+  const proxy::IServerSPtr server_;
 };
 
 }  // namespace gui

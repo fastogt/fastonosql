@@ -24,8 +24,8 @@
 
 #include <common/value.h>  // for ValueSPtr
 
-#include "core/connection_types.h"     // for connectionTypes
-#include "proxy/core_fwd.h"             // for IDatabaseSPtr
+#include "core/connection_types.h"     // for core::connectionTypes
+#include "proxy/proxy_fwd.h"             // for IDatabaseSPtr
 #include "core/db_key.h"               // for NKey (ptr only), etc
 #include "core/icommand_translator.h"  // for translator_t
 
@@ -37,18 +37,18 @@
 #include "global/global.h"  // for FastoObject (ptr only), etc
 
 namespace fastonosql {
-namespace core {
+namespace proxy {
 class IDriver;
 }
 }
 
 namespace fastonosql {
-namespace core {
+namespace proxy {
 
 class IServer : public IServerBase, public std::enable_shared_from_this<IServer> {
   Q_OBJECT
  public:
-  typedef IDataBaseInfoSPtr database_t;
+  typedef core::IDataBaseInfoSPtr database_t;
   typedef std::vector<database_t> databases_t;
   virtual ~IServer();
 
@@ -58,18 +58,18 @@ class IServer : public IServerBase, public std::enable_shared_from_this<IServer>
   bool IsCanRemote() const;
   bool IsSupportTTLKeys() const;
 
-  translator_t Translator() const;
+  core::translator_t Translator() const;
 
-  connectionTypes Type() const;
+  core::connectionTypes Type() const;
   virtual std::string Name() const override;
 
   database_t CurrentDatabaseInfo() const;
-  IServerInfoSPtr CurrentServerInfo() const;
+  core::IServerInfoSPtr CurrentServerInfo() const;
 
   std::string Delimiter() const;
   std::string NsSeparator() const;
-  IDatabaseSPtr CreateDatabaseByInfo(IDataBaseInfoSPtr inf);
-  database_t FindDatabase(IDataBaseInfoSPtr inf) const;
+  IDatabaseSPtr CreateDatabaseByInfo(core::IDataBaseInfoSPtr inf);
+  database_t FindDatabase(core::IDataBaseInfoSPtr inf) const;
 
  Q_SIGNALS:  // only direct connections
   void ConnectStarted(const events_info::ConnectInfoRequest& req);
@@ -193,7 +193,7 @@ class IServer : public IServerBase, public std::enable_shared_from_this<IServer>
   virtual void customEvent(QEvent* event) override;
   virtual void timerEvent(QTimerEvent* event) override;
 
-  virtual IDatabaseSPtr CreateDatabase(IDataBaseInfoSPtr info) = 0;
+  virtual IDatabaseSPtr CreateDatabase(core::IDataBaseInfoSPtr info) = 0;
   void Notify(QEvent* ev);
 
   // handle server events
@@ -231,10 +231,10 @@ class IServer : public IServerBase, public std::enable_shared_from_this<IServer>
   void KeyTTLLoad(core::NKey key, core::ttl_t ttl);
 
  private:
-  IServerInfoSPtr server_info_;
+  core::IServerInfoSPtr server_info_;
   database_t current_database_info_;
 
-  void HandleCheckDBKeys(core::IDataBaseInfoSPtr db, ttl_t expired_time);
+  void HandleCheckDBKeys(core::IDataBaseInfoSPtr db, core::ttl_t expired_time);
 
   void HandleEnterModeEvent(events::EnterModeEvent* ev);
   void HandleLeaveModeEvent(events::LeaveModeEvent* ev);
@@ -248,5 +248,5 @@ class IServer : public IServerBase, public std::enable_shared_from_this<IServer>
   int timer_check_key_exists_id_;
 };
 
-}  // namespace core
+}  // namespace proxy
 }  // namespace fastonosql

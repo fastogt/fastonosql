@@ -26,7 +26,7 @@
 #include <common/smart_ptr.h>  // for make_shared
 #include <common/value.h>      // for ErrorValue, etc
 
-#include "core/connection_types.h"  // for connectionTypes, etc
+#include "core/connection_types.h"  // for core::connectionTypes, etc
 #include "proxy/cluster/icluster.h"
 #include "proxy/sentinel/isentinel.h"  // for Sentinel
 
@@ -81,7 +81,7 @@
 #endif
 
 namespace fastonosql {
-namespace core {
+namespace proxy {
 
 ServersManager::ServersManager() {}
 
@@ -91,7 +91,7 @@ ServersManager::server_t ServersManager::CreateServer(IConnectionSettingsBaseSPt
     return server_t();
   }
 
-  connectionTypes conT = settings->Type();
+  core::connectionTypes conT = settings->Type();
   server_t server;
 #ifdef BUILD_WITH_REDIS
   if (conT == REDIS) {
@@ -145,7 +145,7 @@ ServersManager::sentinel_t ServersManager::CreateSentinel(ISentinelSettingsBaseS
     return sentinel_t();
   }
 
-  connectionTypes conT = settings->Type();
+  core::connectionTypes conT = settings->Type();
 #ifdef BUILD_WITH_REDIS
   if (conT == REDIS) {
     sentinel_t sent = common::make_shared<redis::Sentinel>(settings->Path().ToString());
@@ -176,7 +176,7 @@ ServersManager::cluster_t ServersManager::CreateCluster(IClusterSettingsBaseSPtr
     return cluster_t();
   }
 
-  connectionTypes conT = settings->Type();
+  core::connectionTypes conT = settings->Type();
 #ifdef BUILD_WITH_REDIS
   if (conT == REDIS) {
     cluster_t cl = common::make_shared<redis::Cluster>(settings->Path().ToString());
@@ -199,7 +199,7 @@ common::Error ServersManager::TestConnection(IConnectionSettingsBaseSPtr connect
     return common::make_error_value("Invalid input argument(s)", common::ErrorValue::E_ERROR);
   }
 
-  connectionTypes type = connection->Type();
+  core::connectionTypes type = connection->Type();
 #ifdef BUILD_WITH_REDIS
   if (type == REDIS) {
     redis::ConnectionSettings* settings = static_cast<redis::ConnectionSettings*>(connection.get());
@@ -266,7 +266,7 @@ common::Error ServersManager::DiscoveryClusterConnection(
     return common::make_error_value("Invalid input argument(s)", common::ErrorValue::E_ERROR);
   }
 
-  connectionTypes type = connection->Type();
+  core::connectionTypes type = connection->Type();
 #ifdef BUILD_WITH_REDIS
   if (type == REDIS) {
     redis::ConnectionSettings* settings = static_cast<redis::ConnectionSettings*>(connection.get());
@@ -321,7 +321,7 @@ common::Error ServersManager::DiscoverySentinelConnection(
     return common::make_error_value("Invalid input argument(s)", common::ErrorValue::E_ERROR);
   }
 
-  connectionTypes type = connection->Type();
+  core::connectionTypes type = connection->Type();
 #ifdef BUILD_WITH_REDIS
   if (type == REDIS) {
     redis::ConnectionSettings* settings = static_cast<redis::ConnectionSettings*>(connection.get());
@@ -394,5 +394,5 @@ void ServersManager::CloseSentinel(sentinel_t sentinel) {
   }
 }
 
-}  // namespace core
+}  // namespace proxy
 }  // namespace fastonosql

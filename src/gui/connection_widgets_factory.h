@@ -29,7 +29,7 @@ class ConnectionWidgetsFactory : public common::patterns::LazySingleton<Connecti
  public:
   friend class common::patterns::LazySingleton<ConnectionWidgetsFactory>;
 
-  ConnectionBaseWidget* createWidget(core::IConnectionSettingsBase* connection,
+  ConnectionBaseWidget* createWidget(proxy::IConnectionSettingsBase* connection,
                                      QWidget* parent = 0);
 };
 

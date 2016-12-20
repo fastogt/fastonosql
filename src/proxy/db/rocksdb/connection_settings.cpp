@@ -25,7 +25,7 @@
 #include "core/db/rocksdb/config.h"  // for Config
 
 namespace fastonosql {
-namespace core {
+namespace proxy {
 namespace rocksdb {
 
 ConnectionSettings::ConnectionSettings(const connection_path_t& connectionName)
@@ -77,5 +77,5 @@ ConnectionSettings* ConnectionSettings::Clone() const {
 }
 
 }  // namespace rocksdb
-}  // namespace core
+}  // namespace proxy
 }  // namespace fastonosql

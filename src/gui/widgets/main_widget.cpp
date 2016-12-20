@@ -60,7 +60,7 @@ QueryWidget* MainWidget::widget(int index) const {
   return qobject_cast<QueryWidget*>(QTabWidget::widget(index));
 }
 
-void MainWidget::openConsole(core::IServerSPtr server, const QString& text) {
+void MainWidget::openConsole(proxy::IServerSPtr server, const QString& text) {
   if (!server) {
     DNOTREACHED();
     return;
@@ -157,5 +157,6 @@ void MainWidget::openNewTab(QueryWidget* src, const QString& title, const QStrin
   QueryWidget* newWid = src->clone(text);
   addWidgetToTab(newWid, title);
 }
+
 }  // namespace gui
 }  // namespace fastonosql

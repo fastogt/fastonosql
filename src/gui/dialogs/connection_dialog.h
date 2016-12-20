@@ -37,10 +37,10 @@ class ConnectionDialog : public QDialog {
   Q_OBJECT
  public:
   ConnectionDialog(core::connectionTypes type, const QString& connectionName, QWidget* parent = 0);
-  ConnectionDialog(core::IConnectionSettingsBase* connection, QWidget* parent = 0);
+  ConnectionDialog(proxy::IConnectionSettingsBase* connection, QWidget* parent = 0);
 
   void setFolderEnabled(bool val);
-  core::IConnectionSettingsBaseSPtr connection() const;
+  proxy::IConnectionSettingsBaseSPtr connection() const;
 
  public Q_SLOTS:
   virtual void accept() override;
@@ -52,12 +52,12 @@ class ConnectionDialog : public QDialog {
   virtual void changeEvent(QEvent* ev) override;
 
  private:
-  void init(core::IConnectionSettingsBase* connection);
+  void init(proxy::IConnectionSettingsBase* connection);
 
   void retranslateUi();
   bool validateAndApply();
 
-  core::IConnectionSettingsBaseSPtr connection_;
+  proxy::IConnectionSettingsBaseSPtr connection_;
   ConnectionBaseWidget* connection_widget_;
 
   QPushButton* testButton_;

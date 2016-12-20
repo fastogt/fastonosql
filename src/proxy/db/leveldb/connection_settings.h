@@ -25,7 +25,7 @@
 #include "core/db/leveldb/config.h"
 
 namespace fastonosql {
-namespace core {
+namespace proxy {
 namespace leveldb {
 
 class ConnectionSettings : public IConnectionSettingsLocal {
@@ -54,5 +54,5 @@ class ConnectionSettings : public IConnectionSettingsLocal {
 };
 
 }  // namespace leveldb
-}  // namespace core
+}  // namespace proxy
 }  // namespace fastonosql

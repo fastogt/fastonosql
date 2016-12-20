@@ -21,11 +21,11 @@
 #include <string>  // for string
 #include <vector>  // for vector
 
-#include "proxy/core_fwd.h"              // for IServerSPtr
+#include "proxy/proxy_fwd.h"              // for IServerSPtr
 #include "proxy/server/iserver_base.h"  // for IServerBase
 
 namespace fastonosql {
-namespace core {
+namespace proxy {
 
 struct Sentinel {
   typedef std::vector<IServerSPtr> nodes_t;
@@ -52,5 +52,5 @@ class ISentinel : public IServerBase {
   sentinels_t sentinels_;
 };
 
-}  // namespace core
+}  // namespace proxy
 }  // namespace fastonosql

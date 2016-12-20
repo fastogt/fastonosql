@@ -20,7 +20,7 @@
 
 #include <QDialog>
 
-#include "proxy/core_fwd.h"
+#include "proxy/proxy_fwd.h"
 
 class QTextEdit;
 
@@ -32,7 +32,7 @@ class GlassWidget;
 }
 }  // lines 59-59
 namespace fastonosql {
-namespace core {
+namespace proxy {
 namespace events_info {
 class ServerInfoResponce;
 struct ServerInfoRequest;
@@ -103,12 +103,12 @@ namespace gui {
 class InfoServerDialog : public QDialog {
   Q_OBJECT
  public:
-  explicit InfoServerDialog(core::IServerSPtr server, QWidget* parent = 0);
+  explicit InfoServerDialog(proxy::IServerSPtr server, QWidget* parent = 0);
   enum { min_width = 420, min_height = 560 };
 
  private Q_SLOTS:
-  void startServerInfo(const core::events_info::ServerInfoRequest& req);
-  void finishServerInfo(const core::events_info::ServerInfoResponce& res);
+  void startServerInfo(const proxy::events_info::ServerInfoRequest& req);
+  void finishServerInfo(const proxy::events_info::ServerInfoResponce& res);
 
  protected:
   virtual void changeEvent(QEvent* e) override;
@@ -142,7 +142,7 @@ class InfoServerDialog : public QDialog {
 #endif
   QTextEdit* serverTextInfo_;
   common::qt::gui::GlassWidget* glassWidget_;
-  const core::IServerSPtr server_;
+  const proxy::IServerSPtr server_;
 };
 
 }  // namespace gui

@@ -28,7 +28,7 @@
 #include "proxy/connection_settings_factory.h"
 
 namespace fastonosql {
-namespace core {
+namespace proxy {
 
 SentinelSettings::SentinelSettings() : sentinel(), sentinel_nodes() {}
 
@@ -106,7 +106,7 @@ bool SentinelSettingsfromString(const std::string& text, SentinelSettings* sent)
 //
 
 ISentinelSettingsBase::ISentinelSettingsBase(const connection_path_t& connectionName,
-                                             connectionTypes type)
+                                             core::connectionTypes type)
     : IConnectionSettings(connectionName, type), sentinel_nodes_() {}
 
 ISentinelSettingsBase::sentinel_connections_t ISentinelSettingsBase::Sentinels() const {
@@ -129,5 +129,5 @@ std::string ISentinelSettingsBase::ToString() const {
   return res;
 }
 
-}  // namespace core
+}  // namespace proxy
 }  // namespace fastonosql

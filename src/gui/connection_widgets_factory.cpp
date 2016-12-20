@@ -93,7 +93,7 @@ ConnectionBaseWidget* createWidgetImpl(core::connectionTypes type, QWidget* pare
 }  // namespace
 
 ConnectionBaseWidget* ConnectionWidgetsFactory::createWidget(
-    core::IConnectionSettingsBase* connection,
+    proxy::IConnectionSettingsBase* connection,
     QWidget* parent) {
   if (!connection) {
     NOTREACHED();

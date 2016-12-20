@@ -21,10 +21,10 @@
 #include <common/macros.h>  // for CHECK
 
 namespace fastonosql {
-namespace core {
+namespace proxy {
 
 IConnectionSettingsRemote::IConnectionSettingsRemote(const connection_path_t& connectionPath,
-                                                     connectionTypes type)
+                                                     core::connectionTypes type)
     : IConnectionSettingsBase(connectionPath, type) {
   CHECK(IsRemoteType(type));
 }
@@ -34,5 +34,5 @@ std::string IConnectionSettingsRemote::FullAddress() const {
   return common::ConvertToString(host);
 }
 
-}  // namespace core
+}  // namespace proxy
 }  // namespace fastonosql

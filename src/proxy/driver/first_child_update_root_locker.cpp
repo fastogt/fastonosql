@@ -23,7 +23,7 @@
 #include <common/value.h>          // for Value, etc
 
 namespace fastonosql {
-namespace core {
+namespace proxy {
 
 FirstChildUpdateRootLocker::FirstChildUpdateRootLocker(IDriver* parent,
                                                        QObject* receiver,
@@ -91,5 +91,5 @@ FastoObjectIPtr FirstChildUpdateRootLocker::FindWatchedCmd(FastoObjectCommand* c
   return FastoObjectIPtr();
 }
 
-}  // namespace core
+}  // namespace proxy
 }  // namespace fastonosql

@@ -21,10 +21,10 @@
 #include <string>  // for string
 
 #include "proxy/connection_settings/iconnection_settings.h"
-#include "core/connection_types.h"  // for connectionTypes
+#include "core/connection_types.h"  // for core::connectionTypes
 
 namespace fastonosql {
-namespace core {
+namespace proxy {
 
 class IConnectionSettingsLocal : public IConnectionSettingsBase {
  public:
@@ -45,8 +45,8 @@ class IConnectionSettingsLocal : public IConnectionSettingsBase {
   virtual IConnectionSettingsBase* Clone() const override = 0;
 
  protected:
-  IConnectionSettingsLocal(const connection_path_t& connectionPath, connectionTypes type);
+  IConnectionSettingsLocal(const connection_path_t& connectionPath, core::connectionTypes type);
 };
 
-}  // namespace core
+}  // namespace proxy
 }  // namespace fastonosql

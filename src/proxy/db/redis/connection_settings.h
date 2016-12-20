@@ -27,15 +27,15 @@
 #include "core/db/redis/config.h"  // for Config
 
 namespace fastonosql {
-namespace core {
+namespace proxy {
 namespace redis {
 
 class ConnectionSettings : public IConnectionSettingsRemoteSSH {
  public:
   explicit ConnectionSettings(const connection_path_t& connectionName);
 
-  Config Info() const;
-  void SetInfo(const Config& info);
+  core::redis::Config Info() const;
+  void SetInfo(const core::redis::Config& info);
 
   virtual std::string Delimiter() const override;
   virtual void SetDelimiter(const std::string& delimiter) override;
@@ -52,9 +52,9 @@ class ConnectionSettings : public IConnectionSettingsRemoteSSH {
   virtual ConnectionSettings* Clone() const override;
 
  private:
-  Config info_;
+  core::redis::Config info_;
 };
 
 }  // namespace redis
-}  // namespace core
+}  // namespace proxy
 }  // namespace fastonosql

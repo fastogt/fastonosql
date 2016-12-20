@@ -25,15 +25,15 @@
 #include "core/db/lmdb/config.h"
 
 namespace fastonosql {
-namespace core {
+namespace proxy {
 namespace lmdb {
 
 class ConnectionSettings : public IConnectionSettingsLocal {
  public:
   explicit ConnectionSettings(const connection_path_t& connectionName);
 
-  Config Info() const;
-  void SetInfo(const Config& info);
+  core::lmdb::Config Info() const;
+  void SetInfo(const core::lmdb::Config& info);
 
   virtual std::string Delimiter() const override;
   virtual void SetDelimiter(const std::string& delimiter) override;
@@ -50,9 +50,9 @@ class ConnectionSettings : public IConnectionSettingsLocal {
   virtual ConnectionSettings* Clone() const override;
 
  private:
-  Config info_;
+  core::lmdb::Config info_;
 };
 
 }  // namespace lmdb
-}  // namespace core
+}  // namespace proxy
 }  // namespace fastonosql

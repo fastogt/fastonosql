@@ -23,10 +23,10 @@
 #include <vector>  // for vector
 
 #include "proxy/connection_settings/iconnection_settings.h"  // for IConnectionSettingsBaseSPtr, etc
-#include "core/connection_types.h"                          // for connectionTypes
+#include "core/connection_types.h"                          // for core::connectionTypes
 
 namespace fastonosql {
-namespace core {
+namespace proxy {
 
 struct SentinelSettings {
   typedef std::vector<IConnectionSettingsBaseSPtr> sentinel_nodes_t;
@@ -51,7 +51,7 @@ class ISentinelSettingsBase : public IConnectionSettings {
   virtual ISentinelSettingsBase* Clone() const override = 0;
 
  protected:
-  ISentinelSettingsBase(const connection_path_t& connectionName, connectionTypes type);
+  ISentinelSettingsBase(const connection_path_t& connectionName, core::connectionTypes type);
 
  private:
   sentinel_connections_t sentinel_nodes_;
@@ -59,5 +59,5 @@ class ISentinelSettingsBase : public IConnectionSettings {
 
 typedef common::shared_ptr<ISentinelSettingsBase> ISentinelSettingsBaseSPtr;
 
-}  // namespace core
+}  // namespace proxy
 }  // namespace fastonosql

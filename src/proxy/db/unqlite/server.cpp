@@ -22,7 +22,7 @@
 #include "proxy/db/unqlite/driver.h"
 
 namespace fastonosql {
-namespace core {
+namespace proxy {
 namespace unqlite {
 
 Server::Server(IConnectionSettingsBaseSPtr settings) : IServerLocal(new Driver(settings)) {}
@@ -37,5 +37,5 @@ IDatabaseSPtr Server::CreateDatabase(IDataBaseInfoSPtr info) {
 }
 
 }  // namespace unqlite
-}  // namespace core
+}  // namespace proxy
 }  // namespace fastonosql

@@ -32,7 +32,7 @@
 namespace fastonosql {
 namespace gui {
 
-TestConnection::TestConnection(core::IConnectionSettingsBaseSPtr conn, QObject* parent)
+TestConnection::TestConnection(proxy::IConnectionSettingsBaseSPtr conn, QObject* parent)
     : QObject(parent), connection_(conn), start_time_(common::time::current_mstime()) {}
 
 void TestConnection::routine() {
@@ -42,7 +42,7 @@ void TestConnection::routine() {
     return;
   }
 
-  common::Error er = core::ServersManager::instance().TestConnection(connection_);
+  common::Error er = proxy::ServersManager::instance().TestConnection(connection_);
 
   if (er && er->isError()) {
     emit connectionResult(false, common::time::current_mstime() - start_time_,

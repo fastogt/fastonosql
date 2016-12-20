@@ -188,7 +188,7 @@ SET(HEADERS_PROXY
   ${HEADERS_PROXY_COMMAND}
 
   proxy/servers_manager.h
-  proxy/core_fwd.h
+  proxy/proxy_fwd.h
   proxy/settings_manager.h
   proxy/cluster_connection_settings_factory.h
   proxy/sentinel_connection_settings_factory.h

@@ -21,12 +21,12 @@
 #include <stddef.h>  // for size_t
 #include <string>    // for string
 
-#include "proxy/core_fwd.h"            // for IServerSPtr
+#include "proxy/proxy_fwd.h"            // for IServerSPtr
 #include "proxy/database/idatabase.h"  // for IDatabase
 #include "core/database/idatabase_info.h"
 
 namespace fastonosql {
-namespace core {
+namespace proxy {
 namespace unqlite {
 
 class Database : public IDatabase {
@@ -35,5 +35,5 @@ class Database : public IDatabase {
 };
 
 }  // namespace unqlite
-}  // namespace core
+}  // namespace proxy
 }  // namespace fastonosql

@@ -21,7 +21,7 @@
 #include <QMetaType>  // for qRegisterMetaType
 
 namespace fastonosql {
-namespace core {
+namespace proxy {
 
 CommandLogger::CommandLogger() {
   qRegisterMetaType<fastonosql::FastoObjectCommandIPtr>("FastoObjectCommandIPtr");
@@ -31,5 +31,5 @@ void CommandLogger::Print(FastoObjectCommandIPtr command) {
   emit Printed(command);
 }
 
-}  // namespace core
+}  // namespace proxy
 }  // namespace fastonosql

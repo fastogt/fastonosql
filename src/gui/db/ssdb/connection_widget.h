@@ -31,12 +31,12 @@ class ConnectionWidget : public ConnectionRemoteWidget {
  public:
   explicit ConnectionWidget(QWidget* parent = 0);
 
-  virtual void syncControls(core::IConnectionSettingsBase* connection) override;
+  virtual void syncControls(proxy::IConnectionSettingsBase* connection) override;
   virtual void retranslateUi() override;
 
  private:
-  virtual core::IConnectionSettingsRemote* createConnectionRemoteImpl(
-      const core::connection_path_t& path) const override;
+  virtual proxy::IConnectionSettingsRemote* createConnectionRemoteImpl(
+      const proxy::connection_path_t& path) const override;
 };
 
 }  // namespace ssdb

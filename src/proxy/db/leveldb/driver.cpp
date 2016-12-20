@@ -48,7 +48,7 @@
 #define LEVELDB_INFO_REQUEST "INFO"
 
 namespace fastonosql {
-namespace core {
+namespace proxy {
 namespace leveldb {
 
 Driver::Driver(IConnectionSettingsBaseSPtr settings)
@@ -224,5 +224,5 @@ IServerInfoSPtr Driver::MakeServerInfoFromString(const std::string& val) {
 }
 
 }  // namespace leveldb
-}  // namespace core
+}  // namespace proxy
 }  // namespace fastonosql

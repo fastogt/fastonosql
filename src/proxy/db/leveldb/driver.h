@@ -28,7 +28,7 @@
 #include "proxy/driver/idriver_local.h"                      // for IDriverLocal
 
 namespace fastonosql {
-namespace core {
+namespace proxy {
 namespace leveldb {
 
 class DBConnection;
@@ -77,5 +77,5 @@ class Driver : public IDriverLocal {
 };
 
 }  // namespace leveldb
-}  // namespace core
+}  // namespace proxy
 }  // namespace fastonosql

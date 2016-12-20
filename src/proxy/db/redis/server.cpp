@@ -34,7 +34,7 @@
 #include "core/db/redis/server_info.h"  // for ServerInfo, etc
 
 namespace fastonosql {
-namespace core {
+namespace proxy {
 namespace redis {
 
 Server::Server(IConnectionSettingsBaseSPtr settings)
@@ -94,5 +94,5 @@ void Server::HandleDiscoveryInfoResponceEvent(events::DiscoveryInfoResponceEvent
 }
 
 }  // namespace redis
-}  // namespace core
+}  // namespace proxy
 }  // namespace fastonosql

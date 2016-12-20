@@ -29,7 +29,7 @@
 #include "proxy/server/iserver_remote.h"  // for IServerRemote
 
 namespace fastonosql {
-namespace core {
+namespace proxy {
 
 ICluster::ICluster(const std::string& name) : name_(name) {}
 
@@ -57,5 +57,5 @@ ICluster::node_t ICluster::Root() const {
   return node_t();
 }
 
-}  // namespace core
+}  // namespace proxy
 }  // namespace fastonosql

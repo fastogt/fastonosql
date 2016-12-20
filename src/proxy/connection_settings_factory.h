@@ -25,20 +25,20 @@
 #include "proxy/connection_settings/iconnection_settings_ssh.h"
 
 namespace fastonosql {
-namespace core {
+namespace proxy {
 
 class ConnectionSettingsFactory
     : public common::patterns::LazySingleton<ConnectionSettingsFactory> {
  public:
   friend class common::patterns::LazySingleton<ConnectionSettingsFactory>;
 
-  IConnectionSettingsBase* CreateFromType(connectionTypes type, const connection_path_t& conName);
+  IConnectionSettingsBase* CreateFromType(core::connectionTypes type, const connection_path_t& conName);
   IConnectionSettingsBase* CreateFromString(const std::string& val);
 
-  IConnectionSettingsRemote* CreateFromType(connectionTypes type,
+  IConnectionSettingsRemote* CreateFromType(core::connectionTypes type,
                                             const connection_path_t& conName,
                                             const common::net::HostAndPort& host);
 };
 
-}  // namespace core
+}  // namespace proxy
 }  // namespace fastonosql

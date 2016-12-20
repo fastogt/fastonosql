@@ -33,15 +33,15 @@ class ConnectionRemoteWidget : public ConnectionBaseWidget {
  public:
   explicit ConnectionRemoteWidget(QWidget* parent = 0);
 
-  virtual void syncControls(core::IConnectionSettingsBase* connection) override;
+  virtual void syncControls(proxy::IConnectionSettingsBase* connection) override;
   virtual void retranslateUi() override;
   virtual bool validated() const override;
 
  protected:
-  virtual core::IConnectionSettingsBase* createConnectionImpl(
-      const core::connection_path_t& path) const override final;
-  virtual core::IConnectionSettingsRemote* createConnectionRemoteImpl(
-      const core::connection_path_t& path) const = 0;
+  virtual proxy::IConnectionSettingsBase* createConnectionImpl(
+      const proxy::connection_path_t& path) const override final;
+  virtual proxy::IConnectionSettingsRemote* createConnectionRemoteImpl(
+      const proxy::connection_path_t& path) const = 0;
 
  private:
   HostPortWidget* hostWidget_;

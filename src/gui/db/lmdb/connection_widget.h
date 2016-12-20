@@ -31,12 +31,12 @@ class ConnectionWidget : public ConnectionLocalWidget {
  public:
   explicit ConnectionWidget(QWidget* parent = 0);
 
-  virtual void syncControls(core::IConnectionSettingsBase* connection) override;
+  virtual void syncControls(proxy::IConnectionSettingsBase* connection) override;
   virtual void retranslateUi() override;
 
  private:
-  virtual core::IConnectionSettingsLocal* createConnectionLocalImpl(
-      const core::connection_path_t& path) const override;
+  virtual proxy::IConnectionSettingsLocal* createConnectionLocalImpl(
+      const proxy::connection_path_t& path) const override;
 
   QCheckBox* readOnlyDB_;
 };

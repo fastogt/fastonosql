@@ -51,7 +51,7 @@
 #define UNQLITE_INFO_REQUEST "INFO"
 
 namespace fastonosql {
-namespace core {
+namespace proxy {
 namespace unqlite {
 
 Driver::Driver(IConnectionSettingsBaseSPtr settings)
@@ -227,5 +227,5 @@ IServerInfoSPtr Driver::MakeServerInfoFromString(const std::string& val) {
 }
 
 }  // namespace unqlite
-}  // namespace core
+}  // namespace proxy
 }  // namespace fastonosql

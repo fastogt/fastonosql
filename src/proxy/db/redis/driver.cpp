@@ -87,7 +87,7 @@ common::Value::Type convertFromStringRType(const std::string& type) {
 }  // namespace
 
 namespace fastonosql {
-namespace core {
+namespace proxy {
 namespace redis {
 
 Driver::Driver(IConnectionSettingsBaseSPtr settings)
@@ -656,5 +656,5 @@ IServerInfoSPtr Driver::MakeServerInfoFromString(const std::string& val) {
 }
 
 }  // namespace redis
-}  // namespace core
+}  // namespace proxy
 }  // namespace fastonosql

@@ -28,11 +28,11 @@
 #include "proxy/connection_settings/icluster_connection_settings.h"
 #include "proxy/connection_settings/isentinel_connection_settings.h"
 
-#include "proxy/core_fwd.h"  // for IClusterSPtr, ISentinelSPtr, etc
+#include "proxy/proxy_fwd.h"  // for IClusterSPtr, ISentinelSPtr, etc
 #include "core/server/iserver_info.h"
 
 namespace fastonosql {
-namespace core {
+namespace proxy {
 
 class ServersManager : public common::patterns::LazySingleton<ServersManager> {
   friend class common::patterns::LazySingleton<ServersManager>;
@@ -49,10 +49,10 @@ class ServersManager : public common::patterns::LazySingleton<ServersManager> {
 
   common::Error TestConnection(IConnectionSettingsBaseSPtr connection) WARN_UNUSED_RESULT;
   common::Error DiscoveryClusterConnection(IConnectionSettingsBaseSPtr connection,
-                                           std::vector<ServerDiscoveryClusterInfoSPtr>* inf)
+                                           std::vector<core::ServerDiscoveryClusterInfoSPtr>* inf)
       WARN_UNUSED_RESULT;
   common::Error DiscoverySentinelConnection(IConnectionSettingsBaseSPtr connection,
-                                            std::vector<ServerDiscoverySentinelInfoSPtr>* inf)
+                                            std::vector<core::ServerDiscoverySentinelInfoSPtr>* inf)
       WARN_UNUSED_RESULT;
 
   void Clear();
@@ -67,5 +67,5 @@ class ServersManager : public common::patterns::LazySingleton<ServersManager> {
   servers_t servers_;
 };
 
-}  // namespace core
+}  // namespace proxy
 }  // namespace fastonosql

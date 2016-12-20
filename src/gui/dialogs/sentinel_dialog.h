@@ -43,11 +43,11 @@ namespace gui {
 class SentinelDialog : public QDialog {
   Q_OBJECT
  public:
-  typedef std::vector<core::IConnectionSettingsBaseSPtr> sentinel_connection_t;
+  typedef std::vector<proxy::IConnectionSettingsBaseSPtr> sentinel_connection_t;
   explicit SentinelDialog(
       QWidget* parent,
-      core::ISentinelSettingsBase* connection = nullptr);  // get ownerships connection
-  core::ISentinelSettingsBaseSPtr connection() const;
+      proxy::ISentinelSettingsBase* connection = nullptr);  // get ownerships connection
+  proxy::ISentinelSettingsBaseSPtr connection() const;
 
  public Q_SLOTS:
   virtual void accept() override;
@@ -69,9 +69,9 @@ class SentinelDialog : public QDialog {
   void retranslateUi();
   bool validateAndApply();  // always return true and init
                             // sentinel_connection_
-  void addSentinel(core::SentinelSettings sent);
+  void addSentinel(proxy::SentinelSettings sent);
 
-  core::ISentinelSettingsBaseSPtr sentinel_connection_;
+  proxy::ISentinelSettingsBaseSPtr sentinel_connection_;
   QLineEdit* connectionName_;
   QLabel* folderLabel_;
   QLineEdit* connectionFolder_;

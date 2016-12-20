@@ -23,11 +23,11 @@
 #include <common/net/types.h>  // for HostAndPort
 
 #include "core/ssh_info.h"
-#include "core/connection_types.h"  // for connectionTypes
+#include "core/connection_types.h"  // for core::connectionTypes
 #include "proxy/connection_settings/iconnection_settings_remote.h"
 
 namespace fastonosql {
-namespace core {
+namespace proxy {
 
 class IConnectionSettingsRemoteSSH : public IConnectionSettingsRemote {
  public:
@@ -43,17 +43,17 @@ class IConnectionSettingsRemoteSSH : public IConnectionSettingsRemote {
   virtual std::string CommandLine() const override = 0;
   virtual void SetCommandLine(const std::string& line) override = 0;
 
-  struct SSHInfo SSHInfo() const;
-  void SetSSHInfo(const struct SSHInfo& info);
+  struct core::SSHInfo SSHInfo() const;
+  void SetSSHInfo(const struct core::SSHInfo& info);
 
   virtual std::string ToString() const override;
 
  protected:
-  IConnectionSettingsRemoteSSH(const connection_path_t& connectionName, connectionTypes type);
+  IConnectionSettingsRemoteSSH(const connection_path_t& connectionName, core::connectionTypes type);
 
  private:
-  struct SSHInfo ssh_info_;
+  struct core::SSHInfo ssh_info_;
 };
 
-}  // namespace core
+}  // namespace proxy
 }  // namespace fastonosql

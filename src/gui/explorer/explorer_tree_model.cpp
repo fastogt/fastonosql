@@ -85,11 +85,11 @@ QVariant ExplorerTreeModel::data(const QModelIndex& index, int role) const {
   if (role == Qt::ToolTipRole) {
     if (type == IExplorerTreeItem::eServer) {
       ExplorerServerItem* server_node = static_cast<ExplorerServerItem*>(node);
-      core::IServerSPtr server = server_node->server();
+      proxy::IServerSPtr server = server_node->server();
       QString sname = common::ConvertFromString<QString>(server->Name());
       bool is_can_remote = server->IsCanRemote();
       if (is_can_remote) {
-        core::IServerRemote* rserver = dynamic_cast<core::IServerRemote*>(server.get());  // +
+        proxy::IServerRemote* rserver = dynamic_cast<proxy::IServerRemote*>(server.get());  // +
         CHECK(rserver);
         QString stype =
             common::ConvertFromString<QString>(common::ConvertToString(rserver->Role()));
@@ -99,7 +99,7 @@ QVariant ExplorerTreeModel::data(const QModelIndex& index, int role) const {
             common::ConvertFromString<QString>(common::ConvertToString(rserver->Host()));
         return trRemoteServerToolTipTemplate_4S.arg(sname, stype, mtype, shost);
       } else {
-        core::IServerLocal* lserver = dynamic_cast<core::IServerLocal*>(server.get());  // +
+        proxy::IServerLocal* lserver = dynamic_cast<proxy::IServerLocal*>(server.get());  // +
         CHECK(lserver);
         QString spath = common::ConvertFromString<QString>(lserver->Path());
         return trLocalServerToolTipTemplate_2S.arg(sname, spath);
@@ -124,7 +124,7 @@ QVariant ExplorerTreeModel::data(const QModelIndex& index, int role) const {
       return GuiFactory::instance().sentinelIcon();
     } else if (type == IExplorerTreeItem::eServer) {
       ExplorerServerItem* server_node = static_cast<ExplorerServerItem*>(node);
-      core::IServerSPtr server = server_node->server();
+      proxy::IServerSPtr server = server_node->server();
       return GuiFactory::instance().icon(server->Type());
     } else if (type == IExplorerTreeItem::eKey) {
       ExplorerKeyItem* key = static_cast<ExplorerKeyItem*>(node);
@@ -202,7 +202,7 @@ int ExplorerTreeModel::columnCount(const QModelIndex& parent) const {
   return ExplorerServerItem::eCountColumns;
 }
 
-void ExplorerTreeModel::addCluster(core::IClusterSPtr cluster) {
+void ExplorerTreeModel::addCluster(proxy::IClusterSPtr cluster) {
   ExplorerClusterItem* cl = findClusterItem(cluster);
   if (!cl) {
     common::qt::gui::TreeItem* parent = root_;
@@ -213,14 +213,14 @@ void ExplorerTreeModel::addCluster(core::IClusterSPtr cluster) {
   }
 }
 
-void ExplorerTreeModel::removeCluster(core::IClusterSPtr cluster) {
+void ExplorerTreeModel::removeCluster(proxy::IClusterSPtr cluster) {
   ExplorerClusterItem* serverItem = findClusterItem(cluster);
   if (serverItem) {
     removeItem(QModelIndex(), serverItem);
   }
 }
 
-void ExplorerTreeModel::addServer(core::IServerSPtr server) {
+void ExplorerTreeModel::addServer(proxy::IServerSPtr server) {
   if (!server) {
     return;
   }
@@ -235,14 +235,14 @@ void ExplorerTreeModel::addServer(core::IServerSPtr server) {
   }
 }
 
-void ExplorerTreeModel::removeServer(core::IServerSPtr server) {
+void ExplorerTreeModel::removeServer(proxy::IServerSPtr server) {
   ExplorerServerItem* serverItem = findServerItem(server.get());
   if (serverItem) {
     removeItem(QModelIndex(), serverItem);
   }
 }
 
-void ExplorerTreeModel::addSentinel(core::ISentinelSPtr sentinel) {
+void ExplorerTreeModel::addSentinel(proxy::ISentinelSPtr sentinel) {
   ExplorerSentinelItem* cl = findSentinelItem(sentinel);
   if (!cl) {
     common::qt::gui::TreeItem* parent = root_;
@@ -470,7 +470,7 @@ ExplorerSentinelItem* ExplorerTreeModel::findSentinelItem(core::ISentinelSPtr se
   return nullptr;
 }
 
-ExplorerServerItem* ExplorerTreeModel::findServerItem(core::IServer* server) const {
+ExplorerServerItem* ExplorerTreeModel::findServerItem(proxy::IServer* server) const {
   return static_cast<ExplorerServerItem*>(
       common::qt::gui::findItemRecursive(root_, [server](common::qt::gui::TreeItem* item) -> bool {
         ExplorerServerItem* server_item = dynamic_cast<ExplorerServerItem*>(item);  // +

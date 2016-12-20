@@ -20,7 +20,7 @@
 
 #include <QMainWindow>
 
-#include "proxy/core_fwd.h"
+#include "proxy/proxy_fwd.h"
 
 #include "proxy/connection_settings/iconnection_settings.h"  // for IConnectionSettingsBaseSPtr
 #include "proxy/connection_settings/icluster_connection_settings.h"
@@ -80,9 +80,9 @@ class MainWindow : public QMainWindow {
   void versionAvailible(bool succesResult, const QString& version);
   void statitsticSent(bool succesResult);
 
-  void closeServer(core::IServerSPtr server);
-  void closeSentinel(core::ISentinelSPtr sentinel);
-  void closeCluster(core::IClusterSPtr cluster);
+  void closeServer(proxy::IServerSPtr server);
+  void closeSentinel(proxy::ISentinelSPtr sentinel);
+  void closeCluster(proxy::IClusterSPtr cluster);
 
  protected:
 #ifdef OS_ANDROID
@@ -98,9 +98,9 @@ class MainWindow : public QMainWindow {
   void retranslateUi();
   void updateRecentConnectionActions();
   void clearRecentConnectionsMenu();
-  void createServer(core::IConnectionSettingsBaseSPtr settings);
-  void createSentinel(core::ISentinelSettingsBaseSPtr settings);
-  void createCluster(core::IClusterSettingsBaseSPtr settings);
+  void createServer(proxy::IConnectionSettingsBaseSPtr settings);
+  void createSentinel(proxy::ISentinelSettingsBaseSPtr settings);
+  void createCluster(proxy::IClusterSettingsBaseSPtr settings);
 
   QAction* openAction_;
   QAction* loadFromFileAction_;

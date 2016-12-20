@@ -49,7 +49,7 @@
 #define ROCKSDB_GET_KEYS_PATTERN_1ARGS_I "KEYS a z %d"
 
 namespace fastonosql {
-namespace core {
+namespace proxy {
 namespace rocksdb {
 
 Driver::Driver(IConnectionSettingsBaseSPtr settings)
@@ -200,5 +200,5 @@ IServerInfoSPtr Driver::MakeServerInfoFromString(const std::string& val) {
 }
 
 }  // namespace rocksdb
-}  // namespace core
+}  // namespace proxy
 }  // namespace fastonosql

@@ -53,7 +53,7 @@ class DiscoverySentinelDiagnosticDialog : public QDialog {
  public:
   enum { fix_height = 320, fix_width = 480 };
 
-  DiscoverySentinelDiagnosticDialog(QWidget* parent, core::IConnectionSettingsBaseSPtr connection);
+  DiscoverySentinelDiagnosticDialog(QWidget* parent, proxy::IConnectionSettingsBaseSPtr connection);
   std::vector<ConnectionListWidgetItemDiscovered*> selectedConnections() const;
 
  private Q_SLOTS:
@@ -66,7 +66,7 @@ class DiscoverySentinelDiagnosticDialog : public QDialog {
   virtual void showEvent(QShowEvent* e) override;
 
  private:
-  void testConnection(core::IConnectionSettingsBaseSPtr connection);
+  void testConnection(proxy::IConnectionSettingsBaseSPtr connection);
 
   common::qt::gui::GlassWidget* glassWidget_;
   QLabel* executeTimeLabel_;

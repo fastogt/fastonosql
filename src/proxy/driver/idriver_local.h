@@ -24,7 +24,7 @@
 #include "proxy/driver/idriver.h"                            // for IDriver
 
 namespace fastonosql {
-namespace core {
+namespace proxy {
 
 class IDriverLocal : public IDriver {
   Q_OBJECT
@@ -35,5 +35,5 @@ class IDriverLocal : public IDriver {
   explicit IDriverLocal(IConnectionSettingsBaseSPtr settings);
 };
 
-}  // namespace core
+}  // namespace proxy
 }  // namespace fastonosql

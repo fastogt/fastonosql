@@ -34,13 +34,13 @@
 #include "global/global.h"  // for FastoObject (ptr only), etc
 
 namespace fastonosql {
-namespace core {
+namespace proxy {
 class IDataBaseInfo;
 }
 }
 
 namespace fastonosql {
-namespace core {
+namespace proxy {
 namespace ssdb {
 
 class DBConnection;
@@ -92,5 +92,5 @@ class Driver : public IDriverRemote {
 };
 
 }  // namespace ssdb
-}  // namespace core
+}  // namespace proxy
 }  // namespace fastonosql

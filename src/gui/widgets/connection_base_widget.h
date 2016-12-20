@@ -36,11 +36,11 @@ class ConnectionBaseWidget : public QWidget {
  public:
   explicit ConnectionBaseWidget(QWidget* parent = 0);
 
-  virtual void syncControls(core::IConnectionSettingsBase* connection);
+  virtual void syncControls(proxy::IConnectionSettingsBase* connection);
   virtual void retranslateUi();
   virtual bool validated() const;
 
-  core::IConnectionSettingsBase* createConnection() const;
+  proxy::IConnectionSettingsBase* createConnection() const;
 
   QString connectionName() const;
   void setConnectionName(const QString& name);
@@ -65,8 +65,8 @@ class ConnectionBaseWidget : public QWidget {
 
   virtual void changeEvent(QEvent* ev) override;
 
-  virtual core::IConnectionSettingsBase* createConnectionImpl(
-      const core::connection_path_t& path) const = 0;
+  virtual proxy::IConnectionSettingsBase* createConnectionImpl(
+      const proxy::connection_path_t& path) const = 0;
 
   QLabel* connectionNameLabel_;
   QLineEdit* connectionName_;

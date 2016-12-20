@@ -49,7 +49,7 @@ const QString trPropertiesTemplate_1S = QObject::tr("%1 properties");
 namespace fastonosql {
 namespace gui {
 
-PropertyServerDialog::PropertyServerDialog(core::IServerSPtr server, QWidget* parent)
+PropertyServerDialog::PropertyServerDialog(proxy::IServerSPtr server, QWidget* parent)
     : QDialog(parent), server_(server) {
   CHECK(server_);
 
@@ -73,26 +73,26 @@ PropertyServerDialog::PropertyServerDialog(core::IServerSPtr server, QWidget* pa
       new common::qt::gui::GlassWidget(GuiFactory::instance().pathToLoadingGif(),
                                        translations::trLoading, 0.5, QColor(111, 111, 100), this);
 
-  VERIFY(connect(server.get(), &core::IServer::LoadServerPropertyStarted, this,
+  VERIFY(connect(server.get(), &proxy::IServer::LoadServerPropertyStarted, this,
                  &PropertyServerDialog::startServerProperty));
-  VERIFY(connect(server.get(), &core::IServer::LoadServerPropertyFinished, this,
+  VERIFY(connect(server.get(), &proxy::IServer::LoadServerPropertyFinished, this,
                  &PropertyServerDialog::finishServerProperty));
-  VERIFY(connect(server.get(), &core::IServer::ChangeServerPropertyStarted, this,
+  VERIFY(connect(server.get(), &proxy::IServer::ChangeServerPropertyStarted, this,
                  &PropertyServerDialog::startServerChangeProperty));
-  VERIFY(connect(server.get(), &core::IServer::ChangeServerPropertyFinished, this,
+  VERIFY(connect(server.get(), &proxy::IServer::ChangeServerPropertyFinished, this,
                  &PropertyServerDialog::finishServerChangeProperty));
   retranslateUi();
 }
 
 void PropertyServerDialog::startServerProperty(
-    const core::events_info::ServerPropertyInfoRequest& req) {
+    const proxy::events_info::ServerPropertyInfoRequest& req) {
   UNUSED(req);
 
   glassWidget_->start();
 }
 
 void PropertyServerDialog::finishServerProperty(
-    const core::events_info::ServerPropertyInfoResponce& res) {
+    const proxy::events_info::ServerPropertyInfoResponce& res) {
   glassWidget_->stop();
   common::Error er = res.errorInfo();
   if (er && er->isError()) {
@@ -110,12 +110,12 @@ void PropertyServerDialog::finishServerProperty(
 }
 
 void PropertyServerDialog::startServerChangeProperty(
-    const core::events_info::ChangeServerPropertyInfoRequest& req) {
+    const proxy::events_info::ChangeServerPropertyInfoRequest& req) {
   UNUSED(req);
 }
 
 void PropertyServerDialog::finishServerChangeProperty(
-    const core::events_info::ChangeServerPropertyInfoResponce& res) {
+    const proxy::events_info::ChangeServerPropertyInfoResponce& res) {
   common::Error er = res.errorInfo();
   if (er && er->isError()) {
     return;
@@ -131,7 +131,7 @@ void PropertyServerDialog::finishServerChangeProperty(
 }
 
 void PropertyServerDialog::changedProperty(const core::property_t& prop) {
-  core::events_info::ChangeServerPropertyInfoRequest req(this, prop);
+  proxy::events_info::ChangeServerPropertyInfoRequest req(this, prop);
   server_->ChangeProperty(req);
 }
 
@@ -144,7 +144,7 @@ void PropertyServerDialog::changeEvent(QEvent* e) {
 
 void PropertyServerDialog::showEvent(QShowEvent* e) {
   QDialog::showEvent(e);
-  core::events_info::ServerPropertyInfoRequest req(this);
+  proxy::events_info::ServerPropertyInfoRequest req(this);
   server_->ServerProperty(req);
 }
 

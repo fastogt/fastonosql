@@ -52,7 +52,7 @@ const QString trHistoryTemplate_1S = QObject::tr("%1 history");
 namespace fastonosql {
 namespace gui {
 
-ServerHistoryDialog::ServerHistoryDialog(core::IServerSPtr server, QWidget* parent)
+ServerHistoryDialog::ServerHistoryDialog(proxy::IServerSPtr server, QWidget* parent)
     : QDialog(parent, Qt::WindowMinMaxButtonsHint | Qt::WindowCloseButtonHint), server_(server) {
   CHECK(server_);
   setWindowIcon(GuiFactory::instance().icon(server_->Type()));
@@ -98,28 +98,28 @@ ServerHistoryDialog::ServerHistoryDialog(core::IServerSPtr server, QWidget* pare
   glassWidget_ =
       new common::qt::gui::GlassWidget(GuiFactory::instance().pathToLoadingGif(),
                                        translations::trLoading, 0.5, QColor(111, 111, 100), this);
-  VERIFY(connect(server.get(), &core::IServer::LoadServerHistoryInfoStarted, this,
+  VERIFY(connect(server.get(), &proxy::IServer::LoadServerHistoryInfoStarted, this,
                  &ServerHistoryDialog::startLoadServerHistoryInfo));
-  VERIFY(connect(server.get(), &core::IServer::LoadServerHistoryInfoFinished, this,
+  VERIFY(connect(server.get(), &proxy::IServer::LoadServerHistoryInfoFinished, this,
                  &ServerHistoryDialog::finishLoadServerHistoryInfo));
-  VERIFY(connect(server.get(), &core::IServer::ClearServerHistoryStarted, this,
+  VERIFY(connect(server.get(), &proxy::IServer::ClearServerHistoryStarted, this,
                  &ServerHistoryDialog::startClearServerHistory));
-  VERIFY(connect(server.get(), &core::IServer::ClearServerHistoryFinished, this,
+  VERIFY(connect(server.get(), &proxy::IServer::ClearServerHistoryFinished, this,
                  &ServerHistoryDialog::finishClearServerHistory));
-  VERIFY(connect(server.get(), &core::IServer::ServerInfoSnapShoot, this,
+  VERIFY(connect(server.get(), &proxy::IServer::ServerInfoSnapShoot, this,
                  &ServerHistoryDialog::snapShotAdd));
   retranslateUi();
 }
 
 void ServerHistoryDialog::startLoadServerHistoryInfo(
-    const core::events_info::ServerInfoHistoryRequest& req) {
+    const proxy::events_info::ServerInfoHistoryRequest& req) {
   UNUSED(req);
 
   glassWidget_->start();
 }
 
 void ServerHistoryDialog::finishLoadServerHistoryInfo(
-    const core::events_info::ServerInfoHistoryResponce& res) {
+    const proxy::events_info::ServerInfoHistoryResponce& res) {
   glassWidget_->stop();
   common::Error er = res.errorInfo();
   if (er && er->isError()) {
@@ -131,12 +131,12 @@ void ServerHistoryDialog::finishLoadServerHistoryInfo(
 }
 
 void ServerHistoryDialog::startClearServerHistory(
-    const core::events_info::ClearServerHistoryRequest& req) {
+    const proxy::events_info::ClearServerHistoryRequest& req) {
   UNUSED(req);
 }
 
 void ServerHistoryDialog::finishClearServerHistory(
-    const core::events_info::ClearServerHistoryResponce& res) {
+    const proxy::events_info::ClearServerHistoryResponce& res) {
   common::Error er = res.errorInfo();
   if (er && er->isError()) {
     return;
@@ -151,7 +151,7 @@ void ServerHistoryDialog::snapShotAdd(core::ServerInfoSnapShoot snapshot) {
 }
 
 void ServerHistoryDialog::clearHistory() {
-  core::events_info::ClearServerHistoryRequest req(this);
+  proxy::events_info::ClearServerHistoryRequest req(this);
   server_->ClearHistory(req);
 }
 
@@ -223,7 +223,7 @@ void ServerHistoryDialog::retranslateUi() {
 }
 
 void ServerHistoryDialog::requestHistoryInfo() {
-  core::events_info::ServerInfoHistoryRequest req(this);
+  proxy::events_info::ServerInfoHistoryRequest req(this);
   server_->RequestHistoryInfo(req);
 }
 
