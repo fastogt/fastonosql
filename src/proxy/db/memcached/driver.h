@@ -29,10 +29,16 @@
 #include "proxy/driver/idriver_remote.h"                     // for IDriverRemote
 
 namespace fastonosql {
+namespace core {
+namespace memcached {
+class DBConnection;
+}
+}
+}
+
+namespace fastonosql {
 namespace proxy {
 namespace memcached {
-
-class DBConnection;
 
 class Driver : public IDriverRemote {
   Q_OBJECT
@@ -43,7 +49,7 @@ class Driver : public IDriverRemote {
   virtual bool IsInterrupted() const override;
   virtual void SetInterrupted(bool interrupted) override;
 
-  virtual translator_t Translator() const override;
+  virtual core::translator_t Translator() const override;
 
   virtual bool IsConnected() const override;
   virtual bool IsAuthenticated() const override;
@@ -66,16 +72,16 @@ class Driver : public IDriverRemote {
   virtual common::Error SyncDisconnect() override WARN_UNUSED_RESULT;
 
   virtual common::Error ExecuteImpl(int argc, const char** argv, FastoObject* out) override;
-  virtual common::Error CurrentServerInfo(IServerInfo** info) override;
-  virtual common::Error CurrentDataBaseInfo(IDataBaseInfo** info) override;
+  virtual common::Error CurrentServerInfo(core::IServerInfo** info) override;
+  virtual common::Error CurrentDataBaseInfo(core::IDataBaseInfo** info) override;
 
   virtual void HandleProcessCommandLineArgsEvent(
       events::ProcessConfigArgsRequestEvent* ev) override;
 
   virtual void HandleLoadDatabaseContentEvent(events::LoadDatabaseContentRequestEvent* ev) override;
-  virtual IServerInfoSPtr MakeServerInfoFromString(const std::string& val) override;
+  virtual core::IServerInfoSPtr MakeServerInfoFromString(const std::string& val) override;
 
-  DBConnection* const impl_;
+  core::memcached::DBConnection* const impl_;
 };
 
 }  // namespace memcached

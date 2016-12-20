@@ -29,13 +29,13 @@ namespace proxy {
 namespace leveldb {
 
 ConnectionSettings::ConnectionSettings(const connection_path_t& connectionName)
-    : IConnectionSettingsLocal(connectionName, LEVELDB), info_() {}
+    : IConnectionSettingsLocal(connectionName, core::LEVELDB), info_() {}
 
-Config ConnectionSettings::Info() const {
+core::leveldb::Config ConnectionSettings::Info() const {
   return info_;
 }
 
-void ConnectionSettings::SetInfo(const Config& info) {
+void ConnectionSettings::SetInfo(const core::leveldb::Config& info) {
   info_ = info;
 }
 
@@ -68,7 +68,7 @@ std::string ConnectionSettings::CommandLine() const {
 }
 
 void ConnectionSettings::SetCommandLine(const std::string& line) {
-  info_ = common::ConvertFromString<Config>(line);
+  info_ = common::ConvertFromString<core::leveldb::Config>(line);
 }
 
 ConnectionSettings* ConnectionSettings::Clone() const {

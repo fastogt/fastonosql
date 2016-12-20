@@ -31,7 +31,7 @@
 #include "core/database/idatabase_info.h"
 
 namespace fastonosql {
-namespace core {
+namespace proxy {
 class IServer;
 }
 }

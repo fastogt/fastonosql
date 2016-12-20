@@ -103,7 +103,7 @@ namespace {
 struct RegisterTypes {
   RegisterTypes() {
     qRegisterMetaType<common::ValueSPtr>("common::ValueSPtr");
-    qRegisterMetaType<fastonosql::FastoObjectIPtr>("FastoObjectIPtr");
+    qRegisterMetaType<FastoObjectIPtr>("FastoObjectIPtr");
     qRegisterMetaType<core::NKey>("core::NKey");
     qRegisterMetaType<core::NDbKValue>("core::NDbKValue");
     qRegisterMetaType<core::IDataBaseInfoSPtr>("core::IDataBaseInfoSPtr");

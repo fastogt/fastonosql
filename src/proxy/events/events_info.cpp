@@ -81,10 +81,10 @@ DiscoveryInfoRequest::DiscoveryInfoRequest(initiator_type sender, error_type er)
 
 DiscoveryInfoResponce::DiscoveryInfoResponce(const base_class& request) : base_class(request) {}
 
-EnterModeInfo::EnterModeInfo(initiator_type sender, ConnectionMode mode, error_type er)
+EnterModeInfo::EnterModeInfo(initiator_type sender, core::ConnectionMode mode, error_type er)
     : base_class(sender, er), mode(mode) {}
 
-LeaveModeInfo::LeaveModeInfo(initiator_type sender, ConnectionMode mode, error_type er)
+LeaveModeInfo::LeaveModeInfo(initiator_type sender, core::ConnectionMode mode, error_type er)
     : base_class(sender, er), mode(mode) {}
 
 CommandRootCreatedInfo::CommandRootCreatedInfo(initiator_type sender,
@@ -133,7 +133,7 @@ LoadDatabasesInfoResponce::LoadDatabasesInfoResponce(const base_class& request)
     : base_class(request) {}
 
 LoadDatabaseContentRequest::LoadDatabaseContentRequest(initiator_type sender,
-                                                       IDataBaseInfoSPtr inf,
+                                                       core::IDataBaseInfoSPtr inf,
                                                        const std::string& pattern,
                                                        uint32_t countKeys,
                                                        uint32_t cursor,
@@ -152,11 +152,11 @@ ServerInfoRequest::ServerInfoRequest(initiator_type sender, error_type er)
 
 ServerInfoResponce::ServerInfoResponce(const base_class& request) : base_class(request), info_() {}
 
-IServerInfoSPtr ServerInfoResponce::info() const {
+core::IServerInfoSPtr ServerInfoResponce::info() const {
   return info_;
 }
 
-void ServerInfoResponce::setInfo(IServerInfoSPtr inf) {
+void ServerInfoResponce::setInfo(core::IServerInfoSPtr inf) {
   info_ = inf;
 }
 
@@ -189,7 +189,7 @@ ServerPropertyInfoResponce::ServerPropertyInfoResponce(const base_class& request
     : base_class(request) {}
 
 ChangeServerPropertyInfoRequest::ChangeServerPropertyInfoRequest(initiator_type sender,
-                                                                 const property_t& pt,
+                                                                 const core::property_t& pt,
                                                                  error_type er)
     : base_class(sender, er), new_item(pt) {}
 

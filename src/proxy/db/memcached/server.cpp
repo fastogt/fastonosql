@@ -33,16 +33,16 @@ Server::~Server() {
   StopCheckKeyExistTimer();
 }
 
-serverTypes Server::Role() const {
-  return MASTER;
+core::serverTypes Server::Role() const {
+  return core::MASTER;
 }
 
-serverMode Server::Mode() const {
-  return STANDALONE;
+core::serverMode Server::Mode() const {
+  return core::STANDALONE;
 }
 
-serverState Server::State() const {
-  return SUP;
+core::serverState Server::State() const {
+  return core::SUP;
 }
 
 common::net::HostAndPort Server::Host() const {
@@ -50,7 +50,7 @@ common::net::HostAndPort Server::Host() const {
   return rdrv->Host();
 }
 
-IDatabaseSPtr Server::CreateDatabase(IDataBaseInfoSPtr info) {
+IDatabaseSPtr Server::CreateDatabase(core::IDataBaseInfoSPtr info) {
   return IDatabaseSPtr(new Database(shared_from_this(), info));
 }
 

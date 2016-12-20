@@ -38,18 +38,18 @@ class Server : public IServerRemote {
   explicit Server(IConnectionSettingsBaseSPtr settings);
   virtual ~Server();
 
-  virtual serverTypes Role() const override;
-  virtual serverMode Mode() const override;
-  virtual serverState State() const override;
+  virtual core::serverTypes Role() const override;
+  virtual core::serverMode Mode() const override;
+  virtual core::serverState State() const override;
   virtual common::net::HostAndPort Host() const override;
 
  protected:
   virtual void HandleDiscoveryInfoResponceEvent(events::DiscoveryInfoResponceEvent* ev) override;
 
  private:
-  virtual IDatabaseSPtr CreateDatabase(IDataBaseInfoSPtr info) override;
-  serverTypes role_;
-  serverMode mode_;
+  virtual IDatabaseSPtr CreateDatabase(core::IDataBaseInfoSPtr info) override;
+  core::serverTypes role_;
+  core::serverMode mode_;
 };
 
 }  // namespace redis

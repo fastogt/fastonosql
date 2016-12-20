@@ -32,9 +32,9 @@ ConnectionWidget::ConnectionWidget(QWidget* parent)
   addWidget(createDBIfMissing_);
 }
 
-void ConnectionWidget::syncControls(core::IConnectionSettingsBase* connection) {
-  core::rocksdb::ConnectionSettings* rock =
-      static_cast<core::rocksdb::ConnectionSettings*>(connection);
+void ConnectionWidget::syncControls(proxy::IConnectionSettingsBase* connection) {
+  proxy::rocksdb::ConnectionSettings* rock =
+      static_cast<proxy::rocksdb::ConnectionSettings*>(connection);
   if (rock) {
     core::rocksdb::Config config = rock->Info();
     createDBIfMissing_->setChecked(config.options.create_if_missing);
@@ -47,9 +47,9 @@ void ConnectionWidget::retranslateUi() {
   ConnectionLocalWidget::retranslateUi();
 }
 
-core::IConnectionSettingsLocal* ConnectionWidget::createConnectionLocalImpl(
-    const core::connection_path_t& path) const {
-  core::rocksdb::ConnectionSettings* conn = new core::rocksdb::ConnectionSettings(path);
+proxy::IConnectionSettingsLocal* ConnectionWidget::createConnectionLocalImpl(
+    const proxy::connection_path_t& path) const {
+  proxy::rocksdb::ConnectionSettings* conn = new proxy::rocksdb::ConnectionSettings(path);
   core::rocksdb::Config config = conn->Info();
   config.options.create_if_missing = createDBIfMissing_->isChecked();
   conn->SetInfo(config);

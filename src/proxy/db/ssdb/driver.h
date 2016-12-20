@@ -28,8 +28,8 @@
 #include "proxy/connection_settings/iconnection_settings.h"  // for IConnectionSettingsBaseSPtr
 #include "proxy/events/events.h"                             // for ClearDatabaseRequestEvent, etc
 #include "proxy/driver/idriver_remote.h"                     // for IDriverRemote
-#include "core/icommand_translator.h"                       // for translator_t
-#include "core/server/iserver_info.h"                       // for IServerInfo (ptr only), etc
+#include "core/icommand_translator.h"                        // for translator_t
+#include "core/server/iserver_info.h"                        // for IServerInfo (ptr only), etc
 
 #include "global/global.h"  // for FastoObject (ptr only), etc
 
@@ -40,10 +40,17 @@ class IDataBaseInfo;
 }
 
 namespace fastonosql {
-namespace proxy {
+namespace core {
 namespace ssdb {
 
 class DBConnection;
+}
+}
+}
+
+namespace fastonosql {
+namespace proxy {
+namespace ssdb {
 
 class Driver : public IDriverRemote {
   Q_OBJECT
@@ -54,7 +61,7 @@ class Driver : public IDriverRemote {
   virtual bool IsInterrupted() const override;
   virtual void SetInterrupted(bool interrupted) override;
 
-  virtual translator_t Translator() const override;
+  virtual core::translator_t Translator() const override;
 
   virtual bool IsConnected() const override;
   virtual bool IsAuthenticated() const override;
@@ -77,18 +84,18 @@ class Driver : public IDriverRemote {
   virtual common::Error SyncDisconnect() override WARN_UNUSED_RESULT;
 
   virtual common::Error ExecuteImpl(int argc, const char** argv, FastoObject* out) override;
-  virtual common::Error CurrentServerInfo(IServerInfo** info) override;
-  virtual common::Error CurrentDataBaseInfo(IDataBaseInfo** info) override;
+  virtual common::Error CurrentServerInfo(core::IServerInfo** info) override;
+  virtual common::Error CurrentDataBaseInfo(core::IDataBaseInfo** info) override;
 
   virtual void HandleProcessCommandLineArgsEvent(
       events::ProcessConfigArgsRequestEvent* ev) override;
 
   virtual void HandleLoadDatabaseContentEvent(events::LoadDatabaseContentRequestEvent* ev) override;
 
-  virtual IServerInfoSPtr MakeServerInfoFromString(const std::string& val) override;
+  virtual core::IServerInfoSPtr MakeServerInfoFromString(const std::string& val) override;
 
  private:
-  DBConnection* const impl_;
+  core::ssdb::DBConnection* const impl_;
 };
 
 }  // namespace ssdb

@@ -48,7 +48,7 @@ void ICluster::AddServer(node_t serv) {
 ICluster::node_t ICluster::Root() const {
   for (auto node : nodes_) {
     IServerRemote* rserver = dynamic_cast<IServerRemote*>(node.get());  // +
-    if (rserver && rserver->Role() == MASTER) {
+    if (rserver && rserver->Role() == core::MASTER) {
       return node;
     }
   }

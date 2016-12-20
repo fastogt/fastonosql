@@ -35,7 +35,7 @@ IClusterSettingsBase* ClusterConnectionSettingsFactory::CreateFromType(
     core::connectionTypes type,
     const connection_path_t& conName) {
 #ifdef BUILD_WITH_REDIS
-  if (type == REDIS) {
+  if (type == core::REDIS) {
     return new redis::ClusterSettings(conName);
   }
 #endif

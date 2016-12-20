@@ -95,9 +95,9 @@ PreferencesDialog::PreferencesDialog(QWidget* parent) : QDialog(parent) {
   fontLabel_ = new QLabel;
   fontComboBox_ = new QFontComboBox;
   fontComboBox_->setEditable(false);
-  fontSizeSpinBox_= new QSpinBox;
+  fontSizeSpinBox_ = new QSpinBox;
   fontLayout->addWidget(fontLabel_);
-  fontLayout->addWidget(new QSplitter(Qt::Horizontal));
+  // fontLayout->addWidget(new QSplitter(Qt::Horizontal));
   fontLayout->addWidget(fontComboBox_);
   fontLayout->addWidget(fontSizeSpinBox_);
 

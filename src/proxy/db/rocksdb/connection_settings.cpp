@@ -29,13 +29,13 @@ namespace proxy {
 namespace rocksdb {
 
 ConnectionSettings::ConnectionSettings(const connection_path_t& connectionName)
-    : IConnectionSettingsLocal(connectionName, ROCKSDB), info_() {}
+    : IConnectionSettingsLocal(connectionName, core::ROCKSDB), info_() {}
 
-Config ConnectionSettings::Info() const {
+core::rocksdb::Config ConnectionSettings::Info() const {
   return info_;
 }
 
-void ConnectionSettings::SetInfo(const Config& info) {
+void ConnectionSettings::SetInfo(const core::rocksdb::Config& info) {
   info_ = info;
 }
 
@@ -68,7 +68,7 @@ std::string ConnectionSettings::CommandLine() const {
 }
 
 void ConnectionSettings::SetCommandLine(const std::string& line) {
-  info_ = common::ConvertFromString<Config>(line);
+  info_ = common::ConvertFromString<core::rocksdb::Config>(line);
 }
 
 ConnectionSettings* ConnectionSettings::Clone() const {

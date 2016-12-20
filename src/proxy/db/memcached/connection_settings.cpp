@@ -29,13 +29,13 @@ namespace proxy {
 namespace memcached {
 
 ConnectionSettings::ConnectionSettings(const connection_path_t& connectionName)
-    : IConnectionSettingsRemote(connectionName, MEMCACHED), info_() {}
+    : IConnectionSettingsRemote(connectionName, core::MEMCACHED), info_() {}
 
-Config ConnectionSettings::Info() const {
+core::memcached::Config ConnectionSettings::Info() const {
   return info_;
 }
 
-void ConnectionSettings::SetInfo(const Config& info) {
+void ConnectionSettings::SetInfo(const core::memcached::Config& info) {
   info_ = info;
 }
 
@@ -68,7 +68,7 @@ std::string ConnectionSettings::CommandLine() const {
 }
 
 void ConnectionSettings::SetCommandLine(const std::string& line) {
-  info_ = common::ConvertFromString<Config>(line);
+  info_ = common::ConvertFromString<core::memcached::Config>(line);
 }
 
 ConnectionSettings* ConnectionSettings::Clone() const {

@@ -31,7 +31,7 @@ namespace unqlite {
 
 class Database : public IDatabase {
  public:
-  Database(IServerSPtr server, IDataBaseInfoSPtr info);
+  Database(IServerSPtr server, core::IDataBaseInfoSPtr info);
 };
 
 }  // namespace unqlite

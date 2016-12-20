@@ -113,11 +113,11 @@ ExplorerClusterItem::eType ExplorerClusterItem::type() const {
   return eCluster;
 }
 
-core::IClusterSPtr ExplorerClusterItem::cluster() const {
+proxy::IClusterSPtr ExplorerClusterItem::cluster() const {
   return cluster_;
 }
 
-ExplorerDatabaseItem::ExplorerDatabaseItem(core::IDatabaseSPtr db, ExplorerServerItem* parent)
+ExplorerDatabaseItem::ExplorerDatabaseItem(proxy::IDatabaseSPtr db, ExplorerServerItem* parent)
     : IExplorerTreeItem(parent), db_(db) {
   DCHECK(db_);
 }
@@ -153,25 +153,25 @@ size_t ExplorerDatabaseItem::loadedKeysCount() const {
   return sz;
 }
 
-core::IServerSPtr ExplorerDatabaseItem::server() const {
+proxy::IServerSPtr ExplorerDatabaseItem::server() const {
   CHECK(db_);
   return db_->Server();
 }
 
-core::IDatabaseSPtr ExplorerDatabaseItem::db() const {
+proxy::IDatabaseSPtr ExplorerDatabaseItem::db() const {
   CHECK(db_);
   return db_;
 }
 
 void ExplorerDatabaseItem::loadContent(const std::string& pattern, uint32_t countKeys) {
-  core::IDatabaseSPtr dbs = db();
+  proxy::IDatabaseSPtr dbs = db();
   CHECK(dbs);
-  core::events_info::LoadDatabaseContentRequest req(this, dbs->Info(), pattern, countKeys);
+  proxy::events_info::LoadDatabaseContentRequest req(this, dbs->Info(), pattern, countKeys);
   dbs->LoadContent(req);
 }
 
 void ExplorerDatabaseItem::setDefault() {
-  core::IDatabaseSPtr dbs = db();
+  proxy::IDatabaseSPtr dbs = db();
   CHECK(dbs);
 
   core::translator_t tran = dbs->Translator();
@@ -182,7 +182,7 @@ void ExplorerDatabaseItem::setDefault() {
     return;
   }
 
-  core::events_info::ExecuteInfoRequest req(this, cmd_str);
+  proxy::events_info::ExecuteInfoRequest req(this, cmd_str);
   dbs->Execute(req);
 }
 
@@ -191,7 +191,7 @@ core::IDataBaseInfoSPtr ExplorerDatabaseItem::info() const {
 }
 
 void ExplorerDatabaseItem::renameKey(const core::NKey& key, const QString& newName) {
-  core::IDatabaseSPtr dbs = db();
+  proxy::IDatabaseSPtr dbs = db();
   CHECK(dbs);
   core::translator_t tran = dbs->Translator();
   std::string cmd_str;
@@ -201,12 +201,12 @@ void ExplorerDatabaseItem::renameKey(const core::NKey& key, const QString& newNa
     return;
   }
 
-  core::events_info::ExecuteInfoRequest req(this, cmd_str);
+  proxy::events_info::ExecuteInfoRequest req(this, cmd_str);
   dbs->Execute(req);
 }
 
 void ExplorerDatabaseItem::removeKey(const core::NKey& key) {
-  core::IDatabaseSPtr dbs = db();
+  proxy::IDatabaseSPtr dbs = db();
   CHECK(dbs);
   core::translator_t tran = dbs->Translator();
   std::string cmd_str;
@@ -216,12 +216,12 @@ void ExplorerDatabaseItem::removeKey(const core::NKey& key) {
     return;
   }
 
-  core::events_info::ExecuteInfoRequest req(this, cmd_str);
+  proxy::events_info::ExecuteInfoRequest req(this, cmd_str);
   dbs->Execute(req);
 }
 
 void ExplorerDatabaseItem::loadValue(const core::NDbKValue& key) {
-  core::IDatabaseSPtr dbs = db();
+  proxy::IDatabaseSPtr dbs = db();
   CHECK(dbs);
   core::translator_t tran = dbs->Translator();
   std::string cmd_str;
@@ -231,12 +231,12 @@ void ExplorerDatabaseItem::loadValue(const core::NDbKValue& key) {
     return;
   }
 
-  core::events_info::ExecuteInfoRequest req(this, cmd_str);
+  proxy::events_info::ExecuteInfoRequest req(this, cmd_str);
   dbs->Execute(req);
 }
 
 void ExplorerDatabaseItem::watchKey(const core::NDbKValue& key, int interval) {
-  core::IDatabaseSPtr dbs = db();
+  proxy::IDatabaseSPtr dbs = db();
   CHECK(dbs);
   core::translator_t tran = dbs->Translator();
   std::string cmd_str;
@@ -246,13 +246,13 @@ void ExplorerDatabaseItem::watchKey(const core::NDbKValue& key, int interval) {
     return;
   }
 
-  core::events_info::ExecuteInfoRequest req(this, cmd_str, std::numeric_limits<size_t>::max() - 1,
+  proxy::events_info::ExecuteInfoRequest req(this, cmd_str, std::numeric_limits<size_t>::max() - 1,
                                             interval, false);
   dbs->Execute(req);
 }
 
 void ExplorerDatabaseItem::createKey(const core::NDbKValue& key) {
-  core::IDatabaseSPtr dbs = db();
+  proxy::IDatabaseSPtr dbs = db();
   CHECK(dbs);
   core::translator_t tran = dbs->Translator();
   std::string cmd_str;
@@ -262,12 +262,12 @@ void ExplorerDatabaseItem::createKey(const core::NDbKValue& key) {
     return;
   }
 
-  core::events_info::ExecuteInfoRequest req(this, cmd_str);
+  proxy::events_info::ExecuteInfoRequest req(this, cmd_str);
   dbs->Execute(req);
 }
 
 void ExplorerDatabaseItem::editKey(const core::NDbKValue& key, const core::NValue& value) {
-  core::IDatabaseSPtr dbs = db();
+  proxy::IDatabaseSPtr dbs = db();
   CHECK(dbs);
   core::translator_t tran = dbs->Translator();
   std::string cmd_str;
@@ -279,12 +279,12 @@ void ExplorerDatabaseItem::editKey(const core::NDbKValue& key, const core::NValu
     return;
   }
 
-  core::events_info::ExecuteInfoRequest req(this, cmd_str);
+  proxy::events_info::ExecuteInfoRequest req(this, cmd_str);
   dbs->Execute(req);
 }
 
 void ExplorerDatabaseItem::setTTL(const core::NKey& key, core::ttl_t ttl) {
-  core::IDatabaseSPtr dbs = db();
+  proxy::IDatabaseSPtr dbs = db();
   CHECK(dbs);
   core::translator_t tran = dbs->Translator();
   std::string cmd_str;
@@ -294,12 +294,12 @@ void ExplorerDatabaseItem::setTTL(const core::NKey& key, core::ttl_t ttl) {
     return;
   }
 
-  core::events_info::ExecuteInfoRequest req(this, cmd_str);
+  proxy::events_info::ExecuteInfoRequest req(this, cmd_str);
   dbs->Execute(req);
 }
 
 void ExplorerDatabaseItem::removeAllKeys() {
-  core::IDatabaseSPtr dbs = db();
+  proxy::IDatabaseSPtr dbs = db();
   CHECK(dbs);
   core::translator_t tran = dbs->Translator();
   std::string cmd_str;
@@ -309,7 +309,7 @@ void ExplorerDatabaseItem::removeAllKeys() {
     return;
   }
 
-  core::events_info::ExecuteInfoRequest req(this, cmd_str);
+  proxy::events_info::ExecuteInfoRequest req(this, cmd_str);
   dbs->Execute(req);
 }
 
@@ -350,13 +350,13 @@ QString ExplorerKeyItem::name() const {
   return common::ConvertFromString<QString>(dbv_.KeyString());
 }
 
-core::IServerSPtr ExplorerKeyItem::server() const {
+proxy::IServerSPtr ExplorerKeyItem::server() const {
   ExplorerDatabaseItem* par = db();
   if (par) {
     return par->server();
   }
 
-  return core::IServerSPtr();
+  return proxy::IServerSPtr();
 }
 
 IExplorerTreeItem::eType ExplorerKeyItem::type() const {
@@ -426,13 +426,13 @@ ExplorerDatabaseItem* ExplorerNSItem::db() const {
   return nullptr;
 }
 
-core::IServerSPtr ExplorerNSItem::server() const {
+proxy::IServerSPtr ExplorerNSItem::server() const {
   ExplorerDatabaseItem* par = db();
   if (par) {
     return par->server();
   }
 
-  return core::IServerSPtr();
+  return proxy::IServerSPtr();
 }
 
 ExplorerNSItem::eType ExplorerNSItem::type() const {

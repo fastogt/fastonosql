@@ -52,10 +52,10 @@ namespace proxy {
 namespace leveldb {
 
 Driver::Driver(IConnectionSettingsBaseSPtr settings)
-    : IDriverLocal(settings), impl_(new DBConnection(this)) {
-  COMPILE_ASSERT(DBConnection::connection_t == LEVELDB,
+    : IDriverLocal(settings), impl_(new core::leveldb::DBConnection(this)) {
+  COMPILE_ASSERT(core::leveldb::DBConnection::connection_t == core::LEVELDB,
                  "DBConnection must be the same type as Driver!");
-  CHECK(Type() == LEVELDB);
+  CHECK(Type() == core::LEVELDB);
 }
 
 Driver::~Driver() {
@@ -70,7 +70,7 @@ void Driver::SetInterrupted(bool interrupted) {
   return impl_->SetInterrupted(interrupted);
 }
 
-translator_t Driver::Translator() const {
+core::translator_t Driver::Translator() const {
   return impl_->Translator();
 }
 
@@ -83,7 +83,7 @@ bool Driver::IsAuthenticated() const {
 }
 
 std::string Driver::Path() const {
-  Config config = impl_->config();
+  core::leveldb::Config config = impl_->config();
   return config.dbname;
 }
 
@@ -102,12 +102,12 @@ void Driver::ClearImpl() {}
 FastoObjectCommandIPtr Driver::CreateCommand(FastoObject* parent,
                                              const std::string& input,
                                              common::Value::CommandLoggingType ct) {
-  return fastonosql::core::CreateCommand<Command>(parent, input, ct);
+  return fastonosql::core::CreateCommand<core::leveldb::Command>(parent, input, ct);
 }
 
 FastoObjectCommandIPtr Driver::CreateCommandFast(const std::string& input,
                                                  common::Value::CommandLoggingType ct) {
-  return core::CreateCommandFast<Command>(input, ct);
+  return core::CreateCommandFast<core::leveldb::Command>(input, ct);
 }
 
 common::Error Driver::SyncConnect() {
@@ -124,20 +124,20 @@ common::Error Driver::ExecuteImpl(int argc, const char** argv, FastoObject* out)
   return impl_->Execute(argc, argv, out);
 }
 
-common::Error Driver::CurrentServerInfo(IServerInfo** info) {
+common::Error Driver::CurrentServerInfo(core::IServerInfo** info) {
   FastoObjectCommandIPtr cmd = CreateCommandFast(LEVELDB_INFO_REQUEST, common::Value::C_INNER);
   LOG_COMMAND(cmd);
-  ServerInfo::Stats cm;
+  core::leveldb::ServerInfo::Stats cm;
   common::Error err = impl_->Info(nullptr, &cm);
   if (err && err->isError()) {
     return err;
   }
 
-  *info = new ServerInfo(cm);
+  *info = new core::leveldb::ServerInfo(cm);
   return common::Error();
 }
 
-common::Error Driver::CurrentDataBaseInfo(IDataBaseInfo** info) {
+common::Error Driver::CurrentDataBaseInfo(core::IDataBaseInfo** info) {
   if (!info) {
     return common::make_error_value("Invalid input argument(s)", common::ErrorValue::E_ERROR);
   }
@@ -197,9 +197,9 @@ void Driver::HandleLoadDatabaseContentEvent(events::LoadDatabaseContentRequestEv
       for (size_t i = 0; i < ar->size(); ++i) {
         std::string key;
         if (ar->getString(i, &key)) {
-          NKey k(key);
-          NValue empty_val(common::Value::createEmptyValueFromType(common::Value::TYPE_STRING));
-          NDbKValue ress(k, empty_val);
+          core::NKey k(key);
+          core::NValue empty_val(common::Value::createEmptyValueFromType(common::Value::TYPE_STRING));
+          core::NDbKValue ress(k, empty_val);
           res.keys.push_back(ress);
         }
       }
@@ -218,8 +218,8 @@ void Driver::HandleProcessCommandLineArgsEvent(events::ProcessConfigArgsRequestE
   UNUSED(ev);
 }
 
-IServerInfoSPtr Driver::MakeServerInfoFromString(const std::string& val) {
-  IServerInfoSPtr res(MakeLeveldbServerInfo(val));
+core::IServerInfoSPtr Driver::MakeServerInfoFromString(const std::string& val) {
+  core::IServerInfoSPtr res(core::leveldb::MakeLeveldbServerInfo(val));
   return res;
 }
 

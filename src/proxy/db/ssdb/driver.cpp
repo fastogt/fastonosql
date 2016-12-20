@@ -51,10 +51,10 @@ namespace proxy {
 namespace ssdb {
 
 Driver::Driver(IConnectionSettingsBaseSPtr settings)
-    : IDriverRemote(settings), impl_(new DBConnection(this)) {
-  COMPILE_ASSERT(DBConnection::connection_t == SSDB,
+    : IDriverRemote(settings), impl_(new core::ssdb::DBConnection(this)) {
+  COMPILE_ASSERT(core::ssdb::DBConnection::connection_t == core::SSDB,
                  "DBConnection must be the same type as Driver!");
-  CHECK(Type() == SSDB);
+  CHECK(Type() == core::SSDB);
 }
 
 Driver::~Driver() {
@@ -69,7 +69,7 @@ void Driver::SetInterrupted(bool interrupted) {
   return impl_->SetInterrupted(interrupted);
 }
 
-translator_t Driver::Translator() const {
+core::translator_t Driver::Translator() const {
   return impl_->Translator();
 }
 
@@ -82,7 +82,7 @@ bool Driver::IsAuthenticated() const {
 }
 
 common::net::HostAndPort Driver::Host() const {
-  Config conf = impl_->config();
+  core::ssdb::Config conf = impl_->config();
   return conf.host;
 }
 
@@ -101,12 +101,12 @@ void Driver::ClearImpl() {}
 FastoObjectCommandIPtr Driver::CreateCommand(FastoObject* parent,
                                              const std::string& input,
                                              common::Value::CommandLoggingType ct) {
-  return fastonosql::core::CreateCommand<Command>(parent, input, ct);
+  return fastonosql::core::CreateCommand<core::ssdb::Command>(parent, input, ct);
 }
 
 FastoObjectCommandIPtr Driver::CreateCommandFast(const std::string& input,
                                                  common::Value::CommandLoggingType ct) {
-  return fastonosql::core::CreateCommandFast<Command>(input, ct);
+  return fastonosql::core::CreateCommandFast<core::ssdb::Command>(input, ct);
 }
 
 common::Error Driver::SyncConnect() {
@@ -123,20 +123,20 @@ common::Error Driver::ExecuteImpl(int argc, const char** argv, FastoObject* out)
   return impl_->Execute(argc, argv, out);
 }
 
-common::Error Driver::CurrentServerInfo(IServerInfo** info) {
+common::Error Driver::CurrentServerInfo(core::IServerInfo** info) {
   FastoObjectCommandIPtr cmd = CreateCommandFast(SSDB_INFO_REQUEST, common::Value::C_INNER);
   LOG_COMMAND(cmd);
-  ServerInfo::Stats cm;
+  core::ssdb::ServerInfo::Stats cm;
   common::Error err = impl_->Info(nullptr, &cm);
   if (err && err->isError()) {
     return err;
   }
 
-  *info = new ServerInfo(cm);
+  *info = new core::ssdb::ServerInfo(cm);
   return common::Error();
 }
 
-common::Error Driver::CurrentDataBaseInfo(IDataBaseInfo** info) {
+common::Error Driver::CurrentDataBaseInfo(core::IDataBaseInfo** info) {
   if (!info) {
     DNOTREACHED();
     return common::make_error_value("Invalid input argument(s)", common::ErrorValue::E_ERROR);
@@ -171,11 +171,11 @@ void Driver::HandleLoadDatabaseContentEvent(events::LoadDatabaseContentRequestEv
       for (size_t i = 0; i < ar->size(); ++i) {
         std::string key;
         if (ar->getString(i, &key)) {
-          NKey k(key);
+          core::NKey k(key);
           FastoObjectCommandIPtr cmd_ttl =
               CreateCommandFast(common::MemSPrintf("TTL %s", key), common::Value::C_INNER);
           LOG_COMMAND(cmd_ttl);
-          ttl_t ttl = NO_TTL;
+          core::ttl_t ttl = NO_TTL;
           common::Error err = impl_->TTL(key, &ttl);
           if (err && err->isError()) {
             k.SetTTL(NO_TTL);
@@ -183,8 +183,8 @@ void Driver::HandleLoadDatabaseContentEvent(events::LoadDatabaseContentRequestEv
             k.SetTTL(ttl);
           }
 
-          NValue empty_val(common::Value::createEmptyValueFromType(common::Value::TYPE_STRING));
-          NDbKValue ress(k, empty_val);
+          core::NValue empty_val(common::Value::createEmptyValueFromType(common::Value::TYPE_STRING));
+          core::NDbKValue ress(k, empty_val);
           res.keys.push_back(ress);
         }
       }
@@ -203,8 +203,8 @@ void Driver::HandleProcessCommandLineArgsEvent(events::ProcessConfigArgsRequestE
   UNUSED(ev);
 }
 
-IServerInfoSPtr Driver::MakeServerInfoFromString(const std::string& val) {
-  IServerInfoSPtr res(MakeSsdbServerInfo(val));
+core::IServerInfoSPtr Driver::MakeServerInfoFromString(const std::string& val) {
+  core::IServerInfoSPtr res(core::ssdb::MakeSsdbServerInfo(val));
   return res;
 }
 

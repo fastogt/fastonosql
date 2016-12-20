@@ -29,7 +29,7 @@ namespace proxy {
 namespace ssdb {
 
 ConnectionSettings::ConnectionSettings(const connection_path_t& connectionName)
-    : IConnectionSettingsRemote(connectionName, SSDB), info_() {}
+    : IConnectionSettingsRemote(connectionName, core::SSDB), info_() {}
 
 std::string ConnectionSettings::Delimiter() const {
   return info_.delimiter;
@@ -60,14 +60,14 @@ std::string ConnectionSettings::CommandLine() const {
 }
 
 void ConnectionSettings::SetCommandLine(const std::string& line) {
-  info_ = common::ConvertFromString<Config>(line);
+  info_ = common::ConvertFromString<core::ssdb::Config>(line);
 }
 
-Config ConnectionSettings::Info() const {
+core::ssdb::Config ConnectionSettings::Info() const {
   return info_;
 }
 
-void ConnectionSettings::SetInfo(const Config& info) {
+void ConnectionSettings::SetInfo(const core::ssdb::Config& info) {
   info_ = info;
 }
 

@@ -28,10 +28,10 @@ namespace fastonosql {
 namespace proxy {
 namespace ssdb {
 
-Database::Database(IServerSPtr server, IDataBaseInfoSPtr info) : IDatabase(server, info) {
+Database::Database(IServerSPtr server, core::IDataBaseInfoSPtr info) : IDatabase(server, info) {
   DCHECK(server);
   DCHECK(info);
-  DCHECK(info->Type() == SSDB);
+  DCHECK(info->Type() == core::SSDB);
 }
 
 }  // namespace ssdb

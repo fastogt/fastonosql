@@ -32,8 +32,8 @@ ConnectionWidget::ConnectionWidget(QWidget* parent)
   addWidget(readOnlyDB_);
 }
 
-void ConnectionWidget::syncControls(core::IConnectionSettingsBase* connection) {
-  core::lmdb::ConnectionSettings* lmdb = static_cast<core::lmdb::ConnectionSettings*>(connection);
+void ConnectionWidget::syncControls(proxy::IConnectionSettingsBase* connection) {
+  proxy::lmdb::ConnectionSettings* lmdb = static_cast<proxy::lmdb::ConnectionSettings*>(connection);
   if (lmdb) {
     core::lmdb::Config config = lmdb->Info();
     readOnlyDB_->setChecked(config.ReadOnlyDB());
@@ -46,9 +46,9 @@ void ConnectionWidget::retranslateUi() {
   ConnectionLocalWidget::retranslateUi();
 }
 
-core::IConnectionSettingsLocal* ConnectionWidget::createConnectionLocalImpl(
-    const core::connection_path_t& path) const {
-  core::lmdb::ConnectionSettings* conn = new core::lmdb::ConnectionSettings(path);
+proxy::IConnectionSettingsLocal* ConnectionWidget::createConnectionLocalImpl(
+    const proxy::connection_path_t& path) const {
+  proxy::lmdb::ConnectionSettings* conn = new proxy::lmdb::ConnectionSettings(path);
   core::lmdb::Config config = conn->Info();
   config.SetReadOnlyDB(readOnlyDB_->isChecked());
   conn->SetInfo(config);

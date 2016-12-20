@@ -31,7 +31,7 @@ class QModelIndex;
 class QObject;
 
 namespace fastonosql {
-namespace core {
+namespace proxy {
 class IServer;
 }
 }
@@ -69,22 +69,22 @@ class ExplorerTreeModel : public common::qt::gui::TreeModel {
   void addSentinel(proxy::ISentinelSPtr sentinel);
   void removeSentinel(proxy::ISentinelSPtr sentinel);
 
-  void addDatabase(core::IServer* server, core::IDataBaseInfoSPtr db);
-  void removeDatabase(core::IServer* server, core::IDataBaseInfoSPtr db);
-  void setDefaultDb(core::IServer* server, core::IDataBaseInfoSPtr db);
-  void updateDb(core::IServer* server, core::IDataBaseInfoSPtr db);
+  void addDatabase(proxy::IServer* server, core::IDataBaseInfoSPtr db);
+  void removeDatabase(proxy::IServer* server, core::IDataBaseInfoSPtr db);
+  void setDefaultDb(proxy::IServer* server, core::IDataBaseInfoSPtr db);
+  void updateDb(proxy::IServer* server, core::IDataBaseInfoSPtr db);
 
-  void addKey(core::IServer* server,
+  void addKey(proxy::IServer* server,
               core::IDataBaseInfoSPtr db,
               const core::NDbKValue& dbv,
               const std::string& ns_separator);
-  void removeKey(core::IServer* server, core::IDataBaseInfoSPtr db, const core::NKey& key);
-  void updateKey(core::IServer* server,
+  void removeKey(proxy::IServer* server, core::IDataBaseInfoSPtr db, const core::NKey& key);
+  void updateKey(proxy::IServer* server,
                  core::IDataBaseInfoSPtr db,
                  const core::NKey& old_key,
                  const core::NKey& new_key);
-  void updateValue(core::IServer* server, core::IDataBaseInfoSPtr db, const core::NDbKValue& dbv);
-  void removeAllKeys(core::IServer* server, core::IDataBaseInfoSPtr db);
+  void updateValue(proxy::IServer* server, core::IDataBaseInfoSPtr db, const core::NDbKValue& dbv);
+  void removeAllKeys(proxy::IServer* server, core::IDataBaseInfoSPtr db);
 
  private:
   ExplorerClusterItem* findClusterItem(proxy::IClusterSPtr cl);

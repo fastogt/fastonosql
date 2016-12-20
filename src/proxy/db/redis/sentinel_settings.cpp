@@ -25,7 +25,7 @@ namespace proxy {
 namespace redis {
 
 SentinelSettings::SentinelSettings(const connection_path_t& connectionName)
-    : ISentinelSettingsBase(connectionName, REDIS) {}
+    : ISentinelSettingsBase(connectionName, core::REDIS) {}
 
 SentinelSettings* SentinelSettings::Clone() const {
   SentinelSettings* red = new SentinelSettings(*this);

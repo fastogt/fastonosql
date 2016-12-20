@@ -60,42 +60,42 @@ IConnectionSettingsBase* ConnectionSettingsFactory::CreateFromType(
     core::connectionTypes type,
     const connection_path_t& conName) {
 #ifdef BUILD_WITH_REDIS
-  if (type == REDIS) {
+  if (type == core::REDIS) {
     return new redis::ConnectionSettings(conName);
   }
 #endif
 #ifdef BUILD_WITH_MEMCACHED
-  if (type == MEMCACHED) {
+  if (type == core::MEMCACHED) {
     return new memcached::ConnectionSettings(conName);
   }
 #endif
 #ifdef BUILD_WITH_SSDB
-  if (type == SSDB) {
+  if (type == core::SSDB) {
     return new ssdb::ConnectionSettings(conName);
   }
 #endif
 #ifdef BUILD_WITH_LEVELDB
-  if (type == LEVELDB) {
+  if (type == core::LEVELDB) {
     return new leveldb::ConnectionSettings(conName);
   }
 #endif
 #ifdef BUILD_WITH_ROCKSDB
-  if (type == ROCKSDB) {
+  if (type == core::ROCKSDB) {
     return new rocksdb::ConnectionSettings(conName);
   }
 #endif
 #ifdef BUILD_WITH_UNQLITE
-  if (type == UNQLITE) {
+  if (type == core::UNQLITE) {
     return new unqlite::ConnectionSettings(conName);
   }
 #endif
 #ifdef BUILD_WITH_LMDB
-  if (type == LMDB) {
+  if (type == core::LMDB) {
     return new lmdb::ConnectionSettings(conName);
   }
 #endif
 #ifdef BUILD_WITH_UPSCALEDB
-  if (type == UPSCALEDB) {
+  if (type == core::UPSCALEDB) {
     return new upscaledb::ConnectionSettings(conName);
   }
 #endif
@@ -135,7 +135,7 @@ IConnectionSettingsBase* ConnectionSettingsFactory::CreateFromString(const std::
         result->SetCommandLine(elText);
         if (IConnectionSettingsRemoteSSH* remote =
                 dynamic_cast<IConnectionSettingsRemoteSSH*>(result)) {
-          SSHInfo sinf(val.substr(i + 1));
+          core::SSHInfo sinf(val.substr(i + 1));
           remote->SetSSHInfo(sinf);
         }
         break;
@@ -155,17 +155,17 @@ IConnectionSettingsRemote* ConnectionSettingsFactory::CreateFromType(
     const common::net::HostAndPort& host) {
   IConnectionSettingsRemote* remote = nullptr;
 #ifdef BUILD_WITH_REDIS
-  if (type == REDIS) {
+  if (type == core::REDIS) {
     remote = new redis::ConnectionSettings(conName);
   }
 #endif
 #ifdef BUILD_WITH_MEMCACHED
-  if (type == MEMCACHED) {
+  if (type == core::MEMCACHED) {
     remote = new memcached::ConnectionSettings(conName);
   }
 #endif
 #ifdef BUILD_WITH_SSDB
-  if (type == SSDB) {
+  if (type == core::SSDB) {
     remote = new ssdb::ConnectionSettings(conName);
   }
 #endif

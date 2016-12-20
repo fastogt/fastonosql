@@ -253,14 +253,14 @@ void ExplorerTreeModel::addSentinel(proxy::ISentinelSPtr sentinel) {
   }
 }
 
-void ExplorerTreeModel::removeSentinel(core::ISentinelSPtr sentinel) {
+void ExplorerTreeModel::removeSentinel(proxy::ISentinelSPtr sentinel) {
   ExplorerSentinelItem* serverItem = findSentinelItem(sentinel);
   if (serverItem) {
     removeItem(QModelIndex(), serverItem);
   }
 }
 
-void ExplorerTreeModel::addDatabase(core::IServer* server, core::IDataBaseInfoSPtr db) {
+void ExplorerTreeModel::addDatabase(proxy::IServer* server, core::IDataBaseInfoSPtr db) {
   ExplorerServerItem* parent = findServerItem(server);
   if (!parent) {
     return;
@@ -275,7 +275,7 @@ void ExplorerTreeModel::addDatabase(core::IServer* server, core::IDataBaseInfoSP
   }
 }
 
-void ExplorerTreeModel::removeDatabase(core::IServer* server, core::IDataBaseInfoSPtr db) {
+void ExplorerTreeModel::removeDatabase(proxy::IServer* server, core::IDataBaseInfoSPtr db) {
   ExplorerServerItem* parent = findServerItem(server);
   if (!parent) {
     return;
@@ -289,7 +289,7 @@ void ExplorerTreeModel::removeDatabase(core::IServer* server, core::IDataBaseInf
   }
 }
 
-void ExplorerTreeModel::setDefaultDb(core::IServer* server, core::IDataBaseInfoSPtr db) {
+void ExplorerTreeModel::setDefaultDb(proxy::IServer* server, core::IDataBaseInfoSPtr db) {
   ExplorerServerItem* parent = findServerItem(server);
   if (!parent) {
     return;
@@ -308,7 +308,7 @@ void ExplorerTreeModel::setDefaultDb(core::IServer* server, core::IDataBaseInfoS
   updateItem(parent_index, dbs_last_index);
 }
 
-void ExplorerTreeModel::updateDb(core::IServer* server, core::IDataBaseInfoSPtr db) {
+void ExplorerTreeModel::updateDb(proxy::IServer* server, core::IDataBaseInfoSPtr db) {
   ExplorerServerItem* parent = findServerItem(server);
   if (!parent) {
     return;
@@ -325,7 +325,7 @@ void ExplorerTreeModel::updateDb(core::IServer* server, core::IDataBaseInfoSPtr 
   updateItem(dbs_index1, dbs_index2);
 }
 
-void ExplorerTreeModel::addKey(core::IServer* server,
+void ExplorerTreeModel::addKey(proxy::IServer* server,
                                core::IDataBaseInfoSPtr db,
                                const core::NDbKValue& dbv,
                                const std::string& ns_separator) {
@@ -355,7 +355,7 @@ void ExplorerTreeModel::addKey(core::IServer* server,
   }
 }
 
-void ExplorerTreeModel::removeKey(core::IServer* server,
+void ExplorerTreeModel::removeKey(proxy::IServer* server,
                                   core::IDataBaseInfoSPtr db,
                                   const core::NKey& key) {
   ExplorerServerItem* parent = findServerItem(server);
@@ -376,7 +376,7 @@ void ExplorerTreeModel::removeKey(core::IServer* server,
   }
 }
 
-void ExplorerTreeModel::updateKey(core::IServer* server,
+void ExplorerTreeModel::updateKey(proxy::IServer* server,
                                   core::IDataBaseInfoSPtr db,
                                   const core::NKey& old_key,
                                   const core::NKey& new_key) {
@@ -401,7 +401,7 @@ void ExplorerTreeModel::updateKey(core::IServer* server,
   }
 }
 
-void ExplorerTreeModel::updateValue(core::IServer* server,
+void ExplorerTreeModel::updateValue(proxy::IServer* server,
                                     core::IDataBaseInfoSPtr db,
                                     const core::NDbKValue& dbv) {
   ExplorerServerItem* parent = findServerItem(server);
@@ -425,7 +425,7 @@ void ExplorerTreeModel::updateValue(core::IServer* server,
   }
 }
 
-void ExplorerTreeModel::removeAllKeys(core::IServer* server, core::IDataBaseInfoSPtr db) {
+void ExplorerTreeModel::removeAllKeys(proxy::IServer* server, core::IDataBaseInfoSPtr db) {
   ExplorerServerItem* parent = findServerItem(server);
   if (!parent) {
     return;
@@ -440,7 +440,7 @@ void ExplorerTreeModel::removeAllKeys(core::IServer* server, core::IDataBaseInfo
   removeAllItems(parentdb);
 }
 
-ExplorerClusterItem* ExplorerTreeModel::findClusterItem(core::IClusterSPtr cl) {
+ExplorerClusterItem* ExplorerTreeModel::findClusterItem(proxy::IClusterSPtr cl) {
   common::qt::gui::TreeItem* parent = root_;
   if (!parent) {
     return nullptr;
@@ -455,7 +455,7 @@ ExplorerClusterItem* ExplorerTreeModel::findClusterItem(core::IClusterSPtr cl) {
   return nullptr;
 }
 
-ExplorerSentinelItem* ExplorerTreeModel::findSentinelItem(core::ISentinelSPtr sentinel) {
+ExplorerSentinelItem* ExplorerTreeModel::findSentinelItem(proxy::ISentinelSPtr sentinel) {
   common::qt::gui::TreeItem* parent = root_;
   if (!parent) {
     return nullptr;
@@ -495,7 +495,7 @@ ExplorerDatabaseItem* ExplorerTreeModel::findDatabaseItem(ExplorerServerItem* se
       continue;
     }
 
-    core::IDatabaseSPtr inf = item->db();
+    proxy::IDatabaseSPtr inf = item->db();
     if (inf && inf->Name() == db->Name()) {
       return item;
     }

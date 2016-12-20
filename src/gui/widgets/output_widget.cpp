@@ -74,31 +74,31 @@ FastoCommonItem* createRootItem(FastoObject* item) {
 
 }  // namespace
 
-OutputWidget::OutputWidget(core::IServerSPtr server, QWidget* parent)
+OutputWidget::OutputWidget(proxy::IServerSPtr server, QWidget* parent)
     : QWidget(parent), server_(server) {
   CHECK(server_);
 
   commonModel_ = new FastoCommonModel(this);
   VERIFY(connect(commonModel_, &FastoCommonModel::changedValue, this, &OutputWidget::createKey,
                  Qt::DirectConnection));
-  VERIFY(connect(server_.get(), &core::IServer::ExecuteStarted, this,
+  VERIFY(connect(server_.get(), &proxy::IServer::ExecuteStarted, this,
                  &OutputWidget::startExecuteCommand, Qt::DirectConnection));
-  VERIFY(connect(server_.get(), &core::IServer::ExecuteFinished, this,
+  VERIFY(connect(server_.get(), &proxy::IServer::ExecuteFinished, this,
                  &OutputWidget::finishExecuteCommand, Qt::DirectConnection));
 
-  VERIFY(connect(server_.get(), &core::IServer::KeyAdded, this, &OutputWidget::addKey,
+  VERIFY(connect(server_.get(), &proxy::IServer::KeyAdded, this, &OutputWidget::addKey,
                  Qt::DirectConnection));
-  VERIFY(connect(server_.get(), &core::IServer::KeyLoaded, this, &OutputWidget::updateKey,
-                 Qt::DirectConnection));
-
-  VERIFY(connect(server_.get(), &core::IServer::RootCreated, this, &OutputWidget::rootCreate,
-                 Qt::DirectConnection));
-  VERIFY(connect(server_.get(), &core::IServer::RootCompleated, this, &OutputWidget::rootCompleate,
+  VERIFY(connect(server_.get(), &proxy::IServer::KeyLoaded, this, &OutputWidget::updateKey,
                  Qt::DirectConnection));
 
-  VERIFY(connect(server_.get(), &core::IServer::ChildAdded, this, &OutputWidget::addChild,
+  VERIFY(connect(server_.get(), &proxy::IServer::RootCreated, this, &OutputWidget::rootCreate,
                  Qt::DirectConnection));
-  VERIFY(connect(server_.get(), &core::IServer::ItemUpdated, this, &OutputWidget::updateItem,
+  VERIFY(connect(server_.get(), &proxy::IServer::RootCompleated, this, &OutputWidget::rootCompleate,
+                 Qt::DirectConnection));
+
+  VERIFY(connect(server_.get(), &proxy::IServer::ChildAdded, this, &OutputWidget::addChild,
+                 Qt::DirectConnection));
+  VERIFY(connect(server_.get(), &proxy::IServer::ItemUpdated, this, &OutputWidget::updateItem,
                  Qt::DirectConnection));
 
   treeView_ = new FastoTreeView;
@@ -149,13 +149,13 @@ OutputWidget::OutputWidget(core::IServerSPtr server, QWidget* parent)
   syncWithSettings();
 }
 
-void OutputWidget::rootCreate(const core::events_info::CommandRootCreatedInfo& res) {
+void OutputWidget::rootCreate(const proxy::events_info::CommandRootCreatedInfo& res) {
   FastoObject* rootObj = res.root.get();
   fastonosql::gui::FastoCommonItem* root = createRootItem(rootObj);
   commonModel_->setRoot(root);
 }
 
-void OutputWidget::rootCompleate(const core::events_info::CommandRootCompleatedInfo& res) {
+void OutputWidget::rootCompleate(const proxy::events_info::CommandRootCompleatedInfo& res) {
   updateTimeLabel(res);
 }
 
@@ -169,11 +169,11 @@ void OutputWidget::updateKey(core::IDataBaseInfoSPtr db, core::NDbKValue key) {
   commonModel_->changeValue(key);
 }
 
-void OutputWidget::startExecuteCommand(const core::events_info::ExecuteInfoRequest& req) {
+void OutputWidget::startExecuteCommand(const proxy::events_info::ExecuteInfoRequest& req) {
   UNUSED(req);
 }
 
-void OutputWidget::finishExecuteCommand(const core::events_info::ExecuteInfoResponce& res) {
+void OutputWidget::finishExecuteCommand(const proxy::events_info::ExecuteInfoResponce& res) {
   UNUSED(res);
 }
 
@@ -270,7 +270,7 @@ void OutputWidget::createKey(const core::NDbKValue& dbv) {
     return;
   }
 
-  core::events_info::ExecuteInfoRequest req(this, cmd_text, 0, 0, true, true);
+  proxy::events_info::ExecuteInfoRequest req(this, cmd_text, 0, 0, true, true);
   server_->Execute(req);
 }
 
@@ -293,7 +293,7 @@ void OutputWidget::setTextView() {
 }
 
 void OutputWidget::syncWithSettings() {
-  supportedViews curV = core::SettingsManager::instance().DefaultView();
+  supportedViews curV = proxy::SettingsManager::instance().DefaultView();
   if (curV == Tree) {
     setTreeView();
   } else if (curV == Table) {
@@ -303,7 +303,7 @@ void OutputWidget::syncWithSettings() {
   }
 }
 
-void OutputWidget::updateTimeLabel(const core::events_info::EventInfoBase& evinfo) {
+void OutputWidget::updateTimeLabel(const proxy::events_info::EventInfoBase& evinfo) {
   timeLabel_->setText(QString("%1 msec").arg(evinfo.ElapsedTime()));
 }
 

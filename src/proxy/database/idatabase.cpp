@@ -29,7 +29,7 @@
 namespace fastonosql {
 namespace proxy {
 
-IDatabase::IDatabase(IServerSPtr server, IDataBaseInfoSPtr info) : info_(info), server_(server) {
+IDatabase::IDatabase(IServerSPtr server, core::IDataBaseInfoSPtr info) : info_(info), server_(server) {
   CHECK(server);
   CHECK(info);
   CHECK(server->Type() == info->Type());
@@ -59,11 +59,11 @@ void IDatabase::LoadContent(const events_info::LoadDatabaseContentRequest& req) 
   server_->LoadDatabaseContent(req);
 }
 
-IDataBaseInfoSPtr IDatabase::Info() const {
+core::IDataBaseInfoSPtr IDatabase::Info() const {
   return info_;
 }
 
-translator_t IDatabase::Translator() const {
+core::translator_t IDatabase::Translator() const {
   return server_->Translator();
 }
 

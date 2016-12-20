@@ -28,19 +28,19 @@
 #include <common/value.h>          // for ErrorValue, etc
 #include <common/intrusive_ptr.h>  // for intrusive_ptr
 
-#include "core/command/command.h"         // for CreateCommand, etc
+#include "core/command/command.h"          // for CreateCommand, etc
 #include "proxy/command/command_logger.h"  // for LOG_COMMAND
-#include "core/connection_types.h"        // for ConvertToString, etc
-#include "core/db_key.h"                  // for NDbKValue, NValue, NKey
+#include "core/connection_types.h"         // for ConvertToString, etc
+#include "core/db_key.h"                   // for NDbKValue, NValue, NKey
 
 #include "core/internal/db_connection.h"
 #include "proxy/events/events_info.h"
 
-#include "core/db/rocksdb/command.h"              // for Command
-#include "core/db/rocksdb/config.h"               // for Config
+#include "core/db/rocksdb/command.h"               // for Command
+#include "core/db/rocksdb/config.h"                // for Config
 #include "proxy/db/rocksdb/connection_settings.h"  // for ConnectionSettings
-#include "core/db/rocksdb/db_connection.h"        // for DBConnection
-#include "core/db/rocksdb/server_info.h"          // for ServerInfo, etc
+#include "core/db/rocksdb/db_connection.h"         // for DBConnection
+#include "core/db/rocksdb/server_info.h"           // for ServerInfo, etc
 
 #include "global/global.h"  // for FastoObject::childs_t, etc
 
@@ -53,10 +53,10 @@ namespace proxy {
 namespace rocksdb {
 
 Driver::Driver(IConnectionSettingsBaseSPtr settings)
-    : IDriverLocal(settings), impl_(new DBConnection(this)) {
-  COMPILE_ASSERT(DBConnection::connection_t == ROCKSDB,
+    : IDriverLocal(settings), impl_(new core::rocksdb::DBConnection(this)) {
+  COMPILE_ASSERT(core::rocksdb::DBConnection::connection_t == core::ROCKSDB,
                  "DBConnection must be the same type as Driver!");
-  CHECK(Type() == ROCKSDB);
+  CHECK(Type() == core::ROCKSDB);
 }
 
 Driver::~Driver() {
@@ -71,7 +71,7 @@ void Driver::SetInterrupted(bool interrupted) {
   return impl_->SetInterrupted(interrupted);
 }
 
-translator_t Driver::Translator() const {
+core::translator_t Driver::Translator() const {
   return impl_->Translator();
 }
 
@@ -84,7 +84,7 @@ bool Driver::IsAuthenticated() const {
 }
 
 std::string Driver::Path() const {
-  Config conf = impl_->config();
+  core::rocksdb::Config conf = impl_->config();
   return conf.dbname;
 }
 
@@ -103,12 +103,12 @@ void Driver::ClearImpl() {}
 FastoObjectCommandIPtr Driver::CreateCommand(FastoObject* parent,
                                              const std::string& input,
                                              common::Value::CommandLoggingType ct) {
-  return fastonosql::core::CreateCommand<Command>(parent, input, ct);
+  return fastonosql::core::CreateCommand<core::rocksdb::Command>(parent, input, ct);
 }
 
 FastoObjectCommandIPtr Driver::CreateCommandFast(const std::string& input,
                                                  common::Value::CommandLoggingType ct) {
-  return fastonosql::core::CreateCommandFast<Command>(input, ct);
+  return fastonosql::core::CreateCommandFast<core::rocksdb::Command>(input, ct);
 }
 
 common::Error Driver::SyncConnect() {
@@ -125,20 +125,20 @@ common::Error Driver::ExecuteImpl(int argc, const char** argv, FastoObject* out)
   return impl_->Execute(argc, argv, out);
 }
 
-common::Error Driver::CurrentServerInfo(IServerInfo** info) {
+common::Error Driver::CurrentServerInfo(core::IServerInfo** info) {
   FastoObjectCommandIPtr cmd = CreateCommandFast(ROCKSDB_INFO_REQUEST, common::Value::C_INNER);
   LOG_COMMAND(cmd);
-  ServerInfo::Stats cm;
+  core::rocksdb::ServerInfo::Stats cm;
   common::Error err = impl_->Info(nullptr, &cm);
   if (err && err->isError()) {
     return err;
   }
 
-  *info = new ServerInfo(cm);
+  *info = new core::rocksdb::ServerInfo(cm);
   return common::Error();
 }
 
-common::Error Driver::CurrentDataBaseInfo(IDataBaseInfo** info) {
+common::Error Driver::CurrentDataBaseInfo(core::IDataBaseInfo** info) {
   if (!info) {
     DNOTREACHED();
     return common::make_error_value("Invalid input argument(s)", common::ErrorValue::E_ERROR);
@@ -173,9 +173,9 @@ void Driver::HandleLoadDatabaseContentEvent(events::LoadDatabaseContentRequestEv
       for (size_t i = 0; i < ar->size(); ++i) {
         std::string key;
         if (ar->getString(i, &key)) {
-          NKey k(key);
-          NValue empty_val(common::Value::createEmptyValueFromType(common::Value::TYPE_STRING));
-          NDbKValue ress(k, empty_val);
+          core::NKey k(key);
+          core::NValue empty_val(common::Value::createEmptyValueFromType(common::Value::TYPE_STRING));
+          core::NDbKValue ress(k, empty_val);
           res.keys.push_back(ress);
         }
       }
@@ -194,8 +194,8 @@ void Driver::HandleProcessCommandLineArgsEvent(events::ProcessConfigArgsRequestE
   UNUSED(ev);
 }
 
-IServerInfoSPtr Driver::MakeServerInfoFromString(const std::string& val) {
-  IServerInfoSPtr res(MakeRocksdbServerInfo(val));
+core::IServerInfoSPtr Driver::MakeServerInfoFromString(const std::string& val) {
+  core::IServerInfoSPtr res(core::rocksdb::MakeRocksdbServerInfo(val));
   return res;
 }
 

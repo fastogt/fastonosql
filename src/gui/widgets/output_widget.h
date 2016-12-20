@@ -35,7 +35,7 @@ class IconLabel;
 }
 }  // lines 32-32
 namespace fastonosql {
-namespace core {
+namespace proxy {
 namespace events_info {
 class EventInfoBase;
 struct ExecuteInfoRequest;
@@ -65,11 +65,11 @@ class OutputWidget : public QWidget {
  private Q_SLOTS:
   void createKey(const core::NDbKValue& dbv);
 
-  void startExecuteCommand(const core::events_info::ExecuteInfoRequest& req);
-  void finishExecuteCommand(const core::events_info::ExecuteInfoResponce& res);
+  void startExecuteCommand(const proxy::events_info::ExecuteInfoRequest& req);
+  void finishExecuteCommand(const proxy::events_info::ExecuteInfoResponce& res);
 
-  void rootCreate(const core::events_info::CommandRootCreatedInfo& res);
-  void rootCompleate(const core::events_info::CommandRootCompleatedInfo& res);
+  void rootCreate(const proxy::events_info::CommandRootCreatedInfo& res);
+  void rootCompleate(const proxy::events_info::CommandRootCompleatedInfo& res);
 
   void addKey(core::IDataBaseInfoSPtr db, core::NDbKValue key);
   void updateKey(core::IDataBaseInfoSPtr db, core::NDbKValue key);
@@ -83,7 +83,7 @@ class OutputWidget : public QWidget {
 
  private:
   void syncWithSettings();
-  void updateTimeLabel(const core::events_info::EventInfoBase& evinfo);
+  void updateTimeLabel(const proxy::events_info::EventInfoBase& evinfo);
   common::qt::gui::IconLabel* timeLabel_;
   QPushButton* treeButton_;
   QPushButton* tableButton_;

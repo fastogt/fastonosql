@@ -35,7 +35,7 @@ class Server : public IServerLocal {
   virtual std::string Path() const override;
 
  private:
-  virtual IDatabaseSPtr CreateDatabase(IDataBaseInfoSPtr info) override;
+  virtual IDatabaseSPtr CreateDatabase(core::IDataBaseInfoSPtr info) override;
 };
 
 }  // namespace leveldb

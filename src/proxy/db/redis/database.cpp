@@ -28,10 +28,10 @@ namespace fastonosql {
 namespace proxy {
 namespace redis {
 
-Database::Database(IServerSPtr server, IDataBaseInfoSPtr info) : IDatabase(server, info) {
+Database::Database(IServerSPtr server, core::IDataBaseInfoSPtr info) : IDatabase(server, info) {
   DCHECK(server);
   DCHECK(info);
-  DCHECK(info->Type() == REDIS);
+  DCHECK(info->Type() == core::REDIS);
 }
 
 }  // namespace redis

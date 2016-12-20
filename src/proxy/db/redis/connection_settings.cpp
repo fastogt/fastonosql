@@ -32,7 +32,7 @@ namespace proxy {
 namespace redis {
 
 ConnectionSettings::ConnectionSettings(const connection_path_t& connectionName)
-    : IConnectionSettingsRemoteSSH(connectionName, REDIS), info_() {}
+    : IConnectionSettingsRemoteSSH(connectionName, core::REDIS), info_() {}
 
 std::string ConnectionSettings::Delimiter() const {
   return info_.delimiter;
@@ -59,18 +59,18 @@ void ConnectionSettings::SetHost(const common::net::HostAndPort& host) {
 }
 
 void ConnectionSettings::SetCommandLine(const std::string& line) {
-  info_ = common::ConvertFromString<Config>(line);
+  info_ = common::ConvertFromString<core::redis::Config>(line);
 }
 
 std::string ConnectionSettings::CommandLine() const {
   return common::ConvertToString(info_);
 }
 
-Config ConnectionSettings::Info() const {
+core::redis::Config ConnectionSettings::Info() const {
   return info_;
 }
 
-void ConnectionSettings::SetInfo(const Config& info) {
+void ConnectionSettings::SetInfo(const core::redis::Config& info) {
   info_ = info;
 }
 

@@ -50,9 +50,9 @@ ConnectionWidget::ConnectionWidget(QWidget* parent)
   addLayout(def_layout);
 }
 
-void ConnectionWidget::syncControls(core::IConnectionSettingsBase* connection) {
-  core::upscaledb::ConnectionSettings* ups =
-      static_cast<core::upscaledb::ConnectionSettings*>(connection);
+void ConnectionWidget::syncControls(proxy::IConnectionSettingsBase* connection) {
+  proxy::upscaledb::ConnectionSettings* ups =
+      static_cast<proxy::upscaledb::ConnectionSettings*>(connection);
   if (ups) {
     core::upscaledb::Config config = ups->Info();
     createDBIfMissing_->setChecked(config.create_if_missing);
@@ -67,9 +67,9 @@ void ConnectionWidget::retranslateUi() {
   ConnectionLocalWidget::retranslateUi();
 }
 
-core::IConnectionSettingsLocal* ConnectionWidget::createConnectionLocalImpl(
-    const core::connection_path_t& path) const {
-  core::upscaledb::ConnectionSettings* conn = new core::upscaledb::ConnectionSettings(path);
+proxy::IConnectionSettingsLocal* ConnectionWidget::createConnectionLocalImpl(
+    const proxy::connection_path_t& path) const {
+  proxy::upscaledb::ConnectionSettings* conn = new proxy::upscaledb::ConnectionSettings(path);
   core::upscaledb::Config config = conn->Info();
   config.create_if_missing = createDBIfMissing_->isChecked();
   config.dbnum = defaultDBNum_->value();

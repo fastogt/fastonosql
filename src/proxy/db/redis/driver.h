@@ -35,12 +35,12 @@
 #include "global/global.h"  // for FastoObject (ptr only), etc
 
 namespace fastonosql {
-namespace proxy {
+namespace core {
 class IDataBaseInfo;
 }
 }
 namespace fastonosql {
-namespace proxy {
+namespace core {
 namespace redis {
 class DBConnection;
 }
@@ -60,7 +60,7 @@ class Driver : public IDriverRemote {
   virtual bool IsInterrupted() const override;
   virtual void SetInterrupted(bool interrupted) override;
 
-  virtual translator_t Translator() const override;
+  virtual core::translator_t Translator() const override;
 
   virtual bool IsConnected() const override;
   virtual bool IsAuthenticated() const override;
@@ -84,8 +84,8 @@ class Driver : public IDriverRemote {
 
   virtual common::Error ExecuteImpl(int argc, const char** argv, FastoObject* out) override;
 
-  virtual common::Error CurrentServerInfo(IServerInfo** info) override;
-  virtual common::Error CurrentDataBaseInfo(IDataBaseInfo** info) override;
+  virtual common::Error CurrentServerInfo(core::IServerInfo** info) override;
+  virtual common::Error CurrentDataBaseInfo(core::IDataBaseInfo** info) override;
 
   virtual void HandleLoadDatabaseInfosEvent(events::LoadDatabasesInfoRequestEvent* ev) override;
   virtual void HandleLoadServerPropertyEvent(events::ServerPropertyInfoRequestEvent* ev) override;
@@ -101,9 +101,9 @@ class Driver : public IDriverRemote {
 
   virtual void HandleLoadDatabaseContentEvent(events::LoadDatabaseContentRequestEvent* ev) override;
 
-  virtual IServerInfoSPtr MakeServerInfoFromString(const std::string& val) override;
+  virtual core::IServerInfoSPtr MakeServerInfoFromString(const std::string& val) override;
 
-  DBConnection* const impl_;
+  core::redis::DBConnection* const impl_;
 
   common::Error InteracteveMode(events::ProcessConfigArgsRequestEvent* ev);
   common::Error LatencyMode(events::ProcessConfigArgsRequestEvent* ev);

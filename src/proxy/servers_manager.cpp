@@ -94,42 +94,42 @@ ServersManager::server_t ServersManager::CreateServer(IConnectionSettingsBaseSPt
   core::connectionTypes conT = settings->Type();
   server_t server;
 #ifdef BUILD_WITH_REDIS
-  if (conT == REDIS) {
+  if (conT == core::REDIS) {
     server = common::make_shared<redis::Server>(settings);
   }
 #endif
 #ifdef BUILD_WITH_MEMCACHED
-  if (conT == MEMCACHED) {
+  if (conT == core::MEMCACHED) {
     server = common::make_shared<memcached::Server>(settings);
   }
 #endif
 #ifdef BUILD_WITH_SSDB
-  if (conT == SSDB) {
+  if (conT == core::SSDB) {
     server = common::make_shared<ssdb::Server>(settings);
   }
 #endif
 #ifdef BUILD_WITH_LEVELDB
-  if (conT == LEVELDB) {
+  if (conT == core::LEVELDB) {
     server = common::make_shared<leveldb::Server>(settings);
   }
 #endif
 #ifdef BUILD_WITH_ROCKSDB
-  if (conT == ROCKSDB) {
+  if (conT == core::ROCKSDB) {
     server = common::make_shared<rocksdb::Server>(settings);
   }
 #endif
 #ifdef BUILD_WITH_UNQLITE
-  if (conT == UNQLITE) {
+  if (conT == core::UNQLITE) {
     server = common::make_shared<unqlite::Server>(settings);
   }
 #endif
 #ifdef BUILD_WITH_LMDB
-  if (conT == LMDB) {
+  if (conT == core::LMDB) {
     server = common::make_shared<lmdb::Server>(settings);
   }
 #endif
 #ifdef BUILD_WITH_UPSCALEDB
-  if (conT == UPSCALEDB) {
+  if (conT == core::UPSCALEDB) {
     server = common::make_shared<upscaledb::Server>(settings);
   }
 #endif
@@ -147,7 +147,7 @@ ServersManager::sentinel_t ServersManager::CreateSentinel(ISentinelSettingsBaseS
 
   core::connectionTypes conT = settings->Type();
 #ifdef BUILD_WITH_REDIS
-  if (conT == REDIS) {
+  if (conT == core::REDIS) {
     sentinel_t sent = common::make_shared<redis::Sentinel>(settings->Path().ToString());
     auto nodes = settings->Sentinels();
     for (size_t i = 0; i < nodes.size(); ++i) {
@@ -178,7 +178,7 @@ ServersManager::cluster_t ServersManager::CreateCluster(IClusterSettingsBaseSPtr
 
   core::connectionTypes conT = settings->Type();
 #ifdef BUILD_WITH_REDIS
-  if (conT == REDIS) {
+  if (conT == core::REDIS) {
     cluster_t cl = common::make_shared<redis::Cluster>(settings->Path().ToString());
     auto nodes = settings->Nodes();
     for (size_t i = 0; i < nodes.size(); ++i) {
@@ -201,54 +201,54 @@ common::Error ServersManager::TestConnection(IConnectionSettingsBaseSPtr connect
 
   core::connectionTypes type = connection->Type();
 #ifdef BUILD_WITH_REDIS
-  if (type == REDIS) {
+  if (type == core::REDIS) {
     redis::ConnectionSettings* settings = static_cast<redis::ConnectionSettings*>(connection.get());
-    redis::RConfig rconfig(settings->Info(), settings->SSHInfo());
-    return redis::TestConnection(rconfig);
+    core::redis::RConfig rconfig(settings->Info(), settings->SSHInfo());
+    return core::redis::TestConnection(rconfig);
   }
 #endif
 #ifdef BUILD_WITH_MEMCACHED
-  if (type == MEMCACHED) {
+  if (type == core::MEMCACHED) {
     memcached::ConnectionSettings* settings =
         static_cast<memcached::ConnectionSettings*>(connection.get());
     return fastonosql::core::memcached::TestConnection(settings->Info());
   }
 #endif
 #ifdef BUILD_WITH_SSDB
-  if (type == SSDB) {
+  if (type == core::SSDB) {
     ssdb::ConnectionSettings* settings = static_cast<ssdb::ConnectionSettings*>(connection.get());
     return fastonosql::core::ssdb::TestConnection(settings->Info());
   }
 #endif
 #ifdef BUILD_WITH_LEVELDB
-  if (type == LEVELDB) {
+  if (type == core::LEVELDB) {
     leveldb::ConnectionSettings* settings =
         static_cast<leveldb::ConnectionSettings*>(connection.get());
     return fastonosql::core::leveldb::TestConnection(settings->Info());
   }
 #endif
 #ifdef BUILD_WITH_ROCKSDB
-  if (type == ROCKSDB) {
+  if (type == core::ROCKSDB) {
     rocksdb::ConnectionSettings* settings =
         static_cast<rocksdb::ConnectionSettings*>(connection.get());
     return fastonosql::core::rocksdb::TestConnection(settings->Info());
   }
 #endif
 #ifdef BUILD_WITH_UNQLITE
-  if (type == UNQLITE) {
+  if (type == core::UNQLITE) {
     unqlite::ConnectionSettings* settings =
         static_cast<unqlite::ConnectionSettings*>(connection.get());
     return fastonosql::core::unqlite::TestConnection(settings->Info());
   }
 #endif
 #ifdef BUILD_WITH_LMDB
-  if (type == LMDB) {
+  if (type == core::LMDB) {
     lmdb::ConnectionSettings* settings = static_cast<lmdb::ConnectionSettings*>(connection.get());
     return fastonosql::core::lmdb::TestConnection(settings->Info());
   }
 #endif
 #ifdef BUILD_WITH_UPSCALEDB
-  if (type == UPSCALEDB) {
+  if (type == core::UPSCALEDB) {
     upscaledb::ConnectionSettings* settings =
         static_cast<upscaledb::ConnectionSettings*>(connection.get());
     return fastonosql::core::upscaledb::TestConnection(settings->Info());
@@ -261,51 +261,51 @@ common::Error ServersManager::TestConnection(IConnectionSettingsBaseSPtr connect
 
 common::Error ServersManager::DiscoveryClusterConnection(
     IConnectionSettingsBaseSPtr connection,
-    std::vector<ServerDiscoveryClusterInfoSPtr>* inf) {
+    std::vector<core::ServerDiscoveryClusterInfoSPtr>* inf) {
   if (!connection || !inf) {
     return common::make_error_value("Invalid input argument(s)", common::ErrorValue::E_ERROR);
   }
 
   core::connectionTypes type = connection->Type();
 #ifdef BUILD_WITH_REDIS
-  if (type == REDIS) {
+  if (type == core::REDIS) {
     redis::ConnectionSettings* settings = static_cast<redis::ConnectionSettings*>(connection.get());
-    redis::RConfig rconfig(settings->Info(), settings->SSHInfo());
-    return redis::DiscoveryClusterConnection(rconfig, inf);
+    core::redis::RConfig rconfig(settings->Info(), settings->SSHInfo());
+    return core::redis::DiscoveryClusterConnection(rconfig, inf);
   }
 #endif
 #ifdef BUILD_WITH_MEMCACHED
-  if (type == MEMCACHED) {
+  if (type == core::MEMCACHED) {
     return common::make_error_value("Not supported setting type", common::ErrorValue::E_ERROR);
   }
 #endif
 #ifdef BUILD_WITH_SSDB
-  if (type == SSDB) {
+  if (type == core::SSDB) {
     return common::make_error_value("Not supported setting type", common::ErrorValue::E_ERROR);
   }
 #endif
 #ifdef BUILD_WITH_LEVELDB
-  if (type == LEVELDB) {
+  if (type == core::LEVELDB) {
     return common::make_error_value("Not supported setting type", common::ErrorValue::E_ERROR);
   }
 #endif
 #ifdef BUILD_WITH_ROCKSDB
-  if (type == ROCKSDB) {
+  if (type == core::ROCKSDB) {
     return common::make_error_value("Not supported setting type", common::ErrorValue::E_ERROR);
   }
 #endif
 #ifdef BUILD_WITH_UNQLITE
-  if (type == UNQLITE) {
+  if (type == core::UNQLITE) {
     return common::make_error_value("Not supported setting type", common::ErrorValue::E_ERROR);
   }
 #endif
 #ifdef BUILD_WITH_LMDB
-  if (type == LMDB) {
+  if (type == core::LMDB) {
     return common::make_error_value("Not supported setting type", common::ErrorValue::E_ERROR);
   }
 #endif
 #ifdef BUILD_WITH_UPSCALEDB
-  if (type == UPSCALEDB) {
+  if (type == core::UPSCALEDB) {
     return common::make_error_value("Not supported setting type", common::ErrorValue::E_ERROR);
   }
 #endif
@@ -316,51 +316,51 @@ common::Error ServersManager::DiscoveryClusterConnection(
 
 common::Error ServersManager::DiscoverySentinelConnection(
     IConnectionSettingsBaseSPtr connection,
-    std::vector<ServerDiscoverySentinelInfoSPtr>* inf) {
+    std::vector<core::ServerDiscoverySentinelInfoSPtr>* inf) {
   if (!connection || !inf) {
     return common::make_error_value("Invalid input argument(s)", common::ErrorValue::E_ERROR);
   }
 
   core::connectionTypes type = connection->Type();
 #ifdef BUILD_WITH_REDIS
-  if (type == REDIS) {
+  if (type == core::REDIS) {
     redis::ConnectionSettings* settings = static_cast<redis::ConnectionSettings*>(connection.get());
-    redis::RConfig rconfig(settings->Info(), settings->SSHInfo());
-    return redis::DiscoverySentinelConnection(rconfig, inf);
+    core::redis::RConfig rconfig(settings->Info(), settings->SSHInfo());
+    return core::redis::DiscoverySentinelConnection(rconfig, inf);
   }
 #endif
 #ifdef BUILD_WITH_MEMCACHED
-  if (type == MEMCACHED) {
+  if (type == core::MEMCACHED) {
     return common::make_error_value("Not supported setting type", common::ErrorValue::E_ERROR);
   }
 #endif
 #ifdef BUILD_WITH_SSDB
-  if (type == SSDB) {
+  if (type == core::SSDB) {
     return common::make_error_value("Not supported setting type", common::ErrorValue::E_ERROR);
   }
 #endif
 #ifdef BUILD_WITH_LEVELDB
-  if (type == LEVELDB) {
+  if (type == core::LEVELDB) {
     return common::make_error_value("Not supported setting type", common::ErrorValue::E_ERROR);
   }
 #endif
 #ifdef BUILD_WITH_ROCKSDB
-  if (type == ROCKSDB) {
+  if (type == core::ROCKSDB) {
     return common::make_error_value("Not supported setting type", common::ErrorValue::E_ERROR);
   }
 #endif
 #ifdef BUILD_WITH_UNQLITE
-  if (type == UNQLITE) {
+  if (type == core::UNQLITE) {
     return common::make_error_value("Not supported setting type", common::ErrorValue::E_ERROR);
   }
 #endif
 #ifdef BUILD_WITH_LMDB
-  if (type == LMDB) {
+  if (type == core::LMDB) {
     return common::make_error_value("Not supported setting type", common::ErrorValue::E_ERROR);
   }
 #endif
 #ifdef BUILD_WITH_UPSCALEDB
-  if (type == UPSCALEDB) {
+  if (type == core::UPSCALEDB) {
     return common::make_error_value("Not supported setting type", common::ErrorValue::E_ERROR);
   }
 #endif

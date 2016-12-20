@@ -26,10 +26,10 @@ namespace fastonosql {
 namespace proxy {
 namespace memcached {
 
-Database::Database(IServerSPtr server, IDataBaseInfoSPtr info) : IDatabase(server, info) {
+Database::Database(IServerSPtr server, core::IDataBaseInfoSPtr info) : IDatabase(server, info) {
   DCHECK(server);
   DCHECK(info);
-  DCHECK(info->Type() == MEMCACHED);
+  DCHECK(info->Type() == core::MEMCACHED);
 }
 
 }  // namespace memcached

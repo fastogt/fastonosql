@@ -91,7 +91,7 @@ bool IServer::IsSupportTTLKeys() const {
   return fastonosql::core::IsSupportTTLKeys(Type());
 }
 
-translator_t IServer::Translator() const {
+core::translator_t IServer::Translator() const {
   return drv_->Translator();
 }
 
@@ -104,13 +104,13 @@ std::string IServer::Name() const {
   return path.Name();
 }
 
-IServerInfoSPtr IServer::CurrentServerInfo() const {
+core::IServerInfoSPtr IServer::CurrentServerInfo() const {
   if (IsConnected()) {
     DCHECK(server_info_);
     return server_info_;
   }
 
-  return IServerInfoSPtr();
+  return core::IServerInfoSPtr();
 }
 
 IServer::database_t IServer::CurrentDatabaseInfo() const {
@@ -129,12 +129,12 @@ std::string IServer::NsSeparator() const {
   return drv_->NsSeparator();
 }
 
-IDatabaseSPtr IServer::CreateDatabaseByInfo(IDataBaseInfoSPtr inf) {
+proxy::IDatabaseSPtr IServer::CreateDatabaseByInfo(core::IDataBaseInfoSPtr inf) {
   database_t db = FindDatabase(inf);
   return db ? CreateDatabase(inf) : IDatabaseSPtr();
 }
 
-IServer::database_t IServer::FindDatabase(IDataBaseInfoSPtr inf) const {
+proxy::IServer::database_t IServer::FindDatabase(core::IDataBaseInfoSPtr inf) const {
   if (!inf) {
     DNOTREACHED();
     return database_t();
@@ -461,7 +461,7 @@ void IServer::HandleLoadDatabaseInfosEvent(events::LoadDatabasesInfoResponceEven
     events_info::LoadDatabasesInfoResponce::database_info_cont_type dbs = v.databases;
     events_info::LoadDatabasesInfoResponce::database_info_cont_type tmp;
     for (size_t j = 0; j < dbs.size(); ++j) {
-      IDataBaseInfoSPtr db = dbs[j];
+      core::IDataBaseInfoSPtr db = dbs[j];
       database_t dbs = FindDatabase(db);
       if (!dbs) {
         DCHECK(!db->IsDefault());
@@ -610,30 +610,30 @@ void IServer::KeyTTLLoad(core::NKey key, core::ttl_t ttl) {
   }
 }
 
-void IServer::HandleCheckDBKeys(core::IDataBaseInfoSPtr db, ttl_t expired_time) {
+void IServer::HandleCheckDBKeys(core::IDataBaseInfoSPtr db, core::ttl_t expired_time) {
   if (!db) {
     return;
   }
 
   auto keys = db->Keys();
-  for (NDbKValue key : keys) {
-    NKey nkey = key.Key();
-    ttl_t key_ttl = nkey.TTL();
+  for (core::NDbKValue key : keys) {
+    core::NKey nkey = key.Key();
+    core::ttl_t key_ttl = nkey.TTL();
     if (key_ttl == NO_TTL) {
     } else if (key_ttl == EXPIRED_TTL) {
       if (db->RemoveKey(nkey)) {
         emit KeyRemoved(db, nkey);
       }
     } else {  // live
-      const ttl_t new_ttl = key_ttl - expired_time;
+      const core::ttl_t new_ttl = key_ttl - expired_time;
       if (new_ttl == NO_TTL) {
-        translator_t trans = Translator();
+        core::translator_t trans = Translator();
         std::string load_ttl_cmd;
         common::Error err = trans->LoadKeyTTLCommand(nkey, &load_ttl_cmd);
         if (err && err->isError()) {
           return;
         }
-        core::events_info::ExecuteInfoRequest req(this, load_ttl_cmd, 0, 0, true, true,
+        proxy::events_info::ExecuteInfoRequest req(this, load_ttl_cmd, 0, 0, true, true,
                                                   common::Value::C_INNER);
         Execute(req);
       } else {

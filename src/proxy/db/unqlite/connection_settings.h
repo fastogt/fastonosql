@@ -32,8 +32,8 @@ class ConnectionSettings : public IConnectionSettingsLocal {
  public:
   explicit ConnectionSettings(const connection_path_t& connectionName);
 
-  Config Info() const;
-  void SetInfo(const Config& info);
+  core::unqlite::Config Info() const;
+  void SetInfo(const core::unqlite::Config& info);
 
   virtual std::string Delimiter() const override;
   virtual void SetDelimiter(const std::string& delimiter) override;
@@ -50,7 +50,7 @@ class ConnectionSettings : public IConnectionSettingsLocal {
   virtual ConnectionSettings* Clone() const override;
 
  private:
-  Config info_;
+  core::unqlite::Config info_;
 };
 
 }  // namespace unqlite

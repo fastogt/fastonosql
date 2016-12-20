@@ -26,10 +26,10 @@ namespace fastonosql {
 namespace proxy {
 namespace leveldb {
 
-Database::Database(IServerSPtr server, IDataBaseInfoSPtr info) : IDatabase(server, info) {
+Database::Database(IServerSPtr server, core::IDataBaseInfoSPtr info) : IDatabase(server, info) {
   DCHECK(server);
   DCHECK(info);
-  DCHECK(info->Type() == LEVELDB);
+  DCHECK(info->Type() == core::LEVELDB);
 }
 
 }  // namespace leveldb

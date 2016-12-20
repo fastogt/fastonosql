@@ -32,9 +32,9 @@ ConnectionWidget::ConnectionWidget(QWidget* parent)
   addWidget(createDBIfMissing_);
 }
 
-void ConnectionWidget::syncControls(core::IConnectionSettingsBase* connection) {
-  core::leveldb::ConnectionSettings* lev =
-      static_cast<core::leveldb::ConnectionSettings*>(connection);
+void ConnectionWidget::syncControls(proxy::IConnectionSettingsBase* connection) {
+  proxy::leveldb::ConnectionSettings* lev =
+      static_cast<proxy::leveldb::ConnectionSettings*>(connection);
   if (lev) {
     core::leveldb::Config config = lev->Info();
     createDBIfMissing_->setChecked(config.options.create_if_missing);
@@ -47,9 +47,9 @@ void ConnectionWidget::retranslateUi() {
   ConnectionLocalWidget::retranslateUi();
 }
 
-core::IConnectionSettingsLocal* ConnectionWidget::createConnectionLocalImpl(
-    const core::connection_path_t& path) const {
-  core::leveldb::ConnectionSettings* conn = new core::leveldb::ConnectionSettings(path);
+proxy::IConnectionSettingsLocal* ConnectionWidget::createConnectionLocalImpl(
+    const proxy::connection_path_t& path) const {
+  proxy::leveldb::ConnectionSettings* conn = new proxy::leveldb::ConnectionSettings(path);
   core::leveldb::Config config = conn->Info();
   config.options.create_if_missing = createDBIfMissing_->isChecked();
   conn->SetInfo(config);

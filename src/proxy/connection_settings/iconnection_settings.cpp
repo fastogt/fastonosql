@@ -90,7 +90,7 @@ ConnectionSettingsPath ConnectionSettingsPath::Root() {
 }
 
 IConnectionSettings::IConnectionSettings(const connection_path_t& connectionPath,
-                                         core::core::connectionTypes type)
+                                         core::connectionTypes type)
     : connection_path_(connectionPath), type_(type), msinterval_(0) {}
 
 IConnectionSettings::~IConnectionSettings() {}
@@ -103,7 +103,7 @@ connection_path_t IConnectionSettings::Path() const {
   return connection_path_;
 }
 
-core::core::connectionTypes IConnectionSettings::Type() const {
+core::connectionTypes IConnectionSettings::Type() const {
   return type_;
 }
 
@@ -147,42 +147,42 @@ std::string IConnectionSettingsBase::LoggingPath() const {
   std::string logDir = common::ConvertToString(SettingsManager::instance().LoggingDirectory());
   std::string prefix = logDir + Hash();
 #ifdef BUILD_WITH_REDIS
-  if (type_ == REDIS) {
+  if (type_ == core::REDIS) {
     return prefix + LOGGING_REDIS_FILE_EXTENSION;
   }
 #endif
 #ifdef BUILD_WITH_MEMCACHED
-  if (type_ == MEMCACHED) {
+  if (type_ == core::MEMCACHED) {
     return prefix + LOGGING_MEMCACHED_FILE_EXTENSION;
   }
 #endif
 #ifdef BUILD_WITH_SSDB
-  if (type_ == SSDB) {
+  if (type_ == core::SSDB) {
     return prefix + LOGGING_SSDB_FILE_EXTENSION;
   }
 #endif
 #ifdef BUILD_WITH_LEVELDB
-  if (type_ == LEVELDB) {
+  if (type_ == core::LEVELDB) {
     return prefix + LOGGING_LEVELDB_FILE_EXTENSION;
   }
 #endif
 #ifdef BUILD_WITH_ROCKSDB
-  if (type_ == ROCKSDB) {
+  if (type_ == core::ROCKSDB) {
     return prefix + LOGGING_ROCKSDB_FILE_EXTENSION;
   }
 #endif
 #ifdef BUILD_WITH_UNQLITE
-  if (type_ == UNQLITE) {
+  if (type_ == core::UNQLITE) {
     return prefix + LOGGING_UNQLITE_FILE_EXTENSION;
   }
 #endif
 #ifdef BUILD_WITH_LMDB
-  if (type_ == LMDB) {
+  if (type_ == core::LMDB) {
     return prefix + LOGGING_LMDB_FILE_EXTENSION;
   }
 #endif
 #ifdef BUILD_WITH_UPSCALEDB
-  if (type_ == LMDB) {
+  if (type_ == core::LMDB) {
     return prefix + LOGGING_UPSCALEDB_FILE_EXTENSION;
   }
 #endif

@@ -37,13 +37,13 @@ class Server : public IServerRemote {
   explicit Server(IConnectionSettingsBaseSPtr settings);
   virtual ~Server();
 
-  virtual serverMode Mode() const override;
-  virtual serverTypes Role() const override;
-  virtual serverState State() const override;
+  virtual core::serverMode Mode() const override;
+  virtual core::serverTypes Role() const override;
+  virtual core::serverState State() const override;
   virtual common::net::HostAndPort Host() const override;
 
  private:
-  virtual IDatabaseSPtr CreateDatabase(IDataBaseInfoSPtr info) override;
+  virtual IDatabaseSPtr CreateDatabase(core::IDataBaseInfoSPtr info) override;
 };
 
 }  // namespace ssdb

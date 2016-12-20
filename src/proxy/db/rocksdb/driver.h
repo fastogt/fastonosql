@@ -35,8 +35,16 @@
 #include "global/global.h"  // for FastoObject (ptr only), etc
 
 namespace fastonosql {
-namespace proxy {
+namespace core {
 class IDataBaseInfo;
+}
+}
+
+namespace fastonosql {
+namespace core {
+namespace rocksdb {
+class DBConnection;
+}
 }
 }
 
@@ -55,7 +63,7 @@ class Driver : public IDriverLocal {
   virtual bool IsInterrupted() const override;
   virtual void SetInterrupted(bool interrupted) override;
 
-  virtual translator_t Translator() const override;
+  virtual core::translator_t Translator() const override;
 
   virtual bool IsConnected() const override;
   virtual bool IsAuthenticated() const override;
@@ -78,18 +86,18 @@ class Driver : public IDriverLocal {
   virtual common::Error SyncDisconnect() override WARN_UNUSED_RESULT;
 
   virtual common::Error ExecuteImpl(int argc, const char** argv, FastoObject* out) override;
-  virtual common::Error CurrentServerInfo(IServerInfo** info) override;
-  virtual common::Error CurrentDataBaseInfo(IDataBaseInfo** info) override;
+  virtual common::Error CurrentServerInfo(core::IServerInfo** info) override;
+  virtual common::Error CurrentDataBaseInfo(core::IDataBaseInfo** info) override;
 
   virtual void HandleProcessCommandLineArgsEvent(
       events::ProcessConfigArgsRequestEvent* ev) override;
 
   virtual void HandleLoadDatabaseContentEvent(events::LoadDatabaseContentRequestEvent* ev) override;
 
-  virtual IServerInfoSPtr MakeServerInfoFromString(const std::string& val) override;
+  virtual core::IServerInfoSPtr MakeServerInfoFromString(const std::string& val) override;
 
  private:
-  DBConnection* const impl_;
+  core::rocksdb::DBConnection* const impl_;
 };
 
 }  // namespace rocksdb

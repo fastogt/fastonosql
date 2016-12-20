@@ -25,7 +25,7 @@ namespace proxy {
 namespace redis {
 
 ClusterSettings::ClusterSettings(const connection_path_t& connectionName)
-    : IClusterSettingsBase(connectionName, REDIS) {}
+    : IClusterSettingsBase(connectionName, core::REDIS) {}
 
 ClusterSettings* ClusterSettings::Clone() const {
   ClusterSettings* red = new ClusterSettings(*this);

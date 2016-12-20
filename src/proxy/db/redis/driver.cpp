@@ -43,12 +43,12 @@
 #include "core/internal/cdb_connection.h"
 #include "core/internal/db_connection.h"
 
-#include "core/db/redis/db_connection.h"        // for DBConnection, INFO_REQUEST, etc
-#include "core/db/redis/command.h"              // for Command
-#include "core/db/redis/config.h"               // for Config
+#include "core/db/redis/db_connection.h"         // for DBConnection, INFO_REQUEST, etc
+#include "core/db/redis/command.h"               // for Command
+#include "core/db/redis/config.h"                // for Config
 #include "proxy/db/redis/connection_settings.h"  // for ConnectionSettings
-#include "core/db/redis/database_info.h"        // for DataBaseInfo
-#include "core/db/redis/server_info.h"          // for ServerInfo, etc
+#include "core/db/redis/database_info.h"         // for DataBaseInfo
+#include "core/db/redis/server_info.h"           // for ServerInfo, etc
 
 #include "global/global.h"  // for FastoObjectCommandIPtr, etc
 
@@ -91,10 +91,10 @@ namespace proxy {
 namespace redis {
 
 Driver::Driver(IConnectionSettingsBaseSPtr settings)
-    : IDriverRemote(settings), impl_(new DBConnection(this)) {
-  COMPILE_ASSERT(DBConnection::connection_t == REDIS,
+    : IDriverRemote(settings), impl_(new core::redis::DBConnection(this)) {
+  COMPILE_ASSERT(core::redis::DBConnection::connection_t == core::REDIS,
                  "DBConnection must be the same type as Driver!");
-  CHECK(Type() == REDIS);
+  CHECK(Type() == core::REDIS);
 }
 
 Driver::~Driver() {
@@ -102,7 +102,7 @@ Driver::~Driver() {
 }
 
 common::net::HostAndPort Driver::Host() const {
-  Config conf = impl_->config();
+  core::redis::Config conf = impl_->config();
   return conf.host;
 }
 
@@ -122,7 +122,7 @@ void Driver::SetInterrupted(bool interrupted) {
   return impl_->SetInterrupted(interrupted);
 }
 
-translator_t Driver::Translator() const {
+core::translator_t Driver::Translator() const {
   return impl_->Translator();
 }
 
@@ -141,18 +141,18 @@ void Driver::ClearImpl() {}
 FastoObjectCommandIPtr Driver::CreateCommand(FastoObject* parent,
                                              const std::string& input,
                                              common::Value::CommandLoggingType ct) {
-  return fastonosql::core::CreateCommand<Command>(parent, input, ct);
+  return fastonosql::core::CreateCommand<core::redis::Command>(parent, input, ct);
 }
 
 FastoObjectCommandIPtr Driver::CreateCommandFast(const std::string& input,
                                                  common::Value::CommandLoggingType ct) {
-  return fastonosql::core::CreateCommandFast<Command>(input, ct);
+  return fastonosql::core::CreateCommandFast<core::redis::Command>(input, ct);
 }
 
 common::Error Driver::SyncConnect() {
   ConnectionSettings* set = dynamic_cast<ConnectionSettings*>(settings_.get());  // +
   CHECK(set);
-  RConfig rconf(set->Info(), set->SSHInfo());
+  core::redis::RConfig rconf(set->Info(), set->SSHInfo());
   return impl_->Connect(rconf);
 }
 
@@ -164,7 +164,7 @@ common::Error Driver::ExecuteImpl(int argc, const char** argv, FastoObject* out)
   return impl_->Execute(argc, argv, out);
 }
 
-common::Error Driver::CurrentServerInfo(IServerInfo** info) {
+common::Error Driver::CurrentServerInfo(core::IServerInfo** info) {
   FastoObjectCommandIPtr cmd = CreateCommandFast(INFO_REQUEST, common::Value::C_INNER);
   common::Error err = Execute(cmd.get());
   if (err && err->isError()) {
@@ -172,7 +172,7 @@ common::Error Driver::CurrentServerInfo(IServerInfo** info) {
   }
 
   std::string content = common::ConvertToString(cmd.get());
-  *info = MakeRedisServerInfo(content);
+  *info = core::redis::MakeRedisServerInfo(content);
 
   if (!*info) {
     return common::make_error_value("Invalid " INFO_REQUEST " command output",
@@ -181,7 +181,7 @@ common::Error Driver::CurrentServerInfo(IServerInfo** info) {
   return common::Error();
 }
 
-common::Error Driver::CurrentDataBaseInfo(IDataBaseInfo** info) {
+common::Error Driver::CurrentDataBaseInfo(core::IDataBaseInfo** info) {
   if (!info) {
     DNOTREACHED();
     return common::make_error_value("Invalid input argument(s)", common::ErrorValue::E_ERROR);
@@ -191,7 +191,7 @@ common::Error Driver::CurrentDataBaseInfo(IDataBaseInfo** info) {
 }
 
 void Driver::HandleProcessCommandLineArgsEvent(events::ProcessConfigArgsRequestEvent* ev) {
-  const Config conf = impl_->config();
+  const core::redis::Config conf = impl_->config();
   /* Latency mode */
   if (conf.latency_mode) {
     LatencyMode(ev);
@@ -316,10 +316,10 @@ void Driver::HandleChangeMaxConnectionEvent(events::ChangeMaxConnectionRequestEv
 common::Error Driver::InteracteveMode(events::ProcessConfigArgsRequestEvent* ev) {
   QObject* sender = ev->sender();
   NotifyProgress(sender, 0);
-  events::EnterModeEvent::value_type res(this, InteractiveMode);
+  events::EnterModeEvent::value_type res(this, core::InteractiveMode);
   Reply(sender, new events::EnterModeEvent(this, res));
 
-  events::LeaveModeEvent::value_type res2(this, InteractiveMode);
+  events::LeaveModeEvent::value_type res2(this, core::InteractiveMode);
   Reply(sender, new events::LeaveModeEvent(this, res2));
   NotifyProgress(sender, 100);
   return common::Error();
@@ -452,7 +452,7 @@ void Driver::HandleLoadDatabaseInfosEvent(events::LoadDatabasesInfoRequestEvent*
   FastoObjectCommandIPtr cmd = CreateCommandFast(REDIS_GET_DATABASES, common::Value::C_INNER);
   NotifyProgress(sender, 50);
 
-  IDataBaseInfo* info = nullptr;
+  core::IDataBaseInfo* info = nullptr;
   common::Error err = CurrentDataBaseInfo(&info);
   if (err && err->isError()) {
     res.setErrorInfo(err);
@@ -478,13 +478,14 @@ void Driver::HandleLoadDatabaseInfosEvent(events::LoadDatabasesInfoRequestEvent*
   common::ArrayValue* ar = array->Array();
   CHECK(ar);
 
-  IDataBaseInfoSPtr curdb(info);
+  core::IDataBaseInfoSPtr curdb(info);
   std::string scountDb;
   if (ar->getString(1, &scountDb)) {
     size_t countDb = common::ConvertFromString<size_t>(scountDb);
     if (countDb > 0) {
       for (size_t i = 0; i < countDb; ++i) {
-        IDataBaseInfoSPtr dbInf(new DataBaseInfo(common::ConvertToString(i), false, 0));
+        core::IDataBaseInfoSPtr dbInf(
+            new core::redis::DataBaseInfo(common::ConvertToString(i), false, 0));
         if (dbInf->Name() == curdb->Name()) {
           res.databases.push_back(curdb);
         } else {
@@ -555,8 +556,8 @@ void Driver::HandleLoadDatabaseContentEvent(events::LoadDatabaseContentRequestEv
         std::string key;
         bool isok = ar->getString(i, &key);
         if (isok) {
-          NKey k(key);
-          NDbKValue dbv(k, NValue());
+          core::NKey k(key);
+          core::NDbKValue dbv(k, core::NValue());
           cmds.push_back(CreateCommandFast("TYPE " + key, common::Value::C_INNER));
           cmds.push_back(CreateCommandFast("TTL " + key, common::Value::C_INNER));
           res.keys.push_back(dbv);
@@ -587,9 +588,9 @@ void Driver::HandleLoadDatabaseContentEvent(events::LoadDatabaseContentRequestEv
           DCHECK_EQ(tchildrens.size(), 1);
           if (tchildrens.size() == 1) {
             auto vttl = tchildrens[0]->Value();
-            ttl_t ttl = 0;
+            core::ttl_t ttl = 0;
             if (vttl->getAsInteger(&ttl)) {
-              NKey key = res.keys[i].Key();
+              core::NKey key = res.keys[i].Key();
               key.SetTTL(ttl);
               res.keys[i].SetKey(key);
             }
@@ -622,7 +623,7 @@ void Driver::HandleLoadServerPropertyEvent(events::ServerPropertyInfoRequestEven
       CHECK_EQ(ch.size(), 1);
       FastoObjectArray* array = dynamic_cast<FastoObjectArray*>(ch[0].get());  // +
       if (array) {
-        res.info = MakeServerProperty(array);
+        res.info = core::MakeServerProperty(array);
       }
     }
   }
@@ -650,8 +651,8 @@ void Driver::HandleServerPropertyChangeEvent(events::ChangeServerPropertyInfoReq
   NotifyProgress(sender, 100);
 }
 
-IServerInfoSPtr Driver::MakeServerInfoFromString(const std::string& val) {
-  IServerInfoSPtr res(MakeRedisServerInfo(val));
+core::IServerInfoSPtr Driver::MakeServerInfoFromString(const std::string& val) {
+  core::IServerInfoSPtr res(core::redis::MakeRedisServerInfo(val));
   return res;
 }
 

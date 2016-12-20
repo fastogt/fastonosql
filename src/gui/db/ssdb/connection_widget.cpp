@@ -26,9 +26,9 @@ namespace ssdb {
 
 ConnectionWidget::ConnectionWidget(QWidget* parent) : ConnectionRemoteWidget(parent) {}
 
-void ConnectionWidget::syncControls(core::IConnectionSettingsBase* connection) {
-  core::IConnectionSettingsRemote* remote =
-      static_cast<core::IConnectionSettingsRemote*>(connection);
+void ConnectionWidget::syncControls(proxy::IConnectionSettingsBase* connection) {
+  proxy::IConnectionSettingsRemote* remote =
+      static_cast<proxy::IConnectionSettingsRemote*>(connection);
   ConnectionRemoteWidget::syncControls(remote);
 }
 
@@ -36,9 +36,9 @@ void ConnectionWidget::retranslateUi() {
   ConnectionRemoteWidget::retranslateUi();
 }
 
-core::IConnectionSettingsRemote* ConnectionWidget::createConnectionRemoteImpl(
-    const core::connection_path_t& path) const {
-  core::ssdb::ConnectionSettings* conn = new core::ssdb::ConnectionSettings(path);
+proxy::IConnectionSettingsRemote* ConnectionWidget::createConnectionRemoteImpl(
+    const proxy::connection_path_t& path) const {
+  proxy::ssdb::ConnectionSettings* conn = new proxy::ssdb::ConnectionSettings(path);
   return conn;
 }
 

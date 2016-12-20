@@ -29,8 +29,8 @@
 #include "core/server/iserver_info.h"
 #include "proxy/events/events_info.h"  // for DiscoveryInfoResponce
 
-#include "proxy/db/redis/database.h"     // for Database
-#include "proxy/db/redis/driver.h"       // for Driver
+#include "proxy/db/redis/database.h"    // for Database
+#include "proxy/db/redis/driver.h"      // for Driver
 #include "core/db/redis/server_info.h"  // for ServerInfo, etc
 
 namespace fastonosql {
@@ -38,7 +38,7 @@ namespace proxy {
 namespace redis {
 
 Server::Server(IConnectionSettingsBaseSPtr settings)
-    : IServerRemote(new Driver(settings)), role_(MASTER), mode_(STANDALONE) {
+    : IServerRemote(new Driver(settings)), role_(core::MASTER), mode_(core::STANDALONE) {
   StartCheckKeyExistTimer();
 }
 
@@ -46,16 +46,16 @@ Server::~Server() {
   StopCheckKeyExistTimer();
 }
 
-serverTypes Server::Role() const {
+core::serverTypes Server::Role() const {
   return role_;
 }
 
-serverMode Server::Mode() const {
+core::serverMode Server::Mode() const {
   return mode_;
 }
 
-serverState Server::State() const {
-  return SUP;
+core::serverState Server::State() const {
+  return core::SUP;
 }
 
 common::net::HostAndPort Server::Host() const {
@@ -63,7 +63,7 @@ common::net::HostAndPort Server::Host() const {
   return rdrv->Host();
 }
 
-IDatabaseSPtr Server::CreateDatabase(IDataBaseInfoSPtr info) {
+IDatabaseSPtr Server::CreateDatabase(core::IDataBaseInfoSPtr info) {
   return IDatabaseSPtr(new Database(shared_from_this(), info));
 }
 
@@ -75,20 +75,21 @@ void Server::HandleDiscoveryInfoResponceEvent(events::DiscoveryInfoResponceEvent
     return;
   }
 
-  struct ServerInfo* rinf = dynamic_cast<struct ServerInfo*>(v.sinfo.get());  // +
+  struct core::redis::ServerInfo* rinf =
+      dynamic_cast<struct core::redis::ServerInfo*>(v.sinfo.get());  // +
   CHECK(rinf);
   if (rinf->replication_.role_ == "master") {
-    role_ = MASTER;
+    role_ = core::MASTER;
   } else if (rinf->replication_.role_ == "slave") {
-    role_ = SLAVE;
+    role_ = core::SLAVE;
   }
 
   if (rinf->server_.redis_mode_ == "standalone") {
-    mode_ = STANDALONE;
+    mode_ = core::STANDALONE;
   } else if (rinf->server_.redis_mode_ == "sentinel") {
-    mode_ = SENTINEL;
+    mode_ = core::SENTINEL;
   } else if (rinf->server_.redis_mode_ == "cluster") {
-    mode_ = CLUSTER;
+    mode_ = core::CLUSTER;
   }
   IServer::HandleDiscoveryInfoResponceEvent(ev);
 }
