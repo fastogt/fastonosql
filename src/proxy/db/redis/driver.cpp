@@ -160,8 +160,8 @@ common::Error Driver::SyncDisconnect() {
   return impl_->Disconnect();
 }
 
-common::Error Driver::ExecuteImpl(int argc, const char** argv, FastoObject* out) {
-  return impl_->Execute(argc, argv, out);
+common::Error Driver::ExecuteImpl(const std::string& command, FastoObject* out) {
+  return impl_->Execute(command, out);
 }
 
 common::Error Driver::CurrentServerInfo(core::IServerInfo** info) {

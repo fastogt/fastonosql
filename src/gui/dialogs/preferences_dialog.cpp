@@ -83,47 +83,41 @@ PreferencesDialog::PreferencesDialog(QWidget* parent) : QDialog(parent) {
 
   // ui settings
   generalBox_ = new QGroupBox;
+  QGridLayout* generalLayout = new QGridLayout;
 
-  QHBoxLayout* styleswLayout = new QHBoxLayout;
+  autoCheckUpdates_ = new QCheckBox;
+  generalLayout->addWidget(autoCheckUpdates_, 0, 0);
+  fastViewKeys_ = new QCheckBox;
+  generalLayout->addWidget(fastViewKeys_, 0, 1);
+
+  autoOpenConsole_ = new QCheckBox;
+  generalLayout->addWidget(autoOpenConsole_, 1, 0);
+  autoComletionEnable_ = new QCheckBox;
+  generalLayout->addWidget(autoComletionEnable_, 1, 1);
+
   stylesLabel_ = new QLabel;
   stylesComboBox_ = new QComboBox;
   stylesComboBox_->addItems(common::qt::gui::supportedStyles());
-  styleswLayout->addWidget(stylesLabel_);
-  styleswLayout->addWidget(stylesComboBox_);
+  generalLayout->addWidget(stylesLabel_, 2, 0);
+  generalLayout->addWidget(stylesComboBox_, 2, 1);
 
-  QHBoxLayout* fontLayout = new QHBoxLayout;
   fontLabel_ = new QLabel;
   fontComboBox_ = new QFontComboBox;
   fontComboBox_->setEditable(false);
   fontSizeSpinBox_ = new QSpinBox;
-  fontLayout->addWidget(fontLabel_);
+  generalLayout->addWidget(fontLabel_, 3, 0);
   // fontLayout->addWidget(new QSplitter(Qt::Horizontal));
-  fontLayout->addWidget(fontComboBox_);
-  fontLayout->addWidget(fontSizeSpinBox_);
+  QHBoxLayout* l = new QHBoxLayout;
+  l->addWidget(fontComboBox_);
+  l->addWidget(fontSizeSpinBox_);
+  generalLayout->addLayout(l, 3, 1);
 
-  QHBoxLayout* langLayout = new QHBoxLayout;
   langLabel_ = new QLabel;
-  langLayout->addWidget(langLabel_);
+  generalLayout->addWidget(langLabel_, 4, 0);
   languagesComboBox_ = new QComboBox;
   languagesComboBox_->addItems(common::qt::translations::supportedLanguages());
-  langLayout->addWidget(languagesComboBox_);
+  generalLayout->addWidget(languagesComboBox_, 4, 1);
 
-  QVBoxLayout* generalLayout = new QVBoxLayout;
-  autoCheckUpdates_ = new QCheckBox;
-  generalLayout->addWidget(autoCheckUpdates_);
-  autoComletionEnable_ = new QCheckBox;
-  generalLayout->addWidget(autoComletionEnable_);
-  autoOpenConsole_ = new QCheckBox;
-  generalLayout->addWidget(autoOpenConsole_);
-  fastViewKeys_ = new QCheckBox;
-  generalLayout->addWidget(fastViewKeys_);
-  generalLayout->addLayout(styleswLayout);
-  generalLayout->addLayout(fontLayout);
-  generalLayout->addLayout(langLayout);
-
-  generalBox_->setLayout(generalLayout);
-
-  QHBoxLayout* defaultViewLayaut = new QHBoxLayout;
   defaultViewLabel_ = new QLabel;
   defaultViewComboBox_ = new QComboBox;
   for (size_t i = 0; i < SIZEOFMASS(viewsText); ++i) {
@@ -131,17 +125,14 @@ PreferencesDialog::PreferencesDialog(QWidget* parent) : QDialog(parent) {
     supportedViews sv = common::ConvertFromString<supportedViews>(vstr);
     defaultViewComboBox_->addItem(common::ConvertFromString<QString>(vstr), sv);
   }
-  defaultViewLayaut->addWidget(defaultViewLabel_);
-  defaultViewLayaut->addWidget(defaultViewComboBox_);
+  generalLayout->addWidget(defaultViewLabel_, 5, 0);
+  generalLayout->addWidget(defaultViewComboBox_, 5, 1);
 
   logDirPath_ = new QLineEdit;
-  QHBoxLayout* logLayout = new QHBoxLayout;
   logDirLabel_ = new QLabel;
-  logLayout->addWidget(logDirLabel_);
-  logLayout->addWidget(logDirPath_);
-
-  generalLayout->addLayout(defaultViewLayaut);
-  generalLayout->addLayout(logLayout);
+  generalLayout->addWidget(logDirLabel_, 6, 0);
+  generalLayout->addWidget(logDirPath_, 6, 1);
+  generalBox_->setLayout(generalLayout);
 
   // main layout
   QVBoxLayout* layout = new QVBoxLayout(this);

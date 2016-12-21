@@ -141,7 +141,7 @@ class IDriver : public QObject, public core::CDBConnectionClient {
   void HandleDiscoveryInfoEvent(events::DiscoveryInfoRequestEvent* ev);
   void HandleClearServerHistoryEvent(events::ClearServerHistoryRequestEvent* ev);
 
-  virtual common::Error ExecuteImpl(int argc, const char** argv, FastoObject* out) = 0;
+  virtual common::Error ExecuteImpl(const std::string& command, FastoObject* out) = 0;
 
   virtual void OnFlushedCurrentDB() override;
   virtual void OnCurrentDataBaseChanged(core::IDataBaseInfo* info) override;

@@ -29,18 +29,18 @@
 #include <common/value.h>        // for ErrorValue, etc
 #include <common/convert2string.h>
 
-#include "core/command/command.h"         // for CreateCommand, etc
+#include "core/command/command.h"          // for CreateCommand, etc
 #include "proxy/command/command_logger.h"  // for LOG_COMMAND
-#include "core/connection_types.h"        // for ConvertToString, etc
-#include "core/db_key.h"                  // for NDbKValue, NValue, NKey
+#include "core/connection_types.h"         // for ConvertToString, etc
+#include "core/db_key.h"                   // for NDbKValue, NValue, NKey
 #include "proxy/events/events_info.h"
 
-#include "core/db/leveldb/command.h"              // for Command
-#include "core/db/leveldb/config.h"               // for Config
+#include "core/db/leveldb/command.h"               // for Command
+#include "core/db/leveldb/config.h"                // for Config
 #include "proxy/db/leveldb/connection_settings.h"  // for ConnectionSettings
 #include "proxy/db/leveldb/database.h"             // for DataBaseInfo
-#include "core/db/leveldb/db_connection.h"        // for DBConnection
-#include "core/db/leveldb/server_info.h"          // for ServerInfo, etc
+#include "core/db/leveldb/db_connection.h"         // for DBConnection
+#include "core/db/leveldb/server_info.h"           // for ServerInfo, etc
 
 #include "global/global.h"  // for FastoObject::childs_t, etc
 #include "global/types.h"   // for Command
@@ -120,8 +120,8 @@ common::Error Driver::SyncDisconnect() {
   return impl_->Disconnect();
 }
 
-common::Error Driver::ExecuteImpl(int argc, const char** argv, FastoObject* out) {
-  return impl_->Execute(argc, argv, out);
+common::Error Driver::ExecuteImpl(const std::string& command, FastoObject* out) {
+  return impl_->Execute(command, out);
 }
 
 common::Error Driver::CurrentServerInfo(core::IServerInfo** info) {
@@ -198,7 +198,8 @@ void Driver::HandleLoadDatabaseContentEvent(events::LoadDatabaseContentRequestEv
         std::string key;
         if (ar->getString(i, &key)) {
           core::NKey k(key);
-          core::NValue empty_val(common::Value::createEmptyValueFromType(common::Value::TYPE_STRING));
+          core::NValue empty_val(
+              common::Value::createEmptyValueFromType(common::Value::TYPE_STRING));
           core::NDbKValue ress(k, empty_val);
           res.keys.push_back(ress);
         }

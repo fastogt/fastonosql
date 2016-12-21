@@ -71,7 +71,7 @@ class Driver : public IDriverRemote {
   virtual common::Error SyncConnect() override WARN_UNUSED_RESULT;
   virtual common::Error SyncDisconnect() override WARN_UNUSED_RESULT;
 
-  virtual common::Error ExecuteImpl(int argc, const char** argv, FastoObject* out) override;
+  virtual common::Error ExecuteImpl(const std::string& command, FastoObject* out) override;
   virtual common::Error CurrentServerInfo(core::IServerInfo** info) override;
   virtual common::Error CurrentDataBaseInfo(core::IDataBaseInfo** info) override;
 

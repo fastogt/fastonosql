@@ -23,14 +23,37 @@
 
 #include <string>  // for string
 
+extern "C" {
+#include "sds.h"
+}
+
 #include <common/value.h>    // for ErrorValue, etc
 #include <common/sprintf.h>  // for MemSPrintf
+#include <common/utils.h>
 
 namespace fastonosql {
 namespace core {
 namespace internal {
 
 CommandHandler::CommandHandler(ICommandTranslator* translator) : translator_(translator) {}
+
+common::Error CommandHandler::Execute(const std::string& command, FastoObject* out) {
+  const char* ccommand = common::utils::c_strornull(command);
+  if (!ccommand) {
+    return common::make_error_value("Invalid input argument(s)", common::ErrorValue::E_ERROR);
+  }
+
+  int argc;
+  sds* argv = sdssplitargslong(ccommand, &argc);
+  if (!argv) {
+    return common::make_error_value("Invalid input argument(s)", common::ErrorValue::E_ERROR);
+  }
+
+  const char** exec_argv = const_cast<const char**>(argv);
+  common::Error err = Execute(argc, exec_argv, out);
+  sdsfreesplitres(argv, argc);
+  return err;
+}
 
 common::Error CommandHandler::Execute(int argc, const char** argv, FastoObject* out) {
   const command_t* cmd = nullptr;

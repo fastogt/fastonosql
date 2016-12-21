@@ -31,10 +31,6 @@
 #include <QApplication>
 #include <QThread>
 
-extern "C" {
-#include "sds.h"
-}
-
 #include <common/convert2string.h>  // for ConvertToString, etc
 #include <common/file_system.h>     // for File, ascii_string_path, etc
 #include <common/intrusive_ptr.h>   // for intrusive_ptr
@@ -156,21 +152,8 @@ common::Error IDriver::Execute(FastoObjectCommandIPtr cmd) {
 
   common::CommandValue* icmd = cmd->Cmd();
   const std::string command = icmd->inputCommand();
-  const char* ccommand = common::utils::c_strornull(command);
-  if (!ccommand) {
-    return common::make_error_value("Invalid input argument(s)", common::ErrorValue::E_ERROR);
-  }
-
   LOG_COMMAND(cmd);
-  int argc;
-  sds* argv = sdssplitargslong(ccommand, &argc);
-  if (!argv) {
-    return common::make_error_value("Invalid input argument(s)", common::ErrorValue::E_ERROR);
-  }
-
-  const char** exec_argv = const_cast<const char**>(argv);
-  common::Error err = ExecuteImpl(argc, exec_argv, cmd.get());
-  sdsfreesplitres(argv, argc);
+  common::Error err = ExecuteImpl(command, cmd.get());
   return err;
 }
 
