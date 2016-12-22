@@ -1,9 +1,6 @@
 [submodule "cmake"]
 	path = cmake
 	url = https://github.com/fastogt/cmake.git
-[submodule "src/third-party/leveldb/src"]
-	path = src/third-party/leveldb/src
-	url = https://github.com/fastogt/leveldb
 [submodule "src/third-party/unqlite/src"]
 	path = src/third-party/unqlite/src
 	url = https://github.com/fastogt/unqlite.git

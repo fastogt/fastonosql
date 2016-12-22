@@ -132,6 +132,25 @@ class BuildRequest(object):
 
         build_external_system_args = bs_external.cmd_line()
 
+	try:
+            cloned_dir = self.git_clone('https://github.com/fastogt/leveldb.git')
+            os.chdir(cloned_dir)
+
+            make_leveldb = list(build_external_system_args)
+            make_policy = run_command.CommonPolicy(print_message)
+            run_command.run_command_cb(make_leveldb, make_policy)
+
+	    copy_leveldb_includes=['cp', '-r', 'include/leveldb', '{0}/include'.format(prefix_path)]
+	    copy_policy = run_command.CommonPolicy(print_message)
+	    run_command.run_command_cb(copy_leveldb_includes, copy_policy)
+
+	    copy_leveldb_libs=['cp', 'out-static/libleveldb.a', '{0}/lib'.format(prefix_path)]
+	    run_command.run_command_cb(copy_leveldb_libs, copy_policy)
+            os.chdir(abs_dir_path)
+        except Exception as ex:
+            os.chdir(pwd)
+            raise ex
+
         try:
             cloned_dir = self.git_clone('https://github.com/fastogt/rocksdb.git')
             os.chdir(cloned_dir)
